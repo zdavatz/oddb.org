@@ -35,7 +35,7 @@ module ODDB
 					def invoice_items
 						@invoice_items.sort_by { |item|
 							item.time
-						}
+						}.reverse
 					end
 				end
 				class CompanyFacade

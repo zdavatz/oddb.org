@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Admin::Registration -- oddb -- 07.03.2003 -- hwyss@ywesee.com 
+# View::Drugs::Registration -- oddb -- 07.03.2003 -- hwyss@ywesee.com 
 
 require 'view/privatetemplate'
 require 'htmlgrid/errormessage'
@@ -14,7 +14,7 @@ require 'view/form'
 
 module ODDB
 	module View
-		module Admin
+		module Drugs
 module RegistrationSequenceList 
 	include View::AdditionalInformation
 	COMPONENTS = {
@@ -49,10 +49,10 @@ module RegistrationSequenceList
 	end
 end
 class RegistrationSequences < HtmlGrid::List
-	include View::Admin::RegistrationSequenceList
+	include View::Drugs::RegistrationSequenceList
 end
 class RootRegistrationSequences < View::FormList
-	include View::Admin::RegistrationSequenceList
+	include View::Drugs::RegistrationSequenceList
 end
 class FachinfoLanguageSelect < HtmlGrid::AbstractSelect
 	attr_accessor :value
@@ -115,14 +115,14 @@ class RegistrationForm < View::Form
 		[0,0,4,5]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,4,6]	=>	'list',
+		[0,0,4,9]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
 	SYMBOL_MAP = {
 		#:company_name				=>	HtmlGrid::InputText,
 		:expiration_date		=>	HtmlGrid::InputDate,
-		:fachinfo_upload		=>	HtmlGrid::InputFile,
+		#:fachinfo_upload		=>	HtmlGrid::InputFile,
 		:generic_type				=>	HtmlGrid::Select,
 		:inactive_date			=>	HtmlGrid::InputDate,
 		:market_date				=>	HtmlGrid::InputDate,
@@ -141,15 +141,25 @@ class RegistrationForm < View::Form
 			#css_map.store([1,5], 'button')
 		else
 			components.update({
-				[0,4]   =>	:language_select,
-				[0,5]		=>	:fachinfo_upload,
+				[0,5]		=>	'fi_upload_instruction0',
 				[2,5]		=>	:fachinfo_label,
 				[3,5]		=>	:fachinfo,
-				[1,6]		=>	:submit,
-				[1,6,1]	=>	:new_registration,
+				[0,6]		=>	'fi_upload_instruction1',
+				[1,6]		=>	:language_select,
+				[0,7]		=>	'fi_upload_instruction2',
+				[1,7]		=>	:fachinfo_upload,
+				[0,8]		=>	'fi_upload_instruction3',
+				[1,8]		=>	:submit,
+				[1,8,1]	=>	:new_registration,
 			})
 			#component_css_map.store([0,5,4], 'standard')
-			css_map.store([0,6,4], 'list')
+			#css_map.store([0,7,4], 'list')
+			css_map.store([0,5], 'result-b-r-unknown-left')
+			css_map.store([1,5], 'list-bg')
+			css_map.store([0,6], 'list-bg')
+			css_map.store([1,6], 'list-bg')
+			css_map.store([0,7], 'list-bg')
+			css_map.store([1,7], 'list-bg')
 			#css_map.store([1,6], 'button')
 		end
 	end
@@ -160,6 +170,11 @@ class RegistrationForm < View::Form
 			HtmlGrid::InputText
 		end
 		klass.new(:company_name, model, session, self)
+	end
+	def fachinfo_upload(model, session)
+		input = HtmlGrid::InputFile.new(:fachinfo_upload, model, session, self)
+		input.label = false
+		input
 	end
 	def fachinfo_label(model, session)
 		HtmlGrid::LabelText.new(:fachinfo, model, session , self)
@@ -174,8 +189,10 @@ class RegistrationForm < View::Form
 		klass.new(:iksnr, model, session, self)
 	end
 	def language_select(model, session)
-		View::Admin::FachinfoLanguageSelect.new(:language_select, model, 
+		sel = View::Drugs::FachinfoLanguageSelect.new(:language_select, model, 
 			session, self)
+		sel.label = false
+		sel
 	end
 	def indication(model, session)
 		InputDescription.new(:indication, model.indication, session, self)
@@ -186,7 +203,7 @@ class RegistrationForm < View::Form
 end
 class RegistrationComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,1]		=>	View::Admin::RegistrationInnerComposite,
+		[0,1]		=>	View::Drugs::RegistrationInnerComposite,
 		[0,2]		=>	:registration_sequences,
 	}
 	CSS_CLASS = 'composite'
@@ -194,7 +211,7 @@ class RegistrationComposite < HtmlGrid::Composite
 		[0,0]	=>	'th',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
-	SEQUENCES = View::Admin::RegistrationSequences
+	SEQUENCES = View::Drugs::RegistrationSequences
 	def registration_sequences(model, session)
 		if(sequences = model.sequences)
 			values = PointerArray.new(sequences.values, model.pointer)
@@ -202,25 +219,25 @@ class RegistrationComposite < HtmlGrid::Composite
 		end
 	end
 end
-class RootRegistrationComposite < View::Admin::RegistrationComposite
+class RootRegistrationComposite < View::Drugs::RegistrationComposite
 	COMPONENTS = {
-		[0,1]		=>	View::Admin::RegistrationForm,
+		[0,1]		=>	View::Drugs::RegistrationForm,
 		[0,2]		=>	:registration_sequences,
 		[0,3]		=>	"th_source",
 		[0,4]		=>	:source,
 	}
-	SEQUENCES = View::Admin::RootRegistrationSequences
+	SEQUENCES = View::Drugs::RootRegistrationSequences
 	CSS_MAP = {
 		[0,0]	=>	'th',
 		[0,3]	=>	"subheading",
 	}
 end
 class Registration < View::PrivateTemplate
-	CONTENT = View::Admin::RegistrationComposite
+	CONTENT = View::Drugs::RegistrationComposite
 	SNAPBACK_EVENT = :result
 end
-class RootRegistration < View::Admin::Registration
-	CONTENT = View::Admin::RootRegistrationComposite
+class RootRegistration < View::Drugs::Registration
+	CONTENT = View::Drugs::RootRegistrationComposite
 end
 		end
 	end

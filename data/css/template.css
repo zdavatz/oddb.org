@@ -237,6 +237,14 @@ td.result-b-r-unknown {
 	padding : 4px;
 	text-align : right;
 }
+td.result-b-r-unknown-left { 
+	background : #e9f7f3;
+	color : $bg_bright_font_color;
+	padding : 4px;
+	font-weight: bold;
+	padding : 4px;
+	text-align : left;
+}
 a.result-b-r-unknown-bg {
 	background : $rslt_bg;
 	color : black;
