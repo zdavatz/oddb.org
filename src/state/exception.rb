@@ -5,7 +5,9 @@ require 'state/global_predefine'
 require 'view/exception'
 
 module ODDB
-	class Exception < State::Global
-		VIEW = View::Exception
+	module State
+		class Exception < State::Global
+			VIEW = View::Exception
+		end
 	end
 end

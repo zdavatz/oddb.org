@@ -43,7 +43,7 @@ class ResultForm < View::Form
 		[0,0] =>	'result-found',
 		[0,1] =>	'result-price-compare',
 		[1,1]	=>	'search',	
-		[1,1,1]	=>	'button-right',	
+		[1,0]	=>	'button-right',	
 	}
 	COMPONENT_CSS_MAP = {
 		[0,3]	=>	'result-foot',
@@ -54,7 +54,7 @@ class ResultForm < View::Form
 	def init
 		case @session.user
 		when ODDB::RootUser
-			components.store([0,4], :new_registration)
+			components.store([1,0], :new_registration)
 			components.store([0,2], self::class::ROOT_LISTCLASS)
 		when ODDB::CompanyUser
 			components.store([0,2], self::class::ROOT_LISTCLASS)

@@ -9,6 +9,7 @@ module ODDB
 		module User
 class YamlExport < State::User::Global
 	VIEW = View::User::YamlExport
+	DIRECT_EVENT = :download_export
 end
 		end
 	end
