@@ -31,6 +31,9 @@ module ODDB
 				def recent?
 					Time.now - @time < AGE_LIMIT
 				end
+				def valid_until
+					@time + AGE_LIMIT
+				end
 			end
 			def initialize(email)
 				@email = email

@@ -39,6 +39,13 @@ module ODDB
 				@challenge.authenticate!
 				assert_equal(false, @challenge.recent?)
 			end
+			def test_valid_until
+				time = Time.now
+				@challenge.instance_variable_set('@time', time)
+				assert_instance_of(Time, @challenge.valid_until)
+				assert_equal(time + DownloadUser::Challenge::AGE_LIMIT, 
+					@challenge.valid_until)
+			end
 		end
 		class DownloadUserTest < Test::Unit::TestCase
 			def setup

@@ -2,6 +2,7 @@
 # State::User::RegisterDownload -- oddb -- 22.12.2004 -- hwyss@ywesee.com
 
 require 'state/user/global'
+require 'admin/download_user'
 require 'view/user/register_download'
 
 module ODDB
@@ -26,7 +27,10 @@ class RegisterDownload < State::User::Global
 			:filename		=>	@session.user_input(:filename),
 		}
 		url = lookandfeel._event_url(:authenticate, data)
-		outgoing.body = lookandfeel.lookup(:auth_mail_body, recipient, url)
+		time = challenge.valid_until
+		expires = time.strftime(lookandfeel.lookup(:time_format_long))
+		outgoing.body = lookandfeel.lookup(:auth_mail_body, recipient, url, 
+			expires)
 		outgoing.date = Time.now
 		outgoing['User-Agent'] = 'ODDB Download'
 		recipients = [recipient] + RECIPIENTS
