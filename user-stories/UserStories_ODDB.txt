@@ -1,3 +1,12 @@
+2004-06-17 Zeno Davatz <zdavatz@ywesee.com>
+* Interaktionen:
+	-	Kann man bei dem Link aus den Interaktionen zu den Produkten nur dann
+		einen Link anzeigen wenn auch wirklich Produkte vorhanden sind? Es macht
+		meiner Meinung nach keinen Sinn wenn man auf einen Link klickt und dann
+		erscheint ein leeres Suchresultat
+		Fazit: Wenn für eine Wirkstoff keine Produkte vorhanden sind, dann sollte
+		auch kein Link erscheinen, der ein leeres Suchresultat anzeigt.
+		
 2004-06-16 Zeno Davatz <zdavatz@ywesee.com>
 *	Anpassung Import Fi/Pi aus PDF
 	+ hwyss@ywesee.com: Einen neuen Fachinfo-Parser, der mit dem neuen
