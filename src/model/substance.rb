@@ -13,6 +13,7 @@ module ODDB
 		ODBA_PREFETCH = true
 		ODBA_SERIALIZABLE = [ '@descriptions', '@connection_keys' ]
 		attr_reader :sequences, :substrate_connections
+		attr_accessor :effective_form
 		include Comparable
 		include Language
 		def initialize
@@ -29,8 +30,13 @@ module ODDB
 			values.each { |key, value|
 				if(key.to_s.size == 2)
 					values[key] = value.to_s.gsub(/\b[A-Z].+?\b/) { |match| match.capitalize }
-				elsif(key == :connection_keys)
-					values[key] = [ value ].flatten
+				else
+					case key
+					when :connection_keys
+						values[key] = [ value ].flatten
+					when :effective_form
+						values[key] = value.resolve(app)
+					end
 				end
 			}
 			values
@@ -72,10 +78,13 @@ module ODDB
 		def has_connection_key?(test_key=nil)
 			if(test_key)
 				key = format_connection_key(test_key)
-				!key.empty? && @connection_keys.include?(key)
+				!key.empty? && self.connection_keys.include?(key)
 			else
 				@connection_keys && !@connection_keys.empty?
 			end
+		end
+		def has_effective_form?
+			!@effective_form.nil?
 		end
 		def search_keys
 			keys = (self.descriptions.values + [@name]).compact
@@ -111,6 +120,9 @@ module ODDB
 			else
 				{}	
 			end
+		end
+		def is_effective_form?
+			self.eql?(@effective_form)
 		end
 		def merge(other)
 			other.sequences.uniq.each { |sequence|
