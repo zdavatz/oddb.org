@@ -8,62 +8,19 @@ require 'htmlgrid/link'
 require 'htmlgrid/span'
 require 'view/searchbar'
 require 'view/resultfoot'
-require 'view/navigationlink'
+require 'view/navigation'
 require 'view/legalnote'
 require 'view/tab_navigation'
 
 module ODDB
 	module View
-		class CenteredNavigationLink < HtmlGrid::Link
+		class CenteredNavigationLink < NavigationLink
 			CSS_CLASS = "ccomponent"
-			def init
-				super
-				unless (@lookandfeel.direct_event == @name)
-					@attributes.store("href", @lookandfeel.event_url(@name))
-				end
-			end
 		end
-		class CenteredNavigation < HtmlGrid::Composite
-			COMPONENTS = {}
+		class CenteredNavigation < Navigation 
 			CSS_CLASS = "ccomponent"
-			#HTML_ATTRIBUTES = {
-				#	'align'	=>	'center',
-				#}
-			SYMBOL_MAP = {
-				:divider	=>	HtmlGrid::Text,
-			}
-			def init
-				build_navigation()
-				super
-			end
-			def build_navigation
-				@lookandfeel.zone_navigation.each_with_index { |state, idx| 
-					evt = if(state.is_a?(Symbol))
-						state
-					else
-						evt = state.direct_event
-						symbol_map.store(evt, View::CenteredNavigationLink)
-						evt
-					end
-					components.store([idx*2,0], evt)
-					components.store([idx*2-1,0], :divider) if idx > 0
-					component_css_map.store([idx*2,0], 'list')
-				}
-			end
-			def divider(model, session)
-				span = HtmlGrid::Span.new(model, session, self)
-				span.value = '&nbsp;|&nbsp;'
-				span.set_attribute('style','color: black;')
-				span
-			end
-=begin
-			def contact_oddb(model, session)
-				link = HtmlGrid::Link.new(:contact_oddb, model, session, self)
-				link.href = @lookandfeel.lookup(:contact_oddb_href)
-				link.attributes['class'] = 'navigation'
-				link
-			end
-=end
+			NAV_LINK_CLASS = CenteredNavigationLink
+			NAV_METHOD = :zone_navigation
 		end
 		class PayPalForm < HtmlGrid::Form
 			COMPONENTS = {

@@ -346,7 +346,7 @@ module ODDB
 				unless(@updated_substances.include?(connection_key))
 					values = {
 						:connections		=> substance.substrate_connections.dup,
-						:pointer			=> substance.pointer,
+						:pointer				=> substance.pointer,
 					}
 					@app.update(substance.pointer, values)
 					@updated_substances.store(connection_key, values)

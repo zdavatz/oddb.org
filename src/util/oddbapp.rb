@@ -206,7 +206,9 @@ class OddbPrevalence
 		@users.store(user.oid, user)
 	end
 	def create_atc_class(atc_class)
-		@atc_classes.store(atc_class, ODDB::AtcClass.new(atc_class))
+		atc = ODDB::AtcClass.new(atc_class)
+		@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
+		@atc_classes.store(atc_class, atc)
 	end
 	def create_company
 		company = ODDB::Company.new
@@ -569,10 +571,16 @@ class OddbPrevalence
 			result += soundex_substances(key)
 		}
 =end
-		result += search_substances(query)
+		if(subs = substance(query))
+			result.unshift(subs)
+		end
+		if(result.empty?)
+			result = soundex_substances(query)
+		end
 		result
 	end
 	def search_substances(query)
+		puts "search_substances(#{query})"
 		if(subs = substance(query))
 			[subs]
 		else
@@ -583,9 +591,13 @@ class OddbPrevalence
 		ODBA.cache_server.retrieve_from_index("sequence_index_atc", name)
 	end
 	def soundex_substances(name)
+		puts "soundex_substances(#{name})"
 		parts = name.split(/\s+/)
+		puts "parts = #{parts.join(',')}"
 		soundex = ODDB::Text::Soundex.soundex(parts)
+		puts "soundex = #{soundex.join(',')}"
 		key = soundex.join(' ')
+		puts "key = #{key}"
 		ODBA.cache_server.retrieve_from_index("substance_index", key)
 	end
 	def sponsor
@@ -840,54 +852,77 @@ module ODDB
 			}
 		end
 		def assign_effective_forms
-			ODBA.batch { 
-				@system.substances.select { |subs| 
-					!subs.has_effective_form?
-				}.sort_by { |subs| subs.name }.each { |subs|
-					puts "Looking for effective form of ->#{subs}<- (#{subs.sequences.size} Sequences)"
-					name = subs.to_s
-					parts = name.split(/\s/)
-					suggest = if(parts.size == 1)
-						subs
-					else
-						@system.substance(parts.first) \
-							|| @system.substance(parts.first.gsub(/i$/, 'um'))
-					end
-					result = nil
-					while(result.nil?)
-						if(suggest)
-							puts "Suggestion: #{suggest}"
-							print "d(elete), s(uggestion), S(elf), n(othing), other_name > "
-						else
-							print "d(elete), S(elf), n(othing), other_name > "
-						end
-						$stdout.flush
-						answer = $stdin.readline.strip
-						puts "you typed: ->#{answer}<-"
-						case answer
-						when ''
-							# do nothing
-						when 's'
-							result = suggest
-						when 'S'
-							result = subs
-						when 'd'
-							subs.odba_delete
-							break
-						when 'n'
-							break
-						when 'q'
-							break 2
-						else
-							result = @system.substance(answer)
-						end
-					end
-					if(result)
-						subs.effective_form = result
-						subs.odba_store
-					end
-				}
+			ODBA.batch {
+				_assign_effective_forms
 			}
+		end
+		def _assign_effective_forms
+			result = nil
+			last = nil
+			@system.substances.select { |subs| 
+				!subs.has_effective_form?
+			}.sort_by { |subs| subs.name }.each { |subs|
+				puts "Looking for effective form of ->#{subs}<- (#{subs.sequences.size} Sequences)"
+				name = subs.to_s
+				parts = name.split(/\s/)
+				suggest = if(parts.size == 1)
+					subs
+				else
+					@system.substance(parts.first) \
+						|| @system.substance(parts.first.gsub(/i$/, 'um'))
+				end
+				last = result
+				result = nil
+				while(result.nil?)
+					possibles = [
+						"d(elete)", 
+						"S(elf)", 
+						"n(othing)", 
+						"other_name",
+					]
+					if(suggest)
+						puts "Suggestion:                   ->#{suggest}<-"
+						possibles.unshift("s(uggestion)")
+					end
+					if(last)
+						puts "Last:                         ->#{last}<-"
+						possibles.unshift("l(ast)")
+					end
+					print possibles.join(", ")
+					print " > "
+					$stdout.flush
+					answer = $stdin.readline.strip
+					puts "you typed:                    ->#{answer}<-"
+					case answer
+					when ''
+						# do nothing
+					when 'l'
+						result = last
+					when 's'
+						result = suggest
+					when 'S'
+						result = subs
+					when 'd'
+						subs.sequences.each { |seq| 
+							seq.delete_active_agent(subs) 
+							seq.active_agents.odba_store
+						}
+						subs.odba_delete
+						break
+					when 'n'
+						break
+					when 'q'
+						return
+					else
+						result = @system.substance(answer)
+					end
+				end
+				if(result)
+					subs.effective_form = result
+					subs.odba_store
+				end
+			}
+			nil
 		end
 	end
 end

@@ -1023,6 +1023,9 @@ a.subheading:active, a.subheading-bold:active {
 	text-align : center;
 	text-decoration : none;
 }
+table.right {
+	float: right;
+}
 a.navigation:link, a.navigation:visited {
 	background : $bg_dark;
 	color : $bg_dark_font_color;

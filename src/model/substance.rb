@@ -5,26 +5,24 @@ require 'util/persistence'
 require 'util/levenshtein_distance'
 require 'util/language'
 require 'util/soundex'
+require 'model/sequence_observer'
 require 'model/cyp450connection'
 
 module ODDB
 	class Substance
 		include Persistence
+		include SequenceObserver
 		ODBA_PREFETCH = true
-		ODBA_SERIALIZABLE = [ '@descriptions', '@connection_keys' ]
+		ODBA_SERIALIZABLE = [ '@descriptions', '@connection_keys', '@synonyms' ]
 		attr_reader :sequences, :substrate_connections
 		attr_accessor :effective_form
+		attr_writer :synonyms
 		include Comparable
 		include Language
 		def initialize
 			super()
 			@sequences = []
 			@substrate_connections = {}
-		end
-		def add_sequence(sequence)
-			@sequences.push(sequence)
-			@sequences.odba_isolated_store
-			sequence
 		end
 		def adjust_types(values, app=nil)
 			values.each { |key, value|
@@ -69,9 +67,6 @@ module ODDB
 		def delete_cyp450substrate(cyp_id)
 			@substrate_connections.delete(cyp_id)
 		end
-		def empty?
-			(@substances.nil? || @substances.empty?)
-		end
 		def format_connection_key(key)
 			key.to_s.downcase.gsub(/[^a-z0-9]/, '')
 		end
@@ -85,23 +80,6 @@ module ODDB
 		end
 		def has_effective_form?
 			!@effective_form.nil?
-		end
-		def search_keys
-			keys = (self.descriptions.values + [@name]).compact
-			keys.delete_if { |key|
-				key.empty?
-			}.uniq
-			keys
-		end
-		def soundex_keys
-			names = self.descriptions.values + self.connection_keys
-			names.push(name)
-			keys = names.compact.uniq.collect { |key|
-				parts = key.split(/\s/)
-				soundex = Text::Soundex.soundex(parts)
-				soundex.join(' ')
-			}
-			keys.compact.uniq
 		end
 		def interaction_connections(others)
 			if(@substrate_connections)
@@ -122,7 +100,7 @@ module ODDB
 			end
 		end
 		def is_effective_form?
-			self.eql?(@effective_form)
+			@effective_form == self
 		end
 		def merge(other)
 			other.sequences.uniq.each { |sequence|
@@ -169,23 +147,45 @@ module ODDB
 			end
 		end
 		alias :pointer_descr :name
-		def remove_sequence(sequence)
-			del = @sequences.delete(sequence)
-			@sequences.odba_isolated_store
-			del
-		end
 		def same_as?(substance)
 			teststr = substance.to_s.downcase
-			name.to_s.downcase == teststr \
-				|| descriptions.any? { |lang, desc|
-					desc.is_a?(String) && desc.downcase == teststr
+			_search_keys.any? { |desc|
+					desc.downcase == teststr
 				} || (connection_keys.include?(format_connection_key(teststr)))
+		end
+		def search_keys
+			keys = self._search_keys
+			if(has_effective_form? && !is_effective_form?)
+				keys += @effective_form.search_keys
+			end
+			keys.compact!
+			keys.delete_if { |key|
+				key.empty?
+			}
+			keys.uniq
+		end
+		def _search_keys
+			keys = self.descriptions.values + self.connection_keys \
+				+ self.synonyms
+			keys.push(name)
+			keys.compact
 		end
 		def similar_name?(astring)
 			name.length/3.0 >= name.downcase.ld(astring.downcase)
 		end
+		def soundex_keys
+			keys = self.search_keys.collect { |key|
+				parts = key.split(/\s/)
+				soundex = Text::Soundex.soundex(parts)
+				soundex.join(' ')
+			}
+			keys.compact.uniq
+		end
 		def substrate_connections
 			@substrate_connections ||= {}
+		end
+		def synonyms
+			@synonyms ||= []
 		end
 		def to_s
 			name

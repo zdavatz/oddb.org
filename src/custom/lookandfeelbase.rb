@@ -105,6 +105,7 @@ module ODDB
 				:cpr_updated							=>	'&nbsp;aktualisiert&nbsp;am:&nbsp;',
 				:swiss_francs0						=>	'CHF&nbsp;',
 				:swiss_francs1						=>	'.-',
+				:synonym_list							=>	'Synonyme (kommagetrennt)',
 				:database_last_updated_txt=>	'&nbsp;aktualisiert&nbsp;am:&nbsp;',
 				:database_size_text				=>	'&nbsp;registrierte Produkte',
 				:date_format							=>	'%d.%m.%Y',
@@ -135,6 +136,10 @@ module ODDB
 				:ean_code1								=>	'',
 				:edit_atc_class						=>	'bearbeiten',
 				:edit_registration				=>	'bearbeiten',
+				:effective_substances			=>	'Wirkformen',
+				:effective_form_assign		=>	'Wirkform zuweisen:',
+				:effective_form_other			=>	'Wirkform:',
+				:effective_form_self			=>	'Dies ist die Wirkform dieser Substanz.',
 				:email										=>	'Email',
 				:email_header							=>	'Email',
 				:email_header_doctor			=>	'Email:',
@@ -1213,9 +1218,6 @@ zdavatz ! ywesee.com
 			:logo => {
 				'width'		=>	'285',
 				'height'	=>	'122',
-			},
-			:navigation_divider =>	{
-				'class'	=>	'navigation',
 			},
 			:pass	=> {
 				'type'	=>	'password',
