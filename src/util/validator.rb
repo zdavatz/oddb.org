@@ -165,6 +165,9 @@ module ODDB
 			end
 		end
 		def zone(value)
+			if(value.to_s.empty?)
+				raise SBSM::InvalidDataError.new("e_invalid_zone", :zone, value)
+			end
 			zone = value.to_s.intern
 			if(self::class::ZONES.include?(zone))
 				zone
