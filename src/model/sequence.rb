@@ -12,7 +12,7 @@ module ODDB
 		attr_reader :seqnr, :name_base, :name_descr, :packages,
 								:active_agents
 		attr_accessor :registration, :dose, :atc_class, 
-									:galenic_form, :patinfo, :pdf_patinfo
+									:galenic_form, :patinfo, :pdf_patinfo, :atc_request_time
 		attr_writer :composition_text
 		alias :pointer_descr :seqnr
 		def initialize(seqnr)

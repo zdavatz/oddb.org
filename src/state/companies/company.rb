@@ -124,6 +124,7 @@ class RootCompany < State::Companies::UserCompany
 			:phone,
 			:plz,
 			:powerlink,
+			:regulatory_email,
 			:url,
 		]
 		do_update(keys)

@@ -10,6 +10,7 @@ module ODDB
 		alias :set_pass_1 :pass
 		alias :set_pass_2 :pass
 		alias :unique_email :email
+		alias :regulatory_email :email
 		BOOLEAN = [
 			:cl_status, :experience, :recommend,
 			:impression, :helps
@@ -38,6 +39,7 @@ module ODDB
 			:assign_deprived_sequence,
 			:assign_patinfo,
 			:atc_chooser,
+			:atc_request,
 			:authenticate,
 			:back,
 			:calculate_offer,
