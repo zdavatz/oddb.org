@@ -40,6 +40,27 @@ module ODDB
 			def foot(model, session)
 				self::class::FOOT.new(model, session, self) unless self::class::FOOT.nil?
 			end
+			def title(context)
+				context.title { 
+					[
+						@lookandfeel.lookup(:html_title),
+						@lookandfeel.lookup(@session.state.zone),
+						title_part_three(),
+					].compact.join(@lookandfeel.lookup(:title_divider))
+				}
+			end
+			def title_part_three
+				event = @session.state.direct_event || @session.event
+				if([nil, :resolve, :login, :update, :delete].include?(event))
+					if(@model.respond_to?(:name))
+						@model.name
+					elsif(@model.respond_to?(:pointer_descr))
+						@model.pointer_descr
+					end
+				else
+					@lookandfeel.lookup(event)
+				end
+			end
 		end
 	end
 end

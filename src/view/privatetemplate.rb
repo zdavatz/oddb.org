@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Template -- oddb -- 23.10.2002 -- hwyss@ywesee.com 
+# View::PrivateTemplate -- oddb -- 23.10.2002 -- hwyss@ywesee.com 
 
 require	'view/form'
 require 'view/publictemplate'

@@ -106,6 +106,9 @@ module ODDB
 		def each_package(&block)
 			@packages.each_value(&block)
 		end
+		def generic_type
+			@registration.generic_type
+		end
 		def iksnr
 			@registration.iksnr
 		end
@@ -115,6 +118,7 @@ module ODDB
 		def name
 			[@name_base, @name_descr].compact.join(', ')
 		end
+		alias :to_s :name
 		def name=(name)
 			self.name_base, self.name_descr = name.split(',', 2)
 		end

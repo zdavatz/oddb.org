@@ -11,7 +11,7 @@ module ODDB
 			'm-p'			=>	'm-pöÖóÓôÔòÒ',
 			'q-t'			=>	'q-t',
 			'u-z'			=>	'u-züÜúÚûÛùÙ',
-			'unknown'	=>	'unknown',
+			'|unknown'=>	nil,
 		}
 		attr_reader :range
 		def init
@@ -24,10 +24,12 @@ module ODDB
 			@range = self::class::RANGE_PATTERNS.fetch(user_range) {
 				self::class::RANGE_PATTERNS[default_interval]
 			}
-			pattern = if(@range=='unknown')
+			pattern = if(@range=='|unknown')
 				/^[^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ]/i
-			else
+			elsif(@range)
 				/^[#{@range}]/i
+			else
+				/^$/
 			end
 			@filter = Proc.new { |model|
 				model.select { |item| 
@@ -50,8 +52,8 @@ module ODDB
 			@model.collect { |item| 
 				self::class::RANGE_PATTERNS.collect { |range, pattern| 
 					range if /^[#{pattern}]/i.match(item.send(symbol))
-				}.compact.first || 'unknown'
-			}.uniq.sort
+				}.compact.first || '|unknown'
+			}.flatten.uniq.sort
 		end
 		def symbol
 			:to_s

@@ -106,6 +106,7 @@ module ODDB
 			:search_registrations,
 			:search_sequences,
 			:select_seq,
+			:sequences,
 			:set_pass,
 			:shadow,
 			:shadow_pattern,

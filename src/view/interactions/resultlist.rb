@@ -12,29 +12,10 @@ require 'view/publictemplate'
 require 'view/dataformat'
 require 'view/resultcolors'
 require 'view/descriptionvalue'
-require 'view/template'
 
 module ODDB
 	module View
 		module Interactions
-=begin
-class FacadeHeader < HtmlGrid::Composite
-	COMPONENTS = {
-		[0,0]	=>	:interaction_facade,
-	}
-	CSS_CLASS = 'composite'
-	CSS_MAP = {
-		[0,0]	=>	'atc-result',
-	}
-	def interaction_facade(facade, session)
-		txt = HtmlGrid::Component.new(facade, session, self)
-		obj_class = facade.obj_class.to_s.downcase.split(/::/).last
-		symbol = [ "found", obj_class+"s" ].join("_").intern
-		txt.value = session.lookandfeel.lookup(symbol)
-		txt
-	end
-end
-=end
 class ResultList < HtmlGrid::List
 	COMPONENTS = {
 		[0,0]	=>	:name,

@@ -15,6 +15,7 @@ class Global < State::Global
 		[
 			State::Drugs::RecentRegs,
 			State::Drugs::AtcChooser,
+			State::Drugs::Sequences,
 		]
 	end
 end

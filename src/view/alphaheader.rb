@@ -4,6 +4,7 @@
 module ODDB
 	module View
 		module AlphaHeader
+			EMPTY_LIST_KEY = :choose_range
 			def compose_header(offset=[0,0])
 				offset = super
 				divider = false
