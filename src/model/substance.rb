@@ -123,13 +123,11 @@ module ODDB
 			@sequences.delete(sequence)
 		end
 		def same_as?(substance)
-			result = descriptions.any? { |lang, desc|
-				desc.downcase == substance.to_s.downcase
-			}
-			unless(result==true)
-				result = true if(substance.to_s.downcase == connection_key.downcase)
-			end
-			result
+			teststr = substance.to_s.downcase
+			descriptions.any? { |lang, desc|
+				desc.is_a?(String) && desc.downcase == teststr
+			} || (connection_key.is_a?(String) \
+				&& teststr == connection_key.downcase)
 		end
 		def similar_name?(astring)
 			name.length/3.0 >= name.downcase.ld(astring.downcase)

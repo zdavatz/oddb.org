@@ -94,10 +94,10 @@ class OddbPrevalence
 		item = failsafe(ODDB::Persistence::UninitializedPathError, nil) {
 			pointer.resolve(self)
 		}
-		# if this item has been newly created, we want its pointer back
-		pointer = item.pointer unless item.nil? 
-		updated(item)
-		update_item(item, values)
+		unless item.nil? 
+			updated(item)
+			update_item(item, values)
+		end
 		item
 	end
 	def update_item(item, values)

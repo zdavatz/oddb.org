@@ -8,11 +8,11 @@ require 'spreadsheet/excel'
 module ODDB
 	class OuwerkerkPlugin < Plugin
 		RECIPIENTS = [
-		  'matthijs.ouwerkerk@just-medical.com',
+			'matthijs.ouwerkerk@just-medical.com',
 		]
 		NUMERIC_FLAGS = {
 			:new							=>	1,
-			:del							=>	2,
+			:delete						=>	2,
 			:productname			=>	3, 
 			:address					=>	4,
 			:ikscat						=>	5,
@@ -99,8 +99,9 @@ module ODDB
 
 			rows = []
 			reg_flags.each { |ptr_str, flags|
-				reg = pointer_table[ptr_str].resolve(@app)
-				rows += export_registration(reg, [flags], pac_flags)
+				if(reg = pointer_table[ptr_str].resolve(@app))
+					rows += export_registration(reg, [flags], pac_flags)
+				end
 			}
 			rows.delete_if { |row| row.first.empty? }
 			rows.sort_by { |row| 
@@ -194,8 +195,6 @@ module ODDB
 				@smj.date.strftime("Swissmedic %m/%Y"),
 				(@bsv.date.strftime("SL %m/%Y") unless @bsv.nil?),
 			].compact.join(" - ")
-		end
-		def merged_flags(*args)
 		end
 	end
 end
