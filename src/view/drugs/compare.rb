@@ -15,6 +15,7 @@ module ODDB
 class CompareList < HtmlGrid::List
 	include DataFormat
 	include View::ResultColors
+	BACKGROUND_SUFFIX = " bg"
 	COMPONENTS = {
 		[0,0]	=>	:name_base,
 		[1,0]	=>	:company_name,
@@ -27,12 +28,12 @@ class CompareList < HtmlGrid::List
 	}	
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'result bold',
+		[0,0]	=>	'result big',
 		[1,0]	=>	'result italic',
 		[2,0]	=>	'result right',
 		[3,0]	=>	'result',
 		[4,0]	=>	'result italic',
-		[5,0]	=>	'result-pubprice',
+		[5,0]	=>	'result bold right',
 		[6,0]	=>	'result bold right',
 		[7,0]	=>	'result italic',
 	}
