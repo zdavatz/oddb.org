@@ -113,33 +113,33 @@ class FeedbackList < HtmlGrid::List
 	BACKGROUND_SUFFIX =	' bg'
 	COMPONENTS = {
 		[0,0]			=>	'feedback_title_name',
-		[0,0, 1]	=>	:name,
-		[0,0, 2]	=>	'feedback_title_time',
-		[0,0, 3]	=>	:time,
+		[0,0,1]	=>	:name,
+		[0,0,2]	=>	'feedback_title_time',
+		[0,0,3]	=>	:time,
 		#[0,1]			=>	:email_label,
 		#[1,1,1]		=>	:email,
 		[0,1]			=>	:message_label,
 		[1,1,1]		=>	:message,
 		[0,2]			=>	'experience',
-		[1,2, 1]	=>	:experience,
-		[0,3,]		=>	'recommend',
-		[1,3, 1]	=>	:recommend,
+		[1,2,1]	=>	:experience,
+		[0,3]		=>	'recommend',
+		[1,3,1]	=>	:recommend,
 		[0,4]			=>	'impression',
-		[1,4, 1]	=>	:impression,
+		[1,4,1]	=>	:impression,
 		[0,5]			=>	'helps',
-		[1,5, 1]	=>	:helps,
+		[1,5,1]	=>	:helps,
 	}
 	COLSPAN_MAP = {
 		[0,0]	=>	2,
 	}
 	CSS_MAP = {
 		[0,0,2,7]	=>	'list top',
-		[0,3,1,4]	=>	'list bold',
+		[0,2,1,4]	=>	'list bold',
 	}
 	SYMBOL_MAP = { 
 		#:feedback_title_name	=>	HtmlGrid::LabelText,
 		#:feedback_title_time	=>	HtmlGrid::LabelText,
-		:email_label					=>	HtmlGrid::LabelText,
+		#:email_label					=>	HtmlGrid::LabelText,
 		:message_label				=>	HtmlGrid::LabelText,
 	}
 	CSS_CLASS = 'component border-left top'
