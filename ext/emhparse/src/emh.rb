@@ -293,7 +293,7 @@ module ODDB
 				result = parse_medwin_data(@session.medic_html(data))
 				keys = []
 				result.each { |key, value|
-					if(value[1]==data[:surname])
+					if(value[1]==data[:firstname])
 						keys.push(key)
 					end
 				}

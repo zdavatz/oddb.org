@@ -134,6 +134,7 @@ module ODDB
 				:ean13										=>	'EAN',
 				:ean_code0								=>	'EAN-Code: ',
 				:ean_code1								=>	'',
+				:ean13_header							=>	'EAN:',
 				:edit_atc_class						=>	'bearbeiten',
 				:edit_registration				=>	'bearbeiten',
 				:effective_substances			=>	'Wirkformen',
