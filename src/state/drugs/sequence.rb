@@ -118,6 +118,7 @@ class Sequence < State::Drugs::Global
 				item_pointer = invoice_pointer + :item
 				values = {
 					:user_pointer	=>	@session.user.pointer,
+					:name					=>	@model.name,
 					:time					=>	Time.now,
 					:item_pointer =>	@model.pointer,
 				}

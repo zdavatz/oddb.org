@@ -20,7 +20,7 @@ module ODDB
 	end
 	class InvoiceItem 
 		include Persistence
-		attr_accessor :user_pointer, :time, :item_pointer
+		attr_accessor :user_pointer, :time, :item_pointer, :name
 		def init(app)
 			super(app)
 			@pointer.append(@oid)
