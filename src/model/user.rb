@@ -48,8 +48,23 @@ module ODDB
 	class UnknownUser < SBSM::UnknownUser
 		HOME = State::Drugs::Init
 	end
-	class RootUser < User
+	class AdminUser < User
 		VIRAL_MODULE = State::Admin::Root
+		def set_oid
+			User.instance_eval <<-EOS unless(User.respond_to?(:next_oid))
+				@oid = nil
+				class << self
+					def next_oid
+						# Persistence.current_oid(self).next # will break many tests,
+						# but might solve the problem of mysterious reseting of oids
+						@oid = (@oid || Persistence.current_oid(self)).next
+					end
+				end
+			EOS
+			@oid ||= User.next_oid
+		end
+	end
+	class RootUser < AdminUser
 		def initialize
 			@oid = 0
 			@unique_email = 'hwyss@ywesee.com'
