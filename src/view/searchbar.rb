@@ -25,7 +25,7 @@ module ODDB
 				script << "var href = '#{submit}'"
 				script << "+escape(#{@name}.value.replace(/\\//, '%2F'));"
 				script << "if(this.exact_match)"
-				script << "href += '/exact_match/' + this.exact_match.value;"
+				script << "href += '/exact_match/' + this.exact_match.checked;"
 				script << "document.location.href=href; } return false"
 				self.onsubmit = script
 			end
