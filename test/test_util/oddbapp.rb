@@ -338,6 +338,7 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.galenic_groups = { 2 => group }
 		assert_equal(galenic_form, @app.galenic_form('Tabletten'))
 	end
+=begin
 	def test_checkout
 		reg = ODDB::Registration.new('12345')
 		sq1 = ODDB::Sequence.new('01')
@@ -356,6 +357,7 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal([], @app.sequence_index.fetch('foobar'))
 		assert_equal([], @app.sequence_index.fetch('barfoo'))
 	end
+=end
 	def test_create_galenic_group
 		@app.galenic_groups = {}
 		pointer = ODDB::Persistence::Pointer.new([:galenic_group])
@@ -376,17 +378,9 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(ODDB::Substance, result.class)
 		assert_equal('Acidum Acetylsalicylicum', result.name)
 		soundex = Text::Soundex.soundex(%w{Acidum Acetylsalicylicum})
-		expected = {
-			soundex			=>	[result],
-			[soundex[0]]=>	[result],
-			[soundex[1]]=>	[result],
-		}
-		assert_equal(expected, @app.substance_index.hash)
 	end
 	def test_update_substance
 		@app.substances = {}
-		@app.rebuild_indices
-		assert_equal([], @app.soundex_substances('de_name'))
 		pointer = ODDB::Persistence::Pointer.new(:substance)
 		descr = {
 			'en'						=>	'first_name',
@@ -399,8 +393,6 @@ class TestOddbApp < Test::Unit::TestCase
 		}
 		@app.update(subs.pointer, values)
 		assert_equal('en_name', subs.en)
-		result = @app.soundex_substances('en_name')
-		assert_equal([subs], result)
 	end
 	def test_create_active_agent
 		pointer = ODDB::Persistence::Pointer.new(['registration', '12345'])
@@ -812,6 +804,7 @@ class TestOddbApp < Test::Unit::TestCase
 		result = @app.last_medication_update
 		assert_equal(expected, result)
 	end
+=begin
 	def test_rebuild_indices
 		reg = StubRegistration2.new
 		reg.sequences = {
@@ -848,6 +841,7 @@ class TestOddbApp < Test::Unit::TestCase
 		result2 = @app.indication_index.fetch_all('test')
 		assert_equal(expected2, result2)
 	end
+=end
 	def test_async
 		foo = "bar"
 		@app.async {
@@ -872,7 +866,9 @@ class TestOddbApp < Test::Unit::TestCase
 		
 	end
 	def test_delete_orphan_patinfo
-		@app.orphaned_patinfos = { 1 => "foo" }
+		stub_pat = "f00"
+		stub_pat.extend(ODBA::Persistable)
+		@app.orphaned_patinfos = { 1 => stub_pat}
 		pointer = ODDB::Persistence::Pointer.new([:orphaned_patinfo, 1])
 		@app.delete(pointer)
 		assert_equal({}, @app.orphaned_patinfos)

@@ -66,5 +66,5 @@ resolve_search_term: 'index_search_terms'
 resolve_target: ''
 resolve_origin: ''
 dictionary: 'default_german'
-init_source: '@sequences.values'
+init_source: '@substances.values'
 fulltext: true
