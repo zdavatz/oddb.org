@@ -55,9 +55,9 @@ module ODDB
 			zip_name = tmp_name + '.zip'
 			File.delete(zip_name) if(File.exist?(zip_name))
 			Zip::ZipOutputStream.open(zip_name) { |zos|
-				files.each { |name|
-					zos.put_next_entry(name)
-					zos.puts File.read(name)
+				files.each { |fname|
+					zos.put_next_entry(fname)
+					zos.puts File.read(fname)
 				}
 			}
 			FileUtils.mv(zip_name, name + '.zip')
@@ -105,8 +105,11 @@ module ODDB
 			end
 		end
 		def clear
-			ODBA.cache_server.clear
-			GC.start
+			Thread.new { 
+				sleep 1
+				DRb.thread.exit
+			}
+			nil
 		end
 		module_function :compress
 		module_function :compress_many
