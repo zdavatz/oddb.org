@@ -27,14 +27,14 @@ class CompareList < HtmlGrid::List
 	}	
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'result-big',
-		[1,0]	=>	'result-i',
-		[2,0]	=>	'result-r',
+		[0,0]	=>	'result bold',
+		[1,0]	=>	'result italic',
+		[2,0]	=>	'result right',
 		[3,0]	=>	'result',
-		[4,0]	=>	'result-i',
+		[4,0]	=>	'result italic',
 		[5,0]	=>	'result-pubprice',
-		[6,0]	=>	'result-b-r',
-		[7,0]	=>	'result-i',
+		[6,0]	=>	'result bold right',
+		[7,0]	=>	'result italic',
 	}
 	CSS_HEAD_MAP = {
 		[0,0] =>	'th',

@@ -256,7 +256,7 @@ class FeedbacksComposite < HtmlGrid::Composite
 			model.name, model.size)
 	end
 end
-class Feedbacks < View::PublicTemplate
+class Feedbacks < View::ResultTemplate
 	CONTENT = View::Drugs::FeedbacksComposite
 end
 		end
