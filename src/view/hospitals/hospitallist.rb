@@ -61,12 +61,6 @@ class HospitalList < HtmlGrid::List
 	SORT_DEFAULT = :name
 	SORT_REVERSE = false	
 	LEGACY_INTERFACE = false
-	def init
-		if(@session.state.paged?)
-			extend(View::AlphaHeader)
-		end
-		super
-	end
 	def name(model)
 		link = View::PointerLink.new(:name, model, @session, self)
 		link.set_attribute('title', "EAN: #{model.ean13}")

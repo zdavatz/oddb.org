@@ -6,12 +6,15 @@ require 'state/hospitals/hospital'
 require 'view/hospitals/hospitallist'
 require 'model/hospital'
 require 'model/user'
+require 'util/interval'
 require 'sbsm/user'
 
 module ODDB
 	module State
 		module Hospitals
 class HospitalList < State::Hospitals::Global
+	include Interval
+	attr_reader :range
 	DIRECT_EVENT = :hospitallist
 	VIEW = View::Hospitals::Hospitals
 	RANGE_PATTERNS = {
@@ -40,25 +43,11 @@ class HospitalList < State::Hospitals::Global
 		}
 		@range = range
 	end
-	def default_interval
-		intervals.first
-	end
-	def get_intervals
-		@model.collect { |hospital| 
-			rng = RANGE_PATTERNS.select { |key, pattern| 
-				/^[#{pattern}]/i.match(hospital.name)
-			}.first
-			rng.nil? ? 'unknown' : rng.first
-		}.compact.uniq.sort
-	end
-	def interval
-		@interval ||= self::class::RANGE_PATTERNS.index(@range)
-	end	
-	def intervals
-		@intervals ||= get_intervals
-	end	
-	def paged?
-		@model.size > 10
+	def init
+		if(!@model.is_a?(Array) || @model.empty?)
+			@default_view = View::Companies::EmptyResult
+		end
+		filter_interval
 	end
 end
 class HospitalResult < HospitalList
