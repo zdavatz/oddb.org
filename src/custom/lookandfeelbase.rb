@@ -1293,7 +1293,7 @@ zdavatz ! ywesee.com
 				:bsv_url									=>	'URL of BSV-File:',
 				:business_area						=>	'Business area',
 				:choice										=>  'Edit',
-				:cl_status								=>	'Business directory entrance',
+				:cl_status								=>	'Business directory entry',
 				:clear_interaction_basket	=>	'Empty interaction basket',
 				:calculate_offer					=>	'Calculate Offer',
 				:close_window							=>	'Close window',
