@@ -25,9 +25,10 @@ module ODDB
 		end
 		class PrivateTemplate < PublicTemplate
 			COLSPAN_MAP = {
-				[0,0]			=>	2,
-				[0,2,1,2]	=>	2,
-				[0,3]			=>	2,
+				[0,0]	=>	2,
+				[0,1]	=>	2,
+				[0,3]	=>	2,
+				[0,4]	=>	2,
 			}
 			COMPONENTS = {
 				[0,0]		=>	:foot,
