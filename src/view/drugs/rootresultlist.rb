@@ -11,9 +11,7 @@ class RootResultList < View::Drugs::ResultList
 	def init
 		hash_insert(css_head_map, [0,0], 'th')
 		hash_insert(css_map, [0,0], 'result-edit')
-		#hash_insert(components, [0,0], :iksnr)
 		hash_insert(components, [0,0], :ikskey)
-
 		super
 	end
 	def iksnr(model, session)
