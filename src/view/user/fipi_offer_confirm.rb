@@ -11,31 +11,33 @@ module ODDB
 class FiPiCalculations < HtmlGrid::Composite
 	COMPONENTS = {}
 	COMPONENTS_FI = {
-		[0,0] =>  :print_type_fachinfo,
+		[1,0] =>  'fachinfo',
+		
 		[0,1]	=>	:fi_activation_count,
 		[1,1]	=>	'fi_activation_charge',
 		[2,1]	=>	:fi_activation_charge_value,
 		
-		[0,1]	=>	:fi_quantity,
-		[1,1]	=>	:fi_charge,
-		[2,1]	=>	:calculate_fi_charge,
+		[0,2]	=>	:fi_quantity,
+		[1,2]	=>	:fi_charge,
+		[2,2]	=>	:calculate_fi_charge,
 		
-		[1,2]	=>	:fi_update,
-		[2,2]	=>	:fi_update_value,
+		[1,3]	=>	:fi_update,
+		[2,3]	=>	:fi_update_value,
 	}
 		
 	COMPONENTS_PI = {
-		[0,0] =>  :print_type_patinfo,	
+		[1,0] =>  'patinfo',	
+		
 		[0,1]	=>	:pi_activation_count,
 		[1,1]	=>	'pi_activation_charge',
 		[2,1]	=>	:pi_activation_charge_value,
 		
-		[0,1]	=>	:pi_quantity,
-		[1,1]	=>	:pi_charge,
-		[2,1]	=>	:calculate_pi_charge,
+		[0,2]	=>	:pi_quantity,
+		[1,2]	=>	:pi_charge,
+		[2,2]	=>	:calculate_pi_charge,
 		
-		[1,2]	=>	:pi_update,
-		[2,2]	=>	:pi_update_value,
+		[1,3]	=>	:pi_update,
+		[2,3]	=>	:pi_update_value,
 	}
 		
 	COMPONENTS_FIPI = {
@@ -53,7 +55,7 @@ class FiPiCalculations < HtmlGrid::Composite
 		if(@model.fi_activation_count > 0)
 			components.update(COMPONENTS_FI)
 			css_map.update({[0,0,3,3] => 'padding bg'})
-			offset += 3
+			offset += 5
 		end
 		if(@model.pi_activation_count > 0)
 			COMPONENTS_PI.each { |key, val|
@@ -62,7 +64,7 @@ class FiPiCalculations < HtmlGrid::Composite
 				components.store(newkey, val)
 			}
 			css_map.update({[0,offset,3,3] => 'padding bg'})
-			offset += 3
+			offset += 4
 		end
 		COMPONENTS_FIPI.each { |key, val|
 			newkey = key.dup
