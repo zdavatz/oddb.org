@@ -36,7 +36,9 @@ module ODDB
 			formatter = HtmlFormatter.new(writer)
 			parser = HtmlParser.new(formatter)
 			parser.feed(src)
-			writer.to_fachinfo
+			unless(writer.pseudo?)
+				writer.to_fachinfo 
+			end
 		end
 		def parse_fachinfo_pdf(src)
 			writer = FachinfoPDFWriter.new
