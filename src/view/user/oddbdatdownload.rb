@@ -28,7 +28,7 @@ class OddbDatDownloadInnerComposite < HtmlGrid::Composite
 		link_with_filesize("oddbdat.zip")
 	end
 	def s31x_tar_gz(model, session)
-		link_with_filesize("s31x.tar.gz")
+		link_with_filesize("s31x.gz")
 	end
 	def s31x_zip(model, session)
 		link_with_filesize("s31x.zip")

@@ -635,7 +635,7 @@ zdavatz ! ywesee.com
 				:result_item_start				=>	'<!-- RESULT ITEM START -->',
 				:result_item_end					=>	'<!-- RESULT ITEM END -->',
 				:revision_date						=>	'Revisionsdatum',
-				:s31x_tar_gz							=>	's31x.tar.gz',
+				:s31x_gz									=>	's31x.gz',
 				:s31x_zip									=>	's31x.zip',
 				:search										=>	'Suchen',
 				:search_explain						=>	'Vergleichen Sie einfach und schnell Medikamentenpreise.<br> Suchen Sie nach Medikament, Wirkstoff oder Anwendungsgebiet<br>(z.B. Kopfschmerzen, Akne, Verstauchung, Verletzung).',
