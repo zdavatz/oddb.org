@@ -561,7 +561,7 @@ zdavatz ! ywesee.com
 				:th_de_description				=>	'Deutsche Bezeichnung',
 				:th_description						=>	'Beschreibung',
 				:th_default_name					=>	'Vorgabe Name',
-				:th_dose									=>	'Dosis',
+				:th_dose									=>	'St&auml;rke',
 				:th_en_description				=>	'Englische Bezeichnung',
 				:th_fachinfo_short				=>	'&nbsp;',
 				:th_fachinfo_title				=>	'Fachinfo-Titel',
