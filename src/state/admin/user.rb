@@ -9,9 +9,13 @@ module ODDB
 module User
 	VIRAL = true
 	def resolve_state(pointer, type=:standard)
-		@viral_module::RESOLVE_STATES.fetch(pointer.skeleton) {
+		if((type == :standard))
+			@viral_module::RESOLVE_STATES.fetch(pointer.skeleton) {
+				super
+			}
+		else
 			super
-		}
+		end
 	end
 	def trigger(event)
 		newstate = super
