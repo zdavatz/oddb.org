@@ -178,6 +178,11 @@ module ODDB
 		def to_s
 			name
 		end
+		def unique_compare?(other)
+			other_keys = other.connection_keys + other.search_keys
+			own_keys = self.connection_keys + self.search_keys
+			!(other_keys & own_keys).empty? # intersection
+		end
 		def <=>(other)
 			to_s.downcase <=> other.to_s.downcase
 		end
