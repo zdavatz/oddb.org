@@ -137,6 +137,7 @@ class DoctorComposite < HtmlGrid::Composite
 		[0,0,4]	=>	:name,
 		[0,1]	=> DoctorInnerComposite,
 		[0,2]		=>	:addresses,
+		[0,3] =>	:vcard,
 	}
 	SYMBOL_MAP = {
 		:nbsp						=>	HtmlGrid::Text,
@@ -149,6 +150,12 @@ class DoctorComposite < HtmlGrid::Composite
 	LEGACY_INTERFACE = false
 	def addresses(model)
 		Addresses.new(model.addresses, @session, self)
+	end
+	def vcard(address)
+		link = HtmlGrid::Link.new(:vcard, address, @session, self)
+		link.href = @lookandfeel.event_url(:download)
+		link.css_class = 'list'
+		link
 	end
 end
 class Doctor < PrivateTemplate
