@@ -105,9 +105,19 @@ module ODDB
 			seq_name = nil
 			substance = nil
 			subs_str = ''
+			ikscd = nil
+			packages = nil
+			sequence = nil
 			offset = 0
 			worksheet.each { |row|
 				if(row)
+					## is this an xls with ean13?
+					if(match = /[0-9]{13}/.match(row.at(3).to_s))
+						ikscd = match[0][9,3]
+						package = ParsedPackage.new
+						package.size = row.at(2).to_s
+						package.ikscd = ikscd
+					end
 					iksval = row.at(1).to_i
 					if(iksval > 0)
 						iksnr = sprintf('%05i', iksval)
@@ -116,7 +126,9 @@ module ODDB
 						seq_name = sequence.name = row.at(0).to_s
 						reg = (registrations[iksnr] ||= ParsedRegistration.new)
 						reg.iksnr = iksnr
-						reg.company = row.at(2).to_s
+						unless(package)
+							reg.company = row.at(2).to_s
+						end
 						offset = reg.sequences.size
 						reg.sequences.push(sequence)
 					end
@@ -137,21 +149,15 @@ module ODDB
 							sequence.active_agents.push(active_agent)
 						end
 					}
+					if(package)
+						sequence.packages.store(ikscd, package)
+						package, ikscd = nil
+					end
 					if(!dose_str.empty?)
 						## reset substance
 						subs_str = ''
 						substance = nil
 					end
-## kann reaktiviert werden, wenn wieder ean13 im File sind
-=begin
-					if(match = /[0-9]{13}/.match(row.at(3).to_s))
-						ikscd = match[0][9,3]
-						package = ParsedPackage.new
-						package.size = row.at(2).to_s
-						package.ikscd = ikscd
-						sequence.packages.store(ikscd, package)
-					end
-=end
 				end
 			}
 			registrations

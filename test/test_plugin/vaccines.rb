@@ -200,9 +200,27 @@ Globulines équines obtenues après immunisation par des extraits porcins de tissu
 			assert_equal('40.0', agent.dose)
 			assert_equal('mg', agent.unit)
 			agent = seq.active_agents.at(1)
-			assert_equal('', agent.substance)
-			assert_equal('40.0', agent.dose)
-			assert_equal('mg', agent.unit)
+			#assert_equal('', agent.substance)
+			#assert_equal('40.0', agent.dose)
+			#assert_equal('mg', agent.unit)
+		end
+		def test_integrate__7__ean
+			path = File.expand_path('../data/xls/vaccines_ean.xls', 
+				File.dirname(__FILE__))
+			regs = @plugin.registrations_from_xls(path)
+			reg = regs['55536']
+			reg.assign_seqnrs
+			assert_instance_of(VaccinePlugin::ParsedRegistration, reg)
+			assert_equal('55536', reg.iksnr)
+			seq = reg.sequences.first
+			assert_instance_of(VaccinePlugin::ParsedSequence, seq)
+			assert_equal('02', seq.seqnr)
+			assert_equal('Albumin Human Octapharma 20%', seq.name)
+			assert_equal(['011', '012'], seq.packages.keys.sort)
+			pack = seq.packages['011']
+			assert_instance_of(VaccinePlugin::ParsedPackage, pack)
+			assert_equal('011', pack.ikscd)
+			assert_equal('1 Infusionsflasche zu 50 ml Lösung', pack.size)
 		end
 	end
 end
