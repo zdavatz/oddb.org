@@ -13,7 +13,7 @@ require	'htmlgrid/infomessage'
 require 'view/descriptionform'
 require 'view/form'
 require 'view/pointervalue'
-require 'view/privatetemplate'
+require 'view/resulttemplate'
 require 'view/sponsorlogo'
 
 module ODDB
@@ -233,7 +233,7 @@ class RootCompanyComposite < View::Companies::CompanyComposite
 		[0,3]	=>	:inactive_registrations,
 	}
 end
-class UnknownCompany < ResultTemplate
+class UnknownCompany < View::ResultTemplate
 	CONTENT = View::Companies::UnknownCompanyComposite
 	SNAPBACK_EVENT = :companylist
 end
