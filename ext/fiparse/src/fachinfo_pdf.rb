@@ -14,7 +14,7 @@ module ODDB
 					self.add_text
 				end
 				@font = font
-				@fresh_paragraph = false
+				#@fresh_paragraph = false
 			end
 			def add_text
 				if(@font.bold? && @font.italic?)
@@ -28,22 +28,25 @@ module ODDB
 				elsif(@font.bold?)
 					# product-name
 				elsif(@font.italic?)
-					#if(@fresh_paragraph)
+					if(@fresh_paragraph)
 						@section = @chapter.next_section
 						@section.subheading << self.src
-						#else
-						# formatierung an paragraph
-						#end
+					else
+						@paragraph.set_format(:italic)
+						@paragraph << self.src
+						@paragraph.reduce_format(:italic)
+					end
 				else
-					#self.src.gsub!(/Der Text wurde behördlich genehmigt und vom verantwortlichen Unternehmen zur Publikation durch die Documed AG freigegeben. Das Dokument in der hier vorliegenden Fassung wurde im [0-9]+. [0-9]+ erstellt und ist in gedruckter Form noch nicht veröffentlicht. (C) Copyright [0-9]+ by Documed AG, Basel. Die unberechtigte Nutzung und Weitergabe ist untersagt./, "")
-					#self.src.gsub!(/Arzneimittel-Kompendium der Schweiz \(C\) Copyright [0-9]+ by Documed AG, Basel.[\s]+Seite [0-9]+ von [0-9]+/,"")
 					str = self.src.strip
 					if(!@chapter.nil? && !str.empty? && !/Copyright/i.match(str))
-						#puts "str: #{str}"
-						@paragraph = @section.next_paragraph
+						if(@fresh_paragraph)
+							#puts "str: #{str}"
+							@paragraph = @section.next_paragraph
+						end
 						@paragraph << str.gsub("\n", "")
-					else
 						@fresh_paragraph = false
+					else
+						#@fresh_paragraph = true
 					end
 				end
 				@src = ''
