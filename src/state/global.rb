@@ -20,7 +20,9 @@ require 'state/drugs/patinfo_deprived_sequences'
 require 'state/drugs/recentregs'
 require 'state/drugs/result'
 require 'state/doctors/init'
+require 'state/hospitals/init'
 require 'state/doctors/doctorlist'
+require 'state/hospitals/hospitallist'
 require 'state/drugs/patinfo'
 require 'state/exception'
 require 'state/interactions/basket'
@@ -61,10 +63,12 @@ module ODDB
 				:home_admin						=>	State::Admin::Init,
 				:home_companies				=>	State::Companies::Init,
 				:home_doctors					=>	State::Doctors::Init,
+				:home_hospitals				=>	State::Hospitals::Init,
 				:home_drugs						=>  State::Drugs::Init,
 				:home_interactions		=>  State::Interactions::Init,
 				:home_substances			=>  State::Substances::Init,
 				:home_user						=>  State::User::Init,
+				:hospitallist					=>	State::Hospitals::HospitalList,
 				:login_form						=>	State::Admin::Login,
 				:mailinglist					=>	State::User::MailingList,
 				:plugin								=>	State::User::Plugin,
@@ -75,7 +79,8 @@ module ODDB
 			HOME_STATE = State::Drugs::Init
 			RESOLVE_STATES = {
 				[ :company ]	=>	State::Companies::Company,
-				[ :doctor	 ]  =>	State::Doctors::Doctor,
+				[ :doctor	]  =>	State::Doctors::Doctor,
+				[ :hospital ]  =>	State::Hospitals::Hospital,
 				[ :fachinfo ]	=>	State::Drugs::Fachinfo,
 				[	:registration, :sequence, 
 					:package, :sl_entry, 
@@ -122,6 +127,10 @@ module ODDB
 			def doctorlist
 				model = @session.doctors.values
 				State::Doctors::DoctorList.new(@session, model)
+			end
+			def hospitallist
+				model = @session.hospitals.values
+				State::Hospitals::HospitalList.new(@session, model)
 			end
 			def extend(mod)
 				if(mod.constants.include?('VIRAL'))
@@ -210,6 +219,9 @@ module ODDB
 					State::Exception.new(@session, query)
 				elsif(!query.nil?)
 					case zone
+					when :hospitals
+						result = @session.search_hospitals(query)
+						State::Hospitals::HospitalResult.new(@session, result)
 					when :doctors
 						result = @session.search_doctors(query)
 						State::Doctors::DoctorResult.new(@session, result)
@@ -290,7 +302,7 @@ module ODDB
 				State::User::YweseeContact.new(@session, model)
 			end
 			def zones
-				[:drugs, :interactions, :companies, :doctors, :user]
+				[:drugs, :interactions, :companies, :doctors, :hospitals, :user ]
 			end
 			def zone_navigation
 				[

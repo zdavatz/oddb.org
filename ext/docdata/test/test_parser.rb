@@ -5,13 +5,13 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 $: << File.expand_path("../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'emh'
+require 'parser'
 require 'util/html_parser'
 
 class TestDoctorWriter < Test::Unit::TestCase
 	def setup
-		@writer = ODDB::DoctorWriter.new
-		formatter = ODDB::DoctorFormatter.new(@writer)
+		@writer = ODDB::DocData::DoctorWriter.new
+		formatter = ODDB::DocData::DoctorFormatter.new(@writer)
 		@parser = ODDB::HtmlParser.new(formatter)
 	end
 	def test_parse__multiple_addresses
@@ -21,7 +21,7 @@ class TestDoctorWriter < Test::Unit::TestCase
 		@parser.feed(html)
 		@writer.extract_data
 		expected = {
-			:address	=> [
+			:addresses	=> [
 				{
 					:plz		=>  '6500',
 					:city   =>  'Bellinzona',
@@ -44,6 +44,7 @@ class TestDoctorWriter < Test::Unit::TestCase
 					:fax		=>	'091 811 91 60',
 					:lines	=>	[
 						'Ospedale San Giovanni',
+						'Reparto nefrologia',
 						'Soleggio',
 						'6500 Bellinzona',
 						'',
@@ -57,6 +58,7 @@ class TestDoctorWriter < Test::Unit::TestCase
 					:fax    =>  '',
 					:lines	=>	[
 						'Clinica Sassariente',
+						'Medoscio',
 						'6597 Agarone',
 						'',
 					],
@@ -69,6 +71,7 @@ class TestDoctorWriter < Test::Unit::TestCase
 					:fax    =>  '091 811 87 99',
 					:lines  => [
 						"Ospedale San Giovanni",
+						"Reparto medicina interna",
 					  "Soleggio",
 						"6500 Bellinzona",
 						"",
@@ -82,6 +85,7 @@ class TestDoctorWriter < Test::Unit::TestCase
 					:fax    =>  '',
 					:lines  => [
 						"Ospedale San Giovanni",
+						"Centro Cure Intense",
 					  "Soleggio",
 						"6500 Bellinzona",
 						"",
@@ -89,7 +93,7 @@ class TestDoctorWriter < Test::Unit::TestCase
 					:type	=> :work,
 				},
 			],
-			:specialist	=>	['Innere Medizin', 'Nephrologie'],
+			:specialities	=>	['Innere Medizin', 'Nephrologie'],
 			:language		=>	'italienisch',
 			:praxis			=>	"Ja",
 			:exam				=>	"1970",

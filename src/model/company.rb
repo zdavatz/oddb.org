@@ -14,7 +14,7 @@ module ODDB
 		alias :power_link= :powerlink=
 		alias :power_link :powerlink
 		alias :to_s :name
-		attr_accessor	:contact, :contact_email
+		attr_accessor	:contact, :contact_email, :business_unit
 		attr_accessor	:url, :phone, :fax, :address_email
 		alias :email :address_email
 		attr_accessor :address, :plz, :location

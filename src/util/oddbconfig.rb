@@ -19,6 +19,7 @@ module ODDB
 	FIPARSE_URI = "druby://localhost:10002"
 	FIPDF_URI = "druby://localhost:10003"
 	DOCPARSE_URI = "druby://localhost:10004"
+	MEDDATA_URI = "druby://localhost:10006"
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
 end
 
