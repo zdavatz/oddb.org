@@ -7,8 +7,10 @@ require 'htmlgrid/composite'
 require 'htmlgrid/errormessage'
 require 'htmlgrid/inputcheckbox'
 require 'htmlgrid/inputradio'
+require 'htmlgrid/link'
 require 'htmlgrid/richtext'
 require 'htmlgrid/errormessage'
+require 'view/centeredsearchform'
 
 module ODDB
 	module View
@@ -143,12 +145,16 @@ class FiPiOfferInputComposite < HtmlGrid::Composite
 		[0,0,5]	=>	:amzv_article14_link,
 		[0,0,6]	=>	'point',
 		[0,1]		=>	:fipi_offer_input_explanation,
-		[0,3]		=>	View::User::FiPiOfferInputForm,
+		[0,2] =>		:pi_upload_link,
+		[0,3] =>		:fi_upload_link,
+		[0,4]		=>	View::User::FiPiOfferInputForm,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0]	=>	'th',
 		[0,1]	=>	'list',
+		[0,2]	=>	'list',
+		[0,3]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	def amzv_link(model, session)
@@ -170,6 +176,18 @@ class FiPiOfferInputComposite < HtmlGrid::Composite
 		link.href = @lookandfeel.lookup(:amzv_article14_href)
 		link.value = @lookandfeel.lookup(:amzv_article14)
 		link.set_attribute('class', 'th')
+		link
+	end
+	def pi_upload_link(model, session)
+		create_link(:pi_upload_link, 'http://wiki.oddb.org/wiki.php?pagename=ODDB.Pi-Upload')
+	end
+	def fi_upload_link(model, session)
+		create_link(:fi_upload_link, 'http://wiki.oddb.org/wiki.php?pagename=ODDB.Fi-Upload')
+	end
+	def create_link(text_key, href)
+		link = HtmlGrid::Link.new(text_key, @model, @session, self)
+		link.href = href
+		link.set_attribute('class', 'list')
 		link
 	end
 	def fipi_offer_input_explanation(model, session)
