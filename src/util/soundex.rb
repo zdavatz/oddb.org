@@ -77,7 +77,9 @@ module Soundex
 		str.gsub!(/[üÜ]/, 'ue')
 		str.gsub!(/[úÚùÙûÛ]/, 'u')
 		str.tr!('şßğ', 'psd')
-		str
+		str.gsub!(/[-\s]/i, ' ')
+		str.gsub!(/[^a-z\s]/i, '')
+		str.strip
 	end
 	module_function :prepare
 	

@@ -53,6 +53,7 @@ class StubActiveAgentApp
 	end
 end
 class StubActiveAgentSequence
+	attr_accessor :pointer
 end
 
 class TestActiveAgent < Test::Unit::TestCase
@@ -63,6 +64,7 @@ class TestActiveAgent < Test::Unit::TestCase
 		@substance = StubActiveAgentSubstance.new(@substance_name)
 		@agent.pointer = ODDB::Persistence::Pointer.new('parent', 'self')
 		@sequence = StubActiveAgentSequence.new
+		@sequence.pointer = ODDB::Persistence::Pointer.new(:sequence, 1)
 		@agent.sequence = @sequence
 		@agent.init(@app)
 	end
@@ -81,11 +83,13 @@ class TestActiveAgent < Test::Unit::TestCase
 	end
 	def test_substance_writer
 		sequence = StubActiveAgentSequence.new
+		sequence.pointer = ODDB::Persistence::Pointer.new(:sequence, 2)
 		subst1 = StubActiveAgentSubstance.new("LEVOMENTHOLUM")
 		@agent.sequence = sequence
 		@agent.substance = subst1
 		assert_equal(sequence, subst1.sequence)
 		assert_equal(subst1, @agent.substance)
+		assert_equal(sequence.pointer + [:active_agent, @agent.substance.name], @agent.pointer)
 		subst2 = StubActiveAgentSubstance.new("ACIDUM MEFENAMICUM")
 		@agent.substance = subst2
 		assert_equal(sequence, subst1.removed_sequence)

@@ -88,6 +88,7 @@ class TestSequence < Test::Unit::TestCase
 	end
 	def setup
 		@seq = ODDB::Sequence.new(1)
+		@seq.pointer = ODDB::Persistence::Pointer.new([:sequence, 1])
 	end
 	def test_create_package
 		@seq.packages = {}

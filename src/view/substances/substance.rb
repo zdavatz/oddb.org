@@ -81,12 +81,10 @@ class ActiveFormForm < View::Form
 		end
 	end
 	def effective_form(model)
-		unless(model.is_effective_form?)
-			HtmlGrid::InputText.new(:effective_form, model, @session, self)
-		end
+		HtmlGrid::InputText.new(:effective_form, model, @session, self)
 	end
 	def effective_submit(model)
-		submit(model) unless model.is_effective_form?
+		submit(model) #unless model.is_effective_form?
 	end
 end
 class Substrates < HtmlGrid::List

@@ -39,6 +39,12 @@ module ODDB
 				end
 				def lookup(arg)
 				end
+				def state
+					self
+				end
+				def zone
+					'zone'
+				end
 			end
 			def test_init
 				session = StubSession.new
