@@ -17,7 +17,9 @@ module ODDB
 			([
 				@name, @business_unit,  
 				@address,
+				@location,
 				@phone,
+				@plz,
 				@ean13,
 			]).flatten.compact
 		end
