@@ -1162,7 +1162,7 @@ zdavatz ! ywesee.com
 				:sponsor_until1						=>	'.',
 				:subscribe								=>	'Enregistrer',
 				:substance								=>	'Principe Actif',
-				:substances								=>	'Principe Actifs',
+				:substances								=>	'Principes Actifs',
 				:substrate								=>	'Substrats',
 				:tabnavigation_divider		=>	'&nbsp;|&nbsp;',
 				:th_active_package				=>	'Forme de comerciale active',
