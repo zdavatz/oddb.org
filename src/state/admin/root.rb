@@ -154,7 +154,7 @@ module Root
 		State::Drugs::Substances.new(@session, model)
 	end
 	def zones
-	[:drugs, :interactions, :substances, :companies, :admin, :user]
+	[:drugs, :interactions, :substances, :companies, :user, :admin]
 	end
 end
 		end
