@@ -1,3 +1,8 @@
+2004-06-16 Zeno Davatz <zdavatz@ywesee.com>
+*	Anpassung Import Fi/Pi aus PDF
+	+ hwyss@ywesee.com: Einen neuen Fachinfo-Parser, der mit dem neuen
+		Input-Format das gleiche Output-Format macht.
+
 2004-06-11 Zeno Davatz <zdavatz@ywesee.com>
 *	ODDB läuft am morgen nicht. Es hat einen Apache-Defunct Prozess den man
 	zuerst killen muss mit killall -KILL apache, dann alles ok.
