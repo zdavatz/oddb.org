@@ -9,7 +9,7 @@ module ODDB
 	module View
 		module Companies
 class Search < View::PublicTemplate
-	CONTENT = View::Companies::CenteredSearchComposite
+	CONTENT = View::Companies::GoogleAdSenseComposite
 	CSS_CLASS = 'composite'
 	HEAD = View::WelcomeHead
 end

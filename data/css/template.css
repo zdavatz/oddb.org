@@ -807,11 +807,6 @@ td.logo {
 	top : 3px;
 	padding-bottom : 3px;
 }
-td.logo-r {
-	vertical-align : top;
-	position : relative;
-	top : 0px;
-}
 .logo-r {
 	text-decoration : none;
 	border : 0px dotted red;

@@ -9,7 +9,7 @@ module ODDB
 	module View
 		module User
 class Search < View::PublicTemplate
-	CONTENT = View::User::CenteredSearchComposite
+	CONTENT = View::User::GoogleAdSenseComposite
 	CSS_CLASS = 'composite'
 	HEAD = View::WelcomeHead
 end

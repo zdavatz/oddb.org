@@ -5,10 +5,11 @@ require 'htmlgrid/composite'
 require 'view/sponsorlogo'
 require 'view/logo'
 require 'view/tab_navigation'
+require 'view/logohead'
 
 module ODDB
 	module View
-		class SponsorHead < HtmlGrid::Composite
+		class SponsorHead < CommonLogoHead
 			COMPONENTS = {
 				[0,0]		=>	View::Logo,
 				[1,0]		=>	:sponsor,
@@ -24,6 +25,8 @@ module ODDB
 				if((spons = @session.sponsor) \
 					&& sponsor_represents?(spons, model))
 					View::SponsorLogo.new(spons, session, self)
+				elsif(@lookandfeel.enabled?(:google_adsense))
+					ad_sense(model, session)
 				end
 			end
 			def sponsor_until(model, session)

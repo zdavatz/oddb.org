@@ -7,7 +7,7 @@ module ODDB
 	module View
 		module Interactions
 class Search < View::Search
-	CONTENT = View::Interactions::CenteredSearchComposite
+	CONTENT = View::Interactions::GoogleAdSenseComposite
 end
 		end
 	end
