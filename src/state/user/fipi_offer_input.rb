@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
 # State::User::FiPiOfferInput -- oddb -- 28.06.2004 -- maege@ywesee.com
 
-require 'state/user/global'
+$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path("../../../src", File.dirname(__FILE__))
+
+require 'state/global_predefine'
 require 'view/user/fipi_offer_input'
 
 module ODDB
@@ -11,82 +14,82 @@ class FiPiOfferInput < State::User::Global
 	class FiPiOffer
 		attr_accessor :fi_update, :pi_update
 		attr_accessor :fi_quantity, :pi_quantity
-		FIPI_ACTIVATION_CHARGE = 1000
+		PI_ACTIVATION_CHARGE = 1000
+		FI_ACTIVATION_CHARGE = 1500
+		FIPI_ACTIVATION_CHARGE = 
+			(PI_ACTIVATION_CHARGE + FI_ACTIVATION_CHARGE)
 		FI_CHARGE	= 350
 		FI_UPDATE = 150
 		PI_CHARGE = 120
 		PI_UPDATE = 90
 		def activation_charge
+			PI_ACTIVATION_CHARGE
+			FI_ACTIVATION_CHARGE
 			FIPI_ACTIVATION_CHARGE
 		end
-		def activation_charge_count
+		def pi_activation_count
 			count = 0
-			count += 1 unless (@fi_quantity=="" || @fi_quantity=="0")
 			count += 1 unless (@pi_quantity=="" || @pi_quantity=="0")
 			count
+		end
+		def fi_activation_count
+			count = 0
+			count += 1 unless (@fi_quantity=="" || @fi_quantity=="0")
+			count
+		end
+		def activation_count
+			fi_activation_count + pi_activation_count
 		end
 		def fi_charge
 			FI_CHARGE
 		end
 		def fi_update_charge
-			prize = 0
-			prize = FI_UPDATE if @fi_update=='update_ywesee'
-			prize
+			if(@fi_update=='update_ywesee')
+				FI_UPDATE
+			end.to_i
 		end
 		def fi_quantity
-			if(@fi_quantity=="")
-				0
-			else
-				@fi_quantity
-			end
+			@fi_quantity.to_i
 		end
 		def pi_charge
 			PI_CHARGE
 		end
 		def pi_update_charge
-			prize = 0
-			prize = PI_UPDATE if @pi_update=='update_ywesee'
-			prize
+			if(@pi_update=='update_ywesee')
+				PI_UPDATE
+			end.to_i
 		end
 		def pi_quantity
-			if(@pi_quantity=="")
-				0
-			else
-				@pi_quantity
-			end
+			@pi_quantity.to_i
 		end
-		def calculate_activation_charge
-			activation_charge_count * FIPI_ACTIVATION_CHARGE
+		def pi_calculate_activation_charge
+			pi_activation_count * PI_ACTIVATION_CHARGE
+		end
+		def fi_calculate_activation_charge
+			fi_activation_count * FI_ACTIVATION_CHARGE
 		end
 		def calculate_fi_charge
 			if(@fi_quantity)
 				@fi_quantity.to_i * FI_CHARGE
-			else
-				0
-			end
+			end.to_i
 		end
 		def calculate_fi_update
 			if(@fi_update=='update_ywesee')
 				@fi_quantity.to_i * FI_UPDATE
-			else
-				0
-			end
+			end.to_i
 		end
 		def calculate_pi_charge
 			if(@pi_quantity)
 				@pi_quantity.to_i * PI_CHARGE
-			else
-				0
-			end
+			end.to_i
 		end
 		def calculate_pi_update
 			if(@pi_update=='update_ywesee')
 				@pi_quantity.to_i * PI_UPDATE
-			else
-				0
-			end
+			end.to_i
 		end
 		def calculate_total
+			calculate_activation_charge = fi_calculate_activation_charge + pi_calculate_activation_charge
 			calculate_total_charges + calculate_activation_charge
 		end
 		def calculate_total_charges
@@ -107,10 +110,16 @@ class FiPiOfferInput < State::User::Global
 		]
 		mandatory = []
 		input = self.user_input(keys, mandatory)
+		quant = input[:fi_quantity].to_i \
+			+ input[:pi_quantity].to_i
 		keys.each { |key|
 			@model.send(key.to_s+"=", input[key])
 		}
-		State::User::FiPiOfferConfirm.new(@session, @model)
+		if(quant <= 0)
+			self
+		else
+			State::User::FiPiOfferConfirm.new(@session, @model)
+		end
 	end
 end
 		end

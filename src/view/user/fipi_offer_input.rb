@@ -60,12 +60,12 @@ class FiPiOfferInputForm < View::Form
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
 		[0,1]		=>	'fipi_activation_charge',
-		[1,1]		=>	:fipi_activation_charge_value,
+		[1,1]		=>	:fi_activation_charge_value,
 		[0,2]		=>	:fi_quantity_txt,
 		[1,2]		=>	:fi_quantity,
 		[1,3]		=>	:fi_update,
 		[0,5]		=>	'fipi_activation_charge',
-		[1,5]		=>	:fipi_activation_charge_value,
+		[1,5]		=>	:pi_activation_charge_value,
 		[0,6]		=>	:pi_quantity_txt,
 		[1,6]		=>	:pi_quantity,
 		[1,7]		=>	:pi_update,
@@ -124,8 +124,12 @@ class FiPiOfferInputForm < View::Form
 		radio2 = RadioButton.new('pi_update', 'update_autonomous', pi_upd)
 		View::User::FiPiRadioButtons.new([ radio1, radio2 ], session)	
 	end
-	def fipi_activation_charge_value(model, session)
-		prize =  State::User::FiPiOfferInput::FiPiOffer::FIPI_ACTIVATION_CHARGE
+	def fi_activation_charge_value(model, session)
+		prize =  State::User::FiPiOfferInput::FiPiOffer::FI_ACTIVATION_CHARGE
+		@lookandfeel.lookup(:swiss_francs, prize.to_s)
+	end
+	def pi_activation_charge_value(model, session)
+		prize =  State::User::FiPiOfferInput::FiPiOffer::PI_ACTIVATION_CHARGE
 		@lookandfeel.lookup(:swiss_francs, prize.to_s)
 	end
 end
