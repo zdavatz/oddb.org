@@ -142,7 +142,7 @@ class RegistrationForm < View::Form
 		HtmlGrid::LabelText.new(:fachinfo, model, session , self)
 	end
 	def iksnr(model, session)
-		klass = if(session.user.is_a?(RootUser) || model.is_a?(Persistence::CreateItem))
+		klass = if(session.user.is_a?(ODDB::RootUser)  || model.is_a?(Persistence::CreateItem))
 			HtmlGrid::InputText
 		else
 			HtmlGrid::Value
