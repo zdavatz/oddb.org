@@ -115,7 +115,7 @@ class FeedbackList < HtmlGrid::List
 		[0,0, 1]	=>	:name,
 		[0,0, 2]	=>	'feedback_title_time',
 		[0,0, 3]	=>	:time,
-		[0,1]			=>	'email_label',
+		[0,1]			=>	:email_label,
 		[1,1,1]		=>	:email,
 		[0,2]			=>	:message_label,
 		[1,2,1]		=>	:message,
