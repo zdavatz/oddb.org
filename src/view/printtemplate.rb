@@ -10,7 +10,6 @@ module ODDB
 				link = HtmlGrid::Link.new(:print, model, session, self)
 				link.set_attribute('title', @lookandfeel.lookup(:print_title))
 				args = { 
-					#:state_id => @session.state.id,
 					:pointer	=> model.pointer,
 				}
 				link.href = @lookandfeel.event_url(:print, args)
