@@ -134,6 +134,7 @@ class TestSubstance < Test::Unit::TestCase
 		aagent.__next(:substance=) { |param| 
 			assert_equal(@substance, param)
 		}
+		aagent.__next(:odba_isolated_store) { }
 		other.__next(:substrate_connections) {
 			{ 'conn_key'	=>	connection }
 		}
@@ -144,6 +145,7 @@ class TestSubstance < Test::Unit::TestCase
 			assert_equal(["!substance,12", "!pointer,last."], param)
 		}
 		connection.__next(:cyp_id) { 'cyp_id' }
+		connection.__next(:odba_isolated_store)	{ }
 		other.__next(:descriptions) {
 			{ 'key'	=> 'value' }
 		}

@@ -52,7 +52,7 @@ module ODDB
 		def log_news(lines)
 			new_news = (lines + (old_news - lines))
 			dir = File.dirname(LOG_PATH)
-			FileUtils.mkdir_p(LOG_PATH)
+			FileUtils.mkdir_p(dir)
 			File.open(LOG_PATH, 'w') { |fh|
 				fh.puts(new_news)
 			}
