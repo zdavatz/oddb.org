@@ -20,6 +20,7 @@ class SequenceList < HtmlGrid::List
 	CSS_MAP = {
 		[0,0]	=>	'small result-edit',
 		[1,0]	=>	'result-big',
+		[2,0]	=>	'result',
 	}
 	SORT_DEFAULT = :name
 	SORT_REVERSE = false
@@ -28,9 +29,9 @@ class SequenceList < HtmlGrid::List
 		:iksnr	=>	PointerLink,
 	}
 	include AlphaHeader
-	def name(model, session)
-		link = HtmlGrid::Link.new(:name, model, session, self)
-		link.value = model.name
+	def name_base(model, session)
+		link = HtmlGrid::Link.new(:name_base, model, session, self)
+		link.value = model.name_base
 		query = (atc = model.atc_class) ? atc.code : 'atcless'
 		args = {
 			'search_query'	=>	query,
