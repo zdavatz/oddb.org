@@ -161,6 +161,19 @@ class TestSequence < Test::Unit::TestCase
 		@seq.active_agents = [active_agent]
 		assert_equal(active_agent, @seq.active_agent('LEVOMENTHOLUM'))
 	end
+	def test_active_agent2
+		subst1 = ODDB::Substance.new
+		subst2 = ODDB::Substance.new
+		subst1.update_values(:lt => 'ACIDUM ACETYLSALICYLICUM')
+		subst2.update_values(:lt => 'LEVOMENTHOLUM')
+		active_agent1 = ODDB::ActiveAgent.new('')
+		active_agent2 = ODDB::ActiveAgent.new('')
+		active_agent1.substance = subst1
+		active_agent2.substance = subst2
+		@seq.active_agents = [active_agent1, active_agent2]
+		assert_equal(active_agent1, @seq.active_agent('acidum acetylsalicylicum'))
+		assert_equal(active_agent2, @seq.active_agent('levomentholum'))
+	end
 	def test_create_active_agent
 		@seq.active_agents = []
 		app = StubSequenceApp.new
@@ -310,7 +323,7 @@ class TestSequence < Test::Unit::TestCase
 	end
 	def test_composition_text
 		subst = ODDB::Substance.new
-		subst.descriptions[:de] = 'Levomentholum'
+		subst.descriptions['lt'] = 'Levomentholum'
 		active_agent = ODDB::ActiveAgent.new('LEVOMENTHOLUM')
 		active_agent.substance = subst
 		@seq.active_agents = [active_agent]

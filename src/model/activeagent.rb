@@ -21,6 +21,10 @@ module ODDB
 				@substance.remove_sequence(@sequence)
 			end
 		end
+		def same_as?(str)
+			(@substance_name.downcase == str.downcase) \
+				|| (!@substance.nil? && @substance.same_as?(str))
+		end
 		def to_s
 			[@substance, @dose].join(' ')
 		end

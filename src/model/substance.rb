@@ -8,7 +8,7 @@ require 'model/cyp450connection'
 
 module ODDB
 	class Substance
-		include Persistence
+		#include Persistence
 		attr_reader :sequences, :substrate_connections
 		include Comparable
 		include Language
@@ -56,7 +56,8 @@ module ODDB
 		def name
 			if(@name)
 				@name
-			elsif(@descriptions && @descriptions['lt']!="")
+			# First call to descriptions should go to lazy-initialisator
+			elsif(descriptions && @descriptions['lt']!="") 
 				@descriptions['lt']
 			elsif(@descriptions)
 				@descriptions['en']
@@ -65,6 +66,11 @@ module ODDB
 		def remove_sequence(sequence)
 			@sequences.delete(sequence)
 		end
+		def same_as?(astring)
+			descriptions.any? { |lang, desc|
+				desc.downcase == astring.to_s.downcase
+			}
+		end
 		def similar_name?(astring)
 			name.length/3.0 >= name.downcase.ld(astring.downcase)
 		end
@@ -72,7 +78,7 @@ module ODDB
 			name
 		end
 		def <=>(other)
-			name.downcase <=> other.to_s.downcase
+			to_s.downcase <=> other.to_s.downcase
 		end
 	end
 end
