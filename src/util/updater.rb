@@ -139,7 +139,7 @@ module ODDB
 			}
 		end
 		def update_doctors
-			update_simple(Doctors::DoctorPlugin, 'Doctors')
+			update_simple(Doctors::DoctorPlugin, 'Doctors', :update, nil, false)
 		end
 		def update_fachinfo
 			klass = FachinfoPlugin
@@ -206,11 +206,15 @@ module ODDB
 			log = @app.update(pointer.creator, values)
 			log.notify(subj)
 		end
-		def wrap_update(klass, subj, &block)
+		def wrap_update(klass, subj, batch=true, &block)
 			begin
-				ODBA.batch {
+				if(batch)
+					ODBA.batch {
+						block.call
+					}
+				else
 					block.call
-				}
+				end
 			rescue StandardError => e
 				log = Log.new(Date.today)
 				log.report = [
@@ -225,8 +229,9 @@ module ODDB
 				nil
 			end
 		end
-		def update_simple(klass, subj, update_method=:update, arg=nil)
-			wrap_update(klass, subj) {
+		def update_simple(klass, subj, update_method=:update, 
+			arg=nil, batch=true)
+			wrap_update(klass, subj, batch) {
 				plug = klass.new(@app)
 				#puts ARGUMENTS.inspect
 				if(ARGUMENTS.include?(arg))

@@ -14,6 +14,8 @@ module ODDB
 		ODBA_SERIALIZABLE = [ '@descriptions' ]
 		attr_accessor :code
 		attr_reader :guidelines, :ddd_guidelines
+		# use this instead of add_sequence for temporary atc_classes
+		attr_writer :sequences 
 		class DDD
 			include Persistence
 			attr_accessor :dose, :note
@@ -126,7 +128,5 @@ module ODDB
 		def pointer_descr(key=nil)
 			[super,'(' + @code + ')'].compact.join(' ')
 		end
-		protected
-		attr_writer :sequences
 	end
 end

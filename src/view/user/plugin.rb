@@ -22,7 +22,7 @@ class PluginInnerComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value
 	def plugin_javascript(model, session)
 		link = HtmlGrid::Link.new(:plugin_javascript, model, session, self)
-		link.href = "javascript:addEngine('Generika.cc','gif','Health')"
+		link.href = "javascript:addEngine('oddb.org','gif','Health')"
 		link.label = true
 		link.set_attribute('class', 'list')
 		link
@@ -44,7 +44,7 @@ class PluginInnerComposite < HtmlGrid::Composite
 end
 class PluginComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]	=>	'plugin_generika',
+		[0,0]	=>	'plugin_oddb',
 		[0,1]	=>	View::User::PluginInnerComposite,
 	}
 	CSS_CLASS = 'composite'

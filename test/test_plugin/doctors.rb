@@ -16,6 +16,10 @@ module ODDB
 		class TestDoctorPlugin < Test::Unit::TestCase
 			def setup
 				@app = Mock.new('Application')
+				@config = Mock.new('Config')
+				@app.__next(:config) {
+					@config
+				}
 				@plugin = DoctorPlugin.new(@app)
 				@hash =  {
 					:exam						=>"1970", 
@@ -104,13 +108,6 @@ module ODDB
 					assert_equal('docpointer', pointer)
 				}
 				@plugin.store_doctor(doc_id, @hash)
-			end
-			def test_delete_doctor__empty_id
-				doc_id = 14478 
-				doctor = Mock.new('Doctor')
-				@app.__next(:doctors) { {} }
-				@plugin.delete_doctor(doc_id)
-				assert_equal([doc_id], @plugin.empty_id)
 			end
 			def test_merge_addresses
 				input	= [

@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 # OddbApp -- oddb -- hwyss@ywesee.com
 
-require 'benchmark'
+require 'odba'
+require 'odba/index_definition'
 require 'custom/lookandfeelbase'
 require 'util/failsafe'
 require 'util/oddbconfig'
@@ -17,8 +18,6 @@ require 'sbsm/drbserver'
 require 'sbsm/index'
 require 'util/drb'
 require 'util/config'
-require 'odba'
-require 'odba/index_definition'
 require 'fileutils'
 require 'yaml'
 
@@ -361,8 +360,9 @@ class OddbPrevalence
 		@doctors.size
 	end
 	def doctor_by_origin(origin_db, origin_id)
-		@doctors.each_value { |doctor|
-			if(doctor.record_match?(origin_db, origin_id) == true)
+		# values.each instead of each_value for testing
+		@doctors.values.each { |doctor|
+			if(doctor.record_match?(origin_db, origin_id))
 				return doctor
 			end
 		}
@@ -513,22 +513,22 @@ class OddbPrevalence
 		result.exact = true
 		if(query == 'atcless')
 			atc = ODDB::AtcClass.new('n.n.')
+			sequences = []
 			@registrations.each_value { |reg|
 				reg.sequences.each_value { |seq|
 					if(seq.atc_class.nil? && !seq.packages.empty?)
-						atc.add_sequence(seq)
+						sequences.push(seq)
 					end	
 				}	
 			}
+			atc.sequences = sequences
 			result.atc_classes = [atc]
 			return result
 		elsif(match = /(?:\d{4})?(\d{5})(?:\d{4})?/.match(query))
 			iksnr = match[1]
 			if(reg = registration(iksnr))
 				atc = ODDB::AtcClass.new('n.n.')
-				reg.sequences.each_value { |seq|
-					atc.add_sequence(seq)
-				}
+				atc.sequences = reg.sequences.values
 				result.atc_classes = [atc]
 				return result
 			end
@@ -550,7 +550,20 @@ class OddbPrevalence
 		if(atcs.empty?)
 			atcs = search_by_sequence(key)
 		end
-		atcs.delete_if { |atc| atc.code.length == 0 }
+		# cleanup. remove when all temporary-atcs are deleted from the db
+		atcs.delete_if { |atc|
+			delete = (atc.code == 'n.n.' || atc.code.empty?)
+			if(delete)
+				puts "atc: #{atc} - code: #{atc.code}"
+				puts "deleting!"
+				ODBA.batch { 
+					atc.odba_delete 
+				}
+				true
+			end
+		}
+		#
+		#atcs.delete_if { |atc| atc.code.length == 0 }
 		result.atc_classes = atcs
 		result
 	end
@@ -562,7 +575,7 @@ class OddbPrevalence
 		filtered = atcs.collect { |atc|
 			atc.company_filter_search(key.dup)
 		}
-		atcs.flatten.compact.uniq
+		filtered.flatten.compact.uniq
 	end
 	def search_by_indication(key, lang, result)
 		ODBA.cache_server.retrieve_from_index("fachinfo_index_#{lang}", key.dup, result)
@@ -582,10 +595,8 @@ class OddbPrevalence
 	def search_exact(query)
 		result = ODDB::SearchResult.new
 		atc = ODDB::AtcClass.new('n.n.')
-		ODBA.cache_server.retrieve_from_index('sequence_index', 
-			query).each { |seq|
-			atc.add_sequence(seq)
-		}
+		atc.sequences = ODBA.cache_server.\
+			retrieve_from_index('sequence_index', query)
 		result.atc_classes = [atc]
 		result
 	end
@@ -609,6 +620,11 @@ class OddbPrevalence
 		end
 		result
 	end
+	def search_single_substance(key)
+		result = ODDB::SearchResult.new
+		result.exact = true
+		ODBA.cache_server.retrieve_from_index("substance_index", key, result).first
+	end
 	def search_substances(query)
 		if(subs = substance(query))
 			[subs]
@@ -620,10 +636,10 @@ class OddbPrevalence
 		ODBA.cache_server.retrieve_from_index("sequence_index_atc", name)
 	end
 	def soundex_substances(name)
-		parts = name.split(/\s+/)
+		parts = ODDB::Text::Soundex.prepare(name).split(/\s+/)
 		soundex = ODDB::Text::Soundex.soundex(parts)
 		key = soundex.join(' ')
-		ODBA.cache_server.retrieve_from_index("substance_index", key)
+		ODBA.cache_server.retrieve_from_index("substance_soundex_index", key)
 	end
 	def sponsor
 		@sponsor ||= ODDB::Sponsor.new
@@ -643,6 +659,8 @@ class OddbPrevalence
 		if(key.to_i.to_s == key.to_s)
 			@substances[key.to_i]
 		elsif(substance = @substances[key.to_s.downcase])
+			substance
+		elsif(substance = search_single_substance(key))
 			substance
 		else
 			@substances.values.each { |subs|
@@ -827,8 +845,9 @@ module ODDB
 			failsafe {
 				response = begin
 					instance_eval(src)
-				rescue NameError
-					@system.instance_eval(src)
+				rescue NameError => e
+				#@system.instance_eval(src)
+					e
 				end
 				str = response.to_s
 				if(str.length > 200)
@@ -876,25 +895,25 @@ module ODDB
 				}
 			}
 		end
-		def assign_effective_forms
+		def assign_effective_forms(arg=nil)
 			ODBA.batch {
-				_assign_effective_forms
+				_assign_effective_forms(arg)
 			}
 		end
-		def _assign_effective_forms
+		def _assign_effective_forms(arg=nil)
 			result = nil
 			last = nil
 			@system.substances.select { |subs| 
-				!subs.has_effective_form?
+				!subs.has_effective_form? && (arg.nil? || arg.to_s < subs.to_s)
 			}.sort_by { |subs| subs.name }.each { |subs|
 				puts "Looking for effective form of ->#{subs}<- (#{subs.sequences.size} Sequences)"
 				name = subs.to_s
 				parts = name.split(/\s/)
 				suggest = if(parts.size == 1)
 					subs
-				else
-					@system.substance(parts.first) \
-						|| @system.substance(parts.first.gsub(/i$/, 'um'))
+				elsif(![nil, '', 'Acidum'].include?(parts.first))
+					@system.search_single_substance(parts.first) \
+						|| @system.search_single_substance(parts.first.gsub(/i$/, 'um'))
 				end
 				last = result
 				result = nil
@@ -938,6 +957,17 @@ module ODDB
 						break
 					when 'q'
 						return
+					when /c .+/
+						puts "creating:"
+						pointer = Persistence::Pointer.new(:substance)
+						puts "pointer: #{pointer}"
+						args = { :lt => answer.split(/\s+/, 2).last.strip }
+						argstr = args.collect { |*pair| pair.join(' => ') }.join(', ')
+						puts "args: #{argstr}"
+						result = @system.update(pointer.creator, args)
+						result.effective_form = result
+						result.odba_store
+						puts "result: #{result}"
 					else
 						result = @system.substance(answer)
 					end

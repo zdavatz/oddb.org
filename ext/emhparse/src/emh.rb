@@ -293,7 +293,7 @@ module ODDB
 				result = parse_medwin_data(@session.medic_html(data))
 				keys = []
 				result.each { |key, value|
-					if(value[1]==data[:surname])
+					if(value[1]==data[:firstname])
 						keys.push(key)
 					end
 				}
@@ -304,8 +304,8 @@ module ODDB
 				unless(ean13.nil?)
 					data.store(:ean13, ean13)
 				end
-				data
 			end
+			data
 		end
 		def parse_emh_data(html)
 			writer = DoctorWriter.new

@@ -31,6 +31,9 @@ module ODDB
 			input = "þ ß ð"
 			expected = "p s d"
 			assert_equal(expected, Text::Soundex.prepare(input))
+			input = "(+)-alpha-Tocopheroli Acetas"
+			expected = "alpha Tocopheroli Acetas"
+			assert_equal(expected, Text::Soundex.prepare(input))
 		end
 		def test_soundex
 			assert_not_nil(Text::Soundex.soundex('essigsäure'))

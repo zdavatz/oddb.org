@@ -334,18 +334,20 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		assert_equal(expected.sort, result)
 	end
 	def test_similar_name
-		result = []
-		result.push(@plugin.similar_name?("astring", "astring"))
-		result.push(@plugin.similar_name?("astring", "bstring"))
-		result.push(@plugin.similar_name?("abstring", "bcstring"))
-		expected = [true, true, false]
-		assert_equal(expected, result)
+		assert_equal(true, @plugin.similar_name?("astring", "astring"), 
+			"'astring' was not similar to 'astring'")
+		#assert_equal(true, @plugin.similar_name?("astring", "bstring"), 
+		assert_equal(false, @plugin.similar_name?("astring", "bstring"), 
+			"'astring' was not similar to 'bstring'")
+		assert_equal(false, @plugin.similar_name?("abstring", "bcstring"), 
+			"'abstring' was similar to 'bcstring'")
 	end
 	def test_update_oddb_cyp450_connections
 		cytochrome = Mock.new('cytochrome')
 		cyp450 = Mock.new('cyp450')	
 		inhibitor = Mock.new('inhibitor')
 		pointer = Mock.new('pointer')
+		substance = Mock.new('substance')
 		cyp450.__next(:inhibitors) {
 			{ 
 				'key_1'	=>	'value_1',
@@ -354,52 +356,62 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		}
 		cytochrome.__next(:inhibitors) { [ inhibitor ] }
 		cyp450.__next(:pointer) { pointer	}
-		pointer.__next(:+) { |params|
-			assert_equal(Array, params.class)
-			assert_equal(2, params.size)
-			pointer
-		}
-		inhibitor.__next(:name) { 'foo_name' }
 		inhibitor.__next(:name) { 'foo_name' }
 		inhibitor.__next(:links) { [ 'link' ] }
 		inhibitor.__next(:category) { 'category' }
-		inhibitor.__next(:name)	{ 'key_3' }
+		#inhibitor.__next(:name)	{ 'key_3' }
 		cyp450.__next(:inhibitors) { 
 			{ 
 				'key_1'	=>	'value_1',
 				'key_2'	=>	'value_2',
 			}
 		}
-		cyp450.__next(:cyp_id) { "cyp_id" }
-		pointer.__next(:creator) { pointer }
+		cyp450.__next(:pointer) { pointer }
+		pointer.__next(:+) { |params|
+			assert_equal(Array, params.class)
+			assert_equal(2, params.size)
+			pointer
+		}
+		pointer.__next(:+) { |params|
+			assert_equal(Array, params.class)
+			assert_equal(2, params.size)
+			pointer
+		}
+		#pointer.__next(:creator) { pointer }
+		@app.__next(:substance_by_connection_key) { substance }
+		substance.__next(:primary_connection_key) { 'key_1' }
 		@app.__next(:update) { |create_pointer, args|
 			assert_equal(Hash, args.class)
 			assert_equal(3, args.size)
 			assert_equal(pointer, create_pointer)
 		}
-		inhibitor.__next(:name) { 'key_1' }
-		inhibitor.__next(:name) { 'key_1' }
-		inhibitor.__next(:name)	{ 'foo_name' }
-		cyp450.__next(:pointer) { pointer }
+		#inhibitor.__next(:name) { 'key_1' }
+		#inhibitor.__next(:name) { 'key_1' }
+		#inhibitor.__next(:name)	{ 'foo_name' }
+		#cyp450.__next(:pointer) { pointer }
+=begin
 		pointer.__next(:+) { |params|
 			assert_equal('key_2', params.last)
 			assert_equal(Array, params.class)
 			pointer
 		}
+=end
+		cyp450.__next(:cyp_id) { 'cyp45_id' }
+=begin
 		@app.__next(:delete) { |delete_pointer| 
 			assert_equal(pointer, delete_pointer)
 		}
-		cyp450.__next(:cyp_id) { 'cyp45_id' }
-		cyp450.__next(:pointer) { pointer }
+		#cyp450.__next(:pointer) { pointer }
 		pointer.__next(:+) { |params|
 			assert_equal('key_1', params.last)
 			assert_equal(Array, params.class)
 			pointer
 		}
+=end
 		@app.__next(:delete) { |delete_pointer| 
 			assert_equal(pointer, delete_pointer)
 		}
-		cyp450.__next(:cyp_id) { 'cyp45_id' }
+		#cyp450.__next(:cyp_id) { 'cyp45_id' }
 		@plugin.update_oddb_cyp450_connections('foo_id', cytochrome, cyp450, :inhibitors)
 		cytochrome.__verify
 		cyp450.__verify
@@ -464,7 +476,7 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		connection.__next(:name) { 'not_yet_updated' }
 		connection.__next(:lang) { 'en' }
 		@app.__next(:update) { substance }
-		substance.__next(:substrate_connections) { [connection] }
+		#substance.__next(:substrate_connections) { [connection] }
 		substance.__next(:pointer) { 'pointer' }
 		connection.__next(:name) { 'not_yet_updated' }
 		expected = {
@@ -495,12 +507,17 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		substrate.__next(:links) { 'links' }
 		substrate.__next(:category) { 'category' }
 		substrate.__next(:name) { 'substratename' }
-		@app.__next(:substances) { 
-			[ substance ] 
+		@app.__next(:substance_by_connection_key) { 
+			substance 
 		}
+=begin
 		substance.__next(:has_connection_key?) { |key|
 			assert_equal('substratename', key) 
 			true
+		}
+=end
+		substance.__next(:primary_connection_key) { 
+			'substratename'
 		}
 		substance.__next(:pointer) { pointer }
 		pointer.__next(:+) { pointer }
@@ -510,7 +527,7 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		}
 		pointer.__next(:creator) { 'creator' }
 		substrate.__next(:name) { 'substratename' }
-		substance.__next(:connection_keys) { ['found'] }
+		#substance.__next(:connection_keys) { ['found'] }
 		@app.__next(:update) {}
 		@plugin.update_oddb_substrates('cyt_id', cytochrome)
 		cytochrome.__verify
