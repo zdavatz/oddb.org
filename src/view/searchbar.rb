@@ -21,8 +21,12 @@ module ODDB
 					#'tabIndex'=>	"1",
 				})
 				submit = @lookandfeel.event_url(@container.event, {@name=>''})
-				script = "if (#{@name}.value!='#{val}')"
-				script << "document.location.href='#{submit}' + escape(#{@name}.value.replace(/\\//, '%2F')); return false"
+				script = "if(#{@name}.value!='#{val}'){"
+				script << "var href = '#{submit}'"
+				script << "+escape(#{@name}.value.replace(/\\//, '%2F'));"
+				script << "if(this.exact_match)"
+				script << "href += '/exact_match/' + this.exact_match.value;"
+				script << "document.location.href=href; } return false"
 				self.onsubmit = script
 			end
 		end

@@ -37,7 +37,6 @@ module ODDB
 		def active_agent(substance)
 			active_agent = @active_agents.each { |active|
 				if(active.same_as?(substance))
-				#if(active.substance.same_as?(substance))
 					return active
 				end
 			}

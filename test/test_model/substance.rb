@@ -131,6 +131,7 @@ class TestSubstance < Test::Unit::TestCase
 		pointer = Mock.new('pointer')
 		other.__next(:sequences) { [ sequence ] }
 		sequence.__next(:active_agent) { aagent }
+		aagent.__next(:sequence) { sequence }
 		aagent.__next(:substance=) { |param| 
 			assert_equal(@substance, param)
 		}

@@ -65,6 +65,10 @@ module ODDB
 					if(val.empty?)
 						input[key] = nil
 					end
+				when :generic_type
+					if(value.is_a? String)
+						hash[key] = value.intern
+					end
 				end
 			}
 			input
