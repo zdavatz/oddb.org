@@ -294,6 +294,7 @@ module ODDB
 			end
 			def zone_navigation
 				[
+					:help_link,
 					:faq_link,
 				]
 			end
