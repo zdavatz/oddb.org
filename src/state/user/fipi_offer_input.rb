@@ -11,7 +11,7 @@ class FiPiOfferInput < State::User::Global
 	class FiPiOffer
 		attr_accessor :fi_update, :pi_update
 		attr_accessor :fi_quantity, :pi_quantity
-		FIPI_ACTIVATION_CHARGE = 1500
+		FIPI_ACTIVATION_CHARGE = 1000
 		FI_CHARGE	= 350
 		FI_UPDATE = 150
 		PI_CHARGE = 120

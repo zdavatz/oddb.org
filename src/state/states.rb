@@ -3,7 +3,7 @@
 
 def require_r(dir, prefix)
 	path = File.expand_path(dir)
-	Dir.entries(path).each { |file|
+	Dir.entries(path).sort.each { |file|
 		if /^[a-z_]+\.rb$/.match(file)
 			#print file
 			#print ":"
