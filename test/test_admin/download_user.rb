@@ -42,7 +42,7 @@ module ODDB
 		end
 		class DownloadUserTest < Test::Unit::TestCase
 			def setup
-				@user = DownloadUser.new
+				@user = DownloadUser.new('email')
 			end
 			def test_create_challenge
 				challenge = @user.create_challenge
