@@ -23,13 +23,16 @@ module AddressMap
 	def map(address)
 		link = HtmlGrid::Link.new(:map, address, @session, self)
 		link.href = [
-			'http://map.search.ch',
-			[address.plz, address.city].join('-'),
-			[address.street, address.number].join('-'),
+			'http://map.search.ch', 
+			mapsearch_format(address.plz, address.city),
+			mapsearch_format(address.street, address.number),
 		].join('/')
 		link.css_class = 'list'
 		link
 	end
+	def mapsearch_format(*args)
+		args.compact.join('-').gsub(/\s+/, '-')
+	end		
 end
 class Addresses < HtmlGrid::List
 	include AddressMap

@@ -96,5 +96,40 @@ module ODDB
 			assert_equal('Muhlernstr.', @address.street)
 			assert_equal('244A', @address.number)
 		end
+		def test_street__5_lines_hack
+			@address.lines = [
+				'Herrn Dr. med.',
+				'Bernhard Hugentobler',
+				'Arztpraxis',
+				'Muhlernstr. 244A',
+				'3098 Schliern b. Koenitz',
+				'',
+			]
+			assert_equal('Muhlernstr.', @address.street)
+			assert_equal('244A', @address.number)
+		end
+		def test_plz_city
+			@address.lines = [
+				'Herrn Dr. med.',
+				'Bernhard Hugentobler',
+				'Arztpraxis',
+				'Muhlernstr. 244A',
+				'3098 Schliern b. Koenitz',
+			]
+			assert_equal('Schliern b. Koenitz', @address.city)
+			assert_equal('3098', @address.plz)
+		end
+		def test_plz_city_lines_hack
+			@address.lines = [
+				'Herrn Dr. med.',
+				'Bernhard Hugentobler',
+				'Arztpraxis',
+				'Muhlernstr. 244A',
+				'3098 Schliern b. Koenitz',
+				'',
+			]
+			assert_equal('Schliern b. Koenitz', @address.city)
+			assert_equal('3098', @address.plz)
+		end
 	end
 end
