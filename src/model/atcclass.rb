@@ -11,7 +11,7 @@ module ODDB
 		include Language
 		include SequenceObserver
 		ODBA_PREFETCH = true
-		ODBA_SERIALIZABLE = [ '@descriptions' ]
+		ODBA_SERIALIZABLE = [ '@descriptions', '@ddds' ]
 		attr_accessor :code
 		attr_reader :guidelines, :ddd_guidelines
 		# use this instead of add_sequence for temporary atc_classes
