@@ -711,6 +711,7 @@ zdavatz ! ywesee.com
 				:th_name_descr						=>	'Beschreibung',
 				:th_note									=>	'Note',
 				:th_oid										=>	'OID',
+				:th_patinfo							  =>	'Patinfo',
 				:th_patinfo_short				  =>	'&nbsp;',
 				:th_patinfo_stats					=>	'Patinfo Statistik',
 				:th_patinfo_title				  =>	'Patinfo-Titel',

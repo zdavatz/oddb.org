@@ -79,7 +79,7 @@ class RegistrationInnerComposite < HtmlGrid::Composite
 		[0,3]		=>	:indication,
 		[2,3]		=>	:market_date,
 		[2,4]		=>	:inactive_date,
-		[2,5]		=>  'fachinfo',
+		[2,5]		=>  :fachinfo_label,
 	}
 	CSS_MAP = {
 		[0,0,4,4]	=>	'list',
@@ -88,6 +88,7 @@ class RegistrationInnerComposite < HtmlGrid::Composite
 	LABELS = true
 	SYMBOL_MAP = {
 		:expiration_date		=>	HtmlGrid::DateValue,
+		:fachinfo_label			=>	HtmlGrid::LabelText,
 		:inactive_date			=>	HtmlGrid::DateValue,
 		:market_date		  	=>	HtmlGrid::DateValue,
 		:registration_date	=>	HtmlGrid::DateValue,
