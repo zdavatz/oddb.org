@@ -63,6 +63,7 @@ class HospitalList < HtmlGrid::List
 	end
 	def name(model)
 		link = View::PointerLink.new(:name, model, @session, self)
+		link.set_attribute('title', "EAN: #{model.ean13}")
 		link
 	end
 end
