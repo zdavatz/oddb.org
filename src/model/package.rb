@@ -108,6 +108,8 @@ Grammar OddbSize
 		end
 		def delete_sl_entry
 			@sl_entry = nil
+			self.odba_store
+			nil
 		end
 		def dose
 			@sequence.dose

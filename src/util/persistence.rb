@@ -202,7 +202,8 @@ Grammar OddbSize
 					hook = pointer.resolve(app)
 					if(hook.respond_to?(command.first))
 						hook.send(*(command.compact))
-						hook.odba_isolated_store
+						### do we really need this? should be done by ODBA ###
+						#hook.odba_isolated_store
 					end
 			rescue InvalidPathError, UninitializedPathError => e
 				puts "Could not delete: #{to_s}, reason: #{e.message}"
