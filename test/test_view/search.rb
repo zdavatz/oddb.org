@@ -38,7 +38,7 @@ module ODDB
 				'<INPUT name="search_query" class="search-center" onFocus="if (value==\'HIER Medikament / Wirkstoff eingeben\') { value=\'\' }" type="text" onBlur="if (value==\'\') { value=\'HIER Medikament / Wirkstoff eingeben\' }" value="HIER Medikament / Wirkstoff eingeben" tabIndex="1">',
 			]
 			expected.each { |line|
-				assert(result.index(line), "expected #{line} in\n#{result}")
+				assert(result.index(line), "expected #{line} in\n#{CGI.pretty(result)}")
 			}
 		end
 		def test_http_headers
