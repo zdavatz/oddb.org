@@ -23,23 +23,26 @@ end
 class List < HtmlGrid::Component
 	def to_html(context)
 		context.ul {
-			@model.collect { |item| 
+			@model.collect { |substance, items| 
 				text = HtmlGrid::RichText.new(@model, @session, self)
 				pub_med_search_link = HtmlGrid::Link.new(:pub_med_search_link, @model, @session, self)
-				#substance = @session.substance(item.substance_name)
-				substance = item.substance
 				pub_med_search_link.href = \
 					@lookandfeel.lookup(:pub_med_search_href, substance.en)
+				cyp_ids = items.collect { |item| 
+					item.parent(@session).cyp_id
+				}
 				pub_med_search_link.value = substance.name \
-					+ " (#{item.parent(@session).cyp_id})"
+					+ " (#{cyp_ids.sort.join(',')})"
 				pub_med_search_link.target = "_blank"
 				text << pub_med_search_link
-				item.links.each { |link|
-					alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
-					alink.href = link.href
-					alink.value = link.text
-					text << [ "<br>", link.info, "<br>" ].join
-					text << alink
+				items.each { |item|
+					item.links.each { |link|
+						alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
+						alink.href = link.href
+						alink.value = link.text
+						text << [ "<br>", link.info, "<br>" ].join
+						text << alink
+					}
 				}
 				context.li { text.to_html(context) } 
 			}.join
@@ -71,25 +74,22 @@ class BasketSubstrates < HtmlGrid::List
 	SUBHEADER = View::Interactions::BasketHeader
 	def cyp450s(model, session)
 		unless(model.cyp450s.empty?)
-			nbsp_and_nbsp = @lookandfeel.lookup(:nbsp_and_nbsp)
-			cyp450s = model.cyp450s.join(nbsp_and_nbsp)
+			str = model.cyp450s.sort.join(', ')
+			if(idx = str.rindex(','))
+				str[idx,2] = @lookandfeel.lookup(:nbsp_and_nbsp)
+			end
+			str
 		end
 	end
 	def inhibitors(model, session)
-		#puts 'inhibitors...'
-		#puts model.inhibitors.size
-		if((inhibitors = model.inhibitors) && !inhibitors.empty?)
-			#puts 'yes'
-			#puts inhibitors.class
-			View::Interactions::List.new(inhibitors.values, session, self)
-		end
+		interaction_list(model.inhibitors)
 	end
 	def inducers(model, session)
-		#puts 'inducers ...'
-		#puts model.inducers.size
-		if((inducers = model.inducers) && !inducers.empty?)
-			#puts 'yes'
-			View::Interactions::List.new(inducers.values, session, self)
+		interaction_list(model.inducers)
+	end
+	def interaction_list(model)
+		if(model && !model.empty?)
+			View::Interactions::List.new(model, @session, self)
 		end
 	end
 end

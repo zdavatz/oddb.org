@@ -14,7 +14,7 @@ module ODDB
 		include SequenceObserver
 		ODBA_PREFETCH = true
 		ODBA_SERIALIZABLE = [ '@descriptions', '@connection_keys', '@synonyms' ]
-		attr_reader :sequences, :substrate_connections
+		attr_reader :sequences, :substrate_connections, :connection_keys
 		attr_accessor :effective_form
 		attr_writer :synonyms
 		include Comparable
@@ -45,13 +45,6 @@ module ODDB
 		end
 		def atc_classes
 			@sequences.collect { |seq| seq.atc_class }.uniq
-		end
-		def connection_keys
-			keys = (@connection_keys || []) + self.descriptions.values \
-				+ self.synonyms  + [self.name]
-			@connection_keys = keys.collect { |key|
-				format_connection_key(key)
-			}.delete_if { |key| key.empty? }.uniq.sort
 		end
 		def connection_keys=(keys)
 			@connection_keys += keys
@@ -157,11 +150,11 @@ module ODDB
 		def name
 			# First call to descriptions should go to lazy-initialisator
 			if(@name)
-				@descriptions['lt'] = @name if(self.descriptions['lt'].empty?)
+				#@descriptions['lt'] = @name if(self.descriptions['lt'].empty?)
 				@name
 			elsif(self.descriptions && !@descriptions['lt'].empty?) 
 				@descriptions['lt']
-			elsif(self.descriptions)
+			else
 				@descriptions['en']
 			end
 		end
@@ -219,6 +212,17 @@ module ODDB
 			other_keys = other.connection_keys + other._search_keys
 			own_keys = self.connection_keys + self.search_keys
 			!(other_keys & own_keys).empty? # intersection
+		end
+		def update_connection_keys
+			keys = (@connection_keys || []) + self.descriptions.values \
+				+ self.synonyms  + [self.name]
+			@connection_keys = keys.collect { |key|
+					format_connection_key(key)
+			}.delete_if { |key| key.empty? }.uniq.sort
+		end
+		def update_values(values)
+			super
+			update_connection_keys
 		end
 		def <=>(other)
 			to_s.downcase <=> other.to_s.downcase

@@ -19,23 +19,16 @@ class Basket < State::Interactions::Global
 			@inducers = {}
 			@inhibitors = {}
 		end
-		def add_inhibitor(inhibitor)
-			unless(@inhibitors.include?(inhibitor.substance_name))
-				@inhibitors.store(inhibitor.substance_name, inhibitor)
-			end
-		end 
-		def add_inducer(inducer)
-			unless(@inducers.include?(inducer.substance_name))
-				@inducers.store(inducer.substance_name, inducer)
-			end
-		end
 		def add_interaction(interaction)
 			case interaction
 			when ODDB::CyP450InhibitorConnection
-				add_inhibitor(interaction)
+				store_interaction(@inhibitors, interaction)
 			when ODDB::CyP450InducerConnection
-				add_inducer(interaction)
+				store_interaction(@inducers, interaction)
 			end
+		end
+		def store_interaction(storage, interaction)
+			(storage[interaction.substance] ||= []).push(interaction)
 		end
 	end
 	def init
