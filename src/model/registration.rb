@@ -12,7 +12,7 @@ module ODDB
 		attr_writer :generic_type
 		attr_accessor :registration_date, :export_flag, :company
 		attr_accessor :revision_date, :indication, :expiration_date, :inactive_date, :market_date
-		attr_accessor :fachinfo, :source
+		attr_accessor :fachinfo, :source, :pdf_fachinfos
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
 		def initialize(iksnr)
@@ -132,7 +132,6 @@ module ODDB
 	end
 	class Registration < RegistrationCommon
 		ODBA_PREFETCH = true
-		attr_accessor :pdf_fachinfos
 		def company=(company)
 			@company = replace_observer(@company, company)
 		end
