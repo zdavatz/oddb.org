@@ -23,6 +23,7 @@ module ODDB
 			super()
 			@sequences = []
 			@substrate_connections = {}
+			@connection_keys = []
 		end
 		def adjust_types(values, app=nil)
 			values.each { |key, value|
@@ -43,13 +44,10 @@ module ODDB
 			@sequences.collect { |seq| seq.atc_class }.uniq
 		end
 		def connection_keys
-			@connection_keys or if(!self.descriptions['en'].empty?)
-				self.connection_keys = [@descriptions['en']]
-			else
-				self.connection_keys = [@name]
-			end
+			@connection_keys or self.connection_keys = []
 		end
 		def connection_keys=(keys)
+			keys += self.descriptions.values + self.synonyms + [self.name]
 			@connection_keys = keys.collect { |key|
 				format_connection_key(key)
 			}.delete_if { |key| key.empty? }.uniq.sort
@@ -70,13 +68,9 @@ module ODDB
 		def format_connection_key(key)
 			key.to_s.downcase.gsub(/[^a-z0-9]/, '')
 		end
-		def has_connection_key?(test_key=nil)
-			if(test_key)
-				key = format_connection_key(test_key)
-				!key.empty? && self.connection_keys.include?(key)
-			else
-				@connection_keys && !@connection_keys.empty?
-			end
+		def has_connection_key?(test_key)
+			key = format_connection_key(test_key)
+			!key.empty? && self.connection_keys.include?(key)
 		end
 		def has_effective_form?
 			!@effective_form.nil?
@@ -97,6 +91,15 @@ module ODDB
 				connections
 			else
 				{}	
+			end
+		end
+		def interactions_with(other)
+			if(@substrate_connections)
+				@substrate_connections.values.collect { |conn|
+					conn.interactions_with(other)
+				}.flatten
+			else
+				[]
 			end
 		end
 		def is_effective_form?
@@ -132,7 +135,6 @@ module ODDB
 			self.descriptions.odba_isolated_store
 			# long format, because each of these methods are overridden
 			self.connection_keys = self.connection_keys + other.connection_keys
-			@connection_keys.odba_isolated_store
 			self
 		end
 		def name
@@ -191,7 +193,7 @@ module ODDB
 			name
 		end
 		def unique_compare?(other)
-			other_keys = other.connection_keys + other.search_keys
+			other_keys = other.connection_keys + other._search_keys
 			own_keys = self.connection_keys + self.search_keys
 			!(other_keys & own_keys).empty? # intersection
 		end

@@ -38,7 +38,7 @@ class RecentRegsForm < View::Drugs::ResultForm
 	}
 	ROOT_LISTCLASS = View::Drugs::RootRecentRegsList
 end
-class RecentRegs < View::PublicTemplate
+class RecentRegs < View::ResultTemplate
 	CONTENT = View::Drugs::RecentRegsForm
 end
 		end

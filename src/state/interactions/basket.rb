@@ -13,20 +13,28 @@ class Basket < State::Interactions::Global
 	DIRECT_EVENT = :interaction_basket
 	class Check
 		attr_reader :substance, :cyp450s, :inducers, :inhibitors
-		def initialize(substance, cyp450s)
+		def initialize(substance)#, cyp450s)
 			@substance = substance
-			@cyp450s = cyp450s
+			@cyp450s = substance.substrate_connections.keys
 			@inducers = {}
 			@inhibitors = {}
 		end
 		def add_inhibitor(inhibitor)
-			unless(@inhibitors.keys.include?(inhibitor.substance_name))
+			unless(@inhibitors.include?(inhibitor.substance_name))
 				@inhibitors.store(inhibitor.substance_name, inhibitor)
 			end
 		end 
 		def add_inducer(inducer)
-			unless(@inducers.keys.include?(inducer.substance_name))
+			unless(@inducers.include?(inducer.substance_name))
 				@inducers.store(inducer.substance_name, inducer)
+			end
+		end
+		def add_interaction(interaction)
+			case interaction
+			when ODDB::CyP450InhibitorConnection
+				add_inhibitor(interaction)
+			when ODDB::CyP450InducerConnection
+				add_inducer(interaction)
 			end
 		end
 	end
@@ -39,6 +47,18 @@ class Basket < State::Interactions::Global
 		calculate_interactions
 	end
 	def calculate_interactions
+# work in progress
+		subs = @session.interaction_basket
+		@model = subs.collect { |sub|
+			check = Check.new(sub)
+			(subs - [sub]).each { |other|
+				sub.interactions_with(other).each { |interaction|
+					check.add_interaction(interaction)
+				}
+			}
+			check
+		}
+=begin
 		@session.interaction_basket.each { |substance|
 			connections = substance.interaction_connections(@session.interaction_basket)
 			cyp450s = []
@@ -47,19 +67,15 @@ class Basket < State::Interactions::Global
 				cyp450s.push(cyp450_id)
 				interactions.concat(connection)
 			}
-			interaction_check = Check.new(substance, cyp450s)
+			check = Check.new(substance)#, cyp450s)
 			interactions.each { |interaction|
 				unless(substance.same_as?(interaction.substance_name))
-					case interaction
-					when ODDB::CyP450InhibitorConnection
-						interaction_check.add_inhibitor(interaction)
-					when ODDB::CyP450InducerConnection
-						interaction_check.add_inducer(interaction)
-					end
+					check.add_interaction(interaction)
 				end
 			}
-			@model.push(interaction_check)
+			@model.push(check)
 		}
+=end
 	end
 end
 class EmptyBasket < State::Interactions::Basket

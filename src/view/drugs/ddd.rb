@@ -22,9 +22,6 @@ class DDDList < HtmlGrid::List
 	DEFAULT_HEAD_CLASS = nil
 	OMIT_HEAD_TAG = false
 	SORT_HEADER = false
-	def init
-		super
-	end
 end
 class DDDComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'

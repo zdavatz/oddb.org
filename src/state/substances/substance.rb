@@ -87,7 +87,7 @@ class Substance < State::Substances::Global
 							:synonym_list, syn))
 				end
 			}
-			input.store(:synonyms, syn_list)
+			input.store(:synonyms, syns)
 		end
 		unless error?
 			ODBA.batch {
