@@ -357,7 +357,7 @@ zdavatz ! ywesee.com
 				:interaction_basket				=>	'Interaktionskorb',
 				:interaction_basket_count0	=>	'Im Interktionskorb befinden sich&nbsp;',
 				:interaction_basket_count1	=>	'&nbsp;Substanzen',
-				:interaction_basket_explain	=>	'another explanation',
+				:interaction_basket_explain	=>	'Below Links goto "The free archive of life sciences journals": ',
 				:interaction_search_explain	=>	'Suchen Sie nach Medikamentennamen oder Wirkstoff.',
 				:introduction_date				=>	'Datum der Aufnahme in SL',
 				:legal_note								=>	'Rechtlicher Hinweis',

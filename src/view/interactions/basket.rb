@@ -25,7 +25,6 @@ class List < HtmlGrid::Component
 		context.ul {
 			@model.collect { |item| 
 				text = HtmlGrid::RichText.new(@model, @session, self)
-				pub_med_search_link = HtmlGrid::Link.new(:pub_med_search_link, @model, @session, self)
 				pub_med_search_link.href = @lookandfeel.lookup(:pub_med_search_href, item.substance_name)
 				pub_med_search_link.value = item.substance_name
 				pub_med_search_link.target = "_blank"
@@ -102,6 +101,7 @@ class BasketForm < View::Form
 	COMPONENTS = {
 		[0,0]		=>	:interaction_basket_count,
 		[0,1]		=>	'interaction_basket_explain',
+		[0,1,1]	=>  :pub_med_search_link,
 		[1,1]		=>	:search_query,
 		[1,1,1]	=>	:submit,
 		[0,2]		=>	View::Interactions::BasketSubstrates,
@@ -115,13 +115,20 @@ class BasketForm < View::Form
 	}
 	CSS_MAP = {
 		[0,0] =>	'result-found',
-		[0,1] =>	'result-price-compare',
+		[0,1] =>	'list',
 		[1,1]	=>	'search',	
 		[0,3]	=>	'button left padding',
 	}
 	def interaction_basket_count(model, session)
 		count = session.interaction_basket_count
 		@lookandfeel.lookup(:interaction_basket_count, count)
+	end
+	def pub_med_search_link(model, session)
+		link = HtmlGrid::Link.new(:pub_med, @model, @session, self)
+		link.css_class = 'list'
+		link.target = '_blank'
+		link.href = 'http://www.pubmedcentral.nih.gov/'
+		link
 	end
 	def clear_interaction_basket(model, session)
 		get_event_button(:clear_interaction_basket)
