@@ -457,7 +457,7 @@ class OddbPrevalence
 			YAML.load_documents(file) { |index_definition|
 				ODBA.cache_server.create_index(index_definition, ODDB)
 				puts "name: #{index_definition.index_name}"
-					ODBA.cache_server.fill_index(index_definition.index_name, eval(index_definition.init_source)
+					ODBA.cache_server.fill_index(index_definition.index_name, instance_eval(index_definition.init_source))
 			}
 		rescue
 			puts "INDEX CREATION ERROR"
