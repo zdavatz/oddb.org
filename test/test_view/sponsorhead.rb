@@ -26,7 +26,7 @@ module ODDB
 					@attributes
 				end
 				def enabled?(key, default=nil)
-					@enabled
+					@enabled && (key != :google_adsense)
 				end
 				def event_url(url)
 					puts "url"
