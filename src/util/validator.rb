@@ -10,7 +10,6 @@ module ODDB
 		alias :set_pass_1 :pass
 		alias :set_pass_2 :pass
 		alias :unique_email :email
-		alias :regulatory_email :email
 		BOOLEAN = [
 			:cl_status, :experience, :recommend,
 			:impression, :helps
@@ -181,6 +180,7 @@ module ODDB
 			:powerlink,
 			:range,
 			:register_update,
+			:regulatory_email,
 			:size,
 			:sortvalue,
 			:subscribe,

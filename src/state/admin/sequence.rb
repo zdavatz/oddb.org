@@ -156,8 +156,7 @@ class Sequence < State::Admin::Global
 			end
 		end
 		if((company = @model.company) \
-			&& (mail = self.user_input(:regulatory_email)) && !mail.empty?)
-			puts "mail: #{mail.inspect}"
+			&& (mail = user_input(:regulatory_email)) && !mail.empty?)
 			@session.app.update(company.pointer, mail)
 		end
 		ODBA.transaction {

@@ -188,7 +188,7 @@ class SequenceForm < Form
 					components.store([5,3], :atc_request_label)
 					components.store([3,3], :no_company)
 				else
-					if(@model.company.regulatory_email.nil?)
+					if(@model.company.regulatory_email.to_s.empty?)
 						components.store([2,3], :regulatory_email)
 					else
 						components.store([2,3], :atc_request_label)
