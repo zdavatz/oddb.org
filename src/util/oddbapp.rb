@@ -277,6 +277,7 @@ class OddbPrevalence
 				}
 				diff = subs.diff(values, self)
 				subs.update_values(diff)
+				@substance_name_index ||= Datastructure::CharTree.new
 				begin
 					store_in_index(@substance_index, key, subs)
 					store_in_index(@substance_name_index, key, *subs.sequences)
