@@ -10,8 +10,12 @@ require	'fachinfo_pdf'
 require "yaml"
 require 'rpdf2txt/parser'
 
-
 module ODDB
+	class FachinfoDocument
+		def odba_id
+			1
+		end
+	end
 	module FiParse
 		class TestFachinfoPDFWriter < Test::Unit::TestCase
 			def setup
@@ -1162,6 +1166,22 @@ Allergische
 				result = chapter.sections[2].subheading
 				assert_equal("Kinder von 6-12 Jahren:", result)
 				assert_equal("Saisonale Rhinitis, allergische Konjunktivitis: w\344hrend maximal 4 Wochen 1-mal t\344glich 1 Filmtablette oder 2-mal t\344glich \275 Filmtablette.", chapter.sections[2].paragraphs.first.text)
+			end
+		end
+		class TestFachinfoPDFWriterVelcade < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_velcade.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_usage_velcade
+				chapter = @fachinfo.date
+				assert_equal(1, chapter.sections.size)
+				section = chapter.sections.first
+				assert_equal(1, section.paragraphs.size)
+				assert_equal("Juni 2004.", section.to_s)
 			end
 		end
 	end
