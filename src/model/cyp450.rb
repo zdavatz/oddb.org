@@ -17,12 +17,12 @@ module ODDB
 		def interactions_with(substance)
 			connections = []
 			@inhibitors.each { |connection_key, connection| 
-				if((substance.connection_key == connection_key) || substance.same_as?(connection_key))
-					connections.push(connection)
+				if((substance.connection_key.include?(connection_key)) || substance.same_as?(connection_key))
+						connections.push(connection)
 				end
 			}
 			@inducers.each { |connection_key, connection| 
-				if((substance.connection_key == connection_key) || substance.same_as?(connection_key))
+				if((substance.connection_key.include?(connection_key)) || substance.same_as?(connection_key))
 					connections.push(connection)
 				end
 			}

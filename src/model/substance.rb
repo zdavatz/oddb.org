@@ -26,7 +26,7 @@ module ODDB
 				if(key.to_s.size == 2)
 					values[key] = value.to_s.gsub(/\b[A-Z].+?\b/) { |match| match.capitalize }
 				elsif(key == :connection_key)
-					values[key] = value.to_s.downcase
+					values[key] = [ value.to_s.downcase ]
 				end
 			}
 			values
@@ -36,11 +36,11 @@ module ODDB
 		end
 		def connection_key
 			if(@connection_key)
-				@connection_key
+				@connection_key.to_a
 			elsif(!@descriptions['en'].empty?)
-				@descriptions['en']
+				@descriptions['en'].to_a
 			else
-				@name
+				@name.to_a
 			end
 		end
 		def	create_cyp450substrate(cyp_id)
@@ -100,8 +100,11 @@ module ODDB
 					@descriptions.update_values( { key => value } )
 				end
 			}
-			unless(@connection_key)
-				@connection_key = other.connection_key
+			if(@connection_key)
+				@connection_key.to_a.push(other.connection_key).flatten!
+			else
+				@connection_key = []
+				@connection_key.push(other.connection_key).flatten!
 			end
 		end
 		def name
@@ -123,8 +126,7 @@ module ODDB
 			teststr = substance.to_s.downcase
 			descriptions.any? { |lang, desc|
 				desc.is_a?(String) && desc.downcase == teststr
-			} || (connection_key.is_a?(String) \
-				&& teststr == connection_key.downcase)
+			} || (connection_key.include?(teststr))
 		end
 		def similar_name?(astring)
 			name.length/3.0 >= name.downcase.ld(astring.downcase)

@@ -55,7 +55,7 @@ module ODDB
 				when 'inducers'
 					new_class = ODDB::Interaction::InducerConnection
 					end
-				obj = new_class.new(base_name)
+				obj = new_class.new(base_name, 'en')
 				obj.category = cat unless cat.nil?
 				@cytochromes.each { |key, value|
 					column = key.split("/").first
@@ -275,7 +275,7 @@ module ODDB
 						when /inducers/
 							new_class = ODDB::Interaction::InducerConnection
 						end
-						@connection = new_class.new(name)
+						@connection = new_class.new(name, 'en')
 						@cytochrome.add_connection(@connection)
 					end
 					if(@italic_font=="start" && data!="PubMed")
