@@ -70,6 +70,7 @@ class Registration < State::Drugs::Global
 		if(fi_file = @session.user_input(:fachinfo_upload)) 
 			four_bytes = fi_file.read(4)
 			fi_file.rewind
+			mail_link = @session.lookandfeel.event_url(:resolve, {'pointer' => model.pointer})
 			if(four_bytes == "%PDF")
 				filename = "#{@model.iksnr}_#{language}.pdf"
 				FileUtils.mkdir_p(self::class::FI_FILE_DIR)
@@ -83,12 +84,12 @@ class Registration < State::Drugs::Global
 				else
 					pdf_fachinfos = {language => filename}
 				end
-				hash.store(:pdf_fachinfos, pdf_fachinfos)
+				#hash.store(:pdf_fachinfos, pdf_fachinfos)
 				new_state = State::Drugs::WaitForFachinfo.new(@session, @model)
 				new_state.previous = self
 				@session.app.async {
 					pdf_document =  parse_fachinfo_pdf(fi_file)
-					new_state.signal_done(pdf_document, path, @model.iksnr, "application/pdf", language)
+					new_state.signal_done(pdf_document, path, @model, "application/pdf", language, mail_link)
 				}
 			else
 				filename = "#{@model.iksnr}_#{language}.doc"
@@ -102,7 +103,7 @@ class Registration < State::Drugs::Global
 				new_state.previous = self
 				@session.app.async {
 					word_document = parse_fachinfo_doc(fi_file)
-					new_state.signal_done(word_document, path, @model.iksnr, "application/msword", language)
+					new_state.signal_done(word_document, path, @model, "application/msword", language, mail_link)
 				}
 			end
 		end

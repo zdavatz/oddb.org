@@ -44,16 +44,23 @@ class WaitForFachinfo < State::Drugs::Global
 			@previous	
 		end
 	end
-	def signal_done(document, path, iksnr, mimetype, language)
+	def signal_done(document, path, model, mimetype, language, link)
 		if(document)
 			@language = language
 			@document = document
 		else
+			hash = {}
+			last_model = @previous.model
+			filename = "#{last_model.iksnr}_#{language}.pdf"
+			pdf_fachinfos = {language => filename}
+			hash.store(:pdf_fachinfos, pdf_fachinfos)
+			@session.app.update(last_model.pointer, hash)
 			log = Log.new(Time.now)
+			log.report = link
 			log.files = { 
 				path => mimetype 
 			}
-			log.notify("Fachinfo Parse Error Reg: #{iksnr}, Language; #{language}")
+			log.notify("Fachinfo Parse Error Reg: #{model.iksnr}, Language; #{language}")
 		end
 		@wait = false
 	end

@@ -57,7 +57,7 @@ end
 class FachinfoLanguageSelect < HtmlGrid::AbstractSelect
 	attr_accessor :value
 	def selection(context)
-		values = @lookandfeel.languages
+		values = ["de","fr"]
 		values.collect { |value|
 			attributes = { "value"	=>	value.to_s }
 			attributes.store("selected", true) if(@value == value)
