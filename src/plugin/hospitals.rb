@@ -21,11 +21,10 @@ module ODDB
 			super
 			@meddata_server = DRbObject.new(nil, MEDDATA_URI)
 		end
-		def update(current='7601000', last = '7601004')
+		def update(current='7601001', last = '7601004')
 			factory =  MedData::EanFactory.new(current)
 			while(current < last)
 				current = factory.next
-				puts "current EAN: #{current}"
 				criteria = { 
 					:name				=> '',
 					:country		=> 'CH',
@@ -36,12 +35,14 @@ module ODDB
 					:ean				=> current,
 				}
 				begin
+				puts "current EAN: #{current}"
 					@meddata_server.search(criteria) { |result|
 						values = hospital_details(result)
 						update_hospital(values)
 					}
 				rescue MedData::OverflowError
 					current = factory.clarify
+					retry
 				end
 			end
 		end
@@ -56,6 +57,7 @@ module ODDB
 				:phone					=>	[1,6],
 				:fax						=>	[2,6],
 				:canton					=>	[3,5],
+				:narcotics			=>	[1,10],
 			}
 			data = @meddata_server.detail(result.session, result.ctl, template)
 			#hash
