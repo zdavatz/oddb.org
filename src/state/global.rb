@@ -17,11 +17,12 @@ require	'state/drugs/limitationtext'
 require 'state/admin/orphaned_patinfos'
 require 'state/admin/orphaned_patinfo'
 require 'state/admin/patinfo_deprived_sequences'
+require 'state/drugs/patinfo'
 require 'state/drugs/recentregs'
 require 'state/drugs/result'
+require 'state/drugs/sequences'
 require 'state/doctors/init'
 require 'state/doctors/doctorlist'
-require 'state/drugs/patinfo'
 require 'state/exception'
 require 'state/interactions/basket'
 require 'state/interactions/init'
@@ -70,6 +71,7 @@ module ODDB
 				:passthru							=>	State::User::PassThru,
 				:paypal_thanks				=>	State::User::PayPalThanks,
 				:recent_registrations =>	State::Drugs::RecentRegs,
+				:sequences						=>	State::Drugs::Sequences,
 			}	
 			HOME_STATE = State::Drugs::Init
 			RESOLVE_STATES = {

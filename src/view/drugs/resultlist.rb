@@ -13,7 +13,6 @@ require 'view/publictemplate'
 require 'view/dataformat'
 require 'view/resultcolors'
 require 'view/descriptionvalue'
-require 'view/template'
 require 'sbsm/user'
 
 module ODDB

@@ -651,6 +651,11 @@ class OddbPrevalence
 	def sequences_by_name(name)
 		ODBA.cache_server.retrieve_from_index("sequence_index_atc", name)
 	end
+	def sequences
+		@registrations.values.inject([]) { |inj, reg|
+			inj + reg.sequences.values
+		}
+	end
 	def soundex_substances(name)
 		parts = ODDB::Text::Soundex.prepare(name).split(/\s+/)
 		soundex = ODDB::Text::Soundex.soundex(parts)
