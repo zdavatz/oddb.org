@@ -367,6 +367,7 @@ zdavatz ! ywesee.com
 				:generic_definition_title	=>	'Wann ist ein Medikament ein Generikum? - Swissmedic Journal 11/2003, Seite 990',
 				:generic_group						=>	'Generische Gruppe',
 				:generic_type							=>	'Original/Generikum/Komplement&auml;rprodukt',
+				:google_search						=>	'G',
 				:help_link								=>	"Hilfe",
 				:helps										=>	'Wirkung',
 				:home											=>	'Home',

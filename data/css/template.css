@@ -610,6 +610,14 @@ a.feedback, a.feedback:link, a.feedback:visited, a.square {
 	text-decoration : none;
 	padding : 2px 2px 2px 3px;
 }
+a.google_search, a.google_search:link, a.google_search:visited, a.square {
+	color: white;
+	background-color : #184fca;
+	font-weight : bold;
+	text-align : center;
+	text-decoration : none;
+	padding : 2px 5px 2px 5px;
+}
 td.square, td.square-original, td.square-generic,
 td.square-complementary, td.square-unknown {
 	padding : 2px;
