@@ -6,7 +6,7 @@ module ODDB
 		module User
 module Export
 	EXPORT_DIR = File.expand_path(
-		'../../doc/resources/downloads',
+		'../../../doc/resources/downloads',
 		File.dirname(__FILE__))
 	EXPORT_FILE = ''
 	def display?(path)
