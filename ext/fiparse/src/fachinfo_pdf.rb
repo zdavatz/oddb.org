@@ -4,14 +4,12 @@
 require	'fachinfo_writer'
 require 'fachinfo_html'
 require 'rpdf2txt/parser'
+
 module ODDB
 	module FiParse
 		class FachinfoPDFWriter < Writer
 			include FachinfoWriterMethods
 			include Rpdf2txt::DefaultHandler
-			#	def new_font(font)
-			#@next_font = font
-				#	end
 			def new_font(font)
 				if(@font)
 					self.add_text
@@ -43,8 +41,8 @@ module ODDB
 					str_check = self.src.strip
 					font_name = @font.basefont_name
 					courier = !/courier/i.match(font_name).nil?
-					symbol = !/Symbol/i.match(@font.basefont_name).nil?
-					skip_paragraph = /Copyright/i.match(self.src)
+					symbol = !/symbol/i.match(font_name).nil?
+					skip_paragraph = /documed|copyright/i.match(self.src)
 					if(!@chapter.nil? && !str_check.empty? && !skip_paragraph)
 						str = self.src
 						@wrote_section_heading = false

@@ -42,9 +42,6 @@ module ODDB
 		end
 		def parse_fachinfo_pdf(src)
 			writer = FachinfoPDFWriter.new
-		end
-		def parse_fachinfo_pdf(src)
-			writer = FachinfoPDFWriter.new
 			parser = Rpdf2txt::Parser.new(src)
 			parser.extract_text(writer)
 			writer.to_fachinfo
@@ -71,12 +68,3 @@ module ODDB
 		module_function :parse_patinfo_html
 	end
 end
-
-#trap("HUP") { puts "caught HUP signal, shutting down\n"; exit }
-#trap("TERM") { puts "caught TERM signal, shutting down\n"; exit }
-
-DRb.start_service(ODDB::FIPARSE_URI, ODDB::FiParse)
-
-$0 = "Oddb (FiParse)"
-
-DRb.thread.join
