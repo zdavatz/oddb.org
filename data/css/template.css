@@ -935,16 +935,25 @@ td.error {
 
 /* standard-list-classes */
 a.list {
-	color : $home_link_color;
+	color: $home_link_hover_color;
 	text-decoration : none;
+}
+a.list:link, a.list:visited {
+	color : $home_link_color;
 }
 a.list:hover {
 	color : $home_link_hover_color;
 	text-decoration : none;
 }
+a.list:active {
+	color : black;
+}
 a.list-b {
-	color : $home_link_color;
+	color: $home_link_hover_color;
 	font-weight : bold;
+}
+a.list-b:link, a.list-b:visited {
+	color : $home_link_color;
 	text-decoration : none;
 }
 a.list-b:hover {

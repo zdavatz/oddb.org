@@ -2,6 +2,7 @@
 # View::Companies::CenteredSearchForm -- oddb -- 07.09.2004 -- maege@ywesee.com
 
 require 'view/centeredsearchform'
+require	'view/centeredsearchform'
 
 module ODDB
 	module View
@@ -17,12 +18,7 @@ class CenteredSearchForm < View::CenteredSearchForm
 end
 class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENTS = {
-		[0,0]		=>	:language_de,
-		[0,0,1]	=>	:divider,
-		[0,0,2]	=>	:language_fr,
-		[0,0,3]	=>	:divider,
-		[0,0,4]	=>	:language_en,
-		[0,0,5]	=>	:beta,
+		[0,0]		=>	:language_chooser,
 		[0,1]		=>	View::Companies::CenteredSearchForm,
 		[0,2]		=>	'companies_search_explain', 
 		[0,3]		=>	View::CenteredNavigation,
