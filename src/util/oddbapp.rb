@@ -509,7 +509,7 @@ class OddbPrevalence
 		@sponsor ||= ODDB::Sponsor.new
 	end
 	def store_in_index(index, key, *values)
-		key = key.to_s.gsub(/[^a-zA-Z0-9áéíóúàèìòùâêîôûäëïöüÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÄËÏÖÜ+-_="'.*ç%&\/()=!]/, '')
+		key = key.to_s.gsub(/[^\sa-zA-Z0-9áéíóúàèìòùâêîôûäëïöüÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÄËÏÖÜ+-_="'.*ç%&\/()=!]/, '')
 		parts = key.split(/\s+/)
 		parts << key
 		parts.uniq!
