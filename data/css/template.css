@@ -1487,6 +1487,23 @@ div.plus {
 div.minus {
 	background-color: #ffbc6f;
 }
+span.square {
+	text-align: center;
+	vertical-align: middle;
+	padding: 2px 4px;
+}
+span.anthroposophy {
+	color: white;
+	background-color: #ff00ff;
+}
+span.homeopathy {
+	color: white;
+	background-color: #9900ff;
+}
+span.phytotherapy {
+	color: white;
+	background-color: #6600ff;
+}
 table.wait {
 	cell-spacing: 20px;
 }

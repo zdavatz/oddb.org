@@ -9,7 +9,7 @@ module ODDB
 	class RegistrationCommon
 		include Persistence
 		attr_reader :iksnr, :sequences 
-		attr_writer :generic_type
+		attr_writer :generic_type, :complementary_type
 		attr_accessor :registration_date, :export_flag, :company
 		attr_accessor :revision_date, :indication, :expiration_date, :inactive_date, :market_date
 		attr_accessor :fachinfo, :source, :pdf_fachinfos
@@ -43,6 +43,11 @@ module ODDB
 		end
 		def company_name
 			@company.name if @company
+		end
+		def complementary_type
+			@complementary_type || if(@company)
+				@company.complementary_type
+			end
 		end
 		def create_sequence(seqnr)
 			seq = self::class::SEQUENCE.new(seqnr)
@@ -110,7 +115,7 @@ module ODDB
 					hash[key] = value.resolve(app)
 				else
 					case(key)
-					when :generic_type
+					when :generic_type, :complementary_type
 						if(value.is_a? String)
 							hash[key] = value.intern
 						end

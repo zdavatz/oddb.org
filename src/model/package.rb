@@ -103,6 +103,9 @@ Grammar OddbSize
 				false
 			end
 		end
+		def complementary_type
+			registration.complementary_type
+		end
 		def create_sl_entry
 			@sl_entry = SlEntry.new
 		end

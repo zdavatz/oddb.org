@@ -73,21 +73,22 @@ class ResultList < HtmlGrid::List
 	COMPONENTS = {
 		[0,0]	=>  :feedback,
 		[1,0]	=>	:google_search,
-		[2,0,0]	=>	'result_item_start',
-		[2,0,1]	=>	:name_base,
-		[2,0,2]	=>	'result_item_end',
-		[3,0]		=>	:galenic_form,
-		[4,0]		=>	:most_precise_dose,
-		[5,0]		=>	:comparable_size,
-		[6,0]		=>	:price_exfactory,
-		[7,0]		=>	:price_public,
-		[8,0]		=>	:substances,
-		[9,0]		=>	:company_name,
-		[10,0]	=>	:ikscat,
-		[11,0]	=>	:registration_date,
-		[12,0]	=>	:fachinfo,
-		[13,0]	=>  :patinfo,
-		[14,0]	=>	:limitation_text,
+		[2,0]	=>	:complementary_type,
+		[3,0,0]	=>	'result_item_start',
+		[3,0,1]	=>	:name_base,
+		[3,0,2]	=>	'result_item_end',
+		[4,0]		=>	:galenic_form,
+		[5,0]		=>	:most_precise_dose,
+		[6,0]		=>	:comparable_size,
+		[7,0]		=>	:price_exfactory,
+		[8,0]		=>	:price_public,
+		[9,0]		=>	:substances,
+		[10,0]		=>	:company_name,
+		[11,0]	=>	:ikscat,
+		[12,0]	=>	:registration_date,
+		[13,0]	=>	:fachinfo,
+		[14,0]	=>  :patinfo,
+		[15,0]	=>	:limitation_text,
 	}	
 	REVERSE_MAP = {
 		:company_name			=> false,
@@ -102,38 +103,31 @@ class ResultList < HtmlGrid::List
 		:substances				=> true,
 	}
 	CSS_MAP = {
-		[0,0]	=>	'result-b-r',
-		[1,0]	=>	'result-b-r',
-		[2,0]	=>	'result-big',
-		[3,0]	=>	'result',
-		[4,0]	=>	'result-r',
-		[5,0]	=>	'result-r',
-		[6,0]	=>	'result-r',
-		[7,0]	=>	'result-pubprice',
-		[8,0]	=>	'result-i',
-		[9,0]	=>	'result-i',
-		[10,0]	=>	'result-i',
-		[11,0]	=>	'result-i',
-		[12,0]	=>	'result-b-r',
-		[13,0] =>  'result-b-r',
-		[14,0]	=>	'result-b-r',
+		[0,0,3]	=>	'result-b-r',
+		[3,0]		=>	'result-big',
+		[4,0]		=>	'result',
+		[5,0,3]	=>	'result-r',
+		[8,0]		=>	'result-pubprice',
+		[9,0,4]	=>	'result-i',
+		[13,0,3]=>	'result-b-r',
 	}
 	CSS_HEAD_MAP = {
 		[0,0] =>	'th',
 		[1,0] =>	'th',
 		[2,0] =>	'th',
 		[3,0] =>	'th',
-		[4,0]	=>	'th-r',
+		[4,0] =>	'th',
 		[5,0]	=>	'th-r',
 		[6,0]	=>	'th-r',
-		[7,0]	=>	'th-pad-r',
-		[8,0] =>	'th',
+		[7,0]	=>	'th-r',
+		[8,0]	=>	'th-pad-r',
 		[9,0] =>	'th',
-		[10,0]	=>	'th',
+		[10,0] =>	'th',
 		[11,0]	=>	'th',
-		[12,0]=>	'th-r',
+		[12,0]	=>	'th',
 		[13,0]=>	'th-r',
 		[14,0]=>	'th-r',
+		[15,0]=>	'th-r',
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -146,12 +140,6 @@ class ResultList < HtmlGrid::List
 		:registration_date	=>	HtmlGrid::DateValue,
 		:ikskey							=>	View::PointerLink,
 	}	
-	def compose_subheader(atc, offset)
-		subheader = self::class::SUBHEADER.new(atc, @session, self)
-		@grid.add(subheader, *offset)
-		@grid.add_style('result-atc', *offset)
-		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
-	end
 	def company_name(model, session)
 		if(comp = model.company)
 			link = nil
@@ -172,6 +160,15 @@ class ResultList < HtmlGrid::List
 	def comparable_size(model, session)
 		HtmlGrid::Value.new(:size, model, session, self)
 	end
+	def complementary_type(model, session)
+		if(model.generic_type == :complementary \
+			&& (ctype = model.complementary_type))
+			square = HtmlGrid::Span.new(model, @session, self)
+			square.value = @lookandfeel.lookup("c_type_#{ctype}")
+			square.css_class = "square #{ctype}"
+			square
+		end
+	end
 	def compose_list(model=@model, offset=[0,0])
 		model.each { |atc|	
 			compose_subheader(atc, offset)
@@ -180,6 +177,12 @@ class ResultList < HtmlGrid::List
 			super(packages, offset)
 			offset[1] += packages.size
 		}
+	end
+	def compose_subheader(atc, offset)
+		subheader = self::class::SUBHEADER.new(atc, @session, self)
+		@grid.add(subheader, *offset)
+		@grid.add_style('result-atc', *offset)
+		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 	end
 	def fachinfo(model, session)
 		super(model, session, 'important-infos')

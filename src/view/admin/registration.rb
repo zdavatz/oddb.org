@@ -108,8 +108,9 @@ class RegistrationForm < View::Form
 		[2,1]		=>	:revision_date,
 		[0,2]		=>	:generic_type,
 		[2,2]		=>	:expiration_date,
-		[0,3]		=>	:indication,
+		[0,3]		=>	:complementary_type,
 		[2,3]		=>	:market_date,
+		[0,4]		=>	:indication,
 		[2,4]		=>	:inactive_date,
 	}
 	COMPONENT_CSS_MAP = {
@@ -121,9 +122,8 @@ class RegistrationForm < View::Form
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
 	SYMBOL_MAP = {
-		#:company_name				=>	HtmlGrid::InputText,
+		:complementary_type	=>	HtmlGrid::Select,
 		:expiration_date		=>	HtmlGrid::InputDate,
-		#:fachinfo_upload		=>	HtmlGrid::InputFile,
 		:generic_type				=>	HtmlGrid::Select,
 		:inactive_date			=>	HtmlGrid::InputDate,
 		:market_date				=>	HtmlGrid::InputDate,
