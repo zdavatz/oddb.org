@@ -6,6 +6,7 @@ require 'util/persistence'
 require 'model/dose'
 require 'model/slentry'
 require 'model/ean13'
+require 'model/feedback'
 
 module ODDB
 	class PackageCommon
@@ -144,6 +145,9 @@ Grammar OddbSize
 		def most_precise_dose
 			@pretty_dose || dose
 		end
+		def name
+			@sequence.name
+		end
 		def name_base
 			@sequence.name_base
 		end
@@ -226,6 +230,10 @@ Grammar OddbSize
 	end
 	class Package < PackageCommon
 		ODBA_PREFETCH = true
+		def initialize(ikscd)
+			super
+			@feedbacks = {}
+		end
 		def generic_group=(generic_group)
 			unless(@generic_group.nil?)
 				@generic_group.remove_package(self)
@@ -234,6 +242,16 @@ Grammar OddbSize
 				generic_group.add_package(self)
 			end
 			@generic_group = generic_group
+		end
+		def feedback(id)
+			@feedbacks[id.to_i]
+		end
+		def feedbacks
+			@feedbacks ||= {}
+		end
+		def create_feedback
+			feedback = Feedback.new
+			self.feedbacks.store(feedback.oid, feedback) 
 		end
 	end
 	class IncompletePackage < PackageCommon

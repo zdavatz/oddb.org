@@ -75,21 +75,22 @@ class ResultList < HtmlGrid::List
 	include View::ResultColors
 	include View::AdditionalInformation
 	COMPONENTS = {
-		[0,0,0]	=>	'result_item_start',
-		[0,0,1]	=>	:name_base,
-		[0,0,2]	=>	'result_item_end',
-		[1,0]		=>	:galenic_form,
-		[2,0]		=>	:most_precise_dose,
-		[3,0]		=>	:comparable_size,
-		[4,0]		=>	:price_exfactory,
-		[5,0]		=>	:price_public,
-		[6,0]		=>	:substances,
-		[7,0]		=>	:company_name,
-		[8,0]		=>	:ikscat,
-		[9,0]		=>	:registration_date,
-		[10,0]	=>	:fachinfo,
-		[11,0]	=>  :patinfo,
-		[12,0]	=>	:limitation_text,
+		[0,0]	=>  :feedback,
+		[1,0,0]	=>	'result_item_start',
+		[1,0,1]	=>	:name_base,
+		[1,0,2]	=>	'result_item_end',
+		[2,0]		=>	:galenic_form,
+		[3,0]		=>	:most_precise_dose,
+		[4,0]		=>	:comparable_size,
+		[5,0]		=>	:price_exfactory,
+		[6,0]		=>	:price_public,
+		[7,0]		=>	:substances,
+		[8,0]		=>	:company_name,
+		[9,0]		=>	:ikscat,
+		[10,0]		=>	:registration_date,
+		[11,0]	=>	:fachinfo,
+		[12,0]	=>  :patinfo,
+		[13,0]	=>	:limitation_text,
 	}	
 	REVERSE_MAP = {
 		:company_name			=> false,
@@ -103,20 +104,22 @@ class ResultList < HtmlGrid::List
 		:size							=> false,
 		:substances				=> true,
 	}
+		BACKGROUND_SUFFIX = ' bg'
 	CSS_MAP = {
-		[0,0]	=>	'result-big',
-		[1,0]	=>	'result',
-		[2,0]	=>	'result-r',
-		[3,0]	=>	'result-r',
-		[4,0]	=>	'result-r',
-		[5,0]	=>	'result-pubprice',
-		[6,0]	=>	'result-i',
-		[7,0]	=>	'result-i',
-		[8,0]	=>	'result-i',
-		[9,0]	=>	'result-i',
-		[10,0]	=>	'result-b-r',
-		[11,0] =>  'result-b-r',
-		[12,0]	=>	'result-b-r',
+		[0,0]	=>	'result bold right',
+		[1,0]	=>	'result big',
+		[2,0]	=>	'result',
+		[3,0]	=>	'result right',
+		[4,0]	=>	'result right',
+		[5,0]	=>	'result right',
+		[6,0]	=>	'result bold right',
+		[7,0]	=>	'result italic',
+		[8,0]	=>	'result italic',
+		[9,0]	=>	'result italic',
+		[10,0]	=>	'result italic',
+		[11,0]	=>	'result bold right',
+		[12,0] =>  'result bold right',
+		[13,0]	=>	'result bold right',
 	}
 	CSS_HEAD_MAP = {
 		[0,0,1] =>	'th',
@@ -197,7 +200,7 @@ class ResultList < HtmlGrid::List
 		link = HtmlGrid::PopupLink.new(:compare, model, session, self)
 		link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
 		link.value = model.name_base
-		link.set_attribute('class', 'result-big' << resolve_suffix(model))
+		link.set_attribute('class', 'result big' << resolve_suffix(model))
 		link.set_attribute('title', @lookandfeel.lookup(:ean_code, model.barcode))
 		link
 	end

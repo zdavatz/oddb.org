@@ -34,6 +34,15 @@ module AddressMap
 		args.compact.join('-').gsub(/\s+/, '-')
 	end		
 end
+module VCardMethods
+	def vcard(model)
+		link = HtmlGrid::Link.new(:vcard, model, @session, self)
+		args = {:pointer => model.pointer}
+		link.href = @lookandfeel.event_url(:vcard, args)
+		link.css_class = 'list'
+		link
+	end
+end
 class Addresses < HtmlGrid::List
 	include AddressMap
 	COMPONENTS = {
@@ -93,9 +102,12 @@ class DoctorInnerComposite < HtmlGrid::Composite
 		[0,3]		=>	:exam_header,
 		[0,3,1] =>	:nbsp,
 		[0,3,2]	=>	:exam,
-		[0,4]		=>	:email_header_doctor,
+		[0,4]		=>	:ean13_header,
 		[0,4,1]	=>	:nbsp,
-		[0,4,2]	=>	:email,
+		[0,4,2]	=>	:ean13,
+		[0,5]		=>	:email_header_doctor,
+		[0,5,1]	=>	:nbsp,
+		[0,5,2]	=>	:email,
 	}
 	SYMBOL_MAP = {
 		:address_email	=>	HtmlGrid::MailLink,
@@ -104,6 +116,7 @@ class DoctorInnerComposite < HtmlGrid::Composite
 		:contact_header	=>	HtmlGrid::LabelText,
 		:email_header_doctor		=>	HtmlGrid::LabelText,
 		:exam_header		=>	HtmlGrid::LabelText,
+		:ean13_header		=>	HtmlGrid::LabelText,
 		:language_header	=>	HtmlGrid::LabelText,
 		:nbsp						=>	HtmlGrid::Text,
 		:phone_label		=>	HtmlGrid::Text,
@@ -114,7 +127,7 @@ class DoctorInnerComposite < HtmlGrid::Composite
 		:work_header		=>	HtmlGrid::LabelText,
 	}		
 	CSS_MAP = {
-		[0,0,4,5]	=>	'list',
+		[0,0,4,6]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
@@ -129,14 +142,16 @@ class DoctorInnerComposite < HtmlGrid::Composite
 	end
 end
 class DoctorComposite < HtmlGrid::Composite
+	include VCardMethods
 	COMPONENTS = {
 		[0,0]		=>	:title,
 		[0,0,1]	=>	:nbsp,
 		[0,0,2]	=>	:firstname,
 		[0,0,3]	=>	:nbsp,
 		[0,0,4]	=>	:name,
-		[0,1]	=> DoctorInnerComposite,
+		[0,1]		=> DoctorInnerComposite,
 		[0,2]		=>	:addresses,
+		[0,3]		=>	:vcard,
 	}
 	SYMBOL_MAP = {
 		:nbsp						=>	HtmlGrid::Text,

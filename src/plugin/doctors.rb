@@ -23,12 +23,22 @@ module ODDB
 				@doctors_created = 0
 				@doctors_deleted = 0
 			end
+			def restore(doc_id)
+				if(data = get_doctor_data(doc_id))
+					store_doctor(doc_id, data)
+				end
+			end
 			def update
-				range = 5000..99999
-				empty_ids = (@config.empty_ids || []).dup
+				#range = 5000..99999
+				empty_ids = (@config.empty_ids || [])
+				step = 250
+				5000.step(100000, step) { |base|
+					range = base...(base+step)
+					puts "Next-Step: #{range.first} - #{range.last}"
+					$stdout.flush
+					ODBA.batch {
 				top_doc_id = 0
 				(range.to_a - empty_ids).each { |doc_id| 
-					#puts "doc_id: #{doc_id}"
 					if(data = get_doctor_data(doc_id))
 						store_doctor(doc_id, data)
 						top_doc_id = doc_id
@@ -41,6 +51,8 @@ module ODDB
 				}
 				empty_ids.delete_if { |id| id > top_doc_id }
 				store_empty_ids(empty_ids)
+					}
+				}
 			end
 			def delete_doctor(doc_id)
 				if(doc = @app.doctor_by_origin(:ch, doc_id))
@@ -51,7 +63,7 @@ module ODDB
 			def get_doctor_data(doc_id)
 				retry_count = 3
 				begin
-					self::class::PARSER.emh_data(doc_id)
+					self::class::PARSER.emh_data_add_ean(doc_id)
 				rescue Errno::EINTR, Errno::ECONNRESET => err
 					puts "rescued #{err} -> #{retry_count} more tries"
 					if(retry_count > 0)
@@ -116,6 +128,7 @@ module ODDB
 				end
 				extract = [
 					:abilities,
+					:ean13,
 					:exam,
 					:email,
 					:firstname,

@@ -11,17 +11,26 @@ module ODDB
 				#company = model.company
 				if(fachinfo || pdf_fachinfo )#&& company.fi_status)
 					link = HtmlGrid::PopupLink.new(:fachinfo_short, model, session, self)
-					if(!pdf_fachinfo.nil?)
-						link.href = @lookandfeel.resource_global(:pdf_fachinfo, pdf_fachinfo)
-					elsif(!fachinfo.nil?)
+					if(!fachinfo.nil?)
 						link.href = @lookandfeel.event_url(:resolve, {'pointer' => fachinfo.pointer})
 						link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
+					elsif(!pdf_fachinfo.nil?)
+						link.href = @lookandfeel.resource_global(:pdf_fachinfo, pdf_fachinfo)
 					end
 					pos = components.index(:fachinfo)
 					component_css_map.store(pos, css)
 					css_map.store(pos, css)
 					link
 				end
+			end
+			def feedback(model, session)
+				link = HtmlGrid::Link.new(:feedback_text_short, model, session, self)
+				link.href = @lookandfeel.event_url(:feedbacks, {'pointer'=>model.pointer})
+				#link.set_attribute('title', @lookandfeel.lookup(:limitation_text))
+				pos = components.index(:feedback)
+				component_css_map.store(pos, "feedback square")
+				css_map.store(pos, "square")
+				link
 			end
 			def limitation_text(model, session)
 				if((sl = model.sl_entry) && (sltxt = sl.limitation_text))

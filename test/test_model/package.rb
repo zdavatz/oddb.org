@@ -272,6 +272,24 @@ class TestPackage < Test::Unit::TestCase
 		values = {:price_exfactory => 43.209999999999999999995}
 		assert_equal({}, @package.diff(values))
 	end
+	def test_feedback
+		feedbacks = {
+			12	=>	'foo',
+			16	=>	'bar',
+		}
+		@package.instance_variable_set('@feedbacks', feedbacks)
+		assert_equal('foo', @package.feedback(12))
+		assert_equal('bar', @package.feedback('16'))
+		assert_nil(@package.feedback(1))
+	end
+	def test_create_feedback
+		feedback = @package.create_feedback
+		assert_instance_of(ODDB::Feedback, feedback)
+		assert_equal({feedback.oid => feedback}, @package.feedbacks)
+		assert_not_nil(feedback.oid)
+		oid = feedback.oid
+		assert_equal(feedback, @package.feedback(oid))
+	end
 end
 class TestIncompletePackage < Test::Unit::TestCase
 	def setup

@@ -9,12 +9,14 @@ module ODDB
 		class FachinfoPDFWriter < Writer
 			include FachinfoWriterMethods
 			include Rpdf2txt::DefaultHandler
+			#	def new_font(font)
+			#@next_font = font
+				#	end
 			def new_font(font)
 				if(@font)
 					self.add_text
 				end
 				@font = font
-				#@fresh_paragraph = false
 			end
 			def add_text
 				if(@font.bold? && @font.italic?)
@@ -26,11 +28,12 @@ module ODDB
 						@section = @chapter.next_section
 					end
 				elsif(@font.bold?)
-					# product-name
+					# product-name??
 				elsif(@font.italic?)
 					if(@fresh_paragraph)
 						@section = @chapter.next_section
 						@section.subheading << self.src
+						@wrote_section_heading = true
 					else
 						@paragraph.set_format(:italic)
 						@paragraph << self.src
@@ -44,6 +47,7 @@ module ODDB
 					skip_paragraph = /Copyright/i.match(self.src)
 					if(!@chapter.nil? && !str_check.empty? && !skip_paragraph)
 						str = self.src
+						@wrote_section_heading = false
 						#for the first paragraph after a preformated paragraph
 						if(!courier && @preformatted)
 							@fresh_paragraph = true
@@ -59,9 +63,9 @@ module ODDB
 							@paragraph.reduce_format(:symbol)
 						end
 						if(courier)
-							str.strip!
 							if(@paragraph.empty?)
-								@paragraph.set_format(:pre)
+								str.strip!
+								@paragraph.preformatted!
 							end
 							@preformatted = true
 							@paragraph << "\n"
@@ -71,8 +75,6 @@ module ODDB
 						end
 						@paragraph << str
 						@fresh_paragraph = false
-						#else
-						#@fresh_paragraph = true
 					end
 				end
 				@src = ''
@@ -87,6 +89,9 @@ module ODDB
 				self.src << "\n"
 			end
 			def send_paragraph
+				if(@wrote_section_heading && self.src.strip.empty?)
+					@section.subheading << "\n"
+				end
 				self.add_text
 				unless(@preformatted)
 					@fresh_paragraph = true

@@ -18,6 +18,7 @@ module ODDB
 		module Doctors
 class DoctorList < HtmlGrid::List
 	include AddressMap
+	include VCardMethods
 	COMPONENTS = {
 		[0,0]	=>	:name,
 		[1,0]	=>	:firstname,
@@ -25,11 +26,12 @@ class DoctorList < HtmlGrid::List
 		[3,0]	=>	:praxis_address,
 		[4,0]	=>	:specialities,
 		[5,0]	=>	:map,
+		[6,0]	=>	:vcard,
 	}	
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0,6]	=>	'top list',
+		[0,0,7]	=>	'top list',
 	}
 	DEFAULT_HEAD_CLASS = 'th'
 	SORT_DEFAULT = :name
@@ -75,6 +77,7 @@ class DoctorsComposite < Form
 	SYMBOL_MAP = {
 		:search_query		=>	View::SearchBar,	
 		:map						=>	HtmlGrid::Link,
+		:vcard					=>	HtmlGrid::Link,
 	}
 end
 class Doctors < View::ResultTemplate

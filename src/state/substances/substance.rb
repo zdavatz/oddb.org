@@ -53,7 +53,7 @@ class Substance < State::Substances::Global
 			@errors.store(:substance_form, create_error('e_search_query_short',
 				:substance_form, substance))
 		else
-			substances = @session.app.soundex_substances(substance)
+			substances = @session.app.search_substances(substance)
 			substances.delete(@model)
 			if(substances.empty?)
 				@errors.store(:substance, create_error('e_unknown_substance', 

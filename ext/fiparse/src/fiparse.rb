@@ -7,6 +7,7 @@ $: << File.dirname(__FILE__)
 require 'drb/drb'
 require 'util/oddbconfig'
 require 'fachinfo_writer'
+require 'fachinfo_pdf'
 require 'fachinfo_html'
 require 'fachinfo_pdf'
 require 'fachinfo_news'
@@ -33,6 +34,12 @@ module ODDB
 		def parse_fachinfo_pdf(src)
 			writer = FachinfoPDFWriter.new
 		end
+		def parse_fachinfo_pdf(src)
+			writer = FachinfoPDFWriter.new
+			parser = Rpdf2txt::Parser.new(src)
+			parser.extract_text(writer)
+			writer.to_fachinfo
+		end
 		def parse_fachinfo_news(src)
 			writer = FachinfoNewsWriter.new
 			formatter = HtmlFormatter.new(writer)
@@ -48,6 +55,7 @@ module ODDB
 			writer.to_patinfo
 		end
 		module_function :parse_fachinfo_doc
+		module_function :parse_fachinfo_pdf
 		module_function :parse_fachinfo_html
 		module_function :parse_fachinfo_news
 		module_function :parse_patinfo_html

@@ -14,6 +14,9 @@ class FachinfoConfirm < State::Drugs::Global
 		super
 		validate_iksnrs()
 	end
+	def back
+		@previous.previous
+	end
 	def iksnrs(fi_document)
 		iksnr_src = fi_document.iksnrs.to_s.gsub("'", '')
 		if(iksnr_src && (iksnrs = iksnr_src.match(/[0-9]+(,\s*[0-9]+)*/)))
@@ -50,17 +53,8 @@ class FachinfoConfirm < State::Drugs::Global
 			fachinfo = @session.app.update(pointer.creator, values)
 			@valid_iksnrs.each { |iksnr|
 				@session.app.replace_fachinfo(iksnr, fachinfo.pointer)
-=begin
-				reg = @session.app.registration(iksnr)
-				old_fachinfo = reg.fachinfo
-				values = {:fachinfo => fachinfo.pointer }
-				@session.app.update(reg.pointer, values)
-				if(old_fachinfo && old_fachinfo.empty?)
-					@session.app.delete(old_fachinfo.pointer)
-				end
-=end
 			}
-			@previous
+			@previous.previous
 		end
 	end
 	def validate_iksnrs

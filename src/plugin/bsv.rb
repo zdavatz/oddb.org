@@ -121,11 +121,13 @@ module ODDB
 						:price_public			=>	row.at(9).to_f,
 						:limitation				=>	(row.at(10).to_s.downcase=='y'),
 						:limitation_points=>	row.at(11).to_i,
-						:introduction_date=>	row.at(6).date,
 						:company					=>	row.at(0).to_s,
 						:ikscat						=>	row.at(5).to_s,
 						:name							=>	row.at(7).to_s,
 					}
+					if(field = row.at(6))
+						hash.store(:introduction_date, field.date)
+					end
 					if(row.at(1).to_s.downcase == 'y')
 						hash.store(:generic_type, :generic)
 					end
