@@ -1297,7 +1297,7 @@ zdavatz ! ywesee.com
 				:th_ikscd									=>	"num&eacute;ro d'emballage ",
 				:th_iksnr									=>	'Reg.-nr.',
 				:th_list									=>	'Liste',
-				:th_location							=>	'place'
+				:th_location							=>	'place',
 				:th_most_precise_dose			=>	'Concentration',
 				:th_name									=>	'Nome',
 				:th_name_base							=>	'Pr&eacute;paration',
