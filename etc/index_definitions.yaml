@@ -6,6 +6,7 @@ resolve_search_term: 'name'
 resolve_target: 'atc_classes.each{|atc| atc}'
 resolve_origin: 'sequences.collect{|seq| seq.company}'
 dictionary: ''
+init_source: '@atc_classes.values'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'atc_index'
@@ -15,6 +16,7 @@ resolve_search_term: 'code'
 resolve_target: ''
 resolve_origin: ''
 dictionary: ''
+init_source: '@atc_classes.values'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'substance_index_atc'
@@ -24,6 +26,7 @@ resolve_search_term: 'name'
 resolve_target: 'sequences.collect{|seq| seq.atc_class}'
 resolve_origin: 'sequences.collect{|seq| seq.active_agents.collect{|agent| agent.substance}}'
 dictionary: ''
+init_source: '@atc_classes.values'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'sequence_index_atc'
@@ -33,6 +36,7 @@ resolve_search_term: 'name'
 resolve_target: 'atc_class'
 resolve_origin: 'sequences'
 dictionary: ''
+init_source: '@atc_classes.values'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'fachinfo_index_de'
@@ -40,6 +44,7 @@ origin_klass: 'Fachinfo'
 target_klass: 'AtcClass'
 resolve_search_term: 'de.indications.to_s'
 resolve_target: 'atc_class'
+init_source: '@atc_classes.values'
 resolve_origin: 'sequences.collect { |seq| seq.registration.fachinfo }.uniq'
 dictionary: 'default_german'
 fulltext: true
@@ -51,6 +56,7 @@ resolve_search_term: 'fr.indications.to_s'
 resolve_target: 'atc_class'
 resolve_origin: 'sequences.collect { |seq| seq.registration.fachinfo }.uniq'
 dictionary: 'default_french'
+init_source: '@atc_classes.values'
 fulltext: true
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'substance_index'
@@ -60,4 +66,5 @@ resolve_search_term: 'index_search_terms'
 resolve_target: ''
 resolve_origin: ''
 dictionary: 'default_german'
+init_source: '@sequences.values'
 fulltext: true

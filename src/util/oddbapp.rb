@@ -457,13 +457,7 @@ class OddbPrevalence
 			YAML.load_documents(file) { |index_definition|
 				ODBA.cache_server.create_index(index_definition, ODDB)
 				puts "name: #{index_definition.index_name}"
-				if (index_definition.index_name == "substance_index")
-					puts "special index"
-					ODBA.cache_server.fill_index(index_definition.index_name, @substances.values)
-				else
-					puts "atc_class"
-					ODBA.cache_server.fill_index(index_definition.index_name, @atc_classes.values)
-				end
+					ODBA.cache_server.fill_index(index_definition.index_name, eval(index_definition.init_source)
 			}
 		rescue
 			puts "INDEX CREATION ERROR"
@@ -708,21 +702,21 @@ module ODDB
 		attr_reader :cleaner, :updater
 		def initialize
 			puts STORAGE_PATH
-=begin
+			#=begin
 		 	@prevalence = Madeleine::SnapshotMadeleine.new(STORAGE_PATH) {
 				sys = OddbPrevalence.new
 			}
 			puts "prevalence initialized"
 			@system = @prevalence.system
-=end
-#=begin
+			#=end
+=begin
 			ODBA.cache_server.prefetch
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
 				puts "new oddbprevalence created"
 				OddbPrevalence.new
 			}
 			
-			#=end
+=end
 			puts "system init..."
 			@system.init
 			#@system.odba_store
