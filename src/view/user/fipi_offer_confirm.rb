@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::User::FiPiOfferConfirm -- oddb -- 29.06.2004 -- maege@ywesee.com
 
-require 'view/publictemplate'
+require 'view/resulttemplate'
 require 'htmlgrid/composite'
 require 'htmlgrid/datevalue'
 
@@ -196,7 +196,7 @@ class FiPiOfferConfirmComposite < HtmlGrid::Composite
 		@lookandfeel.lookup(:fipi_offer_disclaimer, date)
 	end
 end
-class FiPiOfferConfirm < View::PublicTemplate
+class FiPiOfferConfirm < View::ResultTemplate
 	CONTENT = View::User::FiPiOfferConfirmComposite
 end
 		end

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::User::FiPiOfferInput -- oddb -- 28.06.2004 -- maege@ywesee.com
 
-require 'view/publictemplate'
+require 'view/resulttemplate'
 require 'view/form'
 require 'htmlgrid/composite'
 require 'htmlgrid/errormessage'
@@ -202,7 +202,7 @@ class FiPiOfferInputComposite < HtmlGrid::Composite
 		text
 	end
 end
-class FiPiOfferInput < View::PublicTemplate
+class FiPiOfferInput < View::ResultTemplate
 	CONTENT = View::User::FiPiOfferInputComposite
 	SNAPBACK_EVENT = :home
 end
