@@ -12,6 +12,7 @@ class IncompleteReg < State::Drugs::Registration
 	SEQUENCE_STATE = State::Drugs::IncompleteSequence
 	VIEW = View::Drugs::IncompleteRegistration
 	def accept
+		update_incomplete()
 		if(@model.acceptable? || @session.app.registration(@model.iksnr))
 			mdl = @session.app.accept_incomplete_registration(@model)
 			State::Drugs::Registration.new(@session, mdl)

@@ -8,7 +8,7 @@ module ODDB
 		attr_accessor :info, :href, :text
 	end
 	class CyP450Connection 
-		attr_accessor :category, :links
+		attr_accessor :category, :links, :substance
 		include Persistence
 		def initialize
 			super
@@ -19,6 +19,13 @@ module ODDB
 				@pointer.append(@oid) 
 			end
 			@pointer
+		end
+		def adjust_types(values, app)
+			if(conn_name = values[:substance])
+				substance = app.substance(conn_name)
+				values.store(:substance, substance)
+			end
+			values
 		end
 	end
 	class CyP450SubstrateConnection < CyP450Connection
@@ -47,13 +54,6 @@ module ODDB
 		def initialize(substance_name)
 			super()
 			@substance_name = substance_name
-		end
-		def adjust_types(values, app)
-			if(conn_name = values[:substance])
-				substance = app.substance(conn_name)
-				values.store(:substance, substance)
-			end
-			values
 		end
 	end
 	class CyP450InhibitorConnection < CyP450InteractionConnection
