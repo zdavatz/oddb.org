@@ -138,7 +138,7 @@ class FeedbackList < HtmlGrid::List
 	SYMBOL_MAP = { 
 		#:feedback_title_name	=>	HtmlGrid::LabelText,
 		#:feedback_title_time	=>	HtmlGrid::LabelText,
-		#:email_label					=>	HtmlGrid::LabelText,
+		:email_label					=>	HtmlGrid::LabelText,
 		:message_label				=>	HtmlGrid::LabelText,
 	}
 	CSS_CLASS = 'component border-left top'
