@@ -2,8 +2,6 @@
 # OddbConfig -- oddb -- 09.04.2003 -- hwyss@ywesee.com 
 
 # Do not require any Application-Internals in this file
-#$KCODE = "UTF-8"
-#require 'jcode'
 require 'drb'
 
 module DRb
