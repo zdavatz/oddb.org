@@ -21,7 +21,9 @@ class IncompleteReg < State::Drugs::Registration
 		end
 	end
 	def delete
-		@session.app.delete(@model.pointer)
+		ODBA.batch {
+			@session.app.delete(@model.pointer)
+		}
 		State::Drugs::IncompleteRegs.new(@session, @session.app.incomplete_registrations)
 	end
 	def update

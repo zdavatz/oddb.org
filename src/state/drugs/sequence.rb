@@ -20,7 +20,9 @@ class Sequence < State::Drugs::Global
 	end
 	def delete
 		registration = @model.parent(@session.app) 
-		@session.app.delete(@model.pointer)
+		ODBA.batch {
+			@session.app.delete(@model.pointer)
+		}
 		State::Drugs::Registration.new(@session, registration)
 	end
 	def new_active_agent
@@ -125,7 +127,9 @@ class Sequence < State::Drugs::Global
 				add_warning(:w_no_patinfo_saved, :patinfo_upload, nil)
 			end
 		end
-		@model = @session.app.update(@model.pointer, input)
+		ODBA.batch {
+			@model = @session.app.update(@model.pointer, input)
+		}
 		self
 	end
 end

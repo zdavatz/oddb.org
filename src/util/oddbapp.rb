@@ -856,6 +856,56 @@ module ODDB
 				}
 			}
 		end
+		def assign_effective_forms
+			ODBA.batch { 
+				@system.substances.select { |subs| 
+					!subs.has_effective_form?
+				}.sort_by { |subs| subs.name }.each { |subs|
+					puts "Looking for effective form of ->#{subs}<- (#{subs.sequences.size} Sequences)"
+					name = subs.to_s
+					parts = name.split(/\s/)
+					suggest = if(parts.size == 1)
+						subs
+					else
+						@system.substance(parts.first) \
+							|| @system.substance(parts.first.gsub(/i$/, 'um'))
+					end
+					result = nil
+					while(result.nil?)
+						if(suggest)
+							puts "Suggestion: #{suggest}"
+							print "d(elete), s(uggestion), S(elf), n(othing), other_name > "
+						else
+							print "d(elete), S(elf), n(othing), other_name > "
+						end
+						$stdout.flush
+						answer = $stdin.readline.strip
+						puts "you typed: ->#{answer}<-"
+						case answer
+						when ''
+							# do nothing
+						when 's'
+							result = suggest
+						when 'S'
+							result = subs
+						when 'd'
+							subs.odba_delete
+							break
+						when 'n'
+							break
+						when 'q'
+							break 2
+						else
+							result = @system.substance(answer)
+						end
+					end
+					if(result)
+						subs.effective_form = result
+						subs.odba_store
+					end
+				}
+			}
+		end
 	end
 end
 

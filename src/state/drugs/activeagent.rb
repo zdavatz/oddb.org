@@ -36,7 +36,9 @@ class ActiveAgent < State::Drugs::Global
 					@model.append(input[:substance])
 				end
 				input[:substance] = substance.pointer
-				@model = @session.app.update(@model.pointer, input)
+				ODBA.batch { 
+					@model = @session.app.update(@model.pointer, input)
+				}
 			end
 		end
 		newstate
