@@ -22,8 +22,8 @@ require 'fileutils'
 require 'yaml'
 
 #require 'madeleine'
-#require 'datastructure/chartree'
-#require 'datastructure/soundextable'
+require 'datastructure/chartree'
+require 'datastructure/soundextable'
 
 class OddbPrevalence
 	include ODDB::Failsafe

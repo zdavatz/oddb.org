@@ -38,7 +38,7 @@ module CompanyUser
 	include State::Admin::User
 	def resolve_state(pointer)
 		if(@session.user_equiv?(pointer))
-			UserCompany
+			State::Companies::UserCompany
 		else
 			super
 		end
