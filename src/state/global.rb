@@ -196,6 +196,15 @@ module ODDB
 			@model.reverse! if(@sort_reverse)
 			self
 		end
+		def substance_result
+			pointer = @session.user_input(:pointer)
+			if(substance = pointer.resolve(@session.app))
+				atc_classes = substance.atc_classes	
+				ResultState.new(@session, atc_classes)
+			else
+				self
+			end
+		end
 		def user_input(keys=[], mandatory=[])
 			keys = [keys] unless keys.is_a?(Array)
 			mandatory = [mandatory] unless mandatory.is_a?(Array)

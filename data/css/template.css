@@ -385,6 +385,29 @@ td.result-big-unknown-bg {
 	font-weight : bold;
 	padding : 4px;
 }
+a.result-small-font, 
+a.result-small-font:link, 
+a.result-small-font:visited {
+	color : black;
+	text-decoration : none;
+}
+a.result-small-font:hover {
+	color : $rslt_link_hover_color;
+}
+a.result-small-font:active {
+	color : black;
+}
+td.result-small-font {
+	font-size : 10px;
+	padding : 4px;
+}
+td.result-small-font-bg {
+	background : $rslt_bg;
+	font-size : 10px;
+	padding : 4px;
+}
+td.result-edit-generic, td.result-edit-original, td.result-edit-unknown,
+a.result-edit-generic, a.result-edit-original, a.result-edit-unknown
 td.result-edit-generic, td.result-edit-original, td.result-edit-unknown,
 a.result-edit-generic, a.result-edit-original, a.result-edit-unknown
 {

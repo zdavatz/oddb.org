@@ -33,6 +33,9 @@ module ODDB
 			}
 			values
 		end
+		def atc_classes
+			@sequences.collect { |seq| seq.atc_class }.uniq
+		end
 		def create_cyp450substrate(cyp_id)
 			#puts 'creating substrate'
 			conn = ODDB::CyP450SubstrateConnection.new(cyp_id)

@@ -413,7 +413,7 @@ zdavatz ! ywesee.com
 				:search_explain						=>	'Vergleichen Sie einfach und schnell Medikamentenpreise.<br> Suchen Sie nach Medikament, Wirkstoff oder Anwendungsgebiet<br>(z.B. Kopfschmerzen, Akne, Verstauchung, Verletzung).',
 				:search_help							=>	'Hilfe',
 				:search_interaction				=>	'Suchen',
-				:search_oddb							=>	'Medikament in der ODDB suchen',
+				:search_oddb							=>	'-> Medikament(e) in der ODDB anzeigen',
 				:search_query							=>	'HIER Medikament / Wirkstoff eingeben',
 				:search_reset							=>	'Zur&uuml;cksetzen',
 				:search_sequences         =>  'Suchen',

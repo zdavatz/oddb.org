@@ -81,7 +81,7 @@ module ODDB
 		class InducerConnection < Connection
 		end
 		class InteractionPlugin < Plugin
-			REFETCH_PAGES = false
+			REFETCH_PAGES = true
 			INTERACTION_TYPES = [
 				:substrates, :inhibitors, :inducers,
 			]

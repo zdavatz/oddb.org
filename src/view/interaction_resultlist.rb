@@ -35,16 +35,17 @@ module ODDB
 =end
 	class InteractionResultList < HtmlGrid::List
 		COMPONENTS = {
-			[0,0]		=>	:name,
-			[0,0,1]	=>	:search_oddb,
-			[2,0]		=>	:interaction_basket_status,
+			[0,0]	=>	:name,
+			[1,0]	=>	:search_oddb,
+			[2,0]	=>	:interaction_basket_status,
 		}
 		REVERSE_MAP = {
 			:name	=>	false,
 		}
 		CSS_MAP = {
-			[0,0]		=>	'result-big-unknown',
-			[2,0]		=>	'result-b-r-unknown',
+			[0,0]	=>	'result-big-unknown',
+			[1,0]	=>	'result-small-font',
+			[2,0]	=>	'result-b-r-unknown',
 		}
 		CSS_HEAD_MAP = {
 			[0,0]	=>	'th',
@@ -105,11 +106,12 @@ module ODDB
 			end
 		end
 		def search_oddb(model, session)
-			link = HtmlGrid::Link.new(:search, model, session, self)
-			link.href = @lookandfeel.event_url(:search, {'search_query'=>model.name})
-			link.value = @lookandfeel.lookup(:search_oddb)
-			link.set_attribute('style','text-decoration:none; color:black; margin:5px; font-size:8pt;')
-			link
+			unless((result = session.app.search(model.name)).empty?)
+				link = HtmlGrid::Link.new(:substance_result, model, session, self)
+				link.href = @lookandfeel.event_url(:substance_result, {'pointer'=>model.pointer})
+				link.value = @lookandfeel.lookup(:search_oddb)
+				link
+			end
 		end
 	end
 end

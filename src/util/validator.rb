@@ -93,6 +93,7 @@ module ODDB
 			:select_seq,
 			:set_pass,
 			:sponsor,
+			:substance_result,
 			:substances,
 			:update,
 			:update_bsv,

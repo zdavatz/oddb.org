@@ -254,7 +254,6 @@ class OddbPrevalence
 		end
 	end
 	def create_substance(substance=nil)
-		puts 'creating substance'
 		subs = nil
 		if(substance.nil?)
 			subs = ODDB::Substance.new
