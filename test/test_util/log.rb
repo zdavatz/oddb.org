@@ -16,7 +16,11 @@ module Net
 		end
 	end
 end
-
+module ODDB
+	class Log
+		MAIL_TO = []
+	end
+end
 class TestLog < Test::Unit::TestCase
 	class StubSmtp
 		def sendmail(*args)
