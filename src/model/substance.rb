@@ -108,10 +108,14 @@ module ODDB
 		def merge(other)
 			other.sequences.uniq.each { |sequence|
 				if(active_agent = sequence.active_agent(other))
+					#puts "found active-agent: #{active_agent}"
 					if(active_agent.sequence.nil?)
+						#puts "no sequence - deleting active_agent"
 						active_agent.odba_delete
 					else
+						#puts "setting substance to #{self}"
 						active_agent.substance = self
+						#puts "calling active_agent_isolated_store"
 						active_agent.odba_isolated_store
 					end
 				else
@@ -132,8 +136,9 @@ module ODDB
 					self.descriptions.update_values( { key => value } )
 				end
 			}
-			self.descriptions.odba_isolated_store
 			# long format, because each of these methods are overridden
+			self.synonyms = self.synonyms + other.synonyms \
+				+ other.descriptions.values - self.descriptions.values
 			self.connection_keys = self.connection_keys + other.connection_keys
 			self
 		end
@@ -188,6 +193,9 @@ module ODDB
 		end
 		def synonyms
 			@synonyms ||= []
+		end
+		def synonyms=(syns)
+			@synonyms = syns.compact.delete_if { |syn| syn.empty?  }
 		end
 		def to_s
 			name
