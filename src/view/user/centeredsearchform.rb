@@ -9,10 +9,6 @@ module ODDB
 class CenteredSearchForm < View::CenteredSearchForm
 	COMPONENTS = {
 		[0,0]		=>	View::TabNavigation,
-		#[0,1]		=>	:search_query,
-		#[0,2]		=>	:submit,
-		#[0,2,1]	=>	:search_reset,
-		#[0,2,2]	=>	:search_help,
 	}
 	EVENT = :search
 end
