@@ -247,11 +247,6 @@ F&uuml;r Anfragen oder Feedback schreiben Sie bitte an:
 zdavatz ! ywesee.com
 				EOS
 =end
-				:galdat_download					=>	'Stammdaten Download',
-			  :galdat_download_descr		=>	'oddbdat.tar.gz und oddbdat.zip enthalten die t&auml;glich aktualisierten Artikelstammdaten der ODDB. Die Daten werden von ywesee in das OddbDat-Format umgewandelt und allen gew&uuml;nschten Systemlieferanten von Schweizer Spit&auml;lern zur Verf&uuml;gung gestellt.<br><br>Feedback bitte an zdavatz at ywesee dot com<br><br>-AC (Tabelle 1) - ODDB-Code<br>-ACMED (Tabelle 2) - Weitere Produktinformationen<br>-ACNAM (Tabelle 3)	- Sprachen<br>-ACBARCODE (Tabelle 6) - EAN-Artikelcode<br>-ACPRICEALG (Tabelle 7) - Preise<br>-CODES (Tabelle 11) - Codebeschreibungen (ATC-Beschreibung, Galenische Form)<br>-COMP (Tabelle 12) - Hersteller<br>-ACCOMP (Tabelle 19) - Verbindungstabelle zwischen AC und COMP<br>-SC (Tabelle 40) - Substanzen<br>-ACSC (Tabelle 41) - Verbindungstabelle zwischen AC und SC<br><br>Die Daten werden als oddbdat.tar.gz und oddbdat.zip auf unserem Server bereitgestellt - Vorzugsweise benutzen Sie einen der folgenden direkten Links:<br>',
-				:galdat_download_title		=>	'Stammdaten Download - oddbdat.tar.gz und oddbdat.zip',
-				:galdat_oddb_tar_gz				=>	'oddbdat.tar.gz',
-				:galdat_oddb_zip					=>	'oddbdat.zip',
 				:galenic_form							=>	'Galenische Form',
 				:galenic_group						=>	'Galenische Gruppe',
 				:galenic_groups						=>	'Galenik',
@@ -375,6 +370,11 @@ zdavatz ! ywesee.com
 				:new_registration					=>	'Neue Registration',
 				:new_sequence							=>	'Neue Sequenz',
 				:new_substance						=>	'Neue Substanz',
+				:oddbdat_download					=>	'Stammdaten Download',
+			  :oddbdat_download_descr		=>	'oddbdat.tar.gz und oddbdat.zip enthalten die t&auml;glich aktualisierten Artikelstammdaten der ODDB. Die Daten werden von ywesee in das OddbDat-Format umgewandelt und allen gew&uuml;nschten Systemlieferanten von Schweizer Spit&auml;lern zur Verf&uuml;gung gestellt.<br><br>Feedback bitte an zdavatz at ywesee dot com<br><br>-AC (Tabelle 1) - ODDB-Code<br>-ACMED (Tabelle 2) - Weitere Produktinformationen<br>-ACNAM (Tabelle 3)	- Sprachen<br>-ACBARCODE (Tabelle 6) - EAN-Artikelcode<br>-ACPRICEALG (Tabelle 7) - Preise<br>-CODES (Tabelle 11) - Codebeschreibungen (ATC-Beschreibung, Galenische Form)<br>-COMP (Tabelle 12) - Hersteller<br>-ACCOMP (Tabelle 19) - Verbindungstabelle zwischen AC und COMP<br>-SC (Tabelle 40) - Substanzen<br>-ACSC (Tabelle 41) - Verbindungstabelle zwischen AC und SC<br><br>Die Daten werden als oddbdat.tar.gz und oddbdat.zip auf unserem Server bereitgestellt - Vorzugsweise benutzen Sie einen der folgenden direkten Links:<br>',
+				:oddbdat_download_title		=>	'Stammdaten Download - oddbdat.tar.gz und oddbdat.zip',
+				:oddbdat_tar_gz						=>	'oddbdat.tar.gz',
+				:oddbdat_zip							=>	'oddbdat.zip',
 				:oddb_yaml_gz							=>	'oddb.yaml.gz',
 				:oddb_yaml_zip						=>	'oddb.yaml.zip',
 				:not_accepted							=>	'Verwerfen',
