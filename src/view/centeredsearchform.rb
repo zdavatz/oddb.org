@@ -115,6 +115,7 @@ module ODDB
 				:fipi_offer				=>	HtmlGrid::Link,
 				:interactions			=>	HtmlGrid::Link,
 				:language_de			=>	HtmlGrid::Link,
+				:language_en			=>	HtmlGrid::Link,
 				:language_fr			=>	HtmlGrid::Link,
 				:mailinglist			=>	HtmlGrid::Link,
 				:plugin						=>	HtmlGrid::Link,
@@ -204,6 +205,13 @@ module ODDB
 				link = HtmlGrid::Link.new(:de, model, session, self)
 				link.href = @lookandfeel.language_url(:de)
 				link.value = @lookandfeel.lookup(:de)
+				link.attributes['class'] =	'list'
+				link
+			end
+			def language_en(model, session)
+				link = HtmlGrid::Link.new(:en, model, session, self)
+				link.href = @lookandfeel.language_url(:en)
+				link.value = @lookandfeel.lookup(:en)
 				link.attributes['class'] =	'list'
 				link
 			end
