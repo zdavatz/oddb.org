@@ -11,7 +11,7 @@ module ODDB
 		alias :set_pass_2 :pass
 		alias :unique_email :email
 		BOOLEAN = [
-			:cl_status, :experience, :recommend,
+			:cl_status, :exact_match, :experience, :recommend,
 			:impression, :helps
 		]
 		DATES = [
@@ -25,10 +25,6 @@ module ODDB
 		]
 		ENUMS = {
 			:cl_status		=>	['false', 'true'],
-			:complementary_type =>	[nil, 'anthroposophy', 'homeopathy', 
-				'phytotherapy', ],
-			:search_type	=>	['st_oddb', 'st_sequence', 
-				'st_substance', 'st_company', 'st_indication'],
 			:fi_status		=>	['false', 'true'],
 			:generic_type =>	[nil, 'generic', 'original', 'complementary' ],
 			:limitation		=>	['true', 'false'],
@@ -41,11 +37,8 @@ module ODDB
 			:assign_deprived_sequence,
 			:assign_patinfo,
 			:atc_chooser,
-			:atc_request,
-			:authenticate,
 			:back,
 			:calculate_offer,
-			:checkout,
 			:choice,
 			:clear_interaction_basket,
 			:company,
@@ -70,9 +63,11 @@ module ODDB
 			:home_companies,
 			:home_doctors,
 			:home_drugs,
+			:home_hospitals,
 			:home_interactions,
 			:home_substances,
 			:home_user,
+			:hospitallist,
 			:incomplete_registrations,
 			:indications,
 			:interaction_basket,
@@ -98,25 +93,21 @@ module ODDB
 			:passthru,
 			:patinfo_deprived_sequences,
 			:patinfo_stats,
-			:patinfo_stats_company,
 			:paypal_thanks,
 			:plugin,
 			:powerlink,
 			:preview,
 			:print,
 			:recent_registrations,
-			:release,
 			:resolve,
 			:result,
 			:search,
 			:search_registrations,
 			:search_sequences,
 			:select_seq,
-			:sequences,
 			:set_pass,
 			:shadow,
 			:shadow_pattern,
-			:show,
 			:show_interaction,
 			:sort,
 			:sponsor,
@@ -135,7 +126,6 @@ module ODDB
 			:patinfo_upload,
 		]
 		NUMERIC = [
-			:change_flags,
 			:fi_quantity,
 			:limitation_points,
 			:pi_quantity,
@@ -145,56 +135,18 @@ module ODDB
 			:meaning_index,
 		]
 		STRINGS = [
-			:address,
-			:address_email,
-			:atc_descr,
-			:bsv_url,
-			:business_area,
-			:challenge,
-			:chapter,
-			:chemical_substance,
-			:company_form,
-			:company_name,
-			:comparable_size,
-			:connection_key,
-			:contact,
-			:contact_email,
-			:de,
-			:descr,
-			:destination,
-			:effective_form,
-			:en,
-			:fax,
-			:fi_update,
-			:fr,
-			:galenic_form,
-			:indication,
-			:language_select,
-			:location,
-			:location,
-			:lt,
-			:name,
-			:name_base,
-			:name_descr,
-			:pattern,
-			:phone,
-			:pi_update,
-			:plz,
-			:powerlink,
-			:range,
-			:register_update,
-			:regulatory_email,
-			:size,
-			:sortvalue,
-			:subscribe,
-			:substance,
-			:substance_form,
-			:synonym_list,
-			:unsubscribe,
-			:url,
+			:address, :address_email, :atc_descr, :bsv_url, :business_area,
+			:chapter, :company_form, :company_name, :comparable_size,
+			:connection_key, :contact, :contact_email, :de, :descr,
+			:destination, :effective_form, :en, :fax, :fi_update, :fr,
+			:galenic_form, :indication, :language_select, :language_select,
+			:location, :location, :lt, :name, :name_base, :name_descr,
+			:pattern, :phone, :pi_update, :plz, :powerlink, :range,
+			:register_update, :size, :sortvalue, :subscribe, :substance,
+			:substance_form, :synonym_list, :unsubscribe, :url,
 		]
 		ZONES = [:drugs, :interactions, :substances, :admin, :user, 
-			:companies, :doctors]
+			:companies, :doctors, :hospitals ]
 		def code(value)
 			pattern = /^[A-Z]([0-9]{2}([A-Z]([A-Z]([0-9]{2})?)?)?)?$/i
 			if(valid = pattern.match(value.capitalize))
@@ -214,8 +166,6 @@ module ODDB
 				raise SBSM::InvalidDataError.new(:e_invalid_dose, :dose, value)
 			end
 		end
-		alias :pretty_dose :dose
-		alias :chemical_dose :dose
 		def filename(value)
 			if(value == File.basename(value))
 				value
@@ -276,10 +226,6 @@ module ODDB
 			begin
 				Persistence::Pointer.parse(value)
 			rescue StandardError, ParseException
-				if(value[-1] != ?.)
-					value << "."
-					retry
-				end
 				raise SBSM::InvalidDataError.new("e_invalid_pointer", :pointer, value)
 			end
 		end

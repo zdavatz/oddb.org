@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+# DocServer -- oddb -- 21.09.2004 -- jlang@ywesee.com
+
+$: << File.expand_path("../../../src", File.dirname(__FILE__))
+$: << File.expand_path("../src", File.dirname(__FILE__))
+
+require 'drb/drb'
+require 'util/oddbconfig'
+require 'meddata'
+
+DRb.start_service(ODDB::MEDDATA_URI, ODDB::MedData)
+DRb.thread.join
+

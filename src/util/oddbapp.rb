@@ -29,7 +29,7 @@ class OddbPrevalence
 		"@atc_chooser", "@bean_counter",
 	]
 	attr_reader :galenic_groups, :companies, :doctors
-	attr_reader	:atc_classes, :last_update
+	attr_reader	:atc_classes, :last_update, :hospitals
 	attr_reader :atc_chooser, :registrations
 	attr_reader :last_medication_update
 	attr_reader :orphaned_patinfos, :orphaned_fachinfos
@@ -70,6 +70,7 @@ class OddbPrevalence
 		@galenic_forms ||= []
 		@galenic_groups ||= []
 		@generic_groups ||= {}
+		@hospitals ||= {}
 		@incomplete_registrations ||= {}
 		@indications ||= {}
 		@last_medication_update ||= Time.now()
@@ -219,13 +220,15 @@ class OddbPrevalence
 		@doctors ||= {}
 		@doctors.store(doctor.oid, doctor)
 	end
+	def create_hospital(ean13)
+		hospital = ODDB::Hospital.new(ean13)
+		@hospitals.store(ean13, hospital)
+	end
 	def create_cyp450(cyp_id)
-		@cyp450s ||= {}
 		cyp450 = ODDB::CyP450.new(cyp_id)
 		@cyp450s.store(cyp_id, cyp450)
 	end
 	def create_fachinfo
-		@fachinfos ||= {}
 		fachinfo = ODDB::Fachinfo.new
 		@fachinfos.store(fachinfo.oid, fachinfo)
 	end
@@ -354,6 +357,12 @@ class OddbPrevalence
 	end
 	def doctor(oid)
 		@doctors[oid.to_i]
+	end
+	def hospital(ean13)
+		@hospitals[ean13]
+	end
+	def hospital_count
+		@hospitals.size
 	end
 	def doctor_count
 		@doctor_count ||= @doctors.size
@@ -645,6 +654,9 @@ class OddbPrevalence
 		result.atc_classes = atc_classes.values
 		result
 	end
+	def search_hospitals(key)
+		ODBA.cache_server.retrieve_from_index("hospital_index", key)
+	end
 	def search_indications(query)
 		ODBA.cache_server.retrieve_from_index("indication_index", query)
 	end
@@ -741,6 +753,15 @@ class OddbPrevalence
 	end
 	def user_by_email(email)
 		@users.values.select { |user| user.unique_email == email }.first
+	end
+	def unique_atc_class(substance)
+		atc_array = search_by_substance(substance)
+		atc_array = atc_array.select { |atc|
+			atc.substances.size == 1
+		}
+		if(atc_array.size == 1)
+			atc_array.first
+		end
 	end
 	def rebuild_indices(name=nil)
 		ODBA.scalar_cache.size

@@ -150,6 +150,17 @@ dictionary: 'default_french'
 init_source: '@atc_classes.values'
 fulltext: true
 --- !ruby/object:ODBA::IndexDefinition 
+index_name: 'hospital_index'
+origin_klass: 'Hospital'
+target_klass: 'Hospital'
+resolve_search_term: 'search_text'
+resolve_target: ''
+resolve_origin: ''
+dictionary: 'default'
+init_source: '@hospitals.values'
+fulltext: true
+
+--- !ruby/object:ODBA::IndexDefinition 
 index_name: 'substance_index_sequence'
 origin_klass: 'Substance'
 target_klass: 'Sequence'
