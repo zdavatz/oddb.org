@@ -19,8 +19,8 @@ module ODDB
 			end
 			def activation_charge_count
 				count = 0
-				count += 1 unless @fi_quantity==""
-				count += 1 unless @pi_quantity==""
+				count += 1 unless (@fi_quantity=="" || @fi_quantity=="0")
+				count += 1 unless (@pi_quantity=="" || @pi_quantity=="0")
 				count
 			end
 			def fi_charge
