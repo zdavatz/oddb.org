@@ -16,8 +16,9 @@ module ODDB
 			elsif(match = /^(.*)=$/.match(key))
 				old = @values[match[1]]
 				ret = @values[match[1]] = args.first
-				@values.odba_store
-				if(old.respond_to?(:odba_delete))
+				ret.odba_isolated_store
+				@values.odba_isolated_store
+				if(old.respond_to?(:odba_delete) && !old.eql?(ret))
 					old.odba_delete
 				end
 				ret
