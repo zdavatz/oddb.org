@@ -43,12 +43,12 @@ module ODDB
 			@app = app
 			@smj_updated = false
 		end
-		def export_ouwerkerk
+		def export_ouwerkerk(date = Date.today)
 			subj = 'Med-Drugs' 
 			wrap_update(OuwerkerkPlugin, subj) {
 				plug = OuwerkerkPlugin.new(@app)
 				plug.export_xls
-				log = Log.new(@smj_updated)
+				log = Log.new(date)
 				log.update_values(log_info(plug))
 				log.notify(subj)
 			}
@@ -108,7 +108,6 @@ module ODDB
 				reconsider_bsv
 			end
 			if(@smj_updated)
-				export_ouwerkerk
 				update_medwin_companies
 			end
 		end

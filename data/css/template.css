@@ -1497,4 +1497,9 @@ td.wait {
 td.bg-red{
 	background-color: #FF0000;
 }
-
+td.confirm {
+	padding: 6px;
+	background : $rslt_bg;
+	font-size: 14px;
+	font-weight: bold;
+}

@@ -17,6 +17,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENTS = {
 		[0,0]		=>	:language_chooser,
 		[0,1]		=>	View::Admin::CenteredSearchForm,
+		[0,3]		=>	:release_ouwerkerk,
 		[0,4]		=>	View::CenteredNavigation,
 		[0,5]		=>	:database_size,
 		[0,5,1]	=>	'database_size_text',
@@ -34,6 +35,15 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	}
 	def substance_count(model, session)
 		@session.app.substance_count
+	end
+	def release_ouwerkerk(model, session)
+		if(@session.user.is_a?(RootUser))
+			button = HtmlGrid::Button.new(:release_ouwerkerk, 
+				model, session, self)
+			url = @lookandfeel.event_url(:release)
+			button.set_attribute('onclick', "window.location.href='#{url}'")
+			button
+		end
 	end
 end	
 		end

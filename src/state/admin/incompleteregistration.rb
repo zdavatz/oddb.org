@@ -14,12 +14,24 @@ class IncompleteReg < State::Admin::Registration
 	VIEW = View::Admin::IncompleteRegistration
 	def accept
 		update_incomplete()
+		flags = @session.user_input(:change_flags)
 		if(@model.acceptable? || @session.app.registration(@model.iksnr))
-			mdl = @session.app.accept_incomplete_registration(@model)
-			State::Admin::Registration.new(@session, mdl)
-		else
-			#@errors.store(create_error(:e_incomplete))
-			self
+			if(flags.nil? || flags.empty?)
+				@errors.store(:change_flags, 
+					create_error(:e_missing_change_flags, :change_flags, flags))
+				self
+			else
+				reg = @session.app.accept_incomplete_registration(@model)
+				log = @session.app.log_group(:swissmedic_journal).latest
+				change_flags = flags.collect { |key, val|
+					OuwerkerkPlugin::NUMERIC_FLAGS.index(key.to_i)
+				}
+				log.change_flags[reg.pointer] ||= []
+				log.change_flags[reg.pointer] += change_flags
+				log.change_flags[reg.pointer].uniq!
+				log.odba_store
+				State::Admin::Registration.new(@session, reg)
+			end
 		end
 	end
 	def delete

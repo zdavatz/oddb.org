@@ -99,6 +99,7 @@ module ODDB
 			:preview,
 			:print,
 			:recent_registrations,
+			:release,
 			:resolve,
 			:result,
 			:search,
@@ -126,6 +127,7 @@ module ODDB
 			:patinfo_upload,
 		]
 		NUMERIC = [
+			:change_flags,
 			:fi_quantity,
 			:limitation_points,
 			:pi_quantity,
