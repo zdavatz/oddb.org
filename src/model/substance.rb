@@ -164,7 +164,7 @@ module ODDB
 		end
 		def same_as?(substance)
 			teststr = substance.to_s.downcase
-			name == teststr \
+			name.to_s.downcase == teststr \
 				|| descriptions.any? { |lang, desc|
 					desc.is_a?(String) && desc.downcase == teststr
 				} || (connection_keys.include?(format_connection_key(teststr)))
