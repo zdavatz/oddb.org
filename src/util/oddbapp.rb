@@ -80,6 +80,7 @@ class OddbPrevalence
 		@substances ||= {}
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
+		rebuild_atc_chooser
 		#rebuild_indices
 	end
 	# prevalence-methods ################################
@@ -190,6 +191,7 @@ class OddbPrevalence
 			}
 		end
 	end
+=end
 	def clear_indices
 		@sequence_index = nil
 		@indication_index = nil
@@ -199,7 +201,6 @@ class OddbPrevalence
 		@atc_index = nil
 		@atc_chooser = nil
 	end
-=end
 	def company(oid)
 		@companies[oid.to_i]
 	end
@@ -445,23 +446,39 @@ class OddbPrevalence
 		ODBA.scalar_cache.scalar_cache.size
 		ODBA.cache_server.indices.size
 		#delete_if only for Testing!!!!!
-		@fachinfos.delete_if{|key, val| val.descriptions["de"].name.nil?}	
-		#@atc_classes.delete_if{|key, atc| atc.sequences.empty?}
+		@fachinfos.delete_if { |key, val| val.descriptions["de"].name.nil? }
+		#@atc_classes.delete_if{ |key, atc| atc.sequences.empty? }
 		clear_indices
+		path = File.expand_path('../../data/odba-csv', File.dirname(__FILE__))
+		ODBA.storage = ODBA::FlatFileStorage.new(path)
+		start = Time.now
 		odba_store('oddbapp')
+		stored = Time.now
+		ODBA.storage.close
 		#odba_take_snapshot
-		rebuild_odba_indices
+		#rebuild_odba_indices
+		indexed = Time.now
+		puts <<-EOS
+#{(stored - start).to_f / 3600} h to save OddbPrevalence and all its unsaved neighbors
+#{(indexed - start).to_f / 3600} h Total time elapsed
+		EOS
+#{(indexed - stored).to_f / 3600} h to write all defined Indices
 	end			
 	def rebuild_odba_indices
 		begin
+			start = Time.now
 			path = File.expand_path("../../etc/index_definitions.yaml", 
 				File.dirname(__FILE__))
 			file = File.open(path)
 			YAML.load_documents(file) { |index_definition|
+				index_start = Time.now
+				puts "creating: #{index_definition.index_name}"
 				ODBA.cache_server.create_index(index_definition, ODDB)
-				puts "name: #{index_definition.index_name}"
-					ODBA.cache_server.fill_index(index_definition.index_name, instance_eval(index_definition.init_source))
+				puts "filling: #{index_definition.index_name}"
+				ODBA.cache_server.fill_index(index_definition.index_name, instance_eval(index_definition.init_source))
+				puts "finished in #{(Time.now - index_start) / 60.0} min"
 			}
+			puts "all Indexes Created in total: #{(Time.now - start) / 3600.0} h"
 		rescue
 			puts "INDEX CREATION ERROR"
 		ensure
@@ -472,6 +489,10 @@ class OddbPrevalence
 		base = File.expand_path("../../ext/fulltext/data/dicts/#{language}", 
 			File.dirname(__FILE__))
 		ODBA.storage.generate_dictionary(language, locale, base)
+	end
+	def generate_dictionaries
+		generate_french_dictionary
+		generate_german_dictionary
 	end
 	def generate_french_dictionary
 		generate_dictionary('french', 'fr_FR@euro')
@@ -507,6 +528,14 @@ class OddbPrevalence
 			inj += reg.package_count
 		}
 	end
+	def rebuild_atc_chooser
+		@atc_chooser = ODDB::AtcNode.new(nil)
+		@atc_classes.values.sort_by { |atc| 
+			atc.code 
+		}.each { |atc|
+			@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
+		}
+	end
 =begin
 	def rebuild_indices
 		@indication_index = Datastructure::CharTree.new
@@ -518,12 +547,6 @@ class OddbPrevalence
 		@atc_index = Datastructure::CharTree.new
 		@atc_classes.each_value { |atc|
 			store_in_index(@atc_index, atc.code, atc)
-		}
-		@atc_chooser = ODDB::AtcNode.new(nil)
-		@atc_classes.values.sort_by { |atc| 
-			atc.code 
-		}.each { |atc|
-			@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
 		}
 	end
 =end
@@ -710,21 +733,19 @@ module ODDB
 		attr_reader :cleaner, :updater
 		def initialize
 			puts STORAGE_PATH
-#=begin
+=begin
 		 	@prevalence = Madeleine::SnapshotMadeleine.new(STORAGE_PATH) {
 				sys = OddbPrevalence.new
 			}
 			puts "prevalence initialized"
 			@system = @prevalence.system
-#=end
-=begin
+=end
+#=begin
 			ODBA.cache_server.prefetch
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
-				puts "new oddbprevalence created"
-				puts "with db start"
 				@system.OddbPrevalence.new
 			}
-=end
+#=end
 			puts "system init..."
 			@system.init
 			#@system.odba_store
@@ -736,6 +757,10 @@ module ODDB
 			puts "reset"
 			reset()
 			puts "system initialized"
+
+			## only for profiling
+			#require 'profile'
+			#rebuild_odba
 		end
 		# prevalence-methods ################################
 		def accept_incomplete_registration(reg)

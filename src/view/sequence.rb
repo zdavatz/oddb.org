@@ -39,7 +39,7 @@ module ODDB
 		end
 	end
 	module SequencePackageList 
-			include DataFormat
+		include DataFormat
 		COMPONENTS = {
 			[0,0]	=>	:ikscd,
 			[1,0]	=>	:most_precise_dose,

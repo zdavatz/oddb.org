@@ -17,9 +17,9 @@ module ODDB
 	class Updater
 		# Recipients for all Update-Logs go here...
 		RECIPIENTS = [
-		#'hwyss@ywesee.com',
+			'hwyss@ywesee.com',
 		#'zdavatz@ywesee.com',
-			'maege@ywesee.com',
+		#	'maege@ywesee.com',
 		]
 		LOG_RECIPIENTS = {
 			:powerlink	=>	['matthijs.ouwerkerk@just-medical.com'],

@@ -8,7 +8,7 @@ require 'spreadsheet/excel'
 module ODDB
 	class OuwerkerkPlugin < Plugin
 		RECIPIENTS = [
-		  'matthijs.ouwerkerk@just-medical.com',
+			#'matthijs.ouwerkerk@just-medical.com',
 		]
 		NUMERIC_FLAGS = {
 			:new							=>	1,
