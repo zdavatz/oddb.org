@@ -106,18 +106,27 @@ class Sequence < State::Drugs::Global
 			if(pi_file.read(4) == "%PDF")
 				pi_file.rewind
 				filename = "#{@model.iksnr}_#{@model.seqnr}.pdf"
-				@model.pdf_patinfo = filename
 				FileUtils.mkdir_p(self::class::PDF_DIR)
 				store_file = File.new(File.expand_path(filename, self::class::PDF_DIR), "w")
 				store_file.write(pi_file.read)
 				store_file.close
+				@model.pdf_patinfo = filename
+				invoice_pointer = Persistence::Pointer.new([:invoice, :patinfo])
+				@session.app.create(invoice_pointer)
+				item_pointer = invoice_pointer + :item
+				values = {
+					:user_pointer	=>	@session.user.pointer,
+					:time					=>	Time.now,
+					:item_pointer =>	@model.pointer,
+				}
+				@session.app.update(item_pointer.creator, values)
 				input.store(:pdf_patinfo, filename)
 			else
 				add_warning(:w_no_patinfo_saved, :patinfo_upload, nil)
 			end
-			@model = @session.app.update(@model.pointer, input)
-			self
 		end
+		@model = @session.app.update(@model.pointer, input)
+		self
 	end
 end
 class CompanySequence < State::Drugs::Sequence
