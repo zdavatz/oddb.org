@@ -71,21 +71,21 @@ module ODDB
 		DICTIONARIES = {
 			'de'	=>	{
 				:html_title		=>	'cc: an alle - generika.cc - betreff: Gesundheitskosten senken!', 
-				:home_welcome							=>  "Willkommen bei generika.cc, dem<br>aktuellsten Medikamenten-Portal der Schweiz.<br><a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>Herkunftsdeklaration</a> der Daten",
+				:home_welcome							=>  "Willkommen bei generika.cc, dem<br>aktuellsten Medikamenten-Portal der Schweiz.<br>** <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>Herkunftsdeklaration</a> der Daten **",
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Willkommen bei Generika.cc',
 				:lookandfeel_owner =>	'Generika.cc',
 			},
 			'fr'	=>	{
 				:html_title		=>	'cc: pour tous - generika.cc - concerne: r&eacute;duire les co&ucirc;ts de la sant&eacute;!', 
-				:home_welcome							=>  "Bienvenue sur generika.cc,<br>le portail des g&eacute;n&eacute;riques de Suisse avec<br>tous les m&eacute;dicaments disponibles sur le march&eacute; suisse!<br><a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>D&eacute;claration d'origine</a> des donn&eacute;es",
+				:home_welcome							=>  "Bienvenue sur generika.cc,<br>le portail des g&eacute;n&eacute;riques de Suisse avec<br>tous les m&eacute;dicaments disponibles sur le march&eacute; suisse!<br>** <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>D&eacute;claration d'origine</a> des donn&eacute;es **",
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Bienvenu sur Generika.cc',
 				:lookandfeel_owner =>	'Generika.cc',
 			},
 			'en'	=>	{
 				:html_title		=>	'cc: to everybody - generika.cc - subject: reduce health costs!', 
-				:home_welcome							=>  "Welcome to generika.cc<br>the open drug database of Switzerland.<br><a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>Declaration of origin</a> of the data",
+				:home_welcome							=>  "Welcome to generika.cc<br>the open drug database of Switzerland.<br>** <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>Declaration of origin</a> of the data **",
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Welcome to Generika.cc',
 				:lookandfeel_owner =>	'Generika.cc',
