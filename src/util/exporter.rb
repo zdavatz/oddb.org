@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # Exporter -- oddb -- 30.07.2003 -- hwyss@ywesee.com 
 
-require 'plugin/galdat_export'
+require 'plugin/oddbdat_export'
 require 'plugin/fipdf'
 require 'plugin/yaml'
 
@@ -13,11 +13,11 @@ module ODDB
 		def run
 			export_yaml
 			GC.start
-			export_galdat
+			export_oddbdat
 			GC.start
 		end
-		def export_galdat
-			GaldatExport.new(@app).run
+		def export_oddbdat
+			OddbDatExport.new(@app).run
 		end
 		def export_yaml
 			YamlExporter.new(@app).run

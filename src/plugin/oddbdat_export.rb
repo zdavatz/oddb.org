@@ -1,5 +1,5 @@
 #/usr/bin/env ruby
-# GaldatExport -- oddb -- 23.06.2003 -- aschrafl@ywesee.com
+# OddbDatExport -- oddb -- 23.06.2003 -- aschrafl@ywesee.com
 
 require 'plugin/plugin'
 require 'util/persistence'
@@ -10,7 +10,7 @@ require 'archive/tarsimple'
 require 'zip/zip'
 
 module ODDB
-	class GaldatExport < Plugin
+	class OddbDatExport < Plugin
 		def initialize(app)
 			@date = Date.today 
 			super
@@ -77,7 +77,7 @@ module ODDB
 			end
 		end
 		def compress_tar(tar_name, files)
-			path = GaldatExport.system_targetdir()
+			path = OddbDatExport.system_targetdir()
 			old_dir = Dir.pwd
 			Dir.chdir(path)
 			gz_name = tar_name + ".gz"
@@ -88,7 +88,7 @@ module ODDB
 			Dir.chdir(old_dir)
 		end
 		def compress_zip(zip_name, files)
-			path = GaldatExport.system_targetdir()
+			path = OddbDatExport.system_targetdir()
 			old_dir = Dir.pwd
 			Dir.chdir(path)
 			File.delete(zip_name) if File.exists?(zip_name) 
@@ -104,10 +104,10 @@ module ODDB
 			export
 			compress
 		end
-		def GaldatExport.http_targetdir
+		def OddbDatExport.http_targetdir
 			Table::DIRPATH
 		end
-		def GaldatExport.system_targetdir
+		def OddbDatExport.system_targetdir
 			Table::DOCUMENT_ROOT + Table::DIRPATH
 		end
 		class Table
@@ -377,7 +377,7 @@ module ODDB
 				file << self.to_s
 			end
 			def to_s
-				#LookandfeelBase::DICTIONARIES['de'][:galdat_download_descr]
+				#LookandfeelBase::DICTIONARIES['de'][:oddbdat_download_descr]
 				#=begin
 				<<-EOS
 oddbdat.tar.gz und oddbdat.zip enthalten die täglich aktualisierten Artikelstammdaten der ODDB. Die Daten werden von ywesee in das OddbDat-Format umgewandelt und allen gewünschten Systemlieferanten von Schweizer Spitälern zur Verfügung gestellt.
@@ -454,7 +454,7 @@ http://www.oddb.org/resources/downloads/oddbdat.zip
 				return [] if structure.nil?
 				fields = Array.new(self::class::LENGTH)
 				structure.each_pair { |place, field|
-					# schlüssel in structure entsprechen der Galdat-Doku
+					# schlüssel in structure entsprechen der OddbDat-Doku
 					fields[place-1] = field 
 				}
 				fields
