@@ -82,10 +82,10 @@ class FeedbackForm < HtmlGrid::Form
 	end
 	def feedback_text_e(model)
 		input = HtmlGrid::Textarea.new(:message, model, @session, self)
-		input.set_attribute('cols', 40)
+		input.set_attribute('cols', 53)
 		input.set_attribute('rows', 4)
 		input.set_attribute('wrap', true)
-		js = "if(this.value.length > 200) { (this.value = this.value.substr(0,200))}" 
+		js = "if(this.value.length > 400) { (this.value = this.value.substr(0,400))}" 
 		input.set_attribute('onKeypress', js)
 		input.label = true
 		input
