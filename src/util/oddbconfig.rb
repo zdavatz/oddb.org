@@ -23,6 +23,7 @@ module ODDB
 	FIPDF_URI = "druby://localhost:10003"
 	DOCPARSE_URI = "druby://localhost:10004"
 	EXPORT_URI = "druby://localhost:10005"
+	MEDDATA_URI = "druby://localhost:10006"
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
 end
 
@@ -31,8 +32,6 @@ module ODBA
 		MAIL_FROM = 'odba@oddb.org'
 		MAIL_RECIPIENTS = [
 			"hwyss@ywesee.com",
-			"rwaltert@ywesee.com",
-			"mwalder@ywesee.com",
 		]
 		SMTP_SERVER = ::ODDB::SMTP_SERVER
 	end

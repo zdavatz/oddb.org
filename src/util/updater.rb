@@ -6,6 +6,7 @@ require 'plugin/doctors'
 require 'plugin/fachinfo'
 require 'plugin/interaction'
 require 'plugin/patinfo'
+require 'plugin/hospitals'
 require 'plugin/bsv'
 require 'plugin/ouwerkerk'
 require 'plugin/limitation'
@@ -13,6 +14,7 @@ require 'plugin/medwin'
 require 'plugin/who'
 require 'util/log'
 require 'util/persistence'
+require 'ext/meddata/src/ean_factory'
 
 module ODDB
 	class Updater
@@ -154,6 +156,9 @@ module ODDB
 		end
 		def update_fachinfo_news
 			update_simple(FachinfoPlugin, 'Fachinfo', :update_news)
+		end
+		def update_hospitals
+			update_simple(HospitalPlugin, 'Hospitals', :update, nil, false)
 		end
 		def update_all_fachinfo
 			update_simple(FachinfoPlugin, "Complete Fachinfo", :update_all)
