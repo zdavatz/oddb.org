@@ -505,8 +505,9 @@ class OddbPrevalence
 		@sponsor ||= ODDB::Sponsor.new
 	end
 	def store_in_index(index, key, *values)
-		parts = key.to_s.split(/\s+/)
-		parts << key.to_s
+		key = key.to_s.gsub(/[^a-zA-Z0-9áéíóúàèìòùâêîôûäëïöüÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÄËÏÖÜ+-_="'.*ç%&\/()=!]/, '')
+		parts = key.split(/\s+/)
+		parts << key
 		parts.uniq!
 		parts.each { |part|
 			index.store(part.downcase, *values) if part.length > 3
