@@ -110,3 +110,14 @@ resolve_target: ''
 resolve_origin: ''
 init_source: '@companies.values'
 fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'indication_index'
+origin_klass: 'Indication'
+target_klass: 'Indication'
+resolve_search_term: 'search_text'
+resolve_target: ''
+resolve_origin: ''
+dictionary: 'default'
+init_source: '@indications.values'
+fulltext: true
+

@@ -3,6 +3,7 @@
 
 require 'state/drugs/global'
 require 'state/drugs/sequence'
+require 'state/drugs/selectindication'
 require 'state/drugs/fachinfoconfirm'
 require 'model/fachinfo'
 require 'view/drugs/registration'
@@ -39,6 +40,7 @@ class Registration < State::Drugs::Global
 	end
 	private
 	def do_update(keys)
+		new_state = self
 		hash = user_input(keys)
 		comp_name = @session.user_input(:company_name)
 		if(company = @session.app.company_by_name(comp_name))
@@ -48,11 +50,16 @@ class Registration < State::Drugs::Global
 			@errors.store(:company_name, err)
 		end
 		ind = user_input(:indication)
+		sel = nil
 		if(indication = @session.app.indication_by_text(ind))
 			hash.store(:indication, indication.pointer)
 		elsif(!ind.empty?)
-			err = create_error(:e_unknown_indication, :indication, ind)
-			@errors.store(:indication, err)
+			#err = create_error(:e_unknown_indication, :indication, ind)
+			#@errors.store(:indication, err)
+			hash.store(:indication, ind)
+			sel = State::Drugs::SelectIndication::Selection.new(hash, 
+				@session.search_indications(ind), @model)
+			new_state = State::Drugs::SelectIndication.new(@session, sel)
 		end
 		if(fi_file = @session.user_input(:fachinfo_upload)) 
 			four_bytes = fi_file.read(4)
@@ -66,13 +73,16 @@ class Registration < State::Drugs::Global
 				}
 				hash.store(:pdf_fachinfo, filename)
 			elsif(documents = parse_fachinfo(fi_file))
-				State::Drugs::FachinfoConfirm.new(@session, documents)
+				new_state = State::Drugs::FachinfoConfirm.new(@session, documents)
 			else
 				add_warning(:w_no_fachinfo_saved, :fachinfo_upload, nil)
 			end
 		end
 		@model = @session.app.update(@model.pointer, hash)
-		self
+		if(sel)
+			sel.registration = @model
+		end
+		new_state
 	end
 	def parse_fachinfo(file)
 		begin
