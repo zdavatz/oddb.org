@@ -27,7 +27,7 @@ module ODDB
 		class ScTable; end
 		class CompTable; end
 		class Readme; end
-class OddbDatExport < Plugin
+class OddbDatExport < ODDB::Plugin
 	DOCUMENT_ROOT = File.expand_path('../../doc/', File.dirname(__FILE__))
 	EXPORT_DIR = File.expand_path('resources/downloads', DOCUMENT_ROOT)
 	EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
@@ -66,16 +66,12 @@ class OddbDatExport < Plugin
 		
 		# compress
 		EXPORT_SERVER.compress_many(EXPORT_DIR, 'oddbdat', files)
-
-		# fachinfo table
-		if(Date.today.wday == 1)
-			ids = @app.fachinfos.collect { |oid, fachinfo| fachinfo.odba_id }
-			files = EXPORT_SERVER.export_oddbdat(ids, EXPORT_DIR, [MCMTable])
-			EXPORT_SERVER.compress(EXPORT_DIR, files.first)
-		end
 	end
-	def run		
-		export
+	def export_fachinfos
+		# fachinfo table
+		ids = @app.fachinfos.collect { |oid, fachinfo| fachinfo.odba_id }
+		files = EXPORT_SERVER.export_oddbdat(ids, EXPORT_DIR, [MCMTable])
+		EXPORT_SERVER.compress(EXPORT_DIR, files.first)
 	end
 end
 	end

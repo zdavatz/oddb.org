@@ -34,7 +34,7 @@ class OddbPrevalence
 	attr_reader :orphaned_patinfos, :orphaned_fachinfos
 	attr_reader :fachinfos
 	attr_reader :patinfos_deprived_sequences, :patinfos
-	attr_reader :invoice_types
+	attr_reader :invoices
 	def initialize		
 		super
 		@atc_classes ||= {}

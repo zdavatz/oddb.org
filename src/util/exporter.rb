@@ -16,15 +16,25 @@ module ODDB
 			mail_download_stats
 			mail_feedback_stats
 			export_yaml
-			GC.start
 			export_oddbdat
-			GC.start
 		end
 		def export_oddbdat
-			OddbDatExport.new(@app).run
+			exporter = OdbaExporter::OddbDatExport.new(@app)
+			exporter.export
+			run_on_weekday(1) {
+				exporter.export_fachinfos
+			}
 		end
 		def export_yaml
-			YamlExporter.new(@app).run
+			exporter = YamlExporter.new(@app)
+			exporter.export
+			exporter.export_atc_classes
+			run_on_weekday(2) {
+				exporter.export_fachinfos
+			}
+			run_on_weekday(3) {
+				exporter.export_patinfos
+			}
 		end
 		def export_pdf
 			FiPDFExporter.new(@app).run

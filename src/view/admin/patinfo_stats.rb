@@ -6,6 +6,7 @@ require 'htmlgrid/list'
 require 'htmlgrid/link'
 require 'view/form'
 require 'view/publictemplate'
+require 'view/resulttemplate'
 require 'view/additional_information'
 
 module ODDB
@@ -105,7 +106,7 @@ class PatinfoStatsComposite < HtmlGrid::Composite
 	}
 	CSS_CLASS = 'composite'
 end
-class PatinfoStats < View::PublicTemplate
+class PatinfoStats < View::ResultTemplate
 	CONTENT = View::Admin::PatinfoStatsComposite
 end
 		end
