@@ -26,7 +26,7 @@ module ODDB
 				File.delete(gz_name) if(File.exist?(gz_name))
 				File.delete(zip_name) if(File.exist?(zip_name))
 				gzwriter = 	Zlib::GzipWriter.open(gz_name)
-				zipwriter = Zip::ZipOutputStream.open(zipname)
+				zipwriter = Zip::ZipOutputStream.open(zip_name)
 				zipwriter.put_next_entry(name)
 				File.open(name, "r") { |fh|
 					fh.each { |line|
