@@ -24,6 +24,11 @@ module Datastructure
 		attr_reader :hash
 	end
 end
+module ODBA
+	class StorageStub
+		attr_accessor :next_id
+	end
+end
 module ODDB
 	class RootUser
 		def initialize
@@ -40,6 +45,7 @@ module ODDB
 		attr_accessor :packages, :active_agents
 	end
 	module Persistence
+		include ODBA
 		class Pointer
 			public :directions
 		end
@@ -176,7 +182,23 @@ class TestOddbApp < Test::Unit::TestCase
 	def setup
 		ODDB::GalenicGroup.reset_oids
 		dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id){
+			1
+		}
 		@app = ODDB::App.new
+		ODBA.storage.__next(:next_id){
+			2
+		}
+		ODBA.storage.__next(:next_id){
+			3
+		}
+		ODBA.storage.__next(:next_id){
+			4
+		}
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_galenic_group_initialized
 		expected_pointer = ODDB::Persistence::Pointer.new([:galenic_group, 1])
@@ -319,7 +341,7 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.galenic_groups = {}
 		pointer = ODDB::Persistence::Pointer.new([:galenic_group])
 		galgroup = @app.create(pointer)
-		assert_equal(galgroup, @app.galenic_group(galgroup.oid))
+		assert_equal(galgroup.oid, @app.galenic_group(galgroup.oid).oid)
 		assert_equal(1, @app.galenic_groups.size)
 	end
 	def test_create_substance
@@ -459,22 +481,22 @@ class TestOddbApp < Test::Unit::TestCase
 	end
 	def test_delete_company
 		company3 = @app.create_company
-		@app.companies = {3 => company3}
+		@app.companies = {company3.oid => company3}
 		company2 = @app.create_company
-		company3.name = 'ehz'
 		company2.name = 'ywesee'
-		expected1 = {company2.oid => company2, 3 => company3}
+		company3.name = 'ehz'
+		expected1 = {company2.oid => company2, company3.oid => company3}
+		puts expected1.inspect
 		assert_equal(expected1, @app.companies)
 		@app.delete_company(company2.oid)
-		expected2 = {3 => company3}
+		expected2 = {company3.oid => company3}
 		assert_equal(expected2, @app.companies)
 	end
 	def test_delete_doctor
-		doctor3 = @app.create_doctor
-		#@app.doctors = {doctor3.oid => doctor3}
 		doctor2 = @app.create_doctor
-	  doctor3.name = 'foobaz'
+		doctor3 = @app.create_doctor
 	  doctor2.name = 'foobar'
+	  doctor3.name = 'foobaz'
 		expected1 = {doctor2.oid => doctor2, doctor3.oid => doctor3}
 		assert_equal(expected1, @app.doctors)
 		@app.delete_doctor(doctor2.oid)

@@ -17,13 +17,17 @@ require 'util/oddbconfig'
 require 'etc/db_connection'
 
 module ODBA
+	class Cache
+		CLEANER_PRIORITY = 1
+		CLEANING_INTERVAL = 60
+	end
 	class CacheEntry
 		remove_const :CLEAN_PREFETCHABLE
 		CLEAN_PREFETCHABLE = true
 		remove_const :RETIRE_TIME
-		RETIRE_TIME = 150
+		RETIRE_TIME = 60
 		remove_const :DESTROY_TIME
-		DESTROY_TIME =  300
+		DESTROY_TIME = 120
 	end
 end
 module ODDB
@@ -45,6 +49,7 @@ module ODDB
 			}
 			FileUtils.mv(gz_name, name + '.gz')
 			FileUtils.mv(zip_name, name + '.zip')
+			name
 		ensure
 			gzwriter.close unless gzwriter.nil?
 			zipwriter.close unless zipwriter.nil?
@@ -70,6 +75,7 @@ module ODDB
 				}
 			}
 			FileUtils.mv(zip_name, name + '.zip')
+			name
 		end
 		def export_yaml(odba_ids, dir, name)
 			FileUtils.mkdir_p(dir)
@@ -81,7 +87,7 @@ module ODDB
 				FileUtils.mv(fh.path, newpath)
 				compress(dir, name)
 			}
-			nil
+			name
 		end
 		def export_oddbdat(odba_ids, dir, klasses)
 			FileUtils.mkdir_p(dir)

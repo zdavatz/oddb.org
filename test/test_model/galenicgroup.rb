@@ -6,33 +6,26 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/galenicgroup'
+require 'odba'
+require 'mock'
 
-
-module ODDB
-	module Persistable
-		@@id = 0;
-		def odba_store
-		end
-		def odba_id
-			if(!@oid)
-				@@id += 1
-				@oid = @@id
-			end
-			@oid
-		end
-		def odba_isolated_store
-		end
-	end
-end
 module ODDB
 	class GalenicGroup
-		include ODDB::Persistable
-		def reset_oids
-			@@id = 0 
-		end
 		attr_accessor :galenic_forms
+		def GalenicGroup::reset_oids
+			@oid = 0
+		end
 	end
 end
+module ODBA
+	module Persistable
+		def odba_isolated_store
+		end
+		def odba_store
+		end
+	end
+end
+
 class TestGalenicGroup < Test::Unit::TestCase
 	class Hash
 		include ODBA::Persistable
@@ -68,10 +61,24 @@ class TestGalenicGroup < Test::Unit::TestCase
 	end
 
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
+		ODBA.storage.__next(:next_id) {
+			2
+		}
+		ODBA.storage.__next(:next_id) {
+			3
+		}
+		ODDB::GalenicGroup.reset_oids
 		ODDB::GalenicGroup.reset_oids
 		StubForm.reset_oid
 		@group = ODDB::GalenicGroup.new
 		@group.pointer = ODDB::Persistence::Pointer.new([:galenic_group, 1])
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_oid
 		assert_equal(1, @group.oid)

@@ -96,6 +96,7 @@ module ODDB
 		end
 		class CenteredSearchComposite < HtmlGrid::Composite
 			include LegalNoteLink
+			include LanguageChooserFactory
 			COMPONENTS = {}
 			CSS_CLASS = 'composite'
 			CSS_MAP = {
@@ -211,9 +212,6 @@ module ODDB
 				link.label = true
 				link.set_attribute('class', 'list')
 				link
-			end
-			def language_chooser(model, session)
-				LanguageChooser.new(@lookandfeel.languages, session, self)
 			end
 			def legal_note(model, session)
 				link = HtmlGrid::Link.new(:legal_note, model, @session, self)

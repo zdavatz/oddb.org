@@ -6,9 +6,12 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'state/global'
+require 'mock'
 require 'util/language'
 #require 'sbsm/validator'
 require 'sbsm/state'
+require 'odba'
+
 
 module ODDB
 	module State
@@ -75,8 +78,15 @@ end
 			end
 
 			def setup
+				ODBA.storage = Mock.new
+				ODBA.storage.__next(:next_id) {
+					1
+				}
 				@session = StubSession.new
 				@state = State::Global.new(@session, @session)
+			end
+			def teardown
+				ODBA.storage = nil
 			end
 			def test_resolve1
 				@company = StubCompany.new

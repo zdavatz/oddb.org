@@ -6,6 +6,8 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/package'
+require 'mock'
+require 'odba'
 
 module ODDB
 	class Package
@@ -49,8 +51,21 @@ end
 
 class TestPackage < Test::Unit::TestCase
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
+		ODBA.storage.__next(:next_id) {
+			2
+		}
+		ODBA.storage.__next(:next_id) {
+			3
+		}
 		@package = ODDB::Package.new('12')
 		@package.sequence = StubPackageSequence.new
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_initialize
 		assert_equal('012', @package.ikscd)
@@ -293,10 +308,17 @@ class TestPackage < Test::Unit::TestCase
 end
 class TestIncompletePackage < Test::Unit::TestCase
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
 		@pack = ODDB::IncompletePackage.new(12)
 		@pack.size = '12 x 34 mg'
 		@pack.ikscat = 'A'
 		@pack.price_public = 1234
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_accepted
 		app = StubPackageApp.new

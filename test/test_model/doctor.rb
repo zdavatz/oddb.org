@@ -7,6 +7,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'model/doctor'
 require 'mock'
+require 'odba'
 
 module ODDB
 	class TestDoctor < Test::Unit::TestCase
@@ -16,7 +17,14 @@ module ODDB
 			end
 		end
 		def setup
+			ODBA.storage = Mock.new
+			ODBA.storage.__next(:next_id){
+				1
+			}
 			@doctor = Doctor.new
+		end
+		def teardown
+			ODBA.storage = nil
 		end
 		def test_init
 			pointer = Mock.new('Pointer')

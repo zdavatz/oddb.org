@@ -6,11 +6,19 @@ $: << File.expand_path('../../src', File.dirname(__FILE__))
 require 'test/unit'
 require 'model/feedback'
 require 'mock'
+require 'odba'
 
 module ODDB
 	class TestFeedback < Test::Unit::TestCase
 		def setup
+			ODBA.storage = Mock.new
+			ODBA.storage.__next(:next_id) {
+				1
+			}
 			@feedback = Feedback.new
+		end
+		def teardown
+			ODBA.storage = nil
 		end
 		def test_init
 			ptr = Mock.new('Pointer')

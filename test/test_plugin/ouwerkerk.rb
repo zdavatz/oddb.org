@@ -9,6 +9,8 @@ require 'plugin/ouwerkerk'
 require 'model/atcclass'
 require 'model/galenicform'
 require 'model/indication'
+require 'mock'
+require 'odba'
 
 module ODDB
 	class OuwerkerkPlugin < Plugin
@@ -66,6 +68,16 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 	end
 
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
+		ODBA.storage.__next(:next_id) {
+			2
+		}
+		ODBA.storage.__next(:next_id) {
+			3
+		}
 		@app = StubApp.new
 		@plugin = ODDB::OuwerkerkPlugin.new(@app)
 		@atc_class = ODDB::AtcClass.new('A01BC23')
@@ -79,6 +91,7 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 			File.delete(@plugin.file_path)
 			Dir.delete(File.dirname(@plugin.file_path))
 		end
+		ODBA.storage = nil
 	end
 	def test_log_info
 		log = StubLogGroup.new

@@ -7,7 +7,6 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'model/activeagent'
 require 'mock'
-
 module ODDB
 	class ActiveAgentCommon
 		public :adjust_types

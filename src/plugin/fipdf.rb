@@ -3,6 +3,7 @@
 
 require 'plugin/plugin'
 require 'util/oddbconfig'
+require 'drb'
 require 'model/fachinfo'
 require 'delegate'
 

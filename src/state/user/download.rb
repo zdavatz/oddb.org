@@ -22,6 +22,7 @@ class Download < State::User::Global
 		outgoing = TMail::Mail.new
 		outgoing.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
 		outgoing.to = [recipient]
+		outgoing.from = MAIL_FROM
 		outgoing.subject = @session.lookandfeel.lookup(:download_mail_subject)
 		outgoing.body = @session.lookandfeel.lookup(:download_mail_body, 
 			recipient)
