@@ -11,6 +11,17 @@ require 'sbsm/request'
 require 'stub/cgi'
 require 'stub/session'
 
+module Apache
+	class Request
+		def headers_in
+			{}
+		end
+	end
+	def request
+		Request.new
+	end
+	module_function :request
+end
 class TestOddbSession < Test::Unit::TestCase
 	class StubUnknownUser
 	end

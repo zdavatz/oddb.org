@@ -133,6 +133,7 @@ module ODDB
 				:email_header							=>	'Email',
 				:empty_list								=>	'Es wurden keine Eintr&auml;ge gefunden.',
 				:en												=>	'Englisch',
+				:exact_match							=>	'Nur genaue &Uuml;bereinstimmungen anzeigen',
 				:exception_header					=>	'Es ist ein Fehler aufgetreten:',
 				:expiration_date					=>	'G&uuml;ltig bis',
 				:explain_complementary		=>	'Pink&nbsp;=&nbsp;Arzneimittel der Komplement&auml;rmedizin',
