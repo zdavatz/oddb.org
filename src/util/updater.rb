@@ -17,8 +17,8 @@ module ODDB
 	class Updater
 		# Recipients for all Update-Logs go here...
 		RECIPIENTS = [
-			'hwyss@ywesee.com',
-			'zdavatz@ywesee.com',
+		#'hwyss@ywesee.com',
+		#	'zdavatz@ywesee.com',
 			'maege@ywesee.com',
 		]
 		LOG_RECIPIENTS = {

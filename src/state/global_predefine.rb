@@ -1,9 +1,32 @@
 #!/usr/bin/env ruby
-# GlobalState -- oddb -- 25.11.2002 -- hwyss@ywesee.com 
+# State::GlobalPredefine -- oddb -- 25.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/state'
 
 module ODDB
-	class GlobalState < SBSM::State
+	module State
+		class Global < SBSM::State
+		end
+		module Admin 
+class Global < State::Global; end
+module Root; end
+module CompanyUser; end
+		end
+		module Companies
+class Global < State::Global; end
+		end
+		module Drugs
+class Global < State::Global; end
+class Init < State::Drugs::Global; end
+		end
+		module Interactions 
+class Global < State::Global; end
+		end
+		module Substances 
+class Global < State::Global; end
+		end
+		module User 
+class Global < State::Global; end
+		end
 	end
 end

@@ -5,17 +5,21 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'state/recentregs'
+require 'state/drugs/recentregs'
 require 'model/registration'
 
 
 module ODDB
-	class RecentRegsState
-		attr_accessor :session, :model
+	module State
+		module Drugs
+class RecentRegs
+	attr_accessor :session, :model
+end
+		end
 	end
 end
 
-class TestRecentRegsState < Test::Unit::TestCase
+class TestRecentRegs < Test::Unit::TestCase
 	class StubPackage
 		attr_reader :ikscd
 		attr_accessor :generic_type
@@ -112,7 +116,7 @@ class TestRecentRegsState < Test::Unit::TestCase
 			33	=>	@package4,
 		}
 		@app.registrations = @registrations
-		@state = ODDB::RecentRegsState.new(@session, nil)
+		@state = ODDB::State::Drugs::RecentRegs.new(@session, nil)
 	end
 	def test_month_range
 		date = Date.new(1983,8,1)
@@ -138,7 +142,7 @@ class TestRecentRegsState < Test::Unit::TestCase
 			@registrations[1],
 			@registrations[4],
 		]
-		pack = ODDB::RecentRegsState::PackageMonth.new(Date.today, regs, @session)
+		pack = ODDB::State::Drugs::RecentRegs::PackageMonth.new(Date.today, regs, @session)
 		expected = [
 			@package1, 
 			@package2, 
@@ -147,7 +151,7 @@ class TestRecentRegsState < Test::Unit::TestCase
 		]
 		assert_equal(expected, pack.packages)
 		pack = @state.create_package_month(Date.today)
-		assert_instance_of( ODDB::RecentRegsState::PackageMonth, pack)
+		assert_instance_of( ODDB::State::Drugs::RecentRegs::PackageMonth, pack)
 		assert_equal(expected, pack.packages)
 	end
 end

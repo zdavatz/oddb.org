@@ -471,7 +471,7 @@ class OddbPrevalence
 		result.delete_if { |atc| atc.code.length == 0 }
 		result
 	end
-	def search_interaction(query)
+	def search_interactions(query)
 		keys = query.to_s.downcase.split(" ")
 		result = []
 		keys.each { |key|
@@ -485,7 +485,7 @@ class OddbPrevalence
 		result.flatten!
 		result
 	end
-	def search_substance(query)
+	def search_substances(query)
 		keys = query.to_s.downcase.split(" ")
 		result = []
 		keys.each { |key|
