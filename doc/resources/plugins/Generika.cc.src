@@ -1,0 +1,34 @@
+# Status: working
+# Mozilla/Netscape 6+ Plugin file
+# by ywesee.com - intellectual capital connected - maege@ywesee.com
+#
+# Created: August 07, 2003
+# Last updated: August 11, 2003
+# for Generika.cc
+
+<search
+	name="Generika.cc"
+	description="Search for Drugs on Generika.cc"
+	action="http://www.oddb.org/index.rbx"
+	searchForm="http://www.oddb.org/index.rbx?event=home&flavor=generika"
+	queryEncoding="ISO-8859-1"
+	method="GET"
+>
+
+<input name="sourceid" value="Mozilla-search">
+<input name="event" value="search">
+<input name="flavor" value="generika">
+<input name="search_query" user>
+		
+<interpret
+	resultItemStart="<!-- RESULT ITEM START -->"
+	resultItemEnd="<!-- RESULT ITEM END -->"
+>
+
+</search>
+
+<browser
+	Update="http://www.oddb.org/resources/plugins/Generika.cc.src"
+	updateIcon="http://www.oddb.org/plugins/oddb.gif
+	updateCheckDays="10"
+>

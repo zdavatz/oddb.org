@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+# Admin -- oddb -- 09.07.2003 -- hwyss@ywesee.com 
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+
+require 'util/oddbapp'
+
+DRb.start_service
+oddb = DRbObject.new(nil, 'druby://localhost:10000')
+oddb.admin('Updater.new(self).update_patinfo_news')

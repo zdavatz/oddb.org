@@ -1,0 +1,22 @@
+CREATE TABLE product (
+    atc_code VARCHAR (7) NOT NULL,
+    registration_date DATE NOT NULL DEFAULT NOW(),
+    iddb_serial INTEGER NOT NULL,
+    galenic_form INTEGER NOT NULL,
+    dose FLOAT NOT NULL,
+    dose_cunit INTEGER NOT NULL,
+    dose_dunit INTEGER,
+    absorption FLOAT,
+    absorption_cunit INTEGER,
+    absorption_dunit INTEGER,
+    packages INTEGER NOT NULL DEFAULT 1,
+    doses_in_package INTEGER NOT NULL,
+    manufacturer INTEGER NOT NULL,
+    PRIMARY KEY (atc_code, registration_date, iddb_serial),
+    FOREIGN KEY (galenic_form) REFERENCES galenic_form (galenic_form) ON UPDATE CASCADE,
+    FOREIGN KEY (dose_cunit) REFERENCES units (unit) ON UPDATE CASCADE,
+    FOREIGN KEY (dose_dunit) REFERENCES units (unit) ON UPDATE CASCADE,
+    FOREIGN KEY (absorption_cunit) REFERENCES units (unit) ON UPDATE CASCADE,
+    FOREIGN KEY (absorption_dunit) REFERENCES units (unit) ON UPDATE CASCADE,
+    FOREIGN KEY (manufacturer) REFERENCES manufacturer (manufacturer) ON UPDATE CASCADE
+);

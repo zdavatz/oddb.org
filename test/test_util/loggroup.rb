@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+# LogGroupTest -- oddb -- 16.05.2003 -- hwyss@ywesee.com 
+
+$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path("../../src", File.dirname(__FILE__))
+
+require 'test/unit'
+require 'util/loggroup'
+
+module ODDB
+	class LogGroup
+		attr_accessor :logs
+	end
+end
+
+class TestLogGroup < Test::Unit::TestCase
+	def setup
+		@group = ODDB::LogGroup.new(:swissmedic_journal)
+	end
+	def test_newest_date
+		assert_nil(@group.newest_date)
+		date = Date.new(1975,8,21)
+		date1 = date.dup
+		@group.logs = {
+			date =>	Object.new
+		}
+		assert_equal(date, @group.newest_date)
+		date = date >> 1
+		assert_equal(date1, @group.newest_date)
+	end
+	def test_log
+		foo = Object.new
+		date = Date.new(1975,8,21)
+		@group.logs = {
+			date =>	foo
+		}
+		assert_equal(foo, @group.log(date))
+	end
+	def test_create_log
+		date = Date.new(1975,8,21)
+		@group.create_log(date)
+		assert_equal([date], @group.logs.keys)
+		assert_equal(ODDB::Log, @group.logs[date].class)
+	end
+end

@@ -1,0 +1,258 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Medwin Suche</title>
+		
+		<meta content="Microsoft Visual Studio.NET 7.0" name="GENERATOR">
+		<meta content="Visual Basic 7.0" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<link href="medwin_files/Styles.css" type="text/css" rel="stylesheet"></head>
+
+
+	<body leftmargin="0" background="medwin_files/background.gif" topmargin="0" rightmargin="0">
+		<form name="formMedwin" method="post" action="frmSearchPartner.aspx?lang=de" id="formMedwin">
+<input type="hidden" name="__EVENTTARGET" value="">
+<input type="hidden" name="__EVENTARGUMENT" value="">
+<input type="hidden" name="__VIEWSTATE" value="FooViewState=">
+
+<script language="javascript">
+<!--
+	function __doPostBack(eventTarget, eventArgument) {
+		var theform;
+		if (window.navigator.appName.toLowerCase().indexOf("netscape") > -1) {
+			theform = document.forms["formMedwin"];
+		}
+		else {
+			theform = document.formMedwin;
+		}
+		theform.__EVENTTARGET.value = eventTarget.split("$").join(":");
+		theform.__EVENTARGUMENT.value = eventArgument;
+		theform.submit();
+	}
+// -->
+</script>
+
+			<table id="TblHead" cellspacing="0" cellpadding="0" width="100%" frame="below" rules="none" border="3">
+				<tbody><tr bgcolor="#008080" height="60">
+					<td width="10"></td>
+					<td colspan="2">
+						<p><img alt="MEDWIN" src="medwin_files/medwin.gif"><span style="vertical-align: top; color: white;"><b>®</b></span></p>
+					</td>
+				</tr>
+			</tbody></table>
+			<br>
+			<table id="tblBody" cellspacing="0" cellpadding="0" width="100%" border="0">
+				<tbody><tr>
+					<td width="10" rowspan="2"></td>
+					<td valign="top" width="30%" rowspan="2">
+						<table id="tblSearch" cellspacing="0" cellpadding="0" width="100%" border="0">
+	<tbody><tr height="60">
+		<td colspan="3"><span id="lblSearchfor"><b>Suche nach</b></span></td>
+	</tr>
+	<tr height="30">
+		<td colspan="2"><span id="lblSearchName">Name</span></td>
+		<td>&nbsp;&nbsp;
+									<span id="lblSearchCountry">Land</span></td>
+	</tr>
+	<tr>
+		<td colspan="2"><input name="txtSearchName" type="text" value="spycher" maxlength="50" id="txtSearchName"></td>
+		<td>&nbsp;&nbsp;
+									<select name="ddlSearchCountry" id="ddlSearchCountry"><option selected="selected" value="0">[Alle]</option><option value="INT">Ausland</option><option value="CH">Schweiz</option></select></td>
+	</tr>
+	<tr height="30">
+		<td><span id="lblSearchZip">PLZ</span></td>
+		<td style="width: 163px;"><span id="lblSearchCity">Ort</span></td>
+		<td>&nbsp;&nbsp;&nbsp;<span id="lblSearchState">Kanton</span></td>
+	</tr>
+	<tr>
+		<td><input name="txtSearchZIP" type="text" maxlength="5" id="txtSearchZIP" class="txtZIPWidth"></td>
+		<td style="width: 163px;"><input name="txtSearchCity" type="text" maxlength="50" id="txtSearchCity"></td>
+		<td align="left">&nbsp;&nbsp;&nbsp;<select name="ddlSearchStates" id="ddlSearchStates"><option selected="selected" value="[Tous]">[Alle]</option><option value="AG">Aargau</option><option value="AI">Appenzel Ausserrhoden</option><option value="AR">Appenzel Innerrhoden</option><option value="BL">Basel Land</option><option value="BS">Basel Stadt</option><option value="BE">Bern</option><option value="FR">Freiburg</option><option value="GE">Genf</option><option value="GL">Glarus</option><option value="GR">Graubünden</option><option value="JU">Jura</option><option value="FL">Liechtenstein</option><option value="LU">Luzern</option><option value="NE">Neuenburg</option><option value="NW">Nidwald</option><option value="OW">Obwald</option><option value="SH">Schaffhausen</option><option value="SZ">Schwytz</option><option value="SO">Solothurn</option><option value="SG">St. Gallen</option><option value="TI">Tessin</option><option value="TG">Thurgau</option><option value="UR">Uri</option><option value="VD">Waadt</option><option value="VS">Walis</option><option value="ZG">Zug</option><option value="ZH">Zürich</option></select></td>
+	</tr>
+	<tr height="30">
+		<td colspan="3"><span id="lblSearchFunction">Tätigkeit</span></td>
+	</tr>
+	<tr>
+		<td colspan="3"><select name="ddlSearchFunctions" id="ddlSearchFunctions"><option selected="selected" value="0">[Alle]</option><option value="36">Andere Pflegeorganisation</option><option value="31">Anderer Leistungserbringer</option><option value="15">Apotheke</option><option value="23">Arzt</option><option value="5">Arztpraxis</option><option value="25">Chiropraktor</option><option value="18">Dienstleistungsfirma</option><option value="6">Drogerie</option><option value="8">Grossist</option><option value="7">Industrie</option><option value="12">Inst. für Forschung, Analyse oder Bildung</option><option value="14">Internationale Organisation</option><option value="2">Krankenversicherung</option><option value="35">Pflegeheim</option><option value="3">Sanitätsbehörde</option><option value="4">Sozialversicherung</option><option value="10">Spital/Klinik</option><option value="24">Tierarzt</option><option value="1">Unfallversicherung</option><option value="19">Verband</option><option value="21">Zahnarzt</option></select></td>
+	</tr>
+	<tr height="30">
+		<td colspan="3"><span id="lblSearchEAN">EAN-Code (GLN)</span></td>
+	</tr>
+	<tr>
+		<td colspan="3"><input name="txtSearchEAN" type="text" maxlength="14" id="txtSearchEAN"></td>
+	</tr>
+	<tr height="40">
+		<td colspan="3"><input type="submit" name="btnSearch" value="Suche" id="btnSearch">&nbsp;&nbsp;
+									<input type="submit" name="btnClearFields" value="Felder rücksetzen" id="btnClearFields"></td>
+	</tr>
+	<tr>
+		<td colspan="3"><span id="lblZur">Zur</span>&nbsp;<a id="hlinkProducts" href="http://www.medwin.ch/frmSearchProduct.aspx">Artikeldatenbank</a>
+									<span id="lblMedref">Medref</span>®</td>
+	</tr>
+	<tr height="60">
+		<td colspan="3"></td>
+	</tr>
+	<tr>
+		<td colspan="3"></td>
+	</tr>
+</tbody></table>
+
+						<input name="hiddenlang" id="hiddenlang" type="hidden" value="de"></td>
+					<td width="10" rowspan="2"></td>
+					<td valign="top">
+						<table id="tblFind" cellspacing="0" width="100%" border="3">
+							<tbody><tr>
+								<td><span id="lblPartnerEAN">EAN-Code (GLN)</span></td>
+								<td bgcolor="#ffffff"><span id="lblEAN"><b>&nbsp;</b></span></td>
+								<td><font face="arial, helvetica, sansserif" size="2"><span id="lblPartnerlanguage">Sprache</span></font></td>
+								<td bgcolor="#ffffff" colspan="2"><span id="lbllanguage"></span>&nbsp;</td>
+							</tr>
+							<tr>
+								<td><span id="lblPartnerTitle">Anrede</span></td>
+								<td bgcolor="#ffffff" colspan="4"><span id="lblSalutation"></span>&nbsp;</td>
+							</tr>
+							<tr>
+								<td><span id="lblPartnerName1">Name 1</span></td>
+								<td bgcolor="#ffffff" colspan="4"><span id="lblName"><b></b></span>&nbsp;</td>
+							</tr>
+							<tr>
+								<td><span id="lblPartnerName2">Name 2</span></td>
+								<td bgcolor="#ffffff" colspan="4"><span id="lblName2"><b></b></span>&nbsp;</td>
+							</tr>
+							<tr>
+								<td><span id="lblPartnerStreet">Strasse</span>&nbsp;/
+									<span id="lblPartnerPostoffice">Postfach</span></td>
+								<td bgcolor="#ffffff" colspan="2"><span id="lblStreet"></span>&nbsp;<span id="lblNumber"></span>&nbsp;</td>
+								<td bgcolor="#ffffff" colspan="2">
+									<span id="lblPost"></span>&nbsp;</td>
+							</tr>
+							<tr>
+								<td nowrap="nowrap"><span id="lblPartnerZip">PLZ</span>&nbsp;/
+									<span id="lblPartnerCity">Ort</span>&nbsp;/
+									<span id="lblPartnerState">Kanton</span>&nbsp;/
+									<span id="lblPartnerCountry">Land</span></td>
+								<td bgcolor="#ffffff"><span id="lblZIP"></span>&nbsp;</td>
+								<td nowrap="nowrap" bgcolor="#ffffff"><span id="lblCity"></span>&nbsp;</td>
+								<td bgcolor="#ffffff">
+									<span id="lblState"></span>&nbsp;</td>
+								<td bgcolor="#ffffff">
+									<span id="lblCountry"></span>&nbsp;</td>
+							</tr>
+							<tr>
+								<td><span id="lblPartnerPhone">Telefon</span>&nbsp;/
+									<span id="lblPartnerFax">Fax</span></td>
+								<td nowrap="nowrap" bgcolor="#ffffff"><span id="lblphone"></span>&nbsp;</td>
+								<td nowrap="nowrap" bgcolor="#ffffff" colspan="3"><span id="lblfax"></span>&nbsp;</td>
+							</tr>
+							<tr>
+								<td><span id="lblPartnerResponsible">Verantwortliche Person 1</span></td>
+								<td bgcolor="#ffffff" colspan="4"><font face="arial, helvetica, sansserif" size="2"></font><span id="lblResponsible"></span>&nbsp;</td>
+							</tr>
+							<tr>
+								<td><span id="lblPartnerResponsible2">Verantwortliche Person 2</span></td>
+								<td bgcolor="#ffffff" colspan="4"><font face="Arial" size="2"></font><span id="lblResponsible2"></span>&nbsp;</td>
+							</tr>
+							<tr>
+								<td><span id="lblPartnerFunction">Tätigkeit</span></td>
+								<td bgcolor="#ffffff" colspan="4"><span id="lblFunction"></span>
+									<span id="lblFunctionSpecial"></span>&nbsp;</td>
+							</tr>
+							<tr>
+								<td><font size="2"><span id="lblPartnerbeko">Betäubungsmittelbewilligung</span>:</font></td>
+								<td bgcolor="#ffffff" colspan="4"><span id="lblbekotext"></span>&nbsp;</td>
+							</tr>
+							<tr>
+								<td colspan="5"><b>MedWin </b><b>®</b>&nbsp;<span id="lblPartnerUpdate">Letzte Aktualisierung</span>
+									:&nbsp;&nbsp;<span id="lblUpdate">18.03.2004</span></td>
+							</tr>
+						</tbody></table>
+					</td>
+				</tr>
+				<tr>
+					<td><br>
+						<p>&nbsp;<span id="lblcount">15</span>
+							<span id="lblcountText">Partner gefunden.</span>
+							</p>
+						<table cellspacing="1" rules="all" border="1" id="DgMedwinPartner" bgcolor="White">
+	<tbody><tr bgcolor="Teal">
+		<td><font color="White"><b>[Detail]</b></font></td><td><font color="White"><b><a href="javascript:__doPostBack('DgMedwinPartner$_ctl1$_ctl0','')"><font color="White">[Name 1]</font></a></b></font></td><td><font color="White"><b><a href="javascript:__doPostBack('DgMedwinPartner$_ctl1$_ctl1','')"><font color="White">[Name 2]</font></a></b></font></td><td><font color="White"><b><a href="javascript:__doPostBack('DgMedwinPartner$_ctl1$_ctl2','')"><font color="White">[Ort]</font></a></b></font></td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl2$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl2_Linkbutton1" name="Linkbutton1">Altersheim bim Spycher</span>
+										
+									</td><td>&nbsp;</td><td>Roggwil BE</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl3$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl3_Linkbutton1" name="Linkbutton1">Brägger-Spycher</span>
+										
+									</td><td>Christian</td><td>Bazenheid</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl4$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl4_Linkbutton1" name="Linkbutton1">Spycher</span>
+										
+									</td><td>Alfred</td><td>Scuol</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl5$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl5_Linkbutton1" name="Linkbutton1">Spycher</span>
+										
+									</td><td>Barbara</td><td>Schliern b. Köniz</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl6$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl6_Linkbutton1" name="Linkbutton1">Spycher</span>
+										
+									</td><td>Beat</td><td>Gümligen</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl7$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl7_Linkbutton1" name="Linkbutton1">Spycher</span>
+										
+									</td><td>Claudia</td><td>Solothurn</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl8$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl8_Linkbutton1" name="Linkbutton1">Spycher</span>
+										
+									</td><td>Heinz</td><td>Eschenz</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl9$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl9_Linkbutton1" name="Linkbutton1">Spycher</span>
+										
+									</td><td>Jonathan</td><td>Wabern</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl10$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl10_Linkbutton1" name="Linkbutton1">Spycher</span>
+										
+									</td><td>Martina</td><td>Basel</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl11$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl11_Linkbutton1" name="Linkbutton1">Spycher</span>
+										
+									</td><td>Max A.</td><td>Zürich</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl12$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl12_Linkbutton1" name="Linkbutton1">Spycher</span>
+										
+									</td><td>Olivier</td><td>Moutier</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl13$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl13_Linkbutton1" name="Linkbutton1">Spycher</span>
+										
+									</td><td>Peter</td><td>Liebefeld</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl14$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl14_Linkbutton1" name="Linkbutton1">Spycher</span>
+										
+									</td><td>Reto</td><td>Bern</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl15$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl15_Linkbutton1" name="Linkbutton1">Spycher</span>
+										
+									</td><td>Rodolphe</td><td>Genève</td>
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl16$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl16_Linkbutton1" name="Linkbutton1">Spycher-Braendli</span>
+										
+									</td><td>Christa Barbara</td><td>Bern</td>
+	</tr>
+</tbody></table></td>
+					</tr>
+			</tbody></table>
+		</form>
+	</body></html>

@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+# parse_emh -- ODDB -- 27.11.2003 -- hwyss@ywesee.com
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+$: << File.expand_path('../ext/emhparse/src', File.dirname(__FILE__))
+
+require 'util/updater'
+require 'emh'
+
+module ODDB
+	class Updater
+		ARGUMENTS = [
+			'-ean13'
+		]
+	end
+	class UpdateEMH < Updater
+		def initialize
+		end
+		def update_emh(ean13=nil)
+			update_simple(EMHPlugin, 'emh', :update, ean13)
+=begin
+			wrap_update(klass, subj) {
+				plug = klass.new(@app)
+				plug.update(ean13)
+				log = Log.new(Date.today)
+				log.update_values(log_info(plug))
+				log.notify(subj)
+			}
+=end
+		end
+	end
+end
+
+arg = ARGV.shift
+updater = ODDB::UpdateEMH.new
+updater.update_emh(arg)

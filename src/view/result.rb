@@ -1,0 +1,107 @@
+#!/usr/bin/env ruby
+# ResultView-- oddb -- 03.03.2003 -- andy@jetnet.ch
+
+require 'htmlgrid/form'
+require 'view/form'
+require 'view/publictemplate'
+require 'view/resultlist'
+require 'view/resultfoot'
+require 'view/searchbar'
+require 'view/sponsorhead'
+require 'view/rootresultlist'
+require 'view/pager'
+require 'sbsm/user'
+
+module ODDB
+	class User < SBSM::KnownUser; end
+	class UnknownUser < SBSM::UnknownUser; end
+	class RootUser < User; end
+	class CompanyUser < User; end
+	class ResultForm < Form
+		COLSPAN_MAP	= {
+			[0,2]	=> 2,
+			[0,3]	=> 2,
+		}
+		COMPONENTS = {
+			[0,0]		=>	:title_found,
+			[0,1]		=>	'price_compare',
+			[1,1]		=>	:search_query,
+			[1,1,1]	=>	:submit,
+			[0,2]		=>	ResultList,
+			[0,3]		=>	ResultFoot,
+		}
+		CSS_CLASS = 'composite'
+		EVENT = :search
+		FORM_METHOD = 'GET'
+		ROOT_LISTCLASS = RootResultList
+		SYMBOL_MAP = {
+			:search_query		=>	SearchBar,	
+		}
+		CSS_MAP = {
+			[0,0] =>	'result-found',
+			[1,0]	=>	'button-right',	
+			[0,1] =>	'result-price-compare',
+			[1,1]	=>	'search',	
+		}
+		COMPONENT_CSS_MAP = {
+			[0,3]	=>	'result-foot',
+=begin
+			[1,3]	=>	'legal-note',
+=end
+		}
+		def init
+			case @session.user
+			when RootUser
+				components.store([1,0], :new_registration)
+				components.store([0,2], self::class::ROOT_LISTCLASS)
+			when CompanyUser
+				components.store([0,2], self::class::ROOT_LISTCLASS)
+			end
+			super
+		end
+		def new_registration(model, session)
+			get_event_button(:new_registration)
+		end
+		def title_found(model, session)
+			query = session.persistent_user_input(:search_query)
+			@lookandfeel.lookup(:title_found, query, session.state.package_count)
+		end
+	end
+	class ResultView < PublicTemplate
+		CONTENT = ResultForm
+		def head(model, session)
+			if(@lookandfeel.enabled?(:sponsorlogo))
+				SponsorHead.new(model, session, self)
+			else
+				LogoHead.new(model, session, self)
+			end
+		end
+	end
+	class EmptyResultForm < HtmlGrid::Form
+		COMPONENTS = {
+			[0,0]		=>	:search_query,
+			[0,0,1]	=>	:submit,
+			[0,1]		=>	:title_none_found,
+			[0,2]		=>	'e_empty_result',
+			[0,3]		=>	'explain_search',
+		}
+		CSS_MAP = {
+			[0,0]			=>	'search',	
+			[0,1]			=>	'th',
+			[0,2,1,2]	=>	'result-atc',
+		}
+		CSS_CLASS = 'composite'
+		EVENT = :search
+		FORM_METHOD = 'GET'
+		SYMBOL_MAP = {
+			:search_query		=>	SearchBar,	
+		}
+		def title_none_found(model, session)
+			query = session.persistent_user_input(:search_query)
+			@lookandfeel.lookup(:title_none_found, query)
+		end
+	end
+	class EmptyResultView < PublicTemplate
+		CONTENT = EmptyResultForm
+	end
+end

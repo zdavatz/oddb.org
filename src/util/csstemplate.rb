@@ -1,0 +1,155 @@
+#!/usr/bin/env ruby
+
+module ODDB
+	class CssTemplate
+		RESOURCE_PATH = "../../doc/resources/"
+		TEMPLATE = File.expand_path('../../data/css/template.css', File.dirname(__FILE__))
+		FLAVORS = {
+			:atupri => {
+				:bg												=>	'#d5e4f1',
+				:bg_bright								=>	'#ACD0F0',
+				:bg_dark									=>	'#3F008E',
+				:bg_dark_font_color				=>	'white',
+				:bg_dark_link_hover_color	=>	'#e20a16',
+				:bg_dark_link_active_color=>	'#e20a16',
+				:home_link_color					=>	'#3F008E',
+				:home_link_hover_color		=>	'#e20a16',
+				:list_font_color					=>	'#3F008E',
+				:list_link_color					=>	'#3F008E',
+				:list_link_hover_color		=>	'#e20a16',
+				#:rslt_bg									=>	'#ACD0F0',
+				:rslt_link_hover_color		=>	'#6666CC',
+			},
+			:drouwerkerk => {
+				:bg												=>	'#fdeeb8',
+				:bg_bright								=>	'#333333',
+				:bg_bright_font_color			=>	'white',
+				:bg_dark									=>	'black',
+				:bg_dark_font_color				=>	'#d4b126',
+				:bg_dark_link_hover_color	=>	'red',
+				:bg_dark_link_active_color=>	'red',
+				:home_link_color					=>	'black',
+				:home_link_hover_color		=>	'red',
+				:list_font_color					=>	'black',
+				:list_link_hover_color		=>	'blue',
+				:rslt_bg									=>	'#fae596',
+			},
+			:gcc		=>		{
+			},
+			:generika	=>	{
+			},
+			:innova => {
+				:bg_bright								=>	'#d9fed5',
+				:bg_dark									=>	'#99ccff',
+				:bg_dark_font_color				=>	'black',
+				:bg_dark_link_hover_color	=>	'red',
+				:button_background				=>	'#99ccff',
+				:button_font_size					=>	'11px',
+				:home_link_color					=>	'#5a9ad6',
+				:home_link_hover_color		=>	'red',
+				:list_font_color					=>	'black',
+				:list_link_hover_color		=>	'#5a9ad6',
+				:std_font_size						=>	'11px',
+			},
+			:provita => {
+				:bg_bright								=>	'#c9eec5',
+				:bg_dark									=>	'#4b8e52',
+				:bg_dark_link_hover_color	=>	'red',
+				:button_background				=>	'#4b8e52',
+				:button_font_color				=>	'white',
+				:button_font_size					=>	'10px',
+				:home_link_color					=>	'#4b8e52',
+				:home_link_hover_color		=>	'red',
+				:list_font_color					=>	'black',
+				:std_font_size						=>	'11px',
+			},
+			:santesuisse => {
+				:bg_bright								=>	'#eaf1fd',
+				:bg_dark									=>	'#4b81d4',
+				:bg_dark_font_color				=>	'white',
+				:bg_dark_link_hover_color	=>	'#c8d8f0',
+				:bg_dark_link_active_color=>	'#c8d8f0',
+				:button_background				=>	'white',
+				:button_font_color				=>	'black',
+				:button_font_size					=>	'10px',
+				:home_link_color					=>	'#5185d5',
+				:home_link_hover_color		=>	'#3a64a4',
+				:list_font_color					=>	'black',
+				:list_link_color					=>	'black',
+				:list_link_hover_color		=>	'#4b81d4',
+				:navigation_link_font_weight	=>	'bold',
+			},
+			:schoenenberger => {
+				:bg_bright								=>	'#ffeb00',
+				:bg_bright_font_color			=>	'#19738a',
+				:bg_dark									=>	'#e00f8f',
+				:bg_dark_link_hover_color	=>	'#19738a',
+				:bg_dark_link_active_color=>	'#19738a',
+				:button_background				=>	'#e00f8f',
+				:button_font_color				=>	'white',
+				:button_font_size					=>	'12px',
+				:home_link_color					=>	'#e00f8f',
+				:home_link_hover_color		=>	'#3a64a4',
+				:list_font_color					=>	'black',
+				:list_link_color					=>	'#e00f8f',
+				:list_link_hover_color		=>	'#19738a',
+			},
+		}
+		DEFAULT = {
+			:bg												=>	'white',
+			:bg_bright								=>	'#ccff99',
+			:bg_bright_font_color			=>	'black',
+			:bg_dark									=>	'#2ba476',
+			:bg_dark_font_color				=>	'white',
+			:bg_dark_link_hover_color	=>	'blue',
+			:bg_dark_link_active_color=>	'red',
+			:button_background				=>	'none',
+			:button_font_color				=>	'black',
+			:button_font_size					=>	'12px',
+			:home_link_color					=>	'blue',
+			:home_link_hover_color		=>	'#2ba476',
+			:list_font_color					=>	'blue',
+			:list_link_color					=>	'blue',
+			:list_link_hover_color		=>	'#2ba476',
+			:rslt_bg									=>	'#f9f7f3',
+			:rslt_infos_bg_bright			=>	'#FFF88F',
+			:rslt_infos_bg_dark				=>	'#FFF455',
+			:rslt_link_hover_color		=>	'blue',
+			:rslt_link_active_color		=>	'gold',
+			:navigation_link_font_weight	=>	'normal',
+			:std_font_family					=>	'Arial, Helvetica, sans-serif',
+			:std_font_size						=>	'12px',
+		}
+		class << self
+			def output_path(dirname)
+				path = RESOURCE_PATH + "#{dirname}/oddb.css"
+				File.expand_path(path, File.dirname(__FILE__))
+			end
+			def resolve(var, flavor)
+				key = var.intern
+				flavor.fetch(key) {
+					DEFAULT.fetch(key)
+				}
+			end
+			def substitute(src, flavor)
+				src.gsub(/\$([^\s;]+)/) { |match|
+					resolve($1, flavor)
+				}
+			end
+			def write_css()
+				FLAVORS.each { |name, flavor|
+					src =	File.read(TEMPLATE)
+					path = output_path(name)
+					dir = File.dirname(path)
+					unless(File.exist?(dir))
+						Dir.mkdir(dir)
+					end
+					File.open(path, "w") { |fh|
+						fh << substitute(src, flavor)
+					}
+					File.chmod(0664, path)
+				}
+			end
+		end
+	end
+end

@@ -1,0 +1,34 @@
+<html>
+	<head>
+		<script type="text/javascript">
+		<!--
+		function errorMsg()
+		{
+			alert("Netscape 6 or Mozilla is needed to install a sherlock plugin");
+		}
+		function addEngine(name,ext,cat)
+		{
+			if ((typeof window.sidebar == "object") && (typeof
+			window.sidebar.addSearchEngine == "function"))
+			{
+				window.sidebar.addSearchEngine(
+				"http://www.oddb.org/resources/plugins/"+name+".src",
+				"http://www.oddb.org/resources/plugins/"+name+"."+ext,
+				name,
+				cat );
+			}
+			else
+			{
+			errorMsg();
+		}
+		}
+		//-->
+		</script>
+	</head>
+	<body>
+		<a href="javascript:addEngine('Generika.cc','gif','Health')">oddb plugin for mozilla/netscape</a>
+		<br>
+		<a href="http://www.oddb.org/resources/plugins/Generika.cc.src">src</a><br>
+		<a href="http://www.oddb.org/resources/plugins/Generika.cc.gif">gif</a><br>
+	</body>
+</html>

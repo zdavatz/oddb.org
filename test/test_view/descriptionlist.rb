@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+# TestDescriptionList -- oddb -- 28.03.2003 -- hwyss@ywesee.com 
+
+$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path("../../src", File.dirname(__FILE__))
+
+require 'test/unit'
+require 'view/descriptionlist'
+
+class TestDescriptionList < Test::Unit::TestCase
+	class StubModel
+		attr_reader :args
+		def description(*args)
+			@args = args
+		end
+	end
+	class StubDescriptionList < ODDB::DescriptionList
+		public :sort_model
+		def init
+		end
+	end
+	class StubLookandfeel
+		def language 
+			'de'
+		end
+		def lookandfeel
+			self
+		end
+	end
+
+	def setup
+		@model = StubModel.new
+		lnf = StubLookandfeel.new
+		@list = StubDescriptionList.new([@model], lnf)
+	end
+	def test_sort_model
+		@list.sort_model
+		assert_equal(['de'], @model.args)
+	end
+end

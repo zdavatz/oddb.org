@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+# LegalNoteView -- oddb -- 01.09.2003 -- maege@ywesee.com
+
+require 'htmlgrid/composite'
+require 'view/popuptemplate'
+
+module ODDB
+	class LegalNoteInfo < HtmlGrid::Composite
+		COMPONENTS = {
+			[0,0]	=>	'legal_note',
+			[0,1] =>	'legal_note_text1',
+			[0,2] =>	'lookandfeel_owner',
+			[0,2,1] =>'legal_note_text2',
+			[0,3] =>	'legal_note_text3',
+		}
+		CSS_MAP = {
+			[0,0]	=>	'th',
+			[0,1]	=>	'list',
+			[0,2]	=>	'list',
+			[0,3]	=>	'list',
+		}
+	end
+	class LegalNoteView < PopupTemplate
+		HEAD = PopupLogoHead
+		CONTENT = LegalNoteInfo
+	end
+end

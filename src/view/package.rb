@@ -1,0 +1,130 @@
+#!/usr/bin/env ruby
+# PackageView -- oddb -- 14.03.2003 -- hwyss@ywesee.com 
+
+require 'view/publictemplate'
+require 'view/form'
+require 'view/pointervalue'
+require 'view/dataformat'
+require 'htmlgrid/inputcurrency'
+require 'htmlgrid/errormessage'
+require 'htmlgrid/link'
+require 'htmlgrid/booleanvalue'
+
+module ODDB
+	class PackageInnerComposite < HtmlGrid::Composite
+		include DataFormat
+		COMPONENTS = {
+			[0,0]		=>	:iksnr,
+			[2,0]		=>	:ikscd,
+			[0,1]		=>	:descr,
+			[2,1]		=>	:size,
+			[0,2]		=>	:ikscat,
+			[2,2]		=>	:sl_entry,
+			[0,3]		=>	:price_exfactory,
+			[2,3]		=>	:price_public,
+		}
+		CSS_MAP = {
+			[0,0,4,4]	=>	'list',
+		}
+		DEFAULT_CLASS = HtmlGrid::Value
+		LABELS = true
+		SYMBOL_MAP = {
+			:sl_entry	=>	HtmlGrid::BooleanValue,
+		}
+	end
+	class PackageForm < Form
+		include HtmlGrid::ErrorMessage
+		COMPONENTS = {
+			[0,0]		=>	:iksnr,
+			[2,0]		=>	:ikscd,
+			[0,1]		=>	:descr,
+			[0,2]		=>	:pretty_dose,
+			[2,2]		=>	:size,
+			[0,3]		=>	:ikscat,
+			[2,3]		=>	:sl_entry,
+			[0,4]		=>	:price_exfactory,
+			[2,4]		=>	:price_public,
+			[0,5]		=>	:generic_group,
+			[1,6]		=>	:submit,
+			[1,6,0]	=>	:delete_item,
+		}
+		COMPONENT_CSS_MAP = {
+			[0,0,4,6]	=>	'standard',
+			[3,3]			=>	'list',
+		}
+		CSS_MAP = {
+			[0,0,4,7]	=>	'list',
+		}
+		LABELS = true
+		SYMBOL_MAP = {
+			:price_exfactory	=>	HtmlGrid::InputCurrency,
+			:price_public			=>	HtmlGrid::InputCurrency,
+			:iksnr						=>	HtmlGrid::Value,
+		}
+		def init
+			super
+			error_message()
+		end
+		def ikscd(model, session)
+			klass = if(model.ikscd.nil?)
+				HtmlGrid::InputText
+			else
+				HtmlGrid::Value
+			end
+			klass.new(:ikscd, model, session, self)
+		end
+		def sl_entry(model, session)
+			unless (model.is_a? Persistence::CreateItem)
+				link = nil
+				if (sl_entry = model.sl_entry)
+					link = HtmlGrid::Link.new(:sl_modify, sl_entry, session, self)
+					args = {'pointer' => sl_entry.pointer}
+					link.href = @lookandfeel.event_url(:resolve, args)
+					PointerLink.new(:pointer_descr, sl_entry, session, self)
+				else
+					link = HtmlGrid::Link.new(:sl_create, sl_entry, session, self)
+					link.href = @lookandfeel.event_url(:new_item)
+				end
+				link.label = true
+				link.set_attribute('class', 'list')
+				link
+			end
+		end
+	end
+	class PackageComposite < HtmlGrid::Composite
+		COMPONENTS = {
+			[0,0]	=>	:package_name,
+			[0,1]	=>	PackageInnerComposite,
+		}
+		CSS_CLASS = 'composite'
+		CSS_MAP = {
+			[0,0]	=>	'th',
+		}
+		def package_name(model, session)
+			sequence = model.parent(session.app)
+			[sequence.name, model.size].compact.join('&nbsp;-&nbsp;')
+		end
+	end
+	class RootPackageComposite < PackageComposite
+		COMPONENTS = {
+			[0,0]	=>	:package_name,
+			[0,1]	=>	PackageForm,
+			[0,2]	=>	'th_source',
+			[0,3]	=>	:source,
+		}
+		CSS_MAP = {
+			[0,0]	=>	'th',
+			[0,2]	=>	'subheading',
+		}
+		def source(model, session)
+			HtmlGrid::Value.new(:source, model.sequence, @session, self)
+		end
+	end
+	class PackageView < PrivateTemplate
+		CONTENT = PackageComposite
+		SNAPBACK_EVENT = :result
+	end
+	class RootPackageView < PackageView
+		CONTENT = RootPackageComposite
+	end
+end

@@ -1,0 +1,25 @@
+Artikelstammdaten der OpenDrugDatabase (im Galdatformat) - http://www.oddb.org
+ywesee, Zürich, 01.07.2003
+
+Das Verzeichnis GDATSA enthält die täglich aktualisierten Artikelstammdaten
+der ODDB. Die Daten werden von ywesee in das Galdat-Format umgewandelt und
+allen gewünschten Systemlieferanten von Schweizer Spitälern zur Verfügung
+gestellt.
+
+Feedback bitte an zdavatz@ywesee.com
+
+-AC (Tabelle 1) - Pharmacode
+-ACMED (Tabelle 2) - Weiter Produktinformationen
+-ACPRICEALG (Tabelle 7) - Preise
+-CODES (Tabelle 11) - Codebeschreibungen
+-COMP (Tabelle 12) - Hersteller
+-ACCOMP (Tabelle 19) - Verbindungstabelle zwischen AC und COMP
+-SC (Tabelle 40) - Substanzen
+-ACSC (Tabelle 41) - Verbindungstabelle zwischen AC und SC
+
+Die Daten werden als galdat_oddb_DATUM.tar.gz auf den FTP-Server von ywesee gelegt:
+
+DATUM: Datum des Exports im Format JJJJMMTT
+IP: 62.12.131.36
+Benutzername: oddb
+Passwort: galdat

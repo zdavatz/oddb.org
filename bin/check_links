@@ -1,0 +1,129 @@
+#!/usr/bin/env ruby
+# check_links -- ODDB -- 27.11.2003 -- hwyss@ywesee.com
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+
+require 'util/html_parser'
+require 'net/http'
+require 'util/oddbconfig'
+require 'util/oddbapp'
+
+if(ARGV[0] == "session")
+	$respect_session = true
+else
+	$respect_session = false
+end
+
+module ODDB
+	class CrawlerWriter < NullWriter
+		def initialize
+			@links = []
+		end
+		def new_linkhandler(handler)
+			@links.push(handler.attribute("href")) if(handler)
+		end
+		def send_meta(attrs)
+			if(attrs.any? { |key, val| /http-equiv/i.match(key) \
+				&& /refresh/i.match(val)} )
+				@error_flag = true
+			end
+		end
+		def links
+			@links unless @error_flag
+		end
+	end
+	class Crawler
+		def initialize
+			@links = [ '/' ]
+			@visited = []
+			@errors = []
+			@session = Net::HTTP.new(SERVER_NAME)
+			@cookies = {}
+		end
+		def check_links
+			@links.each_with_index { |link, idx|
+				puts "#{sprintf("%8d", idx)}: #{link}"
+				@visited.push(link)
+				if(links = check(link))
+					schedule_links(links, idx)
+				else
+					puts "## error: #{link}"
+					@errors.push(link)
+				end
+			}
+			puts "Visited #{@visited.size} links."
+			puts "Encountered #{@errors.size} errors:"
+			puts @errors
+		end
+		def schedule_links(links, idx)
+=begin
+			puts "scheduling...."
+			puts links
+			puts "-"*40
+			puts @visited
+			puts "="*40
+			puts links-@visited
+			puts "*"*40
+=end
+			links.each { |link|
+				if(link.index('oddb.org') \
+					&& !link.index('download') \
+					&& !@links.include?(link))
+					if(link.index('state_id'))
+						@links[idx.next, 0] = link
+					else
+						@links.push(link) 
+					end
+				end
+			}
+		end
+		def check(link)
+			if(html = get_http(link))
+				puts "received: #{link}"
+				writer = CrawlerWriter.new
+				formatter = HtmlFormatter.new(writer)
+				parser = HtmlParser.new(formatter)
+				parser.feed(html)
+				writer.links.compact
+			end
+		end
+		def get_http(link)
+			try = 3
+			begin
+				resp = @session.get(link, headers)
+				if resp.is_a? Net::HTTPOK
+					update_cookies(resp) if($respect_session)
+					resp.body
+				end
+			rescue Timeout::Error, EOFError
+				if(try > 0)
+					sleep 10
+					try -= 1
+					retry
+				end
+			rescue StandardError => e
+				puts e.message
+			end
+		end
+		def update_cookies(resp)
+			if(cookiestring = resp['set-cookie'])
+				ptrn = /(?:^|, (?!\d))([^;]+)/
+				cookiestring.scan(ptrn) { |cookie|
+					@cookies.store(*(cookie[0].split('=',2)))
+				}
+			end
+		end
+		def cookies
+			@cookies.collect { |var| var.join('=') }.join('; ')
+		end
+		def headers
+			{
+				'Cookie'          =>  cookies,
+				'User-Agent'      =>  'Oddb Test-Crawler',
+			}
+		end
+	end
+end
+
+crawler = ODDB::Crawler.new
+crawler.check_links

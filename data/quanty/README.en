@@ -1,0 +1,56 @@
+    Quanty class for Ruby ver 1.1   by Masahiro Tanaka  2001-04-25
+
+= Description
+
+  * A Ruby class to express QUANTITY, which is a set of value and unit.
+    Featuring unit conversion and arithmetic operation among quantities.
+
+= Requirement
+
+  * Ruby ver 1.6.x or later.
+
+= Installation
+
+  * Install Quanty class library.
+
+    1. Extract source code from tar.gz file.
+    2. Make & install:
+	ruby extconf.rb
+	make
+	make install
+
+  * If you want Racc binary library (faster than included script),
+    Get Racc from
+	http://www9.xdsl.ne.jp/~aamine/en/index.html
+    and install it.
+    Back to quanty directory.
+    Run `make clean', `make' and install it.
+
+= Usage
+
+    require "quanty"
+    x = Quanty(1.23,"km")
+
+    See document in quanty-en.rd or quanty-jp.rd.
+
+= Tested Platform
+
+  * Ruby 1.6.2 (2000-12-22) [sparc-solaris2.7]
+  * Racc 1.3.7
+
+= License
+
+  Ruby Quanty class is free software; you can redistribute it
+  and/or modify it under the terms of the GNU General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  But `units.dat' `lib/quanty/parse.rb' files in the distribution
+  are not written by the author.  See each file for the copying
+  condition.
+
+= Author
+
+  Masahiro Tanaka <masa@ir.isas.ac.jp>
+
+=

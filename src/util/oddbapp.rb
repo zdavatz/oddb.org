@@ -1,0 +1,658 @@
+#!/usr/bin/env ruby
+# OddbApp -- oddb -- hwyss@ywesee.com
+
+require 'benchmark'
+require 'custom/lookandfeelbase'
+require 'util/failsafe'
+require 'util/oddbconfig'
+require 'util/session'
+require 'util/updater'
+require 'util/exporter'
+require 'util/validator'
+require 'util/loggroup'
+require 'models'
+require 'commands'
+require 'sbsm/drbserver'
+require 'sbsm/index'
+require 'datastructure/chartree'
+require 'datastructure/soundextable'
+require 'madeleine'
+require 'util/drb'
+
+class OddbPrevalence
+	include ODDB::Failsafe
+	attr_reader :galenic_groups, :companies
+	attr_reader	:atc_classes, :last_update
+	attr_reader :atc_chooser, :registrations
+	attr_reader :last_medication_update
+	attr_reader :orphaned_patinfos, :orphaned_fachinfos, :fachinfos
+	attr_reader :patinfos_deprived_sequences, :patinfos
+	def initialize		
+		super
+		@atc_classes ||= {}
+		@companies ||= {}
+		@fachinfos ||= {}
+		@galenic_forms ||= []
+		@galenic_groups ||= []
+		@generic_groups ||= {}
+		@orphaned_fachinfos ||= {}
+		@orphaned_patinfos ||= {}
+		@patinfos ||= {}
+		@incomplete_registrations ||= {}
+		@indications ||= {}
+		@last_medication_update ||= Time.now()
+		@log_groups ||= {}
+		@registrations ||= {}
+		@substances ||= {}
+		create_unknown_galenic_group()
+		create_root_user()
+	end
+	def init
+		create_unknown_galenic_group()
+		create_root_user()
+		@atc_classes ||= {}
+		@patinfos_deprived_sequences ||= []
+		@companies ||= {}
+		#@fachinfos ||= {}
+		@galenic_forms ||= []
+		@galenic_groups ||= []
+		@generic_groups ||= {}
+		@incomplete_registrations ||= {}
+		@indications ||= {}
+		@last_medication_update ||= Time.now()
+		@log_groups ||= {}
+		@registrations ||= {}
+		@substances ||= {}
+		@orphaned_patinfos ||= {}
+		@orphaned_fachinfos ||= {}
+		rebuild_indices
+	end
+	# prevalence-methods ################################
+	def create(pointer)
+		#puts [__FILE__,__LINE__,"create(#{pointer})"].join(':')
+		@last_update = Time.now()
+		if(item = pointer.issue_create(self))
+			updated(item)
+			item
+		end
+	end
+	def delete(pointer)
+		@last_update = Time.now()
+		failsafe(ODDB::Persistence::UninitializedPathError) {
+			if(item = pointer.resolve(self))
+				updated(item)
+				checkout(item)
+			end
+			pointer.issue_delete(self)
+		}
+	end
+	def update(pointer, values)
+		@last_update = Time.now()
+		item = failsafe(ODDB::Persistence::UninitializedPathError, nil) {
+			pointer.resolve(self)
+		}
+		# if this item has been newly created, we want its pointer back
+		pointer = item.pointer unless item.nil? 
+		updated(item)
+		case item
+		when ODDB::Sequence
+			delete_from_index(@sequence_index, item.name, item)
+			pointer.issue_update(self, values)
+			store_in_index(@sequence_index, item.name, item)
+		when ODDB::Substance
+			delete_from_index(@substance_index, item.name, item)
+			pointer.issue_update(self, values)
+			store_in_index(@substance_index, item.name, item)
+		when ODDB::Indication
+			item.descriptions.values.uniq.each { |desc|
+				delete_from_index(@indication_index, desc, item)
+			}
+			pointer.issue_update(self, values)
+			item.descriptions.values.uniq.each { |desc|
+				store_in_index(@indication_index, desc, item)
+			}
+=begin
+		when ODDB::Indication
+			diff = item.diff(values, self)
+			before = diff.keys.collect { |lang|
+				item.send(lang)
+			}
+			after = diff.values
+			before.each { |descr|
+				@indication_index.delete(descr.downcase, item)
+			}
+			pointer.issue_update(self, values)
+			after.each { |descr|
+				@indication_index.store(descr.downcase, item)
+			}
+=end
+		else
+			pointer.issue_update(self, values) unless pointer.nil?
+		end
+		item
+	end
+	#####################################################
+	def accepted_orphans
+		@accepted_orphans ||= {}
+	end
+	def atcless_sequences
+		@registrations.values.collect { |reg|
+			reg.atcless_sequences
+		}.flatten
+	end
+	def atc_class(code)
+		@atc_classes[code]
+	end
+	def checkout(item)
+		case item
+		when ODDB::Registration
+			item.sequences.each_value { |seq|
+				checkout(seq)
+			}
+		when ODDB::Sequence
+			delete_from_index(@sequence_index, item.name, item)
+		when ODDB::Company
+			delete_from_index(@company_index, item.name, item)
+		when ODDB::Indication
+			item.descriptions.values.uniq.each { |desc|
+				delete_from_index(@indication_index, desc, item)
+			}
+		end
+	end
+	def company(oid)
+		@companies[oid.to_i]
+	end
+	def company_by_name(name)
+		namedown = name.to_s.downcase
+		@companies.each_value { |company|
+			if company.name.to_s.downcase == namedown
+				return company
+			end
+		}
+		nil
+	end
+	def create_atc_class(atc_class)
+		@atc_classes.store(atc_class, ODDB::AtcClass.new(atc_class))
+	end
+	def create_patinfo_deprived_sequences
+		@patinfos_deprived_sequences ||= []
+		pat = ODDB::PatinfoDeprivedSequences.new
+	  @patinfos_deprived_sequences.store(pat.oid, pat)
+	end
+	def create_orphaned_fachinfo
+		@orphaned_fachinfos ||= {}
+		orphan = ODDB::OrphanedFachinfo.new
+	  @orphaned_fachinfos.store(orphan.oid, orphan)
+	end
+	def create_orphaned_patinfo
+		@orphaned_patinfos ||= {}
+		orphan = ODDB::OrphanedPatinfo.new
+	  @orphaned_patinfos.store(orphan.oid, orphan)
+	end
+	def create_company
+		company = ODDB::Company.new
+		@companies.store(company.oid, company)
+	end
+	def create_fachinfo
+		@fachinfos ||= {}
+		fachinfo = ODDB::Fachinfo.new
+		@fachinfos.store(fachinfo.oid, fachinfo)
+	end
+	def create_galenic_group
+		galenic_group = ODDB::GalenicGroup.new
+		@galenic_groups.store(galenic_group.oid, galenic_group)
+	end
+	def create_generic_group(package_pointer)
+		@generic_groups.store(package_pointer, ODDB::GenericGroup.new)
+	end
+	def create_incomplete_registration
+		incomplete = ODDB::IncompleteRegistration.new
+		@incomplete_registrations.store(incomplete.oid, incomplete)
+	end
+	def create_indication
+		indication = ODDB::Indication.new
+		@indications.store(indication.oid, indication)
+	end
+	def create_log_group(key)
+		@log_groups[key] ||= ODDB::LogGroup.new(key)
+	end
+	def create_patinfo
+		@patinfos ||= {}
+		patinfo = ODDB::Patinfo.new
+		@patinfos.store(patinfo.oid, patinfo)
+	end
+	def create_registration(iksnr)
+		unless @registrations.include?(iksnr)
+			@registrations.store(iksnr, ODDB::Registration.new(iksnr))
+		end
+	end
+	def create_substance(substance)
+		unless(@substances.include?(substance.downcase))
+			subs = ODDB::Substance.new(substance)
+			store_in_index(@substance_index, substance, subs)
+			@substances.store(substance.downcase, subs)
+		end
+	end
+	def create_user
+		@users ||= {}
+		user = ODDB::CompanyUser.new
+		@users.store(user.oid, user)
+	end
+	def delete_atc_class(atccode)
+		atc = @atc_classes[atccode]
+		delete_from_index(@atc_index, atc.name, atc)
+		@atc_chooser.delete(atccode)
+		@atc_classes.delete(atccode)
+	end
+	def delete_patinfo_deprived_sequences(oid)
+		@patinfos_deprived_sequences.delete(oid.to_i)
+	end
+	def delete_orphaned_fachinfo(oid)
+		@orphaned_fachinfos.delete(oid.to_i)
+	end
+	def delete_orphaned_patinfo(oid)
+		@orphaned_patinfos.delete(oid.to_i)
+	end
+	def delete_company(oid)
+		#comp = @companies[oid]
+		#@company_index.delete(comp.name.downcase, comp)
+		@companies.delete(oid)
+	end
+	def delete_fachinfo(oid)
+		@fachinfos.delete(oid)
+	end
+	def delete_galenic_group(oid)
+		group = galenic_group(oid)
+		unless (group.nil? || group.empty?)
+			raise 'e_nonempty_galenic_group'
+		end
+		@galenic_groups.delete(oid.to_i)
+	end
+	def delete_incomplete_registration(oid)
+		@incomplete_registrations.delete(oid)
+	end
+	def delete_indication(oid)
+		@indications.delete(oid)
+	end
+	def delete_registration(iksnr)
+		@registrations.delete(iksnr)
+	end
+	def each_atc_class(&block)
+		@atc_classes.each_value(&block)
+	end
+	def each_galenic_form(&block)
+		@galenic_groups.each_value { |galgroup|
+			galgroup.each_galenic_form(&block)
+		}
+	end
+	def each_package(&block)
+		@registrations.each_value { |reg|
+			reg.each_package(&block)
+		}
+	end
+	def fachinfo(oid)
+		@fachinfos[oid.to_i]
+	end
+	def galenic_form(name)
+		@galenic_groups.values.collect { |galenic_group|
+			galenic_group.get_galenic_form(name)
+		}.compact.first
+	end
+	def galenic_group(oid)
+		@galenic_groups[oid.to_i]
+	end
+	def generic_group(package_pointer)
+		@generic_groups[package_pointer]
+	end
+	def patinfo(oid)
+		@patinfos[oid.to_i]
+	end
+	def incomplete_registration(oid)
+		@incomplete_registrations[oid.to_i]
+	end
+	def incomplete_registrations
+		@incomplete_registrations.values
+	end
+	def indication(oid)
+		@indications[oid.to_i]
+	end
+	def indication_by_text(text)
+		@indications.values.select { |indication|
+			indication.has_description?(text)
+		}.first
+	end
+	def indications
+		@indications.values
+	end
+	def login(email, pass)
+		@users.values.select { |user| user.identified_by?(email, pass)}.first
+	end
+	def log_group(key)
+		@log_groups[key]
+	end
+	def patinfo_deprived_sequences(oid)
+		@patinfos_deprived_sequences[oid.to_i]
+	end
+	def orphaned_fachinfo(oid)
+		@orphaned_fachinfos[oid.to_i]
+	end
+	def orphaned_patinfo(oid)
+		@orphaned_patinfos[oid.to_i]
+	end
+	def package_count
+		@registrations.values.inject(0) { |inj, reg|
+			inj += reg.package_count
+		}
+	end
+	def registration(registration_id)
+		@registrations[registration_id]
+	end
+	def resolve(pointer)
+		pointer.resolve(self)
+	end
+	def search(query)
+		# atcless_search, experimental -->
+		if(query == 'atcless')
+			atc = ODDB::AtcClass.new('n.n.')
+			@registrations.each_value { |reg|
+				reg.sequences.each_value { |seq|
+					if(seq.atc_class.nil? && !seq.packages.empty?)
+						atc.add_sequence(seq)
+						#return [atc] if(atc.sequences.size > 50)
+					end	
+				}	
+			}
+			return [atc]
+		elsif(match = /(?:\d{4})?(\d{5})(?:\d{4})?/.match(query))
+			iksnr = match[1]
+			if(reg = registration(iksnr))
+				atc = ODDB::AtcClass.new('n.n.')
+				reg.sequences.each_value { |seq|
+					atc.add_sequence(seq)
+				}
+				return [atc]
+			end
+		end
+		# <--
+		key = query.to_s.downcase
+		result = @atc_index.fetch_all(key)
+		if result.empty?
+			comps = @company_index.fetch_all(key)
+			atc_classes = comps.collect { |company|
+				company.atc_classes
+			}.flatten.compact.uniq
+			result = atc_classes.collect { |atc|
+				atc.company_filter(comps)
+			}
+		end
+		if result.empty?
+			result = sequences_by_name(key).collect { |seq|
+				seq.atc_class
+			}.compact.uniq
+		end
+		if result.empty?
+			result = @substance_name_index.fetch_all(key).collect { |seq|
+				seq.atc_class
+			}.compact.uniq
+		end
+		if result.empty?
+			result = @indication_index.fetch_all(key).collect { |indication|
+				indication.atc_classes
+			}.flatten.compact.uniq
+		end
+		result.delete_if { |atc| atc.code.length == 0 }
+		result
+	end
+	def sequences_by_name(name)
+		@sequence_index.fetch_all(name)
+	end
+	def soundex_substances(name)
+		(@substance_index.fetch(name) || []).sort
+	end
+	def sponsor
+		@sponsor ||= ODDB::Sponsor.new
+	end
+	def store_in_index(index, key, *values)
+		parts = key.to_s.split(/\s+/)
+		parts << key.to_s
+		parts.uniq!
+		parts.each { |part|
+			index.store(part.downcase, *values) if part.length > 3
+		}
+	end
+	def substance(name)
+		@substances[name.downcase] if name
+	end
+	def substances
+		@substances.values
+	end
+	def updated(item)
+		case item
+		when ODDB::Registration, ODDB::Sequence, ODDB::Package, ODDB::AtcClass
+			@last_medication_update = Date.today
+		end
+	end
+	def user(oid)
+		@users[oid]
+	end
+	def user_by_email(email)
+		@users.values.select { |user| user.unique_email == email }.first
+	end
+	private
+	def create_unknown_galenic_group
+		unless(@galenic_groups.is_a?(Hash) && @galenic_groups.size > 0)
+			@galenic_groups = {}
+			pointer = ODDB::Persistence::Pointer.new([:galenic_group])
+			group = create(pointer)
+			raise "Default GalenicGroup has illegal Object ID (#{group.oid})" unless group.oid == 1
+			update(group.pointer, {'de'=>'Unbekannt'})
+		end
+	end
+	def create_root_user
+		@users ||= {}
+		if(@users[0].nil?)
+			@users.store(0, ODDB::RootUser.new)
+		end
+	end
+	def delete_from_index(index, key, value)
+		parts = key.to_s.split(/\s+/)
+		parts << key.to_s
+		parts.uniq!
+		parts.each { |part|
+			index.delete(part.downcase, value) if part.length > 3
+		}
+	end
+	def rebuild_indices
+		@sequence_index = Datastructure::CharTree.new
+		@registrations.each_value { |reg|
+			reg.sequences.each_value { |seq|
+				store_in_index(@sequence_index, seq.name,  seq)
+			}
+=begin
+			unless(reg.indication.nil?)
+				reg.indication.descriptions.values.uniq.each { |desc|
+					store_in_index(@indication_index, desc, reg)
+				}
+			end
+=end
+		}
+		@indication_index = Datastructure::CharTree.new
+		@indications.each_value { |indication|
+			indication.descriptions.values.uniq.each { |desc|
+				store_in_index(@indication_index, desc, indication)
+			}
+		}
+		@substance_index = Datastructure::SoundexTable.new
+		@substance_name_index = Datastructure::CharTree.new
+		@substances.each_value { |subst|
+			store_in_index(@substance_index, subst.name, subst)
+			store_in_index(@substance_name_index, subst.name, *subst.sequences)
+		}
+		@company_index = Datastructure::CharTree.new
+		@companies.each_value { |comp|
+			store_in_index(@company_index, comp.name, comp)
+		}
+		@atc_index = Datastructure::CharTree.new
+		@atc_classes.each_value { |atc|
+			store_in_index(@atc_index, atc.code, atc)
+			}
+		@atc_chooser = ODDB::AtcNode.new(nil)
+		@atc_classes.values.sort_by { |atc| 
+			atc.code 
+		}.each { |atc|
+			@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
+		}
+=begin
+		@indication_index = Datastructure::CharTree.new
+		@indications.each_value { |indication|
+			indication.descriptions.each_value { |description|
+				@indication_index.store(description.downcase, indication)
+			}
+		}
+=end
+	end
+	def sequence_index_register(sequence)
+	end
+	def sequence_index_unregister(sequence)
+	end
+end
+
+module ODDB
+	class App < SBSM::DRbServer
+		include Failsafe
+		AUTOSNAPSHOT = true
+		CLEANING_INTERVAL = 5*60
+		EXPORT_HOUR = 2
+		RUN_CLEANER = true
+		RUN_EXPORTER = true
+		RUN_UPDATER = true
+		#RUN_UPDATER = false
+		SESSION = Session
+		SNAPSHOT_INTERVAL = 4*60*60
+		STORAGE_PATH = File.expand_path('log/prevalence', PROJECT_ROOT)
+		UNKNOWN_USER = UnknownUser
+		UPDATE_INTERVAL = 24*60*60
+		VALIDATOR = Validator
+		attr_reader :cleaner, :updater
+		def initialize
+			#@prevalence = Mnemonic.new(OddbPrevalence.new, STORAGE_PATH,
+			#								"create", "delete", "update")
+			#@prevalence.init
+			puts STORAGE_PATH
+			@prevalence = Madeleine::SnapshotMadeleine.new(STORAGE_PATH) {
+				sys = OddbPrevalence.new
+			}
+			puts "prevalence initialized"
+			@system = @prevalence.system
+			puts "system init..."
+			@system.init
+			puts "...done"
+			#@prevalence.startAutoSnapshot(SNAPSHOT_INTERVAL) if AUTOSNAPSHOT
+			#@prevalence.takeSnapshot
+			puts "setup drb-delegation"
+			super(@system)
+			puts "reset"
+			reset()
+			puts "system initialized"
+		end
+		# prevalence-methods ################################
+		def accept_incomplete_registration(reg)
+			command = AcceptIncompleteRegistration.new(reg.pointer)
+			@prevalence.execute_command(command)
+			registration(reg.iksnr)
+		end
+		def accept_orphaned(orphan, pointer, symbol)
+			command = AcceptOrphan.new(orphan, pointer,symbol)
+			@prevalence.execute_command(command)
+		end
+		def create(pointer)
+			@prevalence.execute_command(CreateCommand.new(pointer))
+		end
+		def delete(pointer)
+			@prevalence.execute_command(DeleteCommand.new(pointer))
+		end
+		def merge_companies(source_pointer, target_pointer)
+			command = MergeCommand.new(source_pointer, target_pointer)
+			@prevalence.execute_command(command)
+		end
+		def merge_galenic_forms(source, target)
+			command = MergeCommand.new(source.pointer, target.pointer)
+			@prevalence.execute_command(command)
+		end
+		def replace_fachinfo(iksnr, pointer)
+			@prevalence.execute_command(ReplaceFachinfoCommand.new(iksnr, pointer))
+		end
+		def update(pointer, values)
+			#puts "updating #{pointer} with #{values}"
+			@prevalence.execute_command(UpdateCommand.new(pointer, values))
+		end
+		def take_snapshot
+			failsafe {
+				@prevalence.take_snapshot
+			}
+		end
+		#####################################################
+		def admin(src, priority=-1)
+			Thread.current.priority = priority
+			Thread.current.abort_on_exception = false
+			failsafe {
+				response = begin
+					instance_eval(src)
+				rescue NameError
+					@prevalence.system.instance_eval(src)
+				end
+				str = response.to_s
+				if(str.length > 40)
+					response.class
+				else
+					str
+				end
+			}
+		end
+		def login(session)
+			pair = session.user_input(:email, :pass)
+			@system.login(pair[:email], pair[:pass])
+		end
+		def reset
+			@updater.kill if(@updater.is_a? Thread)
+			@exporter.kill if(@exporter.is_a? Thread)
+			@updater = run_updater if RUN_UPDATER
+			@exporter = run_exporter if RUN_EXPORTER
+			@mutex.synchronize {
+				@sessions.clear
+			}
+		end
+		def run_exporter
+			Thread.new {
+				Thread.current.priority=-10
+				Thread.current.abort_on_exception = true
+				today = (EXPORT_HOUR > Time.now.hour) ? Date.today : Date.today.next
+				loop {
+					next_run = Time.local(today.year, today.month, today.day, EXPORT_HOUR)
+					sleep(next_run - Time.now)
+					Exporter.new(self).run
+					GC.start
+					today = Date.today.next
+				}
+			}
+		end
+		def run_updater
+			puts "running updater thread"
+			Thread.new {
+				Thread.current.priority=-5
+				Thread.current.abort_on_exception = true
+				loop {
+					Updater.new(self).run
+					#@prevalence.take_snapshot
+					GC.start
+					sleep UPDATE_INTERVAL
+				}
+			}
+		end
+	end
+end
+
+begin 
+	require 'testenvironment'
+rescue LoadError
+end

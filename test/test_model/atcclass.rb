@@ -1,0 +1,151 @@
+#!/usr/bin/env ruby
+# TestAtcClass -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
+
+$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path("../../src", File.dirname(__FILE__))
+
+require 'test/unit'
+require 'model/atcclass'
+require 'model/dose'
+
+module ODDB
+	class AtcClass
+		attr_accessor :sequences, :ddds, :ddd_guidelines, :guidelines
+	end
+end
+
+class TestAtcClass < Test::Unit::TestCase
+	class StubSequence
+		def packages
+			{
+				:p1	=>	'Package1',
+				:p2	=>	'Package2',
+				:p3	=>	'Package3',
+				:p4	=>	'Package4',
+			}
+		end
+	end
+	
+	def setup
+		@atc_class = ODDB::AtcClass.new('N02BA01')
+	end
+	def test_initialize
+		assert_equal('N02BA01', @atc_class.code)
+	end
+	def test_add_sequence
+		@atc_class.sequences = []
+		prod = StubSequence.new
+		@atc_class.add_sequence(prod)
+		assert_equal([prod], @atc_class.sequences)
+	end
+	def test_remove_sequence
+		prod = StubSequence.new
+		@atc_class.sequences = [prod]
+		@atc_class.remove_sequence(prod)
+		assert_equal([], @atc_class.sequences)
+	end
+	def test_packages
+		@atc_class.sequences = [
+			StubSequence.new,
+			StubSequence.new,
+			StubSequence.new,
+			StubSequence.new,
+		]
+		packages = @atc_class.packages
+		assert_equal(16, packages.size)
+	end
+	def test_update_values1
+		@atc_class.descriptions.update_values({'de'=>'eine Beschreibung'})
+		assert_equal('eine Beschreibung', @atc_class.description('de'))
+	end
+	def test_update_description2
+		values = {
+			'de' =>	'eine Beschreibung',
+		}
+		@atc_class.update_values(values)
+		assert_equal(values['de'], @atc_class.description('de'))
+		values = {
+			'de' =>	'eine andere Beschreibung',
+		}
+		pointer = ODDB::Persistence::Pointer.new()
+		pointer.issue_update(@atc_class, values)
+		assert_equal(values['de'], @atc_class.description('de'))
+	end
+	def test_create_guidelines
+		pointer = ODDB::Persistence::Pointer.new([:atc_class, "A"])
+		document = @atc_class.create_guidelines
+		assert_instance_of(ODDB::Text::Document, document)
+		assert_equal(document, @atc_class.guidelines)
+	end
+	def test_create_ddd_guidelines
+		pointer = ODDB::Persistence::Pointer.new([:atc_class, "A"])
+		document = @atc_class.create_ddd_guidelines
+		assert_instance_of(ODDB::Text::Document, document)
+		assert_equal(document, @atc_class.ddd_guidelines)
+	end
+	def test_create_ddd
+		pointer = ODDB::Persistence::Pointer.new([:atc_class, "A"])
+		ddd = @atc_class.create_ddd('O')
+		assert_instance_of(ODDB::AtcClass::DDD, ddd)
+		assert_equal(ddd, @atc_class.ddd('O'))
+	end
+	def test_parent_code
+		assert_equal('N02BA', @atc_class.parent_code)
+		level4 = ODDB::AtcClass.new('N02BA')
+		assert_equal('N02B', level4.parent_code)
+		level3 = ODDB::AtcClass.new('N02B')
+		assert_equal('N02', level3.parent_code)
+		level2 = ODDB::AtcClass.new('N02')
+		assert_equal('N', level2.parent_code)
+		level1 = ODDB::AtcClass.new('N')
+		assert_equal(nil, level1.parent_code)
+	end
+def test_has_ddd
+		assert_equal(false, @atc_class.has_ddd?)
+		@atc_class.ddds.store('O', :ddd)
+		assert_equal(true, @atc_class.has_ddd?)
+		@atc_class.ddds.delete('O')
+		assert_equal(false, @atc_class.has_ddd?)
+		@atc_class.ddd_guidelines = :foo
+		assert_equal(true, @atc_class.has_ddd?)
+		@atc_class.ddd_guidelines = nil
+		assert_equal(false, @atc_class.has_ddd?)
+		@atc_class.guidelines = :foo
+		assert_equal(true, @atc_class.has_ddd?)
+		@atc_class.guidelines = nil
+		assert_equal(false, @atc_class.has_ddd?)
+	end
+end
+class TestDDD < Test::Unit::TestCase
+	def test_equals1
+		ddd = ODDB::AtcClass::DDD.new('O')
+		ddd.dose = ODDB::Dose.new(1, 'g')
+		compare = {
+			:administration_route => 'O',
+			:dose => ODDB::Dose.new(1, 'g')
+		}
+		assert_equal(true, ddd == compare)
+		compare = {
+			:administration_route => 'P',
+			:dose => ODDB::Dose.new(1, 'g')
+		}
+		assert_equal(false, ddd == compare)
+		compare = {
+			:administration_route => 'O',
+			:dose => ODDB::Dose.new(2, 'g')
+		}
+		assert_equal(false, ddd == compare)
+	end
+	def test_equals2
+		ddd = ODDB::AtcClass::DDD.new('O')
+		ddd.dose = ODDB::Dose.new(1, 'g')
+		compare = ODDB::AtcClass::DDD.new('O')
+		compare.dose = ODDB::Dose.new(1, 'g')
+		assert_equal(true, ddd == compare)
+		compare.dose = ODDB::Dose.new(2, 'g')
+		assert_equal(false, ddd == compare)
+		ddd = ODDB::AtcClass::DDD.new('P')
+		compare.dose = ODDB::Dose.new(1, 'g')
+		assert_equal(false, ddd == compare)
+	end
+end

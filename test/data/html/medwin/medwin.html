@@ -1,0 +1,279 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+	<HEAD>
+		<title>Medwin Suche</title>
+		<meta content="Microsoft Visual Studio.NET 7.0" name="GENERATOR">
+		<meta content="Visual Basic 7.0" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<LINK href="Styles.css" type="text/css" rel="stylesheet">
+
+	</HEAD>
+	<body leftMargin="0" background="images/background.gif" topMargin="0" rightMargin="0">
+		<form name="formMedwin" method="post" action="frmSearchPartner.aspx?lang=de" id="formMedwin">
+<input type="hidden" name="__EVENTTARGET" value="" />
+<input type="hidden" name="__EVENTARGUMENT" value="" />
+<input type="hidden" name="__VIEWSTATE" value="FooViewState=" />
+
+<script language="javascript">
+<!--
+	function __doPostBack(eventTarget, eventArgument) {
+		var theform;
+		if (window.navigator.appName.toLowerCase().indexOf("netscape") > -1) {
+			theform = document.forms["formMedwin"];
+		}
+		else {
+			theform = document.formMedwin;
+		}
+		theform.__EVENTTARGET.value = eventTarget.split("$").join(":");
+		theform.__EVENTARGUMENT.value = eventArgument;
+		theform.submit();
+	}
+// -->
+</script>
+
+			<TABLE id="TblHead" cellSpacing="0" cellPadding="0" width="100%" frame="below" rules="none" border="3">
+				<TR bgColor="#008080" height="60">
+
+					<td width="10"></td>
+					<td colSpan="2">
+						<p><IMG alt="MEDWIN" src="images/medwin.gif"><SPAN style="VERTICAL-ALIGN: top; COLOR: white"><B>®</B></SPAN></p>
+					</td>
+				</TR>
+			</TABLE>
+			<br>
+			<TABLE id="tblBody" cellSpacing="0" cellPadding="0" width="100%" border="0">
+
+				<TR>
+					<td width="10" rowSpan="2"></td>
+					<TD vAlign="top" width="30%" rowSpan="2">
+						<table id="tblSearch" cellspacing="0" cellpadding="0" width="100%" border="0">
+	<tr height="60">
+		<TD colspan="3"><span id="lblSearchfor"><b>Suche nach</b></span></TD>
+	</tr>
+	<tr height="30">
+
+		<TD colspan="2"><span id="lblSearchName">Name</span></TD>
+		<td>&nbsp;&nbsp;
+									<span id="lblSearchCountry">Land</span></td>
+	</tr>
+	<tr>
+		<TD colspan="2"><input name="txtSearchName" type="text" value="ecosol ag" maxlength="50" id="txtSearchName" /></TD>
+		<td>&nbsp;&nbsp;
+									<select name="ddlSearchCountry" id="ddlSearchCountry">
+
+			<option value="0">[Alle]</option>
+			<option value="INT">Ausland</option>
+			<option value="CH">Schweiz</option>
+
+		</select></td>
+	</tr>
+	<tr height="30">
+		<TD><span id="lblSearchZip">PLZ</span></TD>
+
+		<TD style="WIDTH: 163px"><span id="lblSearchCity">Ort</span></TD>
+		<TD>&nbsp;&nbsp;&nbsp;<span id="lblSearchState">Kanton</span></TD>
+	</tr>
+	<tr>
+		<TD><input name="txtSearchZIP" type="text" maxlength="5" id="txtSearchZIP" class="txtZIPWidth" /></TD>
+		<TD style="WIDTH: 163px"><input name="txtSearchCity" type="text" maxlength="50" id="txtSearchCity" /></TD>
+		<TD align="left">&nbsp;&nbsp;&nbsp;<select name="ddlSearchStates" id="ddlSearchStates">
+			<option value="[Tous]">[Alle]</option>
+
+			<option value="AG">Aargau</option>
+			<option value="AI">Appenzel Ausserrhoden</option>
+			<option value="AR">Appenzel Innerrhoden</option>
+			<option value="BL">Basel Land</option>
+			<option value="BS">Basel Stadt</option>
+			<option value="BE">Bern</option>
+
+			<option value="FR">Freiburg</option>
+			<option value="GE">Genf</option>
+			<option value="GL">Glarus</option>
+			<option value="GR">Graub&#252;nden</option>
+			<option value="JU">Jura</option>
+			<option value="FL">Liechtenstein</option>
+
+			<option value="LU">Luzern</option>
+			<option value="NE">Neuenburg</option>
+			<option value="NW">Nidwald</option>
+			<option value="OW">Obwald</option>
+			<option value="SH">Schaffhausen</option>
+			<option value="SZ">Schwytz</option>
+
+			<option value="SO">Solothurn</option>
+			<option value="SG">St. Gallen</option>
+			<option value="TI">Tessin</option>
+			<option value="TG">Thurgau</option>
+			<option value="UR">Uri</option>
+			<option value="VD">Waadt</option>
+
+			<option value="VS">Walis</option>
+			<option value="ZG">Zug</option>
+			<option value="ZH">Z&#252;rich</option>
+
+		</select></TD>
+	</tr>
+	<tr height="30">
+
+		<TD colspan="3"><span id="lblSearchFunction">Tätigkeit</span></TD>
+	</tr>
+	<tr>
+		<TD colspan="3"><select name="ddlSearchFunctions" id="ddlSearchFunctions">
+			<option value="0">[Alle]</option>
+			<option value="36">Andere Pflegeorganisation</option>
+			<option value="31">Anderer Leistungserbringer</option>
+
+			<option value="15">Apotheke</option>
+			<option value="23">Arzt</option>
+			<option value="5">Arztpraxis</option>
+			<option value="25">Chiropraktor</option>
+			<option value="18">Dienstleistungsfirma</option>
+			<option value="6">Drogerie</option>
+
+			<option value="8">Grossist</option>
+			<option value="7">Industrie</option>
+			<option value="12">Inst. f&#252;r Forschung, Analyse oder Bildung</option>
+			<option value="14">Internationale Organisation</option>
+			<option value="2">Kankenversicherung</option>
+			<option value="35">Pflegeheim</option>
+
+			<option value="3">Sanit&#228;tsbeh&#246;rde</option>
+			<option value="4">Sozialversicherung</option>
+			<option value="10">Spital/Klinik</option>
+			<option value="24">Tierarzt</option>
+			<option value="1">Unfallversicherung</option>
+
+			<option value="19">Verband</option>
+			<option value="21">Zahnarzt</option>
+
+		</select></TD>
+	</tr>
+	<tr height="30">
+		<TD colspan="3"><span id="lblSearchEAN">EAN-Code (GLN)</span></TD>
+	</tr>
+
+	<tr>
+		<TD colspan="3"><input name="txtSearchEAN" type="text" maxlength="14" id="txtSearchEAN" /></TD>
+	</tr>
+	<tr height="40">
+		<TD colspan="3"><input type="submit" name="btnSearch" value="Suche" id="btnSearch" />&nbsp;&nbsp;
+									<input type="submit" name="btnClearFields" value="Felder rücksetzen" id="btnClearFields" /></TD>
+	</tr>
+	<tr>
+		<td colspan="3"><span id="lblZur">Zur</span>&nbsp;<a id="hlinkProducts" href="frmSearchProduct.aspx">Artikeldatenbank</a>
+
+									<span id="lblMedref">Medref</span>®</td>
+	</tr>
+	<tr height="60">
+		<td colspan="3"></td>
+	</tr>
+	<tr>
+		<td colspan="3"></td>
+	</tr>
+
+</table>
+
+						<input name="hiddenlang" id="hiddenlang" type="hidden" value="de" /></TD>
+					<td width="10" rowSpan="2"></td>
+					<TD vAlign="top">
+						<TABLE id="tblFind" cellSpacing="0" width="100%" border="3">
+							<TR>
+								<TD><span id="lblPartnerEAN">EAN-Code (GLN)</span></TD>
+								<TD bgColor="#ffffff"><span id="lblEAN"><b>7601001003668</b></span></TD>
+
+								<TD><FONT face="arial, helvetica, sansserif" size="2"><span id="lblPartnerlanguage">Sprache</span></FONT></TD>
+								<TD bgColor="#ffffff" colSpan="2"><span id="lbllanguage">Deutsch</span>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD><span id="lblPartnerTitle">Anrede</span></TD>
+								<TD bgColor="#ffffff" colspan="4"><span id="lblSalutation"></span>&nbsp;</TD>
+							</TR>
+
+							<TR>
+								<TD><span id="lblPartnerName1">Name 1</span></TD>
+								<TD bgColor="#ffffff" colSpan="4"><span id="lblName"><b>Ecosol AG</b></span>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD><span id="lblPartnerName2">Name 2</span></TD>
+								<TD bgColor="#ffffff" colSpan="4"><span id="lblName2"><b>Pharmaz. Spezialitäten</b></span>&nbsp;</TD>
+
+							</TR>
+							<TR>
+								<TD><span id="lblPartnerStreet">Strasse</span>&nbsp;/
+									<span id="lblPartnerPostoffice">Postfach</span></TD>
+								<TD bgColor="#ffffff" colSpan="2"><span id="lblStreet">Hohlstrasse 192</span>&nbsp;<span id="lblNumber"></span>&nbsp;</TD>
+								<TD bgColor="#ffffff" colSpan="2">
+									<span id="lblPost">Postfach</span>&nbsp;</TD>
+
+							</TR>
+							<TR>
+								<TD noWrap><span id="lblPartnerZip">PLZ</span>&nbsp;/
+									<span id="lblPartnerCity">Ort</span>&nbsp;/
+									<span id="lblPartnerState">Kanton</span>&nbsp;/
+									<span id="lblPartnerCountry">Land</span></TD>
+								<TD bgColor="#ffffff"><span id="lblZIP">8023</span>&nbsp;</TD>
+								<TD noWrap bgColor="#ffffff"><span id="lblCity">Zürich</span>&nbsp;</TD>
+
+								<TD bgColor="#ffffff">
+									<span id="lblState">ZH</span>&nbsp;</TD>
+								<td bgColor="#ffffff">
+									<span id="lblCountry">CH</span>&nbsp;</td>
+							</TR>
+							<TR>
+								<TD><span id="lblPartnerPhone">Telefon</span>&nbsp;/
+									<span id="lblPartnerFax">Fax</span></TD>
+
+								<TD noWrap bgColor="#ffffff"><span id="lblphone">01 2410500</span>&nbsp;</TD>
+								<TD noWrap bgColor="#ffffff" colSpan="3"><span id="lblfax">01 2410515</span>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD><span id="lblPartnerResponsible">Verantwortliche Person 1</span></TD>
+								<TD bgColor="#ffffff" colSpan="4"><FONT face="arial, helvetica, sansserif" size="2"></FONT><span id="lblResponsible"></span>&nbsp;</TD>
+							</TR>
+
+							<TR>
+								<TD><span id="lblPartnerResponsible2">Verantwortliche Person 2</span></TD>
+								<TD bgColor="#ffffff" colSpan="4"><FONT face="Arial" size="2"></FONT><span id="lblResponsible2"></span>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD><span id="lblPartnerFunction">Tätigkeit</span></TD>
+								<TD bgColor="#ffffff" colSpan="4"><span id="lblFunction">Industrie</span>
+
+									<span id="lblFunctionSpecial"></span>&nbsp;</TD>
+							</TR>
+							<TR>
+								<TD><FONT size="2"><span id="lblPartnerbeko">Betäubungsmittelbewilligung</span>:</FONT></TD>
+								<td bgColor="#ffffff" colSpan="4"><span id="lblbekotext">Keine Betäubungsmittelbewilligung</span>&nbsp;</td>
+							</TR>
+							<TR>
+
+								<TD colSpan="5"><B>MedWin </B><B>®</B>&nbsp;<span id="lblPartnerUpdate">Letzte Aktualisierung</span>
+									:&nbsp;&nbsp;<span id="lblUpdate">16.03.2004</span></TD>
+							</TR>
+						</TABLE>
+					</TD>
+				</TR>
+
+				<tr>
+					<td><br>
+						<p>&nbsp;<span id="lblcount">1</span>
+							<span id="lblcountText">Partner gefunden.</span>
+							</p>
+						<table cellspacing="1" rules="all" border="1" id="DgMedwinPartner" bgcolor="White">
+	<tr bgcolor="Teal">
+		<td><font color="White"><b>[Detail]</b></font></td><td><font color="White"><b><a href="javascript:__doPostBack('DgMedwinPartner$_ctl1$_ctl0','')"><font color="White">[Name 1]</font></a></b></font></td><td><font color="White"><b><a href="javascript:__doPostBack('DgMedwinPartner$_ctl1$_ctl1','')"><font color="White">[Name 2]</font></a></b></font></td><td><font color="White"><b><a href="javascript:__doPostBack('DgMedwinPartner$_ctl1$_ctl2','')"><font color="White">[Ort]</font></a></b></font></td>
+
+	</tr><tr>
+		<td><a href="javascript:__doPostBack('DgMedwinPartner$_ctl2$_ctl0','')">Detail</a></td><td>
+										<span id="DgMedwinPartner__ctl2_Linkbutton1" NAME="Linkbutton1">Ecosol AG</span>
+										</asp:LinkButton>
+									</td><td>Pharmaz. Spezialitäten</td><td>Zürich</td>
+	</tr>
+</table></td>
+
+					</TD></tr>
+			</TABLE>
+		</form>
+	</body>
+</HTML>

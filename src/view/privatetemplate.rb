@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+# Template -- oddb -- 23.10.2002 -- hwyss@ywesee.com 
+
+require	'view/form'
+require 'view/publictemplate'
+require 'view/pointersteps'
+require 'view/searchbar'
+
+module ODDB
+	class SearchHead < Form
+		COMPONENTS = {
+			[0,0]		=>	:search_query,
+			[0,0,1]	=>	:submit,
+		}
+		CSS_CLASS = 'composite'
+		CSS_MAP = {
+			[0,0]	=>	'search',
+		}
+		EVENT = :search
+		FORM_METHOD = 'GET'
+		SYMBOL_MAP = {
+			:search_query	=>	SearchBar,
+		}
+	end
+	class PrivateTemplate < PublicTemplate
+		COLSPAN_MAP = {
+			[0,0]			=>	2,
+			[0,2,1,2]	=>	2,
+			[0,3]			=>	2,
+		}
+		COMPONENTS = {
+			[0,0]		=>	:head,
+			[0,1]		=>	PointerSteps,
+			[1,1]		=>	SearchHead,
+			[0,2]		=>	:content,
+			[0,3]		=>	:foot,
+		}
+		SNAPBACK_EVENT = nil
+		def snapback
+			self.class::SNAPBACK_EVENT	
+		end
+	end
+end

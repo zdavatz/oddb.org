@@ -1,0 +1,452 @@
+parsing spikeparser.txt:
+01 NorLevo, Tabletten 
+Ecosol AG, Hohlstrasse 192, 8004 Zürich 
+Zul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 
+Zusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. 
+Anwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverhütung in Notfällen 
+Packung: 01 002 2 Tabletten C 
+Gültig bis: 28. Oktober 2007
+01 Peterer Arnika Gel mit Spilanthes 
+Peterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil 
+Zul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 
+Zusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. 
+Anwendung: Bei stumpfen Traumen 
+Packung: 01 002 100 g D 
+Gültig bis: 16. Oktober 2007
+
+result:
+[:IKS_REG, "01"]
+" NorLevo, Tabletten \nEcosol AG, Hohlstrasse 192, 8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "01"]
+"NorLevo, Tabletten \nEcosol AG, Hohlstrasse 192, 8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "NorLevo"]
+", Tabletten \nEcosol AG, Hohlstrasse 192, 8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[",", ","]
+"Tabletten \nEcosol AG, Hohlstrasse 192, 8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Tabletten"]
+" \nEcosol AG, Hohlstrasse 192, 8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:NEWLINE, " \n"]
+"Ecosol AG, Hohlstrasse 192, 8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Ecosol"]
+" AG, Hohlstrasse 192, 8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Ecosol"]
+"AG, Hohlstrasse 192, 8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "AG"]
+", Hohlstrasse 192, 8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[",", ","]
+"Hohlstrasse 192, 8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Hohlstrasse"]
+" 192, 8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Hohlstrasse"]
+"192, 8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "192"]
+", 8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[",", ","]
+"8004 Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "8004"]
+" Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "8004"]
+"Z\374rich \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Z\374rich"]
+" \nZul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:NEWLINE, " \n"]
+"Zul.-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Zul"]
+".-Nr: 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Nr"]
+": 55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[":", ":"]
+"55709 Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "55709"]
+" Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "55709"]
+"Abgabekategorie: C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Abgabekategorie"]
+": C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[":", ":"]
+"C Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "C"]
+" Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "C"]
+"Index: 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Index"]
+": 09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[":", ":"]
+"09.02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "09"]
+".02.1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "02"]
+".1. 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "1"]
+". 29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[".", "."]
+"29.10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "29"]
+".10.2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "10"]
+".2002 \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "2002"]
+" \nZusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:NEWLINE, " \n"]
+"Zusammensetzung: 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Zusammensetzung"]
+": 01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[":", ":"]
+"01 LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "01"]
+" LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "01"]
+"LEVONORGESTRELUM 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "LEVONORGESTRELUM"]
+" 0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "LEVONORGESTRELUM"]
+"0.75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "0"]
+".75 mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "75"]
+" mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "75"]
+"mg, EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "mg"]
+", EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[",", ","]
+"EXCIPIENS pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "EXCIPIENS"]
+" pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "EXCIPIENS"]
+"pro COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "pro"]
+" COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "pro"]
+"COMPRESSO. \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "COMPRESSO"]
+". \nAnwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:NEWLINE, " \n"]
+"Anwendung: Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Anwendung"]
+": Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[":", ":"]
+"Hormonales Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Hormonales"]
+" Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Hormonales"]
+"Kontrazeptivum zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Kontrazeptivum"]
+" zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Kontrazeptivum"]
+"zur Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "zur"]
+" Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "zur"]
+"Schwangerschaftsverh\374tung in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Schwangerschaftsverh\374tung"]
+" in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Schwangerschaftsverh\374tung"]
+"in Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "in"]
+" Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "in"]
+"Notf\344llen \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Notf\344llen"]
+" \nPackung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:NEWLINE, " \n"]
+"Packung: 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Packung"]
+": 01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[":", ":"]
+"01 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "01"]
+" 002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "01"]
+"002 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "002"]
+" 2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "002"]
+"2 Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "2"]
+" Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "2"]
+"Tabletten C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Tabletten"]
+" C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Tabletten"]
+"C \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "C"]
+" \nG\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:NEWLINE, " \n"]
+"G\374ltig bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "G\374ltig"]
+" bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "G\374ltig"]
+"bis: 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "bis"]
+": 28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[":", ":"]
+"28. Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "28"]
+". Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[".", "."]
+"Oktober 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Oktober"]
+" 2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Oktober"]
+"2007\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "2007"]
+"\n01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:NEWLINE, "\n"]
+"01 Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "01"]
+" Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "01"]
+"Peterer Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Peterer"]
+" Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Peterer"]
+"Arnika Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Arnika"]
+" Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Arnika"]
+"Gel mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Gel"]
+" mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Gel"]
+"mit Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "mit"]
+" Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "mit"]
+"Spilanthes \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Spilanthes"]
+" \nPeterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:NEWLINE, " \n"]
+"Peterer Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Peterer"]
+" Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Peterer"]
+"Drogerie AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Drogerie"]
+" AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Drogerie"]
+"AG, Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "AG"]
+", Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[",", ","]
+"Bahnhofstrasse 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Bahnhofstrasse"]
+" 5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Bahnhofstrasse"]
+"5, 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "5"]
+", 9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[",", ","]
+"9239 Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "9239"]
+" Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "9239"]
+"Flawil \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Flawil"]
+" \nZul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:NEWLINE, " \n"]
+"Zul.-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Zul"]
+".-Nr: 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Nr"]
+": 56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[":", ":"]
+"56105 Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "56105"]
+" Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "56105"]
+"Abgabekategorie: D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Abgabekategorie"]
+": D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[":", ":"]
+"D Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "D"]
+" Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "D"]
+"Index: 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Index"]
+": 07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[":", ":"]
+"07.10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "07"]
+".10.4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "10"]
+".4. 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "4"]
+". 17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[".", "."]
+"17.10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "17"]
+".10.2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "10"]
+".2002 \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "2002"]
+" \nZusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:NEWLINE, " \n"]
+"Zusammensetzung 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Zusammensetzung"]
+" 01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Zusammensetzung"]
+"01 SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "01"]
+" SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "01"]
+"SPILANTHES OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "SPILANTHES"]
+" OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "SPILANTHES"]
+"OLERACEA TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "OLERACEA"]
+" TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "OLERACEA"]
+"TM 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "TM"]
+" 200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "TM"]
+"200 mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "200"]
+" mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "200"]
+"mg, ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "mg"]
+", ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[",", ","]
+"ARNICAE TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "ARNICAE"]
+" TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "ARNICAE"]
+"TINCTURA 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "TINCTURA"]
+" 100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "TINCTURA"]
+"100 mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "100"]
+" mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "100"]
+"mg, ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "mg"]
+", ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[",", ","]
+"ARNICA MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "ARNICA"]
+" MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "ARNICA"]
+"MONTANA TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "MONTANA"]
+" TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "MONTANA"]
+"TM 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "TM"]
+" 50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "TM"]
+"50 mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "50"]
+" mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "50"]
+"mg, PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "mg"]
+", PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[",", ","]
+"PROPYLENGLYCOLUM, EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "PROPYLENGLYCOLUM"]
+", EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[",", ","]
+"EXCIPIENS ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "EXCIPIENS"]
+" ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "EXCIPIENS"]
+"ad GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "ad"]
+" GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "ad"]
+"GELATUM pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "GELATUM"]
+" pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "GELATUM"]
+"pro 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "pro"]
+" 1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "pro"]
+"1 g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "1"]
+" g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "1"]
+"g. \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "g"]
+". \nAnwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:NEWLINE, " \n"]
+"Anwendung: Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Anwendung"]
+": Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[":", ":"]
+"Bei stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Bei"]
+" stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Bei"]
+"stumpfen Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "stumpfen"]
+" Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "stumpfen"]
+"Traumen \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Traumen"]
+" \nPackung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:NEWLINE, " \n"]
+"Packung: 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "Packung"]
+": 01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[":", ":"]
+"01 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "01"]
+" 002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:IKS_REG, "01"]
+"002 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "002"]
+" 100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "002"]
+"100 g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "100"]
+" g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "100"]
+"g D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "g"]
+" D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "g"]
+"D \nG\374ltig bis: 16. Oktober 2007"
+[:WORD, "D"]
+" \nG\374ltig bis: 16. Oktober 2007"
+[:NEWLINE, " \n"]
+"G\374ltig bis: 16. Oktober 2007"
+[:WORD, "G\374ltig"]
+" bis: 16. Oktober 2007"
+[:WORD, "G\374ltig"]
+"bis: 16. Oktober 2007"
+[:WORD, "bis"]
+": 16. Oktober 2007"
+[":", ":"]
+"16. Oktober 2007"
+[:IKS_REG, "16"]
+". Oktober 2007"
+[".", "."]
+"Oktober 2007"
+[:WORD, "Oktober"]
+" 2007"
+[:WORD, "Oktober"]
+"2007"
+[:WORD, "2007"]
+""
+[:IKS_REG, "01"]
+"iks_reg: 01"
+[:WORD, "NorLevo"]
+"text: NorLevo"
+[",", ","]
+[:WORD, "Tabletten"]
+"text: Tabletten"
+[:NEWLINE, " \n"]
+"name_description: Tabletten"
+"complete_name: 01 - NorLevo - Tabletten"
+[:WORD, "Ecosol"]
+"text: Ecosol"
+[:WORD, "AG"]
+"text: AG"
+[",", ","]

@@ -1,0 +1,14 @@
+2001-07-08  Masahiro Tanaka  <masa@ir.isas.ac.jp>
+
+	* units.dat: comment-out poundbook-related.
+	* extconf.rb: add site-install.
+	* ver 1.1a
+
+2001-07-03  Masahiro Tanaka  <masa@ir.isas.ac.jp>
+
+	* units.dat: fix lightyear, add deg
+
+2001-04-25  Masahiro Tanaka  <masa@ir.isas.ac.jp>
+
+	* lib/quanty/main.rb (Quanty#to_f): enable to convert to radian.
+	* ver 1.1

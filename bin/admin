@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+# Admin -- oddb -- 09.07.2003 -- hwyss@ywesee.com 
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+
+require 'util/oddbapp'
+require 'readline'
+include Readline
+
+prompt = 'oddb> '
+DRb.start_service
+oddb = DRbObject.new(nil, 'druby://localhost:10000')
+last_error = nil
+priority = -1
+while(line = readline(prompt, true))
+	line.strip!
+	$stdout.print "-> "
+	case line.downcase
+	when 'exit', 'quit'
+		$stdout.puts 'Goodbye'
+		break
+	when 'bt', 'backtrace'
+		if last_error.respond_to?(:backtrace)
+			$stdout.puts last_error.backtrace 
+		else
+			$stdout.puts 'No Error'
+		end
+	when /^last_error/
+		begin
+			$stdout.puts eval(line)
+		rescue Exception => last_error
+			$stdout.puts last_error
+		end
+	when /sp\s+(-?\d+)/, /set_priority\s+(-?\d+)/ 
+		priority = $~[1].to_i
+		$stdout.puts "setting Priority to #{priority}"
+	else
+		begin
+			$stdout.puts oddb.admin(line, priority)
+		rescue Exception => last_error
+			$stdout.puts last_error
+		end
+	end
+	$stdout.flush
+end
