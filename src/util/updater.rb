@@ -89,7 +89,7 @@ module ODDB
 				wrap_update(klass, subj) { 
 					if(plug.update(latest))
 						log = logs.latest
-						change_flags = plug.change_flags.update(log.change_flags) 
+						change_flags = plug.change_flags.update(log.change_flags.odba_instance) 
 						@app.update(log.pointer, {:change_flags, change_flags})
 						partlog = Log.new(latest)
 						partlog.update_values(log_info(plug))

@@ -56,6 +56,7 @@ module ODDB
 				@name, @firstname,  
 				@email,
 				@specialities,
+				@ean13,
 			] + @addresses.collect { |addr| addr.search_terms }).flatten.compact
 		end
 		def search_text

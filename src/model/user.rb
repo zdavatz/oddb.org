@@ -64,6 +64,7 @@ module ODDB
 		HOME = State::Drugs::Init
 	end
 	class AdminUser < User
+		SESSION_WEIGHT = 4
 		VIRAL_MODULE = State::Admin::Root
 		include UserOid
 	end
@@ -76,6 +77,7 @@ module ODDB
 		end
 	end		
 	class CompanyUser < User
+		SESSION_WEIGHT = 4
 		VIRAL_MODULE = State::Admin::CompanyUser
 		include UserOid
 	end
