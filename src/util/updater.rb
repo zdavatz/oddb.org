@@ -86,7 +86,7 @@ module ODDB
 				wrap_update(klass, subj) { 
 					if(plug.update(latest))
 						log = logs.latest
-						change_flags = log.change_flags.update(plug.change_flags) 
+						change_flags = plug.change_flags.update(log.change_flags) 
 						@app.update(log.pointer, {:change_flags, change_flags})
 						partlog = Log.new(latest)
 						partlog.update_values(log_info(plug))
@@ -215,6 +215,7 @@ module ODDB
 				].join("\n")
 				log.recipients = RECIPIENTS.dup
 				log.notify("Error: #{subj}")
+				nil
 			end
 		end
 		def update_simple(klass, subj, update_method=:update, arg=nil)
