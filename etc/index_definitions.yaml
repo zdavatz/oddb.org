@@ -91,3 +91,12 @@ resolve_target: ''
 resolve_origin: ''
 init_source: '@doctors.values'
 fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'company_index'
+origin_klass: 'Company'
+target_klass: 'Company'
+resolve_search_term: 'search_terms'
+resolve_target: ''
+resolve_origin: ''
+init_source: '@companies.values'
+fulltext: false

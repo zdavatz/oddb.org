@@ -206,6 +206,9 @@ module ODDB
 					when :doctors
 						result = @session.search_doctors(query)
 						State::Doctors::DoctorResult.new(@session, result)
+					when :companies
+						result = @session.search_companies(query)
+						State::Companies::CompanyResult.new(@session, result)
 					when :drugs
 						result = nil
 						result = if(@session.user_input(:exact_match))

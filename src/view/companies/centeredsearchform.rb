@@ -9,10 +9,10 @@ module ODDB
 class CenteredSearchForm < View::CenteredSearchForm
 	COMPONENTS = {
 		[0,0]		=>	View::TabNavigation,
-		#[0,1]		=>	:search_query,
-		#[0,2]		=>	:submit,
-		#[0,2,1]	=>	:search_reset,
-		#[0,2,2]	=>	:search_help,
+		[0,1]		=>	:search_query,
+		[0,2]		=>	:submit,
+		[0,2,1]	=>	:search_reset,
+		[0,2,2]	=>	:search_help,
 	}
 	EVENT = :search
 end
@@ -23,8 +23,8 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,0,2]	=>	:language_fr,
 		[0,0,3]	=>	:beta,
 		[0,1]		=>	View::Companies::CenteredSearchForm,
-		#[0,2]		=>	:search_explain, 
-		#[0,3]		=>	:search_compare,
+		[0,2]		=>	:search_explain, 
+		[0,3]		=>	:search_compare,
 		[0,4]		=>	View::CenteredNavigation,
 		[0,5]		=>	:company_count,
 		[0,5,1]	=>	'company_count_text',

@@ -544,6 +544,9 @@ class OddbPrevalence
 	def search_doctors(key)
 		ODBA.cache_server.retrieve_from_index("doctor_index", key)
 	end
+	def search_companies(key)
+		ODBA.cache_server.retrieve_from_index("company_index", key)
+	end
 	def search_exact(query)
 		result = ODDB::SearchResult.new
 		atc = ODDB::AtcClass.new('n.n.')
