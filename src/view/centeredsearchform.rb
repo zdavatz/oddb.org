@@ -25,12 +25,11 @@ module ODDB
 		end
 		class CenteredNavigation < HtmlGrid::Composite
 			COMPONENTS = {}
-			CSS_CLASS = "ccomponent"
-			HTML_ATTRIBUTES = {
-				'text-align'	=>	'center',
-			}
+			#HTML_ATTRIBUTES = {
+				#	'align'	=>	'center',
+				#}
 			SYMBOL_MAP = {
-				:navigation_divider	=>	HtmlGrid::Text,
+				:divider	=>	HtmlGrid::Text,
 			}
 			def init
 				build_navigation()

@@ -754,11 +754,12 @@ td.ccomponent {
 	color : black;
 	vertical-align : middle; 
 	padding : 4px;
+	float : center;
 }
 table.ccomponent {
 	position : relative;
 	text-align : center;
-	float : middle;
+	float : center;
 }
 /*
 td.ccomponent {
