@@ -603,6 +603,9 @@ class OddbPrevalence
 		result.atc_classes = [atc]
 		result
 	end
+	def search_indications(query)
+		ODBA.cache_server.retrieve_from_index("indication_index", query)
+	end
 	def search_interactions(query)
 		result = ODBA.cache_server.retrieve_from_index("sequence_index_substance", query)
 =begin
