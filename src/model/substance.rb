@@ -118,7 +118,7 @@ module ODDB
 					active_agent.substance = self
 					active_agent.odba_isolated_store
 				else
-					puts "only removing sequence"
+					warn("Substance.merge: no active agent, only removing sequence")
 					other.remove_sequence(sequence)
 				end
 			}
