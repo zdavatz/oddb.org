@@ -15,30 +15,38 @@ module ODDB
 	module State
 		module Admin
 class Sequence < State::Admin::Global
+	RECIPIENTS = []
 	VIEW = View::Admin::RootSequence
 	PDF_DIR = File.expand_path('../../../doc/resources/patinfo/', File.dirname(__FILE__))
 	def assign_patinfo
 		State::Admin::AssignDeprivedSequence.new(@session, @model)
 	end	
 	def atc_request
-		mail = TMail::Mail.new
-		mail.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
-		mail.to = 'jlang@ywesee.com'
-		mail.from = 'usenguel@ywesee.com'
-		mail.subject = "#{@model.name_base} #{@model.iksnr}"
-    mail.date = Time.now
-		mail.body = [
-				"#{@session.lookandfeel.lookup(:atc_request_email)}",
-				"#{@session.lookandfeel.lookup(:name)}: #{@model.name_base}",
-				"#{@session.lookandfeel.lookup(:registration)}: #{@model.iksnr}",
-				"#{@session.lookandfeel.lookup(:package)}: #{@model.packages.keys.join(",")} \n",
-				"#{@session.lookandfeel.lookup(:thanks_for_cooperation)} \n",
+		if((company = @model.company) && (addr = company.regulatory_email))
+			lookandfeel = @session.lookandfeel
+			mail = TMail::Mail.new
+			mail.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
+			mail.to = [addr]
+			mail.from = MAIL_FROM
+			mail.subject = "#{@model.name_base} #{@model.iksnr}"
+			mail.date = Time.now
+			mail.body = [
+				lookandfeel.lookup(:atc_request_email),
+				lookandfeel.lookup(:name) + ": " + @model.name_base,
+				lookandfeel.lookup(:registration) + ": " + @model.iksnr,
+				lookandfeel.lookup(:package) + ": " \
+					+ @model.packages.keys.join(","),
+				lookandfeel._event_url(:resolve, {:pointer => @model.pointer}),
+				nil, 
+				lookandfeel.lookup(:thanks_for_cooperation),
 			].join("\n")
-		Net::SMTP.start(SMTP_SERVER) { |smtp|
-			smtp.sendmail(mail.encoded, mail.from, mail.to)
-		}
-		@model.atc_request_time = Time.now
-		@model.odba_store
+			mail['User-Agent'] = 'ODDB Download'
+			Net::SMTP.start(SMTP_SERVER) { |smtp|
+				smtp.sendmail(mail.encoded, SMTP_FROM, [addr] + RECIPIENTS)
+			}
+			@model.atc_request_time = Time.now
+			@model.odba_store
+		end
 		self
 	end
 	def delete
@@ -92,28 +100,24 @@ class Sequence < State::Admin::Global
 			end
 			@model.append(seqnr)
 		end
-		input = [
+		keys = [
 			:dose,
 			:name_base, 
 			:name_descr,
-		].inject({}) { |inj, key|
-			value = @session.user_input(key)
-			if(value.is_a? RuntimeError)
-				@errors.store(key, value)
-			else
-				inj.store(key, value)
-			end
-			inj
-		}
+		]
+		input = user_input(keys)
 		galform = @session.user_input(:galenic_form)
 		if(@session.app.galenic_form(galform))
 			input.store(:galenic_form, galform)
 		else
-			@errors.store(:galenic_form, create_error(:e_unknown_galenic_form, :galenic_form, galform))
+			err = create_error(:e_unknown_galenic_form, 
+				:galenic_form, galform)
+			@errors.store(:galenic_form, err)
 		end
-		atc_code = @session.user_input(:code)
-		if(atc_code.is_a?(RuntimeError))
-			@errors.store(atc_code.key, atc_code)
+		atc_input = self.user_input(:code, :code)
+		atc_code = atc_input[:code]
+		if(atc_code.nil?)
+			# error already stored by user_input(:code, :code)
 		elsif((descr = @session.user_input(:atc_descr)) \
 			&& !descr.empty?)
 			pointer = Persistence::Pointer.new([:atc_class, atc_code])
@@ -151,7 +155,12 @@ class Sequence < State::Admin::Global
 				add_warning(:w_no_patinfo_saved, :patinfo_upload, nil)
 			end
 		end
-		ODBA.batch {
+		if((company = @model.company) \
+			&& (mail = self.user_input(:regulatory_email)) && !mail.empty?)
+			puts "mail: #{mail.inspect}"
+			@session.app.update(company.pointer, mail)
+		end
+		ODBA.transaction {
 			@model = @session.app.update(@model.pointer, input)
 		}
 		self

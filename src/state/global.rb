@@ -318,6 +318,9 @@ module ODDB
 				keys = [keys] unless keys.is_a?(Array)
 				mandatory = [mandatory] unless mandatory.is_a?(Array)
 				if(hash = @session.user_input(*keys))
+					unless(hash.is_a?(Hash))
+						hash = {keys.first => hash}
+					end
 					hash.each { |key, value| 
 						carryval = nil
 						if (value.is_a? RuntimeError)

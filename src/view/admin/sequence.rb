@@ -165,6 +165,7 @@ class SequenceForm < Form
 		:patinfo_label			=> HtmlGrid::LabelText,
 		:atc_request_label	=> HtmlGrid::LabelText,
 		:no_company					=> HtmlGrid::LabelText,
+		:regulatory_email		=> HtmlGrid::InputText,
 	}
 	def init
 		if(@model.is_a?(Persistence::CreateItem))
@@ -182,14 +183,13 @@ class SequenceForm < Form
 				[3,4]		=>	'result-infos',
 				[0,5,4] =>	'list',
 			})
-			if(@model.atc_class.nil?)
+			if(@model.atc_class.nil? && !atc_descr_error?)
 			  if(@model.company.nil?)
-					components.store([2,3], :atc_request_label)
+					components.store([5,3], :atc_request_label)
 					components.store([3,3], :no_company)
 				else
 					if(@model.company.regulatory_email.nil?)
-						components.store([2,3], :atc_request_label)
-						components.store([3,3], :profile_link)
+						components.store([2,3], :regulatory_email)
 					else
 						components.store([2,3], :atc_request_label)
 						components.store([3,3], :atc_request)
@@ -209,15 +209,17 @@ class SequenceForm < Form
 		end
 	end
 	def atc_descr(model, session)
-		if(((err = session.error(:atc_class)) \
-			&& err.message == "e_unknown_atc_class") \
-			|| ((atc = model.atc_class) \
-			&& atc.description.empty?))
-
+		if(atc_descr_error?)
 			HtmlGrid::InputText.new(:atc_descr, model, session, self)
 		else
 			super
 		end
+	end
+	def atc_descr_error?
+		((err = @session.error(:atc_class)) \
+			&& err.message == "e_unknown_atc_class") \
+			|| ((atc = @model.atc_class) \
+			&& atc.description.empty?)
 	end
 	def delete_item(model, session)
 		delete_item_warn(model, :w_delete_sequence)

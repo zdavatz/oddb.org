@@ -12,8 +12,6 @@ class RegisterDownload < State::User::Global
 	RECIPIENTS = [
 		'hwyss@ywesee.com',
 	]
-	MAIL_FROM = '"Zeno R.R. Davatz" <zdavatz@ywesee.com>'
-	SMTP_FROM = 'zdavatz@ywesee.com'
 	VIEW = View::User::RegisterDownload
 	def ask_for_authentication(recipient, challenge)
 		lookandfeel = @session.lookandfeel
