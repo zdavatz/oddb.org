@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ResultSort -- oddb -- 10.09.2003 -- maege@ywesee.com
+# ResultSort -- oddb -- 10.09.2003 -- mhuggler@ywesee.com
 
 module ODDB
 	module ResultStateSort

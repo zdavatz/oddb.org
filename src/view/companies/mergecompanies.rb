@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Companies::MergeCompanies -- oddb -- 17.06.2003 -- maege@ywesee.com
+# View::Companies::MergeCompanies -- oddb -- 17.06.2003 -- mhuggler@ywesee.com
 
 require 'view/privatetemplate'
 require 'view/form'

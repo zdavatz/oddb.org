@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Stage::PageFacade -- oddb -- 01.06.2004 -- maege@ywesee.com
+# Stage::PageFacade -- oddb -- 01.06.2004 -- mhuggler@ywesee.com
 
 module ODDB
 	module State

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::User::FiPiOfferConfirm -- oddb -- 29.06.2004 -- maege@ywesee.com
+# State::User::FiPiOfferConfirm -- oddb -- 29.06.2004 -- mhuggler@ywesee.com
 
 require 'state/user/global'
 require 'view/user/fipi_offer_confirm'

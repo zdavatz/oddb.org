@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Upload -- oddb -- 29.07.2003 -- maege@ywesee.com
+# Upload -- oddb -- 29.07.2003 -- mhuggler@ywesee.com
 
 module ODDB
 	class Upload

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# LookandfeelWrapper - oddb -- 21.07.2003 -- maege@ywesee.com
+# LookandfeelWrapper - oddb -- 21.07.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/lookandfeelwrapper'
 

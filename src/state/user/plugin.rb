@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::User::Plugin -- oddb -- 11.08.2003 -- maege@ywesee.com
+# State::User::Plugin -- oddb -- 11.08.2003 -- mhuggler@ywesee.com
 
 require 'state/user/global'
 require 'view/user/plugin'

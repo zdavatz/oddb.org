@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::User::DownloadExport -- oddb -- 20.09.2004 -- maege@ywesee.com
+# State::User::DownloadExport -- oddb -- 20.09.2004 -- mhuggler@ywesee.com
 
 require 'state/user/global'
 require 'view/user/download_export'

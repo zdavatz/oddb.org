@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Drugs::CenteredSearchForm -- oddb -- 07.09.2004 -- maege@ywesee.com
+# View::Drugs::CenteredSearchForm -- oddb -- 07.09.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/select'
 require 'view/centeredsearchform'

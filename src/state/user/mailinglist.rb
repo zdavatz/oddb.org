@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::User::MailingList -- oddb -- 30.09.2003 -- maege@ywesee.com
+# State::User::MailingList -- oddb -- 30.09.2003 -- mhuggler@ywesee.com
 
 require 'state/user/global'
 require 'view/user/mailinglist'

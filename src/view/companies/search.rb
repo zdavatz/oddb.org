@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Companies::Init -- oddb -- 06.09.2004 -- maege@ywesee.com
+# View::Companies::Init -- oddb -- 06.09.2004 -- mhuggler@ywesee.com
 
 require 'view/publictemplate'
 require 'view/welcomehead'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# OneDirSuite -- oddb -- 20.10.2003 -- maege@ywesee.com
+# OneDirSuite -- oddb -- 20.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path(File.dirname(__FILE__))
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::TabNavigation -- oddb -- 01.09.2004 -- maege@ywesee.com
+# View::TabNavigation -- oddb -- 01.09.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'
 require 'htmlgrid/link'

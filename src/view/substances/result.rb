@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Substances::Result -- oddb -- 23.08.2004 -- maege@ywesee.com
+# View::Substances::Result -- oddb -- 23.08.2004 -- mhuggler@ywesee.com
 
 require 'view/form'
 require 'view/resulttemplate'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# MedwinPlugin -- oddb -- 06.10.2003 -- maege@ywesee.com
+# MedwinPlugin -- oddb -- 06.10.2003 -- mhuggler@ywesee.com
 
 require 'util/oddbconfig'
 require 'plugin/plugin'

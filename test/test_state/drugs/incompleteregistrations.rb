@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Drugs::TestIncompleteRegs -- oddb -- 25.08.2003 -- maege@ywesee.com
+# State::Drugs::TestIncompleteRegs -- oddb -- 25.08.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))

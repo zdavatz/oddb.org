@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# HtmlParser -- oddb -- 06.10.2003 -- maege@ywesee.com
+# HtmlParser -- oddb -- 06.10.2003 -- mhuggler@ywesee.com
 
 require 'html-parser'
 require 'formatter'

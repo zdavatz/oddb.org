@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Drugs::RecentRegs -- oddb -- 01.09.2003 -- maege@ywesee.com
+# View::Drugs::RecentRegs -- oddb -- 01.09.2003 -- mhuggler@ywesee.com
 
 require 'view/drugs/result'
 

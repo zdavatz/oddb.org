@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Companies::Init -- oddb -- 06.09.2004 -- maege@ywesee.com
+# State::Companies::Init -- oddb -- 06.09.2004 -- mhuggler@ywesee.com
 
 require 'state/global_predefine'
 require 'view/companies/search'

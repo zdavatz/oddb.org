@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::User::Global -- oddb -- 24.08.2004 -- maege@ywesee.com
+# State::User::Global -- oddb -- 24.08.2004 -- mhuggler@ywesee.com
 
 require 'state/user/init'
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::User::FachinfoPDFDownload -- oddb -- 20.09.2004 -- maege@ywesee.com
+# View::User::FachinfoPDFDownload -- oddb -- 20.09.2004 -- mhuggler@ywesee.com
 
 
 module ODDB

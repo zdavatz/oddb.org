@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Copyright -- oddb -- 27.05.2003 -- maege@ywesee.com
+# View::Copyright -- oddb -- 27.05.2003 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'
 require 'htmlgrid/link'

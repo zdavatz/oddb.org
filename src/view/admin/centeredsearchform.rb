@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Admin::CenteredSearchForm -- oddb -- 07.09.2004 -- maege@ywesee.com
+# View::Admin::CenteredSearchForm -- oddb -- 07.09.2004 -- mhuggler@ywesee.com
 
 require 'view/centeredsearchform'
 require 'view/language_chooser'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Companies::MergeCompanies -- oddb -- 17.06.2003 -- maege@ywesee.com
+# State::Companies::MergeCompanies -- oddb -- 17.06.2003 -- mhuggler@ywesee.com
 
 require 'state/companies/global'
 require 'view/companies/mergecompanies'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Interactions::Result -- oddb -- 26.05.2004 -- maege@ywesee.com
+# State::Interactions::Result -- oddb -- 26.05.2004 -- mhuggler@ywesee.com
 
 require 'view/interactions/result'
 require 'state/interactions/global'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::User::YweseeContact -- oddb -- 04.08.2003 -- maege@ywesee.com
+# State::User::YweseeContact -- oddb -- 04.08.2003 -- mhuggler@ywesee.com
 
 require 'state/user/global'
 require 'view/user/yweseecontact'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Admin::Global -- oddb -- 24.08.2004 -- maege@ywesee.com
+# State::Admin::Global -- oddb -- 24.08.2004 -- mhuggler@ywesee.com
 
 require 'state/admin/init'
 require 'state/admin/patinfo_stats'

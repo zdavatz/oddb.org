@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::User::Plugin -- oddb -- 11.08.2003 -- maege@ywesee.com
+# View::User::Plugin -- oddb -- 11.08.2003 -- mhuggler@ywesee.com
 
 require 'view/publictemplate'
 require 'htmlgrid/link'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# FlockhartPlugin -- oddb -- 25.02.2004 -- maege@ywesee.com
+# FlockhartPlugin -- oddb -- 25.02.2004 -- mhuggler@ywesee.com
 
 require 'plugin/interaction'
 require 'util/html_parser'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Drugs::AtcChooser -- oddb -- 14.07.2003 -- maege@ywesee.com
+# View::Drugs::AtcChooser -- oddb -- 14.07.2003 -- mhuggler@ywesee.com
 
 require 'view/additional_information'
 require 'view/privatetemplate'

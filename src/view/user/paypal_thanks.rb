@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::User::PayPalThanks -- oddb -- 10.09.2003 -- maege@ywesee.com
+# View::User::PayPalThanks -- oddb -- 10.09.2003 -- mhuggler@ywesee.com
 
 require 'view/publictemplate'
 require 'htmlgrid/composite'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::LegalNote -- oddb -- 01.09.2003 -- maege@ywesee.com
+# View::LegalNote -- oddb -- 01.09.2003 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'
 require 'view/popuptemplate'

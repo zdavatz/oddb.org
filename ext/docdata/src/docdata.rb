@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# DoctorParser -- oddb -- 20.10.2003 -- maege@ywesee.com
+# DoctorParser -- oddb -- 20.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.dirname(__FILE__)

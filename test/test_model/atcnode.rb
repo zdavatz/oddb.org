@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# TestAtcNode -- oddb -- 17.07.2003 -- maege@ywesee.com
+# TestAtcNode -- oddb -- 17.07.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))

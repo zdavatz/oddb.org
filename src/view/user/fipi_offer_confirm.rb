@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::User::FiPiOfferConfirm -- oddb -- 29.06.2004 -- maege@ywesee.com
+# View::User::FiPiOfferConfirm -- oddb -- 29.06.2004 -- mhuggler@ywesee.com
 
 require 'view/resulttemplate'
 require 'htmlgrid/composite'

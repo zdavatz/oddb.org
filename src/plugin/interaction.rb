@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Plugin -- oddb -- 23.02.2004 -- maege@ywesee.com
+# Plugin -- oddb -- 23.02.2004 -- mhuggler@ywesee.com
 
 require 'plugin/plugin'
 require 'plugin/flockhart'

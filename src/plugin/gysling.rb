@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# GyslingPlugin -- oddb -- 13.09.2004 -- maege@ywesee.com
+# GyslingPlugin -- oddb -- 13.09.2004 -- mhuggler@ywesee.com
 
 require 'plugin/interaction'
 require 'csvparser'

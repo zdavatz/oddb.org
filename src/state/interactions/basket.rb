@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Interactions::Basket -- oddb -- 07.06.2004 -- maege@ywesee.com
+# State::Interactions::Basket -- oddb -- 07.06.2004 -- mhuggler@ywesee.com
 
 require	'state/interactions/global'
 require	'view/interactions/basket'

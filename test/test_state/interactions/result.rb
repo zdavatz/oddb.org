@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Interactions::TestResult -- oddb -- 01.06.2004 -- maege@ywesee.com
+# State::Interactions::TestResult -- oddb -- 01.06.2004 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))

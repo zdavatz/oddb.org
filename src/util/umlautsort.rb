@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# UmlautSort -- oddb -- 07.07.2003 -- maege@ywesee.com
+# UmlautSort -- oddb -- 07.07.2003 -- mhuggler@ywesee.com
 
 module ODDB
 	module UmlautSort

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Drugs::RecentRegs -- oddb -- 01.09.2003 -- maege@ywesee.com
+# State::Drugs::RecentRegs -- oddb -- 01.09.2003 -- mhuggler@ywesee.com
 
 require 'state/drugs/global'
 require 'view/drugs/recentregs'
