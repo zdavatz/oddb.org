@@ -70,7 +70,7 @@ class EmptyResultForm < HtmlGrid::Form
 		[0,2,1,2]	=>	'result-atc',
 	}
 	CSS_CLASS = 'composite'
-	EVENT = :search_interaction
+	EVENT = :search
 	FORM_METHOD = 'GET'
 	SYMBOL_MAP = {
 		:search_query		=>	View::SearchBar,	

@@ -4,6 +4,7 @@
 require 'util/persistence'
 require 'util/levenshtein_distance'
 require 'util/language'
+require 'util/soundex'
 require 'model/cyp450connection'
 
 module ODDB
@@ -12,7 +13,7 @@ module ODDB
 		ODBA_PREFETCH = true
 		ODBA_SERIALIZABLE = [ '@descriptions' ]
 		attr_reader :sequences, :substrate_connections
-		attr_accessor :connection_key
+		attr_writer :connection_key
 		include Comparable
 		include Language
 		def initialize
@@ -63,15 +64,22 @@ module ODDB
 		def has_connection_key?
 			@connection_key ? true : false	
 		end
-		def index_search_terms
-			keys = []
-			keys.concat(self.descriptions.values)
-			keys.push(connection_key)
-			keys.push(name)
-			search_terms = keys.flatten.collect { |key|
-				key.downcase unless key.nil?
-			}.compact.uniq
-			search_terms.join(" ")
+		def search_keys
+			keys = (self.descriptions.values + [@name]).compact
+			keys.delete_if { |key|
+				key.empty?
+			}.uniq
+			keys
+		end
+		def soundex_keys
+			names = self.descriptions.values + self.connection_key
+			names.push(name)
+			keys = names.compact.uniq.collect { |key|
+				parts = key.split(/\s/)
+				soundex = Text::Soundex.soundex(parts)
+				soundex.join(' ')
+			}
+			keys.compact.uniq
 		end
 		def interaction_connections(others)
 			if(@substrate_connections)
@@ -122,14 +130,14 @@ module ODDB
 			end
 		end
 		def name
-			if(@name)
-				@descriptions['lt'] = @name if(@descriptions['lt']=="")
-				@name
 			# First call to descriptions should go to lazy-initialisator
-			elsif(descriptions && self.descriptions['lt']!="") 
-				self.descriptions['lt']
+			if(@name)
+				@descriptions['lt'] = @name if(self.descriptions['lt'].empty?)
+				@name
+			elsif(self.descriptions && !@descriptions['lt'].empty?) 
+				@descriptions['lt']
 			elsif(self.descriptions)
-				self.descriptions['en']
+				@descriptions['en']
 			end
 		end
 		alias :pointer_descr :name

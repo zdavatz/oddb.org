@@ -65,15 +65,17 @@ module ODDB
 			atc.sequences = atc_sequences
 			atc
 		end
+=begin
 		def substance_filter_search(substance_name)
 			atc = self.dup
-			atc_sequences  = atc.sequences.dup
+			atc_sequences = @sequences.dup
 			atc_sequences.delete_if { |seq|
 				!(seq.substance_names.to_s.downcase.include?(substance_name))
 			}
 			atc.sequences = atc_sequences
 			atc
 		end	
+=end
 		def create_ddd(roa)
 			@ddds ||= {}
 			@ddds[roa] = DDD.new(roa)	
@@ -107,7 +109,7 @@ module ODDB
 		def packages
 			@sequences.collect { |seq| seq.packages.values }.flatten
 		end
-		def susbtances
+		def substances
 			@sequences.collect { |seq| seq.substances }.flatten
 		end
 		def parent_code

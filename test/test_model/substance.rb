@@ -190,4 +190,10 @@ class TestSubstance < Test::Unit::TestCase
 		assert_equal(true, substance.same_as?('Acetylsalicylsäure'))
 		assert_equal(true, substance.same_as?('Acidum Mefenanicum'))
 	end
+	def test_soundex_keys
+		expected = [
+			'A235 A234',
+		]
+		assert_equal(expected, @substance.soundex_keys)
+	end
 end

@@ -36,9 +36,7 @@ class OrphanedFachinfoAssign < State::Drugs::Global
 		end
 	end
 	def delete_orphaned_fachinfo
-		puts "delete_orphaned_fachinfo #{@model.pointer}"
 		@session.app.delete(@model.pointer)
-		puts "done"
 		orphaned_fachinfos
 	end
 	def named_registrations(name)

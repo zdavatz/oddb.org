@@ -10,17 +10,19 @@ require 'util/updater'
 require 'util/exporter'
 require 'util/validator'
 require 'util/loggroup'
+require 'util/soundex'
 require 'models'
 require 'commands'
 require 'sbsm/drbserver'
 require 'sbsm/index'
-require 'datastructure/chartree'
-require 'datastructure/soundextable'
-require 'madeleine'
 require 'util/drb'
 require 'odba'
 require 'odba/index_definition'
 require 'yaml'
+
+require 'madeleine'
+require 'datastructure/chartree'
+require 'datastructure/soundextable'
 
 class OddbPrevalence
 	include ODDB::Failsafe
@@ -130,34 +132,6 @@ class OddbPrevalence
 	def atc_class(code)
 		@atc_classes[code]
 	end
-=begin
-	def checkout(item)
-		case item
-		when ODDB::Registration
-			item.sequences.each_value { |seq|
-				checkout(seq)
-			}
-		when ODDB::Sequence
-			delete_from_index(@sequence_index, item.name, item)
-		when ODDB::Company
-			delete_from_index(@company_index, item.name, item)
-		when ODDB::Indication
-			item.descriptions.values.uniq.each { |desc|
-				delete_from_index(@indication_index, desc, item)
-			}
-		when ODDB::Substance	
-			keys = item.descriptions.values
-			keys.concat(item.connection_key)
-			if(keys.empty?)
-				keys = [ item.name ]
-			end
-			keys.each { |key|
-				delete_from_index(@substance_index, key, item)
-				delete_from_index(@substance_name_index, key, item.sequences)
-			}
-		end
-	end
-=end
 	def clear_indices
 		@sequence_index = nil
 		@indication_index = nil
@@ -263,17 +237,6 @@ class OddbPrevalence
 				}
 				diff = subs.diff(values, self)
 				subs.update_values(diff)
-=begin
-				@substance_name_index ||= Datastructure::CharTree.new
-				begin
-					#store_in_index(@substance_index, key, subs)
-					#store_in_index(@substance_name_index, key, *subs.sequences)
-				rescue
-					puts $!.class
-					puts $!.message
-					puts $!.backtrace
-				end
-=end
 			end
 			@substances.store(subs.oid, subs)
 		end
@@ -412,9 +375,11 @@ class OddbPrevalence
 		}
 	end
 	#for testing only
+=begin
 	def rebuild_odba
 		puts "reloading persistable"
 		load '/usr/local/lib/site_ruby/1.8/odba/persistable.rb'
+		load '/usr/local/lib/site_ruby/1.8/odba.rb'
 		#initialize scalar cache and cache_server 
 		#(otherwise deadlock problems will occur) 
 		puts "initializing scalar_cache"
@@ -427,13 +392,16 @@ class OddbPrevalence
 		clear_indices
 		start = Time.now
 		puts "storing oddbapp"
-		odba_store('oddbapp')
+		ODBA.batch { 
+			odba_store('oddbapp')
+		}
 		stored = Time.now
 		ODBA.storage.close
 		puts <<-EOS
 #{(stored - start).to_f / 3600} h to save OddbPrevalence and all its unsaved neighbors
 		EOS
 	end			
+=end
 	def rebuild_odba_indices
 		ODBA.scalar_cache.size
 		ODBA.cache_server.indices.size
@@ -444,6 +412,12 @@ class OddbPrevalence
 			file = File.open(path)
 			YAML.load_documents(file) { |index_definition|
 				index_start = Time.now
+				begin
+					puts "dropping: #{index_definition.index_name}"
+					ODBA.cache_server.drop_index(index_definition.index_name)
+				rescue Exception => e
+					puts e.message
+				end
 				puts "creating: #{index_definition.index_name}"
 				ODBA.cache_server.create_index(index_definition, ODDB)
 				puts "filling: #{index_definition.index_name}"
@@ -453,8 +427,10 @@ class OddbPrevalence
 				puts "finished in #{(Time.now - index_start) / 60.0} min"
 			}
 			puts "all Indices Created in total: #{(Time.now - start) / 3600.0} h"
-		rescue
-			puts "INDEX CREATION ERROR"
+		rescue StandardError => e
+			puts "INDEX CREATION ERROR:"
+			puts e.message
+			puts e.backtrace
 		ensure
 			file.close
 		end
@@ -544,14 +520,12 @@ class OddbPrevalence
 	end
 	def search(query, lang)
 		result = ODDB::SearchResult.new
-		# atcless_search, experimental -->
 		if(query == 'atcless')
 			atc = ODDB::AtcClass.new('n.n.')
 			@registrations.each_value { |reg|
 				reg.sequences.each_value { |seq|
 					if(seq.atc_class.nil? && !seq.packages.empty?)
 						atc.add_sequence(seq)
-						#return [atc] if(atc.sequences.size > 50)
 					end	
 				}	
 			}
@@ -567,67 +541,65 @@ class OddbPrevalence
 				return [atc]
 			end
 		end
-		# <--
 		key = query.to_s.downcase
-		result.atc_classes = ODBA.cache_server.retrieve_from_index('atc_index', key)
+		result.atc_classes = ODBA.cache_server.retrieve_from_index('atc_index', key.dup)
 		if result.atc_classes.empty?
-			result.atc_classes = ODBA.cache_server.retrieve_from_index('atc_index_company', key)
+			result.atc_classes = ODBA.cache_server.retrieve_from_index('atc_index_company', key.dup)
 			filtered_result = []
 			result.atc_classes.each { |atc|
-				filtered_result.push(atc.company_filter_search(key))
+				filtered_result.push(atc.company_filter_search(key.dup))
 			}
 			result.atc_classes = filtered_result.flatten.compact.uniq
 			result
 		end
 		if result.atc_classes.empty?
-			result.atc_classes = ODBA.cache_server.retrieve_from_index('substance_index_atc', key)
-			filtered_result = []
-			result.atc_classes.each { |atc|
-				filtered_result.push(atc.substance_filter_search(key))
-			}
-			result.atc_classes = filtered_result.flatten.compact.uniq
-			result
+			result.atc_classes = ODBA.cache_server.retrieve_from_index('substance_index_atc', key.dup)
+			#filtered_result = []
+			#result.atc_classes.each { |atc|
+			#filtered_result.push(atc.substance_filter_search(key.dup))
+			#}
+			#result.atc_classes = filtered_result.flatten.compact.uniq
+			#result
 		end
 		if result.atc_classes.empty?
-			result.atc_classes = ODBA.cache_server.retrieve_from_index("fachinfo_index_#{lang}", key, result)
-			result
+			result.atc_classes = ODBA.cache_server.retrieve_from_index("fachinfo_index_#{lang}", key.dup, result)
 		end
 		if result.atc_classes.empty?
-			result.atc_classes = ODBA.cache_server.retrieve_from_index('sequence_index_atc', key)
-			result
+			result.atc_classes = ODBA.cache_server.retrieve_from_index('sequence_index_atc', key.dup)
 		end
 		result.atc_classes.delete_if { |atc| atc.code.length == 0 }
 		result
 	end
 	def search_interactions(query)
-		keys = query.to_s.downcase.split(" ")
-		result = []
+		result = ODBA.cache_server.retrieve_from_index("sequence_index_substance", query)
+=begin
 		keys.each { |key|
 			if(atc_codes = sequences_by_name(key))
 				atc_codes.each { |atc_code|
-					result << atc_code.substances
+					result += atc_code.substances
 				} 
 			end
-			result << soundex_substances(key)
+			result += soundex_substances(key)
 		}
-		result.flatten!
+=end
+		result += search_substances(query)
 		result
 	end
 	def search_substances(query)
-		keys = query.to_s.downcase.split(" ")
-		result = []
-		keys.each { |key|
-			result << soundex_substances(key)
-			result << substance(key)
-		}
-		result.flatten!
-		result.compact
+		if(subs = substance(query))
+			[subs]
+		else
+			soundex_substances(query)
+		end
 	end
 	def sequences_by_name(name)
 		ODBA.cache_server.retrieve_from_index("sequence_index_atc", name)
 	end
 	def soundex_substances(name)
-		ODBA.cache_server.retrieve_from_index("substance_index", name)
+		parts = name.split(/\s+/)
+		soundex = ODDB::Text::Soundex.soundex(parts)
+		key = soundex.join(' ')
+		ODBA.cache_server.retrieve_from_index("substance_index", key)
 	end
 	def sponsor
 		@sponsor ||= ODDB::Sponsor.new
@@ -698,15 +670,6 @@ class OddbPrevalence
 			@users.store(0, ODDB::RootUser.new)
 		end
 	end
-=begin
-	def delete_from_index(index, key, value)
-		parts = key.to_s.split(/\s+/)
-		parts << key.to_s
-		parts.uniq!
-		parts.each { |part|
-			index.delete(part.downcase, value) if part.length > 3
-		}
-	end
 end
 
 module ODDB
@@ -726,26 +689,12 @@ module ODDB
 		VALIDATOR = Validator
 		attr_reader :cleaner, :updater
 		def initialize
-			#puts STORAGE_PATH
-=begin
-		 	@prevalence = Madeleine::SnapshotMadeleine.new(STORAGE_PATH) {
-				sys = OddbPrevalence.new
-			}
-			puts "prevalence initialized"
-			@system = @prevalence.system
-=end
-#=begin
 			ODBA.cache_server.prefetch
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
-				@system.OddbPrevalence.new
+				OddbPrevalence.new
 			}
-#=end
-			puts "system init..."
+			puts "init system"
 			@system.init
-			#@system.odba_store
-			puts "...done"
-			#@prevalence.startAutoSnapshot(SNAPSHOT_INTERVAL) if AUTOSNAPSHOT
-			#@prevalence.takeSnapshot
 			puts "setup drb-delegation"
 			super(@system)
 			puts "reset"
@@ -788,15 +737,6 @@ module ODDB
 			@system.execute_command(UpdateCommand.new(pointer, values))
 			#@system.update(pointer, values)
 		end
-=begin
-		def take_snapshot
-			failsafe {
-				@prevalence.system.clear_indices
-				@prevalence.take_snapshot
-				@prevalence.system.rebuild_indices
-			}
-		end
-=end
 		#####################################################
 		def admin(src, priority=-1)
 			Thread.current.priority = priority
@@ -805,7 +745,6 @@ module ODDB
 				response = begin
 					instance_eval(src)
 				rescue NameError
-					#@prevalence.system.instance_eval(src)
 					@system.instance_eval(src)
 				end
 				str = response.to_s

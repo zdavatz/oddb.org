@@ -220,20 +220,9 @@ module ODDB
 		end
 	end
 	class TestPersistencePointer < Test::Unit::TestCase
-		class StorageStub
-			def next_id
-				1
-			end
-		end
-		class CacheStub
-			def store(anything)
-			end
-			def delete(anything)
-			end
-		end
 		def setup
-			ODBA.storage = StorageStub.new
-			ODBA.cache_server = CacheStub.new
+			ODBA.storage = ODBA::StorageStub.new
+			ODBA.cache_server = ODBA::CacheStub.new
 			@pointer = ODDB::Persistence::Pointer.new(:foo, [:bar, '12345'])
 		end
 		def test_initialize

@@ -22,8 +22,7 @@ module ODDB
 			end
 		end
 		def same_as?(substance)
-			(@substance_name.downcase == substance.to_s.downcase) \
-				|| (!@substance.nil? && @substance.same_as?(substance))
+			!@substance.nil? && @substance.same_as?(substance)
 		end
 		def to_s
 			[@substance, @dose].join(' ')

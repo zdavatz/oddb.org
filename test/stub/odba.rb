@@ -5,7 +5,17 @@ require 'odba'
 
 module ODBA
 	class CacheStub
+		def delete(anything)
+		end
 		def store(anything)
+		end
+		def prefetch
+		end
+		def bulk_fetch(*args)
+			[]
+		end
+		def fetch_named(*argsm, &block)
+			block.call
 		end
 	end
 	class StorageStub
