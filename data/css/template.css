@@ -590,6 +590,7 @@ td.result-pubprice-complementary-bg {
 a.result-infos, a.result-infos:link, a.result-infos:visited,
 a.result-infos-original, a.result-infos-original:link, a.result-infos-original:visited,
 a.result-infos-generic, a.result-infos-generic:link, a.result-infos-generic:visited,
+a.result-infos-complementary, a.result-infos-complementary:link, a.result-infos-complementary:visited,
 a.result-infos-unknown, a.result-infos-unknown:link, a.result-infos-unknown:visited
 {
 	color : black;
@@ -602,6 +603,7 @@ a.result-infos-unknown, a.result-infos-unknown:link, a.result-infos-unknown:visi
 td.result-infos,
 td.result-infos-original, 
 td.result-infos-generic, 
+td.result-infos-complementary, 
 td.result-infos-unknown
 {
 	padding : 2px;
@@ -610,6 +612,7 @@ td.result-infos-unknown
 a.result-infos-bg, a.result-infos-bg:link, a.result-infos-bg:visited, 
 a.result-infos-original-bg, a.result-infos-original-bg:link, a.result-infos-original-bg:visited, 
 a.result-infos-generic-bg, a.result-infos-generic-bg:link, a.result-infos-generic-bg:visited,
+a.result-infos-complementary-bg, a.result-infos-complementary-bg:link, a.result-infos-complementary-bg:visited, 
 a.result-infos-unknown-bg, a.result-infos-unknown-bg:link, a.result-infos-unknown-bg:visited 
 {
 	color : black;
@@ -622,6 +625,7 @@ a.result-infos-unknown-bg, a.result-infos-unknown-bg:link, a.result-infos-unknow
 
 td.result-infos-original-bg, 
 td.result-infos-generic-bg, 
+td.result-infos-complementary-bg, 
 td.result-infos-unknown-bg
 {
 	background : $rslt_bg;
