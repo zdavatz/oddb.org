@@ -51,7 +51,8 @@ module ODDB
 					begin
 						file = TMail::Mail.new
 						mtype, stype = mime.split('/')
-						file.set_content_type(mtype, stype, 'name'=>File.basename(path))
+						file.set_content_type(mtype, stype, 
+							'name' => File.basename(path))
 						file.disposition = 'attachment'
 						file.transfer_encoding = 'base64'
 						file.body = [File.read(path)].pack('m')
