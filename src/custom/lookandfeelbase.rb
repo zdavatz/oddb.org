@@ -120,7 +120,7 @@ module ODDB
 				:delete_orphaned_fachinfo  =>  'L&ouml;schen',
 				:delete_orphaned_patinfo  =>  'L&ouml;schen',
 				:descr										=>	'Beschreibung',
-				:doctors_count_text				=>	'&nbsp;&Auml;rzte',
+				:doctor_count_text				=>	'&nbsp;&Auml;rzte',
 				:doctorlist								=>	'&Auml;rzteverzeichnis',
 				:dose											=>	'St&auml;rke',
 				:download									=>	'Abschicken',

@@ -83,6 +83,8 @@ class OddbPrevalence
 		atc_ddd_count()
 		limitation_text_count()
 		package_count()
+		patinfo_count()
+		doctor_count()
 	end
 	# prevalence-methods ################################
 	def create(pointer)
@@ -355,7 +357,7 @@ class OddbPrevalence
 	def doctor(oid)
 		@doctors[oid.to_i]
 	end
-	def doctors_count
+	def doctor_count
 		@doctors.size
 	end
 	def doctor_by_origin(origin_db, origin_id)

@@ -24,11 +24,8 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,1]		=>	View::Doctors::CenteredSearchForm,
 		[0,2]		=>	'doctors_search_explain', 
 		#0,4]		=>	View::CenteredNavigation,
-		#[0,5]		=>	:database_size,
-		#[0,5,1]	=>	'database_size_text',
-		#[0,5,2]	=>	'comma_separator',
-		[0,5]		=>	:doctors_count,
-		[0,5,1]	=>	'doctors_count_text',
+		[0,5]		=>	:doctor_count,
+		[0,5,1]	=>	'doctor_count_text',
 		[0,5,2]	=>	'comma_separator',
 		[0,5,6]	=>	'database_last_updated_txt',
 		[0,5,7]	=>	:database_last_updated,
@@ -41,8 +38,8 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENT_CSS_MAP = {
 		[0,6]	=>	'legal-note-center',
 	}
-	def doctors_count(model, session)
-		@session.doctors_count
+	def doctor_count(model, session)
+		@session.doctor_count
 	end
 end	
 class GoogleAdSenseComposite < View::GoogleAdSenseComposite
