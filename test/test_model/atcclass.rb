@@ -14,7 +14,19 @@ module ODDB
 	end
 end
 
+module ODBA
+	module Persistable
+		def odba_store
+		end
+	end
+end
 class TestAtcClass < Test::Unit::TestCase
+	class Array
+		include ODBA::Persistable
+	end
+	class Hash
+		include ODBA::Persistable
+	end
 	class StubSequence
 		def packages
 			{

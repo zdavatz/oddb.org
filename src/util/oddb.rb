@@ -2,9 +2,11 @@
 # OddbServer
 
 $: << File.expand_path("..", File.dirname(__FILE__))
+$: << File.expand_path("../..", File.dirname(__FILE__))
 
 require 'drb/drb'
 require 'util/oddbapp'
+require 'etc/db_connection'
 
 while arg = ARGV.shift
   case arg

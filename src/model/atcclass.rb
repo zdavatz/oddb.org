@@ -10,6 +10,8 @@ module ODDB
 	class AtcClass
 		include Language
 		include SequenceObserver
+		ODBA_PREFETCH = true
+		ODBA_SERIALIZABLE = [ '@descriptions' ]
 		attr_accessor :code
 		attr_reader :guidelines, :ddd_guidelines
 		class DDD
@@ -37,11 +39,15 @@ module ODDB
 			super()
 		end
 		def active_packages
-			@sequences.collect { |seq| seq.active_packages }.flatten
+			@sequences.inject([]) { |inj, seq| inj.concat(seq.active_packages) }
+		end
+		def package_count
+			@sequences.inject(0) { |inj, seq| inj += seq.active_package_count }
 		end
 		def checkout
 			@sequences.each { |seq| seq.atc_class = nil } 
 		end
+=begin
 		def company_filter(companies)
 			atc = self.dup
 			atc.sequences = @sequences.select { |seq| 
@@ -49,6 +55,25 @@ module ODDB
 			}
 			atc
 		end
+=end
+		def company_filter_search(company_name)
+			atc = self.dup
+			atc_sequences  = atc.sequences.dup
+			atc_sequences.delete_if { |seq|
+				!(seq.company.to_s.downcase.include?(company_name))
+			}
+			atc.sequences = atc_sequences
+			atc
+		end
+		def substance_filter_search(substance_name)
+			atc = self.dup
+			atc_sequences  = atc.sequences.dup
+			atc_sequences.delete_if { |seq|
+				!(seq.substance_names.to_s.downcase.include?(substance_name))
+			}
+			atc.sequences = atc_sequences
+			atc
+		end	
 		def create_ddd(roa)
 			@ddds ||= {}
 			@ddds[roa] = DDD.new(roa)	
@@ -81,6 +106,9 @@ module ODDB
 		end
 		def packages
 			@sequences.collect { |seq| seq.packages.values }.flatten
+		end
+		def susbtances
+			@sequences.collect { |seq| seq.substances }.flatten
 		end
 		def parent_code
 			case level

@@ -1,9 +1,13 @@
 #!/usr/bin/env ruby
-# Persistence -- oddb -- 26.02.2003 -- hwyss@ywesee.com 
+# Persistence -- oddb -- 26.02.2003 -- hwyss@ywesee.com
+
 require 'rockit/rockit'
+require 'odba/persistable'
 
 module ODDB
 	module Persistence
+		include ODBA::Persistable
+		ODBA_CARRY_METHODS = [:pointer]
 		attr_reader :oid
 		attr_accessor :pointer
 		def initialize(*args)
@@ -160,6 +164,7 @@ Grammar OddbSize
 				Pointer.new(*directions)
 			end
 			def issue_create(app)
+				#puts " in issue create"
 				new_obj = resolve(app)
 				unless new_obj.nil?
 					return new_obj
@@ -171,11 +176,22 @@ Grammar OddbSize
 				new_obj = hook.send(*(command.compact))
 				new_obj.pointer = self
 				new_obj.init(app)
+				#puts "before new_obj.odba_store"
+				#puts "after new_obj.odba_store"
+				#puts "before hook.odba_store"
+				#Only the hook must be stored
+				#because wie scan its connections for unsaved objects
+				#see ODBA::Persistable
+				hook.odba_store
+				#new_obj.odba_store
+				#puts "after hook.odba_store"
 				new_obj
 			end
 			def issue_delete(app)
 				begin
 					obj = resolve(app)
+					#	puts "before odba_delete"
+					obj.odba_delete
 					if obj.respond_to?(:checkout)
 						obj.checkout
 					end
@@ -185,6 +201,7 @@ Grammar OddbSize
 					hook = pointer.resolve(app)
 					if(hook.respond_to?(command.first))
 						hook.send(*(command.compact))
+						hook.odba_store
 					end
 				rescue InvalidPathError, UninitializedPathError => e
 					puts "Could not delete: #{to_s}, reason: #{e.message}"
@@ -192,7 +209,10 @@ Grammar OddbSize
 			end
 			def issue_update(hook, values)
 				obj = resolve(hook)
-				obj.update_values(obj.diff(values, hook)) if obj
+				unless(obj.nil?)
+					obj.update_values(obj.diff(values, hook))
+					obj.odba_store
+				end
 				obj
 			end
 			def last_step

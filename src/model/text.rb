@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # Text -- oddb -- 10.09.2003 -- rwaltert@ywesee.com
 
+require 'util/persistence'
 require 'util/language'
 
 module ODDB
@@ -29,6 +30,8 @@ module ODDB
 				@values.include?(:italic)
 			end
 			def bold?
+				puts "****"
+				puts @values
 				@values.include?(:bold)
 			end
 			def range
@@ -169,6 +172,7 @@ module ODDB
 			end
 		end
 		class Chapter
+		include Persistence
 			attr_accessor :heading
 			attr_reader		:sections
 			def initialize
@@ -229,6 +233,7 @@ module ODDB
 =end
 		class Document
 			include SimpleLanguage
+			ODBA_SERIALIZABLE = [ '@descriptions' ]
 		end
 	end
 end

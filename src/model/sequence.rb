@@ -23,6 +23,9 @@ module ODDB
 		def active_packages
 			(active?) ? @packages.values : []
 		end
+		def active_package_count
+			(active?) ? @packages.size : 0
+		end
 		def active?
 			@registration.active?
 		end
@@ -163,6 +166,7 @@ module ODDB
 	class Sequence < SequenceCommon
 		attr_accessor :patinfo_shadow
 		ACTIVE_AGENT = ActiveAgent
+		ODBA_PREFETCH = true
 		PACKAGE = Package
 		def atc_class=(atc_class)
 			unless(atc_class.nil?)

@@ -52,7 +52,9 @@ Grammar OddbSize
 			@sequence.active_agents
 		end
 		def barcode
-			Ean13.new_unchecked('7680'+ikskey)
+			if(key = ikskey)
+				Ean13.new_unchecked('7680'+key)
+			end
 		end
 		def atc_class
 			@sequence.atc_class
@@ -116,10 +118,12 @@ Grammar OddbSize
 			registration.generic_type
 		end
 		def ikskey
-			iksnr + @ikscd
+			if(nr = iksnr)
+				nr + @ikscd
+			end
 		end
 		def iksnr
-			@sequence.iksnr
+			@sequence.iksnr if(@sequence.respond_to? :iksnr)
 		end
 		def size=(size)
 			@size = size
@@ -213,6 +217,7 @@ Grammar OddbSize
 		end
 	end
 	class Package < PackageCommon
+		ODBA_PREFETCH = true
 		def generic_group=(generic_group)
 			unless(@generic_group.nil?)
 				@generic_group.remove_package(self)

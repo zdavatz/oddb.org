@@ -106,7 +106,7 @@ module ODDB
 			end
 		end
 		def search_oddb(model, session)
-			unless((result = session.app.search(model.name)).empty?)
+			unless((result = session.app.search(model.name, 'de')).atc_classes.empty?)
 				link = HtmlGrid::Link.new(:substance_result, model, session, self)
 				link.href = @lookandfeel.event_url(:substance_result, {'pointer'=>model.pointer})
 				link.value = @lookandfeel.lookup(:search_oddb)

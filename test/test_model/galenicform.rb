@@ -14,7 +14,19 @@ module ODDB
 	end
 end
 
+module ODBA
+	module Persistable
+		def odba_store
+		end
+	end
+end
 class TestGalenicForm < Test::Unit::TestCase
+	class Array
+		include ODBA::Persistable
+	end
+	class Hash
+		include ODBA::Persistable
+	end
 	class StubGroup
 		attr_reader :add_called, :remove_called
 		def add(form)

@@ -8,6 +8,7 @@ module ODDB
 	class Indication
 		include Language
 		include RegistrationObserver
+		ODBA_SERIALIZABLE = [ '@descriptions' ]
 		def atc_classes
 			@registrations.collect { |reg| 
 				reg.atc_classes

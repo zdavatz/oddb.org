@@ -8,6 +8,7 @@ require 'model/galenicform'
 module ODDB
 	class GalenicGroup 
 		include Language
+		ODBA_SERIALIZABLE = [ '@descriptions' ]
 		attr_reader :oid, :galenic_forms
 		def initialize
 			super

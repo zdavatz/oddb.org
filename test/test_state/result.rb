@@ -6,6 +6,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'state/result'
+require 'model/search_result'
 
 module ODDB
 	class ResultState < GlobalState
@@ -20,7 +21,14 @@ module ODDB
 		}
 		def model=(model)
 			session = StubResultStateSession.new
-			@model = model.collect { |atc| AtcFacade.new(atc, session) }
+			#@model = model.collect { |atc| AtcFacade.new(atc, session) }
+		end
+		def pages
+			[]
+		end
+		def init
+			@model = SearchResult.new
+			@model.atc_classes = []
 		end
 	end
 end
