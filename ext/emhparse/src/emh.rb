@@ -59,71 +59,58 @@ module ODDB
 	end
 	class DoctorWriter < NullWriter
 		attr_reader :collected_values
-		WORK_KEYS = {
-			:work_fon	=>	'Telefon:',
-			:work_fax	=>	'Telefax:',
-			:work_email	=>	'Email:',
-			:work_address	=>	'Adresse:',
-			:work_plz	=>	'PLZ:',
-			:work_city=>	'Ort:',
-		}
-		PRAX_KEYS = {
-			:prax_fon	=>	'Telefon:',
-			:prax_fax	=>	'Telefax:',
-			:prax_email	=>	'Email:',
-			:prax_address	=>	'Adresse:',
-			:prax_plz	=>	'PLZ:',
-			:prax_city=>	'Ort:',
+		TRANSLATE_KEYS = {
+			'Telefon:'	=>	:fon,
+			'Telefax:'	=>	:fax,	
+			'Email:'		=>	:email,
+			'Adresse:'	=>	:addresses,
+			'PLZ:'			=>	:plz,
+			'Ort:'			=>	:city,
+			'Anrede:'		=>	:salutation,
+			'Titel:'		=>	:title,
+			'Name:'			=>	:name,
+			'Vorname:'	=>	:firstname,
+			'Email:'		=>	:email,
+			'EAN:'			=>	:ean13,
+			'Praxis'		=>	:praxis,
+			'Staatsexamensjahr:'		=>	:exam,
+			'Korrespondenzsprache:'	=>	:language,
+			'Facharzttitel:'				=>	:specialities,
+			'Fähigkeitsausweis:'		=>	:abilities,
+			'Fertigkeitsausweis:'		=>	:skills,
 		}
 		def initialize
 			@tablehandlers = []
 			@collected_values = {}
 			@type = nil
 		end
-		def check_string(string, type)
-			key = nil 
-			if(type == 'work')
-				WORK_KEYS.each { |csv_key, val|
-					key = csv_key if (string == val)
-				}
-				key = get_key(string) if (key.nil?)
-			elsif(type == 'prax')
-				PRAX_KEYS.each { |csv_key, val|
-					key = csv_key if (string == val)
-				}
-				key = get_key(string) if (key.nil?)
-			elsif (type.nil?)
-				key = get_key(string)
-			end
-			key
+		def translate_key(string)
+=begin
+			if(string.include? "Adresse:")
+				"#{type}_address".intern
+			else
+=end
+				TRANSLATE_KEYS[string.strip]
+			#end
 		end
 		def extract_data
+			type = nil
 			if(handler = @tablehandlers.at(2))
 				handler.each_row { |row|
 					if(row.cdata(0))
 						unless(row.cdata(0).is_a?(Array))
 							if(row.cdata(0).match(/Praxis-Adresse/))
-								@type = 'prax'
+								type = :praxis
 							elsif(row.cdata(0).match(/Adresse Arbeitsort/))
-								@type = 'work'
+								type = :work
 							end	
 						end
 					end
-					handle_data(row.cdata(0), row.cdata(1), @type)
-					handle_data(row.cdata(2), row.cdata(3), @type)
+					handle_data(row.cdata(0), row.cdata(1), type)
+					handle_data(row.cdata(2), row.cdata(3), type)
+					@current_address = nil
 				}
 			end
-		end
-		def get_key(string)
-			key = nil 
-			DoctorParser::CSV_COMPLETE.each { |csv_key, val|
-				if(val == "Praxis" || val == "Mitglied")
-					key = csv_key if (string == val)
-				else
-					key = csv_key if (string == (val+":"))
-				end
-			}
-			key
 		end
 		def get_plz_city(array)
 			arr = []
@@ -134,41 +121,45 @@ module ODDB
 			}
 			arr
 		end
-		def handle_data(string, value, type)
-			if(string.is_a?(Array))
-				if(string == ["Adresse:", ""])
-					plz_city = get_plz_city(value)
-					plz = plz_city.first 
-					city = plz_city.last
-					unless(plz.nil? || city.nil?)
-						handle_data('PLZ:', plz, type)
-						handle_data('Ort:', city, type)
-					end
-					handle_data(string.first, value, type)
-				else
-					string.each_with_index { |str, idx|
-						val = (value.is_a? Array) ? value.at(idx) : value
-						handle_data(str, val, type)
-					}
-				end
+		def handle_data(key, value, type)
+			if(key.is_a?(Array))
+				handle_array_data(key, value, type)
 			else
-				string = string.to_s.delete("\240").strip
-				unless(string == "")
-					key = check_string(string, type)
-				end
-				if(value.is_a?(Array))
-					output = value
+				handle_scalar_data(key, value)
+			end
+		end
+		def handle_array_data(ary, value, type)
+			if(ary.first == "Adresse:")
+				plz_city = get_plz_city(value)
+				addr_hash = {
+					:plz	=>	plz_city.first,
+					:city	=>	plz_city.last,
+					:lines	=>	value,
+					:type		=>	type,
+				}
+				handle_scalar_data('Adresse:', addr_hash)
+				@current_address = addr_hash
+			else
+				ary.each_with_index { |str, idx|
+					val = (value.is_a? Array) ? 
+						value.at(idx) : value
+					handle_scalar_data(str, val)
+				}
+			end
+		end
+		def handle_scalar_data(key, value)
+			string = key.to_s.delete("\240").strip
+			if(key = translate_key(string))
+				if(@current_address)
+					@current_address.store(key, value)
+				elsif(@collected_values.include?(key))
+					values = @collected_values[key]
+					unless values.is_a?(Array)	
+						@collected_values[key] = [values]
+					end
+					@collected_values[key].push(value)
 				else
-					output = String.new
-					value.to_s.each {|s| output << s }
-				end
-				if(@collected_values.include?(key))
-					values = @collected_values[key].to_a
-					output = output.to_a unless output.is_a?(Array)
-					new_values = values.concat(output)
-					@collected_values[key] = new_values
-				else
-					@collected_values.store(key, output) unless key.nil?
+					@collected_values.store(key, value)
 				end
 			end
 		end
@@ -219,9 +210,9 @@ module ODDB
 			:work_city		=>	'Arbeitsort-Ort',
 			:exam				=>	'Staatsexamensjahr',
 			:language		=>	'Korrespondenzsprache',
-			:specialist	=>	'Facharzttitel',
-			:ability		=>	'Fähigkeitsausweis',
-			:skill			=>	'Fertigkeitsausweis',
+			:specialities	=>	'Facharzttitel',
+			:abilities		=>	'Fähigkeitsausweis',
+			:skills			=>	'Fertigkeitsausweis',
 			#:member			=>	'Mitglied',
 		}
 		CSV_ORDER = [
@@ -246,9 +237,9 @@ module ODDB
 			:work_city,
 			:exam,
 			:language,
-			:specialist,
-			:ability,
-			:skill,
+			:specialities,
+			:abilities,
+			:skills,
 			:member,
 		]
 		def initialize

@@ -22,27 +22,13 @@ module ODDB
 					:firstname			=>"Happy Camper", 
 					:language				=>"deutsch", 
 					:name						=>"Testdoctor", 
-					:prax_address		=>["Herrn Dr. med.", 
-						"Happy Camper Testdoctor", "Arztpraxis", 
-						"Seestrasse 45", "3465 Zug", ""], 
-					:work_address	=>	["Herrn Dr. med.", 
-						"Happy Camper Testdoctor",
-						"Workaddress 45", "3465 Zug", ""], 
-					:prax_city			=>"Zug",
-					:work_city			=>"Zug",
-					:prax_fax				=>"", 
-					:work_fax				=>"", 
-					:prax_fon				=>"01 244 33 33", 
-					:work_fon				=>"01 244 33 33", 
-					:prax_plz				=>"6743", 
-					:work_plz				=>"6743", 
+					:addresses			=> [],
 					:praxis					=>"Ja", 
 					:salutation			=>"Herrn", 
-					:skills					=>	["SuperLabor RTZ"],
-					:specialist			=>	["GrossLap Medizin", 
-						"Mangel- und Seisemedizin"], 
+					:skills					=>	"SuperLabor RTZ",
+					:specialities		=>	"GrossLap Medizin", 
+					:abilities			=>	"Mangel- und Seisemedizin", 
 					:title					=>"Dr. med.", 
-					:salutation =>	'Herrn',
 				}
 			end
 			def teardown
@@ -64,27 +50,26 @@ module ODDB
 				}
 				doctor = Mock.new('Doctor')
 				doctor.__next(:pointer) { 'docpointer' }
-				@app.__next(:create) { |pointer|
-					test_p = Persistence::Pointer.new(:doctor)
-					assert_equal(test_p, pointer)
-					doctor
-				}
 				@app.__next(:update) { |pointer, update_hash|
+					test_p = Persistence::Pointer.new(:doctor)
 					expected = {
 						:exam				=>	'1970',
 						:firstname	=>	'Happy Camper',
 						:language		=>	'deutsch',
 						:name				=>	'Testdoctor',
+						:addresses  =>  [],
 						:praxis			=>	true,
-						:specialist			=>	["GrossLap Medizin", 
-							"Mangel- und Seisemedizin"], 
+						:specialities	=>	["GrossLap Medizin"], 
+						:abilities		=>	["Mangel- und Seisemedizin"], 
+						:skills			=>	["SuperLabor RTZ"],
 						:title			=>	'Dr. med.',
 						:salutation =>	'Herrn',
 						:origin_id	=> 14478,
 						:origin_db  => :ch,
 					}	
 					assert_equal(expected, update_hash)
-					assert_equal('docpointer', pointer)
+					assert_equal(test_p.creator, pointer)
+					doctor
 				}
 				res = @plugin.store_doctor(doc_id, @hash)
 				assert_equal(doctor, res)
@@ -105,19 +90,20 @@ module ODDB
 						:salutation =>	'Herrn',
 						:title			=>"Dr. med.", 
 						:language		=>"deutsch", 
-						:specialist	=>	["GrossLap Medizin", 
-							"Mangel- und Seisemedizin"], 
+						:addresses	=> [],
+						:specialities	=>	["GrossLap Medizin"], 
 						:praxis			=> true, 
 						:firstname	=> "Happy Camper", 
 						:name				=> "Testdoctor", 
 						:origin_id	=> 14478,
+						:abilities		=>	["Mangel- und Seisemedizin"], 
 						:origin_db  => :ch,
+						:skills			=>	["SuperLabor RTZ"],					
 					}	
 					assert_equal(expected, update_hash)
 					assert_equal('docpointer', pointer)
 				}
-				res = @plugin.store_doctor(doc_id, @hash)
-				assert_equal(doctor, res)
+				@plugin.store_doctor(doc_id, @hash)
 			end
 			def test_delete_doctor__empty_id
 				doc_id = 14478 
@@ -126,60 +112,160 @@ module ODDB
 				@plugin.delete_doctor(doc_id)
 				assert_equal([doc_id], @plugin.empty_id)
 			end
-		def test_store_address__praxis
-				doc_pointer = Mock.new('DoctorPointer')
-				addr_pointer = Mock.new("AddressPointer")
-				expected = {
-					:city		=>	"Zug",
-					:fax		=>	"", 
-					:fon		=>	"01 244 33 33", 
-					:lines	=>	["Herrn Dr. med.", 
-						"Happy Camper Testdoctor",
-						"Workaddress 45", "3465 Zug", ""], 
-					:plz		=>	'6743',
-				}
-				doc_pointer.__next(:+) { |addition|
-					assert_equal([:address, :praxis], addition)
-					addr_pointer
-				}
-				addr_pointer.__next(:creator) {
-					'address_creator_pointer'
-				}
-				@app.__next(:update) { |creator, values|
-					assert_equal('address_creator_pointer', creator)
-					assert_equal(expected, values)
-				}
-				@plugin.store_address(doc_pointer, :praxis, @hash)
-				doc_pointer.__verify
-				addr_pointer.__verify
+			def test_merge_addresses
+				input	= [
+					{
+						:plz		=>	'6500',
+						:city		=>	'Bellinzona',
+						:fon		=>	'091 811 91 11',
+						:fax		=>	'091 811 91 60',
+						:lines	=>	[
+							'Ospedale San Giovanni',
+							'Soleggio',
+							'6500 Bellinzona',
+							'',
+						],
+					},
+					{
+						:plz		=>  '6597',
+						:city   =>  'Agarone',
+						:fon		=>	'092 64 11 41',
+						:fax    =>  '',
+						:lines	=>	[
+							'Clinica Sassariente',
+							'6597 Agarone',
+							'',
+						],
+					},
+					{
+						:plz		=>  '6500',
+						:city   =>  'Bellinzona',
+						:fon		=>	'091 811 91 09',
+						:fax    =>  '091 811 87 99',
+						:lines  => [
+							"Ospedale San Giovanni",
+							"Soleggio",
+							"6500 Bellinzona",
+							"",
+						],
+					},
+					{
+						:plz		=>  '6500',
+						:city   =>  'Bellinzona',
+						:fon		=>	'091 811 91 11',
+						:fax    =>  '',
+						:lines  => [
+							"Ospedale San Giovanni",
+							"Soleggio",
+							"6500 Bellinzona",
+							"",
+						],
+					},
+				]
+				expected = [
+					{
+						:plz		=>	'6500',
+						:city		=>	'Bellinzona',
+						:fon		=>	[
+							'091 811 91 11',
+							'091 811 91 09',
+						],
+						:fax		=>	[
+							'091 811 91 60',
+							'091 811 87 99',
+						],
+						:lines	=>	[
+							'Ospedale San Giovanni',
+							'Soleggio',
+							'6500 Bellinzona',
+							'',
+						],
+					},
+					{
+						:plz		=>  '6597',
+						:city   =>  'Agarone',
+						:fon		=>	['092 64 11 41'],
+						:fax    =>  [],
+						:lines	=>	[
+							'Clinica Sassariente',
+							'6597 Agarone',
+							'',
+						],
+					},
+				]
+				result = @plugin.merge_addresses(input)
+				assert_equal(expected, result)
 			end
-			def test_store_address__work
-				doc_pointer = Mock.new('DoctorPointer')
-				addr_pointer = Mock.new("AddressPointer")
-				expected = {
-					:city		=>	"Zug",
-					:fax		=>	"", 
-					:fon		=>	"01 244 33 33", 
-					:lines	=>	["Herrn Dr. med.", 
-						"Happy Camper Testdoctor",
-						"Workaddress 45", "3465 Zug", ""], 
-					:plz		=>	'6743',
+			def test_prepare_addresses
+				input = {
+					:addresses	=>	{
+						:plz		=>  '6500',
+						:city   =>  'Bellinzona',
+						:fon		=>	'091 811 91 09',
+						:fax    =>  '091 811 87 99',
+						:lines  => [
+							"Ospedale San Giovanni",
+							"Soleggio",
+							"6500 Bellinzona",
+							"",
+						],
+						:type	=> :work,
+					}
 				}
-				doc_pointer.__next(:+) { |addition|
-					assert_equal([:address, :work], addition)
-					addr_pointer
+				result = nil
+				assert_nothing_raised {
+					result = @plugin.prepare_addresses(input)
 				}
-				addr_pointer.__next(:creator) {
-					'address_creator_pointer'
+				assert_instance_of(Array, result)
+				assert_equal(1, result.size)
+				addr = result.first
+				assert_equal('6500', addr.plz)
+				assert_equal('Bellinzona', addr.city)
+				assert_equal(['091 811 91 09'], addr.fon)
+				assert_equal(['091 811 87 99'], addr.fax)
+				assert_equal(:work, addr.type)
+			end
+			def test_prepare_addresses__2
+				input = {
+					:addresses	=>	[
+						{
+							:plz		=>  '6500',
+							:city   =>  'Bellinzona',
+							:fax    =>  '',
+							:fon		=>	'091 820 91 11',
+							:lines	=>	[
+								'Egregio Prof.',
+								'Claudio Marone',
+								'Studio medico',
+								'Ospedale San Giovanni',
+								'6500 Bellinzona',
+								'',
+							],
+							:type	=> :praxis,
+						},
+						{
+							:plz		=>  '6500',
+							:city   =>  'Bellinzona',
+							:fon		=>	'091 811 91 09',
+							:fax    =>  '091 811 87 99',
+							:lines  => [
+								"Ospedale San Giovanni",
+								"Soleggio",
+								"6500 Bellinzona",
+								"",
+							],
+							:type	=> :work,
+						},
+					]
 				}
-				@app.__next(:update) { |creator, values|
-					assert_equal('address_creator_pointer', creator)
-					assert_equal(expected, values)
+				result = nil
+				assert_nothing_raised {
+					result = @plugin.prepare_addresses(input)
 				}
-
-				@plugin.store_address(doc_pointer, :work, @hash)
-				doc_pointer.__verify
-				addr_pointer.__verify
+				assert_instance_of(Array, result)
+				assert_equal(2, result.size)
+				assert_equal(:praxis, result.first.type)
+				assert_equal(:work, result.last.type)
 			end
 		end
 	end

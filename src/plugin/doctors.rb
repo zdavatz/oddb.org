@@ -5,6 +5,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'drb/drb'
 require 'plugin/plugin'
+require 'model/address'
 require 'util/oddbconfig'
 require 'util/persistence'
 
@@ -29,12 +30,14 @@ module ODDB
 					if(data = get_doctor_data(doc_id))
 						puts "###################### doctor: #{doc_id}"
 						doctor = store_doctor(doc_id, data)
+=begin
 						if(data.include?(:prax_address))
-							store_address(doctor.pointer, :prax, data)
+							store_address(doctor.pointer, :praxis, data)
 						end
 						if(data.include?(:work_address))
 							store_address(doctor.pointer, :work, data)
 						end
+=end
 					else
 						# 1. delete doctor if exists
 						# 2. record id, muss das naechste mal nicht geprueft werden.
@@ -63,33 +66,43 @@ module ODDB
 				report << "Deleted doctors: " << @doctors_deleted.to_s << "\n"
 				report
 			end
-			def store_address(doc_pointer, addr_type, hash)
-				pointer = doc_pointer + [:address, addr_type]
-				translate = if(addr_type == :prax)
-					{
-						:prax_city		=>	:city,
-						:prax_fax			=>	:fax,
-						:prax_fon			=>	:fon,
-						:prax_address	=>	:lines,
-						:prax_plz			=>	:plz,
+			def merge_addresses(addrs)
+				merged = []
+				addrs.each { |addr|
+					if(equal = merged.select { |other|
+						addr[:lines] == other[:lines]
+					}.first)
+						merge_address(equal, addr, :fon)
+						merge_address(equal, addr, :fax)
+					else
+						merge_address(addr, addr, :fax)
+						merge_address(addr, addr, :fon)
+						merged.push(addr)
+					end
+				}
+				merged
+			end
+			def merge_address(target, source, sym)
+				target[sym] = [target[sym], source[sym]].flatten
+				target[sym].delete('')
+				target[sym].uniq!
+			end
+			def prepare_addresses(hash)
+				if(addrs = hash[:addresses])
+					tmp_addrs = (addrs.is_a?(Array)) ? addrs : [addrs]
+					merge_addresses(tmp_addrs).collect { |values|
+						addr = Address.new
+						values.each { |key, val| 
+							meth = "#{key}="
+							if(addr.respond_to?(meth))
+								addr.send(meth, val)
+							end
+						}
+						addr
 					}
 				else
-					{
-						:work_city		=>	:city,
-						:work_fax			=>	:fax,
-						:work_fon			=>	:fon,
-						:work_address	=>	:lines,
-						:work_plz			=>	:plz,
-					}
+					[]
 				end
-				addr_hash = {}
-				hash.each { |key, value|
-					if(new_key = translate[key])
-						addr_hash.store(new_key, value)
-					end
-					}
-				update_values = addr_hash
-				@app.update(pointer.creator, update_values)
 			end
 			def store_doctor(doc_id, hash)
 				pointer = nil
@@ -101,27 +114,36 @@ module ODDB
 					pointer = ptr.creator
 				end
 				extract = [
+					:abilities,
 					:exam,
+					:email,
 					:firstname,
 					:language,
 					:name,
 					:praxis,
-					:specialist,
-					:title,
 					:salutation,
+					:skills,
+					:specialities,
+					:title,
 				]
 				doc_hash = {}
-				hash.each { |key, value|
-					if(extract.include?(key))
-						to_store = hash.fetch(key)
-						if(key == :praxis) 
-							to_store = (to_store == 'Ja') ? true : false
+				extract.each { |key|
+					if(value = hash[key])
+						case key
+						when :praxis
+							value = (value == 'Ja')
+						when :specialities ,:abilities ,:skills
+							if(value.is_a?(String))
+								value = [value]
+							end	
 						end
-						doc_hash.store(key, to_store)
+						doc_hash.store(key, value)
 					end
+					
 				}
 				doc_hash.store(:origin_db, :ch)
 				doc_hash.store(:origin_id, doc_id)
+				doc_hash.store(:addresses, prepare_addresses(hash))
 				@app.update(pointer, doc_hash)
 			end
 		end

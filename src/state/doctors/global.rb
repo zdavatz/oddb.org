@@ -11,7 +11,7 @@ class Global < State::Global
 	ZONE = :doctors
 	def zone_navigation
 		[
-		#State::Doctors::CompanyList,
+			State::Doctors::DoctorList,
 		]
 	end
 end

@@ -5,8 +5,11 @@ require 'util/persistence'
 
 module ODDB
 	class Address 
-		include Persistence
-		attr_accessor :street, :fon, :fax, :email, 
-			:plz, :city
+		attr_accessor :lines, :fon, :fax, :email, 
+			:plz, :city, :type
+
+		def <=>(other)
+			self.lines <=> other.lines
+		end
 	end
 end

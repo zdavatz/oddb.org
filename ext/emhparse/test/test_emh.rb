@@ -45,8 +45,8 @@ class TestEMHMedwinWriter < Test::Unit::TestCase
 	def setup
 		path = File.expand_path('data/html/medwin.html', File.dirname(__FILE__))
 		html = File.read(path)
-		@writer = ODDB::EMHMedwinWriter.new
-		formatter = ODDB::EMHFormatter.new(@writer)
+		@writer = ODDB::DoctorMedwinWriter.new
+		formatter = ODDB::DoctorFormatter.new(@writer)
 		parser = ODDB::HtmlParser.new(formatter)
 		parser.feed(html)
 	end
@@ -90,12 +90,12 @@ class TestEMHWriter < Test::Unit::TestCase
 		html = File.read(path)
 		path2 = File.expand_path('data/html/35316.html', File.dirname(__FILE__))
 		html2 = File.read(path2)
-		@writer = ODDB::EMHWriter.new
-		formatter = ODDB::EMHFormatter.new(@writer)
+		@writer = ODDB::DoctorWriter.new
+		formatter = ODDB::DoctorFormatter.new(@writer)
 		parser = ODDB::HtmlParser.new(formatter)
 		parser.feed(html)
-		@writer2 = ODDB::EMHWriter.new
-		formatter2 = ODDB::EMHFormatter.new(@writer2)
+		@writer2 = ODDB::DoctorWriter.new
+		formatter2 = ODDB::DoctorFormatter.new(@writer2)
 		parser2 = ODDB::HtmlParser.new(formatter2)
 		parser2.feed(html2)
 	end
@@ -253,7 +253,7 @@ class TestEMHPlugin < Test::Unit::TestCase
 	end
 	def setup
 		@app = StubApp.new
-		@plugin = ODDB::EMHPlugin.new(@app)
+		@plugin = ODDB::DoctorPlugin.new(@app)
 	end
 	def test_data_path
 		expected = '/medical_adresses/physicians_fmh/detail.cfm?ds1nr=12500'
@@ -441,7 +441,7 @@ class TestMedwinSession < Test::Unit::TestCase
 		end
 	end
 	def setup
-		@session = ODDB::EMHSession.new("foo")
+		@session = ODDB::DoctorSession.new("foo")
 	end
 	def test_medic_html
 		path = File.expand_path('data/html/medwin_19999.html', File.dirname(__FILE__))

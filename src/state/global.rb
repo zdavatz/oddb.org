@@ -19,6 +19,7 @@ require 'state/drugs/patinfo_deprived_sequences'
 require 'state/drugs/recentregs'
 require 'state/drugs/result'
 require 'state/doctors/init'
+require 'state/doctors/doctorlist'
 require 'state/drugs/patinfo'
 require 'state/exception'
 require 'state/interactions/basket'
@@ -50,6 +51,7 @@ module ODDB
 			DIRECT_EVENT = nil 
 			GLOBAL_MAP = {
 				:companylist					=>	State::Companies::CompanyList,
+				:doctorlist						=>	State::Doctors::DoctorList,
 				:ddd									=>	State::Drugs::DDD,
 				:download							=>	State::User::Download,
 				:download_export			=>	State::User::YamlExport,
@@ -74,6 +76,7 @@ module ODDB
 			HOME_STATE = State::Drugs::Init
 			RESOLVE_STATES = {
 				[ :company ]	=>	State::Companies::Company,
+				[ :doctor	 ]  =>	State::Doctors::Doctor,
 				[ :fachinfo ]	=>	State::Drugs::Fachinfo,
 				[	:registration, :sequence, 
 					:package, :sl_entry, 

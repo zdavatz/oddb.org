@@ -40,6 +40,7 @@ module ODDB
 			:choice,
 			:clear_interaction_basket,
 			:companylist,
+			:doctorlist,
 			:company,
 			:compare,
 			:ddd, 
