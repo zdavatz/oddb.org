@@ -18,24 +18,19 @@ module ODDB
 		DEFAULT_ZONE = :drugs
 		SERVER_NAME = 'www.oddb.org'
 		PERSISTENT_COOKIE_NAME = 'oddb-preferences'
-=begin
 		def process(request)
-			res = nil
-			Benchmark.bm { |bm|
-				bm.item('process') { res = super }
-			}
-			res
-			''
+			@request = request
+			if(is_crawler?)
+				Thread.current.priority = -1
+			end
+			super
 		end
 		def to_html
-			res = nil
-			Benchmark.bm { |bm|
-				bm.item('to_html') { res = super }
-			}
-			puts res.size
-			res
+			if(is_crawler?)
+				Thread.current.priority = -1
+			end
+			super
 		end
-=end
 		def initialize(key, app, validator=nil)
 			super(key, app, validator)
 			@interaction_basket = []
@@ -51,13 +46,6 @@ module ODDB
 		end
 		def navigation
 			@active_state.navigation
-		end
-		def process(request)
-			@request = request
-			if(is_crawler?)
-				Thread.current.priority = -1
-			end
-			super
 		end
 		def user_equiv?(test)
 			return true if(@user.is_a? ODDB::AdminUser)
