@@ -6,13 +6,14 @@ require 'state/drugs/sequence'
 require 'state/drugs/fachinfoconfirm'
 require 'model/fachinfo'
 require 'view/drugs/registration'
+require 'util/log'
 
 module ODDB
 	module State
 		module Drugs
 class Registration < State::Drugs::Global
 	VIEW = View::Drugs::RootRegistration
-	PDF_DIR = File.expand_path('../../../doc/resources/fachinfo/', File.dirname(__FILE__))
+	FI_FILE_DIR = File.expand_path('../../../doc/resources/fachinfo/', File.dirname(__FILE__))
 	def new_sequence
 		pointer = @session.user_input(:pointer)
 		model = pointer.resolve(@session.app)
@@ -39,6 +40,7 @@ class Registration < State::Drugs::Global
 	end
 	private
 	def do_update(keys)
+		new_state = self
 		hash = user_input(keys)
 		comp_name = @session.user_input(:company_name)
 		if(company = @session.app.company_by_name(comp_name))
@@ -59,22 +61,39 @@ class Registration < State::Drugs::Global
 			fi_file.rewind
 			if(four_bytes == "%PDF")
 				filename = "#{@model.iksnr}.pdf"
-				FileUtils.mkdir_p(self::class::PDF_DIR)
-				path = File.expand_path(filename, self::class::PDF_DIR)
+				FileUtils.mkdir_p(self::class::FI_FILE_DIR)
+				path = File.expand_path(filename, self::class::FI_FILE_DIR)
 				File.open(path, "w") { |fh|
 					fh.write(fi_file.read)
 				}
+				fi_file.rewind
 				hash.store(:pdf_fachinfo, filename)
-			elsif(documents = parse_fachinfo(fi_file))
-				State::Drugs::FachinfoConfirm.new(@session, documents)
+				new_state = State::Drugs::WaitForFachinfo.new(@session, @model)
+				new_state.previous = self
+				@session.app.async {
+					pdf_document =  parse_fachinfo_pdf(fi_file)
+					new_state.signal_done(pdf_document, path, @model.iksnr, "application/pdf")
+				}
 			else
-				add_warning(:w_no_fachinfo_saved, :fachinfo_upload, nil)
+				filename = "#{@model.iksnr}.doc"
+				FileUtils.mkdir_p(self::class::FI_FILE_DIR)
+				path = File.expand_path(filename, self::class::FI_FILE_DIR)
+				File.open(path, "w") { |fh|
+					fh.write(fi_file.read)
+				}
+				fi_file.rewind
+				new_state = State::Drugs::WaitForFachinfo.new(@session, @model)
+				new_state.previous = self
+				@session.app.async {
+					word_document = parse_fachinfo_doc(fi_file)
+					new_state.signal_done(word_document, path, @model.iksnr, "application/msword")
+				}
 			end
 		end
 		@model = @session.app.update(@model.pointer, hash)
-		self
+		new_state
 	end
-	def parse_fachinfo(file)
+	def parse_fachinfo_doc(file)
 		begin
 			# establish connection to fachinfo_parser
 			#DRb.start_service
@@ -87,6 +106,23 @@ class Registration < State::Drugs::Global
 				'(' << e.message << ')'
 			].join(' ')
 			err = create_error(:e_service_unavailable, :fachinfo_upload, msg)
+			@errors.store(:fachinfo_upload, err)
+			nil
+		end
+	end
+	def parse_fachinfo_pdf(file)
+		begin
+			# establish connection to fachinfo_parser
+			#DRb.start_service
+			parser = DRbObject.new(nil, FIPARSE_URI)
+			result = parser.parse_fachinfo_pdf(file.read)
+			result
+		rescue StandardError => e
+			msg = [
+				@session.lookandfeel.lookup(:fachinfo_upload),
+				'(' << e.message << ')'
+			].join(' ')
+			err = create_error(:e_pdf_not_parsed, :fachinfo_upload, msg)
 			@errors.store(:fachinfo_upload, err)
 			nil
 		end

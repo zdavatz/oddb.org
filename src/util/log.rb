@@ -11,6 +11,12 @@ require 'plugin/patinfo'
 module ODDB
 	class Log
 		MAIL_FROM = 'update@oddb.org'
+		MAIL_TO = [
+		#'hwyss@ywesee.com',
+		#	'zdavatz@ywesee.com', 
+		#	'mwalder@ywesee.com', 
+			'rwaltert@ywesee.com'
+		]
 		include Persistence
 		attr_accessor :report, :pointers, :recipients, :change_flags, :files
 		attr_accessor :date_str
@@ -55,13 +61,14 @@ module ODDB
 			end
 			
 			outgoing.from = self::class::MAIL_FROM
+			@recipients = (@recipients + self::class::MAIL_TO).uniq
 			outgoing.to = @recipients
 			outgoing.subject = subj
 			outgoing.date = Time.now
 			outgoing['User-Agent'] = 'ODDB Updater'
 
 			Net::SMTP.start('mail.ywesee.com') { |smtp|
-				smtp.sendmail(outgoing.encoded, self::class::MAIL_FROM, @recipients.uniq)
+				smtp.sendmail(outgoing.encoded, self::class::MAIL_FROM, @recipients)
 			}
 		end
 	end

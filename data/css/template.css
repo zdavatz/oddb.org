@@ -1398,3 +1398,16 @@ td.top {
 td.address-width {
 	width: 180px;
 }
+table.wait {
+	cell-spacing: 20px;
+}
+td.wait {
+	width: 25px;
+	height: 25px;
+	border: 1px solid $bg_dark;
+	background-color : #e9f7f3;
+}
+td.bg-red{
+	background-color: #FF0000;
+}
+

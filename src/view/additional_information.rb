@@ -11,11 +11,11 @@ module ODDB
 				#company = model.company
 				if(fachinfo || pdf_fachinfo )#&& company.fi_status)
 					link = HtmlGrid::PopupLink.new(:fachinfo_short, model, session, self)
-					if(!pdf_fachinfo.nil?)
-						link.href = @lookandfeel.resource_global(:pdf_fachinfo, pdf_fachinfo)
-					elsif(!fachinfo.nil?)
+					if(!fachinfo.nil?)
 						link.href = @lookandfeel.event_url(:resolve, {'pointer' => fachinfo.pointer})
 						link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
+					elsif(!pdf_fachinfo.nil?)
+						link.href = @lookandfeel.resource_global(:pdf_fachinfo, pdf_fachinfo)
 					end
 					pos = components.index(:fachinfo)
 					component_css_map.store(pos, css)

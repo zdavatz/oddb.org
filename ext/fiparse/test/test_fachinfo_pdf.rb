@@ -32,8 +32,6 @@ module ODDB
 				paragraph1 = section1.paragraphs.first
 				expected = 'Chlorphenamini maleas, Phenylephrini hydrochloridum.'
 				assert_equal(expected, paragraph1.text)
-
-
 				section2 = chapter.sections.last
 				assert_equal('Hilfsstoffe:', section2.subheading)
 				assert_equal(1, section2.paragraphs.size)
@@ -78,10 +76,19 @@ module ODDB
 				chapter = @fachinfo.restrictions
 				assert_equal('Warnhinweise und Vorsichtsmassnahmen', chapter.heading)
 				section1 = chapter.sections.first
-				assert_equal('Relative Kontraindikationen', section1.subheading)
+				assert_equal("Relative Kontraindikationen\n", section1.subheading)
 				assert_equal(2, section1.paragraphs.size)
 				paragraph1 = section1.paragraphs.first
 				expected = 'Bei schwerer Krankheit der Koronargefässe oder stark erhöhtem Blutdruck darf Rhinopront N nur nach Rücksprache mit einem Arzt eingenommen werden.'
+				assert_equal(expected, paragraph1.text)
+				paragraph2 = section1.paragraphs.at(1)
+				expected = "Siehe \253Schwangerschaft/Stillzeit\273."
+				assert_equal(expected, paragraph2.text)
+				section2 = chapter.sections.at(1)
+				assert_equal("Warnhinweise und Vorsichtsmassnahmen\n", section2.subheading)
+				assert_equal(1, section2.paragraphs.size)
+				paragraph1 = section2.paragraphs.first
+				expected = 'Vorsicht ist geboten bei: Engwinkelglaukom, Zuckerkrankheit, Prostata-Hypertrophie, Hyperthyreose, Asthma bronchiale.'
 				assert_equal(expected, paragraph1.text)
 			end
 			def test_interaction
@@ -90,7 +97,7 @@ module ODDB
 				section1 = chapter.sections.first
 				assert_equal('', section1.subheading)
 				paragraph1 = section1.paragraphs.first
-				expected = 'MAO-Hemmer und trizyklische Antidepressiva verstärken den Vasokonstriktoreffekt des Phenylephrins. Antihistaminika verstärken die  Sedativa, Analgetika, Hypnotika). Beruhigungsmitteln (z.B. Barbiturate,Wirkung von Alkohol und von zentralwirkenden'
+				expected = "MAO-Hemmer und trizyklische Antidepressiva verst\344rken den Vasokonstriktoreffekt des Phenylephrins. Antihistaminika verst\344rken die Wirkung von Alkohol und von zentralwirkenden Beruhigungsmitteln (z.B. Barbiturate, Sedativa, Analgetika, Hypnotika)."
 				assert_equal(expected, paragraph1.text)
 			end
 			def test_pregnancy
@@ -99,7 +106,7 @@ module ODDB
 				section1 = chapter.sections.first
 				assert_equal('', section1.subheading)
 				paragraph1 = section1.paragraphs.first
-				expected = 'Die Sicherheit von Chlorphenamin und Phenylephrin oder ihrer Kombination während der ersten beiden Schwangerschaftstrimester wurde nicht erwiwährend der Stillzeit bergen diese Präparate das Risiko schwerer unerwünschter Wirkungen, wie z.B. esen. Im letzten Schwangerschaftstrimester und durch Chlorphenamin bewirkte Krämpfe beim Fötudiesem Stadium der Schwangerschaft kontraindiziert. s und beim Neugeborenen. Folglich sind sie in'
+				expected =	"Die Sicherheit von Chlorphenamin und Phenylephrin oder ihrer Kombination w\344hrend der ersten beiden Schwangerschaftstrimester wurde nicht erwiesen. Im letzten Schwangerschaftstrimester und w\344hrend der Stillzeit bergen diese Pr\344parate das Risiko schwerer unerw\374nschter Wirkungen, wie z.B. durch Chlorphenamin bewirkte Kr\344mpfe beim F\366tus und beim Neugeborenen. Folglich sind sie in diesem Stadium der Schwangerschaft kontraindiziert."
 				assert_equal(expected, paragraph1.text)
 				paragraph2 = section1.paragraphs.last
 				expected = 'Die Anwendung während der Stillzeit ist zu vermeiden.'
@@ -132,10 +139,41 @@ module ODDB
 				paragraph1 = section3.paragraphs.first
 				expected = 'Veränderungen des Blutbildes.'
 				assert_equal(expected, paragraph1.text)
-				
-				section4 = chapter.sections.last
-				assert_equal('Vereinzelt:', section4.subheading)
-				paragraph1 = section4.paragraphs.first
+				section4 = chapter.sections.at(3)
+				assert_equal("Augenleiden\n", section4.subheading)
+				section5 = chapter.sections.at(4)
+				assert_equal('Gelegentlich:',section5.subheading)
+				paragraph1 = section5.paragraphs.first
+				expected = 'Verschwommenes Sehen.'
+				assert_equal(expected, paragraph1.text)
+				section6 = chapter.sections.at(5)
+				assert_equal("St\366rungen des Nervensystem\n",section6.subheading)
+				section7 = chapter.sections.at(6)
+				assert_equal('Häufig:',section7.subheading)
+				paragraph1 = section7.paragraphs.first
+				expected = "Vor\374bergehende Schl\344frigkeit (10-25%) oder eine Verminderung der Aufmerksamkeit."
+				assert_equal(expected, paragraph1.text)
+				section8 = chapter.sections.at(7)
+				assert_equal("Gastrointestinale St\366rungen\n",section8.subheading)
+				section9 = chapter.sections.at(8)
+				assert_equal('Gelegentlich:',section9.subheading)
+				paragraph1 = section9.paragraphs.first
+				expected = "Mundtrockenheit."
+				assert_equal(expected, paragraph1.text)
+
+				section10 = chapter.sections.at(9)
+				assert_equal("Haut\n",section10.subheading)
+				section11 = chapter.sections.at(10)
+				assert_equal("Ausnahmsweise:",section11.subheading)
+				paragraph1 = section11.paragraphs.first
+				expected = "Rash."
+				assert_equal(expected, paragraph1.text)
+				section12 = chapter.sections.at(11)
+				assert_equal("St\366rungen des muskuloskelettalen Systems\n", section12.subheading)
+				assert_equal(expected, paragraph1.text)
+				sectionlast = chapter.sections.last
+				assert_equal('Vereinzelt:', sectionlast.subheading)
+				paragraph1 = sectionlast.paragraphs.first
 				expected = 'Knochenmarkdepression.'
 				assert_equal(expected, paragraph1.text)
 				#paragraph2 = section2.paragraphs.first
@@ -146,17 +184,17 @@ module ODDB
 				chapter = @fachinfo.overdose
 				assert_equal('Überdosierung',chapter.heading)
 				section1 = chapter.sections.first
-				assert_equal('Symptome in Zusammenhang mit Chlorphenamin', section1.subheading)
+				assert_equal("Symptome in Zusammenhang mit Chlorphenamin\n", section1.subheading)
 				paragraph1 = section1.paragraphs.first
 				expected = 'Stimulierung (Kinder) oder Dämpfung (Erwachsene) des ZNS.'
 				assert_equal(expected, paragraph1.text)
 				section2 = chapter.sections.at(1)
-				assert_equal('Symptome in Zusammenhang mit Phenylephrin', section2.subheading)
+				assert_equal("Symptome in Zusammenhang mit Phenylephrin\n", section2.subheading)
 				paragraph1 = section2.paragraphs.first
 				expected = 'Hohe Hypertonie und Bradykardie.'
 				assert_equal(expected, paragraph1.text)
 				section3 = chapter.sections.at(2)
-				assert_equal('Behandlung:', section3.subheading)
+				assert_equal("Behandlung:", section3.subheading)
 				paragraph1 = section3.paragraphs.first
 				expected = 'Symptomatisch.'
 				assert_equal(expected, paragraph1.text)
@@ -170,7 +208,7 @@ module ODDB
 				expected = 'ATC-Code: R01BA53'
 				assert_equal(expected, paragraph1.text)
 				section2 = chapter.sections.at(1)
-				assert_equal('Wirkungsmechanismus', section2.subheading)
+				assert_equal("Wirkungsmechanismus\n", section2.subheading)
 				paragraph1 = section2.paragraphs.first
 				expected = 'Rhinopront N vereinigt die Wirkung von:'
 				assert_equal(expected, paragraph1.text)
@@ -178,19 +216,19 @@ module ODDB
 				expected = 'einem Antihistaminikum, Chlorphenaminmaleat. Es ist gut verträglich und bringt rasche Linderung der lästigen Erscheinungen des Schnupfens wie Nasenrinnen, Niesen, Kribbeln und Tränenfluss;'
 				assert_equal(expected, paragraph2.text)
 				paragraph3 = section2.paragraphs.at(2)
-				expected = 'einem Vasokonstriktor, Phenylephrinhydrochlorid, der abschwellend auf entzündete gänge befreit und dadurch die Atmung erleichtert. Nasenschleimhaut wirkt, die verstopften Nasen'
+				expected = "einem Vasokonstriktor, Phenylephrinhydrochlorid, der abschwellend auf entz\374ndete Nasenschleimhaut wirkt, die verstopften Naseng\344nge befreit und dadurch die Atmung erleichtert."
 				assert_equal(expected, paragraph3.text)
 				paragraph4 = section2.paragraphs.at(3)
-				expected = 'Die 10-12 Stunden anhaltende Langzeitwirkung von Rhinopront N beruht auf der Dialyse der Wirkstoffe (Diffucap®), welche in den Hunderten von Mikrogranula jeder Kapsel enthalten sind. Somit verschafft eine Kapsel, morgens beim Aufstehen eingenommen, eine währgleichmässig anhaltende Erleichterung; eine zweite, vor dem Schlafengehen, gewährleistet eine end des ganzen Tages ungestörte Nachtruhe und am nächsten Morgen ein Aufwachen ohne Verstopfung der Nase.'
+				expected = "Die 10-12 Stunden anhaltende Langzeitwirkung von Rhinopront N beruht auf der Dialyse der Wirkstoffe (Diffucap\256), welche in den Hunderten von Mikrogranula jeder Kapsel enthalten sind. Somit verschafft eine Kapsel, morgens beim Aufstehen eingenommen, eine w\344hrend des ganzen Tages gleichm\344ssig anhaltende Erleichterung; eine zweite, vor dem Schlafengehen, gew\344hrleistet eine ungest\366rte Nachtruhe und am n\344chsten Morgen ein Aufwachen ohne Verstopfung der Nase."
 				assert_equal(expected, paragraph4.text)
 			end
 			def test_kinetic
 				chapter = @fachinfo.kinetic
 				assert_equal('Pharmakokinetik',chapter.heading)
 				section1 = chapter.sections.first
-				assert_equal('Absorption, Distribution, Metabolismus, Elimination', section1.subheading)
+				assert_equal("Absorption, Distribution, Metabolismus, Elimination\n", section1.subheading)
 				paragraph1 = section1.paragraphs.first
-				expected = 'Chlorphenamin wird nach oraler Verabreichung gut resorbiert und während seiner Resorption durch 30-60 Min. im Plasma, wobei die maximale Plasmakoirst-pass-Effekt) metabolisiert. Es erscheint nach die gastrointestinale Schleimhaut und in der Leber (Fnzentration nach 2-6 Std. erreicht wird. Es geht in den Speichel über. Die Ausscheidung erfolgt hauptsächlich über die Nieren.'
+				expected = "Chlorphenamin wird nach oraler Verabreichung gut resorbiert und w\344hrend seiner Resorption durch die gastrointestinale Schleimhaut und in der Leber (First-pass-Effekt) metabolisiert. Es erscheint nach 30-60 Min. im Plasma, wobei die maximale Plasmakonzentration nach 2-6 Std. erreicht wird. Es geht in den Speichel \374ber. Die Ausscheidung erfolgt haupts\344chlich \374ber die Nieren."
 				assert_equal(expected, paragraph1.text)
 				paragraph2 = section1.paragraphs.at(1)
 				expected = 'Phenylephrin wird unregelmässig aus dem Magen-Darm-Trakt resorbiert und bewirkt nach 15-20 Min. ein Abschwellen der Nasenschleimhäute, das 2-4 Std. anhält. Es wird über die MAO in der Leber und im Darm rasch metabolisiert. Einzelheiten über die Verteilung in der Muttermilch und die Ausscheidung sind nicht bekannt.'
@@ -212,7 +250,7 @@ module ODDB
 				assert_equal('Sonstige Hinweise', chapter.heading)
 
 				section1 = chapter.sections.first
-				assert_equal('Haltbarkeit', section1.subheading)
+				assert_equal("Haltbarkeit\n", section1.subheading)
 				assert_equal(1, section1.paragraphs.size)
 				paragraph1 = section1.paragraphs.first
 				expected = 'Verfalldatum auf der Packung beachten.'
@@ -220,7 +258,7 @@ module ODDB
 
 
 				section2 = chapter.sections.last
-				assert_equal('Besondere Lagerungshinweise', section2.subheading)
+				assert_equal("Besondere Lagerungshinweise\n", section2.subheading)
 				assert_equal(1, section2.paragraphs.size)
 				paragraph2 = section2.paragraphs.first
 				expected = 'Bei Raumtemperatur (15-25 °C) und vor Licht geschützt aufbewahren.'
@@ -975,12 +1013,11 @@ target_encoding: latin1
 				EOS
 				writer.new_font(font)
 				writer.send_flowing_data("wieder normaler text ")
-				writer.new_font(font)
+				writer.send_paragraph
 				section1 = chapter.sections.first
 				assert_equal(section, section1)
 				assert_equal('', section1.subheading)
 				paragraph1 = section1.paragraphs.first
-				#puts paragraph1.text[paragraph1.formats.at(1).range]
 				assert_equal(3, paragraph1.formats.size)
 				assert_equal([:italic], paragraph1.formats.at(1).values)
 				expected = 'Normaler text ich bin kursiv wieder normaler text'	
@@ -997,9 +1034,8 @@ target_encoding: latin1
 			def test_unwanted_effects_pre
 				chapter = @fachinfo.unwanted_effects
 				assert_equal('Unerwünschte Wirkungen', chapter.heading)
-
 				section1 = chapter.sections.first
-				assert_equal('Erfahrungen aus klinischen Studien', section1.subheading)
+				assert_equal("Erfahrungen aus klinischen Studien\n", section1.subheading)
 				#assert_equal(1, section1.paragraphs.size)
 				paragraph1 = section1.paragraphs.first
 				expected = 'In den beiden massgebenden Studien erhielten die Patienten Herceptin entweder als Monotherapie oder in Kombination mit Paclitaxel. Nebenwirkungen sind bei ungefähr 50% der Patienten zu erwarten. Am häufigsten wurden infusionsbedingte Symptome wie Fieber und Schüttelfrost beobachtet, meist im Anschluss an die erste Infusion von Herceptin.'
@@ -1008,7 +1044,7 @@ target_encoding: latin1
 				expected = 'Folgende unerwünschte Wirkungen wurden beobachtet:'
 				assert_equal(expected, paragraph2.text)
 				section2 = chapter.sections.at(1)
-				assert_equal('Tabelle 1', section2.subheading)
+				assert_equal("Tabelle 1\n", section2.subheading)
 				paragraph1 = section2.paragraphs.first
 				#space wird beötigt! nicht löschen!
 				expected = "Nebenwirkungen, die bei \2635% der Patienten oder in der randomisierten Studie in erhöhter Inzidenz bei der Behandlungsgruppe mit Herceptin auftraten (Anteil der Patienten in %)"
@@ -1028,7 +1064,8 @@ Anämie       4       14       9       36      26
 Leuko-       3       24       17      52      34     
  penie                                               
 ----------------------------------------------------
-Stoffwechselstörungen
+Stoffwechselstörungen                                
+
 Periphere    10      22       20      20      17     
  Ödeme                                               
 Ödeme        8       10       8       11      5      
@@ -1090,9 +1127,10 @@ Fieber       36      49       23      56      34
 Schüttel-    32      41       4       35      11     
  frost                                               
 Kopf-        26      36       28      44      31     
- schmerzen
-Bauch-       22      34       22      23      18
-schmerzen                                           
+ schmerzen                                           
+Bauch-       22      34       22      23      18     
+
+ schmerzen                                           
 Rücken-      22      34       30      27      15     
  schmerzen                                           
 Infektion    20      47       27      47      31     
@@ -1105,9 +1143,21 @@ Versehent-   6       13       3       9       4
 Allergische                                          
  Reaktion                                            
 ----------------------------------------------------'
-				assert_equal(1, paragraph2.formats.size)
-				assert_equal([:pre], paragraph2.formats.at(0).values)
 				assert_equal(expected, paragraph2.text)
+			end
+		end
+		class TestFachinfoPDFWriterCetrin < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_certin.rb',File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_usage_certin
+				chapter = @fachinfo.usage
+				result = chapter.sections[2].subheading
+				assert_equal("Kinder von 6-12 Jahren:", result)
+				assert_equal("Saisonale Rhinitis, allergische Konjunktivitis: w\344hrend maximal 4 Wochen 1-mal t\344glich 1 Filmtablette oder 2-mal t\344glich \275 Filmtablette.", chapter.sections[2].paragraphs.first.text)
 			end
 		end
 	end

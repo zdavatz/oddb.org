@@ -82,6 +82,7 @@ class FachinfoConfirmComposite < HtmlGrid::Composite
 end
 class FachinfoConfirm < View::PrivateTemplate
 	CONTENT = View::Drugs::FachinfoConfirmComposite
+	SNAPBACK_EVENT = :result
 end
 		end
 	end

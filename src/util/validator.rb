@@ -49,7 +49,7 @@ module ODDB
 			:result, :shadow, :shadow_pattern, :show_interaction, :search,
 			:search_registrations, :search_sequences, :select_seq, :set_pass,
 			:switch, :sponsor, :substances, :update, :update_bsv,
-			:update_incomplete, :sort, :ywesee_contact,
+			:update_incomplete, :sort, :ywesee_contact, :wait,
 			:home_doctors,
 			:doctorlist,
 		]
