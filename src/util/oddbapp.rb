@@ -581,7 +581,10 @@ class OddbPrevalence
 		if(lang.to_s != "fr") 
 			lang = "de"
 		end
-		ODBA.cache_server.retrieve_from_index("fachinfo_index_#{lang}", key.dup, result)
+		atcs = ODBA.cache_server.retrieve_from_index("fachinfo_index_#{lang}",
+			key.dup, result)
+		atcs += ODBA.cache_server.retrieve_from_index("indication_index_atc",
+			key.dup, result)
 	end
 	def search_by_sequence(key, result=nil)
 		ODBA.cache_server.retrieve_from_index('sequence_index_atc', key.dup, result)
