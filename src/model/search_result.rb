@@ -48,7 +48,6 @@ module ODDB
 		end
 	end
 	class SearchResult
-		include ResultSort
 		attr_accessor  :atc_classes, :session, :relevance
 		def initialize
 			@relevance = {}
@@ -57,12 +56,6 @@ module ODDB
 			@atc_facades ||= @atc_classes.collect { |atc_class|
 				AtcFacade.new(atc_class, @session)
 			}
-		end
-		def each(&block)
-			self.atc_sorted.each(&block)
-		end
-		def set_relevance(odba_id, relevance)
-			@relevance.store(odba_id, relevance)
 		end
 		def atc_sorted
 			@atc_facades = if(@relevance.empty?)
@@ -81,32 +74,12 @@ module ODDB
 			@atc_facades.reverse!
 			delete_empty_packages(@atc_facades)
 		end
-=begin
-		def get_by_relevance
-			by_relevance = []
-			relevance = Hash.new
-			@relevance.each { |result_set|
-				atc_id = result_set.at(0)
-				atc_relevance = result_set.at(1)
-				@atc_classes.each{ |atc|
-					if (atc.odba_id == atc_id)
-						if(relevance.has_key?(atc_relevance))
-							atc_arr = relevance.fetch(atc_relevance)
-							atc_arr.push(atc)
-						else
-							relevance.store(atc_relevance, [atc])
-						end
-					end
-				}
-			}
-			tmp_relevance = relevance.sort.reverse
-			tmp_relevance.each{ |atc_set|
-				sorted = sort_by_package_count(atc_set.at(1))
-				by_relevance.push(sorted)
-			}
-			by_relevance.flatten
+		def each(&block)
+			self.atc_sorted.each(&block)
 		end
-=end
+		def set_relevance(odba_id, relevance)
+			@relevance.store(odba_id, relevance)
+		end
 		private
 		def delete_empty_packages(atc_classes)
 			atc_classes.delete_if { |atc|

@@ -16,6 +16,7 @@ class Result < State::Drugs::Global
 	REVERSE_MAP = View::Drugs::ResultList::REVERSE_MAP
 	ITEM_LIMIT = 150
 	attr_reader :package_count, :pages
+	include ResultStateSort
 	def init
 		@model.session = @session
 		if(@model.atc_classes.nil? || @model.atc_classes.empty?)
