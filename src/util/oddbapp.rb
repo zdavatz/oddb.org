@@ -109,19 +109,16 @@ class OddbPrevalence
 			store_in_index(@sequence_index, item.name, item)
 		when ODDB::Substance
 			keys = item.descriptions.values
-			keys.push(item.connection_key)
-			if(keys.empty?)
-				keys = [ item.name ]
-			end
+			keys.push(item.connection_key) unless keys.include?(item.connection_key)
+			keys.push(item.name) unless keys.include?(item.name)
 			keys.each { |key|
 				delete_from_index(@substance_index, key, item)
 				delete_from_index(@substance_name_index, key, item.sequences)
 			}
 			pointer.issue_update(self, values)
 			keys = item.descriptions.values
-			if(keys.empty?)
-				keys = [item.name]
-			end
+			keys.push(item.connection_key) unless keys.include?(item.connection_key)
+			keys.push(item.name) unless keys.include?(item.name)
 			keys.each { |key|
 				store_in_index(@substance_index, key, item)
 				store_in_index(@substance_name_index, key, *item.sequences)
@@ -488,6 +485,16 @@ class OddbPrevalence
 		result.flatten!
 		result
 	end
+	def search_substance(query)
+		keys = query.to_s.downcase.split(" ")
+		result = []
+		keys.each { |key|
+			result << soundex_substances(key)
+			result << substance(key)
+		}
+		result.flatten!
+		result.compact
+	end
 	def sequences_by_name(name)
 		@sequence_index.fetch_all(name)
 	end
@@ -591,9 +598,8 @@ class OddbPrevalence
 		@substance_name_index = Datastructure::CharTree.new
 		@substances.each_value { |subst|
 			keys = subst.descriptions.values
-			if(keys.empty?)
-				keys = [ subst.name ]
-			end
+			keys.push(subst.connection_key) unless keys.include?(subst.connection_key)
+			keys.push(subst.name) unless keys.include?(subst.name)
 			keys.each { |key|
 				store_in_index(@substance_index, key, subst)
 				store_in_index(@substance_name_index, key, *subst.sequences)

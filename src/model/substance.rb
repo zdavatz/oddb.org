@@ -15,11 +15,6 @@ module ODDB
 		include Language
 		def initialize
 			super()
-=begin
-			if(name)
-				@name = name.gsub(/\b[A-Z].+?\b/) { |match| match.capitalize }
-			end
-=end
 			@sequences = []
 			@substrate_connections = {}
 		end
@@ -111,6 +106,7 @@ module ODDB
 		end
 		def name
 			if(@name)
+				@descriptions['lt'] = @name if(@descriptions['lt']=="")
 				@name
 			# First call to descriptions should go to lazy-initialisator
 			elsif(descriptions && @descriptions['lt']!="") 
@@ -119,6 +115,7 @@ module ODDB
 				@descriptions['en']
 			end
 		end
+		alias :pointer_descr :name
 		def remove_sequence(sequence)
 			@sequences.delete(sequence)
 		end

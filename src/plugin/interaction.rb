@@ -335,7 +335,7 @@ module ODDB
 								:connections		=> subs.substrate_connections.dup,
 								:pointer				=> subs.pointer,
 							}
-							#@app.update(subs.pointer, values)
+							@app.update(subs.pointer, values)
 							@updated_substances.store(subs.connection_key, values)
 						end
 					else

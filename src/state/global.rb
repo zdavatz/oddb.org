@@ -29,6 +29,7 @@ require 'state/patinfo_deprived_sequences'
 require 'state/plugin'
 require 'state/recentregs'
 require 'state/result'
+require 'state/substance_init'
 require 'state/paypal_thanks'
 require 'state/patinfo'
 require 'state/yamlexport'
@@ -45,6 +46,7 @@ module ODDB
 			:companylist					=>	CompanyListState,
 			:ddd									=>	DDDState,
 			:download							=>	DownloadState,
+			:download_export			=>	YamlExportState,
 			:fipi_offer_input			=>	FiPiOfferInputState,
 			:galdat_download			=>	GaldatDownloadState,
 			:help									=>	HelpState,
@@ -53,10 +55,10 @@ module ODDB
 			:login_form						=>	LoginState,
 			:mailinglist					=>	MailingListState,
 			:plugin								=>	PluginState,
-			:recent_registrations =>	RecentRegsState,
-			:download_export			=>	YamlExportState,
 			:passthru							=>	PassThruState,
 			:paypal_thanks				=>	PayPalThanksState,
+			:recent_registrations =>	RecentRegsState,
+			:substance_home				=>	SubstanceInitState,
 		}	
 		RESOLVE_STATES = {
 			[ :company ]	=>	CompanyState,
@@ -192,6 +194,15 @@ module ODDB
 			elsif(!query.nil?)
 				result = @session.search_interaction(query)
 				InteractionResultState.new(@session, result)
+			end
+		end
+		def search_substance
+			query = @session.persistent_user_input(:search_query)
+			if (query.is_a? RuntimeError)
+				ExceptionState.new(@session, query)
+			elsif(!query.nil?)
+				result = @session.search_substance(query)
+				SubstanceResultState.new(@session, result)
 			end
 		end
 		def sort
