@@ -142,6 +142,7 @@ class ResultList < HtmlGrid::List
 	SYMBOL_MAP = {
 		:galenic_form				=>	View::DescriptionValue,
 		:registration_date	=>	HtmlGrid::DateValue,
+		:ikskey							=>	View::PointerLink,
 	}	
 	def compose_subheader(atc, offset)
 		subheader = self::class::SUBHEADER.new(atc, @session, self)
