@@ -14,7 +14,7 @@ module ODDB
 		include SequenceObserver
 		ODBA_PREFETCH = true
 		ODBA_SERIALIZABLE = [ '@descriptions', '@connection_keys', '@synonyms' ]
-		attr_reader :sequences, :substrate_connections, :connection_keys
+		attr_reader :sequences, :substrate_connections
 		attr_accessor :effective_form
 		attr_writer :synonyms
 		include Comparable
@@ -45,6 +45,9 @@ module ODDB
 		end
 		def atc_classes
 			@sequences.collect { |seq| seq.atc_class }.uniq
+		end
+		def connection_keys
+			@connection_keys || self.update_connection_keys
 		end
 		def connection_keys=(keys)
 			@connection_keys += keys

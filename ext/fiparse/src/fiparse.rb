@@ -3,7 +3,7 @@
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.dirname(__FILE__)
-
+require 'odba'
 require 'drb/drb'
 require 'util/oddbconfig'
 require 'fachinfo_writer'
@@ -16,7 +16,14 @@ require 'patinfo_html'
 require 'rpdf2txt/parser'
 
 module ODDB
+	class FachinfoDocument
+		def initialize
+		end
+	end
 	module FiParse
+		def storage=(storage)
+			ODBA.storage = storage
+		end
 		def parse_fachinfo_doc(src)
 			parser = Rwv2.create_parser_from_content(src)
 			handler = FachinfoTextHandler.new
@@ -54,6 +61,7 @@ module ODDB
 			parser.feed(src)
 			writer.to_patinfo
 		end
+		module_function :storage=
 		module_function :parse_fachinfo_doc
 		module_function :parse_fachinfo_pdf
 		module_function :parse_fachinfo_html
