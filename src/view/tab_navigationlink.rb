@@ -10,6 +10,7 @@ module ODDB
 			def init
 				super
 				unless (@session.state.zone == @name)
+=begin
 					args = {
 						"zone"	=> @name.to_s,
 					}
@@ -23,6 +24,9 @@ module ODDB
 						direct_event
 					end
 					@attributes.store("href", @lookandfeel.event_url(:switch, args))
+=end
+					home_event = [:home, @name].join('_')
+					@attributes.store("href", @lookandfeel.event_url(home_event))
 				end
 			end
 		end
