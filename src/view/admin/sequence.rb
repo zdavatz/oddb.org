@@ -95,6 +95,24 @@ module SequenceDisplay
 			txt
 		end
 	end
+	def atc_request(model, session)
+		if(time = model.atc_request_time)
+			days = ((((Time.now - @model.atc_request_time) / 60) / 60) / 24)
+				output = "#{@lookandfeel.lookup(:atc_request_time)}"
+			if(days > 1)
+				output + "#{days.round} #{@lookandfeel.lookup(:atc_request_days)}"
+			else
+				days = (days * 24)  
+				output + "#{days.round} #{@lookandfeel.lookup(:atc_request_hours)}"
+			end
+		else
+			button = HtmlGrid::Button.new(:atc_request, @model, @session, self)
+			button.value = @lookandfeel.lookup(:atc_request)
+			url = @lookandfeel.event_url(:atc_request)
+			button.set_attribute('onclick', "location.href='#{url}'")
+			button
+		end
+	end
 end
 class SequenceInnerComposite < HtmlGrid::Composite
 	include View::Admin::SequenceDisplay
@@ -140,6 +158,8 @@ class SequenceForm < Form
 	SYMBOL_MAP = {
 		:iksnr	=>	HtmlGrid::Value,
 		:patinfo_desc => HtmlGrid::LabelText,
+		:atc_request_label => HtmlGrid::LabelText,
+		:no_company => HtmlGrid::LabelText,
 	}
 	def init
 		if(@model.is_a?(Persistence::CreateItem))
@@ -157,6 +177,20 @@ class SequenceForm < Form
 				[3,4]		=>	'result-infos',
 				[0,5,4] =>	'list',
 			})
+			if(@model.atc_class.nil?)
+			  if(@model.company.nil?)
+					components.store([2,3], :atc_request_label)
+					components.store([3,3], :no_company)
+				else
+					if(@model.company.regulatory_email.nil?)
+						components.store([2,3], :atc_request_label)
+						components.store([3,3], :profile_link)
+					else
+						components.store([2,3], :atc_request_label)
+						components.store([3,3], :atc_request)
+					end
+				end
+			end
 		end
 		super
 		error_message()
@@ -188,6 +222,16 @@ class SequenceForm < Form
 			pos = components.index(:patinfo)
 			link.set_attribute('class', 'result-infos')
 			link
+		end
+	end
+	def profile_link(model, session)
+		if(comp = model.company)
+			link = HtmlGrid::Link.new(:company_link, model, session, self)  
+			args = { :pointer	=>	comp.pointer }
+			link.href = @lookandfeel.event_url(:resolve, args)
+			link.set_attribute('class', 'small')
+			link.label = false
+			link  
 		end
 	end
 	def atc_descr(model, session)

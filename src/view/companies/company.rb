@@ -70,7 +70,6 @@ class UnknownCompanyInnerComposite < HtmlGrid::Composite
 	SYMBOL_MAP = {
 		:address_email	=>	HtmlGrid::MailLink,
 		:address_header	=>	HtmlGrid::LabelText,
-		:contact_email	=>	HtmlGrid::MailLink,
 		:contact_header	=>	HtmlGrid::LabelText,
 		:email_header		=>	HtmlGrid::LabelText,
 		:nbsp						=>	HtmlGrid::Text,
@@ -157,6 +156,7 @@ class RootCompanyForm < View::Companies::UserCompanyForm
 		[0,1]			=>	:contact,
 		[2,1]			=>	:contact_email,
 		[1,2]			=>	:set_pass,
+		[2,2]			=>	:regulatory_email,
 		[0,4]			=>	:address,
 		[0,5]			=>	:plz,
 		[2,5]			=>	:location,

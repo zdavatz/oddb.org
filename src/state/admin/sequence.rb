@@ -8,6 +8,8 @@ require 'state/admin/package'
 require 'state/admin/activeagent'
 require 'state/admin/assign_deprived_sequence'
 require 'fileutils'
+require 'net/smtp'
+require 'tmail'
 
 module ODDB
 	module State
@@ -17,6 +19,27 @@ class Sequence < State::Admin::Global
 	PDF_DIR = File.expand_path('../../../doc/resources/patinfo/', File.dirname(__FILE__))
 	def assign_patinfo
 		State::Admin::AssignDeprivedSequence.new(@session, @model)
+	end	
+	def atc_request
+		mail = TMail::Mail.new
+		mail.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
+		mail.to = 'jlang@ywesee.com'
+		mail.from = 'usenguel@ywesee.com'
+		mail.subject = "#{@model.name_base} #{@model.iksnr}"
+    mail.date = Time.now
+		mail.body = [
+				"#{@session.lookandfeel.lookup(:atc_request_email)}",
+				"#{@session.lookandfeel.lookup(:name)}: #{@model.name_base}",
+				"#{@session.lookandfeel.lookup(:registration)}: #{@model.iksnr}",
+				"#{@session.lookandfeel.lookup(:package)}: #{@model.packages.keys.join(",")} \n",
+				"#{@session.lookandfeel.lookup(:thanks_for_cooperation)} \n",
+			].join("\n")
+		Net::SMTP.start(SMTP_SERVER) { |smtp|
+			smtp.sendmail(mail.encoded, mail.from, mail.to)
+		}
+		@model.atc_request_time = Time.now
+		@model.odba_store
+		self
 	end
 	def delete
 		registration = @model.parent(@session.app) 
