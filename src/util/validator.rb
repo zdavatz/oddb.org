@@ -161,6 +161,10 @@ module ODDB
 			begin
 				Persistence::Pointer.parse(value)
 			rescue StandardError, ParseException
+				if(value[-1] != ?.)
+					value << "."
+					retry
+				end
 				raise SBSM::InvalidDataError.new("e_invalid_pointer", :pointer, value)
 			end
 		end
