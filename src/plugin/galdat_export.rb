@@ -78,14 +78,19 @@ module ODDB
 		end
 		def compress_tar(tar_name, files)
 			path = GaldatExport.system_targetdir()
+			old_dir = Dir.pwd
 			Dir.chdir(path)
 			gz_name = tar_name + ".gz"
 			File.delete(gz_name) if File.exists?(gz_name) 
 			tar_archive = Archive::Tar.new(tar_name)
 			tar_archive.create_archive(files.join(" "))
 			tar_archive.compress_archive
+			Dir.chdir(old_dir)
 		end
 		def compress_zip(zip_name, files)
+			path = GaldatExport.system_targetdir()
+			old_dir = Dir.pwd
+			Dir.chdir(path)
 			File.delete(zip_name) if File.exists?(zip_name) 
 			Zip::ZipOutputStream.open(zip_name) { |zos|
 				files.each { |name|
@@ -93,6 +98,7 @@ module ODDB
 					zos.puts File.read(name)
 				}
 			}
+			Dir.chdir(old_dir)
 		end
 		def run		
 			export
@@ -106,7 +112,8 @@ module ODDB
 		end
 		class Table
 			CRLF = "\r\n"
-			DOCUMENT_ROOT = "/var/www/oddb.org/doc/"
+			DOCUMENT_ROOT = File.expand_path("../../doc", 
+				File.dirname(__FILE__))
 			DIRPATH = "/resources/downloads"
 			def initialize(app)
 				@app = app

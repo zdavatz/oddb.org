@@ -70,6 +70,7 @@ class TestActiveAgentState < Test::Unit::TestCase
 		end
 	end
 	class StubSubstance
+		attr_accessor :pointer
 		def initialize(name, similar)
 			@name = name
 			@similar = similar
@@ -89,9 +90,9 @@ class TestActiveAgentState < Test::Unit::TestCase
 		newstate = @state.update
 		assert_equal(true, @state.error?)
 		assert_equal(@state, newstate)
-		assert_equal(2, @state.errors.size)
+		assert_equal(1, @state.errors.size)
 		assert_equal(true, @state.errors.has_key?(:substance))
-		assert_equal(true, @state.errors.has_key?(:dose))
+		assert_equal(false, @state.errors.has_key?(:dose))
 		assert_equal(false, @session.app.update_called)
 	end
 	def test_update2
@@ -120,9 +121,13 @@ class TestActiveAgentState < Test::Unit::TestCase
 		assert_equal(false, @session.app.update_called)
 	end
 	def test_update4
-		substances = {'Acidum Mefenamicum' => 'Acidum Mefenamicum'}
+		subst1 = StubSubstance.new('Acidum Mefenamicum', false)
+		subst1.pointer = 'substance_pointer_1'
+		subst2 = StubSubstance.new('Acidum Acetylsalicylicum', false)
+		subst2.pointer = 'substance_pointer_2'
+		substances = {'Acidum Mefenamicum' => subst1}
 		@activeagent.active_agents = substances.dup
-		substances.store('Acidum Acetylsalicylicum', 'Acidum Acetylsalicylicum')
+		substances.store('Acidum Acetylsalicylicum', subst2)
 		@session.app.substances = substances
 		@session.user_input = { 
 			:substance => 'Acidum Acetylsalicylicum',  

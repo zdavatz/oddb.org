@@ -114,7 +114,9 @@ class TestPatinfoPlugin < Test::Unit::TestCase
 		assert_equal({},@plugin.error_documents)
 		assert_equal({},@plugin.iksnr_documents)
 		assert_equal(1,@plugin.parse_error_documents.size)
-		assert_equal("/var/www/oddb.org/test/data/html/de/05050.html",@plugin.parse_error_documents.first)
+		expected = File.expand_path('../data/html/de/05050.html',
+			File.dirname(__FILE__))
+		assert_equal(expected, @plugin.parse_error_documents.first)
 	end
 	def test_parse_patinfo1
 		stub = StubPatinfo.new

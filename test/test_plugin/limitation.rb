@@ -520,7 +520,9 @@ class TestLimitationPlugin < Test::Unit::TestCase
 				'5754.htm',
 				'Bar',
 		]
-		file = File.open('/var/www/oddb.org/test/data/html/limitation/5754.htm', 'r')
+		path = File.expand_path('../data/html/limitation/5754.htm', 
+			File.dirname(__FILE__))
+		file = File.open(path)
 		lines = []
 		file.each_line { |line| 
 			lines << line
@@ -530,12 +532,14 @@ class TestLimitationPlugin < Test::Unit::TestCase
 	def test_collect_parsed_indices
 		@plugin.indices = []
 		begin
+			dir = File.expand_path('../data/html/limitation/',
+				File.dirname(__FILE__))
 			@plugin.instance_eval <<-EOS
 				alias :original_index_data_body :index_data_body
 				def index_data_body(letter)
 					@letter = letter
-					file = "/var/www/oddb.org/test/data/html/limitation/Index_"+letter+".htm"
-					path = File.expand_path(file, File.dirname(__FILE__))
+					file = "Index_" + letter + ".htm"
+					path = File.expand_path(file, '#{dir}')
 					html = File.read(path)
 				end
 			EOS

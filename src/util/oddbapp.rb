@@ -253,29 +253,28 @@ class OddbPrevalence
 			@registrations.store(iksnr, ODDB::Registration.new(iksnr))
 		end
 	end
-	def create_substance(substance=nil)
-		subs = nil
-		if(substance.nil?)
+	def create_substance(key=nil)
+		if(!key.nil? && (subs = substance(key)))
+			subs
+		else
 			subs = ODDB::Substance.new
-		elsif(!@substances.include?(substance.downcase))
-			subs = ODDB::Substance.new
-			values = {
-				'lt'	=>	substance
-			}
-			subs.update_values(subs.diff(values, self))
-			keys = subs.descriptions.values
-			if(keys.empty?)
-				keys = [ subs.name ]
+			unless(key.nil?)
+				values = {
+					'lt'	=>	key,
+				}
+				diff = subs.diff(values, self)
+				subs.update_values(diff)
+				begin
+					store_in_index(@substance_index, key, subs)
+					store_in_index(@substance_name_index, key, *subs.sequences)
+				rescue
+					puts $!.class
+					puts $!.message
+					puts $!.backtrace
+				end
 			end
-			keys.each { |key|
-				store_in_index(@substance_index, key, subs)
-				store_in_index(@substance_name_index, key, *subs.sequences)
-			}
-		end
-		unless(subs.nil?)
 			@substances.store(subs.oid, subs)
 		end
-		subs
 	end
 	def create_user
 		@users ||= {}
@@ -323,6 +322,13 @@ class OddbPrevalence
 	end
 	def delete_registration(iksnr)
 		@registrations.delete(iksnr)
+	end
+	def delete_substance(key)
+		if(key.to_i.to_s == key.to_s)
+			@substances.delete(key.to_i)
+		else
+			@substances.delete(key.to_s)
+		end
 	end
 	def each_atc_class(&block)
 		@atc_classes.each_value(&block)
@@ -468,7 +474,7 @@ class OddbPrevalence
 		@sequence_index.fetch_all(name)
 	end
 	def soundex_substances(name)
-		(@substance_index.fetch(name) || []).sort
+		(@substance_index.fetch(name) || []).uniq.sort
 	end
 	def sponsor
 		@sponsor ||= ODDB::Sponsor.new
@@ -484,19 +490,15 @@ class OddbPrevalence
 	def substance(key)
 		if(key.to_i.to_s == key.to_s)
 			@substances[key.to_i]
+		elsif(substance = @substances[key.to_s.downcase])
+			substance
 		else
-			if(substance = @substances[key.to_s.downcase])
-				substance
-			else
-				@substances.values.each { |subs|
-					subs.descriptions.values.each { |desc_name|
-						if(desc_name.downcase == key.to_s.downcase)
-							substance = subs
-						end
-					}
-				}
-				substance
-			end
+			@substances.values.each { |subs|
+				if(subs.same_as?(key))
+					return subs
+				end
+			}
+			nil
 		end
 	end
 	def substances
