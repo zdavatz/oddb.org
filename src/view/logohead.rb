@@ -7,6 +7,7 @@ require 'view/google_ad_sense'
 require 'view/tab_navigation'
 require 'view/searchbar'
 require 'htmlgrid/link'
+require 'view/language_chooser'
 
 module ODDB
 	module View
@@ -19,14 +20,20 @@ module ODDB
 			GOOGLE_HEIGHT = '60'
 		end
 		class LogoHead < CommonLogoHead
+			include LanguageChooserFactory
 			COMPONENTS = {
 				[0,0]		=>	View::Logo,
+				[0,1]		=>	:language_chooser,
 				[1,0]		=>	:ad_sense,
 				[1,1]		=>	View::TabNavigation,
 			}
 			CSS_MAP = {
 				[1,0]	=>	'logo-r',
+				[0,1] =>	'left',
 				[1,1]	=>	'tabnavigation-right',
+			}
+			COMPONENT_CSS_MAP = {
+				[0,1] =>	'component',
 			}
 		end
 		class PopupLogoHead < CommonLogoHead
