@@ -1,3 +1,36 @@
+2004-06-25 Zeno Davatz <zdavatz@ywesee.com>
+* Offertengenerator für Publikation Fi und Pi
+	- Eingabe Felder:
+		Firmenname (Pflichtfeld)
+		Name, Vorname (Pflichtfeld)
+		Email-Adresse (Pflichtfeld)
+		'Eingabefeld' Anzahl Fachinformationen à CHF 350.-/Jahr (Pflichtfeld)
+		'Eingabefeld' Anzahl Patienteninformationen à CHF 120.-/Jahr (Pflichtfeld)
+		Option "mit Aktualisierung von Fi und Pi durch ywesee" zum anklicken.
+	
+	- Fachinformation:
+		****************
+		Einmalig: CHF 1500.-
+		46 Fachinfos à 350.-: 16'100.-
+		Aktualisierung ywesee 46 Fi's à 150.-: 6900.-
+
+		Fi's, Total selbständige Aktualisierung pro Jahr: 16'100.- (exkl. Mwst.)
+		Fi's, Total inkl. Aktualisierung pro Jahr: 23'000.- (exkl. Mwst.)
+
+	-	Patienteninfos:
+		***************
+		Einmalig: CHF 1500.-
+		35 Patinfos à 120.-: 4'200.-
+		Aktualisierung ywesee 35 Pi's à 90.-: 3150.-
+
+		Pi's, Total selbständige Aktualisierung pro Jahr: 4'200.- (exkl. Mwst.)
+		Pi's, Total inkl. Aktualisierung pro Jahr: 7'350.- (exkl. Mwst.)
+
+		Fi's und Pi's werden auf http://www.generika.cc und http://www.oddb.org
+		publiziert und als PDF gesammelt exportiert.
+
+	- Obiges generiert HTML-Output und ein Mail an die angegebene Email-Adresse.
+
 2004-06-17 Zeno Davatz <zdavatz@ywesee.com>
 * Interaktionen:
 	-	Kann man bei dem Link aus den Interaktionen zu den Produkten nur dann
