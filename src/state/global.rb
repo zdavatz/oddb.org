@@ -255,10 +255,13 @@ module ODDB
 						result = @session.search_substances(query)
 						State::Substances::Result.new(@session, result)
 					else
-						result = if(@session.user_input(:exact_match))
-							@session.search_exact(query)
+						result = case @session.user_input(:search_type) 
+						when 'st_sequence'
+							@session.search_exact_sequence(query)
+						when 'st_substance'
+							@session.search_exact_substance(query)
 						else
-							@session.search(query)
+							@session.search_oddb(query)
 						end
 						State::Drugs::Result.new(@session, result)
 					end

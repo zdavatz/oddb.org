@@ -89,8 +89,12 @@ class ResultList < HtmlGrid::List
 		end
 	end
 	def search_oddb(model, session)
-		result = @session.app.search(model.name, @session.language)
-		unless(result.atc_classes.empty?)
+		active_sequences = model.sequences.select { |seq| 
+			seq.active_package_count > 0 
+		}
+		#result = @session.search_oddb(model.name)
+		#unless(result.atc_classes.empty?)
+		unless(active_sequences.empty?)
 			link = HtmlGrid::Link.new(:substance_result, model, session, self)
 			link.href = @lookandfeel.event_url(:search, {'search_query' => model.name, 'zone'	=> :drugs})
 			link.value = @lookandfeel.lookup(:search_oddb)

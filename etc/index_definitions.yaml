@@ -80,7 +80,7 @@ target_klass: 'Sequence'
 resolve_search_term: 'name'
 resolve_target: ''
 resolve_origin: ''
-init_source: '@registrations.values.inject([]) { |inj, reg| inj + reg.sequences.values } '
+init_source: 'self.sequences'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'sequence_index_substance'
@@ -130,3 +130,12 @@ resolve_origin: 'sequences.collect { |seq| seq.registration.indication }.flatten
 dictionary: 'default'
 init_source: '@atc_classes.values'
 fulltext: true
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'substance_index_sequence'
+origin_klass: 'Substance'
+target_klass: 'Sequence'
+resolve_search_term: 'search_keys'
+resolve_target: 'sequences'
+resolve_origin: 'active_agents.collect { |act| act.substance }'
+init_source: 'self.sequences'
+fulltext: false

@@ -11,7 +11,7 @@ module ODDB
 		alias :set_pass_2 :pass
 		alias :unique_email :email
 		BOOLEAN = [
-			:cl_status, :exact_match, :experience, :recommend,
+			:cl_status, :experience, :recommend,
 			:impression, :helps
 		]
 		DATES = [
@@ -25,6 +25,7 @@ module ODDB
 		]
 		ENUMS = {
 			:cl_status		=>	['false', 'true'],
+			:search_type	=>	['st_oddb', 'st_sequence', 'st_substance'],
 			:fi_status		=>	['false', 'true'],
 			:generic_type =>	[nil, 'generic', 'original', 'complementary' ],
 			:limitation		=>	['true', 'false'],
