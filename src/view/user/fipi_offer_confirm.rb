@@ -9,9 +9,10 @@ module ODDB
 	module View
 		module User
 class FiPiCalculations < HtmlGrid::Composite
+	COLSPAN_MAP = {}
 	COMPONENTS = {}
 	COMPONENTS_FI = {
-		[1,0] =>  'fachinfo',
+		[0,0] =>  'fachinfo_column',
 		
 		[0,1]	=>	:fi_activation_count,
 		[1,1]	=>	'fi_activation_charge',
@@ -26,7 +27,7 @@ class FiPiCalculations < HtmlGrid::Composite
 	}
 		
 	COMPONENTS_PI = {
-		[1,0] =>  'patinfo',	
+		[0,0] =>  'patinfo_column',	
 		
 		[0,1]	=>	:pi_activation_count,
 		[1,1]	=>	'pi_activation_charge',
@@ -52,9 +53,15 @@ class FiPiCalculations < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value
 	def init
 		offset = 0
-		if(@model.fi_activation_count > 0)
-			components.update(COMPONENTS_FI)
-			css_map.update({[0,0,3,3] => 'padding bg'})
+			if(@model.fi_activation_count > 0)
+				components.update(COMPONENTS_FI)
+			css_map.update({
+				[0,1,3,4] => 'padding bg',
+				[0,0]			=> 'padding bg bold sum',
+			})
+			colspan_map.update({
+				[0,0] => 3, 
+			})
 			offset += 5
 		end
 		if(@model.pi_activation_count > 0)
@@ -63,7 +70,13 @@ class FiPiCalculations < HtmlGrid::Composite
 				newkey[1] += offset
 				components.store(newkey, val)
 			}
-			css_map.update({[0,offset,3,3] => 'padding bg'})
+			css_map.update({
+				[0,offset+1,3,3] => 'padding bg',
+				[0,offset]		 => 'padding bg bold sum',
+			})
+			colspan_map.update({
+				[0,offset] => 3, 
+			})
 			offset += 4
 		end
 		COMPONENTS_FIPI.each { |key, val|
