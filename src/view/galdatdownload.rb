@@ -18,12 +18,12 @@ module ODDB
 		CSS_MAP = {
 			[0,1,1,3]	=>	'list',
 		}
-		EXPORT_FILE = 'galdat_oddb'
+		EXPORT_FILE = 'oddbdat'
 		def galdat_download_tar_gz(model, session)
-			link_with_filesize("galdat_oddb.tar.gz")
+			link_with_filesize("oddbdat.tar.gz")
 		end
 		def galdat_download_zip(model, session)
-			link_with_filesize("galdat_oddb.zip")
+			link_with_filesize("oddbdat.zip")
 		end
 		def s31x_tar_gz(model, session)
 			link_with_filesize("s31x.tar.gz")

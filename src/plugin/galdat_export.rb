@@ -62,13 +62,13 @@ module ODDB
 			}
 		end
 		def compress
-			compress_tar("galdat_oddb.tar", @filenames)	
+			compress_tar("oddbdat.tar", @filenames)	
 			unless(@singlefilenames.empty?)
 				@singlefilenames.each { |file|
 					compress_tar(file+".tar", [file])
 				}
 			end
-			zip_name = "galdat_oddb.zip"
+			zip_name = "oddbdat.zip"
 			compress_zip(zip_name, @filenames)
 			unless(@singlefilenames.empty?)
 				@singlefilenames.each { |file|
@@ -380,7 +380,7 @@ module ODDB
 				#LookandfeelBase::DICTIONARIES['de'][:galdat_download_descr]
 				#=begin
 				<<-EOS
-Galdat_oddb.tar.gz und Galdat_oddb.zip enthalten die täglich aktualisierten Artikelstammdaten der ODDB. Die Daten werden von ywesee in das Galdat-Format umgewandelt und allen gewünschten Systemlieferanten von Schweizer Spitälern zur Verfügung gestellt.
+oddbdat.tar.gz und oddbdat.zip enthalten die täglich aktualisierten Artikelstammdaten der ODDB. Die Daten werden von ywesee in das OddbDat-Format umgewandelt und allen gewünschten Systemlieferanten von Schweizer Spitälern zur Verfügung gestellt.
 
 Feedback bitte an zdavatz@ywesee.com
 
@@ -403,11 +403,11 @@ Folgende Tabelle mit den Fachinformationen steht wegen ihrer Grösse separat als 
 
 -MCM (Tabelle 31)	- Fachinformationen
 
-Die Daten werden als galdat_oddb.tar.gz und galdat_oddb.zip auf unserem Server bereitgestellt - Vorzugsweise benutzen Sie einen der folgenden direkten Links.
+Die Daten werden als oddbdat.tar.gz und oddbdat.zip auf unserem Server bereitgestellt - Vorzugsweise benutzen Sie einen der folgenden direkten Links.
 
 Ganze Packages (ohne Fachinformationen):
-http://www.oddb.org/resources/downloads/galdat_oddb.tar.gz
-http://www.oddb.org/resources/downloads/galdat_oddb.zip
+http://www.oddb.org/resources/downloads/oddbdat.tar.gz
+http://www.oddb.org/resources/downloads/oddbdat.zip
 
 Nur Fachinformationen (sehr grosse Dateien):
 http://www.oddb.org/resources/downloads/s31x.tar.gz
@@ -418,7 +418,7 @@ http://www.oddb.org/resources/downloads/s31x.zip
 				#=end
 =begin
 				<<-EOS
-Galdat_oddb.tar.gz und Galdat_oddb.zip enthalten die täglich aktualisierten Artikelstammdaten der ODDB. Die Daten werden von ywesee in das Galdat-Format umgewandelt und allen gewünschten Systemlieferanten von Schweizer Spitälern zur Verfügung gestellt.
+oddbdat.tar.gz und oddbdat.zip enthalten die täglich aktualisierten Artikelstammdaten der ODDB. Die Daten werden von ywesee in das OddbDat-Format umgewandelt und allen gewünschten Systemlieferanten von Schweizer Spitälern zur Verfügung gestellt.
 
 Feedback bitte an zdavatz@ywesee.com
 
@@ -436,11 +436,11 @@ Feedback bitte an zdavatz@ywesee.com
 -SC (Tabelle 40) - Substanzen
 -ACSC (Tabelle 41) - Verbindungstabelle zwischen AC und SC
 
-Die Daten werden als galdat_oddb.tar.gz und galdat_oddb.zip auf unserem Server bereitgestellt - Vorzugsweise benutzen Sie einen der folgenden direkten Links.
+Die Daten werden als oddbdat.tar.gz und oddbdat.zip auf unserem Server bereitgestellt - Vorzugsweise benutzen Sie einen der folgenden direkten Links.
 
 Ganze Packages (ohne Fachinformationen):
-http://www.oddb.org/resources/downloads/galdat_oddb.tar.gz
-http://www.oddb.org/resources/downloads/galdat_oddb.zip
+http://www.oddb.org/resources/downloads/oddbdat.tar.gz
+http://www.oddb.org/resources/downloads/oddbdat.zip
 				EOS
 =end
 			end
