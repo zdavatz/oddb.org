@@ -13,7 +13,7 @@ def check(name, obj, odba_id)
 	end
 end
 def check_reached(name, obj, stub, reached)
-	if(stub && stub.is_a?(ODBA::Persistable) && !stub.odba_unsaved?)
+	if(stub && stub.is_a?(ODBA::Stub))
 		reached.push(stub.odba_id)
 		check(name, obj, stub.odba_id)
 	end
