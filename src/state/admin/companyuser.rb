@@ -3,7 +3,6 @@
 
 require 'state/admin/user'
 require 'state/companies/global'
-require 'state/drugs/global'
 require 'state/admin/patinfo_stats'
 
 module ODDB
@@ -12,7 +11,7 @@ module ODDB
 class Company < Global; end
 class UserCompany < Company; end
 		end
-		module Drugs
+		module Admin
 class Registration < Global; end
 class CompanyRegistration < Registration; end
 class Sequence < Global; end
@@ -23,18 +22,16 @@ class Package < Global; end
 class CompanyPackage < Package; end
 class SlEntry < Global; end
 class CompanySlEntry < SlEntry; end
-		end
-		module Admin
 module CompanyUser
 	RESOLVE_STATES = {
-		[ :registration ]							=>	State::Drugs::CompanyRegistration,
-		[ :registration, :sequence ]	=>	State::Drugs::CompanySequence,
+		[ :registration ]							=>	State::Admin::CompanyRegistration,
+		[ :registration, :sequence ]	=>	State::Admin::CompanySequence,
 		[ :registration,
-			:sequence, :active_agent ]	=>	State::Drugs::CompanyActiveAgent,
+			:sequence, :active_agent ]	=>	State::Admin::CompanyActiveAgent,
 		[ :registration,
-			:sequence, :package ]				=>	State::Drugs::CompanyPackage,
+			:sequence, :package ]				=>	State::Admin::CompanyPackage,
 		[ :registration, :sequence,
-			:package, :sl_entry ]				=>	State::Drugs::CompanySlEntry,
+			:package, :sl_entry ]				=>	State::Admin::CompanySlEntry,
 	}	
 	include State::Admin::User
 	def resolve_state(pointer)
@@ -49,26 +46,18 @@ module CompanyUser
 		item = Persistence::CreateItem.new(pointer)
 		item.carry(:company, @session.user.model)
 		item.carry(:company_name, @session.user.model.name)
-		State::Drugs::CompanyRegistration.new(@session, item)
+		State::Admin::CompanyRegistration.new(@session, item)
 	end
 	def patinfo_stats
 		State::Admin::PatinfoStatsCompanyUser.new(@session,[])
 	end
 	def user_navigation
 		[
-			State::Drugs::AtcChooser,
-			State::Companies::CompanyList,
 			State::Admin::Logout,
 		]
 	end
 	def zones
 		[:drugs, :interactions, :substances, :companies, :user, :admin]
-	end
-	def zone_navigation
-		[
-			:faq_link,
-			State::Admin::PatinfoStatsCompanyUser
-		]
 	end
 end
 		end

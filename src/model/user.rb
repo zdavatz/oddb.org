@@ -4,11 +4,6 @@
 require 'sbsm/user'
 require 'util/persistence'
 require 'state/global_predefine'
-#require 'state/states'
-#require 'state/drugs/init'
-#require 'state/admin/root'
-#require 'state/admin/companyuser'
-#require 'state/admin/user'
 
 module ODDB
 	class User < SBSM::KnownUser

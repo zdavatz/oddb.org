@@ -5,7 +5,7 @@ require 'state/drugs/global'
 require 'view/drugs/result'
 require 'model/registration'
 require 'state/page_facade'
-require 'state/drugs/registration'
+require 'state/admin/registration'
 
 module ODDB
 	module State

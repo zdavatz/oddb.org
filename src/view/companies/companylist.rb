@@ -10,7 +10,7 @@ require 'view/pointervalue'
 require 'view/descriptionvalue'
 require 'view/form'
 require 'view/resultcolors'
-require 'view/publictemplate'
+require 'view/resulttemplate'
 require 'view/alphaheader'
 
 module ODDB

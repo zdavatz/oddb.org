@@ -14,12 +14,6 @@ class Global < State::Global
 	EVENT_MAP = {
 		:vcard	=>	State::Doctors::VCard,
 	}
-	def zone_navigation
-		[
-			:help_link,
-			:faq_link,
-		]
-	end
 	def legal_note
 		State::Doctors::LegalNote.new(@session, nil)
 	end
