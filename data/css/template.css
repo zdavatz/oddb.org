@@ -602,6 +602,21 @@ td.result-pubprice-complementary-bg {
 	padding-right : 10px;
 	text-align : right;
 }
+a.feedback, a.feedback:link, a.feedback:visited, a.square {
+	color: black;
+	background-color : #ffbc6f;
+	font-weight : bold;
+	text-align : center;
+	text-decoration : none;
+	padding : 2px 2px 2px 3px;
+}
+td.square {
+	padding : 2px;
+}
+td.bg a.feedback {
+	background : #ffbc22;
+}
+
 
 a.result-infos, a.result-infos:link, a.result-infos:visited,
 a.result-infos-original, a.result-infos-original:link, a.result-infos-original:visited,
