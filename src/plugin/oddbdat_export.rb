@@ -497,6 +497,7 @@ http://www.oddb.org/resources/downloads/oddbdat.zip
 					# Registration::create_package die Verknüpfung erstellt
 					20	=>	generic_code(@package.registration),
 					22	=>	iks_date(@package.registration),
+					29	=>	(@package.sl_entry) ? '3' : nil,
 					39	=>	inscode,
 					40	=>	limitation,
 					41	=>	limitation_points,
