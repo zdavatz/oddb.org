@@ -8,7 +8,9 @@ module ODDB
 		end
 		def execute(app)
 			incomplete = @pointer.resolve(app)
-			incomplete.accepted!(app)
+			ODBA.batch {
+				incomplete.accepted!(app)
+			}
 		end
 	end
 end

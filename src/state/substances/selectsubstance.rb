@@ -20,7 +20,6 @@ class SelectSubstance < State::Substances::Global
 		new_state = self
 		if((pointer = @session.user_input(:pointer)) \
 			&& (target = pointer.resolve(@session.app)))
-			puts target.inspect
 			if(target == @model.source)
 				@errors.store(:substance, create_error('e_selfmerge_substance', 
 					:substance, pointer))

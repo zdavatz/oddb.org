@@ -8,7 +8,9 @@ module ODDB
 			@values = values
 		end
 		def execute(app)
-			app.update(@pointer, @values)
+			ODBA.batch { 
+				app.update(@pointer, @values)
+			}
 		end
 	end
 end
