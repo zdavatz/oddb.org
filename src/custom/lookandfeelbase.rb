@@ -1300,7 +1300,7 @@ zdavatz ! ywesee.com
 				:th_list									=>	'Liste',
 				:th_location							=>	'Place',
 				:th_most_precise_dose			=>	'Concentration',
-				:th_name									=>	'Nome',
+				:th_name									=>	'Nom',
 				:th_name_base							=>	'Pr&eacute;paration',
 				:th_name_descr						=>	'Description',
 				:th_oid										=>	'OID',
