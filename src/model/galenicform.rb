@@ -10,6 +10,7 @@ module ODDB
 		include Comparable
 		include Language
 		include SequenceObserver
+		ODBA_SERIALIZABLE = [ '@descriptions' ]
 		class << self
 			def reset_oid
 				@@oid = 0

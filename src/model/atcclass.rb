@@ -11,6 +11,7 @@ module ODDB
 		include Language
 		include SequenceObserver
 		ODBA_PREFETCH = true
+		ODBA_SERIALIZABLE = [ '@descriptions' ]
 		attr_accessor :code
 		attr_reader :guidelines, :ddd_guidelines
 		class DDD
@@ -105,6 +106,9 @@ module ODDB
 		end
 		def packages
 			@sequences.collect { |seq| seq.packages.values }.flatten
+		end
+		def susbtances
+			@sequences.collect { |seq| seq.substances }.flatten
 		end
 		def parent_code
 			case level

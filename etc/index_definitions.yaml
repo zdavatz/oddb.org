@@ -52,3 +52,12 @@ resolve_target: 'atc_class'
 resolve_origin: 'sequences.collect { |seq| seq.registration.fachinfo }.uniq'
 dictionary: 'default_french'
 fulltext: true
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'substance_index'
+origin_klass: 'Substance'
+target_klass: 'Substance'
+resolve_search_term: 'index_search_terms'
+resolve_target: ''
+resolve_origin: ''
+dictionary: 'default_german'
+fulltext: true

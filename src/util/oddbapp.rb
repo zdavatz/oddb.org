@@ -456,7 +456,14 @@ class OddbPrevalence
 			file = File.open(path)
 			YAML.load_documents(file) { |index_definition|
 				ODBA.cache_server.create_index(index_definition, ODDB)
-				ODBA.cache_server.fill_index(index_definition.index_name, @atc_classes.values)
+				puts "name: #{index_definition.index_name}"
+				if (index_definition.index_name == "substance_index")
+					puts "special index"
+					ODBA.cache_server.fill_index(index_definition.index_name, @substances.values)
+				else
+					puts "atc_class"
+					ODBA.cache_server.fill_index(index_definition.index_name, @atc_classes.values)
+				end
 			}
 		rescue
 			puts "INDEX CREATION ERROR"
@@ -587,10 +594,10 @@ class OddbPrevalence
 		keys = query.to_s.downcase.split(" ")
 		result = []
 		keys.each { |key|
-			if(sequences = sequences_by_name(key))
-				sequences.each { |seq|
-					result << seq.substances
-				}
+			if(atc_codes = sequences_by_name(key))
+				atc_codes.each { |atc_code|
+					result << atc_code.substances
+				} 
 			end
 			result << soundex_substances(key)
 		}
@@ -602,7 +609,7 @@ class OddbPrevalence
 		ODBA.cache_server.retrieve_from_index("sequence_index_atc", name)
 	end
 	def soundex_substances(name)
-		ODBA.cache_server.retrieve_from_index("substance_index_atc", name)
+		ODBA.cache_server.retrieve_from_index("substance_index", name)
 	end
 	def sponsor
 		@sponsor ||= ODDB::Sponsor.new
@@ -708,12 +715,13 @@ module ODDB
 			puts "prevalence initialized"
 			@system = @prevalence.system
 =end
-			#=begin
+#=begin
 			ODBA.cache_server.prefetch
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
 				puts "new oddbprevalence created"
 				OddbPrevalence.new
 			}
+			
 			#=end
 			puts "system init..."
 			@system.init
@@ -745,18 +753,18 @@ module ODDB
 		end
 		def merge_companies(source_pointer, target_pointer)
 			command = MergeCommand.new(source_pointer, target_pointer)
-			@prevalence.execute_command(command)
+			@system.execute_command(command)
 		end
 		def merge_galenic_forms(source, target)
 			command = MergeCommand.new(source.pointer, target.pointer)
-			@prevalence.execute_command(command)
+			@system.execute_command(command)
 		end
 		def merge_substances(source_pointer, target_pointer)
 			command = MergeCommand.new(source_pointer, target_pointer)
-			@prevalence.execute_command(command)
+			@system.execute_command(command)
 		end
 		def replace_fachinfo(iksnr, pointer)
-			@prevalence.execute_command(ReplaceFachinfoCommand.new(iksnr, pointer))
+			@system.execute_command(ReplaceFachinfoCommand.new(iksnr, pointer))
 		end
 		def update(pointer, values)
 			#puts "updating #{pointer} with #{values}"

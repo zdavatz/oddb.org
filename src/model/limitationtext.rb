@@ -6,5 +6,6 @@ require 'util/language'
 module ODDB
 	class LimitationText
 		include SimpleLanguage
+		ODBA_SERIALIZABLE = [ '@descriptions' ]
 	end
 end

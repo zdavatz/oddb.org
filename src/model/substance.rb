@@ -10,6 +10,7 @@ module ODDB
 	class Substance
 		include Persistence
 		ODBA_PREFETCH = true
+		ODBA_SERIALIZABLE = [ '@descriptions' ]
 		attr_reader :sequences, :substrate_connections
 		attr_accessor :connection_key
 		include Comparable
@@ -43,8 +44,8 @@ module ODDB
 		def connection_key
 			if(@connection_key)
 				@connection_key
-			elsif(!@descriptions['en'].empty?)
-				@descriptions['en']
+			elsif(!self.descriptions['en'].empty?)
+				self.descriptions['en']
 			else
 				@name
 			end
@@ -64,6 +65,16 @@ module ODDB
 		end
 		def has_connection_key?
 			@connection_key ? true : false	
+		end
+		def index_search_terms
+			keys = []
+			keys.concat(self.descriptions.values)
+			keys.push(connection_key)
+			keys.push(name)
+			search_terms = keys.flatten.collect { |key|
+				key.downcase unless key.nil?
+			}.compact.uniq
+			search_terms.join(" ")
 		end
 		def interaction_connections(others)
 			if(@substrate_connections)
@@ -102,8 +113,8 @@ module ODDB
 				end
 			}
 			other.descriptions.dup.each { |key, value|
-				unless(@descriptions.has_key?(key))
-					@descriptions.update_values( { key => value } )
+				unless(self.descriptions.has_key?(key))
+					self.descriptions.update_values( { key => value } )
 				end
 			}
 			unless(@connection_key)
@@ -114,10 +125,10 @@ module ODDB
 			if(@name)
 				@name
 			# First call to descriptions should go to lazy-initialisator
-			elsif(descriptions && @descriptions['lt']!="") 
-				@descriptions['lt']
-			elsif(@descriptions)
-				@descriptions['en']
+			elsif(descriptions && self.descriptions['lt']!="") 
+				self.descriptions['lt']
+			elsif(self.descriptions)
+				self.descriptions['en']
 			end
 		end
 		def remove_sequence(sequence)

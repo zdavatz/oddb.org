@@ -233,6 +233,7 @@ module ODDB
 =end
 		class Document
 			include SimpleLanguage
+			ODBA_SERIALIZABLE = [ '@descriptions' ]
 		end
 	end
 end
