@@ -31,7 +31,7 @@ module ODDB
 		end
 		def inactive_registrations
 			@registrations.reject { |registration|
-				registration.active?
+				registration.active? && registration.package_count > 0
 			}
 		end
 		def search_terms
