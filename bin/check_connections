@@ -13,7 +13,7 @@ def check(name, obj, odba_id)
 	end
 end
 def check_reached(name, obj, stub, reached)
-	if(stub && stub.is_a?(ODBA::Stub))
+	if(stub && stub.is_a?(ODBA::Persistable) && !stub.odba_unsaved?)
 		reached.push(stub.odba_id)
 		check(name, obj, stub.odba_id)
 	end
@@ -39,7 +39,7 @@ EOS
 		if(obj.is_a?(Hash))
 			obj.each { |key, val|
 				check_reached('Hash:key', obj, key, reached)
-				check_reached("Hash:#{key}", obj, val, reached)
+				check_reached("Hash[#{key}]", obj, val, reached)
 			}
 		end
 		if(obj.is_a?(Array))
@@ -54,9 +54,12 @@ EOS
 	print "\b" * 8
 	$stdout.flush
 }
+unreached.uniq!
+reached.uniq!
 deleted = (unreached - reached)
 del_size = deleted.size
 puts "deleting #{del_size} objects"
+=begin
 deleted.each_with_index { |id, idx|
 	ODBA.storage.delete_persistable(id)
 	print " " * 8
@@ -65,4 +68,5 @@ deleted.each_with_index { |id, idx|
 	print "\b" * 8
 	$stdout.flush
 }
+=end
 puts "#### ID-Check complete ####"
