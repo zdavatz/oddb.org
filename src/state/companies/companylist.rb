@@ -24,7 +24,11 @@ class CompanyResult < State::Companies::Global
 	}	
 	def init
 		if(!@model.is_a?(Array) || @model.empty?)
-			@default_view = View::Companies::EmptyResult
+			if(@session.user.is_a?(AdminUser))
+				@default_view = View::Companies::RootEmptyResult
+			else
+				@default_view = View::Companies::EmptyResult
+			end
 		end
 		filter_interval
 	end
