@@ -102,7 +102,7 @@ class Sequence < State::Drugs::Global
 		end
 		@model = @session.app.update(@model.pointer, input)
 		if(pi_file = @session.user_input(:patinfo_upload))
-			@model.pdf_patinfo(pi_file)
+			@model.pdf_patinfo = pi_file
 		end
 		self
 	end
