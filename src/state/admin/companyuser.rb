@@ -47,8 +47,9 @@ module CompanyUser
 	def new_registration
 		pointer = Persistence::Pointer.new(:registration)
 		item = Persistence::CreateItem.new(pointer)
-		item.carry(:company_name, @session.user.model)
-		State::Drugs::Registration.new(@session, item)
+		item.carry(:company, @session.user.model)
+		item.carry(:company_name, @session.user.model.name)
+		State::Drugs::CompanyRegistration.new(@session, item)
 	end
 	def patinfo_stats
 		State::Admin::PatinfoStatsCompanyUser.new(@session,[])

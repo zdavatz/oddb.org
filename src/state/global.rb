@@ -254,6 +254,11 @@ module ODDB
 					self.trigger(event)
 				end
 			end
+			def new_registration
+				state = State::Admin::TransparentLogin.new(@session, @model)
+				state.desired_event = :new_registration
+				state
+			end
 			def user_input(keys=[], mandatory=[])
 				keys = [keys] unless keys.is_a?(Array)
 				mandatory = [mandatory] unless mandatory.is_a?(Array)

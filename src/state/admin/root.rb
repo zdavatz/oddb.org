@@ -108,6 +108,7 @@ module Root
 		item = Persistence::CreateItem.new(pointer)
 		if(@model.is_a?(Company))
 			item.carry(:company, @model)
+			item.carry(:company_name, @model.name)
 		end
 		State::Drugs::Registration.new(@session, item)
 	end

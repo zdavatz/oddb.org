@@ -22,14 +22,19 @@ class Login < State::Global
 	end
 end
 class TransparentLogin < State::Admin::Login
+	attr_accessor :desired_event
 	def login
 		if(user = @session.login)
 			if(viral = user.viral_module)
 				self.extend(viral)
-				klass = resolve_state(@model.pointer)
-				newstate = klass.new(@session, @model)
-				newstate.extend(@viral_module)
-				newstate
+				if(@model.respond_to?(:pointer))
+					klass = resolve_state(@model.pointer)
+					newstate = klass.new(@session, @model)
+					newstate.extend(@viral_module)
+					newstate
+				else
+					trigger(@desired_event)
+				end
 			end
 		end
 	end
