@@ -20,21 +20,21 @@ require 'odba'
 require 'odba/index_definition'
 require 'yaml'
 
-require 'madeleine'
-require 'datastructure/chartree'
-require 'datastructure/soundextable'
+#require 'madeleine'
+#require 'datastructure/chartree'
+#require 'datastructure/soundextable'
 
 class OddbPrevalence
 	include ODDB::Failsafe
 	include ODBA::Persistable
 	ODBA_EXCLUDE_VARS = [
 		"@bean_counter",
-		"@sequence_index",
-		"@indication_index",
-		"@substance_index",
-		"@substance_name_index",
-		"@company_index",
-		"@atc_index",
+#		"@sequence_index",
+#		"@indication_index",
+#		"@substance_index",
+#		"@substance_name_index",
+#		"@company_index",
+#		"@atc_index",
 	]
 	attr_reader :galenic_groups, :companies
 	attr_reader	:atc_classes, :last_update
@@ -85,8 +85,9 @@ class OddbPrevalence
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
 		rebuild_atc_chooser()
+		atc_ddd_count()
+		limitation_text_count()
 		package_count()
-		#rebuild_indices
 	end
 	# prevalence-methods ################################
 	def create(pointer)
@@ -134,11 +135,9 @@ class OddbPrevalence
 		@atc_classes[code]
 	end
 	def atc_ddd_count
-		@atc_classes.values.inject(0) { |inj, atc|
-			inj += 1 if(atc.has_ddd?)
-			inj
-		}
+		@atc_ddd_count ||= count_atc_ddd()
 	end
+=begin
 	def clear_indices
 		@sequence_index = nil
 		@indication_index = nil
@@ -148,6 +147,7 @@ class OddbPrevalence
 		@atc_index = nil
 		@atc_chooser = nil
 	end
+=end
 	def company(oid)
 		@companies[oid.to_i]
 	end
@@ -163,6 +163,22 @@ class OddbPrevalence
 	def company_count
 		@companies.length
 	end
+	def count_atc_ddd
+		@atc_classes.values.inject(0) { |inj, atc|
+			inj += 1 if(atc.has_ddd?)
+			inj
+		}
+	end
+	def count_limitation_texts
+		@registrations.values.inject(0) { |inj,reg|			
+			inj += reg.limitation_text_count
+		}
+	end
+	def count_packages
+		@package_count = @registrations.values.inject(0) { |inj, reg|
+			inj += reg.package_count
+		}
+	end
 	def cyp450(id)
 		@cyp450s[id]
 	end
@@ -171,21 +187,6 @@ class OddbPrevalence
 	end
 	def create_atc_class(atc_class)
 		@atc_classes.store(atc_class, ODDB::AtcClass.new(atc_class))
-	end
-	def create_patinfo_deprived_sequences
-		@patinfos_deprived_sequences ||= []
-		pat = ODDB::PatinfoDeprivedSequences.new
-	  @patinfos_deprived_sequences.store(pat.oid, pat)
-	end
-	def create_orphaned_fachinfo
-		@orphaned_fachinfos ||= {}
-		orphan = ODDB::OrphanedFachinfo.new
-	  @orphaned_fachinfos.store(orphan.oid, orphan)
-	end
-	def create_orphaned_patinfo
-		@orphaned_patinfos ||= {}
-		orphan = ODDB::OrphanedPatinfo.new
-	  @orphaned_patinfos.store(orphan.oid, orphan)
 	end
 	def create_company
 		company = ODDB::Company.new
@@ -219,10 +220,25 @@ class OddbPrevalence
 	def create_log_group(key)
 		@log_groups[key] ||= ODDB::LogGroup.new(key)
 	end
+	def create_orphaned_fachinfo
+		@orphaned_fachinfos ||= {}
+		orphan = ODDB::OrphanedFachinfo.new
+	  @orphaned_fachinfos.store(orphan.oid, orphan)
+	end
+	def create_orphaned_patinfo
+		@orphaned_patinfos ||= {}
+		orphan = ODDB::OrphanedPatinfo.new
+	  @orphaned_patinfos.store(orphan.oid, orphan)
+	end
 	def create_patinfo
 		@patinfos ||= {}
 		patinfo = ODDB::Patinfo.new
 		@patinfos.store(patinfo.oid, patinfo)
+	end
+	def create_patinfo_deprived_sequences
+		@patinfos_deprived_sequences ||= []
+		pat = ODDB::PatinfoDeprivedSequences.new
+	  @patinfos_deprived_sequences.store(pat.oid, pat)
 	end
 	def create_registration(iksnr)
 		unless @registrations.include?(iksnr)
@@ -262,15 +278,6 @@ class OddbPrevalence
 	def delete_cyp450(cyp_id)
 		@cyp450s.delete(cyp_id)
 	end
-	def delete_patinfo_deprived_sequences(oid)
-		@patinfos_deprived_sequences.delete(oid.to_i)
-	end
-	def delete_orphaned_fachinfo(oid)
-		@orphaned_fachinfos.delete(oid.to_i)
-	end
-	def delete_orphaned_patinfo(oid)
-		@orphaned_patinfos.delete(oid.to_i)
-	end
 	def delete_company(oid)
 		#comp = @companies[oid]
 		#@company_index.delete(comp.name.downcase, comp)
@@ -291,6 +298,15 @@ class OddbPrevalence
 	end
 	def delete_indication(oid)
 		@indications.delete(oid)
+	end
+	def delete_orphaned_fachinfo(oid)
+		@orphaned_fachinfos.delete(oid.to_i)
+	end
+	def delete_orphaned_patinfo(oid)
+		@orphaned_patinfos.delete(oid.to_i)
+	end
+	def delete_patinfo_deprived_sequences(oid)
+		@patinfos_deprived_sequences.delete(oid.to_i)
 	end
 	def delete_registration(iksnr)
 		@registrations.delete(iksnr)
@@ -324,6 +340,9 @@ class OddbPrevalence
 	def fachinfo(oid)
 		@fachinfos[oid.to_i]
 	end
+	def fachinfo_count
+		@fachinfos.size
+	end
 	def galenic_form(name)
 		@galenic_groups.values.collect { |galenic_group|
 			galenic_group.get_galenic_form(name)
@@ -352,19 +371,29 @@ class OddbPrevalence
 	def indications
 		@indications.values
 	end
+	def limitation_text_count
+		@limitation_text_count ||= count_limitation_texts()
+	end
 	def login(email, pass)
 		@users.values.select { |user| user.identified_by?(email, pass)}.first
 	end
 	def log_group(key)
 		@log_groups[key]
 	end
-		def limitation_text_count
-			@registrations.values.inject(0) { |inj, seq|			
-				inj += seq.limitation_text_count
-			}
-		end
+	def orphaned_fachinfo(oid)
+		@orphaned_fachinfos[oid.to_i]
+	end
+	def orphaned_patinfo(oid)
+		@orphaned_patinfos[oid.to_i]
+	end
+	def package_count
+		@package_count ||= count_packages()
+	end
 	def patinfo(oid)
 		@patinfos[oid.to_i]
+	end
+	def patinfo_count
+		@patinfos.size
 	end
 	def patinfo_deprived_sequences(oid)
 		@patinfos_deprived_sequences[oid.to_i]
@@ -386,119 +415,6 @@ class OddbPrevalence
 			@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
 		}
 	end
-	#for testing only
-=begin
-	def rebuild_odba
-		puts "reloading persistable"
-		load '/usr/local/lib/site_ruby/1.8/odba/persistable.rb'
-		load '/usr/local/lib/site_ruby/1.8/odba.rb'
-		#initialize scalar cache and cache_server 
-		#(otherwise deadlock problems will occur) 
-		puts "initializing scalar_cache"
-		ODBA.scalar_cache.size
-		puts "initializing indices"
-		ODBA.cache_server.indices.size
-		puts "cleaning fachinfos"
-		@fachinfos.delete_if { |key, val| val.descriptions["de"].name.nil? }
-		puts "clearing indices"
-		clear_indices
-		start = Time.now
-		puts "storing oddbapp"
-		ODBA.batch { 
-			odba_store('oddbapp')
-		}
-		stored = Time.now
-		ODBA.storage.close
-		puts <<-EOS
-#{(stored - start).to_f / 3600} h to save OddbPrevalence and all its unsaved neighbors
-		EOS
-	end			
-=end
-	def rebuild_odba_indices
-		ODBA.scalar_cache.size
-		ODBA.cache_server.indices.size
-		begin
-			start = Time.now
-			path = File.expand_path("../../etc/index_definitions.yaml", 
-			File.dirname(__FILE__))
-			file = File.open(path)
-			YAML.load_documents(file) { |index_definition|
-				index_start = Time.now
-				begin
-					puts "dropping: #{index_definition.index_name}"
-					ODBA.cache_server.drop_index(index_definition.index_name)
-				rescue Exception => e
-					puts e.message
-				end
-				puts "creating: #{index_definition.index_name}"
-				ODBA.cache_server.create_index(index_definition, ODDB)
-				puts "filling: #{index_definition.index_name}"
-				puts index_definition.init_source
-				ODBA.cache_server.fill_index(index_definition.index_name, 
-				instance_eval(index_definition.init_source))
-				puts "finished in #{(Time.now - index_start) / 60.0} min"
-			}
-			puts "all Indices Created in total: #{(Time.now - start) / 3600.0} h"
-		rescue StandardError => e
-			puts "INDEX CREATION ERROR:"
-			puts e.message
-			puts e.backtrace
-		ensure
-			file.close
-		end
-	end
-	def generate_dictionary(language, locale)
-		base = File.expand_path("../../ext/fulltext/data/dicts/#{language}", 
-			File.dirname(__FILE__))
-		ODBA.storage.generate_dictionary(language, locale, base)
-	end
-	def generate_dictionaries
-		generate_french_dictionary
-		generate_german_dictionary
-	end
-	def generate_french_dictionary
-		generate_dictionary('french', 'fr_FR@euro')
-	end
-	def generate_german_dictionary
-		generate_dictionary('german', 'de_DE@euro')
-	end
-=begin
-	def how_many_objects
-		arr = []
-		objs = {}
-		ObjectSpace.each_object{|obj|
-			arr.push(obj.class)
-		}
-		arr.uniq!
-		arr.each { |klass|
-			objs.store(klass, ObjectSpace.each_object(klass){})
-		}
-		sortres	=		objs.sort {|a,b| a[1]<=>b[1]}
-		sortres.each{|res|
-			puts res
-		}
-	end
-=end
-	def orphaned_fachinfo(oid)
-		@orphaned_fachinfos[oid.to_i]
-	end
-	def orphaned_patinfo(oid)
-		@orphaned_patinfos[oid.to_i]
-	end
-	def package_count
-		@package_count or begin
-			@package_count = @registrations.values.inject(0) { |inj, reg|
-				inj += reg.package_count
-			}
-		end
-		@package_count
-	end
-	def patinfo_count
-		@patinfos.size
-	end
-	def fachinfo_count
-		@fachinfos.size
-	end
 	def rebuild_atc_chooser
 		@atc_chooser = ODDB::AtcNode.new(nil)
 		@atc_classes.values.sort_by { |atc| 
@@ -507,13 +423,15 @@ class OddbPrevalence
 			@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
 		}
 	end
-	def recount_packages
+	def recount
 		if(@bean_counter.is_a?(Thread) && @bean_counter.status)
 			@bean_counter.kill
 		end
 		@bean_counter = Thread.new {
 			Thread.current.priority = -5
-			package_count()
+			@atc_ddd_count = count_atc_ddd()
+			@limitation_text_count = count_limitation_texts()
+			@package_count = count_packages()
 		}
 	end
 =begin
@@ -663,7 +581,9 @@ class OddbPrevalence
 		case item
 		when ODDB::Registration, ODDB::Sequence, ODDB::Package, ODDB::AtcClass
 			@last_medication_update = Date.today
-			recount_packages()
+			recount
+		when ODDB::LimitationText, ODDB::AtcClass::DDD
+			recount
 		end
 	end
 	def user(oid)
@@ -672,6 +592,99 @@ class OddbPrevalence
 	def user_by_email(email)
 		@users.values.select { |user| user.unique_email == email }.first
 	end
+	# ODBA transmogrification
+=begin
+	def rebuild_odba
+		puts "reloading persistable"
+		load '/usr/local/lib/site_ruby/1.8/odba/persistable.rb'
+		load '/usr/local/lib/site_ruby/1.8/odba.rb'
+		#initialize scalar cache and cache_server 
+		#(otherwise deadlock problems will occur) 
+		puts "initializing scalar_cache"
+		ODBA.scalar_cache.size
+		puts "initializing indices"
+		ODBA.cache_server.indices.size
+		puts "cleaning fachinfos"
+		@fachinfos.delete_if { |key, val| val.descriptions["de"].name.nil? }
+		puts "clearing indices"
+		clear_indices
+		start = Time.now
+		puts "storing oddbapp"
+		ODBA.batch { 
+			odba_store('oddbapp')
+		}
+		stored = Time.now
+		ODBA.storage.close
+		puts <<-EOS
+#{(stored - start).to_f / 3600} h to save OddbPrevalence and all its unsaved neighbors
+		EOS
+	end			
+=end
+	def rebuild_odba_indices
+		ODBA.scalar_cache.size
+		ODBA.cache_server.indices.size
+		begin
+			start = Time.now
+			path = File.expand_path("../../etc/index_definitions.yaml", 
+			File.dirname(__FILE__))
+			file = File.open(path)
+			YAML.load_documents(file) { |index_definition|
+				index_start = Time.now
+				begin
+					puts "dropping: #{index_definition.index_name}"
+					ODBA.cache_server.drop_index(index_definition.index_name)
+				rescue Exception => e
+					puts e.message
+				end
+				puts "creating: #{index_definition.index_name}"
+				ODBA.cache_server.create_index(index_definition, ODDB)
+				puts "filling: #{index_definition.index_name}"
+				puts index_definition.init_source
+				ODBA.cache_server.fill_index(index_definition.index_name, 
+				instance_eval(index_definition.init_source))
+				puts "finished in #{(Time.now - index_start) / 60.0} min"
+			}
+			puts "all Indices Created in total: #{(Time.now - start) / 3600.0} h"
+		rescue StandardError => e
+			puts "INDEX CREATION ERROR:"
+			puts e.message
+			puts e.backtrace
+		ensure
+			file.close
+		end
+	end
+	def generate_dictionary(language, locale)
+		base = File.expand_path("../../ext/fulltext/data/dicts/#{language}", 
+			File.dirname(__FILE__))
+		ODBA.storage.generate_dictionary(language, locale, base)
+	end
+	def generate_dictionaries
+		generate_french_dictionary
+		generate_german_dictionary
+	end
+	def generate_french_dictionary
+		generate_dictionary('french', 'fr_FR@euro')
+	end
+	def generate_german_dictionary
+		generate_dictionary('german', 'de_DE@euro')
+	end
+=begin
+	def how_many_objects
+		arr = []
+		objs = {}
+		ObjectSpace.each_object{|obj|
+			arr.push(obj.class)
+		}
+		arr.uniq!
+		arr.each { |klass|
+			objs.store(klass, ObjectSpace.each_object(klass){})
+		}
+		sortres	=		objs.sort {|a,b| a[1]<=>b[1]}
+		sortres.each{|res|
+			puts res
+		}
+	end
+=end
 	private
 	def create_unknown_galenic_group
 		unless(@galenic_groups.is_a?(Hash) && @galenic_groups.size > 0)

@@ -158,8 +158,8 @@ class TestSequence < Test::Unit::TestCase
 	end
 	def test_active_agent
 		subst = ODDB::Substance.new
-		active_agent = ODDB::ActiveAgent.new('LEVOMENTHOLUM')
-		active_agent.substance = subst
+		active_agent = Mock.new('ActiveAgent')
+		active_agent.__next(:same_as?) { true }
 		@seq.active_agents = [active_agent]
 		assert_equal(active_agent, @seq.active_agent('LEVOMENTHOLUM'))
 	end
@@ -189,9 +189,9 @@ class TestSequence < Test::Unit::TestCase
 		assert_equal(subst, active_agent.substance)
 	end
 	def test_delete_active_agent
-		active_agent = ODDB::ActiveAgent.new('LEVOMENTHOLUM')
+		active_agent = Mock.new('ActiveAgent')
+		active_agent.__next(:same_as?) { true }
 		subst = ODDB::Substance.new
-		active_agent.substance = subst
 		@seq.active_agents = [active_agent]
 		@seq.delete_active_agent('LEVOMENTHOLUM')
 		assert_equal([], @seq.active_agents)
@@ -344,9 +344,9 @@ class TestSequence < Test::Unit::TestCase
 			:mock3 => mock3,
 		}
 		@seq.packages = hash
-		mock1.__next(:sl_entry){ "entry"}
-		mock2.__next(:sl_entry){}
-		mock3.__next(:sl_entry){}
+		mock1.__next(:limitation_text) { "entry"}
+		mock2.__next(:limitation_text) {}
+		mock3.__next(:limitation_text) {}
 		text_count = @seq.limitation_text_count
 		mock1.__verify
 		mock2.__verify

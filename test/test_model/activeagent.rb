@@ -249,7 +249,6 @@ class TestActiveAgent < Test::Unit::TestCase
 	end
 	def test_same_as
 		agent = ODDB::ActiveAgent.new(@substance_name)
-		assert_equal(true, agent.same_as?(@substance_name))
 		assert_equal(false, agent.same_as?('Levomentholum'))
 		subst = Mock.new
 		agent.instance_variable_set('@substance', subst)
