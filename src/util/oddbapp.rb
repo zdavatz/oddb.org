@@ -585,6 +585,7 @@ class OddbPrevalence
 			key.dup, result)
 		atcs += ODBA.cache_server.retrieve_from_index("indication_index_atc",
 			key.dup, result)
+		atcs.uniq
 	end
 	def search_by_sequence(key, result=nil)
 		ODBA.cache_server.retrieve_from_index('sequence_index_atc', key.dup, result)
