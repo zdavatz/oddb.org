@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 # View::SearchBar -- oddb -- 22.11.2002 -- hwyss@ywesee.com 
 
-require 'htmlgrid/input'
+require 'htmlgrid/inputtext'
 
 module ODDB
 	module View
-		class SearchBar < HtmlGrid::Input
+		class SearchBar < HtmlGrid::InputText
 			def init
 				super
 				val = @lookandfeel.lookup(@name)
@@ -18,7 +18,7 @@ module ODDB
 				@attributes.update({
 					'onFocus'	=>	"if (value=='#{val}') { value='' }",
 					'onBlur'	=>	"if (value=='') { value='#{val}' }",
-					'tabIndex'=>	"1",
+					#'tabIndex'=>	"1",
 				})
 				submit = @lookandfeel.event_url(@container.event, {@name=>''})
 				script = "if (#{@name}.value!='#{val}')"
