@@ -217,6 +217,7 @@ module ODDB
 				@app.update(pack.pointer, hash)
 				update_sl(pack.pointer, row)
 				@successful_updates.push(row)
+				pack = ODBA.cache_server.fetch(pack.odba_id, @updated_packages)
 				@updated_packages.push(pack)
 			else
 				differ.add_bsv(row[:ikscd])
