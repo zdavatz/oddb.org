@@ -566,7 +566,7 @@ zdavatz ! ywesee.com
 				:recent_registrations			=>	'Neuregistrierungen',
 				:recommend								=>	'Empfehlung',
 				:register_download				=>	'Download-Registrierung',
-				:register_download_descr	=>	"Der Download der Stammdaten ist kostenlos. Bitte geben Sie Ihre Email-Adresse an.\nSie bekommen anschliessend von uns ein Email mit einem Download-Link, welcher w&auml;hrend 3 Tagen g&uuml;tig ist.",
+				:register_download_descr	=>	"Der Download der Stammdaten ist kostenlos. Bitte geben Sie Ihre Email-Adresse an.\nSie bekommen anschliessend von uns ein Email mit einem Download-Link, welcher w&auml;hrend 3 Tagen g&uuml;ltig ist.",
 				:registration_date				=>	'Registrierungsdatum',
 				:registration_count				=>	'Anzahl Registrationen',
 				:result										=>	'Suchresultat',
