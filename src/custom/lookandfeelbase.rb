@@ -5,6 +5,9 @@ require 'sbsm/lookandfeel'
 
 module ODDB
 	class LookandfeelBase <	SBSM::Lookandfeel
+		LANGUAGES = [
+			'de', 'fr', 'en'
+		]
 		DICTIONARIES = {
 			'de'			=>		{
 				'a-d'.intern							=>	'a-d',
@@ -1986,5 +1989,8 @@ zdavatz ! ywesee.com
 			:plugin_download_gif => 'plugins/oddb.org.gif',
 			:sponsor				=>	'sponsor',
 		}
+		def languages
+			(self::class::LANGUAGES + super).uniq
+		end
 	end
 end

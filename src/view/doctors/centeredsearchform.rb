@@ -2,6 +2,7 @@
 # View::Doctors::CenteredSearchForm -- oddb -- 17.09.2004 -- jlang@ywesee.com
 
 require 'view/centeredsearchform'
+require	'view/language_chooser'
 
 module ODDB
 	module View
@@ -17,12 +18,7 @@ class CenteredSearchForm < View::CenteredSearchForm
 end
 class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENTS = { 
-		[0,0]		=>	:language_de,
-		[0,0,1]	=>	:divider,
-		[0,0,2]	=>	:language_fr,
-		[0,0,3]	=>	:divider,
-		[0,0,4]	=>	:language_en,
-		[0,0,5]	=>	:beta,
+		[0,0]		=>	:language_chooser,
 		[0,1]		=>	View::Doctors::CenteredSearchForm,
 		[0,2]		=>	'doctors_search_explain', 
 		[0,3]		=>	View::CenteredNavigation,
