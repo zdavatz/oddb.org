@@ -108,7 +108,7 @@ module ODDB
 			pac
 		end
 		def each_package(&block)
-			@packages.each_value(&block)
+			@packages.values.each(&block)
 		end
 		def generic_type
 			@registration.generic_type
