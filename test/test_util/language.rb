@@ -6,19 +6,21 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'util/language'
-
-class StubLanguage
+require 'odba'
+class Language
 	attr_accessor :foo
 	include ODDB::Language
-	def StubLanguage.reset_oid
+	def Language.reset_oid
 		@oid=0
+	end
+	def odba_id
 	end
 end
 
 class TestLanguage < Test::Unit::TestCase
 	def setup
-		StubLanguage.reset_oid
-		@obj = StubLanguage.new
+		Language.reset_oid
+		@obj = Language.new
 	end
 	def	test_update_values1
 		values = {
