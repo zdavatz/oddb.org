@@ -31,5 +31,8 @@ class Global < State::Global; end
 		module Doctors
 class Global < State::Global; end
 		end
+		module Hospitals
+class Global < State::Global; end
+		end
 	end
 end

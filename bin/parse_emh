@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
-# parse_emh -- ODDB -- 27.11.2003 -- hwyss@ywesee.com
+# parse_doc -- ODDB -- 27.11.2003 -- hwyss@ywesee.com
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
-$: << File.expand_path('../ext/emhparse/src', File.dirname(__FILE__))
+$: << File.expand_path('../ext/docparse/src', File.dirname(__FILE__))
 
 require 'util/updater'
-require 'emh'
+require 'doc'
 
 module ODDB
 	class Updater
@@ -13,11 +13,11 @@ module ODDB
 			'-ean13'
 		]
 	end
-	class UpdateEMH < Updater
+	class UpdateDOC < Updater
 		def initialize
 		end
-		def update_emh(ean13=nil)
-			update_simple(EMHPlugin, 'emh', :update, ean13)
+		def update_doc(ean13=nil)
+			update_simple(DOCPlugin, 'doc', :update, ean13)
 =begin
 			wrap_update(klass, subj) {
 				plug = klass.new(@app)
@@ -32,5 +32,5 @@ module ODDB
 end
 
 arg = ARGV.shift
-updater = ODDB::UpdateEMH.new
-updater.update_emh(arg)
+updater = ODDB::UpdateDOC.new
+updater.update_doc(arg)

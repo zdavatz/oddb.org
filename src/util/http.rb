@@ -58,11 +58,11 @@ module ODDB
 			@http_server = http_server
 			@http = self.class::HTTP_CLASS.new(@http_server)
 			@output = ''
-			@cookies = {}
 			super(@http)
 		end
 		def post(path, hash)
-			resp = @http.post(path, post_body(hash), post_headers)
+			headers = post_headers
+			resp = @http.post(path, post_body(hash), headers)
 			if(resp.is_a? Net::HTTPOK)
 				ResponseWrapper.new(resp)
 			else
@@ -71,23 +71,21 @@ module ODDB
 		end
 		def post_headers
 			headers = get_headers
-			headers.store('Content-Type', 'application/x-www-form-urlencoded')
-			headers
+			headers.push(['Content-Type', 'application/x-www-form-urlencoded'])
 		end
 		def get_headers
-			{
-				'Accept'          =>  'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1',
-				'Accept-Charset'	=>	'ISO-8859-1',
-				'Accept-Language' =>  'de-ch,en-us;q=0.7,en;q=0.3',
-				'Accept-Encoding' =>  'gzip,deflate',
-				'Connection'			=>	'keep-alive',
-				'Host'						=>	@http_server,
-				'Keep-Alive'			=>	'300',
-				'User-Agent'      =>  'Mozilla/5.0 (X11; U; Linux ppc; en-US; rv:1.4) Gecko/20030716',
-			}
+			[	
+				['Host', @http_server],
+				['User-Agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7) Gecko/20040917 Firefox/0.9.3'],
+				['Accept', 'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1'],
+				['Accept-Language', 'de-ch,en-us;q=0.7,en;q=0.3'],       ['Accept-Encoding', 'gzip,deflate'],
+				['Accept-Charset', 'ISO-8859-1'],
+				['Keep-Alive', '300'],
+				['Connection', 'keep-alive'],
+			]
 		end
-		def post_body(hash)
-			sorted = hash.sort.collect { |pair| 
+		def post_body(data)
+			sorted = data.collect { |pair| 
 				pair.collect { |item| CGI.escape(item) }.join('=') 
 			}
 			sorted.join("&")

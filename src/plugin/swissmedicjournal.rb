@@ -291,6 +291,16 @@ module ODDB
 			if(composition = smj_seq.composition)
 				update_active_agents(composition, pointer)
 			end
+			if(sequence.atc_class.nil? \
+				&& sequence.active_agents.size == 1)
+				key = sequence.active_agents.first.to_s
+				if(atc = @app.unique_atc_class(key))
+					hash = {
+						:atc_class => atc.code,
+					}	
+					@app.update(sequence.pointer, hash)
+				end
+			end
 			if(packages = smj_seq.packages)
 				update_packages(packages, sequence)
 			end

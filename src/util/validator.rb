@@ -70,9 +70,11 @@ module ODDB
 			:home_companies,
 			:home_doctors,
 			:home_drugs,
+			:home_hospitals,
 			:home_interactions,
 			:home_substances,
 			:home_user,
+			:hospitallist,
 			:incomplete_registrations,
 			:indications,
 			:interaction_basket,
@@ -194,7 +196,7 @@ module ODDB
 			:url,
 		]
 		ZONES = [:drugs, :interactions, :substances, :admin, :user, 
-			:companies, :doctors]
+			:companies, :doctors, :hospitals ]
 		def code(value)
 			pattern = /^[A-Z]([0-9]{2}([A-Z]([A-Z]([0-9]{2})?)?)?)?$/i
 			if(valid = pattern.match(value.capitalize))

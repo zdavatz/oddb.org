@@ -2,38 +2,18 @@
 # View::Doctors::Vcard -- oddb -- 10.11.2004 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'htmlgrid/component'
+require 'view/vcard'
 
 module ODDB
 	module View
-		module Doctors 
-class VCard < HtmlGrid::Component
-	def http_headers
+		module Doctors
+class VCard < View::VCard
+	def init
+		@content = [:name, :title, :email, :addresses]
+	end
+	def get_filename
 		filename = @model.name.sub(/\s/, '_').to_s + 
 			"_" + @model.firstname.sub(/\s/, '_').to_s + ".vcf"
-		filename = prepare(filename)
-		{
-			'Content-Type'	=>	'text/x-vCard',	
-			'Content-Disposition'	=>	"attachment; filename=#{filename}",
-		}
-	end
-	def to_html(context)
-		vcard = [
-			"BEGIN:vCard",
-			"VERSION:3.0",
-		]
-		[:name, :title, :email, :addresses].each { |key|
-			vcard += get_value(key)
-		}
-		vcard.push("END:vCard")
-		vcard.join("\n")
-	end
-	def get_value(key)
-		self.send(key) || []
-	end
-	def title
-		if(title = @model.title)
-			["TITLE;CHARSET=ISO-8859-1:" + title]
-		end
 	end
 	def name
 		if((firstname = @model.firstname) \
@@ -42,11 +22,6 @@ class VCard < HtmlGrid::Component
 				"FN;CHARSET=ISO-8859-1:" + firstname + " " + name,
 				"N;CHARSET=ISO-8859-1:" + name + ";" + firstname,
 			]
-		end
-	end
-	def email
-		if(email = @model.email)
-			["EMAIL;TYPE=internet:" + email]
 		end
 	end
 	def get_fons(fons, text_key)
@@ -69,20 +44,6 @@ class VCard < HtmlGrid::Component
 			inj.push(addr_str(addr, "LABEL;#{type};CHARSET=ISO-8859-1:;;", ' '))
 			inj
 		}
-	end
-	def prepare(str)
-		str = str.dup
-		str.gsub!(/[äÄæÆ]/, 'ae')
-		str.gsub!(/[áÁàÀâÂãÃ]/, 'a')
-		str.gsub!(/[çÇ]/, 'c')
-		str.gsub!(/[ëËéÉèÈêÊ]/, 'e')
-		str.gsub!(/[ïÏíÍìÌîÎ]/, 'i')
-		str.gsub!(/[öÖ]/, 'oe')
-		str.gsub!(/[óÓòÒôÔõÕøØ]/, 'o')
-		str.gsub!(/[üÜ]/, 'ue')
-		str.gsub!(/[úÚùÙûÛ]/, 'u')
-		str.tr!('þßð', 'psd')
-		str
 	end
 end
 		end
