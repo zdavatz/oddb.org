@@ -233,15 +233,15 @@ class RootCompanyComposite < View::Companies::CompanyComposite
 		[0,3]	=>	:inactive_registrations,
 	}
 end
-class UnknownCompany < PrivateTemplate
+class UnknownCompany < ResultTemplate
 	CONTENT = View::Companies::UnknownCompanyComposite
 	SNAPBACK_EVENT = :companylist
 end
-class UserCompany < View::PrivateTemplate
+class UserCompany < View::ResultTemplate
 	CONTENT = View::Companies::UserCompanyComposite
 	SNAPBACK_EVENT = :companylist
 end
-class RootCompany < View::PrivateTemplate
+class RootCompany < View::ResultTemplate
 	CONTENT = View::Companies::RootCompanyComposite
 	SNAPBACK_EVENT = :companylist
 end
