@@ -8,7 +8,7 @@ require 'view/admin/login'
 module ODDB
 	module State
 		module Admin
-class Login < State::Admin::Global
+class Login < State::Global
 	DIRECT_EVENT = :login_form
 	VIEW = View::Admin::Login
 	def login
