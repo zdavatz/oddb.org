@@ -43,6 +43,7 @@ class Registration < State::Drugs::Global
 		new_state = self
 		hash = user_input(keys)
 		comp_name = @session.user_input(:company_name)
+		language = user_input(:language_select).intern
 		if(company = @session.app.company_by_name(comp_name))
 			hash.store(:company, company.oid)
 		else
@@ -60,22 +61,27 @@ class Registration < State::Drugs::Global
 			four_bytes = fi_file.read(4)
 			fi_file.rewind
 			if(four_bytes == "%PDF")
-				filename = "#{@model.iksnr}.pdf"
+				filename = "#{@model.iksnr}_#{language}.pdf"
 				FileUtils.mkdir_p(self::class::FI_FILE_DIR)
 				path = File.expand_path(filename, self::class::FI_FILE_DIR)
 				File.open(path, "w") { |fh|
 					fh.write(fi_file.read)
 				}
 				fi_file.rewind
-				hash.store(:pdf_fachinfo, filename)
+				if(pdf_fachinfos = @model.pdf_fachinfos)
+					pdf_fachinfos.store(language, filename)
+				else
+					pdf_fachinfos = {language => filename}
+				end
+				hash.store(:pdf_fachinfos, pdf_fachinfos)
 				new_state = State::Drugs::WaitForFachinfo.new(@session, @model)
 				new_state.previous = self
 				@session.app.async {
 					pdf_document =  parse_fachinfo_pdf(fi_file)
-					new_state.signal_done(pdf_document, path, @model.iksnr, "application/pdf")
+					new_state.signal_done(pdf_document, path, @model.iksnr, "application/pdf", language)
 				}
 			else
-				filename = "#{@model.iksnr}.doc"
+				filename = "#{@model.iksnr}_#{language}.doc"
 				FileUtils.mkdir_p(self::class::FI_FILE_DIR)
 				path = File.expand_path(filename, self::class::FI_FILE_DIR)
 				File.open(path, "w") { |fh|
@@ -86,7 +92,7 @@ class Registration < State::Drugs::Global
 				new_state.previous = self
 				@session.app.async {
 					word_document = parse_fachinfo_doc(fi_file)
-					new_state.signal_done(word_document, path, @model.iksnr, "application/msword")
+					new_state.signal_done(word_document, path, @model.iksnr, "application/msword", language)
 				}
 			end
 		end

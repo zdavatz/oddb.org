@@ -2,6 +2,7 @@
 # View::Drugs::Registration -- oddb -- 07.03.2003 -- hwyss@ywesee.com 
 
 require 'view/privatetemplate'
+require 'htmlgrid/errormessage'
 require 'htmlgrid/datevalue'
 require 'htmlgrid/inputdate'
 require 'htmlgrid/select'
@@ -53,6 +54,19 @@ end
 class RootRegistrationSequences < View::FormList
 	include View::Drugs::RegistrationSequenceList
 end
+class FachinfoLanguageSelect < HtmlGrid::AbstractSelect
+	attr_accessor :value
+	def selection(context)
+		values = @lookandfeel.languages
+		values.collect { |value|
+			attributes = { "value"	=>	value.to_s }
+			attributes.store("selected", true) if(@value == value)
+			context.option(attributes) { 
+				@lookandfeel.lookup(value)
+			}
+		}
+	end
+end
 class RegistrationInnerComposite < HtmlGrid::Composite
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
@@ -96,6 +110,7 @@ class RegistrationForm < View::Form
 		[0,3]		=>	:indication,
 		[2,3]		=>	:market_date,
 		[2,4]		=>	:inactive_date,
+		[0,4]   =>	:language_select,
 		[0,5]		=>	:fachinfo_upload,
 		[2,5]		=>	:fachinfo_label,
 		[3,5]		=>	:fachinfo,
@@ -150,6 +165,12 @@ class RegistrationForm < View::Form
 			HtmlGrid::Value
 		end
 		klass.new(:iksnr, model, session, self)
+	end
+	def language_select(model, session)
+		name = "language_select"
+		select = View::Drugs::FachinfoLanguageSelect.new(name, model, session, self)
+		#		select.value = ['de', 'fr'][@list_index]
+		select
 	end
 	def indication(model, session)
 		InputDescription.new(:indication, model.indication, session, self)
