@@ -110,7 +110,7 @@ class ResultList < HtmlGrid::List
 	def search_oddb(model, session)
 		unless((result = session.app.search(model.name)).empty?)
 			link = HtmlGrid::Link.new(:substance_result, model, session, self)
-			link.href = @lookandfeel.event_url(:substance_result, {'pointer'=>model.pointer})
+			link.href = @lookandfeel.event_url(:search, {'search_query' => model.name, 'zone'	=> :drugs})
 			link.value = @lookandfeel.lookup(:search_oddb)
 			link
 		end
