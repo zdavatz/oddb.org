@@ -100,7 +100,7 @@ class FiPiOfferInputForm < View::Form
 		text
 	end
 	def fi_update(model, session)
-		fi_upd = 'update_ywesee'
+		fi_upd = 'update_autonomous' # set default
 		fi_upd = model.fi_update if(model.respond_to?(:fi_update))
 		radio1 = RadioButton.new('fi_update', 'update_ywesee', fi_upd)
 		radio2 = RadioButton.new('fi_update', 'update_autonomous', fi_upd)
@@ -120,7 +120,7 @@ class FiPiOfferInputForm < View::Form
 		text
 	end
 	def pi_update(model, session)
-		pi_upd = 'update_ywesee'
+		pi_upd = 'update_autonomous' # set default
 		pi_upd = model.pi_update if(model.respond_to?(:pi_update))
 		radio1 = RadioButton.new('pi_update', 'update_ywesee', pi_upd)
 		radio2 = RadioButton.new('pi_update', 'update_autonomous', pi_upd)
