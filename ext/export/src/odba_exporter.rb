@@ -16,6 +16,16 @@ require 'odba'
 require 'util/oddbconfig'
 require 'etc/db_connection'
 
+module ODBA
+	class CacheEntry
+		remove_const :CLEAN_PREFETCHABLE
+		CLEAN_PREFETCHABLE = true
+		remove_const :RETIRE_TIME
+		RETIRE_TIME = 150
+		remove_const :DESTROY_TIME
+		DESTROY_TIME =  300
+	end
+end
 module ODDB
 	module OdbaExporter
 		def compress(dir, name)
