@@ -47,9 +47,9 @@ class ResultList < HtmlGrid::List
 		:interaction_basket_status	=>	false,
 	}
 	CSS_MAP = {
-		[0,0]	=>	'result-big-unknown',
+		[0,0]	=>	'result big unknown',
 		[1,0]	=>	'result-small-font',
-		[2,0]	=>	'result-big-unknown',
+		[2,0]	=>	'result big unknown',
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value

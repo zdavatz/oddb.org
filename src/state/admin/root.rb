@@ -111,6 +111,13 @@ module Root
 		end
 		State::Drugs::Registration.new(@session, item)
 	end
+	def new_substance
+		pointer = Persistence::Pointer.new(:substance)
+		item = Persistence::CreateItem.new(pointer)
+		item.carry(:synonyms, [])
+		item.carry(:connection_keys, [])
+		State::Substances::Substance.new(@session, item)
+	end
 	def	orphaned_fachinfos
 		model = @session.app.orphaned_fachinfos.values
 		State::Drugs::OrphanedFachinfos.new(@session, model)
