@@ -105,6 +105,7 @@ end
 class PatinfoStats < State::Admin::PatinfoStatsCommon
 	VIEW = View::Admin::PatinfoStats
 	include Interval
+	FILTER_THRESHOLD = 0
 	def init
 		super 
 		if((pointer = @session.user_input(:pointer)) \
@@ -117,7 +118,7 @@ class PatinfoStats < State::Admin::PatinfoStatsCommon
 		filter_interval
 	end
 	def symbol
-		:to_s
+		:name
 	end
 end
 =begin
