@@ -1387,3 +1387,9 @@ td.total {
 	border-style : double;
 	border-width : 0px 0px 3px 0px;
 }
+td.top {
+	vertical-align : top;
+}
+td.address-width {
+	width: 180px;
+}
