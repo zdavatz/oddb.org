@@ -713,6 +713,7 @@ module ODDB
 			ODBA.cache_server.prefetch
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
 				puts "new oddbprevalence created"
+				puts "with db start"
 				OddbPrevalence.new
 			}
 			
