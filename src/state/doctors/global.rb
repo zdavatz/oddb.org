@@ -9,11 +9,13 @@ module ODDB
 class Global < State::Global
 	HOME_STATE = State::Doctors::Init
 	ZONE = :doctors
+=begin
 	def zone_navigation
 		[
 			State::Doctors::DoctorList,
 		]
 	end
+=end
 end
 		end
 	end
