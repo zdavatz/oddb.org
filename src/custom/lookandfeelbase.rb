@@ -228,7 +228,7 @@ module ODDB
 				:fipi_offer								=>	'Publikation FI und PI',
 				:fipi_offer_confirm				=>	"Offerte Publikation Fach- und Patienteninfos gem&auml;ss&nbsp;",
 				:fipi_offer_confirmation	=>	"Die gem&auml;ss Ihren Angaben berechnete Offerte:",
-				:fipi_offer_disclaimer0		=>	"Diese Offerte wurde am&nbsp;",
+				:fipi_offer_disclaimer0		=>	"Alle Preisangaben verstehen sich exklusive Mehrwertssteuer<br>Diese Offerte wurde am&nbsp;",
 				:fipi_offer_disclaimer1		=>	"&nbsp;berechnet und ist f&uuml;r 30 Tage g&uuml;ltig.",
 				:fipi_offer_input					=>	"Offerten-Generator f&uuml;r Fach- und Patienteninfos gem&auml;ss&nbsp;",
 				:fipi_offer_input_explanation0	=>	"Bitte tragen Sie unten die Anzahl Fachinfos und Patienteninfos ein und entscheiden Sie ob",
