@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # State::Drugs::Init -- oddb -- 22.10.2002 -- hwyss@ywesee.com 
 
-require 'state/drugs/global'
+require 'state/global_predefine'
 #require 'state/admin/root'
 #require 'state/admin/companyuser'
 require 'view/drugs/search'
@@ -12,7 +12,7 @@ module ODDB
 		module Drugs
 class Init < State::Drugs::Global
 	VIEW = View::Drugs::Search
-	DIRECT_EVENT = :home
+	DIRECT_EVENT = :home_drugs
 end
 		end
 	end

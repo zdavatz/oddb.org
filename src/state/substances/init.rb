@@ -8,7 +8,7 @@ module ODDB
 		module Substances
 class Init < State::Substances::Global
 	VIEW = View::Substances::Search
-	DIRECT_EVENT = :home
+	DIRECT_EVENT = :home_substances
 end
 		end
 	end

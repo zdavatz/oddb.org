@@ -9,7 +9,7 @@ module ODDB
 		module User
 class Init < State::User::Global
 	VIEW = View::User::Search
-	DIRECT_EVENT = :home
+	DIRECT_EVENT = :home_user
 end
 		end
 	end

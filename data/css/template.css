@@ -2,6 +2,9 @@
 a {
 	text-decoration: none;
 }	
+a img {
+	border : 0px;
+}
 body {
 	font-family : $std_font_family;
 	font-size : $std_font_size; 
@@ -754,6 +757,11 @@ td.ccomponent {
 	color : black;
 	vertical-align : middle; 
 	padding : 4px;
+}
+table.ccomponent {
+	position : relative;
+	text-align : center;
+	float : middle;
 }
 /*
 td.ccomponent {

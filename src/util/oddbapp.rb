@@ -200,6 +200,9 @@ class OddbPrevalence
 		}
 		nil
 	end
+	def company_count
+		@companies.length
+	end
 	def cyp450(id)
 		@cyp450s[id]
 	end

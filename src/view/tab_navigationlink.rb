@@ -11,7 +11,7 @@ module ODDB
 				super
 				unless (@session.state.zone == @name)
 					args = {
-						"zone"	=> @name.to_s
+						"zone"	=> @name.to_s,
 					}
 					if(query = @session.persistent_user_input(:search_query))
 						args.store("search_query", query)

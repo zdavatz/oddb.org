@@ -20,7 +20,12 @@ module ODDB
 				end
 			end
 			def to_html(context)
-				context.img(@attributes)
+				link_attrs = {
+					"href"	=> @lookandfeel.event_url(:home)
+				}
+				context.a(link_attrs) {
+					context.img(@attributes)
+				}
 			end
 		end
 		class Logo < View::PopupLogo

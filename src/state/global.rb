@@ -55,6 +55,13 @@ module ODDB
 				:fipi_offer_input			=>	State::User::FiPiOfferInput,
 				:oddbdat_download			=>	State::User::OddbDatDownload,
 				:help									=>	State::User::Help,
+				:home									=>	State::Drugs::Init,
+				:home_admin						=>	State::Admin::Init,
+				:home_companies				=>	State::Companies::Init,
+				:home_drugs						=>  State::Drugs::Init,
+				:home_interactions		=>  State::Interactions::Init,
+				:home_substances			=>  State::Substances::Init,
+				:home_user						=>  State::User::Init,
 				:login_form						=>	State::Admin::Login,
 				:mailinglist					=>	State::User::MailingList,
 				:plugin								=>	State::User::Plugin,
@@ -62,6 +69,7 @@ module ODDB
 				:paypal_thanks				=>	State::User::PayPalThanks,
 				:recent_registrations =>	State::Drugs::RecentRegs,
 			}	
+			HOME_STATE = State::Drugs::Init
 			RESOLVE_STATES = {
 				[ :company ]	=>	State::Companies::Company,
 				[ :fachinfo ]	=>	State::Drugs::Fachinfo,
@@ -107,17 +115,9 @@ module ODDB
 				@session.clear_interaction_basket
 				State::Interactions::EmptyBasket.new(@session, [])
 			end
-			def switch
-				state = self.trigger(self.direct_event)
-				if(state.zone == @session.zone)
-					state
-				else
-					home
-				end
-			end
-			def default_navigation
+			def home_navigation
 				[
-					State::Drugs::Init,
+					self::class::HOME_STATE
 				]
 			end
 			def extend(mod)
@@ -136,25 +136,6 @@ module ODDB
 			def generic_definition
 				State::User::GenericDefinition.new(@session, nil)
 			end
-			def home
-				state = nil
-				zone = @session.zone
-				case zone
-				when :admin
-					state = State::Admin::Init
-				when :companies
-					state = State::Companies::Init
-				when :drugs
-					state = State::Drugs::Init
-				when :interactions
-					state = State::Interactions::Init
-				when :substances
-					state = State::Substances::Init
-				when :user
-					state = State::User::Init
-				end
-				state.new(@session, nil)
-			end
 			def legal_note
 				State::LegalNote.new(@session, nil)
 			end
@@ -163,7 +144,7 @@ module ODDB
 				State::Drugs::Init.new(@session, user)
 			end
 			def navigation
-				zone_navigation + user_navigation + default_navigation
+				zone_navigation + user_navigation + home_navigation
 			end
 			def powerlink
 				pointer = @session.user_input(:pointer)
@@ -238,6 +219,18 @@ module ODDB
 				@model.reverse! if(@sort_reverse)
 				self
 			end
+			def switch
+				state = self.trigger(self.direct_event)
+				if(state.zone == @session.zone)
+					state
+				else
+					event = [
+						'home',
+						@session.zone
+					].compact.join('_').intern
+					self.trigger(event)
+				end
+			end
 			def user_input(keys=[], mandatory=[])
 				keys = [keys] unless keys.is_a?(Array)
 				mandatory = [mandatory] unless mandatory.is_a?(Array)
@@ -274,7 +267,7 @@ module ODDB
 				State::User::YweseeContact.new(@session, model)
 			end
 			def zones
-				[:drugs, :interactions, :user, :companies]
+				[:drugs, :interactions, :companies, :user]
 			end
 			def zone_navigation
 				[]
