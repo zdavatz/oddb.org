@@ -3,6 +3,7 @@
 
 require 'delegate'
 require 'cgi'
+require 'csv'
 require 'plugin/plugin'
 require 'model/text'
 require 'model/dose'
@@ -269,6 +270,27 @@ module ODDB
 				sleep(rand)
 			end
 			@session.logout
+		end
+		def update_from_csv(fname)
+			path = File.join(ARCHIVE_PATH, 'csv', fname)
+			writer = Struct.new( "CsvWriter", 
+				:extract_descriptions, :extract_ddd).new
+			writer.extract_descriptions = descr = {}
+			writer.extract_ddd = daily = {}
+			CSV.open(path, 'r', ?;) { |csv_row|
+				unless(csv_row[2].to_s.strip.empty?)	
+					ddds = csv_row[4].to_s.split(/,/).collect { |ar|
+						ddd = {
+							:dose	=>	Dose.new(csv_row[2], csv_row[3]),
+							:administration_route	=>	ar.strip,
+						}
+					}
+					daily.store(csv_row[0], ddds)
+				end
+				descr.store(csv_row[0], csv_row[1])
+			}
+			extract_descriptions(writer)
+			extract_ddd(writer)
 		end
 		def extract(html)
 			writer = WhoWriter.new
