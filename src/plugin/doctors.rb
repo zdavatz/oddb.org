@@ -61,7 +61,7 @@ module ODDB
 			def get_doctor_data(doc_id)
 				retry_count = 3
 				begin
-					self::class::PARSER.emh_data(doc_id)
+					self::class::PARSER.emh_data_add_ean(doc_id)
 				rescue Errno::EINTR, Errno::ECONNRESET => err
 					puts "rescued #{err} -> #{retry_count} more tries"
 					if(retry_count > 0)
