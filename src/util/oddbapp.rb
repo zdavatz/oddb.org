@@ -44,6 +44,7 @@ class OddbPrevalence
 	attr_reader :orphaned_patinfos, :orphaned_fachinfos
 	attr_reader :fachinfos
 	attr_reader :patinfos_deprived_sequences, :patinfos
+	attr_reader :invoice_types
 	def initialize		
 		super
 		@atc_classes ||= {}
@@ -224,6 +225,9 @@ class OddbPrevalence
 		indication = ODDB::Indication.new
 		@indications.store(indication.oid, indication)
 	end
+	def create_invoice(invoice_name)
+		@invoices.store(invoice_name, ODDB::Invoice.new(invoice_name))
+	end
 	def create_log_group(key)
 		@log_groups[key] ||= ODDB::LogGroup.new(key)
 	end
@@ -375,6 +379,25 @@ class OddbPrevalence
 	end
 	def indications
 		@indications.values
+	end
+	def invoice(invoice_name)
+		@invoices ||= {}
+		@invoices[invoice_name]
+=begin
+		if(@invoice_types.nil?)
+			@invoice_types = {}
+			pointer = ODDB::Persistence::Pointer.new([:invoice_types])
+			invoice_types = create(pointer)
+			update(invoice_types.pointer, {})
+		end
+		element = @invoice_types[invoice_name]
+		if(element.nil?)
+			invoice_type = ODDB::InvoiceType.new(invoice_name)
+			@invoice_types.store(invoice_name, invoice_type)
+		else
+			element
+		end
+=end
 	end
 	def limitation_text_count
 		@limitation_text_count ||= count_limitation_texts()
