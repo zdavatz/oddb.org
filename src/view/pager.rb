@@ -23,7 +23,8 @@ module ODDB
 			SORT_DEFAULT = :to_i
 			SORT_HEADER = false
 			attr_accessor :event, :arguments
-			def initialize(model, session, container, event=:result, args={})
+			def initialize(model, session, container=nil, 
+				event=:result, args={})
 				@event = event
 				@arguments = args
 				super(model, session, container)

@@ -66,7 +66,7 @@ class TestBsvPlugin < Test::Unit::TestCase
 		end
 	end
 	class StubPackage
-		attr_accessor :pointer, :sl_entry, :ikscd, 
+		attr_accessor :pointer, :sl_entry, :ikscd, :iksnr,
 			:price_exfactory, :price_public
 		def diff(hash)
 			hash
