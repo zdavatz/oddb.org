@@ -11,15 +11,18 @@ class SelectSubstance < State::Admin::Global
 	VIEW = View::Admin::SelectSubstance
 	def update
 		pointer = @session.user_input(:pointer)
-		substance = pointer.resolve(@session.app)
-		if(pointer.skeleton == [:create])
-			update = {
-				'lt'	=>	@model.user_input[:substance],
-			}
-			ODBA.batch { 
-				@session.app.update(substance.pointer, update)
-			}
-		end
+		substance = nil
+		ODBA.batch { 
+			substance = pointer.resolve(@session.app)
+			if(pointer.skeleton == [:create])
+				update = {
+					'lt'	=>	@model.user_input[:substance],
+				}
+				ODBA.batch { 
+					@session.app.update(substance.pointer, update)
+				}
+			end
+		}
 		if (error?)
 			self
 		else
