@@ -29,7 +29,7 @@ class TestInteractionResultState < Test::Unit::TestCase
 		@session.__verify
 	end
 	def test_empty_list
-		assert_equal(ODDB::EmptyResultView, @state.default_view)
+		assert_equal(ODDB::EmptyInteractionResultView, @state.default_view)
 	end
 =begin
 	def test_check_facades

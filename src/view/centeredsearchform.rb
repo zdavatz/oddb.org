@@ -98,7 +98,9 @@ module ODDB
 			[0,6,2]	=>	:mailinglist,
 			[0,6,3]	=>	:divider,
 			[0,6,4]	=>	:fipi_offer,
-			[0,6,5]	=>	:new_feature,
+			[0,6,5]	=>	:divider,
+			[0,6,6]	=>	:interactions,
+			[0,6,7]	=>	:new_feature,
 			[0,7]		=>	:database_size,
 			[0,7,1]	=>	'database_size_text',
 			[0,7,2]	=>	'comma_separator',
@@ -129,6 +131,7 @@ module ODDB
 			:database_size		=>	HtmlGrid::Text,
 			:database_size_text	=>	HtmlGrid::Text,
 			:fipi_offer				=>	HtmlGrid::Link,
+			:interactions			=>	HtmlGrid::Link,
 			:language_de			=>	HtmlGrid::Link,
 			:language_fr			=>	HtmlGrid::Link,
 			:mailinglist			=>	HtmlGrid::Link,
@@ -184,6 +187,16 @@ module ODDB
 			link = HtmlGrid::PopupLink.new(:generic_definition, model, session, self)
 			link.href = @lookandfeel.event_url(:generic_definition)
 			link.value = @lookandfeel.lookup(:generic_definition) 
+			link.set_attribute('class', 'list')
+			link
+		end
+		def export_divider(model, session)
+			divider(model, session)
+		end
+		def interactions(model, session)
+			link = HtmlGrid::Link.new(:interactions, model, session, self)
+			link.href = @lookandfeel.event_url(:interaction_home)
+			link.label = true
 			link.set_attribute('class', 'list')
 			link
 		end

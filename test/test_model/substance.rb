@@ -120,6 +120,40 @@ class TestSubstance < Test::Unit::TestCase
 		@substance.remove_sequence("alloa")
 		assert_equal([], @substance.sequences)
 	end
+	def test_merge
+		@substance.pointer = ["!substance,12"]
+		@substance.sequences = []
+		sequence = Mock.new('sequence')
+		aagent = Mock.new('aagent') 
+		other = Mock.new('other')
+		connection = Mock.new('connection')
+		pointer = Mock.new('pointer')
+		other.__next(:sequences) { [ sequence ] }
+		sequence.__next(:active_agent) { aagent }
+		aagent.__next(:substance=) { |param| 
+			assert_equal(@substance, param)
+		}
+		other.__next(:substrate_connections) {
+			{ 'conn_key'	=>	connection }
+		}
+		connection.__next(:cyp_id) { 'cyp_id' }
+		connection.__next(:pointer)	{ pointer }
+		pointer.__next(:last_step) { ['!pointer,last.'] }
+		connection.__next(:pointer=) { |param|
+			assert_equal(["!substance,12", "!pointer,last."], param)
+		}
+		connection.__next(:cyp_id) { 'cyp_id' }
+		other.__next(:descriptions) {
+			{ 'key'	=> 'value' }
+		}
+		other.__next(:connection_key) { 'connection_key' }
+		@substance.merge(other)
+		sequence.__verify
+		aagent.__verify
+		other.__verify
+		connection.__verify
+		pointer.__verify
+	end
 	def test_name
 		assert_equal('Acidum Acetylsalicylicum', @substance.name)
 	end
@@ -147,10 +181,12 @@ class TestSubstance < Test::Unit::TestCase
 	end
 	def test_same_as
 		substance = ODDB::Substance.new
+		substance.connection_key = 'ACIDUM Mefenanicum'
 		substance.descriptions.store('lt', "Acidum Acetylsalicylicum")
 		assert_equal(true, substance.same_as?('ACIDUM ACETYLSALICYLICUM'))
 		assert_equal(false, substance.same_as?('Acetylsalicylsäure'))
 		substance.descriptions.store('de', "Acetylsalicylsäure")
 		assert_equal(true, substance.same_as?('Acetylsalicylsäure'))
+		assert_equal(true, substance.same_as?('Acidum Mefenanicum'))
 	end
 end

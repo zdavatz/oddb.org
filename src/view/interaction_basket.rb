@@ -2,6 +2,7 @@
 # InteractionBasketView -- oddb -- 07.06.2004 -- maege@ywesee.com
 
 require 'htmlgrid/composite'
+require 'htmlgrid/richtext'
 require 'htmlgrid/value'
 require 'view/form'
 require 'view/searchbar'
@@ -21,13 +22,29 @@ module ODDB
 		def to_html(context)
 			context.ul {
 				@model.collect { |item| 
-					#puts "iiiittteeem: #{item.class}"
-					context.li { item.substance_name } 
+					text = HtmlGrid::RichText.new(@model, @session, self)
+					pub_med_search_link = HtmlGrid::Link.new(:pub_med_search_link, @model, @session, self)
+					pub_med_search_link.href = @lookandfeel.lookup(:pub_med_search_href, item.substance_name)
+					pub_med_search_link.value = item.substance_name
+					text << pub_med_search_link
+					pub_med_link = HtmlGrid::Link.new(:pub_med_link, @model, @session, self)
+					pub_med_link.href = @lookandfeel.lookup(:pub_med_href)
+					pub_med_link.value = @lookandfeel.lookup(:pub_med)
+					text << pub_med_link	
+					item.links.each { |link|
+						alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
+						alink.href = link.href
+						alink.value = link.text
+						text << [ "<br>", link.info, "<br>" ].join
+						text << alink
+					}
+					context.li { text.to_html(context) } 
 				}.join
 			}
 		end
 	end
 	class InteractionBasketSubstrates < HtmlGrid::List
+		BACKGROUND_SUFFIX = ' bg'
 		COMPONENTS = {
 			[0,0]		=>	:substance,
 			[1,0]		=>	:cyp450s,
@@ -36,7 +53,8 @@ module ODDB
 			
 		}
 		CSS_MAP = {
-			[0,0]	=>	'result-big-unknown',
+			[0,0]		=>	'bold interaction-substance',
+			[1,0,3]	=>	'interaction-connection',
 		}
 		CSS_HEAD_MAP = {
 			[0,0]	=>	'th',
@@ -44,7 +62,7 @@ module ODDB
 			[2,0]	=>	'th',
 			[3,0]	=>	'th',
 		}
-		CSS_CLASS = 'composite'
+		CSS_CLASS = 'composite interaction-basket'
 		DEFAULT_CLASS = HtmlGrid::Value
 		SORT_DEFAULT = :substance
 		SUBHEADER = InteractionBasketHeader
@@ -60,7 +78,7 @@ module ODDB
 			if((inhibitors = model.inhibitors) && !inhibitors.empty?)
 				#puts 'yes'
 				#puts inhibitors.class
-				InteractionList.new(inhibitors, session, self)
+				InteractionList.new(inhibitors.values, session, self)
 			end
 		end
 		def inducers(model, session)
@@ -68,7 +86,7 @@ module ODDB
 			#puts model.inducers.size
 			if((inducers = model.inducers) && !inducers.empty?)
 				#puts 'yes'
-				InteractionList.new(inducers, session, self)
+				InteractionList.new(inducers.values, session, self)
 			end
 		end
 	end
@@ -83,6 +101,7 @@ module ODDB
 			[1,1]		=>	:search_query,
 			[1,1,1]	=>	:submit,
 			[0,2]		=>	InteractionBasketSubstrates,
+			[0,3]		=>	:clear_interaction_basket,
 		}
 		CSS_CLASS = 'composite'
 		EVENT = :search_interaction
@@ -94,10 +113,14 @@ module ODDB
 			[0,0] =>	'result-found',
 			[0,1] =>	'result-price-compare',
 			[1,1]	=>	'search',	
+			[0,3]	=>	'button left padding',
 		}
 		def interaction_basket_count(model, session)
 			count = session.interaction_basket_count
 			@lookandfeel.lookup(:interaction_basket_count, count)
+		end
+		def clear_interaction_basket(model, session)
+			get_event_button(:clear_interaction_basket)
 		end
 	end
 	class InteractionBasketView < PublicTemplate

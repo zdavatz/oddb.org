@@ -10,6 +10,7 @@ module ODDB
 			source = @source_pointer.resolve(app)
 			target = @target_pointer.resolve(app)
 			target.merge(source)
+			app.update_item(target, {})
 			app.delete(@source_pointer)
 			nil
 		end

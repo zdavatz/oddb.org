@@ -15,30 +15,27 @@ module ODDB
 			@inducers = {}
 		end
 		def interactions_with(substance)
-			#puts '***cytochrome'
 			connections = []
 			@inhibitors.each { |connection_key, connection| 
-				if(substance.same_as?(connection_key))
-					#puts "*"*44
+				if((substance.connection_key == connection_key) || substance.same_as?(connection_key))
 					connections.push(connection)
 				end
 			}
 			@inducers.each { |connection_key, connection| 
-				if(substance.same_as?(connection_key))
-					#puts "*"*44
+				if((substance.connection_key == connection_key) || substance.same_as?(connection_key))
 					connections.push(connection)
 				end
 			}
 			connections
 		end
 		def create_cyp450inducer(substance_name)
-			#puts 'creating inducer...'
-			conn = ODDB::CyP450InhibitorConnection.new(substance_name)
+			conn = ODDB::CyP450InducerConnection.new(substance_name)
+			#puts "create_inducer"
 			@inducers.store(substance_name, conn)
 		end
 		def create_cyp450inhibitor(substance_name)
-			#puts 'creating inhibitor...'
 			conn = ODDB::CyP450InhibitorConnection.new(substance_name)
+			#puts "create_inhibitor"
 			@inhibitors.store(conn.substance_name, conn)
 		end
 		def cyp450inducer(substance_name)

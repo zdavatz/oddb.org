@@ -86,7 +86,7 @@ module ODDB
 		end
 =end
 		def interaction_basket_status(model, session)
-			if(session.interaction_basket.include?(model))
+			if(session.interaction_basket_include?(model))
 				link = HtmlGrid::Link.new(:interaction_basket, model, session, self)
 				link.href = @lookandfeel.event_url(:interaction_basket)
 				link.value = @lookandfeel.lookup(:in_interaction_basket)
@@ -99,7 +99,7 @@ module ODDB
 				model.name
 			else
 				link = HtmlGrid::Link.new(:add_to_interaction_basket, model, session, self)
-				link.href = @lookandfeel.event_url(:add_to_interaction_basket, {'pointer'=>model.pointer})
+				link.href = @lookandfeel.event_url(:add_to_interaction_basket, {'pointer'=>CGI.escape(model.pointer.to_s)})
 				link.value = model.name
 				link.set_attribute('class', 'result-big')
 				link

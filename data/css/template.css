@@ -13,11 +13,13 @@ label {
 }
 ul {
 	list-style-type : square;
-	margin : 5px;
-	padding-left : 20px;
+	margin : 0px;
+	padding-left : 14px;
 }
 li {
-	padding : 5px;
+	margin-top: 2px;
+	padding-left : 5px;
+	margin-bottom: 4px;
 }
 form {
 	margin : 0px;
@@ -1128,10 +1130,47 @@ a.powerlink:active {
 /* new style of formatting */
 /* use multiple classes to style! */
 
+td.interaction-connection li {
+	margin-top: 0px;
+	list-style-type : circle;
+}
+
 input.button {
 	background : $button_background;
 	color : $button_font_color;
 	font-size : $button_font_size;
+}
+
+span.bold {
+	font-weight : bold;
+} 
+
+span.italic {
+	font-style : italic;
+} 
+
+td.bg {
+	background : $rslt_bg;
+}
+
+td.bold {
+	font-weight : bold;
+}
+
+td.interaction-substance {
+	font-size: 14px;
+	width : 10%;
+}
+
+td.interaction-connection {
+	width : 30%;
+}
+
+table.interaction-basket td {
+	padding-top : 4px;
+	padding-left : 4px;
+	padding-bottom : 4px;
+	vertical-align : top;
 }
 
 td.left {
@@ -1144,12 +1183,14 @@ td.padding {
 	padding-bottom : 5px;
 }
 
-td.bg {
-	background : #e9f7f3;
+td.result {
+	font-size : 14px;
+	padding : 4px;
 }
 
-td.bold {
-	font-weight : bold;
+td.result-bg {
+	background : $rslt_bg;
+	font-size : 14px;
 }
 
 td.sum {
@@ -1163,7 +1204,3 @@ td.total {
 	border-style : double;
 	border-width : 0px 0px 3px 0px;
 }
-
-span.bold {
-	font-weight : bold;
-} 

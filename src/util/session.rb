@@ -41,8 +41,20 @@ module ODDB
 		def add_to_interaction_basket(object)
 			@interaction_basket.push(object)
 		end
+		def clear_interaction_basket
+			@interaction_basket.clear
+		end
+		def interaction_basket
+			substances = @interaction_basket.collect { |substance|
+				@app.substance_by_connection_key(substance.connection_key)
+			}.uniq
+			substances
+		end
 		def interaction_basket_count
 			@interaction_basket.size
+		end
+		def interaction_basket_include?(substance)
+			interaction_basket.include?(substance)
 		end
 		def user_equiv?(test)
 			return true if(@user.is_a? RootUser)

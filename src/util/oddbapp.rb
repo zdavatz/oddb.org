@@ -97,6 +97,11 @@ class OddbPrevalence
 		# if this item has been newly created, we want its pointer back
 		pointer = item.pointer unless item.nil? 
 		updated(item)
+		update_item(item, values)
+		item
+	end
+	def update_item(item, values)
+		pointer = item.pointer
 		case item
 		when ODDB::Sequence
 			delete_from_index(@sequence_index, item.name, item)
@@ -104,6 +109,7 @@ class OddbPrevalence
 			store_in_index(@sequence_index, item.name, item)
 		when ODDB::Substance
 			keys = item.descriptions.values
+			keys.push(item.connection_key)
 			if(keys.empty?)
 				keys = [ item.name ]
 			end
@@ -146,7 +152,6 @@ class OddbPrevalence
 		else
 			pointer.issue_update(self, values) unless pointer.nil?
 		end
-		item
 	end
 	#####################################################
 	def accepted_orphans
@@ -173,6 +178,16 @@ class OddbPrevalence
 		when ODDB::Indication
 			item.descriptions.values.uniq.each { |desc|
 				delete_from_index(@indication_index, desc, item)
+			}
+		when ODDB::Substance	
+			keys = item.descriptions.values
+			keys.push(item.connection_key)
+			if(keys.empty?)
+				keys = [ item.name ]
+			end
+			keys.each { |key|
+				delete_from_index(@substance_index, key, item)
+				delete_from_index(@substance_name_index, key, item.sequences)
 			}
 		end
 	end
@@ -217,6 +232,7 @@ class OddbPrevalence
 		@companies.store(company.oid, company)
 	end
 	def create_cyp450(cyp_id)
+		@cyp450s ||= {}
 		cyp450 = ODDB::CyP450.new(cyp_id)
 		@cyp450s.store(cyp_id, cyp450)
 	end
@@ -324,11 +340,13 @@ class OddbPrevalence
 		@registrations.delete(iksnr)
 	end
 	def delete_substance(key)
+		substance = nil
 		if(key.to_i.to_s == key.to_s)
-			@substances.delete(key.to_i)
+			substance = @substances.delete(key.to_i)
 		else
-			@substances.delete(key.to_s)
+			substance = @substances.delete(key.to_s.downcase)
 		end
+		checkout(substance)
 	end
 	def each_atc_class(&block)
 		@atc_classes.each_value(&block)
@@ -501,17 +519,14 @@ class OddbPrevalence
 			nil
 		end
 	end
+	def substance_by_connection_key(connection_key)
+		key = connection_key.to_s.downcase
+		@substances.values.select { |substance|
+			substance.connection_key == key
+		}.first
+	end
 	def substances
 		@substances.values
-	end
-	def substance_by_conn_name(conn_name)
-		return if conn_name.empty?
-		@substances.each { |oid, substance|
-			if(substance.en.downcase == conn_name.downcase)
-				return substance 
-			end
-		}
-		nil
 	end
 	def substance_count
 		@substances.length
@@ -673,6 +688,10 @@ module ODDB
 		end
 		def merge_galenic_forms(source, target)
 			command = MergeCommand.new(source.pointer, target.pointer)
+			@prevalence.execute_command(command)
+		end
+		def merge_substances(source_pointer, target_pointer)
+			command = MergeCommand.new(source_pointer, target_pointer)
 			@prevalence.execute_command(command)
 		end
 		def replace_fachinfo(iksnr, pointer)

@@ -8,6 +8,7 @@ require 'htmlgrid/errormessage'
 require 'htmlgrid/inputcheckbox'
 require 'htmlgrid/inputradio'
 require 'htmlgrid/richtext'
+require 'htmlgrid/errormessage'
 
 module ODDB
 	class FiPiRadioButtons < HtmlGrid::List
