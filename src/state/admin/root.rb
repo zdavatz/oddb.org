@@ -150,9 +150,6 @@ module Root
 	def patinfo_stats
 		State::Admin::PatinfoStats.new(@session,[])
 	end
-	def patinfo_stats_company
-		State::Admin::PatinfoStatsCompany.new(@session,[])
-	end
 	def user_navigation
 		[
 			State::Admin::Logout,

@@ -12,6 +12,9 @@ class Indications < State::Admin::Global
 	include Interval
 	VIEW = View::Admin::Indications
 	DIRECT_EVENT = :indications
+	def init
+		filter_interval
+	end
 	def symbol
 		@session.language
 	end

@@ -13,6 +13,9 @@ class PatinfoDeprivedSequences < State::Admin::Global
 	VIEW = View::Admin::PatinfoDeprivedSequences
 	PERSISTENT_RANGE = true
 	DIRECT_EVENT = :patinfo_deprived_sequences
+	def init
+		filter_interval
+	end
 	def select_seq
 		keys = [:pointer, :state_id]
 		values = user_input(keys, keys)

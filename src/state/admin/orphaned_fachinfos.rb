@@ -8,10 +8,12 @@ module ODDB
 	module State
 		module Admin
 class OrphanedFachinfos < State::Admin::Global
-	include Interval
 	DIRECT_EVENT = :orphaned_fachinfos
 	PERSISTENT_RANGE = true
 	VIEW = View::Admin::OrphanedFachinfos
+	def init
+		filter_interval
+	end
 	def symbol
 		:name 
 	end
