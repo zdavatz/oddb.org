@@ -1,13 +1,4 @@
 --- !ruby/object:ODBA::IndexDefinition 
-index_name: 'atc_index_company'
-origin_klass: 'Company'
-target_klass: 'AtcClass'
-resolve_search_term: 'name'
-resolve_target: 'atc_classes.each { |atc| atc }'
-resolve_origin: 'sequences.collect { |seq| seq.company }'
-init_source: '@atc_classes.values'
-fulltext: false
---- !ruby/object:ODBA::IndexDefinition 
 index_name: 'atc_index'
 origin_klass: 'AtcClass'
 target_klass: 'AtcClass'
@@ -17,21 +8,30 @@ resolve_origin: ''
 init_source: '@atc_classes.values'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
-index_name: 'substance_index_atc'
-origin_klass: 'Substance'
-target_klass: 'AtcClass'
-resolve_search_term: 'search_keys'
-resolve_target: 'sequences.collect { |seq| seq.atc_class }.uniq'
-resolve_origin: 'sequences.collect { |seq| seq.active_agents.collect { |agent| agent.substance } }.uniq'
-init_source: '@atc_classes.values'
-fulltext: false
---- !ruby/object:ODBA::IndexDefinition 
 index_name: 'sequence_index_atc'
 origin_klass: 'Sequence'
 target_klass: 'AtcClass'
 resolve_search_term: 'search_terms'
 resolve_target: 'atc_class'
 resolve_origin: 'sequences'
+init_source: '@atc_classes.values'
+fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'atc_index_company'
+origin_klass: 'Company'
+target_klass: 'AtcClass'
+resolve_search_term: 'name'
+resolve_target: 'atc_classes.each { |atc| atc }'
+resolve_origin: 'sequences.collect { |seq| seq.company }'
+init_source: '@atc_classes.values'
+fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'substance_index_atc'
+origin_klass: 'Substance'
+target_klass: 'AtcClass'
+resolve_search_term: 'search_keys'
+resolve_target: 'sequences.collect { |seq| seq.atc_class }.uniq'
+resolve_origin: 'sequences.collect { |seq| seq.active_agents.collect { |agent| agent.substance } }.uniq'
 init_source: '@atc_classes.values'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
@@ -65,15 +65,6 @@ resolve_origin: ''
 init_source: '@substances.values'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
-index_name: 'sequence_index_substance'
-origin_klass: 'Sequence'
-target_klass: 'Substance'
-resolve_search_term: 'search_terms'
-resolve_target: 'substances'
-resolve_origin: 'sequences'
-init_source: '@substances.values'
-fulltext: false
---- !ruby/object:ODBA::IndexDefinition 
 index_name: 'sequence_index'
 origin_klass: 'Sequence'
 target_klass: 'Sequence'
@@ -81,6 +72,15 @@ resolve_search_term: 'name'
 resolve_target: ''
 resolve_origin: ''
 init_source: '@registrations.values.inject([]) { |inj, reg| inj + reg.sequences.values } '
+fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'sequence_index_substance'
+origin_klass: 'Sequence'
+target_klass: 'Substance'
+resolve_search_term: 'search_terms'
+resolve_target: 'substances'
+resolve_origin: 'sequences'
+init_source: '@substances.values'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'doctor_index'
