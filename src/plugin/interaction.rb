@@ -81,7 +81,7 @@ module ODDB
 		class InducerConnection < Connection
 		end
 		class InteractionPlugin < Plugin
-			REFETCH_PAGES = true
+			REFETCH_PAGES = false
 			INTERACTION_TYPES = [
 				:substrates, :inhibitors, :inducers,
 			]
@@ -255,7 +255,7 @@ module ODDB
 				cyp450_connections = cyp450.send(connection).keys.dup
 				cyt.send(connection).each { |conn|
 					conn_pointer = [ 
-						'cyp450' + connection.to_s, 
+						'cyp450' + connection.to_s[0..-2], 
 						conn.name	
 					]
 					pointer = cyp450.pointer + conn_pointer

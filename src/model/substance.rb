@@ -9,7 +9,7 @@ require 'model/cyp450connection'
 module ODDB
 	class Substance
 		#include Persistence
-		attr_reader :sequences, :substrate_connections
+		attr_reader :sequences
 		include Comparable
 		include Language
 		def initialize
@@ -48,10 +48,29 @@ module ODDB
 		def delete_cyp450substrate(cyp_id)
 			@substrate_connections.delete(cyp_id)
 		end
-		def has_interaction_with?(other)
-			@substrate_connections.each { |conn|
-				conn.has_interaction_with?(other)
-			}
+		def interaction_connections(others)
+			#puts '=========substance'
+			if(@substrate_connections)
+				#puts 'substrate_connections found'
+				connections = {}
+				@substrate_connections.each { |cyp450_id, subs_connection|
+					#puts "subs_connection: #{subs_connection}"
+					others.each { |substance|
+						#puts "other substance: #{substance}"
+						interactions = subs_connection.interactions_with(substance)
+						#puts "iiiiinnnnteractions: #{interactions.size}"
+						if(int_conn = connections[cyp450_id])
+							int_conn.concat(interactions)
+						else
+							connections.store(cyp450_id, interactions)
+						end
+					}
+				}
+				#puts "ccccccccccccccccccccconnections: #{connections.size}"
+				connections
+			else
+				{}	
+			end
 		end
 		def name
 			if(@name)
@@ -73,6 +92,9 @@ module ODDB
 		end
 		def similar_name?(astring)
 			name.length/3.0 >= name.downcase.ld(astring.downcase)
+		end
+		def substrate_connections
+			@substrate_connections || {}
 		end
 		def to_s
 			name

@@ -577,13 +577,13 @@ Hunger. Stufe für Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, S
 		@plugin.compress
 		assert_equal(false, @plugin.filenames.include?("s31x"))
 		dir = ODDB::GaldatExport.system_targetdir
-		name = File.expand_path("galdat_oddb.tar.gz", dir)
+		name = File.expand_path("oddbdat.tar.gz", dir)
 		assert(FileTest.exists?(name), "The file #{name} was not properly created")
 		assert(File.size(name) > 500, "Filesize too small!")
-		name = File.expand_path("galdat_oddb.zip", dir)
+		name = File.expand_path("oddbdat.zip", dir)
 		assert(FileTest.exists?(name), "The file #{name} was not properly created")
 		assert(File.size(name) > 1500, "Filesize too small!")
-		name = File.expand_path("galdat_oddb.zip", dir)
+		name = File.expand_path("oddbdat.zip", dir)
 	end
 	def test_system_filepath
 		table = ODDB::GaldatExport::AcTable.new(nil)

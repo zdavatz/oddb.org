@@ -38,7 +38,8 @@ module ODDB
 				@model.each { |obj|
 					@object_count += 1
 				}
-				@model.uniq!.sort! { |x, y| 
+				@model.uniq!
+				@model.sort! { |x, y| 
 					x.name <=> y.name
 				}
 			end

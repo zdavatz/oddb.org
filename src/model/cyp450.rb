@@ -14,21 +14,22 @@ module ODDB
 			@inhibitors = {}
 			@inducers = {}
 		end
-		def has_connection?(other)
-			(@inhibitors + @inducers).any? { |connection| 
-					
-			}
-			@inhibitors.each { |inhibitor|
-				if(inhibitor.name == other.description('en'))
-					@interaction.store(:inhibitor, inhibitor)
+		def interactions_with(substance)
+			#puts '***cytochrome'
+			connections = []
+			@inhibitors.each { |connection_key, connection| 
+				if(substance.same_as?(connection_key))
+					#puts "*"*44
+					connections.push(connection)
 				end
 			}
-			@inducers.each { |inducers|
-				if(inducers.name == other.description('en'))
-					@interactions.store(:inducer, inducers)
+			@inducers.each { |connection_key, connection| 
+				if(substance.same_as?(connection_key))
+					#puts "*"*44
+					connections.push(connection)
 				end
 			}
-			@interactions
+			connections
 		end
 		def create_cyp450inducer(substance_name)
 			#puts 'creating inducer...'

@@ -22,15 +22,20 @@ module ODDB
 		end
 	end
 	class CyP450SubstrateConnection < CyP450Connection
+		attr_accessor :cyp450
 		attr_reader :cyp_id
 		def initialize(cyp_id)
 			super()
 			@cyp_id = cyp_id
 		end
-		def has_interaction_with?(other)
-			@cytochromes.each { |cytochrome|
-				cytochrome.has_connection?(other)
-			}
+		def interactions_with(substance)
+			#puts "--------------------------connection"
+			if(@cyp450)
+				#puts '______connection'
+				@cyp450.interactions_with(substance)
+			else
+				[]
+			end
 		end
 		def adjust_types(values, app)
 			if(cyp_id = values[:cyp450])

@@ -40,19 +40,20 @@ module ODDB
 			[2,0]	=>	:interaction_basket_status,
 		}
 		REVERSE_MAP = {
-			:name	=>	false,
+			:name												=>	false,
+			:search_oddb								=>	false,
+			:interaction_basket_status	=>	false,
 		}
 		CSS_MAP = {
 			[0,0]	=>	'result-big-unknown',
 			[1,0]	=>	'result-small-font',
-			[2,0]	=>	'result-b-r-unknown',
-		}
-		CSS_HEAD_MAP = {
-			[0,0]	=>	'th',
+			[2,0]	=>	'result-big-unknown',
 		}
 		CSS_CLASS = 'composite'
 		DEFAULT_CLASS = HtmlGrid::Value
+		DEFAULT_HEAD_CLASS = 'th'
 		SORT_DEFAULT = nil
+		STRIPED_BG = true
 		#SUBHEADER = InteractionFacadeHeader
 =begin
 		def compose_subheader(facade, offset)
@@ -89,9 +90,8 @@ module ODDB
 				link = HtmlGrid::Link.new(:interaction_basket, model, session, self)
 				link.href = @lookandfeel.event_url(:interaction_basket)
 				link.value = @lookandfeel.lookup(:in_interaction_basket)
+				link.set_attribute('font-weight', 'bold')
 				link
-			else
-				nil
 			end
 		end
 		def name(model, session)

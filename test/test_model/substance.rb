@@ -68,6 +68,53 @@ class TestSubstance < Test::Unit::TestCase
 		@substance.delete_cyp450substrate('cyp_id')
 		assert_equal(1, result.size)
 	end
+	def test_interaction_connections
+		result = @substance.interaction_connections([])		
+		assert_equal({}, result)
+	end
+	def test_interaction_connections2
+		subst_conn1 = Mock.new('subst_conn1')
+		subst_conn2 = Mock.new('subst_conn2')
+		substance1 = Mock.new('substance1')
+		substance2 = Mock.new('substance2')
+		interaction1 = Mock.new('interaction1')
+		interaction2 = Mock.new('interaction2')
+		interaction3 = Mock.new('interaction3')
+		substances = [ substance1, substance2 ]
+		@substance.substrate_connections = {
+			'cyp450_id1'	=>	subst_conn1,
+			'cyp450_id2'	=>	subst_conn2,
+		}
+		subst_conn1.__next(:interactions_with) { |param|
+			assert_equal(substance1, param)
+			[]
+		}
+		subst_conn1.__next(:interactions_with) { |param|
+			assert_equal(substance2, param)
+			[]
+		}
+		subst_conn2.__next(:interactions_with) { |param|
+			assert_equal(substance1, param)
+			[ interaction1 ]	
+		}
+		subst_conn2.__next(:interactions_with) { |param|
+			assert_equal(substance2, param)
+			[ interaction2, interaction3 ]
+		}
+		result = @substance.interaction_connections(substances)		
+		expected = {
+			"cyp450_id1"	=>	[],
+			"cyp450_id2"	=>	[ interaction1, interaction2, interaction3 ]
+		}
+		assert_equal(expected, result)
+		subst_conn1.__verify
+		subst_conn2.__verify
+		substance1.__verify
+		substance2.__verify
+		interaction1.__verify
+		interaction2.__verify
+		interaction3.__verify
+	end
 	def test_remove_sequence
 		@substance.sequences = ["alloa"]
 		@substance.remove_sequence("alloa")

@@ -12,6 +12,9 @@ module ODDB
 	class CyP450Connection
 		attr_accessor :pointer
 	end
+	class CyP450SubstrateConnection < CyP450Connection
+		attr_accessor :cyp450
+	end
 end
 
 class TestCyP450Connection < Test::Unit::TestCase
@@ -59,6 +62,23 @@ class TestCyP450SubstrateConnection < Test::Unit::TestCase
 		expected = { :cyp450	=>	'found cyp450' }
 		assert_equal(expected, result)
 		app.__verify
+	end
+	def test_interactions_with
+		result = @connection.interactions_with(nil)
+		assert_equal([], result)
+	end
+	def test_interactions_with
+		cyp450 = Mock.new('cyp450')
+		substance = Mock.new('substance')
+		cyp450.__next(:interactions_with) { |param|
+			assert_equal(param, substance)
+			[ 'int_connection' ]
+		}
+		@connection.cyp450 = cyp450 
+		result = @connection.interactions_with(substance)
+		assert_equal([ 'int_connection' ], result)
+		cyp450.__verify
+		substance.__verify
 	end
 end
 class TestCyP450InteractionConnection < Test::Unit::TestCase
