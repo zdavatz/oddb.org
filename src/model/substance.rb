@@ -40,7 +40,13 @@ module ODDB
 			@sequences.collect { |seq| seq.atc_class }.uniq
 		end
 		def connection_key
-			@connection_key	|| @descriptions['en']
+			if(@connection_key)
+				@connection_key
+			elsif(!@descriptions['en'].empty?)
+				@descriptions['en']
+			else
+				@name
+			end
 		end
 		def	create_cyp450substrate(cyp_id)
 			conn = ODDB::CyP450SubstrateConnection.new(cyp_id)

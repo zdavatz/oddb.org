@@ -19,7 +19,7 @@ module ODDB
 		def merge
 			substance = @session.user_input(:substance_form)
 			target = @session.app.substance(substance)
-			if(target.nil? || target.empty?)
+			if(target.nil? || substance.empty?)
 				@errors.store(:substance, create_error('e_unknown_substance', :substance, substance))
 				self
 			elsif(target == @model)

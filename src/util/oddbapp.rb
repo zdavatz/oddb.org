@@ -97,10 +97,11 @@ class OddbPrevalence
 		# if this item has been newly created, we want its pointer back
 		pointer = item.pointer unless item.nil? 
 		updated(item)
-		update_item(item)
+		update_item(item, values)
 		item
 	end
-	def update_item(item)
+	def update_item(item, values)
+		pointer = item.pointer
 		case item
 		when ODDB::Sequence
 			delete_from_index(@sequence_index, item.name, item)
@@ -117,7 +118,7 @@ class OddbPrevalence
 				delete_from_index(@substance_name_index, key, item.sequences)
 			}
 			pointer.issue_update(self, values)
-			keys = values.values
+			keys = item.descriptions.values
 			if(keys.empty?)
 				keys = [item.name]
 			end
@@ -521,7 +522,7 @@ class OddbPrevalence
 	def substance_by_connection_key(connection_key)
 		key = connection_key.to_s.downcase
 		@substances.values.select { |substance|
-			substance.connection_key == key
+			substance.connection_key.downcase == key
 		}.first
 	end
 	def substances
