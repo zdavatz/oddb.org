@@ -16,10 +16,7 @@ module ODDB
 		LANGUAGES = ['de', 'fr']
 		KOMBI = "(#{name_p})?\s*(#{number_p})?"
 		PARSER = DRbObject.new(nil, FIPARSE_URI)
-		RECIPIENTS = [
-			'mwalder@ywesee.com',
-			'rwaltert@ywesee.com',
-		]
+		RECIPIENTS = [ ]
 		def initialize(app)
 			super
 			@iksnrs = []

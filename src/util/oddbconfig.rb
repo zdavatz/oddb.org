@@ -32,8 +32,6 @@ module ODBA
 		MAIL_FROM = 'odba@oddb.org'
 		MAIL_RECIPIENTS = [
 			"hwyss@ywesee.com",
-			"rwaltert@ywesee.com",
-			"mwalder@ywesee.com",
 		]
 		SMTP_SERVER = ::ODDB::SMTP_SERVER
 	end
