@@ -9,11 +9,14 @@ module ODDB
 	module View
 		class Navigation < HtmlGrid::Composite
 			COMPONENTS = {}
-			CSS_CLASS = "navigation right"
+			CSS_CLASS = "navigation-right"
 			LEGACY_INTERFACE = false
 			NAV_LINK_CLASS = NavigationLink
 			NAV_LINK_CSS = 'navigation'
 			NAV_METHOD = :navigation
+			HTML_ATTRIBUTES = {
+				'align'	=>	'right',
+			}
 			SYMBOL_MAP = {
 				:navigation_divider	=>	HtmlGrid::Text,
 			}
