@@ -56,6 +56,7 @@ module ODDB
 					end
 				else
 					# Reset format
+					puts "else"
 					unless(@format.nil?)
 						@target.set_format if(@target.respond_to?(:set_format))
 						@format = nil

@@ -38,9 +38,6 @@ end
 class TestRootState < Test::Unit::TestCase 
 	class StubSession
 		attr_accessor :user_input
-		def app
-			@app ||= StubApp.new
-		end
 		def user_input(*keys)
 			if(keys.size > 1)
 				res = {}
@@ -58,7 +55,11 @@ class TestRootState < Test::Unit::TestCase
 		def logout
 		end
 	end
-	class StubApp; end
+	class StubApp
+		def invoice(key)
+			@invoice_result
+		end
+	end
 	class StubPointer
 		def resolve(app)
 			@model ||= State::Admin::StubResolved.new
@@ -67,7 +68,10 @@ class TestRootState < Test::Unit::TestCase
 			[:resolve]
 		end
 	end
-
+	class TestState
+		attr_accessor :session
+		include State::Admin::Root
+	end
 	def setup
 		@session = StubSession.new
 		@state = State::Drugs::Init.new(@session, @session)
