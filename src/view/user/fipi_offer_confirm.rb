@@ -9,38 +9,76 @@ module ODDB
 	module View
 		module User
 class FiPiCalculations < HtmlGrid::Composite
-	COMPONENTS = {
-		[0,0]	=>	:fipi_activation_charge_count,
-		[1,0]	=>	'fipi_activation_charge',
-		[2,0]	=>	:fipi_activation_charge_value,
+	COMPONENTS = {}
+	COMPONENTS_FI = {
+		[0,0] =>  :print_type_fachinfo,
+		[0,1]	=>	:fi_activation_count,
+		[1,1]	=>	'fi_activation_charge',
+		[2,1]	=>	:fi_activation_charge_value,
+		
 		[0,1]	=>	:fi_quantity,
 		[1,1]	=>	:fi_charge,
 		[2,1]	=>	:calculate_fi_charge,
+		
 		[1,2]	=>	:fi_update,
 		[2,2]	=>	:fi_update_value,
-		[0,3]	=>	:pi_quantity,
-		[1,3]	=>	:pi_charge,
-		[2,3]	=>	:calculate_pi_charge,
-		[1,4]	=>	:pi_update,
-		[2,4]	=>	:pi_update_value,
-		[0,5]	=>	:nbsp,	
-		[1,6]	=>	'total_activation_fee',
-		[2,6]	=>	:fipi_activation_charge_value,
-		[1,7]	=>	'total_recurring_charges',
-		[2,7]	=>	:calculate_total_charges,
-		[1,8]	=>	'total',
-		[2,8]	=>	:calculate_total,
 	}
-	CSS_MAP = {
-		[0,0,3,5]	=>	'padding bg',
-		[0,5,2,1]	=>	'padding bg',
-		[2,5]			=>	'padding bg sum',
-		[0,6,3,2]	=>	'padding bg bold',
-		[0,7,2,2]	=>	'padding bg bold',	
-		[2,7]			=>	'padding bg bold sum',
-		[2,8]			=>	'padding bg bold total',
+		
+	COMPONENTS_PI = {
+		[0,0] =>  :print_type_patinfo,	
+		[0,1]	=>	:pi_activation_count,
+		[1,1]	=>	'pi_activation_charge',
+		[2,1]	=>	:pi_activation_charge_value,
+		
+		[0,1]	=>	:pi_quantity,
+		[1,1]	=>	:pi_charge,
+		[2,1]	=>	:calculate_pi_charge,
+		
+		[1,2]	=>	:pi_update,
+		[2,2]	=>	:pi_update_value,
 	}
+		
+	COMPONENTS_FIPI = {
+		[1,1]	=>	'total_activation_fee',
+		[2,1]	=>	:fipi_activation_charge_value,
+		[1,2]	=>	'total_recurring_charges',
+		[2,2]	=>	:calculate_total_charges,
+		[1,3]	=>	'total',
+		[2,3]	=>	:calculate_total,
+	}
+	CSS_MAP = { }
 	DEFAULT_CLASS = HtmlGrid::Value
+	def init
+		offset = 0
+		if(@model.fi_activation_count > 0)
+			components.update(COMPONENTS_FI)
+			css_map.update({[0,0,3,3] => 'padding bg'})
+			offset += 3
+		end
+		if(@model.pi_activation_count > 0)
+			COMPONENTS_PI.each { |key, val|
+				newkey = key.dup
+				newkey[1] += offset
+				components.store(newkey, val)
+			}
+			css_map.update({[0,offset,3,3] => 'padding bg'})
+			offset += 3
+		end
+		COMPONENTS_FIPI.each { |key, val|
+			newkey = key.dup
+			newkey[1] += offset
+			components.store(newkey, val)
+		}
+		css = {
+			[0,offset,2]				=>	'padding bg',
+			[2,offset]					=>	'padding bg sum',
+			[0,offset + 1,3,3]	=>	'padding bg bold',
+			[2,offset + 2]			=>	'padding bg bold sum',
+			[2,offset + 3]			=>	'padding bg bold total',
+		}
+		css_map.update(css)
+		super
+	end
 	def calculate_total(model, session)
 		prize = model.calculate_total
 		@lookandfeel.lookup(:swiss_francs, prize.to_s)
@@ -63,11 +101,22 @@ class FiPiCalculations < HtmlGrid::Composite
 		prize = model.calculate_fi_update
 		@lookandfeel.lookup(:swiss_francs, prize.to_s)
 	end
-	def fipi_activation_charge_count(model, session)
-		model.activation_charge_count
+	def fi_activation_count(model, session)
+		model.fi_activation_count
+	end
+	def pi_activation_count(model, session)
+		model.pi_activation_count
 	end
 	def fipi_activation_charge_value(model, session)
-		prize = model.calculate_activation_charge
+		prize = model.fi_calculate_activation_charge + model.pi_calculate_activation_charge
+		@lookandfeel.lookup(:swiss_francs, prize.to_s)
+	end
+	def fi_activation_charge_value(model, session)
+		prize = model.fi_calculate_activation_charge
+		@lookandfeel.lookup(:swiss_francs, prize.to_s)
+	end
+	def pi_activation_charge_value(model, session)
+		prize = model.pi_calculate_activation_charge
 		@lookandfeel.lookup(:swiss_francs, prize.to_s)
 	end
 	def pi_charge(model, session)
