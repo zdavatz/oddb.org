@@ -883,7 +883,7 @@ zdavatz ! ywesee.com
 				:fi_usage									=>	'Posolog./mode d\'empl.',
 				:fi_quantity0							=>	'Nombre des', 
 				:fi_quantity2							=>	'.- / IPro par ann&eacute;e',
-				:fons_header							=>	'T@eacute;l&eacute;phone',
+				:fons_header							=>	'T&eacute;l&eacute;phone',
 				:fr												=>	'Fran&ccedil;ais',
 				:oddbdat_oddb_tar_gz				=>	'oddbdat.tar.gz',
 				:oddbdat_oddb_zip					=>	'oddbdat.zip',
