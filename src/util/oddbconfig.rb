@@ -15,6 +15,7 @@ end
 
 module ODDB
 	SERVER_NAME = 'www.oddb.org'
+	SMTP_SERVER = 'mail.ywesee.com'
 	SERVER_URI = "druby://localhost:10000"
 	FIPARSE_URI = "druby://localhost:10002"
 	FIPDF_URI = "druby://localhost:10003"
@@ -31,6 +32,6 @@ module ODBA
 			"rwaltert@ywesee.com",
 			"mwalder@ywesee.com",
 		]
-		SMTP_SERVER = 'mail.ywesee.com'
+		SMTP_SERVER = ::ODDB::SMTP_SERVER
 	end
 end
