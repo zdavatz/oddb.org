@@ -13,7 +13,7 @@ class OddbPrevalence
 	attr_reader :patinfos
 	attr_writer :fachinfos, :orphaned_patinfos
 	attr_writer :substance_index, :soundex_substances
-	public :rebuild_indices
+	#public :rebuild_indices
 	def all_soundex_substances
 		@soundex_substances
 	end

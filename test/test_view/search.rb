@@ -12,6 +12,7 @@ require 'util/validator'
 require 'stub/oddbapp'
 require 'stub/session'
 require 'stub/cgi'
+require 'mock'
 
 module ODDB
 	class GalenicGroup
@@ -21,8 +22,31 @@ module ODDB
 	end
 end
 
+ module ODBA
+	 module Persistable
+		def odba_store(*args)
+		end
+		def odba_delete
+		end
+=begin
+		class Hash
+			def odba_restore
+			end
+		end
+=end
+		class Cache
+			def retrieve_from_index(*args)
+			end
+		end
+	end
+ end
 class TestSearchView < Test::Unit::TestCase
 	def setup
+		ODBA.cache_server = Mock.new("cache_server")
+		ODBA.cache_server.__next(:prefetch){}
+		ODBA.cache_server.__next(:fetch_named){
+				OddbPrevalence.new
+		}
 		ODDB::GalenicGroup.reset_oid
 		validator = ODDB::Validator.new
 		@session = ODDB::Session.new("test", ODDB::App.new, validator)

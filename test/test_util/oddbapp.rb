@@ -195,6 +195,10 @@ class TestOddbApp < Test::Unit::TestCase
 
 	def setup
 		ODBA.cache_server = Mock.new("cache_server")
+		ODBA.cache_server.__next(:prefetch){}
+		ODBA.cache_server.__next(:fetch_named){
+				OddbPrevalence.new
+		}
 		ODDB::GalenicGroup.reset_oids
 		dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
 		Dir.foreach(dir) { |filename|
