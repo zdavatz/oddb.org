@@ -22,6 +22,9 @@ module ODDB
 			NAV_LINK_CLASS = CenteredNavigationLink
 			NAV_LINK_CSS = 'list'
 			NAV_METHOD = :zone_navigation
+			HTML_ATTRIBUTES = {
+				'align' => 'center',
+			}
 		end
 		class PayPalForm < HtmlGrid::Form
 			COMPONENTS = {
@@ -91,6 +94,7 @@ module ODDB
 			end
 		end
 		class CenteredSearchComposite < HtmlGrid::Composite
+			include LegalNoteLink
 			COMPONENTS = {}
 			CSS_CLASS = 'composite'
 			CSS_MAP = {

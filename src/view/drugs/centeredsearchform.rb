@@ -51,7 +51,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,6,4]	=>	:sl_count_text,
 		[0,7] =>	'database_last_updated_txt',
 		[0,7,1]	=>	:database_last_updated,
-		[0,8]		=>	View::LegalNoteLink,
+		[0,8]		=>	:legal_note,
 		[0,9]		=>	:paypal,
 	}
 	CSS_MAP = {

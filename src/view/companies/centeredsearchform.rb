@@ -32,7 +32,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,4,2]	=>	'comma_separator',
 		[0,4,3]	=>	'database_last_updated_txt',
 		[0,4,4]	=>	:database_last_updated,
-		[0,5]		=>	View::LegalNoteLink,
+		[0,5]		=>	:legal_note,
 		[0,6]		=>	:paypal,
 	}
 	CSS_MAP = {

@@ -1241,16 +1241,17 @@ table.legal-note {
 	width : 100%;
 	text-align : right;
 }
-table.legal-note-center {
+td.legal-note-center {
 	font-size: 8pt;
-	width : 100%;
 	text-align : center;
+	padding: 4px;
+	padding-bottom: 6px;
 }
-td.legal-note {
+td.legal-note-right {
 	vertical-align : bottom;
-	width : 100%;
-	padding-top : 3px;
-	padding-bottom : 3px;
+	text-align: right;
+	/*width : 100%;*/
+	padding: 4px;
 }
 a.legal-note {
 	text-decoration : none;
