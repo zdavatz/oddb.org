@@ -10,13 +10,11 @@ module ODDB
 		class Copyright < HtmlGrid::Composite
 			COMPONENTS = {
 				[0,0]			=>	:cpr_link,
-				[0,0,0]		=>	:cpr_updated,
-				[0,0,0,0]	=>	:cpr_date,
+				[0,0,0]		=>	"oddb_version",
 			}
 			CSS_CLASS = "navigation"
 			HTML_ATTRIBUTES = {"align"=>"left"}
 			SYMBOL_MAP = {
-				:cpr_updated	=>	HtmlGrid::Text,	
 				:cpr_link			=>	HtmlGrid::Link,
 			}
 			def cpr_date(model, session)

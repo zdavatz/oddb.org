@@ -435,6 +435,7 @@ zdavatz ! ywesee.com
 				:new_substance						=>	'Neue Substanz',
 				:oddbdat_tar_gz						=>	'oddbdat.tar.gz',
 				:oddbdat_zip							=>	'oddbdat.zip',
+				:oddb_version							=>	'&nbsp;v2.0',
 				:oddb_yaml_gz							=>	'oddb.yaml.gz',
 				:oddb_yaml_zip						=>	'oddb.yaml.zip',
 				:not_accepted							=>	'Verwerfen',
