@@ -328,7 +328,7 @@ module ODDB
 				}
 				cyp450_connections.each { |substance_name|
 					conn_pointer = [ 
-						'cyp450' + connection.to_s, 
+						'cyp450' + connection.to_s[0..-2], 
 						substance_name
 					]
 					pointer = cyp450.pointer + conn_pointer 
