@@ -64,10 +64,10 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		create_link(:sl_count_text, 'http://www.galinfo.net')
 	end
 	def fi_count_text(model, session)
-		create_link(:fi_count_text, 'http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Interpellation')
+		create_link(:fi_count_text, 'http://wiki.oddb.org/wiki.php?pagename=ODDB.Fi-Upload')
 	end
 	def pi_count_text(model, session)
-		create_link(:pi_count_text, 'http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Interpellation')
+		create_link(:pi_count_text, 'http://wiki.oddb.org/wiki.php?pagename=ODDB.Pi-Upload')
 	end
 	def create_link(text_key, href)
 		link = HtmlGrid::Link.new(text_key, @model, @session, self)
