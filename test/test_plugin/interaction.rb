@@ -441,11 +441,11 @@ class TestInteractionPlugin < Test::Unit::TestCase
 			{ 'cyp_id_1'	=> 'substrate_1' }
 		}
 		substance.__next(:pointer) { pointer }
-		#substance.__next(:pointer) { pointer }
-		#@app.__next(:update) { |subs_pointer, values|
-			#	assert_equal(pointer, subs_pointer)
-			#	assert_equal(2, values.size)
-		#}
+		substance.__next(:pointer) { pointer }
+		@app.__next(:update) { |subs_pointer, values|
+			assert_equal(pointer, subs_pointer)
+			assert_equal(2, values.size)
+		}
 		substance.__next(:connection_key) { 'substance_en' }
 		
 		#third iteration
