@@ -165,6 +165,7 @@ class ResultList < HtmlGrid::List
 			&& (ctype = model.complementary_type))
 			square = HtmlGrid::Span.new(model, @session, self)
 			square.value = @lookandfeel.lookup("c_type_#{ctype}")
+			square.set_attribute('title', @lookandfeel.lookup(ctype))
 			square.css_class = "square #{ctype}"
 			square
 		end
