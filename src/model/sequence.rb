@@ -182,6 +182,7 @@ module ODDB
 	class Sequence < SequenceCommon
 		attr_accessor :patinfo_shadow
 		ACTIVE_AGENT = ActiveAgent
+		PDF_DIR = File.expand_path('../../doc/resources/patinfo/', File.dirname(__FILE__))
 		ODBA_PREFETCH = true
 		PACKAGE = Package
 		def atc_class=(atc_class)
@@ -198,6 +199,18 @@ module ODDB
 				@patinfo_oid = @patinfo.oid
 			end
 			@patinfo
+		end
+		def pdf_patinfo(pi_file)
+			#store file	
+			@patinfo = "#{self.iksnr.to_s}_#{@seqnr.to_s}.pdf"
+			
+			
+			str = (File.expand_path(@patinfo, self::class::PDF_DIR))
+			puts "storing:"
+			puts str
+			store_file = File.new(File.expand_path(@patinfo, self::class::PDF_DIR), "w")
+			store_file.write(pi_file.read)
+			store_file.close
 		end
 		def	replace_observer(target, value)
 			if(target.respond_to?(:remove_sequence))

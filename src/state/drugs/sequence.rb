@@ -101,6 +101,9 @@ class Sequence < State::Drugs::Global
 			@errors.store(:atc_class, create_error(:e_unknown_atc_class, :code, atc_code))
 		end
 		@model = @session.app.update(@model.pointer, input)
+		if(pi_file = @session.user_input(:patinfo_upload))
+			@model.pdf_patinfo(pi_file)
+		end
 		self
 	end
 end
