@@ -1,11 +1,8 @@
 #!/usr/bin/env ruby
 # AtcNode -- oddb -- 17.07.2003 -- maege@ywesee.com
 
-require 'util/persistence'
-
 module ODDB
 	class AtcNode
-		include Persistence
 		attr_reader :children
 		def initialize(atcclass)
 			@atc_class = atcclass

@@ -706,14 +706,14 @@ module ODDB
 		attr_reader :cleaner, :updater
 		def initialize
 			puts STORAGE_PATH
-=begin
+			#=begin
 		 	@prevalence = Madeleine::SnapshotMadeleine.new(STORAGE_PATH) {
 				sys = OddbPrevalence.new
 			}
 			puts "prevalence initialized"
 			@system = @prevalence.system
-=end
-			#=begin
+			#=end
+=begin
 			ODBA.cache_server.prefetch
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
 				puts "new oddbprevalence created"
@@ -722,7 +722,7 @@ module ODDB
 			}
 			#rebuild the atc_chooser
 			@system.rebuild_atc_chooser
-			#=end
+=end
 			puts "system init..."
 			@system.init
 			#@system.odba_store
