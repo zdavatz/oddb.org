@@ -94,14 +94,10 @@ module ODDB
 			}
 		end
 		def package_patinfo(idx)
-			puts "#{self}::package_patinfo(#{idx})"
-			#puts caller.join("\n")
 			languages = package_languages(idx)
 			unless(@iksnrs.empty?)
-				#puts "using iksnrs for #{idx}: #{@iksnrs.join(', ')}"
 				patinfo_triage(@iksnr_documents, @iksnrs, languages)
 			else
-				#puts "no iksnrs for #{idx}, using names: #{@names.join(', ')}"
 				patinfo_triage(@named_documents, @names, languages)
 			end
 		end
@@ -116,7 +112,6 @@ module ODDB
 				sprintf("%s/%05i.html", language, idx),
 				self::class::HTML_PATH
 			)
-			#puts filepath
 			if(File.exist?(filepath))
 				#GC.start
 				begin 
@@ -203,9 +198,7 @@ module ODDB
 			elsif(patinfo = @named_documents[name])
 				name
 			end
-			#puts "sequence_info_by_name: key is #{key}"
 			if(@error_documents.include?(seq.iksnr))
-				#puts "got an error document for #{key}"
 				@error_documents[seq.iksnr].push(patinfo)
 				@named_documents.delete(key)
 				nil
@@ -221,13 +214,10 @@ module ODDB
 		end
 		def update_news
 			newsdir = File.expand_path('news', self::class::HTML_PATH)
-			puts "newsdir: #{newsdir}"
 			updates = self::class::LANGUAGES.inject([]) { |inj, lang|
 				target_dir = File.expand_path(lang, self::class::HTML_PATH)
 				source_dir = File.expand_path(lang, newsdir)
-				puts source_dir
 				Dir.foreach(source_dir) { |entry|
-					puts "scanning #{entry}"
 					if(match = /([1-9][0-9]+)\.html/.match(entry))
 						inj << match[1].to_i
 						File.rename(File.expand_path(entry, source_dir), 
@@ -237,7 +227,6 @@ module ODDB
 				inj
 			}.uniq
 			updates.each { |idx|
-				puts "packaging #{idx}"
 				package_patinfo(idx)
 			}
 			update_registrations()
@@ -263,7 +252,6 @@ module ODDB
 				else
 					reg.sequences.each { |key, seq|
 						if(languages = sequence_info_by_name(seq))
-							#puts "got some languages: #{languages.keys.sort.join('/')}"
 							update_sequence(seq, languages)
 						end
 					}

@@ -34,7 +34,10 @@ module ODDB
 		end
 		def checkout
 			checkout_helper([@company, @indication], :remove_registration)
-			@sequences.each_value { |seq| seq.checkout }
+			@sequences.each_value { |seq| 
+				seq.checkout 
+				seq.odba_delete
+			}
 		end
 		def company_name
 			@company.name if @company

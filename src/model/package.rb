@@ -61,7 +61,10 @@ Grammar OddbSize
 		end
 		def checkout
 			checkout_helper([@generic_group], :remove_package)
-			@sl_entry.checkout if @sl_entry.respond_to?(:checkout)
+			if(@sl_entry.respond_to?(:checkout))
+				@sl_entry.checkout 
+				@sl_entry.odba_delete
+			end
 		end
 		def company
 			@sequence.company
@@ -176,7 +179,6 @@ Grammar OddbSize
 			multi, addition, count, measure, scale, dose, comform = nil
 			begin
 				ast = @@parser.parse(size)
-				#puts ast.inspect_multi
 				multi, addition, count, measure, scale, dose, comform = ast.flatten
 			rescue ParseException => e
 				puts '*'*60 

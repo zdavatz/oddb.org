@@ -10,8 +10,7 @@ module ODDB
 		end
 		def add_registration(registration)
 			@registrations.push(registration)
-			@registrations.odba_store
-			odba_store
+			@registrations.odba_isolated_store
 			registration
 		end
 		def empty?
@@ -21,9 +20,9 @@ module ODDB
 			@registrations.size
 		end
 		def remove_registration(registration)
-			@registrations.delete(registration) 
-			@registrations.odba_store
-			odba_store
+			if(@registrations.delete(registration))
+				@registrations.odba_isolated_store
+			end
 			registration
 		end
 		def iksnrs

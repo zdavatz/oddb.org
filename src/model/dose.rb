@@ -52,7 +52,7 @@ module ODDB
 		def to_s
 			@not_normalized or begin
 				val = if(@val.is_a? Float)
-					sprintf('%.3f', @val).gsub(/0$/, '')
+					sprintf('%.3f', @val).gsub(/0+$/, '')
 				else
 					@val
 				end
@@ -76,9 +76,8 @@ module ODDB
 		end
 		def ==(other)
 			begin
-				super
-			rescue RuntimeError => e
-				#puts e
+				other && super
+			rescue StandardError, RuntimeError => e
 				false
 			end
 		end

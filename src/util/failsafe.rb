@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Logger -- ODDB -- 08.03.2004 -- hwyss@ywesee.com
+# Failsafe -- ODDB -- 08.03.2004 -- hwyss@ywesee.com
 
 module ODDB
 	module Failsafe

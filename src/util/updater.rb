@@ -176,7 +176,6 @@ module ODDB
 			logs = @app.create(logs_pointer)
 			# The first issue of SwissmedicJournal is 2002,1
 			latest = logs.newest_date || Date.new(2002,4) 
-			#latest = logs.newest_date || Date.new(2003,5) 
 			success = true
 			while((latest < Date.today) && success)
 				latest = latest >> 1
@@ -203,7 +202,9 @@ module ODDB
 		end
 		def wrap_update(klass, subj, &block)
 			begin
-				block.call
+				ODBA.batch {
+					block.call
+				}
 			rescue StandardError => e
 				log = Log.new(Date.today)
 				log.report = [

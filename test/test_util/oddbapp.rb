@@ -194,6 +194,7 @@ class TestOddbApp < Test::Unit::TestCase
 	end
 
 	def setup
+		@old_cache = ODBA.cache_server
 		ODBA.cache_server = Mock.new("cache_server")
 		ODBA.cache_server.__next(:prefetch){}
 		ODBA.cache_server.__next(:fetch_named){
@@ -206,6 +207,9 @@ class TestOddbApp < Test::Unit::TestCase
 			File.delete(file) unless filename[0] == ?.
 		}
 		@app = ODDB::App.new
+	end
+	def teardown
+		ODBA.cache_server = @old_cache
 	end
 	def test_galenic_group_initialized
 		expected_pointer = ODDB::Persistence::Pointer.new([:galenic_group, 1])
@@ -407,6 +411,7 @@ class TestOddbApp < Test::Unit::TestCase
 		substance = @app.create(substpointer)
 		seq.active_agents = []
 		pointer += ['active_agent', 'LEVOMENTHOLUM']
+		ODBA.cache_server.__next(:store) {}
 		@app.create(pointer)
 		assert_equal(1, seq.active_agents.size)
 		agent = seq.active_agents.first
@@ -422,7 +427,9 @@ class TestOddbApp < Test::Unit::TestCase
 		seq = @app.create(pointer)
 		substpointer = ODDB::Persistence::Pointer.new(['substance', 'LEVOMENTHOLUM'])
 		substance = @app.create(substpointer)
+		assert_instance_of(ODDB::Substance, substance)
 		pointer += ['active_agent', 'LEVOMENTHOLUM']
+		ODBA.cache_server.__next(:store) { }
 		agent = @app.create(pointer)
 		values = {
 			:dose	=>	[16, 'mg'],
@@ -514,6 +521,7 @@ class TestOddbApp < Test::Unit::TestCase
 		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
 		created = @app.create(pointer)
 		assert_equal(1, @app.cyp450s.size)
+		ODBA.cache_server.__next(:store) {}
 		@app.delete(pointer)
 		assert_equal(0, @app.cyp450s.size)
 	end
@@ -548,6 +556,7 @@ class TestOddbApp < Test::Unit::TestCase
 		pointer += ['cyp450inhibitor', 'foo_name']
 		inh = @app.create(pointer)
 		assert_equal(1, cyp450.inhibitors.size)
+		ODBA.cache_server.__next(:store) {}
 		@app.delete(pointer)
 		assert_equal(0, cyp450.inhibitors.size)
 	end
@@ -573,6 +582,7 @@ class TestOddbApp < Test::Unit::TestCase
 		pointer += ['cyp450inducer', 'foo_name']
 		inh = @app.create(pointer)
 		assert_equal(1, cyp450.inducers.size)
+		ODBA.cache_server.__next(:store) {}
 		@app.delete(pointer)
 		assert_equal(0, cyp450.inducers.size)
 	end
@@ -596,6 +606,7 @@ class TestOddbApp < Test::Unit::TestCase
 		pointer += [ :cyp450substrate, "cyp_id" ]
 		substr = @app.create(pointer)
 		assert_equal(1, substance.substrate_connections.size)
+		ODBA.cache_server.__next(:store) {}
 		@app.delete(substr.pointer)
 		assert_equal(0, substance.substrate_connections.size)
 	end
@@ -791,6 +802,7 @@ class TestOddbApp < Test::Unit::TestCase
 			'reg2'	=>	StubRegistration.new,
 			'reg3'	=>	StubRegistration.new,
 		}
+		@app.instance_variable_get('@system').instance_variable_set('@package_count', nil)
 		count = @app.package_count	
 		assert_equal(9,count)
 	end
@@ -874,6 +886,7 @@ class TestOddbApp < Test::Unit::TestCase
 		stub_pat.extend(ODBA::Persistable)
 		@app.orphaned_patinfos = { 1 => stub_pat}
 		pointer = ODDB::Persistence::Pointer.new([:orphaned_patinfo, 1])
+		ODBA.cache_server.__next(:store) {}
 		@app.delete(pointer)
 		assert_equal({}, @app.orphaned_patinfos)
 	end

@@ -8,6 +8,7 @@ require 'test/unit'
 require 'util/persistence'
 require 'model/registration'
 require 'model/incompleteregistration'
+require 'mock'
 
 module ODDB
 	class RegistrationCommon
@@ -264,6 +265,30 @@ class TestRegistration < Test::Unit::TestCase
 			'3434' => sequence,
 		}
 		assert_equal(expected, @registration.substance_names)
+	end
+	def test_checkout
+		seq1 = Mock.new('Sequence1')
+		seq2 = Mock.new('Sequence2')
+		sequences = {
+			"01"	=>	seq1,
+			"02"	=>	seq2,
+		}
+		@registration.instance_variable_set('@sequences', sequences)
+		seq1.__next(:checkout) { 
+			assert(true)	
+		}
+		seq1.__next(:odba_delete) { 
+			assert(true)	
+		}
+		seq2.__next(:checkout) { 
+			assert(true)	
+		}
+		seq2.__next(:odba_delete) { 
+			assert(true)	
+		}
+		@registration.checkout
+		seq1.__verify
+		seq2.__verify
 	end
 end
 class TestIncompleteRegistration < Test::Unit::TestCase

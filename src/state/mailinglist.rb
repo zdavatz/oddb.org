@@ -17,7 +17,6 @@ module ODDB
 				info_message = :i_unsubscriber_mail_sent
 			end
 			email = @session.user_input(:email)
-			puts email.inspect
 			unless(email.is_a?(SBSM::InvalidDataError))
 				send_email(email, recipient, info_message)
 			else

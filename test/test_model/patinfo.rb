@@ -2,11 +2,12 @@
 # TestPatinfo -- oddb -- 29.10.2003 -- rwaltert@ywesee.com
 
 
-$: << File.dirname(__FILE__)
+$: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/patinfo'
+require 'stub/odba'
 
 module ODDB
 	class Patinfo
@@ -14,12 +15,6 @@ module ODDB
 	end
 end
 
-module ODBA
-	module Persistable
-		def odba_store
-		end
-	end
-end
 class TestPatinfo < Test::Unit::TestCase
 	class Array
 		include ODBA::Persistable

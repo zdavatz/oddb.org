@@ -15,7 +15,6 @@ file = File.expand_path('../../data/csv/swissmedic.csv', File.dirname(__FILE__))
 galenic_group_pointer = ODDB::Persistence::Pointer.new([:galenic_group, 1])
 CSV.open(file, 'r', ?;) { |cvs_row|
 	row = cvs_row.to_a
-	#puts (row[3,1] + row[7,2] + row[11,2] + row[17,2]).join(';')
 
 	company	= nil
 	if(row[10])

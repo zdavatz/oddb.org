@@ -57,7 +57,9 @@ module ODDB
 		end
 		def checkout_helper(connections, remove_command)
 			connections.each { |var|
-				var.send(remove_command, self) if var.respond_to?(remove_command)	
+				if(var.respond_to?(remove_command))
+					var.send(remove_command, self)
+				end
 			}
 		end
 		def current_oid(klass)
@@ -164,7 +166,6 @@ Grammar OddbSize
 				Pointer.new(*directions)
 			end
 			def issue_create(app)
-				#puts " in issue create"
 				new_obj = resolve(app)
 				unless new_obj.nil?
 					return new_obj
@@ -176,36 +177,30 @@ Grammar OddbSize
 				new_obj = hook.send(*(command.compact))
 				new_obj.pointer = self
 				new_obj.init(app)
-				#puts "before new_obj.odba_store"
-				#puts "after new_obj.odba_store"
-				#puts "before hook.odba_store"
 				#Only the hook must be stored
 				#because wie scan its connections for unsaved objects
 				#see ODBA::Persistable
 				hook.odba_store
-				#new_obj.odba_store
-				#puts "after hook.odba_store"
 				new_obj
 			end
 			def issue_delete(app)
-				begin
-					obj = resolve(app)
-					#	puts "before odba_delete"
+				obj = resolve(app)
 					if obj.respond_to?(:checkout)
 						obj.checkout
 					end
-					obj.odba_delete
+					if(obj.respond_to?(:odba_delete))
+						obj.odba_delete
+					end
 					pointer = dup
 					command = pointer.directions.pop
 					command[0] = 'delete_' << command.first.to_s
 					hook = pointer.resolve(app)
 					if(hook.respond_to?(command.first))
 						hook.send(*(command.compact))
-						hook.odba_store
+						hook.odba_isolated_store
 					end
-				rescue InvalidPathError, UninitializedPathError => e
-					puts "Could not delete: #{to_s}, reason: #{e.message}"
-				end
+			rescue InvalidPathError, UninitializedPathError => e
+				puts "Could not delete: #{to_s}, reason: #{e.message}"
 			end
 			def issue_update(hook, values)
 				obj = resolve(hook)
@@ -236,7 +231,11 @@ Grammar OddbSize
 						lasthook = hook
 						laststep = step
 						hook = begin
-							hook.send(*step)
+							arity = hook.method(step.first).arity
+							if(((arity >= 0) && (step.size == arity.next)) \
+								|| ((arity < 0) && (step.size >= -arity)))
+								hook.send(*step)
+							end
 						rescue
 							#puts "#{step.join(',')}: Arity did not match!!!!!!!"
 						end

@@ -9,17 +9,17 @@ module ODDB
 			super
 		end
 		def add_sequence(seq)
-			unless @sequences.include?(seq)
+			unless(@sequences.include?(seq))
 				@sequences.push(seq) 
-				@sequences.odba_store
-				odba_store
+				@sequences.odba_isolated_store
 			end
 			seq
 		end
 		def remove_sequence(seq)
-			@sequences.delete(seq)
-			@sequences.odba_store
-			odba_store
+			if(@sequences.delete(seq))
+				@sequences.odba_isolated_store
+			end
+			seq
 		end
 		def empty?
 			@sequences.empty?

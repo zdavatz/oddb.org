@@ -120,29 +120,21 @@ module ODDB
 		end
 		def update
 			news = fachinfo_news
-			#puts "following indices need updating: #{news.join(', ')}"
 			updates = true_news(news, old_news)
 			updates.each { |idx|
-				#puts "fetching_languages for #{idx}"
 				if(fetch_languages(idx))
 					languages = package_languages(idx)
-					#puts "#{languages.size} languages for #{idx}"
 					update_registrations(languages) unless languages.empty?
 				end
-				#puts "done with #{idx}"
 			}
-			#puts "done with them all"
 			log_news(updates)
 			!updates.empty?
 		end
 		def update_all
 			1000.upto(10010) { |idx| 
 				languages = package_languages(idx)
-				#puts "#{idx}	=>	#{languages.size}"
 				unless(languages.empty?)
-					#puts "updating..."
 					update_registrations(languages)
-					#puts "...done"
 				end
 			}
 		end
@@ -167,34 +159,20 @@ module ODDB
 			log_news(updates)
 		end
 		def update_registrations(languages)
-			puts "="*40
-			puts "update_registrations"
 			iksnrs = begin
 				extract_iksnrs(languages)
 			rescue StandardError
 				[]
 			end
-			puts "iksnrs are: #{iksnrs.join(',')}"
-			begin
-				name = languages.sort.first.last.name
-			rescue StandardError
-				name = "No Name"
-			end
-			puts "name is #{name}"
 			if(iksnrs.empty?)
-				#puts "no iksnrs!"
 				@iksless.push(name)
 			else
 				fachinfo = nil
 				iksnrs.each { |nr|
 					iksnr = sprintf('%05i', nr.to_i)
-					#puts "updating #{iksnr}"
 					if(reg = @app.registration(iksnr))
-						#puts "found registration"
 						fachinfo ||= store_fachinfo(languages)
-						#puts "created fachinfo"
 						@app.replace_fachinfo(iksnr, fachinfo.pointer)
-						#puts "replaced fachinfo"
 					else
 						@unknown_iksnrs.store(iksnr, name)
 						store_orphaned(iksnr, languages)

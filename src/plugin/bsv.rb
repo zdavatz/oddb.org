@@ -130,21 +130,14 @@ module ODDB
 						hash.store(:generic_type, :generic)
 					end
 					begin 
-						puts hash[:name]
-						puts hash[:iksnr]
-						puts hash[:ikscd]
 						update_registration(hash)
-						puts '...done'
 					rescue StandardError => e
-						puts '...error:'
 						puts e.class
 						puts e.message
 						puts e.backtrace
 					end
 				}
-				puts "purging sl_entries"
 				purge_sl_entries
-				puts "done..."
 				true
 			else
 				false
@@ -153,7 +146,6 @@ module ODDB
 		private
 		def purge_sl_entries
 			@app.each_package { |pack| 
-				puts pack
 				unless(pack.sl_entry.nil? || @updated_packages.include?(pack))
 					@app.delete(pack.sl_entry.pointer)
 					@change_flags.store(pack.pointer, [:sl_entry])

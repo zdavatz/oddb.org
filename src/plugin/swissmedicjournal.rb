@@ -67,7 +67,6 @@ module ODDB
 		def update(month)
 			@month = month
 			regs = @ctrl.registrations(month)
-			#puts [__FILE__,__LINE__,"regs.size = #{regs.size}"].join(':')
 			unless(regs.nil?)
 				regs.each { |reg|
 					case reg
@@ -110,9 +109,7 @@ module ODDB
 				values.store([key, 'substance'].join('_').intern, extract.substance)
 				if(@app.substance(extract.substance).nil?)
 					pointer = Persistence::Pointer.new([:substance, extract.substance])
-					#puts [__FILE__,__LINE__,"app.create(#{pointer})"].join(':')
 					@app.create(pointer)
-					#puts [__FILE__,__LINE__,"app.created(#{pointer})"].join(':')
 				end
 				if(dose = extract.dose)
 					values.store([key, 'dose'].join('_').intern,[extract.dose.qty, extract.dose.unit])
@@ -133,16 +130,17 @@ module ODDB
 		end
 		def prune_packages(smj_seq, sequence)
 			ikscds = smj_seq.packages.collect { |package| package.ikscd }
-			sequence.packages.each { |ikscd, package| 
+			sequence.packages.dup.each { |ikscd, package| 
 				unless ikscds.include?(ikscd)
 					@pruned_packages += 1
-					@app.delete(package.pointer) 
+					pointer = sequence.pointer + [:package, ikscd]
+					@app.delete(pointer) 
 				end
 			}
 		end
 		def prune_sequences(smj_reg, registration)
 			seqnrs = smj_reg.products.keys
-			registration.sequences.each { |seqnr, sequence|
+			registration.sequences.dup.each { |seqnr, sequence|
 				if(seqnrs.include?(seqnr))
 					smj_seq = smj_reg.products[seqnr]
 					prune_packages(smj_seq, sequence) if smj_seq.packages

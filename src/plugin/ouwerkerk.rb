@@ -13,6 +13,7 @@ module ODDB
 		NUMERIC_FLAGS = {
 			:new							=>	1,
 			:del							=>	2,
+			:delete						=>	2,
 			:productname			=>	3, 
 			:address					=>	4,
 			:ikscat						=>	5,
@@ -143,6 +144,7 @@ module ODDB
 			rows
 		end
 		def export_xls
+			#require 'debug'
 			rows = export_registrations
 			dir = File.dirname(@file_path)
 			Dir.mkdir(dir) unless File.exists?(dir)

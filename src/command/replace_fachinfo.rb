@@ -13,9 +13,7 @@ module ODDB
 				old_fi = registration.fachinfo
 				registration.fachinfo = fachinfo
 				if(old_fi && old_fi.empty?)
-					#puts "========= deleting #{old_fi.pointer} ========"
 					app.delete(old_fi.pointer)
-					#puts "========== piece of cake ============="
 				end
 				nil
 			end

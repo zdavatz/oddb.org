@@ -254,7 +254,6 @@ module ODDB
 		end
 		def package_html(package)
 			ean13 = package.barcode
-			puts ean13
 			hash = build_first_post_hash("", ean13)
 			event_target = "DgMedrefProduct:_ctl2:_ctl0"
 			medwin_html(hash, event_target, ean13)

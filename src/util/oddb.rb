@@ -56,6 +56,6 @@ oddb = ODDB::App.new
 $0 = "Oddb (OddbApp)"
 
 DRb.start_service(ODDB::SERVER_URI, oddb)
-puts "drb-service started"
+#puts "drb-service started in #{seconds} seconds"
 
 DRb.thread.join

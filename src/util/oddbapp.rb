@@ -26,6 +26,7 @@ class OddbPrevalence
 	include ODDB::Failsafe
 	include ODBA::Persistable
 	ODBA_EXCLUDE_VARS = [
+		"@bean_counter",
 		"@sequence_index",
 		"@indication_index",
 		"@substance_index",
@@ -80,7 +81,8 @@ class OddbPrevalence
 		@substances ||= {}
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
-		rebuild_atc_chooser
+		rebuild_atc_chooser()
+		package_count()
 		#rebuild_indices
 	end
 	# prevalence-methods ################################
@@ -89,7 +91,7 @@ class OddbPrevalence
 		@last_update = Time.now()
 		failsafe {
 			if(item = pointer.issue_create(self))
-				puts item
+				#puts item
 				updated(item)
 				item
 			end
@@ -111,9 +113,10 @@ class OddbPrevalence
 			pointer.resolve(self)
 		}
 		# if this item has been newly created, we want its pointer back
-		pointer = item.pointer unless item.nil? 
-		updated(item)
-		update_item(item, values)
+		unless(item.nil?)
+			updated(item)
+			update_item(item, values)
+		end
 		item
 	end
 	def update_item(item, values)
@@ -294,6 +297,7 @@ class OddbPrevalence
 				}
 				diff = subs.diff(values, self)
 				subs.update_values(diff)
+=begin
 				begin
 					#store_in_index(@substance_index, key, subs)
 					#store_in_index(@substance_name_index, key, *subs.sequences)
@@ -302,6 +306,7 @@ class OddbPrevalence
 					puts $!.message
 					puts $!.backtrace
 				end
+=end
 			end
 			@substances.store(subs.oid, subs)
 		end
@@ -441,44 +446,46 @@ class OddbPrevalence
 	end
 	#for testing only
 	def rebuild_odba
+		puts "reloading persistable"
+		load '/usr/local/lib/site_ruby/1.8/odba/persistable.rb'
 		#initialize scalar cache and cache_server 
 		#(otherwise deadlock problems will occur) 
-		ODBA.scalar_cache.scalar_cache.size
+		puts "initializing scalar_cache"
+		ODBA.scalar_cache.size
+		puts "initializing indices"
 		ODBA.cache_server.indices.size
-		#delete_if only for Testing!!!!!
+		puts "cleaning fachinfos"
 		@fachinfos.delete_if { |key, val| val.descriptions["de"].name.nil? }
-		#@atc_classes.delete_if{ |key, atc| atc.sequences.empty? }
+		puts "clearing indices"
 		clear_indices
-		path = File.expand_path('../../data/odba-csv', File.dirname(__FILE__))
-		ODBA.storage = ODBA::FlatFileStorage.new(path)
 		start = Time.now
+		puts "storing oddbapp"
 		odba_store('oddbapp')
 		stored = Time.now
 		ODBA.storage.close
-		#odba_take_snapshot
-		#rebuild_odba_indices
-		indexed = Time.now
 		puts <<-EOS
 #{(stored - start).to_f / 3600} h to save OddbPrevalence and all its unsaved neighbors
-#{(indexed - start).to_f / 3600} h Total time elapsed
 		EOS
-#{(indexed - stored).to_f / 3600} h to write all defined Indices
 	end			
 	def rebuild_odba_indices
+		ODBA.scalar_cache.size
+		ODBA.cache_server.indices.size
 		begin
 			start = Time.now
 			path = File.expand_path("../../etc/index_definitions.yaml", 
-				File.dirname(__FILE__))
+			File.dirname(__FILE__))
 			file = File.open(path)
 			YAML.load_documents(file) { |index_definition|
 				index_start = Time.now
 				puts "creating: #{index_definition.index_name}"
 				ODBA.cache_server.create_index(index_definition, ODDB)
 				puts "filling: #{index_definition.index_name}"
-				ODBA.cache_server.fill_index(index_definition.index_name, instance_eval(index_definition.init_source))
+				puts index_definition.init_source
+				ODBA.cache_server.fill_index(index_definition.index_name, 
+				instance_eval(index_definition.init_source))
 				puts "finished in #{(Time.now - index_start) / 60.0} min"
 			}
-			puts "all Indexes Created in total: #{(Time.now - start) / 3600.0} h"
+			puts "all Indices Created in total: #{(Time.now - start) / 3600.0} h"
 		rescue
 			puts "INDEX CREATION ERROR"
 		ensure
@@ -524,9 +531,12 @@ class OddbPrevalence
 		@orphaned_patinfos[oid.to_i]
 	end
 	def package_count
-		@registrations.values.inject(0) { |inj, reg|
-			inj += reg.package_count
-		}
+		@package_count or begin
+			@package_count = @registrations.values.inject(0) { |inj, reg|
+				inj += reg.package_count
+			}
+		end
+		@package_count
 	end
 	def rebuild_atc_chooser
 		@atc_chooser = ODDB::AtcNode.new(nil)
@@ -534,6 +544,15 @@ class OddbPrevalence
 			atc.code 
 		}.each { |atc|
 			@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
+		}
+	end
+	def recount_packages
+		if(@bean_counter.is_a?(Thread) && @bean_counter.status)
+			@bean_counter.kill
+		end
+		@bean_counter = Thread.new {
+			Thread.current.priority = -5
+			package_count()
 		}
 	end
 =begin
@@ -611,8 +630,6 @@ class OddbPrevalence
 			result
 		end
 		result.atc_classes.delete_if { |atc| atc.code.length == 0 }
-		puts "before result"
-		puts "we have #{result.atc_classes.size} atc-classes"
 		result
 	end
 	def search_interaction(query)
@@ -630,7 +647,6 @@ class OddbPrevalence
 		result
 	end
 	def sequences_by_name(name)
-		puts "retrieving_sequences_by_name"
 		ODBA.cache_server.retrieve_from_index("sequence_index_atc", name)
 	end
 	def soundex_substances(name)
@@ -679,6 +695,7 @@ class OddbPrevalence
 		case item
 		when ODDB::Registration, ODDB::Sequence, ODDB::Package, ODDB::AtcClass
 			@last_medication_update = Date.today
+			recount_packages()
 		end
 	end
 	def user(oid)
@@ -732,7 +749,7 @@ module ODDB
 		VALIDATOR = Validator
 		attr_reader :cleaner, :updater
 		def initialize
-			puts STORAGE_PATH
+			#puts STORAGE_PATH
 =begin
 		 	@prevalence = Madeleine::SnapshotMadeleine.new(STORAGE_PATH) {
 				sys = OddbPrevalence.new
@@ -757,10 +774,6 @@ module ODDB
 			puts "reset"
 			reset()
 			puts "system initialized"
-
-			## only for profiling
-			#require 'profile'
-			#rebuild_odba
 		end
 		# prevalence-methods ################################
 		def accept_incomplete_registration(reg)
@@ -854,13 +867,11 @@ module ODDB
 			}
 		end
 		def run_updater
-			puts "running updater thread"
 			Thread.new {
 				Thread.current.priority=-5
 				Thread.current.abort_on_exception = true
 				loop {
 					Updater.new(self).run
-					#@prevalence.take_snapshot
 					GC.start
 					sleep UPDATE_INTERVAL
 				}

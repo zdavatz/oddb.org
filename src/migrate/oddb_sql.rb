@@ -75,7 +75,6 @@ DBI.connect("dbi:mysql:nachahmer", "nachahmer", "ch5733") { |dbh|
 		begin
 			sequence_pointer = reg.package(ikskey).sequence.pointer
 		rescue StandardError
-			#puts "unknown sequence " << row['iks_key']
 			next_sequence = reg.sequences.keys.max.to_i.next
 			sequence_pointer = reg.pointer + ['sequence', next_sequence]
 		end

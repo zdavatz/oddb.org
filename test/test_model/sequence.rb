@@ -8,6 +8,8 @@ require 'test/unit'
 require 'model/sequence'
 require 'model/atcclass'
 require 'model/substance'
+require 'stub/odba'
+require 'mock'
 
 module ODDB
 	class SequenceCommon

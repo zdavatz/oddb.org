@@ -40,8 +40,14 @@ module ODDB
 		end
 		def checkout
 			checkout_helper([@atc_class, @galenic_form], :remove_sequence)
-			@packages.each_value { |pac| pac.checkout }
-			@active_agents.each { |act| act.checkout }
+			@packages.each_value { |pac| 
+				pac.checkout 
+				pac.odba_delete
+			}
+			@active_agents.each { |act| 
+				act.checkout 
+				act.odba_delete
+			}
 		end
 		def company
 			@registration.company

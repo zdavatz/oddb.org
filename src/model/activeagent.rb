@@ -30,7 +30,7 @@ module ODDB
 		end
 		def update_values(values)
 			super
-			@pointer= @pointer.parent + [:active_agent, @substance.name]
+			@pointer = @pointer.parent + [:active_agent, @substance.name]
 		end
 		alias :pointer_descr :to_s
 		def ==(other)

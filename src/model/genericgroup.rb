@@ -10,7 +10,9 @@ module ODDB
 			@packages = []
 		end
 		def add_package(package)
-			@packages.push(package).last
+			@packages.push(package)
+			@packages.odba_isolated_store
+			@packages.last
 		end
 		def remove_package(package)
 			@packages.delete_if { |pack| pack==package }

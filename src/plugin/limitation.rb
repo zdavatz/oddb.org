@@ -233,7 +233,6 @@ module ODDB
 		end
 		def sequence_data(link)
 			if(body = sequence_data_body(link))
-				#puts "parsing #{link}"
 				parse_sequence_data(body, link)
 			end
 		end

@@ -16,6 +16,8 @@ module ODDB
 		end
 		def add(a_galenic_form)
 			@galenic_forms.store(a_galenic_form.oid, a_galenic_form)
+			@galenic_forms.odba_isolated_store
+			a_galenic_form
 		end
 		def create_galenic_form
 			galenic_form = GalenicForm.new

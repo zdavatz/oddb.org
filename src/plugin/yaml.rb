@@ -10,11 +10,9 @@ module ODDB
 		YAML_URI = 'oddb.org,2003'
 		EXPORT_PROPERTIES = []
 		def to_yaml_type
-			#puts self.class
 			"!#{YAML_URI}/#{self.class}"
 		end
 		def to_yaml_properties
-			#puts self::class::EXPORT_PROPERTIES
 			self::class::EXPORT_PROPERTIES
 		end
   end		
@@ -345,9 +343,7 @@ module ODDB
 			fi_name = 'fachinfo.yaml'
 			pi_name = 'patinfo.yaml'
 			atc_name = 'atc.yaml'
-			#puts "exporting #{db_name}"
 			export(db_name)
-			#puts "compressing #{db_name}"
 			compress(db_name)
 			export_atc_classes(atc_name)
 			compress(atc_name)

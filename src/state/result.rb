@@ -32,7 +32,6 @@ module ODDB
 				count = 0
 				@package_count = 0
 				sorted_atc_classes.each { |atc|
-					#puts "in each"
 					@pages[page] ||= ODDB::PageFacade.new(page) 
 					@pages[page].push(atc)
 					@package_count += atc.package_count

@@ -40,7 +40,6 @@ module ODDB
 			total = fachinfos.size
 			puts "Total: #{total} fachinfos to write"
 			WRITER.document(path, language) { |document|
-				puts "document: #{document.class}"
 				start_time = Time.new
 				fachinfos.each_with_index { |fachinfo, idx|
 					puts "checking Fachinfo: (#{idx}/#{total})"

@@ -81,7 +81,7 @@ module ODDB
 		class InducerConnection < Connection
 		end
 		class InteractionPlugin < Plugin
-			REFETCH_PAGES = false
+			REFETCH_PAGES = true 
 			INTERACTION_TYPES = [
 				:substrates, :inhibitors, :inducers,
 			]
@@ -137,7 +137,7 @@ module ODDB
 				end
 			end
 			def merge_data(hayes, flockhart)
-				puts 'merging ...'
+				#puts 'merging ...'
 				hayes.each { |hayes_cyt_id, hayes_cyt|
 					INTERACTION_TYPES.each { |type|
 						hayes_conn_arr = hayes_cyt.send(type)
@@ -166,7 +166,7 @@ module ODDB
 				hayes
 			end
 			def parse_hayes(plugin)
-				puts 'parsing hayes...'
+				#puts 'parsing hayes...'
 				if(REFETCH_PAGES)
 					plugin.fetch_pages
 				end
@@ -186,7 +186,7 @@ module ODDB
 				substr_hsh
 			end
 			def parse_flockhart(plugin)
-				puts 'parsing flockhart ...'
+				#puts 'parsing flockhart ...'
 				table_hsh = plugin.parse_table 
 				cytochromes = plugin.parse_detail_pages 
 				cytochromes.each { |cyt_id, cyt|
@@ -205,7 +205,7 @@ module ODDB
 				cytochromes	
 			end
 			def report
-				puts 'reporting ...'
+				#puts 'reporting ...'
 				#errors = []
 				updates = []
 				@update_reports.each { |key, value|
@@ -258,7 +258,7 @@ module ODDB
 				update_oddb(merge_data(@hayes, @flockhart))
 			end
 			def update_oddb(cytochrome_hsh)
-				puts "updating oddb ..."
+				#puts "updating oddb ..."
 				cytochrome_hsh.each { |cyt_id, cyt|
 					update_oddb_substances(cyt)
 					cyp450 = update_oddb_cyp450(cyt_id, cyt)
@@ -269,7 +269,7 @@ module ODDB
 				update_oddb_tidy_up
 			end
 			def update_oddb_tidy_up
-				puts "tidying up..."
+				#puts "tidying up..."
 				@updated_substances.each { |desc_en, substance|
 					substance[:connections].each { |cyt_id, conn|
 						pointer = substance[:pointer] + ['cyp450substrate', cyt_id]
@@ -280,7 +280,7 @@ module ODDB
 				}
 			end
 			def update_oddb_cyp450(cyt_id, cyt)
-				puts "updating cyp450 ..."
+				#puts "updating cyp450 ..."
 				unless(cyp450 = @app.cyp450(cyt_id))
 					pointer = Persistence::Pointer.new(['cyp450', cyt_id])
 					cyp450 = @app.create(pointer)
@@ -327,7 +327,7 @@ module ODDB
 				}
 			end
 			def update_oddb_substances(cyt)
-				puts "updating oddb substances..."
+				#puts "updating oddb substances..."
 				(cyt.substrates + cyt.inhibitors + cyt.inducers).each { |connection|
 					if(subs = @app.substance_by_connection_key(connection.name.downcase))
 						unless(@updated_substances.keys.include?(subs.connection_key))
@@ -358,7 +358,7 @@ module ODDB
 				}
 			end
 			def update_oddb_substrates(cyt_id, cyt)
-				puts "updating oddb substrates..."
+				#puts "updating oddb substrates..."
 				cyt.substrates.each { |substrate|
 					args = {
 						:links		=>	substrate.links,

@@ -6,6 +6,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/substance'
+require 'stub/odba'
 require 'mock'
 
 module ODDB

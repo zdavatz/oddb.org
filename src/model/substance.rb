@@ -27,6 +27,8 @@ module ODDB
 		end
 		def add_sequence(sequence)
 			@sequences.push(sequence)
+			@sequences.odba_isolated_store
+			sequence
 		end
 		def adjust_types(values, app=nil)
 			values.each { |key, value|
@@ -132,7 +134,9 @@ module ODDB
 			end
 		end
 		def remove_sequence(sequence)
-			@sequences.delete(sequence)
+			del = @sequences.delete(sequence)
+			@sequences.odba_isolated_store
+			del
 		end
 		def same_as?(substance)
 			result = descriptions.any? { |lang, desc|
