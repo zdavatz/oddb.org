@@ -35,7 +35,7 @@ class CompanyResult < State::Companies::Global
 	}
 	#REVERSE_MAP = ResultList::REVERSE_MAP
 	def init
-		if(@model.empty?)
+		if(!@model.is_a?(Array) || @model.empty?)
 			@default_view = View::Companies::EmptyResult
 		end
 	end
@@ -60,8 +60,8 @@ end
 class CompanyList < CompanyResult
 	DIRECT_EVENT = :companylist
 	def init
-		super
 		@model = @session.app.companies.values
+		super
 		if(@session.user.is_a?(ODDB::AdminUser))
 			userrange = @session.user_input(:range) || default_interval
 			range = RANGE_PATTERNS.fetch(userrange)

@@ -7,6 +7,7 @@ require 'model/address'
 module ODDB
 	class Doctor
 		include Persistence
+		ODBA_SERIALIZABLE = ['@specialities', '@abilities', '@skills']
 		attr_accessor :gender, :title, :name, :firstname,
 			:email, :exam, :language, :specialities, :abilities,
 			:skills, :praxis, :member, :salutation,
@@ -52,7 +53,7 @@ module ODDB
 			[
 				@name,
 				@email,
-				@specialities,
+				#@specialities,
 			] + @addresses.collect { |addr| addr.search_terms }
 		end
 		def work_addresses	
