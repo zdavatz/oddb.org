@@ -1,3 +1,16 @@
+2004-06-29 Matthijs Ouwerkerk <matthijs.ouwerkerk@just-medical.com>
+*	Reklamationen Matthijs
+	-	Wir haben die letzte, von dir gelieferte Liste im Detail kontrolliert und
+		mussten einmal mehr einige Diskrepanzen zwischen dem Swissmedic Journal
+		(05/2004) / galinfo (06/2004) und deiner Datei feststellen.
+		In der Beilage findest du ein EXCEL-Sheet mit deiner Originaldatei im ersten
+		Tabellenblatt und im darauffolgenden Tabellenblatt die selbe Liste, jedoch
+		mit unseren Bemerkungen.
+		3 Produkte fehlen, alle Löschungen sowohl bei der Swissmedic wie auch beim
+		BSV fehlen, 3 Produkte hast du uns schon mehrmals mit dem selben Code
+		mitgeliefert und 1 Produkt (Selipran) ist auf deiner Liste, welches wir im
+		Journal nirgends finden können.
+
 2004-06-25 Zeno Davatz <zdavatz@ywesee.com>
 * Offertengenerator für Publikation Fi und Pi
 	- Eingabe Felder:
