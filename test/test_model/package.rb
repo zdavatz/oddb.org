@@ -254,6 +254,24 @@ class TestPackage < Test::Unit::TestCase
 	def test_respond_to_name_base
 		assert_respond_to(@package, :name_base)
 	end
+	def test_price_diff
+		values = {:price_exfactory => 12.34}
+		expected = {:price_exfactory => 1234}
+		assert_equal(expected, @package.diff(values))
+		@package.price_exfactory = 1234
+		assert_equal({}, @package.diff(values))
+		values = {:price_exfactory => "12.34"}
+		assert_equal({}, @package.diff(values))
+		values = {:price_exfactory => 43.21}
+		expected = {:price_exfactory => 4321}
+		assert_equal(expected, @package.diff(values))
+		## rounding errors:
+		@package.price_exfactory = 4321
+		values = {:price_exfactory => 43.210000000000000000345}
+		assert_equal({}, @package.diff(values))
+		values = {:price_exfactory => 43.209999999999999999995}
+		assert_equal({}, @package.diff(values))
+	end
 end
 class TestIncompletePackage < Test::Unit::TestCase
 	def setup
