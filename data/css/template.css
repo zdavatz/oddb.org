@@ -1237,6 +1237,12 @@ td.explain-result {
 	padding-top : 3px;
 	padding-bottom : 3px;
 }
+td.explain-result-r {
+	background : $bg_bright;
+	vertical-align : bottom;
+	padding: 3px;
+	text-align: right;
+}
 table.legal-note {
 	width : 100%;
 	text-align : right;
