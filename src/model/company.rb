@@ -17,7 +17,8 @@ module ODDB
 		attr_accessor	:contact, :contact_email
 		attr_accessor	:url, :phone, :fax, :address_email
 		alias :email :address_email
-		attr_accessor :address, :plz, :location, :user
+		attr_accessor :address, :plz, :location
+		attr_reader :user
 		def initialize
 			@cl_status = false
 			super
@@ -26,7 +27,7 @@ module ODDB
 			@pointer.append(@oid)
 		end
 		def has_user?
-			!user.nil?
+			!@user.nil?
 		end
 		def inactive_registrations
 			@registrations.reject { |registration|
@@ -47,6 +48,11 @@ module ODDB
 				reg.company = self
 			}
 			@registrations.odba_isolated_store
+		end
+		def user=(user)
+			@user = user
+			self.odba_isolated_store
+			@user
 		end
 		def pointer_descr
 			@name

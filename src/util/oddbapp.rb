@@ -630,8 +630,8 @@ class OddbPrevalence
 =begin
 	def rebuild_odba
 		puts "reloading persistable"
-		load '/usr/local/lib/site_ruby/1.8/odba/persistable.rb'
-		load '/usr/local/lib/site_ruby/1.8/odba.rb'
+		#load '/usr/local/lib/site_ruby/1.8/odba/persistable.rb'
+		#load '/usr/local/lib/site_ruby/1.8/odba.rb'
 		#initialize scalar cache and cache_server 
 		#(otherwise deadlock problems will occur) 
 		puts "initializing scalar_cache"
@@ -644,9 +644,9 @@ class OddbPrevalence
 		clear_indices
 		start = Time.now
 		puts "storing oddbapp"
-		ODBA.batch { 
+		#ODBA.batch { 
 			odba_store('oddbapp')
-		}
+		#}
 		stored = Time.now
 		ODBA.storage.close
 		puts <<-EOS
