@@ -34,21 +34,6 @@ class OddbDatDownloadInnerComposite < HtmlGrid::Composite
 		link_with_filesize("s31x.zip")
 	end
 end
-class OddbDatDownloadComposite < HtmlGrid::Composite
-	COMPONENTS = {
-		[0,0]		=>	'oddbdat_download_title',
-		[0,1]		=>	'oddbdat_download_descr',
-		[0,2]		=>	View::User::OddbDatDownloadInnerComposite,
-	}
-	CSS_CLASS = 'composite'
-	CSS_MAP = {
-		[0,0]	=>	'th',
-		[0,1,1,2]	=>	'list',
-	}
-end
-class OddbDatDownload < View::PublicTemplate
-	CONTENT = View::User::OddbDatDownloadComposite
-end
 		end
 	end
 end

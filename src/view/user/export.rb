@@ -38,7 +38,7 @@ module Export
 	end
 	def link_with_filesize(filename)
 		if(display?(file_path(filename)))
-			symbol = filename.tr(".", "_").intern
+			symbol = filename.tr(".", "_").downcase.intern
 			link = export_link(symbol, filename)
 			size = filesize(filename)
 			[link, size]

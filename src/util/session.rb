@@ -17,6 +17,7 @@ module ODDB
 		DEFAULT_STATE = State::Drugs::Init
 		DEFAULT_ZONE = :drugs
 		SERVER_NAME = 'www.oddb.org'
+		PERSISTENT_COOKIE_NAME = 'oddb-preferences'
 =begin
 		def process(request)
 			res = nil

@@ -13,7 +13,7 @@ class Global < State::Global
 		[
 			State::User::MailingList,
 			State::User::Plugin,
-			State::User::YamlExport,
+			State::User::DownloadExport,
 		]
 	end
 end
