@@ -7,6 +7,9 @@ require 'parseexcel/parseexcel'
 
 module ODDB
 	class BsvPlugin < Plugin
+		BLOCKED_REGISTRATIONS = [
+			'17719', '19075', '55645',
+		]
 		class PackageDiffer
 			attr_reader :iksnr, :name
 			COMMA = ','
@@ -132,7 +135,9 @@ module ODDB
 						hash.store(:generic_type, :generic)
 					end
 					begin 
-						update_registration(hash)
+						unless(BLOCKED_REGISTRATIONS.include?(hash[:iksnr]))
+							update_registration(hash)
+						end
 					rescue StandardError => e
 						puts e.class
 						puts e.message
@@ -157,7 +162,8 @@ module ODDB
 		end
 		def purge_sl_entries
 			@app.each_package { |pack| 
-				unless(pack.sl_entry.nil? || @updated_packages.include?(pack))
+				unless(pack.sl_entry.nil? || @updated_packages.include?(pack) \
+					|| BLOCKED_REGISTRATIONS.include?(pack.iksnr))
 					@app.delete(pack.sl_entry.pointer)
 					@change_flags.store(pack.pointer, [:sl_entry_delete])
 				end
