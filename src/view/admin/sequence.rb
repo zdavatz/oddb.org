@@ -161,12 +161,6 @@ class SequenceForm < Form
 		super
 		error_message()
 	end
-	def patinfo_upload(model, session)
-		HtmlGrid::InputFile.new(:patinfo_upload, model, session, self)
-	end
-	def patinfo_label(model, session)
-		HtmlGrid::LabelText.new(:patinfo, model, session , self)
-	end
 	def assign_patinfo(model, session)
 		unless(@model.is_a? Persistence::CreateItem)
 			link = HtmlGrid::Link.new(:assign_patinfo, model, session, self)
@@ -174,6 +168,20 @@ class SequenceForm < Form
 			link.set_attribute('class', 'small')
 			link
 		end
+	end
+	def atc_descr(model, session)
+		if(((err = session.error(:atc_class)) \
+			&& err.message == "e_unknown_atc_class") \
+			|| ((atc = model.atc_class) \
+			&& atc.description.empty?))
+
+			HtmlGrid::InputText.new(:atc_descr, model, session, self)
+		else
+			super
+		end
+	end
+	def delete_item(model, session)
+		delete_item_warn(model, :w_delete_sequence)
 	end
 	def seqnr(model, session)
 		klass = if(model.seqnr.nil?)
@@ -190,16 +198,11 @@ class SequenceForm < Form
 			link
 		end
 	end
-	def atc_descr(model, session)
-		if(((err = session.error(:atc_class)) \
-			&& err.message == "e_unknown_atc_class") \
-			|| ((atc = model.atc_class) \
-			&& atc.description.empty?))
-
-			HtmlGrid::InputText.new(:atc_descr, model, session, self)
-		else
-			super
-		end
+	def patinfo_label(model, session)
+		HtmlGrid::LabelText.new(:patinfo, model, session , self)
+	end
+	def patinfo_upload(model, session)
+		HtmlGrid::InputFile.new(:patinfo_upload, model, session, self)
 	end
 end
 class SequenceComposite < HtmlGrid::Composite

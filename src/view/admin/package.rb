@@ -75,6 +75,9 @@ class PackageForm < View::Form
 		end
 		klass.new(:ikscd, model, session, self)
 	end
+	def delete_item(model, session)
+		delete_item_warn(model, :w_delete_package)
+	end
 	def sl_entry(model, session)
 		unless (model.is_a? Persistence::CreateItem)
 			link = nil
