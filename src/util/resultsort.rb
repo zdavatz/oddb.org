@@ -16,8 +16,8 @@ module ODDB
 	module ResultSort
 		def sort_result(packages, session)
 			begin
-				puts "in sort result******"
-				puts packages.size
+				#puts "in sort result******"
+				#puts packages.size
 				packages.sort_by { |package|
 					[
 						generic_type_weight(package),

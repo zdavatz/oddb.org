@@ -191,10 +191,10 @@ Grammar OddbSize
 				begin
 					obj = resolve(app)
 					#	puts "before odba_delete"
-					obj.odba_delete
 					if obj.respond_to?(:checkout)
 						obj.checkout
 					end
+					obj.odba_delete
 					pointer = dup
 					command = pointer.directions.pop
 					command[0] = 'delete_' << command.first.to_s

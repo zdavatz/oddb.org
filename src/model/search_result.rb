@@ -27,7 +27,7 @@ module ODDB
 			@atc.odba_id
 		end
 		def empty?
-			puts "ATCFacade::empty?"
+			#puts "ATCFacade::empty?"
 			self.packages.empty?
 		end
 		def has_ddd?
@@ -37,7 +37,7 @@ module ODDB
 			@atc.pointer
 		end
 		def packages
-			puts "ATCFacade::packages"
+			#puts "ATCFacade::packages"
 			@packages ||= @atc.active_packages
 			unless(@packages_sorted)
 				@packages = sort_result(@packages, @session)
@@ -46,7 +46,7 @@ module ODDB
 			@packages
 		end
 		def package_count
-			puts "ATCFacade::package_count"
+			#puts "ATCFacade::package_count"
 			@atc.package_count
 		end
 	end
