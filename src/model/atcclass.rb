@@ -126,7 +126,7 @@ module ODDB
 			end
 		end
 		def pointer_descr(key=nil)
-			[super.capitalize,'(' + @code + ')'].compact.join(' ')
+			[super,'(' + @code + ')'].compact.join(' ')
 		end
 	end
 end
