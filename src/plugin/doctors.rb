@@ -24,10 +24,11 @@ module ODDB
 				@doctors_deleted = 0
 			end
 			def update
-				range = 5000..99999
+				range = 14448..14470
 				empty_ids = (@config.empty_ids || []).dup
 				top_doc_id = 0
 				(range.to_a - empty_ids).each { |doc_id| 
+					puts "doc_id: #{doc_id}"
 					if(data = get_doctor_data(doc_id))
 						store_doctor(doc_id, data)
 						top_doc_id = doc_id
