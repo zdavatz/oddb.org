@@ -1281,7 +1281,7 @@ zdavatz ! ywesee.com
 				:address_header						=>	'Address',
 				:address_praxis						=>	'Address Business',
 				:address_work							=>	'Adresse Private',
-				:address									=>	'Steet',
+				:address									=>	'Street',
 				:admin										=>	'Admin',
 				:amzv											=>	'AMZV',
 				:amzv_href								=>	'http://www.admin.ch/ch/d/sr/812_212_22/index.html',	
