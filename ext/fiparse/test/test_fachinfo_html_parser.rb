@@ -495,7 +495,7 @@ class TestFachinfoHtmlWriter4169 < Test::Unit::TestCase
 		assert_equal('', section1.subheading)
 	  assert_equal(1, section1.paragraphs.size)
 		paragraph1 = section1.paragraphs.first
-		expected = 'Acetylsalicylsä ure (ASS) ist der Essig-Ester der Salicyls äure.'
+		expected = 'Acetylsalicylsä ure (ASS) ist der Essig-Ester der Salicylsäure.'
 		result = paragraph1.text
 		assert_equal(expected, paragraph1.text)
 	end
