@@ -10,13 +10,19 @@ module ODDB
 		def update
 			pointer = @session.user_input(:pointer)
 			substance = pointer.resolve(@session.app)
-			hash = {
-				:dose	=>	@model.user_input[:dose],
-				:substance	=>	substance.name,
-			}
+			if(pointer.skeleton == [:create])
+				update = {
+					'lt'	=>	@model.user_input[:substance],
+				}
+				@session.app.update(substance.pointer, update)
+			end
 			if (error?)
 				self
 			else
+				hash = {
+					:dose				=>	@model.user_input[:dose],
+					:substance	=>	substance.pointer,
+				}
 				if(@model.active_agent.is_a?(Persistence::CreateItem))
 					@model.active_agent.append(substance.name)
 				end

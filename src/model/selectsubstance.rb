@@ -21,7 +21,7 @@ module ODDB
 			@active_agent.sequence.substances
 		end
 		def new_substance
-			pointer = Persistence::Pointer.new([:substance, @user_input[:substance]]) 
+			pointer = Persistence::Pointer.new([:substance]) 
 			Persistence::CreateItem.new(pointer)
 		end
 	end

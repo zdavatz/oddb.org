@@ -55,7 +55,7 @@ class TestFachinfoConfirm < Test::Unit::TestCase
 		@form.compose_footer([0,0])
 		html = @form.to_html(CGI.new)
 		expected = [
-			'<FORM ACCEPT-CHARSET="ISO-8859-1" METHOD="POST" ENCTYPE="application/x-www-form-urlencoded"><TABLE cellspacing="0" class="composite"><TR><TD colspan="4">',
+			'<FORM ACCEPT-CHARSET="ISO-8859-1" NAME="stdform" METHOD="POST" ENCTYPE="application/x-www-form-urlencoded"><TABLE cellspacing="0" class="composite"><TR><TD colspan="4">',
 			'<INPUT name="back" onClick="document.location.href=\'back\';" type="button" value="lookup">',
 			'<INPUT name="update" type="submit" value="lookup">',
 		]
@@ -70,7 +70,7 @@ class TestFachinfoConfirm < Test::Unit::TestCase
 		@form.compose_footer([0,0])
 		html = @form.to_html(CGI.new)
 		expected = [
-			'<FORM ACCEPT-CHARSET="ISO-8859-1" METHOD="POST" ENCTYPE="application/x-www-form-urlencoded"><TABLE cellspacing="0" class="composite"><TR><TD colspan="4">',
+			'<FORM ACCEPT-CHARSET="ISO-8859-1" NAME="stdform" METHOD="POST" ENCTYPE="application/x-www-form-urlencoded"><TABLE cellspacing="0" class="composite"><TR><TD colspan="4">',
 			'<INPUT name="back" onClick="document.location.href=\'back\';" type="button" value="lookup">',
 		]
 		expected.each { |line| 

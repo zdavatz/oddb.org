@@ -15,14 +15,16 @@ end
 
 class TestLogFile < Test::Unit::TestCase
 	def test_filename
-		expected = '/var/www/oddb.org/test/data/log/foo/2003/08.log'
+		expected = File.expand_path('../data/log/foo/2003/08.log',
+			File.dirname(__FILE__))
 		res = ODDB::LogFile.filename(:foo, Date.new(2003,8,21))
 		assert_equal(expected, res)
 		res = ODDB::LogFile.filename(:foo, Time.local(2003,8,21))
 		assert_equal(expected, res)
 	end
 	def test_create_dir
-		file = '/var/www/oddb.org/test/data/log/foo/2003/08.log'
+		file = File.expand_path('../data/log/foo/2003/08.log',
+			File.dirname(__FILE__))
 		begin
 			ODDB::LogFile.append(:foo, ';foobar', Time.local(2003,8,21,19,32,10))
 			assert(File.exist?(file), "Missing Logfile: #{file}")
@@ -36,7 +38,8 @@ class TestLogFile < Test::Unit::TestCase
 		end
 	end
 	def test_append
-		file = '/var/www/oddb.org/test/data/log/foo/2003/08.log'
+		file = File.expand_path('../data/log/foo/2003/08.log',
+			File.dirname(__FILE__))
 		begin
 			ODDB::LogFile.append(:foo, ';foobar', Time.local(2003,8,21,19,32,10))
 			assert(File.exist?(file), "Missing Logfile: #{file}")
@@ -53,7 +56,8 @@ class TestLogFile < Test::Unit::TestCase
 		end
 	end
 	def test_read
-		file = '/var/www/oddb.org/test/data/log/foo/2003/08.log'
+		file = File.expand_path('../data/log/foo/2003/08.log',
+			File.dirname(__FILE__))
 		begin
 			ODDB::LogFile.append(:foo, ';foobar', Time.local(2003,8,21,19,32,10))
 			assert(File.exist?(file), "Missing Logfile: #{file}")

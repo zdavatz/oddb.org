@@ -66,9 +66,9 @@ module ODDB
 		def remove_sequence(sequence)
 			@sequences.delete(sequence)
 		end
-		def same_as?(astring)
+		def same_as?(substance)
 			descriptions.any? { |lang, desc|
-				desc.downcase == astring.to_s.downcase
+				desc.downcase == substance.to_s.downcase
 			}
 		end
 		def similar_name?(astring)
