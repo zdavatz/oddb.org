@@ -739,6 +739,8 @@ zdavatz ! ywesee.com
 				:user											=>	'Services',
 				:w_access_denied_iksnr0		=>	'Sie sind nicht berechtigt, die Registration ',
 				:w_access_denied_iksnr1		=>	' zu administrieren.',
+				:w_delete_package					=>	'Wollen Sie wirklich alle Angaben zu dieser Packung l&ouml;schen?',
+				:w_delete_sequence				=>	'Wollen Sie wirklich alle Angaben zu dieser Sequenz l&ouml;schen?',
 				:w_no_fachinfo_saved			=>	'Es wurde keine Fachinfo gespeichert!',
 				:w_no_patinfo_saved				=>	'Patinfos m&uuml;ssen im Pdf-Format sein',
 				:w_too_many_sequences			=> 'Zu viele Suchresultate, die Suche muss spezifiziert werden',

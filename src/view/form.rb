@@ -27,6 +27,16 @@ module ODDB
 					button
 				end
 			end
+			def delete_item_warn(model, warning)
+				unless(@model.is_a? Persistence::CreateItem)
+					button = HtmlGrid::Button.new(:delete, model, @session, self)
+					warning = @lookandfeel.lookup(warning)
+					script = "if(confirm('#{warning}')) "
+					script << "{ form.event.value='delete'; form.submit(); }"
+					button.set_attribute("onclick", script)
+					button
+				end
+			end
 			def post_event_button(event)
 				button = HtmlGrid::Button.new(event, @model, @session, self)
 				script = "this.form.event.value='"+event.to_s+"'; this.form.submit();"

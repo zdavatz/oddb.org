@@ -98,10 +98,14 @@ module ODDB
 		def delete_active_agent(substance)
 			active = active_agent(substance)
 			@active_agents.delete(active)
+			@active_agents.odba_store
+			active
 		end
 		def delete_package(ikscd)
 			ikscd = sprintf('%03d', ikscd.to_i)
-			@packages.delete(ikscd)
+			pac = @packages.delete(ikscd)
+			@packages.odba_store
+			pac
 		end
 		def each_package(&block)
 			@packages.each_value(&block)
