@@ -6,6 +6,8 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/text'
+require 'odba'
+require 'mock'
 
 module ODDB
 	module Text
@@ -17,7 +19,14 @@ end
 
 class TestImageLink < Test::Unit::TestCase
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
 		@link = ODDB::Text::ImageLink.new
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_empty
 		assert_equal(true, @link.empty?)
@@ -34,7 +43,14 @@ class TestImageLink < Test::Unit::TestCase
 end
 class TestFormat < Test::Unit::TestCase
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
 		@format = ODDB::Text::Format.new
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_initialize
 		assert_nothing_raised {
@@ -89,7 +105,14 @@ class TestFormat < Test::Unit::TestCase
 end
 class TestParagraph < Test::Unit::TestCase
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
 		@paragraph = ODDB::Text::Paragraph.new
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_append
 		assert_equal('', @paragraph.text)
@@ -239,7 +262,14 @@ class TestParagraph < Test::Unit::TestCase
 end
 class	TestSection < Test::Unit::TestCase
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
 		@section = ODDB::Text::Section.new
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_clean
 		@section.subheading = ' '
@@ -289,7 +319,14 @@ class	TestSection < Test::Unit::TestCase
 end
 class TestChapter < Test::Unit::TestCase
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
 		@chapter = ODDB::Text::Chapter.new
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_clean
 		@chapter.heading = ' '
@@ -371,7 +408,14 @@ Schöne Welt!
 end
 class TestDocument < Test::Unit::TestCase
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
 		@document = ODDB::Text::Document.new
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_update_values
 		@document.update_values({:de	=>	'foobar'})

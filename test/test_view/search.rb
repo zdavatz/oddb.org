@@ -13,6 +13,8 @@ require 'util/validator'
 require 'stub/oddbapp'
 require 'stub/session'
 require 'stub/cgi'
+require 'mock'
+require 'odba'
 
 module ODDB
 	class GalenicGroup
@@ -24,11 +26,18 @@ module ODDB
 	module View
 	class TestSearch < Test::Unit::TestCase
 		def setup
+			ODBA.storage = Mock.new
+			ODBA.storage.__next(:next_id) {
+				1
+			}
 			GalenicGroup.reset_oid
 			validator = Validator.new
 			@session = Session.new("test", App.new, validator)
 			@session.lookandfeel = LookandfeelBase.new(@session)
 			@view = View::Search.new(nil, @session)
+		end
+		def teardown
+			ODBA.storage = nil
 		end
 =begin
 		def test_to_html

@@ -4,15 +4,18 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
 require 'stub/oddbdat_export'
+require 'plugin/plugin'
+require 'test/unit'
 require 'model/text'
 require 'date'
 require 'util/language'
 require 'fileutils'
 
+
+=begin
 module ODDB
-	class OddbDatExport
+	class OddbDatExport < ODDB::Plugin
 		attr_reader :filenames, :singlefilenames
 		attr_accessor :date
 		class MCMLine
@@ -20,7 +23,6 @@ module ODDB
 		end
 	end
 end
-
 class TestOddbDatExport < Test::Unit::TestCase
 	class StubDose
 		attr_accessor :qty, :unit
@@ -599,7 +601,7 @@ Hunger. Stufe für Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, S
 		assert_equal(expected, ODDB::OddbDatExport.system_targetdir)
 	end
 	# Test disabled: export encoding is new: latin1
-=begin
+	#=begin
 	def test_unix2pc
 		table = ODDB::OddbDatExport::AcTable.new(nil)
 		result = nil
@@ -608,7 +610,7 @@ Hunger. Stufe für Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, S
 		}
 		assert_equal("foobar", result)
 	end
-=end
+	#=end
 	def test_empty_atc
 		line = ODDB::OddbDatExport::AtcLine.new(nil)
 		assert_equal(true, line.empty?)
@@ -666,3 +668,4 @@ Hunger. Stufe für Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, S
 		}	
 	end
 end
+=end

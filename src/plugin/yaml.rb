@@ -2,12 +2,13 @@
 # YamlPlugin -- oddb -- 02.09.2003 -- rwaltert@ywesee.com
 
 require 'plugin/plugin'
+require 'drb'
 
 module ODDB 
 	class YamlExporter < Plugin
+		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		DOCUMENT_ROOT = File.expand_path('../../doc/', File.dirname(__FILE__))
 		EXPORT_DIR = File.expand_path('resources/downloads', DOCUMENT_ROOT)
-		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		def export(name='oddb.yaml')
 			export_obj(name, @app.companies)
 		end

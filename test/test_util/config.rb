@@ -6,8 +6,12 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'mock'
 require 'util/config'
-
+require 'odba'
 module ODDB
+	class Foo
+		def odba_isolated_store
+		end
+	end
 	class TestConfig < Test::Unit::TestCase
 		def setup
 			@cache = ODBA.cache_server = Mock.new('Cache')
@@ -15,6 +19,7 @@ module ODDB
 		end
 		def teardown
 			ODBA.cache_server = nil
+			ODBA.storage = nil
 		end
 		def test_reader
 			assert_nil(@config.foo)
@@ -30,19 +35,21 @@ module ODDB
 			assert_equal(subconfig, @config.foo)
 		end
 		def test_writer
+			foo = nil
 			@cache.__next(:store) { |obj|
 				assert_equal(@config.instance_variable_get('@values'), obj)
 			}
 			assert_nothing_raised {
-				@config.bar = "baz"
+				foo = Foo.new
+				@config.bar = foo
 			}
-			assert_equal('baz', @config.bar)
+			assert_equal(foo, @config.bar)
 		end
 		def test_dumpable
 			@cache.__next(:store) { |obj|
 				assert_equal(@config.instance_variable_get('@values'), obj)
 			}
-			@config.foo = 'bar'
+			@config.foo = Foo.new
 			assert_nothing_raised {
 				Marshal.dump(@config)
 			}
@@ -51,14 +58,14 @@ module ODDB
 			@cache.__next(:store) { |obj|
 				assert_equal(@config.instance_variable_get('@values'), obj)
 			}
-			@config.bar = 'foo'
+			@config.bar = Foo.new
 			result = nil
 			assert_nothing_raised {
 				mth = @config.method(:bar)
 				assert_equal(-1, mth.arity)
 				result = mth.call
 			}
-			assert_equal('foo', result)
+			assert_equal(@config.bar, result)
 		end
 	end
 end
