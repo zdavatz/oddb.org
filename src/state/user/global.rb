@@ -11,6 +11,7 @@ class Global < State::Global
 	ZONE = :user
 	def zone_navigation
 		[
+			:faq_link,
 			State::User::MailingList,
 			State::User::Plugin,
 			State::User::DownloadExport,

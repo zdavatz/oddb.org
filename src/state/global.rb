@@ -286,7 +286,9 @@ module ODDB
 				[:drugs, :interactions, :companies, :doctors, :user]
 			end
 			def zone_navigation
-				[]
+				[
+					:faq_link,
+				]
 			end
 			private
 			def compare_entries(a, b)

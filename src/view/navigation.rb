@@ -10,7 +10,9 @@ module ODDB
 		class Navigation < HtmlGrid::Composite
 			COMPONENTS = {}
 			CSS_CLASS = "navigation right"
+			LEGACY_INTERFACE = false
 			NAV_LINK_CLASS = NavigationLink
+			NAV_LINK_CSS = 'navigation'
 			NAV_METHOD = :navigation
 			SYMBOL_MAP = {
 				:navigation_divider	=>	HtmlGrid::Text,
@@ -21,8 +23,12 @@ module ODDB
 			end
 			def build_navigation
 				@lookandfeel.send(self::class::NAV_METHOD).each_with_index { |state, idx| 
+					pos = [idx*2,0]
 					evt = if(state.is_a?(Symbol))
-						unless(self.respond_to?(state))
+						if(self.respond_to?(state))
+							css_map.store(pos, self::class::NAV_LINK_CSS)
+							component_css_map.store(pos, self::class::NAV_LINK_CSS)
+						else
 							symbol_map.store(state, self::class::NAV_LINK_CLASS)
 						end
 						state
@@ -31,9 +37,14 @@ module ODDB
 						symbol_map.store(evt, self::class::NAV_LINK_CLASS)
 						evt
 					end
-					components.store([idx*2,0], evt)
+					components.store(pos, evt)
 					components.store([idx*2-1,0], :navigation_divider) if idx > 0
 				}
+			end
+			def faq_link(model)
+				link = HtmlGrid::Link.new(:faq_link, model, @session, self)
+				link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.FAQ"
+				link
 			end
 		end
 	end

@@ -65,6 +65,7 @@ module CompanyUser
 	end
 	def zone_navigation
 		[
+			:faq_link,
 			State::Admin::PatinfoStatsCompanyUser
 		]
 	end

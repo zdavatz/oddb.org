@@ -15,11 +15,12 @@ require 'view/tab_navigation'
 module ODDB
 	module View
 		class CenteredNavigationLink < NavigationLink
-			CSS_CLASS = "ccomponent"
+			CSS_CLASS = "list"
 		end
 		class CenteredNavigation < Navigation 
 			CSS_CLASS = "ccomponent"
 			NAV_LINK_CLASS = CenteredNavigationLink
+			NAV_LINK_CSS = 'list'
 			NAV_METHOD = :zone_navigation
 		end
 		class PayPalForm < HtmlGrid::Form
@@ -118,7 +119,6 @@ module ODDB
 				:mailinglist			=>	HtmlGrid::Link,
 				:plugin						=>	HtmlGrid::Link,
 				:search_explain		=>	HtmlGrid::Text,
-				:search_faq				=>	HtmlGrid::Link,
 				:software_feedback=>	HtmlGrid::Link,
 			}
 			def atc_chooser(model, session)

@@ -257,6 +257,7 @@ module ODDB
 				:fachinfo_yaml_zip				=>	'fachinfo.yaml.zip',
 				:fachinfos_version_3_3_pdf	=>	'Fachinfos-Version-3.3.pdf',
 				:false										=>	'Nein',
+				:faq_link									=>	'FAQ',
 				:fax											=>	'Fax:',
 				:fax_header								=>	'Fax',
 				:fax_label								=>	'Fax:',
@@ -537,7 +538,6 @@ zdavatz ! ywesee.com
 				:s31x_zip									=>	's31x.zip',
 				:search										=>	'Suchen',
 				:search_explain						=>	'Vergleichen Sie einfach und schnell Medikamentenpreise.<br> Suchen Sie nach Medikament, Wirkstoff oder Anwendungsgebiet<br>(z.B. Kopfschmerzen, Akne, Verstauchung, Verletzung).',
-				:search_faq								=>	'FAQ',
 				:search_help							=>	'Hilfe',
 				:search_oddb							=>	'-> Medikament(e) in der ODDB anzeigen',
 				:search_query							=>	'HIER Medikament / Wirkstoff eingeben',
@@ -1223,9 +1223,6 @@ zdavatz ! ywesee.com
 			:software_feedback	=> {
 				'class'	=>	'list',
 				'href'	=>	'http://ywesee.com/index.cgi?SoftwareFeedback',
-			},
-			:search_faq => {
-				'href'	=>	'http://wiki.oddb.org/wiki.php?pagename=ODDB.FAQ ',
 			},
 			:search_query	=>	{
 				'class'	=>	'search',

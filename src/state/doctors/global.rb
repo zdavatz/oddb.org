@@ -11,7 +11,9 @@ class Global < State::Global
 	HOME_STATE = State::Doctors::Init
 	ZONE = :doctors
 	def zone_navigation
-		[]
+		[
+			:faq_link,
+		]
 	end
 	def legal_note
 		State::Doctors::LegalNote.new(@session, nil)
