@@ -31,10 +31,10 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,5,1]	=>	'database_size_text',
 		[0,5,2]	=>	'comma_separator',
 		[0,6]		=>	:fachinfo_size,
-		[0,6,1]	=>	'fi_count_text',
+		[0,6,1]	=>	:fi_count_text,
 		[0,6,2]	=>	'comma_separator',
 		[0,6,3] =>	:patinfo_size,
-		[0,6,4] =>	'pi_count_text',
+		[0,6,4] =>	:pi_count_text,
 		[0,7]		=>	:atc_ddd_size,
 		[0,7,1]	=>	:ddd_count_text,
 		[0,7,2]	=>	'comma_separator',
@@ -52,17 +52,21 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,9]	=>	'legal-note-center',
 	}
 	def ddd_count_text(model, session)
-		link = HtmlGrid::Link.new(:ddd_count_text, model, session, self)
-		link.href = 'http://www.whocc.no/atcddd/'
-		link.set_attribute('class', 'list-b')
-		link.target = '_blank'
-		link
+		create_link(:ddd_count_text, 'http://www.whocc.no/atcddd/')
 	end
 	def sl_count_text(model, session)
-		link = HtmlGrid::Link.new(:sl_count_text, model, session, self)
-		link.href = 'http://www.galinfo.net'
-		link.set_attribute('class', 'list-b')
-		link.target = '_blank'
+		create_link(:sl_count_text, 'http://www.galinfo.net')
+	end
+	def fi_count_text(model, session)
+		create_link(:fi_count_text, 'http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Interpellation')
+	end
+	def pi_count_text(model, session)
+		create_link(:pi_count_text, 'http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Interpellation')
+	end
+	def create_link(text_key, href)
+		link = HtmlGrid::Link.new(text_key, @model, @session, self)
+		link.href = href
+		link.set_attribute('class', 'list')
 		link
 	end
 	def substance_count(model, session)
