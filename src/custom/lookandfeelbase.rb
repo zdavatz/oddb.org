@@ -142,7 +142,7 @@ module ODDB
 				:effective_form_other			=>	'Wirkform:',
 				:effective_form_self			=>	'Dies ist die Wirkform dieser Substanz.',
 				:email										=>	'Email',
-				:email_text								=>	'Wird nicht angezeigt.',
+				:email_text								=>	'&nbsp;Wird nicht angezeigt.',
 				:email_label							=>	'Email ',
 				:email_header							=>	'Email',
 				:email_header_doctor			=>	'Email:',

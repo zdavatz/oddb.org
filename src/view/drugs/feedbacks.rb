@@ -19,7 +19,8 @@ class FeedbackForm < HtmlGrid::Form
 	include HtmlGrid::InfoMessage
 	COMPONENTS = {
 		[0,0]			=>	:name,
-		[0,1]			=>	:email,
+		[0,1]	  =>	:email,
+		[1,1]		=>	'email_text',
 		[0,2]			=>	:feedback_text_e,
 		[0,4,0]		=>	:experience,
 		[2,4,1]		=>	'feedback_text_a_good',
