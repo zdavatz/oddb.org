@@ -10,19 +10,22 @@ module ODDB
 		module Drugs
 class CenteredSearchForm < View::CenteredSearchForm
 	COMPONENTS = {
-		[0,0]		=>	View::TabNavigation,
-		[0,1,0,1]	=>	:search_query,
-		[0,2,0]		=>	'search_type',
+		[0,0]			=>	View::TabNavigation,
+		[0,1]			=>	'search_type',
 		[0,2,1,2]	=>	:search_type,
-		[0,3,0,3]	=>	:submit,
-		[0,3,0,4]	=>	:search_reset,
+		[0,3,0,1]	=>	:search_query,
+		[0,4,0,3]	=>	:submit,
+		[0,4,0,4]	=>	:search_reset,
 	}
 	SYMBOL_MAP = {
 		:search_type	=>	HtmlGrid::Select,
 		:search_query	=>	View::SearchBar,	
 	}
+	COMPONENT_CSS_MAP = {
+		[0,3]	=>	'search-center',
+	}
 	CSS_MAP = {
-		[0,2]	=>	'ccomponent',
+		[0,1]			=>	'ccomponent',
 	}
 	EVENT = :search
 end
