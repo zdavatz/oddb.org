@@ -8,7 +8,8 @@ require 'model/cyp450connection'
 
 module ODDB
 	class Substance
-		#include Persistence
+		include Persistence
+		ODBA_PREFETCH = true
 		attr_reader :sequences, :substrate_connections
 		attr_accessor :connection_key
 		include Comparable

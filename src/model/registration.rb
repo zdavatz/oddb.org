@@ -116,6 +116,7 @@ module ODDB
 		end
 	end
 	class Registration < RegistrationCommon
+		ODBA_PREFETCH = true
 		def company=(company)
 			@company = replace_observer(@company, company)
 		end

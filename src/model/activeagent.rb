@@ -81,6 +81,7 @@ module ODDB
 		end
 	end
 	class ActiveAgent < ActiveAgentCommon
+		ODBA_PREFETCH = true
 		def substance=(substance)
 			unless(substance.nil? || @substance == substance)
 				if(@substance.respond_to?(:remove_sequence))

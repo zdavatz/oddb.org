@@ -1,0 +1,1057 @@
+# Francais-GUTenberg v1.0
+# Copyright 1999, Christophe Pythoud et GUTenberg
+
+# Fichier d'affixes pour le français
+
+# Caractéristiques requises d'ispell : 
+#	- support 8 bits (NO8BIT ne doit pas être défini)
+#	- utilisations des majuscules et minuscules pour les drapeaux
+#	  (MASKBITS = 64)
+
+
+# Pas d'affixation automatique
+
+allaffixes off
+
+
+# Définition des caractères
+
+defstringtype "list" "nroff" ".list"
+
+boundarychars	[-]
+boundarychars	'
+boundarychars	[.]
+boundarychars	@
+wordchars	a	A
+stringchar	à	À
+stringchar	á	Á
+stringchar	â	Â
+stringchar	ä	Ä
+wordchars	[b-c]	[B-C]
+stringchar	ç	Ç
+wordchars	[d-e]	[D-E]
+stringchar	è	È
+stringchar	é	É
+stringchar	ê	Ê
+stringchar	ë	Ë
+wordchars	[f-i]	[F-I]
+stringchar	í	Í
+stringchar	î	Î
+stringchar	ï	Ï
+wordchars	[j-o]	[J-O]
+stringchar	ó	Ó
+stringchar	ô	Ô
+stringchar	ö	Ö
+wordchars	[p-u]	[P-U]
+stringchar	ù	Ù
+stringchar	û	Û
+stringchar	ü	Ü
+wordchars	[v-z]	[V-Z]
+
+#
+# TeX
+#
+altstringtype "tex" "TeX" ".tex" ".bib"
+
+altstringchar	\\`a		à
+altstringchar	\\`A		À
+altstringchar	\\'a		á
+altstringchar	\\'A		Á
+altstringchar	\\^a		â
+altstringchar	\\^A		Â
+altstringchar	"\\c c"		ç
+altstringchar	"\\c C"		Ç
+altstringchar	\\`e		è
+altstringchar	\\`E		È
+altstringchar	\\'e		é
+altstringchar	\\'E		É
+altstringchar	\\^e		ê
+altstringchar	\\^E		Ê
+altstringchar	\\\"e		ë
+altstringchar	\\\"E		Ë
+altstringchar	\\'\\i		í
+altstringchar	\\'\\I		Í
+altstringchar	\\^\\i		î
+altstringchar	\\^\\I		Î
+altstringchar	\\\"\\i		ï
+altstringchar	\\\"\\I		Ï
+altstringchar	\\'o		ó
+altstringchar	\\'O		Ó
+altstringchar	\\^o		ô
+altstringchar	\\^O		Ô
+altstringchar	\\\"o		ö
+altstringchar	\\\"O		Ö
+altstringchar	\\`u		ù
+altstringchar	\\`U		Ù
+altstringchar	\\^u		û
+altstringchar	\\^U		Û
+altstringchar	\\\"u		ü
+altstringchar	\\\"U		Ü
+
+
+# Les affixes dont le drapeau est une minuscule concernent, le plus souvent,
+# les verbes ; les affixes dont le drapeau est une majuscule concernent
+# essentiellement noms et adjectifs, sauf s'ils renvoient à certains
+# préfixes.
+
+# Drapeau	A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+# Préfixe	* * * * *     * * * * * * * * * * *     *   *   * *
+# Suffixe	          * *                       *         *
+# Libre		                                      #   #
+
+# Drapeau	a b c d e f g h i j k l m n o p q r s t u v w x y z
+# Préfixe       * *     * *     * * * * * *         * *
+# Suffixe           * *     *                 * *       * * * * * *
+# Libre                       #             #     # 
+
+
+# ------------------------------------------------------------
+
+
+prefixes
+
+# noms et adjectifs (principalement)
+
+flag *A:			# préfixe latin 'a(d)-'
+				# verbes et non-verbes
+	[^BCDFGLMNPQRST]	>	AD
+	[BDGM]			>	A
+	[CQ]			>	AC
+	[F]			>	AF
+	[L]			>	AL	# exceptions !
+	[N]			>	AN	# id.
+	[P]			>	AP	# id.
+	[R]			>	AR
+	[S]			>	AS
+	[T]			>	AT	# id.
+
+flag *B:			# préfixe latin 'a(d)-'
+				# non-verbes uniquement
+	[^BCDFGLMNPQRST]	>	D'AD
+	[BDGM]			>	D'A
+	[CQ]			>	D'AC
+	[F]			>	D'AF
+	[L]			>	D'AL	# exceptions !
+	[N]			>	D'AN	# id.
+	[P]			>	D'AP	# id.
+	[R]			>	D'AR
+	[S]			>	D'AS
+	[T]			>	D'AT	# id.
+
+flag  H:			# préfixe latin 'a(d)-'
+				# non-verbes uniquement
+	[^BCDFGLMNPQRST]	>	L'AD
+	[BDGM]			>	L'A
+	[CQ]			>	L'AC
+	[F]			>	L'AF
+	[L]			>	L'AL	# exceptions !
+	[N]			>	L'AN	# id.
+	[P]			>	L'AP	# id.
+	[R]			>	L'AR
+	[S]			>	L'AS
+	[T]			>	L'AT	# id.
+
+flag *C:			# préfixe latin 'con-'
+	[^LMR]			>	CON
+	[L]			>	COL
+	[M]			>	COM
+	[R]			>	COR
+
+flag *D:			# préfixe 'dé-'
+    	[^aàâeèéêiîoôuh]	>	Dé
+	[aàâeèéêiîoôuh]		>	DéS
+
+flag *N:			# préfixe latin 'dis-'
+	[^F]			>	DIS
+	[F]			>	DIF
+
+flag *E:			# préfixe latin 'ex-'
+				# verbes et non-verbes
+	[^FLMNRV]		>	EX	# exceptions pour C,P,T !
+	[LMNRV]			>	é
+	[F]			>	EF
+
+flag *Y:			# préfixe latin 'ex-'
+				# non-verbes uniquement
+	[^FLMNRV]		>	D'EX	# exceptions pour C,P,T !
+	[LMNRV]			>	D'é
+	[F]			>	D'EF
+
+flag  Z:			# préfixe latin 'ex-'
+				# non-verbes uniquement
+	[^FLMNRV]		>	L'EX	# exceptions pour C,P,T !
+	[LMNRV]			>	L'é
+	[F]			>	L'EF
+
+flag *I:			# les deux préfixes latins 'in-'
+				# (privatif et locatif/inchoatif)
+				# verbes et non-verbes
+	[^BLMPR]		>	IN
+	[L]			>	IL
+	[BMP]			>	IM
+	[R]			>	IR
+
+flag *J:			# préfixes latins 'in-'
+				# non-verbes uniquement
+	[^BLMPR]		>	D'IN
+	[L]			>	D'IL
+	[BMP]			>	D'IM
+	[IR]			>	D'IR
+
+flag  K:			# préfixes latins 'in-'
+				# non-verbes uniquement
+	[^BLMPR]		>	L'IN
+	[L]			>	L'IL
+	[BMP]			>	L'IM
+	[IR]			>	L'IR
+
+flag *P:			# préfixe 'pré-'
+	.			>	PRé	# exceptions !
+
+flag *R:			# préfixes 're-' et 'ré-'
+				# ('é' devant V et 'e' devant C)
+	[^aàâeèéêiîoôuhs]	>	RE
+	[aàâeèéêiîoôuh]		>	Ré
+	[S]			>	RES
+
+flag *O:			# préfixes 're-' et 'ré-'
+				# ('é' devant C et élision devant V)
+	[^aàâeèéêiîoôuhs]	>	Ré
+	[aàâeèéêiîoôuh]		>	R
+
+flag *W:			# préfixe latin 'sub-'
+	[^CFP]			>	SUB
+	[C]			>	SUC
+	[F]			>	SUF
+	[P]			>	SUP
+
+	# Selon le nombre de drapeaux restant, on traitera également des
+	# préfixes 'sur' et 'sous'
+
+flag  L:
+    	[aàâeèéêiîoôuh] 	>	L'
+
+flag *M:
+    	[aàâeèéêiîoôuh] 	>	D'
+
+flag *Q:
+    	[aàâeèéêiîoôuh] 	>	QU'
+    	[aàâeèéêiîoôuh] 	>	QUOIQU'	
+    	[aàâeèéêiîoôuh] 	>	PUISQU'	
+    	[aàâeèéêiîoôuh]		>	LORSQU'
+
+flag *U:
+    	[aàâeèéêiîoôuh] 	>	JUSQU'
+
+
+
+# verbes (principalement)
+
+flag  j:	# pour accompagner le système à 5 lemmes
+    	[aàâeèéêiîoôuh] 	>	J'
+
+flag *n:			# élision de la négation et de 'que'
+    	[aàâeèéêiîoôuh] 	>	N'
+    	[aàâeèéêiîoôuh] 	>	QU'
+
+flag *m:			# élision du pronom 'me'
+    	[aàâeèéêiîoôuh] 	>	M'	# tu m'aides
+
+flag *t:			# élision du pronom 'te'
+    	[aàâeèéêiîoôuh] 	>	T'	# je t'énerve
+				# pose problème : vous t'énerviez ???
+				# moins ennuyeux que 'l'éléphants' cpdt
+				# et peu probable
+
+flag *l:			# élision d'un pronom complément d'objet
+				# direct uniquement, à n'employer que pour
+				# les verbes transitifs directs et surtout
+				# jamais pour les noms ou adj. (utiliser L)
+    	[aàâeèéêiîoôuh] 	>	L'	# je l'attends
+
+flag  s:			# élision du pronom réfléchi 'se'
+				# à employer uniquement devant l'infinitif
+				# (sinon avec parcimonie)
+    	[aàâeèéêiîoôuh] 	>	S'	# s'attendre
+
+
+flag *a:			# préfixe latin 'a(d)-'
+				# verbes transitifs uniquement
+	[^BCDFGLMNPQRST]	>	L'AD
+	[BDGM]			>	L'A
+	[CQ]			>	L'AC
+	[F]			>	L'AF
+	[L]			>	L'AL	# exceptions !
+	[N]			>	L'AN	# id.
+	[P]			>	L'AP	# id.
+	[R]			>	L'AR
+	[S]			>	L'AS
+	[T]			>	L'AT	# id.
+	[^BCDFGLMNPQRST]	>	M'AD
+	[BDGM]			>	M'A
+	[CQ]			>	M'AC
+	[F]			>	M'AF
+	[L]			>	M'AL	# exceptions !
+	[N]			>	M'AN	# id.
+	[P]			>	M'AP	# id.
+	[R]			>	M'AR
+	[S]			>	M'AS
+	[T]			>	M'AT	# id.
+	[^BCDFGLMNPQRST]	>	T'AD
+	[BDGM]			>	T'A
+	[CQ]			>	T'AC
+	[F]			>	T'AF
+	[L]			>	T'AL	# exceptions !
+	[N]			>	T'AN	# id.
+	[P]			>	T'AP	# id.
+	[R]			>	T'AR
+	[S]			>	T'AS
+	[T]			>	T'AT	# id.
+
+flag  b:			# préfixe latin 'a(d)-'
+				# verbes uniquement
+	[^BCDFGLMNPQRST]	>	J'AD
+	[BDGM]			>	J'A
+	[CQ]			>	J'AC
+	[F]			>	J'AF
+	[L]			>	J'AL	# exceptions !
+	[N]			>	J'AN	# id.
+	[P]			>	J'AP	# id.
+	[R]			>	J'AR
+	[S]			>	J'AS
+	[T]			>	J'AT	# id.
+
+flag *e:			# préfixe latin 'ex-'
+				# verbes transitifs uniquement
+	[^FLMNRV]		>	L'EX	# exceptions pour C,P,T !
+	[LMNRV]			>	L'é
+	[F]			>	L'EF
+	[^FLMNRV]		>	M'EX	# exceptions pour C,P,T !
+	[LMNRV]			>	M'é
+	[F]			>	M'EF
+	[^FLMNRV]		>	T'EX	# exceptions pour C,P,T !
+	[LMNRV]			>	T'é
+	[F]			>	T'EF
+
+flag  f:			# préfixe latin 'ex-'
+				# verbes uniquement
+	[^FLMNRV]		>	J'EX	# exceptions pour C,P,T !
+	[LMNRV]			>	J'é
+	[F]			>	J'EF
+
+flag *i:			# préfixes latins 'in-'
+				# verbes transitifs uniquement
+	[^BLMPR]		>	L'IN
+	[L]			>	L'IL
+	[BMP]			>	L'IM
+	[R]			>	L'IR
+	[^BLMPR]		>	M'IN
+	[L]			>	M'IL
+	[BMP]			>	M'IM
+	[R]			>	M'IR
+	[^BLMPR]		>	T'IN
+	[L]			>	T'IL
+	[BMP]			>	T'IM
+	[R]			>	T'IR
+
+flag  k:			# préfixes latins 'in-'
+				# verbes uniquement
+	[^BLMPR]		>	J'IN
+	[L]			>	J'IL
+	[BMP]			>	J'IM
+	[R]			>	J'IR
+
+
+# ------------------------------------------------------------
+
+
+suffixes
+
+# noms et adjectifs (principalement)
+
+flag *F:			# gestion du masculin et du pluriel à
+				# partir du féminin (sauf mots en -eur)
+	# règle générale du féminin pluriel
+	[^SXZ]			>	S		
+
+	# Voyelle + e/ë :
+        é E                     >       -éE,é   # = -E (employée)
+	I E			>	-IE,I	# = -E (endolorie)
+	ï E			>	-ïE,ï	# = -E (ouïe)
+	[^GQ] U E		>	-UE,U	# = -E (bienvenue)
+	[^GQ] U E		>	-E,S
+	[éIï] E			>	-E,S
+	U ë			>	-Uë,U	# = -ë (aiguë)
+	U ë			>	-ë,S
+
+	# Finale -(c)que
+	[^C] Q U E		>	-QUE,C	# caduque
+	[^C] Q U E		>	-QUE,CS	# caduque
+	C Q U E			>	-CQUE,C	# = -QUE  (grecque)
+	C Q U E			>	-QUE,S
+
+	# Finale -gue
+	G U E			>	-GUE,G	# = -UE (longue)
+	G U E			>	-UE,S	# = -UE (longue)
+
+	# Finale -che
+	[^è] C H E		>	-CHE,C	# = -HE (blanche)
+	[^è] C H E		>	-HE,S
+	è C H E			>	-èCHE,EC	# sèche
+	è C H E			>	-èCHE,ECS
+
+	# Consonne c + e
+	C E			>	-CE,X	# douce
+
+	# Consonne d + e
+	D E			>	-DE,D	# = -E (lourde)
+	D E			>	-E,S			
+
+	# Consonnes ff + e
+	F F E			>	-FFE,F	# = -FE (cheffe)
+	F F E			>	-FE,S
+
+	# Consonne(s) (l)l + e
+	[EIU] L L E		>	-LLE,L	# = -LE (éventuelle, nulle
+	[EIU] L L E		>	-LE,S	#	 pareille, gentille)
+	A L E			>	-LE,L	# = -E (buccale)
+	A L E			>	-LE,UX
+	è L E			>	-èLE,EL	# fidèle
+	è L E			>	-èLE,ELS
+	[IOUû] L E		>	-LE,L	# = -LE (subtile, espagnole,
+	[IOUû] L E		>	-E,S	# veule, saoule)
+
+	# Consonne(s) (n)n + e
+	[AEO] N N E		>	-NNE,N	# = -NE (paysanne, citoyenne,
+	[AEO] N N E		>	-NE,S	# canadienne, wallonne)
+	[AIU] N E		>	-NE,N	# = -NE (américaine, voisine,
+	[AIU] N E		>	-E,S	# opportune, romane)
+	I G N E			>	-GNE,N	# bénigne, maligne
+	I G N E			>	-GNE,NS
+
+	# Consonne r + e
+	è R E			>	-èRE,ER	# dernière
+	è R E			>	-èRE,ERS
+	[IUûY] R E		>	-RE,R	# = -E (supérieure, noire)
+	[IUûY] R E		>	-E,S
+
+	# Consonne(s) (s)s + e
+	[EO] U S E		>	-SE,X	# heureuse, jalouse
+						# exception : andalouse/andalou
+	[^US] S E		>	-SE,S	# = -E (précise, québécoise)
+	[^EO] U S E		>	-SE,S	# recluse
+	O U S S E		>	-SSE,X	# rousse
+	[^U] S S E		>	-SSE,S	# = -SE (basse, épaisse,
+						# métisse)
+
+	# Consonne(s) (t)t + e
+	T T E	 		>	-TTE,T	# coquette, sotte
+	T T E 			>	-TE,S
+	[^èT] T E		>	-TE,T	# idiote
+	[^èT] T E		>	-E,S
+	è T E			>	-èTE,ET	# discrète
+	è T E			>	-èTE,ETS
+
+	# Consonne v + e
+	è V E			>	-èVE,EF	# brève
+	è V E			>	-èVE,EFS
+	[IïU] V E		>	-VE,F	# vive, naïve, veuve
+	[IïU] V E		>	-VE,FS
+
+flag *G:			# mots en -eur et en -al qui font le pluriel
+				# en -als (pas en -aux -> drapeau F)
+	E			>	S		
+
+	# prometteuse
+	E U S E			>	-SE,R
+	E U S E			>	-SE,RS
+
+	# opératrice, ambassadrice
+	[DT] R I C E		>	-RICE,EUR
+	[DT] R I C E		>	-RICE,EURS
+
+	# chasseresse
+	E R E S S E		>	-RESSE,UR
+	E R E S S E		>	-RESSE,URS
+
+	# doctoresse
+	O R E S S E		>	-ORESSE,EUR
+	O R E S S E		>	-ORESSE,EURS
+
+	# australe
+	A L E			>	-LE,L	# = -E
+	A L E			>	-E,S
+
+
+flag *S:			# pluriels en 's'
+	[^SXZ]			>	S		
+
+
+flag *X:			# pluriels en 'x'
+	[AEO] U			>	X
+	A L			>	-L,UX
+	A I L			>	-IL,UX
+
+# verbes (essentiellement)
+
+# Lemme = 1ère pers. sing. de l'IND PR
+# Pour : 1ère, 2e, 3e pers. sing de l'IND PR, 3e pers. plur. de l'IND PR
+#        1ère, 2e, 3e pers. sing du SUBJ PR, 3e pers. plur. du SUB PR
+flag *u:
+	E			>	S
+	E			>	NT
+
+	[^TD] S			>	-S,T
+	T S			>	-TS,T	# = -S
+	D S			>	-DS,D	# = -S
+	[^O] I S		>	SENT
+	[^O] I S		>	SE
+	[^O] I S		>	SES
+
+	I E N S			>	-S,NENT
+	I E N S			>	-S,NE
+	I E N S			>	-S,NES
+	I E R S			>	-ERS,èRENT
+	I E R S			>	-ERS,èRE
+	I E R S			>	-ERS,èRES
+	[^I] E N S		>	-S,TENT
+	[^I] E N S		>	-S,TE
+	[^I] E N S		>	-S,TES
+	[TD] S			>	-S,ENT
+	[TD] S			>	-S,E
+	[TD] S			>	-S,ES
+
+	[AEO] I N S		>	-NS,GNE
+	[AEO] I N S		>	-NS,GNES
+	[AEO] I N S		>	-NS,GNENT
+
+	[^E] R S		>	-S,ENT
+	[^E] R S		>	-S,E
+	[^E] R S		>	-S,ES
+
+	O I S			>	-S,VENT		# 'recevoir', 'boire',
+	O I S			>	-S,VE		# 'devoir'
+	O I S			>	-S,VES
+
+	O î S			>	-OîS,OISSENT	# 'croître'
+	O î S			>	-OîS,OISSE
+	O î S			>	-OîS,OISSES
+
+	[PU] S			>	-S,ENT		# P pour la famille
+	[PU] S			>	-S,E		# de rompre
+	[PU] S			>	-S,ES
+
+	[FVP] [AE] U X		>	-X,T		# sauf 'prévaloir'
+	V A U X			>	-UX,LENT
+	V A U X			>	-UX,ILLE
+	V A U X			>	-UX,ILLES
+	V A U X			>	-UX,ILLENT
+	V E U X			>	-X,LENT		# 'vouloir'
+	V E U X			>	-X,ILLE
+	V E U X			>	-X,ILLES
+	V E U X			>	-X,ILLENT
+
+				# verbe 'fallir' (désuet)
+	F A U X			>	-UX,ILLENT
+	F A U X			>	-UX,ILLE
+	F A U X			>	-UX,ILLES
+
+				# verbe 'pouvoir'
+	P E U X			>	-X,VENT
+	P E U X			>	-EUX,UIS
+	P E U X			>	-EUX,UISSE
+	P E U X			>	-EUX,UISSES
+	P E U X			>	-EUX,UISSENT
+
+flag *g:        # Verbes de la famille de 'prendre'
+    		# IND et SUBJ PR
+	P R E N D S		>	-DS,D	# = -S
+	P R E N D S		>	-DS,NE
+	P R E N D S		>	-DS,NES
+	P R E N D S		>	-DS,NENT
+
+		# Verbes de la famille de 'asseoir'
+	S I E D S		>	-DS,D	# = -S
+	S I E D S		>	-IEDS,EYENT
+	S I E D S		>	-IEDS,EYE
+	S I E D S		>	-IEDS,EYES
+
+		# Verbes de la famille de 'coudre'
+	C O U D S		>	-DS,D	# = -S
+	C O U D S		>	-DS,SENT
+	C O U D S		>	-DS,SE
+	C O U D S		>	-DS,SES
+
+		# Verbes de la famille de 'moudre'
+	M O U D S		>	-DS,D	# = -S
+	M O U D S		>	-DS,LENT
+	M O U D S		>	-DS,LE
+	M O U D S		>	-DS,LES
+
+		# Verbes de la famille de 'mettre' et de 'battre'
+		# IND et SUBJ PR
+	[AE] T S		>	-TS,T	# = -S
+	[AE] T S		>	-S,TE
+	[AE] T S		>	-S,TES
+	[AE] T S		>	-S,TENT
+
+		# Verbes de la famille de 'faire'
+		# IND et SUBJ PR
+	F A I S			>	-S,T
+	F A I S			>	-AIS,ONT
+	F A I S			>	-IS,SSE
+	F A I S			>	-IS,SSES
+	F A I S			>	-IS,SSIONS
+	F A I S			>	-IS,SSIEZ
+	F A I S			>	-IS,SSENT
+
+		# Verbes de la famille 'connaître', 'paraître', 'naître'
+		# IND et SUBJ PR
+	[^T] [NR] A I S		>	-IS,îT
+	[^T] [NR] A I S		>	SENT
+	[^T] [NR] A I S		>	SE
+	[^T] [NR] A I S		>	SES
+
+		# Verbes de la famille de 'traire'
+	T R A I S		>	-S,T
+	T R A I S		>	-S,ENT
+	T R A I S		>	-S,E
+	T R A I S		>	-S,ES
+
+		# Verbes de la famille de 'plaire'
+	P L A I S		>	-IS,îT
+	P L A I S		>	ENT
+	P L A I S		>	E
+	P L A I S		>	ES
+
+		# Verbe 'taire'
+	T A I S			>	-S,T
+	T A I S			>	ENT
+	T A I S			>	E
+	T A I S			>	ES
+
+		# 'paître' et 'repaître'
+	P A I S			>	-AIS,AîT
+	P A I S			>	SENT
+	P A I S			>	SE
+	P A I S			>	SES
+
+		# Verbe 'haïr'
+	H A I S			>	-S,T
+	H A I S			>	-IS,ïSSENT
+	H A I S			>	-IS,ïSSE
+	H A I S			>	-IS,ïSSES
+
+		# Verbe 'savoir'
+	S A I S			>	-S,T
+	S A I S			>	-IS,VENT
+	S A I S			>	-IS,CHE
+	S A I S			>	-IS,CHES
+	S A I S			>	-IS,CHENT
+
+		# Verbes en -SCRIRE + 'écrire' et 'décrire'
+		# IND et SUBJ PR
+	[éS] C R I S		>	-S,T
+	[éS] C R I S		>	-S,VENT
+	[éS] C R I S		>	-S,VE
+	[éS] C R I S		>	-S,VES
+
+		# Verbes de la famille de 'lire', 'dire' et 'confire'
+	[LDF] I S		>	-S,T
+	[LDF] I S		>	ENT
+	[LDF] I S		>	E
+	[LDF] I S		>	ES
+
+		# Verbes de la famille de 'cuire'
+	U I S			>	-S,T
+	U I S			>	ENT
+	U I S			>	E
+	U I S			>	ES
+
+		# Verbes de la famille de 'voir', 'croire', 'pourvoir'
+	O I S			>	-S,T
+	O I S			>	-S,ENT
+	O I S			>	-S,E
+	O I S			>	-S,ES
+
+		# 'prévaloir' uniquement
+	V A U X			>	-X,T
+	V A U X			>	-UX,LENT
+	V A U X			>	-UX,LE
+	V A U X			>	-UX,LES
+
+		# 'bouillir' et 'débouillir'
+	B O U S			>	-S,T
+	B O U S			>	-S,ILLENT
+	B O U S			>	-S,ILLE
+	B O U S			>	-S,ILLES
+
+		# 'absoudre', 'dissoudre' et 'résoudre'
+	S O U S			>	-S,T
+	S O U S			>	-US,LVENT
+	S O U S			>	-US,LVE
+	S O U S			>	-US,LVES
+
+		# 'dormir' et 'endormir'
+	D O R S			>	-S,T
+	D O R S			>	-S,MENT
+	D O R S			>	-S,ME
+	D O R S			>	-S,MES
+
+		# Verbes de la famille de 'servir'
+	S E R S			>	-S,T
+	S E R S			>	-S,VENT
+	S E R S			>	-S,VE
+	S E R S			>	-S,VES
+
+		# Verbes de la famille de 'mouvoir'
+	M E U S			>	-S,T
+	M E U S			>	-S,VENT
+	M E U S			>	-S,VE
+	M E U S			>	-S,VES
+
+		# 'vaincre' et 'convaincre'
+	V A I N C S		>	-CS,C	# = -S
+	V A I N C S		>	-CS,QUENT
+	V A I N C S		>	-CS,QUE
+	V A I N C S		>	-CS,QUES
+
+		# verbes de la famille de 'sortir'
+	S O R S			>	-S, T
+	S O R S			>	-S, TE
+	S O R S			>	-S, TES
+	S O R S			>	-S, TENT
+
+# Lemme = 1ère pers. sing. de l'IND IMP
+# Pour : toutes les pers. de l'IND IMP, les 1ère et 2e pers. plur. de l'IND PR,
+#        les 1ère et 2e pers. plur. du SUBJ PR, le participe présent et la
+#        grande majorité des adjectifs verbaux en -ant
+flag *v:
+	A I S			>	-S,T
+	[^çE] A I S		>	-AIS,IONS
+	[^çE] A I S		>	-AIS,IEZ
+	ç A I S			>	-çAIS,CIONS	# 'placer'
+	ç A I S			>	-çAIS,CIEZ
+	E A I S			>	-EAIS,IONS	# 'manger'
+	E A I S			>	-EAIS,IEZ
+	A I S			>	-S,ENT
+	A I S			>	-AIS,ONS
+	[^çE] A I S		>	-AIS,EZ
+	ç A I S			>	-çAIS,CEZ
+	E A I S			>	-AIS,Z
+	A I S			>	-IS,NT
+flag *c:				# adjectif verbal accordé
+	A I S			>	-IS,NTS
+	A I S			>	-IS,NTE
+	A I S			>	-IS,NTES
+
+flag *d:				# V du 3e gp sur le modèle de 'faire'
+					# et de 'dire'
+	S A I S			>	-S,T
+	S A I S			>	-AIS,ONS
+	S A I S			>	-AIS,IONS
+	S A I S			>	-SAIS,TES
+	S A I S			>	-AIS,IEZ
+	S A I S			>	-S,ENT
+	S A I S			>	-IS,NT
+
+					# 'pouvoir'
+	P O U V A I S		>	-S,T
+	P O U V A I S		>	-IS,NT
+	P O U V A I S		>	-AIS,ONS
+	P O U V A I S		>	-AIS,IONS
+	P O U V A I S		>	-AIS,EZ
+	P O U V A I S		>	-AIS,IEZ
+	P O U V A I S		>	-S,ENT
+	P O U V A I S		>	-OUVAIS,UISSIONS
+	P O U V A I S		>	-OUVAIS,UISSIEZ
+
+# Lemme = 1ère pers. sing. du PS
+# Pour : toutes les pers. du PS et du SUBJ IMP
+flag *w:
+	A I			>	-I,S
+	A I			>	-AI,A	# = -I
+	A I			>	-AI,âMES
+	A I			>	-AI,âTES
+	[^çE] A I		>	-AI,èRENT
+	ç A I			>	-çAI,CèRENT
+	E A I			>	-EAI,èRENT
+	A I			>	-I,SSE
+	A I			>	-I,SSES
+	A I			>	-AI,âT
+	A I			>	-I,SSIONS
+	A I			>	-I,SSIEZ
+	A I			>	-I,SSENT
+
+					# pour tous les V des 2e et 3e gp
+	S			>	-S,T	# crée des doublons avec le
+						# PR des verbes du 2e gp !
+	S			>	-S,RENT
+
+					# V du 2e gp et certains du 3e gp
+	I S			>	-IS,îMES
+	I S			>	-IS,îTES
+	I S			>	-IS,îT
+	[IUû] S			>	SE	# crée des doublons avec le
+						# PR des verbes du 2e gp !
+	[IUû] S			>	SES	# idem
+	[IUû] S			>	SIONS	# idem
+	[IUû] S			>	SIEZ	# idem
+	[IUû] S			>	SENT	# idem
+
+	U S			>	-US,ûMES
+	U S			>	-US,ûTES
+	U S			>	-US,ûT
+
+	û S			>	-S,MES
+	û S			>	-S,TES
+
+					# V du 3e gp
+	I N S			>	-INS,îNMES
+	I N S			>	-INS,îNTES
+	I N S			>	SE
+	I N S			>	SES
+	I N S			>	-INS,îNT
+	I N S			>	SIONS
+	I N S			>	SIEZ
+	I N S			>	SENT
+
+	H A ï S			>	-S,MES
+	H A ï S			>	-S,TES
+
+# Lemme = 1ère pers. sing. du FUT
+# Pour : toutes les pers. du FUT et du COND PR
+flag *x:
+	A I			>	-I,S
+	A I			>	-AI,A	# = -I
+	A I			>	-AI,ONS
+	A I			>	-AI,EZ
+	A I			>	-AI,ONT
+	A I			>	S
+	A I			>	T
+	A I			>	-AI,IONS
+	A I			>	-AI,IEZ
+	A I			>	ENT
+
+# Lemme = INF
+# Pour : toutes les formes du participe passé
+flag *y:
+	E R			>	-ER,é
+	E R			>	-ER,éS
+	E R			>	-ER,éE
+	E R			>	-ER,éES
+
+				# V du 2e gp et certains du 3e gp
+	[^O] I R		>	-IR,I	# = -R
+	[^O] I R		>	-R,S
+	[^O] I R		>	-R,E
+	[^O] I R		>	-R,ES
+
+				# V du 3e gp sur le modèle de 'recevoir'
+	C E V O I R		>	-CEVOIR,çU
+	C E V O I R		>	-CEVOIR,çUS
+	C E V O I R		>	-CEVOIR,çUE
+	C E V O I R		>	-CEVOIR,çUES
+
+				# V du 3e gp sur le modèle de 'asseoir'
+	S E O I R		>	-EOIR,IS
+	S E O I R		>	-EOIR,ISE
+	S E O I R		>	-EOIR,ISES
+
+				# V du 3e gp sur le modèle de 'rendre'
+				# et 'rompre'
+	[PD] R E		>	-RE,U
+	[PD] R E		>	-RE,US
+	[PD] R E		>	-RE,UE
+	[PD] R E		>	-RE,UES
+
+				# V du 3e gp sur le modèle de 'cuire',
+				# 'faire' et 'traire'
+	[AU] I R E		>	-RE,TS
+	[AU] I R E		>	-RE,TE
+	[AU] I R E		>	-RE,TES
+
+				# V du 3e gp sur le modèle de 'lire'
+	L I R E			>	-IRE,U
+	L I R E			>	-IRE,UE
+	L I R E			>	-IRE,UES
+
+				# V du 3e gp sur le modèle de 'dire'
+				# et 'confire'
+	[DF] I R E		>	-RE,TS
+	[DF] I R E		>	-RE,TE
+	[DF] I R E		>	-RE,TES
+
+				# V du 3e gp sur le modèle de 'mettre'
+	M E T T R E		>	-ETTRE,IS
+	M E T T R E		>	-ETTRE,ISE
+	M E T T R E		>	-ETTRE,ISES
+
+				# V du 3e gp sur le modèle de 'battre'
+	B A T T R E		>	-RE,U
+	B A T T R E		>	-RE,UE
+	B A T T R E		>	-RE,US
+	B A T T R E		>	-RE,UES
+
+				# V du 3e gp sur le modèle de 'connaître',
+				# et 'paraître'
+	[NR] A î T R E		>	-AîTRE,U
+	[NR] A î T R E		>	-AîTRE,US
+	[NR] A î T R E		>	-AîTRE,UE
+	[NR] A î T R E		>	-AîTRE,UES
+
+				# V du 3e gp sur le modèle de 'clore'
+	C L O R E		>	-RE,S
+	C L O R E		>	-RE,SE
+	C L O R E		>	-RE,SES
+
+				# V du 3e gp : conclure, exclure, reclure
+	C L U R E		>	-URE,U	# = -RE
+
+				# V du 3e gp sur le modèle de 'boire'
+				# et 'croire'
+	O I R E			>	-OIRE,U
+	O I R E			>	-OIRE,US
+	O I R E			>	-OIRE,UE
+	O I R E			>	-OIRE,UES
+
+				# 'croître' et 'recroître'
+	C R O î T R E		>	-OîTRE,û
+	C R O î T R E		>	-OîTRE,US
+	C R O î T R E		>	-OîTRE,UE
+	C R O î T R E		>	-OîTRE,UES
+
+				# 'haïr'
+	H A ï R			>	-ïR,ï	# = -R
+	H A ï R			>	-R,S
+	H A ï R			>	-R,E
+	H A ï R			>	-R,ES
+
+				# 'vaincre' et 'convaincre'
+	V A I N C R E		>	-RE,U
+	V A I N C R E		>	-RE,US
+	V A I N C R E		>	-RE,UE
+	V A I N C R E		>	-RE,UES
+
+				# 'suivre' et 'poursuivre'
+	S U I V R E		>	-RE,I
+	S U I V R E		>	-RE,IS
+	S U I V R E		>	-RE,IE
+	S U I V R E		>	-RE,IES
+
+				# 'vivre', 'revivre' et 'survivre'
+	V I V R E		>	-IVRE,éCU
+	V I V R E		>	-IVRE,éCUS
+	V I V R E		>	-IVRE,éCUE
+	V I V R E		>	-IVRE,éCUES
+
+flag *z:
+				# V du 3e gp sur le modèle de 'acquérir'
+	é R I R			>	-éRIR,IS
+	é R I R			>	-éRIR,ISE
+	é R I R			>	-éRIR,ISES
+
+				# V du 3e gp sur le modèle de 'couvrir'
+	V R I R			>	-RIR,ERT
+	V R I R			>	-RIR,ERTS
+	V R I R			>	-RIR,ERTE
+	V R I R			>	-RIR,ERTES
+
+				# certains V du 3e gp en -ir
+	[^O] I R		>	-IR,U	
+	[^O] I R		>	-IR,US
+	[^O] I R		>	-IR,UE
+	[^O] I R		>	-IR,UES
+
+				# V du 3e gp sur le modèle de 'valoir'
+				# et 'vouloir'
+	L O I R			>	-OIR,U
+	L O I R			>	-OIR,US
+	L O I R			>	-OIR,UE
+	L O I R			>	-OIR,UES
+
+				# V du 3e gp sur le modèle de 'peindre',
+				# 'joindre', 'craindre'
+	I N D R E		>	-DRE,T
+	I N D R E		>	-DRE,TS
+	I N D R E		>	-DRE,TE
+	I N D R E		>	-DRE,TES
+
+				# V du 3e gp sur le modèle de 'prendre',
+	E N D R E		>	-ENDRE,IS
+	E N D R E		>	-ENDRE,ISE
+	E N D R E		>	-ENDRE,ISES
+
+				# V du 3e gp sur le modèle de 'coudre'
+	C O U D R E		>	-DRE,SU
+	C O U D R E		>	-DRE,SUS
+	C O U D R E		>	-DRE,SUE
+	C O U D R E		>	-DRE,SUES
+
+				# V du 3e gp sur le modèle de 'moudre'
+	M O U D R E		>	-DRE,LU
+	M O U D R E		>	-DRE,LUS
+	M O U D R E		>	-DRE,LUE
+	M O U D R E		>	-DRE,LUES
+
+				# V 'naître' et 'renaître'
+	N A î T R E		>	-AîTRE,é
+	N A î T R E		>	-AîTRE,éS
+	N A î T R E		>	-AîTRE,éE
+	N A î T R E		>	-AîTRE,éES
+
+				# écrire/décrire et V en -SCRIRE
+	[éS] C R I R E		>	-RE,TS
+	[éS] C R I R E		>	-RE,TE
+	[éS] C R I R E		>	-RE,TES
+
+				# V du 3e gp : inclure, occlure
+	C L U R E		>	-RE,SE
+	C L U R E		>	-RE,SES
+
+				# V de la famille de 'croître', sauf 'croître'
+				# et 'recroître'
+	C R O î T R E		>	-OîTRE,u
+	C R O î T R E		>	-OîTRE,us
+	C R O î T R E		>	-OîTRE,ue
+	C R O î T R E		>	-OîTRE,ues
+
+
+# Lemmes supplémentaires pour les emplois réflexifs de certains verbes
+# des premier et deuxième groupes (concerne uniquement l'élision du
+# pronom 'se'
+#
+# Verbes du 1er groupe : lemmes = s' + 3e pers. sing. IND PR  avec drapeau p
+#                               = s' + 3e pers. sing. IND IMP avec drapeau p
+#
+# Verbes du 2e  groupe : lemme  = s' + 3e pers. sing. IND IMP avec drapeau q
+
+flag  p:
+	E			>	NT
+	E			>	-E,ÈRENT
+	E			>	RA
+	E			>	RONT
+	E			>	RAIT
+	E			>	RAIENT
+
+	A I T			>	-T,ENT
+	A I T			>	-AIT,A	# = -IT
+	A I T			>	-IT,NT
+	A I T			>	-AIT,ÂT
+	A I T			>	-IT,SSENT
+
+flag  q:
+	Ï S S A I T		>	-ÏSSAIT,IT
+	[^Ï] S S A I T		>	-SSAIT,T
+	S S A I T		>	-AIT,E
+	S S A I T		>	-AIT,ENT
+	S S A I T		>	-T,ENT
+	S S A I T		>	-IT,NT
+	Ï S S A I T		>	-SSAIT,T
+	S S A I T		>	-SSAIT,RENT
+	Ï S S A I T		>	-ÏSSAIT,ÎT
+	I S S A I T		>	-ISSAIT,ÎT
+	S S A I T		>	-SSAIT,RA
+	S S A I T		>	-SSAIT,RONT
+	S S A I T		>	-SSAIT,RAIT
+	S S A I T		>	-SSAIT,RAIENT

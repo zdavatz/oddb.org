@@ -1,13 +1,16 @@
 #!/usr/bin/env ruby
 # Fachinfo -- oddb -- 12.09.2003 -- rwaltert@ywesee.com
 
+require 'util/persistence'
 require 'util/language'
 require 'model/registration_observer'
 
 module ODDB
 	class Fachinfo
+		include Persistence
 		include Language
 		include RegistrationObserver
+		ODBA_PREFETCH = true
 		def atc_class
 			if(reg = @registrations.first)
 				reg.atc_classes.first
@@ -33,6 +36,7 @@ module ODDB
 		end
 	end
 	class FachinfoDocument
+		include Persistence
 		attr_accessor :name, :galenic_form, :composition
 		attr_accessor :effects, :kinetic, :indications, :usage
 		attr_accessor :restrictions, :unwanted_effects

@@ -8,6 +8,7 @@ module ODDB
 	class Patinfo
 		include Language
 		include SequenceObserver
+		ODBA_PREFETCH = true
 		def company_name
 			if(seq = @sequences.first)
 				seq.company_name

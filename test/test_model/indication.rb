@@ -13,7 +13,16 @@ module ODDB
 	end
 end
 
+module ODBA
+	module Persistable
+		def odba_store
+		end
+	end
+end
 class TestIndication < Test::Unit::TestCase
+	class Array
+		include ODBA::Persistable
+	end
 	class StubRegistration
 	end
 
