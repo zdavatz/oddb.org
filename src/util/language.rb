@@ -59,6 +59,7 @@ module ODDB
 			super(values)
 		end
 		alias :pointer_descr :description
+		alias :name :to_s
 	end
 	module Language
 		include SimpleLanguage

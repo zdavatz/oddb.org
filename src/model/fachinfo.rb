@@ -62,6 +62,8 @@ module ODDB
 			:iksnrs,
 			:date,
 		]
+		def empty?
+		end
 		def chapter_names
 			self::class::CHAPTERS.select { |chapter|
 				respond_to?(chapter) && self.send(chapter)

@@ -8,6 +8,7 @@ require 'htmlgrid/errormessage'
 module ODDB
 	module View
 		module Drugs
+=begin
 class FachinfoLanguageSelect < HtmlGrid::AbstractSelect
 	attr_accessor :value
 	def selection(context)
@@ -21,13 +22,14 @@ class FachinfoLanguageSelect < HtmlGrid::AbstractSelect
 		}
 	end
 end
+=end
 class FachinfoConfirmForm < View::FormList
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
 		[0,0]	=>	:preview,
 		[1,0]	=>	:name,
 		[2,0] =>	:iksnrs,
-		[3,0]	=>	:language_select,
+		[3,0]	=>	:language,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0]		=>	'list-small',
@@ -57,12 +59,17 @@ class FachinfoConfirmForm < View::FormList
 	def iksnrs (model, session)
 		@session.state.iksnrs(model).join(",&nbsp;")
 	end
+	def language(model, session)
+		@lookandfeel.lookup(@session.state.language)
+	end
+=begin
 	def language_select(model, session)
 		name = "language_select[#{@list_index}]"
 		select = View::Drugs::FachinfoLanguageSelect.new(name, model, session, self)
 		select.value = ['de', 'fr'][@list_index]
 		select
 	end
+=end
 	def preview(model, session)
 		link = HtmlGrid::PopupLink.new(:preview, model, session, self)
 		link.href = @lookandfeel.event_url(:preview, \

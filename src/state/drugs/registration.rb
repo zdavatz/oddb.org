@@ -3,6 +3,7 @@
 
 require 'state/drugs/global'
 require 'state/drugs/sequence'
+require 'state/drugs/selectindication'
 require 'state/drugs/fachinfoconfirm'
 require 'model/fachinfo'
 require 'view/drugs/registration'
@@ -27,7 +28,10 @@ class Registration < State::Drugs::Global
 		end
 	end
 	def update
-		keys = [:inactive_date, :generic_type, :registration_date, :revision_date, :market_date]
+		keys = [
+			:inactive_date, :generic_type, :registration_date, 
+			:revision_date, :market_date, :expiration_date,
+		]
 		if(@model.is_a? Persistence::CreateItem)
 			iksnr = @session.user_input(:iksnr)
 			if(error_check_and_store(:iksnr, iksnr, [:iksnr]))
@@ -43,6 +47,7 @@ class Registration < State::Drugs::Global
 		new_state = self
 		hash = user_input(keys)
 		comp_name = @session.user_input(:company_name)
+		language = user_input(:language_select).intern
 		if(company = @session.app.company_by_name(comp_name))
 			hash.store(:company, company.oid)
 		else
@@ -50,32 +55,43 @@ class Registration < State::Drugs::Global
 			@errors.store(:company_name, err)
 		end
 		ind = user_input(:indication)
+		sel = nil
 		if(indication = @session.app.indication_by_text(ind))
 			hash.store(:indication, indication.pointer)
 		elsif(!ind.empty?)
-			err = create_error(:e_unknown_indication, :indication, ind)
-			@errors.store(:indication, err)
+			#err = create_error(:e_unknown_indication, :indication, ind)
+			#@errors.store(:indication, err)
+			input = hash.dup
+			input.store(:indication, ind)
+			sel = State::Drugs::SelectIndication::Selection.new(input, 
+				@session.app.search_indications(ind), @model)
+			new_state = State::Drugs::SelectIndication.new(@session, sel)
 		end
 		if(fi_file = @session.user_input(:fachinfo_upload)) 
 			four_bytes = fi_file.read(4)
 			fi_file.rewind
 			if(four_bytes == "%PDF")
-				filename = "#{@model.iksnr}.pdf"
+				filename = "#{@model.iksnr}_#{language}.pdf"
 				FileUtils.mkdir_p(self::class::FI_FILE_DIR)
 				path = File.expand_path(filename, self::class::FI_FILE_DIR)
 				File.open(path, "w") { |fh|
 					fh.write(fi_file.read)
 				}
 				fi_file.rewind
-				hash.store(:pdf_fachinfo, filename)
+				if(pdf_fachinfos = @model.pdf_fachinfos)
+					pdf_fachinfos.store(language, filename)
+				else
+					pdf_fachinfos = {language => filename}
+				end
+				hash.store(:pdf_fachinfos, pdf_fachinfos)
 				new_state = State::Drugs::WaitForFachinfo.new(@session, @model)
 				new_state.previous = self
 				@session.app.async {
 					pdf_document =  parse_fachinfo_pdf(fi_file)
-					new_state.signal_done(pdf_document, path, @model.iksnr, "application/pdf")
+					new_state.signal_done(pdf_document, path, @model.iksnr, "application/pdf", language)
 				}
 			else
-				filename = "#{@model.iksnr}.doc"
+				filename = "#{@model.iksnr}_#{language}.doc"
 				FileUtils.mkdir_p(self::class::FI_FILE_DIR)
 				path = File.expand_path(filename, self::class::FI_FILE_DIR)
 				File.open(path, "w") { |fh|
@@ -86,11 +102,14 @@ class Registration < State::Drugs::Global
 				new_state.previous = self
 				@session.app.async {
 					word_document = parse_fachinfo_doc(fi_file)
-					new_state.signal_done(word_document, path, @model.iksnr, "application/msword")
+					new_state.signal_done(word_document, path, @model.iksnr, "application/msword", language)
 				}
 			end
 		end
 		@model = @session.app.update(@model.pointer, hash)
+		if(sel)
+			sel.registration = @model
+		end
 		new_state
 	end
 	def parse_fachinfo_doc(file)

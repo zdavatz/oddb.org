@@ -9,11 +9,14 @@ module ODDB
 	module View
 		class Navigation < HtmlGrid::Composite
 			COMPONENTS = {}
-			CSS_CLASS = "navigation right"
+			CSS_CLASS = "navigation-right"
 			LEGACY_INTERFACE = false
 			NAV_LINK_CLASS = NavigationLink
 			NAV_LINK_CSS = 'navigation'
 			NAV_METHOD = :navigation
+			HTML_ATTRIBUTES = {
+				'align'	=>	'right',
+			}
 			SYMBOL_MAP = {
 				:navigation_divider	=>	HtmlGrid::Text,
 			}
@@ -43,7 +46,25 @@ module ODDB
 			end
 			def faq_link(model)
 				link = HtmlGrid::Link.new(:faq_link, model, @session, self)
-				link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.FAQ"
+				if(@lookandfeel.language == 'de')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.FragenUndAntworten"
+				elsif(@lookandfeel.language == 'fr')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.QuestionsEtReponses"
+				elsif(@lookandfeel.language == 'en')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.FrequentlyAskedQuestions"
+				end
+				link
+			end
+			def help_link(model)
+				link = HtmlGrid::Link.new(:help_link, model, @session, self)
+				if(@lookandfeel.language == 'de')
+					link.href =  "http://wiki.oddb.org/wiki.php?pagename=ODDB.Hilfe"
+
+				elsif(@lookandfeel.language == 'fr')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.Aide"
+				elsif(@lookandfeel.language == 'en')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.Help"
+				end
 				link
 			end
 		end

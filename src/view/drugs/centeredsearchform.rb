@@ -16,11 +16,13 @@ class CenteredSearchForm < View::CenteredSearchForm
 		[0,2,1]		=>	'exact_match',
 		[0,3,0,3]	=>	:submit,
 		[0,3,0,4]	=>	:search_reset,
-		[0,3,0,5]	=>	:search_help,
 	}
 	SYMBOL_MAP = {
 		:exact_match	=>	HtmlGrid::InputCheckbox,
 		:search_query	=>	View::SearchBar,	
+	}
+	CSS_MAP = {
+		[0,2]	=>	'ccomponent',
 	}
 	EVENT = :search
 end
@@ -29,7 +31,9 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,0]		=>	:language_de,
 		[0,0,1]	=>	:divider,
 		[0,0,2]	=>	:language_fr,
-		[0,0,3]	=>	:beta,
+		[0,0,3]	=>	:divider,
+		[0,0,4]	=>	:language_en,
+		[0,0,5]	=>	:beta,
 		[0,1]		=>	View::Drugs::CenteredSearchForm,
 		[0,2]		=>	:search_explain, 
 		[0,3]		=>	View::CenteredNavigation,
@@ -48,14 +52,15 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,6,4]	=>	:sl_count_text,
 		[0,7] =>	'database_last_updated_txt',
 		[0,7,1]	=>	:database_last_updated,
-		[0,8]		=>	View::LegalNoteLink,
-		[0,9]		=>	:paypal,
+		[0,8]		=>	:generic_definition,
+		[0,9]		=>	:legal_note,
+		[0,10]		=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,8]		=>	'ccomponent',
+		[0,0,1,10]		=>	'ccomponent',
 	}
 	COMPONENT_CSS_MAP = {
-		[0,8]	=>	'legal-note-center',
+		[0,9]	=>	'legal-note-center',
 	}
 	def ddd_count_text(model, session)
 		create_link(:ddd_count_text, 'http://www.whocc.no/atcddd/')

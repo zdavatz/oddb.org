@@ -37,20 +37,23 @@ class WaitForFachinfo < State::Drugs::Global
 			model = Model.new
 			model.push(@document)
 			model.registration = @model
-			State::Drugs::FachinfoConfirm.new(@session, model)
+			fi_confirm = State::Drugs::FachinfoConfirm.new(@session, model)
+			fi_confirm.language = @language
+			fi_confirm
 		else
 			@previous	
 		end
 	end
-	def signal_done(document, path, iksnr, mimetype)
+	def signal_done(document, path, iksnr, mimetype, language)
 		if(document)
+			@language = language
 			@document = document
 		else
 			log = Log.new(Time.now)
 			log.files = { 
 				path => mimetype 
 			}
-			log.notify("Fachinfo Parse Error Reg: #{iksnr}")
+			log.notify("Fachinfo Parse Error Reg: #{iksnr}, Language; #{language}")
 		end
 		@wait = false
 	end

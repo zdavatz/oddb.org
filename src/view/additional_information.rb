@@ -7,15 +7,30 @@ module ODDB
 			DISABLE_ADDITIONAL_CSS = false
 			def fachinfo(model, session, css='result-infos')
 				fachinfo = model.fachinfo
-				pdf_fachinfo = model.pdf_fachinfo
+				pdf_fachinfos = model.pdf_fachinfos
 				#company = model.company
-				if(fachinfo || pdf_fachinfo )#&& company.fi_status)
+				visitor_language = @lookandfeel.language.intern
+				if(fachinfo || pdf_fachinfos )#&& company.fi_status)
+					pdf_link = false
+					fi_link = false
+					if(!fachinfo.nil? && !fachinfo.descriptions.nil? && fachinfo.descriptions.include?(visitor_language.to_s))
+						fi_link = true
+					elsif(pdf_fachinfos && pdf_fachinfos[visitor_language])
+						pdf_link = true
+					elsif(!fachinfo.nil? && !fachinfo.descriptions.nil? && fachinfo.descriptions[visitor_language.to_s]) 
+							fi_link = true
+					else
+						pdf_link = true
+					end
 					link = HtmlGrid::PopupLink.new(:fachinfo_short, model, session, self)
-					if(!fachinfo.nil?)
+					if(fi_link)
 						link.href = @lookandfeel.event_url(:resolve, {'pointer' => fachinfo.pointer})
 						link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
-					elsif(!pdf_fachinfo.nil?)
-						link.href = @lookandfeel.resource_global(:pdf_fachinfo, pdf_fachinfo)
+					elsif(pdf_link)
+						unless(pdf_fi = pdf_fachinfos[visitor_language])
+							pdf_fi = pdf_fachinfos.values.first
+						end
+						link.href = @lookandfeel.resource_global(:pdf_fachinfo, pdf_fi)
 					end
 					pos = components.index(:fachinfo)
 					component_css_map.store(pos, css)

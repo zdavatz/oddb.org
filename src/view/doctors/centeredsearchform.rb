@@ -20,7 +20,9 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,0]		=>	:language_de,
 		[0,0,1]	=>	:divider,
 		[0,0,2]	=>	:language_fr,
-		[0,0,3]	=>	:beta,
+		[0,0,3]	=>	:divider,
+		[0,0,4]	=>	:language_en,
+		[0,0,5]	=>	:beta,
 		[0,1]		=>	View::Doctors::CenteredSearchForm,
 		[0,2]		=>	'doctors_search_explain', 
 		#0,4]		=>	View::CenteredNavigation,
@@ -29,14 +31,14 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,5,2]	=>	'comma_separator',
 		[0,5,6]	=>	'database_last_updated_txt',
 		[0,5,7]	=>	:database_last_updated,
-		[0,6]		=>	View::LegalNoteLink,
+		[0,6]		=>	:legal_note,
 		[0,7]		=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,6]		=>	'ccomponent',
+		[0,0,1,7]		=>	'ccomponent',
 	}
 	COMPONENT_CSS_MAP = {
-		[0,6]	=>	'legal-note-center',
+		[0,7]	=>	'legal-note-center',
 	}
 	def doctor_count(model, session)
 		@session.doctor_count

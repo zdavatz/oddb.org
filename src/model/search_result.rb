@@ -78,6 +78,7 @@ module ODDB
 			self.atc_sorted.each(&block)
 		end
 		def set_relevance(odba_id, relevance)
+			relevance = [relevance.to_f, @relevance[odba_id].to_f].max
 			@relevance.store(odba_id, relevance)
 		end
 		private

@@ -9,6 +9,7 @@ module ODDB
 	module State
 		module Drugs
 class FachinfoConfirm < State::Drugs::Global
+	attr_accessor :language
 	VIEW = View::Drugs::FachinfoConfirm
 	def init
 		super
@@ -33,29 +34,46 @@ class FachinfoConfirm < State::Drugs::Global
 		State::Drugs::FachinfoPreview.new(@session, fi)
 	end
 	def update
-		keys = [:language_select, :state_id]
-		input = user_input(keys, [:language_select])
+		#	keys = [:state_id]
+		#	input = user_input(keys)
 		validate_iksnrs()
 		if(error?)
 			self
 		else
-			pointer = Persistence::Pointer.new(:fachinfo)
+			pointer = if(old_fachinfo = replaceable_fachinfo)
+				old_fachinfo.pointer
+			else
+				Persistence::Pointer.new(:fachinfo).creator
+			end
 			values = {}
-			input[:language_select].each { |idx, lang|
-				if(lang.length == 2)
-					values.store(lang, @model.at(idx.to_i))
-				end
-			}
+			#input[:language_select].each { |idx, lang|
+				#	if(lang.length == 2)
+					values.store(@language, @model.at(0))
+					#	end
+					#	}
 			if(values.empty?)
 				add_warning(:w_no_fachinfo_saved, :fachinfo_upload, nil)
 				return self
 			end
-			fachinfo = @session.app.update(pointer.creator, values)
+			fachinfo = @session.app.update(pointer, values)
 			@valid_iksnrs.each { |iksnr|
 				@session.app.replace_fachinfo(iksnr, fachinfo.pointer)
 			}
 			@previous.previous
 		end
+	end
+	def replaceable_fachinfo
+		@valid_iksnrs.each { |iksnr|
+			#if no fachinfo exists for this registration
+			if(fi = @session.registration(iksnr).fachinfo)
+				iksnrs = fi.registrations.collect { |reg| 
+					reg.iksnr 
+				}
+				if((iksnrs - @valid_iksnrs).empty?)
+					return fi
+				end
+			end
+		}
 	end
 	def validate_iksnrs
 		@valid_iksnrs = []

@@ -115,8 +115,8 @@ Grammar OddbSize
 		def fachinfo
 			registration.fachinfo
 		end
-		def pdf_fachinfo
-			registration.pdf_fachinfo
+		def pdf_fachinfos
+			registration.pdf_fachinfos
 		end
 		def galenic_form
 			@sequence.galenic_form

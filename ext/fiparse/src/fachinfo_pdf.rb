@@ -29,7 +29,6 @@ module ODDB
 					end
 				elsif(@font.bold?)
 					@name = self.src.strip
-					# product-name??
 				elsif(@font.italic?)
 					if(@fresh_paragraph)
 						@section = @chapter.next_section
