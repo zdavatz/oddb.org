@@ -87,7 +87,7 @@ class ResultList < HtmlGrid::List
 		[7,0]		=>	:substances,
 		[8,0]		=>	:company_name,
 		[9,0]		=>	:ikscat,
-		[10,0]		=>	:registration_date,
+		[10,0]	=>	:registration_date,
 		[11,0]	=>	:fachinfo,
 		[12,0]	=>  :patinfo,
 		[13,0]	=>	:limitation_text,
@@ -199,7 +199,18 @@ class ResultList < HtmlGrid::List
 	def name_base(model, session)
 		link = HtmlGrid::PopupLink.new(:compare, model, session, self)
 		link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
-		link.value = model.name_base
+		name = ''
+		line = ''
+		model.name_base.split(/\b/).each { |part|
+			if((line.length + part.length) > 30)
+				name << line << '<br>'
+				line = part
+			else
+				line << part
+			end
+		}
+		name << line
+		link.value = name
 		link.set_attribute('class', 'result-big' << resolve_suffix(model))
 		indication = model.registration.indication
 		title = [
