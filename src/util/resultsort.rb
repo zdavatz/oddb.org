@@ -4,6 +4,7 @@
 module ODDB
 	module ResultStateSort
 		def sort
+			puts "in result state store"
 			get_sortby!
 			@model.each { |atc| 
 				atc.packages.sort! { |a, b| compare_entries(a, b) }
@@ -15,6 +16,8 @@ module ODDB
 	module ResultSort
 		def sort_result(packages, session)
 			begin
+				#puts "in sort result******"
+				#puts packages.size
 				packages.sort_by { |package|
 					[
 						generic_type_weight(package),

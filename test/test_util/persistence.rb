@@ -7,7 +7,16 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'util/persistence'
 require 'date'
+require 'odba'
 
+module ODBA
+	module Persistable
+		def odba_store
+		end
+		def odba_delete
+		end
+	end
+end
 module ODDB
 	module Persistence
 		public :current_oid
@@ -56,6 +65,7 @@ class StubPointerBar
 	end
 end
 class StubPointerFoo
+	include ODBA::Persistable
 	attr_reader :bar_deleted
 	def initialize
 		@shnup = {}
@@ -99,6 +109,7 @@ class StubPointerApp
 	end
 end
 class StubPointerApp2
+	include ODBA::Persistable
 	def initialize
 		@faps = {}
 	end

@@ -32,7 +32,6 @@ class OddbPrevalence
 		"@substance_name_index",
 		"@company_index",
 		"@atc_index",
-		"@atc_chooser",
 	]
 	attr_reader :galenic_groups, :companies
 	attr_reader	:atc_classes, :last_update
@@ -81,7 +80,7 @@ class OddbPrevalence
 		@substances ||= {}
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
-		rebuild_indices
+		#rebuild_indices
 	end
 	# prevalence-methods ################################
 	def create(pointer)
@@ -100,7 +99,7 @@ class OddbPrevalence
 		failsafe(ODDB::Persistence::UninitializedPathError) {
 			if(item = pointer.resolve(self))
 				updated(item)
-				checkout(item)
+				#	checkout(item)
 			end
 			pointer.issue_delete(self)
 		}
@@ -164,6 +163,7 @@ class OddbPrevalence
 	def atc_class(code)
 		@atc_classes[code]
 	end
+=begin
 	def checkout(item)
 		case item
 		when ODDB::Registration
@@ -199,6 +199,7 @@ class OddbPrevalence
 		@atc_index = nil
 		@atc_chooser = nil
 	end
+=end
 	def company(oid)
 		@companies[oid.to_i]
 	end
@@ -293,8 +294,8 @@ class OddbPrevalence
 				diff = subs.diff(values, self)
 				subs.update_values(diff)
 				begin
-					store_in_index(@substance_index, key, subs)
-					store_in_index(@substance_name_index, key, *subs.sequences)
+					#store_in_index(@substance_index, key, subs)
+					#store_in_index(@substance_name_index, key, *subs.sequences)
 				rescue
 					puts $!.class
 					puts $!.message
@@ -311,7 +312,7 @@ class OddbPrevalence
 	end
 	def delete_atc_class(atccode)
 		atc = @atc_classes[atccode]
-		delete_from_index(@atc_index, atc.name, atc)
+		#delete_from_index(@atc_index, atc.name, atc)
 		@atc_chooser.delete(atccode)
 		@atc_classes.delete(atccode)
 	end
@@ -423,9 +424,9 @@ class OddbPrevalence
 	#=begin
 	def odba_store(name = nil)
 		failsafe {
-			clear_indices
+			#clear_indices
 			super
-			rebuild_indices
+			#rebuild_indices
 		}
 	end
 	def rebuild_atc_chooser
@@ -444,7 +445,7 @@ class OddbPrevalence
 		ODBA.cache_server.indices.size
 		#delete_if only for Testing!!!!!
 		@fachinfos.delete_if{|key, val| val.descriptions["de"].name.nil?}	
-		@atc_classes.delete_if{|key, atc| atc.sequences.empty?}
+		#@atc_classes.delete_if{|key, atc| atc.sequences.empty?}
 		odba_store('oddbapp')
 		#odba_take_snapshot
 		rebuild_odba_indices
@@ -457,7 +458,7 @@ class OddbPrevalence
 			YAML.load_documents(file) { |index_definition|
 				ODBA.cache_server.create_index(index_definition, ODDB)
 				puts "name: #{index_definition.index_name}"
-				ODBA.cache_server.fill_index(index_definition.index_name, instance_eval(index_definition.init_source))
+					ODBA.cache_server.fill_index(index_definition.index_name, instance_eval(index_definition.init_source))
 			}
 		rescue
 			puts "INDEX CREATION ERROR"
@@ -474,7 +475,7 @@ class OddbPrevalence
 
 		 ODBA.cache_server.create_index('sequence_index_atc', ODDB::Sequence, ODDB::AtcClass, :name, "atc_class", "sequences")
 =end
-#=begin
+=begin
 	def how_many_objects
 		arr = []
 		objs = {}
@@ -490,6 +491,7 @@ class OddbPrevalence
 			puts res
 		}
 	end
+=end
 	def orphaned_fachinfo(oid)
 		@orphaned_fachinfos[oid.to_i]
 	end
@@ -501,6 +503,7 @@ class OddbPrevalence
 			inj += reg.package_count
 		}
 	end
+=begin
 	def rebuild_indices
 		@indication_index = Datastructure::CharTree.new
 		@indications.each_value { |indication|
@@ -519,6 +522,7 @@ class OddbPrevalence
 			@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
 		}
 	end
+=end
 	def registration(registration_id)
 		@registrations[registration_id]
 	end
@@ -608,16 +612,16 @@ class OddbPrevalence
 	def sponsor
 		@sponsor ||= ODDB::Sponsor.new
 	end
-	def store_in_index(index, key, *values)
 =begin
+	def store_in_index(index, key, *values)
 		parts = key.to_s.split(/\s+/)
 		parts << key.to_s
 		parts.uniq!
 		parts.each { |part|
 			index.store(part.downcase, *values) if part.length > 3
 		}
-=end
 	end
+=end
 	def substance(key)
 		if(key.to_i.to_s == key.to_s)
 			@substances[key.to_i]
@@ -672,16 +676,16 @@ class OddbPrevalence
 			@users.store(0, ODDB::RootUser.new)
 		end
 	end
-	def delete_from_index(index, key, value)
 =begin
+	def delete_from_index(index, key, value)
 		parts = key.to_s.split(/\s+/)
 		parts << key.to_s
 		parts.uniq!
 		parts.each { |part|
 			index.delete(part.downcase, value) if part.length > 3
 		}
-=end
 	end
+=end
 end
 
 module ODDB
@@ -713,9 +717,9 @@ module ODDB
 			ODBA.cache_server.prefetch
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
 				puts "new oddbprevalence created"
-				OddbPrevalence.new
+				puts "with db start"
+				@system.OddbPrevalence.new
 			}
-			
 =end
 			puts "system init..."
 			@system.init
@@ -765,6 +769,7 @@ module ODDB
 			@system.execute_command(UpdateCommand.new(pointer, values))
 			#@system.update(pointer, values)
 		end
+=begin
 		def take_snapshot
 			failsafe {
 				@prevalence.system.clear_indices
@@ -772,6 +777,7 @@ module ODDB
 				@prevalence.system.rebuild_indices
 			}
 		end
+=end
 		#####################################################
 		def admin(src, priority=-1)
 			Thread.current.priority = priority

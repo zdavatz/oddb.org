@@ -26,13 +26,11 @@ module ODDB
 				@start = 0
 				@end = -1
 			end
+			def bold?
+				@values.include?(:bold)
+			end
 			def italic?
 				@values.include?(:italic)
-			end
-			def bold?
-				puts "****"
-				puts @values
-				@values.include?(:bold)
 			end
 			def range
 				@start..@end
