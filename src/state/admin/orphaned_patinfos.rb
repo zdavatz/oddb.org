@@ -12,6 +12,9 @@ class OrphanedPatinfos < State::Admin::Global
 	DIRECT_EVENT = :orphaned_patinfos
 	PERSISTENT_RANGE = true
 	VIEW = View::Admin::OrphanedPatinfos
+	def init
+		filter_interval
+	end
 	def symbol
 		:names
 	end
