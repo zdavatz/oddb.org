@@ -85,7 +85,9 @@ class UserCompany < State::Companies::Company
 			unless(company.nil? || company==@model)
 				@errors.store(:name, create_error('e_duplicate_company', :name, input[:name]))
 			else
-				@model = @session.app.update(@model.pointer, input)
+				ODBA.batch {
+					@model = @session.app.update(@model.pointer, input)
+				}
 			end
 		end
 		self
@@ -95,7 +97,9 @@ class RootCompany < State::Companies::UserCompany
 	VIEW = View::Companies::RootCompany
 	def delete
 		if(@model.empty?)
-			@session.app.delete(@model.pointer)
+			ODBA.batch {
+				@session.app.delete(@model.pointer)
+			}
 			State::Companies::CompanyList.new(@session, @session.app.companies)
 		else
 			State::Companies::MergeCompanies.new(@session, @model)

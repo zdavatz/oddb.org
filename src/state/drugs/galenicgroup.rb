@@ -12,7 +12,9 @@ class GalenicGroup < State::Drugs::Global
 	VIEW = View::Drugs::GalenicGroup
 	def delete
 		begin
-			@session.app.delete(@model.pointer)
+			ODBA.batch {
+				@session.app.delete(@model.pointer)
+			}
 			galenic_groups() # from RootState
 		rescue StandardError => e
 			State::Exception.new(@session, e)
@@ -23,7 +25,9 @@ class GalenicGroup < State::Drugs::Global
 			inj.store(key, @session.user_input(key.intern))
 			inj
 		}
-		@model = @session.app.update(@model.pointer, input)
+		ODBA.batch {
+			@model = @session.app.update(@model.pointer, input)
+		}
 		self
 	end
 end

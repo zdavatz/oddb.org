@@ -62,7 +62,9 @@ class Package < State::Drugs::Global
 			inj
 		}
 =end
-		@model = @session.app.update(@model.pointer, user_input(keys))
+		ODBA.batch {
+			@model = @session.app.update(@model.pointer, user_input(keys))
+		}
 		self
 	end
 end

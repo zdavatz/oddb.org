@@ -12,7 +12,9 @@ class Substance < State::Substances::Global
 	VIEW = View::Substances::Substance
 	def delete
 		if(@model.empty?)
-			@session.app.delete(@model.pointer)
+			ODBA.batch {
+				@session.app.delete(@model.pointer)
+			}
 			#substances() # from RootState
 			new_state = result()
 			new_state.model.delete(@model)
@@ -50,7 +52,7 @@ class Substance < State::Substances::Global
 		end
 		new_state
 	end
-def update
+	def update
 		languages = @session.lookandfeel.languages.dup
 		languages << 'en' << 'lt'
 		input = languages.inject({}) { |inj, key|
@@ -62,7 +64,9 @@ def update
 			inj
 		}
 		unless error?
-			@model = @session.app.update(@model.pointer, input)	
+			ODBA.batch {
+				@model = @session.app.update(@model.pointer, input)	
+			}
 		end
 		self
 	end

@@ -16,7 +16,9 @@ class AtcClass < State::Drugs::Global
 		keys = @session.lookandfeel.languages
 		input = user_input(keys)
 		unless error?
-			@model = @session.app.update(@model.pointer, input)
+			ODBA.batch {
+				@model = @session.app.update(@model.pointer, input)
+			}
 		end
 		self
 	end
