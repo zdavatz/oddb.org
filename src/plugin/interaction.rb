@@ -329,7 +329,7 @@ module ODDB
 			def update_oddb_substances(cyt)
 				puts "updating oddb substances..."
 				(cyt.substrates + cyt.inhibitors + cyt.inducers).each { |connection|
-					if(subs = @app.substance_by_connection_key(connection.name))
+					if(subs = @app.substance_by_connection_key(connection.name.downcase))
 						unless(@updated_substances.keys.include?(subs.connection_key))
 							values = {
 								:connections		=> subs.substrate_connections.dup,
@@ -342,7 +342,7 @@ module ODDB
 						pointer = Persistence::Pointer.new(:substance)
 						descr = {
 							'en'						=>	connection.name,
-							:connection_key	=>	connection.name,
+							:connection_key	=>	connection.name.downcase,
 						}
 						substance = @app.update(pointer.creator, descr)
 						unless(@updated_substances.keys.include?(substance.connection_key))
@@ -367,7 +367,7 @@ module ODDB
 					}
 					catch :found do
 						@app.substances.each { |substance|
-							if(substance.connection_key == substrate.name)
+							if(substance.connection_key == substrate.name.downcase)
 								pointer = substance.pointer + [:cyp450substrate, cyt_id]
 								if(substance.cyp450substrate(cyt_id))
 									@app.update(pointer, args)
@@ -376,7 +376,7 @@ module ODDB
 									info = "#{substrate.name} => #{cyt_id}"
 									update_report(:substrates_created, info)
 								end
-								@updated_substances[substrate.name][:connections].delete(cyt_id)
+								@updated_substances[substrate.name.downcase][:connections].delete(cyt_id)
 								throw :found
 							end
 						}	

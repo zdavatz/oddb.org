@@ -522,7 +522,7 @@ class OddbPrevalence
 	def substance_by_connection_key(connection_key)
 		key = connection_key.to_s.downcase
 		@substances.values.select { |substance|
-			substance.connection_key.downcase == key
+			substance.connection_key == key
 		}.first
 	end
 	def substances
