@@ -18,9 +18,7 @@ class SelectSubstance < State::Admin::Global
 				update = {
 					'lt'	=>	@model.user_input[:substance],
 				}
-				ODBA.batch { 
-					@session.app.update(substance.pointer, update)
-				}
+				@session.app.update(substance.pointer, update)
 			end
 		}
 		if (error?)
