@@ -1,0 +1,14 @@
+2004-05-03 Zeno Davatz <zdavatz@ywesee.com>
+
+* todo's ODDB.org
+	- Einbauen manuelles Update überschreibt SL-Update
+		Das manuelle Update muss den automatischen SL-Update überschreiben können.
+		z.B. Selipran hat im Excel-Export vom BSV den falschen Swissmedic-Code (die letzen 3 Ziffern stimmen nicht). 
+		Wenn man nun den SL-Eintrag manuell macht, dann muss man die Möglichkeit haben,	
+		dass der automatische SL-Update die manuellen Änderungen nicht überschreibt.
+	- Einbauen der IKS-Nummer von Advate: 56352 (Raphi und Mike)
+		Wir müssen eine kleine Code-Änderung machen, damit die Fachinfo ins 
+		System kommt (ein Bug, das sollte meiner Meinung nach schon passieren,
+		ich kanns aber im Code nicht finden). 
+		Dann kann man via Update-Fehler -> Nicht zugeordnete Fachinfos gehen. 
+		Aufwand: ca. 30min.
