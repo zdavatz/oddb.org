@@ -4,6 +4,7 @@
 require 'view/publictemplate'
 require 'view/form'
 require 'htmlgrid/composite'
+require 'htmlgrid/errormessage'
 require 'htmlgrid/inputcheckbox'
 require 'htmlgrid/inputradio'
 require 'htmlgrid/richtext'
