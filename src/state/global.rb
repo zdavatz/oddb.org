@@ -255,6 +255,7 @@ module ODDB
 						result = @session.search_substances(query)
 						State::Substances::Result.new(@session, result)
 					else
+						query = query.to_s.downcase
 						result = case @session.user_input(:search_type) 
 						when 'st_sequence'
 							@session.search_exact_sequence(query)
