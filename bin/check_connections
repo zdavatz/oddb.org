@@ -29,8 +29,10 @@ EOS
 
 1.upto(max) { |id|
 	if(dump = ODBA.storage.restore(id))
-		unreached.push(id)
 		obj = ODBA.marshaller.load(dump)
+		if(obj.odba_name.nil?)
+			unreached.push(id)
+		end
 		obj.instance_variables.each { |name|
 			check_reached(name, obj, obj.instance_variable_get(name), reached)
 		}
@@ -61,4 +63,6 @@ deleted.each_with_index { |id, idx|
 	print "\b" * 8
 	print "#{sprintf('%7.3f', idx.to_f/del_size.to_f*100.0)}%"
 	print "\b" * 8
+	$stdout.flush
 }
+puts "#### ID-Check complete ####"
