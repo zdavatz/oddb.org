@@ -39,18 +39,37 @@ class FachinfoConfirm < State::Drugs::Global
 		if(error?)
 			self
 		else
+
+			
 			pointer = Persistence::Pointer.new(:fachinfo)
 			values = {}
+			language = ''
 			input[:language_select].each { |idx, lang|
 				if(lang.length == 2)
+					language = lang
 					values.store(lang, @model.at(idx.to_i))
+					puts values.inspect
 				end
 			}
 			if(values.empty?)
 				add_warning(:w_no_fachinfo_saved, :fachinfo_upload, nil)
 				return self
 			end
+			old_fachinfo = @session.app.registration(@valid_iksnrs.first).fachinfo
+			old_fachinfo.descriptions.each { |lang, fi|
+				if(lang != language)
+					values.store(lang, fi)
+				end
+			}
 			fachinfo = @session.app.update(pointer.creator, values)
+=begin
+			regs = old_fachinfo.registrations
+			regs.each{ |reg|
+				if(@valid_iksnr.include?(reg.iksnr))
+					@session.app.replace_fachinfo(iksnr, fachinfo.pointer)
+				end
+			}
+=end
 			@valid_iksnrs.each { |iksnr|
 				@session.app.replace_fachinfo(iksnr, fachinfo.pointer)
 			}
