@@ -13,7 +13,7 @@ class Login < State::Admin::Global
 	VIEW = View::Admin::Login
 	def login
 		if(user = @session.login)
-			newstate = home
+			newstate = trigger(:home)
 			if(viral = user.viral_module)
 				newstate.extend(viral)
 			end
