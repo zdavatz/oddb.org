@@ -965,6 +965,12 @@ td.button-right {
 	text-align : right;
 	padding-bottom : 5px;
 }
+td.button-left-with-padding {
+	text-align : left;
+	padding-right : 5px;
+	padding-top : 5px;
+	padding-bottom : 5px;
+}
 td.button {
 	text-align : center;
 	padding-bottom : 5px;

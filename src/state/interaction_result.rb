@@ -6,6 +6,7 @@ require 'state/result'
 
 module ODDB
 	class InteractionResultState < GlobalState
+=begin
 		class InteractionFacade < SimpleDelegator
 			attr_reader :obj_class, :objects
 			def initialize(obj_class)
@@ -23,6 +24,7 @@ module ODDB
 				@objects.sort { |x, y| x.name <=> y.name }
 			end
 		end
+=end
 		VIEW = InteractionResultView
 		REVERSE_MAP = ResultList::REVERSE_MAP
 		ITEM_LIMIT = 150
@@ -35,13 +37,13 @@ module ODDB
 			else
 				@model.each { |obj|
 					@object_count += 1
-					check_facades(obj.class, obj)
 				}
-				@model = @facades.values.sort { |x, y| 
-					x.obj_class.to_s <=> y.obj_class.to_s
+				@model.uniq!.sort! { |x, y| 
+					x.name <=> y.name
 				}
 			end
 		end
+=begin
 		def check_facades(obj_class, obj)
 			if(@facades.keys.include?(obj_class))
 				@facades[obj_class].add_object(obj)
@@ -51,6 +53,7 @@ module ODDB
 				@facades.store(facade.obj_class, facade)
 			end
 		end
+=end
 		def result
 			self
 		end

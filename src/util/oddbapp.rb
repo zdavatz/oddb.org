@@ -455,9 +455,11 @@ class OddbPrevalence
 		keys = query.to_s.downcase.split(" ")
 		result = []
 		keys.each { |key|
-			result << sequences_by_name(key).collect { |seq|
-				seq
-			}.compact.uniq
+			if(sequences = sequences_by_name(key))
+				sequences.each { |seq|
+					result << seq.substances
+				}
+			end
 			result << soundex_substances(key)
 		}
 		result.flatten!
@@ -502,6 +504,7 @@ class OddbPrevalence
 		@substances.values
 	end
 	def substance_by_conn_name(conn_name)
+		return if conn_name.empty?
 		@substances.each { |oid, substance|
 			if(substance.en.downcase == conn_name.downcase)
 				return substance 

@@ -3,7 +3,6 @@
 
 require 'htmlgrid/urllink'
 require 'model/comparison'
-require 'state/added_to_interaction'
 require 'state/atcchooser'
 require 'state/company'
 require 'state/companylist'
@@ -16,6 +15,7 @@ require 'state/passthru'
 require 'state/powerlink'
 require	'state/help'
 require 'state/init'
+require 'state/interaction_basket'
 require 'state/interaction_init'
 require 'state/legalnote'
 require	'state/limitationtext'
@@ -40,7 +40,6 @@ module ODDB
 		attr_reader :model
 		DIRECT_EVENT = nil
 		GLOBAL_MAP = {
-			:added_to_interaction	=>	AddedToInteractionState,
 			:companylist					=>	CompanyListState,
 			:ddd									=>	DDDState,
 			:download							=>	DownloadState,
@@ -70,6 +69,13 @@ module ODDB
 		}
 		REVERSE_MAP = {}
 		VIEW = SearchView
+		def add_to_interaction_basket
+			pointer = @session.user_input(:pointer)
+			if(object = pointer.resolve(@session.app))
+				@session.add_to_interaction_basket(object)
+			end
+			self
+		end
 		def atc_chooser
 			mdl = @session.app.atc_chooser
 			AtcChooserState.new(@session, mdl)
@@ -95,6 +101,15 @@ module ODDB
 				@viral_module = mod 
 			end
 			super
+		end
+		def interaction_basket
+			if((array = @session.interaction_basket).empty?)
+				puts 'empty basket'
+				EmptyInteractionBasketState.new(@session, array)
+			else
+				puts 'not empty basket'
+				InteractionBasketState.new(@session, array)
+			end
 		end
 		def generic_definition
 			GenericDefinitionState.new(@session, nil)

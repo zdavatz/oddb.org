@@ -30,12 +30,13 @@ module ODDB
 		}	
 		EVENTS = [
 			:accept,
-			:added_to_interaction,
+			:add_to_interaction_basket,
 			:assign,
 			:assign_patinfo,
 			:assign_deprived_sequence,
 			:atc_chooser,
 			:back,
+			:calculate_interaction,
 			:choice,
 			:companylist,
 			:company,
@@ -57,6 +58,7 @@ module ODDB
 			:home,
 			:incomplete_registrations,
 			:indications,
+			:interaction_basket,
 			:interaction_home,
 			:limitation_text,
 			:mailinglist,

@@ -10,6 +10,7 @@ require 'benchmark'
 
 module ODDB
   class Session < SBSM::Session
+		attr_reader :interaction_basket
 		LF_FACTORY = LookandfeelFactory
 		DEFAULT_FLAVOR = "gcc"
 		DEFAULT_LANGUAGE = "de"
@@ -33,6 +34,16 @@ module ODDB
 			res
 		end
 =end
+		def initialize(key, app, validator=nil)
+			super(key, app, validator)
+			@interaction_basket = []
+		end
+		def add_to_interaction_basket(object)
+			@interaction_basket.push(object)
+		end
+		def interaction_basket_count
+			@interaction_basket.size
+		end
 		def user_equiv?(test)
 			return true if(@user.is_a? RootUser)
 			mdl = if(test.is_a?(Persistence::Pointer))

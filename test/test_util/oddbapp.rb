@@ -632,6 +632,8 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(ODDB::Registration, reg.class)
 		pointer += [:sequence, '01']
 		@app.update(pointer.creator, {:name_base => 'foobar'})
+		pointer += [:active_agent, 'foosubstance']
+		@app.create(pointer)
 		pointer = ODDB::Persistence::Pointer.new([:registration, '23456'])
 		reg = @app.create(pointer)
 		assert_equal(ODDB::Registration, reg.class)
@@ -647,6 +649,8 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(ODDB::Registration, reg.class)
 		pointer += [:sequence, '01']
 		@app.update(pointer.creator, {:name_base => 'foobar'})
+		pointer += [:active_agent, 'foosubstance']
+		@app.create(pointer)
 		pointer = ODDB::Persistence::Pointer.new([:substance])
 		values = {
 			:en	=>	'foobar',
