@@ -35,9 +35,8 @@ module ODDB
 			@registration.active?
 		end
 		def active_agent(substance)
-			active_agent = @active_agents.each { |active|
+			@active_agents.each { |active|
 				if(active.same_as?(substance))
-				#if(active.substance.same_as?(substance))
 					return active
 				end
 			}
@@ -135,6 +134,11 @@ module ODDB
 			@packages.values.select { |package|
 				package.limitation_text
 			}.size
+		end
+		def search_terms
+			self.name.split(/\s+/).push(self.name).uniq.delete_if { |term| 
+				term.empty? 
+			}
 		end
 		def source
 			@registration.source

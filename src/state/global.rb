@@ -194,15 +194,15 @@ module ODDB
 					State::Exception.new(@session, query)
 				elsif(!query.nil?)
 					case zone
-					when :drugs
-						result = @session.search(query)
-						State::Drugs::Result.new(@session, result)
 					when :interactions
 						result = @session.search_interactions(query)
 						State::Interactions::Result.new(@session, result)
 					when :substances
 						result = @session.search_substances(query)
 						State::Substances::Result.new(@session, result)
+					else
+						result = @session.search(query)
+						State::Drugs::Result.new(@session, result)
 					end
 				else
 					self

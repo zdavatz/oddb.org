@@ -10,6 +10,16 @@ module ODDB
 		module Substances
 class Substance < State::Substances::Global
 	VIEW = View::Substances::Substance
+	def assign
+		substance_name = @session.user_input(:effective_form)
+		if(substance = @session.substance(substance_name))
+			args = {
+				:effective_form	=>	substance.pointer,
+			}
+			@session.app.update(@model.pointer, args)
+		end
+		self
+	end
 	def delete
 		if(@model.empty?)
 			ODBA.batch {
@@ -32,6 +42,10 @@ class Substance < State::Substances::Global
 		end
 		self
 	end
+	def duplicate?(string)
+		!(string.to_s.empty? \
+			|| [nil, @model].include?(@session.app.substance(string)))
+	end
 	def merge
 		substance = @session.user_input(:substance_form)
 		new_state = self
@@ -53,18 +67,31 @@ class Substance < State::Substances::Global
 		new_state
 	end
 	def update
-		languages = @session.lookandfeel.languages.dup
-		languages << 'en' << 'lt'
+		languages = @session.lookandfeel.languages + ['en', 'lt']
 		input = languages.inject({}) { |inj, key|
-			value = @session.user_input(key.intern)
-			unless [nil, @model].include?(subst = @session.app.substance(value))
-				@errors.store(key.intern, SBSM::ProcessingError.new('e_duplicate_substance_description', key, value)) unless (value=="")
+			sym = key.intern
+			value = @session.user_input(sym)
+			if(duplicate?(value))
+				@errors.store(sym, 
+					create_error('e_duplicate_substance_description', key, value))
 			end
 			inj.store(key, value)
 			inj
 		}
+		if(syn_list = @session.user_input(:synonym_list))
+			syns = syn_list.split(/\s*,\s*/)
+			syns.each { |syn| 
+				if(duplicate?(syn))
+					@errors.store(:synonym_list, 
+						create_error('e_duplicate_substance_description', 
+							:synonym_list, syn))
+				end
+			}
+			input.store(:synonyms, syn_list)
+		end
 		unless error?
 			ODBA.batch {
+				puts "storing input: #{input.collect { |pair| pair.join(' -> ') }.join(' : ')}"
 				@model = @session.app.update(@model.pointer, input)	
 			}
 		end

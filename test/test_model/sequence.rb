@@ -353,6 +353,11 @@ class TestSequence < Test::Unit::TestCase
 		mock3.__verify
 		assert_equal(1, text_count)
 	end
+	def test_search_terms
+		expected = [ 'Similasan', 'Kava-Kava', 'Similasan Kava-Kava']
+		@seq.name = 'Similasan Kava-Kava'
+		assert_equal(expected, @seq.search_terms)
+	end
 end
 class TestIncompleteSequence < Test::Unit::TestCase
 	def setup

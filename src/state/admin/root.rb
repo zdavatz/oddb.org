@@ -33,6 +33,7 @@ class State::Admin::PatinfoStats < State::Admin::Global; end
 class State::Admin::Sponsor < State::Admin::Global; end
 class State::Substances::Substance < State::Substances::Global; end
 class State::Substances::Substances < State::Substances::Global; end
+class State::Substances::EffectiveSubstances < State::Substances::Substances; end
 class State::Drugs::IncompleteRegs < State::Drugs::Global; end
 class State::Drugs::IncompleteReg < State::Drugs::Registration; end
 class State::Drugs::IncompleteSequence < State::Drugs::Sequence; end
@@ -150,11 +151,17 @@ module Root
 		State::Admin::Sponsor.new(@session, model)
 	end
 	def substances
-		model = @session.app.substances
+		model = @session.substances
 		State::Substances::Substances.new(@session, model)
 	end
+	def effective_substances
+		model = @session.substances.select { |sub| 
+			sub.is_effective_form?
+		}
+		State::Substances::EffectiveSubstances.new(@session, model)
+	end
 	def zones
-	[:drugs, :interactions, :substances, :companies, :user, :admin]
+		[:drugs, :interactions, :substances, :companies, :user, :admin]
 	end
 end
 		end

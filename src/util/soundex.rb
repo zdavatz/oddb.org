@@ -36,6 +36,7 @@ module Soundex
   def soundex_str(str)
     return nil if str.empty?
 
+		str = prepare(str)
     str = str.upcase
     last_code = get_code(str[0,1])
     soundex_code = str[0,1]
@@ -64,6 +65,22 @@ module Soundex
   end
   module_function :get_code
 
+	def prepare(str)
+		str = str.dup
+		str.gsub!(/[äÄæÆ]/, 'ae')
+		str.gsub!(/[áÁàÀâÂãÃ]/, 'a')
+		str.gsub!(/[çÇ]/, 'c')
+		str.gsub!(/[ëËéÉèÈêÊ]/, 'e')
+		str.gsub!(/[ïÏíÍìÌîÎ]/, 'i')
+		str.gsub!(/[öÖ]/, 'oe')
+		str.gsub!(/[óÓòÒôÔõÕøØ]/, 'o')
+		str.gsub!(/[üÜ]/, 'ue')
+		str.gsub!(/[úÚùÙûÛ]/, 'u')
+		str.tr!('şßğ', 'psd')
+		str
+	end
+	module_function :prepare
+	
 end # module Soundex
 end # module Text
 end

@@ -46,14 +46,48 @@ class MergeSubstancesForm < View::Form
 	COMPONENTS = {
 		[0,0,0]	=>	'substance',
 		[0,0,1]	=>	'merge_with',
-		[0,0,2]	=>	:substance_form,
-		[0,0,3]	=>	:submit,
+		[1,0,0]	=>	:substance_form,
+		[1,0,1]	=>	:submit,
+	}
+	CSS_MAP = {
+		[0,0,3]	=>	'list',
 	}
 	SYMBOL_MAP = {
 		:substance_form	=>	HtmlGrid::InputText
 	}
 	EVENT = 'merge' 
 	LABELS = false
+end
+class ActiveFormForm < View::Form
+	include HtmlGrid::ErrorMessage
+	COMPONENTS = {
+		[0,0,0]	=>	:effective_label,
+		[1,0,1]	=>	:effective_form,
+		[1,0,2]	=>	:effective_submit,
+	}
+	CSS_MAP = {
+		[0,0,2]	=>	'list',
+	}
+	EVENT = :assign
+	LABELS = false
+	LEGACY_INTERFACE = false
+	def effective_label(model)
+		if(model.is_effective_form?)
+			@lookandfeel.lookup(:effective_form_self)
+		elsif(model.has_effective_form?)
+			@lookandfeel.lookup(:effective_form_other)
+		else
+			@lookandfeel.lookup(:effective_form_assign)
+		end
+	end
+	def effective_form(model)
+		unless(model.is_effective_form?)
+			HtmlGrid::InputText.new(:effective_form, model, @session, self)
+		end
+	end
+	def effective_submit(model)
+		submit(model) unless model.is_effective_form?
+	end
 end
 class Substrates < HtmlGrid::List
 	include View::Substances::SubstrateList
@@ -64,8 +98,12 @@ end
 class DescriptionForm < View::DescriptionForm
 	DESCRIPTION_CSS = 'xl'
 	def languages
-		lang = @lookandfeel.languages.dup
-		lang << 'en' << 'lt'
+		@lookandfeel.languages + ['en', 'lt', 'synonym_list']
+	end
+	def synonym_list(model, session)
+		input = DEFAULT_CLASS.new(:synonym_list, model, session, self)
+		input.value = model.synonyms.join(', ')
+		input
 	end
 end
 class ConnectionKeys < HtmlGrid::List
@@ -93,11 +131,20 @@ class ConnectionKeys < HtmlGrid::List
 		link
 	end
 end
-class Composite < HtmlGrid::Composite
+class AdminComposite < HtmlGrid::Composite
+	CSS_CLASS = 'composite top'
+	COMPONENTS = {
+		[0,0]	=>	View::Substances::MergeSubstancesForm,
+		[0,1]	=>	View::Substances::ActiveFormForm,
+	}
+	CSS_MAP = {
+	}
+end
+class OuterComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	:substance_name,
 		[0,1]	=>	View::Substances::DescriptionForm,
-		[1,1]	=>	View::Substances::MergeSubstancesForm,
+		[1,1]	=>	View::Substances::AdminComposite,
 		[0,4]	=>	:connection_keys,
 		[0,5]	=>	:substrate_connections,
 		[0,6]	=>	:sequences,
@@ -136,7 +183,7 @@ class Composite < HtmlGrid::Composite
 	end
 end
 class Substance < View::PrivateTemplate
-	CONTENT = View::Substances::Composite
+	CONTENT = View::Substances::OuterComposite
 	SNAPBACK_EVENT = :result
 end
 		end

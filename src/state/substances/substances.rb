@@ -41,6 +41,12 @@ class Substances < State::Substances::Global
 		'z'			=>	'z',
 		'unknown'	=>	'unknown',
 	}
+	def default_interval
+		intervals.first || 'a'
+	end
+end
+class EffectiveSubstances < Substances
+	DIRECT_EVENT = :effective_substances
 end
 		end
 	end
