@@ -19,36 +19,39 @@ require 'etc/db_connection'
 module ODDB
 	module OdbaExporter
 		def compress(dir, name)
+			FileUtils.mkdir_p(dir)
 			Dir.chdir(dir)
-			begin
-				gz_name = name + '.gz'
-				zip_name = name + '.zip'
-				File.delete(gz_name) if(File.exist?(gz_name))
-				File.delete(zip_name) if(File.exist?(zip_name))
-				gzwriter = 	Zlib::GzipWriter.open(gz_name)
-				zipwriter = Zip::ZipOutputStream.open(zip_name)
-				zipwriter.put_next_entry(name)
-				File.open(name, "r") { |fh|
-					fh.each { |line|
-						gzwriter << line
-						zipwriter.puts(line)
-					}
+			tmp_name = name + '.tmp'
+			gz_name = tmp_name + '.gz'
+			zip_name = tmp_name + '.zip'
+			gzwriter = 	Zlib::GzipWriter.open(gz_name)
+			zipwriter = Zip::ZipOutputStream.open(zip_name)
+			zipwriter.put_next_entry(name)
+			File.open(name, "r") { |fh|
+				fh.each { |line|
+					gzwriter << line
+					zipwriter.puts(line)
 				}
-			ensure
-				gzwriter.close unless gzwriter.nil?
-				zipwriter.close unless zipwriter.nil?
-			end
+			}
+			FileUtils.mv(gz_name, name + '.gz')
+			FileUtils.mv(zip_name, name + '.zip')
+		ensure
+			gzwriter.close unless gzwriter.nil?
+			zipwriter.close unless zipwriter.nil?
 		end
 		def compress_many(dir, name, files)
+			FileUtils.mkdir_p(dir)
 			Dir.chdir(dir)
-			tar_name = name + '.tar'
+			tmp_name = name + '.tmp'
+			tar_name = tmp_name + '.tar'
 			gz_name = tar_name + '.gz'
 			File.delete(gz_name) if(File.exist?(gz_name))
 			tar_archive = Archive::Tar.new(tar_name)
 			tar_archive.create_archive(files.join(" "))
 			tar_archive.compress_archive
+			FileUtils.mv(gz_name, name + '.tar.gz')
 
-			zip_name = name + '.zip'
+			zip_name = tmp_name + '.zip'
 			File.delete(zip_name) if(File.exist?(zip_name))
 			Zip::ZipOutputStream.open(zip_name) { |zos|
 				files.each { |name|
@@ -56,6 +59,7 @@ module ODDB
 					zos.puts File.read(name)
 				}
 			}
+			FileUtils.mv(zip_name, name + '.zip')
 		end
 		def export_yaml(odba_ids, dir, name)
 			FileUtils.mkdir_p(dir)
