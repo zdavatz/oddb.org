@@ -46,5 +46,9 @@ module ODDB
 			@persistent_user_input[:search_query] ||= query
 			@app.search(query)
 		end
+		def search_interaction(query)
+			@persistent_user_input[:search_query] ||= query
+			@app.search_interaction(query)
+		end
   end
 end

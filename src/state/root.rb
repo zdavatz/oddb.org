@@ -23,6 +23,8 @@ module ODDB
 	class SequenceState < GlobalState; end
 	class SlEntryState < GlobalState; end
 	class SponsorState < GlobalState; end
+	class SubstanceState < GlobalState; end
+	class SubstancesState < GlobalState; end
 	class IncompleteRegsState < GlobalState; end
 	class IncompleteRegState < RegistrationState; end
 	class IncompleteSequenceState < SequenceState; end
@@ -57,7 +59,8 @@ module ODDB
 				:sequence, :package ]				=>	PackageState,
 			[ :registration, :sequence,
 				:package, :sl_entry ]				=>	SlEntryState,
-				[ :indication ]							=>	IndicationState,
+			[ :indication ]								=>	IndicationState,
+			[ :substance ]								=>	SubstanceState,
 		}	
 		def galenic_groups
 			model = @session.app.galenic_groups.values
@@ -92,7 +95,6 @@ module ODDB
 			IndicationState.new(@session, item)
 		end
 		def new_registration
-			puts 'creating registration'
 			pointer = Persistence::Pointer.new(:registration)
 			item = Persistence::CreateItem.new(pointer)
 			if(@model.is_a?(Company))
@@ -130,6 +132,10 @@ module ODDB
 		def sponsor
 			model = @session.app.sponsor
 			SponsorState.new(@session, model)
+		end
+		def substances
+			model = @session.app.substances
+			SubstancesState.new(@session, model)
 		end
 	end
 end

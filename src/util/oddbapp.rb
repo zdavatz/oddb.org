@@ -25,12 +25,14 @@ class OddbPrevalence
 	attr_reader	:atc_classes, :last_update
 	attr_reader :atc_chooser, :registrations
 	attr_reader :last_medication_update
-	attr_reader :orphaned_patinfos, :orphaned_fachinfos, :fachinfos
+	attr_reader :orphaned_patinfos, :orphaned_fachinfos
+	attr_reader :fachinfos
 	attr_reader :patinfos_deprived_sequences, :patinfos
 	def initialize		
 		super
 		@atc_classes ||= {}
 		@companies ||= {}
+		@cyp450s ||= {}
 		@fachinfos ||= {}
 		@galenic_forms ||= []
 		@galenic_groups ||= []
@@ -53,6 +55,7 @@ class OddbPrevalence
 		@atc_classes ||= {}
 		@patinfos_deprived_sequences ||= []
 		@companies ||= {}
+		@cyp450s ||= {}
 		#@fachinfos ||= {}
 		@galenic_forms ||= []
 		@galenic_groups ||= []
@@ -100,9 +103,23 @@ class OddbPrevalence
 			pointer.issue_update(self, values)
 			store_in_index(@sequence_index, item.name, item)
 		when ODDB::Substance
-			delete_from_index(@substance_index, item.name, item)
+			keys = item.descriptions.values
+			if(keys.empty?)
+				keys = [ item.name ]
+			end
+			keys.each { |key|
+				delete_from_index(@substance_index, key, item)
+				delete_from_index(@substance_name_index, key, item.sequences)
+			}
 			pointer.issue_update(self, values)
-			store_in_index(@substance_index, item.name, item)
+			keys = item.descriptions.values
+			if(keys.empty?)
+				keys = [item.name]
+			end
+			keys.each { |key|
+				store_in_index(@substance_index, key, item)
+				store_in_index(@substance_name_index, key, *item.sequences)
+			}
 		when ODDB::Indication
 			item.descriptions.values.uniq.each { |desc|
 				delete_from_index(@indication_index, desc, item)
@@ -171,6 +188,12 @@ class OddbPrevalence
 		}
 		nil
 	end
+	def cyp450(id)
+		@cyp450s[id]
+	end
+	def cyp450s
+		@cyp450s.values
+	end
 	def create_atc_class(atc_class)
 		@atc_classes.store(atc_class, ODDB::AtcClass.new(atc_class))
 	end
@@ -192,6 +215,10 @@ class OddbPrevalence
 	def create_company
 		company = ODDB::Company.new
 		@companies.store(company.oid, company)
+	end
+	def create_cyp450(cyp_id)
+		cyp450 = ODDB::CyP450.new(cyp_id)
+		@cyp450s.store(cyp_id, cyp450)
 	end
 	def create_fachinfo
 		@fachinfos ||= {}
@@ -226,12 +253,30 @@ class OddbPrevalence
 			@registrations.store(iksnr, ODDB::Registration.new(iksnr))
 		end
 	end
-	def create_substance(substance)
-		unless(@substances.include?(substance.downcase))
-			subs = ODDB::Substance.new(substance)
-			store_in_index(@substance_index, substance, subs)
-			@substances.store(substance.downcase, subs)
+	def create_substance(substance=nil)
+		puts 'creating substance'
+		subs = nil
+		if(substance.nil?)
+			subs = ODDB::Substance.new
+		elsif(!@substances.include?(substance.downcase))
+			subs = ODDB::Substance.new
+			values = {
+				'lt'	=>	substance
+			}
+			subs.update_values(subs.diff(values, self))
+			keys = subs.descriptions.values
+			if(keys.empty?)
+				keys = [ subs.name ]
+			end
+			keys.each { |key|
+				store_in_index(@substance_index, key, subs)
+				store_in_index(@substance_name_index, key, *subs.sequences)
+			}
 		end
+		unless(subs.nil?)
+			@substances.store(subs.oid, subs)
+		end
+		subs
 	end
 	def create_user
 		@users ||= {}
@@ -243,6 +288,9 @@ class OddbPrevalence
 		delete_from_index(@atc_index, atc.name, atc)
 		@atc_chooser.delete(atccode)
 		@atc_classes.delete(atccode)
+	end
+	def delete_cyp450(cyp_id)
+		@cyp450s.delete(cyp_id)
 	end
 	def delete_patinfo_deprived_sequences(oid)
 		@patinfos_deprived_sequences.delete(oid.to_i)
@@ -403,6 +451,18 @@ class OddbPrevalence
 		result.delete_if { |atc| atc.code.length == 0 }
 		result
 	end
+	def search_interaction(query)
+		keys = query.to_s.downcase.split(" ")
+		result = []
+		keys.each { |key|
+			result << sequences_by_name(key).collect { |seq|
+				seq
+			}.compact.uniq
+			result << soundex_substances(key)
+		}
+		result.flatten!
+		result
+	end
 	def sequences_by_name(name)
 		@sequence_index.fetch_all(name)
 	end
@@ -420,11 +480,37 @@ class OddbPrevalence
 			index.store(part.downcase, *values) if part.length > 3
 		}
 	end
-	def substance(name)
-		@substances[name.downcase] if name
+	def substance(key)
+		if(key.to_i.to_s == key.to_s)
+			@substances[key.to_i]
+		else
+			if(substance = @substances[key.to_s.downcase])
+				substance
+			else
+				@substances.values.each { |subs|
+					subs.descriptions.values.each { |desc_name|
+						if(desc_name.downcase == key.to_s.downcase)
+							substance = subs
+						end
+					}
+				}
+				substance
+			end
+		end
 	end
 	def substances
 		@substances.values
+	end
+	def substance_by_conn_name(conn_name)
+		@substances.each { |oid, substance|
+			if(substance.en.downcase == conn_name.downcase)
+				return substance 
+			end
+		}
+		nil
+	end
+	def substance_count
+		@substances.length
 	end
 	def updated(item)
 		case item
@@ -485,8 +571,14 @@ class OddbPrevalence
 		@substance_index = Datastructure::SoundexTable.new
 		@substance_name_index = Datastructure::CharTree.new
 		@substances.each_value { |subst|
-			store_in_index(@substance_index, subst.name, subst)
-			store_in_index(@substance_name_index, subst.name, *subst.sequences)
+			keys = subst.descriptions.values
+			if(keys.empty?)
+				keys = [ subst.name ]
+			end
+			keys.each { |key|
+				store_in_index(@substance_index, key, subst)
+				store_in_index(@substance_name_index, key, *subst.sequences)
+			}
 		}
 		@company_index = Datastructure::CharTree.new
 		@companies.each_value { |comp|

@@ -44,7 +44,7 @@ module ODDB
 					return true
 				end
 			end
-			def create_connection(name_base, function)
+			def create_connection(name, function)
 				case function
 				when 'substrate'
 					new_class = ODDB::Interaction::SubstrateConnection
@@ -53,7 +53,7 @@ module ODDB
 				when 'induces'
 					new_class = ODDB::Interaction::InducerConnection
 				end
-				new_class.new(name_base)
+				new_class.new(name)
 			end
 			def extract_data
 				parse_substances
@@ -62,7 +62,7 @@ module ODDB
 			def handle_cytochrome(cytochrome_arr, conn)
 				cytochrome_arr.each { |cytochrome|
 					unless(@cytochromes.has_key?(cytochrome))
-						@cytochromes.store(cytochrome, Cytochrome.new(cytochrome))
+						@cytochromes.store(cytochrome, ODDB::Interaction::Cytochrome.new(cytochrome))
 					end
 					@cytochromes[cytochrome].add_connection(conn)
 				}

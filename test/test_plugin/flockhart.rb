@@ -116,14 +116,14 @@ class TestFlockhartWriter < Test::Unit::TestCase
 		@writer.extract_data
 		substrates = @writer.cytochromes["0/1A2"].substrates
 		substrates.each { |sub|
-			@result = sub if sub.name_base==nil
+			@result = sub if sub.name==nil
 		}
 		assert_equal(23, substrates.size)
 		substrates.each { |sub|
-			@result = sub if sub.name_base.match(/phenacetin/)
+			@result = sub if sub.name.match(/phenacetin/)
 		}
 		expected = "phenacetin"
-		assert_equal(expected, @result.name_base)
+		assert_equal(expected, @result.name)
 	end
 	def test_new_fonthandler
 		@writer2.category = "start"
@@ -239,7 +239,7 @@ class TestDetailWriter < Test::Unit::TestCase
 			result << conn
 		}
 		assert_equal(66, result.size)
-		assert_equal("alfentanil", result.first.name_base)
+		assert_equal("alfentanil", result.first.name)
 	end
 end
 class TestTableLinksWriter < Test::Unit::TestCase

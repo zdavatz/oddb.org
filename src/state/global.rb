@@ -3,6 +3,7 @@
 
 require 'htmlgrid/urllink'
 require 'model/comparison'
+require 'state/added_to_interaction'
 require 'state/atcchooser'
 require 'state/company'
 require 'state/companylist'
@@ -15,6 +16,7 @@ require 'state/passthru'
 require 'state/powerlink'
 require	'state/help'
 require 'state/init'
+require 'state/interaction_init'
 require 'state/legalnote'
 require	'state/limitationtext'
 require 'state/login'
@@ -38,19 +40,21 @@ module ODDB
 		attr_reader :model
 		DIRECT_EVENT = nil
 		GLOBAL_MAP = {
-			:companylist			=>	CompanyListState,
-			:ddd							=>	DDDState,
-			:download					=>	DownloadState,
-			:galdat_download	=>	GaldatDownloadState,
-			:help							=>	HelpState,
-			:home							=>	InitState,
-			:login_form				=>	LoginState,
-			:mailinglist			=>	MailingListState,
-			:plugin						=>	PluginState,
+			:added_to_interaction	=>	AddedToInteractionState,
+			:companylist					=>	CompanyListState,
+			:ddd									=>	DDDState,
+			:download							=>	DownloadState,
+			:galdat_download			=>	GaldatDownloadState,
+			:help									=>	HelpState,
+			:home									=>	InitState,
+			:interaction_home			=>	InteractionInitState,
+			:login_form						=>	LoginState,
+			:mailinglist					=>	MailingListState,
+			:plugin								=>	PluginState,
 			:recent_registrations =>	RecentRegsState,
-			:download_export	=>	YamlExportState,
-			:passthru					=>	PassThruState,
-			:paypal_thanks		=>	PayPalThanksState,
+			:download_export			=>	YamlExportState,
+			:passthru							=>	PassThruState,
+			:paypal_thanks				=>	PayPalThanksState,
 		}	
 		RESOLVE_STATES = {
 			[ :company ]	=>	CompanyState,
@@ -159,6 +163,15 @@ module ODDB
 			elsif(!query.nil?)
 				result = @session.search(query)
 				ResultState.new(@session, result)
+			end
+		end
+		def search_interaction
+			query = @session.persistent_user_input(:search_query)
+			if (query.is_a? RuntimeError) 
+				ExceptionState.new(@session, query)
+			elsif(!query.nil?)
+				result = @session.search_interaction(query)
+				InteractionResultState.new(@session, result)
 			end
 		end
 		def sort

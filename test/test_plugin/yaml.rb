@@ -211,7 +211,8 @@ pharmacode: "11223"
 		assert_equal(exported_properties, sl_entry.to_yaml_properties)
 	end	
 	def test_substance_to_yaml
-		substance = ODDB::Substance.new('Levomentholum')
+		substance = ODDB::Substance.new
+		substance.descriptions[:de] = 'Levomentholum'
 		assert_equal('!oddb.org,2003/ODDB::Substance', substance.to_yaml_type)
 		exported_properties = [
 			'@oid',

@@ -13,6 +13,7 @@ require 'model/atcclass'
 require 'model/orphan'
 require 'model/galenicform'
 require 'util/language'
+require 'mock'
 
 module Datastructure
 	class CharTree
@@ -346,9 +347,10 @@ class TestOddbApp < Test::Unit::TestCase
 		substance = 'ACIDUM ACETYLSALICYLICUM'
 		assert_nil(@app.substance(substance))
 		pointer = ODDB::Persistence::Pointer.new(['substance', 'ACIDUM ACETYLSALICYLICUM'])
-		@app.create(pointer)
+		created = @app.create(pointer)
 		assert_equal(1, @app.substances.size)
-		result = @app.substance(substance)
+		assert_equal(ODDB::Substance, created.class)
+		result = @app.substance(created.oid)
 		assert_equal(ODDB::Substance, result.class)
 		assert_equal('Acidum Acetylsalicylicum', result.name)
 		soundex = Text::Soundex.soundex(%w{Acidum Acetylsalicylicum})
@@ -358,6 +360,21 @@ class TestOddbApp < Test::Unit::TestCase
 			[soundex[1]]=>	[result],
 		}
 		assert_equal(expected, @app.substance_index.hash)
+	end
+	def test_update_substance
+		@app.substances = {}
+		@app.soundex_substances = {}
+		pointer = ODDB::Persistence::Pointer.new(:substance)
+		assert_equal([], @app.soundex_substances('de_name'))
+		subs = @app.create(pointer)
+		values = {
+			:en	=>	'en_name',
+			:de	=>	'de_name',			
+		}
+		@app.update(subs.pointer, values)
+		assert_equal('en_name', subs.en)
+		result = @app.soundex_substances('en_name')
+		assert_equal([subs], result)
 	end
 	def test_create_active_agent
 		pointer = ODDB::Persistence::Pointer.new(['registration', '12345'])
@@ -459,6 +476,107 @@ class TestOddbApp < Test::Unit::TestCase
 		expected2 = {3 => company3}
 		assert_equal(expected2, @app.companies)
 	end
+	def test_create_cyp450
+		@app.cyp450s.clear
+		cyp450 = '1A2'
+		assert_nil(@app.cyp450(cyp450))
+		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
+		created = @app.create(pointer)
+		assert_equal(1, @app.cyp450s.size)
+		assert_equal(ODDB::CyP450, created.class)
+		result = @app.cyp450(cyp450)
+		assert_equal(ODDB::CyP450, result.class)
+	end
+	def test_delete_cyp450
+		@app.cyp450s.clear
+		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
+		created = @app.create(pointer)
+		assert_equal(1, @app.cyp450s.size)
+		@app.delete(pointer)
+		assert_equal(0, @app.cyp450s.size)
+	end
+	def test_cyp450
+		@app.cyp450s.clear
+		cyp450 = '1A2'
+		assert_nil(@app.cyp450(cyp450))
+		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
+		created = @app.create(pointer)
+		result = @app.cyp450(cyp450)
+		assert_equal(created, result)
+	end
+	def test_create_cyp450inhibitor
+		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
+		cyp450 = @app.create(pointer)
+		pointer += ['cyp450inhibitor', 'foo_name']
+		inh = @app.create(pointer)
+		values = {
+			:links		=>	'foo-links',
+			:category	=>	'bar-category',
+		}
+		@app.update(inh.pointer, values)	
+		assert_equal('foo-links', inh.links)	
+		assert_equal('bar-category', inh.category)	
+		assert_equal('foo_name', inh.substance_name)
+		assert_equal(1, cyp450.inhibitors.size)
+		assert_equal(['foo_name'], cyp450.inhibitors.keys)
+	end
+	def test_delete_cyp450inhibitor
+		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
+		cyp450 = @app.create(pointer)
+		pointer += ['cyp450inhibitor', 'foo_name']
+		inh = @app.create(pointer)
+		assert_equal(1, cyp450.inhibitors.size)
+		@app.delete(pointer)
+		assert_equal(0, cyp450.inhibitors.size)
+	end
+	def test_create_cyp450inducer
+		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
+		cyp450 = @app.create(pointer)
+		pointer += ['cyp450inducer', 'foo_name']
+		inh = @app.create(pointer)
+		values = {
+			:links		=>	'foo-links',
+			:category	=>	'bar-category',
+		}
+		@app.update(inh.pointer, values)	
+		assert_equal('foo-links', inh.links)	
+		assert_equal('bar-category', inh.category)	
+		assert_equal('foo_name', inh.substance_name)
+		assert_equal(1, cyp450.inducers.size)
+		assert_equal(['foo_name'], cyp450.inducers.keys)
+	end
+	def test_delete_cyp450inducer
+		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
+		cyp450 = @app.create(pointer)
+		pointer += ['cyp450inducer', 'foo_name']
+		inh = @app.create(pointer)
+		assert_equal(1, cyp450.inducers.size)
+		@app.delete(pointer)
+		assert_equal(0, cyp450.inducers.size)
+	end
+	def test_create_cyp450substrate
+		pointer = ODDB::Persistence::Pointer.new(['substance', 'subs_name'])
+		substance = @app.create(pointer)
+		pointer += [ :cyp450substrate, "cyp_id" ]
+		inh = @app.create(pointer)
+		values = {
+			:links		=>	['foo-links'],
+			:category	=>	'bar-category',
+		}
+		@app.update(inh.pointer, values)	
+		assert_equal(['foo-links'], inh.links)	
+		assert_equal('bar-category', inh.category)	
+		assert_equal(1, substance.substrate_connections.size)
+	end
+	def test_delete_cyp450substrate
+		pointer = ODDB::Persistence::Pointer.new(['substance', 'subs_name'])
+		substance = @app.create(pointer)
+		pointer += [ :cyp450substrate, "cyp_id" ]
+		substr = @app.create(pointer)
+		assert_equal(1, substance.substrate_connections.size)
+		@app.delete(substr.pointer)
+		assert_equal(0, substance.substrate_connections.size)
+	end
 	def test_delete_galenic_group
 		group = StubGalenicGroup.new
 		@app.galenic_groups = {
@@ -507,6 +625,37 @@ class TestOddbApp < Test::Unit::TestCase
 		}
 		@app.init
 		assert_equal([], @app.search('froh'))
+	end
+	def test_search_interaction
+		pointer = ODDB::Persistence::Pointer.new([:registration, '12345'])
+		reg = @app.create(pointer)
+		assert_equal(ODDB::Registration, reg.class)
+		pointer += [:sequence, '01']
+		@app.update(pointer.creator, {:name_base => 'foobar'})
+		pointer = ODDB::Persistence::Pointer.new([:registration, '23456'])
+		reg = @app.create(pointer)
+		assert_equal(ODDB::Registration, reg.class)
+		pointer += [:sequence, '02']
+		@app.update(pointer.creator, {:name_base => 'barfoo'})
+		@app.init
+		@app.rebuild_indices
+		assert_equal(1, @app.search_interaction('foobar').size)
+	end
+	def test_search_interaction2
+		pointer = ODDB::Persistence::Pointer.new([:registration, '12345'])
+		reg = @app.create(pointer)
+		assert_equal(ODDB::Registration, reg.class)
+		pointer += [:sequence, '01']
+		@app.update(pointer.creator, {:name_base => 'foobar'})
+		pointer = ODDB::Persistence::Pointer.new([:substance])
+		values = {
+			:en	=>	'foobar',
+			:de	=>	'de_name',			
+		}
+		@app.update(pointer.creator, values)
+		@app.init
+		@app.rebuild_indices
+		assert_equal(2, @app.search_interaction('foobar').size)
 	end
 	def test_update_sequence
 		pointer = ODDB::Persistence::Pointer.new([:registration, '12345'])
@@ -588,10 +737,30 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(expected, result.pointer)
 	end
 	def test_substance
-	substance = ODDB::Substance.new('ACIDUM ACETYLSALICYLICUM')
-	@app.substances = {substance.name.downcase => substance}
-	assert_equal(substance, @app.substance('ACIDUM ACETYLSALICYLICUM') )
-end
+		substance = ODDB::Substance.new
+		substance.descriptions[:de] = 'ACIDUM ACETYLSALICYLICUM'
+		@app.substances = {substance.name.downcase => substance}
+		assert_equal(substance, @app.substance('ACIDUM ACETYLSALICYLICUM') )
+	end
+	def test_substance2
+		substance = ODDB::Substance.new
+		@app.substances = {substance.oid => substance}
+		assert_equal(substance, @app.substance(substance.oid) )
+	end
+	def test_substance_by_conn_name
+		substance = ODDB::Substance.new
+		@app.substances = {substance.oid => substance}
+		substance2 = ODDB::Substance.new
+		substance2.descriptions['en'] = "en_foo_name"
+		@app.substances.store(substance2.oid, substance2)
+		result = @app.substance_by_conn_name('En_bar_name') 
+		assert_nil(result)
+		substance3 = ODDB::Substance.new
+		substance3.descriptions['en'] = "en_Bar_name"
+		@app.substances.store(substance3.oid, substance3)
+		result = @app.substance_by_conn_name('En_bar_name') 
+		assert_equal(substance3, result)
+	end
 	def test_substance_soundex
 		sub1 = StubSubstance.new("Hallo Du", false)
 		sub2 = StubSubstance.new("Acidum Mefenanicum", true)

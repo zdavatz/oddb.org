@@ -233,8 +233,8 @@ module ODDB
 			end
 		end
 		class DetailWriter < NullWriter
-			def initialize(name_base)
-				@cytochrome = Cytochrome.new(name_base.split(".").pop)
+			def initialize(name)
+				@cytochrome = Cytochrome.new(name.split(".").pop)
 			end
 			def extract_data
 				@cytochrome
@@ -266,7 +266,7 @@ module ODDB
 			def send_flowing_data(data) 
 				unless(@current_table.nil?)
 					if(@bold_font=="start" && data.size>3)
-						name_base = data.delete(":").downcase
+						name = data.delete(":").downcase
 						case @current_table
 						when /substrates/
 							new_class = ODDB::Interaction::SubstrateConnection
@@ -275,7 +275,7 @@ module ODDB
 						when /inducers/
 							new_class = ODDB::Interaction::InducerConnection
 						end
-						@connection = new_class.new(name_base)
+						@connection = new_class.new(name)
 						@cytochrome.add_connection(@connection)
 					end
 					if(@italic_font=="start" && data!="PubMed")

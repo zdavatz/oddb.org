@@ -7,6 +7,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'plugin/hayes'
 require 'util/html_parser'
+require 'mock'
 
 module ODDB
 	module Interaction
@@ -26,6 +27,7 @@ end
 class TestHayesPlugin < Test::Unit::TestCase
 	class StubApp
 		def initialize
+			@cytochromes = {}
 		end
 	end
 	def setup
@@ -39,7 +41,7 @@ class TestHayesPlugin < Test::Unit::TestCase
 		cytochromes = @plugin.parse_substrate_table
 		result = []
 		cytochromes['2B6'].substrates.each { |conn|
-			result.push(conn.name_base)
+			result.push(conn.name)
 		}
 		expected = [
 			"Bupropion",
@@ -52,24 +54,12 @@ class TestHayesPlugin < Test::Unit::TestCase
 		assert_equal(expected, result)
 		assert_equal([], cytochromes['1A2'].inhibitors)
 	end
-	def test_parse_interaction_table
-		cytochromes = @plugin.parse_interaction_table
-		result = []
-		cytochromes['2B6'].inhibitors.each { |conn|
-			result.push(conn.name_base)
-		}
-		expected = [
-			"Orphenadrine", 
-			"Thiotepa", 
-			"Ticlopidine",
-		]
-		assert_equal(expected, result)
-	end
+
 	def test_parse_interaction_table2
 		cytochromes = @plugin.parse_interaction_table
 		result = []
 		cytochromes['2C8'].inducers.each { |conn|
-			result.push(conn.name_base)
+			result.push(conn.name)
 		}
 		expected = [
 			"Phenobarbital", 
@@ -124,7 +114,7 @@ class TestHayesWriter < Test::Unit::TestCase
 		obj = @writer.create_connection("suBstanCe", "inhibits")
 		expected = ODDB::Interaction::InhibitorConnection 
 		assert_equal(expected, obj.class)
-		assert_equal("suBstanCe", obj.name_base)
+		assert_equal("suBstanCe", obj.name)
 	end
 	def test_handle_cytochrome
 		obj = ODDB::Interaction::InhibitorConnection.new("suBstanCe")
@@ -286,11 +276,11 @@ class TestHayesWriter < Test::Unit::TestCase
 		result = writer.cytochromes["1A1"].substrates.first
 		expected = ODDB::Interaction::SubstrateConnection
 		assert_equal(expected, result.class)
-		assert_equal("SubStanzOne", result.name_base)
+		assert_equal("SubStanzOne", result.name)
 		result = writer.cytochromes["1A2"].substrates
 		assert_equal(2, result.size)
 		subs = []
-		result.each do |sub|; subs.push sub.name_base; end
+		result.each do |sub|; subs.push sub.name; end
 		expected = ["SubStanzOne", "SubStanzTwo"]
 		assert_equal(expected, subs)
 	end
@@ -307,11 +297,11 @@ class TestHayesWriter < Test::Unit::TestCase
 		result = writer.cytochromes["1A6"].inducers.first
 		expected = ODDB::Interaction::InducerConnection
 		assert_equal(expected, result.class)
-		assert_equal("SubStanzTwo", result.name_base)
+		assert_equal("SubStanzTwo", result.name)
 		result = writer.cytochromes["1A2"].inhibitors
 		assert_equal(2, result.size)
 		subs = []
-		result.each do |sub|; subs.push sub.name_base; end
+		result.each do |sub|; subs.push sub.name; end
 		expected = ["SubStanzOne", "SubStanzThree"]
 		assert_equal(expected, subs)
 	end

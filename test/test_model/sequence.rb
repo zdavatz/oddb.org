@@ -155,7 +155,7 @@ class TestSequence < Test::Unit::TestCase
 		assert_equal(expected, @seq.adjust_types(values, app))
 	end
 	def test_active_agent
-		subst = ODDB::Substance.new('LEVOMENTHOLUM')
+		subst = ODDB::Substance.new
 		active_agent = ODDB::ActiveAgent.new('LEVOMENTHOLUM')
 		active_agent.substance = subst
 		@seq.active_agents = [active_agent]
@@ -164,7 +164,7 @@ class TestSequence < Test::Unit::TestCase
 	def test_create_active_agent
 		@seq.active_agents = []
 		app = StubSequenceApp.new
-		subst = ODDB::Substance.new('LEVOMENTHOLUM')
+		subst = ODDB::Substance.new
 		app.substances = [subst]
 		active_agent = @seq.create_active_agent('LEVOMENTHOLUM')
 		assert_equal(ODDB::ActiveAgent,  @seq.active_agents.first.class)
@@ -175,7 +175,7 @@ class TestSequence < Test::Unit::TestCase
 	end
 	def test_delete_active_agent
 		active_agent = ODDB::ActiveAgent.new('LEVOMENTHOLUM')
-		subst = ODDB::Substance.new('LEVOMENTHOLUM')
+		subst = ODDB::Substance.new
 		active_agent.substance = subst
 		@seq.active_agents = [active_agent]
 		@seq.delete_active_agent('LEVOMENTHOLUM')
@@ -210,7 +210,7 @@ class TestSequence < Test::Unit::TestCase
 	def test_comparables1
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
-		subst = ODDB::Substance.new('LEVOMENTHOLUM')
+		subst = ODDB::Substance.new
 		active_agent = ODDB::ActiveAgent.new('LEVOMENTHOLUM')
 		active_agent.substance = subst
 		@seq.active_agents = [active_agent]
@@ -224,12 +224,12 @@ class TestSequence < Test::Unit::TestCase
 	def test_comparables2
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
-		subst = ODDB::Substance.new('LEVOMENTHOLUM')
+		subst = ODDB::Substance.new
 		active_agent = ODDB::ActiveAgent.new('LEVOMENTHOLUM')
 		active_agent.substance = subst
 		@seq.active_agents = [active_agent]
 		comparable = ODDB::Sequence.new('02')
-		subst = ODDB::Substance.new('ACIDUM ACETYLSALICYLICUM')
+		subst = ODDB::Substance.new
 		active_agent = ODDB::ActiveAgent.new('ACIDUM ACETYLSALICYLICUM')
 		active_agent.substance = subst
 		comparable.active_agents = [active_agent]
@@ -239,8 +239,10 @@ class TestSequence < Test::Unit::TestCase
 	def test_comparables3
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
-		subst1 = ODDB::Substance.new('CAPTOPRILUM')
-		subst2 = ODDB::Substance.new('HYDROCHLOROTHIACIDUM')
+		subst1 = ODDB::Substance.new
+		subst1.descriptions[:de] = 'CAPTOPRILUM'
+		subst2 = ODDB::Substance.new
+		subst2.descriptions[:de] = 'HYDROCHLOROTHIACIDUM'
 		active_agent1 = ODDB::ActiveAgent.new('CAPTOPRILUM')
 		active_agent2 = ODDB::ActiveAgent.new('HYDROCHLOROTHIACIDUM')
 		active_agent1.substance = subst1
@@ -307,7 +309,8 @@ class TestSequence < Test::Unit::TestCase
 		assert_equal(@seq, galform.removed)
 	end
 	def test_composition_text
-		subst = ODDB::Substance.new('LEVOMENTHOLUM')
+		subst = ODDB::Substance.new
+		subst.descriptions[:de] = 'Levomentholum'
 		active_agent = ODDB::ActiveAgent.new('LEVOMENTHOLUM')
 		active_agent.substance = subst
 		@seq.active_agents = [active_agent]

@@ -5,6 +5,7 @@ require 'delegate'
 require 'state/global_predefine'
 require 'view/result'
 require 'model/registration'
+require 'state/page_facade'
 require 'state/registration'
 
 module ODDB
@@ -32,24 +33,6 @@ module ODDB
 				@packages
 			end
 		end
-		class PageFacade < Array
-			def initialize(int)
-				super()
-				@int = int
-			end
-			def next
-				PageFacade.new(@int.next)
-			end
-			def previous
-				PageFacade.new(@int-1)
-			end
-			def to_s
-				@int.next.to_s
-			end
-			def to_i
-				@int
-			end
-		end
 		VIEW = ResultView
 		REVERSE_MAP = ResultList::REVERSE_MAP
 		ITEM_LIMIT = 150
@@ -70,7 +53,7 @@ module ODDB
 				count = 0
 				@package_count = 0
 				@model.each { |atc|
-					@pages[page] ||= PageFacade.new(page) 
+					@pages[page] ||= ODDB::PageFacade.new(page) 
 					@pages[page].push(atc)
 					@package_count += atc.package_count
 					count += atc.package_count	

@@ -51,18 +51,12 @@ module ODDB
 				err = create_error(:e_unknown_indication, :indication, ind)
 				@errors.store(:indication, err)
 			end
-			@session.app.update(@model.pointer, hash)
+			@model = @session.app.update(@model.pointer, hash)
 			if((fi_file = @session.user_input(:fachinfo_upload)) \
 				&& (documents = parse_fachinfo(fi_file)))
 				FachinfoConfirmState.new(@session, documents)
 			else
-				if(@model.is_a? Persistence::CreateItem)
-					inner_pointer =  @model.inner_pointer
-					obj = @session.app.resolve(inner_pointer)
-					RegistrationState.new(@session, obj)
-				else
-					self
-				end
+				self
 			end
 		end
 		def parse_fachinfo(file)

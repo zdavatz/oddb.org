@@ -18,7 +18,7 @@ module ODDB
 		LABELS = true
 		def init
 			index=0
-			@lookandfeel.languages.each_with_index { |language, index|
+			self.languages.each_with_index { |language, index|
 				components.store([0,index], language.intern)
 				if(descr_css = self::class::DESCRIPTION_CSS)
 					component_css_map.store([1,index], descr_css)
@@ -33,6 +33,9 @@ module ODDB
 				@grid.add(button, 1, index.next)
 			end
 			error_message()
+		end
+		def languages
+			@lookandfeel.languages
 		end
 	end
 end

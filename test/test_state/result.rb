@@ -136,11 +136,11 @@ class TestResultState < Test::Unit::TestCase
 		assert_instance_of(Proc, filter)
 		@state.session.user_input = { :page=>0 }
 		result = filter.call(nil)
-		assert_instance_of(ODDB::ResultState::PageFacade, result)
+		assert_instance_of(ODDB::PageFacade, result)
 		assert_equal(75, result.size)
 		@state.session.user_input = { :page=>3 }
 		result = filter.call(nil)
-		assert_instance_of(ODDB::ResultState::PageFacade, result)
+		assert_instance_of(ODDB::PageFacade, result)
 		assert_equal(25, result.size)
 	end
 	def test_page
@@ -150,7 +150,7 @@ class TestResultState < Test::Unit::TestCase
 		atc.packages = [p1, p2]
 		@state.model = Array.new(150, atc)
 		@state.init
-		assert_instance_of(ODDB::ResultState::PageFacade, @state.page)
+		assert_instance_of(ODDB::PageFacade, @state.page)
 		assert_equal(0, @state.page.to_i)
 		@state.session.user_input = { :page => 1 }
 		assert_equal(1, @state.page.to_i)
@@ -269,29 +269,6 @@ class TestResultState < Test::Unit::TestCase
 		state.trigger(:sort)
 		assert_equal([p1, p2], @state.model.first.packages)
 		assert_equal([p2, p1], state.model.first.packages)
-	end
-end
-class TestPageFacade < Test::Unit::TestCase
-	def setup
-		@page = ODDB::ResultState::PageFacade.new(7)
-	end
-	def test_next
-		result = @page.next
-		assert_instance_of(ODDB::ResultState::PageFacade, result)
-		assert_equal(8, result.to_i)
-		assert_equal("9", result.to_s)
-	end
-	def test_previous
-		result = @page.previous
-		assert_instance_of(ODDB::ResultState::PageFacade, result)
-		assert_equal(6, result.to_i)
-		assert_equal("7", result.to_s)
-	end
-	def test_to_i
-		assert_equal(7, @page.to_i)
-	end
-	def test_to_s
-		assert_equal("8", @page.to_s) 
 	end
 end
 class TestAtcFacade < Test::Unit::TestCase

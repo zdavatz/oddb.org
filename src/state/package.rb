@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 # PackageState -- oddb -- 14.03.2003 -- hwyss@ywesee.com 
-
 require 'state/global'
 require 'view/package'
 
