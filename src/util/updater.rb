@@ -201,7 +201,7 @@ module ODDB
 			wrap_update(VaccinePlugin, 'blutprodukte') { 
 				plugin = VaccinePlugin.new(self)
 				# registrations, indications, sequences
-				plugin.parse_from_txt('vaccines.txt')     
+				plugin.parse_from_smj('vaccines.txt')
 				# sequences, substances, active_agents
 				plugin.parse_from_xls('vaccines.xls')
 				# packages

@@ -86,7 +86,9 @@ module ODDB
 				{ :size => @size }
 			end
 		end
-		def parse_from_smj(txt)
+		def parse_from_smj(fname)
+			path = File.join(ARCHIVE_PATH, 'txt', fname)
+			txt = File.read(path)
 			registrations = {}
 			txt.each_line { |line|
 				if(pair = parse_smj_line(line))
@@ -96,7 +98,8 @@ module ODDB
 			}
 			update_registrations(registrations)
 		end
-		def parse_from_xls(path)
+		def parse_from_xls(fname)
+			path = File.join(ARCHIVE_PATH, 'xls', fname)
 			update_registrations(registrations_from_xls(path))
 		end
 		def parse_worksheet(worksheet)
