@@ -833,7 +833,6 @@ module ODDB
 		def initialize
 			### keep this disabled, as long as unreachable prefetchable
 			### objects are not reaped from the db
-			ODBA.cache_server.prefetch
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
 				OddbPrevalence.new
 			}

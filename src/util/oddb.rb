@@ -58,4 +58,6 @@ $0 = "Oddb (OddbApp)"
 DRb.start_service(ODDB::SERVER_URI, $oddb)
 #puts "drb-service started in #{seconds} seconds"
 
+ODBA.cache_server.prefetch
+
 DRb.thread.join
