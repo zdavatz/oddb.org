@@ -15,7 +15,7 @@ class Download < State::User::Global
 		super
 	end
 	def check_or_set_cookie
-		if((email = @session.cookie_input_by_key(:email)) && !email.empty?)
+		if((email = @session.get_cookie_input(:email)) && !email.empty?)
 			@default_view = View::User::Download
 		elsif((email = @session.user_input(:email)) && !email.empty?)
 			@session.set_cookie_input(:email, email)
