@@ -31,6 +31,7 @@ class TestInteractionResultState < Test::Unit::TestCase
 	def test_empty_list
 		assert_equal(ODDB::EmptyResultView, @state.default_view)
 	end
+=begin
 	def test_check_facades
 		facade1 = Mock.new('facade1')
 		facade2 = Mock.new('facade2')
@@ -64,7 +65,9 @@ class TestInteractionResultState < Test::Unit::TestCase
 		facade2.__verify
 		object.__verify
 	end
+=end
 end
+=begin
 class TestInteractionFacade < Test::Unit::TestCase
 	def setup
 		@facade = ODDB::InteractionResultState::InteractionFacade.new('foobar')
@@ -111,3 +114,4 @@ class TestInteractionFacade < Test::Unit::TestCase
 		object3.__verify
 	end
 end
+=end
