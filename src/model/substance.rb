@@ -117,6 +117,7 @@ module ODDB
 				if(active_agent = sequence.active_agent(other))
 					if(@sequences.include?(sequence))
 						sequence.delete_active_agent(other)
+						active_agent.odba_delete
 					else
 						active_agent.substance = self
 						active_agent.odba_isolated_store
@@ -126,7 +127,7 @@ module ODDB
 				end
 			}
 			other.substrate_connections.values.each { |substr_conn|
-				if((cyp450substrate(substr_conn.cyp_id)).nil?)
+				unless(cyp450substrate(substr_conn.cyp_id))
 					substr_conn.pointer = self.pointer + substr_conn.pointer.last_step
 					substrate_connections.store(substr_conn.cyp_id, substr_conn)
 					substr_conn.odba_isolated_store
@@ -142,6 +143,7 @@ module ODDB
 			# long format, because each of these methods are overridden
 			self.connection_keys = self.connection_keys + other.connection_keys
 			@connection_keys.odba_isolated_store
+			self
 		end
 		def name
 			# First call to descriptions should go to lazy-initialisator
@@ -162,9 +164,10 @@ module ODDB
 		end
 		def same_as?(substance)
 			teststr = substance.to_s.downcase
-			descriptions.any? { |lang, desc|
-				desc.is_a?(String) && desc.downcase == teststr
-			} || (connection_keys.include?(format_connection_key(teststr)))
+			name == teststr \
+				|| descriptions.any? { |lang, desc|
+					desc.is_a?(String) && desc.downcase == teststr
+				} || (connection_keys.include?(format_connection_key(teststr)))
 		end
 		def similar_name?(astring)
 			name.length/3.0 >= name.downcase.ld(astring.downcase)
