@@ -8,7 +8,7 @@ require 'view/admin/logincomposite'
 module ODDB
 	module View
 		module Admin
-class Login < PublicTemplate
+class Login < View::PublicTemplate
 	CONTENT = View::Admin::LoginComposite
 	HEAD = View::LogoHead
 end

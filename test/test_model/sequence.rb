@@ -334,6 +334,25 @@ class TestSequence < Test::Unit::TestCase
 		@seq.composition_text = text
 		assert_equal(text, @seq.composition_text)
 	end
+	def test_limitation_text_count
+		mock1 = Mock.new("packet_mock1")
+		mock2 = Mock.new("packet_mock2")
+		mock3 = Mock.new("packet_mock3")
+		hash = {
+			:mock1 => mock1,
+			:mock2 => mock2,
+			:mock3 => mock3,
+		}
+		@seq.packages = hash
+		mock1.__next(:sl_entry){ "entry"}
+		mock2.__next(:sl_entry){}
+		mock3.__next(:sl_entry){}
+		text_count = @seq.limitation_text_count
+		mock1.__verify
+		mock2.__verify
+		mock3.__verify
+		assert_equal(1, text_count)
+	end
 end
 class TestIncompleteSequence < Test::Unit::TestCase
 	def setup

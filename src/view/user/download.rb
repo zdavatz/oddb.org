@@ -10,14 +10,17 @@ module ODDB
 		module User
 class Download < HtmlGrid::PassThru
 	def init
+		puts "filename: #{@session.user_input(:filename)}"
 		if(filename = @session.user_input(:filename))
 			@path = @lookandfeel.resource_global(:downloads, filename)
+			puts "path: #{@path}"
 		end
 	end
 	def to_html(context)
 		line = [
 			nil,
 			@session.remote_addr,
+			@session.get_cookie_input(:email),
 			@path,
 		].join(';')
 		LogFile.append(:download, line, Time.now)

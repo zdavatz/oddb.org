@@ -201,6 +201,9 @@ module ODDB
 				link.set_attribute('class', 'list-b')
 				link
 			end
+			def atc_ddd_size(mode, session)
+				@session.app.atc_ddd_count
+			end
 			def beta(model, session)
 				link = HtmlGrid::Link.new(:beta, model, session, self)
 				link.href = @lookandfeel.lookup(:ywesee_contact_href)
@@ -235,6 +238,9 @@ module ODDB
 				link.label = true
 				link.set_attribute('class', 'list')
 				link
+			end
+			def fachinfo_size(model, session)
+				@session.app.fachinfo_count
 			end
 			def generic_definition(model, session)
 				link = HtmlGrid::PopupLink.new(:generic_definition, model, session, self)
@@ -274,6 +280,16 @@ module ODDB
 				link.attributes['class'] =	'list'
 				link
 			end
+			def limitation_size(mode, session)
+				@session.app.limitation_text_count
+			end
+			def plugin(model, session)
+				link = HtmlGrid::Link.new(:plugin, model, session, self)
+				link.href = @lookandfeel.event_url(:plugin)
+				link.label = true
+				link.set_attribute('class', 'list')
+				link
+			end
 			def new_feature(model, session)
 				span = HtmlGrid::Span.new(model, session, self)
 				span.value = @lookandfeel.lookup(:new_feature)
@@ -299,6 +315,9 @@ module ODDB
 				link.label = true
 				link.set_attribute('class', 'list')
 				link
+			end
+			def patinfo_size(model, session)
+				@session.app.patinfo_count
 			end
 		end
 	end

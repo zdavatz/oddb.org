@@ -64,6 +64,11 @@ module ODDB
 				@company.generic_type
 			end
 		end
+		def limitation_text_count
+			@sequences.values.inject(0) { |inj, seq|			
+				inj += seq.limitation_text_count
+			}
+		end
 		def name_base
 			if(seq = @sequences.values.first)
 				seq.name_base

@@ -71,7 +71,7 @@ class OddbPrevalence
 		@patinfos_deprived_sequences ||= []
 		@companies ||= {}
 		@cyp450s ||= {}
-		#@fachinfos ||= {}
+		@fachinfos ||= {}
 		@galenic_forms ||= []
 		@galenic_groups ||= []
 		@generic_groups ||= {}
@@ -79,6 +79,7 @@ class OddbPrevalence
 		@indications ||= {}
 		@last_medication_update ||= Time.now()
 		@log_groups ||= {}
+		@patinfos ||= {}
 		@registrations ||= {}
 		@substances ||= {}
 		@orphaned_patinfos ||= {}
@@ -131,6 +132,12 @@ class OddbPrevalence
 	end
 	def atc_class(code)
 		@atc_classes[code]
+	end
+	def atc_ddd_count
+		@atc_classes.values.inject(0) { |inj, atc|
+			inj += 1 if(atc.has_ddd?)
+			inj
+		}
 	end
 	def clear_indices
 		@sequence_index = nil
@@ -351,6 +358,11 @@ class OddbPrevalence
 	def log_group(key)
 		@log_groups[key]
 	end
+		def limitation_text_count
+			@registrations.values.inject(0) { |inj, seq|			
+				inj += seq.limitation_text_count
+			}
+		end
 	def patinfo(oid)
 		@patinfos[oid.to_i]
 	end
@@ -480,6 +492,12 @@ class OddbPrevalence
 			}
 		end
 		@package_count
+	end
+	def patinfo_count
+		@patinfos.size
+	end
+	def fachinfo_count
+		@fachinfos.size
 	end
 	def rebuild_atc_chooser
 		@atc_chooser = ODDB::AtcNode.new(nil)

@@ -26,17 +26,16 @@ require 'state/interactions/result'
 require 'state/substances/init'
 require 'state/substances/result'
 require 'state/user/download'
+require 'state/user/download_export'
 require 'state/user/fipi_offer_input'
 require 'state/user/fipi_offer_confirm'
 require 'state/user/genericdefinition'
 require	'state/user/help'
-require 'state/user/oddbdat_download'
 require 'state/user/mailinglist'
 require 'state/user/passthru'
 require 'state/user/paypal_thanks'
 require 'state/user/powerlink'
 require 'state/user/plugin'
-require 'state/user/yamlexport'
 require 'state/user/init'
 require 'util/umlautsort'
 require 'sbsm/state'
@@ -51,9 +50,8 @@ module ODDB
 				:companylist					=>	State::Companies::CompanyList,
 				:ddd									=>	State::Drugs::DDD,
 				:download							=>	State::User::Download,
-				:download_export			=>	State::User::YamlExport,
+				:download_export			=>	State::User::DownloadExport,
 				:fipi_offer_input			=>	State::User::FiPiOfferInput,
-				:oddbdat_download			=>	State::User::OddbDatDownload,
 				:help									=>	State::User::Help,
 				:home									=>	State::Drugs::Init,
 				:home_admin						=>	State::Admin::Init,
