@@ -4,7 +4,7 @@
 require 'view/publictemplate'
 require 'view/user/export'
 require 'htmlgrid/link'
-require 'plugin/galdat_export'
+require 'plugin/oddbdat_export'
 
 module ODDB
 	module View
@@ -12,8 +12,8 @@ module ODDB
 class OddbDatDownloadInnerComposite < HtmlGrid::Composite
 	include View::User::Export
 	COMPONENTS = {
-		[0,0]		=>	:galdat_download_tar_gz,
-		[0,1]		=>	:galdat_download_zip,
+		[0,0]		=>	:oddbdat_download_tar_gz,
+		[0,1]		=>	:oddbdat_download_zip,
 		[0,2]		=>	:s31x_tar_gz,
 		[0,3]		=>	:s31x_zip,
 	}
@@ -21,10 +21,10 @@ class OddbDatDownloadInnerComposite < HtmlGrid::Composite
 		[0,1,1,3]	=>	'list',
 	}
 	EXPORT_FILE = 'oddbdat'
-	def galdat_download_tar_gz(model, session)
+	def oddbdat_download_tar_gz(model, session)
 		link_with_filesize("oddbdat.tar.gz")
 	end
-	def galdat_download_zip(model, session)
+	def oddbdat_download_zip(model, session)
 		link_with_filesize("oddbdat.zip")
 	end
 	def s31x_tar_gz(model, session)
@@ -36,8 +36,8 @@ class OddbDatDownloadInnerComposite < HtmlGrid::Composite
 end
 class OddbDatDownloadComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]		=>	'galdat_download_title',
-		[0,1]		=>	'galdat_download_descr',
+		[0,0]		=>	'oddbdat_download_title',
+		[0,1]		=>	'oddbdat_download_descr',
 		[0,2]		=>	View::User::OddbDatDownloadInnerComposite,
 	}
 	CSS_CLASS = 'composite'
