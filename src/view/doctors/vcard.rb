@@ -30,15 +30,15 @@ class VCard < HtmlGrid::Component
 	end
 	def title
 		if(title = @model.title)
-			["TITLE:" + title]
+			["TITLE;CHARSET=ISO-8859-1:" + title]
 		end
 	end
 	def name
 		if((firstname = @model.firstname) \
 			&& (name = @model.name))
 			[
-				"FN:" + firstname + " " + name,
-				"N:" + name + ";" + firstname,
+				"FN;CHARSET=ISO-8859-1:" + firstname + " " + name,
+				"N;CHARSET=ISO-8859-1:" + name + ";" + firstname,
 			]
 		end
 	end
@@ -63,8 +63,8 @@ class VCard < HtmlGrid::Component
 			inj += get_fons(addr.fon, "TEL;WORK;VOICE:")
 			inj += get_fons(addr.fax, "TEL;WORK;FAX:")
 			type = (addr.type == :work) ? 'WORK' : 'POSTAL'
-			inj.push(addr_str(addr, "ADR;#{type}:;;", ';'))
-			inj.push(addr_str(addr, "LABEL;#{type}:;;", ' '))
+			inj.push(addr_str(addr, "ADR;#{type};CHARSET=ISO-8859-1:;;", ';'))
+			inj.push(addr_str(addr, "LABEL;#{type};CHARSET=ISO-8859-1:;;", ' '))
 			inj
 		}
 	end
