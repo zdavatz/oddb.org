@@ -32,7 +32,9 @@ class SetPass < State::Companies::Global
 				hash.store(:model, mdl.pointer)
 			end
 			begin
-				@session.app.update(@model.pointer, hash)
+				ODBA.batch { 
+					@session.app.update(@model.pointer, hash)
+				}
 				if(klass = resolve_state(mdl.pointer))
 					klass.new(@session, mdl)
 				end
