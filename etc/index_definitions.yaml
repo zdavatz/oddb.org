@@ -121,13 +121,23 @@ dictionary: 'default'
 init_source: '@indications.values'
 fulltext: true
 --- !ruby/object:ODBA::IndexDefinition 
-index_name: 'indication_index_atc'
+index_name: 'indication_index_atc_de'
 origin_klass: 'Indication'
 target_klass: 'AtcClass'
-resolve_search_term: 'search_text'
+resolve_search_term: 'de'
 resolve_target: 'registrations.collect { |reg| reg.sequences.values.collect { |seq| seq.atc_class } }.flatten.uniq'
 resolve_origin: 'sequences.collect { |seq| seq.registration.indication }.flatten.uniq'
-dictionary: 'default'
+dictionary: 'default_german'
+init_source: '@atc_classes.values'
+fulltext: true
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'indication_index_atc_fr'
+origin_klass: 'Indication'
+target_klass: 'AtcClass'
+resolve_search_term: 'fr'
+resolve_target: 'registrations.collect { |reg| reg.sequences.values.collect { |seq| seq.atc_class } }.flatten.uniq'
+resolve_origin: 'sequences.collect { |seq| seq.registration.indication }.flatten.uniq'
+dictionary: 'default_french'
 init_source: '@atc_classes.values'
 fulltext: true
 --- !ruby/object:ODBA::IndexDefinition 

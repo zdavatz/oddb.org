@@ -512,8 +512,8 @@ class OddbPrevalence
 		# 3. atc-code
 		# 4. exact word in sequence name
 		# 5. company-name
-		# 6. indication
-		# 7. substance
+		# 6. substance
+		# 7. indication
 		# 8. sequence
 		result = ODDB::SearchResult.new
 		result.exact = true
@@ -552,11 +552,11 @@ class OddbPrevalence
 		if(atcs.empty?)
 			atcs = search_by_company(key)
 		end
-		# indication
+		# substance
 		if(atcs.empty?)
 			atcs = search_by_substance(key)
 		end
-		# substance
+		# indication
 		if(atcs.empty?)
 			atcs = search_by_indication(key, lang, result)
 		end
@@ -595,9 +595,10 @@ class OddbPrevalence
 		if(lang.to_s != "fr") 
 			lang = "de"
 		end
-		atcs = ODBA.cache_server.retrieve_from_index("fachinfo_index_#{lang}",
-			key.dup, result)
-		atcs += ODBA.cache_server.retrieve_from_index("indication_index_atc",
+		atcs = ODBA.cache_server.\
+			retrieve_from_index("fachinfo_index_#{lang}", key.dup, result)
+		atcs += ODBA.cache_server.\
+			retrieve_from_index("indication_index_atc_#{lang}",
 			key.dup, result)
 		atcs.uniq
 	end
@@ -740,7 +741,7 @@ class OddbPrevalence
 	def user_by_email(email)
 		@users.values.select { |user| user.unique_email == email }.first
 	end
-	def rebuild_odba_indices(name=nil)
+	def rebuild_indices(name=nil)
 		ODBA.scalar_cache.size
 		ODBA.cache_server.indices.size
 		begin
@@ -783,7 +784,7 @@ class OddbPrevalence
 		end
 	end
 	def generate_dictionary(language, locale)
-		ODBA.storage.remove_dictionary(lanugage)
+		ODBA.storage.remove_dictionary(language)
 		base = File.expand_path("../../ext/fulltext/data/dicts/#{language}", 
 			File.dirname(__FILE__))
 		ODBA.storage.generate_dictionary(language, locale, base)
