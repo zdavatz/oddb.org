@@ -2,6 +2,9 @@
 a {
 	text-decoration: none;
 }	
+a img {
+	border : 0px;
+}
 body {
 	font-family : $std_font_family;
 	font-size : $std_font_size; 
