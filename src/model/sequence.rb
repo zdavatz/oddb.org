@@ -117,6 +117,11 @@ module ODDB
 		def package_count
 			@packages.length
 		end
+		def limitation_text_count
+			@packages.values.select { |package|
+				package.limitation_text
+			}.size
+		end
 		def source
 			@registration.source
 		end

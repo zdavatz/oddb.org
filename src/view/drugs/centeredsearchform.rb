@@ -32,20 +32,30 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,5,2]	=>	'comma_separator',
 		[0,5,3]	=>	'database_last_updated_txt',
 		[0,5,4]	=>	:database_last_updated,
-		[0,6]		=>	View::LegalNoteLink,
-		[0,7]		=>	:paypal,
+		[0,6]		=>	:fachinfo_size,
+		[0,6,1]	=>	'fi_count_text',
+		[0,6,2]	=>	'comma_separator',
+		[0,6,3] =>	:patinfo_size,
+		[0,6,4] =>	'pi_count_text',
+		[0,7]		=>	:atc_ddd_size,
+		[0,7,1]	=>	'ddd_count_text',
+		[0,7,2]	=>	'comma_separator',
+		[0,7,3]	=>	:limitation_size,
+		[0,7,4]	=>	'sl_count_text',
+		[0,8]		=>	View::LegalNoteLink,
+		[0,9]		=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,6]		=>	'ccomponent',
+		[0,0,1,8]		=>	'ccomponent',
 	}
 	COMPONENT_CSS_MAP = {
-		[0,6]	=>	'legal-note-center',
+		[0,8]	=>	'legal-note-center',
 	}
 	def substance_count(model, session)
 		@session.app.substance_count
 	end
 end	
-class GoogleAdSenseComposite < GoogleAdSenseComposite
+class GoogleAdSenseComposite < View::GoogleAdSenseComposite
 	CONTENT = CenteredSearchComposite
 	GOOGLE_CHANNEL = '2298340258'
 end

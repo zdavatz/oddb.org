@@ -129,7 +129,7 @@ Grammar OddbSize
 			end
 		end
 		def limitation_text
-			@sl_entry.limitation_text
+			@sl_entry.limitation_text unless @sl_entry.nil?
 		end
 		def most_precise_dose
 			@pretty_dose || dose
