@@ -3,11 +3,12 @@
 
 require 'state/global_predefine'
 require 'view/admin/patinfo_stats'
-
+require 'state/companies/companylist'
 module ODDB
 	module State
 		module Admin
 			class PatinfoStats < State::Admin::Global
+				include State::Companies::AlphaInterval
 				VIEW = View::Admin::PatinfoStats
 				DIRECT_EVENT = :patinfo_stats	
 				class InvoiceItemFacade
@@ -44,9 +45,7 @@ module ODDB
 					end
 				end
 				class CompanyFacade
-					attr_accessor :company_name, :company
 					def initialize(company)
-						@company_name = company.name
 						@company = company
 						@invoice_sequences= {}
 					end
@@ -66,10 +65,16 @@ module ODDB
 					def invoice_count
 						@invoice_sequences.size
 					end
+					def name
+						@company.name
+					end
 					def newest_date
 						@invoice_sequences.values.collect { |seq| 
 							seq.newest_date 
 						}.max
+					end
+					def pointer
+						@company.pointer
 					end
 				end
 				def init
@@ -98,4 +103,3 @@ module ODDB
 		end
 	end
 end
-

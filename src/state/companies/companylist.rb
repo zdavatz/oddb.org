@@ -11,12 +11,41 @@ require 'sbsm/user'
 module ODDB
 	module State
 		module Companies
+				module AlphaInterval
+				RANGE_PATTERNS = {
+					'a-d'			=>	'a-däÄáÁàÀâÂçÇ',
+					'e-h'			=>	'e-hëËéÉèÈêÊ',
+					'i-l'			=>	'i-l',
+					'm-p'			=>	'm-pöÖóÓòÒôÔ',
+					'q-t'			=>	'q-t',
+					'u-z'			=>	'u-züÜúÚùÙûÛ',
+					'unknown'	=>	'unknown',
+				}
+					def default_interval
+						intervals.first
+					end
+					def get_intervals
+						@model.collect { |company| 
+							rng = RANGE_PATTERNS.select { |key, pattern| 
+								/^[#{pattern}]/i.match(company.name)
+							}.first
+							rng.nil? ? 'unknown' : rng.first
+						}.compact.uniq.sort
+					end
+					def interval
+						@interval ||= self::class::RANGE_PATTERNS.index(@range)
+					end
+					def intervals
+						@intervals ||= get_intervals
+					end
+				end
 			#class User < SBSM::KnownUser; end
 			#class UnknownUser < SBSM::UnknownUser; end
 			#class CompanyUser < State::Companies::User; end
 			#class AdminUser < State::Companies::User; end
 class CompanyResult < State::Companies::Global
-	attr_reader :intervals, :range
+	include AlphaInterval
+	attr_reader :range
 	DIRECT_EVENT = :search
 	VIEW = {
 		ODDB::UnknownUser	=>	View::Companies::UnknownCompanies,
@@ -24,37 +53,11 @@ class CompanyResult < State::Companies::Global
 		ODDB::RootUser		=>	View::Companies::RootCompanies,
 		ODDB::AdminUser		=>	View::Companies::RootCompanies,
 	}	
-	RANGE_PATTERNS = {
-		'a-d'			=>	'a-däÄáÁàÀâÂçÇ',
-		'e-h'			=>	'e-hëËéÉèÈêÊ',
-		'i-l'			=>	'i-l',
-		'm-p'			=>	'm-pöÖóÓòÒôÔ',
-		'q-t'			=>	'q-t',
-		'u-z'			=>	'u-züÜúÚùÙûÛ',
-		'unknown'	=>	'unknown',
-	}
 	#REVERSE_MAP = ResultList::REVERSE_MAP
 	def init
 		if(!@model.is_a?(Array) || @model.empty?)
 			@default_view = View::Companies::EmptyResult
 		end
-	end
-	def default_interval
-		intervals.first
-	end
-	def get_intervals
-		@model.collect { |company| 
-			rng = RANGE_PATTERNS.select { |key, pattern| 
-				/^[#{pattern}]/i.match(company.name)
-			}.first
-			rng.nil? ? 'unknown' : rng.first
-		}.compact.uniq.sort
-	end
-	def interval
-		@interval ||= self::class::RANGE_PATTERNS.index(@range)
-	end
-	def intervals
-		@intervals ||= get_intervals
 	end
 end
 class CompanyList < CompanyResult
