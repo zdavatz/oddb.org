@@ -64,7 +64,6 @@ class Registration < State::Drugs::Global
 		if(@model.is_a?(Persistence::CreateItem) && error?)
 			return self
 		end
-		language = user_input(:language_select).intern
 		ind = user_input(:indication)
 		sel = nil
 		if(indication = @session.app.indication_by_text(ind))
@@ -78,7 +77,9 @@ class Registration < State::Drugs::Global
 				@session.app.search_indications(ind), @model)
 			new_state = State::Drugs::SelectIndication.new(@session, sel)
 		end
-		if(fi_file = @session.user_input(:fachinfo_upload)) 
+		if((fi_file = @session.user_input(:fachinfo_upload)) \
+			&& language = @session.user_input(:language_select)) 
+			language = language.intern
 			four_bytes = fi_file.read(4)
 			fi_file.rewind
 			if(four_bytes == "%PDF")

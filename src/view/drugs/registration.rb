@@ -131,6 +131,11 @@ class RegistrationForm < View::Form
 	}
 	TAG_METHOD = :multipart_form
 	def init
+		reorganize_components()
+		super
+		error_message()
+	end
+	def reorganize_components
 		if(@model.is_a?(Persistence::CreateItem))
 			components.store([1,5], :submit)
 			#css_map.store([1,5], 'button')
@@ -147,8 +152,6 @@ class RegistrationForm < View::Form
 			css_map.store([0,6,4], 'list')
 			#css_map.store([1,6], 'button')
 		end
-		super
-		error_message()
 	end
 	def company_name(model, session)
 		klass = if(session.user.is_a?(ODDB::CompanyUser))
