@@ -36,10 +36,10 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,6,3] =>	:patinfo_size,
 		[0,6,4] =>	'pi_count_text',
 		[0,7]		=>	:atc_ddd_size,
-		[0,7,1]	=>	'ddd_count_text',
+		[0,7,1]	=>	:ddd_count_text,
 		[0,7,2]	=>	'comma_separator',
 		[0,7,3]	=>	:limitation_size,
-		[0,7,4]	=>	'sl_count_text',
+		[0,7,4]	=>	:sl_count_text,
 		[0,8] =>	'database_last_updated_txt',
 		[0,8,1]	=>	:database_last_updated,
 		[0,9]		=>	View::LegalNoteLink,
@@ -51,6 +51,20 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENT_CSS_MAP = {
 		[0,9]	=>	'legal-note-center',
 	}
+	def ddd_count_text(model, session)
+		link = HtmlGrid::Link.new(:ddd_count_text, model, session, self)
+		link.href = 'http://www.whocc.no/atcddd/'
+		link.set_attribute('class', 'list-b')
+		link.target = '_blank'
+		link
+	end
+	def sl_count_text(model, session)
+		link = HtmlGrid::Link.new(:sl_count_text, model, session, self)
+		link.href = 'http://www.galinfo.net'
+		link.set_attribute('class', 'list-b')
+		link.target = '_blank'
+		link
+	end
 	def substance_count(model, session)
 		@session.app.substance_count
 	end
