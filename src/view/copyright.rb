@@ -9,8 +9,11 @@ module ODDB
 	module View
 		class Copyright < HtmlGrid::Composite
 			COMPONENTS = {
-				[0,0]			=>	:cpr_link,
-				[0,0,0]		=>	:oddb_version,
+				[0,0]			=>  :lgpl_license,
+				[1,0]			=>  'comma_separator',
+				[2,0]			=>  :current_year,
+				[3,0]			=>	:cpr_link,
+				[4,0]			=>	:oddb_version,
 			}
 			CSS_CLASS = "navigation"
 			HTML_ATTRIBUTES = {"align"=>"left"}
@@ -31,6 +34,15 @@ module ODDB
 				link.href = 'http://www.ywesee.com'
 				link.css_class = 'navigation'
 				link
+			end
+			def lgpl_license(model)
+				link = HtmlGrid::Link.new(:lgpl_license, model, @session, self)
+				link.href = 'http://www.gnu.org/copyleft/lesser.html'
+				link.css_class = 'navigation'
+				link
+			end
+			def current_year(model)
+				Time.now.year.to_s
 			end
 		end
 	end
