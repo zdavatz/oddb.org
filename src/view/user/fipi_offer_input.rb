@@ -59,12 +59,12 @@ class FiPiOfferInputForm < View::Form
 	end
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
-		[0,1]		=>	'fipi_activation_charge',
+		[0,1]		=>	'fi_activation_charge',
 		[1,1]		=>	:fi_activation_charge_value,
 		[0,2]		=>	:fi_quantity_txt,
 		[1,2]		=>	:fi_quantity,
 		[1,3]		=>	:fi_update,
-		[0,5]		=>	'fipi_activation_charge',
+		[0,5]		=>	'pi_activation_charge',
 		[1,5]		=>	:pi_activation_charge_value,
 		[0,6]		=>	:pi_quantity_txt,
 		[1,6]		=>	:pi_quantity,
@@ -88,7 +88,7 @@ class FiPiOfferInputForm < View::Form
 		text = HtmlGrid::RichText.new(model, session, self)
 		text << @lookandfeel.lookup(:fi_quantity0)
 		span = HtmlGrid::Span.new(model, session, self)
-		span.value = @lookandfeel.lookup(:fachinfo_colon)
+		span.value = @lookandfeel.lookup(:fachinfo_column)
 		span.css_class = 'bold'
 		text << span
 		text << @lookandfeel.lookup(:fi_quantity1)
@@ -108,7 +108,7 @@ class FiPiOfferInputForm < View::Form
 		text = HtmlGrid::RichText.new(model, session, self)
 		text << @lookandfeel.lookup(:pi_quantity0)
 		span = HtmlGrid::Span.new(model, session, self)
-		span.value = @lookandfeel.lookup(:patinfo_colon)
+		span.value = @lookandfeel.lookup(:patinfo_column)
 		span.css_class = 'bold'
 		text << span
 		text << @lookandfeel.lookup(:pi_quantity1)
