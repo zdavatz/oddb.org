@@ -134,6 +134,7 @@ module ODDB
 		end
 		class CenteredSearchComposite < HtmlGrid::Composite
 			COMPONENTS = {
+=begin
 				[0,0]		=>	:language_de,
 				[0,0,1]	=>	:divider,
 				[0,0,2]	=>	:language_fr,
@@ -161,8 +162,10 @@ module ODDB
 				[0,7,4]	=>	:database_last_updated,
 				[0,8]		=>	:generic_definition,
 				[0,8,1]	=>	:new_feature,
+				
 				[0,9]		=>	View::LegalNoteLink,
 				[0,10]		=>	:paypal,
+=end
 			}
 			CSS_CLASS = 'composite'
 			CSS_MAP = {
@@ -183,6 +186,7 @@ module ODDB
 				:atc_chooser			=>	HtmlGrid::Link,
 				:database_size		=>	HtmlGrid::Text,
 				:database_size_text	=>	HtmlGrid::Text,
+				:ddd_count_text		=>	HtmlGrid::Text,
 				:fipi_offer				=>	HtmlGrid::Link,
 				:interactions			=>	HtmlGrid::Link,
 				:language_de			=>	HtmlGrid::Link,
@@ -215,6 +219,13 @@ module ODDB
 			end
 			def database_last_updated(model, session)
 				HtmlGrid::DateValue.new(:last_medication_update, session.app, session, self)
+			end
+			def ddd_count_text(model, session)
+				link = HtmlGrid::Link.new(:ddd_count_Text, model, session, self)
+				link.href = @lookandfeel.event_url(:ddd_count_text)
+				link.label = true
+				link.set_attribute('class', 'list-b')
+				link
 			end
 			def divider(model, session)
 				span = HtmlGrid::Span.new(model, session, self)
