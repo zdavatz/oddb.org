@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'fileutils'
+
 module ODDB
 	class CssTemplate
 		RESOURCE_PATH = "../../doc/resources/"
@@ -146,10 +148,7 @@ module ODDB
 				FLAVORS.each { |name, flavor|
 					src =	File.read(TEMPLATE)
 					path = output_path(name)
-					dir = File.dirname(path)
-					unless(File.exist?(dir))
-						Dir.mkdir(dir)
-					end
+					FileUtils.mkdir_p(File.dirname(path))
 					File.open(path, "w") { |fh|
 						fh << substitute(src, flavor)
 					}

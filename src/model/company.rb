@@ -46,6 +46,7 @@ module ODDB
 			regs.each { |reg|
 				reg.company = self
 			}
+			@registrations.odba_isolated_store
 		end
 		def pointer_descr
 			@name

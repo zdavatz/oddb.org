@@ -165,20 +165,18 @@ module ODDB
 				end
 			end
 			def resolve
-				pointer = @session.user_input(:pointer)
-				begin
-					if((model = pointer.resolve(@session.app)))
-						if(klass = resolve_state(pointer))
-							klass.new(@session, model)
-						else
-							State::Admin::TransparentLogin.new(@session, model)
-						end
+				if((pointer = @session.user_input(:pointer)) \
+					&& (model = pointer.resolve(@session.app)))
+					if(klass = resolve_state(pointer))
+						klass.new(@session, model)
 					else
-						self
+						State::Admin::TransparentLogin.new(@session, model)
 					end
-				rescue Persistence::UninitializedPathError
+				else
 					self
 				end
+			rescue Persistence::UninitializedPathError
+				self
 			end
 			def resolve_state(pointer, type=:standard)
 				state_map = {

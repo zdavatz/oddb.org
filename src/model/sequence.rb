@@ -23,8 +23,13 @@ module ODDB
 		def active_packages
 			(active?) ? @packages.values : []
 		end
-		def active_package_count
-			(active?) ? @packages.size : 0
+		def active_package_count(generic_type=nil)
+			if(active? && (generic_type.nil? \
+				|| @registration.generic_type == generic_type))
+				@packages.size
+			else
+				0
+			end
 		end
 		def active?
 			@registration.active?

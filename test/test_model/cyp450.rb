@@ -76,22 +76,22 @@ class TestCyP450 < Test::Unit::TestCase
 			'ind_conn1'	=>	ind_connection1,	
 			'ind_conn2'	=>	inh_connection2,	
 		}
-		substance.__next(:connection_key) { [] }
+		substance.__next(:has_connection_key?) { false }
 		substance.__next(:same_as?) { |param|
 			assert_equal('inh_conn1', param)
 			false
 		}
-		substance.__next(:connection_key) { [] }
+		substance.__next(:has_connection_key?) { false }
 		substance.__next(:same_as?) { |param|
 			assert_equal('inh_conn2', param)
 			false
 		}
-		substance.__next(:connection_key) { [] }
+		substance.__next(:has_connection_key?) { false }
 		substance.__next(:same_as?) { |param|
 			assert_equal('ind_conn1', param)
 			false
 		}
-		substance.__next(:connection_key) { [] }
+		substance.__next(:has_connection_key?) { false }
 		substance.__next(:same_as?) { |param|
 			assert_equal('ind_conn2', param)
 			false
@@ -117,22 +117,22 @@ class TestCyP450 < Test::Unit::TestCase
 			'ind_conn1'	=>	ind_connection1,	
 			'ind_conn2'	=>	ind_connection2,	
 		}
-		substance.__next(:connection_key) { [] }
+		substance.__next(:has_connection_key?) { false }
 		substance.__next(:same_as?) { |param|
 			assert_equal('inh_conn1', param)
 			false
 		}
-		substance.__next(:connection_key) { [] }
+		substance.__next(:has_connection_key?) { false }
 		substance.__next(:same_as?) { |param|
 			assert_equal('inh_conn2', param)
 			true
 		}
-		substance.__next(:connection_key) { [] }
+		substance.__next(:has_connection_key?) { false }
 		substance.__next(:same_as?) { |param|
 			assert_equal('ind_conn1', param)
 			true
 		}
-		substance.__next(:connection_key) { [] }
+		substance.__next(:has_connection_key?) { false }
 		substance.__next(:same_as?) { |param|
 			assert_equal('ind_conn2', param)
 			true

@@ -5,6 +5,7 @@ require 'state/companies/global'
 require 'state/companies/setpass'
 require 'view/companies/company'
 require 'model/company'
+require 'fileutils'
 
 module ODDB
 	module State
@@ -69,6 +70,7 @@ class UserCompany < State::Companies::Company
 			input[:logo_filename] = filename
 			path = File.expand_path(filename, LOGO_PATH)
 			begin
+				FileUtils.mkdir_p(LOGO_PATH)
 				File.open(path, 'wb') { |fh|
 					fh << upload.read
 				}

@@ -18,6 +18,7 @@ require 'sbsm/index'
 require 'util/drb'
 require 'odba'
 require 'odba/index_definition'
+require 'fileutils'
 require 'yaml'
 
 #require 'madeleine'
@@ -106,7 +107,6 @@ class OddbPrevalence
 		failsafe(ODDB::Persistence::UninitializedPathError) {
 			if(item = pointer.resolve(self))
 				updated(item)
-				#	checkout(item)
 			end
 			pointer.issue_delete(self)
 		}
@@ -310,7 +310,6 @@ class OddbPrevalence
 	end
 	def delete_registration(iksnr)
 		@registrations.delete(iksnr)
-		@registrations.odba_store
 	end
 	def delete_substance(key)
 		substance = nil
@@ -319,7 +318,6 @@ class OddbPrevalence
 		else
 			substance = @substances.delete(key.to_s.downcase)
 		end
-		checkout(substance)
 	end
 	def each_atc_class(&block)
 		@atc_classes.each_value(&block)
@@ -408,12 +406,13 @@ class OddbPrevalence
 	end
 =end
 	def rebuild_atc_chooser
-		@atc_chooser = ODDB::AtcNode.new(nil)
+		chooser = ODDB::AtcNode.new(nil)
 		@atc_classes.values.sort_by { |atc| 
 			atc.code 
 		}.each { |atc|
-			@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
+			chooser.add_offspring(ODDB::AtcNode.new(atc))
 		}
+		@atc_chooser = chooser
 	end
 	def rebuild_atc_chooser
 		@atc_chooser = ODDB::AtcNode.new(nil)
@@ -490,12 +489,6 @@ class OddbPrevalence
 		end
 		if result.atc_classes.empty?
 			result.atc_classes = ODBA.cache_server.retrieve_from_index('substance_index_atc', key.dup)
-			#filtered_result = []
-			#result.atc_classes.each { |atc|
-			#filtered_result.push(atc.substance_filter_search(key.dup))
-			#}
-			#result.atc_classes = filtered_result.flatten.compact.uniq
-			#result
 		end
 		if result.atc_classes.empty?
 			result.atc_classes = ODBA.cache_server.retrieve_from_index("fachinfo_index_#{lang}", key.dup, result)
@@ -566,9 +559,8 @@ class OddbPrevalence
 		end
 	end
 	def substance_by_connection_key(connection_key)
-		key = connection_key.to_s.downcase
 		@substances.values.select { |substance|
-			substance.connection_key.include?(key)
+			substance.has_connection_key?(connection_key)
 		}.first
 	end
 	def substances
@@ -626,7 +618,8 @@ class OddbPrevalence
 		begin
 			start = Time.now
 			path = File.expand_path("../../etc/index_definitions.yaml", 
-			File.dirname(__FILE__))
+				File.dirname(__FILE__))
+			FileUtils.mkdir_p(File.dirname(path))
 			file = File.open(path)
 			YAML.load_documents(file) { |index_definition|
 				index_start = Time.now
@@ -779,7 +772,7 @@ module ODDB
 					@system.instance_eval(src)
 				end
 				str = response.to_s
-				if(str.length > 40)
+				if(str.length > 200)
 					response.class
 				else
 					str

@@ -11,9 +11,8 @@ module ODDB
 	class Substance
 		include Persistence
 		ODBA_PREFETCH = true
-		ODBA_SERIALIZABLE = [ '@descriptions' ]
+		ODBA_SERIALIZABLE = [ '@descriptions', '@connection_keys' ]
 		attr_reader :sequences, :substrate_connections
-		attr_writer :connection_key
 		include Comparable
 		include Language
 		def initialize
@@ -30,8 +29,8 @@ module ODDB
 			values.each { |key, value|
 				if(key.to_s.size == 2)
 					values[key] = value.to_s.gsub(/\b[A-Z].+?\b/) { |match| match.capitalize }
-				elsif(key == :connection_key)
-					values[key] = [ value.to_s.downcase ]
+				elsif(key == :connection_keys)
+					values[key] = [ value ].flatten
 				end
 			}
 			values
@@ -39,14 +38,17 @@ module ODDB
 		def atc_classes
 			@sequences.collect { |seq| seq.atc_class }.uniq
 		end
-		def connection_key
-			if(@connection_key)
-				@connection_key.to_a
-			elsif(!self.descriptions['en'].empty?)
-				@descriptions['en'].to_a
+		def connection_keys
+			@connection_keys or if(!self.descriptions['en'].empty?)
+				self.connection_keys = [@descriptions['en']]
 			else
-				@name.to_a
+				self.connection_keys = [@name]
 			end
+		end
+		def connection_keys=(keys)
+			@connection_keys = keys.collect { |key|
+				format_connection_key(key)
+			}.delete_if { |key| key.empty? }.uniq.sort
 		end
 		def	create_cyp450substrate(cyp_id)
 			conn = ODDB::CyP450SubstrateConnection.new(cyp_id)
@@ -61,8 +63,19 @@ module ODDB
 		def delete_cyp450substrate(cyp_id)
 			@substrate_connections.delete(cyp_id)
 		end
-		def has_connection_key?
-			@connection_key ? true : false	
+		def empty?
+			(@substances.nil? || @substances.empty?)
+		end
+		def format_connection_key(key)
+			key.to_s.downcase.gsub(/[^a-z0-9]/, '')
+		end
+		def has_connection_key?(test_key=nil)
+			if(test_key)
+				key = format_connection_key(test_key)
+				!key.empty? && @connection_keys.include?(key)
+			else
+				@connection_keys && !@connection_keys.empty?
+			end
 		end
 		def search_keys
 			keys = (self.descriptions.values + [@name]).compact
@@ -72,7 +85,7 @@ module ODDB
 			keys
 		end
 		def soundex_keys
-			names = self.descriptions.values + self.connection_key
+			names = self.descriptions.values + self.connection_keys
 			names.push(name)
 			keys = names.compact.uniq.collect { |key|
 				parts = key.split(/\s/)
@@ -100,34 +113,35 @@ module ODDB
 			end
 		end
 		def merge(other)
-			other.sequences.dup.uniq.each { |sequence|
+			other.sequences.dup.each { |sequence|
 				if(active_agent = sequence.active_agent(other))
 					if(@sequences.include?(sequence))
 						sequence.delete_active_agent(other)
 					else
 						active_agent.substance = self
+						active_agent.odba_isolated_store
 					end
 				else
 					other.remove_sequence(sequence)
 				end
 			}
-			other.substrate_connections.values.dup.each { |substr_conn|
+			other.substrate_connections.values.each { |substr_conn|
 				if((cyp450substrate(substr_conn.cyp_id)).nil?)
 					substr_conn.pointer = self.pointer + substr_conn.pointer.last_step
 					substrate_connections.store(substr_conn.cyp_id, substr_conn)
+					substr_conn.odba_isolated_store
 				end
 			}
+			substrate_connections.odba_isolated_store
 			other.descriptions.dup.each { |key, value|
 				unless(self.descriptions.has_key?(key))
 					self.descriptions.update_values( { key => value } )
 				end
 			}
-			if(@connection_key)
-				@connection_key.to_a.push(other.connection_key).flatten!
-			else
-				@connection_key = []
-				@connection_key.push(other.connection_key).flatten!
-			end
+			self.descriptions.odba_isolated_store
+			# long format, because each of these methods are overridden
+			self.connection_keys = self.connection_keys + other.connection_keys
+			@connection_keys.odba_isolated_store
 		end
 		def name
 			# First call to descriptions should go to lazy-initialisator
@@ -150,16 +164,13 @@ module ODDB
 			teststr = substance.to_s.downcase
 			descriptions.any? { |lang, desc|
 				desc.is_a?(String) && desc.downcase == teststr
-			} || (connection_key.include?(teststr))
+			} || (connection_keys.include?(format_connection_key(teststr)))
 		end
 		def similar_name?(astring)
 			name.length/3.0 >= name.downcase.ld(astring.downcase)
 		end
 		def substrate_connections
-			unless(@substrate_connections)
-				@substrate_connections = {}
-			end
-			@substrate_connections
+			@substrate_connections ||= {}
 		end
 		def to_s
 			name

@@ -151,7 +151,7 @@ module Root
 	end
 	def substances
 		model = @session.app.substances
-		State::Drugs::Substances.new(@session, model)
+		State::Substances::Substances.new(@session, model)
 	end
 	def zones
 	[:drugs, :interactions, :substances, :companies, :user, :admin]

@@ -2,6 +2,7 @@
 # Sponsor -- oddb -- 29.07.2003 -- maege@ywesee.com
 
 require 'date'
+require 'fileutils'
 require 'util/persistence'
 
 module ODDB
@@ -29,6 +30,7 @@ module ODDB
 			end
 			@logo_filename = upload.name
 			path = File.expand_path(upload.name, PATH)
+			FileUtils.mkdir_p(PATH)
 			File.open(path, 'wb') { |fh|
 				fh << upload.content
 			}

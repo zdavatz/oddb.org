@@ -498,7 +498,10 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		@app.__next(:substances) { 
 			[ substance ] 
 		}
-		substance.__next(:connection_key) { ['substratename'] }
+		substance.__next(:has_connection_key?) { |key|
+			assert_equal('substratename', key) 
+			true
+		}
 		substance.__next(:pointer) { pointer }
 		pointer.__next(:+) { pointer }
 		substance.__next(:cyp450substrate) { |param| 
@@ -507,7 +510,7 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		}
 		pointer.__next(:creator) { 'creator' }
 		substrate.__next(:name) { 'substratename' }
-		substance.__next(:connection_key) { ['found'] }
+		substance.__next(:connection_keys) { ['found'] }
 		@app.__next(:update) {}
 		@plugin.update_oddb_substrates('cyt_id', cytochrome)
 		cytochrome.__verify

@@ -3,9 +3,9 @@
 
 require 'cgi'
 require 'net/http'
-require 'util/dir'
 require 'delegate'
 require 'iconv'
+require 'fileutils'
 
 module ODDB
 	module HttpFile
@@ -14,7 +14,7 @@ module ODDB
 			resp = session.get(source)
 			if resp.is_a? Net::HTTPOK
 				dir = File.dirname(target)
-				Dir.mkdir_r(dir) unless FileTest.exist?(dir)
+				FileUtils.mkdir_p(dir)
 				File.open(target, 'w') { |file|
 					file << resp.body
 				}

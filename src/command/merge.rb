@@ -7,11 +7,16 @@ module ODDB
 			@source_pointer, @target_pointer = source_pointer, target_pointer
 		end
 		def execute(app)
+			#puts "resolving source"
 			source = @source_pointer.resolve(app)
+			#puts "source: #{source}"
+			#puts "resolving target"
 			target = @target_pointer.resolve(app)
-			target.merge(source)
-			app.update_item(target, {})
-			app.delete(@source_pointer)
+			#puts "target: #{target}"
+			ODBA.batch { 
+				target.merge(source)
+				app.delete(@source_pointer)
+			}
 			nil
 		end
 	end

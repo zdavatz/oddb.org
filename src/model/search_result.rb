@@ -43,8 +43,8 @@ module ODDB
 			end
 			@packages
 		end
-		def package_count
-			@atc.package_count
+		def package_count(generic_type=nil)
+			@atc.package_count(generic_type)
 		end
 	end
 	class SearchResult
@@ -65,12 +65,20 @@ module ODDB
 			@relevance.store(odba_id, relevance)
 		end
 		def atc_sorted
-			@atc_facades = atc_facades.sort_by { |atc_class|
-			[
-					@relevance[atc_class.odba_id].to_f, 
+			@atc_facades = if(@relevance.empty?)
+				atc_facades.sort_by { |atc_class|
 					atc_class.package_count.to_i
-				]
-			}.reverse
+				}
+			else
+				@atc_facades = atc_facades.sort_by { |atc_class|
+					[
+						@relevance[atc_class.odba_id].to_f, 
+						atc_class.package_count(:complementary).to_i,
+						atc_class.package_count.to_i,
+					]
+				}
+			end
+			@atc_facades.reverse!
 			delete_empty_packages(@atc_facades)
 		end
 =begin

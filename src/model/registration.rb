@@ -39,6 +39,7 @@ module ODDB
 				seq.checkout 
 				seq.odba_delete
 			}
+			@sequences.odba_delete
 		end
 		def company_name
 			@company.name if @company

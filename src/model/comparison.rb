@@ -15,12 +15,14 @@ module ODDB
 				super(package)
 			end
 			def price_difference
-				oprice = @original.price_public
-				pprice = @package.price_public
+				oprice = @original.price_public.to_f
+				pprice = @package.price_public.to_f
+				osize = @original.comparable_size.qty.to_f 
+				psize = @package.comparable_size.qty.to_f
 				unless ( (@original == @package) \
-					|| (oprice.to_i <= 0) || (pprice.to_i <= 0) )
-					( (@original.comparable_size.qty.to_f * pprice.to_f) / 
-						(@package.comparable_size.qty.to_f * oprice.to_f) ) - 1.0
+					|| (oprice <= 0) || (pprice <= 0) \
+					|| (osize <= 0) || (psize <= 0))
+					( (osize * pprice) / (psize * oprice) ) - 1.0
 				end
 			end
 			def <=>(other)

@@ -147,7 +147,7 @@ class TestSubstance < Test::Unit::TestCase
 		other.__next(:descriptions) {
 			{ 'key'	=> 'value' }
 		}
-		other.__next(:connection_key) { 'connection_key' }
+		other.__next(:connection_keys) { ['connectionkey'] }
 		@substance.merge(other)
 		sequence.__verify
 		aagent.__verify
@@ -182,7 +182,7 @@ class TestSubstance < Test::Unit::TestCase
 	end
 	def test_same_as
 		substance = ODDB::Substance.new
-		substance.connection_key = 'acidum mefenanicum'
+		substance.connection_keys = 'acidummefenanicum'
 		substance.descriptions.store('lt', "Acidum Acetylsalicylicum")
 		assert_equal(true, substance.same_as?('ACIDUM ACETYLSALICYLICUM'))
 		assert_equal(false, substance.same_as?('Acetylsalicylsäure'))
@@ -195,5 +195,11 @@ class TestSubstance < Test::Unit::TestCase
 			'A235 A234',
 		]
 		assert_equal(expected, @substance.soundex_keys)
+	end
+	def test_format_connection_key
+		fmt = @substance.format_connection_key('(+)-alfa-Tocopheroli Acetas')
+		assert_equal('alfatocopheroliacetas', fmt)
+		fmt = @substance.format_connection_key('1-(4-Tolyl)-Ethylis Nicotinas')
+		assert_equal('14tolylethylisnicotinas', fmt)
 	end
 end

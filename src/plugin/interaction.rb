@@ -138,6 +138,9 @@ module ODDB
 					name
 				end
 			end
+			def format_connection_key(key)
+				key.to_s.downcase.gsub(/[^a-z0-9]/, '')
+			end
 			def merge_data(hayes, flockhart, gysling)
 				#puts 'merging ...'
 				hayes.each { |hayes_cyt_id, hayes_cyt|
@@ -339,8 +342,8 @@ module ODDB
 				}
 			end
 			def update_oddb_existing_substance(substance, connection)
-				connection_key = connection.name.gsub(/[^a-zA-Z]/, '').downcase
-				unless(@updated_substances.keys.include?(connection_key))
+				connection_key = format_connection_key(connection.name)
+				unless(@updated_substances.include?(connection_key))
 					values = {
 						:connections		=> substance.substrate_connections.dup,
 						:pointer				=> substance.pointer,
@@ -351,7 +354,7 @@ module ODDB
 			end
 			def update_oddb_create_substance(connection)
 				pointer = Persistence::Pointer.new(:substance)
-				connection_key = connection.name.gsub(/[^a-zA-Z]/, '').downcase
+				connection_key = format_connection_key(connection.name)
 				descr = {
 					connection.lang	=>	connection.name,
 					:connection_key	=>	connection_key,
@@ -370,8 +373,9 @@ module ODDB
 			def update_oddb_substances(cyt)
 				#puts "updating oddb substances..."
 				(cyt.substrates + cyt.inhibitors + cyt.inducers).each { |connection|
-					connection_key = connection.name.gsub(/[^a-zA-Z]/, '').downcase
+					connection_key = format_connection_key(connection.name)
 					if(subs = @app.substance_by_connection_key(connection_key))
+						puts "updating #{subs} with #{connection_key}"
 						update_oddb_existing_substance(subs, connection)
 					else
 						update_oddb_create_substance(connection)	
@@ -386,10 +390,10 @@ module ODDB
 						:category	=>	substrate.category,
 						:cyp450		=>	cyt_id,
 					}
-					connection_key = substrate.name.gsub(/[^a-zA-Z]/, '').downcase
+					connection_key = format_connection_key(substrate.name)
 					catch :found do
 						@app.substances.each { |substance|
-							if(substance.connection_key.include?(connection_key))
+							if(substance.has_connection_key?(connection_key))
 								pointer = substance.pointer + [:cyp450substrate, cyt_id]
 								if(substance.cyp450substrate(cyt_id))
 									@app.update(pointer, args)
@@ -398,7 +402,7 @@ module ODDB
 									info = "#{substrate.name} => #{cyt_id}"
 									update_report(:substrates_created, info)
 								end
-								substance.connection_key.each { |conn_key|
+								substance.connection_keys.each { |conn_key|
 									unless(@updated_substances[conn_key].nil?)
 										@updated_substances[conn_key][:connections].delete(cyt_id)
 									end

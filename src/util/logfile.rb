@@ -2,8 +2,8 @@
 # LogFile -- ODDB -- 21.10.2003 -- hwyss@ywesee.com
 
 require 'util/oddbconfig'
-require 'util/dir'
 require 'date'
+require 'fileutils'
 
 module ODDB
 	module LogFile
@@ -11,9 +11,7 @@ module ODDB
 		def append(key, line, time=Time.now)
 			file = filename(key, time)
 			dir = File.dirname(file)
-			unless(File.exist?(dir))
-				Dir.mkdir_r(dir)
-			end
+			FileUtils.mkdir_p(dir)
 			timestr = time.strftime('%Y-%m-%d %H:%M:%S %Z')
 			File.open(file, 'a') { |fh| fh << [timestr, line, "\n"].join }
 		end

@@ -41,11 +41,14 @@ module ODDB
 		def active_packages
 			@sequences.inject([]) { |inj, seq| inj.concat(seq.active_packages) }
 		end
-		def package_count
-			@sequences.inject(0) { |inj, seq| inj += seq.active_package_count }
+		def package_count(generic_type=nil)
+			@sequences.inject(0) { |inj, seq|
+				inj += seq.active_package_count(generic_type)
+			}
 		end
 		def checkout
 			@sequences.each { |seq| seq.atc_class = nil } 
+			@sequences.odba_delete
 		end
 =begin
 		def company_filter(companies)

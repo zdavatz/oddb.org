@@ -4,6 +4,7 @@
 require 'plugin/plugin'
 require 'models'
 require 'yaml'
+require 'fileutils'
 
 module ODDB 
 	module OddbYaml
@@ -360,6 +361,7 @@ module ODDB
 			export_obj(name, @app.companies)
 		end
 		def export_array(name, array)
+			FileUtils.mkdir_p(EXPORT_DIR)
 			Dir.chdir(EXPORT_DIR)
 			File.open(name, 'w') { |fh|
 				array.each { |item|
@@ -385,6 +387,7 @@ module ODDB
 			export_array(name, @app.fachinfos.values)
 		end
 		def export_obj(name, obj)
+			FileUtils.mkdir_p(EXPORT_DIR)
 			Dir.chdir(EXPORT_DIR)
 			File.open(name, 'w') { |fh|
 				fh << obj.to_yaml
@@ -395,6 +398,7 @@ module ODDB
 			export_array(name, @app.patinfos.values)
 		end
 		def compress(name)
+			FileUtils.mkdir_p(EXPORT_DIR)
 			Dir.chdir(EXPORT_DIR)
 			begin
 				gzwriter = 	Zlib::GzipWriter.open(name+'.gz')

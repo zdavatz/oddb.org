@@ -56,7 +56,7 @@ class ActiveAgent < State::Drugs::Global
 			item.carry(:sequence, sequence)
 			item.carry(:dose, " ")
 			item.carry(:substance, " ")
-			ODDB::ActiveAgent.new(@session, item)
+			State::Drugs::ActiveAgent.new(@session, item)
 		else
 			error = create_error(:e_no_seq_to_activeagent, :substance, @model.substance)
 			@errors.store(:substance, error)

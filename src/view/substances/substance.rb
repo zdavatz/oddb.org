@@ -19,7 +19,7 @@ module SubstrateList
 		[0,0,1]	=>	'list',
 	}	
 	DEFAULT_CLASS = HtmlGrid::Value
-	DEFUALT_HEAD_CLASS = 'subheading'
+	DEFAULT_HEAD_CLASS = 'subheading'
 	SORT_HEADER = false
 	def substrates(model, session)
 		txt = HtmlGrid::Text.new(:substrates, model, session, self)
@@ -37,7 +37,7 @@ module SequencesList
 		[0,0,1]	=>	'list',
 	}	
 	DEFAULT_CLASS = HtmlGrid::Value
-	DEFUALT_HEAD_CLASS = 'subheading'
+	DEFAULT_HEAD_CLASS = 'subheading'
 	SORT_HEADER = false
 	SORT_DEFAULT = :name_base
 end
@@ -68,13 +68,39 @@ class DescriptionForm < View::DescriptionForm
 		lang << 'en' << 'lt'
 	end
 end
+class ConnectionKeys < HtmlGrid::List
+	COMPONENTS = {
+		[0,0]	=>	:connection_key,
+		[1,0]	=>	:delete,
+	}
+	CSS_MAP = {
+		[0,0]	=>	'list',
+	}	
+	CSS_CLASS = 'composite'
+	LEGACY_INTERFACE = false
+	DEFAULT_HEAD_CLASS = 'subheading'
+	SORT_HEADER = false
+	def connection_key(model)
+		model.to_s
+	end
+	def delete(model)
+		link = HtmlGrid::Link.new(:delete, model, @session, self)
+		args = {
+			:connection_key	=>	model,
+		}
+		link.href = @lookandfeel.event_url(:delete_connection_key, args)
+		link.css_class = 'small'
+		link
+	end
+end
 class Composite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	:substance_name,
 		[0,1]	=>	View::Substances::DescriptionForm,
 		[1,1]	=>	View::Substances::MergeSubstancesForm,
-		[0,4]	=>	:substrate_connections,
-		[0,5]	=>	:sequences,
+		[0,4]	=>	:connection_keys,
+		[0,5]	=>	:substrate_connections,
+		[0,6]	=>	:sequences,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
@@ -85,8 +111,15 @@ class Composite < HtmlGrid::Composite
 		[0,0]	=>	2,
 		[0,4]	=>	2,
 		[0,5]	=>	2,
+		[0,6]	=>	2,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
+	def connection_keys(model, session)
+		conn_keys = model.connection_keys
+		unless(conn_keys.empty?)
+			View::Substances::ConnectionKeys.new(conn_keys, session, self)
+		end
+	end
 	def substance_name(model, session)
 		model.name
 	end

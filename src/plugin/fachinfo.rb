@@ -3,9 +3,9 @@
 
 require 'plugin/plugin'
 require 'util/oddbconfig'
-require 'util/dir'
 require 'drb/drb'
 require 'util/persistence'
+require 'fileutils'
 
 module ODDB
 	class FachinfoPlugin < Plugin
@@ -52,9 +52,7 @@ module ODDB
 		def log_news(lines)
 			new_news = (lines + (old_news - lines))
 			dir = File.dirname(LOG_PATH)
-			if(!File.exist?(dir))
-				Dir.mkdir_r(dir)
-			end
+			FileUtils.mkdir_p(LOG_PATH)
 			File.open(LOG_PATH, 'w') { |fh|
 				fh.puts(new_news)
 			}

@@ -2,6 +2,7 @@
 # State::Substances::Subtance -- oddb -- 25.05.2004 -- maege@ywesee.com
 
 require 'state/substances/global'
+require 'state/substances/selectsubstance'
 require 'view/substances/substance'
 
 module ODDB
@@ -12,28 +13,42 @@ class Substance < State::Substances::Global
 	def delete
 		if(@model.empty?)
 			@session.app.delete(@model.pointer)
-			substances() # from RootState
+			#substances() # from RootState
+			new_state = result()
+			new_state.model.delete(@model)
+			new_state
 		else
 			@errors.store(:substance, create_error('e_substance_not_empty', :substance, @model))
 			self
 		end
 	end
+	def delete_connection_key
+		if(key = @session.user_input(:connection_key))
+			keys = @model.connection_keys
+			keys.delete(key)
+			@session.app.update(@model.pointer, keys)
+		end
+		self
+	end
 	def merge
 		substance = @session.user_input(:substance_form)
-		target = @session.app.substance(substance)
-		if(target.nil? || substance.empty?)
-			@errors.store(:substance, create_error('e_unknown_substance', :substance, substance))
-			self
-		elsif(target == @model)
-			@errors.store(:substance, create_error('e_selfmerge_substance', :substance, substance))
-			self
-			#		elsif(target.has_connection_key? && target.connection_key != @model.connection_key)
-			#@errors.store(:substance, create_error('e_different_connection_key', :substance, substance))
-			#self
+		new_state = self
+		if(substance.size < 3)
+			@errors.store(:substance_form, create_error('e_search_query_short',
+				:substance_form, substance))
 		else
-			@session.app.merge_substances(@model.pointer, target.pointer)
-			State::Substances::Substance.new(@session, target)
+			substances = @session.app.soundex_substances(substance)
+			substances.delete(@model)
+			if(substances.empty?)
+				@errors.store(:substance, create_error('e_unknown_substance', 
+					:substance, substance))
+			else
+				new_model = SelectSubstance::SubstanceSelection.new(@model, 
+					substances)
+				new_state = SelectSubstance.new(@session, new_model)
+			end
 		end
+		new_state
 	end
 def update
 		languages = @session.lookandfeel.languages.dup

@@ -176,10 +176,6 @@ class TestOddbApp < Test::Unit::TestCase
 	def setup
 		ODDB::GalenicGroup.reset_oids
 		dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
-		Dir.foreach(dir) { |filename|
-			file = File.expand_path(filename, dir)
-			File.delete(file) unless filename[0] == ?.
-		}
 		@app = ODDB::App.new
 	end
 	def test_galenic_group_initialized
@@ -342,8 +338,8 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.substances = {}
 		pointer = ODDB::Persistence::Pointer.new(:substance)
 		descr = {
-			'en'						=>	'first_name',
-			:connection_key	=>	'connection_key',
+			'en'							=>	'first_name',
+			:connection_keys	=>	['connection_key'],
 		}
 		subs = @app.update(pointer.creator, descr)
 		values = {
@@ -352,7 +348,7 @@ class TestOddbApp < Test::Unit::TestCase
 		}
 		@app.update(subs.pointer, values)
 		assert_equal('en_name', subs.en)
-		assert_equal(['connection_key'], subs.connection_key)
+		assert_equal(['connectionkey'], subs.connection_keys)
 		assert_equal('de_name', subs.de)
 		assert_equal({subs.oid, subs}, @app.substances)
 	end
@@ -655,10 +651,16 @@ class TestOddbApp < Test::Unit::TestCase
 	def test_substance_by_connection_key
 		substance = Mock.new('substance')
 		@app.substances = { 'connection key' =>	substance }
-		substance.__next(:connection_key) { 'valid key' }
+		substance.__next(:has_connection_key?) { |key|
+			assert_equal('valid key', key)
+			true
+		}
 		result = @app.substance_by_connection_key('valid key')
 		assert_equal(substance, result)
-		substance.__next(:connection_key) { 'valid key' }
+		substance.__next(:has_connection_key?) { |key|
+			assert_equal('invalid key', key)
+			false
+		}
 		result = @app.substance_by_connection_key('invalid key')
 		assert_equal(nil, result)
 		substance.__verify

@@ -112,7 +112,7 @@ class AssignDeprivedSequence < State::Drugs::Global
 	def preview 
 		if(lang = @session.user_input(:language_select))
 			doc = @model.languages[lang]
-			ODDB::PatinfoPreview.new(@session, doc)
+			State::Drugs::PatinfoPreview.new(@session, doc)
 		else
 			self
 		end

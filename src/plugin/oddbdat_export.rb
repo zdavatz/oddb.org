@@ -119,7 +119,9 @@ module ODDB
 				@app = app
 			end
 			def export
-				File.open(system_filepath, "w") { |file|
+				path = system_filepath()
+				FileUtils.mkdir_p(File.dirname(path))
+				File.open(path, "w") { |file|
 					make_table(file)
 				}
 			end
