@@ -109,7 +109,7 @@ class OddbPrevalence
 			store_in_index(@sequence_index, item.name, item)
 		when ODDB::Substance
 			keys = item.descriptions.values
-			keys.push(item.connection_key) unless keys.include?(item.connection_key)
+			keys.concat(item.connection_key).uniq!
 			keys.push(item.name) unless keys.include?(item.name)
 			keys.each { |key|
 				delete_from_index(@substance_index, key, item)
@@ -117,7 +117,7 @@ class OddbPrevalence
 			}
 			pointer.issue_update(self, values)
 			keys = item.descriptions.values
-			keys.push(item.connection_key) unless keys.include?(item.connection_key)
+			keys.concat(item.connection_key).uniq!
 			keys.push(item.name) unless keys.include?(item.name)
 			keys.each { |key|
 				store_in_index(@substance_index, key, item)
@@ -178,7 +178,7 @@ class OddbPrevalence
 			}
 		when ODDB::Substance	
 			keys = item.descriptions.values
-			keys.push(item.connection_key)
+			keys.concat(item.connection_key)
 			if(keys.empty?)
 				keys = [ item.name ]
 			end
@@ -534,7 +534,7 @@ class OddbPrevalence
 	def substance_by_connection_key(connection_key)
 		key = connection_key.to_s.downcase
 		@substances.values.select { |substance|
-			substance.connection_key == key
+			substance.connection_key.include?(key)
 		}.first
 	end
 	def substances
@@ -603,7 +603,7 @@ class OddbPrevalence
 		@substance_name_index = Datastructure::CharTree.new
 		@substances.each_value { |subst|
 			keys = subst.descriptions.values
-			keys.push(subst.connection_key) unless keys.include?(subst.connection_key)
+			keys.concat(subst.connection_key).uniq!
 			keys.push(subst.name) unless keys.include?(subst.name)
 			keys.each { |key|
 				store_in_index(@substance_index, key, subst)

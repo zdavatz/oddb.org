@@ -53,7 +53,7 @@ module ODDB
 				when 'induces'
 					new_class = ODDB::Interaction::InducerConnection
 				end
-				new_class.new(name)
+				new_class.new(name, 'en')
 			end
 			def extract_data
 				parse_substances

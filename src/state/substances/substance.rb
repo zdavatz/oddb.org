@@ -27,9 +27,9 @@ class Substance < State::Substances::Global
 		elsif(target == @model)
 			@errors.store(:substance, create_error('e_selfmerge_substance', :substance, substance))
 			self
-		elsif(target.has_connection_key? && target.connection_key != @model.connection_key)
-			@errors.store(:substance, create_error('e_different_connection_key', :substance, substance))
-			self
+			#		elsif(target.has_connection_key? && target.connection_key != @model.connection_key)
+			#@errors.store(:substance, create_error('e_different_connection_key', :substance, substance))
+			#self
 		else
 			@session.app.merge_substances(@model.pointer, target.pointer)
 			State::Substances::Substance.new(@session, target)
