@@ -64,7 +64,7 @@ class Registration < State::Admin::Global
 		if(@model.is_a?(Persistence::CreateItem) && error?)
 			return self
 		end
-		ind = user_input(:indication)
+		ind = @session.user_input(:indication)
 		sel = nil
 		if(indication = @session.app.indication_by_text(ind))
 			hash.store(:indication, indication.pointer)

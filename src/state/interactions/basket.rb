@@ -36,9 +36,6 @@ class Basket < State::Interactions::Global
 		calculate_interactions
 	end
 	def delete
-		#pointers = user_input(:pointers)
-		#@model = [] 
-		#calculate_interactions
 		init
 	end
 	def calculate_interactions
