@@ -59,6 +59,12 @@ class TestDose < Test::Unit::TestCase
 		assert_equal('mg/g', dose.unit.to_s)
 		assert_equal('62.5mg / 10g', dose.to_s)
 	end
+	def test_initialize7
+		dose = ODDB::Dose.new('0.025', '%')
+		assert_equal(0.025, dose.qty)
+		assert_equal('%', dose.unit.to_s)
+		assert_equal('0.025 %', dose.to_s)
+	end
 	def test_comparable1
 		dose1 = ODDB::Dose.new(10, 'mg')
 		dose2 = ODDB::Dose.new(10, 'mg')
