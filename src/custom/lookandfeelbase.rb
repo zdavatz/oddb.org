@@ -521,7 +521,7 @@ zdavatz ! ywesee.com
 				:pi_quantity1							=>	'<br>(CHF&nbsp;',
 				:pi_quantity2							=>	'.- / Fachinfo und Jahr)',
 				:pi_status								=>	'Patienteninfo anzeigen',
-				:please_wait							=>  'Bitte haben Sie etwas geduld, das PDF Dokument wird bearbeitet. Dieser Vorgang kann mehrere Minuten dauern',
+				:please_wait							=>  'Bitte haben Sie etwas Geduld, das PDF Dokument wird bearbeitet. Dieser Vorgang kann mehrere Minuten dauern',
 				:plugin										=>	'Plugin',
 				:plugin_generika					=>	'ODDB.org - Plugin',
 				:plugin_description				=>	'Direktsuche auf ODDB.org &uuml;ber den Browser',
