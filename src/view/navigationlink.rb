@@ -14,5 +14,14 @@ module ODDB
 				end
 			end
 		end
+		class LanguageNavigationLink < HtmlGrid::Link
+			CSS_CLASS = "list"
+			def init
+				super
+				unless (@lookandfeel.language == @name.to_s)
+					@attributes.store("href", @lookandfeel.language_url(@name))
+				end
+			end
+		end
 	end
 end

@@ -11,6 +11,7 @@ require 'view/resultfoot'
 require 'view/navigation'
 require 'view/legalnote'
 require 'view/tab_navigation'
+require	'view/language_chooser'
 
 module ODDB
 	module View
@@ -211,25 +212,18 @@ module ODDB
 				link.set_attribute('class', 'list')
 				link
 			end
-			def language_de(model, session)
-				link = HtmlGrid::Link.new(:de, model, session, self)
-				link.href = @lookandfeel.language_url(:de)
-				link.value = @lookandfeel.lookup(:de)
-				link.attributes['class'] =	'list'
-				link
+			def language_chooser(model, session)
+				LanguageChooser.new(@lookandfeel.languages, session, self)
 			end
-			def language_en(model, session)
-				link = HtmlGrid::Link.new(:en, model, session, self)
-				link.href = @lookandfeel.language_url(:en)
-				link.value = @lookandfeel.lookup(:en)
-				link.attributes['class'] =	'list'
-				link
-			end
-			def language_fr(model, session)
-				link = HtmlGrid::Link.new(:fr, model, session, self)
-				link.href = @lookandfeel.language_url(:fr)
-				link.value = @lookandfeel.lookup(:fr)
-				link.attributes['class'] =	'list'
+			def legal_note(model, session)
+				link = HtmlGrid::Link.new(:legal_note, model, @session, self)
+				if(@lookandfeel.language == 'de')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.RechtlicherHinweis"
+				elsif(@lookandfeel.language == 'fr')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.NoticeLegale"
+				elsif(@lookandfeel.language == 'en')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.LegalDisclaimer"
+				end
 				link
 			end
 			def limitation_size(mode, session)

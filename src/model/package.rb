@@ -251,6 +251,7 @@ Grammar OddbSize
 		end
 		def create_feedback
 			feedback = Feedback.new
+			feedback.oid = self.feedbacks.keys.max.to_i.next
 			self.feedbacks.store(feedback.oid, feedback) 
 		end
 	end

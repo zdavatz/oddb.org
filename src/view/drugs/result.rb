@@ -53,16 +53,10 @@ class ResultForm < View::Form
 	}
 	def init
 		case @session.user
-		when ODDB::AdminUser
-			components.store([1,0], :new_registration)
-			components.store([0,2], self::class::ROOT_LISTCLASS)
-		when ODDB::CompanyUser
+		when ODDB::AdminUser, ODDB::CompanyUser
 			components.store([0,2], self::class::ROOT_LISTCLASS)
 		end
 		super
-	end
-	def new_registration(model, session)
-		get_event_button(:new_registration)
 	end
 	def title_found(model, session)
 		query = session.persistent_user_input(:search_query)

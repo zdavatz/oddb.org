@@ -12,12 +12,14 @@ module ODDB
 	class Log
 		MAIL_FROM = 'update@oddb.org'
 		MAIL_TO = [
-		#'hwyss@ywesee.com',
-		#	'zdavatz@ywesee.com', 
-		#	'mwalder@ywesee.com', 
+			'hwyss@ywesee.com',
+			'zdavatz@ywesee.com', 
+			'mwalder@ywesee.com', 
 			'rwaltert@ywesee.com'
 		]
 		include Persistence
+		ODBA_SERIALIZABLE = ['@change_flags', '@pointers', '@recipients',
+			'@files']
 		attr_accessor :report, :pointers, :recipients, :change_flags, :files
 		attr_accessor :date_str
 		attr_reader :date

@@ -610,8 +610,23 @@ a.feedback, a.feedback:link, a.feedback:visited, a.square {
 	text-decoration : none;
 	padding : 2px 2px 2px 3px;
 }
-td.square {
+a.google_search, a.google_search:link, a.google_search:visited, a.square {
+	color: white;
+	background-color : #184fca;
+	font-weight : bold;
+	text-align : center;
+	text-decoration : none;
+	padding : 2px 5px 2px 5px;
+}
+td.square, td.square-original, td.square-generic,
+td.square-complementary, td.square-unknown {
 	padding : 2px;
+}
+td.square-bg, td.square-original-bg, 
+td.square-generic-bg, td.square-complementary-bg, 
+td.square-unknown-bg {
+	padding : 2px;
+	background : $rslt_bg;
 }
 td.bg a.feedback {
 	background : #ffbc22;
@@ -690,6 +705,10 @@ td.important-infos-unknown,
 td.important-infos-complementary
 {
 	padding : 0px;
+}
+
+td.bg a.important-infos {
+	background : $rslt_infos_bg_dark;
 }
 
 a.important-infos-bg, a.important-infos-bg:link, a.important-infos-bg:visited, 
@@ -935,16 +954,25 @@ td.error {
 
 /* standard-list-classes */
 a.list {
-	color : $home_link_color;
+	color: $home_link_hover_color;
 	text-decoration : none;
+}
+a.list:link, a.list:visited {
+	color : $home_link_color;
 }
 a.list:hover {
 	color : $home_link_hover_color;
 	text-decoration : none;
 }
+a.list:active {
+	color : black;
+}
 a.list-b {
-	color : $home_link_color;
+	color: $home_link_hover_color;
 	font-weight : bold;
+}
+a.list-b:link, a.list-b:visited {
+	color : $home_link_color;
 	text-decoration : none;
 }
 a.list-b:hover {
@@ -1132,6 +1160,12 @@ a.pager:hover {
 a.pager:active {
 	color: gold;
 }
+a.fbpager {
+	color: white;
+}
+a.fbpager:hover {
+	color: blue;
+}
 td.pager-head {
 	padding-right : 12px;
 }
@@ -1236,6 +1270,12 @@ td.explain-result {
 	min-width : 500pt;
 	padding-top : 3px;
 	padding-bottom : 3px;
+}
+td.explain-result-r {
+	background : $bg_bright;
+	vertical-align : bottom;
+	padding: 3px;
+	text-align: right;
 }
 table.legal-note {
 	width : 100%;
@@ -1413,6 +1453,31 @@ td.top {
 }
 td.address-width {
 	width: 180px;
+}
+td.border-left {
+	float: right;
+	border-left: 1.5px solid $bg_dark;
+	width: 400px;
+}
+td.radio {
+	vertical-align: top;
+	width: 5px;
+	height: 12px;
+	max-width: 5px;
+}
+div.square {
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	vertical-align: middle;
+	font-size : 16px;
+}
+div.plus {
+	background-color: #cf9;
+
+}
+div.minus {
+	background-color: #ffbc6f;
 }
 table.wait {
 	cell-spacing: 20px;

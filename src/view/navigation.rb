@@ -27,6 +27,9 @@ module ODDB
 			def build_navigation
 				@lookandfeel.send(self::class::NAV_METHOD).each_with_index { |state, idx| 
 					pos = [idx*2,0]
+					if(state.is_a?(String))
+						state = state.intern
+					end
 					evt = if(state.is_a?(Symbol))
 						if(self.respond_to?(state))
 							css_map.store(pos, self::class::NAV_LINK_CSS)

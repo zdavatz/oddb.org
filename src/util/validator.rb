@@ -74,7 +74,7 @@ module ODDB
 			:chapter, :company_form, :company_name, :comparable_size,
 			:connection_key, :contact, :contact_email, :de, :descr,
 			:destination, :effective_form, :en, :fax, :fi_update, :fr,
-			:galenic_form, :indication, :language_select, :language_select,
+			:galenic_form, :indication, :language_select, 
 			:location, :location, :lt, :name, :name_base, :name_descr,
 			:pattern, :phone, :pi_update, :plz, :powerlink, :range,
 			:register_update, :size, :sortvalue, :subscribe, :substance,

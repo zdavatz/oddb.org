@@ -76,21 +76,22 @@ class ResultList < HtmlGrid::List
 	include View::AdditionalInformation
 	COMPONENTS = {
 		[0,0]	=>  :feedback,
-		[1,0,0]	=>	'result_item_start',
-		[1,0,1]	=>	:name_base,
-		[1,0,2]	=>	'result_item_end',
-		[2,0]		=>	:galenic_form,
-		[3,0]		=>	:most_precise_dose,
-		[4,0]		=>	:comparable_size,
-		[5,0]		=>	:price_exfactory,
-		[6,0]		=>	:price_public,
-		[7,0]		=>	:substances,
-		[8,0]		=>	:company_name,
-		[9,0]		=>	:ikscat,
-		[10,0]		=>	:registration_date,
-		[11,0]	=>	:fachinfo,
-		[12,0]	=>  :patinfo,
-		[13,0]	=>	:limitation_text,
+		[1,0]	=>	:google_search,
+		[2,0,0]	=>	'result_item_start',
+		[2,0,1]	=>	:name_base,
+		[2,0,2]	=>	'result_item_end',
+		[3,0]		=>	:galenic_form,
+		[4,0]		=>	:most_precise_dose,
+		[5,0]		=>	:comparable_size,
+		[6,0]		=>	:price_exfactory,
+		[7,0]		=>	:price_public,
+		[8,0]		=>	:substances,
+		[9,0]		=>	:company_name,
+		[10,0]		=>	:ikscat,
+		[11,0]	=>	:registration_date,
+		[12,0]	=>	:fachinfo,
+		[13,0]	=>  :patinfo,
+		[14,0]	=>	:limitation_text,
 	}	
 	REVERSE_MAP = {
 		:company_name			=> false,
@@ -106,35 +107,37 @@ class ResultList < HtmlGrid::List
 	}
 	CSS_MAP = {
 		[0,0]	=>	'result-b-r',
-		[1,0]	=>	'result-big',
-		[2,0]	=>	'result',
-		[3,0]	=>	'result-r',
+		[1,0]	=>	'result-b-r',
+		[2,0]	=>	'result-big',
+		[3,0]	=>	'result',
 		[4,0]	=>	'result-r',
 		[5,0]	=>	'result-r',
-		[6,0]	=>	'result-pubprice',
-		[7,0]	=>	'result-i',
+		[6,0]	=>	'result-r',
+		[7,0]	=>	'result-pubprice',
 		[8,0]	=>	'result-i',
 		[9,0]	=>	'result-i',
 		[10,0]	=>	'result-i',
-		[11,0]	=>	'result-b-r',
-		[12,0] =>  'result-b-r',
-		[13,0]	=>	'result-b-r',
+		[11,0]	=>	'result-i',
+		[12,0]	=>	'result-b-r',
+		[13,0] =>  'result-b-r',
+		[14,0]	=>	'result-b-r',
 	}
 	CSS_HEAD_MAP = {
 		[0,0] =>	'th',
-		[1,0,1] =>	'th',
+		[1,0] =>	'th',
 		[2,0] =>	'th',
-		[3,0]	=>	'th-r',
+		[3,0] =>	'th',
 		[4,0]	=>	'th-r',
 		[5,0]	=>	'th-r',
-		[6,0]	=>	'th-pad-r',
-		[7,0] =>	'th',
+		[6,0]	=>	'th-r',
+		[7,0]	=>	'th-pad-r',
 		[8,0] =>	'th',
-		[9,0]	=>	'th',
+		[9,0] =>	'th',
 		[10,0]	=>	'th',
-		[11,0]=>	'th-r',
+		[11,0]	=>	'th',
 		[12,0]=>	'th-r',
 		[13,0]=>	'th-r',
+		[14,0]=>	'th-r',
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -154,18 +157,20 @@ class ResultList < HtmlGrid::List
 		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 	end
 	def company_name(model, session)
-		comp = model.company
-		return if comp.nil?
-		if(@lookandfeel.enabled?(:powerlink, false) && comp.powerlink)
-			link = HtmlGrid::HttpLink.new(:name, model.company, session, self)
-			link.href = @lookandfeel.event_url(:powerlink, {'pointer'=>comp.pointer})
-			link.set_attribute("class", "powerlink")
+		if(comp = model.company)
+			link = nil
+			if(@lookandfeel.enabled?(:powerlink, false) && comp.powerlink)
+				link = HtmlGrid::HttpLink.new(:name, comp, session, self)
+				link.href = @lookandfeel.event_url(:powerlink, {'pointer'=>comp.pointer})
+				link.set_attribute("class", "powerlink")
+			elsif(@lookandfeel.enabled?(:companylist) \
+				&& comp.listed?)
+				link = View::PointerLink.new(:name, comp, session, self)
+			else
+				link = HtmlGrid::Value.new(:name, comp, session, self)
+			end
+			link.value = breakline(comp.name, 12)
 			link
-		elsif(@lookandfeel.enabled?(:companylist) \
-			&& model.company.listed?)
-			View::PointerLink.new(:name, model.company, session, self)
-		else
-			HtmlGrid::Value.new(:name, model.company, session, self)
 		end
 	end
 	def comparable_size(model, session)
@@ -182,7 +187,15 @@ class ResultList < HtmlGrid::List
 	end
 	def fachinfo(model, session)
 		super(model, session, 'important-infos')
+	end	
+	def google_search(model, session)
+		glink = CGI.escape(model.name_base.to_s)
+		link = HtmlGrid::Link.new(:google_search, @model, @session, self)	
+		link.href =  "http://www.google.com/search?q=#{glink}"
+		link.css_class= 'google_search square'
+		link
 	end
+
 	def ikscat(model, session)
 		txt = HtmlGrid::Component.new(model, session, self)
 		txt.value = [
@@ -196,10 +209,23 @@ class ResultList < HtmlGrid::List
 		txt.set_attribute('title', title)
 		txt
 	end
+	def breakline(txt, length)
+		name = ''
+		line = ''
+		txt.split(/\b/).each { |part|
+			if((line.length + part.length) > length)
+				name << line << '<br>'
+				line = part
+			else
+				line << part
+			end
+		}
+		name << line
+	end
 	def name_base(model, session)
 		link = HtmlGrid::PopupLink.new(:compare, model, session, self)
 		link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
-		link.value = model.name_base
+		link.value = breakline(model.name_base, 25)
 		link.set_attribute('class', 'result-big' << resolve_suffix(model))
 		indication = model.registration.indication
 		title = [
@@ -207,6 +233,7 @@ class ResultList < HtmlGrid::List
 			(indication.send(@session.language) unless(indication.nil?)),
 		].compact.join(', ')
 		link.set_attribute('title', title)
+		link.width =1250
 		link
 	end
 	def substances(model, session)

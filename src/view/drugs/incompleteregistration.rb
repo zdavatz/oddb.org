@@ -12,6 +12,8 @@ module ODDB
 		module Drugs
 class IncompleteRegistrationForm < View::Drugs::RegistrationForm
 	include HtmlGrid::ErrorMessage
+	DEFAULT_CLASS = HtmlGrid::InputText
+	EVENT = :update_incomplete
 	COMPONENTS = {
 		[0,0]		=>	:iksnr,
 		[2,0]		=>	:registration_date,
@@ -20,18 +22,14 @@ class IncompleteRegistrationForm < View::Drugs::RegistrationForm
 		[0,2]		=>	:generic_type,
 		[2,2]		=>	:expiration_date,
 		[0,3]		=>	:indication,
-		[2,3]		=>	:inactive_date,
-		[1,4]		=>	:submit,
-		[1,4,0]	=>	:delete_item,
+		[2,3]		=>	:market_date,
+		[2,4]		=>	:inactive_date,
 	}
-	DEFAULT_CLASS = HtmlGrid::InputText
-	EVENT = :update_incomplete
-	def init
-		if(acceptable?(@model))
-			components.store([1,5], :accept)
-		end
-		super
-		error_message()
+	def reorganize_components
+		components.update({
+			[1,5]		=>	((acceptable?(@model)) ? :accept : :submit),
+			[1,5,1]	=>	:delete_item,
+		})
 	end
 	def acceptable?(model)
 		(@session.app.registration(model.iksnr) || model.acceptable?)

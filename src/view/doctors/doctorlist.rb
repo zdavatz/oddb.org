@@ -45,7 +45,11 @@ class DoctorList < HtmlGrid::List
 	end
 	def praxis_address(model)
 		if(address = model.praxis_address)
-			address.lines.dup.push(model.email).join("<br>")
+			emails = model.email
+			if(!emails.is_a?(Array))
+				emails = [emails]
+			end
+			(address.lines + emails).join("<br>")
 		end
 	end
 	def map(doctor)	
