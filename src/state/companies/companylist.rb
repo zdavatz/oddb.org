@@ -36,7 +36,7 @@ class CompanyList < State::Companies::Global
 	def init
 		super
 		@model = @session.app.companies.values
-		if(@session.user.is_a? RootUser)
+		if(@session.user.is_a? ODDB::RootUser)
 			userrange = @session.user_input(:range) || default_interval
 			range = RANGE_PATTERNS.fetch(userrange)
 			@filter = Proc.new { |model|
