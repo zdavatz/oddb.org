@@ -29,8 +29,8 @@ module ODDB
 			:passthru		=>	[],	
 		}
 		LOG_FILES = {
-			:powerlink	=>	'Powerlink-Statistics',
-			:passthru		=>	'Banner-Clicks',
+			#:powerlink		=>	'Powerlink-Statistics',
+			#:passthru		=>	'Banner-Clicks',
 		}
 		PLUGINS = {
 			:swissmedicjournal	=>	SwissmedicJournalPlugin,
