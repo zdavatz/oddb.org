@@ -179,9 +179,20 @@ class OddbPrevalence
 		}
 	end
 	def count_packages
-		@package_count = @registrations.values.inject(0) { |inj, reg|
+		@registrations.values.inject(0) { |inj, reg|
 			inj += reg.package_count
 		}
+	end
+	def count_patinfos
+		patinfo_count = @patinfos.size 
+		@registrations.each_value { |reg| 
+			reg.sequences.each_value { |seq|
+				unless(seq.pdf_patinfo.nil?)
+					patinfo_count += 1
+				end
+			}
+		}
+		patinfo_count
 	end
 	def cyp450(id)
 		@cyp450s[id]
@@ -421,7 +432,7 @@ class OddbPrevalence
 		@patinfos[oid.to_i]
 	end
 	def patinfo_count
-		@patinfos.size
+		@patinfo_count ||= count_patinfos()
 	end
 	def patinfo_deprived_sequences(oid)
 		@patinfos_deprived_sequences[oid.to_i]
@@ -461,6 +472,7 @@ class OddbPrevalence
 			@atc_ddd_count = count_atc_ddd()
 			@limitation_text_count = count_limitation_texts()
 			@package_count = count_packages()
+			@patinfo_count = count_patinfos()
 		}
 	end
 =begin
