@@ -735,6 +735,7 @@ zdavatz ! ywesee.com
 				:th_name_base							=>	'Pr&auml;parat',
 				:th_name_descr						=>	'Beschreibung',
 				:th_note									=>	'Note',
+				:th_narcotics							=>  'Bet.M',
 				:th_oid										=>	'OID',
 				:th_patinfo_short				  =>	'&nbsp;',
 				:th_patinfo_stats					=>	'Patinfo Statistik',
