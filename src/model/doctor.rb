@@ -50,11 +50,14 @@ module ODDB
 			@origin_db == origin_db && @origin_id == origin_id
 		end
 		def search_terms
-			[
-				@name,
+			([
+				@name, @firstname,  
 				@email,
-				#@specialities,
-			] + @addresses.collect { |addr| addr.search_terms }
+				@specialities,
+			] + @addresses.collect { |addr| addr.search_terms }).flatten.compact
+		end
+		def search_text
+			search_terms.join(' ')
 		end
 		def work_addresses	
 			@addresses.select { |addr| 

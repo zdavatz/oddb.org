@@ -12,7 +12,7 @@ module ODDB
 			end
 		end
 		def search_terms
-			[self.lines_without_title, @fon, @fax, @plz, @city]
+			[self.lines_without_title, @fon, @fax, @plz, @city].flatten
 		end
 		def street
 			if(match = /[^0-9,]+/.match(@lines[-3]))
