@@ -103,17 +103,21 @@ class Sequence < State::Drugs::Global
 			@errors.store(:atc_class, create_error(:e_unknown_atc_class, :code, atc_code))
 		end
 		if(pi_file = @session.user_input(:patinfo_upload))
-			#@model.pdf_patinfo = pi_file
-			filename = "#{@model.iksnr}_#{@model.seqnr}.pdf"
-			@model.pdf_patinfo = filename
-			FileUtils.mkdir_p(self::class::PDF_DIR)
-			store_file = File.new(File.expand_path(filename, self::class::PDF_DIR), "w")
-			store_file.write(pi_file.read)
-			store_file.close
-			input.store(:pdf_patinfo, filename)
+			if(pi_file.read(4) == "%PDF")
+				pi_file.rewind
+				filename = "#{@model.iksnr}_#{@model.seqnr}.pdf"
+				@model.pdf_patinfo = filename
+				FileUtils.mkdir_p(self::class::PDF_DIR)
+				store_file = File.new(File.expand_path(filename, self::class::PDF_DIR), "w")
+				store_file.write(pi_file.read)
+				store_file.close
+				input.store(:pdf_patinfo, filename)
+			else
+				add_warning(:w_no_patinfo_saved, :patinfo_upload, nil)
+			end
+			@model = @session.app.update(@model.pointer, input)
+			self
 		end
-		@model = @session.app.update(@model.pointer, input)
-		self
 	end
 end
 class CompanySequence < State::Drugs::Sequence
