@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+
+$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path('../src', File.dirname(__FILE__))
+
+require 'odba'
+require 'util/oddbapp'
+require 'etc/db_connection'
+
+def check(name, obj, odba_id)
+	unless(ODBA.storage.restore(odba_id))
+		puts "missing: #{obj.odba_id} -> #{odba_id} from: #{obj}:#{name}"
+	end
+end
+def check_reached(name, obj, stub, reached)
+	if(stub && stub.is_a?(ODBA::Stub))
+		reached.push(stub.odba_id)
+		check(name, obj, stub.odba_id)
+	end
+end
+
+reached = []
+unreached = []
+max = ODBA.storage.max_id
+$stdout.flush
+puts <<-EOS
+#### Starting ID-Check ####
+EOS
+
+1.upto(max) { |id|
+	if(dump = ODBA.storage.restore(id))
+		unreached.push(id)
+		obj = ODBA.marshaller.load(dump)
+		obj.instance_variables.each { |name|
+			check_reached(name, obj, obj.instance_variable_get(name), reached)
+		}
+		if(obj.is_a?(Hash))
+			obj.each { |key, val|
+				check_reached('Hash:key', obj, key, reached)
+				check_reached("Hash:#{key}", obj, val, reached)
+			}
+		end
+		if(obj.is_a?(Array))
+			obj.each { |val|
+				check_reached('Array', obj, val, reached)
+			}
+		end
+	end
+	print " " * 8
+	print "\b" * 8
+	print "#{sprintf('%7.3f', id.to_f/max.to_f*100.0)}%"
+	print "\b" * 8
+	$stdout.flush
+}
+deleted = (unreached - reached)
+del_size = deleted.size
+puts "deleting #{del_size} objects"
+deleted.each_with_index { |id, idx|
+	ODBA.storage.delete_persistable(id)
+	print " " * 8
+	print "\b" * 8
+	print "#{sprintf('%7.3f', idx.to_f/del_size.to_f*100.0)}%"
+	print "\b" * 8
+}
