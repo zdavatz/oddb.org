@@ -16,6 +16,7 @@ class Global < State::Global
 	}
 	def zone_navigation
 		[
+			:help_link,
 			:faq_link,
 		]
 	end

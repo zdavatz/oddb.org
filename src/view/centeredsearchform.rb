@@ -232,6 +232,17 @@ module ODDB
 				link.attributes['class'] =	'list'
 				link
 			end
+			def legal_note(model, session)
+				link = HtmlGrid::Link.new(:legal_note, model, @session, self)
+				if(@lookandfeel.language == 'de')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.RechtlicherHinweis"
+				elsif(@lookandfeel.language == 'fr')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.NoticeLegale"
+				elsif(@lookandfeel.language == 'en')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.LegalDisclaimer"
+				end
+				link
+			end
 			def limitation_size(mode, session)
 				@session.app.limitation_text_count
 			end

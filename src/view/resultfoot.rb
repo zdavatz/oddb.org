@@ -8,11 +8,7 @@ module ODDB
 	module View
 		module LegalNoteLink
 			def legal_note(model, session)
-				link = HtmlGrid::PopupLink.new(:legal_note, model, session, self)
-				link.href = @lookandfeel.event_url(:legal_note)
-				link.value = @lookandfeel.lookup(:legal_note) 
-				link.set_attribute('class', 'legal-note')
-				link
+				legal_note = nil
 			end
 		end
 		class ExplainResult < HtmlGrid::Composite
@@ -65,17 +61,28 @@ module ODDB
 			include LegalNoteLink
 			COLSPAN_MAP	= {
 				[0,0]	=> 2,
-				[0,1]	=> 2,
 			}
 			COMPONENTS = {
-				[0,0]	=>	:legal_note,
 				[0,1]	=>	View::ExplainResult,
+				[1,1]	=>	:legal_note,
 			}
 			COMPONENT_CSS_MAP = {
-				[0,0]	=>	'legal-note-right',
 				[0,1]	=>	'explain-result',
+				[1,1]	=>	'explain-result-r',
 			}
 			CSS_CLASS = 'composite'
+			def legal_note(model, session)
+			  link = HtmlGrid::Link.new(:legal_note, model, @session, self)
+			  if(@lookandfeel.language == 'de')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.RechtlicherHinweis"
+				elsif(@lookandfeel.language == 'fr')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.NoticeLegale"
+				elsif(@lookandfeel.language == 'en')
+					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.LegalDisclaimer"
+	      end
+				link.css_class = 'subheading'
+			  link
+		  end
 		end
 	end
 end
