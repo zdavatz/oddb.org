@@ -10,6 +10,7 @@ module ODDB
 class Global < State::Global
 	HOME_STATE = State::Doctors::Init
 	ZONE = :doctors
+=begin
 	def zone_navigation
 		[
 			State::Doctors::DoctorList,
@@ -18,6 +19,7 @@ class Global < State::Global
 	def legal_note
 		State::Doctors::LegalNote.new(@session, nil)
 	end
+=end
 end
 		end
 	end
