@@ -8,6 +8,7 @@ require 'test/unit'
 require 'util/persistence'
 require 'model/registration'
 require 'model/incompleteregistration'
+require 'mock'
 
 module ODDB
 	class RegistrationCommon
@@ -138,6 +139,14 @@ class TestRegistration < Test::Unit::TestCase
 		assert_equal(@registration, seq.registration)
 		seq1 = @registration.create_sequence(2)
 		assert_equal(seq1, @registration.sequences['02'])
+	end
+	def test_generic_type
+		company = Mock.new("company")
+		@registration.company = company 
+		company.__next(:generic_type) { "complementary" }	
+		assert_equal("complementary", @registration.generic_type)
+		@registration.generic_type = "generic"
+		assert_equal("generic", @registration.generic_type)
 	end
 	def test_sequence
 		seq = StubRegistrationSequence.new('01')

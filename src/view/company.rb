@@ -99,7 +99,8 @@ module ODDB
 			[0,10]		=>	:registration_count,
 			#[2,10]		=>	:fi_status,
 			#[2,11]    =>  :pi_status,
-			[1,11]		=>	:submit,
+			[0,11]		=>	:generic_type,
+			[1,12]		=>	:submit,
 		}
 		CSS_MAP = {
 			[0,0,4,12]	=>	'list',
@@ -108,6 +109,7 @@ module ODDB
 		SYMBOL_MAP = {
 			:nbsp									=>	HtmlGrid::Text,
 			:address_header				=>	HtmlGrid::Text,
+			:generic_type					=>	HtmlGrid::Select,
 			:registration_count		=>	HtmlGrid::Value,	
 			:fi_status						=>	HtmlGrid::Select,
 			:pi_status						=>	HtmlGrid::Select,
@@ -147,10 +149,11 @@ module ODDB
 			[2,10]		=>	:ean13,
 			[0,11]		=>	:cl_status,
 			[2,11]		=>	:registration_count,
+			[0,12]		=>	:generic_type,
 			#[2,11]		=>	:fi_status,
 			#[0,12]		=>	:registration_count,
 			#[2,12]    =>  :pi_status,
-			[1,12]		=>	:submit,
+			[1,13]		=>	:submit,
 			[1,13,0]	=>	:delete_item,
 		}
 		CSS_MAP = {
@@ -159,6 +162,7 @@ module ODDB
 		SYMBOL_MAP = {
 			:nbsp									=>	HtmlGrid::Text,
 			:address_header				=>	HtmlGrid::Text,
+			:generic_type					=>	HtmlGrid::Select,
 			:registration_count		=>	HtmlGrid::Value,	
 			:cl_status						=>	HtmlGrid::Select,
 			:fi_status						=>	HtmlGrid::Select,

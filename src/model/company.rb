@@ -8,7 +8,7 @@ module ODDB
 	class Company
 		include Persistence
 		include RegistrationObserver
-		attr_accessor :business_area
+		attr_accessor :business_area, :generic_type
 		attr_accessor :cl_status, :fi_status, :pi_status
 		attr_accessor :name, :ean13, :powerlink, :logo_filename
 		alias :power_link= :powerlink=
