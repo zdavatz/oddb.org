@@ -60,7 +60,6 @@ class PatinfoStatsList < HtmlGrid::List
 	def date(model, session)
 		time = model.time
 		time.strftime("%A %d.%m.%Y &nbsp;&nbsp;-&nbsp;&nbsp;%H.%M Uhr %Z")
-		#time.strftime(@lookandfeel.lookup(:date_format))
 	end
 	def email(model, session)
 		model.user.unique_email
@@ -87,8 +86,6 @@ class PatinfoStatsList < HtmlGrid::List
 		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 	end
 	def compose_subheader_seq(seq, offset)
-		#@grid.add(@pi_nr+=1, *offset)
-		#@grid.add('&nbsp;'*2, *offset)
 		@grid.add(seq_iks_link(seq), *offset)
 		@grid.add_style('result-seq indent bold', *offset)
 		x, y = offset
