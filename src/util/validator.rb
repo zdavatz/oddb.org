@@ -3,6 +3,7 @@
 
 require 'sbsm/validator'
 require 'model/ean13'
+require 'cgi'
 
 module ODDB
 	class Validator < SBSM::Validator
@@ -10,7 +11,8 @@ module ODDB
 		alias :set_pass_2 :pass
 		alias :unique_email :email
 		BOOLEAN = [
-			:cl_status, :exact_match,
+			:cl_status, :exact_match, :experience, :recommend,
+			:impression, :helps
 		]
 		DATES = [
 			:inactive_date,
@@ -33,10 +35,10 @@ module ODDB
 			:assign_deprived_sequence, :atc_chooser, :back, :calculate_offer,
 			:choice, :clear_interaction_basket, :companylist, :company,
 			:compare, :ddd, :delete, :delete_connection_key,
-			:delete_orphaned_fachinfo, :delete_orphaned_patinfo,
+			:delete_orphaned_fachinfo, :delete_orphaned_patinfo, :doctorlist,
 			:download, :download_export, :effective_substances, 
-			:generic_definition, :help,
-			:home, :home_admin, :home_companies, :home_drugs,
+			:feedbacks, :generic_definition, :help,
+			:home, :home_admin, :home_companies, :home_drugs, :home_doctors,
 			:home_interactions, :home_substances, :home_user, :legal_note,
 			:login, :login_form, :logout, :fipi_offer_input, :galenic_groups,
 			:incomplete_registrations, :indications, :interaction_basket,
@@ -50,8 +52,6 @@ module ODDB
 			:search_registrations, :search_sequences, :select_seq, :set_pass,
 			:switch, :sponsor, :substances, :update, :update_bsv,
 			:update_incomplete, :sort, :ywesee_contact,
-			:home_doctors,
-			:doctorlist,
 		]
 		FILES = [
 			:logo_file,
@@ -124,6 +124,9 @@ module ODDB
 		end
 		def iksnr(value)
 			swissmedic_id(:iksnr, value, 4..5)
+		end
+		def message(value)
+			CGI.escapeHTML(validate_string(value).to_s[0,200])
 		end
 		def search_query(value)
 			result = validate_string(value)
