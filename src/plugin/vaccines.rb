@@ -11,7 +11,7 @@ module ODDB
 		class ParsedRegistration
 			attr_accessor :iksnr, :indication, :company, :ikscat
 			attr_reader :sequences
-			def initalize
+			def initialize
 				@sequences = []
 			end
 			def assign_seqnrs(reg = nil)
@@ -41,6 +41,7 @@ module ODDB
 				if(@ikscat)
 					data.store(:ikscat, @ikscat)
 				end
+				data
 			end
 		end
 		class ParsedSequence
@@ -53,7 +54,7 @@ module ODDB
 			def assign_seqnr_by_ikscd(registration)
 				@packages.each_key { |ikscd|
 					if(pack = registration.package(ikscd))
-						return @seqnr = pack.seqnr
+						return @seqnr = pack.sequence.seqnr
 					end
 				}
 			end
@@ -75,21 +76,19 @@ module ODDB
 				{ :size => @size }
 			end
 		end
-		def initialize(*args)
-			super
-			@parsed_registrations = {}
-		end
-		def parse_from_smj_journal(txt)
+		def parse_from_smj(txt)
 			registrations = {}
 			txt.each_line { |line|
-				reg, seq = parse_smj_line(line)
-				(registrations[parsed.iksnr] ||= reg).sequences.push(seq)
+				if(pair = parse_smj_line(line))
+					reg, seq = pair
+					(registrations[reg.iksnr] ||= reg).sequences.push(seq)
+				end
 			}
 			update_registrations(registrations)
 		end
 		def parse_from_xls(path)
 			workbook = Spreadsheet::ParseExcel.parse(path)
-			regstrations = parse_worksheet(workbook.worksheet(0))
+			registrations = parse_worksheet(workbook.worksheet(0))
 			update_registrations(registrations)
 		end
 		def parse_worksheet(worksheet)
@@ -118,17 +117,18 @@ module ODDB
 			registrations
 		end
 		def parse_smj_line(line)
-			registration = ParsedRegistration.new
-			sequence = ParsedSequence.new
-			nrpos = line.index(/[0-9]{5}/)
-			catpos = line.index(/\b[A-D]\b/, nrpos)
-			flagpos = line.rindex(/\bx\b/) || catpos.next
-			sequence.name = line[0...nrpos].strip
-			registration.iksnr = line[nrpos, 5]
-			registration.indication = line[(nrpos + 5)...catpos].strip
-			registration.ikscat = line[catpos, 1]
-			registration.company = line[flagpos.next..-1].strip
-			[registration, sequence]
+			if(nrpos = line.index(/[0-9]{5}/))
+				registration = ParsedRegistration.new
+				sequence = ParsedSequence.new
+				catpos = line.index(/\b[A-D]\b/, nrpos)
+				flagpos = line.rindex(/\bx\b/) || catpos.next
+				sequence.name = line[0...nrpos].strip
+				registration.iksnr = line[nrpos, 5]
+				registration.indication = line[(nrpos + 5)...catpos].strip
+				registration.ikscat = line[catpos, 1]
+				registration.company = line[flagpos.next..-1].strip
+				[registration, sequence]
+			end
 		end
 		def update_package(pack, seq_pointer)
 			pointer = seq_pointer + [:package, pack.ikscd]
@@ -147,12 +147,14 @@ module ODDB
 				@app.update(pointer.creator, data)
 			end
 			reg.sequences.each { |seq| update_sequence(seq, pointer) }
-			registration.each_sequence { |sequence|
-				unless(reg.sequences.any? { |seq| 
-					seq.seqnr == sequence.seqnr })
-					@app.delete(sequence.pointer)
-				end
-			}
+			if(registration)
+				registration.each_sequence { |sequence|
+					unless(reg.sequences.any? { |seq| 
+						seq.seqnr == sequence.seqnr })
+						@app.delete(sequence.pointer)
+					end
+				}
+			end
 		end
 		def update_registrations(registrations)
 			ODBA.transaction {
@@ -164,7 +166,7 @@ module ODDB
 		def update_sequence(seq, reg_pointer)
 			pointer = reg_pointer + [:sequence, seq.seqnr]
 			sequence = @app.update(pointer.creator, seq.data)
-			seq.packages.each { |pack| update_package(pack, pointer) }
+			seq.packages.each_value { |pack| update_package(pack, pointer) }
 			sequence.each_package { |package|
 				unless(seq.packages.include?(package.ikscd))
 					@app.delete(package.pointer)
