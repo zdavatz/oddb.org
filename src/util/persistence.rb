@@ -70,6 +70,7 @@ module ODDB
 			oids.max
 		end
 		def set_oid
+=begin
 			self.class.instance_eval <<-EOS unless(self.class.respond_to?(:next_oid))
 				@oid = nil
 				class << self
@@ -81,6 +82,8 @@ module ODDB
 				end
 			EOS
 			@oid ||= self.class.next_oid
+=end
+			@oid ||= self.odba_id
 		end
 		module_function :current_oid
 		class PathError < RuntimeError

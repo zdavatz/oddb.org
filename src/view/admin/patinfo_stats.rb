@@ -60,7 +60,7 @@ class PatinfoStatsList < HtmlGrid::List
 	SUBHEADER = View::Admin::CompanyHeader
 	def compose_list(model=@model, offset=[0,0])
 		model.each { |company|
-			@pi_nr = 0
+		@pi_nr = 0
 			compose_subheader(company, offset)
 			offset = resolve_offset(offset, self::class::OFFSET_STEP)
 			invoice_sequences = company.invoice_sequences
