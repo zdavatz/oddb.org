@@ -57,12 +57,8 @@ module ODDB
 			}
 		end
 		def generic_type
-			if(@generic_type)
-				@generic_type
-			elsif(@company)
+			@generic_type || if(@company)
 				@company.generic_type
-			else
-				nil
 			end
 		end
 		def name_base
