@@ -361,6 +361,11 @@ zdavatz ! ywesee.com
 				:home_substances					=>  'Wirkstoffe-Home',
 				:home_user								=>  'Services-Home',
 				:home_welcome							=>  'Willkommen bei oddb.org, dem<br>aktuellsten Medikamenten-Portal der Schweiz.<br>Die monatliche Aktualisierung erfolgt direkt<br>&uuml;ber die offiziellen Daten vom <a class="welcome" href="http://www.bsv.admin.ch/sl/liste/d/index.htm" target="_blank">BSV</a> und der <a class="welcome" href="http://www.swissmedic.ch/de/industrie/overall.asp?theme=0.00110.00001&amp;theme_id=980" target="_blank">Swissmedic</a>.',
+				:home_welcome_doctors			=>	'Willkommen bei oddb.org, dem
+				aktuellsten Äzte-Portal der Schweiz.
+				Die monatliche Aktualisierung erfolgt direkt
+				&uuml;ber die offiziellen Daten der <a class="welcome" href="http://www.fmh.ch" target="_blank">FMH</a>.',
+				
 				:html_title								=>	'ODDB.org: Open Drug Database',
 				:inactive_text			=>'Inaktive Registrationen:',
 				:i_bsv_in_progress				=>	'Das BSV-File wird importiert...',
@@ -1207,9 +1212,6 @@ zdavatz ! ywesee.com
 			},
 			:explain_search => {
 				'style'	=>	'padding-top: 40px;',
-			},
-			:home_welcome	=>	{
-				'class'	=>	'welcome',
 			},
 			:login_welcome =>	{
 				'tag'	=>	'th',
