@@ -1,26 +1,26 @@
 #!/usr/bin/env ruby
-# EMHPlugin -- oddb -- 20.10.2003 -- maege@ywesee.com
+# DoctorParser -- oddb -- 20.10.2003 -- maege@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.dirname(__FILE__)
 
 require 'plugin/plugin'
 require 'util/html_parser'
-require 'util/http'
+#require 'util/http'
 require 'plugin/medwin'
 require 'iconv'
 require 'cgi'
 require 'csv'
 
 module ODDB
-	class EMHFormatter < HtmlFormatter
+	class DoctorFormatter < HtmlFormatter
 		def push_tablecell(attributes)
 			unless(@tablehandler.nil?)
 				@tablehandler.next_cell(attributes, true)
 			end
 		end
 	end
-	class EMHMedwinWriter < NullWriter
+	class DoctorMedwinWriter < NullWriter
 		def initialize
 			@tablehandlers = []
 			@linkhandlers = []
@@ -57,7 +57,7 @@ module ODDB
 			end
 		end
 	end
-	class EMHWriter < NullWriter
+	class DoctorWriter < NullWriter
 		attr_reader :collected_values
 		WORK_KEYS = {
 			:work_fon	=>	'Telefon:',
@@ -116,7 +116,7 @@ module ODDB
 		end
 		def get_key(string)
 			key = nil 
-			EMHPlugin::CSV_COMPLETE.each { |csv_key, val|
+			DoctorParser::CSV_COMPLETE.each { |csv_key, val|
 				if(val == "Praxis" || val == "Mitglied")
 					key = csv_key if (string == val)
 				else
@@ -187,25 +187,24 @@ module ODDB
 			end
 		end
 	end
-	class EMHPlugin < Plugin
+	class DoctorParser
 		attr_reader :keys
 		HTTP_SERVER = 'www.emh.ch'
 		MEDWIN_SERVER = 'www.medwin.ch'
 		HTML_PATH = '/medical_adresses/physicians_fmh/detail.cfm'
 		CSV_PATH = File.expand_path('../data/csv/emh_addresses.csv', File.dirname(__FILE__))
-		RANGE = 16099...16101
+		RANGE = 14470...14480
 		#RANGE = 11457...70000
 		RETRIES = 3
 		RETRY_WAIT = 5
 		CSV_COMPLETE = {
-			:gender			=>	'Anrede',
-			:title			=>	'Titel',
-			:name				=>	'Name',
-			:surname		=>	'Vorname',
-			:email			=>	'Email',
-			:ean13			=>	'EAN',
-			:email			=>	'Email',
-			:praxis			=>	'Praxis',
+			:salutation		=>	'Anrede',
+			:title				=>	'Titel',
+			:name					=>	'Name',
+			:firstname		=>	'Vorname',
+			:email				=>	'Email',
+			:ean13				=>	'EAN',
+			:praxis				=>	'Praxis',
 			:prax_address	=>	'Praxis-Adresse',
 			:prax_fon			=>	'Praxis-Telefon',
 			:prax_fax			=>	'Praxis-Telefax',
@@ -232,7 +231,6 @@ module ODDB
 			:surname,
 			:email,
 			:ean13,
-			:email,
 			:praxis,
 			:prax_address,
 			:prax_fon,
@@ -253,14 +251,13 @@ module ODDB
 			:skill,
 			:member,
 		]
-		def initialize(app)
+		def initialize
 			@keys = []
 			@addresses_found = 0 
-			@session = EMHSession.new(MEDWIN_SERVER)
+			@session = DoctorSession.new(MEDWIN_SERVER)
 			@medwin_template = {
 				:ean13		=>	[1,0],
 			}
-			super
 		end
 		def data_path(emh_id)
 			attributes = {
@@ -320,23 +317,23 @@ module ODDB
 			end
 		end
 		def parse_emh_data(html)
-			writer = EMHWriter.new
-			formatter = EMHFormatter.new(writer)
+			writer = DoctorWriter.new
+			formatter = DoctorFormatter.new(writer)
 			parser = HtmlParser.new(formatter)
 			parser.feed(html)
 			writer.extract_data
 			writer.collected_values
 		end
 		def parse_medwin_data(html)
-			writer = EMHMedwinWriter.new
-			formatter = EMHFormatter.new(writer)
+			writer = DoctorMedwinWriter.new
+			formatter = DoctorFormatter.new(writer)
 			parser = HtmlParser.new(formatter)
 			parser.feed(html)
 			writer.extract_data
 		end
 		def parse_medwin_detail_data(html)
 			writer = MedwinWriter.new(@medwin_template)
-			formatter = EMHFormatter.new(writer)
+			formatter = DoctorFormatter.new(writer)
 			parser = HtmlParser.new(formatter)
 			parser.feed(html)
 			writer.extract_data
@@ -385,7 +382,7 @@ module ODDB
 			array
 		end
 	end
-	class EMHSession < HttpSession
+	class DoctorSession < HttpSession
 		HTTP_PATH = '/frmSearchPartner.aspx?lang=de' 
 		def initialize(server)
 			@value_viewstate = nil

@@ -18,6 +18,7 @@ require 'state/drugs/orphaned_patinfo'
 require 'state/drugs/patinfo_deprived_sequences'
 require 'state/drugs/recentregs'
 require 'state/drugs/result'
+require 'state/doctors/init'
 require 'state/drugs/patinfo'
 require 'state/exception'
 require 'state/interactions/basket'
@@ -58,6 +59,7 @@ module ODDB
 				:home									=>	State::Drugs::Init,
 				:home_admin						=>	State::Admin::Init,
 				:home_companies				=>	State::Companies::Init,
+				:home_doctors					=>	State::Doctors::Init,
 				:home_drugs						=>  State::Drugs::Init,
 				:home_interactions		=>  State::Interactions::Init,
 				:home_substances			=>  State::Substances::Init,
@@ -267,7 +269,7 @@ module ODDB
 				State::User::YweseeContact.new(@session, model)
 			end
 			def zones
-				[:drugs, :interactions, :companies, :user]
+				[:drugs, :interactions, :companies, :user, :doctors]
 			end
 			def zone_navigation
 				[]

@@ -2,6 +2,7 @@
 # Updater-- oddb -- 19.02.2003 -- hwyss@ywesee.com 
 
 require 'plugin/swissmedicjournal'
+require 'plugin/doctors'
 require 'plugin/fachinfo'
 require 'plugin/interaction'
 require 'plugin/patinfo'
@@ -17,9 +18,11 @@ module ODDB
 	class Updater
 		# Recipients for all Update-Logs go here...
 		RECIPIENTS = [
-			'hwyss@ywesee.com',
-			'zdavatz@ywesee.com',
-			'maege@ywesee.com',
+			#'hwyss@ywesee.com',
+			#'zdavatz@ywesee.com',
+			#'maege@ywesee.com',
+			'jlang@ywesee.com',
+			'usenguel@ywesee.com',
 		]
 		LOG_RECIPIENTS = {
 			:powerlink	=>	['matthijs.ouwerkerk@just-medical.com'],
@@ -134,6 +137,9 @@ module ODDB
 					log_notify_bsv(plug, Date.today)
 				end
 			}
+		end
+		def update_doctors
+			update_simple(Doctors::DoctorPlugin, 'Doctors')
 		end
 		def update_fachinfo
 			klass = FachinfoPlugin

@@ -28,5 +28,8 @@ class Global < State::Global; end
 		module User 
 class Global < State::Global; end
 		end
+		module Doctors
+class Global < State::Global; end
+		end
 	end
 end
