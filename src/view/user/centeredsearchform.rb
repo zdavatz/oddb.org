@@ -19,8 +19,6 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,0,2]	=>	:language_fr,
 		[0,0,3]	=>	:beta,
 		[0,1]		=>	View::User::CenteredSearchForm,
-		#[0,2]		=>	:search_explain, 
-		#[0,3]		=>	:search_compare,
 		[0,4]		=>	View::CenteredNavigation,
 		[0,5]		=>	:software_feedback,
 		[0,5,1]	=>	:divider,

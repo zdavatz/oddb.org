@@ -90,40 +90,7 @@ module ODDB
 			end
 		end
 		class CenteredSearchComposite < HtmlGrid::Composite
-			COMPONENTS = {
-=begin
-				[0,0]		=>	:language_de,
-				[0,0,1]	=>	:divider,
-				[0,0,2]	=>	:language_fr,
-				[0,0,3]	=>	:beta,
-				[0,1]		=>	View::CenteredSearchForm,
-				[0,2]		=>	:search_explain, 
-				#[0,3]		=>	:atc_chooser_text,
-				[0,3,1]	=>	:atc_chooser,
-				[0,3,2]	=>	'ddd_feature_text',
-				[0,4]		=>	:search_compare,
-				[0,5]		=>	:plugin,
-				[0,5,1]	=>	:export_divider,
-				[0,5,2]	=>	:download_export,
-				[0,5,3]	=>	:divider,
-				[0,5,4]	=>	:recent_registrations,
-				[0,6]		=>	:software_feedback,
-				[0,6,1]	=>	:divider,
-				[0,6,2]	=>	:mailinglist,
-				[0,6,3]	=>	:divider,
-				[0,6,4]	=>	:fipi_offer,
-				[0,7]		=>	:database_size,
-				[0,7,1]	=>	'database_size_text',
-				[0,7,2]	=>	'comma_separator',
-				[0,7,3]	=>	'database_last_updated_txt',
-				[0,7,4]	=>	:database_last_updated,
-				[0,8]		=>	:generic_definition,
-				[0,8,1]	=>	:new_feature,
-				
-				[0,9]		=>	View::LegalNoteLink,
-				[0,10]		=>	:paypal,
-=end
-			}
+			COMPONENTS = {}
 			CSS_CLASS = 'composite'
 			CSS_MAP = {
 				[0,0,1,5]		=>	'ccomponent',
@@ -150,10 +117,9 @@ module ODDB
 				:language_fr			=>	HtmlGrid::Link,
 				:mailinglist			=>	HtmlGrid::Link,
 				:plugin						=>	HtmlGrid::Link,
-				:software_feedback=>	HtmlGrid::Link,
-				:search_compare		=>	HtmlGrid::Text,
 				:search_explain		=>	HtmlGrid::Text,
-				#:search_reset			=>	HtmlGrid::Button,
+				:search_faq				=>	HtmlGrid::Link,
+				:software_feedback=>	HtmlGrid::Link,
 			}
 			def atc_chooser(model, session)
 				link = HtmlGrid::Link.new(:atc_chooser, model, session, self)

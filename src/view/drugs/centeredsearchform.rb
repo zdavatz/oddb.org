@@ -32,7 +32,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,0,3]	=>	:beta,
 		[0,1]		=>	View::Drugs::CenteredSearchForm,
 		[0,2]		=>	:search_explain, 
-		[0,3]		=>	:search_compare,
+		[0,3]		=>	:search_faq,
 		[0,4]		=>	View::CenteredNavigation,
 		[0,5]		=>	:database_size,
 		[0,5,1]	=>	'database_size_text',

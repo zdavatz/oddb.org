@@ -65,6 +65,27 @@ module ODDB
 					link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
 					link
 				end
+			rescue NoMethodError => e
+				puts e
+				puts e.message
+				puts "atc:   #{atc.class}"
+				puts "query: #{session.persistent_user_input(:search_query)}"
+				if(atc.respond_to?(:pointer))
+					puts "pointer:#{atc.pointer}"
+				end
+				if(atc.respond_to?(:ddds))
+					ddds = atc.ddds
+					puts "ddds.class: #{ddds.class}"
+					puts "Stub?:      #{ddds.is_a?(ODBA::Stub)}"
+					if(ddds.respond_to?(:odba_id))
+						puts "odba_id: #{ddds.odba_id}"
+					end
+				end
+				puts "state: #{session.state.class}"
+				puts "model: #{@model.class}"
+				if(@model.respond_to?(:pointer))
+					puts "pointer: #{@model.pointer}"
+				end
 			end
 		end
 	end

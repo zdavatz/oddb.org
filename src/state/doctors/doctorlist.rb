@@ -67,6 +67,8 @@ class DoctorResult < DoctorList
 	def init
 		if(@model.empty?)
 			@default_view = View::Doctors::EmptyResult
+		else
+			super
 		end
 	end
 end
