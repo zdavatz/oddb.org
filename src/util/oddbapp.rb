@@ -578,6 +578,9 @@ class OddbPrevalence
 		filtered.flatten.compact.uniq
 	end
 	def search_by_indication(key, lang, result)
+		if(lang.to_s != "fr") 
+			lang = "de"
+		end
 		ODBA.cache_server.retrieve_from_index("fachinfo_index_#{lang}", key.dup, result)
 	end
 	def search_by_sequence(key, result=nil)
