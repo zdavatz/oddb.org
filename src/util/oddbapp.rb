@@ -80,11 +80,7 @@ class OddbPrevalence
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
 		rebuild_atc_chooser()
-		atc_ddd_count()
-		limitation_text_count()
-		package_count()
-		patinfo_count()
-		doctor_count()
+		recount()
 	end
 	# prevalence-methods ################################
 	def create(pointer)
@@ -731,9 +727,15 @@ class OddbPrevalence
 		case item
 		when ODDB::Registration, ODDB::Sequence, ODDB::Package, ODDB::AtcClass
 			@last_medication_update = Date.today
-			recount
+			#recount
 		when ODDB::LimitationText, ODDB::AtcClass::DDD
-			recount
+			#recount
+		when ODDB::Substance
+			@substances.each_value { |subs|
+				if(!subs.is_effective_form? && subs.effective_form == item)
+					subs.odba_store
+				end
+			}
 		end
 	end
 	def user(oid)
@@ -946,6 +948,7 @@ module ODDB
 				Thread.current.abort_on_exception = true
 				loop {
 					Updater.new(self).run
+					@system.recount
 					GC.start
 					sleep UPDATE_INTERVAL
 				}

@@ -2,7 +2,7 @@
 # View::Substances::Result -- oddb -- 23.08.2004 -- maege@ywesee.com
 
 require 'view/form'
-require 'view/publictemplate'
+require 'view/resulttemplate'
 require 'view/substances/resultlist'
 require 'view/searchbar'
 require 'view/sponsorhead'
@@ -26,7 +26,7 @@ class ResultComposite < HtmlGrid::Composite
 		@lookandfeel.lookup(:title_found, query, @session.state.object_count)
 	end
 end
-class Result < View::PublicTemplate
+class Result < View::ResultTemplate
 	CONTENT = View::Substances::ResultComposite
 end
 class EmptyResultForm < HtmlGrid::Form
@@ -54,7 +54,7 @@ class EmptyResultForm < HtmlGrid::Form
 		@lookandfeel.lookup(:title_none_found, query)
 	end
 end
-class EmptyResult < View::PublicTemplate
+class EmptyResult < View::ResultTemplate
 	CONTENT = View::Substances::EmptyResultForm
 end
 		end

@@ -10,7 +10,7 @@ require 'view/pointervalue'
 require 'view/descriptionvalue'
 require 'view/form'
 require 'view/resultcolors'
-require 'view/publictemplate'
+require 'view/resulttemplate'
 require 'view/alphaheader'
 
 module ODDB
@@ -75,7 +75,7 @@ class ListForm < View::Form
 		[1,0]	=>	'search',	
 	}
 end
-class Substances < View::PublicTemplate
+class Substances < View::ResultTemplate
 	CONTENT = View::Substances::ListForm
 end
 		end
