@@ -10,10 +10,10 @@ module ODDB
 		module User
 class Download < HtmlGrid::PassThru
 	def init
-		puts "filename: #{@session.user_input(:filename)}"
+		#puts "filename: #{@session.user_input(:filename)}"
 		if(filename = @session.user_input(:filename))
 			@path = @lookandfeel.resource_global(:downloads, filename)
-			puts "path: #{@path}"
+			#puts "path: #{@path}"
 		end
 	end
 	def to_html(context)

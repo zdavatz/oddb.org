@@ -2,6 +2,7 @@
 # View::User::RegisterDownload -- oddb -- 20.09.2004 -- maege@ywesee.com
 
 require 'htmlgrid/form'
+require 'htmlgrid/errormessage'
 require 'view/publictemplate'
 require 'view/logohead'
 
@@ -9,6 +10,7 @@ module ODDB
 	module View
 		module User
 class RegisterDownloadForm < HtmlGrid::Form
+	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
 		[0,1]	=>	:email,
 		[1,2]	=>	:submit,
@@ -23,6 +25,10 @@ class RegisterDownloadForm < HtmlGrid::Form
 	SYMBOL_MAP = {
 		:email	=>	HtmlGrid::InputText,
 	}
+	def init
+		super
+		error_message
+	end
 	def hidden_fields(context)
 		super <<
 		context.hidden('filename', @session.user_input(:filename))
@@ -41,7 +47,6 @@ class RegisterDownloadComposite < HtmlGrid::Composite
 end
 class RegisterDownload < View::PublicTemplate
 	CONTENT = View::User::RegisterDownloadComposite
-	HEAD = View::LogoHead
 end
 		end
 	end

@@ -12,6 +12,7 @@ require 'util/exporter'
 require 'util/validator'
 require 'util/loggroup'
 require 'util/soundex'
+require 'admin/subsystem'
 require 'models'
 require 'commands'
 require 'sbsm/drbserver'
@@ -124,6 +125,11 @@ class OddbPrevalence
 	end
 	def admin(oid)
 		@users[oid.to_i]
+	end
+	def admin_subsystem
+		ODBA.cache_server.fetch_named('admin', self) {
+			ODDB::Admin::Subsystem.new
+		}
 	end
 	def atcless_sequences
 		@registrations.values.collect { |reg|

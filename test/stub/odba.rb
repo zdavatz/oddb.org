@@ -23,6 +23,10 @@ module ODBA
 		end
 	end
 	class StorageStub
+		def next_id
+			@id ||= 0
+			@id = @id.next
+		end
 	end
 	def batch(&block)
 		block.call
