@@ -117,6 +117,12 @@ module ODDB
 			:rslt_link_hover_color		=>	'blue',
 			:rslt_link_active_color		=>	'gold',
 			:navigation_link_font_weight	=>	'normal',
+			:tabnavigation_link_font_weight	=>	'bold',
+			:tabnavigation_link_font_size	=>	'13px',
+			:tabnavigation_link_active_color =>	'black',
+			:tabnavigation_link_hover_color =>	'black',
+			:tabnavigation_link_color =>	'blue',
+			:tabnavigation_text_color	=>	'black',
 			:std_font_family					=>	'Arial, Helvetica, sans-serif',
 			:std_font_size						=>	'12px',
 		}

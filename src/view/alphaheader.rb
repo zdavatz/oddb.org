@@ -1,28 +1,30 @@
 #!/usr/bin/env ruby
-# AlphaHeader -- oddb -- 03.07.2003 -- hwyss@ywesee.com 
+# View::AlphaHeader -- oddb -- 03.07.2003 -- hwyss@ywesee.com 
 
 module ODDB
-	module AlphaHeader
-		def compose_header(offset=[0,0])
-			offset = super
-			divider = false
-			current_range = @session.state.interval
-			@session.state.intervals.each {|range|
-				@grid.add(divider, *offset) if divider
-				divider = @lookandfeel.lookup(:navigation_divider)	
-				link = HtmlGrid::Link.new(:range, @model, @session, self)
-				link.value = @lookandfeel.lookup(range.intern)
-				unless(range == current_range)
-					link.href = @lookandfeel.event_url(@session.direct_event, {'range'=>range})
-					link.set_attribute('class', 'subheading-bold')
-				else
-					@lookandfeel.lookup(range.intern)
-				end
-				@grid.add(link, *offset)
-			}
-			@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
-			@grid.add_style('subheading-bold', *offset)
-			offset = resolve_offset(offset, self::class::OFFSET_STEP)
+	module View
+		module AlphaHeader
+			def compose_header(offset=[0,0])
+				offset = super
+				divider = false
+				current_range = @session.state.interval
+				@session.state.intervals.each {|range|
+					@grid.add(divider, *offset) if divider
+					divider = @lookandfeel.lookup(:navigation_divider)	
+					link = HtmlGrid::Link.new(:range, @model, @session, self)
+					link.value = @lookandfeel.lookup(range.intern)
+					unless(range == current_range)
+						link.href = @lookandfeel.event_url(@session.direct_event, {'range'=>range})
+						link.set_attribute('class', 'subheading-bold')
+					else
+						@lookandfeel.lookup(range.intern)
+					end
+					@grid.add(link, *offset)
+				}
+				@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
+				@grid.add_style('subheading-bold', *offset)
+				offset = resolve_offset(offset, self::class::OFFSET_STEP)
+			end
 		end
 	end
 end

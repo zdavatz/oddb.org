@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
-# PopupTemplate -- oddb -- 21.08.2003 -- ywesee@ywesee.com
+# View::PopupTemplate -- oddb -- 21.08.2003 -- ywesee@ywesee.com
 
 require 'view/publictemplate'
 
 module ODDB
-	class PopupTemplate < PublicTemplate
-		HEAD = PopupLogoHead
-		FOOT = nil
+	module View
+		class PopupTemplate < View::PublicTemplate
+			HEAD = View::PopupLogoHead
+			FOOT = nil
+		end
 	end
 end

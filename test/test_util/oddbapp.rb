@@ -630,7 +630,7 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.init
 		assert_equal([], @app.search('froh'))
 	end
-	def test_search_interaction
+	def test_search_interactions
 		pointer = ODDB::Persistence::Pointer.new([:registration, '12345'])
 		reg = @app.create(pointer)
 		assert_equal(ODDB::Registration, reg.class)
@@ -645,9 +645,9 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.update(pointer.creator, {:name_base => 'barfoo'})
 		@app.init
 		@app.rebuild_indices
-		assert_equal(1, @app.search_interaction('foobar').size)
+		assert_equal(1, @app.search_interactions('foobar').size)
 	end
-	def test_search_interaction2
+	def test_search_interactions2
 		pointer = ODDB::Persistence::Pointer.new([:registration, '12345'])
 		reg = @app.create(pointer)
 		assert_equal(ODDB::Registration, reg.class)
@@ -663,7 +663,7 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.update(pointer.creator, values)
 		@app.init
 		@app.rebuild_indices
-		assert_equal(2, @app.search_interaction('foobar').size)
+		assert_equal(2, @app.search_interactions('foobar').size)
 	end
 	def test_update_sequence
 		pointer = ODDB::Persistence::Pointer.new([:registration, '12345'])

@@ -1020,6 +1020,36 @@ a.navigation:active {
 	color : $bg_dark_link_active_color;
 	font-weight: $navigation_link_font_weight;
 }
+td.tabnavigation-right table {
+	margin-bottom : 10px;
+	padding : 5px;
+	position : relative;
+	float :right;
+}
+table.tabnavigation {
+	padding : 5px;
+	background : $bg_bright;
+	color : $tabnavigation_text_color;
+	text-decoration : none;
+}
+a.tabnavigation:link, a.tabnavigation:visited {
+	background : $bg_bright;
+	color : $tabnavigation_link_color;
+	font-weight: $tabnavigation_link_font_weight;
+	font-size: $tabnavigation_link_font_size;
+}
+a.tabnavigation, a.tabnavigation:hover {
+	background : $bg_bright;
+	color : $tabnavigation_link_hover_color;
+	font-weight: $tabnavigation_link_font_weight;
+	font-size: $tabnavigation_link_font_size;
+}
+a.tabnavigation:active {
+	background : $bg_bright;
+	color : $tabnavigation_link_active_color;
+	font-weight: $tabnavigation_link_font_weight;
+	font-size: $tabnavigation_link_font_size;
+}
 table.navigation {
 	position : relative;
 	right : 0px;
@@ -1300,6 +1330,10 @@ table.interaction-basket td {
 
 td.left {
 	text-align : left;
+}
+
+td.right {
+	text-align : right;
 }
 
 td.padding {
