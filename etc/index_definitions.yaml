@@ -77,7 +77,7 @@ fulltext: false
 index_name: 'sequence_index'
 origin_klass: 'Sequence'
 target_klass: 'Sequence'
-resolve_search_term: 'name'
+resolve_search_term: 'search_terms'
 resolve_target: ''
 resolve_origin: ''
 init_source: 'self.sequences'
