@@ -12,7 +12,7 @@ module ODDB
 		attr_reader :seqnr, :name_base, :name_descr, :packages,
 								:active_agents
 		attr_accessor :registration, :dose, :atc_class, 
-									:galenic_form, :patinfo, :pdf_patinfo
+									:galenic_form, :patinfo
 		attr_writer :composition_text
 		alias :pointer_descr :seqnr
 		def initialize(seqnr)
@@ -180,7 +180,7 @@ module ODDB
 		end
 	end
 	class Sequence < SequenceCommon
-		attr_accessor :patinfo_shadow
+		attr_accessor :patinfo_shadow, :pdf_patinfo
 		ACTIVE_AGENT = ActiveAgent
 		ODBA_PREFETCH = true
 		PACKAGE = Package
