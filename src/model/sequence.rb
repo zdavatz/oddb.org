@@ -226,7 +226,7 @@ module ODDB
 				:name_descr				=>	@name_descr,
 				:dose							=>	@dose,
 				:atc_class				=>	(@atc_class.code if @atc_class), 
-				:galenic_form			=>	(@galenic_form.to_s if @galenic_form),
+				:galenic_form			=>	(@galenic_form.pointer if @galenic_form),
 				:composition_text	=>	@composition_text,
 			}.delete_if { |key, val| val.nil? }
 			app.update(ptr.creator, hash)
