@@ -8,7 +8,8 @@ module ODDB
 		COMPONENTS = {
 			[0,0]	=>	'explain_original',
 			[0,1]	=>	'explain_generic',
-			[0,2]	=>	'explain_unknown',
+			[0,2]	=>	'explain_complementary',
+			[0,3]	=>	'explain_unknown',
 			[1,0]	=>	'explain_fi',
 			[1,1]	=>	'explain_pi',
 			[1,2]	=>	'explain_efb',
@@ -19,7 +20,8 @@ module ODDB
 		CSS_MAP = {
 			[0,0]	=>	'explain-original',
 			[0,1]	=>	'explain-generic',
-			[0,2]	=>	'explain-unknown',
+			[0,2]	=>	'explain-complementary',
+			[0,3]	=>	'explain-unknown',
 			[1,0]	=>	'explain-infos',
 			[1,1]	=>	'explain-infos',
 			[1,2]	=>	'explain-infos',

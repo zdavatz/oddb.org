@@ -50,8 +50,10 @@ module ODDB
 				0
 			when :generic
 				5
-			else
+			when :complementary
 				10
+			else
+				15
 			end
 			# the following was madly inefficient!
 =begin

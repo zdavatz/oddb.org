@@ -101,6 +101,15 @@ td.result-original-bg {
 	color : red;
 	padding : 4px;
 }
+td.result-complementary {
+	color : #dd1cff;
+	padding : 4px;
+}
+td.result-complementary-bg {
+	background : $rslt_bg;
+	color : #dd1cff;
+	padding : 4px;
+}
 td.result-unknown {
 	padding : 4px;
 }
@@ -172,6 +181,40 @@ a.result-b-r-original-bg:active {
 td.result-b-r-original-bg { 
 	background : $rslt_bg;
 	color : red;
+	font-weight: bold;
+	padding : 4px;
+	text-align : right;
+}
+a.result-b-r-complementary {
+	color : #dd1cff;
+	font-weight: bold;
+}
+a.result-b-r-complementary:hover {
+	color : $rslt_link_hover_color;
+}
+a.result-b-r-complementary:active {
+	color : gold;
+}
+td.result-b-r-complementary {
+	color : #dd1cff;
+	font-weight: bold;
+	padding : 4px;
+	text-align : right;
+}
+a.result-b-r-complementary-bg:link, a.result-b-r-complementary-bg:visited {
+	background : $rslt_bg;
+	color : #dd1cff;
+	font-weight: bold;
+}
+a.result-b-r-complementary-bg:hover {
+	color : $rslt_link_hover_color;
+}
+a.result-b-r-complementary-bg:active {
+	color : gold;
+}
+td.result-b-r-complementary-bg {
+	background : $rslt_bg;
+	color : #dd1cff;
 	font-weight: bold;
 	padding : 4px;
 	text-align : right;
@@ -276,6 +319,30 @@ td.result-i-r-unknown-bg {
 	padding : 4px;
 	text-align : right;
 }
+td.result-i-complementary {
+	color : #dd1cff;
+	font-style : italic;
+	padding : 4px;
+}
+td.result-i-complementary-bg {
+	background : $rslt_bg;
+	color : #dd1cff;
+	font-style : italic;
+	padding : 4px;
+}
+td.result-i-r-complementary {
+	color : #dd1cff;
+	font-style : italic;
+	padding : 4px;
+	text-align : right;
+}
+td.result-i-r-complementary-bg {
+	background : $rslt_bg;
+	color : #dd1cff;
+	font-style : italic;
+	padding : 4px;
+	text-align : right;
+}
 td.result-r-generic {
 	color : #2ba476;
 	padding : 4px;
@@ -303,6 +370,17 @@ td.result-r-unknown {
 	text-align : right;
 }
 td.result-r-unknown-bg {
+	background : $rslt_bg;
+	padding : 4px;
+	text-align : right;
+}
+td.result-r-complementary {
+	color : #dd1cff;
+	padding : 4px;
+	text-align : right;
+}
+td.result-r-complementary-bg {
+	color : #dd1cff;
 	background : $rslt_bg;
 	padding : 4px;
 	text-align : right;
@@ -387,6 +465,29 @@ td.result-big-unknown-bg {
 	font-weight : bold;
 	padding : 4px;
 }
+a.result-big-complementary, 
+a.result-big-complementary:link, 
+a.result-big-complementary:visited {
+	color : #dd1cff;
+	text-decoration : none;
+}
+a.result-big-complementary:hover {
+	color : $rslt_link_hover_color;
+}
+a.result-big-complementary:active {
+	color : gold;
+}
+td.result-big-complementary {
+	font-size : 14px;
+	font-weight : bold;
+	padding : 4px;
+}
+td.result-big-complementary-bg {
+	background : $rslt_bg;
+	font-size : 14px;
+	font-weight : bold;
+	padding : 4px;
+}
 a.result-small-font, 
 a.result-small-font:link, 
 a.result-small-font:visited {
@@ -408,18 +509,16 @@ td.result-small-font-bg {
 	font-size : 10px;
 	padding : 4px;
 }
-td.result-edit-generic, td.result-edit-original, td.result-edit-unknown,
-a.result-edit-generic, a.result-edit-original, a.result-edit-unknown
-td.result-edit-generic, td.result-edit-original, td.result-edit-unknown,
-a.result-edit-generic, a.result-edit-original, a.result-edit-unknown
+td.result-edit-generic, td.result-edit-original, td.result-edit-unknown, td.result-edit-complementary,
+a.result-edit-generic, a.result-edit-original, a.result-edit-unknown, a.result-edit-complementary
 {
 	color : $list_font_color;
 	font-size : 11px;
 	text-decoration : none;
 	padding : 4px;
 }
-td.result-edit-generic-bg, td.result-edit-original-bg, td.result-edit-unknown-bg,
-a.result-edit-generic-bg, a.result-edit-original-bg, a.result-edit-unknown-bg
+td.result-edit-generic-bg, td.result-edit-original-bg, td.result-edit-unknown-bg, td.result-edit-complementary-bg,
+a.result-edit-generic-bg, a.result-edit-original-bg, a.result-edit-unknown-bg, a.result-edit-complementary-bg
 {
 	background : $rslt_bg;
 	color : $list_font_color;
@@ -469,6 +568,19 @@ td.result-pubprice-unknown {
 	text-align : right;
 }
 td.result-pubprice-unknown-bg {
+	background : $rslt_bg;
+	font-weight : bold;
+	padding-right : 10px;
+	text-align : right;
+}
+td.result-pubprice-complementary {
+	color : #dd1cff;
+	font-weight : bold;
+	padding-right : 10px;
+	text-align : right;
+}
+td.result-pubprice-complementary-bg {
+	color : #dd1cff;
 	background : $rslt_bg;
 	font-weight : bold;
 	padding-right : 10px;
@@ -1010,6 +1122,11 @@ td.explain-original {
 td.explain-unknown {
 	font-weight : bold;
 	color : $bg_bright_font_color;
+	padding-left : 4px;
+}
+td.explain-complementary {
+	font-weight : bold;
+	color : #dd1cff;
 	padding-left : 4px;
 }
 td.explain-infos {

@@ -24,7 +24,7 @@ module ODDB
 		ENUMS = {
 			:cl_status		=>	['false', 'true'],
 			:fi_status		=>	['false', 'true'],
-			:generic_type =>	[nil, 'generic', 'original' ],
+			:generic_type =>	[nil, 'generic', 'original', 'complementary' ],
 			:limitation		=>	['true', 'false'],
 			:pi_status		=>	['false', 'true'],
 		}	
