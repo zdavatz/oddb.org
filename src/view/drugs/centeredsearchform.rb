@@ -30,8 +30,6 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,5]		=>	:database_size,
 		[0,5,1]	=>	'database_size_text',
 		[0,5,2]	=>	'comma_separator',
-		[0,5,3]	=>	'database_last_updated_txt',
-		[0,5,4]	=>	:database_last_updated,
 		[0,6]		=>	:fachinfo_size,
 		[0,6,1]	=>	'fi_count_text',
 		[0,6,2]	=>	'comma_separator',
@@ -42,14 +40,16 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,7,2]	=>	'comma_separator',
 		[0,7,3]	=>	:limitation_size,
 		[0,7,4]	=>	'sl_count_text',
-		[0,8]		=>	View::LegalNoteLink,
-		[0,9]		=>	:paypal,
+		[0,8] =>	'database_last_updated_txt',
+		[0,8,1]	=>	:database_last_updated,
+		[0,9]		=>	View::LegalNoteLink,
+		[0,10]		=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,8]		=>	'ccomponent',
+		[0,0,1,9]		=>	'ccomponent',
 	}
 	COMPONENT_CSS_MAP = {
-		[0,8]	=>	'legal-note-center',
+		[0,9]	=>	'legal-note-center',
 	}
 	def substance_count(model, session)
 		@session.app.substance_count
