@@ -120,7 +120,7 @@ module ODDB
 				:delete_orphaned_fachinfo  =>  'L&ouml;schen',
 				:delete_orphaned_patinfo  =>  'L&ouml;schen',
 				:descr										=>	'Beschreibung',
-				:doctor_count_text				=>	'&nbsp;&Auml;rzte',
+				:doctors_count_text				=>	'&nbsp;&Auml;rzte',
 				:doctorlist								=>	'&Auml;rzteverzeichnis',
 				:dose											=>	'St&auml;rke',
 				:download									=>	'Abschicken',
@@ -161,7 +161,6 @@ module ODDB
 				:explain_pbp							=>	'PP = Publikumspreis, inkl. Mwst.',
 				:explain_pi								=>	'PI = Patienteninformationen',
 				:explain_search						=>	'Sie k&ouml;nnen nach Originalpr&auml;parat, Generikum, Wirkstoff oder<br>Hersteller suchen. Die Suche erfolgt nach dem ATC-Code. ',
-				:explain_search_doctor		=>	"Suchen Sie nach Arzt oder &Auml;rztin in der Schweiz.\nSie k&ouml;nnen nach Name, Adresse, Telefon oder Facharzttitel suchen.",
 				:explain_sl								=>	'SL = Spezialit&auml;tenliste',
 				:explain_unknown					=>	'Schwarz&nbsp;=&nbsp;Nicht&nbsp;klassifiziert',
 				:e_different_connection_key	=>	'Die beiden Substanzen besitzen verschiedene Interaktionsverbindungen und k&ouml;nnen darum nicht zusammengelegt werden.',
@@ -257,7 +256,6 @@ module ODDB
 				:fachinfo_yaml_zip				=>	'fachinfo.yaml.zip',
 				:fachinfos_version_3_3_pdf	=>	'Fachinfos-Version-3.3.pdf',
 				:false										=>	'Nein',
-				:faq_link									=>	'FAQ',
 				:fax											=>	'Fax:',
 				:fax_header								=>	'Fax',
 				:fax_label								=>	'Fax:',
@@ -364,7 +362,11 @@ zdavatz ! ywesee.com
 				:home_substances					=>  'Wirkstoffe-Home',
 				:home_user								=>  'Services-Home',
 				:home_welcome							=>  'Willkommen bei oddb.org, dem<br>aktuellsten Medikamenten-Portal der Schweiz.<br>Die monatliche Aktualisierung erfolgt direkt<br>&uuml;ber die offiziellen Daten vom <a class="welcome" href="http://www.bsv.admin.ch/sl/liste/d/index.htm" target="_blank">BSV</a> und der <a class="welcome" href="http://www.swissmedic.ch/de/industrie/overall.asp?theme=0.00110.00001&amp;theme_id=980" target="_blank">Swissmedic</a>.',
-				:home_welcome_doctors			=>	"Willkommen bei oddb.org, dem\naktuellsten Ärzte-Portal der Schweiz.\nDie monatliche Aktualisierung erfolgt direkt\n&uuml;ber die offiziellen Daten der <a class='welcome' href='http://www.fmh.ch' target='_blank'>FMH</a>.",
+				:home_welcome_doctors			=>	'Willkommen bei oddb.org, dem
+				aktuellsten Äzte-Portal der Schweiz.
+				Die monatliche Aktualisierung erfolgt direkt
+				&uuml;ber die offiziellen Daten der <a class="welcome" href="http://www.fmh.ch" target="_blank">FMH</a>.',
+				
 				:html_title								=>	'ODDB.org: Open Drug Database',
 				:inactive_text			=>'Inaktive Registrationen:',
 				:i_bsv_in_progress				=>	'Das BSV-File wird importiert...',
@@ -539,6 +541,7 @@ zdavatz ! ywesee.com
 				:s31x_tar_gz							=>	's31x.tar.gz',
 				:s31x_zip									=>	's31x.zip',
 				:search										=>	'Suchen',
+				:search_compare						=>	'F&uuml;r den Direktvergleich klicken Sie bitte auf<br>den Medikamentennamen im Suchergebnis!',
 				:search_explain						=>	'Vergleichen Sie einfach und schnell Medikamentenpreise.<br> Suchen Sie nach Medikament, Wirkstoff oder Anwendungsgebiet<br>(z.B. Kopfschmerzen, Akne, Verstauchung, Verletzung).',
 				:search_help							=>	'Hilfe',
 				:search_oddb							=>	'-> Medikament(e) in der ODDB anzeigen',
@@ -751,7 +754,7 @@ zdavatz ! ywesee.com
 				:date_format							=>	'%d.%m.%Y',
 				:ddd											=>	'DDD-OMS',
 				:ddd_feature_text					=>	'&nbsp;<span style="color: red;">Nouveau:</span> avec Daily Drug Doses de\'l <a href="http://www.whocc.no">OMS</a>',
-				:de												=>	'Deutsch',
+				:de												=>	'Allemand',
 				:de_description						=>	'Allemand',
 				:default_name							=>	'Nom',
 				:delete										=>	'Supprimer',
@@ -788,7 +791,6 @@ zdavatz ! ywesee.com
 				:explain_pbp							=>	'PP = Prix de public, TVA comp.',
 				:explain_pi								=>	'IPat = Information destin&eacute;e aux patients',
 				:explain_search						=>	'Vous pouvez cherchez des produits originals, g&eacute;n&eacute;riques, des principes actifs ou des fabricants. La recherche a lieu apres le code ATC.',
-				:explain_search_doctor		=>	"Cherchez pars m&eacute;decin en Suisse.\nVous pouvez chercher conform&eacute;ment au nom, t&eacute;l&eacute;phone ou &agrave; titre de m&eacute;decin sp&eacute;cialiste.",
 				:explain_sl								=>	'SL = Liste de sp&eacute;cialit&eacute;',
 				:explain_unknown					=>	'noir&nbsp;=&nbsp;pas classes',
 				:e_domainless_email_address0	=>	'"',
@@ -946,7 +948,6 @@ zdavatz ! ywesee.com
 				:home_doctors							=>  'Acceuil-M&eacute;decins',
 				:home_interactions				=>  'Acceuil-Interactions',
 				:home_welcome							=>  "Bienvenue sur oddb.org,<br>le portail des g&eacute;n&eacute;riques de Suisse avec<br>tous les m&eacute;dicaments disponibles sur le march&eacute; suisse!<br>La mise &agrave; jour mensuelle s'effectue directement <br>par les donn&eacute;es officielles de <a class=\"welcome\" href=\"http://www.bsv.admin.ch/sl/liste/d/index.htm\" target=\"_blank\">BSV</a> et de <a class=\"welcome\" href=\"http://www.swissmedic.ch/de/industrie/overall.asp?theme=0.00110.00001&amp;theme_id=980\" target=\"_blank\">Swissmedic</a>.",
-				:home_welcome_doctors			=>	"Bienvenu sur oddb.org,\nle portail des M&eacute;decins Suisses le plus actuel de la Suisse.\nLa mise &agrave; jour mensuelle s'effectue directement\npar les donn&eacute;es officielles de <a class='welcome' href='http://www.fmh.ch/ww/fr/pub/welcome.htm'>FMH</a>.",
 				:home_user								=>  'Acceuil-Services',
 				:html_title								=>	'ODDB.org: Open Drug Database',
 				:i_bsv_in_progress				=>	'Le BSV-File est import&eacute; ...',
@@ -1207,9 +1208,6 @@ zdavatz ! ywesee.com
 				'height'	=>	'62',
 			},
 			:explain_search => {
-				'style'	=>	'padding-top: 40px;',
-			},
-			:explain_search_doctor => {
 				'style'	=>	'padding-top: 40px;',
 			},
 			:login_welcome =>	{

@@ -10,13 +10,14 @@ require 'view/pointervalue'
 require 'view/publictemplate'
 require 'view/alphaheader'
 require 'view/searchbar'
+require 'view/doctors/doctor'
 require 'view/form'
 
 module ODDB
 	module View
 		module Doctors
 class DoctorList < HtmlGrid::List
-	#include UmlautSort
+	include AddressMap
 	COMPONENTS = {
 		[0,0]	=>	:name,
 		[1,0]	=>	:firstname,
@@ -47,14 +48,7 @@ class DoctorList < HtmlGrid::List
 	end
 	def map(doctor)	
 		if(address = doctor.praxis_address)
-			link = HtmlGrid::Link.new(:map, address, @session, self)
-			link.href = [
-				'http://map.search.ch',
-				[address.plz, address.city].join('-'),
-				[address.street, address.number].join('-'),
-			].join('/')
-			#link.set.attribute =('class', 'list') 
-			link
+			super(address)
 		end
 	end
 	def name(model)

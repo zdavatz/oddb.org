@@ -19,7 +19,20 @@ require 'view/sponsorlogo'
 module ODDB
 	module View
 		module Doctors 
+module AddressMap
+	def map(address)
+		link = HtmlGrid::Link.new(:map, address, @session, self)
+		link.href = [
+			'http://map.search.ch',
+			[address.plz, address.city].join('-'),
+			[address.street, address.number].join('-'),
+		].join('/')
+		link.css_class = 'list'
+		link
+	end
+end
 class Addresses < HtmlGrid::List
+	include AddressMap
 	COMPONENTS = {
 		[0,0]	=>	:type,
 		[0,1]	=>	:lines,
@@ -65,16 +78,6 @@ class Addresses < HtmlGrid::List
 	end
 	def type(model)
 		HtmlGrid::LabelText.new("address_#{model.type}", model, @session, self)
-	end
-	def map(address)	
-		link = HtmlGrid::Link.new(:map, address, @session, self)
-		link.href = [
-			'http://map.search.ch',
-			[address.plz, address.city].join('-'),
-			[address.street, address.number].join('-'),
-		].join('/')
-		#link.set.attribute =('class', 'list') 
-		link
 	end
 end
 class DoctorInnerComposite < HtmlGrid::Composite
