@@ -498,7 +498,17 @@ class OddbPrevalence
 		pointer.resolve(self)
 	end
 	def search(query, lang)
+		# current search_order:
+		# 1. atcless
+		# 2. iksnr or ean13
+		# 3. atc-code
+		# 4. exact word in sequence name
+		# 5. company-name
+		# 6. indication
+		# 7. substance
+		# 8. sequence
 		result = ODDB::SearchResult.new
+		result.exact = true
 		if(query == 'atcless')
 			atc = ODDB::AtcClass.new('n.n.')
 			@registrations.each_value { |reg|
@@ -517,31 +527,49 @@ class OddbPrevalence
 				reg.sequences.each_value { |seq|
 					atc.add_sequence(seq)
 				}
-				return [atc]
+				result.atc_classes = [atc]
+				return result
 			end
 		end
 		key = query.to_s.downcase
-		result.atc_classes = ODBA.cache_server.retrieve_from_index('atc_index', key.dup)
-		if result.atc_classes.empty?
-			result.atc_classes = ODBA.cache_server.retrieve_from_index('atc_index_company', key.dup)
-			filtered_result = []
-			result.atc_classes.each { |atc|
-				filtered_result.push(atc.company_filter_search(key.dup))
-			}
-			result.atc_classes = filtered_result.flatten.compact.uniq
-			result
+		atcs = search_by_atc(key)
+		if(atcs.empty?)
+			atcs = search_by_sequence(key, result)
 		end
-		if result.atc_classes.empty?
-			result.atc_classes = ODBA.cache_server.retrieve_from_index('substance_index_atc', key.dup)
+		if(atcs.empty?)
+			atcs = search_by_company(key)
 		end
-		if result.atc_classes.empty?
-			result.atc_classes = ODBA.cache_server.retrieve_from_index("fachinfo_index_#{lang}", key.dup, result)
+		if(atcs.empty?)
+			atcs = search_by_substance(key)
 		end
-		if result.atc_classes.empty?
-			result.atc_classes = ODBA.cache_server.retrieve_from_index('sequence_index_atc', key.dup)
+		if(atcs.empty?)
+			atcs = search_by_indication(key, lang, result)
 		end
-		result.atc_classes.delete_if { |atc| atc.code.length == 0 }
+		if(atcs.empty?)
+			atcs = search_by_sequence(key)
+		end
+		atcs.delete_if { |atc| atc.code.length == 0 }
+		result.atc_classes = atcs
 		result
+	end
+	def search_by_atc(key)
+		ODBA.cache_server.retrieve_from_index('atc_index', key.dup)
+	end
+	def search_by_company(key)
+		atcs = ODBA.cache_server.retrieve_from_index('atc_index_company', key.dup)
+		filtered = atcs.collect { |atc|
+			atc.company_filter_search(key.dup)
+		}
+		atcs.flatten.compact.uniq
+	end
+	def search_by_indication(key, lang, result)
+		ODBA.cache_server.retrieve_from_index("fachinfo_index_#{lang}", key.dup, result)
+	end
+	def search_by_sequence(key, result=nil)
+		ODBA.cache_server.retrieve_from_index('sequence_index_atc', key.dup, result)
+	end
+	def search_by_substance(key)
+		ODBA.cache_server.retrieve_from_index('substance_index_atc', key.dup)
 	end
 	def search_doctors(key)
 		ODBA.cache_server.retrieve_from_index("doctor_index", key)
@@ -580,7 +608,6 @@ class OddbPrevalence
 		result
 	end
 	def search_substances(query)
-		puts "search_substances(#{query})"
 		if(subs = substance(query))
 			[subs]
 		else
@@ -591,13 +618,9 @@ class OddbPrevalence
 		ODBA.cache_server.retrieve_from_index("sequence_index_atc", name)
 	end
 	def soundex_substances(name)
-		puts "soundex_substances(#{name})"
 		parts = name.split(/\s+/)
-		puts "parts = #{parts.join(',')}"
 		soundex = ODDB::Text::Soundex.soundex(parts)
-		puts "soundex = #{soundex.join(',')}"
 		key = soundex.join(' ')
-		puts "key = #{key}"
 		ODBA.cache_server.retrieve_from_index("substance_index", key)
 	end
 	def sponsor
