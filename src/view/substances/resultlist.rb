@@ -19,26 +19,19 @@ module ODDB
 class ResultList < View::FormList
 	COMPONENTS = {
 		[0,0]	=>	:name,
-		[1,0]	=>	:en,
-		[2,0]	=>	:lt,
-		[3,0]	=>	:de,
-		[4,0]	=>	:fr,
+		[1,0]	=>	:de,
+		[2,0]	=>	:fr,
+		[3,0]	=>	:en,
+		[4,0]	=>	:lt,
+		[5,0]	=>	:effective_form,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'list',
-		[1,0]	=>	'list',
-		[2,0]	=>	'list',
-		[3,0]	=>	'list',
-		[4,0]	=>	'list',
+		[0,0,6]	=>	'list',
 	}
 	CSS_HEAD_MAP = {
-		[0,0] =>	'th',
-		[1,0] =>	'th',
-		[2,0] =>	'th',
-		[3,0] =>	'th',
-		[4,0] =>	'th',
+		[0,0,6] =>	'th',
 	}
 	LOOKANDFEEL_MAP = {
 		:name	=>	:default_name,
@@ -49,6 +42,7 @@ class ResultList < View::FormList
 	}
 	SORT_DEFAULT = :name
 	SORT_REVERSE = false
+	SORT_HEADER = false
 	def name(model, session)
 		link = View::PointerLink.new(:name, model, session, self)
 		link

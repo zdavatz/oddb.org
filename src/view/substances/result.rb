@@ -15,7 +15,7 @@ class SearchForm < View::Form
 		[0,0]	=>	:search_query,
 		[1,0]	=>	:submit,
 	}
-	CSS_CLASS = 'component'
+	CSS_CLASS = 'right'
 	EVENT = :search
 	FORM_METHOD = 'GET'
 	SYMBOL_MAP = {

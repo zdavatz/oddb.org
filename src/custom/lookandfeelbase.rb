@@ -620,6 +620,7 @@ zdavatz ! ywesee.com
 				:th_description						=>	'Beschreibung',
 				:th_default_name					=>	'Vorgabe Name',
 				:th_dose									=>	'St&auml;rke',
+				:th_effective_form				=>	'Wirkform',
 				:th_en_description				=>	'Englische Bezeichnung',
 				:th_fachinfo_short				=>	'&nbsp;',
 				:th_fachinfo_title				=>	'Fachinfo-Titel',
