@@ -120,4 +120,13 @@ resolve_origin: ''
 dictionary: 'default'
 init_source: '@indications.values'
 fulltext: true
-
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'indication_index_atc'
+origin_klass: 'Indication'
+target_klass: 'AtcClass'
+resolve_search_term: 'search_text'
+resolve_target: 'registrations.collect { |reg| reg.sequences.values.collect { |seq| seq.atc_class } }.flatten.uniq'
+resolve_origin: 'sequences.collect { |seq| seq.registration.indication }.flatten.uniq'
+dictionary: 'default'
+init_source: '@atc_classes.values'
+fulltext: true

@@ -201,7 +201,12 @@ class ResultList < HtmlGrid::List
 		link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
 		link.value = model.name_base
 		link.set_attribute('class', 'result-big' << resolve_suffix(model))
-		link.set_attribute('title', @lookandfeel.lookup(:ean_code, model.barcode))
+		indication = model.registration.indication
+		title = [
+			@lookandfeel.lookup(:ean_code, model.barcode),
+			(indication.send(@session.language) unless(indication.nil?)),
+		].compact.join(', ')
+		link.set_attribute('title', title)
 		link
 	end
 	def substances(model, session)
