@@ -166,7 +166,7 @@ class ResultList < HtmlGrid::List
 			else
 				link = HtmlGrid::Value.new(:name, comp, session, self)
 			end
-			link.value = breakline(comp.name, 18)
+			link.value = breakline(comp.name, 12)
 			link
 		end
 	end
