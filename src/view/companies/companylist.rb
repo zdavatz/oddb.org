@@ -78,9 +78,6 @@ end
 class UnknownCompanyList < HtmlGrid::List
 	include View::Companies::CompanyList	
 	def init
-		@model = @model.select{ |company|
-			company.listed?
-		}
 		super
 	end
 end
@@ -89,21 +86,6 @@ class UnknownCompaniesComposite < CompaniesComposite
 end
 class UnknownCompanies < View::PublicTemplate
 	CONTENT = View::Companies::UnknownCompaniesComposite
-end
-class UserCompanyList < HtmlGrid::List
-	include View::Companies::CompanyList	
-	def init
-		@model = @model.select{ |company|
-			company.listed? || (company == @session.user.model)
-		}
-		super
-	end
-end
-class UserCompaniesComposite < CompaniesComposite
-	COMPANY_LIST = UserCompanyList
-end
-class UserCompanies < View::PublicTemplate
-	CONTENT = View::Companies::UserCompaniesComposite
 end
 class RootCompanyList < View::FormList
 	include View::Companies::CompanyList	

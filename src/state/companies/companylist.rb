@@ -20,7 +20,7 @@ class CompanyResult < State::Companies::Global
 	DIRECT_EVENT = :search
 	VIEW = {
 		ODDB::UnknownUser	=>	View::Companies::UnknownCompanies,
-		ODDB::CompanyUser	=>	View::Companies::UserCompanies,
+		ODDB::CompanyUser	=>	View::Companies::UnknownCompanies,
 		ODDB::RootUser		=>	View::Companies::RootCompanies,
 		ODDB::AdminUser		=>	View::Companies::RootCompanies,
 	}	
@@ -57,7 +57,7 @@ class CompanyList < CompanyResult
 	def init
 		super
 		@model = @session.app.companies.values
-		if(@session.user.is_a? ODDB::AdminUser)
+		if(@session.user.is_a?(ODDB::AdminUser))
 			userrange = @session.user_input(:range) || default_interval
 			range = RANGE_PATTERNS.fetch(userrange)
 			@filter = Proc.new { |model|
@@ -70,6 +70,14 @@ class CompanyList < CompanyResult
 				}
 			}
 			@range = range
+		elsif(@session.user.is_a?(ODDB::CompanyUser))
+			@model = @model.select { |company|
+				company.listed? || (company == @session.user.model)
+			}
+		else
+			@model = @model.select { |company|
+				company.listed?
+			}
 		end
 	end
 end
