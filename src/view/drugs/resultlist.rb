@@ -212,7 +212,7 @@ class ResultList < HtmlGrid::List
 	def breakline(txt, length)
 		name = ''
 		line = ''
-		txt.to_s.split(/\b/).each { |part|
+		txt.to_s.split(/(:?[\s-])/).each { |part|
 			if((line.length + part.length) > length)
 				name << line << '<br>'
 				line = part

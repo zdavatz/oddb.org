@@ -26,7 +26,7 @@ class OddbPrevalence
 	include ODDB::Failsafe
 	include ODBA::Persistable
 	ODBA_EXCLUDE_VARS = [
-		"@bean_counter",
+		"@atc_chooser", "@bean_counter",
 	]
 	attr_reader :galenic_groups, :companies, :doctors
 	attr_reader	:atc_classes, :last_update
@@ -799,7 +799,9 @@ module ODDB
 		VALIDATOR = Validator
 		attr_reader :cleaner, :updater
 		def initialize
-			ODBA.cache_server.prefetch
+			### keep this disabled, as long as unreachable prefetchable
+			### objects are not reaped from the db
+			#ODBA.cache_server.prefetch
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
 				OddbPrevalence.new
 			}
