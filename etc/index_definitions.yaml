@@ -74,6 +74,15 @@ resolve_origin: 'sequences'
 init_source: '@substances.values'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
+index_name: 'sequence_index'
+origin_klass: 'Sequence'
+target_klass: 'Sequence'
+resolve_search_term: 'name'
+resolve_target: ''
+resolve_origin: ''
+init_source: '@registrations.values.inject([]) { |inj, reg| inj + reg.sequences.values } '
+fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
 index_name: 'doctor_index'
 origin_klass: 'Doctor'
 target_klass: 'Doctor'

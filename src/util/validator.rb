@@ -10,7 +10,7 @@ module ODDB
 		alias :set_pass_2 :pass
 		alias :unique_email :email
 		BOOLEAN = [
-			:cl_status, 
+			:cl_status, :exact_match,
 		]
 		DATES = [
 			:inactive_date,

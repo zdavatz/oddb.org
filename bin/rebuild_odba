@@ -30,40 +30,40 @@ then
 fi
 
 echo "delete from object"
-psql -U postgres --command "delete from object" odba
+psql -U postgres --command "delete from object" oddb_dot_org
 echo "delete from object_connection"
-psql -U postgres --command "delete from object_connection" odba
+psql -U postgres --command "delete from object_connection" oddb_dot_org
 echo "drop table atc_index"
-psql -U postgres --command "drop table atc_index" odba
+psql -U postgres --command "drop table atc_index" oddb_dot_org
 echo "drop table atc_index_company"
-psql -U postgres --command "drop table atc_index_company" odba
+psql -U postgres --command "drop table atc_index_company" oddb_dot_org
 echo "drop table fachinfo_index_de"
-psql -U postgres --command "drop table fachinfo_index_de" odba
+psql -U postgres --command "drop table fachinfo_index_de" oddb_dot_org
 echo "drop table fachinfo_index_fr"
-psql -U postgres --command "drop table fachinfo_index_fr" odba
+psql -U postgres --command "drop table fachinfo_index_fr" oddb_dot_org
 echo "drop table sequence_index_atc"
-psql -U postgres --command "drop table sequence_index_atc" odba
+psql -U postgres --command "drop table sequence_index_atc" oddb_dot_org
 echo "drop table substance_index"
-psql -U postgres --command "drop table substance_index" odba
+psql -U postgres --command "drop table substance_index" oddb_dot_org
 echo "drop table substance_index_atc"
-psql -U postgres --command "drop table substance_index_atc" odba
+psql -U postgres --command "drop table substance_index_atc" oddb_dot_org
 echo "vacuum full analyze"
-psql -U postgres --command "vacuum full analyze" odba
+psql -U postgres --command "vacuum full analyze" oddb_dot_org
 
 for FILE in $(ls $DATADIR/object)
 do 
 	echo "object/$FILE"
 	psql -U postgres --command \
 		"COPY object FROM '$DATADIR/object/$FILE'" \
-		odba
+		oddb_dot_org
 done
 for FILE in $(ls $DATADIR/object_connection)
 do 
 	echo "object_connection/$FILE"
 	psql -U postgres --command \
 		"COPY object_connection FROM '/$DATADIR/object_connection/$FILE'" \
-		odba
+		oddb_dot_org
 done
 
 echo "vacuum full analyze"
-psql -U postgres --command "vacuum full analyze" odba
+psql -U postgres --command "vacuum full analyze" oddb_dot_org

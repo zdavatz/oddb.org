@@ -56,12 +56,6 @@ module ODDB
 					def invoice_sequences
 						@invoice_sequences.values
 					end
-=begin
-					def add_invoice(invoice, sequence)
-						facade = @sequences[sequence] ||= @sequences.store(sequence, SequenceFacade.new(sequence))
-						facade.add_invoice_item(invoice)
-					end
-=end
 				end
 				def init
 					model = {}
@@ -76,6 +70,14 @@ module ODDB
 						company_facade.add_sequence(item_facade)
 					}
 					@model = model.values
+				end
+			end
+			class PatinfoStatsCompanyUser < State::Admin::PatinfoStats
+				def init
+					super
+					@model.delete_if { |comp|
+						comp.company.user != @session.user
+					}
 				end
 			end
 		end

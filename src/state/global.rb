@@ -207,7 +207,12 @@ module ODDB
 						result = @session.search_doctors(query)
 						State::Doctors::DoctorResult.new(@session, result)
 					when :drugs
-						result = @session.search(query)
+						result = nil
+						result = if(@session.user_input(:exact_match))
+							@session.search_exact(query)
+						else
+							@session.search(query)
+						end
 						State::Drugs::Result.new(@session, result)
 					when :interactions
 						result = @session.search_interactions(query)

@@ -25,7 +25,7 @@ module Datastructure
 	end
 end
 module ODDB
-	class RootUser < User
+	class RootUser
 		def initialize
 			@oid = 0
 			@unique_email = 'test@oddb.org'

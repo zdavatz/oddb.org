@@ -22,10 +22,6 @@ require 'odba/index_definition'
 require 'fileutils'
 require 'yaml'
 
-#require 'madeleine'
-require 'datastructure/chartree'
-require 'datastructure/soundextable'
-
 class OddbPrevalence
 	include ODDB::Failsafe
 	include ODBA::Persistable
@@ -139,17 +135,6 @@ class OddbPrevalence
 	def atc_ddd_count
 		@atc_ddd_count ||= count_atc_ddd()
 	end
-=begin
-	def clear_indices
-		@sequence_index = nil
-		@indication_index = nil
-		@substance_index = nil
-		@substance_name_index = nil
-		@company_index = nil
-		@atc_index = nil
-		@atc_chooser = nil
-	end
-=end
 	def company(oid)
 		@companies[oid.to_i]
 	end
@@ -475,15 +460,6 @@ class OddbPrevalence
 	def patinfo_deprived_sequences(oid)
 		@patinfos_deprived_sequences[oid.to_i]
 	end
-=begin
-	def odba_store(name = nil)
-		failsafe {
-			#clear_indices
-			super
-			#rebuild_indices
-		}
-	end
-=end
 	def rebuild_atc_chooser
 		chooser = ODDB::AtcNode.new(nil)
 		@atc_classes.values.sort_by { |atc| 
@@ -513,20 +489,6 @@ class OddbPrevalence
 			@patinfo_count = count_patinfos()
 		}
 	end
-=begin
-	def rebuild_indices
-		@indication_index = Datastructure::CharTree.new
-		@indications.each_value { |indication|
-			indication.descriptions.values.uniq.each { |desc|
-				store_in_index(@indication_index, desc, indication)
-			}
-		}
-		@atc_index = Datastructure::CharTree.new
-		@atc_classes.each_value { |atc|
-			store_in_index(@atc_index, atc.code, atc)
-		}
-	end
-=end
 	def registration(registration_id)
 		@registrations[registration_id]
 	end
@@ -581,6 +543,16 @@ class OddbPrevalence
 	end
 	def search_doctors(key)
 		ODBA.cache_server.retrieve_from_index("doctor_index", key)
+	end
+	def search_exact(query)
+		result = ODDB::SearchResult.new
+		atc = ODDB::AtcClass.new('n.n.')
+		ODBA.cache_server.retrieve_from_index('sequence_index', 
+			query).each { |seq|
+			atc.add_sequence(seq)
+		}
+		result.atc_classes = [atc]
+		result
 	end
 	def search_interactions(query)
 		result = ODBA.cache_server.retrieve_from_index("sequence_index_substance", query)
@@ -667,34 +639,6 @@ class OddbPrevalence
 	def user_by_email(email)
 		@users.values.select { |user| user.unique_email == email }.first
 	end
-	# ODBA transmogrification
-=begin
-	def rebuild_odba
-		puts "reloading persistable"
-		load '/usr/local/lib/site_ruby/1.8/odba/persistable.rb'
-		load '/usr/local/lib/site_ruby/1.8/odba.rb'
-		#initialize scalar cache and cache_server 
-		#(otherwise deadlock problems will occur) 
-		puts "initializing scalar_cache"
-		ODBA.scalar_cache.size
-		puts "initializing indices"
-		ODBA.cache_server.indices.size
-		puts "cleaning fachinfos"
-		@fachinfos.delete_if { |key, val| val.descriptions["de"].name.nil? }
-		puts "clearing indices"
-		clear_indices
-		start = Time.now
-		puts "storing oddbapp"
-		ODBA.batch { 
-			odba_store('oddbapp')
-		}
-		stored = Time.now
-		ODBA.storage.close
-		puts <<-EOS
-#{(stored - start).to_f / 3600} h to save OddbPrevalence and all its unsaved neighbors
-		EOS
-	end			
-=end
 	def rebuild_odba_indices
 		ODBA.scalar_cache.size
 		ODBA.cache_server.indices.size
@@ -744,23 +688,6 @@ class OddbPrevalence
 	def generate_german_dictionary
 		generate_dictionary('german', 'de_DE@euro')
 	end
-=begin
-	def how_many_objects
-		arr = []
-		objs = {}
-		ObjectSpace.each_object{|obj|
-			arr.push(obj.class)
-		}
-		arr.uniq!
-		arr.each { |klass|
-			objs.store(klass, ObjectSpace.each_object(klass){})
-		}
-		sortres	=		objs.sort {|a,b| a[1]<=>b[1]}
-		sortres.each{|res|
-			puts res
-		}
-	end
-=end
 	private
 	def create_unknown_galenic_group
 		unless(@galenic_groups.is_a?(Hash) && @galenic_groups.size > 0)

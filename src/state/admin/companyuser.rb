@@ -4,6 +4,7 @@
 require 'state/admin/user'
 require 'state/companies/global'
 require 'state/drugs/global'
+require 'state/admin/patinfo_stats'
 
 module ODDB
 	module State
@@ -49,11 +50,22 @@ module CompanyUser
 		item.carry(:company_name, @session.user.model)
 		State::Drugs::Registration.new(@session, item)
 	end
+	def patinfo_stats
+		State::Admin::PatinfoStatsCompanyUser.new(@session,[])
+	end
 	def user_navigation
 		[
 			State::Drugs::AtcChooser,
 			State::Companies::CompanyList,
 			State::Admin::Logout,
+		]
+	end
+	def zones
+		[:drugs, :interactions, :substances, :companies, :user, :admin]
+	end
+	def zone_navigation
+		[
+			State::Admin::PatinfoStatsCompanyUser
 		]
 	end
 end
