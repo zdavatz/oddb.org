@@ -56,8 +56,9 @@ class Registration < State::Drugs::Global
 		elsif(!ind.empty?)
 			#err = create_error(:e_unknown_indication, :indication, ind)
 			#@errors.store(:indication, err)
-			hash.store(:indication, ind)
-			sel = State::Drugs::SelectIndication::Selection.new(hash, 
+			input = hash.dup
+			input.store(:indication, ind)
+			sel = State::Drugs::SelectIndication::Selection.new(input, 
 				@session.app.search_indications(ind), @model)
 			new_state = State::Drugs::SelectIndication.new(@session, sel)
 		end
