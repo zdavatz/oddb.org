@@ -96,6 +96,9 @@ module ODDB
 			[0,6]		=>	:software_feedback,
 			[0,6,1]	=>	:divider,
 			[0,6,2]	=>	:mailinglist,
+			[0,6,3]	=>	:divider,
+			[0,6,4]	=>	:fipi_offer,
+			[0,6,5]	=>	:new_feature,
 			[0,7]		=>	:database_size,
 			[0,7,1]	=>	'database_size_text',
 			[0,7,2]	=>	'comma_separator',
@@ -125,6 +128,7 @@ module ODDB
 			:atc_chooser			=>	HtmlGrid::Link,
 			:database_size		=>	HtmlGrid::Text,
 			:database_size_text	=>	HtmlGrid::Text,
+			:fipi_offer				=>	HtmlGrid::Link,
 			:language_de			=>	HtmlGrid::Link,
 			:language_fr			=>	HtmlGrid::Link,
 			:mailinglist			=>	HtmlGrid::Link,
@@ -168,6 +172,13 @@ module ODDB
 		end
 		def export_divider(model, session)
 			divider(model, session)
+		end
+		def fipi_offer(model, session)
+			link = HtmlGrid::Link.new(:fipi_offer, model, session, self)
+			link.href = @lookandfeel.event_url(:fipi_offer_input)
+			link.label = true
+			link.set_attribute('class', 'list')
+			link
 		end
 		def generic_definition(model, session)
 			link = HtmlGrid::PopupLink.new(:generic_definition, model, session, self)
