@@ -60,10 +60,11 @@ class PatinfoStatsList < HtmlGrid::List
 	SUBHEADER = View::Admin::CompanyHeader
 	def compose_list(model=@model, offset=[0,0])
 		model.each { |company|
+			@pi_nr = 0
 			compose_subheader(company, offset)
 			offset = resolve_offset(offset, self::class::OFFSET_STEP)
 			invoice_sequences = company.invoice_sequences
-			invoice_sequences.each {|seq|
+			invoice_sequences.each { |seq|
 				compose_subheader_seq(seq, offset)
 				offset = resolve_offset(offset, self::class::OFFSET_STEP)
 				invoice_items = seq.invoice_items
@@ -79,11 +80,9 @@ class PatinfoStatsList < HtmlGrid::List
 		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 	end
 	def compose_subheader_seq(seq, offset)
-		values = [
-			seq_iks_link(seq),
-			@lookandfeel.lookup(:user_pi_upload)
-		]
-		@grid.add(values, *offset)
+		@grid.add(@pi_nr+=1, *offset)
+		@grid.add('&nbsp;'*2, *offset)
+		@grid.add(seq_iks_link(seq), *offset)
 		@grid.add_style('result-seq indent bold', *offset)
 		x, y = offset
 		@grid.add_style('result-seq', x + 1, y)

@@ -87,7 +87,7 @@ class ResultList < HtmlGrid::List
 		[7,0]		=>	:price_public,
 		[8,0]		=>	:substances,
 		[9,0]		=>	:company_name,
-		[10,0]		=>	:ikscat,
+		[10,0]	=>	:ikscat,
 		[11,0]	=>	:registration_date,
 		[12,0]	=>	:fachinfo,
 		[13,0]	=>  :patinfo,

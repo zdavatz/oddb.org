@@ -115,14 +115,14 @@ class RegistrationForm < View::Form
 		[0,0,4,5]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,4,6]	=>	'list',
+		[0,0,4,9]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
 	SYMBOL_MAP = {
 		#:company_name				=>	HtmlGrid::InputText,
 		:expiration_date		=>	HtmlGrid::InputDate,
-		:fachinfo_upload		=>	HtmlGrid::InputFile,
+		#:fachinfo_upload		=>	HtmlGrid::InputFile,
 		:generic_type				=>	HtmlGrid::Select,
 		:inactive_date			=>	HtmlGrid::InputDate,
 		:market_date				=>	HtmlGrid::InputDate,
@@ -141,15 +141,25 @@ class RegistrationForm < View::Form
 			#css_map.store([1,5], 'button')
 		else
 			components.update({
-				[0,4]   =>	:language_select,
-				[0,5]		=>	:fachinfo_upload,
+				[0,5]		=>	'fi_upload_instruction0',
 				[2,5]		=>	:fachinfo_label,
 				[3,5]		=>	:fachinfo,
-				[1,6]		=>	:submit,
-				[1,6,1]	=>	:new_registration,
+				[0,6]		=>	'fi_upload_instruction1',
+				[1,6]		=>	:language_select,
+				[0,7]		=>	'fi_upload_instruction2',
+				[1,7]		=>	:fachinfo_upload,
+				[0,8]		=>	'fi_upload_instruction3',
+				[1,8]		=>	:submit,
+				[1,8,1]	=>	:new_registration,
 			})
 			#component_css_map.store([0,5,4], 'standard')
-			css_map.store([0,6,4], 'list')
+			#css_map.store([0,7,4], 'list')
+			css_map.store([0,5], 'result-b-r-unknown-left')
+			css_map.store([1,5], 'list-bg')
+			css_map.store([0,6], 'list-bg')
+			css_map.store([1,6], 'list-bg')
+			css_map.store([0,7], 'list-bg')
+			css_map.store([1,7], 'list-bg')
 			#css_map.store([1,6], 'button')
 		end
 	end
@@ -160,6 +170,11 @@ class RegistrationForm < View::Form
 			HtmlGrid::InputText
 		end
 		klass.new(:company_name, model, session, self)
+	end
+	def fachinfo_upload(model, session)
+		input = HtmlGrid::InputFile.new(:fachinfo_upload, model, session, self)
+		input.label = false
+		input
 	end
 	def fachinfo_label(model, session)
 		HtmlGrid::LabelText.new(:fachinfo, model, session , self)
@@ -174,8 +189,10 @@ class RegistrationForm < View::Form
 		klass.new(:iksnr, model, session, self)
 	end
 	def language_select(model, session)
-		View::Drugs::FachinfoLanguageSelect.new(:language_select, model, 
+		sel = View::Drugs::FachinfoLanguageSelect.new(:language_select, model, 
 			session, self)
+		sel.label = false
+		sel
 	end
 	def indication(model, session)
 		InputDescription.new(:indication, model.indication, session, self)
