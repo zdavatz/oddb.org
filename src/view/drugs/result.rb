@@ -3,7 +3,7 @@
 
 require 'htmlgrid/form'
 require 'view/form'
-require 'view/publictemplate'
+require 'view/resulttemplate'
 require 'view/drugs/resultlist'
 require 'view/resultfoot'
 require 'view/searchbar'
@@ -69,7 +69,7 @@ class ResultForm < View::Form
 		@lookandfeel.lookup(:title_found, query, session.state.package_count)
 	end
 end
-class Result < View::PublicTemplate
+class Result < View::ResultTemplate
 	CONTENT = ResultForm
 	def head(model, session)
 		if(@lookandfeel.enabled?(:sponsorlogo))

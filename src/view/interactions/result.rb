@@ -53,7 +53,7 @@ class ResultForm < View::Form
 		@lookandfeel.lookup(:title_found, query, session.state.object_count)
 	end
 end
-class Result < View::PublicTemplate
+class Result < View::ResultTemplate
 	CONTENT = View::Interactions::ResultForm
 end
 class EmptyResultForm < HtmlGrid::Form

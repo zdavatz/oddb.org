@@ -34,6 +34,11 @@ class CompanyResult < State::Companies::Global
 		'unknown'	=>	'unknown',
 	}
 	#REVERSE_MAP = ResultList::REVERSE_MAP
+	def init
+		if(@model.empty?)
+			@default_view = View::Companies::EmptyResult
+		end
+	end
 	def default_interval
 		intervals.first
 	end
