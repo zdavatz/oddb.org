@@ -44,7 +44,7 @@ class WaitForFachinfo < View::PopupTemplate
 	def http_headers
 		hsh = super
 		link = @lookandfeel.event_url(:wait)
-		hsh.store("Refresh", "5; #{link}")
+		hsh.store("Refresh", "5; url=#{link}")
 		hsh
 	end
 end
