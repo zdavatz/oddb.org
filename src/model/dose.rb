@@ -15,12 +15,26 @@ module ODDB
 			end
 		end
 		def initialize(qty, unit=nil)
-			if (match = %r{([^/]*)/\s*(\d+([.,]\d+)?)\s*(.*)}.match(unit.to_s))
-				qty = round(qty)
+		  np = '-?[0-9]+(?:[.,][0-9]+)?' ## numerical pattern
+			qty_str = ''
+			if(match = %r{(#{np})\s*-\s*(#{np})}.match(qty.to_s))
+				qty = round(match[1].to_f)..round(match[2].to_f)
+			end
+			if(qty.is_a?(Range))
+				qty_str = "#{qty.first}-#{qty.last}"
+				qty = (qty.first + qty.last) / 2.0
+				@not_normalized = [qty_str, unit].compact.join(' ')
+			end
+			if(match = %r{([^/]*)/\s*(#{np})\s*(.*)}.match(unit.to_s))
+				qty_str = round(qty).to_s
 				div = round(match[2])
-				@not_normalized = [qty, [match[1].strip, div].join(' / '), match[4]].join
+				@not_normalized = [
+					qty_str, 
+					[match[1].strip, div].join(' / '), 
+					match[3],
+				].join
 				qty = qty.to_f/div.to_f
-				unit = [match[1].strip,match[4].strip].join('/')
+				unit = [match[1].strip,match[3].strip].join('/')
 			end
 			qty = round(qty)
 			unit = unit.to_s.tr('L', 'l')
