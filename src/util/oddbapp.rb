@@ -633,7 +633,7 @@ class OddbPrevalence
 			code = (atc = seq.atc_class) ? atc.code : 'n.n'
 			new_atc = atc_classes.fetch(code) { 
 				atc_class = ODDB::AtcClass.new(code)
-				atc_class.descriptions = atc.descriptions
+				atc_class.descriptions = atc.descriptions unless(atc.nil?)
 				atc_classes.store(code, atc_class)
 			}
 			new_atc.sequences.push(seq)
