@@ -513,22 +513,22 @@ class OddbPrevalence
 		result.exact = true
 		if(query == 'atcless')
 			atc = ODDB::AtcClass.new('n.n.')
+			sequences = []
 			@registrations.each_value { |reg|
 				reg.sequences.each_value { |seq|
 					if(seq.atc_class.nil? && !seq.packages.empty?)
-						atc.add_sequence(seq)
+						sequences.push(seq)
 					end	
 				}	
 			}
+			atc.sequences = sequences
 			result.atc_classes = [atc]
 			return result
 		elsif(match = /(?:\d{4})?(\d{5})(?:\d{4})?/.match(query))
 			iksnr = match[1]
 			if(reg = registration(iksnr))
 				atc = ODDB::AtcClass.new('n.n.')
-				reg.sequences.each_value { |seq|
-					atc.add_sequence(seq)
-				}
+				atc.sequences = reg.sequences.values
 				result.atc_classes = [atc]
 				return result
 			end
@@ -550,7 +550,20 @@ class OddbPrevalence
 		if(atcs.empty?)
 			atcs = search_by_sequence(key)
 		end
-		atcs.delete_if { |atc| atc.code.length == 0 }
+		# cleanup. remove when all temporary-atcs are deleted from the db
+		atcs.delete_if { |atc|
+			delete = (atc.code == 'n.n.' || atc.code.empty?)
+			if(delete)
+				puts "atc: #{atc} - code: #{atc.code}"
+				puts "deleting!"
+				ODBA.batch { 
+					atc.odba_delete 
+				}
+				true
+			end
+		}
+		#
+		#atcs.delete_if { |atc| atc.code.length == 0 }
 		result.atc_classes = atcs
 		result
 	end
@@ -562,7 +575,7 @@ class OddbPrevalence
 		filtered = atcs.collect { |atc|
 			atc.company_filter_search(key.dup)
 		}
-		atcs.flatten.compact.uniq
+		filtered.flatten.compact.uniq
 	end
 	def search_by_indication(key, lang, result)
 		ODBA.cache_server.retrieve_from_index("fachinfo_index_#{lang}", key.dup, result)
@@ -582,10 +595,8 @@ class OddbPrevalence
 	def search_exact(query)
 		result = ODDB::SearchResult.new
 		atc = ODDB::AtcClass.new('n.n.')
-		ODBA.cache_server.retrieve_from_index('sequence_index', 
-			query).each { |seq|
-			atc.add_sequence(seq)
-		}
+		atc.sequences = ODBA.cache_server.\
+			retrieve_from_index('sequence_index', query)
 		result.atc_classes = [atc]
 		result
 	end
