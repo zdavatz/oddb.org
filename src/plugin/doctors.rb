@@ -20,7 +20,6 @@ module ODDB
 			def initialize(*args)
 				super
 				@config = @app.config(:docparse, :ch)
-				puts @config.inspect
 				@doctors_created = 0
 				@doctors_deleted = 0
 			end
@@ -30,13 +29,14 @@ module ODDB
 				top_doc_id = 0
 				(range.to_a - empty_ids).each { |doc_id| 
 					if(data = get_doctor_data(doc_id))
-						doctor = store_doctor(doc_id, data)
+						store_doctor(doc_id, data)
 						top_doc_id = doc_id
 					else
 						# 1. delete doctor if exists
 						delete_doctor(doc_id)
 						# 2. record id, muss das naechste mal nicht geprueft werden.
 						empty_ids.push(doc_id)
+						store_empty_ids(empty_ids)
 					end
 				}
 				empty_ids.delete_if { |id| id > top_doc_id }
@@ -49,7 +49,16 @@ module ODDB
 				end
 			end
 			def get_doctor_data(doc_id)
-				self::class::PARSER.emh_data(doc_id)
+				retry_count = 3
+				begin
+					self::class::PARSER.emh_data(doc_id)
+				rescue Errno::EINTR
+					puts "rescued Errno::EINTR -> #{retry_count} more tries"
+					if(retry_count > 0)
+						retry_count -= 1
+						retry
+					end
+				end
 			end
 			def report
 				report = "Doctors update \n\n"

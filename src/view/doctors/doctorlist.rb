@@ -35,7 +35,7 @@ class DoctorList < HtmlGrid::List
 	LEGACY_INTERFACE = false
 	def init
 		if(@session.state.paged?)
-			include View::AlphaHeader
+			extend(View::AlphaHeader)
 		end
 		super
 	end
