@@ -225,7 +225,7 @@ Grammar OddbSize
 					if(hook.nil?)
 						call = laststep.shift
 						args = laststep.join(',')
-						msg = "#{lasthook.class}::#{call}(#{args}) returned nil"
+						msg = "#{to_s} -> #{lasthook.class}::#{call}(#{args}) returned nil"
 						raise(UninitializedPathError.new(msg, self))
 					elsif(hook.respond_to?(step.first))
 						lasthook = hook
@@ -242,7 +242,7 @@ Grammar OddbSize
 					else
 						call = step.shift
 						args = step.join(',')
-						msg = "undefined Method #{hook.class}::#{call}(#{args})"
+						msg = "#{to_s} -> undefined Method #{hook.class}::#{call}(#{args})"
 						raise(InvalidPathError.new(msg, self))
 					end
 				}
