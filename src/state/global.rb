@@ -115,19 +115,18 @@ module ODDB
 				end
 			end
 			def compare
-				pointer = @session.user_input(:pointer)
-				package = pointer.resolve(@session.app)
-				if(package.is_a? Package)
-					begin
-						State::Drugs::Compare.new(@session, ODDB::Comparison.new(package))
-					rescue StandardError => e
-						puts e.class
-						puts e.message
-						puts e.backtrace
-						self
+				if(pointer = @session.user_input(:pointer))
+					package = pointer.resolve(@session.app)
+					if(package.is_a? Package)
+						begin
+							State::Drugs::Compare.new(@session, ODDB::Comparison.new(package))
+						rescue StandardError => e
+							puts e.class
+							puts e.message
+							puts e.backtrace
+							self
+						end
 					end
-				else
-					self
 				end
 			end
 			def clear_interaction_basket
