@@ -40,9 +40,6 @@ module ODDB
 				set_target(nil)
 			end
 			def send_line_break
-				#	puts "send_line_break"
-				#puts @section
-				#puts @newline_target
 				if(@target == @name)
 					@name << "\n"
 				elsif(@chapter == @galenic_form && @section)
@@ -50,13 +47,10 @@ module ODDB
 				elsif(@chapter && (@target == @chapter.heading \
 					|| @chapter == @galenic_form))
 					@chapter.heading << "\n"
-				#elsif(@chapter == @galenic_form)
-					#@chapter.heading << "\n"
 				else
 					@chapter.clean! unless(@chapter.nil? || @mozilla)
 					@newline_target << "\n" unless(@newline_target.nil?)
 					target = if(@section)
-						#puts "next paragraph"
 						@section.next_paragraph
 					end
 					set_target(target)
