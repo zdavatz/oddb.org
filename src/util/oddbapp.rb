@@ -254,9 +254,9 @@ class OddbPrevalence
 	def create_registration(iksnr)
 		unless @registrations.include?(iksnr)
 			reg = ODDB::Registration.new(iksnr)
-			reg.odba_store
+			#reg.odba_store
 			@registrations.store(iksnr, reg)
-			@registrations.odba_store
+			#@registrations.odba_store
 			reg
 		end
 	end
