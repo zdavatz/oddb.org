@@ -610,7 +610,14 @@ a.feedback, a.feedback:link, a.feedback:visited, a.square {
 	text-decoration : none;
 	padding : 2px 2px 2px 3px;
 }
-td.square {
+td.square-bg, td.square-original-bg, 
+td.square-generic-bg, td.square-complementary-bg, 
+td.square-unknown-bg {
+	padding : 2px;
+	background : $rslt_bg;
+}
+td.square-bg, td.square-original-bg, td.square-generic-bg,
+td.square-complementary, td.square-unknown {
 	padding : 2px;
 }
 td.bg a.feedback {
