@@ -25,25 +25,22 @@ module ODDB
 				end
 				set_target(target)
 			end
-			def named_chapter(name)
-				self.instance_eval <<-EOS
-					@#{name} = Text::Chapter.new
-				EOS
-			end
 			def send_flowing_data(data)
-				#puts data
+				#	puts "send_flowing_data"
 				@newline_target = nil
 				(@target << data) unless(@target.nil?)
+				#puts "****************************"
+				#puts @target
 			end
 			def send_hor_rule
-				#puts "send_hor_rule"
+				#	puts "send_hor_rule"
 				@chapter.clean! unless @chapter.nil?
 				@chapter = nil
 				@section = nil
 				set_target(nil)
 			end
 			def send_line_break
-				#puts "send_line_break"
+				#	puts "send_line_break"
 				#puts @section
 				#puts @newline_target
 				if(@target == @name)
@@ -89,6 +86,16 @@ module ODDB
 				@newline_target = @target unless(target == @target)
 				@target = target
 			end
+			def named_chapter(name)
+				self.instance_eval <<-EOS
+					@#{name} = Text::Chapter.new
+				EOS
+			end
+			def named_chapters(names)
+				names.collect { |name|
+					named_chapter(name)
+				}
+			end
 			def next_chapter
 				#puts "next_chapter!"
 				#puts caller[0,3]
@@ -97,11 +104,6 @@ module ODDB
 				end
 				chapter = @templates.shift || Text::Chapter.new
 				@chapters.push(chapter).last
-			end
-			def named_chapters(names)
-				names.collect { |name|
-					named_chapter(name)
-				}
 			end
 		end
 	end
