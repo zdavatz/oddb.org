@@ -127,22 +127,24 @@ class SequenceForm < Form
 		[2,2]		=>	:galenic_form,
 		[0,3]		=>	:atc_class,
 		[2,3]		=>	:atc_descr,
-		[1,4]		=>	:submit,
-		[1,4,0] =>  :delete_item,
-		[2,4]   =>  :patinfo_desc,
-		[3,4,1] =>  :patinfo,
-		[3,4,2] =>  :assign_patinfo,
+		[0,4]		=>	:patinfo_upload,
+		[1,5]		=>	:submit,
+		[1,5,0] =>  :delete_item,
+		[2,5]   =>  :patinfo_desc,
+		[3,5,1] =>  :patinfo,
+		[3,5,2] =>  :assign_patinfo,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,4,4]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,4,4]	=>	'list',
-		[2,4]     =>	'list',
-		[3,4]			=>	'result-infos',
+		[0,0,5,5]	=>	'list',
+		[2,5]     =>	'list',
+		[3,5]			=>	'result-infos',
 	}
 	DISABLE_ADDITIONAL_CSS = true
 	LABELS = true
+	TAG_METHOD = :multipart_form
 	SYMBOL_MAP = {
 		:iksnr	=>	HtmlGrid::Value,
 		:patinfo_desc => HtmlGrid::LabelText,
@@ -150,6 +152,12 @@ class SequenceForm < Form
 	def init
 		super
 		error_message()
+	end
+	def patinfo_upload(model, session)
+		HtmlGrid::InputFile.new(:patinfo_upload, model, session, self)
+	end
+	def patinfo_label(model, session)
+		HtmlGrid::LabelText.new(:patinfo, model, session , self)
 	end
 	def assign_patinfo(model, session)
 		unless(@model.is_a? Persistence::CreateItem)

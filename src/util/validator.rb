@@ -53,6 +53,7 @@ module ODDB
 		FILES = [
 			:logo_file,
 			:fachinfo_upload,
+			:patinfo_upload,
 		]
 		NUMERIC = [
 			:fi_quantity,

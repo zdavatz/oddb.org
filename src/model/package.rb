@@ -147,6 +147,9 @@ Grammar OddbSize
 		def patinfo
 			@sequence.patinfo
 		end
+		def pdf_patinfo
+			@sequence.pdf_patinfo
+		end
 		def registration
 			@sequence.registration
 		end
