@@ -20,7 +20,7 @@ module ODDB
 			@sequences = {}
 		end
 		def active?
-			(@inactive_date.nil? || @inactive_date >= Date.today) \
+			(@inactive_date.nil? || @inactive_date > Date.today) \
 				&& (@market_date.nil? || @market_date <= Date.today)
 		end
 		def atc_classes

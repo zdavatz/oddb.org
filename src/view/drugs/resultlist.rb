@@ -87,7 +87,7 @@ class ResultList < HtmlGrid::List
 		[7,0]		=>	:substances,
 		[8,0]		=>	:company_name,
 		[9,0]		=>	:ikscat,
-		[10,0]		=>	:registration_date,
+		[10,0]	=>	:registration_date,
 		[11,0]	=>	:fachinfo,
 		[12,0]	=>  :patinfo,
 		[13,0]	=>	:limitation_text,
@@ -122,7 +122,7 @@ class ResultList < HtmlGrid::List
 	}
 	CSS_HEAD_MAP = {
 		[0,0] =>	'th',
-		[1,0,1] =>	'th',
+		[1,0] =>	'th',
 		[2,0] =>	'th',
 		[3,0]	=>	'th-r',
 		[4,0]	=>	'th-r',
@@ -154,18 +154,20 @@ class ResultList < HtmlGrid::List
 		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 	end
 	def company_name(model, session)
-		comp = model.company
-		return if comp.nil?
-		if(@lookandfeel.enabled?(:powerlink, false) && comp.powerlink)
-			link = HtmlGrid::HttpLink.new(:name, model.company, session, self)
-			link.href = @lookandfeel.event_url(:powerlink, {'pointer'=>comp.pointer})
-			link.set_attribute("class", "powerlink")
+		if(comp = model.company)
+			link = nil
+			if(@lookandfeel.enabled?(:powerlink, false) && comp.powerlink)
+				link = HtmlGrid::HttpLink.new(:name, comp, session, self)
+				link.href = @lookandfeel.event_url(:powerlink, {'pointer'=>comp.pointer})
+				link.set_attribute("class", "powerlink")
+			elsif(@lookandfeel.enabled?(:companylist) \
+				&& comp.listed?)
+				link = View::PointerLink.new(:name, comp, session, self)
+			else
+				link = HtmlGrid::Value.new(:name, comp, session, self)
+			end
+			link.value = breakline(comp.name, 12)
 			link
-		elsif(@lookandfeel.enabled?(:companylist) \
-			&& model.company.listed?)
-			View::PointerLink.new(:name, model.company, session, self)
-		else
-			HtmlGrid::Value.new(:name, model.company, session, self)
 		end
 	end
 	def comparable_size(model, session)
@@ -196,10 +198,23 @@ class ResultList < HtmlGrid::List
 		txt.set_attribute('title', title)
 		txt
 	end
+	def breakline(txt, length)
+		name = ''
+		line = ''
+		txt.split(/\b/).each { |part|
+			if((line.length + part.length) > length)
+				name << line << '<br>'
+				line = part
+			else
+				line << part
+			end
+		}
+		name << line
+	end
 	def name_base(model, session)
 		link = HtmlGrid::PopupLink.new(:compare, model, session, self)
 		link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
-		link.value = model.name_base
+		link.value = breakline(model.name_base, 25)
 		link.set_attribute('class', 'result-big' << resolve_suffix(model))
 		indication = model.registration.indication
 		title = [
