@@ -60,7 +60,22 @@ module CompanyList
 		HtmlGrid::MailLink.new('contact_email', model, session, self)
 	end
 end
-class UnknownCompanyListList < HtmlGrid::List
+class CompaniesComposite < Form
+	CSS_CLASS = 'composite'
+	COMPONENTS = {
+		[0,0]		=>	:search_query,
+		[0,0,1]	=>	:submit,
+		[0,1]		=>	:company_list,
+	}
+	EVENT = :search
+	SYMBOL_MAP = {
+		:search_query		=>	View::SearchBar,	
+	}
+	def company_list(model, session)
+		self::class::COMPANY_LIST.new(model, session, self)
+	end
+end
+class UnknownCompanyList < HtmlGrid::List
 	include View::Companies::CompanyList	
 	def init
 		@model = @model.select{ |company|
@@ -69,7 +84,13 @@ class UnknownCompanyListList < HtmlGrid::List
 		super
 	end
 end
-class CompanyUserListList < HtmlGrid::List
+class UnknownCompaniesComposite < CompaniesComposite
+	COMPANY_LIST = UnknownCompanyList
+end
+class UnknownCompanies < View::PublicTemplate
+	CONTENT = View::Companies::UnknownCompaniesComposite
+end
+class UserCompanyList < HtmlGrid::List
 	include View::Companies::CompanyList	
 	def init
 		@model = @model.select{ |company|
@@ -78,19 +99,22 @@ class CompanyUserListList < HtmlGrid::List
 		super
 	end
 end
-class RootCompanyListList < View::FormList
+class UserCompaniesComposite < CompaniesComposite
+	COMPANY_LIST = UserCompanyList
+end
+class UserCompanies < View::PublicTemplate
+	CONTENT = View::Companies::UserCompaniesComposite
+end
+class RootCompanyList < View::FormList
 	include View::Companies::CompanyList	
 	EVENT = :new_company
 	include View::AlphaHeader
 end
-class UnknownCompanyList < View::PublicTemplate
-	CONTENT = View::Companies::UnknownCompanyListList
+class RootCompaniesComposite < CompaniesComposite
+	COMPANY_LIST = RootCompanyList
 end
-class CompanyUserList < View::PublicTemplate
-	CONTENT = View::Companies::CompanyUserListList
-end
-class RootCompanyList < View::PublicTemplate
-	CONTENT = View::Companies::RootCompanyListList
+class RootCompanies < View::PublicTemplate
+	CONTENT = View::Companies::RootCompaniesComposite
 end
 		end
 	end

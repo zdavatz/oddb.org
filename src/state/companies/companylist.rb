@@ -15,14 +15,14 @@ module ODDB
 			#class UnknownUser < SBSM::UnknownUser; end
 			#class CompanyUser < State::Companies::User; end
 			#class AdminUser < State::Companies::User; end
-class CompanyList < State::Companies::Global
+class CompanyResult < State::Companies::Global
 	attr_reader :intervals, :range
-	DIRECT_EVENT = :companylist
+	DIRECT_EVENT = :search
 	VIEW = {
-		ODDB::UnknownUser	=>	View::Companies::UnknownCompanyList,
-		ODDB::CompanyUser	=>	View::Companies::CompanyUserList,
-		ODDB::RootUser		=>	View::Companies::RootCompanyList,
-		ODDB::AdminUser		=>	View::Companies::RootCompanyList,
+		ODDB::UnknownUser	=>	View::Companies::UnknownCompanies,
+		ODDB::CompanyUser	=>	View::Companies::UserCompanies,
+		ODDB::RootUser		=>	View::Companies::RootCompanies,
+		ODDB::AdminUser		=>	View::Companies::RootCompanies,
 	}	
 	RANGE_PATTERNS = {
 		'a-d'			=>	'a-d‰ƒ·¡‡¿‚¬Á«',
@@ -34,6 +34,26 @@ class CompanyList < State::Companies::Global
 		'unknown'	=>	'unknown',
 	}
 	#REVERSE_MAP = ResultList::REVERSE_MAP
+	def default_interval
+		intervals.first
+	end
+	def get_intervals
+		@model.collect { |company| 
+			rng = RANGE_PATTERNS.select { |key, pattern| 
+				/^[#{pattern}]/i.match(company.name)
+			}.first
+			rng.nil? ? 'unknown' : rng.first
+		}.compact.uniq.sort
+	end
+	def interval
+		@interval ||= self::class::RANGE_PATTERNS.index(@range)
+	end
+	def intervals
+		@intervals ||= get_intervals
+	end
+end
+class CompanyList < CompanyResult
+	DIRECT_EVENT = :companylist
 	def init
 		super
 		@model = @session.app.companies.values
@@ -51,23 +71,6 @@ class CompanyList < State::Companies::Global
 			}
 			@range = range
 		end
-	end
-	def default_interval
-		intervals.first
-	end
-	def get_intervals
-		@model.collect { |company| 
-			rng = RANGE_PATTERNS.select { |key, pattern| 
-				/^[#{pattern}]/i.match(company.name)
-			}.first
-			rng.nil? ? 'unknown' : rng.first
-		}.compact.uniq.sort
-	end
-	def interval
-		@interval ||= self::class::RANGE_PATTERNS.index(@range)
-	end
-	def intervals
-		@intervals ||= get_intervals
 	end
 end
 		end
