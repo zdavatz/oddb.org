@@ -760,9 +760,9 @@ td.ccomponent {
 	float : center;
 }
 table.ccomponent {
-	position : relative;
-	text-align : center;
-	float : center;
+	margin-left: auto; 
+	margin-right: auto; 
+	text-align: center;
 }
 /*
 td.ccomponent {
@@ -813,6 +813,7 @@ td.logo-r {
 	top : 0px;
 }
 .logo-r {
+	text-decoration : none;
 	border : 0px dotted red;
 	font-size : 11px;
 	text-align : right;

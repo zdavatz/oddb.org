@@ -25,6 +25,7 @@ module ODDB
 		end
 		class CenteredNavigation < HtmlGrid::Composite
 			COMPONENTS = {}
+			CSS_CLASS = "ccomponent"
 			#HTML_ATTRIBUTES = {
 				#	'align'	=>	'center',
 				#}
