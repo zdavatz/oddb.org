@@ -162,7 +162,7 @@ module ODDB
 		end
 		def purge_sl_entries
 			@app.each_package { |pack| 
-				unless(pack.sl_entry.nil? || @updated_packages.include?(pack) \
+				unless(pack.sl_entry.nil? || @updated_packages.include?(pack.odba_id) \
 					|| BLOCKED_REGISTRATIONS.include?(pack.iksnr))
 					@app.delete(pack.sl_entry.pointer)
 					@change_flags.store(pack.pointer, [:sl_entry_delete])
@@ -217,8 +217,7 @@ module ODDB
 				@app.update(pack.pointer, hash)
 				update_sl(pack.pointer, row)
 				@successful_updates.push(row)
-				pack = ODBA.cache_server.fetch(pack.odba_id, @updated_packages)
-				@updated_packages.push(pack)
+				@updated_packages.push(pack.odba_id)
 			else
 				differ.add_bsv(row[:ikscd])
 				@unknown_packages.push(row)
