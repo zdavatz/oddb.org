@@ -13,6 +13,7 @@ class IncompleteReg < State::Admin::Registration
 	SEQUENCE_STATE = State::Admin::IncompleteSequence
 	VIEW = View::Admin::IncompleteRegistration
 	def accept
+		update_incomplete()
 		if(@model.acceptable? || @session.app.registration(@model.iksnr))
 			mdl = @session.app.accept_incomplete_registration(@model)
 			State::Admin::Registration.new(@session, mdl)

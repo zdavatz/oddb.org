@@ -47,13 +47,15 @@ module ODDB
 			@sequences.collect { |seq| seq.atc_class }.uniq
 		end
 		def connection_keys
-			self.connection_keys = @connection_keys || []
-		end
-		def connection_keys=(keys)
-			keys += self.descriptions.values + self.synonyms + [self.name]
+			keys = (@connection_keys || []) + self.descriptions.values \
+				+ self.synonyms  + [self.name]
 			@connection_keys = keys.collect { |key|
 				format_connection_key(key)
 			}.delete_if { |key| key.empty? }.uniq.sort
+		end
+		def connection_keys=(keys)
+			@connection_keys += keys
+			self.connection_keys
 		end
 		def	create_cyp450substrate(cyp_id)
 			conn = ODDB::CyP450SubstrateConnection.new(cyp_id)

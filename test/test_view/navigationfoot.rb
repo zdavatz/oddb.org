@@ -78,7 +78,7 @@ module ODDB
 					result << @view.to_html(CGI.new)
 				}
 				expected = [
-					'<TABLE cellspacing="0" class="navigation right">',
+					'<TABLE cellspacing="0" class="navigation-foot" valign="bottom">',
 					'<TD class="navigation"><A name="foo" class="navigation">Foo</A></TD>',
 					'<TD>&nbsp;|&nbsp;</TD>',
 					'<TD class="navigation"><A name="bar" href="/de/gcc/bar" class="navigation">Bar</A></TD>',

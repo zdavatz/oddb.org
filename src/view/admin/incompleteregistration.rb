@@ -24,12 +24,14 @@ class IncompleteRegistrationForm < View::Admin::RegistrationForm
 		[0,3]		=>	:indication,
 		[2,3]		=>	:market_date,
 		[2,4]		=>	:inactive_date,
+		[1,5]		=>	:submit,
+		[1,5,1]	=>	:delete_item,
 	}
 	def reorganize_components
-		components.update({
-			[1,5]		=>	((acceptable?(@model)) ? :accept : :submit),
-			[1,5,1]	=>	:delete_item,
-		})
+		if(acceptable?(@model))
+			components.store([1,6], :accept)
+			css_map.store([1,6], 'list')
+		end
 	end
 	def acceptable?(model)
 		(@session.app.registration(model.iksnr) || model.acceptable?)

@@ -67,7 +67,7 @@ class Substance < State::Substances::Global
 		new_state
 	end
 	def update
-		languages = @session.lookandfeel.languages + ['en', 'lt']
+		languages = @session.lookandfeel.languages + ['lt']
 		input = languages.inject({}) { |inj, key|
 			sym = key.intern
 			value = @session.user_input(sym)
@@ -91,7 +91,6 @@ class Substance < State::Substances::Global
 		end
 		unless error?
 			ODBA.batch {
-				puts "storing input: #{input.collect { |pair| pair.join(' -> ') }.join(' : ')}"
 				@model = @session.app.update(@model.pointer, input)	
 			}
 		end
