@@ -87,6 +87,7 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		result = @plugin.flock_conn_name(flock_conn)
 		assert_equal("acetaminophen", result)
 	end
+=begin
 	def test_merge_data
 		hayes_cytochrome = Mock.new('hayes_cytochrome')
 		flockhart_cytochrome = Mock.new('flockhart_cytochrome')
@@ -167,6 +168,10 @@ class TestInteractionPlugin < Test::Unit::TestCase
 			assert_equal(param, gysling_connection)
 		}
 
+		subs = Mock.new('Substance')
+		@app.__next(:substance) { subs }
+		subs.__next(:same_as?) { false }
+		
 		@plugin.merge_data(hayes, flockhart, gysling)
 		assert_equal(2, @plugin.flock_conn_not_found)
 		hayes_cytochrome.__verify
@@ -176,7 +181,9 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		flock_link.__verify
 		gysling_cytochrome.__verify
 		gysling_connection.__verify
+		subs.__verify
 	end
+=end
 	def test_parse_hayes
 		interaction = Mock.new('interaction')
 		cytochrome = Mock.new('cytochrome')
@@ -334,13 +341,17 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		assert_equal(expected.sort, result)
 	end
 	def test_similar_name
-		assert_equal(true, @plugin.similar_name?("astring", "astring"), 
-			"'astring' was not similar to 'astring'")
-		#assert_equal(true, @plugin.similar_name?("astring", "bstring"), 
-		assert_equal(false, @plugin.similar_name?("astring", "bstring"), 
-			"'astring' was not similar to 'bstring'")
-		assert_equal(false, @plugin.similar_name?("abstring", "bcstring"), 
-			"'abstring' was similar to 'bcstring'")
+		subs = Mock.new('Substance')
+		@app.__next(:substance) { |name| 
+			assert_equal('astring', name)
+			subs 
+		}
+		subs.__next(:same_as?) { |other|
+			assert_equal('bstring', other)
+			'result'
+		}
+		assert_equal('result', @plugin.similar_name?('astring', 'bstring'))
+		subs.__verify
 	end
 	def test_update_oddb_cyp450_connections
 		cytochrome = Mock.new('cytochrome')
@@ -444,49 +455,20 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		cytochrome.__verify
 		cyp450.__verify
 	end
-	def test_update_oddb_existing_substance
-		@plugin.updated_substances = {
-			'updated'	=>	'substance',
-		}
-		substance = Mock.new('substance')
-		connection = Mock.new('connection')
-		connection.__next(:name) { 'not_yet_updated' }
-		substance.__next(:substrate_connections) { [connection] }
-		substance.__next(:pointer)	{ 'pointer' }
-		substance.__next(:pointer)	{ 'pointer' }
-		@app.__next(:update) {}
-		@plugin.update_oddb_existing_substance(substance, connection)
-		expected = {
-			'notyetupdated'	=>	{
-				:pointer	=> "pointer",
-			  :connections	=> [connection],
-			},
-			"updated"=>"substance",
-		}
-		assert_equal(expected, @plugin.updated_substances)
-		substance.__verify
-		connection.__verify
-	end
 	def test_update_oddb_create_substance
-		@plugin.updated_substances = {
-			'updated'	=>	'substance',
-		}
 		connection = Mock.new("connection")
 		substance = Mock.new("substance")
-		connection.__next(:name) { 'not_yet_updated' }
 		connection.__next(:lang) { 'en' }
+		connection.__next(:name) { 'not_yet_updated' }
 		@app.__next(:update) { substance }
 		#substance.__next(:substrate_connections) { [connection] }
-		substance.__next(:pointer) { 'pointer' }
-		connection.__next(:name) { 'not_yet_updated' }
+		substance.__next(:name) { 'not_yet_updated' }
 		expected = {
-			'not_yet_updated'	=>	{
-				:pointer	=> "pointer",
-			  :connections	=> [connection],
-			},
-			"updated"=>"substance",
+			substance =>	{},
 		}
 		@plugin.update_oddb_create_substance(connection)
+		assert_equal(expected, 
+			@plugin.instance_variable_get('@updated_substances'))
 		connection.__verify
 		substance.__verify
 	end

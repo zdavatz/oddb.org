@@ -200,6 +200,7 @@ class TestSubstance < Test::Unit::TestCase
 	def test_soundex_keys
 		expected = [
 			'A235 A234',
+			'A235',
 		]
 		assert_equal(expected, @substance.soundex_keys)
 	end

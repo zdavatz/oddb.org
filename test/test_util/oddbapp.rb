@@ -348,7 +348,8 @@ class TestOddbApp < Test::Unit::TestCase
 		}
 		@app.update(subs.pointer, values)
 		assert_equal('en_name', subs.en)
-		assert_equal(['connectionkey', 'firstname'], subs.connection_keys)
+		assert_equal(['connectionkey', 'firstname', 'enname', 'dename'].sort, 
+			subs.connection_keys.sort)
 		assert_equal('de_name', subs.de)
 		assert_equal({subs.oid, subs}, @app.substances)
 	end

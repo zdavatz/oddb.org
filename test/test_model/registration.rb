@@ -202,7 +202,7 @@ class TestRegistration < Test::Unit::TestCase
 		@registration.inactive_date = (Date.today >> 1)
 		assert_equal(true, @registration.active?)
 		@registration.inactive_date = Date.today 
-		assert_equal(true, @registration.active?)
+		assert_equal(false, @registration.active?)
 		@registration.inactive_date = (Date.today << 1)
 		assert_equal(false, @registration.active?)
 	end
