@@ -16,20 +16,6 @@ require 'odba'
 require 'util/oddbconfig'
 require 'etc/db_connection'
 
-module ODBA
-	class Cache
-		CLEANER_PRIORITY = 1
-		CLEANING_INTERVAL = 60
-	end
-	class CacheEntry
-		remove_const :CLEAN_PREFETCHABLE
-		CLEAN_PREFETCHABLE = true
-		remove_const :RETIRE_TIME
-		RETIRE_TIME = 60
-		remove_const :DESTROY_TIME
-		DESTROY_TIME = 120
-	end
-end
 module ODDB
 	module OdbaExporter
 		def compress(dir, name)
@@ -118,15 +104,34 @@ module ODDB
 				files.each { |file, table| file.close! }
 			end
 		end
+		def clear
+			ODBA.cache_server.clear
+			GC.start
+		end
 		module_function :compress
 		module_function :compress_many
 		module_function :export_oddbdat
 		module_function :export_yaml
+		module_function :clear
 	end
 end
 
-DRb.start_service(ODDB::EXPORT_URI, ODDB::OdbaExporter)
+if($0 == __FILE__)
+	module ODBA
+		class Cache
+			CLEANER_PRIORITY = 1
+			CLEANING_INTERVAL = 60
+		end
+		class CacheEntry
+			remove_const :RETIRE_TIME
+			RETIRE_TIME = 60
+			remove_const :DESTROY_TIME
+			DESTROY_TIME = 120
+		end
+	end
 
-$0 = "Oddb (FiParse)"
-
-DRb.thread.join
+	DRb.start_service(ODDB::EXPORT_URI, ODDB::OdbaExporter)
+	$0 = "Oddb (Export)"
+	ODBA.cache_server.clean_prefetched
+	DRb.thread.join
+end

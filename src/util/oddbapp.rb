@@ -148,7 +148,7 @@ class OddbPrevalence
 		nil
 	end
 	def company_count
-		@companies.length
+		@company_count ||= @companies.size
 	end
 	def config(*args)
 		if(@config.nil?)
@@ -356,7 +356,7 @@ class OddbPrevalence
 		@doctors[oid.to_i]
 	end
 	def doctor_count
-		@doctors.size
+		@doctor_count ||= @doctors.size
 	end
 	def doctor_by_origin(origin_db, origin_id)
 		# values.each instead of each_value for testing
@@ -487,6 +487,8 @@ class OddbPrevalence
 		@bean_counter = Thread.new {
 			Thread.current.priority = -5
 			@atc_ddd_count = count_atc_ddd()
+			@doctor_count = @doctors.size
+			@company_count = @companies.size
 			@limitation_text_count = count_limitation_texts()
 			@package_count = count_packages()
 			@patinfo_count = count_patinfos()
