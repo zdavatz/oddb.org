@@ -703,7 +703,7 @@ class OddbPrevalence
 	def user_by_email(email)
 		@users.values.select { |user| user.unique_email == email }.first
 	end
-	def rebuild_odba_indices
+	def rebuild_odba_indices(name=nil)
 		ODBA.scalar_cache.size
 		ODBA.cache_server.indices.size
 		begin
@@ -713,20 +713,22 @@ class OddbPrevalence
 			FileUtils.mkdir_p(File.dirname(path))
 			file = File.open(path)
 			YAML.load_documents(file) { |index_definition|
-				index_start = Time.now
-				begin
-					puts "dropping: #{index_definition.index_name}"
-					ODBA.cache_server.drop_index(index_definition.index_name)
-				rescue Exception => e
-					puts e.message
+				if(name.nil? || name.match(index_definition.index_name))
+					index_start = Time.now
+					begin
+						puts "dropping: #{index_definition.index_name}"
+						ODBA.cache_server.drop_index(index_definition.index_name)
+					rescue Exception => e
+						puts e.message
+					end
+					puts "creating: #{index_definition.index_name}"
+					ODBA.cache_server.create_index(index_definition, ODDB)
+					puts "filling: #{index_definition.index_name}"
+					puts index_definition.init_source
+					ODBA.cache_server.fill_index(index_definition.index_name, 
+					instance_eval(index_definition.init_source))
+					puts "finished in #{(Time.now - index_start) / 60.0} min"
 				end
-				puts "creating: #{index_definition.index_name}"
-				ODBA.cache_server.create_index(index_definition, ODDB)
-				puts "filling: #{index_definition.index_name}"
-				puts index_definition.init_source
-				ODBA.cache_server.fill_index(index_definition.index_name, 
-				instance_eval(index_definition.init_source))
-				puts "finished in #{(Time.now - index_start) / 60.0} min"
 			}
 			puts "all Indices Created in total: #{(Time.now - start) / 3600.0} h"
 		rescue StandardError => e
