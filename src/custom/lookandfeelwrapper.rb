@@ -8,6 +8,13 @@ module ODDB
 		ENABLED = [
 			:atc_chooser,
 			:home,
+			:home_admin,
+			:home_companies,
+			:home_doctors,
+			:home_drugs,
+			:home_interactions,
+			:home_substances,
+			:home_user,
 		]
 		RESOURCES = {}
 	end
