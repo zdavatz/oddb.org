@@ -6,8 +6,18 @@ module ODDB
 		attr_accessor :lines, :fon, :fax,
 			:plz, :city, :type
 		
+		def number 
+			if(match = /[0-9][^,]*/.match(@lines[-3]))
+				match.to_s.strip
+			end
+		end
 		def search_terms
 			[self.lines_without_title, @fon, @fax, @plz, @city]
+		end
+		def street
+			if(match = /[^0-9,]+/.match(@lines[-3]))
+				match.to_s.strip
+			end
 		end
 		def lines_without_title
 			@lines.select { |line|

@@ -23,11 +23,12 @@ class DoctorList < HtmlGrid::List
 		[2,0]	=>	:tel,
 		[3,0]	=>	:praxis_address,
 		[4,0]	=>	:specialities,
+		[5,0]	=>	:map,
 	}	
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0,5]	=>	'top list',
+		[0,0,6]	=>	'top list',
 	}
 	DEFAULT_HEAD_CLASS = 'th'
 	SORT_DEFAULT = :name
@@ -44,6 +45,18 @@ class DoctorList < HtmlGrid::List
 			"#{address.lines.join("<br>")} #{model.email}"
 		end
 	end
+	def map(doctor)	
+		if(address = doctor.praxis_address)
+			link = HtmlGrid::Link.new(:map, address, @session, self)
+			link.href = [
+				'http://map.search.ch',
+				[address.plz, address.city].join('-'),
+				[address.street, address.number].join('-'),
+			].join('/')
+			#link.set.attribute =('class', 'list') 
+			link
+		end
+	end
 	def name(model)
 		View::PointerLink.new(:name, model, @session, self)
 	end
@@ -55,7 +68,7 @@ class DoctorList < HtmlGrid::List
 	def specialities(model)
 		spc = model.specialities
 		spc.join('<br>') unless spc.nil?
-	end
+	end	
 end
 class DoctorsComposite < Form
 	CSS_CLASS = 'composite'
@@ -67,6 +80,7 @@ class DoctorsComposite < Form
 	EVENT = :search
 	SYMBOL_MAP = {
 		:search_query		=>	View::SearchBar,	
+		:map						=>	HtmlGrid::Link,
 	}
 end
 class Doctors < View::ResultTemplate

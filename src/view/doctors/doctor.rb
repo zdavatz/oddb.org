@@ -27,6 +27,7 @@ class Addresses < HtmlGrid::List
 		[0,3]	=>	:fons,
 		[0,4]	=>	:fax_header,
 		[0,5]	=>	:fax,
+		[0,6] =>	:map,
 	}
 	SYMBOL_MAP = {
 		:address_email	=>	HtmlGrid::MailLink,
@@ -41,7 +42,7 @@ class Addresses < HtmlGrid::List
 		:work_header		=>	HtmlGrid::LabelText,
 	}	
 	CSS_MAP = {
-		[0,0,1,6]	=> 'top address-width list',
+		[0,0,1,7]	=> 'top address-width list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
@@ -64,6 +65,16 @@ class Addresses < HtmlGrid::List
 	end
 	def type(model)
 		HtmlGrid::LabelText.new("address_#{model.type}", model, @session, self)
+	end
+	def map(address)	
+		link = HtmlGrid::Link.new(:map, address, @session, self)
+		link.href = [
+			'http://map.search.ch',
+			[address.plz, address.city].join('-'),
+			[address.street, address.number].join('-'),
+		].join('/')
+		#link.set.attribute =('class', 'list') 
+		link
 	end
 end
 class DoctorInnerComposite < HtmlGrid::Composite
