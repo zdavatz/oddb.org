@@ -262,6 +262,8 @@ module ODDB
 							@session.search_exact_substance(query)
 						when 'st_company'
 							@session.search_exact_company(query)
+						when 'st_indication'
+							@session.search_exact_indication(query)
 						else
 							@session.search_oddb(query)
 						end

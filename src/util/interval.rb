@@ -11,7 +11,7 @@ module ODDB
 			'm-p'			=>	'm-pöÖóÓôÔòÒ',
 			'q-t'			=>	'q-t',
 			'u-z'			=>	'u-züÜúÚûÛùÙ',
-			'|unknown'=>	nil,
+			'|unknown'=>	'^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ',
 		}
 		attr_reader :range
 		def init

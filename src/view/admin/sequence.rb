@@ -17,13 +17,18 @@ module SequenceAgentList
 	COMPONENTS = {
 		[0,0]	=>	:substance,
 		[1,0]	=>	:dose,
+		[3,0]	=>	:chemical_substance,
+		[4,0]	=>	:chemical_dose,
 	}
 	CSS_HEAD_MAP = {
 		[1,0]	=>	'subheading-r',
+		[4,0]	=>	'subheading-r',
 	}
 	CSS_MAP = {
 		[0,0]	=>	'list',
 		[1,0]	=>	'list-r',
+		[3,0]	=>	'list',
+		[4,0]	=>	'list-r',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'subheading'

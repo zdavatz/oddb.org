@@ -39,7 +39,8 @@ class Substances < State::Substances::Global
 		'x'			=>	'x',
 		'y'			=>	'y',
 		'z'			=>	'z',
-		'unknown'	=>	'unknown',
+		#'unknown'	=>	'unknown',
+		'|unknown'=>	'^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ',
 	}
 	def default_interval
 		intervals.first || 'a'

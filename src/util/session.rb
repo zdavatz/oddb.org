@@ -66,6 +66,9 @@ module ODDB
 			@persistent_user_input[:search_query] ||= query
 			@app.search_oddb(query, self.language)
 		end
+		def search_exact_indication(query)
+			@app.search_exact_indication(query, self.language)
+		end
 		def search_interactions(query)
 			@persistent_user_input[:search_query] ||= query
 			@app.search_interactions(query)

@@ -618,6 +618,12 @@ class OddbPrevalence
 		result.atc_classes = search_by_company(query)
 		result
 	end
+	def search_exact_indication(query, lang)
+		result = ODDB::SearchResult.new
+		result.exact = true
+		result.atc_classes = search_by_indication(query, lang, result)
+		result
+	end
 	def search_exact_sequence(query)
 		sequences = search_sequences(query)
 		_search_exact_classified_result(sequences)
@@ -777,6 +783,7 @@ class OddbPrevalence
 		end
 	end
 	def generate_dictionary(language, locale)
+		ODBA.storage.remove_dictionary(lanugage)
 		base = File.expand_path("../../ext/fulltext/data/dicts/#{language}", 
 			File.dirname(__FILE__))
 		ODBA.storage.generate_dictionary(language, locale, base)

@@ -18,11 +18,11 @@ class ActiveAgent < State::Admin::Global
 		State::Admin::Sequence.new(@session, sequence)
 	end	
 	def update
-		keys = [:substance, :dose]
+		keys = [:substance, :dose, :chemical_substance, :chemical_dose]
 		input = user_input(keys, [:substance])
 		newstate = self
 		unless (error?)
-			substance = @session.app.substance(input[:substance]) 
+			substance = @session.substance(input[:substance]) 
 			if(substance.nil?)
 				selection = self.substance_selection
 				model = ODDB::SelectSubstance.new(input, selection, @model)
@@ -35,8 +35,21 @@ class ActiveAgent < State::Admin::Global
 				if(@model.is_a?(Persistence::CreateItem))
 					@model.append(input[:substance])
 				end
+				chem = input[:chemical_substance]
+				if(chemical = @session.substance(chem))
+					input[:chemical_substance] = chemical.pointer
+				elsif(chem.empty?)
+					input[:chemical_substance] = nil
+					input[:chemical_dose] = nil
+				else
+					error = create_error(:e_unknown_substance, 
+						:chemical_substance, chem)
+					@errors.store(:chemical_substance, error)
+					input.delete(:chemical_substance)
+					input.delete(:chemical_dose)
+				end
 				input[:substance] = substance.pointer
-				ODBA.batch { 
+				ODBA.transaction { 
 					@model = @session.app.update(@model.pointer, input)
 				}
 			end
