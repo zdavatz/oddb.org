@@ -1259,17 +1259,15 @@ td.result-foot {
 table.explain-result {
 	background : $bg_bright;
 	color : $bg_bright_font_color;
-	width : 75%;
-	min-width : 500pt;
 	text-align : left;
+	width : 100%;
 }
 td.explain-result {
 	background : $bg_bright;
 	vertical-align : bottom;
-	width : 75%;
-	min-width : 500pt;
 	padding-top : 3px;
 	padding-bottom : 3px;
+	width : 75%;
 }
 td.explain-result-r {
 	background : $bg_bright;
