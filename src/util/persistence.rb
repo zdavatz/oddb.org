@@ -204,9 +204,11 @@ Grammar OddbSize
 				parent unless parent.directions.empty?
 			end
 			def resolve(hook)
+				#puts "hook: #{hook}"
 				lasthook = hook
 				laststep = []
 				@directions.each { |step|
+					#puts "step: #{step}"
 					if(hook.nil?)
 						call = laststep.shift
 						args = laststep.join(',')

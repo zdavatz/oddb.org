@@ -99,7 +99,7 @@ module ODDB
 				model.name
 			else
 				link = HtmlGrid::Link.new(:add_to_interaction_basket, model, session, self)
-				link.href = @lookandfeel.event_url(:add_to_interaction_basket, {'pointer'=>model.pointer})
+				link.href = @lookandfeel.event_url(:add_to_interaction_basket, {'pointer'=>CGI.escape(model.pointer.to_s)})
 				link.value = model.name
 				link.set_attribute('class', 'result-big')
 				link

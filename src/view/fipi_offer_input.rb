@@ -7,6 +7,7 @@ require 'htmlgrid/composite'
 require 'htmlgrid/inputcheckbox'
 require 'htmlgrid/inputradio'
 require 'htmlgrid/richtext'
+require 'htmlgrid/errormessage'
 
 module ODDB
 	class FiPiRadioButtons < HtmlGrid::List

@@ -23,9 +23,12 @@ module ODDB
 			context.ul {
 				@model.collect { |item| 
 					text = HtmlGrid::RichText.new(@model, @session, self)
-					text << item.substance_name
+					pub_med_search_link = HtmlGrid::Link.new(:pub_med_search_link, @model, @session, self)
+					pub_med_search_link.href = @lookandfeel.lookup(:pub_med_search_href, item.substance_name)
+					pub_med_search_link.value = item.substance_name
+					text << pub_med_search_link
 					pub_med_link = HtmlGrid::Link.new(:pub_med_link, @model, @session, self)
-					pub_med_link.href = @lookandfeel.lookup(:pub_med_href, item.substance_name)
+					pub_med_link.href = @lookandfeel.lookup(:pub_med_href)
 					pub_med_link.value = @lookandfeel.lookup(:pub_med)
 					text << pub_med_link	
 					item.links.each { |link|
