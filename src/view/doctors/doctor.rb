@@ -34,6 +34,15 @@ module AddressMap
 		args.compact.join('-').gsub(/\s+/, '-')
 	end		
 end
+module VCardMethods
+	def vcard(model)
+		link = HtmlGrid::Link.new(:vcard, model, @session, self)
+		args = {:pointer => model.pointer}
+		link.href = @lookandfeel.event_url(:vcard, args)
+		link.css_class = 'list'
+		link
+	end
+end
 class Addresses < HtmlGrid::List
 	include AddressMap
 	COMPONENTS = {
@@ -129,6 +138,7 @@ class DoctorInnerComposite < HtmlGrid::Composite
 	end
 end
 class DoctorComposite < HtmlGrid::Composite
+	include VCardMethods
 	COMPONENTS = {
 		[0,0]		=>	:title,
 		[0,0,1]	=>	:nbsp,
@@ -150,12 +160,6 @@ class DoctorComposite < HtmlGrid::Composite
 	LEGACY_INTERFACE = false
 	def addresses(model)
 		Addresses.new(model.addresses, @session, self)
-	end
-	def vcard(address)
-		link = HtmlGrid::Link.new(:vcard, address, @session, self)
-		link.href = @lookandfeel.event_url(:download)
-		link.css_class = 'list'
-		link
 	end
 end
 class Doctor < PrivateTemplate

@@ -332,7 +332,7 @@ module ODDB
 				:fipi_offer_input_explanation1	=>	"<br>die Aktualisierung durchf&uuml;hren soll. Klicken Sie dann auf 'Offerte berechnen'.",
 				:fr												=>	'Fran&ccedil;ais',
 				:fons_header							=>	'Telefon',
-				:vcard										=>	'VCard Download',
+				:vcard										=>	'vCard',
 =begin
 				:gag_order								=>	<<-EOS,
 Gesch&auml;tzte Besucherin

@@ -2,6 +2,7 @@
 # State::Doctors::Global -- oddb -- 17.09.2004 --jlang@ywesee.com
 
 require 'state/doctors/init'
+require 'state/doctors/vcard'
 require 'state/legalnote'
 
 module ODDB
@@ -10,6 +11,9 @@ module ODDB
 class Global < State::Global
 	HOME_STATE = State::Doctors::Init
 	ZONE = :doctors
+	EVENT_MAP = {
+		:vcard	=>	State::Doctors::VCard,
+	}
 	def zone_navigation
 		[
 			:faq_link,
