@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Drugs::Registration -- oddb -- 07.03.2003 -- hwyss@ywesee.com 
+# View::Admin::Registration -- oddb -- 07.03.2003 -- hwyss@ywesee.com 
 
 require 'view/privatetemplate'
 require 'htmlgrid/errormessage'
@@ -14,7 +14,7 @@ require 'view/form'
 
 module ODDB
 	module View
-		module Drugs
+		module Admin
 module RegistrationSequenceList 
 	include View::AdditionalInformation
 	COMPONENTS = {
@@ -49,10 +49,10 @@ module RegistrationSequenceList
 	end
 end
 class RegistrationSequences < HtmlGrid::List
-	include View::Drugs::RegistrationSequenceList
+	include View::Admin::RegistrationSequenceList
 end
 class RootRegistrationSequences < View::FormList
-	include View::Drugs::RegistrationSequenceList
+	include View::Admin::RegistrationSequenceList
 end
 class FachinfoLanguageSelect < HtmlGrid::AbstractSelect
 	attr_accessor :value
@@ -189,7 +189,7 @@ class RegistrationForm < View::Form
 		klass.new(:iksnr, model, session, self)
 	end
 	def language_select(model, session)
-		sel = View::Drugs::FachinfoLanguageSelect.new(:language_select, model, 
+		sel = View::Admin::FachinfoLanguageSelect.new(:language_select, model, 
 			session, self)
 		sel.label = false
 		sel
@@ -203,7 +203,7 @@ class RegistrationForm < View::Form
 end
 class RegistrationComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,1]		=>	View::Drugs::RegistrationInnerComposite,
+		[0,1]		=>	View::Admin::RegistrationInnerComposite,
 		[0,2]		=>	:registration_sequences,
 	}
 	CSS_CLASS = 'composite'
@@ -211,7 +211,7 @@ class RegistrationComposite < HtmlGrid::Composite
 		[0,0]	=>	'th',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
-	SEQUENCES = View::Drugs::RegistrationSequences
+	SEQUENCES = View::Admin::RegistrationSequences
 	def registration_sequences(model, session)
 		if(sequences = model.sequences)
 			values = PointerArray.new(sequences.values, model.pointer)
@@ -219,25 +219,25 @@ class RegistrationComposite < HtmlGrid::Composite
 		end
 	end
 end
-class RootRegistrationComposite < View::Drugs::RegistrationComposite
+class RootRegistrationComposite < View::Admin::RegistrationComposite
 	COMPONENTS = {
-		[0,1]		=>	View::Drugs::RegistrationForm,
+		[0,1]		=>	View::Admin::RegistrationForm,
 		[0,2]		=>	:registration_sequences,
 		[0,3]		=>	"th_source",
 		[0,4]		=>	:source,
 	}
-	SEQUENCES = View::Drugs::RootRegistrationSequences
+	SEQUENCES = View::Admin::RootRegistrationSequences
 	CSS_MAP = {
 		[0,0]	=>	'th',
 		[0,3]	=>	"subheading",
 	}
 end
 class Registration < View::PrivateTemplate
-	CONTENT = View::Drugs::RegistrationComposite
+	CONTENT = View::Admin::RegistrationComposite
 	SNAPBACK_EVENT = :result
 end
-class RootRegistration < View::Drugs::Registration
-	CONTENT = View::Drugs::RootRegistrationComposite
+class RootRegistration < View::Admin::Registration
+	CONTENT = View::Admin::RootRegistrationComposite
 end
 		end
 	end
