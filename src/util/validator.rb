@@ -25,6 +25,8 @@ module ODDB
 		]
 		ENUMS = {
 			:cl_status		=>	['false', 'true'],
+			:complementary_type =>	[nil, 'anthroposophy', 'homeopathy', 
+				'phytotherapy', ],
 			:search_type	=>	['st_oddb', 'st_sequence', 
 				'st_substance', 'st_company', 'st_indication'],
 			:fi_status		=>	['false', 'true'],
@@ -43,6 +45,7 @@ module ODDB
 			:authenticate,
 			:back,
 			:calculate_offer,
+			:checkout,
 			:choice,
 			:clear_interaction_basket,
 			:company,
