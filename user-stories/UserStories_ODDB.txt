@@ -1,3 +1,11 @@
+2004-06-10 Zeno Davatz <zdavatz@ywesee.com>
+* Minerva und Feminac
+	- Bei den Produkten Minerva und Feminac kann man den zweiten Wirkstoff nicht
+		hinzufügen. Es kommt die Meldung: 
+		Der Wirkstoff "CYPROTERONI ACETAS" ist
+		der aktuellen Sequenz bereits zugeordnet.
+		Bitte geben Sie einen anderen Wirkstoff an.
+
 2004-05-03 Zeno Davatz <zdavatz@ywesee.com>
 
 * todo's ODDB.org
