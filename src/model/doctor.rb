@@ -45,6 +45,13 @@ module ODDB
 		def record_match?(origin_db, origin_id)
 			@origin_db == origin_db && @origin_id == origin_id
 		end
+		def search_terms
+			[
+				@name,
+				@email,
+				@specialities,
+			] + @addresses.collect { |addr| addr.search_terms }
+		end
 		def work_addresses	
 			@addresses.select { |addr| 
 				addr.type == :work

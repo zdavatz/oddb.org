@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Doctors::DocotorList -- oddb -- 26.05.2003 -- maege@ywesee.com
+# View::Doctors::DocotorList -- oddb -- 26.05.2003 -- jlang@ywesee.com
 
 require 'htmlgrid/value'
 require 'htmlgrid/link'
@@ -7,11 +7,10 @@ require 'htmlgrid/urllink'
 require 'htmlgrid/list'
 require 'util/umlautsort'
 require 'view/pointervalue'
-require 'view/descriptionvalue'
-require 'view/form'
-require 'view/resultcolors'
 require 'view/publictemplate'
 require 'view/alphaheader'
+require 'view/searchbar'
+require 'view/form'
 
 module ODDB
 	module View
@@ -34,6 +33,12 @@ class DoctorList < HtmlGrid::List
 	SORT_DEFAULT = :name
 	SORT_REVERSE = false 
 	LEGACY_INTERFACE = false
+	def init
+		if(@session.state.paged?)
+			include View::AlphaHeader
+		end
+		super
+	end
 	def praxis_address(model)
 		if(address = model.praxis_address)
 			"#{address.lines.join("<br>")} #{model.email}"
@@ -52,8 +57,20 @@ class DoctorList < HtmlGrid::List
 		spc.join('<br>') unless spc.nil?
 	end
 end
+class DoctorsComposite < Form
+	CSS_CLASS = 'composite'
+	COMPONENTS = {
+		[0,0]		=>	:search_query,
+		[0,0,1]	=>	:submit,
+		[0,1]		=>	DoctorList,
+	}
+	EVENT = :search
+	SYMBOL_MAP = {
+		:search_query		=>	View::SearchBar,	
+	}
+end
 class Doctors < View::PublicTemplate
-	CONTENT = View::Doctors::DoctorList
+	CONTENT = View::Doctors::DoctorsComposite
 end
 		end
 	end

@@ -50,7 +50,7 @@ module ODDB
 			DIRECT_EVENT = nil 
 			GLOBAL_MAP = {
 				:companylist					=>	State::Companies::CompanyList,
-				:doctorlist						=>	State::Doctors::DoctorList,
+				#:doctorlist						=>	State::Doctors::DoctorList,
 				:ddd									=>	State::Drugs::DDD,
 				:download							=>	State::User::Download,
 				:download_export			=>	State::User::DownloadExport,
@@ -117,6 +117,10 @@ module ODDB
 			def clear_interaction_basket
 				@session.clear_interaction_basket
 				State::Interactions::EmptyBasket.new(@session, [])
+			end
+			def doctorlist
+				model = @session.doctors.values
+				State::Doctors::DoctorList.new(@session, model)
 			end
 			def home_navigation
 				[
@@ -199,6 +203,9 @@ module ODDB
 					State::Exception.new(@session, query)
 				elsif(!query.nil?)
 					case zone
+					when :doctors
+						result = @session.search_doctors(query)
+						State::Doctors::DoctorResult.new(@session, result)
 					when :drugs
 						result = @session.search(query)
 						State::Drugs::Result.new(@session, result)

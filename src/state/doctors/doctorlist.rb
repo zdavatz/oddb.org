@@ -26,21 +26,20 @@ class DoctorList < State::Doctors::Global
 	#REVERSE_MAP = ResultList::REVERSE_MAP
 	def init
 		super
-		@model = @session.app.doctors.values
-=begin
-		userrange = @session.user_input(:range) || default_interval
-		range = RANGE_PATTERNS.fetch(userrange)
-		@filter = Proc.new { |model|
-			model.select { |doc| 
-				if(range=='unknown')
-					doc.name =~ /^[^'a-zäÄáÁàÀâÂçÇëËéÉèÈêÊüÜúÚùÙûÛ']/i
-				else
-					/^[#{range}]/i.match(comp.name)
-				end
+		if(self.paged?)
+			userrange = @session.user_input(:range) || default_interval
+			range = RANGE_PATTERNS.fetch(userrange)
+			@filter = Proc.new { |model|
+				model.select { |comp| 
+					if(range=='unknown')
+						comp.name =~ /^[^'a-zäÄáÁàÀâÂçÇëËéÉèÈêÊüÜúÚùÙûÛ']/i
+					else
+						/^[#{range}]/i.match(comp.name)
+					end
+				}
 			}
-		}
-		@range = range
-=end
+			@range = range
+		end
 	end
 	def default_interval
 		intervals.first
@@ -59,6 +58,12 @@ class DoctorList < State::Doctors::Global
 	def intervals
 		@intervals ||= get_intervals
 	end	
+	def paged?
+		@model.size > 100
+	end
+end
+class DoctorResult < DoctorList
+	DIRECT_EVENT = :search
 end
 		end
 	end

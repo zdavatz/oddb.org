@@ -16,6 +16,7 @@ require 'commands'
 require 'sbsm/drbserver'
 require 'sbsm/index'
 require 'util/drb'
+require 'util/config'
 require 'odba'
 require 'odba/index_definition'
 require 'fileutils'
@@ -163,6 +164,24 @@ class OddbPrevalence
 	end
 	def company_count
 		@companies.length
+	end
+	def config(*args)
+		if(@config.nil?)
+			@config = ODDB::Config.new
+			@config.pointer = ODDB::Persistence::Pointer.new(:config)
+			self.odba_store
+		end
+		hook = @config
+		args.each { |arg|
+			conf = hook.send(arg)
+			if(conf.nil?)
+				conf = hook.send("create_#{arg}")
+				conf.pointer = hook.pointer + arg
+				hook.odba_store
+			end
+			hook = conf
+		}
+		hook
 	end
 	def count_atc_ddd
 		@atc_classes.values.inject(0) { |inj, atc|
@@ -559,6 +578,9 @@ class OddbPrevalence
 		end
 		result.atc_classes.delete_if { |atc| atc.code.length == 0 }
 		result
+	end
+	def search_doctors(key)
+		ODBA.cache_server.retrieve_from_index("doctor_index", key)
 	end
 	def search_interactions(query)
 		result = ODBA.cache_server.retrieve_from_index("sequence_index_substance", query)

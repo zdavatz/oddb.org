@@ -18,43 +18,35 @@ module ODDB
 			]
 			PARSER = DRbObject.new(nil, DOCPARSE_URI)
 			def initialize(*args)
+				super
+				@config = @app.config(:docparse, :ch)
+				puts @config.inspect
 				@doctors_created = 0
 				@doctors_deleted = 0
-				@empty_id = []
-				super
 			end
 			def update
-				range = 14480..14500
-				range.each { |doc_id| 
-					puts "getting doctor data(#{doc_id})"
+				range = 5000..100000
+				empty_ids = (@config.empty_ids || []).dup
+				top_doc_id = 0
+				(range.to_a - empty_ids).each { |doc_id| 
 					if(data = get_doctor_data(doc_id))
-						puts "###################### doctor: #{doc_id}"
 						doctor = store_doctor(doc_id, data)
-=begin
-						if(data.include?(:prax_address))
-							store_address(doctor.pointer, :praxis, data)
-						end
-						if(data.include?(:work_address))
-							store_address(doctor.pointer, :work, data)
-						end
-=end
+						top_doc_id = doc_id
 					else
 						# 1. delete doctor if exists
-						# 2. record id, muss das naechste mal nicht geprueft werden.
 						delete_doctor(doc_id)
+						# 2. record id, muss das naechste mal nicht geprueft werden.
+						empty_ids.push(doc_id)
 					end
 				}
+				empty_ids.delete_if { |id| id > top_doc_id }
+				store_empty_ids(empty_ids)
 			end
 			def delete_doctor(doc_id)
-				  @app.doctors.each { |key, value| 
-					if(key == doc_id) 
-						@app.doctors.delete(key)
-						@doctors_deleted += 1
-						puts "doctors_deleted: #{@doctors_deleted}"
-					end
-				}
-				@empty_id.push(doc_id)
-				puts "added to empty_id: " << @empty_id.size.to_s
+				if(doc = @app.doctor_by_origin(:ch, doc_id))
+					@app.delete(doc.pointer)
+					@doctors_deleted += 1
+				end
 			end
 			def get_doctor_data(doc_id)
 				self::class::PARSER.emh_data(doc_id)
@@ -145,6 +137,12 @@ module ODDB
 				doc_hash.store(:origin_id, doc_id)
 				doc_hash.store(:addresses, prepare_addresses(hash))
 				@app.update(pointer, doc_hash)
+			end
+			def store_empty_ids(ids)
+				values = {
+					:empty_ids	=> ids,
+				}
+				@app.update(@config.pointer, values)
 			end
 		end
 	end
