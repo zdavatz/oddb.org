@@ -1988,7 +1988,7 @@ zdavatz ! ywesee.com
 				:th_patinfo_short				  =>	'&nbsp;',
 				:th_patinfo_stats						=>	'Consumerinfo statistics',
 				:th_patinfo_title				  =>	'Consumerinfo title',
-				:th_plz										=>	'postal zip code'
+				:th_plz										=>	'postal zip code',
 				:th_pointer								=>	'The entered active agent does not yet exist. Please choose a different active agent or file a new active agent',
 				:th_pointer_descr					=>	'You are at:',
 				:th_praxis_address				=>	'Business address',
