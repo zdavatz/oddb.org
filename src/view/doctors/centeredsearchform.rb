@@ -25,7 +25,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,0,5]	=>	:beta,
 		[0,1]		=>	View::Doctors::CenteredSearchForm,
 		[0,2]		=>	'doctors_search_explain', 
-		#0,4]		=>	View::CenteredNavigation,
+		[0,3]		=>	View::CenteredNavigation,
 		[0,5]		=>	:doctor_count,
 		[0,5,1]	=>	'doctor_count_text',
 		[0,5,2]	=>	'comma_separator',

@@ -11,12 +11,11 @@ class PluginInnerComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	:plugin_description,
 		[0,1]	=>	:plugin_javascript,
-		[0,2]	=>	'plugin_download_descr',
-		[0,3]	=>	:plugin_download_src,
-		[0,4]	=>	:plugin_download_gif,
+		[0,2]	=>	:plugin_download_src,
+		[0,3]	=>	:plugin_download_gif,
 	}
 	CSS_MAP = {
-		[0,0,4,5]	=>	'list',
+		[0,0,4,4]	=>	'list',
 	}
 	LABELS = false
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -44,7 +43,7 @@ class PluginInnerComposite < HtmlGrid::Composite
 				def plugin_description(model, session)
 					link = HtmlGrid::Link.new(:plugin_description, model, @session, self)
 					if(@lookandfeel.language == 'de')
-					link.href =  "http://wiki.oddb.org/wiki.php?pagename=ODDB.Stammdaten"
+					link.href =  "http://wiki.oddb.org/wiki.php?pagename=ODDB.Direktsuche"
 					elsif(@lookandfeel.language == 'fr')
 					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.DirectCherche"
 					elsif(@lookandfeel.language == 'en')
