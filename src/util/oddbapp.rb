@@ -746,9 +746,7 @@ module ODDB
 			@system.execute_command(CreateCommand.new(pointer))
 		end
 		def create_admin_user(email, password)
-			puts "create_admin_user(#{email}, #{password})"
 			unless(@system.user_by_email(email))
-				"no other user found"
 				pass_hash = Digest::MD5.hexdigest(password)
 				pointer = Persistence::Pointer.new([:admin])
 				values = {
@@ -777,7 +775,6 @@ module ODDB
 			@system.execute_command(ReplaceFachinfoCommand.new(iksnr, pointer))
 		end
 		def update(pointer, values)
-			puts "updating #{pointer} with #{values}"
 			@system.execute_command(UpdateCommand.new(pointer, values))
 		end
 		#####################################################
