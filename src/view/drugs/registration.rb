@@ -146,8 +146,7 @@ class RegistrationForm < View::Form
 		error_message()
 	end
 	def company_name(model, session)
-		klass = if(model.company_name && \
-			model.is_a?(Persistence::CreateItem))
+		klass = if(session.user.is_a?(ODDB::CompanyUser))
 			HtmlGrid::Value
 		else
 			HtmlGrid::InputText

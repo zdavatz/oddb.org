@@ -19,6 +19,8 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,1]		=>	View::User::CenteredSearchForm,
 		[0,4]		=>	View::CenteredNavigation,
 		[0,5]	  =>	:fipi_offer,
+		[0,5,1]	=>	:divider,
+		[0,5,2]	=>	:new_registration,
 		[0,6]		=>	:database_size,
 		[0,6,1]	=>	'database_size_text',
 		[0,6,2]	=>	'comma_separator',
@@ -34,6 +36,11 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENT_CSS_MAP = {
 		[0,8]	=>	'legal-note-center',
 	}
+	def new_registration(model, session)
+		link = HtmlGrid::Link.new(:new_registration, model, @session, self)
+		link.href = @lookandfeel.event_url(:new_registration)
+		link
+	end
 	def substance_count(model, session)
 		@session.app.substance_count
 	end

@@ -21,6 +21,7 @@ class Registration < State::Drugs::Global
 		seq_pointer = pointer + [:sequence]
 		item = Persistence::CreateItem.new(seq_pointer)
 		item.carry(:iksnr, model.iksnr)
+		item.carry(:company, model.company)
 		if (klass=resolve_state(seq_pointer))
 			klass.new(@session, item)
 		else
@@ -36,6 +37,10 @@ class Registration < State::Drugs::Global
 			iksnr = @session.user_input(:iksnr)
 			if(error_check_and_store(:iksnr, iksnr, [:iksnr]))
 				return self
+			elsif(@session.app.registration(iksnr))
+				error = create_error('e_duplicate_iksnr', :iksnr, iksnr)
+				@errors.store(:iksnr, error)
+				return self
 			else
 				@model.append(iksnr)
 			end
@@ -43,17 +48,23 @@ class Registration < State::Drugs::Global
 		do_update(keys)
 	end
 	private
-	def do_update(keys)
-		new_state = self
-		hash = user_input(keys)
+	def resolve_company(hash)
 		comp_name = @session.user_input(:company_name)
-		language = user_input(:language_select).intern
-		if(company = @session.app.company_by_name(comp_name))
+		if(company = @session.company_by_name(comp_name) || @model.company)
 			hash.store(:company, company.oid)
 		else
 			err = create_error(:e_unknown_company, :company_name, comp_name)
 			@errors.store(:company_name, err)
 		end
+	end
+	def do_update(keys)
+		new_state = self
+		hash = user_input(keys)
+		resolve_company(hash)
+		if(@model.is_a?(Persistence::CreateItem) && error?)
+			return self
+		end
+		language = user_input(:language_select).intern
 		ind = user_input(:indication)
 		sel = nil
 		if(indication = @session.app.indication_by_text(ind))
@@ -106,7 +117,9 @@ class Registration < State::Drugs::Global
 				}
 			end
 		end
-		@model = @session.app.update(@model.pointer, hash)
+		ODBA.batch { 
+			@model = @session.app.update(@model.pointer, hash)
+		}
 		if(sel)
 			sel.registration = @model
 		end
@@ -157,6 +170,11 @@ class CompanyRegistration < State::Drugs::Registration
 	def new_sequence
 		if(allowed?)
 			super
+		end
+	end
+	def resolve_company(hash)
+		if(@model.is_a?(Persistence::CreateItem))
+			hash.store(:company, @session.user.model.oid)
 		end
 	end
 	def update
