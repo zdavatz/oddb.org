@@ -22,6 +22,9 @@ module ODDB
 			NAV_LINK_CLASS = CenteredNavigationLink
 			NAV_LINK_CSS = 'list'
 			NAV_METHOD = :zone_navigation
+			HTML_ATTRIBUTES = {
+				'align' => 'center',
+			}
 		end
 		class PayPalForm < HtmlGrid::Form
 			COMPONENTS = {
@@ -91,6 +94,7 @@ module ODDB
 			end
 		end
 		class CenteredSearchComposite < HtmlGrid::Composite
+			include LegalNoteLink
 			COMPONENTS = {}
 			CSS_CLASS = 'composite'
 			CSS_MAP = {
@@ -115,6 +119,7 @@ module ODDB
 				:fipi_offer				=>	HtmlGrid::Link,
 				:interactions			=>	HtmlGrid::Link,
 				:language_de			=>	HtmlGrid::Link,
+				:language_en			=>	HtmlGrid::Link,
 				:language_fr			=>	HtmlGrid::Link,
 				:mailinglist			=>	HtmlGrid::Link,
 				:plugin						=>	HtmlGrid::Link,
@@ -177,8 +182,14 @@ module ODDB
 				@session.app.fachinfo_count
 			end
 			def generic_definition(model, session)
-				link = HtmlGrid::PopupLink.new(:generic_definition, model, session, self)
-				link.href = @lookandfeel.event_url(:generic_definition)
+				link = nil
+				if(@lookandfeel.language == 'en')
+					link = HtmlGrid::Link.new(:generic_definition, model, session, self)
+					link.href = "http://www.fda.gov/cder/ogd/"
+				else
+					link = HtmlGrid::PopupLink.new(:generic_definition, model, session, self)
+					link.href = @lookandfeel.event_url(:generic_definition)
+				end
 				link.value = @lookandfeel.lookup(:generic_definition) 
 				link.set_attribute('class', 'list')
 				link
@@ -204,6 +215,13 @@ module ODDB
 				link = HtmlGrid::Link.new(:de, model, session, self)
 				link.href = @lookandfeel.language_url(:de)
 				link.value = @lookandfeel.lookup(:de)
+				link.attributes['class'] =	'list'
+				link
+			end
+			def language_en(model, session)
+				link = HtmlGrid::Link.new(:en, model, session, self)
+				link.href = @lookandfeel.language_url(:en)
+				link.value = @lookandfeel.lookup(:en)
 				link.attributes['class'] =	'list'
 				link
 			end

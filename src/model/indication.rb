@@ -14,5 +14,8 @@ module ODDB
 				reg.atc_classes
 			}.flatten.compact.uniq
 		end
+		def search_text
+			self.descriptions.values.join(" ")
+		end
 	end
 end
