@@ -65,7 +65,7 @@ module CompanyList
 end
 module NewCompany
 	def new_company(model, session)
-		button = HtmlGrid::Input.new(:new_company, model, session, self)
+		button = HtmlGrid::Button.new(:new_company, model, session, self)
 		href = "location.href='#{@lookandfeel.event_url(:new_company)}'"
 		button.set_attribute('onClick', href)
 		button
