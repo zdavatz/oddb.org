@@ -240,7 +240,6 @@ Grammar OddbSize
 		end
 	end
 	class Package < PackageCommon
-		ODBA_PREFETCH = true
 		def initialize(ikscd)
 			super
 			@feedbacks = {}
