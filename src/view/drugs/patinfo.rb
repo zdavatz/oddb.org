@@ -60,35 +60,7 @@ class Patinfo2001InnerComposite < View::Drugs::PatinfoInnerComposite
 		:date
 	]
 end
-class PatinfoPreviewComposite < HtmlGrid::Composite
-	COLSPAN_MAP = {
-		[0,1]	=> 2,
-	}
-	COMPONENTS = {
-		[0,0]	=>	:patinfo_name,
-		[1,0]	=>	:company,
-		[0,1] =>	:document,
-	}
-	CSS_CLASS = 'composite'
-	CSS_MAP = {
-		[0,0] => 'th',
-		[1,0]	=> 'th-r',
-	}	
-	DEFAULT_CLASS = HtmlGrid::Value
-	def document(model, session)
-		klass = case model
-		when ODDB::PatinfoDocument2001
-			View::Drugs::Patinfo2001InnerComposite
-		else
-			View::Drugs::PatinfoInnerComposite
-		end
-		klass.new(model, session, self)
-	end
-	def patinfo_name(model, session)
-		@lookandfeel.lookup(:patinfo_name, model.name)
-	end
-end
-class PatinfoComposite < View::Drugs::PatinfoPreviewComposite
+class PatinfoComposite < HtmlGrid::Composite
 	include View::Print
 	COLSPAN_MAP = {
 		[0,2]	=> 2,
@@ -105,6 +77,7 @@ class PatinfoComposite < View::Drugs::PatinfoPreviewComposite
 		[1,0]	=> 'th-r',
 		[0,2]	=> 'list',
 	}	
+	DEFAULT_CLASS = HtmlGrid::Value
 	COMPONENT_CSS_MAP = {
 		[0,1]	=> 'list-b',
 	}
@@ -117,7 +90,16 @@ class PatinfoComposite < View::Drugs::PatinfoPreviewComposite
 =end
 	def document(model, session)
 		document = model.send(session.language)
-		super(document, session)
+		document_composite(document, session)
+	end
+	def document_composite(model, session)
+		klass = case model
+		when ODDB::PatinfoDocument2001
+			View::Drugs::Patinfo2001InnerComposite
+		else
+			View::Drugs::PatinfoInnerComposite
+		end
+		klass.new(model, session, self)
 	end
 	def patinfo_name(model, session)
 		document = model.send(@session.language)
@@ -132,9 +114,6 @@ end
 class Patinfo < View::PopupTemplate
 	CONTENT = View::Drugs::PatinfoComposite
 end
-class PatinfoPreview < View::PopupTemplate
-	CONTENT = View::Drugs::PatinfoPreviewComposite
-end	
 class PatinfoPrint < View::PrintTemplate
 	CONTENT = View::Drugs::PatinfoPrintComposite
 end

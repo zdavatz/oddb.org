@@ -11,13 +11,31 @@ class Global < State::Global
 	HOME_STATE = State::Admin::Init
 	ZONE = :admin
 	def zone_navigation
-		[
-			State::Admin::PatinfoStats,
-			State::Admin::Sponsor,
-			State::Drugs::Indications,
-			State::Drugs::GalenicGroups,
-			State::Drugs::IncompleteRegs,
-		]
+		case @session.user
+		when ODDB::RootUser
+			[
+				:new_registration,
+				State::Admin::PatinfoStats,
+				State::Admin::Sponsor,
+				State::Admin::Indications,
+				State::Admin::GalenicGroups,
+				State::Admin::IncompleteRegs,
+			]
+		when ODDB::AdminUser
+			[
+				:new_registration,
+				State::Admin::PatinfoStats,
+				State::Admin::Indications,
+				State::Admin::GalenicGroups,
+				State::Admin::IncompleteRegs,
+			]
+		else
+			[
+				:new_registration,
+				State::Admin::GalenicGroups,
+				State::Admin::PatinfoStatsCompanyUser,
+			]
+		end
 	end
 end
 		end

@@ -11,8 +11,6 @@ class Global < State::Global
 	ZONE = :interactions
 	def zone_navigation
 		[
-			:help_link,
-			:faq_link,
 			State::Interactions::Basket,
 		]
 	end

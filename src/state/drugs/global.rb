@@ -13,8 +13,6 @@ class Global < State::Global
 	ZONE = :drugs
 	def zone_navigation
 		[
-			:help_link,
-			:faq_link,
 			State::Drugs::RecentRegs,
 			State::Drugs::AtcChooser,
 		]

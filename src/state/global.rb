@@ -14,9 +14,9 @@ require 'state/drugs/fachinfo'
 require 'state/drugs/feedbacks'
 require 'state/drugs/init'
 require	'state/drugs/limitationtext'
-require 'state/drugs/orphaned_patinfos'
-require 'state/drugs/orphaned_patinfo'
-require 'state/drugs/patinfo_deprived_sequences'
+require 'state/admin/orphaned_patinfos'
+require 'state/admin/orphaned_patinfo'
+require 'state/admin/patinfo_deprived_sequences'
 require 'state/drugs/recentregs'
 require 'state/drugs/result'
 require 'state/doctors/init'
@@ -135,6 +135,12 @@ module ODDB
 					State::Drugs::Feedbacks.new(@session, pack)
 				end
 			end
+			def help_navigation
+				[
+					:help_link,
+					:faq_link,
+				]
+			end
 			def home_navigation
 				[
 					self::class::HOME_STATE
@@ -158,7 +164,10 @@ module ODDB
 				State::Drugs::Init.new(@session, user)
 			end
 			def navigation
-				zone_navigation + user_navigation + home_navigation
+				help_navigation \
+				+ zone_navigation \
+				+ user_navigation \
+				+ home_navigation
 			end
 			def powerlink
 				pointer = @session.user_input(:pointer)
@@ -298,10 +307,7 @@ module ODDB
 				[:drugs, :interactions, :companies, :doctors, :user]
 			end
 			def zone_navigation
-				[
-					:help_link,
-					:faq_link,
-				]
+				[ ]
 			end
 			private
 			def compare_entries(a, b)

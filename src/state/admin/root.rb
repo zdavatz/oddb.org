@@ -2,86 +2,86 @@
 # State::Admin::Root -- oddb -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/user'
-require 'state/drugs/incompleteregistrations'
-require 'state/drugs/galenicgroups'
-require 'state/drugs/indications'
+require 'state/admin/incompleteregistrations'
+require 'state/admin/galenicgroups'
+require 'state/admin/indications'
 require 'state/admin/logout'
 require 'state/admin/init'
 
 module ODDB
 	module State
 		module Admin
-class State::Drugs::ActiveAgent < State::Drugs::Global; end
-class State::Drugs::AssignDeprivedSequence < State::Drugs::Global; end
-class State::Drugs::AtcClass < State::Drugs::Global; end
+class State::Admin::ActiveAgent < State::Admin::Global; end
+class State::Admin::AssignDeprivedSequence < State::Admin::Global; end
+class State::Admin::AtcClass < State::Admin::Global; end
 class State::Companies::Company < State::Companies::Global; end
 class State::Companies::UserCompany < State::Companies::Company; end
 class State::Companies::RootCompany < State::Companies::UserCompany; end
-class State::Drugs::GalenicForm < State::Drugs::Global; end
-class State::Drugs::GalenicGroup < State::Drugs::Global; end
-class State::Drugs::GalenicGroups < State::Drugs::Global; end
-class State::Drugs::OrphanedFachinfos < State::Drugs::Global; end
-class State::Drugs::OrphanedFachinfoAssign < State::Drugs::Global; end
-class State::Drugs::OrphanedPatinfo < State::Drugs::Global; end
-class State::Drugs::OrphanedPatinfos < State::Drugs::Global; end
-class State::Drugs::Package < State::Drugs::Global; end
-class State::Drugs::PatinfoDeprivedSequences < State::Drugs::Global; end
-class State::Drugs::Registration < State::Drugs::Global; end
-class State::Drugs::Sequence < State::Drugs::Global; end
-class State::Drugs::SlEntry < State::Drugs::Global; end
+class State::Admin::GalenicForm < State::Admin::Global; end
+class State::Admin::GalenicGroup < State::Admin::Global; end
+class State::Admin::GalenicGroups < State::Admin::Global; end
+class State::Admin::OrphanedFachinfos < State::Admin::Global; end
+class State::Admin::OrphanedFachinfoAssign < State::Admin::Global; end
+class State::Admin::OrphanedPatinfo < State::Admin::Global; end
+class State::Admin::OrphanedPatinfos < State::Admin::Global; end
+class State::Admin::Package < State::Admin::Global; end
+class State::Admin::PatinfoDeprivedSequences < State::Admin::Global; end
+class State::Admin::Registration < State::Admin::Global; end
+class State::Admin::Sequence < State::Admin::Global; end
+class State::Admin::SlEntry < State::Admin::Global; end
 class State::Admin::PatinfoStats < State::Admin::Global; end
 class State::Admin::Sponsor < State::Admin::Global; end
 class State::Substances::Substance < State::Substances::Global; end
 class State::Substances::Substances < State::Substances::Global; end
 class State::Substances::EffectiveSubstances < State::Substances::Substances; end
-class State::Drugs::IncompleteRegs < State::Drugs::Global; end
-class State::Drugs::IncompleteReg < State::Drugs::Registration; end
-class State::Drugs::IncompleteSequence < State::Drugs::Sequence; end
-class State::Drugs::IncompletePackage < State::Drugs::Package; end
-class State::Drugs::IncompleteActiveAgent < State::Drugs::ActiveAgent; end
-class State::Drugs::Indication < State::Drugs::Global; end
-class State::Drugs::Indication < State::Drugs::Global; end
+class State::Admin::IncompleteRegs < State::Admin::Global; end
+class State::Admin::IncompleteReg < State::Admin::Registration; end
+class State::Admin::IncompleteSequence < State::Admin::Sequence; end
+class State::Admin::IncompletePackage < State::Admin::Package; end
+class State::Admin::IncompleteActiveAgent < State::Admin::ActiveAgent; end
+class State::Admin::Indication < State::Admin::Global; end
+class State::Admin::Indication < State::Admin::Global; end
 module Root
 	include State::Admin::User
 	RESOLVE_STATES = {
-		[ :atc_class ]								=>	State::Drugs::AtcClass,
+		[ :atc_class ]								=>	State::Admin::AtcClass,
 		[ :company ]									=>	State::Companies::RootCompany,
-		[ :galenic_group ]						=>	State::Drugs::GalenicGroup,
+		[ :galenic_group ]						=>	State::Admin::GalenicGroup,
 		[ :galenic_group,
-			:galenic_form ]							=>	State::Drugs::GalenicForm,
-			[ :select_seq ]									=>  State::Drugs::AssignDeprivedSequence,
-		[ :incomplete_registration ]	=>	State::Drugs::IncompleteReg, 
+			:galenic_form ]							=>	State::Admin::GalenicForm,
+			[ :select_seq ]									=>  State::Admin::AssignDeprivedSequence,
+		[ :incomplete_registration ]	=>	State::Admin::IncompleteReg, 
 		[ :incomplete_registration,
-			:sequence ]									=>	State::Drugs::IncompleteSequence, 
+			:sequence ]									=>	State::Admin::IncompleteSequence, 
 		[ :incomplete_registration,
-			:sequence, :package ]				=>	State::Drugs::IncompletePackage, 
+			:sequence, :package ]				=>	State::Admin::IncompletePackage, 
 		[ :incomplete_registration,
-			:sequence, :active_agent ]	=>	State::Drugs::IncompleteActiveAgent, 
-		[ :orphaned_fachinfo ]				=>	State::Drugs::OrphanedFachinfoAssign,
-		[ :orphaned_patinfo ]					=>	State::Drugs::OrphanedPatinfo,
-		[ :patinfo_deprived_sequences ] => State::Drugs::PatinfoDeprivedSequences,
-		[ :registration ]							=>	State::Drugs::Registration,
-		[ :registration, :sequence ]	=>	State::Drugs::Sequence,
+			:sequence, :active_agent ]	=>	State::Admin::IncompleteActiveAgent, 
+		[ :orphaned_fachinfo ]				=>	State::Admin::OrphanedFachinfoAssign,
+		[ :orphaned_patinfo ]					=>	State::Admin::OrphanedPatinfo,
+		[ :patinfo_deprived_sequences ] => State::Admin::PatinfoDeprivedSequences,
+		[ :registration ]							=>	State::Admin::Registration,
+		[ :registration, :sequence ]	=>	State::Admin::Sequence,
 		[ :registration,
-			:sequence, :active_agent ]	=>	State::Drugs::ActiveAgent,
+			:sequence, :active_agent ]	=>	State::Admin::ActiveAgent,
 		[ :registration,
-			:sequence, :package ]				=>	State::Drugs::Package,
+			:sequence, :package ]				=>	State::Admin::Package,
 		[ :registration, :sequence,
-			:package, :sl_entry ]				=>	State::Drugs::SlEntry,
-		[ :indication ]								=>	State::Drugs::Indication,
+			:package, :sl_entry ]				=>	State::Admin::SlEntry,
+		[ :indication ]								=>	State::Admin::Indication,
 		[ :substance ]								=>	State::Substances::Substance,
 	}	
 	def galenic_groups
 		model = @session.app.galenic_groups.values
-		State::Drugs::GalenicGroups.new(@session, model)
+		State::Admin::GalenicGroups.new(@session, model)
 	end
 	def incomplete_registrations
 		model = @session.app.incomplete_registrations
-		State::Drugs::IncompleteRegs.new(@session, model)
+		State::Admin::IncompleteRegs.new(@session, model)
 	end
 	def indications
 		model = @session.app.indications
-		State::Drugs::Indications.new(@session, model)
+		State::Admin::Indications.new(@session, model)
 	end
 	def new_company
 		pointer = Persistence::Pointer.new(:company)
@@ -92,16 +92,16 @@ module Root
 		model = pointer.resolve(@session.app)
 		item = Persistence::CreateItem.new(pointer + [:galenic_form])
 		item.carry(:galenic_group, model)
-		State::Drugs::GalenicForm.new(@session, item)
+		State::Admin::GalenicForm.new(@session, item)
 	end
 	def new_galenic_group
 		pointer = Persistence::Pointer.new(:galenic_group)
-		State::Drugs::GalenicGroup.new(@session, Persistence::CreateItem.new(pointer))
+		State::Admin::GalenicGroup.new(@session, Persistence::CreateItem.new(pointer))
 	end
 	def new_indication
 		pointer = Persistence::Pointer.new([:indication])
 		item = Persistence::CreateItem.new(pointer)
-		State::Drugs::Indication.new(@session, item)
+		State::Admin::Indication.new(@session, item)
 	end
 	def new_registration
 		pointer = Persistence::Pointer.new(:registration)
@@ -110,7 +110,7 @@ module Root
 			item.carry(:company, @model)
 			item.carry(:company_name, @model.name)
 		end
-		State::Drugs::Registration.new(@session, item)
+		State::Admin::Registration.new(@session, item)
 	end
 	def new_substance
 		pointer = Persistence::Pointer.new(:substance)
@@ -121,11 +121,11 @@ module Root
 	end
 	def	orphaned_fachinfos
 		model = @session.app.orphaned_fachinfos.values
-		State::Drugs::OrphanedFachinfos.new(@session, model)
+		State::Admin::OrphanedFachinfos.new(@session, model)
 	end	
 	def orphaned_patinfos
 		model = @session.app.orphaned_patinfos.values
-		State::Drugs::OrphanedPatinfos.new(@session, model)
+		State::Admin::OrphanedPatinfos.new(@session, model)
 	end
 	def patinfo_deprived_sequences	
 		model = []
@@ -144,7 +144,7 @@ module Root
 				model += candidates
 			#end
 		}
-		State::Drugs::PatinfoDeprivedSequences.new(@session, model)
+		State::Admin::PatinfoDeprivedSequences.new(@session, model)
 	end
 	def patinfo_stats
 		State::Admin::PatinfoStats.new(@session,[])
