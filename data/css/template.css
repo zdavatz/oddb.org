@@ -637,7 +637,8 @@ td.result-infos-bg
 a.important-infos, a.important-infos:link, a.important-infos:visited,
 a.important-infos-original, a.important-infos-original:link, a.important-infos-original:visited,
 a.important-infos-generic, a.important-infos-generic:link, a.important-infos-generic:visited,
-a.important-infos-unknown, a.important-infos-unknown:link, a.important-infos-unknown:visited
+a.important-infos-unknown, a.important-infos-unknown:link, a.important-infos-unknown:visited,
+a.important-infos-complementary, a.important-infos-complementary:link, a.important-infos-complementary:visited
 {
 	color : black;
 	background : $rslt_infos_bg_bright;
@@ -650,7 +651,8 @@ a.important-infos-unknown, a.important-infos-unknown:link, a.important-infos-unk
 td.important-infos,
 td.important-infos-original, 
 td.important-infos-generic, 
-td.important-infos-unknown
+td.important-infos-unknown,
+td.important-infos-complementary
 {
 	padding : 0px;
 }
@@ -658,7 +660,8 @@ td.important-infos-unknown
 a.important-infos-bg, a.important-infos-bg:link, a.important-infos-bg:visited, 
 a.important-infos-original-bg, a.important-infos-original-bg:link, a.important-infos-original-bg:visited, 
 a.important-infos-generic-bg, a.important-infos-generic-bg:link, a.important-infos-generic-bg:visited,
-a.important-infos-unknown-bg, a.important-infos-unknown-bg:link, a.important-infos-unknown-bg:visited 
+a.important-infos-unknown-bg, a.important-infos-unknown-bg:link, a.important-infos-unknown-bg:visited,
+a.important-infos-complementary-bg, a.important-infos-complementary-bg:link, a.important-infos-complementary-bg:visited 
 {
 	color : black;
 	background : $rslt_infos_bg_dark;
@@ -671,7 +674,8 @@ a.important-infos-unknown-bg, a.important-infos-unknown-bg:link, a.important-inf
 
 td.important-infos-original-bg, 
 td.important-infos-generic-bg, 
-td.important-infos-unknown-bg
+td.important-infos-unknown-bg,
+td.important-infos-complementary-bg
 {
 	background : $rslt_bg;
 	padding : 0px;
