@@ -37,6 +37,11 @@ module ODDB
 							item.time
 						}.reverse
 					end
+					def newest_date
+						@newest_date ||= @invoice_items.collect { |item| 
+							item.time 
+						}.max
+					end
 				end
 				class CompanyFacade
 					attr_accessor :company_name, :company
@@ -54,7 +59,17 @@ module ODDB
 						sequence_facade.add_invoice_item(item_facade)
 					end
 					def invoice_sequences
-						@invoice_sequences.values
+						@invoice_sequences.values.sort_by { |seq|
+							seq.newest_date
+						}.reverse
+					end
+					def invoice_count
+						@invoice_sequences.size
+					end
+					def newest_date
+						@invoice_sequences.values.collect { |seq| 
+							seq.newest_date 
+						}.max
 					end
 				end
 				def init

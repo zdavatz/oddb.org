@@ -15,8 +15,13 @@ class CompanyHeader < HtmlGrid::Composite
 	include View::AdditionalInformation
 	COMPONENTS = {
 		[0,0] => :company_name,
+		[0,0,1] => 'nbsp',
+		[0,0,2] => 'total',
+		[0,0,3] => 'nbsp',
+		[0,0,4] => :invoice_count,
 	}
 	CSS_CLASS = 'composite'
+	DEFAULT_CLASS = HtmlGrid::Value
 	def init
 		if(@session.user.is_a? RootUser)
 			components.store([0,0,0], :edit)
@@ -50,9 +55,12 @@ class PatinfoStatsList < HtmlGrid::List
 		[1,0]	=> 'list',
 	}
 	OMIT_HEADER = true
+	SORT_DEFAULT = :newest_date
+	SORT_REVERSE = true
 	def date(model, session)
 		time = model.time
 		time.strftime("%A %d.%m.%Y &nbsp;&nbsp;-&nbsp;&nbsp;%H.%M Uhr %Z")
+		#time.strftime(@lookandfeel.lookup(:date_format))
 	end
 	def email(model, session)
 		model.user.unique_email
@@ -60,7 +68,6 @@ class PatinfoStatsList < HtmlGrid::List
 	SUBHEADER = View::Admin::CompanyHeader
 	def compose_list(model=@model, offset=[0,0])
 		model.each { |company|
-		@pi_nr = 0
 			compose_subheader(company, offset)
 			offset = resolve_offset(offset, self::class::OFFSET_STEP)
 			invoice_sequences = company.invoice_sequences
@@ -80,8 +87,8 @@ class PatinfoStatsList < HtmlGrid::List
 		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 	end
 	def compose_subheader_seq(seq, offset)
-		@grid.add(@pi_nr+=1, *offset)
-		@grid.add('&nbsp;'*2, *offset)
+		#@grid.add(@pi_nr+=1, *offset)
+		#@grid.add('&nbsp;'*2, *offset)
 		@grid.add(seq_iks_link(seq), *offset)
 		@grid.add_style('result-seq indent bold', *offset)
 		x, y = offset
