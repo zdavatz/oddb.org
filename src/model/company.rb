@@ -34,6 +34,12 @@ module ODDB
 				registration.active?
 			}
 		end
+		def search_terms
+			[
+				@name,
+				@address,
+			]
+		end
 		def atc_classes
 			@registrations.collect { |registration|
 				registration.atc_classes				
