@@ -104,7 +104,7 @@ class EmptyResultForm < HtmlGrid::Form
 		[0,0,1]	=>	:submit,
 		[0,1]		=>	:title_none_found,
 		[0,2]		=>	'e_empty_result',
-		[0,3]		=>	'explain_search',
+		[0,3]		=>	'explain_search_company',
 	}
 	CSS_MAP = {
 		[0,0]			=>	'search',	
