@@ -133,13 +133,15 @@ module ODDB
 				State::Doctors::DoctorList.new(@session, model)
 			end
 			def download
-				email = @session.get_cookie_input(:email) \
-					|| @session.user_input(:email)
+				input = @session.user_input(:email)
+				email = @session.get_cookie_input(:email) || input
 				user = @session.admin_subsystem.download_user(email)
 				if(user && user.authenticated?)
 					State::User::Download.new(@session, user)
 				else
-					State::User::RegisterDownload.new(@session, nil)
+					state = State::User::RegisterDownload.new(@session, nil)
+					# in case we were kicked out of a session, try state.download
+					(input.nil?) ? state : state.download
 				end
 			end
 			def extend(mod)
