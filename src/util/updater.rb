@@ -11,6 +11,7 @@ require 'plugin/bsv'
 require 'plugin/ouwerkerk'
 require 'plugin/limitation'
 require 'plugin/medwin'
+require 'plugin/vaccines'
 require 'plugin/who'
 require 'util/log'
 require 'util/persistence'
@@ -34,13 +35,6 @@ module ODDB
 			#:powerlink		=>	'Powerlink-Statistics',
 			#:passthru		=>	'Banner-Clicks',
 		}
-		PLUGINS = {
-			:swissmedicjournal	=>	SwissmedicJournalPlugin,
-			:bsv_sl							=>	BsvPlugin,
-			:owerkerk						=>	OuwerkerkPlugin,
-			:limitation_txt			=>	LimitationPlugin,
-		}
-		ARGUMENTS = []
 		def initialize(app)
 			@app = app
 			@smj_updated = false
@@ -85,7 +79,7 @@ module ODDB
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
 			logs = @app.create(logs_pointer)
 			if(latest = logs.newest_date)
-				klass = PLUGINS[:bsv_sl]
+				klass = BsvPlugin
 				plug = klass.new(@app)
 				subj = 'SL-Update Reconsidered'
 				wrap_update(klass, subj) { 
@@ -120,7 +114,7 @@ module ODDB
 			this_month = Date.new(today.year, today.month)
 			latest = logs.newest_date || (this_month << 1)
 			months = [this_month, this_month >> 1].select { |month| month > latest }
-			klass = PLUGINS[:bsv_sl]
+			klass = BsvPlugin
 			plug = klass.new(@app)
 			subj = 'SL-Update'
 			wrap_update(klass, subj) { 
@@ -130,7 +124,7 @@ module ODDB
 			}
 		end
 		def update_bsv_from_url(server, path, target)
-			klass = PLUGINS[:bsv_sl]
+			klass = BsvPlugin
 			plug = klass.new(@app)
 			subj = 'SL-Update'
 			wrap_update(klass, subj) { 
@@ -140,7 +134,7 @@ module ODDB
 			}
 		end
 		def update_doctors
-			update_simple(Doctors::DoctorPlugin, 'Doctors', :update, nil, false)
+			update_simple(Doctors::DoctorPlugin, 'Doctors')
 		end
 		def update_fachinfo
 			klass = FachinfoPlugin
@@ -158,7 +152,7 @@ module ODDB
 			update_simple(FachinfoPlugin, 'Fachinfo', :update_news)
 		end
 		def update_hospitals
-			update_simple(HospitalPlugin, 'Hospitals', :update, nil, false)
+			update_simple(HospitalPlugin, 'Hospitals')
 		end
 		def update_all_fachinfo
 			update_simple(FachinfoPlugin, "Complete Fachinfo", :update_all)
@@ -189,7 +183,7 @@ module ODDB
 			success = true
 			while((latest < Date.today) && success)
 				latest = latest >> 1
-				klass = PLUGINS[:swissmedicjournal]
+				klass = SwissmedicJournalPlugin
 				plug = klass.new(@app)
 				wrap_update(klass, "swissmedic-journal") { 
 					success = false
@@ -203,6 +197,17 @@ module ODDB
 				end
 			end
 		end
+		def update_vaccines
+			wrap_update(VaccinePlugin, 'blutprodukte') { 
+				plugin = VaccinePlugin.new(self)
+				# registrations, indications, sequences
+				plugin.parse_from_txt('vaccines.txt')     
+				# sequences, substances, active_agents
+				plugin.parse_from_xls('vaccines.xls')
+				# packages
+				plugin.parse_from_xls('vaccines_ean.xls')
+			}
+		end
 		private
 		def log_notify_bsv(plug, date, subj='SL-Update')
 			pointer = Persistence::Pointer.new([:log_group, :bsv_sl], [:log, date])
@@ -210,15 +215,11 @@ module ODDB
 			log = @app.update(pointer.creator, values)
 			log.notify(subj)
 		end
-		def wrap_update(klass, subj, batch=true, &block)
+		def wrap_update(klass, subj, &block)
 			begin
-				if(batch)
-					ODBA.batch {
-						block.call
-					}
-				else
+				ODBA.transaction {
 					block.call
-				end
+				}
 			rescue StandardError => e
 				log = Log.new(Date.today)
 				log.report = [
@@ -233,16 +234,10 @@ module ODDB
 				nil
 			end
 		end
-		def update_simple(klass, subj, update_method=:update, 
-			arg=nil, batch=true)
-			wrap_update(klass, subj, batch) {
+		def update_simple(klass, subj, update_method=:update)
+			wrap_update(klass, subj) {
 				plug = klass.new(@app)
-				#puts ARGUMENTS.inspect
-				if(ARGUMENTS.include?(arg))
-					plug.send(update_method, arg)
-				else
-					plug.send(update_method)
-				end
+				plug.send(update_method)
 				log = Log.new(Date.today)
 				log.update_values(log_info(plug))
 				log.notify(subj)
