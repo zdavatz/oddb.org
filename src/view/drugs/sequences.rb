@@ -2,6 +2,7 @@
 # View::Drugs::Sequences -- oddb -- 08.02.2005 -- hwyss@ywesee.com
 
 require 'view/resulttemplate'
+require 'view/resultfoot'
 require 'view/resultcolors'
 
 module ODDB
@@ -38,8 +39,15 @@ class SequenceList < HtmlGrid::List
 		link
 	end
 end
+class SequencesComposite < HtmlGrid::Composite
+	COMPONENTS = {
+		[0,0]	=> View::Drugs::SequenceList,
+		[0,1]	=> View::ResultFoot,
+	}
+	CSS_CLASS = 'composite'
+end
 class Sequences < View::ResultTemplate
-	CONTENT = View::Drugs::SequenceList
+	CONTENT = View::Drugs::SequencesComposite
 end
 		end
 	end
