@@ -620,10 +620,10 @@ zdavatz ! ywesee.com
 				:search_reset							=>	'Zur&uuml;cksetzen',
 				:search_sequences         =>  'Suchen',
 				:search_type							=>	'Art der Suche:&nbsp;',
-				:st_company								=>	'Firmenname',
-				:st_oddb									=>	'ODDB-Suche',
-				:st_sequence							=>	'Produktname',
-				:st_substance							=>	'Substanzname',
+				:st_company								=>	'Hersteller',
+				:st_oddb									=>	'Preisvergleich',
+				:st_sequence							=>	'Markenname',
+				:st_substance							=>	'Substanz',
 				:select_indication				=>	'Anwendungs-Auswahl',
 				:select_indication_list		=>	'Die von Ihnen eingegebene Anwendung existiert noch nicht. Bitte wählen Sie eine andere oder erstellen Sie sie neu.',
 				:select_substance_list		=>	'Der von Ihnen eingegebene Wirkstoff existiert noch nicht. Bitte wählen Sie einen anderen oder erstellen Sie ihn neu.',
@@ -1189,10 +1189,10 @@ zdavatz ! ywesee.com
 				:search_query							=>	'ICI entrer le m&eacute;dicament/ principe actif',
 				:search_reset							=>	'Retour',
 				:search_type							=>	'Type de la recherche:&nbsp;',
-				:st_company								=>	'Nom de Firme',
-				:st_oddb									=>	'Recherche ODDB',
-				:st_sequence							=>	'Nom de m&eacute;dicament',
-				:st_substance							=>	'Nom de substance',
+				:st_company								=>	'Fabricant',
+				:st_oddb									=>	'Comparaison des prix',
+				:st_sequence							=>	'Nom de marque',
+				:st_substance							=>	'Substance',
 				:select_indication				=>	'S&eacute;lection d\'indication',
 				:select_indication_list		=>	'L\'indication que vous avez choisi n\'est pas connu. Choisissez une autre ou sanctionnez la cr&eacute;ation d\'une nouvelle indication.',
 				:select_substance_list		=>	"Le principe actif sugg&eacute;r&eacute; par vous n'existe pas encore. Veuillez choisir un autre ou fournissez &agrave; nouveau",
@@ -1822,10 +1822,10 @@ zdavatz ! ywesee.com
 				:search_reset							=>	'Reset',
 				:search_sequences         =>  'Search',
 				:search_type							=>	'Type of Search:&nbsp;',
-				:st_company								=>	'Company name',
-				:st_oddb									=>	'ODDB-Search',
-				:st_sequence							=>	'Product name',
-				:st_substance							=>	'Substance name',
+				:st_company								=>	'Producer',
+				:st_oddb									=>	'Price comparison',
+				:st_sequence							=>	'Brand name',
+				:st_substance							=>	'Substance',
 				:select_indication				=>	'Select an indication',
 				:select_indication_list		=>	'The requested indication is unknown. Choose a similar one or create a new indication from your input.',
 				:select_substance_list		=>	'The active agent you have entered does not exist. Please choose another one or create a new substance from your input.',
@@ -2036,8 +2036,5 @@ zdavatz ! ywesee.com
 			:plugin_download_gif => 'plugins/oddb.org.gif',
 			:sponsor				=>	'sponsor',
 		}
-		def languages
-			(self::class::LANGUAGES + super).uniq
-		end
 	end
 end

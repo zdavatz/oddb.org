@@ -48,6 +48,9 @@ module ODDB
 		}
 	end
 	class LookandfeelGenerika < SBSM::LookandfeelWrapper
+		LANGUAGES = [
+			'de', 'fr', 'en'
+		]
 		ENABLED = [
 			:companylist,
 			:epatents,
@@ -80,6 +83,13 @@ module ODDB
 				:login_welcome	=>	'Bienvenu sur Generika.cc',
 				:lookandfeel_owner =>	'Generika.cc',
 			},
+			'en'	=>	{
+				:html_title		=>	'cc: to everybody - generika.cc - subject: reduce health costs!', 
+				:home_welcome							=>  'Welcome to generika.cc,<br>Switzerland\'s most up-to-date portal for generics<br>The data is being updated by the monthly publication of the<br><a class="welcome" href="http://www.bsv.admin.ch/sl/liste/d/index.htm" target="_self">Swiss Federal Office of Public Health</a> and the <a class="welcome" href="http://www.swissmedic.ch/de/industrie/overall.asp?theme=0.00110.00001&amp;theme_id=980" target="_self">Swissmedic-Journal</a>.',
+				:mailinglist_title	=>	'Mailinglist - Generika.cc',
+				:login_welcome	=>	'Welcome to Generika.cc',
+				:lookandfeel_owner =>	'Generika.cc',
+			}
 		}
 		HTML_ATTRIBUTES = {
 			:logo => {
