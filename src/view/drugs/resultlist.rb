@@ -115,7 +115,7 @@ class ResultList < HtmlGrid::List
 		[6,0]	=>	'result bold right',
 		[7,0]	=>	'result italic',
 		[8,0]	=>	'result italic',
-		[8,0]	=>	'result italic',
+		[9,0]	=>	'result italic',
 		[10,0]	=>	'result italic',
 		[11,0]	=>	'result bold right',
 		[12,0] =>  'result bold right',
