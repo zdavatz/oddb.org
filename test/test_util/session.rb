@@ -62,7 +62,8 @@ class TestOddbSession < Test::Unit::TestCase
     assert_respond_to(@session, :delete)
   end
   def test_restore
-    assert_equal(@session, @session.restore[:proxy])
+		restore = @session.restore[:proxy]
+    assert_instance_of(DRb::DRbObject, restore)
   end
 	def test_process
 		request = SBSM::Request.new('druby://localhost:10001')

@@ -19,21 +19,47 @@ end
 def check_reached(name, obj, stub, reached)
 	if(stub && stub.is_a?(ODBA::Stub))
 		reached.push(stub.odba_id)
-		check(name, obj, stub.odba_id)
+		#check(name, obj, stub.odba_id)
 	end
+end
+def check_collection(odba_id, &block)
+	collection = ODBA.storage.restore_collection(odba_id)
+	collection.each(&block)
+end
+def check_array(obj, odba_id, reached, target_ids)
+	check_collection(odba_id) { |row|
+		key = ODBA.marshaller.load(row[0])
+		value = ODBA.marshaller.load(row[1])
+		target_ids.push(value.odba_id)
+		check_reached("Array[#{key}]", obj, value, reached)
+	}
+end
+def check_hash(obj, odba_id, reached, target_ids)
+	check_collection(odba_id) { |row|
+		key = ODBA.marshaller.load(row[0])
+		value = ODBA.marshaller.load(row[1])
+		target_ids.push(key.odba_id)
+		target_ids.push(value.odba_id)
+		check_reached("Hash:key", obj, key, reached)
+		check_reached("Hash[#{key}]", obj, value, reached)
+	}
 end
 
 checked = []
 reached = []
 max = ODBA.storage.max_id
+puts "#### Starting ID-Check ####"
 $stdout.flush
-puts <<-EOS
-#### Starting ID-Check ####
-EOS
 
 1.upto(max) { |id|
 	if(dump = ODBA.storage.restore(id))
 		obj = ODBA.marshaller.load(dump)
+
+## don't lose any target_ids
+		target_ids = obj.odba_target_ids
+
+## check reachability
+#=begin
 		checked.push(id)
 		unless(obj.odba_name.nil?)
 			reached.push(id)
@@ -41,17 +67,44 @@ EOS
 		obj.instance_variables.each { |name|
 			check_reached(name, obj, obj.instance_variable_get(name), reached)
 		}
+#=end
+
+## move all collections to collection table
+#=begin
+		size = obj.odba_collection.size
+		if(size > 0)
+			puts "moving #{size} elements to collection-table"
+			obj.odba_collection.each { |key, value|
+				begin
+					key_dump = ODBA.marshaller.dump(key.odba_isolated_stub)
+					value_dump = ODBA.marshaller.dump(value.odba_isolated_stub)
+					ODBA.storage.collection_store(id, key_dump, value_dump)	
+				rescue DBI::ProgrammingError => e
+					puts "rescued #{e.message}"
+				end
+			}
+		end
+#=end
+## correct prefetchability
+#=begin
+		obj.odba_prefetch = false
+		obj.instance_variable_set('@odba_target_ids', nil)
+		dump = obj.odba_isolated_dump
+		ODBA.storage.store(id, dump, obj.odba_name, obj.odba_prefetch?)
+#=end
+
+## ensure object connections
+#=begin
 		if(obj.is_a?(Hash))
-			obj.each { |key, val|
-				check_reached('Hash:key', obj, key, reached)
-				check_reached("Hash[#{key}]", obj, val, reached)
-			}
+			check_hash(obj, id, reached, target_ids)
+		elsif(obj.is_a?(Array))
+			check_array(obj, id, reached, target_ids)
 		end
-		if(obj.is_a?(Array))
-			obj.each { |val|
-				check_reached('Array', obj, val, reached)
-			}
-		end
+		target_ids.compact!
+		target_ids.uniq!
+		ODBA.storage.ensure_object_connections(id, target_ids)
+#=end
+
 	end
 	print " " * 8
 	print "\b" * 8
@@ -59,14 +112,16 @@ EOS
 	print "\b" * 8
 	$stdout.flush
 }
-unreached.uniq!
+checked.uniq!
 reached.uniq!
 puts "checked #{checked.size} objects"
 puts "reached #{reached.size} objects"
+
+## delete unreached (collect garbage)
+#=begin
 unreached = (checked - reached)
 del_size = unreached.size
 puts "deleting #{del_size} objects"
-=begin
 unreached.each_with_index { |id, idx|
 	ODBA.storage.delete_persistable(id)
 	print " " * 8
@@ -75,5 +130,5 @@ unreached.each_with_index { |id, idx|
 	print "\b" * 8
 	$stdout.flush
 }
-=end
+#=end
 puts "#### ID-Check complete ####"

@@ -12,7 +12,6 @@ module ODDB
 	class Substance
 		include Persistence
 		include SequenceObserver
-		ODBA_PREFETCH = true
 		ODBA_SERIALIZABLE = [ '@descriptions', '@connection_keys', '@synonyms' ]
 		attr_reader :sequences, :substrate_connections
 		attr_accessor :effective_form

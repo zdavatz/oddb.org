@@ -16,6 +16,7 @@ class Result < State::Drugs::Global
 	REVERSE_MAP = View::Drugs::ResultList::REVERSE_MAP
 	ITEM_LIMIT = 150
 	attr_reader :package_count, :pages
+	attr_accessor :search_query, :search_type
 	include ResultStateSort
 	def init
 		@model.session = @session
@@ -47,6 +48,15 @@ class Result < State::Drugs::Global
 			@page = @pages[pge]
 		else
 			@page ||= @pages.first
+		end
+	end
+	def search
+		query = query.to_s.downcase
+		stype = @session.user_input(:search_type) 
+		if(@search_type != stype || @search_query != query)
+			super
+		else
+			self
 		end
 	end
 end

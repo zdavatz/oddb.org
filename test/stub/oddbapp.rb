@@ -20,15 +20,11 @@ class OddbPrevalence
 end
 module ODDB
 	class App < SBSM::DRbServer
-		remove_const :AUTOSNAPSHOT
 		remove_const :RUN_CLEANER
 		remove_const :RUN_EXPORTER
 		remove_const :RUN_UPDATER
-		remove_const :STORAGE_PATH
-		AUTOSNAPSHOT = false
 		RUN_CLEANER = false
 		RUN_EXPORTER = false
 		RUN_UPDATER = false
-		STORAGE_PATH = File.expand_path('../data/prevalence', File.dirname(__FILE__))
 	end
 end

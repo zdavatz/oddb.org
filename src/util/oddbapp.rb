@@ -80,15 +80,12 @@ class OddbPrevalence
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
 		rebuild_atc_chooser()
-		recount()
 	end
 	# prevalence-methods ################################
 	def create(pointer)
-		#puts [__FILE__,__LINE__,"create(#{pointer})"].join(':')
 		@last_update = Time.now()
 		failsafe {
 			if(item = pointer.issue_create(self))
-				#puts item
 				updated(item)
 				item
 			end
@@ -494,6 +491,7 @@ class OddbPrevalence
 			@package_count = count_packages()
 			@patinfo_count = count_patinfos()
 		}
+		self.odba_store
 	end
 	def registration(registration_id)
 		@registrations[registration_id]
@@ -727,9 +725,7 @@ class OddbPrevalence
 		case item
 		when ODDB::Registration, ODDB::Sequence, ODDB::Package, ODDB::AtcClass
 			@last_medication_update = Date.today
-			#recount
 		when ODDB::LimitationText, ODDB::AtcClass::DDD
-			#recount
 		when ODDB::Substance
 			@substances.each_value { |subs|
 				if(!subs.is_effective_form? && subs.effective_form == item)
@@ -830,8 +826,6 @@ module ODDB
 		RUN_EXPORTER = true
 		RUN_UPDATER = true
 		SESSION = Session
-		SNAPSHOT_INTERVAL = 4*60*60
-		STORAGE_PATH = File.expand_path('log/prevalence', PROJECT_ROOT)
 		UNKNOWN_USER = UnknownUser
 		UPDATE_INTERVAL = 24*60*60
 		VALIDATOR = Validator
@@ -839,7 +833,7 @@ module ODDB
 		def initialize
 			### keep this disabled, as long as unreachable prefetchable
 			### objects are not reaped from the db
-			#ODBA.cache_server.prefetch
+			ODBA.cache_server.prefetch
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
 				OddbPrevalence.new
 			}
