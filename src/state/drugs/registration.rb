@@ -58,7 +58,7 @@ class Registration < State::Drugs::Global
 			#@errors.store(:indication, err)
 			hash.store(:indication, ind)
 			sel = State::Drugs::SelectIndication::Selection.new(hash, 
-				@session.search_indications(ind), @model)
+				@session.app.search_indications(ind), @model)
 			new_state = State::Drugs::SelectIndication.new(@session, sel)
 		end
 		if(fi_file = @session.user_input(:fachinfo_upload)) 
