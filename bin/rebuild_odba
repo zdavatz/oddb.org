@@ -1,0 +1,69 @@
+#!/bin/sh
+
+DATADIR="/var/www/oddb.org/data/odba-csv"
+
+if [ ! -d $DATADIR/object_connection ]
+then
+	if [ ! -f $DATADIR/object_connection.csv ]
+	then
+		echo "No object connection data found!"
+		echo "You need to run rebuild_odba from the oddb admin tool."
+		exit -1
+	fi
+	echo "splitting object_connection.csv"
+	mkdir $DATADIR/object_connection
+	sort -n $DATADIR/object_connection.csv | uniq \
+		| split -l10000 - $DATADIR/object_connection/part_
+fi
+if [ ! -d $DATADIR/object ]
+then
+	if [ ! -f $DATADIR/object.csv ]
+	then
+		echo "No object data found!"
+		echo "You need to run rebuild_odba from the oddb admin tool."
+		exit -1
+	fi
+	echo "splitting object.csv"
+	mkdir $DATADIR/object
+	sort -n $DATADIR/object.csv | uniq \
+		| split -l5000 - $DATADIR/object/part_
+fi
+
+echo "delete from object"
+psql -U postgres --command "delete from object" odba
+echo "delete from object_connection"
+psql -U postgres --command "delete from object_connection" odba
+echo "drop table atc_index"
+psql -U postgres --command "drop table atc_index" odba
+echo "drop table atc_index_company"
+psql -U postgres --command "drop table atc_index_company" odba
+echo "drop table fachinfo_index_de"
+psql -U postgres --command "drop table fachinfo_index_de" odba
+echo "drop table fachinfo_index_fr"
+psql -U postgres --command "drop table fachinfo_index_fr" odba
+echo "drop table sequence_index_atc"
+psql -U postgres --command "drop table sequence_index_atc" odba
+echo "drop table substance_index"
+psql -U postgres --command "drop table substance_index" odba
+echo "drop table substance_index_atc"
+psql -U postgres --command "drop table substance_index_atc" odba
+echo "vacuum full analyze"
+psql -U postgres --command "vacuum full analyze" odba
+
+for FILE in $(ls $DATADIR/object)
+do 
+	echo "object/$FILE"
+	psql -U postgres --command \
+		"COPY object FROM '$DATADIR/object/$FILE'" \
+		odba
+done
+for FILE in $(ls $DATADIR/object_connection)
+do 
+	echo "object_connection/$FILE"
+	psql -U postgres --command \
+		"COPY object_connection FROM '/$DATADIR/object_connection/$FILE'" \
+		odba
+done
+
+echo "vacuum full analyze"
+psql -U postgres --command "vacuum full analyze" odba
