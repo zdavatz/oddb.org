@@ -22,9 +22,16 @@ module ODDB
 			OFFSET_STEP = [1,0]
 			SORT_DEFAULT = :to_i
 			SORT_HEADER = false
+			attr_accessor :event, :arguments
+			def initialize(model, session, container, event=:result, args={})
+				@event = event
+				@arguments = args
+				super(model, session, container)
+			end
 			def init
 				@page = @session.state.page
-				super end
+				super 
+			end
 			def compose_header(offset)
 				@grid.add(page_number(@model, @session), *offset)
 				@grid.add_style('pager-head', *offset)
@@ -42,6 +49,10 @@ module ODDB
 					@grid.add(link, *offset)
 				end
 			end
+			def to_html(context)
+				init
+				super
+			end
 			private
 			def number_link(model, session)
 				page_link(:to_s, model)
@@ -51,11 +62,10 @@ module ODDB
 					link = HtmlGrid::Link.new(key, page, @session, self)
 					link.value = page.send(key) if page.respond_to?(key)
 					link.set_attribute("class", "pager")
-					values = {
+					values = @arguments.merge({
 						:page	=>	page.to_s,
-						:state_id	=>	@session.state.id,
-					}
-					link.href = @lookandfeel.event_url(:result, values)
+					})
+					link.href = @lookandfeel.event_url(@event, values)
 					link
 				else
 					page.to_s

@@ -64,9 +64,12 @@ class AtcHeader < HtmlGrid::Composite
 		if(state.respond_to?(:pages) \
 			&& (pages = state.pages) \
 			&& pages.size > 1)
-			pager = View::Pager.new(pages, session, self)
+			args = {
+				:search_query => @session.user_input(:search_query),	
+				:search_type => @session.user_input(:search_type),	
+			}
+			View::Pager.new(pages, session, self, :search, args)
 		end
-		pager
 	end
 end
 class ResultList < HtmlGrid::List
