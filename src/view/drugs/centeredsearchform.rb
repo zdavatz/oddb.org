@@ -22,6 +22,9 @@ class CenteredSearchForm < View::CenteredSearchForm
 		:exact_match	=>	HtmlGrid::InputCheckbox,
 		:search_query	=>	View::SearchBar,	
 	}
+	CSS_MAP = {
+		[0,2]	=>	'ccomponent',
+	}
 	EVENT = :search
 end
 class CenteredSearchComposite < View::CenteredSearchComposite
