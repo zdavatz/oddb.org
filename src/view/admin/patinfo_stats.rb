@@ -6,8 +6,10 @@ require 'htmlgrid/list'
 require 'htmlgrid/link'
 require 'view/form'
 require 'view/publictemplate'
+require 'view/pointervalue'
 require 'view/resulttemplate'
 require 'view/additional_information'
+require 'view/alphaheader'
 
 module ODDB
 	module View
@@ -15,7 +17,7 @@ module ODDB
 class CompanyHeader < HtmlGrid::Composite
 	include View::AdditionalInformation
 	COMPONENTS = {
-		[0,0] => :company_name,
+		[0,0] => :name,
 		[0,0,1] => 'nbsp',
 		[0,0,2] => 'total',
 		[0,0,3] => 'nbsp',
@@ -23,26 +25,14 @@ class CompanyHeader < HtmlGrid::Composite
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
+	SYMBOL_MAP = {
+		:name =>	View::PointerLink,
+	}
 	def init
 		if(@session.user.is_a? RootUser)
 			components.store([0,0,0], :edit)
 		end
 		super
-	end
-	def company_name(company, session)
-		comp = model.company
-		return if comp.nil?
-		if(@lookandfeel.enabled?(:powerlink, false) && comp.powerlink)
-			link = HtmlGrid::HttpLink.new(:name, model.company, session, self)
-			link.href = @lookandfeel.event_url(:powerlink, {'pointer'=>comp.pointer})
-			link.set_attribute("class", "powerlink")
-			link
-		elsif(@lookandfeel.enabled?(:companylist) \
-			&& model.company.listed?)
-			View::PointerLink.new(:name, model.company, session, self)
-		else
-			HtmlGrid::Value.new(:name, model.company, session, self)
-		end
 	end
 end
 class PatinfoStatsList < HtmlGrid::List
@@ -55,9 +45,14 @@ class PatinfoStatsList < HtmlGrid::List
 		[0,0]	=> 'list',
 		[1,0]	=> 'list',
 	}
-	OMIT_HEADER = true
 	SORT_DEFAULT = :newest_date
 	SORT_REVERSE = true
+	SORT_HEADER = false
+	LOOKANDFEEL_MAP = {
+		:date					=>	:patinfo_stats,
+		:email				=>	:nbsp,
+	}
+	include View::AlphaHeader
 	def date(model, session)
 		time = model.time
 		time.strftime("%A %d.%m.%Y &nbsp;&nbsp;-&nbsp;&nbsp;%H.%M Uhr %Z")
@@ -98,11 +93,11 @@ class PatinfoStatsList < HtmlGrid::List
 end
 class PatinfoStatsComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]		=> 'patinfo_stats',
+		#	[0,0]		=> 'patinfo_stats',
 		[0,1]		=> View::Admin::PatinfoStatsList,
 	}
 	CSS_MAP = {
-		[0,0]	=> 'th',
+		#[0,0]	=> 'th',
 	}
 	CSS_CLASS = 'composite'
 end
