@@ -233,6 +233,7 @@ class ResultList < HtmlGrid::List
 			(indication.send(@session.language) unless(indication.nil?)),
 		].compact.join(', ')
 		link.set_attribute('title', title)
+		link.width =1250
 		link
 	end
 	def substances(model, session)
