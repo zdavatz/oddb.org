@@ -52,6 +52,7 @@
 		erscheint ein leeres Suchresultat
 		Fazit: Wenn für eine Wirkstoff keine Produkte vorhanden sind, dann sollte
 		auch kein Link erscheinen, der ein leeres Suchresultat anzeigt.
+		+ maege@ywesee.com: ist erledigt
 		
 2004-06-16 Zeno Davatz <zdavatz@ywesee.com>
 *	Anpassung Import Fi/Pi aus PDF

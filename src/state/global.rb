@@ -9,6 +9,8 @@ require 'state/companylist'
 require 'state/compare'
 require 'state/ddd'
 require 'state/fachinfo'
+require 'state/fipi_offer_input'
+require 'state/fipi_offer_confirm'
 require 'state/galdatdownload'
 require 'state/genericdefinition'
 require 'state/passthru'
@@ -43,6 +45,7 @@ module ODDB
 			:companylist					=>	CompanyListState,
 			:ddd									=>	DDDState,
 			:download							=>	DownloadState,
+			:fipi_offer_input			=>	FiPiOfferInputState,
 			:galdat_download			=>	GaldatDownloadState,
 			:help									=>	HelpState,
 			:home									=>	InitState,

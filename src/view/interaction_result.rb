@@ -31,7 +31,7 @@ module ODDB
 			[0,0] =>	'result-found',
 			[0,1] =>	'result-price-compare',
 			[1,1]	=>	'search',	
-			[0,3]	=>	'button-left-with-padding',	
+			[0,3]	=>	'button left padding',	
 		}
 		def interaction_basket(model, session)
 			get_event_button(:interaction_basket)
