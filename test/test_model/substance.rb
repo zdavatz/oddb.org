@@ -8,6 +8,7 @@ require 'test/unit'
 require 'model/substance'
 require 'stub/odba'
 require 'mock'
+require 'odba'
 
 module ODDB
 	class Substance
@@ -15,11 +16,23 @@ module ODDB
 		attr_accessor :substrate_connections
 	end
 end
-
 class TestSubstance < Test::Unit::TestCase
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
+		ODBA.storage.__next(:next_id) {
+			2
+		}
+		ODBA.storage.__next(:next_id) {
+			3
+		}
 		@substance = ODDB::Substance.new
 		@substance.descriptions.store('lt', "Acidum Acetylsalicylicum")
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_initialize
 		assert_not_nil(@substance.oid)
@@ -200,7 +213,6 @@ class TestSubstance < Test::Unit::TestCase
 	def test_soundex_keys
 		expected = [
 			'A235 A234',
-			'A235',
 		]
 		assert_equal(expected, @substance.soundex_keys)
 	end

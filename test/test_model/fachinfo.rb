@@ -7,6 +7,8 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'model/fachinfo'
 require 'model/text'
+require 'odba'
+require 'mock'
 
 module ODDB
 	class Fachinfo
@@ -20,6 +22,8 @@ end
 module ODBA
 	module Persistable
 		def odba_store
+		end
+		def odba_isolated_store
 		end
 	end
 end
@@ -36,7 +40,17 @@ class TestFachinfo < Test::Unit::TestCase
 		attr_accessor :substance_names
 	end
 	def setup
+		ODBA.storage =  Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
+		ODBA.storage.__next(:next_id) {
+			2
+		}
 		@fachinfo = ODDB::Fachinfo.new
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_add_registration
 		reg = StubRegistration.new

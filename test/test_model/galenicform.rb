@@ -6,6 +6,8 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/galenicform'
+require 'odba'
+require	'mock'
 
 module ODDB
 	class GalenicForm
@@ -16,7 +18,7 @@ end
 
 module ODBA
 	module Persistable
-		def odba_store
+		def odba_isolated_store
 		end
 	end
 end
@@ -60,8 +62,24 @@ class TestGalenicForm < Test::Unit::TestCase
 	end
 
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
+		ODBA.storage.__next(:next_id) {
+			2
+		}
+		ODBA.storage.__next(:next_id) {
+			3
+		}
+		ODBA.storage.__next(:next_id) {
+			4
+		}
 		@galform = ODDB::GalenicForm.new
 		@galform.update_values('de'=>'Tabletten')
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_adjust_types
 		app = StubApp.new
@@ -115,6 +133,7 @@ class TestGalenicForm < Test::Unit::TestCase
 		pointer = ODDB::Persistence::Pointer.new([:galenic_group, 1], [:galenic_form])
 		@galform.pointer = pointer
 		@galform.init(nil)
+		puts @galform.oid
 		expected = pointer.parent + [:galenic_form, @galform.oid]
 		assert_equal(expected, @galform.pointer)
 	end

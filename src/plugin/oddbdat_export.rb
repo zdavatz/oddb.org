@@ -2,6 +2,8 @@
 # OddbDatExport -- oddb -- 23.06.2003 -- aschrafl@ywesee.com
 
 require 'plugin/plugin'
+require 'drb'
+require 'util/oddbconfig'
 require 'util/persistence'
 require 'custom/lookandfeelbase'
 require 'date'
@@ -28,9 +30,9 @@ module ODDB
 		class CompTable; end
 		class Readme; end
 class OddbDatExport < ODDB::Plugin
+	EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 	DOCUMENT_ROOT = File.expand_path('../../doc/', File.dirname(__FILE__))
 	EXPORT_DIR = File.expand_path('resources/downloads', DOCUMENT_ROOT)
-	EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 	def initialize(app)
 		@date = Date.today 
 		super

@@ -7,6 +7,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'model/cyp450connection'
 require 'mock'
+require 'odba'
 
 module ODDB
 	class CyP450Connection
@@ -19,6 +20,10 @@ end
 
 class TestCyP450Connection < Test::Unit::TestCase
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
 		@connection = ODDB::CyP450Connection.new
 	end
 	def test_init
@@ -36,6 +41,10 @@ class TestCyP450Connection < Test::Unit::TestCase
 end
 class TestCyP450SubstrateConnection < Test::Unit::TestCase
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
 		@connection = ODDB::CyP450SubstrateConnection.new('cyp_id')
 	end
 =begin
@@ -83,7 +92,14 @@ class TestCyP450SubstrateConnection < Test::Unit::TestCase
 end
 class TestCyP450InteractionConnection < Test::Unit::TestCase
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
 		@connection = ODDB::CyP450InteractionConnection.new('substance name')
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_adjust_types
 		app = Mock.new('app')

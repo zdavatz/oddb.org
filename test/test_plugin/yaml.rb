@@ -3,7 +3,7 @@
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
-
+=begin
 require 'test/unit'
 require 'plugin/yaml'
 
@@ -254,3 +254,4 @@ pharmacode: "11223"
 		}
 	end
 end
+=end

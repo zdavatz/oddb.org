@@ -6,6 +6,8 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/galenicgroup'
+require 'odba'
+require 'mock'
 
 module ODDB
 	class GalenicGroup
@@ -15,13 +17,15 @@ module ODDB
 		end
 	end
 end
-
 module ODBA
 	module Persistable
+		def odba_isolated_store
+		end
 		def odba_store
 		end
 	end
 end
+
 class TestGalenicGroup < Test::Unit::TestCase
 	class Hash
 		include ODBA::Persistable
@@ -57,10 +61,24 @@ class TestGalenicGroup < Test::Unit::TestCase
 	end
 
 	def setup
+		ODBA.storage = Mock.new
+		ODBA.storage.__next(:next_id) {
+			1
+		}
+		ODBA.storage.__next(:next_id) {
+			2
+		}
+		ODBA.storage.__next(:next_id) {
+			3
+		}
+		ODDB::GalenicGroup.reset_oids
 		ODDB::GalenicGroup.reset_oids
 		StubForm.reset_oid
 		@group = ODDB::GalenicGroup.new
 		@group.pointer = ODDB::Persistence::Pointer.new([:galenic_group, 1])
+	end
+	def teardown
+		ODBA.storage = nil
 	end
 	def test_oid
 		assert_equal(1, @group.oid)
