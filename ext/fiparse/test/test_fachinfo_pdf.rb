@@ -735,7 +735,7 @@ src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastCh
 target_encoding: latin1
 				EOS
 				writer.new_font(font)
-				writer.send_flowing_data(" ich bin ")
+				writer.send_flowing_data("ich bin ")
 				writer.send_flowing_data("kursiv ")
 				font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
@@ -1010,8 +1010,11 @@ target_encoding: latin1
 				section2 = chapter.sections.at(1)
 				assert_equal('Tabelle 1', section2.subheading)
 				paragraph1 = section2.paragraphs.first
-				expected = 'Nebenwirkungen, die bei1165% der Patienten oder in der randomisierten Studie in erhöhter Inzidenz bei der Behandlungsgruppe mit Herceptin auftraten (Anteil der Patienten in %)'
+				#space wird beötigt! nicht löschen!
+				expected = "Nebenwirkungen, die bei \2635% der Patienten oder in der randomisierten Studie in erhöhter Inzidenz bei der Behandlungsgruppe mit Herceptin auftraten (Anteil der Patienten in %)"
 				assert_equal(expected, paragraph1.text)
+				assert_equal(3, paragraph1.formats.size)
+				assert_equal([:symbol], paragraph1.formats.at(1).values)
 				paragraph2 = section2.paragraphs.at(1)
 				expected = '---------------------------------------------------- 
              Mono-   Hercep-  Pacli-  Herce-  AC*    

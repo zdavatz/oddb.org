@@ -2,7 +2,12 @@ require "yaml"
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -226,11 +231,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -268,7 +282,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "174"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 201 0 R
   !ruby/sym widths: 
     - "250"
     - "0"
@@ -414,11 +433,20 @@ attributes:
     - "0"
     - "747"
   !ruby/sym basefont: "/JENAHD+TimesNewRoman,Bold"
-  !ruby/sym lastchar: "174"
-  !ruby/sym fontdescriptor: 201 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 198
 src: "198 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 174 \r/Widths [ 250 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 722 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 556 278 0 0 0 0 556 500 556 0 444 0 333 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 747 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAHD+TimesNewRoman,Bold \r/FontDescriptor 201 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -432,15 +460,29 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "32"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 195 0 R
   !ruby/sym widths: 
     - "250"
   !ruby/sym basefont: "/JENAHF+TimesNewRoman"
-  !ruby/sym lastchar: "32"
-  !ruby/sym fontdescriptor: 195 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 196
 src: "196 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 32 \r/Widths [ 250 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAHF+TimesNewRoman \r/FontDescriptor 195 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -454,7 +496,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -678,11 +725,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -694,15 +750,29 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "32"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 195 0 R
   !ruby/sym widths: 
     - "250"
   !ruby/sym basefont: "/JENAHF+TimesNewRoman"
-  !ruby/sym lastchar: "32"
-  !ruby/sym fontdescriptor: 195 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 196
 src: "196 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 32 \r/Widths [ 250 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAHF+TimesNewRoman \r/FontDescriptor 195 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -714,7 +784,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -938,11 +1013,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -955,15 +1039,29 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "32"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 195 0 R
   !ruby/sym widths: 
     - "250"
   !ruby/sym basefont: "/JENAHF+TimesNewRoman"
-  !ruby/sym lastchar: "32"
-  !ruby/sym fontdescriptor: 195 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 196
 src: "196 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 32 \r/Widths [ 250 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAHF+TimesNewRoman \r/FontDescriptor 195 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -973,7 +1071,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -1197,11 +1300,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -1214,15 +1326,29 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "32"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 195 0 R
   !ruby/sym widths: 
     - "250"
   !ruby/sym basefont: "/JENAHF+TimesNewRoman"
-  !ruby/sym lastchar: "32"
-  !ruby/sym fontdescriptor: 195 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 196
 src: "196 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 32 \r/Widths [ 250 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAHF+TimesNewRoman \r/FontDescriptor 195 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -1232,7 +1358,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -1450,11 +1581,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -1468,7 +1608,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -1692,11 +1837,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -1719,15 +1873,29 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "32"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 195 0 R
   !ruby/sym widths: 
     - "250"
   !ruby/sym basefont: "/JENAHF+TimesNewRoman"
-  !ruby/sym lastchar: "32"
-  !ruby/sym fontdescriptor: 195 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 196
 src: "196 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 32 \r/Widths [ 250 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAHF+TimesNewRoman \r/FontDescriptor 195 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -1737,7 +1905,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -1955,11 +2128,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -1972,7 +2154,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -2196,11 +2383,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -2217,7 +2413,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -2441,11 +2642,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -2463,7 +2673,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -2687,11 +2902,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -2720,7 +2944,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -2944,11 +3173,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -2965,7 +3203,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -3189,17 +3432,26 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
 EOS
 @writer.new_font(font)
-@writer.send_flowing_data(" ")
+@writer.send_flowing_data("  ")
 @writer.send_flowing_data(" ")
 @writer.send_line_break()
 @writer.send_paragraph()
@@ -3257,7 +3509,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -3481,11 +3738,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -3499,7 +3765,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -3723,11 +3994,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -3737,7 +4017,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -3955,11 +4240,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -3981,7 +4275,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -4205,11 +4504,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -4231,7 +4539,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -4455,11 +4768,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -4474,7 +4796,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -4698,11 +5025,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -4737,7 +5073,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -4961,11 +5302,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -4985,7 +5335,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -5209,11 +5564,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -5223,7 +5587,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -5441,11 +5810,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -5463,7 +5841,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -5687,11 +6070,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -5738,7 +6130,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -5956,11 +6353,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -5982,7 +6388,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -6206,11 +6617,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -6249,7 +6669,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -6473,11 +6898,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -6489,7 +6923,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -6713,11 +7152,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -6728,9 +7176,23 @@ font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
   !ruby/sym subtype: "/Type1"
-  !ruby/sym basefont: "/Helvetica"
   !ruby/sym type: "/Font"
   !ruby/sym name: "/F1"
+  !ruby/sym basefont: "/Helvetica"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 219
 src: "219 0 obj\r<< \r/Type /Font \r/Name /F1 \r/Subtype /Type1 \r/BaseFont /Helvetica \r>> \rendobj\r"
 target_encoding: latin1
@@ -6743,7 +7205,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -6967,11 +7434,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -6986,7 +7462,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -7210,11 +7691,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -7226,7 +7716,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -7450,11 +7945,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -7478,7 +7982,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -7702,11 +8211,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -7718,7 +8236,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -7942,11 +8465,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -7966,7 +8498,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -8190,11 +8727,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -8204,7 +8750,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -8428,11 +8979,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -8448,7 +9008,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -8666,11 +9231,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -8683,7 +9257,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -8907,11 +9486,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -8921,7 +9509,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -9139,11 +9732,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -9155,7 +9757,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -9379,11 +9986,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -9393,7 +10009,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -9611,11 +10232,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -9627,7 +10257,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -9851,11 +10486,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -9865,7 +10509,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -10083,11 +10732,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -10099,7 +10757,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -10323,11 +10986,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -10337,7 +11009,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -10555,11 +11232,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -10571,7 +11257,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -10795,11 +11486,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -10809,7 +11509,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -11027,11 +11732,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -11043,7 +11757,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -11267,11 +11986,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -11281,7 +12009,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -11499,11 +12232,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -11515,7 +12257,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -11739,11 +12486,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -11753,7 +12509,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -11971,11 +12732,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -11987,7 +12757,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -12211,11 +12986,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -12228,7 +13012,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -12446,11 +13235,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -12463,7 +13261,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -12687,11 +13490,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -12701,7 +13513,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -12919,11 +13736,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -12935,7 +13761,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -13159,11 +13990,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -13173,7 +14013,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -13397,11 +14242,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -13413,7 +14267,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -13637,11 +14496,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -13654,7 +14522,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -13872,11 +14745,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -13886,7 +14768,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -14110,11 +14997,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -14126,7 +15022,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -14344,11 +15245,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -14360,7 +15270,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -14584,11 +15499,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -14599,9 +15523,23 @@ font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
   !ruby/sym subtype: "/Type1"
-  !ruby/sym basefont: "/Helvetica"
   !ruby/sym type: "/Font"
   !ruby/sym name: "/F1"
+  !ruby/sym basefont: "/Helvetica"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 31
 src: "31 0 obj\r<< \r/Type /Font \r/Name /F1 \r/Subtype /Type1 \r/BaseFont /Helvetica \r>> \rendobj\r"
 target_encoding: latin1
@@ -14614,7 +15552,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -14838,11 +15781,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -14852,7 +15804,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -15070,11 +16027,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -15086,7 +16052,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -15310,11 +16281,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -15327,7 +16307,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -15551,11 +16536,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -15565,7 +16559,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -15789,11 +16788,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -15805,7 +16813,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -16023,11 +17036,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -16039,7 +17061,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -16263,11 +17290,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -16303,7 +17339,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -16527,11 +17568,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -16543,7 +17593,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -16767,11 +17822,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -16781,7 +17845,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -16999,11 +18068,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -17015,7 +18093,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -17239,11 +18322,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -17274,7 +18366,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -17498,11 +18595,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -17512,7 +18618,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -17736,11 +18847,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -17754,7 +18874,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -17978,11 +19103,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -17994,7 +19128,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -18218,11 +19357,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -18232,7 +19380,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -18450,11 +19603,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -18466,7 +19628,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -18690,11 +19857,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -18707,7 +19883,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "246"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 208 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -18925,11 +20106,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JENBGD+Arial,Italic"
-  !ruby/sym lastchar: "246"
-  !ruby/sym fontdescriptor: 208 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 207
 src: "207 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 246 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 278 333 0 0 0 556 556 0 0 0 0 0 0 0 278 \r0 0 0 0 0 0 667 667 722 722 667 0 778 722 0 500 667 556 833 722 \r0 667 0 722 667 0 0 667 944 0 0 611 0 0 0 0 0 0 556 556 500 556 \r556 278 556 556 222 0 500 222 833 556 556 556 0 333 500 278 556 \r500 722 0 500 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENBGD+Arial,Italic \r/FontDescriptor 208 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -18941,7 +20131,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -19165,11 +20360,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -19183,7 +20387,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -19407,11 +20616,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -19423,7 +20641,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -19647,11 +20870,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -19665,9 +20897,23 @@ font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
   !ruby/sym subtype: "/Type1"
-  !ruby/sym basefont: "/Helvetica"
   !ruby/sym type: "/Font"
   !ruby/sym name: "/F1"
+  !ruby/sym basefont: "/Helvetica"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 32
 src: "32 0 obj\r<< \r/Type /Font \r/Name /F1 \r/Subtype /Type1 \r/BaseFont /Helvetica \r>> \rendobj\r"
 target_encoding: latin1
@@ -19680,7 +20926,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -19904,11 +21155,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -19921,7 +21181,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -20145,11 +21410,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -20165,7 +21439,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 202 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -20389,11 +21668,20 @@ attributes:
     - "0"
     - "611"
   !ruby/sym basefont: "/JENAOE+Arial,BoldItalic"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 202 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 197
 src: "197 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 0 0 0 0 0 0 0 0 0 278 278 556 556 556 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 722 722 722 722 667 611 778 722 278 0 722 611 833 \r722 778 667 0 722 667 611 722 667 944 0 0 611 0 0 0 0 0 0 556 611 \r556 611 556 333 611 611 278 0 556 278 889 611 611 611 0 389 556 \r333 611 556 778 0 0 500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 611 0 0 0 0 0 611 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAOE+Arial,BoldItalic \r/FontDescriptor 202 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -20405,7 +21693,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -20629,11 +21922,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -20650,15 +21952,29 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "32"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 195 0 R
   !ruby/sym widths: 
     - "250"
   !ruby/sym basefont: "/JENAHF+TimesNewRoman"
-  !ruby/sym lastchar: "32"
-  !ruby/sym fontdescriptor: 195 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 196
 src: "196 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 32 \r/Widths [ 250 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAHF+TimesNewRoman \r/FontDescriptor 195 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -20668,7 +21984,12 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "252"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 199 0 R
   !ruby/sym widths: 
     - "278"
     - "0"
@@ -20892,11 +22213,20 @@ attributes:
     - "0"
     - "556"
   !ruby/sym basefont: "/JEMPEI+Arial"
-  !ruby/sym lastchar: "252"
-  !ruby/sym fontdescriptor: 199 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 200
 src: "200 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 252 \r/Widths [ 278 0 0 0 0 889 0 0 333 333 0 0 278 333 278 278 556 556 556 556 556 \r556 556 556 556 0 278 278 0 0 0 0 0 667 667 722 722 667 611 778 \r722 278 500 667 556 833 722 778 667 0 722 667 611 722 667 944 0 \r0 611 0 0 0 0 0 0 556 556 500 556 556 278 556 556 222 222 500 222 \r833 556 556 556 0 333 500 278 556 500 722 500 500 500 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r0 0 0 0 0 0 0 0 0 0 0 556 0 0 737 0 400 0 0 0 0 0 0 0 0 0 0 556 \r0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 \r722 0 0 0 0 0 0 0 556 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 556 0 0 \r0 0 0 556 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JEMPEI+Arial \r/FontDescriptor 199 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -21087,15 +22417,29 @@ EOS
 font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
+  !ruby/sym encoding: "/WinAnsiEncoding"
+  !ruby/sym firstchar: "32"
   !ruby/sym subtype: "/TrueType"
+  !ruby/sym lastchar: "32"
+  !ruby/sym type: "/Font"
+  !ruby/sym fontdescriptor: 195 0 R
   !ruby/sym widths: 
     - "250"
   !ruby/sym basefont: "/JENAHF+TimesNewRoman"
-  !ruby/sym lastchar: "32"
-  !ruby/sym fontdescriptor: 195 0 R
-  !ruby/sym encoding: "/WinAnsiEncoding"
-  !ruby/sym firstchar: "32"
-  !ruby/sym type: "/Font"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 196
 src: "196 0 obj\r<< \r/Type /Font \r/Subtype /TrueType \r/FirstChar 32 \r/LastChar 32 \r/Widths [ 250 ] \r/Encoding /WinAnsiEncoding \r/BaseFont /JENAHF+TimesNewRoman \r/FontDescriptor 195 0 R \r>> \rendobj\r"
 target_encoding: latin1
@@ -21107,9 +22451,23 @@ font = YAML.load <<-EOS
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
   !ruby/sym subtype: "/Type1"
-  !ruby/sym basefont: "/Helvetica"
   !ruby/sym type: "/Font"
   !ruby/sym name: "/F1"
+  !ruby/sym basefont: "/Helvetica"
+decoder: &id001 !ruby/object:Rpdf2txt::PdfEncrypt 
+  attributes: 
+    !ruby/sym length: "40"
+    !ruby/sym u: ":b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë"
+    !ruby/sym r: "2"
+    !ruby/sym o: " UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g"
+    !ruby/sym p: "-60"
+    !ruby/sym v: "1"
+    !ruby/sym filter: "/Standard"
+  decoder: *id001
+  file_id: 6cc51842285afc49c019d0b9585d1ff1
+  oid: 153
+  src: "153 0 obj\r<< \r/Filter /Standard \r/R 2 \r/O ( UÇVÇ.\x1a×\x02`Ž–¬­DzÓ-\x17Ïõƒ#_mÑ_í}«g)\r/U (:b¼\x11¸ãè5£J£òéQá\\\\ž¥;\x04\x17hvŸKú?ùÝ[\x18ë)\r/P -60 \r/V 1 \r/Length 40 \r>> \rendobj\r"
+  target_encoding: latin1
 oid: 33
 src: "33 0 obj\r<< \r/Type /Font \r/Name /F1 \r/Subtype /Type1 \r/BaseFont /Helvetica \r>> \rendobj\r"
 target_encoding: latin1

@@ -37,11 +37,13 @@ module ODDB
 						@paragraph.reduce_format(:italic)
 					end
 				else
-					str = self.src.strip
+					str_check = self.src.strip
 					font_name = @font.basefont_name
 					courier = !/courier/i.match(font_name).nil?
-					skip_paragraph = /Copyright/i.match(str)
-					if(!@chapter.nil? && !str.empty? && !skip_paragraph)
+					symbol = !/Symbol/i.match(@font.basefont_name).nil?
+					skip_paragraph = /Copyright/i.match(self.src)
+					if(!@chapter.nil? && !str_check.empty? && !skip_paragraph)
+						str = self.src
 						#for the first paragraph after a preformated paragraph
 						if(!courier && @preformatted)
 							@fresh_paragraph = true
@@ -49,7 +51,15 @@ module ODDB
 						if(@fresh_paragraph)
 							@paragraph = @section.next_paragraph
 						end
+						if(symbol)
+							@paragraph.set_format(:symbol)
+							@symbol_format = true
+						elsif(@symbol_format)
+							@symbol_format = false
+							@paragraph.reduce_format(:symbol)
+						end
 						if(courier)
+							str.strip!
 							if(@paragraph.empty?)
 								@paragraph.set_format(:pre)
 							end
