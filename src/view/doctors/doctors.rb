@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Companies::Company -- oddb -- 27.05.2003 -- maege@ywesee.com
+# View::Companies::Company -- oddb -- 27.05.2003 -- jlang@ywesee.com
 
 require 'view/sponsorlogo'
 
