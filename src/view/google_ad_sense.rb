@@ -32,8 +32,8 @@ google_ad_height = "#{@height}";
 google_ad_format = "#{@format}";
 google_ad_channel ="#{@channel}";
 google_ad_type = "text_image";
-google_color_border = "FFFFFF";
-google_color_bg = "CCFF99";
+google_color_border = "DBE1D6";
+google_color_bg = "E6FFD6";
 google_color_link = "003366";
 google_color_url = "FF3300";
 google_color_text = "003399";
@@ -52,6 +52,9 @@ google_color_text = "003399";
 				[2,0]	=>	:ad_sense,
 			}
 			CSS_CLASS = 'composite'
+			CSS_MAP = {
+				[2,0]	=>	'right',
+			}
 			GOOGLE_CHANNEL = ''
 			GOOGLE_FORMAT = '250x250_as'
 			GOOGLE_WIDTH = '250'
