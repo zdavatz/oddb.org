@@ -37,9 +37,9 @@ module ODDB
 				#company = model.company
 				if(patinfo || pdf_patinfo)# && @lookandfeel.enabled?(:patinfo))#&& company.pi_status)
 					link = HtmlGrid::PopupLink.new(:patinfo_short, model, session, self)
-					if(pdf_patinfo.class == String)
+					unless(pdf_patinfo.nil?)
 						link.href = @lookandfeel.resource_global(:pdf_patinfo, pdf_patinfo)
-					elsif(patinfo.class != String)
+					elsif(!patinfo.nil?)
 						link.href = @lookandfeel.event_url(:resolve, {'pointer' => patinfo.pointer})
 						link.set_attribute('title', @lookandfeel.lookup(:patinfo))
 						#link.set_attribute('class', 'result-b-r' << resolve_suffix(model))
