@@ -106,20 +106,20 @@ class ResultList < HtmlGrid::List
 	}
 		BACKGROUND_SUFFIX = ' bg'
 	CSS_MAP = {
-		[0,0]	=>	'result big',
-		[1,0]	=>	'result',
-		[2,0]	=>	'result right',
+		[0,0]	=>	'result bold right',
+		[1,0]	=>	'result big',
+		[2,0]	=>	'result',
 		[3,0]	=>	'result right',
 		[4,0]	=>	'result right',
-		[5,0]	=>	'result bold right',
-		[6,0]	=>	'result italic',
+		[5,0]	=>	'result right',
+		[6,0]	=>	'result bold right',
 		[7,0]	=>	'result italic',
 		[8,0]	=>	'result italic',
-		[9,0]	=>	'result italic',
-		[10,0]	=>	'result bold right',
-		[11,0] =>  'result bold right',
-		[12,0]	=>	'result bold right',
-		[12,0]	=>	'result bold right',
+		[8,0]	=>	'result italic',
+		[10,0]	=>	'result italic',
+		[11,0]	=>	'result bold right',
+		[12,0] =>  'result bold right',
+		[13,0]	=>	'result bold right',
 	}
 	CSS_HEAD_MAP = {
 		[0,0,1] =>	'th',
