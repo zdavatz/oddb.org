@@ -22,6 +22,10 @@ module ODDB
 				eval(File.read(path))
 				@fachinfo = @writer.to_fachinfo
 			end
+			def test_name
+				name = @fachinfo.name
+				assert_equal("Rhinopront\256 N", name)
+			end
 			def test_composition
 				chapter = @fachinfo.composition
 				assert_equal('Zusammensetzung', chapter.heading)
