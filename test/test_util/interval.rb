@@ -44,7 +44,7 @@ class TestInterval < Test::Unit::TestCase
 		assert_equal(ad, @interval.get_intervals.first)
 		@interval.model = [ 'abc', '123' ]
 		assert_equal(2, @interval.get_intervals.size)
-		assert_equal([ad, 'unknown'], @interval.get_intervals)
+		assert_equal([ad, '|unknown'], @interval.get_intervals)
 	end
 	def test_default_interval1
 		ad = 'a-d'

@@ -13,6 +13,8 @@ class ActiveAgentInnerComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]		=>	:substance,
 		[2,0]		=>	:dose,
+		[0,1]		=>	:chemical_substance,
+		[2,1]		=>	:chemical_dose,
 	}
 	CSS_MAP = {
 		[0,0,4,2]	=>	'list',
@@ -25,22 +27,24 @@ class ActiveAgentForm < View::Form
 	COMPONENTS = {
 		[0,0]		=>	:substance,
 		[2,0]		=>	:dose,
-		[1,1]		=>	:submit,
-		[1,1,0]	=>	:delete_item,
-		[1,2]		=>	:new_activ_agent_button,
+		[0,1]		=>	:chemical_substance,
+		[2,1]		=>	:chemical_dose,
+		[1,2]		=>	:submit,
+		[1,2,0]	=>	:delete_item,
+		[1,3]		=>	:new_active_agent_button,
 	}
 	COMPONENT_CSS_MAP = {
-		[0,0,4]	=>	'standard',
+		[0,0,4,2]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,4,3]	=>	'list',
+		[0,0,4,4]	=>	'list',
 	}
 	LABELS = true
 	def init
 		super
 		error_message()
 	end
-	def new_activ_agent_button(model, session)
+	def new_active_agent_button(model, session)
 		unless(@model.is_a? Persistence::CreateItem)
 			post_event_button(:new_active_agent)
 		end

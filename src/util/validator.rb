@@ -27,7 +27,7 @@ module ODDB
 		ENUMS = {
 			:cl_status		=>	['false', 'true'],
 			:search_type	=>	['st_oddb', 'st_sequence', 
-				'st_substance', 'st_company'],
+				'st_substance', 'st_company', 'st_indication'],
 			:fi_status		=>	['false', 'true'],
 			:generic_type =>	[nil, 'generic', 'original', 'complementary' ],
 			:limitation		=>	['true', 'false'],
@@ -149,6 +149,7 @@ module ODDB
 			:business_area,
 			:challenge,
 			:chapter,
+			:chemical_substance,
 			:company_form,
 			:company_name,
 			:comparable_size,
@@ -210,6 +211,7 @@ module ODDB
 			end
 		end
 		alias :pretty_dose :dose
+		alias :chemical_dose :dose
 		def filename(value)
 			if(value == File.basename(value))
 				value
