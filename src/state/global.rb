@@ -159,6 +159,8 @@ module ODDB
 			elsif(!query.nil?)
 				result = @session.search(query)
 				ResultState.new(@session, result)
+			else
+				self
 			end
 		end
 		def sort

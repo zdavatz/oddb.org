@@ -17,7 +17,19 @@ module ODDB
 	end
 end
 
+module ODBA
+	module Persistable
+		def odba_store
+		end
+	end
+end
 class TestFachinfo < Test::Unit::TestCase
+	class Array
+		include ODBA::Persistable
+	end
+	class Hash
+		include ODBA::Persistable
+	end
 	class StubRegistration
 		attr_accessor :company_name
 		attr_accessor :generic_type

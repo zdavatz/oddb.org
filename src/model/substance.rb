@@ -7,6 +7,7 @@ require 'util/levenshtein_distance'
 module ODDB
 	class Substance
 		include Persistence
+		ODBA_PREFETCH = true
 		attr_reader :name, :sequences
 		include Comparable
 		def initialize(name)

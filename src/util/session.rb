@@ -14,6 +14,8 @@ module ODDB
 		DEFAULT_FLAVOR = "gcc"
 		DEFAULT_LANGUAGE = "de"
 		DEFAULT_STATE = InitState
+		CAP_MAX_THRESHOLD = 8
+		MAX_STATES = 5
 		SERVER_NAME = 'www.oddb.org'
 =begin
 		def process(request)
@@ -44,7 +46,7 @@ module ODDB
 		end
 		def search(query)
 			@persistent_user_input[:search_query] ||= query
-			@app.search(query)
+			@app.search(query, self.language)
 		end
   end
 end

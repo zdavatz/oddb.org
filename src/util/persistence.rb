@@ -7,6 +7,7 @@ require 'odba/persistable'
 module ODDB
 	module Persistence
 		include ODBA::Persistable
+		ODBA_CARRY_METHODS = [:pointer]
 		attr_reader :oid
 		attr_accessor :pointer
 		def initialize(*args)

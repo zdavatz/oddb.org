@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # OddbApp -- oddb -- hwyss@ywesee.com
 
-#require 'benchmark'
+require 'benchmark'
 require 'custom/lookandfeelbase'
 require 'util/failsafe'
 require 'util/oddbconfig'
@@ -19,6 +19,8 @@ require 'datastructure/soundextable'
 require 'madeleine'
 require 'util/drb'
 require 'odba'
+require 'odba/index_definition'
+require 'yaml'
 
 class OddbPrevalence
 	include ODDB::Failsafe
@@ -372,30 +374,67 @@ class OddbPrevalence
 			rebuild_indices
 		}
 	end
-		#for testing only
-		def rebuild_odba
-			@atc_classes.delete_if{ |key,atc| atc.sequences.empty?}
-			odba_store('oddbapp')
-			odba_take_snapshot
-			#ODBA.cache_server.create_index('sequence_index', ODDB::Sequence, :name)
-			#@registrations.values.each{|reg| ODBA.cache_server.fill_index('sequence_index', reg.sequences.values)}
-			
-			ODBA.cache_server.create_index('name_index_atc', ODDB::Sequence, :name, :atc_class, "sequences")
-			ODBA.cache_server.fill_index('name_index_atc', @atc_classes.values)
-			
-=begin
-			ODBA.cache_server.create_index('substance_index_atc', ODDB::Substance, :name, :sequences, "sequences.collect{ |seq| seq.active_agents.collect{|agent| agent.substance}}")
-			 ODBA.cache_server.fill_index('substance_index_atc', @atc_classes.values)
-=end
-			 
-		end
-=begin
-	def odba_take_snapshot
-		clear_indices
-		super
-		rebuild_indices
+	def rebuild_atc_chooser
+		@atc_chooser = ODDB::AtcNode.new(nil)
+		@atc_classes.values.sort_by { |atc| 
+			atc.code 
+		}.each { |atc|
+			@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
+		}
 	end
+	#for testing only
+	def rebuild_odba
+		#initialize scalar cache and cache_server 
+		#(otherwise deadlock problems will occur) 
+		ODBA.scalar_cache.scalar_cache.size
+		ODBA.cache_server.indices.size
+		#delete_if only for Testing!!!!!
+		@fachinfos.delete_if{|key, val| val.descriptions["de"].name.nil?}	
+		@atc_classes.delete_if{|key, atc| atc.sequences.empty?}
+		odba_store('oddbapp')
+		#odba_take_snapshot
+		rebuild_odba_indices
+	end			
+	def rebuild_odba_indices
+		begin
+			path = File.expand_path("../../etc/index_definitions.yaml", 
+				File.dirname(__FILE__))
+			file = File.open(path)
+			YAML.load_documents(file) { |index_definition|
+				ODBA.cache_server.create_index(index_definition, ODDB)
+				ODBA.cache_server.fill_index(index_definition.index_name, @atc_classes.values)
+			}
+		rescue
+			puts "INDEX CREATION ERROR"
+		ensure
+			file.close
+		end
+	end
+=begin
+		ODBA.cache_server.create_index('atc_index_company',ODDB::Company, ODDB::AtcClass, :name, "atc_classes.each{ |atc| atc}", "sequences.collect{|seq| seq.company}")
+
+		ODBA.cache_server.create_index('atc_index', ODDB::AtcClass, ODDB::AtcClass, :code, "")
+
+		 ODBA.cache_server.create_index('substance_index_atc', ODDB::Substance, ODDB::AtcClass, :name, 'sequences.collect { |seq| seq.atc_class }', "sequences.collect{|seq| seq.active_agents.collect{|agent| agent.substance}}")
+
+		 ODBA.cache_server.create_index('sequence_index_atc', ODDB::Sequence, ODDB::AtcClass, :name, "atc_class", "sequences")
 =end
+#=begin
+	def how_many_objects
+		arr = []
+		objs = {}
+		ObjectSpace.each_object{|obj|
+			arr.push(obj.class)
+		}
+		arr.uniq!
+		arr.each { |klass|
+			objs.store(klass, ObjectSpace.each_object(klass){})
+		}
+		sortres	=		objs.sort {|a,b| a[1]<=>b[1]}
+		sortres.each{|res|
+			puts res
+		}
+	end
 	def orphaned_fachinfo(oid)
 		@orphaned_fachinfos[oid.to_i]
 	end
@@ -408,36 +447,11 @@ class OddbPrevalence
 		}
 	end
 	def rebuild_indices
-=begin
-		@sequence_index = Datastructure::CharTree.new
-		@registrations.each_value { |reg|
-			reg.sequences.each_value { |seq|
-				store_in_index(@sequence_index, seq.name,  seq)
-			}
-			unless(reg.indication.nil?)
-				reg.indication.descriptions.values.uniq.each { |desc|
-					store_in_index(@indication_index, desc, reg)
-				}
-			end
-		}
-=end
 		@indication_index = Datastructure::CharTree.new
 		@indications.each_value { |indication|
 			indication.descriptions.values.uniq.each { |desc|
 				store_in_index(@indication_index, desc, indication)
 			}
-		}
-=begin
-		@substance_index = Datastructure::SoundexTable.new
-		@substance_name_index = Datastructure::CharTree.new
-		@substances.each_value { |subst|
-			store_in_index(@substance_index, subst.name, subst)
-			store_in_index(@substance_name_index, subst.name, *subst.sequences)
-		}
-=end
-		@company_index = Datastructure::CharTree.new
-		@companies.each_value { |comp|
-			store_in_index(@company_index, comp.name, comp)
 		}
 		@atc_index = Datastructure::CharTree.new
 		@atc_classes.each_value { |atc|
@@ -449,14 +463,6 @@ class OddbPrevalence
 		}.each { |atc|
 			@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
 		}
-=begin
-		@indication_index = Datastructure::CharTree.new
-		@indications.each_value { |indication|
-			indication.descriptions.each_value { |description|
-				@indication_index.store(description.downcase, indication)
-			}
-		}
-=end
 	end
 	def registration(registration_id)
 		@registrations[registration_id]
@@ -464,7 +470,8 @@ class OddbPrevalence
 	def resolve(pointer)
 		pointer.resolve(self)
 	end
-	def search(query)
+	def search(query, lang)
+		result = ODDB::SearchResult.new
 		# atcless_search, experimental -->
 		if(query == 'atcless')
 			atc = ODDB::AtcClass.new('n.n.')
@@ -476,7 +483,8 @@ class OddbPrevalence
 					end	
 				}	
 			}
-			return [atc]
+			result.atc_classes = [atc]
+			return result
 		elsif(match = /(?:\d{4})?(\d{5})(?:\d{4})?/.match(query))
 			iksnr = match[1]
 			if(reg = registration(iksnr))
@@ -489,53 +497,44 @@ class OddbPrevalence
 		end
 		# <--
 		key = query.to_s.downcase
-		result = @atc_index.fetch_all(key)
-		if result.empty?
-			comps = @company_index.fetch_all(key)
-			atc_classes = comps.collect { |company|
-				company.atc_classes
-			}.flatten.compact.uniq
-			result = atc_classes.collect { |atc|
-				atc.company_filter(comps)
+		result.atc_classes = ODBA.cache_server.retrieve_from_index('atc_index', key)
+		if result.atc_classes.empty?
+			result.atc_classes = ODBA.cache_server.retrieve_from_index('atc_index_company', key)
+			filtered_result = []
+			result.atc_classes.each { |atc|
+				filtered_result.push(atc.company_filter_search(key))
 			}
+			result.atc_classes = filtered_result.flatten.compact.uniq
+			result
 		end
-		if result.empty?
-=begin
-			result = sequences_by_name(key).collect { |seq|
-				atc_class = seq.atc_class
-			}.compact.uniq
-=end
-			result = ODBA.cache_server.retrieve_from_index('name_index_atc', key)
-			puts "odba found:"
-			puts result.size
+		if result.atc_classes.empty?
+			result.atc_classes = ODBA.cache_server.retrieve_from_index('substance_index_atc', key)
+			filtered_result = []
+			result.atc_classes.each { |atc|
+				filtered_result.push(atc.substance_filter_search(key))
+			}
+			result.atc_classes = filtered_result.flatten.compact.uniq
+			result
 		end
-		if result.empty?
-=begin
-			result = @substance_name_index.fetch_all(key).collect { |seq|
-				seq.atc_class
-			}.compact.uniq
-=end
-		puts "substance found"
-		result = ODBA.cache_server.retrieve_from_index('substance_index_atc', key)
+		if result.atc_classes.empty?
+			result.atc_classes = ODBA.cache_server.retrieve_from_index("fachinfo_index_#{lang}", key, result)
+			result
 		end
-=begin
-		if result.empty?
-			result = @indication_index.fetch_all(key).collect { |indication|
-				indication.atc_classes
-			}.flatten.compact.uniq
+		if result.atc_classes.empty?
+			result.atc_classes = ODBA.cache_server.retrieve_from_index('sequence_index_atc', key)
+			result
 		end
-=end
-		result.delete_if { |atc| atc.code.length == 0 }
+		result.atc_classes.delete_if { |atc| atc.code.length == 0 }
+		puts "before result"
+		puts "we have #{result.atc_classes.size} atc-classes"
 		result
 	end
 	def sequences_by_name(name)
 		puts "retrieving_sequences_by_name"
-		ODBA.cache_server.retrieve_from_index("sequence_index", name)
-		#@sequence_index.fetch_all(name)
+		ODBA.cache_server.retrieve_from_index("sequence_index_atc", name)
 	end
 	def soundex_substances(name)
-		#		ODBA.cache_server.retrieve_from_index("substance_index_atc", name)
-		(@substance_index.fetch(name) || []).sort
+		ODBA.cache_server.retrieve_from_index("substance_index_atc", name)
 	end
 	def sponsor
 		@sponsor ||= ODDB::Sponsor.new
@@ -614,21 +613,20 @@ module ODDB
 		attr_reader :cleaner, :updater
 		def initialize
 			puts STORAGE_PATH
-			#=begin
+=begin
 		 	@prevalence = Madeleine::SnapshotMadeleine.new(STORAGE_PATH) {
 				sys = OddbPrevalence.new
 			}
 			puts "prevalence initialized"
 			@system = @prevalence.system
-			#=end
-=begin
+=end
+			#=begin
 			ODBA.cache_server.prefetch
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
 				puts "new oddbprevalence created"
 				OddbPrevalence.new
 			}
-			#puts @system.inspect
-=end
+			#=end
 			puts "system init..."
 			@system.init
 			#@system.odba_store

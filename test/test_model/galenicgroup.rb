@@ -16,7 +16,19 @@ module ODDB
 	end
 end
 
+module ODBA
+	module Persistable
+		def odba_store
+		end
+	end
+end
 class TestGalenicGroup < Test::Unit::TestCase
+	class Hash
+		include ODBA::Persistable
+	end
+	class Array
+		include ODBA::Persistable
+	end
 	class StubForm
 		include ODDB::Persistence
 		def has_description?(value)
@@ -32,6 +44,7 @@ class TestGalenicGroup < Test::Unit::TestCase
 		end
 	end
 	class StubApp
+		include ODBA::Persistable
 		def initialize
 			@galenic_groups = {}
 		end

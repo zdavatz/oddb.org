@@ -12,12 +12,14 @@ module ODDB
 			unless @sequences.include?(seq)
 				@sequences.push(seq) 
 				@sequences.odba_store
+				odba_store
 			end
 			seq
 		end
 		def remove_sequence(seq)
 			@sequences.delete(seq)
 			@sequences.odba_store
+			odba_store
 		end
 		def empty?
 			@sequences.empty?

@@ -25,7 +25,7 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 		end
 	end
 	class StubPackage
-		attr_accessor :pointer, :ikscat, :price_exfactory, :price_public, :size, :ikscd, :sl_entry
+		attr_accessor :pharmacode,:pointer, :ikscat, :price_exfactory, :price_public, :size, :ikscd, :sl_entry
 	end
 	class StubSequence
 		attr_accessor :seqnr, :packages, :name, :dose, :active_agents, :galenic_form

@@ -1,0 +1,957 @@
+#
+#	Ispell affix table for German language
+#
+# This file has been heavily modified by Björn Jacke to fit to the affixes
+# used in the German dictionary igerman98. You can assume almost every line
+# as changed, seen from the original version of Geoff Kuenning; it was
+# impossible to mark them all as changes.
+#
+# Copyright 1988, 1989, 1992, 1993, Geoff Kuenning, Granada Hills, CA
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+# 3. All modifications to the source code must be clearly marked as
+#    such.  Binary redistributions based on modified source code
+#    must be clearly marked as modified versions in the documentation
+#    and/or other materials provided with the distribution.
+# 4. All advertising materials mentioning features or use of this software
+#    must display the following acknowledgment:
+#      This product includes software developed by Geoff Kuenning and
+#      other unpaid contributors.
+# 5. The name of Geoff Kuenning may not be used to endorse or promote
+#    products derived from this software without specific prior
+#    written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY GEOFF KUENNING AND CONTRIBUTORS ``AS IS'' AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL GEOFF KUENNING OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
+#
+# Here's a record of flags used, in case you want to add new ones.
+#
+#            ABCDEFGHIJKLMNOPQRSTUVWXYZ       abcdefghijklmnopqrstuvwxyz
+# Used:      **************************            *         **
+#            ABCDEFGHIJKLMNOPQRSTUVWXYZ       abcdefghijklmnopqrstuvwxyz
+# Available:			       
+#
+#
+# [ Note: The flags   G, L, J, K, H and M   are the
+#	  least used for now and may eventually disappear. ]
+#
+#
+# PARTICULAR SETTINGS FOR ISPELL ARE NECESSARY !!!
+# The default 32 MASKBITS for ispell are NOT SUFFICIENT. You
+# need 64 MASKBITS now.
+# Find out with `ispell -vv |grep MASKBITS' and eventually recompile
+# it with appropriate settings.
+#
+# Here is a small example list of words.  You may enter
+# them to "ispell -d some-german.hash -e" to see them expanded.
+# ( The command
+#	echo "ttttt" > tmp; buildhash tmp -l german.aff some-german.hash
+#   can build an empty german dictionary for you. )
+#
+# A"gypter/FSN
+# a"hneln/WIXYD
+#
+
+compoundwords off
+allaffixes on
+
+# Character-set definitions.  The special-character strings are appropriate
+# for use with the "-mm" nroff/troff macro package.  Users of other formatters
+# or macro packages will undoubtedly have to modify these definitions.
+# The definition of "ess-zed" requires that you define two characters in
+# your ".mm" files;  "\*(ss" should expand to "\*b" (the Greek beta, which
+# is fairly close to ess-zed) and "\*(SS" should expand to "SS" (two capital
+# esses).
+#
+# These definitions also illustrate a cute little trick.  By declaring the
+# non-special string 'ss' as a stringchar, we cause ispell to represent it
+# as a single character internally.  This allows ispell to suggest spellings
+# that use ess-zed as corrections for spellings using double esses, which is
+# good because this is a common spelling error.  The price we pay is that
+# ispell will not generate proper corrections for less common typos such
+# as "st" for "ss".
+
+#
+# generic umlauts and sz as used in german word list
+# All other types are defined relative to this one.
+#
+defstringtype "list" "nroff" ".list"
+
+wordchars	[a-z]	[A-Z]
+stringchar	a\"	A\"	# ä
+stringchar	o\"	O\"	# ö
+stringchar	ss	SS	# tricky :-)
+stringchar	sS	Ss	# ß (no captalized version of ß - use SS for it)
+stringchar	u\"	U\"	# ü
+stringchar	à
+stringchar	â
+stringchar	ç	Ç
+stringchar	é
+stringchar	ë
+stringchar	ê
+#stringchar	ï
+stringchar	ñ
+########## Does anyone want more characters?
+
+#
+# TeX/LaTeX a` la german.sty
+#
+altstringtype "tex" "TeX" ".tex" ".bib"
+
+altstringchar	\"a	a\"
+altstringchar	\"A	A\"
+altstringchar	\"o	o\"
+altstringchar	\"O	O\"
+altstringchar	\"u	u\"
+altstringchar	\"U	U\"
+altstringchar	\"s	sS
+altstringchar	\"S	Ss
+altstringchar	ss	ss
+altstringchar	SS	SS
+altstringchar	\\`a	à
+altstringchar	\\^a	â
+altstringchar	\\c{c}	ç
+altstringchar	\\c{C}	Ç
+altstringchar	\\'e	é
+altstringchar	\\"e	ë
+altstringchar	\\^e	ê
+#altstringchar	\\\"{\\i}	ï
+altstringchar	\\~n	ñ
+
+#
+# Plain TeX
+#
+altstringtype "plaintex" "TeX" ".tex"
+
+altstringchar	\\\"a	a\"
+altstringchar	\\\"A	A\"
+altstringchar	\\\"o	o\"
+altstringchar	\\\"O	O\"
+altstringchar	\\\"u	u\"
+altstringchar	\\\"U	U\"
+altstringchar	{\\ss}	sS
+altstringchar	{\\SS}	Ss
+altstringchar	ss	ss
+altstringchar	SS	SS
+altstringchar	\\`a	à
+altstringchar	\\^a	â
+altstringchar	\\c{c}	ç
+altstringchar	\\c{C}	Ç
+altstringchar	\\'e	é
+altstringchar	\\"e	ë
+altstringchar	\\^e	ê
+#altstringchar	\\\"{\\i}	ï
+altstringchar	\\~n	ñ
+
+#
+# Alternate forms for ISO latin1 charset
+#
+altstringtype "latin1" "TeX" ".latin1" ".txt" ".tex" ".bib"
+
+altstringchar	\344	a\"
+altstringchar	\304	A\"	#swiss-umlaut
+#altstringchar	Ae	A\"	#swiss-noumlaut
+altstringchar	\366	o\"
+altstringchar	\326	O\"	#swiss-umlaut
+#altstringchar	Oe	O\"	#swiss-noumlaut
+altstringchar	\374	u\"
+altstringchar	\334	U\"	#swiss-umlaut
+#altstringchar	Ue	U\"	#swiss-noumlaut
+altstringchar	\337	sS
+altstringchar	SS	Ss	# using two definitions of SS is difficult:
+             			# GROSS will not be accepted but suggested at
+             			# the same time :-|
+altstringchar	ss	ss
+altstringchar	SS	SS	# this definition is used for checking
+altstringchar	à	à
+altstringchar	â	â
+altstringchar	ç	ç
+altstringchar	Ç	Ç
+altstringchar	é	é
+altstringchar	ë	ë
+altstringchar	ê	ê
+#altstringchar	ï	ï
+altstringchar	ñ	ñ
+
+#
+# Alternate forms for plain ASCII text files
+altstringtype "ascii" "nroff" ".ascii" ".txt"
+
+altstringchar	ae	a\"
+altstringchar	Ae	A\"
+altstringchar	oe	o\"
+altstringchar	Oe	O\"
+altstringchar	ue	u\"
+altstringchar	Ue	U\"
+altstringchar	ss	sS
+altstringchar	SS	Ss
+altstringchar	ss	ss
+altstringchar	SS	SS
+ 
+#
+# Alternate forms for PC charset
+#
+altstringtype "pc" "TeX" ".pc" ".txt" ".tex"
+
+altstringchar	\204	a\"
+altstringchar	\216	A\"
+altstringchar	\224	o\"
+altstringchar	\231	O\"
+altstringchar	\201	u\"
+altstringchar	\232	U\"
+altstringchar	\341	sS
+altstringchar	SS	Ss
+altstringchar	ss	ss
+altstringchar	SS	SS
+
+#
+# HTML/SGML/XML `entities' (useful if you have the Ispell-HTML patch)
+#
+#altstringtype "HTML" "TeX" ".html" ".htm" ".sgml" ".xml"
+
+#altstringchar	\&auml\;	a\"
+#altstringchar	\&Auml\;	A\"
+#altstringchar	\&ouml\;	o\"
+#altstringchar	\&Ouml\;	O\"
+#altstringchar	\&uuml\;	u\"
+#altstringchar	\&Uuml\;	U\"
+#altstringchar	\&szlig\;	sS
+#altstringchar	SS	Ss
+#altstringchar	ss	ss
+#altstringchar	SS	SS
+
+#
+# N/Troff with -ms/-me macros packages
+#
+#altstringtype "nroff" "nroff" ".nr" ".ms" ".me"
+
+#altstringchar	a\\*\:	a\"
+#altstringchar	A\\*\:	A\"
+#altstringchar	o\\*\:	o\"
+#altstringchar	O\\*\:	O\"
+#altstringchar	u\\*\:	u\"
+#altstringchar	U\\*\:	U\"
+#altstringchar	\\*8	sS
+#altstringchar	SS	Ss
+#altstringchar	ss	ss
+#altstringchar	SS	SS
+
+#
+# N/Troff with -mm macros
+#
+#altstringtype "-mm" "nroff" ".nr" ".mm"
+
+#altstringchar	a\\*\:	a\"
+#altstringchar	A\\*\;	A\"
+#altstringchar	o\\*\:	o\"
+#altstringchar	O\\*\;	O\"
+#altstringchar	u\\*\:	u\"
+#altstringchar	U\\*\;	U\"
+#altstringchar	\\*(ss	sS
+#altstringchar	SS	Ss
+#altstringchar	ss      ss
+#altstringchar	SS      SS
+ 
+#
+# Alternate form for NeXTSTEP charset
+#
+#altstringtype "NeXT" "TeX" ".NeXT" ".txt" ".tex"
+
+#altstringchar	\331	a\"
+#altstringchar	\205	A\"
+#altstringchar	\360	o\"
+#altstringchar	\226	O\"
+#altstringchar	\366	u\"
+#altstringchar	\271	U\"
+#altstringchar	\373	sS
+#altstringchar	SS	Ss
+#altstringchar	ss	ss
+#altstringchar	SS	SS
+
+#
+# Alternate forms for HP-Roman8 charset
+# (used on HP-9000 machines under HP-VUE and maybe others)
+#
+#altstringtype "roman8" "TeX" ".roman8" ".txt" ".tex"
+#
+#altstringchar	\314	a\"
+#altstringchar	\330	A\"
+#altstringchar	\316	o\"
+#altstringchar	\332	O\"
+#altstringchar	\317	u\"
+#altstringchar	\333	U\"
+#altstringchar	\336	sS
+#altstringchar	SS	Ss
+#altstringchar	ss	ss
+#altstringchar	SS	SS
+
+#
+# Alternate forms for ATARI charset
+#
+#altstringtype "atari" "TeX" ".atari" ".txt" ".tex"
+#
+#altstringchar	\204	a\"
+#altstringchar	\216	A\"
+#altstringchar	\224	o\"
+#altstringchar	\231	O\"
+#altstringchar	\201	u\"
+#altstringchar	\232	U\"
+#altstringchar	\341	sS
+#altstringchar	SS	Ss
+#altstringchar	ss	ss
+#altstringchar	SS	SS
+
+
+#
+#			Quick Reference
+#			===============
+#
+# nouns and adjectives:
+#	E   -e			A  adj.: -e,-er,-en,-em,-es
+#	N   -n
+#	P   -en 		C  adj. comp.:	-ere, -erer, -eren, ...
+#	p	plural for special words like Markt -> Märkte
+#	R   -er, -ern
+#	S   -s	        
+#	T   -es 		D  verb > adj.: -d,   -de,  -den, 
+#	Q   -s > sse,ssen			-dem, -der, -des
+#			        
+# verbs:
+#	W   Du-imperative form			holen  > hol
+#	D	Gerundium: -de, -der, -des, -den, -dem
+#	I   ich- and ihr-form present tense	nehmen > nehme, nehmt
+#	O   Partizip: -tete, -teter, tetes, teten, tetem
+#	X   other present tense forms		legen  > legst, legt
+#	Y   past tense forms			wagen  > wagte, wagtest, ...
+#	Z   past tense and conditional forms from ich-from
+#	    e.g.  nahm > nahmen, nahmst, nahmt
+#
+# other suffixes:
+#	L   -lich, -liche, -licher, ...
+#	B   -bar, -bare, -barer, ...
+#	J   -ung, -ungen, ...
+#	M   -chen, -chens
+#
+# prefixes and msic. suffixes:
+#	U  un-			F   -in,   -innen
+#	G  ge-			H   -heit, -heiten
+#	V  ver- 		K   -keit, -keiten
+
+prefixes
+
+flag G:	# Inseparable ge- prefix for verbs
+	.	>	GE	# rufen > gerufen
+
+
+flag *U:	# un- prefix for anything
+	.	>	UN	# gesund > ungesund
+
+
+flag *V:	# Inseparable ver- prefix for verbs
+	.	>	VER	# kaufen > verkaufen
+
+
+suffixes
+
+flag F:	# IN, INNEN for feminizing nouns and NEN for xxxIN nouns
+	I N	>	NEN	# Bäuerin > Bäuerinnen
+	E	>	-E,IN	# Bote > Botin
+	E	>	-E,INNEN
+	[^I] N	>	IN	# Spion > Spionin
+	[^I] N	>	INNEN
+	[^EN]	>	IN	# Freund > Freundin
+	[^EN]	>	INNEN
+
+
+# The question is: How to switch Capitalization off?
+# This will not serve us much otherwise!
+flag L: 	# LICHxx for creating adverbs and adjectives:
+	N	>	TLICH	# verschieden > verschiedentlich
+	N	>	TLICHE
+	N	>	TLICHER
+	N	>	TLICHES
+	N	>	TLICHEM
+	N	>	TLICHEN
+	[^N]	>	LICH	# bitter > bitterlich #nn
+	[^N]	>	LICHE	#nn
+	[^N]	>	LICHER	#nn
+	[^N]	>	LICHES	#nn
+	[^N]	>	LICHEM	#nn
+	[^N]	>	LICHEN	#nn
+
+
+#
+# How to force Capitals on for heit/keit ?
+#
+flag H:	# HEIT substantivation:
+	.	>	HEIT	# gemein > Gemeinheit
+	.	>	HEITEN	# fein > Feinheiten
+
+
+flag K:	# KEIT substantivation:
+	.	>	KEIT	# heimlich > Heimlichkeit
+	.	>	KEITEN	# eitel > Eitelkeiten
+
+
+flag M:	# CHEN diminuitiv:
+	[^SSE]	>	CHEN	# Tür > Türchen
+	[^SSE]	>	CHENS	# Heft > Heftchens
+#	A S E	>	-ASE,A"SCHEN
+#	O S E	>	-OSE,O"SCHEN
+#	U S E	>	-USE,U"SCHEN
+	A SS	>	-ASS,A"SSCHEN
+	A SS	>	-ASS,A"SSCHENS
+	O SS	>	-OSS,O"SSCHEN
+	O SS	>	-OSS,O"SSCHENS
+	U SS	>	-USS,U"SSCHEN
+	U SS	>	-USS,U"SSCHENS
+	E	>	-E,CHEN
+	E	>	-E,CHENS
+
+
+flag *A:	# for adjectives:
+	E	>	R	# älteste > ältester
+	E	>	N
+	E	>	M
+	E	>	S
+	[^ELR]	>	E	# formbar > formbare
+	[^ELR]	>	ER
+	[^ELR]	>	EN
+	[^ELR]	>	EM
+	[^ELR]	>	ES
+	[^E] [RL]	>	E	# schnell > schnelle
+	[^E] [RL]	>	ER	# schal > schale
+	[^E] [RL]	>	EN
+	[^E] [RL]	>	EM
+	[^E] [RL]	>	ES
+	[^U] E R	>	E	# schwer > schwere
+	[^U] E R	>	ER
+	[^U] E R	>	EN
+	[^U] E R	>	EM
+	[^U] E R	>	ES
+
+	U E R	>	-ER,RE	# teuer > teure
+	U E R	>	-ER,RER	# sauer	> saurer
+	U E R	>	-ER,REN
+	U E R	>	-ER,REM
+	U E R	>	-ER,RES
+
+	[EIL] E L 	>	E	# parallel > parallele
+	[EIL] E L 	>	ER	# viel > viele
+	[EIL] E L 	>	EN	# scheel > scheele
+	[EIL] E L 	>	EM
+	[EIL] E L 	>	ES
+#	[^EIL] E L 	>	-EL,LE	# eitel > eitle #qqq
+#	[^EIL] E L	>	-EL,LER	# simpel > simple #qqq
+#	[^EIL] E L	>	-EL,LEN #qqq
+#	[^EIL] E L	>	-EL,LEM #qqq
+#	[^EIL] E L	>	-El,LES #qqq
+	[^EIL] E L 	>	-EL,LE	# eitel > eitle #nnn
+	[^EIL] E L	>	-EL,LER	# simpel > simple #nnn
+	[^EIL] E L	>	-EL,LEN #nnn
+	[^EIL] E L	>	-EL,LEM #nnn
+	[^EIL] E L	>	-El,LES #nnn
+
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIG	# adlig > adelig
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGE
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGER
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGEN
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGEM
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGES
+
+	[^HI] E R I G	>	-ERIG,RIG	# zitterig > zittrig
+	[^HI] E R I G	>	-ERIG,RIGE
+	[^HI] E R I G	>	-ERIG,RIGER
+	[^HI] E R I G	>	-ERIG,RIGEN
+	[^HI] E R I G	>	-ERIG,RIGEM
+	[^HI] E R I G	>	-ERIG,RIGES
+
+
+flag *C:		# for comparative forms of adjectives:
+	[^ELR]	>	ERE	# neu > neuere
+	[^ELR]	>	ERER
+	[^ELR]	>	EREN
+	[^ELR]	>	EREM
+	[^ELR]	>	ERES
+
+	[E]	>	RE	# prüde > prüdere
+	[E]	>	RER
+	[E]	>	REN
+	[E]	>	REM
+	[E]	>	RES
+
+	[^E] [LR]	>	ERE	# schmal > schmale
+	[^E] [LR]	>	ERER	#
+	[^E] [LR]	>	EREN	#
+	[^E] [LR]	>	EREM	#
+	[^E] [LR]	>	ERES	#
+
+#	E L	>	-EL,LERE	# eitel	> eitlere #qqq
+#	E L	>	-EL,LERER	#qqq
+#	E L	>	-EL,LEREN	#qqq
+#	E L	>	-EL,LEREM	#qqq
+#	E L	>	-EL,LERES	#qqq
+	E L	>	-EL,LERE	# eitel	> eitlere #nnn
+	E L	>	-EL,LERER	#nnn
+	E L	>	-EL,LEREN	#nnn
+	E L	>	-EL,LEREM	#nnn
+	E L	>	-EL,LERES	#nnn
+
+	U E R	>	-ER,RERE	# teuer > teurere
+	U E R	>	-ER,RERER	#
+	U E R	>	-ER,REREN	#
+	U E R	>	-ER,REREM	#
+	U E R	>	-ER,RERES	#
+
+	[^U] E R	>	ERE	# schwer > schwerere
+	[^U] E R	>	ERER	#
+	[^U] E R	>	EREN	#
+	[^U] E R	>	EREM	#
+	[^U] E R	>	ERES	#
+
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGERE	# adlig	> adeligere
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGERER
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGEREN
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGEREM
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGERES
+
+	[^HI] E R I G	>	-ERIG,RIGERE	# zitterig > zittrigere
+	[^HI] E R I G	>	-ERIG,RIGERER
+	[^HI] E R I G	>	-ERIG,RIGEREN
+	[^HI] E R I G	>	-ERIG,RIGEREM
+	[^HI] E R I G	>	-ERIG,RIGERES
+# superlatives ...	
+	[KSSSUXZ]	>	ESTE	# neu > neueste
+	[KSSSUXZ]	>	ESTER
+	[KSSSUXZ]	>	ESTEN	# mies > miesesten
+	[KSSSUXZ]	>	ESTEM	# lax > laxestem
+	[KSSSUXZ]	>	ESTES	# spitz > spitzestes
+
+	E T	>	STE	# geeignet > geeignetste
+	E T	>	STER
+	E T	>	STEN
+	E T	>	STEM
+	E T	>	STES
+
+	[^E] T	>	ESTE	# matt > matteste
+	[^E] T	>	ESTER
+	[^E] T	>	ESTEN
+	[^E] T	>	ESTEM
+	[^E] T	>	ESTES
+
+	[^KSSSTXZ]	>	STE	# teuer > teuerste
+	[^KSSSTXZ]	>	STER	# dick > dickster
+	[^KSSSTXZ]	>	STEN	# lahm > lahmsten
+	[^KSSSTXZ]	>	STEM	# teuer	> teuerstem
+	[^KSSSTXZ]	>	STES	# teuer > teuerstes
+
+	N D	>	STE	# wohlhabend > wohlhabendste
+	N D	>	STER
+	N D	>	STEN
+	N D	>	STEM
+	N D	>	STES
+
+	[^N] D	>	ESTE	# wild > wildeste
+	[^N] D	>	ESTER
+	[^N] D	>	ESTEN
+	[^N] D	>	ESTEM
+	[^N] D	>	ESTES
+
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGSTE	# adlig > adeligste
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGSTER
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGSTEN
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGSTEM
+	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGSTES
+
+	[^HI] E R I G	>	-ERIG,RIGSTE	# zitterig > zittrig
+	[^HI] E R I G	>	-ERIG,RIGSTER
+	[^HI] E R I G	>	-ERIG,RIGSTEN
+	[^HI] E R I G	>	-ERIG,RIGSTEM
+	[^HI] E R I G	>	-ERIG,RIGSTES
+
+# a few 'catch all' plural forms:
+# All plurals seem to boil down to one of 'N', 'E', 'P' or 'Q'
+# (or are 'irregular')
+
+
+flag *E:
+	.	>	E	# Wind > Winde
+
+
+flag *f:
+	P H 	>	-PH,F	# Paragraph > Paragraf
+	P H 	>	-PH,FEN
+	P H I E	>	-PHIE,FIE	# Typographie > Typografie #nn
+	P H I E	>	-PHIE,FIEN #nn
+
+
+flag *N:
+	.	>	N	# Lampe > Lampen
+
+
+flag *P:
+	.	>	EN	# Tat > Taten
+
+
+flag *p:
+# this is for some irregular plural forms with vowel -> umlaut conversions
+	A U F	>	-AUF,A"UFE	# Lauf > Läufe
+	A U F	>	-AUF,A"UFEN
+	H A U S	>	-AUS,A"USER		# Haus > Häuser
+	H A U S	>	-AUS,A"USERN
+	M A R K T	>	-ARKT,A"RKTE	# Markt > Märkte
+	M A R K T	>	-ARKT,A"RKTEN
+	A N G	>	-ANG,A"NGE	# Gang > Gänge
+	A N G	>	-ANG,A"NGEN
+	O SS	>	-OSS,O"SSE	# Stoß > Stöße #swiss-convert
+	O SS	>	-OSS,O"SSEN	#swiss-convert
+	A U M	>	-AUM,A"UME	# Raum > Räume
+	A U M	>	-AUM,A"UMEN
+	A G	>	-AG,A"GE	# Betrag > Beträge
+	A G	>	-AG,A"GEN
+	U G	>	-UG,U"GE	# Zug > Züge
+	U G	>	-UG,U"GEN
+#	A N D	>	-AND,A"NDE	#... ??? TODO ???
+#	A N D	>	-AND,A"NDEN	#... ???
+	A L L	>	-ALL,A"LLE	# Fall > Fälle
+	A L L	>	-ALL,A"LLEN
+	A SS	>	-ASS,A"SSE	# Pass > Pässe
+	A SS	>	-ASS,A"SSEN
+	U SS	>	-USS,U"SSE	# Nuss > Nüsse
+	U SS	>	-USS,U"SSEN
+#  be carefull with Erlass, Fass, Hass, Kompass, ???,
+#  Stuss, ..druss, ???        ... they don't pluralize via the /p flag !
+
+
+flag *R:
+	[^E]	>	ER	# Licht > Lichter
+	[^E]	>	ERN
+	E	>	R	# Beamte > Beamter
+
+
+flag *S:
+	.	>	S	# Wolfgang > Wolfgangs
+
+
+flag *q:	# for feminin nouns who don't have -SSES like `Erlaubnisses'
+	S	>	-S,SSE	# Erlaubnis > Erlaubnisse
+	S	>	-S,SSEN	# Erlaubnis > Erlaubnissen
+
+
+flag *Q:	
+	S	>	-S,SSE	# Geheimnis > Geheimnisse
+	S	>	-S,SSEN	# Geheimnis > Geheimnissen
+	S	>	-S,SSES	# Geheimnis > Geheimnisses
+
+
+########
+
+# Genitiv seperate -s and -es, many words may take them both! (Muts, Mutes)
+flag *T:
+	.	>	ES	# Platz	> Platzes
+				# Reis	> Reises
+
+# verbs:
+
+flag *J: 	# -ung (verb -> noun)
+# capitalization problem revisited!
+	E L N	>	-ELN,LUNG	# handeln > Handlung #nn
+	E R N	>	-N,UNG	# wandern > Wanderung
+	E N	>	-EN,UNG	# reiben > Reibung
+	E L N	>	-ELN,LUNGEN	# handeln > Handlungen #nn
+	E R N	>	-N,UNGEN	# wandern > Wanderungen
+	E N	>	-EN,UNGEN	# reiben > Reibungen
+	[^N] 	>	UNG	# Bild > Bildung
+	[^N] 	>	UNGEN	# Abbild > Abbildungen
+#	E L	>	-EL,LUNG	# Drossel > Drosslung #qqq
+#	E L	>	-EL,LUNGEN	#qqq
+	E L	>	-EL,LUNG	# Drossel > Drosslung #nnn
+	E L	>	-EL,LUNGEN	#nnn
+
+
+flag B: 	# -bar	(verb -> adj.):
+	E [LR] N	>	-N,BAR	# wundern > wunderbar
+	E [LR] N	>	-N,BARE
+	E [LR] N	>	-N,BAREN
+	E [LR] N	>	-N,BARER
+	E [LR] N	>	-N,BARES
+	E [LR] N	>	-N,BAREM
+	E N	>	-EN,BAR	# halten > haltbar
+	E N	>	-EN,BARE
+	E N	>	-EN,BAREN
+	E N	>	-EN,BARER
+	E N	>	-EN,BARES
+	E N	>	-EN,BAREM
+
+
+flag *D:	# -d..	(verb -> Partizip Präs.):
+	N	>	D	# schlafen > schlafend
+	N	>	DE
+	N	>	DEN
+	N	>	DER
+	N	>	DES
+	N	>	DEM
+
+
+flag *W:
+# Du-form imperative endings
+	[^IMN] E N	>	-EN,-	# reimen > reim
+	E I E N	>	-EN,-	# schreien > schrei
+					# aber nicht: knien > kni
+	[^BGHT] [MN] E N	>	-EN,-	# rennen > renn
+	[^C] H N E N	>	-EN,-	# dehnen	> dehn
+
+	E L N	>	-N,-	# lächeln > lächel
+	E R N	>	-N,-	# nähern > näher
+					# otherwise: ich-ending below
+# Du-form imperative endings from du- or er/sie/es-form:
+	S T	>	-ST,-	# trittst > tritt
+	[^S] T	>	-T,-	# nimmt > nimm
+
+#
+# Present tense:
+#
+# ich, ihr-forms are seperated from du,er/sie/es-forms.
+# Many (starke) verbs can only build the ich,ihr-form from the infinitive.
+#	tragen/I > trage, tragt
+#
+# Also flag X is sometimes useful for past tense of Konjunktiv:
+#	abnahmen/X > abnahmst, abnahmt
+#
+# For present tense regular (schwache) verbs, I and X will go together.
+#
+flag *I:
+# ich
+	E N	>	-N,-	# kommen > komme
+#	E L N 	>	-ELN,QQLE	# lächeln > lächle #qqq
+	E L N 	>	-ELN,LE	# lächeln > lächle #nnn
+	E L N	>	-N,E	# auch: lächeln > lächele
+	E R N	>	-ERN,RE	# wandern > wandre
+	E R N	>	-N,E	# auch: nähern > nähere
+
+# Ihr-form endings (redundant with er/sie/es most of the time)
+	E [LR] N	>	-N,T	# lächeln > lächelt
+	[DT] E N	>	-N,T
+	[^DIMNT] E N	>	-EN,T	# schaff"|t
+
+	E I E N	>	-EN,T	# schreien > schreit
+	[^E] I E N	>	-N,T	# knien > kniet
+
+	C H N E N	>	-N,T
+	[^C] H [MN] E N	>	-EN,T	# nehmen > nehmt
+
+
+	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,T
+	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,T
+
+# special treatment for 'tun': (worthwile?)
+	U N	>	-N,E	# tun > ich tue
+	U N	>	-N,T	# tun > er tut
+
+
+flag *X:	# other present tense verb endings:
+# Er/sie/es-form endings
+	E [LR] N	>	-N,T	# lächeln > lächelt
+	[DTW] E N	>	-N,T	# arbeiten > arbeitet
+	E I E N	>	-EN,T	# schreien > schreit
+# old form:
+#    E I E N	>	-N,T	# schreien > schreiet
+
+	[^E] I E N	>	-N,T	# knien > kniet
+	[^DITMNW] E N	>	-EN,T	# leben > lebt
+
+	C H N E N	>	-N,T	# rechnen > rechnet
+	[^C] H [MN] E N	>	-EN,T	# ahnen > ahnt
+
+	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,T	# atmen > atmet
+	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,T	# lernen > lernt
+
+
+# old fashioned imperative and ihr- form:
+#	[BFGHKLMNPRSVX] E N	>	-N,T	# lernen > lernet
+
+	U N 	>	-N, T	# tun > tut
+# old fashioned form:
+#	U N	>	-N, ET	# tun > tuet
+
+# Er/sie/es-form ending from Du-form:
+	T S T	>	-ST,-	# trittst > tritt
+
+# Du-form endings
+	E [LR] N	>	-N,ST	# nähern > näherst
+	[DTW] E N	>	-N,ST	# arbeiten > arbeitest
+	[^DIMNSSSTWZX] E N	>	-EN,ST	# leben > lebst
+
+	E I E N	>	-EN,ST	# schreien > schreist
+	[^E] I E N	>	-N,ST	# knien > kniest
+
+	C H N E N	>	-N,ST	# rechnen > rechnest
+	[^C] H [MN] E N	>	-EN,ST	# ahnen > ahnst
+
+	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,ST	# atmen > atmest
+	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,ST	# lernen > lernst
+
+	U N	>	-N, ST	# tun > tust
+
+	[SSSXZ] E N	>	-N,ST	# heißen > heißest
+
+#   alternate form for -schen:
+	S C H E N	>	-N,ST	# wischen > wischest
+
+
+# Du-form ending from Er/sie/es-form:
+	[^SZ] T	>	-T,ST	# nimmt > nimmst
+	Z T	>	-T,EST	# schmilzt > schmilzest
+
+
+flag *Y:
+# Past-tense ich/er/sie/es-form endings
+	E [LR] N	>	-N,TE	# lächeln > lächelte
+	[DTW] E N	>	-N,TE	# arbeiten > arbeitete
+	[^DIMNTW] E N	>	-EN,TE	# leben > lebte
+
+	E I E N		>	-EN,TE	# freien > freite
+	[^E] I E N	>	-N,TE	# knien > kniete
+
+	C H N E N	>	-N,TE	# rechnen > rechnete
+	[^C] H [MN] E N	>	-EN,TE	# ahnen > ahnte
+
+	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,TE	# atmen > atmete
+	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TE	# lernen > lernte
+
+# Past-tense du-form endings
+	E [LR] N	>	-N,TEST	# lächeln > lächeltest
+	[DTW] E N	>	-N,TEST # arbeiten > arbeitetest
+	[^DIMNTW] E N	>	-EN,TEST	# leben > lebtest
+
+	E I E N	>	-EN,TEST	# freien > freitest
+	[^E] I E N	>	-N,TEST	# knien > knietest
+
+	C H N E N	>	-N,TEST 	# rechnen > rechnetest
+	[^C] H [MN] E N	>	-EN,TEST	# ahnen > ahntest
+
+	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,TEST	# atmen > atmetest
+	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TEST	# lernen > lerntest
+
+# Past-tense ihr-form endings
+	E [LR] N	>	-N,TET	# nähern > nähertet
+	[DTW] E N		>	-N,TET	# rasten > rastetet
+	[^DIMNTW] E N	>	-EN,TET	# rasen > rastet
+
+	E I E N	>	-EN,TET	# freien > freitet
+	[^E] I E N	>	-N,TET	# knien > knietet
+
+	C H N E N	>	-N,TET	# rechnen > rechnetet
+	[^C] H [MN] E N	>	-EN,TET # ahnen > ahntet
+
+	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,TET	# atmen > atmetet
+	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TET	# lernen > lerntet
+
+# Past-tense sie/Sie-form endings
+	E [LR] N	>	-N, TEN	# lächeln > lächelten
+	[DTW] E N	>	-N, TEN	# arbeiten > arbeiteten
+	[^DIMNTW] E N	>	-EN,TEN	# leben > lebten
+
+	E I E N	>	-EN,TEN	# freien > freiten
+	[^E] I E N	>	-N,TEN	# knien > knieten
+
+	C H N E N	>	-N, TEN	# rechnen > rechneten
+	[^C] H [MN] E N	>	-EN,TEN	# ahnen	> ahnten
+
+	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N, TEN	# atmen > atmeten
+	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TEN	# lernen > lernten
+
+
+# Past-tense endings for non-regular verbs and Konjunktiv forms from ich-form:
+flag *Z:
+# er/sie/es = ich
+# du
+	[^HSSSZ]	>	ST	# wusste > wusstest
+	[^C] H	>	ST	# floh > flohest
+	[^S] C H	>	ST	# wich > wichst
+# CH,D,F,K and T may also have an 'e' before 'st':
+	[DFKSTZ]	>	EST	# riet > rietest
+# There are verbs which don't have the -chest form below, such as 'brachst'
+# or 'rochst'.	Then use 'brachen/WX', which is only slightly less elegant.
+	C H	>	EST	# wusch > wuschest
+	[AU] SS	>	EST	# aß > aßest #swiss-convert
+	I E SS	>	EST	# ließ > ließt #swiss-convert
+	[IO] SS	>	EST	# goss > gossest
+
+# ihr
+	[^DT]	>	T	# wüsste > wüsstet
+	[DT]	>	ET	# riet > rietet
+#   If you insist on all past tense ihr-forms ending in -et,
+#   here is how to do it:
+#   [ I didn't check if this is 'normal' or not, but it seems somewhat
+#     old-fashioned to me.  ]
+#	.	>	ET	# hob > hobet
+#				# schoss > schosset
+
+# wir/sie
+	E	>	N	# hatte > hatten
+	I E 	>	EN	# auch: schrie > schrieen
+	[^E]	>	EN	# nahm > nahmen
+
+
+flag *O:
+#
+# Partizip dekliniert: Wie  verarbeiten -> verarbeiteter
+#
+# This is similar to flag Y,  but will not necessaryly apply
+# to all verbs which have regular (Y) past tense form.
+#
+# The forms to be generated are the same as for the A flag
+# (which could be used with a different stem to do the same thing).
+#
+# flag *Y wil already produce the -e, -en forms.
+#
+# -tes
+	E [LR] N	>	-N,TES	# vererben > vererbtes
+	[DTW] E N	>	-N,TES
+	[^DMNTW] E N	>	-EN,TES
+
+	C H N E N	>	-N,TES
+	[^C] H [MN] E N	>	-EN,TES
+
+	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,TES
+	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TES
+# -ter		# Wie erzielen > erzielter
+	E [LR] N	>	-N,TER
+	[DTW] E N	>	-N,TER
+	[^DMNTW] E N	>	-EN,TER
+
+	C H N E N	>	-N,TER
+	[^C] H [MN] E N	>	-EN,TER
+
+	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,TER
+	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TER
+# -tem		# Wie verfluchen > verfluchtem
+	E [LR] N	>	-N,TEM
+	[DTW] E N	>	-N,TEM
+	[^DMNTW] E N	>	-EN,TEM
+
+	C H N E N	>	-N,TEM
+	[^C] H [MN] E N	>	-EN,TEM
+
+	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,TEM
+	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TEM
+
