@@ -9,7 +9,9 @@ module ODDB
 			super
 		end
 		def add_registration(registration)
-			@registrations.push(registration).last
+			@registrations.push(registration)
+			@registrations.odba_store
+			registration
 		end
 		def empty?
 			@registrations.empty?
@@ -19,6 +21,8 @@ module ODDB
 		end
 		def remove_registration(registration)
 			@registrations.delete(registration) 
+			@registrations.odba_store
+			registration
 		end
 		def iksnrs
 			@registrations.collect { |reg| reg.iksnr }

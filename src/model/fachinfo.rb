@@ -8,6 +8,7 @@ module ODDB
 	class Fachinfo
 		include Language
 		include RegistrationObserver
+		ODBA_PREFETCH = true
 		def atc_class
 			if(reg = @registrations.first)
 				reg.atc_classes.first

@@ -10,6 +10,7 @@ module ODDB
 	class AtcClass
 		include Language
 		include SequenceObserver
+		ODBA_PREFETCH = true
 		attr_accessor :code
 		attr_reader :guidelines, :ddd_guidelines
 		class DDD

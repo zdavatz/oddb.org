@@ -157,6 +157,7 @@ module ODDB
 	class Sequence < SequenceCommon
 		attr_accessor :patinfo_shadow
 		ACTIVE_AGENT = ActiveAgent
+		ODBA_PREFETCH = true
 		PACKAGE = Package
 		def atc_class=(atc_class)
 			unless(atc_class.nil?)
