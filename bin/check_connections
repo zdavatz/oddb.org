@@ -9,7 +9,11 @@ require 'etc/db_connection'
 
 def check(name, obj, odba_id)
 	unless(ODBA.storage.restore(odba_id))
-		puts "missing: #{obj.odba_id} -> #{odba_id} from: #{obj}:#{name}"
+		obj_str = obj.to_s
+		if(obj_str.length > 50)
+			obj_str = obj.class.to_s
+		end
+		puts "missing: #{obj.odba_id} -> #{odba_id} from: #{obj_str}:#{name}"
 	end
 end
 def check_reached(name, obj, stub, reached)
@@ -19,8 +23,8 @@ def check_reached(name, obj, stub, reached)
 	end
 end
 
+checked = []
 reached = []
-unreached = []
 max = ODBA.storage.max_id
 $stdout.flush
 puts <<-EOS
@@ -30,8 +34,9 @@ EOS
 1.upto(max) { |id|
 	if(dump = ODBA.storage.restore(id))
 		obj = ODBA.marshaller.load(dump)
-		if(obj.odba_name.nil?)
-			unreached.push(id)
+		checked.push(id)
+		unless(obj.odba_name.nil?)
+			reached.push(id)
 		end
 		obj.instance_variables.each { |name|
 			check_reached(name, obj, obj.instance_variable_get(name), reached)
@@ -54,10 +59,12 @@ EOS
 	print "\b" * 8
 	$stdout.flush
 }
-deleted = (unreached - reached)
-del_size = deleted.size
+puts "checked #{checked.size} objects"
+puts "reached #{reached.size} objects"
+unreached = (checked - reached)
+del_size = unreached.size
 puts "deleting #{del_size} objects"
-deleted.each_with_index { |id, idx|
+unreached.each_with_index { |id, idx|
 	ODBA.storage.delete_persistable(id)
 	print " " * 8
 	print "\b" * 8
