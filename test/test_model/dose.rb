@@ -65,6 +65,12 @@ class TestDose < Test::Unit::TestCase
 		assert_equal('%', dose.unit.to_s)
 		assert_equal('0.025 %', dose.to_s)
 	end
+	def test_initialize8
+		dose = ODDB::Dose.new('40-60', 'mg')
+		assert_equal(50, dose.qty)
+		assert_equal('mg', dose.unit.to_s)
+		assert_equal('40-60 mg', dose.to_s)
+	end
 	def test_comparable1
 		dose1 = ODDB::Dose.new(10, 'mg')
 		dose2 = ODDB::Dose.new(10, 'mg')
@@ -93,6 +99,11 @@ class TestDose < Test::Unit::TestCase
 	def test_comparable6
 		dose1 = ODDB::Dose.new(1000, 'mg')
 		dose2 = ODDB::Dose.new(1, 'g')
+		assert(dose2 == dose1, "dose2 was not == dose1")
+	end
+	def test_comparable6
+		dose1 = ODDB::Dose.new('400-600', 'mg')
+		dose2 = ODDB::Dose.new('0.4-0.6', 'g')
 		assert(dose2 == dose1, "dose2 was not == dose1")
 	end
 	def test_complex_unit
