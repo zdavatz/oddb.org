@@ -16,7 +16,6 @@ class CenteredSearchForm < View::CenteredSearchForm
 		[0,2,1]		=>	'exact_match',
 		[0,3,0,3]	=>	:submit,
 		[0,3,0,4]	=>	:search_reset,
-		[0,3,0,5]	=>	:search_help,
 	}
 	SYMBOL_MAP = {
 		:exact_match	=>	HtmlGrid::InputCheckbox,
@@ -50,14 +49,15 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,6,4]	=>	:sl_count_text,
 		[0,7] =>	'database_last_updated_txt',
 		[0,7,1]	=>	:database_last_updated,
-		[0,8]		=>	:legal_note,
-		[0,9]		=>	:paypal,
+		[0,8]		=>	:generic_definition,
+		[0,9]		=>	:legal_note,
+		[0,10]		=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,8]		=>	'ccomponent',
+		[0,0,1,10]		=>	'ccomponent',
 	}
 	COMPONENT_CSS_MAP = {
-		[0,8]	=>	'legal-note-center',
+		[0,9]	=>	'legal-note-center',
 	}
 	def ddd_count_text(model, session)
 		create_link(:ddd_count_text, 'http://www.whocc.no/atcddd/')

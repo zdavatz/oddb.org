@@ -33,7 +33,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,9]		=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,8]		=>	'ccomponent',
+		[0,0,1,9]		=>	'ccomponent',
 	}
 	COMPONENT_CSS_MAP = {
 		[0,8]	=>	'legal-note-center',
