@@ -12,7 +12,8 @@ module ODDB
 		class Table
 			remove_const :DOCUMENT_ROOT
 			remove_const :DIRPATH
-			DOCUMENT_ROOT = "/var/www/oddb.org/test"
+			DOCUMENT_ROOT = File.expand_path("../../test", 
+				File.dirname(__FILE__))
 			DIRPATH = "/data/downloads"
 		end
 		class Line

@@ -363,9 +363,9 @@ class TestOddbApp < Test::Unit::TestCase
 	end
 	def test_update_substance
 		@app.substances = {}
-		@app.soundex_substances = {}
-		pointer = ODDB::Persistence::Pointer.new(:substance)
+		@app.rebuild_indices
 		assert_equal([], @app.soundex_substances('de_name'))
+		pointer = ODDB::Persistence::Pointer.new(:substance)
 		subs = @app.create(pointer)
 		values = {
 			:en	=>	'en_name',

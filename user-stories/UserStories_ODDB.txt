@@ -14,6 +14,9 @@
 		Der Wirkstoff "CYPROTERONI ACETAS" ist
 		der aktuellen Sequenz bereits zugeordnet.
 		Bitte geben Sie einen anderen Wirkstoff an.
+	+ hwyss@ywesee.com: Die obigen Bugs hatten mit der Umstellung auf
+		mehrsprachige Substanzen zu tun, die wir für die Interaktionen benötigen.
+		Sollte jetzt wieder gehen. 
 
 2004-05-03 Zeno Davatz <zdavatz@ywesee.com>
 

@@ -32,6 +32,7 @@ module ODDB
 					if(@model.is_a?(Persistence::CreateItem))
 						@model.append(input[:substance])
 					end
+					input[:substance] = substance.pointer
 					@model = @session.app.update(@model.pointer, input)
 				end
 			end

@@ -42,7 +42,7 @@ class TestCssTemplate < Test::Unit::TestCase
 	end
 	def test_output_path
 		result = ODDB::CssTemplate.output_path(:foo)
-		expected = File.expand_path('/var/www/oddb.org/test/data/css/foo/oddb.css', File.dirname(__FILE__))
+		expected = File.expand_path('../data/css/foo/oddb.css', File.dirname(__FILE__))
 		assert_equal(expected, result)
 	end
 	def test_resolve

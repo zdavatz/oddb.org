@@ -21,9 +21,9 @@ module ODDB
 				@substance.remove_sequence(@sequence)
 			end
 		end
-		def same_as?(str)
-			(@substance_name.downcase == str.downcase) \
-				|| (!@substance.nil? && @substance.same_as?(str))
+		def same_as?(substance)
+			(@substance_name.downcase == substance.to_s.downcase) \
+				|| (!@substance.nil? && @substance.same_as?(substance))
 		end
 		def to_s
 			[@substance, @dose].join(' ')
@@ -55,20 +55,25 @@ module ODDB
 		def adjust_types(values, app=nil)
 			values = values.dup
 			values.each { |key, value| 
-				case(key)
-				when :dose, :chemical_dose, :equivalent_dose
-					begin
-						values[key] = Dose.new(*value) unless(value.is_a? Dose)
-					rescue(StandardError)
-						values.delete(key)
-					end
-					if(value.nil? && key != :dose)
-						values[key] = nil
-					end
-				when :substance, :chemical_substance, :equivalent_substance
-					values[key] = app.substance(value)
-					if(values[key].nil? && key == :substance)
-						values.delete(key) 
+				if(value.is_a?(Persistence::Pointer))
+					values.store(key, value.resolve(app))
+				else
+					case(key)
+					when :dose, :chemical_dose, :equivalent_dose
+						begin
+							values[key] = Dose.new(*value) unless(value.is_a? Dose)
+						rescue(StandardError)
+							values.delete(key)
+						end
+						if(value.nil? && key != :dose)
+							values[key] = nil
+						end
+					#deprecated
+					when :substance, :chemical_substance, :equivalent_substance
+						values[key] = app.substance(value)
+						if(values[key].nil? && key == :substance)
+							values.delete(key) 
+						end
 					end
 				end
 			}

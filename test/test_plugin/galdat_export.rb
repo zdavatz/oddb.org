@@ -9,6 +9,7 @@ require 'stub/galdat_export'
 require 'model/text'
 require 'date'
 require 'util/language'
+require 'fileutils'
 
 module ODDB
 	class GaldatExport
@@ -249,8 +250,9 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		@plugin.date = Time.gm(2003,"dec",15,11,11,11)
 		@date = Date.today.strftime('%Y%m%d%H%M%S')
 		@iksdate = Date.today.strftime("%Y%m%d")
-		Dir.chdir(ODDB::GaldatExport.system_targetdir)
-		Dir.glob("*") { |file|
+		dir = ODDB::GaldatExport.system_targetdir
+		Dir.entries(dir) { |entry|
+			file = File.expand_path(entry, dir)
 			unless(File.ftype(file)=='directory')
 				File.delete(file)
 			end
@@ -539,7 +541,7 @@ Hunger. Stufe für Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, S
 	def test_export
 		full_setup()
 		@plugin.export
-		Dir.chdir(ODDB::GaldatExport.system_targetdir)
+		dir = ODDB::GaldatExport.system_targetdir
 		{
 			's01x'	=>	744,
 			's02x'	=>	440,
@@ -553,8 +555,9 @@ Hunger. Stufe für Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, S
 			's41x'	=>	576,
 			
 		}.each_pair{ |name, size|
-			assert(FileTest.exists?(name), "The file #{name} was not properly created")
-			assert_equal(size, FileTest.size(name), "Wrong filesize for #{name}")
+			file = File.expand_path(name, dir)
+			assert(FileTest.exists?(file), "The file #{file} was not properly created")
+			assert_equal(size, FileTest.size(file), "Wrong filesize for #{file}")
 		}	
 	end		
 	def test_export2
@@ -573,24 +576,26 @@ Hunger. Stufe für Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, S
 		@plugin.export
 		@plugin.compress
 		assert_equal(false, @plugin.filenames.include?("s31x"))
-		Dir.chdir(ODDB::GaldatExport.system_targetdir)
-		name = "galdat_oddb.tar.gz"
+		dir = ODDB::GaldatExport.system_targetdir
+		name = File.expand_path("galdat_oddb.tar.gz", dir)
 		assert(FileTest.exists?(name), "The file #{name} was not properly created")
 		assert(File.size(name) > 500, "Filesize too small!")
-		name = "galdat_oddb.zip"
+		name = File.expand_path("galdat_oddb.zip", dir)
 		assert(FileTest.exists?(name), "The file #{name} was not properly created")
 		assert(File.size(name) > 1500, "Filesize too small!")
-		name = "s31x.tar.gz"
-		#<DocumedGag>
-		#assert(FileTest.exists?(name), "The file #{name} was not properly created")
-		#assert(File.size(name) > 100, "Filesize too small!")
+		name = File.expand_path("galdat_oddb.zip", dir)
 	end
 	def test_system_filepath
 		table = ODDB::GaldatExport::AcTable.new(nil)
-		assert_equal("/var/www/oddb.org/test/data/downloads/s01x", table.system_filepath)
+		expected = File.expand_path('../data/downloads/s01x',
+			File.dirname(__FILE__))
+			puts expected
+		assert_equal(expected, table.system_filepath)
 	end
 	def test_system_targetdir
-		assert_equal("/var/www/oddb.org/test/data/downloads", ODDB::GaldatExport.system_targetdir)
+		expected = File.expand_path('../data/downloads',
+			File.dirname(__FILE__))
+		assert_equal(expected, ODDB::GaldatExport.system_targetdir)
 	end
 	def test_unix2pc
 		table = ODDB::GaldatExport::AcTable.new(nil)

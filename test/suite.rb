@@ -5,9 +5,9 @@ $: << File.dirname(__FILE__)
 
 directories = []
 
-require '/usr/local/frameworks/sbsm/test/suite'
-require '/usr/local/frameworks/htmlgrid/test/suite'
-require '/usr/local/frameworks/datastructure/test/suite'
+#require '/usr/local/frameworks/sbsm/test/suite'
+#require '/usr/local/frameworks/htmlgrid/test/suite'
+#require '/usr/local/frameworks/datastructure/test/suite'
 Dir.foreach(File.dirname(__FILE__)) { |dir|
 	if /^test_.*/o.match(dir)
 		directories << File.expand_path(dir, File.dirname(__FILE__))

@@ -12,7 +12,7 @@ class OddbPrevalence
 	attr_reader :sequence_index, :indication_index, :substance_index
 	attr_reader :patinfos
 	attr_writer :fachinfos, :orphaned_patinfos
-	attr_writer :soundex_substances
+	attr_writer :substance_index, :soundex_substances
 	public :rebuild_indices
 	def all_soundex_substances
 		@soundex_substances
@@ -29,6 +29,6 @@ module ODDB
 		RUN_CLEANER = false
 		RUN_EXPORTER = false
 		RUN_UPDATER = false
-		STORAGE_PATH = '/var/www/oddb.org/test/data/prevalence'
+		STORAGE_PATH = File.expand_path('../data/prevalence', File.dirname(__FILE__))
 	end
 end
