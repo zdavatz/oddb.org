@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Drugs::LimitationText -- oddb -- 14.11.2003 -- maege@ywesee.com
+# State::Drugs::LimitationText -- oddb -- 14.11.2003 -- mhuggler@ywesee.com
 
 require 'state/drugs/global'
 require 'view/drugs/limitationtext'

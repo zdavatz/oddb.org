@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Interactions::ResultList -- oddb -- 01.06.2004 -- maege@ywesee.com
+# View::Interactions::ResultList -- oddb -- 01.06.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/list'
 require 'htmlgrid/value'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Drugs::AtcChooser  -- oddb -- 14.07.2003 -- maege@ywesee.com
+# State::Drugs::AtcChooser  -- oddb -- 14.07.2003 -- mhuggler@ywesee.com
 
 require 'state/drugs/global'
 require 'view/drugs/atcchooser'

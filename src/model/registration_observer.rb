@@ -9,8 +9,10 @@ module ODDB
 			super
 		end
 		def add_registration(registration)
-			@registrations.push(registration)
-			@registrations.odba_isolated_store
+			unless(@registrations.include?(registration))
+				@registrations.push(registration)
+				@registrations.odba_isolated_store
+			end
 			registration
 		end
 		def empty?

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::User::YweseeContact -- oddb -- 04.08.2003 -- maege@ywesee.com
+# View::User::YweseeContact -- oddb -- 04.08.2003 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'
 require 'htmlgrid/form'

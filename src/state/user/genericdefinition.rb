@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::User::GenericDefinition -- oddb -- 05.01.2004 -- maege@ywesee.com
+# State::User::GenericDefinition -- oddb -- 05.01.2004 -- mhuggler@ywesee.com
 
 require 'state/user/global'
 require 'view/user/genericdefinition'

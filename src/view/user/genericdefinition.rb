@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::User::GenericDefinition -- oddb -- 05.01.2004 -- maege@ywesee.com
+# View::User::GenericDefinition -- oddb -- 05.01.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'
 require 'view/popuptemplate'

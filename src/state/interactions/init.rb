@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Interactions::Init -- oddb -- 26.05.2004 -- maege@ywesee.com
+# State::Interactions::Init -- oddb -- 26.05.2004 -- mhuggler@ywesee.com
 
 require 'state/global_predefine'
 require 'view/interactions/search'

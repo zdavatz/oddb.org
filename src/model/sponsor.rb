@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Sponsor -- oddb -- 29.07.2003 -- maege@ywesee.com
+# Sponsor -- oddb -- 29.07.2003 -- mhuggler@ywesee.com
 
 require 'date'
 require 'fileutils'

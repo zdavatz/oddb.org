@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Ean13 -- oddb -- 01.10.2003 -- maege@ywesee.com
+# Ean13 -- oddb -- 01.10.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/validator'
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Interactions::Global -- oddb -- 23.08.2004 -- maege@ywesee.com
+# State::Interactions::Global -- oddb -- 23.08.2004 -- mhuggler@ywesee.com
 
 require 'state/interactions/init'
 

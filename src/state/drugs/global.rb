@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Drugs::Global -- oddb -- 23.08.2004 -- maege@ywesee.com
+# State::Drugs::Global -- oddb -- 23.08.2004 -- mhuggler@ywesee.com
 
 require 'state/drugs/init'
 require 'state/drugs/recentregs'

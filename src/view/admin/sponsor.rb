@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Admin::Sponsor -- oddb -- 29.07.2003 -- maege@ywesee.com
+# View::Admin::Sponsor -- oddb -- 29.07.2003 -- mhuggler@ywesee.com
 
 require 'htmlgrid/inputdate'
 require 'htmlgrid/inputfile'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# AtcNode -- oddb -- 17.07.2003 -- maege@ywesee.com
+# AtcNode -- oddb -- 17.07.2003 -- mhuggler@ywesee.com
 
 module ODDB
 	class AtcNode

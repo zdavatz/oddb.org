@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# LimitationText -- oddb -- 10.11.2003 -- maege@ywesee.com
+# LimitationText -- oddb -- 10.11.2003 -- mhuggler@ywesee.com
 
 require 'util/language'
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Drugs::LimitationText -- oddb -- 12.11.2003 -- maege@ywesee.com
+# View::Drugs::LimitationText -- oddb -- 12.11.2003 -- mhuggler@ywesee.com
 
 require 'view/popuptemplate'
 require 'view/chapter'

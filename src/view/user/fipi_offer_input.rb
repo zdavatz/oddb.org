@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::User::FiPiOfferInput -- oddb -- 28.06.2004 -- maege@ywesee.com
+# View::User::FiPiOfferInput -- oddb -- 28.06.2004 -- mhuggler@ywesee.com
 
 require 'view/resulttemplate'
 require 'view/form'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Subtances::Global -- oddb -- 23.08.2004 -- maege@ywesee.com
+# State::Subtances::Global -- oddb -- 23.08.2004 -- mhuggler@ywesee.com
 
 require 'state/substances/init'
 

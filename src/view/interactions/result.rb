@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Interactions::Result -- oddb -- 26.05.2004 -- maege@ywesee.com
+# View::Interactions::Result -- oddb -- 26.05.2004 -- mhuggler@ywesee.com
 
 require 'view/form'
 require 'view/publictemplate'

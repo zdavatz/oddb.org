@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# TestCytochrome -- oddb -- 04.05.2004 -- maege@ywesee.com
+# TestCytochrome -- oddb -- 04.05.2004 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))

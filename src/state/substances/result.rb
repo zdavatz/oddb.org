@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Substances::Result -- oddb -- 23.08.2004 -- maege@ywesee.com
+# State::Substances::Result -- oddb -- 23.08.2004 -- mhuggler@ywesee.com
 
 require 'view/substances/result'
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Doctors::DoctorList -- oddb -- 26.05.2003 -- maege@ywesee.com
+# State::Doctors::DoctorList -- oddb -- 26.05.2003 -- mhuggler@ywesee.com
 
 require 'state/doctors/global'
 require 'state/doctors/doctor'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Companies::CompanyList -- oddb -- 26.05.2003 -- maege@ywesee.com
+# View::Companies::CompanyList -- oddb -- 26.05.2003 -- mhuggler@ywesee.com
 
 require 'htmlgrid/value'
 require 'htmlgrid/link'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::User::ODDBDatDownload -- oddb -- 18.08.2003 -- maege@ywesee.com
+# View::User::ODDBDatDownload -- oddb -- 18.08.2003 -- mhuggler@ywesee.com
 
 require 'view/publictemplate'
 require 'view/user/export'

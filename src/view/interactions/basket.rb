@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Interactions::Basket -- oddb -- 07.06.2004 -- maege@ywesee.com
+# View::Interactions::Basket -- oddb -- 07.06.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'
 require 'htmlgrid/richtext'

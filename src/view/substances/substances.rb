@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Substances::Substances -- oddb -- 25.05.2004 -- maege@ywesee.com
+# View::Substances::Substances -- oddb -- 25.05.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/value'
 require 'htmlgrid/link'

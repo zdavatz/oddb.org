@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# LimitationPlugin -- oddb -- 05.11.2003 -- maege@ywesee.com
+# LimitationPlugin -- oddb -- 05.11.2003 -- mhuggler@ywesee.com
 
 require 'plugin/plugin'
 require 'util/html_parser'
@@ -174,7 +174,7 @@ module ODDB
 		#RANGE = ['A']
 		RANGE = ('A'..'Z').to_a
 		RECIPIENTS = [
-			'maege@ywesee.com',
+			'mhuggler@ywesee.com',
 		]
 		RETRIES = 3
 		RETRY_WAIT = 5

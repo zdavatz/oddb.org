@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Interactions::Search -- oddb -- 26.05.2004 -- maege@ywesee.com
+# View::Interactions::Search -- oddb -- 26.05.2004 -- mhuggler@ywesee.com
 
 require 'view/interactions/centeredsearchform'
 

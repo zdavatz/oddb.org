@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Doctors::LegalNote -- oddb -- 01.09.2003 -- maege@ywesee.com
+# State::Doctors::LegalNote -- oddb -- 01.09.2003 -- mhuggler@ywesee.com
 
 require 'state/global_predefine'
 require 'view/legalnote'

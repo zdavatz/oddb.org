@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Language -- oddb -- 24.03.2003 -- maege@ywesee.com 
+# Language -- oddb -- 24.03.2003 -- mhuggler@ywesee.com 
 
 require 'util/persistence'
 

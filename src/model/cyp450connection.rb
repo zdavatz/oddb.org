@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# CyP450Connection -- oddb -- 04.05.2004 -- maege@ywesee.com
+# CyP450Connection -- oddb -- 04.05.2004 -- mhuggler@ywesee.com
 
 require 'util/persistence'
 

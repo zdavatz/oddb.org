@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-#	State::Admin::Sponsor -- oddb -- 29.07.2003 -- maege@ywesee.com
+#	State::Admin::Sponsor -- oddb -- 29.07.2003 -- mhuggler@ywesee.com
 
 require 'state/admin/global'
 require 'util/upload'

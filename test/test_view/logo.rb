@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::TestLogo -- oddb -- 01.10.2003 -- maege@ywesee.com
+# View::TestLogo -- oddb -- 01.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Companies::Global -- oddb -- 23.08.2004 -- maege@ywesee.com
+# State::Companies::Global -- oddb -- 23.08.2004 -- mhuggler@ywesee.com
 
 require 'state/companies/init'
 

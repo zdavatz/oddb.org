@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Companies::CompanyList -- oddb -- 26.05.2003 -- maege@ywesee.com
+# State::Companies::CompanyList -- oddb -- 26.05.2003 -- mhuggler@ywesee.com
 
 require 'state/companies/global'
 require 'state/companies/company'

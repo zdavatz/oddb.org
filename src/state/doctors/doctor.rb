@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Companies::Company -- oddb -- 27.05.2003 -- maege@ywesee.com
+# State::Companies::Company -- oddb -- 27.05.2003 -- mhuggler@ywesee.com
 
 require 'state/doctors/global'
 require 'view/doctors/doctor'

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Substances::Subtance -- oddb -- 25.05.2004 -- maege@ywesee.com
+# State::Substances::Subtance -- oddb -- 25.05.2004 -- mhuggler@ywesee.com
 
 require 'state/substances/global'
 require 'state/substances/selectsubstance'
