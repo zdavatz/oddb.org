@@ -9,6 +9,10 @@
 2004-05-03 Zeno Davatz <zdavatz@ywesee.com>
 
 * todo's ODDB.org
+	-	Schön wäre eine automatische Wirkstoffüberprüfung und dann eine direkte
+		Zuordnung vom ATC-Code. Gerade bei Produkte mit eindeutigem Wirkstoff z.B.
+		'Omeprazol' würde das neu registrierte Generikum direkt einen ATC-Code
+		erhalten und man müsste nicht manuell zuordnen.
 	- Einbauen manuelles Update überschreibt SL-Update
 		Das manuelle Update muss den automatischen SL-Update überschreiben können.
 		z.B. Selipran hat im Excel-Export vom BSV den falschen Swissmedic-Code (die letzen 3 Ziffern stimmen nicht). 
