@@ -1346,7 +1346,7 @@ zdavatz ! ywesee.com
 				:download_export_title		=>	'Master Data Download - oddb.yaml.gz und oddb.yaml.zip',
 				:drugs										=>	'Drugs',
 				:doctors									=>  'Doctors Switzerland',
-				:doctors_search_explain	  =>	'Search a doctor in Switzerland. Search by name,<br> address, telefon, professional title or a combination of these.',
+				:doctors_search_explain	  =>	'Search for a doctor in Switzerland. Search by name,<br> address, telefon, professional title or a combination of these.',
 				:ean13										=>	'EAN',
 				:ean_code0								=>	'EAN-Code: ',
 				:ean_code1								=>	'',
