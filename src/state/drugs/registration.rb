@@ -27,7 +27,10 @@ class Registration < State::Drugs::Global
 		end
 	end
 	def update
-		keys = [:inactive_date, :generic_type, :registration_date, :revision_date, :market_date]
+		keys = [
+			:inactive_date, :generic_type, :registration_date, 
+			:revision_date, :market_date, :expiration_date,
+		]
 		if(@model.is_a? Persistence::CreateItem)
 			iksnr = @session.user_input(:iksnr)
 			if(error_check_and_store(:iksnr, iksnr, [:iksnr]))
