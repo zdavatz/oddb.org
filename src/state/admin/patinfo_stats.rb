@@ -82,8 +82,8 @@ class PatinfoStatsCommon < State::Admin::Global
 	end
 	def init
 		model = {}
-		patinfo_slate  = @session.app.slate(:patinfo)
-		patinfo_slate.items.each_value { |invoice|
+		patinfo_invoice = @session.invoice(:patinfo)
+		patinfo_invoice.items.each_value { |invoice|
 			item_facade = InvoiceItemFacade.new(invoice, @session.app)
 			company = item_facade.sequence.company
 			company_facade = model.fetch(company.name) {
