@@ -43,5 +43,58 @@ module ODDB
 			]
 			assert_equal(expected, @address.lines_without_title)
 		end
+		def test_street__1
+			@address.lines = [
+				'Herrn Dr. med.',
+				'Rolf Hugentobler',
+				'Arztpraxis',
+				'Stichweg 8',
+				'5024 Kuettigen',
+			]
+			assert_equal('Stichweg', @address.street)
+			assert_equal('8', @address.number)
+		end
+		def test_street__2
+			@address.lines = [
+				'Ospedale San Giovanni',
+				'6500 Bellinzona' 
+			]
+			assert_equal('Ospedale San Giovanni', @address.street)
+			assert_nil(@address.number)
+		end
+		def test_street__3
+			@address.lines = [
+				'Herrn Dr. med.',
+				'Johannes Andreas Blum',
+				'Arztpraxis',
+				'Schweiz. Tropeninstitut Basel',
+				'Socinstr. 57, Postfach',
+				'4002 Basel',
+			]
+			assert_equal('Socinstr.', @address.street)
+			assert_equal('57', @address.number)
+		end
+		def test_street__4
+			@address.lines = [
+				'Madame le Docteur',
+				'Verena Schweizer-Rohrer',
+				'Cabinet medical',
+				'4, rte d\'Arnier',
+				'1092 Belmont-Lausanne',
+			]
+			assert_equal('rte d\'Arnier', @address.street)
+			assert_equal('4', @address.number)
+		end
+		def test_street__5
+			@address.lines = [
+				'Herrn Dr. med.',
+				'Bernhard Hugentobler',
+				'Arztpraxis',
+				'Muhlernstr. 244A',
+				'3098 Schliern b. Koenitz',
+			]
+			assert_equal('Muhlernstr.', @address.street)
+			assert_equal('244A', @address.number)
+		end
 	end
 end
