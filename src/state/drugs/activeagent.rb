@@ -4,6 +4,7 @@
 require 'state/drugs/global'
 require 'model/selectsubstance'
 require 'state/drugs/selectsubstance'
+require 'state/drugs/sequence'
 require 'view/drugs/activeagent'
 
 module ODDB
@@ -14,7 +15,7 @@ class ActiveAgent < State::Drugs::Global
 	def	delete
 		sequence = @model.parent(@session.app) 
 		@session.app.delete(@model.pointer)
-		ODDB::Sequence.new(@session, sequence)
+		State::Drugs::Sequence.new(@session, sequence)
 	end	
 	def update
 		keys = [:substance, :dose]
