@@ -804,7 +804,7 @@ zdavatz ! ywesee.com
 				:edit_atc_class						=>	'Modifier',
 				:edit_registration				=>	'Modifier',
 				:email										=>	'&Eacute;mail ',
-				:email_text								=>	"On n'indique pas",
+				:email_text								=>	"&nbsp;On n'indique pas",
 				:email_label							=>	'&Eacute;mail ',
 				:email_feedback						=>  'Email: <br> (Kommentar: Die Angabe der Email-Adresse dient nur als Seriosit&auml;tshinweis und wird nicht angezeigt oder weiterverwendet werden)',
 				:email_header							=>	"&Eacute;mail",
