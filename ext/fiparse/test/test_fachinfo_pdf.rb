@@ -987,5 +987,125 @@ target_encoding: latin1
 				assert_equal(expected, paragraph1.text)
 			end
 		end
+		class TestFachinfoPDFWriterPre < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_pre.rb',File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_unwanted_effects_pre
+				chapter = @fachinfo.unwanted_effects
+				assert_equal('Unerwünschte Wirkungen', chapter.heading)
+
+				section1 = chapter.sections.first
+				assert_equal('Erfahrungen aus klinischen Studien', section1.subheading)
+				#assert_equal(1, section1.paragraphs.size)
+				paragraph1 = section1.paragraphs.first
+				expected = 'In den beiden massgebenden Studien erhielten die Patienten Herceptin entweder als Monotherapie oder in Kombination mit Paclitaxel. Nebenwirkungen sind bei ungefähr 50% der Patienten zu erwarten. Am häufigsten wurden infusionsbedingte Symptome wie Fieber und Schüttelfrost beobachtet, meist im Anschluss an die erste Infusion von Herceptin.'
+				assert_equal(expected, paragraph1.text)
+				paragraph2 = section1.paragraphs.at(1)
+				expected = 'Folgende unerwünschte Wirkungen wurden beobachtet:'
+				assert_equal(expected, paragraph2.text)
+				section2 = chapter.sections.at(1)
+				assert_equal('Tabelle 1', section2.subheading)
+				paragraph1 = section2.paragraphs.first
+				expected = 'Nebenwirkungen, die bei1165% der Patienten oder in der randomisierten Studie in erhöhter Inzidenz bei der Behandlungsgruppe mit Herceptin auftraten (Anteil der Patienten in %)'
+				assert_equal(expected, paragraph1.text)
+				paragraph2 = section2.paragraphs.at(1)
+				expected = '---------------------------------------------------- 
+             Mono-   Hercep-  Pacli-  Herce-  AC*    
+             the-    tin +    taxel   ptin    allein 
+             rapie   Pacli-   allein  + AC*          
+                     taxel                           
+             n= 352  n= 91    n= 95   n= 143  n= 135 
+---------------------------------------------------- 
+Blut und Lymphsystem                                 
+Anämie       4       14       9       36      26     
+Leuko-       3       24       17      52      34     
+ penie                                               
+----------------------------------------------------
+Stoffwechselstörungen
+Periphere    10      22       20      20      17     
+ Ödeme                                               
+Ödeme        8       10       8       11      5      
+---------------------------------------------------- 
+Nervensystem                                         
+Schlaf-      14      25       13      29      15     
+störungen                                            
+Benommenheit 13      22       24      24      18     
+Parästhesie  9       48       39      17      11     
+Depression   6       12       13      20      12     
+Periphere    2       23       16      2       2      
+ Neuritis                                            
+Neuropathie  1       13       5       4       4      
+---------------------------------------------------- 
+Herz/Kreislauf                                       
+Tachykardie  5       12       4       10      5      
+Chronische   7       11       1       28      7      
+ Herzin-                                             
+ suffizienz                                          
+---------------------------------------------------- 
+Atmungsorgane                                        
+Vermehrtes                                           
+ Husten      26      41       22      43      29     
+Dyspnoe      22      27       26      42      25     
+Rhinitis     14      22       5       22      16     
+Pharyngitis  12      22       14      30      18     
+Sinusitis    9       21       7       13      6      
+---------------------------------------------------- 
+Gastrointestinale Störungen                          
+Übelkeit     33      51       9       76      77     
+Diarrhöe     25      45       29      45      26     
+Erbrechen    23      37       28      53      49     
+Übelkeit     8       14       11      18      9      
+ und Er-                                             
+ brechen                                             
+Appetit-     14      24       16      31      26     
+ verlust                                             
+---------------------------------------------------- 
+Haut                                                 
+Hautaus-     18      38       18      27      17     
+ schlag                                              
+Herpes       2       12       3       7       9      
+ simplex                                             
+Akne         2       11       3       3       <1     
+---------------------------------------------------- 
+Muskelskelettsystem                                  
+Knochen-     7       24       18      7       7      
+ schmerzen                                           
+Arthralgie   6       37       21      8       9      
+---------------------------------------------------- 
+Nieren u. Harnwege                                   
+Harnwegs-                                            
+ infektionen 5       18       14      13      7      
+---------------------------------------------------- 
+Allgemeine Reaktionen                                
+Schmerzen    47      61       62      57      42     
+Asthenie     42      62       57      54      55     
+Fieber       36      49       23      56      34     
+Schüttel-    32      41       4       35      11     
+ frost                                               
+Kopf-        26      36       28      44      31     
+ schmerzen
+Bauch-       22      34       22      23      18
+schmerzen                                           
+Rücken-      22      34       30      27      15     
+ schmerzen                                           
+Infektion    20      47       27      47      31     
+Grippe-      10      12       5       12      6      
+ ähnliches                                           
+ Syndrom                                             
+Versehent-   6       13       3       9       4      
+ liche                                               
+ Verletzung  3       8        2       4       2      
+Allergische                                          
+ Reaktion                                            
+----------------------------------------------------'
+				assert_equal(1, paragraph2.formats.size)
+				assert_equal([:pre], paragraph2.formats.at(0).values)
+				assert_equal(expected, paragraph2.text)
+			end
+		end
 	end
 end

@@ -38,14 +38,30 @@ module ODDB
 					end
 				else
 					str = self.src.strip
-					if(!@chapter.nil? && !str.empty? && !/Copyright/i.match(str))
+					font_name = @font.basefont_name
+					courier = !/courier/i.match(font_name).nil?
+					skip_paragraph = /Copyright/i.match(str)
+					if(!@chapter.nil? && !str.empty? && !skip_paragraph)
+						#for the first paragraph after a preformated paragraph
+						if(!courier && @preformatted)
+							@fresh_paragraph = true
+						end
 						if(@fresh_paragraph)
-							#puts "str: #{str}"
 							@paragraph = @section.next_paragraph
 						end
-						@paragraph << str.gsub("\n", "")
+						if(courier)
+							if(@paragraph.empty?)
+								@paragraph.set_format(:pre)
+							end
+							@preformatted = true
+							@paragraph << "\n"
+						else
+							str.gsub!("\n","")
+							@preformatted = false
+						end
+						@paragraph << str
 						@fresh_paragraph = false
-					else
+						#else
 						#@fresh_paragraph = true
 					end
 				end
@@ -57,9 +73,14 @@ module ODDB
 			def send_page
 				self.add_text
 			end
+			def send_line_break
+				self.src << "\n"
+			end
 			def send_paragraph
 				self.add_text
-				@fresh_paragraph = true
+				unless(@preformatted)
+					@fresh_paragraph = true
+				end
 			end
 		end
 	end
