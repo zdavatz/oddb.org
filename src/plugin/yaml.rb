@@ -8,20 +8,6 @@ module ODDB
 		DOCUMENT_ROOT = File.expand_path('../../doc/', File.dirname(__FILE__))
 		EXPORT_DIR = File.expand_path('resources/downloads', DOCUMENT_ROOT)
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
-		def run
-			db_name = 'oddb.yaml'
-			fi_name = 'fachinfo.yaml'
-			pi_name = 'patinfo.yaml'
-			atc_name = 'atc.yaml'
-			export(db_name)
-			export_atc_classes(atc_name)
-			if(Date.today.wday==2)
-				export_fachinfos(fi_name)
-			end
-			if(Date.today.wday==3)
-				export_patinfos(pi_name)
-			end
-		end
 		def export(name='oddb.yaml')
 			export_obj(name, @app.companies)
 		end
