@@ -125,7 +125,7 @@ module ODDB
 				:en												=>	'Englisch',
 				:exception_header					=>	'Es ist ein Fehler aufgetreten:',
 				:expiration_date					=>	'G&uuml;ltig bis',
-				:explain_complementary		=>	'Pink&nbsp;=&nbsp;Komplement&auml;rprodukt',
+				:explain_complementary		=>	'Pink&nbsp;=&nbsp;Arzneimittel der Komplement&auml;rmedizin',
 				:explain_complementary_url =>	'http://www.svkh.ch',
 				:explain_efb							=>	'EFP = Exfactory-Preis, exkl. Mwst.',
 				:explain_fi								=>	'FI = Fachinformationen',
