@@ -35,17 +35,13 @@ end
 class SearchForm < View::Form
 	COMPONENTS = {
 		[0,0]	=>	:search_query,
-		[1,0]	=>	:submit,
+		[0,0,0]	=>	:submit,
 	}
 	CSS_CLASS = 'right'
 	EVENT = :search
 	FORM_METHOD = 'GET'
 	SYMBOL_MAP = {
 		:search_query		=>	View::SearchBar,	
-	}
-	CSS_MAP = {
-		[0,0] =>	'search',
-		[1,0] =>	'button left padding',
 	}
 end
 	end
