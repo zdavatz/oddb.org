@@ -10,22 +10,6 @@ require 'view/sponsorhead'
 module ODDB
 	module View
 		module Substances
-class SearchForm < View::Form
-	COMPONENTS = {
-		[0,0]	=>	:search_query,
-		[1,0]	=>	:submit,
-	}
-	CSS_CLASS = 'right'
-	EVENT = :search
-	FORM_METHOD = 'GET'
-	SYMBOL_MAP = {
-		:search_query		=>	View::SearchBar,	
-	}
-	CSS_MAP = {
-		[0,0] =>	'search',
-		[1,0] =>	'button left padding',
-	}
-end
 class ResultComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 	COLSPAN_MAP = {
@@ -33,7 +17,7 @@ class ResultComposite < HtmlGrid::Composite
 	}
 	COMPONENTS = {
 		[0,0]		=>	:title_found,
-		[1,0]		=>	View::Substances::SearchForm,
+		[1,0]		=>	View::SearchForm,
 		[0,1]		=>	View::Substances::ResultList,
 	}
 	LEGACY_INTERFACE = false

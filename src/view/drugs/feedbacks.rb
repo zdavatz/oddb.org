@@ -3,6 +3,7 @@
 
 require 'view/publictemplate'
 require 'view/additional_information'
+require 'view/searchbar'
 require 'htmlgrid/form'
 require 'htmlgrid/inputradio'
 require 'htmlgrid/textarea'
@@ -227,14 +228,15 @@ end
 class FeedbacksComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
-		[0,0]	  =>	:feedback_title,
-		[1,0]		=>	:feedback_pager,
-		[0,1]	  =>	:current_feedback,
-		[1,1]	  =>	:feedback_list,
+		[1,0]	  =>	View::SearchForm,
+		[0,1]	  =>	:feedback_title,
+		[1,1]		=>	:feedback_pager,
+		[0,2]	  =>	:current_feedback,
+		[1,2]	  =>	:feedback_list,
 	}
 	CSS_MAP = {
-		[0,0] => 'th',
-		[1,0] => 'th right',
+		[0,1] => 'th',
+		[1,1] => 'th right',
 	}	
 	LEGACY_INTERFACE = false
 	def current_feedback(model)
