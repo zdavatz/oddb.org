@@ -421,7 +421,7 @@ class OddbPrevalence
 	def patinfo_deprived_sequences(oid)
 		@patinfos_deprived_sequences[oid.to_i]
 	end
-	#=begin
+=begin
 	def odba_store(name = nil)
 		failsafe {
 			#clear_indices
@@ -429,6 +429,7 @@ class OddbPrevalence
 			#rebuild_indices
 		}
 	end
+=end
 	def rebuild_atc_chooser
 		@atc_chooser = ODDB::AtcNode.new(nil)
 		@atc_classes.values.sort_by { |atc| 
@@ -446,6 +447,7 @@ class OddbPrevalence
 		#delete_if only for Testing!!!!!
 		@fachinfos.delete_if{|key, val| val.descriptions["de"].name.nil?}	
 		#@atc_classes.delete_if{|key, atc| atc.sequences.empty?}
+		clear_indices
 		odba_store('oddbapp')
 		#odba_take_snapshot
 		rebuild_odba_indices
@@ -466,15 +468,17 @@ class OddbPrevalence
 			file.close
 		end
 	end
-=begin
-		ODBA.cache_server.create_index('atc_index_company',ODDB::Company, ODDB::AtcClass, :name, "atc_classes.each{ |atc| atc}", "sequences.collect{|seq| seq.company}")
-
-		ODBA.cache_server.create_index('atc_index', ODDB::AtcClass, ODDB::AtcClass, :code, "")
-
-		 ODBA.cache_server.create_index('substance_index_atc', ODDB::Substance, ODDB::AtcClass, :name, 'sequences.collect { |seq| seq.atc_class }', "sequences.collect{|seq| seq.active_agents.collect{|agent| agent.substance}}")
-
-		 ODBA.cache_server.create_index('sequence_index_atc', ODDB::Sequence, ODDB::AtcClass, :name, "atc_class", "sequences")
-=end
+	def generate_dictionary(language, locale)
+		base = File.expand_path("../../ext/fulltext/data/dicts/#{language}", 
+			File.dirname(__FILE__))
+		ODBA.storage.generate_dictionary(language, locale, base)
+	end
+	def generate_french_dictionary
+		generate_dictionary('french', 'fr_FR@euro')
+	end
+	def generate_german_dictionary
+		generate_dictionary('german', 'de_DE@euro')
+	end
 =begin
 	def how_many_objects
 		arr = []
@@ -706,13 +710,13 @@ module ODDB
 		attr_reader :cleaner, :updater
 		def initialize
 			puts STORAGE_PATH
-			#=begin
+#=begin
 		 	@prevalence = Madeleine::SnapshotMadeleine.new(STORAGE_PATH) {
 				sys = OddbPrevalence.new
 			}
 			puts "prevalence initialized"
 			@system = @prevalence.system
-			#=end
+#=end
 =begin
 			ODBA.cache_server.prefetch
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
