@@ -21,7 +21,7 @@ module ODDB
 			super
 			@meddata_server = DRbObject.new(nil, MEDDATA_URI)
 		end
-		def update(current='7601001', last = '7601004')
+		def update(current='7601000', last = '7601004')
 			factory =  MedData::EanFactory.new(current)
 			while(current < last)
 				current = factory.next

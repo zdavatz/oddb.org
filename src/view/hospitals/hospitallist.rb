@@ -22,11 +22,12 @@ class HospitalList < HtmlGrid::List
 	include VCardMethods
 	COMPONENTS = {
 		[0,0]	=>	:name,
-		[1,0]	=>	:location,
-		[2,0]	=>	:plz,
-		[3,0]	=>	:canton,
-		[4,0]	=>	:map,
-		[5,0]	=>	:vcard,
+		[1,0]	=>	:business_unit,
+		[2,0]	=>	:location,
+		[3,0]	=>	:plz,
+		[4,0]	=>	:canton,
+		[5,0]	=>	:map,
+		[6,0]	=>	:vcard,
 	}	
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
@@ -37,6 +38,7 @@ class HospitalList < HtmlGrid::List
 		[3,0]	=>	'list',
 		[4,0]	=>	'list',
 		[5,0]	=>	'list',
+		[6,0]	=>	'list',
 	}
 	CSS_HEAD_MAP = {
 		[0,0] =>	'th',
@@ -45,6 +47,7 @@ class HospitalList < HtmlGrid::List
 		[3,0] =>	'th',
 		[4,0] =>	'th',
 		[5,0] =>	'th',
+		[6,0] =>	'th',
 	}
 	LOOKANDFEEL_MAP = {
 		:name						=>	:hospital_name,
