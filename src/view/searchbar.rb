@@ -20,7 +20,8 @@ module ODDB
 					'onBlur'	=>	"if (value=='') { value='#{val}' }",
 					#'tabIndex'=>	"1",
 				})
-				submit = @lookandfeel.event_url(@container.event, {@name=>''})
+				args = ['zone', @session.state.zone, @name, '']
+				submit = @lookandfeel.event_url(@container.event, args)
 				script = "if(#{@name}.value!='#{val}'){"
 				script << "var href = '#{submit}'"
 				script << "+escape(#{@name}.value.replace(/\\//, '%2F'));"
