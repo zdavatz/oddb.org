@@ -64,10 +64,12 @@ module ODDB
 				}
 			else
 				@atc_facades = atc_facades.sort_by { |atc_class|
+					count = atc_class.package_count.to_i
 					[
-						@relevance[atc_class.odba_id].to_f, 
+						(@relevance[atc_class.odba_id].to_f / count.to_f), 
 						atc_class.package_count(:complementary).to_i,
-						atc_class.package_count.to_i,
+						#atc_class.package_count.to_i,
+						count,
 					]
 				}
 			end
@@ -78,8 +80,9 @@ module ODDB
 			self.atc_sorted.each(&block)
 		end
 		def set_relevance(odba_id, relevance)
-			relevance = [relevance.to_f, @relevance[odba_id].to_f].max
-			@relevance.store(odba_id, relevance)
+			#relevance = [relevance.to_f, @relevance[odba_id].to_f].max
+			#@relevance.store(odba_id, relevance)
+			@relevance[odba_id] = @relevance[odba_id].to_f + relevance.to_f
 		end
 		private
 		def delete_empty_packages(atc_classes)
