@@ -28,10 +28,11 @@ class FiChapterChooserLink < HtmlGrid::Link
 		else
 			@lookandfeel.lookup(@name)
 		end
-		args = {
-			:chapter => @name,
-			:pointer => @model.pointer,
-		}
+		args = [
+			:chapter, @name,
+			:pointer, @model.pointer,
+			:state_id, @session.state.id,
+		]
 		unless(@session.user_input(:chapter) == @name.to_s)
 			self.href = @lookandfeel.event_url(:resolve, args)
 		end

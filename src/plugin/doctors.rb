@@ -24,7 +24,7 @@ module ODDB
 				@doctors_deleted = 0
 			end
 			def update
-				range = 5000..100000
+				range = 5000..99999
 				empty_ids = (@config.empty_ids || []).dup
 				top_doc_id = 0
 				(range.to_a - empty_ids).each { |doc_id| 
@@ -36,7 +36,6 @@ module ODDB
 						delete_doctor(doc_id)
 						# 2. record id, muss das naechste mal nicht geprueft werden.
 						empty_ids.push(doc_id)
-						store_empty_ids(empty_ids)
 					end
 				}
 				empty_ids.delete_if { |id| id > top_doc_id }
@@ -52,8 +51,8 @@ module ODDB
 				retry_count = 3
 				begin
 					self::class::PARSER.emh_data(doc_id)
-				rescue Errno::EINTR
-					puts "rescued Errno::EINTR -> #{retry_count} more tries"
+				rescue Errno::EINTR, Errno::ECONNRESET => err
+					puts "rescued #{err} -> #{retry_count} more tries"
 					if(retry_count > 0)
 						retry_count -= 1
 						retry

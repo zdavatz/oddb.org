@@ -162,7 +162,7 @@ class SequenceForm < Form
 	def assign_patinfo(model, session)
 		unless(@model.is_a? Persistence::CreateItem)
 			link = HtmlGrid::Link.new(:assign_patinfo, model, session, self)
-			link.href = @lookandfeel.event_url(:assign_patinfo, hash)
+			link.href = @lookandfeel.event_url(:assign_patinfo)
 			link.set_attribute('class', 'small')
 			link
 		end
