@@ -1136,7 +1136,7 @@ zdavatz ! ywesee.com
 				:mailinglist							=>	'Mailinglist',
 				:mailinglist_form_descr		=>	"Veuillez utiliser la zone d'entr&eacute;e suivante, pour annoncer ou d&eacute;clarer le d&eacute;part leur adresse d'&eacute;mail",
 				:mailinglist_title				=>	'Mailinglist',
-				:map											=>	"Plan d'ensemble ou map24.ch",
+				:map											=>	"Plan d'ensemble ou map.search.ch",
 				:merge_companies0					=>	"Avec l'entreprise &agrave; supprimer sont encore ",
 				:merge_companies1					=>	' s&eacute;qu&eacute;nces li&eacute;.<br>Choisisez un autre entreprise pour les s&eacute;qu&eacute;nces:',
 				:merge_companies					=>	' mettre ensemble avec:',
