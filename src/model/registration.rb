@@ -132,6 +132,7 @@ module ODDB
 	end
 	class Registration < RegistrationCommon
 		ODBA_PREFETCH = true
+		attr_accessor :pdf_fachinfo
 		def company=(company)
 			@company = replace_observer(@company, company)
 		end

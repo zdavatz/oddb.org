@@ -1196,6 +1196,7 @@ zdavatz ! ywesee.com
 			:company_logo		=>	'logos',
 			:downloads			=>	'downloads',
 			:pdf_patinfo		=>	'patinfo',
+			:pdf_fachinfo		=>	'fachinfo',
 			:logo						=>	'logo_de.gif',
 			:logo_de				=>	'logo_de.gif',
 			:logo_fr				=>	'logo_fr.gif',

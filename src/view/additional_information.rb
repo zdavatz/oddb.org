@@ -7,11 +7,16 @@ module ODDB
 			DISABLE_ADDITIONAL_CSS = false
 			def fachinfo(model, session, css='result-infos')
 				fachinfo = model.fachinfo
+				pdf_fachinfo = model.pdf_fachinfo
 				#company = model.company
-				if(fachinfo )#&& company.fi_status)
+				if(fachinfo || pdf_fachinfo )#&& company.fi_status)
 					link = HtmlGrid::PopupLink.new(:fachinfo_short, model, session, self)
-					link.href = @lookandfeel.event_url(:resolve, {'pointer' => fachinfo.pointer})
-					link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
+					if(!pdf_fachinfo.nil?)
+						link.href = @lookandfeel.resource_global(:pdf_fachinfo, pdf_fachinfo)
+					elsif(!fachinfo.nil?)
+						link.href = @lookandfeel.event_url(:resolve, {'pointer' => fachinfo.pointer})
+						link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
+					end
 					pos = components.index(:fachinfo)
 					component_css_map.store(pos, css)
 					css_map.store(pos, css)

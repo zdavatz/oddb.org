@@ -12,6 +12,7 @@ module ODDB
 		module Drugs
 class Registration < State::Drugs::Global
 	VIEW = View::Drugs::RootRegistration
+	PDF_DIR = File.expand_path('../../../doc/resources/fachinfo/', File.dirname(__FILE__))
 	def new_sequence
 		pointer = @session.user_input(:pointer)
 		model = pointer.resolve(@session.app)
@@ -53,13 +54,25 @@ class Registration < State::Drugs::Global
 			err = create_error(:e_unknown_indication, :indication, ind)
 			@errors.store(:indication, err)
 		end
-		@model = @session.app.update(@model.pointer, hash)
-		if((fi_file = @session.user_input(:fachinfo_upload)) \
-			&& (documents = parse_fachinfo(fi_file)))
-			State::Drugs::FachinfoConfirm.new(@session, documents)
-		else
-			self
+		if(fi_file = @session.user_input(:fachinfo_upload)) 
+			four_bytes = fi_file.read(4)
+			fi_file.rewind
+			if(four_bytes == "%PDF")
+				filename = "#{@model.iksnr}.pdf"
+				FileUtils.mkdir_p(self::class::PDF_DIR)
+				path = File.expand_path(filename, self::class::PDF_DIR)
+				File.open(path, "w") { |fh|
+					fh.write(fi_file.read)
+				}
+				hash.store(:pdf_fachinfo, filename)
+			elsif(documents = parse_fachinfo(fi_file))
+				State::Drugs::FachinfoConfirm.new(@session, documents)
+			else
+				add_warning(:w_no_fachinfo_saved, :fachinfo_upload, nil)
+			end
 		end
+		@model = @session.app.update(@model.pointer, hash)
+		self
 	end
 	def parse_fachinfo(file)
 		begin
