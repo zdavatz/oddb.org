@@ -418,7 +418,7 @@ zdavatz ! ywesee.com
 				:oddb_yaml_gz							=>	'oddb.yaml.gz',
 				:oddb_yaml_zip						=>	'oddb.yaml.zip',
 				:not_accepted							=>	'Verwerfen',
-				:no_comparables						=>	'In unserer Datenbank wurden leider keine Produkte gefunden, die mit diesem Sequenz verglichen werden k&ouml;nnten.',
+				:no_comparables						=>	'In unserer Datenbank wurden leider keine Produkte gefunden, die mit dieser Sequenz verglichen werden k&ouml;nnten.',
 				:original									=>	'Original',
 				:orphan										=>	'Patinfo(s) ohne Registration',
 				:orphaned_fachinfos0			=>	'Nicht zugeordnete Fachinfos: ',
