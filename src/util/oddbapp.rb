@@ -446,7 +446,7 @@ class OddbPrevalence
 		ODBA.cache_server.indices.size
 		#delete_if only for Testing!!!!!
 		@fachinfos.delete_if{|key, val| val.descriptions["de"].name.nil?}	
-		@atc_classes.delete_if{|key, atc| atc.sequences.empty?}
+		#@atc_classes.delete_if{|key, atc| atc.sequences.empty?}
 		odba_store('oddbapp')
 		#odba_take_snapshot
 		rebuild_odba_indices
