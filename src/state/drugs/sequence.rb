@@ -115,9 +115,10 @@ class Sequence < State::Drugs::Global
 			else
 				add_warning(:w_no_patinfo_saved, :patinfo_upload, nil)
 			end
-			@model = @session.app.update(@model.pointer, input)
-			self
 		end
+		#store here
+		@model = @session.app.update(@model.pointer, input)
+		self
 	end
 end
 class CompanySequence < State::Drugs::Sequence
