@@ -2,13 +2,14 @@
 # ResultFoot -- oddb -- 20.03.2003 -- hwyss@ywesee.com 
 
 require 'htmlgrid/composite'
+require 'htmlgrid/link'
 
 module ODDB
 	class ExplainResult < HtmlGrid::Composite
 		COMPONENTS = {
-			[0,0]	=>	'explain_original',
-			[0,1]	=>	'explain_generic',
-			[0,2]	=>	'explain_complementary',
+			[0,0]	=>	:explain_original,
+			[0,1]	=>	:explain_generic,
+			[0,2]	=>	:explain_complementary,
 			[0,3]	=>	'explain_unknown',
 			[1,0]	=>	'explain_fi',
 			[1,1]	=>	'explain_pi',
@@ -18,9 +19,6 @@ module ODDB
 			[2,2]	=>	'explain_pbp',
 		}
 		CSS_MAP = {
-			[0,0]	=>	'explain-original',
-			[0,1]	=>	'explain-generic',
-			[0,2]	=>	'explain-complementary',
 			[0,3]	=>	'explain-unknown',
 			[1,0]	=>	'explain-infos',
 			[1,1]	=>	'explain-infos',
@@ -29,6 +27,27 @@ module ODDB
 			[2,1]	=>	'explain-infos',
 			[2,2]	=>	'explain-infos',
 		}
+		def explain_original(model, session)
+			link = HtmlGrid::Link.new(:explain_original, model, session, self)
+			link.href = @lookandfeel.lookup(:explain_original_url) 
+			link.value = @lookandfeel.lookup(:explain_original)
+			link.attributes['class'] = 'explain-original'
+			link
+		end
+		def explain_generic(model, session)
+			link = HtmlGrid::Link.new(:explain_generic, model, session, self)
+			link.href = @lookandfeel.lookup(:explain_generic_url) 
+			link.value = @lookandfeel.lookup(:explain_generic)
+			link.attributes['class'] = 'explain-generic'
+			link
+		end
+		def explain_complementary(model, session)
+			link = HtmlGrid::Link.new(:explain_complementary, model, session, self)
+			link.href = @lookandfeel.lookup(:explain_complementary_url) 
+			link.value = @lookandfeel.lookup(:explain_complementary)
+			link.attributes['class'] = 'explain-complementary'
+			link
+		end
 	end
 	class LegalNote < HtmlGrid::Composite
 		COMPONENTS = {

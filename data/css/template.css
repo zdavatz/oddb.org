@@ -1113,24 +1113,24 @@ td.button {
 }
 
 /* explain-classes */
-td.explain-generic {
+a.explain-generic {
 	font-weight : bold;
 	color : $bg_dark;
 	padding-left : 4px;
 }
-td.explain-original {
+a.explain-original {
 	font-weight : bold;
 	color : red;
+	padding-left : 4px;
+}
+a.explain-complementary {
+	font-weight : bold;
+	color : #dd1cff;
 	padding-left : 4px;
 }
 td.explain-unknown {
 	font-weight : bold;
 	color : $bg_bright_font_color;
-	padding-left : 4px;
-}
-td.explain-complementary {
-	font-weight : bold;
-	color : #dd1cff;
 	padding-left : 4px;
 }
 td.explain-infos {
