@@ -11,6 +11,9 @@ module ODDB
 	module View
 		class WelcomeHead < HtmlGrid::Composite
 			CSS_CLASS = 'composite'
+			CSS_MAP = {
+				[1,0]	=>	'welcome'
+			}
 			COMPONENTS = {
 				[0,0]		=>	View::Logo,
 				#[1,0]		=>	:banner,
