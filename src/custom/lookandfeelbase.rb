@@ -131,7 +131,7 @@ module ODDB
 				:drugs										=>	'Medikamente',
 				:doctors									=>  '&Auml;rzte&nbsp;Schweiz',
 				:doctors_search_explain	  =>	'Suchen Sie nach Arzt oder &Auml;rztin in der Schweiz. Sie k&ouml;nnen nach Name,<br> Adresse, Telefon oder Facharzttitel suchen.',
-				:EAN13										=>	'EAN',
+				:ean13										=>	'EAN',
 				:ean_code0								=>	'EAN-Code: ',
 				:ean_code1								=>	'',
 				:edit_atc_class						=>	'bearbeiten',
@@ -1248,6 +1248,12 @@ zdavatz ! ywesee.com
 				:ywesee_contact_name			=>	'Zeno Davatz',
 				:ywesee_contact_text			=>	'Veuillez &eacute;crire &agrave;: ',
 			},
+		}	
+		HTML_ATTRIBUTES = {
+			:banner => {
+				'width'		=>	'468',
+				'height'	=>	'62',
+			},
 			:explain_search => {
 				'style'	=>	'padding-top: 40px;',
 			},
@@ -1295,8 +1301,8 @@ zdavatz ! ywesee.com
 			:logo_doctors_de=>	'logo_doc.gif',
 			:logo_doctors_fr=>	'logo_doc.gif',
 			:paypal_donate	=>	'paypal_donate.gif',
-			:plugin_download_src => 'plugins/Generika.cc.src',
-			:plugin_download_gif => 'plugins/Generika.cc.gif',
+			:plugin_download_src => 'plugins/oddb.org.src',
+			:plugin_download_gif => 'plugins/oddb.org.gif',
 			:sponsor				=>	'sponsor',
 		}
 	end
