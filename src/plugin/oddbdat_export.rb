@@ -140,6 +140,9 @@ module ODDB
 				unix2pc(@lines.uniq.join(CRLF) << CRLF)
 			end
 			def unix2pc(str)
+				str
+# disabled due to customer feedback
+=begin
 				do_retry = true
 				iconv = Iconv.new('ibm437', 'latin1')
 				begin
@@ -152,6 +155,7 @@ module ODDB
 						end
 					}.compact.join
 				end
+=end
 			end
 			def write_lines(file, lines)
 				lines.each { |line|
