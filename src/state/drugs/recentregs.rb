@@ -31,10 +31,8 @@ class RecentRegs < State::Drugs::Global
 	VIEW = View::Drugs::RecentRegs
 	DIRECT_EVENT = :recent_registrations
 	def init
-		date = @session.app.log_group(:swissmedic_journal).newest_date
-		if(date.nil?)
-			@model = nil
-		else
+		if((loggroup = @session.app.log_group(:swissmedic_journal)) \
+			&& (date = loggroup.newest_date))
 			@model = [
 				create_package_month(date), 
 				create_package_month(date << 1), 
@@ -42,6 +40,8 @@ class RecentRegs < State::Drugs::Global
 			@model.delete_if { |month| 
 				month.package_count == 0
 			}
+		else
+			@model = nil
 		end
 	end
 	def create_package_month(date)

@@ -1,12 +1,13 @@
 #!/usr/bin/env ruby
 # State::User::Global -- oddb -- 24.08.2004 -- maege@ywesee.com
 
-require 'state/global_predefine'
+require 'state/user/init'
 
 module ODDB
 	module State
 		module User
 class Global < State::Global
+	HOME_STATE = State::User::Init
 	ZONE = :user
 	def zone_navigation
 		[
