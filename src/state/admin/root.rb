@@ -29,6 +29,7 @@ class State::Drugs::PatinfoDeprivedSequences < State::Drugs::Global; end
 class State::Drugs::Registration < State::Drugs::Global; end
 class State::Drugs::Sequence < State::Drugs::Global; end
 class State::Drugs::SlEntry < State::Drugs::Global; end
+class State::Admin::PatinfoStats < State::Admin::Global; end
 class State::Admin::Sponsor < State::Admin::Global; end
 class State::Substances::Substance < State::Substances::Global; end
 class State::Substances::Substances < State::Substances::Global; end
@@ -136,12 +137,11 @@ module Root
 		}
 		State::Drugs::PatinfoDeprivedSequences.new(@session, model)
 	end
+	def patinfo_stats
+		State::Admin::PatinfoStats.new(@session,[])
+	end
 	def user_navigation
 		[
-			State::Admin::Sponsor,
-			State::Drugs::Indications,
-			State::Drugs::GalenicGroups,
-			State::Drugs::IncompleteRegs,
 			State::Admin::Logout,
 		]
 	end

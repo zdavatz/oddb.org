@@ -43,7 +43,7 @@ module ODDB
 			:new_company, :new_galenic_form, :new_galenic_group,
 			:new_indication, :new_item, :new_package, :new_registration,
 			:new_sequence, :orphaned_fachinfos, :orphaned_patinfos,
-			:patinfo_deprived_sequences, :passthru, :paypal_thanks, :plugin,
+			:patinfo_deprived_sequences, :patinfo_stats, :passthru, :paypal_thanks, :plugin,
 			:powerlink, :preview, :print, :recent_registrations, :resolve,
 			:result, :shadow, :shadow_pattern, :show_interaction, :search,
 			:search_registrations, :search_sequences, :select_seq, :set_pass,
