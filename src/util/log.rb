@@ -61,7 +61,7 @@ module ODDB
 			outgoing['User-Agent'] = 'ODDB Updater'
 
 			Net::SMTP.start('mail.ywesee.com') { |smtp|
-				smtp.sendmail(outgoing.encoded, self::class::MAIL_FROM, @recipients)
+				smtp.sendmail(outgoing.encoded, self::class::MAIL_FROM, @recipients.uniq)
 			}
 		end
 	end

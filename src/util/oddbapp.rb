@@ -30,14 +30,8 @@ class OddbPrevalence
 	include ODBA::Persistable
 	ODBA_EXCLUDE_VARS = [
 		"@bean_counter",
-#		"@sequence_index",
-#		"@indication_index",
-#		"@substance_index",
-#		"@substance_name_index",
-#		"@company_index",
-#		"@atc_index",
 	]
-	attr_reader :galenic_groups, :companies
+	attr_reader :galenic_groups, :companies, :doctors
 	attr_reader	:atc_classes, :last_update
 	attr_reader :atc_chooser, :registrations
 	attr_reader :last_medication_update
@@ -49,6 +43,7 @@ class OddbPrevalence
 		super
 		@atc_classes ||= {}
 		@companies ||= {}
+		@doctors ||= {}
 		@cyp450s ||= {}
 		@fachinfos ||= {}
 		@galenic_forms ||= []
@@ -74,6 +69,7 @@ class OddbPrevalence
 		@companies ||= {}
 		@cyp450s ||= {}
 		@fachinfos ||= {}
+		@doctors ||= {}
 		@galenic_forms ||= []
 		@galenic_groups ||= []
 		@generic_groups ||= {}
@@ -113,6 +109,7 @@ class OddbPrevalence
 		}
 	end
 	def update(pointer, values)
+		#puts [__FILE__,__LINE__,"update(#{pointer}, #{values})"].join(':')
 		@last_update = Time.now()
 		item = failsafe(ODDB::Persistence::UninitializedPathError, nil) {
 			pointer.resolve(self)
@@ -211,6 +208,11 @@ class OddbPrevalence
 		company = ODDB::Company.new
 		@companies.store(company.oid, company)
 	end
+	def create_doctor
+		doctor = ODDB::Doctor.new
+		@doctors ||= {}
+		@doctors.store(doctor.oid, doctor)
+	end
 	def create_cyp450(cyp_id)
 		@cyp450s ||= {}
 		cyp450 = ODDB::CyP450.new(cyp_id)
@@ -305,6 +307,9 @@ class OddbPrevalence
 		#@company_index.delete(comp.name.downcase, comp)
 		@companies.delete(oid)
 	end
+	def delete_doctor(oid)
+		@doctors.delete(oid.to_i)
+	end
 	def delete_fachinfo(oid)
 		@fachinfos.delete(oid)
 	end
@@ -340,6 +345,20 @@ class OddbPrevalence
 		else
 			substance = @substances.delete(key.to_s.downcase)
 		end
+	end
+	def doctor(oid)
+		@doctors[oid.to_i]
+	end
+	def doctors_count
+		@doctors.size
+	end
+	def doctor_by_origin(origin_db, origin_id)
+		@doctors.each_value { |doctor|
+			if(doctor.record_match?(origin_db, origin_id) == true)
+				return doctor
+			end
+		}
+		nil
 	end
 	def each_atc_class(&block)
 		@atc_classes.each_value(&block)
@@ -577,7 +596,7 @@ class OddbPrevalence
 	end
 =begin
 	def store_in_index(index, key, *values)
-		key = key.to_s.gsub(/[^\sa-zA-Z0-9·ÈÌÛ˙‡ËÏÚ˘‚ÍÓÙ˚‰ÎÔˆ¸¡…Õ”⁄¿»Ã“Ÿ¬ Œ‘€ƒÀœ÷‹+-_="'.*Á%&\/()=!]/, '')
+		key = key.to_s.gsub(/[^\sa-zA-Z0-9√°√©√≠√≥√∫√†√®√¨√≤√π√¢√™√Æ√¥√ª√§√´√Ø√∂√º√Å√â√ç√ì√ö√Ä√à√å√í√ô√Ç√ä√é√î√õ√Ñ√ã√è√ñ√ú+-_="'.*√ß%&\/()=!]/, '')
 		parts = key.split(/\s+/)
 		parts << key
 		parts.uniq!

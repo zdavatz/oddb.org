@@ -1,15 +1,15 @@
 #!/usr/bin/env ruby
-# View::Admin::Search -- oddb -- 07.09.2004 -- maege@ywesee.com
+# View::Doctors::Init -- oddb -- 17.09.2004 -- jlang@ywesee.com
 
 require 'view/publictemplate'
-require 'view/admin/centeredsearchform'
 require 'view/welcomehead'
+require 'view/doctors/centeredsearchform'
 
 module ODDB
 	module View
-		module Admin
+		module Doctors
 class Search < View::PublicTemplate
-	CONTENT = View::Admin::CenteredSearchComposite
+	CONTENT = View::Doctors::GoogleAdSenseComposite
 	CSS_CLASS = 'composite'
 	HEAD = View::WelcomeHead
 end

@@ -5,9 +5,9 @@ require 'util/oddbapp'
 
 class OddbPrevalence
 	attr_accessor :registrations, :galenic_groups, :galenic_forms, :substances
-	attr_accessor :indications, :atc_classes, :companies, :generic_groups
+	attr_accessor :indications, :atc_classes, :companies, :generic_groups, :doctors
 	attr_accessor :incomplete_registrations, :log_groups
-	attr_accessor :last_update
+	attr_accessor :last_update, :doctors
 	attr_accessor :last_medication_update
 	attr_reader :sequence_index, :indication_index, :substance_index
 	attr_reader :patinfos

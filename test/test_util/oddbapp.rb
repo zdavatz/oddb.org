@@ -399,6 +399,12 @@ class TestOddbApp < Test::Unit::TestCase
 		oid = @app.companies.keys.first
 		assert_equal(company, @app.company(oid))
 	end
+	def test_doctor
+		doctor = ODDB::Company.new
+		@app.doctors = {doctor.oid => doctor}
+		oid = @app.doctors.keys.first
+		assert_equal(doctor, @app.doctor(oid))
+	end
 	def test_company_by_name1
 		company1 = ODDB::Company.new
 		company2 = ODDB::Company.new
@@ -433,12 +439,21 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(nil, @app.company_by_name('pear'))
 	end
 	def test_create_company
-		@app.companies = {}
-		@app.create_company
+			@app.companies = {}
+			@app.create_company
 		oid = @app.companies.keys.first
 		company = @app.companies.values.first
 		assert_equal(ODDB::Company, @app.company(oid).class)
 		assert_equal(company, @app.company(oid))
+	end
+	def test_create_doctor
+			@app.doctors = {}
+			@app.create_doctor
+		oid = @app.doctors.keys.first
+		doctor = @app.doctors.values.first
+		puts @app.doctors.inspect
+		assert_equal(ODDB::Doctor, @app.doctor(oid).class)
+		assert_equal(doctor, @app.doctor(oid))
 	end
 	def test_delete_company
 		company3 = @app.create_company
@@ -451,6 +466,18 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.delete_company(company2.oid)
 		expected2 = {3 => company3}
 		assert_equal(expected2, @app.companies)
+	end
+	def test_delete_doctor
+		doctor3 = @app.create_doctor
+		@app.doctors = {3 => doctor3}
+		doctor2 = @app.create_doctor
+	  doctor3.name = 'foobaz'
+	  doctor2.name = 'foobar'
+		expected1 = {doctor2.oid => doctor2, 3 => doctor3}
+		assert_equal(expected1, @app.doctors)
+		@app.delete_doctor(doctor2.oid)
+		expected2 = {3 => doctor3}
+		assert_equal(expected2, @app.doctors)
 	end
 	def test_create_cyp450
 		@app.cyp450s.clear
@@ -772,5 +799,25 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.update(pointer, update_hash)
 		assert_equal('12345', orph.key)
 		assert_equal(['iksnr'], orph.meanings)
+	end
+	def test_doctor_by_origin
+		docs = Mock.new('DoctorHash')
+		doc1 = Mock.new('Doctor1')
+		doc2 = Mock.new('Doctor2')
+		doc3 = Mock.new('Doctor3')
+		@app.doctors = docs
+		docs.__next(:values) {
+			[ doc1, doc2, doc3, ]
+		}
+		doc1.__next(:record_match?) { |db, id| 
+			false
+		}
+		doc2.__next(:record_match?) { |db, id| 
+			true
+		}
+		assert_equal(doc2, @app.doctor_by_origin(:doc, 4567))
+		doc1.__verify
+		doc2.__verify
+		doc3.__verify
 	end
 end

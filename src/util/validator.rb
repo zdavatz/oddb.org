@@ -49,6 +49,8 @@ module ODDB
 			:search_registrations, :search_sequences, :select_seq, :set_pass,
 			:switch, :sponsor, :substances, :update, :update_bsv,
 			:update_incomplete, :sort, :ywesee_contact,
+			:home_doctors,
+			:doctorlist,
 		]
 		FILES = [
 			:logo_file,
@@ -110,7 +112,7 @@ module ODDB
 			:url,
 		]
 		ZONES = [:drugs, :interactions, :substances, :admin, :user, 
-			:companies]
+			:companies, :doctors]
 		def code(value)
 			pattern = /^[A-Z]([0-9]{2}([A-Z]([A-Z]([0-9]{2})?)?)?)?$/i
 			if(valid = pattern.match(value.capitalize))

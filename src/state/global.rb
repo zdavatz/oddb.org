@@ -18,6 +18,8 @@ require 'state/drugs/orphaned_patinfo'
 require 'state/drugs/patinfo_deprived_sequences'
 require 'state/drugs/recentregs'
 require 'state/drugs/result'
+require 'state/doctors/init'
+require 'state/doctors/doctorlist'
 require 'state/drugs/patinfo'
 require 'state/exception'
 require 'state/interactions/basket'
@@ -48,6 +50,7 @@ module ODDB
 			DIRECT_EVENT = nil 
 			GLOBAL_MAP = {
 				:companylist					=>	State::Companies::CompanyList,
+				:doctorlist						=>	State::Doctors::DoctorList,
 				:ddd									=>	State::Drugs::DDD,
 				:download							=>	State::User::Download,
 				:download_export			=>	State::User::DownloadExport,
@@ -56,6 +59,7 @@ module ODDB
 				:home									=>	State::Drugs::Init,
 				:home_admin						=>	State::Admin::Init,
 				:home_companies				=>	State::Companies::Init,
+				:home_doctors					=>	State::Doctors::Init,
 				:home_drugs						=>  State::Drugs::Init,
 				:home_interactions		=>  State::Interactions::Init,
 				:home_substances			=>  State::Substances::Init,
@@ -70,6 +74,7 @@ module ODDB
 			HOME_STATE = State::Drugs::Init
 			RESOLVE_STATES = {
 				[ :company ]	=>	State::Companies::Company,
+				[ :doctor	 ]  =>	State::Doctors::Doctor,
 				[ :fachinfo ]	=>	State::Drugs::Fachinfo,
 				[	:registration, :sequence, 
 					:package, :sl_entry, 
@@ -264,7 +269,7 @@ module ODDB
 				State::User::YweseeContact.new(@session, model)
 			end
 			def zones
-				[:drugs, :interactions, :companies, :user]
+				[:drugs, :interactions, :companies, :user, :doctors]
 			end
 			def zone_navigation
 				[]
