@@ -196,13 +196,11 @@ class ResultList < HtmlGrid::List
 		txt.set_attribute('title', title)
 		txt
 	end
-	def name_base(model, session)
-		link = HtmlGrid::PopupLink.new(:compare, model, session, self)
-		link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
+	def breakline(words, chars)
 		name = ''
 		line = ''
-		model.name_base.split(/\b/).each { |part|
-			if((line.length + part.length) > 30)
+		words.split(/\b/).each { |part|
+			if((line.length + part.length) > chars)
 				name << line << '<br>'
 				line = part
 			else
@@ -210,7 +208,11 @@ class ResultList < HtmlGrid::List
 			end
 		}
 		name << line
-		link.value = name
+	end
+	def name_base(model, session)
+		link = HtmlGrid::PopupLink.new(:compare, model, session, self)
+		link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
+		link.value = breakline(model.name_base, 20)
 		link.set_attribute('class', 'result-big' << resolve_suffix(model))
 		indication = model.registration.indication
 		title = [
