@@ -16,7 +16,9 @@ class SelectSubstance < State::Admin::Global
 			update = {
 				'lt'	=>	@model.user_input[:substance],
 			}
-			@session.app.update(substance.pointer, update)
+			ODBA.batch { 
+				@session.app.update(substance.pointer, update)
+			}
 		end
 		if (error?)
 			self
@@ -28,7 +30,10 @@ class SelectSubstance < State::Admin::Global
 			if(@model.active_agent.is_a?(Persistence::CreateItem))
 				@model.active_agent.append(substance.name)
 			end
-			model = @session.app.update(@model.pointer, hash)
+			model = nil
+			ODBA.batch { 
+				model = @session.app.update(@model.pointer, hash)
+			}
 			State::Admin::ActiveAgent.new(@session, model)
 		end
 	end
