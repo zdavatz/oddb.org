@@ -40,7 +40,8 @@ module ODDB
 			if(language.length == 2)
 				descriptions[language]
 			else
-				raise NoMethodError.new("Undefined or Private Method: #{language} for #{self.class}:#{self}")
+				super
+				#raise NoMethodError.new("Undefined or Private Method: #{language} for #{self.class}:#{self}")
 			end
 		end
 		def respond_to?(symbol)
