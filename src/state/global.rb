@@ -53,7 +53,6 @@ module ODDB
 				:companylist					=>	State::Companies::CompanyList,
 				#:doctorlist						=>	State::Doctors::DoctorList,
 				:ddd									=>	State::Drugs::DDD,
-				:download							=>	State::User::Download,
 				:download_export			=>	State::User::DownloadExport,
 				:fipi_offer_input			=>	State::User::FiPiOfferInput,
 				:help									=>	State::User::Help,
@@ -99,6 +98,16 @@ module ODDB
 				mdl = @session.app.atc_chooser
 				State::Drugs::AtcChooser.new(@session, mdl)
 			end
+			def authenticate
+				email = @session.user_input(:email)
+				key = @session.user_input(:challenge)
+				user = @session.admin_subsystem.download_user(email)
+				if(user && user.authenticate!(key))
+					State::User::Download.new(@session, nil)
+				else
+					State::User::RegisterDownload.new(@session, user)
+				end
+			end
 			def compare
 				pointer = @session.user_input(:pointer)
 				package = pointer.resolve(@session.app)
@@ -122,6 +131,16 @@ module ODDB
 			def doctorlist
 				model = @session.doctors.values
 				State::Doctors::DoctorList.new(@session, model)
+			end
+			def download
+				email = @session.get_cookie_input(:email) \
+					|| @session.user_input(:email)
+				user = @session.admin_subsystem.download_user(email)
+				if(user && user.authenticated?)
+					State::User::Download.new(@session, user)
+				else
+					State::User::RegisterDownload.new(@session, nil)
+				end
 			end
 			def extend(mod)
 				if(mod.constants.include?('VIRAL'))
