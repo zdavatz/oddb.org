@@ -30,9 +30,11 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[0,6]		=>	:sl_entry,
 		[0,7]		=>	:price_exfactory,
 		[2,7]		=>	:price_public,
+		[0,8]		=>	:feedback_label,
+		[1,8]		=>	:feedback,
 	}
 	CSS_MAP = {
-		[0,0,4,8]	=>	'list',
+		[0,0,4,9]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
@@ -42,6 +44,7 @@ class PackageInnerComposite < HtmlGrid::Composite
 		:limitation			=>	HtmlGrid::BooleanValue,
 		:patinfo_label	=> HtmlGrid::LabelText,
 		:fachinfo_label	=> HtmlGrid::LabelText,
+		:feedback_label	=> HtmlGrid::LabelText,
 	}
 	def init
 		if(@model.sl_entry)

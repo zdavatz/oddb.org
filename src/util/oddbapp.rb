@@ -498,6 +498,7 @@ class OddbPrevalence
 			@atc_ddd_count = count_atc_ddd()
 			@doctor_count = @doctors.size
 			@company_count = @companies.size
+			@substance_count = @substances.size
 			@limitation_text_count = count_limitation_texts()
 			@package_count = count_packages()
 			@patinfo_count = count_patinfos()
@@ -733,7 +734,7 @@ class OddbPrevalence
 		@substances.values
 	end
 	def substance_count
-		@substances.length
+		@substance_count ||= @substances.size
 	end
 	def updated(item)
 		case item
