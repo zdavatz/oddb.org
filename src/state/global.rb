@@ -74,6 +74,10 @@ module ODDB
 				:sequences						=>	State::Drugs::Sequences,
 			}	
 			HOME_STATE = State::Drugs::Init
+			READONLY_STATES = {
+				[	:registration, :sequence, 
+					:package ]	=>	State::Drugs::Package,
+			}	
 			RESOLVE_STATES = {
 				[ :company ]	=>	State::Companies::Company,
 				[ :doctor	 ]  =>	State::Doctors::Doctor,
@@ -230,6 +234,7 @@ module ODDB
 			def resolve_state(pointer, type=:standard)
 				state_map = {
 					:standard	=>	self::class::RESOLVE_STATES,
+					:readonly	=>	self::class::READONLY_STATES,
 					:print		=>	self::class::PRINT_STATES,
 				}
 				type = :standard unless(state_map.include?(type))
@@ -273,6 +278,16 @@ module ODDB
 				else
 					self
 				end
+			end
+			def show
+				if((pointer = @session.user_input(:pointer)) \
+					&& pointer.is_a?(Persistence::Pointer) \
+					&& (model = pointer.resolve(@session.app)) \
+					&& klass = resolve_state(pointer, :readonly))
+					klass.new(@session, model)
+				end
+			rescue Persistence::UninitializedPathError
+				self
 			end
 			alias :result :search
 			def sort

@@ -134,12 +134,18 @@ Grammar OddbSize
 		def iksnr
 			@sequence.iksnr if(@sequence.respond_to? :iksnr)
 		end
+		def indication
+			@sequence.indication
+		end
 		def size=(size)
 			@size = size
 			unless size.to_s.strip.empty?
 				@addition, @multi, @count, @measure, @scale, @comform = parse_size(size) 
 				@comparable_size = @multi * ((@count + @addition) * @measure) / @scale
 			end
+		end
+		def limitation
+			@sl_entry.limitation unless @sl_entry.nil?
 		end
 		def limitation_text
 			@sl_entry.limitation_text unless @sl_entry.nil?

@@ -114,6 +114,7 @@ module ODDB
 			:set_pass,
 			:shadow,
 			:shadow_pattern,
+			:show,
 			:show_interaction,
 			:sort,
 			:sponsor,

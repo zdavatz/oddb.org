@@ -161,10 +161,10 @@ class SequenceForm < Form
 	LABELS = true
 	TAG_METHOD = :multipart_form
 	SYMBOL_MAP = {
-		:iksnr	=>	HtmlGrid::Value,
-		:patinfo_desc => HtmlGrid::LabelText,
-		:atc_request_label => HtmlGrid::LabelText,
-		:no_company => HtmlGrid::LabelText,
+		:iksnr							=>	HtmlGrid::Value,
+		:patinfo_label			=> HtmlGrid::LabelText,
+		:atc_request_label	=> HtmlGrid::LabelText,
+		:no_company					=> HtmlGrid::LabelText,
 	}
 	def init
 		if(@model.is_a?(Persistence::CreateItem))
@@ -172,7 +172,7 @@ class SequenceForm < Form
 		else
 			components.update({
 				[0,4]		=>	:patinfo_upload,
-				[2,4]   =>  :patinfo_desc,
+				[2,4]   =>  :patinfo_label,
 				[3,4,1] =>  :patinfo,
 				[3,4,2] =>  :assign_patinfo,
 				[1,5]		=>	:submit,

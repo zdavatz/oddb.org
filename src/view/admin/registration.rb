@@ -128,6 +128,7 @@ class RegistrationForm < View::Form
 		:market_date				=>	HtmlGrid::InputDate,
 		:registration_date	=>	HtmlGrid::InputDate,
 		:revision_date			=>	HtmlGrid::InputDate,
+		:fachinfo_label			=>	HtmlGrid::LabelText,
 	}
 	TAG_METHOD = :multipart_form
 	def init
@@ -175,9 +176,6 @@ class RegistrationForm < View::Form
 		input = HtmlGrid::InputFile.new(:fachinfo_upload, model, session, self)
 		input.label = false
 		input
-	end
-	def fachinfo_label(model, session)
-		HtmlGrid::LabelText.new(:fachinfo, model, session , self)
 	end
 	def iksnr(model, session)
 		klass = if(session.user.is_a?(ODDB::AdminUser) \

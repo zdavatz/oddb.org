@@ -39,19 +39,13 @@ class AtcHeader < HtmlGrid::Composite
 		end
 		super
 	end
-	def atc_description(atc, session)
-		atc_descr = if(descr = atc.description(@lookandfeel.language))
-			descr.dup.to_s << ' (' << atc.code << ')' 
-		else
-			atc.code
-		end
-		text = [
-			atc_descr,
-			atc.package_count,
+	def atc_description(model, session)
+		[
+			super,
+			model.package_count,
 			@lookandfeel.lookup(:products),
 			nil,
 		].join('&nbsp;')
-		text
 	end
 	def edit(model, session)
 		link = View::PointerLink.new(:code, model, session, self)
@@ -239,14 +233,16 @@ class ResultList < HtmlGrid::List
 		link
 	end
 	def substances(model, session)
+		link = HtmlGrid::Link.new(:show, model, session, self)
+		link.href = @lookandfeel.event_url(:show, {:pointer => model.pointer})
 		if (model.active_agents.size > 1)
-			txt = HtmlGrid::Component.new(model, session, self)
-			txt.set_attribute('title', model.active_agents.join(', '))
-			txt.value = @lookandfeel.lookup(:active_agents, model.active_agents.size)
-			txt
+			#txt = HtmlGrid::Component.new(model, session, self)
+			link.set_attribute('title', model.active_agents.join(', '))
+			link.value = @lookandfeel.lookup(:active_agents, model.active_agents.size)
 		else
-			model.substances.first.to_s
+			link.value = model.substances.first.to_s
 		end
+		link
 	end
 end
 		end

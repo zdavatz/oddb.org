@@ -116,6 +116,9 @@ module ODDB
 		def iksnr
 			@registration.iksnr
 		end
+		def indication
+			@registration.indication
+		end
 		def match(query)
 			/#{query}/i.match(@name_base)
 		end

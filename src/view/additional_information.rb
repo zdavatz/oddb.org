@@ -13,12 +13,14 @@ module ODDB
 				if(fachinfo || pdf_fachinfos )#&& company.fi_status)
 					pdf_link = false
 					fi_link = false
-					if(!fachinfo.nil? && !fachinfo.descriptions.nil? && fachinfo.descriptions.include?(visitor_language.to_s))
+					if(!fachinfo.nil? && !fachinfo.descriptions.nil? \
+						&& fachinfo.descriptions.include?(visitor_language.to_s))
 						fi_link = true
 					elsif(pdf_fachinfos && pdf_fachinfos[visitor_language])
 						pdf_link = true
-					elsif(!fachinfo.nil? && !fachinfo.descriptions.nil? && fachinfo.descriptions[visitor_language.to_s]) 
-							fi_link = true
+					elsif(!fachinfo.nil? && !fachinfo.descriptions.nil? \
+						&& fachinfo.descriptions[visitor_language.to_s]) 
+						fi_link = true
 					else
 						pdf_link = true
 					end
@@ -109,6 +111,13 @@ module ODDB
 				puts "model: #{@model.class}"
 				if(@model.respond_to?(:pointer))
 					puts "pointer: #{@model.pointer}"
+				end
+			end
+			def atc_description(atc, session)
+				atc_descr = if(descr = atc.description(@lookandfeel.language))
+					descr.dup.to_s << ' (' << atc.code << ')' 
+				else
+					atc.code
 				end
 			end
 		end
