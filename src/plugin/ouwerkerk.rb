@@ -9,6 +9,7 @@ module ODDB
 	class OuwerkerkPlugin < Plugin
 		RECIPIENTS = [
 		  'matthijs.ouwerkerk@just-medical.com',
+			'beatrix.struchen@just-medical.com',
 		]
 		NUMERIC_FLAGS = {
 			:new							=>	1,
