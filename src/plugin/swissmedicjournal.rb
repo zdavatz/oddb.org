@@ -10,7 +10,7 @@ require 'cgi'
 module ODDB
 	class SwissmedicJournalPlugin < Plugin
 		RECIPIENTS = [
-		  'matthijs.ouwerkerk@just-medical.com',
+			'matthijs.ouwerkerk@just-medical.com',
 		]
 		attr_reader :incomplete_pointers
 		def initialize(app)
@@ -125,6 +125,7 @@ module ODDB
 				pointer = Persistence::Pointer.new([:registration, smj_reg.iksnr])
 				date = smj_reg.date || Date.today
 				@deactivated_pointers.push(pointer)
+				@change_flags.store(pointer, smj_reg.flags)
 				@app.update(pointer, {:inactive_date => date})
 			else
 				@incomplete_deactivations.push(smj_reg.src)

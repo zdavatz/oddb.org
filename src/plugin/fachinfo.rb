@@ -16,8 +16,8 @@ module ODDB
 			File.dirname(__FILE__))
 		PARSER = DRbObject.new(nil, FIPARSE_URI)
 		RECIPIENTS = [
-			'mwalder@ywesee.com',
-			'rwaltert@ywesee.com',
+		#'mwalder@ywesee.com',
+		#'rwaltert@ywesee.com',
 		]
 		def initialize(app)
 			super
