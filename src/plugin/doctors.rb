@@ -23,124 +23,134 @@ module ODDB
 				@doctors_created = 0
 				@doctors_deleted = 0
 			end
+			def restore(doc_id)
+				if(data = get_doctor_data(doc_id))
+					store_doctor(doc_id, data)
+				end
+			end
 			def update
-				range = 5000..99999
-				empty_ids = (@config.empty_ids || []).dup
+				#range = 5000..99999
+				empty_ids = (@config.empty_ids || [])
+				step = 250
+				5000.step(100000, step) { |base|
+					range = base..(base+step)
+					ODBA.batch {
 				top_doc_id = 0
 				(range.to_a - empty_ids).each { |doc_id| 
-				puts "doc_id: #{doc_id}"
-				if(data = get_doctor_data(doc_id)) 
-					store_doctor(doc_id, data)
-					top_doc_id = doc_id
-				else
-					# 1. delete doctor if exists
-					delete_doctor(doc_id)
-					# 2. record id, muss das naechste mal nicht geprueft werden.
-					empty_ids.push(doc_id)
-				end
-			}
-			empty_ids.delete_if { |id| id > top_doc_id }
-			store_empty_ids(empty_ids)
-		end
-		def delete_doctor(doc_id)
-			if(doc = @app.doctor_by_origin(:ch, doc_id))
-				@app.delete(doc.pointer)
-				@doctors_deleted += 1
-			end
-		end
-		def get_doctor_data(doc_id)
-			retry_count = 3
-			begin
-				self::class::PARSER.emh_data_add_ean(doc_id) #emh_data
-			rescue Errno::EINTR, Errno::ECONNRESET => err
-				puts "rescued #{err} -> #{retry_count} more tries"
-				if(retry_count > 0)
-					retry_count -= 1
-					retry
-				end
-			end
-		end
-		def report
-			report = "Doctors update \n\n"
-			report << "Number of doctors: " << @app.doctors.size.to_s << "\n"
-			report << "New doctors: " << @doctors_created.to_s << "\n"
-			report << "Deleted doctors: " << @doctors_deleted.to_s << "\n"
-			report
-		end
-		def merge_addresses(addrs)
-			merged = []
-			addrs.each { |addr|
-				if(equal = merged.select { |other|
-					addr[:lines] == other[:lines]
-				}.first)
-					merge_address(equal, addr, :fon)
-					merge_address(equal, addr, :fax)
-				else
-					merge_address(addr, addr, :fax)
-					merge_address(addr, addr, :fon)
-					merged.push(addr)
-				end
-			}
-			merged
-		end
-		def merge_address(target, source, sym)
-			target[sym] = [target[sym], source[sym]].flatten
-			target[sym].delete('')
-			target[sym].uniq!
-		end
-		def prepare_addresses(hash)
-			if(addrs = hash[:addresses])
-				tmp_addrs = (addrs.is_a?(Array)) ? addrs : [addrs]
-				merge_addresses(tmp_addrs).collect { |values|
-					addr = Address.new
-					values.each { |key, val| 
-						meth = "#{key}="
-						if(addr.respond_to?(meth))
-							addr.send(meth, val)
-						end
-					}
-					addr
-				}
-			else
-				[]
-			end
-		end
-		def store_doctor(doc_id, hash)
-			pointer = nil
-			if(doc = @app.doctor_by_origin(:ch, doc_id))
-				pointer = doc.pointer
-			else
-				@doctors_created += 1
-				ptr = Persistence::Pointer.new(:doctor)
-				pointer = ptr.creator
-			end
-			extract = [
-				:abilities,
-				:exam,
-				:email,
-				:firstname,
-				:language,
-				:name,
-				:praxis,
-				:salutation,
-				:skills,
-				:specialities,
-				:title,
-				:ean13,
-			]
-			doc_hash = {}
-			extract.each { |key|
-				if(value = hash[key])
-					case key
-					when :praxis
-						value = (value == 'Ja')
-					when :specialities ,:abilities ,:skills
-						if(value.is_a?(String))
-							value = [value]
-						end	
+					if(data = get_doctor_data(doc_id))
+						store_doctor(doc_id, data)
+						top_doc_id = doc_id
+					else
+						# 1. delete doctor if exists
+						delete_doctor(doc_id)
+						# 2. record id, muss das naechste mal nicht geprueft werden.
+						empty_ids.push(doc_id)
 					end
-					doc_hash.store(key, value)
+				}
+				empty_ids.delete_if { |id| id > top_doc_id }
+				store_empty_ids(empty_ids)
+					}
+				}
+			end
+			def delete_doctor(doc_id)
+				if(doc = @app.doctor_by_origin(:ch, doc_id))
+					@app.delete(doc.pointer)
+					@doctors_deleted += 1
 				end
+			end
+			def get_doctor_data(doc_id)
+				retry_count = 3
+				begin
+					self::class::PARSER.emh_data(doc_id)
+				rescue Errno::EINTR, Errno::ECONNRESET => err
+					puts "rescued #{err} -> #{retry_count} more tries"
+					if(retry_count > 0)
+						retry_count -= 1
+						retry
+					end
+				end
+			end
+			def report
+				report = "Doctors update \n\n"
+				report << "Number of doctors: " << @app.doctors.size.to_s << "\n"
+				report << "New doctors: " << @doctors_created.to_s << "\n"
+				report << "Deleted doctors: " << @doctors_deleted.to_s << "\n"
+				report
+			end
+			def merge_addresses(addrs)
+				merged = []
+				addrs.each { |addr|
+					if(equal = merged.select { |other|
+						addr[:lines] == other[:lines]
+					}.first)
+						merge_address(equal, addr, :fon)
+						merge_address(equal, addr, :fax)
+					else
+						merge_address(addr, addr, :fax)
+						merge_address(addr, addr, :fon)
+						merged.push(addr)
+					end
+				}
+				merged
+			end
+			def merge_address(target, source, sym)
+				target[sym] = [target[sym], source[sym]].flatten
+				target[sym].delete('')
+				target[sym].uniq!
+			end
+			def prepare_addresses(hash)
+				if(addrs = hash[:addresses])
+					tmp_addrs = (addrs.is_a?(Array)) ? addrs : [addrs]
+					merge_addresses(tmp_addrs).collect { |values|
+						addr = Address.new
+						values.each { |key, val| 
+							meth = "#{key}="
+							if(addr.respond_to?(meth))
+								addr.send(meth, val)
+							end
+						}
+						addr
+					}
+				else
+					[]
+				end
+			end
+			def store_doctor(doc_id, hash)
+				pointer = nil
+				if(doc = @app.doctor_by_origin(:ch, doc_id))
+					pointer = doc.pointer
+				else
+					@doctors_created += 1
+					ptr = Persistence::Pointer.new(:doctor)
+					pointer = ptr.creator
+				end
+				extract = [
+					:abilities,
+					:exam,
+					:email,
+					:firstname,
+					:language,
+					:name,
+					:praxis,
+					:salutation,
+					:skills,
+					:specialities,
+					:title,
+				]
+				doc_hash = {}
+				extract.each { |key|
+					if(value = hash[key])
+						case key
+						when :praxis
+							value = (value == 'Ja')
+						when :specialities ,:abilities ,:skills
+							if(value.is_a?(String))
+								value = [value]
+							end	
+						end
+						doc_hash.store(key, value)
+					end
+					
 				}
 				doc_hash.store(:origin_db, :ch)
 				doc_hash.store(:origin_id, doc_id)
