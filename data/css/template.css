@@ -1046,9 +1046,15 @@ td.list-small-bg {
 a.subheading {
 	padding : 0px;
 }
+a.subheading-bold {
+	padding : 4px;
+}
+a.subheading, a.subheading-bold {
+	color : $bg_bright_font_color;
+}
 a.subheading:link, a.subheading:visited,
 a.subheading-bold:link, a.subheading-bold:visited {
-	color : $bg_bright_font_color;
+	color : $tabnavigation_link_color;
 }
 a.subheading:hover, a.subheading-bold:hover {
 	color : red;

@@ -608,8 +608,7 @@ class OddbPrevalence
 	def search_exact(query)
 		result = ODDB::SearchResult.new
 		atc = ODDB::AtcClass.new('n.n.')
-		atc.sequences = ODBA.cache_server.\
-			retrieve_from_index('sequence_index', query)
+		atc.sequences = search_sequences(query)
 		result.atc_classes = [atc]
 		result
 	end
@@ -635,6 +634,9 @@ class OddbPrevalence
 			result = soundex_substances(query)
 		end
 		result
+	end
+	def search_sequences(query)
+		ODBA.cache_server.retrieve_from_index('sequence_index', query)
 	end
 	def search_single_substance(key)
 		result = ODDB::SearchResult.new

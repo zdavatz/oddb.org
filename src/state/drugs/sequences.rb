@@ -42,10 +42,25 @@ class Sequences < State::Drugs::Global
 		'0-9'		=>	'^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ',
 	}
 	def init
-		@model = @session.sequences
 		super
+		@filter = Proc.new { |model|
+			if(range = user_range)
+				parts = range.to_s.split('-')
+				if(parts.size > 1)
+					parts = (parts.first..parts.last).to_a
+				end
+				parts.inject([]) { |inj, part|
+					inj + @session.search_sequences(part)
+				}
+			else
+				[]
+			end
+		}
 	end
 	def default_interval
+	end
+	def intervals
+		('a'..'z').to_a.push('0-9')
 	end
 end
 		end

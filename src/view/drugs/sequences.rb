@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Drugs::Sequences -- oddb -- 08.02.2005 -- hwyss@ywesee.com
 
-require 'view/publictemplate'
+require 'view/resulttemplate'
 require 'view/resultcolors'
 
 module ODDB
@@ -22,12 +22,23 @@ class SequenceList < HtmlGrid::List
 	SORT_DEFAULT = :name
 	SORT_REVERSE = false
 	SORT_HEADER = false
+	SYMBOL_MAP = {
+		:iksnr	=>	PointerLink,
+	}
 	include AlphaHeader
-	def iksnr(model, session)
-		View::PointerLink.new(:iksnr, model, session, self)
+	def name(model, session)
+		link = HtmlGrid::Link.new(:name, model, session, self)
+		link.value = model.name
+		query = (atc = model.atc_class) ? atc.code : 'atcless'
+		args = {
+			'search_query'	=>	query,
+		}
+		link.href = @lookandfeel.event_url(:search, args)
+		link.css_class = 'result-big' << resolve_suffix(model)
+		link
 	end
 end
-class Sequences < View::PublicTemplate
+class Sequences < View::ResultTemplate
 	CONTENT = View::Drugs::SequenceList
 end
 		end

@@ -16,11 +16,6 @@ module ODDB
 		attr_reader :range
 		def init
 			super
-			user_range = if(self::class::PERSISTENT_RANGE)
-				@session.persistent_user_input(:range)
-			else
-				@session.user_input(:range)
-			end
 			@range = self::class::RANGE_PATTERNS.fetch(user_range) {
 				self::class::RANGE_PATTERNS[default_interval]
 			}
@@ -46,6 +41,13 @@ module ODDB
 		end
 		def intervals
 			@intervals ||= get_intervals
+		end
+		def user_range
+			if(self::class::PERSISTENT_RANGE)
+				@session.persistent_user_input(:range)
+			else
+				@session.user_input(:range)
+			end
 		end
 		private
 		def get_intervals
