@@ -83,6 +83,7 @@ module ODDB
 				:comma_separator					=>	',&nbsp;',
 				:companies								=>	'Firmen',
 				:companylist							=>	'Firmenverzeichnis',
+				:company_count_text				=>	'&nbsp;Firmen',
 				:company_name							=>	'Firmenname',
 				:compare									=>	'Preisvergleich',
 				:compare_desc0_no_atc0		=>	'Produkte, die keine ATC-Klasse besitzen k&ouml;nnen leider nicht verglichen werden.<b>"',

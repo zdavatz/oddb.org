@@ -25,8 +25,8 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,1]		=>	View::Companies::CenteredSearchForm,
 		#[0,2]		=>	:search_explain, 
 		#[0,3]		=>	:search_compare,
-		[0,4]		=>	:database_size,
-		[0,4,1]	=>	'database_size_text',
+		[0,4]		=>	:company_count,
+		[0,4,1]	=>	'company_count_text',
 		[0,4,2]	=>	'comma_separator',
 		[0,4,3]	=>	'database_last_updated_txt',
 		[0,4,4]	=>	:database_last_updated,
@@ -39,8 +39,8 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENT_CSS_MAP = {
 		[0,5]	=>	'legal-note-center',
 	}
-	def substance_count(model, session)
-		@session.app.substance_count
+	def company_count(model, session)
+		@session.app.company_count
 	end
 end	
 		end

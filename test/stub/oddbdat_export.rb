@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
-# StubGaldatExport -- oddb -- 20.08.2003 -- ywesee@ywesee.com
+# StubOddbDatExport -- oddb -- 20.08.2003 -- ywesee@ywesee.com
 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'plugin/galdat_export'
+require 'plugin/oddbdat_export'
 
 module ODDB
-	class GaldatExport
+	class OddbDatExport
 		class Table
 			remove_const :DOCUMENT_ROOT
 			remove_const :DIRPATH

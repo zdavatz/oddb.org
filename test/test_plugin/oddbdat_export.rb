@@ -1,18 +1,18 @@
 #!/usr/bin/env ruby
-# TestGaldatExport -- oddb -- 23.06.2003 -- aschrafl@ywesee.com
+# TestOddbDatExport -- oddb -- 23.06.2003 -- aschrafl@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'stub/galdat_export'
+require 'stub/oddbdat_export'
 require 'model/text'
 require 'date'
 require 'util/language'
 require 'fileutils'
 
 module ODDB
-	class GaldatExport
+	class OddbDatExport
 		attr_reader :filenames, :singlefilenames
 		attr_accessor :date
 		class MCMLine
@@ -21,7 +21,7 @@ module ODDB
 	end
 end
 
-class TestGaldatExport < Test::Unit::TestCase
+class TestOddbDatExport < Test::Unit::TestCase
 	class StubDose
 		attr_accessor :qty, :unit
 		def initialize
@@ -246,11 +246,11 @@ Alter   Suspension   Kapseln   Suppositorien zu
 
 	def setup
 		@app = StubODDBapp.new
-		@plugin = ODDB::GaldatExport.new(@app)
+		@plugin = ODDB::OddbDatExport.new(@app)
 		@plugin.date = Time.gm(2003,"dec",15,11,11,11)
 		@date = Date.today.strftime('%Y%m%d%H%M%S')
 		@iksdate = Date.today.strftime("%Y%m%d")
-		dir = ODDB::GaldatExport.system_targetdir
+		dir = ODDB::OddbDatExport.system_targetdir
 		Dir.entries(dir) { |entry|
 			file = File.expand_path(entry, dir)
 			unless(File.ftype(file)=='directory')
@@ -261,25 +261,25 @@ Alter   Suspension   Kapseln   Suppositorien zu
 	def test_scline
 		package = StubPackage.new
 		substance = StubSubstance.new
-		scline = ODDB::GaldatExport::ScLine.new(package, substance)
+		scline = ODDB::OddbDatExport::ScLine.new(package, substance)
 		expected = "40|#{@date}|41|L|4|This is the description of a substance||"
 		assert_equal(expected, scline.to_s)
 	end
 	def test_galenicformline
 		galform = StubGalenicForm.new
-		galformline = ODDB::GaldatExport::GalenicFormLine.new(galform)
+		galformline = ODDB::OddbDatExport::GalenicFormLine.new(galform)
 		expected = "11|#{@date}|5|7|D|4|This is the description of a galenic form||"
 		assert_equal(expected, galformline.to_s)
 	end
 	def test_compline
 		company = StubCompany.new
-		companyline = ODDB::GaldatExport::CompLine.new(company)
+		companyline = ODDB::OddbDatExport::CompLine.new(company)
 		expected = "12|#{@date}|16|4|1234567891123||Ywesee|Winterthurerstrasse 52|CH|8006|Zuerich||0041 1 350 85 85||0041 1 350 85 86|aschrafl@ywesee.com|www.ywesee.com||"
 		assert_equal(expected, companyline.to_s)
 	end
 	def test_atcline
 		atcclass = StubAtcClass.new
-		atcline = ODDB::GaldatExport::AtcLine.new(atcclass)
+		atcline = ODDB::OddbDatExport::AtcLine.new(atcclass)
 		expected = "11|#{@date}|8|ATC0273|D|4|This is a description of a AtcClass||"
 		assert_equal(expected, atcline.to_s)
 	end
@@ -288,29 +288,29 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		substance = StubSubstance.new
 		dose = StubDose.new
 		package.dose = dose
-		acscline = ODDB::GaldatExport::AcscLine.new(package, substance, 1)
+		acscline = ODDB::OddbDatExport::AcscLine.new(package, substance, 1)
 		expected = "41|#{@date}|3|1|4|41|5|kg|W|"
 		assert_equal(expected, acscline.to_s)
 	end
 	def test_acpricealgexfactoryline
 		package = StubPackage.new
-		acpricealgexfactoryline = ODDB::GaldatExport::AcpricealgExfactoryLine.new(package)
+		acpricealgexfactoryline = ODDB::OddbDatExport::AcpricealgExfactoryLine.new(package)
 		assert_equal('', acpricealgexfactoryline.to_s)
 		package.price_exfactory = 342
-		acpricealgexfactoryline = ODDB::GaldatExport::AcpricealgExfactoryLine.new(package)
+		acpricealgexfactoryline = ODDB::OddbDatExport::AcpricealgExfactoryLine.new(package)
 		expected = "07|#{@date}|3|PSL1|4|3.42|||"
 		assert_equal(expected, acpricealgexfactoryline.to_s)
 	end
 	def test_acpricealgpublicline
 		package = StubPackage.new
-		acpricealgpublicline = ODDB::GaldatExport::AcpricealgPublicLine.new(package)
+		acpricealgpublicline = ODDB::OddbDatExport::AcpricealgPublicLine.new(package)
 		assert_equal('', acpricealgpublicline.to_s)
 		package.price_public = 26
-		acpricealgpublicline = ODDB::GaldatExport::AcpricealgPublicLine.new(package)
+		acpricealgpublicline = ODDB::OddbDatExport::AcpricealgPublicLine.new(package)
 		expected = "07|#{@date}|3|PPUB|4|0.26|||"
 		assert_equal(expected, acpricealgpublicline.to_s)
 		package.sl_entry = StubSLEntry.new
-		acpricealgpublicline = ODDB::GaldatExport::AcpricealgPublicLine.new(package)
+		acpricealgpublicline = ODDB::OddbDatExport::AcpricealgPublicLine.new(package)
 		expected = "07|#{@date}|3|PSL2|4|0.26|||"
 		assert_equal(expected, acpricealgpublicline.to_s)
 	end
@@ -324,7 +324,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		package.fachinfo = StubFachinfo.new
 		package.fachinfo.oid = 3456 
 		package.galenic_form = galenic_form
-		acmedline = ODDB::GaldatExport::AcmedLine.new(package)
+		acmedline = ODDB::OddbDatExport::AcmedLine.new(package)
 		expected = "02|#{@date}|1|3|4||3456|||ATC0273||7|||||||||||||||"
 		assert_equal(expected, acmedline.to_s)
 	end
@@ -332,7 +332,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		package = StubPackage.new
 		sequence = StubSequence.new
 		package.sequence = sequence
-		acmedline = ODDB::GaldatExport::AcmedLine.new(package)
+		acmedline = ODDB::OddbDatExport::AcmedLine.new(package)
 		expected = "02|#{@date}|1|3|4||||||||||||||||||||||"
 		assert_equal(expected, acmedline.to_s)
 	end
@@ -347,7 +347,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		sequence.atc_class = atcclass
 		sequence.galenic_form = galenic_form
 		package.sequence = sequence
-		acmedline = ODDB::GaldatExport::AcnamLine.new(package)
+		acmedline = ODDB::OddbDatExport::AcnamLine.new(package)
 		expected = "03|#{@date}|1|3|D|4|Il nomine della Rosa|Base Ball"
 		expected += "|boring Sport||This is the description of a galenic form|||||||||||||||"
 		assert_equal(expected, acmedline.to_s)
@@ -358,7 +358,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		registration = StubRegistration.new
 		registration.company = company
 		package.registration = registration
-		accompline = ODDB::GaldatExport::AccompLine.new(package)
+		accompline = ODDB::OddbDatExport::AccompLine.new(package)
 		expected = "19|#{@date}|3|16|H|4||"
 		assert_equal(expected, accompline.to_s)
 	end
@@ -366,27 +366,27 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		package = StubPackage.new
 		registration = StubRegistration.new
 		package.registration = registration
-		acline = ODDB::GaldatExport::AcLine.new(package)
+		acline = ODDB::OddbDatExport::AcLine.new(package)
 		assert_equal(nil, acline.generic_code(registration))
 		registration.generic_type = :generic
 		assert_equal('Y', acline.generic_code(registration))
 	end
 	def test_http_filepath
-		table = ODDB::GaldatExport::AcTable.new(nil)
+		table = ODDB::OddbDatExport::AcTable.new(nil)
 		assert_equal("/data/downloads/s01x", table.http_filepath)
 	end
 	def test_iks_date
 		package = StubPackage.new
 		registration = StubRegistration.new
 		package.registration = registration
-		acline = ODDB::GaldatExport::AcLine.new(package)
+		acline = ODDB::OddbDatExport::AcLine.new(package)
 		assert_equal(@iksdate, acline.iks_date(registration))
 	end
 	def test_ikskey
 		package = StubPackage.new
 		registration = StubRegistration.new
 		package.registration = registration
-		acline = ODDB::GaldatExport::AcLine.new(package)
+		acline = ODDB::OddbDatExport::AcLine.new(package)
 		assert_equal('007007747', acline.ikskey)
 		assert_equal('007007', package.iksnr)
 		assert_equal('747', package.ikscd)
@@ -395,7 +395,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		package = StubPackage.new
 		registration = StubRegistration.new
 		package.registration = registration
-		acline = ODDB::GaldatExport::AcLine.new(package)
+		acline = ODDB::OddbDatExport::AcLine.new(package)
 		assert_equal(nil, acline.inscode)
 		package.sl_entry = StubSLEntry.new
 		assert_equal('1', acline.inscode)
@@ -404,7 +404,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		package = StubPackage.new
 		registration = StubRegistration.new
 		package.registration = registration
-		acline = ODDB::GaldatExport::AcLine.new(package)
+		acline = ODDB::OddbDatExport::AcLine.new(package)
 		assert_equal(nil, acline.limitation)
 		package.sl_entry = StubSLEntry.new
 		assert_equal(nil, acline.limitation)
@@ -415,7 +415,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		package = StubPackage.new
 		registration = StubRegistration.new
 		package.registration = registration
-		acline = ODDB::GaldatExport::AcLine.new(package)
+		acline = ODDB::OddbDatExport::AcLine.new(package)
 		assert_equal(nil, acline.limitation_points)
 		package.sl_entry = StubSLEntry.new
 		assert_equal(5, acline.limitation_points)
@@ -424,7 +424,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		package = StubPackage.new
 		package.sl_entry = StubSLEntry.new
 		package.sl_entry.new_limtext('test-txt-')
-		table = ODDB::GaldatExport::AcLimTable.new(@app)
+		table = ODDB::OddbDatExport::AcLimTable.new(@app)
 		limtxtlines = table.lines(package)
 		expected = "09|#{@date}|3|3002|2|4||"
 		result = limtxtlines[2].to_s
@@ -434,7 +434,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		package = StubPackage.new
 		package.sl_entry = StubSLEntry.new
 		package.sl_entry.new_limtext('test-txt-')
-		table = ODDB::GaldatExport::LimitationTable.new(@app)
+		table = ODDB::OddbDatExport::LimitationTable.new(@app)
 		limtxtlines = table.lines(package)
 		expected = "16|#{@date}|3001||4|COM||||"
 		result = limtxtlines[1].to_s
@@ -444,7 +444,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		package = StubPackage.new
 		package.sl_entry = StubSLEntry.new
 		package.sl_entry.new_limtext('test-txt-')
-		table = ODDB::GaldatExport::LimTxtTable.new(@app)
+		table = ODDB::OddbDatExport::LimTxtTable.new(@app)
 		limtxtlines = table.lines(package)
 		expected = "10|#{@date}|3002|F|4|test-txt-3-fr||"
 		assert_equal(expected, limtxtlines[8].to_s)
@@ -453,7 +453,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		fi = StubFachinfo.new
 		fi.descriptions[:de] = StubFachinfoDocument.new
 		@app.fachinfos.store(1, fi)
-		table = ODDB::GaldatExport::MCMTable.new(@app)
+		table = ODDB::OddbDatExport::MCMTable.new(@app)
 		mcmlines = table.mcmline(fi)
 		expected = "31|#{@date}|#{fi.oid}|D|2|4|<BI>h-1<E><P><I>sub-h-1<E>text_1 end<P><I>italic<E><P>"
 		assert_equal(expected, mcmlines[1].to_s)
@@ -471,7 +471,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		fi = StubFachinfo.new
 		fi.descriptions[:de] = StubFachinfoDocument2001.new
 		@app.fachinfos.store(1, fi)
-		table = ODDB::GaldatExport::MCMTable.new(@app)
+		table = ODDB::OddbDatExport::MCMTable.new(@app)
 		mcmlines = table.mcmline(fi)
 		expected = "31|#{date}|#{fi.oid}|D|6|4|<BI>h-5<E><P><I>sub-h-5<E>text_5<P><I>italic<E><P>"
 		assert_equal(expected, mcmlines[5].to_s)
@@ -481,7 +481,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		fi = StubFachinfo.new
 		fi.descriptions[:de] = StubFachinfoDocument2001.new
 		@app.fachinfos.store(1, fi)
-		table = ODDB::GaldatExport::MCMTable.new(@app)
+		table = ODDB::OddbDatExport::MCMTable.new(@app)
 		mcmlines = table.mcmline(fi)
 		expected = <<-EOS
 31|#{date}|#{fi.oid}|D|1|4|<BI>h-0<E><P><I>sub-h-0<E>text_0<P><I>italic<E><P>
@@ -508,7 +508,7 @@ Hunger. Stufe für Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, S
 		doc.chapters = [chapter]
 		fi.descriptions[:de] = doc
 		@app.fachinfos.store(1, fi)
-		table = ODDB::GaldatExport::MCMTable.new(@app)
+		table = ODDB::OddbDatExport::MCMTable.new(@app)
 		mcmlines = table.mcmline(fi)
 		expected = <<-EOS
 31|#{date}|#{fi.oid}|D|1|4|<BI>heading<E><P><I>subheading<E>Hunger. Stufe f\374r Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, Sternchen Salami gleich Blockwurst. Die Pilze hatten sechs Monate in einem Sarg aus Blech, abgeschattet vom 
@@ -522,26 +522,26 @@ Hunger. Stufe für Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, S
 		package = StubPackage.new
 		registration = StubRegistration.new
 		package.registration = registration
-		acline = ODDB::GaldatExport::AcLine.new(package)
+		acline = ODDB::OddbDatExport::AcLine.new(package)
 		expected = "01|#{@date}|1|3|4||007007747|||||||A||||||||#{@iksdate}|||||||||||||||||||||||||||||||||"
 		assert_equal(expected, acline.to_s)
 	end
 	def test_content
-		line = ODDB::GaldatExport::Line.new
+		line = ODDB::OddbDatExport::Line.new
 		assert_equal(['nodata', nil, 'moredata', nil], line.content(line.structure))
 	end
 	def test_eanline
 		package = StubPackage.new
 		registration = StubRegistration.new
 		package.registration = registration
-		eanline = ODDB::GaldatExport::EanLine.new(package)
+		eanline = ODDB::OddbDatExport::EanLine.new(package)
 		expected = "06|#{@date}|#{package.oid}|E13|76800070077470|4||"
 		assert_equal(expected, eanline.to_s)
 	end
 	def test_export
 		full_setup()
 		@plugin.export
-		dir = ODDB::GaldatExport.system_targetdir
+		dir = ODDB::OddbDatExport.system_targetdir
 		{
 			's01x'	=>	744,
 			's02x'	=>	440,
@@ -576,7 +576,7 @@ Hunger. Stufe für Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, S
 		@plugin.export
 		@plugin.compress
 		assert_equal(false, @plugin.filenames.include?("s31x"))
-		dir = ODDB::GaldatExport.system_targetdir
+		dir = ODDB::OddbDatExport.system_targetdir
 		name = File.expand_path("oddbdat.tar.gz", dir)
 		assert(FileTest.exists?(name), "The file #{name} was not properly created")
 		assert(File.size(name) > 500, "Filesize too small!")
@@ -586,7 +586,7 @@ Hunger. Stufe für Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, S
 		name = File.expand_path("oddbdat.zip", dir)
 	end
 	def test_system_filepath
-		table = ODDB::GaldatExport::AcTable.new(nil)
+		table = ODDB::OddbDatExport::AcTable.new(nil)
 		expected = File.expand_path('../data/downloads/s01x',
 			File.dirname(__FILE__))
 			puts expected
@@ -595,10 +595,10 @@ Hunger. Stufe für Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, S
 	def test_system_targetdir
 		expected = File.expand_path('../data/downloads',
 			File.dirname(__FILE__))
-		assert_equal(expected, ODDB::GaldatExport.system_targetdir)
+		assert_equal(expected, ODDB::OddbDatExport.system_targetdir)
 	end
 	def test_unix2pc
-		table = ODDB::GaldatExport::AcTable.new(nil)
+		table = ODDB::OddbDatExport::AcTable.new(nil)
 		result = nil
 		assert_nothing_raised {
 			result = table.unix2pc("foo\256bar")
@@ -606,7 +606,7 @@ Hunger. Stufe für Stufe schob sie sich die Treppe hinauf. Pizza Funghi Salami, S
 		assert_equal("foobar", result)
 	end
 	def test_empty_atc
-		line = ODDB::GaldatExport::AtcLine.new(nil)
+		line = ODDB::OddbDatExport::AtcLine.new(nil)
 		assert_equal(true, line.empty?)
 	end
 	def full_setup
