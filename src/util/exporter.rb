@@ -22,7 +22,6 @@ module ODDB
 		rescue StandardError => e
 			log = Log.new(Date.today)
 			log.report = [
-				"Plugin: #{klass}",
 				"Error: #{e.class}",
 				"Message: #{e.message}",
 				"Backtrace:",
