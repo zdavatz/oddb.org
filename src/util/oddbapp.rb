@@ -26,7 +26,7 @@ class OddbPrevalence
 	include ODDB::Failsafe
 	include ODBA::Persistable
 	ODBA_EXCLUDE_VARS = [
-		"@bean_counter",
+		"@atc_chooser", "@bean_counter",
 	]
 	attr_reader :galenic_groups, :companies, :doctors
 	attr_reader	:atc_classes, :last_update
