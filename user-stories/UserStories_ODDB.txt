@@ -1,3 +1,124 @@
+2004-11-08 Hannes Wyss <hwyss@ywesee.com>
+* Unten meine Antworten zu den Kommentaren Aufwand bis jetzt für Abklärungen: 2h
+Es gibt noch einige Produkte, bei denen ich nicht weiss, was los ist: Preterax
+forte, Selipran, Deroxat, Vegesan, Autopen, Diabinese, Felden, Vincristine,
+Zithromax, Terracortril
+
+* Kann es sein, dass an irgend einem von den Produkten von Hand änderungen
+vorgenommen wurden? Was sind die Prioritätssetzungen: soll ich zuerst ca 1 Tag
+für weitere Abklärungen aufwenden? (ich habe etwas, was ich gerne vorher für
+die ODDB-ODBA-Integration ausprobieren möchte, aber nachher kann das gut
+parallel laufen, ich muss vor allem den Snapshot nochmals schreiben)
+
+	- Produkt: Acyclovir Helvepharm
+		Kommentar: Kategorie 4 statt 1
+		Antwort: ist im SwissmedicJournal nicht als Kategorie 4 (Änderung
+		Registrationsinhaber) gekennzeichnet - die Änderungskennzeichnung (*) fehlt
+		komplett, es gibt aber den Hinweis, dass der Index Therapeuticus geändert hat.
+		Das ist aber Fulltext, das können wir unmöglich rausparsen.
+		Lösung: Ev. kann man die Bemerkungen ins Update-File aufnehmen?
+		Aufwand: 30 min.
+
+	-	Produkt: Ivadal
+		Kommentar: Woher Info?
+		Antwort: SwissmedicJournal 6/2004, S.607 - wieder fehlt im Swissmedicjournal
+		die Änderungskennzeichnung.
+		Lösung: Wir müssen Abmachen, was mit solchen Informationen gemacht werden
+		soll. Am besten ist wahrscheinlich, nicht gekennzeichnete Änderungen zu
+		ignorieren.
+		Aufwand: 2 h
+
+		Produkt: Augmentin i.v. (iksnr 46452038), Makro-Albumon, Osteosol, Concor Cor,
+		Fluo-Calc, Nerisona Crème (nicht Salbe), Urografin
+		Kommentar: Woher Info?
+		Antwort: Das Produkt ist in BSV-SL per 1.6.2004, nicht mehr in BSV-SL per
+		1.7.2004
+
+		Produkt: Kessar, Valoron, Calmavérine, Cardiopril, Carnitene, Colestid,
+		Distalgesic, Farlutal, Fragmin, Inderal Retard, Inderetic , Minipress,
+		Norpace, Rhinocort, Suxinutin, Syscor, Tenormin, Trosyd,
+		Kommentar: Kategorie 2 statt 10
+		Antwort: Trifft für SwissmedicJournal 6/2004 nicht zu. Die Produkte kommen
+		dort nicht vor. Ich nehme an, die SL-Liste ist da aktueller, da wir auch
+		SL7?/2004 vor SMJ6?/2004 erhalten...
+		Lösung: Theoretisch könnte man versuchen, die Updates zu synchronisieren, also
+		das Swissmedic-Journal vom Juni nur mit den SL-Änderungen vom Juni, nicht vom
+		Juli zu kombinieren. Die Daten sind dann einfach noch älter.
+		Aufwand: 1 h
+
+		Produkt: Videx
+		Kommentar: Woher Info? Antwort: Dosis 200mg nicht in BSV-SL per 1.6.2004, aber
+		schon in BSV-SL per 1.7.2004
+
+		Produkt: Climara
+		Kommentar: Woher Info?
+		Antwort: Packung 100mg 4 Pflaster ist in BSV-SL per 1.6.2004, aber nicht mehr
+		in BSV-SL per 1.7.2004
+
+		Produkt: Levovist
+		Kommentar: Woher Info?
+		Antwort: Packung Levovist Amp. 4 g 1 Amp. 20 ml 4 g ist in BSV-SL per
+		1.6.2004, aber nicht mehr in BSV-SL per 1.7.2004
+
+		Produkt: Magnevist
+		Kommentar: Woher Info?
+		Antwort: Packungen mit 5 Ampullen sind in BSV-SL per 1.6.2004, aber nicht mehr
+		in BSV-SL per 1.7.2004
+
+		Produkt: Metopress
+		Kommentar: Woher Info?
+		Antwort: Packungen zu 50mg sind in BSV-SL per 1.6.2004, aber nicht mehr in
+		BSV-SL per 1.7.2004
+
+		Produkt: Rimifon
+		Kommentar: Woher Info?
+		Antwort: Packung zu 150mg ist in BSV-SL per 1.6.2004, aber nicht mehr in
+		BSV-SL per 1.7.2004
+
+		Produkt: Stiemycine
+		Kommentar: Woher Info?
+		Antwort: Packung Stiemycin Sol. 2 % 25 ml Sol. 2% ist in BSV-SL per 1.6.2004,
+		aber nicht mehr in BSV-SL per 1.7.2004
+
+		Produkt: Colpotrophine, Imagopaque
+		Kommentar: Woher Info?
+		Antwort: Die Iksnr hat im BSV-SL geändert.\\ Lösung: Zusätzliche Überprüfung
+		anhand des Pharmacodes.
+		Aufwand: 2-3 h
+
+		Produkt: Modasomil
+		Kommentar: Woher Info?
+		Antwort: Swissmedic-Journal 6/2004, S.615, Gekennzeichnet als Geänderte
+		Indikation
+
+		Produkt: Inderal
+		Kommentar: Woher Info?
+		Antwort: Swissmedic-Journal 6/2004, S.604, Gekennzeichnet als Geänderte
+		Handelsformen
+
+		Produkt: Preterax forte, Selipran, Deroxat
+		Kommentar: Woher Info?
+		Antwort: Muss ich weiter abklären.
+
+		Produkt: Vegesan, Autopen, Diabinese, Felden, Vincristine, Zithromax,
+		Terracortril
+		Kommentar: fehlt von Liste BSV
+		Antwort: Ich verstehe den Kommentar nicht. Ich habe die Swissmedic-Journals
+		4-6/2004 Kontrolliert und keine ensprechenden Einträge gefunden.
+
+2004-07-30 Beatrich Struchen <beatrix.struchen@just-medical.com>
+* Habe bei der Durchsicht erneut folgende Problempunkte festgestellt: Siehe
+beiliegende von mir gekürzte Liste: Attach:justmedical_feedback.xls
+
+	-	Rubrik 2 Löschungen fehlt komplett (sowohl Swissmedic wie auch BSV)
+	- Viele Löschungen sind versehentlich immer noch unter Rubrik 10, also
+	- Kassenzulässigkeiten
+	-	Produkte mit dem Vermerk _woher Info_ konnte ich weder bei Swissmedic
+	- noch beim BSV finden (sind also auf der Originalliste inexistent)
+	-	Dagegen fehlen gewisse Produkte auf Deiner Liste, welche ich sehr wohl
+	- bei Swissmedic und BSV sehe.
+	- Ein Produkt war in der falschen Gruppe vermerkt (1 anstelle von 4). 
+
 2004-06-29 Matthijs Ouwerkerk <matthijs.ouwerkerk@just-medical.com>
 *	Reklamationen Matthijs
 	-	Wir haben die letzte, von dir gelieferte Liste im Detail kontrolliert und
