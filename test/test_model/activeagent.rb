@@ -6,6 +6,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/activeagent'
+require 'mock'
 
 module ODDB
 	class ActiveAgentCommon
@@ -245,6 +246,19 @@ class TestActiveAgent < Test::Unit::TestCase
 		assert_equal(-1, other <=> @agent)
 		other.dose = nil
 		assert_equal(1, other <=> @agent)
+	end
+	def test_same_as
+		agent = ODDB::ActiveAgent.new(@substance_name)
+		assert_equal(true, agent.same_as?(@substance_name))
+		assert_equal(false, agent.same_as?('Levomentholum'))
+		subst = Mock.new
+		agent.instance_variable_set('@substance', subst)
+		subst.__next(:same_as?) { |arg| 
+			assert_equal('Levomentholum', arg)
+			true
+		}
+		assert_equal(true, agent.same_as?('Levomentholum'))
+		subst.__verify
 	end
 end
 class TestIncompleteActiveAgent < Test::Unit::TestCase

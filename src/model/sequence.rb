@@ -28,14 +28,12 @@ module ODDB
 		end
 		def active_agent(substance)
 			active_agent = @active_agents.each { |active|
-				active.substance.descriptions.values.each { |desc_name|
-					if(desc_name.downcase == substance.downcase)
-						active
-					end
-				}
+				if(active.same_as?(substance))
+				#if(active.substance.same_as?(substance))
+					return active
+				end
 			}
-			#@active_agents.select { |active| active.substance.descriptions.each == substance }.first
-			active_agent.first
+			nil
 		end
 		def checkout
 			checkout_helper([@atc_class, @galenic_form], :remove_sequence)

@@ -18,7 +18,7 @@ end
 class TestSubstance < Test::Unit::TestCase
 	def setup
 		@substance = ODDB::Substance.new
-		@substance.descriptions.store('de', "Acidum Acetylsalicylicum")
+		@substance.descriptions.store('lt', "Acidum Acetylsalicylicum")
 	end
 	def test_initialize
 		assert_not_nil(@substance.oid)
@@ -78,7 +78,7 @@ class TestSubstance < Test::Unit::TestCase
 	end
 	def test_name2
 		@substance.descriptions.store('en', 'En Name')
-		@substance.descriptions.delete('de')
+		@substance.descriptions.delete('lt')
 		assert_equal('En Name', @substance.name)
 	end
 	def test_equal_string
@@ -97,5 +97,13 @@ class TestSubstance < Test::Unit::TestCase
 	def test_similar_name
 		assert_equal(false, @substance.similar_name?("ACIDUM MEFENAMICUM"))
 		assert_equal(true, @substance.similar_name?("ACIDU ACETYLSALIKUM"))
+	end
+	def test_same_as
+		substance = ODDB::Substance.new
+		substance.descriptions.store('lt', "Acidum Acetylsalicylicum")
+		assert_equal(true, substance.same_as?('ACIDUM ACETYLSALICYLICUM'))
+		assert_equal(false, substance.same_as?('Acetylsalicylsäure'))
+		substance.descriptions.store('de', "Acetylsalicylsäure")
+		assert_equal(true, substance.same_as?('Acetylsalicylsäure'))
 	end
 end

@@ -1,6 +1,8 @@
 2004-06-11 Zeno Davatz <zdavatz@ywesee.com>
 *	ODDB läuft am morgen nicht. Es hat einen Apache-Defunct Prozess den man
-*	zuerst killen muss mit killall -KILL apache, dann alles ok.
+	zuerst killen muss mit killall -KILL apache, dann alles ok.
+	+ hwyss@ywesee.com: Ein cronjob sendet jetzt täglich um 07:30 
+	  svc -t /service/apache
 
 2004-06-10 Zeno Davatz <zdavatz@ywesee.com>
 * Minerva und Feminac
