@@ -92,13 +92,13 @@ module ODDB
 				@app.update(pointer.creator, update_values)
 			end
 			def store_doctor(doc_id, hash)
-				doc = nil
+				pointer = nil
 				if(doc = @app.doctor_by_origin(:ch, doc_id))
+					pointer = doc.pointer
 				else
 					@doctors_created += 1
-					puts "doctors updated: #{@doctors_created}"
-					pointer = Persistence::Pointer.new(:doctor)
-					doc = @app.create(pointer)
+					ptr = Persistence::Pointer.new(:doctor)
+					pointer = ptr.creator
 				end
 				extract = [
 					:exam,
@@ -122,8 +122,7 @@ module ODDB
 				}
 				doc_hash.store(:origin_db, :ch)
 				doc_hash.store(:origin_id, doc_id)
-				@app.update(doc.pointer, doc_hash)
-				doc
+				@app.update(pointer, doc_hash)
 			end
 		end
 	end

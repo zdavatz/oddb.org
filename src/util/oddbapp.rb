@@ -92,6 +92,7 @@ class OddbPrevalence
 		}
 	end
 	def update(pointer, values)
+		#puts [__FILE__,__LINE__,"update(#{pointer}, #{values})"].join(':')
 		@last_update = Time.now()
 		item = failsafe(ODDB::Persistence::UninitializedPathError, nil) {
 			pointer.resolve(self)
@@ -235,6 +236,7 @@ class OddbPrevalence
 	end
 	def create_doctor
 		doctor = ODDB::Doctor.new
+		@doctors ||= {}
 		@doctors.store(doctor.oid, doctor)
 	end
 	def create_cyp450(cyp_id)
@@ -361,8 +363,11 @@ class OddbPrevalence
 	def doctor(oid)
 		@doctors[oid.to_i]
 	end
+	def doctors_count
+		@doctors.size
+	end
 	def doctor_by_origin(origin_db, origin_id)
-		@doctors.values.each { |doctor|
+		@doctors.each_value { |doctor|
 			if(doctor.record_match?(origin_db, origin_id) == true)
 				return doctor
 			end
