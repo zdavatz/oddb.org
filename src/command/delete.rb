@@ -7,7 +7,7 @@ module ODDB
 			@pointer = pointer
 		end
 		def execute(app)
-			app.delete(@pointer)
+			ODBA.batch { app.delete(@pointer) }
 		end
 	end
 end

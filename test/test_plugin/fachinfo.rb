@@ -77,6 +77,7 @@ class TestFachinfoPlugin < Test::Unit::TestCase
 			}
 			assert_equal(expected, @plugin.package_languages(1))
 
+			FileUtils.mkdir_p(File.dirname(frfile))
 			File.open(frfile, 'w') { |fh| fh << "fr_fi" }
 			expected = {
 				'de'	=>	'de_fi',

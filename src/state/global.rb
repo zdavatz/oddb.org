@@ -166,6 +166,7 @@ module ODDB
 			end
 			def resolve
 				if((pointer = @session.user_input(:pointer)) \
+					&& pointer.is_a?(Persistence::Pointer) \
 					&& (model = pointer.resolve(@session.app)))
 					if(klass = resolve_state(pointer))
 						klass.new(@session, model)

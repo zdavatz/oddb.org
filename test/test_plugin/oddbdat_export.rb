@@ -251,6 +251,7 @@ Alter   Suspension   Kapseln   Suppositorien zu
 		@date = Date.today.strftime('%Y%m%d%H%M%S')
 		@iksdate = Date.today.strftime("%Y%m%d")
 		dir = ODDB::OddbDatExport.system_targetdir
+		FileUtils.mkdir_p(dir)
 		Dir.entries(dir) { |entry|
 			file = File.expand_path(entry, dir)
 			unless(File.ftype(file)=='directory')

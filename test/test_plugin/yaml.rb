@@ -231,6 +231,7 @@ pharmacode: "11223"
 			File.delete(path) if File.exist?(path)
 		}
 		footext = "---\n  many Companies!\n"
+		FileUtils.mkdir_p(dir)
 		File.open(file, 'w') { |fh|
 			fh << footext
 		}
