@@ -34,7 +34,7 @@ module CompanyUser
 			:package, :sl_entry ]				=>	State::Admin::CompanySlEntry,
 	}	
 	include State::Admin::User
-	def resolve_state(pointer)
+	def resolve_state(pointer, type=:standard)
 		if(@session.user_equiv?(pointer))
 			State::Companies::UserCompany
 		else

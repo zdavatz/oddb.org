@@ -8,7 +8,7 @@ module ODDB
 		module Admin
 module User
 	VIRAL = true
-	def resolve_state(pointer)
+	def resolve_state(pointer, type=:standard)
 		@viral_module::RESOLVE_STATES.fetch(pointer.skeleton) {
 			super
 		}
