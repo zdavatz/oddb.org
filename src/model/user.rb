@@ -45,11 +45,7 @@ module ODDB
 			super
 		end
 	end
-	class UnknownUser < SBSM::UnknownUser
-		HOME = State::Drugs::Init
-	end
-	class AdminUser < User
-		VIRAL_MODULE = State::Admin::Root
+	module UserOid
 		def set_oid
 			User.instance_eval <<-EOS unless(User.respond_to?(:next_oid))
 				@oid = nil
@@ -64,6 +60,13 @@ module ODDB
 			@oid ||= User.next_oid
 		end
 	end
+	class UnknownUser < SBSM::UnknownUser
+		HOME = State::Drugs::Init
+	end
+	class AdminUser < User
+		VIRAL_MODULE = State::Admin::Root
+		include UserOid
+	end
 	class RootUser < AdminUser
 		def initialize
 			@oid = 0
@@ -74,5 +77,6 @@ module ODDB
 	end		
 	class CompanyUser < User
 		VIRAL_MODULE = State::Admin::CompanyUser
+		include UserOid
 	end
 end
