@@ -32,6 +32,20 @@ module ODDB
 							rng.nil? ? 'unknown' : rng.first
 						}.compact.uniq.sort
 					end
+					def filter_interval
+						userrange = @session.user_input(:range) || default_interval
+						range = RANGE_PATTERNS.fetch(userrange)
+						@filter = Proc.new { |model|
+							model.select { |comp| 
+								if(range=='unknown')
+									comp.name =~ /^[^'a-zäÄáÁàÀâÂçÇëËéÉèÈêÊüÜúÚùÙûÛ']/i
+								else
+									/^[#{range}]/i.match(comp.name)
+								end
+							}
+						}
+						@range = range
+					end
 					def interval
 						@interval ||= self::class::RANGE_PATTERNS.index(@range)
 					end
@@ -64,20 +78,9 @@ class CompanyList < CompanyResult
 	DIRECT_EVENT = :companylist
 	def init
 		@model = @session.app.companies.values
+		filter_interval
 		super
 		if(@session.user.is_a?(ODDB::AdminUser))
-			userrange = @session.user_input(:range) || default_interval
-			range = RANGE_PATTERNS.fetch(userrange)
-			@filter = Proc.new { |model|
-				model.select { |comp| 
-					if(range=='unknown')
-						comp.name =~ /^[^'a-zäÄáÁàÀâÂçÇëËéÉèÈêÊüÜúÚùÙûÛ']/i
-					else
-						/^[#{range}]/i.match(comp.name)
-					end
-				}
-			}
-			@range = range
 		elsif(@session.user.is_a?(ODDB::CompanyUser))
 			@model = @model.select { |company|
 				company.listed? || (company == @session.user.model)

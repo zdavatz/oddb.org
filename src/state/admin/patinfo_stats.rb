@@ -7,9 +7,8 @@ require 'state/companies/companylist'
 module ODDB
 	module State
 		module Admin
-			class PatinfoStats < State::Admin::Global
-				include State::Companies::AlphaInterval
-				VIEW = View::Admin::PatinfoStats
+			class PatinfoStatsCommon < State::Admin::Global
+				VIEW = View::Admin::PatinfoStatsCompany
 				DIRECT_EVENT = :patinfo_stats	
 				class InvoiceItemFacade
 					attr_accessor :user, :sequence, :time
@@ -76,6 +75,9 @@ module ODDB
 					def pointer
 						@company.pointer
 					end
+					def user
+						@company.user
+					end
 				end
 				def init
 					model = {}
@@ -92,11 +94,28 @@ module ODDB
 					@model = model.values
 				end
 			end
-			class PatinfoStatsCompanyUser < State::Admin::PatinfoStats
+			class PatinfoStatsCompanyUser < State::Admin::PatinfoStatsCommon
 				def init
 					super
 					@model.delete_if { |comp|
-						comp.company.user != @session.user
+						comp.user != @session.user
+					}
+				end
+			end
+			class PatinfoStats < State::Admin::PatinfoStatsCommon
+				VIEW = View::Admin::PatinfoStats
+				include State::Companies::AlphaInterval
+				def init
+					super 
+					filter_interval
+				end
+			end
+			class PatinfoStatsCompany < State::Admin::PatinfoStatsCommon
+				DIRECT_EVENT = :patinfo_stats_company	
+				def init
+					super
+					@model.delete_if { |comp|
+						comp.name != @session.user_input(:company_name)
 					}
 				end
 			end

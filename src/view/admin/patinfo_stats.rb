@@ -35,7 +35,7 @@ class CompanyHeader < HtmlGrid::Composite
 		super
 	end
 end
-class PatinfoStatsList < HtmlGrid::List
+class PatinfoStatsCompanyList < HtmlGrid::List
 	COMPONENTS = {
 		[0,0]		=> :date,
 		[1,0]		=> :email
@@ -45,14 +45,13 @@ class PatinfoStatsList < HtmlGrid::List
 		[0,0]	=> 'list',
 		[1,0]	=> 'list',
 	}
-	SORT_DEFAULT = :newest_date
+	#SORT_DEFAULT = :newest_date
 	SORT_REVERSE = true
 	SORT_HEADER = false
 	LOOKANDFEEL_MAP = {
 		:date					=>	:patinfo_stats,
 		:email				=>	:nbsp,
 	}
-	include View::AlphaHeader
 	def date(model, session)
 		time = model.time
 		time.strftime("%A %d.%m.%Y &nbsp;&nbsp;-&nbsp;&nbsp;%H.%M Uhr %Z")
@@ -91,6 +90,9 @@ class PatinfoStatsList < HtmlGrid::List
 		View::PointerLink.new(:iksnr_seqnr, seq, @session, self)
 	end
 end
+class PatinfoStatsList < PatinfoStatsCompanyList
+	include View::AlphaHeader
+end
 class PatinfoStatsComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		#	[0,0]		=> 'patinfo_stats',
@@ -100,9 +102,19 @@ class PatinfoStatsComposite < HtmlGrid::Composite
 		#[0,0]	=> 'th',
 	}
 	CSS_CLASS = 'composite'
+end	
+class PatinfoStatsCompanyComposite < HtmlGrid::Composite
+	COMPONENTS = {
+		[0,0] => 'patinfo_stats',
+		[0,1]	=>	View::Admin::PatinfoStatsCompanyList
+	}
+	CSS_CLASS = 'composite'
 end
 class PatinfoStats < View::ResultTemplate
 	CONTENT = View::Admin::PatinfoStatsComposite
+end
+class PatinfoStatsCompany < PatinfoStats
+	CONTENT = View::Admin::PatinfoStatsCompanyComposite	
 end
 		end
 	end

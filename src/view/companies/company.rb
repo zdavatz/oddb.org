@@ -5,6 +5,7 @@ require 'htmlgrid/composite'
 require 'htmlgrid/labeltext'
 require 'htmlgrid/select'
 require 'htmlgrid/text'
+require 'htmlgrid/link'
 require 'htmlgrid/urllink'
 require 'htmlgrid/value'
 require 'htmlgrid/inputfile'
@@ -15,6 +16,8 @@ require 'view/form'
 require 'view/pointervalue'
 require 'view/resulttemplate'
 require 'view/sponsorlogo'
+require 'state/companies/companylist'
+
 
 module ODDB
 	module View
@@ -102,6 +105,7 @@ class UserCompanyForm < View::Form
 		#[2,10]		=>	:fi_status,
 		#[2,11]    =>  :pi_status,
 		[0,11]		=>	:generic_type,
+		[2,12]		 =>	:patinfo_stats,
 		[1,12]		=>	:submit,
 	}
 	CSS_MAP = {
@@ -121,6 +125,21 @@ class UserCompanyForm < View::Form
 		super
 		error_message()
 		info_message()
+	end
+	def patinfo_stats(model, session)
+		link = HtmlGrid::Link.new(:patinfo_stats, model , session, self)
+=begin
+		puts "patinfo"
+		link_range = "unknown"
+		ODDB::State::Companies::AlphaInterval::RANGE_PATTERNS.each{|range, pat|
+			if(/^[#{pat}]/i.match(model.name))
+				link_range = range
+			end
+		}
+=end
+		link.href = @lookandfeel.event_url(:patinfo_stats_company) + "/company_name/#{model.name}"
+		link.set_attribute('title', @lookandfeel.lookup(:patinfo_stats))
+		link
 	end
 	def company_name(model, session)
 		HtmlGrid::InputText.new('name', model, session, self)
@@ -155,6 +174,7 @@ class RootCompanyForm < View::Companies::UserCompanyForm
 		#[2,11]		=>	:fi_status,
 		#[0,12]		=>	:registration_count,
 		#[2,12]    =>  :pi_status,
+		[2,12]		 =>	:patinfo_stats,
 		[1,13]		=>	:submit,
 		[1,13,0]	=>	:delete_item,
 	}

@@ -29,7 +29,8 @@ class State::Admin::PatinfoDeprivedSequences < State::Admin::Global; end
 class State::Admin::Registration < State::Admin::Global; end
 class State::Admin::Sequence < State::Admin::Global; end
 class State::Admin::SlEntry < State::Admin::Global; end
-class State::Admin::PatinfoStats < State::Admin::Global; end
+class State::Admin::PatinfoStatsCommon < State::Admin::Global; end
+class State::Admin::PatinfoStats < State::Admin::PatinfoStatsCommon; end
 class State::Admin::Sponsor < State::Admin::Global; end
 class State::Substances::Substance < State::Substances::Global; end
 class State::Substances::Substances < State::Substances::Global; end
@@ -148,6 +149,9 @@ module Root
 	end
 	def patinfo_stats
 		State::Admin::PatinfoStats.new(@session,[])
+	end
+	def patinfo_stats_company
+		State::Admin::PatinfoStatsCompany.new(@session,[])
 	end
 	def user_navigation
 		[

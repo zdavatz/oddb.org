@@ -51,9 +51,13 @@ module CompanyUser
 	def patinfo_stats
 		State::Admin::PatinfoStatsCompanyUser.new(@session,[])
 	end
+	def patinfo_stats_company
+		State::Admin::PatinfoStatsCompanyUser.new(@session,[])
+	end
 	def user_navigation
 		[
 			State::Admin::Logout,
+			
 		]
 	end
 	def zones
