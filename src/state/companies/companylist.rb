@@ -6,59 +6,14 @@ require 'state/companies/company'
 require 'view/companies/companylist'
 require 'model/company'
 require 'model/user'
+require 'util/interval'
 require 'sbsm/user'
 
 module ODDB
 	module State
 		module Companies
-				module AlphaInterval
-				RANGE_PATTERNS = {
-					'a-d'			=>	'a-däÄáÁàÀâÂçÇ',
-					'e-h'			=>	'e-hëËéÉèÈêÊ',
-					'i-l'			=>	'i-l',
-					'm-p'			=>	'm-pöÖóÓòÒôÔ',
-					'q-t'			=>	'q-t',
-					'u-z'			=>	'u-züÜúÚùÙûÛ',
-					'unknown'	=>	'unknown',
-				}
-					def default_interval
-						intervals.first
-					end
-					def get_intervals
-						@model.collect { |company| 
-							rng = RANGE_PATTERNS.select { |key, pattern| 
-								/^[#{pattern}]/i.match(company.name)
-							}.first
-							rng.nil? ? 'unknown' : rng.first
-						}.compact.uniq.sort
-					end
-					def filter_interval
-						userrange = @session.user_input(:range) || default_interval
-						range = RANGE_PATTERNS.fetch(userrange)
-						@filter = Proc.new { |model|
-							model.select { |comp| 
-								if(range=='unknown')
-									comp.name =~ /^[^'a-zäÄáÁàÀâÂçÇëËéÉèÈêÊüÜúÚùÙûÛ']/i
-								else
-									/^[#{range}]/i.match(comp.name)
-								end
-							}
-						}
-						@range = range
-					end
-					def interval
-						@interval ||= self::class::RANGE_PATTERNS.index(@range)
-					end
-					def intervals
-						@intervals ||= get_intervals
-					end
-				end
-			#class User < SBSM::KnownUser; end
-			#class UnknownUser < SBSM::UnknownUser; end
-			#class CompanyUser < State::Companies::User; end
-			#class AdminUser < State::Companies::User; end
 class CompanyResult < State::Companies::Global
-	include AlphaInterval
+	include Interval
 	attr_reader :range
 	DIRECT_EVENT = :search
 	VIEW = {
@@ -67,29 +22,29 @@ class CompanyResult < State::Companies::Global
 		ODDB::RootUser		=>	View::Companies::RootCompanies,
 		ODDB::AdminUser		=>	View::Companies::RootCompanies,
 	}	
-	#REVERSE_MAP = ResultList::REVERSE_MAP
 	def init
 		if(!@model.is_a?(Array) || @model.empty?)
 			@default_view = View::Companies::EmptyResult
 		end
+		filter_interval
 	end
 end
 class CompanyList < CompanyResult
 	DIRECT_EVENT = :companylist
 	def init
-		@model = @session.app.companies.values
-		filter_interval
-		super
+		model = @session.app.companies.values
 		if(@session.user.is_a?(ODDB::AdminUser))
+			@model = model
 		elsif(@session.user.is_a?(ODDB::CompanyUser))
-			@model = @model.select { |company|
-				company.listed? || (company == @session.user.model)
+			@model = model.select { |company|
+				(company.listed? || @session.user_equiv?(company))
 			}
 		else
-			@model = @model.select { |company|
+			@model = model.select { |company|
 				company.listed?
 			}
 		end
+		super
 	end
 end
 		end

@@ -13,25 +13,26 @@ module ODDB
 			'u-z'			=>	'u-züÜúÚûÛùÙ',
 			'|unknown'=>	'^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ',
 		}
+		FILTER_THRESHOLD = 30
 		attr_reader :range
-		def init
-			super
-			@range = self::class::RANGE_PATTERNS.fetch(user_range) {
-				self::class::RANGE_PATTERNS[default_interval]
-			}
-			pattern = if(@range=='|unknown')
-				/^[^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ]/i
-			elsif(@range)
-				/^[#{@range}]/i
-			else
-				/^$/
-			end
-			@filter = Proc.new { |model|
-				model.select { |item| 
-					pattern.match(item.send(symbol))
+		def filter_interval
+			if(@model.size > self::class::FILTER_THRESHOLD)
+				@range = self::class::RANGE_PATTERNS.fetch(user_range) {
+					self::class::RANGE_PATTERNS[default_interval]
 				}
-			}
-			@range = range
+				pattern = if(@range=='|unknown')
+					/^[^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ]/i
+				elsif(@range)
+					/^[#{@range}]/i
+				else
+					/^$/
+				end
+				@filter = Proc.new { |model|
+					model.select { |item| 
+						pattern.match(item.send(symbol))
+					}
+				}
+			end
 		end
 		def default_interval
 			intervals.first || 'a-d'

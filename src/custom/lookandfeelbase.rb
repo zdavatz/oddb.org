@@ -1063,7 +1063,7 @@ zdavatz ! ywesee.com
 				:home_companies						=>	'Acceuil-Entreprises',
 				:home_doctors							=>  'Acceuil-M&eacute;decins',
 				:home_interactions				=>  'Acceuil-Interactions',
-				:home_welcome							=>  "Bienvenue sur oddb.org,<br>le portail des g&eacute;n&eacute;riques de Suisse avec<br>tous les m&eacute;dicaments disponibles sur le march&eacute; suisse!<br>** <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>D&eacute;claration d'origine</a> des donne&eacute;es **",
+				:home_welcome							=>  "Bienvenue sur oddb.org,<br>le portail des g&eacute;n&eacute;riques de Suisse avec<br>tous les m&eacute;dicaments disponibles sur le march&eacute; suisse!<br>** <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>D&eacute;claration d'origine</a> des donn&eacute;es **",
 				:home_welcome_doctors			=>	"Bienvenu sur oddb.org,\nle portail des M&eacute;decins Suisses le plus actuel de la Suisse.\nLa mise &agrave; jour mensuelle s'effectue directement\npar les donn&eacute;es officielles de <a class='welcome' href='http://www.fmh.ch/ww/fr/pub/welcome.htm'>FMH</a>.",
 				:home_user								=>  'Acceuil-Services',
 				:homeopathy								=>	'M&eacute;dicaments hom&eacute;opathiques',

@@ -9,6 +9,7 @@ require 'util/logfile'
 
 module ODDB
 	class Exporter
+		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		def initialize(app)
 			@app = app
 		end
@@ -17,6 +18,18 @@ module ODDB
 			mail_feedback_stats
 			export_yaml
 			export_oddbdat
+			EXPORT_SERVER.clear
+		rescue StandardError => e
+			log = Log.new(Date.today)
+			log.report = [
+				"Plugin: #{klass}",
+				"Error: #{e.class}",
+				"Message: #{e.message}",
+				"Backtrace:",
+				e.backtrace.join("\n"),
+			].join("\n")
+			log.notify("Error: Export")
+			nil
 		end
 		def export_oddbdat
 			exporter = OdbaExporter::OddbDatExport.new(@app)

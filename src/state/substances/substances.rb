@@ -42,6 +42,9 @@ class Substances < State::Substances::Global
 		#'unknown'	=>	'unknown',
 		'|unknown'=>	'^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ',
 	}
+	def init
+		filter_interval
+	end
 	def default_interval
 		intervals.first || 'a'
 	end
