@@ -43,6 +43,7 @@ module ODDB
 			EXPORT_PROPERTIES = [
 				'@formats',
 				'@text',
+				'@preformatted',
 			]
 		end
 		class Format
