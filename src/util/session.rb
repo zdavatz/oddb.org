@@ -52,6 +52,13 @@ module ODDB
 		def navigation
 			@active_state.navigation
 		end
+		def process(request)
+			@request = request
+			if(is_crawler?)
+				Thread.current.priority = -1
+			end
+			super
+		end
 		def user_equiv?(test)
 			return true if(@user.is_a? ODDB::AdminUser)
 			mdl = if(test.is_a?(Persistence::Pointer))
