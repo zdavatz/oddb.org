@@ -88,7 +88,7 @@ class TestCyP450InteractionConnection < Test::Unit::TestCase
 	def test_adjust_types
 		app = Mock.new('app')
 		values = { :substance	=>	'foo name' }
-		app.__next(:substance_by_conn_name) { |param|
+		app.__next(:substance) { |param|
 			assert_equal('foo name', param)
 			'substance'
 		}

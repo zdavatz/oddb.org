@@ -33,7 +33,7 @@ module ODDB
 			@facades = {}
 			@object_count = 0
 			if(@model.nil? || @model.empty?)
-				@default_view = EmptyResultView
+				@default_view = EmptyInteractionResultView
 			else
 				@model.each { |obj|
 					@object_count += 1

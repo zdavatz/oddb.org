@@ -29,9 +29,7 @@ module ODDB
 			@cyp_id = cyp_id
 		end
 		def interactions_with(substance)
-			#puts "--------------------------connection"
 			if(@cyp450)
-				#puts '______connection'
 				@cyp450.interactions_with(substance)
 			else
 				[]
@@ -52,7 +50,7 @@ module ODDB
 		end
 		def adjust_types(values, app)
 			if(conn_name = values[:substance])
-				substance = app.substance_by_conn_name(conn_name)
+				substance = app.substance(conn_name)
 				values.store(:substance, substance)
 			end
 			values

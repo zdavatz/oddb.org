@@ -470,40 +470,49 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		cytochrome.__next(:substrates) { [ substrate ] }
 		cytochrome.__next(:inhibitors) { [ inhibitor ] }
 		cytochrome.__next(:inducers) { [ inducer ] }
+		### first iteration
 		substrate.__next(:name) { 'substrate_name' }
-		@app.__next(:substance_by_conn_name) { |param|
+		@app.__next(:substance_by_connection_key) { |param|
 			assert_equal('substrate_name', param)	
 			substance
-		}
-		substance.__next(:en) { 'updated_substance' }
+		}	
+		substance.__next(:connection_key) { 'updated_substance' }
+		### second iteration
 		inhibitor.__next(:name) { 'inhibitor_name' }
-		@app.__next(:substance_by_conn_name) { |param|
+		@app.__next(:substance_by_connection_key) { |param|
 			assert_equal('inhibitor_name', param)	
 			substance
 		}
-		substance.__next(:en) { 'non_updated_substance' }
+		substance.__next(:connection_key) { 'non_updated_substance' }
 		substance.__next(:substrate_connections) { 
 			{ 'cyp_id_1'	=> 'substrate_1' }
 		}
 		substance.__next(:pointer) { pointer }
-		substance.__next(:en) { 'substance_en' }
+		substance.__next(:pointer) { pointer }
+		@app.__next(:update) { |subs_pointer, values|
+			assert_equal(pointer, subs_pointer)
+			assert_equal(2, values.size)
+		}
+		substance.__next(:connection_key) { 'substance_en' }
+		### third iteration
 		inducer.__next(:name) { 'inducer_name' }
-		@app.__next(:substance_by_conn_name) { |param|
+		@app.__next(:substance_by_connection_key) { |param|
 			assert_equal('inducer_name', param)	
 			nil
 		}
 		inducer.__next(:name) { 'inducer_name' }
+		inducer.__next(:name) { 'inducer_name_key' }
 		@app.__next(:update) { |new_pointer, descr| 
 			expected = ODDB::Persistence::Pointer
 			assert_equal(expected, new_pointer.class)	
 			assert_equal(Hash, descr.class)
 			substance	
 		}
-		substance.__next(:en) { 'non_updated_substance' }
+		substance.__next(:connection_key) { 'non_updated_substance' }
 		substance.__next(:substrate_connections) { [] }
 		substance.__next(:pointer) { pointer }
-		substance.__next(:en) { 'substance_en' }
-		substance.__next(:en) { 'substance_en' }
+		substance.__next(:connection_key) { 'substance_en' }
+		substance.__next(:connection_key) { 'substance_en' }
 		@plugin.update_oddb_substances(cytochrome)
 		cytochrome.__verify
 		substrate.__verify
@@ -519,7 +528,7 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		connection = Mock.new('connection')
 		pointer = Mock.new('pointer')
 		@plugin.updated_substances = { 
-			'updated_substance'	=>	{ 
+			'found'	=>	{ 
 				:connections	=>	{ 
 					'cyt_id'	=> connection
 				}
@@ -531,11 +540,10 @@ class TestInteractionPlugin < Test::Unit::TestCase
 		@app.__next(:substances) { 
 			[ substance, substance, substance ] 
 		}
-		substance.__next(:en) { 'not_found' }
+		substance.__next(:connection_key) { 'not_found' }
 		substrate.__next(:name) { 'found' }
-		substance.__next(:en) { 'found' }
+		substance.__next(:connection_key) { 'found' }
 		substrate.__next(:name) { 'found' }
-		substance.__next(:en) { 'updated_substance' }
 		substance.__next(:pointer) { pointer }
 		pointer.__next(:+) { |param|
 			assert_equal(Array, param.class)

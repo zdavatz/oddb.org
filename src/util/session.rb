@@ -41,6 +41,9 @@ module ODDB
 		def add_to_interaction_basket(object)
 			@interaction_basket.push(object)
 		end
+		def clear_interaction_basket
+			@interaction_basket.clear
+		end
 		def interaction_basket_count
 			@interaction_basket.size
 		end

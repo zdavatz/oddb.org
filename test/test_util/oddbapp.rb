@@ -366,7 +366,11 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.rebuild_indices
 		assert_equal([], @app.soundex_substances('de_name'))
 		pointer = ODDB::Persistence::Pointer.new(:substance)
-		subs = @app.create(pointer)
+		descr = {
+			'en'						=>	'first_name',
+			:connection_key	=>	'connection_key',
+		}
+		subs = @app.update(pointer.creator, descr)
 		values = {
 			:en	=>	'en_name',
 			:de	=>	'de_name',			
@@ -751,20 +755,6 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.substances = {substance.oid => substance}
 		assert_equal(substance, @app.substance(substance.oid) )
 	end
-	def test_substance_by_conn_name
-		substance = ODDB::Substance.new
-		@app.substances = {substance.oid => substance}
-		substance2 = ODDB::Substance.new
-		substance2.descriptions['en'] = "en_foo_name"
-		@app.substances.store(substance2.oid, substance2)
-		result = @app.substance_by_conn_name('En_bar_name') 
-		assert_nil(result)
-		substance3 = ODDB::Substance.new
-		substance3.descriptions['en'] = "en_Bar_name"
-		@app.substances.store(substance3.oid, substance3)
-		result = @app.substance_by_conn_name('En_bar_name') 
-		assert_equal(substance3, result)
-	end
 	def test_substance_soundex
 		sub1 = StubSubstance.new("Hallo Du", false)
 		sub2 = StubSubstance.new("Acidum Mefenanicum", true)
@@ -785,6 +775,17 @@ class TestOddbApp < Test::Unit::TestCase
 		result = @app.soundex_substances('Acidum Mefenami')
 		assert_equal([sub2, sub4,  sub5], result)
 		assert_equal([],@app.soundex_substances("nix"))
+	end
+	def test_substance_by_connection_key
+		substance = Mock.new('substance')
+		@app.substances = { 'connection key' =>	substance }
+		substance.__next(:connection_key) { 'valid key' }
+		result = @app.substance_by_connection_key('valid key')
+		assert_equal(substance, result)
+		substance.__next(:connection_key) { 'valid key' }
+		result = @app.substance_by_connection_key('invalid key')
+		assert_equal(nil, result)
+		substance.__verify
 	end
 	def test_atcless_sequences
 		reg = StubRegistration.new('12345')

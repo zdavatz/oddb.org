@@ -13,14 +13,18 @@ module ODDB
 			def initialize(substance, cyp450s)
 				@substance = substance
 				@cyp450s = cyp450s
-				@inducers = []
-				@inhibitors = []
+				@inducers = {}
+				@inhibitors = {}
 			end
 			def add_inhibitor(inhibitor)
-				@inhibitors.push(inhibitor)
+				unless(@inhibitors.keys.include?(inhibitor.substance_name))
+					@inhibitors.store(inhibitor.substance_name, inhibitor)
+				end
 			end
-			def add_inducers(inducer)
-				@inducers.push(inducer)
+			def add_inducer(inducer)
+				unless(@inducers.keys.include?(inducer.substance_name))
+					@inducers.store(inducer.substance_name, inducer)
+				end
 			end
 		end
 		def init
@@ -37,13 +41,10 @@ module ODDB
 				cyp450s = []
 				interactions = []
 				connections.each { |cyp450_id, connection|
-					#puts "*"*33
-					#puts connection.size
 					cyp450s.push(cyp450_id)
 					interactions.concat(connection)
 				}
 				interaction_check = InteractionCheck.new(substance, cyp450s)
-				#puts interactions.size
 				interactions.each { |interaction|
 					unless(substance.same_as?(interaction.substance_name))
 						case interaction

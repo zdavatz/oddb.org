@@ -307,28 +307,30 @@ module ODDB
 			def update_oddb_substances(cyt)
 				puts "updating oddb substances..."
 				(cyt.substrates + cyt.inhibitors + cyt.inducers).each { |connection|
-					if(subs = @app.substance_by_conn_name(connection.name))
-						unless(@updated_substances.keys.include?(subs.en))
+					if(subs = @app.substance_by_connection_key(connection.name))
+						unless(@updated_substances.keys.include?(subs.connection_key))
 							values = {
-								:connections	=> subs.substrate_connections.dup,
-								:pointer			=> subs.pointer,
+								:connections		=> subs.substrate_connections.dup,
+								:pointer				=> subs.pointer,
 							}
-							@updated_substances.store(subs.en, values)
+							@app.update(subs.pointer, values)
+							@updated_substances.store(subs.connection_key, values)
 						end
 					else
 						pointer = Persistence::Pointer.new(:substance)
 						descr = {
-							'en'	=>	connection.name,
+							'en'						=>	connection.name,
+							:connection_key	=>	connection.name,
 						}
 						substance = @app.update(pointer.creator, descr)
-						unless(@updated_substances.keys.include?(substance.en))
+						unless(@updated_substances.keys.include?(substance.connection_key))
 							values = {
 								:connections	=> substance.substrate_connections.dup,
 								:pointer			=> substance.pointer,
-							}
-							@updated_substances.store(substance.en, values)
+								}
+							@updated_substances.store(substance.connection_key, values)
 						end
-						info = substance.en
+						info = substance.connection_key
 						update_report(:substance_created, info)
 					end
 				}
@@ -343,8 +345,9 @@ module ODDB
 					}
 					catch :found do
 						@app.substances.each { |substance|
-							if(substance.en == substrate.name)
-								substrate_connections = @updated_substances[substance.en][:connections]
+							connection_key = substance.connection_key
+							if(connection_key == substrate.name)
+								substrate_connections = @updated_substances[connection_key][:connections]
 								pointer = substance.pointer + ['cyp450substrate', cyt_id]
 								@app.update(pointer.creator, args)
 								if(substrate_connections.keys.include?(cyt_id))

@@ -82,8 +82,8 @@ module ODDB
 				@packages.store(ikscd, pkg) 
 			end
 		end
-		def delete_active_agent(substance_name)
-			active = active_agent(substance_name)
+		def delete_active_agent(substance)
+			active = active_agent(substance)
 			@active_agents.delete(active)
 		end
 		def delete_package(ikscd)

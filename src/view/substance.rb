@@ -13,7 +13,6 @@ zwei probleme:
 
 module ODDB
 	module SubstanceSubstrateList
-		include AdditionalInformation
 		COMPONENTS = {
 			[0,0]	=>	:substrates,
 		}
@@ -24,7 +23,6 @@ module ODDB
 		DEFAULT_CLASS = HtmlGrid::Value
 		DEFUALT_HEAD_CLASS = 'subheading'
 		SORT_HEADER = false
-		SORT_DEFAULT = :cyp_id
 		def substrates(model, session)
 			txt = HtmlGrid::Text.new(:substrates, model, session, self)
 			txt.label = false 
@@ -32,8 +30,38 @@ module ODDB
 			txt
 		end
 	end
+	module SequencesList
+		COMPONENTS = {
+			[0,0]	=>	:name_base,
+		}
+		CSS_CLASS = 'composite'
+		CSS_MAP = {
+			[0,0,1]	=>	'list',
+		}	
+		DEFAULT_CLASS = HtmlGrid::Value
+		DEFUALT_HEAD_CLASS = 'subheading'
+		SORT_HEADER = false
+		SORT_DEFAULT = :name_base
+	end
+	class MergeSubstancesForm < Form
+		include HtmlGrid::ErrorMessage
+		COMPONENTS = {
+			[0,0,0]	=>	'substance',
+			[0,0,1]	=>	'merge_with',
+			[0,0,2]	=>	:substance_form,
+			[0,0,3]	=>	:submit,
+		}
+		SYMBOL_MAP = {
+			:substance_form	=>	HtmlGrid::InputText
+		}
+		EVENT = 'merge' 
+		LABELS = false
+	end
 	class SubstanceSubstrates < HtmlGrid::List
 		include SubstanceSubstrateList
+	end
+	class Sequences < HtmlGrid::List
+		include SequencesList
 	end
 	class SubstanceForm < DescriptionForm
 		DESCRIPTION_CSS = 'xl'
@@ -46,12 +74,19 @@ module ODDB
 		COMPONENTS = {
 			[0,0]	=>	:substance_name,
 			[0,1]	=>	SubstanceForm,
-			[0,2]	=>	:nbsp,
+			[1,1]	=>	MergeSubstancesForm,
 			[0,4]	=>	:substrate_connections,
+			[0,5]	=>	:sequences,
 		}
 		CSS_CLASS = 'composite'
 		CSS_MAP = {
 			[0,0]	=>	'th',
+			[1,2]	=>	'button',
+		}
+		COLSPAN_MAP = {
+			[0,0]	=>	2,
+			[0,4]	=>	2,
+			[0,5]	=>	2,
 		}
 		DEFAULT_CLASS = HtmlGrid::Value
 		def substance_name(model, session)
@@ -63,6 +98,10 @@ module ODDB
 				values = PointerArray.new(connections, model.pointer)
 				SubstanceSubstrates.new(values, session, self)
 			end
+		end
+		def sequences(model, session)
+			sequences = model.sequences
+			Sequences.new(sequences, session, self)
 		end
 	end
 	class SubstanceView < PrivateTemplate

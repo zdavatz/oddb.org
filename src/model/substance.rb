@@ -9,7 +9,8 @@ require 'model/cyp450connection'
 module ODDB
 	class Substance
 		#include Persistence
-		attr_reader :sequences
+		attr_reader :sequences, :substrate_connections
+		attr_accessor :connection_key
 		include Comparable
 		include Language
 		def initialize
@@ -36,29 +37,31 @@ module ODDB
 		def atc_classes
 			@sequences.collect { |seq| seq.atc_class }.uniq
 		end
-		def create_cyp450substrate(cyp_id)
-			#puts 'creating substrate'
+		def connection_key
+			@connection_key	|| @descriptions['en']
+		end
+		def	create_cyp450substrate(cyp_id)
 			conn = ODDB::CyP450SubstrateConnection.new(cyp_id)
 			@substrate_connections.store(conn.cyp_id, conn)
 			conn
 		end
 		def cyp450substrate(cyp_id)
-			@substrate_connections[cyp_id]
+			if(@substrate_connections)
+				@substrate_connections[cyp_id]
+			end
 		end
 		def delete_cyp450substrate(cyp_id)
 			@substrate_connections.delete(cyp_id)
 		end
+		def has_connection_key?
+			@connection_key ? true : false	
+		end
 		def interaction_connections(others)
-			#puts '=========substance'
 			if(@substrate_connections)
-				#puts 'substrate_connections found'
 				connections = {}
 				@substrate_connections.each { |cyp450_id, subs_connection|
-					#puts "subs_connection: #{subs_connection}"
 					others.each { |substance|
-						#puts "other substance: #{substance}"
 						interactions = subs_connection.interactions_with(substance)
-						#puts "iiiiinnnnteractions: #{interactions.size}"
 						if(int_conn = connections[cyp450_id])
 							int_conn.concat(interactions)
 						else
@@ -66,10 +69,35 @@ module ODDB
 						end
 					}
 				}
-				#puts "ccccccccccccccccccccconnections: #{connections.size}"
 				connections
 			else
 				{}	
+			end
+		end
+		def merge(other)
+			other.sequences.dup.uniq.each { |sequence|
+				if(active_agent = sequence.active_agent(other))
+					if(@sequences.include?(sequence))
+						sequence.delete_active_agent(other)
+					else
+						active_agent.substance = self
+					end
+				else
+					other.remove_sequence(sequence)
+				end
+			}
+			other.substrate_connections.values.dup.each { |substr_conn|
+				if((cyp450substrate(substr_conn.cyp_id)).nil?)
+					substrate_connections.store(substr_conn.cyp_id, substr_conn)
+				end
+			}
+			other.descriptions.dup.each { |key, value|
+				unless(@descriptions.has_key?(key))
+					@descriptions.update_values( { key => value } )
+				end
+			}
+			unless(@connection_key)
+				@connection_key = other.connection_key
 			end
 		end
 		def name
@@ -86,15 +114,22 @@ module ODDB
 			@sequences.delete(sequence)
 		end
 		def same_as?(substance)
-			descriptions.any? { |lang, desc|
+			result = descriptions.any? { |lang, desc|
 				desc.downcase == substance.to_s.downcase
 			}
+			unless(result==true)
+				result = true if(substance.to_s.downcase == connection_key.downcase)
+			end
+			result
 		end
 		def similar_name?(astring)
 			name.length/3.0 >= name.downcase.ld(astring.downcase)
 		end
 		def substrate_connections
-			@substrate_connections || {}
+			unless(@substrate_connections)
+				@substrate_connections = {}
+			end
+			@substrate_connections
 		end
 		def to_s
 			name

@@ -99,6 +99,10 @@ module ODDB
 				self
 			end
 		end
+		def clear_interaction_basket
+			@session.clear_interaction_basket
+			EmptyInteractionBasketState.new(@session, [])
+		end
 		def extend(mod)
 			if(mod.constants.include?('VIRAL'))
 				@viral_module = mod 
@@ -107,10 +111,8 @@ module ODDB
 		end
 		def interaction_basket
 			if((array = @session.interaction_basket).empty?)
-				puts 'empty basket'
 				EmptyInteractionBasketState.new(@session, array)
 			else
-				puts 'not empty basket'
 				InteractionBasketState.new(@session, array)
 			end
 		end
