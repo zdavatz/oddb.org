@@ -110,18 +110,12 @@ class RegistrationForm < View::Form
 		[0,3]		=>	:indication,
 		[2,3]		=>	:market_date,
 		[2,4]		=>	:inactive_date,
-		[0,4]   =>	:language_select,
-		[0,5]		=>	:fachinfo_upload,
-		[2,5]		=>	:fachinfo_label,
-		[3,5]		=>	:fachinfo,
-		[1,6]		=>	:submit,
 	}
 	COMPONENT_CSS_MAP = {
-		[0,0,5,5]	=>	'standard',
+		[0,0,4,5]	=>	'standard',
 	}
 	CSS_MAP = {
 		[0,0,4,6]	=>	'list',
-		#[1,3]			=>	'standard',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
@@ -137,10 +131,21 @@ class RegistrationForm < View::Form
 	}
 	TAG_METHOD = :multipart_form
 	def init
-		if(@session.user.is_a?(ODDB::AdminUser) \
-			&& !@model.is_a?(Persistence::CreateItem))
-			components.store([1,6,1], :new_registration)
-			CSS_MAP.store([1,6,1], 'button')
+		if(@model.is_a?(Persistence::CreateItem))
+			components.store([1,5], :submit)
+			#css_map.store([1,5], 'button')
+		else
+			components.update({
+				[0,4]   =>	:language_select,
+				[0,5]		=>	:fachinfo_upload,
+				[2,5]		=>	:fachinfo_label,
+				[3,5]		=>	:fachinfo,
+				[1,6]		=>	:submit,
+				[1,6,1]	=>	:new_registration,
+			})
+			#component_css_map.store([0,5,4], 'standard')
+			css_map.store([0,6,4], 'list')
+			#css_map.store([1,6], 'button')
 		end
 		super
 		error_message()
@@ -166,10 +171,8 @@ class RegistrationForm < View::Form
 		klass.new(:iksnr, model, session, self)
 	end
 	def language_select(model, session)
-		name = "language_select"
-		select = View::Drugs::FachinfoLanguageSelect.new(name, model, session, self)
-		#		select.value = ['de', 'fr'][@list_index]
-		select
+		View::Drugs::FachinfoLanguageSelect.new(:language_select, model, 
+			session, self)
 	end
 	def indication(model, session)
 		InputDescription.new(:indication, model.indication, session, self)

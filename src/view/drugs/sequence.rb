@@ -127,20 +127,12 @@ class SequenceForm < Form
 		[2,2]		=>	:galenic_form,
 		[0,3]		=>	:atc_class,
 		[2,3]		=>	:atc_descr,
-		[0,4]		=>	:patinfo_upload,
-		[1,5]		=>	:submit,
-		[1,5,0] =>  :delete_item,
-		[2,5]   =>  :patinfo_desc,
-		[3,5,1] =>  :patinfo,
-		[3,5,2] =>  :assign_patinfo,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,4,4]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,5,5]	=>	'list',
-		[2,5]     =>	'list',
-		[3,5]			=>	'result-infos',
+		[0,0,4,5]	=>	'list',
 	}
 	DISABLE_ADDITIONAL_CSS = true
 	LABELS = true
@@ -150,6 +142,22 @@ class SequenceForm < Form
 		:patinfo_desc => HtmlGrid::LabelText,
 	}
 	def init
+		if(@model.is_a?(Persistence::CreateItem))
+			components.store([1,4], :submit)
+		else
+			components.update({
+				[0,4]		=>	:patinfo_upload,
+				[2,4]   =>  :patinfo_desc,
+				[3,4,1] =>  :patinfo,
+				[3,4,2] =>  :assign_patinfo,
+				[1,5]		=>	:submit,
+				[1,5,0] =>  :delete_item,
+			})
+			css_map.update({
+				[3,4]		=>	'result-infos',
+				[0,5,4] =>	'list',
+			})
+		end
 		super
 		error_message()
 	end
