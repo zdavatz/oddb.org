@@ -436,6 +436,7 @@ zdavatz ! ywesee.com
 				:home_companies						=>	'Firmen-Home',
 				:home_drugs								=>  'Home',
 				:home_doctors							=>  'Arztsuche-Home',
+				:home_hospitals						=>	'Spit&auml;ler-Home',
 				:home_interactions				=>  'Interaktionen-Home',
 				:home_substances					=>  'Wirkstoffe-Home',
 				:home_user								=>  'Services-Home',

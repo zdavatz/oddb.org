@@ -15,10 +15,7 @@ module ODDB
 		LOG_PATH = File.expand_path('../../log/fachinfo.txt', 
 			File.dirname(__FILE__))
 		PARSER = DRbObject.new(nil, FIPARSE_URI)
-		RECIPIENTS = [
-		#'mwalder@ywesee.com',
-		#'rwaltert@ywesee.com',
-		]
+		RECIPIENTS = [ ]
 		def initialize(app)
 			super
 			@success = 0
