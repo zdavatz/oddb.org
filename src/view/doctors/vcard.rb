@@ -8,8 +8,8 @@ module ODDB
 		module Doctors 
 class VCard < HtmlGrid::Component
 	def http_headers
-		filename = @model.name.to_s + 
-			"_" + @model.firstname.to_s + ".vcf"
+		filename = @model.name.sub(/\s/, '_').to_s + 
+			"_" + @model.firstname.sub(/\s/, '_').to_s + ".vcf"
 		filename = prepare(filename)
 		{
 			'Content-Type'	=>	'text/x-vCard',	
