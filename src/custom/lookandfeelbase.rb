@@ -705,7 +705,7 @@ zdavatz ! ywesee.com
 				:w_no_patinfo_saved				=>	'Patinfos m&uuml;ssen im Pdf-Format sein',
 				:w_too_many_sequences			=> 'Zu viele Suchresultate, die Suche muss spezifiziert werden',
 				:w_unknown_iksnr0					=>	'Die Registration "',
-				:w_unknown_iksnr1					=>	'" ist nicht bekannt.',
+				:w_unknown_iksnr1					=>	'" ist uns nicht bekannt.',
 				:work_header							=>	'Arbeitsort',
 			        :yaml_export_descr				=>	'oddb.yaml.gz und oddb.yaml.zip enthalten die t&auml;glich aktualisierten Artikelstammdaten von ODDB.org. Die Daten werden von ywesee im Yaml-Format exportiert und allen interessierten Systemlieferanten von Krankenkassen, Spit&auml;lern, Apotheken, &Auml;rzten, Heimen etc. zur Verf&uuml;gung gestellt. Die Kosten f&uuml;r die Daten sind zur Zeit gleich Null. Bei einer erfolgreichen Implementation mit  den ODDB.org-Daten nehmen wir gerne eine Dienstleistungsgeb&uuml;hr entgegen.',
 				:yaml_export_feedback			=>	'Feedback bitte an zdavatz at ywesee dot com',
