@@ -15,13 +15,13 @@ class DownloadExportComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]		=>	'download_export_title',
 		[0,1]		=>	:download_export_descr,
-		[0,4]		=>	View::User::YamlExportInnerComposite,
-		[0,5]		=>	View::User::OddbDatDownloadInnerComposite,
-		[0,6]		=>	View::User::FachinfoPDFDownloadInnerComposite,
+		[0,2]		=>	View::User::YamlExportInnerComposite,
+		[0,3]		=>	View::User::OddbDatDownloadInnerComposite,
+		[0,4]		=>	View::User::FachinfoPDFDownloadInnerComposite,
 	}
 	CSS_MAP = {
 		[0,0]     =>  'th',
-		[0,1,1,6] =>  'list',
+		[0,1,1,5] =>  'list',
 	}
 	SYMBOL_MAP = {
 		:yaml_link => HtmlGrid::Link,
