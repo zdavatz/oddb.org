@@ -1,5 +1,7 @@
 2004-06-10 Zeno Davatz <zdavatz@ywesee.com>
 * Minerva und Feminac
+	+	Es scheint, dass die Wirkstoff rausgelöscht bei den "Atcless" wenn man die
+		ODDB neustartet.
 	+	Dasselbe Problem bei Faslodex
 	+	Dasselbe Problem mit Kiddi Pharmaton.
 	-	Bei den Produkten Minerva und Feminac kann man den zweiten Wirkstoff nicht
