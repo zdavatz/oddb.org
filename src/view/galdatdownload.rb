@@ -34,8 +34,8 @@ module ODDB
 	end
 	class GaldatDownloadComposite < HtmlGrid::Composite
 		COMPONENTS = {
-			[0,0]		=>	'galdat_download_title',
-			[0,1]		=>	'galdat_download_descr',
+			[0,0]		=>	'oddbdat_download_title',
+			[0,1]		=>	'oddbdat_download_descr',
 			[0,2]		=>	GaldatDownloadInnerComposite,
 		}
 		CSS_CLASS = 'composite'
