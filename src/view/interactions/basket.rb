@@ -26,8 +26,12 @@ class List < HtmlGrid::Component
 			@model.collect { |item| 
 				text = HtmlGrid::RichText.new(@model, @session, self)
 				pub_med_search_link = HtmlGrid::Link.new(:pub_med_search_link, @model, @session, self)
-				pub_med_search_link.href = @lookandfeel.lookup(:pub_med_search_href, item.substance_name)
-				pub_med_search_link.value = item.substance_name + " (#{item.parent(@session).cyp_id})"
+				#substance = @session.substance(item.substance_name)
+				substance = item.substance
+				pub_med_search_link.href = \
+					@lookandfeel.lookup(:pub_med_search_href, substance.en)
+				pub_med_search_link.value = substance.name \
+					+ " (#{item.parent(@session).cyp_id})"
 				pub_med_search_link.target = "_blank"
 				text << pub_med_search_link
 				item.links.each { |link|

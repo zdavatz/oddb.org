@@ -96,7 +96,7 @@ end
 class DescriptionForm < View::DescriptionForm
 	DESCRIPTION_CSS = 'xl'
 	def languages
-		@lookandfeel.languages + ['en', 'lt', 'synonym_list']
+		@lookandfeel.languages + ['lt', 'synonym_list']
 	end
 	def synonym_list(model, session)
 		input = DEFAULT_CLASS.new(:synonym_list, model, session, self)
