@@ -17,12 +17,7 @@ class CenteredSearchForm < View::CenteredSearchForm
 end
 class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENTS = { 
-		[0,0]		=>	:language_de,
-		[0,0,1]	=>	:divider,
-		[0,0,2]	=>	:language_fr,
-		[0,0,3]	=>	:divider,
-		[0,0,4]	=>	:language_en,
-		[0,0,5]	=>	:beta,
+		[0,0]		=>	:language_chooser,
 		[0,1]		=>	View::Hospitals::CenteredSearchForm,
 		[0,2]		=>	'hospitals_search_explain', 
 		[0,3]		=>	View::CenteredNavigation,
