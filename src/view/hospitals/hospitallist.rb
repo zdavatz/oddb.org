@@ -26,8 +26,9 @@ class HospitalList < HtmlGrid::List
 		[2,0]	=>	:location,
 		[3,0]	=>	:plz,
 		[4,0]	=>	:canton,
-		[5,0]	=>	:map,
-		[6,0]	=>	:vcard,
+		[5,0]	=>	:narcotics,
+		[6,0]	=>	:map,
+		[7,0]	=>	:vcard,
 	}	
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
@@ -39,6 +40,7 @@ class HospitalList < HtmlGrid::List
 		[4,0]	=>	'list',
 		[5,0]	=>	'list',
 		[6,0]	=>	'list',
+		[7,0]	=>	'list',
 	}
 	CSS_HEAD_MAP = {
 		[0,0] =>	'th',
@@ -48,6 +50,7 @@ class HospitalList < HtmlGrid::List
 		[4,0] =>	'th',
 		[5,0] =>	'th',
 		[6,0] =>	'th',
+		[7,0] =>	'th',
 	}
 	LOOKANDFEEL_MAP = {
 		:name						=>	:hospital_name,
@@ -68,6 +71,13 @@ class HospitalList < HtmlGrid::List
 		link = View::PointerLink.new(:name, model, @session, self)
 		link.set_attribute('title', "EAN: #{model.ean13}")
 		link
+	end
+	def narcotics(model)
+		if(model.narcotics == "Keine Betäubungsmittelbewilligung")
+			@lookandfeel.lookup(:true)
+		else
+			@lookandfeel.lookup(:false)
+		end
 	end
 end
 class HospitalsComposite < Form

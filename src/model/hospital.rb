@@ -8,7 +8,7 @@ module ODDB
 		include Persistence
 		ODBA_SERIALIZABLE = []
 		attr_accessor :name, :business_unit, :address, :plz,
-			:location, :phone, :fax, :canton
+			:location, :phone, :fax, :canton, :narcotics
 		attr_reader :ean13
 		def initialize(ean13)
 			@ean13 = ean13
