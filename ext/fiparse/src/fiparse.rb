@@ -8,9 +8,11 @@ require 'drb/drb'
 require 'util/oddbconfig'
 require 'fachinfo_writer'
 require 'fachinfo_html'
+require 'fachinfo_pdf'
 require 'fachinfo_news'
-require 'fachinfo_doc'
+#require 'fachinfo_doc'
 require 'patinfo_html'
+require 'rpdf2txt/parser'
 
 module ODDB
 	module FiParse
@@ -27,6 +29,9 @@ module ODDB
 			parser = HtmlParser.new(formatter)
 			parser.feed(src)
 			writer.to_fachinfo
+		end
+		def parse_fachinfo_pdf(src)
+			writer = FachinfoPDFWriter.new
 		end
 		def parse_fachinfo_news(src)
 			writer = FachinfoNewsWriter.new
