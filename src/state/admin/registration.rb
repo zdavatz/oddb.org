@@ -149,6 +149,8 @@ class Registration < State::Admin::Global
 			# establish connection to fachinfo_parser
 			#DRb.start_service
 			parser = DRbObject.new(nil, FIPARSE_URI)
+			
+			#parser.storage = ODBA.storage
 			result = parser.parse_fachinfo_pdf(file.read)
 			result
 		rescue StandardError => e
@@ -158,6 +160,7 @@ class Registration < State::Admin::Global
 			].join(' ')
 			err = create_error(:e_pdf_not_parsed, :fachinfo_upload, msg)
 			@errors.store(:fachinfo_upload, err)
+			puts e.backtrace
 			nil
 		end
 	end

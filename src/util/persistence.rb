@@ -62,6 +62,7 @@ module ODDB
 				end
 			}
 		end
+=begin
 		def current_oid(klass)
 			oids = []
 			ObjectSpace.each_object(klass) { |obj|
@@ -69,6 +70,7 @@ module ODDB
 			}
 			oids.max
 		end
+=end
 		def set_oid
 =begin
 			self.class.instance_eval <<-EOS unless(self.class.respond_to?(:next_oid))
@@ -85,7 +87,7 @@ module ODDB
 =end
 			@oid ||= self.odba_id
 		end
-		module_function :current_oid
+		#module_function :current_oid
 		class PathError < RuntimeError
 			attr_reader :pointer
 			def initialize(msg, pointer)
