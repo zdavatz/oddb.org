@@ -83,7 +83,7 @@ module ODDB
 		class InducerConnection < Connection
 		end
 		class InteractionPlugin < Plugin
-			REFETCH_PAGES = true 
+			REFETCH_PAGES = false
 			INTERACTION_TYPES = [
 				:substrates, :inhibitors, :inducers,
 			]
@@ -139,23 +139,24 @@ module ODDB
 				end
 			end
 			def format_connection_key(key)
-				key.to_s.downcase.gsub(/[^a-z0-9]/, '')
+				Substance.format_connection_key(key)
 			end
 			def merge_data(hayes, flockhart, gysling)
 				#puts 'merging ...'
+				flock_conn_arr = nil
 				hayes.each { |hayes_cyt_id, hayes_cyt|
 					INTERACTION_TYPES.each { |type|
 						hayes_conn_arr = hayes_cyt.send(type)
 						hayes_conn_arr.each { |hayes_conn|
 							found_conn = false
-							if(flockhart.has_key?(hayes_cyt_id))
-								@flock_conn_arr = flockhart[hayes_cyt_id].send(type)
-								@flock_conn_arr.each { |flock_conn|
+							if(flock_cyt = flockhart[hayes_cyt_id])
+								flock_conn_arr = flock_cyt.send(type)
+								flock_conn_arr.each { |flock_conn|
 									if(similar_name?(hayes_conn.name, flock_conn_name(flock_conn)))
 										found_conn = true
 										hayes_conn.category = flock_conn.category
 										hayes_conn.links.concat(flock_conn.links)
-										@flock_conn_arr.delete(flock_conn)
+										flock_conn_arr.delete(flock_conn)
 									end
 								}
 							end
@@ -163,11 +164,11 @@ module ODDB
 								@flock_conn_not_found += 1
 							end
 						}
-						if(@flock_conn_arr)
-							@hayes_conn_not_found += @flock_conn_arr.size
+						if(flock_conn_arr)
+							@hayes_conn_not_found += flock_conn_arr.size
 						end
-						if(gysling.has_key?(hayes_cyt_id))
-							gysling[hayes_cyt_id].send(type).each { |conn| 
+						if(gysling_cyt = gysling[hayes_cyt_id])
+							gysling_cyt.send(type).each { |conn| 
 								hayes_cyt.add_connection(conn)
 							}
 						end
@@ -215,7 +216,7 @@ module ODDB
 				cytochromes	
 			end
 			def parse_gysling(plugin)
-				puts 'parsing gysling ...'
+				#puts 'parsing gysling ...'
 				plugin.parse_csv
 			end
 			def report
@@ -260,11 +261,8 @@ module ODDB
 				lines.join("\n")
 			end
 			def similar_name?(astring, bstring)
-				if(astring.downcase.ld(bstring.downcase) == 0)
-					true
-				else
-					false
-				end
+				#(astring.downcase.ld(bstring.downcase) <= 1)
+				astring.downcase == bstring.downcase
 			end
 			def update
 				@hayes = parse_hayes(HayesPlugin.new(@app))
@@ -305,38 +303,42 @@ module ODDB
 				cyp450
 			end
 			def update_oddb_cyp450_connections(cyt_id, cyt, cyp450, connection)
-				cyp450_connections = cyp450.send(connection).keys.dup
+				cyp450_connections = cyp450.send(connection).keys
 				cyt.send(connection).each { |conn|
+					subs = @app.substance_by_connection_key(conn.name) \
+						|| @app.substance(conn.name)
+					connection_key = subs.primary_connection_key
+				                   #format_connection_key(conn.name)
 					conn_pointer = [ 
 						'cyp450' + connection.to_s[0..-2], 
-						conn.name	
+						connection_key,	
 					]
 					pointer = cyp450.pointer + conn_pointer
 					args = {
-						:substance	=>	conn.name,
+						:substance	=>	connection_key,
 						:links			=>	conn.links,
 						:category		=>	conn.category,
 					}
-					if(cyp450.send(connection).keys.include?(conn.name))
+					if(cyp450.send(connection).keys.include?(connection_key))
 						@app.update(pointer, args)
 					else
 						@app.update(pointer.creator, args)
-						info = "#{cyp450.cyp_id} =>	#{conn.name}" 
+						info = "#{cyp450.cyp_id} =>	#{connection_key}" 
 						symbol = (connection.to_s + '_created').intern
 						update_report(symbol, info)
 					end
-					if(cyp450_connections.include?(conn.name))
-						cyp450_connections.delete(conn.name)
+					if(cyp450_connections.include?(connection_key))
+						cyp450_connections.delete(connection_key)
 					end
 				}
-				cyp450_connections.each { |substance_name|
+				cyp450_connections.each { |connection_key|
 					conn_pointer = [ 
 						'cyp450' + connection.to_s[0..-2], 
-						substance_name
+						connection_key,
 					]
 					pointer = cyp450.pointer + conn_pointer 
 					@app.delete(pointer)
-					info = "#{cyp450.cyp_id} => #{substance_name}"
+					info = "#{cyp450.cyp_id} => #{connection_key}"
 					symbol = (connection.to_s + '_deleted').intern
 					update_report(symbol, info)
 				}
@@ -346,9 +348,9 @@ module ODDB
 				unless(@updated_substances.include?(connection_key))
 					values = {
 						:connections		=> substance.substrate_connections.dup,
-						:pointer				=> substance.pointer,
 					}
 					@app.update(substance.pointer, values)
+					values.store(:pointer, substance.pointer)
 					@updated_substances.store(connection_key, values)
 				end
 			end
@@ -360,9 +362,10 @@ module ODDB
 					:connection_key	=>	connection_key,
 				}
 				substance = @app.update(pointer.creator, descr)
-				unless(@updated_substances.keys.include?(connection_key))
+				unless(@updated_substances.include?(connection_key))
 					values = {
-						:connections	=> substance.substrate_connections.dup,
+						#:connections	=> substance.substrate_connections.dup,
+						:connections	=>	{},
 						:pointer			=> substance.pointer,
 					}
 					@updated_substances.store(connection_key, values)
@@ -375,8 +378,11 @@ module ODDB
 				(cyt.substrates + cyt.inhibitors + cyt.inducers).each { |connection|
 					connection_key = format_connection_key(connection.name)
 					if(subs = @app.substance_by_connection_key(connection_key))
-						puts "updating #{subs} with #{connection_key}"
-						update_oddb_existing_substance(subs, connection)
+						values = {
+							:connections => subs.substrate_connections.dup,
+							:pointer		 =>	subs.pointer
+						}
+						@updated_substances.store(connection_key, values)
 					else
 						update_oddb_create_substance(connection)	
 					end
@@ -390,7 +396,26 @@ module ODDB
 						:category	=>	substrate.category,
 						:cyp450		=>	cyt_id,
 					}
-					connection_key = format_connection_key(substrate.name)
+					substance = @app.substance_by_connection_key(substrate.name) \
+						|| @app.substance(substrate.name)
+					connection_key = substance.primary_connection_key
+				                   #format_connection_key(substrate.name)
+					pointer = substance.pointer + [:cyp450substrate, cyt_id]
+					if(substance.cyp450substrate(cyt_id))
+						@app.update(pointer, args)
+					else
+						@app.update(pointer.creator, args)
+						info = "#{substrate.name} => #{cyt_id}"
+						update_report(:substrates_created, info)
+					end
+=begin
+					substance.connection_keys.each { |conn_key|
+						unless(@updated_substances[conn_key].nil?)
+							@updated_substances[conn_key][:connections].delete(cyt_id)
+						end
+					}
+=end
+=begin
 					catch :found do
 						@app.substances.each { |substance|
 							if(substance.has_connection_key?(connection_key))
@@ -412,6 +437,7 @@ module ODDB
 							end
 						}	
 					end
+=end
 				}
 			end
 			def update_report(id, info)

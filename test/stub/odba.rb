@@ -5,9 +5,13 @@ require 'odba'
 
 module ODBA
 	class CacheStub
+		attr_writer :retrieve_from_index
 		def delete(anything)
 		end
 		def store(anything)
+		end
+		def retrieve_from_index(*args)
+			@retrieve_from_index || []
 		end
 		def prefetch
 		end

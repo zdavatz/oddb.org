@@ -38,20 +38,19 @@ module LevenshteinDistance
     if s_len == 0 then return t_len end
     if t_len == 0 then return s_len end
     
-    arr = (0..s_len).map {[]}
+		cur = Array.new(t_len.next, 0)
+		lst = Array.new(t_len.next, 0)
 
-    (0..s_len).each {|row| arr[row][0] = row}
-    (0..t_len).each {|col| arr[0][col] = col}
-
-    (1..s_len).each {|row|
-      (1..t_len).each {|col|
+    (0..s_len).each {|row|
+      (0..t_len).each {|col|
 	cost = if s[row] == t[col] then 0 else 1 end
-	arr[row][col] = ld_min(arr[row-1][col] + 1, 
-			       arr[row][col-1] + 1, 
-			       arr[row-1][col-1] + cost)
+	cur[col] = ld_min(lst[col] + 1, 
+			       cur[col-1] + 1, 
+			       lst[col-1] + cost)
       }
+			cur, lst = lst, cur
     }
-    arr[s_len][t_len]
+    lst[t_len]
   end
     
 end

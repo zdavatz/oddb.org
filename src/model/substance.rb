@@ -19,6 +19,9 @@ module ODDB
 		attr_writer :synonyms
 		include Comparable
 		include Language
+		def Substance.format_connection_key(key)
+			key.to_s.downcase.gsub(/[^a-z0-9]/, '')
+		end
 		def initialize
 			super()
 			@sequences = []
@@ -44,7 +47,7 @@ module ODDB
 			@sequences.collect { |seq| seq.atc_class }.uniq
 		end
 		def connection_keys
-			@connection_keys or self.connection_keys = []
+			self.connection_keys = @connection_keys || []
 		end
 		def connection_keys=(keys)
 			keys += self.descriptions.values + self.synonyms + [self.name]
@@ -66,7 +69,7 @@ module ODDB
 			@substrate_connections.delete(cyp_id)
 		end
 		def format_connection_key(key)
-			key.to_s.downcase.gsub(/[^a-z0-9]/, '')
+			Substance.format_connection_key(key)
 		end
 		def has_connection_key?(test_key)
 			key = format_connection_key(test_key)
@@ -94,6 +97,13 @@ module ODDB
 			end
 		end
 		def interactions_with(other)
+			interactions = _interactions_with(other) 
+			if(has_effective_form? && !is_effective_form?)
+				interactions += @effective_form._interactions_with(other)
+			end
+			interactions
+		end
+		def _interactions_with(other)
 			if(@substrate_connections)
 				@substrate_connections.values.collect { |conn|
 					conn.interactions_with(other)
@@ -154,11 +164,14 @@ module ODDB
 			end
 		end
 		alias :pointer_descr :name
+		def primary_connection_key
+			@primary_connection_key ||= format_connection_key(self.name)
+		end
 		def same_as?(substance)
 			teststr = substance.to_s.downcase
 			_search_keys.any? { |desc|
-					desc.downcase == teststr
-				} || (connection_keys.include?(format_connection_key(teststr)))
+				desc.downcase == teststr
+			} || (connection_keys.include?(format_connection_key(teststr)))
 		end
 		def search_keys
 			keys = self._search_keys

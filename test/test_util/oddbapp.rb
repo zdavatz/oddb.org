@@ -348,7 +348,7 @@ class TestOddbApp < Test::Unit::TestCase
 		}
 		@app.update(subs.pointer, values)
 		assert_equal('en_name', subs.en)
-		assert_equal(['connectionkey'], subs.connection_keys)
+		assert_equal(['connectionkey', 'firstname'], subs.connection_keys)
 		assert_equal('de_name', subs.de)
 		assert_equal({subs.oid, subs}, @app.substances)
 	end
@@ -376,6 +376,7 @@ class TestOddbApp < Test::Unit::TestCase
 		seq = @app.create(pointer)
 		substpointer = ODDB::Persistence::Pointer.new(['substance', 'LEVOMENTHOLUM'])
 		substance = @app.create(substpointer)
+		#ODBA.cache_server.retrieve_from_index = [substance]
 		pointer += ['active_agent', 'LEVOMENTHOLUM']
 		agent = @app.create(pointer)
 		values = {
@@ -469,14 +470,14 @@ class TestOddbApp < Test::Unit::TestCase
 	end
 	def test_delete_doctor
 		doctor3 = @app.create_doctor
-		@app.doctors = {3 => doctor3}
+		#@app.doctors = {doctor3.oid => doctor3}
 		doctor2 = @app.create_doctor
 	  doctor3.name = 'foobaz'
 	  doctor2.name = 'foobar'
-		expected1 = {doctor2.oid => doctor2, 3 => doctor3}
+		expected1 = {doctor2.oid => doctor2, doctor3.oid => doctor3}
 		assert_equal(expected1, @app.doctors)
 		@app.delete_doctor(doctor2.oid)
-		expected2 = {3 => doctor3}
+		expected2 = {doctor3.oid => doctor3}
 		assert_equal(expected2, @app.doctors)
 	end
 	def test_create_cyp450
@@ -806,13 +807,15 @@ class TestOddbApp < Test::Unit::TestCase
 		doc2 = Mock.new('Doctor2')
 		doc3 = Mock.new('Doctor3')
 		@app.doctors = docs
-		docs.__next(:values) {
+		docs.__next(:values) { 
 			[ doc1, doc2, doc3, ]
 		}
 		doc1.__next(:record_match?) { |db, id| 
+			puts "record-match doc 1"
 			false
 		}
 		doc2.__next(:record_match?) { |db, id| 
+			puts "record-match doc 2"
 			true
 		}
 		assert_equal(doc2, @app.doctor_by_origin(:doc, 4567))
