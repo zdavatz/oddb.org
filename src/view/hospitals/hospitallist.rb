@@ -74,9 +74,9 @@ class HospitalList < HtmlGrid::List
 	end
 	def narcotics(model)
 		if(model.narcotics == "Keine Betäubungsmittelbewilligung")
-			@lookandfeel.lookup(:true)
-		else
 			@lookandfeel.lookup(:false)
+		else
+			@lookandfeel.lookup(:true)
 		end
 	end
 end
