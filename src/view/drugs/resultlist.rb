@@ -90,6 +90,7 @@ class ResultList < HtmlGrid::List
 		[10,0]	=>	:fachinfo,
 		[11,0]	=>  :patinfo,
 		[12,0]	=>	:limitation_text,
+		[13,0]	=>  :feedback,
 	}	
 	REVERSE_MAP = {
 		:company_name			=> false,
@@ -103,20 +104,22 @@ class ResultList < HtmlGrid::List
 		:size							=> false,
 		:substances				=> true,
 	}
+		BACKGROUND_SUFFIX = ' bg'
 	CSS_MAP = {
-		[0,0]	=>	'result-big',
+		[0,0]	=>	'result big',
 		[1,0]	=>	'result',
-		[2,0]	=>	'result-r',
-		[3,0]	=>	'result-r',
-		[4,0]	=>	'result-r',
-		[5,0]	=>	'result-pubprice',
-		[6,0]	=>	'result-i',
-		[7,0]	=>	'result-i',
-		[8,0]	=>	'result-i',
-		[9,0]	=>	'result-i',
-		[10,0]	=>	'result-b-r',
-		[11,0] =>  'result-b-r',
-		[12,0]	=>	'result-b-r',
+		[2,0]	=>	'result right',
+		[3,0]	=>	'result right',
+		[4,0]	=>	'result right',
+		[5,0]	=>	'result bold right',
+		[6,0]	=>	'result italic',
+		[7,0]	=>	'result italic',
+		[8,0]	=>	'result italic',
+		[9,0]	=>	'result italic',
+		[10,0]	=>	'result bold right',
+		[11,0] =>  'result bold right',
+		[12,0]	=>	'result bold right',
+		[12,0]	=>	'result bold right',
 	}
 	CSS_HEAD_MAP = {
 		[0,0,1] =>	'th',
@@ -197,7 +200,7 @@ class ResultList < HtmlGrid::List
 		link = HtmlGrid::PopupLink.new(:compare, model, session, self)
 		link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
 		link.value = model.name_base
-		link.set_attribute('class', 'result-big' << resolve_suffix(model))
+		link.set_attribute('class', 'result big' << resolve_suffix(model))
 		link.set_attribute('title', @lookandfeel.lookup(:ean_code, model.barcode))
 		link
 	end

@@ -11,6 +11,7 @@ require 'state/drugs/atcchooser'
 require 'state/drugs/compare'
 require 'state/drugs/ddd'
 require 'state/drugs/fachinfo'
+require 'state/drugs/feedbacks'
 require 'state/drugs/init'
 require	'state/drugs/limitationtext'
 require 'state/drugs/orphaned_patinfos'
@@ -122,16 +123,22 @@ module ODDB
 				model = @session.doctors.values
 				State::Doctors::DoctorList.new(@session, model)
 			end
-			def home_navigation
-				[
-					self::class::HOME_STATE
-				]
-			end
 			def extend(mod)
 				if(mod.constants.include?('VIRAL'))
 					@viral_module = mod 
 				end
 				super
+			end
+			def feedbacks
+				if((pointer = @session.user_input(:pointer)) \
+					&& (pack = pointer.resolve(@session.app)))
+					State::Drugs::Feedbacks.new(@session, pack)
+				end
+			end
+			def home_navigation
+				[
+					self::class::HOME_STATE
+				]
 			end
 			def interaction_basket
 				if((array = @session.interaction_basket).empty?)

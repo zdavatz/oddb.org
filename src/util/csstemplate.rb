@@ -113,7 +113,7 @@ module ODDB
 			:list_font_color					=>	'blue',
 			:list_link_color					=>	'blue',
 			:list_link_hover_color		=>	'#2ba476',
-			:rslt_bg									=>	'#f9f7f3',
+			:rslt_bg									=>	'#ecffe6',
 			:rslt_infos_bg_bright			=>	'#FFF88F',
 			:rslt_infos_bg_dark				=>	'#FFF455',
 			:rslt_link_hover_color		=>	'blue',

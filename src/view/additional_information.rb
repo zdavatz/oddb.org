@@ -23,6 +23,15 @@ module ODDB
 					link
 				end
 			end
+			def feedback(model, session)
+				link = HtmlGrid::Link.new(:feedback_text_short, model, session, self)
+				link.href = @lookandfeel.event_url(:feedbacks, {'pointer'=>model.pointer})
+				#link.set_attribute('title', @lookandfeel.lookup(:limitation_text))
+				pos = components.index(:feedback)
+				component_css_map.store(pos, "feedback square")
+				css_map.store(pos, "square")
+				link
+			end
 			def limitation_text(model, session)
 				if((sl = model.sl_entry) && (sltxt = sl.limitation_text))
 					link = HtmlGrid::PopupLink.new(:limitation_text_short, model, session, self)
