@@ -63,6 +63,14 @@ module CompanyList
 		HtmlGrid::MailLink.new('contact_email', model, session, self)
 	end
 end
+module NewCompany
+	def new_company(model, session)
+		button = HtmlGrid::Input.new(:new_company, model, session, self)
+		href = "location.href='#{@lookandfeel.event_url(:new_company)}'"
+		button.set_attribute('onClick', href)
+		button
+	end
+end
 class CompaniesComposite < Form
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
@@ -80,9 +88,6 @@ class CompaniesComposite < Form
 end
 class UnknownCompanyList < HtmlGrid::List
 	include View::Companies::CompanyList	
-	def init
-		super
-	end
 end
 class UnknownCompaniesComposite < CompaniesComposite
 	COMPANY_LIST = UnknownCompanyList
@@ -90,13 +95,18 @@ end
 class UnknownCompanies < View::ResultTemplate
 	CONTENT = View::Companies::UnknownCompaniesComposite
 end
-class RootCompanyList < View::FormList
-	include View::Companies::CompanyList	
-	EVENT = :new_company
+class RootCompanyList < UnknownCompanyList
 	include View::AlphaHeader
 end
 class RootCompaniesComposite < CompaniesComposite
+	include NewCompany
 	COMPANY_LIST = RootCompanyList
+	COMPONENTS = {
+		[0,0]		=>	:search_query,
+		[0,0,1]	=>	:submit,
+		[0,1]		=>	:company_list,
+		[0,2]		=>	:new_company,
+	}
 end
 class RootCompanies < View::ResultTemplate
 	CONTENT = View::Companies::RootCompaniesComposite
@@ -125,8 +135,22 @@ class EmptyResultForm < HtmlGrid::Form
 		@lookandfeel.lookup(:title_none_found, query)
 	end
 end
+class RootEmptyResultForm < EmptyResultForm
+	include NewCompany
+	COMPONENTS = {
+		[0,0]		=>	:search_query,
+		[0,0,1]	=>	:submit,
+		[0,1]		=>	:title_none_found,
+		[0,2]		=>	'e_empty_result',
+		[0,3]		=>	'explain_search_company',
+		[0,4]		=>	:new_company,
+	}
+end
 class EmptyResult < View::PublicTemplate
 	CONTENT = View::Companies::EmptyResultForm
+end
+class RootEmptyResult < View::PublicTemplate
+	CONTENT = View::Companies::RootEmptyResultForm
 end
 		end
 	end
