@@ -26,8 +26,8 @@ class SearchBar < HtmlGrid::InputText
 		script = "if(#{@name}.value!='#{val}'){"
 		script << "var href = '#{submit}'"
 		script << "+escape(#{@name}.value.replace(/\\//, '%2F'));"
-		script << "if(this.exact_match)"
-		script << "href += '/exact_match/' + this.exact_match.checked;"
+		script << "if(this.search_type)"
+		script << "href += '/search_type/' + this.search_type.value;"
 		script << "document.location.href=href; } return false"
 		self.onsubmit = script
 	end

@@ -15,7 +15,7 @@ module ODDB
 		attr_accessor :code
 		attr_reader :guidelines, :ddd_guidelines
 		# use this instead of add_sequence for temporary atc_classes
-		attr_writer :sequences 
+		attr_writer :sequences, :descriptions
 		class DDD
 			include Persistence
 			attr_accessor :dose, :note

@@ -505,7 +505,7 @@ class OddbPrevalence
 	def resolve(pointer)
 		pointer.resolve(self)
 	end
-	def search(query, lang)
+	def search_oddb(query, lang)
 		# current search_order:
 		# 1. atcless
 		# 2. iksnr or ean13
@@ -517,6 +517,7 @@ class OddbPrevalence
 		# 8. sequence
 		result = ODDB::SearchResult.new
 		result.exact = true
+		# atcless
 		if(query == 'atcless')
 			atc = ODDB::AtcClass.new('n.n.')
 			sequences = []
@@ -530,6 +531,7 @@ class OddbPrevalence
 			atc.sequences = sequences
 			result.atc_classes = [atc]
 			return result
+		# iksnr or ean13
 		elsif(match = /(?:\d{4})?(\d{5})(?:\d{4})?/.match(query))
 			iksnr = match[1]
 			if(reg = registration(iksnr))
@@ -540,19 +542,25 @@ class OddbPrevalence
 			end
 		end
 		key = query.to_s.downcase
+		# atc-code
 		atcs = search_by_atc(key)
+		# exact word in sequence name
 		if(atcs.empty?)
 			atcs = search_by_sequence(key, result)
 		end
+		# company-name
 		if(atcs.empty?)
 			atcs = search_by_company(key)
 		end
+		# indication
 		if(atcs.empty?)
 			atcs = search_by_substance(key)
 		end
+		# substance
 		if(atcs.empty?)
 			atcs = search_by_indication(key, lang, result)
 		end
+		# sequence
 		if(atcs.empty?)
 			atcs = search_by_sequence(key)
 		end
@@ -605,12 +613,29 @@ class OddbPrevalence
 	def search_companies(key)
 		ODBA.cache_server.retrieve_from_index("company_index", key)
 	end
-	def search_exact(query)
-		result = ODDB::SearchResult.new
-		atc = ODDB::AtcClass.new('n.n.')
-		atc.sequences = ODBA.cache_server.\
+	def search_exact_sequence(query)
+		sequences = ODBA.cache_server.\
 			retrieve_from_index('sequence_index', query)
-		result.atc_classes = [atc]
+		_search_exact_classified_result(sequences)
+	end
+	def search_exact_substance(query)
+		sequences = ODBA.cache_server.\
+			retrieve_from_index('substance_index_sequence', query)
+		_search_exact_classified_result(sequences)
+	end
+	def _search_exact_classified_result(sequences)
+		atc_classes = {}
+		sequences.each { |seq|
+			code = (atc = seq.atc_class) ? atc.code : 'n.n'
+			new_atc = atc_classes.fetch(code) { 
+				atc_class = ODDB::AtcClass.new(code)
+				atc_class.descriptions = atc.descriptions
+				atc_classes.store(code, atc_class)
+			}
+			new_atc.sequences.push(seq)
+		}
+		result = ODDB::SearchResult.new
+		result.atc_classes = atc_classes.values
 		result
 	end
 	def search_indications(query)
@@ -618,16 +643,6 @@ class OddbPrevalence
 	end
 	def search_interactions(query)
 		result = ODBA.cache_server.retrieve_from_index("sequence_index_substance", query)
-=begin
-		keys.each { |key|
-			if(atc_codes = sequences_by_name(key))
-				atc_codes.each { |atc_code|
-					result += atc_code.substances
-				} 
-			end
-			result += soundex_substances(key)
-		}
-=end
 		if(subs = substance(query))
 			result.unshift(subs)
 		end
@@ -648,6 +663,11 @@ class OddbPrevalence
 			soundex_substances(query)
 		end
 	end
+	def sequences
+		@registrations.values.inject([]) { |seq, reg| 
+			seq + reg.sequences.values 
+		}
+	end
 	def sequences_by_name(name)
 		ODBA.cache_server.retrieve_from_index("sequence_index_atc", name)
 	end
@@ -660,17 +680,6 @@ class OddbPrevalence
 	def sponsor
 		@sponsor ||= ODDB::Sponsor.new
 	end
-=begin
-	def store_in_index(index, key, *values)
-		key = key.to_s.gsub(/[^\sa-zA-Z0-9áéíóúàèìòùâêîôûäëïöüÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÄËÏÖÜ+-_="'.*ç%&\/()=!]/, '')
-		parts = key.split(/\s+/)
-		parts << key
-		parts.uniq!
-		parts.each { |part|
-			index.store(part.downcase, *values) if part.length > 3
-		}
-	end
-=end
 	def substance(key)
 		if(key.to_i.to_s == key.to_s)
 			@substances[key.to_i]
@@ -733,10 +742,16 @@ class OddbPrevalence
 					end
 					puts "creating: #{index_definition.index_name}"
 					ODBA.cache_server.create_index(index_definition, ODDB)
-					puts "filling: #{index_definition.index_name}"
-					puts index_definition.init_source
-					ODBA.cache_server.fill_index(index_definition.index_name, 
-					instance_eval(index_definition.init_source))
+					begin 
+						puts "filling: #{index_definition.index_name}"
+						puts index_definition.init_source
+						source = instance_eval(index_definition.init_source)
+						puts "source.size: #{source.size}"
+						ODBA.cache_server.fill_index(index_definition.index_name, 
+							source)
+					rescue Exception => e
+						puts e.message
+					end
 					puts "finished in #{(Time.now - index_start) / 60.0} min"
 				end
 			}

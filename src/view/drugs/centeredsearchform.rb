@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Drugs::CenteredSearchForm -- oddb -- 07.09.2004 -- maege@ywesee.com
 
-require 'htmlgrid/inputcheckbox'
+require 'htmlgrid/select'
 require 'view/centeredsearchform'
 require 'view/google_ad_sense'
 
@@ -12,13 +12,13 @@ class CenteredSearchForm < View::CenteredSearchForm
 	COMPONENTS = {
 		[0,0]		=>	View::TabNavigation,
 		[0,1,0,1]	=>	:search_query,
-		[0,2,0,2]	=>	:exact_match,
-		[0,2,1]		=>	'exact_match',
+		[0,2,0]		=>	'search_type',
+		[0,2,1,2]	=>	:search_type,
 		[0,3,0,3]	=>	:submit,
 		[0,3,0,4]	=>	:search_reset,
 	}
 	SYMBOL_MAP = {
-		:exact_match	=>	HtmlGrid::InputCheckbox,
+		:search_type	=>	HtmlGrid::Select,
 		:search_query	=>	View::SearchBar,	
 	}
 	CSS_MAP = {
