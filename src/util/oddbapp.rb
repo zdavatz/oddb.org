@@ -97,6 +97,10 @@ class OddbPrevalence
 		# if this item has been newly created, we want its pointer back
 		pointer = item.pointer unless item.nil? 
 		updated(item)
+		update_item(item)
+		item
+	end
+	def update_item(item)
 		case item
 		when ODDB::Sequence
 			delete_from_index(@sequence_index, item.name, item)
@@ -147,7 +151,6 @@ class OddbPrevalence
 		else
 			pointer.issue_update(self, values) unless pointer.nil?
 		end
-		item
 	end
 	#####################################################
 	def accepted_orphans
@@ -516,8 +519,9 @@ class OddbPrevalence
 		end
 	end
 	def substance_by_connection_key(connection_key)
+		key = connection_key.to_s.downcase
 		@substances.values.select { |substance|
-			substance.connection_key == connection_key
+			substance.connection_key == key
 		}.first
 	end
 	def substances

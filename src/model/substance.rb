@@ -30,6 +30,8 @@ module ODDB
 			values.each { |key, value|
 				if(key.to_s.size == 2)
 					values[key] = value.to_s.gsub(/\b[A-Z].+?\b/) { |match| match.capitalize }
+				elsif(key == :connection_key)
+					values[key] = value.to_s.downcase
 				end
 			}
 			values
