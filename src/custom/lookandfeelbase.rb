@@ -1293,6 +1293,7 @@ zdavatz ! ywesee.com
 				:th_inhibitors						=>	'R&eacute;prim&eacute; par',
 				:th_interaction_basket_status		=>	"Statut de panier d'interaction",
 				:th_galenic_form					=>	'Forme gal&eacute;nique',
+				:th_hospital_name					=>	'Nom',
 				:th_ikscat								=>	'Kat.',
 				:th_ikscat_title					=>	'Cat&eacute;gorie Swissmedic / Entr&eacute;e SL',
 				:th_ikscd									=>	"num&eacute;ro d'emballage ",
