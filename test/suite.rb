@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # suite.rb -- oddb -- 18.11.2002 -- hwyss@ywesee.com 
 
-$: << File.expand_path(File.dirname(__FILE__))
+$: << File.dirname(__FILE__)
 
 directories = []
 
@@ -16,10 +16,10 @@ Dir.foreach(File.dirname(__FILE__)) { |dir|
 
 directories.each { |dir|
 	if(File.ftype(dir) == 'directory')
+		puts dir
 		Dir.foreach(dir) { |file|
-			if /.*\.rb$/o.match(file)&&file!='suite.rb'
-				#require file 
-				require File.expand_path(file, dir)
+			if /.*\.rb$/o.match(file) && file!='suite.rb'
+				require(File.expand_path(file, dir))
 			end
 		}
 	end
