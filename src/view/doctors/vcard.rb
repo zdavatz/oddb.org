@@ -8,7 +8,9 @@ module ODDB
 		module Doctors 
 class VCard < HtmlGrid::Component
 	def http_headers
-		filename = @model.name.to_s + ".vcf"
+		filename = @model.name.to_s + 
+			"_" + @model.firstname.to_s + ".vcf"
+		filename = prepare(filename)
 		{
 			'Content-Type'	=>	'text/x-vCard',	
 			'Content-Disposition'	=>	"attachment; filename=#{filename}",
@@ -67,6 +69,20 @@ class VCard < HtmlGrid::Component
 			inj.push(addr_str(addr, "LABEL;#{type};CHARSET=ISO-8859-1:;;", ' '))
 			inj
 		}
+	end
+	def prepare(str)
+		str = str.dup
+		str.gsub!(/[äÄæÆ]/, 'ae')
+		str.gsub!(/[áÁàÀâÂãÃ]/, 'a')
+		str.gsub!(/[çÇ]/, 'c')
+		str.gsub!(/[ëËéÉèÈêÊ]/, 'e')
+		str.gsub!(/[ïÏíÍìÌîÎ]/, 'i')
+		str.gsub!(/[öÖ]/, 'oe')
+		str.gsub!(/[óÓòÒôÔõÕøØ]/, 'o')
+		str.gsub!(/[üÜ]/, 'ue')
+		str.gsub!(/[úÚùÙûÛ]/, 'u')
+		str.tr!('þßð', 'psd')
+		str
 	end
 end
 		end
