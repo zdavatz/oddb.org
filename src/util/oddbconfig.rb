@@ -2,6 +2,7 @@
 # OddbConfig -- oddb -- 09.04.2003 -- hwyss@ywesee.com 
 
 # Do not require any Application-Internals in this file
+require 'delegate'
 
 =begin
 module DRb

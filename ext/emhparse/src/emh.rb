@@ -304,8 +304,8 @@ module ODDB
 				unless(ean13.nil?)
 					data.store(:ean13, ean13)
 				end
-				data
 			end
+			data
 		end
 		def parse_emh_data(html)
 			writer = DoctorWriter.new

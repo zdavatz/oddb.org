@@ -33,7 +33,9 @@ module ODDB
 				empty_ids = (@config.empty_ids || [])
 				step = 250
 				5000.step(100000, step) { |base|
-					range = base..(base+step)
+					range = base...(base+step)
+					puts "Next-Step: #{range.first} - #{range.last}"
+					$stdout.flush
 					ODBA.batch {
 				top_doc_id = 0
 				(range.to_a - empty_ids).each { |doc_id| 
@@ -126,6 +128,7 @@ module ODDB
 				end
 				extract = [
 					:abilities,
+					:ean13,
 					:exam,
 					:email,
 					:firstname,
