@@ -175,7 +175,7 @@ class FiPiOfferInputComposite < HtmlGrid::Composite
 	def fipi_offer_input_explanation(model, session)
 		text = HtmlGrid::RichText.new(model, session, self)
 		link = HtmlGrid::Link.new(:ywesee, model, session, self)
-		link.href	= @lookandfeel.lookup(:ywesee_href)
+		link.href	= @lookandfeel.lookup(:fipi_cost_link)
 		link.value = @lookandfeel.lookup(:ywesee)
 		link.set_attribute('class', 'list')
 		text << @lookandfeel.lookup(:fipi_offer_input_explanation0)

@@ -345,6 +345,7 @@ module ODDB
 				:fi_activation_charge			=>	"<b>Einmalige</b> Aufschaltgeb&uuml;hren FI:",
 				:pi_activation_charge			=>	"<b>Einmalige</b> Aufschaltgeb&uuml;hren PI:",
 				:fipi_activation_charge_value	=>	"CHF 1'500.-",
+				:fipi_cost_link						=>	'http://wiki.ywesee.com/index.cgi?Kosten_Publikation_Fi_und_Pi#Kosten',
 				:pi_count_text						=>	'&nbsp;Patienteninformationen',
 				:fipi_offer								=>	'Publikation FI und PI',
 				:fipi_offer_confirm				=>	"Offerte Publikation Fach- und Patienteninfos gem&auml;ss&nbsp;",
@@ -732,7 +733,6 @@ zdavatz ! ywesee.com
 				:ywesee_contact_href			=>	'mailto:zdavatz@ywesee.com',
 				:ywesee_contact_name			=>	'Zeno Davatz',
 				:ywesee_contact_text			=>	'Bitte schreiben Sie an:',
-				:ywesee_href							=>	'http://www.ywesee.com/index.cgi?Kosten_Publikation_Fi_und_Pi#Kosten',
 				:ywesee										=>	'ywesee',
 			},
 			'fr'			=>		{
@@ -1957,7 +1957,6 @@ zdavatz ! ywesee.com
 				:ywesee_contact_href			=>	'mailto:zdavatz@ywesee.com',
 				:ywesee_contact_name			=>	'Zeno Davatz',
 				:ywesee_contact_text			=>	'Please write to',
-				:ywesee_href							=>	'http://www.ywesee.com/index.cgi?Kosten_Publikation_Fi_und_Pi#Kosten',
 				:ywesee										=>	'ywesee',
 			},
 		}	
