@@ -21,7 +21,7 @@ module ODDB
 		attr_accessor :price_exfactory, :price_public, :pretty_dose
 		attr_accessor :pharmacode
 		alias :pointer_descr :ikscd
-		unit_pattern = '(([kmucMG]?([glLJm]|mol|Bq))(\/([mu]?[glL]))?)|((Mio\s)?U\.?I\.?)|(%( [mV]\/[mV])?)|(I\.E\.)|(Fl\.)'
+		unit_pattern = '(([kmucMG]?([glLJm]|mol|Bq)\b)(\/([mu]?[glL])\b)?)|((Mio\s)?U\.?I\.?)|(%( [mV]\/[mV])?)|(I\.E\.)|(Fl\.)'
 		numeric_pattern = '\d+(\'\d+)*([.,]\d+)?'
 		iso_pattern = "[a-zA-Z#{0xC0.chr}-#{0xFF.chr}()\-]+"
 		@@parser = Parse.generate_parser <<-EOG

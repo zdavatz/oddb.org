@@ -45,6 +45,7 @@ module ODDB
 			:companylist,
 			:epatents,
 			:galenic_groups,
+			:google_adsense,
 			:incomplete_registrations,
 			:indications,
 			:login_form,
@@ -119,8 +120,8 @@ module ODDB
 		}
 		HTML_ATTRIBUTES = {
 			:logo => {
-				'width'		=>	'151',
-				'height'	=>	'70',
+				'width'		=>	'150',
+				'height'	=>	'50',
 			},
 		}
 	end

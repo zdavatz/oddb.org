@@ -117,8 +117,8 @@ class TestHayesWriter < Test::Unit::TestCase
 		assert_equal("suBstanCe", obj.name)
 	end
 	def test_handle_cytochrome
-		obj = ODDB::Interaction::InhibitorConnection.new("suBstanCe")
-		obj_two = ODDB::Interaction::InhibitorConnection.new("SubStanCeTwo")
+		obj = ODDB::Interaction::InhibitorConnection.new("suBstanCe", 'en')
+		obj_two = ODDB::Interaction::InhibitorConnection.new("SubStanCeTwo", "en")
 		@writer.handle_cytochrome(["3A5", "3A6"], obj)
 		assert_equal(2, @writer.cytochromes.size)
 		result = @writer.cytochromes["3A5"].inhibitors.first

@@ -140,6 +140,14 @@ class TestRegistration < Test::Unit::TestCase
 		seq1 = @registration.create_sequence(2)
 		assert_equal(seq1, @registration.sequences['02'])
 	end
+	def test_generic_type
+		company = Mock.new("company")
+		@registration.company = company 
+		company.__next(:generic_type) { "complementary" }	
+		assert_equal("complementary", @registration.generic_type)
+		@registration.generic_type = "generic"
+		assert_equal("generic", @registration.generic_type)
+	end
 	def test_sequence
 		seq = StubRegistrationSequence.new('01')
 		@registration.sequences = {'01'=>seq }

@@ -6,7 +6,6 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/company'
-require 'state/company'
 
 module ODDB
 	class Company

@@ -24,7 +24,7 @@ module ODDB
 		ENUMS = {
 			:cl_status		=>	['false', 'true'],
 			:fi_status		=>	['false', 'true'],
-			:generic_type =>	[nil, 'generic', 'original' ],
+			:generic_type =>	[nil, 'generic', 'original', 'complementary' ],
 			:limitation		=>	['true', 'false'],
 			:pi_status		=>	['false', 'true'],
 		}	
@@ -48,20 +48,24 @@ module ODDB
 			:delete_orphaned_patinfo,
 			:download,
 			:download_export,
-			:galdat_download,
 			:generic_definition,
 			:help,
+			:home,
+			:home_admin,
+			:home_companies,
+			:home_drugs,
+			:home_interactions,
+			:home_substances,
+			:home_user,
 			:legal_note,
 			:login,
 			:login_form,
 			:logout,
 			:fipi_offer_input,
 			:galenic_groups,
-			:home,
 			:incomplete_registrations,
 			:indications,
 			:interaction_basket,
-			:interaction_home,
 			:limitation_text,
 			:mailinglist,
 			:merge,
@@ -74,6 +78,7 @@ module ODDB
 			:new_package,
 			:new_registration,
 			:new_sequence,
+			:oddbdat_download,
 			:orphaned_fachinfos,
 			:orphaned_patinfos,
 			:patinfo_deprived_sequences,
@@ -90,13 +95,12 @@ module ODDB
 			:shadow_pattern,
 			:show_interaction,
 			:search,
-			:search_interaction,
 			:search_registrations,
 			:search_sequences,
 			:select_seq,
 			:set_pass,
+			:switch,
 			:sponsor,
-			:substance_result,
 			:substances,
 			:update,
 			:update_bsv,
@@ -160,6 +164,8 @@ module ODDB
 			:unsubscribe,
 			:url,
 		]
+		ZONES = [:drugs, :interactions, :substances, :admin, :user, 
+			:companies]
 		def code(value)
 			pattern = /^[A-Z]([0-9]{2}([A-Z]([A-Z]([0-9]{2})?)?)?)?$/i
 			if(valid = pattern.match(value.capitalize))
@@ -235,6 +241,14 @@ module ODDB
 				Persistence::Pointer.parse(value)
 			rescue StandardError, ParseException
 				raise SBSM::InvalidDataError.new("e_invalid_pointer", :pointer, value)
+			end
+		end
+		def zone(value)
+			zone = value.to_s.intern
+			if(self::class::ZONES.include?(zone))
+				zone
+			else
+				raise SBSM::InvalidDataError.new("e_invalid_zone", :zone, value)
 			end
 		end
 		alias :pointers :pointer

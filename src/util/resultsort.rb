@@ -46,12 +46,14 @@ module ODDB
 		end
 		def generic_type_weight(package)
 			case package.generic_type
-			when :original
+			when :original, 'original'
 				0
-			when :generic
+			when :generic, 'generic'
 				5
-			else
+			when :complementary, 'complementary'
 				10
+			else
+				15
 			end
 			# the following was madly inefficient!
 =begin

@@ -182,7 +182,7 @@ class TestSubstance < Test::Unit::TestCase
 	end
 	def test_same_as
 		substance = ODDB::Substance.new
-		substance.connection_key = 'ACIDUM Mefenanicum'
+		substance.connection_key = 'acidum mefenanicum'
 		substance.descriptions.store('lt', "Acidum Acetylsalicylicum")
 		assert_equal(true, substance.same_as?('ACIDUM ACETYLSALICYLICUM'))
 		assert_equal(false, substance.same_as?('Acetylsalicylsäure'))

@@ -14,9 +14,8 @@ module ODDB
 		LF_FACTORY = LookandfeelFactory
 		DEFAULT_FLAVOR = "gcc"
 		DEFAULT_LANGUAGE = "de"
-		DEFAULT_STATE = InitState
-		CAP_MAX_THRESHOLD = 8
-		MAX_STATES = 5
+		DEFAULT_STATE = State::Drugs::Init
+		DEFAULT_ZONE = :drugs
 		SERVER_NAME = 'www.oddb.org'
 =begin
 		def process(request)
@@ -49,8 +48,11 @@ module ODDB
 		def interaction_basket_count
 			@interaction_basket.size
 		end
+		def navigation
+			@active_state.navigation
+		end
 		def user_equiv?(test)
-			return true if(@user.is_a? RootUser)
+			return true if(@user.is_a? ODDB::RootUser)
 			mdl = if(test.is_a?(Persistence::Pointer))
 				test.resolve(@app)
 			else
@@ -62,9 +64,13 @@ module ODDB
 			@persistent_user_input[:search_query] ||= query
 			@app.search(query, self.language)
 		end
-		def search_interaction(query)
+		def search_interactions(query)
 			@persistent_user_input[:search_query] ||= query
-			@app.search_interaction(query)
+			@app.search_interactions(query)
+		end
+		def search_substances(query)
+			@persistent_user_input[:search_query] ||= query
+			@app.search_substances(query)
 		end
   end
 end

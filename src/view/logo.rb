@@ -1,33 +1,40 @@
 #!/usr/bin/env ruby
-# Logo -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
+# View::Logo -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/component'
 
 module ODDB
-	class PopupLogo < HtmlGrid::Component
-		CSS_CLASS = 'logo'
-		def init
-			super
-			if(@lookandfeel)
-				@attributes.update(@lookandfeel.attributes(:logo))
-				@attributes['src'] = if(@lookandfeel.enabled?(:multilingual_logo, false))
-					@lookandfeel.resource_localized(:logo)
-				else
-					@lookandfeel.resource(:logo)
+	module View
+		class PopupLogo < HtmlGrid::Component
+			CSS_CLASS = 'logo'
+			def init
+				super
+				if(@lookandfeel)
+					@attributes.update(@lookandfeel.attributes(:logo))
+					@attributes['src'] = if(@lookandfeel.enabled?(:multilingual_logo, false))
+						@lookandfeel.resource_localized(:logo)
+					else
+						@lookandfeel.resource(:logo)
+					end
+					@attributes['alt'] = @lookandfeel.lookup(:logo)
 				end
-				@attributes['alt'] = @lookandfeel.lookup(:logo)
+			end
+			def to_html(context)
+				link_attrs = {
+					"href"	=> @lookandfeel.event_url(:home)
+				}
+				context.a(link_attrs) {
+					context.img(@attributes)
+				}
 			end
 		end
-		def to_html(context)
-			context.img(@attributes)
-		end
-	end
-	class Logo < PopupLogo
-		def to_html(context)
-			if(@lookandfeel.enabled?(:logo))
-				super
-			else
-				'&nbsp;'
+		class Logo < View::PopupLogo
+			def to_html(context)
+				if(@lookandfeel.enabled?(:logo))
+					super
+				else
+					'&nbsp;'
+				end
 			end
 		end
 	end

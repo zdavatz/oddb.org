@@ -50,28 +50,7 @@ module ODDB
 		end
 	end
 end
- module ODBA
-	 module Persistable
-		def odba_store(*args)
-		end
-		def odba_delete
-		end
-=begin
-		class Hash
-			def odba_restore
-			end
-		end
-=end
-		class Cache
-			def retrieve_from_index(*args)
-			end
-		end
-	end
- end
- class Array
-	 def odba_restore
-	 end
- end
+
 class TestOddbApp < Test::Unit::TestCase
 	class StubCompany
 		attr_accessor	:oid
@@ -194,12 +173,6 @@ class TestOddbApp < Test::Unit::TestCase
 	end
 
 	def setup
-		@old_cache = ODBA.cache_server
-		ODBA.cache_server = Mock.new("cache_server")
-		ODBA.cache_server.__next(:prefetch){}
-		ODBA.cache_server.__next(:fetch_named){
-				OddbPrevalence.new
-		}
 		ODDB::GalenicGroup.reset_oids
 		dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
 		Dir.foreach(dir) { |filename|
@@ -207,9 +180,6 @@ class TestOddbApp < Test::Unit::TestCase
 			File.delete(file) unless filename[0] == ?.
 		}
 		@app = ODDB::App.new
-	end
-	def teardown
-		ODBA.cache_server = @old_cache
 	end
 	def test_galenic_group_initialized
 		expected_pointer = ODDB::Persistence::Pointer.new([:galenic_group, 1])
@@ -346,7 +316,6 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.galenic_groups = { 2 => group }
 		assert_equal(galenic_form, @app.galenic_form('Tabletten'))
 	end
-=begin
 	def test_checkout
 		reg = ODDB::Registration.new('12345')
 		sq1 = ODDB::Sequence.new('01')
@@ -365,7 +334,6 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal([], @app.sequence_index.fetch('foobar'))
 		assert_equal([], @app.sequence_index.fetch('barfoo'))
 	end
-=end
 	def test_create_galenic_group
 		@app.galenic_groups = {}
 		pointer = ODDB::Persistence::Pointer.new([:galenic_group])
@@ -386,9 +354,17 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(ODDB::Substance, result.class)
 		assert_equal('Acidum Acetylsalicylicum', result.name)
 		soundex = Text::Soundex.soundex(%w{Acidum Acetylsalicylicum})
+		expected = {
+			soundex			=>	[result],
+			[soundex[0]]=>	[result],
+			[soundex[1]]=>	[result],
+		}
+		assert_equal(expected, @app.substance_index.hash)
 	end
 	def test_update_substance
 		@app.substances = {}
+		@app.rebuild_indices
+		assert_equal([], @app.soundex_substances('de_name'))
 		pointer = ODDB::Persistence::Pointer.new(:substance)
 		descr = {
 			'en'						=>	'first_name',
@@ -401,6 +377,8 @@ class TestOddbApp < Test::Unit::TestCase
 		}
 		@app.update(subs.pointer, values)
 		assert_equal('en_name', subs.en)
+		result = @app.soundex_substances('en_name')
+		assert_equal([subs], result)
 	end
 	def test_create_active_agent
 		pointer = ODDB::Persistence::Pointer.new(['registration', '12345'])
@@ -411,7 +389,6 @@ class TestOddbApp < Test::Unit::TestCase
 		substance = @app.create(substpointer)
 		seq.active_agents = []
 		pointer += ['active_agent', 'LEVOMENTHOLUM']
-		ODBA.cache_server.__next(:store) {}
 		@app.create(pointer)
 		assert_equal(1, seq.active_agents.size)
 		agent = seq.active_agents.first
@@ -427,9 +404,7 @@ class TestOddbApp < Test::Unit::TestCase
 		seq = @app.create(pointer)
 		substpointer = ODDB::Persistence::Pointer.new(['substance', 'LEVOMENTHOLUM'])
 		substance = @app.create(substpointer)
-		assert_instance_of(ODDB::Substance, substance)
 		pointer += ['active_agent', 'LEVOMENTHOLUM']
-		ODBA.cache_server.__next(:store) { }
 		agent = @app.create(pointer)
 		values = {
 			:dose	=>	[16, 'mg'],
@@ -521,7 +496,6 @@ class TestOddbApp < Test::Unit::TestCase
 		pointer = ODDB::Persistence::Pointer.new(['cyp450', '1A2'])
 		created = @app.create(pointer)
 		assert_equal(1, @app.cyp450s.size)
-		ODBA.cache_server.__next(:store) {}
 		@app.delete(pointer)
 		assert_equal(0, @app.cyp450s.size)
 	end
@@ -556,7 +530,6 @@ class TestOddbApp < Test::Unit::TestCase
 		pointer += ['cyp450inhibitor', 'foo_name']
 		inh = @app.create(pointer)
 		assert_equal(1, cyp450.inhibitors.size)
-		ODBA.cache_server.__next(:store) {}
 		@app.delete(pointer)
 		assert_equal(0, cyp450.inhibitors.size)
 	end
@@ -582,7 +555,6 @@ class TestOddbApp < Test::Unit::TestCase
 		pointer += ['cyp450inducer', 'foo_name']
 		inh = @app.create(pointer)
 		assert_equal(1, cyp450.inducers.size)
-		ODBA.cache_server.__next(:store) {}
 		@app.delete(pointer)
 		assert_equal(0, cyp450.inducers.size)
 	end
@@ -606,7 +578,6 @@ class TestOddbApp < Test::Unit::TestCase
 		pointer += [ :cyp450substrate, "cyp_id" ]
 		substr = @app.create(pointer)
 		assert_equal(1, substance.substrate_connections.size)
-		ODBA.cache_server.__next(:store) {}
 		@app.delete(substr.pointer)
 		assert_equal(0, substance.substrate_connections.size)
 	end
@@ -643,28 +614,56 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(group_pointer, generic_group.pointer)
 	end
 	def test_search1
-		atc_mock1 = Mock.new("atc_class2")
-		atc_mock1.__next(:code){[2]}
-		atc_mock2 = Mock.new("atc_class2")
-		atc_mock2.__next(:code){[1]}
-		ODBA.cache_server.__next(:retrieve_from_index){|name, s_term|
-			[atc_mock1, atc_mock2]
+		@app.registrations = {
+			:foo => StubRegistration.new,
+			:bar => StubRegistration.new,
 		}
-		expected = [atc_mock1, atc_mock2]
-		assert_equal(expected, @app.search('blah', 'de').atc_classes)
+		@app.init
+		expected = [StubAtcClassFactory.atc('1'), StubAtcClassFactory.atc('2')]
+		assert_equal(expected, @app.search('blah'))
 	end
-	def test_search_interaction
-		atc_mock1 = Mock.new("atc_mock1")
-		atc_mock2 = Mock.new("atc_mock2")
-		atc_mock1.__next(:substances){ ["atc_mock1"]}
-		atc_mock2.__next(:substances){ ["atc_mock2"]}
-		ODBA.cache_server.__next(:retrieve_from_index){|name, key|
-			[atc_mock1]	
+	def test_search2
+		@app.registrations = {
+			:foo => StubRegistration.new,
+			:bar => StubRegistration.new,
 		}
-		ODBA.cache_server.__next(:retrieve_from_index){|name, key|
-			[atc_mock1]	
+		@app.init
+		assert_equal([], @app.search('froh'))
+	end
+	def test_search_interactions
+		pointer = ODDB::Persistence::Pointer.new([:registration, '12345'])
+		reg = @app.create(pointer)
+		assert_equal(ODDB::Registration, reg.class)
+		pointer += [:sequence, '01']
+		@app.update(pointer.creator, {:name_base => 'foobar'})
+		pointer += [:active_agent, 'foosubstance']
+		@app.create(pointer)
+		pointer = ODDB::Persistence::Pointer.new([:registration, '23456'])
+		reg = @app.create(pointer)
+		assert_equal(ODDB::Registration, reg.class)
+		pointer += [:sequence, '02']
+		@app.update(pointer.creator, {:name_base => 'barfoo'})
+		@app.init
+		@app.rebuild_indices
+		assert_equal(1, @app.search_interactions('foobar').size)
+	end
+	def test_search_interactions2
+		pointer = ODDB::Persistence::Pointer.new([:registration, '12345'])
+		reg = @app.create(pointer)
+		assert_equal(ODDB::Registration, reg.class)
+		pointer += [:sequence, '01']
+		@app.update(pointer.creator, {:name_base => 'foobar'})
+		pointer += [:active_agent, 'foosubstance']
+		@app.create(pointer)
+		pointer = ODDB::Persistence::Pointer.new([:substance])
+		values = {
+			:en	=>	'foobar',
+			:de	=>	'de_name',			
 		}
-		assert_equal(2, @app.search_interaction('foobar').size)
+		@app.update(pointer.creator, values)
+		@app.init
+		@app.rebuild_indices
+		assert_equal(2, @app.search_interactions('foobar').size)
 	end
 	def test_update_sequence
 		pointer = ODDB::Persistence::Pointer.new([:registration, '12345'])
@@ -676,9 +675,22 @@ class TestOddbApp < Test::Unit::TestCase
 		values = {
 			'name'	=>	'Ponstan',
 		}
+		@app.rebuild_indices
 		@app.update(pointer, values)
+		assert_equal([seq], @app.sequence_index['ponstan'])
+		values = {
+			'name'	=>	'Mefe',
+		}
 		@app.update(pointer, values)
+		assert_equal([], @app.sequence_index['ponstan'])
+		assert_equal([seq], @app.sequence_index['mefe'])
+		values = {
+			'name_base'	=>	'Melur'
+		}
 		@app.update(pointer, values)
+		assert_equal([], @app.sequence_index['ponstan'])
+		assert_equal([], @app.sequence_index['mefe'])
+		assert_equal([seq], @app.sequence_index['melur'])
 	end
 	def test_create_indication
 		@app.indications = {}
@@ -743,6 +755,27 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.substances = {substance.oid => substance}
 		assert_equal(substance, @app.substance(substance.oid) )
 	end
+	def test_substance_soundex
+		sub1 = StubSubstance.new("Hallo Du", false)
+		sub2 = StubSubstance.new("Acidum Mefenanicum", true)
+		sub3 = StubSubstance.new("Accium Mefenaneic", true)
+		sub4 = StubSubstance.new("Acidum Mefenanikum", true)
+		sub5 = StubSubstance.new("Acidum Mephenanikum", true)
+		substances	= {
+			"Hallo Du"					=>	sub1,
+			"Acidum Mefenanicum"	=>	sub2,
+			"Accium Mefenaneic"		=>	sub3,
+			"Acidum Mefenanikum"	=>	sub4,
+			"Acidum Mephenanikum"	=>	sub5,
+		}
+		soundex = {}
+		substances.each { |key, val| 
+			@app.store_in_index(@app.substance_index, key, val)
+		}
+		result = @app.soundex_substances('Acidum Mefenami')
+		assert_equal([sub2, sub4,  sub5], result)
+		assert_equal([],@app.soundex_substances("nix"))
+	end
 	def test_substance_by_connection_key
 		substance = Mock.new('substance')
 		@app.substances = { 'connection key' =>	substance }
@@ -802,7 +835,6 @@ class TestOddbApp < Test::Unit::TestCase
 			'reg2'	=>	StubRegistration.new,
 			'reg3'	=>	StubRegistration.new,
 		}
-		@app.instance_variable_get('@system').instance_variable_set('@package_count', nil)
 		count = @app.package_count	
 		assert_equal(9,count)
 	end
@@ -820,7 +852,6 @@ class TestOddbApp < Test::Unit::TestCase
 		result = @app.last_medication_update
 		assert_equal(expected, result)
 	end
-=begin
 	def test_rebuild_indices
 		reg = StubRegistration2.new
 		reg.sequences = {
@@ -857,7 +888,6 @@ class TestOddbApp < Test::Unit::TestCase
 		result2 = @app.indication_index.fetch_all('test')
 		assert_equal(expected2, result2)
 	end
-=end
 	def test_async
 		foo = "bar"
 		@app.async {
@@ -882,11 +912,8 @@ class TestOddbApp < Test::Unit::TestCase
 		
 	end
 	def test_delete_orphan_patinfo
-		stub_pat = "f00"
-		stub_pat.extend(ODBA::Persistable)
-		@app.orphaned_patinfos = { 1 => stub_pat}
+		@app.orphaned_patinfos = { 1 => "foo" }
 		pointer = ODDB::Persistence::Pointer.new([:orphaned_patinfo, 1])
-		ODBA.cache_server.__next(:store) {}
 		@app.delete(pointer)
 		assert_equal({}, @app.orphaned_patinfos)
 	end

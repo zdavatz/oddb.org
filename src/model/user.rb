@@ -3,16 +3,18 @@
 
 require 'sbsm/user'
 require 'util/persistence'
-require 'state/states'
+require 'state/global_predefine'
+#require 'state/states'
+#require 'state/drugs/init'
+#require 'state/admin/root'
+#require 'state/admin/companyuser'
+#require 'state/admin/user'
 
 module ODDB
-	class CompanyListState < GlobalState; end
-	class YweseeContactState < GlobalState; end
-	class LogoutState < GlobalState; end
 	class User < SBSM::KnownUser
 		include Persistence
 		attr_accessor :model, :unique_email, :pass_hash
-		HOME = InitState
+		HOME = State::Drugs::Init
 		def init(app)
 			@pointer.append(@oid)
 		end
@@ -44,27 +46,10 @@ module ODDB
 		end
 	end
 	class UnknownUser < SBSM::UnknownUser
-		HOME = InitState
-		NAVIGATION = [
-			AtcChooserState,
-			CompanyListState,
-			LoginState,
-			YweseeContactState,
-			InitState,
-		]
+		HOME = State::Drugs::Init
 	end
 	class RootUser < User
-		VIRAL_MODULE = RootState
-		NAVIGATION = [
-			SponsorState,
-			CompanyListState,
-			IndicationsState,
-			SubstancesState,
-			GalenicGroupsState,
-			IncompleteRegsState,
-			LogoutState,
-			InitState,
-		]
+		VIRAL_MODULE = State::Admin::Root
 		def initialize
 			@oid = 0
 			@unique_email = 'hwyss@ywesee.com'
@@ -73,12 +58,6 @@ module ODDB
 		end
 	end		
 	class CompanyUser < User
-		VIRAL_MODULE = CompanyUserState
-		NAVIGATION = [
-			AtcChooserState,
-			CompanyListState,
-			LogoutState,
-			InitState,
-		]
+		VIRAL_MODULE = State::Admin::CompanyUser
 	end
 end

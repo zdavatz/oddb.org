@@ -112,48 +112,11 @@ class OddbPrevalence
 		item = failsafe(ODDB::Persistence::UninitializedPathError, nil) {
 			pointer.resolve(self)
 		}
-		# if this item has been newly created, we want its pointer back
-		unless(item.nil?)
+		unless item.nil? 
 			updated(item)
-			update_item(item, values)
+			pointer.issue_update(self, values)
 		end
 		item
-	end
-	def update_item(item, values)
-		pointer = item.pointer
-		case item
-		when ODDB::Sequence
-			#	delete_from_index(@sequence_index, item.name, item)
-			pointer.issue_update(self, values)
-		when ODDB::Substance
-			#delete_from_index(@substance_index, item.name, item)
-			pointer.issue_update(self, values)
-		when ODDB::Indication
-			item.descriptions.values.uniq.each { |desc|
-				#delete_from_index(@indication_index, desc, item)
-			}	
-			pointer.issue_update(self, values)
-			item.descriptions.values.uniq.each { |desc|
-				#store_in_index(@indication_index, desc, item)
-			}	
-=begin
-		when ODDB::Indication
-			diff = item.diff(values, self)
-			before = diff.keys.collect { |lang|
-				item.send(lang)
-			}
-			after = diff.values
-			before.each { |descr|
-				@indication_index.delete(descr.downcase, item)
-			}
-			pointer.issue_update(self, values)
-			after.each { |descr|
-				@indication_index.store(descr.downcase, item)
-			}
-=end
-		else
-			pointer.issue_update(self, values) unless pointer.nil?
-		end
 	end
 	#####################################################
 	def accepted_orphans
@@ -184,7 +147,7 @@ class OddbPrevalence
 			}
 		when ODDB::Substance	
 			keys = item.descriptions.values
-			keys.push(item.connection_key)
+			keys.concat(item.connection_key)
 			if(keys.empty?)
 				keys = [ item.name ]
 			end
@@ -215,6 +178,9 @@ class OddbPrevalence
 			end
 		}
 		nil
+	end
+	def company_count
+		@companies.length
 	end
 	def cyp450(id)
 		@cyp450s[id]
@@ -298,6 +264,7 @@ class OddbPrevalence
 				diff = subs.diff(values, self)
 				subs.update_values(diff)
 =begin
+				@substance_name_index ||= Datastructure::CharTree.new
 				begin
 					#store_in_index(@substance_index, key, subs)
 					#store_in_index(@substance_name_index, key, *subs.sequences)
@@ -632,7 +599,7 @@ class OddbPrevalence
 		result.atc_classes.delete_if { |atc| atc.code.length == 0 }
 		result
 	end
-	def search_interaction(query)
+	def search_interactions(query)
 		keys = query.to_s.downcase.split(" ")
 		result = []
 		keys.each { |key|
@@ -646,6 +613,16 @@ class OddbPrevalence
 		result.flatten!
 		result
 	end
+	def search_substances(query)
+		keys = query.to_s.downcase.split(" ")
+		result = []
+		keys.each { |key|
+			result << soundex_substances(key)
+			result << substance(key)
+		}
+		result.flatten!
+		result.compact
+	end
 	def sequences_by_name(name)
 		ODBA.cache_server.retrieve_from_index("sequence_index_atc", name)
 	end
@@ -657,8 +634,9 @@ class OddbPrevalence
 	end
 =begin
 	def store_in_index(index, key, *values)
-		parts = key.to_s.split(/\s+/)
-		parts << key.to_s
+		key = key.to_s.gsub(/[^\sa-zA-Z0-9áéíóúàèìòùâêîôûäëïöüÁÉÍÓÚÀÈÌÒÙÂÊÎÔÛÄËÏÖÜ+-_="'.*ç%&\/()=!]/, '')
+		parts = key.split(/\s+/)
+		parts << key
 		parts.uniq!
 		parts.each { |part|
 			index.store(part.downcase, *values) if part.length > 3
@@ -682,7 +660,7 @@ class OddbPrevalence
 	def substance_by_connection_key(connection_key)
 		key = connection_key.to_s.downcase
 		@substances.values.select { |substance|
-			substance.connection_key == key
+			substance.connection_key.include?(key)
 		}.first
 	end
 	def substances
@@ -729,7 +707,6 @@ class OddbPrevalence
 			index.delete(part.downcase, value) if part.length > 3
 		}
 	end
-=end
 end
 
 module ODDB

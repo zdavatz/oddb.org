@@ -6,7 +6,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'util/session'
-require 'state/init'
+require 'state/drugs/init'
 require 'sbsm/request'
 require 'stub/cgi'
 require 'stub/session'
@@ -39,7 +39,7 @@ class TestOddbSession < Test::Unit::TestCase
 		assert_nothing_raised { ODDB::Session.new("test", StubApp.new, nil) }
 	end
 	def test_init_state
-		assert_equal(ODDB::InitState, @session.state.class)
+		assert_equal(ODDB::State::Drugs::Init, @session.state.class)
 	end
 	def test_unwrapped_lookandfeel
 		assert_equal(ODDB::LookandfeelBase, @session.lookandfeel.class)

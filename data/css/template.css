@@ -2,6 +2,9 @@
 a {
 	text-decoration: none;
 }	
+a img {
+	border : 0px;
+}
 body {
 	font-family : $std_font_family;
 	font-size : $std_font_size; 
@@ -101,6 +104,15 @@ td.result-original-bg {
 	color : red;
 	padding : 4px;
 }
+td.result-complementary {
+	color : #dd1cff;
+	padding : 4px;
+}
+td.result-complementary-bg {
+	background : $rslt_bg;
+	color : #dd1cff;
+	padding : 4px;
+}
 td.result-unknown {
 	padding : 4px;
 }
@@ -172,6 +184,40 @@ a.result-b-r-original-bg:active {
 td.result-b-r-original-bg { 
 	background : $rslt_bg;
 	color : red;
+	font-weight: bold;
+	padding : 4px;
+	text-align : right;
+}
+a.result-b-r-complementary {
+	color : #dd1cff;
+	font-weight: bold;
+}
+a.result-b-r-complementary:hover {
+	color : $rslt_link_hover_color;
+}
+a.result-b-r-complementary:active {
+	color : gold;
+}
+td.result-b-r-complementary {
+	color : #dd1cff;
+	font-weight: bold;
+	padding : 4px;
+	text-align : right;
+}
+a.result-b-r-complementary-bg:link, a.result-b-r-complementary-bg:visited {
+	background : $rslt_bg;
+	color : #dd1cff;
+	font-weight: bold;
+}
+a.result-b-r-complementary-bg:hover {
+	color : $rslt_link_hover_color;
+}
+a.result-b-r-complementary-bg:active {
+	color : gold;
+}
+td.result-b-r-complementary-bg {
+	background : $rslt_bg;
+	color : #dd1cff;
 	font-weight: bold;
 	padding : 4px;
 	text-align : right;
@@ -276,6 +322,30 @@ td.result-i-r-unknown-bg {
 	padding : 4px;
 	text-align : right;
 }
+td.result-i-complementary {
+	color : #dd1cff;
+	font-style : italic;
+	padding : 4px;
+}
+td.result-i-complementary-bg {
+	background : $rslt_bg;
+	color : #dd1cff;
+	font-style : italic;
+	padding : 4px;
+}
+td.result-i-r-complementary {
+	color : #dd1cff;
+	font-style : italic;
+	padding : 4px;
+	text-align : right;
+}
+td.result-i-r-complementary-bg {
+	background : $rslt_bg;
+	color : #dd1cff;
+	font-style : italic;
+	padding : 4px;
+	text-align : right;
+}
 td.result-r-generic {
 	color : #2ba476;
 	padding : 4px;
@@ -303,6 +373,17 @@ td.result-r-unknown {
 	text-align : right;
 }
 td.result-r-unknown-bg {
+	background : $rslt_bg;
+	padding : 4px;
+	text-align : right;
+}
+td.result-r-complementary {
+	color : #dd1cff;
+	padding : 4px;
+	text-align : right;
+}
+td.result-r-complementary-bg {
+	color : #dd1cff;
 	background : $rslt_bg;
 	padding : 4px;
 	text-align : right;
@@ -387,6 +468,29 @@ td.result-big-unknown-bg {
 	font-weight : bold;
 	padding : 4px;
 }
+a.result-big-complementary, 
+a.result-big-complementary:link, 
+a.result-big-complementary:visited {
+	color : #dd1cff;
+	text-decoration : none;
+}
+a.result-big-complementary:hover {
+	color : $rslt_link_hover_color;
+}
+a.result-big-complementary:active {
+	color : gold;
+}
+td.result-big-complementary {
+	font-size : 14px;
+	font-weight : bold;
+	padding : 4px;
+}
+td.result-big-complementary-bg {
+	background : $rslt_bg;
+	font-size : 14px;
+	font-weight : bold;
+	padding : 4px;
+}
 a.result-small-font, 
 a.result-small-font:link, 
 a.result-small-font:visited {
@@ -408,18 +512,16 @@ td.result-small-font-bg {
 	font-size : 10px;
 	padding : 4px;
 }
-td.result-edit-generic, td.result-edit-original, td.result-edit-unknown,
-a.result-edit-generic, a.result-edit-original, a.result-edit-unknown
-td.result-edit-generic, td.result-edit-original, td.result-edit-unknown,
-a.result-edit-generic, a.result-edit-original, a.result-edit-unknown
+td.result-edit-generic, td.result-edit-original, td.result-edit-unknown, td.result-edit-complementary,
+a.result-edit-generic, a.result-edit-original, a.result-edit-unknown, a.result-edit-complementary
 {
 	color : $list_font_color;
 	font-size : 11px;
 	text-decoration : none;
 	padding : 4px;
 }
-td.result-edit-generic-bg, td.result-edit-original-bg, td.result-edit-unknown-bg,
-a.result-edit-generic-bg, a.result-edit-original-bg, a.result-edit-unknown-bg
+td.result-edit-generic-bg, td.result-edit-original-bg, td.result-edit-unknown-bg, td.result-edit-complementary-bg,
+a.result-edit-generic-bg, a.result-edit-original-bg, a.result-edit-unknown-bg, a.result-edit-complementary-bg
 {
 	background : $rslt_bg;
 	color : $list_font_color;
@@ -474,10 +576,24 @@ td.result-pubprice-unknown-bg {
 	padding-right : 10px;
 	text-align : right;
 }
+td.result-pubprice-complementary {
+	color : #dd1cff;
+	font-weight : bold;
+	padding-right : 10px;
+	text-align : right;
+}
+td.result-pubprice-complementary-bg {
+	color : #dd1cff;
+	background : $rslt_bg;
+	font-weight : bold;
+	padding-right : 10px;
+	text-align : right;
+}
 
 a.result-infos, a.result-infos:link, a.result-infos:visited,
 a.result-infos-original, a.result-infos-original:link, a.result-infos-original:visited,
 a.result-infos-generic, a.result-infos-generic:link, a.result-infos-generic:visited,
+a.result-infos-complementary, a.result-infos-complementary:link, a.result-infos-complementary:visited,
 a.result-infos-unknown, a.result-infos-unknown:link, a.result-infos-unknown:visited
 {
 	color : black;
@@ -490,6 +606,7 @@ a.result-infos-unknown, a.result-infos-unknown:link, a.result-infos-unknown:visi
 td.result-infos,
 td.result-infos-original, 
 td.result-infos-generic, 
+td.result-infos-complementary, 
 td.result-infos-unknown
 {
 	padding : 2px;
@@ -498,6 +615,7 @@ td.result-infos-unknown
 a.result-infos-bg, a.result-infos-bg:link, a.result-infos-bg:visited, 
 a.result-infos-original-bg, a.result-infos-original-bg:link, a.result-infos-original-bg:visited, 
 a.result-infos-generic-bg, a.result-infos-generic-bg:link, a.result-infos-generic-bg:visited,
+a.result-infos-complementary-bg, a.result-infos-complementary-bg:link, a.result-infos-complementary-bg:visited, 
 a.result-infos-unknown-bg, a.result-infos-unknown-bg:link, a.result-infos-unknown-bg:visited 
 {
 	color : black;
@@ -510,6 +628,7 @@ a.result-infos-unknown-bg, a.result-infos-unknown-bg:link, a.result-infos-unknow
 
 td.result-infos-original-bg, 
 td.result-infos-generic-bg, 
+td.result-infos-complementary-bg, 
 td.result-infos-unknown-bg
 {
 	background : $rslt_bg;
@@ -525,7 +644,8 @@ td.result-infos-bg
 a.important-infos, a.important-infos:link, a.important-infos:visited,
 a.important-infos-original, a.important-infos-original:link, a.important-infos-original:visited,
 a.important-infos-generic, a.important-infos-generic:link, a.important-infos-generic:visited,
-a.important-infos-unknown, a.important-infos-unknown:link, a.important-infos-unknown:visited
+a.important-infos-unknown, a.important-infos-unknown:link, a.important-infos-unknown:visited,
+a.important-infos-complementary, a.important-infos-complementary:link, a.important-infos-complementary:visited
 {
 	color : black;
 	background : $rslt_infos_bg_bright;
@@ -538,7 +658,8 @@ a.important-infos-unknown, a.important-infos-unknown:link, a.important-infos-unk
 td.important-infos,
 td.important-infos-original, 
 td.important-infos-generic, 
-td.important-infos-unknown
+td.important-infos-unknown,
+td.important-infos-complementary
 {
 	padding : 0px;
 }
@@ -546,7 +667,8 @@ td.important-infos-unknown
 a.important-infos-bg, a.important-infos-bg:link, a.important-infos-bg:visited, 
 a.important-infos-original-bg, a.important-infos-original-bg:link, a.important-infos-original-bg:visited, 
 a.important-infos-generic-bg, a.important-infos-generic-bg:link, a.important-infos-generic-bg:visited,
-a.important-infos-unknown-bg, a.important-infos-unknown-bg:link, a.important-infos-unknown-bg:visited 
+a.important-infos-unknown-bg, a.important-infos-unknown-bg:link, a.important-infos-unknown-bg:visited,
+a.important-infos-complementary-bg, a.important-infos-complementary-bg:link, a.important-infos-complementary-bg:visited 
 {
 	color : black;
 	background : $rslt_infos_bg_dark;
@@ -559,7 +681,8 @@ a.important-infos-unknown-bg, a.important-infos-unknown-bg:link, a.important-inf
 
 td.important-infos-original-bg, 
 td.important-infos-generic-bg, 
-td.important-infos-unknown-bg
+td.important-infos-unknown-bg,
+td.important-infos-complementary-bg
 {
 	background : $rslt_bg;
 	padding : 0px;
@@ -634,6 +757,12 @@ td.ccomponent {
 	color : black;
 	vertical-align : middle; 
 	padding : 4px;
+	float : center;
+}
+table.ccomponent {
+	margin-left: auto; 
+	margin-right: auto; 
+	text-align: center;
 }
 /*
 td.ccomponent {
@@ -678,12 +807,8 @@ td.logo {
 	top : 3px;
 	padding-bottom : 3px;
 }
-td.logo-r {
-	vertical-align : top;
-	position : relative;
-	top : 0px;
-}
 .logo-r {
+	text-decoration : none;
 	border : 0px dotted red;
 	font-size : 11px;
 	text-align : right;
@@ -900,6 +1025,44 @@ a.navigation:active {
 	color : $bg_dark_link_active_color;
 	font-weight: $navigation_link_font_weight;
 }
+td.tabnavigation-right table {
+	margin-bottom : 4px;
+	padding : 4px;
+	position : relative;
+	float :right;
+	border-right: 1px solid $bg_dark;
+	border-bottom: 1px solid $bg_dark;
+	border-left: 0px;
+	border-top: 0px;
+}
+table.tabnavigation {
+	padding : 4px;
+	background : $bg_bright;
+	color : $tabnavigation_text_color;
+	text-decoration : none;
+	border-right: 0px;
+	border-bottom: 0px;
+	border-left: 1px solid $bg_dark;
+	border-top: 1px solid $bg_dark;
+}
+a.tabnavigation:link, a.tabnavigation:visited {
+	background : $bg_bright;
+	color : $tabnavigation_link_color;
+	font-weight: $tabnavigation_link_font_weight;
+	font-size: $tabnavigation_link_font_size;
+}
+a.tabnavigation, a.tabnavigation:hover {
+	background : $bg_bright;
+	color : $tabnavigation_link_hover_color;
+	font-weight: $tabnavigation_link_font_weight;
+	font-size: $tabnavigation_link_font_size;
+}
+a.tabnavigation:active {
+	background : $bg_bright;
+	color : $tabnavigation_link_active_color;
+	font-weight: $tabnavigation_link_font_weight;
+	font-size: $tabnavigation_link_font_size;
+}
 table.navigation {
 	position : relative;
 	right : 0px;
@@ -997,14 +1160,19 @@ td.button {
 }
 
 /* explain-classes */
-td.explain-generic {
+a.explain-generic {
 	font-weight : bold;
 	color : $bg_dark;
 	padding-left : 4px;
 }
-td.explain-original {
+a.explain-original {
 	font-weight : bold;
 	color : red;
+	padding-left : 4px;
+}
+a.explain-complementary {
+	font-weight : bold;
+	color : #dd1cff;
 	padding-left : 4px;
 }
 td.explain-unknown {
@@ -1175,6 +1343,10 @@ table.interaction-basket td {
 
 td.left {
 	text-align : left;
+}
+
+td.right {
+	text-align : right;
 }
 
 td.padding {

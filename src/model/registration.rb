@@ -9,7 +9,8 @@ module ODDB
 	class RegistrationCommon
 		include Persistence
 		attr_reader :iksnr, :sequences 
-		attr_accessor :registration_date, :generic_type, :export_flag, :company
+		attr_writer :generic_type
+		attr_accessor :registration_date, :export_flag, :company
 		attr_accessor :revision_date, :indication, :expiration_date, :inactive_date, :market_date
 		attr_accessor :fachinfo, :source
 		alias :pointer_descr :iksnr
@@ -57,6 +58,11 @@ module ODDB
 			@sequences.each_value { |seq|
 				seq.each_package(&block)
 			}
+		end
+		def generic_type
+			@generic_type || if(@company)
+				@company.generic_type
+			end
 		end
 		def name_base
 			if(seq = @sequences.values.first)
