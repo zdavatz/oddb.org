@@ -8,7 +8,7 @@
 * Minerva und Feminac
 	+	Es scheint, dass die Wirkstoffe rausgelöscht werden bei den "Atcless" wenn man die
 		ODDB neustartet.
-	+	Dito Faslodex, Calvakehl D3, Kiddi Pharmaton.
+	+	Dito Faslodex, Calvakehl D3, Kiddi Pharmaton, Reyataz
 	-	Bei den Produkten Minerva und Feminac kann man den zweiten Wirkstoff nicht
 		hinzufügen. Es kommt die Meldung: 
 		Der Wirkstoff "CYPROTERONI ACETAS" ist
