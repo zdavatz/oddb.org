@@ -14,7 +14,13 @@ module ODDB
 			if(match = /^create_(.*)$/.match(key))
 				@values[match[1]] ||= Config.new
 			elsif(match = /^(.*)=$/.match(key))
-				@values[match[1]] = args.first
+				old = @values[match[1]]
+				ret = @values[match[1]] = args.first
+				@values.odba_store
+				if(old.respond_to?(:odba_delete))
+					old.odba_delete
+				end
+				ret
 			else
 				@values[key]
 			end

@@ -492,11 +492,13 @@ a.result-big-complementary:active {
 	color : gold;
 }
 td.result-big-complementary {
+	color : #dd1cff;
 	font-size : 14px;
 	font-weight : bold;
 	padding : 4px;
 }
 td.result-big-complementary-bg {
+	color : #dd1cff;
 	background : $rslt_bg;
 	font-size : 14px;
 	font-weight : bold;
