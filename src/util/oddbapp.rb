@@ -81,7 +81,6 @@ class OddbPrevalence
 	end
 	def delete(pointer)
 		@last_update = Time.now()
-		puts "deleting #{pointer}"
 		failsafe(ODDB::Persistence::UninitializedPathError) {
 			if(item = pointer.resolve(self))
 				updated(item)
@@ -175,6 +174,16 @@ class OddbPrevalence
 		when ODDB::Indication
 			item.descriptions.values.uniq.each { |desc|
 				delete_from_index(@indication_index, desc, item)
+			}
+		when ODDB::Substance	
+			keys = item.descriptions.values
+			keys.push(item.connection_key)
+			if(keys.empty?)
+				keys = [ item.name ]
+			end
+			keys.each { |key|
+				delete_from_index(@substance_index, key, item)
+				delete_from_index(@substance_name_index, key, item.sequences)
 			}
 		end
 	end
@@ -327,12 +336,13 @@ class OddbPrevalence
 		@registrations.delete(iksnr)
 	end
 	def delete_substance(key)
-		puts "key #{key}"
+		substance = nil
 		if(key.to_i.to_s == key.to_s)
-			@substances.delete(key.to_i)
+			substance = @substances.delete(key.to_i)
 		else
-			@substances.delete(key.to_s.downcase)
+			substance = @substances.delete(key.to_s.downcase)
 		end
+		checkout(substance)
 	end
 	def each_atc_class(&block)
 		@atc_classes.each_value(&block)

@@ -36,7 +36,10 @@ module ODDB
 			calculate_interactions
 		end
 		def calculate_interactions
-			@session.interaction_basket.each { |substance|
+			substances = @session.interaction_basket.collect { |substance|
+				@session.app.substance_by_connection_key(substance.connection_key)
+			}.uniq
+			substances.each { |substance|
 				connections = substance.interaction_connections(@session.interaction_basket)
 				cyp450s = []
 				interactions = []

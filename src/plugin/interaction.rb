@@ -99,7 +99,7 @@ module ODDB
 				:inducers_created		=>	"The following inducer connections have been created:",
 				:inducers_deleted		=>	"The following inducer connections have been deleted:",
 				:substrates_created	=>	"The following substrate connections have been created:",
-				:substrates_deleted	=>	"The following substrate connections have been updated:",
+				:substrates_deleted	=>	"The following substrate connections have been deleted:",
 			}
 			def initialize(app)
 				@app = app
@@ -272,7 +272,6 @@ module ODDB
 				puts "tidying up..."
 				@updated_substances.each { |desc_en, substance|
 					substance[:connections].each { |cyt_id, conn|
-						puts "deleting #{desc_en} => #{cyt_id}"
 						pointer = substance[:pointer] + ['cyp450substrate', cyt_id]
 						@app.delete(pointer)
 						info = "#{desc_en} => #{cyt_id}"
