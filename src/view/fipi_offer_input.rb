@@ -108,7 +108,7 @@ module ODDB
 			span.css_class = 'bold'
 			text << span
 			text << @lookandfeel.lookup(:pi_quantity1)
-			prize =  ODDB::FiPiOfferInputState::FiPiOffer::FI_CHARGE
+			prize =  ODDB::FiPiOfferInputState::FiPiOffer::PI_CHARGE
 			text << prize.to_s
 			text << @lookandfeel.lookup(:pi_quantity2)
 			text
