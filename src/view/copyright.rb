@@ -14,9 +14,6 @@ module ODDB
 			}
 			CSS_CLASS = "navigation"
 			HTML_ATTRIBUTES = {"align"=>"left"}
-			SYMBOL_MAP = {
-				:cpr_link			=>	HtmlGrid::Link,
-			}
 			LEGACY_INTERFACE = false
 =begin
 			def cpr_date(model, session)
@@ -26,6 +23,12 @@ module ODDB
 			def oddb_version(model)
 				link = HtmlGrid::Link.new(:oddb_version, model, @session, self)
 				link.href = 'http://ywesee.bkbits.net:8080/oddb.org'
+				link.css_class = 'navigation'
+				link
+			end
+			def cpr_link(model)
+				link = HtmlGrid::Link.new(:cpr_link, model, @session, self)
+				link.href = 'http://www.ywesee.com'
 				link.css_class = 'navigation'
 				link
 			end

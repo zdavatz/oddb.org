@@ -8,7 +8,7 @@ module ODDB
 	module View
 		class ResultTemplate < PublicTemplate
 			COMPONENTS = {
-				[0,0]		=>	View::Navigation,
+				[0,0]		=>	View::NavigationFoot,
 				[0,1]		=>	:head,
 				[0,2]		=>	:content,
 				[0,3]		=>	:foot,

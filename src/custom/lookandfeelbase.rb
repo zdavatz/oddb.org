@@ -1200,11 +1200,6 @@ zdavatz ! ywesee.com
 				'width'		=>	'468',
 				'height'	=>	'62',
 			},
-			:cpr_link	=>	{
-				'class'	=>	'navigation',
-				'href'	=>	'http://www.ywesee.com',
-				'target'=>	'_blank',
-			},
 			:explain_search => {
 				'style'	=>	'padding-top: 40px;',
 			},
