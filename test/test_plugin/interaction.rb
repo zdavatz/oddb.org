@@ -504,8 +504,9 @@ class TestInteractionPlugin < Test::Unit::TestCase
 			assert_equal('cyt_id', param.last)
 			pointer
 		}
-		substance.__next(:substrate_connections) {
-			{ "not_included"	=>	"key" }
+		substance.__next(:cyp450substrate) { |param|
+			assert_equal('cyt_id', param)
+			nil
 		}
 		pointer.__next(:creator) { pointer }
 		@app.__next(:update) { |create_pointer, args|

@@ -88,6 +88,7 @@ module ODDB
 			}
 			other.substrate_connections.values.dup.each { |substr_conn|
 				if((cyp450substrate(substr_conn.cyp_id)).nil?)
+					substr_conn.pointer = self.pointer + substr_conn.pointer.last_step
 					substrate_connections.store(substr_conn.cyp_id, substr_conn)
 				end
 			}

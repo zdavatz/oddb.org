@@ -59,6 +59,7 @@ module ODDB
 			SponsorState,
 			CompanyListState,
 			IndicationsState,
+			SubstancesState,
 			GalenicGroupsState,
 			IncompleteRegsState,
 			LogoutState,

@@ -121,11 +121,13 @@ class TestSubstance < Test::Unit::TestCase
 		assert_equal([], @substance.sequences)
 	end
 	def test_merge
+		@substance.pointer = ["!substance,12"]
 		@substance.sequences = []
 		sequence = Mock.new('sequence')
 		aagent = Mock.new('aagent') 
 		other = Mock.new('other')
 		connection = Mock.new('connection')
+		pointer = Mock.new('pointer')
 		other.__next(:sequences) { [ sequence ] }
 		sequence.__next(:active_agent) { aagent }
 		aagent.__next(:substance=) { |param| 
@@ -135,6 +137,11 @@ class TestSubstance < Test::Unit::TestCase
 			{ 'conn_key'	=>	connection }
 		}
 		connection.__next(:cyp_id) { 'cyp_id' }
+		connection.__next(:pointer)	{ pointer }
+		pointer.__next(:last_step) { ['!pointer,last.'] }
+		connection.__next(:pointer=) { |param|
+			assert_equal(["!substance,12", "!pointer,last."], param)
+		}
 		connection.__next(:cyp_id) { 'cyp_id' }
 		other.__next(:descriptions) {
 			{ 'key'	=> 'value' }
@@ -145,6 +152,7 @@ class TestSubstance < Test::Unit::TestCase
 		aagent.__verify
 		other.__verify
 		connection.__verify
+		pointer.__verify
 	end
 	def test_name
 		assert_equal('Acidum Acetylsalicylicum', @substance.name)

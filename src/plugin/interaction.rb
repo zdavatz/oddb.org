@@ -369,8 +369,8 @@ module ODDB
 					catch :found do
 						@app.substances.each { |substance|
 							if(substance.connection_key == substrate.name)
-								pointer = substance.pointer + ['cyp450substrate', cyt_id]
-								if(substance.substrate_connections.keys.include?(cyt_id))
+								pointer = substance.pointer + [:cyp450substrate, cyt_id]
+								if(substance.cyp450substrate(cyt_id))
 									@app.update(pointer, args)
 								else
 									@app.update(pointer.creator, args)
