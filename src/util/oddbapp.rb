@@ -32,7 +32,6 @@ class OddbPrevalence
 		"@substance_name_index",
 		"@company_index",
 		"@atc_index",
-		"@atc_chooser",
 	]
 	attr_reader :galenic_groups, :companies
 	attr_reader	:atc_classes, :last_update
@@ -719,9 +718,10 @@ module ODDB
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
 				puts "new oddbprevalence created"
 				puts "with db start"
-				OddbPrevalence.new
+				@system.OddbPrevalence.new
 			}
-			
+			#rebuild the atc_chooser
+			@system.rebuild_atc_chooser
 			#=end
 			puts "system init..."
 			@system.init
