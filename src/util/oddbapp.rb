@@ -662,8 +662,9 @@ class OddbPrevalence
 		end
 		result
 	end
-	def search_sequences(query)
-		ODBA.cache_server.retrieve_from_index('sequence_index', query)
+	def search_sequences(query, chk_all_words=true)
+		index = (chk_all_words) ? 'sequence_index' : 'sequence_index_exact'
+		ODBA.cache_server.retrieve_from_index(index, query)
 	end
 	def search_single_substance(key)
 		result = ODDB::SearchResult.new

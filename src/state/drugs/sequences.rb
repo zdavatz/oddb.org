@@ -50,7 +50,9 @@ class Sequences < State::Drugs::Global
 					parts = (parts.first..parts.last).to_a
 				end
 				parts.inject([]) { |inj, part|
-					inj + @session.search_sequences(part)
+					# false: do not	check all words in a sequence name, only the 
+					#        beginning counts.
+					inj + @session.search_sequences(part, false) 
 				}
 			else
 				[]

@@ -83,6 +83,15 @@ resolve_origin: ''
 init_source: 'self.sequences'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
+index_name: 'sequence_index_exact'
+origin_klass: 'Sequence'
+target_klass: 'Sequence'
+resolve_search_term: 'name'
+resolve_target: ''
+resolve_origin: ''
+init_source: 'self.sequences'
+fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
 index_name: 'sequence_index_substance'
 origin_klass: 'Sequence'
 target_klass: 'Substance'
