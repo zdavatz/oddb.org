@@ -59,7 +59,13 @@ module ODDB
 			else
 				test
 			end 
-			mdl == @user.model
+			# hack: ensure that we are not comparing stubs by mistake
+			[mdl, @user.model].each { |test|
+				if(test.is_a?(ODBA::Stub))
+					test.odba_replace
+				end
+			}
+			(mdl == @user.model)
 		end
 		def search(query)
 			@persistent_user_input[:search_query] ||= query

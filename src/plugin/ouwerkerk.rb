@@ -13,7 +13,7 @@ module ODDB
 		]
 		NUMERIC_FLAGS = {
 			:new							=>	1,
-			:delete						=>	2,
+			:sl_entry_delete	=>	2,
 			:productname			=>	3, 
 			:address					=>	4,
 			:ikscat						=>	5,
@@ -22,10 +22,13 @@ module ODDB
 			:sequence					=>	8, 
 			:expirydate				=>	9,
 			:sl_entry					=>	10,
-			:price						=>	11,
+			:price						=>	11, #legacy
+			:price_cut				=>	11, #legacy
 			:price_exfactory	=>	11, #legacy
 			:price_public			=>	11, #legacy
 			:comment					=>	12,
+			:price_rise				=>	13,
+			:delete						=>	14,
 		}
 		def initialize(app)
 			super

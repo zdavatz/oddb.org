@@ -2,25 +2,31 @@
 # State::Admin::CompanyUser -- oddb -- 23.07.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/user'
+require 'state/companies/global'
+require 'state/drugs/global'
 
 module ODDB
 	module State
+		module Companies
+class Company < Global; end
+class UserCompany < Company; end
+		end
+		module Drugs
+class Registration < Global; end
+class CompanyRegistration < Registration; end
+class Sequence < Global; end
+class CompanySequence < Sequence; end
+class ActiveAgent < Global; end
+class CompanyActiveAgent < ActiveAgent; end
+class Package < Global; end
+class CompanyPackage < Package; end
+class SlEntry < Global; end
+class CompanySlEntry < SlEntry; end
+		end
 		module Admin
-class State::Companies::Company < State::Companies::Global; end
-class State::Companies::UserCompany < State::Companies::Company; end
-class State::Drugs::Registration < State::Drugs::Global; end
-class State::Companies::CompanyRegistration < State::Drugs::Registration; end
-class State::Drugs::Sequence < State::Drugs::Global; end
-class State::Drugs::CompanySequence < State::Drugs::Sequence; end
-class State::Drugs::ActiveAgent < State::Drugs::Global; end
-class State::Drugs::CompanyActiveAgent < State::Drugs::ActiveAgent; end
-class State::Drugs::Package < State::Drugs::Global; end
-class State::Drugs::CompanyPackage < State::Drugs::Package; end
-class State::Drugs::SlEntry < State::Drugs::Global; end
-class State::Drugs::CompanySlEntry < State::Drugs::SlEntry; end
 module CompanyUser
 	RESOLVE_STATES = {
-		[ :registration ]							=>	State::Companies::CompanyRegistration,
+		[ :registration ]							=>	State::Drugs::CompanyRegistration,
 		[ :registration, :sequence ]	=>	State::Drugs::CompanySequence,
 		[ :registration,
 			:sequence, :active_agent ]	=>	State::Drugs::CompanyActiveAgent,

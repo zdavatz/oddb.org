@@ -17,7 +17,7 @@ module ODDB
 		attr_accessor :change_flags, :successful_updates, :updated_packages
 		attr_accessor :package_diffs
 		public :update_package, :update_registration, :update_sl
-		public :report_format, :purge_sl_entries
+		public :report_format, :purge_sl_entries, :price_flag
 	end
 end
 
@@ -66,7 +66,8 @@ class TestBsvPlugin < Test::Unit::TestCase
 		end
 	end
 	class StubPackage
-		attr_accessor :pointer, :sl_entry, :ikscd
+		attr_accessor :pointer, :sl_entry, :ikscd, 
+			:price_exfactory, :price_public
 		def diff(hash)
 			hash
 		end
@@ -98,7 +99,7 @@ class TestBsvPlugin < Test::Unit::TestCase
 		@plug.purge_sl_entries
 		assert_equal([1], @app.deletions)
 		expected = {
-			11	=>	[:sl_entry],
+			11	=>	[:sl_entry_delete],
 		}
 		assert_equal(expected, @plug.change_flags)
 	end
@@ -159,6 +160,7 @@ class TestBsvPlugin < Test::Unit::TestCase
 		reg = StubRegistration.new
 		package = StubPackage.new
 		package.sl_entry = StubSlEntry.new
+		package.price_exfactory = 4.00
 		pointer = ODDB::Persistence::Pointer.new
 		package.pointer = pointer
 		reg.packages = {
@@ -182,7 +184,7 @@ class TestBsvPlugin < Test::Unit::TestCase
 			:price_public			=>	12.50,
 		}
 		assert_equal(expected, @app.updates[pointer])
-		assert_equal({pointer => [:price]}, @plug.change_flags)
+		assert_equal({pointer => [:price_rise]}, @plug.change_flags)
 		assert_equal([], @plug.unknown_packages)
 		assert_equal(['39437'], @plug.package_diffs.keys)
 		diff = @plug.package_diffs['39437']
@@ -352,6 +354,25 @@ class TestBsvPlugin < Test::Unit::TestCase
 			value if key==creator
 		}.compact.first
 		assert_equal(expected, hash)
+	end
+	def test_price_flag
+		assert_equal(:price_cut, @plug.price_flag(2,1,4,3))
+		assert_equal(:price_rise, @plug.price_flag(1,2,4,3))
+		assert_equal(:price_rise, @plug.price_flag(2,1,3,4))
+		assert_equal(:price_rise, @plug.price_flag(1,2,3,4))
+		assert_equal(:price_rise, @plug.price_flag(nil,2,3,4))
+		assert_equal(:price_rise, @plug.price_flag(1,nil,3,4))
+		assert_equal(:price_rise, @plug.price_flag(nil,nil,3,4))
+		assert_equal(:price_cut, @plug.price_flag(nil,2,4,3))
+		assert_equal(:price_cut, @plug.price_flag(1,nil,4,3))
+		assert_equal(:price_cut, @plug.price_flag(nil,nil,4,3))
+		assert_equal(:price_rise, @plug.price_flag(1,2,nil,4))
+		assert_equal(:price_rise, @plug.price_flag(1,2,3,nil))
+		assert_equal(:price_rise, @plug.price_flag(1,2,nil,nil))
+		assert_equal(:price_cut, @plug.price_flag(2,1,nil,4))
+		assert_equal(:price_cut, @plug.price_flag(2,1,3,nil))
+		assert_equal(:price_cut, @plug.price_flag(2,1,nil,nil))
+		assert_equal(:price_rise, @plug.price_flag(nil, nil, nil, nil))
 	end
 end
 class TestPackageDiffer < Test::Unit::TestCase

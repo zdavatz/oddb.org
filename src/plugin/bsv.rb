@@ -144,11 +144,20 @@ module ODDB
 			end
 		end
 		private
+		def price_flag(old_efp, new_efp, old_pbp, new_pbp)
+			if([old_efp, new_efp, old_pbp, new_pbp].compact.empty? \
+				|| (old_efp && new_efp && (old_efp.to_f < new_efp.to_f)) \
+				|| (old_pbp && new_pbp && (old_pbp.to_f < new_pbp.to_f)))
+				:price_rise
+			else
+				:price_cut
+			end
+		end
 		def purge_sl_entries
 			@app.each_package { |pack| 
 				unless(pack.sl_entry.nil? || @updated_packages.include?(pack))
 					@app.delete(pack.sl_entry.pointer)
-					@change_flags.store(pack.pointer, [:sl_entry])
+					@change_flags.store(pack.pointer, [:sl_entry_delete])
 				end
 			}
 		end
@@ -190,7 +199,12 @@ module ODDB
 					@change_flags.store(pack.pointer, [:sl_entry])
 				# prior sl_entry has different price
 				elsif((changes = pack.diff(hash)) && !changes.empty?)
-					@change_flags.store(pack.pointer, [:price])
+					old_efp = pack.price_exfactory
+					new_efp = row[:price_exfactory]
+					old_pbp = pack.price_public
+					new_pbp = row[:price_public]
+					flag = price_flag(old_efp, new_efp, old_pbp, new_pbp)
+					@change_flags.store(pack.pointer, [flag])
 				end
 				@app.update(pack.pointer, hash)
 				update_sl(pack.pointer, row)

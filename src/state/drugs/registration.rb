@@ -82,19 +82,22 @@ end
 class CompanyRegistration < State::Drugs::Registration
 	def init
 		super
-		unless(@session.user_equiv?(@model.company))
+		unless(allowed?)
 			@default_view = View::Drugs::Registration
 		end
 	end
 	def new_sequence
-		if(@session.user_equiv?(@model.company))
+		if(allowed?)
 			super
 		end
 	end
 	def update
-		if(@session.user_equiv?(@model.company))
+		if(allowed?)
 			super
 		end
+	end
+	def allowed?
+		@session.user_equiv?(@model.company)
 	end
 end
 		end
