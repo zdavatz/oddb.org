@@ -1,5 +1,6 @@
 2004-06-10 Zeno Davatz <zdavatz@ywesee.com>
 * Minerva und Feminac
+	+	Dasselbe Problem mit Kiddi Pharmaton.
 	- Bei den Produkten Minerva und Feminac kann man den zweiten Wirkstoff nicht
 		hinzufügen. Es kommt die Meldung: 
 		Der Wirkstoff "CYPROTERONI ACETAS" ist
