@@ -71,11 +71,10 @@ class FachinfoConfirm < State::Drugs::Global
 				}
 				if((iksnrs - @valid_iksnrs).empty?)
 					return fi
-				else
-					return nil
 				end
 			end
 		}
+		nil
 	end
 	def validate_iksnrs
 		@valid_iksnrs = []
