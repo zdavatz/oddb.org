@@ -126,6 +126,9 @@ class OddbPrevalence
 	def accepted_orphans
 		@accepted_orphans ||= {}
 	end
+	def admin(oid)
+		@users[oid.to_i]
+	end
 	def atcless_sequences
 		@registrations.values.collect { |reg|
 			reg.atcless_sequences
@@ -184,6 +187,10 @@ class OddbPrevalence
 	end
 	def cyp450s
 		@cyp450s.values
+	end
+	def create_admin
+		user = ODDB::AdminUser.new
+		@users.store(user.oid, user)
 	end
 	def create_atc_class(atc_class)
 		@atc_classes.store(atc_class, ODDB::AtcClass.new(atc_class))
@@ -738,6 +745,19 @@ module ODDB
 		def create(pointer)
 			@system.execute_command(CreateCommand.new(pointer))
 		end
+		def create_admin_user(email, password)
+			puts "create_admin_user(#{email}, #{password})"
+			unless(@system.user_by_email(email))
+				"no other user found"
+				pass_hash = Digest::MD5.hexdigest(password)
+				pointer = Persistence::Pointer.new([:admin])
+				values = {
+					:unique_email	=>	email,
+					:pass_hash		=>	pass_hash,
+				}
+				update(pointer.creator, values)
+			end
+		end
 		def delete(pointer)
 			@system.execute_command(DeleteCommand.new(pointer))
 		end
@@ -757,9 +777,8 @@ module ODDB
 			@system.execute_command(ReplaceFachinfoCommand.new(iksnr, pointer))
 		end
 		def update(pointer, values)
-			#puts "updating #{pointer} with #{values}"
+			puts "updating #{pointer} with #{values}"
 			@system.execute_command(UpdateCommand.new(pointer, values))
-			#@system.update(pointer, values)
 		end
 		#####################################################
 		def admin(src, priority=-1)

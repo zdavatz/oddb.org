@@ -17,7 +17,7 @@ module ODDB
 		module Drugs
 class User < SBSM::KnownUser; end
 class UnknownUser < SBSM::UnknownUser; end
-class RootUser < View::Drugs::User; end
+class AdminUser < View::Drugs::User; end
 class CompanyUser < View::Drugs::User; end
 class ResultForm < View::Form
 	COLSPAN_MAP	= {
@@ -53,7 +53,7 @@ class ResultForm < View::Form
 	}
 	def init
 		case @session.user
-		when ODDB::RootUser
+		when ODDB::AdminUser
 			components.store([1,0], :new_registration)
 			components.store([0,2], self::class::ROOT_LISTCLASS)
 		when ODDB::CompanyUser

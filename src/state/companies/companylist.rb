@@ -14,7 +14,7 @@ module ODDB
 			#class User < SBSM::KnownUser; end
 			#class UnknownUser < SBSM::UnknownUser; end
 			#class CompanyUser < State::Companies::User; end
-			#class RootUser < State::Companies::User; end
+			#class AdminUser < State::Companies::User; end
 class CompanyList < State::Companies::Global
 	attr_reader :intervals, :range
 	DIRECT_EVENT = :companylist
@@ -22,6 +22,7 @@ class CompanyList < State::Companies::Global
 		ODDB::UnknownUser	=>	View::Companies::UnknownCompanyList,
 		ODDB::CompanyUser	=>	View::Companies::CompanyUserList,
 		ODDB::RootUser		=>	View::Companies::RootCompanyList,
+		ODDB::AdminUser		=>	View::Companies::RootCompanyList,
 	}	
 	RANGE_PATTERNS = {
 		'a-d'			=>	'a-däÄáÁàÀâÂçÇ',
@@ -36,7 +37,7 @@ class CompanyList < State::Companies::Global
 	def init
 		super
 		@model = @session.app.companies.values
-		if(@session.user.is_a? ODDB::RootUser)
+		if(@session.user.is_a? ODDB::AdminUser)
 			userrange = @session.user_input(:range) || default_interval
 			range = RANGE_PATTERNS.fetch(userrange)
 			@filter = Proc.new { |model|

@@ -12,7 +12,7 @@ module ODDB
 		module Interactions
 			#class User < SBSM::KnownUser; end
 			#class UnknownUser < SBSM::UnknownUser; end
-			#class RootUser < View::Drugs::User; end
+			#class AdminUser < View::Drugs::User; end
 			#class CompanyUser < View::Drugs::User; end
 class ResultForm < View::Form 
 	COLSPAN_MAP	= {

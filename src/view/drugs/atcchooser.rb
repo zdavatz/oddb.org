@@ -26,7 +26,7 @@ class AtcChooserList < HtmlGrid::List
 	SORT_REVERSE = false 
 	def init
 		@model = @model.children
-		if(@session.user.is_a? ODDB::RootUser)
+		if(@session.user.is_a? ODDB::AdminUser)
 			components.store([1,0], :edit)
 		end
 		super

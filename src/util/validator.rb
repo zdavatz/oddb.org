@@ -115,6 +115,8 @@ module ODDB
 			pattern = /^[A-Z]([0-9]{2}([A-Z]([A-Z]([0-9]{2})?)?)?)?$/i
 			if(valid = pattern.match(value.capitalize))
 				valid[0].upcase
+			elsif(value.empty?)
+				nil
 			else
 				raise SBSM::InvalidDataError.new(:e_invalid_atc_class, :atc_class, value)
 			end

@@ -86,21 +86,22 @@ class Sequence < State::Drugs::Global
 		else
 			@errors.store(:galenic_form, create_error(:e_unknown_galenic_form, :galenic_form, galform))
 		end
-		atc_code = @session.user_input(:code)
-		if(atc_code.is_a?(RuntimeError))
-			@errors.store(atc_code.key, atc_code)
-		elsif((descr = @session.user_input(:atc_descr)) \
-			&& !descr.empty?)
-			pointer = Persistence::Pointer.new([:atc_class, atc_code])
-			values = {
-				@session.language	=> descr,	
-			}
-			@session.app.update(pointer.creator, values)
-			input.store(:atc_class, atc_code)
-		elsif(@session.app.atc_class(atc_code))
-			input.store(:atc_class, atc_code)
-		else
-			@errors.store(:atc_class, create_error(:e_unknown_atc_class, :code, atc_code))
+		if(atc_code = @session.user_input(:code))
+			if(atc_code.is_a?(RuntimeError))
+				@errors.store(atc_code.key, atc_code)
+			elsif((descr = @session.user_input(:atc_descr)) \
+				&& !descr.empty?)
+				pointer = Persistence::Pointer.new([:atc_class, atc_code])
+				values = {
+					@session.language	=> descr,	
+				}
+				@session.app.update(pointer.creator, values)
+				input.store(:atc_class, atc_code)
+			elsif(@session.app.atc_class(atc_code))
+				input.store(:atc_class, atc_code)
+			else
+				@errors.store(:atc_class, create_error(:e_unknown_atc_class, :code, atc_code))
+			end
 		end
 		if(pi_file = @session.user_input(:patinfo_upload))
 			if(pi_file.read(4) == "%PDF")
@@ -115,9 +116,9 @@ class Sequence < State::Drugs::Global
 			else
 				add_warning(:w_no_patinfo_saved, :patinfo_upload, nil)
 			end
-			@model = @session.app.update(@model.pointer, input)
-			self
 		end
+		@model = @session.app.update(@model.pointer, input)
+		self
 	end
 end
 class CompanySequence < State::Drugs::Sequence

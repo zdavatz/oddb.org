@@ -122,7 +122,8 @@ class RegistrationForm < View::Form
 	}
 	TAG_METHOD = :multipart_form
 	def init
-		if(@session.user.is_a?(ODDB::RootUser) && !@model.is_a?(Persistence::CreateItem))
+		if(@session.user.is_a?(ODDB::AdminUser) \
+			&& !@model.is_a?(Persistence::CreateItem))
 			components.store([1,6,1], :new_registration)
 			CSS_MAP.store([1,6,1], 'button')
 		end
@@ -142,7 +143,8 @@ class RegistrationForm < View::Form
 		HtmlGrid::LabelText.new(:fachinfo, model, session , self)
 	end
 	def iksnr(model, session)
-		klass = if(session.user.is_a?(ODDB::RootUser)  || model.is_a?(Persistence::CreateItem))
+		klass = if(session.user.is_a?(ODDB::AdminUser) \
+			|| model.is_a?(Persistence::CreateItem))
 			HtmlGrid::InputText
 		else
 			HtmlGrid::Value
