@@ -54,7 +54,10 @@ module CompanyList
 		link
 	end
 	def url(model, session)
-		HtmlGrid::HttpLink.new('url', model, session, self)
+		link = HtmlGrid::HttpLink.new('url', model, session, self)
+		link.set_attribute('class', 'list')
+		link.target = "_self"
+		link
 	end
 	def contact(model, session)
 		HtmlGrid::MailLink.new('contact_email', model, session, self)
