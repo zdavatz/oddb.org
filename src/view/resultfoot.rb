@@ -6,6 +6,15 @@ require 'htmlgrid/link'
 
 module ODDB
 	module View
+		module LegalNoteLink
+			def legal_note(model, session)
+				link = HtmlGrid::PopupLink.new(:legal_note, model, session, self)
+				link.href = @lookandfeel.event_url(:legal_note)
+				link.value = @lookandfeel.lookup(:legal_note) 
+				link.set_attribute('class', 'legal-note')
+				link
+			end
+		end
 		class ExplainResult < HtmlGrid::Composite
 			COMPONENTS = {
 				[0,0]	=>	:explain_original,
@@ -52,34 +61,19 @@ module ODDB
 				link
 			end
 		end
-		class LegalNoteLink < HtmlGrid::Composite
-			COMPONENTS = {
-				[0,0]	=>	:legal_note,
-			}
-			CSS_MAP = {
-				[0,0]	=>	'legal-note',
-			}
-			CSS_CLASS = "legal-note"
-			def legal_note(model, session)
-				link = HtmlGrid::PopupLink.new(:legal_note, model, session, self)
-				link.href = @lookandfeel.event_url(:legal_note)
-				link.value = @lookandfeel.lookup(:legal_note) 
-				link.set_attribute('class', 'legal-note')
-				link
-			end
-		end
 		class ResultFoot < HtmlGrid::Composite
+			include LegalNoteLink
 			COLSPAN_MAP	= {
 				[0,0]	=> 2,
 				[0,1]	=> 2,
 			}
 			COMPONENTS = {
-				[0,0]	=>	View::LegalNoteLink,
+				[0,0]	=>	:legal_note,
 				[0,1]	=>	View::ExplainResult,
 			}
 			COMPONENT_CSS_MAP = {
-			[0,0]	=>	'legal-note',
-			[0,1]	=>	'explain-result',
+				[0,0]	=>	'legal-note-right',
+				[0,1]	=>	'explain-result',
 			}
 			CSS_CLASS = 'composite'
 		end

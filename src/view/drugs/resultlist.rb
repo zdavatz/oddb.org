@@ -104,37 +104,37 @@ class ResultList < HtmlGrid::List
 		:size							=> false,
 		:substances				=> true,
 	}
-		BACKGROUND_SUFFIX = ' bg'
 	CSS_MAP = {
-		[0,0]	=>	'result bold right',
-		[1,0]	=>	'result big',
+		[0,0]	=>	'result-b-r',
+		[1,0]	=>	'result-big',
 		[2,0]	=>	'result',
-		[3,0]	=>	'result right',
-		[4,0]	=>	'result right',
-		[5,0]	=>	'result right',
-		[6,0]	=>	'result bold right',
-		[7,0]	=>	'result italic',
-		[8,0]	=>	'result italic',
-		[9,0]	=>	'result italic',
-		[10,0]	=>	'result italic',
-		[11,0]	=>	'result bold right',
-		[12,0] =>  'result bold right',
-		[13,0]	=>	'result bold right',
+		[3,0]	=>	'result-r',
+		[4,0]	=>	'result-r',
+		[5,0]	=>	'result-r',
+		[6,0]	=>	'result-pubprice',
+		[7,0]	=>	'result-i',
+		[8,0]	=>	'result-i',
+		[9,0]	=>	'result-i',
+		[10,0]	=>	'result-i',
+		[11,0]	=>	'result-b-r',
+		[12,0] =>  'result-b-r',
+		[13,0]	=>	'result-b-r',
 	}
 	CSS_HEAD_MAP = {
-		[0,0,1] =>	'th',
-		[1,0] =>	'th',
-		[2,0]	=>	'th-r',
+		[0,0] =>	'th',
+		[1,0,1] =>	'th',
+		[2,0] =>	'th',
 		[3,0]	=>	'th-r',
 		[4,0]	=>	'th-r',
-		[5,0]	=>	'th-pad-r',
-		[6,0] =>	'th',
+		[5,0]	=>	'th-r',
+		[6,0]	=>	'th-pad-r',
 		[7,0] =>	'th',
-		[8,0]	=>	'th',
+		[8,0] =>	'th',
 		[9,0]	=>	'th',
-		[10,0]=>	'th-r',
+		[10,0]	=>	'th',
 		[11,0]=>	'th-r',
 		[12,0]=>	'th-r',
+		[13,0]=>	'th-r',
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -200,8 +200,13 @@ class ResultList < HtmlGrid::List
 		link = HtmlGrid::PopupLink.new(:compare, model, session, self)
 		link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
 		link.value = model.name_base
-		link.set_attribute('class', 'result big' << resolve_suffix(model))
-		link.set_attribute('title', @lookandfeel.lookup(:ean_code, model.barcode))
+		link.set_attribute('class', 'result-big' << resolve_suffix(model))
+		indication = model.registration.indication
+		title = [
+			@lookandfeel.lookup(:ean_code, model.barcode),
+			(indication.send(@session.language) unless(indication.nil?)),
+		].compact.join(', ')
+		link.set_attribute('title', title)
 		link
 	end
 	def substances(model, session)

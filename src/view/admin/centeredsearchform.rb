@@ -17,7 +17,9 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,0]		=>	:language_de,
 		[0,0,1]	=>	:divider,
 		[0,0,2]	=>	:language_fr,
-		[0,0,3]	=>	:beta,
+		[0,0,3]	=>	:divider,
+		[0,0,4]	=>	:language_en,
+		[0,0,5]	=>	:beta,
 		[0,1]		=>	View::Admin::CenteredSearchForm,
 		[0,4]		=>	View::CenteredNavigation,
 		[0,5]		=>	:database_size,
@@ -25,7 +27,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,5,2]	=>	'comma_separator',
 		[0,5,3]	=>	'database_last_updated_txt',
 		[0,5,4]	=>	:database_last_updated,
-		[0,6]		=>	View::LegalNoteLink,
+		[0,6]		=>	:legal_note,
 		[0,7]		=>	:paypal,
 	}
 	CSS_MAP = {

@@ -11,6 +11,7 @@ class Global < State::Global
 	ZONE = :companies
 	def zone_navigation
 		[
+			:help_link,
 			:faq_link,
 			State::Companies::CompanyList,
 		]

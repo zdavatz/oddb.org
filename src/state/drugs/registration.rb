@@ -3,6 +3,7 @@
 
 require 'state/drugs/global'
 require 'state/drugs/sequence'
+require 'state/drugs/selectindication'
 require 'state/drugs/fachinfoconfirm'
 require 'model/fachinfo'
 require 'view/drugs/registration'
@@ -27,7 +28,10 @@ class Registration < State::Drugs::Global
 		end
 	end
 	def update
-		keys = [:inactive_date, :generic_type, :registration_date, :revision_date, :market_date]
+		keys = [
+			:inactive_date, :generic_type, :registration_date, 
+			:revision_date, :market_date, :expiration_date,
+		]
 		if(@model.is_a? Persistence::CreateItem)
 			iksnr = @session.user_input(:iksnr)
 			if(error_check_and_store(:iksnr, iksnr, [:iksnr]))
@@ -51,11 +55,17 @@ class Registration < State::Drugs::Global
 			@errors.store(:company_name, err)
 		end
 		ind = user_input(:indication)
+		sel = nil
 		if(indication = @session.app.indication_by_text(ind))
 			hash.store(:indication, indication.pointer)
 		elsif(!ind.empty?)
-			err = create_error(:e_unknown_indication, :indication, ind)
-			@errors.store(:indication, err)
+			#err = create_error(:e_unknown_indication, :indication, ind)
+			#@errors.store(:indication, err)
+			input = hash.dup
+			input.store(:indication, ind)
+			sel = State::Drugs::SelectIndication::Selection.new(input, 
+				@session.app.search_indications(ind), @model)
+			new_state = State::Drugs::SelectIndication.new(@session, sel)
 		end
 		if(fi_file = @session.user_input(:fachinfo_upload)) 
 			four_bytes = fi_file.read(4)
@@ -97,6 +107,9 @@ class Registration < State::Drugs::Global
 			end
 		end
 		@model = @session.app.update(@model.pointer, hash)
+		if(sel)
+			sel.registration = @model
+		end
 		new_state
 	end
 	def parse_fachinfo_doc(file)
