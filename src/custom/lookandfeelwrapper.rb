@@ -71,21 +71,21 @@ module ODDB
 		DICTIONARIES = {
 			'de'	=>	{
 				:html_title		=>	'cc: an alle - generika.cc - betreff: Gesundheitskosten senken!', 
-				:home_welcome	=>	'Willkommen bei generika.cc, dem<br>aktuellsten Generika-Portal der Schweiz.<br>Die monatliche Aktualisierung erfolgt direkt<br>über die offiziellen Daten vom <a class="welcome" href="http://www.bsv.admin.ch/sl/liste/d/index.htm" target="_blank">BSV</a> und der <a class="welcome" href="http://www.swissmedic.ch/de/industrie/overall.asp?theme=0.00110.00001&theme_id=980" target="_blank">Swissmedic</a>.',
+				:home_welcome							=>  "Willkommen bei generika.cc, dem<br>aktuellsten Medikamenten-Portal der Schweiz.<br>Die Daten werden monatlich aktualisiert. <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>Herkunftsdeklaration</a>",
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Willkommen bei Generika.cc',
 				:lookandfeel_owner =>	'Generika.cc',
 			},
 			'fr'	=>	{
 				:html_title		=>	'cc: pour tous - generika.cc - concerne: r&eacute;duire les co&ucirc;ts de la sant&eacute;!', 
-				:home_welcome	=>	"Bienvenu sur generika.cc,<br>le Generika-Portal le plus actuel de la Suisse.<br>La mise à jour mensuelle s'effectue directement<br>par les données officielles du <a class=\"welcome\" href=\"http://www.bsv.admin.ch/sl/liste/d/index.htm\" target=\"_blank\">BSV</a> et les <a class=\"welcome\" href=\"http://www.swissmedic.ch/de/industrie/overall.asp?theme=0.00110.00001&theme_id=980\" target=\"_blank\">Swissmedic</a>.",
+				:home_welcome							=>  "Bienvenue sur generika.cc,<br>le portail des g&eacute;n&eacute;riques de Suisse avec<br>tous les m&eacute;dicaments disponibles sur le march&eacute; suisse!<br>Les donn&eacute;s sont mis &agrave; jour mensuel. <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>D&eacute;claration d'origine</a>",
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Bienvenu sur Generika.cc',
 				:lookandfeel_owner =>	'Generika.cc',
 			},
 			'en'	=>	{
 				:html_title		=>	'cc: to everybody - generika.cc - subject: reduce health costs!', 
-				:home_welcome							=>  'Welcome to generika.cc,<br>Switzerland\'s most up-to-date portal for generics<br>The data is being updated by the monthly publication of the<br><a class="welcome" href="http://www.bsv.admin.ch/sl/liste/d/index.htm" target="_self">Swiss Federal Office of Public Health</a> and the <a class="welcome" href="http://www.swissmedic.ch/de/industrie/overall.asp?theme=0.00110.00001&amp;theme_id=980" target="_self">Swissmedic-Journal</a>.',
+				:home_welcome							=>  "Welcome to generika.cc<br>the open drug database of Switzerland.<br>The data are updated on a monthly basis. <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>Declaration of origin</a>",
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Welcome to Generika.cc',
 				:lookandfeel_owner =>	'Generika.cc',
