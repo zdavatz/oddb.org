@@ -101,6 +101,7 @@ module ODDB
 				raise SBSM::InvalidDataError.new(:e_invalid_dose, :dose, value)
 			end
 		end
+		alias :pretty_dose :dose
 		def filename(value)
 			if(value == File.basename(value))
 				value
