@@ -3,6 +3,7 @@
 
 require 'state/drugs/global'
 require 'view/drugs/feedbacks'
+require 'util/logfile'
 
 module ODDB
 	module State
@@ -13,6 +14,7 @@ class Feedbacks < State::Drugs::Global
 		INDEX_STEP = 10
 		attr_writer :current_feedback
 		attr_accessor :index
+		attr_reader :package
 		def initialize(package)
 			@package = package
 			@index = 0
@@ -56,24 +58,32 @@ class Feedbacks < State::Drugs::Global
 			:recommend, :impression, :helps]
 		keys = mandatory + [:message]
 		hash = user_input(keys, mandatory)
-		puts hash.inspect
-		feedback = @model.current_feedback
-		info_key = :feedback_changed
-		if(feedback.is_a?(ODDB::Persistence::CreateItem))
-			info_key = :feedback_saved
-			hash.each { |key, value|
-				feedback.carry(key, value)
-			}
-		end
 		unless(error?)
+			feedback = @model.current_feedback
+			info_key = :feedback_changed
+			if(feedback.is_a?(ODDB::Persistence::CreateItem))
+				info_key = :feedback_saved
+				hash.each { |key, value|
+					feedback.carry(key, value)
+				}
+			end
+			
 			# store new Feedback
-			time = Time.new
+			time = Time.now
 			hash.store(:time , time)
 			@model.current_feedback = @session.app.update(
 				@model.current_feedback.pointer, hash)
 			@infos = [info_key]
-		else
-			puts @errors.inspect
+
+			# in case this was a new feedback, drop a line into a logfile
+			if(info_key == :feedback_saved)
+				args = {:pointer => @model.package.pointer}
+				link = @session.lookandfeel._event_url(:feedbacks, args)
+				line = [
+					nil, hash[:name], hash[:email], link
+				].join(';')
+				LogFile.append('feedback', line, time)
+			end
 		end
 		self
 	end
