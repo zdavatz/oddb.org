@@ -8,7 +8,6 @@ require 'date'
 module ODDB
 	class SlEntry
 		include Persistence
-		ODBA_PREFETCH = true
 		attr_accessor :limitation, :limitation_points
 		attr_accessor :introduction_date
 		attr_reader :limitation_text

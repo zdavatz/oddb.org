@@ -12,6 +12,7 @@ require 'state/drugs/compare'
 require 'state/drugs/ddd'
 require 'state/drugs/fachinfo'
 require 'state/drugs/feedbacks'
+require 'state/drugs/package'
 require 'state/drugs/init'
 require	'state/drugs/limitationtext'
 require 'state/admin/orphaned_patinfos'
@@ -261,7 +262,8 @@ module ODDB
 						State::Substances::Result.new(@session, result)
 					else
 						query = query.to_s.downcase
-						result = case @session.user_input(:search_type) 
+						stype = @session.user_input(:search_type) 
+						result = case stype
 						when 'st_sequence'
 							@session.search_exact_sequence(query)
 						when 'st_substance'
@@ -273,7 +275,10 @@ module ODDB
 						else
 							@session.search_oddb(query)
 						end
-						State::Drugs::Result.new(@session, result)
+						state = State::Drugs::Result.new(@session, result)
+						state.search_query = query
+						state.search_type = stype
+						state
 					end
 				else
 					self
