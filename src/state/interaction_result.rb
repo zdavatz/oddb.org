@@ -30,7 +30,7 @@ module ODDB
 		ITEM_LIMIT = 150
 		attr_reader :object_count, :pages
 		def init
-			@facades = {}
+			#@facades = {}
 			@object_count = 0
 			if(@model.nil? || @model.empty?)
 				@default_view = EmptyInteractionResultView

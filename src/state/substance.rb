@@ -33,6 +33,16 @@ module ODDB
 				SubstanceState.new(@session, target)
 			end
 		end
+		def result
+			if(@session.persistent_user_input(:search_query))
+				search
+			else
+				SubstancesState.new(@session, @session.app.substances)
+			end
+		end
+		def search
+			search_substance
+		end
 		def update
 			languages = @session.lookandfeel.languages.dup
 			languages << 'en' << 'lt'

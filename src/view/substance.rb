@@ -3,7 +3,8 @@
 
 require 'view/privatetemplate'
 require 'view/descriptionform'
-require 'view/additional_information'
+require 'view/pointersteps'
+require 'view/form'
 
 =begin
 zwei probleme:
@@ -63,7 +64,7 @@ module ODDB
 	class Sequences < HtmlGrid::List
 		include SequencesList
 	end
-	class SubstanceForm < DescriptionForm
+	class SubstanceDescriptionForm < DescriptionForm
 		DESCRIPTION_CSS = 'xl'
 		def languages
 			lang = @lookandfeel.languages.dup
@@ -73,7 +74,7 @@ module ODDB
 	class SubstanceComposite < HtmlGrid::Composite
 		COMPONENTS = {
 			[0,0]	=>	:substance_name,
-			[0,1]	=>	SubstanceForm,
+			[0,1]	=>	SubstanceDescriptionForm,
 			[1,1]	=>	MergeSubstancesForm,
 			[0,4]	=>	:substrate_connections,
 			[0,5]	=>	:sequences,
@@ -106,6 +107,6 @@ module ODDB
 	end
 	class SubstanceView < PrivateTemplate
 		CONTENT = SubstanceComposite
-		SNAPBACK_EVENT = :substances
+		SNAPBACK_EVENT = :result
 	end
 end

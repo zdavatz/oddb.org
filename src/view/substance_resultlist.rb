@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# SubstancesView -- oddb -- 25.05.2004 -- maege@ywesee.com
+# SubstanceResultListView -- oddb -- 23.08.2004 -- maege@ywesee.com
 
 require 'htmlgrid/value'
 require 'htmlgrid/link'
@@ -14,7 +14,7 @@ require 'view/publictemplate'
 require 'view/alphaheader'
 
 module ODDB
-	class SubstanceList < FormList
+	class SubstanceResultList < FormList
 		COMPONENTS = {
 			[0,0]	=>	:name,
 			[1,0]	=>	:en,
@@ -52,28 +52,6 @@ module ODDB
 			link
 		end
 		EVENT = :new_substance
-		include AlphaHeader
-	end
-	class SubstanceListForm < Form
-		COLSPAN_MAP = {
-			[0,1]	=>	2,
-		}
-		COMPONENTS = {
-			[1,0]		=>	:search_query,
-			[1,0,1]	=>	:submit,
-			[0,1]		=>	SubstanceList,
-		}
-		CSS_CLASS = 'composite'
-		EVENT = :search_substance
-		FORM_METHOD = 'GET'
-		SYMBOL_MAP = {
-			:search_query	=>	SearchBar,
-		}
-		CSS_MAP = {
-			[1,0]	=>	'search',	
-		}
-	end
-	class SubstanceListView < PublicTemplate
-		CONTENT = SubstanceListForm
+		#include AlphaHeader
 	end
 end
