@@ -136,7 +136,7 @@ class DoctorComposite < HtmlGrid::Composite
 end
 class Doctor < PrivateTemplate
 	CONTENT = View::Doctors::DoctorComposite
-	SNAPBACK_EVENT = :doctorlist
+	SNAPBACK_EVENT = :result
 end
 		end
 	end

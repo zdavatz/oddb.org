@@ -29,6 +29,9 @@ module ODDB
 			@addresses[addr.oid] = addr
 		end
 =end
+		def pointer_descr
+			[@title, @firstname, @name].compact.join(' ')
+		end
 		def praxis_address
 			@addresses.each { |addr| 
 				if(addr.type == :praxis)
