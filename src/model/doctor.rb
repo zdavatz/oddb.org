@@ -7,7 +7,6 @@ require 'model/address'
 module ODDB
 	class Doctor
 		include Persistence
-		ODBA_PREFETCH = true
 		ODBA_SERIALIZABLE = [
 			'@addresses', '@specialities', '@abilities', '@skills', '@ean13',
 		]

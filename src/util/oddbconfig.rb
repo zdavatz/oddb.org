@@ -27,7 +27,7 @@ module ODDB
 end
 
 module ODBA
-	class Cache < SimpleDelegator
+	class Cache
 		MAIL_FROM = 'odba@oddb.org'
 		MAIL_RECIPIENTS = [
 			"hwyss@ywesee.com",
