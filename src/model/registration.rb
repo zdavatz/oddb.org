@@ -67,6 +67,9 @@ module ODDB
 				seq.each_package(&block)
 			}
 		end
+		def each_sequence(&block)
+			@sequences.values.each(&block)
+		end
 		def generic_type
 			@generic_type || if(@company)
 				@company.generic_type
