@@ -12,7 +12,8 @@ class SequenceList < HtmlGrid::List
 	include View::ResultColors
 	COMPONENTS = {
 		[0,0]	=>	:iksnr,
-		[1,0]	=>	:name,
+		[1,0]	=>	:name_base,
+		[2,0]	=>	:galenic_form,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'

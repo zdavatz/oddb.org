@@ -49,11 +49,13 @@ class Sequences < State::Drugs::Global
 				if(parts.size > 1)
 					parts = (parts.first..parts.last).to_a
 				end
-				parts.inject([]) { |inj, part|
+				sequences = parts.inject([]) { |inj, part|
 					# false: do not	check all words in a sequence name, only the 
 					#        beginning counts.
 					inj + @session.search_sequences(part, false) 
 				}
+				sequences.delete_if { |seq| seq.active_packages.empty? }
+				sequences
 			else
 				[]
 			end
