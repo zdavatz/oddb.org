@@ -9,7 +9,7 @@ module ODDB
 	module View
 		module Drugs
 class Search < View::PublicTemplate
-	CONTENT = View::Drugs::CenteredSearchComposite
+	CONTENT = View::Drugs::GoogleAdSenseComposite
 	CSS_CLASS = 'composite'
 	HEAD = View::WelcomeHead
 end

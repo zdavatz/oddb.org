@@ -2,6 +2,7 @@
 # View::Drugs::CenteredSearchForm -- oddb -- 07.09.2004 -- maege@ywesee.com
 
 require 'view/centeredsearchform'
+require 'view/google_ad_sense'
 
 module ODDB
 	module View
@@ -44,6 +45,10 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		@session.app.substance_count
 	end
 end	
+class GoogleAdSenseComposite < GoogleAdSenseComposite
+	CONTENT = CenteredSearchComposite
+	GOOGLE_CHANNEL = '2298340258'
+end
 		end
 	end
 end

@@ -48,6 +48,10 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		@session.app.substance_count
 	end
 end	
+class GoogleAdSenseComposite < View::GoogleAdSenseComposite
+	CONTENT = CenteredSearchComposite
+	GOOGLE_CHANNEL = '4606893552'
+end
 		end
 	end
 end

@@ -45,6 +45,7 @@ module ODDB
 			:companylist,
 			:epatents,
 			:galenic_groups,
+			:google_adsense,
 			:incomplete_registrations,
 			:indications,
 			:login_form,
