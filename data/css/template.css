@@ -755,6 +755,11 @@ td.ccomponent {
 	vertical-align : middle; 
 	padding : 4px;
 }
+table.ccomponent {
+	position : relative;
+	text-align : center;
+	float : middle;
+}
 /*
 td.ccomponent {
 	text-align : center;
