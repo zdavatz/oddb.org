@@ -613,6 +613,11 @@ class OddbPrevalence
 	def search_companies(key)
 		ODBA.cache_server.retrieve_from_index("company_index", key)
 	end
+	def search_exact_company(query)
+		result = ODDB::SearchResult.new
+		result.atc_classes = search_by_company(query)
+		result
+	end
 	def search_exact_sequence(query)
 		sequences = search_sequences(query)
 		_search_exact_classified_result(sequences)

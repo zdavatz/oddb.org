@@ -26,7 +26,8 @@ module ODDB
 		]
 		ENUMS = {
 			:cl_status		=>	['false', 'true'],
-			:search_type	=>	['st_oddb', 'st_sequence', 'st_substance'],
+			:search_type	=>	['st_oddb', 'st_sequence', 
+				'st_substance', 'st_company'],
 			:fi_status		=>	['false', 'true'],
 			:generic_type =>	[nil, 'generic', 'original', 'complementary' ],
 			:limitation		=>	['true', 'false'],

@@ -260,6 +260,8 @@ module ODDB
 							@session.search_exact_sequence(query)
 						when 'st_substance'
 							@session.search_exact_substance(query)
+						when 'st_company'
+							@session.search_exact_company(query)
 						else
 							@session.search_oddb(query)
 						end
