@@ -107,18 +107,21 @@ module ODDB
 			link = HtmlGrid::Link.new(:azmv, model, session, self)
 			link.href = @lookandfeel.lookup(:amzv_href)
 			link.value = @lookandfeel.lookup(:amzv)
+			link.set_attribute('class', 'th')
 			link
 		end
 		def amzv_article13_link(model, session)
 			link = HtmlGrid::Link.new(:azmv_article13, model, session, self)
 			link.href = @lookandfeel.lookup(:amzv_article13_href)
 			link.value = @lookandfeel.lookup(:amzv_article13)
+			link.set_attribute('class', 'th')
 			link
 		end
 		def amzv_article14_link(model, session)
 			link = HtmlGrid::Link.new(:azmv_article14, model, session, self)
 			link.href = @lookandfeel.lookup(:amzv_article14_href)
 			link.value = @lookandfeel.lookup(:amzv_article14)
+			link.set_attribute('class', 'th')
 			link
 		end
 		def fipi_offer_disclaimer(model, session)

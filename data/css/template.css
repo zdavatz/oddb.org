@@ -1129,9 +1129,9 @@ a.powerlink:active {
 /* use multiple classes to style! */
 
 input.button {
-	background: $button_background;
-	color: $button_font_color;
-	font-size: $button_font_size;
+	background : $button_background;
+	color : $button_font_color;
+	font-size : $button_font_size;
 }
 
 td.left {
@@ -1151,15 +1151,17 @@ td.bg {
 td.bold {
 	font-weight : bold;
 }
+
 td.sum {
 	border-color : black;
 	border-style : solid;
-	border-width: 0px 0px 1px 0px;
+	border-width : 0px 0px 1px 0px;
 }
+
 td.total {
 	border-color : black;
 	border-style : double;
-	border-width: 0px 0px 3px 0px;
+	border-width : 0px 0px 3px 0px;
 }
 
 span.bold {
