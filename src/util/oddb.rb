@@ -41,7 +41,7 @@ end
 #trap("HUP") { puts "caught HUP signal, shutting down\n"; exit }
 trap("USR1") { 
 	puts "caught USR1 signal, clearing Sessions\n"
-	oddb.clear 
+	$oddb.clear 
 }
 trap("USR2") { 
 	puts "caught USR2 signal, flushing stdout...\n"
@@ -49,13 +49,13 @@ trap("USR2") {
 }
 #trap("TERM") { puts "caught TERM signal, exiting immediately\n"; exit }
 
-oddb = ODDB::App.new
+$oddb = ODDB::App.new
 
 #require 'profile'
 
 $0 = "Oddb (OddbApp)"
 
-DRb.start_service(ODDB::SERVER_URI, oddb)
+DRb.start_service(ODDB::SERVER_URI, $oddb)
 #puts "drb-service started in #{seconds} seconds"
 
 DRb.thread.join
