@@ -10,7 +10,7 @@ module ODDB
 		include Comparable
 		include Language
 		include SequenceObserver
-		ODBA_SERIALIZABLE = [ '@descriptions' ]
+		ODBA_SERIALIZABLE = [ '@descriptions', '@synonyms' ]
 		class << self
 			def reset_oid
 				@@oid = 0
@@ -29,6 +29,7 @@ module ODDB
 			other.sequences.each { |seq|
 				seq.galenic_form = self
 			}
+			self.synonyms = other.all_descriptions - self.all_descriptions
 		end
 		def sequence_count
 			@sequences.size

@@ -20,17 +20,35 @@ class GalenicForm < State::Admin::Global
 			State::Admin::MergeGalenicForm.new(@session, @model)
 		end
 	end
+	def duplicate?(string)
+		!(string.to_s.empty? \
+			|| [nil, @model].include?(@session.app.galenic_form(string)))
+	end
 	def update
-		input = @session.lookandfeel.languages.inject({}) { |inj, key|
-			value = @session.user_input(key.intern)
-			unless [nil, @model].include?(@session.app.galenic_form(value))
-				@errors.store(key.intern, SBSM::ProcessingError.new('e_duplicate_galenic_form', key, value))
+		languages = @session.lookandfeel.languages + ['lt']
+		input = languages.inject({}) { |inj, key|
+			sym = key.intern
+			value = @session.user_input(sym)
+			if(duplicate?(value))
+				@errors.store(sym, 
+					create_error('e_duplicate_galenic_form', key, value))
 			end
 			inj.store(key, value)
 			inj
 		}
+		if(syn_list = @session.user_input(:synonym_list))
+			syns = syn_list.split(/\s*,\s*/)
+			syns.each { |syn| 
+				if(duplicate?(syn))
+					@errors.store(:synonym_list, 
+						create_error('e_duplicate_galenic_form', 
+							:synonym_list, syn))
+				end
+			}
+			input.store(:synonyms, syns)
+		end
+		input.store(:galenic_group, @session.user_input(:galenic_group))
 		unless error?
-			input.store(:galenic_group, @session.user_input(:galenic_group))
 			@model = @session.app.update(@model.pointer, input)
 		end
 		self

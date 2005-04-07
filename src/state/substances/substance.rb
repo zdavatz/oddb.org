@@ -90,7 +90,7 @@ class Substance < State::Substances::Global
 			input.store(:synonyms, syns)
 		end
 		unless error?
-			ODBA.batch {
+			ODBA.transaction {
 				@model = @session.app.update(@model.pointer, input)	
 			}
 		end

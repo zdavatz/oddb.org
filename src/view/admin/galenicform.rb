@@ -36,6 +36,14 @@ class GalenicFormForm < View::DescriptionForm
 	CSS_MAP = {
 		[3,1]	=>	'list-r'
 	}
+	def languages
+		@lookandfeel.languages + ['lt', 'synonym_list']
+	end
+	def synonym_list(model, session)
+		input = DEFAULT_CLASS.new(:synonym_list, model, session, self)
+		input.value = model.synonyms.join(', ')
+		input
+	end
 end
 class GalenicFormComposite < HtmlGrid::Composite
 	COMPONENTS = {

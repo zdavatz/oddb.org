@@ -64,6 +64,7 @@ module ODDB
 	end
 	module Language
 		include SimpleLanguage
+		attr_writer :synonyms
 		class Descriptions < Hash
 			def initialize
 				super('')
@@ -91,19 +92,22 @@ module ODDB
 		end
 		def init(app=nil)
 			super
-=begin
-			last_step = @pointer.last_step
-			last_step.push(@oid) if last_step.size == 1
-			@pointer = if(@pointer.parent)
-				@pointer.parent + last_step
-			else
-				Persistence::Pointer.new(last_step)
-			end
-=end
 			unless(@pointer.last_step.size > 1)
 				@pointer.append(@oid) 
 			end
 			@pointer
+		end
+		def all_descriptions
+			self.synonyms + self.descriptions.values
+		end
+		def has_description?(descr)
+			super || (@synonyms.is_a?(Array) && @synonyms.include?(descr))
+		end
+		def synonyms
+			@synonyms ||= []
+		end
+		def synonyms=(syns)
+			@synonyms = syns.compact.delete_if { |syn| syn.empty?  }
 		end
 	end
 end

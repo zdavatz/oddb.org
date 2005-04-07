@@ -15,7 +15,6 @@ module ODDB
 		ODBA_SERIALIZABLE = [ '@descriptions', '@connection_keys', '@synonyms' ]
 		attr_reader :sequences, :substrate_connections
 		attr_accessor :effective_form
-		attr_writer :synonyms
 		include Comparable
 		include Language
 		def Substance.format_connection_key(key)
@@ -200,12 +199,6 @@ module ODDB
 		end
 		def substrate_connections
 			@substrate_connections ||= {}
-		end
-		def synonyms
-			@synonyms ||= []
-		end
-		def synonyms=(syns)
-			@synonyms = syns.compact.delete_if { |syn| syn.empty?  }
 		end
 		def to_s
 			name
