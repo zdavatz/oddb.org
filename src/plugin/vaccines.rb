@@ -228,15 +228,20 @@ module ODDB
 				@app.update(pointer, data) unless(data.empty?)
 			else
 				pointer = Persistence::Pointer.new([:registration, reg.iksnr])
-				@app.update(pointer.creator, data)
+				registration = @app.update(pointer.creator, data)
 			end
 			reg.sequences.each { |seq| update_sequence(seq, pointer) }
-			if(registration)
+			unless(reg.sequences.empty?)
 				registration.each_sequence { |sequence|
 					unless(reg.sequences.any? { |seq| 
 						seq.seqnr == sequence.seqnr })
 						@app.delete(sequence.pointer)
 					end
+				}
+			end
+			if(ikscat = reg.ikscat)
+				registration.each_package { |pack|
+					@app.update(pack.pointer, {:ikscat => ikscat})
 				}
 			end
 		end
