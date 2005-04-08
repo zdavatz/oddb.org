@@ -46,7 +46,7 @@ class Notify < State::Drugs::Global
 		mail.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
 		mail.to = @model.notify_recipient
 		mail.from = @model.notify_sender
-		mail.subject = "#{@session.lookandfeel.lookup(:notify_subject_0)} #{@model.name} #{@session.lookandfeel.lookup(:notify_subject_1)}"
+		mail.subject = "#{@session.lookandfeel.lookup(:notify_subject)} #{@model.name}"
 		mail.date = Time.now
 		mail.body = [
 			@session.lookandfeel._event_url(:show, {:pointer => model.package.pointer}),
