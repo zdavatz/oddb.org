@@ -122,7 +122,8 @@ module ODDB
 				end
 			end
 			def compare
-				if(pointer = @session.user_input(:pointer))
+				if((pointer = @session.user_input(:pointer)) \
+					&& pointer.is_a?(Persistence::Pointer))
 					package = pointer.resolve(@session.app)
 					if(package.is_a? Package)
 						begin
