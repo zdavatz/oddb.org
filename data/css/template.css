@@ -27,6 +27,10 @@ table {
 	border: 0px solid gold;
 	margin: 0px;
 }
+textarea {
+	width: 400px;
+	height: 100px;
+}
 td {
 	border : 0px dashed green;
 	padding: 0px;

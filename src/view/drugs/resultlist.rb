@@ -71,9 +71,9 @@ class ResultList < HtmlGrid::List
 	include View::ResultColors
 	include View::AdditionalInformation
 	COMPONENTS = {
-		[0,0]	=>  :feedback,
-		[1,0]	=>	:google_search,
-		[2,0]	=>	:complementary_type,
+		[0,0]		=>  :fachinfo,
+		[1,0]		=>	:patinfo,
+		[2,0]		=>	:complementary_type,
 		[3,0,0]	=>	'result_item_start',
 		[3,0,1]	=>	:name_base,
 		[3,0,2]	=>	'result_item_end',
@@ -83,12 +83,13 @@ class ResultList < HtmlGrid::List
 		[7,0]		=>	:price_exfactory,
 		[8,0]		=>	:price_public,
 		[9,0]		=>	:substances,
-		[10,0]		=>	:company_name,
+		[10,0]	=>	:company_name,
 		[11,0]	=>	:ikscat,
 		[12,0]	=>	:registration_date,
-		[13,0]	=>	:fachinfo,
-		[14,0]	=>  :patinfo,
-		[15,0]	=>	:limitation_text,
+		[13,0]	=>	:feedback,
+		[14,0]	=>  :google_search,
+		[15,0]	=>	:notify,
+		[16,0]	=>	:limitation_text,
 	}	
 	REVERSE_MAP = {
 		:company_name			=> false,
@@ -128,6 +129,7 @@ class ResultList < HtmlGrid::List
 		[13,0]=>	'th-r',
 		[14,0]=>	'th-r',
 		[15,0]=>	'th-r',
+		[16,0]=>	'th-r',
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -234,6 +236,17 @@ class ResultList < HtmlGrid::List
 		].compact.join(', ')
 		link.set_attribute('title', title)
 		link.width = 950
+		link
+	end
+	def notify(model, session)
+		link = HtmlGrid::Link.new(:notify, model, session, self)
+		args = {
+			:pointer => model.pointer,
+		}
+		link.href = @lookandfeel.event_url(:notify, args)
+		img = HtmlGrid::Image.new(:notify, model, session, self)
+		img.set_attribute('src', @lookandfeel.resource_global(:notify))
+		link.value = img
 		link
 	end
 	def substances(model, session)
