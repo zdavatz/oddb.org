@@ -12,6 +12,7 @@ require 'state/drugs/compare'
 require 'state/drugs/ddd'
 require 'state/drugs/fachinfo'
 require 'state/drugs/feedbacks'
+require 'state/drugs/notify'
 require 'state/drugs/package'
 require 'state/drugs/init'
 require	'state/drugs/limitationtext'
@@ -170,6 +171,12 @@ module ODDB
 				if((pointer = @session.user_input(:pointer)) \
 					&& (pack = pointer.resolve(@session.app)))
 					State::Drugs::Feedbacks.new(@session, pack)
+				end
+			end
+			def notify 
+				if((pointer = @session.user_input(:pointer)) \
+					&& (pack = pointer.resolve(@session.app)))
+					State::Drugs::Notify.new(@session, pack)
 				end
 			end
 			def help_navigation
