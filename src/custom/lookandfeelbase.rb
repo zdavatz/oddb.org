@@ -350,7 +350,7 @@ module ODDB
 				:notify_send							=>	'Senden',
 				:notify_sender						=>	'Absender',
 				:notify_sent							=>	'Ihr Email wurde gesendet...',
-				:notify_subject				    =>	'Nozify a friend mit ODDB.org; Gruss von',
+				:notify_subject				    =>	'Notify a friend mit ODDB.org; Gruss von',
 				:notify_title							=>  'Ich m&ouml;chte folgendes Produkt weiter empfehlen: ',
 				:message									=>  'Feedback',
 				:message_label						=>  'Feedback <br>',
