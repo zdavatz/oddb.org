@@ -62,8 +62,6 @@ class Notify < State::Drugs::Global
 		mandatory = [:name, :notify_sender, :notify_recipient]
 		keys = mandatory + [:notify_message]
 		input = user_input(keys, mandatory)
-		puts input.inspect
-		puts keys.inspect
 		@model.name = input[:name]
 		@model.notify_sender = input[:notify_sender]
 		@model.notify_recipient = input[:notify_recipient]
