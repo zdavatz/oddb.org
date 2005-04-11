@@ -247,6 +247,7 @@ class ResultList < HtmlGrid::List
 		img = HtmlGrid::Image.new(:notify, model, session, self)
 		img.set_attribute('src', @lookandfeel.resource_global(:notify))
 		link.value = img
+		link.set_attribute('title', @lookandfeel.lookup(:notify_alt))
 		link
 	end
 	def substances(model, session)
