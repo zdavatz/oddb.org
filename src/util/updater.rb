@@ -114,7 +114,7 @@ module ODDB
 			this_month = Date.new(today.year, today.month)
 			latest = logs.newest_date || (this_month << 1)
 			months = [this_month, this_month >> 1].select { |month| month > latest }
-			klass = BsvPlugin
+			klass = BsvPlugin2
 			plug = klass.new(@app)
 			subj = 'SL-Update'
 			wrap_update(klass, subj) { 
