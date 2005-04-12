@@ -104,13 +104,13 @@ class ResultList < HtmlGrid::List
 		:substances				=> true,
 	}
 	CSS_MAP = {
-		[0,0,3]	=>	'result-b-r',
-		[3,0]		=>	'result-big',
-		[4,0]		=>	'result',
-		[5,0,3]	=>	'result-r',
-		[8,0]		=>	'result-pubprice',
-		[9,0,4]	=>	'result-i',
-		[13,0,3]=>	'result-b-r',
+		[1,0,3]	=>	'result-b-r',
+		[4,0]		=>	'result-big',
+		[5,0]		=>	'result',
+		[6,0,3]	=>	'result-r',
+		[9,0]		=>	'result-pubprice',
+		[10,0,4]	=>	'result-i',
+		[14,0,3]=>	'result-b-r',
 	}
 	CSS_HEAD_MAP = {
 		[0,0] =>	'th',
@@ -195,6 +195,7 @@ class ResultList < HtmlGrid::List
 		link = HtmlGrid::Link.new(:google_search, @model, @session, self)	
 		link.href =  "http://www.google.com/search?q=#{glink}"
 		link.css_class= 'google_search square'
+		link.set_attribute('title', "#{@lookandfeel.lookup(:google_alt)}#{model.name_base}")
 		link
 	end
 
