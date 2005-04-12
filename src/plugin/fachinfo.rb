@@ -11,6 +11,8 @@ module ODDB
 	class FachinfoPlugin < Plugin
 		HTML_PATH = File.expand_path('../../data/html/fachinfo', 
 			File.dirname(__FILE__))
+		PDF_PATH = File.expand_path('../../data/pdf/fachinfo', 
+			File.dirname(__FILE__))
 		LANGUAGES = ['de', 'fr']
 		LOG_PATH = File.expand_path('../../log/fachinfo.txt', 
 			File.dirname(__FILE__))
@@ -70,13 +72,11 @@ module ODDB
 			}
 		end
 		def parse_fachinfo(language, idx)
-			#puts "parse #{language}/#{idx}"
 			filepath = target(language, idx)
-			#puts "filepath: #{filepath}"
 			if(File.exist?(filepath))
 				retries = 3
 				begin
-					PARSER.parse_fachinfo_html(File.read(filepath))
+					PARSER.parse_fachinfo_pdf(File.read(filepath))
 				rescue StandardError => e
 					puts e.class
 					puts e.message
@@ -134,13 +134,13 @@ module ODDB
 			}
 		end
 		def update_news
-			newsdir = File.expand_path('news', self::class::HTML_PATH)
+			newsdir = File.expand_path('news', self::class::PDF_PATH)
 			updates = self::class::LANGUAGES.inject([]) { |inj, lang|
-				target_dir = File.expand_path(lang, self::class::HTML_PATH)
+				target_dir = File.expand_path(lang, self::class::PDF_PATH)
 				source_dir = File.expand_path(lang, newsdir)
 				Dir.foreach(source_dir) { |entry|
-					if(match = /([1-9][0-9]+)\.html/.match(entry))
-						inj << match[1].to_i
+					if(match = /([0-9A-F\-]{36})\.pdf/.match(entry))
+						inj << match[1].to_s
 						File.rename(File.expand_path(entry, source_dir), 
 							File.expand_path(entry, target_dir))
 					end
@@ -186,8 +186,8 @@ module ODDB
 		private
 		def target(lang, idx)
 			File.expand_path(
-				sprintf("%s/%05i.html", lang, idx),
-				self::class::HTML_PATH
+				sprintf("%s/%s.pdf", lang, idx),
+				self::class::PDF_PATH
 			)
 		end
 	end
