@@ -83,7 +83,7 @@ class FeedbackForm < HtmlGrid::Form
 		radio_bad(:recommend)
 	end
 	def feedback_text_e(model)
-		input = HtmlGrid::Textarea.new(:message_message, model, @session, self)
+		input = HtmlGrid::Textarea.new(:message, model, @session, self)
 		input.set_attribute('cols', 53)
 		input.set_attribute('rows', 4)
 		input.set_attribute('wrap', true)
