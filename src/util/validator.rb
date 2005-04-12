@@ -10,6 +10,8 @@ module ODDB
 		alias :set_pass_1 :pass
 		alias :set_pass_2 :pass
 		alias :unique_email :email
+		alias :notify_sender :email
+		alias :notify_recipient :email
 		BOOLEAN = [
 			:cl_status, :experience, :recommend,
 			:impression, :helps
@@ -95,6 +97,8 @@ module ODDB
 			:new_registration,
 			:new_sequence,
 			:new_substance,
+			:notify,
+			:notify_send,
 			:orphaned_fachinfos,
 			:orphaned_patinfos,
 			:passthru,
@@ -114,6 +118,7 @@ module ODDB
 			:search_registrations,
 			:search_sequences,
 			:select_seq,
+			:send,
 			:sequences,
 			:set_pass,
 			:shadow,
@@ -178,6 +183,7 @@ module ODDB
 			:name,
 			:name_base,
 			:name_descr,
+			:notify_message,
 			:pattern,
 			:phone,
 			:pi_update,
