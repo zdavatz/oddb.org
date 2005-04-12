@@ -404,9 +404,10 @@ module ODDB
 		end
 		def setup
 			reg = StubRegistration.new
-			reg.iksnr = '12345'
-			reg.name_base = 'Aspirin Cardio'
-			@diff = ODDB::BsvPlugin2::PackageDiffer.new(reg)
+			pac = BsvPlugin2::ParsedPackage.new
+			pac.name = 'Aspirin Cardio'
+			pac.iksnr = '12345'
+			@diff = BsvPlugin2::PackageDiffer.new(reg, pac)
 		end
 		def test_add_both1
 			@diff.add_both('007')

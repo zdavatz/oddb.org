@@ -402,9 +402,9 @@ end
 					"Übereinstimmend".ljust(wdth),
 				].join
 			end
-			def initialize(reg)
-				@iksnr = reg.iksnr
-				@name = reg.name_base
+			def initialize(reg, pac)
+				@iksnr = pac.iksnr
+				@name = pac.name
 				@bsv = []
 				@smj = []
 				reg.each_package { |pak|
@@ -486,6 +486,8 @@ end
 			].join("\n")
 		end
 		def update(month)
+			@month = month
+
 			## download the Bulletin where we can extract exact changes
 			## and the database-file where we can reference pharmacodes
 			bl_file = download_bulletin(month)
@@ -619,7 +621,7 @@ end
 		end
 		def update_package(reg, pac)
 			differ = @package_diffs.fetch(pac.iksnr) {
-				@package_diffs.store(pac.iksnr, PackageDiffer.new(reg))
+				@package_diffs.store(pac.iksnr, PackageDiffer.new(reg, pac))
 			}
 			if(pack = reg.package(pac.ikscd))
 				differ.add_both(pac.ikscd)

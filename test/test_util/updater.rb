@@ -31,13 +31,6 @@ module ODDB
 		end
 		alias :recipients :incomplete_pointers
 	end
-	class Updater
-		remove_const :PLUGINS
-		PLUGINS = {
-			:swissmedicjournal	=>	StubUpdaterPlugin,
-			:bsv_sl							=>	StubUpdaterPlugin,
-		}
-	end
 	class TestUpdater < Test::Unit::TestCase
 		class StubLog
 			include ODDB::Persistence
