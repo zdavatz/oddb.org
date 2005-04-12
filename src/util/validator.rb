@@ -251,7 +251,7 @@ module ODDB
 			swissmedic_id(:iksnr, value, 4..5)
 		end
 		def message(value)
-			CGI.escapeHTML(validate_string(value).to_s[0,200])
+			CGI.escapeHTML(validate_string(value).to_s[0,401])
 		end
 		def search_query(value)
 			result = validate_string(value)

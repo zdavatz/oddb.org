@@ -172,7 +172,6 @@ class FeedbackList < HtmlGrid::List
 		div.css_class = css
 		div
 	end
-
 	def time(model, session)
 		model.time.strftime(@lookandfeel.lookup(:time_format))
 	end
