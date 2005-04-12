@@ -1,0 +1,649 @@
+SPEZIALITATENLISTE - LISTE DES SPECIALITES
+_____________________________________________________
+Gültig ab 01.04.2005 / Valable à partir du 01.04.2005
+_____________________________________________________
+Therap.Gruppe
+Groupe thér.
+		Präparate/Wirkstoffe	Verantwortliche Firma
+		Préparation/Substances actives	Maison responsable
+		Dossier-Nr.	Packungen	Pub-Preis {FAP}			SHI-Nr.			Aufnahmejahr
+		No du dossier	Emballages	Prix-pub {PDF}			No d'ISM		Année d'admission
+
+{}Der dem verfügten Publikumspreis zugrunde liegende Fabrikabgabepreis
+{}Le prix de fabrique servant de base au prix public autorisé
+
+I. Neuzugang Präparate/Packungen / Nouvelle admissions des préparations/emballages  
+
+
+Kapitel:01.01.30
+
+		Durogesic Matrix 	JANSSEN-CILAG AG
++		(Fentanyl.)
+		16734		5 Systeme 12,5 mcg/h Fr. 53.35 {31.38}		[53904068]		01.04.2005, A
+ 
+Kapitel:01.06.00
+
+		Limbitrol 		ICN PHARMACEUTICALS SWITZERLAND AG
+		(Amitriptylin. HCl, Chlordiazepoxid.)
+		18128		30 Caps. (12,5+5 mg) Fr. 12.75 {5.60}		[33354010]		01.04.2005, B
+		18128		100 Caps. (12,5+5 mg) Fr. 36.20 {16.84}		[33354029]		01.04.2005, B
+ 
+Kapitel:02.06.10
+
+		Amlo eco 		ECOSOL AG
+G		(Amlodipin.)
+		18092		30 Compr. 5 mg Fr. 34.85 {15.70}		[56151002]		01.04.2005, B
+		18092		100 Compr. 5 mg Fr. 66.90 {42.90}		[56151004]		01.04.2005, B
+ 
+		Amlo eco 		ECOSOL AG
+		(Amlodipin.)
+G		18092		30 Compr. 10 mg Fr. 51.70 {30.00}		[56151006]		01.04.2005, B
+		18092		100 Compr. 10 mg Fr. 112.95 {82.00}		[56151008]		01.04.2005, B
+
+ 
+		Amlodipin Helvepharm 	HELVEPHARM AG
+G		(Amlodipin.)
+		18132		30 Compr. 5 mg Fr. 36.75 {17.30}		[56821002]		01.04.2005, B
+		18132		100 Compr. 5 mg Fr. 89.95 {62.47}		[56821004]		01.04.2005, B
+ 
+		Amlodipin Helvepharm 	HELVEPHARM AG
+		(Amlodipin.)
+G		18132		30 Compr. 10 mg Fr. 52.95 {31.05}		[56821006]		01.04.2005, B
+		18132		100 Compr. 10 mg Fr. 149.70 {113.22}		[56821008]		01.04.2005, B
+
+ 
+		Amlodipin-Mepha 	MEPHA PHARMA AG
+		(Amlodipin.)
+G		18133		30 Compr. 5 mg Fr. 39.90 {19.97}		[56991002]		01.04.2005, B
+		18133		100 Compr. 5 mg Fr. 99.80 {70.84}		[56991004]		01.04.2005, B
+ 
+		Amlodipin-Mepha 	MEPHA PHARMA AG
+G		(Amlodipin.)
+		18133		30 Compr. 10 mg Fr. 59.50 {36.61}		[56991008]		01.04.2005, B
+		18133		100 Compr. 10 mg Fr. 171.40 {131.64}		[56991010]		01.04.2005, B
+ 
+
+		Amlopin 		SPIRIG PHARMA AG
+		(Amlodipin.)
+G		18134		30 Compr. 5 mg Fr. 35.00 {15.81}		[57011002]		01.04.2005, B
+		18134		100 Compr. 5 mg Fr. 66.50 {42.56}		[57011004]		01.04.2005, B
+ 
+		Amlopin 		SPIRIG PHARMA AG
+		(Amlodipin.)
+G		18134		30 Compr. 10 mg Fr. 52.00 {30.24}		[57011006]		01.04.2005, B
+		18134		100 Compr. 10 mg Fr. 112.50 {81.62}		[57011008]		01.04.2005, B
+
+
+		Alzar			MEDIKA AG
+		(Amlodipin.)
+G		18091		30 Compr. 5 mg Fr. 29.95 {14.99}		[56822001]		01.04.2005, B
+		18091		100 Compr. 5 mg Fr. 59.95 {37.00}		[56822003]		01.04.2005, B
+
+		Alzar			MEDIKA AG
+G		(Amlodipin.)
+		18091		30 Compr. 10 mg Fr. 44.90 {24.20}		[56822005]		01.04.2005, B
+		18091		100 Compr. 10 mg Fr. 89.90 {62.45}		[56822007]		01.04.2005, B
+
+ 
+Kapitel:02.07.10
+
+		Lisinopril HelvePharm 	HELVEPHARM AG
+		(Lisinopril.)
+G		18172		30 Compr. 5 mg Fr. 9.95 {4.99}			[56905002]		01.04.2005, B
+		18172		100 Compr. 5 mg Fr. 28.95 {14.15}		[56905004]		01.04.2005, B
+ 
+		Lisinopril HelvePharm 	HELVEPHARM AG
+G		(Lisinopril.)
+		18172		30 Compr. 10 mg Fr. 18.50 {8.76}		[56905006]		01.04.2005, B
+		18172		100 Compr. 10 mg Fr. 41.50 {21.34}		[56905008]		01.04.2005, B
+
+		Lisinopril HelvePharm 	HELVEPHARM AG
+G		(Lisinopril.)
+		18172		30 Compr. 20 mg Fr. 28.70 {13.95}		[56905010]		01.04.2005, B
+		18172		100 Compr. 20 mg Fr. 64.90 {41.22}		[56905012]		01.04.2005, B
+ 
+Kapitel:02.07.20
+
+		Corpriretic 		G. STREULI & CO. AG
+		(Lisinopril., Hydrochlorothiazid.)
+G		18097		30 Compr. (10+12,5 mg) Fr. 29.70 {14.80}	[56902001]		01.04.2005, B
+		18097		100 Compr. (10+12,5 mg) Fr. 65.75 {41.90}	[56902003]		01.04.2005, B
+ 
+		Corpriretic 		G. STREULI & CO. AG
+G		(Lisinopril., Hydrochlorothiazid.)
+		18097		30 Compr. (20+12,5 mg) Fr. 39.70 {19.80}	[56902005]		01.04.2005, B
+		18097		100 Compr. (20+12,5 mg) Fr. 82.35 {56.00}	[56902007]		01.04.2005, B
+ 
+		Lisinopril HCT Helvepharm 		HELVEPHARM AG
+G		(Lisinopril., Hydrochlorothiazid.)
+		18136		30 Compr. (10+12,5 mg) Fr. 28.90 {14.11}	[56901002]		01.04.2005, B
+		18136		100 Compr. (10+12,5 mg) Fr. 61.85 {38.62}	[56901004]		01.04.2005, B
+ 
+		Lisinopril HCT Helvepharm 		HELVEPHARM AG
+G		(Lisinopril., Hydrochlorothiazid.)
+		18136		30 Compr. (20+12,5 mg) Fr. 38.40 {18.70}	[56901006]		01.04.2005, B
+		18136		100 Compr. (20+12,5 mg) Fr. 79.90 {53.94}	[56901008]		01.04.2005, B
+ 
+		Provas 		SCHWARZ PHARMA AG
+		(Valsartan.)
+		18174		28 Filmtabs 80 mg Fr. 58.40 {35.67}		[57305002]		01.04.2005, B
+		18174		98 Filmtabs 80 mg Fr. 152.05 {115.20}		[57305004]		01.04.2005, B
+ 
+		Provas 		SCHWARZ PHARMA AG
+		(Valsartan.)
+		18174		28 Filmtabs 160 mg Fr. 66.90 {42.88}		[57305006]		01.04.2005, B
+		18174		98 Filmtabs 160 mg Fr. 194.80 {151.51}		[57305008]		01.04.2005, B
+ 
+		Provas comp 	SCHWARZ PHARMA AG
+		(Valsartan., Hydrochlorothiazid.)
+		18175		28 Filmtabs (80+12,5 mg) Fr. 60.80 {37.71}	[57304001]		01.04.2005, B
+		18175		98 Filmtabs (80+12,5 mg) Fr. 159.90 {121.88}	[57304003]		01.04.2005, B
+ 
+		Provas comp 	SCHWARZ PHARMA AG
+		(Valsartan., Hydrochlorothiazid.)
+		18175		28 Filmtabs (160+12,5 mg) Fr. 69.10 {44.75}	[57304005]		01.04.2005, B
+		18175		98 Filmtabs (160+12,5 mg) Fr. 200.65 {156.49}	[57304007]		01.04.2005, B
+ 
+		Provas comp 	SCHWARZ PHARMA AG
+		(Valsartan., Hydrochlorothiazid.)
+		18175		28 Filmtabs maxx (160+25 mg) Fr. 69.10 {44.75}	[57304009]		01.04.2005, B
+		18175		98 Filmtabs maxx (160+25 mg) Fr. 200.65 {156.49} [57304011]		01.04.2005, B
+ 
+Kapitel:03.04.10
+
+		Euphyllin N 		ALTANA PHARMA AG
+		(Theophyllin.)
+		 6771		5 Amp. i.v. 200 mg/10 ml Fr. 7.90 {3.29}	[18056038]		01.04.2005, B
+ 
+Kapitel:04.08.13
+
+	(L)	Colosan mite 		VIFOR SA
+		(Sterculiae Gummi)
+		13716		200 g Pulv. gran. 85% citron Fr. 12.35 {6.71}	[43319078]		01.04.2005, D
+		13716		500 g Pulv. gran. 85% citron Fr. 28.25 {15.34}	[43319086]		01.04.2005, D
+		13716		200 g Pulv. gran. 85% mocca Fr. 12.35 {6.71}	[43319108]		01.04.2005, D
+		13716		500 g Pulv. gran. 85% mocca Fr. 28.25 {15.34}	[43319116]		01.04.2005, D
+
+Limitatio: Gesamthaft zugelassen 2 Kleinpackungen oder 1 Grosspackung. Von dieser Beschränkung ist die Behandlung der 
+Obstipation aufgrund von Opioidtherapie, von Parkinsontherapie sowie diejenige der Obstipation von Patienten, die Anti-
+depressiva oder Neuroleptika unterstellt sind, ausgenommen. Im weiteren sind davon ausgenommen Para- und Tetraplegiker.
+
+Prescription limitée au maximum à 2 petits emballages ou 1 grand emballage. Cette limitation ne s'applique pas à la 
+prise en charge des cas de constipation résultant d'un traitement par des opioïdes ou par des antiparkinsoniens ou
+encore à ceux consécutifs à la prise d'antidépresseurs ou de neuroleptiques. Cette limitation ne s'applique pas non
+plus aux paraplégiques et aux tétraplégiques.
+
+ 
+Kapitel:04.09.00
+
+		Mesazin 		VIFOR SA
+		(Mesalazin.)
+		17975		50 Sach. Gran. 500 mg Fr. 53.65 {31.66}		[55951002]		01.04.2005, B
+		17975		300 Sach. Gran. 500 mg Fr. 206.50 {161.47}	[55951004]		01.04.2005, B
+ 
+		Mesazin 		VIFOR SA
+		(Mesalazin.)
+		17975		50 Sach. Gran. 1000 mg Fr. 90.95 {63.32}	[55951006]		01.04.2005, B
+		17975		150 Sach. Gran. 1000 mg Fr. 206.50 {161.47}	[55951008]		01.04.2005, B
+ 
+Kapitel:07.08.30
+
+		Utrogestan 		VIFOR SA
+		(Progesteron.)
+		14470		15 Caps. 200 mg Fr. 20.35 {10.32}		[45351033]		01.04.2005, B
+ 
+Kapitel:07.12.00
+
+		Primesin 		SCHWARZ PHARMA AG
+		(Fluvastatin.)
+		18188		28 Caps. mite 20 mg Fr. 41.75 {21.56}		[57306001]		01.04.2005, B
+		18188		98 Caps. mite 20 mg Fr. 99.55 {70.61}		[57306003]		01.04.2005, B
+ 
+		Primesin 		SCHWARZ PHARMA AG
+		(Fluvastatin.)
+		18188		28 Caps. 40 mg Fr. 58.05 {35.39}		[57306005]		01.04.2005, B
+		18188		98 Caps. 40 mg Fr. 152.70 {115.74}		[57306007]		01.04.2005, B
+ 
+		Primesin 		SCHWARZ PHARMA AG
+		(Fluvastatin.)
+		18189		28 Compr. retard 80 mg Fr. 69.05 {44.72}	[57307002]		01.04.2005, B
+		18189		98 Compr. retard 80 mg Fr. 200.35 {156.22}	[57307004]		01.04.2005, B
+ 
+Kapitel:11.09.00
+
+		Timo-Comod 		URSAPHARM SCHWEIZ GMBH
+G		(Timololi maleas)
+		18152		5 ml Guttae 0,25% Fr. 15.90 {6.56}		[55788009]		01.04.2005, B
+		18152		2 x 5 ml Guttae 0,25% Fr. 27.30 {12.73}		[55788011]		01.04.2005, B
+ 
+		Timo-Comod 		URSAPHARM SCHWEIZ GMBH
+G		(Timololi maleas)
+		18152		5 ml Guttae 0,5% Fr. 16.65 {7.18}		[55788013]		01.04.2005, B
+		18152		2 x 5 ml Guttae 0,5% Fr. 28.70 {13.93}		[55788015]		01.04.2005, B
+ 
+Kapitel:57.10.40
+
+	(L)	Schmids Sportcrème 		OTC PHARMA AG
+		(Dextrocamphora, Eucalypti aetheroleum, Gaultheriae aetherol., Rosmarini aetheroleum, Terebinthinae medicinalis aetheroleum, Arnicae Tct.)
+		18154		100 g Crème (40+40+40+40+40+100 mg) Fr. 14.25 {7.74} [54210019]		01.04.2005, D
+
+Limitatio: 4 x 100 g pro 3 Monate.
+4 x 100 g par période de 3 mois.
+
+ 
+Therap.Gruppe
+Groupe thér.
+		Präparate/Wirkstoffe	Verantwortliche Firma
+		Préparation/Substances actives	Maison responsable
+		Dossier-Nr.	Packungen	Pub-Preis {FAP}			SHI-Nr.		Aufnahmejahr
+		No du dossier	Emballages	Prix-pub {PDF}			No d'ISM	Année d'admission
+
+Gemäss Art. 68 Abs. 2 der Verordnung über die Krankenversicherung (KVV) wird eine Streichung von Medikamenten aus der
+SL erst drei Monate nach Veröffentlichung im BAG-Bulletin wirksam.
+
+Conformément à l'art. 68, al. 2, de l'Ordonnance sur l'assurance-maladie (OAMal), la radiation d'un médicament de la
+LS prend effet trois mois après avoir été publiée dans le bulletin de l'OFSP.
+
+{}Der dem verfügten Publikumspreis zugrunde liegende Fabrikabgabepreis
+{}Le prix de fabrique servant de base au prix public autorisé
+
+II. Neu gestrichene Präparate/Packungen / Préparations/emballages radiés  
+
+
+Kapitel:01.01.24
+
+		Dorsilon 		DROSSAPHARM AG
+		(Mephenoxalon., Paracetamol.)
+		 9750		20 Compr. (200+450 mg) Fr. 11.20 {4.65}		[29088012]		1964, B
+		 9750		100 Compr. (200+450 mg) Fr. 37.20 {17.66}	[29088020]		1964, B
+ 
+		Dorsilon 		DROSSAPHARM AG
+		(Mephenoxalon., Paracetamol.)
+		10385		10 Supp. (200+600 mg) Fr. 9.15 {3.80}		[30848012]		1964, B
+ 
+Kapitel:01.01.30
+
+		Depronal retard 	PFIZER AG
+		(Dextropropoxyphen. HCl)
+		12086		15 Caps. 150 mg Fr. 16.25 {6.84}		[34306028]		1975, B
+ 
+Kapitel:03.04.10
+
+		Euphyllin 		ALTANA PHARMA AG
+		(Aminophyllin.)
+		 6771		5 Amp. i.v. 10 ml 24 mg/ml Fr. 7.90 {3.29}	[18056011]		1955, B
+ 
+Kapitel:06.06.00
+
+		Cyklokapron 		PFIZER AG
+		(Acid. tranexamic.)
+		11587		6 Amp. 5 ml 100 mg/ml Fr. 34.30 {15.23}		[33740018]		1972, B
+ 
+Kapitel:10.05.20
+
+		Nystacorton 		SPIRIG PHARMA AG
+		(Prednisoloni acetas, Nystatin., Chlorhexidini HCl)
+		14033		25 g Schaum (0,5%+100 000 E./u./g+0,5%) Fr. 18.20 {8.49} [44035014]		1982, B
+ 
+Kapitel:12.02.60
+
+		Coldistop 		RIDUPHARM
+		(Retinol. palmitic., Tocopherol. acetic.)
+		12579		10 ml Guttae (15 000 U.I.+20 mg/ml) Fr. 5.05 { } [38189018]		1977, D
+ 
+
+III. Preissenkungen / Réductions de prix
+
+Präparate/Packungen	Firma	Therap. Gruppe
+Préparations/emballages	Maison	Groupe thérapeutique
+		Pharma	Dossier Nr.	Preis neu	Ex-Fact.neu
+		Code	No du dossier	nouveau prix	nouveau ex-fact.
+Fludara	SCHERING (Schweiz) AG	07.16.10
+	5 Amp. 50 mg	1635551	16397	1332.70	1128.60	
+ 
+Lisitril	ECOSOL AG	02.07.10
+	100 Compr. 5 mg	2783816	18004	29.90		14.97	
+	100 Compr. 10 mg2783880	18004	45.60		24.81	
+	30 Compr. 20 mg	2783897	18004	28.00		13.34	
+	100 Compr. 20 mg 2783905 18004	65.15		41.42	
+ 
+Omeprazol Sandoz	Sandoz AG	04.99.00
+	14 Caps. 10 mg	2672235	17916	29.90		14.96	
+	28 Caps. 10 mg	2672241	17916	46.30		25.40	
+	56 Caps. 10 mg	2672258	17916	82.40		56.06	
+	7 Caps. 20 mg	2672270	17916	25.30		11.05	
+	14 Caps. 20 mg	2672287	17916	34.05		15.00	
+	28 Caps. 20 mg	2672293	17916	56.70		34.23	
+	56 Caps. 20 mg	2672301	17916	109.00		78.65	
+ 
+Prinil	MEPHA Pharma AG	02.07.10
+	30 Compr. 5 mg	1361881	15581	9.95		4.99	
+	28 Compr. 20 mg	1361869	15581	26.95		12.45	
+	98 Compr. 20 mg	1361875	15581	64.20		40.60	
+
+Präparate/Packungen	Firma	Therap. Gruppe
+Préparations/emballages	Maison	Groupe thérapeutique
+		Pharma	Dossier Nr.	Preis neu	Ex-Fact.neu
+		Code	No du dossier	nouveau prix	nouveau ex-fact.
+
+IV. Preismutationen im Zusammenhang mit der Erhöhung des Swissmedic-Zulassungsvermerks -  Mutations
+des prix comme conséquence de l'augmentation de l'estampille de Swissmedic
+
+Advate	BAXTER AG	06.01.10
+	1 Amp. 250 I.E.	2802152	18009	360.95		320.55	
+	1 Amp. 500 I.E.	2802175	18009	651.90		610.30	
+	1 Amp. 1000 I.E.2802117	18009	1263.00		1219.50	
+	1 Amp. 1500 I.E.2802123	18009	1871.70		1828.20	
+ 
+Benefix	BAXTER AG	06.01.10
+	1 Amp. 250 I.E.	2802241	17063	374.20		333.80	
+	1 Amp. 500 I.E.	2802258	17063	709.20		667.60	
+	1 Amp. 1000 I.E. 2802235 17063	1377.70		1334.20	
+ 
+Endobulin S/D	BAXTER AG	08.09.00
+	1 Amp. 2,5 g	2477255	15548	207.80		162.25	
+	1 Amp. 5 g	2477278	15548	399.00		324.50	
+	1 Amp. 10 g	2477284	15548	782.55		649.00	
+ 
+Faktor VII-Konzentrat S-TIM 4	BAXTER AG	06.01.10
+	1 Vitr. 10 ml 500 I.E.	1968821	15944	507.95	467.35	
+ 
+Feiba S-TIM 4	BAXTER AG	06.01.10
+	1 Amp. 1000 E./u. 1982672 13547	1522.10		1478.60	
+ 
+Gammagard S/D	BAXTER AG	08.09.00
+	1 Amp. 2,5 g	1982778	16709	228.10		179.50	
+	1 Amp. 5 g	1982784	16709	439.85		359.00	
+	1 Amp. 10 g	1982790	16709	863.80		718.00	
+ 
+Gen H-B Vax	Aventis Pasteur MSD AG	08.08.00
+	1 Amp. pro adult. 10 mcg	1946972	16589	46.10	25.15	
+	1 Amp. pro infant. 5 mcg	1946966	16589	42.80	22.35	
+ 
+Gen H-B Vax Dialyse	Aventis Pasteur MSD AG	08.08.00
+	1 Amp. 40 mcg	1379912	16590	50.10		28.54	
+ 
+HB Vax Pro 10	Aventis Pasteur MSD AG	08.08.00
+	1 Amp. pro adult. 10 mcg	2723688	17959	46.10	25.15	
+ 
+HB Vax Pro 5	Aventis Pasteur MSD AG	08.08.00
+	1 Amp. pro infant. 5 mcg	2847189	17958	42.80	22.35	
+ 
+Hexavac	Aventis Pasteur MSD AG	08.08.00
+	1 Amp. 0,5 ml	2343773	17650	90.55		62.77	
+ 
+Human-Albumin 20%	BAXTER AG	06.01.10
+	100 ml 20% salzarm 1874356	12398	109.35	69.20	
+ 
+Immunate STIM Plus	BAXTER AG	06.01.10
+	1 Amp. 250 I.E.	1874422	16468	298.75		258.35	
+	1 Amp. 500 I.E.	1874439	16468	528.00		487.40	
+	1 Amp. 1000 I.E. 1874416 16468	1016.40		974.80	
+ 
+Immunine STIM Plus	BAXTER AG	06.01.10
+	1 Amp. 600 I.E.	1874451	16141	525.60		485.00	
+	1 Amp. 1200 I.E. 1874445 16141	1010.35		968.75	
+ 
+M-M-R-Vax II	Aventis Pasteur MSD AG	08.08.00
+	1 Amp. 0,5 ml	595039	16595	46.70		25.66	
+ 
+Pentavac	Aventis Pasteur MSD AG	08.08.00
+	1 Amp. 0.5 ml	2198911	17426	60.75		37.53	
+ 
+Prothromplex Total S-TIM 4	BAXTER AG	06.01.10
+	1 Amp. 200 E./u. 1968838	15453	172.25	131.95	
+	1 Amp. 600 E./u. 1968844	15453	412.85	372.25	
+ 
+Recombinate 	BAXTER AG	06.01.10
+	1 Amp. 250 I.E.	2802904	16469	360.95		320.55	
+	1 Amp. 500 I.E.	2802927	16469	651.90		610.30	
+	1 Amp. 1000 I.E. 2802962 16469	1263.00		1219.50	
+ 
+Revaxis	Aventis Pasteur MSD AG	08.08.00
+	1 Amp. 0,5 ml	2343804	17608	35.75		16.39	
+ 
+Tetravac	Aventis Pasteur MSD AG	08.08.00
+	1 Amp. 0,5 ml	2198934	17427	45.10		24.29	
+ 
+Vaccin Rabique Inactivé	Aventis Pasteur MSD AG	08.08.00
+	1 Amp. à 1 Dose	723543	13613	75.95		50.42	
+
+
+V. Aenderung der Limitation - Changement de la limitation
+
+Kapitel:07.16.10.
+
+		Fludara			SCHERING (SCHWEIZ) AG
+		(Fludarabin. phosphas.)	
+	16397	5 Amp. 50 mg Fr. 1332.70 {1128.60}
+
+Limitatio: Therapie der chronisch-lymphatischen Leukämie (CLL) vom B-Zell-Typ. Die Firstline-
+Therapie mit FLUDARA sollte nur bei Patienten mit fortgeschrittener Erkrankung begonnen werden, d.h. im
+Binet-Stadium B oder C, einhergehend mit krankheitsbedingten Symptomen oder Zeichen einer 
+Krankheitsprogression.
+Behandlung des niedrig malignen Non-Hodgkin-Lymphoms im Stadium 3 bis 4 bei Patienten, die 
+auf eine Standardtherapie mit mindestens einer alkylierenden Substanz nicht angesprochen
+haben oder bei denen die Krankheit während oder nach der Standardtherapie fortgeschritten ist.
+
+Traitement de la leucémie lymphoïde chronique (LLC) à cellules B. Le traitement de première
+intention avec FLUDARA ne doit être initié que chez des patients qui sont déjà à un stade avancé de la
+maladie, c'est-à-dire aux stades B ou C de la classification de Binet, accompagné de symptômes liés
+à la maladie ou de signes d'une progression de la maladie.
+Traitement du lymphome non hodgkinien de faible malignité au stade 3 à 4, chez les patients qui n'ont
+pas répondu au traitement standard par au moins une substance alkylante ou chez lesquels la maladie
+a progressé pendant ou après le traitement standard.
+
+
+VI. Bisherige Veröffentlichungen / Publications jusqu'à présent
+
+Aufnahmen (für Details: vgl. das konkrete Bulletin)			per	Bull.BAG.Nr.
+Admissions (pour les détails voir le bulletin s'y référant)		au	Bull.OFSP No
+
+16577	3TC								1.11.04	45/04
+
+17965	Abilify								1.12.04	50/04
+18105	Aggrastat							1.1.05	1/05
+18139	Algifor Junior							1.2.05	5/05
+18061	Amevive								1.2.05	5/05
+18089	Amiodarone Winthrop						1.12.04	50/04
+17989	AtroMed								1.1.05	1/05
+18082	Avastin								15.1.05	5/05
+
+18033	Carsol CR							1.1.05	1/05
+18211	Cefuroxim-Mepha							1.1.05	1/05
+18114	Cetirizin HelvePharm						1.12.04	50/04
+18112	Cetrin								1.11.04	45/04
+17986	Ciprofloxacin Sandoz						1.11.04	45/04
+18085	Citalopram Sandoz						1.12.04 50/04
+17998	Clopin eco							1.1.05	1/05
+18151	Combigan							1.2.05	5/05
+17193	Cosopt								1.1.05	1/05
+15670	Coversum							1.12.04	50/04
+18146	Curakne								1.2.05	5/05
+
+18142	Dacin								1.3.05	9/05
+15223	Dolo-Veniten							1.3.05	9/05
+15913	Dotarem								1.1.05	1/05
+18088	Dysport								1.12.04	50/04
+
+18072	Emtriva								1.12.04	50/04
+18104	Exanta								1.1.05	1/05
+18157	Exanta								1.1.05	1/05
+
+12400	Florinef							1.11.04	45/04
+18120	Flucazol							1.11.04	45/04
+18144	Fluconazol Helvepharm						1.3.05	9/05
+17999	Fluesco								1.3.05	9/05
+
+17983	Grofenac							1.2.05	5/05
+
+18115	Histatec							1.12.04	50/04
+
+17982	Inflamac Rapid							1.11.04	45/04
+
+16559	Lipanthyl 267M							1.12.04	50/04
+18098	Lisitril comp							1.1.05	1/05
+18095	Lisopril plus							1.12.04	50/04
+18051	Livial								1.1.05	1/05
+16158	Lucrin								1.1.05	1/05
+17338	Lucrin Depot 3 Monate						1.1.05	1/05
+
+18108	Metformin-Mepha							1.2.05	5/05
+15148	Mg 5-Granoral							1.1.05	1/05
+18118	Mimpara								1.2.05	5/05
+18062	Mitoxantron Ebewe						1.1.05	1/05
+18145	Mykantol							1.2.05	5/05
+
+17868	Omed								1.11.04	45/04
+18102	Omed Tab							1.2.05	5/05
+18103	Omeprazol Helvepharm						1.11.04	45/04
+18121	Optiderm							1.12.04	50/04
+
+18129	Paroxetin Helvepharm						1.3.05	9/05
+18086	Paroxetop							1.3.05	9/05
+18110	Piroxicam Helvepharm						1.12.04 50/04
+
+18018	Raptiva								1.1.05	1/05
+18150	Relestat							1.2.05	5/05
+18100	Rhinathiol							1.11.04	45/04
+18101	Rhinathiol							1.11.04	45/04
+17775	Ritalin LA							1.3.05	9/05
+
+18111	Simvastatin Sandoz						1.11.04	45/04
+18124	Solevita forte							1.12.04	50/04
+18109	Sporsal 500							1.1.05	1/05
+
+18078	Theracap 131							1.1.05	1/05
+18113	Tobin								1.11.04	45/04
+18141	Tobin								1.1.05	1/05
+18083	Tramadol Helvepharm						1.3.05	9/05
+
+18076	Varilrix							1.1.05	1/05
+18125	Viscotears							1.12.04	50/04
+18122	Viscotears SDU							1.12.04	50/04
+
+18135	Zanidip								1.2.05	5/05
+18137	Zofenil plus							1.2.05	5/05
+18084	Zolpidem Winthrop						1.12.04	50/04
+18090	Zomig nasal							1.1.05	1/05
+
+
+Streichungen (für Details: vgl. das konkrete Bulletin)			per	Bull.BAG.Nr.
+Radiations (pour les détails voir le bulletin s'y référant)		au	Bull.OFSP No
+
+17201	Angiocis							1.2.05	5/05
+
+14197	Bonidon								1.2.05	5/05
+14863	Bonidon								1.2.05	5/05
+
+866	Calcium-Sandoz							1.3.05	9/05
+17067	Calsan								1.2.05	5/05
+17329	Calsan								1.2.05	5/05
+17241	Capsion								1.2.05	5/05
+16448	Cognex								1.12.04	50/04
+15576	Coridil								1.1.05	1/05
+
+8497	Decadron							1.3.05	9/05
+17328	Detrusitol							1.3.05	9/05
+13637	Dexacortin-K							1.11.04	45/04
+16803	DexOptifen							1.2.05	5/05
+15952	Dolo Target							1.12.04	50/04
+14354	Dolo-Veniten							1.12.04	50/04
+
+17856	Ecodolor							1.12.04	50/04
+15844	Effacne								1.12.04	50/04
+11555	Efudix								1.1.05	1/05
+14246	Erytran 500							1.12.04	50/04
+17695	Escozem								1.11.04	45/04
+17696	Escozem								1.11.04	45/04
+
+16157	Farlutal							1.3.05	9/05
+17809	Femerin								1.12.04	50/04
+17190	Fortovase							1.3.05	9/05
+
+12523	Gelusil								1.3.05	9/05
+12241	Gluborid							1.2.05	5/05
+16329	Grisol								1.12.04 50/04
+
+16090	Hivid								1.3.05	9/05
+
+15787	Inderm								1.1.05	1/05
+
+9976	Kalium Hausmann							1.1.05	1/05
+14689	Kessar								1.3.05	9/05
+6910	Konakion							1.3.05	9/05
+14758	Kontexin							1.1.05	1/05
+
+17851	Libertin							1.11.04	45/04
+12162	Liquemin							1.3.05	9/05
+14002	Lomudal								1.1.05	1/05
+
+15866	Malimed								1.1.05	1/05
+17257	Mandal 425							1.2.05	5/05
+14177	Megacillin oral							1.2.05	5/05
+15264	Megacillin oral							1.2.05	5/05
+15148	Mg 5-Granoral							1.1.05	1/05
+8833	Mycolog								1.2.05	5/05
+12114	Mycolog								1.2.05	5/05
+
+12506	Nerisona							1.2.05	5/05
+12507	Nerisona							1.2.05	5/05
+12984	Noviform 2% Dispersa						1.2.05	5/05
+
+17917	Omezol-Mepha							1.3.05	9/05
+17918	Oprazol								1.3.05	9/05
+15054	Optifen								1.3.05	9/05
+13530	Ossin								1.2.05	5/05
+17204	Osteocis							1.2.05	5/05
+16335	Otospray SM							1.12.04	50/04
+
+14718	Pindolol Helvepharm						1.3.05	9/05
+15530	Piroxicam-Mepha							1.2.05	5/05
+15443	Prepulsid							1.2.05	5/05
+15444	Prepulsid							1.2.05	5/05
+16772	Prepulsid							1.2.05	5/05
+17293	Pulmocis							1.2.05	5/05
+17671	Puregon								1.1.05	1/05
+
+16884	Regepar								1.2.05	5/05
+17242	Renocis								1.2.05	5/05
+17682	Resovist							1.2.05	5/05
+11025	Rhinopront							1.3.05	9/05
+
+12851	Semi-Euglucon							1.3.05	9/05
+13948	Sigadoxin							1.12.04	50/04
+14617	Sigaperidol							1.1.05	1/05
+14619	Sigaperidol							1.1.05	1/05
+14118	Sigapurol							1.2.05	5/05
+15038	Sigapurol							1.2.05	5/05
+10480	Silubin retard							1.2.05	5/05
+18008	Singulair							1.11.04	45/04
+804	Spasmo-Cibalgin							1.11.04	45/04
+7705	Spasmo-Cibalgin							1.11.04	45/04
+8309	Spasmo-Cibalgin comp.						1.1.05	1/05
+11157	Spasmo-Cibalgin comp.						1.1.05	1/05
+12315	Spersacarpine							1.11.04	45/04
+12316	Spersacarpine							1.11.04	45/04
+12991	Spersacet							1.11.04	45/04
+12605	Spersacet C							1.11.04	45/04
+12314	Spersadexoline							1.2.05	5/05
+12194	Spersanicol							1.2.05	5/05
+15637	Supracombin							1.2.05	5/05
+15669	Supramox							1.2.05	5/05
+15717	Supramox							1.2.05	5/05
+15718	Supramox							1.2.05	5/05
+
+16749	Tasmar								1.12.04	50/04
+13974	Thiaminum chloratum						1.11.04	45/04
+15434	Tilade								1.1.05	1/05
+15047	Tilcotil							1.3.05	9/05
+15363	Tilcotil							1.3.05	9/05
+15661	Timpilo								1.3.05	9/05
+13717	Triherpine							1.2.05	5/05
+
+17208	Vasculocis							1.2.05	5/05
+17352	Vioxx								1.11.04	45/04
+17353	Vioxx								1.11.04	45/04
+17514	Virsol								1.12.04	50/04
+
+15475	Zadorin-100							1.2.05	5/05
