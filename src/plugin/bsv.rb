@@ -256,7 +256,7 @@ end
 				[@iksnr, @ikscd].join
 			end
 			def ikskey=(key)
-				@iksnr = key[0,5]
+				@iksnr = sprintf('%05i', key[0,5])
 				@ikscd = key[5,3]
 			end
 			def merge(other)
@@ -518,6 +518,9 @@ end
 			##       package-size and dose
 			
 			## compile a report that includes missing packages.
+			## -> is being done on the fly
+		rescue RuntimeError
+			false
 		end
 		private
 		def balance_package(package)
@@ -584,19 +587,19 @@ end
 			workbook = Spreadsheet::ParseExcel.parse(path)
 			worksheet = workbook.worksheet(0)
 			worksheet.each(1) { |row|
-				pcode = row.at(2).to_s
-				ikskey = row.at(4).to_s
+				pcode = row.at(2).to_i.to_s
+				ikskey = row.at(4).to_i.to_s
 				package = ParsedPackage.new
 				package.company = row.at(0).to_s
 				package.generic_type = (row.at(1).to_s.downcase == 'y')
 				package.name = row.at(7).to_s
 				package.limitation = (row.at(10).to_s.downcase=='y')
 				package.limitation_points = row.at(11).to_i
-				unless(pcode.empty?)
+				unless(pcode == '0')
 					package.pharmacode = pcode
 					@ptable.store(pcode, package)
 				end
-				unless(ikskey.empty?)
+				unless(ikskey == '0')
 					package.ikskey = ikskey
 					@ikstable.store(ikskey, package)
 				end
