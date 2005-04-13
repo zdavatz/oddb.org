@@ -37,16 +37,17 @@ module ODDB
 					pos = components.index(:fachinfo)
 					component_css_map.store(pos, css)
 					css_map.store(pos, css)
+					link.set_attribute('title', @lookandfeel.lookup(:fi_alt))
 					link
 				end
 			end
 			def feedback(model, session)
 				link = HtmlGrid::Link.new(:feedback_text_short, model, session, self)
 				link.href = @lookandfeel.event_url(:feedbacks, {'pointer'=>model.pointer})
-				#link.set_attribute('title', @lookandfeel.lookup(:limitation_text))
 				pos = components.index(:feedback)
 				component_css_map.store(pos, "feedback square")
 				css_map.store(pos, "square")
+				link.set_attribute('title', "#{@lookandfeel.lookup(:feedback_alt)}#{model.name_base}")
 				link
 			end
 			def limitation_text(model, session)
