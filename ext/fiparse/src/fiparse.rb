@@ -51,7 +51,7 @@ module ODDB
 			formatter = HtmlFormatter.new(writer)
 			parser = HtmlParser.new(formatter)
 			parser.feed(src)
-			writer.ids.compact
+			writer.fi_ids.compact
 		end
 		def parse_patinfo_html(src)
 			writer = PatinfoHtmlWriter.new

@@ -7,19 +7,24 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'plugin/fachinfo'
 require 'model/text'
+require 'fileutils'
 
 class StubFachinfoParser
 	class << self
-		def parse_fachinfo_html(src)
+		def parse_fachinfo_pdf(src)
 			src
 		end
 	end
 end
 module ODDB
 	class FachinfoPlugin < Plugin
-		HTML_PATH = File.expand_path('../data/html', File.dirname(__FILE__))
+		HTML_PATH = File.expand_path('../data/html', 
+			File.dirname(__FILE__))
+		PDF_PATH = File.expand_path('../data/pdf', 
+			File.dirname(__FILE__))
 		PARSER = StubFachinfoParser
-		LOG_PATH = File.expand_path('../data/fachinfo.log', File.dirname(__FILE__))
+		LOG_PATH = File.expand_path('../data/fachinfo.log', 
+			File.dirname(__FILE__))
 		
 		public :target
 	end
@@ -62,7 +67,7 @@ class TestFachinfoPlugin < Test::Unit::TestCase
 		@app = StubApp.new
 		@plugin = ODDB::FachinfoPlugin.new(@app)
 	end
-	def tear_down
+	def teardown
 		if(File.exists?(@logpath))
 			File.delete(@logpath)
 		end
@@ -71,6 +76,7 @@ class TestFachinfoPlugin < Test::Unit::TestCase
 		begin
 			defile = @plugin.target('de', 1)	
 			frfile = @plugin.target('fr', 1)
+			FileUtils.mkdir_p(File.dirname(defile))
 			File.open(defile, 'w') { |fh| fh << "de_fi" }
 			expected = {
 				'de'	=>	'de_fi',
@@ -150,11 +156,9 @@ class TestFachinfoPlugin < Test::Unit::TestCase
 	def test_old_news
 		file = ODDB::FachinfoPlugin::LOG_PATH
 		File.open(file, 'w') { |fh|
-			fh.puts([123, 456, 789, 101112])
+			fh.puts(%w{123 456 789 101112})
 		}
-		expected = [
-			123, 456, 789, 101112,
-		]
+		expected = %w{123 456 789 101112}
 		assert_equal(expected, @plugin.old_news)
 	end
 	def test_store_orphaned
@@ -175,22 +179,20 @@ class TestFachinfoPlugin < Test::Unit::TestCase
 	def test_log_news2
 		file = ODDB::FachinfoPlugin::LOG_PATH
 		File.open(file, 'w') { |fh|
-			fh.puts([123, 456, 789, 101112])
+			fh.puts(%w{123 456 789 101112})
 		}
-		@plugin.log_news([654, 789, 1314])
-		expected = [
-			654, 789, 1314, 123, 456, 101112,
-		]
+		@plugin.log_news(%w{654 789 1314})
+		expected = %w{654 789 1314 123 456 101112}
 		assert_equal(expected, @plugin.old_news)
 	end
 	def test_true_news1
-		news = [1234, 5678, 9807, 4567, 3456]
-		old_news = [9807, 4567]
-		expected = [1234, 5678]
+		news = %w{1234 5678 9807 4567 3456}
+		old_news = %w{9807 4567}
+		expected = %w{1234 5678}
 		assert_equal(expected, @plugin.true_news(news, old_news))
 	end
 	def test_true_news2
-		news = [1234, 5678, 9807, 4567, 3456]
+		news = %w{1234 5678 9807 4567 3456}
 		old_news = []
 		assert_equal(news, @plugin.true_news(news, old_news))
 	end

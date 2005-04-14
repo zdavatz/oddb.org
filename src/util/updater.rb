@@ -97,7 +97,7 @@ module ODDB
 		def run
 			logfile_stats
 			update_swissmedicjournal
-			#update_fachinfo
+			update_fachinfo
 			if(update_bsv)
 				update_limitation_text
 			elsif(@smj_updated)
@@ -220,7 +220,7 @@ module ODDB
 				ODBA.transaction {
 					block.call
 				}
-			rescue StandardError => e
+			rescue RuntimeError, StandardError => e
 				log = Log.new(Date.today)
 				log.report = [
 					"Plugin: #{klass}",

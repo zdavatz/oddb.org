@@ -17,12 +17,18 @@ module ODDB
 		LOG_PATH = File.expand_path('../../log/fachinfo.txt', 
 			File.dirname(__FILE__))
 		PARSER = DRbObject.new(nil, FIPARSE_URI)
+		NEWS_PATHS = ['/deutsch/index.html', 
+			'/deutsch/news/docunews/docunews.html']
 		RECIPIENTS = [ ]
 		def initialize(app)
 			super
 			@success = 0
 			@unknown_iksnrs = {}
 			@iksless = []
+			@hdrs = {
+				'User-Agent'=>	'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1) ',
+				'Accept'		=>	'image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, */* ',
+			}
 		end
 		def extract_iksnrs(languages)
 			iksnrs = []
@@ -34,19 +40,33 @@ module ODDB
 			}
 			iksnrs.uniq
 		end
+		def extract_name(languages)
+			languages.sort.first.last.name.to_s rescue 'Unknown'
+		end
 		def fachinfo_news
-			path = File.expand_path('fachinfo/index.html', 
-				self::class::HTML_PATH)
-			if(http_file('www.documed.ch', '/deutsch/', path))
-				PARSER.parse_fachinfo_news(File.read(path))
-			end
+			ids = []
+			NEWS_PATHS.each { |source|
+				target = File.join(HTML_PATH, File.basename(source))
+				if(http_file('www.documed.ch', source, target, nil, @hdrs))
+					ids += PARSER.parse_fachinfo_news(File.read(target))
+				else 
+					raise "Could not download #{source} from www.documed.ch"
+				end
+			}
+			ids
 		end
 		def fetch_languages(idx)
-			LANGUAGES.select { |lang|
+			host = "www.kompendium.ch"
+			successes = LANGUAGES.select { |lang|
 				ln = lang[0,1]
-				url = sprintf("//data/fi_%s/%sk%05i_.htm", ln, ln, idx)
-				http_file("www.kompendium.ch", url, target(lang, idx))
-			}.size > 0
+				url = sprintf("/data/fi_%s_pdf/%sk%s_.pdf", ln, ln, idx)
+				http_file(host, url, target(lang, idx), nil, @hdrs)
+			}
+			if(successes.empty?)
+				msg = "could not download any fachinfos from #{host}\n"
+				msg << urls.join("\n")
+				raise msg	
+			end
 		end
 		def log_news(lines)
 			new_news = (lines + (old_news - lines))
@@ -58,7 +78,7 @@ module ODDB
 		end
 		def old_news
 			begin
-				File.readlines(LOG_PATH).collect { |line| line.to_i }
+				File.readlines(LOG_PATH).collect { |line| line.strip }
 			rescue Errno::ENOENT
 				[]
 			end
@@ -115,12 +135,11 @@ module ODDB
 		end
 		def update
 			news = fachinfo_news
-			updates = true_news(news, old_news)
+			updates = true_news(news, old_news())
 			updates.each { |idx|
-				if(fetch_languages(idx))
-					languages = package_languages(idx)
-					update_registrations(languages) unless languages.empty?
-				end
+				fetch_languages(idx)
+				languages = package_languages(idx)
+				update_registrations(languages) unless languages.empty?
 			}
 			log_news(updates)
 			!updates.empty?
@@ -160,7 +179,7 @@ module ODDB
 				[]
 			end
 			if(iksnrs.empty?)
-				@iksless.push(name)
+				@iksless.push(extract_name(languages))
 			else
 				fachinfo = nil
 				iksnrs.each { |nr|
@@ -169,19 +188,19 @@ module ODDB
 						fachinfo ||= store_fachinfo(languages)
 						@app.replace_fachinfo(iksnr, fachinfo.pointer)
 					else
-						@unknown_iksnrs.store(iksnr, name)
+						@unknown_iksnrs.store(iksnr, extract_name(languages))
 						store_orphaned(iksnr, languages)
 					end
 				}
 			end
 		end
 		def store_orphaned(iksnr, languages)
-				pointer = Persistence::Pointer.new(:orphaned_fachinfo)
-				store = {
-					:key => iksnr,
-					:languages => languages,
-				}				
-				@app.update(pointer.creator, store) 
+			pointer = Persistence::Pointer.new(:orphaned_fachinfo)
+			store = {
+				:key => iksnr,
+				:languages => languages,
+			}				
+			@app.update(pointer.creator, store) 
 		end	
 		private
 		def target(lang, idx)

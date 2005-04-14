@@ -9,9 +9,9 @@ require 'fileutils'
 
 module ODDB
 	module HttpFile
-		def http_file(server, source, target, session=nil)
+		def http_file(server, source, target, session=nil, hdrs = nil)
 			session ||= Net::HTTP.new(server)
-			resp = session.get(source)
+			resp = session.get(source, hdrs)
 			if resp.is_a? Net::HTTPOK
 				dir = File.dirname(target)
 				FileUtils.mkdir_p(dir)
