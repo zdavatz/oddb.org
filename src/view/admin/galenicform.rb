@@ -11,13 +11,13 @@ module ODDB
 class GalenicGroupSelect < HtmlGrid::AbstractSelect
 	private
 	def selection(context)
-		selected = @model.galenic_group
+		selected = @model.galenic_group.odba_id
 		values = @session.app.galenic_groups.values.sort_by { |group| 
 			group.description(@lookandfeel.language)
 		}
 		values.collect { |group| 
 			attributes = { "value" => group.pointer.to_s }
-			attributes.store("selected", true) if(group == selected)
+			attributes.store("selected", true) if(group.odba_id == selected)
 			context.option(attributes) {
 				group.description(@lookandfeel.language)
 			}
