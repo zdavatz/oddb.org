@@ -8,17 +8,16 @@ module ODDB
 			@pointer = pointer
 		end
 		def execute(app)
-			ODBA.batch {
-				if((registration = app.registration(@iksnr)) \
-					&& (fachinfo = @pointer.resolve(app)))
-					old_fi = registration.fachinfo
-					registration.fachinfo = fachinfo
-					if(old_fi && old_fi.empty?)
-						app.delete(old_fi.pointer)
-					end
-					nil
+			if((registration = app.registration(@iksnr)) \
+				&& (fachinfo = @pointer.resolve(app)))
+				old_fi = registration.fachinfo
+				registration.fachinfo = fachinfo
+				registration.odba_store
+				if(old_fi && old_fi.empty?)
+					app.delete(old_fi.pointer)
 				end
-			}
+				nil
+			end
 		end
 	end
 end
