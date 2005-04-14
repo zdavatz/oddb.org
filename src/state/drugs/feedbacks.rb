@@ -54,7 +54,7 @@ class Feedbacks < State::Drugs::Global
 		super
 	end
 	def update
-		mandatory = [:name, :email, :experience, 
+		mandatory = [:name, :email, :show_email, :experience, 
 			:recommend, :impression, :helps]
 		keys = mandatory + [:message]
 		hash = user_input(keys, mandatory)
