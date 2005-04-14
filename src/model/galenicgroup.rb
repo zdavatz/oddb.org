@@ -43,6 +43,8 @@ module ODDB
 		end
 		def remove(a_galenic_form)
 			@galenic_forms.delete(a_galenic_form.oid)
+			@galenic_forms.odba_store
+			a_galenic_form
 		end
 		def ==(other)
 			@oid > 1 && super # Unknown group does not compare to any
