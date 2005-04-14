@@ -465,7 +465,7 @@ zdavatz ! ywesee.com
 				:hospitals								=>	'Spital',
 				:hospital_count_text			=>	'&nbsp;Spit&auml;ler',
 				:hospitallist							=>	'Spit&auml;lverzeichnis',
-				:homeopathy								=>	'Homöopathische Arzneimittel',
+				:homeopathy								=>	'Homöopathisches Arzneimittel',
 				:html_title								=>	'ODDB.org: Open Drug Database',
 				:inactive_text			=>'Inaktive Registrationen:',
 				:i_bsv_in_progress				=>	'Das BSV-File wird importiert...',
