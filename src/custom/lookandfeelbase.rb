@@ -208,7 +208,7 @@ module ODDB
 				:explain_g								=>	'G = Google Suche nach Produktename',
 				:explain_generic					=>	'Gr&uuml;n&nbsp;=&nbsp;Generikum',
 				:explain_generic_url			=>	'http://www.generika.cc',
-				:explain_h								=>	'H = Homöopathische Heilmittel',
+				:explain_h								=>	'H = Homöopathisches Heilmittel',
 				:explain_li								=>	'L = Limitationen',
 				:explain_original					=>	'Rot&nbsp;=&nbsp;Original',
 				:explain_original_url			=>	'http://www.interpharma.ch',
