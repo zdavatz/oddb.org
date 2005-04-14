@@ -18,36 +18,40 @@ class FeedbackForm < HtmlGrid::Form
 	include HtmlGrid::ErrorMessage
 	include HtmlGrid::InfoMessage
 	COMPONENTS = {
-		[0,0]			=>	:name,
-		[0,1]	  =>	:email,
-		[1,1]		=>	'email_text',
-		[0,2]			=>	:feedback_text_e,
-		[0,4,0]		=>	:experience,
-		[2,4,1]		=>	'feedback_text_a_good',
-		[1,5,0]		=>	:experience_bad,
-		[2,5,1]		=>	'feedback_text_a_bad',
-		[0,6,0]		=>	:recommend,
-		[2,6,1]		=>	'feedback_text_b_good',
-		[1,7,0]		=>	:recommend_bad,
-		[2,7,1]		=>	'feedback_text_b_bad',
-		[0,8,0]		=>	:impression,
-		[2,8,1]		=>	'feedback_text_c_good',
-		[1,9,0]		=>	:impression_bad,
-		[2,9,1]		=>	'feedback_text_c_bad',
-		[0,10,0]	=>	:helps,
-		[2,10,1]	=>	'feedback_text_d_good',
-		[1,11,0]	=>	:helps_bad,
-		[2,11,1]  =>	'feedback_text_d_bad',
-		[2,13]		=>	:submit,
+		[0,0]				=>	:name,
+		[0,1]				=>	:email,
+		[0,2,0]			=>	:show_email,
+		[2,2,1]			=>	'email_text_good',
+		[1,3,0]			=>	:show_email_bad,
+		[2,3,1]			=>	'email_text_bad',
+		[0,5]				=>	:feedback_text_e,
+		[0,6,0]			=>	:experience,
+		[2,6,1]			=>	'feedback_text_a_good',
+		[1,7,0]			=>	:experience_bad,
+		[2,7,1]			=>	'feedback_text_a_bad',
+		[0,8,0]			=>	:recommend,
+		[2,8,1]			=>	'feedback_text_b_good',
+		[1,9,0]			=>	:recommend_bad,
+		[2,9,1]			=>	'feedback_text_b_bad',
+		[0,10,0]			=>	:impression,
+		[2,10,1]			=>	'feedback_text_c_good',
+		[1,11,0]		=>	:impression_bad,
+		[2,11,1]		=>	'feedback_text_c_bad',
+		[0,12,0]		=>	:helps,
+		[2,12,1]		=>	'feedback_text_d_good',
+		[1,13,0]		=>	:helps_bad,
+		[2,13,1]		=>	'feedback_text_d_bad',
+		[0,15]			=>	:submit,
 	}
 	CSS_MAP = {
-		[0,0,2,14]	=>	'list',
-		[1,4,1,8]		=>	'radio',
+		[0,0,2,15]		=>	'list top',
+		[1,4,1,15]		=>	'radio',
 	}
 	COLSPAN_MAP = {
 		[1,0]	=>	2,
 		[1,1]	=>	2,
-		[1,2]	=>	2,
+		[1,5]	=>	2,
+		[1,15]	=>	2,
 	}
 	CSS_CLASS = 'composite top'
 	LABELS = true
@@ -92,6 +96,12 @@ class FeedbackForm < HtmlGrid::Form
 		input.label = true
 		input
 	end
+	def show_email(model)
+		radio_good(:show_email)
+	end
+	def show_email_bad(model)
+		radio_bad(:show_email)
+	end
 	def radio_bad(bad_key)
 		radio = HtmlGrid::InputRadio.new(bad_key, model, @session, self)
 		if(model.send(bad_key).eql?(false))
@@ -114,21 +124,21 @@ class FeedbackList < HtmlGrid::List
 	BACKGROUND_SUFFIX =	' bg'
 	COMPONENTS = {
 		[0,0]			=>	'feedback_title_name',
-		[0,0,1]	=>	:name,
-		[0,0,2]	=>	'feedback_title_time',
-		[0,0,3]	=>	:time,
+		[0,0,1]		=>	:name,
+		[0,0,2]		=>	'feedback_title_time',
+		[0,0,3]		=>	:time,
 		[0,1]			=>	:email_label,
-		[1,1,1]		=>	'email_text',
+		[1,1,1]		=>	:show_email,
 		[0,2]			=>	:message_label,
 		[1,2,1]		=>	:message,
 		[0,3]			=>	'experience',
-		[1,3,1]	=>	:experience,
-		[0,4]		=>	'recommend',
-		[1,4,1]	=>	:recommend,
+		[1,3,1]		=>	:experience,
+		[0,4]			=>	'recommend',
+		[1,4,1]		=>	:recommend,
 		[0,5]			=>	'impression',
-		[1,5,1]	=>	:impression,
+		[1,5,1]		=>	:impression,
 		[0,6]			=>	'helps',
-		[1,6,1]	=>	:helps,
+			[1,6,1]		=>	:helps,
 	}
 	COLSPAN_MAP = {
 		[0,0]	=>	2,
@@ -149,6 +159,13 @@ class FeedbackList < HtmlGrid::List
 	OFFSET_STEP = [0,7]
 	def experience(model, session)
 		result(model.experience)
+	end
+	def show_email(model, session)
+		if(model.show_email)
+			model.email
+		else
+			@lookandfeel.lookup(:email_text)
+		end
 	end
 	def recommend(model, session)
 		result(model.recommend)

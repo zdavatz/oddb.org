@@ -6,8 +6,7 @@ require 'util/persistence'
 module ODDB
 	class Feedback
 		include Persistence
-		attr_accessor :name, :email, :message, :experience, :recommend, 
-			:impression, :helps, :time
+		attr_accessor :name, :email, :message, :show_email, :experience, :recommend, :impression, :helps, :time
 		attr_writer :oid
 		def init(app=nil)
 			super
