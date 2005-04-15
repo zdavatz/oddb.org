@@ -129,16 +129,10 @@ class UserCompanyForm < View::Form
 	end
 	def patinfo_stats(model, session)
 		link = HtmlGrid::Link.new(:patinfo_stats, model , session, self)
-=begin
-		puts "patinfo"
-		link_range = "unknown"
-		ODDB::State::Companies::AlphaInterval::RANGE_PATTERNS.each{|range, pat|
-			if(/^[#{pat}]/i.match(model.name))
-				link_range = range
-			end
+		args = {
+			:pointer	=>	model.pointer,
 		}
-=end
-		link.href = @lookandfeel.event_url(:patinfo_stats_company) + "/company_name/#{model.name}"
+		link.href = @lookandfeel.event_url(:patinfo_stats, args)
 		link.set_attribute('title', @lookandfeel.lookup(:patinfo_stats))
 		link
 	end

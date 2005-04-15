@@ -19,25 +19,6 @@ class OrphanedPatinfoForm < View::Form
 	EVENT = :delete_orphaned_patinfo
 	FORM_METHOD = 'POST'
 end
-module OrphanedPatinfoLanguages
-	class OrphanedLanguageFacade < SimpleDelegator
-		attr_reader :language
-		attr_reader :document
-		def initialize(lang, document)
-			@language = lang
-			@document = document
-			super(document)
-		end
-	end
-	def languages(model, session)
-		if(model.is_a?(Hash))
-			listmodel = model.collect { |lang, document|	
-				View::Admin::OrphanedLanguageFacade.new(lang, document)
-			}
-			View::Admin::OrphanedLanguagesList.new(listmodel, session, self)
-		end
-	end
-end
 class OrphanedPatinfoListInnerComposite < HtmlGrid::Composite
 	include View::Admin::OrphanedLanguages
 	CSS_CLASS = 'component'

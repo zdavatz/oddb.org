@@ -50,9 +50,9 @@ module OrphanedLanguages
 	def languages(model, session)
 		if(model.is_a?(Hash))
 			listmodel = model.collect { |lang, document|	
-				View::Admin::OrphanedLanguageFacade.new(lang, document)
+				OrphanedLanguageFacade.new(lang, document)
 			}
-			View::Admin::OrphanedLanguagesList.new(listmodel, session, self)
+			OrphanedLanguagesList.new(listmodel, session, self)
 		end
 	end
 end
