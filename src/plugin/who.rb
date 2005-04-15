@@ -281,13 +281,13 @@ module ODDB
 				unless(csv_row[2].to_s.strip.empty?)	
 					ddds = csv_row[4].to_s.split(/,/).collect { |ar|
 						ddd = {
-							:dose	=>	Dose.new(csv_row[2], csv_row[3]),
+							:dose	=>	Dose.new(csv_row[2].to_s, csv_row[3].to_s),
 							:administration_route	=>	ar.strip,
 						}
 					}
-					daily.store(csv_row[0], ddds)
+					daily.store(csv_row[0].to_s, ddds)
 				end
-				descr.store(csv_row[0], csv_row[1])
+				descr.store(csv_row[0].to_s, csv_row[1].to_s)
 			}
 			extract_descriptions(writer)
 			extract_ddd(writer)

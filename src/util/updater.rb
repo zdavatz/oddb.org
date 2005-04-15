@@ -23,7 +23,6 @@ module ODDB
 		RECIPIENTS = [
 			'hwyss@ywesee.com',
 			'zdavatz@ywesee.com',
-			'mhuggler@ywesee.com',
 			'jlang@ywesee.com',
 			'usenguel@ywesee.com',
 		]
