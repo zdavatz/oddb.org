@@ -22,6 +22,7 @@ module ODDB
 				[1,2]	=>	'explain_a',
 				[1,3]	=>	'explain_h',
 				[1,4]	=>	'explain_p',
+				[1,5]	=>	'explain_pr',
 				[2,0]	=>	'explain_efb',
 				[2,1]	=>	'explain_pbp',
 				[2,2]	=>	'explain_sl',

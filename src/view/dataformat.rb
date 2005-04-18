@@ -14,10 +14,22 @@ module ODDB
 			end
 			private
 			def formatted_price(key, model)
+				if(value = model.send(key))
 				price = HtmlGrid::NamedComponent.new(key, model, @session, self)
-				price.value = @lookandfeel.format_price(model.send(key))
+				price.value = @lookandfeel.format_price(value)
 				price.label = true
 				price
+					else
+						link = HtmlGrid::Link.new(:price_request, model, @session, self)
+						pagenames = {
+							'de'	=>	'PreisAnfrage',
+							'en'	=>	'PriceRequest',
+							'fr'	=>	'DemandeDesPrix',
+						}
+						pagename = pagenames[@lookandfeel.language]
+						link.href = "http://wiki.oddb.org/wiki.php?n=ODDB.#{pagename}"
+						link
+					end
 			end
 		end
 	end
