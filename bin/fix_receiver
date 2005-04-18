@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path('../src', File.dirname(__FILE__))
+
+require 'odba'
+require 'util/oddbapp'
+require 'etc/db_connection'
+
+checked = []
+reached = []
+max = ODBA.storage.max_id
+puts "#### Starting ID-Check ####"
+$stdout.flush
+
+1.upto(max) { |id|
+	if(before_dump = ODBA.storage.restore(id))
+		before = before_dump.size
+		obj = ODBA.marshaller.load(before_dump)
+		ObjectSpace.each_object(ODBA::Stub) { |stub|
+			stub.odba_fix_receiver
+		}
+
+		after_dump = obj.odba_isolated_dump
+		after = after_dump.size
+		if(after < before)
+			puts before.to_s << " -> " << after.to_s
+			ODBA.storage.store(id, after_dump, 
+				obj.odba_name, obj.odba_prefetch?)
+		end
+	end
+	print " " * 8
+	print "\b" * 8
+	print "#{sprintf('%7.3f', id.to_f/max.to_f*100.0)}%"
+	print "\b" * 8
+	$stdout.flush
+}
