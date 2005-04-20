@@ -293,7 +293,7 @@ module ODDB
 			end
 			if(sequence.atc_class.nil? \
 				&& sequence.active_agents.size == 1)
-				key = sequence.active_agents.first.to_s
+				key = sequence.active_agents.first.substances.to_s
 				if(atc = @app.unique_atc_class(key))
 					hash = {
 						:atc_class => atc.code,
