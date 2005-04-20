@@ -38,6 +38,7 @@ module ODDB
 			atcless = @app.atcless_sequences.collect { |sequence|
 				resolve_link(sequence.pointer)	
 			}.sort
+
 			deactivated = @deactivated_pointers.collect { |pointer|
 				resolve_link(pointer)
 			}.sort
@@ -291,12 +292,20 @@ module ODDB
 			if(composition = smj_seq.composition)
 				update_active_agents(composition, pointer)
 			end
-			if(sequence.atc_class.nil? \
-				&& sequence.active_agents.size == 1)
-				key = sequence.active_agents.first.substances.to_s
-				if(atc = @app.unique_atc_class(key))
+			if(sequence.atc_class.nil?)
+				code = nil
+				atcs = sequence.registration.sequences.values.collect { |other| other.atc_class }.compact
+				if(atc = atcs.first)
+					code = atc.code
+				elsif(sequence.active_agents.size == 1) 
+					key = sequence.active_agents.first.substance.to_s
+					if(atc = @app.unique_atc_class(key))
+						code = atc.code
+					end
+				end
+				if(code)
 					hash = {
-						:atc_class => atc.code,
+						:atc_class => code,
 					}	
 					@app.update(sequence.pointer, hash)
 				end
