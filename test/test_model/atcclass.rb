@@ -5,6 +5,7 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'stub/odba'
 require 'model/atcclass'
 require 'model/dose'
 
@@ -28,6 +29,7 @@ class TestAtcClass < Test::Unit::TestCase
 		include ODBA::Persistable
 	end
 	class StubSequence
+		attr_accessor :substances
 		def packages
 			{
 				:p1	=>	'Package1',
@@ -112,7 +114,7 @@ class TestAtcClass < Test::Unit::TestCase
 		level1 = ODDB::AtcClass.new('N')
 		assert_equal(nil, level1.parent_code)
 	end
-def test_has_ddd
+	def test_has_ddd
 		assert_equal(false, @atc_class.has_ddd?)
 		@atc_class.ddds.store('O', :ddd)
 		assert_equal(true, @atc_class.has_ddd?)
@@ -126,6 +128,23 @@ def test_has_ddd
 		assert_equal(true, @atc_class.has_ddd?)
 		@atc_class.guidelines = nil
 		assert_equal(false, @atc_class.has_ddd?)
+	end
+	def test_substances__1
+		seq1 = StubSequence.new
+		seq1.substances = ['amlodipin']
+		seq2 = StubSequence.new
+		seq2.substances = ['amlodipin']
+		@atc_class.sequences = [seq1, seq2]
+		assert_equal(['amlodipin'], @atc_class.substances)
+	end
+	def test_substances__2
+		seq1 = StubSequence.new
+		seq1.substances = ['amlodipin']
+		seq2 = StubSequence.new
+		seq2.substances = ['acidum mefenamicum']
+		@atc_class.sequences = [seq1, seq2]
+		assert_equal(['amlodipin', 'acidum mefenamicum'], 
+			@atc_class.substances)
 	end
 end
 class TestDDD < Test::Unit::TestCase

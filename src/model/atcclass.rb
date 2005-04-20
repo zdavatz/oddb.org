@@ -114,7 +114,8 @@ module ODDB
 			@sequences.collect { |seq| seq.packages.values }.flatten
 		end
 		def substances
-			@sequences.collect { |seq| seq.substances }.flatten
+			@sequences.collect { |seq| seq.substances 
+			}.flatten.uniq
 		end
 		def parent_code
 			case level
