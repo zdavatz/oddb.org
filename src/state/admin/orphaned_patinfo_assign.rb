@@ -52,7 +52,7 @@ class OrphanedPatinfoAssign < State::Admin::Global
 			add_warning(:w_name_to_short,:name, name)
 			[]
 		else
-			returnvalue = @session.app.sequences_by_name(name.downcase)
+			returnvalue = @session.app.search_sequences(name.downcase)
 			if(returnvalue.size > 50)
 				add_warning(:w_too_many_sequences, :name, nil)
 				[]
