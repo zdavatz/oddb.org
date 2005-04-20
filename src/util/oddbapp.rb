@@ -756,14 +756,16 @@ class OddbPrevalence
 		@users.values.select { |user| user.unique_email == email }.first
 	end
 	def unique_atc_class(substance)
-		atc_array = search_by_substance(substance)
-		atc_array = atc_array.select { |atc|
-			atc.substances.size == 1
-		}
-		if(atc_array.size == 1)
-			atc_array.first
-		end
-	end
+	 atc_array = search_by_substance(substance)
+	 if(atc_array.size > 1)
+		 atc_array = atc_array.select { |atc|
+			 atc.substances.size == 1
+		 }
+	 end
+	 if(atc_array.size == 1)
+		 atc_array.first
+	 end
+  end
 	def rebuild_indices(name=nil)
 		ODBA.scalar_cache.size
 		ODBA.cache_server.indices.size
