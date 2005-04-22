@@ -104,7 +104,7 @@ class UserCompanyForm < View::Form
 		#[2,10]		=>	:fi_status,
 		#[2,11]    =>  :pi_status,
 		[0,11]		=>	:generic_type,
-		[2,11]		=>	:generic_type,
+		[2,11]		=>	:complementary_type,
 		[1,12]		 =>	:patinfo_stats,
 		[1,13]		=>	:submit,
 	}
