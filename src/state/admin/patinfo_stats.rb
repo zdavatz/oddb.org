@@ -97,8 +97,9 @@ end
 class PatinfoStatsCompanyUser < State::Admin::PatinfoStatsCommon
 	def init
 		super
+		name = @session.user.model.name
 		@model.delete_if { |comp|
-			comp.user != @session.user
+			comp.name != name
 		}
 	end
 end
