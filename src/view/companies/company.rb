@@ -90,6 +90,7 @@ class UserCompanyForm < View::Form
 		[0,0]			=>	:company_name,
 		[0,1]			=>	:contact,
 		[2,1]			=>	:contact_email,
+		[2,2]			=>	:regulatory_email,
 		[1,2]			=>	:set_pass,
 		[0,4]			=>	:address,
 		[0,5]			=>	:plz,
@@ -105,11 +106,11 @@ class UserCompanyForm < View::Form
 		#[2,11]    =>  :pi_status,
 		[0,11]		=>	:generic_type,
 		[2,11]		=>	:complementary_type,
-		[1,12]		 =>	:patinfo_stats,
-		[1,13]		=>	:submit,
+		[1,12]		=>	:submit,
+		[3,12]		 =>	:patinfo_stats,
 	}
 	CSS_MAP = {
-		[0,0,4,12]	=>	'list',
+		[0,0,4,13]	=>	'list',
 	}
 	LABELS = true
 	SYMBOL_MAP = {
