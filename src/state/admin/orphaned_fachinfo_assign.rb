@@ -44,7 +44,7 @@ class OrphanedFachinfoAssign < State::Admin::Global
 			add_warning(:w_name_to_short,:name, name)
 			[]
 		else
-			sequences = @session.app.sequences_by_name(name.downcase)
+			sequences = @session.app.search_sequences(name.downcase)
 			registrations = sequences.collect { |seq|
 				seq.registration
 			}.uniq

@@ -2,6 +2,7 @@
 # TestVaccinePlugin -- ydpm -- 22.03.2005 -- hwyss@ywesee.com
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
+$: << File.expand_path('..', File.dirname(__FILE__))
 
 require 'test/unit'
 require 'rubygems'
@@ -200,9 +201,6 @@ Globulines équines obtenues après immunisation par des extraits porcins de tissu
 			assert_equal('40.0', agent.dose)
 			assert_equal('mg', agent.unit)
 			agent = seq.active_agents.at(1)
-			#assert_equal('', agent.substance)
-			#assert_equal('40.0', agent.dose)
-			#assert_equal('mg', agent.unit)
 		end
 		def test_integrate__7__ean
 			path = File.expand_path('../data/xls/vaccines_ean.xls', 

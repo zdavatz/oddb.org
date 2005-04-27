@@ -62,7 +62,7 @@ h3 {
 	font-size: $std_font_size;
 	margin-bottom: 2px;
 }
-div {
+div.section {
 	font-family: $std_font_family;
 	font-size: 13px;
 	font-style : italic;
@@ -76,7 +76,7 @@ pre {
 	text-align : left;
 	white-space : pre;
 }
-span {
+span.paragraph {
 	font-style : normal;
 	font-size: $std_font_size;
 	padding-bottom : 16px;
@@ -1525,4 +1525,8 @@ td.confirm {
 	background : $rslt_bg;
 	font-size: 14px;
 	font-weight: bold;
+}
+table.invoice {
+	width: 300px;
+	border: 1px solid $bg_bright;
 }

@@ -21,7 +21,7 @@ class CompanyHeader < HtmlGrid::Composite
 		[0,0,1] => 'nbsp',
 		[0,0,2] => 'total',
 		[0,0,3] => 'nbsp',
-		[0,0,4] => :invoice_count,
+		[0,0,4] => :slate_count,
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -64,8 +64,8 @@ class PatinfoStatsCompanyList < HtmlGrid::List
 		model.each { |company|
 			compose_subheader(company, offset)
 			offset = resolve_offset(offset, self::class::OFFSET_STEP)
-			invoice_sequences = company.invoice_sequences
-			invoice_sequences.each { |seq|
+			slate_sequences = company.slate_sequences
+			slate_sequences.each { |seq|
 				compose_subheader_seq(seq, offset)
 				offset = resolve_offset(offset, self::class::OFFSET_STEP)
 				invoice_items = seq.invoice_items

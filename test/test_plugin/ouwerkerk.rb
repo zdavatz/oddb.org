@@ -89,7 +89,6 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 	def teardown
 		if(File.exists? @plugin.file_path)
 			File.delete(@plugin.file_path)
-			Dir.delete(File.dirname(@plugin.file_path))
 		end
 		ODBA.storage = nil
 	end

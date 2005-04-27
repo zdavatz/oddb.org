@@ -9,12 +9,6 @@ require 'util/persistence'
 require 'date'
 require 'stub/odba'
 
-module ODBA
-	class StorageStub
-		def next_id
-		end
-	end
-end
 module ODDB
 	module Persistence
 		class Pointer
@@ -232,6 +226,9 @@ module ODDB
 			ODBA.storage = ODBA::StorageStub.new
 			ODBA.cache_server = ODBA::CacheStub.new
 			@pointer = ODDB::Persistence::Pointer.new(:foo, [:bar, '12345'])
+		end
+		def teardown
+			ODBA.storage = nil
 		end
 		def test_initialize
 			expected = [

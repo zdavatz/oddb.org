@@ -24,11 +24,13 @@ module Datastructure
 		attr_reader :hash
 	end
 end
+=begin
 module ODBA
 	class StorageStub
 		attr_accessor :next_id
 	end
 end
+=end
 module ODDB
 	class RootUser
 		def initialize
@@ -700,6 +702,8 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(atc2, @app.unique_atc_class('substance'))
 		atc1.__verify
 		atc2.__verify
+
+		ODBA.cache_server.retrieve_from_index = nil
 	end
 	def test_create_log_group
 		@app.log_groups = {}

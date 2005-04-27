@@ -40,7 +40,7 @@ module ODDB
 				DoctorPlugin::PARSER.__verify
 			end
 			def test_get_doctor_data
-				DoctorPlugin::PARSER.__next(:emh_data_add_ean) { |arg|
+				DoctorPlugin::PARSER.__next(:doc_data_add_ean) { |arg|
 					assert_equal(5, arg)
 				}
 				@plugin.get_doctor_data(5)
