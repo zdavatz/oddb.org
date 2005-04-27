@@ -28,7 +28,6 @@ class PatinfoDeprivedSequencesList < HtmlGrid::List
 		link = HtmlGrid::Link.new(:select_seq, model, session, self)
 		hash = { 
 			:pointer					=> model.pointer , 
-			:state_id				=> session.state.id,
 		}
 		link.href = @lookandfeel.event_url(:select_seq, hash)
 		link.value = model.name_base
