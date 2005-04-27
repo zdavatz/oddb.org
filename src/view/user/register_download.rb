@@ -110,9 +110,16 @@ class RegisterDownloadForm < Form
 	end
 	def hidden_fields(context)
 		hidden = super
-		@model.downloads.each { |name|
-			hidden << context.hidden("download[#{name}]", '1')
-		}
+		if(downloads = @session.user_input(:download))
+			downloads.each { |key, val|
+				hidden << context.hidden("download[#{key}]", val)
+			}
+		end
+		if(months = @session.user_input(:months))
+			months.each { |key, val|
+				hidden << context.hidden("months[#{key}]", val)
+			}
+		end
 		hidden
 	end
 end

@@ -126,6 +126,9 @@ module ODDB
 					State::User::RegisterDownload.new(@session, user)
 				end
 			end
+			def checkout
+				proceed.checkout
+			end
 			def compare
 				if((pointer = @session.user_input(:pointer)) \
 					&& pointer.is_a?(Persistence::Pointer))
@@ -240,6 +243,10 @@ module ODDB
 				rescue Persistence::UninitializedPathError
 					self
 				end
+			end
+			def proceed
+				state = State::User::DownloadExport.new(@session, nil)
+				state.proceed
 			end
 			def resolve
 				if((pointer = @session.user_input(:pointer)) \

@@ -92,27 +92,8 @@ class DownloadExport < State::User::Global
 		end
 		pointer = Persistence::Pointer.new(:invoice)
 		invoice = Persistence::CreateItem.new(pointer)
-		invoice.carry(:downloads, downloads)
 		RegisterDownload.new(@session, invoice)
 	end
-=begin
-		pointer = Persistence::Pointer.new(:invoice)
-		invoice = nil
-		ODBA.transaction { 
-			invoice = @session.app.create(pointer)
-			downloads.each { |file|
-				item_ptr = pointer + [:item]
-				price = self.class.price(file)
-				data = {
-					:time		=> Time.now,
-					:text		=> file,
-					:amount	=> price,
-				}
-				item = @session.app.update(item_ptr.creator, data)
-			}
-		}
-		State::User::Checkout.new(@session, invoice)
-=end
 end
 		end
 	end
