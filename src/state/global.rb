@@ -156,10 +156,10 @@ module ODDB
 			def download
 				input = @session.user_input(:email)
 				email = @session.get_cookie_input(:email) || input
-				user = @session.admin_subsystem.download_user(email)
 				oid = @session.user_input(:invoice)
 				file = @session.user_input(:filename)
-				if((invoice = user.invoice(oid)) \
+				if((user = @session.admin_subsystem.download_user(email)) \
+					&& (invoice = user.invoice(oid)) \
 					&& invoice.payment_received? \
 					&& (item = invoice.item_by_text(file)) \
 					&& !item.expired?)
