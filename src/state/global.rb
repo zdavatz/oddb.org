@@ -156,8 +156,8 @@ module ODDB
 				if(@session.is_crawler?)
 					return State::Drugs::Init.new(@session, nil)
 				end
-				input = @session.user_input(:email)
-				email = @session.get_cookie_input(:email) || input
+				email = @session.user_input(:email)
+				email ||= @session.get_cookie_input(:email)
 				oid = @session.user_input(:invoice)
 				file = @session.user_input(:filename)
 				if((user = @session.admin_subsystem.download_user(email)) \
