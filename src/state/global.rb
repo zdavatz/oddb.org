@@ -78,7 +78,6 @@ module ODDB
 				:mailinglist					=>	State::User::MailingList,
 				:plugin								=>	State::User::Plugin,
 				:passthru							=>	State::User::PassThru,
-				:paypal								=>	State::User::PayPal,
 				:paypal_ipn						=>	State::User::PayPalIpn,
 				:paypal_thanks				=>	State::User::PayPalThanks,
 				:recent_registrations =>	State::Drugs::RecentRegs,
@@ -154,6 +153,9 @@ module ODDB
 				State::Doctors::DoctorList.new(@session, model)
 			end
 			def download
+				if(@session.is_crawler?)
+					return State::Drugs::Init.new(@session, nil)
+				end
 				input = @session.user_input(:email)
 				email = @session.get_cookie_input(:email) || input
 				oid = @session.user_input(:invoice)
@@ -223,6 +225,13 @@ module ODDB
 				+ zone_navigation \
 				+ user_navigation \
 				+ home_navigation
+			end
+			def paypal
+				if(@session.is_crawler?)
+					State::Drugs::Init.new(@session, nil)
+				else
+					State::User::PayPal.new(@session, nil)
+				end
 			end
 			def powerlink
 				pointer = @session.user_input(:pointer)
