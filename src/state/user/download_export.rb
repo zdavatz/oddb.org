@@ -92,6 +92,7 @@ class DownloadExport < State::User::Global
 		end
 		pointer = Persistence::Pointer.new(:invoice)
 		invoice = Persistence::CreateItem.new(pointer)
+		invoice.carry(:downloads, downloads)
 		RegisterDownload.new(@session, invoice)
 	end
 end
