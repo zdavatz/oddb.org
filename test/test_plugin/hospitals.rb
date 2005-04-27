@@ -24,7 +24,7 @@ def test_update_hospital__1
 	values = {
 		:ean13	=>	'7680123456789'
 	}
-	@app.__next(:company_by_ean13) { |ean|
+	@app.__next(:hospital) { |ean|
 		assert_equal('7680123456789', ean)
 		nil
 	}
@@ -41,7 +41,7 @@ def test_update_hospital__2
 	}
 	mock1 = Mock.new('hospital_mock')
 	mock1.__next(:pointer) { "pointer" }
-	@app.__next(:company_by_ean13) { |ean|
+	@app.__next(:hospital) { |ean|
 		assert_equal('1324657675434', ean)
 		mock1
 	}
@@ -62,6 +62,7 @@ def test_hospital_details__1
 		:phone				=>	[1,6],
 		:fax					=>	[2,6],
 		:canton				=>	[3,5],
+		:narcotics			=>	[1,10],
 	}
 	result = Mock.new('result_mock')
 	result.__next(:session) {}
@@ -69,14 +70,14 @@ def test_hospital_details__1
 	@meddata.__next(:detail) { |sess, ctl, templ| 
 		assert_equal(template, templ)
 		{
-			:business_area => 'Spital/Apotheke',
+			#:business_area => 'Spital/Apotheke',
 			:name	=> 'Hospital',
 		}
 	}
 	retval = @plugin.hospital_details(result)
 	expected = {
 		:name	=> 'Hospital',
-		:business_area => :hospital,
+		#:business_area => :hospital,
 	}
 	assert_equal(expected, retval)
 end

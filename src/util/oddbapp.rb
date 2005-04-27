@@ -35,28 +35,9 @@ class OddbPrevalence
 	attr_reader :orphaned_patinfos, :orphaned_fachinfos
 	attr_reader :fachinfos
 	attr_reader :patinfos_deprived_sequences, :patinfos
-	attr_reader :invoices
-	def initialize		
-		super
-		@atc_classes ||= {}
-		@companies ||= {}
-		@doctors ||= {}
-		@cyp450s ||= {}
-		@fachinfos ||= {}
-		@galenic_forms ||= []
-		@galenic_groups ||= []
-		@generic_groups ||= {}
-		@orphaned_fachinfos ||= {}
-		@orphaned_patinfos ||= {}
-		@patinfos ||= {}
-		@incomplete_registrations ||= {}
-		@indications ||= {}
-		@last_medication_update ||= Time.now()
-		@log_groups ||= {}
-		@registrations ||= {}
-		@substances ||= {}
-		create_unknown_galenic_group()
-		create_root_user()
+	attr_reader :invoices, :slates
+	def initialize
+		init
 	end
 	def init
 		create_unknown_galenic_group()
@@ -73,6 +54,7 @@ class OddbPrevalence
 		@hospitals ||= {}
 		@incomplete_registrations ||= {}
 		@indications ||= {}
+		@invoices ||= {}
 		@last_medication_update ||= Time.now()
 		@log_groups ||= {}
 		@patinfos ||= {}
@@ -80,6 +62,28 @@ class OddbPrevalence
 		@substances ||= {}
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
+		## begin temporary code for slate-migration ##
+		if(@slates.nil?)
+			@slates = {}
+			@invoices.each { |name, invoice|
+				pointer = ODDB::Persistence::Pointer.new([:slate, name])
+				slate = create(pointer)
+				slate.instance_variable_set('@items', invoice.items)
+				slate.items.each { |oid, item|
+					item.pointer = pointer + [:item, oid]
+					item.odba_store
+				}
+				slate.odba_store
+			}
+			@invoices.values.each { |invoice| invoice.odba_delete }
+			@invoices = {}
+			@invoices.odba_store
+			@slates.odba_store
+			odba_store
+		end
+		## end temporary code for slate-migration ##
+
+		@slates ||= {}
 		rebuild_atc_chooser()
 	end
 	# prevalence-methods ################################
@@ -247,8 +251,9 @@ class OddbPrevalence
 		indication = ODDB::Indication.new
 		@indications.store(indication.oid, indication)
 	end
-	def create_invoice(invoice_name)
-		@invoices.store(invoice_name, ODDB::Invoice.new(invoice_name))
+	def create_invoice
+		invoice = ODDB::Invoice.new
+		@invoices.store(invoice.oid, invoice)
 	end
 	def create_log_group(key)
 		@log_groups[key] ||= ODDB::LogGroup.new(key)
@@ -281,6 +286,10 @@ class OddbPrevalence
 			#@registrations.odba_store
 			reg
 		end
+	end
+	def create_slate(name)
+		slate = ODDB::Slate.new(name)
+		@slates.store(name, slate)
 	end
 	def create_substance(key=nil)
 		if(!key.nil? && (subs = substance(key)))
@@ -426,24 +435,9 @@ class OddbPrevalence
 	def indications
 		@indications.values
 	end
-	def invoice(invoice_name)
+	def invoice(oid)
 		@invoices ||= {}
-		@invoices[invoice_name]
-=begin
-		if(@invoice_types.nil?)
-			@invoice_types = {}
-			pointer = ODDB::Persistence::Pointer.new([:invoice_types])
-			invoice_types = create(pointer)
-			update(invoice_types.pointer, {})
-		end
-		element = @invoice_types[invoice_name]
-		if(element.nil?)
-			invoice_type = ODDB::InvoiceType.new(invoice_name)
-			@invoice_types.store(invoice_name, invoice_type)
-		else
-			element
-		end
-=end
+		@invoices[oid.to_i]
 	end
 	def limitation_text_count
 		@limitation_text_count ||= count_limitation_texts()
@@ -692,13 +686,13 @@ class OddbPrevalence
 			seq + reg.sequences.values 
 		}
 	end
-	def sequences_by_name(name)
-		ODBA.cache_server.retrieve_from_index("sequence_index_atc", name)
-	end
 	def sequences
 		@registrations.values.inject([]) { |inj, reg|
 			inj + reg.sequences.values
 		}
+	end
+	def slate(name)
+		@slates[name]
 	end
 	def soundex_substances(name)
 		parts = ODDB::Text::Soundex.prepare(name).split(/\s+/)

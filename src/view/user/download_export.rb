@@ -2,42 +2,152 @@
 # View::User::DownloadExport -- oddb -- 20.09.2004 -- mhuggler@ywesee.com
 
 require 'view/publictemplate'
+require 'view/form'
 require 'view/user/export'
 require 'view/user/oddbdatdownload'
 require 'view/user/fachinfopdf_download'
 require 'view/user/yamlexport'
 require 'htmlgrid/link'
+require 'htmlgrid/errormessage'
 
 module ODDB
 	module View
 		module User
-class DownloadExportComposite < HtmlGrid::Composite
+class DownloadExportInnerComposite < HtmlGrid::Composite
+	include View::User::Export
 	COMPONENTS = {
-		[0,0]		=>	'download_export_title',
-		[0,1]		=>	:download_export_descr,
-		[0,2]		=>	View::User::YamlExportInnerComposite,
-		[0,3]		=>	View::User::OddbDatDownloadInnerComposite,
-		[0,4]		=>	View::User::FachinfoPDFDownloadInnerComposite,
+		[3,0]		=>	'months_1',
+		[5,0]		=>	'months_12',
+		[0,1]		=>	:yaml_export_gz,
+		[2,1]		=>	:radio_oddb_yaml_gz,
+		[0,2]		=>	:yaml_export_zip,
+		[2,2]		=>	:radio_oddb_yaml_zip,
+		[0,3]		=>	:yaml_fachinfo_export_gz,
+		[2,3]		=>	:radio_fachinfo_yaml_gz,
+		[0,4]		=>	:yaml_fachinfo_export_zip,
+		[2,4]		=>	:radio_fachinfo_yaml_zip,
+		[0,5]		=>	:yaml_patinfo_export_gz,
+		[3,5]		=>	:yaml_patinfo_price,
+		[0,6]		=>	:yaml_patinfo_export_zip,
+		[3,6]		=>	:yaml_patinfo_price,
+		[0,8]		=>	:oddbdat_download_tar_gz,
+		[2,8]		=>	:radio_oddbdat_tar_gz,
+		[0,9]		=>	:oddbdat_download_zip,
+		[2,9]		=>	:radio_oddbdat_zip,
+		[0,10]	=>	:s31x_gz,
+		[2,10]	=>	:radio_s31x_gz,
+		[0,11]	=>	:s31x_zip,
+		[2,11]	=>	:radio_s31x_zip,
+	}
+	COLSPAN_MAP = {
+		[3,5]	=>	2,
+		[3,6]	=>	2,
 	}
 	CSS_MAP = {
-		[0,0]     =>  'th',
-		[0,1,1,5] =>  'list',
+		[0,0,6]			=>	'subheading',
+		[0,1,6,11]	=>	'list',
 	}
+	CSS_CLASS = 'component'
+	def oddbdat_download_tar_gz(model, session)
+		checkbox_with_filesize("oddbdat.tar.gz")
+	end
+	def oddbdat_download_zip(model, session)
+		checkbox_with_filesize("oddbdat.zip")
+	end
+	def radio_fachinfo_yaml_gz(model, session)
+		once_or_year('fachinfo.yaml.gz')
+	end
+	def radio_fachinfo_yaml_zip(model, session)
+		once_or_year('fachinfo.yaml.zip')
+	end
+	def radio_oddbdat_tar_gz(model, session)
+		once_or_year('oddbdat.tar.gz')
+	end
+	def radio_oddbdat_zip(model, session)
+		once_or_year('oddbdat.zip')
+	end
+	def radio_oddb_yaml_gz(model, session)
+		once_or_year('oddb.yaml.gz')
+	end
+	def radio_oddb_yaml_zip(model, session)
+		once_or_year('oddb.yaml.zip')
+	end
+	def radio_s31x_gz(model, session)
+		once_or_year('s31x.gz')
+	end
+	def radio_s31x_zip(model, session)
+		once_or_year('s31x.zip')
+	end
+	def s31x_gz(model, session)
+		checkbox_with_filesize("s31x.gz")
+	end
+	def s31x_zip(model, session)
+		checkbox_with_filesize("s31x.zip")
+	end
+	def yaml_export_gz(model, session)
+		checkbox_with_filesize("oddb.yaml.gz")
+	end
+	def yaml_export_zip(model, session)
+		checkbox_with_filesize("oddb.yaml.zip")
+	end
+	def yaml_fachinfo_export_gz(model, session)
+		checkbox_with_filesize("fachinfo.yaml.gz")
+	end
+	def yaml_fachinfo_export_zip(model, session)
+		checkbox_with_filesize("fachinfo.yaml.zip")
+	end
+	def yaml_patinfo_export_gz(model, session)
+		checkbox_with_filesize("patinfo.yaml.gz")
+	end
+	def yaml_patinfo_export_zip(model, session)
+		checkbox_with_filesize("patinfo.yaml.zip")
+	end
+	def yaml_patinfo_price(model, session)
+		price = State::User::DownloadExport.price('patinfo.yaml')
+		@lookandfeel.format_price(price.to_i * 100, 'EUR')
+	end
+end
+class DownloadExportComposite < Form
+	include HtmlGrid::ErrorMessage
+	COMPONENTS = {
+		[0,0]		=>	'download_export_title',
+		[0,0,0]	=>	:declaration,
+		[0,1]		=>	:download_export_descr,
+		[0,2]		=>	DownloadExportInnerComposite,
+		[0,3]		=>	:submit,
+	}
+	CSS_CLASS = 'composite'
+	CSS_MAP = {
+		[0,0] =>  'th',
+		[0,1] =>  'list',
+		[0,3] =>  'list',
+	}
+	EVENT = :proceed
 	SYMBOL_MAP = {
 		:yaml_link => HtmlGrid::Link,
 	}
-				def download_export_descr(model, session)
-					link = HtmlGrid::Link.new(:download_export_descr, model, @session, self)
-					if(@lookandfeel.language == 'de')
-					link.href =  "http://wiki.oddb.org/wiki.php?pagename=ODDB.Stammdaten"
-					elsif(@lookandfeel.language == 'fr')
-					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.DonneesDeBase"
-					elsif(@lookandfeel.language == 'en')
-					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.MasterData"
-					end
-					link
-				end
-	CSS_CLASS = 'composite'
+	def declaration(model, session)
+		link = HtmlGrid::Link.new(:data_declaration, model, session, self)
+		link.href = 'http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'
+		link.css_class = 'th'
+		link
+	end
+	def download_export_descr(model, session)
+		pages = {
+			'de' => 'Stammdaten', 	
+			'en' => 'MasterData', 	
+			'fr' => 'DonneesDeBase', 	
+		}
+		page = pages[@lookandfeel.language]
+		link = HtmlGrid::Link.new(:download_export_descr, model, 
+			@session, self)
+		link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.#{page}"
+		link
+	end
+	def init
+		super
+		error_message(1)
+	end
 end
 class DownloadExport < View::PublicTemplate
 	CONTENT = View::User::DownloadExportComposite 	

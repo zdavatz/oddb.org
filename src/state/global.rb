@@ -42,6 +42,8 @@ require 'state/user/genericdefinition'
 require	'state/user/help'
 require 'state/user/mailinglist'
 require 'state/user/passthru'
+require 'state/user/paypal'
+require 'state/user/paypal_ipn'
 require 'state/user/paypal_thanks'
 require 'state/user/powerlink'
 require 'state/user/plugin'
@@ -76,6 +78,8 @@ module ODDB
 				:mailinglist					=>	State::User::MailingList,
 				:plugin								=>	State::User::Plugin,
 				:passthru							=>	State::User::PassThru,
+				:paypal								=>	State::User::PayPal,
+				:paypal_ipn						=>	State::User::PayPalIpn,
 				:paypal_thanks				=>	State::User::PayPalThanks,
 				:recent_registrations =>	State::Drugs::RecentRegs,
 				:sequences						=>	State::Drugs::Sequences,
@@ -150,12 +154,15 @@ module ODDB
 				input = @session.user_input(:email)
 				email = @session.get_cookie_input(:email) || input
 				user = @session.admin_subsystem.download_user(email)
-				if(user && user.authenticated?)
+				oid = @session.user_input(:invoice)
+				file = @session.user_input(:filename)
+				if((invoice = user.invoice(oid)) \
+					&& invoice.payment_received? \
+					&& (item = invoice.item_by_text(file)) \
+					&& !item.expired?)
 					State::User::Download.new(@session, user)
 				else
-					state = State::User::RegisterDownload.new(@session, nil)
-					# in case we were kicked out of a session, try state.download
-					(input.nil?) ? state : state.download
+					State::User::PayPal.new(@session, user)
 				end
 			end
 			def hospitallist

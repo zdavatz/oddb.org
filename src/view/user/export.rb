@@ -36,12 +36,36 @@ module Export
 			")",
 		].join("&nbsp;")
 	end
-	def link_with_filesize(filename)
+	def checkbox_with_filesize(filename)
 		if(display?(file_path(filename)))
-			symbol = filename.tr(".", "_").downcase.intern
-			link = export_link(symbol, filename)
+			checkbox = HtmlGrid::InputCheckbox.new("download[#{filename}]", 
+				@model, @session, self)
+			#symbol = filename.tr(".", "_").downcase.intern
+			#link = export_link(symbol, filename)
 			size = filesize(filename)
-			[link, size]
+			[checkbox, "#{filename} #{size}"]
+		end
+	end
+	def once_or_year(filename)
+		if(display?(file_path(filename)))
+			name = "months[#{filename}]"
+			months = @session.user_input('months') || {}
+			checked = months[filename] || '1'
+			radio1 = HtmlGrid::InputRadio.new(name, @model, @session, self)
+			price = State::User::DownloadExport.price(filename)
+			price1 = @lookandfeel.format_price(price.to_i * 100, 'EUR')
+			radio1.value = '1'
+			if(checked == '1')
+				radio1.set_attribute('checked', true)
+			end
+			radio2 = HtmlGrid::InputRadio.new(name, @model, @session, self)
+			radio2.value = '12'
+			if(checked == '12')
+				radio2.set_attribute('checked', true)
+			end
+			price = State::User::DownloadExport.subscription_price(filename)
+			price2 = @lookandfeel.format_price(price.to_i * 100, 'EUR')
+			[radio1, price1, radio2, price2]
 		end
 	end
 	def file_path(filename)

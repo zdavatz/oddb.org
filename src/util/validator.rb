@@ -12,9 +12,10 @@ module ODDB
 		alias :unique_email :email
 		alias :notify_sender :email
 		alias :notify_recipient :email
+		alias :receiver_email :email
 		BOOLEAN = [
-			:cl_status, :experience, :recommend,
-			:impression, :helps, :show_email
+			:cl_status,  :download, :experience, :recommend,
+			:impression, :helps, :show_email,
 		]
 		DATES = [
 			:inactive_date,
@@ -26,6 +27,8 @@ module ODDB
 			:sponsor_until,
 		]
 		ENUMS = {
+			:business_area=>	[nil, 'ba_hospital', 'ba_pharma', 'ba_health',
+				'ba_doctor', ],
 			:cl_status		=>	['false', 'true'],
 			:complementary_type =>	[nil, 'anthroposophy', 'homeopathy', 
 				'phytotherapy', ],
@@ -35,6 +38,7 @@ module ODDB
 			:generic_type =>	[nil, 'generic', 'original', 'complementary' ],
 			:limitation		=>	['true', 'false'],
 			:pi_status		=>	['false', 'true'],
+			:salutation		=>	['salutation_m', 'salutation_f'],
 		}	
 		EVENTS = [
 			:accept,
@@ -105,11 +109,14 @@ module ODDB
 			:patinfo_deprived_sequences,
 			:patinfo_stats,
 			:patinfo_stats_company,
+			:paypal,
+			:paypal_ipn,
 			:paypal_thanks,
 			:plugin,
 			:powerlink,
 			:preview,
 			:print,
+			:proceed,
 			:recent_registrations,
 			:release,
 			:resolve,
@@ -149,7 +156,10 @@ module ODDB
 			:price_exfactory,
 			:price_public,
 			:index,
+			:invoice,
+			:item_number,
 			:meaning_index,
+			:months,
 		]
 		STRINGS = [
 			:address,
@@ -178,13 +188,14 @@ module ODDB
 			:indication,
 			:language_select,
 			:location,
-			:location,
 			:lt,
 			:name,
 			:name_base,
 			:name_descr,
+			:name_first,
 			:notify_message,
 			:pattern,
+			:payment_status,
 			:phone,
 			:pi_update,
 			:plz,
@@ -198,6 +209,7 @@ module ODDB
 			:substance,
 			:substance_form,
 			:synonym_list,
+			:txn_id,
 			:unsubscribe,
 			:url,
 		]

@@ -2,16 +2,6 @@
 # OddbConfig -- oddb -- 09.04.2003 -- hwyss@ywesee.com 
 
 # Do not require any Application-Internals in this file
-require 'delegate'
-
-=begin
-module DRb
-	class DRbConn
-		remove_const :POOL_SIZE
-		POOL_SIZE = 4
-	end
-end
-=end
 
 module ODDB
 	SERVER_NAME = 'www.oddb.org'
@@ -25,6 +15,9 @@ module ODDB
 	EXPORT_URI = "druby://localhost:10005"
 	MEDDATA_URI = "druby://localhost:10006"
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
+	PAYPAL_SERVER = 'www.paypal.com'
+	PAYPAL_RECEIVER = 'zdavatz@ywesee.com'
+	VAT_RATE = 7.6
 end
 
 module ODBA

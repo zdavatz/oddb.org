@@ -193,9 +193,6 @@ Grammar OddbSize
 					if obj.respond_to?(:checkout)
 						obj.checkout
 					end
-					if(obj.respond_to?(:odba_delete))
-						obj.odba_delete
-					end
 					pointer = dup
 					command = pointer.directions.pop
 					command[0] = 'delete_' << command.first.to_s
@@ -203,7 +200,10 @@ Grammar OddbSize
 					if(hook.respond_to?(command.first))
 						hook.send(*(command.compact))
 						### do we really need this? should be done by ODBA ###
-						#hook.odba_isolated_store
+						hook.odba_isolated_store
+					end
+					if(obj.respond_to?(:odba_delete))
+						obj.odba_delete
 					end
 			rescue InvalidPathError, UninitializedPathError => e
 				puts "Could not delete: #{to_s}, reason: #{e.message}"
@@ -237,13 +237,13 @@ Grammar OddbSize
 						lasthook = hook
 						laststep = step
 						hook = begin
-							arity = hook.method(step.first).arity
-							if(((arity >= 0) && (step.size == arity.next)) \
-								|| ((arity < 0) && (step.size >= -arity)))
+						#arity = hook.method(step.first).arity
+						#if(((arity >= 0) && (step.size == arity.next)) \
+						#		|| ((arity < 0) && (step.size >= -arity)))
 								hook.send(*step)
-							end
+						#end
 						rescue
-							#puts "#{step.join(',')}: Arity did not match!!!!!!!"
+							puts "#{hook.class}::#{step.join(',')}: Arity did not match!!!!!!!"
 						end
 					else
 						call = step.shift

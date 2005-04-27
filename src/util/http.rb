@@ -54,9 +54,9 @@ module ODDB
 		HTTP_CLASS = Net::HTTP
 		RETRIES = 0
 		RETRY_WAIT = 10
-		def initialize(http_server)
+		def initialize(http_server, port=80)
 			@http_server = http_server
-			@http = self.class::HTTP_CLASS.new(@http_server)
+			@http = self.class::HTTP_CLASS.new(@http_server, port)
 			@output = ''
 			super(@http)
 		end
