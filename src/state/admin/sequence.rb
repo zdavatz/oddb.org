@@ -45,7 +45,7 @@ class Sequence < State::Admin::Global
 				smtp.sendmail(mail.encoded, SMTP_FROM, [addr] + RECIPIENTS)
 			}
 			@model.atc_request_time = Time.now
-			@model.odba_store
+			@model.odba_isolated_store
 		end
 		self
 	end

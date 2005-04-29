@@ -1,21 +1,21 @@
 #!/usr/bin/env ruby
-# State::User::PayPal -- ODDB -- 21.04.2005 -- hwyss@ywesee.com
+# State::PayPal::Return -- ODDB -- 21.04.2005 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
-require 'view/user/paypal'
+require 'view/paypal/return'
 require 'delegate'
 
 module ODDB
 	module State
-		module User
-class PayPal < Global
+		module PayPal
+class Return < State::Global
 	class InvoiceWrapper < SimpleDelegator
 		attr_accessor :items
 	end
 	class ItemWrapper < SimpleDelegator
 		attr_accessor :email, :oid
 	end
-	VIEW = View::User::PayPal
+	VIEW = View::PayPal::Return
 	def init
 		if((id = @session.user_input(:invoice)) \
 			&& (invoice = @session.invoice(id)))

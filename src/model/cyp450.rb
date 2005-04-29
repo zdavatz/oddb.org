@@ -45,10 +45,16 @@ module ODDB
 			@inhibitors[substance_name]
 		end
 		def delete_cyp450inducer(substance_name)
-			@inducers.delete(substance_name)
+			if(ind = @inducers.delete(substance_name))
+				@inducers.odba_isolated_store
+				ind
+			end
 		end
 		def delete_cyp450inhibitor(substance_name)
-			@inhibitors.delete(substance_name)
+			if(inh = @inhibitors.delete(substance_name))
+				@inhibitors.odba_isolated_store
+				inh
+			end	
 		end
 	end
 end

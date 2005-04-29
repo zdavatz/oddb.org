@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
-# View::User::PayPal -- ODDB -- 21.04.2005 -- hwyss@ywesee.com
+# View::PayPal::Return -- ODDB -- 21.04.2005 -- hwyss@ywesee.com
 
-require 'view/publictemplate'
+require 'view/resulttemplate'
 
 module ODDB
 	module View
-		module User
-class PayPalDownloads < HtmlGrid::List
+		module PayPal
+class ReturnDownloads < HtmlGrid::List
 	COMPONENTS = {
 		[0,0]	=>	:download_link	
 	}
@@ -21,8 +21,8 @@ class PayPalDownloads < HtmlGrid::List
 			time = model.expiry_time
 			timestr = (time) \
 				? time.strftime(@lookandfeel.time_format) \
-				: @lookandfeel.lookup(:paypal_e_invalid)
-			@lookandfeel.lookup(:paypal_e_expired, model.text, timestr)
+				: @lookandfeel.lookup(:Return_e_invalid)
+			@lookandfeel.lookup(:Return_e_expired, model.text, timestr)
 		else
 			data = {
 				:email			=>	model.email,
@@ -36,8 +36,8 @@ class PayPalDownloads < HtmlGrid::List
 		end
 	end
 end
-class PayPalComposite < HtmlGrid::Composite
-	COMPONENTS = { }
+class ReturnComposite < HtmlGrid::Composite
+	COMPONENTS = {}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0]	=>	'th',
@@ -54,9 +54,10 @@ class PayPalComposite < HtmlGrid::Composite
 			css_map.store([0,1], 'error')
 		else
 			if(@model.payment_received?)
+				suffix = @model.items.size == 1 ? 's' : 'p'
 				components.update({
 					[0,0]	=>	'paypal_success',
-					[0,1]	=>	'paypal_msg_success',
+					[0,1]	=>	"paypal_msg_success_#{suffix}",
 					[0,2]	=>	:download_links,
 					[0,3]	=>	:back,
 				})
@@ -77,11 +78,20 @@ class PayPalComposite < HtmlGrid::Composite
 		button
 	end
 	def download_links(model)
-		PayPalDownloads.new(model.items, @session, self)
+		ReturnDownloads.new(model.items, @session, self)
 	end
 end
-class PayPal < PublicTemplate
-	CONTENT = PayPalComposite
+class Return < PublicTemplate
+	CONTENT = ReturnComposite
+	def http_headers
+		headers = super
+		unless(@model && @model.payment_received?)
+			args = { :invoice => @model.oid }
+			url = @lookandfeel.event_url(:paypal_return, args)
+			headers.store('Refresh', "10; URL=#{url}")
+		end
+		headers
+	end
 end
 		end
 	end

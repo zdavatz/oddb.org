@@ -58,9 +58,10 @@ module ODDB
 		end
 		def delete_sequence(seqnr)
 			seqnr = sprintf('%02d', seqnr.to_i)
-			seq = @sequences.delete(seqnr)
-			@sequences.odba_store
-			seq
+			if(seq = @sequences.delete(seqnr))
+				@sequences.odba_isolated_store
+				seq
+			end
 		end
 		def each_package(&block)
 			@sequences.each_value { |seq|

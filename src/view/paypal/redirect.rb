@@ -1,18 +1,20 @@
 #!/usr/bin/env ruby
-# View::User::PayPalRedirect -- ODDB -- 20.04.2005 -- hwyss@ywesee.com
+# View::PayPal::Redirect -- ODDB -- 20.04.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
 
 module ODDB
 	module View
-		module User
-class PayPalRedirect < HtmlGrid::Component
+		module PayPal
+class Redirect < HtmlGrid::Component
 	def http_headers 
 		invoice = @model.oid
-		ret_url = @lookandfeel._event_url(:paypal, {:invoice => invoice})
+		names = @model.items.values.collect { |item| item.text }.join(' ,')
+		ret_url = @lookandfeel._event_url(:paypal_return, 
+			{:invoice => invoice})
 		url = 'https://' << PAYPAL_SERVER << '/cgi-bin/webscr?' \
 			<< "business=#{PAYPAL_RECEIVER}&" \
-			<< "item_name=Datendownload&item_number=#{invoice}&" \
+			<< "item_name=#{names}&item_number=#{invoice}&" \
 			<< "invoice=#{invoice}&" \
 			<< "amount=#{sprintf('%3.2f', model.total_brutto)}&" \
 			<< 'no_shipping=1&no_note=1&currency_code=EUR&' \

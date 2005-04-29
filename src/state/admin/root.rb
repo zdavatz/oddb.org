@@ -60,7 +60,6 @@ module Root
 			:sequence, :active_agent ]	=>	State::Admin::IncompleteActiveAgent, 
 		[ :orphaned_fachinfo ]				=>	State::Admin::OrphanedFachinfoAssign,
 		[ :orphaned_patinfo ]					=>	State::Admin::OrphanedPatinfo,
-		[ :patinfo_deprived_sequences ] => State::Admin::PatinfoDeprivedSequences,
 		[ :registration ]							=>	State::Admin::Registration,
 		[ :registration, :sequence ]	=>	State::Admin::Sequence,
 		[ :registration,

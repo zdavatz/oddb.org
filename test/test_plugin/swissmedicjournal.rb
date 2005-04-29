@@ -331,9 +331,14 @@ module ODDB
 			@app.mock_handle(:unique_atc_class) { 
 				atc
 			}
+			agent = FlexMock.new
+			agent.mock_handle(:substance) { 'a_substance' }
 			sequence = FlexMock.new
+			reg = FlexMock.new
+			reg.mock_handle(:sequences) { { '01' => sequence }}
+			sequence.mock_handle(:registration) { reg }
 			sequence.mock_handle(:atc_class) { nil }
-			sequence.mock_handle(:active_agents) { ['one'] } 
+			sequence.mock_handle(:active_agents) { [agent] } 
 			sequence.mock_handle(:pointer) {}
 			@app.mock_handle(:update) { |pointer, values|
 				case @app.mock_count(:update)

@@ -676,7 +676,6 @@ class TestOddbApp < Test::Unit::TestCase
 		atc1 = Mock.new('ATC1')
 		atc_array = [atc1]
 		ODBA.cache_server.retrieve_from_index = atc_array
-		atc1.__next(:substances) { ['substance'] }
 		assert_equal(atc1, @app.unique_atc_class('substance'))
 		atc1.__verify
 
@@ -690,9 +689,8 @@ class TestOddbApp < Test::Unit::TestCase
 		atc2.__verify
 
 		atc_array = [atc1]
-		atc1.__next(:substances) { ['substance1', 'substance2'] }
 		ODBA.cache_server.retrieve_from_index = atc_array
-		assert_nil(@app.unique_atc_class('substance'))
+		assert_equal(atc1, @app.unique_atc_class('substance'))
 		atc1.__verify
 
 		atc1.__next(:substances) { ['sub1', 'sub2'] }

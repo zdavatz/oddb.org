@@ -182,9 +182,13 @@ Grammar OddbSize
 				new_obj = hook.send(*(command.compact))
 				new_obj.pointer = self
 				new_obj.init(app)
-				#Only the hook must be stored
-				#because wie scan its connections for unsaved objects
-				#see ODBA::Persistable
+				# Only the hook must be stored in issue_create
+				# because wie scan its connections for unsaved objects
+				# see ODBA::Persistable
+				# In the case where the newly created object were saved
+				# *before* the hook, any intermediate collections might not 
+				# be properly stored, resulting in the newly created object
+				# being inaccessible after a restart
 				hook.odba_store
 				new_obj
 			end
@@ -199,8 +203,9 @@ Grammar OddbSize
 					hook = pointer.resolve(app)
 					if(hook.respond_to?(command.first))
 						hook.send(*(command.compact))
-						### do we really need this? should be done by ODBA ###
-						hook.odba_isolated_store
+						### ODBA needs the delete_<command> method to call
+						### odba_store or odba_isolated_store on whoever was the
+						### last connection to this item.
 					end
 					if(obj.respond_to?(:odba_delete))
 						obj.odba_delete

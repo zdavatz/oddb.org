@@ -25,6 +25,9 @@ module ODDB
 			item = InvoiceItem.new
 			@items.store(item.oid, item)
 		end
+		def expired?
+			@items.values.all? { |item| item.expired? }
+		end
 		def item(oid)
 			@items[oid]
 		end
@@ -47,11 +50,17 @@ module ODDB
 	class AbstractInvoiceItem
 		attr_accessor :user_pointer, :time, :item_pointer, #:name
 			:text, :quantity, :price, :expiry_time, :vat_rate, :duration
+		attr_accessor :data
 		def initialize
 			@quantity = 1.0
+			@duration = 1
+			@data = {}
 		end
 		def total_brutto
 			total_netto * (1.0 + (@vat_rate.to_f / 100.0))
+		end
+		def total_brutto=(total)
+			self.total_netto = (total / (1.0 + (@vat_rate.to_f / 100.0)))
 		end
 		def total_netto
 			@quantity.to_f * @price.to_f
@@ -68,6 +77,10 @@ module ODDB
 	end
 	class InvoiceItem < AbstractInvoiceItem
 		include Persistence
+		ODBA_SERIALIZABLE = ['@data']
+		def InvoiceItem.expiry_time(duration, time)
+			time + (duration * 24 * 60 * 60)
+		end
 		def initialize
 			super
 			@quantity = 1

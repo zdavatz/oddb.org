@@ -1,29 +1,22 @@
 #!/usr/bin/env ruby
-# View::User::RegisterDownload -- oddb -- 20.09.2004 -- mhuggler@ywesee.com
+# View::Drugs::RegisterDownload -- ODDB -- 28.04.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/errormessage'
-require 'htmlgrid/select'
+require 'view/resulttemplate'
 require 'view/paypal/invoice'
-require 'view/publictemplate'
 require 'view/form'
 
 module ODDB
 	module View
-		module User
+		module Drugs
 class RegisterDownloadForm < Form
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
 		[0,0]	=>	:salutation,
 		[0,1]	=>	:name,
 		[0,2]	=>	:name_first,
-		[0,3]	=>	:company_name,
-		[0,4]	=>	:address,
-		[0,5]	=>	:plz,
-		[0,6]	=>	:location,
-		[0,7]	=>	:phone,
-		[0,8]	=>	:business_area,
-		[0,9]	=>	:email,
-		[1,10]	=>	:submit,
+		[0,3]	=>	:email,
+		[1,4]	=>	:submit,
 	}
 	CSS_CLASS = 'component'
 	HTML_ATTRIBUTES = {
@@ -32,15 +25,13 @@ class RegisterDownloadForm < Form
 	EVENT = :checkout
 	LABELS = true
 	CSS_MAP = {
-		[0,0,2,10]	=>	'list',
-		[1,11]	=> 'button',
+		[0,0,2,5]	=>	'list',
 	}
 	COMPONENT_CSS_MAP = {
-		[1,0,2,10]	=>	'standard',
+		[1,0,2,4]	=>	'standard',
 	}
 	SYMBOL_MAP = {
 		:salutation			=>	HtmlGrid::Select,
-		:business_area	=>	HtmlGrid::Select,
 	}
 	def init
 		super
@@ -51,24 +42,17 @@ class RegisterDownloadForm < Form
 	end
 	def hidden_fields(context)
 		hidden = super
-		if(downloads = @session.user_input(:download))
-			downloads.each { |key, val|
-				hidden << context.hidden("download[#{key}]", val)
-			}
-		end
-		if(months = @session.user_input(:months))
-			months.each { |key, val|
-				hidden << context.hidden("months[#{key}]", val)
-			}
-		end
+		[:search_query, :search_type].each { |key|
+			hidden << context.hidden(key.to_s, @session.state.send(key))
+		}	
 		hidden
 	end
 end
 class RegisterDownloadComposite < HtmlGrid::Composite 
 	include View::PayPal::InvoiceMethods
 	COMPONENTS = {
-		[0,0]	=>	"register_download",
-		[0,1]	=>	"register_download_descr",
+		[0,0]	=>	"export_csv",
+		[0,1]	=>	"export_csv_descr",
 		[0,2]	=>	RegisterDownloadForm,
 		[1,2]	=>	:invoice_items,
 	}
@@ -82,7 +66,7 @@ class RegisterDownloadComposite < HtmlGrid::Composite
 	}
 	LEGACY_INTERFACE = false
 end
-class RegisterDownload < View::PublicTemplate
+class RegisterDownload < View::ResultTemplate
 	CONTENT = RegisterDownloadComposite
 end
 		end

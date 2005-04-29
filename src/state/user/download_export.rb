@@ -39,12 +39,8 @@ class DownloadExport < State::User::Global
 		'oddbdat'				=> 365,
 		's31x'					=> 365,
 	}
-	## Number of seconds during which a paid file may be downloaded
 	def DownloadExport.duration(file)
 		DURATIONS[fuzzy_key(file)].to_i
-	end
-	def DownloadExport.expiry_time(duration, time)
-		time + (duration * 24 * 60 * 60)
 	end
 	def DownloadExport.fuzzy_key(file)
 		PRICES.keys.select { |key|
@@ -63,8 +59,7 @@ class DownloadExport < State::User::Global
 	def proceed
 		keys = [:download, :months]
 		input = user_input(keys, keys) 
-		downloads = []
-		puts input.inspect
+		items = []
 		if(files = input[:download])
 			files.each { |filename, val|
 				if(val)
@@ -81,18 +76,18 @@ class DownloadExport < State::User::Global
 					end
 					item.total_netto = DownloadExport.send(price_mth, filename)
 					item.duration = DownloadExport.send(duration_mth, filename)
-					downloads.push(item)
+					items.push(item)
 				end
 			}
 		end
-		if(downloads.empty?)
+		if(items.empty?)
 			@errors.store(:download, create_error('e_no_download_selected', 
 				:download, nil))
 			return self
 		end
 		pointer = Persistence::Pointer.new(:invoice)
 		invoice = Persistence::CreateItem.new(pointer)
-		invoice.carry(:downloads, downloads)
+		invoice.carry(:items, items)
 		RegisterDownload.new(@session, invoice)
 	end
 end

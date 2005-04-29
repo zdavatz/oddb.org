@@ -71,15 +71,15 @@ class OddbPrevalence
 				slate.instance_variable_set('@items', invoice.items)
 				slate.items.each { |oid, item|
 					item.pointer = pointer + [:item, oid]
-					item.odba_store
+					item.odba_isolated_store
 				}
-				slate.odba_store
+				slate.odba_isolated_store
 			}
 			@invoices.values.each { |invoice| invoice.odba_delete }
 			@invoices = {}
-			@invoices.odba_store
-			@slates.odba_store
-			odba_store
+			@invoices.odba_isolated_store
+			@slates.odba_isolated_store
+			odba_isolated_store
 		end
 		## end temporary code for slate-migration ##
 
@@ -139,6 +139,22 @@ class OddbPrevalence
 	end
 	def atc_ddd_count
 		@atc_ddd_count ||= count_atc_ddd()
+	end
+	def clean_invoices
+		@invoices.delete_if { |oid, invoice| invoice.odba_instance.nil? }
+		deletables = @invoices.values.select { |invoice|
+			!invoice.payment_received? && invoice.expired?
+		}
+		unless(deletables.empty?)
+			deletables.each { |invoice|
+				if((ptr = invoice.user_pointer) \
+					&& (user = ptr.resolve(self)))
+					user.remove_invoice(invoice)	
+				end
+				delete(invoice.pointer)
+			}
+			@invoices.odba_isolated_store
+		end
 	end
 	def company(oid)
 		@companies[oid.to_i]
@@ -273,17 +289,10 @@ class OddbPrevalence
 		patinfo = ODDB::Patinfo.new
 		@patinfos.store(patinfo.oid, patinfo)
 	end
-	def create_patinfo_deprived_sequences
-		@patinfos_deprived_sequences ||= []
-		pat = ODDB::PatinfoDeprivedSequences.new
-	  @patinfos_deprived_sequences.store(pat.oid, pat)
-	end
 	def create_registration(iksnr)
 		unless @registrations.include?(iksnr)
 			reg = ODDB::Registration.new(iksnr)
-			#reg.odba_store
 			@registrations.store(iksnr, reg)
-			#@registrations.odba_store
 			reg
 		end
 	end
@@ -313,48 +322,81 @@ class OddbPrevalence
 	end
 	def delete_atc_class(atccode)
 		atc = @atc_classes[atccode]
-		#delete_from_index(@atc_index, atc.name, atc)
 		@atc_chooser.delete(atccode)
-		@atc_classes.delete(atccode)
+		if(@atc_classes.delete(atccode))
+			@atc_classes.odba_isolated_store
+		end
+		atc
 	end
 	def delete_cyp450(cyp_id)
-		@cyp450s.delete(cyp_id)
+		if(cyp = @cyp450s.delete(cyp_id))
+			@cyp450s.odba_isolated_store
+			cyp
+		end
 	end
 	def delete_company(oid)
-		#comp = @companies[oid]
-		#@company_index.delete(comp.name.downcase, comp)
-		@companies.delete(oid)
+		if(comp = @companies.delete(oid))
+			@companies.odba_isolated_store
+			comp
+		end
 	end
 	def delete_doctor(oid)
-		@doctors.delete(oid.to_i)
+		if(doc = @doctors.delete(oid.to_i))
+			@doctors.odba_isolated_store
+			doc
+		end
 	end
 	def delete_fachinfo(oid)
-		@fachinfos.delete(oid)
+		if(fi = @fachinfos.delete(oid))
+			@fachinfos.odba_isolated_store
+			fi
+		end
 	end
 	def delete_galenic_group(oid)
 		group = galenic_group(oid)
 		unless (group.nil? || group.empty?)
 			raise 'e_nonempty_galenic_group'
 		end
-		@galenic_groups.delete(oid.to_i)
+		if(grp = @galenic_groups.delete(oid.to_i))
+			@galenic_groups.odba_isolated_store
+			grp
+		end
 	end
 	def delete_incomplete_registration(oid)
-		@incomplete_registrations.delete(oid)
+		if(reg = @incomplete_registrations.delete(oid))
+			@incomplete_registrations.odba_isolated_store
+			reg
+		end
 	end
 	def delete_indication(oid)
-		@indications.delete(oid)
+		if(ind = @indications.delete(oid))
+			@indications.odba_isolated_store
+			ind
+		end
+	end
+	def delete_invoice(oid)
+		if(inv = @invoices.delete(oid))
+			@invoices.odba_isolated_store
+			inv
+		end
 	end
 	def delete_orphaned_fachinfo(oid)
-		@orphaned_fachinfos.delete(oid.to_i)
+		if(fi = @orphaned_fachinfos.delete(oid.to_i))
+			@orphaned_fachinfos.odba_isolated_store
+			fi
+		end
 	end
 	def delete_orphaned_patinfo(oid)
-		@orphaned_patinfos.delete(oid.to_i)
-	end
-	def delete_patinfo_deprived_sequences(oid)
-		@patinfos_deprived_sequences.delete(oid.to_i)
+		if(pi = @orphaned_patinfos.delete(oid.to_i))
+			@orphaned_patinfos.odba_isolated_store
+			pi
+		end
 	end
 	def delete_registration(iksnr)
-		@registrations.delete(iksnr)
+		if(reg = @registrations.delete(iksnr))
+			@registrations.odba_isolated_store
+			reg
+		end
 	end
 	def delete_substance(key)
 		substance = nil
@@ -362,6 +404,10 @@ class OddbPrevalence
 			substance = @substances.delete(key.to_i)
 		else
 			substance = @substances.delete(key.to_s.downcase)
+		end
+		if(substance)
+			@substances.odba_isolated_store
+			substance
 		end
 	end
 	def doctor(oid)
@@ -463,9 +509,6 @@ class OddbPrevalence
 	def patinfo_count
 		@patinfo_count ||= count_patinfos()
 	end
-	def patinfo_deprived_sequences(oid)
-		@patinfos_deprived_sequences[oid.to_i]
-	end
 	def rebuild_atc_chooser
 		chooser = ODDB::AtcNode.new(nil)
 		@atc_classes.values.sort_by { |atc| 
@@ -497,7 +540,7 @@ class OddbPrevalence
 			@package_count = count_packages()
 			@patinfo_count = count_patinfos()
 		}
-		self.odba_store
+		self.odba_isolated_store
 	end
 	def registration(registration_id)
 		@registrations[registration_id]
@@ -564,20 +607,6 @@ class OddbPrevalence
 		if(atcs.empty?)
 			atcs = search_by_sequence(key)
 		end
-		# cleanup. remove when all temporary-atcs are deleted from the db
-		atcs.delete_if { |atc|
-			delete = (atc.code == 'n.n.' || atc.code.empty?)
-			if(delete)
-				puts "atc: #{atc} - code: #{atc.code}"
-				puts "deleting!"
-				ODBA.batch { 
-					atc.odba_delete 
-				}
-				true
-			end
-		}
-		#
-		#atcs.delete_if { |atc| atc.code.length == 0 }
 		result.atc_classes = atcs
 		result
 	end
@@ -738,7 +767,7 @@ class OddbPrevalence
 		when ODDB::Substance
 			@substances.each_value { |subs|
 				if(!subs.is_effective_form? && subs.effective_form == item)
-					subs.odba_store
+					subs.odba_isolated_store
 				end
 			}
 		end
@@ -873,6 +902,10 @@ module ODDB
 		def accept_orphaned(orphan, pointer, symbol)
 			command = AcceptOrphan.new(orphan, pointer,symbol)
 			@system.execute_command(command)
+		end
+		def clean
+			super
+			@system.clean_invoices
 		end
 		def create(pointer)
 			@system.execute_command(CreateCommand.new(pointer))
@@ -1021,7 +1054,7 @@ module ODDB
 					when 'd'
 						subs.sequences.each { |seq| 
 							seq.delete_active_agent(subs) 
-							seq.active_agents.odba_store
+							seq.active_agents.odba_isolated_store
 						}
 						subs.odba_delete
 						break

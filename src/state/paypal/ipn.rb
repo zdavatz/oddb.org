@@ -1,17 +1,17 @@
 #!/usr/bin/env ruby
-# State::PayPalIpn -- ODDB -- 19.04.2005 -- hwyss@ywesee.com
+# State::PayPal::Ipn -- ODDB -- 19.04.2005 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
 require 'net/https'
 require 'util/http'
-require 'view/user/paypal_ipn'
+require 'view/paypal/ipn'
 
 module ODDB
 	module State
-		module User
-class PayPalIpn < Global
+		module PayPal
+class Ipn < State::Global
 	RECIPIENTS = [ 'hwyss@ywesee.com', ]
-	VIEW = View::User::PayPalIpn
+	VIEW = View::PayPal::Ipn
 	VOLATILE = true
 	def init
 		validation_keys = [:payment_status, :receiver_email, 
@@ -33,7 +33,7 @@ class PayPalIpn < Global
 			status = response.body
 			if(status == 'VERIFIED')
 				invoice.payment_received!
-				invoice.odba_store
+				invoice.odba_isolated_store
 				send_notification(invoice)
 				send_seller_notification(invoice)
 			end
@@ -58,10 +58,19 @@ class PayPalIpn < Global
 				lookandfeel._event_url(:download, data)
 			}
 			salut = lookandfeel.lookup(user.salutation)
-			body = lookandfeel.lookup(:download_mail_body, 
-				salut, user.name, urls.join("\n"))
-			body << "\n\n" << format_invoice(invoice, lookandfeel)
-			outgoing.body = body
+			suffix = (urls.size == 1) ? 's' : 'p'
+			lines = [
+				lookandfeel.lookup(:download_mail_body),
+				lookandfeel.lookup("download_mail_instr_#{suffix}"),
+			]
+			parts = [
+				lookandfeel.lookup(:download_mail_salut, salut, user.name),
+				lines.join("\n"),
+				urls.join("\n"), 
+				lookandfeel.lookup(:download_mail_feedback),
+				format_invoice(invoice, lookandfeel),
+			]
+			outgoing.body = parts.join("\n\n")
 			outgoing.date = Time.now
 			outgoing['User-Agent'] = 'ODDB Download'
 			recipients = [recipient] + RECIPIENTS
@@ -114,19 +123,59 @@ class PayPalIpn < Global
 		puts e.backtrace
 	end
 	def format_invoice(invoice, lookandfeel)
+		lines = [lookandfeel.lookup(:invoice_origin), nil]
+		qsizes = []
+		tsizes = []
+		nsizes = []
 		downloads = invoice.items.values.collect { |item|
-			[sprintf('%i x', item.quantity), item.text, item.total_netto]
+			qstr = sprintf('%i x', item.quantity)
+			qsizes.push(qstr.size)
+			tstr = item.text
+			tsizes.push(tstr.size)
+			nstr = sprintf('%3.2f', item.total_netto)
+			nsizes.push(nstr.size)
+			[qstr, tstr, nstr]
 		}
-		downloads += [
-			[nil, lookandfeel.lookup(:total_netto), invoice.total_netto],
-			[nil, lookandfeel.lookup(:vat), invoice.vat],
-			[nil, lookandfeel.lookup(:total_brutto), invoice.total_brutto],
-		]
-		invoice = downloads.collect { |data|
-			sprintf("%5s %-20s EUR %8.2f", *data)
+		tstr = lookandfeel.lookup(:total_netto)
+		tsizes.push(tstr.size)
+		nstr = sprintf('%3.2f', invoice.total_netto)
+		nsizes.push(nstr.size)
+		netto_line = [nil, tstr, nstr]
+		tstr = lookandfeel.lookup(:vat)
+		tsizes.push(tstr.size)
+		nstr = sprintf('%3.2f', invoice.vat)
+		nsizes.push(nstr.size)
+		vat_line = [nil, tstr, nstr]
+		tstr = lookandfeel.lookup(:total_brutto)
+		tsizes.push(tstr.size)
+		nstr = sprintf('%3.2f', invoice.total_brutto)
+		nsizes.push(nstr.size)
+		brutto_line = [nil, tstr, nstr]
+
+		sizes = [qsizes.max, tsizes.max, nsizes.max]
+
+		width = sizes.inject(7) { |a,b| a + b }
+		
+		dline = "=" * width
+		sline = "-" * width
+
+		lines.push(dline)
+		lines += downloads.collect { |data|
+			format_line(sizes, data)
 		}
-		invoice += [nil, lookandfeel.lookup(:invoice_origin)]
-		invoice.join("\n")
+		lines.push(sline)
+		lines.push(format_line(sizes, netto_line))
+		lines.push(sline)
+		lines.push(format_line(sizes, vat_line))
+		lines.push(dline)
+		lines.push(format_line(sizes, brutto_line))
+		lines.push(dline)
+		lines.push(nil)
+		lines.join("\n")
+	end
+	def format_line(sizes, data)
+		sprintf("%#{sizes.at(0)}s %-#{sizes.at(1)}s  EUR %#{sizes.at(2)}s",
+			*data)
 	end
 end
 		end

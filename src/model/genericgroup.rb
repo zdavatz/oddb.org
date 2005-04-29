@@ -15,7 +15,10 @@ module ODDB
 			@packages.last
 		end
 		def remove_package(package)
-			@packages.delete_if { |pack| pack==package }
+			if(@packages.delete(package))
+				@packages.odba_isolated_store
+				package
+			end
 		end
 	end
 end

@@ -25,7 +25,10 @@ module ODDB
 			@galenic_forms.store(galenic_form.oid, galenic_form)
 		end
 		def delete_galenic_form(oid)
-			@galenic_forms.delete(oid.to_i)
+			if(form = @galenic_forms.delete(oid.to_i))
+				@galenic_forms.odba_isolated_store
+				form
+			end
 		end
 		def each_galenic_form(&block)
 			@galenic_forms.each_value(&block)
@@ -42,8 +45,9 @@ module ODDB
 			}.first
 		end
 		def remove(a_galenic_form)
-			@galenic_forms.delete(a_galenic_form.oid)
-			@galenic_forms.odba_store
+			if(@galenic_forms.delete(a_galenic_form.oid))
+				@galenic_forms.odba_isolated_store
+			end
 			a_galenic_form
 		end
 		def ==(other)

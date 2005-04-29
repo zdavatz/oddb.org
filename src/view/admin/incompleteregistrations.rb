@@ -93,7 +93,8 @@ class IncompleteRegList < HtmlGrid::Composite
 		link
 	end
 	def patinfo_deprived_sequences(model,session)
-		link = HtmlGrid::Link.new(:patinfo_deprived_sequences,model,session, self)
+		link = HtmlGrid::Link.new(:patinfo_deprived_sequences, 
+			model, session, self)
 		link.href = @lookandfeel.event_url(:patinfo_deprived_sequences)
 		link.set_attribute('class','list')
 	#	count = anazahl sequenzen ohne patinfo

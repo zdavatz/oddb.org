@@ -14,6 +14,7 @@ require 'state/drugs/fachinfo'
 require 'state/drugs/feedbacks'
 require 'state/drugs/notify'
 require 'state/drugs/package'
+require 'state/drugs/register_download'
 require 'state/drugs/init'
 require	'state/drugs/limitationtext'
 require 'state/admin/orphaned_patinfos'
@@ -42,8 +43,8 @@ require 'state/user/genericdefinition'
 require	'state/user/help'
 require 'state/user/mailinglist'
 require 'state/user/passthru'
-require 'state/user/paypal'
-require 'state/user/paypal_ipn'
+require 'state/paypal/return'
+require 'state/paypal/ipn'
 require 'state/user/paypal_thanks'
 require 'state/user/powerlink'
 require 'state/user/plugin'
@@ -78,7 +79,7 @@ module ODDB
 				:mailinglist					=>	State::User::MailingList,
 				:plugin								=>	State::User::Plugin,
 				:passthru							=>	State::User::PassThru,
-				:paypal_ipn						=>	State::User::PayPalIpn,
+				:paypal_ipn						=>	State::PayPal::Ipn,
 				:paypal_thanks				=>	State::User::PayPalThanks,
 				:recent_registrations =>	State::Drugs::RecentRegs,
 				:sequences						=>	State::Drugs::Sequences,
@@ -126,7 +127,12 @@ module ODDB
 				end
 			end
 			def checkout
-				proceed.checkout
+				case @session.zone
+				when :user
+					proceed.checkout
+				when :drugs
+					export_csv.checkout
+				end
 			end
 			def compare
 				if((pointer = @session.user_input(:pointer)) \
@@ -165,14 +171,19 @@ module ODDB
 					&& invoice.payment_received? \
 					&& (item = invoice.item_by_text(file)) \
 					&& !item.expired?)
-					State::User::Download.new(@session, user)
+					State::User::Download.new(@session, item)
 				else
-					State::User::PayPal.new(@session, user)
+					State::PayPal::Return.new(@session, user)
 				end
 			end
 			def hospitallist
 				model = @session.hospitals.values
 				State::Hospitals::HospitalList.new(@session, model)
+			end
+			def export_csv
+				if(@session.zone == :drugs)
+					search.export_csv
+				end
 			end
 			def extend(mod)
 				if(mod.constants.include?('VIRAL'))
@@ -226,11 +237,11 @@ module ODDB
 				+ user_navigation \
 				+ home_navigation
 			end
-			def paypal
+			def paypal_return
 				if(@session.is_crawler?)
 					State::Drugs::Init.new(@session, nil)
 				else
-					State::User::PayPal.new(@session, nil)
+					State::PayPal::Return.new(@session, nil)
 				end
 			end
 			def powerlink
@@ -306,18 +317,7 @@ module ODDB
 					else
 						query = query.to_s.downcase
 						stype = @session.user_input(:search_type) 
-						result = case stype
-						when 'st_sequence'
-							@session.search_exact_sequence(query)
-						when 'st_substance'
-							@session.search_exact_substance(query)
-						when 'st_company'
-							@session.search_exact_company(query)
-						when 'st_indication'
-							@session.search_exact_indication(query)
-						else
-							@session.search_oddb(query)
-						end
+						result = _search_drugs(query, stype)
 						state = State::Drugs::Result.new(@session, result)
 						state.search_query = query
 						state.search_type = stype
@@ -325,6 +325,20 @@ module ODDB
 					end
 				else
 					self
+				end
+			end
+			def _search_drugs(query, stype)
+				result = case stype
+				when 'st_sequence'
+					@session.search_exact_sequence(query)
+				when 'st_substance'
+					@session.search_exact_substance(query)
+				when 'st_company'
+					@session.search_exact_company(query)
+				when 'st_indication'
+					@session.search_exact_indication(query)
+				else
+					@session.search_oddb(query)
 				end
 			end
 			def show
