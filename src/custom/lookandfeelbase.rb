@@ -1272,7 +1272,7 @@ module ODDB
 				:paypal_msg_success_s			=>	'Merci beaucoup! Vous pouvez maintenant télécharger les données par le liens suivant. Ce lien vous a été envoyés à vôtre adresse e-mail.',
 				:paypal_msg_unconfirmed		=>	'Votre payement ne nous a pas encore été confirmé par PayPal. Dès que la confirmation arrive nous vous en avertirons par e-mail.',
 				:paypal_unconfirmed				=>	'Erreur',
-				:paypal_success						=>	'Prêt à télécharger'
+				:paypal_success						=>	'Prêt à télécharger',
 				:phone_label							=>	'T&eacute;l&eacute;phone:',
 				:phone										=>	'T&eacute;l&eacute;phone:',
 				:phytotherapy							=>	'M&eacute;dicament phytoth&eacute;rapeutique',
@@ -1926,7 +1926,7 @@ module ODDB
 				:paypal_msg_success_s			=>	'Thank you! You may now download the data using the following link. This link has also been sent to your email address.',
 				:paypal_msg_unconfirmed		=>	'Your payment has not yet been confirmed by PayPal. As soon as the confirmation reaches us, we will send a notification to your email address.',
 				:paypal_unconfirmed				=>	'Error',
-				:paypal_success						=>	'Ready for download'
+				:paypal_success						=>	'Ready for download',
 				:phone_label							=>	'Phone:',
 				:phone										=>	'Phone:',
 				:phytotherapy							=>	'Phytotherapy',
