@@ -3,6 +3,7 @@
 
 require 'view/publictemplate'
 require 'view/form'
+require 'view/datadeclaration'
 require 'view/user/export'
 require 'view/user/oddbdatdownload'
 require 'view/user/fachinfopdf_download'
@@ -27,9 +28,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[0,4]		=>	:yaml_fachinfo_export_zip,
 		[2,4]		=>	:radio_fachinfo_yaml_zip,
 		[0,5]		=>	:yaml_patinfo_export_gz,
-		[3,5]		=>	:yaml_patinfo_price,
+		[3,5]		=>	:yaml_patinfo_price_gz,
 		[0,6]		=>	:yaml_patinfo_export_zip,
-		[3,6]		=>	:yaml_patinfo_price,
+		[3,6]		=>	:yaml_patinfo_price_zip,
 		[0,8]		=>	:oddbdat_download_tar_gz,
 		[2,8]		=>	:radio_oddbdat_tar_gz,
 		[0,9]		=>	:oddbdat_download_zip,
@@ -38,10 +39,6 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[2,10]	=>	:radio_s31x_gz,
 		[0,11]	=>	:s31x_zip,
 		[2,11]	=>	:radio_s31x_zip,
-	}
-	COLSPAN_MAP = {
-		[3,5]	=>	2,
-		[3,6]	=>	2,
 	}
 	CSS_MAP = {
 		[0,0,6]			=>	'subheading',
@@ -102,16 +99,30 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def yaml_patinfo_export_zip(model, session)
 		checkbox_with_filesize("patinfo.yaml.zip")
 	end
-	def yaml_patinfo_price(model, session)
+	def yaml_patinfo_price_gz(model, session)
 		price = State::User::DownloadExport.price('patinfo.yaml')
-		@lookandfeel.format_price(price.to_i * 100, 'EUR')
+		hidden = HtmlGrid::Input.new('months[patinfo.yaml.gz]', 
+			model, session, self)
+		hidden.set_attribute('type', 'hidden')
+		hidden.value = '1'
+		[@lookandfeel.format_price(price.to_i * 100, 'EUR'), hidden]
+	end
+	def yaml_patinfo_price_zip(model, session)
+		price = State::User::DownloadExport.price('patinfo.yaml')
+		hidden = HtmlGrid::Input.new('months[patinfo.yaml.zip]', 
+			model, session, self)
+		hidden.set_attribute('type', 'hidden')
+		hidden.value = '1'
+		[@lookandfeel.format_price(price.to_i * 100, 'EUR'), hidden]
 	end
 end
 class DownloadExportComposite < Form
 	include HtmlGrid::ErrorMessage
+	include View::DataDeclaration
 	COMPONENTS = {
-		[0,0]		=>	'download_export_title',
-		[0,0,0]	=>	:declaration,
+		[0,0]		=>	'download_export',
+		[0,0,0]	=>	'dash_separator',
+		[0,0,1]	=>	:data_declaration,
 		[0,1]		=>	:download_export_descr,
 		[0,2]		=>	DownloadExportInnerComposite,
 		[0,3]		=>	:submit,
@@ -126,12 +137,6 @@ class DownloadExportComposite < Form
 	SYMBOL_MAP = {
 		:yaml_link => HtmlGrid::Link,
 	}
-	def declaration(model, session)
-		link = HtmlGrid::Link.new(:data_declaration, model, session, self)
-		link.href = 'http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'
-		link.css_class = 'th'
-		link
-	end
 	def download_export_descr(model, session)
 		pages = {
 			'de' => 'Stammdaten', 	

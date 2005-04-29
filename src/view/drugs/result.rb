@@ -22,10 +22,27 @@ class CompanyUser < View::Drugs::User; end
 class ExportCSV < View::Form
 	CSS_CLASS = 'right'
 	COMPONENTS = {
-		[0,0]		=>	:new_feature,
-		[0,0,1]	=>	:submit,
+		[0,0,0]	=>	:new_feature,
+		[0,0,1]	=>	:example,
+		[0,0,2]	=>	:submit,
 	}
 	EVENT = :export_csv
+	def init
+		super
+		data = {
+			:zone					=>	@session.zone,
+			:search_query	=>	@session.persistent_user_input(:search_query),
+			:search_type	=>	@session.persistent_user_input(:search_type),
+		}
+		url = @lookandfeel.event_url(:export_csv, data)
+		self.onsubmit = "location.href='#{url}';return false;"
+	end
+	def example(model, session)
+		link = HtmlGrid::Link.new(:export_csv_example, model, 
+			session, self)
+		link.href = '/resources/downloads/Inderal.Preisvergleich.csv'
+		link
+	end
 	def hidden_fields(context)
 		hidden = super
 		[:search_query, :search_type].each { |key|

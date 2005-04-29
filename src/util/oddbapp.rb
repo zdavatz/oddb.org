@@ -197,12 +197,12 @@ class OddbPrevalence
 	end
 	def count_limitation_texts
 		@registrations.values.inject(0) { |inj,reg|			
-			inj += reg.limitation_text_count
+			inj + reg.limitation_text_count
 		}
 	end
 	def count_packages
 		@registrations.values.inject(0) { |inj, reg|
-			inj += reg.package_count
+			inj + reg.package_count
 		}
 	end
 	def count_patinfos

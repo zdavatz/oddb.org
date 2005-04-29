@@ -2,6 +2,7 @@
 # View::PayPal::Return -- ODDB -- 21.04.2005 -- hwyss@ywesee.com
 
 require 'view/resulttemplate'
+require 'view/datadeclaration'
 
 module ODDB
 	module View
@@ -20,9 +21,9 @@ class ReturnDownloads < HtmlGrid::List
 		if(model.expired?)
 			time = model.expiry_time
 			timestr = (time) \
-				? time.strftime(@lookandfeel.time_format) \
-				: @lookandfeel.lookup(:Return_e_invalid)
-			@lookandfeel.lookup(:Return_e_expired, model.text, timestr)
+				? time.strftime(@lookandfeel.lookup(:time_format_long)) \
+				: @lookandfeel.lookup(:paypal_e_invalid_time)
+			@lookandfeel.lookup(:paypal_e_expired, model.text, timestr)
 		else
 			data = {
 				:email			=>	model.email,
@@ -37,7 +38,12 @@ class ReturnDownloads < HtmlGrid::List
 	end
 end
 class ReturnComposite < HtmlGrid::Composite
-	COMPONENTS = {}
+	include View::DataDeclaration
+	## in this class, COMPONENTS only includes the unchanging components
+	COMPONENTS = {
+		[0,0,0]	=>	'dash_separator',
+		[0,0,1]	=>	:data_declaration,
+	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0]	=>	'th',

@@ -78,7 +78,7 @@ module ODDB
 		end
 		def limitation_text_count
 			@sequences.values.inject(0) { |inj, seq|			
-				inj += seq.limitation_text_count
+				inj + seq.limitation_text_count
 			}
 		end
 		def name_base
@@ -95,7 +95,7 @@ module ODDB
 		end
 		def package_count
 			@sequences.values.inject(0) { |inj, seq|
-				inj += seq.package_count
+				inj + seq.package_count
 			}
 		end
 		def search(query)
