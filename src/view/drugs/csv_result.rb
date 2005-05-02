@@ -15,6 +15,7 @@ class CsvResult < HtmlGrid::Component
 		:galenic_form,
 		:most_precise_dose,
 		:size,
+		:numerical_size,
 		:price_exfactory,
 		:price_public,
 		:company_name,
@@ -33,6 +34,9 @@ class CsvResult < HtmlGrid::Component
 			'Content-Type'				=>	'text/csv',
 			'Content-Disposition'	=>	"attachment;filename=#{file}",
 		}
+	end
+	def numerical_size(pack)
+		pack.comparable_size.qty
 	end
 	def price_exfactory(pack)
 		@lookandfeel.format_price(pack.price_exfactory.to_i)

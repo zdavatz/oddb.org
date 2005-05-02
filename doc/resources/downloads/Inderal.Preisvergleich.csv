@@ -1,19 +1,19 @@
-EAN-Code;Präparat;Galenische Form;Stärke;Packungsgrösse;EFP;PP;Zulassungsinh.;Kat.;SL;Reg.Dat.
+EAN-Code;Präparat;Galenische Form;Stärke;Packungsgrösse;Numerisch;EFP;PP;Zulassungsinh.;Kat.;SL;Reg.Dat.
 C07AA05;Propranolol
-7680317050108;Inderal;Injektionslösung;1 mg;10 x 1 mL Ampulle(n);;30.00;AstraZeneca AG;B;;01.11.1965
-7680317060176;Inderal 10 mg;Tabletten;10 mg;50 Tabletten;2.72;7.30;AstraZeneca AG;B;SL;19.03.1979
-7680317061142;Inderal 10 mg;Tabletten;10 mg;150 Tabletten;7.36;16.85;AstraZeneca AG;B;SL;19.03.1979
-7680317060336;Inderal 40 mg;Tabletten;40 mg;50 Tabletten;7.85;17.45;AstraZeneca AG;B;SL;19.03.1979
-7680317061227;Inderal 40 mg;Tabletten;40 mg;150 Tabletten;20.33;40.30;AstraZeneca AG;B;SL;19.03.1979
-7680418100412;Inderal LA 80;Kapseln;80 mg;50 Kapseln;14.86;29.80;AstraZeneca AG;B;SL;10.06.1985
-7680418100689;Inderal LA 80;Kapseln;80 mg;150 Kapseln;38.32;61.50;AstraZeneca AG;B;SL;10.06.1985
-7680418100177;Inderal retard;Kapseln;160 mg;30 Kapseln;20.99;41.10;AstraZeneca AG;B;SL;10.06.1985
-7680418100252;Inderal retard;Kapseln;160 mg;100 Kapseln;69.92;98.70;AstraZeneca AG;B;SL;10.06.1985
-7680470250285;Propranolol Helvepharm 10 mg;Tabletten;10 mg;60 Tabletten;2.90;7.00;Helvepharm AG;B;SL;10.10.1985
-7680470250360;Propranolol Helvepharm 40 mg;Tabletten;40 mg;60 Tabletten;8.44;18.15;Helvepharm AG;B;SL;10.10.1985
-7680470250872;Propranolol Helvepharm 40 mg;Tabletten;40 mg;180 Tabletten;21.84;42.10;Helvepharm AG;B;SL;10.10.1985
-7680470250445;Propranolol Helvepharm 80 mg;Tabletten;80 mg;60 Tabletten;12.58;27.10;Helvepharm AG;B;SL;10.10.1985
-7680470250957;Propranolol Helvepharm 80 mg;Tabletten;80 mg;180 Tabletten;32.02;54.10;Helvepharm AG;B;SL;10.10.1985
-7680475510131;Propranolol Helvepharm Retard;Retard-Kapseln;160 mg;14 Kapseln;7.40;16.90;Helvepharm AG;B;SL;12.12.1985
-7680475510216;Propranolol Helvepharm Retard;Retard-Kapseln;160 mg;30 Kapseln;14.62;31.55;Helvepharm AG;B;SL;12.12.1985
-7680475510483;Propranolol Helvepharm Retard;Retard-Kapseln;160 mg;100 Kapseln;44.90;69.25;Helvepharm AG;B;SL;12.12.1985
+7680317050108;Inderal;Injektionslösung;1 mg;10 x 1 mL Ampulle(n);10;;30.00;AstraZeneca AG;B;;01.11.1965
+7680317060176;Inderal 10 mg;Tabletten;10 mg;50 Tabletten;50;2.72;7.30;AstraZeneca AG;B;SL;19.03.1979
+7680317061142;Inderal 10 mg;Tabletten;10 mg;150 Tabletten;150;7.36;16.85;AstraZeneca AG;B;SL;19.03.1979
+7680317060336;Inderal 40 mg;Tabletten;40 mg;50 Tabletten;50;7.85;17.45;AstraZeneca AG;B;SL;19.03.1979
+7680317061227;Inderal 40 mg;Tabletten;40 mg;150 Tabletten;150;20.33;40.30;AstraZeneca AG;B;SL;19.03.1979
+7680418100412;Inderal LA 80;Kapseln;80 mg;50 Kapseln;50;14.86;29.80;AstraZeneca AG;B;SL;10.06.1985
+7680418100689;Inderal LA 80;Kapseln;80 mg;150 Kapseln;150;38.32;61.50;AstraZeneca AG;B;SL;10.06.1985
+7680418100177;Inderal retard;Kapseln;160 mg;30 Kapseln;30;20.99;41.10;AstraZeneca AG;B;SL;10.06.1985
+7680418100252;Inderal retard;Kapseln;160 mg;100 Kapseln;100;69.92;98.70;AstraZeneca AG;B;SL;10.06.1985
+7680470250285;Propranolol Helvepharm 10 mg;Tabletten;10 mg;60 Tabletten;60;2.90;7.00;Helvepharm AG;B;SL;10.10.1985
+7680470250360;Propranolol Helvepharm 40 mg;Tabletten;40 mg;60 Tabletten;60;8.44;18.15;Helvepharm AG;B;SL;10.10.1985
+7680470250872;Propranolol Helvepharm 40 mg;Tabletten;40 mg;180 Tabletten;180;21.84;42.10;Helvepharm AG;B;SL;10.10.1985
+7680470250445;Propranolol Helvepharm 80 mg;Tabletten;80 mg;60 Tabletten;60;12.58;27.10;Helvepharm AG;B;SL;10.10.1985
+7680470250957;Propranolol Helvepharm 80 mg;Tabletten;80 mg;180 Tabletten;180;32.02;54.10;Helvepharm AG;B;SL;10.10.1985
+7680475510131;Propranolol Helvepharm Retard;Retard-Kapseln;160 mg;14 Kapseln;14;7.40;16.90;Helvepharm AG;B;SL;12.12.1985
+7680475510216;Propranolol Helvepharm Retard;Retard-Kapseln;160 mg;30 Kapseln;30;14.62;31.55;Helvepharm AG;B;SL;12.12.1985
+7680475510483;Propranolol Helvepharm Retard;Retard-Kapseln;160 mg;100 Kapseln;100;44.90;69.25;Helvepharm AG;B;SL;12.12.1985
