@@ -13,9 +13,7 @@ class PatinfoStatsCommon < State::Admin::Global
 	DIRECT_EVENT = :patinfo_stats	
 	class InvoiceItemFacade
 		attr_accessor :user, :sequence, :time
-		def initialize(invoice_item, app)
-			@user = app.resolve(invoice_item.user_pointer)
-			@sequence = app.resolve(invoice_item.item_pointer)
+		def initialize(invoice_item)
 			@time = invoice_item.time
 		end
 	end
@@ -84,12 +82,16 @@ class PatinfoStatsCommon < State::Admin::Global
 		model = {}
 		patinfo_slate = @session.slate(:patinfo)
 		patinfo_slate.items.each_value { |item|
-			item_facade = InvoiceItemFacade.new(item, @session.app)
-			company = item_facade.sequence.company
-			company_facade = model.fetch(company.name) {
-				model.store(company.name, CompanyFacade.new(company))
-			}
-			company_facade.add_sequence(item_facade)
+			if(sequence = @session.app.resolve(item.item_pointer))
+				item_facade = InvoiceItemFacade.new(item)
+				item_facade.sequence = sequence
+				item_facade.user = @session.app.resolve(item.user_pointer)
+				company = sequence.company
+				company_facade = model.fetch(company.name) {
+					model.store(company.name, CompanyFacade.new(company))
+				}
+				company_facade.add_sequence(item_facade)
+			end
 		}
 		@model = model.values
 	end
