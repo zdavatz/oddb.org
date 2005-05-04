@@ -48,6 +48,9 @@ module ODDB
 				def warning?
 					false
 				end
+				def zone
+					'twilight'
+				end
 			end
 			class StubModel
 				def description(language)

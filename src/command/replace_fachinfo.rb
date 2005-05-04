@@ -12,7 +12,7 @@ module ODDB
 				&& (fachinfo = @pointer.resolve(app)))
 				old_fi = registration.fachinfo
 				registration.fachinfo = fachinfo
-				registration.odba_store
+				registration.odba_isolated_store
 				if(old_fi && old_fi.empty?)
 					app.delete(old_fi.pointer)
 				end

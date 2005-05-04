@@ -11,7 +11,10 @@ module ODDB
 			private
 			def hidden_fields(context)
 				hidden = super
-				hidden << context.hidden('pointer', @model.pointer.to_s) if @model.respond_to?(:pointer)
+				if(@model.respond_to?(:pointer))
+					hidden << context.hidden('pointer', @model.pointer.to_s)
+				end
+				hidden << context.hidden('zone', @session.zone)
 				hidden
 			end
 		end

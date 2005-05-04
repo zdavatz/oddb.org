@@ -34,7 +34,6 @@ class OrphanedPatinfoListInnerComposite < HtmlGrid::Composite
 		link = HtmlGrid::Link.new(:choice, model, session, self)
 		hash = { 
 			:meaning_index	=> @container.list_index , 
-			:state_id				=> @session.state.id,
 		}
 		link.href = @lookandfeel.event_url(:choice, hash)
 		link

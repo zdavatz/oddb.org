@@ -18,7 +18,7 @@ class OddbDatDownloadInnerComposite < HtmlGrid::Composite
 		[0,3]		=>	:s31x_zip,
 	}
 	CSS_MAP = {
-		[0,1,1,3]	=>	'list',
+		[0,0,1,4]	=>	'list',
 	}
 	EXPORT_FILE = 'oddbdat'
 	def oddbdat_download_tar_gz(model, session)

@@ -182,9 +182,13 @@ Grammar OddbSize
 				new_obj = hook.send(*(command.compact))
 				new_obj.pointer = self
 				new_obj.init(app)
-				#Only the hook must be stored
-				#because wie scan its connections for unsaved objects
-				#see ODBA::Persistable
+				# Only the hook must be stored in issue_create
+				# because wie scan its connections for unsaved objects
+				# see ODBA::Persistable
+				# In the case where the newly created object were saved
+				# *before* the hook, any intermediate collections might not 
+				# be properly stored, resulting in the newly created object
+				# being inaccessible after a restart
 				hook.odba_store
 				new_obj
 			end
@@ -193,17 +197,18 @@ Grammar OddbSize
 					if obj.respond_to?(:checkout)
 						obj.checkout
 					end
-					if(obj.respond_to?(:odba_delete))
-						obj.odba_delete
-					end
 					pointer = dup
 					command = pointer.directions.pop
 					command[0] = 'delete_' << command.first.to_s
 					hook = pointer.resolve(app)
 					if(hook.respond_to?(command.first))
 						hook.send(*(command.compact))
-						### do we really need this? should be done by ODBA ###
-						#hook.odba_isolated_store
+						### ODBA needs the delete_<command> method to call
+						### odba_store or odba_isolated_store on whoever was the
+						### last connection to this item.
+					end
+					if(obj.respond_to?(:odba_delete))
+						obj.odba_delete
 					end
 			rescue InvalidPathError, UninitializedPathError => e
 				puts "Could not delete: #{to_s}, reason: #{e.message}"
@@ -237,13 +242,13 @@ Grammar OddbSize
 						lasthook = hook
 						laststep = step
 						hook = begin
-							arity = hook.method(step.first).arity
-							if(((arity >= 0) && (step.size == arity.next)) \
-								|| ((arity < 0) && (step.size >= -arity)))
+						#arity = hook.method(step.first).arity
+						#if(((arity >= 0) && (step.size == arity.next)) \
+						#		|| ((arity < 0) && (step.size >= -arity)))
 								hook.send(*step)
-							end
+						#end
 						rescue
-							#puts "#{step.join(',')}: Arity did not match!!!!!!!"
+							puts "#{hook.class}::#{step.join(',')}: Arity did not match!!!!!!!"
 						end
 					else
 						call = step.shift

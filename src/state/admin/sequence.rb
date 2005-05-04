@@ -45,7 +45,7 @@ class Sequence < State::Admin::Global
 				smtp.sendmail(mail.encoded, SMTP_FROM, [addr] + RECIPIENTS)
 			}
 			@model.atc_request_time = Time.now
-			@model.odba_store
+			@model.odba_isolated_store
 		end
 		self
 	end
@@ -140,9 +140,9 @@ class Sequence < State::Admin::Global
 				store_file.write(pi_file.read)
 				store_file.close
 				@model.pdf_patinfo = filename
-				invoice_pointer = Persistence::Pointer.new([:invoice, :patinfo])
-				@session.app.create(invoice_pointer)
-				item_pointer = invoice_pointer + :item
+				slate_pointer = Persistence::Pointer.new([:slate, :patinfo])
+				@session.app.create(slate_pointer)
+				item_pointer = slate_pointer + :item
 				values = {
 					:user_pointer	=>	@session.user.pointer,
 					:name					=>	@model.name,

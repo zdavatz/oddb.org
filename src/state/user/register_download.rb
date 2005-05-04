@@ -1,61 +1,21 @@
 #!/usr/bin/env ruby
 # State::User::RegisterDownload -- oddb -- 22.12.2004 -- hwyss@ywesee.com
 
-require 'state/user/global'
-require 'admin/download_user'
+require 'state/global_predefine'
+require 'state/paypal/checkout'
 require 'view/user/register_download'
 
 module ODDB
 	module State
 		module User
-class RegisterDownload < State::User::Global
-	RECIPIENTS = [
-		'hwyss@ywesee.com',
-	]
+class RegisterDownload < Global
+	include State::PayPal::Checkout
 	VIEW = View::User::RegisterDownload
-	def ask_for_authentication(recipient, challenge)
-		lookandfeel = @session.lookandfeel
-		outgoing = TMail::Mail.new
-		outgoing.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
-		outgoing.to = [recipient]
-		outgoing.from = MAIL_FROM
-		outgoing.subject = lookandfeel.lookup(:auth_mail_subject)
-		data = {
-			:email			=>	recipient,
-			:challenge	=>	challenge.key,
-			:filename		=>	@session.user_input(:filename),
-		}
-		url = lookandfeel._event_url(:authenticate, data)
-		time = challenge.valid_until
-		expires = time.strftime(lookandfeel.lookup(:time_format_long))
-		outgoing.body = lookandfeel.lookup(:auth_mail_body, recipient, url, 
-			expires)
-		outgoing.date = Time.now
-		outgoing['User-Agent'] = 'ODDB Download'
-		recipients = [recipient] + RECIPIENTS
-		Net::SMTP.start(SMTP_SERVER) { |smtp|
-			smtp.sendmail(outgoing.encoded, SMTP_FROM, recipients)
-		}
+	def checkout_keys
+		checkout_mandatory() + [:business_area, :company_name]
 	end
-	def download
-		email = @session.user_input(:email)
-		if(email.nil? || email.is_a?(SBSM::InvalidDataError))
-			error = create_error(:e_missing_email, :email, email)
-			@errors.store(:email, error)
-			self
-		else
-			@session.set_cookie_input(:email, email)
-			pointer = Persistence::Pointer.new([:admin_subsystem], 
-				[:download_user, email])
-			user = pointer.creator.resolve(@session.app)
-			if(user.authenticated?)
-				State::User::Download.new(@session, nil)
-			else
-				challenge = user.create_challenge
-				ask_for_authentication(email, challenge)
-				State::User::AuthInfo.new(@session, user)
-			end
-		end
+	def checkout_mandatory
+		super + [ :address, :plz, :location, :phone ]
 	end
 end
 		end

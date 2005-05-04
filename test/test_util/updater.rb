@@ -69,12 +69,6 @@ module ODDB
 			@updater = ODDB::Updater.new(@app)
 			@group = @app.log_group = StubLogGroup.new
 		end
-		def test_update_swissmedicjournal_break_on_failure
-			@group.newest_date = nil
-			@updater.update_swissmedicjournal	
-			expected = Date.new(2002,11)
-			assert_equal(expected, @app.values[:report])
-		end
 		def test_update_bsv_no_repeats
 			today = Date.today()
 			this_month = Date.new(today.year, today.month)

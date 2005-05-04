@@ -62,7 +62,10 @@ module ODDB
 			end
 		end
 		def delete_cyp450substrate(cyp_id)
-			@substrate_connections.delete(cyp_id)
+			if(cyp = @substrate_connections.delete(cyp_id))
+				@substrate_connections.odba_isolated_store
+				cyp
+			end
 		end
 		def format_connection_key(key)
 			Substance.format_connection_key(key)

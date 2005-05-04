@@ -16,7 +16,7 @@ module ODDB
 		end
 		def delete_limitation_text
 			@limitation_text = nil
-			self.odba_store
+			self.odba_isolated_store
 			nil
 		end
 		def pointer_descr

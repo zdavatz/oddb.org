@@ -14,6 +14,7 @@ require 'state/drugs/fachinfo'
 require 'state/drugs/feedbacks'
 require 'state/drugs/notify'
 require 'state/drugs/package'
+require 'state/drugs/register_download'
 require 'state/drugs/init'
 require	'state/drugs/limitationtext'
 require 'state/admin/orphaned_patinfos'
@@ -42,6 +43,8 @@ require 'state/user/genericdefinition'
 require	'state/user/help'
 require 'state/user/mailinglist'
 require 'state/user/passthru'
+require 'state/paypal/return'
+require 'state/paypal/ipn'
 require 'state/user/paypal_thanks'
 require 'state/user/powerlink'
 require 'state/user/plugin'
@@ -76,6 +79,7 @@ module ODDB
 				:mailinglist					=>	State::User::MailingList,
 				:plugin								=>	State::User::Plugin,
 				:passthru							=>	State::User::PassThru,
+				:paypal_ipn						=>	State::PayPal::Ipn,
 				:paypal_thanks				=>	State::User::PayPalThanks,
 				:recent_registrations =>	State::Drugs::RecentRegs,
 				:sequences						=>	State::Drugs::Sequences,
@@ -122,6 +126,14 @@ module ODDB
 					State::User::RegisterDownload.new(@session, user)
 				end
 			end
+			def checkout
+				case @session.zone
+				when :user
+					proceed.checkout
+				when :drugs
+					export_csv.checkout
+				end
+			end
 			def compare
 				if((pointer = @session.user_input(:pointer)) \
 					&& pointer.is_a?(Persistence::Pointer))
@@ -147,20 +159,31 @@ module ODDB
 				State::Doctors::DoctorList.new(@session, model)
 			end
 			def download
-				input = @session.user_input(:email)
-				email = @session.get_cookie_input(:email) || input
-				user = @session.admin_subsystem.download_user(email)
-				if(user && user.authenticated?)
-					State::User::Download.new(@session, user)
+				if(@session.is_crawler?)
+					return State::Drugs::Init.new(@session, nil)
+				end
+				email = @session.user_input(:email)
+				email ||= @session.get_cookie_input(:email)
+				oid = @session.user_input(:invoice)
+				file = @session.user_input(:filename)
+				if((user = @session.admin_subsystem.download_user(email)) \
+					&& (invoice = user.invoice(oid)) \
+					&& invoice.payment_received? \
+					&& (item = invoice.item_by_text(file)) \
+					&& !item.expired?)
+					State::User::Download.new(@session, item)
 				else
-					state = State::User::RegisterDownload.new(@session, nil)
-					# in case we were kicked out of a session, try state.download
-					(input.nil?) ? state : state.download
+					State::PayPal::Return.new(@session, user)
 				end
 			end
 			def hospitallist
 				model = @session.hospitals.values
 				State::Hospitals::HospitalList.new(@session, model)
+			end
+			def export_csv
+				if(@session.zone == :drugs)
+					search.export_csv
+				end
 			end
 			def extend(mod)
 				if(mod.constants.include?('VIRAL'))
@@ -214,6 +237,13 @@ module ODDB
 				+ user_navigation \
 				+ home_navigation
 			end
+			def paypal_return
+				if(@session.is_crawler?)
+					State::Drugs::Init.new(@session, nil)
+				else
+					State::PayPal::Return.new(@session, nil)
+				end
+			end
 			def powerlink
 				pointer = @session.user_input(:pointer)
 				unless(error?)
@@ -233,6 +263,10 @@ module ODDB
 				rescue Persistence::UninitializedPathError
 					self
 				end
+			end
+			def proceed
+				state = State::User::DownloadExport.new(@session, nil)
+				state.proceed
 			end
 			def resolve
 				if((pointer = @session.user_input(:pointer)) \
@@ -283,18 +317,7 @@ module ODDB
 					else
 						query = query.to_s.downcase
 						stype = @session.user_input(:search_type) 
-						result = case stype
-						when 'st_sequence'
-							@session.search_exact_sequence(query)
-						when 'st_substance'
-							@session.search_exact_substance(query)
-						when 'st_company'
-							@session.search_exact_company(query)
-						when 'st_indication'
-							@session.search_exact_indication(query)
-						else
-							@session.search_oddb(query)
-						end
+						result = _search_drugs(query, stype)
 						state = State::Drugs::Result.new(@session, result)
 						state.search_query = query
 						state.search_type = stype
@@ -302,6 +325,20 @@ module ODDB
 					end
 				else
 					self
+				end
+			end
+			def _search_drugs(query, stype)
+				result = case stype
+				when 'st_sequence'
+					@session.search_exact_sequence(query)
+				when 'st_substance'
+					@session.search_exact_substance(query)
+				when 'st_company'
+					@session.search_exact_company(query)
+				when 'st_indication'
+					@session.search_exact_indication(query)
+				else
+					@session.search_oddb(query)
 				end
 			end
 			def show

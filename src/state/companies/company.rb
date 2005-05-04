@@ -49,6 +49,7 @@ class UserCompany < State::Companies::Company
 			:name,
 			:phone,
 			:plz,
+			:regulatory_email,
 			:url,
 		]
 		do_update(keys)

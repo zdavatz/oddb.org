@@ -2,8 +2,10 @@
 # State::Drugs::Result -- oddb -- 03.03.2003 -- hwyss@ywesee.com 
 
 require 'state/drugs/global'
+require 'state/drugs/register_download'
 require 'view/drugs/result'
 require 'model/registration'
+require 'model/invoice'
 require 'state/page_facade'
 require 'state/admin/registration'
 
@@ -42,6 +44,9 @@ class Result < State::Drugs::Global
 				page()
 			}
 		end
+	end
+	def export_csv
+		RegisterDownload.new(@session, @model)
 	end
 	def page
 		if(pge = @session.user_input(:page))

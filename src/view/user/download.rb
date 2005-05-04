@@ -20,7 +20,7 @@ class Download < HtmlGrid::PassThru
 		line = [
 			nil,
 			@session.remote_addr,
-			@session.get_cookie_input(:email),
+			@session.user_input(:email),
 			@path,
 		].join(';')
 		LogFile.append(:download, line, Time.now)

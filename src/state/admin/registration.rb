@@ -91,12 +91,14 @@ class Registration < State::Admin::Global
 					fh.write(fi_file.read)
 				}
 				fi_file.rewind
+=begin
 				if(pdf_fachinfos = @model.pdf_fachinfos)
 					pdf_fachinfos.store(language, filename)
 				else
 					pdf_fachinfos = {language => filename}
 				end
 				#hash.store(:pdf_fachinfos, pdf_fachinfos)
+=end
 				new_state = State::Admin::WaitForFachinfo.new(@session, @model)
 				new_state.previous = self
 				@session.app.async {

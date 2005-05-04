@@ -10,6 +10,8 @@ module ODDB
 			include Persistence
 			ODBA_SERIALIZABLE = ['@challenges']
 			attr_reader :email
+			attr_accessor :salutation, :name, :name_first, :company_name,
+				:address, :plz, :location, :phone, :business_area
 			class Challenge
 				AGE_LIMIT = 72*60*60 # 72h
 				attr_reader :key
@@ -38,11 +40,19 @@ module ODDB
 			def initialize(email)
 				@email = email
 				@challenges = []
+				@invoices = []
+			end
+			def add_invoice(invoice)
+				@invoices.push(invoice)
+				@invoices.odba_isolated_store
+				invoice.user_pointer = @pointer
+				invoice.odba_isolated_store
+				invoice
 			end
 			def authenticate!(key)
 				if(challenge = self.challenge(key))
 					challenge.authenticate!
-					odba_store
+					odba_isolated_store
 				end
 				authenticated?
 			end
@@ -57,8 +67,21 @@ module ODDB
 			def create_challenge
 				challenge = Challenge.new
 				@challenges.push(challenge)
-				@challenges.odba_store
+				odba_isolated_store
 				challenge
+			end
+			def invoice(oid)
+				oid = oid.to_i
+				@invoices.each { |invoice|
+					return invoice if(invoice.oid == oid)
+				}
+				nil
+			end
+			def remove_invoice(invoice)
+				if(@invoices.delete(invoice))
+					@invoices.odba_isolated_store
+					invoice
+				end
 			end
 		end
 	end

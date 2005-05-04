@@ -29,7 +29,7 @@ class IncompleteReg < State::Admin::Registration
 				log.change_flags[reg.pointer] ||= []
 				log.change_flags[reg.pointer] += change_flags
 				log.change_flags[reg.pointer].uniq!
-				log.odba_store
+				log.odba_isolated_store
 				State::Admin::Registration.new(@session, reg)
 			end
 		end

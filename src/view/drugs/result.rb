@@ -19,16 +19,56 @@ class User < SBSM::KnownUser; end
 class UnknownUser < SBSM::UnknownUser; end
 class AdminUser < View::Drugs::User; end
 class CompanyUser < View::Drugs::User; end
-class ResultForm < View::Form
+class ExportCSV < View::Form
+	CSS_CLASS = 'right'
+	COMPONENTS = {
+		[0,0,0]	=>	:new_feature,
+		[0,0,1]	=>	:example,
+		[0,0,2]	=>	:submit,
+	}
+	EVENT = :export_csv
+	def init
+		super
+		data = {
+			:zone					=>	@session.zone,
+			:search_query	=>	@session.persistent_user_input(:search_query),
+			:search_type	=>	@session.persistent_user_input(:search_type),
+		}
+		url = @lookandfeel.event_url(:export_csv, data)
+		self.onsubmit = "location.href='#{url}';return false;"
+	end
+	def example(model, session)
+		link = HtmlGrid::Link.new(:export_csv_example, model, 
+			session, self)
+		link.href = '/resources/downloads/Inderal.Preisvergleich.csv'
+		link
+	end
+	def hidden_fields(context)
+		hidden = super
+		[:search_query, :search_type].each { |key|
+			hidden << context.hidden(key.to_s, 
+				@session.persistent_user_input(key))
+		}	
+		hidden
+	end
+	def new_feature(model, session)
+		span = HtmlGrid::Span.new(model, session, self)
+		span.value = @lookandfeel.lookup(:new_feature)
+		span.set_attribute('style','color: red; margin: 5px; font-size: 8pt;')
+		#span.set_attribute('style','color: red; margin: 5px; font-size: 11pt;')
+		span
+	end
+end
+class ResultForm < HtmlGrid::Composite
 	COLSPAN_MAP	= {
 		[0,2]	=> 2,
 		[0,3]	=> 2,
 	}
 	COMPONENTS = {
 		[0,0]		=>	:title_found,
+		[1,0]		=>	View::Drugs::ExportCSV,
 		[0,1]		=>	'price_compare',
-		[1,1]		=>	:search_query,
-		[1,1,1]	=>	:submit,
+		[1,1]		=>	SearchForm,
 		[0,2]		=>	View::Drugs::ResultList,
 		[0,3]		=>	View::ResultFoot,
 	}
@@ -37,13 +77,10 @@ class ResultForm < View::Form
 	FORM_METHOD = 'GET'
 	ROOT_LISTCLASS = View::Drugs::RootResultList
 	SYMBOL_MAP = {
-		:search_query		=>	View::SearchBar,	
 	}
 	CSS_MAP = {
 		[0,0] =>	'result-found',
 		[0,1] =>	'result-price-compare',
-		[1,1]	=>	'search',	
-		[1,0]	=>	'button-right',	
 	}
 	COMPONENT_CSS_MAP = {
 		[0,3]	=>	'result-foot',

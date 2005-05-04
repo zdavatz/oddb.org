@@ -47,29 +47,29 @@ class PatinfoStatsCommon < State::Admin::Global
 	class CompanyFacade
 		def initialize(company)
 			@company = company
-			@invoice_sequences= {}
+			@slate_sequences= {}
 		end
 		def add_sequence(item_facade)
 			sequence = item_facade.sequence
-			sequence_facade = @invoice_sequences.fetch(sequence) {
-				@invoice_sequences.store(sequence, 
+			sequence_facade = @slate_sequences.fetch(sequence) {
+				@slate_sequences.store(sequence, 
 					SequenceFacade.new(sequence))
 			}
 			sequence_facade.add_invoice_item(item_facade)
 		end
-		def invoice_sequences
-			@invoice_sequences.values.sort_by { |seq|
+		def slate_sequences
+			@slate_sequences.values.sort_by { |seq|
 				seq.newest_date
 			}.reverse
 		end
-		def invoice_count
-			@invoice_sequences.size
+		def slate_count
+			@slate_sequences.size
 		end
 		def name
 			@company.name
 		end
 		def newest_date
-			@invoice_sequences.values.collect { |seq| 
+			@slate_sequences.values.collect { |seq| 
 				seq.newest_date 
 			}.max
 		end
@@ -82,9 +82,9 @@ class PatinfoStatsCommon < State::Admin::Global
 	end
 	def init
 		model = {}
-		patinfo_invoice = @session.invoice(:patinfo)
-		patinfo_invoice.items.each_value { |invoice|
-			item_facade = InvoiceItemFacade.new(invoice, @session.app)
+		patinfo_slate = @session.slate(:patinfo)
+		patinfo_slate.items.each_value { |item|
+			item_facade = InvoiceItemFacade.new(item, @session.app)
 			company = item_facade.sequence.company
 			company_facade = model.fetch(company.name) {
 				model.store(company.name, CompanyFacade.new(company))
@@ -97,8 +97,9 @@ end
 class PatinfoStatsCompanyUser < State::Admin::PatinfoStatsCommon
 	def init
 		super
+		name = @session.user.model.name
 		@model.delete_if { |comp|
-			comp.user != @session.user
+			comp.name != name
 		}
 	end
 end

@@ -35,7 +35,6 @@ module ODDB
 					:ean				=> current,
 				}
 				begin
-				puts "current EAN: #{current}"
 					@meddata_server.search(criteria) { |result|
 						values = hospital_details(result)
 						update_hospital(values)
@@ -59,8 +58,7 @@ module ODDB
 				:canton					=>	[3,5],
 				:narcotics			=>	[1,10],
 			}
-			data = @meddata_server.detail(result.session, result.ctl, template)
-			#hash
+			@meddata_server.detail(result.session, result.ctl, template)
 		end
 		def update_hospital(values)
 			ean13 = values.delete(:ean13)

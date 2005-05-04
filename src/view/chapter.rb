@@ -29,7 +29,7 @@ module ODDB
 						}
 					end
 				}
-				context.span { res }
+				context.span({ 'class' => 'paragraph' }) { res }
 			end
 			def to_html(context)
 				html = ''
@@ -39,8 +39,9 @@ module ODDB
 				html << sections(context, @value.sections)
 			end
 			def sections(context, sections)
+				attr = { 'class' => 'section' }
 				sections.collect { |section|
-					context.div { 
+					context.div(attr) { 
 						head = self.escape(section.subheading)
 						if(/\n\s*$/.match(section.subheading))	
 							head << context.br
@@ -52,9 +53,10 @@ module ODDB
 				}.join("\n")
 			end
 			def paragraphs(context, paragraphs)
+				attr = { 'class' => 'paragraph' }
 				paragraphs.collect { |paragraph|
 					if(paragraph.is_a? Text::ImageLink)
-						context.p { context.img(paragraph.attributes) }
+						context.p(attr) { context.img(paragraph.attributes) }
 					elsif(paragraph.preformatted?)
 						context.pre	{ self.escape(paragraph) }
 					else

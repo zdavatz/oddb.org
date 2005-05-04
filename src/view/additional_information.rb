@@ -114,7 +114,7 @@ module ODDB
 					puts "pointer: #{@model.pointer}"
 				end
 			end
-			def atc_description(atc, session)
+			def atc_description(atc, session=nil)
 				atc_descr = if(descr = atc.description(@lookandfeel.language))
 					descr.dup.to_s << ' (' << atc.code << ')' 
 				else
