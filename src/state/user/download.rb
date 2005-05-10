@@ -13,9 +13,12 @@ class Download < State::User::Global
 	VOLATILE = true
 	VIEW = View::User::Download
 	def init
-		query = @model.data[:search_query]
-		stype = @model.data[:search_type]
 		# if the file is a bespoke export, query and stype should be set
+		query = stype = nil
+		if(@model.respond_to?(:data) && @model.data.is_a?(Hash))
+			query = @model.data[:search_query]
+			stype = @model.data[:search_type]
+		end
 		if(query && stype)
 			@model = _search_drugs(query, stype)
 			@model.session = @session
