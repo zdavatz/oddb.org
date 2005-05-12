@@ -23,12 +23,12 @@ module ODDB
 			:expirydate				=>	9,
 			:sl_entry					=>	10,
 			:price						=>	11, #legacy
-			:price_cut				=>	11, #legacy
 			:price_exfactory	=>	11, #legacy
 			:price_public			=>	11, #legacy
 			:comment					=>	12,
 			:price_rise				=>	13,
 			:delete						=>	14,
+			:price_cut				=>	15,
 		}
 		def initialize(app)
 			super
