@@ -16,6 +16,7 @@ module ODDB
 		def run
 			mail_download_stats
 			mail_feedback_stats
+			mail_notification_stats
 			export_yaml
 			export_oddbdat
 			EXPORT_SERVER.clear
@@ -60,6 +61,12 @@ module ODDB
 			run_on_weekday(0) { 
 				mail_stats('feedback')
 			}
+		end
+		def mail_notification_stats
+			run_on_weekday(0) {
+				file = @app.notification_logger.create_csv(@app)
+				Log.new(Date.today).notify_attachment(file, 'CSV-Export der Notifications', 'text', 'csv')
+				}
 		end
 		def mail_stats(key)
 			date = Date.today

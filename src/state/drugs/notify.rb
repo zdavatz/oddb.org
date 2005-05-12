@@ -5,6 +5,8 @@ require 'state/drugs/global'
 require 'view/drugs/notify'
 require 'state/drugs/notify_confirm'
 require 'util/logfile'
+require 'util/oddbapp'
+require 'date'
 
 module ODDB
 	module State
@@ -56,6 +58,9 @@ class Notify < State::Drugs::Global
 		Net::SMTP.start(SMTP_SERVER) { |smtp|
 			smtp.sendmail(mail.encoded, SMTP_FROM, @model.notify_recipient) 
 		}
+		logger = @session.notification_logger
+		logger.log(@model.package.ikskey, Time.now)
+		logger.odba_store
 		NotifyConfirm.new(@session, @model)
 	end
 	def preview

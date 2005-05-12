@@ -12,6 +12,7 @@ require 'util/exporter'
 require 'util/validator'
 require 'util/loggroup'
 require 'util/soundex'
+require 'util/notification_logger'
 require 'admin/subsystem'
 require 'models'
 require 'commands'
@@ -35,7 +36,7 @@ class OddbPrevalence
 	attr_reader :orphaned_patinfos, :orphaned_fachinfos
 	attr_reader :fachinfos
 	attr_reader :patinfos_deprived_sequences, :patinfos
-	attr_reader :invoices
+	attr_reader :invoices, :notification_logger
 	def initialize		
 		super
 		@atc_classes ||= {}
@@ -75,6 +76,7 @@ class OddbPrevalence
 		@indications ||= {}
 		@last_medication_update ||= Time.now()
 		@log_groups ||= {}
+		@notification_logger ||= ODDB::NotificationLogger.new
 		@patinfos ||= {}
 		@registrations ||= {}
 		@substances ||= {}
@@ -862,6 +864,7 @@ module ODDB
 			}
 			puts "init system"
 			@system.init
+			@system.odba_store
 			puts "setup drb-delegation"
 			super(@system)
 			puts "reset"
