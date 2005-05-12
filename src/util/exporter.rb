@@ -65,8 +65,13 @@ module ODDB
 		def mail_notification_stats
 			run_on_weekday(0) {
 				file = @app.notification_logger.create_csv(@app)
-				Log.new(Date.today).notify_attachment(file, 'CSV-Export der Notifications', 'text', 'csv')
+				headers = {
+					:filename => 'notifications.csv',
+					:mime_type => 'text/csv',
+					:subject => 'CSV-Export der Notifications', 
 				}
+				Log.new(Date.today).notify_attachment(file, headers)
+			}
 		end
 		def mail_stats(key)
 			date = Date.today

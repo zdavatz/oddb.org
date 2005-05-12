@@ -62,10 +62,12 @@ module ODDB
 
 			send_mail(multipart)
 		end
-		def notify_attachment(attachment, subject, type1, type2)
+		def notify_attachment(attachment, headers)
 			multipart = TMail::Mail.new
+			subject = headers[:subject]
 			multipart.parts << text_part(subject)
-			multipart.parts << file_part(type1, type2, 'notifications.csv', attachment)
+			type1, type2 = (headers[:mime_type] || 'text/plain').split('/')
+			multipart.parts << file_part(type1, type2, headers[:filename], attachment)
 			multipart.from = self::class::MAIL_FROM
 			@recipients = (@recipients + self::class::MAIL_TO).uniq
 			multipart.to = @recipients
