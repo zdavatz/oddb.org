@@ -31,8 +31,8 @@ module ODDB
 		class Readme; end
 class OddbDatExport < ODDB::Plugin
 	EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
-	DOCUMENT_ROOT = File.expand_path('../../doc/', File.dirname(__FILE__))
-	EXPORT_DIR = File.expand_path('resources/downloads', DOCUMENT_ROOT)
+	EXPORT_DIR = File.expand_path('../../data/downloads', 
+		File.dirname(__FILE__))
 	def initialize(app)
 		@date = Date.today 
 		super

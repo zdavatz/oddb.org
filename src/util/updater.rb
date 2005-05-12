@@ -78,7 +78,7 @@ module ODDB
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
 			logs = @app.create(logs_pointer)
 			if(latest = logs.newest_date)
-				klass = BsvPlugin
+				klass = BsvPlugin2
 				plug = klass.new(@app)
 				subj = 'SL-Update Reconsidered'
 				wrap_update(klass, subj) { 
