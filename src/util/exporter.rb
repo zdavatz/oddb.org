@@ -14,9 +14,11 @@ module ODDB
 			@app = app
 		end
 		def run
-			mail_download_stats
-			mail_feedback_stats
-			mail_notification_stats
+			run_on_weekday(0) { 
+				mail_download_stats
+				mail_feedback_stats
+				mail_notification_stats
+			}
 			export_yaml
 			export_oddbdat
 			EXPORT_SERVER.clear
@@ -53,25 +55,22 @@ module ODDB
 			FiPDFExporter.new(@app).run
 		end
 		def mail_download_stats
-			run_on_weekday(0) { 
-				mail_stats('download')
-			}
+			mail_stats('download')
 		end
 		def mail_feedback_stats
-			run_on_weekday(0) { 
-				mail_stats('feedback')
-			}
+			mail_stats('feedback')
 		end
 		def mail_notification_stats
-			run_on_weekday(0) {
-				file = @app.notification_logger.create_csv(@app)
-				headers = {
-					:filename => 'notifications.csv',
-					:mime_type => 'text/csv',
-					:subject => 'CSV-Export der Notifications', 
-				}
-				Log.new(Date.today).notify_attachment(file, headers)
+			file = @app.notification_logger.create_csv(@app)
+			headers = {
+				:filename => 'notifications.csv',
+				:mime_type => 'text/csv',
+				:subject => 'CSV-Export der Notifications', 
 			}
+			Log.new(Date.today).notify_attachment(file, headers)
+		rescue Exception => err
+			puts err
+			puts err.backtrace
 		end
 		def mail_stats(key)
 			date = Date.today

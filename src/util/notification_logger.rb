@@ -7,6 +7,26 @@ require 'util/persistence'
 
 module ODDB
 	class NotificationLogger
+		class LogEntry
+			attr_reader :sender, :recipient, :time
+			def initialize(sender, recipient, time)
+				@sender = sender
+				@recipient = recipient
+				@time = time 
+			end
+			def month
+				@time.month
+			end
+			def year
+				@time.year
+			end
+			def <=>(other)
+				if(other.respond_to?(:time))
+					other = other.time
+				end
+				@time <=> other
+			end
+		end
 		include ODBA::Persistable
 		ODBA_SERIALIZABLE = ['@logs']
 		attr_reader :logs, :lines
@@ -14,8 +34,9 @@ module ODDB
 			super
 			@logs = {}
 		end
-		def log(iksnr, time)
-			(@logs[iksnr.to_s] ||= []).push(time)
+		def log(iksnr, sender, recipient, time)
+			entry = LogEntry.new(sender, recipient, time)
+			(@logs[iksnr.to_s] ||= []).push(entry)
 		end
 		def total_count
 			@logs.size
@@ -36,34 +57,43 @@ module ODDB
 			count.size
 		end
 		def first_month
-			time = @logs.collect { |key, times|
-				times.first
+			entry = @logs.collect { |key, entries|
+				entries.first
 			}.min
-			Date.new(time.year, time.month)
+			Date.new(entry.year, entry.month)
 		end
 		def last_month
-			time = @logs.collect { |key, times|
-				times.last
+			entry = @logs.collect { |key, entries|
+				entries.last
 			}.max
-			Date.new(time.year, time.month)
+			Date.new(entry.year, entry.month)
 		end
 		def create_csv(app)
 			csv_lines(app).collect { |line|
 				CSVLine.new(line).to_s(false, ';')
 			}.join("\n") << "\n"
 		end
-		def csv_line(name, key, times, month_range)
+		def range_lines(month_range, entries, arguments)
+			entries.collect { |entry| 
+				csv_line(month_range, entry, entries, arguments)
+			}
+		end
+		def csv_line(month_range, entry, entries, arguments)
+			#def csv_line(name, key, times, month_range)
 			line = [
-				name.to_s,
-				key.to_s,
-				times.size.to_s,
+				arguments[:iksnr].to_s,
+				arguments[:name].to_s,
+				arguments[:packagesize].to_s,
+				entry.sender.to_s,
+				entry.recipient.to_s,
+				entries.size.to_s,
 			]
 			month = month_range.first
 			while(month <= month_range.last)
-				count = times.select { |val| 
-					val.year == month.year && val.mon == month.mon
-				}
-				line.push(count.size.to_s)
+				count = entries.select { |val| 
+					val.time.year == month.year && val.time.mon == month.mon
+				}.size
+				line.push(count.to_s)
 				month = month >> 1
 			end
 			line
@@ -72,6 +102,9 @@ module ODDB
 			header = [
 				"IKSNr.",
 				"Name",
+				"Packungsgrösse",
+				"Sender",
+				"Empfänger",
 				"Total",
 			]
 			month_range = (first_month)..(last_month)
@@ -80,11 +113,20 @@ module ODDB
 				header.push("#{month.strftime("%B")} #{month.year}")
 				month = month >> 1
 			end
-			lines = @logs.collect { |key, val| 
+			lines = []
+			@logs.each { |key, entries| 
 				iksnr = [key[0..4], key[5..8]]
 				name = app.registration(iksnr[0]).package(iksnr[1]).name
-				csv_line(name, key, val, month_range)
-			}.sort.unshift(header)
+				packagesize = app.registration(iksnr[0]).package(iksnr[1]).size
+				arguments = {
+					:name         => name,
+					:packagesize  => packagesize,
+					:iksnr        => key, 
+					:entries  		=> entries, 
+				}
+				lines += range_lines(month_range, entries, arguments)
+			}
+			lines.sort.unshift(header)
 		end
 	end
 end

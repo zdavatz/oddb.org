@@ -60,7 +60,7 @@ module ODDB
 			outgoing.date = Time.now
 			outgoing['User-Agent'] = 'ODDB Updater'
 
-			send_mail(multipart)
+			send_mail(outgoing)
 		end
 		def notify_attachment(attachment, headers)
 			multipart = TMail::Mail.new
