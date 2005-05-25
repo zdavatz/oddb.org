@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# TestNotifyLog -- oddb -- 20.04.2005 -- jlang@ywesee.com
+# TestNotifyLog -- oddb -- 21.04.2005 -- jlang@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
