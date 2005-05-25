@@ -1217,4 +1217,17 @@ a progressé pendant ou après le traitement standard.
 			assert_nothing_raised { @plugin.report }
 		end
 	end
+	class TestParsedPackage < Test::Unit::TestCase
+		def setup
+			@package = BsvPlugin2::ParsedPackage.new
+		end
+		def test_ikskey_writer__0
+			@package.ikskey = '12345123'
+			assert_equal('12345123', @package.ikskey)
+		end
+		def test_ikskey_writer__1
+			@package.ikskey = '123'
+			assert_equal('00123000', @package.ikskey)
+		end
+	end
 end
