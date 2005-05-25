@@ -257,7 +257,7 @@ end
 			end
 			def ikskey=(key)
 				@iksnr = sprintf('%05i', key[0,5])
-				@ikscd = key[5,3]
+				@ikscd = sprintf('%03i', key[5,3])
 			end
 			def merge(other)
 				if(other.is_a?(ParsedPackage))
@@ -601,7 +601,8 @@ end
 				end
 				unless(ikskey == '0')
 					package.ikskey = ikskey
-					@ikstable.store(ikskey, package)
+					## ensure the correct ikskey-format by regetting it
+					@ikstable.store(package.ikskey, package)
 				end
 			}
 		end
