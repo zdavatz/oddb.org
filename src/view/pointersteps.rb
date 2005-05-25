@@ -63,7 +63,7 @@ module ODDB
 					args ||= []
 					link = HtmlGrid::Link.new(event, @model, @session, self)
 					unless (@lookandfeel.direct_event == event)
-						link.set_attribute('href', @lookandfeel.event_url(event, *args))
+						link.set_attribute('href', @lookandfeel.event_url(event, args))
 						link.set_attribute('class', 'th-pointersteps')
 					end
 					@grid.add(link, *offset)

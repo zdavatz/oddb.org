@@ -14,7 +14,7 @@ module ODDB
 			@app = app
 		end
 		def run
-			run_on_weekday(0) {
+			run_on_weekday(0) { 
 				mail_download_stats
 				mail_feedback_stats
 				mail_notification_stats
@@ -56,11 +56,9 @@ module ODDB
 		end
 		def mail_download_stats
 			mail_stats('download')
-			puts 'download_methode'
 		end
 		def mail_feedback_stats
 			mail_stats('feedback')
-			puts 'feedback_methode'
 		end
 		def mail_notification_stats
 			file = @app.notification_logger.create_csv(@app)

@@ -18,7 +18,8 @@ module ODDB
 			File.dirname(__FILE__))
 		PARSER = DRbObject.new(nil, FIPARSE_URI)
 		NEWS_PATHS = ['/deutsch/index.html', 
-			'/deutsch/news/docunews/docunews.html']
+			#'/deutsch/news/docunews/docunews.html'
+		]
 		RECIPIENTS = [ ]
 		def initialize(app)
 			super

@@ -182,7 +182,10 @@ module ODDB
 			end
 			def export_csv
 				if(@session.zone == :drugs)
-					search.export_csv
+					state = self.search
+					if(state.is_a?(State::Drugs::Result))
+						state.export_csv
+					end
 				end
 			end
 			def extend(mod)

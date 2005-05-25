@@ -59,7 +59,7 @@ class Notify < State::Drugs::Global
 			smtp.sendmail(mail.encoded, SMTP_FROM, @model.notify_recipient) 
 		}
 		logger = @session.notification_logger
-		logger.log(@model.package.ikskey, Time.now)
+		logger.log(@model.package.ikskey,@model.notify_sender, @model.notify_recipient, Time.now)
 		logger.odba_store
 		NotifyConfirm.new(@session, @model)
 	end
