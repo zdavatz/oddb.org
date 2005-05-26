@@ -37,24 +37,13 @@ module ODDB
 		def log(iksnr, sender, recipient, time)
 			entry = LogEntry.new(sender, recipient, time)
 			(@logs[iksnr.to_s] ||= []).push(entry)
+			entry
 		end
 		def total_count
 			@logs.size
 		end
 		def total_count_iksnr(iksnr)
 			(@logs[iksnr.to_s] ||= []).size
-		end
-		def months_count(iksnr, date=nil)
-			count = []
-			time = date || time = Time.now
-			if(logs = @logs[iksnr.to_s])
-				logs.each { |val| 
-					if(val.year == time.year && val.mon == time.mon)
-						count.push(val)
-					end
-				}
-			end
-			count.size
 		end
 		def first_month
 			entry = @logs.collect { |key, entries|
@@ -79,7 +68,6 @@ module ODDB
 			}
 		end
 		def csv_line(month_range, entry, entries, arguments)
-			#def csv_line(name, key, times, month_range)
 			line = [
 				arguments[:iksnr].to_s,
 				arguments[:name].to_s,
