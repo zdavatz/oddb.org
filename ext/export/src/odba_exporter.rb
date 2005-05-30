@@ -1,10 +1,6 @@
 #!/usr/bin/env ruby
 # OdbaExporter -- ODDB -- 09.12.2004 -- hwyss@ywesee.com
 
-$: << File.dirname(__FILE__)
-$: << File.expand_path("../../..", File.dirname(__FILE__))
-$: << File.expand_path("../../../src", File.dirname(__FILE__))
-
 require 'fileutils'
 require 'tempfile'
 require 'archive/tarsimple'
@@ -13,8 +9,6 @@ require 'models'
 require 'oddb_yaml'
 require 'oddbdat'
 require 'odba'
-require 'util/oddbconfig'
-require 'etc/db_connection'
 
 module ODDB
 	module OdbaExporter
@@ -117,24 +111,4 @@ module ODDB
 		module_function :export_yaml
 		module_function :clear
 	end
-end
-
-if($0 == __FILE__)
-	module ODBA
-		class Cache
-			CLEANER_PRIORITY = 1
-			CLEANING_INTERVAL = 60
-		end
-		class CacheEntry
-			remove_const :RETIRE_TIME
-			RETIRE_TIME = 60
-			remove_const :DESTROY_TIME
-			DESTROY_TIME = 120
-		end
-	end
-
-	DRb.start_service(ODDB::EXPORT_URI, ODDB::OdbaExporter)
-	$0 = "Oddb (Export)"
-	ODBA.cache_server.clean_prefetched
-	DRb.thread.join
 end
