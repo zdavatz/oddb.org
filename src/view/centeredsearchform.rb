@@ -28,6 +28,7 @@ module ODDB
 			}
 		end
 		class PayPalForm < HtmlGrid::Form
+			CSS_CLASS = 'center'
 			COMPONENTS = {
 				[0,0]	=> :donation_logo,
 			}
@@ -36,7 +37,7 @@ module ODDB
 				[0,0]	=>	'donate',
 			}
 			HTML_ATTRIBUTES = {
-				'width'				=>	'100%',
+				#'width'				=>	'100%',
 			}
 			def donation_logo(model, session)
 				image = HtmlGrid::Input.new(:submit, model, session, self)
@@ -68,6 +69,7 @@ module ODDB
 				[0,2,0,4]	=>	:search_help,
 			}
 			COMPONENT_CSS_MAP = {
+				[0,0]		=>	'component tabnavigation center',
 				[0,1]	=>	'search-center',
 			}
 			EVENT = :search

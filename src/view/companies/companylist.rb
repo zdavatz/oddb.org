@@ -82,6 +82,9 @@ class CompaniesComposite < Form
 	SYMBOL_MAP = {
 		:search_query		=>	View::SearchBar,	
 	}
+	CSS_MAP = {
+		[0,0]	=>	'right'
+	}
 	def company_list(model, session)
 		self::class::COMPANY_LIST.new(model, session, self)
 	end

@@ -9,8 +9,8 @@ module ODDB
 	module View
 		class TabNavigation < HtmlGrid::Composite
 			COMPONENTS = {}
-			CSS_CLASS = "component tabnavigation"
-			HTML_ATTRIBUTES = { "align"=>"center" }
+			CSS_CLASS = "component tabnavigation right"
+			#HTML_ATTRIBUTES = { "align"=>"center" }
 			SYMBOL_MAP = {
 				:tabnavigation_divider	=>	HtmlGrid::Text,
 			}

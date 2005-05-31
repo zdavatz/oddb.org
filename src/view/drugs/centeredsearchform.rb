@@ -22,6 +22,7 @@ class CenteredSearchForm < View::CenteredSearchForm
 		:search_query	=>	View::SearchBar,	
 	}
 	COMPONENT_CSS_MAP = {
+		[0,0]		=>	'component tabnavigation center',
 		[0,3]	=>	'search-center',
 	}
 	CSS_MAP = {

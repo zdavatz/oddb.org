@@ -17,6 +17,9 @@ module ODDB
 			HTML_ATTRIBUTES = {
 				'valign'	=>	'bottom',
 			}
+			CSS_MAP = {
+				[0,0,2]	=>	'navigation'
+			}
 		end
 	end
 end
