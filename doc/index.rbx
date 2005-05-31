@@ -4,7 +4,8 @@
 require 'sbsm/request'
 require 'util/oddbconfig'
 
-DRb.start_service()
+DRb.start_service('druby://localhost:0')
+
 begin
 	SBSM::Request.new(ODDB::SERVER_URI).process
 rescue Exception => e
