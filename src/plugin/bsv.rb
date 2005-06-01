@@ -256,8 +256,8 @@ end
 				[@iksnr, @ikscd].join
 			end
 			def ikskey=(key)
-				@iksnr = sprintf('%05i', key[0,5])
-				@ikscd = sprintf('%03i', key[5,3])
+				@iksnr = sprintf('%05i', key[0,5].to_i)
+				@ikscd = sprintf('%03i', key[5,3].to_i)
 			end
 			def merge(other)
 				if(other.is_a?(ParsedPackage))
