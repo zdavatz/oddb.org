@@ -2,6 +2,7 @@
 # DoctorsServer -- oddb -- 21.09.2004 -- jlang@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
+$: << File.expand_path("../../..", File.dirname(__FILE__))
 $: << File.expand_path("../src", File.dirname(__FILE__))
 
 require 'drb/drb'

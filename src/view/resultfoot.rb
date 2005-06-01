@@ -69,6 +69,10 @@ module ODDB
 				[0,1]	=>	'explain-result',
 				[1,1]	=>	'explain-result-r',
 			}
+			CSS_MAP = {
+				[0,1]	=>	'explain-result',
+				[1,1]	=>	'explain-result-r',
+			}
 			CSS_CLASS = 'composite'
 			def legal_note(model, session)
 			  link = HtmlGrid::Link.new(:legal_note, model, @session, self)
