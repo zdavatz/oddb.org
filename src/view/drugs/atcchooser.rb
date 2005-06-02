@@ -26,9 +26,11 @@ class AtcChooserList < HtmlGrid::List
 	SORT_DEFAULT = false
 	SORT_REVERSE = false 
 	def init
+		css_map.store([0,0], "atcchooser#{@model.level.next}")
 		@model = @model.children
 		if(@session.user.is_a? ODDB::AdminUser)
-			components.store([1,0], :edit)
+			components.store([2,0], :edit)
+			css_map.store([2,0], 'list small')
 		end
 		super
 	end

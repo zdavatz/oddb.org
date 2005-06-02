@@ -752,12 +752,23 @@ td.important-infos-bg
 
 
 /* atc-chooser-classes */
+td.atcchooser1 {
+	padding: 8px 4px 1px 4px;
+}
+td.atcchooser2 {
+	padding: 6px 4px 1px 4px;
+}
+td.atcchooser3 {
+	padding: 4px 4px 1px 4px;
+}
+td.atcchooser4 {
+	padding: 2px 4px 1px 4px;
+}
+td.atcchooser5 {
+	padding: 1px 4px 1px 4px;
+}
 a.atcchooser1 {
 	font-weight : bold;
-	padding-left : 4px;
-	padding-top : 4px;
-	padding-right : 4px;
-	padding-bottom : 4px;
 }
 a.atcchooser1, a.atcchooser2,
 a.atcchooser3, a.atcchooser4,
@@ -782,28 +793,16 @@ a.atclink4:hover, a.atclink5:hover {
 	text-decoration: none;
 }
 a.atcchooser2, a.atclink2 {
-	padding-left : 24px;
-	padding-top : 4px;
-	padding-right : 4px;
-	padding-bottom : 4px;
+	margin-left: 26px;
 }
 a.atcchooser3, a.atclink3 {
-	padding-left : 44px;
-	padding-top : 4px;
-	padding-right : 4px;
-	padding-bottom : 4px;
+	margin-left: 46px;
 }
 a.atcchooser4, a.atclink4 {
-	padding-left : 64px;
-	padding-top : 4px;
-	padding-right : 4px;
-	padding-bottom : 4px;
+	margin-left: 66px;
 }
 a.atcchooser5, a.atclink5 {
-	padding-left : 84px;
-	padding-top : 4px;
-	padding-right : 4px;
-	padding-bottom : 4px;
+	margin-left: 86px;
 }
 
 /* layout-classes */
