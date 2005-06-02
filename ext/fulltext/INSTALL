@@ -1,0 +1,87 @@
+To install Fulltext-Search you need access to the build-directory of your postgres installation. In Gentoo you can (as root) do:
+
+1. determine installed version
+#> emerge -p postgresql
+
+2. make build-tree
+   Gentoo:
+#> ebuild /usr/portage/dev-db/postgresql/postgresql-<version>.ebuild compile
+   Others: 
+#> tar -xzf postgresql-<version>.tar.gz
+#> cd postgresql-<version> 
+#> ./configure <your usual options>
+#> make
+
+3. copy the stemmer-source into the build-tree
+   Gentoo: <path-to-build-tree> is: 
+   /var/tmp/portage/postgresql-<version>/work/postgresql-<version>
+#> cp -a <path-to-oddb>/ext/fulltext/redist/dict_{french,german} \
+   <path-to-build-tree>/contrib
+
+4. cd there and make
+#> cd <path-to-build-tree>/contrib/dict_french
+#> make && make install
+#> cd <path-to-build-tree>/contrib/dict_german
+#> make && make install
+
+5. As postgres, create the dict-init functions:
+   Gentoo: <pg-share-path> is:
+	 /usr/share/postgresql/contrib
+#> psql -u postgres <your-db> < <pg-share-path>/dict_french.sql
+#> psql -u postgres <your-db> < <pg-share-path>/dict_german.sql
+
+6. In the oddb-admin tool, generate the dictionaries and rebuild the fulltext-indices
+#> <path-to-oddb>/bin/oddbd &
+#> <path-to-oddb>/bin/admin
+oddb> generate_dictionaries
+oddb> rebuild_indices
+
+
+----------------------------------------------------------------------
+The dict_french and dict_german directories were generated as follows:
+
+a) cd to gendict
+#> cd <path-to-build-tree>/contrib/tsearch2/gendict
+
+b) patch the config.sh script
+#> cat <<-"EOP" > config.sh.patch
+--- config.sh   2005-06-02 09:01:54.992135610 +0200
++++ config.sh   2005-06-02 09:02:27.193866501 +0200
+@@ -23,8 +23,8 @@
+ dictname=
+ stemmode=no
+ verbose=no
+-cfile=
+-hfile=
++cfile="stem.c"
++hfile="stem.h"
+ dir=
+ hasinit=no
+ comment=
+@@ -53,8 +53,6 @@
+ if [ $stemmode = "yes" ] ; then
+        [ ${#prefix} -eq 0 ] && prefix=$dictname
+        hasinit=yes
+-       cfile="stem.c"
+-       hfile="stem.h"
+ fi
+
+ [ ${#dir}   -eq 0 ] && dir="dict_$dictname"
+EOP
+
+#> 
+
+(actually I couldn't get this patch to work - you may have to apply it by hand. Patch-Help welcome!)
+
+c) copy the snowball-code into the postgres-build:
+#> cp <path-to-oddb>/ext/fulltext/redist/{french,german}_stem.{c,h} .
+
+d) run config.sh
+#> ./config.sh -n french -s -p french -v -c french_stem.c -h french_stem.h
+#> ./config.sh -n german -s -p german -v -c german_stem.c -h german_stem.h
+
+----------------------------------------------------------------------
+for adding a language, you may have to apply the following to a snowball-generated
+stem.c, to fix "error: void value not ignored as it ought to be":
+
+#> ex -c "%s/int ret;\n\(\s*\)ret = \(slice_.*\)\n.*/\r\1\2/" -c x stem.c

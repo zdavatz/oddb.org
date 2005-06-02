@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+# OddbServer
+
+$: << File.expand_path("../src", File.dirname(__FILE__))
+$: << File.expand_path("..", File.dirname(__FILE__))
+
+require 'drb/drb'
+require 'rubygems'
+require 'util/oddbapp'
+require 'etc/db_connection'
+
+trap("USR1") { 
+	puts "caught USR1 signal, clearing Sessions\n"
+	$oddb.clear 
+}
+trap("USR2") { 
+	puts "caught USR2 signal, flushing stdout...\n"
+	$stdout.flush
+}
+
+$oddb = ODDB::App.new
+
+$0 = "Oddb (OddbApp)"
+
+DRb.start_service(ODDB::SERVER_URI, $oddb)
+
+start = Time.now
+puts "prefetching..."
+$stdout.flush
+ODBA.cache_server.prefetch
+puts "prefetch completed in #{Time.now-start} seconds"
+$stdout.flush
+
+DRb.thread.join
