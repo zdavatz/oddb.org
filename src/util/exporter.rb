@@ -65,7 +65,7 @@ module ODDB
 			headers = {
 				:filename => 'notifications.csv',
 				:mime_type => 'text/csv',
-				:subject => 'CSV-Export der Notifications', 
+				:subject => 'Wöchentlicher CSV-Export der Notifications', 
 			}
 			Log.new(Date.today).notify_attachment(file, headers)
 		end
