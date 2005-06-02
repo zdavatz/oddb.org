@@ -17,6 +17,7 @@ module ODDB
 	module View
 		module Hospitals
 class HospitalList < HtmlGrid::List
+	include AlphaHeader
 	include UmlautSort
 	include AddressMap
 	include VCardMethods
@@ -55,8 +56,6 @@ class HospitalList < HtmlGrid::List
 	LOOKANDFEEL_MAP = {
 		:name						=>	:hospital_name,
 		:canton					=>	:canton,
-		#:url						=>	:company_url,
-   	#:contact				=>	:company_contact,
 	}
 	SORT_DEFAULT = :name
 	SORT_REVERSE = false	
@@ -81,17 +80,15 @@ class HospitalsComposite < Form
 		[0,0,1]	=>	:submit,
 		[0,1]		=>	:hospital_list,
 	}
+	CSS_MAP = {
+		[0,0]	=> 'right',
+	}
 	EVENT = :search
 	SYMBOL_MAP = {
 		:search_query		=>	View::SearchBar,	
-		:map						=>	HtmlGrid::Link,
-		:vcard					=>	HtmlGrid::Link,
 	}
 	def hospital_list(model, session)
 		HospitalList.new(model, session, self)
-	end
-	def name(model, session)
-		link = View::PointerLink.new(:name, model, session, self)
 	end
 end
 class Hospitals < View::PublicTemplate
