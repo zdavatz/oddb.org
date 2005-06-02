@@ -3,5 +3,5 @@ BEGIN;
 CREATE FUNCTION dinit_german(internal)
 	RETURNS internal
 	AS 'MODULE_PATHNAME'
-	LANGAUGE 'C';
+	language 'C';
 END;
