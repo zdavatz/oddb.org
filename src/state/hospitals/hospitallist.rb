@@ -28,26 +28,13 @@ class HospitalList < State::Hospitals::Global
 	}
 	#REVERSE_MAP = ResultList::REVERSE_MAP
 	def init
-		#@model = @session.hospitals.values
-		super
-		userrange = @session.user_input(:range) || default_interval
-		range = RANGE_PATTERNS.fetch(userrange)
-		@filter = Proc.new { |model|
-			model.select { |comp| 
-				if(range=='unknown')
-					comp.name =~ /^[^'a-zäÄáÁàÀâÂçÇëËéÉèÈêÊüÜúÚùÙûÛ']/i
-				else
-					/^[#{range}]/i.match(comp.name)
-				end
-			}
-		}
-		@range = range
-	end
-	def init
 		if(!@model.is_a?(Array) || @model.empty?)
 			@default_view = View::Companies::EmptyResult
 		end
 		filter_interval
+	end
+	def symbol
+		:name
 	end
 end
 class HospitalResult < HospitalList
