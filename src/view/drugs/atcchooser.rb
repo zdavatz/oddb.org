@@ -17,9 +17,10 @@ class AtcChooserList < HtmlGrid::List
 		[1,0]	=>	:atc_ddd_link,
 	}	
 	CSS_MAP = {
-		[1,0]	=>	"result-infos"
+		[1,0]	=>	"result-infos right"
 	}
-	#CSS_CLASS = "composite"
+	COMPONENT_CSS_MAP = {}
+	CSS_CLASS = "composite"
 	DEFAULT_CLASS = HtmlGrid::Value
 	OMIT_HEADER = true
 	SORT_DEFAULT = false
@@ -93,6 +94,9 @@ class AtcChooserComposite < HtmlGrid::Composite
 	CSS_CLASS = "composite"
 	CSS_MAP = {
 		[0,0] =>	'th',
+	}
+	COMPONENT_CSS_MAP = {
+		[0,1]	=>	'component',
 	}
 end
 class AtcChooser < View::PrivateTemplate

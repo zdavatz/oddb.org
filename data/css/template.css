@@ -752,7 +752,7 @@ td.important-infos-bg
 
 
 /* atc-chooser-classes */
-td.atcchooser1 {
+a.atcchooser1 {
 	font-weight : bold;
 	padding-left : 4px;
 	padding-top : 4px;
@@ -765,7 +765,7 @@ a.atcchooser5 {
 	color: $list_font_color;
 	text-decoration: none;
 }
-a.atcchooser1:hover, a.atcchooser2:hover,
+a.atcchooser2:hover, a.atcchooser2:hover,
 a.atcchooser3:hover, a.atcchooser4:hover,
 a.atcchooser5:hover {
 	color : $list_link_hover_color;
@@ -781,25 +781,25 @@ a.atclink4:hover, a.atclink5:hover {
 	color : $list_link_hover_color;
 	text-decoration: none;
 }
-td.atcchooser2, td.atclink2 {
+a.atcchooser2, a.atclink2 {
 	padding-left : 24px;
 	padding-top : 4px;
 	padding-right : 4px;
 	padding-bottom : 4px;
 }
-td.atcchooser3, td.atclink3 {
+a.atcchooser3, a.atclink3 {
 	padding-left : 44px;
 	padding-top : 4px;
 	padding-right : 4px;
 	padding-bottom : 4px;
 }
-td.atcchooser4, td.atclink4 {
+a.atcchooser4, a.atclink4 {
 	padding-left : 64px;
 	padding-top : 4px;
 	padding-right : 4px;
 	padding-bottom : 4px;
 }
-td.atcchooser5, td.atclink5 {
+a.atcchooser5, a.atclink5 {
 	padding-left : 84px;
 	padding-top : 4px;
 	padding-right : 4px;

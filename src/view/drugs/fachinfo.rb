@@ -50,12 +50,13 @@ class FiChapterChooser < HtmlGrid::Composite
 		[2,0]	=>	:print,
 	}
 	COMPONENT_CSS_MAP = {
-		[0,0,1]	=>	'chapter-tab',
+		[0,0,2]	=>	'chapter-tab',
 		[2,0]		=>	'chapter-tab-b',
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0,2]	=>	'chapter-tab'
+		[0,0,2]	=>	'chapter-tab',
+		[2,0]		=>	'chapter-tab-b',
 	}
 	def init
 		xwidth = self::class::XWIDTH
