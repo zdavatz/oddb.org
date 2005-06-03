@@ -17,7 +17,7 @@ module ODDB
 			run_on_weekday(0) { 
 				mail_download_stats
 				mail_feedback_stats
-				mail_notification_stats
+				#mail_notification_stats
 			}
 			export_yaml
 			export_oddbdat
@@ -65,7 +65,7 @@ module ODDB
 			headers = {
 				:filename => 'notifications.csv',
 				:mime_type => 'text/csv',
-				:subject => 'Wöchentlicher CSV-Export der Notifications', 
+				:subject => 'Täglicher CSV-Export der Notifications', 
 			}
 			Log.new(Date.today).notify_attachment(file, headers)
 		end

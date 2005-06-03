@@ -876,6 +876,7 @@ module ODDB
 		EXPORT_HOUR = 2
 		RUN_CLEANER = true
 		RUN_EXPORTER = true
+		RUN_EXPORTER_NOTIFY = true
 		RUN_UPDATER = true
 		SESSION = Session
 		UNKNOWN_USER = UnknownUser
@@ -974,6 +975,7 @@ module ODDB
 			@exporter.kill if(@exporter.is_a? Thread)
 			@updater = run_updater if RUN_UPDATER
 			@exporter = run_exporter if RUN_EXPORTER
+			@exporter_notify = run_exporter_notify if RUN_EXPORTER_NOTIFY
 			@mutex.synchronize {
 				@sessions.clear
 			}
@@ -987,6 +989,20 @@ module ODDB
 					next_run = Time.local(today.year, today.month, today.day, EXPORT_HOUR)
 					sleep(next_run - Time.now)
 					Exporter.new(self).run
+					GC.start
+					today = Date.today.next
+				}
+			}
+		end
+		def run_exporter_notify
+			Thread.new {
+				Thread.current.priority=-10
+				Thread.current.abort_on_exception = true
+				today = (17 > Time.now.hour) ? Date.today : Date.today.next
+				loop {
+					next_run = Time.local(today.year, today.month, today.day, 17)
+					sleep(next_run - Time.now)
+					Exporter.new(self).mail_notification_stats
 					GC.start
 					today = Date.today.next
 				}
