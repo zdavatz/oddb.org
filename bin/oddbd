@@ -18,17 +18,17 @@ trap("USR2") {
 	$stdout.flush
 }
 
-$oddb = ODDB::App.new
-
-$0 = "Oddb (OddbApp)"
-
-DRb.start_service(ODDB::SERVER_URI, $oddb)
-
 start = Time.now
 puts "prefetching..."
 $stdout.flush
 ODBA.cache_server.prefetch
 puts "prefetch completed in #{Time.now-start} seconds"
 $stdout.flush
+
+$oddb = ODDB::App.new
+
+$0 = "Oddb (OddbApp)"
+
+DRb.start_service(ODDB::SERVER_URI, $oddb)
 
 DRb.thread.join
