@@ -148,12 +148,9 @@ class FeedbackList < HtmlGrid::List
 		[0,3,1,4]	=>	'list bold',
 	}
 	SYMBOL_MAP = { 
-		#:feedback_title_name	=>	HtmlGrid::LabelText,
-		#:feedback_title_time	=>	HtmlGrid::LabelText,
 		:email_label					=>	HtmlGrid::LabelText,
 		:message_label				=>	HtmlGrid::LabelText,
 	}
-	CSS_CLASS = 'component border-left top'
 	DEFAULT_CLASS = HtmlGrid::Value
 	OMIT_HEADER = true
 	OFFSET_STEP = [0,7]
@@ -254,6 +251,7 @@ class FeedbacksComposite < HtmlGrid::Composite
 	CSS_MAP = {
 		[0,1] => 'th',
 		[1,1] => 'th right',
+		[1,2]	=> 'component border-left top'
 	}	
 	LEGACY_INTERFACE = false
 	def current_feedback(model)
