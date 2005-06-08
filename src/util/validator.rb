@@ -38,6 +38,7 @@ module ODDB
 			:generic_type =>	[nil, 'generic', 'original', 'complementary' ],
 			:limitation		=>	['true', 'false'],
 			:pi_status		=>	['false', 'true'],
+			:patinfo			=>	['delete', 'keep'],
 			:salutation		=>	['salutation_m', 'salutation_f'],
 		}	
 		EVENTS = [

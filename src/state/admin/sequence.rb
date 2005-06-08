@@ -154,6 +154,9 @@ class Sequence < State::Admin::Global
 			else
 				add_warning(:w_no_patinfo_saved, :patinfo_upload, nil)
 			end
+		elsif(@session.user_input(:patinfo) == 'delete')
+			input.store(:patinfo, nil)
+			input.store(:pdf_patinfo, nil)
 		end
 		if((company = @model.company) \
 			&& (mail = user_input(:regulatory_email)) && !mail.empty?)

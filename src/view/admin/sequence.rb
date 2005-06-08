@@ -176,6 +176,7 @@ class SequenceForm < Form
 				[2,4]   =>  :patinfo_label,
 				[3,4,1] =>  :patinfo,
 				[3,4,2] =>  :assign_patinfo,
+				[3,4,3] =>  :delete_patinfo,
 				[1,5]		=>	:submit,
 				[1,5,0] =>  :delete_item,
 			})
@@ -224,6 +225,15 @@ class SequenceForm < Form
 	def delete_item(model, session)
 		delete_item_warn(model, :w_delete_sequence)
 	end
+	def delete_patinfo(model, session)
+		if(model.has_patinfo?)
+			button = HtmlGrid::Button.new(:delete_patinfo, 
+				model, session, self)
+			script = "this.form.patinfo.value = 'delete'; this.form.submit();"
+			button.set_attribute('onclick', script)
+			button
+		end
+	end
 	def seqnr(model, session)
 		klass = if(model.seqnr.nil?)
 			HtmlGrid::InputText
@@ -254,6 +264,9 @@ class SequenceForm < Form
 	end
 	def patinfo_upload(model, session)
 		HtmlGrid::InputFile.new(:patinfo_upload, model, session, self)
+	end
+	def hidden_fields(context)
+		super << context.hidden('patinfo', 'keep')
 	end
 end
 class SequenceComposite < HtmlGrid::Composite
