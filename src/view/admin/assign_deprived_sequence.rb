@@ -64,10 +64,13 @@ class AssignDeprivedSequenceForm < View::FormList
 			link.href	= @lookandfeel.event_url(:shadow)
 			link.set_attribute('class', 'small')
 			link
-		else
-			patinfo = model.patinfo
+		elsif(patinfo = model.patinfo)
 			radio = HtmlGrid::InputRadio.new(:patinfo_pointer, patinfo, session, self)
 			radio.value = patinfo.pointer
+			radio
+		elsif(patinfo = model.pdf_patinfo)
+			radio = HtmlGrid::InputRadio.new(:patinfo_pointer, patinfo, session, self)
+			radio.value = model.pointer + [:pdf_patinfo]
 			radio
 		end
 	end

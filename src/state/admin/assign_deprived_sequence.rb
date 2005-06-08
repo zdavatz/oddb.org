@@ -47,7 +47,8 @@ class AssignDeprivedSequence < State::Admin::Global
 			@sequence.pointer
 		end
 		def sequences=(array)
-			@sequences = array.select { |seq| !seq.patinfo.nil? && seq != @sequence }
+			@sequences = array.select { |seq| 
+				seq.has_patinfo? && (seq != @sequence) }
 		end
 	end
 	def init
@@ -63,9 +64,12 @@ class AssignDeprivedSequence < State::Admin::Global
 	def assign_deprived_sequence
 		if(!@session.error? \
 			&& (pointer = @session.user_input(:patinfo_pointer)))
-			values = {
-				:patinfo => pointer, 
-			}
+			values = {}
+			if(pointer.last_step == [:pdf_patinfo])
+				values.store(:pdf_patinfo, @session.resolve(pointer))
+			else
+				values.store(:patinfo, pointer)
+			end
 			@session.app.update(@model.pointer, values)
 			if(@previous.direct_event == :patinfo_deprived_sequences)
 				patinfo_deprived_sequences
