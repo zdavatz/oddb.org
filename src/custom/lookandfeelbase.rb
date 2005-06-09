@@ -854,6 +854,7 @@ module ODDB
 				:w_too_many_sequences			=> 'Zu viele Suchresultate, die Suche muss spezifiziert werden',
 				:w_unknown_iksnr0					=>	'Die Registration "',
 				:w_unknown_iksnr1					=>	'" ist uns nicht bekannt.',
+				:welcome									=>  'Willkomen',
 			        :yaml_export_descr				=>	'oddb.yaml.gz und oddb.yaml.zip enthalten die t&auml;glich aktualisierten Artikelstammdaten von ODDB.org. Die Daten werden von ywesee im Yaml-Format exportiert und allen interessierten Systemlieferanten von Krankenkassen, Spit&auml;lern, Apotheken, &Auml;rzten, Heimen etc. zur Verf&uuml;gung gestellt. Die Kosten f&uuml;r die Daten sind zur Zeit gleich Null. Bei einer erfolgreichen Implementation mit  den ODDB.org-Daten nehmen wir gerne eine Dienstleistungsgeb&uuml;hr entgegen.',
 				:yaml_export_feedback			=>	'Feedback bitte an zdavatz at ywesee dot com',
 				:yaml_export_title				=>	'Stammdaten Download - oddb.yaml.gz und oddb.yaml.zip',
@@ -1448,6 +1449,7 @@ module ODDB
 				:ywesee_contact_href			=>	'mailto:zdavatz@ywesee.com',
 				:ywesee_contact_name			=>	'Zeno Davatz',
 				:ywesee_contact_text			=>	'Veuillez &eacute;crire &agrave;: ',
+				:welcome									=>  'Bienvenue',
 			},
 			'en'			=>		{
 				:'|unknown'								=>	'others',
@@ -2157,6 +2159,7 @@ module ODDB
 				:w_too_many_sequences			=> 'To many search resultst. Please narrow your query!',
 				:w_unknown_iksnr0					=>	'This registration "',
 				:w_unknown_iksnr1					=>	'" is not known.',
+				:welcome									=>  'Welcome',
 			        :yaml_export_descr				=>	'oddb.yaml.gz and oddb.yaml.zip contain the daily updated master data of ODDB.org. The master data is being exported by ywesee on a daily basis. The data aims at the system integrators of insurances, hospitals, pharmacies, doctors, old folks homes etc. At the moment the master data is free of cost. If you start using our data successfully in your daily business we are happy to accept a fee.',
 				:yaml_export_feedback			=>	'Please send Feedback to: zdavatz@ywesee.com',
 				:yaml_export_title				=>	'Master Data Download - oddb.yaml.gz and oddb.yaml.zip',

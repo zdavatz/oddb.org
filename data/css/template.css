@@ -868,6 +868,13 @@ td.logo {
 	text-align : right;
 	color : silver;
 }
+.personal {
+	text-decoration : none;
+	font-weight : bold;
+	font-size : 11px;
+	margin-top : 40px;
+	color : black;
+}
 td.standard {
 	padding : 4px;
 	width : 200px;

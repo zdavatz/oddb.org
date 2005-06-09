@@ -10,6 +10,7 @@ require 'view/logo'
 module ODDB
 	module View
 		class WelcomeHead < HtmlGrid::Composite
+			include Personal
 			CSS_CLASS = 'composite'
 			CSS_MAP = {
 				[1,0]	=>	'welcome'
@@ -19,6 +20,7 @@ module ODDB
 				#[1,0]		=>	:banner,
 				[1,0,1]	=>	"break",
 				[1,0,2]	=>	"home_welcome",
+				[1,0,3]	=>	:welcome,
 			}
 			def banner(model, session) if(@lookandfeel.enabled?(:epatents)) #, false))
 					%q{<A HREF="http://petition.eurolinux.org"><img src="http://aful.org/images/patent_banner.gif" alt="Petition against e-patents"></A><BR>}

@@ -4,6 +4,7 @@
 require 'htmlgrid/composite'
 require 'view/logo'
 require 'view/google_ad_sense'
+require 'view/personal.rb'
 require 'view/tab_navigation'
 require 'view/searchbar'
 require 'htmlgrid/link'
@@ -13,6 +14,7 @@ module ODDB
 	module View
 		class CommonLogoHead < HtmlGrid::Composite
 			include GoogleAdSenseMethods
+			include Personal
 			CSS_CLASS = 'composite'
 			GOOGLE_CHANNEL = '6336403681'
 			GOOGLE_FORMAT = '468x60_as'
@@ -25,6 +27,7 @@ module ODDB
 				[0,0]		=>	View::Logo,
 				[0,1]		=>	:language_chooser,
 				[1,0]		=>	:ad_sense,
+				[1,0,2]	=>	:welcome,
 				[1,1]		=>	View::TabNavigation,
 			}
 			CSS_MAP = {
