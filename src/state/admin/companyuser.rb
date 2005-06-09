@@ -35,7 +35,7 @@ module CompanyUser
 	}	
 	include State::Admin::User
 	def home_companies
-		State::Companies::Company.new(@session, 
+		State::Companies::UserCompany.new(@session, 
 			@session.user.model)
 	end
 	def resolve_state(pointer, type=:standard)
