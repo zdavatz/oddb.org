@@ -34,6 +34,10 @@ module CompanyUser
 			:package, :sl_entry ]				=>	State::Admin::CompanySlEntry,
 	}	
 	include State::Admin::User
+	def home_companies
+		State::Companies::Company.new(@session, 
+			@session.user.model)
+	end
 	def resolve_state(pointer, type=:standard)
 		if(@session.user_equiv?(pointer))
 			State::Companies::UserCompany
