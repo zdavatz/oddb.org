@@ -35,8 +35,12 @@ module CompanyUser
 	}	
 	include State::Admin::User
 	def home_companies
-		State::Companies::UserCompany.new(@session, 
-			@session.user.model)
+		klass = State::Companies::UserCompany
+		if(self.is_a?(klass))
+			State::Companies::Init.new(@session, nil)
+		else
+			klass.new(@session, @session.user.model)
+		end
 	end
 	def resolve_state(pointer, type=:standard)
 		if(@session.user_equiv?(pointer))
