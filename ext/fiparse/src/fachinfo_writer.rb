@@ -149,7 +149,7 @@ module ODDB
 						@templates = named_chapters [
 							:switch,
 						]
-					when /Stand der Information/, /Mise à jour de l'information/
+					when /Stand der Information/, /Mise? . jour de l.information/
 						@date = chapter
 						@templates = named_chapters [
 							:rest,
