@@ -36,7 +36,7 @@ module ODDB
 					@name = self.src.strip
 				elsif(@font.italic?)
 					#puts "i"
-					if(@fresh_paragraph)
+					if(@fresh_paragraph || @preformatted)
 						@section = @chapter.next_section
 						@section.subheading << self.src
 						@wrote_section_heading = true
@@ -111,7 +111,7 @@ module ODDB
 					@src = ''
 					return
 				end
-				if(@chars_since_last_linebreak < 80)
+				if(!@preformatted && @chars_since_last_linebreak < 80)
 					send_paragraph
 				else
 					self.src << "\n"
