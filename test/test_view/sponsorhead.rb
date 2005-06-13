@@ -86,43 +86,38 @@ module ODDB
 				@other.represents = false
 				@pac = StubPackage.new
 				@pac.company = @comp
+				@expect_nologo = '<TABLE cellspacing="0" class="composite"><TR><TD><A><IMG class="logo" src="logo_drugs/" alt="LOGO"></A></TD><TD class="logo-r">&nbsp;</TD></TR><TR><TD>&nbsp;</TD><TD class="tabnavigation-right"><TABLE cellspacing="0" class="component tabnavigation right"><TR><TD><A name="drugs" class="tabnavigation">DRUGS</A></TD></TR></TABLE></TD></TR></TABLE>'
 			end
 			def test_empty_model
 				view = View::SponsorHead.new([], @session)
-				expected = '<TABLE cellspacing="0" class="composite"><TR><TD class="logo"><A><IMG class="logo" src="logo_drugs/" alt="LOGO"></A></TD><TD class="logo-r">&nbsp;</TD></TR><TR><TD>&nbsp;</TD><TD class="tabnavigation-right" align="center"><TABLE cellspacing="0" class="component tabnavigation" align="center"><TR><TD class="tabnavigation"><A name="drugs" class="tabnavigation">DRUGS</A></TD></TR></TABLE></TD></TR></TABLE>'
-				assert_equal(expected, view.to_html(CGI.new))
+				assert_equal(@expect_nologo, view.to_html(CGI.new))
 			end
 			def test_model_no_sponsor
 				view = View::SponsorHead.new([@pac], @session)
-				expected = '<TABLE cellspacing="0" class="composite"><TR><TD class="logo"><A><IMG class="logo" src="logo_drugs/" alt="LOGO"></A></TD><TD class="logo-r">&nbsp;</TD></TR><TR><TD>&nbsp;</TD><TD class="tabnavigation-right" align="center"><TABLE cellspacing="0" class="component tabnavigation" align="center"><TR><TD class="tabnavigation"><A name="drugs" class="tabnavigation">DRUGS</A></TD></TR></TABLE></TD></TR></TABLE>'
-				assert_equal(expected, view.to_html(CGI.new))
-
+				assert_equal(@expect_nologo, view.to_html(CGI.new))
 			end
 			def test_model_nonmatching_sponsor
 				@session.sponsor = @other
 				view = View::SponsorHead.new([@pac], @session)
-				expected = '<TABLE cellspacing="0" class="composite"><TR><TD class="logo"><A><IMG class="logo" src="logo_drugs/" alt="LOGO"></A></TD><TD class="logo-r">&nbsp;</TD></TR><TR><TD>&nbsp;</TD><TD class="tabnavigation-right" align="center"><TABLE cellspacing="0" class="component tabnavigation" align="center"><TR><TD class="tabnavigation"><A name="drugs" class="tabnavigation">DRUGS</A></TD></TR></TABLE></TD></TR></TABLE>'
-				assert_equal(expected, view.to_html(CGI.new))
+				assert_equal(@expect_nologo, view.to_html(CGI.new))
 			end
 			def test_matching_sponsor_no_date
 				@session.sponsor = @comp
 				view = View::SponsorHead.new([@pac], @session)
-				expected = '<TABLE cellspacing="0" class="composite"><TR><TD class="logo"><A><IMG class="logo" src="logo_drugs/" alt="LOGO"></A></TD><TD class="logo-r">&nbsp;</TD></TR><TR><TD>&nbsp;</TD><TD class="tabnavigation-right" align="center"><TABLE cellspacing="0" class="component tabnavigation" align="center"><TR><TD class="tabnavigation"><A name="drugs" class="tabnavigation">DRUGS</A></TD></TR></TABLE></TD></TR></TABLE>'
-				assert_equal(expected, view.to_html(CGI.new))
+				assert_equal(@expect_nologo, view.to_html(CGI.new))
 			end
 			def test_sponsor_time_over
 				@session.sponsor = @comp
 				@comp.sponsor_until = Date.new(2002,12,31)
 				view = View::SponsorHead.new([@pac], @session)
-				expected = '<TABLE cellspacing="0" class="composite"><TR><TD class="logo"><A><IMG class="logo" src="logo_drugs/" alt="LOGO"></A></TD><TD class="logo-r">&nbsp;</TD></TR><TR><TD>&nbsp;</TD><TD class="tabnavigation-right" align="center"><TABLE cellspacing="0" class="component tabnavigation" align="center"><TR><TD class="tabnavigation"><A name="drugs" class="tabnavigation">DRUGS</A></TD></TR></TABLE></TD></TR></TABLE>'
-				assert_equal(expected, view.to_html(CGI.new))
+				assert_equal(@expect_nologo, view.to_html(CGI.new))
 			end
 			def test_display_sponsor
 				@session.sponsor = @comp
 				@comp.sponsor_until = Date.today
 				view = View::SponsorHead.new([@pac], @session)
-				expected = '<TABLE cellspacing="0" class="composite"><TR><TD class="logo"><A><IMG class="logo" src="logo_drugs/" alt="LOGO"></A></TD><TD class="logo-r"><IMG src="sponsor/sponsorlogo" alt="sponsorlogo">SPONSOR_UNTIL</TD></TR><TR><TD>&nbsp;</TD><TD class="tabnavigation-right" align="center"><TABLE cellspacing="0" class="component tabnavigation" align="center"><TR><TD class="tabnavigation"><A name="drugs" class="tabnavigation">DRUGS</A></TD></TR></TABLE></TD></TR></TABLE>'
-				assert_equal(expected, view.to_html(CGI.new))
+				html = view.to_html(CGI.new)
+				assert_not_nil(/<IMG src="sponsor.sponsorlogo" alt="sponsorlogo">SPONSOR_UNTIL/.match(html), html)
 			end
 		end
 	end

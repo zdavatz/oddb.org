@@ -1,9 +1,6 @@
 #!/usr/bin/env ruby
 # -- oddb -- 24.05.2005 -- jlang@ywesee.com, usenguel@ywesee.com
 
-require 'util/oddbapp'
-require 'state/admin/global'
-
 module ODDB
 	module View
 		module Personal

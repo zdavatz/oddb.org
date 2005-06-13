@@ -79,10 +79,10 @@ module ODDB
 				}
 				expected = [
 					'<TABLE cellspacing="0" class="navigation-foot" valign="bottom">',
-					'<TD class="navigation"><A name="foo" class="navigation">Foo</A></TD>',
+					'<TD><A name="foo" class="navigation">Foo</A></TD>',
 					'<TD>&nbsp;|&nbsp;</TD>',
-					'<TD class="navigation"><A name="bar" href="/de/gcc/bar" class="navigation">Bar</A></TD>',
-					'<TD class="navigation"><A name="baz" href="/de/gcc/baz" class="navigation">Baz</A></TD>',
+					'<TD><A name="bar" href="/de/gcc/bar" class="navigation">Bar</A></TD>',
+					'<TD><A name="baz" href="/de/gcc/baz" class="navigation">Baz</A></TD>',
 				]
 				expected.each { |line|
 					assert(result.index(line), "expected #{line} in \n#{result}")

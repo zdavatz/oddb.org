@@ -10,6 +10,10 @@ module ODDB
 		class FachinfoPDFWriter < Writer
 			include FachinfoWriterMethods
 			include Rpdf2txt::DefaultHandler
+			def initialize(*args)
+				super
+				@chars_since_last_linebreak = 0
+			end
 			def new_font(font)
 				if(@font)
 					self.add_text
@@ -17,7 +21,9 @@ module ODDB
 				@font = font
 			end
 			def add_text
+				#puts "add_text called with @src #@src and format:"
 				if(@font.bold? && @font.italic?)
+					#puts "bi"
 					heading = self.src.strip
 					unless(heading.empty?)
 						@chapter = next_chapter
@@ -26,8 +32,10 @@ module ODDB
 						@section = @chapter.next_section
 					end
 				elsif(@font.bold?)
+					#puts "b"
 					@name = self.src.strip
 				elsif(@font.italic?)
+					#puts "i"
 					if(@fresh_paragraph)
 						@section = @chapter.next_section
 						@section.subheading << self.src
@@ -38,6 +46,7 @@ module ODDB
 						@paragraph.reduce_format(:italic)
 					end
 				else
+					#puts "none"
 					str_check = self.src.strip
 					font_name = @font.basefont_name
 					courier = !/courier/i.match(font_name).nil?
@@ -68,7 +77,8 @@ module ODDB
 							@preformatted = true
 							@paragraph << "\n"
 						else
-							str.gsub!("\n","")
+							str.gsub!(/-\n/, "-")
+							str.gsub!(/ ?\n ?/, " ")
 							@preformatted = false
 						end
 						@paragraph << str
@@ -78,13 +88,35 @@ module ODDB
 				@src = ''
 			end
 			def send_flowing_data(data)
-				self.src << data
+				@chars_since_last_linebreak += data.size
+				self.src << data unless(/[kc]ompendium/i.match(data))
 			end
 			def send_page
+				## in newer fi-pdfs there is no change of font for 
+				## pagenumbers. Here in send_page we can recognize 
+				## and delete the page-numbering
+				if(pos = @src.index(/\w+\s+\d+$/))
+					@src[pos..-1] = ''
+				end
 				self.add_text
 			end
 			def send_line_break
-				self.src << "\n"
+				## After ther first period in 'Valid until' 
+				## we can go on to the next chapter
+				if(@chapter == @date && /\.\s*$/.match(self.src))
+					self.add_text
+					@chapter = next_chapter
+					@section = @chapter.next_section
+					@paragraph = @section.next_paragraph
+					@src = ''
+					return
+				end
+				if(@chars_since_last_linebreak < 80)
+					send_paragraph
+				else
+					self.src << "\n"
+				end
+				@chars_since_last_linebreak = 0
 			end
 			def send_paragraph
 				if(@wrote_section_heading && self.src.strip.empty?)

@@ -1060,7 +1060,8 @@ target_encoding: latin1
 				assert_equal(3, paragraph1.formats.size)
 				assert_equal([:symbol], paragraph1.formats.at(1).values)
 				paragraph2 = section2.paragraphs.at(1)
-				expected = '---------------------------------------------------- 
+				expected = <<-'EOS'
+---------------------------------------------------- 
              Mono-   Hercep-  Pacli-  Herce-  AC*    
              the-    tin +    taxel   ptin    allein 
              rapie   Pacli-   allein  + AC*          
@@ -1150,8 +1151,106 @@ Versehent-   6       13       3       9       4
  Verletzung  3       8        2       4       2      
 Allergische                                          
  Reaktion                                            
-----------------------------------------------------'
-				assert_equal(expected, paragraph2.text)
+----------------------------------------------------
+				EOS
+				expected = <<-'EOS'
+----------------------------------------------------
+             Mono-   Hercep-  Pacli-  Herce-  AC*
+             the-    tin +    taxel   ptin    allein
+             rapie   Pacli-   allein  + AC*
+                     taxel
+             n= 352  n= 91    n= 95   n= 143  n= 135
+----------------------------------------------------
+Blut und Lymphsystem
+Anämie       4       14       9       36      26
+Leuko-       3       24       17      52      34
+ penie
+----------------------------------------------------
+Stoffwechselstörungen
+
+Periphere    10      22       20      20      17
+ Ödeme
+Ödeme        8       10       8       11      5
+----------------------------------------------------
+Nervensystem
+Schlaf-      14      25       13      29      15
+störungen
+Benommenheit 13      22       24      24      18
+Parästhesie  9       48       39      17      11
+Depression   6       12       13      20      12
+Periphere    2       23       16      2       2
+ Neuritis
+Neuropathie  1       13       5       4       4
+----------------------------------------------------
+Herz/Kreislauf
+Tachykardie  5       12       4       10      5
+Chronische   7       11       1       28      7
+ Herzin-
+ suffizienz
+----------------------------------------------------
+Atmungsorgane
+Vermehrtes
+ Husten      26      41       22      43      29
+Dyspnoe      22      27       26      42      25
+Rhinitis     14      22       5       22      16
+Pharyngitis  12      22       14      30      18
+Sinusitis    9       21       7       13      6
+----------------------------------------------------
+Gastrointestinale Störungen
+Übelkeit     33      51       9       76      77
+Diarrhöe     25      45       29      45      26
+Erbrechen    23      37       28      53      49
+Übelkeit     8       14       11      18      9
+ und Er-
+ brechen
+Appetit-     14      24       16      31      26
+ verlust
+----------------------------------------------------
+Haut
+Hautaus-     18      38       18      27      17
+ schlag
+Herpes       2       12       3       7       9
+ simplex
+Akne         2       11       3       3       <1
+----------------------------------------------------
+Muskelskelettsystem
+Knochen-     7       24       18      7       7
+ schmerzen
+Arthralgie   6       37       21      8       9
+----------------------------------------------------
+Nieren u. Harnwege
+Harnwegs-
+ infektionen 5       18       14      13      7
+----------------------------------------------------
+Allgemeine Reaktionen
+Schmerzen    47      61       62      57      42
+Asthenie     42      62       57      54      55
+Fieber       36      49       23      56      34
+Schüttel-    32      41       4       35      11
+ frost
+Kopf-        26      36       28      44      31
+ schmerzen
+Bauch-       22      34       22      23      18
+
+ schmerzen
+Rücken-      22      34       30      27      15
+ schmerzen
+Infektion    20      47       27      47      31
+Grippe-      10      12       5       12      6
+ ähnliches
+ Syndrom
+Versehent-   6       13       3       9       4
+ liche
+ Verletzung  3       8        2       4       2
+Allergische
+ Reaktion
+----------------------------------------------------
+
+				EOS
+				result = paragraph2.text.split(/\n/)
+				expected.split(/\n/).each_with_index { |line, idx|
+					assert_equal(line.rstrip, result.at(idx).rstrip)
+				}
 			end
 		end
 		class TestFachinfoPDFWriterCetrin < Test::Unit::TestCase
@@ -1176,12 +1275,90 @@ Allergische
 				eval(File.read(path))
 				@fachinfo = @writer.to_fachinfo
 			end
-			def test_usage_velcade
+			def test_valid_until_velcade
 				chapter = @fachinfo.date
-				assert_equal(1, chapter.sections.size)
+				assert_equal(1, chapter.sections.size, chapter)
 				section = chapter.sections.first
-				assert_equal(1, section.paragraphs.size)
+				assert_equal(1, section.paragraphs.size, section)
 				assert_equal("Juni 2004.", section.to_s)
+			end
+		end
+		class TestFachinfoPDFWriterFursol < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_fursol.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_valid_until_fursol
+				chapter = @fachinfo.date
+				assert_equal(1, chapter.sections.size, chapter.inspect)
+				section = chapter.sections.first
+				assert_equal(1, section.paragraphs.size, section.inspect)
+				assert_equal("Dezember 2003.", section.to_s)
+			end
+			def test_no_page_numbers
+				@fachinfo.each_chapter { |chapter|
+					ch_str = chapter.to_s
+					assert_nil(/seite \d+/i.match(ch_str), ch_str)
+					assert_nil(/.*kompendium.*/i.match(ch_str), ch_str)
+				}
+			end
+			def test_correct_chapters
+				assert_equal("AMZV 9.11.2001", @fachinfo.amzv.heading)
+				assert_equal("Zusammensetzung", @fachinfo.composition.heading)
+				assert_equal("Galenische Form und Wirkstoffmenge pro Einheit",
+					@fachinfo.galenic_form.heading)
+				assert_equal("Indikationen/Anwendungsmöglichkeiten", 
+					@fachinfo.indications.heading)
+				assert_equal("Dosierung/Anwendung", @fachinfo.usage.heading)
+				assert_equal("Kontraindikationen", 
+					@fachinfo.contra_indications.heading)
+				assert_equal("Warnhinweise und Vorsichtsmassnahmen", 
+					@fachinfo.restrictions.heading)
+				assert_equal("Interaktionen", @fachinfo.interactions.heading)
+				assert_equal("Schwangerschaft/Stillzeit", 
+					@fachinfo.pregnancy.heading)
+				assert_equal("Wirkung auf die Fahrtüchtigkeit und auf das Bedienen von Maschinen", 
+					@fachinfo.driving_ability.heading)
+				assert_equal("Unerwünschte Wirkungen", 
+					@fachinfo.unwanted_effects.heading)
+				assert_equal("Überdosierung", @fachinfo.overdose.heading)
+				assert_equal("Eigenschaften/Wirkungen", 
+					@fachinfo.effects.heading)
+				assert_equal("Pharmakokinetik", @fachinfo.kinetic.heading)
+				assert_equal("Präklinische Daten", @fachinfo.preclinic.heading)
+				assert_equal("Sonstige Hinweise", 
+					@fachinfo.other_advice.heading)
+				assert_equal("Zulassungsvermerk", @fachinfo.iksnrs.heading)
+				assert_equal("Zulassungsinhaberin", 
+					@fachinfo.registration_owner.heading)
+				assert_equal("Stand der Information", @fachinfo.date.heading)
+			end
+			def test_linebreaks
+				chapter = @fachinfo.indications
+				assert_equal(2, chapter.sections.size)
+				section = chapter.sections.first
+				assert_equal(4, section.paragraphs.size)
+				section = chapter.sections.last
+				assert_equal(8, section.paragraphs.size)
+			end
+		end
+		class TestFachinfoPDFWriterFursolFr < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_fursol_fr.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_no_page_numbers
+				@fachinfo.each_chapter { |chapter|
+					ch_str = chapter.to_s
+					assert_nil(/page \d+/i.match(ch_str), ch_str)
+					assert_nil(/.*compendium.*/i.match(ch_str), ch_str)
+				}
 			end
 		end
 	end

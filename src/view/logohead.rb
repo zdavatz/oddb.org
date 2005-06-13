@@ -1,13 +1,21 @@
 #!/usr/bin/env ruby
 # View::LogoHead -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
 
+puts "going to get htmlgrid/composite"
 require 'htmlgrid/composite'
+puts "going to get view/logo"
 require 'view/logo'
+puts "going to get view/google_ad_sense"
 require 'view/google_ad_sense'
+puts "going to get view/personal.rb"
 require 'view/personal.rb'
+puts "going to get view/tab_navigation"
 require 'view/tab_navigation'
+puts "going to get view/searchbar"
 require 'view/searchbar'
+puts "going to get htmlgrid/link"
 require 'htmlgrid/link'
+puts "going to get view/language_chooser"
 require 'view/language_chooser'
 
 module ODDB

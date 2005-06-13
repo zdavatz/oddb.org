@@ -1,10 +1,18 @@
 #!/usr/bin/env ruby
 # View::PublicTemplate -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
 
+puts "publictemplate"
+
+puts "going to get htmlgrid/template"
 require 'htmlgrid/template'
+puts "going to get view/logohead"
 require 'view/logohead'
+puts "going to get view/navigationfoot"
 require 'view/navigationfoot'
+puts "going to get sbsm/time"
 require 'sbsm/time'
+
+puts "defining publictemplate"
 
 module ODDB
 	module View
@@ -64,3 +72,5 @@ module ODDB
 		end
 	end
 end
+
+puts "defined publictemplate"
