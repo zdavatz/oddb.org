@@ -83,6 +83,9 @@ class DoctorsComposite < Form
 		:map						=>	HtmlGrid::Link,
 		:vcard					=>	HtmlGrid::Link,
 	}
+	CSS_MAP = {
+		[0,0]	=> 'right',
+	}
 end
 class Doctors < View::ResultTemplate
 	CONTENT = View::Doctors::DoctorsComposite

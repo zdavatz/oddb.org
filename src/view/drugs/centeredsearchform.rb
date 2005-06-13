@@ -9,11 +9,12 @@ module ODDB
 	module View
 		module Drugs
 class CenteredSearchForm < View::CenteredSearchForm
+	CSS_CLASS = 'composite'
 	COMPONENTS = {
 		[0,0]			=>	View::TabNavigation,
 		[0,1]			=>	'search_type',
-		[0,2,1,2]	=>	:search_type,
-		[0,3,0,1]	=>	:search_query,
+		[0,2,0,1]	=>	:search_type,
+		[0,3,0,2]	=>	:search_query,
 		[0,4,0,3]	=>	:submit,
 		[0,4,0,4]	=>	:search_reset,
 	}
@@ -23,10 +24,10 @@ class CenteredSearchForm < View::CenteredSearchForm
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0]		=>	'component tabnavigation center',
-		[0,3]	=>	'search-center',
 	}
 	CSS_MAP = {
-		[0,1]			=>	'ccomponent',
+		[0,1]	=>	'ccomponent', ## gives a nice padding
+		[0,2,1,3]	=>	'search-center',
 	}
 	EVENT = :search
 end

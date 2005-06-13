@@ -158,6 +158,7 @@ class DoctorComposite < HtmlGrid::Composite
 	}	
 	CSS_MAP = {
 		[0,0]	=> 'th',
+		[0,3] => 'list',
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value

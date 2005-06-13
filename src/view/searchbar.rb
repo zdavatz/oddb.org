@@ -19,7 +19,6 @@ class SearchBar < HtmlGrid::InputText
 		@attributes.update({
 			'onFocus'	=>	"if (value=='#{val}') { value='' }",
 			'onBlur'	=>	"if (value=='') { value='#{val}' }",
-			#'tabIndex'=>	"1",
 		})
 		args = ['zone', @session.state.zone, @name, '']
 		submit = @lookandfeel.event_url(@container.event, args)
