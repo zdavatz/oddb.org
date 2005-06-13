@@ -48,13 +48,13 @@ module ODDB
 		def first_month
 			entry = @logs.collect { |key, entries|
 				entries.first
-			}.min
+			}.compact.min
 			Date.new(entry.year, entry.month)
 		end
 		def last_month
 			entry = @logs.collect { |key, entries|
 				entries.last
-			}.max
+			}.compact.max
 			Date.new(entry.year, entry.month)
 		end
 		def create_csv(app)

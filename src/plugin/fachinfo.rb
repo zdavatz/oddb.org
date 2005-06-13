@@ -137,12 +137,16 @@ module ODDB
 		def update
 			news = fachinfo_news
 			updates = true_news(news, old_news())
+			successes = []	
 			updates.each { |idx|
 				fetch_languages(idx)
 				languages = package_languages(idx)
-				update_registrations(languages) unless languages.empty?
+				unless languages.empty?
+					update_registrations(languages) 
+					successes.push(idx)
+				end
 			}
-			log_news(updates)
+			log_news(successes)
 			!updates.empty?
 		end
 		def update_all
