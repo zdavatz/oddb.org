@@ -21,9 +21,7 @@ module ODDB
 				@font = font
 			end
 			def add_text
-				#puts "add_text called with @src #@src and format:"
 				if(@font.bold? && @font.italic?)
-					#puts "bi"
 					heading = self.src.strip
 					unless(heading.empty?)
 						@chapter = next_chapter
@@ -32,10 +30,14 @@ module ODDB
 						@section = @chapter.next_section
 					end
 				elsif(@font.bold?)
-					#puts "b"
 					@name = self.src.strip
 				elsif(@font.italic?)
-					#puts "i"
+					## special case: italic after company-name is the 
+					## galenic_form-chapter of the pre AMZV-form of fi
+					if(@chapter == @company)
+						@chapter = next_chapter
+						@section = @chapter.next_section
+					end
 					if(@fresh_paragraph || @preformatted)
 						@section = @chapter.next_section
 						@section.subheading << self.src
@@ -46,7 +48,6 @@ module ODDB
 						@paragraph.reduce_format(:italic)
 					end
 				else
-					#puts "none"
 					str_check = self.src.strip
 					font_name = @font.basefont_name
 					courier = !/courier/i.match(font_name).nil?

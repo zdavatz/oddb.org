@@ -1361,5 +1361,22 @@ Allergische
 				}
 			end
 		end
+		class TestFachinfoPDFWriterTrileptal < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_trileptal.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_galenic_form
+				assert_equal("Trileptal\256", @fachinfo.name)
+				chapter = @fachinfo.galenic_form
+				assert_equal('', chapter.heading)
+				assert_equal(1, chapter.sections.size)
+				section = chapter.sections.first
+				assert_equal("Antiepileptikum\n", section.subheading)
+			end
+		end
 	end
 end
