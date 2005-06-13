@@ -998,9 +998,9 @@ module ODDB
 			Thread.new {
 				Thread.current.priority=-10
 				Thread.current.abort_on_exception = true
-				today = (17 > Time.now.hour) ? Date.today : Date.today.next
+				today = (10 > Time.now.hour) ? Date.today : Date.today.next
 				loop {
-					next_run = Time.local(today.year, today.month, today.day, 17)
+					next_run = Time.local(today.year, today.month, today.day, 10)
 					sleep(next_run - Time.now)
 					Exporter.new(self).mail_notification_stats
 					GC.start
