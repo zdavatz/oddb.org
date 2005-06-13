@@ -63,14 +63,15 @@ module ODDB
 		class CenteredSearchForm < HtmlGrid::Form
 			COMPONENTS = {
 				[0,0]			=>	View::TabNavigation,
-				[0,1,0,1]	=>	:search_query,
-				[0,2,0,2]	=>	:submit,
-				[0,2,0,3]	=>	:search_reset,
-				[0,2,0,4]	=>	:search_help,
+				[0,2,0,1]	=>	:search_query,
+				[0,3,0,2]	=>	:submit,
+				[0,3,0,3]	=>	:search_reset,
 			}
 			COMPONENT_CSS_MAP = {
 				[0,0]		=>	'component tabnavigation center',
-				[0,1]	=>	'search-center',
+			}
+			CSS_MAP = {
+				[0,2,1,2]	=>	'search-center',
 			}
 			EVENT = :search
 			FORM_METHOD = 'POST'

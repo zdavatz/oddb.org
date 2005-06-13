@@ -1220,7 +1220,8 @@ td.search {
 	padding-bottom : 5px;
 }
 td.search-center {
-	text-align : center;
+	float: center;
+	text-align: center;
 }
 input.small {
 	width : 40px;

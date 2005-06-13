@@ -7,22 +7,10 @@ require 'view/language_chooser'
 module ODDB
 	module View
 		module Substances
-class CenteredSearchForm < View::CenteredSearchForm
-	COMPONENTS = {
-		[0,0]		=>	View::TabNavigation,
-		[0,2]		=>	:search_query,
-		[0,3]		=>	:submit,
-		[0,3,1]	=>	:search_reset,
-	}
-	COMPONENT_CSS_MAP = {
-		[0,0]		=>	'component tabnavigation center'
-	}
-	EVENT = :search
-end
 class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENTS = { 
 		[0,0]		=>	:language_chooser,
-		[0,1]		=>	View::Substances::CenteredSearchForm,
+		[0,1]		=>	View::CenteredSearchForm,
 		[0,2]		=>	'substance_search_explain', 
 		[0,4]		=>	View::CenteredNavigation,
 		[0,5,3]	=>	:substance_count,
