@@ -19,6 +19,7 @@ class OddbPrevalence
 	end
 end
 module ODDB
+	ODDB_VERSION = 'version'
 	class App < SBSM::DRbServer
 		remove_const :RUN_CLEANER
 		remove_const :RUN_EXPORTER

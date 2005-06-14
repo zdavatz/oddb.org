@@ -24,7 +24,7 @@ module ODDB
 				par1.preformatted!
 				result = @view.paragraphs(CGI.new, [par1, par2])
 				expected = <<-EOS
-		<PRE>Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</PRE><BR><SPAN class="paragraph">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</SPAN>
+		<DIV class="preformatted">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</DIV><DIV class="paragraph">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</DIV>
 				EOS
 				assert_equal(expected.strip, result)
 			end
@@ -61,7 +61,7 @@ module ODDB
 				par.set_format
 				par << " Danke."
 				result = @view.paragraphs(CGI.new, [par])
-				expected = '<SPAN class="paragraph">Guten<SPAN style="font-style:italic;"> Tag</SPAN>! Guten<SPAN style="font-weight:bold;"> Abend</SPAN>! Guten<SPAN style="font-style:italic; font-weight:bold;"> Morgen!!!</SPAN> Danke.</SPAN>'
+				expected = '<DIV class="paragraph">Guten<SPAN style="font-style:italic;"> Tag</SPAN>! Guten<SPAN style="font-weight:bold;"> Abend</SPAN>! Guten<SPAN style="font-style:italic; font-weight:bold;"> Morgen!!!</SPAN> Danke.</DIV>'
 				assert_equal(expected, result)
 			end
 		end
