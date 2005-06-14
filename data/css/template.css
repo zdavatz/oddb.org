@@ -77,11 +77,10 @@ pre, div.preformatted {
 	text-align : left;
 	white-space : pre;
 }
-div.paragraph {
+span.paragraph {
 	font-style : normal;
 	font-size: $std_font_size;
-	padding-bottom : 0px;
-	margin-bottom: 4px;
+	padding-bottom: 4px;
 }
 
 /* standard-result-classes */

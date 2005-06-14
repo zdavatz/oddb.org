@@ -29,8 +29,13 @@ module ODDB
 						}
 					end
 				}
-				css = (paragraph.preformatted?) ? 'preformatted' : 'paragraph'
-				context.div({ 'class' => css }) { res }
+				if(paragraph.preformatted?)
+					context.div({ 'class' => 'preformatted' }) { res }
+				else
+					## this must be an inline element, to enable starting 
+					## paragraphs on the same line as the section-subheading
+					context.span({ 'class' => 'paragraph' }) { res }
+				end
 			end
 			def to_html(context)
 				html = ''
