@@ -17,6 +17,12 @@ module ODDB
 			def new_font(font)
 				if(@font)
 					self.add_text
+					## if the following is preformatted text, we would like to 
+					## know before the next call to add_text, e.g. for line_break
+					## and similar
+					if(/courier/i.match(font.basefont_name))
+						@preformatted = true
+					end
 				end
 				@font = font
 			end
@@ -57,7 +63,7 @@ module ODDB
 						str = self.src
 						@wrote_section_heading = false
 						#for the first paragraph after a preformated paragraph
-						if(!courier && @preformatted)
+						if(!(courier || symbol) && @preformatted)
 							@fresh_paragraph = true
 						end
 						if(@fresh_paragraph)
@@ -74,9 +80,11 @@ module ODDB
 							if(@paragraph.empty?)
 								str.strip!
 								@paragraph.preformatted!
+							elsif(!@paragraph.preformatted?)
+								@paragraph = @section.next_paragraph
+								@paragraph.preformatted!
 							end
-							@preformatted = true
-							@paragraph << "\n"
+							#@preformatted = true
 						else
 							str.gsub!(/-\n/, "-")
 							str.gsub!(/ ?\n ?/, " ")
@@ -112,8 +120,11 @@ module ODDB
 					@src = ''
 					return
 				end
-				if(!@preformatted && @chars_since_last_linebreak < 80)
-					send_paragraph
+				if(@preformatted)
+					self.add_text
+					@paragraph << "\n"
+				elsif(!@preformatted && @chars_since_last_linebreak < 80)
+					self.send_paragraph
 				else
 					self.src << "\n"
 				end

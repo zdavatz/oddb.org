@@ -1061,99 +1061,6 @@ target_encoding: latin1
 				assert_equal([:symbol], paragraph1.formats.at(1).values)
 				paragraph2 = section2.paragraphs.at(1)
 				expected = <<-'EOS'
----------------------------------------------------- 
-             Mono-   Hercep-  Pacli-  Herce-  AC*    
-             the-    tin +    taxel   ptin    allein 
-             rapie   Pacli-   allein  + AC*          
-                     taxel                           
-             n= 352  n= 91    n= 95   n= 143  n= 135 
----------------------------------------------------- 
-Blut und Lymphsystem                                 
-Anämie       4       14       9       36      26     
-Leuko-       3       24       17      52      34     
- penie                                               
-----------------------------------------------------
-Stoffwechselstörungen                                
-
-Periphere    10      22       20      20      17     
- Ödeme                                               
-Ödeme        8       10       8       11      5      
----------------------------------------------------- 
-Nervensystem                                         
-Schlaf-      14      25       13      29      15     
-störungen                                            
-Benommenheit 13      22       24      24      18     
-Parästhesie  9       48       39      17      11     
-Depression   6       12       13      20      12     
-Periphere    2       23       16      2       2      
- Neuritis                                            
-Neuropathie  1       13       5       4       4      
----------------------------------------------------- 
-Herz/Kreislauf                                       
-Tachykardie  5       12       4       10      5      
-Chronische   7       11       1       28      7      
- Herzin-                                             
- suffizienz                                          
----------------------------------------------------- 
-Atmungsorgane                                        
-Vermehrtes                                           
- Husten      26      41       22      43      29     
-Dyspnoe      22      27       26      42      25     
-Rhinitis     14      22       5       22      16     
-Pharyngitis  12      22       14      30      18     
-Sinusitis    9       21       7       13      6      
----------------------------------------------------- 
-Gastrointestinale Störungen                          
-Übelkeit     33      51       9       76      77     
-Diarrhöe     25      45       29      45      26     
-Erbrechen    23      37       28      53      49     
-Übelkeit     8       14       11      18      9      
- und Er-                                             
- brechen                                             
-Appetit-     14      24       16      31      26     
- verlust                                             
----------------------------------------------------- 
-Haut                                                 
-Hautaus-     18      38       18      27      17     
- schlag                                              
-Herpes       2       12       3       7       9      
- simplex                                             
-Akne         2       11       3       3       <1     
----------------------------------------------------- 
-Muskelskelettsystem                                  
-Knochen-     7       24       18      7       7      
- schmerzen                                           
-Arthralgie   6       37       21      8       9      
----------------------------------------------------- 
-Nieren u. Harnwege                                   
-Harnwegs-                                            
- infektionen 5       18       14      13      7      
----------------------------------------------------- 
-Allgemeine Reaktionen                                
-Schmerzen    47      61       62      57      42     
-Asthenie     42      62       57      54      55     
-Fieber       36      49       23      56      34     
-Schüttel-    32      41       4       35      11     
- frost                                               
-Kopf-        26      36       28      44      31     
- schmerzen                                           
-Bauch-       22      34       22      23      18     
-
- schmerzen                                           
-Rücken-      22      34       30      27      15     
- schmerzen                                           
-Infektion    20      47       27      47      31     
-Grippe-      10      12       5       12      6      
- ähnliches                                           
- Syndrom                                             
-Versehent-   6       13       3       9       4      
- liche                                               
- Verletzung  3       8        2       4       2      
-Allergische                                          
- Reaktion                                            
-----------------------------------------------------
-				EOS
-				expected = <<-'EOS'
 ----------------------------------------------------
              Mono-   Hercep-  Pacli-  Herce-  AC*
              the-    tin +    taxel   ptin    allein
@@ -1167,7 +1074,6 @@ Leuko-       3       24       17      52      34
  penie
 ----------------------------------------------------
 Stoffwechselstörungen
-
 Periphere    10      22       20      20      17
  Ödeme
 Ödeme        8       10       8       11      5
@@ -1231,7 +1137,6 @@ Schüttel-    32      41       4       35      11
 Kopf-        26      36       28      44      31
  schmerzen
 Bauch-       22      34       22      23      18
-
  schmerzen
 Rücken-      22      34       30      27      15
  schmerzen
@@ -1248,9 +1153,12 @@ Allergische
 
 				EOS
 				result = paragraph2.text.split(/\n/)
-				expected.split(/\n/).each_with_index { |line, idx|
+				control = expected.split(/\n/)
+				control.each_with_index { |line, idx|
+					assert_not_nil(result.at(idx), line)
 					assert_equal(line.rstrip, result.at(idx).rstrip)
 				}
+				assert_equal(result.size, control.size)
 			end
 		end
 		class TestFachinfoPDFWriterCetrin < Test::Unit::TestCase
@@ -1376,6 +1284,46 @@ Allergische
 				assert_equal(1, chapter.sections.size)
 				section = chapter.sections.first
 				assert_equal("Antiepileptikum\n", section.subheading)
+			end
+		end
+		class TestFachinfoPDFWriterLyrica < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_lyrica.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_preformatted
+				chapter = @fachinfo.usage
+				assert_equal(10, chapter.sections.size)
+				section = chapter.sections.at(5)
+				paragraph = section.paragraphs.at(0)
+				expected = "Anpassung der Pregabalin-Dosis in Abh\344ngigkeit von der Nierenfunktion."
+				assert_equal(expected, paragraph.to_s)
+				paragraph = section.paragraphs.at(1)
+				expected = <<-EOS
+----------------------------------------------------
+Kreatinin-  Gesamttagesdosis von        Dosisauf-
+Clearance   Pregabalin*                 teilung
+(CLcr)
+(ml/min)
+----------------------------------------------------
+            Anfangsdosis  Höchstdosis
+            (mg/Tag)      (mg/Tag)
+---------------------------------------------------- 
+>=60         150           600           in 2 oder 3
+                                        Einzeldosen
+----------------------------------------------------
+30-60       75            300           in 2 oder 3
+                                        Einzeldosen
+----------------------------------------------------
+				EOS
+				lines = paragraph.to_s.split(/\n/)
+				expected.split(/\n/).each_with_index { |line, idx|
+					assert_not_nil(lines[idx], line)
+					assert_equal(line.rstrip, lines[idx].rstrip)
+				}
 			end
 		end
 	end

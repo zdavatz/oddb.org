@@ -67,19 +67,21 @@ div.section {
 	font-size: 13px;
 	font-style : italic;
 	line-height : 120%;
-	margin-bottom : 8px;
+	margin-top : 4px;
 }
-pre {
+pre, div.preformatted {
 	font-style : normal;
+	font-family: Courier New, Courier, monospace;
 	font-size: $std_font_size;
 	margin-top : 0px;
 	text-align : left;
 	white-space : pre;
 }
-span.paragraph {
+div.paragraph {
 	font-style : normal;
 	font-size: $std_font_size;
-	padding-bottom : 16px;
+	padding-bottom : 0px;
+	margin-bottom: 4px;
 }
 
 /* standard-result-classes */

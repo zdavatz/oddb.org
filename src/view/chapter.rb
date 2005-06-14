@@ -29,7 +29,8 @@ module ODDB
 						}
 					end
 				}
-				context.span({ 'class' => 'paragraph' }) { res }
+				css = (paragraph.preformatted?) ? 'preformatted' : 'paragraph'
+				context.div({ 'class' => css }) { res }
 			end
 			def to_html(context)
 				html = ''
@@ -56,13 +57,11 @@ module ODDB
 				attr = { 'class' => 'paragraph' }
 				paragraphs.collect { |paragraph|
 					if(paragraph.is_a? Text::ImageLink)
-						context.p(attr) { context.img(paragraph.attributes) }
-					elsif(paragraph.preformatted?)
-						context.pre	{ self.escape(paragraph) }
+						context.div(attr) { context.img(paragraph.attributes) }
 					else
 						formats(context, paragraph)
 					end
-				}.join(context.br)
+				}.join
 			end
 		end
 	end
