@@ -251,15 +251,15 @@ class RootCompanyComposite < View::Companies::CompanyComposite
 end
 class UnknownCompany < View::PrivateTemplate
 	CONTENT = View::Companies::UnknownCompanyComposite
-	SNAPBACK_EVENT = :result
+	SNAPBACK_EVENT = :home_companies
 end
 class UserCompany < View::PrivateTemplate
 	CONTENT = View::Companies::UserCompanyComposite
-	SNAPBACK_EVENT = :result
+	SNAPBACK_EVENT = :home_companies
 end
 class RootCompany < View::PrivateTemplate
 	CONTENT = View::Companies::RootCompanyComposite
-	SNAPBACK_EVENT = :result
+	SNAPBACK_EVENT = :home_companies
 end
 		end
 	end

@@ -9,10 +9,10 @@ module ODDB
 				div = HtmlGrid::Div.new(model, session, self)
 				div.css_class = 'personal'
 			  if(user.is_a? ODDB::CompanyUser)
-					div.value = "#{@lookandfeel.lookup(:welcome)} #{user.model.contact}"
+					div.value = "#{@lookandfeel.lookup(:welcome)} #{user.model.contact} !"
 					div
 				elsif(user.is_a? ODDB::User)
-					div.value = "#{@lookandfeel.lookup(:welcome)} #{user.unique_email}"
+					div.value = "#{@lookandfeel.lookup(:welcome)} #{user.unique_email} !"
 					div
 				end
 			end
