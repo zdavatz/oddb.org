@@ -13,6 +13,23 @@ module ODDB
 			def initialize(*args)
 				super
 				@chars_since_last_linebreak = 0
+				@tableheader_lineno = nil
+			end
+			def detect_tableheader?
+				## ignore empty lines at the start of the page
+				if(@tableheader_lineno == 0 && @src.strip.empty?)
+					return true
+				end
+				lines = @paragraph.to_s.split("\n")
+				if(@tableheader_lineno \
+					&& (line = lines.at(@tableheader_lineno)) \
+					&& line.strip == @src.strip)
+					@tableheader_lineno += 1
+					true
+				else
+					@tableheader_lineno = nil
+					false
+				end
 			end
 			def new_font(font)
 				if(@font)
@@ -108,6 +125,9 @@ module ODDB
 					@src[pos..-1] = ''
 				end
 				self.add_text
+				if(@preformatted)
+					@tableheader_lineno = 0
+				end
 			end
 			def send_line_break
 				## After ther first period in 'Valid until' 
@@ -121,12 +141,16 @@ module ODDB
 					return
 				end
 				if(@preformatted)
-					self.add_text
-					@paragraph << "\n"
+					if(detect_tableheader?)
+						@src = ''
+					else
+						self.add_text
+						@paragraph << "\n"
+					end
 				elsif(!@preformatted && @chars_since_last_linebreak < 80)
 					self.send_paragraph
-				else
-					self.src << "\n"
+				elsif(!/[\s-]$/.match(self.src))
+					self.src << " "
 				end
 				@chars_since_last_linebreak = 0
 			end

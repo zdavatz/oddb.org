@@ -1326,5 +1326,164 @@ Clearance   Pregabalin*                 teilung
 				}
 			end
 		end
+		class TestFachinfoPDFWriterValcyte < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_valcyte.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_table_header_detection
+				chapter = @fachinfo.unwanted_effects
+				assert_equal(27, chapter.sections.size)
+				section = chapter.sections.at(5)
+				expected = "Tabelle 2: Prozentsatz der Patienten mit unerwünschten Wirkungen, die bei Patienten mit einer CMV-Retinitis oder nach Organtransplantation innerhalb von klinischen Studien mit Valganciclovir auftraten"
+				assert_equal(expected, section.subheading.to_s)
+				paragraph = section.paragraphs.at(0)
+				expected = <<-EOS
+----------------------------------------------------
+                   Patienten  Patienten nach solider
+                   mit CMV    Organtransplantation  
+                   Retinitis                        
+----------------------------------------------------
+                   Valganci-  Valganci-  Orales     
+                   clovir     clovir     Ganci-     
+                                         clovir     
+----------------------------------------------------
+Unerwünschte                                        
+Wirkungen nach                                      
+einzelnen          n= 370     n= 244     n= 126     
+Organsystemen      %          %          %          
+----------------------------------------------------
+Gastrointestinaltrakt                               
+Diarrhöe           38         30         29         
+Übelkeit           25         23         23         
+Orale Candidiasis  20         3          3          
+Erbrechen          20         16         14         
+Bauchschmerzen     13         14         14         
+Oberbauchschmerzen 6          9          6          
+Obstipation        6          20         20         
+Dyspepsie          4          12         10         
+Bauchauftreibung   2          6          6          
+Ascites            -          9          6          
+----------------------------------------------------
+Gesamtorganismus                                    
+Fieber             26         13         14         
+Müdigkeit          20         13         15         
+Kopfschmerzen      18         22         22         
+Influenza          9          -          -          
+Gewichtsabnahme    9          3          3          
+Verminderter                                        
+ Appetit           8          4          5          
+Rückenschmerzen    8          20         15         
+Dehydratation      6          5          6          
+Anorexie           5          3          -          
+Kachexie           5          -          -          
+Beinödeme          5          21         16         
+Schmerzen          3          5          7          
+Oedeme             -          11         9          
+Periphere Oedeme   -          6          7          
+Schwäche           -          6          6          
+----------------------------------------------------
+Blut- und Lymphsystem                               
+Neutropenie        24         8          3          
+Anämie             22         12         15         
+Thrombozytopenie   5          5          5          
+Leukopenie         4          14         7          
+----------------------------------------------------
+Haut und Anhangsgebilde                             
+Dermatitis         18         4          5          
+Nachtschweiss      7          3          4          
+Pruritus           6          7          4          
+Akne               -          4          6          
+----------------------------------------------------
+Atemwege                                            
+Husten             16         6          8          
+Pharyngitis/                                        
+ Nasopharyngitis   12         4          8          
+Infektion im                                        
+ oberen Respira-                                    
+ tionstrakt        9          7          7          
+Dyspnöe            9          11         10         
+Pneumonie          7          4          2          
+Bronchitis         6          -          1          
+Pneumocystis-ca-                                    
+ rinii-Pneumonie   6          -          -          
+Husten mit Auswurf 5          2          2          
+Rhinorrhöe         2          4          6          
+Pleuraerguss       -          7          8          
+----------------------------------------------------
+Zentrales und peripheres Nervensystem               
+Schlafstörungen    14         20         16         
+Schwindel          9          10         6          
+Depression         9          7          6          
+Periphere Neuro-                                    
+ pathie            7          1          1          
+Parästhesie        6          5          5          
+Tremor             2          28         25         
+----------------------------------------------------
+Sinnesorgane                                        
+Makuläre Ödeme     4          -          -          
+Netzhautablösung   13         -          -          
+Sinusitis          10         3          -          
+Verschwommensehen  6          1          4          
+----------------------------------------------------
+Bewegungsapparat                                    
+Arthralgie         6          7          7          
+Muskelkrämpfe      2          6          11         
+Gliederschmerzen   -          5          7          
+----------------------------------------------------
+Urogenitaltrakt                                     
+Beeinträchtigung                                    
+ der Nieren-                                        
+ funktion          -          7          12         
+Dysurie            2          7          6          
+Harnwegsinfektion  5          11         9          
+----------------------------------------------------
+Störungen des Immunsystems                          
+Abstossungs-                                        
+ reaktion          -          24         30         
+----------------------------------------------------
+Kardiovaskuläre Störungen                           
+Hypertension       -          18         15         
+----------------------------------------------------
+Stoffwechsel- und Ernährungsstörungen               
+Hyperkaliämie      -          14         14         
+Hypokaliämie       -          8          8          
+Hypomagnesiämie    -          8          8          
+Hyperglykämiae     -          6          7          
+Hypophosphatämie   -          9          6          
+Hypokalziämie      -          4          6          
+----------------------------------------------------
+Leber- und Gallenstörungen                          
+Leberfunktions-                                     
+ störungen         3          9          11         
+----------------------------------------------------
+Chirurgische und medizinische Eingriffe             
+Postoperative                                       
+ Komplikationen    -          12         8          
+Postoperative                                       
+ Schmerzen         -          13         7          
+Postoperative                                       
+ Wundinfektionen   -          11         6          
+----------------------------------------------------
+Verletzung, Vergiftung und Komplikation             
+bei Eingriffen                                      
+Erhöhte Wund-                                       
+ drainage          -          5          9          
+Wunddehiszenz      -          5          6          
+----------------------------------------------------
+Vaskuläre Störungen                                 
+Hypotension        -          3          8          
+----------------------------------------------------
+				EOS
+				lines = paragraph.to_s.split(/\n/)
+				expected.split(/\n/).each_with_index { |line, idx|
+					assert_not_nil(lines[idx], line)
+					assert_equal(line.rstrip, lines[idx].rstrip)
+				}
+			end
+		end
 	end
 end
