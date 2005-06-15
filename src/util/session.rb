@@ -6,6 +6,7 @@ require 'custom/lookandfeelfactory'
 require 'state/states'
 require 'util/validator'
 require 'model/user'
+require 'fileutils'
 #require 'benchmark'
 
 module ODDB
@@ -18,18 +19,36 @@ module ODDB
 		DEFAULT_ZONE = :drugs
 		SERVER_NAME = 'www.oddb.org'
 		PERSISTENT_COOKIE_NAME = 'oddb-preferences'
+		path = File.expand_path('../../log/request_log', 
+			File.dirname(__FILE__))
+		FileUtils.mkdir_p(File.dirname(path))
+		@@request_log = File.open(path, 'a')
 		def process(request)
 			@request = request
+			@request_id = request.object_id
+			@request_path = request.unparsed_uri
+			@process_start = Time.now
 			if(is_crawler?)
 				Thread.current.priority = -1
 			end
 			super
+		ensure
+			request_log('PRCS')
+		end
+		def request_log(phase)
+			bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
+			@@request_log.puts(sprintf("%10i %10i %4i %6iMB %s %s",
+				self.object_id, @request_id, Time.now - @process_start, 
+				bytes / (2**20), phase, @request_path))
+			@@request_log.flush
 		end
 		def to_html
 			if(is_crawler?)
 				Thread.current.priority = -1
 			end
 			super
+		ensure
+			request_log('HTML')
 		end
 		def initialize(key, app, validator=nil)
 			super(key, app, validator)
