@@ -30,6 +30,8 @@ module ODDB
 				'User-Agent'=>	'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1) ',
 				'Accept'		=>	'image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, */* ',
 			}
+			@successes = []	
+			@failures = []	
 		end
 		def extract_iksnrs(languages)
 			iksnrs = []
@@ -119,7 +121,9 @@ module ODDB
 				"Unknown Iks-Numbers: #{unknown_size}",
 				unknown, nil,
 				"Fachinfo without iksnrs: #{@iksless.size}",
-				@iksless.join("\n"),
+				@iksless.join("\n"), nil,
+				"Parse Errors: #{@failures.size}", 
+				@failures.join("\n"), 
 			].join("\n")
 		end
 		def store_fachinfo(languages)
@@ -137,16 +141,17 @@ module ODDB
 		def update
 			news = fachinfo_news
 			updates = true_news(news, old_news())
-			successes = []	
 			updates.each { |idx|
 				fetch_languages(idx)
 				languages = package_languages(idx)
-				unless languages.empty?
+				if(languages.empty?)
+					@failures.push(idx)
+				else
 					update_registrations(languages) 
-					successes.push(idx)
+					@successes.push(idx)
 				end
 			}
-			log_news(successes)
+			log_news(updates)
 			!updates.empty?
 		end
 		def update_all

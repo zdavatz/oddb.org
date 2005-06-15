@@ -984,9 +984,11 @@ module ODDB
 			Thread.new {
 				Thread.current.priority=-10
 				Thread.current.abort_on_exception = true
-				today = (EXPORT_HOUR > Time.now.hour) ? Date.today : Date.today.next
+				today = (EXPORT_HOUR > Time.now.hour) ? \
+					Date.today : Date.today.next
 				loop {
-					next_run = Time.local(today.year, today.month, today.day, EXPORT_HOUR)
+					next_run = Time.local(today.year, today.month, today.day, 
+						EXPORT_HOUR)
 					sleep(next_run - Time.now)
 					Exporter.new(self).run
 					GC.start
@@ -1009,14 +1011,25 @@ module ODDB
 			}
 		end
 		def run_updater
+			update_hour = rand(24)
+			update_min = rand(60)
 			Thread.new {
 				Thread.current.priority=-5
 				Thread.current.abort_on_exception = true
+				today = (update_hour > Time.now.hour) ? \
+					Date.today : Date.today.next
 				loop {
+					next_run = Time.local(today.year, today.month, today.day, 
+						update_hour, update_min)
+					puts "next update will take place at #{next_run}"
+					$stdout.flush
+					sleep(next_run - Time.now)
 					Updater.new(self).run
 					@system.recount
 					GC.start
-					sleep UPDATE_INTERVAL
+					today = Date.today.next
+					update_hour = rand(24)
+					update_min = rand(60)
 				}
 			}
 		end
