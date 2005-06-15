@@ -37,7 +37,7 @@ module ODDB
 		end
 		def request_log(phase)
 			bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
-			@@request_log.puts(sprintf("%10i %10i %4i %6iMB %s %s",
+			@@request_log.puts(sprintf("session:%12i request:%12i time:%4is mem:%6iMB %s %s",
 				self.object_id, @request_id, Time.now - @process_start, 
 				bytes / (2**20), phase, @request_path))
 			@@request_log.flush
