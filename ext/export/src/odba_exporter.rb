@@ -61,7 +61,8 @@ module ODDB
 			FileUtils.mkdir_p(dir)
 			Tempfile.open(name, dir) { |fh|
 				odba_ids.each { |odba_id|
-					fh.puts ODBA.cache_server.fetch(odba_id, nil).to_yaml
+					YAML.dump(ODBA.cache_server.fetch(odba_id, nil), fh)
+					ODBA.cache_server.clear
 				}
 				newpath = File.join(dir, name)
 				FileUtils.mv(fh.path, newpath)
@@ -86,6 +87,7 @@ module ODDB
 					files.each { |file, table|
 						file.puts table.lines(item)
 					}
+					ODBA.cache_server.clear
 				}
 			end
 			files.each { |file, table|

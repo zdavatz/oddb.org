@@ -21,7 +21,6 @@ module ODDB
 			}
 			export_yaml
 			export_oddbdat
-			EXPORT_SERVER.clear
 		rescue StandardError => e
 			log = Log.new(Date.today)
 			log.report = [
@@ -36,19 +35,29 @@ module ODDB
 		def export_oddbdat
 			exporter = OdbaExporter::OddbDatExport.new(@app)
 			exporter.export
+			EXPORT_SERVER.clear
+			sleep(30)
 			run_on_weekday(1) {
 				exporter.export_fachinfos
+				EXPORT_SERVER.clear
+				sleep(30)
 			}
 		end
 		def export_yaml
 			exporter = YamlExporter.new(@app)
 			exporter.export
 			exporter.export_atc_classes
+			EXPORT_SERVER.clear
+			sleep(30)
 			run_on_weekday(2) {
 				exporter.export_fachinfos
+				EXPORT_SERVER.clear
+				sleep(30)
 			}
 			run_on_weekday(3) {
 				exporter.export_patinfos
+				EXPORT_SERVER.clear
+				sleep(30)
 			}
 		end
 		def export_pdf
