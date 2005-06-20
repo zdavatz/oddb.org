@@ -60,9 +60,12 @@ module ODDB
 		end
 		def fetch_languages(idx)
 			host = "www.kompendium.ch"
+			urls = []
 			successes = LANGUAGES.select { |lang|
-				ln = lang[0,1]
-				url = sprintf("/data/fi_%s_pdf/%sk%s_.pdf", ln, ln, idx)
+				url = sprintf(
+					"/FrmMainMonographie.aspx?Id=%s&lang=%s&MonType=fi", 
+					idx, lang)
+				urls.push(url)
 				http_file(host, url, target(lang, idx), nil, @hdrs)
 			}
 			if(successes.empty?)
