@@ -29,6 +29,7 @@ class OddbPrevalence
 	ODBA_EXCLUDE_VARS = [
 		"@atc_chooser", "@bean_counter",
 	]
+	ODBA_SERIALIZABLE = [ '@currency_rates' ]
 	attr_reader :galenic_groups, :companies, :doctors
 	attr_reader	:atc_classes, :last_update, :hospitals
 	attr_reader :atc_chooser, :registrations
@@ -47,6 +48,7 @@ class OddbPrevalence
 		@atc_classes ||= {}
 		@patinfos_deprived_sequences ||= []
 		@companies ||= {}
+		@currency_rates ||= {}
 		@cyp450s ||= {}
 		@fachinfos ||= {}
 		@doctors ||= {}
@@ -722,6 +724,12 @@ class OddbPrevalence
 		@registrations.values.inject([]) { |inj, reg|
 			inj + reg.sequences.values
 		}
+	end
+	def set_currency_rate(symbol, value)
+		@currency_rates.store(symbol, value)
+	end
+	def get_currency_rate(symbol)
+		@currency_rates[symbol]
 	end
 	def slate(name)
 		@slates[name]
