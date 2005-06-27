@@ -27,11 +27,12 @@ module ODDB
 			:sponsor_until,
 		]
 		ENUMS = {
-			:business_area=>	[nil, 'ba_hospital', 'ba_pharma', 'ba_health',
+			:business_area =>	[nil, 'ba_hospital', 'ba_pharma', 'ba_health',
 				'ba_doctor', ],
 			:cl_status		=>	['false', 'true'],
 			:complementary_type =>	[nil, 'anthroposophy', 'homeopathy', 
 				'phytotherapy', ],
+			:currency			=>  ['CHF', 'EUR', 'USD'],
 			:search_type	=>	['st_oddb', 'st_sequence', 
 				'st_substance', 'st_company', 'st_indication'],
 			:fi_status		=>	['false', 'true'],

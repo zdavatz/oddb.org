@@ -14,17 +14,24 @@ module ODDB
 			end
 			private
 			def formatted_price(key, model)
-				value = model.send(key).to_i
-				if(value != 0)
-					price_chf = model.send(key).to_i
-					price_euro = price_to_euro(price_chf)
-					price_usd = price_to_usd(price_chf)
+				price_chf = model.send(key).to_i
+				if(price_chf != 0)
+					prices = {
+						'CHF'	=>	price_chf,
+						'EUR'	=>	price_to_euro(price_chf),
+						'USD'	=>	price_to_usd(price_chf),
+					}
+					prices.dup.each { |cur, val|
+						prices.store(cur, @lookandfeel.format_price(val))
+					}
+					display = prices.delete(@session.currency)
 					span = HtmlGrid::Span.new(model, @session, self)
 					price = HtmlGrid::NamedComponent.new(key, model, @session, self)
-					price.value = @lookandfeel.format_price(value)
+					price.value = display
 					price.label = true
 					span.value = price
-					span.set_attribute('title', "USD: #{price_usd} / EURO: #{price_euro}")
+					title = prices.sort.collect { |pair| pair.join(': ') }.join(' / ')
+					span.set_attribute('title', title)
 					span
 				else
 					link = HtmlGrid::Link.new(:price_request, model, @session, self)
@@ -39,12 +46,10 @@ module ODDB
 				end
 			end
 			def price_to_euro(price)
-				result = price * @session.get_currency_rate('EUR')
-				@lookandfeel.format_price(result)
+				price * @session.get_currency_rate('EUR')
 			end
 			def price_to_usd(price)
-				result = price * @session.get_currency_rate('USD')
-				@lookandfeel.format_price(result)
+				price * @session.get_currency_rate('USD')
 			end
 		end
 	end

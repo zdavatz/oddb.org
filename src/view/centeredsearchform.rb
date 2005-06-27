@@ -98,7 +98,7 @@ module ODDB
 		end
 		class CenteredSearchComposite < HtmlGrid::Composite
 			include LegalNoteLink
-			include LanguageChooserFactory
+			include UserSettings 
 			COMPONENTS = {}
 			CSS_CLASS = 'composite'
 			CSS_MAP = {

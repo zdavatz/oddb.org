@@ -18,6 +18,9 @@ module ODDB
 				:'u-z'										=>	'u-z',
 				:'0-9'										=>	'0-9',
 				:'|unknown'								=>	'andere',
+				:CHF											=>  'CHF',
+				:EUR											=>  'EUR',
+				:USD											=>  'USD',
 				:a												=>	'A',
 				:b												=>	'B',
 				:c												=>	'C',
@@ -2230,5 +2233,8 @@ module ODDB
 			:plugin_download_gif => 'plugins/oddb.org.gif',
 			:sponsor				=>	'sponsor',
 		}
+		def currencies
+			['CHF', 'EUR', 'USD']
+		end
 	end
 end
