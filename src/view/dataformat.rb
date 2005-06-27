@@ -18,8 +18,8 @@ module ODDB
 				if(price_chf != 0)
 					prices = {
 						'CHF'	=>	price_chf,
-						'EUR'	=>	price_to_euro(price_chf),
-						'USD'	=>	price_to_usd(price_chf),
+						'EUR'	=>	convert_price(price_chf, 'EUR'),
+						'USD'	=>	convert_price(price_chf, 'USD'),
 					}
 					prices.dup.each { |cur, val|
 						prices.store(cur, @lookandfeel.format_price(val))
@@ -45,11 +45,10 @@ module ODDB
 					link
 				end
 			end
-			def price_to_euro(price)
-				price * @session.get_currency_rate('EUR')
-			end
-			def price_to_usd(price)
-				price * @session.get_currency_rate('USD')
+			def convert_price(price, currency)
+				if(rate = @session.get_currency_rate(currency))
+					price * rate
+				end
 			end
 		end
 	end
