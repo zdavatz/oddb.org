@@ -325,6 +325,9 @@ class OddbPrevalence
 		user = ODDB::CompanyUser.new
 		@users.store(user.oid, user)
 	end
+	def currencies
+		@currency_rates.keys.sort
+	end
 	def delete_atc_class(atccode)
 		atc = @atc_classes[atccode]
 		@atc_chooser.delete(atccode)
@@ -468,6 +471,9 @@ class OddbPrevalence
 	end
 	def generic_group(package_pointer)
 		@generic_groups[package_pointer]
+	end
+	def get_currency_rate(symbol)
+		@currency_rates[symbol]
 	end
 	def incomplete_registration(oid)
 		@incomplete_registrations[oid.to_i]
@@ -727,9 +733,6 @@ class OddbPrevalence
 	end
 	def set_currency_rate(symbol, value)
 		@currency_rates.store(symbol, value)
-	end
-	def get_currency_rate(symbol)
-		@currency_rates[symbol]
 	end
 	def slate(name)
 		@slates[name]

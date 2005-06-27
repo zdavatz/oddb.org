@@ -22,10 +22,12 @@ module ODDB
 			GOOGLE_HEIGHT = '60'
 		end
 		class LogoHead < CommonLogoHead
-			include LanguageChooserFactory
+			include UserSettings
 			COMPONENTS = {
 				[0,0]		=>	View::Logo,
 				[0,1]		=>	:language_chooser,
+				[0,1,1]	=>  :dash_separator,
+				[0,1,2]	=>	:currency_switcher,
 				[1,0]		=>	:ad_sense,
 				[1,0,2]	=>	:welcome,
 				[1,1]		=>	View::TabNavigation,
@@ -37,6 +39,8 @@ module ODDB
 			}
 			COMPONENT_CSS_MAP = {
 				[0,1] =>	'component',
+				[0,1,1] =>	'component',
+				[0,1,2] =>	'component',
 			}
 		end
 		class PopupLogoHead < CommonLogoHead
