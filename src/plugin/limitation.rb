@@ -327,14 +327,15 @@ module ODDB
 		end
 		def update_packages(data_hsh)
 			data_hsh.each { |ikskey, values|
-				if((reg = @app.registration(ikskey[0])) \
-					&& (pack = reg.package(ikskey[1])))
-					update_package(pack, values)
-				elsif(ikskey[1] == '000')
-					## vaccines and blood-substitutes have no ikscd
-					reg.each_package { |pack|
+				if(reg = @app.registration(ikskey[0]))
+					if(pack = reg.package(ikskey[1]))
 						update_package(pack, values)
-					}
+					elsif(ikskey[1] == '000')
+						## vaccines and blood-substitutes have no ikscd
+						reg.each_package { |pack|
+							update_package(pack, values)
+						}
+					end
 				end
 			}
 		end

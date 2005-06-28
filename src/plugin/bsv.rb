@@ -455,6 +455,7 @@ end
 			@guessed_packages = []
 			@unknown_packages = []
 			@unknown_registrations = []
+			@parse_errors = []
 		end
 		def report
 			successful = @successful_updates.collect { |pac| 
@@ -469,6 +470,9 @@ end
 			packages = @unknown_packages.collect { |pac| 
 				report_format(pac).join("\n")
 			}
+			parse_errors = @parse_errors.collect { |triplet|
+				sprintf("%-15s '%20s' '%s'", *triplet)
+			}
 			package_diffs = @package_diffs.values.collect { |diff| 
 				diff.to_s unless diff.empty?
 			}.compact.sort
@@ -477,6 +481,7 @@ end
 				"Guessed Packages:      #{@guessed_packages.size.to_s.rjust(5)}", 
 				"Unknown Registrations: #{@unknown_registrations.size.to_s.rjust(5)}",
 				"Unknown Packages:      #{@unknown_packages.size.to_s.rjust(5)}",
+				"Parse Errors:          #{@parse_errors.size.to_s.rjust(5)}",
 				nil, nil, nil,
 				"Successful Updates:    #{@successful_updates.size.to_s.rjust(5)}", 
 				successful.join("\n\n"),
@@ -489,6 +494,9 @@ end
 				nil, nil, nil,
 				"Unknown Packages:      #{@unknown_packages.size.to_s.rjust(5)}",
 				packages.join("\n\n"),
+				nil, nil, nil,
+				"Parse Errors:          #{@parse_errors.size.to_s.rjust(5)}",
+				parse_errors.join("\n"),
 				nil, nil, nil,
 				"Differences:",
 				package_diffs.join("\n\n"),
@@ -632,6 +640,8 @@ end
 					end
 				end
 			end
+		rescue ParseException, AmbigousParseException => err
+			@parse_errors.push([err.klass.to_s, package.name, match[2]])
 		end
 		def load_database(path)
 			workbook = Spreadsheet::ParseExcel.parse(path)

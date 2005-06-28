@@ -28,8 +28,8 @@ module ODDB
 					span = HtmlGrid::Span.new(model, @session, self)
 					price = HtmlGrid::NamedComponent.new(key, model, @session, self)
 					price.value = display
-					price.label = true
 					span.value = price
+					span.label = true
 					title = prices.sort.collect { |pair| pair.join(': ') }.join(' / ')
 					span.set_attribute('title', title)
 					span
