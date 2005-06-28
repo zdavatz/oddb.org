@@ -23,5 +23,17 @@ module ODDB
 				end
 			end
 		end
+		class CurrencyNavigationLink < HtmlGrid::Link
+			CSS_CLASS = "list"
+			def init
+				super
+				unless (@session.currency == @name.to_s)
+					args = {
+						:currency => @name
+					}
+					@attributes.store("href", @lookandfeel.event_url(:self, args))
+				end
+			end
+		end
 	end
 end

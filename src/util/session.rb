@@ -60,6 +60,9 @@ module ODDB
 		def clear_interaction_basket
 			@interaction_basket.clear
 		end
+		def currency 
+			cookie_set_or_get(:currency) || "CHF"
+		end
 		def interaction_basket_count
 			@interaction_basket.size
 		end

@@ -22,7 +22,7 @@ module ODDB
 			GOOGLE_HEIGHT = '60'
 		end
 		class LogoHead < CommonLogoHead
-			include LanguageChooserFactory
+			include UserSettings
 			COMPONENTS = {
 				[0,0]		=>	View::Logo,
 				[0,1]		=>	:language_chooser,
