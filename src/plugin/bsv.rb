@@ -641,7 +641,7 @@ end
 				end
 			end
 		rescue ParseException, AmbigousParseException => err
-			@parse_errors.push([err.klass.to_s, package.name, match[2]])
+			@parse_errors.push([err.class.to_s, package.name, match[2]])
 		end
 		def load_database(path)
 			workbook = Spreadsheet::ParseExcel.parse(path)
