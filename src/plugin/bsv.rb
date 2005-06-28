@@ -4,6 +4,7 @@
 require 'plugin/plugin'
 require 'util/persistence'
 require 'parseexcel/parseexcel'
+require 'model/package'
 
 module ODDB
 	class BsvPlugin < Plugin
@@ -249,6 +250,7 @@ end
 	end
 	class BsvPlugin2 < Plugin
 		class ParsedPackage
+			include SizeParser
 			attr_accessor :sl_dossier, :iksnr, :ikscd, :introduction_date, 
 				:price_public, :price_exfactory, :pharmacode, :limitation,
 				:limitation_points, :generic_type, :name, :company, :pointer
@@ -394,14 +396,6 @@ end
 		class PackageDiffer
 			attr_reader :iksnr, :name
 			COMMA = ','
-			def PackageDiffer.header(wdth = 20)
-				[
-					"  Iksnr".ljust(8),
-					"SL-Liste".ljust(wdth),
-					"Swissmedic".ljust(wdth),
-					"Übereinstimmend".ljust(wdth),
-				].join
-			end
 			def initialize(reg, pac)
 				@iksnr = pac.iksnr
 				@name = pac.name
@@ -431,9 +425,18 @@ end
 			end
 			def to_s
 				lines = [@name]
+				wdth = 12
+				header = [
+					"Iksnr".ljust(wdth),
+					"BAG".ljust(wdth),
+					"Swissmedic".ljust(wdth),
+					"Beide".ljust(wdth),
+				].join
 				all = [[@iksnr], @bsv.sort, @smj.sort, @both.sort] 
 				all.collect { |coll| coll.size }.max.times { |idx|
-					lines << all.collect { |coll| coll.at(idx).to_s.ljust(10) }.join
+					lines << all.collect { |coll| 
+						coll.at(idx).to_s.ljust(wdth) 
+					}.join
 				}
 				lines.join("\n")
 			end
@@ -449,11 +452,15 @@ end
 			@package_diffs = {}
 			@ptable = {}
 			@successful_updates = []
+			@guessed_packages = []
 			@unknown_packages = []
 			@unknown_registrations = []
 		end
 		def report
 			successful = @successful_updates.collect { |pac| 
+				report_format(pac).join("\n")
+			}
+			guessed = @guessed_packages.collect { |pac| 
 				report_format(pac).join("\n")
 			}
 			registrations = @unknown_registrations.collect { |pac| 
@@ -467,11 +474,15 @@ end
 			}.compact.sort
 			[
 				"Successful Updates:    #{@successful_updates.size.to_s.rjust(5)}", 
+				"Guessed Packages:      #{@guessed_packages.size.to_s.rjust(5)}", 
 				"Unknown Registrations: #{@unknown_registrations.size.to_s.rjust(5)}",
 				"Unknown Packages:      #{@unknown_packages.size.to_s.rjust(5)}",
 				nil, nil, nil,
 				"Successful Updates:    #{@successful_updates.size.to_s.rjust(5)}", 
 				successful.join("\n\n"),
+				nil, nil, nil,
+				"Guessed Packages:      #{@guessed_packages.size.to_s.rjust(5)}", 
+				guessed.join("\n\n"),
 				nil, nil, nil,
 				"Unknown Registrations: #{@unknown_registrations.size.to_s.rjust(5)}",
 				registrations.join("\n\n"),
@@ -480,7 +491,6 @@ end
 				packages.join("\n\n"),
 				nil, nil, nil,
 				"Differences:",
-				PackageDiffer.header,
 				package_diffs.join("\n\n"),
 				nil,
 			].join("\n")
@@ -514,8 +524,16 @@ end
 				handle_augmentation(package)
 			}
 
+			## update prices from the database but do not store as mutation.
+			@ikstable.each_value { |package| 
+				handle_package(package)
+			}
+
 			## TODO: try to identify missing packages according to their 
 			##       package-size and dose
+			@ikstable.each_value { |package| 
+				handle_unknown_package(package)
+			}
 			
 			## compile a report that includes missing packages.
 			## -> is being done on the fly
@@ -574,13 +592,45 @@ end
 		def handle_package(package)
 			balance_package(package)
 			if(reg = update_registration(package))
-				update_package(reg, package)
+				if(pac = update_package(reg, package))
+					## when we iterate over @ikstable later on, this package 
+					## need not be handled again
+					@ikstable.delete(package.ikskey)
+					pac
+				end
+			else
+				## when we iterate over @ikstable later on, this unknown
+				## registration need not be handled again
+				@ikstable.delete(package.ikskey)
+				nil
 			end
 		end
 		def handle_reduction(package)
 			if(pack = handle_package(package))
 				update_sl_entry(pack, package)
 				@change_flags.store(package.pointer, [:price_cut])
+			end
+		end
+		def handle_unknown_package(package)
+			if(reg = @app.registration(package.iksnr))
+				if(match = /(\d+\s+\w+)\s+(\d+\s+\w+)/.match(package.name))
+					package.size = match[2]
+					dose = Dose.new(match[2])
+					## both dose and size must match for a valid guess
+					candidates = reg.sequences.values.select { |seq|
+						seq.dose == dose
+					}.collect { |seq|
+						seq.packages.values.select { |pac|
+							pac.comparable_size == package.comparable_size
+						}
+					}.flatten
+					if(candidates.size == 1)
+						@unknown_packages.delete(package)
+						@guessed_packages.push(package)
+						package.ikscd = candidates.first.ikscd
+						update_package(reg, package)
+					end
+				end
 			end
 		end
 		def load_database(path)
@@ -593,6 +643,10 @@ end
 				package.company = row.at(0).to_s
 				package.generic_type = (row.at(1).to_s.downcase == 'y')
 				package.name = row.at(7).to_s
+				exf = row.at(8).to_f
+				package.price_exfactory = exf if(exf > 0)
+				pub = row.at(9).to_f
+				package.price_public = pub if(pub > 0)
 				package.limitation = (row.at(10).to_s.downcase=='y')
 				package.limitation_points = row.at(11).to_i
 				unless(pcode == '0')

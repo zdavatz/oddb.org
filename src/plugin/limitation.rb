@@ -131,8 +131,13 @@ module ODDB
 				'it'	=>	chap_it,
 			}
 			if(limitatio)
-				ikskey = key[1,9].split(" ")
-				[ikskey, values]
+				ikskey, pkg = key[1,9].split(" ")
+				## bsv and swissmedic do not agree on the id of vaccines
+				if(ikskey == '00000')
+					ikskey = sprintf('%05i', pkg)
+					pkg = '000'
+				end
+				[[ikskey, pkg], values]
 			end
 		end
 		def new_tablehandler(handler)
@@ -171,7 +176,7 @@ module ODDB
 		HTTP_SERVER = 'www.galinfo.net'
 		HTML_PATH = '/sl/batchhtm'
 		EXT = 'htm'
-		#RANGE = ['A']
+		#RANGE = ['O']
 		RANGE = ('A'..'Z').to_a
 		RECIPIENTS = [
 			'mhuggler@ywesee.com',
@@ -191,8 +196,8 @@ module ODDB
 		end
 		def collect_parsed_indices
 			RANGE.each { |letter|
-				if(index_data(letter))
-					@indices.concat(index_data(letter))
+				if(data = index_data(letter))
+					@indices.concat(data)
 				end
 			}
 		end
@@ -311,17 +316,25 @@ module ODDB
 			}
 			purge_limitation_texts
 		end
+		def update_package(pack, values)
+			sl_pointer = pack.pointer + [:sl_entry]
+			unless(pack.sl_entry)
+				@app.update(sl_pointer.creator, {:limitation => true})
+			end
+			@updated_packages.push(pack)
+			pointer = sl_pointer + [:limitation_text]
+			@app.update(pointer.creator, values)
+		end
 		def update_packages(data_hsh)
 			data_hsh.each { |ikskey, values|
 				if((reg = @app.registration(ikskey[0])) \
 					&& (pack = reg.package(ikskey[1])))
-					sl_pointer = pack.pointer + [:sl_entry]
-					unless(pack.sl_entry)
-						@app.update(sl_pointer.creator, {:limitation => true})
-					end
-					@updated_packages.push(pack)
-					pointer = sl_pointer + [:limitation_text]
-					@app.update(pointer.creator, values)
+					update_package(pack, values)
+				elsif(ikskey[1] == '000')
+					## vaccines and blood-substitutes have no ikscd
+					reg.each_package { |pack|
+						update_package(pack, values)
+					}
 				end
 			}
 		end
