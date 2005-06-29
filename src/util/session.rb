@@ -19,10 +19,12 @@ module ODDB
 		DEFAULT_ZONE = :drugs
 		SERVER_NAME = 'www.oddb.org'
 		PERSISTENT_COOKIE_NAME = 'oddb-preferences'
-		path = File.expand_path('../../log/request_log', 
-			File.dirname(__FILE__))
-		FileUtils.mkdir_p(File.dirname(path))
-		@@request_log = File.open(path, 'a')
+		def Session.request_log
+			path = File.expand_path('../../log/request_log', 
+				File.dirname(__FILE__))
+			FileUtils.mkdir_p(File.dirname(path))
+			@@request_log ||= File.open(path, 'a')
+		end
 		def process(request)
 			@request = request
 			@request_id = request.object_id
@@ -37,10 +39,10 @@ module ODDB
 		end
 		def request_log(phase)
 			bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
-			@@request_log.puts(sprintf("session:%12i request:%12i time:%4is mem:%6iMB %s %s",
+			Session.request_log.puts(sprintf("session:%12i request:%12i time:%4is mem:%6iMB %s %s",
 				self.object_id, @request_id, Time.now - @process_start, 
 				bytes / (2**20), phase, @request_path))
-			@@request_log.flush
+			Session.request_log.flush
 		end
 		def to_html
 			if(is_crawler?)
