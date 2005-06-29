@@ -706,6 +706,7 @@ end
 			else
 				@unknown_packages.push(pac)
 			end
+			pack
 		end
 		def update_registration(package)
 			ptr = Persistence::Pointer.new([:registration, package.iksnr])
