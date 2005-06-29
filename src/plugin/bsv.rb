@@ -73,13 +73,13 @@ end
 		def report
 			successful = @successful_updates.collect { |row| 
 				report_format(row).join("\n")
-			}
+			}.sort
 			registrations = @unknown_registrations.collect { |row| 
 				report_format(row).join("\n")
-			}
+			}.sort
 			packages = @unknown_packages.collect { |row| 
 				report_format(row).join("\n")
-			}
+			}.sort
 			package_diffs = @package_diffs.values.collect { |diff| 
 				diff.to_s unless diff.empty?
 			}.compact.sort
@@ -253,7 +253,8 @@ end
 				include SizeParser
 				attr_accessor :sl_dossier, :iksnr, :ikscd, :introduction_date, 
 					:price_public, :price_exfactory, :pharmacode, :limitation,
-					:limitation_points, :generic_type, :name, :company, :pointer
+					:limitation_points, :generic_type, :name, :company, :pointer,
+					:guessed_ikscd
 				def ikskey
 					[@iksnr, @ikscd].join
 				end
@@ -460,19 +461,19 @@ end
 		def report
 			successful = @successful_updates.collect { |pac| 
 				report_format(pac).join("\n")
-			}
+			}.sort
 			guessed = @guessed_packages.collect { |pac| 
 				report_format(pac).join("\n")
-			}
+			}.sort
 			registrations = @unknown_registrations.collect { |pac| 
 				report_format(pac).join("\n")
-			}
+			}.sort
 			packages = @unknown_packages.collect { |pac| 
 				report_format(pac).join("\n")
-			}
+			}.sort
 			parse_errors = @parse_errors.collect { |triplet|
 				sprintf("%-15s '%20s' '%s'", *triplet)
-			}
+			}.sort
 			package_diffs = @package_diffs.values.collect { |diff| 
 				diff.to_s unless diff.empty?
 			}.compact.sort
@@ -635,7 +636,7 @@ end
 					if(candidates.size == 1)
 						@unknown_packages.delete(package)
 						@guessed_packages.push(package)
-						package.ikscd = candidates.first.ikscd
+						package.guessed_ikscd = candidates.first.ikscd
 						update_package(reg, package)
 					end
 				end
@@ -691,16 +692,19 @@ end
 			differ = @package_diffs.fetch(pac.iksnr) {
 				@package_diffs.store(pac.iksnr, PackageDiffer.new(reg, pac))
 			}
+			pack = nil
 			if(pack = reg.package(pac.ikscd))
 				differ.add_both(pac.ikscd)
+			else
+				pack = reg.package(pac.guessed_ikscd)
+				differ.add_bsv(pac.ikscd)
+			end
+			if(pack)
 				pac.pointer = pack.pointer
 				@app.update(pack.pointer, pac.data)
 				@successful_updates.push(pac)
-				pack
 			else
-				differ.add_bsv(pac.ikscd)
 				@unknown_packages.push(pac)
-				nil
 			end
 		end
 		def update_registration(package)
