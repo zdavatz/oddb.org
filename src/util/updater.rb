@@ -228,7 +228,7 @@ module ODDB
 				ODBA.transaction {
 					block.call
 				}
-			rescue RuntimeError, StandardError => e
+			rescue Exception => e #RuntimeError, StandardError => e
 				log = Log.new(Date.today)
 				log.report = [
 					"Plugin: #{klass}",
