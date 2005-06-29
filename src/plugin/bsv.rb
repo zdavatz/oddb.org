@@ -622,9 +622,9 @@ end
 		end
 		def handle_unknown_package(package)
 			if(reg = @app.registration(package.iksnr))
-				if(match = /(\d+\s+\w+)(.*?)((\d,)?\d+\s+\w+)$/.match(package.name))
-					package.size = match[2]
-					dose = Dose.new(match[1])
+				if(match = /(\d+)\s+(\w+)(.*?)((\d,)?\d+\s+\w+)$/.match(package.name))
+					package.size = match[3]
+					dose = Dose.new(match[1], match[2])
 					## both dose and size must match for a valid guess
 					candidates = reg.sequences.values.select { |seq|
 						seq.dose == dose
