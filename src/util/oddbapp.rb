@@ -67,27 +67,6 @@ class OddbPrevalence
 		@substances ||= {}
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
-		## begin temporary code for slate-migration ##
-		if(@slates.nil?)
-			@slates = {}
-			@invoices.each { |name, invoice|
-				pointer = ODDB::Persistence::Pointer.new([:slate, name])
-				slate = create(pointer)
-				slate.instance_variable_set('@items', invoice.items)
-				slate.items.each { |oid, item|
-					item.pointer = pointer + [:item, oid]
-					item.odba_isolated_store
-				}
-				slate.odba_isolated_store
-			}
-			@invoices.values.each { |invoice| invoice.odba_delete }
-			@invoices = {}
-			@invoices.odba_isolated_store
-			@slates.odba_isolated_store
-			odba_isolated_store
-		end
-		## end temporary code for slate-migration ##
-
 		@slates ||= {}
 		rebuild_atc_chooser()
 	end
