@@ -248,31 +248,31 @@ end
 			@app.update(pointer.creator, hash)
 		end
 	end
-	class BsvPlugin2 < Plugin
-		class ParsedPackage
-			include SizeParser
-			attr_accessor :sl_dossier, :iksnr, :ikscd, :introduction_date, 
-				:price_public, :price_exfactory, :pharmacode, :limitation,
-				:limitation_points, :generic_type, :name, :company, :pointer
-			def ikskey
-				[@iksnr, @ikscd].join
-			end
-			def ikskey=(key)
-				@iksnr = sprintf('%05i', key[0,5].to_i)
-				@ikscd = sprintf('%03i', key[5,3].to_i)
-			end
-			def merge(other)
-				if(other.is_a?(ParsedPackage))
-					other.instance_variables.each { |name|
-						unless(instance_variable_get(name))
-							instance_variable_set(name, 
-								other.instance_variable_get(name))
-						end
-					}
-				else
-					raise TypeError "can only merge with another package"
+		class BsvPlugin2 < Plugin
+			class ParsedPackage
+				include SizeParser
+				attr_accessor :sl_dossier, :iksnr, :ikscd, :introduction_date, 
+					:price_public, :price_exfactory, :pharmacode, :limitation,
+					:limitation_points, :generic_type, :name, :company, :pointer
+				def ikskey
+					[@iksnr, @ikscd].join
 				end
-			end
+				def ikskey=(key)
+					@iksnr = sprintf('%05i', key[0,5].to_i)
+					@ikscd = sprintf('%03i', key[5,3].to_i)
+				end
+				def merge(other)
+					if(other.is_a?(ParsedPackage))
+						other.instance_variables.each { |name|
+							unless(instance_variable_get(name))
+								instance_variable_set(name, 
+									other.instance_variable_get(name))
+							end
+						}
+					else
+						raise TypeError "can only merge with another package"
+					end
+				end
 			def data
 				data = {
 					:pharmacode	=>	@pharmacode,
@@ -424,7 +424,6 @@ end
 				@bsv.empty?
 			end
 			def to_s
-				lines = [@name]
 				wdth = 12
 				header = [
 					"Iksnr".ljust(wdth),
@@ -432,6 +431,7 @@ end
 					"Swissmedic".ljust(wdth),
 					"Beide".ljust(wdth),
 				].join
+				lines = [@name, header]
 				all = [[@iksnr], @bsv.sort, @smj.sort, @both.sort] 
 				all.collect { |coll| coll.size }.max.times { |idx|
 					lines << all.collect { |coll| 
@@ -621,9 +621,9 @@ end
 		end
 		def handle_unknown_package(package)
 			if(reg = @app.registration(package.iksnr))
-				if(match = /(\d+\s+\w+)\s+(\d+\s+\w+)/.match(package.name))
+				if(match = /(\d+\s+\w+)(.*?)((\d,)?\d+\s+\w+)$/.match(package.name))
 					package.size = match[2]
-					dose = Dose.new(match[2])
+					dose = Dose.new(match[1])
 					## both dose and size must match for a valid guess
 					candidates = reg.sequences.values.select { |seq|
 						seq.dose == dose

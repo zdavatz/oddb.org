@@ -71,11 +71,13 @@ Grammar OddbSize
 			begin
 				ast = @@parser.parse(size)
 				multi, addition, count, measure, scale, dose, comform = ast.flatten
+				count = (count ? count[1].value.to_i : 1)
 			rescue ParseException => e
 				puts '*'*60 
 				puts size
 				puts e.message
-				puts e.backtrace
+				puts e.backtrace[0,6]
+				count = size.to_i
 			end
 			if(!dose.nil? && @sequence.dose.nil?)
 				@sequence.dose = Dose.new(*(dose.childrens[1,2].collect { |c| c.value }))
@@ -83,7 +85,7 @@ Grammar OddbSize
 			[
 				(addition ? addition.first.value.to_i : 0),
 				dose_from_multi(multi),
-				(count ? count[1].value.to_i : 1),
+				count,
 				dose_from_measure(measure),
 				dose_from_scale(scale),
 				(comform.value if comform),
