@@ -4,6 +4,7 @@
 require 'state/admin/global'
 require 'state/admin/fachinfoconfirm'
 require 'view/admin/wait_for_fachinfo'
+require 'model/fachinfo'
 require 'util/log'
 
 module ODDB
@@ -45,7 +46,7 @@ class WaitForFachinfo < State::Admin::Global
 		end
 	end
 	def signal_done(document, path, model, mimetype, language, link)
-		if(document)
+		if(document.is_a?(FachinfoDocument))
 			@language = language
 			@document = document
 		else
@@ -56,7 +57,13 @@ class WaitForFachinfo < State::Admin::Global
 			hash.store(:pdf_fachinfos, pdf_fachinfos)
 			@session.app.update(last_model.pointer, hash)
 			log = Log.new(Time.now)
-			log.report = link
+			report = link
+			if(document.is_a?(Exception))
+				report = ([
+					link, nil, document.class, document.message
+				] + document.backtrace).join("\n")
+			end
+			log.report = report
 			log.files = { 
 				path => mimetype 
 			}

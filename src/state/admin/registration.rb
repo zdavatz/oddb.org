@@ -102,8 +102,10 @@ class Registration < State::Admin::Global
 				new_state = State::Admin::WaitForFachinfo.new(@session, @model)
 				new_state.previous = self
 				@session.app.async {
-					pdf_document =  parse_fachinfo_pdf(fi_file)
-					new_state.signal_done(pdf_document, path, @model, "application/pdf", language, mail_link)
+					@session.app.failsafe { 
+						new_state.signal_done(parse_fachinfo_pdf(fi_file), 
+							path, @model, "application/pdf", language, mail_link)
+					}
 				}
 			else
 				filename = "#{@model.iksnr}_#{language}.doc"
@@ -116,8 +118,8 @@ class Registration < State::Admin::Global
 				new_state = State::Admin::WaitForFachinfo.new(@session, @model)
 				new_state.previous = self
 				@session.app.async {
-					word_document = parse_fachinfo_doc(fi_file)
-					new_state.signal_done(word_document, path, @model, "application/msword", language, mail_link)
+					new_state.signal_done(parse_fachinfo_doc(fi_file), 
+						path, @model, "application/msword", language, mail_link)
 				}
 			end
 		end
@@ -132,7 +134,6 @@ class Registration < State::Admin::Global
 	def parse_fachinfo_doc(file)
 		begin
 			# establish connection to fachinfo_parser
-			#DRb.start_service
 			parser = DRbObject.new(nil, FIPARSE_URI)
 			result = parser.parse_fachinfo_doc(file.read)
 			result
@@ -143,16 +144,13 @@ class Registration < State::Admin::Global
 			].join(' ')
 			err = create_error(:e_service_unavailable, :fachinfo_upload, msg)
 			@errors.store(:fachinfo_upload, err)
-			nil
+			e
 		end
 	end
 	def parse_fachinfo_pdf(file)
 		begin
 			# establish connection to fachinfo_parser
-			#DRb.start_service
 			parser = DRbObject.new(nil, FIPARSE_URI)
-			
-			#parser.storage = ODBA.storage
 			result = parser.parse_fachinfo_pdf(file.read)
 			result
 		rescue StandardError => e
@@ -162,8 +160,7 @@ class Registration < State::Admin::Global
 			].join(' ')
 			err = create_error(:e_pdf_not_parsed, :fachinfo_upload, msg)
 			@errors.store(:fachinfo_upload, err)
-			puts e.backtrace
-			nil
+			e
 		end
 	end
 end
