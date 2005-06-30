@@ -203,7 +203,7 @@ module ODDB
 					log.notify('Swissmedic-Journal')
 					@smj_updated = latest
 				end
-			#end
+			end
 		end
 		def update_vaccines
 			wrap_update(VaccinePlugin, 'blutprodukte') { 
