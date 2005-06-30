@@ -189,9 +189,8 @@ module ODDB
 			# The first issue of SwissmedicJournal is 2002,1
 			latest = logs.newest_date || Date.new(2002,4) 
 			success = true
-			#while((latest < Date.today) && success)
-				#latest = latest >> 1
-				latest = Date.new(2004, 11)
+			while((latest < Date.today) && success)
+				latest = latest >> 1
 				klass = SwissmedicJournalPlugin
 				plug = klass.new(@app)
 				wrap_update(klass, "swissmedic-journal") { 
