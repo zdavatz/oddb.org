@@ -227,7 +227,7 @@ class ResultList < HtmlGrid::List
 	def most_precise_dose(model, session)
 		if(model.respond_to?(:most_precise_dose))
 			dose = model.most_precise_dose
-			dose.qty > 0 ? dose : nil
+			(dose && (dose.qty > 0)) ? dose : nil
 		end
 	end
 	def name_base(model, session)
