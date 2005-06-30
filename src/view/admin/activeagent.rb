@@ -24,18 +24,15 @@ class ActiveAgentInnerComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value	
 	LABELS = true
 	def substance(model, session)
-		[ model.substance.send(@lookandfeel.language), 
-			model.sequence.spagyric_type, 
-			model.sequence.spagyric_dose ].compact.join(' ')
+		model.substance.send(@lookandfeel.language)
 	end
 end
 class ActiveAgentForm < View::Form
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
 		[0,0]		=>	:substance,
-		[2,0]		=>	:spagyric_type,
+		[2,0]		=>	:dose,
 		[4,0]		=>	:spagyric_dose,
-		[6,0]		=>	:dose,
 		[0,1]		=>	:chemical_substance,
 		[2,1]		=>	:chemical_dose,
 		[0,2]		=>	:equivalent_substance,
@@ -44,14 +41,8 @@ class ActiveAgentForm < View::Form
 		[1,3,0]	=>	:delete_item,
 		[1,4]		=>	:new_active_agent_button,
 	}
-	COLSPAN_MAP = {
-		[3,1]	=>	3,
-		[3,2]	=>	3,
-	}
 	COMPONENT_CSS_MAP = {
 		[0,0,8,3]	=>	'standard',
-		[3,0]	=>	'medium',
-		[5,0]	=>	'small',
 	}
 	CSS_MAP = {
 		[0,0,8,6]	=>	'list',

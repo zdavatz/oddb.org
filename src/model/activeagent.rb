@@ -26,7 +26,7 @@ module ODDB
 			!@substance.nil? && @substance.same_as?(substance)
 		end
 		def to_s
-			[@substance, @spagyric_type, @spagyric_dose, @dose].compact.join(' ')
+			[@substance, @dose].compact.join(' ')
 		end
 		def update_values(values)
 			super
@@ -65,7 +65,7 @@ module ODDB
 						rescue(StandardError)
 							values.delete(key)
 						end
-						if(value.nil? && key != :dose)
+						if(value.nil?)
 							values[key] = nil
 						end
 					#deprecated

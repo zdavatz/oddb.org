@@ -40,9 +40,7 @@ module SequenceAgentList
 	SORT_HEADER = false
 	def substance(model, session)
 		if(sub = model.substance)
-			[ sub.name, 
-				model.spagyric_type, 
-				model.spagyric_dose ].compact.join(' ')
+			sub.name
 		end
 	end
 end

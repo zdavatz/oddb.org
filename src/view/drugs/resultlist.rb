@@ -142,6 +142,19 @@ class ResultList < HtmlGrid::List
 		:registration_date	=>	HtmlGrid::DateValue,
 		:ikskey							=>	View::PointerLink,
 	}	
+	def breakline(txt, length)
+		name = ''
+		line = ''
+		txt.to_s.split(/(:?[\s-])/).each { |part|
+			if((line.length + part.length) > length)
+				name << line << '<br>'
+				line = part
+			else
+				line << part
+			end
+		}
+		name << line
+	end
 	def company_name(model, session)
 		if(comp = model.company)
 			link = nil
@@ -198,7 +211,6 @@ class ResultList < HtmlGrid::List
 		link.set_attribute('title', "#{@lookandfeel.lookup(:google_alt)}#{model.name_base}")
 		link
 	end
-
 	def ikscat(model, session)
 		txt = HtmlGrid::Component.new(model, session, self)
 		txt.value = [
@@ -212,18 +224,11 @@ class ResultList < HtmlGrid::List
 		txt.set_attribute('title', title)
 		txt
 	end
-	def breakline(txt, length)
-		name = ''
-		line = ''
-		txt.to_s.split(/(:?[\s-])/).each { |part|
-			if((line.length + part.length) > length)
-				name << line << '<br>'
-				line = part
-			else
-				line << part
-			end
-		}
-		name << line
+	def most_precise_dose(model, session)
+		if(model.respond_to?(:most_precise_dose))
+			dose = model.most_precise_dose
+			dose.qty > 0 ? dose : nil
+		end
 	end
 	def name_base(model, session)
 		link = HtmlGrid::PopupLink.new(:compare, model, session, self)

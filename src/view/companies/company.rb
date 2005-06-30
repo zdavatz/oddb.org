@@ -16,7 +16,6 @@ require 'view/form'
 require 'view/pointervalue'
 require 'view/resulttemplate'
 require 'view/sponsorlogo'
-require 'state/companies/companylist'
 
 
 module ODDB

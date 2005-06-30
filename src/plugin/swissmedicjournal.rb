@@ -202,11 +202,13 @@ module ODDB
 		end
 		def update_active_agent(agent, seq_pointer)
 			unless(agent.substance.nil?)
-				unless(@app.substance(agent.substance))
-					pointer = Persistence::Pointer.new([:substance, agent.substance])
+				substance = [agent.substance, 
+					agent.special, agent.spagyric].compact.join(' ')
+				unless(@app.substance(substance))
+					pointer = Persistence::Pointer.new([:substance, substance])
 					@app.create(pointer)
 				end
-				pointer = seq_pointer + [:active_agent, agent.substance]
+				pointer = seq_pointer + [:active_agent, substance]
 				values = {
 					:spagyric_dose => agent.spagyric,	
 					:spagyric_type => agent.special,	
@@ -229,9 +231,12 @@ module ODDB
 				# remove stragglers
 				seq.active_agents.dup.each { |agent|
 					puts "straggler: #{agent.pointer}"
+					sub = agent.substance
+					sub.remove_sequence(seq)
 					agent.odba_delete
+					sub.sequences.delete_if { |sseq| sseq.odba_instance.nil? }
+					sub.sequences.odba_store
 				}
-
 				agents.each { |agent|
 					update_active_agent(agent, seq_pointer)
 				}
