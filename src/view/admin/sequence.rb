@@ -19,6 +19,8 @@ module SequenceAgentList
 		[1,0]	=>	:dose,
 		[3,0]	=>	:chemical_substance,
 		[4,0]	=>	:chemical_dose,
+		[6,0]	=>	:equivalent_substance,
+		[7,0]	=>	:equivalent_dose,
 	}
 	CSS_HEAD_MAP = {
 		[1,0]	=>	'subheading-r',
@@ -27,13 +29,22 @@ module SequenceAgentList
 	CSS_MAP = {
 		[0,0]	=>	'list',
 		[1,0]	=>	'list-r',
-		[3,0]	=>	'list',
+		[2,0,2]	=>	'list',
 		[4,0]	=>	'list-r',
+		[5,0,2]	=>	'list',
+		[7,0]	=>	'list-r',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'subheading'
 	EVENT = :new_active_agent	
 	SORT_HEADER = false
+	def substance(model, session)
+		if(sub = model.substance)
+			[ sub.name, 
+				model.spagyric_type, 
+				model.spagyric_dose ].compact.join(' ')
+		end
+	end
 end
 class SequenceAgents < HtmlGrid::List
 	include View::Admin::SequenceAgentList
@@ -42,7 +53,7 @@ class RootSequenceAgents < View::FormList
 	include SequenceAgentList
 	def substance(model, session)
 		link = View::PointerLink.new(:substance, model, session, self)
-		link.value = model.substance.name if(model.substance)
+		link.value = super
 		link
 	end
 end

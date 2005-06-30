@@ -23,6 +23,42 @@ module ODDB
 			@pruned_sequences = 0
 			@pruned_packages = 0
 		end
+		def fix_from_source(reg)
+			if(src = reg.source)
+				src.gsub!(/-\n/, '')
+				preg = SwissmedicJournal::ActiveRegistration.new(src, :human)
+				succ = false
+				preg.parse.each { |seqnum, pseq|
+					if((comp = pseq.composition) && (seq = reg.sequence(seqnum)))
+						if(ndose = pseq.name_dose)
+							name_base = [
+								pseq.name_base, 
+								ndose, 
+								pseq.name_descr,
+							].compact.join(' ')
+							dose = [
+								pseq.most_precise_dose,
+								pseq.most_precise_unit,
+							]
+							values = {
+								:name_base	=>	name_base,
+								:dose				=>	dose,
+							}
+							@app.update(seq.pointer, values)
+						end
+						succ = update_active_agents(comp, seq.pointer)
+					end
+				}
+				if(succ)
+					reg.odba_store
+				end
+			end
+		rescue Exception => exc
+			puts exc.class
+			puts exc.message
+			puts exc.backtrace
+			$stdout.flush
+		end
 		def log_info
 			hash = super
 			hash.store(:pointers, @incomplete_pointers)
@@ -171,7 +207,10 @@ module ODDB
 					@app.create(pointer)
 				end
 				pointer = seq_pointer + [:active_agent, agent.substance]
-				values = {}
+				values = {
+					:spagyric_dose => agent.spagyric,	
+					:spagyric_type => agent.special,	
+				}
 				if(agent.dose)
 					values.store(:dose, [agent.dose.qty, agent.dose.unit])
 				end
@@ -184,9 +223,15 @@ module ODDB
 			agents = smj_composition.active_agents
 			unless(agents.empty?)
 				seq = seq_pointer.resolve(@app)
-				seq.active_agents.each { |agent|
+				seq.active_agents.dup.each { |agent|
 					@app.delete(agent.pointer)
 				}
+				# remove stragglers
+				seq.active_agents.dup.each { |agent|
+					puts "straggler: #{agent.pointer}"
+					agent.odba_delete
+				}
+
 				agents.each { |agent|
 					update_active_agent(agent, seq_pointer)
 				}

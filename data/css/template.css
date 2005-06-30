@@ -1197,6 +1197,9 @@ input.button {
 	color: $button_font_color;
 	font-size: $button_font_size;
 }
+input.medium {
+	width : 100px;
+}
 input.standard {
 	width : 200px;
 }

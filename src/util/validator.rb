@@ -208,6 +208,8 @@ module ODDB
 			:regulatory_email,
 			:size,
 			:sortvalue,
+			:spagyric_dose,
+			:spagyric_type,
 			:subscribe,
 			:substance,
 			:substance_form,
