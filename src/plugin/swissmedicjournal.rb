@@ -29,7 +29,7 @@ module ODDB
 				preg = SwissmedicJournal::ActiveRegistration.new(src, :human)
 				succ = false
 				preg.parse.each { |seqnum, pseq|
-					if((comp = pseq.composition) && (seq = reg.sequence(seqnum)))
+					if(seq = reg.sequence(seqnum))
 						if(ndose = pseq.name_dose)
 							name_base = [
 								pseq.name_base, 
@@ -46,7 +46,9 @@ module ODDB
 							}
 							@app.update(seq.pointer, values)
 						end
-						succ = update_active_agents(comp, seq.pointer)
+						if(comp = pseq.composition)
+							succ = update_active_agents(comp, seq.pointer)
+						end
 					end
 				}
 				if(succ)
