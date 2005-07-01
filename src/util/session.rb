@@ -43,6 +43,8 @@ module ODDB
 				self.object_id, @request_id, Time.now - @process_start, 
 				bytes / (2**20), phase, @request_path))
 			Session.request_log.flush
+		rescue Exception
+			## don't die for logging
 		end
 		def to_html
 			if(is_crawler?)

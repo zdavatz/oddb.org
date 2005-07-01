@@ -5,14 +5,14 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'util/session'
+require 'stub/session'
 require 'state/drugs/init'
 require 'sbsm/request'
 require 'stub/cgi'
-require 'stub/session'
 
 module Apache
 	class Request
+		attr_accessor :unparsed_uri
 		def headers_in
 			{}
 		end
@@ -45,7 +45,7 @@ module ODDB
 		end
 		
 		def setup
-			@session = Session.new("test", StubApp.new, StubValidator.new)
+			@session = ODDB::Session.new("test", StubApp.new, StubValidator.new)
 			@session.reset
 		end
 		def test_initialize

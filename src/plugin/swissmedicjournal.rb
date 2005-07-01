@@ -233,11 +233,12 @@ module ODDB
 				# remove stragglers
 				seq.active_agents.dup.each { |agent|
 					puts "straggler: #{agent.pointer}"
-					sub = agent.substance
-					sub.remove_sequence(seq)
-					agent.odba_delete
-					sub.sequences.delete_if { |sseq| sseq.odba_instance.nil? }
-					sub.sequences.odba_store
+					if(sub = agent.substance)
+						sub.remove_sequence(seq)
+						agent.odba_delete
+						sub.sequences.delete_if { |sseq| sseq.odba_instance.nil? }
+						sub.sequences.odba_store
+					end
 				}
 				agents.each { |agent|
 					update_active_agent(agent, seq_pointer)

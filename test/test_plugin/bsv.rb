@@ -471,10 +471,11 @@ module ODDB
 			@diff.both = ['005', '007', '006', '008']
       expected = <<-EOS
 Aspirin Cardio
-12345     001       004       005       
-          002                 006       
-          003                 007       
-                              008       
+Iksnr       BAG         Swissmedic  Beide       
+12345       001         004         005         
+            002                     006         
+            003                     007         
+                                    008         
       EOS
 			result = @diff.to_s
 =begin

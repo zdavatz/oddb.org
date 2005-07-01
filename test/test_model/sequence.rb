@@ -330,7 +330,7 @@ class TestSequence < Test::Unit::TestCase
 		active_agent = ODDB::ActiveAgent.new('LEVOMENTHOLUM')
 		active_agent.substance = subst
 		@seq.active_agents = [active_agent]
-		assert_equal('Levomentholum ', @seq.composition_text)
+		assert_equal('Levomentholum', @seq.composition_text)
 		text = "Foo, Bar, and some Levomentholum mixed in."
 		@seq.composition_text = text
 		assert_equal(text, @seq.composition_text)

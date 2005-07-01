@@ -2,7 +2,6 @@
 # LanguageChooser -- oddb -- hwyss@ywesee.com
 
 require 'view/navigation'
-require 'util/oddbapp'
 
 module ODDB
 	module View
