@@ -18,7 +18,7 @@ class Login < State::Global
 				name = user.company_name
 				type = 'st_company'
 				@session.set_persistent_user_input(:search_query, name)
-				#@session.set_persistent_user_input(:search_type, type)
+				@session.set_persistent_user_input(:search_type, type)
 				_search_drugs_state(name.downcase, type)
 			else
 				@previous || trigger(:home)
