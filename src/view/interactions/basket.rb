@@ -6,7 +6,7 @@ require 'htmlgrid/richtext'
 require 'htmlgrid/value'
 require 'view/form'
 require 'view/searchbar'
-require 'view/publictemplate'
+require 'view/resulttemplate'
 
 module ODDB
 	module View
@@ -134,7 +134,7 @@ class BasketForm < View::Form
 		get_event_button(:clear_interaction_basket)
 	end
 end
-class Basket < View::PublicTemplate
+class Basket < View::ResultTemplate
 	CONTENT = View::Interactions::BasketForm
 end
 		end
