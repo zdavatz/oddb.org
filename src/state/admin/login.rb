@@ -16,8 +16,10 @@ class Login < State::Global
 			newstate = case user
 			when ODDB::CompanyUser
 				name = user.company_name
+				type = 'st_company'
 				@session.set_persistent_user_input(:search_query, name)
-				_search_drugs_state(name.downcase, 'st_company')
+				#@session.set_persistent_user_input(:search_type, type)
+				_search_drugs_state(name.downcase, type)
 			else
 				@previous || trigger(:home)
 			end
