@@ -98,5 +98,8 @@ module ODDB
 			@persistent_user_input[:search_query] ||= query
 			@app.search_substances(query)
 		end
+		def set_persistent_user_input(key, val)
+			@persistent_user_input.store(key, val)
+		end
   end
 end

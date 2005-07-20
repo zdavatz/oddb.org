@@ -13,7 +13,14 @@ class Login < State::Global
 	VIEW = View::Admin::Login
 	def login
 		if(user = @session.login)
-			newstate = @previous || trigger(:home)
+			newstate = case user
+			when ODDB::CompanyUser
+				name = user.company_name
+				@session.set_persistent_user_input(:search_query, name)
+				_search_drugs_state(name.downcase, 'st_company')
+			else
+				@previous || trigger(:home)
+			end
 			if(viral = user.viral_module)
 				newstate.extend(viral)
 			end

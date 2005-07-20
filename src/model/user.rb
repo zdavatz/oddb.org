@@ -58,5 +58,8 @@ module ODDB
 	class CompanyUser < User
 		SESSION_WEIGHT = 4
 		VIRAL_MODULE = State::Admin::CompanyUser
+		def company_name
+			@model ? @model.name : ''
+		end
 	end
 end

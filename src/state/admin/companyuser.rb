@@ -65,7 +65,6 @@ module CompanyUser
 	def user_navigation
 		[
 			State::Admin::Logout,
-			
 		]
 	end
 	def zones

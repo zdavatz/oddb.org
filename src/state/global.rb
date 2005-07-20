@@ -320,18 +320,14 @@ module ODDB
 					else
 						query = query.to_s.downcase
 						stype = @session.user_input(:search_type) 
-						result = _search_drugs(query, stype)
-						state = State::Drugs::Result.new(@session, result)
-						state.search_query = query
-						state.search_type = stype
-						state
+						_search_drugs_state(query, stype)
 					end
 				else
 					self
 				end
 			end
 			def _search_drugs(query, stype)
-				result = case stype
+				case stype
 				when 'st_sequence'
 					@session.search_exact_sequence(query)
 				when 'st_substance'
@@ -343,6 +339,13 @@ module ODDB
 				else
 					@session.search_oddb(query)
 				end
+			end
+			def _search_drugs_state(query, stype)
+				result = _search_drugs(query, stype)
+				state = State::Drugs::Result.new(@session, result)
+				state.search_query = query
+				state.search_type = stype
+				state
 			end
 			def show
 				if((pointer = @session.user_input(:pointer)) \
