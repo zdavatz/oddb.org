@@ -13,6 +13,9 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,1]		=>	View::CenteredSearchForm,
 		[0,2]		=>	'doctors_search_explain', 
 		[0,3]		=>	View::CenteredNavigation,
+		[0,4]		=>	'download_doctors0',
+		[0,4,1]	=>	:download_doctors,
+		[0,4,2]	=>	'download_doctors2',
 		[0,5]		=>	:doctor_count,
 		[0,5,1]	=>	'doctor_count_text',
 		[0,5,2]	=>	'comma_separator',
@@ -27,6 +30,11 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENT_CSS_MAP = { }
 	def doctor_count(model, session)
 		@session.doctor_count
+	end
+	def download_doctors(model, session)
+		link = HtmlGrid::Link.new(:download_doctors1, model, session, self)
+		link.href = @lookandfeel._event_url(:download_export)
+		link
 	end
 end	
 class GoogleAdSenseComposite < View::GoogleAdSenseComposite

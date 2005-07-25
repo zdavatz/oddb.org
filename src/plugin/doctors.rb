@@ -127,7 +127,6 @@ module ODDB
 					pointer = ptr.creator
 				end
 				extract = [
-					:abilities,
 					:ean13,
 					:exam,
 					:email,
@@ -136,7 +135,6 @@ module ODDB
 					:name,
 					:praxis,
 					:salutation,
-					:skills,
 					:specialities,
 					:title,
 				]
@@ -146,7 +144,7 @@ module ODDB
 						case key
 						when :praxis
 							value = (value == 'Ja')
-						when :specialities ,:abilities ,:skills
+						when :specialities 
 							if(value.is_a?(String))
 								value = [value]
 							end	
