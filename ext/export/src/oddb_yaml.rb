@@ -132,9 +132,7 @@ module ODDB
 			'@praxis',
 			'@salutation',
 			'@title',
-			'@abilities',
 			'@specialities',
-			'@skills',
 			'@member',
 			'@addresses',
 		]
