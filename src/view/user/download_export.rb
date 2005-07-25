@@ -31,18 +31,22 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[3,5]		=>	:yaml_patinfo_price_gz,
 		[0,6]		=>	:yaml_patinfo_export_zip,
 		[3,6]		=>	:yaml_patinfo_price_zip,
-		[0,8]		=>	:oddbdat_download_tar_gz,
-		[2,8]		=>	:radio_oddbdat_tar_gz,
-		[0,9]		=>	:oddbdat_download_zip,
-		[2,9]		=>	:radio_oddbdat_zip,
-		[0,10]	=>	:s31x_gz,
-		[2,10]	=>	:radio_s31x_gz,
-		[0,11]	=>	:s31x_zip,
-		[2,11]	=>	:radio_s31x_zip,
+		[0,7]		=>	:yaml_doctors_export_gz,
+		[3,7]		=>	:yaml_doctors_price_gz,
+		[0,8]		=>	:yaml_doctors_export_zip,
+		[3,8]		=>	:yaml_doctors_price_zip,
+		[0,10]	=>	:oddbdat_download_tar_gz,
+		[2,10]	=>	:radio_oddbdat_tar_gz,
+		[0,11]	=>	:oddbdat_download_zip,
+		[2,11]	=>	:radio_oddbdat_zip,
+		[0,12]	=>	:s31x_gz,
+		[2,12]	=>	:radio_s31x_gz,
+		[0,13]	=>	:s31x_zip,
+		[2,13]	=>	:radio_s31x_zip,
 	}
 	CSS_MAP = {
 		[0,0,6]			=>	'subheading',
-		[0,1,6,11]	=>	'list',
+		[0,1,6,13]	=>	'list',
 	}
 	CSS_CLASS = 'component'
 	def oddbdat_download_tar_gz(model, session)
@@ -80,6 +84,28 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def s31x_zip(model, session)
 		checkbox_with_filesize("s31x.zip")
+	end
+	def yaml_doctors_export_gz(model, session)
+		checkbox_with_filesize("doctors.yaml.gz")
+	end
+	def yaml_doctors_export_zip(model, session)
+		checkbox_with_filesize("doctors.yaml.zip")
+	end
+	def yaml_doctors_price_gz(model, session)
+		price = State::User::DownloadExport.price('doctors.yaml')
+		hidden = HtmlGrid::Input.new('months[doctors.yaml.gz]', 
+			model, session, self)
+		hidden.set_attribute('type', 'hidden')
+		hidden.value = '1'
+		[@lookandfeel.format_price(price.to_i * 100, 'EUR'), hidden]
+	end
+	def yaml_doctors_price_zip(model, session)
+		price = State::User::DownloadExport.price('doctors.yaml')
+		hidden = HtmlGrid::Input.new('months[doctors.yaml.zip]', 
+			model, session, self)
+		hidden.set_attribute('type', 'hidden')
+		hidden.value = '1'
+		[@lookandfeel.format_price(price.to_i * 100, 'EUR'), hidden]
 	end
 	def yaml_export_gz(model, session)
 		checkbox_with_filesize("oddb.yaml.gz")

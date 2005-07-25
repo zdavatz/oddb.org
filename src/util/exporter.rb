@@ -59,6 +59,11 @@ module ODDB
 				EXPORT_SERVER.clear
 				sleep(30)
 			}
+			run_on_weekday(4) {
+				exporter.export_doctors
+				EXPORT_SERVER.clear
+				sleep(30)
+			}
 		end
 		def export_pdf
 			FiPDFExporter.new(@app).run

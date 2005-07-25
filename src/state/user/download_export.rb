@@ -13,6 +13,7 @@ class DownloadExport < State::User::Global
 	VIEW = View::User::DownloadExport
 	DIRECT_EVENT = :download_export
 	PRICES = {
+		'doctors.yaml'	=> 500,
 		'oddb.yaml'			=> 600,
 		'fachinfo.yaml'	=> 800,
 		'patinfo.yaml'	=> 500,
@@ -27,6 +28,7 @@ class DownloadExport < State::User::Global
 	}
 	## Number of Days during which a paid file may be downloaded
 	DURATIONS = { 
+		'doctors.yaml'	=> 30,
 		'oddb.yaml'			=> 30,
 		'fachinfo.yaml'	=> 30,
 		'patinfo.yaml'	=> 30,
