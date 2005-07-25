@@ -8,11 +8,11 @@ module ODDB
 	class Doctor
 		include Persistence
 		ODBA_SERIALIZABLE = [
-			'@addresses', '@specialities', '@abilities', '@skills', '@ean13',
+			'@addresses', '@specialities', '@ean13',
 		]
 		attr_accessor :gender, :title, :name, :firstname,
-			:email, :exam, :language, :specialities, :abilities,
-			:skills, :praxis, :member, :salutation,
+			:email, :exam, :language, :specialities, 
+			:praxis, :member, :salutation,
 			:origin_db, :origin_id, :addresses, :ean13
 			
 		def initialize
