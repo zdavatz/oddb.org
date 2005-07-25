@@ -62,6 +62,7 @@ module ODDB
 			Tempfile.open(name, dir) { |fh|
 				odba_ids.each { |odba_id|
 					YAML.dump(ODBA.cache_server.fetch(odba_id, nil), fh)
+					fh.puts
 					ODBA.cache_server.clear
 				}
 				newpath = File.join(dir, name)

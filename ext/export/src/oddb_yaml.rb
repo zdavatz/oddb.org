@@ -70,6 +70,17 @@ module ODDB
 			'@dose',
 		]
 	end
+	class Address
+		include OddbYaml 
+		EXPORT_PROPERTIES = [
+			'@city',
+			'@fax',
+			'@fon',
+			'@lines',
+			'@plz',
+			'@type',
+		]
+	end
 	class AtcClass 
 		include OddbYaml 
 		EXPORT_PROPERTIES = [
@@ -105,6 +116,27 @@ module ODDB
 			'@location',
 			'@contact',
 			'@contact_email',
+		]
+	end	
+	class Doctor
+		include OddbYaml
+		EXPORT_PROPERTIES = [
+			'@oid',
+			'@ean13',
+			'@email',
+			'@language',
+			'@gender', 
+			'@firstname',
+			'@name',
+			'@exam',
+			'@praxis',
+			'@salutation',
+			'@title',
+			'@abilities',
+			'@specialities',
+			'@skills',
+			'@member',
+			'@addresses',
 		]
 	end	
 	class Dose < Quanty
