@@ -13,7 +13,7 @@ class DownloadExport < State::User::Global
 	VIEW = View::User::DownloadExport
 	DIRECT_EVENT = :download_export
 	PRICES = {
-		'doctors.yaml'	=> 500,
+		'doctors.yaml'	=> 1100,
 		'oddb.yaml'			=> 600,
 		'fachinfo.yaml'	=> 800,
 		'patinfo.yaml'	=> 500,
