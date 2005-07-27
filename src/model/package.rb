@@ -218,8 +218,14 @@ Grammar OddbSize
 		def registration
 			@sequence.registration
 		end
+		def registration_data(key)
+			if(@sequence && (reg = @sequence.registration))
+				reg.send(key)
+			end
+		end
 		def registration_date
-			@sequence.registration.registration_date
+			#@sequence.registration.registration_date
+			registration_data(:registration_date)
 		end
 		def substances
 			active_agents.collect { |active| active.substance }.compact
