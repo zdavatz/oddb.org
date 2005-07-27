@@ -142,6 +142,9 @@ class ResultList < HtmlGrid::List
 		:registration_date	=>	HtmlGrid::DateValue,
 		:ikskey							=>	View::PointerLink,
 	}	
+	LOOKANDFEEL_MAP = {
+		:limitation_text	=>	:ltext,
+	}
 	def breakline(txt, length)
 		name = ''
 		line = ''
