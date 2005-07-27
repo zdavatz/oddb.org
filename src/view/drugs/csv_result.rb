@@ -69,8 +69,8 @@ class CsvResult < HtmlGrid::Component
 		end
 	end
 	def limitation_text(pack)
-		if((sl = pack.sl_entry) && txt = sl.limitation_text)
-			txt.send(@lookandfeel.language)
+		if((sl = pack.sl_entry) && (txt = sl.limitation_text))
+			txt.send(@lookandfeel.language).gsub(/\n/, '|')
 		end
 	end
 	def numerical_size(pack)

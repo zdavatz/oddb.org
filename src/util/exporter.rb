@@ -25,6 +25,7 @@ module ODDB
 			}
 			export_yaml
 			export_oddbdat
+			export_csv
 		rescue StandardError => e
 			log = Log.new(Date.today)
 			log.report = [
@@ -48,11 +49,14 @@ module ODDB
 			session.flavor = 'gcc'
 			session.lookandfeel = LookandfeelBase.new(session)
 			model = @app.atc_classes.values.sort_by { |atc| atc.code }
-			path = File.expand_path('../../data/csv/oddb.csv', 
+			dir = File.expand_path('../../data/downloads', 
 				File.dirname(__FILE__))
-			FileUtils.mkdir_p(File.dirname(path))
+			name = 'oddb.csv'
+			path = File.join(dir, name)
+			FileUtils.mkdir_p(dir)
 			exporter = View::Drugs::CsvResult.new(model, session)
 			exporter.to_csv_file(keys, path)
+			EXPORT_SERVER.compress(dir, name)
 		rescue
 			puts $!.message
 			puts $!.backtrace

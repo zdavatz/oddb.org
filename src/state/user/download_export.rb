@@ -14,6 +14,7 @@ class DownloadExport < State::User::Global
 	DIRECT_EVENT = :download_export
 	PRICES = {
 		'doctors.yaml'	=> 1100,
+		'oddb.csv'			=> 500,
 		'oddb.yaml'			=> 600,
 		'fachinfo.yaml'	=> 800,
 		'patinfo.yaml'	=> 500,
@@ -21,6 +22,7 @@ class DownloadExport < State::User::Global
 		's31x'					=> 900,
 	}
 	SUBSCRIPTION_PRICES = {
+		'oddb.csv'			=> 2000,
 		'oddb.yaml'			=> 2500,
 		'fachinfo.yaml'	=> 1400,
 		'oddbdat'				=> 2500,
@@ -28,6 +30,7 @@ class DownloadExport < State::User::Global
 	}
 	## Number of Days during which a paid file may be downloaded
 	DURATIONS = { 
+		'oddb.csv'			=> 30,
 		'doctors.yaml'	=> 30,
 		'oddb.yaml'			=> 30,
 		'fachinfo.yaml'	=> 30,
@@ -36,6 +39,7 @@ class DownloadExport < State::User::Global
 		's31x'					=> 30,
 	}
 	SUBSCRIPTION_DURATIONS = { 
+		'oddb.csv'			=> 365,
 		'oddb.yaml'			=> 365,
 		'fachinfo.yaml'	=> 365,
 		'oddbdat'				=> 365,
