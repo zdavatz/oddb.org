@@ -10,6 +10,10 @@ require 'util/logfile'
 module ODDB
 	class Exporter
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
+		class SessionStub
+			attr_accessor :language, :flavor, :lookandfeel
+			alias :default_language :language
+		end
 		def initialize(app)
 			@app = app
 		end
@@ -21,6 +25,7 @@ module ODDB
 			}
 			export_yaml
 			export_oddbdat
+			export_csv
 		rescue StandardError => e
 			log = Log.new(Date.today)
 			log.report = [
@@ -31,6 +36,31 @@ module ODDB
 			].join("\n")
 			log.notify("Error: Export")
 			nil
+		end
+		def export_csv
+			keys = [ :iksnr, :ikscd, :barcode, :name_base, :galenic_form,
+				:most_precise_dose, :size, :numerical_size, :price_exfactory,
+				:price_public, :company_name, :ikscat, :sl_entry,
+				:introduction_date, :limitation, :limitation_points,
+				:limitation_text, :registration_date, :expiration_date,
+				:inactive_date, :export_flag, ]
+			session = SessionStub.new
+			session.language = 'de'
+			session.flavor = 'gcc'
+			session.lookandfeel = LookandfeelBase.new(session)
+			model = @app.atc_classes.values.sort_by { |atc| atc.code }
+			dir = File.expand_path('../../data/downloads', 
+				File.dirname(__FILE__))
+			name = 'oddb.csv'
+			path = File.join(dir, name)
+			FileUtils.mkdir_p(dir)
+			exporter = View::Drugs::CsvResult.new(model, session)
+			exporter.to_csv_file(keys, path)
+			EXPORT_SERVER.compress(dir, name)
+		rescue
+			puts $!.message
+			puts $!.backtrace
+			raise
 		end
 		def export_oddbdat
 			exporter = OdbaExporter::OddbDatExport.new(@app)

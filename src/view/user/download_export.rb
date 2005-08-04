@@ -19,41 +19,57 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[3,0]		=>	'months_1',
 		[5,0]		=>	'months_12',
-		[0,1]		=>	:yaml_export_gz,
-		[2,1]		=>	:radio_oddb_yaml_gz,
-		[0,2]		=>	:yaml_export_zip,
-		[2,2]		=>	:radio_oddb_yaml_zip,
-		[0,3]		=>	:yaml_fachinfo_export_gz,
-		[2,3]		=>	:radio_fachinfo_yaml_gz,
-		[0,4]		=>	:yaml_fachinfo_export_zip,
-		[2,4]		=>	:radio_fachinfo_yaml_zip,
-		[0,5]		=>	:yaml_patinfo_export_gz,
-		[3,5]		=>	:yaml_patinfo_price_gz,
-		[0,6]		=>	:yaml_patinfo_export_zip,
-		[3,6]		=>	:yaml_patinfo_price_zip,
-		[0,7]		=>	:yaml_doctors_export_gz,
-		[3,7]		=>	:yaml_doctors_price_gz,
-		[0,8]		=>	:yaml_doctors_export_zip,
-		[3,8]		=>	:yaml_doctors_price_zip,
-		[0,10]	=>	:oddbdat_download_tar_gz,
-		[2,10]	=>	:radio_oddbdat_tar_gz,
-		[0,11]	=>	:oddbdat_download_zip,
-		[2,11]	=>	:radio_oddbdat_zip,
-		[0,12]	=>	:s31x_gz,
-		[2,12]	=>	:radio_s31x_gz,
-		[0,13]	=>	:s31x_zip,
-		[2,13]	=>	:radio_s31x_zip,
+		[0,1]		=>	:csv_export_gz,
+		[2,1]		=>	:radio_oddb_csv_gz,
+		[0,2]		=>	:csv_export_zip,
+		[2,2]		=>	:radio_oddb_csv_zip,
+		[0,3]		=>	:yaml_export_gz,
+		[2,3]		=>	:radio_oddb_yaml_gz,
+		[0,4]		=>	:yaml_export_zip,
+		[2,4]		=>	:radio_oddb_yaml_zip,
+		[0,5]		=>	:yaml_fachinfo_export_gz,
+		[2,5]		=>	:radio_fachinfo_yaml_gz,
+		[0,6]		=>	:yaml_fachinfo_export_zip,
+		[2,6]		=>	:radio_fachinfo_yaml_zip,
+		[0,7]		=>	:yaml_patinfo_export_gz,
+		[3,7]		=>	:yaml_patinfo_price_gz,
+		[0,8]		=>	:yaml_patinfo_export_zip,
+		[3,8]		=>	:yaml_patinfo_price_zip,
+		[0,9]		=>	:yaml_doctors_export_gz,
+		[3,9]		=>	:yaml_doctors_price_gz,
+		[0,10]	=>	:yaml_doctors_export_zip,
+		[3,10]	=>	:yaml_doctors_price_zip,
+		[0,12]	=>	:oddbdat_download_tar_gz,
+		[2,12]	=>	:radio_oddbdat_tar_gz,
+		[0,13]	=>	:oddbdat_download_zip,
+		[2,13]	=>	:radio_oddbdat_zip,
+		[0,14]	=>	:s31x_gz,
+		[2,14]	=>	:radio_s31x_gz,
+		[0,15]	=>	:s31x_zip,
+		[2,15]	=>	:radio_s31x_zip,
 	}
 	CSS_MAP = {
 		[0,0,6]			=>	'subheading',
-		[0,1,6,13]	=>	'list',
+		[0,1,6,15]	=>	'list',
 	}
 	CSS_CLASS = 'component'
+	def csv_export_gz(model, session)
+		checkbox_with_filesize("oddb.csv.gz")
+	end
+	def csv_export_zip(model, session)
+		checkbox_with_filesize("oddb.csv.zip")
+	end
 	def oddbdat_download_tar_gz(model, session)
 		checkbox_with_filesize("oddbdat.tar.gz")
 	end
 	def oddbdat_download_zip(model, session)
 		checkbox_with_filesize("oddbdat.zip")
+	end
+	def radio_oddb_csv_gz(model, session)
+		once_or_year('oddb.csv.gz')
+	end
+	def radio_oddb_csv_zip(model, session)
+		once_or_year('oddb.csv.zip')
 	end
 	def radio_fachinfo_yaml_gz(model, session)
 		once_or_year('fachinfo.yaml.gz')
