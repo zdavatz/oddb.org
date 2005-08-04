@@ -30,6 +30,7 @@ class RecentRegs < State::Drugs::Global
 	attr_accessor :regs_this_month, :regs_last_month
 	VIEW = View::Drugs::RecentRegs
 	DIRECT_EVENT = :recent_registrations
+	LIMITED = true
 	def init
 		if((loggroup = @session.app.log_group(:swissmedic_journal)) \
 			&& (date = loggroup.newest_date))

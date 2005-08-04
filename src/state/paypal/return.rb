@@ -17,8 +17,8 @@ class Return < State::Global
 	end
 	VIEW = View::PayPal::Return
 	def init
-		if((id = @session.user_input(:invoice)) \
-			&& (invoice = @session.invoice(id)))
+		if(@model)
+			invoice = @model
 			@model = InvoiceWrapper.new(invoice)
 			user = @session.resolve(invoice.user_pointer)
 			@model.items = invoice.items.values.collect { |item|
@@ -27,13 +27,19 @@ class Return < State::Global
 				wrap.oid = invoice.oid
 				wrap
 			}
-		else
-			@model = nil
 		end
 		super
 	end
 	def back
 		@previous.previous if(@previous.respond_to?(:previous))
+	end
+	def paypal_return
+		if(@model && @model.types.all? { |type| type  == :poweruser } \
+			&& @model.payment_received? && (des = @session.desired_state))
+			des
+		else
+			self
+		end
 	end
 end
 		end

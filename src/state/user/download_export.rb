@@ -58,40 +58,6 @@ class DownloadExport < State::User::Global
 	def DownloadExport.subscription_price(file)
 		SUBSCRIPTION_PRICES[fuzzy_key(file)].to_f
 	end
-	def proceed
-		keys = [:download, :months]
-		input = user_input(keys, keys) 
-		items = []
-		if(files = input[:download])
-			files.each { |filename, val|
-				if(val)
-					item = AbstractInvoiceItem.new
-					item.text = filename
-					item.vat_rate = VAT_RATE
-					months = input[:months][filename]
-					item.quantity = months.to_f
-					price_mth = 'price'
-					duration_mth = 'duration'
-					if(months == '12')
-						price_mth = 'subscription_' << price_mth
-						duration_mth = 'subscription_' << duration_mth
-					end
-					item.total_netto = DownloadExport.send(price_mth, filename)
-					item.duration = DownloadExport.send(duration_mth, filename)
-					items.push(item)
-				end
-			}
-		end
-		if(items.empty?)
-			@errors.store(:download, create_error('e_no_download_selected', 
-				:download, nil))
-			return self
-		end
-		pointer = Persistence::Pointer.new(:invoice)
-		invoice = Persistence::CreateItem.new(pointer)
-		invoice.carry(:items, items)
-		RegisterDownload.new(@session, invoice)
-	end
 end
 		end
 	end

@@ -273,6 +273,10 @@ class OddbPrevalence
 		patinfo = ODDB::Patinfo.new
 		@patinfos.store(patinfo.oid, patinfo)
 	end
+	def create_poweruser
+		user = ODDB::PowerUser.new
+		@users.store(user.oid, user)
+	end
 	def create_registration(iksnr)
 		unless @registrations.include?(iksnr)
 			reg = ODDB::Registration.new(iksnr)
@@ -498,6 +502,9 @@ class OddbPrevalence
 	end
 	def patinfo_count
 		@patinfo_count ||= count_patinfos()
+	end
+	def poweruser(oid)
+		@users[oid.to_i]
 	end
 	def rebuild_atc_chooser
 		chooser = ODDB::AtcNode.new(nil)

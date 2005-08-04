@@ -159,7 +159,7 @@ class DownloadExportComposite < Form
 		[0,1] =>  'list',
 		[0,3] =>  'list',
 	}
-	EVENT = :proceed
+	EVENT = :proceed_download
 	SYMBOL_MAP = {
 		:yaml_link => HtmlGrid::Link,
 	}

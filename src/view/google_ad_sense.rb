@@ -5,7 +5,8 @@ module ODDB
 	module View
 		module GoogleAdSenseMethods
 			def ad_sense(model, session)
-				if(@lookandfeel.enabled?(:google_adsense))
+				if(@lookandfeel.enabled?(:google_adsense) \
+					&& !@session.user.valid?)
 					google = GoogleAdSense.new(model, session, self)
 					google.channel = self::class::GOOGLE_CHANNEL
 					google.format = self::class::GOOGLE_FORMAT

@@ -19,7 +19,13 @@ ul {
 	padding-left : 14px;
 	list-style-type : disc;
 }
-	
+ol {
+	margin : 0px;
+	padding: 0px 0px 0px 20px;
+}
+ol li {
+	margin: 5px 0px;
+}
 form {
 	margin : 0px;
 }

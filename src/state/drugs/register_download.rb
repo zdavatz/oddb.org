@@ -29,6 +29,7 @@ class RegisterDownload < Global
 		item = AbstractInvoiceItem.new
 		stype = @session.lookandfeel.lookup(@search_type)
 		item.text = [@search_query, stype, 'csv'].join('.')
+		item.type = :csv_export
 		item.data = {
 			:search_query => @search_query,
 			:search_type	=> @search_type,

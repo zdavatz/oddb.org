@@ -11,6 +11,7 @@ module ODDB
 class Global < State::Global; end
 module Root; end
 module CompanyUser; end
+module PowerUser; end
 		end
 		module Companies
 class Global < State::Global; end

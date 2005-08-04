@@ -3,25 +3,30 @@
 
 require 'state/admin/global'
 require 'state/admin/root'
+require 'state/user/invalid_user'
 require 'view/admin/login'
 
 module ODDB
 	module State
 		module Admin
-class Login < State::Global
-	DIRECT_EVENT = :login_form
-	VIEW = View::Admin::Login
+module LoginMethods
 	def login
 		if(user = @session.login)
-			newstate = case user
-			when ODDB::CompanyUser
-				name = user.company_name
-				type = 'st_company'
-				@session.set_persistent_user_input(:search_query, name)
-				@session.set_persistent_user_input(:search_type, type)
-				_search_drugs_state(name.downcase, type)
+			newstate = if(user.valid?)
+				case user
+				when ODDB::CompanyUser
+					name = user.company_name
+					type = 'st_company'
+					@session.set_persistent_user_input(:search_query, name)
+					@session.set_persistent_user_input(:search_type, type)
+					_search_drugs_state(name.downcase, type)
+				else
+					des = @session.desired_state
+					@session.desired_state = nil
+					des || @previous || trigger(:home)
+				end
 			else
-				@previous || trigger(:home)
+				State::User::InvalidUser.new(@session, user)
 			end
 			if(viral = user.viral_module)
 				newstate.extend(viral)
@@ -30,20 +35,24 @@ class Login < State::Global
 		end
 	end
 end
+class Login < State::Global
+	DIRECT_EVENT = :login_form
+	VIEW = View::Admin::Login
+end
 class TransparentLogin < State::Admin::Login
 	attr_accessor :desired_event
 	def login
 		if(user = @session.login)
 			if(viral = user.viral_module)
 				self.extend(viral)
-				if(@model.respond_to?(:pointer))
-					klass = resolve_state(@model.pointer)
-					newstate = klass.new(@session, @model)
-					newstate.extend(@viral_module)
-					newstate
-				else
-					trigger(@desired_event)
-				end
+			end
+			if(@model.respond_to?(:pointer))
+				klass = resolve_state(@model.pointer)
+				newstate = klass.new(@session, @model)
+				newstate.extend(@viral_module)
+				newstate
+			else
+				trigger(@desired_event)
 			end
 		end
 	end

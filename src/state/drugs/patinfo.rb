@@ -11,10 +11,12 @@ module ODDB
 class Patinfo < State::Drugs::Global
 	VIEW = View::Drugs::Patinfo
 	VOLATILE = true
+	LIMITED = true
 end
 class PatinfoPrint < State::Drugs::Global
 	VIEW = View::Drugs::PatinfoPrint
 	VOLATILE = true
+	LIMITED = true
 end
 		end
 	end

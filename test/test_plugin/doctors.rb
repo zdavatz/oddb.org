@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # TestDoctorPlugin -- oddb -- 22.09.2004 -- jlang@ywesee.com
 
+$: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'plugin/doctors'
@@ -64,8 +65,8 @@ module ODDB
 						:addresses  =>  [],
 						:praxis			=>	true,
 						:specialities	=>	["GrossLap Medizin"], 
-						:abilities		=>	["Mangel- und Seisemedizin"], 
-						:skills			=>	["SuperLabor RTZ"],
+						#:abilities		=>	["Mangel- und Seisemedizin"], 
+						#:skills			=>	["SuperLabor RTZ"],
 						:title			=>	'Dr. med.',
 						:salutation =>	'Herrn',
 						:origin_id	=> 14478,
@@ -100,9 +101,9 @@ module ODDB
 						:firstname	=> "Happy Camper", 
 						:name				=> "Testdoctor", 
 						:origin_id	=> 14478,
-						:abilities		=>	["Mangel- und Seisemedizin"], 
+						#:abilities		=>	["Mangel- und Seisemedizin"], 
 						:origin_db  => :ch,
-						:skills			=>	["SuperLabor RTZ"],					
+						#:skills			=>	["SuperLabor RTZ"],					
 					}	
 					assert_equal(expected, update_hash)
 					assert_equal('docpointer', pointer)

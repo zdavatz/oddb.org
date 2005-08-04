@@ -106,6 +106,7 @@ module ODDB
 			'@ean13',
 			'@name',
 			'@business_area',
+			'@generic_type',
 			'@registrations',
 			'@url',
 			'@phone',

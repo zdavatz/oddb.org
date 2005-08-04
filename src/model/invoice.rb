@@ -31,11 +31,17 @@ module ODDB
 		def item(oid)
 			@items[oid]
 		end
+		def max_duration
+			@items.values.collect { |item| item.duration }.compact.max
+		end
 		def total_brutto
 			@items.values.inject(0) { |inj, item| inj + item.total_brutto }
 		end
 		def total_netto
 			@items.values.inject(0) { |inj, item| inj + item.total_netto }
+		end
+		def types
+			@items.values.collect { |item| item.type }.compact.uniq
 		end
 		def payment_received!
 			@payment_received = true
@@ -48,7 +54,7 @@ module ODDB
 		end
 	end
 	class AbstractInvoiceItem
-		attr_accessor :user_pointer, :time, :item_pointer, #:name
+		attr_accessor :user_pointer, :time, :item_pointer, :type,
 			:text, :quantity, :price, :expiry_time, :vat_rate, :duration
 		attr_accessor :data
 		def initialize

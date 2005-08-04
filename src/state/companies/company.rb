@@ -12,6 +12,7 @@ module ODDB
 		module Companies
 class Company < State::Companies::Global
 	VIEW = View::Companies::UnknownCompany
+	LIMITED = true
 end
 class UserCompany < State::Companies::Company
 	VIEW = View::Companies::UserCompany

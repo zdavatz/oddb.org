@@ -10,6 +10,7 @@ module ODDB
 		module Doctors
 class Doctor < State::Doctors::Global
 	VIEW = View::Doctors::Doctor
+	LIMITED = true
 end
 		end
 	end

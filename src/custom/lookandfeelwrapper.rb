@@ -25,28 +25,6 @@ module ODDB
 			:search				=>	{ "class" => "button" },
 		}
 	end
-	class LookandfeelDrOuwerkerk < SBSM::LookandfeelWrapper
-		ENABLED = [
-			:paypal,
-			:powerlink,
-		]
-		DICTIONARIES = {
-			'de'	=>	{
-				:home_welcome	=>	'',
-				:lookandfeel_owner =>	'dr-ouwerkerk.com',
-			},
-			'fr'	=>	{
-				:home_welcome	=>	'',
-				:lookandfeel_owner =>	'dr-ouwerkerk.com',
-			},
-		}
-		HTML_ATTRIBUTES = {
-			:logo => {
-				'width'		=>	'468',
-				'height'	=>	'60',
-			},
-		}
-	end
 	class LookandfeelGenerika < SBSM::LookandfeelWrapper
 		LANGUAGES = [
 			'de', 'fr', 'en'
@@ -64,6 +42,7 @@ module ODDB
 			:multilingual_logo,
 			:patinfo,
 			:paypal,
+			:query_limit,
 			:sponsor,
 			:sponsorlogo,
 			:ywesee_contact,
@@ -95,30 +74,6 @@ module ODDB
 			:logo => {
 				'width'		=>	'338',
 				'height'	=>	'87',
-			},
-		}
-	end
-	class LookandfeelInnova < SBSM::LookandfeelWrapper
-		ENABLED = [
-			:logo,
-			:ywesee_contact,
-		]
-		DICTIONARIES = {
-			'de'	=>	{
-				:home_welcome	=>	'Willkommen bei Innova und oddb.org',
-				:mailinglist_title	=>	'Mailinglist - Generika.cc',
-				:lookandfeel_owner =>	'Generika.cc',
-			},
-			'fr'	=>	{
-				:home_welcome	=>	'Bienvenu sur Innova et oddb.org',
-				:mailinglist_title	=>	'Mailinglist - Generika.cc',
-				:lookandfeel_owner =>	'Generika.cc',
-			},
-		}
-		HTML_ATTRIBUTES = {
-			:logo => {
-				'width'		=>	'209',
-				'height'	=>	'70',
 			},
 		}
 	end
@@ -164,26 +119,6 @@ module ODDB
 			:logo => {
 				'width'		=>	'252',
 				'height'	=>	'96',
-			},
-		}
-	end
-	class LookandfeelSchoenenberger < SBSM::LookandfeelWrapper
-		DICTIONARIES = {
-			'de'	=>	{
-				:home_welcome	=>	'Willkommen bei Sch&ouml;nenberger Pharma AG und oddb.org',
-				:lookandfeel_owner =>	'Generika.ch',
-				:mailinglist_title	=>	'Mailinglist - Generika.cc',
-			},
-			'fr'	=>	{
-				:home_welcome	=>	'Bienvenu sur Sch&ouml;nenberger Pharma AG et oddb.org',
-				:lookandfeel_owner =>	'Generika.ch',
-				:mailinglist_title	=>	'Mailinglist - Generika.cc',
-			},
-		}
-		HTML_ATTRIBUTES = {
-			:logo => {
-				'width'		=>	'100',
-				'height'	=>	'200',
 			},
 		}
 	end

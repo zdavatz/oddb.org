@@ -23,6 +23,7 @@ class CompanyPackage < Package; end
 class SlEntry < Global; end
 class CompanySlEntry < SlEntry; end
 module CompanyUser
+	include State::Admin::User
 	RESOLVE_STATES = {
 		[ :registration ]							=>	State::Admin::CompanyRegistration,
 		[ :registration, :sequence ]	=>	State::Admin::CompanySequence,
@@ -33,7 +34,6 @@ module CompanyUser
 		[ :registration, :sequence,
 			:package, :sl_entry ]				=>	State::Admin::CompanySlEntry,
 	}	
-	include State::Admin::User
 	def home_companies
 		klass = State::Companies::UserCompany
 		if(self.is_a?(klass))
@@ -41,6 +41,9 @@ module CompanyUser
 		else
 			klass.new(@session, @session.user.model)
 		end
+	end
+	def limited?
+		false
 	end
 	def resolve_state(pointer, type=:standard)
 		if(@session.user_equiv?(pointer))

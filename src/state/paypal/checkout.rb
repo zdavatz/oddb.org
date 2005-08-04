@@ -13,43 +13,63 @@ module Checkout
 		if(error?)
 			self
 		else
-			input.each { |key, val| @session.set_cookie_input(key, val) }
-			email = input.delete(:email)
-			#@session.set_cookie_input(:email, email)
 			ODBA.transaction { 
-				pointer = Persistence::Pointer.new([:admin_subsystem], 
-					[:download_user, email])
-				user = @session.app.update(pointer.creator, input)
-				pointer = Persistence::Pointer.new([:invoice])
-				invoice = @session.app.create(pointer)
-				@model.items.each { |abstract|
-					item_ptr = pointer + [:item]
-					time = Time.now
-					file = abstract.text
-					duration = abstract.duration
-					expiry = InvoiceItem.expiry_time(duration, time)
-					data = {
-						:duration			=> duration,
-						:expiry_time	=> expiry,
-						:price				=> abstract.price,
-						:quantity			=> abstract.quantity,
-						:text					=> file,
-						:time					=> time,
-						:data					=> abstract.data,
-						:vat_rate			=> VAT_RATE,
-					}
-					item = @session.app.update(item_ptr.creator, data)
-				}
+				user = create_user(input)
+				invoice = create_invoice(input)
 				user.add_invoice(invoice)
 				State::PayPal::Redirect.new(@session, invoice)
 			}
 		end
+	rescue SBSM::ProcessingError => err
+		@errors.store(err.key, err)
+		self
 	end
 	def checkout_mandatory
 		[ :salutation, :name, :name_first, :email ]
 	end
 	def checkout_keys
 		checkout_mandatory()
+	end
+	def create_invoice(input)
+		pointer = Persistence::Pointer.new([:invoice])
+		invoice = @session.app.create(pointer)
+		@model.items.each { |abstract|
+			item_ptr = pointer + [:item]
+			time = Time.now
+			file = abstract.text
+			duration = abstract.duration
+			expiry = InvoiceItem.expiry_time(duration, time)
+			data = {
+				:duration			=> duration,
+				:expiry_time	=> expiry,
+				:price				=> abstract.price,
+				:quantity			=> abstract.quantity,
+				:text					=> file,
+				:time					=> time,
+				:type					=> abstract.type,
+				:data					=> abstract.data,
+				:vat_rate			=> VAT_RATE,
+			}
+			item = @session.app.update(item_ptr.creator, data)
+		}
+		invoice
+	end
+	def create_user(input)
+		input.each { |key, val| @session.set_cookie_input(key, val) }
+		email = input.delete(:email)
+		pointer = Persistence::Pointer.new([:admin_subsystem], 
+			[:download_user, email])
+		@session.app.update(pointer.creator, input)
+	end
+	def user_input(keys, mandatory)
+		input = super
+		msg = 'e_need_all_input'
+		@errors.each { |key, err|
+			if(err.message.match(/^e_missing_/))
+				@errors.store(key, create_error(msg, key, err.value))
+			end
+		}
+		input
 	end
 end
 		end

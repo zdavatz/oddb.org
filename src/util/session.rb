@@ -12,6 +12,7 @@ require 'fileutils'
 module ODDB
   class Session < SBSM::Session
 		attr_reader :interaction_basket
+		attr_writer :desired_state
 		LF_FACTORY = LookandfeelFactory
 		DEFAULT_FLAVOR = "gcc"
 		DEFAULT_LANGUAGE = "de"
@@ -19,11 +20,28 @@ module ODDB
 		DEFAULT_ZONE = :drugs
 		SERVER_NAME = 'www.oddb.org'
 		PERSISTENT_COOKIE_NAME = 'oddb-preferences'
+		QUERY_LIMIT = 10
+		QUERY_LIMIT_AGE = 60 * 60 * 24
+		@@requests = {}
 		def Session.request_log
 			path = File.expand_path('../../log/request_log', 
 				File.dirname(__FILE__))
 			FileUtils.mkdir_p(File.dirname(path))
 			@@request_log ||= File.open(path, 'a')
+		end
+		def limit_queries
+			requests = (@@requests[remote_ip] ||= [])
+			if(@state.limited?)
+				requests.delete_if { |other| 
+					(@process_start - other) >= QUERY_LIMIT_AGE 
+				}
+				requests.push(@process_start)
+				if(requests.size > QUERY_LIMIT)
+					request_log('DENY')
+					@desired_state = @state
+					@active_state = @state = @state.limit_state
+				end
+			end
 		end
 		def process(request)
 			@request = request
@@ -32,14 +50,22 @@ module ODDB
 			@process_start = Time.now
 			if(is_crawler?)
 				Thread.current.priority = -1
+				super
+			else
+				super
+				## @lookandfeel.nil?: the first access from a client has no
+				## lookandfeel here
+				if(self.lookandfeel.enabled?(:query_limit))
+					limit_queries 
+				end
 			end
-			super
 		ensure
 			request_log('PRCS')
 		end
 		def request_log(phase)
 			bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
-			Session.request_log.puts(sprintf("session:%12i request:%12i time:%4is mem:%6iMB %s %s",
+			Session.request_log.puts(sprintf(
+				"session:%12i request:%12i time:%4is mem:%6iMB %s %s",
 				self.object_id, @request_id, Time.now - @process_start, 
 				bytes / (2**20), phase, @request_path))
 			Session.request_log.flush
@@ -66,6 +92,12 @@ module ODDB
 		end
 		def currency 
 			cookie_set_or_get(:currency) || "CHF"
+		end
+		def desired_state
+			if(mod = @user.viral_module)
+				@desired_state.extend(mod)
+			end
+			@desired_state
 		end
 		def interaction_basket_count
 			@interaction_basket.size
