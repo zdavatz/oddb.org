@@ -183,6 +183,9 @@ Grammar OddbSize
 		def generic_type
 			registration.generic_type
 		end
+		def has_patinfo?
+			@sequence.has_patinfo?
+		end
 		def ikskey
 			if(nr = iksnr)
 				nr + @ikscd

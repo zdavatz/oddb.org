@@ -6,6 +6,12 @@ require 'plugin/fxcrossrate'
 module ODDB
 	module View
 		module DataFormat
+			def most_precise_dose(model, session)
+				if(model.respond_to?(:most_precise_dose))
+					dose = model.most_precise_dose
+					(dose && (dose.qty > 0)) ? dose : nil
+				end
+			end
 			def price_exfactory(model, session)
 				formatted_price(:price_exfactory, model)
 			end

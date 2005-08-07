@@ -227,12 +227,6 @@ class ResultList < HtmlGrid::List
 		txt.set_attribute('title', title)
 		txt
 	end
-	def most_precise_dose(model, session)
-		if(model.respond_to?(:most_precise_dose))
-			dose = model.most_precise_dose
-			(dose && (dose.qty > 0)) ? dose : nil
-		end
-	end
 	def name_base(model, session)
 		link = HtmlGrid::PopupLink.new(:compare, model, session, self)
 		link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})

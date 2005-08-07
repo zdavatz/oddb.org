@@ -146,13 +146,26 @@ class ResultLimitList < HtmlGrid::List
 	CSS_CLASS = 'composite'
 	SORT_HEADER = false
 	CSS_MAP = {
-		[0,0] => 'result bold',
+		[0,0] => 'result-big-unknown',
 		[1,0] => 'list',
 		[2,0,6] => 'list-r',
 	}
 	CSS_HEAD_MAP = {
 		[2,0,6] => 'th-r',
 	}
+	def patinfo(model, session)
+		## only show pdf-patinfos
+		if(pdf_patinfo = model.pdf_patinfo)
+			link = HtmlGrid::PopupLink.new(:patinfo_short, 
+				model, session, self)
+			link.href = @lookandfeel.resource_global(:pdf_patinfo, 
+				pdf_patinfo)
+			pos = components.index(:patinfo)
+			component_css_map.store(pos, "result-infos")
+			css_map.store(pos, "result-infos")
+			link
+		end
+	end
 end
 class ResultLimitComposite < HtmlGrid::Composite
 	COMPONENTS = {

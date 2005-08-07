@@ -22,7 +22,7 @@ module ODDB
 		PERSISTENT_COOKIE_NAME = 'oddb-preferences'
 		QUERY_LIMIT = 10
 		QUERY_LIMIT_AGE = 60 * 60 * 24
-		@@requests = {}
+		@@requests ||= {}
 		def Session.request_log
 			path = File.expand_path('../../log/request_log', 
 				File.dirname(__FILE__))
@@ -58,6 +58,8 @@ module ODDB
 				if(self.lookandfeel.enabled?(:query_limit))
 					limit_queries 
 				end
+				## return empty string across the drb-border
+				''
 			end
 		ensure
 			request_log('PRCS')
