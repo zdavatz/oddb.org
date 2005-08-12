@@ -15,29 +15,37 @@ class ActiveAgentInnerComposite < HtmlGrid::Composite
 		[2,0]		=>	:dose,
 		[0,1]		=>	:chemical_substance,
 		[2,1]		=>	:chemical_dose,
+		[0,2]		=>	:equivalent_substance,
+		[2,2]		=>	:equivalent_dose,
 	}
 	CSS_MAP = {
 		[0,0,4,2]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value	
 	LABELS = true
+	def substance(model, session)
+		model.substance.send(@lookandfeel.language)
+	end
 end
 class ActiveAgentForm < View::Form
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
 		[0,0]		=>	:substance,
 		[2,0]		=>	:dose,
+		[4,0]		=>	:spagyric_dose,
 		[0,1]		=>	:chemical_substance,
 		[2,1]		=>	:chemical_dose,
-		[1,2]		=>	:submit,
-		[1,2,0]	=>	:delete_item,
-		[1,3]		=>	:new_active_agent_button,
+		[0,2]		=>	:equivalent_substance,
+		[2,2]		=>	:equivalent_dose,
+		[1,3]		=>	:submit,
+		[1,3,0]	=>	:delete_item,
+		[1,4]		=>	:new_active_agent_button,
 	}
 	COMPONENT_CSS_MAP = {
-		[0,0,4,2]	=>	'standard',
+		[0,0,8,3]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,4,4]	=>	'list',
+		[0,0,8,6]	=>	'list',
 	}
 	LABELS = true
 	def init

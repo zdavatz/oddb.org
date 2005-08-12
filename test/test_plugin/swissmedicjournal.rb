@@ -116,10 +116,11 @@ module ODDB
 			end
 		end
 		class StubActiveAgent
-			attr_accessor :pointer
+			attr_accessor :pointer, :substance
 		end
 		class StubSmjActiveAgent
-			attr_accessor :substance, :dose, :chemical, :equivalent
+			attr_accessor :substance, :dose, :chemical, :equivalent,
+				:special, :spagyric
 		end
 		class StubDose
 			attr_reader :qty, :unit
@@ -492,6 +493,8 @@ module ODDB
 			agent_ptr = pointer + [:active_agent, 'FLUCLOXACILLINUM']
 			expected = {
 				:dose									=>	["500", "mg"],
+				:spagyric_dose				=>	nil,
+				:spagyric_type				=>	nil,
 			}
 			@app.mock_handle(:update) { |ptr, values|
 				assert_equal(agent_ptr.creator, ptr)
@@ -527,6 +530,8 @@ module ODDB
 				:chemical_dose				=>	["500", "mg"],
 				:equivalent_substance	=>	"RUSCOGENINA",
 				:equivalent_dose			=>	["0.5", "mg"],
+				:spagyric_dose				=>	nil,
+				:spagyric_type				=>	nil,
 			}
 			@app.mock_handle(:update) { |ptr, values|
 				assert_equal(expected, values)

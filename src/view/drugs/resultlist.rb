@@ -59,8 +59,8 @@ class AtcHeader < HtmlGrid::Composite
 			&& (pages = state.pages) \
 			&& pages.size > 1)
 			args = {
-				:search_query => @session.user_input(:search_query),	
-				:search_type => @session.user_input(:search_type),	
+				:search_query => @session.persistent_user_input(:search_query),	
+				:search_type => @session.persistent_user_input(:search_type),	
 			}
 			View::Pager.new(pages, session, self, :search, args)
 		end
@@ -142,6 +142,22 @@ class ResultList < HtmlGrid::List
 		:registration_date	=>	HtmlGrid::DateValue,
 		:ikskey							=>	View::PointerLink,
 	}	
+	LOOKANDFEEL_MAP = {
+		:limitation_text	=>	:ltext,
+	}
+	def breakline(txt, length)
+		name = ''
+		line = ''
+		txt.to_s.split(/(:?[\s-])/).each { |part|
+			if((line.length + part.length) > length)
+				name << line << '<br>'
+				line = part
+			else
+				line << part
+			end
+		}
+		name << line
+	end
 	def company_name(model, session)
 		if(comp = model.company)
 			link = nil
@@ -198,7 +214,6 @@ class ResultList < HtmlGrid::List
 		link.set_attribute('title', "#{@lookandfeel.lookup(:google_alt)}#{model.name_base}")
 		link
 	end
-
 	def ikscat(model, session)
 		txt = HtmlGrid::Component.new(model, session, self)
 		txt.value = [
@@ -211,19 +226,6 @@ class ResultList < HtmlGrid::List
 		].compact.join('&nbsp;/&nbsp;')
 		txt.set_attribute('title', title)
 		txt
-	end
-	def breakline(txt, length)
-		name = ''
-		line = ''
-		txt.to_s.split(/(:?[\s-])/).each { |part|
-			if((line.length + part.length) > length)
-				name << line << '<br>'
-				line = part
-			else
-				line << part
-			end
-		}
-		name << line
 	end
 	def name_base(model, session)
 		link = HtmlGrid::PopupLink.new(:compare, model, session, self)

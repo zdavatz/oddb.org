@@ -10,9 +10,36 @@ module ODDB
 		class FachinfoPDFWriter < Writer
 			include FachinfoWriterMethods
 			include Rpdf2txt::DefaultHandler
+			def initialize(*args)
+				super
+				@chars_since_last_linebreak = 0
+				@tableheader_lineno = nil
+			end
+			def detect_tableheader?
+				## ignore empty lines at the start of the page
+				if(@tableheader_lineno == 0 && @src.strip.empty?)
+					return true
+				end
+				lines = @paragraph.to_s.split("\n")
+				if(@tableheader_lineno \
+					&& (line = lines.at(@tableheader_lineno)) \
+					&& line.strip == @src.strip)
+					@tableheader_lineno += 1
+					true
+				else
+					@tableheader_lineno = nil
+					false
+				end
+			end
 			def new_font(font)
 				if(@font)
 					self.add_text
+					## if the following is preformatted text, we would like to 
+					## know before the next call to add_text, e.g. for line_break
+					## and similar
+					if(/courier/i.match(font.basefont_name))
+						@preformatted = true
+					end
 				end
 				@font = font
 			end
@@ -28,7 +55,13 @@ module ODDB
 				elsif(@font.bold?)
 					@name = self.src.strip
 				elsif(@font.italic?)
-					if(@fresh_paragraph)
+					## special case: italic after company-name is the 
+					## galenic_form-chapter of the pre AMZV-form of fi
+					if(@chapter == @company)
+						@chapter = next_chapter
+						@section = @chapter.next_section
+					end
+					if(@fresh_paragraph || @preformatted)
 						@section = @chapter.next_section
 						@section.subheading << self.src
 						@wrote_section_heading = true
@@ -47,7 +80,7 @@ module ODDB
 						str = self.src
 						@wrote_section_heading = false
 						#for the first paragraph after a preformated paragraph
-						if(!courier && @preformatted)
+						if(!(courier || symbol) && @preformatted)
 							@fresh_paragraph = true
 						end
 						if(@fresh_paragraph)
@@ -64,11 +97,14 @@ module ODDB
 							if(@paragraph.empty?)
 								str.strip!
 								@paragraph.preformatted!
+							elsif(!@paragraph.preformatted?)
+								@paragraph = @section.next_paragraph
+								@paragraph.preformatted!
 							end
-							@preformatted = true
-							@paragraph << "\n"
+							#@preformatted = true
 						else
-							str.gsub!("\n","")
+							str.gsub!(/-\n/, "-")
+							str.gsub!(/ ?\n ?/, " ")
 							@preformatted = false
 						end
 						@paragraph << str
@@ -78,13 +114,45 @@ module ODDB
 				@src = ''
 			end
 			def send_flowing_data(data)
-				self.src << data
+				@chars_since_last_linebreak += data.size
+				self.src << data unless(/[kc]ompendium/i.match(data))
 			end
 			def send_page
+				## in newer fi-pdfs there is no change of font for 
+				## pagenumbers. Here in send_page we can recognize 
+				## and delete the page-numbering
+				if(pos = @src.index(/\w+\s+\d+$/))
+					@src[pos..-1] = ''
+				end
 				self.add_text
+				if(@preformatted)
+					@tableheader_lineno = 0
+				end
 			end
 			def send_line_break
-				self.src << "\n"
+				## After ther first period in 'Valid until' 
+				## we can go on to the next chapter
+				if(@chapter == @date && /\.\s*$/.match(self.src))
+					self.add_text
+					@chapter = next_chapter
+					@section = @chapter.next_section
+					@paragraph = @section.next_paragraph
+					@src = ''
+					return
+				end
+				if(@preformatted)
+					if(detect_tableheader?)
+						@src = ''
+					else
+						self.add_text
+						@paragraph << "\n"
+					end
+				elsif(!@preformatted && @chars_since_last_linebreak < 80)
+					self.send_paragraph
+				elsif(!/[\s-]$/.match(self.src))
+					self.src << " "
+				end
+				@chars_since_last_linebreak = 0
 			end
 			def send_paragraph
 				if(@wrote_section_heading && self.src.strip.empty?)

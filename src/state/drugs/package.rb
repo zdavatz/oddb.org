@@ -9,6 +9,7 @@ module ODDB
 		module Drugs
 class Package < State::Drugs::Global
 	VIEW = View::Drugs::Package
+	LIMITED = true
 end
 		end
 	end

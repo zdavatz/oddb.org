@@ -13,8 +13,6 @@ module ODDB
 			DOCUMENT_ROOT = 'doc'
 			IMAGE_PATH = '/resources/images/fachinfo'
 			def new_font(font_tuple)
-				#puts "in new font"
-				#puts font_tuple.inspect
 				if(@chapter_flag)
 					@chapter_flag = nil
 					# switch between old and new (2001) FI-Schema
@@ -33,20 +31,15 @@ module ODDB
 						@section = @chapter.next_section
 					end
 				end
-				#puts font_tuple.join('-') if font_tuple
 				case font_tuple
 				when ['h1',0,1,0]
-					#puts " in first 1"
 					set_target(@name)
 				when [nil,1,1,nil]
-					#	puts "in second 1"
 					@chapter_flag = true
 					@chapter = next_chapter
-					#puts @chapter
 					@section = @chapter.next_section
 					set_target(@chapter.heading)
 				when [nil,1,nil,nil]
-					#puts "in third 1"
 					if(@target.is_a?(Text::Paragraph) \
 						&& !@target.empty?)
 						@format = @target.set_format(:italic)
@@ -60,9 +53,6 @@ module ODDB
 						set_target(@section.subheading)
 					end
 				else
-					#puts "in else"
-					# Reset format
-					puts "else"
 					unless(@format.nil?)
 						@target.set_format if(@target.respond_to?(:set_format))
 						@format = nil
@@ -123,9 +113,7 @@ module ODDB
 				end
 				fname = sprintf("%05i#{ftype}", id)
 				fpath = File.expand_path(fname, langdir)
-				puts remote
-				puts fpath
-				return
+				return ## disabled
 				if(http_file(FACHINFO_SERVER, remote, fpath))
 					File.expand_path(fname, langpath)
 				end

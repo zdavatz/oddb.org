@@ -10,6 +10,7 @@ module ODDB
 		module Hospitals
 class Hospital < State::Hospitals::Global
 	VIEW = View::Hospitals::Hospital
+	LIMITED = true
 end
 		end
 	end

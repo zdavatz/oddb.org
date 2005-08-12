@@ -14,6 +14,7 @@ module ODDB
 class DoctorList < State::Doctors::Global
 	DIRECT_EVENT = :doctorlist
 	VIEW = View::Doctors::Doctors
+	LIMITED = true
 	RANGE_PATTERNS = {
 		'a-d'			=>	'a-däÄáÁàÀâÂçÇ',
 		'e-h'			=>	'e-hëËéÉèÈêÊ',

@@ -81,8 +81,8 @@ module ODDB
 <TABLE cellspacing="0">
 <TR>
 <TH class="th-pointersteps">Th_pointer_descr</TH>
-<TD class="th-pointersteps">
-<A href="http://www.oddb.org/de/gcc/backsnap" name="backsnap" class="th-pointersteps">Backsnap</A>
+<TD>
+<A href="http://www.oddb.org/de/gcc/backsnap/" name="backsnap" class="th-pointersteps">Backsnap</A>
 </TD>
 <TD>#{View::PointerSteps::STEP_DIVISOR}</TD>
 <TD class="th-pointersteps">bon</TD>
@@ -100,8 +100,8 @@ module ODDB
 <TABLE cellspacing="0">
 <TR>
 <TH class="th-pointersteps">Th_pointer_descr</TH>
-<TD class="th-pointersteps">
-<A href="http://www.oddb.org/de/gcc/backsnap" name="backsnap" class="th-pointersteps">Backsnap</A>
+<TD>
+<A href="http://www.oddb.org/de/gcc/backsnap/" name="backsnap" class="th-pointersteps">Backsnap</A>
 </TD>
 <TD>#{View::PointerSteps::STEP_DIVISOR}</TD>
 <TD class="th-pointersteps">
@@ -125,8 +125,8 @@ module ODDB
 <TABLE cellspacing="0">
 <TR>
 <TH class="th-pointersteps">Th_pointer_descr</TH>
-<TD class="th-pointersteps">
-<A href="http://www.oddb.org/de/gcc/backsnap" name="backsnap" class="th-pointersteps">Backsnap</A>
+<TD>
+<A href="http://www.oddb.org/de/gcc/backsnap/" name="backsnap" class="th-pointersteps">Backsnap</A>
 </TD>
 <TD>#{View::PointerSteps::STEP_DIVISOR}</TD>
 <TD class="th-pointersteps">
@@ -155,8 +155,8 @@ module ODDB
 <TABLE cellspacing="0">
 <TR>
 <TH class="th-pointersteps">Th_pointer_descr</TH>
-<TD class="th-pointersteps">
-<A href="http://www.oddb.org/de/gcc/backsnap" name="backsnap" class="th-pointersteps">Backsnap</A>
+<TD>
+<A href="http://www.oddb.org/de/gcc/backsnap/" name="backsnap" class="th-pointersteps">Backsnap</A>
 </TD>
 </TR>
 </TABLE>

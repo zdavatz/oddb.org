@@ -3,6 +3,8 @@
 
 require 'sbsm/user'
 require 'util/persistence'
+require 'model/invoice'
+require 'model/invoice_observer'
 require 'state/global_predefine'
 
 module ODDB
@@ -26,12 +28,16 @@ module ODDB
 		def pointer_descr
 			:set_pass
 		end
+		def valid?
+			true
+		end
 		def viral_module
 			self::class::VIRAL_MODULE
 		end
 		private
 		def adjust_types(values, app)
-			if(other = app.user_by_email(values[:unique_email]))
+			if((email = values[:unique_email]) \
+				&& (other = app.user_by_email(email)))
 				raise 'e_duplicate_email' unless(other==self)
 			end
 			if((pointer = values[:model]).is_a?(Pointer))
@@ -42,6 +48,11 @@ module ODDB
 	end
 	class UnknownUser < SBSM::UnknownUser
 		HOME = State::Drugs::Init
+		def valid?
+			false
+		end
+		def viral_module 
+		end
 	end
 	class AdminUser < User
 		SESSION_WEIGHT = 4
@@ -58,5 +69,21 @@ module ODDB
 	class CompanyUser < User
 		SESSION_WEIGHT = 4
 		VIRAL_MODULE = State::Admin::CompanyUser
+		def company_name
+			@model ? @model.name : ''
+		end
+	end
+	class PowerUser < User
+		include InvoiceObserver
+		SESSION_WEIGHT = 4
+		VIRAL_MODULE = State::Admin::PowerUser
+		def valid?
+			self.invoices.any? { |invoice|
+				invoice.payment_received? && !invoice.expired?
+			}
+		end
+		def email
+			@unique_email
+		end
 	end
 end

@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<title>FXCrossRate</title>
+
+<meta name="description" content="Currency Cross rate table for all 164 world currencies">
+<meta name="distribution" content="Global">
+<meta name="robots" content="ALL">
+<META name="keywords" content="currency conversion, localization, foreign exchange rates, currency converter, money conversion, cash exchange, currency exchange, currency calculator, currency prices, currency database, currency forecast, foreign exchange, credit card rates, cash rates, 164 currency converter"> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<meta name="keywords" content="currency converter, exchange rates, foreign exchange, currency conversion,  EXCHANGE RATES, FOREIGN EXCHANGE, CURRENCY ">
+
+   <link rel="stylesheet" type="text/css" href="/share/c/oanda.css" />
+   <link rel="stylesheet" type="text/css" href="/share/c/header.css" />
+   <link rel="stylesheet" type="text/css" href="/share/c/lsidebar.css" />
+   <link rel="stylesheet" type="text/css" href="/share/c/rsidebar.css" />
+   <link rel="stylesheet" type="text/css" href="/share/c/footer.css" />
+
+</head>
+
+<body>
+
+<table id="header">
+   <tr><td>
+   <table id="jazz" cellpadding="0" cellspacing="0">
+      <tr>
+      <td class="lt_wcorner"><img src="/share/i/corner_lt.gif" /></td> 
+      <td class="tc_wedge"><img src="/share/i/edge_ct.gif" width="100%" height="8px" /></td>
+      <td class="rt_wcorner"><img src="/share/i/corner_rt.gif" /></td>
+      </tr>
+   
+      <tr>
+      <td class="lc_wedge"><img src="/share/i/edge_lc.gif" height="100%" width="11px" /></td>
+      <td>
+         <h1>OANDA Jazz</h1>
+         <p><a href="/home/html/fxtrade.html">OANDA FXTrade Currency trading with 2-3 pips</a></p>
+         <p><a href="/home/html/fxgame.html">OANDA FXGame FREE currency trading demo account</a></p></td>
+   
+   <td class="rc_wedge"><img src="/share/i/edge_rc.gif" height="100%" width="13px" /></td>
+
+	</tr>
+   
+      <tr>
+      <td class="lb_wcorner"><img src="/share/i/corner_lb.gif" /></td>
+      <td class="bc_wedge"><img src="/share/i/edge_cb.gif" width="100%" height="13px" /></td>
+      <td class="rb_wcorner"><img src="/share/i/corner_rb.gif" /></td>
+      </tr>
+   </table>
+
+ <td id="banner">
+      <script type="text/javascript" language="JavaScript" src="/share/script/banner.js">
+      </script>
+   </td>
+</tr>
+</table>
+
+
+<table id="menu" cellspacing="0" cellpadding="0" width="100%">
+   <tr> <td rowspan="4">
+   <span id="ms1">
+   <a href="http://www.oanda.com">
+   <img hspace="0" src="/share/i/ban1.gif" alt="OANDA.com, The currency site provides currency and foreign exchange rates to investors travelers and online businesses" /></a>
+   <span class="channel" />
+   </span>
+   </td>
+
+   <td rowspan="4">
+   <span id="ms2">
+   <img class="ban" hspace="0" src="/share/i/ban2.gif" alt="oanda logo" />
+   <p> 
+   <span id="l1"><a class="link" href="/channels/products/products.shtml">Tools</a></span> 
+   <img class="flower" src="/share/i/flower.gif" hspace="0" />
+   <span id="l2"><a class="link" href="/site/info.shtml">Info</a></span>
+   </p> 
+   <span class="channel">
+   <span id="ch1"><a href="/channels/business/business.shtml">Business</a></span>
+   </span>
+   </span>
+   </td>
+  <td  rowspan="4">
+  <span id="ms3">
+  <img class="ban" hspace="0" src="/share/i/ban3.gif" />
+  <span id="converter">
+
+  <form method="post" action="/convert/classic">
+     <input type="hidden" name="value" value="1">
+
+     <select class="qclist" name=exch>
+     <option selected value=USD>USA</option>
+     <option value=AUD>Australia</option>
+     <option value=GBP>UK</option>
+     <option value=CAD>Canada</option>
+     <option value=EUR>Euro</option>
+     <option value=HKD>Hong Kong</option>
+     <option value=IDR>Indonesia</option>
+     <option value=JPY>Japan</option>
+     <option value=SGD>Singapore</option>
+     <option value=SEK>Sweden</option>
+     <option value=CHF>Switzerland</option>
+     <option value=THB>Thailand</option>
+     </select>
+
+     <select class="qclist" name=expr>
+     <option value=USD>USA</option>
+     <option value=AUD>Australia</option>
+     <option value=GBP>UK</option>
+     <option value=CAD>Canada</option>
+     <option selected value=EUR>Euro</option>
+     <option value=HKD>Hong Kong</option>
+     <option value=IDR>Indonesia</option>
+     <option value=JPY>Japan</option>
+     <option value=SGD>Singapore</option>
+     <option value=SEK>Sweden</option>
+     <option value=CHF>Switzerland</option>
+     <option value=THB>Thailand</option>
+     </select>         
+     
+     <input id="convert" type="image" name="Convert" src="/share/i/convert.gif" alt="Get Exchange Rates">
+     </form>
+ 
+
+  </span>
+  <span id="ms3_links">
+  
+  <img class="flower" src="/share/i/flower.gif" hspace="0" />
+  <span id="l3"><a class="link" href="/site/customize.shtml">Services</a></span>
+  <img class="flower" src="/share/i/flower.gif" hspace="0" />
+  <span id="l4"><a class="link" href="http://fxtrade.oanda.com/">Trading</a></span> 
+  </span>
+  
+  <span class="channel">
+  <span id="ch2"><a href="/channels/traveler/travelers.shtml">Travelers</a></span>
+  <span id="ch3"><a href="/channels/investor/investors.shtml">Investors</a></span>
+  </span> 
+  </span>
+  </td>
+  <td id="ms41"><img hspace="0" src="/share/i/ban3.gif" width="125" height="28" alt="" /></td>
+  <td id="filler1"><img hspace="0" src="/share/i/ban3.gif" alt="" /></td>
+  </tr>
+  <tr>
+     <td id="ms42"></td>
+     <td id="filler2"></td>
+  </tr>
+  
+  <tr>
+     <td id="ms43"></td>
+     <td id="filler3"></td>
+  </tr>
+  <tr>
+     <td id="ms44"></td>
+     <td id="filler4"></td>
+  </tr> 
+</table>
+
+
+<table class="content">
+   
+   <tr>
+   <td rowspan="1"><script language="JAVASCRIPT">
+   function popUpWindow(wPage, wName) {
+      wParam = "status=yes,resizable=yes,scrollbars=yes,width=770,height=480";
+      window.open(wPage, wName, wParam);
+   }
+</script>
+
+<table id="lmenu" cellpadding="0" cellspacing="0">
+      <tr>
+      <td class="lt_gcorner"><img src="/share/i/lhs_corner_lt.gif" /></td>
+      <td id="tc_lcorner"><img src="/share/i/lhs_edge_ct.gif" width="100%" height="9px"></td>
+      <td class="rt_gcorner"><img src="/share/i/lhs_corner_rt.gif" /></td>
+      </tr>
+    
+      <tr>
+      <td class="lc_lcorner"><img src="/share/i/lhs_edge_lc.gif" width="9px" height="100%" /></td>
+      <td class="lcol">
+         <ul><li class="list_title">Investors</li>
+         <li><a href="http://fxtrade.oanda.com">Currency Trading</a></li>
+         <li><a href="http://fxgame.oanda.com/">Forex Training</a></li>
+         <li><a href="#" onClick="javascript:popUpWindow('http://fxtrade.oanda.com/about/tour/index.html','tour')">Take a Tour</a></li>
+         <li><a href="/products/fxnews/html/fxnews.shtml">FXNews</a></li>
+         <li class="more_item"><a href="/channels/investor/investors.shtml">&gt&gt more</a></li>
+         
+         <li class="list_title">Business</li>
+         <li><a href="/channels/business/FXCommerce.shtml">Currency Localization</a></li>
+         <li><a href="/channels/business/business.shtml#data">Currency Data Services</a></li>
+         <li><a href="/site/customize.shtml">Customizable Tools</a></li>
+         <li class="more_item"><a href="/channels/business/business.shtml">&gt&gt more</a></li>
+  
+         <li class="list_title">Currency Tools</li>
+         <li><a href="/convert/classic">FXConverter</a></li>
+         <li><a href="/convert/fxhistory">FXHistory</a></li>
+         <li><a href="/convert/fxdaily">FXDaily</a></li>
+         <li><a href="/convert/cheatsheet">FXCheatSheet</a></li>
+         <li><a href="/cgi/crossrate/crossrate.shtml">Cross Rate Table</a></li>
+         <li class="more_item"><a href="/channels/products/products.shtml">&gt&gt more</a></li>
+    
+         <li class="list_title">About OANDA</li>
+         <li><a href="/site/oanda/com_index.shtml">Company Profile</a></li>
+         <li><a href="/site/oanda/media_comments.shtml">In the press</a></li>
+         <li><a href="/site/ads/ad_rate-card.shtml">Advertising Info</a></li>
+         <li class="more_item"><a href="/site/oanda/com_index.shtml">&gt&gt more</a></li>
+   
+         <li class="list_title">Your Account</li>
+         <li><a href="/site/accounts.shtml">Login to your Account</a></li>
+         <li><a href="/cgi/new_account_reg">Open new Account</a></li>         
+	 <li><a href="/site/customize.shtml">Subscribe to Currency Services</a></li>
+         </ul>
+         <img id="lspacer" src="/share/i/g.gif" /> 
+      </td>
+      <td class="rc_lcorner"><img src="/share/i/lhs_edge_rc.gif" width="13px" height="100%" /></td>
+      </tr>
+    
+      <tr>
+         <td class="lb_gcorner"><img src="/share/i/lhs_corner_lb.gif" /></td>
+         <td id="bc_ledge"><img src="/share/i/lhs_edge_cb.gif" width="100%" height="13px" /></td>
+         <td class="rb_gcorner"><img src="/share/i/lhs_corner_rb.gif" /></td>
+      </tr>
+   </table>
+ </td>
+   <td id="mainSection">
+
+      <h1>FXCrossRate Results</h1>
+      <p> <table width=480><tr><td><font size="2" face="Arial" >
+<b>Thursday, June 23, 2005</b></font></td></tr><tr><td>
+<table border="1" bordercolor=#666666 cellspacing=0 cellpadding=0 width="100%">
+<tr bgcolor="#CCCCCC"><td align=center width=100><font size="1" face="Arial" color="#000000">Currency names</font></td>
+<td align=center width=100><font size="1" face="Arial" color="#000000">
+Euro
+</font></td>
+<td align=center width=100><font size="1" face="Arial" color="#000000">
+Swiss Franc
+</font></td>
+<td align=center width=100><font size="1" face="Arial" color="#000000">
+US Dollar
+</font></td>
+</tr>
+<tr bgcolor="#F4F4F4">
+<td align=center><font size="1" face="Arial" >
+Euro
+</font></td>
+<td align=center><font size="1" face="Arial" >
+1.0000</font></td>
+<td align=center><font size="1" face="Arial" >
+0.6484</font></td>
+<td align=center><font size="1" face="Arial" >
+0.8246</font></td>
+</tr>
+<tr bgcolor="#FFFFFF">
+<td align=center><font size="1" face="Arial" >
+Swiss Franc
+</font></td>
+<td align=center><font size="1" face="Arial" color="#000000">
+1.5420</font></td>
+<td align=center><font size="1" face="Arial" color="#000000">
+1.0000</font></td>
+<td align=center><font size="1" face="Arial" color="#000000">
+1.2716</font></td>
+</tr>
+<tr bgcolor="#F4F4F4">
+<td align=center><font size="1" face="Arial" >
+US Dollar
+</font></td>
+<td align=center><font size="1" face="Arial" >
+1.2125</font></td>
+<td align=center><font size="1" face="Arial" >
+0.7862</font></td>
+<td align=center><font size="1" face="Arial" >
+1.0000</font></td>
+</tr>
+ <td colspan=3><font size="1" face="Verdana, Arial, Helvetica, Swiss">
+<a href=http://www.oanda.com/convert/classic>Currency Exchange Rates</a> provided by <a href=http://www.oanda.com/>OANDA</a>, the currency site.<br></font></td> </tr>
+</table>
+</td></tr></table>
+ <a href="/cgi/crossrate/crossrate.shtml">Get 
+        another Table</a> </p>
+      <p>FXCrossRate &copy;2005 by OANDA Corporation</p>
+	<a href="/channels/business/FXCrossRate.shtml">Add this currency cross rate table to your site</a>.
+	
+      </td>
+
+<td rowspan="2"><table id="rmenu" cellpadding="o" cellspacing="0">
+      <tr>
+      <td><img src="/share/i/corner_lt.gif" /></td>
+      <td id="tc_rcorner"><img src="/share/i/edge_ct.gif" width="100%" height="8px" /></td>
+      <td><img src="/share/i/corner_rt.gif" /></td>
+      </tr>
+    
+      <tr>
+      <td class="lc_rcorner"><img src="/share/i/edge_lc.gif" width="11px" height="100%" /></td>
+      <td class="rcol">
+              <h1>OANDA's new look & feel</h1>
+              <p>Please <a href="/site/feedback/feedback.shtml">contact us</a> with any feedback or problems<br /></p>
+      </td>
+      <td class="rc_rcorner"><img src="/share/i/edge_rc.gif" width="13px" height="100%" /></td>
+      </tr>
+    
+      <tr>
+         <td class="lb_gcorner"><img src="/share/i/corner_lb.gif" /></td>
+         <td id="bc_redge"><img src="/share/i/edge_cb.gif" height="13px" width="100%" /></td>
+         <td class="rb_gcorner"><img src="/share/i/corner_rb.gif" /></td>
+      </tr>
+   </table>
+ </td>
+   </tr>
+   
+   <tr><td colspan="2"><div id="footer">
+   <a href="/site/legal/termsofuse.shtml">Terms of Use</a>
+   <a href="/site/legal/privacy.shtml">Privacy Policy</a>
+   <a href="/index.shtml">Home Page</a>
+   <a href="/cgi/new_account_reg">Register</a>
+   <a href="/site/feedback/feedback.shtml">Contact Us</a>
+   <a href="/site/sitemap.shtml">Site Map</a>
+   <a class="last" href="/site/find.shtml">Search</a>
+     
+   <span>
+   <a href="/site/misc/disclaimer.shtml">&copy 1996 - 2005 OANDA Corporation.
+</a> All rights reserved. All Registered Trade Marks used on this
+Website, whether marked as Trade Marks or not marked, are declared to belong to
+their respective owner(s). OANDA Corporation owns Trade Marks of all its "FX" products
+.
+   </span>
+</div>
+</td></tr>
+   </table>
+</body>
+</html>

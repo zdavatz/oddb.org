@@ -17,6 +17,7 @@ class HospitalList < State::Hospitals::Global
 	attr_reader :range
 	DIRECT_EVENT = :hospitallist
 	VIEW = View::Hospitals::Hospitals
+	LIMITED = true
 	RANGE_PATTERNS = {
 		'a-d'			=>	'a-däÄáÁàÀâÂçÇ',
 		'e-h'			=>	'e-hëËéÉèÈêÊ',

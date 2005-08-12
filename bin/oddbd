@@ -18,6 +18,11 @@ trap("USR2") {
 	$stdout.flush
 }
 
+module ODDB
+	headpath = File.expand_path('../.git/HEAD', File.dirname(__FILE__))
+	ODDB_VERSION = File.read(headpath)
+end
+
 start = Time.now
 puts "prefetching..."
 $stdout.flush

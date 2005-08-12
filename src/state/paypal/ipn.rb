@@ -29,25 +29,46 @@ class Ipn < State::Global
 				[key.to_s, val.to_s]
 			}
 			data.push(['cmd', '_notify-validate'])
-			response = session.post('/cgi-bin/webscr', data)
-			status = response.body
-			if(status == 'VERIFIED')
-				invoice.payment_received!
-				invoice.odba_isolated_store
-				send_notification(invoice)
-				send_seller_notification(invoice)
+			tries = 3
+			begin
+				response = session.post('/cgi-bin/webscr', data)
+				status = response.body
+				if(status == 'VERIFIED')
+					invoice.payment_received!
+					invoice.odba_isolated_store
+					invoice.types.each { |type|
+						case type
+						when :poweruser
+							send_poweruser_notification(invoice)
+						else
+							send_download_notification(invoice)
+							send_download_seller_notification(invoice)
+						end
+					}
+				end
+			rescue RuntimeError => error
+				if(tries > 0)
+					tries -= 1
+					sleep(3-tries)
+					retry
+				else
+					send_notification(invoice) { |outgoing, user, lookandfeel|
+						outgoing.subject = error.message
+						parts = [ 
+							lookandfeel.lookup(:paypal_msg_error),
+							error.class,
+							error.message,
+							error.backtrace.join("\n"),
+						]
+						outgoing.body = parts.join("\n\n")
+					}
+				end
 			end
 		end
 	end
-	def send_notification(invoice)
-		if((pointer = invoice.user_pointer) \
-			&& user = @session.resolve(pointer))
-			lookandfeel = @session.lookandfeel
+	def send_download_notification(invoice)
+		send_notification(invoice) { |outgoing, user, lookandfeel|
 			recipient = user.email
-			outgoing = TMail::Mail.new
-			outgoing.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
-			outgoing.to = [recipient]
-			outgoing.from = MAIL_FROM
 			outgoing.subject = lookandfeel.lookup(:download_mail_subject)
 			urls = invoice.items.values.collect { |item|
 				data = {
@@ -71,19 +92,9 @@ class Ipn < State::Global
 				format_invoice(invoice, lookandfeel),
 			]
 			outgoing.body = parts.join("\n\n")
-			outgoing.date = Time.now
-			outgoing['User-Agent'] = 'ODDB Download'
-			recipients = [recipient] + RECIPIENTS
-			Net::SMTP.start(SMTP_SERVER) { |smtp|
-				smtp.sendmail(outgoing.encoded, SMTP_FROM, recipients)
-			}
-		end
-	rescue Exception => e
-		puts e.class
-		puts e.message
-		puts e.backtrace
+		}
 	end
-	def send_seller_notification(invoice)
+	def send_download_seller_notification(invoice)
 		if((pointer = invoice.user_pointer) \
 			&& user = @session.resolve(pointer))
 			lookandfeel = @session.lookandfeel
@@ -113,6 +124,46 @@ class Ipn < State::Global
 			outgoing.date = Time.now
 			outgoing['User-Agent'] = 'ODDB Download'
 			recipients = [recipient] + RECIPIENTS
+			Net::SMTP.start(SMTP_SERVER) { |smtp|
+				smtp.sendmail(outgoing.encoded, SMTP_FROM, recipients)
+			}
+		end
+	rescue Exception => e
+		puts e.class
+		puts e.message
+		puts e.backtrace
+	end
+	def send_poweruser_notification(invoice)
+		send_notification(invoice) { |outgoing, user, lookandfeel|
+			outgoing.subject = lookandfeel.lookup(:poweruser_mail_subject)
+			salut = lookandfeel.lookup(user.salutation)
+			item = invoice.item_by_text('unlimited access')
+			dkey = "poweruser_duration_#{item.duration.to_i}"
+			duration = lookandfeel.lookup(dkey)
+			parts = [
+				lookandfeel.lookup(:poweruser_mail_salut, salut, user.name),
+				lookandfeel.lookup(:poweruser_mail_body),
+				lookandfeel.lookup(:poweruser_mail_instr, duration,
+					lookandfeel._event_url(:login_form)),
+			]
+			outgoing.body = parts.join("\n\n")
+		}
+	end
+	def send_notification(invoice, &block)
+		if((pointer = invoice.user_pointer) \
+			&& user = @session.resolve(pointer))
+			lookandfeel = @session.lookandfeel
+			recipient = user.email
+			outgoing = TMail::Mail.new
+			outgoing.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
+			outgoing.to = [recipient]
+			outgoing.from = MAIL_FROM
+			outgoing.date = Time.now
+			outgoing['User-Agent'] = 'ODDB Paypal-IPN'
+
+			block.call(outgoing, user, lookandfeel) 
+
+			recipients = ([recipient] + RECIPIENTS).uniq
 			Net::SMTP.start(SMTP_SERVER) { |smtp|
 				smtp.sendmail(outgoing.encoded, SMTP_FROM, recipients)
 			}

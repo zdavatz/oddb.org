@@ -29,7 +29,13 @@ module ODDB
 						}
 					end
 				}
-				context.span({ 'class' => 'paragraph' }) { res }
+				if(paragraph.preformatted?)
+					context.div({ 'class' => 'preformatted' }) { res }
+				else
+					## this must be an inline element, to enable starting 
+					## paragraphs on the same line as the section-subheading
+					context.span({ 'class' => 'paragraph' }) { res }
+				end
 			end
 			def to_html(context)
 				html = ''
@@ -56,13 +62,11 @@ module ODDB
 				attr = { 'class' => 'paragraph' }
 				paragraphs.collect { |paragraph|
 					if(paragraph.is_a? Text::ImageLink)
-						context.p(attr) { context.img(paragraph.attributes) }
-					elsif(paragraph.preformatted?)
-						context.pre	{ self.escape(paragraph) }
+						context.div(attr) { context.img(paragraph.attributes) }
 					else
 						formats(context, paragraph)
 					end
-				}.join(context.br)
+				}.join
 			end
 		end
 	end

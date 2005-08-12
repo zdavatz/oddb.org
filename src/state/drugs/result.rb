@@ -8,6 +8,7 @@ require 'model/registration'
 require 'model/invoice'
 require 'state/page_facade'
 require 'state/admin/registration'
+require 'state/user/limit'
 
 module ODDB
 	module State
@@ -15,8 +16,9 @@ module ODDB
 class Result < State::Drugs::Global
 	DIRECT_EVENT = :search
 	VIEW = View::Drugs::Result
-	REVERSE_MAP = View::Drugs::ResultList::REVERSE_MAP
+	LIMITED = true
 	ITEM_LIMIT = 150
+	REVERSE_MAP = View::Drugs::ResultList::REVERSE_MAP
 	attr_reader :package_count, :pages
 	attr_accessor :search_query, :search_type
 	include ResultStateSort
@@ -47,6 +49,14 @@ class Result < State::Drugs::Global
 	end
 	def export_csv
 		RegisterDownload.new(@session, @model)
+	end
+	def limit_state
+		result = if(@search_type == "st_sequence")
+			@model
+		else
+			_search_drugs(@search_query, "st_sequence")
+		end
+		State::User::ResultLimit.new(@session, result)
 	end
 	def page
 		if(pge = @session.user_input(:page))

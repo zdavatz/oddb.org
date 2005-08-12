@@ -10,6 +10,7 @@ module ODDB
 		attr_accessor :substance
 		attr_accessor :chemical_substance, :equivalent_substance
 		attr_accessor :dose, :chemical_dose, :equivalent_dose, :sequence
+		attr_accessor :spagyric_dose, :spagyric_type
 		def initialize(substance_name)
 			@substance_name = substance_name
 		end
@@ -25,7 +26,7 @@ module ODDB
 			!@substance.nil? && @substance.same_as?(substance)
 		end
 		def to_s
-			[@substance, @dose].join(' ')
+			[@substance, @dose].compact.join(' ')
 		end
 		def update_values(values)
 			super
@@ -64,7 +65,7 @@ module ODDB
 						rescue(StandardError)
 							values.delete(key)
 						end
-						if(value.nil? && key != :dose)
+						if(value.nil?)
 							values[key] = nil
 						end
 					#deprecated

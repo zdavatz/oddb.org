@@ -5,7 +5,6 @@ require 'state/drugs/global'
 require 'view/drugs/notify'
 require 'state/drugs/notify_confirm'
 require 'util/logfile'
-require 'util/oddbapp'
 require 'date'
 
 module ODDB

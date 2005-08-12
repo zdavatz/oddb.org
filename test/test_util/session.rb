@@ -5,16 +5,20 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'util/session'
+require 'stub/session'
 require 'state/drugs/init'
 require 'sbsm/request'
 require 'stub/cgi'
-require 'stub/session'
 
 module Apache
+	REMOTE_NOLOOKUP = 1
 	class Request
+		attr_accessor :unparsed_uri
 		def headers_in
 			{}
+		end
+		def remote_host(arg)
+			'127.0.0.1'
 		end
 	end
 	def request
@@ -45,7 +49,7 @@ module ODDB
 		end
 		
 		def setup
-			@session = Session.new("test", StubApp.new, StubValidator.new)
+			@session = ODDB::Session.new("test", StubApp.new, StubValidator.new)
 			@session.reset
 		end
 		def test_initialize

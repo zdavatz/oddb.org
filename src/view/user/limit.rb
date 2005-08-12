@@ -1,0 +1,181 @@
+#!/usr/bin/env ruby
+# View::User::Limit -- oddb -- 26.07.2005 -- hwyss@ywesee.com
+
+require 'view/publictemplate'
+require 'view/admin/loginform'
+require 'view/drugs/resultlist'
+require 'view/additional_information'
+require 'view/dataformat'
+
+module ODDB
+	module View
+		module User
+class LimitForm < View::Form
+	include HtmlGrid::ErrorMessage
+	COMPONENTS = {
+		[0,0]	=>	:query_limit_poweruser_365,
+		[1,0]	=>	:query_limit_poweruser_a,
+		[0,1]	=>	:query_limit_poweruser_30,
+		[1,1]	=>	:query_limit_poweruser_b,
+		[0,2]	=>	:query_limit_poweruser_1,
+		[1,2]	=>	:query_limit_poweruser_c,
+		[1,3]	=>  :submit,
+	}
+	CSS_MAP = {
+		[0,0,2,4]	=>	'list',
+	}
+	LABELS = true
+	LEGACY_INTERFACE = false
+	EVENT = :proceed_poweruser
+	def init
+		super
+		error_message
+	end
+	def query_limit_poweruser_a(model)
+		query_limit_poweruser_txt(:query_limit_poweruser_a, 
+			@session.state.class.price(365))
+	end
+	def query_limit_poweruser_b(model)
+		price = @session.state.class.price(30)
+		@lookandfeel.lookup(:query_limit_poweruser_b,
+			@session.class.const_get(:QUERY_LIMIT),
+			@lookandfeel.format_price(price * 100, 'EUR'))
+	end
+	def query_limit_poweruser_c(model)
+		query_limit_poweruser_txt(:query_limit_poweruser_c,
+			@session.state.class.price(1))
+	end
+	def query_limit_poweruser_txt(key, price)
+		@lookandfeel.lookup(key, 
+			@lookandfeel.format_price(price * 100, 'EUR'))
+	end
+	def query_limit_poweruser_1(model)
+		query_limit_poweruser_radio(1)
+	end
+	def query_limit_poweruser_30(model)
+		query_limit_poweruser_radio(30)
+	end
+	def query_limit_poweruser_365(model)
+		query_limit_poweruser_radio(365)
+	end
+	def query_limit_poweruser_radio(value)
+		radio = HtmlGrid::InputRadio.new('days', @model, @session, self)
+		radio.value = value
+		radio
+	end
+end
+class LimitComposite < HtmlGrid::Composite
+	COMPONENTS = {
+		[0,0]	=> :query_limit,
+		[0,1]	=> 'query_limit_welcome',
+		[0,2]	=> 'query_limit_new_user',
+		[0,3]	=> :query_limit_explain,
+		[0,4]	=> :query_limit_more_info,
+		[0,5,0]	=> 'ol_open',
+		[0,5,1]	=> 'li_open',
+		[0,5,2]		=> 'query_limit_download',
+		[0,5,3]	=> :query_limit_download,
+		[0,5,4]	=> 'li_close',
+		[0,5,5]	=> 'li_open',
+		[0,5,6]	=>	'query_limit_poweruser',
+		[0,5,7]	=>	'li_close',
+		[0,5,8]	=>	'ol_close',
+		[0,6]	=> LimitForm,
+		[0,8]	=>	'query_limit_login',
+		[0,9]	=> View::Admin::LoginForm,
+		[0,11]	=>	'query_limit_thanks0',
+		[0,12]	=>	'query_limit_thanks1',
+		[0,12,1]	=>	:query_limit_email,
+		[0,12,2]	=>	'query_limit_thanks2',
+	}
+	CSS_MAP = {
+		[0,0]	=>	'th',
+		[0,1]	=>	'list',
+		[0,2]	=>	'subheading bold',
+		[0,3,1,3]	=>	'list',
+		[0,8]	=>	'subheading bold',
+		[0,11]	=>	'subheading bold',
+		[0,12]	=>	'list',
+	}
+	CSS_CLASS = 'composite'
+	LEGACY_INTERFACE = false
+	def query_limit(model)
+		@lookandfeel.lookup(:query_limit, 
+			@session.class.const_get(:QUERY_LIMIT))
+	end
+	def query_limit_download(model)
+		link = HtmlGrid::Link.new(:query_limit_download, 
+			model, @session, self)
+		link.value = link.href = @lookandfeel._event_url(:download_export)
+		link
+	end
+	def query_limit_email(model)
+		link = HtmlGrid::Link.new(:ywesee_contact_email, 
+			model, @session, self)
+		link.href = @lookandfeel.lookup(:ywesee_contact_href)
+		link
+	end
+	def query_limit_explain(model)
+		@lookandfeel.lookup(:query_limit_explain, @session.remote_ip,
+			@session.class.const_get(:QUERY_LIMIT))
+	end
+	def query_limit_more_info(model)
+		link = HtmlGrid::Link.new(:query_limit_more_info, 
+			model, @session, self)
+		link.href = "http://www.ywesee.com/pmwiki.php?n=Main.WekoBlog"
+		link
+	end
+end
+class Limit < PublicTemplate
+	CONTENT = LimitComposite
+end
+class ResultLimitList < HtmlGrid::List
+	include DataFormat
+	include View::AdditionalInformation
+	COMPONENTS = {
+		[0,0]	=>	:name_base,
+		[1,0]	=>	:galenic_form,
+		[2,0]	=>	:most_precise_dose,
+		[3,0]	=>	:size,
+		[4,0]	=>	:price_exfactory,
+		[5,0]	=>	:price_public,
+		[6,0]	=>	:ikscat,
+		[7,0]	=>	:patinfo,
+	}
+	DEFAULT_CLASS = HtmlGrid::Value
+	CSS_CLASS = 'composite'
+	SORT_HEADER = false
+	CSS_MAP = {
+		[0,0] => 'result-big-unknown',
+		[1,0] => 'list',
+		[2,0,6] => 'list-r',
+	}
+	CSS_HEAD_MAP = {
+		[2,0,6] => 'th-r',
+	}
+	def patinfo(model, session)
+		## only show pdf-patinfos
+		if(pdf_patinfo = model.pdf_patinfo)
+			link = HtmlGrid::PopupLink.new(:patinfo_short, 
+				model, session, self)
+			link.href = @lookandfeel.resource_global(:pdf_patinfo, 
+				pdf_patinfo)
+			pos = components.index(:patinfo)
+			component_css_map.store(pos, "result-infos")
+			css_map.store(pos, "result-infos")
+			link
+		end
+	end
+end
+class ResultLimitComposite < HtmlGrid::Composite
+	COMPONENTS = {
+		[0,0] => ResultLimitList, 
+		[0,1]	=> LimitComposite,
+	}
+end
+class ResultLimit < PublicTemplate
+	CONTENT = ResultLimitComposite
+end
+		end
+	end
+end

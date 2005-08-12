@@ -41,6 +41,7 @@ class Sequences < State::Drugs::Global
 		'z'			=>	'z',
 		'0-9'		=>	'^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ',
 	}
+	LIMITED = true
 	def init
 		super
 		@filter = Proc.new { |model|

@@ -19,21 +19,16 @@ module ODDB
 				]
 			end
 			def new_alignment(alignment)
-				#puts "new_alignment: #{alignment}"
 				target = if(@section)
 					@section.next_paragraph
 				end
 				set_target(target)
 			end
 			def send_flowing_data(data)
-				#	puts "send_flowing_data"
 				@newline_target = nil
 				(@target << data) unless(@target.nil?)
-				#puts "****************************"
-				#puts @target
 			end
 			def send_hor_rule
-				#	puts "send_hor_rule"
 				@chapter.clean! unless @chapter.nil?
 				@chapter = nil
 				@section = nil
@@ -57,26 +52,12 @@ module ODDB
 				end
 			end
 			def send_literal_data(data)
-				#puts "send_literal_data: #{data}"
 				if(@target)
 					@target.preformatted!
 					@target << data.gsub(/\r\n?/, "\n")
 				end
 			end
 			def set_target(target)
-				#puts "################### set_target ####################"
-				#puts "chapter #{@chapter.class}:#{@chapter}"
-				#puts "section: #{@section.class}:#{@section}"
-				#if(@chapter)
-					#puts "chapter.includes section? #{@chapter.sections.include? @section}"
-				#end
-				#if(@section)
-					#puts "section.includes old target? #{@section.paragraphs.include? @target}"
-					#puts "section.includes new target? #{@section.paragraphs.include? target}"
-				#end
-				#puts "old target: #{@target.class}:#{@target}"
-				#puts "new target: #{target.class}:#{target}"
-				#puts "old target == new target? #{@target == target}"
 				@newline_target = @target unless(target == @target)
 				@target = target
 			end
@@ -91,8 +72,6 @@ module ODDB
 				}
 			end
 			def next_chapter
-				#puts "next_chapter!"
-				#puts caller[0,3]
 				if(chapter = @chapters.last)
 					chapter.clean!
 				end

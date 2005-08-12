@@ -19,6 +19,9 @@ module ODDB
 		def export_atc_classes(name='atc.yaml')
 			export_array(name, @app.atc_classes.values.sort_by { |atc| atc.code.to_s })
 		end
+		def export_doctors(name='doctors.yaml')
+			export_array(name, @app.doctors.values)
+		end
 		def export_fachinfos(name='fachinfo.yaml')
 			export_array(name, @app.fachinfos.values)
 		end

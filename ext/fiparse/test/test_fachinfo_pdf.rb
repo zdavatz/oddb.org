@@ -1060,98 +1060,105 @@ target_encoding: latin1
 				assert_equal(3, paragraph1.formats.size)
 				assert_equal([:symbol], paragraph1.formats.at(1).values)
 				paragraph2 = section2.paragraphs.at(1)
-				expected = '---------------------------------------------------- 
-             Mono-   Hercep-  Pacli-  Herce-  AC*    
-             the-    tin +    taxel   ptin    allein 
-             rapie   Pacli-   allein  + AC*          
-                     taxel                           
-             n= 352  n= 91    n= 95   n= 143  n= 135 
----------------------------------------------------- 
-Blut und Lymphsystem                                 
-Anämie       4       14       9       36      26     
-Leuko-       3       24       17      52      34     
- penie                                               
+				expected = <<-'EOS'
 ----------------------------------------------------
-Stoffwechselstörungen                                
+             Mono-   Hercep-  Pacli-  Herce-  AC*
+             the-    tin +    taxel   ptin    allein
+             rapie   Pacli-   allein  + AC*
+                     taxel
+             n= 352  n= 91    n= 95   n= 143  n= 135
+----------------------------------------------------
+Blut und Lymphsystem
+Anämie       4       14       9       36      26
+Leuko-       3       24       17      52      34
+ penie
+----------------------------------------------------
+Stoffwechselstörungen
+Periphere    10      22       20      20      17
+ Ödeme
+Ödeme        8       10       8       11      5
+----------------------------------------------------
+Nervensystem
+Schlaf-      14      25       13      29      15
+störungen
+Benommenheit 13      22       24      24      18
+Parästhesie  9       48       39      17      11
+Depression   6       12       13      20      12
+Periphere    2       23       16      2       2
+ Neuritis
+Neuropathie  1       13       5       4       4
+----------------------------------------------------
+Herz/Kreislauf
+Tachykardie  5       12       4       10      5
+Chronische   7       11       1       28      7
+ Herzin-
+ suffizienz
+----------------------------------------------------
+Atmungsorgane
+Vermehrtes
+ Husten      26      41       22      43      29
+Dyspnoe      22      27       26      42      25
+Rhinitis     14      22       5       22      16
+Pharyngitis  12      22       14      30      18
+Sinusitis    9       21       7       13      6
+----------------------------------------------------
+Gastrointestinale Störungen
+Übelkeit     33      51       9       76      77
+Diarrhöe     25      45       29      45      26
+Erbrechen    23      37       28      53      49
+Übelkeit     8       14       11      18      9
+ und Er-
+ brechen
+Appetit-     14      24       16      31      26
+ verlust
+----------------------------------------------------
+Haut
+Hautaus-     18      38       18      27      17
+ schlag
+Herpes       2       12       3       7       9
+ simplex
+Akne         2       11       3       3       <1
+----------------------------------------------------
+Muskelskelettsystem
+Knochen-     7       24       18      7       7
+ schmerzen
+Arthralgie   6       37       21      8       9
+----------------------------------------------------
+Nieren u. Harnwege
+Harnwegs-
+ infektionen 5       18       14      13      7
+----------------------------------------------------
+Allgemeine Reaktionen
+Schmerzen    47      61       62      57      42
+Asthenie     42      62       57      54      55
+Fieber       36      49       23      56      34
+Schüttel-    32      41       4       35      11
+ frost
+Kopf-        26      36       28      44      31
+ schmerzen
+Bauch-       22      34       22      23      18
+ schmerzen
+Rücken-      22      34       30      27      15
+ schmerzen
+Infektion    20      47       27      47      31
+Grippe-      10      12       5       12      6
+ ähnliches
+ Syndrom
+Versehent-   6       13       3       9       4
+ liche
+ Verletzung  3       8        2       4       2
+Allergische
+ Reaktion
+----------------------------------------------------
 
-Periphere    10      22       20      20      17     
- Ödeme                                               
-Ödeme        8       10       8       11      5      
----------------------------------------------------- 
-Nervensystem                                         
-Schlaf-      14      25       13      29      15     
-störungen                                            
-Benommenheit 13      22       24      24      18     
-Parästhesie  9       48       39      17      11     
-Depression   6       12       13      20      12     
-Periphere    2       23       16      2       2      
- Neuritis                                            
-Neuropathie  1       13       5       4       4      
----------------------------------------------------- 
-Herz/Kreislauf                                       
-Tachykardie  5       12       4       10      5      
-Chronische   7       11       1       28      7      
- Herzin-                                             
- suffizienz                                          
----------------------------------------------------- 
-Atmungsorgane                                        
-Vermehrtes                                           
- Husten      26      41       22      43      29     
-Dyspnoe      22      27       26      42      25     
-Rhinitis     14      22       5       22      16     
-Pharyngitis  12      22       14      30      18     
-Sinusitis    9       21       7       13      6      
----------------------------------------------------- 
-Gastrointestinale Störungen                          
-Übelkeit     33      51       9       76      77     
-Diarrhöe     25      45       29      45      26     
-Erbrechen    23      37       28      53      49     
-Übelkeit     8       14       11      18      9      
- und Er-                                             
- brechen                                             
-Appetit-     14      24       16      31      26     
- verlust                                             
----------------------------------------------------- 
-Haut                                                 
-Hautaus-     18      38       18      27      17     
- schlag                                              
-Herpes       2       12       3       7       9      
- simplex                                             
-Akne         2       11       3       3       <1     
----------------------------------------------------- 
-Muskelskelettsystem                                  
-Knochen-     7       24       18      7       7      
- schmerzen                                           
-Arthralgie   6       37       21      8       9      
----------------------------------------------------- 
-Nieren u. Harnwege                                   
-Harnwegs-                                            
- infektionen 5       18       14      13      7      
----------------------------------------------------- 
-Allgemeine Reaktionen                                
-Schmerzen    47      61       62      57      42     
-Asthenie     42      62       57      54      55     
-Fieber       36      49       23      56      34     
-Schüttel-    32      41       4       35      11     
- frost                                               
-Kopf-        26      36       28      44      31     
- schmerzen                                           
-Bauch-       22      34       22      23      18     
-
- schmerzen                                           
-Rücken-      22      34       30      27      15     
- schmerzen                                           
-Infektion    20      47       27      47      31     
-Grippe-      10      12       5       12      6      
- ähnliches                                           
- Syndrom                                             
-Versehent-   6       13       3       9       4      
- liche                                               
- Verletzung  3       8        2       4       2      
-Allergische                                          
- Reaktion                                            
-----------------------------------------------------'
-				assert_equal(expected, paragraph2.text)
+				EOS
+				result = paragraph2.text.split(/\n/)
+				control = expected.split(/\n/)
+				control.each_with_index { |line, idx|
+					assert_not_nil(result.at(idx), line)
+					assert_equal(line.rstrip, result.at(idx).rstrip)
+				}
+				assert_equal(result.size, control.size)
 			end
 		end
 		class TestFachinfoPDFWriterCetrin < Test::Unit::TestCase
@@ -1176,12 +1183,306 @@ Allergische
 				eval(File.read(path))
 				@fachinfo = @writer.to_fachinfo
 			end
-			def test_usage_velcade
+			def test_valid_until_velcade
 				chapter = @fachinfo.date
+				assert_equal(1, chapter.sections.size, chapter)
+				section = chapter.sections.first
+				assert_equal(1, section.paragraphs.size, section)
+				assert_equal("Juni 2004.", section.to_s)
+			end
+		end
+		class TestFachinfoPDFWriterFursol < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_fursol.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_valid_until_fursol
+				chapter = @fachinfo.date
+				assert_equal(1, chapter.sections.size, chapter.inspect)
+				section = chapter.sections.first
+				assert_equal(1, section.paragraphs.size, section.inspect)
+				assert_equal("Dezember 2003.", section.to_s)
+			end
+			def test_no_page_numbers
+				@fachinfo.each_chapter { |chapter|
+					ch_str = chapter.to_s
+					assert_nil(/seite \d+/i.match(ch_str), ch_str)
+					assert_nil(/.*kompendium.*/i.match(ch_str), ch_str)
+				}
+			end
+			def test_correct_chapters
+				assert_equal("AMZV 9.11.2001", @fachinfo.amzv.heading)
+				assert_equal("Zusammensetzung", @fachinfo.composition.heading)
+				assert_equal("Galenische Form und Wirkstoffmenge pro Einheit",
+					@fachinfo.galenic_form.heading)
+				assert_equal("Indikationen/Anwendungsmöglichkeiten", 
+					@fachinfo.indications.heading)
+				assert_equal("Dosierung/Anwendung", @fachinfo.usage.heading)
+				assert_equal("Kontraindikationen", 
+					@fachinfo.contra_indications.heading)
+				assert_equal("Warnhinweise und Vorsichtsmassnahmen", 
+					@fachinfo.restrictions.heading)
+				assert_equal("Interaktionen", @fachinfo.interactions.heading)
+				assert_equal("Schwangerschaft/Stillzeit", 
+					@fachinfo.pregnancy.heading)
+				assert_equal("Wirkung auf die Fahrtüchtigkeit und auf das Bedienen von Maschinen", 
+					@fachinfo.driving_ability.heading)
+				assert_equal("Unerwünschte Wirkungen", 
+					@fachinfo.unwanted_effects.heading)
+				assert_equal("Überdosierung", @fachinfo.overdose.heading)
+				assert_equal("Eigenschaften/Wirkungen", 
+					@fachinfo.effects.heading)
+				assert_equal("Pharmakokinetik", @fachinfo.kinetic.heading)
+				assert_equal("Präklinische Daten", @fachinfo.preclinic.heading)
+				assert_equal("Sonstige Hinweise", 
+					@fachinfo.other_advice.heading)
+				assert_equal("Zulassungsvermerk", @fachinfo.iksnrs.heading)
+				assert_equal("Zulassungsinhaberin", 
+					@fachinfo.registration_owner.heading)
+				assert_equal("Stand der Information", @fachinfo.date.heading)
+			end
+			def test_linebreaks
+				chapter = @fachinfo.indications
+				assert_equal(2, chapter.sections.size)
+				section = chapter.sections.first
+				assert_equal(4, section.paragraphs.size)
+				section = chapter.sections.last
+				assert_equal(8, section.paragraphs.size)
+			end
+		end
+		class TestFachinfoPDFWriterFursolFr < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_fursol_fr.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_no_page_numbers
+				@fachinfo.each_chapter { |chapter|
+					ch_str = chapter.to_s
+					assert_nil(/page \d+/i.match(ch_str), ch_str)
+					assert_nil(/.*compendium.*/i.match(ch_str), ch_str)
+				}
+			end
+		end
+		class TestFachinfoPDFWriterTrileptal < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_trileptal.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_galenic_form
+				assert_equal("Trileptal\256", @fachinfo.name)
+				chapter = @fachinfo.galenic_form
+				assert_equal('', chapter.heading)
 				assert_equal(1, chapter.sections.size)
 				section = chapter.sections.first
-				assert_equal(1, section.paragraphs.size)
-				assert_equal("Juni 2004.", section.to_s)
+				assert_equal("Antiepileptikum\n", section.subheading)
+			end
+		end
+		class TestFachinfoPDFWriterLyrica < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_lyrica.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_preformatted
+				chapter = @fachinfo.usage
+				assert_equal(10, chapter.sections.size)
+				section = chapter.sections.at(5)
+				paragraph = section.paragraphs.at(0)
+				expected = "Anpassung der Pregabalin-Dosis in Abh\344ngigkeit von der Nierenfunktion."
+				assert_equal(expected, paragraph.to_s)
+				paragraph = section.paragraphs.at(1)
+				expected = <<-EOS
+----------------------------------------------------
+Kreatinin-  Gesamttagesdosis von        Dosisauf-
+Clearance   Pregabalin*                 teilung
+(CLcr)
+(ml/min)
+----------------------------------------------------
+            Anfangsdosis  Höchstdosis
+            (mg/Tag)      (mg/Tag)
+---------------------------------------------------- 
+>=60         150           600           in 2 oder 3
+                                        Einzeldosen
+----------------------------------------------------
+30-60       75            300           in 2 oder 3
+                                        Einzeldosen
+----------------------------------------------------
+				EOS
+				lines = paragraph.to_s.split(/\n/)
+				expected.split(/\n/).each_with_index { |line, idx|
+					assert_not_nil(lines[idx], line)
+					assert_equal(line.rstrip, lines[idx].rstrip)
+				}
+			end
+		end
+		class TestFachinfoPDFWriterValcyte < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_valcyte.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_table_header_detection
+				chapter = @fachinfo.unwanted_effects
+				assert_equal(27, chapter.sections.size)
+				section = chapter.sections.at(5)
+				expected = "Tabelle 2: Prozentsatz der Patienten mit unerwünschten Wirkungen, die bei Patienten mit einer CMV-Retinitis oder nach Organtransplantation innerhalb von klinischen Studien mit Valganciclovir auftraten"
+				assert_equal(expected, section.subheading.to_s)
+				paragraph = section.paragraphs.at(0)
+				expected = <<-EOS
+----------------------------------------------------
+                   Patienten  Patienten nach solider
+                   mit CMV    Organtransplantation  
+                   Retinitis                        
+----------------------------------------------------
+                   Valganci-  Valganci-  Orales     
+                   clovir     clovir     Ganci-     
+                                         clovir     
+----------------------------------------------------
+Unerwünschte                                        
+Wirkungen nach                                      
+einzelnen          n= 370     n= 244     n= 126     
+Organsystemen      %          %          %          
+----------------------------------------------------
+Gastrointestinaltrakt                               
+Diarrhöe           38         30         29         
+Übelkeit           25         23         23         
+Orale Candidiasis  20         3          3          
+Erbrechen          20         16         14         
+Bauchschmerzen     13         14         14         
+Oberbauchschmerzen 6          9          6          
+Obstipation        6          20         20         
+Dyspepsie          4          12         10         
+Bauchauftreibung   2          6          6          
+Ascites            -          9          6          
+----------------------------------------------------
+Gesamtorganismus                                    
+Fieber             26         13         14         
+Müdigkeit          20         13         15         
+Kopfschmerzen      18         22         22         
+Influenza          9          -          -          
+Gewichtsabnahme    9          3          3          
+Verminderter                                        
+ Appetit           8          4          5          
+Rückenschmerzen    8          20         15         
+Dehydratation      6          5          6          
+Anorexie           5          3          -          
+Kachexie           5          -          -          
+Beinödeme          5          21         16         
+Schmerzen          3          5          7          
+Oedeme             -          11         9          
+Periphere Oedeme   -          6          7          
+Schwäche           -          6          6          
+----------------------------------------------------
+Blut- und Lymphsystem                               
+Neutropenie        24         8          3          
+Anämie             22         12         15         
+Thrombozytopenie   5          5          5          
+Leukopenie         4          14         7          
+----------------------------------------------------
+Haut und Anhangsgebilde                             
+Dermatitis         18         4          5          
+Nachtschweiss      7          3          4          
+Pruritus           6          7          4          
+Akne               -          4          6          
+----------------------------------------------------
+Atemwege                                            
+Husten             16         6          8          
+Pharyngitis/                                        
+ Nasopharyngitis   12         4          8          
+Infektion im                                        
+ oberen Respira-                                    
+ tionstrakt        9          7          7          
+Dyspnöe            9          11         10         
+Pneumonie          7          4          2          
+Bronchitis         6          -          1          
+Pneumocystis-ca-                                    
+ rinii-Pneumonie   6          -          -          
+Husten mit Auswurf 5          2          2          
+Rhinorrhöe         2          4          6          
+Pleuraerguss       -          7          8          
+----------------------------------------------------
+Zentrales und peripheres Nervensystem               
+Schlafstörungen    14         20         16         
+Schwindel          9          10         6          
+Depression         9          7          6          
+Periphere Neuro-                                    
+ pathie            7          1          1          
+Parästhesie        6          5          5          
+Tremor             2          28         25         
+----------------------------------------------------
+Sinnesorgane                                        
+Makuläre Ödeme     4          -          -          
+Netzhautablösung   13         -          -          
+Sinusitis          10         3          -          
+Verschwommensehen  6          1          4          
+----------------------------------------------------
+Bewegungsapparat                                    
+Arthralgie         6          7          7          
+Muskelkrämpfe      2          6          11         
+Gliederschmerzen   -          5          7          
+----------------------------------------------------
+Urogenitaltrakt                                     
+Beeinträchtigung                                    
+ der Nieren-                                        
+ funktion          -          7          12         
+Dysurie            2          7          6          
+Harnwegsinfektion  5          11         9          
+----------------------------------------------------
+Störungen des Immunsystems                          
+Abstossungs-                                        
+ reaktion          -          24         30         
+----------------------------------------------------
+Kardiovaskuläre Störungen                           
+Hypertension       -          18         15         
+----------------------------------------------------
+Stoffwechsel- und Ernährungsstörungen               
+Hyperkaliämie      -          14         14         
+Hypokaliämie       -          8          8          
+Hypomagnesiämie    -          8          8          
+Hyperglykämiae     -          6          7          
+Hypophosphatämie   -          9          6          
+Hypokalziämie      -          4          6          
+----------------------------------------------------
+Leber- und Gallenstörungen                          
+Leberfunktions-                                     
+ störungen         3          9          11         
+----------------------------------------------------
+Chirurgische und medizinische Eingriffe             
+Postoperative                                       
+ Komplikationen    -          12         8          
+Postoperative                                       
+ Schmerzen         -          13         7          
+Postoperative                                       
+ Wundinfektionen   -          11         6          
+----------------------------------------------------
+Verletzung, Vergiftung und Komplikation             
+bei Eingriffen                                      
+Erhöhte Wund-                                       
+ drainage          -          5          9          
+Wunddehiszenz      -          5          6          
+----------------------------------------------------
+Vaskuläre Störungen                                 
+Hypotension        -          3          8          
+----------------------------------------------------
+				EOS
+				lines = paragraph.to_s.split(/\n/)
+				expected.split(/\n/).each_with_index { |line, idx|
+					assert_not_nil(lines[idx], line)
+					assert_equal(line.rstrip, lines[idx].rstrip)
+				}
 			end
 		end
 	end

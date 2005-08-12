@@ -10,29 +10,35 @@ module ODDB
 				pdf_fachinfos = model.pdf_fachinfos
 				#company = model.company
 				visitor_language = @lookandfeel.language.intern
-				if(fachinfo || pdf_fachinfos )#&& company.fi_status)
-					pdf_link = false
+				if(fachinfo)# || pdf_fachinfos )#&& company.fi_status)
+#					pdf_link = false
 					fi_link = false
 					if(!fachinfo.nil? && !fachinfo.descriptions.nil? \
 						&& fachinfo.descriptions.include?(visitor_language.to_s))
 						fi_link = true
+=begin
 					elsif(pdf_fachinfos && pdf_fachinfos[visitor_language])
 						pdf_link = true
+=end
 					elsif(!fachinfo.nil? && !fachinfo.descriptions.nil? \
 						&& fachinfo.descriptions[visitor_language.to_s]) 
 						fi_link = true
+=begin
 					else
 						pdf_link = true
+=end
 					end
 					link = HtmlGrid::PopupLink.new(:fachinfo_short, model, session, self)
 					if(fi_link)
 						link.href = @lookandfeel.event_url(:resolve, {'pointer' => fachinfo.pointer})
 						link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
+=begin
 					elsif(pdf_link)
 						unless(pdf_fi = pdf_fachinfos[visitor_language])
 							pdf_fi = pdf_fachinfos.values.first
 						end
 						link.href = @lookandfeel.resource_global(:pdf_fachinfo, pdf_fi)
+=end
 					end
 					pos = components.index(:fachinfo)
 					component_css_map.store(pos, css)
@@ -64,17 +70,13 @@ module ODDB
 				end
 			end
 			def patinfo(model, session)
-				patinfo = model.patinfo
-				pdf_patinfo = model.pdf_patinfo
-				#company = model.company
-				if(patinfo || pdf_patinfo)# && @lookandfeel.enabled?(:patinfo))#&& company.pi_status)
+				if(model.has_patinfo?)
 					link = HtmlGrid::PopupLink.new(:patinfo_short, model, session, self)
-					if(!pdf_patinfo.nil?)
+					if(pdf_patinfo = model.pdf_patinfo)
 						link.href = @lookandfeel.resource_global(:pdf_patinfo, pdf_patinfo)
-					elsif(!patinfo.nil?)
+					elsif(patinfo = model.patinfo)
 						link.href = @lookandfeel.event_url(:resolve, {'pointer' => patinfo.pointer})
 						link.set_attribute('title', @lookandfeel.lookup(:patinfo))
-						#link.set_attribute('class', 'result-b-r' << resolve_suffix(model))
 					end
 					pos = components.index(:patinfo)
 					unless(self::class::DISABLE_ADDITIONAL_CSS)

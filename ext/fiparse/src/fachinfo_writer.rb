@@ -26,40 +26,25 @@ module ODDB
 					fi
 				end
 				fi.name = @name
-				#puts "name " << fi.name
 				fi.galenic_form = @galenic_form
-				#puts "galenic " << fi.galenic_form.heading
 				fi.composition = @composition
-				#puts "composite " << fi.composition.heading
 				fi.effects = @effects 
-				#puts "effects " << fi.effects.heading
 				fi.kinetic = @kinetic
-				#		puts "kinetic " << fi.kinetic.heading
 				fi.indications = @indications
-				#	puts "indications " << fi.indications.heading
 				fi.usage = @usage
-				#		puts "indications " << fi.indications.heading
 
 				fi.restrictions = @restrictions
-				#	puts "indications " << fi.indications.heading
 				fi.unwanted_effects = @unwanted_effects
-				#	puts "indications " << fi.indications.heading
 				fi.interactions = @interactions
-				#		puts "indications " << fi.indications.heading
 				fi.overdose = @overdose
-				#puts "overdose " << fi.overdose.heading
 				fi.other_advice = @other_advice
-				#	puts "other advice " << fi.other_advice.heading
 				fi.iksnrs = @iksnrs
-				#	puts "iksnrs " << fi.iksnrs.heading
 				fi.date = @date
 				fi
 			end
 			private
 			def set_templates(chapter)
 				if(@amzv.nil?)
-					#puts "********"
-					#puts chapter.heading
 					case chapter.heading
 					when /9\.11\.2001/
 						@amzv = chapter
@@ -149,7 +134,7 @@ module ODDB
 						@templates = named_chapters [
 							:switch,
 						]
-					when /Stand der Information/, /Mise à jour de l'information/
+					when /Stand der Information/, /Mise? . jour de l.information/
 						@date = chapter
 						@templates = named_chapters [
 							:rest,

@@ -23,11 +23,13 @@ module ODDB
 				LookandfeelExtern,
 				LookandfeelGenerika,
 			],
+=begin
 			'innova'			=>	[
 				LookandfeelExtern,
 				LookandfeelButtons, 
 				LookandfeelInnova, 
 			],
+=end
 			'provita'			=>	[
 				LookandfeelExtern,
 				LookandfeelButtons, 
@@ -38,11 +40,13 @@ module ODDB
 				LookandfeelButtons, 
 				LookandfeelSantesuisse, 
 			],
+=begin
 			'schoenenberger' =>	[
 				LookandfeelExtern,
 				LookandfeelButtons, 
 				LookandfeelSchoenenberger, 
 			],
+=end
 		}
 	end
 end

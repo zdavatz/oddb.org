@@ -4,6 +4,7 @@
 require 'plugin/plugin'
 require 'util/persistence'
 require 'parseexcel/parseexcel'
+require 'model/package'
 
 module ODDB
 	class BsvPlugin < Plugin
@@ -72,13 +73,13 @@ end
 		def report
 			successful = @successful_updates.collect { |row| 
 				report_format(row).join("\n")
-			}
+			}.sort
 			registrations = @unknown_registrations.collect { |row| 
 				report_format(row).join("\n")
-			}
+			}.sort
 			packages = @unknown_packages.collect { |row| 
 				report_format(row).join("\n")
-			}
+			}.sort
 			package_diffs = @package_diffs.values.collect { |diff| 
 				diff.to_s unless diff.empty?
 			}.compact.sort
@@ -247,30 +248,32 @@ end
 			@app.update(pointer.creator, hash)
 		end
 	end
-	class BsvPlugin2 < Plugin
-		class ParsedPackage
-			attr_accessor :sl_dossier, :iksnr, :ikscd, :introduction_date, 
-				:price_public, :price_exfactory, :pharmacode, :limitation,
-				:limitation_points, :generic_type, :name, :company, :pointer
-			def ikskey
-				[@iksnr, @ikscd].join
-			end
-			def ikskey=(key)
-				@iksnr = sprintf('%05i', key[0,5].to_i)
-				@ikscd = sprintf('%03i', key[5,3].to_i)
-			end
-			def merge(other)
-				if(other.is_a?(ParsedPackage))
-					other.instance_variables.each { |name|
-						unless(instance_variable_get(name))
-							instance_variable_set(name, 
-								other.instance_variable_get(name))
-						end
-					}
-				else
-					raise TypeError "can only merge with another package"
+		class BsvPlugin2 < Plugin
+			class ParsedPackage
+				include SizeParser
+				attr_accessor :sl_dossier, :iksnr, :ikscd, :introduction_date, 
+					:price_public, :price_exfactory, :pharmacode, :limitation,
+					:limitation_points, :generic_type, :name, :company, :pointer,
+					:guessed_ikscd
+				def ikskey
+					[@iksnr, @ikscd].join
 				end
-			end
+				def ikskey=(key)
+					@iksnr = sprintf('%05i', key[0,5].to_i)
+					@ikscd = sprintf('%03i', key[5,3].to_i)
+				end
+				def merge(other)
+					if(other.is_a?(ParsedPackage))
+						other.instance_variables.each { |name|
+							unless(instance_variable_get(name))
+								instance_variable_set(name, 
+									other.instance_variable_get(name))
+							end
+						}
+					else
+						raise TypeError "can only merge with another package"
+					end
+				end
 			def data
 				data = {
 					:pharmacode	=>	@pharmacode,
@@ -394,14 +397,6 @@ end
 		class PackageDiffer
 			attr_reader :iksnr, :name
 			COMMA = ','
-			def PackageDiffer.header(wdth = 20)
-				[
-					"  Iksnr".ljust(8),
-					"SL-Liste".ljust(wdth),
-					"Swissmedic".ljust(wdth),
-					"Übereinstimmend".ljust(wdth),
-				].join
-			end
 			def initialize(reg, pac)
 				@iksnr = pac.iksnr
 				@name = pac.name
@@ -430,10 +425,19 @@ end
 				@bsv.empty?
 			end
 			def to_s
-				lines = [@name]
+				wdth = 12
+				header = [
+					"Iksnr".ljust(wdth),
+					"BAG".ljust(wdth),
+					"Swissmedic".ljust(wdth),
+					"Beide".ljust(wdth),
+				].join
+				lines = [@name, header]
 				all = [[@iksnr], @bsv.sort, @smj.sort, @both.sort] 
 				all.collect { |coll| coll.size }.max.times { |idx|
-					lines << all.collect { |coll| coll.at(idx).to_s.ljust(10) }.join
+					lines << all.collect { |coll| 
+						coll.at(idx).to_s.ljust(wdth) 
+					}.join
 				}
 				lines.join("\n")
 			end
@@ -449,29 +453,42 @@ end
 			@package_diffs = {}
 			@ptable = {}
 			@successful_updates = []
+			@guessed_packages = []
 			@unknown_packages = []
 			@unknown_registrations = []
+			@parse_errors = []
 		end
 		def report
 			successful = @successful_updates.collect { |pac| 
 				report_format(pac).join("\n")
-			}
+			}.sort
+			guessed = @guessed_packages.collect { |pac| 
+				report_format(pac).join("\n")
+			}.sort
 			registrations = @unknown_registrations.collect { |pac| 
 				report_format(pac).join("\n")
-			}
+			}.sort
 			packages = @unknown_packages.collect { |pac| 
 				report_format(pac).join("\n")
-			}
+			}.sort
+			parse_errors = @parse_errors.collect { |triplet|
+				sprintf("%-15s '%20s' '%s'", *triplet)
+			}.sort
 			package_diffs = @package_diffs.values.collect { |diff| 
 				diff.to_s unless diff.empty?
 			}.compact.sort
 			[
 				"Successful Updates:    #{@successful_updates.size.to_s.rjust(5)}", 
+				"Guessed Packages:      #{@guessed_packages.size.to_s.rjust(5)}", 
 				"Unknown Registrations: #{@unknown_registrations.size.to_s.rjust(5)}",
 				"Unknown Packages:      #{@unknown_packages.size.to_s.rjust(5)}",
+				"Parse Errors:          #{@parse_errors.size.to_s.rjust(5)}",
 				nil, nil, nil,
 				"Successful Updates:    #{@successful_updates.size.to_s.rjust(5)}", 
 				successful.join("\n\n"),
+				nil, nil, nil,
+				"Guessed Packages:      #{@guessed_packages.size.to_s.rjust(5)}", 
+				guessed.join("\n\n"),
 				nil, nil, nil,
 				"Unknown Registrations: #{@unknown_registrations.size.to_s.rjust(5)}",
 				registrations.join("\n\n"),
@@ -479,8 +496,10 @@ end
 				"Unknown Packages:      #{@unknown_packages.size.to_s.rjust(5)}",
 				packages.join("\n\n"),
 				nil, nil, nil,
+				"Parse Errors:          #{@parse_errors.size.to_s.rjust(5)}",
+				parse_errors.join("\n"),
+				nil, nil, nil,
 				"Differences:",
-				PackageDiffer.header,
 				package_diffs.join("\n\n"),
 				nil,
 			].join("\n")
@@ -514,8 +533,16 @@ end
 				handle_augmentation(package)
 			}
 
+			## update prices from the database but do not store as mutation.
+			@ikstable.each_value { |package| 
+				handle_package(package)
+			}
+
 			## TODO: try to identify missing packages according to their 
 			##       package-size and dose
+			@ikstable.each_value { |package| 
+				handle_unknown_package(package)
+			}
 			
 			## compile a report that includes missing packages.
 			## -> is being done on the fly
@@ -574,7 +601,17 @@ end
 		def handle_package(package)
 			balance_package(package)
 			if(reg = update_registration(package))
-				update_package(reg, package)
+				if(pac = update_package(reg, package))
+					## when we iterate over @ikstable later on, this package 
+					## need not be handled again
+					@ikstable.delete(package.ikskey)
+					pac
+				end
+			else
+				## when we iterate over @ikstable later on, this unknown
+				## registration need not be handled again
+				@ikstable.delete(package.ikskey)
+				nil
 			end
 		end
 		def handle_reduction(package)
@@ -582,6 +619,30 @@ end
 				update_sl_entry(pack, package)
 				@change_flags.store(package.pointer, [:price_cut])
 			end
+		end
+		def handle_unknown_package(package)
+			if(reg = @app.registration(package.iksnr))
+				if(match = /(\d+)\s+(\w+)(.*?)((\d,)?\d+\s+\w+)$/.match(package.name))
+					package.size = match[3]
+					dose = Dose.new(match[1], match[2])
+					## both dose and size must match for a valid guess
+					candidates = reg.sequences.values.select { |seq|
+						seq.dose == dose
+					}.collect { |seq|
+						seq.packages.values.select { |pac|
+							pac.comparable_size == package.comparable_size
+						}
+					}.flatten
+					if(candidates.size == 1)
+						@unknown_packages.delete(package)
+						@guessed_packages.push(package)
+						package.guessed_ikscd = candidates.first.ikscd
+						update_package(reg, package)
+					end
+				end
+			end
+		rescue ParseException, AmbigousParseException => err
+			@parse_errors.push([err.class.to_s, package.name, match[2]])
 		end
 		def load_database(path)
 			workbook = Spreadsheet::ParseExcel.parse(path)
@@ -593,6 +654,10 @@ end
 				package.company = row.at(0).to_s
 				package.generic_type = (row.at(1).to_s.downcase == 'y')
 				package.name = row.at(7).to_s
+				exf = row.at(8).to_f
+				package.price_exfactory = exf if(exf > 0)
+				pub = row.at(9).to_f
+				package.price_public = pub if(pub > 0)
 				package.limitation = (row.at(10).to_s.downcase=='y')
 				package.limitation_points = row.at(11).to_i
 				unless(pcode == '0')
@@ -627,17 +692,21 @@ end
 			differ = @package_diffs.fetch(pac.iksnr) {
 				@package_diffs.store(pac.iksnr, PackageDiffer.new(reg, pac))
 			}
+			pack = nil
 			if(pack = reg.package(pac.ikscd))
 				differ.add_both(pac.ikscd)
+			else
+				pack = reg.package(pac.guessed_ikscd)
+				differ.add_bsv(pac.ikscd)
+			end
+			if(pack)
 				pac.pointer = pack.pointer
 				@app.update(pack.pointer, pac.data)
 				@successful_updates.push(pac)
-				pack
 			else
-				differ.add_bsv(pac.ikscd)
 				@unknown_packages.push(pac)
-				nil
 			end
+			pack
 		end
 		def update_registration(package)
 			ptr = Persistence::Pointer.new([:registration, package.iksnr])

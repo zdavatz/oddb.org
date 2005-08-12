@@ -13,6 +13,8 @@ class DownloadExport < State::User::Global
 	VIEW = View::User::DownloadExport
 	DIRECT_EVENT = :download_export
 	PRICES = {
+		'doctors.yaml'	=> 1100,
+		'oddb.csv'			=> 500,
 		'oddb.yaml'			=> 600,
 		'fachinfo.yaml'	=> 800,
 		'patinfo.yaml'	=> 500,
@@ -20,6 +22,7 @@ class DownloadExport < State::User::Global
 		's31x'					=> 900,
 	}
 	SUBSCRIPTION_PRICES = {
+		'oddb.csv'			=> 2000,
 		'oddb.yaml'			=> 2500,
 		'fachinfo.yaml'	=> 1400,
 		'oddbdat'				=> 2500,
@@ -27,6 +30,8 @@ class DownloadExport < State::User::Global
 	}
 	## Number of Days during which a paid file may be downloaded
 	DURATIONS = { 
+		'oddb.csv'			=> 30,
+		'doctors.yaml'	=> 30,
 		'oddb.yaml'			=> 30,
 		'fachinfo.yaml'	=> 30,
 		'patinfo.yaml'	=> 30,
@@ -34,6 +39,7 @@ class DownloadExport < State::User::Global
 		's31x'					=> 30,
 	}
 	SUBSCRIPTION_DURATIONS = { 
+		'oddb.csv'			=> 365,
 		'oddb.yaml'			=> 365,
 		'fachinfo.yaml'	=> 365,
 		'oddbdat'				=> 365,
@@ -55,40 +61,6 @@ class DownloadExport < State::User::Global
 	end
 	def DownloadExport.subscription_price(file)
 		SUBSCRIPTION_PRICES[fuzzy_key(file)].to_f
-	end
-	def proceed
-		keys = [:download, :months]
-		input = user_input(keys, keys) 
-		items = []
-		if(files = input[:download])
-			files.each { |filename, val|
-				if(val)
-					item = AbstractInvoiceItem.new
-					item.text = filename
-					item.vat_rate = VAT_RATE
-					months = input[:months][filename]
-					item.quantity = months.to_f
-					price_mth = 'price'
-					duration_mth = 'duration'
-					if(months == '12')
-						price_mth = 'subscription_' << price_mth
-						duration_mth = 'subscription_' << duration_mth
-					end
-					item.total_netto = DownloadExport.send(price_mth, filename)
-					item.duration = DownloadExport.send(duration_mth, filename)
-					items.push(item)
-				end
-			}
-		end
-		if(items.empty?)
-			@errors.store(:download, create_error('e_no_download_selected', 
-				:download, nil))
-			return self
-		end
-		pointer = Persistence::Pointer.new(:invoice)
-		invoice = Persistence::CreateItem.new(pointer)
-		invoice.carry(:items, items)
-		RegisterDownload.new(@session, invoice)
 	end
 end
 		end

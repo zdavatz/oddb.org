@@ -7,7 +7,6 @@ require 'cgi'
 
 module ODDB
 	class Validator < SBSM::Validator
-		alias :set_pass_1 :pass
 		alias :set_pass_2 :pass
 		alias :unique_email :email
 		alias :notify_sender :email
@@ -38,6 +37,7 @@ module ODDB
 			:cl_status		=>	['false', 'true'],
 			:complementary_type =>	[nil, 'anthroposophy', 'homeopathy', 
 				'phytotherapy', ],
+			:currency			=>  ['CHF', 'EUR', 'USD'],
 			:search_type	=>	['st_oddb', 'st_sequence', 
 				'st_substance', 'st_company', 'st_indication'],
 			:fi_status		=>	['false', 'true'],
@@ -126,7 +126,8 @@ module ODDB
 			:powerlink,
 			:preview,
 			:print,
-			:proceed,
+			:proceed_download,
+			:proceed_poweruser,
 			:recent_registrations,
 			:release,
 			:resolve,
@@ -161,16 +162,17 @@ module ODDB
 		]
 		NUMERIC = [
 			:change_flags,
+			:days,
 			:fi_quantity,
-			:limitation_points,
-			:pi_quantity,
-			:price_exfactory,
-			:price_public,
 			:index,
 			:invoice,
 			:item_number,
+			:limitation_points,
 			:meaning_index,
 			:months,
+			:pi_quantity,
+			:price_exfactory,
+			:price_public,
 		]
 		STRINGS = [
 			:additional_lines,
@@ -218,6 +220,8 @@ module ODDB
 			:regulatory_email,
 			:size,
 			:sortvalue,
+			:spagyric_dose,
+			:spagyric_type,
 			:subscribe,
 			:substance,
 			:substance_form,
@@ -291,6 +295,13 @@ module ODDB
 			else
 				raise SBSM::InvalidDataError.new(:e_search_query_short, :search_query, value)
 			end
+		end
+		def set_pass_1(value)
+			if(value.to_s.size < 4)
+				raise SBSM::InvalidDataError.new("e_missing_password", 
+					:set_pass_1, value)
+			end
+			pass(value)
 		end
 		def seqnr(value)
 			swissmedic_id(:seqnr, value, 1..2, 2)

@@ -19,7 +19,13 @@ ul {
 	padding-left : 14px;
 	list-style-type : disc;
 }
-	
+ol {
+	margin : 0px;
+	padding: 0px 0px 0px 20px;
+}
+ol li {
+	margin: 5px 0px;
+}
 form {
 	margin : 0px;
 }
@@ -68,10 +74,11 @@ div.section {
 	font-size: 13px;
 	font-style : italic;
 	line-height : 120%;
-	margin-bottom : 8px;
+	margin-top : 4px;
 }
-pre {
+pre, div.preformatted {
 	font-style : normal;
+	font-family: Courier New, Courier, monospace;
 	font-size: $std_font_size;
 	margin-top : 0px;
 	text-align : left;
@@ -80,7 +87,7 @@ pre {
 span.paragraph {
 	font-style : normal;
 	font-size: $std_font_size;
-	padding-bottom : 16px;
+	padding-bottom: 4px;
 }
 
 /* standard-result-classes */
@@ -1202,6 +1209,9 @@ input {
 	font-family : $std_font_family;
 	font-size : $std_font_size; 
 }
+input.medium {
+	width : 100px;
+}
 input.standard {
 	width : 200px;
 }
@@ -1233,7 +1243,8 @@ td.search {
 	padding-bottom : 5px;
 }
 td.search-center {
-	text-align : center;
+	float: center;
+	text-align: center;
 }
 input.small {
 	width : 40px;

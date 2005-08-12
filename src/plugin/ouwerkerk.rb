@@ -10,6 +10,7 @@ module ODDB
 		RECIPIENTS = [
 			'beatrix.struchen@just-medical.com',
 			'matthijs.ouwerkerk@just-medical.com',
+			'Josef.Hunkeler@pue.admin.ch',
 		]
 		NUMERIC_FLAGS = {
 			:new							=>	1,

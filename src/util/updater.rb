@@ -4,6 +4,7 @@
 require 'plugin/swissmedicjournal'
 require 'plugin/doctors'
 require 'plugin/fachinfo'
+require 'plugin/fxcrossrate'
 require 'plugin/interaction'
 require 'plugin/patinfo'
 require 'plugin/hospitals'
@@ -96,6 +97,7 @@ module ODDB
 		def run
 			logfile_stats
 			update_swissmedicjournal
+			update_fxcrossrate
 			update_fachinfo
 			if(update_bsv)
 				update_limitation_text
@@ -149,6 +151,13 @@ module ODDB
 		end
 		def update_fachinfo_news
 			update_simple(FachinfoPlugin, 'Fachinfo', :update_news)
+		end
+		def update_fxcrossrate
+			klass = FXCrossratePlugin
+			wrap_update(klass, 'Currency Rates') {
+				plug = klass.new(@app)
+				plug.update
+			}
 		end
 		def update_hospitals
 			update_simple(HospitalPlugin, 'Hospitals')
@@ -219,7 +228,7 @@ module ODDB
 				ODBA.transaction {
 					block.call
 				}
-			rescue RuntimeError, StandardError => e
+			rescue Exception => e #RuntimeError, StandardError => e
 				log = Log.new(Date.today)
 				log.report = [
 					"Plugin: #{klass}",

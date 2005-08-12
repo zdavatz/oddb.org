@@ -23,6 +23,44 @@ module ODDB
 			@pruned_sequences = 0
 			@pruned_packages = 0
 		end
+		def fix_from_source(reg)
+			if(src = reg.source)
+				src.gsub!(/-\n/, '')
+				preg = SwissmedicJournal::ActiveRegistration.new(src, :human)
+				succ = false
+				preg.parse.each { |seqnum, pseq|
+					if(seq = reg.sequence(seqnum))
+						if(ndose = pseq.name_dose)
+							name_base = [
+								pseq.name_base, 
+								ndose, 
+								pseq.name_descr,
+							].compact.join(' ')
+							dose = [
+								pseq.most_precise_dose,
+								pseq.most_precise_unit,
+							]
+							values = {
+								:name_base	=>	name_base,
+								:dose				=>	dose,
+							}
+							@app.update(seq.pointer, values)
+						end
+						if(comp = pseq.composition)
+							succ = update_active_agents(comp, seq.pointer)
+						end
+					end
+				}
+				if(succ)
+					reg.odba_store
+				end
+			end
+		rescue Exception => exc
+			puts exc.class
+			puts exc.message
+			puts exc.backtrace
+			$stdout.flush
+		end
 		def log_info
 			hash = super
 			hash.store(:pointers, @incomplete_pointers)
@@ -166,12 +204,17 @@ module ODDB
 		end
 		def update_active_agent(agent, seq_pointer)
 			unless(agent.substance.nil?)
-				unless(@app.substance(agent.substance))
-					pointer = Persistence::Pointer.new([:substance, agent.substance])
+				substance = [agent.substance, 
+					agent.special, agent.spagyric].compact.join(' ')
+				unless(@app.substance(substance))
+					pointer = Persistence::Pointer.new([:substance, substance])
 					@app.create(pointer)
 				end
-				pointer = seq_pointer + [:active_agent, agent.substance]
-				values = {}
+				pointer = seq_pointer + [:active_agent, substance]
+				values = {
+					:spagyric_dose => agent.spagyric,	
+					:spagyric_type => agent.special,	
+				}
 				if(agent.dose)
 					values.store(:dose, [agent.dose.qty, agent.dose.unit])
 				end
@@ -184,8 +227,18 @@ module ODDB
 			agents = smj_composition.active_agents
 			unless(agents.empty?)
 				seq = seq_pointer.resolve(@app)
-				seq.active_agents.each { |agent|
+				seq.active_agents.dup.each { |agent|
 					@app.delete(agent.pointer)
+				}
+				# remove stragglers
+				seq.active_agents.dup.each { |agent|
+					puts "straggler: #{agent.pointer}"
+					if(sub = agent.substance)
+						sub.remove_sequence(seq)
+						agent.odba_delete
+						sub.sequences.delete_if { |sseq| sseq.odba_instance.nil? }
+						sub.sequences.odba_store
+					end
 				}
 				agents.each { |agent|
 					update_active_agent(agent, seq_pointer)

@@ -30,6 +30,8 @@ module ODDB
 				'User-Agent'=>	'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1) ',
 				'Accept'		=>	'image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, */* ',
 			}
+			@successes = []	
+			@failures = []	
 		end
 		def extract_iksnrs(languages)
 			iksnrs = []
@@ -58,9 +60,12 @@ module ODDB
 		end
 		def fetch_languages(idx)
 			host = "www.kompendium.ch"
+			urls = []
 			successes = LANGUAGES.select { |lang|
-				ln = lang[0,1]
-				url = sprintf("/data/fi_%s_pdf/%sk%s_.pdf", ln, ln, idx)
+				url = sprintf(
+					"/FrmMainMonographie.aspx?Id=%s&lang=%s&MonType=fi", 
+					idx, lang)
+				urls.push(url)
 				http_file(host, url, target(lang, idx), nil, @hdrs)
 			}
 			if(successes.empty?)
@@ -119,7 +124,9 @@ module ODDB
 				"Unknown Iks-Numbers: #{unknown_size}",
 				unknown, nil,
 				"Fachinfo without iksnrs: #{@iksless.size}",
-				@iksless.join("\n"),
+				@iksless.join("\n"), nil,
+				"Parse Errors: #{@failures.size}", 
+				@failures.join("\n"), 
 			].join("\n")
 		end
 		def store_fachinfo(languages)
@@ -140,7 +147,12 @@ module ODDB
 			updates.each { |idx|
 				fetch_languages(idx)
 				languages = package_languages(idx)
-				update_registrations(languages) unless languages.empty?
+				if(languages.empty?)
+					@failures.push(idx)
+				else
+					update_registrations(languages) 
+					@successes.push(idx)
+				end
 			}
 			log_news(updates)
 			!updates.empty?

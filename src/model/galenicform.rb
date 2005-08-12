@@ -28,6 +28,7 @@ module ODDB
 		def merge(other)
 			other.sequences.each { |seq|
 				seq.galenic_form = self
+				seq.odba_isolated_store
 			}
 			self.synonyms = other.all_descriptions - self.all_descriptions
 		end

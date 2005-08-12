@@ -29,6 +29,7 @@ class OddbPrevalence
 	ODBA_EXCLUDE_VARS = [
 		"@atc_chooser", "@bean_counter",
 	]
+	ODBA_SERIALIZABLE = [ '@currency_rates' ]
 	attr_reader :galenic_groups, :companies, :doctors
 	attr_reader	:atc_classes, :last_update, :hospitals
 	attr_reader :atc_chooser, :registrations
@@ -48,6 +49,7 @@ class OddbPrevalence
 		@address_suggestions ||= {}
 		@patinfos_deprived_sequences ||= []
 		@companies ||= {}
+		@currency_rates ||= {}
 		@cyp450s ||= {}
 		@fachinfos ||= {}
 		@doctors ||= {}
@@ -66,27 +68,6 @@ class OddbPrevalence
 		@substances ||= {}
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
-		## begin temporary code for slate-migration ##
-		if(@slates.nil?)
-			@slates = {}
-			@invoices.each { |name, invoice|
-				pointer = ODDB::Persistence::Pointer.new([:slate, name])
-				slate = create(pointer)
-				slate.instance_variable_set('@items', invoice.items)
-				slate.items.each { |oid, item|
-					item.pointer = pointer + [:item, oid]
-					item.odba_isolated_store
-				}
-				slate.odba_isolated_store
-			}
-			@invoices.values.each { |invoice| invoice.odba_delete }
-			@invoices = {}
-			@invoices.odba_isolated_store
-			@slates.odba_isolated_store
-			odba_isolated_store
-		end
-		## end temporary code for slate-migration ##
-
 		@slates ||= {}
 		rebuild_atc_chooser()
 	end
@@ -300,6 +281,10 @@ class OddbPrevalence
 		patinfo = ODDB::Patinfo.new
 		@patinfos.store(patinfo.oid, patinfo)
 	end
+	def create_poweruser
+		user = ODDB::PowerUser.new
+		@users.store(user.oid, user)
+	end
 	def create_registration(iksnr)
 		unless @registrations.include?(iksnr)
 			reg = ODDB::Registration.new(iksnr)
@@ -330,6 +315,9 @@ class OddbPrevalence
 		@users ||= {}
 		user = ODDB::CompanyUser.new
 		@users.store(user.oid, user)
+	end
+	def currencies
+		@currency_rates.keys.sort
 	end
 	def delete_address_suggestion(oid)
 		if(sug = @address_suggestions.delete(oid))
@@ -481,6 +469,9 @@ class OddbPrevalence
 	def generic_group(package_pointer)
 		@generic_groups[package_pointer]
 	end
+	def get_currency_rate(symbol)
+		@currency_rates[symbol]
+	end
 	def incomplete_registration(oid)
 		@incomplete_registrations[oid.to_i]
 	end
@@ -525,6 +516,9 @@ class OddbPrevalence
 	end
 	def patinfo_count
 		@patinfo_count ||= count_patinfos()
+	end
+	def poweruser(oid)
+		@users[oid.to_i]
 	end
 	def rebuild_atc_chooser
 		chooser = ODDB::AtcNode.new(nil)
@@ -751,6 +745,9 @@ class OddbPrevalence
 		@registrations.values.inject([]) { |inj, reg|
 			inj + reg.sequences.values
 		}
+	end
+	def set_currency_rate(symbol, value)
+		@currency_rates.store(symbol, value)
 	end
 	def slate(name)
 		@slates[name]
@@ -1013,9 +1010,11 @@ module ODDB
 			Thread.new {
 				Thread.current.priority=-10
 				Thread.current.abort_on_exception = true
-				today = (EXPORT_HOUR > Time.now.hour) ? Date.today : Date.today.next
+				today = (EXPORT_HOUR > Time.now.hour) ? \
+					Date.today : Date.today.next
 				loop {
-					next_run = Time.local(today.year, today.month, today.day, EXPORT_HOUR)
+					next_run = Time.local(today.year, today.month, today.day, 
+						EXPORT_HOUR)
 					sleep(next_run - Time.now)
 					Exporter.new(self).run
 					GC.start
@@ -1027,9 +1026,9 @@ module ODDB
 			Thread.new {
 				Thread.current.priority=-10
 				Thread.current.abort_on_exception = true
-				today = (17 > Time.now.hour) ? Date.today : Date.today.next
+				today = (10 > Time.now.hour) ? Date.today : Date.today.next
 				loop {
-					next_run = Time.local(today.year, today.month, today.day, 17)
+					next_run = Time.local(today.year, today.month, today.day, 10)
 					sleep(next_run - Time.now)
 					Exporter.new(self).mail_notification_stats
 					GC.start
@@ -1038,14 +1037,25 @@ module ODDB
 			}
 		end
 		def run_updater
+			update_hour = rand(24)
+			update_min = rand(60)
 			Thread.new {
 				Thread.current.priority=-5
 				Thread.current.abort_on_exception = true
+				today = (update_hour > Time.now.hour) ? \
+					Date.today : Date.today.next
 				loop {
+					next_run = Time.local(today.year, today.month, today.day, 
+						update_hour, update_min)
+					puts "next update will take place at #{next_run}"
+					$stdout.flush
+					sleep(next_run - Time.now)
 					Updater.new(self).run
 					@system.recount
 					GC.start
-					sleep UPDATE_INTERVAL
+					today = Date.today.next
+					update_hour = rand(24)
+					update_min = rand(60)
 				}
 			}
 		end

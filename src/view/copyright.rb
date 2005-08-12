@@ -25,7 +25,8 @@ module ODDB
 =end
 			def oddb_version(model)
 				link = HtmlGrid::Link.new(:oddb_version, model, @session, self)
-				link.href = 'http://ywesee.bkbits.net:8080/oddb.org'
+				link.href = 'http://scm.ywesee.com/?p=oddb.org;a=summary'
+				link.set_attribute('title', ODDB_VERSION)
 				link.css_class = 'navigation'
 				link
 			end

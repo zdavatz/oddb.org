@@ -90,6 +90,9 @@ module Root
 		model = @session.app.indications
 		State::Admin::Indications.new(@session, model)
 	end
+	def limited?
+		false
+	end
 	def new_company
 		pointer = Persistence::Pointer.new(:company)
 		State::Companies::RootCompany.new(@session, Persistence::CreateItem.new(pointer))
