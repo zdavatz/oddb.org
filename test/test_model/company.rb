@@ -71,9 +71,6 @@ class TestCompany < Test::Unit::TestCase
 			:url						=>	'www.ywesee.com',
 			:business_area	=>	'Intellectual Capital',
 			:contact				=>	'hwyss at ywesee.com',
-			:address				=>	'Winterthurerstrasse',
-			:plz						=>	'8000',
-			:location				=>	'Zuerich'
 		}
 		reg = StubRegistration.new
 		@company.add_registration(reg)
@@ -85,8 +82,6 @@ class TestCompany < Test::Unit::TestCase
 		assert_equal('www.ywesee.com', @company.url)
 		assert_equal('Intellectual Capital', @company.business_area)
 		assert_equal('hwyss at ywesee.com', @company.contact)
-		assert_equal('8000', @company.plz)
-		assert_equal('Zuerich', @company.location)
 		assert_equal([reg], @company.registrations)
 	end		
 	def test_adjust_types
@@ -116,11 +111,11 @@ class TestCompany < Test::Unit::TestCase
 	end
 	def test_refactor_addresses
 		@company.pointer = [:company, 1]
-		@company.address = '' 
-		@company.plz = '6300'
-		@company.location = 'Zug'
-		@company.phone = 'fon'
-		@company.fax = 'fax'
+		@company.instance_variable_set('@address', '' )
+		@company.instance_variable_set('@plz', '6300')
+		@company.instance_variable_set('@location', 'Zug')
+		@company.instance_variable_set('@phone', 'fon')
+		@company.instance_variable_set('@fax', 'fax')
 		result = @company.refactor_addresses
 		assert_equal(1, result.size)
 		addr = result.first

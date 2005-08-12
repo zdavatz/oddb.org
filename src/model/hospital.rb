@@ -9,11 +9,9 @@ module ODDB
 		include Persistence
 		include AddressObserver
 		ODBA_SERIALIZABLE = ['@addresses']
-		attr_accessor :name, :business_unit, :plz,
-			:location, :phone, :fax, :canton, :narcotics,
+		attr_accessor :name, :business_unit, :narcotics,
 			:addresses, :email
 		attr_reader :ean13
-		attr_writer :address
 		def initialize(ean13)
 			@addresses = []
 			@ean13 = ean13
@@ -32,9 +30,13 @@ module ODDB
 			@addresses = [ addr ]
 		end
 		def search_terms
-			@addresses.collect { |addr| 
-				addr.search_terms
-			}.flatten.push(@ean13).compact
+			terms = [
+				@ean13, @business_unit, @email
+			]
+			@addresses.each { |addr| 
+				terms += addr.search_terms
+			}
+			terms.compact
 		end
 		def search_text
 			search_terms.join(' ')

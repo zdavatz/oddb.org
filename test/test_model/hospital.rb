@@ -15,11 +15,11 @@ module ODDB
 		def test_refactor_addresses
 			@hospital.pointer = [:hospital, 1]
 			@hospital.business_unit = 'Apotheke' 
-			@hospital.address = 'Meissenbergstrasse 17'
-			@hospital.plz = '6300'
-			@hospital.location = 'Zug'
-			@hospital.phone = 'fon'
-			@hospital.fax = 'fax'
+			@hospital.instance_variable_set('@address', 'Meissenbergstrasse 17')
+			@hospital.instance_variable_set('@plz', '6300')
+			@hospital.instance_variable_set('@location', 'Zug')
+			@hospital.instance_variable_set('@phone', 'fon')
+			@hospital.instance_variable_set('@fax', 'fax')
 			result = @hospital.refactor_addresses
 			assert_instance_of(Array, result)
 			assert_equal(1, result.size)

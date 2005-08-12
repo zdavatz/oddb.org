@@ -18,11 +18,9 @@ module ODDB
 		alias :power_link :powerlink
 		alias :to_s :name
 		attr_accessor	:contact, :contact_email, :regulatory_email, :business_unit
-		attr_accessor	:url, :phone, :fax, :address_email
+		attr_accessor	:url, :address_email
 		alias :email :address_email
-		attr_accessor :plz, :location
 		attr_reader :user
-		attr_writer :address
 		def initialize
 			@addresses = []
 			@cl_status = false
@@ -40,10 +38,13 @@ module ODDB
 			}
 		end
 		def search_terms
-			[
-				@name,
-				@address,
+			terms = [
+				@name, @ean13,
 			]
+			@addresses.each { |addr| 
+				terms += addr.search_terms
+			}
+			terms.compact
 		end
 		def atc_classes
 			@registrations.collect { |registration|
