@@ -100,5 +100,75 @@ module ODDB
 			expected =	[addr1, addr2]
 			assert_equal(expected, @doctor.work_addresses)
 		end
+		def test_refactor_addresse__1
+			@doctor.pointer = [:doctor, 1]
+			address = Address.new
+			address.lines = [ "Monsieur le Docteur", 
+				"Michel Voirol", "Cabinet M.", 
+				"18, rue des Remparts", 
+				"1400 Yverdon-les-Bains", ""]
+			address.plz = "1400"
+			address.city = "Yverdon-les-Bains"
+			address.type = :work
+			address.fon = ['fon1', 'fon2']
+			address.fax = ['fax1', 'fax2']
+
+			addr = @doctor.refactor_address(address, 2)
+			assert_instance_of(Address2, addr)
+			
+			assert_equal('Monsieur le Docteur', addr.title)
+			assert_equal('Michel Voirol' , addr.name)
+			assert_equal('18, rue des Remparts' , addr.address)
+			assert_equal('1400 Yverdon-les-Bains', addr.location)
+			assert_equal(['Cabinet M.'], addr.additional_lines)
+			assert_equal([:doctor, 1, :address, 2],
+				addr.pointer)
+			assert_equal("at_work", addr.type)
+			assert_equal(['fon1', 'fon2'], addr.fon)
+			assert_equal(['fax1', 'fax2'], addr.fax)
+		end
+		def test_refactor_addresse__2
+			@doctor.pointer = [:doctor, 1]
+			address = Address.new
+			address.lines = [ "Monsieur le Docteur", 
+				"Michel Voirol", "Cabinet M.", "AD",
+				"18, rue des Remparts", 
+				"1400 Yverdon-les-Bains", ""]
+			address.plz = "1400"
+			address.city = "Yverdon-les-Bains"
+			address.type = :praxis
+
+			addr = @doctor.refactor_address(address, 3)
+			assert_instance_of(Address2, addr)
+			
+			assert_equal('Michel Voirol' , addr.name)
+			assert_equal('18, rue des Remparts' , addr.address)
+			assert_equal('1400 Yverdon-les-Bains', addr.location)
+			assert_equal(['Cabinet M.', 'AD'], addr.additional_lines)
+			assert_equal([:doctor, 1, :address, 3],
+				addr.pointer)
+			assert_equal("at_praxis", addr.type)
+		end
+		def test_refactor_addresse__3
+			@doctor.pointer = [:doctor, 1]
+			address = Address.new
+			address.lines = [
+				"Michel Voirol",
+				"18, rue des Remparts", 
+				"1400 Yverdon-les-Bains", ""]
+			address.plz = "1400"
+			address.city = "Yverdon-les-Bains"
+
+			addr = @doctor.refactor_address(address, 0)
+			assert_instance_of(Address2, addr)
+			
+			assert_nil(addr.title)
+			assert_equal('Michel Voirol' , addr.name)
+			assert_equal('18, rue des Remparts' , addr.address)
+			assert_equal('1400 Yverdon-les-Bains', addr.location)
+			assert_equal([:doctor, 1, :address, 0],
+				addr.pointer)
+			assert_equal([], addr.additional_lines)
+		end
 	end
 end

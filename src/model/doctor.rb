@@ -7,13 +7,15 @@ require 'model/address'
 module ODDB
 	class Doctor
 		include Persistence
+		include AddressObserver
 		ODBA_SERIALIZABLE = [
-			'@addresses', '@specialities', '@abilities', '@skills', '@ean13',
+			'@addresses', '@specialities', '@abilities',
+			'@skills', '@ean13',
 		]
 		attr_accessor :gender, :title, :name, :firstname,
 			:email, :exam, :language, :specialities, :abilities,
 			:skills, :praxis, :member, :salutation,
-			:origin_db, :origin_id, :addresses, :ean13
+			:origin_db, :origin_id, :ean13
 			
 		def initialize
 			@addresses = []
@@ -23,15 +25,29 @@ module ODDB
 			super
 			@pointer.append(@oid)
 		end
-		def address(pos)
-			@addresses[pos.to_i]
+		def refactor_address(addr, idx)
+			new_addr = Address2.new
+			lines = addr.lines_without_title
+			new_addr.title = (addr.lines - lines).first
+			new_addr.name = lines.at(0)
+			new_addr.additional_lines = lines[1..-3]
+			new_addr.address = lines.at(-2)
+			new_addr.location = lines.at(-1)
+			if(type = addr.type)
+				new_addr.type = "at_#{type}"
+			end
+			new_addr.fon = addr.fon
+			new_addr.fax = addr.fax
+			new_addr.pointer = @pointer + [:address, idx]
+			new_addr
 		end
-=begin
-		def create_address
-			addr = Address.new
-			@addresses[addr.oid] = addr
+		def refactor_addresses
+			addrs = []
+			@addresses.each_with_index { |addr, idx|
+				addrs.push(refactor_address(addr, idx))
+			}
+			@addresses = addrs
 		end
-=end
 		def pointer_descr
 			[@title, @firstname, @name].compact.join(' ')
 		end

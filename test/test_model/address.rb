@@ -10,7 +10,7 @@ require 'model/address'
 module ODDB
 	class TestAddress < Test::Unit::TestCase
 		def setup
-			@address = ODDB::Address.new
+			@address = ODDB::Address2.new
 		end
 		def test_search_terms__prof
 			@address.lines = [
@@ -130,6 +130,91 @@ module ODDB
 			]
 			assert_equal('Schliern b. Koenitz', @address.city)
 			assert_equal('3098', @address.plz)
+		end
+	end
+	class TestAddress2 < Test::Unit::TestCase
+		def setup
+			@address = ODDB::Address2.new
+			@address.title = 'Dr.'
+			@address.name = 'Yvonne'
+			@address.additional_lines = [
+				'additional_line1',
+				'additional_line2',
+			]
+			@address.street = 'Austr.'
+			@address.number = '44a'
+			@address.plz = '8045'
+			@address.location = 'Zürich'
+		end
+		def test_search_terms__prof
+			expected = [
+				'Claudio Marone',
+				'Studio medico',
+				'Christoph Profos',
+				'Ospedale San Giovanni',
+				'6500 Bellinzona' 
+			]
+			@address.name = 'Claudio Marone'
+		  @address.additional_lines = 'Studio medico'
+		  @address.additional_lines = 'Christoph Profos'
+		  @address.street = 'Ospedale San Giovanni'
+		  @address.plz = '6500'
+			@address.location = 'Bellinzona' 
+			assert_equal(expected, @address.lines_without_title)
+		end
+		def test_search_terms__dr
+			expected = [
+				'6500 Bellinzona' 
+			]
+			assert_equal(expected, @address.lines_without_title)
+		end
+		def test_lines
+			expected = [
+				'Dr.',
+				'Yvonne',
+				'additional_line1',
+				'additional_line2',
+				'Austr. 44a',
+				'8045 Zürich',
+			]
+			assert_equal(expected, @address.lines)
+		end
+		def test_lines_more_additional_lines
+			@address.additional_lines = [
+				'line1',
+				'line2',
+				'line3',
+			]
+			expected = [
+				'Dr.',
+				'Yvonne',
+				'line1',
+				'line2',
+				'line3',
+				'Austr. 44a',
+				'045 Zürich',
+			]
+			assert_equal(expected, @address.lines)
+		end
+		def test_lines_without_title
+			@address.title = 'Dr.'
+			@address.name = 'Yvonne'
+			@address.additional_lines = [
+				'additional_line1',
+				'additional_line2',
+			]
+			@address.street = 'Austr.'
+			@address.number = '44a'
+			@address.plz = '8045'
+			@address.location = 'Zürich'
+			expected = [
+				'Yvonne',
+				'additional_line1',
+				'additional_line2',
+				'Austr. 44a',
+				'8045 Zürich',
+			]
+			assert_equal(expected, @address.lines_without_title)
 		end
 	end
 end

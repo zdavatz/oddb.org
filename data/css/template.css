@@ -30,6 +30,7 @@ table {
 textarea {
 	width: 400px;
 	height: 100px;
+	font-family : $std_font_family;
 }
 td {
 	border : 0px dashed green;
@@ -1195,10 +1196,22 @@ input.button {
 	background: $button_background;
 	color: $button_font_color;
 	font-size: $button_font_size;
+	font-family : $std_font_family;
+}
+input {
+	font-family : $std_font_family;
+	font-size : $std_font_size; 
 }
 input.standard {
 	width : 200px;
 }
+textarea.standard {
+	width : 200px;
+	height: 60px;
+	font-family : $std_font_family;
+	font-size : $std_font_size; 
+}
+
 input.xl {
 	width : 350px;
 }
@@ -1538,4 +1551,7 @@ table.invoice {
 }
 table.center {
 	margin: auto;
+}
+table.border, table.border td {
+	border: 1px solid green;
 }

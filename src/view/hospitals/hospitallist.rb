@@ -12,6 +12,7 @@ require 'view/form'
 require 'view/resultcolors'
 require 'view/publictemplate'
 require 'view/alphaheader'
+require 'view/address'
 
 module ODDB
 	module View
@@ -23,8 +24,8 @@ class HospitalList < HtmlGrid::List
 	include VCardMethods
 	COMPONENTS = {
 		[0,0]	=>	:name,
-		[1,0]	=>	:business_unit,
-		[2,0]	=>	:location,
+		[1,0]	=>	:additional_lines, 
+		[2,0]	=>	:city,
 		[3,0]	=>	:plz,
 		[4,0]	=>	:canton,
 		[5,0]	=>	:narcotics,
@@ -60,6 +61,26 @@ class HospitalList < HtmlGrid::List
 	SORT_DEFAULT = :name
 	SORT_REVERSE = false	
 	LEGACY_INTERFACE = false
+	def additional_lines(model)
+		if(addr = model.addresses.first)
+			addr.additional_lines
+		end
+	end
+	def plz(model)
+		if(addr = model.addresses.first)
+			addr.plz
+		end
+	end
+	def city(model)
+		if(addr = model.addresses.first)
+			addr.city
+		end
+	end
+	def canton(model)
+		if(addr = model.addresses.first)
+			addr.canton
+		end
+	end
 	def name(model)
 		link = View::PointerLink.new(:name, model, @session, self)
 		link.set_attribute('title', "EAN: #{model.ean13}")
@@ -70,6 +91,11 @@ class HospitalList < HtmlGrid::List
 			@lookandfeel.lookup(:false)
 		else
 			@lookandfeel.lookup(:true)
+		end
+	end
+	def map(model)
+		if(addr = model.addresses.first)
+			super(addr)
 		end
 	end
 end

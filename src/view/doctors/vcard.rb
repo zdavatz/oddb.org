@@ -24,29 +24,7 @@ class VCard < View::VCard
 			]
 		end
 	end
-	def get_fons(fons, text_key)
-		(fons || []).inject([]) { |inj, num|
-			inj.push(text_key  + num.to_s)
-			inj
-		}
-	end
-	def addr_str(addr, text_key, div)
-		text_key \
-			+ [addr.street, addr.number].compact.join(' ') \
-			+ div + addr.city + div*2 + addr.plz
-	end
-	def addresses
-		@model.addresses.inject([]) { |inj, addr| 
-			inj += get_fons(addr.fon, "TEL;WORK;VOICE:")
-			inj += get_fons(addr.fax, "TEL;WORK;FAX:")
-			type = (addr.type == :work) ? 'WORK' : 'POSTAL'
-			inj.push(addr_str(addr, "ADR;#{type};CHARSET=ISO-8859-1:;;", ';'))
-			inj.push(addr_str(addr, "LABEL;#{type};CHARSET=ISO-8859-1:;;", ' '))
-			inj
-		}
-	end
 end
 		end
 	end
 end
-

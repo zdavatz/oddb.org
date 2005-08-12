@@ -12,11 +12,13 @@ module ODDB
 	module State
 		module Admin
 class State::Admin::ActiveAgent < State::Admin::Global; end
+class State::Admin::AddressSuggestion < State::Admin::Global; end
 class State::Admin::AssignDeprivedSequence < State::Admin::Global; end
 class State::Admin::AtcClass < State::Admin::Global; end
 class State::Companies::Company < State::Companies::Global; end
 class State::Companies::UserCompany < State::Companies::Company; end
 class State::Companies::RootCompany < State::Companies::UserCompany; end
+class State::Admin::Addresses < State::Admin::Global; end
 class State::Admin::GalenicForm < State::Admin::Global; end
 class State::Admin::GalenicGroup < State::Admin::Global; end
 class State::Admin::GalenicGroups < State::Admin::Global; end
@@ -45,6 +47,7 @@ class State::Admin::Indication < State::Admin::Global; end
 module Root
 	include State::Admin::User
 	RESOLVE_STATES = {
+		[ :address_suggestion ]				=>	State::Admin::AddressSuggestion,
 		[ :atc_class ]								=>	State::Admin::AtcClass,
 		[ :company ]									=>	State::Companies::RootCompany,
 		[ :galenic_group ]						=>	State::Admin::GalenicGroup,
@@ -71,6 +74,10 @@ module Root
 		[ :indication ]								=>	State::Admin::Indication,
 		[ :substance ]								=>	State::Substances::Substance,
 	}	
+	def addresses
+		model = @session.app.address_suggestions.values
+		State::Admin::Addresses.new(@session, model)
+	end
 	def galenic_groups
 		model = @session.app.galenic_groups.values
 		State::Admin::GalenicGroups.new(@session, model)

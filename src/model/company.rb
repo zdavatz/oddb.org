@@ -3,10 +3,13 @@
 
 require 'util/persistence'
 require 'model/registration_observer'
+require 'model/address'
 
 module ODDB
 	class Company
 		include Persistence
+		include AddressObserver
+		ODBA_SERIALIZABLE = ['@addresses']
 		include RegistrationObserver
 		attr_accessor :business_area, :generic_type, :complementary_type
 		attr_accessor :cl_status, :fi_status, :pi_status
@@ -17,9 +20,11 @@ module ODDB
 		attr_accessor	:contact, :contact_email, :regulatory_email, :business_unit
 		attr_accessor	:url, :phone, :fax, :address_email
 		alias :email :address_email
-		attr_accessor :address, :plz, :location
+		attr_accessor :plz, :location
 		attr_reader :user
+		attr_writer :address
 		def initialize
+			@addresses = []
 			@cl_status = false
 			super
 		end	
@@ -47,6 +52,16 @@ module ODDB
 		end
 		def listed?
 			@cl_status
+		end
+		def refactor_addresses
+			addr = Address2.new
+			addr.location = [@plz, @location].join(" ")
+			addr.address = @address
+			addr.pointer = @pointer + [:address, 0]
+			addr.fon = [ @phone ].compact
+			addr.fax = [ @fax ].compact
+			@phone = @fax = @plz = @location = @address = nil
+			@addresses = [ addr ]
 		end
 		def merge(other)
 			regs = other.registrations.dup

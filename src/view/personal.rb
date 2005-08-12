@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
-# -- oddb -- 24.05.2005 -- jlang@ywesee.com, usenguel@ywesee.com
+# View::Personal -- oddb -- 24.05.2005 -- jlang@ywesee.com, usenguel@ywesee.com
 
-require 'util/oddbapp'
-require 'state/admin/global'
+require 'model/user'
 
 module ODDB
 	module View

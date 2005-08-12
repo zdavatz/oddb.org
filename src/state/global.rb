@@ -35,6 +35,7 @@ require 'state/interactions/init'
 require 'state/interactions/result'
 require 'state/substances/init'
 require 'state/substances/result'
+require 'state/suggest_address'
 require 'state/user/download'
 require 'state/user/download_export'
 require 'state/user/fipi_offer_input'
@@ -362,6 +363,14 @@ module ODDB
 				@model.reverse! if(@sort_reverse)
 				self
 			end
+			def suggest_address
+				keys = [:pointer]
+				input = user_input(keys, keys)
+				pointer = input[:pointer]
+				if(!error? && (addr = pointer.resolve(@session)))
+					SuggestAddress.new(@session, addr)
+				end	
+			end
 			def switch
 				state = self.trigger(self.direct_event)
 				if(state.zone == @session.zone)
@@ -388,7 +397,7 @@ module ODDB
 					end
 					hash.each { |key, value| 
 						carryval = nil
-						if (value.is_a? RuntimeError)
+						if(value.is_a? RuntimeError)
 							carryval = value.value
 							@errors.store(key, hash.delete(key))
 						elsif (mandatory.include?(key) && mandatory_violation(value))

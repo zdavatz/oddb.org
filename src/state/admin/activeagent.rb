@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # State::Admin::ActiveAgent -- oddb -- 22.04.2003 -- hwyss@ywesee.com 
 
-require 'state/admin/global'
+require 'state/global_predefine'
 require 'model/selectsubstance'
 require 'state/admin/selectsubstance'
 require 'state/admin/sequence'

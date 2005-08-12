@@ -15,32 +15,12 @@ require 'view/form'
 require 'view/pointervalue'
 require 'view/privatetemplate'
 require 'view/sponsorlogo'
+require 'view/address'
+
 
 module ODDB
 	module View
 		module Hospitals 
-module AddressMap
-	def map(hospital)
-		link = HtmlGrid::Link.new(:map, hospital, @session, self)
-		link.href = [
-			'http://map.search.ch', 
-			mapsearch_format(hospital.plz, hospital.location),
-			mapsearch_format(hospital.address),
-		].join('/')
-		link
-	end
-	def mapsearch_format(*args)
-		args.compact.join('-').gsub(/\s+/, '-')
-	end		
-end
-module VCardMethods
-	def vcard(model)
-		link = HtmlGrid::Link.new(:vcard, model, @session, self)
-		args = {:pointer => model.pointer}
-		link.href = @lookandfeel.event_url(:vcard, args)
-		link
-	end
-end
 class HospitalInnerComposite < HtmlGrid::Composite
 	include VCardMethods
 	include AddressMap
@@ -48,24 +28,13 @@ class HospitalInnerComposite < HtmlGrid::Composite
 		[0,0]			=>	:business_unit_header,
 		[0,0,1]		=>	:nbsp,
 		[0,0,2]		=>	:business_unit,
-		[0,1]			=>	:nbsp,
+		[0,1]		=>	:ean13_header,
+		[0,1,1]	=>	:nbsp,
+		[0,1,2]	=>	:ean13,
 		[0,2]			=>	:address_header,
 		[0,3]			=>	:address,
-		[0,4]			=>	:plz,
-		[0,4,1]		=>	:nbsp,
-		[0,4,2]		=>	:location,
-		[0,5]			=>	:nbsp,
-		[0,6]			=>	:fons_header,
-		[0,7]			=>	:phone,
-		[0,8]			=>	:fax_header,
-		[0,9]			=>	:fax,
-		[0,10]		=>	:nbsp,
-		[0,11]		=>	:ean13_header,
-		[0,11,1]	=>	:nbsp,
-		[0,11,2]	=>	:ean13,
-		[0,12]		=>	:nbsp,
-		[0,12]		=>	:map,
-		[0,13]		=>	:vcard,
+		#[0,12]		=>	:map,
+		[0,4]		=>	:vcard,
 	}
 	SYMBOL_MAP = {
 		:business_unit_header	=>	HtmlGrid::LabelText,
@@ -77,12 +46,22 @@ class HospitalInnerComposite < HtmlGrid::Composite
 		:url						=>	HtmlGrid::HttpLink,
 	}		
 	CSS_MAP = {
+		[0,0,1,3] => 'list',
+		[0,4,1,2] => 'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
 	def mapsearch_format(*args)
 		args.compact.join('-').gsub(/\s+/, '-')
 	end		
+	def address(model)
+		Address.new(model.addresses.first, @session, self)
+	end
+	def location(model)
+		if(addr = model.addresses.first)
+			addr.location
+		end
+	end
 end
 class HospitalComposite < HtmlGrid::Composite
 	include VCardMethods
