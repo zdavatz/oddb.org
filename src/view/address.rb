@@ -59,7 +59,7 @@ class SuggestedAddress < HtmlGrid::Composite
 	YPOS = 0
 	CSS_CLASS = 'component'
 	def init
-		init_components
+		init_components unless(@model.nil?)
 		super
 	end
 	def init_components
@@ -120,9 +120,11 @@ class Address < SuggestedAddress
 	COMPONENTS = {}
 	def init_components
 		super
-		ypos = components.size
-		components.store([0,ypos], :correct)
-		css_map.store([0,ypos], 'top address-width list')
+		if(@model.respond_to?(:pointer))
+			ypos = components.size
+			components.store([0,ypos], :correct)
+			css_map.store([0,ypos], 'top address-width list')
+		end
 	end
 end
 	end

@@ -23,6 +23,9 @@ module ODDB
 		QUERY_LIMIT = 10
 		QUERY_LIMIT_AGE = 60 * 60 * 24
 		@@requests ||= {}
+		def Session.reset_query_limit
+			@@requests = {}
+		end
 		def Session.request_log
 			path = File.expand_path('../../log/request_log', 
 				File.dirname(__FILE__))
