@@ -52,7 +52,7 @@ module ODDB
 		end
 		def praxis_address
 			@addresses.each { |addr| 
-				if(addr.type == :praxis)
+				if(addr.type == 'at_praxis')
 					return addr
 				end
 		  }
@@ -60,7 +60,7 @@ module ODDB
 		end
 		def praxis_addresses	
 			@addresses.select { |addr| 
-				addr.type == :praxis
+				addr.type == 'at_praxis'
 		  }
 		end
 		def record_match?(origin_db, origin_id)

@@ -571,18 +571,26 @@ class OddbPrevalence
 	end
 	def refactor_addresses
 		# 3 Iterationen 
+		puts "refactoring doctors"
+		$stdout.flush
 	  @doctors.each_value { |doc| 
-				doc.refactor_addresses 
-				doc.odba_store
-			}
+			doc.refactor_addresses 
+			doc.odba_store
+		}
+		puts "refactoring hospitals"
+		$stdout.flush
 	  @hospitals.each_value { |spi| 
-				spi.refactor_addresses 
-				spi.odba_store
-			}
+			spi.refactor_addresses 
+			spi.odba_store
+		}
+		puts "refactoring companies"
+		$stdout.flush
 	  @companies.each_value { |comp| 
-				comp.refactor_addresses 
-				comp.odba_store
-			}
+			comp.refactor_addresses 
+			comp.odba_store
+		}
+		puts "finished refactoring addresses"
+		$stdout.flush
 	end
 	def search_oddb(query, lang)
 		# current search_order:
