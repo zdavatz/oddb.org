@@ -79,7 +79,7 @@ module ODDB
 		end
 		def work_addresses	
 			@addresses.select { |addr| 
-				addr.type == :work
+				addr.type == 'at_work'
 		  }
 		end
 	end

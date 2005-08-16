@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # TestDoctor -- oddb -- 20.09.2004 -- jlang@ywesee.com -- usenguel@ywesee.com
 
-
+$: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
@@ -45,57 +45,57 @@ module ODDB
 		end
 		def test_praxis_address
 			addr1 = TypeMock.new("praxis_addresse1")
-			addr1.__next(:type) { :praxis }
+			addr1.__next(:type) { 'at_praxis' }
 			addr2 = TypeMock.new("work_addresse2")
-			addr2.__next(:type) { :work }
+			addr2.__next(:type) { 'at_work' }
 			addr3 = TypeMock.new("work_addresse3")
-			addr3.__next(:type) { :work }
+			addr3.__next(:type) { 'at_work' }
 			@doctor.addresses = [addr1, addr2, addr3]
 			assert_equal(addr1, @doctor.praxis_address)
 		end
 		def test_praxis_address__nil
 			addr2 = TypeMock.new("work_addresse2")
-			addr2.__next(:type) { :work }
+			addr2.__next(:type) { 'at_work' }
 			addr3 = TypeMock.new("work_addresse3")
-			addr3.__next(:type) { :work }
+			addr3.__next(:type) { 'at_work' }
 			@doctor.addresses = [addr2, addr3]
 			assert_nil(@doctor.praxis_address)
 		end
 		def test_praxis_address__not_first
 			addr1 = TypeMock.new("praxis_addresse1")
-			addr1.__next(:type) { :praxis }
+			addr1.__next(:type) { 'at_praxis' }
 			addr2 = TypeMock.new("work_addresse2")
-			addr2.__next(:type) { :work }
+			addr2.__next(:type) { 'at_work' }
 			addr3 = TypeMock.new("work_addresse3")
-			addr3.__next(:type) { :work }
+			addr3.__next(:type) { 'at_work' }
 			@doctor.addresses = [addr2, addr1, addr3]
 			assert_equal(addr1, @doctor.praxis_address)
 		end
 		def test_work_addresses
 			addr1 = TypeMock.new("praxis_addresse1")
-			addr1.__next(:type) { :praxis }
+			addr1.__next(:type) { 'at_praxis' }
 			addr2 = TypeMock.new("work_addresse2")
-			addr2.__next(:type) { :work }
+			addr2.__next(:type) { 'at_work' }
 			addr3 = TypeMock.new("work_addresse3")
-			addr3.__next(:type) { :work }
+			addr3.__next(:type) { 'at_work' }
 			@doctor.addresses = [addr1, addr2, addr3]
 			expected = [addr2, addr3]
 			assert_equal(expected, @doctor.work_addresses)
 		end
 		def test_work_addresses__nil
 			addr1 = TypeMock.new("praxis_addresse1")
-			addr1.__next(:type) { :praxis }
+			addr1.__next(:type) { 'at_praxis' }
 			@doctor.addresses = [addr1]
 			expected = []
 			assert_equal(expected, @doctor.work_addresses)
 		end
 		def test_work_addresses__first
 			addr1 = TypeMock.new("work_addresse1")
-			addr1.__next(:type) { :work }
+			addr1.__next(:type) { 'at_work' }
 			addr2 = TypeMock.new("work_addresse2")
-			addr2.__next(:type) { :work }
+			addr2.__next(:type) { 'at_work' }
 			addr3 = TypeMock.new("praxis_addresse3")
-			addr3.__next(:type) { :praxis }
+			addr3.__next(:type) { 'at_praxis' }
 			@doctor.addresses = [addr1, addr2, addr3]
 			expected =	[addr1, addr2]
 			assert_equal(expected, @doctor.work_addresses)
