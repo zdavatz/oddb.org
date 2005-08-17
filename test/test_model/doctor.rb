@@ -7,7 +7,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'model/doctor'
 require 'mock'
-require 'odba'
+require 'stub/odba'
 
 module ODDB
 	class TestDoctor < Test::Unit::TestCase
@@ -169,6 +169,12 @@ module ODDB
 			assert_equal([:doctor, 1, :address, 0],
 				addr.pointer)
 			assert_equal([], addr.additional_lines)
+		end
+		def test_create_address
+			assert_equal([], @doctor.addresses)
+			addr = @doctor.create_address(0)
+			assert_instance_of(Address2, addr)
+			assert_equal([addr], @doctor.addresses)
 		end
 	end
 end

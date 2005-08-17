@@ -94,6 +94,7 @@ class SuggestedAddress < HtmlGrid::Composite
 			model, @session, self)
 		args = {
 			:pointer	=>	model.pointer,
+			:zone			=>	@session.zone,
 		}
 		url = @lookandfeel._event_url(:suggest_address, args)
 		button.set_attribute('onclick', 

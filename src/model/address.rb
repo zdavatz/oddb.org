@@ -44,12 +44,14 @@ module ODDB
 		end
 	end
 	class Address2
+		include PersistenceMethods
 		@@city_pattern = /[^0-9]+[^0-9\-](?!-)/
 		attr_accessor :name, :additional_lines, :address,
-			:location, :title, :fon, :fax, :canton, :type, 
-			:pointer
+			:location, :title, :fon, :fax, :canton, :type
 		alias :address_type :type
+		alias :pointer_descr :name
 		def initialize 
+			super
 			@additional_lines = []
 			@fon = []
 			@fax = []
@@ -115,16 +117,23 @@ module ODDB
 	end
 	module AddressObserver
 		attr_accessor :addresses
+		attr_reader :fullname
 		def address(pos)
 			@addresses[pos.to_i]
 		end
+		def create_address(pos=nil)
+			addr = Address2.new
+			@addresses.push(addr)
+			addr
+		end
 	end
 	class AddressSuggestion < Address2
-		attr_accessor :address_pointer, :message, 
-			:email_suggestion, :email, :time
 		include Persistence
 		ODBA_SERIALIZABLE = ['@additional_lines', '@fax',
 			'@fon'] 
+		attr_accessor :address_pointer, :message, 
+			:email_suggestion, :email, :time, :fullname
+		alias :pointer_descr :fullname
 		def init(app = nil)
 			super
 			@pointer.append(@oid)

@@ -120,7 +120,7 @@ end
 class AddressSuggestionOuterComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]		=>	'suggest_addr_title',
-		[0,0,1]	=>	:name,
+		[0,0,1]	=>	:fullname,
 		[0,1]		=>	AddressSuggestionComposite,
 	}
 	CSS_MAP = {
@@ -128,9 +128,11 @@ class AddressSuggestionOuterComposite < HtmlGrid::Composite
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
+	LEGACY_INTERFACE = false
 end
-class AddressSuggestion < ResultTemplate
+class AddressSuggestion < PrivateTemplate
 	CONTENT = AddressSuggestionOuterComposite
+	SNAPBACK_EVENT = :addresses
 end
 		end
 	end

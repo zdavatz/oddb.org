@@ -60,7 +60,7 @@ module ODDB
 			def compose_snapback(offset)
 				if @container.respond_to?(:snapback)
 					event, args = @container.snapback
-					args ||= []
+					args ||= ['zone', @session.zone]
 					link = HtmlGrid::Link.new(event, @model, @session, self)
 					unless (@lookandfeel.direct_event == event)
 						link.set_attribute('href', @lookandfeel.event_url(event, args))

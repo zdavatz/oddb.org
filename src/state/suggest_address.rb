@@ -29,6 +29,8 @@ module ODDB
 					lns.split(/[\n\r]+/))
 				input.store(:type, input.delete(:address_type))
 				input.store(:address_pointer, @model.pointer)
+				parent = @model.parent(@session)
+				input.store(:fullname, parent.fullname)
 				input.store(:time, Time.now)
 				unless error?
 					@session.set_cookie_input(:email, input[:email])
@@ -40,7 +42,7 @@ module ODDB
 				mail.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
 				mail.to = RECIPIENTS
 				mail.from = 'suggest_address@oddb.org'
-				mail.subject = "#{@session.lookandfeel.lookup(:address_subject)} #{suggestion.name}"
+				mail.subject = "#{@session.lookandfeel.lookup(:address_subject)} #{suggestion.fullname}"
 				mail.date = Time.now
 				url = @session.lookandfeel._event_url(:resolve,
 					{:pointer => suggestion.pointer})

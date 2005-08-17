@@ -20,7 +20,7 @@ class SearchBar < HtmlGrid::InputText
 			'onFocus'	=>	"if (value=='#{val}') { value='' }",
 			'onBlur'	=>	"if (value=='') { value='#{val}' }",
 		})
-		args = ['zone', @session.state.zone, @name, '']
+		args = ['zone', @session.zone, @name, '']
 		submit = @lookandfeel.event_url(@container.event, args)
 		script = "if(#{@name}.value!='#{val}'){"
 		script << "var href = '#{submit}'"

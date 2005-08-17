@@ -61,6 +61,9 @@ module ODDB
 			def lookup(key)
 				key.to_s.capitalize unless /_title$/.match(key)
 			end
+			def zone
+				'drugs'
+			end
 		end
 		class StubPointerStepsContainer
 			def snapback
@@ -82,7 +85,7 @@ module ODDB
 <TR>
 <TH class="th-pointersteps">Th_pointer_descr</TH>
 <TD>
-<A href="http://www.oddb.org/de/gcc/backsnap/" name="backsnap" class="th-pointersteps">Backsnap</A>
+<A href="http://www.oddb.org/de/gcc/backsnap/zone/drugs" name="backsnap" class="th-pointersteps">Backsnap</A>
 </TD>
 <TD>#{View::PointerSteps::STEP_DIVISOR}</TD>
 <TD class="th-pointersteps">bon</TD>
@@ -101,7 +104,7 @@ module ODDB
 <TR>
 <TH class="th-pointersteps">Th_pointer_descr</TH>
 <TD>
-<A href="http://www.oddb.org/de/gcc/backsnap/" name="backsnap" class="th-pointersteps">Backsnap</A>
+<A href="http://www.oddb.org/de/gcc/backsnap/zone/drugs" name="backsnap" class="th-pointersteps">Backsnap</A>
 </TD>
 <TD>#{View::PointerSteps::STEP_DIVISOR}</TD>
 <TD class="th-pointersteps">
@@ -126,7 +129,7 @@ module ODDB
 <TR>
 <TH class="th-pointersteps">Th_pointer_descr</TH>
 <TD>
-<A href="http://www.oddb.org/de/gcc/backsnap/" name="backsnap" class="th-pointersteps">Backsnap</A>
+<A href="http://www.oddb.org/de/gcc/backsnap/zone/drugs" name="backsnap" class="th-pointersteps">Backsnap</A>
 </TD>
 <TD>#{View::PointerSteps::STEP_DIVISOR}</TD>
 <TD class="th-pointersteps">
@@ -156,7 +159,7 @@ module ODDB
 <TR>
 <TH class="th-pointersteps">Th_pointer_descr</TH>
 <TD>
-<A href="http://www.oddb.org/de/gcc/backsnap/" name="backsnap" class="th-pointersteps">Backsnap</A>
+<A href="http://www.oddb.org/de/gcc/backsnap/zone/drugs" name="backsnap" class="th-pointersteps">Backsnap</A>
 </TD>
 </TR>
 </TABLE>

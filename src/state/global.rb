@@ -445,7 +445,16 @@ module ODDB
 				keys = [:pointer]
 				input = user_input(keys, keys)
 				pointer = input[:pointer]
-				if(!error? && (addr = pointer.resolve(@session)))
+				if(!error?) 
+					addr = pointer.resolve(@session)
+					if(addr.nil?)
+						## simulate an address
+						addr = Address2.new
+						if(parent = pointer.parent.resolve(@session))
+							addr.name = parent.fullname
+						end
+						addr.pointer = pointer
+					end
 					SuggestAddress.new(@session, addr)
 				end	
 			end

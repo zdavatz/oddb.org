@@ -14,8 +14,12 @@ class AddressSuggestion < Global
 		attr_accessor :email_suggestion
 	end
 	def init
-		if((pointer = @model.address_pointer) \
-			&& (addr = pointer.resolve(@session)))
+		if(pointer = @model.address_pointer)
+			addr = pointer.resolve(@session)
+			if(addr.nil?)
+				addr = Address2.new
+				addr.pointer = pointer
+			end
 			@active_address = AddressWrapper.new(addr)
 			parent = pointer.parent.resolve(@session)
 			@active_address.email_suggestion = parent.email
@@ -43,21 +47,23 @@ class AddressSuggestion < Global
 		input.store(:type, input.delete(:address_type))
 		if(!error? && (pointer = input.delete(:pointer)) \
 			&& (sugg = pointer.resolve(@session)) \
-			&& (addr_pointer = sugg.address_pointer) \
-			&& (addr = addr_pointer.resolve(@session)))
+			&& (addr_pointer = sugg.address_pointer))
+			addr = addr_pointer.resolve(@session)
 			ODBA.transaction {
+				if(addr.nil?)
+					addr = addr_pointer.creator.resolve(@session)
+					@active_address = AddressWrapper.new(addr)
+				end
 				email = input.delete(:email_suggestion)
 				parent_input = {
 					:email	=>	email,
 				}
-				puts parent_input.inspect
 				@session.app.update(pointer, input)
 				addr.replace_with(sugg)
 				@session.app.update(addr_pointer.parent, 
 					parent_input)
 				## nur nötig wenn suggestion nicht gelöscht wird
 				@active_address.email_suggestion = email
-				puts @active_address.inspect
 			}
 			self
 		end

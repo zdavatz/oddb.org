@@ -12,6 +12,7 @@ module ODDB
 		attr_accessor :name, :business_unit, :narcotics,
 			:addresses, :email
 		attr_reader :ean13
+		alias :fullname :name
 		def initialize(ean13)
 			@addresses = []
 			@ean13 = ean13

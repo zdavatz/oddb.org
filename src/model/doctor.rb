@@ -24,6 +24,9 @@ module ODDB
 			super
 			@pointer.append(@oid)
 		end
+		def fullname
+			[@firstname, @name].join(' ')
+		end
 		def refactor_address(addr, idx)
 			new_addr = Address2.new
 			lines = addr.lines_without_title

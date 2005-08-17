@@ -84,7 +84,7 @@ end
 class SuggestAddressComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]		=>	'suggest_addr_title',
-		[0,0,1]	=>	:name,
+		[0,0,1]	=>	:fullname,
 		[0,1]		=>	SuggestAddressForm,
 	}
 	CSS_MAP = {
@@ -93,9 +93,15 @@ class SuggestAddressComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
+	def fullname(model)
+		if(parent = model.pointer.parent.resolve(@session))
+			parent.fullname
+		end
+	end
 end
 class SuggestAddress < PrivateTemplate
 	CONTENT = View::SuggestAddressComposite
+	SNAPBACK_EVENT = :result
 end
 	end
 end

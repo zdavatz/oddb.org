@@ -106,7 +106,14 @@ class DoctorComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
 	def addresses(model)
-		Addresses.new(model.addresses, @session, self)
+		addrs = model.addresses
+		if(addrs.empty?)
+			addrs = addrs.dup
+			addr = Address2.new
+			addr.pointer = model.pointer + [:address, 0]
+			addrs.push(addr)
+		end
+		Addresses.new(addrs, @session, self)
 	end
 end
 class Doctor < PrivateTemplate
