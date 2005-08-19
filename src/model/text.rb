@@ -170,9 +170,10 @@ module ODDB
 			end
 		end
 		class Chapter
-		include Persistence
+			include Persistence
+			ODBA_SERIALIZABLE = ["@sections"]
 			attr_accessor :heading
-			attr_reader		:sections
+			attr_accessor	:sections
 			def initialize
 				@heading = ''
 				@sections = []

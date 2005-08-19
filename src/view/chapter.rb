@@ -34,21 +34,28 @@ module ODDB
 				else
 					## this must be an inline element, to enable starting 
 					## paragraphs on the same line as the section-subheading
-					context.span({ 'class' => 'paragraph' }) { res }
+					context.span({ 'class' => 'paragraph' }) { 
+						res } << context.br
 				end
 			end
 			def to_html(context)
 				html = ''
 				unless(@value.heading.empty?)
-					html << context.h3 { self.escape(@value.heading) }
+					html << heading(context)
 				end
 				html << sections(context, @value.sections)
 			end
+			def heading(context)
+				context.h3 { self.escape(@value.heading) }
+			end
 			def sections(context, sections)
-				attr = { 'class' => 'section' }
+				section_attr = { 'class' => 'section' }
+				subhead_attr = { 'style'=>'font-style: italic;' }
+				#attr = {}
 				sections.collect { |section|
-					context.div(attr) { 
-						head = self.escape(section.subheading)
+					context.div(section_attr) { 
+						head = context.span(subhead_attr) {
+							self.escape(section.subheading) }
 						if(/\n\s*$/.match(section.subheading))	
 							head << context.br
 						elsif(!section.subheading.strip.empty?)
@@ -56,7 +63,7 @@ module ODDB
 						end
 						head << paragraphs(context, section.paragraphs)
 					} 
-				}.join("\n")
+				}.join
 			end
 			def paragraphs(context, paragraphs)
 				attr = { 'class' => 'paragraph' }
@@ -67,6 +74,55 @@ module ODDB
 						formats(context, paragraph)
 					end
 				}.join
+			end
+		end
+		class EditChapter < Chapter
+			def to_html(context)
+				args = {
+					'language'	=>	'JavaScript',
+					'type'			=>	'text/javascript',
+				}
+				content = sections(context, @value.sections)
+				content.gsub!(/[\\']/, '\\\1')
+				content.gsub!(/\n/, "\\n")
+				## the two following javascript-invocations need to be
+				## in two separate javascript-tags, so a dynamically
+				## generated hidden field can be used by writeRichText
+				heading(context) << context.script(args) {
+					<<-EOS
+<!--
+initRTE("/resources/javascript/richtext/images/", "/resources/javascript/richtext/", "#{@lookandfeel.resource(:css)}", false);
+//-->
+					EOS
+				} << context.script(args) {
+					<<-EOS
+<!--
+writeRichText('html_chapter', '#{content}', 650, 250, true, false);
+//-->
+					EOS
+				}
+			end
+		end
+		class EditChapterForm < Form
+			COMPONENTS = {
+				[0,0]	=>	:edit_chapter,
+				[0,1]	=>	:submit,
+			}
+			LEGACY_INTERFACE = false
+			def initialize(name, *args)
+				@name = name
+				super(*args)
+			end
+			def init
+				super
+				self.onsubmit = 'return updateRTE(\'html_chapter\');'
+			end
+			def edit_chapter(model)
+				EditChapter.new(@name, model, @session, self)
+			end
+			def hidden_fields(context)
+				args = {'name' => 'chapter', 'value' => @name}
+				super << context.hidden(args)
 			end
 		end
 	end

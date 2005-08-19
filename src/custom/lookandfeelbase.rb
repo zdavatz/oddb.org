@@ -2251,6 +2251,7 @@ module ODDB
 			:paypal_donate	=>	'paypal_donate.gif',
 			:plugin_download_src => 'plugins/oddb.org.src',
 			:plugin_download_gif => 'plugins/oddb.org.gif',
+			:richtext_js		=>	'javascript/richtext.js',
 			:sponsor				=>	'sponsor',
 		}
 		def currencies

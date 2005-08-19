@@ -188,6 +188,7 @@ module ODDB
 			:fi_update,
 			:fr,
 			:galenic_form,
+			:html_chapter,
 			:indication,
 			:language_select,
 			:location,

@@ -4,7 +4,7 @@
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.dirname(__FILE__)
 
-require 'pdf/ezwriter'
+require 'pdf/writer'
 require 'model/text'
 require 'substance_index'
 require 'format'
@@ -104,7 +104,7 @@ end
 
 module ODDB
 	module FiPDF
-		class FachinfoWriter < PDF::EZWriter
+		class FachinfoWriter < PDF::Writer
 			ALPHA_GAP = 5
 			ALPHA_FONT = "Helvetica-Bold"
 			COLOR_DRUG_NAME_BG = {

@@ -1,18 +1,19 @@
 #!/usr/bin/env ruby
 # HtmlParser -- oddb -- 06.10.2003 -- mhuggler@ywesee.com
 
+
 require 'html-parser'
 require 'formatter'
 
 module ODDB
-	class NullWriter < NullWriter
+	class NullWriter < ::NullWriter
 		def new_fonthandler(fonthandler); end
 		def new_linkhandler(linkhandler); end
 		def new_tablehandler(tablehandler); end
 		def send_image(src); end
 		def send_meta(attributes); end
 	end
-	class HtmlParser < HTMLParser
+	class BasicHtmlParser < HTMLParser
 		entities = {}
 		[
 			'nbsp', 'iexcl', 'cent', 'pound', 'curren',
@@ -41,20 +42,50 @@ module ODDB
 		}
 		Entitydefs = entities	
 
-=begin		
-		def parse_starttag(i)
-			rawdata = @rawdata
-			j = rawdata.index(Endbracket, i + 1)
-			#puts "parse_starttag(#{i}, #{rawdata[i..j]})"
-			super
+		def finish_endtag(tag)
+			if tag == ''
+				found = @stack.length - 1
+				if found < 0
+					unknown_endtag(tag)
+					return
+				end
+			else
+				unless @stack.include? tag
+					method = 'end_' + tag
+					unless self.respond_to?(method)
+						unknown_endtag(tag)
+					end
+					return
+				end
+				found = @stack.rindex(tag) #or @stack.length
+			end
+			if(@stack.last == 'pre')
+				if(tag == 'pre')
+					handle_endtag(tag, :end_pre)
+					@stack.pop
+				end
+			else
+				#puts  [@stack.length, found].join("/")
+				while @stack.length > found
+					tag = @stack[-1]
+					#puts "pop #{tag}"
+					method = 'end_' + tag
+					if respond_to?(method)
+						handle_endtag(tag, method)
+					else
+						unknown_endtag(tag)
+					end
+					@stack.pop
+				end
+			end
 		end
-		def parse_endtag(i)
-			rawdata = @rawdata
-			j = rawdata.index(Endbracket, i + 1)
-			#puts "parse_endtag(#{i}, #{rawdata[i..j]})"
-			super
+		def unknown_entityref(name)
+			if(data = self::class::Entitydefs[name])
+				handle_data(data)
+			end
 		end
-=end
+	end
+	class HtmlParser < BasicHtmlParser
 		def do_img(attrs)
 			align = nil
 			alt = '(image)'
@@ -106,43 +137,6 @@ module ODDB
 		def feed(data)
 			super(data.tr("\222", "'"))
 		end
-		def finish_endtag(tag)
-			if tag == ''
-				found = @stack.length - 1
-				if found < 0
-					unknown_endtag(tag)
-					return
-				end
-			else
-				unless @stack.include? tag
-					method = 'end_' + tag
-					unless self.respond_to?(method)
-						unknown_endtag(tag)
-					end
-					return
-				end
-				found = @stack.rindex(tag) #or @stack.length
-			end
-			if(@stack.last == 'pre')
-				if(tag == 'pre')
-					handle_endtag(tag, :end_pre)
-					@stack.pop
-				end
-			else
-				#puts  [@stack.length, found].join("/")
-				while @stack.length > found
-					tag = @stack[-1]
-					#puts "pop #{tag}"
-					method = 'end_' + tag
-					if respond_to?(method)
-						handle_endtag(tag, method)
-					else
-						unknown_endtag(tag)
-					end
-					@stack.pop
-				end
-			end
-		end
 		def handle_image(src, *args)
 			@formatter.send_image(src.gsub(/["']/, ''))
 		end
@@ -165,11 +159,6 @@ module ODDB
 		end
 		def start_tr(attrs)
 			@formatter.push_tablerow(attrs)
-		end
-		def unknown_entityref(name)
-			if(data = self::class::Entitydefs[name])
-				handle_data(data)
-			end
 		end
 	end
 	class HtmlTableHandler

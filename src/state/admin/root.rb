@@ -7,6 +7,7 @@ require 'state/admin/galenicgroups'
 require 'state/admin/indications'
 require 'state/admin/logout'
 require 'state/admin/init'
+require 'state/drugs/fachinfo'
 
 module ODDB
 	module State
@@ -47,6 +48,7 @@ module Root
 	RESOLVE_STATES = {
 		[ :atc_class ]								=>	State::Admin::AtcClass,
 		[ :company ]									=>	State::Companies::RootCompany,
+		[ :fachinfo ]									=>	State::Drugs::RootFachinfo,
 		[ :galenic_group ]						=>	State::Admin::GalenicGroup,
 		[ :galenic_group,
 			:galenic_form ]							=>	State::Admin::GalenicForm,
