@@ -93,6 +93,9 @@ class Return < PublicTemplate
 		headers = super
 		unless(@model && @model.payment_received?)
 			args = { :invoice => @model.oid }
+			## use event_url as opposed to _event_url in order to include
+			## the state-id, so we stay in the same state instead of
+			## creating a new one with each refresh
 			url = @lookandfeel.event_url(:paypal_return, args)
 			headers.store('Refresh', "10; URL=#{url}")
 		end

@@ -9,6 +9,7 @@ module ODDB
 		module Drugs
 class Compare < State::Drugs::Global
 	VIEW = View::Drugs::Compare
+	LIMITED = true
 	VOLATILE = true
 	def init
 		if(@model.atc_class.nil?)

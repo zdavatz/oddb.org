@@ -13,6 +13,7 @@ module ODDB
 class Fachinfo < State::Drugs::Global
 	VIEW = View::Drugs::Fachinfo
 	VOLATILE = true
+	LIMITED = true
 end
 class FachinfoPreview < State::Drugs::Global
 	VIEW = View::Drugs::FachinfoPreview
@@ -21,6 +22,7 @@ end
 class FachinfoPrint < State::Drugs::Global
 	VIEW = View::Drugs::FachinfoPrint
 	VOLATILE = true
+	LIMITED = true
 end
 class RootFachinfo < State::Drugs::Global
 	VIEW = View::Drugs::RootFachinfo

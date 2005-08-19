@@ -7,7 +7,6 @@ require 'cgi'
 
 module ODDB
 	class Validator < SBSM::Validator
-		alias :set_pass_1 :pass
 		alias :set_pass_2 :pass
 		alias :unique_email :email
 		alias :notify_sender :email
@@ -27,8 +26,14 @@ module ODDB
 			:sponsor_until,
 		]
 		ENUMS = {
-			:business_area =>	[nil, 'ba_hospital', 'ba_pharma', 'ba_health',
+			:address_type	=>	[nil, 'at_work', 'at_praxis',
+				'at_private'],
+			:business_area=>	[nil, 'ba_hospital', 'ba_pharma', 'ba_health',
 				'ba_doctor', ],
+			:canton				=>	[nil, 'AG', 'AI', 'AR', 'BE',
+				'BL', 'BS', 'FR', 'GE', 'GL', 'GR', 'JU', 'LU',
+				'NE', 'NW', 'OW', 'SG', 'SH', 'SO', 'SZ', 'TG',
+				'TI', 'UR', 'VD', 'VS', 'ZG', 'ZH'],
 			:cl_status		=>	['false', 'true'],
 			:complementary_type =>	[nil, 'anthroposophy', 'homeopathy', 
 				'phytotherapy', ],
@@ -45,12 +50,14 @@ module ODDB
 		EVENTS = [
 			:accept,
 			:add_to_interaction_basket,
+			:addresses,
 			:assign,
 			:assign_deprived_sequence,
 			:assign_patinfo,
 			:atc_chooser,
 			:atc_request,
 			:authenticate,
+			:address_send,
 			:back,
 			:calculate_offer,
 			:checkout,
@@ -119,7 +126,8 @@ module ODDB
 			:powerlink,
 			:preview,
 			:print,
-			:proceed,
+			:proceed_download,
+			:proceed_poweruser,
 			:recent_registrations,
 			:release,
 			:resolve,
@@ -138,6 +146,7 @@ module ODDB
 			:sort,
 			:sponsor,
 			:substances,
+			:suggest_address,
 			:switch,
 			:update,
 			:update_bsv,
@@ -153,18 +162,20 @@ module ODDB
 		]
 		NUMERIC = [
 			:change_flags,
+			:days,
 			:fi_quantity,
-			:limitation_points,
-			:pi_quantity,
-			:price_exfactory,
-			:price_public,
 			:index,
 			:invoice,
 			:item_number,
+			:limitation_points,
 			:meaning_index,
 			:months,
+			:pi_quantity,
+			:price_exfactory,
+			:price_public,
 		]
 		STRINGS = [
+			:additional_lines,
 			:address,
 			:address_email,
 			:atc_descr,
@@ -186,6 +197,7 @@ module ODDB
 			:en,
 			:fax,
 			:fi_update,
+			:fon,
 			:fr,
 			:galenic_form,
 			:html_chapter,
@@ -200,7 +212,7 @@ module ODDB
 			:notify_message,
 			:pattern,
 			:payment_status,
-			:phone,
+			##:phone, ## ??
 			:pi_update,
 			:plz,
 			:powerlink,
@@ -215,6 +227,7 @@ module ODDB
 			:substance,
 			:substance_form,
 			:synonym_list,
+			:title,
 			:txn_id,
 			:unsubscribe,
 			:url,
@@ -251,6 +264,11 @@ module ODDB
 			return '' if value.empty?
 			ODDB::Ean13.new(value)
 		end
+		def email_suggestion(value)
+			unless(value.empty?)
+				email(value)
+			end
+		end
 		def galenic_group(value)
 			pointer(value)
 		end
@@ -269,7 +287,7 @@ module ODDB
 			swissmedic_id(:iksnr, value, 4..5)
 		end
 		def message(value)
-			CGI.escapeHTML(validate_string(value).to_s[0,401])
+			validate_string(value).to_s[0,500]
 		end
 		def search_query(value)
 			result = validate_string(value)
@@ -278,6 +296,13 @@ module ODDB
 			else
 				raise SBSM::InvalidDataError.new(:e_search_query_short, :search_query, value)
 			end
+		end
+		def set_pass_1(value)
+			if(value.to_s.size < 4)
+				raise SBSM::InvalidDataError.new("e_missing_password", 
+					:set_pass_1, value)
+			end
+			pass(value)
 		end
 		def seqnr(value)
 			swissmedic_id(:seqnr, value, 1..2, 2)

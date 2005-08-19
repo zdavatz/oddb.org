@@ -20,6 +20,7 @@ class Global < State::Global
 				State::Admin::Indications,
 				State::Admin::GalenicGroups,
 				State::Admin::IncompleteRegs,
+				State::Admin::Addresses,
 			]
 		when ODDB::AdminUser
 			[

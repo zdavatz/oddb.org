@@ -10,6 +10,7 @@ module ODDB
 class DDD < State::Drugs::Global
 	VIEW = View::Drugs::DDD
 	VOLATILE = true
+	LIMITED = true
 	def init
 		if((pointer = @session.user_input(:pointer)))
 			@model = pointer.resolve(@session.app)

@@ -3,23 +3,27 @@
 
 require 'util/persistence'
 require 'model/registration_observer'
+require 'model/address'
 
 module ODDB
 	class Company
 		include Persistence
+		include AddressObserver
+		ODBA_SERIALIZABLE = ['@addresses']
 		include RegistrationObserver
 		attr_accessor :business_area, :generic_type, :complementary_type
 		attr_accessor :cl_status, :fi_status, :pi_status
 		attr_accessor :name, :ean13, :powerlink, :logo_filename
+		alias :fullname :name
 		alias :power_link= :powerlink=
 		alias :power_link :powerlink
 		alias :to_s :name
 		attr_accessor	:contact, :contact_email, :regulatory_email, :business_unit
-		attr_accessor	:url, :phone, :fax, :address_email
+		attr_accessor	:url, :address_email
 		alias :email :address_email
-		attr_accessor :address, :plz, :location
 		attr_reader :user
 		def initialize
+			@addresses = []
 			@cl_status = false
 			super
 		end	
@@ -35,10 +39,13 @@ module ODDB
 			}
 		end
 		def search_terms
-			[
-				@name,
-				@address,
+			terms = [
+				@name, @ean13,
 			]
+			@addresses.each { |addr| 
+				terms += addr.search_terms
+			}
+			terms.compact
 		end
 		def atc_classes
 			@registrations.collect { |registration|
@@ -47,6 +54,16 @@ module ODDB
 		end
 		def listed?
 			@cl_status
+		end
+		def refactor_addresses
+			addr = Address2.new
+			addr.location = [@plz, @location].join(" ")
+			addr.address = @address
+			addr.pointer = @pointer + [:address, 0]
+			addr.fon = [ @phone ].compact
+			addr.fax = [ @fax ].compact
+			@phone = @fax = @plz = @location = @address = nil
+			@addresses = [ addr ]
 		end
 		def merge(other)
 			regs = other.registrations.dup

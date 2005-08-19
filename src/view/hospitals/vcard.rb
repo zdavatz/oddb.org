@@ -9,31 +9,11 @@ module ODDB
 		module Hospitals
 class VCard < View::VCard
 	def init
-		@content = [:name, :address]
+		@content = [:name, :addresses]
 	end
 	def get_filename
-		filename = @model.name.sub(/\s/, '_').to_s + 
-			"_" + @model.business_unit.sub(/\s/, '_').to_s + ".vcf"
-	end
-	def name
-		if((firstname = @model.name) \
-			&& (name = @model.business_unit))
-			[
-				"FN;CHARSET=ISO-8859-1:" + firstname + " " + name,
-				"N;CHARSET=ISO-8859-1:" + name + ";" + firstname,
-			]
-		end
-	end
-	def address
-		addr_parts = [
-			@model.address, @model.location, nil, @model.plz	
-		]
-		[
-			"TEL;WORK;VOICE: #{@model.phone}",
-			"TEL;WORK;FAX: #{@model.fax}",
-		  "ADR;#WORK;CHARSET=ISO-8859-1:;;#{addr_parts.join(';')}",
-			"LABEL;WORK;CHARSET=ISO-8859-1:;;#{addr_parts.compact.join(' ')}",
-		]
+		filename = @model.name.gsub(/\s/, '_').to_s + 
+			"_" + @model.ean13.gsub(/\s/, '_').to_s + ".vcf"
 	end
 end
 		end

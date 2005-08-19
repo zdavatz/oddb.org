@@ -11,10 +11,14 @@ require 'sbsm/request'
 require 'stub/cgi'
 
 module Apache
+	REMOTE_NOLOOKUP = 1
 	class Request
 		attr_accessor :unparsed_uri
 		def headers_in
 			{}
+		end
+		def remote_host(arg)
+			'127.0.0.1'
 		end
 	end
 	def request

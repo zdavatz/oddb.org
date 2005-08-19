@@ -11,6 +11,7 @@ class AtcChooser < State::Drugs::Global
 	attr_reader :user_code
 	DIRECT_EVENT = :atc_chooser
 	VIEW = View::Drugs::AtcChooser
+	LIMITED = true
 end
 		end
 	end

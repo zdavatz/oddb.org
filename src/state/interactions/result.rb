@@ -31,6 +31,7 @@ class Result < State::Interactions::Global
 	VIEW = View::Interactions::Result
 	REVERSE_MAP = View::Interactions::ResultList::REVERSE_MAP
 	ITEM_LIMIT = 150
+	LIMITED = true
 	attr_reader :object_count, :pages
 	def init
 		#@facades = {}

@@ -9,7 +9,7 @@ module ODDB
 			CSS_CLASS = "tabnavigation"
 			def init
 				super
-				unless (@session.state.zone == @name)
+				unless (@session.zone == @name)
 =begin
 					args = {
 						"zone"	=> @name.to_s,

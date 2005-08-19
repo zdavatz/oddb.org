@@ -6,6 +6,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/company'
+require 'stub/odba'
 
 module ODDB
 	class Company
@@ -70,9 +71,6 @@ class TestCompany < Test::Unit::TestCase
 			:url						=>	'www.ywesee.com',
 			:business_area	=>	'Intellectual Capital',
 			:contact				=>	'hwyss at ywesee.com',
-			:address				=>	'Winterthurerstrasse',
-			:plz						=>	'8000',
-			:location				=>	'Zuerich'
 		}
 		reg = StubRegistration.new
 		@company.add_registration(reg)
@@ -84,9 +82,6 @@ class TestCompany < Test::Unit::TestCase
 		assert_equal('www.ywesee.com', @company.url)
 		assert_equal('Intellectual Capital', @company.business_area)
 		assert_equal('hwyss at ywesee.com', @company.contact)
-		assert_equal('Winterthurerstrasse', @company.address)
-		assert_equal('8000', @company.plz)
-		assert_equal('Zuerich', @company.location)
 		assert_equal([reg], @company.registrations)
 	end		
 	def test_adjust_types
@@ -113,5 +108,23 @@ class TestCompany < Test::Unit::TestCase
 			:location				=>	'Zuerich'
 		}
 		assert_equal(expected, @company.adjust_types(values))
+	end
+	def test_refactor_addresses
+		@company.pointer = [:company, 1]
+		@company.instance_variable_set('@address', '' )
+		@company.instance_variable_set('@plz', '6300')
+		@company.instance_variable_set('@location', 'Zug')
+		@company.instance_variable_set('@phone', 'fon')
+		@company.instance_variable_set('@fax', 'fax')
+		result = @company.refactor_addresses
+		assert_equal(1, result.size)
+		addr = result.first
+		assert_equal('' , addr.address)
+		assert_equal('6300 Zug', addr.location)
+		assert_equal(['fon'], addr.fon)
+		assert_equal(['fax'], addr.fax)
+		assert_equal([:company, 1, :address, 0], 
+			addr.pointer)
+		assert_equal(result, @company.addresses)
 	end
 end

@@ -5,15 +5,9 @@ require 'rockit/rockit'
 require 'odba/persistable'
 
 module ODDB
-	module Persistence
-		include ODBA::Persistable
-		ODBA_CARRY_METHODS = [:pointer]
+	module PersistenceMethods
 		attr_reader :oid
 		attr_accessor :pointer
-		def initialize(*args)
-			super
-			set_oid()
-		end
 		def init(app)
 		end
 		def ancestors(app)
@@ -88,6 +82,15 @@ module ODDB
 			@oid ||= self.odba_id
 		end
 		#module_function :current_oid
+	end
+	module Persistence
+		include PersistenceMethods
+		include ODBA::Persistable
+		ODBA_CARRY_METHODS = [:pointer]
+		def initialize(*args)
+			super
+			set_oid()
+		end
 		class PathError < RuntimeError
 			attr_reader :pointer
 			def initialize(msg, pointer)

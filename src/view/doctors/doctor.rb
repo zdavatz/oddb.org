@@ -12,6 +12,7 @@ require	'htmlgrid/errormessage'
 require	'htmlgrid/infomessage'
 require 'view/descriptionform'
 require 'view/form'
+require 'view/address'
 require 'view/pointervalue'
 require 'view/privatetemplate'
 require 'view/sponsorlogo'
@@ -19,78 +20,18 @@ require 'view/sponsorlogo'
 module ODDB
 	module View
 		module Doctors 
-module AddressMap
-	def map(address)
-		link = HtmlGrid::Link.new(:map, address, @session, self)
-		link.href = [
-			'http://map.search.ch', 
-			mapsearch_format(address.plz, address.city),
-			mapsearch_format(address.street, address.number),
-		].join('/')
-		link.css_class = 'list'
-		link
-	end
-	def mapsearch_format(*args)
-		args.compact.join('-').gsub(/\s+/, '-')
-	end		
-end
-module VCardMethods
-	def vcard(model)
-		link = HtmlGrid::Link.new(:vcard, model, @session, self)
-		args = {:pointer => model.pointer}
-		link.href = @lookandfeel.event_url(:vcard, args)
-		link.css_class = 'list'
-		link
-	end
-end
 class Addresses < HtmlGrid::List
-	include AddressMap
 	COMPONENTS = {
-		[0,0]	=>	:type,
-		[0,1]	=>	:lines,
-		[0,2] =>	:fons_header,
-		[0,3]	=>	:fons,
-		[0,4]	=>	:fax_header,
-		[0,5]	=>	:fax,
-		[0,6] =>	:map,
+		[0,0]	=>	Address, 
 	}
-	SYMBOL_MAP = {
-		:address_email	=>	HtmlGrid::MailLink,
-		:praxis_header	=>	HtmlGrid::LabelText,
-		:contact_email	=>	HtmlGrid::MailLink,
-		:contact_header	=>	HtmlGrid::LabelText,
-		:email_header		=>	HtmlGrid::LabelText,
-		:fax_header			=>	HtmlGrid::LabelText,
-		:fons_header		=>	HtmlGrid::LabelText,
-		:nbsp						=>	HtmlGrid::Text,
-		:phone_label		=>	HtmlGrid::Text,
-		:work_header		=>	HtmlGrid::LabelText,
-	}	
 	CSS_MAP = {
-		[0,0,1,7]	=> 'top address-width list',
+		[0,0]	=>	'top',
 	}
-	DEFAULT_CLASS = HtmlGrid::Value
-	LEGACY_INTERFACE = false
 	SORT_DEFAULT = nil
 	OMIT_HEADER = true
 	OFFSET_STEP = [1,0]
-	def fax_header(model) 
-		if((fax = model.fax) && !fax.empty?)
-			HtmlGrid::LabelText.new(:fax_header, model, @session, self)
-		end
-	end
-	def fax(model)
-		model.fax.join('<br>')
-	end
-	def fons(model)
-		model.fon.join('<br>')
-	end
-	def lines(model)
-		model.lines.join('<br>')
-	end
-	def type(model)
-		HtmlGrid::LabelText.new("address_#{model.type}", model, @session, self)
-	end
+	CSS_CLASS = 'component'
+	BACKGROUND_SUFFIX = ' bg'
 end
 class DoctorInnerComposite < HtmlGrid::Composite
 	COMPONENTS = {
@@ -158,13 +99,21 @@ class DoctorComposite < HtmlGrid::Composite
 	}	
 	CSS_MAP = {
 		[0,0]	=> 'th',
-		[0,3] => 'list',
+		[0,2]	=> 'top',
+		[0,3]	=> 'list',
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
 	def addresses(model)
-		Addresses.new(model.addresses, @session, self)
+		addrs = model.addresses
+		if(addrs.empty?)
+			addrs = addrs.dup
+			addr = Address2.new
+			addr.pointer = model.pointer + [:address, 0]
+			addrs.push(addr)
+		end
+		Addresses.new(addrs, @session, self)
 	end
 end
 class Doctor < PrivateTemplate

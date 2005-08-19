@@ -11,12 +11,12 @@ require 'htmlgrid/value'
 require 'htmlgrid/inputfile'
 require	'htmlgrid/errormessage'
 require	'htmlgrid/infomessage'
+require 'view/address'
 require 'view/descriptionform'
 require 'view/form'
 require 'view/pointervalue'
 require 'view/resulttemplate'
 require 'view/sponsorlogo'
-
 
 module ODDB
 	module View
@@ -53,22 +53,25 @@ class UnknownCompanyInnerComposite < HtmlGrid::Composite
 		[0,3]		=>	:contact_email,
 		[0,4]		=>	:address_header,
 		[0,5]		=>	:address,
-		[2,5]		=>	:phone_label,
-		[2,5,0]	=>	:nbsp,
-		[2,5,1]	=>	:phone,
-		[0,6]		=>	:plz,
-		[0,6,0]	=>	:nbsp,
-		[0,6,1]	=>	:location,
-		[2,6]		=>	:fax_label,
-		[2,6,0]	=>	:nbsp,
-		[2,6,1]	=>	:fax,
+		#[0,5]		=>	:address,
+		#[2,5]		=>	:phone_label,
+		#[2,5,0]	=>	:nbsp,
+		#[2,5,1]	=>	:phone,
+		#[0,6]		=>	:plz,
+		#[0,6,0]	=>	:nbsp,
+		#[0,6,1]	=>	:city,
+		#[2,6]		=>	:fax_label,
+		#[2,6,0]	=>	:nbsp,
+		#[2,6,1]	=>	:fax,
+		[0,6]	=>	:nbsp,
 		[0,7]		=>	:url_header,
 		[0,8]		=>	:url,
-		[2,8]		=>	:address_email,
+		[1,8]		=>	:address_email,
 	}
 	SYMBOL_MAP = {
 		:address_email	=>	HtmlGrid::MailLink,
 		:address_header	=>	HtmlGrid::LabelText,
+		:contact_email	=>	HtmlGrid::MailLink,
 		:contact_header	=>	HtmlGrid::LabelText,
 		:email_header		=>	HtmlGrid::LabelText,
 		:nbsp						=>	HtmlGrid::Text,
@@ -78,9 +81,30 @@ class UnknownCompanyInnerComposite < HtmlGrid::Composite
 		:url_header			=>	HtmlGrid::LabelText,
 	}	
 	CSS_MAP = {
-		[0,0,4,9]	=>	'list',
+		[0,0,2,5]	=>	'list',
+		[0,6,2,3]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
+	LEGACY_INTERFACE = false
+	def address(model)
+		Address.new(model.addresses.first, @session, self)
+	end
+=begin
+	def address(model, session)
+		address_delegate(model, :address)
+	end
+	def city(model, session)
+		address_delegate(model, :city)
+	end
+	def plz(model, session)
+		address_delegate(model, :plz)
+	end
+	def address_delegate(model, data)
+		if(addr = model.addresses.first)
+			addr.send(data)
+		end
+	end
+=end
 end
 class UserCompanyForm < View::Form
 	include HtmlGrid::ErrorMessage
@@ -127,6 +151,19 @@ class UserCompanyForm < View::Form
 		error_message()
 		info_message()
 	end
+	def address(model, session)
+		address_delegate(model, :address)
+	end
+	def address_delegate(model, symbol)
+		HtmlGrid::InputText.new(symbol,
+			model.address(0), @session, self)
+	end
+	def city(model, session)
+		address_delegate(model, :city)
+	end
+	def company_name(model, session)
+		HtmlGrid::InputText.new('name', model, session, self)
+	end
 	def patinfo_stats(model, session)
 		link = HtmlGrid::Link.new(:patinfo_stats, model , session, self)
 		args = {
@@ -136,8 +173,8 @@ class UserCompanyForm < View::Form
 		link.set_attribute('title', @lookandfeel.lookup(:patinfo_stats))
 		link
 	end
-	def company_name(model, session)
-		HtmlGrid::InputText.new('name', model, session, self)
+	def plz(model, session)
+		address_delegate(model, :plz)
 	end
 	def set_pass(model, session)
 		button = HtmlGrid::Button.new(:set_pass, model, session, self)

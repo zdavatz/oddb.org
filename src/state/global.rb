@@ -35,6 +35,7 @@ require 'state/interactions/init'
 require 'state/interactions/result'
 require 'state/substances/init'
 require 'state/substances/result'
+require 'state/suggest_address'
 require 'state/user/download'
 require 'state/user/download_export'
 require 'state/user/fipi_offer_input'
@@ -43,6 +44,7 @@ require 'state/user/genericdefinition'
 require	'state/user/help'
 require 'state/user/mailinglist'
 require 'state/user/passthru'
+require 'state/user/register_poweruser'
 require 'state/paypal/return'
 require 'state/paypal/ipn'
 require 'state/user/paypal_thanks'
@@ -56,6 +58,7 @@ module ODDB
 	module State
 		class Global < SBSM::State
 			include UmlautSort
+			include Admin::LoginMethods
 			attr_reader :model
 			DIRECT_EVENT = nil 
 			GLOBAL_MAP = {
@@ -85,6 +88,7 @@ module ODDB
 				:sequences						=>	State::Drugs::Sequences,
 			}	
 			HOME_STATE = State::Drugs::Init
+			LIMITED = false
 			READONLY_STATES = {
 				[	:registration, :sequence, 
 					:package ]	=>	State::Drugs::Package,
@@ -129,7 +133,7 @@ module ODDB
 			def checkout
 				case @session.zone
 				when :user
-					proceed.checkout
+					proceed_download.checkout
 				when :drugs
 					export_csv.checkout
 				end
@@ -230,6 +234,12 @@ module ODDB
 			def legal_note
 				State::LegalNote.new(@session, nil)
 			end
+			def limited?
+				self.class.const_get(:LIMITED)
+			end
+			def limit_state
+				State::User::Limit.new(@session, nil)
+			end
 			def logout
 				user = @session.logout
 				State::Drugs::Init.new(@session, user)
@@ -243,6 +253,18 @@ module ODDB
 			def paypal_return
 				if(@session.is_crawler?)
 					State::Drugs::Init.new(@session, nil)
+				elsif((id = @session.user_input(:invoice)) \
+					&& (invoice = @session.invoice(id)))
+					state = State::PayPal::Return.new(@session, invoice)
+					if(invoice.types.all? { |type| type == :poweruser } \
+						&& invoice.payment_received? \
+						&& (des = @session.desired_state))
+						state = des
+						if(viral = @session.user.viral_module)
+							state.extend(viral)
+						end
+					end
+					state
 				else
 					State::PayPal::Return.new(@session, nil)
 				end
@@ -267,9 +289,63 @@ module ODDB
 					self
 				end
 			end
-			def proceed
-				state = State::User::DownloadExport.new(@session, nil)
-				state.proceed
+			def proceed_download
+				keys = [:download, :months]
+				input = user_input(keys, keys) 
+				items = []
+				if(files = input[:download])
+					files.each { |filename, val|
+						if(val)
+							item = AbstractInvoiceItem.new
+							item.text = filename
+							item.type = :download
+							item.vat_rate = VAT_RATE
+							months = input[:months][filename]
+							item.quantity = months.to_f
+							price_mth = 'price'
+							duration_mth = 'duration'
+							if(months == '12')
+								price_mth = 'subscription_' << price_mth
+								duration_mth = 'subscription_' << duration_mth
+							end
+							klass = State::User::DownloadExport
+							item.total_netto = klass.send(price_mth, filename)
+							item.duration = klass.send(duration_mth, filename)
+							items.push(item)
+						end
+					}
+				end
+				if(items.empty?)
+					@errors.store(:download, create_error('e_no_download_selected', 
+						:download, nil))
+					return self
+				end
+				pointer = Persistence::Pointer.new(:invoice)
+				invoice = Persistence::CreateItem.new(pointer)
+				invoice.carry(:items, items)
+				State::User::RegisterDownload.new(@session, invoice)
+			end
+			def proceed_poweruser
+				keys = [:days]
+				input = user_input(keys, keys)
+				unless(error?)
+					days = input[:days].to_i
+					item = AbstractInvoiceItem.new
+					item.text = "unlimited access"
+					item.type = :poweruser
+					item.vat_rate = VAT_RATE
+					item.quantity = days
+					item.duration = days
+					item.total_netto = State::User::Limit.price(days)
+					pointer = Persistence::Pointer.new(:invoice)
+					invoice = Persistence::CreateItem.new(pointer)
+					invoice.carry(:items, [item])
+					if(usr = @session.user_input(:pointer))
+						State::User::RenewPowerUser.new(@session, invoice)
+					else
+						State::User::RegisterPowerUser.new(@session, invoice)
+					end
+				end
 			end
 			def resolve
 				if((pointer = @session.user_input(:pointer)) \
@@ -365,6 +441,23 @@ module ODDB
 				@model.reverse! if(@sort_reverse)
 				self
 			end
+			def suggest_address
+				keys = [:pointer]
+				input = user_input(keys, keys)
+				pointer = input[:pointer]
+				if(!error?) 
+					addr = pointer.resolve(@session)
+					if(addr.nil?)
+						## simulate an address
+						addr = Address2.new
+						if(parent = pointer.parent.resolve(@session))
+							addr.name = parent.fullname
+						end
+						addr.pointer = pointer
+					end
+					SuggestAddress.new(@session, addr)
+				end	
+			end
 			def switch
 				state = self.trigger(self.direct_event)
 				if(state.zone == @session.zone)
@@ -385,30 +478,29 @@ module ODDB
 			def user_input(keys=[], mandatory=[])
 				keys = [keys] unless keys.is_a?(Array)
 				mandatory = [mandatory] unless mandatory.is_a?(Array)
-				if(hash = @session.user_input(*keys))
-					unless(hash.is_a?(Hash))
-						hash = {keys.first => hash}
-					end
-					hash.each { |key, value| 
-						carryval = nil
-						if (value.is_a? RuntimeError)
-							carryval = value.value
-							@errors.store(key, hash.delete(key))
-						elsif (mandatory.include?(key) && mandatory_violation(value))
-							error = create_error('e_missing_' << key.to_s, key, value)
-							@errors.store(key, error)
-							hash.delete(key)
-						else
-							carryval = value
-						end
-						if (@model.is_a? Persistence::CreateItem)
-							@model.carry(key, carryval)
-						end
-					}
-					hash
-				else
-					{}
+				hash = @session.user_input(*keys)
+				hash ||= {}
+				unless(hash.is_a?(Hash))
+					hash = {keys.first => hash}
 				end
+				keys.each { |key| 
+					carryval = nil
+					value = hash[key]
+					if(value.is_a? RuntimeError)
+						carryval = value.value
+						@errors.store(key, hash.delete(key))
+					elsif(mandatory.include?(key) && mandatory_violation(value))
+						error = create_error('e_missing_' << key.to_s, key, value)
+						@errors.store(key, error)
+						hash.delete(key)
+					else
+						carryval = value
+					end
+					if (@model.is_a? Persistence::CreateItem)
+						@model.carry(key, carryval)
+					end
+				}
+				hash
 			end
 			def user_navigation
 				[

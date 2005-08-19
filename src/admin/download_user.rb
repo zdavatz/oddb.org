@@ -2,12 +2,14 @@
 # Admin::DownloadUser -- oddb -- 21.12.2004 -- hwyss@ywesee.com
 
 require 'util/persistence'
+require 'model/invoice_observer'
 require 'digest'
 
 module ODDB
 	module Admin
 		class DownloadUser
 			include Persistence
+			include InvoiceObserver
 			ODBA_SERIALIZABLE = ['@challenges']
 			attr_reader :email
 			attr_accessor :salutation, :name, :name_first, :company_name,
@@ -42,13 +44,6 @@ module ODDB
 				@challenges = []
 				@invoices = []
 			end
-			def add_invoice(invoice)
-				@invoices.push(invoice)
-				@invoices.odba_isolated_store
-				invoice.user_pointer = @pointer
-				invoice.odba_isolated_store
-				invoice
-			end
 			def authenticate!(key)
 				if(challenge = self.challenge(key))
 					challenge.authenticate!
@@ -69,19 +64,6 @@ module ODDB
 				@challenges.push(challenge)
 				odba_isolated_store
 				challenge
-			end
-			def invoice(oid)
-				oid = oid.to_i
-				@invoices.each { |invoice|
-					return invoice if(invoice.oid == oid)
-				}
-				nil
-			end
-			def remove_invoice(invoice)
-				if(@invoices.delete(invoice))
-					@invoices.odba_isolated_store
-					invoice
-				end
 			end
 		end
 	end

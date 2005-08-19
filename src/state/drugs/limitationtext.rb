@@ -9,6 +9,7 @@ module ODDB
 		module Drugs
 class LimitationText < State::Drugs::Global
 	VIEW = View::Drugs::LimitationText
+	LIMITED = true
 end
 		end
 	end

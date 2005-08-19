@@ -12,6 +12,7 @@ module ODDB
 		module Companies
 class Company < State::Companies::Global
 	VIEW = View::Companies::UnknownCompany
+	LIMITED = true
 end
 class UserCompany < State::Companies::Company
 	VIEW = View::Companies::UserCompany
@@ -87,6 +88,12 @@ class UserCompany < State::Companies::Company
 			unless(company.nil? || company==@model)
 				@errors.store(:name, create_error('e_duplicate_company', :name, input[:name]))
 			else
+				addr = @model.address(0)
+				addr.address = input.delete(:address)
+				addr.location = [
+					input.delete(:plz),
+					input.delete(:location),
+				].compact.join(' ')
 				ODBA.batch {
 					@model = @session.app.update(@model.pointer, input)
 				}

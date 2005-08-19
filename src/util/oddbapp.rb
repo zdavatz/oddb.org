@@ -35,7 +35,7 @@ class OddbPrevalence
 	attr_reader :atc_chooser, :registrations
 	attr_reader :last_medication_update
 	attr_reader :orphaned_patinfos, :orphaned_fachinfos
-	attr_reader :fachinfos
+	attr_reader :fachinfos, :address_suggestions
 	attr_reader :patinfos_deprived_sequences, :patinfos
 	attr_reader :invoices, :notification_logger
 	attr_reader :invoices, :slates
@@ -46,6 +46,7 @@ class OddbPrevalence
 		create_unknown_galenic_group()
 		create_root_user()
 		@atc_classes ||= {}
+		@address_suggestions ||= {}
 		@patinfos_deprived_sequences ||= []
 		@companies ||= {}
 		@currency_rates ||= {}
@@ -68,6 +69,16 @@ class OddbPrevalence
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
 		@slates ||= {}
+		@hospitals.each_value { |item|  
+			if(item.addresses.nil?)
+				item.addresses = []
+			end
+		}
+		@companies.each_value { |item|  
+			if(item.addresses.nil?)
+				item.addresses = []
+			end
+		}
 		rebuild_atc_chooser()
 	end
 	# prevalence-methods ################################
@@ -123,6 +134,9 @@ class OddbPrevalence
 	end
 	def atc_ddd_count
 		@atc_ddd_count ||= count_atc_ddd()
+	end
+	def address_suggestion(oid)
+		@address_suggestions[oid.to_i]
 	end
 	def clean_invoices
 		@invoices.delete_if { |oid, invoice| invoice.odba_instance.nil? }
@@ -255,6 +269,10 @@ class OddbPrevalence
 		invoice = ODDB::Invoice.new
 		@invoices.store(invoice.oid, invoice)
 	end
+	def create_address_suggestion
+		address = ODDB::AddressSuggestion.new
+		@address_suggestions.store(address.oid, address) 
+	end
 	def create_log_group(key)
 		@log_groups[key] ||= ODDB::LogGroup.new(key)
 	end
@@ -272,6 +290,10 @@ class OddbPrevalence
 		@patinfos ||= {}
 		patinfo = ODDB::Patinfo.new
 		@patinfos.store(patinfo.oid, patinfo)
+	end
+	def create_poweruser
+		user = ODDB::PowerUser.new
+		@users.store(user.oid, user)
 	end
 	def create_registration(iksnr)
 		unless @registrations.include?(iksnr)
@@ -306,6 +328,12 @@ class OddbPrevalence
 	end
 	def currencies
 		@currency_rates.keys.sort
+	end
+	def delete_address_suggestion(oid)
+		if(sug = @address_suggestions.delete(oid))
+			@address_suggestions.odba_isolated_store
+			sug
+		end
 	end
 	def delete_atc_class(atccode)
 		atc = @atc_classes[atccode]
@@ -499,6 +527,9 @@ class OddbPrevalence
 	def patinfo_count
 		@patinfo_count ||= count_patinfos()
 	end
+	def poweruser(oid)
+		@users[oid.to_i]
+	end
 	def rebuild_atc_chooser
 		chooser = ODDB::AtcNode.new(nil)
 		@atc_classes.values.sort_by { |atc| 
@@ -537,6 +568,29 @@ class OddbPrevalence
 	end
 	def resolve(pointer)
 		pointer.resolve(self)
+	end
+	def refactor_addresses
+		# 3 Iterationen 
+		puts "refactoring doctors"
+		$stdout.flush
+	  @doctors.each_value { |doc| 
+			doc.refactor_addresses 
+			doc.odba_store
+		}
+		puts "refactoring hospitals"
+		$stdout.flush
+	  @hospitals.each_value { |spi| 
+			spi.refactor_addresses 
+			spi.odba_store
+		}
+		puts "refactoring companies"
+		$stdout.flush
+	  @companies.each_value { |comp| 
+			comp.refactor_addresses 
+			comp.odba_store
+		}
+		puts "finished refactoring addresses"
+		$stdout.flush
 	end
 	def search_oddb(query, lang)
 		# current search_order:
