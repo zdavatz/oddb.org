@@ -148,9 +148,13 @@ module ODDB
 				@subheading.empty? && @paragraphs.empty?
 			end
 			def to_s
-				lines = @paragraphs.dup.unshift(@subheading)
-				lines.delete_if { |line| line.empty? }
-				lines.join("\n")
+				str = @subheading.dup
+				@paragraphs.each { |paragraph|
+					unless(paragraph.empty?)
+						str << "\n" << paragraph.to_s
+					end
+				}
+				str
 			end
 			def match(pattern)
 				pattern.match(@subheading) or
@@ -191,9 +195,13 @@ module ODDB
 				@sections.include?(section)
 			end
 			def to_s
-				parts = @sections.dup.unshift(@heading)
-				parts.delete_if { |part| part.empty? }
-				parts.join("\n")
+				str = @heading.dup
+				@sections.each { |section|
+					unless(section.empty?)
+						str << "\n" << section.to_s
+					end
+				}
+				str
 			end
 			def match(pattern)
 				pattern.match(@heading) or
