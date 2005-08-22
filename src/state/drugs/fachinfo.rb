@@ -38,14 +38,13 @@ class RootFachinfo < State::Drugs::Global
 		lang = @session.language
 		doc = @model.send(lang)
 		name = input[:chapter]
-		original = doc.send(name)
 		pointer = @model.pointer + [lang] + [name]
 		args = {
 			:sections =>	writer.chapter.sections,
 		}
 		ODBA.transaction {
 			@session.app.update(pointer, args)
-			@session.app.update(@model.pointer, {})
+			@model.odba_store
 		}
 		self
 	end	
