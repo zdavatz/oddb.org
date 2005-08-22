@@ -2,6 +2,7 @@
 # View::Chapter -- oddb -- 17.09.2003 -- rwaltert@ywesee.com
 
 require 'htmlgrid/value'
+require 'view/form'
 
 module ODDB
 	module View
