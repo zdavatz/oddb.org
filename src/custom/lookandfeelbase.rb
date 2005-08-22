@@ -2490,6 +2490,7 @@ module ODDB
 		RESOURCES = {
 			:banner					=>	'banner.gif',
 			:css						=>	'oddb.css',
+			:css_print			=>	'print.css',
 			:company_logo		=>	'logos',
 			:downloads			=>	'downloads',
 			:pdf_patinfo		=>	'patinfo',

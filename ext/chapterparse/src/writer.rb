@@ -69,7 +69,7 @@ module ODDB
 					&& target.preformatted?
 			end
 			def send_line_break
-				puts "send_line_break"
+				#puts "send_line_break"
 				if((@target.empty? && @subheading) \
 					|| @target == @section.subheading)
 					puts "subheading!"

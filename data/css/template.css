@@ -75,6 +75,9 @@ div.section {
 	line-height : 120%;
 	margin-top : 4px;
 }
+span.section {
+	font-style:italic;
+}
 pre, div.preformatted {
 	font-style : normal;
 	font-family: Courier New, Courier, monospace;

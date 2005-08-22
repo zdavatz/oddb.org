@@ -50,7 +50,7 @@ module ODDB
 			end
 			def sections(context, sections)
 				section_attr = { 'class' => 'section' }
-				subhead_attr = { 'style'=>'font-style: italic;' }
+				subhead_attr = { 'class' => 'section' }
 				#attr = {}
 				sections.collect { |section|
 					context.div(section_attr) { 
@@ -97,7 +97,7 @@ initRTE("/resources/javascript/richtext/images/", "/resources/javascript/richtex
 				} << context.script(args) {
 					<<-EOS
 <!--
-writeRichText('html_chapter', '#{content}', 650, 250, true, false);
+writeRichText('html_chapter', '#{content}', 650, 500, true, false);
 //-->
 					EOS
 				}
