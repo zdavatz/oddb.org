@@ -51,7 +51,7 @@ module ODDB
 			end
 			def sections(context, sections)
 				section_attr = { 'class' => 'section' }
-				subhead_attr = { 'class' => 'section' }
+				subhead_attr = { 'style' => 'font-style: italic' }
 				#attr = {}
 				sections.collect { |section|
 					context.div(section_attr) { 
