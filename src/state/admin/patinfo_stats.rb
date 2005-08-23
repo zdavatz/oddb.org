@@ -82,7 +82,8 @@ class PatinfoStatsCommon < State::Admin::Global
 		model = {}
 		patinfo_slate = @session.slate(:patinfo)
 		patinfo_slate.items.each_value { |item|
-			if(sequence = @session.app.resolve(item.item_pointer))
+			if(item.type == :annual_fee \
+				&& (sequence = @session.app.resolve(item.item_pointer)))
 				item_facade = InvoiceItemFacade.new(item)
 				item_facade.sequence = sequence
 				item_facade.user = @session.app.resolve(item.user_pointer)

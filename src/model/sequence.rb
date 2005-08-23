@@ -43,7 +43,8 @@ module ODDB
 			nil
 		end
 		def checkout
-			checkout_helper([@atc_class, @galenic_form], :remove_sequence)
+			checkout_helper([@atc_class, @galenic_form, @patinfo], 
+				:remove_sequence)
 			@packages.each_value { |pac| 
 				pac.checkout 
 				pac.odba_delete

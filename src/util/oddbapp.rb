@@ -37,8 +37,7 @@ class OddbPrevalence
 	attr_reader :orphaned_patinfos, :orphaned_fachinfos
 	attr_reader :fachinfos, :address_suggestions
 	attr_reader :patinfos_deprived_sequences, :patinfos
-	attr_reader :invoices, :notification_logger
-	attr_reader :invoices, :slates
+	attr_reader :invoices, :notification_logger, :slates
 	def initialize
 		init
 	end
@@ -69,16 +68,6 @@ class OddbPrevalence
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
 		@slates ||= {}
-		@hospitals.each_value { |item|  
-			if(item.addresses.nil?)
-				item.addresses = []
-			end
-		}
-		@companies.each_value { |item|  
-			if(item.addresses.nil?)
-				item.addresses = []
-			end
-		}
 		rebuild_atc_chooser()
 	end
 	# prevalence-methods ################################
@@ -141,7 +130,7 @@ class OddbPrevalence
 	def clean_invoices
 		@invoices.delete_if { |oid, invoice| invoice.odba_instance.nil? }
 		deletables = @invoices.values.select { |invoice|
-			!invoice.payment_received? && invoice.expired?
+			invoice.deletable?
 		}
 		unless(deletables.empty?)
 			deletables.each { |invoice|

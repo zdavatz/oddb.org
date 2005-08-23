@@ -2,6 +2,7 @@
 # View::Chapter -- oddb -- 17.09.2003 -- rwaltert@ywesee.com
 
 require 'htmlgrid/value'
+require 'view/form'
 
 module ODDB
 	module View
@@ -50,7 +51,7 @@ module ODDB
 			end
 			def sections(context, sections)
 				section_attr = { 'class' => 'section' }
-				subhead_attr = { 'class' => 'section' }
+				subhead_attr = { 'style' => 'font-style: italic' }
 				#attr = {}
 				sections.collect { |section|
 					context.div(section_attr) { 

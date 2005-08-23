@@ -209,6 +209,7 @@ module ODDB
 			end
 			def notify 
 				if((pointer = @session.user_input(:pointer)) \
+					&& pointer.is_a?(Persistence::Pointer) \
 					&& (pack = pointer.resolve(@session.app)))
 					State::Drugs::Notify.new(@session, pack)
 				end

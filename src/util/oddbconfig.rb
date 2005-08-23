@@ -17,6 +17,55 @@ module ODDB
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
 	PAYPAL_SERVER = 'www.paypal.com'
 	PAYPAL_RECEIVER = 'zdavatz@ywesee.com'
+	## Prices and Durations
+	DOWNLOAD_EXPORT_PRICES = {
+		'doctors.yaml'	=> 1100,
+		'oddb.csv'			=> 500,
+		'oddb.yaml'			=> 600,
+		'fachinfo.yaml'	=> 800,
+		'patinfo.yaml'	=> 500,
+		'oddbdat'				=> 700,
+		's31x'					=> 900,
+	}
+	DOWNLOAD_EXPORT_SUBSCRIPTION_PRICES = {
+		'oddb.csv'			=> 2000,
+		'oddb.yaml'			=> 2500,
+		'fachinfo.yaml'	=> 1400,
+		'oddbdat'				=> 2500,
+		's31x'					=> 1400,
+	}
+	DOWNLOAD_EXPORT_DURATIONS = { 
+		'oddb.csv'			=> 30,
+		'doctors.yaml'	=> 30,
+		'oddb.yaml'			=> 30,
+		'fachinfo.yaml'	=> 30,
+		'patinfo.yaml'	=> 30,
+		'oddbdat'				=> 30,
+		's31x'					=> 30,
+	}
+	DOWNLOAD_EXPORT_SUBSCRIPTION_DURATIONS = { 
+		'oddb.csv'			=> 365,
+		'oddb.yaml'			=> 365,
+		'fachinfo.yaml'	=> 365,
+		'oddbdat'				=> 365,
+		's31x'					=> 365,
+	}
+	FI_UPLOAD_PRICES = {
+		:activation => 1500,
+		:annual_fee => 350,
+		:processing => 150,
+	}
+	PI_UPLOAD_DURATION = 365
+	PI_UPLOAD_PRICES = {
+		:activation => 1000,
+		:annual_fee => 120,
+		:processing => 90,
+	}
+	QUERY_LIMIT_PRICES = {
+		1		=>	5,
+		30	=>	50,
+		365	=>	400,
+	}
 	VAT_RATE = 7.6
 end
 

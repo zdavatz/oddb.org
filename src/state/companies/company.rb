@@ -45,7 +45,7 @@ class UserCompany < State::Companies::Company
 			:fi_status,
 			:generic_type,
 			:pi_status,
-			:location,
+			:city,
 			:logo_file,
 			:name,
 			:phone,
@@ -92,7 +92,7 @@ class UserCompany < State::Companies::Company
 				addr.address = input.delete(:address)
 				addr.location = [
 					input.delete(:plz),
-					input.delete(:location),
+					input.delete(:city),
 				].compact.join(' ')
 				ODBA.batch {
 					@model = @session.app.update(@model.pointer, input)
@@ -128,7 +128,7 @@ class RootCompany < State::Companies::UserCompany
 			:fi_status,
 			:generic_type,
 			:pi_status,
-			:location,
+			:city,
 			:logo_file,
 			:name,
 			:phone,

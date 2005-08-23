@@ -43,6 +43,43 @@ module ODDB
 			assert_equal(item, @invoice.item_by_text('foo'))
 			assert_equal(nil, @invoice.item_by_text('bar'))
 		end
+		def test_expired
+			assert_equal(true, @invoice.expired?)
+			item = @invoice.create_item
+			assert_equal(true, @invoice.expired?)
+			item.time = Time.now
+			assert_equal(true, @invoice.expired?)
+			item.expiry_time = (Time.now - 1)
+			assert_equal(true, @invoice.expired?)
+			item.expiry_time = (Time.now + 1)
+			assert_equal(false, @invoice.expired?)
+		end
+		def test_expired_2_items
+			item = @invoice.create_item
+			item2 = @invoice.create_item
+			item.time = Time.now
+			item.expiry_time = (Time.now + 1)
+			assert_equal(false, item.expired?)
+			assert_equal(true, item2.expired?)
+			assert_equal(false, @invoice.expired?)
+		end
+		def test_deletable
+			assert_equal(true, @invoice.deletable?)
+		end
+		def test_deletable_payment_received
+			@invoice.payment_received!
+			assert_equal(false, @invoice.deletable?)
+		end
+		def test_deletable_keep_if_unpaid
+			@invoice.keep_if_unpaid = true
+			assert_equal(false, @invoice.deletable?)
+		end
+		def test_deletable_not_expired
+			item = @invoice.create_item
+			item.time = Time.now
+			item.expiry_time = (Time.now + 1)
+			assert_equal(false, @invoice.deletable?)
+		end
 	end
 	class TestInvoiceItem < Test::Unit::TestCase
 		def setup
@@ -59,6 +96,15 @@ module ODDB
 			@item.quantity = 1
 			@item.total_brutto = 100
 			assert_in_delta(75.0, @item.price, 0.01)
+		end
+		def test_expired
+			assert_equal(true, @item.expired?)
+			@item.time = Time.now
+			assert_equal(true, @item.expired?)
+			@item.expiry_time = (Time.now - 1)
+			assert_equal(true, @item.expired?)
+			@item.expiry_time = (Time.now + 1)
+			assert_equal(false, @item.expired?)
 		end
 	end
 end

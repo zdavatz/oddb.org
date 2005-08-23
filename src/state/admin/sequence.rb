@@ -136,20 +136,12 @@ class Sequence < State::Admin::Global
 				pi_file.rewind
 				filename = "#{@model.iksnr}_#{@model.seqnr}.pdf"
 				FileUtils.mkdir_p(self::class::PDF_DIR)
-				store_file = File.new(File.expand_path(filename, self::class::PDF_DIR), "w")
+				store_file = File.new(File.expand_path(filename, 
+					self::class::PDF_DIR), "w")
 				store_file.write(pi_file.read)
 				store_file.close
 				@model.pdf_patinfo = filename
-				slate_pointer = Persistence::Pointer.new([:slate, :patinfo])
-				@session.app.create(slate_pointer)
-				item_pointer = slate_pointer + :item
-				values = {
-					:user_pointer	=>	@session.user.pointer,
-					:name					=>	@model.name,
-					:time					=>	Time.now,
-					:item_pointer =>	@model.pointer,
-				}
-				@session.app.update(item_pointer.creator, values)
+				store_slate()
 				input.store(:pdf_patinfo, filename)
 			else
 				add_warning(:w_no_patinfo_saved, :patinfo_upload, nil)
@@ -166,6 +158,35 @@ class Sequence < State::Admin::Global
 			@model = @session.app.update(@model.pointer, input)
 		}
 		self
+	end
+	private
+	def store_slate
+		time = Time.now
+		ODBA.transaction { 
+			store_slate_item(time, :annual_fee)
+			store_slate_item(time, :processing)
+		}
+	end
+	def store_slate_item(time, type)
+		slate_pointer = Persistence::Pointer.new([:slate, :patinfo])
+		@session.app.create(slate_pointer)
+		item_pointer = slate_pointer + :item
+		expiry_time = InvoiceItem.expiry_time(PI_UPLOAD_DURATION, time)
+		unit = @session.lookandfeel.lookup("pi_upload_#{type}")
+		text = sprintf("%s %s", @model.iksnr, @model.seqnr)
+		values = {
+			:duration			=>	PI_UPLOAD_DURATION,
+			:expiry_time	=>	expiry_time,
+			:item_pointer =>	@model.pointer,
+			:price				=>	PI_UPLOAD_PRICES[type],
+			:text					=>	text,
+			:time					=>	time,
+			:type					=>	type,
+			:unit					=>	unit,
+			:user_pointer	=>	@session.user.pointer,
+			:vat_rate			=>	VAT_RATE, 
+		} 
+		@session.app.update(item_pointer.creator, values)
 	end
 end
 class CompanySequence < State::Admin::Sequence
@@ -198,6 +219,9 @@ class CompanySequence < State::Admin::Sequence
 	private
 	def allowed?
 		@session.user_equiv?(@model.company)
+	end
+	def store_slate
+		store_slate_item(Time.now, :annual_fee)
 	end
 end
 		end

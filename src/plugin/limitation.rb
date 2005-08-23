@@ -178,9 +178,7 @@ module ODDB
 		EXT = 'htm'
 		#RANGE = ['O']
 		RANGE = ('A'..'Z').to_a
-		RECIPIENTS = [
-			'mhuggler@ywesee.com',
-		]
+		RECIPIENTS = []
 		RETRIES = 3
 		RETRY_WAIT = 5
 		def initialize(app)

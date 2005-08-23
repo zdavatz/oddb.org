@@ -5,6 +5,7 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'state/global_predefine'
+require 'util/oddbconfig'
 require 'view/user/fipi_offer_input'
 
 module ODDB
@@ -14,19 +15,6 @@ class FiPiOfferInput < State::User::Global
 	class FiPiOffer
 		attr_accessor :fi_update, :pi_update
 		attr_accessor :fi_quantity, :pi_quantity
-		PI_ACTIVATION_CHARGE = 1000
-		FI_ACTIVATION_CHARGE = 1500
-		FIPI_ACTIVATION_CHARGE = 
-			(PI_ACTIVATION_CHARGE + FI_ACTIVATION_CHARGE)
-		FI_CHARGE	= 350
-		FI_UPDATE = 150
-		PI_CHARGE = 120
-		PI_UPDATE = 90
-		def activation_charge
-			PI_ACTIVATION_CHARGE
-			FI_ACTIVATION_CHARGE
-			FIPI_ACTIVATION_CHARGE
-		end
 		def pi_activation_count
 			count = 0
 			count += 1 unless (@pi_quantity=="" || @pi_quantity=="0")
@@ -41,51 +29,51 @@ class FiPiOfferInput < State::User::Global
 			fi_activation_count + pi_activation_count
 		end
 		def fi_charge
-			FI_CHARGE
+			FI_UPLOAD_PRICES[:annual_fee]
 		end
 		def fi_update_charge
 			if(@fi_update=='update_ywesee')
-				FI_UPDATE
+				FI_UPLOAD_PRICES[:processing]
 			end.to_i
 		end
 		def fi_quantity
 			@fi_quantity.to_i
 		end
 		def pi_charge
-			PI_CHARGE
+			PI_UPLOAD_PRICES[:annual_fee]
 		end
 		def pi_update_charge
 			if(@pi_update=='update_ywesee')
-				PI_UPDATE
+				PI_UPLOAD_PRICES[:processing]
 			end.to_i
 		end
 		def pi_quantity
 			@pi_quantity.to_i
 		end
 		def pi_calculate_activation_charge
-			pi_activation_count * PI_ACTIVATION_CHARGE
+			pi_activation_count * PI_UPLOAD_PRICES[:activation]
 		end
 		def fi_calculate_activation_charge
-			fi_activation_count * FI_ACTIVATION_CHARGE
+			fi_activation_count * FI_UPLOAD_PRICES[:activation]
 		end
 		def calculate_fi_charge
 			if(@fi_quantity)
-				@fi_quantity.to_i * FI_CHARGE
+				@fi_quantity.to_i * FI_UPLOAD_PRICES[:annual_fee]
 			end.to_i
 		end
 		def calculate_fi_update
 			if(@fi_update=='update_ywesee')
-				@fi_quantity.to_i * FI_UPDATE
+				@fi_quantity.to_i * FI_UPLOAD_PRICES[:processing]
 			end.to_i
 		end
 		def calculate_pi_charge
 			if(@pi_quantity)
-				@pi_quantity.to_i * PI_CHARGE
+				@pi_quantity.to_i * PI_UPLOAD_PRICES[:annual_fee]
 			end.to_i
 		end
 		def calculate_pi_update
 			if(@pi_update=='update_ywesee')
-				@pi_quantity.to_i * PI_UPDATE
+				@pi_quantity.to_i * PI_UPLOAD_PRICES[:processing]
 			end.to_i
 		end
 		def calculate_total

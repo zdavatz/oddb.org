@@ -41,7 +41,7 @@ module ODDB
 				section = chapter.next_section
 				section.subheading = "Für Zwerge > 1.5 m"
 				@view.value = chapter
-				expected = '<DIV class="section"><SPAN style="font-style: italic;">Für Zwerge &gt; 1.5 m</SPAN>&nbsp;</DIV>'
+				expected = '<DIV class="section"><SPAN style="font-style: italic">Für Zwerge &gt; 1.5 m</SPAN>&nbsp;</DIV>'
 				result = @view.to_html(CGI.new)
 				assert_equal(expected, result)
 			end

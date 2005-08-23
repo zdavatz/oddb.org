@@ -23,14 +23,14 @@ module ODDB
 			@pruned_sequences = 0
 			@pruned_packages = 0
 		end
-		def fix_from_source(reg)
+		def fix_from_source(reg, *flags)
 			if(src = reg.source)
 				src.gsub!(/-\n/, '')
 				preg = SwissmedicJournal::ActiveRegistration.new(src, :human)
 				succ = false
 				preg.parse.each { |seqnum, pseq|
 					if(seq = reg.sequence(seqnum))
-						if(ndose = pseq.name_dose)
+						if((ndose = pseq.name_dose) || !flags.include?(:dose_only))
 							name_base = [
 								pseq.name_base, 
 								ndose, 
@@ -46,7 +46,8 @@ module ODDB
 							}
 							@app.update(seq.pointer, values)
 						end
-						if(comp = pseq.composition)
+						if((comp = pseq.composition) \
+							&& flags.include?(:composition))
 							succ = update_active_agents(comp, seq.pointer)
 						end
 					end
