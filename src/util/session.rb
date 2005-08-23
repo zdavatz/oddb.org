@@ -111,7 +111,7 @@ module ODDB
 			@active_state.navigation
 		end
 		def user_equiv?(test)
-			return true if(@user.is_a? ODDB::AdminUser)
+			return true if(@user.is_a?(ODDB::AdminUser))
 			mdl = if(test.is_a?(Persistence::Pointer))
 				test.resolve(@app)
 			else

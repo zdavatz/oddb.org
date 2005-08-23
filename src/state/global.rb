@@ -116,6 +116,9 @@ module ODDB
 				end
 				self
 			end
+			def allowed?
+				false
+			end
 			def atc_chooser
 				mdl = @session.app.atc_chooser
 				State::Drugs::AtcChooser.new(@session, mdl)
