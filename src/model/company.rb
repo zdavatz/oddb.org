@@ -30,6 +30,11 @@ module ODDB
 		def init(app)
 			@pointer.append(@oid)
 		end
+		def atc_classes
+			@registrations.collect { |registration|
+				registration.atc_classes				
+			}.flatten.compact.uniq
+		end
 		def has_user?
 			!@user.nil?
 		end
@@ -38,32 +43,8 @@ module ODDB
 				registration.active? && registration.package_count > 0
 			}
 		end
-		def search_terms
-			terms = [
-				@name, @ean13,
-			]
-			@addresses.each { |addr| 
-				terms += addr.search_terms
-			}
-			terms.compact
-		end
-		def atc_classes
-			@registrations.collect { |registration|
-				registration.atc_classes				
-			}.flatten.compact.uniq
-		end
 		def listed?
 			@cl_status
-		end
-		def refactor_addresses
-			addr = Address2.new
-			addr.location = [@plz, @location].join(" ")
-			addr.address = @address
-			addr.pointer = @pointer + [:address, 0]
-			addr.fon = [ @phone ].compact
-			addr.fax = [ @fax ].compact
-			@phone = @fax = @plz = @location = @address = nil
-			@addresses = [ addr ]
 		end
 		def merge(other)
 			regs = other.registrations.dup
@@ -79,6 +60,25 @@ module ODDB
 		end
 		def pointer_descr
 			@name
+		end
+		def refactor_addresses
+			addr = Address2.new
+			addr.location = [@plz, @location].join(" ")
+			addr.address = @address
+			addr.pointer = @pointer + [:address, 0]
+			addr.fon = [ @phone ].compact
+			addr.fax = [ @fax ].compact
+			@phone = @fax = @plz = @location = @address = nil
+			@addresses = [ addr ]
+		end
+		def search_terms
+			terms = [
+				@name, @ean13,
+			]
+			@addresses.each { |addr| 
+				terms += addr.search_terms
+			}
+			terms.compact
 		end
 		private
 		def adjust_types(input, app=nil)

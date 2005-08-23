@@ -87,7 +87,7 @@ class UnknownCompanyInnerComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
 	def address(model)
-		Address.new(model.addresses.first, @session, self)
+		Address.new(model.address(0), @session, self)
 	end
 =begin
 	def address(model, session)
@@ -117,7 +117,7 @@ class UserCompanyForm < View::Form
 		[1,2]			=>	:set_pass,
 		[0,4]			=>	:address,
 		[0,5]			=>	:plz,
-		[2,5]			=>	:location,
+		[2,5]			=>	:city,
 		[0,6]			=>	:phone,
 		[2,6]			=>	:fax,
 		[0,7]			=>	:url,
@@ -192,7 +192,7 @@ class RootCompanyForm < View::Companies::UserCompanyForm
 		[2,2]			=>	:regulatory_email,
 		[0,4]			=>	:address,
 		[0,5]			=>	:plz,
-		[2,5]			=>	:location,
+		[2,5]			=>	:city,
 		[0,6]			=>	:phone,
 		[2,6]			=>	:fax,
 		[0,7]			=>	:url,
