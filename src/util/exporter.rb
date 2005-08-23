@@ -4,6 +4,7 @@
 require 'plugin/oddbdat_export'
 require 'plugin/fipdf'
 require 'plugin/yaml'
+require 'plugin/patinfo_invoicer'
 require 'util/log'
 require 'util/logfile'
 
@@ -23,6 +24,7 @@ module ODDB
 				mail_feedback_stats
 				#mail_notification_stats
 			}
+			mail_patinfo_invoices
 			export_yaml
 			export_oddbdat
 			export_csv
@@ -112,6 +114,9 @@ module ODDB
 				:subject => 'Täglicher CSV-Export der Notifications', 
 			}
 			Log.new(Date.today).notify_attachment(file, headers)
+		end
+		def mail_patinfo_invoices
+			PatinfoInvoicer.new(@app).run
 		end
 		def mail_stats(key)
 			date = Date.today

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # Invoice -- oddb -- 08.10.2004 -- mwalder@ywesee.com, rwaltert@ywesee.com 
+
 require 'util/persistence'
 
 module ODDB
@@ -26,7 +27,8 @@ module ODDB
 			@items.store(item.oid, item)
 		end
 		def expired?
-			@items.values.all? { |item| item.expired? }
+			!@unexpirable \
+				&& @items.values.all? { |item| item.expired? }
 		end
 		def item(oid)
 			@items[oid]
@@ -54,13 +56,14 @@ module ODDB
 		end
 	end
 	class AbstractInvoiceItem
-		attr_accessor :user_pointer, :time, :item_pointer, :type,
-			:text, :quantity, :price, :expiry_time, :vat_rate, :duration
-		attr_accessor :data
+		attr_accessor :data, :duration, :expiry_time, :item_pointer,
+			:price, :quantity, :text, :time, :type, :unit, :user_pointer,
+			:vat_rate
 		def initialize
 			@quantity = 1.0
 			@duration = 1
 			@data = {}
+			@unexpirable = false
 		end
 		def total_brutto
 			total_netto * (1.0 + (@vat_rate.to_f / 100.0))
@@ -80,6 +83,22 @@ module ODDB
 		def vat
 			total_netto * @vat_rate.to_f / 100.0
 		end
+		def values
+			{
+				:data					=>	@data,
+				:duration			=>	@duration,
+				:expiry_time	=>	@expiry_time,
+				:item_pointer	=>	@item_pointer,
+				:price				=>	@price,
+				:quantity			=>	@quantity,
+				:text					=>	@text,
+				:time					=>	@time,
+				:type					=>	@type,
+				:unit					=>	@unit,
+				:user_pointer	=>	@user_pointer,
+				:vat_rate			=>	@vat_rate,
+			}
+		end
 	end
 	class InvoiceItem < AbstractInvoiceItem
 		include Persistence
@@ -92,7 +111,8 @@ module ODDB
 			@quantity = 1
 		end
 		def expired?
-			@time.nil? || @expiry_time.nil? || Time.now > @expiry_time
+			@time.nil? \
+				|| @expiry_time.nil? || Time.now > @expiry_time
 		end
 		def init(app)
 			@pointer.append(@oid)
