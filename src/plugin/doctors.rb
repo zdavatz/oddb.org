@@ -12,10 +12,7 @@ require 'util/persistence'
 module ODDB
 	module Doctors
 		class DoctorPlugin < Plugin
-			RECIPIENTS = [
-				'jlang@ywesee.com',
-				'usenguel@ywesee.com',
-			]
+			RECIPIENTS = []
 			PARSER = DRbObject.new(nil, DOCPARSE_URI)
 			def initialize(*args)
 				super
