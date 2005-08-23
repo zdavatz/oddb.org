@@ -70,14 +70,17 @@ module ODDB
 			'@dose',
 		]
 	end
-	class Address
+	class Address2
 		include OddbYaml 
 		EXPORT_PROPERTIES = [
-			'@city',
-			'@fax',
+			'@title',
+			'@name',
+			'@additional_lines',
+			'@address',
+			'@location',
+			'@canton',
 			'@fon',
-			'@lines',
-			'@plz',
+			'@fax',
 			'@type',
 		]
 	end
