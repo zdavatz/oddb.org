@@ -21,6 +21,9 @@ module ODDB
 		def ancestors(app=nil)
 			[@model].compact
 		end
+		def cache_html?
+			false
+		end
 		def model=(model)
 			model.user = self
 			@model = model
@@ -48,6 +51,9 @@ module ODDB
 	end
 	class UnknownUser < SBSM::UnknownUser
 		HOME = State::Drugs::Init
+		def cache_html?
+			true
+		end
 		def valid?
 			false
 		end

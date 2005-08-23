@@ -23,8 +23,15 @@ module ODDB
 		QUERY_LIMIT = 10
 		QUERY_LIMIT_AGE = 60 * 60 * 24
 		@@requests ||= {}
+		@@html_cache ||= {}
+		def Session.clear_html_cache
+			@@html_cache.clear
+		end
+		def Session.html_cache
+			@@html_cache
+		end
 		def Session.reset_query_limit
-			@@requests = {}
+			@@requests.clear
 		end
 		def Session.request_log
 			path = File.expand_path('../../log/request_log', 
@@ -47,13 +54,18 @@ module ODDB
 			end
 		end
 		def process(request)
+			unless(is_crawler?)
+				@@html_cache.delete(@request_path)
+			end
 			@request = request
 			@request_id = request.object_id
 			@request_path = request.unparsed_uri
 			@process_start = Time.now
 			if(is_crawler?)
-				Thread.current.priority = -1
-				super
+				if(@@html_cache[@request_path].nil?)
+					Thread.current.priority = -1
+					super
+				end
 			else
 				super
 				## @lookandfeel.nil?: the first access from a client has no
@@ -79,12 +91,24 @@ module ODDB
 			## don't die for logging
 		end
 		def to_html
+			logtype = 'HTML'
 			if(is_crawler?)
-				Thread.current.priority = -1
-			end
-			super
+				if(html = @@html_cache[@request_path])
+					logtype = 'CCHE'
+					html
+				else
+					Thread.current.priority = -1
+					super
+				end
+			else
+				html = super
+				if(@user.cache_html?)
+					@@html_cache[@request_path] = html
+				end
+				html
+			end.dup
 		ensure
-			request_log('HTML')
+			request_log(logtype)
 		end
 		def initialize(key, app, validator=nil)
 			super(key, app, validator)
@@ -92,6 +116,10 @@ module ODDB
 		end
 		def add_to_interaction_basket(object)
 			@interaction_basket.push(object)
+		end
+		def checkout
+			@@html_cache.delete(@request_path)
+			true
 		end
 		def clear_interaction_basket
 			@interaction_basket.clear
