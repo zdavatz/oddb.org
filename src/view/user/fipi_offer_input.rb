@@ -29,12 +29,12 @@ class FiPiRadioButtons < HtmlGrid::List
 	def radio_text(model, session)
 		case model.name[0,2]
 		when 'fi'
-			prize =  State::User::FiPiOfferInput::FiPiOffer::FI_UPDATE
+			price = FI_UPLOAD_PRICES[:processing]
 		when 'pi'
-			prize =  State::User::FiPiOfferInput::FiPiOffer::PI_UPDATE
+			price = PI_UPLOAD_PRICES[:processing]
 		end
 		if(model.value=='update_ywesee')
-			@lookandfeel.lookup(model.value.intern, prize.to_s)
+			@lookandfeel.lookup(model.value.intern, price.to_s)
 		else
 			@lookandfeel.lookup(model.value.intern, "0")
 		end
@@ -94,8 +94,8 @@ class FiPiOfferInputForm < View::Form
 		span.css_class = 'bold'
 		text << span
 		text << @lookandfeel.lookup(:fi_quantity1)
-		prize =  State::User::FiPiOfferInput::FiPiOffer::FI_CHARGE
-		text << prize.to_s
+		price = FI_UPLOAD_PRICES[:annual_fee]
+		text << price.to_s
 		text << @lookandfeel.lookup(:fi_quantity2)
 		text
 	end
@@ -114,8 +114,8 @@ class FiPiOfferInputForm < View::Form
 		span.css_class = 'bold'
 		text << span
 		text << @lookandfeel.lookup(:pi_quantity1)
-		prize =  State::User::FiPiOfferInput::FiPiOffer::PI_CHARGE
-		text << prize.to_s
+		price = PI_UPLOAD_PRICES[:annual_fee]
+		text << price.to_s
 		text << @lookandfeel.lookup(:pi_quantity2)
 		text
 	end
@@ -127,12 +127,12 @@ class FiPiOfferInputForm < View::Form
 		View::User::FiPiRadioButtons.new([ radio1, radio2 ], session)	
 	end
 	def fi_activation_charge_value(model, session)
-		prize =  State::User::FiPiOfferInput::FiPiOffer::FI_ACTIVATION_CHARGE
-		@lookandfeel.lookup(:swiss_francs, prize.to_s)
+		price = FI_UPLOAD_PRICES[:activation]
+		@lookandfeel.lookup(:swiss_francs, price.to_s)
 	end
 	def pi_activation_charge_value(model, session)
-		prize =  State::User::FiPiOfferInput::FiPiOffer::PI_ACTIVATION_CHARGE
-		@lookandfeel.lookup(:swiss_francs, prize.to_s)
+		price = PI_UPLOAD_PRICES[:activation]
+		@lookandfeel.lookup(:swiss_francs, price.to_s)
 	end
 end
 class FiPiOfferInputComposite < HtmlGrid::Composite

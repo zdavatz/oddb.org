@@ -63,6 +63,23 @@ module ODDB
 			assert_equal(true, item2.expired?)
 			assert_equal(false, @invoice.expired?)
 		end
+		def test_deletable
+			assert_equal(true, @invoice.deletable?)
+		end
+		def test_deletable_payment_received
+			@invoice.payment_received!
+			assert_equal(false, @invoice.deletable?)
+		end
+		def test_deletable_keep_if_unpaid
+			@invoice.keep_if_unpaid = true
+			assert_equal(false, @invoice.deletable?)
+		end
+		def test_deletable_not_expired
+			item = @invoice.create_item
+			item.time = Time.now
+			item.expiry_time = (Time.now + 1)
+			assert_equal(false, @invoice.deletable?)
+		end
 	end
 	class TestInvoiceItem < Test::Unit::TestCase
 		def setup

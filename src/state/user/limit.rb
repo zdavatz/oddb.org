@@ -10,13 +10,8 @@ module ODDB
 		module User
 class Limit < Global
 	VIEW = View::User::Limit
-	PRICES = {
-		1		=>	5,
-		30	=>	50,
-		365	=>	400,
-	}
 	def Limit.price(days)
-		PRICES[days.to_i].to_f
+		QUERY_LIMIT_PRICES[days.to_i].to_f
 	end
 	def login
 		if(user = @session.login)

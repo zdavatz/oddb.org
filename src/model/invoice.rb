@@ -7,11 +7,12 @@ module ODDB
 	class Invoice
 		include Persistence
 		attr_reader :items
-		attr_accessor :user_pointer
+		attr_accessor :user_pointer, :keep_if_unpaid
 		def initialize
 			super
 			@items = {}
 			@payment_received = false
+			@unexpirable = false
 		end
 		def init(app)
 			@pointer.append(@oid)
@@ -26,9 +27,11 @@ module ODDB
 			item = InvoiceItem.new
 			@items.store(item.oid, item)
 		end
+		def deletable?
+			!(@payment_received || @keep_if_unpaid) && expired?
+		end
 		def expired?
-			!@unexpirable \
-				&& @items.values.all? { |item| item.expired? }
+			@items.values.all? { |item| item.expired? }
 		end
 		def item(oid)
 			@items[oid]
@@ -63,7 +66,6 @@ module ODDB
 			@quantity = 1.0
 			@duration = 1
 			@data = {}
-			@unexpirable = false
 		end
 		def total_brutto
 			total_netto * (1.0 + (@vat_rate.to_f / 100.0))

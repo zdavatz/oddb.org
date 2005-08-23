@@ -174,6 +174,16 @@ module ODDB
 			assert_equal([item1, item3], @plugin.recent_items(today - 1))
 		end
 		def test_group_by_company
+			old_invoice = FlexMock.new
+			@app.mock_handle(:invoices) { { 1 => old_invoice } }
+			old_item = FlexMock.new
+			old_invoice.mock_handle(:items) { { 1 => old_item } }
+			old_item.mock_handle(:type) { :annual_fee }
+			item_pointer = FlexMock.new
+			old_item.mock_handle(:item_pointer) { item_pointer }
+			sequence = FlexMock.new
+			item_pointer.mock_handle(:resolve) { sequence }
+			sequence.mock_handle(:company) { 'company2' }
 			pointer = FlexMock.new
 			item1 = AbstractInvoiceItem.new
 			item1.user_pointer = 'user1'
@@ -194,12 +204,17 @@ module ODDB
 			companies = [company_donor1, company_donor2] * 2
 			pointer.mock_handle(:resolve) { companies.shift }
 
-			expected = {
-				'company1' => [item1, item3],
-				'company2' => [item2, item4],
-			}
 			items = [item1, item2, item3, item4]
-			assert_equal(expected, @plugin.group_by_company(items))
+			comps = @plugin.group_by_company(items)
+			comp1 = comps['company1']
+			comp2 = comps['company2']
+			assert_equal(3, comp1.size)
+			item = comp1.shift
+			assert_equal([item1, item3], comp1)
+			assert_instance_of(AbstractInvoiceItem, item)
+			assert_equal(1000, item.price)
+			assert_equal(:activation, item.type)
+			assert_equal([item2, item4], comp2)
 		end
 		def test_create_invoice
 			item1 = AbstractInvoiceItem.new
@@ -237,7 +252,8 @@ module ODDB
 			item_vals3 = item_vals1.dup
 			item_vals3.store(:item_pointer, 'item3')
 			expected = [
-				[pointer.creator, {:user_pointer => 'user1'}, invoice],
+				[pointer.creator, {:user_pointer => 'user1', 
+					:keep_if_unpaid => true}, invoice],
 				[item_ptr.dup.creator, item_vals1, nil],
 				[item_ptr.dup.creator, item_vals2, nil],
 				[item_ptr.dup.creator, item_vals3, nil],

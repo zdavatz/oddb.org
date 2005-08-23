@@ -15,11 +15,6 @@ module ODDB
 	module State
 		module Admin
 class Sequence < State::Admin::Global
-	PI_UPLOAD_DURATION = 365
-	PI_UPLOAD_PRICES = {
-		:annual_fee => 120,
-		:processing => 90,
-	}
 	RECIPIENTS = []
 	VIEW = View::Admin::RootSequence
 	PDF_DIR = File.expand_path('../../../doc/resources/patinfo/', File.dirname(__FILE__))
@@ -180,15 +175,15 @@ class Sequence < State::Admin::Global
 		unit = @session.lookandfeel.lookup("pi_upload_#{type}")
 		text = sprintf("%s %s", @model.iksnr, @model.seqnr)
 		values = {
-			:user_pointer	=>	@session.user.pointer,
-			:item_pointer =>	@model.pointer,
-			:text					=>	text,
-			:time					=>	time,
-			:unit					=>	unit,
-			:type					=>	type,
-			:price				=>	PI_UPLOAD_PRICES[type],
 			:duration			=>	PI_UPLOAD_DURATION,
 			:expiry_time	=>	expiry_time,
+			:item_pointer =>	@model.pointer,
+			:price				=>	PI_UPLOAD_PRICES[type],
+			:text					=>	text,
+			:time					=>	time,
+			:type					=>	type,
+			:unit					=>	unit,
+			:user_pointer	=>	@session.user.pointer,
 			:vat_rate			=>	VAT_RATE, 
 		} 
 		@session.app.update(item_pointer.creator, values)

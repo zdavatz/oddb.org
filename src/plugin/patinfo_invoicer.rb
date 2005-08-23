@@ -4,6 +4,7 @@
 require 'plugin/plugin'
 require 'pdfinvoice/config'
 require 'pdfinvoice/invoice'
+require 'util/oddbconfig'
 require 'rmail'
 require 'date'
 
@@ -39,13 +40,19 @@ module ODDB
 			pdfinvoice
 		end
 		def create_pdf_invoice(day, company, items)
-			pdfinvoice = PdfInvoice::Invoice.new(PdfInvoice.config)
+			config = PdfInvoice.config
+			config.texts['thanks'] = <<-EOS
+Ohne Ihre Gegenmeldung erfolgt der Rechnungsversand nur per Email.
+Thank you for your patronage
+			EOS
+			pdfinvoice = PdfInvoice::Invoice.new(config)
 			assemble_pdf_invoice(pdfinvoice, day, company, items)
 		end
 		def create_invoice(user, items)
 			pointer = Persistence::Pointer.new(:invoice)
 			values = {
-				:user_pointer	=>	user.pointer,
+				:user_pointer		=>	user.pointer,
+				:keep_if_unpaid =>	true,
 			}
 			ODBA.transaction { 
 				invoice = @app.update(pointer.creator, values)
@@ -99,11 +106,35 @@ module ODDB
 			result
 		end
 		def group_by_company(items)
+			active_companies = []
+			@app.invoices.each_value { |inv|
+				inv.items.each_value { |item|
+					if(item.type == :annual_fee && (ptr = item.item_pointer) \
+						&& (seq = ptr.resolve(@app)) && (company = seq.company))
+						active_companies.push(company)
+					end
+				}
+			}
+			active_companies.uniq!
 			companies = {}
 			items.each { |item| 
 				ptr = item.item_pointer
 				if(seq = ptr.resolve(@app))
 					(companies[seq.company] ||= []).push(item)
+				end
+			}
+			price = PI_UPLOAD_PRICES[:activation]
+			companies.each { |company, items|
+				time = items.collect { |item| item.time }.min
+				unless(active_companies.include?(company))
+					item = AbstractInvoiceItem.new
+					item.price = price
+					item.text = 'Aufschaltgebühr'
+					item.time = time
+					item.type = :activation
+					item.unit = 'Einmalig'
+					item.vat_rate = VAT_RATE
+					items.unshift(item)
 				end
 			}
 			companies
@@ -119,7 +150,7 @@ module ODDB
 			}
 		end
 		def send_invoice(day, company, items)
-			to = company.contact_email
+			to = company.user.unique_email
 			invoice = create_pdf_invoice(day, company, items)
 			invoice_name = "#{invoice.invoice_number}.pdf"
 			fpart = RMail::Message.new
@@ -143,6 +174,12 @@ module ODDB
 			}
 		end
 		def transmogrify_items
+			@app.invoices.each_value { |invoice|
+				if(invoice.items.values.any? { |item| item.type == :annual_fee})
+					invoice.keep_if_unpaid = true
+					invoice.odba_store
+				end
+			}
 			root_ptr = Persistence::Pointer.new([:user, 0])
 			slate = @app.slate(:patinfo)
 			items = []
