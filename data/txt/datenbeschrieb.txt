@@ -1,0 +1,180 @@
+Datenbeschrieb oddb.yaml
+
+Version:  1.0
+Erstellt: 26.07.2005 (1.0) durch hwyss@ywesee.com
+Geändert: 23.08.2005 (1.1) durch hwyss@ywesee.com
+
+## Struktur ##
+
+Top-Level:
+- Hash (Company.oid, Company)
+
+Company:
+- oid               (Integer, NOT NULL)    -> Unique Identifier
+- ean13             (String)               -> Ean13 der Firma
+- name              (String)               -> Name der Firma
+- business_area     (String)               -> Geschäftsbereich 
+- generic_type      (Symbol)               -> siehe Glossar (GenericType)
+- registrations     (Array (Registration)) -> Produkte der Firma (siehe Registration)
+- url               (String)               -> Allgemeine Internet-Adresse
+- email             (String)               -> Allgemeine Email-Adresse
+- addresses         (Array (Address2))     -> Sammlung von Adressen für diese Firma (i.A. aus der Swissmedic-Registrationsurkunde)
+- contact           (String)               -> Vorname und Name der Kontaktperson
+- contact_email     (String)               -> Kontakt-Email
+
+Address2:
+- type              (String)               -> Adresstyp: at_work | at_private | at_praxis
+- title             (String)               -> Titel und/oder Anrede
+- name              (String)               -> Name wie in der Adresse gewünscht
+- additional_lines  (Array (String))       -> Zusätzliche Adresszeilen vor Strasse/Nr.
+- address           (String)               -> Strasse/Nr. (französische Schweiz: Nr./Strasse)
+- location          (String)               -> PLZ/Ort
+- canton            (String)               -> 2-Stelliges Kantonskürzel
+- fon               (Array (String))       -> Mit dieser Adresse verbundene Telefonnummern
+- fax               (Array (String))       -> Mit dieser Adresse verbundene Faxnummern
+
+Registration:
+- iksnr             (String(5) NOT NULL)   -> Registrations-Id der Swissmedic (ehemals IKS)
+- registration_date (Date)                 -> Datum der ersten Zulassung in der Schweiz
+- revision_date     (Date)                 -> Datum der letzen gültigen Registrationsurkunde
+- expiration_date   (Date)                 -> Ende der Gültigkeit der letzen gültigen Registrationsurkunde
+- inactive_date     (Date)                 -> Falls ein Produkt unabhängig der Swissmedic ausser Handel genommen wird: Datum der Ausserhandelnahme
+- sequences         (Hash (Sequence.seqnr, Sequence)) -> Sequenzen der Registration (siehe Sequence)
+- indication        (Indication)           -> Indikationsbezeichnung aus der Registrationsurkunde
+- generic_type      (Symbol)               -> siehe Glossar (GenericType)
+- export_flag       (Boolean)              -> Produkt ist nur für den Export bestimmt
+- fachinfo_oid      (Integer)              -> Verbindungsschlüssel zur Fachinformation (in fachinfo.yaml)
+
+Sequence:
+- seqnr             (String, NOT NULL)     -> Sequenznumerierung aus der Registrationsurkunde
+- name_base         (String)               -> Hauptname der Sequenz aus der Registrationsurkunde, enthält z.T. Dosisangaben.
+- name_descr        (String)               -> Zusatzname der Sequenz aus der Registrationsurkunde, z.B. 'Tabletten'
+- dose              (Dose)                 -> Dosierung der Sequenz. Wird falls möglich aus dem Namen gewonnen, andernfalls aus der Zusammensetzung.
+- atc_class         (AtcClass)             -> Atc-Klassierung der Sequenz (siehe AtcClass)
+- galenic_form      (GalenicForm)          -> Galenische Form der Sequenz (siehe GalenicForm)
+- composition_text  (String)               -> noch nicht implementiert.
+- active_agents     (Array (ActiveAgent))  -> Wirkstoff-Dosis Paare der Sequenz (siehe ActiveAgent)
+- packages          (Hash (Package.ikscd, Package) -> Packungen der Sequenz (siehe Package)
+
+Package:
+- ikscd             (String(3), NOT NULL)  -> Packungsnummer. Ergibt zusammen mit Registration.iksnr die 8-Stellige Swissmedic-Nummer.
+- size              (String)               -> Grössenbezeichnung
+- descr             (String)               -> Zusätzlicher Beschreibungstext. Selten.
+- ikscat            (String)               -> Abgabekategorie. A-E
+- price_exfactory   (Integer)              -> Exfactorypreis in Rappen
+- price_public      (Integer)              -> Publikumspreis in Rappen
+- sl_entry          (SlEntry)              -> Eintrag in der SL, NULL = Nein, SlEntry = Ja.
+
+AtcClass:
+- code              (String(1-7), NOT NULL)-> Atc-Code. siehe Glossar (AtcCode)
+- descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Bezeichnung. siehe Glossar (SimpleLanguage::Descriptions)
+- guidelines        (Text::Document)       -> Guidelines der WHO zum Atc-Code. Sprache: en
+- ddd_guidelines    (Text::Document)       -> Guidelines der WHO zu den DailyDoses. Sprache: en
+- ddds              (Hash (DDD.administration_route, DDD) -> DailyDrugDose Informationen der WHO. siehe Glossar (DailyDrugDose)
+
+GalenicForm:
+- oid               (Integer, NOT NULL)    -> Unique Identifier
+- descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Bezeichnung. siehe Glossar (SimpleLanguage::Descriptions)
+- galenic_group     (GalenicGroup)         -> siehe Glossar (GalenicGroup)
+
+ActiveAgent:
+- substance         (Substance, NOT NULL)  -> Substanz/Wirkstoff
+- dose              (Dose)                 -> Dosis
+
+SlEntry:
+- introduction_date (Date)                 -> Datum der Aufnahme in die Spezialitätenliste
+- limitation        (Boolean)              -> Limitation Ja/Nein
+- limitation_points (Integer)              -> Limitationspunkte
+- limitation_text   (LimitationText)       -> Limitationstexte in 3 Sprachen: de/it/fr
+
+Indication:
+- oid               (Integer, NOT NULL)    -> Unique Identifier
+- descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Indikationstext. siehe Glossar (SimpleLanguage::Descriptions)
+
+Dose:
+- val               (Float, NOT NULL)      -> Wert/Grösse der Dosis
+- unit              (String)               -> Einheit der Dosis
+
+AtcClass::DDD:
+- administration_route (String, NOT NULL)  -> Route of Administration, Codiert gemäss WHO. Diverse Werte.
+- dose              (Dose)                 -> Empfohlene Tagesdosis für diese Route of Administration gemäss WHO.
+- note              (String)               -> Bemerkung zu dieser DDD. Sprache: en
+
+LimitationText:
+- descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Limitationstext. siehe Glossar (SimpleLanguage::Descriptions)
+
+GalenicGroup:
+- oid               (Integer, NOT NULL)    -> Unique Identifier
+- descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Bezeichnung. siehe Glossar (SimpleLanguage::Descriptions)
+
+Text::Document:
+- descriptions      (SimpleLanguage::Descriptions (String, Text::Chapter)) -> Sprache, Formatierter Text
+
+Text::Chapter:
+- heading           (String)                -> Titel
+- sections          (Array (Text::Section)) -> Abschnitte
+
+Text::Section:
+- subheading        (String)                -> Abschnitt-Titel
+- paragraphs        (Array (Text::Paragraph)) -> Absätze
+
+Text::Paragraph:
+- formats           (Array (Text::Format))  -> Formatdefinitionen
+- text              (String)                -> unformatierter Text
+- preformatted      (Boolean)               -> Wenn ja, sollte whitespace 1:1 übernommen werden.
+
+Text::Format:
+- values            (Array (Symbol))        -> mögliche Werte: alle Kombinationen von :bold, :italic und :symbol. Wenn Symbol, dann ist der Betreffende Text im Symbol-Font darzustellen.
+- start             (Integer NOT NULL)      -> 0-N Char-Position innerhalb des Paragraphs an welchem das Format beginnt.
+- end               (Integer NOT NULL)      -> 1-N, -1. Wenn -1, gilt das Format bis zum Ende des Paragraphs.
+
+
+## Glossar ##
+* AtcCode:
+Anatomisch-Therapeutisch-Chemischer Code der durch die WHO vergeben wird. Hat 5 Ebenen:
+Level 1: C       -> Anatomische Gruppierung,    z.B. A:       Alimentäres System und Stoffwechsel
+Level 2: +NN     -> Therapeutische Gruppierung, z.B. A02:     Mittel bei Säure bedingten Erkrankungen
+Level 3:   +C    -> Therapeutische Untergruppe, z.B. A02A:    Antacida
+Level 4:    +C   -> Chemische Gruppierung,      z.B. A02AA:   Magnesium-haltige Verbindungen
+Level 5:     +NN -> Wirkstoff(-Kombination),    z.B. A02AA01: Magnesiumcarbonat
+
+* DailyDrugDose
+Richtlinien der WHO zur Dosierung von Medikamenten: http://www.whocc.no/atcddd/
+
+* Date: 
+serialisiert in der Form YYYY-MM-DD
+
+* GalenicGroup:
+Gruppierung von Galenischen Formen. Alle Galenischen Formen mit der gleichen Galenischen Gruppe gelten für Vergleichszwecke als equivalent.
+Ausnahme: die Galenischen Formen in der Galenischen Gruppe mit der oid 1 ('Unbekannt') sind nicht equivalent.
+
+* GenericType:
+Produkt-Typ. Kann in Company oder Registration gesetzt sein zu einem von 4 Werten: 
+- :original       -> Originalprodukt
+- :generic        -> Generikum
+- :complementary  -> Produkt der Komplementärmedizin
+- :unknown / NULL -> Unbekannt / nicht gesetzt
+
+Ist Registration.generic_type gesetzt, so gilt immer dieser.
+Ist Registration.generic_type nicht gesetzt, und Company.generic_type ist gesetzt so gilt Company.generic_type.
+Ist weder Registration.generic_type noch Company.generic_type gesetzt, so ist der Produkt-Typ :unknown.
+
+* Hash
+Hash-Table. Unsortierte, indexierte Collection.
+
+* Sequence, Sequenz:
+Bezeichnung für die Gruppierung aller Packungsgrössen einer Registration, deren Dosierung/Zusammensetzung identisch ist.
+
+* SimpleLanguage::Descriptions:
+Subklasse von Hash. Key-Value pairs für Sprache/Text, wobei folgende Werte als Schlüssel vorkommen:
+- de -> Deutsch
+- fr -> Französisch
+- it -> Italienisch
+- en -> Englisch
+- lt -> Latein
+
+* Symbol: 
+Interne Repräsentation eines Namens. In anderen Programmiersprachen auch Atom.
+
+* YAML
+Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml.org

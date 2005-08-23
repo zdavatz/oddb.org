@@ -526,6 +526,7 @@ module ODDB
 				super
 			end
 			def structure
+				addr = @company.address(0)
 				{
 					1		=>	'12',
 					2		=>	@date,
@@ -533,12 +534,12 @@ module ODDB
 					4		=>	'4',
 					5		=>	@company.ean13,
 					7		=>	@company.name,
-					8		=>	@company.address,
+					8		=>	addr.address,
 					9		=>	'CH',
-					10	=>	@company.plz,
-					11	=>	@company.location,
-					13	=>	@company.phone,
-					15	=>	@company.fax,
+					10	=>	addr.plz,
+					11	=>	addr.city,
+					13	=>	addr.fon.first,
+					15	=>	addr.fax.first,
 					16	=>	@company.address_email,
 					17	=>	@company.url,
 				}
