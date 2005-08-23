@@ -69,16 +69,6 @@ class OddbPrevalence
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
 		@slates ||= {}
-		@hospitals.each_value { |item|  
-			if(item.addresses.nil?)
-				item.addresses = []
-			end
-		}
-		@companies.each_value { |item|  
-			if(item.addresses.nil?)
-				item.addresses = []
-			end
-		}
 		rebuild_atc_chooser()
 	end
 	# prevalence-methods ################################
