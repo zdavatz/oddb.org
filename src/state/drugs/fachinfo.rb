@@ -4,6 +4,9 @@
 require 'state/drugs/global'
 require 'view/drugs/fachinfo'
 
+require 'ext/chapterparse/src/parser'
+require 'ext/chapterparse/src/writer'
+
 module ODDB
 	module State
 		module Drugs
@@ -20,6 +23,48 @@ class FachinfoPrint < State::Drugs::Global
 	VIEW = View::Drugs::FachinfoPrint
 	VOLATILE = true
 	LIMITED = true
+end
+class RootFachinfo < State::Drugs::Global
+	VIEW = View::Drugs::RootFachinfo
+	#VOLATILE = true
+	def	update
+		keys = [:html_chapter, :chapter]
+		input = user_input(keys, keys)
+		html = input[:html_chapter]
+		writer = ChapterParse::Writer.new
+		formatter = HtmlFormatter.new(writer)
+		parser = ChapterParse::Parser.new(formatter)
+		parser.feed(html)
+		lang = @session.language
+		doc = @model.send(lang)
+		name = input[:chapter]
+		pointer = @model.pointer + [lang] + [name]
+		args = {
+			:sections =>	writer.chapter.sections,
+		}
+		ODBA.transaction {
+			@session.app.update(pointer, args)
+			@model.odba_store
+		}
+		self
+	end	
+end
+class CompanyFachinfo < RootFachinfo
+  VIEW = View::Drugs::RootFachinfo
+	def init
+		super
+		unless(allowed?)
+			@default_view = View::Drugs::Fachinfo
+		end
+	end
+	def allowed?
+		@session.user_equiv?(@model.registrations.first.company)
+  end
+	def update
+		if(allowed?)
+			super
+		end
+	end
 end
 		end
 	end

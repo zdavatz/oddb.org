@@ -24,6 +24,10 @@ module ODDB
 			def head(model, session)
 				@lookandfeel.lookup(:print_head)
 			end
+			def css_link(context)
+				super(context, 
+					@lookandfeel.resource_global(:css_print))
+			end
 		end
 		module PrintComposite
 			COLSPAN_MAP = {}

@@ -161,6 +161,124 @@ module ODDB
 				}
 				@app.update(@config.pointer, values)
 			end
+
+			MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
+			def fix_doctors(ambiguous, docs)
+				found = {}
+				hypothesis = {}
+				docs.each { |doc|
+					criteria = {
+						:name	=>	doc.name,
+					}
+					check = [doc.name, doc.firstname]
+					if((addr = doc.praxis_address) \
+						|| (addr = doc.addresses.first))
+						criteria.store(:city, addr.city)
+						check.push(addr.city)
+					end
+					begin
+						results = MEDDATA_SERVER.search(criteria).select { |res|
+							check_with = res.values[0,check.size]
+							check_with.at(1).gsub!(/\d/, '')
+							check_with.at(1).strip!
+							check_with == check
+						}
+					rescue RuntimeError
+						puts check.inspect, criteria.inspect
+						hypothesis.store(doc, [ambiguous])
+						next
+					end
+					eans = results.collect { |result|
+						details = MEDDATA_SERVER.detail(result.session, 
+							result.ctl, {:ean13 => [1,0]})
+						details[:ean13]
+					}
+					if(eans.size == 1)
+						found.store(doc, eans.first)
+					else
+						hypothesis.store(doc, eans)
+					end
+				}
+				found.each_value { |ean|
+					hypothesis.each { |doc, eans|
+						eans.delete(ean)
+					}
+				}
+				hypothesis.delete_if { |doc, eans| eans.empty? }
+				sorted = hypothesis.sort_by { |doc, eans| eans.size }
+				while(pair = sorted.shift)
+					doc, eans = *pair
+					if(eans.size > 1) ## ambiguous
+						break
+					elsif(eans.size == 0)
+						next
+					else
+						if(sorted.any? { |pair| pair.at(1) == eans}) ## duplicate!
+							sorted.delete_if { |pair| pair.at(1) == eans}
+						else
+							found.store(doc, eans.first)
+						end
+						sorted.each { |pair| pair.at(1).delete(eans.first) }
+					end
+					sorted = sorted.sort_by { |pair| pair.at(1).size }
+				end
+				if(found.values.size > found.values.uniq.size)
+					## ignore ambiguous values
+					eans = found.values
+					while(ean = eans.shift)
+						if(eans.include?(ean))
+							found.delete_if { |doc, ean13| ean == ean13 }
+							eans.delete(ean)
+						end
+					end
+				end
+				docs.each { |doc|
+					doc.ean13 = found[doc]
+					doc.odba_store
+				}
+=begin
+				result = MEDDATA_SERVER.search().first
+				matchs = []
+				docs.each { |doc|
+					if([doc.name, doc.firstname] == result.values[0,2])
+						matchs.push(doc)
+					else
+						#doc.ean13 = nil
+						#doc.odba_store
+					end
+				}
+				locations = []
+				if(matchs.size > 1)
+					matchs.each { |doc|
+						if(doc.addresses.any? { |addr|result.values.at(2) })
+							locations.push(doc)
+						else
+							#doc.ean13 = nil
+							#doc.odba_store
+						end
+					}
+				end
+				if(locations.size > 1)
+					puts "still #{locations.size} duplicate eans:"
+					puts locations.collect { |doc| [doc.name, doc.firstname].join(' ') }
+					raise "thats enuff"
+				end
+=end
+			end
+			def fix_duplicate_eans
+				ean_table = {}
+				@app.doctors.each { |id, doc|
+					if(ean = doc.ean13)
+						(ean_table[ean] ||= []).push(doc)
+					end
+				}
+				ean_table.each { |ean, docs|
+					if(docs.size > 1)
+						fix_doctors(ean, docs)
+					end
+				}
+			end
+
 		end
 	end
 end

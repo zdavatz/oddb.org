@@ -72,9 +72,11 @@ h3 {
 div.section {
 	font-family: $std_font_family;
 	font-size: 13px;
-	font-style : italic;
 	line-height : 120%;
 	margin-top : 4px;
+}
+span.section {
+	font-style:italic;
 }
 pre, div.preformatted {
 	font-style : normal;

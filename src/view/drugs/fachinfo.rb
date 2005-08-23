@@ -177,6 +177,7 @@ class FachinfoPrintComposite < View::Drugs::FachinfoPreviewComposite
 	PRINT_TYPE = :print_type_fachinfo
 end
 class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
+	CHAPTER_CLASS = View::Chapter
 	COMPONENTS = {
 		[0,0]	=>	:fachinfo_name,
 		[1,0]	=>	:company_name,
@@ -198,7 +199,8 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 		if(chapter == 'ddd')
 			View::Drugs::DDDTree.new(model.atc_class, session, self)
 		elsif(chapter)
-			View::Chapter.new(chapter, document, session, self)
+			self.class.const_get(:CHAPTER_CLASS).new(chapter, 
+				document, session, self)
 		else
 			#super(document, session)
 			View::Drugs::FachinfoInnerComposite.new(document, session, self)
@@ -217,6 +219,21 @@ class FachinfoPreview < View::PopupTemplate
 end
 class FachinfoPrint < View::PrintTemplate
 	CONTENT = View::Drugs::FachinfoPrintComposite
+end
+class RootFachinfoComposite < View::Drugs::FachinfoComposite
+	CHAPTER_CLASS = View::EditChapterForm
+end
+class RootFachinfo < View::PopupTemplate
+
+	CONTENT = View::Drugs::RootFachinfoComposite
+	def other_html_headers(context)
+		args = {
+			'language'	=>	'JavaScript',
+			'type'			=>	'text/javascript',
+			'src'				=>	@lookandfeel.resource_global(:richtext_js),
+		}
+		super << context.script(args)
+	end
 end
 		end
 	end

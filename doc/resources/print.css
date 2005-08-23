@@ -1,0 +1,62 @@
+table {
+	border: 0px solid gold;
+	margin: 0px;
+}
+body {
+	font-family : Arial, Helvetica, sans-serif;
+	font-size : 12px; 
+	border : 0px dotted darkred;
+	background-color: white; 
+}
+td {
+	border : 0px dashed green;
+	padding: 0px;
+}
+h3 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	margin-bottom: 2px;
+}
+div.preformatted {
+	font-style : normal;
+	font-family: Courier New, Courier, monospace;
+	font-size: 12px;
+	margin-top : 0px;
+	text-align : left;
+	white-space : pre;
+}
+span.paragraph {
+	font-style : normal;
+	font-size:11px;
+	line-height: 1.5;
+	padding-bottom: 4px;
+}
+span.section {
+	font-style:italic;
+	line-height: 1.5;
+}
+div.section {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	line-height : 120%;
+	margin-top : 4px;
+}
+td.list-r {
+	padding : 4px;
+	text-align : right;
+}
+td.print-big { 
+	padding-top: 12px;
+	font-weight: bold;
+	font-size: 24px;
+}
+table.composite {
+	width : 100%;
+}
+
+/*
+body.composite {
+	height : 100%;
+}
+*/
+

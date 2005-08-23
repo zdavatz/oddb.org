@@ -69,9 +69,10 @@ module ODDB
 		end
 		def request_log(phase)
 			bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
+			asterisk = is_crawler? ? "*" : " "
 			Session.request_log.puts(sprintf(
-				"ip: %15s | session:%12i | request:%12i | time:%4is | mem:%6iMB | %s %s",
-				remote_ip, self.object_id, @request_id, Time.now - @process_start,
+				"%sip: %15s | session:%12i | request:%12i | time:%4is | mem:%6iMB | %s %s",
+				asterisk, remote_ip, self.object_id, @request_id, Time.now - @process_start,
 				bytes / (2**20), phase, @request_path))
 			Session.request_log.flush
 		rescue Exception

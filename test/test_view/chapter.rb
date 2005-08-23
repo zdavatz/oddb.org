@@ -24,7 +24,7 @@ module ODDB
 				par1.preformatted!
 				result = @view.paragraphs(CGI.new, [par1, par2])
 				expected = <<-EOS
-		<DIV class="preformatted">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</DIV><SPAN class="paragraph">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</SPAN>
+		<DIV class="preformatted">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</DIV><SPAN class="paragraph">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</SPAN><BR>
 				EOS
 				assert_equal(expected.strip, result)
 			end
@@ -41,7 +41,7 @@ module ODDB
 				section = chapter.next_section
 				section.subheading = "Für Zwerge > 1.5 m"
 				@view.value = chapter
-				expected = '<DIV class="section">Für Zwerge &gt; 1.5 m&nbsp;</DIV>'
+				expected = '<DIV class="section"><SPAN style="font-style: italic">Für Zwerge &gt; 1.5 m</SPAN>&nbsp;</DIV>'
 				result = @view.to_html(CGI.new)
 				assert_equal(expected, result)
 			end
@@ -61,7 +61,7 @@ module ODDB
 				par.set_format
 				par << " Danke."
 				result = @view.paragraphs(CGI.new, [par])
-				expected = '<SPAN class="paragraph">Guten<SPAN style="font-style:italic;"> Tag</SPAN>! Guten<SPAN style="font-weight:bold;"> Abend</SPAN>! Guten<SPAN style="font-style:italic; font-weight:bold;"> Morgen!!!</SPAN> Danke.</SPAN>'
+				expected = '<SPAN class="paragraph">Guten<SPAN style="font-style:italic;"> Tag</SPAN>! Guten<SPAN style="font-weight:bold;"> Abend</SPAN>! Guten<SPAN style="font-style:italic; font-weight:bold;"> Morgen!!!</SPAN> Danke.</SPAN><BR>'
 				assert_equal(expected, result)
 			end
 		end

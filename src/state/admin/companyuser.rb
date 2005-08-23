@@ -11,6 +11,10 @@ module ODDB
 class Company < Global; end
 class UserCompany < Company; end
 		end
+		module Drugs
+class RootFachinfo < Global; end
+class CompanyFachinfo < RootFachinfo; end
+		end
 		module Admin
 class Registration < Global; end
 class CompanyRegistration < Registration; end
@@ -25,6 +29,7 @@ class CompanySlEntry < SlEntry; end
 module CompanyUser
 	include State::Admin::User
 	RESOLVE_STATES = {
+		[ :fachinfo ]									=>	State::Drugs::CompanyFachinfo,
 		[ :registration ]							=>	State::Admin::CompanyRegistration,
 		[ :registration, :sequence ]	=>	State::Admin::CompanySequence,
 		[ :registration,

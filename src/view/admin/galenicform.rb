@@ -41,7 +41,9 @@ class GalenicFormForm < View::DescriptionForm
 	end
 	def synonym_list(model, session)
 		input = DEFAULT_CLASS.new(:synonym_list, model, session, self)
-		input.value = model.synonyms.join(', ')
+		if(syns = model.synonyms)
+			input.value = syns.join(', ')
+		end
 		input
 	end
 end

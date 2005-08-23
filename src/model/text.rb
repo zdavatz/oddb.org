@@ -148,7 +148,7 @@ module ODDB
 				@subheading.empty? && @paragraphs.empty?
 			end
 			def to_s
-				lines = @paragraphs.dup.unshift(@subheading)
+				lines = [ @subheading ] + @paragraphs
 				lines.delete_if { |line| line.empty? }
 				lines.join("\n")
 			end
@@ -170,9 +170,10 @@ module ODDB
 			end
 		end
 		class Chapter
-		include Persistence
+			include Persistence
+			ODBA_SERIALIZABLE = ["@sections"]
 			attr_accessor :heading
-			attr_reader		:sections
+			attr_accessor	:sections
 			def initialize
 				@heading = ''
 				@sections = []
@@ -190,9 +191,9 @@ module ODDB
 				@sections.include?(section)
 			end
 			def to_s
-				parts = @sections.dup.unshift(@heading)
-				parts.delete_if { |part| part.empty? }
-				parts.join("\n")
+				lines = [ @heading ] + @sections
+				lines.delete_if { |line| line.empty? }
+				lines.join("\n")
 			end
 			def match(pattern)
 				pattern.match(@heading) or
