@@ -102,8 +102,9 @@ module ODDB
 			companies = {}
 			items.each { |item| 
 				ptr = item.item_pointer
-				seq = ptr.resolve(@app)
-				(companies[seq.company] ||= []).push(item)
+				if(seq = ptr.resolve(@app))
+					(companies[seq.company] ||= []).push(item)
+				end
 			}
 			companies
 		end
