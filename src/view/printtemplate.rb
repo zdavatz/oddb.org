@@ -6,14 +6,17 @@ require 'view/popuptemplate'
 module ODDB
 	module View
 		module Print
-			def print(model, session)
-				link = HtmlGrid::Link.new(:print, model, session, self)
+			def print(model, session, key=:print)
+				link = HtmlGrid::Link.new(key, model, session, self)
 				link.set_attribute('title', @lookandfeel.lookup(:print_title))
 				args = { 
 					:pointer	=> model.pointer,
 				}
 				link.href = @lookandfeel.event_url(:print, args)
 				link
+			end
+			def print_edit(model, session, key=:print)
+				print(model, session, :print_edit)
 			end
 		end
 		class PrintTemplate < View::PopupTemplate
@@ -25,8 +28,13 @@ module ODDB
 				@lookandfeel.lookup(:print_head)
 			end
 			def css_link(context)
-				super(context, 
-					@lookandfeel.resource_global(:css_print))
+				if(@session.state.allowed?)
+					super(context, 
+						@lookandfeel.resource_global(:css_print))
+				else
+					super
+				end
+				
 			end
 		end
 		module PrintComposite

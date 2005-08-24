@@ -59,6 +59,9 @@ class FiChapterChooser < HtmlGrid::Composite
 		[2,0]		=>	'chapter-tab-b',
 	}
 	def init
+		if(@session.state.allowed?)
+			components.store([2,0], :print_edit)
+		end
 		xwidth = self::class::XWIDTH
 		document = @model.send(@session.language)
 		names = document.chapter_names
