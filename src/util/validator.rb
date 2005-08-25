@@ -184,6 +184,7 @@ module ODDB
 			:challenge,
 			:chapter,
 			:chemical_substance,
+			:city,
 			:company_form,
 			:company_name,
 			:comparable_size,
