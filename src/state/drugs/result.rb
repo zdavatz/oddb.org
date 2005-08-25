@@ -51,12 +51,19 @@ class Result < State::Drugs::Global
 		RegisterDownload.new(@session, @model)
 	end
 	def limit_state
-		result = if(@search_type == "st_sequence")
+		count = @package_count
+		model = if(@search_type == "st_sequence")
 			@model
 		else
 			_search_drugs(@search_query, "st_sequence")
 		end
+		result = model.atc_classes.inject([]) { |mdl, atc|
+			mdl += atc.active_packages
+		}
 		State::User::ResultLimit.new(@session, result)
+		state = State::User::ResultLimit.new(@session, result)
+		state.package_count = count
+		state
 	end
 	def page
 		if(pge = @session.user_input(:page))

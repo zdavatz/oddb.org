@@ -31,11 +31,7 @@ class Limit < Global
 end
 class ResultLimit < Limit
 	VIEW = View::User::ResultLimit
-	def init
-		@model = @model.atc_classes.inject([]) { |mdl, atc|
-			mdl += atc.active_packages
-		}
-	end
+	attr_accessor :package_count
 end
 		end
 	end

@@ -3,7 +3,7 @@
 
 require 'view/publictemplate'
 require 'view/admin/loginform'
-require 'view/drugs/resultlist'
+require 'view/drugs/result'
 require 'view/additional_information'
 require 'view/dataformat'
 
@@ -166,11 +166,19 @@ class ResultLimitList < HtmlGrid::List
 			link
 		end
 	end
+	def compose_empty_list(offset)
+		@grid.add(@lookandfeel.lookup(:query_limit_empty, 
+			@session.state.package_count, 
+			@session.class.const_get(:QUERY_LIMIT)), *offset)
+		@grid.add_attribute('class', 'list', *offset)
+		@grid.set_colspan(*offset)
+	end
 end
 class ResultLimitComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0] => ResultLimitList, 
-		[0,1]	=> LimitComposite,
+		[0,0]	=> View::Drugs::ExportCSV,
+		[0,1] => ResultLimitList, 
+		[0,2]	=> LimitComposite,
 	}
 end
 class ResultLimit < PublicTemplate
