@@ -734,7 +734,7 @@ module ODDB
 				:price_public							=>	'Publikumspreis',
 				:price_request						=>	'PA',
 				:print										=>	'Drucken',
-				:print_edit								=>  'Drucken mit 1.5 Zeilen Abst.',
+				:print_edit								=>  'Drucken mit 1.5 Zeilenabst.',
 				:print_head								=>	'Ausdruck von http://www.oddb.org',
 				:print_title							=>	'Druckfreundliche Version',
 				:print_type_fachinfo			=>	'Fachinformation',
