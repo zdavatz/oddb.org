@@ -53,17 +53,7 @@ class UnknownCompanyInnerComposite < HtmlGrid::Composite
 		[0,3]		=>	:contact_email,
 		[0,4]		=>	:address_header,
 		[0,5]		=>	:address,
-		#[0,5]		=>	:address,
-		#[2,5]		=>	:phone_label,
-		#[2,5,0]	=>	:nbsp,
-		#[2,5,1]	=>	:phone,
-		#[0,6]		=>	:plz,
-		#[0,6,0]	=>	:nbsp,
-		#[0,6,1]	=>	:city,
-		#[2,6]		=>	:fax_label,
-		#[2,6,0]	=>	:nbsp,
-		#[2,6,1]	=>	:fax,
-		[0,6]	=>	:nbsp,
+		[0,6]		=>	:nbsp,
 		[0,7]		=>	:url_header,
 		[0,8]		=>	:url,
 		[1,8]		=>	:address_email,
@@ -89,28 +79,13 @@ class UnknownCompanyInnerComposite < HtmlGrid::Composite
 	def address(model)
 		Address.new(model.address(0), @session, self)
 	end
-=begin
-	def address(model, session)
-		address_delegate(model, :address)
-	end
-	def city(model, session)
-		address_delegate(model, :city)
-	end
-	def plz(model, session)
-		address_delegate(model, :plz)
-	end
-	def address_delegate(model, data)
-		if(addr = model.addresses.first)
-			addr.send(data)
-		end
-	end
-=end
 end
 class UserCompanyForm < View::Form
 	include HtmlGrid::ErrorMessage
 	include HtmlGrid::InfoMessage
 	COMPONENTS = {
 		[0,0]			=>	:company_name,
+		[2,0]			=>	:invoice_email,
 		[0,1]			=>	:contact,
 		[2,1]			=>	:contact_email,
 		[2,2]			=>	:regulatory_email,
@@ -186,6 +161,7 @@ end
 class RootCompanyForm < View::Companies::UserCompanyForm
 	COMPONENTS = {
 		[0,0]			=>	:company_name,
+		[2,0]			=>	:invoice_email,
 		[0,1]			=>	:contact,
 		[2,1]			=>	:contact_email,
 		[1,2]			=>	:set_pass,

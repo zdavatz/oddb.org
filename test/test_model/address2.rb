@@ -36,17 +36,22 @@ module ODDB
 			@address.address = 'Champs Elysees'
 			assert_nil(@address.number)
 		end
+		def test_street__5
+			@address.address = 'Bakerstreet 221a'
+			assert_equal('Bakerstreet', @address.street)
+			assert_equal('221a', @address.number)
+		end
+		def test_street__2
+			@address.address = '13, Champs Elysees'
+			assert_equal('Champs Elysees', @address.street)
+			assert_equal('13', @address.number)
+		end
 		def test_location__1
 			@address.location = '8000 Zürich'
 			assert_equal('8000', @address.plz)
 			assert_equal('Zürich', @address.city)
 		end
 		def test_location__2
-			@address.location = 'Zürich 8000'
-			assert_equal('Zürich', @address.city)
-			assert_equal('8000', @address.plz)
-		end
-		def test_location__3
 			@address.location = 'Zürich'
 			assert_equal('Zürich', @address.city)
 			assert_nil(@address.plz)
@@ -55,6 +60,11 @@ module ODDB
 			@address.location = 'CH-8006 Zürich'
 			assert_equal('Zürich', @address.city)
 			assert_equal('8006', @address.plz)
+		end
+		def test_location__4
+			@address.location = '6330 Cham 2'
+			assert_equal('Cham 2', @address.city)
+			assert_equal('6330', @address.plz)
 		end
 		def test_lines__1
 			@address.title = 'Herrn Dr. med.'

@@ -11,17 +11,16 @@ module ODDB
 		include AddressObserver
 		ODBA_SERIALIZABLE = ['@addresses']
 		include RegistrationObserver
-		attr_accessor :business_area, :generic_type, :complementary_type
-		attr_accessor :cl_status, :fi_status, :pi_status
-		attr_accessor :name, :ean13, :powerlink, :logo_filename
+		attr_accessor :address_email, :business_area, :business_unit,
+			:cl_status, :complementary_type, :contact, :ean13, :fi_status,
+			:generic_type, :invoice_email, :logo_filename, :name,
+			:pi_status, :powerlink, :regulatory_email, :url
+		attr_reader :user
 		alias :fullname :name
 		alias :power_link= :powerlink=
 		alias :power_link :powerlink
 		alias :to_s :name
-		attr_accessor	:contact, :contact_email, :regulatory_email, :business_unit
-		attr_accessor	:url, :address_email
 		alias :email :address_email
-		attr_reader :user
 		def initialize
 			@addresses = []
 			@cl_status = false
@@ -34,6 +33,9 @@ module ODDB
 			@registrations.collect { |registration|
 				registration.atc_classes				
 			}.flatten.compact.uniq
+		end
+		def contact_email
+			@user.unique_email if(@user)
 		end
 		def has_user?
 			!@user.nil?

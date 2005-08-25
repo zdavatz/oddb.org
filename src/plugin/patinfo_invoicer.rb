@@ -28,10 +28,9 @@ module ODDB
 			}
 			nil
 		end
-		def assemble_pdf_invoice(pdfinvoice, day, company, items)
+		def assemble_pdf_invoice(pdfinvoice, day, company, items, email)
 			pdfinvoice.invoice_number = day.strftime('Patinfo-Upload-%d.%m.%Y')
-			lines = [ company.name, 
-				"z.H. #{company.contact}", company.user.unique_email ]
+			lines = [ company.name, "z.H. #{company.contact}", email ]
 			lines += company.address(0).lines
 			pdfinvoice.debitor_address = lines
 			pdfinvoice.items = items.collect { |item|
@@ -40,14 +39,14 @@ module ODDB
 			}
 			pdfinvoice
 		end
-		def create_pdf_invoice(day, company, items)
+		def create_pdf_invoice(day, company, items, email)
 			config = PdfInvoice.config
 			config.texts['thanks'] = <<-EOS
 Ohne Ihre Gegenmeldung erfolgt der Rechnungsversand nur per Email.
 Thank you for your patronage
 			EOS
 			pdfinvoice = PdfInvoice::Invoice.new(config)
-			assemble_pdf_invoice(pdfinvoice, day, company, items)
+			assemble_pdf_invoice(pdfinvoice, day, company, items, email)
 		end
 		def create_invoice(user, items)
 			pointer = Persistence::Pointer.new(:invoice)
@@ -151,8 +150,12 @@ Thank you for your patronage
 			}
 		end
 		def send_invoice(day, company, items)
-			to = company.user.unique_email
-			invoice = create_pdf_invoice(day, company, items)
+			to = company.invoice_email || company.user.unique_email
+			invoice = create_pdf_invoice(day, company, items, to)
+			File.open('/tmp/invoice.pdf', 'w') { |fh| fh.puts invoice.to_pdf }
+			invoice_name = sprintf('Patinfo-Upload-%s-%s.pdf', 
+				company.name.tr(' ', '_'),
+				day.strftime('%d.%m.%Y'))
 			invoice_name = "#{invoice.invoice_number}.pdf"
 			fpart = RMail::Message.new
 			header = fpart.header

@@ -45,7 +45,7 @@ module ODDB
 	end
 	class Address2
 		include PersistenceMethods
-		@@city_pattern = /[^0-9]+[^0-9\-](?!-)/
+		@@city_pattern = /[^0-9]+[^0-9\-](?!-)([0-9]+)?/
 		attr_accessor :name, :additional_lines, :address,
 			:location, :title, :fon, :fax, :canton, :type
 		alias :address_type :type

@@ -20,13 +20,9 @@ class UserCompany < State::Companies::Company
 		File.dirname(__FILE__))
 	def set_pass
 		update() # save user input
-		mdl = @model.user
-		if(mdl.nil?)
-			mdl = Persistence::CreateItem.new(Persistence::Pointer.new([:user])) 
-			mdl.carry(:model, @model)
-			mdl.carry(:unique_email, @model.contact_email)
+		unless(error?)
+			State::Companies::SetPass.new(@session, user_or_creator)
 		end
-		State::Companies::SetPass.new(@session, mdl)
 	end
 	def update
 		unless(@session.user_equiv?(@model))
@@ -44,6 +40,7 @@ class UserCompany < State::Companies::Company
 			:fax,
 			:fi_status,
 			:generic_type,
+			:invoice_email,
 			:pi_status,
 			:city,
 			:logo_file,
@@ -59,7 +56,8 @@ class UserCompany < State::Companies::Company
 	def do_update(keys)
 		mandatory = [:name]
 		input = user_input(keys, mandatory)
-		if((upload = input[:logo_file]) && !upload.original_filename.empty?)
+		if((upload = input.delete(:logo_file)) \
+			&& !upload.original_filename.empty?)
 			if((fname = @model.logo_filename) \
 				&& (old = File.expand_path(fname, LOGO_PATH)) \
 				&& File.exist?(old))
@@ -82,8 +80,8 @@ class UserCompany < State::Companies::Company
 				@errors.store(:logo_file, err)
 			end
 		end
-		input.delete(:logo_file)
 		unless (error?)
+			contact_email = input.delete(:contact_email)
 			company = @session.app.company_by_name(input[:name])
 			unless(company.nil? || company==@model)
 				@errors.store(:name, create_error('e_duplicate_company', :name, input[:name]))
@@ -94,12 +92,37 @@ class UserCompany < State::Companies::Company
 					input.delete(:plz),
 					input.delete(:city),
 				].compact.join(' ')
-				ODBA.batch {
+				ODBA.transaction {
 					@model = @session.app.update(@model.pointer, input)
 				}
+				update_company_user(contact_email)
 			end
 		end
 		self
+	end
+	def update_company_user(contact_email)
+		if(contact_email)
+			ODBA.transaction {
+				user = user_or_creator
+				args = {
+					:unique_email => contact_email, 
+					:model => @model
+				}
+				@session.app.update(user.pointer, args)
+			}
+		end
+	rescue RuntimeError => e
+		err = create_error(e.message, :unique_email, contact_email)
+		@errors.store(:unique_email, err)
+	end
+	def user_or_creator
+		mdl = @model.user
+		if(mdl.nil?)
+			mdl = Persistence::CreateItem.new(Persistence::Pointer.new([:user])) 
+			mdl.carry(:model, @model)
+			mdl.carry(:unique_email, @session.user_input(:contact_email))
+		end
+		mdl
 	end
 end
 class RootCompany < State::Companies::UserCompany
@@ -127,6 +150,7 @@ class RootCompany < State::Companies::UserCompany
 			:fax,
 			:fi_status,
 			:generic_type,
+			:invoice_email,
 			:pi_status,
 			:city,
 			:logo_file,

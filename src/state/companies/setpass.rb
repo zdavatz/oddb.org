@@ -28,17 +28,19 @@ class SetPass < State::Companies::Global
 				:pass_hash		=>	pass1,
 			}
 			mdl = @model.model
+			backup = Marshal.dump(@model.pointer)
 			if(@model.is_a? Persistence::CreateItem)
 				hash.store(:model, mdl.pointer)
 			end
 			begin
-				ODBA.batch { 
+				ODBA.transaction { 
 					@session.app.update(@model.pointer, hash)
 				}
 				if(klass = resolve_state(mdl.pointer))
 					klass.new(@session, mdl)
 				end
 			rescue RuntimeError => e
+				@model.pointer = Marshal.load(backup)
 				err = create_error(e.message, :unique_email, email)
 				@errors.store(:unique_email, err)
 				self

@@ -30,14 +30,12 @@ class OddbPrevalence
 		"@atc_chooser", "@bean_counter",
 	]
 	ODBA_SERIALIZABLE = [ '@currency_rates' ]
-	attr_reader :galenic_groups, :companies, :doctors
-	attr_reader	:atc_classes, :last_update, :hospitals
-	attr_reader :atc_chooser, :registrations
-	attr_reader :last_medication_update
-	attr_reader :orphaned_patinfos, :orphaned_fachinfos
-	attr_reader :fachinfos, :address_suggestions
-	attr_reader :patinfos_deprived_sequences, :patinfos
-	attr_reader :invoices, :notification_logger, :slates
+	attr_reader :address_suggestions, :atc_chooser, :atc_classes,
+		:companies, :doctors, :fachinfos, :galenic_groups, :hospitals,
+		:invoices, :last_medication_update, :last_update,
+		:notification_logger, :orphaned_fachinfos, :orphaned_patinfos,
+		:patinfos, :patinfos_deprived_sequences, :registrations, :slates,
+		:users
 	def initialize
 		init
 	end

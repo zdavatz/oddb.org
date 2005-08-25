@@ -65,16 +65,14 @@ module ODDB
 			invoice.mock_handle(:to_pdf) { 'pdf-document' }
 			company = FlexMock.new
 			address = FlexMock.new
-			user = FlexMock.new
 			company.mock_handle(:address) { address }
 			company.mock_handle(:name) { 'Test AG' }
-			company.mock_handle(:user) { user }
 			address.mock_handle(:lines) { 
 				['Bümplitzstrasse 2', '3006 Bern']
 			}
-			user.mock_handle(:unique_email) { 'abachman@test.com' }
+			email = 'abachman@test.com'
 			company.mock_handle(:contact) { 'A. Bachmann' }
-			@plugin.assemble_pdf_invoice(invoice, day, company, items)
+			@plugin.assemble_pdf_invoice(invoice, day, company, items, email)
 			invoice.mock_verify
 		end
 		def test_filter_paid

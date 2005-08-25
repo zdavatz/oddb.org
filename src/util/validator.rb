@@ -270,6 +270,7 @@ module ODDB
 				email(value)
 			end
 		end
+		alias :invoice_email :email_suggestion
 		def galenic_group(value)
 			pointer(value)
 		end
