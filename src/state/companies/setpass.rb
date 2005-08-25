@@ -28,7 +28,6 @@ class SetPass < State::Companies::Global
 				:pass_hash		=>	pass1,
 			}
 			mdl = @model.model
-			backup = Marshal.dump(@model.pointer)
 			if(@model.is_a? Persistence::CreateItem)
 				hash.store(:model, mdl.pointer)
 			end
@@ -40,7 +39,13 @@ class SetPass < State::Companies::Global
 					klass.new(@session, mdl)
 				end
 			rescue RuntimeError => e
-				@model.pointer = Marshal.load(backup)
+				if(@model.is_a? Persistence::CreateItem)
+					ptr = Persistence::Pointer.new([:user])
+					item = Persistence::CreateItem.new(ptr)
+					item.carry(:model, mdl)
+					item.carry(:unique_email, email)
+					@model = item
+				end
 				err = create_error(e.message, :unique_email, email)
 				@errors.store(:unique_email, err)
 				self
