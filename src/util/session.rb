@@ -122,7 +122,7 @@ module ODDB
 		def add_to_interaction_basket(object)
 			@interaction_basket.push(object)
 		end
-		def checkout
+		def __checkout
 			@@html_cache.delete(@request_path)
 			true
 		end

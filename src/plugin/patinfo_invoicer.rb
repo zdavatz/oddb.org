@@ -30,7 +30,8 @@ module ODDB
 		end
 		def assemble_pdf_invoice(pdfinvoice, day, company, items)
 			pdfinvoice.invoice_number = day.strftime('Patinfo-Upload-%d.%m.%Y')
-			lines = [ company.name, "z.H. #{company.contact}" ]
+			lines = [ company.name, 
+				"z.H. #{company.contact}", company.user.unique_email ]
 			lines += company.address(0).lines
 			pdfinvoice.debitor_address = lines
 			pdfinvoice.items = items.collect { |item|
@@ -165,7 +166,7 @@ Thank you for your patronage
 				{'filename' => invoice_name })
 			header.add('Content-Transfer-Encoding', 'base64')
 			fpart.body = [invoice.to_pdf].pack('m')
-			smtp = Net::SMTP.new('localhost')
+			smtp = Net::SMTP.new(SMTP_SERVER)
 			recipients = RECIPIENTS.dup.push(to).uniq
 			smtp.start {
 				recipients.each { |recipient|
