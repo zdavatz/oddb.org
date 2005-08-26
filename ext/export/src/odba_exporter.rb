@@ -67,6 +67,9 @@ module ODDB
 		end
 		def OdbaExporter.export_doc_csv(odba_ids, dir, name)
 			safe_export(dir, name) { |fh|
+				fh << <<-HEAD
+ean13;exam;salutation;title;firstname;name;praxis;addresstype;address;location;canton;fons;faxs;email;language
+				HEAD
 				odba_ids.each { |odba_id|
 					item = ODBA.cache_server.fetch(odba_id, nil)
 					CsvExporter.dump(CsvExporter::DOCTOR, item, fh)

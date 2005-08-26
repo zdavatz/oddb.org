@@ -16,6 +16,7 @@ module ODDB
 			def setup
 				@addr = Address2.new
 				@addr.address = "Foobodenstrasse 1"
+				@addr.type = 'at_work'
 				@addr.location = "1234 Neuchâtel"
 				@addr.canton = 'NE'
 				@addr.fon = ['fon1', 'fon2']
@@ -34,7 +35,7 @@ module ODDB
 			end
 			def test_dump_1
 				expected = <<-CSV
-7601000616715;Herrn;Dr. med;Fabrice;Dami;false;;;;;;amig@amig.ch;französisch
+7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;false;at_work;Foobodenstrasse 1;1234 Neuchâtel;NE;fon1,fon2;;amig@amig.ch;französisch
 				CSV
 				fh = ''
 				CsvExporter.dump(CsvExporter::DOCTOR, @doc, fh)
@@ -42,8 +43,9 @@ module ODDB
 			end
 			def test_dump_2
 				@addr.type = 'at_praxis'
+				@doc.praxis = true
 				expected = <<-CSV
-7601000616715;Herrn;Dr. med;Fabrice;Dami;false;Foobodenstrasse 1;1234 Neuchâtel;NE;fon1,fon2;;amig@amig.ch;französisch
+7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;true;at_praxis;Foobodenstrasse 1;1234 Neuchâtel;NE;fon1,fon2;;amig@amig.ch;französisch
 				CSV
 				fh = ''
 				CsvExporter.dump(CsvExporter::DOCTOR, @doc, fh)
