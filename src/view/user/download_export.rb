@@ -39,18 +39,22 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[3,9]		=>	:yaml_doctors_price_gz,
 		[0,10]	=>	:yaml_doctors_export_zip,
 		[3,10]	=>	:yaml_doctors_price_zip,
-		[0,12]	=>	:oddbdat_download_tar_gz,
-		[2,12]	=>	:radio_oddbdat_tar_gz,
-		[0,13]	=>	:oddbdat_download_zip,
-		[2,13]	=>	:radio_oddbdat_zip,
-		[0,14]	=>	:s31x_gz,
-		[2,14]	=>	:radio_s31x_gz,
-		[0,15]	=>	:s31x_zip,
-		[2,15]	=>	:radio_s31x_zip,
+		[0,11]	=>	:csv_doctors_export_gz,
+		[3,11]	=>	:csv_doctors_price_gz,
+		[0,12]	=>	:csv_doctors_export_zip,
+		[3,12]	=>	:csv_doctors_price_zip,
+		[0,14]	=>	:oddbdat_download_tar_gz,
+		[2,14]	=>	:radio_oddbdat_tar_gz,
+		[0,15]	=>	:oddbdat_download_zip,
+		[2,15]	=>	:radio_oddbdat_zip,
+		[0,16]	=>	:s31x_gz,
+		[2,16]	=>	:radio_s31x_gz,
+		[0,17]	=>	:s31x_zip,
+		[2,17]	=>	:radio_s31x_zip,
 	}
 	CSS_MAP = {
 		[0,0,6]			=>	'subheading',
-		[0,1,6,15]	=>	'list',
+		[0,1,6,17]	=>	'list',
 	}
 	CSS_CLASS = 'component'
 	def csv_export_gz(model, session)
@@ -58,6 +62,18 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def csv_export_zip(model, session)
 		checkbox_with_filesize("oddb.csv.zip")
+	end
+	def csv_doctors_export_gz(model, session)
+		checkbox_with_filesize("doctors.csv.gz")
+	end
+	def csv_doctors_export_zip(model, session)
+		checkbox_with_filesize("doctors.csv.zip")
+	end
+	def csv_doctors_price_gz(model, session)
+		once('doctors.csv.gz')
+	end
+	def csv_doctors_price_zip(model, session)
+		once('doctors.csv.zip')
 	end
 	def oddbdat_download_tar_gz(model, session)
 		checkbox_with_filesize("oddbdat.tar.gz")
@@ -108,20 +124,10 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		checkbox_with_filesize("doctors.yaml.zip")
 	end
 	def yaml_doctors_price_gz(model, session)
-		price = State::User::DownloadExport.price('doctors.yaml')
-		hidden = HtmlGrid::Input.new('months[doctors.yaml.gz]', 
-			model, session, self)
-		hidden.set_attribute('type', 'hidden')
-		hidden.value = '1'
-		[@lookandfeel.format_price(price.to_i * 100, 'EUR'), hidden]
+		once('doctors.yaml.gz')
 	end
 	def yaml_doctors_price_zip(model, session)
-		price = State::User::DownloadExport.price('doctors.yaml')
-		hidden = HtmlGrid::Input.new('months[doctors.yaml.zip]', 
-			model, session, self)
-		hidden.set_attribute('type', 'hidden')
-		hidden.value = '1'
-		[@lookandfeel.format_price(price.to_i * 100, 'EUR'), hidden]
+		once('doctors.yaml.zip')
 	end
 	def yaml_export_gz(model, session)
 		checkbox_with_filesize("oddb.yaml.gz")
@@ -142,20 +148,10 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		checkbox_with_filesize("patinfo.yaml.zip")
 	end
 	def yaml_patinfo_price_gz(model, session)
-		price = State::User::DownloadExport.price('patinfo.yaml')
-		hidden = HtmlGrid::Input.new('months[patinfo.yaml.gz]', 
-			model, session, self)
-		hidden.set_attribute('type', 'hidden')
-		hidden.value = '1'
-		[@lookandfeel.format_price(price.to_i * 100, 'EUR'), hidden]
+		once('patinfo.yaml.gz')
 	end
 	def yaml_patinfo_price_zip(model, session)
-		price = State::User::DownloadExport.price('patinfo.yaml')
-		hidden = HtmlGrid::Input.new('months[patinfo.yaml.zip]', 
-			model, session, self)
-		hidden.set_attribute('type', 'hidden')
-		hidden.value = '1'
-		[@lookandfeel.format_price(price.to_i * 100, 'EUR'), hidden]
+		once('patinfo.yaml.zip')
 	end
 end
 class DownloadExportComposite < Form

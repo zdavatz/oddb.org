@@ -7,12 +7,20 @@ require 'archive/tarsimple'
 require 'zip/zip'
 require 'models'
 require 'oddb_yaml'
+require 'csv_exporter'
 require 'oddbdat'
 require 'odba'
 
 module ODDB
 	module OdbaExporter
-		def compress(dir, name)
+		def OdbaExporter.clear
+			Thread.new { 
+				sleep 1
+				DRb.thread.exit
+			}
+			nil
+		end
+		def OdbaExporter.compress(dir, name)
 			FileUtils.mkdir_p(dir)
 			Dir.chdir(dir)
 			tmp_name = name + '.tmp'
@@ -34,7 +42,7 @@ module ODDB
 			gzwriter.close unless gzwriter.nil?
 			zipwriter.close unless zipwriter.nil?
 		end
-		def compress_many(dir, name, files)
+		def OdbaExporter.compress_many(dir, name, files)
 			FileUtils.mkdir_p(dir)
 			Dir.chdir(dir)
 			tmp_name = name + '.tmp'
@@ -57,21 +65,16 @@ module ODDB
 			FileUtils.mv(zip_name, name + '.zip')
 			name
 		end
-		def export_yaml(odba_ids, dir, name)
-			FileUtils.mkdir_p(dir)
-			Tempfile.open(name, dir) { |fh|
+		def OdbaExporter.export_doc_csv(odba_ids, dir, name)
+			safe_export(dir, name) { |fh|
 				odba_ids.each { |odba_id|
-					YAML.dump(ODBA.cache_server.fetch(odba_id, nil), fh)
-					fh.puts
+					item = ODBA.cache_server.fetch(odba_id, nil)
+					CsvExporter.dump(CsvExporter::DOCTOR, item, fh)
 					ODBA.cache_server.clear
 				}
-				newpath = File.join(dir, name)
-				FileUtils.mv(fh.path, newpath)
-				compress(dir, name)
 			}
-			name
 		end
-		def export_oddbdat(odba_ids, dir, klasses)
+		def OdbaExporter.export_oddbdat(odba_ids, dir, klasses)
 			FileUtils.mkdir_p(dir)
 			files = klasses.collect { |klass| 
 				table = klass.new
@@ -101,17 +104,24 @@ module ODDB
 				files.each { |file, table| file.close! }
 			end
 		end
-		def clear
-			Thread.new { 
-				sleep 1
-				DRb.thread.exit
+		def OdbaExporter.export_yaml(odba_ids, dir, name)
+			safe_export { |fh|
+				odba_ids.each { |odba_id|
+					YAML.dump(ODBA.cache_server.fetch(odba_id, nil), fh)
+					fh.puts
+					ODBA.cache_server.clear
+				}
 			}
-			nil
 		end
-		module_function :compress
-		module_function :compress_many
-		module_function :export_oddbdat
-		module_function :export_yaml
-		module_function :clear
+		def OdbaExporter.safe_export(dir, name, &block)
+			FileUtils.mkdir_p(dir)
+			Tempfile.open(name, dir) { |fh|
+				block.call(fh)
+				newpath = File.join(dir, name)
+				FileUtils.mv(fh.path, newpath)
+				compress(dir, name)
+			}
+			name
+		end
 	end
 end

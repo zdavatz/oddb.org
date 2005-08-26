@@ -4,6 +4,7 @@
 require 'plugin/oddbdat_export'
 require 'plugin/fipdf'
 require 'plugin/yaml'
+require 'plugin/csv_export'
 require 'plugin/patinfo_invoicer'
 require 'util/log'
 require 'util/logfile'
@@ -28,6 +29,7 @@ module ODDB
 			export_yaml
 			export_oddbdat
 			export_csv
+			export_doc_csv
 		rescue StandardError => e
 			log = Log.new(Date.today)
 			log.report = [
@@ -59,10 +61,18 @@ module ODDB
 			exporter = View::Drugs::CsvResult.new(model, session)
 			exporter.to_csv_file(keys, path)
 			EXPORT_SERVER.compress(dir, name)
+			EXPORT_SERVER.clear
+			sleep(30)
 		rescue
 			puts $!.message
 			puts $!.backtrace
 			raise
+		end
+		def export_doc_csv
+			plug = CsvExportPlugin.new(@app)
+			plug.export_doctors
+			EXPORT_SERVER.clear
+			sleep(30)
 		end
 		def export_oddbdat
 			exporter = OdbaExporter::OddbDatExport.new(@app)

@@ -11,7 +11,7 @@ module ODDB
 		ODBA_SERIALIZABLE = [
 			'@addresses', '@specialities', '@ean13',
 		]
-		attr_accessor :gender, :title, :name, :firstname,
+		attr_accessor :title, :name, :firstname,
 			:email, :exam, :language, :specialities, 
 			:praxis, :member, :salutation,
 			:origin_db, :origin_id, :addresses, :ean13

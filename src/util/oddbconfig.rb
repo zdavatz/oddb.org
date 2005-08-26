@@ -20,6 +20,7 @@ module ODDB
 	## Prices and Durations
 	DOWNLOAD_EXPORT_PRICES = {
 		'doctors.yaml'	=> 1100,
+		'doctors.csv'		=> 900,
 		'oddb.csv'			=> 500,
 		'oddb.yaml'			=> 600,
 		'fachinfo.yaml'	=> 800,
@@ -37,6 +38,7 @@ module ODDB
 	DOWNLOAD_EXPORT_DURATIONS = { 
 		'oddb.csv'			=> 30,
 		'doctors.yaml'	=> 30,
+		'doctors.csv'		=> 30,
 		'oddb.yaml'			=> 30,
 		'fachinfo.yaml'	=> 30,
 		'patinfo.yaml'	=> 30,
