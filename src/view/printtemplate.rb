@@ -6,6 +6,8 @@ require 'view/popuptemplate'
 module ODDB
 	module View
 		module Print
+
+
 			def print(model, session, key=:print)
 				link = HtmlGrid::Link.new(key, model, session, self)
 				link.set_attribute('title', @lookandfeel.lookup(:print_title))

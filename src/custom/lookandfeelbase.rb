@@ -434,6 +434,7 @@ module ODDB
 				:feedback_title_time			=>  ', erstellt am: ',
 				:fi_activation_charge			=>	"<b>Einmalige</b> Aufschaltgeb&uuml;hren FI:",
 				:fi_alt										=>	'Fachinformation',
+				:fi_changelog							=>  'Changelog',
 				:fi_charge0								=>	'<b>Fachinformationen</b> &aacute; CHF&nbsp;',
 				:fi_charge1								=>	'.-',
 				:fi_composition						=>	'Zusammens.',
