@@ -841,6 +841,7 @@ module ODDB
 				:sponsor_until						=>	'Sponsor bis',
 				:st_company								=>	'Zulassungsinhaber',
 				:st_indication						=>	'Indikation',
+				:st_migel									=>  'MiGel - Mittel und Gegenstandsliste',
 				:st_oddb									=>	'Preisvergleich',
 				:st_sequence							=>	'Markenname',
 				:st_substance							=>	'Inhaltsstoff',
