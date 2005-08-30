@@ -39,7 +39,7 @@ module ODDB
 				'phytotherapy', ],
 			:currency			=>  ['CHF', 'EUR', 'USD'],
 			:search_type	=>	['st_oddb', 'st_sequence', 
-				'st_substance', 'st_company', 'st_indication', 'st_migel'],
+				'st_substance', 'st_company', 'st_indication'],
 			:fi_status		=>	['false', 'true'],
 			:generic_type =>	[nil, 'generic', 'original', 'complementary' ],
 			:limitation		=>	['true', 'false'],
