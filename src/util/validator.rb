@@ -213,7 +213,7 @@ module ODDB
 			:notify_message,
 			:pattern,
 			:payment_status,
-			##:phone, ## ??
+			:phone, ## needed for download-registration!!
 			:pi_update,
 			:plz,
 			:powerlink,
