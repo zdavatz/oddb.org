@@ -1313,7 +1313,8 @@ td.explain-result {
 	vertical-align : bottom;
 	padding-top : 3px;
 	padding-bottom : 3px;
-	width : 75%;
+	width : 85%;
+	font-size : 11px;
 }
 td.explain-result-r {
 	background : $bg_bright;

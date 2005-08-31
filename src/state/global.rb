@@ -416,6 +416,8 @@ module ODDB
 					@session.search_exact_company(query)
 				when 'st_indication'
 					@session.search_exact_indication(query)
+				when 'st_migel'
+					@session.search_exact_migel(query)
 				else
 					@session.search_oddb(query)
 				end

@@ -108,7 +108,7 @@ ean13;exam;salutation;title;firstname;name;praxis;addresstype;address;location;c
 			end
 		end
 		def OdbaExporter.export_yaml(odba_ids, dir, name)
-			safe_export { |fh|
+			safe_export(dir, name) { |fh|
 				odba_ids.each { |odba_id|
 					YAML.dump(ODBA.cache_server.fetch(odba_id, nil), fh)
 					fh.puts
