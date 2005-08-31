@@ -288,6 +288,9 @@ Grammar OddbSize
 				other.is_a?(Pointer) \
 					&& @directions == other.directions
 			end
+			def hash
+				to_s.hash
+			end
 			protected 
 			attr_reader :directions
 		end
