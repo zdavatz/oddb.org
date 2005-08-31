@@ -298,8 +298,8 @@ end
 		class MutationParser
 			attr_reader :src_additions, :src_deletions, :src_reductions,
 				:src_augmentations, :src_limitations
-			money = "[\\d\.]+"
 			@@line = /Fr\.\s+([\d.]+)\s*\{([\s\d.]+)\}\s+\[(\d+)\]\s+([\d.]+),/
+			@@brokenline = /\s+\[(\d+)\]\s+([\d.]+),/
 			@@modline = /(\d+)\s*(\d+)\s+([\d.]+)\s+([\d.]*)/
 			def initialize(src)
 				@src = src.gsub("\r", "")
@@ -346,19 +346,24 @@ end
 						skip -= 1
 					else
 						case line
-						when /^I\. Neuzugang/
+						when /^[IVX]+\. Neuzugang/
 							target = @src_additions = ''
-						when /^II\. Neu gestrichen/
+						when /^[IVX]+\. Neu gestrichen/
 							target = @src_deletions = ''
-						when /^III\. Preissenkung/
+						when /^[IVX]+\. Preissenkung/
 							target = @src_reductions = ''
 							skip = 5
-						when /^IV\. Preismutation/
+						when /^[IVX]+\. Preismutation/
 							target = @src_augmentations = ''
 							skip = 1
-						when /^V\. Aenderung der Limitation/
+						when /^[IVX]+\. Preiskorrektur/
+							target = @src_corrections = ''
+						when /^[IVX]+\. Aenderung der Limitation/, 
+							/^[IVX]+\. Limitations.nderung/
 							target = @src_limitations = ''
-						when /^VI\. Bisherige/
+						when /^[IVX]+\. Streichung der Limitation/
+							target = @src_limitation_deletions = ''
+						when /^[IVX]+\. Bisherige/
 							target = @src_previous = ''
 						when /^Therap\.Gruppe/, /^Präparate/
 							## ignore this bit
@@ -390,6 +395,12 @@ end
 					pack.sl_dossier = match[2]
 					pack.price_public = match[3].to_f
 					pack.price_exfactory = match[4].to_f
+					pack
+				elsif(match = @@brokenline.match(line))
+					pack = ParsedPackage.new
+					pack.ikskey = match[1]
+					date = match[2].split('.').reverse.collect { |str| str.to_i }
+					pack.introduction_date = Date.new(*date)
 					pack
 				end
 			end

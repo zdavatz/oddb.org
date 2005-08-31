@@ -6,6 +6,7 @@ require 'view/chapter'
 require 'view/printtemplate'
 require 'view/additional_information'
 require 'view/changelog'
+
 module ODDB
 	module View
 		module Drugs
@@ -229,7 +230,6 @@ class RootFachinfoComposite < View::Drugs::FachinfoComposite
 	CHAPTER_CLASS = View::EditChapterForm
 end
 class RootFachinfo < View::PopupTemplate
-
 	CONTENT = View::Drugs::RootFachinfoComposite
 	def other_html_headers(context)
 		args = {
@@ -243,4 +243,3 @@ end
 		end
 	end
 end
-
