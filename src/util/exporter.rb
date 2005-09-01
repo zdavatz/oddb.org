@@ -42,12 +42,12 @@ module ODDB
 			nil
 		end
 		def export_csv
-			keys = [ :iksnr, :ikscd, :barcode, :name_base, :galenic_form,
-				:most_precise_dose, :size, :numerical_size, :price_exfactory,
-				:price_public, :company_name, :ikscat, :sl_entry,
-				:introduction_date, :limitation, :limitation_points,
-				:limitation_text, :registration_date, :expiration_date,
-				:inactive_date, :export_flag, ]
+			keys = [ :iksnr, :ikscd, :barcode, :pharmacode, :name_base,
+				:galenic_form, :most_precise_dose, :size, :numerical_size,
+				:price_exfactory, :price_public, :company_name, :ikscat,
+				:sl_entry, :introduction_date, :limitation,
+				:limitation_points, :limitation_text, :registration_date,
+				:expiration_date, :inactive_date, :export_flag, ]
 			session = SessionStub.new
 			session.language = 'de'
 			session.flavor = 'gcc'

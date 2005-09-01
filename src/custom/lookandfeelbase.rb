@@ -931,6 +931,7 @@ module ODDB
 				:th_patinfo_stats					=>	'Patinfo Statistik',
 				:th_patinfo_title				  =>	'Patinfo-Titel',
 				:th_parent_class				  =>	'Adresse für',
+				:th_pharmacode					  =>	'Pharmacode',
 				:th_plz										=>	'Postleitzahl',
 				:th_pointer								=>	'Der eingegebene Wirkstoff existiert noch nicht. Bitte wählen Sie einen anderen aus oder erstellen Sie den Wirkstoff neu.',
 				:th_pointer_descr					=>	'Sie befinden sich in:',
