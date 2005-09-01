@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::User::Limit -- oddb -- 26.07.2005 -- hwyss@ywesee.com
 
-require 'view/publictemplate'
+require 'view/resulttemplate'
 require 'view/admin/loginform'
 require 'view/drugs/result'
 require 'view/additional_information'
@@ -126,7 +126,7 @@ class LimitComposite < HtmlGrid::Composite
 		link
 	end
 end
-class Limit < PublicTemplate
+class Limit < ResultTemplate
 	CONTENT = LimitComposite
 end
 class ResultLimitList < HtmlGrid::List
@@ -167,21 +167,32 @@ class ResultLimitList < HtmlGrid::List
 		end
 	end
 	def compose_empty_list(offset)
-		@grid.add(@lookandfeel.lookup(:query_limit_empty, 
-			@session.state.package_count, 
-			@session.class.const_get(:QUERY_LIMIT)), *offset)
-		@grid.add_attribute('class', 'list', *offset)
-		@grid.set_colspan(*offset)
+		count = @session.state.package_count.to_i
+		if(count > 0)
+			@grid.add(@lookandfeel.lookup(:query_limit_empty, 
+				@session.state.package_count, 
+				@session.class.const_get(:QUERY_LIMIT)), *offset)
+			@grid.add_attribute('class', 'list', *offset)
+			@grid.set_colspan(*offset)
+		else
+			super
+		end
 	end
 end
 class ResultLimitComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]	=> View::Drugs::ExportCSV,
+		[0,0]	=> :export_csv,
 		[0,1] => ResultLimitList, 
 		[0,2]	=> LimitComposite,
 	}
+	LEGACY_INTERFACE = false
+	def export_csv(model)
+		if(@session.state.package_count.to_i > 0)
+			View::Drugs::ExportCSV.new(model, @session, self)
+		end
+	end
 end
-class ResultLimit < PublicTemplate
+class ResultLimit < ResultTemplate
 	CONTENT = ResultLimitComposite
 end
 		end

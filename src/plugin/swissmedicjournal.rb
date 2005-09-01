@@ -5,6 +5,7 @@ require 'date'
 require 'plugin/plugin'
 require 'swissmedicjournal/control'
 require 'util/persistence'
+require 'model/address'
 require 'cgi'
 
 module ODDB
@@ -161,7 +162,6 @@ module ODDB
 			unless(smj_reg.incomplete?)
 				pointer = Persistence::Pointer.new([:registration, smj_reg.iksnr])
 				date = smj_reg.date || Date.today
-				@change_flags.store(pointer, smj_reg.flags)
 				@deactivated_pointers.push(pointer)
 				@change_flags.store(pointer, smj_reg.flags)
 				@app.update(pointer, {:inactive_date => date})
@@ -252,11 +252,12 @@ module ODDB
 			else
 				Persistence::Pointer.new([:company]).creator
 			end
+			addr = Address2.new
+			addr.address = smj_company.address
+			addr.location = [smj_company.plz, smj_company.location].join(' ')
 			hash = {
-				:name			=>	smj_company.name,
-				:address	=>	smj_company.address,
-				:plz			=>	smj_company.plz,
-				:location	=>	smj_company.location,
+				:name				=>	smj_company.name,
+				:addresses	=>	[addr],
 			}
 			@app.update(pointer, hash)
 		end

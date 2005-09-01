@@ -4,6 +4,7 @@
 require 'plugin/oddbdat_export'
 require 'plugin/fipdf'
 require 'plugin/yaml'
+require 'plugin/csv_export'
 require 'plugin/patinfo_invoicer'
 require 'util/log'
 require 'util/logfile'
@@ -28,6 +29,7 @@ module ODDB
 			export_yaml
 			export_oddbdat
 			export_csv
+			export_doc_csv
 		rescue StandardError => e
 			log = Log.new(Date.today)
 			log.report = [
@@ -40,12 +42,12 @@ module ODDB
 			nil
 		end
 		def export_csv
-			keys = [ :iksnr, :ikscd, :barcode, :name_base, :galenic_form,
-				:most_precise_dose, :size, :numerical_size, :price_exfactory,
-				:price_public, :company_name, :ikscat, :sl_entry,
-				:introduction_date, :limitation, :limitation_points,
-				:limitation_text, :registration_date, :expiration_date,
-				:inactive_date, :export_flag, ]
+			keys = [ :iksnr, :ikscd, :barcode, :pharmacode, :name_base,
+				:galenic_form, :most_precise_dose, :size, :numerical_size,
+				:price_exfactory, :price_public, :company_name, :ikscat,
+				:sl_entry, :introduction_date, :limitation,
+				:limitation_points, :limitation_text, :registration_date,
+				:expiration_date, :inactive_date, :export_flag, ]
 			session = SessionStub.new
 			session.language = 'de'
 			session.flavor = 'gcc'
@@ -59,10 +61,18 @@ module ODDB
 			exporter = View::Drugs::CsvResult.new(model, session)
 			exporter.to_csv_file(keys, path)
 			EXPORT_SERVER.compress(dir, name)
+			EXPORT_SERVER.clear
+			sleep(30)
 		rescue
 			puts $!.message
 			puts $!.backtrace
 			raise
+		end
+		def export_doc_csv
+			plug = CsvExportPlugin.new(@app)
+			plug.export_doctors
+			EXPORT_SERVER.clear
+			sleep(30)
 		end
 		def export_oddbdat
 			exporter = OdbaExporter::OddbDatExport.new(@app)

@@ -68,10 +68,14 @@ module ODDB
 				row[12] = reg.company.name
 				row[19] = reg.company.url
 			end
-			reg.sequences.each_value { |seq|
-				seqrow = row.dup
-				rows += export_sequence(seq, seqrow, pac_flags)
-			}
+			if(reg.sequences.empty?)
+				rows.push(row)
+			else
+				reg.sequences.each_value { |seq|
+					seqrow = row.dup
+					rows += export_sequence(seq, seqrow, pac_flags)
+				}
+			end
 			rows
 		end
 		def export_registrations
@@ -142,10 +146,14 @@ module ODDB
 			if(atc = seq.atc_class)
 				row[21] = atc.code
 			end
-			seq.packages.each_value { |pack| 
-				prow = row.dup
-				rows << export_package(pack, prow, pac_flags)
-			}
+			if(seq.packages.empty?)
+				rows << row
+			else
+				seq.packages.each_value { |pack| 
+					prow = row.dup
+					rows << export_package(pack, prow, pac_flags)
+				}
+			end
 			rows
 		end
 		def export_xls

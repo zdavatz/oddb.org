@@ -134,7 +134,7 @@ class EmptyResultForm < HtmlGrid::Form
 		@lookandfeel.lookup(:title_none_found, query)
 	end
 end
-class EmptyResult < View::PublicTemplate
+class EmptyResult < View::ResultTemplate
 	CONTENT = View::Drugs::EmptyResultForm
 end
 		end

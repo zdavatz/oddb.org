@@ -5,15 +5,31 @@ require 'util/persistence'
 require 'util/language'
 require 'model/registration_observer'
 
+
 module ODDB
 	class Fachinfo
+		class ChangeLogItem
+			attr_accessor :email, :time, :chapter, :language
+		end
 		include Persistence
 		include Language
 		include RegistrationObserver
+		ODBA_SERIALIZABLE = ['@change_log']
+		def add_change_log_item(email, chapter, language)
+			item = ChangeLogItem.new
+			item.email = email
+			item.time = Time.now
+			item.chapter = chapter
+			item.language = language
+			self.change_log.push(item)
+		end
 		def atc_class
 			if(reg = @registrations.first)
 				reg.atc_classes.first
 			end
+		end
+		def change_log
+			@change_log ||= []
 		end
 		def company_name
 			if(reg = @registrations.first)

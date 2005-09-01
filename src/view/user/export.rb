@@ -46,6 +46,16 @@ module Export
 			[checkbox, "#{filename} #{size}"]
 		end
 	end
+	def once(filename)
+		if(display?(file_path(filename)))
+			price = State::User::DownloadExport.price(filename)
+			hidden = HtmlGrid::Input.new("months[#{filename}]", 
+				@model, @session, self)
+			hidden.set_attribute('type', 'hidden')
+			hidden.value = '1'
+			[@lookandfeel.format_price(price.to_i * 100, 'EUR'), hidden]
+		end
+	end
 	def once_or_year(filename)
 		if(display?(file_path(filename)))
 			name = "months[#{filename}]"

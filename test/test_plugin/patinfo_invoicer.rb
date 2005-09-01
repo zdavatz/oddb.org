@@ -149,13 +149,13 @@ module ODDB
 			today = Date.today
 			item1 = AbstractInvoiceItem.new
 			item1.time = Time.local(today.year, today.month,
-				today.day - 1)
+				today.day) - (24*60*60)
 			item2 = AbstractInvoiceItem.new
 			item2.time = Time.local(today.year, today.month,
-				today.day - 2, 23, 59, 59)
+				today.day, 23, 59, 59) - (2*24*60*60)
 			item3 = AbstractInvoiceItem.new
 			item3.time = Time.local(today.year, today.month,
-				today.day - 1, 23, 59, 59)
+				today.day, 23, 59, 59) - (24*60*60)
 			item4 = AbstractInvoiceItem.new
 			item4.time = Time.local(today.year, today.month,
 				today.day)

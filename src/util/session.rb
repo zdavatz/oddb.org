@@ -22,6 +22,7 @@ module ODDB
 		PERSISTENT_COOKIE_NAME = 'oddb-preferences'
 		QUERY_LIMIT = 10
 		QUERY_LIMIT_AGE = 60 * 60 * 24
+		@@stub_html = File.read(File.expand_path('../../data/stub.html', File.dirname(__FILE__)))
 		@@requests ||= {}
 		@@html_cache ||= {}
 		def Session.clear_html_cache
@@ -67,6 +68,7 @@ module ODDB
 					super
 				end
 			else
+			#unless(is_crawler?)
 				super
 				## @lookandfeel.nil?: the first access from a client has no
 				## lookandfeel here
@@ -82,10 +84,11 @@ module ODDB
 		def request_log(phase)
 			bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
 			asterisk = is_crawler? ? "*" : " "
+			now = Time.now
 			Session.request_log.puts(sprintf(
-				"%sip: %15s | session:%12i | request:%12i | time:%4is | mem:%6iMB | %s %s",
-				asterisk, remote_ip, self.object_id, @request_id, Time.now - @process_start,
-				bytes / (2**20), phase, @request_path))
+				"%s | %sip: %15s | session:%12i | request:%12i | time:%4is | mem:%6iMB | %s %s",
+				now.strftime('%Y-%m-%d %H:%M:%S'), asterisk, remote_ip, self.object_id, @request_id, 
+				now - @process_start, bytes / (2**20), phase, @request_path))
 			Session.request_log.flush
 		rescue Exception
 			## don't die for logging
@@ -98,7 +101,10 @@ module ODDB
 					html
 				else
 					Thread.current.priority = -1
-					super
+					logtype = 'CRWL'
+					sleep(5)
+					@@stub_html
+					#super
 				end
 			else
 				html = super

@@ -5,6 +5,7 @@ require 'view/popuptemplate'
 require 'view/chapter'
 require 'view/printtemplate'
 require 'view/additional_information'
+require 'view/changelog'
 
 module ODDB
 	module View
@@ -37,12 +38,13 @@ class FiChapterChooserLink < HtmlGrid::Link
 		end
 	end
 end
+
 class FiChapterChooser < HtmlGrid::Composite
 	include View::AdditionalInformation
 	include View::Print
 	XWIDTH = 8
 	COLSPAN_MAP = {
-		[2,0]	=>	XWIDTH - 2,
+		[2,0]	=>	XWIDTH - 3,
 	}
 	COMPONENTS = {
 		[0,0]	=>	:full_text,
@@ -57,12 +59,14 @@ class FiChapterChooser < HtmlGrid::Composite
 	CSS_MAP = {
 		[0,0,2]	=>	'chapter-tab',
 		[2,0]		=>	'chapter-tab-b',
+		[XWIDTH-1,0]		=>	'chapter-tab-b',
 	}
 	def init
+		xwidth = self::class::XWIDTH
 		if(@session.state.allowed?)
 			components.store([2,0], :print_edit)
+			components.store([xwidth-1,0], :changelog)
 		end
-		xwidth = self::class::XWIDTH
 		document = @model.send(@session.language)
 		names = document.chapter_names
 		xx = 0
@@ -87,6 +91,16 @@ class FiChapterChooser < HtmlGrid::Composite
 		colspan_map.store(pos, xwidth - pos.at(0))
 		super
 	end
+	def changelog(model, session)
+		View::Drugs::FiChapterChooserLink.new(:changelog, 
+			model, session, self)
+	end
+	def ddd(model, session)
+		if(atc = model.atc_class)			
+			View::Drugs::FiChapterChooserLink.new(:ddd, 
+				model, session, self)
+		end
+	end
 	def full_text(model, session)
 		link = HtmlGrid::Link.new(:fachinfo_all, model, session, self)
 		link.set_attribute('title', @lookandfeel.lookup(:fachinfo_all_title))
@@ -94,18 +108,6 @@ class FiChapterChooser < HtmlGrid::Composite
 			link.href = @lookandfeel.event_url(:resolve, {:pointer => model.pointer})
 		end
 		link
-	end
-	def ddd(model, session)
-		if(atc = model.atc_class)			
-			View::Drugs::FiChapterChooserLink.new(:ddd, model, session, self)
-=begin
-			link = HtmlGrid::Link.new(:ddd, atc, session, self)
-			link.href = @lookandfeel.event_url(:ddd, {'pointer'=>atc.pointer})
-			#link.set_attribute('class', 'result-infos-bg')
-			link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
-			link
-=end
-		end
 	end
 end
 class FachinfoInnerComposite < HtmlGrid::Composite
@@ -200,12 +202,13 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 		document = model.send(session.language)
 		chapter = @session.user_input(:chapter)
 		if(chapter == 'ddd')
-			View::Drugs::DDDTree.new(model.atc_class, session, self)
-		elsif(chapter)
+				View::Drugs::DDDTree.new(model.atc_class, session, self)
+		elsif(chapter == 'changelog')
+		  View::ChangeLog.new(model.change_log, session, self)
+		elsif(chapter != nil)
 			self.class.const_get(:CHAPTER_CLASS).new(chapter, 
 				document, session, self)
 		else
-			#super(document, session)
 			View::Drugs::FachinfoInnerComposite.new(document, session, self)
 		end
 	end
@@ -227,7 +230,6 @@ class RootFachinfoComposite < View::Drugs::FachinfoComposite
 	CHAPTER_CLASS = View::EditChapterForm
 end
 class RootFachinfo < View::PopupTemplate
-
 	CONTENT = View::Drugs::RootFachinfoComposite
 	def other_html_headers(context)
 		args = {

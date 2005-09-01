@@ -101,7 +101,7 @@ class UserCompany < State::Companies::Company
 		self
 	end
 	def update_company_user(contact_email)
-		if(contact_email)
+		if(contact_email && !contact_email.empty?)
 			ODBA.transaction {
 				user = user_or_creator
 				args = {

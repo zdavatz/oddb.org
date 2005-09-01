@@ -607,15 +607,15 @@ module ODDB
 			@app.mock_handle(:company_by_name) { |name|
 				nil
 			}
-			expected = {
-				:address	=>	'Sumpfstrasse 3',
-				:plz			=>	'6312',
-				:location	=>	'Steinhausen',
-				:name			=>	'Bausch & Lomb Swiss AG',
-			}
 			@app.mock_handle(:update) { |ptr, values|
 				assert_equal(pointer.creator, ptr)
-				assert_equal(expected, values)
+				assert_equal(2, values.size)
+				assert_equal('Bausch & Lomb Swiss AG', values[:name])
+				addrs = values[:addresses]
+				assert_equal(1, addrs.size)
+				addr = addrs.first
+				assert_equal('Sumpfstrasse 3', addr.address)
+				assert_equal('6312 Steinhausen', addr.location)
 			}
 			@plugin.update_company(smj_company)
 		end

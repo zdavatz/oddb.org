@@ -31,8 +31,7 @@ end
 class RecentRegsForm < View::Drugs::ResultForm
 	COMPONENTS = {
 		[0,1]		=>	'price_compare',
-		[1,1]		=>	:search_query,
-		[1,1,1]	=>	:submit,
+		[1,1]		=>	SearchForm,
 		[0,2]		=>	View::Drugs::RecentRegsList,
 		[0,3]		=>	View::ResultFoot,
 	}

@@ -914,6 +914,15 @@ a progressé pendant ou après le traitement standard.
 			assert_equal(5.05, package.price_public)
 			assert_equal(0.0, package.price_exfactory)
 		end
+		def test_parse_line__2a
+			line = <<-EOS
+					[29298033]		1980, B
+			EOS
+			pack = @parser.parse_line(line)
+			assert_equal('29298', pack.iksnr)
+			assert_equal('033', pack.ikscd)
+			assert_equal(Date.new(1980), pack.introduction_date)
+		end
 		def test_parse_line__3
 			line = <<-EOS
 	100 Compr. 5 mg	2783816	18004	29.90		14.97	
