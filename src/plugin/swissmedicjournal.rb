@@ -29,30 +29,35 @@ module ODDB
 				src.gsub!(/-\n/, '')
 				preg = SwissmedicJournal::ActiveRegistration.new(src, :human)
 				succ = false
-				preg.parse.each { |seqnum, pseq|
-					if(seq = reg.sequence(seqnum))
-						if((ndose = pseq.name_dose) || !flags.include?(:dose_only))
-							name_base = [
-								pseq.name_base, 
-								ndose, 
-								pseq.name_descr,
-							].compact.join(' ')
-							dose = [
-								pseq.most_precise_dose,
-								pseq.most_precise_unit,
-							]
-							values = {
-								:name_base	=>	name_base,
-								:dose				=>	dose,
-							}
-							@app.update(seq.pointer, values)
+				if(flags.include?(:all))
+					preg.parse
+					update_registration(preg)
+				else
+					preg.parse.each { |seqnum, pseq|
+						if(seq = reg.sequence(seqnum))
+							if((ndose = pseq.name_dose) || !flags.include?(:dose_only))
+								name_base = [
+									pseq.name_base, 
+									ndose, 
+									pseq.name_descr,
+								].compact.join(' ')
+								dose = [
+									pseq.most_precise_dose,
+									pseq.most_precise_unit,
+								]
+								values = {
+									:name_base	=>	name_base,
+									:dose				=>	dose,
+								}
+								@app.update(seq.pointer, values)
+							end
+							if((comp = pseq.composition) \
+								&& flags.include?(:composition))
+								succ = update_active_agents(comp, seq.pointer)
+							end
 						end
-						if((comp = pseq.composition) \
-							&& flags.include?(:composition))
-							succ = update_active_agents(comp, seq.pointer)
-						end
-					end
-				}
+					}
+				end
 				if(succ)
 					reg.odba_store
 				end
