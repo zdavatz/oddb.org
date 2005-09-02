@@ -1,8 +1,8 @@
 Datenbeschrieb doctors.csv
 
-Version: 1.0
-Erstellt: 01.09.2005 (1.0) durch hwyss@ywesee.com
-Geändert: 
+Version: 1.0.1
+Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
+Erstellt: 01.09.2005 (1.0)   durch hwyss@ywesee.com
 
 ## Struktur ##
 Encoding: ISO-8859-1
@@ -25,3 +25,9 @@ Doctor-Record:
 12: faxs              (*)                       -> Faxnummern, durch ',' getrennt
 13: email             (*)                       -> Email-Adresse
 14: language          (*)                       -> Korrespondenzsprache
+
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben

@@ -1,8 +1,8 @@
 Datenbeschrieb fachinfo.yaml
 
-Version: 1.0
-Erstellt: 01.09.2005 (1.0) durch hwyss@ywesee.com
-Geändert: 
+Version: 1.0.1
+Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
+Erstellt: 01.09.2005 (1.0)   durch hwyss@ywesee.com
 
 ## Struktur ##
 Encoding: ISO-8859-1
@@ -93,3 +93,9 @@ Strukturierte Repräsentation einer Fachinformation gemäss AMZV 9.11.2001
 
 * YAML
 Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml.org
+
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben

@@ -1,9 +1,10 @@
 Datenbeschrieb oddb.yaml
 
-Version:  1.1.1
-Erstellt: 26.07.2005 (1.0)   durch hwyss@ywesee.com
-Geändert: 23.08.2005 (1.1)   durch hwyss@ywesee.com
+Version:  1.1.2
+Geändert: 02.09.2005 (1.1.2) durch hwyss@ywesee.com
 Geändert: 01.09.2005 (1.1.1) durch hwyss@ywesee.com
+Geändert: 23.08.2005 (1.1)   durch hwyss@ywesee.com
+Erstellt: 26.07.2005 (1.0)   durch hwyss@ywesee.com
 
 ## Struktur ##
 Encoding: ISO-8859-1
@@ -180,3 +181,9 @@ Interne Repräsentation eines Namens. In anderen Programmiersprachen auch Atom.
 
 * YAML
 Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml.org
+
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben

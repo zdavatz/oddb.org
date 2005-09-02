@@ -1,8 +1,8 @@
 Datenbeschrieb s31x
 
-Version: 1.0
-Erstellt: 02.09.2005 (1.0) durch hwyss@ywesee.com
-Geändert: 
+Version: 1.0.1
+Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
+Erstellt: 02.09.2005 (1.0)   durch hwyss@ywesee.com
 
 ## Struktur ##
 Encoding: ISO-8859-1
@@ -28,3 +28,9 @@ Primärschlüssel: fachinfo_id, language, line_number
 <E>  -> Ende formatierter Text
 <P>  -> Ende eines Abschnitts
 _    -> Steht in vorformatierten Abschnitten (Tabellen) für Abstände
+
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben
