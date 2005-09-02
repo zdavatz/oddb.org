@@ -72,14 +72,12 @@ module ODDB
 						end
 						if(/\bitalic\b/i.match(style))
 							start_i(attrs)
-							#puts attrs.inspect
 							release.push(:end_i)
 						end
 					end
 				}
 			end
 			def unknown_charref(ref)
-				#puts "unknwon charref #{ref}"
 				chartable = {
 				
 				  # Signs

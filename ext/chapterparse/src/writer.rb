@@ -1,20 +1,12 @@
 #!/usr/bin/env ruby
 # ChapterParse::Writer -- oddb -- 11.08.2005 -- ffricker@ywesee.com
 
-
+require 'util/html_parser'
 require 'model/text'
 
 module ODDB
 	module ChapterParse
-		class DumbWriter
-			def method_missing(symbol, *args)	
-				puts "method '#{symbol}' called with arguments:"
-				args.each { |arg|
-					puts "- #{arg.inspect}"
-				}
-			end
-		end
-		class Writer 
+		class Writer < NullWriter
 			def initialize
 				@chapter = Text::Chapter.new
 				@section = @chapter.next_section
@@ -23,12 +15,6 @@ module ODDB
 			def chapter
 				@chapter.clean!
 				@chapter
-			end
-			def method_missing(symbol, *args)	
-				puts "method '#{symbol}' called with arguments:"
-				args.each { |arg|
-					puts "- #{arg.inspect}"
-				}
 			end
 			def new_font(font)
 				case font
@@ -69,10 +55,8 @@ module ODDB
 					&& target.preformatted?
 			end
 			def send_line_break
-				#puts "send_line_break"
 				if((@target.empty? && @subheading) \
 					|| @target == @section.subheading)
-					puts "subheading!"
 					@subheading << "\n"
 					@subheading = nil
 				end
