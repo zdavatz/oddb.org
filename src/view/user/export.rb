@@ -9,6 +9,16 @@ module Export
 		'../../../data/downloads',
 		File.dirname(__FILE__))
 	EXPORT_FILE = ''
+	def datadesc(filename)
+		if(display?(file_path("#{filename}.zip")))
+			link = HtmlGrid::Link.new(:data_description, 
+				@model, @session, self)
+			path = File.join('datadesc', "#{filename}.txt")
+			link.href = @lookandfeel.resource_global(:downloads, path)
+			link.css_class = 'list-small'
+			link
+		end
+	end
 	def display?(path)
 		File.exists?(path) && File.size(path) > 0
 	end

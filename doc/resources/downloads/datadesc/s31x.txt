@@ -1,0 +1,30 @@
+Datenbeschrieb s31x
+
+Version: 1.0
+Erstellt: 02.09.2005 (1.0) durch hwyss@ywesee.com
+Geändert: 
+
+## Struktur ##
+Encoding: ISO-8859-1
+Record-Separator: \n
+Field-Separator:  |
+
+s31x:
+Primärschlüssel: fachinfo_id, language, line_number
+00: table             (31)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: fachinfo_id       (Integer, NOT NULL)       -> Primärschlüssel
+03: language          (D/F)                     -> Sprache 
+04: line_number       (Integer, NOT NULL)       -> Zeilennummer innerhalb einer Fachinfo
+05: update_type       (4)                       -> Vollständiger Datensatz
+06: text              (Char)                    -> Text mit Steuerzeichen. siehe Glossar (Steuerzeichen)
+
+
+## Glossar ##
+* Steuerzeichen:
+<B>  -> Beginn Fetter Text
+<I>  -> Beginn Kursiver Text 
+<BI> -> Beginn Fetter und Kursiver Text
+<E>  -> Ende formatierter Text
+<P>  -> Ende eines Abschnitts
+_    -> Steht in vorformatierten Abschnitten (Tabellen) für Abstände

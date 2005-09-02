@@ -1,0 +1,95 @@
+Datenbeschrieb fachinfo.yaml
+
+Version: 1.0
+Erstellt: 01.09.2005 (1.0) durch hwyss@ywesee.com
+Geändert: 
+
+## Struktur ##
+Encoding: ISO-8859-1
+
+Top-Level:
+- Stream von voneinander unabhängigen YAML-Documents, wovon jedes ein Fachinfo beschreibt.
+
+Fachinfo:
+- oid               (Integer, NOT NULL)    -> Unique Identifier
+- descriptions      (SimpleLanguage::Descriptions (String, FachinfoDocument|FachinfoDocument2001)) -> Sprache, Dokument. siehe Glossar (SimpleLanguage::Descriptions)
+
+FachinfoDocument:
+- galenic_form      (Text::Chapter)         -> Kapitel Galenische Form
+- composition       (Text::Chapter)         -> Kapitel Zusammensetzung
+- effects           (Text::Chapter)         -> Kapitel Eigenschaften/Wirkungen
+- kinetic           (Text::Chapter)         -> Kapitel Pharmakokinetik
+- indications       (Text::Chapter)         -> Kapitel Indikationen/Anwendungsmöglichkeiten
+- usage             (Text::Chapter)         -> Kapitel Dosierung/Anwendung
+- restrictions      (Text::Chapter)         -> Kapitel Anwendungseinschränkungen
+- unwanted_effects  (Text::Chapter)         -> Kapitel Unerwünschte Wirkungen
+- interactions      (Text::Chapter)         -> Kapitel Interaktionen
+- overdose          (Text::Chapter)         -> Kapitel Überdosierung
+- other_advice      (Text::Chapter)         -> Kapitel Sonstige Hinweise
+- delivery          (Text::Chapter)         -> Kapitel Auslieferung
+- distribution      (Text::Chapter)         -> Kapitel Vertrieb
+- fabrication       (Text::Chapter)         -> Kapitel Herstellerfirma
+- reference         (Text::Chapter)         -> Kapitel Weitere Angaben
+- iksnrs            (Text::Chapter)         -> Kapitel IKS-Nummern
+- date              (Text::Chapter)         -> Kapitel Stand der Information
+
+FachinfoDocument2001:
+- amzv              (Text::Chapter)         -> Kapitel AMZV 9.11.2001
+- composition       (Text::Chapter)         -> Kapitel Zusammensetzung
+- galenic_form      (Text::Chapter)         -> Kapitel Galenische Form und Wirkstoffmenge pro Einheit
+- indications       (Text::Chapter)         -> Kapitel Indikationen/Anwendungsmöglichkeiten
+- usage             (Text::Chapter)         -> Kapitel Dosierung/Anwendung
+- contra_indications(Text::Chapter)         -> Kapitel Kontraindikationen
+- restrictions      (Text::Chapter)         -> Kapitel Warnhinweise und Vorsichtsmassnahmen
+- interactions      (Text::Chapter)         -> Kapitel Interaktionen
+- pregnancy         (Text::Chapter)         -> Kapitel Schwangerschaft/Stillzeit
+- driving_ability   (Text::Chapter)         -> Kapitel Wirkung auf die Fahrtüchtigkeit und auf das Bedienen von Maschinen
+- unwanted_effects  (Text::Chapter)         -> Kapitel Unerwünschte Wirkungen
+- overdose          (Text::Chapter)         -> Kapitel Überdosierung
+- effects           (Text::Chapter)         -> Kapitel Eigenschaften/Wirkungen
+- kinetic           (Text::Chapter)         -> Kapitel Pharmakokinetik
+- preclinic         (Text::Chapter)         -> Kapitel Präklinische Daten
+- other_advice      (Text::Chapter)         -> Kapitel Sonstige Hinweise
+- iksnrs            (Text::Chapter)         -> Kapitel Zulassungsvermerk
+- registration_owner(Text::Chapter)         -> Kapitel Zulassungsinhaberin
+- date              (Text::Chapter)         -> Kapitel Stand der Information
+
+Text::Chapter:
+- heading           (String)                -> Titel
+- sections          (Array (Text::Section)) -> Abschnitte
+
+Text::Section:
+- subheading        (String)                -> Abschnitt-Titel
+- paragraphs        (Array (Text::Paragraph)) -> Absätze
+
+Text::Paragraph:
+- formats           (Array (Text::Format))  -> Formatdefinitionen
+- text              (String)                -> unformatierter Text
+- preformatted      (Boolean)               -> Wenn ja, sollte whitespace 1:1 übernommen werden.
+
+Text::Format:
+- values            (Array (Symbol))        -> mögliche Werte: alle Kombinationen von :bold, :italic und :symbol. Wenn Symbol, dann ist der Betreffende Text im Symbol-Font darzustellen.
+- start             (Integer NOT NULL)      -> 0-N Char-Position innerhalb des Paragraphs an welchem das Format beginnt.
+- end               (Integer NOT NULL)      -> 1-N, -1. Wenn -1, gilt das Format bis zum Ende des Paragraphs.
+
+
+## Glossar ##
+* Hash
+Hash-Table. Unsortierte, indexierte Collection.
+
+* SimpleLanguage::Descriptions:
+Subklasse von Hash. Key-Value pairs für Sprache/Text, wobei folgende Werte als Schlüssel vorkommen:
+- de -> Deutsch
+- fr -> Französisch
+- it -> Italienisch
+- en -> Englisch
+- lt -> Latein
+
+* FachinfoDocument
+Strukturierte Repräsentation einer Fachinformation.
+
+* FachinfoDocument2001
+Strukturierte Repräsentation einer Fachinformation gemäss AMZV 9.11.2001
+
+* YAML
+Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml.org

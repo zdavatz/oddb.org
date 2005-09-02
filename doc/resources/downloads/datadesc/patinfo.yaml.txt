@@ -1,0 +1,70 @@
+Datenbeschrieb patinfo.yaml
+
+Version: 1.0
+Erstellt: 01.09.2005 (1.0) durch hwyss@ywesee.com
+Geändert: 
+
+## Struktur ##
+Encoding: ISO-8859-1
+
+Top-Level:
+- Stream von voneinander unabhängigen YAML-Documents, wovon jedes ein Patinfo beschreibt.
+
+Patinfo:
+- oid               (Integer, NOT NULL)    -> Unique Identifier
+- descriptions      (SimpleLanguage::Descriptions (String, PatinfoDocument|PatinfoDocument2001)) -> Sprache, Dokument. siehe Glossar (SimpleLanguage::Descriptions)
+
+PatinfoDocument/PatinfoDocument2001:
+- name              (String)                -> Produktname
+- company           (Text::Chapter)         -> Kapitel Hersteller
+- galenic_form      (Text::Chapter)         -> Kapitel Galenische Form
+- effects           (Text::Chapter)         -> Kapitel Eigenschaften/Verwendungszweck
+- amendments        (Text::Chapter)         -> Kapitel Ergänzungen
+- contra_indications(Text::Chapter)         -> Kapitel Kontraindikationen
+- precautions       (Text::Chapter)         -> Kapitel Vorsichtsmassnahmen
+- pregnancy         (Text::Chapter)         -> Kapitel Schwangerschaft/Stillzeit
+- usage             (Text::Chapter)         -> Kapitel Dosierung/Anwendung
+- unwanted_effects  (Text::Chapter)         -> Kapitel Unerwünschte Wirkungen
+- general_advice    (Text::Chapter)         -> Kapitel Allgemeine Hinweise
+- composition       (Text::Chapter)         -> Kapitel Zusammensetzung
+- packages          (Text::Chapter)         -> Kapitel Verkaufsart/Packungen
+- distribution      (Text::Chapter)         -> Kapitel Vertriebsfirma
+- date              (Text::Chapter)         -> Kapitel Stand der Information
+
+Text::Chapter:
+- heading           (String)                -> Titel
+- sections          (Array (Text::Section)) -> Abschnitte
+
+Text::Section:
+- subheading        (String)                -> Abschnitt-Titel
+- paragraphs        (Array (Text::Paragraph)) -> Absätze
+
+Text::Paragraph:
+- formats           (Array (Text::Format))  -> Formatdefinitionen
+- text              (String)                -> unformatierter Text
+- preformatted      (Boolean)               -> Wenn ja, sollte whitespace 1:1 übernommen werden.
+
+Text::Format:
+- values            (Array (Symbol))        -> mögliche Werte: alle Kombinationen von :bold, :italic und :symbol. Wenn Symbol, dann ist der Betreffende Text im Symbol-Font darzustellen.
+- start             (Integer NOT NULL)      -> 0-N Char-Position innerhalb des Paragraphs an welchem das Format beginnt.
+- end               (Integer NOT NULL)      -> 1-N, -1. Wenn -1, gilt das Format bis zum Ende des Paragraphs.
+
+
+## Glossar ##
+* Hash
+Hash-Table. Unsortierte, indexierte Collection.
+
+* SimpleLanguage::Descriptions:
+Subklasse von Hash. Key-Value pairs für Sprache/Text, wobei folgende Werte als Schlüssel vorkommen:
+- de -> Deutsch
+- fr -> Französisch
+- it -> Italienisch
+- en -> Englisch
+- lt -> Latein
+
+* PatinfoDocument/PatinfoDocument2001
+Strukturierte Repräsentation einer Patinformation.
+
+* YAML
+Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml.org
+

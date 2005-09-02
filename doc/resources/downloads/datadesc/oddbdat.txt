@@ -1,0 +1,212 @@
+Datenbeschrieb oddbdat
+
+Version: 1.0
+Erstellt: 02.09.2005 (1.0) durch hwyss@ywesee.com
+Geändert: 
+
+## Struktur ##
+Encoding: ISO-8859-1
+Record-Separator: \n
+Field-Separator:  |
+
+Bemerkung:
+Da dies ein Kompatibilitäts-Export ist, sind viele Felder nie gesetzt.
+
+s01x:
+Primärschlüssel: oddb_id
+00: table             (01)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: const             (1)                       -> Konstante
+03: oddb_id           (Integer, NOT NULL)       -> Primärschlüssel
+03: update_type       (4)                       -> Vollständiger Datensatz
+[...]
+06: ikskey            (Integer (8), NOT NULL)   -> 8-stellige Iksnr aus 5-stelligem Registrations-Code + 3-stelliger Packungsnummer
+[...]
+13: ikscat            (Char (1))                -> Abgabekategorie A-E
+[...]
+19: generic           (Char (1))                -> wenn 'Y': das Produkt ist ein Generikum
+[...]
+21: registration_date (yyyymmdd)                -> Registrations-Datum
+[...]
+28: mwst-code         (Integer (1))             -> 3: Preis exkl MwSt
+[...]
+38: insurance_code    (Integer (1))             -> 1: Produkt ist in SL
+39: limitation        (Char (1))                -> Y: Produkt hat Limitation
+40: limitation_points (Integer)                 -> Limitationspunkte
+[...]
+
+s02x:
+Primärschlüssel: oddb_id
+00: table             (02)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: const             (1)                       -> Konstante
+03: oddb_id           (Integer, NOT NULL)       -> Fremdschlüssel zu Tabelle 01
+04: update_type       (4)                       -> Vollständiger Datensatz
+[...]
+06: fachinfo_id       (Integer)                 -> Fachinformation. Fremdschlüssel zu Tabelle 31
+[...]
+09: atc_code          (Char (1-7))              -> ATC-Code. siehe Glossar (AtcCode). Fremdschlüssel zu Tabelle 11 (Code-Type 3)
+[...]
+11: galenic_form      (Integer)                 -> Galenische Form. Fremdschlüssel zu Tabelle 11 (Code-Type 5)
+[...]
+
+s03x:
+Primärschlüssel: oddb_id, language
+00: table             (03)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: const             (1)                       -> Konstante
+03: oddb_id           (Integer, NOT NULL)       -> Fremdschlüssel zu Tabelle 01
+04: language          (D)                       -> Sprache 
+05: update_type       (4)                       -> Vollständiger Datensatz
+06: fullname          (Char)                    -> Vollständiger Produktname
+07: basename          (Char)                    -> Hauptname
+08: description       (Char)                    -> Beschreibung im Namen
+[...]
+10: galenic_form      (Char)                    -> Galenische Form
+11: dose              (Float)                   -> Dosis Anzahl
+12: unit              (Char)                    -> Dosis Einheit
+[...]
+15: multi             (Integer)                 -> Bei Mehrfachpackungen: Anzahl Packungen in Liefereinheit
+16: comform           (String)                  -> Packungsform
+17: quantity          (Float)                   -> Packungsgrösse
+18: unit              (String)                  -> Einheit für Packungsgrösse
+[...]
+
+s06x:
+Primärschlüssel: oddb_id, code_type
+00: table             (06)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: oddb_id           (Integer, NOT NULL)       -> Fremdschlüssel zu Tabelle 01
+03: code_type         (E13)                     -> EAN-Typ
+04: barcode           (Char (13))               -> Packungs-Barcode, zusammengesetzt aus iksnr und ikscd
+05: update_type       (4)                       -> Vollständiger Datensatz
+[...]
+
+s07x:
+Primärschlüssel: oddb_id, price_type
+00: table             (07)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: oddb_id           (Integer, NOT NULL)       -> Fremdschlüssel zu Tabelle 01
+03: price_type        (Char)                    -> Preisart. siehe Glossar (PriceType)
+04: update_type       (4)                       -> Vollständiger Datensatz
+05: price             (Float)                   -> Preis
+[...]
+
+s09x:
+Primärschlüssel: oddb_id, limitation_id
+00: table             (09)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: oddb_id           (Integer, NOT NULL)       -> Fremdschlüssel zu Tabelle 01
+03: limitation_id     (Integer, NOT NULL)       -> Fremdschlüssel zu Tabelle 10 (Limitationstext-Id)
+05: lineno            (Integer, NOT NULL)       -> Zeilennummer, Kann zum Sortieren verwendet werden.
+05: update_type       (4)                       -> Vollständiger Datensatz
+[...]
+
+s10x:
+Primärschlüssel: limitation_id, language
+00: table             (10)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: limitation_id     (Integer, NOT NULL)       -> Limitationstext-Id
+03: language          (D/F/I)                   -> Sprache 
+04: update_type       (4)                       -> Vollständiger Datensatz
+05: limitation_text   (Char)                    -> Limitationstext
+[...]
+
+s11x:
+Primärschlüssel: code_type, code_value, language
+00: table             (11)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: code_type         (Integer, NOT NULL)       -> Code-Type. siehe Glossar (CodeType)
+03: code_value        (Char, NOT NULL)          -> Code-Wert
+04: language          (D)                       -> Sprache 
+05: update_type       (4)                       -> Vollständiger Datensatz
+06: code_description  (Char)                    -> Beschreibung
+[...]
+
+s12x:
+Primärschlüssel: company_id
+00: table             (12)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: company_id        (Integer, NOT NULL)       -> Primärschlüssel
+03: update_type       (4)                       -> Vollständiger Datensatz
+04: ean13             (Char (13))               -> EAN-13 der Firma
+[...]
+06: company_name      (Char, NOT NULL)          -> Firmenname
+07: address           (Char)                    -> Strasse, Nr.
+08: country           (CH)                      -> Landescode
+09: plz               (Char)                    -> PLZ
+10: city              (Char)                    -> Ort
+[...]
+12: phone             (Char)                    -> Telefonnr.
+[...]
+14: fax               (Char)                    -> Faxnr.
+15: email             (Char)                    -> Email
+16: url               (Char)                    -> URL der Firmenwebsite
+[...]
+
+s16x:
+Primärschlüssel: limitation_id
+00: table             (16)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: limitation_id     (Integer, NOT NULL)       -> Limitations-Id
+[...]
+04: update_type       (4)                       -> Vollständiger Datensatz
+05: limitation_type   (COM)                     -> Kommentar
+[...]
+
+s19x:
+Primärschlüssel: oddb_id, company_id
+00: table             (19)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: oddb_id           (Integer, NOT NULL)       -> Fremdschlüssel zu Tabelle 01
+03: company_id        (Integer, NOT NULL)       -> Fremdschlüssel zu Tabelle 12
+04: company_type      (H)                       -> Registrationsinhaberin
+05: update_type       (4)                       -> Vollständiger Datensatz
+[...]
+
+s40x:
+Primärschlüssel: substance_id
+00: table             (40)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: substance_id      (Integer, NOT NULL)       -> Primärschlüssel
+03: language          (L)                       -> Sprache (Latein)
+04: update_type       (4)                       -> Vollständiger Datensatz
+05: substance         (Char)                    -> Substanz
+[...]
+
+s41x:
+Primärschlüssel: oddb_id, line_number
+00: table             (41)                      -> Tabellenbezeichnung
+01: date              (yyyymmddhhmmss)          -> Datum des Exports
+02: oddb_id           (Integer, NOT NULL)       -> Fremdschlüssel zu Tabelle 01
+03: line_number       (Integer, NOT NULL)       -> Substanz ist n-ter Wirkstoff einer Packung
+04: update_type       (4)                       -> Vollständiger Datensatz
+05: substance_id      (Integer, NOT NULL)       -> Fremdschlüssel zu Tabelle 40
+06: quantity          (Float)                   -> Dosis-Anzahl
+07: unit              (Char)                    -> Dosis-Einheit
+08: substance_type    (W)                       -> Wirkstoff
+[...]
+
+s99x:
+Primärschlüssel: oddb_id
+00: oddb_id           (Integer, NOT NULL)       -> Fremdschlüssel zu Tabelle 01
+01: pharmacode        (Integer)                 -> Pharmacode wo vorhanden
+
+
+## Glossar ##
+* AtcCode:
+Anatomisch-Therapeutisch-Chemischer Code der durch die WHO vergeben wird. Hat 5 Ebenen:
+Level 1: C       -> Anatomische Gruppierung,    z.B. A:       Alimentäres System und Stoffwechsel
+Level 2: +NN     -> Therapeutische Gruppierung, z.B. A02:     Mittel bei Säure bedingten Erkrankungen
+Level 3:   +C    -> Therapeutische Untergruppe, z.B. A02A:    Antacida
+Level 4:    +C   -> Chemische Gruppierung,      z.B. A02AA:   Magnesium-haltige Verbindungen
+Level 5:     +NN -> Wirkstoff(-Kombination),    z.B. A02AA01: Magnesiumcarbonat
+
+* PriceType:
+PSL1: Ex-Factory-Preis gemäss SL
+PSL2: Publikums-Preis gemäss SL
+PPUB: Publikums-Preis gemäss Hersteller
+
+* CodeType:
+5: Galenische Form
+8: ATC-Code

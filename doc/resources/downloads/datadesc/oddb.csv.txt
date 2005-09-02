@@ -1,0 +1,48 @@
+Datenbeschrieb oddb.csv
+
+Version: 1.0
+Erstellt: 01.09.2005 (1.0) durch hwyss@ywesee.com
+Geändert: 
+
+## Struktur ##
+Encoding: ISO-8859-1
+Record-Separator: \n
+Field-Separator:  ;
+
+Es kommen zwei Record-Arten vor: ATC-Record und Produkt-Record
+
+ATC-Record: alle folgenden Produkt-Records gehören zu diesem ATC-Code
+00: code              (1-7), NOT NULL           -> Atc-Code. siehe Glossar (AtcCode)
+01: de                (*)                       -> Deutsche Bezeichnung 
+
+Produkt-Record:
+00: iksnr             (Integer (5)), NOT NULL   -> Registrationsnummer der Swissmedic
+01: ikscd             (Integer (3)), NOT NULL   -> Packungsnummer der Swissmedic
+02: barcode           (Integer (13)), NOT NULL  -> Packungs-Barcode, zusammengesetzt aus iksnr und ikscd
+03: pharmacode        (Integer)                 -> Pharmacode, wo vorhanden
+04: name_base         (*)                       -> Hauptname der Sequenz aus der Registrationsurkunde, enthält z.T. Dosisangaben.
+05: galenic_form      (*)                       -> Galenische Form, Deutsche Bezeichnung
+06: dose              (*)                       -> Dosierung. Wird falls möglich aus dem Namen gewonnen, andernfalls aus der Zusammensetzung.
+07: size              (*)                       -> Packungsgrösse (z.B. 5 x 28 Tabletten)
+08: numerical_size    (Integer)                 -> Packungsgrösse, verrechnet (z.B. 140)
+09: price_exfactory   (Float)                   -> Exfactorypreis in Franken und Rappen
+10: price_public      (Float)                   -> Publikumspreis in Franken und Rappen 
+11: company           (*)                       -> Registrationsinhaber
+12: ikscat            (*)                       -> Abgabekategorie. A-E
+13: sl_entry          (Ja/Nein)                 -> Eintrag in der SL
+14: introduction_date (dd.mm.yyyy)              -> Datum der Aufnahme in die Spezialitätenliste
+15: limitation        (Ja/Nein)                 -> Limitation
+16: limitation_points (Integer)                 -> Limitationspunkte
+17: limitation_text   (*)                       -> Limitationstext in Deutsch
+18: registration_date (dd.mm.yyyy)              -> Datum der ersten Zulassung in der Schweiz
+19: inactive_date     (dd.mm.yyyy)              -> Falls ein Produkt unabhängig von der Swissmedic ausser Handel genommen wird: Datum der Ausserhandelnahme
+20: export_flag       (*)                       -> Wenn gesetzt: Produkt ist nur für den Export Bestimmt
+
+## Glossar ##
+* AtcCode:
+Anatomisch-Therapeutisch-Chemischer Code der durch die WHO vergeben wird. Hat 5 Ebenen:
+Level 1: C       -> Anatomische Gruppierung,    z.B. A:       Alimentäres System und Stoffwechsel
+Level 2: +NN     -> Therapeutische Gruppierung, z.B. A02:     Mittel bei Säure bedingten Erkrankungen
+Level 3:   +C    -> Therapeutische Untergruppe, z.B. A02A:    Antacida
+Level 4:    +C   -> Chemische Gruppierung,      z.B. A02AA:   Magnesium-haltige Verbindungen
+Level 5:     +NN -> Wirkstoff(-Kombination),    z.B. A02AA01: Magnesiumcarbonat
