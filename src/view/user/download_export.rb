@@ -49,6 +49,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[6,11]	=>	:datadesc_doctors_csv,
 		[0,12]	=>	:csv_doctors_export_zip,
 		[3,12]	=>	:csv_doctors_price_zip,
+
 		[0,14]	=>	:oddbdat_download_tar_gz,
 		[2,14]	=>	:radio_oddbdat_tar_gz,
 		[6,14]	=>	:datadesc_oddbdat,
@@ -62,7 +63,14 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	}
 	CSS_MAP = {
 		[0,0,6]			=>	'subheading',
-		[0,1,7,17]	=>	'list',
+		[0,1,7,2]		=>	'list',
+		[0,3,7,2]		=>	'list-bg',
+		[0,5,7,2]		=>	'list',
+		[0,7,7,2]		=>	'list-bg',
+		[0,9,7,2]		=>	'list',
+		[0,11,7,2]		=>	'list-bg',
+		[0,13,7,3]		=>	'list',
+		[0,16,7,2]		=>	'list-bg',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
