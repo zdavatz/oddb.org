@@ -233,7 +233,12 @@ class ResultList < HtmlGrid::List
 		link.value = breakline(model.name_base, 25)
 		link.set_attribute('class', 'result-big' << resolve_suffix(model))
 		indication = model.registration.indication
+		descr = model.descr
+		if(descr && descr.empty?)
+			descr = nil
+		end
 		title = [
+			descr,
 			@lookandfeel.lookup(:ean_code, model.barcode),
 			(indication.send(@session.language) unless(indication.nil?)),
 		].compact.join(', ')

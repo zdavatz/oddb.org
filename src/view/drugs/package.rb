@@ -21,6 +21,7 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[2,2]		=>	:size,
 		[0,3]		=>	:atc_class,
 		[1,3,1]	=>	:atc_ddd_link,
+		[2,3]		=>	:descr,
 		[0,4]		=>	:ikscat,
 		[2,4]		=>	:indication,
 		[0,5]		=>	:fachinfo_label,
@@ -82,6 +83,9 @@ class PackageInnerComposite < HtmlGrid::Composite
 			text.value = lim.send(@session.language)
 		end
 		text
+	end
+	def most_precise_dose(model, session)
+		HtmlGrid::Value.new(:most_precise_dose, model, session, self)
 	end
 end
 class PackageComposite < HtmlGrid::Composite
