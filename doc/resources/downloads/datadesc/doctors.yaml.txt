@@ -1,0 +1,48 @@
+Datenbeschrieb doctors.yaml
+
+Version: 1.0.1
+Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
+Erstellt: 01.09.2005 (1.0)   durch hwyss@ywesee.com
+
+## Struktur ##
+Encoding: ISO-8859-1
+
+TopLevel:
+- Stream von voneinander unabhängigen YAML-Documents, wovon jedes einen Doctor beschreibt.
+
+Doctor: 
+- oid               (Integer, NOT NULL)    -> Unique Identifier
+- ean13             (String)               -> Ean13 des Arztes
+- email             (String)               -> Email-Adresse
+- language          (String)               -> Korrespondenzsprache
+- firstname         (String)               -> Vorname
+- name              (String)               -> Nachname
+- exam              (String)               -> Jahr des Staatsexamens
+- praxis            (Boolean)              -> Praxis Ja/Nein
+- salutation        (String)               -> Anrede
+- title             (String)               -> Titel
+- specialities      (Array (String))       -> Facharzttitel
+- member            (Boolean)              -> FMH Ja/Nein
+- addresses         (Array (Address2))     -> Sammlung von Adressen 
+
+Address2:
+- type              (String)               -> Adresstyp: at_work | at_private | at_praxis
+- title             (String)               -> Titel und/oder Anrede
+- name              (String)               -> Name wie in der Adresse gewünscht
+- additional_lines  (Array (String))       -> Zusätzliche Adresszeilen vor Strasse/Nr.
+- address           (String)               -> Strasse/Nr. (französische Schweiz: Nr./Strasse)
+- location          (String)               -> PLZ/Ort
+- canton            (String)               -> 2-Stelliges Kantonskürzel
+- fon               (Array (String))       -> Mit dieser Adresse verbundene Telefonnummern
+- fax               (Array (String))       -> Mit dieser Adresse verbundene Faxnummern
+
+
+## Glossar ##
+* YAML
+Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml.org
+
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben

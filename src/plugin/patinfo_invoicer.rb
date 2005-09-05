@@ -152,7 +152,6 @@ Thank you for your patronage
 		def send_invoice(day, company, items)
 			to = company.invoice_email || company.user.unique_email
 			invoice = create_pdf_invoice(day, company, items, to)
-			File.open('/tmp/invoice.pdf', 'w') { |fh| fh.puts invoice.to_pdf }
 			invoice_name = sprintf('Patinfo-Upload-%s-%s.pdf', 
 				company.name.tr(' ', '_'),
 				day.strftime('%d.%m.%Y'))

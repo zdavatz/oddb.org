@@ -54,16 +54,22 @@ module ODDB
 		class AcOddbTable < Table
 			FILENAME = 's99x'
 			def lines(package)
-				[AcOddbLine.new(package)]
+				lines = []
+				if(package.pharmacode)
+					lines << AcOddbLine.new(package)
+				end
+				lines
 			end
 		end
 		class AcpricealgTable < Table
 			FILENAME = 's07x'
 			def lines(package)
-				[
+				lines = [
 					AcpricealgPublicLine.new(package),
 					AcpricealgExfactoryLine.new(package),
 				]
+				lines.delete_if { |line| line.empty? }
+				lines
 			end
 		end
 		class AcscTable < Table

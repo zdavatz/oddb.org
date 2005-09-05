@@ -36,24 +36,26 @@ class RootFachinfo < State::Drugs::Global
 	def	update
 		keys = [:html_chapter, :chapter]
 		input = user_input(keys, keys)
-		html = input[:html_chapter]
-		writer = ChapterParse::Writer.new
-		formatter = HtmlFormatter.new(writer)
-		parser = ChapterParse::Parser.new(formatter)
-		parser.feed(html)
-		lang = @session.language	
-		doc = @model.send(lang)
-		email = @session.user.unique_email
-		name = input[:chapter]
-		pointer = @model.pointer + [lang] + [name]
-		args = {
-			:sections =>	writer.chapter.sections,
-		}
-		ODBA.transaction {
-			@model.add_change_log_item(email, name, lang)
-			@session.app.update(pointer, args)
-			@session.app.update(@model.pointer, {})
-		}
+		unless(error?)
+			html = input[:html_chapter]
+			writer = ChapterParse::Writer.new
+			formatter = HtmlFormatter.new(writer)
+			parser = ChapterParse::Parser.new(formatter)
+			parser.feed(html)
+			lang = @session.language	
+			doc = @model.send(lang)
+			email = @session.user.unique_email
+			name = input[:chapter]
+			pointer = @model.pointer + [lang] + [name]
+			args = {
+				:sections =>	writer.chapter.sections,
+			}
+			ODBA.transaction {
+				@model.add_change_log_item(email, name, lang)
+				@session.app.update(pointer, args)
+				@session.app.update(@model.pointer, {})
+			}
+		end
 		self
 	end	
 end

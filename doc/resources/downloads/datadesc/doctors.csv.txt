@@ -1,0 +1,33 @@
+Datenbeschrieb doctors.csv
+
+Version: 1.0.1
+Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
+Erstellt: 01.09.2005 (1.0)   durch hwyss@ywesee.com
+
+## Struktur ##
+Encoding: ISO-8859-1
+Record-Separator: \n
+Field-Separator:  ;
+
+Doctor-Record:
+00: ean13             (Integer (13))            -> Ean13 des Arztes
+01: exam              (Integer (4))             -> Jahr des Staatsexamens
+02: salutation        (*)                       -> Anrede
+03: title             (*)                       -> Titel
+04: firstname         (*)                       -> Vorname
+05: name              (*)                       -> Nachname
+06: praxis            (true/false)              -> Praxis Ja/Nein
+07: address_type      (at_praxis / at_work)     -> Adressart 
+08: address           (*)                       -> Strasse, Nummer
+09: location          (*)                       -> PLZ / Ort
+10: canton            (*)                       -> Kantonskürzel (falls vorhanden)
+11: fons              (*)                       -> Telefonnummern, durch ',' getrennt
+12: faxs              (*)                       -> Faxnummern, durch ',' getrennt
+13: email             (*)                       -> Email-Adresse
+14: language          (*)                       -> Korrespondenzsprache
+
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben

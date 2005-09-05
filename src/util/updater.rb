@@ -22,7 +22,7 @@ module ODDB
 	class Updater
 		# Recipients for all Update-Logs go here...
 		RECIPIENTS = [
-			'team@ywesee.com',
+			'admin@ywesee.com',
 		]
 		LOG_RECIPIENTS = {
 			:powerlink	=>	['matthijs.ouwerkerk@just-medical.com'],
