@@ -201,6 +201,7 @@ module ODDB
 			:fon,
 			:fr,
 			:galenic_form,
+			:heading,
 			:html_chapter,
 			:indication,
 			:language_select,

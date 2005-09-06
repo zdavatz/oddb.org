@@ -18,8 +18,8 @@ class FiChapterChooserLink < HtmlGrid::Link
 			@value = @lookandfeel.lookup("fi_#{@name.to_s}_amzv")
 		end
 		@value ||= @lookandfeel.lookup("fi_" << @name.to_s)
-		@attributes['title'] = if(@document.respond_to? @name)
-			chapter = @document.send(@name)
+		@attributes['title'] = if(@document.respond_to?(@name) \
+			&& (chapter = @document.send(@name)))
 			title = chapter.heading
 			if(title.empty? && (section = chapter.sections.first))
 				section.subheading
@@ -68,25 +68,23 @@ class FiChapterChooser < HtmlGrid::Composite
 			components.store([xwidth-1,0], :changelog)
 		end
 		document = @model.send(@session.language)
-		names = document.chapter_names
+		names = display_names(document)
 		xx = 0
 		yy = 0
 		xoffset = xwidth
 		pos = [0,0]
 		names.each { |name|
 			next if(name == :amzv)
-			if((chapter = document.send(name)) )#&& !chapter.heading.empty?)
-				if((xx % xwidth) == 0)
-					yy += 1
-					xoffset -= xwidth
-				end
-				pos = [xx + xoffset, yy]
-				components.store(pos, name)
-				css_map.store(pos, 'chapter-tab')
-				component_css_map.store(pos, 'chapter-tab')
-				symbol_map.store(name, View::Drugs::FiChapterChooserLink)
-				xx += 1
+			if((xx % xwidth) == 0)
+				yy += 1
+				xoffset -= xwidth
 			end
+			pos = [xx + xoffset, yy]
+			components.store(pos, name)
+			css_map.store(pos, 'chapter-tab')
+			component_css_map.store(pos, 'chapter-tab')
+			symbol_map.store(name, View::Drugs::FiChapterChooserLink)
+			xx += 1
 		}
 		colspan_map.store(pos, xwidth - pos.at(0))
 		super
@@ -100,6 +98,9 @@ class FiChapterChooser < HtmlGrid::Composite
 			View::Drugs::FiChapterChooserLink.new(:ddd, 
 				model, session, self)
 		end
+	end
+	def display_names(document)
+		document.chapter_names
 	end
 	def full_text(model, session)
 		link = HtmlGrid::Link.new(:fachinfo_all, model, session, self)
@@ -183,10 +184,11 @@ class FachinfoPrintComposite < View::Drugs::FachinfoPreviewComposite
 end
 class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 	CHAPTER_CLASS = View::Chapter
+	CHOOSER_CLASS = View::Drugs::FiChapterChooser
 	COMPONENTS = {
 		[0,0]	=>	:fachinfo_name,
 		[1,0]	=>	:company_name,
-		[0,1]	=>	View::Drugs::FiChapterChooser,
+		[0,1]	=>	:chapter_chooser,
 		[0,2] =>	:document,
 	}
 	COLSPAN_MAP = {
@@ -198,6 +200,11 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 		[1,0]	=> 'th-r',
 		[0,2]	=> 'list',
 	}	
+	def chapter_chooser(model, session)
+		if(klass = self.class.const_get(:CHOOSER_CLASS))
+			klass.new(model, session, self)
+		end
+	end
 	def document(model, session)
 		document = model.send(session.language)
 		chapter = @session.user_input(:chapter)
@@ -226,8 +233,14 @@ end
 class FachinfoPrint < View::PrintTemplate
 	CONTENT = View::Drugs::FachinfoPrintComposite
 end
+class EditFiChapterChooser < FiChapterChooser
+	def display_names(document)
+		document.class.const_get(:CHAPTERS)
+	end
+end
 class RootFachinfoComposite < View::Drugs::FachinfoComposite
 	CHAPTER_CLASS = View::EditChapterForm
+	CHOOSER_CLASS = EditFiChapterChooser
 end
 class RootFachinfo < View::PopupTemplate
 	CONTENT = View::Drugs::RootFachinfoComposite

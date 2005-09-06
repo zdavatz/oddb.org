@@ -73,7 +73,7 @@ module ODDB
 			:delivery,
 			:distribution,
 			:fabrication,
-			:reference,
+			#:reference,
 			:iksnrs,
 			:date,
 		]

@@ -83,14 +83,17 @@ module ODDB
 					'language'	=>	'JavaScript',
 					'type'			=>	'text/javascript',
 				}
-				content = sections(context, @value.sections)
-				content.gsub!(/\\/, '\\\\')
-				content.gsub!(/'/, '\\\\\'')
-				content.gsub!(/\n/, "\\n")
+				content = ''
+				if(@value)
+					content = sections(context, @value.sections)
+					content.gsub!(/\\/, '\\\\')
+					content.gsub!(/'/, '\\\\\'')
+					content.gsub!(/\n/, "\\n")
+				end
 				## the two following javascript-invocations need to be
 				## in two separate javascript-tags, so a dynamically
 				## generated hidden field can be used by writeRichText
-				heading(context) << context.script(args) {
+				context.script(args) {
 					<<-EOS
 <!--
 initRTE("/resources/javascript/richtext/images/", "/resources/javascript/richtext/", "#{@lookandfeel.resource(:css)}", false);
@@ -107,10 +110,23 @@ writeRichText('html_chapter', '#{content}', 650, 500, true, false);
 		end
 		class EditChapterForm < Form
 			COMPONENTS = {
-				[0,0]	=>	:edit_chapter,
-				[0,1]	=>	:submit,
+				[0,0]	=>	:heading,
+				[0,0,0]	=>	'nbsp',
+				[0,0,1]	=>	:heading_input,
+				[0,1]	=>	:edit_chapter,
+				[0,2]	=>	:submit,
 			}
+			LABELS = false
 			LEGACY_INTERFACE = false
+			SYMBOL_MAP = {
+				:heading	=>	HtmlGrid::LabelText,
+			}
+			CSS_MAP = {
+				[0,0]	=>	'list',
+			}
+			COMPONENT_CSS_MAP = {
+				[0,0,1]	=>	'standard',
+			}
 			def initialize(name, *args)
 				@name = name
 				super(*args)
@@ -121,6 +137,10 @@ writeRichText('html_chapter', '#{content}', 650, 500, true, false);
 			end
 			def edit_chapter(model)
 				EditChapter.new(@name, model, @session, self)
+			end
+			def heading_input(model)
+				HtmlGrid::InputText.new(:heading, model.send(@name), 
+					@session, self)
 			end
 			def hidden_fields(context)
 				args = {'name' => 'chapter', 'value' => @name}

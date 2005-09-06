@@ -34,8 +34,9 @@ class RootFachinfo < State::Drugs::Global
 		true
 	end
 	def	update
-		keys = [:html_chapter, :chapter]
-		input = user_input(keys, keys)
+		mandatory = [:html_chapter, :chapter]
+		keys = mandatory + [:heading]
+		input = user_input(keys, mandatory)
 		unless(error?)
 			html = input[:html_chapter]
 			writer = ChapterParse::Writer.new
@@ -46,13 +47,19 @@ class RootFachinfo < State::Drugs::Global
 			doc = @model.send(lang)
 			email = @session.user.unique_email
 			name = input[:chapter]
-			pointer = @model.pointer + [lang] + [name]
+			unless(doc.send(name))
+				doc.send("#{name}=", Text::Chapter.new)
+			end
+			doc_pointer = @model.pointer + [lang] 
+			pointer = doc_pointer + [name]
 			args = {
+				:heading	=>	input[:heading],
 				:sections =>	writer.chapter.sections,
 			}
 			ODBA.transaction {
 				@model.add_change_log_item(email, name, lang)
 				@session.app.update(pointer, args)
+				@session.app.update(doc_pointer, {})
 				@session.app.update(@model.pointer, {})
 			}
 		end
