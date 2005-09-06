@@ -41,7 +41,8 @@ module ODDB
 				@release_stack.push(release)
 			end
 			def start_div(attrs)
-				if(attrs == [["class", "\"preformatted\""]])
+				if((klass = fetch_attribute('class', attrs)) \
+					&& /\bpreformatted\b/i.match(klass))
 					register_release_tag { |release|
 						start_pre(attrs)
 						release.push(:end_pre)

@@ -284,6 +284,9 @@ module ODDB
 					:ikscat	=>	package.ikscat,
 					:size		=>	package.package_size,
 				}
+				if(descr = package.description)
+					hash.store(:descr, descr)
+				end
 				@app.update(pointer.creator, hash)
 			}
 		end

@@ -84,7 +84,8 @@ module ODDB
 					'type'			=>	'text/javascript',
 				}
 				content = sections(context, @value.sections)
-				content.gsub!(/[\\']/, '\\\1')
+				content.gsub!(/\\/, '\\\\')
+				content.gsub!(/'/, '\\\\\'')
 				content.gsub!(/\n/, "\\n")
 				## the two following javascript-invocations need to be
 				## in two separate javascript-tags, so a dynamically
