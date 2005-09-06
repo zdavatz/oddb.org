@@ -52,6 +52,7 @@ module ODDB
 			regs = other.registrations.dup
 			regs.each { |reg|
 				reg.company = self
+				reg.odba_isolated_store
 			}
 			@registrations.odba_isolated_store
 		end
