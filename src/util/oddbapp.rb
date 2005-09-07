@@ -824,7 +824,6 @@ class OddbPrevalence
 	 end
   end
 	def rebuild_indices(name=nil)
-		ODBA.scalar_cache.size
 		ODBA.cache_server.indices.size
 		begin
 			start = Time.now

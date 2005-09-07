@@ -186,9 +186,6 @@ class CompanyRegistration < State::Admin::Registration
 			super
 		end
 	end
-	def allowed?
-		@session.user_equiv?(@model.company)
-	end
 end
 		end
 	end

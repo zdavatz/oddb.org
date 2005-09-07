@@ -35,7 +35,7 @@ module ODDB
 				[0,1] =>	'left',
 				[1,1]	=>	'tabnavigation-right',
 			}
-			COMPONENT_CSS_MAP = {
+			COMPONENT_CSS_MAP = {	
 				[0,1] =>	'component',
 			}
 		end
@@ -43,6 +43,7 @@ module ODDB
 			COMPONENTS = {
 				[0,0]		=>	View::PopupLogo,
 				[1,0]		=>	:ad_sense,
+				[0,1]		=>	:language_chooser,
 			}
 			CSS_MAP = {
 				[1,0]	=>	'logo-r',

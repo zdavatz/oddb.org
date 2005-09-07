@@ -87,8 +87,7 @@ class CompareList < HtmlGrid::List
 		model.active_agents.join(',<br>')
 	end
 end
-class Compare < View::PopupTemplate
-	HEAD = View::PopupLogoHead
+class Compare < View::ResultTemplate
 	CONTENT = View::Drugs::CompareList
 	FOOT = View::ResultFoot
 end
@@ -120,7 +119,7 @@ class EmptyCompareComposite < HtmlGrid::Composite
 		link
 	end
 end
-class EmptyCompare < View::PopupTemplate
+class EmptyCompare < View::ResultTemplate
 	CONTENT = View::Drugs::EmptyCompareComposite
 end
 		end

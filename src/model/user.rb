@@ -18,6 +18,9 @@ module ODDB
 		def identified_by?(*args) # email, hashed_password
 			args == [@unique_email, @pass_hash]
 		end
+		def allowed?(obj)
+			false
+		end
 		def ancestors(app=nil)
 			[@model].compact
 		end
@@ -51,6 +54,9 @@ module ODDB
 	end
 	class UnknownUser < SBSM::UnknownUser
 		HOME = State::Drugs::Init
+		def allowed?(obj)
+			false
+		end
 		def cache_html?
 			true
 		end
@@ -63,6 +69,9 @@ module ODDB
 	class AdminUser < User
 		SESSION_WEIGHT = 4
 		VIRAL_MODULE = State::Admin::Root
+		def allowed?(obj)
+			true
+		end
 	end
 	class RootUser < AdminUser
 		def initialize
@@ -75,6 +84,22 @@ module ODDB
 	class CompanyUser < User
 		SESSION_WEIGHT = 4
 		VIRAL_MODULE = State::Admin::CompanyUser
+		def allowed?(obj)
+			case obj
+			when ActiveAgent
+				allowed?(obj.sequence)
+			when Company
+				@model.odba_instance == obj.odba_instance
+			when Fachinfo
+				allowed?(obj.registrations.first)
+			when Package
+				allowed?(obj.sequence)
+			when Registration
+				allowed?(obj.company)
+			when Sequence
+				allowed?(obj.registration)	
+			end
+		end
 		def company_name
 			@model ? @model.name : ''
 		end

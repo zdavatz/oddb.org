@@ -124,7 +124,8 @@ document.writeln('		<td><div id="signs_' + rte + '"><img class="rteImage" src="'
 }
 
 function enableDesignMode(rte, html, readOnly) {
-	var frameHtml = "<html id=\"" + rte + "\">\n";
+	var frameHtml = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">';
+	frameHtml += "<html id=\"" + rte + "\">\n";
 	frameHtml += "<head>\n";
 	//to reference your stylesheet, set href property below to your stylesheet path and uncomment
 	if (cssFile.length > 0) {

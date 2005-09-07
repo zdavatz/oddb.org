@@ -45,9 +45,7 @@ class CompanySlEntry < State::Admin::SlEntry
 	end
 	private
 	def allowed?
-		((pac = @model.parent(@session.app)) \
-			&& (seq = pac.sequence) \
-			&& (@session.user_equiv?(seq.company)))
+		@session.user.allowed?(@model.parent(@session.app))
 	end
 end
 		end
