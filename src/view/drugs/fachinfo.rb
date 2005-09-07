@@ -4,6 +4,7 @@
 require 'view/popuptemplate'
 require 'view/chapter'
 require 'view/printtemplate'
+require 'view/privatetemplate'
 require 'view/additional_information'
 require 'view/changelog'
 
@@ -38,7 +39,6 @@ class FiChapterChooserLink < HtmlGrid::Link
 		end
 	end
 end
-
 class FiChapterChooser < HtmlGrid::Composite
 	include View::AdditionalInformation
 	include View::Print
@@ -242,8 +242,9 @@ class RootFachinfoComposite < View::Drugs::FachinfoComposite
 	CHAPTER_CLASS = View::EditChapterForm
 	CHOOSER_CLASS = EditFiChapterChooser
 end
-class RootFachinfo < View::PopupTemplate
+class RootFachinfo < View::PrivateTemplate
 	CONTENT = View::Drugs::RootFachinfoComposite
+	SNAPBACK_EVENT = :result
 	def other_html_headers(context)
 		args = {
 			'language'	=>	'JavaScript',

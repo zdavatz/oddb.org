@@ -216,10 +216,6 @@ class CompanySequence < State::Admin::Sequence
 			super
 		end
 	end
-	private
-	def allowed?
-		@session.user_equiv?(@model.company)
-	end
 	def store_slate
 		store_slate_item(Time.now, :annual_fee)
 	end

@@ -44,6 +44,9 @@ module ODDB
 			}
 			:unknown
 		end
+		def pointer_descr
+			@registrations.first.name_base
+		end
 		def substance_names
 			@registrations.collect { |reg|
 				reg.substance_names

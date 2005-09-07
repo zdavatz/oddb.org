@@ -90,10 +90,6 @@ class CompanyPackage < State::Admin::Package
 			super
 		end
 	end
-	private
-	def allowed?
-		((seq = @model.sequence) && @session.user_equiv?(seq.company))
-	end
 end
 		end
 	end

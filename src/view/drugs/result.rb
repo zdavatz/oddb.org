@@ -13,12 +13,12 @@ require 'view/pager'
 require 'sbsm/user'
 
 module ODDB
+class AdminUser < User; end
+class CompanyUser < User; end
 	module View
 		module Drugs
 class User < SBSM::KnownUser; end
 class UnknownUser < SBSM::UnknownUser; end
-class AdminUser < View::Drugs::User; end
-class CompanyUser < View::Drugs::User; end
 class ExportCSV < View::Form
 	CSS_CLASS = 'right'
 	COMPONENTS = {

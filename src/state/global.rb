@@ -117,7 +117,7 @@ module ODDB
 				self
 			end
 			def allowed?
-				false
+				@session.user.allowed?(@model)
 			end
 			def atc_chooser
 				mdl = @session.app.atc_chooser

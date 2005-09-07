@@ -22,7 +22,11 @@ module ODDB
 		PERSISTENT_COOKIE_NAME = 'oddb-preferences'
 		QUERY_LIMIT = 10
 		QUERY_LIMIT_AGE = 60 * 60 * 24
-		@@stub_html = File.read(File.expand_path('../../data/stub.html', File.dirname(__FILE__)))
+		begin
+			@@stub_html = File.read(File.expand_path('../../data/stub.html', File.dirname(__FILE__)))
+		rescue
+			@@stub_html = ''
+		end
 		@@requests ||= {}
 		@@html_cache ||= {}
 		def Session.clear_html_cache
@@ -144,6 +148,9 @@ module ODDB
 		end
 		def navigation
 			@active_state.navigation
+		end
+		def user
+			@user.odba_instance
 		end
 		def user_equiv?(test)
 			return true if(@user.is_a?(ODDB::AdminUser))
