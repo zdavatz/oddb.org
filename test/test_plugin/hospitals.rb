@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # -- oddb -- 07.02.2005 -- jlang@ywesee.com
 
+$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
 require 'plugin/hospitals'
@@ -67,10 +68,9 @@ def test_hospital_details__1
 	result = Mock.new('result_mock')
 	result.__next(:session) {}
 	result.__next(:ctl) {}
-	@meddata.__next(:detail) { |sess, ctl, templ| 
+	@meddata.__next(:detail) { |result, templ| 
 		assert_equal(template, templ)
 		{
-			#:business_area => 'Spital/Apotheke',
 			:name	=> 'Hospital',
 		}
 	}

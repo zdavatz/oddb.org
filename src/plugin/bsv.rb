@@ -5,6 +5,7 @@ require 'plugin/plugin'
 require 'util/persistence'
 require 'parseexcel/parseexcel'
 require 'model/package'
+require 'util/oddbconfig'
 
 module ODDB
 	class BsvPlugin < Plugin
@@ -176,6 +177,7 @@ end
 				:company,
 				:iksnr,
 				:ikscd,
+				:pharmacode,
 				:ikscat,
 				:generic_type,
 				:price_exfactory,
@@ -248,32 +250,33 @@ end
 			@app.update(pointer.creator, hash)
 		end
 	end
-		class BsvPlugin2 < Plugin
-			class ParsedPackage
-				include SizeParser
-				attr_accessor :sl_dossier, :iksnr, :ikscd, :introduction_date, 
-					:price_public, :price_exfactory, :pharmacode, :limitation,
-					:limitation_points, :generic_type, :name, :company, :pointer,
-					:guessed_ikscd
-				def ikskey
-					[@iksnr, @ikscd].join
+	class BsvPlugin2 < Plugin
+		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
+		class ParsedPackage
+			include SizeParser
+			attr_accessor :sl_dossier, :iksnr, :ikscd, :introduction_date, 
+				:price_public, :price_exfactory, :pharmacode, :limitation,
+				:limitation_points, :generic_type, :name, :company, :pointer,
+				:guessed_ikscd, :medwin_ikskey, :sl_ikskey
+			def ikskey
+				[@iksnr, @ikscd].join
+			end
+			def ikskey=(key)
+				@iksnr = sprintf('%05i', key[0,5].to_i)
+				@ikscd = sprintf('%03i', key[5,3].to_i)
+			end
+			def merge(other)
+				if(other.is_a?(ParsedPackage))
+					other.instance_variables.each { |name|
+						unless(instance_variable_get(name))
+							instance_variable_set(name, 
+							other.instance_variable_get(name))
+						end
+					}
+				else
+					raise TypeError "can only merge with another package"
 				end
-				def ikskey=(key)
-					@iksnr = sprintf('%05i', key[0,5].to_i)
-					@ikscd = sprintf('%03i', key[5,3].to_i)
-				end
-				def merge(other)
-					if(other.is_a?(ParsedPackage))
-						other.instance_variables.each { |name|
-							unless(instance_variable_get(name))
-								instance_variable_set(name, 
-									other.instance_variable_get(name))
-							end
-						}
-					else
-						raise TypeError "can only merge with another package"
-					end
-				end
+			end
 			def data
 				data = {
 					:pharmacode	=>	@pharmacode,
@@ -297,7 +300,7 @@ end
 		end
 		class MutationParser
 			attr_reader :src_additions, :src_deletions, :src_reductions,
-				:src_augmentations, :src_limitations
+			:src_augmentations, :src_limitations
 			@@line = /Fr\.\s+([\d.]+)\s*\{([\s\d.]+)\}\s+\[(\d+)\]\s+([\d.]+),/
 			@@brokenline = /\s+\[(\d+)\]\s+([\d.]+),/
 			@@modline = /(\d+)\s*(\d+)\s+([\d.]+)\s+([\d.]*)/
@@ -438,10 +441,10 @@ end
 			def to_s
 				wdth = 12
 				header = [
-					"Iksnr".ljust(wdth),
-					"BAG".ljust(wdth),
-					"Swissmedic".ljust(wdth),
-					"Beide".ljust(wdth),
+				"Iksnr".ljust(wdth),
+				"BAG".ljust(wdth),
+				"Swissmedic".ljust(wdth),
+				"Beide".ljust(wdth),
 				].join
 				lines = [@name, header]
 				all = [[@iksnr], @bsv.sort, @smj.sort, @both.sort] 
@@ -468,11 +471,13 @@ end
 			@unknown_packages = []
 			@unknown_registrations = []
 			@parse_errors = []
+			@medwin_sl_diffs = []
+			@medwin_out_of_sale = []
 		end
 		def report
-			successful = @successful_updates.collect { |pac| 
-				report_format(pac).join("\n")
-			}.sort
+			#successful = @successful_updates.collect { |pac| 
+			#	report_format(pac).join("\n")
+			#}.sort
 			guessed = @guessed_packages.collect { |pac| 
 				report_format(pac).join("\n")
 			}.sort
@@ -485,33 +490,51 @@ end
 			parse_errors = @parse_errors.collect { |triplet|
 				sprintf("%-15s '%20s' '%s'", *triplet)
 			}.sort
-			package_diffs = @package_diffs.values.collect { |diff| 
-				diff.to_s unless diff.empty?
-			}.compact.sort
+			#package_diffs = @package_diffs.values.collect { |diff| 
+			#	diff.to_s unless diff.empty?
+			#}.compact.sort
+			medwin_sl_diffs = @medwin_sl_diffs.collect { |package|
+				sprintf("%s\nMedwin: %8s <-> BSV-XLS: %8s", package.name, 
+					package.medwin_ikskey, package.sl_ikskey)
+			}.sort
+			medwin_out_of_sale = @medwin_out_of_sale.collect { |pac| 
+				report_format(pac).join("\n")
+			}.sort
 			[
-				"Successful Updates:    #{@successful_updates.size.to_s.rjust(5)}", 
-				"Guessed Packages:      #{@guessed_packages.size.to_s.rjust(5)}", 
-				"Unknown Registrations: #{@unknown_registrations.size.to_s.rjust(5)}",
-				"Unknown Packages:      #{@unknown_packages.size.to_s.rjust(5)}",
-				"Parse Errors:          #{@parse_errors.size.to_s.rjust(5)}",
+				format_header("Successful Updates:", @successful_updates.size),
+				format_header("Guessed Packages:", @guessed_packages.size),
+				format_header("Unknown Registrations:", 
+					@unknown_registrations.size),
+				format_header("Unknown Packages:", @unknown_packages.size),
+				format_header("Parse Errors:", @parse_errors.size),
+				#format_header("Differences:", @package_diffs.size),
+				format_header("Medwin-Differences:", @medwin_sl_diffs.size),
+				format_header("Ausser Handel (laut Medwin):", @medwin_out_of_sale.size),
 				nil, nil, nil,
-				"Successful Updates:    #{@successful_updates.size.to_s.rjust(5)}", 
-				successful.join("\n\n"),
-				nil, nil, nil,
-				"Guessed Packages:      #{@guessed_packages.size.to_s.rjust(5)}", 
+				#format_header("Successful Updates:", @successful_updates.size),
+				#successful.join("\n\n"),
+				#nil, nil, nil,
+				format_header("Guessed Packages:", @guessed_packages.size),
 				guessed.join("\n\n"),
 				nil, nil, nil,
-				"Unknown Registrations: #{@unknown_registrations.size.to_s.rjust(5)}",
+				format_header("Unknown Registrations:", 
+					@unknown_registrations.size),
 				registrations.join("\n\n"),
 				nil, nil, nil,
-				"Unknown Packages:      #{@unknown_packages.size.to_s.rjust(5)}",
+				format_header("Unknown Packages:", @unknown_packages.size),
 				packages.join("\n\n"),
 				nil, nil, nil,
-				"Parse Errors:          #{@parse_errors.size.to_s.rjust(5)}",
+				format_header("Parse Errors:", @parse_errors.size),
 				parse_errors.join("\n"),
 				nil, nil, nil,
-				"Differences:",
-				package_diffs.join("\n\n"),
+				#format_header("Differences:", @package_diffs.size),
+				#package_diffs.join("\n\n"),
+				#nil, nil, nil,
+				format_header("Medwin-Differences:", @medwin_sl_diffs.size),
+				medwin_sl_diffs.join("\n\n"),
+				nil, nil, nil,
+				format_header("Medwin-Out of sale:", @medwin_out_of_sale.size),
+				medwin_out_of_sale.join("\n"),
 				nil,
 			].join("\n")
 		end
@@ -554,7 +577,7 @@ end
 			@ikstable.each_value { |package| 
 				handle_unknown_package(package)
 			}
-			
+
 			## compile a report that includes missing packages.
 			## -> is being done on the fly
 		rescue RuntimeError
@@ -655,12 +678,15 @@ end
 		rescue ParseException, AmbigousParseException => err
 			@parse_errors.push([err.class.to_s, package.name, match[2]])
 		end
+		def format_header(name, size)
+			sprintf("%-30s%5i", name, size)
+		end
 		def load_database(path)
 			workbook = Spreadsheet::ParseExcel.parse(path)
 			worksheet = workbook.worksheet(0)
 			worksheet.each(1) { |row|
 				pcode = row.at(2).to_i.to_s
-				ikskey = row.at(4).to_i.to_s
+				sl_iks = row.at(4).to_i.to_s
 				package = ParsedPackage.new
 				package.company = row.at(0).to_s
 				package.generic_type = (row.at(1).to_s.downcase == 'y')
@@ -671,16 +697,35 @@ end
 				package.price_public = pub if(pub > 0)
 				package.limitation = (row.at(10).to_s.downcase=='y')
 				package.limitation_points = row.at(11).to_i
+				medwin_iks = nil
 				unless(pcode == '0')
 					package.pharmacode = pcode
 					@ptable.store(pcode, package)
+					unless(medwin_iks = load_ikskey(pcode))
+						@medwin_out_of_sale.push(package)
+					end
 				end
-				unless(ikskey == '0')
-					package.ikskey = ikskey
-					## ensure the correct ikskey-format by regetting it
-					@ikstable.store(package.ikskey, package)
+				package.ikskey = (medwin_iks || sl_iks)
+				if(!(medwin_iks.nil? || medwin_iks == sl_iks))
+					package.medwin_ikskey = medwin_iks
+					package.sl_ikskey = sl_iks
+					@medwin_sl_diffs.push(package)
+				end
+				## ensure the correct ikskey-format by regetting it
+				ikskey = package.ikskey
+				unless(ikskey.to_i == 0)
+					@ikstable.store(ikskey, package)
 				end
 			}
+		end
+		def load_ikskey(pcode)
+			results = MEDDATA_SERVER.search({:pharmacode => pcode}, :product)
+			if(results.size == 1)
+				data = MEDDATA_SERVER.detail(results.first, {:ean13 => [1,2]})
+				if(ean13 = data[:ean13])
+					ean13[4,8]
+				end
+			end
 		end
 		def report_format(package)
 			[
@@ -688,6 +733,7 @@ end
 				:company,
 				:iksnr,
 				:ikscd,
+				:pharmacode,
 				:generic_type,
 				:price_exfactory,
 				:price_public,

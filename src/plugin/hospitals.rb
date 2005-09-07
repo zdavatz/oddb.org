@@ -58,7 +58,7 @@ module ODDB
 				:canton					=>	[3,5],
 				:narcotics			=>	[1,10],
 			}
-			@meddata_server.detail(result.session, result.ctl, template)
+			@meddata_server.detail(result, template)
 		end
 		def update_hospital(values)
 			ean13 = values.delete(:ean13)
