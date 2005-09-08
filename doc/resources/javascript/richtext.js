@@ -93,16 +93,16 @@ function writeRichText(rte, html, width, height, buttons, readOnly) {
 			document.writeln('<td><img class="rteImage" src="' + imagesPath + 'italic.gif" width="25" height="24" alt="Italic" title="Italic" onClick="rteCommand(\'' + rte + '\', \'italic\', \'\')"></td>');
 		document.writeln('<td><img class="rteVertSep" src="' + imagesPath + 'blackdot.gif" width="1" height="20" border="0" alt=""></td>');
 	
-document.writeln('		<td><div id="signs_' + rte + '"><img class="rteImage" src="' + imagesPath + 'sigma.gif" width="25" height="24" alt="Sonderzeichen" title="Sonderzeichen" onClick="dlgColorPalette(\'' + rte + '\', \'signs\', \'\')"></div></td>');
+document.writeln('		<td><div id="symbols_' + rte + '"><img class="rteImage" src="' + imagesPath + 'sigma.gif" width="25" height="24" alt="Sonderzeichen" title="Sonderzeichen" onClick="dlgSymbolPalette(\'' + rte + '\', \'symbols\', \'\')"></div></td>');
 		
 			document.writeln('		<td width="100%"></td>');
 			document.writeln('	</tr>');
 			document.writeln('</table>');
 		}
-		document.writeln('<iframe id="' + rte + '" name="' + rte + '" width="' + width + 'px" height="' + height + 'px" src="' + includesPath + 'blank.htm"></iframe>');
+		document.writeln('<iframe id="' + rte + '" name="' + rte + '" width="' + width + 'px" height="' + height + 'px" src="' + includesPath + 'blank.html"></iframe>');
 				
 	//if (!readOnly) document.writeln('<br /><input type="hidden" id="chkSrc' + rte + '" onclick="toggleHTMLSrc(\'' + rte + '\',' + buttons + ');" />&nbsp;<label for="chkSrc' + rte + '"></label>');
-				document.writeln('<iframe width="200" height="140" id="signs' + rte + '" src="' + includesPath + 'signs.htm" marginwidth="0" marginheight="0" scrolling="no" style="visibility:hidden; position: absolute;"></iframe>');
+				document.writeln('<iframe width="200" height="180" id="symbols' + rte + '" src="' + includesPath + 'symbols.html" marginwidth="0" marginheight="0" scrolling="no" style="visibility:hidden; position: absolute;"></iframe>');
 		
 		document.writeln('<input type="hidden" id="hdn' + rte + '" name="' + rte + '" value="">');
 		document.writeln('</div>');
@@ -288,13 +288,13 @@ function toggleHTMLSrc(rte, buttons) {
 	}
 }
 
-function dlgColorPalette(rte, command) {
+function dlgSymbolPalette(rte, command) {
 	//function to display or hide color palettes
 	setRange(rte);
 	//alert(command)
 	//get dialog position
 	
-	var oDialog = document.getElementById('signs' + rte);
+	var oDialog = document.getElementById('symbols' + rte);
 	var buttonElement = document.getElementById(command + '_' + rte);
 	var iLeftPos = getOffsetLeft(buttonElement);
 	var iTopPos = getOffsetTop(buttonElement) + (buttonElement.offsetHeight + 4);
@@ -311,7 +311,7 @@ function dlgColorPalette(rte, command) {
 		//if opening a new dialog, close all others
 		var vRTEs = allRTEs.split(";");
 		for (var i = 0; i < vRTEs.length; i++) {
-			showHideElement('signs' + vRTEs[i], 'hide');
+			showHideElement('symbols' + vRTEs[i], 'hide');
 		}
 		showHideElement(oDialog, 'show');
 	}
@@ -326,7 +326,7 @@ function dlgInsertTable(rte, command) {
 	//save current values
 	parent.command = command;
 	currentRTE = rte;
-	InsertTable = popUpWin(includesPath + 'insert_table.htm', 'InsertTable', 360, 180, '');
+	InsertTable = popUpWin(includesPath + 'insert_table.html', 'InsertTable', 360, 180, '');
 }
 
 function dlgInsertLink(rte, command) {
@@ -334,7 +334,7 @@ function dlgInsertLink(rte, command) {
 	//save current values
 	parent.command = command;
 	currentRTE = rte;
-	InsertLink = popUpWin(includesPath + 'insert_link.htm', 'InsertLink', 360, 180, '');
+	InsertLink = popUpWin(includesPath + 'insert_link.html', 'InsertLink', 360, 180, '');
 	
 	//get currently highlighted text and set link text value
 	setRange(rte);
@@ -366,25 +366,8 @@ function popUpWin (url, win, width, height, options) {
 }
 
 
-//function setColor(color) {
-// function to set color
-//	var rte = currentRTE;
-//	var parentCommand = parent.command;
-//	
-//	if (document.all) {
-//		if (parentCommand == "hilitecolor") parentCommand = "backcolor";
-//		
-//		retrieve selected range
-//		rng.select();
-//	}
-//	
-//	rteCommand(rte, parentCommand, color);
-// 	showHideElement('signs' + rte, "hide");
-// }
-
-
-function insertSigns(signs) {
-	//function to set signs
+function insertSymbols(symbols) {
+	//function to set symbols
 	var rte = currentRTE;
 	var parentCommand = parent.command;
 	
@@ -395,8 +378,8 @@ function insertSigns(signs) {
 	}
 
 	//rteCommand(rte, parentCommand, sign);
-	insertHTML(signs);
-	showHideElement('signs' + rte, "hide");
+	insertHTML(symbols);
+	showHideElement('symbols' + rte, "hide");
 }
 
 
