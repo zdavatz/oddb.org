@@ -47,8 +47,19 @@ class Session < HttpSession
 	end
 	def detail_html(ctl)
 		hash = post_hash({}, ctl)
-		resp = post(@http_path, hash)
-		resp.body
+		tries = 3
+		begin
+			resp = post(@http_path, hash)
+			resp.body
+		rescue Errno::ECONNRESET
+			if(tries > 0)
+				tries -= 1
+				sleep(3 - tries)
+				retry
+			else
+				raise
+			end
+		end
 	end
 	def handle_resp!(resp)
 		@cookie_header = resp["set-cookie"]

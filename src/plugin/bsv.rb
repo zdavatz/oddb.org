@@ -702,6 +702,7 @@ end
 					package.pharmacode = pcode
 					@ptable.store(pcode, package)
 					unless(medwin_iks = load_ikskey(pcode))
+						sleep(0.2)
 						@medwin_out_of_sale.push(package)
 					end
 				end
@@ -719,11 +720,22 @@ end
 			}
 		end
 		def load_ikskey(pcode)
-			results = MEDDATA_SERVER.search({:pharmacode => pcode}, :product)
-			if(results.size == 1)
-				data = MEDDATA_SERVER.detail(results.first, {:ean13 => [1,2]})
-				if(ean13 = data[:ean13])
-					ean13[4,8]
+			tries = 3
+			begin
+				results = MEDDATA_SERVER.search({:pharmacode => pcode}, :product)
+				if(results.size == 1)
+					data = MEDDATA_SERVER.detail(results.first, {:ean13 => [1,2]})
+					if(ean13 = data[:ean13])
+						ean13[4,8]
+					end
+				end
+			rescue Errno::ECONNRESET
+				if(tries > 0)
+					tries -= 1
+					sleep(3 - tries)
+					retry
+				else
+					raise
 				end
 			end
 		end
