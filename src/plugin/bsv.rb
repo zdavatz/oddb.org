@@ -474,34 +474,18 @@ end
 			@medwin_sl_diffs = []
 			@medwin_out_of_sale = []
 		end
+		def log_info
+			info = super
+			parts = [
+				['text/plain', 'todo.txt', report_todo],
+				['text/plain', 'medwin_bsv_differences.txt', 
+					report_medwin_diffs],
+				['text/plain', 'bsv_out_of_sale.txt', report_out_of_sale],
+			]
+			info.store(:parts, parts)
+			info
+		end
 		def report
-			#successful = @successful_updates.collect { |pac| 
-			#	report_format(pac).join("\n")
-			#}.sort
-			guessed = @guessed_packages.collect { |pac| 
-				report_format(pac).join("\n")
-			}.sort
-			registrations = @unknown_registrations.collect { |pac| 
-				report_format(pac).join("\n")
-			}.sort
-			packages = @unknown_packages.collect { |pac| 
-				report_format(pac).join("\n")
-			}.sort
-			parse_errors = @parse_errors.collect { |triplet|
-				sprintf("%-15s '%20s' '%s'", *triplet)
-			}.sort
-			#package_diffs = @package_diffs.values.collect { |diff| 
-			#	diff.to_s unless diff.empty?
-			#}.compact.sort
-			medwin_sl_diffs = @medwin_sl_diffs.collect { |package|
-				mw = package.medwin_ikskey.to_s
-				sl = package.sl_ikskey.to_s
-				sprintf("%s\nMedwin: %5s %3s <-> BSV-XLS: %5s %3s", package.name, 
-					mw[0,5], mw[5,3], sl[0,5], sl[5,3])
-			}.sort
-			medwin_out_of_sale = @medwin_out_of_sale.collect { |pac| 
-				report_format(pac).join("\n")
-			}.sort
 			[
 				format_header("Successful Updates:", @successful_updates.size),
 				format_header("Guessed Packages:", @guessed_packages.size),
@@ -511,33 +495,8 @@ end
 				format_header("Parse Errors:", @parse_errors.size),
 				#format_header("Differences:", @package_diffs.size),
 				format_header("Medwin-Differences:", @medwin_sl_diffs.size),
-				format_header("Ausser Handel (laut Medwin):", @medwin_out_of_sale.size),
-				nil, nil, nil,
-				#format_header("Successful Updates:", @successful_updates.size),
-				#successful.join("\n\n"),
-				#nil, nil, nil,
-				format_header("Guessed Packages:", @guessed_packages.size),
-				guessed.join("\n\n"),
-				nil, nil, nil,
-				format_header("Unknown Registrations:", 
-					@unknown_registrations.size),
-				registrations.join("\n\n"),
-				nil, nil, nil,
-				format_header("Unknown Packages:", @unknown_packages.size),
-				packages.join("\n\n"),
-				nil, nil, nil,
-				format_header("Parse Errors:", @parse_errors.size),
-				parse_errors.join("\n"),
-				nil, nil, nil,
-				#format_header("Differences:", @package_diffs.size),
-				#package_diffs.join("\n\n"),
-				#nil, nil, nil,
-				format_header("Medwin-Differences:", @medwin_sl_diffs.size),
-				medwin_sl_diffs.join("\n\n"),
-				nil, nil, nil,
-				format_header("Ausser Handel (laut Medwin):", @medwin_out_of_sale.size),
-				medwin_out_of_sale.join("\n\n"),
-				nil,
+				format_header("Ausser Handel (laut Medwin):", 
+					@medwin_out_of_sale.size),
 			].join("\n")
 		end
 		def update(month)
@@ -582,8 +541,6 @@ end
 
 			## compile a report that includes missing packages.
 			## -> is being done on the fly
-		rescue RuntimeError
-			false
 		end
 		private
 		def balance_package(package)
@@ -719,6 +676,7 @@ end
 				unless(ikskey.to_i == 0)
 					@ikstable.store(ikskey, package)
 				end
+				#break if(@medwin_sl_diffs.size > 0)
 			}
 		end
 		def load_ikskey(pcode)
@@ -758,6 +716,61 @@ end
 				label = key.to_s.tr('_', '-').capitalize << ':'
 				label.ljust(20) << package.send(key).to_s
 			}
+		end
+		def report_medwin_diffs
+			fmt = <<-EOS
+Pharmacode: %s
+%s
+Medwin Swissmedic-Nr:  %5s %3s 
+BSV-XLS Swissmedic-Nr: %5s %3s
+			EOS
+			medwin_sl_diffs = @medwin_sl_diffs.collect { |package|
+				mw = package.medwin_ikskey.to_s
+				sl = package.sl_ikskey.to_s
+				sprintf(fmt, package.pharmacode, package.name, 
+					mw[0,5], mw[5,3], sl[0,5], sl[5,3])
+			}.sort
+			[
+				format_header("Medwin-Differences:", @medwin_sl_diffs.size),
+				medwin_sl_diffs.join("\n"),
+			].join("\n")
+		end
+		def report_out_of_sale
+			medwin_out_of_sale = @medwin_out_of_sale.collect { |pac| 
+				report_format(pac).join("\n")
+			}.sort
+			[
+				format_header("Ausser Handel (laut Medwin):", @medwin_out_of_sale.size),
+				medwin_out_of_sale.join("\n\n"),
+			].join("\n")
+		end
+		def report_todo
+			guessed = @guessed_packages.collect { |pac| 
+				report_format(pac).join("\n")
+			}.sort
+			registrations = @unknown_registrations.collect { |pac| 
+				report_format(pac).join("\n")
+			}.sort
+			packages = @unknown_packages.collect { |pac| 
+				report_format(pac).join("\n")
+			}.sort
+			parse_errors = @parse_errors.collect { |triplet|
+				sprintf("%-15s '%20s' '%s'", *triplet)
+			}.sort
+			[
+				format_header("Guessed Packages:", @guessed_packages.size),
+				guessed.join("\n\n"),
+				nil, nil, nil,
+				format_header("Unknown Registrations:", 
+					@unknown_registrations.size),
+				registrations.join("\n\n"),
+				nil, nil, nil,
+				format_header("Unknown Packages:", @unknown_packages.size),
+				packages.join("\n\n"),
+				nil, nil, nil,
+				format_header("Parse Errors:", @parse_errors.size),
+				parse_errors.join("\n"),
+			].join("\n")
 		end
 		def update_package(reg, pac)
 			differ = @package_diffs.fetch(pac.iksnr) {
