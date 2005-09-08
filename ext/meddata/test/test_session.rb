@@ -12,24 +12,20 @@ require 'mock'
 
 module ODDB
 	module MedData
-class Session
-	def initialize(param)
-	end
-end
-class MedDataTest < Test::Unit::TestCase
+class SessionTest < Test::Unit::TestCase
 	def setup
-		@session = Session.new(nil)
+		@session = Session.new('')
 	end
-	def test_post_hash__1 
+	def test_post_hash__1
 		data = {
 			:name	=>	'Meier',
 		}
 		expected = [
 			['__EVENTTARGET',	''],
 			['__EVENTARGUMENT', ''],
-			['txtSearchName', 'Meier'],
 			['btnSearch', 'Suche'],
-			['hiddenlang', ''],
+			['txtSearchName', 'Meier'],
+			['hiddenlang', 'de'],
 		]
 		result = @session.post_hash(data)
 		assert_equal(expected, result)
@@ -42,9 +38,9 @@ class MedDataTest < Test::Unit::TestCase
 			expected = [
 				['__EVENTTARGET', ''],
 				['__EVENTARGUMENT', ''],
-				['txtSearchName', "M\303\274ller"],
 				['btnSearch', 'Suche'],
-				['hiddenlang', ''],
+				['txtSearchName', "M\303\274ller"],
+				['hiddenlang', 'de'],
 			]
 			result = @session.post_hash(data)
 			assert_equal(expected, result)
@@ -57,10 +53,10 @@ class MedDataTest < Test::Unit::TestCase
 		expected = [
 			['__EVENTTARGET',	''],
 			['__EVENTARGUMENT', ''],
+			['btnSearch',	'Suche'],
 			['txtSearchName',	"M\303\274ller"],
 			['txtSearchZIP', "8000"],
-			['btnSearch',	'Suche'],
-			['hiddenlang', ''],
+			['hiddenlang', 'de'],
 		]
 		result = @session.post_hash(data)
 		assert_equal(expected, result)
@@ -77,14 +73,14 @@ class MedDataTest < Test::Unit::TestCase
 		expected = [
 			['__EVENTTARGET',	''],
 			['__EVENTARGUMENT', ''],
+			['btnSearch', 'Suche'],
 			['txtSearchName', "M\303\274ller"],
 			['ddlSearchCountry', "Schweiz"],
 			['txtSearchZIP', "8000",],
 			['txtSearchCity', "Cham"],
 			['ddlSearchStates', "Zug"],
 			['ddlSearchFunctions', "Dienstleistungsfirma"],
-			['btnSearch', 'Suche'],
-			['hiddenlang', ''],
+			['hiddenlang', 'de'],
 		]
 		result = @session.post_hash(data)
 		assert_equal(expected, result)

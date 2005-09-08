@@ -12,8 +12,8 @@ module ODDB
 	module MedData
 class OverflowError < RuntimeError; end
 MEDDATA_SERVER = 'www.medwin.ch'
-def detail(session, ctl, template)
-	html = session.detail_html(ctl)
+def MedData.detail(result, template)
+	html = result.session.detail_html(result.ctl)
 	writer = DetailWriter.new
 	formatter = Formatter.new(writer)
 	parser = HtmlParser.new(formatter)
@@ -21,25 +21,25 @@ def detail(session, ctl, template)
 	results = writer.extract_data(template)
 	remove_whitespace(results)
 end
-def remove_whitespace(data)
+def MedData.remove_whitespace(data)
 	data.each { |key, value|
 		value.gsub!(/\240/, "") unless(value.nil?)
 	}
 end
-def search(criteria, &block)
-	session = Session.new(MEDDATA_SERVER)
+def MedData.search(criteria, search_type=:partner, &block)
+	session = Session.new(MEDDATA_SERVER, search_type)
 	html = session.get_result_list(criteria)
 	if(html.include?('lblcountPreciseSearch'))
 		raise OverflowError, 'not all valid entries in result!'
 	end
-	writer = ResultWriter.new
+	writer = ResultWriter.new(search_type)
 	formatter = Formatter.new(writer)
 	parser = HtmlParser.new(formatter)
 	parser.feed(html)
 	results = writer.extract_data
 	_dispatch(session, results, &block)
 end
-def _dispatch(session, results, &block)
+def MedData._dispatch(session, results, &block)
 	if(block_given?)
 		results.each { |resultline|
 			ctl, values = resultline
@@ -54,10 +54,5 @@ def _dispatch(session, results, &block)
 		}
 	end
 end
-
-module_function :search
-module_function :remove_whitespace
-module_function :detail
-module_function :_dispatch
 	end
 end

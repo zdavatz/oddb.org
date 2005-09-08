@@ -129,7 +129,7 @@ module ODDB
 			end
 		end
 		class StubPackage
-			attr_accessor :package_size, :ikscat, :ikscd
+			attr_accessor :package_size, :ikscat, :ikscd, :description
 		end
 
 		def setup

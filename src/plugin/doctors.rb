@@ -189,8 +189,7 @@ module ODDB
 						next
 					end
 					eans = results.collect { |result|
-						details = MEDDATA_SERVER.detail(result.session, 
-							result.ctl, {:ean13 => [1,0]})
+						details = MEDDATA_SERVER.detail(result, {:ean13 => [1,0]})
 						details[:ean13]
 					}
 					if(eans.size == 1)

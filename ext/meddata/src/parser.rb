@@ -17,7 +17,12 @@ class Formatter < HtmlFormatter
 	end
 end
 class ResultWriter < NullWriter
-	def initialize
+	DG_PATTERNS = {
+		:partner => /DgMedwinPartner/,
+		:product => /DgMedrefProduct/,
+	}
+	def initialize(search_type=:partner)
+		@dg_pattern = DG_PATTERNS[search_type]
 		@tablehandlers = []
 		@linkhandlers = []
 	end
@@ -26,7 +31,7 @@ class ResultWriter < NullWriter
 		@tablehandlers.each { |handler|
 			unless(handler.nil?)
 				if(handler.attributes.any? { |key, val|
-					/DgMedwinPartner/.match(val)
+					@dg_pattern.match(val)
 				})
 					handler.each_row { |row|
 					unless(row.children(0).empty?)

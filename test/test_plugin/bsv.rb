@@ -6,6 +6,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'plugin/bsv'
+require 'flexmock'
 require 'date'
 
 module ODDB
@@ -23,6 +24,9 @@ module ODDB
 		class PackageDiffer
 			attr_accessor :both, :bsv, :smj
 		end
+		flexo = FlexMock.new
+		flexo.mock_handle(:search) { [] }
+		MEDDATA_SERVER = flexo
 		ARCHIVE_PATH = File.expand_path('../data', File.dirname(__FILE__))
 		public :balance_package
 		public :bulletin
@@ -1214,6 +1218,7 @@ a progressé pendant ou après le traitement standard.
 				"Company:            3M (Schweiz AG)",
 				"Iksnr:              39437",
 				"Ikscd:              031",
+				"Pharmacode:         ",
 				"Generic-type:       generic",
 				"Price-exfactory:    5.39",
 				"Price-public:       12.5",

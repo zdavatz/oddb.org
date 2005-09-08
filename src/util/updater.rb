@@ -79,7 +79,7 @@ module ODDB
 				klass = BsvPlugin2
 				plug = klass.new(@app)
 				subj = 'SL-Update Reconsidered'
-				wrap_update(klass, subj) { 
+				wrap_update(klass, subj) {
 					if(plug.update(latest))
 						log = logs.latest
 						change_flags = plug.change_flags.update(log.change_flags.odba_instance) 

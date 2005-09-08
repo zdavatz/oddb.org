@@ -17,8 +17,8 @@ module ODDB
 		include Persistence
 		ODBA_SERIALIZABLE = ['@change_flags', '@pointers', '@recipients',
 			'@files']
-		attr_accessor :report, :pointers, :recipients, :change_flags, :files
-		attr_accessor :date_str
+		attr_accessor :report, :pointers, :recipients, :change_flags, 
+			:files, :parts, :date_str
 		attr_reader :date
 
 		def initialize(date)
@@ -26,6 +26,7 @@ module ODDB
 			@report = ''
 			@pointers = []
 			@files = {}
+			@parts = []
 			@recipients = []
 		end
 		def notify(subject = nil)
@@ -37,17 +38,23 @@ module ODDB
 			
 			text = text_part(@report)
 
-			outgoing = if(@files.nil? || @files.empty?)
+			parts = @parts.nil? ? [] : @parts.dup
+			unless(@files.nil?)
+				@files.each { |path, mime|
+					begin
+						parts.push([mime, File.basename(path), File.read(path)])
+					rescue Errno::ENOENT
+					end
+				}
+			end
+			outgoing = if(parts.empty?)
 				text
 			else
 				multipart = TMail::Mail.new
 				multipart.parts << text
-				@files.each { |path, mime|
-					begin
-						mtype, stype = mime.split('/')
-						multipart.parts << file_part(mtype, stype, File.basename(path), File.read(path))
-					rescue Errno::ENOENT
-					end
+				parts.each { |mime, name, content|
+					mtype, stype = mime.split('/')
+					multipart.parts << file_part(mtype, stype, name, content)
 				}
 				multipart
 			end

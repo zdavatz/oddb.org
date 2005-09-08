@@ -61,8 +61,7 @@ module ODDB
 			results = MEDDATA_SERVER.search(criteria)
 			if(results.size == 1)
 				result = results.first
-				details = MEDDATA_SERVER.detail(result.session,
-					result.ctl, @medwin_template)
+				details = MEDDATA_SERVER.detail(result, @medwin_template)
 				update_company_data(comp, details)
 			end
 			#comp_name = comp.name.gsub(/\W/," ").split(" ")
@@ -115,8 +114,7 @@ module ODDB
 			results = MEDDATA_SERVER.search(criteria)
 			if(results.size == 1)
 				result = results.first
-				details = MEDDATA_SERVER.detail(result.session,
-					result.ctl, @medwin_template)
+				details = MEDDATA_SERVER.detail(result, @medwin_template)
 				update_package_data(pack, data)
 			end
 =begin

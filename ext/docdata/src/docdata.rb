@@ -66,16 +66,17 @@ module ODDB
 			# define Struct
 			_define_struct
 			unless(data.nil?)
-				result = MEDDATA_SERVER.search(data)
+				results = MEDDATA_SERVER.search(data)
 				keys = []
-				result.select { |value|
-					if(value[1] == data[:firstname])
-						keys.push(key)
+				results.select { |result|
+					if(result.values[1] == data[:firstname])
+						keys.push(result)
 					end
 				}
 				ean13 = nil
 				if(keys.size == 1)
-					ean13 = parse_medwin_detail_data(MEDDATA_SERVER.detail_html(keys.first))[:ean13]
+					data = MEDDATA_SERVER.detail(keys.first, {:ean13 => [1,0]})
+					ean13 = data[:ean13]
 					puts "######### >>> #{ean13}"
 				end
 				unless(ean13.nil?)

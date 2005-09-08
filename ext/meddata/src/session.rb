@@ -11,26 +11,76 @@ require 'cgi'
 module ODDB
 	module MedData
 class Session < HttpSession
-	#HTTP_PATH = '/frmSearchPartner.aspx?lang=de&' 
-	HTTP_PATH = '/refdata_wa_medwin/frmSearchPartner.aspx?lang=de'
-	FORM_KEYS = [
-		[:name,	'txtSearchName'],
-		[:country, 'ddlSearchCountry'],
-		[:plz, 'txtSearchZIP'],
-		[:city,	'txtSearchCity'],
-		[:state, 'ddlSearchStates'],
-		[:functions, 'ddlSearchFunctions'],
-		[:ean,	'txtSearchEAN'],
-	]
-	def initialize(server)
-		super
-		resp = get(HTTP_PATH)
+	FORM_KEYS = {
+		:partner => [
+			[:name,	'txtSearchName'],
+			[:country, 'ddlSearchCountry'],
+			[:plz, 'txtSearchZIP'],
+			[:city,	'txtSearchCity'],
+			[:state, 'ddlSearchStates'],
+			[:functions, 'ddlSearchFunctions'],
+			[:ean,	'txtSearchEAN'],
+		],
+		:product => [
+			[:name,	'txtSearchProductName'],
+			[:ean,	'txtSearchEAN'],
+			[:pharmacode, 'txtSearchPharmacode'],
+			[:company,	'txtSearchProducer'],
+		],
+	}
+	HTTP_PATHS = {
+		:partner =>	'/refdata_wa_medwin/frmSearchPartner.aspx?lang=de',
+		:product =>	'/refdata_wa_medwin/frmSearchProduct.aspx?lang=de',
+	}
+	DETAIL_KEYS = {
+		:partner => "DgMedwinPartner",
+		:product => "DgMedrefProduct",
+	}
+	attr_accessor :http_path, :form_keys, :detail_key
+	def initialize(server, search_type=:partner)
+		@http_path = HTTP_PATHS[search_type]
+		@form_keys = FORM_KEYS[search_type]
+		@detail_key = DETAIL_KEYS[search_type]
+		super(server)
+		resp = get(self)
 		handle_resp!(resp)
+	end
+	def detail_html(ctl)
+		hash = post_hash({}, ctl)
+		tries = 3
+		begin
+			resp = post(@http_path, hash)
+			resp.body
+		rescue Errno::ECONNRESET
+			if(tries > 0)
+				tries -= 1
+				sleep(3 - tries)
+				retry
+			else
+				raise
+			end
+		end
+	end
+	def handle_resp!(resp)
+		@cookie_header = resp["set-cookie"]
+		resp.body.each { |line|
+			if(line.match(/VIEWSTATE/))
+				arr = line.split('value')[1].split('"')
+				@viewstate = arr[1]
+			end
+		}
+		@viewstate
+	end
+	def get_result_list(criteria)
+		hash = post_hash(criteria)
+		resp = post(self.http_path, hash)
+		@viewstate = handle_resp!(resp)
+		resp.body
 	end
 	def post_hash(criteria, ctl=nil)
 		data = if(ctl)
 			[['__EVENTTARGET',
-				"DgMedwinPartner:#{ctl}:_ctl0"],
+				"#@detail_key:#{ctl}:_ctl0"],
 				['__EVENTARGUMENT',	''],
 			]
 		else
@@ -43,7 +93,7 @@ class Session < HttpSession
 		if(@viewstate)
 			data.push(['__VIEWSTATE', @viewstate])
 		end
-		FORM_KEYS.each { |key, new_key|
+		@form_keys.each { |key, new_key|
 			if(val = criteria[key])
 				val = Iconv.iconv('utf8', 'latin1', val.to_s).first
 				data.push([new_key, val])
@@ -55,41 +105,9 @@ class Session < HttpSession
 	def post_headers
 		headers = super
 		if(@cookie_header)
-			#headers.push(['User-Agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7) Gecko/20040917 Firefox/0.9.3'])
-			#headers.push(['Accept', 'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5'])
-			#headers.push(['Accept-Language', 'en-us,en;q=0.5'])
-			#headers.push(['Accept-Encoding', 'gzip,deflate'])
-			#headers.push(['Accept-Charset', 'ISO-8859-1,utf-8;q=0.7,*;q=0.7'])
-			#headers.push(['Keep-Alive', '300'])
-			#headers.push(['Connection', 'keep-alive'])
-			#headers.push(['Referer', 'http://www.medwin.ch/frmSearchPartner.aspx?lang=de'])
 			headers.push(['Cookie', @cookie_header])
 		end
 		headers
-	end
-	def handle_resp!(resp)
-		@cookie_header = resp["set-cookie"]
-		@viewstate = String.new
-		resp.body.each { |line|
-			if(line.match(/VIEWSTATE/))
-				arr = line.split('value')[1].split('"')
-				@viewstate = arr[1]
-			end
-		}
-		@viewstate
-	end
-	def detail_html(ctl)
-		#hash = post_hash(ctl)
-		hash = post_hash({}, ctl)
-		resp = post(HTTP_PATH, hash)
-		#@viewstate = nil
-		resp.body
-	end
-	def get_result_list(criteria)
-		hash = post_hash(criteria)
-		resp = post(HTTP_PATH, hash)
-		@viewstate = handle_resp!(resp)
-		resp.body
 	end
 end
 	end
