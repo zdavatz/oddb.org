@@ -494,8 +494,10 @@ end
 			#	diff.to_s unless diff.empty?
 			#}.compact.sort
 			medwin_sl_diffs = @medwin_sl_diffs.collect { |package|
-				sprintf("%s\nMedwin: %8s <-> BSV-XLS: %8s", package.name, 
-					package.medwin_ikskey, package.sl_ikskey)
+				mw = package.medwin_ikskey.to_s
+				sl = package.sl_ikskey.to_s
+				sprintf("%s\nMedwin: %5s %3s <-> BSV-XLS: %5s %3s", package.name, 
+					mw[0,5], mw[5,3], sl[0,5], sl[5,3])
 			}.sort
 			medwin_out_of_sale = @medwin_out_of_sale.collect { |pac| 
 				report_format(pac).join("\n")
@@ -533,8 +535,8 @@ end
 				format_header("Medwin-Differences:", @medwin_sl_diffs.size),
 				medwin_sl_diffs.join("\n\n"),
 				nil, nil, nil,
-				format_header("Medwin-Out of sale:", @medwin_out_of_sale.size),
-				medwin_out_of_sale.join("\n"),
+				format_header("Ausser Handel (laut Medwin):", @medwin_out_of_sale.size),
+				medwin_out_of_sale.join("\n\n"),
 				nil,
 			].join("\n")
 		end
