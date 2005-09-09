@@ -75,7 +75,6 @@ module ODDB
 					@stack.pop
 				end
 			else
-				#puts  [@stack.length, found].join("/")
 				while @stack.length > found
 					tag = @stack[-1]
 					#puts "pop #{tag}"
@@ -184,7 +183,9 @@ module ODDB
 			end
 			def cdata
 				cdata = _cdata
-				if(cdata.size == 1)
+				if(cdata.empty?)
+					''
+				elsif(cdata.size == 1)
 					cdata.first
 				else
 					cdata
@@ -221,19 +222,6 @@ module ODDB
 			end
 			def send_cdata(data)
 				@current_line << data
-				if(@current_line.length > MAX_WIDTH)
-					idx = @current_line.rindex(/\s+/, MAX_WIDTH)
-					range = if(idx.nil? || idx == 0)
-						MAX_WIDTH..-1
-					else
-						idx..-1
-					end
-					rest = @current_line[range]
-					@current_line[range] = ""
-					next_line
-					send_cdata(rest)
-				end
-				@current_line
 			end
 			def send_format(fmtstr)
 				@current_formats[@current_line.size] = fmtstr
@@ -352,7 +340,7 @@ module ODDB
 						#formatted_cdata = ''
 						if(cell = row.cells[idx])
 							colspan = cell.colspan
-							cdata = cell._cdata[idy].to_s.strip
+							cdata = cell._cdata(false)[idy].to_s.strip
 							#formatted_cdata = cell.formatted_cdata[idy].to_s.strip
 							if(colspan > 1)
 								total_w = 0
@@ -455,7 +443,6 @@ module ODDB
 			@align_stack.push(alignment)
 		end
 		def push_link(attributes)
-			#puts 'push link!'
 			@linkhandler = HtmlLinkHandler.new(attributes)
 			@link_stack << @linkhandler
 			@writer.new_linkhandler(@linkhandler)
@@ -466,7 +453,6 @@ module ODDB
 			@writer.new_fonthandler(@fonthandler)
 		end
 		def push_table(attributes)
-			#puts "push table!"
 			@tablehandler = HtmlTableHandler.new(attributes)
 			@table_stack << @tablehandler 
 			@writer.new_tablehandler(@tablehandler)			
