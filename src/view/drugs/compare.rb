@@ -87,11 +87,20 @@ class CompareList < HtmlGrid::List
 		model.active_agents.join(',<br>')
 	end
 end
-class Compare < View::ResultTemplate
-	CONTENT = View::Drugs::CompareList
-	FOOT = View::ResultFoot
+class CompareComposite < HtmlGrid::Composite
+	CSS_CLASS = 'composite'
+	COMPONENTS = {
+		[0,0] => CompareList,
+		[0,1] => View::ResultFoot,
+	}
 end
+class Compare < View::PrivateTemplate
+	SNAPBACK_EVENT = :result
+	CONTENT = CompareComposite
+end
+
 class EmptyCompareComposite < HtmlGrid::Composite
+
 	COMPONENTS = {
 		[0,0]		=>	'compare_title_no_atc',
 		[0,1]		=>	:compare_desc0_no_atc,
@@ -101,7 +110,7 @@ class EmptyCompareComposite < HtmlGrid::Composite
 	}
 	CSS_MAP = {
 		[0,0]			=>	'th',
-		[0,1,2,2]	=>	'list',
+		[0,1,1,2]	=>	'list',
 	}
 	CSS_CLASS = 'composite'
 	def compare_desc0_no_atc(model, session)
@@ -119,8 +128,9 @@ class EmptyCompareComposite < HtmlGrid::Composite
 		link
 	end
 end
-class EmptyCompare < View::ResultTemplate
+class EmptyCompare < View::PrivateTemplate
 	CONTENT = View::Drugs::EmptyCompareComposite
+	SNAPBACK_EVENT = :result
 end
 		end
 	end

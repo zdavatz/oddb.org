@@ -35,8 +35,12 @@ module ODDB
 		def Session.html_cache
 			@@html_cache
 		end
-		def Session.reset_query_limit
-			@@requests.clear
+		def Session.reset_query_limit(ip = nil)
+			if(ip)
+				@@requests.delete(ip)
+			else
+				@@requests.clear
+			end
 		end
 		def Session.request_log
 			path = File.expand_path('../../log/request_log', 

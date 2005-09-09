@@ -3,7 +3,7 @@
 
 require 'delegate'
 
-module ODDB
+	module ODDB
 	class Comparison
 		include Enumerable
 		attr_reader :package, :comparables
@@ -55,6 +55,9 @@ module ODDB
 		end
 		def atc_class
 			@package.atc_class
+		end
+		def pointer_descr
+			@package.name_base
 		end
 	end
 end

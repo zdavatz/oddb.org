@@ -28,13 +28,8 @@ module ODDB
 						pdf_link = true
 =end
 					end
-					link = if(@session.user.allowed?(model))
-						HtmlGrid::Link.new(:fachinfo_short, model, 
-							session, self)
-					else
-						HtmlGrid::PopupLink.new(:fachinfo_short, 
+					link = HtmlGrid::Link.new(:fachinfo_short, 
 							model, session, self)
-					end
 					if(fi_link)
 						link.href = @lookandfeel._event_url(:resolve,
 							{'pointer' => fachinfo.pointer})

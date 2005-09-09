@@ -145,6 +145,7 @@ class Ipn < State::Global
 				lookandfeel.lookup(:poweruser_mail_body),
 				lookandfeel.lookup(:poweruser_mail_instr, duration,
 					lookandfeel._event_url(:login_form)),
+				lookandfeel.lookup(:poweruser_regulatory),
 			]
 			outgoing.body = parts.join("\n\n")
 		}

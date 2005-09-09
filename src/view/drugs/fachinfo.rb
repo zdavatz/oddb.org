@@ -224,10 +224,11 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 		super(model, session)
 	end
 end
-class Fachinfo < View::PopupTemplate
+class Fachinfo < View::PrivateTemplate
 	CONTENT = View::Drugs::FachinfoComposite
+	SNAPBACK_EVENT = :result
 end
-class FachinfoPreview < View::PopupTemplate
+class FachinfoPreview < View::PrivateTemplate
 	CONTENT = View::Drugs::FachinfoPreviewComposite
 end
 class FachinfoPrint < View::PrintTemplate
