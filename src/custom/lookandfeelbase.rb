@@ -8,6 +8,22 @@ module ODDB
 	class Doctor; end
 	class Hospital; end
 	class LookandfeelBase <	SBSM::Lookandfeel
+		poweruser_regulatory = <<-EOS
+Hinweis: Arbeiten Sie für eine Pharmafirma als Produktmanager oder in der Regulatoryabteilung? Sind Sie Arzt oder Apotheker? Dann beachten Sie bitte folgende Links:
+				
+Für die Stammdatenmutation:
+http://wiki.oddb.org/wiki.php/ODDB/Stammdatenmutation
+Online Editieren Ihrer Fachinformation:
+http://wiki.oddb.org/wiki.php/ODDB/Fi-Editor
+Neue Fachinfo hochladen:
+http://wiki.oddb.org/wiki.php/ODDB/Fi-Upload
+Neue Patienteninfo hochladen:
+http://wiki.oddb.org/wiki.php/ODDB/Pi-Upload
+
+Mit freundlichen Grüssen
+Zeno Davatz
++41 43 540 05 50
+		EOS
 		LANGUAGES = [
 			'de', 'fr', 'en'
 		]
@@ -730,6 +746,7 @@ module ODDB
 				:poweruser_mail_salut1		=>	' ',
 				:poweruser_mail_salut2		=>	'',
 				:poweruser_mail_subject		=>	'Power-User bei ODDB.org',
+				:poweruser_regulatory 		=>	poweruser_regulatory,
 				:praxis_header						=>	'Praxis-Adresse',
 				:pretty_dose							=>	'St&auml;rke',
 				:preview									=>	'Vorschau',
