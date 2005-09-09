@@ -252,6 +252,7 @@ end
 	end
 	class BsvPlugin2 < Plugin
 		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
+		MEDDATA_SLEEP = 0.2
 		class ParsedPackage
 			include SizeParser
 			attr_accessor :sl_dossier, :iksnr, :ikscd, :introduction_date, 
@@ -661,9 +662,9 @@ end
 					package.pharmacode = pcode
 					@ptable.store(pcode, package)
 					unless(medwin_iks = load_ikskey(pcode))
-						sleep(0.2)
 						@medwin_out_of_sale.push(package)
 					end
+					sleep(MEDDATA_SLEEP)
 				end
 				package.ikskey = (medwin_iks || sl_iks)
 				if(!(medwin_iks.nil? || medwin_iks == sl_iks))

@@ -27,6 +27,7 @@ module ODDB
 		flexo = FlexMock.new
 		flexo.mock_handle(:search) { [] }
 		MEDDATA_SERVER = flexo
+		MEDDATA_SLEEP = 0
 		ARCHIVE_PATH = File.expand_path('../data', File.dirname(__FILE__))
 		public :balance_package
 		public :bulletin
