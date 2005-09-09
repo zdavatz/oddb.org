@@ -3,7 +3,7 @@
 
 require 'state/drugs/global'
 require 'view/drugs/fachinfo'
-
+require 'delegate'
 require 'ext/chapterparse/src/parser'
 require 'ext/chapterparse/src/writer'
 
@@ -11,9 +11,17 @@ module ODDB
 	module State
 		module Drugs
 class Fachinfo < State::Drugs::Global
+	class FachinfoWrapper < DelegateClass(ODDB::Fachinfo)
+		attr_accessor :pointer_descr
+	end
 	VIEW = View::Drugs::Fachinfo
-	VOLATILE = true
 	LIMITED = true
+	def init
+		@model = FachinfoWrapper.new(@model)
+		descr = @session.lookandfeel.lookup(:fachinfo_descr, 
+			@model.name_base)
+		@model.pointer_descr = descr
+	end
 end
 class FachinfoPreview < State::Drugs::Global
 	VIEW = View::Drugs::FachinfoPreview
@@ -24,9 +32,8 @@ class FachinfoPrint < State::Drugs::Global
 	VOLATILE = true
 	LIMITED = true
 end
-class RootFachinfo < State::Drugs::Global
+class RootFachinfo < Fachinfo
 	VIEW = View::Drugs::RootFachinfo
-	#VOLATILE = true
 	def	update
 		mandatory = [:html_chapter, :chapter]
 		keys = mandatory + [:heading]
