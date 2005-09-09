@@ -17,6 +17,7 @@ module ODDB
 				@chapter
 			end
 			def new_font(font)
+				return if @table
 				case font
 				when [nil, 1, nil, nil]
 					if(@target.is_a?(Text::Paragraph) \
@@ -50,17 +51,30 @@ module ODDB
 					end
 				end
 			end
+			def new_tablehandler(th)
+				if(@table)
+					paragraph = @section.next_paragraph
+					paragraph.preformatted!
+					paragraph << @table.to_s
+				end
+				@table = @target = th
+				if(th.nil?)
+					@target = @section.next_paragraph
+				end
+			end
 			def preformatted?(target)
 				target.is_a?(Text::Paragraph) \
 					&& target.preformatted?
 			end
 			def send_line_break
-				if((@target.empty? && @subheading) \
+				if(!@table && (@target.empty? && @subheading) \
 					|| @target == @section.subheading)
 					@subheading << "\n"
 					@subheading = nil
 				end
-				if(preformatted?(@target))
+				if(@table)
+					@table.next_line
+				elsif(preformatted?(@target))
 					@target << "\n"
 				else
 					@target = @section.next_paragraph

@@ -42,6 +42,16 @@ module ODDB
 		}
 		Entitydefs = entities	
 
+		def end_table
+			@formatter.pop_table
+		end
+		def end_td
+			@formatter.pop_alignment
+			@formatter.pop_tablecell
+		end
+		def end_tr
+			@formatter.pop_tablerow
+		end
 		def finish_endtag(tag)
 			if tag == ''
 				found = @stack.length - 1
@@ -84,6 +94,20 @@ module ODDB
 				handle_data(data)
 			end
 		end
+		def start_table(attrs)
+			@formatter.push_table(attrs)
+		end
+		def start_td(attrs)
+			align = attrs.collect { |key, val|	
+				val if(key == 'align')
+			}.compact.last
+			align = align.downcase if(align.is_a? String)
+			@formatter.push_alignment(align)
+			@formatter.push_tablecell(attrs)
+		end
+		def start_tr(attrs)
+			@formatter.push_tablerow(attrs)
+		end
 	end
 	class HtmlParser < BasicHtmlParser
 		def do_img(attrs)
@@ -124,16 +148,6 @@ module ODDB
 		def end_font
 			@formatter.pop_fonthandler
 		end
-		def end_table
-			@formatter.pop_table
-		end
-		def end_td
-			@formatter.pop_alignment
-			@formatter.pop_tablecell
-		end
-		def end_tr
-			@formatter.pop_tablerow
-		end
 		def feed(data)
 			super(data.tr("\222", "'"))
 		end
@@ -146,24 +160,11 @@ module ODDB
 		def start_font(attrs)
 			@formatter.push_fonthandler(attrs)
 		end
-		def start_table(attrs)
-			@formatter.push_table(attrs)
-		end
-		def start_td(attrs)
-			align = attrs.collect { |key, val|	
-				val if(key == 'align')
-			}.compact.last
-			align = align.downcase if(align.is_a? String)
-			@formatter.push_alignment(align)
-			@formatter.push_tablecell(attrs)
-		end
-		def start_tr(attrs)
-			@formatter.push_tablerow(attrs)
-		end
 	end
 	class HtmlTableHandler
 		class Cell
 			attr_reader :attributes, :colspan, :children
+			MAX_WIDTH = 32
 			def initialize(attr, keep=false)
 				@keep_empty_lines = keep
 				@attributes = attr.inject({}) { |inj, pair| 
@@ -171,35 +172,76 @@ module ODDB
 					inj.store(key.downcase, val)
 					inj
 				}
-				@cdata = ''
+				@current_line = ''
+				@cdata = [@current_line]
 				@children = []
 				@colspan = [@attributes["colspan"].to_i, 1].max
+				@current_formats = {}
+				@formats = [@current_formats]
 			end
 			def add_child(child)
 				@children.push(child)
 			end
 			def cdata
-				if(@cdata.is_a? Array)
-					cdata = @cdata.collect { |data|
-						data.strip
-					}
-					cdata.delete('') unless @keep_empty_lines
-					(cdata.length == 1) ? cdata.first : cdata
+				cdata = _cdata
+				if(cdata.size == 1)
+					cdata.first
 				else
-					@cdata.strip
+					cdata
 				end
+			end
+			def _cdata(flatten=true)
+				cdata = @cdata.collect { |data|
+					data.strip
+				}
+				cdata.delete('') unless @keep_empty_lines
+				cdata
+			end
+			def formatted_cdata
+				cdata = []
+				@cdata.each_with_index { |data, idx|
+					ddata = data.dup
+					@formats[idx].sort.reverse.each { |pos, fmt|
+						if(pos <= ddata.length)
+							ddata[pos, 0] = fmt
+						end
+					}
+					cdata << ddata
+				}
+				cdata
+			end
+			def height
+				_cdata.size
 			end
 			def next_line
-				unless(@cdata.is_a? Array)
-					@cdata = [@cdata]
-				end
-				@cdata << ''
+				@current_formats = {}
+				@formats << @current_formats
+				@current_line = ''
+				@cdata << @current_line
 			end
 			def send_cdata(data)
-				target = (@cdata.is_a?(Array)) \
-					? @cdata.last \
-					: @cdata
-				target << data
+				@current_line << data
+				if(@current_line.length > MAX_WIDTH)
+					idx = @current_line.rindex(/\s+/, MAX_WIDTH)
+					range = if(idx.nil? || idx == 0)
+						MAX_WIDTH..-1
+					else
+						idx..-1
+					end
+					rest = @current_line[range]
+					@current_line[range] = ""
+					next_line
+					send_cdata(rest)
+				end
+				@current_line
+			end
+			def send_format(fmtstr)
+				@current_formats[@current_line.size] = fmtstr
+			end
+			def width
+				width = @cdata.collect { |line| 
+					line.strip.size }.max
+				(width.to_f / @colspan.to_f).ceil
 			end
 		end
 		class Row
@@ -221,7 +263,16 @@ module ODDB
 					@cells.at(x).children
 				end
 			end
-			def next_cell(attr, keep=false)
+			def current_colspan
+				@current_cell.colspan
+			end
+			def each_cell_with_index(&block)
+				@cells.each_with_index(&block)
+			end
+			def height
+				@cells.collect { |cell| cell.height }.max
+			end
+			def next_cell(attr={}, keep=false)
 				@current_cell = Cell.new(attr, keep)
 				@cells += Array.new(@current_cell.colspan, @current_cell)
 				@current_cell
@@ -230,7 +281,10 @@ module ODDB
 				@current_cell.next_line
 			end
 			def send_cdata(data)
-				@current_cell.send_cdata(data)
+				(@current_cell || next_cell).send_cdata(data)
+			end
+			def send_format(fmtstr)
+				(@current_cell || next_cell).send_format(fmtstr)
 			end
 		end
 		attr_reader :attributes
@@ -251,6 +305,9 @@ module ODDB
 				@rows.at(y).children(x)
 			end
 		end
+		def current_colspan
+			@current_row.current_colspan
+		end
 		def each_row(&block)
 			@rows.each(&block)
 		end
@@ -267,13 +324,70 @@ module ODDB
 		def next_cell(attr, keep=false)
 			(@current_row || next_row({})).next_cell(attr, keep)
 		end
-		def next_row(attr)
+		def next_row(attr={})
 			@current_row = Row.new(attr)
 			@rows.push(@current_row)
 			@current_row
 		end
 		def send_cdata(data)
-			@current_row.send_cdata(data)
+			(@current_row || next_row).send_cdata(data)
+		end
+		alias :<< :send_cdata
+		def to_s
+			if(@rows.empty?)
+				return ''
+			end
+			hline = "-" * width
+			lines = [ hline ]
+			@rows.each { |row|
+				row.height.times { |idy|
+					cells = []
+					colspan = 1
+					@column_widths.each_with_index { |pad, idx|
+						if(colspan > 1)
+							colspan -= 1
+							next
+						end
+						cdata = ''
+						#formatted_cdata = ''
+						if(cell = row.cells[idx])
+							colspan = cell.colspan
+							cdata = cell._cdata[idy].to_s.strip
+							#formatted_cdata = cell.formatted_cdata[idy].to_s.strip
+							if(colspan > 1)
+								total_w = 0
+								colspan.times { |offset|
+									total_w += @column_widths[offset + idx]
+								}
+								total_w += (colspan - 1) * 3
+								pad = total_w - cdata.size 
+							else
+								pad -= cdata.size
+							end
+						end
+
+						#cells.push(formatted_cdata << (" " * pad))
+						cells.push(cdata << (" " * pad))
+					}
+					lines.push("| " << cells.join(' | ') << " |")
+				}
+				lines.push(hline)
+			}
+			lines.join("\n") << "\n"
+		end
+		def width
+			@column_widths = []
+			@rows.each { |row|
+				row.each_cell_with_index { |cell, idx|
+					oldval = @column_widths[idx]
+					newval = cell.width 
+					@column_widths[idx] = [oldval, newval].max
+				}
+			}
+			width = @column_widths.inject { |wdt, inj|
+				wdt + inj 
+			}
+			width + (@column_widths.size * 3) + 1
 		end
 	end
 	class HtmlLimitationHandler
