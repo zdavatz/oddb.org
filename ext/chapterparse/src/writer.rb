@@ -87,7 +87,7 @@ module ODDB
 				@target << data.tr("\240", " ")
 			end
 			def send_literal_data(data)
-				@target << data.tr("\240", " ").tr("\n\r", '')
+				@target << data.tr("\240", " ").gsub(/\r\n?/, "\n")
 			end
 		end
 	end
