@@ -72,7 +72,7 @@ Grammar OddbSize
 				ast = @@parser.parse(size)
 				multi, addition, count, measure, scale, dose, comform = ast.flatten
 				count = (count ? count[1].value.to_i : 1)
-			rescue ParseException => e
+			rescue ParseException, AmbigousParseException => e
 				puts '*'*60 
 				puts size
 				puts e.message
