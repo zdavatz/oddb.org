@@ -17,10 +17,14 @@ class Fachinfo < State::Drugs::Global
 	VIEW = View::Drugs::Fachinfo
 	LIMITED = true
 	def init
-		@model = FachinfoWrapper.new(@model)
+		@fachinfo = @model
+		@model = FachinfoWrapper.new(@fachinfo)
 		descr = @session.lookandfeel.lookup(:fachinfo_descr, 
 			@model.name_base)
 		@model.pointer_descr = descr
+	end
+	def allowed?
+		@session.user.allowed?(@fachinfo)
 	end
 end
 class FachinfoPreview < State::Drugs::Global

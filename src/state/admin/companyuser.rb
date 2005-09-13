@@ -15,7 +15,7 @@ class UserCompany < Company; end
 class Fachinfo < Global; end
 class RootFachinfo < Fachinfo; end
 class CompanyFachinfo < RootFachinfo; end
-		end
+	end
 		module Admin
 class Registration < Global; end
 class CompanyRegistration < Registration; end
