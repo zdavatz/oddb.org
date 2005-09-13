@@ -5,7 +5,6 @@ require 'util/persistence'
 require 'util/language'
 require 'model/registration_observer'
 
-
 module ODDB
 	class Fachinfo
 		class ChangeLogItem
@@ -44,7 +43,7 @@ module ODDB
 			}
 			:unknown
 		end
-		def pointer_descr
+		def name_base
 			@registrations.first.name_base
 		end
 		def substance_names
@@ -52,7 +51,7 @@ module ODDB
 				reg.substance_names
 			}.flatten.uniq
 		end
-	end
+end
 	class FachinfoDocument
 		include Persistence
 		attr_accessor :name, :galenic_form, :composition
@@ -124,4 +123,4 @@ module ODDB
 			:date,
 		]
 	end
-end
+end	

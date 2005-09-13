@@ -85,11 +85,11 @@ module ODDB
 		SESSION_WEIGHT = 4
 		VIRAL_MODULE = State::Admin::CompanyUser
 		def allowed?(obj)
-			case obj
+			case obj.odba_instance
 			when ActiveAgent
 				allowed?(obj.sequence)
 			when Company
-				@model.odba_instance == obj.odba_instance
+				@model.odba_instance == obj
 			when Fachinfo
 				allowed?(obj.registrations.first)
 			when Package

@@ -12,9 +12,10 @@ class Company < Global; end
 class UserCompany < Company; end
 		end
 		module Drugs
-class RootFachinfo < Global; end
+class Fachinfo < Global; end
+class RootFachinfo < Fachinfo; end
 class CompanyFachinfo < RootFachinfo; end
-		end
+	end
 		module Admin
 class Registration < Global; end
 class CompanyRegistration < Registration; end

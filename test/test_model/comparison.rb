@@ -5,14 +5,20 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'model/comparison'
+require 'state/drugs/compare'
 require 'model/dose'
 
 module ODDB
+	module State 
+		module Drugs
+class Compare
 	class Comparison
 		attr_reader :comparables
-		class PackageFacade < SimpleDelegator
+		class PackageFacade
 			attr_reader :package
+		end
+	end
+end
 		end
 	end
 end
@@ -34,6 +40,9 @@ class StubComparisonPackage
 	end
 end
 
+module ODDB
+	module State
+		module Drugs
 class TestComparison < Test::Unit::TestCase
 	def setup
 		@original = StubComparisonPackage.new(ODDB::Dose.new(10, 'Tabletten'), 1000)
@@ -43,7 +52,7 @@ class TestComparison < Test::Unit::TestCase
 		@pack4 = StubComparisonPackage.new(ODDB::Dose.new(5, 'Tabletten'), 0, "a")
 		@pack5 = StubComparisonPackage.new(ODDB::Dose.new(5, 'Tabletten'), nil, "b")
 		@original.comparables = [@pack1, @pack2, @pack3, @pack4, @pack5]
-		@comp = ODDB::Comparison.new(@original)
+		@comp = Compare::Comparison.new(@original)
 	end
 	def test_empty
 		assert_equal(false, @comp.empty?)
@@ -67,20 +76,22 @@ class TestComparison < Test::Unit::TestCase
 	end
 	def test_comparables
 		original = StubComparisonPackage.new(ODDB::Dose.new(10, 'Tabletten'), 1000)
-		comp = ODDB::Comparison.new(original)
+		comp = Compare::Comparison.new(original)
 		assert_equal(true, comp.empty?)
 	end
 end
-
 class TestPackageFacade < Test::Unit::TestCase
 	def setup
 		pack1 = StubComparisonPackage.new(ODDB::Dose.new(5, 'Tabletten'), nil)
 		pack2 = StubComparisonPackage.new(ODDB::Dose.new(5, 'Tabletten'), 374)
 		original = StubComparisonPackage.new(ODDB::Dose.new(5, 'Tabletten'), nil)
-		@pack1 = ODDB::Comparison::PackageFacade.new(pack1, original)
-		@pack2 = ODDB::Comparison::PackageFacade.new(pack2, original)
+		@pack1 = Compare::Comparison::PackageFacade.new(pack1, original)
+		@pack2 = Compare::Comparison::PackageFacade.new(pack2, original)
 	end
 	def test_comparable
 		assert_nothing_raised { @pack1 <=> @pack2 }
+	end
+end
+		end
 	end
 end

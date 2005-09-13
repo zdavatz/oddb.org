@@ -2,7 +2,6 @@
 # State::Global -- oddb -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
-require 'model/comparison'
 require 'state/legalnote'
 require 'state/admin/login'
 require 'state/companies/company'
@@ -63,6 +62,7 @@ module ODDB
 			DIRECT_EVENT = nil 
 			GLOBAL_MAP = {
 				:companylist					=>	State::Companies::CompanyList,
+				:compare							=>	State::Drugs::Compare,
 				#:doctorlist						=>	State::Doctors::DoctorList,
 				:ddd									=>	State::Drugs::DDD,
 				:download_export			=>	State::User::DownloadExport,
@@ -139,22 +139,6 @@ module ODDB
 					proceed_download.checkout
 				when :drugs
 					export_csv.checkout
-				end
-			end
-			def compare
-				if((pointer = @session.user_input(:pointer)) \
-					&& pointer.is_a?(Persistence::Pointer))
-					package = pointer.resolve(@session.app)
-					if(package.is_a? Package)
-						begin
-							State::Drugs::Compare.new(@session, ODDB::Comparison.new(package))
-						rescue StandardError => e
-							puts e.class
-							puts e.message
-							puts e.backtrace
-							self
-						end
-					end
 				end
 			end
 			def clear_interaction_basket
