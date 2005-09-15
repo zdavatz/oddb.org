@@ -41,9 +41,6 @@ module ODDB
 			if(flags = pac_flags[pack.pointer.to_s])
 				row[0] += flags
 			end
-			row[0] = row[0].collect { |flg| 
-				self::class::NUMERIC_FLAGS[flg] 
-			}.uniq.sort
 			row[2] = pack.ikscd
 			row[10] = pack.ikscat
 			row[13] = pack.size
@@ -112,7 +109,12 @@ module ODDB
 					rows += export_registration(reg, [flags], pac_flags)
 				end
 			}
-			rows.delete_if { |row| row.first.empty? }
+			rows.delete_if { |row| 
+				row[0] = row[0].collect { |flg| 
+					self::class::NUMERIC_FLAGS[flg] 
+				}.compact.uniq.sort
+				row.first.empty? 
+			}
 			rows.sort_by { |row| 
 				[ 
 					row.first, 

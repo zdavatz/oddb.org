@@ -18,7 +18,8 @@ class ActiveAgent < State::Admin::Global
 		State::Admin::Sequence.new(@session, sequence)
 	end	
 	def update
-		keys = [:substance, :dose, :chemical_substance, :chemical_dose]
+		keys = [:substance, :dose, :chemical_substance, :chemical_dose,
+			:spagyric_dose, :equivalent_substance, :equivalent_dose]
 		input = user_input(keys, [:substance])
 		newstate = self
 		unless (error?)

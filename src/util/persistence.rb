@@ -11,7 +11,9 @@ module ODDB
 		def init(app)
 		end
 		def ancestors(app)
-			@pointer.ancestors.collect { |pointer| pointer.resolve(app) }
+			if(@pointer)
+				@pointer.ancestors.collect { |pointer| pointer.resolve(app) }
+			end
 		end
 		def diff(values, app=nil)
 			result = {}
