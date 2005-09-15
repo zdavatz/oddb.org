@@ -60,7 +60,7 @@ module ODDB
 			if(ind = reg.indication)
 				row[6] = ind.de
 			end
-			row[7] = reg.export_flag
+			row[7] = reg.export_flag ? 'Export' : ''
 			if(company = reg.company)
 				row[12] = reg.company.name
 				row[19] = reg.company.url

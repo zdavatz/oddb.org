@@ -412,6 +412,7 @@ Zeno Davatz
 				:export_csv								=>	'Resultat als CSV Downloaden',
 				:export_csv_descr					=>	'Der Download eines Resultats als CSV ist kostenpflichtig. Bitte geben Sie Ihre Kontakt-Daten an und gehen Sie dann weiter zum PayPal-Checkout.',
 				:export_csv_example				=>	'Beispiel-Download',
+				:export_flag							=>	'Exportregistration',
 				:fachinfo_all_title				=>	'Vollst&auml;ndige Fachinformation',
 				:fachinfo_all							=>	'Vollst. Fachinformation',
 				:fachinfo_column					=>	'Fachinformationen:',

@@ -14,7 +14,7 @@ module ODDB
 		alias :receiver_email :email
 		BOOLEAN = [
 			:cl_status,  :download, :experience, :recommend,
-			:impression, :helps, :show_email,
+			:impression, :helps, :show_email, :export_flag,
 		]
 		DATES = [
 			:inactive_date,
