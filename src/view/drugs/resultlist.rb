@@ -145,19 +145,6 @@ class ResultList < HtmlGrid::List
 	LOOKANDFEEL_MAP = {
 		:limitation_text	=>	:ltext,
 	}
-	def breakline(txt, length)
-		name = ''
-		line = ''
-		txt.to_s.split(/(:?[\s-])/).each { |part|
-			if((line.length + part.length) > length)
-				name << line << '<br>'
-				line = part
-			else
-				line << part
-			end
-		}
-		name << line
-	end
 	def company_name(model, session)
 		if(comp = model.company)
 			link = nil
@@ -226,24 +213,6 @@ class ResultList < HtmlGrid::List
 		].compact.join('&nbsp;/&nbsp;')
 		txt.set_attribute('title', title)
 		txt
-	end
-	def name_base(model, session)
-		link = HtmlGrid::Link.new(:compare, model, session, self)
-		link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
-		link.value = breakline(model.name_base, 25)
-		link.set_attribute('class', 'result-big' << resolve_suffix(model))
-		indication = model.registration.indication
-		descr = model.descr
-		if(descr && descr.empty?)
-			descr = nil
-		end
-		title = [
-			descr,
-			@lookandfeel.lookup(:ean_code, model.barcode),
-			(indication.send(@session.language) unless(indication.nil?)),
-		].compact.join(', ')
-		link.set_attribute('title', title)
-		link
 	end
 	def notify(model, session)
 		link = HtmlGrid::Link.new(:notify, model, session, self)
