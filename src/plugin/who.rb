@@ -321,7 +321,7 @@ module ODDB
 			writer.extract_ddd.each { |code, ddds|
 				pointer = Persistence::Pointer.new([:atc_class, code])
 				ddds.each { |hash|
-					ddd_ptr = pointer + [:ddd, hash[:administration_route]]
+					ddd_ptr = pointer + [:ddd, hash[:administration_route]||'*']
 					if(!(ddd = @app.resolve(ddd_ptr)) || ddd != hash)
 						hash.delete(:administration_route)
 						@app.update(ddd_ptr.creator, hash)
