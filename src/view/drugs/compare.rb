@@ -72,12 +72,6 @@ class CompareList < HtmlGrid::List
 		#offset = resolve_offset(offset, self::class::OFFSET_STEP)
 		super(model.comparables, offset)
 	end
-	def name_base(model, session)
-		txt = HtmlGrid::Component.new(model, session, self)
-		txt.set_attribute('title', 'EAN-Code:&nbsp;'+model.barcode)
-		txt.value = model.name_base 
-		txt
-	end
 	def price_difference(model, session)
 		if(diff = model.price_difference)
 			sprintf('%+d%', diff*100.0)

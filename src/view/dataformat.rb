@@ -6,11 +6,42 @@ require 'plugin/fxcrossrate'
 module ODDB
 	module View
 		module DataFormat
+			def breakline(txt, length)
+				name = ''
+				line = ''
+				txt.to_s.split(/(:?[\s-])/).each { |part|
+					if((line.length + part.length) > length)
+						name << line << '<br>'
+						line = part
+					else
+						line << part
+					end
+				}
+				name << line
+			end
 			def most_precise_dose(model, session)
 				if(model.respond_to?(:most_precise_dose))
 					dose = model.most_precise_dose
 					(dose && (dose.qty > 0)) ? dose : nil
 				end
+			end
+			def name_base(model, session)
+				link = HtmlGrid::Link.new(:compare, model, session, self)
+				link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
+				link.value = breakline(model.name_base, 25)
+				link.set_attribute('class', 'result-big' << resolve_suffix(model))
+				indication = model.registration.indication
+				descr = model.descr
+				if(descr && descr.empty?)
+					descr = nil
+				end
+				title = [
+					descr,
+					@lookandfeel.lookup(:ean_code, model.barcode),
+					(indication.send(@session.language) unless(indication.nil?)),
+				].compact.join(', ')
+				link.set_attribute('title', title)
+				link
 			end
 			def price_exfactory(model, session)
 				formatted_price(:price_exfactory, model)
