@@ -155,7 +155,28 @@ module ODDB
 				@writer.send_literal_data('First Line')
 				@writer.send_line_break
 				@writer.new_font(nil)
-				@writer.send_paragraph
+				@writer.send_paragraph({})
+				@writer.new_font([nil, nil, nil, 1])
+				@writer.send_literal_data('Second Line')
+				chapter = @writer.chapter
+				assert_equal(1, chapter.sections.size)
+				section = chapter.sections.first
+				assert_equal('', section.subheading)
+				assert_equal(1, section.paragraphs.size)
+				paragraph = section.paragraphs.first
+				assert_equal(true, paragraph.preformatted?)
+				expected = "First Line\nSecond Line"
+				assert_equal(expected, paragraph.text)
+			end
+			def test_preformatted_2_lines__too_many_newlines
+				@writer.new_font([nil, nil, nil, 1])
+				@writer.send_literal_data('First Line')
+				@writer.send_line_break
+				@writer.new_font(nil)
+				@writer.send_paragraph({})
+				@writer.send_line_break
+				@writer.send_line_break
+				@writer.send_line_break
 				@writer.new_font([nil, nil, nil, 1])
 				@writer.send_literal_data('Second Line')
 				chapter = @writer.chapter
@@ -173,7 +194,7 @@ module ODDB
 				@writer.send_literal_data('First Line')
 				@writer.send_line_break
 				@writer.new_font(nil)
-				@writer.send_paragraph
+				@writer.send_paragraph({})
 				@writer.send_flowing_data('Second Line')
 				chapter = @writer.chapter
 				assert_equal(1, chapter.sections.size)

@@ -110,6 +110,28 @@ module ODDB
 				super
 				@release_stack = []
 			end
+			def analyse_attributes(attrs, release)
+				if(style = fetch_attribute('style', attrs))
+					if(/\bmono(space)?\b/i.match(style))
+						start_pre(attrs)
+						release.push(:end_pre)
+					elsif(/\bsans-serif\b/i.match(style))
+						suspend_pre(release)
+					end
+					if(/\bbold\b/i.match(style))
+						start_b(attrs)
+						release.push(:end_b)
+					end
+					if(/\bitalic\b/i.match(style))
+						start_i(attrs)
+						release.push(:end_i)
+					end
+				elsif((klass = fetch_attribute('class', attrs)) \
+					&& /\bpreformatted\b/i.match(klass))
+					start_pre(attrs)
+					release.push(:end_pre)
+				end
+			end
 			def end_div
 				release_tag
 			end
@@ -139,43 +161,37 @@ module ODDB
 				block.call(release)
 				@release_stack.push(release)
 			end
+			def restart_pre
+				start_pre({})
+			end
 			def start_div(attrs)
-				if((klass = fetch_attribute('class', attrs)) \
-					&& /\bpreformatted\b/i.match(klass))
-					register_release_tag { |release|
-						start_pre(attrs)
-						release.push(:end_pre)
-					}	
-				end
+				register_release_tag { |release|
+					analyse_attributes(attrs, release)
+				}	
 				@formatter.add_line_break
 			end
 			def start_font(attrs)
 				register_release_tag { |release|
 					if(face = fetch_attribute('face', attrs))
-						if(/\bmono\b/i.match(face))
+						if(/\bmono(space)?\b/i.match(face))
 							start_pre(attrs)
 							release.push(:end_pre)
 						end
+					elsif(/\bsans-serif\b/i.match(face))
+						suspend_pre(release)
 					end
 				}
 			end
 			def start_span(attrs)
 				register_release_tag { |release|
-					if(style = fetch_attribute('style', attrs))
-						if(/\bmono\b/i.match(style))
-							start_pre(attrs)
-							release.push(:end_pre)
-						end
-						if(/\bbold\b/i.match(style))
-							start_b(attrs)
-							release.push(:end_b)
-						end
-						if(/\bitalic\b/i.match(style))
-							start_i(attrs)
-							release.push(:end_i)
-						end
-					end
+					analyse_attributes(attrs, release)
 				}
+			end
+			def suspend_pre(release)
+				if(@release_stack.any? { |rel| rel.include?(:end_pre) })
+					end_pre
+					release.push(:restart_pre)
+				end
 			end
 			def unknown_charref(ref)
 				if(char = SYMBOL_ENTITIES[ref])

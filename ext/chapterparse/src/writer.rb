@@ -21,7 +21,7 @@ module ODDB
 				case font
 				when [nil, 1, nil, nil]
 					if(@target.is_a?(Text::Paragraph) \
-						&& !@target.empty?)
+						&& !(@target.empty? || @target.preformatted?))
 						@target.set_format(:italic)
 					else
 						@section = @chapter.next_section
