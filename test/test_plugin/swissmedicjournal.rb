@@ -239,6 +239,7 @@ module ODDB
 			registration.mock_handle(:pointer) { pointer }
 			@plugin.update_registration(reg)
 		end
+=begin  -- 09/2005: do not accept incomplete Registrations.
 		def test_update_incomplete_anyway_if_has_iksnr
 			reg = StubSmjRegistration.new
 			reg.flags = [:ikscat]
@@ -275,6 +276,7 @@ module ODDB
 			}
 			@plugin.update_registration(reg)
 		end
+=end
 		def test_prune_sequences
 			seq1 = StubSequence.new
 			seq2 = StubSequence.new
