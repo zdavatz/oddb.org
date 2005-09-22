@@ -7,6 +7,7 @@ require 'htmlgrid/datevalue'
 require 'htmlgrid/inputdate'
 require 'htmlgrid/select'
 require 'htmlgrid/inputfile'
+require 'htmlgrid/inputcheckbox'
 require 'view/pointervalue'
 require 'view/additional_information'
 require 'view/inputdescription'
@@ -112,12 +113,13 @@ class RegistrationForm < View::Form
 		[2,3]		=>	:market_date,
 		[0,4]		=>	:indication,
 		[2,4]		=>	:inactive_date,
+		[0,5]		=>	:export_flag,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,4,5]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,4,9]	=>	'list',
+		[0,0,4,10]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
@@ -130,6 +132,7 @@ class RegistrationForm < View::Form
 		:registration_date	=>	HtmlGrid::InputDate,
 		:revision_date			=>	HtmlGrid::InputDate,
 		:fachinfo_label			=>	HtmlGrid::LabelText,
+		:export_flag				=>	HtmlGrid::InputCheckbox,
 	}
 	TAG_METHOD = :multipart_form
 	def init
@@ -139,29 +142,29 @@ class RegistrationForm < View::Form
 	end
 	def reorganize_components
 		if(@model.is_a?(Persistence::CreateItem))
-			components.store([1,5], :submit)
+			components.store([1,6], :submit)
 			#css_map.store([1,5], 'button')
 		else
 			components.update({
-				[0,5]		=>	'fi_upload_instruction0',
-				[2,5]		=>	:fachinfo_label,
-				[3,5]		=>	:fachinfo,
-				[0,6]		=>	'fi_upload_instruction1',
-				[1,6]		=>	:language_select,
-				[0,7]		=>	'fi_upload_instruction2',
-				[1,7]		=>	:fachinfo_upload,
-				[0,8]		=>	'fi_upload_instruction3',
-				[1,8]		=>	:submit,
-				[1,8,1]	=>	:new_registration,
+				[0,6]		=>	'fi_upload_instruction0',
+				[2,6]		=>	:fachinfo_label,
+				[3,6]		=>	:fachinfo,
+				[0,7]		=>	'fi_upload_instruction1',
+				[1,7]		=>	:language_select,
+				[0,8]		=>	'fi_upload_instruction2',
+				[1,8]		=>	:fachinfo_upload,
+				[0,9]		=>	'fi_upload_instruction3',
+				[1,9]		=>	:submit,
+				[1,9,1]	=>	:new_registration,
 			})
 			#component_css_map.store([0,5,4], 'standard')
 			#css_map.store([0,7,4], 'list')
-			css_map.store([0,5], 'result-b-r-unknown-left')
-			css_map.store([1,5], 'list-bg')
-			css_map.store([0,6], 'list-bg')
+			css_map.store([0,6], 'result-b-r-unknown-left')
 			css_map.store([1,6], 'list-bg')
 			css_map.store([0,7], 'list-bg')
 			css_map.store([1,7], 'list-bg')
+			css_map.store([0,8], 'list-bg')
+			css_map.store([1,8], 'list-bg')
 			#css_map.store([1,6], 'button')
 		end
 	end

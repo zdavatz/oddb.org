@@ -26,6 +26,7 @@ module ODDB
 				#mail_notification_stats
 			}
 			mail_patinfo_invoices
+			export_sl_pcodes
 			export_yaml
 			export_oddbdat
 			export_csv
@@ -85,6 +86,20 @@ module ODDB
 				sleep(30)
 			}
 		end
+		def export_pdf
+			FiPDFExporter.new(@app).run
+		end
+		def export_sl_pcodes
+			path = File.expand_path('../../data/txt/sl_pcodes.txt', 
+				File.dirname(__FILE__))
+			File.open(path, 'w') { |fh|
+				@app.each_package { |pac|
+					if(pac.sl_entry && pac.pharmacode)
+						fh.puts(pac.pharmacode)
+					end
+				}
+			}
+		end
 		def export_yaml
 			exporter = YamlExporter.new(@app)
 			exporter.export
@@ -106,9 +121,6 @@ module ODDB
 				EXPORT_SERVER.clear
 				sleep(30)
 			}
-		end
-		def export_pdf
-			FiPDFExporter.new(@app).run
 		end
 		def mail_download_stats
 			mail_stats('download')

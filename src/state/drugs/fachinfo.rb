@@ -35,6 +35,12 @@ class FachinfoPrint < State::Drugs::Global
 	VIEW = View::Drugs::FachinfoPrint
 	VOLATILE = true
 	LIMITED = true
+	def init
+		if(allowed?)
+			@default_view = View::Drugs::CompanyFachinfoPrint
+		end
+		super
+	end
 end
 class RootFachinfo < Fachinfo
 	VIEW = View::Drugs::RootFachinfo

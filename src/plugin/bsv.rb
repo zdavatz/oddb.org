@@ -542,6 +542,8 @@ end
 
 			## compile a report that includes missing packages.
 			## -> is being done on the fly
+		rescue RuntimeError
+			## return nil if any of the downloads fail.
 		end
 		private
 		def balance_package(package)

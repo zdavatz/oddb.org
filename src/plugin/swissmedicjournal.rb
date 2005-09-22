@@ -206,7 +206,7 @@ module ODDB
 			str << 'http://www.oddb.org/de/gcc/resolve/pointer/' << CGI.escape(pointer.to_s) << ' '
 		end
 		def smj_incomplete?(smj_reg)
-			smj_reg.incomplete? && smj_reg.iksnr.nil?
+			smj_reg.incomplete? #&& smj_reg.iksnr.nil?
 		end
 		def update_active_agent(agent, seq_pointer)
 			unless(agent.substance.nil?)

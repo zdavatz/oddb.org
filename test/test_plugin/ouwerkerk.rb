@@ -113,7 +113,7 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 		flags = [:new]
 		row = @plugin.export_package(pack, [flags], {pointer.to_s => [:price]})
 		expected = [
-			[1,11], nil, '032', nil, nil, nil, nil, nil, nil, nil, 'A', nil, 
+			[:new,:price], nil, '032', nil, nil, nil, nil, nil, nil, nil, 'A', nil, 
 			nil, "100 Tabletten", nil, nil, 12.34, 56.78, nil, nil, nil, nil, 
 			nil, nil, 'keine'
 		]
@@ -121,7 +121,7 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 		pack.sl_entry = Object.new
 		row = @plugin.export_package(pack, [flags], {pointer.to_s => [:price]})
 		expected = [
-			[1,11], nil, '032', nil, nil, nil, nil, nil, nil, nil, 'A', nil, 
+			[:new,:price], nil, '032', nil, nil, nil, nil, nil, nil, nil, 'A', nil, 
 			nil, "100 Tabletten", nil, nil, 12.34, 56.78, nil, nil, nil, nil, 
 			nil, nil, 'SL'
 		]
@@ -154,14 +154,14 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 		rows = @plugin.export_sequence(seq, [flags], {'foo' => [:price]})
 		expected = [
 			[
-				[3,4,11], nil, '032', '01', 'Ponstan, Tabletten', nil, nil, nil, 
-				150, 'mg', 'A', 3, nil, "100 Tabletten", "Tabletten", nil, 
-				12.34, 56.78, nil, nil, nil, 'A01BC23', nil, nil, 'keine'
-			],
-			[
-				[3,4], nil, '064', '01', 'Ponstan, Tabletten', nil, nil, nil, 
+				[:productname,:address], nil, '064', '01', 'Ponstan, Tabletten', nil, nil, nil, 
 				150, 'mg', 'B', 3, nil, "200 Kapseln", "Tabletten", nil, 43.21, 87.65,
 				nil, nil, nil, 'A01BC23', nil, nil, 'keine'
+			],
+			[
+				[:productname,:address,:price], nil, '032', '01', 'Ponstan, Tabletten', nil, nil, nil, 
+				150, 'mg', 'A', 3, nil, "100 Tabletten", "Tabletten", nil, 
+				12.34, 56.78, nil, nil, nil, 'A01BC23', nil, nil, 'keine'
 			],
 		]
 		assert([expected, expected.reverse].include?(rows), 
@@ -200,12 +200,12 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 		rows = @plugin.export_registration(reg, [flags], {'foo' => [:price]})
 		expected = [
 			[
-				[3,4,11], '98765', '032', '01', 'Ponstan, Tabletten', nil, 'Placebo', 
+				[:productname, :address, :price], '98765', '032', '01', 'Ponstan, Tabletten', nil, 'Placebo', 
 				'Export', 150, 'mg', 'A', 3, 'Pfizer', "100 Tabletten", "Tabletten", 
 				nil, 12.34, 56.78, nil, 'www.pfizer.ch', nil, 'A01BC23', nil, nil, 'keine'
 			],
 			[
-				[3,4], '98765', '064', '01', 'Ponstan, Tabletten', nil, 'Placebo', 
+				[:productname,:address], '98765', '064', '01', 'Ponstan, Tabletten', nil, 'Placebo', 
 				'Export', 150, 'mg', 'B', 3, 'Pfizer', "200 Kapseln", "Tabletten", 
 				nil, 43.21, 87.65, nil, 'www.pfizer.ch', nil, 'A01BC23', nil, nil, 'keine'
 			],
@@ -280,6 +280,7 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 			:bsv_sl => bsv,
 		}
 		rows = @plugin.export_registrations
+		assert_equal(3, rows.size)
 		expected = [
 			[ "3,4", "98765", "032", "01", "Ponstan, Tabletten", nil, "Placebo",
 				"Export", 150, "mg", "A", 3, "Pfizer", "100 Tabletten", "Tabletten",
@@ -288,7 +289,7 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 				"Export", 150, "mg", "B", 3, "Pfizer", "200 Kapseln", "Tabletten", 
 				nil, 43.21, 87.65, nil, "www.pfizer.ch", nil, "A01BC23", nil, nil, 'keine'], 
 			[ "11", "12007", "007", "02", "Vodka Martini Dry, shaken - not stirred",
-				nil, "Placebo", nil, 7, "cl", "C", 3, "Her Majesty's Secret Service", 
+				nil, "Placebo", '', 7, "cl", "C", 3, "Her Majesty's Secret Service", 
 				"7 cl", "Tabletten", nil, 7.00, 70.00, nil, nil, nil, "A01BC23", nil, nil, 'keine'], 
 		]
 		assert_equal(expected.sort, rows.sort)

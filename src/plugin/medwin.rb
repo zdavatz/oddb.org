@@ -7,6 +7,7 @@ require 'util/persistence'
 require 'util/html_parser'
 require 'util/http'
 require 'model/text'
+require 'model/address'
 require 'drb'
 
 module ODDB
@@ -67,16 +68,20 @@ module ODDB
 			#comp_name = comp.name.gsub(/\W/," ").split(" ")
 		end
 		def update_company_data(comp, data)
-			update = data.inject({}) { |inj, pair|
-				key, val = pair
-				unless(comp.listed? || comp.has_user?)
-					if(comp.respond_to?(key))
-						inj.store(key, val)
-					end
+			unless(comp.listed? || comp.has_user?)
+				addr = Address2.new
+				addr.address = data[:address]
+				addr.location = [data[:plz], data[:location]].compact.join(' ')
+				if(fon = data[:phone])
+					addr.fon = [fon]
 				end
-				inj
-			}
-			unless(update.empty?)
+				if(fax = data[:fax])
+					addr.fax = [fax]
+				end
+				update = {
+					:ean13	=>	data[:ean13],
+					:addresses => [addr],
+				}
 				@updated.push(comp.name)
 				@app.update(comp.pointer, update)
 			end

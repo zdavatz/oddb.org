@@ -21,7 +21,7 @@ module ODDB
 				case font
 				when [nil, 1, nil, nil]
 					if(@target.is_a?(Text::Paragraph) \
-						&& !@target.empty?)
+						&& !(@target.empty? || @target.preformatted?))
 						@target.set_format(:italic)
 					else
 						@section = @chapter.next_section
@@ -87,7 +87,7 @@ module ODDB
 				@target << data.tr("\240", " ")
 			end
 			def send_literal_data(data)
-				@target << data.tr("\240", " ").tr("\n\r", '')
+				@target << data.tr("\240", " ").gsub(/\r\n?/, "\n")
 			end
 		end
 	end

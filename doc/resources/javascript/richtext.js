@@ -83,7 +83,7 @@ function writeRichText(rte, html, width, height, buttons, readOnly) {
 			document.writeln('<select id="fontname_' + rte + '" onchange="selectFont(\'' + rte + '\', this.id)">');
 			document.writeln('<option value="Font" selected>Schrift</option>');
 			document.writeln('<option value="Arial, Helvetica, sans-serif">Arial</option>');
-			document.writeln('<option value="Courier New, Courier, mono">Courier New</option>');
+			document.writeln('<option value="Courier New, Courier, monospace">Courier New</option>');
 			document.writeln('</select>');
 			document.writeln('</td>');
 			document.writeln('<td width="2%">');

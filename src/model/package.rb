@@ -59,11 +59,21 @@ Grammar OddbSize
 				false
 			end
 		end
+		def set_comparable_size!
+			descr_multi = [@descr.to_f, 1].max
+			multi = @multi || 1
+			count = @count || 1
+			addition = @addition || 0
+			measure = @measure || Dose.new(1, nil)
+			scale = @scale || Dose.new(1, nil)
+			@comparable_size = descr_multi * multi * ((count + addition) \
+				* measure) / scale
+		end
 		def size=(size)
 			@size = size
 			unless size.to_s.strip.empty?
 				@addition, @multi, @count, @measure, @scale, @comform = parse_size(size) 
-				@comparable_size = @multi * ((@count + @addition) * @measure) / @scale
+				set_comparable_size!
 			end
 		end
 		def parse_size(size)
@@ -90,6 +100,11 @@ Grammar OddbSize
 				dose_from_scale(scale),
 				(comform.value if comform),
 			]
+		end
+		def descr=(descr)
+			@descr = descr
+			set_comparable_size!
+			@descr
 		end
 		def dose_from_measure(measure)
 			values = measure ? measure.childrens[0,2].collect{ |c| c.value } : [1,nil]
@@ -120,8 +135,8 @@ Grammar OddbSize
 			end
 		end
 		attr_reader :ikscd, :size, :count, :multi, :measure, :comform
-		attr_reader :addition, :scale, :sl_entry
-		attr_accessor :descr, :sequence, :ikscat, :generic_group
+		attr_reader :descr, :addition, :scale, :sl_entry
+		attr_accessor :sequence, :ikscat, :generic_group
 		attr_accessor :price_exfactory, :price_public, :pretty_dose
 		attr_accessor :pharmacode
 		alias :pointer_descr :ikscd

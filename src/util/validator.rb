@@ -14,7 +14,7 @@ module ODDB
 		alias :receiver_email :email
 		BOOLEAN = [
 			:cl_status,  :download, :experience, :recommend,
-			:impression, :helps, :show_email,
+			:impression, :helps, :show_email, :export_flag,
 		]
 		DATES = [
 			:inactive_date,
@@ -196,6 +196,7 @@ module ODDB
 			:destination,
 			:effective_form,
 			:en,
+			:equivalent_substance,
 			:fax,
 			:fi_update,
 			:fon,
@@ -257,6 +258,7 @@ module ODDB
 		end
 		alias :pretty_dose :dose
 		alias :chemical_dose :dose
+		alias :equivalent_dose :dose
 		def filename(value)
 			if(value == File.basename(value))
 				value

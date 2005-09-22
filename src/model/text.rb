@@ -129,7 +129,13 @@ module ODDB
 			end
 			def <<(text)
 				@raw_txt << text
+				if(@preformatted)
+					@raw_txt.gsub!(/[\n\r]+/, "\n")
+				end
 				@text = @raw_txt.strip
+			end
+			def [](*args)
+				@raw_txt[*args]
 			end
 		end
 		class Section
@@ -180,8 +186,10 @@ module ODDB
 			end
 			def clean!
 				@heading.strip!
-				@sections.each { |section| section.clean! }
-				@sections.delete_if { |section| section.empty? }
+				@sections.delete_if { |section| 
+					section.clean!
+					section.empty? 
+				}
 			end
 			def empty?
 				clean!

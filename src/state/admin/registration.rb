@@ -31,7 +31,8 @@ class Registration < State::Admin::Global
 	def update
 		keys = [
 			:inactive_date, :generic_type, :registration_date, 
-			:revision_date, :market_date, :expiration_date, :complementary_type
+			:revision_date, :market_date, :expiration_date, 
+			:complementary_type, :export_flag
 		]
 		if(@model.is_a? Persistence::CreateItem)
 			iksnr = @session.user_input(:iksnr)

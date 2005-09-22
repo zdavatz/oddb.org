@@ -41,9 +41,6 @@ module ODDB
 			if(flags = pac_flags[pack.pointer.to_s])
 				row[0] += flags
 			end
-			row[0] = row[0].collect { |flg| 
-				self::class::NUMERIC_FLAGS[flg] 
-			}.uniq.sort
 			row[2] = pack.ikscd
 			row[10] = pack.ikscat
 			row[13] = pack.size
@@ -63,7 +60,7 @@ module ODDB
 			if(ind = reg.indication)
 				row[6] = ind.de
 			end
-			row[7] = reg.export_flag
+			row[7] = reg.export_flag ? 'Export' : ''
 			if(company = reg.company)
 				row[12] = reg.company.name
 				row[19] = reg.company.url
@@ -112,7 +109,12 @@ module ODDB
 					rows += export_registration(reg, [flags], pac_flags)
 				end
 			}
-			rows.delete_if { |row| row.first.empty? }
+			rows.delete_if { |row| 
+				row[0] = row[0].collect { |flg| 
+					self::class::NUMERIC_FLAGS[flg] 
+				}.compact.uniq.sort
+				row.first.empty? 
+			}
 			rows.sort_by { |row| 
 				[ 
 					row.first, 

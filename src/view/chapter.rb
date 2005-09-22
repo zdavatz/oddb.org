@@ -2,11 +2,16 @@
 # View::Chapter -- oddb -- 17.09.2003 -- rwaltert@ywesee.com
 
 require 'htmlgrid/value'
+require 'htmlgrid/labeltext'
 require 'view/form'
 
 module ODDB
 	module View
 		class Chapter < HtmlGrid::Value
+			PRE_STYLE = 'font-family: Courier New, Courier, monospace; white-space: pre'
+			PAR_STYLE = 'padding-bottom: 4px; white-space: normal'
+			SEC_STYLE = 'font-size: 13px; margin-top: 4px; line-height: 120%'
+			SUB_STYLE = 'font-style: italic' 
 			def formats(context, paragraph)
 				res = ''
 				txt = paragraph.text
@@ -31,11 +36,14 @@ module ODDB
 					end
 				}
 				if(paragraph.preformatted?)
-					context.div({ 'class' => 'preformatted' }) { res }
+					#context.div({ 'class' => 'preformatted' }) { res }
+					context.div({ 'style' => self.class::PRE_STYLE }) { 
+						res.gsub("\n", "\r\n") }
 				else
 					## this must be an inline element, to enable starting 
 					## paragraphs on the same line as the section-subheading
-					context.span({ 'class' => 'paragraph' }) { 
+					#context.span({ 'class' => 'paragraph' }) { 
+					context.span({ 'style' => self.class::PAR_STYLE }) { 
 						res } << context.br
 				end
 			end
@@ -50,8 +58,8 @@ module ODDB
 				context.h3 { self.escape(@value.heading) }
 			end
 			def sections(context, sections)
-				section_attr = { 'class' => 'section' }
-				subhead_attr = { 'style' => 'font-style: italic' }
+				section_attr = { 'style' => self.class::SEC_STYLE }
+				subhead_attr = { 'style' => self.class::SUB_STYLE }
 				#attr = {}
 				sections.collect { |section|
 					context.div(section_attr) { 
@@ -67,7 +75,8 @@ module ODDB
 				}.join
 			end
 			def paragraphs(context, paragraphs)
-				attr = { 'class' => 'paragraph' }
+				#attr = { 'class' => 'paragraph' }
+				attr = { 'style' => self.class::PAR_STYLE }
 				paragraphs.collect { |paragraph|
 					if(paragraph.is_a? Text::ImageLink)
 						context.div(attr) { context.img(paragraph.attributes) }
@@ -76,6 +85,10 @@ module ODDB
 					end
 				}.join
 			end
+		end
+		class PrintChapter < Chapter
+			PAR_STYLE = 'padding-bottom: 4px; white-space: normal; line-height: 150%'
+			SEC_STYLE = 'font-size: 13px; margin-top: 4px; line-height: 150%'
 		end
 		class EditChapter < Chapter
 			def to_html(context)
@@ -89,6 +102,7 @@ module ODDB
 					content.gsub!(/\\/, '\\\\')
 					content.gsub!(/'/, '\\\\\'')
 					content.gsub!(/\n/, "\\n")
+					content.gsub!(/\r/, "\\r")
 				end
 				## the two following javascript-invocations need to be
 				## in two separate javascript-tags, so a dynamically

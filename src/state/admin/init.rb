@@ -13,7 +13,9 @@ class Init < State::Admin::Global
 	DIRECT_EVENT = :home_admin
 	def release
 		@session.app.async {
-			Updater.new(@session.app).export_ouwerkerk
+			updater = Updater.new(@session.app)
+			updater.reconsider_bsv
+			updater.export_ouwerkerk
 		}
 		State::Admin::Confirm.new(@session, :release_ouwerkerk_confirm)
 	end
