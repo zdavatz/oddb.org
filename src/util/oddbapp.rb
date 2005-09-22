@@ -22,6 +22,7 @@ require 'util/drb'
 require 'util/config'
 require 'fileutils'
 require 'yaml'
+require 'model/migel/group'
 
 class OddbPrevalence
 	include ODDB::Failsafe
@@ -31,8 +32,8 @@ class OddbPrevalence
 	]
 	ODBA_SERIALIZABLE = [ '@currency_rates' ]
 	attr_reader :address_suggestions, :atc_chooser, :atc_classes,
-		:companies, :doctors, :fachinfos, :galenic_groups, :hospitals,
-		:invoices, :last_medication_update, :last_update,
+		:companies, :doctors, :fachinfos, :galenic_groups, :migel_groups,
+		:hospitals, :invoices, :last_medication_update, :last_update,
 		:notification_logger, :orphaned_fachinfos, :orphaned_patinfos,
 		:patinfos, :patinfos_deprived_sequences, :registrations, :slates,
 		:users
@@ -53,6 +54,7 @@ class OddbPrevalence
 		@galenic_forms ||= []
 		@galenic_groups ||= []
 		@generic_groups ||= {}
+		@migel_groups ||= {}
 		@hospitals ||= {}
 		@incomplete_registrations ||= {}
 		@indications ||= {}
@@ -316,6 +318,10 @@ class OddbPrevalence
 	def currencies
 		@currency_rates.keys.sort
 	end
+	def create_migel_group(groupcd)
+		migel = ODDB::Migel::Group.new(groupcd)
+		@migel_groups.store(groupcd, migel)
+	end
 	def delete_address_suggestion(oid)
 		if(sug = @address_suggestions.delete(oid))
 			@address_suggestions.odba_isolated_store
@@ -498,6 +504,9 @@ class OddbPrevalence
 	end
 	def log_group(key)
 		@log_groups[key]
+	end
+	def migel_group(groupcd)
+		@migel_groups[groupcd]
 	end
 	def orphaned_fachinfo(oid)
 		@orphaned_fachinfos[oid.to_i]
