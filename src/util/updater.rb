@@ -12,6 +12,7 @@ require 'plugin/bsv'
 require 'plugin/ouwerkerk'
 require 'plugin/limitation'
 require 'plugin/medwin'
+require 'plugin/migel'
 require 'plugin/vaccines'
 require 'plugin/who'
 require 'util/log'
@@ -173,6 +174,18 @@ module ODDB
 		end
 		def update_medwin_packages
 			update_simple(MedwinPackagePlugin, 'Medwin-Packages')
+		end
+		def update_migel
+			klass = MiGeLPlugin
+			subj = 'MiGeL'
+			wrap_update(klass, subj) {
+				plug = klass.new(@app)
+				[:de, :fr, :it].each { |lang|
+					path = File.expand_path("../../data/csv/migel_#{lang}.csv", 
+						File.dirname(__FILE__))
+					plug.update(path, lang)
+				}
+			}
 		end
 		def update_patinfo
 			update_simple(PatinfoPlugin, 'Patinfo')		

@@ -15,6 +15,7 @@ require 'model/galenicform'
 require 'util/language'
 require 'stub/odba'
 require 'mock'
+require 'util/oddbapp'
 
 module Datastructure
 	class CharTree
@@ -882,5 +883,13 @@ class TestOddbApp < Test::Unit::TestCase
 		doc1.__verify
 		doc2.__verify
 		doc3.__verify
+	end
+	def test_create_migel_group
+		group = @app.create_migel_group('03')
+		assert_instance_of(ODDB::Migel::Group, group)
+		assert_equal(@app.migel_groups["03"], group)
+		assert_equal({'03' => group}, @app.migel_groups)
+		## getter-test
+		assert_equal(group, @app.migel_group('03'))
 	end
 end

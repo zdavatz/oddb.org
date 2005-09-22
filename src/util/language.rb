@@ -35,7 +35,7 @@ module ODDB
 		def has_description?(description)
 			descriptions.has_value?(description)
 		end
-		def method_missing(symbol, *args)
+		def method_missing(symbol, *args, &block)
 			language = symbol.to_s
 			if(language.length == 2)
 				descriptions[language]
