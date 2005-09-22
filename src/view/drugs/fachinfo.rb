@@ -177,6 +177,9 @@ class FachinfoPreviewComposite < HtmlGrid::Composite
 		@lookandfeel.lookup(:fachinfo_name, model.name)
 	end
 end
+class FachinfoPrintInnerComposite < FachinfoInnerComposite
+	DEFAULT_CLASS = View::PrintChapter
+end
 class FachinfoPrintComposite < View::Drugs::FachinfoPreviewComposite
 	include PrintComposite
 	INNER_COMPOSITE = View::Drugs::FachinfoInnerComposite
@@ -233,6 +236,12 @@ class FachinfoPreview < View::PrivateTemplate
 end
 class FachinfoPrint < View::PrintTemplate
 	CONTENT = View::Drugs::FachinfoPrintComposite
+end
+class CompanyFachinfoPrintComposite < FachinfoPrintComposite
+	INNER_COMPOSITE = View::Drugs::FachinfoPrintInnerComposite
+end
+class CompanyFachinfoPrint < FachinfoPrint
+	CONTENT = View::Drugs::CompanyFachinfoPrintComposite
 end
 class EditFiChapterChooser < FiChapterChooser
 	def display_names(document)
