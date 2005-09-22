@@ -1,13 +1,11 @@
 #!/usr/bin/env ruby
 # View::PrintTemplate -- ODDB -- 09.03.2004 -- hwyss@ywesee.com
 
-require 'view/popuptemplate'
+require 'htmlgrid/divtemplate'
 
 module ODDB
 	module View
 		module Print
-
-
 			def print(model, session, key=:print)
 				link = HtmlGrid::Link.new(key, model, session, self)
 				link.set_attribute('title', @lookandfeel.lookup(:print_title))
@@ -21,7 +19,11 @@ module ODDB
 				print(model, session, :print_edit)
 			end
 		end
-		class PrintTemplate < View::PopupTemplate
+		class PrintTemplate < HtmlGrid::DivTemplate
+			COMPONENTS = {
+				[0,0]		=>	:head,
+				[0,1]		=>	:content,
+			}
 			def init
 				@attributes['onload'] = 'window.print();'
 				super
@@ -30,13 +32,7 @@ module ODDB
 				@lookandfeel.lookup(:print_head)
 			end
 			def css_link(context)
-				if(@session.state.allowed?)
-					super(context, 
-						@lookandfeel.resource_global(:css_print))
-				else
-					super
-				end
-				
+				super(context, @lookandfeel.resource_global(:css_print))
 			end
 		end
 		module PrintComposite

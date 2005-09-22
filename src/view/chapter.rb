@@ -8,7 +8,6 @@ require 'view/form'
 module ODDB
 	module View
 		class Chapter < HtmlGrid::Value
-			PRE_STYLE = 'font-family: Courier New, Courier, monospace; white-space: pre'
 			PAR_STYLE = 'padding-bottom: 4px; white-space: normal'
 			SEC_STYLE = 'font-size: 13px; margin-top: 4px; line-height: 120%'
 			SUB_STYLE = 'font-style: italic' 
@@ -36,9 +35,9 @@ module ODDB
 					end
 				}
 				if(paragraph.preformatted?)
-					#context.div({ 'class' => 'preformatted' }) { res }
-					context.div({ 'style' => self.class::PRE_STYLE }) { 
-						res.gsub("\n", "\r\n") }
+					# this _has_ to be a <pre> tag, as IE6 refuses to print 
+					# style="white-space: pre" correctly.
+					context.pre { res }
 				else
 					## this must be an inline element, to enable starting 
 					## paragraphs on the same line as the section-subheading
