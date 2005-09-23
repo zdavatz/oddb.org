@@ -176,9 +176,9 @@ module ODDB
 						if(/\bmono(space)?\b/i.match(face))
 							start_pre(attrs)
 							release.push(:end_pre)
+						elsif(/\bsans-serif\b/i.match(face))
+							suspend_pre(release)
 						end
-					elsif(/\bsans-serif\b/i.match(face))
-						suspend_pre(release)
 					end
 				}
 			end
@@ -188,7 +188,7 @@ module ODDB
 				}
 			end
 			def suspend_pre(release)
-				if(@release_stack.any? { |rel| rel.include?(:end_pre) })
+				if(@nofill > 0)
 					end_pre
 					release.push(:restart_pre)
 				end

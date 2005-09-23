@@ -47,6 +47,12 @@ end
 						})[key]
 					end
 				end
+				def allowed?(foo)
+					true
+				end
+				def user
+					self
+				end
 			end
 			class StubApp
 				attr_accessor :companies, :galenic_groups, :fachinfos

@@ -7,8 +7,9 @@ module ODDB
 	module OdbaExporter
 		module CsvExporter
 			DOCTOR = [ :ean13, :exam, :salutation, :title, :firstname,
-				:name, :praxis, :first_address_data, :email, :language, ]
-			ADDRESS = [:type, :address, :location, :canton, :fons, :faxs]
+				:name, :praxis, :first_address_data, :email, :language, 
+				:specialities]
+			ADDRESS = [:type, :address, :location, :canton, :fon, :fax]
 			DEFRIT = [:de, :fr, :it] 
 			MIGEL = [:migel_code, :migel_subgroup, :migel_defrit, 
 				:migel_limitation, :format_price, :date, :migel_unit]
@@ -23,7 +24,11 @@ module ODDB
 					if(item.nil?)
 						''
 					elsif(item.respond_to?(key))
-						item.send(key).to_s.gsub("\n", "\v")
+						val = item.send(key)
+						if(val.is_a?(Array))
+							val = val.join(',')
+						end
+						val.to_s.gsub("\n", "\v")
 					else
 						self.send(key, item)
 					end
@@ -33,18 +38,8 @@ module ODDB
 				data = collect_data(keys, item).flatten
 				fh << CSVLine.new(data).to_s(false, ';') << "\n"
 			end
-			def CsvExporter.faxs(item)
-				item.fax.join(',')
-			end
-			def CsvExporter.fons(item)
-				item.fon.join(',')
-			end
 			def CsvExporter.format_price(item)
 				sprintf("%.2f", item.price)
-			end
-			def CsvExporter.first_address_data(item)
-				addr = item.praxis_address || item.address(0)
-				address_data(addr)
 			end
 			def CsvExporter.migel_defrit(item)
 				self.collect_data(DEFRIT, item)

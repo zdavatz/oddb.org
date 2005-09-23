@@ -111,7 +111,7 @@ class FiChapterChooser < HtmlGrid::Composite
 		link
 	end
 end
-class FachinfoInnerComposite < HtmlGrid::Composite
+class FachinfoInnerComposite < HtmlGrid::DivComposite
 	COMPONENTS = {}
 	DEFAULT_CLASS = View::Chapter
 	def init
@@ -161,18 +161,6 @@ class FachinfoPreviewComposite < HtmlGrid::Composite
 		[1,0]	=> 'th-r',
 	}	
 	DEFAULT_CLASS = HtmlGrid::Value
-	def document(model, session)
-=begin
-		klass = case model
-		when FachinfoDocument2001
-			Fachinfo2001InnerComposite
-		else
-			FachinfoInnerComposite
-		end
-		klass.new(model, session, self)
-=end
-		View::Drugs::FachinfoInnerComposite.new(model, session, self)
-	end
 	def fachinfo_name(model, session)
 		@lookandfeel.lookup(:fachinfo_name, model.name)
 	end
@@ -180,10 +168,15 @@ end
 class FachinfoPrintInnerComposite < FachinfoInnerComposite
 	DEFAULT_CLASS = View::PrintChapter
 end
-class FachinfoPrintComposite < View::Drugs::FachinfoPreviewComposite
+class FachinfoPrintComposite < HtmlGrid::DivComposite #View::Drugs::FachinfoPreviewComposite
 	include PrintComposite
 	INNER_COMPOSITE = View::Drugs::FachinfoInnerComposite
 	PRINT_TYPE = :print_type_fachinfo
+	CSS_MAP = {
+		0	=> 'print-type',
+		1	=> 'print-big',
+		2	=> 'list-r',
+	}
 end
 class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 	CHAPTER_CLASS = View::Chapter

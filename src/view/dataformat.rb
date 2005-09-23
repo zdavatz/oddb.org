@@ -19,17 +19,18 @@ module ODDB
 				}
 				name << line
 			end
-			def most_precise_dose(model, session)
+			def most_precise_dose(model, session=@session)
 				if(model.respond_to?(:most_precise_dose))
 					dose = model.most_precise_dose
 					(dose && (dose.qty > 0)) ? dose : nil
 				end
 			end
-			def name_base(model, session)
+			def name_base(model, session=@session)
 				link = HtmlGrid::Link.new(:compare, model, session, self)
 				link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
 				link.value = breakline(model.name_base, 25)
-				link.set_attribute('class', 'result-big' << resolve_suffix(model))
+				link.set_attribute('class', 
+					'result-big' << resolve_suffix(model))
 				indication = model.registration.indication
 				descr = model.descr
 				if(descr && descr.empty?)
@@ -43,10 +44,10 @@ module ODDB
 				link.set_attribute('title', title)
 				link
 			end
-			def price_exfactory(model, session)
+			def price_exfactory(model, session=@session)
 				formatted_price(:price_exfactory, model)
 			end
-			def price_public(model, session)
+			def price_public(model, session=@session)
 				formatted_price(:price_public, model)
 			end
 			private

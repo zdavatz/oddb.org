@@ -153,6 +153,21 @@ class ResultLimitList < HtmlGrid::List
 	CSS_HEAD_MAP = {
 		[2,0,6] => 'th-r',
 	}
+	def compose_empty_list(offset)
+		count = @session.state.package_count.to_i
+		if(count > 0)
+			@grid.add(@lookandfeel.lookup(:query_limit_empty, 
+				@session.state.package_count, 
+				@session.class.const_get(:QUERY_LIMIT)), *offset)
+			@grid.add_attribute('class', 'list', *offset)
+			@grid.set_colspan(*offset)
+		else
+			super
+		end
+	end
+	def name_base(model, session)
+		model.name_base
+	end
 	def patinfo(model, session)
 		## only show pdf-patinfos
 		if(pdf_patinfo = model.pdf_patinfo)
@@ -164,18 +179,6 @@ class ResultLimitList < HtmlGrid::List
 			component_css_map.store(pos, "result-infos")
 			css_map.store(pos, "result-infos")
 			link
-		end
-	end
-	def compose_empty_list(offset)
-		count = @session.state.package_count.to_i
-		if(count > 0)
-			@grid.add(@lookandfeel.lookup(:query_limit_empty, 
-				@session.state.package_count, 
-				@session.class.const_get(:QUERY_LIMIT)), *offset)
-			@grid.add_attribute('class', 'list', *offset)
-			@grid.set_colspan(*offset)
-		else
-			super
 		end
 	end
 end
