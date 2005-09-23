@@ -10,6 +10,11 @@ require 'date'
 
 module ODDB
 	class MiGeLPlugin < Plugin
+		SALE_TYPES = {
+			'1'	=> :purchase,
+			'2' => :rent,
+			'3'	=> :both,
+		}
 		def convert_charset(txt)
 			txt = txt.gsub("\317", "oe")
 			txt = txt.gsub("\320", "-")
@@ -26,6 +31,7 @@ module ODDB
 		def update(path, language)
 			CSVParser.parse_with_file(path).each { |row|
 				id = row.at(8).split('.')
+				id[-1]=id[-1][0,1]
 				group = update_group(id, row, language)
 				subgroup = update_subgroup(id, group, row, language)
 				if(id.size > 2)
@@ -77,13 +83,7 @@ module ODDB
 			else
 				text.strip!
 			end
-			if (id.at(4) == '3')
-				type = :purchase
-			elsif (id.at(4) == '2')
-				type = :rent
-			else
-				type = :sell
-			end
+			type = SALE_TYPES[id.at(4)]
 			price = (convert_charset(row.at(13)).to_i) * 100
 			date = date_object(convert_charset(row.at(14)))
 			hash = {

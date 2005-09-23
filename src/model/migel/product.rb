@@ -31,7 +31,9 @@ module ODDB
 			def create_unit
 				@unit = ODDB::Text::Document.new
 			end
+			def migel_code
+				[ @subgroup.group_code, @subgroup.code, @code ].join('.')
+			end
 		end
 	end
 end
-

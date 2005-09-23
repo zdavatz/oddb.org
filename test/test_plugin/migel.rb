@@ -16,6 +16,27 @@ module ODDB
 			@app = FlexMock.new
 			@plugin = MiGeLPlugin.new(@app)
 		end
+		def test_update_id
+			row = [
+"3","APPLIKATIONSHILFEN","Gerätereparaturen beim Kaufsystem: Bei sorgfältigemGebrauch ohne Selbstverschuldung, Vergütung nach Aufwand nur nach vorgängiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehör und Verbrauchsmaterial.Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		Rücksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"
+			]
+			id = %w(03 02 01 00 209)
+			@app.mock_handle(:update, 1) { |pointer, values|
+			ptr = Persistence::Pointer.new([:migel_group, '03'])
+			assert_equal(ptr.creator, pointer)
+			chapter = Text::Chapter.new
+			chapter.heading = 'APPLIKATIONSHILFEN'	
+			paragraph = chapter.next_section.next_paragraph
+			paragraph << "Ger‰tereparaturen beim Kaufsystem: Bei sorgf‰ltigem Gebrauch ohne Selbstverschuldung, Verg¸tung nach Aufwand nur nach vorg‰ngiger Kostengutsprache durch den Krankenversicherer."
+				expected = {
+					:code => '03',
+					:de    => chapter,
+				}
+				assert_equal(expected, values)
+			}
+			@plugin.update_group(id, row, :de)
+			@app.mock_verify
+		end
 		def test_update_group__de
 			row = [
 "3","APPLIKATIONSHILFEN","Gerätereparaturen beim Kaufsystem: Bei sorgfältigemGebrauch ohne Selbstverschuldung, Vergütung nach Aufwand nur nach vorgängiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehör und Verbrauchsmaterial.Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		Rücksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"

@@ -75,6 +75,12 @@ module ODDB
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
+		def export_migel_csv
+			plug = CsvExportPlugin.new(@app)
+			plug.export_migel
+			EXPORT_SERVER.clear
+			sleep(30)
+		end
 		def export_oddbdat
 			exporter = OdbaExporter::OddbDatExport.new(@app)
 			exporter.export

@@ -11,5 +11,16 @@ module ODDB
 			ids = @app.doctors.values.collect { |item| item.odba_id }
 			EXPORT_SERVER.export_doc_csv(ids, EXPORT_DIR, 'doctors.csv')
 		end
+		def export_migel
+			products = []
+			@app.migel_groups.each_value { |group| 
+				group.subgroups.each_value { |subgr|
+					products += subgr.products.values
+				}
+			}
+			ids = products.sort_by { |product| 
+				product.migel_code }.collect { |product| product.odba_id }
+			EXPORT_SERVER.export_migel_csv(ids, EXPORT_DIR, 'migel.csv')
+		end
 	end
 end
