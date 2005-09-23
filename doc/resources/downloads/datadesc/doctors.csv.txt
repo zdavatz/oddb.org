@@ -1,6 +1,7 @@
 Datenbeschrieb doctors.csv
 
-Version: 1.0.1
+Version: 1.1
+Geändert: 23.09.2005 (1.1)   durch hwyss@ywesee.com
 Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
 Erstellt: 01.09.2005 (1.0)   durch hwyss@ywesee.com
 
@@ -21,10 +22,11 @@ Doctor-Record:
 08: address           (*)                       -> Strasse, Nummer
 09: location          (*)                       -> PLZ / Ort
 10: canton            (*)                       -> Kantonskürzel (falls vorhanden)
-11: fons              (*)                       -> Telefonnummern, durch ',' getrennt
-12: faxs              (*)                       -> Faxnummern, durch ',' getrennt
+11: fon               (*)                       -> Telefonnummern, durch ',' getrennt
+12: fax               (*)                       -> Faxnummern, durch ',' getrennt
 13: email             (*)                       -> Email-Adresse
 14: language          (*)                       -> Korrespondenzsprache
+15: specialities      (*)                       -> Facharzttitel, durch ',' getrennt
 
 * Version
 Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
