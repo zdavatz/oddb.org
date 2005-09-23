@@ -83,7 +83,7 @@ class Compare < State::Drugs::Global
 			end
 		end
 		if(@model.nil?)
-			@default_view = View::Drugs::Init
+			@default_view = View::Drugs::Search
 		elsif(@model.atc_class.nil?)
 			@default_view = View::Drugs::EmptyCompare
 		else
