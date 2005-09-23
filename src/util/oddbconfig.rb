@@ -21,6 +21,7 @@ module ODDB
 	DOWNLOAD_EXPORT_PRICES = {
 		'doctors.yaml'	=> 1100,
 		'doctors.csv'		=> 900,
+		'migel.csv'			=> 100,
 		'oddb.csv'			=> 500,
 		'oddb.yaml'			=> 600,
 		'fachinfo.yaml'	=> 800,
