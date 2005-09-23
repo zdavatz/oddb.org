@@ -178,6 +178,7 @@ module ODDB
 		def update_migel
 			klass = MiGeLPlugin
 			subj = 'MiGeL'
+			status_report = "MiGeL is now up to date"
 			wrap_update(klass, subj) {
 				plug = klass.new(@app)
 				[:de, :fr, :it].each { |lang|
@@ -185,6 +186,7 @@ module ODDB
 						File.dirname(__FILE__))
 					plug.update(path, lang)
 				}
+				status_report
 			}
 		end
 		def update_patinfo
