@@ -39,7 +39,7 @@ module ODDB
 				fh << CSVLine.new(data).to_s(false, ';') << "\n"
 			end
 			def CsvExporter.format_price(item)
-				item.price = item.price / 100
+				item.price = item.price / 100.0
 				item.price = sprintf("%.2f", item.price)
 			end
 			def CsvExporter.migel_defrit(item)

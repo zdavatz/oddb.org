@@ -84,7 +84,7 @@ module ODDB
 				text.strip!
 			end
 			type = SALE_TYPES[id.at(4)]
-			price = (convert_charset(row.at(13)).to_i) * 100
+			price = ((convert_charset(row.at(13)).to_f) * 100).to_i
 			date = date_object(convert_charset(row.at(14)))
 			hash = {
 				language => text,
