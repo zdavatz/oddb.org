@@ -1,0 +1,59 @@
+Datenbeschrieb migel.csv
+
+Version: 1.0
+Erstellt: 26.09.2005 (1.0) durch ffricker@ywesee.com
+
+## Struktur ##
+Encoding: ISO-8859-1
+Record-Separator: \n
+Field-Separator:  ;
+De. - Deutsch
+Fr. - Französisch
+It. - Italienisch
+
+Migel-Record:
+00: migel_code             (GG.UU.PP.ZZ.V) -> Migel-Code, siehe Glossar (Migel-Code)
+01: group_code             (GG)            -> Migel-Group-Code
+02: group_de               (*)             -> Gruppen-Bezeichnung De.
+03: group_fr               (*)             -> Gruppen-Bezeichnung Fr.
+04: group_it               (*)             -> Gruppen-Bezeichnung It.
+05: subgroup_code          (UU)            -> Gruppen-Code
+06: subgroup_de            (*)             -> Untergruppen-Bezeichnung De.
+07: subgroup_fr            (*)             -> Untergruppen-Bezeichnung Fr.
+08: subgroup_it            (*)             -> Untergruppen-Bezeichnung It.
+09: limitation_de          (*)             -> Limitation-Untergruppe De.
+10: limitation_fr          (*)             -> Limitation-Untergruppe Fr.
+11: limitation_it          (*)             -> Limitation-Untergruppe It.
+12: product_code           (PP.ZZ.V)       -> Produkte Code
+13: product_de             (*)             -> Produkt-Bezeichnung De.
+14: product_fr             (*)             -> Produkt-Bezeichnung Fr.
+15: product_it             (*)             -> Produkt-Bezeichnung It.
+16: product_limitation_de  (*)             -> Produkt-Limitation De.
+17: product_limitation_fr  (*)             -> Produkt-Limitation Fr.
+18: product_limitation_it  (*)             -> Produkt-Limitation It.
+19: price                  (Float)         -> Preis
+20: date                   (DD.MM.YYYY)    -> Aufnahme Datum
+21: unit_de                (*)             -> Einheit De.
+22: unit_fr                (*)             -> Einheit Fr.
+23: unit_it                (*)             -> Einheit It.
+
+
+## Glossar ##
+* Migel-Code
+  03.03.02.02.2
+  |  |  |  |  |
+  |  |  |  |  Verkaufsart
+  |  |  |  |
+  |  |  |  Zubehör
+  |  |  |
+  |  |  Produkt
+  |  |
+  |  Untergruppe
+  |
+  Produkt-Gruppe
+
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben
