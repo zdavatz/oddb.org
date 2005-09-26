@@ -53,6 +53,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[3,13]	=>	:csv_migel_price_gz,
 		[0,14]	=>	:csv_migel_export_zip,
 		[3,14]	=>	:csv_migel_price_zip,
+		[6,13]	=>	:datadesc_migel_csv,
 
 		[0,16]	=>	:oddbdat_download_tar_gz,
 		[2,16]	=>	:radio_oddbdat_tar_gz,
@@ -119,6 +120,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def datadesc_fachinfo_yaml(model, session)
 		datadesc('fachinfo.yaml')
+	end
+	def datadesc_migel_csv(model, session)
+		datadesc('migel.csv')
 	end
 	def datadesc_oddb_csv(model, session)
 		datadesc('oddb.csv')
