@@ -49,17 +49,21 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[6,11]	=>	:datadesc_doctors_csv,
 		[0,12]	=>	:csv_doctors_export_zip,
 		[3,12]	=>	:csv_doctors_price_zip,
+		[0,13]	=>	:csv_migel_export_gz,
+		[3,13]	=>	:csv_migel_price_gz,
+		[0,14]	=>	:csv_migel_export_zip,
+		[3,14]	=>	:csv_migel_price_zip,
 
-		[0,14]	=>	:oddbdat_download_tar_gz,
-		[2,14]	=>	:radio_oddbdat_tar_gz,
-		[6,14]	=>	:datadesc_oddbdat,
-		[0,15]	=>	:oddbdat_download_zip,
-		[2,15]	=>	:radio_oddbdat_zip,
-		[0,16]	=>	:s31x_gz,
-		[6,16]	=>	:datadesc_s31x,
-		[2,16]	=>	:radio_s31x_gz,
-		[0,17]	=>	:s31x_zip,
-		[2,17]	=>	:radio_s31x_zip,
+		[0,16]	=>	:oddbdat_download_tar_gz,
+		[2,16]	=>	:radio_oddbdat_tar_gz,
+		[6,16]	=>	:datadesc_oddbdat,
+		[0,17]	=>	:oddbdat_download_zip,
+		[2,17]	=>	:radio_oddbdat_zip,
+		[0,18]	=>	:s31x_gz,
+		[6,18]	=>	:datadesc_s31x,
+		[2,18]	=>	:radio_s31x_gz,
+		[0,19]	=>	:s31x_zip,
+		[2,19]	=>	:radio_s31x_zip,
 	}
 	CSS_MAP = {
 		[0,0,6]			=>	'subheading',
@@ -71,6 +75,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[0,11,7,2]		=>	'list-bg',
 		[0,13,7,3]		=>	'list',
 		[0,16,7,2]		=>	'list-bg',
+		[0,18,7,2]		=>	'list',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
@@ -93,6 +98,18 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def csv_doctors_price_zip(model, session)
 		once('doctors.csv.zip')
+	end
+	def csv_migel_export_gz(model, session)
+		checkbox_with_filesize('migel.csv.gz')
+	end
+	def csv_migel_export_zip(model, session)
+		checkbox_with_filesize('migel.csv.zip')
+	end
+	def csv_migel_price_gz(model, session)
+		once('migel.csv.gz')
+	end
+	def csv_migel_price_zip(model, session)
+		once('migel.csv.zip')
 	end
 	def datadesc_doctors_csv(model, session)
 		datadesc('doctors.csv')

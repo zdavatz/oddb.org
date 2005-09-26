@@ -6,6 +6,7 @@ require 'tempfile'
 require 'archive/tarsimple'
 require 'zip/zip'
 require 'models'
+require 'model/migel/group'
 require 'oddb_yaml'
 require 'csv_exporter'
 require 'oddbdat'
@@ -73,6 +74,20 @@ ean13;exam;salutation;title;firstname;name;praxis;addresstype;address;location;c
 				odba_ids.each { |odba_id|
 					item = ODBA.cache_server.fetch(odba_id, nil)
 					CsvExporter.dump(CsvExporter::DOCTOR, item, fh)
+					ODBA.cache_server.clear
+				}
+			}
+		end
+		def OdbaExporter.export_migel_csv(odba_ids, dir, name)
+			safe_export(dir, name) { |fh|
+=begin
+start fh << <<-HEAD
+migel_code;group_code;group_de;group_fr;group_it;subgroup_code;subgroup_de;subgroup_fr;subgroup_it;limitation_de;limitation_fr;limitation_it;accessory_de;accessory_fr;accessory_it;price;type;date;unit_de;unite_fr;unite_it
+				HEAD
+=end
+					odba_ids.each { |odba_id|
+					item = ODBA.cache_server.fetch(odba_id, nil)
+					CsvExporter.dump(CsvExporter::MIGEL, item, fh)
 					ODBA.cache_server.clear
 				}
 			}

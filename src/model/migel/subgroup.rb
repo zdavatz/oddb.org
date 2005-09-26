@@ -26,6 +26,9 @@ module ODDB
 				product.subgroup = self
 				@products.store(productcd, product)
 			end
+			def group_code
+				@group.code 
+			end
 			def product(code)
 				@products[code]
 			end
