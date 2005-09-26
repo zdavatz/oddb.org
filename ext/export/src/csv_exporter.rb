@@ -47,7 +47,7 @@ module ODDB
 			end
 			def CsvExporter.format_date(item)
 				if(date = item.date)
-					date.strftime('%d-%m-%Y')
+					date.strftime('%d.%m.%Y')
 				else
 					""
 				end
