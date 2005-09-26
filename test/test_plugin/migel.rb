@@ -20,7 +20,7 @@ module ODDB
 			row = [
 "3","APPLIKATIONSHILFEN","Gerätereparaturen beim Kaufsystem: Bei sorgfältigemGebrauch ohne Selbstverschuldung, Vergütung nach Aufwand nur nach vorgängiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehör und Verbrauchsmaterial.Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		Rücksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"
 			]
-			id = %w(03 02 01 00 209)
+			id = %w(03 02 01 00 199)
 			@app.mock_handle(:update, 1) { |pointer, values|
 			ptr = Persistence::Pointer.new([:migel_group, '03'])
 			assert_equal(ptr.creator, pointer)
