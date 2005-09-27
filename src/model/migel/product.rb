@@ -10,8 +10,8 @@ module ODDB
 			include SimpleLanguage
 			ODBA_SERIALIZABLE = ['@descriptions']
 			attr_reader :code
-			attr_accessor :subgroup, :price, :type, :date, 
-				:unit, :limitation_text
+			attr_accessor :subgroup, :limitation, :price, :type, :date, 
+				:unit, :limitation_text, :product, :product_text
 			def initialize(code)
 				@code = code
 				@products = {}
@@ -28,11 +28,20 @@ module ODDB
 			def create_limitation_text
 				@limitation_text = LimitationText.new
 			end
+			def create_product_text
+				@product_text = Text::Document.new
+			end
 			def create_unit
-				@unit = ODDB::Text::Document.new
+				@unit = Text::Document.new
+			end
+			def accessory_code
+				@code.split('.', 2).last
 			end
 			def migel_code
 				[ @subgroup.group_code, @subgroup.code, @code ].join('.')
+			end
+			def product_code
+				@code.split('.').first
 			end
 		end
 	end

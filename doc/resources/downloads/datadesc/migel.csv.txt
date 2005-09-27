@@ -1,6 +1,7 @@
 Datenbeschrieb migel.csv
 
-Version: 1.0
+Version: 2.0
+Geändert: 27.09.2005 (2.0) durch ffricker@ywesee.com
 Erstellt: 26.09.2005 (1.0) durch ffricker@ywesee.com
 
 ## Struktur ##
@@ -17,26 +18,33 @@ Migel-Record:
 02: group_de               (*)             -> Gruppen-Bezeichnung De.
 03: group_fr               (*)             -> Gruppen-Bezeichnung Fr.
 04: group_it               (*)             -> Gruppen-Bezeichnung It.
-05: subgroup_code          (UU)            -> Gruppen-Code
-06: subgroup_de            (*)             -> Untergruppen-Bezeichnung De.
-07: subgroup_fr            (*)             -> Untergruppen-Bezeichnung Fr.
-08: subgroup_it            (*)             -> Untergruppen-Bezeichnung It.
-09: limitation_de          (*)             -> Limitation-Untergruppe De.
-10: limitation_fr          (*)             -> Limitation-Untergruppe Fr.
-11: limitation_it          (*)             -> Limitation-Untergruppe It.
-12: product_code           (PP.ZZ.V)       -> Produkte Code
-13: product_de             (*)             -> Produkt-Bezeichnung De.
-14: product_fr             (*)             -> Produkt-Bezeichnung Fr.
-15: product_it             (*)             -> Produkt-Bezeichnung It.
-16: product_limitation_de  (*)             -> Produkt-Limitation De.
-17: product_limitation_fr  (*)             -> Produkt-Limitation Fr.
-18: product_limitation_it  (*)             -> Produkt-Limitation It.
-19: price                  (Float)         -> Preis
-20: date                   (DD.MM.YYYY)    -> Aufnahme Datum
-21: unit_de                (*)             -> Einheit De.
-22: unit_fr                (*)             -> Einheit Fr.
-23: unit_it                (*)             -> Einheit It.
-
+05: group_limitation_de    (*)             -> Gruppen-Limitation De.
+06: group_limitation_fr    (*)             -> Gruppen-Limitation Fr.
+07: group_limitation_it    (*)             -> Gruppen-Limitation It.
+08: subgroup_code          (UU)            -> Gruppen-Code
+09: subgroup_de            (*)             -> Untergruppen-Bezeichnung De.
+10: subgroup_fr            (*)             -> Untergruppen-Bezeichnung Fr.
+11: subgroup_it            (*)             -> Untergruppen-Bezeichnung It.
+12: subgroup_limitation_de (*)             -> Limitation-Untergruppe De.
+13: subgroup_limitation_fr (*)             -> Limitation-Untergruppe Fr.
+14: subgroup_limitation_it (*)             -> Limitation-Untergruppe It.
+15: product_code           (PP)            -> Produkte Code
+16: product_de             (*)             -> Produkt-Bezeichnung De.
+17: product_fr             (*)             -> Produkt-Bezeichnung Fr.
+18: product_it             (*)             -> Produkt-Bezeichnung It.
+19: accessory_code         (ZZ.V)          -> Zubehör-Code
+20: accessory_de           (*)             -> Zubehör De.
+21: accessory_fr           (*)             -> Zubehör Fr.
+22: accessory_it           (*)             -> Zubehör It.
+23: product_limitation_de  (*)             -> Produkt-Limitation De.
+24: product_limitation_fr  (*)             -> Produkt-Limitation Fr.
+25: product_limitation_it  (*)             -> Produkt-Limitation It.
+26: price                  (Float)         -> Preis
+27: unit_de                (*)             -> Einheit De.
+28: unit_fr                (*)             -> Einheit Fr.
+29: unit_it                (*)             -> Einheit It.
+30: limitation_flag        (Boolean)       -> Limitations Zeichen, siehe Glossar (Limitations Zeichen)
+31: date                   (DD.MM.YYYY)    -> Aufnahme Datum
 
 ## Glossar ##
 * Migel-Code
@@ -51,6 +59,9 @@ Migel-Record:
   |  Untergruppe
   |
   Produkt-Gruppe
+
+* Limitations Zeichen
+  Zeigt an, ob eine Limitation vorhanden ist.
 
 * Version
 Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"

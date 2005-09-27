@@ -12,9 +12,13 @@ module ODDB
 			include SimpleLanguage
 			ODBA_SERIALIZABLE = ['@descriptions']
 			attr_reader :subgroups, :code
+			attr_accessor :limitation_text
 			def initialize(sgcd)
 				@code = sgcd
 				@subgroups = {}
+			end
+			def create_limitation_text
+				@limitation_text = LimitationText.new
 			end
 			def create_subgroup(sgcd)
 				subgroup = Subgroup.new(sgcd)

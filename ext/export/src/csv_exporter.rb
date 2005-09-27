@@ -11,11 +11,13 @@ module ODDB
 				:specialities]
 			ADDRESS = [:type, :address, :location, :canton, :fon, :fax]
 			DEFRIT = [:de, :fr, :it] 
-			MIGEL = [:migel_code, :migel_subgroup, :code, :migel_defrit, 
-				:migel_limitation, :format_price, :format_date, :migel_unit]
+			MIGEL = [:migel_code, :migel_subgroup, :product_code,
+				:migel_product_text, :accessory_code, :migel_defrit,
+				:migel_limitation, :format_price, :migel_unit, :limitation,
+				:format_date]
 			MIGEL_SUBGROUP = [:migel_group, :code, :migel_defrit,
 				:migel_limitation]
-			MIGEL_GROUP = [:code, :migel_defrit]
+			MIGEL_GROUP = [:code, :migel_defrit, :migel_limitation]
 			def CsvExporter.address_data(item)
 				collect_data(ADDRESS, item)
 			end
@@ -57,6 +59,9 @@ module ODDB
 			end
 			def CsvExporter.migel_group(item)
 				self.collect_data(MIGEL_GROUP, item.group)
+			end
+			def CsvExporter.migel_product_text(item)
+				self.migel_defrit(item.product_text)
 			end
 			def CsvExporter.migel_subgroup(item)
 				self.collect_data(MIGEL_SUBGROUP, item.subgroup)
