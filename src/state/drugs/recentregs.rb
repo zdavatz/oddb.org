@@ -46,17 +46,11 @@ class RecentRegs < State::Drugs::Global
 		end
 	end
 	def create_package_month(date)
-		month = month_range(date)
-		PackageMonth.new(date, regs_by_month(month), @session)
-	end
-	def month_range(date)
-		first = Date.new(date.year, date.month)
-		first...(first >> 1)
+		PackageMonth.new(date, regs_by_month(date), @session)
 	end
 	def regs_by_month(month)
-		@session.app.registrations.values.select { |reg|
-			month.include?(reg.registration_date)
-		}
+		ODBA.cache_server.retrieve_from_index('date_index_registration',
+			month.strftime('%Y-%m'))
 	end
 end
 		end
