@@ -158,7 +158,6 @@ resolve_origin: ''
 dictionary: 'default'
 init_source: '@hospitals.values'
 fulltext: true
-
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'substance_index_sequence'
 origin_klass: 'Substance'
@@ -167,4 +166,13 @@ resolve_search_term: 'search_keys'
 resolve_target: 'sequences'
 resolve_origin: 'active_agents.collect { |act| act.substance }'
 init_source: 'self.sequences'
+fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'date_index_registration'
+origin_klass: 'Registration'
+target_klass: 'Registration'
+resolve_search_term: 'registration_date.to_s'
+resolve_target: ''
+resolve_origin: ''
+init_source: 'self.registrations.values'
 fulltext: false
