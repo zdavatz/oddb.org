@@ -126,6 +126,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 					YAML.dump(ODBA.cache_server.fetch(odba_id, nil), fh)
 					fh.puts
 					ODBA.cache_server.clear
+					$stdout.flush
 				}
 			}
 		end
@@ -133,6 +134,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 			FileUtils.mkdir_p(dir)
 			Tempfile.open(name, dir) { |fh|
 				block.call(fh)
+				fh.flush
 				newpath = File.join(dir, name)
 				FileUtils.mv(fh.path, newpath)
 				compress(dir, name)
