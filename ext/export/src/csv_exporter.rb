@@ -9,7 +9,8 @@ module ODDB
 			DOCTOR = [ :ean13, :exam, :salutation, :title, :firstname,
 				:name, :praxis, :first_address_data, :email, :language, 
 				:specialities]
-			ADDRESS = [:type, :address, :location, :canton, :fon, :fax]
+			ADDRESS = [:type, :additional_lines, :address, :location, 
+				:canton, :fon, :fax]
 			DEFRIT = [:de, :fr, :it] 
 			MIGEL = [:migel_code, :migel_subgroup, :product_code,
 				:migel_product_text, :accessory_code, :migel_defrit,
