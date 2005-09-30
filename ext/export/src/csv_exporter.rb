@@ -45,19 +45,19 @@ module ODDB
 				addr = item.praxis_address || item.address(0)
 				address_data(addr)
 			end
-			def CsvExporter.format_price(item)
-				item.price = item.price / 100.0
-				item.price = sprintf("%.2f", item.price)
-			end
-			def CsvExporter.migel_defrit(item)
-				self.collect_data(DEFRIT, item)
-			end
 			def CsvExporter.format_date(item)
 				if(date = item.date)
 					date.strftime('%d.%m.%Y')
 				else
 					""
 				end
+			end
+			def CsvExporter.format_price(item)
+				item.price = item.price / 100.0
+				item.price = sprintf("%.2f", item.price)
+			end
+			def CsvExporter.migel_defrit(item)
+				self.collect_data(DEFRIT, item)
 			end
 			def CsvExporter.migel_limitation(item)
 				self.migel_defrit(item.limitation_text)
