@@ -41,6 +41,10 @@ module ODDB
 				data = collect_data(keys, item).flatten
 				fh << CSVLine.new(data).to_s(false, ';') << "\n"
 			end
+			def CsvExporter.first_address_data(item)
+				addr = item.praxis_address || item.address(0)
+				address_data(addr)
+			end
 			def CsvExporter.format_price(item)
 				item.price = item.price / 100.0
 				item.price = sprintf("%.2f", item.price)
