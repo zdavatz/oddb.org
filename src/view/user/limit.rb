@@ -133,25 +133,27 @@ class ResultLimitList < HtmlGrid::List
 	include DataFormat
 	include View::AdditionalInformation
 	COMPONENTS = {
-		[0,0]	=>	:name_base,
-		[1,0]	=>	:galenic_form,
-		[2,0]	=>	:most_precise_dose,
-		[3,0]	=>	:size,
-		[4,0]	=>	:price_exfactory,
-		[5,0]	=>	:price_public,
-		[6,0]	=>	:ikscat,
-		[7,0]	=>	:patinfo,
+		[0,0]	=>  :fachinfo,
+		[1,0]	=>	:patinfo,
+		[2,0]	=>	:name_base,
+		[3,0]	=>	:galenic_form,
+		[4,0]	=>	:most_precise_dose,
+		[5,0]	=>	:size,
+		[6,0]	=>	:price_exfactory,
+		[7,0]	=>	:price_public,
+		[8,0]	=>	:ikscat,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
 	SORT_HEADER = false
 	CSS_MAP = {
-		[0,0] => 'result-big-unknown',
-		[1,0] => 'list',
-		[2,0,6] => 'list-r',
+		[0,0,2]	=>	'list',
+		[2,0] => 'list-big',
+		[3,0] => 'list',
+		[4,0,5] => 'list-r',
 	}
 	CSS_HEAD_MAP = {
-		[2,0,6] => 'th-r',
+		[4,0,5] => 'th-r',
 	}
 	def compose_empty_list(offset)
 		count = @session.state.package_count.to_i
@@ -168,25 +170,13 @@ class ResultLimitList < HtmlGrid::List
 	def name_base(model, session)
 		model.name_base
 	end
-	def patinfo(model, session)
-		## only show pdf-patinfos
-		if(pdf_patinfo = model.pdf_patinfo)
-			link = HtmlGrid::PopupLink.new(:patinfo_short, 
-				model, session, self)
-			link.href = @lookandfeel.resource_global(:pdf_patinfo, 
-				pdf_patinfo)
-			pos = components.index(:patinfo)
-			component_css_map.store(pos, "result-infos")
-			css_map.store(pos, "result-infos")
-			link
-		end
-	end
 end
 class ResultLimitComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=> :export_csv,
-		[0,1] => ResultLimitList, 
-		[0,2]	=> LimitComposite,
+		[0,1]	=> SearchForm,
+		[0,2] => ResultLimitList, 
+		[0,3]	=> LimitComposite,
 	}
 	LEGACY_INTERFACE = false
 	def export_csv(model)

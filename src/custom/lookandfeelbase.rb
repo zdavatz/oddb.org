@@ -782,7 +782,7 @@ Zeno Davatz
 				:query_limit_empty2				=>	". Abfrage unbeschränkt. Besten Dank für Ihr Verständnis.",
 				:query_limit_explain0			=>	"ODDB.org misst die Anzahl Abfragen von einer IP-Adresse. Bei Ihrer IP-Adresse <",
 				:query_limit_explain1			=>	"> haben wir innerhalb von einem Tag mehr als ",
-				:query_limit_explain2			=>	" Abfragen gemessen. Gerne möchten wir Ihnen folgende Möglichkeiten anbieten direkter und schneller zu Ihrer gewünschten Dienstleistung zu gelangen.",
+				:query_limit_explain2			=>	" Abfragen gemessen. Gerne möchten wir Ihnen folgende Möglichkeiten anbieten direkter und schneller zu Ihrer gewünschten Dienstleistung zu gelangen.<br>Die Einsicht in die Fach- und Patienteninformationen ist für die auf ODDB.org publizierten Fach- und Patienteninformationen nach wie vor möglich. Verwenden Sie dazu bitte die Suchmaske oben rechts.<br>Falls Sie keine Abfragebeschränkung wünschen, Surfen Sie bitte über die Seiten von <a href=\"http://www.atupri.ch\">http://www.atupri.ch</a> oder <a href=\"http://www.provita.ch\">http://www.provita.ch</a>",
 				:query_limit_login				=>	'B) Falls Sie bereits als Benutzer registriert sind, geben Sie Ihr Email und Passwort an um zur gewünschten Ansicht zu gelangen:',
 				:query_limit_more_info		=>	'Mehr Informationen',
 				:query_limit_new_user			=>	'A) Falls Sie noch nicht als Benutzer registriert sind, lesen Sie bitte folgendes:',

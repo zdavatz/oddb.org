@@ -16,7 +16,6 @@ class Fachinfo < State::Drugs::Global
 		attr_accessor :pointer_descr
 	end
 	VIEW = View::Drugs::Fachinfo
-	LIMITED = true
 	def init
 		@fachinfo = @model
 		@model = FachinfoWrapper.new(@fachinfo)
@@ -35,7 +34,6 @@ end
 class FachinfoPrint < State::Drugs::Global
 	VIEW = View::Drugs::FachinfoPrint
 	VOLATILE = true
-	LIMITED = true
 	def init
 		if(allowed?)
 			@default_view = View::Drugs::CompanyFachinfoPrint
