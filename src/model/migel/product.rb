@@ -12,9 +12,13 @@ module ODDB
 			attr_reader :code
 			attr_accessor :subgroup, :limitation, :price, :type, :date, 
 				:unit, :limitation_text, :product, :product_text
+			alias :pointer_descr :code
 			def initialize(code)
 				@code = code
 				@products = {}
+			end
+			def accessory_code
+				@code.split('.', 2).last
 			end
 			def adjust_types(hash, app=nil)
 				hash = hash.dup
@@ -34,14 +38,28 @@ module ODDB
 			def create_unit
 				@unit = Text::Document.new
 			end
-			def accessory_code
-				@code.split('.', 2).last
+			def group
+				@subgroup.group
 			end
 			def migel_code
-				[ @subgroup.group_code, @subgroup.code, @code ].join('.')
+				[ @subgroup.migel_code, @code ].join('.')
 			end
 			def product_code
 				@code.split('.').first
+			end
+			def search_terms(lang = :de)
+				terms = [
+					migel_code,
+				]
+				[ @subgroup.group, @subgroup, 
+					@product_text, self ].compact.each { |item|
+					terms.push(item.send(lang))
+				}
+				terms.delete_if { |str| str.empty? }
+			end
+			def search_text(lang = :de)
+				text = search_terms(lang).join(' ').downcase
+				text
 			end
 		end
 	end

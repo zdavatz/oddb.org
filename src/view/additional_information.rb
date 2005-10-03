@@ -60,16 +60,20 @@ module ODDB
 			end
 			def limitation_text(model, session)
 				if((sl = model.sl_entry) && (sltxt = sl.limitation_text))
-					link = HtmlGrid::PopupLink.new(:limitation_text_short, model, session, self)
-					link.height = 300
-					link.width = 500
-					link.href = @lookandfeel.event_url(:resolve, {'pointer'=>sltxt.pointer})
-					link.set_attribute('title', @lookandfeel.lookup(:limitation_text))
-					pos = components.index(:limitation_text)
-					component_css_map.store(pos, "result-infos")
-					css_map.store(pos, "result-infos")
-					link
+					limitation_link(sltxt)
 				end
+			end
+			def limitation_link(sltxt)
+				link = HtmlGrid::Link.new(:limitation_text_short, 
+					nil, @session, self)
+				link.href = @lookandfeel.event_url(:resolve, 
+					{'pointer'=>CGI.escape(sltxt.pointer.to_s)})
+				link.set_attribute('title', 
+					@lookandfeel.lookup(:limitation_text))
+				pos = components.index(:limitation_text)
+				link.css_class = "result-infos"
+				#css_map.store(pos, "result-infos")
+				link
 			end
 			def patinfo(model, session)
 				if(model.has_patinfo?)

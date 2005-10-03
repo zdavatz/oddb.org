@@ -158,7 +158,6 @@ resolve_origin: ''
 dictionary: 'default'
 init_source: '@hospitals.values'
 fulltext: true
-
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'substance_index_sequence'
 origin_klass: 'Substance'
@@ -168,3 +167,23 @@ resolve_target: 'sequences'
 resolve_origin: 'active_agents.collect { |act| act.substance }'
 init_source: 'self.sequences'
 fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'migel_index_de'
+origin_klass: 'ODDB::Migel::Product'
+target_klass: 'ODDB::Migel::Product'
+resolve_search_term: 'search_text(:de)'
+resolve_target: ''
+resolve_origin: ''
+init_source: 'self.migel_products'
+fulltext: true
+dictionary: 'default_german'
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'migel_index_fr'
+origin_klass: 'Migel::Product'
+target_klass: 'Migel::Product'
+resolve_search_term: 'search_text(:fr)'
+resolve_target: ''
+resolve_origin: ''
+init_source: 'self.migel_products'
+fulltext: true
+dictionary: 'default_french'

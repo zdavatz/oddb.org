@@ -1569,3 +1569,8 @@ table.center {
 table.border, table.border td {
 	border: 1px solid green;
 }
+td.migel-group {
+	background: $bg_medium;
+	color: $bg_medium_font_color;
+	padding:4px;
+}

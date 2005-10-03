@@ -177,6 +177,10 @@ module ODDB
 			@persistent_user_input[:search_query] ||= query
 			@app.search_interactions(query)
 		end
+		def search_migel_products(query)
+			@persistent_user_input[:search_query] ||= query
+			@app.search_migel_products(query, self.language)
+		end
 		def search_substances(query)
 			@persistent_user_input[:search_query] ||= query
 			@app.search_substances(query)
