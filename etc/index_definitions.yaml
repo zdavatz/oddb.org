@@ -179,8 +179,8 @@ fulltext: true
 dictionary: 'default_german'
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'migel_index_fr'
-origin_klass: 'Migel::Product'
-target_klass: 'Migel::Product'
+origin_klass: 'ODDB::Migel::Product'
+target_klass: 'ODDB::Migel::Product'
 resolve_search_term: 'search_text(:fr)'
 resolve_target: ''
 resolve_origin: ''
