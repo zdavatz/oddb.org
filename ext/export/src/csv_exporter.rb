@@ -9,7 +9,8 @@ module ODDB
 			DOCTOR = [ :ean13, :exam, :salutation, :title, :firstname,
 				:name, :praxis, :first_address_data, :email, :language, 
 				:specialities]
-			ADDRESS = [:type, :address, :location, :canton, :fon, :fax]
+			ADDRESS = [:type, :name, :additional_lines, :address, :plz,
+				:city, :canton, :fon, :fax]
 			DEFRIT = [:de, :fr, :it] 
 			MIGEL = [:migel_code, :migel_subgroup, :product_code,
 				:migel_product_text, :accessory_code, :migel_defrit,
@@ -40,12 +41,9 @@ module ODDB
 				data = collect_data(keys, item).flatten
 				fh << CSVLine.new(data).to_s(false, ';') << "\n"
 			end
-			def CsvExporter.format_price(item)
-				item.price = item.price / 100.0
-				item.price = sprintf("%.2f", item.price)
-			end
-			def CsvExporter.migel_defrit(item)
-				self.collect_data(DEFRIT, item)
+			def CsvExporter.first_address_data(item)
+				addr = item.praxis_address || item.address(0)
+				address_data(addr)
 			end
 			def CsvExporter.format_date(item)
 				if(date = item.date)
@@ -53,6 +51,13 @@ module ODDB
 				else
 					""
 				end
+			end
+			def CsvExporter.format_price(item)
+				item.price = item.price / 100.0
+				item.price = sprintf("%.2f", item.price)
+			end
+			def CsvExporter.migel_defrit(item)
+				self.collect_data(DEFRIT, item)
 			end
 			def CsvExporter.migel_limitation(item)
 				self.migel_defrit(item.limitation_text)

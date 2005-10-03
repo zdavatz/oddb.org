@@ -124,7 +124,11 @@ module ODDB
 				self
 			end
 			def allowed?
-				@session.user.allowed?(@model)
+				test = @model
+				if(@model.is_a?(Persistence::CreateItem)) 
+					test = @model.parent(@session.app)
+				end
+				@session.user.allowed?(test)
 			end
 			def atc_chooser
 				mdl = @session.app.atc_chooser

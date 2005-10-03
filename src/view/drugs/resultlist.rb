@@ -104,7 +104,7 @@ class ResultList < HtmlGrid::List
 		:substances				=> true,
 	}
 	CSS_MAP = {
-		[1,0,3]	=>	'result-b-r',
+		[0,0,4]	=>	'result-b-r',
 		[4,0]		=>	'result-big',
 		[5,0]		=>	'result',
 		[6,0,3]	=>	'result-r',

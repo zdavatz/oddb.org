@@ -55,6 +55,10 @@ module ODDB
 								&& flags.include?(:composition))
 								succ = update_active_agents(comp, seq.pointer)
 							end
+							if((pacs = pseq.packages) \
+								&& flags.include?(:packages))
+								succ = update_packages(pacs, seq)
+							end
 						end
 					}
 				end

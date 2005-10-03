@@ -1,6 +1,7 @@
 Datenbeschrieb migel.csv
 
-Version: 2.0.1
+Version: 2.0.2
+Geändert: 30.09.2005 (2.0.2) durch hwyss@ywesee.com
 Geändert: 28.09.2005 (2.0.1) durch ffricker@ywesee.com
 Geändert: 27.09.2005 (2.0)   durch ffricker@ywesee.com
 Erstellt: 26.09.2005 (1.0)   durch ffricker@ywesee.com
@@ -75,4 +76,6 @@ Migel-Record:
 Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
 - Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+Die komplette Version-History ist zu finden unter:
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/migel.csv.txt

@@ -69,7 +69,7 @@ module ODDB
 		def OdbaExporter.export_doc_csv(odba_ids, dir, name)
 			safe_export(dir, name) { |fh|
 				fh << <<-HEAD
-ean13;exam;salutation;title;firstname;name;praxis;addresstype;address;location;canton;fons;faxs;email;language
+ean13;exam;salutation;title;firstname;name;praxis;addresstype;address_name;lines;address;plz;city;canton;fon;fax;email;language;specialities
 				HEAD
 				odba_ids.each { |odba_id|
 					item = ODBA.cache_server.fetch(odba_id, nil)
@@ -126,6 +126,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 					YAML.dump(ODBA.cache_server.fetch(odba_id, nil), fh)
 					fh.puts
 					ODBA.cache_server.clear
+					$stdout.flush
 				}
 			}
 		end

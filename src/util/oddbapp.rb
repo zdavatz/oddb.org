@@ -114,9 +114,7 @@ class OddbPrevalence
 		}
 	end
 	def atcless_sequences
-		@registrations.values.collect { |reg|
-			reg.atcless_sequences
-		}.flatten
+		ODBA.cache_server.retrieve_from_index('atcless', 'true')
 	end
 	def atc_class(code)
 		@atc_classes[code]
