@@ -1,6 +1,7 @@
 Datenbeschrieb doctors.csv
 
-Version: 1.2
+Version: 1.3
+Geändert: 03.10.2005 (1.3)   durch hwyss@ywesee.com
 Geändert: 30.09.2005 (1.2)   durch hwyss@ywesee.com
 Geändert: 23.09.2005 (1.1)   durch hwyss@ywesee.com
 Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
@@ -20,15 +21,17 @@ Doctor-Record:
 05: name              (*)                       -> Nachname
 06: praxis            (true/false)              -> Praxis Ja/Nein
 07: address_type      (at_praxis / at_work)     -> Adressart 
-08: lines             (*)                       -> zusätzliche Adresszeilen
-09: address           (*)                       -> Strasse, Nummer
-10: location          (*)                       -> PLZ / Ort
-11: canton            (*)                       -> Kantonskürzel (falls vorhanden)
-12: fon               (*)                       -> Telefonnummern, durch ',' getrennt
-13: fax               (*)                       -> Faxnummern, durch ',' getrennt
-14: email             (*)                       -> Email-Adresse
-15: language          (*)                       -> Korrespondenzsprache
-16: specialities      (*)                       -> Facharzttitel, durch ',' getrennt
+08: address_name      (*)                       -> Name gemäss Adresse
+09: lines             (*)                       -> zusätzliche Adresszeilen
+10: address           (*)                       -> Strasse, Nummer
+11: plz               (*)                       -> PLZ
+12: city              (*)                       -> Ort
+13: canton            (*)                       -> Kantonskürzel (falls vorhanden)
+14: fon               (*)                       -> Telefonnummern, durch ',' getrennt
+15: fax               (*)                       -> Faxnummern, durch ',' getrennt
+16: email             (*)                       -> Email-Adresse
+17: language          (*)                       -> Korrespondenzsprache
+18: specialities      (*)                       -> Facharzttitel, durch ',' getrennt
 
 * Version
 Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
