@@ -175,6 +175,7 @@ class Sequence < State::Admin::Global
 		unit = @session.lookandfeel.lookup("pi_upload_#{type}")
 		text = sprintf("%s %s", @model.iksnr, @model.seqnr)
 		values = {
+			:data					=>	{:name => @model.name},
 			:duration			=>	PI_UPLOAD_DURATION,
 			:expiry_time	=>	expiry_time,
 			:item_pointer =>	@model.pointer,
