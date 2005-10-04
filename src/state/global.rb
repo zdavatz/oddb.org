@@ -101,6 +101,13 @@ module ODDB
 				[	:registration, :sequence, 
 					:package, :sl_entry, 
 					:limitation_text ]	=>	State::Drugs::LimitationText,
+				[	:migel_group, :subgroup, :product, 
+					:limitation_text ]	=>	State::Drugs::MigelLimitationText,
+				[	:migel_group, :subgroup, 
+					:limitation_text ]	=>  State::Drugs::MigelLimitationText,
+				[	:migel_group,
+					:limitation_text ] => State::Drugs::MigelLimitationText,
+				[ :patinfo ]	=>	State::Drugs::Patinfo,
 				[ :patinfo ]	=>	State::Drugs::Patinfo,
 			}	
 			PRINT_STATES = {
@@ -387,7 +394,7 @@ module ODDB
 						State::Substances::Result.new(@session, result)
 					else
 						query = query.to_s.downcase
-						stype = @session.user_input(:search_type) 
+						stype = @session.persistent_user_input(:search_type) 
 						_search_drugs_state(query, stype)
 					end
 				else
@@ -404,18 +411,21 @@ module ODDB
 					@session.search_exact_company(query)
 				when 'st_indication'
 					@session.search_exact_indication(query)
-				when 'st_migel'
-					@session.search_exact_migel(query)
 				else
 					@session.search_oddb(query)
 				end
 			end
 			def _search_drugs_state(query, stype)
-				result = _search_drugs(query, stype)
-				state = State::Drugs::Result.new(@session, result)
-				state.search_query = query
-				state.search_type = stype
-				state
+				if(stype == 'st_migel')
+					result = @session.search_migel_products(query)
+					state = State::Drugs::MigelResult.new(@session, result)
+				else
+					result = _search_drugs(query, stype)
+					state = State::Drugs::Result.new(@session, result)
+					state.search_query = query
+					state.search_type = stype
+					state
+				end
 			end
 			def show
 				if((pointer = @session.user_input(:pointer)) \

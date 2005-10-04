@@ -48,6 +48,14 @@ module ODDB
 			FileUtils.mkdir_p(File.dirname(path))
 			@@request_log ||= File.open(path, 'a')
 		end
+		def event
+			if(@lookandfeel \
+				&& persistent_user_input(:flavor) != @lookandfeel.flavor)
+				:home
+			else
+				super
+			end
+		end
 		def limit_queries
 			requests = (@@requests[remote_ip] ||= [])
 			if(@state.limited?)
@@ -63,20 +71,20 @@ module ODDB
 			end
 		end
 		def process(request)
+			@request = request
 			unless(is_crawler?)
 				@@html_cache.delete(@request_path)
 			end
-			@request = request
 			@request_id = request.object_id
 			@request_path = request.unparsed_uri
 			@process_start = Time.now
+			request_log('INIT')
 			if(is_crawler?)
 				if(@@html_cache[@request_path].nil?)
 					Thread.current.priority = -1
 					super
 				end
 			else
-			#unless(is_crawler?)
 				super
 				## @lookandfeel.nil?: the first access from a client has no
 				## lookandfeel here
@@ -110,7 +118,7 @@ module ODDB
 				else
 					Thread.current.priority = -1
 					logtype = 'CRWL'
-					sleep(5)
+					#sleep(5)
 					@@stub_html
 					#super
 				end
@@ -176,6 +184,10 @@ module ODDB
 		def search_interactions(query)
 			@persistent_user_input[:search_query] ||= query
 			@app.search_interactions(query)
+		end
+		def search_migel_products(query)
+			@persistent_user_input[:search_query] ||= query
+			@app.search_migel_products(query, self.language)
 		end
 		def search_substances(query)
 			@persistent_user_input[:search_query] ||= query

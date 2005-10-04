@@ -44,6 +44,9 @@ module ODDB
 				link.set_attribute('title', title)
 				link
 			end
+			def price(model, session=@session)
+				formatted_price(:price, model)
+			end
 			def price_exfactory(model, session=@session)
 				formatted_price(:price_exfactory, model)
 			end

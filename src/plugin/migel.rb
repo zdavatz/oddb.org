@@ -78,9 +78,9 @@ module ODDB
 			text = convert_charset(input)
 			text.tr!("\v", "\n")
 			limitation = ''
-			if(idx = text.index("\nLimitation"))
-				limitation = text[idx.next..-1]
-				text = text[0...idx]
+			if(idx = text.index("Limitation"))
+				limitation = text[idx..-1].strip
+				text = text[0...idx].strip
 			else
 				text.strip!
 			end
