@@ -112,7 +112,7 @@ Thank you for your patronage
 				inv.items.each_value { |item|
 					if(item.type == :annual_fee && (ptr = item.item_pointer) \
 						&& (seq = ptr.resolve(@app)) && (company = seq.company))
-						active_companies.push(company)
+						active_companies.push(company.odba_instance)
 					end
 				}
 			}
@@ -121,7 +121,7 @@ Thank you for your patronage
 			items.each { |item| 
 				ptr = item.item_pointer
 				if(seq = ptr.resolve(@app))
-					(companies[seq.company] ||= []).push(item)
+					(companies[seq.company.odba_instance] ||= []).push(item)
 				end
 			}
 			price = PI_UPLOAD_PRICES[:activation]
