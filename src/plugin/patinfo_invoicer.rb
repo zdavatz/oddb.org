@@ -199,8 +199,8 @@ Thank you for your patronage
 			}
 		end
 		def sequence_name(pointer)
-			if(pointer.is_a?(Persistence::Pointer \
-				&& (seq = pointer.resolve(@app))))
+			if(pointer.is_a?(Persistence::Pointer) \
+				&& (seq = pointer.resolve(@app)))
 				seq.name
 			end
 		end
