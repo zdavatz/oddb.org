@@ -702,6 +702,9 @@ class OddbPrevalence
 		result
 	end
 	def search_migel_products(query, lang)
+		if(lang.to_s != "fr") 
+			lang = "de"
+		end
 		index_name = "migel_index_#{lang}"
 		ODBA.cache_server.retrieve_from_index(index_name, query)
 	end
