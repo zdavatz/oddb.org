@@ -1,16 +1,15 @@
 Datenbeschrieb migel.csv
 
-Version: 2.0
-Geändert: 27.09.2005 (2.0) durch ffricker@ywesee.com
-Erstellt: 26.09.2005 (1.0) durch ffricker@ywesee.com
+Version: 2.0.2
+Geändert: 30.09.2005 (2.0.2) durch hwyss@ywesee.com
+Geändert: 28.09.2005 (2.0.1) durch ffricker@ywesee.com
+Geändert: 27.09.2005 (2.0)   durch ffricker@ywesee.com
+Erstellt: 26.09.2005 (1.0)   durch ffricker@ywesee.com
 
 ## Struktur ##
 Encoding: ISO-8859-1
-Record-Separator: \n
+Record-Separator: \n (Für New-Lines in Feldern siehe Glossar: New-Line)
 Field-Separator:  ;
-De. - Deutsch
-Fr. - Französisch
-It. - Italienisch
 
 Migel-Record:
 00: migel_code             (GG.UU.PP.ZZ.V) -> Migel-Code, siehe Glossar (Migel-Code)
@@ -47,6 +46,11 @@ Migel-Record:
 31: date                   (DD.MM.YYYY)    -> Aufnahme Datum
 
 ## Glossar ##
+* Sprachen
+  De. - Deutsch
+  Fr. - Französisch
+  It. - Italienisch
+
 * Migel-Code
   03.03.02.02.2
   |  |  |  |  |
@@ -60,11 +64,18 @@ Migel-Record:
   |
   Produkt-Gruppe
 
-* Limitations Zeichen
-  Zeigt an, ob eine Limitation vorhanden ist.
-
+* New-Line
+  In den Ausgangsdaten wurden Zeilenumbrüche mit ASCII-11 (Vertical Tab)
+  formatiert. In unseren Datenbanksystemen sind diese Daten jedoch als
+  ACSCII-10 (Line-Feed) gespeichert.
+  Aufgrund der Tatsache, das viele CSV-Parser mühe haben, Record-Seperators
+  innerhalb von Fields anzutreffen, sind die Daten im CSV-Export mit den
+  Vertical-Tabs formatiert.
+          
 * Version
 Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
 - Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+Die komplette Version-History ist zu finden unter:
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/migel.csv.txt

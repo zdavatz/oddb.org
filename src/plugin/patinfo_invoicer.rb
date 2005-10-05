@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Plugin::PatinfoInvoicer -- oddb -- 16.08.2005 -- jlang@ywesee.com
+# PatinfoInvoicer -- oddb -- 16.08.2005 -- jlang@ywesee.com
 
 require 'plugin/plugin'
 require 'pdfinvoice/config'
@@ -34,7 +34,8 @@ module ODDB
 			lines += company.address(0).lines
 			pdfinvoice.debitor_address = lines
 			pdfinvoice.items = items.collect { |item|
-				[ day, item.text, item.unit, 
+				text = [item.text, item_name(item)].compact.join("\n")
+				[ day, text, item.unit, 
 					item.quantity.to_i, item.price.to_f ]
 			}
 			pdfinvoice
@@ -67,7 +68,7 @@ Thank you for your patronage
 			# Für jedes item in items:
 			# Gibt es ein Invoice, welches nicht expired? ist 
 			# und welches ein Item beinhaltet, das den typ 
-			# :annual_fee hat und den selben model_pointer wie item
+			# :annual_fee hat und den selben item_pointer wie item
 
 			items = items.sort_by { |item| item.time }
 
@@ -111,7 +112,7 @@ Thank you for your patronage
 				inv.items.each_value { |item|
 					if(item.type == :annual_fee && (ptr = item.item_pointer) \
 						&& (seq = ptr.resolve(@app)) && (company = seq.company))
-						active_companies.push(company)
+						active_companies.push(company.odba_instance)
 					end
 				}
 			}
@@ -120,7 +121,7 @@ Thank you for your patronage
 			items.each { |item| 
 				ptr = item.item_pointer
 				if(seq = ptr.resolve(@app))
-					(companies[seq.company] ||= []).push(item)
+					(companies[seq.company.odba_instance] ||= []).push(item)
 				end
 			}
 			price = PI_UPLOAD_PRICES[:activation]
@@ -138,6 +139,16 @@ Thank you for your patronage
 				end
 			}
 			companies
+		end
+		def item_name(item)
+			name = ''
+			if(data = item.data)
+				name = data[:name].to_s.strip
+			end
+			if(name.empty? && (ptr = item.item_pointer))
+				name = sequence_name(ptr).to_s.strip
+			end
+			name unless(name.empty?)
 		end
 		def recent_items(day)
 			slate = @app.slate(:patinfo)
@@ -175,6 +186,12 @@ Thank you for your patronage
 					smtp.sendmail(fpart.to_s, SMTP_FROM, recipient)
 				}
 			}
+		end
+		def sequence_name(pointer)
+			if(pointer.is_a?(Persistence::Pointer) \
+				&& (seq = pointer.resolve(@app)))
+				seq.name
+			end
 		end
 		def transmogrify_items
 			@app.invoices.each_value { |invoice|

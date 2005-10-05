@@ -14,6 +14,7 @@ module ODDB
 			ODBA_SERIALIZABLE = ['@descriptions']
 			attr_accessor :group
 			attr_reader :products, :code, :limitation_text
+			alias :pointer_descr :code
 			def initialize(productcd)
 				@products = {}
 				@code = productcd
@@ -28,6 +29,9 @@ module ODDB
 			end
 			def group_code
 				@group.code 
+			end
+			def migel_code
+				[ @group.migel_code, @code ].join('.')
 			end
 			def product(code)
 				@products[code]

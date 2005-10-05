@@ -151,7 +151,7 @@ module ODDB
 			super(data.tr("\222", "'"))
 		end
 		def handle_image(src, *args)
-			@formatter.send_image(src.gsub(/["']/, ''))
+			@formatter.send_image(src.to_s.gsub(/["']/, ''))
 		end
 		def start_a(attrs)
 			@formatter.push_link(attrs)

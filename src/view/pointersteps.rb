@@ -37,13 +37,19 @@ module ODDB
 				compose_footer(offset)
 			end
 			def compose_footer(offset=[0,0])
-				if @model.respond_to?(:pointer_descr) 
+				if(@model.is_a?(LimitationText))
+					value = @lookandfeel.lookup(:limitation)
+					compose_footer_add(value,offset)
+				elsif @model.respond_to?(:pointer_descr) 
 					value = View::PointerValue.new(:pointer_descr, @model, @session, self)
-					@grid.add_field(self::class::STEP_DIVISOR, *offset)
-					offset = resolve_offset(offset, self::class::OFFSET_STEP)
-					@grid.add_field(value, *offset)
-					@grid.add_style('th-pointersteps', *offset)
+					compose_footer_add(value,offset)
 				end
+			end
+			def compose_footer_add(value, offset=[0,0])
+				@grid.add_field(self::class::STEP_DIVISOR, *offset)
+				offset = resolve_offset(offset, self::class::OFFSET_STEP)
+				@grid.add_field(value, *offset)
+				@grid.add_style('th-pointersteps', *offset)
 			end
 			def compose_list(model=@model, offset=[0,0])
 				bg_flag = false

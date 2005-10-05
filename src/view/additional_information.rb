@@ -16,17 +16,9 @@ module ODDB
 					if(!fachinfo.nil? && !fachinfo.descriptions.nil? \
 						&& fachinfo.descriptions.include?(visitor_language.to_s))
 						fi_link = true
-=begin
-					elsif(pdf_fachinfos && pdf_fachinfos[visitor_language])
-						pdf_link = true
-=end
 					elsif(!fachinfo.nil? && !fachinfo.descriptions.nil? \
 						&& fachinfo.descriptions[visitor_language.to_s]) 
 						fi_link = true
-=begin
-					else
-						pdf_link = true
-=end
 					end
 					link = HtmlGrid::Link.new(:fachinfo_short, 
 							model, session, self)
@@ -34,13 +26,6 @@ module ODDB
 						link.href = @lookandfeel._event_url(:resolve,
 							{'pointer' => fachinfo.pointer})
 						link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
-=begin
-					elsif(pdf_link)
-						unless(pdf_fi = pdf_fachinfos[visitor_language])
-							pdf_fi = pdf_fachinfos.values.first
-						end
-						link.href = @lookandfeel.resource_global(:pdf_fachinfo, pdf_fi)
-=end
 					end
 					pos = components.index(:fachinfo)
 					component_css_map.store(pos, css)
@@ -60,16 +45,20 @@ module ODDB
 			end
 			def limitation_text(model, session)
 				if((sl = model.sl_entry) && (sltxt = sl.limitation_text))
-					link = HtmlGrid::PopupLink.new(:limitation_text_short, model, session, self)
-					link.height = 300
-					link.width = 500
-					link.href = @lookandfeel._event_url(:resolve, {'pointer'=>sltxt.pointer})
-					link.set_attribute('title', @lookandfeel.lookup(:limitation_text))
-					pos = components.index(:limitation_text)
-					component_css_map.store(pos, "result-infos")
-					css_map.store(pos, "result-infos")
-					link
+					limitation_link(sltxt)
 				end
+			end
+			def limitation_link(sltxt)
+				link = HtmlGrid::Link.new(:limitation_text_short, 
+					nil, @session, self)
+				link.href = @lookandfeel._event_url(:resolve, 
+					{'pointer'=>CGI.escape(sltxt.pointer.to_s)})
+				link.set_attribute('title', 
+					@lookandfeel.lookup(:limitation_text))
+				pos = components.index(:limitation_text)
+				link.css_class = "result-infos"
+				#css_map.store(pos, "result-infos")
+				link
 			end
 			def patinfo(model, session)
 				if(model.has_patinfo?)

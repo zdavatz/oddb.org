@@ -13,6 +13,7 @@ module ODDB
 			ODBA_SERIALIZABLE = ['@descriptions']
 			attr_reader :subgroups, :code
 			attr_accessor :limitation_text
+			alias :pointer_descr :code
 			def initialize(sgcd)
 				@code = sgcd
 				@subgroups = {}
@@ -24,6 +25,9 @@ module ODDB
 				subgroup = Subgroup.new(sgcd)
 				subgroup.group = self
 				@subgroups.store(sgcd, subgroup)
+			end
+			def migel_code
+				@code
 			end
 			def subgroup(code)
 				@subgroups[code]

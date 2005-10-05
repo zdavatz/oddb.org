@@ -78,14 +78,14 @@ module ODDB
 			text = convert_charset(input)
 			text.tr!("\v", "\n")
 			limitation = ''
-			if(idx = text.index("\nLimitation"))
-				limitation = text[idx.next..-1]
-				text = text[0...idx]
+			if(idx = text.index("Limitation"))
+				limitation = text[idx..-1].strip
+				text = text[0...idx].strip
 			else
 				text.strip!
 			end
 			type = SALE_TYPES[id.at(4)]
-			price = ((convert_charset(row.at(13)).to_f) * 100).to_i
+			price = ((convert_charset(row.at(13)).to_f) * 100).round
 			date = date_object(convert_charset(row.at(14)))
 			lim_flag = convert_charset(row.at(10))
 			hash = {
@@ -120,4 +120,3 @@ module ODDB
 		end
 	end
 end
-

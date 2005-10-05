@@ -11,10 +11,10 @@ require 'plugin/patinfo_invoicer'
 require 'model/invoice'
 
 module ODDB
-	class FlexMock < ::FlexMock
-		undef :type
-	end
 	class TestPatinfoInvoicer < Test::Unit::TestCase
+		class FlexMock < ::FlexMock
+			undef :type
+		end
 		def setup
 			@app = FlexMock.new
 			@plugin = PatinfoInvoicer.new(@app)
@@ -187,18 +187,23 @@ module ODDB
 			item_pointer.mock_handle(:resolve) { sequence }
 			sequence.mock_handle(:company) { 'company2' }
 			pointer = FlexMock.new
+			time = Time.now
 			item1 = AbstractInvoiceItem.new
 			item1.user_pointer = 'user1'
 			item1.item_pointer = pointer
+			item1.time = time
 			item2 = AbstractInvoiceItem.new
 			item2.user_pointer = 'user2'
 			item2.item_pointer = pointer
+			item2.time = time
 			item3 = AbstractInvoiceItem.new
 			item3.user_pointer = 'user1'
 			item3.item_pointer = pointer
+			item3.time = time
 			item4 = AbstractInvoiceItem.new
 			item4.user_pointer = 'user2'
 			item4.item_pointer = pointer
+			item4.time = time
 			company_donor1 = FlexMock.new
 			company_donor2 = FlexMock.new
 			company_donor1.mock_handle(:company) { 'company1' }
