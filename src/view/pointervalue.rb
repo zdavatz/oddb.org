@@ -22,7 +22,7 @@ module ODDB
 		class PointerLink < View::PointerValue
 			def to_html(context)
 				arguments = {'pointer'	=>	CGI.escape(@model.pointer.to_s)}
-				@attributes['href'] = @lookandfeel.event_url(:resolve, arguments)
+				@attributes['href'] = @lookandfeel._event_url(:resolve, arguments)
 				context.a(@attributes) { @value }
 			end
 		end

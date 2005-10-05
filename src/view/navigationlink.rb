@@ -10,7 +10,7 @@ module ODDB
 			def init
 				super
 				unless (@lookandfeel.direct_event == @name)
-					@attributes.store("href", @lookandfeel.event_url(@name))
+					@attributes.store("href", @lookandfeel._event_url(@name))
 				end
 			end
 		end
@@ -31,7 +31,7 @@ module ODDB
 					args = {
 						:currency => @name
 					}
-					@attributes.store("href", @lookandfeel.event_url(:self, args))
+					@attributes.store("href", @lookandfeel._event_url(:self, args))
 				end
 			end
 		end

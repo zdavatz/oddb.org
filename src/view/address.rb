@@ -25,7 +25,7 @@ module VCardMethods
 	def vcard(model)
 		link = HtmlGrid::Link.new(:vcard, model, @session, self)
 		args = {:pointer => model.pointer}
-		link.href = @lookandfeel.event_url(:vcard, args)
+		link.href = @lookandfeel._event_url(:vcard, args)
 		link.css_class = 'list'
 		link
 	end

@@ -21,7 +21,7 @@ class SearchBar < HtmlGrid::InputText
 			'onBlur'	=>	"if (value=='') { value='#{val}' }",
 		})
 		args = ['zone', @session.zone, @name, '']
-		submit = @lookandfeel.event_url(@container.event, args)
+		submit = @lookandfeel._event_url(@container.event, args)
 		script = "if(#{@name}.value!='#{val}'){"
 		script << "var href = '#{submit}'"
 		script << "+escape(#{@name}.value.replace(/\\//, '%2F'));"

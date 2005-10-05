@@ -27,7 +27,7 @@ module ODDB
 			end
 			def name_base(model, session=@session)
 				link = HtmlGrid::Link.new(:compare, model, session, self)
-				link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
+				link.href = @lookandfeel._event_url(:compare, {'pointer'=>model.pointer})
 				link.value = breakline(model.name_base, 25)
 				link.set_attribute('class', 
 					'result-big' << resolve_suffix(model))

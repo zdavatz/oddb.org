@@ -48,7 +48,7 @@ module ODDB
 			end
 			def get_event_button(event, params={})
 				button = HtmlGrid::Button.new(event, @model, @session, self)
-				url = @lookandfeel.event_url(event, params) 
+				url = @lookandfeel._event_url(event, params) 
 				script = "document.location.href='#{url}';"
 				button.set_attribute("onclick", script)
 				button

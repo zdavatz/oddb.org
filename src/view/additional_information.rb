@@ -51,7 +51,7 @@ module ODDB
 			end
 			def feedback(model, session)
 				link = HtmlGrid::Link.new(:feedback_text_short, model, session, self)
-				link.href = @lookandfeel.event_url(:feedbacks, {'pointer'=>model.pointer})
+				link.href = @lookandfeel._event_url(:feedbacks, {'pointer'=>model.pointer})
 				pos = components.index(:feedback)
 				component_css_map.store(pos, "feedback square")
 				css_map.store(pos, "square")
@@ -63,7 +63,7 @@ module ODDB
 					link = HtmlGrid::PopupLink.new(:limitation_text_short, model, session, self)
 					link.height = 300
 					link.width = 500
-					link.href = @lookandfeel.event_url(:resolve, {'pointer'=>sltxt.pointer})
+					link.href = @lookandfeel._event_url(:resolve, {'pointer'=>sltxt.pointer})
 					link.set_attribute('title', @lookandfeel.lookup(:limitation_text))
 					pos = components.index(:limitation_text)
 					component_css_map.store(pos, "result-infos")
@@ -77,7 +77,7 @@ module ODDB
 					if(pdf_patinfo = model.pdf_patinfo)
 						link.href = @lookandfeel.resource_global(:pdf_patinfo, pdf_patinfo)
 					elsif(patinfo = model.patinfo)
-						link.href = @lookandfeel.event_url(:resolve, {'pointer' => patinfo.pointer})
+						link.href = @lookandfeel._event_url(:resolve, {'pointer' => patinfo.pointer})
 						link.set_attribute('title', @lookandfeel.lookup(:patinfo))
 					end
 					pos = components.index(:patinfo)
@@ -91,7 +91,7 @@ module ODDB
 			def atc_ddd_link(atc, session)
 				if(atc.has_ddd?)
 					link = HtmlGrid::PopupLink.new(:ddd, atc, session, self)
-					link.href = @lookandfeel.event_url(:ddd, {'pointer'=>atc.pointer})
+					link.href = @lookandfeel._event_url(:ddd, {'pointer'=>atc.pointer})
 					link.set_attribute('class', 'result-infos-bg')
 					link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
 					link

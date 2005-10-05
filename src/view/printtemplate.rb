@@ -12,7 +12,7 @@ module ODDB
 				args = { 
 					:pointer	=> model.pointer,
 				}
-				link.href = @lookandfeel.event_url(:print, args)
+				link.href = @lookandfeel._event_url(:print, args)
 				link
 			end
 			def print_edit(model, session, key=:print)
