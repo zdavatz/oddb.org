@@ -34,15 +34,15 @@ module ODDB
 			lines += company.address(0).lines
 			pdfinvoice.debitor_address = lines
 			pdfinvoice.items = items.collect { |item|
-				[ day, item.text, item.unit, 
+				text = [item.text, item_name(item)].compact.join("\n")
+				[ day, text, item.unit, 
 					item.quantity.to_i, item.price.to_f ]
 			}
 			pdfinvoice
 		end
 		def create_pdf_invoice(day, company, items, email)
 			config = PdfInvoice.config
-			config.texts['thanks'] = item_caption(items) << <<-EOS
-
+			config.texts['thanks'] = <<-EOS
 Ohne Ihre Gegenmeldung erfolgt der Rechnungsversand nur per Email.
 Thank you for your patronage
 			EOS
@@ -140,25 +140,15 @@ Thank you for your patronage
 			}
 			companies
 		end
-		def item_caption(items)
-			caption = ''
-			seen = {}
-			items.each { |item|
-				text = item.text
-				next if(seen.has_key?(text))
-				seen.store(text, 1)
-				name = ''
-				if(data = item.data)
-					name = data[:name].to_s.strip
-				end
-				if(name.empty? && (ptr = item.item_pointer))
-					name = sequence_name(ptr)
-				end
-				unless(name.empty?)
-					caption << [text, name].join(': ') << "\n"
-				end
-			}
-			caption
+		def item_name(item)
+			name = ''
+			if(data = item.data)
+				name = data[:name].to_s.strip
+			end
+			if(name.empty? && (ptr = item.item_pointer))
+				name = sequence_name(ptr).to_s.strip
+			end
+			name unless(name.empty?)
 		end
 		def recent_items(day)
 			slate = @app.slate(:patinfo)
@@ -173,7 +163,6 @@ Thank you for your patronage
 		def send_invoice(day, company, items)
 			to = company.invoice_email || company.user.unique_email
 			invoice = create_pdf_invoice(day, company, items, to)
-			File.open('/tmp/pdfinvoice.pdf', 'w') { |fh| fh.puts invoice.to_pdf }
 			invoice_name = sprintf('Patinfo-Upload-%s-%s.pdf', 
 				company.name.tr(' ', '_'),
 				day.strftime('%d.%m.%Y'))
