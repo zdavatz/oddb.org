@@ -634,8 +634,10 @@ end
 					if(candidates.size == 1)
 						@unknown_packages.delete(package)
 						@guessed_packages.push(package)
-						package.guessed_ikscd = candidates.first.ikscd
+						pack = candidates.first
+						package.guessed_ikscd = pack.ikscd
 						update_package(reg, package)
+						update_sl_entry(pack, package)
 					end
 				end
 			end
