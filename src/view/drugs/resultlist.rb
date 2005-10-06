@@ -39,6 +39,12 @@ class AtcHeader < HtmlGrid::Composite
 		end
 		super
 	end
+	def atc_ddd_link(atc, session)
+		while(atc && !atc.has_ddd? && (code = atc.parent_code))
+			atc = session.app.atc_class(code)
+		end
+		super(atc)
+	end
 	def atc_description(model, session)
 		[
 			super,

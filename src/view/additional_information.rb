@@ -78,33 +78,12 @@ module ODDB
 				end
 			end
 			def atc_ddd_link(atc, session)
-				if(atc.has_ddd?)
+				if(atc && atc.has_ddd?)
 					link = HtmlGrid::PopupLink.new(:ddd, atc, session, self)
 					link.href = @lookandfeel._event_url(:ddd, {'pointer'=>atc.pointer})
 					link.set_attribute('class', 'result-infos-bg')
 					link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
 					link
-				end
-			rescue NoMethodError => e
-				puts e
-				puts e.message
-				puts "atc:   #{atc.class}"
-				puts "query: #{session.persistent_user_input(:search_query)}"
-				if(atc.respond_to?(:pointer))
-					puts "pointer:#{atc.pointer}"
-				end
-				if(atc.respond_to?(:ddds))
-					ddds = atc.ddds
-					puts "ddds.class: #{ddds.class}"
-					puts "Stub?:      #{ddds.is_a?(ODBA::Stub)}"
-					if(ddds.respond_to?(:odba_id))
-						puts "odba_id: #{ddds.odba_id}"
-					end
-				end
-				puts "state: #{session.state.class}"
-				puts "model: #{@model.class}"
-				if(@model.respond_to?(:pointer))
-					puts "pointer: #{@model.pointer}"
 				end
 			end
 			def atc_description(atc, session=nil)

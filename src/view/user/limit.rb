@@ -167,6 +167,9 @@ class ResultLimitList < HtmlGrid::List
 			super
 		end
 	end
+	def fachinfo(model, session)
+		super(model, session, 'important-infos')
+	end	
 	def name_base(model, session)
 		model.name_base
 	end
