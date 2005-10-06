@@ -532,7 +532,7 @@ end
 			## update prices from the database but do not store as mutation.
 			@ikstable.each_value { |package| 
 				if(pack = handle_package(package))
-					update_sl_entry(package)
+					update_sl_entry(pack, package)
 				end
 			}
 
