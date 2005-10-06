@@ -13,18 +13,18 @@ module LoginMethods
 	def login
 		if(user = @session.login)
 			newstate = if(user.valid?)
-				case user
-				when ODDB::CompanyUser
-					name = user.company_name
-					type = 'st_company'
-					@session.set_persistent_user_input(:search_query, name)
-					@session.set_persistent_user_input(:search_type, type)
-					_search_drugs_state(name.downcase, type)
-				else
+			#case user
+			#	when ODDB::CompanyUser
+			#		name = user.company_name
+			#		type = 'st_company'
+			#		@session.set_persistent_user_input(:search_query, name)
+			#		@session.set_persistent_user_input(:search_type, type)
+			#		_search_drugs_state(name.downcase, type)
+			#else
 					des = @session.desired_state
 					@session.desired_state = nil
 					des || @previous || trigger(:home)
-				end
+			#end
 			else
 				State::User::InvalidUser.new(@session, user)
 			end

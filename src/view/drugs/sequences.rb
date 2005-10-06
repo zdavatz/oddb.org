@@ -36,7 +36,7 @@ class SequenceList < HtmlGrid::List
 		args = {
 			'search_query'	=>	query,
 		}
-		link.href = @lookandfeel.event_url(:search, args)
+		link.href = @lookandfeel._event_url(:search, args)
 		link.css_class = 'result-big' << resolve_suffix(model)
 		link
 	end

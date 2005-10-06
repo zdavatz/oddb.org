@@ -78,7 +78,7 @@ class IncompleteRegList < HtmlGrid::Composite
 =end
 	def orphaned_fachinfos(model, session)
 		link = HtmlGrid::Link.new(:orphaned_fachinfos, model, session, self)
-		link.href = @lookandfeel.event_url(:orphaned_fachinfos)
+		link.href = @lookandfeel._event_url(:orphaned_fachinfos)
 		link.set_attribute('class', 'list')
 		count = session.app.orphaned_fachinfos.size
 		link.value = @lookandfeel.lookup(:orphaned_fachinfos, count)
@@ -86,7 +86,7 @@ class IncompleteRegList < HtmlGrid::Composite
 	end
 	def orphaned_patinfos(model, session)
 		link = HtmlGrid::Link.new(:orphaned_patinfos, model, session, self)
-		link.href = @lookandfeel.event_url(:orphaned_patinfos)
+		link.href = @lookandfeel._event_url(:orphaned_patinfos)
 		link.set_attribute('class', 'list')
 		count = session.app.orphaned_patinfos.size
 		link.value = @lookandfeel.lookup(:orphaned_patinfos, count)
@@ -95,7 +95,7 @@ class IncompleteRegList < HtmlGrid::Composite
 	def patinfo_deprived_sequences(model,session)
 		link = HtmlGrid::Link.new(:patinfo_deprived_sequences, 
 			model, session, self)
-		link.href = @lookandfeel.event_url(:patinfo_deprived_sequences)
+		link.href = @lookandfeel._event_url(:patinfo_deprived_sequences)
 		link.set_attribute('class','list')
 	#	count = anazahl sequenzen ohne patinfo
 		link.value = @lookandfeel.lookup(:patinfo_deprived_sequences)

@@ -42,28 +42,29 @@ module ODDB
 		def update_group(id, row, language)
 			groupcd = id.at(0)
 			pointer = Persistence::Pointer.new([:migel_group, groupcd])
-			chapter = Text::Chapter.new
-			paragraph = chapter.next_section.next_paragraph
-			chapter.heading = convert_charset(row.at(1))
-			text = convert_charset(row.at(2))
-			text.tr!("\v", " ")
-			paragraph << text
 			hash = {
 				:code => groupcd,
-				language  => chapter, 
+				language  => convert_charset(row.at(1)), 
 			}
-			@app.update(pointer.creator, hash)
+			group = @app.update(pointer.creator, hash)
+			text = convert_charset(row.at(2))
+			text.tr!("\v", " ")
+			text.strip!
+			unless(text.empty?)
+				desc_ptr = pointer + [:limitation_text]
+				@app.update(desc_ptr.creator, {language => text})
+			end
+			group
 		end
 		def update_subgroup(id, group, row, language)
 			sgcd = id.at(1)
 			pointer = group.pointer + [:subgroup, sgcd]
-			text = convert_charset(row.at(5))
-			lim = "limitation_text_#{language}".to_sym
 			hash = {
 				:code => sgcd,
 				language => convert_charset(row.at(4))
 			}
 			subgroup = @app.update(pointer.creator, hash)
+			text = convert_charset(row.at(5))
 			unless(text.empty?)
 				lim_ptr = pointer + [:limitation_text]
 				@app.update(lim_ptr.creator, {language => text})
@@ -77,28 +78,35 @@ module ODDB
 			text = convert_charset(input)
 			text.tr!("\v", "\n")
 			limitation = ''
-			if(idx = text.index("\nLimitation"))
-				limitation = text[idx.next..-1]
-				text = text[0...idx]
+			if(idx = text.index("Limitation"))
+				limitation = text[idx..-1].strip
+				text = text[0...idx].strip
 			else
 				text.strip!
 			end
 			type = SALE_TYPES[id.at(4)]
-			price = (convert_charset(row.at(13)).to_i) * 100
+			price = ((convert_charset(row.at(13)).to_f) * 100).round
 			date = date_object(convert_charset(row.at(14)))
+			lim_flag = convert_charset(row.at(10))
 			hash = {
 				language => text,
+				:limitation => (lim_flag == 'L'),
 				:price => price,
 				:type => type,
 				:date => date,
 			}
-			if(id[3,1] != ["00"])
-				prodcd = id[2,1] + ['00'] + id[4,1]
+			if(id[3] != "00")
+				prodcd = [id[2], '00' + id[4]]
 				prodcd = prodcd.join(".")
 				prod = subgroup.pointer + [:product, prodcd]
 				hash.store(:product, prod)
 			end
 			product = @app.update(pointer.creator, hash) 
+			product_text = convert_charset(row.at(7))
+			unless(product_text.empty?)
+				pt_ptr = pointer + [:product_text]
+				@app.update(pt_ptr.creator, {language => product_text})
+			end
 			unless(limitation.empty?)
 				lim_ptr = pointer + [:limitation_text]
 				@app.update(lim_ptr.creator, {language => limitation})
@@ -112,4 +120,3 @@ module ODDB
 		end
 	end
 end
-

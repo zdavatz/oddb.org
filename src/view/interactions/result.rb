@@ -44,7 +44,7 @@ class ResultForm < View::Form
 	end
 	def interaction_basket_link(model, session)
 		link = HtmlGrid::Link.new(:interaction_basket, model, session, self)
-		link.href = @lookandfeel.event_url(:interaction_basket)
+		link.href = @lookandfeel._event_url(:interaction_basket)
 		link.label = true
 		link
 	end

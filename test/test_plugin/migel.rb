@@ -16,22 +16,26 @@ module ODDB
 			@app = FlexMock.new
 			@plugin = MiGeLPlugin.new(@app)
 		end
-		def test_update_id
+		def test_update_group__id
 			row = [
 "3","APPLIKATIONSHILFEN","Gerätereparaturen beim Kaufsystem: Bei sorgfältigemGebrauch ohne Selbstverschuldung, Vergütung nach Aufwand nur nach vorgängiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehör und Verbrauchsmaterial.Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		Rücksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"
 			]
-			id = %w(03 02 01 00 209)
-			@app.mock_handle(:update, 1) { |pointer, values|
+			id = %w(03 02 01 00 199)
 			ptr = Persistence::Pointer.new([:migel_group, '03'])
-			assert_equal(ptr.creator, pointer)
-			chapter = Text::Chapter.new
-			chapter.heading = 'APPLIKATIONSHILFEN'	
-			paragraph = chapter.next_section.next_paragraph
-			paragraph << "Ger‰tereparaturen beim Kaufsystem: Bei sorgf‰ltigem Gebrauch ohne Selbstverschuldung, Verg¸tung nach Aufwand nur nach vorg‰ngiger Kostengutsprache durch den Krankenversicherer."
-				expected = {
+			pointers = [ptr, ptr + :limitation_text]
+			expecteds = [
+				{
 					:code => '03',
-					:de    => chapter,
-				}
+					:de    => 'APPLIKATIONSHILFEN',
+				},
+				{
+					:de    => "Ger‰tereparaturen beim Kaufsystem: Bei sorgf‰ltigem Gebrauch ohne Selbstverschuldung, Verg¸tung nach Aufwand nur nach vorg‰ngiger Kostengutsprache durch den Krankenversicherer.",
+				},
+			]
+			@app.mock_handle(:update, 2) { |pointer, values|
+				ptr = pointers.shift
+				assert_equal(ptr.creator, pointer)
+				expected = expecteds.shift
 				assert_equal(expected, values)
 			}
 			@plugin.update_group(id, row, :de)
@@ -42,17 +46,21 @@ module ODDB
 "3","APPLIKATIONSHILFEN","Gerätereparaturen beim Kaufsystem: Bei sorgfältigemGebrauch ohne Selbstverschuldung, Vergütung nach Aufwand nur nach vorgängiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehör und Verbrauchsmaterial.Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		Rücksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"
 			]
 			id = %w(03 02 01 00 2)
-			@app.mock_handle(:update, 1) { |pointer, values|
 			ptr = Persistence::Pointer.new([:migel_group, '03'])
-			assert_equal(ptr.creator, pointer)
-			chapter = Text::Chapter.new
-			chapter.heading = 'APPLIKATIONSHILFEN'	
-			paragraph = chapter.next_section.next_paragraph
-			paragraph << "Ger‰tereparaturen beim Kaufsystem: Bei sorgf‰ltigem Gebrauch ohne Selbstverschuldung, Verg¸tung nach Aufwand nur nach vorg‰ngiger Kostengutsprache durch den Krankenversicherer."
-				expected = {
+			pointers = [ptr, ptr + :limitation_text]
+			expecteds = [
+				{
 					:code => '03',
-					:de    => chapter,
-				}
+					:de    => 'APPLIKATIONSHILFEN',
+				},
+				{
+					:de    => "Ger‰tereparaturen beim Kaufsystem: Bei sorgf‰ltigem Gebrauch ohne Selbstverschuldung, Verg¸tung nach Aufwand nur nach vorg‰ngiger Kostengutsprache durch den Krankenversicherer.",
+				},
+			]
+			@app.mock_handle(:update, 2) { |pointer, values|
+				ptr = pointers.shift
+				assert_equal(ptr.creator, pointer)
+				expected = expecteds.shift
 				assert_equal(expected, values)
 			}
 			@plugin.update_group(id, row, :de)
@@ -63,17 +71,21 @@ module ODDB
 "3","APPLIKATIONSHILFEN","Gerätereparaturen beim Kaufsystem: Bei sorgfältigemGebrauch ohne Selbstverschuldung, Vergütung nach Aufwand nur nach vorgängiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehör und Verbrauchsmaterial.Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		Rücksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"
 			]
 			id = %w(03 02 01 00 2)
-			@app.mock_handle(:update, 1) { |pointer, values|
-				ptr = Persistence::Pointer.new([:migel_group, '03'])
-				assert_equal(ptr.creator, pointer)
-				chapter = Text::Chapter.new
-				chapter.heading = 'APPLIKATIONSHILFEN'
-				paragraph = chapter.next_section.next_paragraph
-				paragraph << "Ger‰tereparaturen beim Kaufsystem: Bei sorgf‰ltigem Gebrauch ohne Selbstverschuldung, Verg¸tung nach Aufwand nur nach vorg‰ngiger Kostengutsprache durch den Krankenversicherer."
-				expected = {
+			ptr = Persistence::Pointer.new([:migel_group, '03'])
+			pointers = [ptr, ptr + :limitation_text]
+			expecteds = [
+				{
 					:code => '03',
-					:fr    => chapter,
-				}
+					:fr    => 'APPLIKATIONSHILFEN',
+				},
+				{
+					:fr    => "Ger‰tereparaturen beim Kaufsystem: Bei sorgf‰ltigem Gebrauch ohne Selbstverschuldung, Verg¸tung nach Aufwand nur nach vorg‰ngiger Kostengutsprache durch den Krankenversicherer.",
+				},
+			]
+			@app.mock_handle(:update, 2) { |pointer, values|
+				ptr = pointers.shift
+				assert_equal(ptr.creator, pointer)
+				expected = expecteds.shift
 				assert_equal(expected, values)
 			}
 			@plugin.update_group(id, row, :fr)
@@ -154,6 +166,7 @@ module ODDB
 					:price =>	1000,
 					:type	 => :rent,
 					:date  => Date.new(2003),
+					:limitation => true,
 				},
 				{
 					:de => "Limitation: Kosten¸bernahme nur auf vorg‰ngige besondere Gutsprache des Krankenversicherers und mit ausdr¸cklicher Bewilligung des Vertrauensarztes oder der Vertrauens‰rztin.\nZur Insulintherapie bei:\n- Extrem labiler Diabetes.\n- Einstellung auch mit der Methode der Mehrfachinjektionen unbefriedigend.\n- Indikationen des Pumpeneinsatzes und Betreuung des Patienten durch ein qualifiziertes Zentrum oder, nach R¸cksprache mit dem Vertrauensarzt, durch einen Arzt, der in der Anwendung der Insulinpumpen ausgebildet ist.",
@@ -194,6 +207,7 @@ module ODDB
 					:price =>	1000,
 					:type	 => :rent,
 					:date  => Date.new(2003),
+					:limitation => true,
 				},
 				{
 					:fr => "Limitation: Kosten¸bernahme nur auf vorg‰ngige besondere Gutsprache des Krankenversicherers und mit ausdr¸cklicher Bewilligung des Vertrauensarztes oder der Vertrauens‰rztin.\nZur Insulintherapie bei:\n- Extrem labiler Diabetes.\n- Einstellung auch mit der Methode der Mehrfachinjektionen unbefriedigend.\n- Indikationen des Pumpeneinsatzes und Betreuung des Patienten durch ein qualifiziertes Zentrum oder, nach R¸cksprache mit dem Vertrauensarzt, durch einen Arzt, der in der Anwendung der Insulinpumpen ausgebildet ist.",
@@ -234,6 +248,7 @@ module ODDB
 					:price =>	1000,
 					:type	 => :rent,
 					:date  => Date.new(2003),
+					:limitation => true,
 				},
 				{
 					:it => "Limitation: Kosten¸bernahme nur auf vorg‰ngige besondere Gutsprache des Krankenversicherers und mit ausdr¸cklicher Bewilligung des Vertrauensarztes oder der Vertrauens‰rztin.\nZur Insulintherapie bei:\n- Extrem labiler Diabetes.\n- Einstellung auch mit der Methode der Mehrfachinjektionen unbefriedigend.\n- Indikationen des Pumpeneinsatzes und Betreuung des Patienten durch ein qualifiziertes Zentrum oder, nach R¸cksprache mit dem Vertrauensarzt, durch einen Arzt, der in der Anwendung der Insulinpumpen ausgebildet ist.",
@@ -263,7 +278,6 @@ module ODDB
 				sg_pointer
 			}
 			@app.mock_handle(:update, 1) { |pointer, values|
-				puts "update!"
 				ptr = sg_pointer + [:product, '01.00.2']
 				assert_equal(ptr.creator, pointer) 	
 				expected = {
@@ -271,6 +285,7 @@ module ODDB
 					:price =>	1000,
 					:type	 => :rent,
 					:date  => Date.new(2003),
+					:limitation => true,
 				}
 				assert_equal(expected, values)
 		  }	
@@ -300,6 +315,7 @@ module ODDB
 					:price =>	1000,
 					:type	 => :rent,
 					:date  => Date.new(2003),
+					:limitation => true,
 				},
 				{
 					:de => "Limitation: Kosten¸bernahme nur auf vorg‰ngige besondere Gutsprache des Krankenversicherers und mit ausdr¸cklicher Bewilligung des Vertrauensarztes oder der Vertrauens‰rztin.\nZur Insulintherapie bei:\n- Extrem labiler Diabetes.\n- Einstellung auch mit der Methode der Mehrfachinjektionen unbefriedigend.\n- Indikationen des Pumpeneinsatzes und Betreuung des Patienten durch ein qualifiziertes Zentrum oder, nach R¸cksprache mit dem Vertrauensarzt, durch einen Arzt, der in der Anwendung der Insulinpumpen ausgebildet ist.",

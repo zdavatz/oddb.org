@@ -115,6 +115,9 @@ module ODDB
 				match.to_s.strip
 			end
 		end
+		def <=>(other)
+			self.lines <=> other.lines
+		end
 	end
 	module AddressObserver
 		attr_accessor :addresses

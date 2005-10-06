@@ -27,7 +27,7 @@ module ODDB
 			end
 			def name_base(model, session=@session)
 				link = HtmlGrid::Link.new(:compare, model, session, self)
-				link.href = @lookandfeel.event_url(:compare, {'pointer'=>model.pointer})
+				link.href = @lookandfeel._event_url(:compare, {'pointer'=>model.pointer})
 				link.value = breakline(model.name_base, 25)
 				link.set_attribute('class', 
 					'result-big' << resolve_suffix(model))
@@ -43,6 +43,9 @@ module ODDB
 				].compact.join(', ')
 				link.set_attribute('title', title)
 				link
+			end
+			def price(model, session=@session)
+				formatted_price(:price, model)
 			end
 			def price_exfactory(model, session=@session)
 				formatted_price(:price_exfactory, model)

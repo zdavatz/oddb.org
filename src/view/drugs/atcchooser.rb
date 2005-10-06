@@ -68,7 +68,7 @@ class AtcChooserList < HtmlGrid::List
 				"atcchooser",
 			]
 		end
-		link.href = @lookandfeel.event_url(event, args)
+		link.href = @lookandfeel._event_url(event, args)
 		link.value = mdl.pointer_descr(@session.language)
 		link.attributes["class"] = css + mdl.level.to_s
 		link

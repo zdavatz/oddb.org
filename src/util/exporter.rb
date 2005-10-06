@@ -36,6 +36,7 @@ module ODDB
 			export_csv
 			export_doc_csv
 		rescue StandardError => e
+			EXPORT_SERVER.clear
 			log = Log.new(Date.today)
 			log.report = [
 				"Error: #{e.class}",

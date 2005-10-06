@@ -105,6 +105,8 @@ module ODDB
 			:bg_dark_font_color				=>	'white',
 			:bg_dark_link_hover_color	=>	'blue',
 			:bg_dark_link_active_color=>	'red',
+			:bg_medium								=>	'#7bcf88', 
+			:bg_medium_font_color			=>	'black',
 			:button_background				=>	'none',
 			:button_font_color				=>	'black',
 			:button_font_size					=>	'12px',

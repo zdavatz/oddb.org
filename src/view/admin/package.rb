@@ -84,7 +84,7 @@ class PackageForm < View::Form
 			if (sl_entry = model.sl_entry)
 				link = HtmlGrid::Link.new(:sl_modify, sl_entry, session, self)
 				args = {'pointer' => sl_entry.pointer}
-				link.href = @lookandfeel.event_url(:resolve, args)
+				link.href = @lookandfeel._event_url(:resolve, args)
 				PointerLink.new(:pointer_descr, sl_entry, session, self)
 			else
 				link = HtmlGrid::Link.new(:sl_create, sl_entry, session, self)

@@ -54,7 +54,7 @@ module ODDB
 				context.hidden('item_name', "ODDB.org")<<
 				context.hidden('image_url', "https://www.generika.cc/images/oddb_paypal.jpg")<<
 				context.hidden('no_note', "1")<<
-				context.hidden('return', @lookandfeel.event_url(:paypal_thanks))<<
+				context.hidden('return', @lookandfeel._event_url(:paypal_thanks))<<
 				context.hidden('cancel_return', @lookandfeel.base_url)<<
 				context.hidden('currency_code', "EUR")<<
 				context.hidden('tax', "0")
@@ -84,7 +84,7 @@ module ODDB
 			}
 			def search_help(model, session)
 				button = HtmlGrid::Button.new(:search_help, model, session, self)
-				url = @lookandfeel.event_url(:help)
+				url = @lookandfeel._event_url(:help)
 				props = "scrollbars=yes,resizable=no,toolbar=yes,menubar=no,locationbar=no,width=600,height=500";
 				script = "window.open('#{url}', '#{@name}', '#{props}').focus(); return false"
 				button.set_attribute('onClick', script)
@@ -133,7 +133,7 @@ module ODDB
 			}
 			def atc_chooser(model, session)
 				link = HtmlGrid::Link.new(:atc_chooser, model, session, self)
-				link.href = @lookandfeel.event_url(:atc_chooser)
+				link.href = @lookandfeel._event_url(:atc_chooser)
 				link.label = true
 				link.set_attribute('class', 'list-b')
 				link
@@ -154,7 +154,7 @@ module ODDB
 				HtmlGrid::DateValue.new(:last_medication_update, session.app, session, self)
 			end
 			def ddd_count_text(model, session)
-				link = HtmlGrid::Link.new(:ddd_count_Text, model, session, self)
+				link = HtmlGrid::Link.new(:ddd_count_text, model, session, self)
 				link.href = @lookandfeel.event_url(:ddd_count_text)
 				link.label = true
 				link.set_attribute('class', 'list-b')
@@ -178,7 +178,7 @@ module ODDB
 			end
 			def fipi_offer(model, session)
 				link = HtmlGrid::Link.new(:fipi_offer, model, session, self)
-				link.href = @lookandfeel.event_url(:fipi_offer_input)
+				link.href = @lookandfeel._event_url(:fipi_offer_input)
 				link.label = true
 				link.set_attribute('class', 'list')
 				link
@@ -193,7 +193,7 @@ module ODDB
 					link.href = "http://www.fda.gov/cder/ogd/"
 				else
 					link = HtmlGrid::PopupLink.new(:generic_definition, model, session, self)
-					link.href = @lookandfeel.event_url(:generic_definition)
+					link.href = @lookandfeel._event_url(:generic_definition)
 				end
 				link.value = @lookandfeel.lookup(:generic_definition) 
 				link.set_attribute('class', 'list')
@@ -204,14 +204,14 @@ module ODDB
 			end
 			def interactions(model, session)
 				link = HtmlGrid::Link.new(:interactions, model, session, self)
-				link.href = @lookandfeel.event_url(:interactions_home)
+				link.href = @lookandfeel._event_url(:interactions_home)
 				link.label = true
 				link.set_attribute('class', 'list')
 				link
 			end
 			def mailinglist(model, session)
 				link = HtmlGrid::Link.new(:mailinglist, model, session, self)
-				link.href = @lookandfeel.event_url(:mailinglist)
+				link.href = @lookandfeel._event_url(:mailinglist)
 				link.label = true
 				link.set_attribute('class', 'list')
 				link
@@ -232,7 +232,7 @@ module ODDB
 			end
 			def plugin(model, session)
 				link = HtmlGrid::Link.new(:plugin, model, session, self)
-				link.href = @lookandfeel.event_url(:plugin)
+				link.href = @lookandfeel._event_url(:plugin)
 				link.label = true
 				link.set_attribute('class', 'list')
 				link
@@ -246,7 +246,7 @@ module ODDB
 			end
 			def recent_registrations(model, session)
 				link = HtmlGrid::Link.new(:recent_registrations, model, session, self)
-				link.href = @lookandfeel.event_url(:recent_registrations)
+				link.href = @lookandfeel._event_url(:recent_registrations)
 				link.label = true
 				link.set_attribute('class', 'list')
 				link
@@ -258,7 +258,7 @@ module ODDB
 			end
 			def plugin(model, session)
 				link = HtmlGrid::Link.new(:plugin, model, session, self)
-				link.href = @lookandfeel.event_url(:plugin)
+				link.href = @lookandfeel._event_url(:plugin)
 				link.label = true
 				link.set_attribute('class', 'list')
 				link

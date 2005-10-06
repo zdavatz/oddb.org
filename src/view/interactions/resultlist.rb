@@ -71,7 +71,7 @@ class ResultList < HtmlGrid::List
 	def interaction_basket_status(model, session)
 		if(session.interaction_basket.include?(model))
 			link = HtmlGrid::Link.new(:interaction_basket, model, session, self)
-			link.href = @lookandfeel.event_url(:interaction_basket)
+			link.href = @lookandfeel._event_url(:interaction_basket)
 			link.value = @lookandfeel.lookup(:in_interaction_basket)
 			link.set_attribute('font-weight', 'bold')
 			link
@@ -82,7 +82,7 @@ class ResultList < HtmlGrid::List
 			model.name
 		else
 			link = HtmlGrid::Link.new(:add_to_interaction_basket, model, session, self)
-			link.href = @lookandfeel.event_url(:add_to_interaction_basket, {'pointer'=>CGI.escape(model.pointer.to_s)})
+			link.href = @lookandfeel._event_url(:add_to_interaction_basket, {'pointer'=>CGI.escape(model.pointer.to_s)})
 			link.value = model.name
 			link.set_attribute('class', 'result-big')
 			link
@@ -96,7 +96,7 @@ class ResultList < HtmlGrid::List
 		#unless(result.atc_classes.empty?)
 		unless(active_sequences.empty?)
 			link = HtmlGrid::Link.new(:substance_result, model, session, self)
-			link.href = @lookandfeel.event_url(:search, {'search_query' => model.name, 'zone'	=> :drugs})
+			link.href = @lookandfeel._event_url(:search, {'search_query' => model.name, 'zone'	=> :drugs})
 			link.value = @lookandfeel.lookup(:search_oddb)
 			link
 		end

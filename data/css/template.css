@@ -1010,6 +1010,17 @@ td.list {
 td.list-b {
 	padding : 4px;
 }
+td.list-big {
+	padding : 4px;
+	font-size: 14px; 
+	font-weight: bold;
+}
+td.list-big-bg {
+	padding : 4px;
+	font-size: 14px; 
+	font-weight: bold;
+	background : #e9f7f3;
+}
 td.list-title {
 	padding : 4px;
 	font-weight : bold;
@@ -1568,4 +1579,9 @@ table.center {
 }
 table.border, table.border td {
 	border: 1px solid green;
+}
+td.migel-group {
+	background: $bg_medium;
+	color: $bg_medium_font_color;
+	padding:4px;
 }

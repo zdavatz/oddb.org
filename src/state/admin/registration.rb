@@ -172,6 +172,9 @@ class CompanyRegistration < State::Admin::Registration
 			@default_view = View::Admin::Registration
 		end
 	end
+	def allowed?
+		@session.user.allowed?(@model.company)
+	end
 	def new_sequence
 		if(allowed?)
 			super

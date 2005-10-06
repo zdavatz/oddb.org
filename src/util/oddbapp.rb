@@ -114,9 +114,7 @@ class OddbPrevalence
 		}
 	end
 	def atcless_sequences
-		@registrations.values.collect { |reg|
-			reg.atcless_sequences
-		}.flatten
+		ODBA.cache_server.retrieve_from_index('atcless', 'true')
 	end
 	def atc_class(code)
 		@atc_classes[code]
@@ -508,6 +506,15 @@ class OddbPrevalence
 	def migel_group(groupcd)
 		@migel_groups[groupcd]
 	end
+	def migel_products
+		products = []
+		@migel_groups.each_value { |group| 
+			group.subgroups.each_value { |subgr|
+				products.concat(subgr.products.values)
+			}
+		}
+		products
+	end
 	def orphaned_fachinfo(oid)
 		@orphaned_fachinfos[oid.to_i]
 	end
@@ -693,6 +700,13 @@ class OddbPrevalence
 		result.exact = true
 		result.atc_classes = search_by_indication(query, lang, result)
 		result
+	end
+	def search_migel_products(query, lang)
+		if(lang.to_s != "fr") 
+			lang = "de"
+		end
+		index_name = "migel_index_#{lang}"
+		ODBA.cache_server.retrieve_from_index(index_name, query)
 	end
 	def search_exact_sequence(query)
 		sequences = search_sequences(query)

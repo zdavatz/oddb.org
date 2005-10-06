@@ -9,13 +9,16 @@ module ODDB
 			DOCTOR = [ :ean13, :exam, :salutation, :title, :firstname,
 				:name, :praxis, :first_address_data, :email, :language, 
 				:specialities]
-			ADDRESS = [:type, :address, :location, :canton, :fon, :fax]
+			ADDRESS = [:type, :name, :additional_lines, :address, :plz,
+				:city, :canton, :fon, :fax]
 			DEFRIT = [:de, :fr, :it] 
-			MIGEL = [:migel_code, :migel_subgroup, :migel_defrit, 
-				:migel_limitation, :format_price, :date, :migel_unit]
-			MIGEL_SUBGROUP = [:migel_group, :code, :migel_defrit, 
-				:migel_limitation ]
-			MIGEL_GROUP = [:code, :migel_defrit]
+			MIGEL = [:migel_code, :migel_subgroup, :product_code,
+				:migel_product_text, :accessory_code, :migel_defrit,
+				:migel_limitation, :format_price, :migel_unit, :limitation,
+				:format_date]
+			MIGEL_SUBGROUP = [:migel_group, :code, :migel_defrit,
+				:migel_limitation]
+			MIGEL_GROUP = [:code, :migel_defrit, :migel_limitation]
 			def CsvExporter.address_data(item)
 				collect_data(ADDRESS, item)
 			end
@@ -42,8 +45,16 @@ module ODDB
 				addr = item.praxis_address || item.address(0)
 				address_data(addr)
 			end
+			def CsvExporter.format_date(item)
+				if(date = item.date)
+					date.strftime('%d.%m.%Y')
+				else
+					""
+				end
+			end
 			def CsvExporter.format_price(item)
-				sprintf("%.2f", item.price)
+				item.price = item.price / 100.0
+				item.price = sprintf("%.2f", item.price)
 			end
 			def CsvExporter.migel_defrit(item)
 				self.collect_data(DEFRIT, item)
@@ -53,6 +64,9 @@ module ODDB
 			end
 			def CsvExporter.migel_group(item)
 				self.collect_data(MIGEL_GROUP, item.group)
+			end
+			def CsvExporter.migel_product_text(item)
+				self.migel_defrit(item.product_text)
 			end
 			def CsvExporter.migel_subgroup(item)
 				self.collect_data(MIGEL_SUBGROUP, item.subgroup)

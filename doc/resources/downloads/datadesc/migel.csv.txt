@@ -1,0 +1,81 @@
+Datenbeschrieb migel.csv
+
+Version: 2.0.2
+Geändert: 30.09.2005 (2.0.2) durch hwyss@ywesee.com
+Geändert: 28.09.2005 (2.0.1) durch ffricker@ywesee.com
+Geändert: 27.09.2005 (2.0)   durch ffricker@ywesee.com
+Erstellt: 26.09.2005 (1.0)   durch ffricker@ywesee.com
+
+## Struktur ##
+Encoding: ISO-8859-1
+Record-Separator: \n (Für New-Lines in Feldern siehe Glossar: New-Line)
+Field-Separator:  ;
+
+Migel-Record:
+00: migel_code             (GG.UU.PP.ZZ.V) -> Migel-Code, siehe Glossar (Migel-Code)
+01: group_code             (GG)            -> Migel-Group-Code
+02: group_de               (*)             -> Gruppen-Bezeichnung De.
+03: group_fr               (*)             -> Gruppen-Bezeichnung Fr.
+04: group_it               (*)             -> Gruppen-Bezeichnung It.
+05: group_limitation_de    (*)             -> Gruppen-Limitation De.
+06: group_limitation_fr    (*)             -> Gruppen-Limitation Fr.
+07: group_limitation_it    (*)             -> Gruppen-Limitation It.
+08: subgroup_code          (UU)            -> Gruppen-Code
+09: subgroup_de            (*)             -> Untergruppen-Bezeichnung De.
+10: subgroup_fr            (*)             -> Untergruppen-Bezeichnung Fr.
+11: subgroup_it            (*)             -> Untergruppen-Bezeichnung It.
+12: subgroup_limitation_de (*)             -> Limitation-Untergruppe De.
+13: subgroup_limitation_fr (*)             -> Limitation-Untergruppe Fr.
+14: subgroup_limitation_it (*)             -> Limitation-Untergruppe It.
+15: product_code           (PP)            -> Produkte Code
+16: product_de             (*)             -> Produkt-Bezeichnung De.
+17: product_fr             (*)             -> Produkt-Bezeichnung Fr.
+18: product_it             (*)             -> Produkt-Bezeichnung It.
+19: accessory_code         (ZZ.V)          -> Zubehör-Code
+20: accessory_de           (*)             -> Zubehör De.
+21: accessory_fr           (*)             -> Zubehör Fr.
+22: accessory_it           (*)             -> Zubehör It.
+23: product_limitation_de  (*)             -> Produkt-Limitation De.
+24: product_limitation_fr  (*)             -> Produkt-Limitation Fr.
+25: product_limitation_it  (*)             -> Produkt-Limitation It.
+26: price                  (Float)         -> Preis
+27: unit_de                (*)             -> Einheit De.
+28: unit_fr                (*)             -> Einheit Fr.
+29: unit_it                (*)             -> Einheit It.
+30: limitation_flag        (Boolean)       -> Limitations Zeichen, siehe Glossar (Limitations Zeichen)
+31: date                   (DD.MM.YYYY)    -> Aufnahme Datum
+
+## Glossar ##
+* Sprachen
+  De. - Deutsch
+  Fr. - Französisch
+  It. - Italienisch
+
+* Migel-Code
+  03.03.02.02.2
+  |  |  |  |  |
+  |  |  |  |  Verkaufsart
+  |  |  |  |
+  |  |  |  Zubehör
+  |  |  |
+  |  |  Produkt
+  |  |
+  |  Untergruppe
+  |
+  Produkt-Gruppe
+
+* New-Line
+  In den Ausgangsdaten wurden Zeilenumbrüche mit ASCII-11 (Vertical Tab)
+  formatiert. In unseren Datenbanksystemen sind diese Daten jedoch als
+  ACSCII-10 (Line-Feed) gespeichert.
+  Aufgrund der Tatsache, das viele CSV-Parser mühe haben, Record-Seperators
+  innerhalb von Fields anzutreffen, sind die Daten im CSV-Export mit den
+  Vertical-Tabs formatiert.
+          
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+Die komplette Version-History ist zu finden unter:
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/migel.csv.txt

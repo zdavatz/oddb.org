@@ -1,6 +1,7 @@
 Datenbeschrieb fachinfo.yaml
 
-Version: 1.0.1
+Version: 1.0.2
+Geändert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
 Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
 Erstellt: 01.09.2005 (1.0)   durch hwyss@ywesee.com
 
@@ -98,4 +99,6 @@ Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml
 Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
 - Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+Die komplette Version-History ist zu finden unter:
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/fachinfo.yaml.txt

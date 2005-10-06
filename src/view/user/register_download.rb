@@ -40,7 +40,7 @@ class RegisterDownloadForm < Form
 		[1,0,2,10]	=>	'standard',
 	}
 	LOOKANDFEEL_MAP = {
-		:location => :city,
+		:location	=> :city,
 	}
 	SYMBOL_MAP = {
 		:salutation			=>	HtmlGrid::Select,

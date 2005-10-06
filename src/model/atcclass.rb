@@ -62,7 +62,7 @@ module ODDB
 =end
 		def company_filter_search(company_name)
 			atc = self.dup
-			atc_sequences  = atc.sequences.dup
+			atc_sequences = @sequences.odba_instance.dup
 			atc_sequences.delete_if { |seq|
 				!(seq.company.to_s.downcase.include?(company_name))
 			}

@@ -21,8 +21,8 @@ index_name: 'atc_index_company'
 origin_klass: 'Company'
 target_klass: 'AtcClass'
 resolve_search_term: 'name'
-resolve_target: 'atc_classes.each { |atc| atc }'
-resolve_origin: 'sequences.collect { |seq| seq.company }'
+resolve_target: 'atc_classes'
+resolve_origin: 'sequences.collect { |seq| seq.company }.uniq'
 init_source: '@atc_classes.values'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
@@ -168,6 +168,26 @@ resolve_origin: 'active_agents.collect { |act| act.substance }'
 init_source: 'self.sequences'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
+index_name: 'migel_index_de'
+origin_klass: 'ODDB::Migel::Product'
+target_klass: 'ODDB::Migel::Product'
+resolve_search_term: 'search_text(:de)'
+resolve_target: ''
+resolve_origin: ''
+init_source: 'self.migel_products'
+fulltext: true
+dictionary: 'default_german'
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'migel_index_fr'
+origin_klass: 'ODDB::Migel::Product'
+target_klass: 'ODDB::Migel::Product'
+resolve_search_term: 'search_text(:fr)'
+resolve_target: ''
+resolve_origin: ''
+init_source: 'self.migel_products'
+fulltext: true
+dictionary: 'default_french'
+--- !ruby/object:ODBA::IndexDefinition 
 index_name: 'date_index_registration'
 origin_klass: 'Registration'
 target_klass: 'Registration'
@@ -175,4 +195,13 @@ resolve_search_term: 'registration_date.to_s'
 resolve_target: ''
 resolve_origin: ''
 init_source: 'self.registrations.values'
+fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'atcless'
+origin_klass: 'Sequence'
+target_klass: 'Sequence'
+resolve_search_term: 'atc_class.nil?.to_s'
+resolve_target: ''
+resolve_origin: ''
+init_source: 'self.sequences'
 fulltext: false

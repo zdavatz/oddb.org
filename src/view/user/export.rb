@@ -25,7 +25,7 @@ module Export
 	def export_link(key, filename)
 		link = HtmlGrid::Link.new(key, @model, @session, self)
 		args = {'filename'=>filename}
-		link.href = @lookandfeel.event_url(:download, args)
+		link.href = @lookandfeel._event_url(:download, args)
 		link.label = true
 		link.set_attribute('class', 'list')
 		link
