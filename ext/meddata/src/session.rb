@@ -42,7 +42,7 @@ class Session < HttpSession
 		@form_keys = FORM_KEYS[search_type]
 		@detail_key = DETAIL_KEYS[search_type]
 		super(server)
-		resp = get(self)
+		resp = get('/')
 		handle_resp!(resp)
 	end
 	def detail_html(ctl)

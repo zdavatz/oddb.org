@@ -175,6 +175,9 @@ Grammar OddbSize
 				directions = @directions.collect { |step| step.dup }
 				Pointer.new(*directions)
 			end
+			def eql?(other)
+				to_s.eql?(other.to_s)
+			end
 			def issue_create(app)
 				new_obj = resolve(app)
 				unless new_obj.nil?

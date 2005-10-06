@@ -39,6 +39,9 @@ class RegisterDownloadForm < Form
 	COMPONENT_CSS_MAP = {
 		[1,0,2,10]	=>	'standard',
 	}
+	LOOKANDFEEL_MAP = {
+		:location => :city,
+	}
 	SYMBOL_MAP = {
 		:salutation			=>	HtmlGrid::Select,
 		:business_area	=>	HtmlGrid::Select,

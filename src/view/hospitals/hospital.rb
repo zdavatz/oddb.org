@@ -10,13 +10,14 @@ require 'htmlgrid/value'
 require 'htmlgrid/inputfile'
 require	'htmlgrid/errormessage'
 require	'htmlgrid/infomessage'
+require	'htmlgrid/form'
 require 'view/descriptionform'
 require 'view/form'
 require 'view/pointervalue'
 require 'view/privatetemplate'
 require 'view/sponsorlogo'
 require 'view/address'
-
+require 'view/admin/address_suggestion'
 
 module ODDB
 	module View
@@ -63,6 +64,75 @@ class HospitalInnerComposite < HtmlGrid::Composite
 		end
 	end
 end
+class HospitalForm < HtmlGrid::Form
+	include View::Admin::AddressFormMethods
+	COMPONENTS = {
+		[0,0]	=>	:ean13,
+		[0,1]	=>	:name,
+		[0,2]	=>	:business_unit,
+		[0,3]	=>	:address_type,
+		[0,4]	=>	:title, 
+		[0,5]	=>	:contact, 
+		[0,6]	=>	:additional_lines, 
+		[0,7]	=>	:address, 
+		[0,8]	=>	:location,
+		[0,9]	=>	:canton,
+		[0,10]	=>	:fon,
+		[0,11]	=>	:fax,
+		[1,12]	=>	:submit,
+		[1,12,1]=>	:set_pass,
+	}
+	CSS_MAP = {
+		[0,0,2,13]	=>	'list',	
+		[0,6]	=> 'list top',
+	}
+	COMPONENT_CSS_MAP = {
+		[0,0,2,12]	=>	'standard',	
+	}
+	EVENT = :update
+	LABELS = true
+	LEGACY_INTERFACE = false
+	SYMBOL_MAP = {
+		:ean13	=>	HtmlGrid::Value,
+	}
+	def additional_lines(model)
+		super(model.address(0))
+	end
+	def address(model)
+		address_input(:address, model)
+	end
+	def address_input(symbol, model)
+		HtmlGrid::InputText.new(symbol, model.address(0), @session, self)
+	end
+	def contact(model)
+		address_input(:contact, model)
+	end
+	def address_type(model)
+		HtmlGrid::Select.new(:address_type, model.address(0), 
+			@session, self)
+	end
+	def canton(model)
+		address_input(:canton, model)
+	end
+	def fax(model)
+		address_input(:fax, model)
+	end
+	def fon(model)
+		address_input(:fon, model)
+	end
+	def title(model)
+		address_input(:title, model)
+	end
+	def location(model)
+		address_input(:location, model)
+	end
+	def set_pass(model)
+		button = HtmlGrid::Button.new(:set_pass, model, @session, self)
+		script = 'this.form.event.value="set_pass"; this.form.submit();'
+		button.set_attribute('onClick', script)
+		button
+	end
+end
 class HospitalComposite < HtmlGrid::Composite
 	include VCardMethods
 	COMPONENTS = {
@@ -85,36 +155,22 @@ class HospitalComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
 end
+class RootHospitalComposite < HospitalComposite
+	COMPONENTS = {
+		[0,0]		=>	:title,
+		[0,0,1]	=>	:nbsp,
+		[0,0,2]	=>	:firstname,
+		[0,0,3]	=>	:nbsp,
+		[0,0,4]	=>	:name,
+		[0,1]		=> HospitalForm,
+	}
+end
 class Hospital < PrivateTemplate
 	CONTENT = View::Hospitals::HospitalComposite
 	SNAPBACK_EVENT = :result
 end
-class EmptyResultForm < HtmlGrid::Form
-	COMPONENTS = {
-		[0,0]		=>	:search_query,
-		[0,0,1]	=>	:submit,
-		[0,1]		=>	:title_none_found,
-		[0,2]		=>	'e_empty_result',
-		[0,3]		=>	'explain_search_hospital',
-	}
-	CSS_MAP = {
-		[0,0]			=>	'search',	
-		[0,1]			=>	'th',
-		[0,2,1,2]	=>	'result-atc',
-	}
-	CSS_CLASS = 'composite'
-	EVENT = :search
-	FORM_METHOD = 'GET'
-	SYMBOL_MAP = {
-		:search_query		=>	View::SearchBar,	
-	}
-	def title_none_found(model, session)
-		query = session.persistent_user_input(:search_query)
-		@lookandfeel.lookup(:title_none_found, query)
-	end
-end
-class EmptyResult < View::PublicTemplate
-	CONTENT = View::Hospitals::EmptyResultForm
+class RootHospital < Hospital
+	CONTENT = View::Hospitals::RootHospitalComposite
 end
 		end
 	end

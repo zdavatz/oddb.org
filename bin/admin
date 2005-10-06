@@ -37,7 +37,7 @@ while(line = readline(prompt, true))
 		$stdout.puts "setting Priority to #{priority}"
 	else
 		begin
-			$stdout.puts oddb.admin(line, priority)
+			$stdout.puts oddb._admin(line, priority)
 		rescue Exception => last_error
 			$stdout.puts last_error
 		end

@@ -24,7 +24,7 @@ class HospitalList < HtmlGrid::List
 	include VCardMethods
 	COMPONENTS = {
 		[0,0]	=>	:name,
-		[1,0]	=>	:additional_lines, 
+		[1,0]	=>	:business_unit, 
 		[2,0]	=>	:city,
 		[3,0]	=>	:plz,
 		[4,0]	=>	:canton,
@@ -61,18 +61,13 @@ class HospitalList < HtmlGrid::List
 	SORT_DEFAULT = :name
 	SORT_REVERSE = false	
 	LEGACY_INTERFACE = false
-	def additional_lines(model)
-		if(addr = model.addresses.first)
-			addr.additional_lines
-		end
-	end
 	def plz(model)
 		if(addr = model.addresses.first)
 			addr.plz
 		end
 	end
 	def city(model)
-		if(addr = model.addresses.first)
+		if(addr = model.address(0))
 			addr.city
 		end
 	end
@@ -119,6 +114,33 @@ class HospitalsComposite < Form
 end
 class Hospitals < View::PublicTemplate
 	CONTENT = View::Hospitals::HospitalsComposite
+end
+class EmptyResultForm < HtmlGrid::Form
+	COMPONENTS = {
+		[0,0]		=>	:search_query,
+		[0,0,1]	=>	:submit,
+		[0,1]		=>	:title_none_found,
+		[0,2]		=>	'e_empty_result',
+		[0,3]		=>	'explain_search_hospital',
+	}
+	CSS_MAP = {
+		[0,0]			=>	'search',	
+		[0,1]			=>	'th',
+		[0,2,1,2]	=>	'result-atc',
+	}
+	CSS_CLASS = 'composite'
+	EVENT = :search
+	FORM_METHOD = 'GET'
+	SYMBOL_MAP = {
+		:search_query		=>	View::SearchBar,	
+	}
+	def title_none_found(model, session)
+		query = session.persistent_user_input(:search_query)
+		@lookandfeel.lookup(:title_none_found, query)
+	end
+end
+class EmptyResult < View::PublicTemplate
+	CONTENT = View::Hospitals::EmptyResultForm
 end
 		end
 	end

@@ -755,11 +755,6 @@ class OddbPrevalence
 			seq + reg.sequences.values 
 		}
 	end
-	def sequences
-		@registrations.values.inject([]) { |inj, reg|
-			inj + reg.sequences.values
-		}
-	end
 	def set_currency_rate(symbol, value)
 		@currency_rates.store(symbol, value)
 	end
@@ -987,7 +982,7 @@ module ODDB
 			@system.execute_command(UpdateCommand.new(pointer, values))
 		end
 		#####################################################
-		def admin(src, priority=-1)
+		def _admin(src, priority=-1)
 			Thread.current.priority = priority
 			Thread.current.abort_on_exception = false
 			failsafe {
