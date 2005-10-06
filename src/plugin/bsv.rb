@@ -531,7 +531,9 @@ end
 
 			## update prices from the database but do not store as mutation.
 			@ikstable.each_value { |package| 
-				handle_package(package)
+				if(pack = handle_package(package))
+					update_sl_entry(package)
+				end
 			}
 
 			## TODO: try to identify missing packages according to their 
