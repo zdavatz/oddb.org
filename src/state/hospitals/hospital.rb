@@ -13,8 +13,30 @@ class Hospital < State::Hospitals::Global
 	LIMITED = true
 end
 class RootHospital < Hospital
-	VIEW = View::Hospitals::RootHospital
-	def do_update(keys)
+	def init
+		super
+		if(allowed?)
+			@default_view = View::Hospitals::RootHospital
+		end
+	end
+	def set_pass
+		if(allowed?)
+			do_update
+			unless(error?)
+				State::Hospitals::SetPass.new(@session, user_or_creator)
+			end
+		end
+	end
+	def update
+		if(allowed?)
+			do_update
+		end
+		self
+	end
+	private
+	def do_update
+		keys = [:name, :business_unit, :address_type, :title, :contact, 
+			:additional_lines, :address, :location, :canton, :fon, :fax]
 		mandatory = [:name, :ean13]
 		input = user_input(keys, mandatory)
 		unless (error?)
@@ -32,18 +54,6 @@ class RootHospital < Hospital
 				@model = @session.app.update(@model.pointer, input)
 			}
 		end
-		self
-	end
-	def set_pass
-		update() # save user input
-		unless(error?)
-			State::Hospitals::SetPass.new(@session, user_or_creator)
-		end
-	end
-	def update
-		keys = [:name, :business_unit, :address_type, :title, :contact, 
-			:additional_lines, :address, :location, :canton, :fon, :fax]
-		do_update(keys)
 	end
 	def user_or_creator
 		mdl = @model.user
@@ -51,7 +61,6 @@ class RootHospital < Hospital
 			ptr = Persistence::Pointer.new([:admin])
 			mdl = Persistence::CreateItem.new(ptr) 
 			mdl.carry(:model, @model)
-			#mdl.carry(:unique_email, @session.user_input(:contact_email))
 		end
 		mdl
 	end

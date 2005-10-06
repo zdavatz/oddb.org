@@ -76,7 +76,12 @@ module ODDB
 		SESSION_WEIGHT = 4
 		VIRAL_MODULE = State::Admin::Root
 		def allowed?(obj)
-			true
+			case obj.odba_instance
+			when Hospital
+				@model.odba_instance == obj
+			else
+				true
+			end
 		end
 		def creditable?(obj)
 			true
@@ -88,6 +93,9 @@ module ODDB
 			@unique_email = 'hwyss@ywesee.com'
 			@pass_hash = 'fc16bcd5a418882563a2fc2ec532639e'
 			@pointer = Pointer.new([:user, 0])
+		end
+		def allowed?(obj)
+			true
 		end
 	end		
 	class CompanyUser < User

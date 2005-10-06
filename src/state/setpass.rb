@@ -9,6 +9,12 @@ module ODDB
 module SetPass 
 	VIEW = View::SetPass 
 	def update
+		if(allowed?)
+			do_update
+		end
+	end
+	private
+	def do_update
 		keys = [:unique_email, :set_pass_1, :set_pass_2]
 		input = user_input(keys, keys)
 		pass1 = input[:set_pass_1]
