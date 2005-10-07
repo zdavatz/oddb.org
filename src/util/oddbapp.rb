@@ -706,6 +706,9 @@ class OddbPrevalence
 		result
 	end
 	def search_migel_products(query, lang)
+		if(lang.to_s != "fr") 
+			lang = "de"
+		end
 		index_name = "migel_index_#{lang}"
 		ODBA.cache_server.retrieve_from_index(index_name, query)
 	end
@@ -768,11 +771,6 @@ class OddbPrevalence
 	def sequences
 		@registrations.values.inject([]) { |seq, reg| 
 			seq + reg.sequences.values 
-		}
-	end
-	def sequences
-		@registrations.values.inject([]) { |inj, reg|
-			inj + reg.sequences.values
 		}
 	end
 	def set_currency_rate(symbol, value)
@@ -1002,7 +1000,7 @@ module ODDB
 			@system.execute_command(UpdateCommand.new(pointer, values))
 		end
 		#####################################################
-		def admin(src, priority=-1)
+		def _admin(src, priority=-1)
 			Thread.current.priority = priority
 			Thread.current.abort_on_exception = false
 			failsafe {

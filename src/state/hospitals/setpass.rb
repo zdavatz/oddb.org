@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# State::Hospitals::SetPass -- oddb -- 29.09.2005 -- hwyss@ywesee.com
+
+require 'state/setpass'
+require 'state/hospitals/global'
+
+module ODDB
+	module State
+		module Hospitals
+class SetPass < State::Hospitals::Global
+	include State::SetPass
+end
+		end
+	end
+end

@@ -4,18 +4,19 @@
 require 'util/persistence'
 require 'model/registration_observer'
 require 'model/address'
+require 'model/user'
 
 module ODDB
 	class Company
 		include Persistence
+		include RegistrationObserver
+		include UserObserver
 		include AddressObserver
 		ODBA_SERIALIZABLE = ['@addresses']
-		include RegistrationObserver
 		attr_accessor :address_email, :business_area, :business_unit,
 			:cl_status, :complementary_type, :contact, :ean13, :fi_status,
 			:generic_type, :invoice_email, :logo_filename, :name,
 			:pi_status, :powerlink, :regulatory_email, :url
-		attr_reader :user
 		alias :fullname :name
 		alias :power_link= :powerlink=
 		alias :power_link :powerlink
@@ -34,12 +35,6 @@ module ODDB
 				registration.atc_classes				
 			}.flatten.compact.uniq
 		end
-		def contact_email
-			@user.unique_email if(@user)
-		end
-		def has_user?
-			!@user.nil?
-		end
 		def inactive_registrations
 			@registrations.reject { |registration|
 				registration.active? && registration.package_count > 0
@@ -55,11 +50,6 @@ module ODDB
 				reg.odba_isolated_store
 			}
 			@registrations.odba_isolated_store
-		end
-		def user=(user)
-			@user = user
-			self.odba_isolated_store
-			@user
 		end
 		def pointer_descr
 			@name

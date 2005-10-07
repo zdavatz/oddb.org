@@ -27,6 +27,9 @@ module ODDB
 		def cache_html?
 			false
 		end
+		def creditable?(obj)
+			false
+		end
 		def model=(model)
 			model.user = self
 			@model = model
@@ -60,6 +63,9 @@ module ODDB
 		def cache_html?
 			true
 		end
+		def creditable?(obj)
+			false
+		end
 		def valid?
 			false
 		end
@@ -70,6 +76,14 @@ module ODDB
 		SESSION_WEIGHT = 4
 		VIRAL_MODULE = State::Admin::Root
 		def allowed?(obj)
+			case obj.odba_instance
+			when Hospital
+				@model.odba_instance == obj
+			else
+				true
+			end
+		end
+		def creditable?(obj)
 			true
 		end
 	end
@@ -79,6 +93,9 @@ module ODDB
 			@unique_email = 'hwyss@ywesee.com'
 			@pass_hash = 'fc16bcd5a418882563a2fc2ec532639e'
 			@pointer = Pointer.new([:user, 0])
+		end
+		def allowed?(obj)
+			true
 		end
 	end		
 	class CompanyUser < User
@@ -115,6 +132,20 @@ module ODDB
 		end
 		def email
 			@unique_email
+		end
+	end
+	module UserObserver
+		attr_reader :user
+		def contact_email
+			@user.unique_email if(@user)
+		end
+		def has_user?
+			!@user.nil?
+		end
+		def user=(user)
+			@user = user
+			self.odba_isolated_store
+			@user
 		end
 	end
 end

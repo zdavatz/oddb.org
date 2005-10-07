@@ -39,6 +39,12 @@ class AtcHeader < HtmlGrid::Composite
 		end
 		super
 	end
+	def atc_ddd_link(atc, session)
+		while(atc && !atc.has_ddd? && (code = atc.parent_code))
+			atc = session.app.atc_class(code)
+		end
+		super(atc, session)
+	end
 	def atc_description(model, session)
 		[
 			super,
@@ -150,7 +156,7 @@ class ResultList < HtmlGrid::List
 			link = nil
 			if(@lookandfeel.enabled?(:powerlink, false) && comp.powerlink)
 				link = HtmlGrid::HttpLink.new(:name, comp, session, self)
-				link.href = @lookandfeel.event_url(:powerlink, {'pointer'=>comp.pointer})
+				link.href = @lookandfeel._event_url(:powerlink, {'pointer'=>comp.pointer})
 				link.set_attribute("class", "powerlink")
 			elsif(@lookandfeel.enabled?(:companylist) \
 				&& comp.listed?)
@@ -219,7 +225,7 @@ class ResultList < HtmlGrid::List
 		args = {
 			:pointer => model.pointer,
 		}
-		link.href = @lookandfeel.event_url(:notify, args)
+		link.href = @lookandfeel._event_url(:notify, args)
 		img = HtmlGrid::Image.new(:notify, model, session, self)
 		img.set_attribute('src', @lookandfeel.resource_global(:notify))
 		link.value = img
@@ -228,7 +234,7 @@ class ResultList < HtmlGrid::List
 	end
 	def substances(model, session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
-		link.href = @lookandfeel.event_url(:show, {:pointer => model.pointer})
+		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
 		if (model.active_agents.size > 1)
 			#txt = HtmlGrid::Component.new(model, session, self)
 			link.set_attribute('title', model.active_agents.join(', '))

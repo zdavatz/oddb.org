@@ -144,7 +144,7 @@ class UserCompanyForm < View::Form
 		args = {
 			:pointer	=>	model.pointer,
 		}
-		link.href = @lookandfeel.event_url(:patinfo_stats, args)
+		link.href = @lookandfeel._event_url(:patinfo_stats, args)
 		link.set_attribute('title', @lookandfeel.lookup(:patinfo_stats))
 		link
 	end

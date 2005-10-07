@@ -7,7 +7,7 @@ require 'state/states'
 require 'util/validator'
 require 'model/user'
 require 'fileutils'
-#require 'benchmark'
+require 'timeout'
 
 module ODDB
   class Session < SBSM::Session
@@ -22,6 +22,8 @@ module ODDB
 		PERSISTENT_COOKIE_NAME = 'oddb-preferences'
 		QUERY_LIMIT = 10
 		QUERY_LIMIT_AGE = 60 * 60 * 24
+		PROCESS_TIMEOUT = 30
+		HTML_TIMEOUT = 60
 		begin
 			@@stub_html = File.read(File.expand_path('../../data/stub.html', File.dirname(__FILE__)))
 		rescue
@@ -48,6 +50,14 @@ module ODDB
 			FileUtils.mkdir_p(File.dirname(path))
 			@@request_log ||= File.open(path, 'a')
 		end
+		def event
+			if(@lookandfeel \
+				&& persistent_user_input(:flavor) != @lookandfeel.flavor)
+				:home
+			else
+				super
+			end
+		end
 		def limit_queries
 			requests = (@@requests[remote_ip] ||= [])
 			if(@state.limited?)
@@ -63,21 +73,26 @@ module ODDB
 			end
 		end
 		def process(request)
+			@request = request
 			unless(is_crawler?)
 				@@html_cache.delete(@request_path)
 			end
-			@request = request
 			@request_id = request.object_id
 			@request_path = request.unparsed_uri
 			@process_start = Time.now
+			request_log('INIT')
+			logtype = 'PRCS'
 			if(is_crawler?)
 				if(@@html_cache[@request_path].nil?)
 					Thread.current.priority = -1
-					super
+					timeout(PROCESS_TIMEOUT) { 
+						super
+					}
 				end
 			else
-			#unless(is_crawler?)
-				super
+				timeout(PROCESS_TIMEOUT) { 
+					super
+				}
 				## @lookandfeel.nil?: the first access from a client has no
 				## lookandfeel here
 				if(self.lookandfeel.enabled?(:query_limit))
@@ -86,8 +101,11 @@ module ODDB
 				## return empty string across the drb-border
 				''
 			end
+		rescue Timeout::Error
+			logtype = 'PRTO'
 		ensure
-			request_log('PRCS')
+			Thread.current.priority = 0
+			request_log(logtype)
 		end
 		def request_log(phase)
 			bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
@@ -110,18 +128,24 @@ module ODDB
 				else
 					Thread.current.priority = -1
 					logtype = 'CRWL'
-					sleep(5)
+					#sleep(5)
 					@@stub_html
 					#super
 				end
 			else
-				html = super
+				html = ''
+				timeout(HTML_TIMEOUT) {
+					html = super
+				}
 				if(@user.cache_html?)
 					@@html_cache[@request_path] = html
 				end
 				html
 			end.dup
+		rescue Timeout::Error
+			logtype = 'TMOT'
 		ensure
+			Thread.current.priority = 0
 			request_log(logtype)
 		end
 		def initialize(key, app, validator=nil)

@@ -11,6 +11,7 @@ module ODDB
 class RegisterDownload < Global
 	include State::PayPal::Checkout
 	VIEW = View::Drugs::RegisterDownload
+	CURRENCY = 'EUR'
 	attr_reader :search_query, :search_type
 	def RegisterDownload.price(package_count)
 		count = package_count.to_i
@@ -35,10 +36,38 @@ class RegisterDownload < Global
 			:search_type	=> @search_type,
 		}
 		item.vat_rate = VAT_RATE
-		item.total_netto = RegisterDownload.price(package_count)
+		item.total_netto = self.class.price(package_count)
 		pointer = Persistence::Pointer.new(:invoice)
 		@model = Persistence::CreateItem.new(pointer)
 		@model.carry(:items, [item])
+		@model.carry(:currency, self.currency)
+	end
+end
+class RegisterInvoicedDownload < RegisterDownload
+	def RegisterInvoicedDownload.price(package_count)
+		count = package_count.to_i
+		if(count <= 0)
+			0
+		else
+			5 + ([(count / 100.0).ceil - 1 , 0].max * 1.5)
+		end
+	end
+	CURRENCY = 'CHF'
+	def checkout
+		if(creditable?)
+			if(@paid.nil?)
+				app = @session.app
+				item = @model.items.first
+				slate_ptr = Persistence::Pointer.new([:slate, :download])
+				slate = app.create(slate_ptr)
+				item_ptr = slate_ptr + [:item]
+				values = item.values
+				values.store(:user_pointer, @session.user.pointer)
+				values.store(:time, Time.now)
+				@paid = app.update(item_ptr.creator, values)
+			end
+			State::User::Download.new(@session, @paid)
+		end
 	end
 end
 		end

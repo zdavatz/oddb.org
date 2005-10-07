@@ -531,7 +531,9 @@ end
 
 			## update prices from the database but do not store as mutation.
 			@ikstable.each_value { |package| 
-				handle_package(package)
+				if(pack = handle_package(package))
+					update_sl_entry(pack, package)
+				end
 			}
 
 			## TODO: try to identify missing packages according to their 
@@ -632,8 +634,10 @@ end
 					if(candidates.size == 1)
 						@unknown_packages.delete(package)
 						@guessed_packages.push(package)
-						package.guessed_ikscd = candidates.first.ikscd
+						pack = candidates.first
+						package.guessed_ikscd = pack.ikscd
 						update_package(reg, package)
+						update_sl_entry(pack, package)
 					end
 				end
 			end

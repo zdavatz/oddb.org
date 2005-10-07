@@ -50,6 +50,7 @@ module ODDB
 			:location, :title, :fon, :fax, :canton, :type
 		alias :address_type :type
 		alias :pointer_descr :name
+		alias :contact :name
 		def initialize 
 			super
 			@additional_lines = []

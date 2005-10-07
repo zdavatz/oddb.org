@@ -35,7 +35,7 @@ class FiChapterChooserLink < HtmlGrid::Link
 			:pointer, @model.pointer,
 		]
 		unless(@session.user_input(:chapter) == @name.to_s)
-			self.href = @lookandfeel.event_url(:resolve, args)
+			self.href = @lookandfeel._event_url(:resolve, args)
 		end
 	end
 end
@@ -106,7 +106,7 @@ class FiChapterChooser < HtmlGrid::Composite
 		link = HtmlGrid::Link.new(:fachinfo_all, model, session, self)
 		link.set_attribute('title', @lookandfeel.lookup(:fachinfo_all_title))
 		unless(@session.user_input(:chapter).nil?)
-			link.href = @lookandfeel.event_url(:resolve, {:pointer => model.pointer})
+			link.href = @lookandfeel._event_url(:resolve, {:pointer => model.pointer})
 		end
 		link
 	end

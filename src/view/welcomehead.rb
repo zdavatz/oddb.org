@@ -27,7 +27,7 @@ module ODDB
 				elsif(@lookandfeel.enabled?(:banner))
 					#banner = @lookandfeel.resource(:banner)
 					dest = @lookandfeel.lookup(:banner_destination)
-					href = @lookandfeel.event_url(:passthru, {"destination"=>dest})
+					href = @lookandfeel._event_url(:passthru, {"destination"=>dest})
 =begin
 					case banner
 					when /\.swf/

@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
 # State::Drugs::Result -- oddb -- 03.03.2003 -- hwyss@ywesee.com 
 
-require 'state/drugs/global'
+require 'state/global_predefine'
 require 'state/drugs/register_download'
+require 'state/drugs/payment_method'
 require 'view/drugs/result'
 require 'model/registration'
 require 'model/invoice'
@@ -48,7 +49,11 @@ class Result < State::Drugs::Global
 		end
 	end
 	def export_csv
-		RegisterDownload.new(@session, @model)
+		if(creditable?)
+			PaymentMethod.new(@session, @model)
+		else
+			RegisterDownload.new(@session, @model)
+		end
 	end
 	def limit_state
 		count = @package_count

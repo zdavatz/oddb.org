@@ -15,7 +15,7 @@ module ODDB
 					link = HtmlGrid::Link.new(:range, @model, @session, self)
 					link.value = @lookandfeel.lookup(range.intern)
 					unless(range == current_range)
-						link.href = @lookandfeel.event_url(@session.direct_event, 
+						link.href = @lookandfeel._event_url(@session.direct_event, 
 							{'range' => range})
 					end
 					link.set_attribute('class', 'subheading-bold')

@@ -68,7 +68,6 @@ module ODDB
 			GLOBAL_MAP = {
 				:companylist					=>	State::Companies::CompanyList,
 				:compare							=>	State::Drugs::Compare,
-				#:doctorlist						=>	State::Doctors::DoctorList,
 				:ddd									=>	State::Drugs::DDD,
 				:download_export			=>	State::User::DownloadExport,
 				:fipi_offer_input			=>	State::User::FiPiOfferInput,
@@ -165,6 +164,9 @@ module ODDB
 			def clear_interaction_basket
 				@session.clear_interaction_basket
 				State::Interactions::EmptyBasket.new(@session, [])
+			end
+			def creditable?
+				@session.user.creditable?(@model)
 			end
 			def doctorlist
 				model = @session.doctors.values

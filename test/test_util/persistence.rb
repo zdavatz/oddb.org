@@ -415,6 +415,12 @@ module ODDB
 				Marshal.dump(@pointer)
 			}
 		end
+		def test_hash_key
+			hash = {}
+			hash.store(Persistence::Pointer.new(:foo, [:bar, 1]), 'test')
+			assert_equal('test', 
+				hash[Persistence::Pointer.new(:foo, [:bar, 1])])
+		end
 	end
 	class TestPersistenceCreateItem < Test::Unit::TestCase
 		class CacheStub
@@ -467,4 +473,3 @@ module ODDB
 		end
 	end
 end
-

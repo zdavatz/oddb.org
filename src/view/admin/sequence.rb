@@ -262,7 +262,7 @@ class SequenceForm < Form
 		if(comp = model.company)
 			link = HtmlGrid::Link.new(:company_link, model, session, self)  
 			args = { :pointer	=>	comp.pointer }
-			link.href = @lookandfeel.event_url(:resolve, args)
+			link.href = @lookandfeel._event_url(:resolve, args)
 			link.set_attribute('class', 'small')
 			link.label = false
 			link  

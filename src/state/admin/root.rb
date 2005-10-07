@@ -8,6 +8,7 @@ require 'state/admin/indications'
 require 'state/admin/logout'
 require 'state/admin/init'
 require 'state/drugs/fachinfo'
+require 'state/hospitals/hospital'
 
 module ODDB
 	module State
@@ -55,7 +56,8 @@ module Root
 		[ :galenic_group ]						=>	State::Admin::GalenicGroup,
 		[ :galenic_group,
 			:galenic_form ]							=>	State::Admin::GalenicForm,
-			[ :select_seq ]									=>  State::Admin::AssignDeprivedSequence,
+		[ :select_seq ]								=>  State::Admin::AssignDeprivedSequence,
+		[ :hospital ]									=>	State::Hospitals::RootHospital,
 		[ :incomplete_registration ]	=>	State::Admin::IncompleteReg, 
 		[ :incomplete_registration,
 			:sequence ]									=>	State::Admin::IncompleteSequence, 

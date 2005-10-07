@@ -8,7 +8,7 @@ require 'htmlgrid/urllink'
 module ODDB
 	module View
 		module Admin
-class AddressSuggestionForm < View::Form
+module AddressFormMethods
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
 		[0,0]	=>	:address_type,
@@ -49,6 +49,9 @@ class AddressSuggestionForm < View::Form
 		area.css_class = 'standard'
 		area
 	end
+end
+class AddressSuggestionForm < View::Form
+	include AddressFormMethods
 	def delete(model)
 		button = HtmlGrid::Button.new(:delete,
 			model, @session, self)

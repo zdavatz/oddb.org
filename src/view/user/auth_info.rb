@@ -23,7 +23,7 @@ class AuthInfoComposite < HtmlGrid::Composite
 	end
 	def back(model)
 		link = HtmlGrid::Link.new(:auth_back, model, @session, self)
-		link.href = @lookandfeel.event_url(:download_export)
+		link.href = @lookandfeel._event_url(:download_export)
 		link
 	end
 end

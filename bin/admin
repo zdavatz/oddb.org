@@ -8,8 +8,29 @@ require 'util/oddbapp'
 require 'readline'
 include Readline
 
+class RequestStub
+	def ask(meth, *args)
+		pr = "call: #{meth}(#{args.join(',')}) return? > "
+		readline(pr, true)
+	end
+	def cookies
+		instance_eval(ask(:cookies)) || {}
+	end
+	def params
+		instance_eval(ask(:params)) || {}
+	end
+	def unparsed_uri
+		ask(:unparsed_uri)
+	end
+	def user_agent
+		ask(:user_agent)
+	end
+end
+
 prompt = 'oddb> '
-DRb.start_service('druby://localhost:0')
+#DRb.start_service('druby://localhost:0')
+req = RequestStub.new
+request = DRb.start_service('druby://localhost:0', req)
 oddb = DRbObject.new(nil, 'druby://localhost:10000')
 last_error = nil
 priority = -1
@@ -32,12 +53,27 @@ while(line = readline(prompt, true))
 		rescue Exception => last_error
 			$stdout.puts last_error
 		end
+	when 'process'
+		cmd = "self['test'].process(DRbObject.new(nil, '#{request.uri}'))"
+		puts "sending #{cmd}"
+		begin 
+			$stdout.puts oddb.admin(cmd)
+		rescue Exception => last_error
+			$stdout.puts last_error
+		end
+	when /to_html(\[[\d,.]+\])?/
+		begin 
+			range = $1 || "[0,200]"
+			$stdout.puts oddb.admin("self['test'].to_html#{range}")
+		rescue Exception => last_error
+			$stdout.puts last_error
+		end
 	when /sp\s+(-?\d+)/, /set_priority\s+(-?\d+)/ 
 		priority = $~[1].to_i
 		$stdout.puts "setting Priority to #{priority}"
 	else
 		begin
-			$stdout.puts oddb.admin(line, priority)
+			$stdout.puts oddb._admin(line, priority)
 		rescue Exception => last_error
 			$stdout.puts last_error
 		end

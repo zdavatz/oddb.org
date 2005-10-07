@@ -123,6 +123,9 @@ module ODDB
 		}
 	end
 	class LookandfeelAtupri < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:logo,
+		]
 		DICTIONARIES = {
 			'de'	=>	{
 				:home_welcome	=>	'Willkommen bei atupri und oddb.org',

@@ -46,6 +46,9 @@ module ODDB
 		def package_count(generic_type=nil)
 			@atc.package_count(generic_type)
 		end
+		def parent_code
+			@atc.parent_code
+		end
 	end
 	class SearchResult
 		attr_accessor  :atc_classes, :session, :relevance, :exact

@@ -6,6 +6,7 @@ require 'plugin/fipdf'
 require 'plugin/yaml'
 require 'plugin/csv_export'
 require 'plugin/patinfo_invoicer'
+require 'plugin/download_invoicer'
 require 'util/log'
 require 'util/logfile'
 
@@ -20,6 +21,9 @@ module ODDB
 			@app = app
 		end
 		def run
+			run_on_monthday(1) {
+				mail_download_invoices
+			}
 			run_on_weekday(0) { 
 				mail_download_stats
 				mail_feedback_stats
@@ -132,6 +136,9 @@ module ODDB
 		def mail_download_stats
 			mail_stats('download')
 		end
+		def mail_download_invoices
+			DownloadInvoicer.new(@app).run
+		end
 		def mail_feedback_stats
 			mail_stats('feedback')
 		end
@@ -164,6 +171,11 @@ module ODDB
 				] + e.backtrace).join("\n")
 			end
 			log.notify("#{key.capitalize}-Statistics")
+		end
+		def run_on_monthday(day, &block)
+			if(Date.today.day == day)
+				block.call
+			end
 		end
 		def run_on_weekday(day, &block)
 			if(Date.today.wday == day)

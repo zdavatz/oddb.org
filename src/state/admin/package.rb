@@ -31,8 +31,10 @@ class Package < State::Admin::Global
 			end
 			if error
 				@errors.store(:ikscd, error)
-				@model.carry(:price_exfactory, Package.price_internal(@session.user_input(:price_exfactory)))
-				@model.carry(:price_public, Package.price_internal(@session.user_input(:price_public)))
+				@model.carry(:price_exfactory, 
+					ODDB::Package.price_internal(@session.user_input(:price_exfactory)))
+				@model.carry(:price_public, 
+					ODDB::Package.price_internal(@session.user_input(:price_public)))
 				return self
 			end
 			@model.append(ikscode)

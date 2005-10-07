@@ -38,7 +38,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	}
 	def new_registration(model, session)
 		link = HtmlGrid::Link.new(:new_registration, model, @session, self)
-		link.href = @lookandfeel.event_url(:new_registration)
+		link.href = @lookandfeel._event_url(:new_registration)
 		link
 	end
 	def substance_count(model, session)

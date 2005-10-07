@@ -18,7 +18,7 @@ module ODDB
 			end
 			def to_html(context)
 				link_attrs = {
-					"href"	=> @lookandfeel.event_url(:home)
+					"href"	=> @lookandfeel._event_url(:home)
 				}
 				context.a(link_attrs) {
 					context.img(@attributes)

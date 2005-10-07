@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# -- oddb -- 07.02.2005 -- jlang@ywesee.com
+# HospitalPlugin -- oddb -- 07.02.2005 -- jlang@ywesee.com
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
@@ -25,6 +25,7 @@ module ODDB
 			factory =  MedData::EanFactory.new(current)
 			while(current < last)
 				current = factory.next
+				puts current
 				criteria = { 
 					:name				=> '',
 					:country		=> 'CH',
@@ -42,6 +43,9 @@ module ODDB
 				rescue MedData::OverflowError
 					current = factory.clarify
 					retry
+				rescue
+					puts $!.backtrace
+					raise
 				end
 			end
 		end
@@ -68,6 +72,15 @@ module ODDB
 				ptr = Persistence::Pointer.new([:hospital, ean13])
 				pointer = ptr.creator
 			end
+			addr = Address2.new
+			addr.address = values.delete(:address)
+			addr.location = [values.delete(:plz), 
+				values.delete(:location)].compact.join(' ')
+			addr.canton	 = values.delete(:canton)
+			addr.fon = [values.delete(:phone)]
+			addr.fax = [values.delete(:fax)]
+			addr.additional_lines = [values[:business_unit]]
+			values.store(:addresses, [addr])
 			@app.update(pointer, values)
 		end
 	end

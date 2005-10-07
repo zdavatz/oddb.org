@@ -34,7 +34,7 @@ module ODDB
 					:pointer => @container.model.pointer,
 					:chapter => model.chapter,
 				}
-				link.href = @lookandfeel.event_url(:resolve, args)
+				link.href = @lookandfeel._event_url(:resolve, args)
 				link
 			end
 			def language(model)

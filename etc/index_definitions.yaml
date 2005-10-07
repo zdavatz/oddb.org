@@ -21,8 +21,8 @@ index_name: 'atc_index_company'
 origin_klass: 'ODDB::Company'
 target_klass: 'ODDB::AtcClass'
 resolve_search_term: 'name'
-resolve_target: 'atc_classes.each { |atc| atc }'
-resolve_origin: 'sequences.collect { |seq| seq.company }'
+resolve_target: 'atc_classes'
+resolve_origin: 'sequences.collect { |seq| seq.company }.uniq'
 init_source: '@atc_classes.values'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 

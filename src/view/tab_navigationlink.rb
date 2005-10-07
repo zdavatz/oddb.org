@@ -26,7 +26,7 @@ module ODDB
 					@attributes.store("href", @lookandfeel.event_url(:switch, args))
 =end
 					home_event = [:home, @name].join('_')
-					@attributes.store("href", @lookandfeel.event_url(home_event))
+					@attributes.store("href", @lookandfeel._event_url(home_event))
 				end
 			end
 		end

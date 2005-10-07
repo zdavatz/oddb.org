@@ -36,7 +36,7 @@ module ODDB
 			end
 			def feedback(model, session)
 				link = HtmlGrid::Link.new(:feedback_text_short, model, session, self)
-				link.href = @lookandfeel.event_url(:feedbacks, {'pointer'=>model.pointer})
+				link.href = @lookandfeel._event_url(:feedbacks, {'pointer'=>model.pointer})
 				pos = components.index(:feedback)
 				component_css_map.store(pos, "feedback square")
 				css_map.store(pos, "square")
@@ -51,7 +51,7 @@ module ODDB
 			def limitation_link(sltxt)
 				link = HtmlGrid::Link.new(:limitation_text_short, 
 					nil, @session, self)
-				link.href = @lookandfeel.event_url(:resolve, 
+				link.href = @lookandfeel._event_url(:resolve, 
 					{'pointer'=>CGI.escape(sltxt.pointer.to_s)})
 				link.set_attribute('title', 
 					@lookandfeel.lookup(:limitation_text))
@@ -66,7 +66,7 @@ module ODDB
 					if(pdf_patinfo = model.pdf_patinfo)
 						link.href = @lookandfeel.resource_global(:pdf_patinfo, pdf_patinfo)
 					elsif(patinfo = model.patinfo)
-						link.href = @lookandfeel.event_url(:resolve, {'pointer' => patinfo.pointer})
+						link.href = @lookandfeel._event_url(:resolve, {'pointer' => patinfo.pointer})
 						link.set_attribute('title', @lookandfeel.lookup(:patinfo))
 					end
 					pos = components.index(:patinfo)
@@ -78,33 +78,12 @@ module ODDB
 				end
 			end
 			def atc_ddd_link(atc, session)
-				if(atc.has_ddd?)
+				if(atc && atc.has_ddd?)
 					link = HtmlGrid::PopupLink.new(:ddd, atc, session, self)
-					link.href = @lookandfeel.event_url(:ddd, {'pointer'=>atc.pointer})
+					link.href = @lookandfeel._event_url(:ddd, {'pointer'=>atc.pointer})
 					link.set_attribute('class', 'result-infos-bg')
 					link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
 					link
-				end
-			rescue NoMethodError => e
-				puts e
-				puts e.message
-				puts "atc:   #{atc.class}"
-				puts "query: #{session.persistent_user_input(:search_query)}"
-				if(atc.respond_to?(:pointer))
-					puts "pointer:#{atc.pointer}"
-				end
-				if(atc.respond_to?(:ddds))
-					ddds = atc.ddds
-					puts "ddds.class: #{ddds.class}"
-					puts "Stub?:      #{ddds.is_a?(ODBA::Stub)}"
-					if(ddds.respond_to?(:odba_id))
-						puts "odba_id: #{ddds.odba_id}"
-					end
-				end
-				puts "state: #{session.state.class}"
-				puts "model: #{@model.class}"
-				if(@model.respond_to?(:pointer))
-					puts "pointer: #{@model.pointer}"
 				end
 			end
 			def atc_description(atc, session=nil)

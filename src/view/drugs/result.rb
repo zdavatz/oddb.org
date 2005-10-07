@@ -34,7 +34,7 @@ class ExportCSV < View::Form
 			:search_query	=>	@session.persistent_user_input(:search_query),
 			:search_type	=>	@session.persistent_user_input(:search_type),
 		}
-		url = @lookandfeel.event_url(:export_csv, data)
+		url = @lookandfeel._event_url(:export_csv, data)
 		self.onsubmit = "location.href='#{url}';return false;"
 	end
 	def example(model, session)
