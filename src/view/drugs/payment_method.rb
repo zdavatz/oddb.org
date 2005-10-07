@@ -10,12 +10,11 @@ module ODDB
 class PaymentMethodForm < Form
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
-		[0,0]	=>	:salutation,
-		[0,1]	=>	:name,
-		[0,2]	=>	:name_first,
-		[0,3]	=>	:email,
-		[0,4]	=>	:payment_method,
-		[1,5]	=>	:submit,
+		[0,0]	=>	:name,
+		[0,1]	=>	:contact,
+		[0,2]	=>	:email,
+		[0,3]	=>	:payment_method,
+		[1,4]	=>	:submit,
 	}
 	CSS_CLASS = 'component'
 	HTML_ATTRIBUTES = {
@@ -24,17 +23,15 @@ class PaymentMethodForm < Form
 	EVENT = :proceed_payment
 	LABELS = true
 	CSS_MAP = {
-		[0,0,2,6]	=>	'list',
+		[0,0,2,5]	=>	'list',
 	}
 	COMPONENT_CSS_MAP = {
-		[1,0,2,4]	=>	'standard',
+		[0,0,2,3]	=>	'standard',
 	}
+	DEFAULT_CLASS = HtmlGrid::Value
+	LEGACY_INTERFACE = false
 	SYMBOL_MAP = {
-		:salutation			=>	HtmlGrid::Select,
 		:payment_method	=>	HtmlGrid::Select,
-		:name						=>	HtmlGrid::InputText,
-		:name_first			=>	HtmlGrid::InputText,
-		:email					=>	HtmlGrid::InputText,
 	}
 	def init
 		super
@@ -43,12 +40,9 @@ class PaymentMethodForm < Form
 			message(error, 'processingerror')
 		end
 	end
-	def download_credit(model, session=nil)
-		button = HtmlGrid::Button.new(:download_credit, 
-			model, @session, self)
-		script = 'this.form.event.value=\'download_credit\'; this.form.submit();'
-		button.set_attribute('onClick', script)
-		button
+	def email(model)
+		HtmlGrid::Value.new(:unique_email, model.user, 
+			@session, self)
 	end
 	def hidden_fields(context)
 		hidden = super
