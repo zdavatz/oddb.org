@@ -633,7 +633,7 @@ Zeno Davatz
 				:migel										=>	'MiGel',
 				:migel_code								=>	'MiGel-Code',
 				:migel_count_text					=>	'&nbsp;Produkte',
-				:migel_search_explain			=>	'Suchen Sie in der Liste von den Krankenversicherern im Rahmen der obligatorischen Krankenpflegeversicherung als Pflichtleistung zu verg&uuml;tenden Mittel und Gegenst&auml;nde.',
+				:migel_search_explain			=>	'Suchen Sie in der Liste von den Krankenversicherern im Rahmen der obligatorischen<br>Krankenpflegeversicherung als Pflichtleistung zu<br>verg&uuml;tenden Mittel und Gegenst&auml;nde.',
 				:migel_product						=>	'MiGeL-Leistung',
 				:month_10									=>	'Oktober',
 				:month_11									=>	'November',
