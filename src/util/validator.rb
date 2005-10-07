@@ -39,7 +39,7 @@ module ODDB
 				'phytotherapy', ],
 			:currency			=>  ['CHF', 'EUR', 'USD'],
 			:search_type	=>	['st_oddb', 'st_sequence', 
-				'st_substance', 'st_company', 'st_indication', 'st_migel'],
+				'st_substance', 'st_company', 'st_indication',],
 			:fi_status		=>	['false', 'true'],
 			:generic_type =>	[nil, 'generic', 'original', 'complementary' ],
 			:limitation		=>	['true', 'false'],
@@ -89,6 +89,7 @@ module ODDB
 			:home_doctors,
 			:home_drugs,
 			:home_hospitals,
+			:home_migel,
 			:home_interactions,
 			:home_substances,
 			:home_user,
@@ -239,8 +240,8 @@ module ODDB
 			:unsubscribe,
 			:url,
 		]
-		ZONES = [:drugs, :interactions, :substances, :admin, :user, 
-			:companies, :doctors, :hospitals ]
+		ZONES = [:admin, :doctors, :interactions, :drugs, :migel, :user, 
+			:hospitals, :substances, :companies]
 		def code(value)
 			pattern = /^[A-Z]([0-9]{2}([A-Z]([A-Z]([0-9]{2})?)?)?)?$/i
 			if(valid = pattern.match(value.capitalize))

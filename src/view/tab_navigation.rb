@@ -19,7 +19,9 @@ module ODDB
 				super
 			end
 			def build_navigation
-				@session.state.zones.each_with_index { |zone, idx|
+				@session.state.zones.sort_by { |zone| 
+					@lookandfeel.lookup(zone)
+				}.each_with_index { |zone, idx|
 					symbol_map.store(zone, View::TabNavigationLink)
 					components.store([idx*2,0], zone)
 					if(idx > 0)

@@ -32,6 +32,11 @@ require 'state/exception'
 require 'state/interactions/basket'
 require 'state/interactions/init'
 require 'state/interactions/result'
+require 'state/migel/init'
+require 'state/migel/limitationtext'
+require 'state/migel/group'
+require 'state/migel/subgroup'
+require 'state/migel/product'
 require 'state/substances/init'
 require 'state/substances/result'
 require 'state/suggest_address'
@@ -74,6 +79,7 @@ module ODDB
 				:home_hospitals				=>	State::Hospitals::Init,
 				:home_drugs						=>  State::Drugs::Init,
 				:home_interactions		=>  State::Interactions::Init,
+				:home_migel						=>	State::Migel::Init,
 				:home_substances			=>  State::Substances::Init,
 				:home_user						=>  State::User::Init,
 				:hospitallist					=>	State::Hospitals::HospitalList,
@@ -99,13 +105,17 @@ module ODDB
 				[ :fachinfo ]	=>	State::Drugs::Fachinfo,
 				[	:registration, :sequence, 
 					:package, :sl_entry, 
-					:limitation_text ]	=>	State::Drugs::LimitationText,
+					:limitation_text ] =>	State::Drugs::LimitationText,
+				[ :migel_group, :subgroup, 
+					:product ]	=>	State::Migel::Product,
+				[ :migel_group, :subgroup] => State::Migel::Subgroup,
+				[ :migel_group] => State::Migel::Group,
 				[	:migel_group, :subgroup, :product, 
-					:limitation_text ]	=>	State::Drugs::MigelLimitationText,
+					:limitation_text ] =>	State::Migel::LimitationText,
 				[	:migel_group, :subgroup, 
-					:limitation_text ]	=>  State::Drugs::MigelLimitationText,
+					:limitation_text ] =>  State::Migel::LimitationText,
 				[	:migel_group,
-					:limitation_text ] => State::Drugs::MigelLimitationText,
+					:limitation_text ] => State::Migel::LimitationText,
 				[ :patinfo ]	=>	State::Drugs::Patinfo,
 				[ :patinfo ]	=>	State::Drugs::Patinfo,
 			}	
@@ -394,6 +404,9 @@ module ODDB
 					when :substances
 						result = @session.search_substances(query)
 						State::Substances::Result.new(@session, result)
+					when :migel
+						result = @session.search_migel_products(query)
+						State::Migel::Result.new(@session, result)
 					else
 						query = query.to_s.downcase
 						stype = @session.persistent_user_input(:search_type) 
@@ -418,16 +431,11 @@ module ODDB
 				end
 			end
 			def _search_drugs_state(query, stype)
-				if(stype == 'st_migel')
-					result = @session.search_migel_products(query)
-					state = State::Drugs::MigelResult.new(@session, result)
-				else
 					result = _search_drugs(query, stype)
 					state = State::Drugs::Result.new(@session, result)
 					state.search_query = query
 					state.search_type = stype
 					state
-				end
 			end
 			def show
 				if((pointer = @session.user_input(:pointer)) \
@@ -519,7 +527,7 @@ module ODDB
 				State::User::YweseeContact.new(@session, model)
 			end
 			def zones
-				[:drugs, :interactions, :companies, :doctors, :hospitals, :user ]
+			[ :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies]
 			end
 			def zone_navigation
 				[ ]

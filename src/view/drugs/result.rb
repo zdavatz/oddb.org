@@ -137,6 +137,33 @@ end
 class EmptyResult < View::ResultTemplate
 	CONTENT = View::Drugs::EmptyResultForm
 end
+class MigelEmptyResultForm < HtmlGrid::Form
+	COMPONENTS = {
+		[0,0]		=>	:search_query,
+		[0,0,1]	=>	:submit,
+		[0,1]		=>	:title_none_found,
+		[0,2]		=>	'e_empty_result',
+		[0,3]		=>	'e_empty_migel_result',
+	}
+	CSS_MAP = {
+		[0,0]			=>	'search',	
+		[0,1]			=>	'th',
+		[0,2,1,2]	=>	'result-atc',
+	}
+	CSS_CLASS = 'composite'
+	EVENT = :search
+	FORM_METHOD = 'GET'
+	SYMBOL_MAP = {
+		:search_query		=>	View::SearchBar,	
+	}
+	def title_none_found(model, session)
+		query = session.persistent_user_input(:search_query)
+		@lookandfeel.lookup(:title_none_found, query)
+	end
+end
+class MigelEmptyResult < View::ResultTemplate
+	CONTENT = View::Drugs::MigelEmptyResultForm
+end
 		end
 	end
 end

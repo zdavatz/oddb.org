@@ -160,6 +160,13 @@ Thank you for your patronage
 				range.include?(item.time)
 			}
 		end
+		def resend_invoice(invoice, day = Date.today)
+			if((user = invoice.user_pointer.resolve(@app)) \
+				&& (company = user.model))
+				items = invoice.items.values
+				send_invoice(day, company, items)
+			end
+		end
 		def send_invoice(day, company, items)
 			to = company.invoice_email || company.user.unique_email
 			invoice = create_pdf_invoice(day, company, items, to)

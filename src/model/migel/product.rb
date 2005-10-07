@@ -9,16 +9,21 @@ module ODDB
 		class Product
 			include SimpleLanguage
 			ODBA_SERIALIZABLE = ['@descriptions']
-			attr_reader :code
+			attr_reader :code, :product, :accessories
 			attr_accessor :subgroup, :limitation, :price, :type, :date, 
-				:unit, :limitation_text, :product, :product_text
+				:unit, :limitation_text, :product_text
 			alias :pointer_descr :code
 			def initialize(code)
 				@code = code
-				@products = {}
+				@accessories = []
 			end
 			def accessory_code
 				@code.split('.', 2).last
+			end
+			def add_accessory(acc)
+				@accessories.push(acc)
+				@accessories.odba_isolated_store
+				acc
 			end
 			def adjust_types(hash, app=nil)
 				hash = hash.dup
@@ -46,6 +51,21 @@ module ODDB
 			end
 			def product_code
 				@code.split('.').first
+			end
+			def product=(prod)
+				if(@product)
+					@product.remove_accessory(self)
+				end
+				if(prod)
+					prod.add_accessory(self)
+				end
+				@product = prod
+			end
+			def remove_accessory(acc)
+				if(@accessories.delete(acc))
+					@accessories.odba_isolated_store
+					acc
+				end
 			end
 			def search_terms(lang = :de)
 				terms = [

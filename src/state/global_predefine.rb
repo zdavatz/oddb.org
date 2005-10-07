@@ -35,5 +35,8 @@ class Global < State::Global; end
 		module Hospitals
 class Global < State::Global; end
 		end
+		module Migel
+class Global < State::Global; end 
+		end
 	end
 end
