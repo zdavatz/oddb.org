@@ -181,7 +181,7 @@ module Root
 		State::Substances::EffectiveSubstances.new(@session, model)
 	end
 	def zones
-		[:drugs, :interactions, :substances, :companies, :doctors, :hospitals, :user, :admin]
+		[:admin, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :substances, :companies]
 	end
 end
 		end

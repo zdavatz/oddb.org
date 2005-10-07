@@ -77,7 +77,7 @@ module CompanyUser
 		]
 	end
 	def zones
-		[:drugs, :interactions, :substances, :companies, :user, :admin]
+		[:admin, :interactions,:drugs, :migel, :user, :substances, :companies]
 	end
 end
 		end

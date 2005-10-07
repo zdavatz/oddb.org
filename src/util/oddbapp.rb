@@ -503,6 +503,9 @@ class OddbPrevalence
 	def log_group(key)
 		@log_groups[key]
 	end
+	def migel_count
+		@migel_count ||= migel_products.size	
+	end
 	def migel_group(groupcd)
 		@migel_groups[groupcd]
 	end
@@ -561,6 +564,7 @@ class OddbPrevalence
 			@company_count = @companies.size
 			@substance_count = @substances.size
 			@limitation_text_count = count_limitation_texts()
+			@migel_count = migel_products.size
 			@package_count = count_packages()
 			@patinfo_count = count_patinfos()
 		}

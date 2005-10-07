@@ -96,9 +96,10 @@ module ODDB
 				:date => date,
 			}
 			if(id[3] != "00")
-				prodcd = [id[2], '00' + id[4]]
+				prodcd = [id[2], '00', id[4]]
 				prodcd = prodcd.join(".")
 				prod = subgroup.pointer + [:product, prodcd]
+				puts prod.inspect
 				hash.store(:product, prod)
 			end
 			product = @app.update(pointer.creator, hash) 
