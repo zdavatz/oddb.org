@@ -40,10 +40,7 @@ class RegisterDownload < Global
 		pointer = Persistence::Pointer.new(:invoice)
 		@model = Persistence::CreateItem.new(pointer)
 		@model.carry(:items, [item])
-		@model.carry(:currency, self.class.const_get(:CURRENCY))
-	end
-	def currency
-		self.class.const_get(:CURRENCY)
+		@model.carry(:currency, self.currency)
 	end
 end
 class RegisterInvoicedDownload < RegisterDownload

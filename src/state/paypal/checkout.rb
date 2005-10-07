@@ -8,6 +8,7 @@ module ODDB
 	module State
 		module PayPal
 module Checkout
+	CURRENCY = 'EUR'
 	def checkout
 		input = user_input(checkout_keys(), checkout_mandatory)
 		if(error?)
@@ -60,6 +61,9 @@ module Checkout
 		pointer = Persistence::Pointer.new([:admin_subsystem], 
 			[:download_user, email])
 		@session.app.update(pointer.creator, input)
+	end
+	def currency
+		self.class.const_get(:CURRENCY)
 	end
 	def user_input(keys, mandatory)
 		input = super
