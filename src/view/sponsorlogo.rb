@@ -16,13 +16,18 @@ module ODDB
 				context.img(@attributes)
 			end
 		end
-		class SponsorLogo < View::CompanyLogo
+		class SponsorLogo < HtmlGrid::Component
 			def init
 				if((name = @model.logo_filename(@lookandfeel.language)) \
 					|| (name = @model.logo_filename(:default)))
 					@attributes['src'] = @lookandfeel.resource_global(:sponsor, name)
 					@attributes['alt'] = @model.name
 				end
+			end
+			def to_html(context)
+				context.a({'href' => @model.url}) { 
+					context.img(@attributes)
+				}
 			end
 		end
 	end

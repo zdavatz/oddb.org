@@ -9,7 +9,7 @@ module ODDB
 	class Sponsor
 		include Persistence
 		ODBA_SERIALIZABLE = ['@logo_filenames']
-		attr_accessor :sponsor_until, :company
+		attr_accessor :sponsor_until, :company, :url
 		attr_reader :logo_filenames
 		def initialize
 			@pointer = Pointer.new([:sponsor])

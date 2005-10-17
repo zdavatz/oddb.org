@@ -14,11 +14,12 @@ class Sponsor < State::Admin::Global
 	PATH = File.expand_path('../../../doc/resources/sponsor', 
 		File.dirname(__FILE__))
 	def update
-		keys = [:sponsor_until, :company_name, :logo_file, :logo_fr]
+		keys = [:sponsor_until, :company_name, :logo_file, :logo_fr, :url]
 		input = user_input(keys)#, keys)
 		name = input[:company_name]
 		values = {
 			:sponsor_until	=>	input[:sponsor_until],
+			:url						=>	input[:url]
 		}
 		if(name.empty?)
 			values.store(:company, nil)
@@ -30,15 +31,13 @@ class Sponsor < State::Admin::Global
 		end
 		unless error?
 			begin
-				logo_default = input.delete(:logo_file)
-				logo_fr = input.delete(:logo_fr)
 				@model = @session.app.update(@model.pointer, values)
-				if(logo_default)
+				if(logo_default = input[:logo_file])
 					name = store_logo(logo_default, :default, 
 						@model.logo_filenames[:default])
 					@model.logo_filenames.store(:default, name)
 				end
-				if(logo_fr)
+				if(logo_fr = input[:logo_fr])
 					name = store_logo(logo_fr, :fr, @model.logo_filenames[:fr])
 					@model.logo_filenames.store(:fr, name)
 				end
