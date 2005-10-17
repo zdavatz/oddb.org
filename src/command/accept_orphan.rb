@@ -14,17 +14,13 @@ module ODDB
 		def	execute(app)
 			pointer = ODDB::Persistence::Pointer.new(@orphantype)
 			digest = Digest::MD5.hexdigest(@orphan.sort.to_s)
-			ODBA.batch { 
-				info = app.accepted_orphans.fetch(digest) {
-					inf = app.update(pointer.creator, @orphan)
-					app.accepted_orphans.store(digest, inf)	
-					inf
-				}
+			ODBA.transaction { 
 				@pointers.each { |ptr|
 					parent = ptr.resolve(app)
 					old_info = parent.send(@orphantype)
 					writer = @orphantype.to_s << "="
 					parent.send(writer, info)
+					parent.odba_store
 					if(old_info && old_info.empty?)
 						app.delete(old_info.pointer)
 					end
