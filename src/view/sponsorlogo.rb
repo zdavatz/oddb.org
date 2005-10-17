@@ -6,12 +6,9 @@ require 'htmlgrid/image'
 module ODDB
 	module View
 		class CompanyLogo < HtmlGrid::Component
-			RESOURCE_TYPE = :company_logo
 			def init
-				super
-				if((name = @model.logo_filename(@lookandfeel.language)) \
-					|| (name = @model.logo_filename(:default)))
-					@attributes['src'] = @lookandfeel.resource_global(self::class::RESOURCE_TYPE, name)
+				if(name = @model.logo_filename)
+					@attributes['src'] = @lookandfeel.resource_global(:company_logo, name)
 					@attributes['alt'] = @model.name
 				end
 			end
@@ -20,7 +17,13 @@ module ODDB
 			end
 		end
 		class SponsorLogo < View::CompanyLogo
-			RESOURCE_TYPE = :sponsor
+			def init
+				if((name = @model.logo_filename(@lookandfeel.language)) \
+					|| (name = @model.logo_filename(:default)))
+					@attributes['src'] = @lookandfeel.resource_global(:sponsor, name)
+					@attributes['alt'] = @model.name
+				end
+			end
 		end
 	end
 end
