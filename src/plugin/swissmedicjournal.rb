@@ -318,6 +318,7 @@ module ODDB
 			end
 			args = if(smj_incomplete?(smj_reg)) 
 				hash.store(:errors, smj_reg.errors)
+				hash.store(:iksnr, smj_reg.iksnr)
 				:incomplete_registration
 			else
 				[:registration, smj_reg.iksnr]
