@@ -190,6 +190,7 @@ class ResultLimitComposite < HtmlGrid::Composite
 	end
 end
 class ResultLimit < ResultTemplate
+	HEAD = View::SponsorHead
 	CONTENT = ResultLimitComposite
 end
 		end

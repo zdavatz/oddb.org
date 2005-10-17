@@ -48,8 +48,9 @@ class SponsorHead < CommonLogoHead
 		model.respond_to?(:any?) \
 		&& (date = spons.sponsor_until) \
 		&& date >= Date.today \
-		&& model.any? { |atc| 
-			atc.packages.any? { |pac| spons.represents?(pac)}
+		&& model.any? { |item| 
+			spons.represents?(item) || (item.respond_to?(:packages) \
+				&& item.packages.any? { |pac| spons.represents?(pac)})
 		}
 	end
 end
