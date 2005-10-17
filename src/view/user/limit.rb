@@ -6,6 +6,7 @@ require 'view/admin/loginform'
 require 'view/drugs/result'
 require 'view/additional_information'
 require 'view/dataformat'
+require 'view/sponsorhead'
 
 module ODDB
 	module View

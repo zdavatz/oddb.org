@@ -18,18 +18,20 @@ class SponsorForm < View::Form
 		[0,0]		=>	:company_name,
 		[0,1]		=>	:sponsor_until,
 		[0,2]		=>	:logo_file,
-		[1,3]		=>	:submit,
+		[0,3]		=>	:logo_fr,
+		[1,4]		=>	:submit,
 	} 
 	COMPONENT_CSS_MAP = {
 		[0,0,2,2]	=>	'standard',
 	}
 	CSS_MAP =	{
-		[0,0,2,4]	=>	'list',
+		[0,0,2,5]	=>	'list',
 	}
 	LABELS = true
 	SYMBOL_MAP = {
 		:sponsor_until	=>	HtmlGrid::InputDate,
 		:logo_file			=>	HtmlGrid::InputFile,
+		:logo_fr				=>	HtmlGrid::InputFile,
 	}
 	TAG_METHOD = :multipart_form
 	def init

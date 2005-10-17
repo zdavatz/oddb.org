@@ -32,7 +32,7 @@ module ODDB
 			}
 			CSS_MAP = {
 				[1,0]	=>	'logo-r',
-				[0,1] =>	'left',
+				[0,1] =>	'list',
 				[1,1]	=>	'tabnavigation-right',
 			}
 			COMPONENT_CSS_MAP = {	

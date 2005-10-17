@@ -101,14 +101,8 @@ class ResultForm < HtmlGrid::Composite
 	end
 end
 class Result < View::ResultTemplate
+	include View::SponsorMethods
 	CONTENT = ResultForm
-	def head(model, session)
-		if(@lookandfeel.enabled?(:sponsorlogo))
-			View::SponsorHead.new(model, session, self)
-		else
-			View::LogoHead.new(model, session, self)
-		end
-	end
 end
 class EmptyResultForm < HtmlGrid::Form
 	COMPONENTS = {

@@ -11,8 +11,10 @@ module ODDB
 class Sponsor < State::Admin::Global
 	DIRECT_EVENT = :sponsor	
 	VIEW = View::Admin::Sponsor	
+	PATH = File.expand_path('../../../doc/resources/sponsor', 
+		File.dirname(__FILE__))
 	def update
-		keys = [:sponsor_until, :company_name, :logo_file]
+		keys = [:sponsor_until, :company_name, :logo_file, :logo_fr]
 		input = user_input(keys)#, keys)
 		name = input[:company_name]
 		values = {
@@ -28,16 +30,43 @@ class Sponsor < State::Admin::Global
 		end
 		unless error?
 			begin
-				if((logo = input[:logo_file]))
-					values.store(:logo, Upload.new(logo))
+				logo_default = input.delete(:logo_file)
+				logo_fr = input.delete(:logo_fr)
+				@model = @session.app.update(@model.pointer, values)
+				if(logo_default)
+					name = store_logo(logo_default, :default, 
+						@model.logo_filenames[:default])
+					@model.logo_filenames.store(:default, name)
 				end
-				@session.app.update(@model.pointer, values)
+				if(logo_fr)
+					name = store_logo(logo_fr, :fr, @model.logo_filenames[:fr])
+					@model.logo_filenames.store(:fr, name)
+				end
+				@model.odba_isolated_store
 			rescue StandardError => e
 				err = create_error(:e_exception, :logo_file, e.message)	
 				@errors.store(:logo_file, err)
 			end
 		end
 		self
+	end
+	def store_logo(io, key, oldname)
+		if(oldname)
+			old = File.expand_path(oldname, PATH)
+			if(File.exist?(old))
+				File.delete(old)
+			end
+		end
+		filename = keyname(io, key)
+		path = File.expand_path(filename, PATH)
+		FileUtils.mkdir_p(PATH)
+		File.open(path, 'wb') { |fh|
+			fh << io.read
+		}
+		filename
+	end
+	def keyname(io, key)
+		[key, io.original_filename].join('_')
 	end
 end
 		end

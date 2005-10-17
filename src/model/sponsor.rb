@@ -7,33 +7,20 @@ require 'util/persistence'
 
 module ODDB
 	class Sponsor
-		PATH = File.expand_path(
-			'../../doc/resources/sponsor', 
-			File.dirname(__FILE__))
 		include Persistence
+		ODBA_SERIALIZABLE = ['@logo_filenames']
 		attr_accessor :sponsor_until, :company
-		attr_reader :logo_filename, :logo
+		attr_reader :logo_filenames
 		def initialize
 			@pointer = Pointer.new([:sponsor])
+			@logo_filenames = {}
 		end
 		def company_name
 			@company.name if @company
 		end
 		alias :name :company_name
-		def logo=(upload)
-			return if(upload.name.nil? || upload.name.empty?)
-			if(@logo_filename)
-				old = File.expand_path(@logo_filename, PATH)
-				if(File.exist?(old))
-					File.delete(old)
-				end
-			end
-			@logo_filename = upload.name
-			path = File.expand_path(upload.name, PATH)
-			FileUtils.mkdir_p(PATH)
-			File.open(path, 'wb') { |fh|
-				fh << upload.content
-			}
+		def logo_filename(language)
+			@logo_filenames[language.to_sym]
 		end
 		def represents?(pac)
 			pac.respond_to?(:company) && (pac.company == @company)

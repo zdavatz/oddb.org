@@ -161,6 +161,7 @@ module ODDB
 		]
 		FILES = [
 			:logo_file,
+			:logo_fr,
 			:fachinfo_upload,
 			:patinfo_upload,
 		]

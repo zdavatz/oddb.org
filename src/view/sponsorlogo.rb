@@ -8,8 +8,9 @@ module ODDB
 		class CompanyLogo < HtmlGrid::Component
 			RESOURCE_TYPE = :company_logo
 			def init
-				if(name = @model.logo_filename)
-					super
+				super
+				if((name = @model.logo_filename(@lookandfeel.language)) \
+					|| (name = @model.logo_filename(:default)))
 					@attributes['src'] = @lookandfeel.resource_global(self::class::RESOURCE_TYPE, name)
 					@attributes['alt'] = @model.name
 				end
@@ -20,13 +21,6 @@ module ODDB
 		end
 		class SponsorLogo < View::CompanyLogo
 			RESOURCE_TYPE = :sponsor
-			def to_html(context)
-				if(@lookandfeel.enabled?(:sponsorlogo))
-					super
-				else
-					'&nbsp;'
-				end
-			end
 		end
 	end
 end
