@@ -18,7 +18,7 @@ class Result < State::Drugs::Global
 	DIRECT_EVENT = :search
 	VIEW = View::Drugs::Result
 	LIMITED = true
-	ITEM_LIMIT = 150
+	ITEM_LIMIT = 100
 	REVERSE_MAP = View::Drugs::ResultList::REVERSE_MAP
 	attr_reader :package_count, :pages
 	attr_accessor :search_query, :search_type

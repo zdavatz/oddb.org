@@ -23,7 +23,7 @@ module ODDB
 		QUERY_LIMIT = 10
 		QUERY_LIMIT_AGE = 60 * 60 * 24
 		PROCESS_TIMEOUT = 30
-		HTML_TIMEOUT = 60
+		HTML_TIMEOUT = 30
 		begin
 			@@stub_html = File.read(File.expand_path('../../data/stub.html', File.dirname(__FILE__)))
 		rescue
@@ -73,6 +73,7 @@ module ODDB
 			end
 		end
 		def process(request)
+			Thread.current.priority = -1
 			@request = request
 			unless(is_crawler?)
 				@@html_cache.delete(@request_path)
@@ -82,27 +83,26 @@ module ODDB
 			@process_start = Time.now
 			request_log('INIT')
 			logtype = 'PRCS'
-			if(is_crawler?)
-				if(@@html_cache[@request_path].nil?)
-					Thread.current.priority = -1
-					timeout(PROCESS_TIMEOUT) { 
+			timeout(PROCESS_TIMEOUT) { 
+				if(is_crawler?)
+					if(@@html_cache[@request_path].nil?)
+						Thread.current.priority = -3
 						super
-					}
-				end
-			else
-				timeout(PROCESS_TIMEOUT) { 
+					end
+				else
 					super
-				}
-				## @lookandfeel.nil?: the first access from a client has no
-				## lookandfeel here
-				if(self.lookandfeel.enabled?(:query_limit))
-					limit_queries 
+					## @lookandfeel.nil?: the first access from a client has no
+					## lookandfeel here
+					if(self.lookandfeel.enabled?(:query_limit))
+						limit_queries 
+					end
+					## return empty string across the drb-border
+					''
 				end
-				## return empty string across the drb-border
-				''
-			end
+			}
 		rescue Timeout::Error
 			logtype = 'PRTO'
+			'your request has timed out. please try again later.'
 		ensure
 			Thread.current.priority = 0
 			request_log(logtype)
@@ -120,28 +120,28 @@ module ODDB
 			## don't die for logging
 		end
 		def to_html
+			Thread.current.priority = 0
 			logtype = 'HTML'
+		timeout(HTML_TIMEOUT) {
 			if(is_crawler?)
 				if(html = @@html_cache[@request_path])
 					logtype = 'CCHE'
 					html
 				else
-					Thread.current.priority = -1
+					Thread.current.priority = -2
 					logtype = 'CRWL'
 					#sleep(5)
 					@@stub_html
 					#super
 				end
 			else
-				html = ''
-				timeout(HTML_TIMEOUT) {
-					html = super
-				}
+				html = super
 				if(@user.cache_html?)
 					@@html_cache[@request_path] = html
 				end
 				html
 			end.dup
+		}
 		rescue Timeout::Error
 			logtype = 'TMOT'
 		ensure
