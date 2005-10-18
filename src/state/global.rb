@@ -410,7 +410,7 @@ module ODDB
 						State::Migel::Result.new(@session, result)
 					else
 						query = query.to_s.downcase
-						stype = @session.persistent_user_input(:search_type) 
+						stype = @session.user_input(:search_type) 
 						_search_drugs_state(query, stype)
 					end
 				else
