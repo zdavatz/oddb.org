@@ -104,8 +104,8 @@ module ODDB
 			update_fachinfo
 			if(update_bsv)
 				update_limitation_text
-			elsif(@smj_updated)
-				reconsider_bsv
+			#elsif(@smj_updated)
+				#reconsider_bsv
 			end
 			if(@smj_updated)
 				update_medwin_companies
