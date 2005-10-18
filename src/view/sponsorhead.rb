@@ -30,8 +30,10 @@ class SponsorHead < CommonLogoHead
 		[0,1] =>	'component',
 	}
 	def sponsor(model, session)
+		#if((spons = @session.sponsor) \
+		#&& sponsor_represents?(spons, model))
 		if((spons = @session.sponsor) \
-			&& sponsor_represents?(spons, model))
+			&& @lookandfeel.enabled?(:sponsorlogo, false))
 			View::SponsorLogo.new(spons, session, self)
 		elsif(@lookandfeel.enabled?(:google_adsense))
 			ad_sense(model, session)

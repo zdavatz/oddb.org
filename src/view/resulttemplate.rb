@@ -3,6 +3,7 @@
 
 require 'view/publictemplate'
 require 'view/navigation'
+require 'view/sponsorhead'
 
 module ODDB
 	module View

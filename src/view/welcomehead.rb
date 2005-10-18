@@ -5,7 +5,7 @@ require 'htmlgrid/composite'
 require 'htmlgrid/text'
 require 'htmlgrid/link'
 #require 'htmlgrid/flash'
-require 'view/logo'
+require 'view/logohead'
 
 module ODDB
 	module View
@@ -13,16 +13,18 @@ module ODDB
 			include Personal
 			CSS_CLASS = 'composite'
 			CSS_MAP = {
-				[1,0]	=>	'welcome'
+				[0,0]	=>	'logo',
+				[1,0]	=>	'welcome',
 			}
 			COMPONENTS = {
 				[0,0]		=>	View::Logo,
-				#[1,0]		=>	:banner,
+				[1,0]		=>	:sponsor,
 				[1,0,1]	=>	"break",
 				[1,0,2]	=>	"home_welcome",
 				[1,0,3]	=>	:welcome,
 			}
-			def banner(model, session) if(@lookandfeel.enabled?(:epatents)) #, false))
+			def banner(model, session) 
+				if(@lookandfeel.enabled?(:epatents)) #, false))
 					%q{<A HREF="http://petition.eurolinux.org"><img src="http://aful.org/images/patent_banner.gif" alt="Petition against e-patents"></A><BR>}
 				elsif(@lookandfeel.enabled?(:banner))
 					#banner = @lookandfeel.resource(:banner)
@@ -44,6 +46,12 @@ module ODDB
 						link.set_attribute('href', href)
 						link
 					#end
+				end
+			end
+			def sponsor(model, session)
+				if((spons = @session.sponsor) && spons.valid? \
+					&& @lookandfeel.enabled?(:sponsorlogo, false))
+					View::SponsorLogo.new(spons, session, self)
 				end
 			end
 		end
