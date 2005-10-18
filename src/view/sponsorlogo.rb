@@ -25,7 +25,8 @@ module ODDB
 				end
 			end
 			def to_html(context)
-				context.a({'href' => @model.url}) { 
+				url = @lookandfeel._event_url(:sponsorlink)
+				context.a({'href' => url}) { 
 					context.img(@attributes)
 				}
 			end

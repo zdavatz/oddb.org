@@ -55,6 +55,7 @@ require 'state/user/paypal_thanks'
 require 'state/user/powerlink'
 require 'state/user/plugin'
 require 'state/user/init'
+require 'state/user/sponsorlink'
 require 'util/umlautsort'
 require 'sbsm/state'
 
@@ -454,6 +455,11 @@ module ODDB
 				@model.sort! { |a, b| compare_entries(a, b) }
 				@model.reverse! if(@sort_reverse)
 				self
+			end
+			def sponsorlink
+				if((sponsor = @session.sponsor) && sponsor.valid?)
+					State::User::SponsorLink.new(@session, sponsor)
+				end
 			end
 			def suggest_address
 				keys = [:pointer]

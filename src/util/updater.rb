@@ -28,10 +28,12 @@ module ODDB
 		LOG_RECIPIENTS = {
 			:powerlink	=>	['matthijs.ouwerkerk@just-medical.com'],
 			:passthru		=>	[],	
+			:sponsor		=>	['christina.kobi@helvepharm.ch'],	
 		}
 		LOG_FILES = {
 			#:powerlink		=>	'Powerlink-Statistics',
 			#:passthru		=>	'Banner-Clicks',
+			:sponsor			=>	'Exklusiv-Sponsoring'
 		}
 		def initialize(app)
 			@app = app
@@ -65,10 +67,13 @@ module ODDB
 		def logfile_stats
 			date = Date.today << 1
 			if(date.day == 1)
-				self::class::LOG_FILES.each { |name, subj|
-					mail_logfile(name, date, subj)
-				}
+				_logfile_stats(date)
 			end
+		end
+		def _logfile_stats(date)
+			self::class::LOG_FILES.each { |name, subj|
+				mail_logfile(name, date, subj)
+			}
 		end
 		def recipients
 			self.class::RECIPIENTS

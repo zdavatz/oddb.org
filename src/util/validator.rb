@@ -149,6 +149,7 @@ module ODDB
 			:show_interaction,
 			:sort,
 			:sponsor,
+			:sponsorlink,
 			:substances,
 			:suggest_address,
 			:switch,

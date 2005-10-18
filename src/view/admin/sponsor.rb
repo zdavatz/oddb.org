@@ -41,6 +41,9 @@ class SponsorForm < View::Form
 	end
 end
 class SponsorInnerComposite < HtmlGrid::Composite
+	CSS_MAP = {
+		[1,0]	=>	'list logo',
+	}
 	COMPONENTS = {
 		[0,0]	=>	View::Admin::SponsorForm,
 		[1,0]	=>	View::SponsorLogo,
