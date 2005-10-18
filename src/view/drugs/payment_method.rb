@@ -42,7 +42,7 @@ class PaymentMethodForm < Form
 	end
 	def email(model)
 		HtmlGrid::Value.new(:unique_email, model.user, 
-			@session, self)
+			@session, self) if(model)
 	end
 	def hidden_fields(context)
 		hidden = super
