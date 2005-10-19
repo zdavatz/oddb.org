@@ -74,6 +74,7 @@ module ODDB
 		end
 		def process(request)
 			Thread.current.priority = -1
+			logtype = 'ERR?'
 			@request = request
 			unless(is_crawler?)
 				@@html_cache.delete(@request_path)
@@ -115,35 +116,36 @@ module ODDB
 				"%s | %sip: %15s | session:%12i | request:%12i | time:%4is | mem:%6iMB | %s %s",
 				now.strftime('%Y-%m-%d %H:%M:%S'), asterisk, remote_ip, self.object_id, @request_id, 
 				now - @process_start, bytes / (2**20), phase, @request_path))
-			Session.request_log.flush
+			#Session.request_log.flush
 		rescue Exception
 			## don't die for logging
 		end
 		def to_html
 			Thread.current.priority = 0
 			logtype = 'HTML'
-		timeout(HTML_TIMEOUT) {
-			if(is_crawler?)
-				if(html = @@html_cache[@request_path])
-					logtype = 'CCHE'
-					html
+			timeout(HTML_TIMEOUT) {
+				if(is_crawler?)
+					if(html = @@html_cache[@request_path])
+						logtype = 'CCHE'
+						html
+					else
+						#Thread.current.priority = -3
+						logtype = 'CRWL'
+						sleep(5)
+						#@@stub_html
+						super
+					end
 				else
-					Thread.current.priority = -2
-					logtype = 'CRWL'
-					#sleep(5)
-					@@stub_html
-					#super
-				end
-			else
-				html = super
-				if(@user.cache_html?)
-					@@html_cache[@request_path] = html
-				end
-				html
-			end.dup
-		}
+					html = super
+					if(@user.cache_html?)
+						@@html_cache[@request_path] = html
+					end
+					html
+				end.dup
+			}
 		rescue Timeout::Error
 			logtype = 'TMOT'
+			'your request has timed out. please try again later.'
 		ensure
 			Thread.current.priority = 0
 			request_log(logtype)

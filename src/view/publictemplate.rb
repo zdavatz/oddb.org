@@ -27,8 +27,8 @@ module ODDB
 			FOOT = View::NavigationFoot
 			META_TAGS = [
 				{
-					"http-equiv"	=>	"robots",
-					"content"			=>	"follow, index",
+					"name"				=>	"robots",
+					"content"			=>	"follow, index, noarchive",
 				},
 			]
 			def content(model, session)

@@ -1,7 +1,6 @@
 User-agent: Mediapartners-Google*
 Disallow:
 User-Agent: *
-Disallow: /
 Disallow: /de/atupri/
 Disallow: /fr/atupri/
 Disallow: /en/atupri/
