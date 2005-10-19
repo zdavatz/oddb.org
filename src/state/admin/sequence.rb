@@ -140,7 +140,7 @@ class Sequence < State::Admin::Global
 		if(pi_file = @session.user_input(:patinfo_upload))
 			if(pi_file.read(4) == "%PDF")
 				pi_file.rewind
-				filename = "#{@model.iksnr}_#{@model.seqnr}.pdf"
+				filename = "#{@model.iksnr}_#{@model.seqnr}_#{Time.now.to_f}.pdf"
 				FileUtils.mkdir_p(self::class::PDF_DIR)
 				store_file = File.new(File.expand_path(filename, 
 					self::class::PDF_DIR), "w")
