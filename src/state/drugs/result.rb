@@ -71,11 +71,15 @@ class Result < State::Drugs::Global
 		state
 	end
 	def page
-		if(pge = @session.user_input(:page))
-			@page = @pages[pge]
+		pge = nil
+		if(@session.event == :search)
+			## reset page-input
+			pge = @session.user_input(:page)
+			@session.set_persistent_user_input(:page, pge)
 		else
-			@page ||= @pages.first
+			pge = @session.persistent_user_input(:page)
 		end
+		@page = @pages[pge || 0]
 	end
 	def search
 		query = query.to_s.downcase
