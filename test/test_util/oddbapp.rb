@@ -754,13 +754,6 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(nil, result)
 		substance.__verify
 	end
-	def test_atcless_sequences
-		reg = StubRegistration.new('12345')
-		@app.registrations = {'12345'=>reg}
-		atcless = @app.atcless_sequences
-		assert_equal(1, atcless.size)
-		assert_instance_of(StubSequence, atcless.first, 'atcless not flattened')
-	end
 	def test_each_package
 		reg1 = StubRegistration.new(1)
 		reg2 = StubRegistration.new(2)

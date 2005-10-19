@@ -4,6 +4,7 @@
 require 'htmlgrid/list'
 require 'htmlgrid/link'
 require 'view/pointervalue'
+require 'model/limitationtext'
 
 module ODDB
 	module View

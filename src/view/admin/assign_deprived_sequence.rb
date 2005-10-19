@@ -44,7 +44,8 @@ class AssignDeprivedSequenceForm < View::FormList
 		[9,0] =>  :patinfo,
 	}
 	CSS_MAP = {
-		[0,0,9]	=>	'list',
+		[0,0]		=>	'small small-font list',
+		[1,0,8]	=>	'list',
 		[9,0] => 'result-infos',
 	}
 	COMPONENT_CSS_MAP = {

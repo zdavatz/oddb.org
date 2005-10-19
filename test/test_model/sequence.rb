@@ -218,7 +218,7 @@ class TestSequence < Test::Unit::TestCase
 		@seq.patinfo = patinfo2
 		assert_equal(@seq, patinfo1.removed)
 		assert_equal(@seq, patinfo2.added)
-		assert_equal(@seq.patinfo_oid, 5)
+		assert_equal(@seq.patinfo.oid, 5)
 		assert_nil(patinfo2.removed)
 		@seq.patinfo = nil
 		assert_equal(@seq, patinfo2.removed)

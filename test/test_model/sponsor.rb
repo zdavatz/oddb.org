@@ -11,8 +11,6 @@ require 'util/upload'
 module ODDB
 	class Sponsor
 		attr_writer :logo_filename
-		remove_const :PATH
-		PATH = File.expand_path('../data/sponsor', File.dirname(__FILE__))
 		public :adjust_types
 	end
 end
@@ -83,26 +81,5 @@ class TestSponsor < Test::Unit::TestCase
 	def test_company_name_robust
 		assert_nil(@sponsor.company)
 		assert_nothing_raised { @sponsor.company_name }
-	end
-	def test_logo_writer1
-		assert(!File.exist?(@file))
-		logo = StubLogo.new
-		logo.original_filename = 'foo.gif'
-		logo.read = 'bar'
-		upload = ODDB::Upload.new(logo)
-		@sponsor.logo = upload
-		assert_equal('foo.gif', @sponsor.logo_filename)
-		assert(File.exist?(@file), "logo file was not saved, it's a pity.")
-		assert_equal('bar', File.read(@file))
-	end
-	def test_logo_writer2
-		@sponsor.logo_filename = 'bar.jpg'
-		File.open(@file2, "w") { |fh| fh << 'baz' }
-		logo = StubLogo.new
-		logo.original_filename = 'foo.gif'
-		logo.read = 'bar'
-		upload = ODDB::Upload.new(logo)
-		@sponsor.logo = upload
-		assert(!File.exist?(@file2), 'old file was not deleted, sorry. Try again.')
 	end
 end

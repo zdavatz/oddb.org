@@ -7,6 +7,7 @@ require 'model/sequence'
 require 'state/admin/package'
 require 'state/admin/activeagent'
 require 'state/admin/assign_deprived_sequence'
+require 'state/admin/assign_patinfo'
 require 'fileutils'
 require 'net/smtp'
 require 'tmail'
@@ -19,7 +20,11 @@ class Sequence < State::Admin::Global
 	VIEW = View::Admin::RootSequence
 	PDF_DIR = File.expand_path('../../../doc/resources/patinfo/', File.dirname(__FILE__))
 	def assign_patinfo
-		State::Admin::AssignDeprivedSequence.new(@session, @model)
+		if(@model.has_patinfo?)
+			State::Admin::AssignPatinfo.new(@session, @model)
+		else
+			State::Admin::AssignDeprivedSequence.new(@session, @model)
+		end
 	end	
 	def atc_request
 		if((company = @model.company) && (addr = company.regulatory_email))
@@ -85,6 +90,7 @@ class Sequence < State::Admin::Global
 		end
 	end
 	def update
+		newstate = self
 		if(@model.is_a? Persistence::CreateItem)
 			seqnr = @session.user_input(:seqnr)
 			error =	if(seqnr.is_a? RuntimeError)
@@ -96,7 +102,7 @@ class Sequence < State::Admin::Global
 			end
 			if error
 				@errors.store(:seqnr, error)
-				return self
+				return newstate
 			end
 			@model.append(seqnr)
 		end
@@ -143,6 +149,7 @@ class Sequence < State::Admin::Global
 				@model.pdf_patinfo = filename
 				store_slate()
 				input.store(:pdf_patinfo, filename)
+				newstate = State::Admin::AssignPatinfo.new(@session, @model)
 			else
 				add_warning(:w_no_patinfo_saved, :patinfo_upload, nil)
 			end
@@ -157,7 +164,7 @@ class Sequence < State::Admin::Global
 		ODBA.transaction {
 			@model = @session.app.update(@model.pointer, input)
 		}
-		self
+		newstate
 	end
 	private
 	def store_slate

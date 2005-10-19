@@ -49,7 +49,7 @@ module ODDB
 			def direct_event
 				'bon'
 			end
-			def event_url(*args)
+			def _event_url(*args)
 				(['http://www.oddb.org/de/gcc'] + args).join('/')
 			end
 			def language

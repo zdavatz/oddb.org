@@ -14,6 +14,7 @@ require 'sbsm/state'
 require 'stub/cgi'
 
 module ODDB
+	ODDB_VERSION = 'version'
 	class GalenicGroup
 		def GalenicGroup.reset_oid
 			@oid=0
@@ -56,6 +57,12 @@ module ODDB
 				def default_language
 					"de"
 				end
+				def http_protocol
+					'http'
+				end
+				def server_name
+					'test.oddb.org'
+				end
 			end
 			class StubApp
 				attr_accessor :last_update
@@ -81,8 +88,8 @@ module ODDB
 					'<TABLE cellspacing="0" class="navigation-foot" valign="bottom">',
 					'<TD><A name="foo" class="navigation">Foo</A></TD>',
 					'<TD>&nbsp;|&nbsp;</TD>',
-					'<TD><A name="bar" href="/de/gcc/bar" class="navigation">Bar</A></TD>',
-					'<TD><A name="baz" href="/de/gcc/baz" class="navigation">Baz</A></TD>',
+					'<TD><A name="bar" href="http://test.oddb.org/de/gcc/bar/" class="navigation">Bar</A></TD>',
+					'<TD><A name="baz" href="http://test.oddb.org/de/gcc/baz/" class="navigation">Baz</A></TD>',
 				]
 				expected.each { |line|
 					assert(result.index(line), "expected #{line} in \n#{result}")

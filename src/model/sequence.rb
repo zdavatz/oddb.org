@@ -214,10 +214,6 @@ module ODDB
 		end
 		def patinfo=(patinfo)
 			@patinfo = replace_observer(@patinfo, patinfo)
-			unless(@patinfo.nil?)
-				@patinfo_oid = @patinfo.oid
-			end
-			@patinfo
 		end
 		def	replace_observer(target, value)
 			if(target.respond_to?(:remove_sequence))

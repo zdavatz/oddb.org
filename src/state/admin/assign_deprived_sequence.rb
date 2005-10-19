@@ -9,30 +9,15 @@ module ODDB
 		module Admin
 class AssignDeprivedSequence < State::Admin::Global
 	VIEW = View::Admin::AssignDeprivedSequence
-=begin
-	class DeprivedSequenceFacade < Array
-		attr_reader :sequence
-		def initialize(seq)
-			@sequence = seq
-			sequences = seq.registration.sequences.values
-			self.sequences=(seq.registration.sequences.values)
-		end
-		def sequences=(array)
-			array.each{ |seq|
-				unless(seq.patinfo.nil?)
-					self << seq
-				end
-			}
-		end
-	end
-=end
 	class DeprivedSequenceFacade
-		attr_reader :sequence
-		attr_reader :sequences
+		attr_reader :sequence, :sequences
 		include Enumerable
 		def initialize(seq)
 			@sequence = seq
 			self.sequences = seq.registration.sequences.values
+		end
+		def ancestors(app)
+			@sequence.ancestors(app)
 		end
 		def each(&block)
 			@sequences.each(&block)
@@ -62,7 +47,7 @@ class AssignDeprivedSequence < State::Admin::Global
 		end
 	end
 	def assign_deprived_sequence
-		if(!@session.error? \
+		if(allowed?(@model.sequence) && !@session.error? \
 			&& (pointer = @session.user_input(:patinfo_pointer)))
 			values = {}
 			if(pointer.last_step == [:pdf_patinfo])

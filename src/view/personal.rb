@@ -2,6 +2,7 @@
 # View::Personal -- oddb -- 24.05.2005 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'model/user'
+require 'htmlgrid/div'
 
 module ODDB
 	module View
