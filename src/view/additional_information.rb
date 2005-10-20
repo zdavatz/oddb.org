@@ -62,10 +62,12 @@ module ODDB
 			end
 			def patinfo(model, session)
 				if(model.has_patinfo?)
-					link = HtmlGrid::PopupLink.new(:patinfo_short, model, session, self)
+					link = nil
 					if(pdf_patinfo = model.pdf_patinfo)
+						link = HtmlGrid::PopupLink.new(:patinfo_short, model, session, self)
 						link.href = @lookandfeel.resource_global(:pdf_patinfo, pdf_patinfo)
 					elsif(patinfo = model.patinfo)
+						link = HtmlGrid::Link.new(:patinfo_short, model, session, self)
 						link.href = @lookandfeel._event_url(:resolve, {'pointer' => patinfo.pointer})
 						link.set_attribute('title', @lookandfeel.lookup(:patinfo))
 					end

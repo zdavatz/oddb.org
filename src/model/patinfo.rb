@@ -9,8 +9,15 @@ module ODDB
 		include Language
 		include SequenceObserver
 		def company_name
+			_sequence_delegate(:company_name)
+		end
+		def name_base
+			_sequence_delegate(:name_base)
+		end
+		private
+		def _sequence_delegate(symbol)
 			if(seq = @sequences.first)
-				seq.company_name
+				seq.send(symbol)
 			end
 		end
 	end

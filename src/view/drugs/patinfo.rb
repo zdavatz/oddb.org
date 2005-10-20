@@ -4,6 +4,7 @@
 require 'view/popuptemplate'
 require 'view/chapter'
 require 'view/printtemplate'
+require 'model/patinfo'
 
 module ODDB
 	module View
@@ -111,8 +112,9 @@ class PatinfoPrintComposite < View::Drugs::PatinfoComposite
 	INNER_COMPOSITE = View::Drugs::PatinfoInnerComposite
 	PRINT_TYPE = :print_type_patinfo
 end
-class Patinfo < View::PopupTemplate
+class Patinfo < View::PrivateTemplate
 	CONTENT = View::Drugs::PatinfoComposite
+	SNAPBACK_EVENT = :result
 end
 class PatinfoPrint < View::PrintTemplate
 	CONTENT = View::Drugs::PatinfoPrintComposite
