@@ -18,7 +18,7 @@ class AssignPatinfoForm < View::Admin::AssignDeprivedSequenceForm
 		elsif([model.pdf_patinfo, model.patinfo].include?(test))
 			@lookandfeel.lookup(:assign_patinfo_equal)			
 		else
-			check = HtmlGrid::InputCheckbox.new("pointers[]", 
+			check = HtmlGrid::InputCheckbox.new("pointers[#{@list_index}]", 
 				model, session, self)
 			check.value = model.pointer
 			check
