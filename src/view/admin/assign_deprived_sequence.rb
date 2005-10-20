@@ -60,7 +60,8 @@ class AssignDeprivedSequenceForm < View::FormList
 		super(model, offset)
 	end
 	def patinfo_pointer(model, session)
-		if(model == @model.sequence)
+		if(model == @model.sequence \
+			&& @session.user.allowed?(:patinfo_shadow))
 			link = HtmlGrid::Link.new(:shadow, model, session, self)
 			link.href	= @lookandfeel.event_url(:shadow)
 			link.set_attribute('class', 'small')
