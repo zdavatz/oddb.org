@@ -5,8 +5,8 @@ require 'state/migel/init'
 require 'state/legalnote'
 
 module ODDB
-		module State
-			module Migel
+	module State
+		module Migel
 class Global < State::Global
 	HOME_STATE = State::Migel::Init
 	ZONE = :migel

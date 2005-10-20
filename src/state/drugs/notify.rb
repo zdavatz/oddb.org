@@ -11,8 +11,10 @@ module ODDB
 	module State
 		module Drugs
 			class Notify < State::Drugs::Global
+				include State::Notify
 				VIEW = View::Drugs::Notify
 				CODE_KEY = :ikskey
+				CONFIRM_STATE = NotifyConfirm
 			end
 		end
 	end

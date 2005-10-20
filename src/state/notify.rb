@@ -57,7 +57,8 @@ module Notify
 			logger.log(@model.item.send(self.class.const_get(:CODE_KEY)),
 				@model.notify_sender, @model.notify_recipient, Time.now)
 			logger.odba_store
-			NotifyConfirm.new(@session, @model)
+			klass = self.class.const_get(:CONFIRM_STATE)
+			klass.new(@session, @model)
 		end
 	end
 	def preview

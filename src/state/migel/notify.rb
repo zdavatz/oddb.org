@@ -3,7 +3,7 @@
 
 require 'state/migel/global'
 require 'view/drugs/notify'
-require 'state/drugs/notify_confirm'
+require 'state/migel/notify_confirm'
 require 'state/notify'
 require 'util/logfile'
 require 'date'
@@ -15,6 +15,7 @@ module ODDB
 				include State::Notify
 				VIEW = View::Drugs::Notify
 				CODE_KEY = :migel_code
+				CONFIRM_STATE = NotifyConfirm
 			end
 		end
 	end
