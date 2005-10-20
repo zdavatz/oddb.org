@@ -37,6 +37,7 @@ require 'state/migel/limitationtext'
 require 'state/migel/group'
 require 'state/migel/subgroup'
 require 'state/migel/product'
+require 'state/migel/notify'
 require 'state/substances/init'
 require 'state/substances/result'
 require 'state/suggest_address'
@@ -94,10 +95,6 @@ module ODDB
 			}	
 			HOME_STATE = State::Drugs::Init
 			LIMITED = false
-			READONLY_STATES = {
-				[	:registration, :sequence, 
-					:package ]	=>	State::Drugs::Package,
-			}	
 			RESOLVE_STATES = {
 				[ :company ]	=>	State::Companies::Company,
 				[ :doctor	]  =>	State::Doctors::Doctor,
@@ -119,6 +116,10 @@ module ODDB
 				[ :patinfo ]	=>	State::Drugs::Patinfo,
 				[ :patinfo ]	=>	State::Drugs::Patinfo,
 			}	
+			READONLY_STATES = RESOLVE_STATES.dup.update({
+				[	:registration, :sequence, 
+					:package ]	=>	State::Drugs::Package,
+			})
 			PRINT_STATES = {
 				[ :fachinfo ]	=>	State::Drugs::FachinfoPrint,
 				[ :patinfo ]	=>	State::Drugs::PatinfoPrint,
@@ -217,8 +218,13 @@ module ODDB
 			def notify 
 				if((pointer = @session.user_input(:pointer)) \
 					&& pointer.is_a?(Persistence::Pointer) \
-					&& (pack = pointer.resolve(@session.app)))
-					State::Drugs::Notify.new(@session, pack)
+					&& (item = pointer.resolve(@session.app)))
+					case item.odba_instance
+					when ODDB::Package
+						State::Drugs::Notify.new(@session, item)
+					when ODDB::Migel::Product
+						State::Migel::Notify.new(@session, item)
+					end
 				end
 			end
 			def help_navigation

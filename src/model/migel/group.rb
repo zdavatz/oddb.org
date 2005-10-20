@@ -5,6 +5,7 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'model/migel/subgroup'
 require 'util/language'
+require 'model/text'
 
 module ODDB
 	module Migel
@@ -12,7 +13,7 @@ module ODDB
 			include SimpleLanguage
 			ODBA_SERIALIZABLE = ['@descriptions']
 			attr_reader :subgroups, :code
-			attr_accessor :limitation_text
+			attr_accessor :limitation_text, :group
 			alias :pointer_descr :code
 			def initialize(sgcd)
 				@code = sgcd

@@ -6,6 +6,7 @@ require 'htmlgrid/value'
 require 'htmlgrid/datevalue'
 require 'htmlgrid/popuplink'
 require 'htmlgrid/urllink'
+require 'iconv'
 require 'model/package'
 require 'view/additional_information'
 require 'view/pointervalue'
@@ -200,7 +201,7 @@ class ResultList < HtmlGrid::List
 		super(model, session, 'important-infos')
 	end	
 	def google_search(model, session)
-		glink = CGI.escape(model.name_base.to_s)
+		glink = CGI.escape(Iconv.iconv('UTF-8', 'ISO_8859-1', model.name_base.to_s).first)
 		link = HtmlGrid::Link.new(:google_search, @model, @session, self)	
 		link.href =  "http://www.google.com/search?q=#{glink}"
 		link.css_class= 'google_search square'

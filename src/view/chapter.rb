@@ -128,6 +128,7 @@ writeRichText('html_chapter', '#{content}', 650, 500, true, false);
 				[0,0,1]	=>	:heading_input,
 				[0,1]	=>	:edit_chapter,
 				[0,2]	=>	:submit,
+				[1,2]	=>	:submit_swissmedic,
 			}
 			LABELS = false
 			LEGACY_INTERFACE = false
@@ -158,6 +159,9 @@ writeRichText('html_chapter', '#{content}', 650, 500, true, false);
 			def hidden_fields(context)
 				args = {'name' => 'chapter', 'value' => @name}
 				super << context.hidden(args)
+			end
+			def submit_swissmedic(model=@model, session=@session, name=event())
+				Submit.new(name, model, session, self)
 			end
 		end
 	end

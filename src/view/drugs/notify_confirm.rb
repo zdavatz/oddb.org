@@ -45,7 +45,7 @@ class NotifyConfirmComposite < HtmlGrid::Composite
 		[0,1] => 'th',
 	}	
 	def notify_title(model, session)
-		[@lookandfeel.lookup(:notify_title), model.package.name].join
+		[@lookandfeel.lookup(:notify_title), model.item.name].join
 	end
 end
 class NotifyConfirm < View::ResultTemplate

@@ -2,20 +2,23 @@
 # View::Migel::Product -- oddb -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/privatetemplate'
-require 'view/migel/result'
 require 'view/pointervalue'
+require 'view/migel/result'
 require 'model/migel/product'
 require 'view/dataformat'
+require 'htmlgrid/urllink'
 
 module ODDB
 	module View
 		module Migel
 class AccessoryList < HtmlGrid::List
 	COMPONENTS = {
-		[0,0]	=>	:migel_code
+		[0,0]	=>	:migel_code,
+		[1,0]	=>	:description,
 	}
 	CSS_MAP = {
-		[0,0] =>	'list',
+		[0,0]	=>	'top list',
+		[1,0]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'subheading'
@@ -23,6 +26,10 @@ class AccessoryList < HtmlGrid::List
 	SORT_DEFAULT = :migel_code
 	SYMBOL_MAP = {
 		:migel_code	=>	PointerLink,
+	}
+	LOOKANDFEEL_MAP = {
+		:migel_code	=>	:title_accessories,
+		:description	=>	:nbsp,
 	}
 end
 class ProductInnerComposite < HtmlGrid::Composite
@@ -39,10 +46,11 @@ class ProductInnerComposite < HtmlGrid::Composite
 		[0,5] => :limitation_text,
 		[0,6] => :date,
 		[0,7] => :price,
+		[0,8] => :product,
 	}
 	CSS_MAP = {
-		[0,0,1,8] => 'list top',
-		[1,0,1,8] => 'list',
+		[0,0,1,9] => 'list top',
+		[1,0,1,9] => 'list',
 	}
 	LABELS = true
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -55,16 +63,26 @@ class ProductInnerComposite < HtmlGrid::Composite
 		value
 	end
 	def group(model)
-		description(model.group, :group)
+		pointer_link(model.group)
 	end
 	def limitation_text(model)
 		description(model.limitation_text, :limitation_text)
 	end
+	def subgroup(model)
+		pointer_link(model.subgroup)
+	end
+	def pointer_link(model)
+		link = PointerLink.new(:to_s, model, @session, self)
+		link.value = model.send(@session.language)
+		link
+	end
 	def product_text(model)
 		description(model.product_text, :product_text)
 	end
-	def subgroup(model)
-		description(model.subgroup, :subgroup)
+	def product(model)
+		if(prod = model.product)
+			pointer_link(prod)			
+		end
 	end
 end
 class ProductComposite < HtmlGrid::Composite
@@ -72,10 +90,11 @@ class ProductComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	'migel_product',
 		[0,1] =>  ProductInnerComposite,
-		#[0,2] =>	:accessories,
+		[0,2] =>	:accessories,
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
+		[0,2]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false

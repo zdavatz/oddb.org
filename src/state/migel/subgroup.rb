@@ -2,7 +2,6 @@
 # State::Migel::Subgroup -- oddb -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/migel/subgroup'
-require 'delegate'
 
 module ODDB
 	module State

@@ -13,7 +13,7 @@ module ODDB
 			include SimpleLanguage 
 			ODBA_SERIALIZABLE = ['@descriptions']
 			attr_accessor :group
-			attr_reader :products, :code, :limitation_text
+			attr_reader :products, :code, :limitation_text, :subgroup
 			alias :pointer_descr :code
 			def initialize(productcd)
 				@products = {}
