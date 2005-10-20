@@ -37,8 +37,8 @@ class GroupInnerComposite < HtmlGrid::Composite
 		[0,2] => :limitation_text,
 	}
 	CSS_MAP = {
-		[0,0,1,8] => 'list top',
-		[1,0,1,8] => 'list',
+		[0,0,1,3] => 'list top',
+		[1,0,1,3] => 'list',
 	}
 	LABELS = true
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -81,4 +81,3 @@ end
 		end
 	end
 end
-
