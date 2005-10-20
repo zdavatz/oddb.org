@@ -10,7 +10,8 @@ module ODDB
 class AssignDeprivedSequence < State::Admin::Global
 	VIEW = View::Admin::AssignDeprivedSequence
 	class DeprivedSequenceFacade
-		attr_reader :sequence, :sequences
+		attr_reader :sequence
+		attr_accessor :sequences
 		include Enumerable
 		def initialize(seq)
 			@sequence = seq
@@ -30,10 +31,6 @@ class AssignDeprivedSequence < State::Admin::Global
 		end
 		def pointer
 			@sequence.pointer
-		end
-		def sequences=(array)
-			@sequences = array.select { |seq| 
-				seq.has_patinfo? && (seq != @sequence) }
 		end
 	end
 	def init
