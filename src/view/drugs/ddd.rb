@@ -126,8 +126,9 @@ class DDDTree < HtmlGrid::Composite
 		end
 	end
 end
-class DDD < View::PopupTemplate
+class DDD < View::PrivateTemplate
 	CONTENT = View::Drugs::DDDTree
+	SNAPBACK_EVENT = :result
 end
 		end
 	end

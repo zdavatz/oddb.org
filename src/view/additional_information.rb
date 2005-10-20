@@ -79,7 +79,7 @@ module ODDB
 			end
 			def atc_ddd_link(atc, session)
 				if(atc && atc.has_ddd?)
-					link = HtmlGrid::PopupLink.new(:ddd, atc, session, self)
+					link = HtmlGrid::Link.new(:ddd, atc, session, self)
 					link.href = @lookandfeel._event_url(:ddd, {'pointer'=>atc.pointer})
 					link.set_attribute('class', 'result-infos-bg')
 					link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
