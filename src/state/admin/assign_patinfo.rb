@@ -11,9 +11,9 @@ module ODDB
 class AssignPatinfo < AssignDeprivedSequence
 	VIEW = View::Admin::AssignPatinfo
 	def assign
-		keys = [:pointers]
+		keys = [:pointers, :pointer]
 		input = user_input(keys, keys)
-		pointers = input[:pointers]
+		pointers = input[:pointers].values
 		if(pointers \
 			&& pointers.any? { |pointer| 
 				!allowed?(pointer.resolve(@session))})
@@ -29,7 +29,6 @@ class AssignPatinfo < AssignDeprivedSequence
 			end
 			ODBA.transaction { 
 				pointers.each { |pointer|
-					puts "updating #{pointer} with #{args.inspect}"
 					@session.app.update(pointer, args)
 				}
 			}
