@@ -19,6 +19,9 @@ module ODDB
 			@addresses = []
 			@ean13 = ean13
 		end
+		def contact
+			(addr = @addresses.first) && addr.name
+		end
 		def refactor_addresses
 			addr = Address2.new
 			addr.location = [@plz, @location].join(" ")

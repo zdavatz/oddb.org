@@ -102,9 +102,6 @@ class OddbPrevalence
 		item
 	end
 	#####################################################
-	def accepted_orphans
-		@accepted_orphans ||= {}
-	end
 	def admin(oid)
 		@users[oid.to_i]
 	end
@@ -614,15 +611,7 @@ class OddbPrevalence
 		# atcless
 		if(query == 'atcless')
 			atc = ODDB::AtcClass.new('n.n.')
-			sequences = []
-			@registrations.each_value { |reg|
-				reg.sequences.each_value { |seq|
-					if(seq.atc_class.nil? && !seq.packages.empty?)
-						sequences.push(seq)
-					end	
-				}	
-			}
-			atc.sequences = sequences
+			atc.sequences = atcless_sequences
 			result.atc_classes = [atc]
 			return result
 		# iksnr or ean13
@@ -786,7 +775,11 @@ class OddbPrevalence
 		ODBA.cache_server.retrieve_from_index("substance_soundex_index", key)
 	end
 	def sponsor
-		@sponsor ||= ODDB::Sponsor.new
+		if(@sponsor.nil?)
+			@sponsor = ODDB::Sponsor.new
+			odba_store
+		end
+		@sponsor
 	end
 	def substance(key)
 		if(key.to_i.to_s == key.to_s)

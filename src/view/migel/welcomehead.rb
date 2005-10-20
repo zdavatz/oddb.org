@@ -12,6 +12,7 @@ module ODDB
 class WelcomeHeadMigel < View::WelcomeHead
 	COMPONENTS = {
 		[0,0]		=>	View::Logo,
+		[1,0]		=>	:sponsor,
 		[1,0,1]	=>	"break",
 		[1,0,2]	=>	"home_welcome",
 	}

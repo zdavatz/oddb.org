@@ -17,19 +17,22 @@ class SponsorForm < View::Form
 	COMPONENTS = {
 		[0,0]		=>	:company_name,
 		[0,1]		=>	:sponsor_until,
-		[0,2]		=>	:logo_file,
-		[1,3]		=>	:submit,
+		[0,2]		=>	:url,
+		[0,3]		=>	:logo_file,
+		[0,4]		=>	:logo_fr,
+		[1,5]		=>	:submit,
 	} 
 	COMPONENT_CSS_MAP = {
-		[0,0,2,2]	=>	'standard',
+		[0,0,2,3]	=>	'standard',
 	}
 	CSS_MAP =	{
-		[0,0,2,4]	=>	'list',
+		[0,0,2,6]	=>	'list',
 	}
 	LABELS = true
 	SYMBOL_MAP = {
 		:sponsor_until	=>	HtmlGrid::InputDate,
 		:logo_file			=>	HtmlGrid::InputFile,
+		:logo_fr				=>	HtmlGrid::InputFile,
 	}
 	TAG_METHOD = :multipart_form
 	def init
@@ -38,6 +41,9 @@ class SponsorForm < View::Form
 	end
 end
 class SponsorInnerComposite < HtmlGrid::Composite
+	CSS_MAP = {
+		[1,0]	=>	'list logo',
+	}
 	COMPONENTS = {
 		[0,0]	=>	View::Admin::SponsorForm,
 		[1,0]	=>	View::SponsorLogo,

@@ -56,6 +56,7 @@ require 'state/user/paypal_thanks'
 require 'state/user/powerlink'
 require 'state/user/plugin'
 require 'state/user/init'
+require 'state/user/sponsorlink'
 require 'util/umlautsort'
 require 'sbsm/state'
 
@@ -133,8 +134,7 @@ module ODDB
 				end
 				self
 			end
-			def allowed?
-				test = @model
+			def allowed?(test = @model)
 				if(@model.is_a?(Persistence::CreateItem)) 
 					test = @model.parent(@session.app)
 				end
@@ -415,7 +415,7 @@ module ODDB
 						State::Migel::Result.new(@session, result)
 					else
 						query = query.to_s.downcase
-						stype = @session.persistent_user_input(:search_type) 
+						stype = @session.user_input(:search_type) 
 						_search_drugs_state(query, stype)
 					end
 				else
@@ -460,6 +460,11 @@ module ODDB
 				@model.sort! { |a, b| compare_entries(a, b) }
 				@model.reverse! if(@sort_reverse)
 				self
+			end
+			def sponsorlink
+				if((sponsor = @session.sponsor) && sponsor.valid?)
+					State::User::SponsorLink.new(@session, sponsor)
+				end
 			end
 			def suggest_address
 				keys = [:pointer]

@@ -6,7 +6,7 @@ module ODDB
 		module GoogleAdSenseMethods
 			def ad_sense(model, session)
 				if(@lookandfeel.enabled?(:google_adsense) \
-					&& !@session.user.valid?)
+					&& !(@session.user.valid? || active_sponsor?))
 					google = GoogleAdSense.new(model, session, self)
 					google.channel = self::class::GOOGLE_CHANNEL
 					google.format = self::class::GOOGLE_FORMAT
@@ -14,6 +14,10 @@ module ODDB
 					google.height = self::class::GOOGLE_HEIGHT
 					google
 				end
+			end
+			def active_sponsor?
+				((spons = @session.sponsor) && spons.valid? \
+					&& @lookandfeel.enabled?(:sponsorlogo, false))
 			end
 		end
 		class GoogleAdSense < HtmlGrid::Component

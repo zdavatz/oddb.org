@@ -6,11 +6,9 @@ require 'htmlgrid/image'
 module ODDB
 	module View
 		class CompanyLogo < HtmlGrid::Component
-			RESOURCE_TYPE = :company_logo
 			def init
 				if(name = @model.logo_filename)
-					super
-					@attributes['src'] = @lookandfeel.resource_global(self::class::RESOURCE_TYPE, name)
+					@attributes['src'] = @lookandfeel.resource_global(:company_logo, name)
 					@attributes['alt'] = @model.name
 				end
 			end
@@ -18,14 +16,19 @@ module ODDB
 				context.img(@attributes)
 			end
 		end
-		class SponsorLogo < View::CompanyLogo
-			RESOURCE_TYPE = :sponsor
-			def to_html(context)
-				if(@lookandfeel.enabled?(:sponsorlogo))
-					super
-				else
-					'&nbsp;'
+		class SponsorLogo < HtmlGrid::Component
+			def init
+				if((name = @model.logo_filename(@lookandfeel.language)) \
+					|| (name = @model.logo_filename(:default)))
+					@attributes['src'] = @lookandfeel.resource_global(:sponsor, name)
+					@attributes['alt'] = @model.name
 				end
+			end
+			def to_html(context)
+				url = @lookandfeel._event_url(:sponsorlink)
+				context.a({'href' => url}) { 
+					context.img(@attributes)
+				}
 			end
 		end
 	end

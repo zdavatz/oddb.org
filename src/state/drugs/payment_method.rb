@@ -15,13 +15,15 @@ class PaymentMethod < Global
 		super
 		@search_query = @session.user_input(:search_query)
 		@search_type = @session.user_input(:search_type)
+		@result = @model
+		@model = @session.user.model
 	end
 	def proceed_payment
 		if(creditable? \
 			&& @session.user_input(:payment_method) == 'pm_invoice')
-			RegisterInvoicedDownload.new(@session, @model)
+			RegisterInvoicedDownload.new(@session, @result)
 		else
-			RegisterDownload.new(@session, @model)
+			RegisterDownload.new(@session, @result)
 		end
 	end
 end

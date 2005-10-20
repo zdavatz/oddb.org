@@ -40,10 +40,23 @@ class RegisterDownload < Global
 		pointer = Persistence::Pointer.new(:invoice)
 		@model = Persistence::CreateItem.new(pointer)
 		@model.carry(:items, [item])
-		@model.carry(:currency, self.currency)
+		@model.carry(:currency, self.class.const_get(:CURRENCY))
+		user = @session.user
+		if(creditable? && (hosp = user.model))
+			if(addr = hosp.address(0))
+				name, last = addr.name.split(' ')
+				@model.carry(:name, last)
+				@model.carry(:name_first, name)
+			end
+			@model.carry(:email, user.unique_email)
+		end
+	end
+	def currency
+		self.class.const_get(:CURRENCY)
 	end
 end
 class RegisterInvoicedDownload < RegisterDownload
+	VIEW = View::Drugs::RegisterInvoicedDownload
 	def RegisterInvoicedDownload.price(package_count)
 		count = package_count.to_i
 		if(count <= 0)

@@ -229,6 +229,7 @@ module ODDB
 		end
 		def teardown
 			ODBA.storage = nil
+			ODBA.cache_server = nil
 		end
 		def test_initialize
 			expected = [
@@ -433,6 +434,9 @@ module ODDB
 			ODBA.cache_server = CacheStub.new
 			@pointer = ODDB::Persistence::Pointer.new([:fap, "fap"])
 			@item = ODDB::Persistence::CreateItem.new(@pointer)
+		end
+		def teardown
+			ODBA.cache_server = nil
 		end
 		def test_carry
 			@item.carry(:grok, "pak")

@@ -45,6 +45,7 @@ class CsvResult < HtmlGrid::Component
 	end
 	def http_headers
 		file = @session.user_input(:filename)
+		url = @lookandfeel._event_url(:home)
 		{
 			'Content-Type'				=>	'text/csv',
 			'Content-Disposition'	=>	"attachment;filename=#{file}",

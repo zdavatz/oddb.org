@@ -149,6 +149,7 @@ module ODDB
 			:show_interaction,
 			:sort,
 			:sponsor,
+			:sponsorlink,
 			:substances,
 			:suggest_address,
 			:switch,
@@ -161,6 +162,7 @@ module ODDB
 		]
 		FILES = [
 			:logo_file,
+			:logo_fr,
 			:fachinfo_upload,
 			:patinfo_upload,
 		]

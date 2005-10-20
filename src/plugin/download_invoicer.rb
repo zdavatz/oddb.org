@@ -9,19 +9,16 @@ module ODDB
 			'hwyss@ywesee.com', 
 			'zdavatz@ywesee.com' 
 		]
-		def run(month = (Date.today << 1))
+		def run(month = (Date.today - 1))
 			items = recent_items(month)
-			#payable_items = filter_paid(items)
-			groups = group_by_user(items)
+			payable_items = filter_paid(items)
+			groups = group_by_user(payable_items)
 			groups.each { |pointer, items|
-				puts pointer.inspect
-				puts pointer.resolve(@app).inspect
-				puts pointer.resolve(@app).model
 				if((user = pointer.resolve(@app)) && (hospital = user.model))
 					## first send the invoice 
 					send_invoice(month, hospital, items) 
 					## then store it in the database
-					#create_invoice(user, items)
+					create_invoice(user, items)
 				end
 			}
 			nil
@@ -38,6 +35,20 @@ module ODDB
 			}
 			pdfinvoice
 		end
+		def create_invoice(user, items)
+			pointer = Persistence::Pointer.new(:invoice)
+			values = {
+				:user_pointer		=>	user.pointer,
+				:keep_if_unpaid =>	true,
+			}
+			ODBA.transaction { 
+				invoice = @app.update(pointer.creator, values)
+				pointer = invoice.pointer + [:item]
+				items.each { |item|
+					@app.update(pointer.dup.creator, item.values)
+				}
+			}
+		end
 		def create_pdf_invoice(day, hospital, items, email)
 			config = PdfInvoice.config
 			config.texts['thanks'] = <<-EOS
@@ -46,6 +57,32 @@ Thank you for your patronage
 			EOS
 			pdfinvoice = PdfInvoice::Invoice.new(config)
 			assemble_pdf_invoice(pdfinvoice, day, hospital, items, email)
+		end
+		def filter_paid(items)
+			items = items.sort_by { |item| item.time }
+
+			range = items.first.time..items.last.time
+
+			## Vorgeschlagener Algorithmus
+			# 1. alle invoices von app
+			# 2. davon alle items die den typ :csv_export haben und im
+			#    Zeitraum range liegen
+			# 3. Annahme: item.time ist Eineindeutig
+			times = []
+			@app.invoices.each_value { |invoice|
+				invoice.items.each_value { |item|
+					if(item.type == :csv_export && range.include?(item.time))
+						times.push(item.time)
+					end
+				}
+			}
+			
+			# 5. Duplikate löschen
+			result = []
+			items.delete_if { |item| 
+				times.include?(item.time)
+			}
+			items
 		end
 		def group_by_user(items)
 			items.inject({}) { |groups, item|
@@ -83,7 +120,7 @@ Thank you for your patronage
 			header.add('Content-Transfer-Encoding', 'base64')
 			fpart.body = [invoice.to_pdf].pack('m')
 			smtp = Net::SMTP.new(SMTP_SERVER)
-			recipients = RECIPIENTS#.dup.push(to).uniq
+			recipients = RECIPIENTS.dup.push(to).uniq
 			smtp.start {
 				recipients.each { |recipient|
 					smtp.sendmail(fpart.to_s, SMTP_FROM, recipient)

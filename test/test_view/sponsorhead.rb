@@ -25,17 +25,31 @@ module ODDB
 				def attributes(key)
 					@attributes
 				end
+				def currencies
+					['CHF']
+				end
+				def currency
+					'CHF'
+				end
 				def enabled?(key, default=nil)
 					@enabled && (key != :google_adsense)
 				end
-				def event_url(url)
-					puts "url"
+				def _event_url(url)
 				end
 				def format_date(date)
 					date.strftime("%d.%m.%Y")
 				end
+				def language
+					'de'
+				end
+				def languages
+					['de']
+				end
 				def lookandfeel
 					self
+				end
+				def lookup(key, name=nil)
+					key.to_s.upcase
 				end
 				def resource_global(key, str = nil)
 					[key, str].join('/')
@@ -43,11 +57,11 @@ module ODDB
 				def resource_localized(key, str = nil)
 					[key, str].join('/')
 				end
-				def state
+				def user
 					self
 				end
-				def lookup(key, name=nil)
-					key.to_s.upcase
+				def state
+					self
 				end
 				def zone
 					:drugs
@@ -64,7 +78,7 @@ module ODDB
 				def name
 					"sponsorlogo"
 				end
-				def logo_filename
+				def logo_filename(language)
 					"sponsorlogo"
 				end
 				def represents?(arg)
@@ -86,38 +100,38 @@ module ODDB
 				@other.represents = false
 				@pac = StubPackage.new
 				@pac.company = @comp
-				@expect_nologo = '<TABLE cellspacing="0" class="composite"><TR><TD><A><IMG class="logo" src="logo_drugs/" alt="LOGO"></A></TD><TD class="logo-r">&nbsp;</TD></TR><TR><TD>&nbsp;</TD><TD class="tabnavigation-right"><TABLE cellspacing="0" class="component tabnavigation right"><TR><TD><A name="drugs" class="tabnavigation">DRUGS</A></TD></TR></TABLE></TD></TR></TABLE>'
+				@logo_pattern = /<A><IMG src="sponsor.sponsorlogo" alt="sponsorlogo"><.A>SPONSOR_UNTIL/
 			end
 			def test_empty_model
 				view = View::SponsorHead.new([], @session)
-				assert_equal(@expect_nologo, view.to_html(CGI.new))
+				assert_nil(@logo_pattern.match(view.to_html(CGI.new)))
 			end
 			def test_model_no_sponsor
 				view = View::SponsorHead.new([@pac], @session)
-				assert_equal(@expect_nologo, view.to_html(CGI.new))
+				assert_nil(@logo_pattern.match(view.to_html(CGI.new)))
 			end
 			def test_model_nonmatching_sponsor
 				@session.sponsor = @other
 				view = View::SponsorHead.new([@pac], @session)
-				assert_equal(@expect_nologo, view.to_html(CGI.new))
+				assert_nil(@logo_pattern.match(view.to_html(CGI.new)))
 			end
 			def test_matching_sponsor_no_date
 				@session.sponsor = @comp
 				view = View::SponsorHead.new([@pac], @session)
-				assert_equal(@expect_nologo, view.to_html(CGI.new))
+				assert_nil(@logo_pattern.match(view.to_html(CGI.new)))
 			end
 			def test_sponsor_time_over
 				@session.sponsor = @comp
 				@comp.sponsor_until = Date.new(2002,12,31)
 				view = View::SponsorHead.new([@pac], @session)
-				assert_equal(@expect_nologo, view.to_html(CGI.new))
+				assert_nil(@logo_pattern.match(view.to_html(CGI.new)))
 			end
 			def test_display_sponsor
 				@session.sponsor = @comp
 				@comp.sponsor_until = Date.today
 				view = View::SponsorHead.new([@pac], @session)
 				html = view.to_html(CGI.new)
-				assert_not_nil(/<IMG src="sponsor.sponsorlogo" alt="sponsorlogo">SPONSOR_UNTIL/.match(html), html)
+				assert_not_nil(@logo_pattern.match(html), html)
 			end
 		end
 	end

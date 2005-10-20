@@ -8,6 +8,7 @@ require 'view/popuptemplate'
 require 'view/resultcolors'
 require 'view/resultfoot'
 require 'view/dataformat'
+require 'view/sponsorhead'
 
 module ODDB
 	module View
@@ -89,6 +90,7 @@ class CompareComposite < HtmlGrid::Composite
 	}
 end
 class Compare < View::PrivateTemplate
+	include View::SponsorMethods
 	SNAPBACK_EVENT = :result
 	CONTENT = CompareComposite
 end

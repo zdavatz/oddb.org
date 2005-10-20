@@ -2,6 +2,7 @@
 # View::Personal -- oddb -- 24.05.2005 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'model/user'
+require 'htmlgrid/div'
 
 module ODDB
 	module View
@@ -10,12 +11,14 @@ module ODDB
 				user = session.user
 				div = HtmlGrid::Div.new(model, session, self)
 				div.css_class = 'personal'
-			  if(user.is_a? ODDB::CompanyUser)
-					div.value = "#{@lookandfeel.lookup(:welcome)} #{user.model.contact}!"
-					div
-				elsif(user.is_a? ODDB::User)
-					div.value = "#{@lookandfeel.lookup(:welcome)} #{user.unique_email}!"
-					div
+				if(user.is_a?(ODDB::User))
+					if((mdl = user.model) && mdl.respond_to?(:contact))
+						div.value = @lookandfeel.lookup(:welcome, mdl.contact)
+						div
+					else
+						div.value = @lookandfeel.lookup(:welcome, user.unique_email)
+						div
+					end
 				end
 			end
 		end

@@ -3,13 +3,15 @@
 
 require 'view/publictemplate'
 require 'view/navigation'
+require 'view/sponsorhead'
 
 module ODDB
 	module View
 		class ResultTemplate < PublicTemplate
+			HEAD = View::LogoHead
 			COMPONENTS = {
 				[0,0]		=>	:foot,
-				[0,1]		=>	View::LogoHead,
+				[0,1]		=>	:head,
 				[0,2]		=>	:content,
 				[0,3]		=>	:foot,
 			}

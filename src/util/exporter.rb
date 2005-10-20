@@ -21,7 +21,11 @@ module ODDB
 			@app = app
 		end
 		def run
+			mail_patinfo_invoices
 			run_on_monthday(1) {
+				mail_download_invoices
+			}
+			run_on_monthday(15) {
 				mail_download_invoices
 			}
 			run_on_weekday(0) { 
@@ -29,7 +33,6 @@ module ODDB
 				mail_feedback_stats
 				#mail_notification_stats
 			}
-			mail_patinfo_invoices
 			export_sl_pcodes
 			export_yaml
 			export_oddbdat

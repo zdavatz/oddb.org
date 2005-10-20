@@ -18,7 +18,7 @@ class Result < State::Drugs::Global
 	DIRECT_EVENT = :search
 	VIEW = View::Drugs::Result
 	LIMITED = true
-	ITEM_LIMIT = 150
+	ITEM_LIMIT = 100
 	REVERSE_MAP = View::Drugs::ResultList::REVERSE_MAP
 	attr_reader :package_count, :pages
 	attr_accessor :search_query, :search_type
@@ -71,11 +71,15 @@ class Result < State::Drugs::Global
 		state
 	end
 	def page
-		if(pge = @session.user_input(:page))
-			@page = @pages[pge]
+		pge = nil
+		if(@session.event == :search)
+			## reset page-input
+			pge = @session.user_input(:page)
+			@session.set_persistent_user_input(:page, pge)
 		else
-			@page ||= @pages.first
+			pge = @session.persistent_user_input(:page)
 		end
+		@page = @pages[pge || 0]
 	end
 	def search
 		query = query.to_s.downcase
