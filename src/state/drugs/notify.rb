@@ -2,6 +2,7 @@
 # Notify -- oddb -- 21.03.2005 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'state/drugs/global'
+require 'state/notify'
 require 'view/drugs/notify'
 require 'state/drugs/notify_confirm'
 require 'util/logfile'

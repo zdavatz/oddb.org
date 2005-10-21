@@ -2,9 +2,9 @@
 #  -- oddb -- 17.10.2005 -- ffricker@ywesee.com
 
 require 'state/migel/global'
+require 'state/notify'
 require 'view/drugs/notify'
 require 'state/migel/notify_confirm'
-require 'state/notify'
 require 'util/logfile'
 require 'date'
 
