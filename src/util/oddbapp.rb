@@ -31,6 +31,7 @@ class OddbPrevalence
 		"@atc_chooser", "@bean_counter",
 	]
 	ODBA_SERIALIZABLE = [ '@currency_rates' ]
+	ODBA_PREFETCH = true
 	attr_reader :address_suggestions, :atc_chooser, :atc_classes,
 		:companies, :doctors, :fachinfos, :galenic_groups, :migel_groups,
 		:hospitals, :invoices, :last_medication_update, :last_update,
@@ -929,8 +930,6 @@ module ODDB
 		VALIDATOR = Validator
 		attr_reader :cleaner, :updater
 		def initialize
-			### keep this disabled, as long as unreachable prefetchable
-			### objects are not reaped from the db
 			@system = ODBA.cache_server.fetch_named('oddbapp', self){
 				OddbPrevalence.new
 			}
