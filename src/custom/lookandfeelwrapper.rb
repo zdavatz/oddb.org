@@ -3,6 +3,13 @@
 
 require 'sbsm/lookandfeelwrapper'
 
+module SBSM
+	class LookandfeelWrapper < Lookandfeel
+		def navigation(filter=false)
+			@component.navigation(false)	
+		end
+	end
+end
 module ODDB
 	class LookandfeelExtern < SBSM::LookandfeelWrapper
 		ENABLED = [
