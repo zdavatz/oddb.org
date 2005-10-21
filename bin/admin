@@ -4,7 +4,8 @@
 $: << File.expand_path('../src', File.dirname(__FILE__))
 
 require 'rubygems'
-require 'util/oddbapp'
+require 'drb'
+require 'util/oddbconfig'
 require 'readline'
 include Readline
 
@@ -31,7 +32,7 @@ prompt = 'oddb> '
 #DRb.start_service('druby://localhost:0')
 req = RequestStub.new
 request = DRb.start_service('druby://localhost:0', req)
-oddb = DRbObject.new(nil, 'druby://localhost:10000')
+oddb = DRbObject.new(nil, ODDB::SERVER_URI)
 last_error = nil
 priority = -1
 while(line = readline(prompt, true))
