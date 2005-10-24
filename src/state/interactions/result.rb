@@ -27,7 +27,7 @@ class Result < State::Interactions::Global
 		end
 	end
 =end
-	DIRECT_EVENT = :search
+	DIRECT_EVENT = :result
 	VIEW = View::Interactions::Result
 	REVERSE_MAP = View::Interactions::ResultList::REVERSE_MAP
 	ITEM_LIMIT = 150

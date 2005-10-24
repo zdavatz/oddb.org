@@ -8,7 +8,7 @@ module ODDB
 		module Substances
 class Result < State::Substances::Global
 	VIEW = View::Substances::Result
-	DIRECT_EVENT = :search
+	DIRECT_EVENT = :result
 	#REVERSE_MAP = View::Substances::ResultList::REVERSE_MAP
 	ITEM_LIMIT = 100
 	attr_reader :object_count, :pages

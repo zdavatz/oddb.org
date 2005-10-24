@@ -15,7 +15,7 @@ module ODDB
 	module State
 		module Drugs
 class Result < State::Drugs::Global
-	DIRECT_EVENT = :search
+	DIRECT_EVENT = :result
 	VIEW = View::Drugs::Result
 	LIMITED = true
 	ITEM_LIMIT = 100

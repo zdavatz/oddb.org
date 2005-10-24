@@ -15,7 +15,7 @@ module ODDB
 class CompanyResult < State::Companies::Global
 	include Interval
 	attr_reader :range
-	DIRECT_EVENT = :search
+	DIRECT_EVENT = :result
 	LIMITED = true
 	VIEW = {
 		ODDB::UnknownUser	=>	View::Companies::UnknownCompanies,

@@ -39,7 +39,7 @@ class HospitalList < State::Hospitals::Global
 	end
 end
 class HospitalResult < HospitalList
-	DIRECT_EVENT = :search
+	DIRECT_EVENT = :result
 	def init
 		if(@model.empty?)
 			@default_view = View::Hospitals::EmptyResult

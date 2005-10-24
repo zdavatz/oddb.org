@@ -64,7 +64,7 @@ class DoctorList < State::Doctors::Global
 	end
 end
 class DoctorResult < DoctorList
-	DIRECT_EVENT = :search
+	DIRECT_EVENT = :result
 	def init
 		if(@model.empty?)
 			@default_view = View::Doctors::EmptyResult
