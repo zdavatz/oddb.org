@@ -697,6 +697,7 @@ Zeno Davatz
 				:notify_subject				    =>	'Notify a friend mit ODDB.org; Gruss von',
 				:notify										=>	'tell a friend',
 				:notify_title							=>  'Ich m&ouml;chte folgendes Produkt weiter empfehlen: ',
+				:notify_migel_title				=>	'Ich m&ouml;chte folgende Migel-Position weiterleiten: ',
 				:oddbdat_tar_gz						=>	'oddbdat.tar.gz',
 				:oddbdat_zip							=>	'oddbdat.zip',
 				:oddb_version							=>	'&nbsp;Commit-ID',
