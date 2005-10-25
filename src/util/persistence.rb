@@ -314,7 +314,7 @@ Grammar OddbSize
 			def carry(key, val=nil)
 				instance_eval("@#{key} = val")
 				instance_eval <<-EOS
-					def #{key}
+					def #{key}(*args)
 						@#{key}
 					end
 				EOS

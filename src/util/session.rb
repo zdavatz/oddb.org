@@ -116,7 +116,7 @@ module ODDB
 				"%s | %sip: %15s | session:%12i | request:%12i | time:%4is | mem:%6iMB | %s %s",
 				now.strftime('%Y-%m-%d %H:%M:%S'), asterisk, remote_ip, self.object_id, @request_id, 
 				now - @process_start, bytes / (2**20), phase, @request_path))
-			#Session.request_log.flush
+			Session.request_log.flush
 		rescue Exception
 			## don't die for logging
 		end
