@@ -55,6 +55,22 @@ class Result < State::Drugs::Global
 			RegisterDownload.new(@session, @model)
 		end
 	end
+	def get_sortby!
+		super
+		if(@sortby.first == :dsp)
+			sortvalue = [:most_precise_dose, :comparable_size, :price_public]
+			if(@sortby[1,3] == sortvalue)
+				## @sort_reverse has already been reset at this stage, 
+				## correct it with dedicated instance variable
+				@sort_reverse = @sort_reverse_dsp = !@sort_reverse_dsp
+				@sortby.shift
+			else
+				@sort_reverse_dsp = @sort_reverse
+				@sortby[0,1] = sortvalue
+			end
+		end
+		@sortby.uniq!
+	end
 	def limit_state
 		count = @package_count
 		model = if(@search_type == "st_sequence")
