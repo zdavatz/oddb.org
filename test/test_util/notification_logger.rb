@@ -102,7 +102,7 @@ module ODDB
 			entries = [entry, entry, entry]
 			arguments = {
 				:name         => "Ponstan",
-				:packagesize  => "12 Tabletten",
+				:size  => "12 Tabletten",
 				:iksnr        => "30785010", 
 				:entries  		=> entries, 
 			}
@@ -121,7 +121,7 @@ module ODDB
 			entries = [entry, entry, entry]
 			arguments = {
 				:name         => "Ponstan",
-				:packagesize  => "12 Tabletten",
+				:size  => "12 Tabletten",
 				:iksnr        => "30785010", 
 				:entries  		=> entries, 
 			}
@@ -151,7 +151,7 @@ module ODDB
 				'30785007'	=> [entry5, entry6, entry7],
 			}
 			string = <<-EOS
-IKSNr.;Name;Packungsgrösse;Sender;Empfänger;Total;December 2004;January 2005;February 2005;March 2005;April 2005
+Code;Name;Grösse;Sender;Empfänger;Total;December 2004;January 2005;February 2005;March 2005;April 2005
 23487012;Ponstan;50 Tabletten;jlang@ywesee.com;usenguel@ywesee.com;4;0;2;1;0;1
 23487012;Ponstan;50 Tabletten;jlang@ywesee.com;usenguel@ywesee.com;4;0;2;1;0;1
 23487012;Ponstan;50 Tabletten;jlang@ywesee.com;usenguel@ywesee.com;4;0;2;1;0;1

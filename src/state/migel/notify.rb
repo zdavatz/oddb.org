@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
-#  -- oddb -- 17.10.2005 -- ffricker@ywesee.com
+#  State::Notify-- oddb -- 17.10.2005 -- ffricker@ywesee.com
 
 require 'state/migel/global'
 require 'state/notify'
-require 'view/drugs/notify'
+require 'view/migel/notify'
 require 'state/migel/notify_confirm'
 require 'util/logfile'
 require 'date'
@@ -13,9 +13,10 @@ module ODDB
 		module Migel
 			class Notify < State::Migel::Global
 				include State::Notify
-				VIEW = View::Drugs::Notify
+				VIEW = View::Migel::Notify
 				CODE_KEY = :migel_code
 				CONFIRM_STATE = NotifyConfirm
+				ITEM_TYPE = :migel
 			end
 		end
 	end

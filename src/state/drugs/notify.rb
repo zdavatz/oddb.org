@@ -16,6 +16,7 @@ module ODDB
 				VIEW = View::Drugs::Notify
 				CODE_KEY = :ikskey
 				CONFIRM_STATE = NotifyConfirm
+				ITEM_TYPE = :drugs
 			end
 		end
 	end

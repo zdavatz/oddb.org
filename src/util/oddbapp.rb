@@ -507,6 +507,13 @@ class OddbPrevalence
 	def migel_group(groupcd)
 		@migel_groups[groupcd]
 	end
+	def migel_product(code)
+		parts = code.split('.', 3)
+		migel_group(parts[0]).subgroup(parts[1]).product(parts[2])
+	rescue NoMethodError
+		# invalid migel_code
+		nil
+	end
 	def migel_products
 		products = []
 		@migel_groups.each_value { |group| 

@@ -54,7 +54,11 @@ module Notify
 				smtp.sendmail(mail.encoded, SMTP_FROM, @model.notify_recipient) 
 			}
 			logger = @session.notification_logger
-			logger.log(@model.item.send(self.class.const_get(:CODE_KEY)),
+			key = [
+				self.class.const_get(:ITEM_TYPE),
+				@model.item.send(self.class.const_get(:CODE_KEY)),
+			]
+			logger.log(key, 
 				@model.notify_sender, @model.notify_recipient, Time.now)
 			logger.odba_store
 			klass = self.class.const_get(:CONFIRM_STATE)

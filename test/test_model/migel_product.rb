@@ -76,7 +76,6 @@ module ODDB
 				assert_equal(acc2, res)
 			ensure
 				ODBA.cache_server = nil
-				odba.mock_verify
 			end
 			def test_remove_accessory
 				odba = ODBA.cache_server = FlexMock.new
@@ -98,7 +97,6 @@ module ODDB
 				assert_equal(acc2, res)
 			ensure
 				ODBA.cache_server = nil
-				odba.mock_verify
 			end
 		end
 	end

@@ -71,7 +71,7 @@ module ODDB
 			line = [
 				arguments[:iksnr].to_s,
 				arguments[:name].to_s,
-				arguments[:packagesize].to_s,
+				arguments[:size].to_s,
 				entry.sender.to_s,
 				entry.recipient.to_s,
 				entries.size.to_s,
@@ -88,9 +88,9 @@ module ODDB
 		end
 		def csv_lines(app)
 			header = [
-				"IKSNr.",
+				"Code",
 				"Name",
-				"Packungsgrösse",
+				"Grösse",
 				"Sender",
 				"Empfänger",
 				"Total",
@@ -102,15 +102,33 @@ module ODDB
 				month = month >> 1
 			end
 			lines = []
-			@logs.each { |key, entries| 
-				iksnr = [key[0..4], key[5..8]]
-				name = app.registration(iksnr[0]).package(iksnr[1]).name
-				packagesize = app.registration(iksnr[0]).package(iksnr[1]).size
+			@logs.each { |combined_key, entries| 
+				type, key = combined_key
+				name, size = ''
+				case type
+				when :drugs
+					iksnr = key[0,5]
+					ikscd = key[5,3]
+					if((reg = app.registration(iksnr)) \
+						&& (pac = reg.package(ikscd)))
+						name = pac.name
+						size = pac.size
+					end
+				when :migel
+					if(product = app.migel_product(key))
+						if(txt = product.product_text)
+							name = txt.de
+							size = product.de
+						else
+							name = product.de
+						end
+					end
+				end
 				arguments = {
-					:name         => name,
-					:packagesize  => packagesize,
-					:iksnr        => key, 
-					:entries  		=> entries, 
+					:name			=> name,
+					:size			=> size,
+					:iksnr		=> key, 
+					:entries	=> entries, 
 				}
 				lines += range_lines(month_range, entries, arguments)
 			}
