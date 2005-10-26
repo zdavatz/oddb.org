@@ -18,7 +18,7 @@ module ODDB
 	module View
 		module Migel
 class ResultList < HtmlGrid::List
-	include AdditionalInformation
+	include View::AdditionalInformation
 	include DataFormat
 	CSS_CLASS = 'composite'
 	SYMBOL_MAP = {
@@ -30,12 +30,13 @@ class ResultList < HtmlGrid::List
 		[2,0]	=>	:product_description,
 		[3,0] =>  :date,
 		[4,0] =>  :price,
-		[5,0]	=>  :google_search,
-		[6,0] =>  :notify,
+		[5,0] =>	:feedback,
+		[6,0]	=>  :google_search,
+		[7,0] =>  :notify,
 	}
 	CSS_MAP = {
-		[0,0,6]	=>	'list',
-		[6,0] =>	'list-r',
+		[0,0,7]	=>	'list',
+		[7,0] =>	'list-r',
 	}
 	CSS_HEAD_MAP = {
 		[0,0]	=> 'th',
@@ -44,14 +45,15 @@ class ResultList < HtmlGrid::List
 		[3,0] => 'th',
 		[4,0] => 'th',
 		[5,0] => 'th',
-		[6,0] => 'th-r',
+		[6,0] => 'th',
+		[7,0] => 'th-r',
 	}
 	LOOKANDFEEL_MAP = {
 		:limitation_text => :nbsp,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	SORT_DEFAULT = nil
-	WIDTH = 6
+	WIDTH = 7
 	LEGACY_INTERFACE = false
 	def compose_list(model=@model, offset=[0,0])
 		bg_flag = false
@@ -84,7 +86,7 @@ class ResultList < HtmlGrid::List
 		].compact.collect { |item| 
 			item.send(@session.language) 
 		}.join(': ').gsub("\n", ' ')
-		glink = CGI.escape(Iconv.iconv('UTF-8', 'ISO_8859-1', text).first)
+		glink = Iconv.iconv('UTF-8', 'ISO_8859-1', text).first
 		link = HtmlGrid::Link.new(:google_search, @model, @session, self)
 		link.href =  "http://www.google.com/search?q=#{glink}"
 		link.css_class= 'google_search square'
@@ -99,7 +101,7 @@ class ResultList < HtmlGrid::List
 	def notify(model)
 		link = HtmlGrid::Link.new(:notify, model, @session, self)
 		args = {
-			:pointer => CGI.escape(model.pointer.to_s),
+			:pointer => model.pointer.to_s,
 		}
 		link.href = @lookandfeel._event_url(:notify, args)
 		img = HtmlGrid::Image.new(:notify, model, @session, self)

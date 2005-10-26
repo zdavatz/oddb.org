@@ -189,6 +189,9 @@ Grammar OddbSize
 		def fachinfo
 			registration.fachinfo
 		end
+		def localized_name(language)
+			@sequence.name
+		end
 		def pdf_fachinfos
 			registration.pdf_fachinfos
 		end

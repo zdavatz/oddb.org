@@ -46,6 +46,14 @@ module ODDB
 			def group
 				@subgroup.group
 			end
+			def localized_name(language)
+				parts = []
+				if(@product_text)
+					parts.push(@product_text.send(language))
+				end
+				parts.push(self.send(language))
+				parts.join(' ')
+			end
 			def migel_code
 				[ @subgroup.migel_code, @code ].join('.')
 			end
@@ -80,6 +88,17 @@ module ODDB
 			def search_text(lang = :de)
 				text = search_terms(lang).join(' ').downcase
 				text
+			end
+			def feedback(id)
+				@feedbacks[id.to_i]
+			end
+			def feedbacks
+				@feedbacks ||= {}
+			end
+			def create_feedback
+				feedback = Feedback.new
+				feedback.oid = self.feedbacks.keys.max.to_i.next
+				self.feedbacks.store(feedback.oid, feedback) 
 			end
 		end
 	end

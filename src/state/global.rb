@@ -38,6 +38,7 @@ require 'state/migel/group'
 require 'state/migel/subgroup'
 require 'state/migel/product'
 require 'state/migel/notify'
+require 'state/migel/feedbacks'
 require 'state/substances/init'
 require 'state/substances/result'
 require 'state/suggest_address'
@@ -211,8 +212,14 @@ module ODDB
 			end
 			def feedbacks
 				if((pointer = @session.user_input(:pointer)) \
-					&& (pack = pointer.resolve(@session.app)))
-					State::Drugs::Feedbacks.new(@session, pack)
+					&& pointer.is_a?(Persistence::Pointer) \
+					&& (item = pointer.resolve(@session.app)))
+					case item.odba_instance
+					when ODDB::Package
+						State::Drugs::Feedbacks.new(@session, item)
+					when ODDB::Migel::Product
+						State::Migel::Feedbacks.new(@session, item)
+					end
 				end
 			end
 			def notify 

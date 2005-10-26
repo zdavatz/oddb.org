@@ -34,13 +34,15 @@ module ODDB
 					link
 				end
 			end
-			def feedback(model, session)
+			def feedback(model, session=@session)
 				link = HtmlGrid::Link.new(:feedback_text_short, model, session, self)
 				link.href = @lookandfeel._event_url(:feedbacks, {'pointer'=>model.pointer})
 				pos = components.index(:feedback)
 				component_css_map.store(pos, "feedback square")
 				css_map.store(pos, "square")
-				link.set_attribute('title', "#{@lookandfeel.lookup(:feedback_alt)}#{model.name_base}")
+
+				link.set_attribute('title', @lookandfeel.lookup(:feedback_alt, 
+					model.localized_name(@session.language)))
 				link
 			end
 			def limitation_text(model, session)
