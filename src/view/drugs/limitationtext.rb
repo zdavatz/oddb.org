@@ -40,7 +40,7 @@ class LimitationTextComposite < HtmlGrid::Composite
 		end
 	end
 end
-class LimitationText < View::PopupTemplate
+class LimitationText < View::PrivateTemplate
 	CONTENT = View::Drugs::LimitationTextComposite
 	SNAPBACK_EVENT = :result
 end
