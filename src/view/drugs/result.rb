@@ -66,6 +66,7 @@ class ResultForm < HtmlGrid::Composite
 	}
 	COMPONENTS = {
 		[0,0]		=>	:title_found,
+		[0,0,1]	=>	:dsp_sort,
 		[1,0]		=>	View::Drugs::ExportCSV,
 		[0,1]		=>	'price_compare',
 		[1,1]		=>	SearchForm,
@@ -94,6 +95,12 @@ class ResultForm < HtmlGrid::Composite
 			components.store([0,2], self::class::ROOT_LISTCLASS)
 		end
 		super
+	end
+	def dsp_sort(model, session)
+		url = @lookandfeel.event_url(:sort, {:sortvalue => :dsp})
+		link = HtmlGrid::Link.new(:dsp_sort, model, @session, self)
+		link.href = url
+		link
 	end
 	def title_found(model, session)
 		query = session.persistent_user_input(:search_query)

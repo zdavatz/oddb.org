@@ -44,8 +44,8 @@ module ODDB
 				path = {}
 				state = @session.state
 				while(event.nil? && state)
-					state = state.previous
-					if(event = state.direct_event)
+					if((state = state.previous) \
+						&& (event = state.direct_event))
 						path = state.request_path
 					end
 				end
