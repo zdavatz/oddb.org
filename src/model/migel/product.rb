@@ -63,12 +63,9 @@ module ODDB
 				@subgroup.group
 			end
 			def localized_name(language)
-				parts = []
-				if(@product_text)
-					parts.push(@product_text.send(language))
-				end
-				parts.push(self.send(language))
-				parts.join(' ')
+				[ @product_text, self ].compact.collect { |part|
+					part.send(language)
+				}.join(': ').gsub("\n", ' ')
 			end
 			def migel_code
 				[ @subgroup.migel_code, @code ].join('.')

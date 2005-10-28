@@ -5,7 +5,23 @@ module ODDB
 	module View
 		module AdditionalInformation
 			DISABLE_ADDITIONAL_CSS = false
-			def fachinfo(model, session, css='result-infos')
+			def atc_ddd_link(atc, session=@session)
+				if(atc && atc.has_ddd?)
+					link = HtmlGrid::Link.new(:ddd, atc, session, self)
+					link.href = @lookandfeel._event_url(:ddd, {'pointer'=>atc.pointer})
+					link.set_attribute('class', 'result-infos-bg')
+					link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
+					link
+				end
+			end
+			def atc_description(atc, session=@session)
+				if(descr = atc.description(@lookandfeel.language))
+					descr.dup.to_s << ' (' << atc.code << ')' 
+				else
+					atc.code
+				end
+			end
+			def fachinfo(model, session=@session, css='result-infos')
 				fachinfo = model.fachinfo
 				pdf_fachinfos = model.pdf_fachinfos
 				#company = model.company
@@ -45,7 +61,29 @@ module ODDB
 					model.localized_name(@session.language)))
 				link
 			end
-			def limitation_text(model, session)
+			def google_search(model, session=@session)
+				text = model.localized_name(@session.language)
+				glink = Iconv.iconv('UTF-8', 'ISO_8859-1', text).first
+				link = HtmlGrid::Link.new(:google_search, @model, @session, self)
+				link.href =  "http://www.google.com/search?q=#{glink}"
+				link.css_class= 'google_search square'
+				link.set_attribute('title', "#{@lookandfeel.lookup(:google_alt)}#{text}")
+				link
+			end
+			def ikscat(model, session=@session)
+				txt = HtmlGrid::Component.new(model, session, self)
+				txt.value = [
+					(cat = model.ikscat),
+					(@lookandfeel.lookup(:sl) unless (sl = model.sl_entry).nil?),
+				].compact.join('&nbsp;/&nbsp;')
+				title = [
+					(@lookandfeel.lookup(('ikscat_'+(cat.downcase)).intern) unless cat.nil?),
+					(@lookandfeel.lookup(:sl_list) unless sl.nil?),
+				].compact.join('&nbsp;/&nbsp;')
+				txt.set_attribute('title', title)
+				txt
+			end
+			def limitation_text(model, session=@session)
 				if((sl = model.sl_entry) && (sltxt = sl.limitation_text))
 					limitation_link(sltxt)
 				end
@@ -62,7 +100,19 @@ module ODDB
 				#css_map.store(pos, "result-infos")
 				link
 			end
-			def patinfo(model, session)
+			def notify(model, session=@session)
+				link = HtmlGrid::Link.new(:notify, model, @session, self)
+				args = {
+					:pointer => model.pointer.to_s,
+				}
+				link.href = @lookandfeel._event_url(:notify, args)
+				img = HtmlGrid::Image.new(:notify, model, @session, self)
+				img.set_attribute('src', @lookandfeel.resource_global(:notify))
+				link.value = img
+				link.set_attribute('title', @lookandfeel.lookup(:notify_alt))
+				link
+			end
+			def patinfo(model, session=@session)
 				if(model.has_patinfo?)
 					link = nil
 					if(pdf_patinfo = model.pdf_patinfo)
@@ -79,22 +129,6 @@ module ODDB
 						css_map.store(pos, "result-infos")
 					end
 					link
-				end
-			end
-			def atc_ddd_link(atc, session)
-				if(atc && atc.has_ddd?)
-					link = HtmlGrid::Link.new(:ddd, atc, session, self)
-					link.href = @lookandfeel._event_url(:ddd, {'pointer'=>atc.pointer})
-					link.set_attribute('class', 'result-infos-bg')
-					link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
-					link
-				end
-			end
-			def atc_description(atc, session=nil)
-				atc_descr = if(descr = atc.description(@lookandfeel.language))
-					descr.dup.to_s << ' (' << atc.code << ')' 
-				else
-					atc.code
 				end
 			end
 		end
