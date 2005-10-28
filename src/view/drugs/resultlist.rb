@@ -201,14 +201,7 @@ class ResultList < HtmlGrid::List
 	def fachinfo(model, session)
 		super(model, session, 'important-infos')
 	end	
-	def google_search(model, session)
-		glink = Iconv.iconv('UTF-8', 'ISO_8859-1', model.name_base.to_s).first
-		link = HtmlGrid::Link.new(:google_search, @model, @session, self)	
-		link.href =  "http://www.google.com/search?q=#{glink}"
-		link.css_class= 'google_search square'
-		link.set_attribute('title', "#{@lookandfeel.lookup(:google_alt)}#{model.name_base}")
-		link
-	end
+=begin
 	def ikscat(model, session)
 		txt = HtmlGrid::Component.new(model, session, self)
 		txt.value = [
@@ -222,18 +215,7 @@ class ResultList < HtmlGrid::List
 		txt.set_attribute('title', title)
 		txt
 	end
-	def notify(model, session)
-		link = HtmlGrid::Link.new(:notify, model, session, self)
-		args = {
-			:pointer => model.pointer,
-		}
-		link.href = @lookandfeel._event_url(:notify, args)
-		img = HtmlGrid::Image.new(:notify, model, session, self)
-		img.set_attribute('src', @lookandfeel.resource_global(:notify))
-		link.value = img
-		link.set_attribute('title', @lookandfeel.lookup(:notify_alt))
-		link
-	end
+=end
 	def substances(model, session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
 		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
