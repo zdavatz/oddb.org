@@ -84,18 +84,6 @@ class ResultList < HtmlGrid::List
 			limitation_link(sltxt)
 		end
 	end
-	def notify(model)
-		link = HtmlGrid::Link.new(:notify, model, @session, self)
-		args = {
-			:pointer => model.pointer.to_s,
-		}
-		link.href = @lookandfeel._event_url(:notify, args)
-		img = HtmlGrid::Image.new(:notify, model, @session, self)
-		img.set_attribute('src', @lookandfeel.resource_global(:notify))
-		link.value = img
-		link.set_attribute('title', @lookandfeel.lookup(:notify_alt))
-		link
-	end
 	def product_description(model)
 		link = PointerLink.new(:to_s, model, @session, self)
 		text = [

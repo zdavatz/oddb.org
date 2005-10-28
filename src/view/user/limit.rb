@@ -15,15 +15,16 @@ class LimitForm < View::Form
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
 		[0,0]	=>	:query_limit_poweruser_365,
-		[1,0]	=>	:query_limit_poweruser_a,
+		[2,0]	=>	:query_limit_poweruser_a,
 		[0,1]	=>	:query_limit_poweruser_30,
-		[1,1]	=>	:query_limit_poweruser_b,
+		[2,1]	=>	:query_limit_poweruser_b,
 		[0,2]	=>	:query_limit_poweruser_1,
-		[1,2]	=>	:query_limit_poweruser_c,
-		[1,3]	=>  :submit,
+		[2,2]	=>	:query_limit_poweruser_c,
+		[2,3]	=>  :submit,
 	}
 	CSS_MAP = {
-		[0,0,2,4]	=>	'list',
+		[0,0,3,4]	=>	'list top',
+		[1,0,1,4]	=>	'small top',
 	}
 	LABELS = true
 	LEGACY_INTERFACE = false
@@ -70,33 +71,33 @@ class LimitComposite < HtmlGrid::Composite
 		[0,0]	=> :query_limit,
 		[0,1]	=> 'query_limit_welcome',
 		[0,2]	=> 'query_limit_new_user',
+		[0,2,1]	=> :query_limit_more_info,
 		[0,3]	=> :query_limit_explain,
-		[0,4]	=> :query_limit_more_info,
-		[0,5,0]	=> 'ol_open',
-		[0,5,1]	=> 'li_open',
-		[0,5,2]		=> 'query_limit_download',
-		[0,5,3]	=> :query_limit_download,
-		[0,5,4]	=> 'li_close',
-		[0,5,5]	=> 'li_open',
-		[0,5,6]	=>	'query_limit_poweruser',
-		[0,5,7]	=>	'li_close',
-		[0,5,8]	=>	'ol_close',
-		[0,6]	=> LimitForm,
-		[0,8]	=>	'query_limit_login',
-		[0,9]	=> View::Admin::LoginForm,
-		[0,11]	=>	'query_limit_thanks0',
-		[0,12]	=>	'query_limit_thanks1',
-		[0,12,1]	=>	:query_limit_email,
-		[0,12,2]	=>	'query_limit_thanks2',
+		[0,4,0]	=> 'ol_open',
+		[0,4,1]	=> 'li_open',
+		[0,4,2]		=> 'query_limit_download',
+		[0,4,3]	=> :query_limit_download,
+		[0,4,4]	=> 'li_close',
+		[0,4,5]	=> 'li_open',
+		[0,4,6]	=>	'query_limit_poweruser',
+		[0,4,7]	=>	'li_close',
+		[0,4,8]	=>	'ol_close',
+		[0,5]	=> LimitForm,
+		[0,7]	=>	'query_limit_login',
+		[0,8]	=> View::Admin::LoginForm,
+		[0,10]	=>	'query_limit_thanks0',
+		[0,11]	=>	'query_limit_thanks1',
+		[0,11,1]	=>	:query_limit_email,
+		[0,11,2]	=>	'query_limit_thanks2',
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
 		[0,1]	=>	'list',
 		[0,2]	=>	'subheading bold',
-		[0,3,1,3]	=>	'list',
-		[0,8]	=>	'subheading bold',
-		[0,11]	=>	'subheading bold',
-		[0,12]	=>	'list',
+		[0,3,1,2]	=>	'list',
+		[0,7]	=>	'subheading bold',
+		[0,10]	=>	'subheading bold',
+		[0,11]	=>	'list',
 	}
 	CSS_CLASS = 'composite'
 	LEGACY_INTERFACE = false
@@ -155,7 +156,7 @@ class ResultLimitList < HtmlGrid::List
 		[2,0] => 'list-big',
 		[3,0] => 'list',
 		[4,0,5] => 'list-r',
-		[9,0,3]=>	'result-b-r',
+		[9,0,3]=>	'list-r',
 	}
 	CSS_HEAD_MAP = {
 		[4,0,8] => 'th-r',

@@ -16,11 +16,11 @@ module ODDB
 		end
 		def test_log__1
 			time1 = Time.local(2005, 4, 21, 15, 54)
-			entry1 = @log.log('30785010', "usenguel@ywesee.com", 
+			entry1 = @log.log([:drugs, '30785010'], "usenguel@ywesee.com", 
 				"jlang@ywesee.com", time1)
 			logs = @log.logs
 			assert_equal(1, logs.size)
-			entries = logs['30785010']
+			entries = logs[[:drugs, '30785010']]
 			assert_instance_of(Array, entries)
 			assert_equal([entry1], entries)
 			assert_instance_of(NotificationLogger::LogEntry, entry1)
@@ -29,19 +29,19 @@ module ODDB
 			assert_equal('jlang@ywesee.com', entry1.recipient)
 
 			time2 = Time.local(2005, 5, 21, 15, 54)
-			entry2 = @log.log('30785011', "usenguel@ywesee.com", 
+			entry2 = @log.log([:drugs, '30785011'], "usenguel@ywesee.com", 
 				"jlang@ywesee.com", time2)
 			expected = {
-				"30785010"	=> [entry1],
-				"30785011"	=> [entry2],
+				[:drugs, "30785010"]	=> [entry1],
+				[:drugs, "30785011"]	=> [entry2],
 			}
 			assert_equal(expected, @log.logs)
 
 			time3 = Time.local(2005, 6, 21, 15, 54)
-			entry3 = @log.log(30785010, 'usenguel@ywesee.com', 'jlang@ywesee.com', time3)
+			entry3 = @log.log([:drugs, '30785010'], 'usenguel@ywesee.com',					'jlang@ywesee.com', time3)
 			expected = {
-				"30785010"	=> [entry1, entry3],
-				"30785011"	=> [entry2],
+				[:drugs, "30785010"]	=> [entry1, entry3],
+				[:drugs, "30785011"]	=> [entry2],
 			}
 			assert_equal(expected, @log.logs)
 		end
@@ -147,8 +147,8 @@ module ODDB
 			entry6 = NotificationLogger::LogEntry.new("jlang@ywesee.com", "usenguel@ywesee.com", time5)
 			entry7 = NotificationLogger::LogEntry.new("jlang@ywesee.com", "usenguel@ywesee.com", time7)
 			logs = {
-				'23487012'	=> [entry1, entry2, entry3, entry4],
-				'30785007'	=> [entry5, entry6, entry7],
+				[:drugs, '23487012']	=> [entry1, entry2, entry3, entry4],
+				[:drugs, '30785007']	=> [entry5, entry6, entry7],
 			}
 			string = <<-EOS
 Code;Name;Grösse;Sender;Empfänger;Total;December 2004;January 2005;February 2005;March 2005;April 2005
