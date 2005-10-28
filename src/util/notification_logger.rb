@@ -34,9 +34,9 @@ module ODDB
 			super
 			@logs = {}
 		end
-		def log(iksnr, sender, recipient, time)
+		def log(key, sender, recipient, time)
 			entry = LogEntry.new(sender, recipient, time)
-			(@logs[iksnr.to_s] ||= []).push(entry)
+			(@logs[key] ||= []).push(entry)
 			entry
 		end
 		def total_count

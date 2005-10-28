@@ -38,27 +38,29 @@ module ODDB
 				product.mock_handle(:add_accessory, 1) { |acc| 
 					assert_equal(@product, acc)
 				}
-				res = @product.product = product 
+				res = @product.add_product(product)
 				assert_equal(product, res)
-				assert_equal(product, @product.product)
+				assert_equal([product], @product.products)
+				@product.add_product(product)
+				assert_equal([product], @product.products)
 				product.mock_verify
 			end
 			def test_product_writer__nil
-				assert_nothing_raised { @product.product = nil }
-				assert_nil(@product.product)
+				assert_nothing_raised { @product.add_product(nil) }
+				assert_equal([], @product.products)
 			end
 			def test_product_writer__remove
 				product = FlexMock.new
 				product.mock_handle(:add_accessory) { |acc| 
 					assert_equal(@product, acc)
 				}
-				@product.product = product 
-				assert_equal(product, @product.product)
+				@product.add_product(product)
+				assert_equal([product], @product.products)
 				product.mock_handle(:remove_accessory, 1) { |acc| 
 					assert_equal(@product, acc)
 				}
-				@product.product = nil
-				assert_nil(@product.product)
+				@product.remove_product(product)
+				assert_equal([product], @product.products)
 				product.mock_verify
 			end
 			def test_add_accessory
