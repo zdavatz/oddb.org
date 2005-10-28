@@ -48,7 +48,7 @@ module ODDB
 			end
 			def localized_name(language)
 				[ @product_text, self ].compact.collect { |part|
-					part.send(language))
+					part.send(language)
 				}.join(': ').gsub("\n", ' ')
 			end
 			def migel_code
