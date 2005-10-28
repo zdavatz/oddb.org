@@ -135,12 +135,12 @@ module ODDB
 		]
 		DICTIONARIES = {
 			'de'	=>	{
-				:home_welcome	=>	'Willkommen bei atupri und oddb.org',
+				:home_welcome	=>	'Willkommen bei <a href="http://www.atupri.ch/">atupri</a> und oddb.org',
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:lookandfeel_owner =>	'Generika.cc',
 			},
 			'fr'	=>	{
-				:home_welcome	=>	'Bienvenu sur atupri et oddb.org',
+				:home_welcome	=>	'Bienvenu sur <a href="http://www.atupri.ch/">atupri</a> et oddb.org',
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:lookandfeel_owner =>	'Generika.cc',
 			},

@@ -79,20 +79,6 @@ class ResultList < HtmlGrid::List
 		@grid.add_style(css, xval, yval, 3)
 		@grid.set_colspan(xval + 2, yval, WIDTH - xval - 1)
 	end
-	def google_search(model)
-		text = [
-			(model.product_text if(model.respond_to?(:product_text))),
-			model
-		].compact.collect { |item| 
-			item.send(@session.language) 
-		}.join(': ').gsub("\n", ' ')
-		glink = Iconv.iconv('UTF-8', 'ISO_8859-1', text).first
-		link = HtmlGrid::Link.new(:google_search, @model, @session, self)
-		link.href =  "http://www.google.com/search?q=#{glink}"
-		link.css_class= 'google_search square'
-		link.set_attribute('title', "#{@lookandfeel.lookup(:google_alt)}#{text}")
-		link
-	end
 	def limitation_text(model)
 		if(sltxt = model.limitation_text)
 			limitation_link(sltxt)

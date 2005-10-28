@@ -143,6 +143,9 @@ class ResultLimitList < HtmlGrid::List
 		[6,0]	=>	:price_exfactory,
 		[7,0]	=>	:price_public,
 		[8,0]	=>	:ikscat,
+		[9,0]	=>	:feedback,
+		[10,0]	=>  :google_search,
+		[11,0]	=>	:notify,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
@@ -152,9 +155,10 @@ class ResultLimitList < HtmlGrid::List
 		[2,0] => 'list-big',
 		[3,0] => 'list',
 		[4,0,5] => 'list-r',
+		[9,0,3]=>	'result-b-r',
 	}
 	CSS_HEAD_MAP = {
-		[4,0,5] => 'th-r',
+		[4,0,8] => 'th-r',
 	}
 	def compose_empty_list(offset)
 		count = @session.state.package_count.to_i

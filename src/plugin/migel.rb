@@ -95,14 +95,15 @@ module ODDB
 				:type => type,
 				:date => date,
 			}
-			if(id[3] != "00")
-				prodcd = [id[2], '00', id[4]]
-				prodcd = prodcd.join(".")
-				prod = subgroup.pointer + [:product, prodcd]
-				puts prod.inspect
-				hash.store(:product, prod)
-			end
 			product = @app.update(pointer.creator, hash) 
+			if(id[3] != "00")
+				1.upto(3) { |num|
+					prodcd =  [id[2], '00', num].join('.')
+					if(prod = subgroup.product(prodcd))
+						product.add_product(prod)
+					end
+				}
+			end
 			product_text = convert_charset(row.at(7))
 			unless(product_text.empty?)
 				pt_ptr = pointer + [:product_text]
