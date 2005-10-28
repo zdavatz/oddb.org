@@ -5,8 +5,8 @@ require 'view/privatetemplate'
 require 'view/pointervalue'
 require 'view/migel/result'
 require 'model/migel/product'
-require 'view/dataformat'
 require 'htmlgrid/urllink'
+require 'view/additional_information'
 
 module ODDB
 	module View
@@ -39,9 +39,10 @@ class AccessoryOfList < AccessoryList
 	}
 end
 class ProductInnerComposite < HtmlGrid::Composite
-	include DataFormat
+	include AdditionalInformation
 	SYMBOL_MAP = {
 		:date		=> HtmlGrid::DateValue,
+		:feedback_label	=> HtmlGrid::LabelText,
 	}
 	COMPONENTS = {
 		[0,0] => :migel_code,
@@ -52,10 +53,12 @@ class ProductInnerComposite < HtmlGrid::Composite
 		[0,5] => :limitation_text,
 		[0,6] => :date,
 		[0,7] => :price,
+		[0,8] => :feedback_label,
+		[1,8] => :feedback,
 	}
 	CSS_MAP = {
-		[0,0,1,8] => 'list top',
-		[1,0,1,8] => 'list',
+		[0,0,1,9] => 'list top',
+		[1,0,1,9] => 'list',
 	}
 	LABELS = true
 	DEFAULT_CLASS = HtmlGrid::Value
