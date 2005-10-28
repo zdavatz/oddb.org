@@ -156,7 +156,7 @@ class ResultLimitList < HtmlGrid::List
 		[2,0] => 'list-big',
 		[3,0] => 'list',
 		[4,0,5] => 'list-r',
-		[9,0,3]=>	'result-b-r',
+		[9,0,3]=>	'list-r',
 	}
 	CSS_HEAD_MAP = {
 		[4,0,8] => 'th-r',
