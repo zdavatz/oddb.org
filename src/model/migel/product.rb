@@ -9,21 +9,37 @@ module ODDB
 		class Product
 			include SimpleLanguage
 			ODBA_SERIALIZABLE = ['@descriptions']
-			attr_reader :code, :product, :accessories
+			attr_reader :code, :accessories, :products
 			attr_accessor :subgroup, :limitation, :price, :type, :date, 
 				:unit, :limitation_text, :product_text
 			alias :pointer_descr :code
 			def initialize(code)
 				@code = code
 				@accessories = []
+				@products = []
 			end
 			def accessory_code
-				@code.split('.', 2).last
+				code = @code.split('.')
+				code.delete_at(4)
+				code.join(".")
+				code.split(".",2)
 			end
 			def add_accessory(acc)
 				@accessories.push(acc)
 				@accessories.odba_isolated_store
 				acc
+			end
+			def add_product(prod)
+				if(prod != nil)
+					unless(@products.include?(prod))
+						if(prod)
+							prod.add_accessory(self)
+						end
+						products.push(prod)
+						@products.odba_store
+					end
+				end
+				prod
 			end
 			def adjust_types(hash, app=nil)
 				hash = hash.dup
@@ -60,27 +76,21 @@ module ODDB
 			def product_code
 				@code.split('.').first
 			end
-			def product=(prod)
-				if(@product)
-					@product.remove_accessory(self)
-				end
-				if(prod)
-					prod.add_accessory(self)
-				end
-				@product = prod
-			end
 			def remove_accessory(acc)
 				if(@accessories.delete(acc))
 					@accessories.odba_isolated_store
 					acc
 				end
 			end
+			def remove_product(prod)
+				prod.remove_accessory(self)
+			end
 			def search_terms(lang = :de)
 				terms = [
-					migel_code,
+				migel_code,
 				]
 				[ @subgroup.group, @subgroup, 
-					@product_text, self ].compact.each { |item|
+				@product_text, self ].compact.each { |item|
 					terms.push(item.send(lang))
 				}
 				terms.delete_if { |str| str.empty? }

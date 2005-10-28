@@ -81,8 +81,7 @@ class FeedbacksComposite < HtmlGrid::Composite
 		end
 	end
 	def feedback_title(model)
-		@lookandfeel.lookup(:feedback_title, 
-			model.name, model.product_text)
+		[@lookandfeel.lookup(:feedback_title_migel), model.name].join
 	end
 end
 class Feedbacks < View::ResultTemplate

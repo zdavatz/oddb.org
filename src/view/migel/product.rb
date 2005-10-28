@@ -32,6 +32,12 @@ class AccessoryList < HtmlGrid::List
 		:description	=>	:nbsp,
 	}
 end
+class AccessoryOfList < AccessoryList	
+	LOOKANDFEEL_MAP = {
+		:migel_code	=>	:title_accessories_of,
+		:description	=>	:nbsp,
+	}
+end
 class ProductInnerComposite < HtmlGrid::Composite
 	include DataFormat
 	SYMBOL_MAP = {
@@ -46,11 +52,10 @@ class ProductInnerComposite < HtmlGrid::Composite
 		[0,5] => :limitation_text,
 		[0,6] => :date,
 		[0,7] => :price,
-		[0,8] => :product,
 	}
 	CSS_MAP = {
-		[0,0,1,9] => 'list top',
-		[1,0,1,9] => 'list',
+		[0,0,1,8] => 'list top',
+		[1,0,1,8] => 'list',
 	}
 	LABELS = true
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -79,11 +84,6 @@ class ProductInnerComposite < HtmlGrid::Composite
 	def product_text(model)
 		description(model.product_text, :product_text)
 	end
-	def product(model)
-		if(prod = model.product)
-			pointer_link(prod)			
-		end
-	end
 end
 class ProductComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
@@ -100,8 +100,11 @@ class ProductComposite < HtmlGrid::Composite
 	LEGACY_INTERFACE = false
 	def accessories(model)
 		acc = model.accessories
+		prods = model.products
 		if(!acc.empty?)
 			AccessoryList.new(acc, @session, self)
+		elsif(!prods.empty?)
+			AccessoryOfList.new(prods, @session, self)
 		end
 	end
 end
