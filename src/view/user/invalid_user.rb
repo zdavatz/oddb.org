@@ -2,7 +2,7 @@
 # View::Admin::InvalidUser -- oddb -- 02.08.2005 -- hwyss@ywesee.com
 
 require 'view/publictemplate'
-require 'view/user/limit'
+require 'view/limit'
 
 module ODDB
 	module View
@@ -13,7 +13,7 @@ class InvalidUserComposite < HtmlGrid::Composite
 		[0,0]	=>	'invalid_user_welcome',
 		[0,1]	=>	:invalid_user_explain,
 		#[0,1,1] => :renew_poweruser,
-		[0,2]	=>	LimitForm,
+		[0,2]	=>	View::LimitForm,
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',

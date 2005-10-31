@@ -12,6 +12,9 @@ VIEW = View::Limit
 def Limit.price(days)
 	QUERY_LIMIT_PRICES[days.to_i].to_f
 end
+def init
+	@desired_input = @session.valid_input
+end
 def price(days)
 	Limit.price(days)
 end
@@ -20,6 +23,7 @@ def login
 		newstate = if(user.valid?)
 			des = @session.desired_state
 			@session.desired_state = nil
+			@session.valid_input.update(@desired_input)
 			des || trigger(:home)
 		else
 			State::User::InvalidUser.new(@session, user)
