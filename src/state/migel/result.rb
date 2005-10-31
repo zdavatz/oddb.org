@@ -12,6 +12,7 @@ module ODDB
 class Result < State::Migel::Global
 	VIEW = View::Migel::Result
 	DIRECT_EVENT = :result
+	LIMITED = true
 	class SubgroupFacade < SimpleDelegator
 		attr_reader :products
 		def initialize(subgroup)

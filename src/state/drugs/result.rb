@@ -81,8 +81,7 @@ class Result < State::Drugs::Global
 		result = model.atc_classes.inject([]) { |mdl, atc|
 			mdl += atc.active_packages
 		}
-		State::User::ResultLimit.new(@session, result)
-		state = State::User::ResultLimit.new(@session, result)
+		state = State::Drugs::ResultLimit.new(@session, result)
 		state.package_count = count
 		state
 	end

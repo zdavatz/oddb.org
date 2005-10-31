@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
-# State::User::Limit -- oddb -- 26.07.2005 -- hwyss@ywesee.com
+# State::Companies::Limit -- oddb -- 31.10.2005 -- hwyss@ywesee.com
 
 require 'state/limit'
 
 module ODDB
 	module State
-		module User
+		module Companies
 class Limit < Global
 	include State::Limit
 end

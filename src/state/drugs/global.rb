@@ -4,6 +4,7 @@
 require 'state/drugs/init'
 require 'state/drugs/recentregs'
 require 'state/drugs/atcchooser'
+require 'state/drugs/limit'
 
 module ODDB
 	module State
@@ -17,6 +18,9 @@ class Global < State::Global
 			State::Drugs::AtcChooser,
 			State::Drugs::Sequences,
 		]
+	end
+	def limit_state
+		State::Drugs::Limit.new(@session, nil)
 	end
 end
 		end

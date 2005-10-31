@@ -3,6 +3,7 @@
 
 require 'state/hospitals/init'
 require 'state/hospitals/vcard'
+require 'state/hospitals/limit'
 require 'state/legalnote'
 
 module ODDB
@@ -23,6 +24,9 @@ class Global < State::Global
 	end
 	def legal_note
 		State::Hospitals::LegalNote.new(@session, nil)
+	end
+	def limit_state
+		State::Hospitals::Limit.new(@session, nil)
 	end
 end
 		end

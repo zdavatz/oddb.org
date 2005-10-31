@@ -360,7 +360,7 @@ module ODDB
 					item.vat_rate = VAT_RATE
 					item.quantity = days
 					item.duration = days
-					item.total_netto = State::User::Limit.price(days)
+					item.total_netto = State::Limit.price(days)
 					pointer = Persistence::Pointer.new(:invoice)
 					invoice = Persistence::CreateItem.new(pointer)
 					invoice.carry(:items, [item])

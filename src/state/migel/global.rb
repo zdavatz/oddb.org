@@ -2,6 +2,7 @@
 # State::Migel::Global  -- oddb -- 04.10.2005 -- ffricker@ywesee.com
 
 require 'state/migel/init'
+require 'state/migel/limit'
 require 'state/legalnote'
 
 module ODDB
@@ -12,6 +13,9 @@ class Global < State::Global
 	ZONE = :migel
 	def legal_note
 		State::Migel::LegalNote.new(@session, nil)
+	end
+	def limit_state
+		State::Migel::Limit.new(@session, nil)
 	end
 end
 		end

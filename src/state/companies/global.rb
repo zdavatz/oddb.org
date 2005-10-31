@@ -2,6 +2,7 @@
 # State::Companies::Global -- oddb -- 23.08.2004 -- mhuggler@ywesee.com
 
 require 'state/companies/init'
+require 'state/companies/limit'
 
 module ODDB
 	module State
@@ -9,6 +10,9 @@ module ODDB
 class Global < State::Global
 	HOME_STATE = State::Companies::Init
 	ZONE = :companies
+	def limit_state
+		State::Companies::Limit.new(@session, nil)
+	end
 	def zone_navigation
 		[
 			State::Companies::CompanyList,
