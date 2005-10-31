@@ -10,6 +10,8 @@ module ODDB
 			:atupri => {
 				:bg												=>	'#d5e4f1',
 				:bg_bright								=>	'#ACD0F0',
+				:bg_medium								=>	'#6699CC', 
+				:bg_medium_font_color			=>	'black',
 				:bg_dark									=>	'#3F008E',
 				:bg_dark_font_color				=>	'white',
 				:bg_dark_link_hover_color	=>	'#e20a16',
@@ -67,6 +69,8 @@ module ODDB
 			},
 			:santesuisse => {
 				:bg_bright								=>	'#eaf1fd',
+				:bg_medium								=>	'#AAA', 
+				:bg_medium_font_color			=>	'white',
 				:bg_dark									=>	'#4b81d4',
 				:bg_dark_font_color				=>	'white',
 				:bg_dark_link_hover_color	=>	'#c8d8f0',
