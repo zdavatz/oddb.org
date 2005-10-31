@@ -74,6 +74,10 @@ class PackageInnerComposite < HtmlGrid::Composite
 			super(atc, session)
 		end
 	end
+	## ignore AdditionalInformation#ikscat
+	def ikscat(model, session)
+		HtmlGrid::Value.new(:ikscat, model, @session, self)
+	end
 	def registration_holder(model, session)
 		HtmlGrid::Value.new(:company_name, model, @session, self)
 	end
