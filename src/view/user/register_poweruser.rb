@@ -4,6 +4,7 @@
 require 'view/resulttemplate'
 require 'view/paypal/invoice'
 require 'htmlgrid/pass'
+require 'htmlgrid/errormessage'
 
 module ODDB
 	module View
