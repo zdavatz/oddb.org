@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # State::User::Plugin -- oddb -- 11.08.2003 -- mhuggler@ywesee.com
 
-require 'state/user/global'
+require 'state/global_predefine'
 require 'view/user/plugin'
 
 module ODDB

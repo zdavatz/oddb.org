@@ -2,6 +2,9 @@
 # State::Admin::AddressSuggestion -- oddb -- 09.08.2005 -- jlang@ywesee.com
 
 require 'state/global_predefine'
+require 'model/company'
+require 'model/hospital'
+require 'model/doctor'
 require 'view/admin/address_suggestion'
 
 module ODDB
@@ -22,16 +25,10 @@ class AddressSuggestion < Global
 			end
 			@active_address = AddressWrapper.new(addr)
 			parent = pointer.parent.resolve(@session)
+			select_zone(parent)
 			@active_address.email_suggestion = parent.email
 		end
 		super
-	end
-	def delete
-		if((pointer = @session.user_input(:pointer)) \
-			&& pointer.is_a?(Persistence::Pointer))
-			@session.app.delete(pointer)
-			trigger(:addresses)
-		end
 	end
 	def accept
 		mandatory = [:name]
@@ -66,6 +63,53 @@ class AddressSuggestion < Global
 				@active_address.email_suggestion = email
 			}
 			self
+		end
+	end
+	def delete
+		if((pointer = @session.user_input(:pointer)) \
+			&& pointer.is_a?(Persistence::Pointer))
+			@session.app.delete(pointer)
+			trigger(:addresses)
+		end
+	end
+	def home_state
+		case zone
+		when :companies
+			State::Companies::Init
+		when :doctors
+			State::Doctors::Init
+		when :hospitals
+			State::Hospitals::Init
+		else
+			super
+		end
+	end
+	def zone
+		@zone || super
+	end
+	def zone_navigation
+		case zone
+		when :companies
+			State::Companies::Global::ZONE_NAVIGATION
+		when :doctors
+			State::Doctors::Global::ZONE_NAVIGATION
+		when :hospitals
+			State::Hospitals::Global::ZONE_NAVIGATION
+		else
+			State::Admin::Global::ZONE_NAVIGATION
+		end
+	end
+	private
+	def select_zone(parent)
+		case parent
+		when ODDB::Company
+			@zone = :companies
+		when ODDB::Doctor
+			@zone = :doctors
+		when ODDB::Hospital
+			@zone = :hospitals
+		else
+			@zone = :admin
 		end
 	end
 end

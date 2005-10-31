@@ -350,7 +350,7 @@ module ODDB
 			if(value.to_s.empty?)
 				raise SBSM::InvalidDataError.new("e_invalid_zone", :zone, value)
 			end
-			zone = value.to_s.intern
+			zone = value.to_sym
 			if(self::class::ZONES.include?(zone))
 				zone
 			else

@@ -128,6 +128,7 @@ module ODDB
 			}
 			REVERSE_MAP = {}
 			VIEW = View::Search
+			ZONE_NAVIGATION = []
 			def add_to_interaction_basket
 				pointer = @session.user_input(:pointer)
 				if(object = pointer.resolve(@session.app))
@@ -242,8 +243,11 @@ module ODDB
 			end
 			def home_navigation
 				[
-					self::class::HOME_STATE
+					self.home_state
 				]
+			end
+			def home_state
+				self::class::HOME_STATE
 			end
 			def interaction_basket
 				if((array = @session.interaction_basket).empty?)
@@ -548,7 +552,7 @@ module ODDB
 			[ :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies]
 			end
 			def zone_navigation
-				[ ]
+				self::class::ZONE_NAVIGATION
 			end
 			private
 			def compare_entries(a, b)

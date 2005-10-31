@@ -10,6 +10,10 @@ module ODDB
 			@values = {}
 		end
 		def method_missing(method, *args)
+			if(@values.odba_instance.nil?)
+				@values = {}
+				odba_store
+			end
 			key = method.to_s
 			if(match = /^create_(.*)$/.match(key))
 				@values[match[1]] ||= Config.new

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # State::Hospitals::HospitalList -- oddb -- 09.03.2005 -- jlang@ywesee.com
 
-require 'state/hospitals/global'
+require 'state/global_predefine'
 require 'state/hospitals/hospital'
 require 'view/hospitals/hospitallist'
 require 'model/hospital'

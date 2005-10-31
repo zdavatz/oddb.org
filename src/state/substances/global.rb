@@ -9,11 +9,9 @@ module ODDB
 class Global < State::Global
 	HOME_STATE = State::Substances::Init
 	ZONE = :substances
-	def zone_navigation
-		[
-			:substances, :effective_substances
-		]
-	end
+	ZONE_NAVIGATION = [
+		:substances, :effective_substances
+	]
 end
 		end
 	end

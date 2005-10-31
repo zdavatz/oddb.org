@@ -4,6 +4,7 @@
 require 'state/hospitals/init'
 require 'state/hospitals/vcard'
 require 'state/hospitals/limit'
+require 'state/hospitals/hospitallist'
 require 'state/legalnote'
 
 module ODDB
@@ -12,16 +13,14 @@ module ODDB
 class Global < State::Global
 	HOME_STATE = State::Hospitals::Init
 	ZONE = :hospitals
+	ZONE_NAVIGATION = [
+		:help_link,
+		:faq_link,
+		State::Hospitals::HospitalList,
+	]
 	EVENT_MAP = {
 		:vcard	=>	State::Hospitals::VCard,
 	}
-	def zone_navigation
-		[
-			:help_link,
-			:faq_link,
-			#State::Hospitals::HospitalList,
-		]
-	end
 	def legal_note
 		State::Hospitals::LegalNote.new(@session, nil)
 	end

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # State::User::MailingList -- oddb -- 30.09.2003 -- mhuggler@ywesee.com
 
-require 'state/user/global'
+require 'state/global_predefine'
 require 'view/user/mailinglist'
 require 'tmail'
 
