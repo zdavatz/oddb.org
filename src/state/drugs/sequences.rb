@@ -12,6 +12,7 @@ class Sequences < State::Drugs::Global
 	include Interval
 	VIEW = View::Drugs::Sequences
 	DIRECT_EVENT = :sequences
+	PERSISTENT_RANGE = true
 	RANGE_PATTERNS = {
 		'a'			=>	'aäÄáÁàÀâÂ',
 		'b'			=>	'b',
@@ -45,8 +46,8 @@ class Sequences < State::Drugs::Global
 	def init
 		super
 		@filter = Proc.new { |model|
-			if(range = user_range)
-				parts = range.to_s.split('-')
+			if(@range = user_range)
+				parts = @range.to_s.split('-')
 				if(parts.size > 1)
 					parts = (parts.first..parts.last).to_a
 				end
@@ -63,6 +64,9 @@ class Sequences < State::Drugs::Global
 		}
 	end
 	def default_interval
+	end
+	def interval
+		@range
 	end
 	def intervals
 		('a'..'z').to_a.push('0-9')
