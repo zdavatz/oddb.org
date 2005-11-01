@@ -43,10 +43,26 @@ class SequenceList < HtmlGrid::List
 end
 class SequencesComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]	=> View::Drugs::SequenceList,
-		[0,1]	=> View::ResultFoot,
+		[0,0]	=> :title_sequences,
+		[1,0]		=>	SearchForm,
+		[0,1]	=> View::Drugs::SequenceList,
+		[0,2]	=> View::ResultFoot,
 	}
 	CSS_CLASS = 'composite'
+	CSS_MAP = {
+		[0,0]	=>	'result-found list',
+	}
+	COLSPAN_MAP	= {
+		[0,1]	=> 2,
+		[0,2]	=> 2,
+	}
+	LEGACY_INTERFACE = false
+	def title_sequences(model)
+		unless(model.empty?)
+			@lookandfeel.lookup(:title_sequences, 
+				@session.state.interval, @model.size)
+		end
+	end
 end
 class Sequences < View::ResultTemplate
 	CONTENT = View::Drugs::SequencesComposite
