@@ -10,16 +10,6 @@ require 'flexmock'
 require 'date'
 
 module ODDB
-	class BsvPlugin < Plugin
-		class PackageDiffer
-			attr_accessor :both, :bsv, :smj
-		end
-		attr_accessor :unknown_packages, :unknown_registrations
-		attr_accessor :change_flags, :successful_updates, :updated_packages
-		attr_accessor :package_diffs
-		public :update_package, :update_registration, :update_sl
-		public :report_format, :purge_sl_entries, :price_flag
-	end
 	class BsvPlugin2 < Plugin
 		class PackageDiffer
 			attr_accessor :both, :bsv, :smj
@@ -38,367 +28,12 @@ module ODDB
 		public :handle_augmentation
 		public :handle_deletion
 		public :handle_reduction
+		public :handle_unknown_package
 		public :load_database
 		public :report_format
 		attr_reader :ptable, :ikstable, :unknown_registrations, 
 			:unknown_packages, :successful_updates
 	end
-=begin
-	class TestBsvPlugin < Test::Unit::TestCase
-		class StubApp
-			attr_accessor :registrations, :updates, :packages, :deletions
-			def initialize
-				@deletions = []
-				@updates = {}
-			end
-			def delete(pointer)
-				@deletions.push(pointer)
-			end
-			def each_package(&block)
-				@packages.each(&block)
-			end
-			def registration(iksnr)
-				(@registrations ||={})[iksnr]
-			end
-			def update(pointer, values)
-				@updates.store(pointer, values)
-			end
-		end
-		class StubCell
-			attr_accessor :value
-			def initialize(value)
-				@value = value
-			end
-			def to_s
-				@value.to_s
-			end
-			def to_i
-				@value.to_i
-			end
-			def date
-				Date.today
-			end
-		end	
-		class StubRegistration
-			attr_accessor :packages
-			def package(iksnr)
-				(@packages ||={})[iksnr]
-			end
-			def each_package(&block)
-				(@packages ||= {}).each_value(&block)
-			end
-		end
-		class StubPackage
-			attr_accessor :pointer, :sl_entry, :ikscd, :iksnr,
-				:price_exfactory, :price_public
-			def diff(hash)
-				hash
-			end
-		end
-		class StubSlEntry
-			attr_accessor :pointer
-		end
-
-		def setup
-			@url = 'http://www.galinfo.net/sl/BSV_per_2003.06.01.xls'
-			@app = StubApp.new
-			@plug = ODDB::BsvPlugin.new(@app)
-		end
-		def test_purge_sl_entries
-			sl_entry1 = StubSlEntry.new
-			sl_entry2 = StubSlEntry.new
-			sl_entry1.pointer = 1
-			sl_entry2.pointer = 2
-			pack1 = StubPackage.new
-			pack2 = StubPackage.new
-			pack3 = StubPackage.new
-			pack1.pointer = 11
-			pack2.pointer = 12
-			pack3.pointer = 13
-			pack1.sl_entry = sl_entry1 
-			pack3.sl_entry = sl_entry2
-			@app.packages = [ pack1, pack2, pack3 ]
-			@plug.updated_packages = [ pack3 ]	
-			@plug.purge_sl_entries
-			assert_equal([1], @app.deletions)
-			expected = {
-				11	=>	[:sl_entry_delete],
-			}
-			assert_equal(expected, @plug.change_flags)
-		end
-		def test_report_format
-			row = {
-				:company						=>	'3M (Schweiz AG)',
-				:iksnr							=>	'39437',
-				:ikscd							=>	'031',
-				:ikscat							=>	'B',
-				:introduction_date	=>	Date.new(2003,6,18),
-				:name								=>	'Acupan Filmtabs 30 mg 20 Filmtabs 30 mg',
-				:price_exfactory		=>	5.39,
-				:price_public				=>	12.50,
-				:limitation					=>	false,
-				:limitation_points	=>	0,
-			}
-			expected = [
-				"Name:               Acupan Filmtabs 30 mg 20 Filmtabs 30 mg",
-				"Company:            3M (Schweiz AG)",
-				"Iksnr:              39437",
-				"Ikscd:              031",
-				"Ikscat:             B",
-				"Generic-type:       ",
-				"Price-exfactory:    5.39",
-				"Price-public:       12.5",
-				"Introduction-date:  2003-06-18",
-				"Limitation:         false", 
-				"Limitation-points:  0",
-			]
-			assert_equal(expected, @plug.report_format(row))
-		end
-		def test_report
-			assert_nothing_raised { @plug.report }
-		end
-		def test_update_package1 # Unknown Package
-			reg = StubRegistration.new
-			row = {
-				:company						=>	'3M (Schweiz AG)',
-				:iksnr							=>	'39437',
-				:ikscd							=>	'031',
-				:ikscat							=>	'B',
-				:introduction_date	=>	Date.today,
-				:name								=>	'Acupan Filmtabs 30 mg 20 Filmtabs 30 mg',
-				:price_exfactory		=>	5.39,
-				:price_public				=>	12.50,
-				:limitation					=>	false,
-				:limitation_points	=>	0,
-			}
-			@plug.update_package(reg, row)
-			assert_equal([row], @plug.unknown_packages)
-			assert_equal(['39437'], @plug.package_diffs.keys)
-			diff = @plug.package_diffs['39437']
-			assert_instance_of(ODDB::BsvPlugin::PackageDiffer, diff)
-			assert_equal(['031'], diff.bsv)
-			assert_equal([], diff.both)
-		end
-		def test_update_package2 # Price changed
-			reg = StubRegistration.new
-			package = StubPackage.new
-			package.sl_entry = StubSlEntry.new
-			package.price_exfactory = 4.00
-			pointer = ODDB::Persistence::Pointer.new
-			package.pointer = pointer
-			reg.packages = {
-				'031'	=>	package
-			}	
-			row = {
-				:company						=>	'3M (Schweiz AG)',
-				:iksnr							=>	'39437',
-				:ikscd							=>	'031',
-				:ikscat							=>	'B',
-				:introduction_date	=>	Date.today,
-				:name								=>	'Acupan Filmtabs 30 mg 20 Filmtabs 30 mg',
-				:price_exfactory		=>	5.39,
-				:price_public				=>	12.50,
-				:limitation					=>	false,
-				:limitation_points	=>	0,
-			}
-			@plug.update_package(reg, row)
-			expected = {
-				:price_exfactory	=>	5.39,
-				:price_public			=>	12.50,
-			}
-			assert_equal(expected, @app.updates[pointer])
-			assert_equal({pointer => [:price_rise]}, @plug.change_flags)
-			assert_equal([], @plug.unknown_packages)
-			assert_equal(['39437'], @plug.package_diffs.keys)
-			diff = @plug.package_diffs['39437']
-			assert_instance_of(ODDB::BsvPlugin::PackageDiffer, diff)
-			assert_equal([], diff.bsv)
-			assert_equal(['031'], diff.both)
-		end
-		def test_update_package3 # only price_public
-			reg = StubRegistration.new
-			package = StubPackage.new
-			package.sl_entry = StubSlEntry.new
-			pointer = ODDB::Persistence::Pointer.new
-			package.pointer = pointer
-			reg.packages = {
-				'031'	=>	package
-			}	
-			row = {
-				:company						=>	'3M (Schweiz AG)',
-				:iksnr							=>	'39437',
-				:ikscd							=>	'031',
-				:ikscat							=>	'B',
-				:introduction_date	=>	Date.today,
-				:name								=>	'Acupan Filmtabs 30 mg 20 Filmtabs 30 mg',
-				:price_public				=>	12.50,
-				:limitation					=>	false,
-				:limitation_points	=>	0,
-			}
-			assert_nothing_raised { @plug.update_package(reg, row) }
-			expected = {
-				:price_public			=>	12.50,
-			}
-			assert_equal(expected, @app.updates[pointer])
-			assert_equal([], @plug.unknown_packages)
-		end
-		def test_update_package4 # no price information
-			reg = StubRegistration.new
-			package = StubPackage.new
-			package.sl_entry = StubSlEntry.new
-			pointer = ODDB::Persistence::Pointer.new
-			package.pointer = pointer
-			reg.packages = {
-				'031'	=>	package
-			}	
-			row = {
-				:company						=>	'3M (Schweiz AG)',
-				:iksnr							=>	'39437',
-				:ikscd							=>	'031',
-			}
-			assert_nothing_raised { @plug.update_package(reg, row) }
-			expected = {}
-			assert_equal(expected, @app.updates[pointer])
-			assert_equal({}, @plug.change_flags)
-			assert_equal([], @plug.unknown_packages)
-		end
-		def test_update_package5 # no prior SL-Entry
-			reg = StubRegistration.new
-			package = StubPackage.new
-			pointer = ODDB::Persistence::Pointer.new
-			package.pointer = pointer
-			reg.packages = {
-				'031'	=>	package
-			}	
-			row = {
-				:company						=>	'3M (Schweiz AG)',
-				:iksnr							=>	'39437',
-				:ikscd							=>	'031',
-				:ikscat							=>	'B',
-				:introduction_date	=>	Date.today,
-				:name								=>	'Acupan Filmtabs 30 mg 20 Filmtabs 30 mg',
-				:price_public				=>	12.50,
-				:limitation					=>	false,
-				:limitation_points	=>	0,
-			}
-			assert_nothing_raised { @plug.update_package(reg, row) }
-			expected = {
-				:price_public			=>	12.50,
-			}
-			assert_equal(expected, @app.updates[pointer])
-			assert_equal({pointer => [:sl_entry]}, @plug.change_flags)
-			assert_equal([], @plug.unknown_packages)
-		end
-		def test_update_registration1
-			row = {
-				:company						=>	'3M (Schweiz AG)',
-				:iksnr							=>	'39437',
-				:ikscd							=>	'031',
-				:ikscat							=>	'B',
-				:introduction_date	=>	Date.today,
-				:name								=>	'Acupan Filmtabs 30 mg 20 Filmtabs 30 mg',
-				:price_exfactory		=>	5.39,
-				:price_public				=>	12.50,
-				:limitation					=>	false,
-				:limitation_points	=>	0,
-			}
-			@plug.update_registration(row)
-			assert_equal([row], @plug.unknown_registrations)
-		end
-		def test_update_registration2
-			@app.registrations = {
-				'39437'	=>	StubRegistration.new
-			}
-			row = {
-				:company						=>	'3M (Schweiz AG)',
-				:iksnr							=>	'39437',
-				:ikscd							=>	'031',
-				:ikscat							=>	'B',
-				:introduction_date	=>	Date.today,
-				:name								=>	'Acupan Filmtabs 30 mg 20 Filmtabs 30 mg',
-				:price_exfactory		=>	5.39,
-				:price_public				=>	12.50,
-				:limitation					=>	false,
-				:limitation_points	=>	0,
-			}
-			@plug.update_registration(row)
-			pointer = ODDB::Persistence::Pointer.new([:registration, '39437'])
-			assert_nil(@app.updates[pointer])
-			assert_equal([], @plug.unknown_registrations)
-		end
-		def test_update_registration3
-			@app.registrations = {
-				'39437'	=>	StubRegistration.new
-			}
-			row = {
-				:company						=>	'3M (Schweiz AG)',
-				:iksnr							=>	'39437',
-				:ikscd							=>	'031',
-				:ikscat							=>	'B',
-				:introduction_date	=>	Date.today,
-				:name								=>	'Acupan Filmtabs 30 mg 20 Filmtabs 30 mg',
-				:price_exfactory		=>	5.39,
-				:price_public				=>	12.50,
-				:limitation					=>	false,
-				:limitation_points	=>	0,
-				:generic_type				=>	:generic,
-			}
-			@plug.update_registration(row)
-			pointer = ODDB::Persistence::Pointer.new([:registration, '39437'])
-			hash = @app.updates.collect { |key, value|
-				value if key==pointer
-			}.compact.first
-			assert_equal([], @plug.unknown_registrations)
-			assert_equal({:generic_type => :generic}, hash)
-		end
-		def test_update_sl
-			row = {
-				:company						=>	'3M (Schweiz AG)',
-				:iksnr							=>	'39437',
-				:ikscd							=>	'031',
-				:ikscat							=>	'B',
-				:introduction_date	=>	Date.today,
-				:name								=>	'Acupan Filmtabs 30 mg 20 Filmtabs 30 mg',
-				:price_exfactory		=>	5.39,
-				:price_public				=>	12.50,
-				:limitation					=>	false,
-				:limitation_points	=>	0,
-			}
-			pointer = ODDB::Persistence::Pointer.new()
-			sl_pointer = pointer + :sl_entry
-			creator = sl_pointer.creator
-			expected = {
-				:introduction_date	=>	Date.today,
-				:limitation					=>	false,
-				:limitation_points	=>	0,
-			}
-			@plug.update_sl(pointer, row)
-			hash = @app.updates.collect { |key, value|
-				value if key==creator
-			}.compact.first
-			assert_equal(expected, hash)
-		end
-		def test_price_flag
-			assert_equal(:price_cut, @plug.price_flag(2,1,4,3))
-			assert_equal(:price_rise, @plug.price_flag(1,2,4,3))
-			assert_equal(:price_rise, @plug.price_flag(2,1,3,4))
-			assert_equal(:price_rise, @plug.price_flag(1,2,3,4))
-			assert_equal(:price_rise, @plug.price_flag(nil,2,3,4))
-			assert_equal(:price_rise, @plug.price_flag(1,nil,3,4))
-			assert_equal(:price_rise, @plug.price_flag(nil,nil,3,4))
-			assert_equal(:price_cut, @plug.price_flag(nil,2,4,3))
-			assert_equal(:price_cut, @plug.price_flag(1,nil,4,3))
-			assert_equal(:price_cut, @plug.price_flag(nil,nil,4,3))
-			assert_equal(:price_rise, @plug.price_flag(1,2,nil,4))
-			assert_equal(:price_rise, @plug.price_flag(1,2,3,nil))
-			assert_equal(:price_rise, @plug.price_flag(1,2,nil,nil))
-			assert_equal(:price_cut, @plug.price_flag(2,1,nil,4))
-			assert_equal(:price_cut, @plug.price_flag(2,1,3,nil))
-			assert_equal(:price_cut, @plug.price_flag(2,1,nil,nil))
-			assert_equal(:price_rise, @plug.price_flag(nil, nil, nil, nil))
-		end
-	end
-=end
 	class TestPackageDiffer < Test::Unit::TestCase
 		class StubRegistration
 			attr_accessor :iksnr, :name_base
@@ -970,7 +605,7 @@ a progressé pendant ou après le traitement standard.
 			end
 		end
 		class StubRegistration
-			attr_accessor :packages, :iksnr, :name_base
+			attr_accessor :packages, :iksnr, :name_base, :sequences
 			def initialize(iksnr)
 				@iksnr = iksnr
 			end
@@ -981,9 +616,12 @@ a progressé pendant ou après le traitement standard.
 				(@packages ||= {}).each_value(&block)
 			end
 		end
+		class StubSequence
+			attr_accessor :packages, :dose
+		end
 		class StubPackage
 			attr_accessor :pointer, :sl_entry, :ikscd, :iksnr,
-				:price_exfactory, :price_public
+				:price_exfactory, :price_public, :comparable_size
 			def diff(hash)
 				hash
 			end
@@ -1231,6 +869,37 @@ a progressé pendant ou après le traitement standard.
 		end
 		def test_report
 			assert_nothing_raised { @plugin.report }
+		end
+		def test_handle_unknown_package
+			pack1 = StubPackage.new
+			pack1.pointer = Persistence::Pointer.new(:package, '001')
+			pack1.comparable_size = 1
+			pack2 = StubPackage.new
+			pack2.pointer = Persistence::Pointer.new(:package, '011')
+			pack2.comparable_size = 11
+			seq = StubSequence.new
+			seq.packages = { '001' => pack1, '002' => pack2 }
+			seq.dose = nil
+			reg = StubRegistration.new('00646')
+			reg.sequences = { '01' => seq }
+			@app.registrations = {
+				'00646'	=>	reg
+			}
+			pac = BsvPlugin2::ParsedPackage.new
+			pac.company = 'Aventis Pasteur MSD AG'
+			pac.ikskey = '00646000'
+			pac.introduction_date	 = Date.today
+			pac.name = 'Revaxis Amp. 0.5 ml 1 Amp. 0,5 ml'
+			pac.price_exfactory	= 16.44
+			pac.price_public = 35.75
+			pac.limitation = false
+			pac.limitation_points = 0
+			pac.generic_type = nil
+			@plugin.handle_unknown_package(pac)
+			assert_equal(0, @app.deletions.size)
+			assert_equal(1, @app.updates.size)
+			assert_equal([(pack1.pointer + :sl_entry).creator], 
+				@app.updates.keys)
 		end
 	end
 	class TestParsedPackage < Test::Unit::TestCase

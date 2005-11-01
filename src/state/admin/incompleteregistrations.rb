@@ -12,6 +12,7 @@ class IncompleteRegs < State::Admin::Global
 	ARCHIVE_PATH = File.expand_path('../../data', File.dirname(__FILE__))
 	DIRECT_EVENT = :incomplete_registrations
 	VIEW = View::Admin::IncompleteRegistrations
+=begin
 	def update_bsv
 		url = @session.user_input(:bsv_url)
 		if(url.empty?)
@@ -49,6 +50,7 @@ class IncompleteRegs < State::Admin::Global
 			[match[1], match[2], match[3]]
 		end
 	end
+=end
 end
 		end
 	end

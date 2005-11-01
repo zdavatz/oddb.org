@@ -127,16 +127,6 @@ module ODDB
 				end
 			}
 		end
-		def update_bsv_from_url(server, path, target)
-			klass = BsvPlugin
-			plug = klass.new(@app)
-			subj = 'SL-Update'
-			wrap_update(klass, subj) { 
-				if(plug.update_from_url(server, path, target))
-					log_notify_bsv(plug, Date.today)
-				end
-			}
-		end
 		def update_doctors
 			update_simple(Doctors::DoctorPlugin, 'Doctors')
 		end

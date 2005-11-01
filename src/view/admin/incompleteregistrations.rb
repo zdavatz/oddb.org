@@ -58,10 +58,10 @@ end
 class IncompleteRegList < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	View::Admin::InnerIncompleteRegList,
-		[0,1]	=>	View::Admin::BsvForm,
-		[0,2]	=>	:orphaned_patinfos,
-		[0,3] =>  :patinfo_deprived_sequences,
-		[0,4] =>  :orphaned_fachinfos,
+		#[0,1]	=>	View::Admin::BsvForm,
+		[0,1]	=>	:orphaned_patinfos,
+		[0,2] =>  :patinfo_deprived_sequences,
+		[0,3] =>  :orphaned_fachinfos,
 	}	
 	COLSPAN_MAP	= {
 		[0,0]	=> 2,
