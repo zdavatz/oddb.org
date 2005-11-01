@@ -13,7 +13,6 @@ class Patinfo < State::Drugs::Global
 		attr_accessor :pointer_descr
 	end
 	VIEW = View::Drugs::Patinfo
-	VOLATILE = true
 	def init
 		@patinfo = @model
 		@model = PatinfoWrapper.new(@patinfo)

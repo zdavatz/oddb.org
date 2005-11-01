@@ -9,7 +9,6 @@ module ODDB
 		module Drugs
 class DDD < State::Drugs::Global
 	VIEW = View::Drugs::DDD
-	VOLATILE = true
 	LIMITED = true
 	def init
 		if((pointer = @session.user_input(:pointer)))
