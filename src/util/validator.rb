@@ -28,8 +28,8 @@ module ODDB
 		ENUMS = {
 			:address_type	=>	[nil, 'at_work', 'at_praxis',
 				'at_private'],
-			:business_area=>	[nil, 'ba_hospital', 'ba_pharma', 'ba_health',
-				'ba_doctor', ],
+			:business_area=>	[nil, 'ba_hospital', 'ba_pharma', 
+				'ba_insurance', 'ba_doctor', 'ba_health', 'ba_info' ],
 			:canton				=>	[nil, 'AG', 'AI', 'AR', 'BE',
 				'BL', 'BS', 'FR', 'GE', 'GL', 'GR', 'JU', 'LU',
 				'NE', 'NW', 'OW', 'SG', 'SH', 'SO', 'SZ', 'TG',
@@ -186,7 +186,6 @@ module ODDB
 			:address_email,
 			:atc_descr,
 			:bsv_url,
-			:business_area,
 			:business_unit,
 			:challenge,
 			:chapter,

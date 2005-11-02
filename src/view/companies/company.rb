@@ -114,6 +114,7 @@ class UserCompanyForm < View::Form
 	SYMBOL_MAP = {
 		:nbsp									=>	HtmlGrid::Text,
 		:address_header				=>	HtmlGrid::Text,
+		:business_area				=>	HtmlGrid::Select,
 		:generic_type					=>	HtmlGrid::Select,
 		:complementary_type		=>	HtmlGrid::Select,
 		:registration_count		=>	HtmlGrid::Value,	
@@ -191,6 +192,7 @@ class RootCompanyForm < View::Companies::UserCompanyForm
 	SYMBOL_MAP = {
 		:nbsp									=>	HtmlGrid::Text,
 		:address_header				=>	HtmlGrid::Text,
+		:business_area				=>	HtmlGrid::Select,
 		:generic_type					=>	HtmlGrid::Select,
 		:complementary_type		=>	HtmlGrid::Select,
 		:registration_count		=>	HtmlGrid::Value,	

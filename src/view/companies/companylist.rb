@@ -46,6 +46,9 @@ module CompanyList
 	}
 	SORT_DEFAULT = :name
 	SORT_REVERSE = false 
+	def business_area(model, session)
+		@lookandfeel.lookup(model.business_area)
+	end
 	def name(model, session)
 		link = View::PointerLink.new(:name, model, session, self)
 		if(model.ean13)
