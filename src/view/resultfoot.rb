@@ -16,7 +16,8 @@ module ODDB
 				[0,0]	=>	:explain_original,
 				[0,1]	=>	:explain_generic,
 				[0,2]	=>	:explain_complementary,
-				[0,3]	=>	'explain_unknown',
+				[0,3]	=>	:explain_vaccine,
+				[0,4]	=>	'explain_unknown',
 				[1,0]	=>	'explain_fd',
 				[1,1]	=>	'explain_g',
 				[1,2]	=>	'explain_a',
@@ -31,7 +32,7 @@ module ODDB
 				[2,5]	=>	'explain_li',
 			}
 			CSS_MAP = {	
-				[0,3]	=>	'explain-unknown',
+				[0,4]	=>	'explain-unknown',
 				[1,0,2,6]	=>	'explain-infos',
 			}
 			def explain_original(model, session)
@@ -53,6 +54,13 @@ module ODDB
 				link.href = @lookandfeel.lookup(:explain_complementary_url) 
 				link.value = @lookandfeel.lookup(:explain_complementary)
 				link.attributes['class'] = 'explain-complementary'
+				link
+			end
+			def explain_vaccine(model, session)
+				link = HtmlGrid::Link.new(:explain_vaccine, model, session, self)
+				link.href = @lookandfeel.lookup(:explain_vaccine_url) 
+				link.value = @lookandfeel.lookup(:explain_vaccine)
+				link.attributes['class'] = 'explain-vaccine'
 				link
 			end
 		end

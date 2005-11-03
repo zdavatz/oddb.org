@@ -123,6 +123,15 @@ td.result-complementary-bg {
 	color : #dd1cff;
 	padding : 4px;
 }
+td.result-vaccine {
+	color : brown;
+	padding : 4px;
+}
+td.result-vaccine-bg {
+	background : $rslt_bg;
+	color : brown;
+	padding : 4px;
+}
 td.result-unknown {
 	padding : 4px;
 }
@@ -228,6 +237,40 @@ a.result-b-r-complementary-bg:active {
 td.result-b-r-complementary-bg {
 	background : $rslt_bg;
 	color : #dd1cff;
+	font-weight: bold;
+	padding : 4px;
+	text-align : right;
+}
+a.result-b-r-vaccine {
+	color : brown;
+	font-weight: bold;
+}
+a.result-b-r-vaccine:hover {
+	color : $rslt_link_hover_color;
+}
+a.result-b-r-vaccine:active {
+	color : gold;
+}
+td.result-b-r-vaccine {
+	color : brown;
+	font-weight: bold;
+	padding : 4px;
+	text-align : right;
+}
+a.result-b-r-vaccine-bg {
+	background : $rslt_bg;
+	color : brown;
+	font-weight: bold;
+}
+a.result-b-r-vaccine-bg:hover {
+	color : $rslt_link_hover_color;
+}
+a.result-b-r-vaccine-bg:active {
+	color : gold;
+}
+td.result-b-r-vaccine-bg { 
+	background : $rslt_bg;
+	color : brown;
 	font-weight: bold;
 	padding : 4px;
 	text-align : right;
@@ -364,6 +407,30 @@ td.result-i-r-complementary-bg {
 	padding : 4px;
 	text-align : right;
 }
+td.result-i-vaccine {
+	color : brown;
+	font-style : italic;
+	padding : 4px;
+}
+td.result-i-vaccine-bg {
+	background : $rslt_bg;
+	color : brown;
+	font-style : italic;
+	padding : 4px;
+}
+td.result-i-r-vaccine {
+	color : brown;
+	font-style : italic;
+	padding : 4px;
+	text-align : right;
+}
+td.result-i-r-vaccine-bg {
+	background : $rslt_bg;
+	color : brown;
+	font-style : italic;
+	padding : 4px;
+	text-align : right;
+}
 td.result-r-generic {
 	color : #2ba476;
 	padding : 4px;
@@ -403,6 +470,17 @@ td.result-r-complementary {
 td.result-r-complementary-bg {
 	color : #dd1cff;
 	background : $rslt_bg;
+	padding : 4px;
+	text-align : right;
+}
+td.result-r-vaccine {
+	color : brown;
+	padding : 4px;
+	text-align : right;
+}
+td.result-r-vaccine-bg {
+	background : $rslt_bg;
+	color : brown;
 	padding : 4px;
 	text-align : right;
 }
@@ -522,6 +600,31 @@ td.result-big-complementary-bg {
 	font-weight : bold;
 	padding : 4px;
 }
+a.result-big-vaccine, 
+a.result-big-vaccine:link, 
+a.result-big-vaccine:visited {
+	color : brown;
+	text-decoration : none;
+}
+a.result-big-vaccine:hover {
+	color : $rslt_link_hover_color;
+}
+a.result-big-vaccine:active {
+	color : gold;
+}
+td.result-big-vaccine {
+	color : brown;
+	font-size : 14px;
+	font-weight : bold;
+	padding : 4px;
+}
+td.result-big-vaccine-bg {
+	background : $rslt_bg;
+	color : brown;
+	font-size : 14px;
+	font-weight : bold;
+	padding : 4px;
+}
 a.result-small-font, 
 a.result-small-font:link, 
 a.result-small-font:visited {
@@ -543,16 +646,24 @@ td.result-small-font-bg {
 	font-size : 10px;
 	padding : 4px;
 }
-td.result-edit-generic, td.result-edit-original, td.result-edit-unknown, td.result-edit-complementary,
-a.result-edit-generic, a.result-edit-original, a.result-edit-unknown, a.result-edit-complementary
+td.result-edit-generic, td.result-edit-original, 
+td.result-edit-unknown, td.result-edit-complementary,
+td.result-edit-vaccine,
+a.result-edit-generic, a.result-edit-original, 
+a.result-edit-unknown, a.result-edit-complementary,
+a.result-edit-vaccine
 {
 	color : $list_font_color;
 	font-size : 11px;
 	text-decoration : none;
 	padding : 4px;
 }
-td.result-edit-generic-bg, td.result-edit-original-bg, td.result-edit-unknown-bg, td.result-edit-complementary-bg,
-a.result-edit-generic-bg, a.result-edit-original-bg, a.result-edit-unknown-bg, a.result-edit-complementary-bg
+td.result-edit-generic-bg, td.result-edit-original-bg, 
+td.result-edit-unknown-bg, td.result-edit-complementary-bg,
+td.result-edit-vaccine-bg,
+a.result-edit-generic-bg, a.result-edit-original-bg, 
+a.result-edit-unknown-bg, a.result-edit-complementary-bg,
+a.result-edit-vaccine-bg
 {
 	background : $rslt_bg;
 	color : $list_font_color;
@@ -620,6 +731,19 @@ td.result-pubprice-complementary-bg {
 	padding-right : 10px;
 	text-align : right;
 }
+td.result-pubprice-vaccine {
+	color : brown;
+	font-weight : bold;
+	padding-right : 10px;
+	text-align : right;
+}
+td.result-pubprice-vaccine-bg {
+	background : $rslt_bg;
+	color : brown;
+	font-weight : bold;
+	padding-right : 10px;
+	text-align : right;
+}
 a.feedback, a.feedback:link, a.feedback:visited, a.square {
 	color: black;
 	background-color : #ffbc6f;
@@ -637,11 +761,11 @@ a.google_search, a.google_search:link, a.google_search:visited, a.square {
 	padding : 2px 5px 2px 5px;
 }
 td.square, td.square-original, td.square-generic,
-td.square-complementary, td.square-unknown {
+td.square-complementary, td.square-vaccine, td.square-unknown {
 	padding : 2px;
 }
 td.square-bg, td.square-original-bg, 
-td.square-generic-bg, td.square-complementary-bg, 
+td.square-generic-bg, td.square-complementary-bg, td.square-vaccine-bg,
 td.square-unknown-bg {
 	padding : 2px;
 	background : $rslt_bg;
@@ -652,10 +776,16 @@ td.bg a.feedback {
 
 
 a.result-infos, a.result-infos:link, a.result-infos:visited,
-a.result-infos-original, a.result-infos-original:link, a.result-infos-original:visited,
-a.result-infos-generic, a.result-infos-generic:link, a.result-infos-generic:visited,
-a.result-infos-complementary, a.result-infos-complementary:link, a.result-infos-complementary:visited,
-a.result-infos-unknown, a.result-infos-unknown:link, a.result-infos-unknown:visited
+a.result-infos-original, a.result-infos-original:link, 
+a.result-infos-original:visited,
+a.result-infos-generic, a.result-infos-generic:link, 
+a.result-infos-generic:visited,
+a.result-infos-complementary, a.result-infos-complementary:link, 
+a.result-infos-complementary:visited,
+a.result-infos-vaccine, a.result-infos-vaccine:link, 
+a.result-infos-vaccine:visited,
+a.result-infos-unknown, a.result-infos-unknown:link, 
+a.result-infos-unknown:visited
 {
 	color : black;
 	background : $rslt_infos_bg_bright;
@@ -668,16 +798,23 @@ td.result-infos,
 td.result-infos-original, 
 td.result-infos-generic, 
 td.result-infos-complementary, 
+td.result-infos-vaccine, 
 td.result-infos-unknown
 {
 	padding : 2px;
 }
 
 a.result-infos-bg, a.result-infos-bg:link, a.result-infos-bg:visited, 
-a.result-infos-original-bg, a.result-infos-original-bg:link, a.result-infos-original-bg:visited, 
-a.result-infos-generic-bg, a.result-infos-generic-bg:link, a.result-infos-generic-bg:visited,
-a.result-infos-complementary-bg, a.result-infos-complementary-bg:link, a.result-infos-complementary-bg:visited, 
-a.result-infos-unknown-bg, a.result-infos-unknown-bg:link, a.result-infos-unknown-bg:visited 
+a.result-infos-original-bg, a.result-infos-original-bg:link, 
+a.result-infos-original-bg:visited, 
+a.result-infos-generic-bg, a.result-infos-generic-bg:link, 
+a.result-infos-generic-bg:visited,
+a.result-infos-complementary-bg, a.result-infos-complementary-bg:link, 
+a.result-infos-complementary-bg:visited, 
+a.result-infos-vaccine-bg, a.result-infos-vaccine-bg:link, 
+a.result-infos-vaccine-bg:visited, 
+a.result-infos-unknown-bg, a.result-infos-unknown-bg:link, 
+a.result-infos-unknown-bg:visited 
 {
 	color : black;
 	background : $rslt_infos_bg_dark;
@@ -690,6 +827,7 @@ a.result-infos-unknown-bg, a.result-infos-unknown-bg:link, a.result-infos-unknow
 td.result-infos-original-bg, 
 td.result-infos-generic-bg, 
 td.result-infos-complementary-bg, 
+td.result-infos-vaccine-bg, 
 td.result-infos-unknown-bg
 {
 	background : $rslt_bg;
@@ -703,10 +841,16 @@ td.result-infos-bg
 }
 
 a.important-infos, a.important-infos:link, a.important-infos:visited,
-a.important-infos-original, a.important-infos-original:link, a.important-infos-original:visited,
-a.important-infos-generic, a.important-infos-generic:link, a.important-infos-generic:visited,
-a.important-infos-unknown, a.important-infos-unknown:link, a.important-infos-unknown:visited,
-a.important-infos-complementary, a.important-infos-complementary:link, a.important-infos-complementary:visited
+a.important-infos-original, a.important-infos-original:link, 
+a.important-infos-original:visited,
+a.important-infos-generic, a.important-infos-generic:link, 
+a.important-infos-generic:visited,
+a.important-infos-unknown, a.important-infos-unknown:link, 
+a.important-infos-unknown:visited,
+a.important-infos-complementary, a.important-infos-complementary:link,
+a.important-infos-complementary:visited,
+a.important-infos-vaccine, a.important-infos-vaccine:link,
+a.important-infos-vaccine:visited
 {
 	color : black;
 	background : $rslt_infos_bg_bright;
@@ -720,6 +864,7 @@ td.important-infos,
 td.important-infos-original, 
 td.important-infos-generic, 
 td.important-infos-unknown,
+td.important-infos-vaccine,
 td.important-infos-complementary
 {
 	padding : 0px;
@@ -729,11 +874,19 @@ td.bg a.important-infos {
 	background : $rslt_infos_bg_dark;
 }
 
-a.important-infos-bg, a.important-infos-bg:link, a.important-infos-bg:visited, 
-a.important-infos-original-bg, a.important-infos-original-bg:link, a.important-infos-original-bg:visited, 
-a.important-infos-generic-bg, a.important-infos-generic-bg:link, a.important-infos-generic-bg:visited,
-a.important-infos-unknown-bg, a.important-infos-unknown-bg:link, a.important-infos-unknown-bg:visited,
-a.important-infos-complementary-bg, a.important-infos-complementary-bg:link, a.important-infos-complementary-bg:visited 
+a.important-infos-bg, a.important-infos-bg:link, 
+a.important-infos-bg:visited, 
+a.important-infos-original-bg, a.important-infos-original-bg:link, 
+a.important-infos-original-bg:visited, 
+a.important-infos-generic-bg, a.important-infos-generic-bg:link, 
+a.important-infos-generic-bg:visited,
+a.important-infos-unknown-bg, a.important-infos-unknown-bg:link, 
+a.important-infos-unknown-bg:visited,
+a.important-infos-vaccine-bg, a.important-infos-vaccine-bg:link, 
+a.important-infos-vaccine-bg:visited,
+a.important-infos-complementary-bg, 
+a.important-infos-complementary-bg:link, 
+a.important-infos-complementary-bg:visited 
 {
 	color : black;
 	background : $rslt_infos_bg_dark;
@@ -747,6 +900,7 @@ a.important-infos-complementary-bg, a.important-infos-complementary-bg:link, a.i
 td.important-infos-original-bg, 
 td.important-infos-generic-bg, 
 td.important-infos-unknown-bg,
+td.important-infos-vaccine-bg,
 td.important-infos-complementary-bg
 {
 	background : $rslt_bg;
@@ -1295,6 +1449,11 @@ a.explain-original {
 a.explain-complementary {
 	font-weight : bold;
 	color : #dd1cff;
+	padding-left : 4px;
+}
+a.explain-vaccine {
+	font-weight : bold;
+	color : brown;
 	padding-left : 4px;
 }
 td.explain-unknown {
