@@ -67,6 +67,13 @@ module ODDB
 			@duration = 1
 			@data = {}
 		end
+		def dup
+			dup = super
+			if(@data)
+				dup.data = @data.dup
+			end
+			dup
+		end
 		def total_brutto
 			total_netto * (1.0 + (@vat_rate.to_f / 100.0))
 		end

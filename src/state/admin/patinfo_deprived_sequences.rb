@@ -31,12 +31,10 @@ class PatinfoDeprivedSequences < State::Admin::Global
 		begin
 			if(str = @session.user_input(:pattern))
 				pattern = Regexp.new(str)
-				@session.app.registrations.each_value { |reg|
-					reg.sequences.each_value { |seq|
-						if(pattern.match(seq.name_base))
-							@session.app.update(seq.pointer, {:patinfo_shadow => true})
-						end
-					}
+				@session.each_sequence { |seq|
+					if(pattern.match(seq.name_base))
+						@session.app.update(seq.pointer, {:patinfo_shadow => true})
+					end
 				}
 				patinfo_deprived_sequences
 			else

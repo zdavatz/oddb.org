@@ -14,9 +14,11 @@ module ODDB
 		include AddressObserver
 		ODBA_SERIALIZABLE = ['@addresses']
 		attr_accessor :address_email, :business_area, :business_unit,
-			:cl_status, :complementary_type, :contact, :ean13, :fi_status,
+			:cl_status, :complementary_type, :contact, :ean13, 
 			:generic_type, :invoice_email, :logo_filename, :name,
-			:pi_status, :powerlink, :regulatory_email, :url
+			:disable_autoinvoice, :powerlink, :regulatory_email, :url, 
+			:patinfo_price
+		attr_writer :pref_invoice_date
 		alias :fullname :name
 		alias :power_link= :powerlink=
 		alias :power_link :powerlink
@@ -54,6 +56,15 @@ module ODDB
 		def pointer_descr
 			@name
 		end
+		def pref_invoice_date
+			if(@pref_invoice_date)
+				today = Date.today
+				while(@pref_invoice_date < today)
+					@pref_invoice_date = @pref_invoice_date >> 12
+				end
+				@pref_invoice_date
+			end
+		end
 		def refactor_addresses
 			addr = Address2.new
 			addr.location = [@plz, @location].join(" ")
@@ -77,12 +88,6 @@ module ODDB
 		def adjust_types(input, app=nil)
 			input.each { |key, val|
 				case key
-				when :fi_status, :cl_status, :pi_status
-					input[key] = [
-						/true/i, /y/i, /ja?/i, /1/
-						].any? { |pattern|
-						pattern.match(val.to_s)
-					}
 				when :powerlink
 					if(val.empty?)
 						input[key] = nil

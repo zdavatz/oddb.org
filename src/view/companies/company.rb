@@ -2,15 +2,17 @@
 # View::Companies::Company -- oddb -- 27.05.2003 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'
-require 'htmlgrid/labeltext'
-require 'htmlgrid/select'
-require 'htmlgrid/text'
-require 'htmlgrid/link'
-require 'htmlgrid/urllink'
-require 'htmlgrid/value'
-require 'htmlgrid/inputfile'
 require	'htmlgrid/errormessage'
 require	'htmlgrid/infomessage'
+require 'htmlgrid/inputcheckbox'
+require 'htmlgrid/inputdate'
+require 'htmlgrid/inputfile'
+require 'htmlgrid/labeltext'
+require 'htmlgrid/link'
+require 'htmlgrid/select'
+require 'htmlgrid/text'
+require 'htmlgrid/urllink'
+require 'htmlgrid/value'
 require 'view/address'
 require 'view/descriptionform'
 require 'view/form'
@@ -100,8 +102,6 @@ class UserCompanyForm < View::Form
 		[0,9]			=>	:business_area,
 		[2,9]			=>	:ean13,
 		[0,10]		=>	:registration_count,
-		#[2,10]		=>	:fi_status,
-		#[2,11]    =>  :pi_status,
 		[0,11]		=>	:generic_type,
 		[2,11]		=>	:complementary_type,
 		[1,12]		=>	:submit,
@@ -118,8 +118,6 @@ class UserCompanyForm < View::Form
 		:generic_type					=>	HtmlGrid::Select,
 		:complementary_type		=>	HtmlGrid::Select,
 		:registration_count		=>	HtmlGrid::Value,	
-		:fi_status						=>	HtmlGrid::Select,
-		:pi_status						=>	HtmlGrid::Select,
 	}
 	TAG_METHOD = :multipart_form
 	def init
@@ -167,27 +165,30 @@ class RootCompanyForm < View::Companies::UserCompanyForm
 		[2,1]			=>	:contact_email,
 		[1,2]			=>	:set_pass,
 		[2,2]			=>	:regulatory_email,
-		[0,4]			=>	:address,
-		[0,5]			=>	:plz,
-		[2,5]			=>	:city,
-		[0,6]			=>	:phone,
-		[2,6]			=>	:fax,
-		[0,7]			=>	:url,
-		[2,7]			=>	:address_email,
-		[0,8]			=>	:powerlink,
-		[2,8]			=>	:logo_file,
-		[0,10]		=>	:business_area,
-		[2,10]		=>	:ean13,
-		[0,11]		=>	:cl_status,
-		[2,11]		=>	:registration_count,
-		[0,12]		=>	:generic_type,
-		[2,12]		=>	:complementary_type,
-		[1,13]		 =>	:patinfo_stats,
-		[1,14]		=>	:submit,
-		[1,14,0]	=>	:delete_item,
+		[0,3]			=>	:disable_autoinvoice,
+		[2,3]			=>	:pref_invoice_date,
+		[2,4]			=>	:patinfo_price,
+		[0,6]			=>	:address,
+		[0,7]			=>	:plz,
+		[2,7]			=>	:city,
+		[0,8]			=>	:phone,
+		[2,8]			=>	:fax,
+		[0,9]			=>	:url,
+		[2,9]			=>	:address_email,
+		[0,10]		=>	:powerlink,
+		[2,10]		=>	:logo_file,
+		[0,12]		=>	:business_area,
+		[2,12]		=>	:ean13,
+		[0,13]		=>	:cl_status,
+		[2,13]		=>	:registration_count,
+		[0,14]		=>	:generic_type,
+		[2,14]		=>	:complementary_type,
+		[1,15]		=>	:patinfo_stats,
+		[1,16]		=>	:submit,
+		[1,16,0]	=>	:delete_item,
 	}
 	CSS_MAP = {
-		[0,0,4,14]	=>	'list',
+		[0,0,4,16]	=>	'list',
 	}
 	SYMBOL_MAP = {
 		:nbsp									=>	HtmlGrid::Text,
@@ -197,9 +198,9 @@ class RootCompanyForm < View::Companies::UserCompanyForm
 		:complementary_type		=>	HtmlGrid::Select,
 		:registration_count		=>	HtmlGrid::Value,	
 		:cl_status						=>	HtmlGrid::Select,
-		:fi_status						=>	HtmlGrid::Select,
-		:pi_status						=>	HtmlGrid::Select,
 		:logo_file						=>	HtmlGrid::InputFile,
+		:disable_autoinvoice	=>	HtmlGrid::InputCheckbox,
+		:pref_invoice_date		=>	HtmlGrid::InputDate,
 	}
 end
 class UnknownCompanyComposite < HtmlGrid::Composite

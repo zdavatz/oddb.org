@@ -111,6 +111,15 @@ class OddbPrevalence
 			ODDB::Admin::Subsystem.new
 		}
 	end
+	def active_pdf_patinfos
+		active = {}
+		each_sequence { |seq|
+			if(str = seq.pdf_patinfo)
+				active.store(str, 1)
+			end
+		}
+		active
+	end
 	def atcless_sequences
 		ODBA.cache_server.retrieve_from_index('atcless', 'true')
 	end
@@ -189,15 +198,7 @@ class OddbPrevalence
 		}
 	end
 	def count_patinfos
-		patinfo_count = @patinfos.size 
-		@registrations.each_value { |reg| 
-			reg.sequences.each_value { |seq|
-				unless(seq.pdf_patinfo.nil?)
-					patinfo_count += 1
-				end
-			}
-		}
-		patinfo_count
+		@patinfos.size + active_pdf_patinfos.size
 	end
 	def cyp450(id)
 		@cyp450s[id]
@@ -446,6 +447,11 @@ class OddbPrevalence
 	def each_package(&block)
 		@registrations.each_value { |reg|
 			reg.each_package(&block)
+		}
+	end
+	def each_sequence(&block)
+		@registrations.each_value { |reg|
+			reg.each_sequence(&block)
 		}
 	end
 	def execute_command(command)

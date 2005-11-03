@@ -12,14 +12,46 @@ module ODDB
 	class PatinfoInvoicer < Plugin
 		RECIPIENTS = [ 
 			'hwyss@ywesee.com', 
-			'zdavatz@ywesee.com' 
+			'zdavatz@ywesee.com',
 		]
-		def run(day = Date.today - 1)
+		def run(day = Date.today)
+			send_daily_invoices(day - 1)
+			send_annual_invoices(day)
+		end
+		def send_annual_invoices(day = Date.today)
+			items = all_items.select { |item| item.type == :annual_fee }
+			groups = group_by_company(items)
+			groups.each { |company, items|
+				if(!company.disable_autoinvoice && (user = company.user))
+					if(company.pref_invoice_date.nil?)
+						time = items.collect { |item| item.time }.min
+						date = Date.new(time.year, time.month, time.day)
+						company.pref_invoice_date = date
+						company.odba_store
+					end
+					if(day == company.pref_invoice_date)
+						## adjust the annual fee according to company settings
+						adjust_company_fee(company, items)
+						## first send the invoice 
+						send_invoice(day, company, items) 
+						## then store it in the database
+						create_invoice(user, items)
+					end
+				end
+			}
+		end
+		def send_daily_invoices(day)
 			items = recent_items(day)
 			payable_items = filter_paid(items)
 			groups = group_by_company(payable_items)
 			groups.each { |company, items|
-				if(user = company.user)
+				if(!company.disable_autoinvoice && (user = company.user))
+					## work with duplicates
+					items = items.collect { |item| item.dup }
+					## adjust the annual fee according to company settings
+					adjust_company_fee(company, items)
+					## adjust the annual fee according to date
+					adjust_annual_fee(company, items)
 					## first send the invoice 
 					send_invoice(day, company, items) 
 					## then store it in the database
@@ -28,15 +60,56 @@ module ODDB
 			}
 			nil
 		end
+		def adjust_annual_fee(company, items)
+			if(date = company.pref_invoice_date)
+				diy = (date - (date << 12)).to_f
+				items.each { |item|
+					if(item.type == :annual_fee)
+						tim = item.time
+						days = (date - Date.new(tim.year, tim.month, tim.day)).to_f
+						factor = days/diy
+						item.data ||= {}
+						item.data.update({:last_valid_date => date, :days => days})
+						item.quantity = factor
+					end
+				}
+			end
+		end
+		def adjust_company_fee(company, items)
+			price = company.patinfo_price.to_i
+			if(price > 0)
+				items.each { |item|
+					if(item.type == :annual_fee)
+						item.price = price
+					end
+				}
+			end
+		end
+		def all_items
+			active = @app.active_pdf_patinfos.keys.inject({}) { |inj, key|
+				inj.store(key[0,8], 1)
+				inj
+			}
+			## all items for which the product still exists 
+			@app.slate(:patinfo).items.values.select { |item| 
+				active.include?(pdf_name(item))
+			}
+		end
 		def assemble_pdf_invoice(pdfinvoice, day, company, items, email)
 			pdfinvoice.invoice_number = day.strftime('Patinfo-Upload-%d.%m.%Y')
 			lines = [ company.name, "z.H. #{company.contact}", email ]
 			lines += company.address(0).lines
 			pdfinvoice.debitor_address = lines
 			pdfinvoice.items = items.collect { |item|
-				text = [item.text, item_name(item)].compact.join("\n")
-				[ day, text, item.unit, 
-					item.quantity.to_i, item.price.to_f ]
+				lines = [item.text, item_name(item)]
+				if((data = item.data) && (date = data[:last_valid_date]) \
+					&& (days = data[:days]))
+					lines.push(sprintf("%s - %s:", 
+						item.time.strftime("%d.%m.%Y"), date.strftime("%d.%m.%Y")))
+					lines.push(sprintf("%i Tage", days))
+				end
+				[ day, lines.compact.join("\n"), item.unit, 
+					item.quantity.to_f, item.price.to_f ]
 			}
 			pdfinvoice
 		end
@@ -150,14 +223,20 @@ Thank you for your patronage
 			end
 			name unless(name.empty?)
 		end
+		def pdf_name(item)
+			name = item.text
+			if(/^[0-9]{5} [0-9]{2}$/.match(name))
+				name.tr(' ', '_')
+			elsif((ptr = item.item_pointer) && (seq = ptr.resolve(@app)))
+				[seq.iksnr, seq.seqnr].join('_')
+			end
+		end
 		def recent_items(day)
-			slate = @app.slate(:patinfo)
-			all_items = slate.items.values
-			time_start = Time.local(day.year, day.month, day.day)
-			time_end = time_start + (24 * 60 * 60)
-			range = time_start...time_end
+			mday = day.day
+			month = day.month
 			all_items.select { |item|
-				range.include?(item.time)
+				tim = item.time
+				tim.day == mday && tim.month == month
 			}
 		end
 		def resend_invoice(invoice, day = Date.today)
@@ -199,44 +278,6 @@ Thank you for your patronage
 				&& (seq = pointer.resolve(@app)))
 				seq.name
 			end
-		end
-		def transmogrify_items
-			@app.invoices.each_value { |invoice|
-				if(invoice.items.values.any? { |item| item.type == :annual_fee})
-					invoice.keep_if_unpaid = true
-					invoice.odba_store
-				end
-			}
-			root_ptr = Persistence::Pointer.new([:user, 0])
-			slate = @app.slate(:patinfo)
-			items = []
-			slate.items.each_value { |item|
-				if(item.type.nil?)
-					item.unit = 'Jahresgebühr'
-					item.type = :annual_fee
-					item.price = 120
-					item.duration = 365
-					item.expiry_time = InvoiceItem.expiry_time(365, item.time)
-					item.vat_rate = VAT_RATE
-					item.odba_store
-					items.push(item)
-					if(item.user_pointer == root_ptr)
-						fee = item.dup
-						fee.unit = 'Bearbeitung'
-						fee.type = :processing
-						fee.price = 90
-						items.push(fee)
-					end
-				end
-			}
-			payable_items = filter_paid(items)
-			groups = group_by_company(payable_items)
-			groups.each { |company, items|
-				if(user = company.user)
-					create_invoice(user, items)
-				end
-			}
-			nil
 		end
 	end
 end

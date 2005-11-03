@@ -67,7 +67,6 @@ class TestCompany < Test::Unit::TestCase
 		values = {
 			:name						=>	'ywesee.com',
 			:cl_status			=>	true,
-			:fi_status			=>	false,
 			:url						=>	'www.ywesee.com',
 			:business_area	=>	'Intellectual Capital',
 			:contact				=>	'hwyss at ywesee.com',
@@ -78,7 +77,6 @@ class TestCompany < Test::Unit::TestCase
 		@company.update_values(values)
 		assert_equal('ywesee.com', @company.name)
 		assert_equal(true, @company.cl_status)
-		assert_equal(false, @company.fi_status)
 		assert_equal('www.ywesee.com', @company.url)
 		assert_equal('Intellectual Capital', @company.business_area)
 		assert_equal('hwyss at ywesee.com', @company.contact)
@@ -87,8 +85,7 @@ class TestCompany < Test::Unit::TestCase
 	def test_adjust_types
 		values = {
 			:name						=>	'ywesee.com',
-			:cl_status			=>	'true',
-			:fi_status			=>	'false',
+			:cl_status			=>	true,
 			:url						=>	'www.ywesee.com',
 			:business_area	=>	'Intellectual Capital',
 			:contact				=>	'hwyss at ywesee.com',
@@ -99,7 +96,6 @@ class TestCompany < Test::Unit::TestCase
 		expected = {
 			:name						=>	'ywesee.com',
 			:cl_status			=>	true,
-			:fi_status			=>	false,
 			:url						=>	'www.ywesee.com',
 			:business_area	=>	'Intellectual Capital',
 			:contact				=>	'hwyss at ywesee.com',
@@ -126,5 +122,14 @@ class TestCompany < Test::Unit::TestCase
 		assert_equal([:company, 1, :address, 0], 
 			addr.pointer)
 		assert_equal(result, @company.addresses)
+	end
+	def test_pref_invoice_date
+		date = Date.today
+		@company.pref_invoice_date = date
+		assert_equal(date, @company.pref_invoice_date)
+		@company.pref_invoice_date = date >> 1
+		assert_equal(date >> 1, @company.pref_invoice_date)
+		@company.pref_invoice_date = date << 1
+		assert_equal(date >> 11, @company.pref_invoice_date)
 	end
 end

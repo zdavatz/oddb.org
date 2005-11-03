@@ -250,13 +250,8 @@ Grammar OddbSize
 						lasthook = hook
 						laststep = step
 						hook = begin
-						#arity = hook.method(step.first).arity
-						#if(((arity >= 0) && (step.size == arity.next)) \
-						#		|| ((arity < 0) && (step.size >= -arity)))
-								hook.send(*step)
-						#end
+							hook.send(*step)
 						rescue
-							puts "#{hook.class}::#{step.join(',')}: Arity did not match!!!!!!!"
 						end
 					else
 						call = step.shift

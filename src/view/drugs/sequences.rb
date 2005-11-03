@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # View::Drugs::Sequences -- oddb -- 08.02.2005 -- hwyss@ywesee.com
 
+require 'view/alphaheader'
 require 'view/resulttemplate'
 require 'view/resultfoot'
 require 'view/resultcolors'

@@ -75,6 +75,16 @@ module ODDB
 			@plugin.assemble_pdf_invoice(invoice, day, company, items, email)
 			invoice.mock_verify
 		end
+		def test_adjust_annual_fee
+			item1 = AbstractInvoiceItem.new
+			item1.type = :annual_fee
+			item1.time = Time.local(2005, 7, 2, 18, 26, 42)
+			company = FlexMock.new
+			company.mock_handle(:pref_invoice_date) { Date.new(2006) }
+			company.mock_handle(:patinfo_price) { 100 }
+			@plugin.adjust_annual_fee(company, [item1])
+			assert_equal(183.0/365.0, item1.quantity)
+		end
 		def test_filter_paid
 			day = Date.today - 1
 			## Item that has been paid more than a year ago
@@ -146,19 +156,29 @@ module ODDB
 			assert_equal(expected, @plugin.filter_paid(items))
 		end
 		def test_recent_items
+			ptr = FlexMock.new
+			ptr.mock_handle(:resolve) { true }
 			today = Date.today
 			item1 = AbstractInvoiceItem.new
+			item1.item_pointer = ptr
 			item1.time = Time.local(today.year, today.month,
 				today.day) - (24*60*60)
+			item1.text = '12345 01'
 			item2 = AbstractInvoiceItem.new
+			item2.item_pointer = ptr
 			item2.time = Time.local(today.year, today.month,
 				today.day, 23, 59, 59) - (2*24*60*60)
+			item2.text = '12345 02'
 			item3 = AbstractInvoiceItem.new
+			item3.item_pointer = ptr
 			item3.time = Time.local(today.year, today.month,
 				today.day, 23, 59, 59) - (24*60*60)
+			item3.text = '12345 03'
 			item4 = AbstractInvoiceItem.new
+			item4.item_pointer = ptr
 			item4.time = Time.local(today.year, today.month,
 				today.day)
+			item4.text = '12345 04'
 			items = {
 				1	=>	item1,
 				2	=>	item2,
@@ -173,10 +193,22 @@ module ODDB
 				assert_equal(:patinfo, name)
 				slate
 			}
+			@app.mock_handle(:active_pdf_patinfos) {
+				{
+					'12345_01.pdf' => 1, '12345_02.12347435.pdf' => 1,
+					'12345_03.pdf' => 1, '12345_04.e1718.pdf' => 1 
+				}	
+			}
 			assert_equal([item1, item3], @plugin.recent_items(today - 1))
 		end
 		def test_group_by_company
 			old_invoice = FlexMock.new
+			company1 = FlexMock.new
+			company1.mock_handle(:pref_invoice_date) { nil }
+			company1.mock_handle(:patinfo_price) { nil }
+			company2 = FlexMock.new
+			company2.mock_handle(:pref_invoice_date) { nil }
+			company2.mock_handle(:patinfo_price) { nil }
 			@app.mock_handle(:invoices) { { 1 => old_invoice } }
 			old_item = FlexMock.new
 			old_invoice.mock_handle(:items) { { 1 => old_item } }
@@ -185,7 +217,7 @@ module ODDB
 			old_item.mock_handle(:item_pointer) { item_pointer }
 			sequence = FlexMock.new
 			item_pointer.mock_handle(:resolve) { sequence }
-			sequence.mock_handle(:company) { 'company2' }
+			sequence.mock_handle(:company) { company2 }
 			pointer = FlexMock.new
 			time = Time.now
 			item1 = AbstractInvoiceItem.new
@@ -206,15 +238,15 @@ module ODDB
 			item4.time = time
 			company_donor1 = FlexMock.new
 			company_donor2 = FlexMock.new
-			company_donor1.mock_handle(:company) { 'company1' }
-			company_donor2.mock_handle(:company) { 'company2' }
+			company_donor1.mock_handle(:company) { company1 }
+			company_donor2.mock_handle(:company) { company2 }
 			companies = [company_donor1, company_donor2] * 2
 			pointer.mock_handle(:resolve) { companies.shift }
 
 			items = [item1, item2, item3, item4]
 			comps = @plugin.group_by_company(items)
-			comp1 = comps['company1']
-			comp2 = comps['company2']
+			comp1 = comps[company1]
+			comp2 = comps[company2]
 			assert_equal(3, comp1.size)
 			item = comp1.shift
 			assert_equal([item1, item3], comp1)

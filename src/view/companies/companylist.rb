@@ -47,7 +47,9 @@ module CompanyList
 	SORT_DEFAULT = :name
 	SORT_REVERSE = false 
 	def business_area(model, session)
-		@lookandfeel.lookup(model.business_area)
+		if((area = model.business_area) && !area.empty?)
+			@lookandfeel.lookup(area)
+		end
 	end
 	def name(model, session)
 		link = View::PointerLink.new(:name, model, session, self)

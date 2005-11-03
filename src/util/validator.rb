@@ -13,8 +13,8 @@ module ODDB
 		alias :notify_recipient :email
 		alias :receiver_email :email
 		BOOLEAN = [
-			:cl_status,  :download, :experience, :recommend,
-			:impression, :helps, :show_email, :export_flag,
+			:cl_status,  :download, :experience, :recommend, :impression,
+			:helps, :show_email, :export_flag, :disable_autoinvoice
 		]
 		DATES = [
 			:inactive_date,
@@ -23,6 +23,7 @@ module ODDB
 			:revision_date,
 			:market_date,
 			:expiration_date,
+			:pref_invoice_date,
 			:sponsor_until,
 		]
 		ENUMS = {
@@ -44,7 +45,6 @@ module ODDB
 			:generic_type =>	[nil, 'generic', 'original', 'complementary' ],
 			:limitation		=>	['true', 'false'],
 			:payment_method => ['pm_invoice', 'pm_paypal'],
-			:pi_status		=>	['false', 'true'],
 			:patinfo			=>	['delete', 'keep'],
 			:salutation		=>	['salutation_m', 'salutation_f'],
 		}	
@@ -176,6 +176,7 @@ module ODDB
 			:limitation_points,
 			:meaning_index,
 			:months,
+			:patinfo_price,
 			:pi_quantity,
 			:price_exfactory,
 			:price_public,
