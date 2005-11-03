@@ -19,10 +19,7 @@ module ODDB
 				@products = []
 			end
 			def accessory_code
-				code = @code.split('.')
-				code.delete_at(4)
-				code.join(".")
-				code.split(".",2)
+				@code.split('.', 2).last
 			end
 			def add_accessory(acc)
 				@accessories.push(acc)

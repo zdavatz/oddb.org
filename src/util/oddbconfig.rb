@@ -40,6 +40,7 @@ module ODDB
 		'oddb.csv'			=> 30,
 		'doctors.yaml'	=> 30,
 		'doctors.csv'		=> 30,
+		'migel.csv'			=> 30,
 		'oddb.yaml'			=> 30,
 		'fachinfo.yaml'	=> 30,
 		'patinfo.yaml'	=> 30,
