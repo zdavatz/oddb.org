@@ -31,7 +31,9 @@ module ODDB
 				}
 			end
 			def data
-				data = {}
+				data = {
+					:generic_type => :vaccine,
+				}
 				if(@indication)
 					data.store(:indication, @indication)
 				end
