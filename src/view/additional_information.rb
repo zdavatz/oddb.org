@@ -71,15 +71,25 @@ module ODDB
 				link
 			end
 			def ikscat(model, session=@session)
-				txt = HtmlGrid::Component.new(model, session, self)
+				txt = HtmlGrid::Span.new(model, session, self)
 				txt.value = [
 					(cat = model.ikscat),
 					(@lookandfeel.lookup(:sl) unless (sl = model.sl_entry).nil?),
 				].compact.join('&nbsp;/&nbsp;')
-				title = [
-					(@lookandfeel.lookup(('ikscat_'+(cat.downcase)).intern) unless cat.nil?),
-					(@lookandfeel.lookup(:sl_list) unless sl.nil?),
-				].compact.join('&nbsp;/&nbsp;')
+				title_elements = []
+				if(cat)
+					catstr = @lookandfeel.lookup("ikscat_" << cat.to_s.downcase)
+					title_elements.push(catstr)
+				end
+				if(sl)
+					sl_str = @lookandfeel.lookup(:sl_list)
+					if(date = sl.introduction_date)
+						sl_str << @lookandfeel.lookup(:sl_since, 
+							date.strftime(@lookandfeel.lookup(:date_format)))
+					end
+					title_elements.push(sl_str)
+				end
+				title = title_elements.join('&nbsp;/&nbsp;')
 				txt.set_attribute('title', title)
 				txt
 			end
