@@ -82,7 +82,7 @@ module ODDB
 					title_elements.push(catstr)
 				end
 				if(sl)
-					sl_str = @lookandfeel.lookup(:sl_list)
+					sl_str = @lookandfeel.lookup(:sl_list).dup
 					if(date = sl.introduction_date)
 						sl_str << @lookandfeel.lookup(:sl_since, 
 							date.strftime(@lookandfeel.lookup(:date_format)))
