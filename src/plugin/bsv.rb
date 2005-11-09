@@ -271,7 +271,6 @@ module ODDB
 
 			## make a pharmacode-lookup-table from the database-file
 			load_database(db_file)
-			return
 
 			## iterate over all changes in the bulletin, identify the 
 			## corresponding package, apply the changes and record them 
