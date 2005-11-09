@@ -192,7 +192,7 @@ module ODDB
 			wrap_update(klass, subj) {
 				plug = klass.new(@app)
 				[:de].each { |lang|
-					path = File.expand_path("../../data/csv/betäubungsmittel_a_#{lang}.csv",
+					path = File.expand_path("../../data/csv/betaeubungsmittel_a_#{lang}.csv",
 						File.dirname(__FILE__))
 					plug.update(path, lang)
 				}
