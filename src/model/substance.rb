@@ -14,7 +14,7 @@ module ODDB
 		include SequenceObserver
 		ODBA_SERIALIZABLE = [ '@descriptions', '@connection_keys', '@synonyms' ]
 		attr_reader :sequences, :narcotic, :substrate_connections
-		attr_accessor :effective_form, :swissmedic_code
+		attr_accessor :effective_form, :swissmedic_code, :casrn
 		include Comparable
 		include Language
 		def Substance.format_connection_key(key)
