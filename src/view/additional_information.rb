@@ -72,16 +72,28 @@ module ODDB
 			end
 			def ikscat(model, session=@session)
 				txt = HtmlGrid::Span.new(model, session, self)
-				txt.value = [
-					(cat = model.ikscat),
-					(@lookandfeel.lookup(:sl) unless (sl = model.sl_entry).nil?),
-					((narc = "BM") if (model.narcotic)),
-				].compact.join('&nbsp;/&nbsp;')
-				title = [
-					(@lookandfeel.lookup(('ikscat_'+(cat.downcase)).intern) unless cat.nil?),
-					(@lookandfeel.lookup(:sl_list) unless sl.nil?),
-					(@lookandfeel.lookup(:narcotic) if (model.narcotic)),
-				].compact.join('&nbsp;/&nbsp;')
+				text_elements = []
+				title_elements = []
+				if(cat = model.ikscat)
+					text_elements.push(cat)
+					catstr = @lookandfeel.lookup("ikscat_" << cat.to_s.downcase)
+					title_elements.push(catstr)
+				end
+				if(sl = model.sl_entry)
+					text_elements.push(@lookandfeel.lookup(:sl))
+					sl_str = @lookandfeel.lookup(:sl_list).dup
+					if(date = sl.introduction_date)
+						sl_str << @lookandfeel.lookup(:sl_since, 
+							date.strftime(@lookandfeel.lookup(:date_format)))
+					end
+					title_elements.push(sl_str)
+				end
+				if(narc = model.narcotic)
+					text_elements.push(@lookandfeel.lookup(:narc_short))
+					title_elements.push(@lookandfeel.lookup(:narcotic))
+				end
+				txt.value = text_elements.join('&nbsp;/&nbsp;')
+				title = title_elements.join('&nbsp;/&nbsp;')
 				txt.set_attribute('title', title)
 				txt
 			end

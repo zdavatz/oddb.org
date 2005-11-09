@@ -28,14 +28,25 @@ class RequestStub
 	end
 end
 
+Kernel.trap('INT') {
+	if($current.respond_to?(:exit))
+		$current.exit
+		$current = nil
+	else
+		puts "<ctrl-c> is used to kill admin-threads."
+		puts "Type <quit> or <exit> to exit."
+	end
+}
+
 prompt = 'oddb> '
-#DRb.start_service('druby://localhost:0')
 req = RequestStub.new
 request = DRb.start_service('druby://localhost:0', req)
 oddb = DRbObject.new(nil, ODDB::SERVER_URI)
 last_error = nil
 priority = -1
 while(line = readline(prompt, true))
+	result = ''
+	result.extend(DRb::DRbUndumped)
 	line.strip!
 	$stdout.print "-> "
 	case line.downcase
@@ -56,16 +67,20 @@ while(line = readline(prompt, true))
 		end
 	when 'process'
 		cmd = "self['test'].process(DRbObject.new(nil, '#{request.uri}'))"
-		puts "sending #{cmd}"
 		begin 
-			$stdout.puts oddb.admin(cmd)
+			$current = oddb._admin(cmd, result, priority)
+			$current.join
+			$stdout.puts result
 		rescue Exception => last_error
 			$stdout.puts last_error
 		end
 	when /to_html(\[[\d,.]+\])?/
 		begin 
 			range = $1 || "[0,200]"
-			$stdout.puts oddb.admin("self['test'].to_html#{range}")
+			cmd = "self['test'].to_html#{range}"
+			$current = oddb._admin(cmd, result, priority)
+			$current.join
+			$stdout.puts result
 		rescue Exception => last_error
 			$stdout.puts last_error
 		end
@@ -74,10 +89,13 @@ while(line = readline(prompt, true))
 		$stdout.puts "setting Priority to #{priority}"
 	else
 		begin
-			$stdout.puts oddb._admin(line, priority)
+			$current = oddb._admin(line, result, priority)
+			$current.join
+			$stdout.puts result
 		rescue Exception => last_error
 			$stdout.puts last_error
 		end
 	end
+	$current = nil
 	$stdout.flush
 end

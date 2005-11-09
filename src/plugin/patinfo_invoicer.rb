@@ -36,6 +36,12 @@ module ODDB
 						send_invoice(day, company, items) 
 						## then store it in the database
 						create_invoice(user, items)
+					elsif((day >> 12) == company.pref_invoice_date)
+						## if the date has been sent to one year from now,
+						## this invoice has already been sent manually.
+						## store the items anyway to prevent sending a 2-year
+						## invoice on the following day..
+						create_invoice(user, items)
 					end
 				end
 			}
@@ -104,7 +110,7 @@ module ODDB
 				lines = [item.text, item_name(item)]
 				if((data = item.data) && (date = data[:last_valid_date]) \
 					&& (days = data[:days]))
-					lines.push(sprintf("%s - %s:", 
+					lines.push(sprintf("%s - %s", 
 						item.time.strftime("%d.%m.%Y"), date.strftime("%d.%m.%Y")))
 					lines.push(sprintf("%i Tage", days))
 				end

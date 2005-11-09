@@ -1024,22 +1024,24 @@ module ODDB
 			@system.execute_command(UpdateCommand.new(pointer, values))
 		end
 		#####################################################
-		def _admin(src, priority=-1)
-			Thread.current.priority = priority
-			Thread.current.abort_on_exception = false
-			failsafe {
-				response = begin
-					instance_eval(src)
-				rescue NameError => e
-				#@system.instance_eval(src)
-					e
-				end
-				str = response.to_s
-				if(str.length > 200)
-					response.class
-				else
-					str
-				end
+		def _admin(src, result, priority=-1)
+			Thread.new {
+				Thread.current.priority = priority
+				Thread.current.abort_on_exception = false
+				result << failsafe {
+					response = begin
+						instance_eval(src)
+					rescue NameError => e
+					#@system.instance_eval(src)
+						e
+					end
+					str = response.to_s
+					if(str.length > 200)
+						response.class
+					else
+						str
+					end
+				}.to_s
 			}
 		end
 		def login(session)

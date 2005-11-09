@@ -49,12 +49,15 @@ module ODDB
 				data
 			end
 			def sl_data
-				{
+				data = {
 					:bsv_dossier => @sl_dossier,
-					:introduction_date => @introduction_date,
 					:limitation	=>	@limitation,
 					:limitation_points	=>	@limitation_points,
 				}
+				if(@introduction_date.is_a?(Date))
+					data.store(:introduction_date, @introduction_date)
+				end
+				data
 			end
 		end
 		class MutationParser
@@ -433,6 +436,9 @@ module ODDB
 				package = ParsedPackage.new
 				package.company = row.at(0).to_s
 				package.generic_type = (row.at(1).to_s.downcase == 'y')
+				if(field = row.at(6))
+					package.introduction_date = field.date
+				end
 				package.name = row.at(7).to_s
 				exf = row.at(8).to_f
 				package.price_exfactory = exf if(exf > 0)

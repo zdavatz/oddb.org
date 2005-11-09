@@ -64,11 +64,13 @@ module ODDB
 		def update_substance(row, narc, language)
 			smcd = smcd(row)
 			name = name(row)
+			casrn = casrn(row)
 			pointer = Persistence::Pointer.new(:substance).creator
 			data = {
 				language					=> name,
 				:narcotic					=> narc,
 				:swissmedic_code	=> smcd,
+				:casrn						=> casrn,
 			}
 			substance = @app.substance_by_smcd(smcd) \
 				|| @app.substance(name)
