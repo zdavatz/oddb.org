@@ -16,9 +16,6 @@ module ODDB
 end
 
 class TestPatinfo < Test::Unit::TestCase
-	class Array
-		include ODBA::Persistable
-	end
 	class StubSequence
 		include ODDB::Persistence
 		def patinfo=(patinfo)

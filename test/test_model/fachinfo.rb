@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 # TestFachinfo -- oddb -- 17.09.2003 -- rwaltert@ywesee.com
 
-$: << File.dirname(__FILE__)
+$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/fachinfo'
 require 'model/text'
-require 'odba'
+require 'stub/odba'
 require 'mock'
 
 module ODDB
@@ -19,21 +19,7 @@ module ODDB
 	end
 end
 
-module ODBA
-	module Persistable
-		def odba_store
-		end
-		def odba_isolated_store
-		end
-	end
-end
 class TestFachinfo < Test::Unit::TestCase
-	class Array
-		include ODBA::Persistable
-	end
-	class Hash
-		include ODBA::Persistable
-	end
 	class StubRegistration
 		attr_accessor :company_name
 		attr_accessor :generic_type

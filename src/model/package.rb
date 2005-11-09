@@ -134,8 +134,8 @@ Grammar OddbSize
 				(value.to_f*100).round
 			end
 		end
-		attr_reader :ikscd, :size, :count, :multi, :measure, :comform
-		attr_reader :descr, :addition, :scale, :sl_entry
+		attr_reader :ikscd, :size, :count, :multi, :measure, :comform 
+		attr_reader :descr, :addition, :scale, :sl_entry, :narcotic
 		attr_accessor :sequence, :ikscat, :generic_group
 		attr_accessor :price_exfactory, :price_public, :pretty_dose
 		attr_accessor :pharmacode
@@ -160,7 +160,7 @@ Grammar OddbSize
 			@sequence.atc_class
 		end
 		def checkout
-			checkout_helper([@generic_group], :remove_package)
+			checkout_helper([@generic_group, @narcotic], :remove_package)
 			if(@sl_entry.respond_to?(:checkout))
 				@sl_entry.checkout 
 				@sl_entry.odba_delete
@@ -229,6 +229,15 @@ Grammar OddbSize
 		end
 		def name_base
 			@sequence.name_base
+		end
+		def narcotic=(narc)
+			if(@narcotic)
+				@narcotic.remove_package(self)
+			end
+			if(narc)
+				narc.add_package(self)
+			end
+			@narcotic = narc
 		end
 		def patinfo
 			@sequence.patinfo

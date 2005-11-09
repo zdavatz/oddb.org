@@ -13,6 +13,7 @@ require 'plugin/ouwerkerk'
 require 'plugin/limitation'
 require 'plugin/medwin'
 require 'plugin/migel'
+require 'plugin/narcotic'
 require 'plugin/vaccines'
 require 'plugin/who'
 require 'util/log'
@@ -178,6 +179,20 @@ module ODDB
 				plug = klass.new(@app)
 				[:de, :fr, :it].each { |lang|
 					path = File.expand_path("../../data/csv/migel_#{lang}.csv", 
+						File.dirname(__FILE__))
+					plug.update(path, lang)
+				}
+				status_report
+			}
+		end
+		def update_narcotics
+			klass = NarcoticPlugin
+			subj = 'Narcotic'
+			status_report = "Narcotics are now up to date"
+			wrap_update(klass, subj) {
+				plug = klass.new(@app)
+				[:de].each { |lang|
+					path = File.expand_path("../../data/csv/betäubungsmittel_a_#{lang}.csv",
 						File.dirname(__FILE__))
 					plug.update(path, lang)
 				}
