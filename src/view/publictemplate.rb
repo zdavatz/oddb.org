@@ -34,11 +34,24 @@ module ODDB
 			def content(model, session)
 				self::class::CONTENT.new(model, session, self)
 			end
-			def head(model, session)
-				self::class::HEAD.new(model, session, self)
+			def css_link(context)
+				if(@lookandfeel.enabled?(:external_css, false))
+					super(context, @lookandfeel.resource_external(:external_css))
+				else
+					super
+				end
 			end
 			def foot(model, session)
 				self::class::FOOT.new(model, session, self) unless self::class::FOOT.nil?
+			end
+			def head(model, session)
+				self::class::HEAD.new(model, session, self)
+			end
+			def just_medical(model, session=@session)
+				div = HtmlGrid::Div.new(model, @session, self)
+				div.css_class = 'just-medical'
+				div.value = @lookandfeel.lookup(:all_drugs_pricecomparison)
+				div
 			end
 			def title(context)
 				context.title { 
@@ -59,6 +72,13 @@ module ODDB
 					end
 				else
 					@lookandfeel.lookup(event)
+				end
+			end
+			def topfoot(model, session)
+				if(@lookandfeel.enabled?(:just_medical_structure, false))
+					just_medical(model, session)
+				else
+					foot(model, session)
 				end
 			end
 		end

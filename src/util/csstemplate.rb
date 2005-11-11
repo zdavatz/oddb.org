@@ -24,12 +24,12 @@ module ODDB
 				#:rslt_bg									=>	'#ACD0F0',
 				:rslt_link_hover_color		=>	'#6666CC',
 			},
-			:drouwerkerk => {
+			:'just-medical' => {
 				:bg												=>	'#fdeeb8',
-				:bg_bright								=>	'#333333',
-				:bg_bright_font_color			=>	'white',
-				:bg_dark									=>	'black',
-				:bg_dark_font_color				=>	'#d4b126',
+				:bg_bright								=>	'#e5c237',
+				:bg_bright_font_color			=>	'black',
+				:bg_dark									=>	'#d4b126',
+				:bg_dark_font_color				=>	'black',
 				:bg_dark_link_hover_color	=>	'red',
 				:bg_dark_link_active_color=>	'red',
 				:home_link_color					=>	'black',

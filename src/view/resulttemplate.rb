@@ -10,7 +10,7 @@ module ODDB
 		class ResultTemplate < PublicTemplate
 			HEAD = View::LogoHead
 			COMPONENTS = {
-				[0,0]		=>	:foot,
+				[0,0]		=>	:topfoot,
 				[0,1]		=>	:head,
 				[0,2]		=>	:content,
 				[0,3]		=>	:foot,

@@ -15,15 +15,37 @@ module ODDB
 				:tabnavigation_divider	=>	HtmlGrid::Text,
 			}
 			def init
-				build_navigation()
+				if(@lookandfeel.enabled?(:just_medical_structure, false))
+					build_jm_navigation()
+				else
+					build_navigation()
+				end
 				super
 			end
 			def build_navigation
-				@session.state.zones.sort_by { |zone| 
+				@lookandfeel.zones.sort_by { |zone| 
 					@lookandfeel.lookup(zone)
 				}.each_with_index { |zone, idx|
 					symbol_map.store(zone, View::TabNavigationLink)
-					components.store([idx*2,0], zone)
+					pos = [idx*2,0]
+					components.store(pos, zone)
+					component_css_map.store(pos, 'tabnavigation')
+					if(idx > 0)
+						components.store([idx*2-1,0], :tabnavigation_divider) 
+					end
+				}
+			end
+			def build_jm_navigation
+				@lookandfeel.zones.each_with_index { |zone, idx|
+					if(zone.is_a?(Class))
+						zone = zone.direct_event
+						symbol_map.store(zone, View::NavigationLink)
+					else
+						symbol_map.store(zone, View::TabNavigationLink)
+					end
+					pos = [idx*2,0]
+					components.store(pos, zone)
+					component_css_map.store(pos, 'tabnavigation')
 					if(idx > 0)
 						components.store([idx*2-1,0], :tabnavigation_divider) 
 					end

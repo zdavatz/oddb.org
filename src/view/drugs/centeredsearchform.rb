@@ -62,6 +62,16 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENT_CSS_MAP = {
 		[0,9]	=>	'legal-note-center',
 	}
+	def init
+		if(@lookandfeel.enabled?(:just_medical_structure, false))
+			@components = {
+				[0,0]		=>	:language_chooser,
+				[0,1]		=>	View::Drugs::CenteredSearchForm,
+				[0,2]		=>	'search_explain', 
+			}
+		end
+		super
+	end
 	def ddd_count_text(model, session)
 		create_link(:ddd_count_text, 'http://www.whocc.no/atcddd/')
 	end

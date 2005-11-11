@@ -155,4 +155,38 @@ module ODDB
 			},
 		}
 	end
+	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:just_medical_structure,	
+			:external_css,
+		]
+		DICTIONARIES = {
+			'de'	=>	{
+				:all_drugs_pricecomparison	=>	'Alle Medikamente mit Preisvergleich',
+				:atc_chooser								=>	'ATC-Codes', 
+				:data_declaration						=>	'Datenherkunft',
+				:home_drugs									=>	'Medikamente',
+				:legal_note									=>	'Rechtliche Hinweise',
+				:meddrugs_update						=>	'med-drugs update', 
+				:migel											=>	'Medizinprodukte (MiGeL)',
+				:search_explain							=>	'Vergleichen Sie einfach und schnell Medikamentenpreise.<br> Suchen Sie nach Medikament, Wirkstoff oder Anwendungsgebiet.',
+				:sequences									=>	'Medikamente alphabetisch',
+			},
+			'fr'	=>	{
+			},
+			'en'	=>	{
+			},
+		}
+		RESOURCES = {
+			:external_css	=>	'http://www.just-medical.com/css/oddb.css',
+		}
+		def navigation
+			[ :meddrugs_update, :legal_note, :data_declaration, 
+				:home ]
+		end
+		def zones
+			[ State::Drugs::Init, State::Drugs::AtcChooser, 
+				State::Drugs::Sequences, :migel ]
+		end
+	end
 end
