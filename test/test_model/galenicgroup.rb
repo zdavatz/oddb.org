@@ -6,7 +6,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/galenicgroup'
-require 'odba'
+require 'stub/odba'
 require 'mock'
 
 module ODDB
@@ -17,22 +17,8 @@ module ODDB
 		end
 	end
 end
-module ODBA
-	module Persistable
-		def odba_isolated_store
-		end
-		def odba_store
-		end
-	end
-end
 
 class TestGalenicGroup < Test::Unit::TestCase
-	class Hash
-		include ODBA::Persistable
-	end
-	class Array
-		include ODBA::Persistable
-	end
 	class StubForm
 		include ODDB::Persistence
 		def has_description?(value)

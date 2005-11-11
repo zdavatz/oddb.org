@@ -24,16 +24,17 @@ module ODDB
 				[1,3]	=>	'explain_h',
 				[1,4]	=>	'explain_p',
 				[1,5]	=>	'explain_pr',
+				[1,6]	=>	'explain_fi',
 				[2,0]	=>	'explain_efb',
 				[2,1]	=>	'explain_pbp',
 				[2,2]	=>	'explain_sl',
-				[2,3]	=>	'explain_fi',
+				[2,3]	=>	'explain_narc',
 				[2,4]	=>	'explain_pi',
 				[2,5]	=>	'explain_li',
 			}
 			CSS_MAP = {	
 				[0,4]	=>	'explain-unknown',
-				[1,0,2,6]	=>	'explain-infos',
+				[1,0,2,7]	=>	'explain-infos',
 			}
 			def explain_original(model, session)
 				link = HtmlGrid::Link.new(:explain_original, model, session, self)

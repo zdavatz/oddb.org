@@ -72,16 +72,15 @@ module ODDB
 			end
 			def ikscat(model, session=@session)
 				txt = HtmlGrid::Span.new(model, session, self)
-				txt.value = [
-					(cat = model.ikscat),
-					(@lookandfeel.lookup(:sl) unless (sl = model.sl_entry).nil?),
-				].compact.join('&nbsp;/&nbsp;')
+				text_elements = []
 				title_elements = []
-				if(cat)
+				if(cat = model.ikscat)
+					text_elements.push(cat)
 					catstr = @lookandfeel.lookup("ikscat_" << cat.to_s.downcase)
 					title_elements.push(catstr)
 				end
-				if(sl)
+				if(sl = model.sl_entry)
+					text_elements.push(@lookandfeel.lookup(:sl))
 					sl_str = @lookandfeel.lookup(:sl_list).dup
 					if(date = sl.introduction_date)
 						sl_str << @lookandfeel.lookup(:sl_since, 
@@ -89,6 +88,11 @@ module ODDB
 					end
 					title_elements.push(sl_str)
 				end
+				if(narc = model.narcotic)
+					text_elements.push(@lookandfeel.lookup(:narc_short))
+					title_elements.push(@lookandfeel.lookup(:narcotic))
+				end
+				txt.value = text_elements.join('&nbsp;/&nbsp;')
 				title = title_elements.join('&nbsp;/&nbsp;')
 				txt.set_attribute('title', title)
 				txt

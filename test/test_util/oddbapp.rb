@@ -15,23 +15,9 @@ require 'model/galenicform'
 require 'util/language'
 require 'stub/odba'
 require 'mock'
+require 'flexmock'
 require 'util/oddbapp'
 
-module Datastructure
-	class CharTree
-		attr_reader :children, :values
-	end
-	class SoundexTable
-		attr_reader :hash
-	end
-end
-=begin
-module ODBA
-	class StorageStub
-		attr_accessor :next_id
-	end
-end
-=end
 module ODDB
 	class RootUser
 		def initialize
@@ -48,7 +34,6 @@ module ODDB
 		attr_accessor :packages, :active_agents
 	end
 	module Persistence
-		include ODBA
 		class Pointer
 			public :directions
 		end
@@ -884,5 +869,33 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal({'03' => group}, @app.migel_groups)
 		## getter-test
 		assert_equal(group, @app.migel_group('03'))
+	end
+	def test_narcotic_by_casrn
+		narc1 = FlexMock.new
+		narc1.mock_handle(:casrn) { 'foo-bar' }
+		narc2 = FlexMock.new
+		narc2.mock_handle(:casrn) {  }
+		@app.narcotics.update({ 1 => narc1, 2 => narc2 })
+		assert_equal(narc1, @app.narcotic_by_casrn('foo-bar'))
+		assert_nil(@app.narcotic_by_casrn('x-bar'))
+	end
+	def test_narcotic_by_smcd
+		narc1 = FlexMock.new
+		narc1.mock_handle(:smcd) { 'foo-bar' }
+		narc2 = FlexMock.new
+		narc2.mock_handle(:smcd) {  }
+		@app.narcotics.update({ 1 => narc1, 2 => narc2 })
+		assert_equal(narc1, @app.narcotic_by_smcd('foo-bar'))
+		assert_nil(@app.narcotic_by_smcd('x-bar'))
+	end
+	def test_substance_by_smcd
+		narc1 = FlexMock.new
+		narc1.mock_handle(:smcd) { 'Narc' }
+		narc2 = FlexMock.new
+		narc2.mock_handle(:smcd) {  }
+		@app.narcotics.update({ 1 => narc1, 2 => narc2 })
+		assert_equal(narc1, @app.substance_by_smcd('Narc'))
+		assert_nil(@app.substance_by_smcd('Narc_no_Smcd'))
+
 	end
 end

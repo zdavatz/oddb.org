@@ -8,6 +8,7 @@ require 'test/unit'
 require 'model/package'
 require 'mock'
 require 'odba'
+require 'flexmock'
 
 module ODDB
 	class Package
@@ -310,6 +311,17 @@ module ODDB
 			assert_not_nil(feedback.oid)
 			oid = feedback.oid
 			assert_equal(feedback, @package.feedback(oid))
+		end
+		def test_narcotic_writer
+			narc = FlexMock.new
+			narc.mock_handle(:add_package)
+			@package.narcotic = narc
+			assert_equal(narc, @package.narcotic)	
+			narc.mock_handle(:remove_package)
+			narc1 = FlexMock.new
+			narc1.mock_handle(:add_package)
+			@package.narcotic = narc1
+			assert_equal(narc1, @package.narcotic)
 		end
 	end
 	class TestIncompletePackage < Test::Unit::TestCase

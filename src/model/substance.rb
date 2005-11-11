@@ -13,8 +13,8 @@ module ODDB
 		include Persistence
 		include SequenceObserver
 		ODBA_SERIALIZABLE = [ '@descriptions', '@connection_keys', '@synonyms' ]
-		attr_reader :sequences, :substrate_connections
-		attr_accessor :effective_form
+		attr_reader :sequences, :narcotic, :substrate_connections
+		attr_accessor :effective_form, :swissmedic_code, :casrn
 		include Comparable
 		include Language
 		def Substance.format_connection_key(key)
@@ -163,6 +163,17 @@ module ODDB
 			end
 		end
 		alias :pointer_descr :name
+		def narcotic=(narc)
+			if(@narcotic)
+				@narcotic.substance = nil
+				@barcotic.odba_store
+			end
+			if(narc)
+				narc.substance = self
+				narc.odba_store
+			end
+			@narcotic = narc
+		end
 		def primary_connection_key
 			@primary_connection_key ||= format_connection_key(self.name)
 		end

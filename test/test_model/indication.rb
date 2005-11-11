@@ -6,6 +6,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/indication'
+require 'stub/odba'
 
 module ODDB
 	class Indication
@@ -13,16 +14,7 @@ module ODDB
 	end
 end
 
-module ODBA
-	module Persistable
-		def odba_store
-		end
-	end
-end
 class TestIndication < Test::Unit::TestCase
-	class Array
-		include ODBA::Persistable
-	end
 	class StubRegistration
 	end
 

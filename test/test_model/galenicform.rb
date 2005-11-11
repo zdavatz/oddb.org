@@ -6,7 +6,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'model/galenicform'
-require 'odba'
+require 'stub/odba'
 require	'mock'
 
 module ODDB
@@ -16,19 +16,7 @@ module ODDB
 	end
 end
 
-module ODBA
-	module Persistable
-		def odba_isolated_store
-		end
-	end
-end
 class TestGalenicForm < Test::Unit::TestCase
-	class Array
-		include ODBA::Persistable
-	end
-	class Hash
-		include ODBA::Persistable
-	end
 	class StubGroup
 		attr_reader :add_called, :remove_called
 		def add(form)

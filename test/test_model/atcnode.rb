@@ -7,20 +7,9 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'model/atcclass'
 require 'model/atcnode'
+require 'stub/odba'
 
-module ODBA
-	module Persistable
-		def odba_store
-		end
-	end
-end
 class TestAtcNode < Test::Unit::TestCase
-	class Array
-		include ODBA::Persistable
-	end
-	class Hash
-		include ODBA::Persistable
-	end
 	def setup
 		@root = ODDB::AtcNode.new(nil)
 		@atcN = ODDB::AtcClass.new('N')

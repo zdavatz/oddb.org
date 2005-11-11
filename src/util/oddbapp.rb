@@ -37,7 +37,7 @@ class OddbPrevalence
 		:hospitals, :invoices, :last_medication_update, :last_update,
 		:notification_logger, :orphaned_fachinfos, :orphaned_patinfos,
 		:patinfos, :patinfos_deprived_sequences, :registrations, :slates,
-		:users
+		:users, :narcotics
 	def initialize
 		init
 	end
@@ -62,6 +62,7 @@ class OddbPrevalence
 		@invoices ||= {}
 		@last_medication_update ||= Time.now()
 		@log_groups ||= {}
+		@narcotics ||= {}
 		@notification_logger ||= ODDB::NotificationLogger.new
 		@patinfos ||= {}
 		@registrations ||= {}
@@ -93,13 +94,11 @@ class OddbPrevalence
 	def update(pointer, values)
 		#puts [__FILE__,__LINE__,"update(#{pointer}, #{values})"].join(':')
 		@last_update = Time.now()
-		item = failsafe(ODDB::Persistence::UninitializedPathError, nil) {
-			pointer.resolve(self)
+		item = nil
+		failsafe(ODDB::Persistence::UninitializedPathError, nil) {
+			item = pointer.issue_update(self, values)
+			updated(item) unless(item.nil?)
 		}
-		unless item.nil? 
-			updated(item)
-			pointer.issue_update(self, values)
-		end
 		item
 	end
 	#####################################################
@@ -262,18 +261,20 @@ class OddbPrevalence
 	def create_log_group(key)
 		@log_groups[key] ||= ODDB::LogGroup.new(key)
 	end
+	def create_narcotic
+		narc = ODDB::Narcotic.new
+		@narcotics.store(narc.oid, narc)
+	end
 	def create_orphaned_fachinfo
 		@orphaned_fachinfos ||= {}
 		orphan = ODDB::OrphanedFachinfo.new
 	  @orphaned_fachinfos.store(orphan.oid, orphan)
 	end
 	def create_orphaned_patinfo
-		@orphaned_patinfos ||= {}
 		orphan = ODDB::OrphanedPatinfo.new
 	  @orphaned_patinfos.store(orphan.oid, orphan)
 	end
 	def create_patinfo
-		@patinfos ||= {}
 		patinfo = ODDB::Patinfo.new
 		@patinfos.store(patinfo.oid, patinfo)
 	end
@@ -528,6 +529,19 @@ class OddbPrevalence
 			}
 		}
 		products
+	end
+	def narcotic(odba_id)
+		@narcotics[:odba_id]
+	end
+	def narcotic_by_casrn(casrn)
+		@narcotics.values.select { |narc| 
+			narc.casrn == casrn 
+		}.first
+	end
+	def narcotic_by_smcd(smcd)
+		@narcotics.values.select { |narc| 
+			narc.smcd == smcd 
+		}.first
 	end
 	def orphaned_fachinfo(oid)
 		@orphaned_fachinfos[oid.to_i]
@@ -814,6 +828,11 @@ class OddbPrevalence
 	def substance_by_connection_key(connection_key)
 		@substances.values.select { |substance|
 			substance.has_connection_key?(connection_key)
+		}.first
+	end
+	def substance_by_smcd(smcd)
+		@narcotics.values.select { |narc|
+			narc.smcd == smcd
 		}.first
 	end
 	def substances
