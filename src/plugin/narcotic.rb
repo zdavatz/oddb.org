@@ -18,13 +18,13 @@ module ODDB
 			super(app)
 		end
 		def casrn(row)
-			casrn = row.at(1)
+			casrn = row.at(1).to_s
 			unless(casrn.nil? || casrn.empty? || casrn == "nil")
 				casrn
 			end
 		end
 		def name(row)
-			name = row.at(0)
+			name = row.at(0).to_s
 		end
 		def report_text(row)
 			name = row.at(0)
@@ -98,7 +98,7 @@ module ODDB
 		end
 		def send_report
 			mail = TMail::Mail.new
-			mail.to = "ffricker@ywesee.com" #ODDB::Log::MAIL_TO
+			mail.to = ODDB::Log::MAIL_TO
 			mail.from =	ODDB::Log::MAIL_FROM
 			mail.subject = "Narcotics-Update-Report"
 			mail.date = Time.now
