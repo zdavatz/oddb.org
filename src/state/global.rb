@@ -58,7 +58,6 @@ require 'state/user/powerlink'
 require 'state/user/plugin'
 require 'state/user/init'
 require 'state/user/sponsorlink'
-require 'state/user/meddrugs_update'
 require 'util/umlautsort'
 require 'sbsm/state'
 
