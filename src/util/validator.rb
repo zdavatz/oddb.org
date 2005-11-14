@@ -104,7 +104,6 @@ module ODDB
 			:login_form,
 			:logout,
 			:mailinglist,
-			:meddrugs_update,
 			:merge,
 			:new_active_agent,
 			:new_company,

@@ -72,6 +72,12 @@ module ODDB
 				link.value = @lookandfeel.lookup(:home)
 				link
 			end
+			def meddrugs_update(model)
+				link = NavigationLink.new(:meddrugs_update, 
+					model, @session, self)
+				link.href = "http://www.just-medical.ch/jm.cfm?top=just-medical/top_home.cfm&menu=meddrugs/menu_drugs.cfm&main=meddrugs/update.cfm&l1=05&l2=45&l3=1&r1=05&r2=45&r3=1"
+				link
+			end
 		end
 	end
 end
