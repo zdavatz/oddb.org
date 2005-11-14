@@ -38,6 +38,7 @@ Produkt-Record:
 18: registration_date (dd.mm.yyyy)              -> Datum der ersten Zulassung in der Schweiz
 19: inactive_date     (dd.mm.yyyy)              -> Falls ein Produkt unabhängig von der Swissmedic ausser Handel genommen wird: Datum der Ausserhandelnahme
 20: export_flag       (*)                       -> Wenn gesetzt: Produkt ist nur für den Export Bestimmt
+21: narcotic          (*)                       -> Wenn gesetzt: CAS Registry Number des Eintrags in der Betäubungsmittelliste
 
 ## Glossar ##
 * AtcCode:
@@ -47,6 +48,9 @@ Level 2: +NN     -> Therapeutische Gruppierung, z.B. A02:     Mittel bei Säure b
 Level 3:   +C    -> Therapeutische Untergruppe, z.B. A02A:    Antacida
 Level 4:    +C   -> Chemische Gruppierung,      z.B. A02AA:   Magnesium-haltige Verbindungen
 Level 5:     +NN -> Wirkstoff(-Kombination),    z.B. A02AA01: Magnesiumcarbonat
+
+* CAS Registry Number:
+  http://www.cas.org/EO/regsys.html
 
 * Version
 Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"

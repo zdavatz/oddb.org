@@ -64,7 +64,6 @@ module ODDB
 	end
 	module Language
 		include SimpleLanguage
-		attr_writer :synonyms
 		class Descriptions < Hash
 			def initialize
 				super('')

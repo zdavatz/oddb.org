@@ -22,10 +22,16 @@ class CsvResult < HtmlGrid::Component
 		:ikscat,
 		:sl_entry,
 		:registration_date,
+		:casrn,
 	]
 	def boolean(bool)
 		key = bool ? :true : :false
 		@lookandfeel.lookup(key)
+	end
+	def casrn(pack)
+		if(narc = pack.narcotic)
+			narc.casrn
+		end
 	end
 	def expiration_date(pack)
 		formatted_date(pack, :expiration_date)

@@ -1,9 +1,10 @@
 Datenbeschrieb oddbdat
 
-Version: 1.0.2
+Version: 1.1.0
+Geändert: 14.11.2005 (1.1.0) durch hwyss@ywesee.com
 Geändert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
 Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
-Erstellt: 02.09.2005 (1.0)   durch hwyss@ywesee.com
+Erstellt: 02.09.2005 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
 Encoding: ISO-8859-1
@@ -34,6 +35,8 @@ Primärschlüssel: oddb_id
 38: insurance_code    (Integer (1))             -> 1: Produkt ist in SL
 39: limitation        (Char (1))                -> Y: Produkt hat Limitation
 40: limitation_points (Integer)                 -> Limitationspunkte
+[...]
+46: narcotic          (Char (1))                -> Y: Produkt untersteht dem Betäubungsmittelgesetz
 [...]
 
 s02x:

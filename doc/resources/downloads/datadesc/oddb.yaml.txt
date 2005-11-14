@@ -1,11 +1,12 @@
 Datenbeschrieb oddb.yaml
 
-Version:  1.1.3
+Version:  1.2.0
+Geändert: 14.11.2005 (1.2.0) durch hwyss@ywesee.com
 Geändert: 30.09.2005 (1.1.3) durch hwyss@ywesee.com
 Geändert: 02.09.2005 (1.1.2) durch hwyss@ywesee.com
 Geändert: 01.09.2005 (1.1.1) durch hwyss@ywesee.com
-Geändert: 23.08.2005 (1.1)   durch hwyss@ywesee.com
-Erstellt: 26.07.2005 (1.0)   durch hwyss@ywesee.com
+Geändert: 23.08.2005 (1.1.0) durch hwyss@ywesee.com
+Erstellt: 26.07.2005 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
 Encoding: ISO-8859-1
@@ -68,6 +69,7 @@ Package:
 - price_exfactory   (Integer)              -> Exfactorypreis in Rappen
 - price_public      (Integer)              -> Publikumspreis in Rappen
 - sl_entry          (SlEntry)              -> Eintrag in der SL, NULL = Nein, SlEntry = Ja.
+- narcotic          (Narcotic)             -> Betäubungsmitteleintrag
 
 AtcClass:
 - code              (String(1-7), NOT NULL)-> Atc-Code. siehe Glossar (AtcCode)
@@ -95,6 +97,13 @@ Indication:
 - oid               (Integer, NOT NULL)    -> Unique Identifier
 - descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Indikationstext. siehe Glossar (SimpleLanguage::Descriptions)
 
+Substance:
+- oid               (Integer, NOT NULL)    -> Unique Identifier
+- descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Indikationstext. siehe Glossar (SimpleLanguage::Descriptions)
+- synonyms          (Array (String))			 -> Weitere bezeichnungen
+- effective_form    (Substance)            -> Wirkform
+- narcotic          (Narcotic)             -> Betäubungsmitteleintrag
+
 Dose:
 - val               (Float, NOT NULL)      -> Wert/Grösse der Dosis
 - unit              (String)               -> Einheit der Dosis
@@ -110,6 +119,10 @@ LimitationText:
 GalenicGroup:
 - oid               (Integer, NOT NULL)    -> Unique Identifier
 - descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Bezeichnung. siehe Glossar (SimpleLanguage::Descriptions)
+
+Narcotic:
+- oid               (Integer, NOT NULL)    -> Unique Identifier
+- casrn             (String)               -> CAS Registry Number
 
 Text::Document:
 - descriptions      (SimpleLanguage::Descriptions (String, Text::Chapter)) -> Sprache, Formatierter Text
@@ -141,6 +154,9 @@ Level 2: +NN     -> Therapeutische Gruppierung, z.B. A02:     Mittel bei Säure b
 Level 3:   +C    -> Therapeutische Untergruppe, z.B. A02A:    Antacida
 Level 4:    +C   -> Chemische Gruppierung,      z.B. A02AA:   Magnesium-haltige Verbindungen
 Level 5:     +NN -> Wirkstoff(-Kombination),    z.B. A02AA01: Magnesiumcarbonat
+
+* CAS Registry Number
+  http://www.cas.org/EO/regsys.html
 
 * DailyDrugDose
 Richtlinien der WHO zur Dosierung von Medikamenten: http://www.whocc.no/atcddd/
