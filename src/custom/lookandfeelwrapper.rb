@@ -117,7 +117,7 @@ module ODDB
 				:home_welcome		=>	'',
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:price_compare	=>	'Pour la comparaison directe, veuillez cliqueter sur les noms de m&eacute;dicament dans le r&eacute;sultat de la recherche!',
-				:search_explain	=>	'Bienvenu sur santesuisse.ch et oddb.org.<br><br>Comparez simplement et rapidement les prix des m&eacute;dicaments en entrant le nom du m&eacute;dicament ou un principe actif dans la barre d\'outils de recherche.',
+				:search_explain	=>	'Bienvenu sur santesuisse.ch et oddb.org.<br><br>Comparez simplement et rapidement les prix des m&eacute;dicaments<br>en entrant le nom du m&eacute;dicament ou un principe actif dans<br>la barre d\'outils de recherche.',
 				:lookandfeel_owner =>	'Generika.cc',
 			},
 			
