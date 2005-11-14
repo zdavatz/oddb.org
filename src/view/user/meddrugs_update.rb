@@ -8,9 +8,25 @@ module ODDB
 		module User
 class MeddrugsUpdate < HtmlGrid::PassThru
 	def init
-		file = Dir['../../../data/xls/med-drugs*'].sort.reverse.first
-		@path = File.join('..', 'data', 'xls', File.basename(file))
-		puts @path
+		dir = File.expand_path('../../../data/xls', File.dirname(__FILE__))
+		if(file = Dir["#{dir}/med-drugs*"].sort.reverse.first)
+			@path = File.join('..', 'data', 'xls', File.basename(file))
+		end
+	end
+	def http_headers
+		{
+			'Content-Type'	=> 'application/vnd.ms-excel',
+		}
+	end
+	def to_html(context)
+		line = [
+			nil,
+			@session.remote_addr,
+			@path,
+		].join(';')
+		LogFile.append(:meddrugs_update, line, Time.now)
+		@session.passthru(@path)
+		''
 	end
 end
 		end

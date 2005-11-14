@@ -58,6 +58,7 @@ require 'state/user/powerlink'
 require 'state/user/plugin'
 require 'state/user/init'
 require 'state/user/sponsorlink'
+require 'state/user/meddrugs_update'
 require 'util/umlautsort'
 require 'sbsm/state'
 
@@ -88,6 +89,7 @@ module ODDB
 				:hospitallist					=>	State::Hospitals::HospitalList,
 				:login_form						=>	State::Admin::Login,
 				:mailinglist					=>	State::User::MailingList,
+				:meddrugs_update			=>	State::User::MeddrugsUpdate,
 				:plugin								=>	State::User::Plugin,
 				:passthru							=>	State::User::PassThru,
 				:paypal_ipn						=>	State::PayPal::Ipn,
