@@ -46,11 +46,5 @@ module ODDB
 				Time.now.year.to_s
 			end
 		end
-		class JustMedicalCopyright < Copyright
-			COMPONENTS = {
-				[0,0]			=>  :current_year,
-				[1,0]			=>	:cpr_link,
-			}
-		end
 	end
 end
