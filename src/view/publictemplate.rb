@@ -53,6 +53,22 @@ module ODDB
 				div.value = @lookandfeel.lookup(:all_drugs_pricecomparison)
 				div
 			end
+			def other_html_headers(context)
+				attrs_load = {
+					'src' => "http://www.google-analytics.com/urchin.js",
+					'type'=> "text/javascript",
+				}
+				attrs_exec = {
+					'type'=> "text/javascript",
+				}
+				super << context.script(attrs_load) << \
+					context.script(attrs_exec) {
+					<<-EOS				
+_uacct = "UA-115196-1";
+urchinTracker();
+					EOS
+				}
+			end
 			def title(context)
 				context.title { 
 					[
