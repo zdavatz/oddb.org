@@ -24,35 +24,33 @@ module ODDB
 			end
 =end
 			def oddb_version(model)
-				link = HtmlGrid::Link.new(:oddb_version, model, @session, self)
+				link = standard_link(:oddb_version, model)
 				link.href = 'http://scm.ywesee.com/?p=oddb.org;a=summary'
 				link.set_attribute('title', ODDB_VERSION)
-				link.css_class = 'navigation'
-				if(@lookandfeel.enabled?(:just_medical_structure, false))
-					link.set_attribute('target', '_blank')
-				end
 				link
 			end
 			def cpr_link(model)
-				link = HtmlGrid::Link.new(:cpr_link, model, @session, self)
+				link = standard_link(:cpr_link, model)
 				link.href = 'http://www.ywesee.com'
-				link.css_class = 'navigation'
-				if(@lookandfeel.enabled?(:just_medical_structure, false))
-					link.set_attribute('target', '_blank')
-				end
 				link
 			end
 			def lgpl_license(model)
-				link = HtmlGrid::Link.new(:lgpl_license, model, @session, self)
+				link = standard_link(:lgpl_license, model)
 				link.href = 'http://www.gnu.org/copyleft/lesser.html'
-				link.css_class = 'navigation'
-				if(@lookandfeel.enabled?(:just_medical_structure, false))
-					link.set_attribute('target', '_blank')
-				end
 				link
 			end
 			def current_year(model)
 				Time.now.year.to_s
+			end
+			def standard_link(key, model)
+				klass = if(@lookandfeel.enabled?(:just_medical_structure, false))
+					HtmlGrid::PopupLink
+				else
+					HtmlGrid::Link
+				end
+				link = klass.new(key, model, @session, self)
+				link.css_class = 'navigation'
+				link
 			end
 		end
 	end

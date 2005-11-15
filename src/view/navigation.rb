@@ -3,6 +3,7 @@
 
 require 'htmlgrid/composite'
 require 'htmlgrid/link'
+require 'htmlgrid/popuplink'
 require 'view/navigationlink'
 
 module ODDB
@@ -55,11 +56,13 @@ module ODDB
 			end
 			def wiki_link(model, key, namekey)
 				name = @lookandfeel.lookup(namekey)
-				link = HtmlGrid::Link.new(key, model, @session, self)
-				link.href = "http://wiki.oddb.org/wiki.php?pagename=#{name}"
-				if(@lookandfeel.enabled?(:just_medical_structure, false))
-					link.set_attribute('target', '_blank')
+				klass = if(@lookandfeel.enabled?(:just_medical_structure, false))
+					HtmlGrid::PopupLink
+				else
+					HtmlGrid::Link
 				end
+				link = klass.new(key, model, @session, self)
+				link.href = "http://wiki.oddb.org/wiki.php?pagename=#{name}"
 				link
 			end
 			## meddrugs_update, data_declaration and legal_note: 
