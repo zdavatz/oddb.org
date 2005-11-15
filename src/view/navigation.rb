@@ -79,7 +79,7 @@ module ODDB
 				link = NavigationLink.new(:meddrugs_update, 
 					model, @session, self)
 				link.href = "http://www.just-medical.com/lastdrugs.cfm"
-				link.set_attribute('target', '_blank')
+				link.set_attribute('target', '_top')
 				link
 			end
 		end
