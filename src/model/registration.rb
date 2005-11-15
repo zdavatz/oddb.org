@@ -10,9 +10,10 @@ module ODDB
 		include Persistence
 		attr_reader :iksnr, :sequences 
 		attr_writer :generic_type, :complementary_type
-		attr_accessor :registration_date, :export_flag, :company
-		attr_accessor :revision_date, :indication, :expiration_date, :inactive_date, :market_date
-		attr_accessor :fachinfo, :source, :pdf_fachinfos
+		attr_accessor :registration_date, :export_flag, :company, 
+			:revision_date, :indication, :expiration_date, :inactive_date,
+			:market_date, :fachinfo, :source, :pdf_fachinfos,
+			:index_therapeuticus
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
 		def initialize(iksnr)

@@ -76,7 +76,7 @@ module ODDB
 		class StubSmjRegistration
 			attr_accessor :flags, :valid_until, :indication, :pointer
 			attr_accessor :exportvalue, :incomplete, :last_update, :iksnr
-			attr_accessor :company, :date, :sequences, :src
+			attr_accessor :company, :date, :sequences, :src, :indexth
 			attr_writer :products
 			def initialize
 				@company = StubCompany.new('Bayer')
@@ -158,6 +158,7 @@ module ODDB
 				:indication					=>	ind_pointer,
 				:export_flag				=>	nil,
 				:source							=>	nil,
+				:index_therapeuticus =>  nil,
 			}
 			registration = FlexMock.new
 			@app.mock_handle(:update) { |pointer, values| 
@@ -191,6 +192,7 @@ module ODDB
 				:indication			=>	ind_pointer,
 				:export_flag		=>	nil,
 				:source					=>	nil,
+				:index_therapeuticus =>  nil,
 			}
 			## update indication
 			indication = FlexMock.new
@@ -227,6 +229,7 @@ module ODDB
 				:revision_date	=>	nil,
 				:export_flag		=>	nil,
 				:source					=>	nil,
+				:index_therapeuticus =>  nil,
 			}
 			registration = FlexMock.new
 			@app.mock_handle(:update) { |pointer, values|
