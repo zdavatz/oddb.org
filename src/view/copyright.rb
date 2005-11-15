@@ -28,18 +28,27 @@ module ODDB
 				link.href = 'http://scm.ywesee.com/?p=oddb.org;a=summary'
 				link.set_attribute('title', ODDB_VERSION)
 				link.css_class = 'navigation'
+				if(@lookandfeel.enabled?(:just_medical_structure, false))
+					link.set_attribute('target', '_blank')
+				end
 				link
 			end
 			def cpr_link(model)
 				link = HtmlGrid::Link.new(:cpr_link, model, @session, self)
 				link.href = 'http://www.ywesee.com'
 				link.css_class = 'navigation'
+				if(@lookandfeel.enabled?(:just_medical_structure, false))
+					link.set_attribute('target', '_blank')
+				end
 				link
 			end
 			def lgpl_license(model)
 				link = HtmlGrid::Link.new(:lgpl_license, model, @session, self)
 				link.href = 'http://www.gnu.org/copyleft/lesser.html'
 				link.css_class = 'navigation'
+				if(@lookandfeel.enabled?(:just_medical_structure, false))
+					link.set_attribute('target', '_blank')
+				end
 				link
 			end
 			def current_year(model)

@@ -57,6 +57,9 @@ module ODDB
 				name = @lookandfeel.lookup(namekey)
 				link = HtmlGrid::Link.new(key, model, @session, self)
 				link.href = "http://wiki.oddb.org/wiki.php?pagename=#{name}"
+				if(@lookandfeel.enabled?(:just_medical_structure, false))
+					link.set_attribute('target', '_blank')
+				end
 				link
 			end
 			## meddrugs_update, data_declaration and legal_note: 
@@ -75,7 +78,7 @@ module ODDB
 			def meddrugs_update(model)
 				link = NavigationLink.new(:meddrugs_update, 
 					model, @session, self)
-				link.href = "http://www.just-medical.ch/jm.cfm?top=just-medical/top_home.cfm&menu=meddrugs/menu_drugs.cfm&main=meddrugs/update.cfm&l1=05&l2=45&l3=1&r1=05&r2=45&r3=1"
+				link.href = "http://www.just-medical.com/lastdrugs.cfm"
 				link
 			end
 		end

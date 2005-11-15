@@ -162,7 +162,7 @@ module ODDB
 		]
 		DICTIONARIES = {
 			'de'	=>	{
-				:all_drugs_pricecomparison	=>	'Alle Medikamente mit Preisvergleich',
+				:all_drugs_pricecomparison	=>	'Komplette Schweizer Medikamenten-Enzyklopädie',
 				:atc_chooser								=>	'ATC-Codes', 
 				:data_declaration						=>	'Datenherkunft',
 				:home_drugs									=>	'Medikamente',
@@ -173,8 +173,26 @@ module ODDB
 				:sequences									=>	'Medikamente alphabetisch',
 			},
 			'fr'	=>	{
+				:all_drugs_pricecomparison	=>	'Encyclopédie complète des médicaments de la Suisse',
+				:atc_chooser								=>	'ATC-Codes', 
+				:data_declaration						=>	'Datenherkunft',
+				:home_drugs									=>	'Medikamente',
+				:legal_note									=>	'Rechtliche Hinweise',
+				:meddrugs_update						=>	'med-drugs update', 
+				:migel											=>	'Medizinprodukte (MiGeL)',
+				:search_explain							=>	'Comparez simplement et rapidement les prix des médicaments.<br>Cherchez le nom du médicament, le principe actif ou l\'indication.',
+				:sequences									=>	'Medikamente alphabetisch',
 			},
 			'en'	=>	{
+				:all_drugs_pricecomparison	=>	'Complete Swiss encyclopaedia of drugs',
+				:atc_chooser								=>	'ATC-Codes', 
+				:data_declaration						=>	'Datenherkunft',
+				:home_drugs									=>	'Medikamente',
+				:legal_note									=>	'Rechtliche Hinweise',
+				:meddrugs_update						=>	'med-drugs update', 
+				:migel											=>	'Medizinprodukte (MiGeL)',
+				:search_explain							=>	'Compare prices of drugs - fast and easy.<br>Search by name of drug, active agent or indication.',
+				:sequences									=>	'Medikamente alphabetisch',
 			},
 		}
 		RESOURCES = {
