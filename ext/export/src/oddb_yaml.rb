@@ -234,6 +234,13 @@ module ODDB
 			'@descriptions',
 		]
 	end
+	class Narcotic
+		include OddbYaml
+		EXPORT_PROPERTIES = [
+			'@oid',
+			'@casrn',
+		]
+	end
 	class Package < PackageCommon
 		include OddbYaml
 		EXPORT_PROPERTIES = [	
@@ -244,6 +251,7 @@ module ODDB
 			'@price_exfactory',
 			'@price_public',
 			'@sl_entry',
+			'@narcotic',
 		]
 		def to_yaml( opts = {} )
 			YAML::quick_emit( self.object_id, opts ) { |out|
@@ -346,7 +354,10 @@ module ODDB
 		include OddbYaml
 		EXPORT_PROPERTIES = [
 			'@oid',
-			'@name',
+			'@descriptions',
+			'@synonyms',
+			'@effective_form',
+			'@narcotic',
 		]
 	end
 end

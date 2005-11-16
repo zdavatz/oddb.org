@@ -3,6 +3,7 @@
 
 require 'htmlgrid/composite'
 require 'htmlgrid/link'
+require 'htmlgrid/popuplink'
 require 'view/navigationlink'
 
 module ODDB
@@ -48,26 +49,40 @@ module ODDB
 				}
 			end
 			def faq_link(model)
-				link = HtmlGrid::Link.new(:faq_link, model, @session, self)
-				if(@lookandfeel.language == 'de')
-					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.FragenUndAntworten"
-				elsif(@lookandfeel.language == 'fr')
-					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.QuestionsEtReponses"
-				elsif(@lookandfeel.language == 'en')
-					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.FrequentlyAskedQuestions"
-				end
-				link
+				wiki_link(model, :faq_link, :faq_pagename)
 			end
 			def help_link(model)
-				link = HtmlGrid::Link.new(:help_link, model, @session, self)
-				if(@lookandfeel.language == 'de')
-					link.href =  "http://wiki.oddb.org/wiki.php?pagename=ODDB.Hilfe"
-
-				elsif(@lookandfeel.language == 'fr')
-					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.Aide"
-				elsif(@lookandfeel.language == 'en')
-					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.Help"
+				wiki_link(model, :help_link, :help_pagename)
+			end
+			def wiki_link(model, key, namekey)
+				name = @lookandfeel.lookup(namekey)
+				klass = if(@lookandfeel.enabled?(:just_medical_structure, false))
+					HtmlGrid::PopupLink
+				else
+					HtmlGrid::Link
 				end
+				link = klass.new(key, model, @session, self)
+				link.href = "http://wiki.oddb.org/wiki.php?pagename=#{name}"
+				link
+			end
+			## meddrugs_update, data_declaration and legal_note: 
+			## extrawurst for just-medical
+			def data_declaration(model)
+				wiki_link(model, :data_declaration, :datadeclaration_pagename)
+			end
+			def legal_note(model)
+				wiki_link(model, :legal_note, :legal_note_pagename)
+			end
+			def home(model)
+				link = NavigationLink.new(:home_drugs, model, @session, self)
+				link.value = @lookandfeel.lookup(:home)
+				link
+			end
+			def meddrugs_update(model)
+				link = NavigationLink.new(:meddrugs_update, 
+					model, @session, self)
+				link.href = "http://www.just-medical.com/lastdrugs.cfm"
+				link.set_attribute('target', '_top')
 				link
 			end
 		end

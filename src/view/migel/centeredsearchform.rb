@@ -28,6 +28,16 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,0,1,7]		=>	'ccomponent',
 	}
 	COMPONENT_CSS_MAP = { }
+	def init
+		if(@lookandfeel.enabled?(:just_medical_structure, false))
+			@components = {
+				[0,0]		=>	:language_chooser,
+				[0,1]		=>	View::CenteredSearchForm,
+				[0,2]		=>	'migel_search_explain', 
+			}
+		end
+		super
+	end
 	def migel_count(model, session)
 		@session.migel_count
 	end

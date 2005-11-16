@@ -1746,3 +1746,11 @@ td.migel-group, td.migel-group a {
 td.migel-group {
 	padding: 4px;
 }
+div.just-medical {
+	background : $bg_dark;
+	color : $bg_dark_font_color;
+	font-weight : bold;
+	padding : 4px;
+	text-align : left;
+	text-decoration : none;
+}

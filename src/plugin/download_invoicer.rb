@@ -11,16 +11,18 @@ module ODDB
 		]
 		def run(month = (Date.today - 1))
 			items = recent_items(month)
-			payable_items = filter_paid(items)
-			groups = group_by_user(payable_items)
-			groups.each { |pointer, items|
-				if((user = pointer.resolve(@app)) && (hospital = user.model))
-					## first send the invoice 
-					send_invoice(month, hospital, items) 
-					## then store it in the database
-					create_invoice(user, items)
-				end
-			}
+			unless(items.empty?)
+				payable_items = filter_paid(items)
+				groups = group_by_user(payable_items)
+				groups.each { |pointer, items|
+					if((user = pointer.resolve(@app)) && (hospital = user.model))
+						## first send the invoice 
+						send_invoice(month, hospital, items) 
+						## then store it in the database
+						create_invoice(user, items)
+					end
+				}
+			end
 			nil
 		end
 		def assemble_pdf_invoice(pdfinvoice, day, hospital, items, email)

@@ -56,7 +56,7 @@ module ODDB
 				:price_exfactory, :price_public, :company_name, :ikscat,
 				:sl_entry, :introduction_date, :limitation,
 				:limitation_points, :limitation_text, :registration_date,
-				:expiration_date, :inactive_date, :export_flag, ]
+				:expiration_date, :inactive_date, :export_flag, :casrn ]
 			session = SessionStub.new
 			session.language = 'de'
 			session.flavor = 'gcc'

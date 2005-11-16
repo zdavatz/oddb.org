@@ -12,7 +12,7 @@ module ODDB
 			CSS_CLASS = "navigation-foot"
 			COMPONENTS = {
 				[0,0]		=>	View::Copyright,
-				[1,0]		=>	View::Navigation,	
+				[1,0]		=>	View::Navigation,
 			}
 			HTML_ATTRIBUTES = {
 				'valign'	=>	'bottom',

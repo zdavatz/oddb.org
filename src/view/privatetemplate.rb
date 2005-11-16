@@ -31,7 +31,7 @@ module ODDB
 				[0,4]	=>	2,
 			}
 			COMPONENTS = {
-				[0,0]		=>	:foot,
+				[0,0]		=>	:topfoot,
 				[0,1]		=>	:head,
 				[0,2]		=>	View::PointerSteps,
 				[1,2]		=>	View::SearchHead,

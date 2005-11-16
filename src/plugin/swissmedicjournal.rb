@@ -304,6 +304,7 @@ module ODDB
 				date_key			=>	smj_reg.last_update,
 				:export_flag	=>	smj_reg.exportvalue,
 				:source				=>	smj_reg.src,
+				:index_therapeuticus => smj_reg.indexth,
 			}
 			if(indication_name = smj_reg.indication)
 				indication = update_indication(indication_name)

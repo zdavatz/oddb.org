@@ -306,6 +306,7 @@ module ODDB
 					39	=>	inscode,
 					40	=>	limitation,
 					41	=>	limitation_points,
+					47	=>	(@package.narcotic) ? 'y' : nil,
 				}
 			end
 			def generic_code(registration)

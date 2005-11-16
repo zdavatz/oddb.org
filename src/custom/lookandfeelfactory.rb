@@ -13,23 +13,14 @@ module ODDB
 				LookandfeelExtern,
 				LookandfeelAtupri, 
 			],
-=begin
-			'drouwerkerk'=>	[
+			'just-medical'=>	[
 				LookandfeelExtern,
-				LookandfeelDrOuwerkerk, 
+				LookandfeelJustMedical, 
 			],
-=end
 			'generika'	=>	[
 				LookandfeelExtern,
 				LookandfeelGenerika,
 			],
-=begin
-			'innova'			=>	[
-				LookandfeelExtern,
-				LookandfeelButtons, 
-				LookandfeelInnova, 
-			],
-=end
 			'provita'			=>	[
 				LookandfeelExtern,
 				LookandfeelButtons, 
@@ -40,13 +31,6 @@ module ODDB
 				LookandfeelButtons, 
 				LookandfeelSantesuisse, 
 			],
-=begin
-			'schoenenberger' =>	[
-				LookandfeelExtern,
-				LookandfeelButtons, 
-				LookandfeelSchoenenberger, 
-			],
-=end
 		}
 	end
 end

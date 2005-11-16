@@ -117,7 +117,7 @@ module ODDB
 				:home_welcome		=>	'',
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:price_compare	=>	'Pour la comparaison directe, veuillez cliqueter sur les noms de m&eacute;dicament dans le r&eacute;sultat de la recherche!',
-				:search_explain	=>	'Bienvenu et sur sant&eacute;suisse et oddb.org.<br><br>comparaisez simplement et rapidement prix de m&eacute;dicament en vous<br>sugg&eacute;rez soit un m&eacute;dicament, soit un agent dans la poutre de recherche :',
+				:search_explain	=>	'Bienvenu sur santesuisse.ch et oddb.org.<br><br>Comparez simplement et rapidement les prix des m&eacute;dicaments<br>en entrant le nom du m&eacute;dicament ou un principe actif<br>dans la barre d\'outils de recherche.',
 				:lookandfeel_owner =>	'Generika.cc',
 			},
 			
@@ -154,5 +154,57 @@ module ODDB
 				'height'	=>	'92',
 			},
 		}
+	end
+	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:just_medical_structure,	
+			:external_css,
+		]
+		DICTIONARIES = {
+			'de'	=>	{
+				:all_drugs_pricecomparison	=>	'Komplette Schweizer Medikamenten-Enzyklopädie',
+				:atc_chooser								=>	'ATC-Codes', 
+				:data_declaration						=>	'Datenherkunft',
+				:home_drugs									=>	'Medikamente',
+				:legal_note									=>	'Rechtliche Hinweise',
+				:meddrugs_update						=>	'med-drugs update', 
+				:migel											=>	'Medizinprodukte (MiGeL)',
+				:search_explain							=>	'Vergleichen Sie einfach und schnell Medikamentenpreise.<br> Suchen Sie nach Medikament, Wirkstoff oder Anwendungsgebiet.',
+				:sequences									=>	'Medikamente alphabetisch',
+			},
+			'fr'	=>	{
+				:all_drugs_pricecomparison	=>	'Encyclopédie complète des médicaments de la Suisse',
+				:atc_chooser								=>	'ATC-Codes', 
+				:data_declaration						=>	'Source des dates',
+				:home_drugs									=>	'Médicaments',
+				:legal_note									=>	'Notice légale',
+				:meddrugs_update						=>	'med-drugs update', 
+				:migel											=>	'Dispositifs médicaux (MiGeL)',
+				:search_explain							=>	'Comparez simplement et rapidement les prix des médicaments.<br>Cherchez le nom du médicament, le principe actif ou l\'indication.',
+				:sequences									=>	'Médicaments alphabétiques',
+			},
+			'en'	=>	{
+				:all_drugs_pricecomparison	=>	'Complete Swiss encyclopaedia of drugs',
+				:atc_chooser								=>	'ATC-Codes', 
+				:data_declaration						=>	'Source of data',
+				:home_drugs									=>	'Drugs',
+				:legal_note									=>	'Legal Disclaimer',
+				:meddrugs_update						=>	'med-drugs update', 
+				:migel											=>	'Medical devices (MiGeL)',
+				:search_explain							=>	'Compare prices of drugs - fast and easy.<br>Search by name of drug, active agent or indication.',
+				:sequences									=>	'Drugs alphabetical',
+			},
+		}
+		RESOURCES = {
+			:external_css	=>	'http://www.just-medical.com/css/oddb.css',
+		}
+		def navigation
+			[ :meddrugs_update, :legal_note, :data_declaration, 
+				:home ]
+		end
+		def zones
+			[ State::Drugs::Init, State::Drugs::AtcChooser, 
+				State::Drugs::Sequences, :migel ]
+		end
 	end
 end
