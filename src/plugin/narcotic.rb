@@ -94,7 +94,7 @@ module ODDB
 		def update_narcotic_texts(language)
 			@narcotic_texts.each { |name, text|
 				@reserve_substances.delete_if { |substance|
-					if((substance.send(language).include?(name))
+					if(substance.send(language).include?(name))
 						ptr = substance.narcotic.pointer + :reservation_text
 						args = {
 							language	=> text,
