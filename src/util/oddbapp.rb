@@ -531,7 +531,7 @@ class OddbPrevalence
 		products
 	end
 	def narcotic(odba_id)
-		@narcotics[:odba_id]
+		@narcotics[odba_id.to_i]
 	end
 	def narcotic_by_casrn(casrn)
 		@narcotics.values.select { |narc| 
@@ -831,8 +831,8 @@ class OddbPrevalence
 		}.first
 	end
 	def substance_by_smcd(smcd)
-		@narcotics.values.select { |narc|
-			narc.smcd == smcd
+		@substances.values.select { |sub|
+			sub.swissmedic_code == smcd
 		}.first
 	end
 	def substances

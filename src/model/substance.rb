@@ -166,7 +166,7 @@ module ODDB
 		def narcotic=(narc)
 			if(@narcotic)
 				@narcotic.substance = nil
-				@barcotic.odba_store
+				@narcotic.odba_store
 			end
 			if(narc)
 				narc.substance = self

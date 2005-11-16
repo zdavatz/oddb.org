@@ -2,12 +2,16 @@
 # Narcotic -- oddb -- 04.11.2005 -- ffricker@ywesee.com
 
 require 'util/persistence'
+require 'util/language'
 
 module ODDB
 	class Narcotic
 		include Persistence
-		attr_reader	:packages
-		attr_accessor :casrn, :smcd, :substance
+		attr_reader	:packages, :reservation_text
+		attr_accessor :casrn, :swissmedic_code, :substance, :category
+		def create_reservation_text
+			@reservation_text = Text::Document.new
+		end
 		def initialize
 			@packages = []
 			super
