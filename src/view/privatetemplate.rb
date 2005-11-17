@@ -38,19 +38,7 @@ module ODDB
 				[0,3]		=>	:content,
 				[0,4]		=>	:foot,
 			}
-			SNAPBACK_EVENT = nil
-			def snapback
-				event = nil
-				path = {}
-				state = @session.state
-				while(event.nil? && state)
-					if((state = state.previous) \
-						&& (event = state.direct_event))
-						path = state.request_path
-					end
-				end
-				[event || self.class::SNAPBACK_EVENT, path]
-			end
+			include View::Snapback
 		end
 	end
 end

@@ -6,6 +6,7 @@ require 'view/form'
 require 'view/pointervalue'
 require 'view/dataformat'
 require 'htmlgrid/inputcurrency'
+require 'htmlgrid/inputdate'
 require 'htmlgrid/errormessage'
 require 'htmlgrid/link'
 require 'htmlgrid/booleanvalue'
@@ -47,6 +48,7 @@ class PackageForm < View::Form
 		[0,4]		=>	:price_exfactory,
 		[2,4]		=>	:price_public,
 		[0,5]		=>	:generic_group,
+		[2,5]		=>	:market_date,
 		[1,6]		=>	:submit,
 		[1,6,0]	=>	:delete_item,
 	}
@@ -62,6 +64,7 @@ class PackageForm < View::Form
 		:price_exfactory	=>	HtmlGrid::InputCurrency,
 		:price_public			=>	HtmlGrid::InputCurrency,
 		:iksnr						=>	HtmlGrid::Value,
+		:market_date			=>	HtmlGrid::InputDate,
 	}
 	def init
 		super

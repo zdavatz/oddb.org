@@ -2,6 +2,7 @@
 # View::Drugs::Sequences -- oddb -- 08.02.2005 -- hwyss@ywesee.com
 
 require 'view/alphaheader'
+require 'view/additional_information'
 require 'view/resulttemplate'
 require 'view/resultfoot'
 require 'view/resultcolors'
@@ -11,27 +12,42 @@ module ODDB
 		module Drugs
 class SequenceList < HtmlGrid::List
 	include View::ResultColors
+	include View::AdditionalInformation
 	COMPONENTS = {
 		[0,0]	=>	:iksnr,
-		[1,0]	=>	:name_base,
-		[2,0]	=>	:galenic_form,
+		[1,0]	=>	:limitation_text,
+		[1,0]	=>  :fachinfo,
+		[2,0]	=>	:patinfo,
+		[3,0]	=>	:name_base,
+		[4,0]	=>	:galenic_form,
+		[5,0]	=>	:feedback,
+		[6,0]	=>  :google_search,
+		[7,0]	=>	:notify,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'small result-edit',
-		[1,0]	=>	'result-big',
-		[2,0]	=>	'result',
+		[0,0]		=>	'small result-edit',
+		[1,0,2]	=>	'result-infos',
+		[3,0]		=>	'result-big',
+		[4,0]		=>	'result',
+		[5,0,3]	=>	'result-b-r',
 	}
-	SORT_DEFAULT = :name
-	SORT_REVERSE = false
+	SORT_DEFAULT = false
 	SORT_HEADER = false
 	SYMBOL_MAP = {
 		:iksnr	=>	PointerLink,
 	}
+	LEGACY_INTERFACE = false
 	include AlphaHeader
-	def name_base(model, session)
-		link = HtmlGrid::Link.new(:name_base, model, session, self)
+	def limitation_text(model)
+		packs = model.packages.values
+		pack = packs.select { |pack| pack.limitation_text }.first \
+			|| packs.first
+		super(pack)
+	end
+	def name_base(model)
+		link = HtmlGrid::Link.new(:name_base, model, @session, self)
 		link.value = model.name_base
 		query = (atc = model.atc_class) ? atc.code : 'atcless'
 		args = {

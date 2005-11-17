@@ -46,27 +46,14 @@ class Package < State::Admin::Global
 			:pretty_dose,
 			:price_exfactory,
 			:price_public,
+			:market_date,
 		]
-		#input = user_input(keys)
-=begin
-		input = [
-			:size, 
-			:ikscat,
-			:price_exfactory,
-			:price_public,
-		].inject({}) { |inj, key|
-			value = @session.user_input(key)
-			if(value.is_a? RuntimeError)
-				@errors.store(key, value)
-			else
-				inj.store(key, value)
-			end
-			inj
-		}
-=end
-		ODBA.batch {
-			@model = @session.app.update(@model.pointer, user_input(keys))
-		}
+		input = user_input(keys)
+		unless(error?)
+			ODBA.transaction {
+				@model = @session.app.update(@model.pointer, user_input(keys))
+			}
+		end
 		self
 	end
 end

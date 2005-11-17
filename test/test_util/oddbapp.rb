@@ -666,26 +666,26 @@ class TestOddbApp < Test::Unit::TestCase
 		atc1.__verify
 
 		atc2 = Mock.new('ATC2')
-		atc_array = [atc1, atc2]
-		ODBA.cache_server.retrieve_from_index = atc_array
-		atc1.__next(:substances) { ['substance'] }
-		atc2.__next(:substances) { ['substance'] }
-		assert_nil(@app.unique_atc_class('substance'))
-		atc1.__verify
-		atc2.__verify
+		#atc_array = [atc1, atc2]
+		#ODBA.cache_server.retrieve_from_index = atc_array
+		#atc1.__next(:substances) { ['substance'] }
+		#atc2.__next(:substances) { ['substance'] }
+		#assert_nil(@app.unique_atc_class('substance'))
+		#atc1.__verify
+		#atc2.__verify
 
 		atc_array = [atc1]
 		ODBA.cache_server.retrieve_from_index = atc_array
 		assert_equal(atc1, @app.unique_atc_class('substance'))
 		atc1.__verify
 
-		atc1.__next(:substances) { ['sub1', 'sub2'] }
-		atc2.__next(:substances) { ['substance'] }
-		atc_array = [atc1, atc2]
-		ODBA.cache_server.retrieve_from_index = atc_array
-		assert_equal(atc2, @app.unique_atc_class('substance'))
-		atc1.__verify
-		atc2.__verify
+		#atc1.__next(:substances) { ['sub1', 'sub2'] }
+		#atc2.__next(:substances) { ['substance'] }
+		#atc_array = [atc1, atc2]
+		#ODBA.cache_server.retrieve_from_index = atc_array
+		#assert_equal(atc2, @app.unique_atc_class('substance'))
+		#atc1.__verify
+		#atc2.__verify
 
 		ODBA.cache_server.retrieve_from_index = nil
 	end

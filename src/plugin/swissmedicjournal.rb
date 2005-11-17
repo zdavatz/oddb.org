@@ -31,7 +31,11 @@ module ODDB
 				succ = false
 				if(flags.include?(:all))
 					preg.parse
-					update_registration(preg)
+					ptr = nil
+					if(reg.is_a?(IncompleteRegistration))
+						ptr = reg.pointer
+					end
+					update_registration(preg, ptr)
 				else
 					preg.parse.each { |seqnum, pseq|
 						if(seq = reg.sequence(seqnum))
@@ -294,7 +298,7 @@ module ODDB
 				@app.update(pointer.creator, hash)
 			}
 		end
-		def update_registration(smj_reg)
+		def update_registration(smj_reg, pointer=nil)
 			date_key = if (smj_reg.flags == [:new])
 				:registration_date	
 			else
@@ -317,14 +321,14 @@ module ODDB
 				company = update_company(smj_company)
 				hash.store(:company, company.pointer)
 			end
-			args = if(smj_incomplete?(smj_reg)) 
+			args = if(smj_incomplete?(smj_reg) || pointer) 
 				hash.store(:errors, smj_reg.errors)
 				hash.store(:iksnr, smj_reg.iksnr)
 				:incomplete_registration
 			else
 				[:registration, smj_reg.iksnr]
 			end
-			pointer = Persistence::Pointer.new(args)
+			pointer ||= Persistence::Pointer.new(args)
 			registration = @app.update(pointer.creator, hash)
 			if(smj_incomplete?(smj_reg))
 				@incomplete_pointers

@@ -21,12 +21,21 @@ module ODDB
 			@active_agents = []
 		end
 		def active_packages
-			(active?) ? @packages.values : []
+			if(active?) 
+				@packages.values.select { |pac| pac.active? }
+			else
+				[]
+			end
 		end
 		def active_package_count(generic_type=nil)
 			if(active? && (generic_type.nil? \
 				|| @registration.generic_type == generic_type))
-				@packages.size
+				@packages.values.inject(0) { |count, pack|
+					if(pack.active?)
+						count += 1
+					end
+					count
+				}
 			else
 				0
 			end
@@ -113,6 +122,9 @@ module ODDB
 		def each_package(&block)
 			@packages.values.each(&block)
 		end
+		def fachinfo
+			@registration.fachinfo
+		end
 		def generic_type
 			@registration.generic_type
 		end
@@ -124,6 +136,9 @@ module ODDB
 		end
 		def indication
 			@registration.indication
+		end
+		def localized_name(language)
+			self.name
 		end
 		def match(query)
 			/#{query}/i.match(@name_base)

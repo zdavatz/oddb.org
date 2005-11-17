@@ -84,5 +84,20 @@ module ODDB
 				offset
 			end
 		end
+		module Snapback
+			SNAPBACK_EVENT = nil
+			def snapback
+				state = @session.state
+				event = state.direct_event
+				path = {}
+				while(event.nil? && state)
+					if((state = state.previous) \
+						&& (event = state.direct_event))
+						path = state.request_path
+					end
+				end
+				[event || self.class::SNAPBACK_EVENT, path]
+			end
+		end
 	end
 end

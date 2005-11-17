@@ -22,12 +22,11 @@ module ODDB
 				end
 			end
 			def fachinfo(model, session=@session, css='result-infos')
-				fachinfo = model.fachinfo
-				pdf_fachinfos = model.pdf_fachinfos
-				#company = model.company
+				_fachinfo(model.fachinfo, css)
+			end
+			def _fachinfo(fachinfo, css='result-infos')
 				visitor_language = @lookandfeel.language.intern
-				if(fachinfo)# || pdf_fachinfos )#&& company.fi_status)
-#					pdf_link = false
+				if(fachinfo)
 					fi_link = false
 					if(!fachinfo.nil? && !fachinfo.descriptions.nil? \
 						&& fachinfo.descriptions.include?(visitor_language.to_s))
@@ -37,7 +36,7 @@ module ODDB
 						fi_link = true
 					end
 					link = HtmlGrid::Link.new(:fachinfo_short, 
-							model, session, self)
+							fachinfo, @session, self)
 					if(fi_link)
 						link.href = @lookandfeel._event_url(:resolve,
 							{'pointer' => fachinfo.pointer})

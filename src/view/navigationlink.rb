@@ -9,7 +9,7 @@ module ODDB
 			CSS_CLASS = "navigation"
 			def init
 				super
-				unless (@lookandfeel.direct_event == @name)
+				unless(@lookandfeel.direct_event == @name)
 					@attributes.store("href", @lookandfeel._event_url(@name))
 				end
 			end
@@ -18,8 +18,10 @@ module ODDB
 			CSS_CLASS = "list"
 			def init
 				super
-				unless (@lookandfeel.language == @name.to_s)
-					@attributes.store("href", @lookandfeel.language_url(@name))
+				unless(@lookandfeel.language == @name.to_s)
+					path = @session.request_path.dup
+					path.gsub!(/^.{3}/, "/#{@name}")
+					@attributes.store("href", path)
 				end
 			end
 		end
@@ -27,11 +29,18 @@ module ODDB
 			CSS_CLASS = "list"
 			def init
 				super
-				unless (@session.currency == @name.to_s)
-					args = {
-						:currency => @name
-					}
-					@attributes.store("href", @lookandfeel._event_url(:self, args))
+				current = @session.currency
+				unless(current == @name.to_s)
+					path = @session.request_path.dup
+					path.slice!(/\/$/)
+					if(path.count('/') < 3)
+						args = { :currency => @name }
+						path = @lookandfeel._event_url(:self, args)
+					else
+						path.slice!(/\/currency\/[^\/]*/)
+						path << '/currency/' << @name.to_s
+					end
+					@attributes.store("href", path)
 				end
 			end
 		end

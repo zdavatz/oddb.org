@@ -10,6 +10,7 @@ require 'state/drugs/atcchooser'
 require 'state/drugs/compare'
 require 'state/drugs/ddd'
 require 'state/drugs/fachinfo'
+require 'state/drugs/fachinfos'
 require 'state/drugs/feedbacks'
 require 'state/drugs/notify'
 require 'state/drugs/package'
@@ -73,6 +74,7 @@ module ODDB
 				:compare							=>	State::Drugs::Compare,
 				:ddd									=>	State::Drugs::DDD,
 				:download_export			=>	State::User::DownloadExport,
+				:fachinfos						=>	State::Drugs::Fachinfos,
 				:fipi_offer_input			=>	State::User::FiPiOfferInput,
 				:help									=>	State::User::Help,
 				:home									=>	State::Drugs::Init,

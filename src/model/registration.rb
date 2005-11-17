@@ -21,8 +21,10 @@ module ODDB
 			@sequences = {}
 		end
 		def active?
-			(@inactive_date.nil? || @inactive_date > Date.today) \
-				&& (@market_date.nil? || @market_date <= Date.today)
+			today = Date.today
+			(@inactive_date.nil? || @inactive_date > today) \
+				&& (@expiration_date.nil? || @expiration_date > today) \
+				&& (@market_date.nil? || @market_date <= today) 
 		end
 		def atc_classes
 			@sequences.values.collect { |seq|

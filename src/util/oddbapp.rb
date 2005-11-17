@@ -37,13 +37,14 @@ class OddbPrevalence
 		:hospitals, :invoices, :last_medication_update, :last_update,
 		:notification_logger, :orphaned_fachinfos, :orphaned_patinfos,
 		:patinfos, :patinfos_deprived_sequences, :registrations, :slates,
-		:users, :narcotics
+		:users, :narcotics, :accepted_orphans
 	def initialize
 		init
 	end
 	def init
 		create_unknown_galenic_group()
 		create_root_user()
+		@accepted_orphans ||= {}
 		@atc_classes ||= {}
 		@address_suggestions ||= {}
 		@patinfos_deprived_sequences ||= []
@@ -464,6 +465,13 @@ class OddbPrevalence
 	def fachinfo_count
 		@fachinfos.size
 	end
+	def fachinfos_by_name(name, lang)
+		if(lang.to_s != "fr") 
+			lang = "de"
+		end
+		ODBA.cache_server.retrieve_from_index("fachinfo_name_#{lang}", 
+			name)
+	end
 	def galenic_form(name)
 		@galenic_groups.values.collect { |galenic_group|
 			galenic_group.get_galenic_form(name)
@@ -862,11 +870,14 @@ class OddbPrevalence
 	end
 	def unique_atc_class(substance)
 	 atc_array = search_by_substance(substance)
+=begin ## this is much too unstable, completely wrong assignment is 
+       ## probable!
 	 if(atc_array.size > 1)
 		 atc_array = atc_array.select { |atc|
 			 atc.substances.size == 1
 		 }
 	 end
+=end
 	 if(atc_array.size == 1)
 		 atc_array.first
 	 end

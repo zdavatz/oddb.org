@@ -29,7 +29,7 @@ module ODDB
 				end
 				@filter = Proc.new { |model|
 					model.select { |item| 
-						pattern.match(item.send(symbol))
+						pattern.match(item.send(*symbol))
 					}
 				}
 			end
@@ -44,22 +44,76 @@ module ODDB
 			@intervals ||= get_intervals
 		end
 		def user_range
-			if(self::class::PERSISTENT_RANGE)
+			range = if(self::class::PERSISTENT_RANGE)
 				@session.persistent_user_input(:range)
 			else
 				@session.user_input(:range)
 			end
+			unless(self.class.const_get(:RANGE_PATTERNS).include?(range))
+				range = default_interval
+			end
+			range
 		end
 		private
 		def get_intervals
 			@model.collect { |item| 
 				self::class::RANGE_PATTERNS.collect { |range, pattern| 
-					range if /^[#{pattern}]/i.match(item.send(symbol))
+					range if /^[#{pattern}]/i.match(item.send(*symbol))
 				}.compact.first || '|unknown'
 			}.flatten.uniq.sort
 		end
 		def symbol
 			:to_s
 		end
+	end
+	module IndexedInterval
+		include Interval
+		RANGE_PATTERNS = {
+			'a'			=>	'aäÄáÁàÀâÂ',
+			'b'			=>	'b',
+			'c'			=>	'cçÇ',
+			'd'			=>	'd',
+			'e'			=>	'eëËéÉèÈêÊ',
+			'f'			=>	'f',
+			'g'			=>	'g',
+			'h'			=>	'h',
+			'i'			=>	'i',
+			'j'			=>	'j',
+			'k'			=>	'k',
+			'l'			=>	'l',
+			'm'			=>	'm',
+			'n'			=>	'n',
+			'o'			=>	'oöÖóÓòÒôÔ',
+			'p'			=>	'p',
+			'q'			=>	'q',
+			'r'			=>	'r',
+			's'			=>	's',
+			't'			=>	't',
+			'u'			=>	'uüÜúÚùÙûÛ',
+			'v'			=>	'v',
+			'w'			=>	'w',
+			'x'			=>	'x',
+			'y'			=>	'y',
+			'z'			=>	'z',
+			'0-9'		=>	'^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ',
+		}
+	def init
+		super
+		@filter = Proc.new { |model|
+			if(@range = user_range)
+				index_lookup(@range)
+			else
+				[]
+			end
+		}
+	end
+	def default_interval
+	end
+	def interval
+		@range
+	end
+	def intervals
+		('a'..'z').to_a.push('0-9')
+	end
 	end
 end

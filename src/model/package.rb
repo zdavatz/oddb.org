@@ -138,7 +138,7 @@ Grammar OddbSize
 		attr_reader :descr, :addition, :scale, :sl_entry, :narcotic
 		attr_accessor :sequence, :ikscat, :generic_group
 		attr_accessor :price_exfactory, :price_public, :pretty_dose
-		attr_accessor :pharmacode
+		attr_accessor :pharmacode, :market_date
 		alias :pointer_descr :ikscd
 		def initialize(ikscd)
 			super()
@@ -146,7 +146,7 @@ Grammar OddbSize
 			@comparable_size = Dose.new(1,'')
 		end
 		def active?
-			@sequence.active?
+			@market_date.nil? || @market_date <= Date.today
 		end
 		def active_agents
 			@sequence.active_agents
@@ -187,10 +187,10 @@ Grammar OddbSize
 			@sequence.dose
 		end
 		def fachinfo
-			registration.fachinfo
+			@sequence.fachinfo
 		end
 		def localized_name(language)
-			@sequence.name
+			@sequence.localized_name(language)
 		end
 		def pdf_fachinfos
 			registration.pdf_fachinfos
