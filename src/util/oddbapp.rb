@@ -862,11 +862,14 @@ class OddbPrevalence
 	end
 	def unique_atc_class(substance)
 	 atc_array = search_by_substance(substance)
+=begin ## this is much too unstable, completely wrong assignment is 
+       ## probable!
 	 if(atc_array.size > 1)
 		 atc_array = atc_array.select { |atc|
 			 atc.substances.size == 1
 		 }
 	 end
+=end
 	 if(atc_array.size == 1)
 		 atc_array.first
 	 end
