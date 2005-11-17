@@ -4,6 +4,29 @@
 require 'rockit/rockit'
 require 'odba/persistable'
 
+module ODBA
+	class Stub
+		def odba_replace(name=nil)
+			@receiver || begin
+				@receiver = ODBA.cache_server.fetch(@odba_id, @odba_container)
+				if(@odba_container)
+					@odba_container.odba_replace_stubs(self, @receiver)
+				end
+				@receiver
+			rescue OdbaError => e
+				msg = "ODBA::Stub was unable to replace #{@odba_class}:#{@odba_id} - "
+				if(@odba_container.respond_to?(:pointer))
+					msg << @odba_container.pointer.to_s	
+				end
+				names = @odba_container.instance_variables.select { |name|
+					eql?(@odba_container.instance_variable_get(name))
+				}
+				msg << "[" << names.join(',') << "]"
+				warn msg
+			end
+		end
+	end
+end
 module ODDB
 	module PersistenceMethods
 		attr_reader :oid
