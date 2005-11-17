@@ -79,6 +79,7 @@ module ODDB
 			:download_export,
 			:effective_substances,
 			:export_csv,
+			:fachinfos,
 			:feedbacks,
 			:fipi_offer_input,
 			:galenic_groups,

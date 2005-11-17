@@ -187,10 +187,10 @@ Grammar OddbSize
 			@sequence.dose
 		end
 		def fachinfo
-			registration.fachinfo
+			@sequence.fachinfo
 		end
 		def localized_name(language)
-			@sequence.name
+			@sequence.localized_name(language)
 		end
 		def pdf_fachinfos
 			registration.pdf_fachinfos

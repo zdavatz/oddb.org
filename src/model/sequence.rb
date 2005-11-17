@@ -113,6 +113,9 @@ module ODDB
 		def each_package(&block)
 			@packages.values.each(&block)
 		end
+		def fachinfo
+			@registration.fachinfo
+		end
 		def generic_type
 			@registration.generic_type
 		end
@@ -124,6 +127,9 @@ module ODDB
 		end
 		def indication
 			@registration.indication
+		end
+		def localized_name(language)
+			self.name
 		end
 		def match(query)
 			/#{query}/i.match(@name_base)

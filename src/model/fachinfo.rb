@@ -43,6 +43,9 @@ module ODDB
 			}
 			:unknown
 		end
+		def localized_name(language=:de)
+			self.send(language).name
+		end
 		def name_base
 			@registrations.first.name_base
 		end

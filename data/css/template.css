@@ -802,6 +802,7 @@ td.result-infos-vaccine,
 td.result-infos-unknown
 {
 	padding : 2px;
+	width: 20px;
 }
 
 a.result-infos-bg, a.result-infos-bg:link, a.result-infos-bg:visited, 
@@ -832,12 +833,14 @@ td.result-infos-unknown-bg
 {
 	background : $rslt_bg;
 	padding : 2px;
+	width: 20px;
 }
 
 td.result-infos-bg
 {
 	background : #e9f7f3;
 	padding : 2px;
+	width: 20px;
 }
 
 a.important-infos, a.important-infos:link, a.important-infos:visited,
@@ -867,7 +870,7 @@ td.important-infos-unknown,
 td.important-infos-vaccine,
 td.important-infos-complementary
 {
-	padding : 0px;
+	padding : 2px;
 }
 
 td.bg a.important-infos {
@@ -904,7 +907,7 @@ td.important-infos-vaccine-bg,
 td.important-infos-complementary-bg
 {
 	background : $rslt_bg;
-	padding : 0px;
+	padding : 2px;
 }
 
 td.important-infos-bg

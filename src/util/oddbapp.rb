@@ -465,6 +465,13 @@ class OddbPrevalence
 	def fachinfo_count
 		@fachinfos.size
 	end
+	def fachinfos_by_name(name, lang)
+		if(lang.to_s != "fr") 
+			lang = "de"
+		end
+		ODBA.cache_server.retrieve_from_index("fachinfo_name_#{lang}", 
+			name)
+	end
 	def galenic_form(name)
 		@galenic_groups.values.collect { |galenic_group|
 			galenic_group.get_galenic_form(name)

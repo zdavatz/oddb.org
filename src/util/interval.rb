@@ -29,7 +29,7 @@ module ODDB
 				end
 				@filter = Proc.new { |model|
 					model.select { |item| 
-						pattern.match(item.send(symbol))
+						pattern.match(item.send(*symbol))
 					}
 				}
 			end
@@ -44,17 +44,21 @@ module ODDB
 			@intervals ||= get_intervals
 		end
 		def user_range
-			if(self::class::PERSISTENT_RANGE)
+			range = if(self::class::PERSISTENT_RANGE)
 				@session.persistent_user_input(:range)
 			else
 				@session.user_input(:range)
 			end
+			unless(self.class.const_get(:RANGE_PATTERNS).include?(range))
+				range = default_interval
+			end
+			range
 		end
 		private
 		def get_intervals
 			@model.collect { |item| 
 				self::class::RANGE_PATTERNS.collect { |range, pattern| 
-					range if /^[#{pattern}]/i.match(item.send(symbol))
+					range if /^[#{pattern}]/i.match(item.send(*symbol))
 				}.compact.first || '|unknown'
 			}.flatten.uniq.sort
 		end
