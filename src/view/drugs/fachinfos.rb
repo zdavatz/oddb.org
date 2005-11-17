@@ -43,25 +43,21 @@ class FachinfoList < HtmlGrid::List
 	end
 end
 class FachinfosComposite < HtmlGrid::Composite
-	include Snapback
 	COMPONENTS = {
-		[0,0]	=>	View::PointerSteps,
-		[0,1]	=> :title_fachinfos,
-		[1,1]	=>	SearchForm,
-		[0,2]	=> View::Drugs::FachinfoList,
-		[0,3]	=> View::ResultFoot,
+		[0,0]	=> :title_fachinfos,
+		[1,0]	=>	SearchForm,
+		[0,1]	=> View::Drugs::FachinfoList,
+		[0,2]	=> View::ResultFoot,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,1]	=>	'result-found list',
+		[0,0]	=>	'result-found list',
 	}
 	COLSPAN_MAP	= {
-		[0,0]	=> 2,
+		[0,1]	=> 2,
 		[0,2]	=> 2,
-		[0,3]	=> 2,
 	}
 	LEGACY_INTERFACE = false
-	SNAPBACK_EVENT = :fachinfos
 	def title_fachinfos(model)
 		unless(model.empty?)
 			@lookandfeel.lookup(:title_fachinfos, 

@@ -47,7 +47,9 @@ module ODDB
 			self.send(language).name
 		end
 		def name_base
-			@registrations.first.name_base
+			if(reg = @registrations.first)
+				reg.name_base
+			end
 		end
 		def pointer_descr
 			name_base

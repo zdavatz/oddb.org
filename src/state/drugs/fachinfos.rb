@@ -15,9 +15,9 @@ class Fachinfos < Global
 	DIRECT_EVENT = :fachinfos
 	PERSISTENT_RANGE = true
 	def index_lookup(range)
-		fis = @session.fachinfos_by_name(range, @session.language) 
-		fis.delete_if { |fi| fi.registrations.empty? }
-		fis
+		@session.fachinfos_by_name(range, @session.language).reject { |fi|
+			fi.registrations.empty?
+		}
 	end
 	def symbol 
 		[:localized_name, @session.language]
