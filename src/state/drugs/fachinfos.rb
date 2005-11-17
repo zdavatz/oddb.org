@@ -11,11 +11,13 @@ module ODDB
 class Fachinfos < Global
 	include IndexedInterval
 	VIEW = View::Drugs::Fachinfos
-	LIMITED = false
+	LIMITED = true
 	DIRECT_EVENT = :fachinfos
 	PERSISTENT_RANGE = true
 	def index_lookup(range)
-		@session.fachinfos_by_name(range, @session.language) 
+		fis = @session.fachinfos_by_name(range, @session.language) 
+		fis.delete_if { |fi| fi.registrations.empty? }
+		fis
 	end
 	def symbol 
 		[:localized_name, @session.language]
