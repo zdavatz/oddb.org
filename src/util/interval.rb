@@ -66,4 +66,54 @@ module ODDB
 			:to_s
 		end
 	end
+	module IndexedInterval
+		include Interval
+		RANGE_PATTERNS = {
+			'a'			=>	'aäÄáÁàÀâÂ',
+			'b'			=>	'b',
+			'c'			=>	'cçÇ',
+			'd'			=>	'd',
+			'e'			=>	'eëËéÉèÈêÊ',
+			'f'			=>	'f',
+			'g'			=>	'g',
+			'h'			=>	'h',
+			'i'			=>	'i',
+			'j'			=>	'j',
+			'k'			=>	'k',
+			'l'			=>	'l',
+			'm'			=>	'm',
+			'n'			=>	'n',
+			'o'			=>	'oöÖóÓòÒôÔ',
+			'p'			=>	'p',
+			'q'			=>	'q',
+			'r'			=>	'r',
+			's'			=>	's',
+			't'			=>	't',
+			'u'			=>	'uüÜúÚùÙûÛ',
+			'v'			=>	'v',
+			'w'			=>	'w',
+			'x'			=>	'x',
+			'y'			=>	'y',
+			'z'			=>	'z',
+			'0-9'		=>	'^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ',
+		}
+	def init
+		super
+		@filter = Proc.new { |model|
+			if(@range = user_range)
+				index_lookup(@range)
+			else
+				[]
+			end
+		}
+	end
+	def default_interval
+	end
+	def interval
+		@range
+	end
+	def intervals
+		('a'..'z').to_a.push('0-9')
+	end
+	end
 end

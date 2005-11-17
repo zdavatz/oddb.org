@@ -870,7 +870,7 @@ td.important-infos-unknown,
 td.important-infos-vaccine,
 td.important-infos-complementary
 {
-	padding : 2px;
+	padding : 0px;
 }
 
 td.bg a.important-infos {
@@ -907,7 +907,7 @@ td.important-infos-vaccine-bg,
 td.important-infos-complementary-bg
 {
 	background : $rslt_bg;
-	padding : 2px;
+	padding : 0px;
 }
 
 td.important-infos-bg
