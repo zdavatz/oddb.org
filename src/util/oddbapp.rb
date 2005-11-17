@@ -37,13 +37,14 @@ class OddbPrevalence
 		:hospitals, :invoices, :last_medication_update, :last_update,
 		:notification_logger, :orphaned_fachinfos, :orphaned_patinfos,
 		:patinfos, :patinfos_deprived_sequences, :registrations, :slates,
-		:users, :narcotics
+		:users, :narcotics, :accepted_orphans
 	def initialize
 		init
 	end
 	def init
 		create_unknown_galenic_group()
 		create_root_user()
+		@accepted_orphans ||= {}
 		@atc_classes ||= {}
 		@address_suggestions ||= {}
 		@patinfos_deprived_sequences ||= []
