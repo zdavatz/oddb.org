@@ -4,6 +4,7 @@
 require 'htmlgrid/list'
 require 'view/popuptemplate'
 require 'view/chapter'
+require 'view/external_links'
 
 module ODDB
 	module View
@@ -77,6 +78,7 @@ class DDDTreeList < HtmlGrid::List
 	OMIT_HEADER = true
 end
 class DDDTree < HtmlGrid::Composite
+	include ExternalLinks
 	SORT_DEFAULT = nil
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
@@ -117,10 +119,9 @@ class DDDTree < HtmlGrid::Composite
 	end
 	def source(model, session)
 		if(atc = model.last)
+			link = external_link(atc, :ddd_source)
 			href = "http://www.whocc.no/atcddd/indexdatabase/index.php?query="
 			href << atc.code
-			link = HtmlGrid::Link.new(:ddd_source, atc, session, self)
-			link.value = @lookandfeel.lookup(:ddd_source)
 			link.href = href
 			link
 		end
