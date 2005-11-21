@@ -9,9 +9,9 @@ module ODDB
 		class Product
 			include SimpleLanguage
 			ODBA_SERIALIZABLE = ['@descriptions']
-			attr_reader :code, :accessories, :products
+			attr_reader :code, :accessories, :products, :product_text
 			attr_accessor :subgroup, :limitation, :price, :type, :date, 
-				:unit, :limitation_text, :product_text
+				:unit, :limitation_text
 			alias :pointer_descr :code
 			def initialize(code)
 				@code = code

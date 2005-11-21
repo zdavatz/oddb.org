@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # View::Migel::Product -- oddb -- 05.10.2005 -- ffricker@ywesee.com
 
+require 'view/dataformat'
 require 'view/privatetemplate'
 require 'view/pointervalue'
 require 'view/migel/result'
@@ -40,6 +41,7 @@ class AccessoryOfList < AccessoryList
 end
 class ProductInnerComposite < HtmlGrid::Composite
 	include AdditionalInformation
+	include DataFormat
 	SYMBOL_MAP = {
 		:date		=> HtmlGrid::DateValue,
 		:feedback_label	=> HtmlGrid::LabelText,
