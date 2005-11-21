@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Drugs::Fachinfos -- oddb -- 17.11.2005 -- hwyss@ywesee.com
+# View::Drugs::Patinfos -- oddb -- 21.11.2005 -- hwyss@ywesee.com
 
 require 'view/additional_information'
 require 'view/alphaheader'
@@ -10,9 +10,9 @@ require 'htmlgrid/list'
 module ODDB
 	module View
 		module Drugs
-class FachinfoList < HtmlGrid::List
+class PatinfoList < HtmlGrid::List
 	COMPONENTS = {
-		[0,0]	=> :fachinfo,
+		[0,0]	=> :patinfo,
 		[1,0]	=> :name,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -27,12 +27,9 @@ class FachinfoList < HtmlGrid::List
 	include View::AlphaHeader
 	include View::AdditionalInformation
 	include View::ResultColors
-	def fachinfo(model)
-		_fachinfo(model)
-	end
 	def name(model)
 		link = HtmlGrid::Link.new(:name_base, model, @session, self)
-		link.value = model.send(@session.language).name
+		link.value = model.name_base
 		args = {
 			'search_query'	=>	model.name_base,
 		}
@@ -41,11 +38,11 @@ class FachinfoList < HtmlGrid::List
 		link
 	end
 end
-class FachinfosComposite < HtmlGrid::Composite
+class PatinfosComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]	=> :title_fachinfos,
+		[0,0]	=> :title_patinfos,
 		[1,0]	=>	SearchForm,
-		[0,1]	=> View::Drugs::FachinfoList,
+		[0,1]	=> View::Drugs::PatinfoList,
 		[0,2]	=> View::ResultFoot,
 	}
 	CSS_CLASS = 'composite'
@@ -57,15 +54,15 @@ class FachinfosComposite < HtmlGrid::Composite
 		[0,2]	=> 2,
 	}
 	LEGACY_INTERFACE = false
-	def title_fachinfos(model)
+	def title_patinfos(model)
 		unless(model.empty?)
-			@lookandfeel.lookup(:title_fachinfos, 
-				@session.state.interval, @model.size, @session.fachinfo_count)
+			@lookandfeel.lookup(:title_patinfos, 
+				@session.state.interval, @model.size, @session.patinfo_count)
 		end
 	end
 end
-class Fachinfos < ResultTemplate
-	CONTENT = View::Drugs::FachinfosComposite
+class Patinfos < ResultTemplate
+	CONTENT = PatinfosComposite
 end
 		end
 	end

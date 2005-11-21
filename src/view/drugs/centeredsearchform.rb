@@ -84,7 +84,9 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 			:fachinfos)
 	end
 	def pi_count_text(model, session)
-		create_link(:pi_count_text, 'http://wiki.oddb.org/wiki.php?pagename=ODDB.Pi-Upload')
+		create_link(:pi_count_text, 
+			'http://wiki.oddb.org/wiki.php?pagename=ODDB.Pi-Upload', 
+			:patinfos)
 	end
 	def create_link(text_key, href, event=nil)
 		link = HtmlGrid::Link.new(text_key, @model, @session, self)

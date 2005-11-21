@@ -16,11 +16,13 @@ require 'state/drugs/notify'
 require 'state/drugs/package'
 require 'state/drugs/register_download'
 require 'state/drugs/init'
-require	'state/drugs/limitationtext'
+require 'state/drugs/limitationtext'
+require 'state/drugs/limitationtexts'
 require 'state/admin/orphaned_patinfos'
 require 'state/admin/orphaned_patinfo'
 require 'state/admin/patinfo_deprived_sequences'
 require 'state/drugs/patinfo'
+require 'state/drugs/patinfos'
 require 'state/drugs/recentregs'
 require 'state/drugs/result'
 require 'state/drugs/sequences'
@@ -88,8 +90,10 @@ module ODDB
 				:home_substances			=>  State::Substances::Init,
 				:home_user						=>  State::User::Init,
 				:hospitallist					=>	State::Hospitals::HospitalList,
+				:limitation_texts			=>	State::Drugs::LimitationTexts,
 				:login_form						=>	State::Admin::Login,
 				:mailinglist					=>	State::User::MailingList,
+				:patinfos							=>	State::Drugs::Patinfos,
 				:plugin								=>	State::User::Plugin,
 				:passthru							=>	State::User::PassThru,
 				:paypal_ipn						=>	State::PayPal::Ipn,
