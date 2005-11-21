@@ -37,6 +37,13 @@ module ODDB
 		def default_interval
 			intervals.first || 'a-d'
 		end
+		def get_intervals
+			@model.collect { |item| 
+				self::class::RANGE_PATTERNS.collect { |range, pattern| 
+					range if /^[#{pattern}]/i.match(item.send(*symbol))
+				}.compact.first || '|unknown'
+			}.flatten.uniq.sort
+		end
 		def interval
 			@interval ||= self::class::RANGE_PATTERNS.index(@range)
 		end
@@ -53,14 +60,6 @@ module ODDB
 				range = default_interval
 			end
 			range
-		end
-		private
-		def get_intervals
-			@model.collect { |item| 
-				self::class::RANGE_PATTERNS.collect { |range, pattern| 
-					range if /^[#{pattern}]/i.match(item.send(*symbol))
-				}.compact.first || '|unknown'
-			}.flatten.uniq.sort
 		end
 		def symbol
 			:to_s
@@ -99,9 +98,12 @@ module ODDB
 		}
 	def init
 		super
+		sortvalue = self.symbol
 		@filter = Proc.new { |model|
 			if(@range = user_range)
-				index_lookup(@range)
+				index_lookup(@range).sort_by { |item| 
+					item.send(*sortvalue).to_s.downcase
+				}
 			else
 				[]
 			end
