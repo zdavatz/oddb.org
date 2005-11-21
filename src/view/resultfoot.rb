@@ -3,15 +3,12 @@
 
 require 'htmlgrid/composite'
 require 'htmlgrid/link'
+require 'view/external_links'
 
 module ODDB
 	module View
-		module LegalNoteLink
-			def legal_note(model, session)
-				legal_note = nil
-			end
-		end
 		class ExplainResult < HtmlGrid::Composite
+			include ExternalLinks
 			COMPONENTS = {
 				[0,0]	=>	:explain_original,
 				[0,1]	=>	:explain_generic,
@@ -36,37 +33,27 @@ module ODDB
 				[0,4]	=>	'explain-unknown',
 				[1,0,2,7]	=>	'explain-infos',
 			}
-			def explain_original(model, session)
-				link = HtmlGrid::Link.new(:explain_original, model, session, self)
-				link.href = @lookandfeel.lookup(:explain_original_url) 
-				link.value = @lookandfeel.lookup(:explain_original)
-				link.attributes['class'] = 'explain-original'
-				link
+			def explain_original(model, session=@session)
+				explain_link(model, :original)
 			end
-			def explain_generic(model, session)
-				link = HtmlGrid::Link.new(:explain_generic, model, session, self)
-				link.href = @lookandfeel.lookup(:explain_generic_url) 
-				link.value = @lookandfeel.lookup(:explain_generic)
-				link.attributes['class'] = 'explain-generic'
-				link
+			def explain_generic(model, session=@session)
+				explain_link(model, :generic)
 			end
-			def explain_complementary(model, session)
-				link = HtmlGrid::Link.new(:explain_complementary, model, session, self)
-				link.href = @lookandfeel.lookup(:explain_complementary_url) 
-				link.value = @lookandfeel.lookup(:explain_complementary)
-				link.attributes['class'] = 'explain-complementary'
-				link
+			def explain_complementary(model, session=@session)
+				explain_link(model, :complementary)
 			end
-			def explain_vaccine(model, session)
-				link = HtmlGrid::Link.new(:explain_vaccine, model, session, self)
-				link.href = @lookandfeel.lookup(:explain_vaccine_url) 
-				link.value = @lookandfeel.lookup(:explain_vaccine)
-				link.attributes['class'] = 'explain-vaccine'
-				link
+			def explain_vaccine(model, session=@session)
+				explain_link(model, :vaccine)
+			end
+			def explain_link(model, key)
+				link = external_link(model, "explain_#{key}")
+				link.href = @lookandfeel.lookup("explain_#{key}_url") 
+				link.attributes['class'] = "explain-#{key}"
+				link 
 			end
 		end
 		class ResultFoot < HtmlGrid::Composite
-			include LegalNoteLink
+			include ExternalLinks
 			COLSPAN_MAP	= {
 				[0,0]	=> 2,
 			}
@@ -83,15 +70,8 @@ module ODDB
 				[1,1]	=>	'explain-result-r',
 			}
 			CSS_CLASS = 'composite'
-			def legal_note(model, session)
-			  link = HtmlGrid::Link.new(:legal_note, model, @session, self)
-			  if(@lookandfeel.language == 'de')
-					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.RechtlicherHinweis"
-				elsif(@lookandfeel.language == 'fr')
-					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.NoticeLegale"
-				elsif(@lookandfeel.language == 'en')
-					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.LegalDisclaimer"
-	      end
+			def legal_note(model, session=@session)
+			  link = super(model)
 				link.css_class = 'subheading'
 			  link
 		  end

@@ -5,6 +5,7 @@ require 'htmlgrid/composite'
 require 'htmlgrid/link'
 require 'htmlgrid/popuplink'
 require 'view/navigationlink'
+require 'view/external_links'
 
 module ODDB
 	module View
@@ -21,6 +22,7 @@ module ODDB
 			SYMBOL_MAP = {
 				:navigation_divider	=>	HtmlGrid::Text,
 			}
+			include ExternalLinks
 			def init
 				build_navigation()
 				super
@@ -48,41 +50,9 @@ module ODDB
 					components.store([idx*2-1,0], :navigation_divider) if idx > 0
 				}
 			end
-			def faq_link(model)
-				wiki_link(model, :faq_link, :faq_pagename)
-			end
-			def help_link(model)
-				wiki_link(model, :help_link, :help_pagename)
-			end
-			def wiki_link(model, key, namekey)
-				name = @lookandfeel.lookup(namekey)
-				klass = if(@lookandfeel.enabled?(:just_medical_structure, false))
-					HtmlGrid::PopupLink
-				else
-					HtmlGrid::Link
-				end
-				link = klass.new(key, model, @session, self)
-				link.href = "http://wiki.oddb.org/wiki.php?pagename=#{name}"
-				link
-			end
-			## meddrugs_update, data_declaration and legal_note: 
-			## extrawurst for just-medical
-			def data_declaration(model)
-				wiki_link(model, :data_declaration, :datadeclaration_pagename)
-			end
-			def legal_note(model)
-				wiki_link(model, :legal_note, :legal_note_pagename)
-			end
 			def home(model)
 				link = NavigationLink.new(:home_drugs, model, @session, self)
 				link.value = @lookandfeel.lookup(:home)
-				link
-			end
-			def meddrugs_update(model)
-				link = NavigationLink.new(:meddrugs_update, 
-					model, @session, self)
-				link.href = "http://www.just-medical.com/lastdrugs.cfm"
-				link.set_attribute('target', '_top')
 				link
 			end
 		end

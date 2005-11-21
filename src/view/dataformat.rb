@@ -2,10 +2,12 @@
 # View::DataFormat -- oddb -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'plugin/fxcrossrate'
+require 'view/external_links'
 
 module ODDB
 	module View
 		module DataFormat
+			include ExternalLinks
 			def breakline(txt, length)
 				name = ''
 				line = ''
@@ -75,15 +77,7 @@ module ODDB
 					span.set_attribute('title', title)
 					span
 				else
-					link = HtmlGrid::Link.new(:price_request, model, @session, self)
-					pagenames = {
-						'de'	=>	'PreisAnfrage',
-						'en'	=>	'PriceRequest',
-						'fr'	=>	'DemandeDesPrix',
-					}
-					pagename = pagenames[@lookandfeel.language]
-					link.href = "http://wiki.oddb.org/wiki.php?n=ODDB.#{pagename}"
-					link
+					wiki_link(model, :price_request, :price_request_pagename)
 				end
 			end
 			def convert_price(price, currency)

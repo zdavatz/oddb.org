@@ -12,6 +12,7 @@ require 'view/navigation'
 require 'view/legalnote'
 require 'view/tab_navigation'
 require	'view/language_chooser'
+require 'view/external_links'
 
 module ODDB
 	module View
@@ -98,7 +99,7 @@ module ODDB
 			end
 		end
 		class CenteredSearchComposite < HtmlGrid::Composite
-			include LegalNoteLink
+			include ExternalLinks
 			include UserSettings 
 			COMPONENTS = {}
 			CSS_CLASS = 'composite'
@@ -214,17 +215,6 @@ module ODDB
 				link.href = @lookandfeel._event_url(:mailinglist)
 				link.label = true
 				link.set_attribute('class', 'list')
-				link
-			end
-			def legal_note(model, session)
-				link = HtmlGrid::Link.new(:legal_note, model, @session, self)
-				if(@lookandfeel.language == 'de')
-					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.RechtlicherHinweis"
-				elsif(@lookandfeel.language == 'fr')
-					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.NoticeLegale"
-				elsif(@lookandfeel.language == 'en')
-					link.href = "http://wiki.oddb.org/wiki.php?pagename=ODDB.LegalDisclaimer"
-				end
 				link
 			end
 			def limitation_size(mode, session)
