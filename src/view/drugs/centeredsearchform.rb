@@ -76,7 +76,9 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		create_link(:ddd_count_text, 'http://www.whocc.no/atcddd/')
 	end
 	def sl_count_text(model, session)
-		create_link(:sl_count_text, 'http://www.galinfo.net')
+		create_link(:sl_count_text, 
+			'http://www.galinfo.net',
+			:limitation_texts)
 	end
 	def fi_count_text(model, session)
 		create_link(:fi_count_text, 

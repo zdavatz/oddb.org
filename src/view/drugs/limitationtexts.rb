@@ -67,6 +67,7 @@ class LimitationTextsComposite < HtmlGrid::Composite
 end
 class LimitationTexts < ResultTemplate
 	CONTENT = LimitationTextsComposite
+	SNAPBACK_EVENT = :limitation_texts
 end
 		end
 	end

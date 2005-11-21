@@ -97,7 +97,8 @@ module ODDB
 				txt
 			end
 			def limitation_text(model, session=@session)
-				if((sl = model.sl_entry) && (sltxt = sl.limitation_text))
+				if(sltxt = model.limitation_text)
+					#if((sl = model.sl_entry) && (sltxt = sl.limitation_text))
 					limitation_link(sltxt)
 				end
 			end

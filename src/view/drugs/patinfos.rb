@@ -63,6 +63,7 @@ class PatinfosComposite < HtmlGrid::Composite
 end
 class Patinfos < ResultTemplate
 	CONTENT = PatinfosComposite
+	SNAPBACK_EVENT = :patinfos
 end
 		end
 	end

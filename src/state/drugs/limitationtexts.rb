@@ -15,12 +15,8 @@ class LimitationTexts < Global
 	DIRECT_EVENT = :limitation_texts
 	PERSISTENT_RANGE = true
 	def index_lookup(range)
-		@session.search_sequences(range, false).inject([]) { |pacs, seq|
-			seq.each_package { |pac|
-				if(pac.limitation_text)
-					pacs.push(pac)
-				end
-			}
+		@session.search_sequences(range, false).select { |seq|
+			seq.limitation_text
 		}
 	end
 end
