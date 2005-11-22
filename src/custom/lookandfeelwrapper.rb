@@ -3,25 +3,20 @@
 
 require 'sbsm/lookandfeelwrapper'
 
-module SBSM
-	class LookandfeelWrapper < Lookandfeel
-		def navigation(filter=false)
-			@component.navigation(false)	
-		end
-	end
-end
 module ODDB
 	class LookandfeelExtern < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:atc_chooser,
+			:drugs, 
+			:faq_link,
+			:help_link,
 			:home,
-			:home_admin,
-			:home_companies,
-			:home_doctors,
 			:home_drugs,
-			:home_interactions,
-			:home_substances,
-			:home_user,
+			:home_migel,
+			:migel,
+			:recent_registrations,
+			:sequences,
+			:ywesee_contact,
 		]
 		RESOURCES = {}
 	end
@@ -33,26 +28,17 @@ module ODDB
 		}
 	end
 	class LookandfeelGenerika < SBSM::LookandfeelWrapper
-		LANGUAGES = [
-			'de', 'fr', 'en'
-		]
 		ENABLED = [
-			:companylist,
-			:epatents,
-			:galenic_groups,
+			:fachinfos,
 			:google_adsense,
-			:incomplete_registrations,
-			:indications,
-			:login_form,
+			:limitation_texts,
 			:logo,
-			:logout,
 			:multilingual_logo,
-			:patinfo,
+			:patinfos, 
 			:paypal,
 			:query_limit,
 			:sponsor,
 			:sponsorlogo,
-			:ywesee_contact,
 		]
 		DICTIONARIES = {
 			'de'	=>	{
@@ -60,21 +46,18 @@ module ODDB
 				:home_welcome							=>  "Willkommen bei generika.cc, dem<br>aktuellsten Medikamenten-Portal der Schweiz.<br>** <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>Herkunftsdeklaration</a> der Daten **",
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Willkommen bei Generika.cc',
-				:lookandfeel_owner =>	'Generika.cc',
 			},
 			'fr'	=>	{
 				:html_title		=>	'cc: pour tous - generika.cc - concerne: r&eacute;duire les co&ucirc;ts de la sant&eacute;!', 
 				:home_welcome							=>  "Bienvenue sur generika.cc,<br>le portail des g&eacute;n&eacute;riques de Suisse avec<br>tous les m&eacute;dicaments disponibles sur le march&eacute; suisse!<br>** <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>D&eacute;claration d'origine</a> des donn&eacute;es **",
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Bienvenu sur Generika.cc',
-				:lookandfeel_owner =>	'Generika.cc',
 			},
 			'en'	=>	{
 				:html_title		=>	'cc: to everybody - generika.cc - subject: reduce health costs!', 
 				:home_welcome							=>  "Welcome to generika.cc<br>the open drug database of Switzerland.<br>** <a class='welcome' href='http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration'>Declaration of origin</a> of the data **",
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
 				:login_welcome	=>	'Welcome to Generika.cc',
-				:lookandfeel_owner =>	'Generika.cc',
 			}
 		}
 		HTML_ATTRIBUTES = {
@@ -83,18 +66,24 @@ module ODDB
 				'height'	=>	'87',
 			},
 		}
+		def navigation(filter=false)
+			@component.navigation(false)
+		end
+		def zones(filter=false)
+			@component.zones(false)
+		end
 	end
 	class LookandfeelProvita < SBSM::LookandfeelWrapper
 		DICTIONARIES = {
 			'de'	=>	{
 				:home_welcome	=>	'Willkommen bei Provita und oddb.org',
-				:mailinglist_title	=>	'Mailinglist - Generika.cc',
-				:lookandfeel_owner =>	'Generika.cc',
 			},
 			'fr'	=>	{
 				:home_welcome	=>	'Bienvenu sur Provita et oddb.org',
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
-				:lookandfeel_owner =>	'Generika.cc',
+			},
+			'en'	=>	{
+				:home_welcome	=>	'Welcome to Provita and oddb.org',
 			},
 		}
 		HTML_ATTRIBUTES = {
@@ -105,22 +94,20 @@ module ODDB
 		}
 	end
 	class LookandfeelSantesuisse < SBSM::LookandfeelWrapper
+		ENABLED = [ :doctors ]
 		DICTIONARIES = {
 			'de'	=>	{
 				:home_welcome		=>	'',
-				:mailinglist_title	=>	'Mailinglist - Generika.cc',
-				:price_compare	=>	'F&uuml;r den Direktvergleich klicken Sie bitte auf den<br>Medikamentennamen im Suchergebnis!',
-				:search_explain	=>	'Willkommen bei sant&eacute;suisse und oddb.org<br><br>Vergleichen Sie einfach und schnell Medikamentenpreise indem Sie<br>entweder ein Medikament oder einen Wirkstoff im Suchbalken eingeben:',
-				:lookandfeel_owner =>	'Generika.cc',
+				:search_explain	=>	'Willkommen bei sant&eacute;suisse und oddb.org<br><br>Vergleichen Sie einfach und schnell Medikamentenpreise indem Sie<br>entweder ein Medikament oder einen Wirkstoff im Suchbalken eingeben.',
 			},
 			'fr'	=>	{
 				:home_welcome		=>	'',
-				:mailinglist_title	=>	'Mailinglist - Generika.cc',
-				:price_compare	=>	'Pour la comparaison directe, veuillez cliqueter sur les noms de m&eacute;dicament dans le r&eacute;sultat de la recherche!',
 				:search_explain	=>	'Bienvenu sur santesuisse.ch et oddb.org.<br><br>Comparez simplement et rapidement les prix des m&eacute;dicaments<br>en entrant le nom du m&eacute;dicament ou un principe actif<br>dans la barre d\'outils de recherche.',
-				:lookandfeel_owner =>	'Generika.cc',
 			},
-			
+			'en'	=>	{
+				:home_welcome		=>	'',
+				:search_explain	=>  "Welcome to santesuisse.ch and oddb.org<br><br>Compare Drug-Prices quickly by simply typing<br>a name or substance in the search bar.",
+			},
 		}
 		HTML_ATTRIBUTES = {
 			:logo => {
@@ -137,12 +124,12 @@ module ODDB
 			'de'	=>	{
 				:home_welcome	=>	'Willkommen bei <a href="http://www.atupri.ch/">atupri</a> und oddb.org',
 				:mailinglist_title	=>	'Mailinglist - Generika.cc',
-				:lookandfeel_owner =>	'Generika.cc',
 			},
 			'fr'	=>	{
 				:home_welcome	=>	'Bienvenu sur <a href="http://www.atupri.ch/">atupri</a> et oddb.org',
-				:mailinglist_title	=>	'Mailinglist - Generika.cc',
-				:lookandfeel_owner =>	'Generika.cc',
+			},
+			'en'	=>	{
+				:home_welcome	=>	'Welcome to <a href="http://www.atupri.ch/">atupri</a> and oddb.org',
 			},
 		}
 		RESOURCES = {

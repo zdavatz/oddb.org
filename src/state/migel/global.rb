@@ -3,7 +3,6 @@
 
 require 'state/migel/init'
 require 'state/migel/limit'
-require 'state/legalnote'
 
 module ODDB
 	module State
@@ -11,9 +10,6 @@ module ODDB
 class Global < State::Global
 	HOME_STATE = State::Migel::Init
 	ZONE = :migel
-	def legal_note
-		State::Migel::LegalNote.new(@session, nil)
-	end
 	def limit_state
 		State::Migel::Limit.new(@session, nil)
 	end

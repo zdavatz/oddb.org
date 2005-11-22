@@ -2,7 +2,6 @@
 # State::Global -- oddb -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
-require 'state/legalnote'
 require 'state/admin/login'
 require 'state/companies/company'
 require 'state/companies/companylist'
@@ -264,9 +263,6 @@ module ODDB
 			end
 			def generic_definition
 				State::User::GenericDefinition.new(@session, nil)
-			end
-			def legal_note
-				State::LegalNote.new(@session, nil)
 			end
 			def limited?
 				self.class.const_get(:LIMITED)

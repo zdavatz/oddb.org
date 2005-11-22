@@ -4,7 +4,6 @@
 require 'state/doctors/init'
 require 'state/doctors/vcard'
 require 'state/doctors/limit'
-require 'state/legalnote'
 
 module ODDB
 	module State

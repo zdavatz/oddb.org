@@ -14,7 +14,7 @@ module ODDB
 class DoctorList < State::Doctors::Global
 	DIRECT_EVENT = :doctorlist
 	VIEW = View::Doctors::Doctors
-	LIMITED = true
+	LIMITED = false
 	RANGE_PATTERNS = {
 		'a-d'			=>	'a-d‰ƒ·¡‡¿‚¬Á«',
 		'e-h'			=>	'e-hÎÀÈ…Ë»Í ',
@@ -24,7 +24,6 @@ class DoctorList < State::Doctors::Global
 		'u-z'			=>	'u-z¸‹˙⁄˘Ÿ˚€',
 		'unknown'	=>	'unknown',
 	}
-	#REVERSE_MAP = ResultList::REVERSE_MAP
 	def init
 		super
 		if(self.paged?)

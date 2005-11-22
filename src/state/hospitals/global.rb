@@ -5,7 +5,6 @@ require 'state/hospitals/init'
 require 'state/hospitals/vcard'
 require 'state/hospitals/limit'
 require 'state/hospitals/hospitallist'
-require 'state/legalnote'
 
 module ODDB
 	module State
@@ -21,9 +20,6 @@ class Global < State::Global
 	EVENT_MAP = {
 		:vcard	=>	State::Hospitals::VCard,
 	}
-	def legal_note
-		State::Hospitals::LegalNote.new(@session, nil)
-	end
 	def limit_state
 		State::Hospitals::Limit.new(@session, nil)
 	end

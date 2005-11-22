@@ -9,7 +9,7 @@ module ODDB
 class VCard < Global
 	VIEW = View::Doctors::VCard
 	VOLATILE = true
-	LIMITED = true
+	LIMITED = false
 	def init
 		pointer = @session.user_input(:pointer)
 		@model = pointer.resolve(@session)
