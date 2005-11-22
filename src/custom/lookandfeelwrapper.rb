@@ -17,6 +17,7 @@ module ODDB
 			:recent_registrations,
 			:sequences,
 			:ywesee_contact,
+			:logout,
 		]
 		RESOURCES = {}
 	end
