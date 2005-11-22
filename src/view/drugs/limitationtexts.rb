@@ -11,6 +11,7 @@ module ODDB
 	module View
 		module Drugs
 class LimitationTextList < HtmlGrid::List
+	EMPTY_LIST_KEY = :choose_limittext_range
 	COMPONENTS = {
 		[0,0]	=> :limitation_text,
 		[1,0]	=> :name,

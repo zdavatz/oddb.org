@@ -11,6 +11,7 @@ module ODDB
 	module View
 		module Drugs
 class PatinfoList < HtmlGrid::List
+	EMPTY_LIST_KEY = :choose_patinfo_range
 	COMPONENTS = {
 		[0,0]	=> :patinfo,
 		[1,0]	=> :name,

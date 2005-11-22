@@ -11,6 +11,7 @@ module ODDB
 	module View
 		module Drugs
 class FachinfoList < HtmlGrid::List
+	EMPTY_LIST_KEY = :choose_fachinfo_range
 	COMPONENTS = {
 		[0,0]	=> :fachinfo,
 		[1,0]	=> :name,
