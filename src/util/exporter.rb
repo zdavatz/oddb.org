@@ -7,6 +7,7 @@ require 'plugin/yaml'
 require 'plugin/csv_export'
 require 'plugin/patinfo_invoicer'
 require 'plugin/download_invoicer'
+require 'plugin/xls_export'
 require 'util/log'
 require 'util/logfile'
 
@@ -82,6 +83,15 @@ module ODDB
 			plug.export_doctors
 			EXPORT_SERVER.clear
 			sleep(30)
+		end
+		def export_generics_xls
+			plug = XlsExportPlugin.new(@app)
+			plug.export_generics
+			EXPORT_SERVER.clear
+			sleep(30)
+		rescue NameError => e
+			puts e.message
+			puts e.backtrace
 		end
 		def export_migel_csv
 			plug = CsvExportPlugin.new(@app)

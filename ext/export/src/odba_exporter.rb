@@ -10,6 +10,7 @@ require 'model/migel/group'
 require 'oddb_yaml'
 require 'csv_exporter'
 require 'oddbdat'
+require 'generics_xls'
 require 'odba'
 
 module ODDB
@@ -76,6 +77,16 @@ ean13;exam;salutation;title;firstname;name;praxis;addresstype;address_name;lines
 					CsvExporter.dump(CsvExporter::DOCTOR, item, fh)
 					ODBA.cache_server.clear
 				}
+			}
+		end
+		def OdbaExporter.export_generics_xls(odba_ids, dir, name)
+			safe_export(dir, name) { |fh|
+				exporter = GenericXls.new(fh.path)
+				odba_ids.each { |odba_id|
+					package = ODBA.cache_server.fetch(odba_id)
+					exporter.export_comparables(package)
+				}
+				exporter.close
 			}
 		end
 		def OdbaExporter.export_migel_csv(odba_ids, dir, name)

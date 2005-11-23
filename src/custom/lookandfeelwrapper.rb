@@ -147,6 +147,7 @@ module ODDB
 		ENABLED = [
 			:just_medical_structure,	
 			:external_css,
+			:powerlink,
 		]
 		DICTIONARIES = {
 			'de'	=>	{

@@ -63,6 +63,9 @@ module ODDB
 				@val * @fact.factor
 			end
 		end
+		def to_i
+			@val.to_i
+		end
 		def to_s
 			@not_normalized or begin
 				val = if(@val.is_a? Float)
