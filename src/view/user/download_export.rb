@@ -51,20 +51,26 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[3,12]	=>	:csv_doctors_price_zip,
 		[0,13]	=>	:csv_migel_export_gz,
 		[3,13]	=>	:csv_migel_price_gz,
+		[6,13]	=>	:datadesc_migel_csv,
 		[0,14]	=>	:csv_migel_export_zip,
 		[3,14]	=>	:csv_migel_price_zip,
-		[6,13]	=>	:datadesc_migel_csv,
 
-		[0,16]	=>	:oddbdat_download_tar_gz,
-		[2,16]	=>	:radio_oddbdat_tar_gz,
-		[6,16]	=>	:datadesc_oddbdat,
-		[0,17]	=>	:oddbdat_download_zip,
-		[2,17]	=>	:radio_oddbdat_zip,
-		[0,18]	=>	:s31x_gz,
-		[6,18]	=>	:datadesc_s31x,
-		[2,18]	=>	:radio_s31x_gz,
-		[0,19]	=>	:s31x_zip,
-		[2,19]	=>	:radio_s31x_zip,
+		[0,16]	=>	:xls_generics_gz,
+		[2,16]	=>	:radio_generics_gz,
+		[6,16]	=>	:datadesc_generics_xls,
+		[0,17]	=>	:xls_generics_zip,
+		[2,17]	=>	:radio_generics_zip,
+
+		[0,19]	=>	:oddbdat_download_tar_gz,
+		[2,19]	=>	:radio_oddbdat_tar_gz,
+		[6,19]	=>	:datadesc_oddbdat,
+		[0,20]	=>	:oddbdat_download_zip,
+		[2,20]	=>	:radio_oddbdat_zip,
+		[0,21]	=>	:s31x_gz,
+		[6,21]	=>	:datadesc_s31x,
+		[2,21]	=>	:radio_s31x_gz,
+		[0,22]	=>	:s31x_zip,
+		[2,22]	=>	:radio_s31x_zip,
 	}
 	CSS_MAP = {
 		[0,0,6]			=>	'subheading',
@@ -76,7 +82,8 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[0,11,7,2]		=>	'list-bg',
 		[0,13,7,3]		=>	'list',
 		[0,16,7,2]		=>	'list-bg',
-		[0,18,7,2]		=>	'list',
+		[0,19,7,2]		=>	'list',
+		[0,21,7,2]		=>	'list-bg',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
@@ -121,6 +128,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def datadesc_fachinfo_yaml(model, session)
 		datadesc('fachinfo.yaml')
 	end
+	def datadesc_generics_xls(model, session)
+		datadesc('generics.xls')
+	end
 	def datadesc_migel_csv(model, session)
 		datadesc('migel.csv')
 	end
@@ -157,6 +167,12 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def radio_fachinfo_yaml_zip(model, session)
 		once_or_year('fachinfo.yaml.zip')
 	end
+	def radio_generics_gz(model, session)
+		once_or_year('generics.xls.gz')
+	end
+	def radio_generics_zip(model, session)
+		once_or_year('generics.xls.zip')
+	end
 	def radio_oddbdat_tar_gz(model, session)
 		once_or_year('oddbdat.tar.gz')
 	end
@@ -180,6 +196,12 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def s31x_zip(model, session)
 		checkbox_with_filesize("s31x.zip")
+	end
+	def xls_generics_gz(model, session)
+		checkbox_with_filesize('generics.xls.gz')
+	end
+	def xls_generics_zip(model, session)
+		checkbox_with_filesize('generics.xls.zip')
 	end
 	def yaml_doctors_export_gz(model, session)
 		checkbox_with_filesize("doctors.yaml.gz")

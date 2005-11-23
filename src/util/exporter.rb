@@ -89,9 +89,6 @@ module ODDB
 			plug.export_generics
 			EXPORT_SERVER.clear
 			sleep(30)
-		rescue NameError => e
-			puts e.message
-			puts e.backtrace
 		end
 		def export_migel_csv
 			plug = CsvExportPlugin.new(@app)

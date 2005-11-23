@@ -32,7 +32,7 @@ module ODDB
 			:sponsor		=>	['christina.kobi@helvepharm.ch'],	
 		}
 		LOG_FILES = {
-			#:powerlink		=>	'Powerlink-Statistics',
+			:powerlink		=>	'Powerlink-Statistics',
 			#:passthru		=>	'Banner-Clicks',
 			:sponsor			=>	'Exklusiv-Sponsoring'
 		}

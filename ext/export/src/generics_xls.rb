@@ -13,7 +13,8 @@ module ODDB
 				:address					=> 'neue Herstelleradresse',
 				:comment					=> 'neue Bemerkung',
 				:composition			=> 'veränderte Zusammensetzung',
-				:expirydate				=> 'verlängerte Gültigkeit',
+				:delete						=> 'Registration läuft aus'
+				:expirydate				=> 'Registration verlängert',
 				:ikscat						=> 'neue Abgabekategorie',
 				:indication				=> 'neue Indikation',
 				:new							=> 'neue Registration',
@@ -39,7 +40,7 @@ module ODDB
 					'EAN-Code Generikum', 'Pharmacode Generikum',
 					'Bezeichnung Generikum', 'Dosierung Generikum',
 					'Packungsgrösse Generikum', 'Fabrikabgabe-preis Generikum',
-					'Publikums-preis Original (inkl. MwSt)',
+					'Publikums-preis Generikum (inkl. MwSt)',
 					'Zulassungsinhaberin', 'Kat.', 'SL', 'Reg.Dat.', 'Bemerkung',
 				]
 				@worksheet.write(0, 0, columns, fmt_title)

@@ -4,6 +4,8 @@
 require 'state/global_predefine'
 require 'state/admin/confirm'
 require 'view/admin/search'
+require 'util/updater'
+require 'util/exporter'
 
 module ODDB
 	module State
@@ -16,6 +18,8 @@ class Init < State::Admin::Global
 			updater = Updater.new(@session.app)
 			updater.reconsider_bsv
 			updater.export_ouwerkerk
+			exporter = Exporter.new(@session.app)
+			exporter.export_generics_xls
 		}
 		State::Admin::Confirm.new(@session, :release_ouwerkerk_confirm)
 	end

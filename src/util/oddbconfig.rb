@@ -19,39 +19,43 @@ module ODDB
 	PAYPAL_RECEIVER = 'zdavatz@ywesee.com'
 	## Prices and Durations
 	DOWNLOAD_EXPORT_PRICES = {
-		'doctors.yaml'	=> 1100,
 		'doctors.csv'		=> 900,
+		'doctors.yaml'	=> 1100,
+		'fachinfo.yaml'	=> 800,
+		'generics.xls'	=> 900,
 		'migel.csv'			=> 100,
 		'oddb.csv'			=> 500,
-		'oddb.yaml'			=> 600,
-		'fachinfo.yaml'	=> 800,
-		'patinfo.yaml'	=> 500,
 		'oddbdat'				=> 700,
+		'oddb.yaml'			=> 600,
+		'patinfo.yaml'	=> 500,
 		's31x'					=> 900,
 	}
 	DOWNLOAD_EXPORT_SUBSCRIPTION_PRICES = {
-		'oddb.csv'			=> 2000,
-		'oddb.yaml'			=> 2500,
 		'fachinfo.yaml'	=> 1400,
+		'generics.xls'	=> 2500,
+		'oddb.csv'			=> 2000,
 		'oddbdat'				=> 2500,
+		'oddb.yaml'			=> 2500,
 		's31x'					=> 1400,
 	}
 	DOWNLOAD_EXPORT_DURATIONS = { 
-		'oddb.csv'			=> 30,
-		'doctors.yaml'	=> 30,
 		'doctors.csv'		=> 30,
-		'migel.csv'			=> 30,
-		'oddb.yaml'			=> 30,
+		'doctors.yaml'	=> 30,
 		'fachinfo.yaml'	=> 30,
-		'patinfo.yaml'	=> 30,
+		'generics.xls'	=> 30,
+		'migel.csv'			=> 30,
+		'oddb.csv'			=> 30,
 		'oddbdat'				=> 30,
+		'oddb.yaml'			=> 30,
+		'patinfo.yaml'	=> 30,
 		's31x'					=> 30,
 	}
 	DOWNLOAD_EXPORT_SUBSCRIPTION_DURATIONS = { 
-		'oddb.csv'			=> 365,
-		'oddb.yaml'			=> 365,
 		'fachinfo.yaml'	=> 365,
+		'generics.xls'	=> 365,
+		'oddb.csv'			=> 365,
 		'oddbdat'				=> 365,
+		'oddb.yaml'			=> 365,
 		's31x'					=> 365,
 	}
 	FI_UPLOAD_PRICES = {

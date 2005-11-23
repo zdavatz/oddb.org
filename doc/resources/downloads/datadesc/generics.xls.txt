@@ -1,0 +1,40 @@
+Datenbeschrieb generics.xls
+
+Version: 1.0.0
+Erstellt: 26.09.2005 (1.0.0) durch hwyss@ywesee.com
+
+## Struktur ##
+A: Basename O              
+B: Basename erweitert O  
+C: EAN-Code O   
+D: Pharmacode O 
+E: Bezeichnung O
+F: Dosierung O
+G: Packungsgrösse O
+H: Fabrikabgabe-preis O
+I: Publikums-preis O (inkl. MwSt)
+J: Zulassungsinhaberin O
+K: Abgabekategorie O
+L: Spezialitätenliste O
+M: Registrations-Datum O
+N: EAN-Code G
+O: Pharmacode G
+P: Bezeichnung G
+Q: Dosierung G
+R: Packungsgrösse G
+S: Fabrikabgabe-preis G
+T: Publikums-preis G (inkl. MwSt)
+U: Zulassungsinhaberin G
+V: Abgabekategorie G
+W: Spezialitätenliste G
+X: Registrations-Datum G
+Y: Bemerkung 
+
+## Glossar ##
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+Die komplette Version-History ist zu finden unter:
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/generics.xls.txt
