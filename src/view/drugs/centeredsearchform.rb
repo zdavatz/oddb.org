@@ -40,6 +40,8 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,4]		=>	:database_size,
 		[0,4,1]	=>	'database_size_text',
 		[0,4,2]	=>	'comma_separator',
+		[0,4,3]	=>	:narcotics_size,
+		[0,4,4]	=>	:narcotics,
 		[0,5]		=>	:fachinfo_size,
 		[0,5,1]	=>	:fi_count_text,
 		[0,5,2]	=>	'comma_separator',
@@ -102,6 +104,12 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	end
 	def substance_count(model, session)
 		@session.app.substance_count
+	end
+	def narcotics(model, session)
+		link = HtmlGrid::Link.new(:narcotics, model, session, self)
+		link.href = @lookandfeel._event_url(:narcotics)
+		link.set_attribute('class', 'list')
+		link
 	end
 end	
 class GoogleAdSenseComposite < View::GoogleAdSenseComposite

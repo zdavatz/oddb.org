@@ -12,6 +12,7 @@ module ODDB
 			'q-t'			=>	'q-t',
 			'u-z'			=>	'u-züÜúÚûÛùÙ',
 			'|unknown'=>	'^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ',
+			'|unknown'=>	'|unknown',
 		}
 		FILTER_THRESHOLD = 30
 		attr_reader :range
@@ -22,6 +23,7 @@ module ODDB
 				}
 				pattern = if(@range=='|unknown')
 					/^[^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ]/i
+					/^($|[^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ])/i
 				elsif(@range)
 					/^[#{@range}]/i
 				else
