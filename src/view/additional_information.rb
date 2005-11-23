@@ -87,7 +87,7 @@ module ODDB
 					end
 					title_elements.push(sl_str)
 				end
-				if(narc = model.narcotic)
+				unless(model.narcotics.empty?)
 					text_elements.push(@lookandfeel.lookup(:narc_short))
 					title_elements.push(@lookandfeel.lookup(:narcotic))
 				end
