@@ -548,7 +548,7 @@ class OddbPrevalence
 	end
 	def narcotic_by_smcd(smcd)
 		@narcotics.values.select { |narc| 
-			narc.smcd == smcd 
+			narc.swissmedic_code == smcd 
 		}.first
 	end
 	def orphaned_fachinfo(oid)
