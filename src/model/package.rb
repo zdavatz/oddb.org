@@ -33,27 +33,29 @@ Grammar OddbSize
 			ODDB::Dose.from_quanty(@comparable_size)
 		end
 		def comparables
-			range = ([
+			bottom = [
 				@comparable_size / 2, 
 				Dose.new(@comparable_size.value - 20, 
 					@comparable_size.unit)
-			].max)..([
+			].max
+			top = [
 				@comparable_size * 2, 
 				Dose.new(@comparable_size.value + 20, 
 					@comparable_size.unit)
-			].min)
+			].min
 			@sequence.comparables.collect { |seq|
 				seq.packages.values.select { |pack|
-					comparable?(range, pack)
+					comparable?(bottom, top, pack)
 				}
 			}.flatten + @sequence.packages.values.select { |pack|
-				comparable?(range, pack)
+				comparable?(bottom, top, pack)
 			}
 		end
-		def comparable?(range, pack)
+		def comparable?(bottom, top, pack)
 			begin
 				pack != self \
-					&& range.include?(pack.comparable_size)
+					&& bottom < pack.comparable_size \
+					&& top > pack.comparable_size
 			rescue RuntimeError => e
 				puts "Error: #{e} while comparing #{@pointer} to #{pack.pointer}"
 				false
@@ -159,6 +161,9 @@ Grammar OddbSize
 		def atc_class
 			@sequence.atc_class
 		end
+		def basename
+			@sequence.basename
+		end
 		def checkout
 			checkout_helper([@generic_group, @narcotic], :remove_package)
 			if(@sl_entry.respond_to?(:checkout))
@@ -259,6 +264,10 @@ Grammar OddbSize
 		end
 		def substances
 			active_agents.collect { |active| active.substance }.compact
+		end
+		def <=>(other)
+			[self.basename, self.dose, self.comparable_size] <=> \
+				[other.basename, other.dose, other.comparable_size]
 		end
 		private
 		def adjust_types(values, app=nil)

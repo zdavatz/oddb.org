@@ -51,6 +51,9 @@ module ODDB
 			}
 			nil
 		end
+		def basename
+			@name_base.to_s[/^.[^0-9]+/]
+		end
 		def checkout
 			checkout_helper([@atc_class, @galenic_form, @patinfo], 
 				:remove_sequence)
