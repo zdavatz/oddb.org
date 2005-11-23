@@ -107,6 +107,7 @@ module ODDB
 			:logout,
 			:mailinglist,
 			:merge,
+			:narcotics,
 			:new_active_agent,
 			:new_company,
 			:new_galenic_form,

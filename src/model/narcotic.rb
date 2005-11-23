@@ -32,11 +32,20 @@ module ODDB
 				pack.odba_store 
 			}
 		end
+		def swissmedic_code 
+			@substance.swissmedic_code unless(@substance.nil?)
+		end
+		def to_s
+			@substance.to_s
+		end
 		def remove_package(package)
 			if(@packages.delete(package))
 				@packages.odba_isolated_store
 				package
 			end
+		end
+		def pointer_descr
+			substance
 		end
 	end
 end

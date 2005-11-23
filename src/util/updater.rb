@@ -188,16 +188,20 @@ module ODDB
 		def update_narcotics
 			klass = NarcoticPlugin
 			subj = 'Narcotic'
+			plug = nil
 			status_report = "Narcotics are now up to date"
 			wrap_update(klass, subj) {
-				plug = klass.new(@app)
-				[:de].each { |lang|
+				[:de, :fr].each { |lang|
+					plug = klass.new(@app)
 					path = File.expand_path("../../data/csv/betaeubungsmittel_a_#{lang}.csv",
 						File.dirname(__FILE__))
 					plug.update(path, lang)
+					log = Log.new(Date.today)
+					log.update_values(log_info(plug))
+					log.notify(subj)
 				}
 				status_report
-			}
+			}		
 		end
 		def update_patinfo
 			update_simple(PatinfoPlugin, 'Patinfo')		

@@ -137,7 +137,7 @@ Grammar OddbSize
 			end
 		end
 		attr_reader :ikscd, :size, :count, :multi, :measure, :comform 
-		attr_reader :descr, :addition, :scale, :sl_entry, :narcotic
+		attr_reader :descr, :addition, :scale, :sl_entry, :narcotics
 		attr_accessor :sequence, :ikscat, :generic_group
 		attr_accessor :price_exfactory, :price_public, :pretty_dose
 		attr_accessor :pharmacode, :market_date
@@ -146,12 +146,21 @@ Grammar OddbSize
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)
 			@comparable_size = Dose.new(1,'')
+			@narcotics = []
 		end
 		def active?
 			@market_date.nil? || @market_date <= Date.today
 		end
 		def active_agents
 			@sequence.active_agents
+		end
+		def add_narcotic(narc)
+			unless(narc.nil? || @narcotics.include?(narc))
+				@narcotics.push(narc)
+				@narcotics.odba_isolated_store
+				narc.add_package(self)
+			end
+			narc
 		end
 		def barcode
 			if(key = ikskey)
@@ -165,7 +174,10 @@ Grammar OddbSize
 			@sequence.basename
 		end
 		def checkout
-			checkout_helper([@generic_group, @narcotic], :remove_package)
+			checkout_helper([@generic_group], :remove_package)
+			@narcotics.each { |narc| 
+				narc.remove_package(self)
+			}
 			if(@sl_entry.respond_to?(:checkout))
 				@sl_entry.checkout 
 				@sl_entry.odba_delete
@@ -234,15 +246,6 @@ Grammar OddbSize
 		end
 		def name_base
 			@sequence.name_base
-		end
-		def narcotic=(narc)
-			if(@narcotic)
-				@narcotic.remove_package(self)
-			end
-			if(narc)
-				narc.add_package(self)
-			end
-			@narcotic = narc
 		end
 		def patinfo
 			@sequence.patinfo

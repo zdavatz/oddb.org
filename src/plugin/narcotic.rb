@@ -20,11 +20,12 @@ module ODDB
 			@unknwon_substances_text = []
 			super(app)
 		end
-		def casrn(row)
-			casrn = row.at(1).to_s
-			if(/\d+/.match(casrn))
-				casrn
-			end
+		def casrns(row)
+			casrns = row.at(1).to_s.split('/').collect { |casrn|
+				if(/\d+/.match(casrn))
+					casrn.to_s
+				end
+			}
 		end
 		def category(row)
 			category = row.at(5).to_s
@@ -37,10 +38,21 @@ module ODDB
 		end
 		def strip_name(row)
 			orig = name(row)
-			orig.split(/\(\s*(unter\s*)?Vorbehalt/i, 2)
+			orig.split(/\(\s*((unter\s*)?Vorbehalt|voir)/i, 2)
 		end
-		def text2name(text)
-			text.split("haltige", 2).first
+		def text2name(text, language)
+			case language
+			when :de 
+				if(match = /^(.+)haltige/.match(text))
+					match[1]
+				end
+			when :fr
+				if(match = /contenant (de la |du |d')([^\s]+)/.match(text))
+					match[2]
+				end
+			else
+				raise "unhandled language: '#{language}'"
+			end
 		end
 		def report_text(row)
 			if(row.at(0))
@@ -52,23 +64,27 @@ module ODDB
 				"Error! Entry has no name!"
 			end
 		end
-		def update(path, text_path, language = :de)
+		def update(path, language)
 			CSV.open(path, 'r', ';').each { |row|
-				narc = update_narcotic(row, language)
-				update_package_or_substance(row, narc, language)
+				update_narcotics(row, language).each { |narc|
+					update_package_or_substance(row, narc, language)
+				}
 			}
 			update_narcotic_texts(language)
-			send_report
 		end
-		def update_narcotic(row, language)
-			casrn = casrn(row)
+		def update_narcotics(row, language)
+			casrns(row).collect { |casrn| 
+				update_narcotic(row, casrn, language)
+			}
+		end
+		def update_narcotic(row, casrn, language)
 			smcd = smcd(row)
 			category = category(row)
 			name = name(row)
 			values = {}
 			# When smcd and casrn are nil, we have a text description
-			if(category == "c" && smcd.nil? && casrn.nil?)
-				@narcotic_texts.store(text2name(name(row)), name(row))
+			if(category == "c" && (subst = text2name(name, language)))
+				@narcotic_texts.store(subst, name)
 			elsif(casrn || smcd)
 				if(category)
 					values.store(:category, category)
@@ -108,7 +124,9 @@ module ODDB
 			smcd = smcd(row)
 			if(registration = @app.registration(smcd[0,5]))
 				if(package = registration.package(smcd[5,3])) 
-					@app.update(package.pointer, {:narcotic => narc})
+					#@app.update(package.pointer, {:narcotic => narc})
+					package.add_narcotic(narc)
+					package.odba_store
 				else
 					@unknown_packages.push(report_text(row))
 				end
@@ -118,14 +136,13 @@ module ODDB
 		end
 		def update_substance(row, narc, language)
 			smcd = smcd(row)
-			casrn = casrn(row)
 			name, rest = strip_name(row)
 			pointer = Persistence::Pointer.new(:substance).creator
 			data = {
 				language					=> name.strip,
 				:narcotic					=> narc,
 				:swissmedic_code	=> smcd,
-				:casrn						=> casrn,
+				:casrn						=> narc.casrn,
 			}
 			substance = @app.substance_by_smcd(smcd) \
 				|| @app.substance(name)
@@ -148,33 +165,25 @@ module ODDB
 				update_substance(row, narc, language)
 			end
 		end
-		def send_report
-			mail = TMail::Mail.new
-			mail.to = "ffricker@ywesee.com" #ODDB::Log::MAIL_TO
-			mail.from =	ODDB::Log::MAIL_FROM
-			mail.subject = "Narcotics-Update-Report"
-			mail.date = Time.now
-			mail.body = [
-			"Narcotics Update", "\n",
-			"Time: ", mail.date,
-			"\n",
-			"Name", "Casrn | Pharmacode | Ean-Code | Company | Level",
-			"\n",
-			"Unknown registrations: #{@unknown_registrations.size} \n",
-			@unknown_registrations,
-			"\n",
-			"Unknown packages: #{@unknown_packages.size} \n",
-			@unknown_packages,
-			"\n",
-			"New substances: #{@new_substances.size} \n",
-			@new_substances,
-			"\n",
-			"New Narcotic Text: #{@narcotic_texts.size}",
-			@narcotic_texts,
+		def report
+			[
+				"Narcotics Update", "\n",
+				"Time: ", Time.now,
+				"\n",
+				"Name", "Casrn | Pharmacode | Ean-Code | Company | Level",
+				"\n",
+				"Unknown registrations: #{@unknown_registrations.size} \n",
+				@unknown_registrations,
+				"\n",
+				"Unknown packages: #{@unknown_packages.size} \n",
+				@unknown_packages,
+				"\n",
+				"New substances: #{@new_substances.size} \n",
+				@new_substances,
+				"\n",
+				"New Narcotic Text: #{@narcotic_texts.size}",
+				@narcotic_texts,
 			].join("\n")
-			Net::SMTP.start(SMTP_SERVER) { |smtp|
-				smtp.sendmail(mail.encoded, SMTP_FROM, mail.to) 
-			}
 		end
 		def smcd(row)
 			smcd = row.at(3).to_s
