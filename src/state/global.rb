@@ -25,6 +25,8 @@ require 'state/drugs/patinfos'
 require 'state/drugs/recentregs'
 require 'state/drugs/result'
 require 'state/drugs/sequences'
+require 'state/drugs/narcotic'
+require 'state/drugs/narcotics'
 require 'state/doctors/init'
 require 'state/hospitals/init'
 require 'state/doctors/doctorlist'
@@ -93,6 +95,7 @@ module ODDB
 				:login_form						=>	State::Admin::Login,
 				:mailinglist					=>	State::User::MailingList,
 				:patinfos							=>	State::Drugs::Patinfos,
+				:narcotics						=>	State::Drugs::Narcotics,
 				:plugin								=>	State::User::Plugin,
 				:passthru							=>	State::User::PassThru,
 				:paypal_ipn						=>	State::PayPal::Ipn,
@@ -121,6 +124,7 @@ module ODDB
 				[	:migel_group,
 					:limitation_text ] => State::Migel::LimitationText,
 				[ :patinfo ]	=>	State::Drugs::Patinfo,
+				[ :narcotic ]	=>	State::Drugs::Narcotic,
 				[ :patinfo ]	=>	State::Drugs::Patinfo,
 			}	
 			READONLY_STATES = RESOLVE_STATES.dup.update({

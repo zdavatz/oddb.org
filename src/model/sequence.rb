@@ -51,6 +51,9 @@ module ODDB
 			}
 			nil
 		end
+		def basename
+			@name_base.to_s[/^.[^0-9]+/]
+		end
 		def checkout
 			checkout_helper([@atc_class, @galenic_form, @patinfo], 
 				:remove_sequence)
@@ -80,6 +83,7 @@ module ODDB
 		end
 		def comparable?(seq)
 			seq != self \
+				&& seq.active? \
 				&& !seq.galenic_form.nil? \
 				&& seq.galenic_form.equivalent_to?(@galenic_form) \
 				&& (seq.active_agents.sort == @active_agents.sort)

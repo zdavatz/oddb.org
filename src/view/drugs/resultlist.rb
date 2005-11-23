@@ -157,7 +157,7 @@ class ResultList < HtmlGrid::List
 		if(comp = model.company)
 			link = nil
 			if(@lookandfeel.enabled?(:powerlink, false) && comp.powerlink)
-				link = HtmlGrid::HttpLink.new(:name, comp, session, self)
+				link = HtmlGrid::PopupLink.new(:name, comp, session, self)
 				link.href = @lookandfeel._event_url(:powerlink, {'pointer'=>comp.pointer})
 				link.set_attribute("class", "powerlink")
 			elsif(@lookandfeel.enabled?(:companylist) \

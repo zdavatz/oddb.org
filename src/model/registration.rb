@@ -74,6 +74,9 @@ module ODDB
 		def each_sequence(&block)
 			@sequences.values.each(&block)
 		end
+		def generic?
+			self.generic_type == :generic
+		end
 		def generic_type
 			@generic_type || if(@company)
 				@company.generic_type
@@ -88,6 +91,9 @@ module ODDB
 			if(seq = @sequences.values.first)
 				seq.name_base
 			end
+		end
+		def original?
+			self.generic_type == :original
 		end
 		def package(ikscd)
 			@sequences.each_value { |seq|

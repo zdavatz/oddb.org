@@ -127,6 +127,7 @@ module ODDB
 				:language_en			=>	HtmlGrid::Link,
 				:language_fr			=>	HtmlGrid::Link,
 				:mailinglist			=>	HtmlGrid::Link,
+				:narcotics				=>	HtmlGrid::Link,
 				:plugin						=>	HtmlGrid::Link,
 				:search_explain		=>	HtmlGrid::Text,
 				:software_feedback=>	HtmlGrid::Link,
@@ -225,6 +226,9 @@ module ODDB
 				link.label = true
 				link.set_attribute('class', 'list')
 				link
+			end
+			def narcotics_size(model, session)
+				@session.app.narcotics_count
 			end
 			def new_feature(model, session)
 				span = HtmlGrid::Span.new(model, session, self)

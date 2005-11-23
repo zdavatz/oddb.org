@@ -551,6 +551,9 @@ class OddbPrevalence
 			narc.swissmedic_code == smcd 
 		}.first
 	end
+	def narcotics_count
+		@narcotics.size
+	end
 	def orphaned_fachinfo(oid)
 		@orphaned_fachinfos[oid.to_i]
 	end
