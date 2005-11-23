@@ -83,6 +83,7 @@ module ODDB
 		end
 		def comparable?(seq)
 			seq != self \
+				&& seq.active? \
 				&& !seq.galenic_form.nil? \
 				&& seq.galenic_form.equivalent_to?(@galenic_form) \
 				&& (seq.active_agents.sort == @active_agents.sort)

@@ -44,10 +44,10 @@ Grammar OddbSize
 					@comparable_size.unit)
 			].min
 			@sequence.comparables.collect { |seq|
-				seq.packages.values.select { |pack|
+				seq.active_packages.select { |pack|
 					comparable?(bottom, top, pack)
 				}
-			}.flatten + @sequence.packages.values.select { |pack|
+			}.flatten + @sequence.active_packages.select { |pack|
 				comparable?(bottom, top, pack)
 			}
 		end
