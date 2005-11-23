@@ -266,8 +266,8 @@ Grammar OddbSize
 			active_agents.collect { |active| active.substance }.compact
 		end
 		def <=>(other)
-			[self.basename, self.dose, self.comparable_size] <=> \
-				[other.basename, other.dose, other.comparable_size]
+			[self.basename, self.dose.to_f, self.comparable_size.to_f] <=> \
+				[other.basename, other.dose.to_f, other.comparable_size.to_f]
 		end
 		private
 		def adjust_types(values, app=nil)

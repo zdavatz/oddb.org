@@ -102,9 +102,14 @@ module ODDB
 				].compact.join(' ')
 			end
 			def _remarks(package, title)
-				flags = @smj_flags[package.registration.pointer]
-				flags += @bsv_flags[package.pointer]
-				unless(orig_flags.empty?)
+				flags = []
+				if(smj_flags = @smj_flags[package.registration.pointer])
+					flags += smj_flags
+				end
+				if(bsv_flags = @bsv_flags[package.pointer])
+					flags += bsv_flags
+				end
+				unless(flags.empty?)
 					'' << title << ': ' << flags.collect { |flag|
 						FLAGS[flag]
 					}.join(', ')
