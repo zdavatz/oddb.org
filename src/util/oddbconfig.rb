@@ -22,7 +22,7 @@ module ODDB
 		'doctors.csv'		=> 900,
 		'doctors.yaml'	=> 1100,
 		'fachinfo.yaml'	=> 800,
-		'generics.xls'	=> 900,
+		'generics.xls'	=> 150,
 		'migel.csv'			=> 100,
 		'oddb.csv'			=> 500,
 		'oddbdat'				=> 700,
@@ -32,7 +32,7 @@ module ODDB
 	}
 	DOWNLOAD_EXPORT_SUBSCRIPTION_PRICES = {
 		'fachinfo.yaml'	=> 1400,
-		'generics.xls'	=> 2500,
+		'generics.xls'	=> 1700,
 		'oddb.csv'			=> 2000,
 		'oddbdat'				=> 2500,
 		'oddb.yaml'			=> 2500,
