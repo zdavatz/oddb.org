@@ -265,6 +265,13 @@ Grammar OddbSize
 			#@sequence.registration.registration_date
 			registration_data(:registration_date)
 		end
+		def remove_narcotic(narc)
+			if(res = @narcotics.delete(narc))
+				@narcotics.odba_isolated_store
+				narc.remove_package(self)
+			end
+			res
+		end
 		def substances
 			active_agents.collect { |active| active.substance }.compact
 		end

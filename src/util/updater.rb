@@ -190,8 +190,8 @@ module ODDB
 			subj = 'Narcotic'
 			plug = nil
 			status_report = "Narcotics are now up to date"
-			wrap_update(klass, subj) {
-				[:de, :fr].each { |lang|
+			[:de, :fr].each { |lang|
+				wrap_update(klass, subj) {
 					plug = klass.new(@app)
 					path = File.expand_path("../../data/csv/betaeubungsmittel_a_#{lang}.csv",
 						File.dirname(__FILE__))
@@ -200,8 +200,8 @@ module ODDB
 					log.update_values(log_info(plug))
 					log.notify(subj)
 				}
-				status_report
 			}		
+			status_report
 		end
 		def update_patinfo
 			update_simple(PatinfoPlugin, 'Patinfo')		

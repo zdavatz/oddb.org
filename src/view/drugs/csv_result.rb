@@ -29,9 +29,9 @@ class CsvResult < HtmlGrid::Component
 		@lookandfeel.lookup(key)
 	end
 	def casrn(pack)
-		if(narc = pack.narcotic)
+		pack.narcotics.collect { |narc|
 			narc.casrn
-		end
+		}.compact.join(',')
 	end
 	def expiration_date(pack)
 		formatted_date(pack, :expiration_date)

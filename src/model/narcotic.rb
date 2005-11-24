@@ -28,7 +28,7 @@ module ODDB
 			@substance.narcotic = nil
 			@substance.odba_store
 			@packages.each { |pack| 
-				pack.narcotic = nil
+				pack.remove_narcotic(self)
 				pack.odba_store 
 			}
 		end
