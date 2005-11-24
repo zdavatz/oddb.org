@@ -52,12 +52,16 @@ class PackageInnerComposite < HtmlGrid::Composite
 			components.store([2,6], :limitation)
 			if(@model.limitation_text)
 				colspan_map.store([1,7], 3)
+				components.delete([2,7])
+				components.delete([1,8])
 				components.update({
 					[0,7]		=>	:limitation_text,
 					[0,8]		=>	:price_exfactory,
 					[2,8]		=>	:price_public,
+					[0,9]		=>	:feedback_label,
+					[1,9]		=>	:feedback,
 				})
-				css_map.store([0,8,4], 'list')
+				css_map.store([0,9,4], 'list')
 			end
 		end
 		super

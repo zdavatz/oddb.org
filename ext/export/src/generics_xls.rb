@@ -13,7 +13,7 @@ module ODDB
 				:address					=> 'neue Herstelleradresse',
 				:comment					=> 'neue Bemerkung',
 				:composition			=> 'veränderte Zusammensetzung',
-				:delete						=> 'Registration läuft aus'
+				:delete						=> 'Registration läuft aus',
 				:expirydate				=> 'Registration verlängert',
 				:ikscat						=> 'neue Abgabekategorie',
 				:indication				=> 'neue Indikation',

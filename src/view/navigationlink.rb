@@ -20,7 +20,7 @@ module ODDB
 				super
 				unless(@lookandfeel.language == @name.to_s)
 					path = @session.request_path.dup
-					path.gsub!(/^.{3}/, "/#{@name}")
+					path.gsub!(/^.{0,3}/, "/#{@name}")
 					@attributes.store("href", path)
 				end
 			end
