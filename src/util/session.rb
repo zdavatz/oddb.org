@@ -73,18 +73,18 @@ module ODDB
 			end
 		end
 		def process(request)
-			Thread.current.priority = -1
-			logtype = 'ERR?'
-			@request = request
-			unless(is_crawler?)
-				@@html_cache.delete(@request_path)
-			end
-			@request_id = request.object_id
-			@request_path = request.unparsed_uri
-			@process_start = Time.now
-			request_log('INIT')
-			logtype = 'PRCS'
+			logtype = 'PRIN'
 			timeout(PROCESS_TIMEOUT) { 
+				Thread.current.priority = -1
+				@request = request
+				unless(is_crawler?)
+					@@html_cache.delete(@request_path)
+				end
+				@request_id = request.object_id
+				@request_path = request.unparsed_uri
+				@process_start = Time.now
+				request_log('INIT')
+				logtype = 'PRCS'
 				if(is_crawler?)
 					if(@@html_cache[@request_path].nil?)
 						Thread.current.priority = -3
@@ -104,6 +104,8 @@ module ODDB
 		rescue Timeout::Error
 			logtype = 'PRTO'
 			'your request has timed out. please try again later.'
+		rescue Exception => ex
+			logtype = ex.message
 		ensure
 			Thread.current.priority = 0
 			request_log(logtype)
@@ -121,9 +123,9 @@ module ODDB
 			## don't die for logging
 		end
 		def to_html
-			Thread.current.priority = 0
 			logtype = 'HTML'
 			timeout(HTML_TIMEOUT) {
+				Thread.current.priority = 0
 				if(is_crawler?)
 					if(html = @@html_cache[@request_path])
 						logtype = 'CCHE'
@@ -146,6 +148,8 @@ module ODDB
 		rescue Timeout::Error
 			logtype = 'TMOT'
 			'your request has timed out. please try again later.'
+		rescue Exception => ex
+			logtype = ex.message
 		ensure
 			Thread.current.priority = 0
 			request_log(logtype)

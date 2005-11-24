@@ -35,11 +35,17 @@ class NarcoticList < HtmlGrid::List
 	}
 	SORT_HEADER = false
 	SYMBOL_MAP = {
-		:substance	=>	PointerLink,
 		:casrn	=>	PointerLink,
 	}
 	def num_packages(model)
 		model.packages.size
+	end
+	def substance(model)
+		link = PointerLink.new(:substance, model, @session, self)
+		if(sub = model.substance)
+			link.value = sub.send(@session.language)
+		end
+		link
 	end
 end
 class NarcoticsComposite < HtmlGrid::Composite
