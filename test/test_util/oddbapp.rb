@@ -881,21 +881,20 @@ class TestOddbApp < Test::Unit::TestCase
 	end
 	def test_narcotic_by_smcd
 		narc1 = FlexMock.new
-		narc1.mock_handle(:smcd) { 'foo-bar' }
+		narc1.mock_handle(:swissmedic_code) { 'foo-bar' }
 		narc2 = FlexMock.new
-		narc2.mock_handle(:smcd) {  }
+		narc2.mock_handle(:swissmedic_code) {  }
 		@app.narcotics.update({ 1 => narc1, 2 => narc2 })
 		assert_equal(narc1, @app.narcotic_by_smcd('foo-bar'))
 		assert_nil(@app.narcotic_by_smcd('x-bar'))
 	end
 	def test_substance_by_smcd
-		narc1 = FlexMock.new
-		narc1.mock_handle(:smcd) { 'Narc' }
-		narc2 = FlexMock.new
-		narc2.mock_handle(:smcd) {  }
-		@app.narcotics.update({ 1 => narc1, 2 => narc2 })
-		assert_equal(narc1, @app.substance_by_smcd('Narc'))
-		assert_nil(@app.substance_by_smcd('Narc_no_Smcd'))
-
+		sub1 = FlexMock.new
+		sub1.mock_handle(:swissmedic_code) { 'SMCD' }
+		sub2 = FlexMock.new
+		sub2.mock_handle(:swissmedic_code) {  }
+		@app.substances = { 1 => sub1, 2 => sub2 }
+		assert_equal(sub1, @app.substance_by_smcd('SMCD'))
+		assert_nil(@app.substance_by_smcd('unknown'))
 	end
 end

@@ -41,9 +41,9 @@ end
 class StubPackageSequence
 	attr_accessor :dose
 	attr_accessor :comparables
-	attr_accessor :packages
+	attr_accessor :active_packages
 	def initialize
-		@packages = {}
+		@active_packages = []
 	end
 	def iksnr
 		'12345'
@@ -244,7 +244,7 @@ module ODDB
 			seq = StubPackageSequence.new
 			pack = ODDB::Package.new('98')
 			pack.size = '12 Tabletten'
-			seq.packages = {'98' => pack}
+			seq.active_packages = [pack]
 			@package.sequence.comparables = [seq]
 			@package.size = '20 Tabletten'
 			assert_equal([pack], @package.comparables)
@@ -253,7 +253,7 @@ module ODDB
 			seq = StubPackageSequence.new
 			pack = ODDB::Package.new('98')
 			pack.size = '12 Tabletten'
-			seq.packages = {'02' => pack}
+			seq.active_packages = [pack]
 			@package.sequence.comparables = [seq]
 			@package.size = '200 Tabletten'
 			assert_equal([], @package.comparables)
@@ -264,12 +264,9 @@ module ODDB
 			seqpack.size = '12 Tabletten'
 			pack = ODDB::Package.new('98')
 			pack.size = '12 Tabletten'
-			seq.packages = {'98' => pack}
+			seq.active_packages = [pack]
 			@package.sequence.comparables = [seq]
-			@package.sequence.packages = {
-				'97'	=>	seqpack,
-				'96'	=>	@package,
-			}
+			@package.sequence.active_packages = [seqpack, @package]
 			@package.size = '20 Tabletten'
 			assert_equal([pack, seqpack], @package.comparables)
 		end

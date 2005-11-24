@@ -9,6 +9,7 @@ require 'model/sequence'
 require 'model/atcclass'
 require 'model/substance'
 require 'stub/odba'
+require 'flexmock'
 require 'mock'
 
 module ODDB
@@ -224,6 +225,9 @@ class TestSequence < Test::Unit::TestCase
 		assert_equal(@seq, patinfo2.removed)
 	end
 	def test_comparables1
+		reg = FlexMock.new
+		reg.mock_handle(:active?) { true }
+		@seq.registration = reg
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
 		subst = ODDB::Substance.new
@@ -232,12 +236,16 @@ class TestSequence < Test::Unit::TestCase
 		@seq.active_agents = [active_agent]
 		@seq.galenic_form = StubSequenceGalenicForm.new
 		comparable = ODDB::Sequence.new('02')
+		comparable.registration = reg
 		comparable.atc_class = atc
 		comparable.active_agents = [active_agent]
 		comparable.galenic_form = @seq.galenic_form
 		assert_equal([comparable], @seq.comparables)
 	end
 	def test_comparables2
+		reg = FlexMock.new
+		reg.mock_handle(:active?) { true }
+		@seq.registration = reg
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
 		subst = ODDB::Substance.new
@@ -245,6 +253,7 @@ class TestSequence < Test::Unit::TestCase
 		active_agent.substance = subst
 		@seq.active_agents = [active_agent]
 		comparable = ODDB::Sequence.new('02')
+		comparable.registration = reg
 		subst = ODDB::Substance.new
 		active_agent = ODDB::ActiveAgent.new('ACIDUM ACETYLSALICYLICUM')
 		active_agent.substance = subst
@@ -253,6 +262,9 @@ class TestSequence < Test::Unit::TestCase
 		assert_equal([], @seq.comparables)
 	end
 	def test_comparables3
+		reg = FlexMock.new
+		reg.mock_handle(:active?) { true }
+		@seq.registration = reg
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
 		subst1 = ODDB::Substance.new
@@ -266,6 +278,7 @@ class TestSequence < Test::Unit::TestCase
 		@seq.active_agents = [active_agent1, active_agent2]
 		@seq.galenic_form = StubSequenceGalenicForm.new
 		comparable = ODDB::Sequence.new('02')
+		comparable.registration = reg
 		comparable.active_agents = [active_agent2, active_agent1]
 		comparable.atc_class = atc
 		comparable.galenic_form = @seq.galenic_form

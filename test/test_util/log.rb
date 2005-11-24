@@ -59,7 +59,7 @@ a lengthy report.\r
 			expected = [
 				report.strip,
 				'update@oddb.org',
-				['hwyss@ywesee.com'],
+				'hwyss@ywesee.com',
 			]
 			result = $stub_log_smtp.sent
 			result[0][0] = result[0][0].split("\n")[1..-1].join("\n")
@@ -87,7 +87,7 @@ a lengthy report.\r
 			expected = [
 				report.strip,
 				'update@oddb.org',
-				['hwyss@ywesee.com'],
+				'hwyss@ywesee.com',
 			]
 			result = $stub_log_smtp.sent
 			result[0][0] = result[0][0].split("\n")[1..-1].join("\n")

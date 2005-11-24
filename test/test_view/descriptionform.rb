@@ -93,7 +93,7 @@ module ODDB
 			<INPUT name="de" type="text" value="foo">
 			<LABEL>Franz&ouml;sisch</LABEL>
 			<INPUT name="fr" type="text" value="bar">
-			<INPUT name="update" type="submit" value="Speichern">
+			<INPUT name="update" type="submit" id="submit" value="Speichern">
 			EOS
 			result = @form.to_html(CGI.new)
 			expected.each { |line| 
