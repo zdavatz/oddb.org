@@ -166,7 +166,6 @@ class SequenceForm < Form
 	CSS_MAP = {
 		[0,0,4,5]	=>	'list',
 	}
-	DISABLE_ADDITIONAL_CSS = true
 	LABELS = true
 	TAG_METHOD = :multipart_form
 	SYMBOL_MAP = {

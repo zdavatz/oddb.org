@@ -112,7 +112,7 @@ class ResultList < HtmlGrid::List
 		:substances				=> true,
 	}
 	CSS_MAP = {
-		[0,0,4]	=>	'result-b-r',
+		[0,0,4]	=>	'result-infos',
 		[4,0]		=>	'result-big',
 		[5,0]		=>	'result',
 		[6,0,3]	=>	'result-r',
@@ -201,21 +201,6 @@ class ResultList < HtmlGrid::List
 	def fachinfo(model, session)
 		super(model, session, 'important-infos')
 	end	
-=begin
-	def ikscat(model, session)
-		txt = HtmlGrid::Component.new(model, session, self)
-		txt.value = [
-			(cat = model.ikscat),
-			(@lookandfeel.lookup(:sl) unless (sl = model.sl_entry).nil?),
-		].compact.join('&nbsp;/&nbsp;')
-		title = [
-			(@lookandfeel.lookup(('ikscat_'+(cat.downcase)).intern) unless cat.nil?),
-			(@lookandfeel.lookup(:sl_list) unless sl.nil?),
-		].compact.join('&nbsp;/&nbsp;')
-		txt.set_attribute('title', title)
-		txt
-	end
-=end
 	def substances(model, session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
 		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})

@@ -802,7 +802,7 @@ td.result-infos-vaccine,
 td.result-infos-unknown
 {
 	padding : 2px;
-	width: 20px;
+	max-width: 20px;
 }
 
 a.result-infos-bg, a.result-infos-bg:link, a.result-infos-bg:visited, 
@@ -833,14 +833,14 @@ td.result-infos-unknown-bg
 {
 	background : $rslt_bg;
 	padding : 2px;
-	width: 20px;
+	max-width: 20px;
 }
 
 td.result-infos-bg
 {
 	background : #e9f7f3;
 	padding : 2px;
-	width: 20px;
+	max-width: 20px;
 }
 
 a.important-infos, a.important-infos:link, a.important-infos:visited,
@@ -1684,7 +1684,7 @@ td.radio {
 	max-width: 5px;
 }
 div.square {
-	width: 20px;
+	max-width: 20px;
 	height: 20px;
 	text-align: center;
 	vertical-align: middle;

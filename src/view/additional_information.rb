@@ -4,7 +4,6 @@
 module ODDB
 	module View
 		module AdditionalInformation
-			DISABLE_ADDITIONAL_CSS = false
 			def atc_ddd_link(atc, session=@session)
 				if(atc && atc.has_ddd?)
 					link = HtmlGrid::Link.new(:ddd, atc, session, self)
@@ -27,25 +26,12 @@ module ODDB
 			def _fachinfo(fachinfo, css='result-infos')
 				visitor_language = @lookandfeel.language.intern
 				if(fachinfo)
-					fi_link = false
-					if(!fachinfo.nil? && !fachinfo.descriptions.nil? \
-						&& fachinfo.descriptions.include?(visitor_language.to_s))
-						fi_link = true
-					elsif(!fachinfo.nil? && !fachinfo.descriptions.nil? \
-						&& fachinfo.descriptions[visitor_language.to_s]) 
-						fi_link = true
-					end
 					link = HtmlGrid::Link.new(:fachinfo_short, 
 							fachinfo, @session, self)
-					if(fi_link)
-						link.href = @lookandfeel._event_url(:resolve,
-							{'pointer' => fachinfo.pointer})
-						link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
-					end
-					pos = components.index(:fachinfo)
-					component_css_map.store(pos, css)
-					css_map.store(pos, css)
-					link.set_attribute('title', @lookandfeel.lookup(:fi_alt))
+					link.href = @lookandfeel._event_url(:resolve,
+						{'pointer' => fachinfo.pointer})
+					link.css_class = css
+					link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
 					link
 				end
 			end
@@ -87,7 +73,7 @@ module ODDB
 					end
 					title_elements.push(sl_str)
 				end
-				if(narc = model.narcotic)
+				unless(model.narcotics.empty?)
 					text_elements.push(@lookandfeel.lookup(:narc_short))
 					title_elements.push(@lookandfeel.lookup(:narcotic))
 				end
@@ -128,20 +114,19 @@ module ODDB
 			end
 			def patinfo(model, session=@session)
 				if(model.has_patinfo?)
-					link = nil
+					href = nil
+					klass = nil
 					if(pdf_patinfo = model.pdf_patinfo)
-						link = HtmlGrid::PopupLink.new(:patinfo_short, model, session, self)
-						link.href = @lookandfeel.resource_global(:pdf_patinfo, pdf_patinfo)
+						klass = HtmlGrid::PopupLink
+						href = @lookandfeel.resource_global(:pdf_patinfo, pdf_patinfo)
 					elsif(patinfo = model.patinfo)
-						link = HtmlGrid::Link.new(:patinfo_short, model, session, self)
-						link.href = @lookandfeel._event_url(:resolve, {'pointer' => patinfo.pointer})
-						link.set_attribute('title', @lookandfeel.lookup(:patinfo))
+						klass = HtmlGrid::Link
+						href = @lookandfeel._event_url(:resolve, {'pointer' => patinfo.pointer})
 					end
-					pos = components.index(:patinfo)
-					unless(self::class::DISABLE_ADDITIONAL_CSS)
-						component_css_map.store(pos, "result-infos")
-						css_map.store(pos, "result-infos")
-					end
+					link = klass.new(:patinfo_short, model, @session, self)
+					link.href = href
+					link.set_attribute('title', @lookandfeel.lookup(:patinfo))
+					link.css_class = 'result-infos'
 					link
 				end
 			end

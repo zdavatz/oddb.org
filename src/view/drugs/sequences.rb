@@ -15,7 +15,6 @@ class SequenceList < HtmlGrid::List
 	include View::AdditionalInformation
 	COMPONENTS = {
 		[0,0]	=>	:iksnr,
-		[1,0]	=>	:limitation_text,
 		[1,0]	=>  :fachinfo,
 		[2,0]	=>	:patinfo,
 		[3,0]	=>	:name_base,
@@ -40,12 +39,6 @@ class SequenceList < HtmlGrid::List
 	}
 	LEGACY_INTERFACE = false
 	include AlphaHeader
-	def limitation_text(model)
-		packs = model.packages.values
-		pack = packs.select { |pack| pack.limitation_text }.first \
-			|| packs.first
-		super(pack)
-	end
 	def name_base(model)
 		link = HtmlGrid::Link.new(:name_base, model, @session, self)
 		link.value = model.name_base

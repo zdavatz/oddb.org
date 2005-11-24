@@ -58,7 +58,7 @@ module ODDB
 			private
 			def formatted_price(key, model)
 				price_chf = model.send(key).to_i
-				if(price_chf != 0)
+				item = if(price_chf != 0)
 					prices = {
 						'CHF'	=>	price_chf,
 						'EUR'	=>	convert_price(price_chf, 'EUR'),
@@ -72,13 +72,14 @@ module ODDB
 					price = HtmlGrid::NamedComponent.new(key, model, @session, self)
 					price.value = display
 					span.value = price
-					span.label = true
 					title = prices.sort.collect { |pair| pair.join(': ') }.join(' / ')
 					span.set_attribute('title', title)
 					span
 				else
 					wiki_link(model, :price_request, :price_request_pagename)
 				end
+				item.label = true
+				item	
 			end
 			def convert_price(price, currency)
 				if(rate = @session.get_currency_rate(currency))

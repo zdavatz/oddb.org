@@ -19,7 +19,7 @@ class FachinfoList < HtmlGrid::List
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'small result',
+		[0,0]	=>	'result-infos',
 		[1,0]	=>	'result-big',
 	}
 	SORT_DEFAULT = false
