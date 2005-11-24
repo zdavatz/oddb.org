@@ -41,7 +41,6 @@ module ODDB
 				from = suggestion.email_suggestion 
 				mail = TMail::Mail.new
 				mail.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
-				mail.to = RECIPIENTS
 				mail.from = from #'suggest_address@oddb.org'
 				mail.subject = "#{@session.lookandfeel.lookup(:address_subject)} #{suggestion.fullname}"
 				mail.date = Time.now
@@ -52,6 +51,7 @@ module ODDB
 				].join("\n")
 				Net::SMTP.start(SMTP_SERVER) { |smtp|
 					RECIPIENTS.each { |rec|
+						mail.to = [rec]
 						smtp.sendmail(mail.encoded, from, rec) 
 					}
 				}

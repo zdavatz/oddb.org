@@ -33,7 +33,7 @@ class MailingList < State::User::Global
 		mail.to = recipient
 		mail.date = Time.now
 		begin
-			Net::SMTP.start('localhost') { |smtp|
+			Net::SMTP.start(SMTP_SERVER) { |smtp|
 				smtp.sendmail(mail.encoded, subscriber, recipient)
 			}
 			@infos.push(info_message)

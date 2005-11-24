@@ -61,7 +61,6 @@ module ODDB
 			
 			outgoing.from = self::class::MAIL_FROM
 			@recipients = (@recipients + self::class::MAIL_TO).uniq
-			outgoing.to = @recipients
 			outgoing.subject = subj
 			outgoing.date = Time.now
 			outgoing['User-Agent'] = 'ODDB Updater'
@@ -90,7 +89,11 @@ module ODDB
 		end
 		def send_mail(multipart)
 			Net::SMTP.start(SMTP_SERVER) { |smtp|
-				smtp.sendmail(multipart.encoded, self::class::MAIL_FROM, @recipients)
+				@recipients.each { |recipient|
+					multipart.to = [recipient]
+					smtp.sendmail(multipart.encoded, 
+												self::class::MAIL_FROM, recipient)
+				}
 			}
 		end
 		def file_part(type1, type2, filename, attachment)
