@@ -1392,7 +1392,7 @@ Zeno Davatz
 				:explain_unknown					=>	'noir&nbsp;=&nbsp;pas classes',
 				:explain_vaccine					=>	'brun&nbsp;=&nbsp;vaccin/produit sanguin',
 				:explain_vaccine_url			=>	'http://www.swissmedic.ch/fr/industrie/overall.asp?lang=3&theme=0.00106.00003&theme_id=941#Impfstoff',
-				:export_added_value				=>	'Fichiers de dates conditionn&eacute;es (comparaison de g&eactue;n&eacute;riques, changements r&eacute;latif au moi dernier)',
+				:export_added_value				=>	'Fichiers de dates conditionn&eacute;es (comparaison de g&eacute;n&eacute;riques, changements r&eacute;latif au moi dernier)',
 				:export_csv								=>	'Télécharger le résultat en format CSV',
 				:export_csv_descr					=>	'Télécharger un résultat en format CSV est payant. Veuillez indiquer votres coordonnées et continuer au checkout PayPal.',
 				:export_csv_example				=>	'Exemple de télécharge',
