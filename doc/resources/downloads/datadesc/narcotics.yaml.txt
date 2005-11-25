@@ -1,0 +1,38 @@
+Datenbeschrieb narcotics.yaml
+
+Version:  1.0.0
+Erstellt: 25.11.2005 (1.0.0) durch hwyss@ywesee.com
+
+## Struktur ##
+Encoding: ISO-8859-1
+
+Top-Level:
+- Stream von voneinander unabhängigen YAML-Documents, wovon jedes ein Narcotic beschreibt.
+
+Narcotic:
+- oid               (Integer, NOT NULL)    -> Unique Identifier
+- casrn             (String)               -> CAS-Registry Number
+- substance         (Substance)            -> Substanz
+- packages          (Array (String))       -> Verknüpfungen zu Package
+
+Substance:
+- oid               (Integer, NOT NULL)    -> Unique Identifier
+- descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Indikationstext. siehe Glossar (SimpleLanguage::Descriptions)
+- synonyms          (Array (String))			 -> Weitere bezeichnungen
+- effective_form    (Substance)            -> Wirkform
+- narcotic          (String)               -> CAS-Registry Number
+
+## Glossar ##
+* CAS Registry Number
+  http://www.cas.org/EO/regsys.html
+
+* YAML
+Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml.org
+
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+Die komplette Version-History ist zu finden unter:
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/narcotics.yaml.txt

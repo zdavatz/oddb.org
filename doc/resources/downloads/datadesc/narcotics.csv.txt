@@ -18,6 +18,9 @@ Narcotic-Record:
 06: reservation_fr         (*)             -> Vorbehaltstext Fr.
 
 ## Glossar ##
+* CAS Registry Number
+  http://www.cas.org/EO/regsys.html
+
 * Kategorie
   b) von der Kontrolle teilweise Ausgenommen
 	c) in kleinen Mengen ohne ärztliche Verschreibung erhältlich und von

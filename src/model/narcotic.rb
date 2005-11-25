@@ -8,7 +8,7 @@ module ODDB
 	class Narcotic
 		include Persistence
 		attr_reader	:packages, :reservation_text
-		attr_accessor :casrn, :swissmedic_code, :substance, :category
+		attr_accessor :casrn, :substance, :category
 		def create_reservation_text
 			@reservation_text = Text::Document.new
 		end

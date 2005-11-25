@@ -240,7 +240,7 @@ module ODDB
 		EXPORT_PROPERTIES = [
 			'@oid',
 			'@casrn',
-			'@swissmedic_code',
+			'@substance',
 		]
 		def to_yaml( opts = {} )
 			YAML::quick_emit( self.object_id, opts ) { |out|
@@ -248,9 +248,6 @@ module ODDB
 					to_yaml_properties.each { |m|
 						map.add( m[1..-1], instance_variable_get( m ) )
 					}
-					if(@substance)
-						map.add('substance', @substance.swissmedic_code)
-					end
 					map.add('packages', @packages.collect { |pac| pac.ikskey })
 				}
 			}
