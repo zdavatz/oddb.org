@@ -38,6 +38,7 @@ module ODDB
 			:cl_status		=>	['false', 'true'],
 			:complementary_type =>	[nil, 'anthroposophy', 'homeopathy', 
 				'phytotherapy', ],
+			:compression	=>	[ 'compr_zip', 'compr_gz' ],
 			:currency			=>  ['CHF', 'EUR', 'USD'],
 			:search_type	=>	['st_oddb', 'st_sequence', 
 				'st_substance', 'st_company', 'st_indication',],

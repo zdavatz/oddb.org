@@ -17,9 +17,12 @@ class DownloadExport < State::User::Global
 		DOWNLOAD_EXPORT_DURATIONS[fuzzy_key(file)].to_i
 	end
 	def DownloadExport.fuzzy_key(file)
-		DOWNLOAD_EXPORT_PRICES.keys.select { |key|
-			file.index(key)
-		}.first
+		DOWNLOAD_EXPORT_PRICES.each_key { |key|
+			if(file.index(key))
+				return key
+			end
+		}
+		nil
 	end
 	def DownloadExport.price(file)
 		DOWNLOAD_EXPORT_PRICES[fuzzy_key(file)].to_f

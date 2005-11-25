@@ -5,14 +5,15 @@ require 'yaml'
 
 module ODDB
 	module OddbYaml
-		YAML_URI = 'oddb.org,2003'
+		YAML_URI = '!oddb.org,2003'
 		EXPORT_PROPERTIES = []
 		def to_yaml_type
-			"!#{YAML_URI}/#{self.class}"
+			"#{YAML_URI}/#{self.class}"
 		end
 		def to_yaml_properties
 			self::class::EXPORT_PROPERTIES
 		end
+		yaml_as YAML_URI
   end		
 	module SimpleLanguage
 		class Descriptions < Hash
@@ -151,7 +152,7 @@ module ODDB
 		]
 		def to_yaml( opts = {} )
 			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( self.to_yaml_type ) { |map|
+				out.map( taguri ) { |map|
 					to_yaml_properties.each { |m|
 						map.add( m[1..-1], instance_variable_get( m ) )
 					}
@@ -239,7 +240,21 @@ module ODDB
 		EXPORT_PROPERTIES = [
 			'@oid',
 			'@casrn',
+			'@swissmedic_code',
 		]
+		def to_yaml( opts = {} )
+			YAML::quick_emit( self.object_id, opts ) { |out|
+				out.map( taguri ) { |map|
+					to_yaml_properties.each { |m|
+						map.add( m[1..-1], instance_variable_get( m ) )
+					}
+					if(@substance)
+						map.add('substance', @substance.swissmedic_code)
+					end
+					map.add('packages', @packages.collect { |pac| pac.ikskey })
+				}
+			}
+		end
 	end
 	class Package < PackageCommon
 		include OddbYaml
@@ -251,16 +266,16 @@ module ODDB
 			'@price_exfactory',
 			'@price_public',
 			'@sl_entry',
-			'@narcotic',
 		]
 		def to_yaml( opts = {} )
 			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( self.to_yaml_type ) { |map|
+				out.map( taguri ) { |map|
 					to_yaml_properties.each { |m|
 						map.add( m[1..-1], instance_variable_get( m ) )
 					}
 					map.add('ean13', self.barcode)
 					map.add('pharmacode', self.pharmacode)
+					map.add('narcotics', @narcotics.collect { |narc| narc.casrn})
 				}
 			}
 		end
@@ -357,7 +372,19 @@ module ODDB
 			'@descriptions',
 			'@synonyms',
 			'@effective_form',
-			'@narcotic',
+			'@swissmedic_code',
 		]
+		def to_yaml( opts = {} )
+			YAML::quick_emit( self.object_id, opts ) { |out|
+				out.map( taguri ) { |map|
+					to_yaml_properties.each { |m|
+						map.add( m[1..-1], instance_variable_get( m ) )
+					}
+					if(@narcotic)
+						map.add('narcotic', @narcotic.casrn)
+					end
+				}
+			}
+		end
 	end
 end

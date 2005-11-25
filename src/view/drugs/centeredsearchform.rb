@@ -52,17 +52,19 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,6,2]	=>	'comma_separator',
 		[0,6,3]	=>	:limitation_size,
 		[0,6,4]	=>	:sl_count_text,
-		[0,7] =>	'database_last_updated_txt',
+		[0,7]		=>	'database_last_updated_txt',
 		[0,7,1]	=>	:database_last_updated,
-		[0,8]		=>	:generic_definition,
-		[0,9]		=>	:legal_note,
-		[0,10]		=>	:paypal,
+		[0,8]		=>	:new_feature,
+		[0,8,1]	=>	:download_generics,
+		[0,9]		=>	:generic_definition,
+		[0,10]	=>	:legal_note,
+		[0,11]	=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,10]		=>	'ccomponent',
+		[0,0,1,11]		=>	'ccomponent',
 	}
 	COMPONENT_CSS_MAP = {
-		[0,9]	=>	'legal-note-center',
+		[0,10]	=>	'legal-note-center',
 	}
 	def init
 		if(@lookandfeel.enabled?(:just_medical_structure, false))

@@ -11,14 +11,17 @@ module ODDB
 				:specialities]
 			ADDRESS = [:type, :name, :additional_lines, :address, :plz,
 				:city, :canton, :fon, :fax]
+			DEFR = [:de, :fr] 
 			DEFRIT = [:de, :fr, :it] 
 			MIGEL = [:migel_code, :migel_subgroup, :product_code,
-				:migel_product_text, :accessory_code, :migel_defrit,
+				:migel_product_text, :accessory_code, :defrit,
 				:migel_limitation, :format_price, :migel_unit, :limitation,
 				:format_date]
-			MIGEL_SUBGROUP = [:migel_group, :code, :migel_defrit,
+			MIGEL_SUBGROUP = [:migel_group, :code, :defrit,
 				:migel_limitation]
-			MIGEL_GROUP = [:code, :migel_defrit, :migel_limitation]
+			MIGEL_GROUP = [:code, :defrit, :migel_limitation]
+			NARCOTIC = [:casrn, :swissmedic_code, :narc_substance, 
+				:category, :narc_reservation_text]
 			def CsvExporter.address_data(item)
 				collect_data(ADDRESS, item)
 			end
@@ -56,23 +59,32 @@ module ODDB
 				item.price = item.price / 100.0
 				item.price = sprintf("%.2f", item.price)
 			end
-			def CsvExporter.migel_defrit(item)
+			def CsvExporter.defr(item)
+				self.collect_data(DEFR, item)
+			end
+			def CsvExporter.defrit(item)
 				self.collect_data(DEFRIT, item)
 			end
 			def CsvExporter.migel_limitation(item)
-				self.migel_defrit(item.limitation_text)
+				self.defrit(item.limitation_text)
 			end
 			def CsvExporter.migel_group(item)
 				self.collect_data(MIGEL_GROUP, item.group)
 			end
 			def CsvExporter.migel_product_text(item)
-				self.migel_defrit(item.product_text)
+				self.defrit(item.product_text)
 			end
 			def CsvExporter.migel_subgroup(item)
 				self.collect_data(MIGEL_SUBGROUP, item.subgroup)
 			end
 			def CsvExporter.migel_unit(item)
-				self.migel_defrit(item.unit)
+				self.defrit(item.unit)
+			end
+			def CsvExporter.narc_reservation_text(item)
+				self.defr(item.reservation_text)
+			end
+			def CsvExporter.narc_substance(item)
+				self.defr(item.substance)
 			end
 		end
 	end

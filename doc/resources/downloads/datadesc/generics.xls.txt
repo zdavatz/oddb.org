@@ -1,33 +1,34 @@
 Datenbeschrieb generics.xls
 
-Version: 1.0.0
-Erstellt: 26.09.2005 (1.0.0) durch hwyss@ywesee.com
+Version: 1.0.1
+Geändert: 25.11.2005 (1.0.1) durch hwyss@ywesee.com
+Erstellt: 23.11.2005 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
-A: Basename O              
-B: Basename erweitert O  
-C: EAN-Code O   
-D: Pharmacode O 
-E: Bezeichnung O
-F: Dosierung O
-G: Packungsgrösse O
-H: Fabrikabgabe-preis O
-I: Publikums-preis O (inkl. MwSt)
-J: Zulassungsinhaberin O
-K: Abgabekategorie O
-L: Spezialitätenliste O
-M: Registrations-Datum O
-N: EAN-Code G
-O: Pharmacode G
-P: Bezeichnung G
-Q: Dosierung G
-R: Packungsgrösse G
-S: Fabrikabgabe-preis G
-T: Publikums-preis G (inkl. MwSt)
-U: Zulassungsinhaberin G
-V: Abgabekategorie G
-W: Spezialitätenliste G
-X: Registrations-Datum G
+A: Basename Original              
+B: Basename erweitert Original  
+C: EAN-Code Original   
+D: Pharmacode Original 
+E: Bezeichnung Original
+F: Dosierung Original
+G: Packungsgrösse Original
+H: Fabrikabgabe-preis Original
+I: Publikums-preis Original (inkl. MwSt)
+J: Zulassungsinhaberin Original
+K: Abgabekategorie Original
+L: Spezialitätenliste Original
+M: Registrations-Datum Original
+N: EAN-Code Generikum
+O: Pharmacode Generikum
+P: Bezeichnung Generikum
+Q: Dosierung Generikum
+R: Packungsgrösse Generikum
+S: Fabrikabgabe-preis Generikum
+T: Publikums-preis Generikum (inkl. MwSt)
+U: Zulassungsinhaberin Generikum
+V: Abgabekategorie Generikum
+W: Spezialitätenliste Generikum
+X: Registrations-Datum Generikum
 Y: Bemerkung 
 
 ## Glossar ##

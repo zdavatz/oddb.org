@@ -16,5 +16,12 @@ module ODDB
 				product.migel_code }.collect { |product| product.odba_id }
 			EXPORT_SERVER.export_migel_csv(ids, EXPORT_DIR, 'migel.csv')
 		end
+		def export_narcotics
+			ids = @app.narcotics.values.sort_by { |narcotic| 
+				narcotic.substance.to_s }.collect { |narcotic| 
+				narcotic.odba_id }
+			EXPORT_SERVER.export_narcotics_csv(ids, EXPORT_DIR,
+				'narcotics.csv')
+		end
 	end
 end

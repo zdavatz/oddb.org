@@ -1,0 +1,308 @@
+65: !oddb.org,2003/ODDB::Company 
+  oid: 65
+  ean13: "7612053000000"
+  name: Gebro Pharma AG
+  business_area: 
+  generic_type: 
+  registrations: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "54767"
+    registration_date: 2000-06-28
+    revision_date: 2003-07-18
+    expiration_date: 2005-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Seractil 200 mg
+        name_descr: Filmtabletten
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 200
+          unit: mg
+        atc_class: &id002 !oddb.org,2003/ODDB::AtcClass 
+          code: M01AE14
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Dexibuprofen
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+            O: !oddb.org,2003/ODDB::AtcClass::DDD 
+              administration_route: O
+              dose: !oddb.org,2003/ODDB::Dose 
+                val: 0.8
+                unit: g
+              note: 
+        galenic_form: &id003 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 21
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Filmtabletten
+            lt: COMPRESSO OBDUCTO
+          galenic_group: &id019 !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 2
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Tabletten
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id001 !oddb.org,2003/ODDB::Substance 
+            oid: 1784
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Dexibuprofenum
+            synonyms: []
+
+            effective_form: *id001
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 200
+            unit: mg
+        packages: 
+          "021": !oddb.org,2003/ODDB::Package 
+            ikscd: "021"
+            size: 100 Filmtabletten
+            descr: ""
+            ikscat: B
+            price_exfactory: 2229
+            price_public: 4265
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680547670213
+            pharmacode: "2376809"
+            narcotics: []
+
+          "013": !oddb.org,2003/ODDB::Package 
+            ikscd: "013"
+            size: 30 Filmtabletten
+            descr: ""
+            ikscat: B
+            price_exfactory: 790
+            price_public: 1750
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680547670138
+            pharmacode: "2376790"
+            narcotics: &id117 []
+
+      "02": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "02"
+        name_base: Seractil 300 mg
+        name_descr: Filmtabletten
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 300
+          unit: mg
+        atc_class: *id002
+        galenic_form: *id003
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id001
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 300
+            unit: mg
+        packages: 
+          "056": !oddb.org,2003/ODDB::Package 
+            ikscd: "056"
+            size: 100 Filmtabletten
+            descr: ""
+            ikscat: B
+            price_exfactory: 3200
+            price_public: 5405
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680547670565
+            pharmacode: "2376838"
+            narcotics: []
+
+          048: !oddb.org,2003/ODDB::Package 
+            ikscd: 048
+            size: 30 Filmtabletten
+            descr: ""
+            ikscat: B
+            price_exfactory: 1160
+            price_public: 2595
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680547670480
+            pharmacode: "2376815"
+            narcotics: []
+
+      "03": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "03"
+        name_base: Seractil 400 mg forte
+        name_descr: Filmtabletten
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 400
+          unit: mg
+        atc_class: *id002
+        galenic_form: *id003
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id001
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 400
+            unit: mg
+        packages: 
+          "064": !oddb.org,2003/ODDB::Package 
+            ikscd: "064"
+            size: 30 Filmtabletten
+            descr: ""
+            ikscat: B
+            price_exfactory: 1310
+            price_public: 2975
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680547670640
+            pharmacode: "2376850"
+            narcotics: []
+
+          099: !oddb.org,2003/ODDB::Package 
+            ikscd: 099
+            size: 50 Filmtabletten
+            descr: ""
+            ikscat: B
+            price_exfactory: 2132
+            price_public: 4150
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680547670992
+            pharmacode: "2376867"
+            narcotics: &id388 []
+
+          080: !oddb.org,2003/ODDB::Package 
+            ikscd: 080
+            size: 10 Filmtabletten
+            descr: ""
+            ikscat: B
+            price_exfactory: 515
+            price_public: 1220
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680547670800
+            pharmacode: "2376844"
+            narcotics: []
+
+    indication: &id046 !oddb.org,2003/ODDB::Indication 
+      oid: 807
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Antirheumatikum, Antiphlogistikum
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "41177"
+    registration_date: 1981-02-11
+    revision_date: 2004-12-16
+    expiration_date: 2009-12-15
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Tasmaderm
+        name_descr: Lotion
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 1
+          unit: mg
+        atc_class: &id016 !oddb.org,2003/ODDB::AtcClass 
+          code: M01AE02
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Naproxen
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+            O: !oddb.org,2003/ODDB::AtcClass::DDD 
+              administration_route: O
+              dose: !oddb.org,2003/ODDB::Dose 
+                val: 0.5
+                unit: g
+              note: 
+            R: !oddb.org,2003/ODDB::AtcClass::DDD 
+              administration_route: R
+              dose: !oddb.org,2003/ODDB::Dose 
+                val: 0.5
+                unit: g
+              note: 
+        galenic_form: &id418 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 53
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Lotion
+          galenic_group: &id055 !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 11
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: "Fl\xFCssigkeit"
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id004 !oddb.org,2003/ODDB::Substance 
+            oid: 2258
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Motretinidum
+            synonyms: []
+
+            effective_form: *id004
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1
+            unit: mg
+        packages: 
+          "012": !oddb.org,2003/ODDB::Package 
+            ikscd: "012"
+            size: 50 mL
+            descr: ""
+            ikscat: C
+            price_exfactory: 0
+            price_public: 1740
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680411770124
+            pharmacode: "890169"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 988
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Akne
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  url: 
+  email: 
+  addresses: 
+  - !oddb.org,2003/ODDB::Address2 
+    title: 
+    name: 
+    additional_lines: []
+
+    address: Gestadeckplatz  2
+    location: 4410 Liestal
+    canton: 
+    fon: []
+
+    fax: []
+
+    type: 
+  contact: 
+  contact_email: 

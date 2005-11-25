@@ -324,14 +324,25 @@ module ODDB
 				end
 			end
 			def proceed_download
-				keys = [:download, :months]
+				keys = [:download, :months, :compression]
 				input = user_input(keys, keys) 
 				items = []
+				dir = File.expand_path('../../data/downloads', 
+					File.dirname(__FILE__))
+				compression = input[:compression]
 				if(files = input[:download])
 					files.each { |filename, val|
 						if(val)
 							item = AbstractInvoiceItem.new
-							item.text = filename
+							suffix = case compression
+							when 'compr_gz'
+								['.gz', '.tar.gz'].select { |sfx|
+									File.exist?(File.join(dir, filename + sfx))
+								}.first
+							else 
+								'.zip'
+							end
+							item.text = filename + suffix
 							item.type = :download
 							item.vat_rate = VAT_RATE
 							months = input[:months][filename]
@@ -352,12 +363,15 @@ module ODDB
 				if(items.empty?)
 					@errors.store(:download, create_error('e_no_download_selected', 
 						:download, nil))
-					return self
 				end
-				pointer = Persistence::Pointer.new(:invoice)
-				invoice = Persistence::CreateItem.new(pointer)
-				invoice.carry(:items, items)
-				State::User::RegisterDownload.new(@session, invoice)
+				if(error?)
+					self
+				else
+					pointer = Persistence::Pointer.new(:invoice)
+					invoice = Persistence::CreateItem.new(pointer)
+					invoice.carry(:items, items)
+					State::User::RegisterDownload.new(@session, invoice)
+				end
 			end
 			def proceed_poweruser
 				keys = [:days]

@@ -18,6 +18,7 @@ require 'plugin/vaccines'
 require 'plugin/who'
 require 'util/log'
 require 'util/persistence'
+require 'util/exporter'
 require 'ext/meddata/src/ean_factory'
 
 module ODDB
@@ -43,8 +44,7 @@ module ODDB
 		def export_ouwerkerk(date = Date.today)
 			subj = 'Med-Drugs' 
 			wrap_update(OuwerkerkPlugin, subj) {
-				plug = OuwerkerkPlugin.new(@app)
-				plug.export_xls
+				plug = Exporter.new(@app).export_meddrugs_xls
 				log = Log.new(date)
 				log.update_values(log_info(plug))
 				log.notify(subj)

@@ -1,0 +1,57 @@
+Datenbeschrieb meddrugs-update.xls
+
+Version: 1.0.0
+Erstellt: 25.11.2005 (1.0.0) durch hwyss@ywesee.com
+
+## Struktur ##
+A: Änderungskategorien (siehe Glossar: Änderungskategorie)
+B: Swissmedic: Registrationsnummer
+C: Swissmedic: Packungsnummer
+D: Swissmedic: Sequenznummer
+E: Bezeichnung 
+F: Handelsform
+G: Indikationen
+H: Export (wenn Y: Produkt ist nur für Export bestimmt)
+I: Dosierung
+J: Einheit der Dosierung
+K: Abgabekategorie
+L: Anzahl Wirkstoffe
+M: Zulassugsinhaberin
+N: Packungsgrösse
+O: Galenische Form
+P: Zusammensetzung, Wirkstoffe durch ',' getrennt
+Q: Exfactory-Preis
+R: Publikumspreis
+S: URL Produkt
+T: URL Zulassungsinhaberin
+U: Reserve
+V: ATC-Code
+W: Reserve
+X: Pharmacode
+Y: Liste (SL)
+
+## Glossar ##
+* Änderungskategorie
+   1: Neuregistrierungen
+   2: Streichung aus SL (BAG)
+   3: Änderung Präparatname
+   4: Änderung ZulassungsinhaberIn?
+   5: Verkaufsart/Verkaufsabgrenzung/Abgabekategorie
+   6: Änderung Zusammensetzung
+   7: Indikationsänderung
+   8: Änderung Handelsformen
+   9: Verlängerung Registration
+  10: Neuzugang (BAG)
+  11: Preisänderung (BAG)
+  12: Bemerkungen Swissmedic Journal
+  13: Preiserhöhung (BAG)
+  14: Wiederruf der Zulassung (Swissmedic)
+  15: Preissenkung (BAG)
+
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+Die komplette Version-History ist zu finden unter:
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/meddrugs-update.xls.txt

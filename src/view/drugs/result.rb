@@ -10,6 +10,7 @@ require 'view/searchbar'
 require 'view/sponsorhead'
 require 'view/drugs/rootresultlist'
 require 'view/pager'
+require 'view/user/export'
 require 'sbsm/user'
 
 module ODDB
@@ -20,6 +21,7 @@ class CompanyUser < User; end
 class User < SBSM::KnownUser; end
 class UnknownUser < SBSM::UnknownUser; end
 class ExportCSV < View::Form
+	include View::User::Export
 	CSS_CLASS = 'right'
 	COMPONENTS = {
 		[0,0,0]	=>	:new_feature,
@@ -38,10 +40,7 @@ class ExportCSV < View::Form
 		self.onsubmit = "location.href='#{url}';return false;"
 	end
 	def example(model, session)
-		link = HtmlGrid::Link.new(:export_csv_example, model, 
-			session, self)
-		link.href = '/resources/downloads/Inderal.Preisvergleich.csv'
-		link
+		super('Inderal.Preisvergleich.csv')
 	end
 	def hidden_fields(context)
 		hidden = super

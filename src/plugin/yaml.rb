@@ -24,6 +24,9 @@ module ODDB
 		def export_fachinfos(name='fachinfo.yaml')
 			export_array(name, @app.fachinfos.values)
 		end
+		def export_narcotics(name='narcotics.yaml')
+			export_array(name, @app.narcotics.values)
+		end
 		def export_obj(name, obj)
 			EXPORT_SERVER.export_yaml([obj.odba_id], EXPORT_DIR, name)
 		end

@@ -10,7 +10,7 @@ module Export
 		File.dirname(__FILE__))
 	EXPORT_FILE = ''
 	def datadesc(filename)
-		if(display?(file_path("#{filename}.zip")))
+		if(display?(filename))
 			link = HtmlGrid::Link.new(:data_description, 
 				@model, @session, self)
 			path = File.join('datadesc', "#{filename}.txt")
@@ -19,8 +19,17 @@ module Export
 			link
 		end
 	end
-	def display?(path)
-		File.exists?(path) && File.size(path) > 0
+	def display?(name)
+		file_paths(name).any? { |path|
+			File.exists?(path) && File.size(path) > 0
+		}
+	end
+	def example(filename)
+		link = HtmlGrid::Link.new(:example_download, 
+															@model, @session, self)
+		link.href = @lookandfeel.resource_global(:examples, filename)
+		link.css_class = 'list-small'
+		link
 	end
 	def export_link(key, filename)
 		link = HtmlGrid::Link.new(key, @model, @session, self)
@@ -30,34 +39,36 @@ module Export
 		link.set_attribute('class', 'list')
 		link
 	end
-	def convert_filesize(path)
-		kilo = (2**10).to_f
-		size = File.size(path).to_f / kilo
-		unit = "kB"
+	def convert_filesize(filename)
+		kilo = (2**10)
+		valid_paths = file_paths(filename).select { |path|
+			File.exist?(path)
+		}
+		sizes = valid_paths.collect { |path|
+			File.size(path)
+		}
+		size = sizes.max
+		unit = 'Bytes'
 		if(size > kilo)
-			size = size/kilo
+			size = size / kilo
+			unit = "KB"
+		end
+		if(size > kilo)
+			size = size / kilo
 			unit = "MB"
 		end
-		rounded = sprintf('%.2f', size)
-		[
-			"(",
-			rounded,
-			unit,
-			")",
-		].join("&nbsp;")
+		sprintf('(&nbsp;~&nbsp;%i&nbsp;%s)', size, unit)
 	end
 	def checkbox_with_filesize(filename)
-		if(display?(file_path(filename)))
+		if(display?(filename))
 			checkbox = HtmlGrid::InputCheckbox.new("download[#{filename}]", 
 				@model, @session, self)
-			#symbol = filename.tr(".", "_").downcase.intern
-			#link = export_link(symbol, filename)
 			size = filesize(filename)
 			[checkbox, "#{filename} #{size}"]
 		end
 	end
 	def once(filename)
-		if(display?(file_path(filename)))
+		if(display?(filename))
 			price = State::User::DownloadExport.price(filename)
 			hidden = HtmlGrid::Input.new("months[#{filename}]", 
 				@model, @session, self)
@@ -67,7 +78,7 @@ module Export
 		end
 	end
 	def once_or_year(filename)
-		if(display?(file_path(filename)))
+		if(display?(filename))
 			name = "months[#{filename}]"
 			months = @session.user_input('months') || {}
 			checked = months[filename] || '1'
@@ -91,9 +102,14 @@ module Export
 	def file_path(filename)
 		File.expand_path(filename, self::class::EXPORT_DIR)
 	end
+	def file_paths(filename)
+		['.zip', '.gz', '.tar.gz'].collect { |suffix|
+			File.expand_path(filename + suffix, self::class::EXPORT_DIR)
+		}
+	end
 	def filesize(filename)
-		if(display?(file_path(filename)))
-			convert_filesize(file_path(filename))
+		if(display?(filename))
+			convert_filesize(filename)
 		end
 	end
 end

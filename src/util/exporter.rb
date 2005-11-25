@@ -7,6 +7,7 @@ require 'plugin/yaml'
 require 'plugin/csv_export'
 require 'plugin/patinfo_invoicer'
 require 'plugin/download_invoicer'
+require 'plugin/ouwerkerk'
 require 'plugin/xls_export'
 require 'util/log'
 require 'util/logfile'
@@ -14,6 +15,9 @@ require 'util/logfile'
 module ODDB
 	class Exporter
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
+		EXPORT_DIR = File.expand_path('../../data/downloads',
+																	File.dirname(__FILE__))
+		FileUtils.mkdir_p(EXPORT_DIR)
 		class SessionStub
 			attr_accessor :language, :flavor, :lookandfeel
 			alias :default_language :language
@@ -63,14 +67,11 @@ module ODDB
 			session.flavor = 'gcc'
 			session.lookandfeel = LookandfeelBase.new(session)
 			model = @app.atc_classes.values.sort_by { |atc| atc.code }
-			dir = File.expand_path('../../data/downloads', 
-				File.dirname(__FILE__))
 			name = 'oddb.csv'
-			path = File.join(dir, name)
-			FileUtils.mkdir_p(dir)
+			path = File.join(EXPORT_DIR, name)
 			exporter = View::Drugs::CsvResult.new(model, session)
 			exporter.to_csv_file(keys, path)
-			EXPORT_SERVER.compress(dir, name)
+			EXPORT_SERVER.compress(EXPORT_DIR, name)
 			EXPORT_SERVER.clear
 			sleep(30)
 		rescue
@@ -90,9 +91,24 @@ module ODDB
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
+		def export_meddrugs_xls(date = Date.today)
+			plug = OuwerkerkPlugin.new(@app)
+			plug.export_xls
+			name = 'meddrugs-update.xls'
+			path = File.join(EXPORT_DIR, name)
+			FileUtils.cp(plug.file_path, path)
+			EXPORT_SERVER.compress(EXPORT_DIR, name)
+			plug
+		end
 		def export_migel_csv
 			plug = CsvExportPlugin.new(@app)
 			plug.export_migel
+			EXPORT_SERVER.clear
+			sleep(30)
+		end
+		def export_narcotics_csv
+			plug = CsvExportPlugin.new(@app)
+			plug.export_narcotics
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
@@ -125,23 +141,18 @@ module ODDB
 			exporter = YamlExporter.new(@app)
 			exporter.export
 			exporter.export_atc_classes
-			EXPORT_SERVER.clear
-			sleep(30)
+			exporter.export_narcotics
 			run_on_weekday(2) {
 				exporter.export_fachinfos
-				EXPORT_SERVER.clear
-				sleep(30)
 			}
 			run_on_weekday(3) {
 				exporter.export_patinfos
-				EXPORT_SERVER.clear
-				sleep(30)
 			}
 			run_on_weekday(4) {
 				exporter.export_doctors
-				EXPORT_SERVER.clear
-				sleep(30)
 			}
+			EXPORT_SERVER.clear
+			sleep(30)
 		end
 		def mail_download_stats
 			mail_stats('download')

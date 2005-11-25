@@ -31,6 +31,7 @@ module ODDB
 			:delete						=>	14,
 			:price_cut				=>	15,
 		}
+		attr_reader :file_path
 		def initialize(app)
 			super
 			date = Date.today
