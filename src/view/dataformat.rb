@@ -13,7 +13,6 @@ module ODDB
 				line = ''
 				last = ''
 				txt.to_s.split(/(:?[\s-])/).each { |part|
-					puts part.inspect
 					if((line.length + last.length + part.length) > length \
 						&& part.length > 3)
 						name << line << last << '<br>'
