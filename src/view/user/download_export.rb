@@ -62,10 +62,10 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[2,13]	=>	:radio_generics_xls,
 		[6,13]	=>	:datadesc_generics_xls,
 		[7,13]	=>	:example_generics_xls,
-		[0,14]	=>	:xls_swissdrugs_update,
-		[2,14]	=>	:radio_swissdrugs_update_xls,
-		[6,14]	=>	:datadesc_swissdrugs_update_xls,
-		[7,14]	=>	:example_swissdrugs_update_xls,
+		[0,14]	=>	:xls_swissdrug_update,
+		[2,14]	=>	:radio_swissdrug_update_xls,
+		[6,14]	=>	:datadesc_swissdrug_update_xls,
+		[7,14]	=>	:example_swissdrug_update_xls,
 
 		[0,16]	=>	'export_compatibility',
 		[0,17]	=>	:oddbdat_download,
@@ -135,8 +135,8 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def datadesc_generics_xls(model, session)
 		datadesc('generics.xls')
 	end
-	def datadesc_swissdrugs_update_xls(model, session)
-		datadesc('swissdrugs-update.xls')
+	def datadesc_swissdrug_update_xls(model, session)
+		datadesc('swissdrug-update.xls')
 	end
 	def datadesc_migel_csv(model, session)
 		datadesc('migel.csv')
@@ -174,8 +174,8 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def example_generics_xls(model, session)
 		example('generics.xls')
 	end
-	def example_swissdrugs_update_xls(model, session)
-		example('swissdrugs-update.xls')
+	def example_swissdrug_update_xls(model, session)
+		example('swissdrug-update.xls')
 	end
 	def example_migel_csv(model, session)
 		example('migel.csv')
@@ -207,8 +207,8 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def radio_generics_xls(model, session)
 		once_or_year('generics.xls')
 	end
-	def radio_swissdrugs_update_xls(model, session)
-		once_or_year('swissdrugs-update.xls')
+	def radio_swissdrug_update_xls(model, session)
+		once_or_year('swissdrug-update.xls')
 	end
 	def radio_narcotics_csv(model, session)
 		once_or_year('narcotics.csv')
@@ -231,8 +231,8 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def xls_generics(model, session)
 		checkbox_with_filesize('generics.xls')
 	end
-	def xls_swissdrugs_update(model, session)
-		checkbox_with_filesize('swissdrugs-update.xls')
+	def xls_swissdrug_update(model, session)
+		checkbox_with_filesize('swissdrug-update.xls')
 	end
 	def yaml_doctors_export(model, session)
 		checkbox_with_filesize("doctors.yaml")
