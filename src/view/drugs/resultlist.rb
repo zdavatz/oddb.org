@@ -100,7 +100,7 @@ class ResultList < HtmlGrid::List
 	}	
 	REVERSE_MAP = {
 		:company_name			=> false,
-		:dose							=> false,
+		:most_precise_dose=> false,
 		:dsp							=> false,
 		:galenic_form			=> false,
 		:ikscat						=> false,

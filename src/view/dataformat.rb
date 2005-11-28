@@ -28,7 +28,8 @@ module ODDB
 			def most_precise_dose(model, session=@session)
 				if(model.respond_to?(:most_precise_dose))
 					dose = model.most_precise_dose
-					(dose && (dose.qty > 0)) ? dose : nil
+					dose = (dose && (dose.qty > 0)) ? dose : nil
+					dose.to_s.gsub(/\s+/, '&nbsp;')
 				end
 			end
 			def name_base(model, session=@session)
