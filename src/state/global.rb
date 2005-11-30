@@ -123,9 +123,10 @@ module ODDB
 					:limitation_text ] =>  State::Migel::LimitationText,
 				[	:migel_group,
 					:limitation_text ] => State::Migel::LimitationText,
-				[ :patinfo ]	=>	State::Drugs::Patinfo,
 				[ :narcotic ]	=>	State::Drugs::Narcotic,
 				[ :patinfo ]	=>	State::Drugs::Patinfo,
+				[ :registration, :sequence, 
+					:package, :narcotics ]	=>	State::Drugs::NarcoticPlus,
 			}	
 			READONLY_STATES = RESOLVE_STATES.dup.update({
 				[	:registration, :sequence, 

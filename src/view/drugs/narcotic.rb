@@ -3,6 +3,7 @@
 
 require 'view/privatetemplate'
 require 'view/resultfoot'
+require 'view/additional_information'
 
 module ODDB
 	module View
@@ -41,6 +42,7 @@ module ODDB
 				end
 			end
 			class NarcoticInnerComposite < HtmlGrid::Composite
+				include View::AdditionalInformation
 				COMPONENTS = {
 					[0,0]	=> :casrn,
 					[0,1]	=> :swissmedic_code,
@@ -54,6 +56,20 @@ module ODDB
 					[0,0,1,4] => 'list top',
 					[1,0,1,4] => 'list',
 				}
+				def reservation_text(model)
+					if(text = model.reservation_text)
+						txt = text.send(@session.language)
+						if(match = /SR (\d{3}\.\d{3}\.\d{2})/.match(txt))
+							url = sprintf('http://www.admin.ch/ch/%s/sr/c%s.html',
+								@session.language[0,1], 
+								match[1].gsub('.', '_'))
+							link = "<a href='#{url}'>#{match.to_s}</a>"
+							txt.gsub(match.to_s, link)
+						else
+							txt
+						end
+					end
+				end
 			end
 			class NarcoticComposite < HtmlGrid::Composite
 				COMPONENTS = {
@@ -80,6 +96,19 @@ module ODDB
 			end
 			class Narcotic < View::PrivateTemplate
 				CONTENT = View::Drugs::NarcoticComposite
+				SNAPBACK_EVENT = :result
+			end
+			class NarcoticPlusComposite < HtmlGrid::List
+				COMPONENTS = {
+					[0,0]	=> NarcoticComposite,
+				}
+				LEGACY_INTERFACE = false
+				CSS_CLASS = 'composite'
+				OFFSET_STEP = [1,0]
+				OMIT_HEADER = true
+			end
+			class NarcoticPlus < View::PrivateTemplate
+				CONTENT = View::Drugs::NarcoticPlusComposite
 				SNAPBACK_EVENT = :result
 			end
 		end
