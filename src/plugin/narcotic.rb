@@ -18,6 +18,8 @@ module ODDB
 			@narcotic_texts = {}
 			@reserve_substances = []
 			@unknwon_substances_text = []
+			@packages = []
+			@narcs = {}
 			super(app)
 		end
 		def casrns(row)
@@ -25,13 +27,14 @@ module ODDB
 				if(/\d+/.match(casrn))
 					casrn.to_s
 				end
-			}
+			}.compact
 		end
 		def category(row)
 			category = row.at(5).to_s
-			unless(category == "")
-				category
+			if(category == "")
+				category = "a"
 			end
+			category
 		end
 		def name(row)
 			row.at(0).to_s.strip
@@ -66,16 +69,23 @@ module ODDB
 		end
 		def update(path, language)
 			CSV.open(path, 'r', ';').each { |row|
-				update_narcotics(row, language).each { |narc|
-					update_package_or_substance(row, narc, language)
+					if(/^7611/.match(row.at(3)))
+						casrn = casrns(row).first
+						narc = update_narcotic(row, casrn, language)
+						@narcs.store(casrn, narc)
+						update_substance(row, casrn, narc, language)
+					elsif(/^7680/.match(row.at(3)))
+						@packages.push(row)
+					end
+			}
+			@packages.each { |row|
+				casrns(row).each { |casrn|
+					if(narc = @narcs[casrn])
+						update_package(row, narc, language)
+					end
 				}
 			}
 			update_narcotic_texts(language)
-		end
-		def update_narcotics(row, language)
-			casrns(row).collect { |casrn| 
-				update_narcotic(row, casrn, language)
-			}
 		end
 		def update_narcotic(row, casrn, language)
 			smcd = smcd(row)
@@ -99,11 +109,6 @@ module ODDB
 				else
 					pointer = Persistence::Pointer.new(:narcotic).creator
 				end
-				if(casrn)
-					values.store(:casrn, casrn)
-				else
-					values.store(:swissmedic_code, smcd)
-				end
 				@app.update(pointer, values)
 			end
 		end
@@ -121,8 +126,8 @@ module ODDB
 			}
 		end
 		def update_package(row, narc, language)
-			smcd = smcd(row)
-			if(registration = @app.registration(smcd[0,5]))
+			if((smcd = smcd(row)) \
+				&& (registration = @app.registration(smcd[0,5])))
 				if(package = registration.package(smcd[5,3])) 
 					#@app.update(package.pointer, {:narcotic => narc})
 					package.add_narcotic(narc)
@@ -134,15 +139,15 @@ module ODDB
 				@unknown_registrations.push(report_text(row))
 			end
 		end
-		def update_substance(row, narc, language)
+		def update_substance(row, casrn, narc, language)
 			smcd = smcd(row)
 			name, rest = strip_name(row)
 			pointer = Persistence::Pointer.new(:substance).creator
 			data = {
 				language					=> name.strip,
 				:narcotic					=> narc,
+				:casrn						=> casrn,
 				:swissmedic_code	=> smcd,
-				:casrn						=> narc.casrn,
 			}
 			substance = @app.substance_by_smcd(smcd) \
 				|| @app.substance(name)
@@ -156,14 +161,6 @@ module ODDB
 				@reserve_substances.push(substance)
 			end
 			substance
-		end
-		def update_package_or_substance(row, narc, language)
-			case row.at(3)
-			when /^7680/
-				update_package(row, narc, language)
-			when /^7611/
-				update_substance(row, narc, language)
-			end
 		end
 		def report
 			[

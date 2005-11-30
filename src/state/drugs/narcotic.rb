@@ -10,6 +10,10 @@ class Narcotic < State::Global
 	VIEW = View::Drugs::Narcotic
 	LIMITED = true
 end
+class NarcoticPlus < State::Global
+	VIEW = View::Drugs::NarcoticPlus
+	LIMITED = true
+end
 		end
 	end
 end

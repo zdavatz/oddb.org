@@ -37,6 +37,14 @@ class NarcoticList < HtmlGrid::List
 	SYMBOL_MAP = {
 		:casrn	=>	PointerLink,
 	}
+	def category(model, session=@session)
+		txt = HtmlGrid::Span.new(model ,session, self)
+		cat = model.category.to_s
+		key = "category_" + cat
+		txt.value = cat
+		txt.set_attribute('title', @lookandfeel.lookup(key))
+		txt
+	end
 	def num_packages(model)
 		model.packages.size
 	end

@@ -73,10 +73,6 @@ module ODDB
 					end
 					title_elements.push(sl_str)
 				end
-				unless(model.narcotics.empty?)
-					text_elements.push(@lookandfeel.lookup(:narc_short))
-					title_elements.push(@lookandfeel.lookup(:narcotic))
-				end
 				txt.value = text_elements.join('&nbsp;/&nbsp;')
 				title = title_elements.join('&nbsp;/&nbsp;')
 				txt.set_attribute('title', title)
@@ -99,6 +95,17 @@ module ODDB
 				link.css_class = "result-infos"
 				#css_map.store(pos, "result-infos")
 				link
+			end
+			def narcotic(model, session=@session)
+				if(narc = model.narcotics.first)
+					link = HtmlGrid::Link.new(:narc_short, 
+							narc, @session, self)
+					link.href = @lookandfeel._event_url(:resolve,
+						{'pointer' => model.pointer + :narcotics})
+					link.css_class = 'result-infos'
+					link.set_attribute('title', @lookandfeel.lookup(:narcotic))
+					link
+				end
 			end
 			def notify(model, session=@session)
 				link = HtmlGrid::Link.new(:notify, model, @session, self)

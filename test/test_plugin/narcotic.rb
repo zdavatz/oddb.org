@@ -22,7 +22,7 @@ module ODDB
 			row = ['NAME', '', 'pcode', 'smcd']
 			assert_equal(@plugin.casrns(row), [])
 			row = ['NAME', 'nil', 'pcode', 'smcd']
-			assert_equal(@plugin.casrns(row), [nil])
+			assert_equal(@plugin.casrns(row), [])
 			row = ['NAME', '11-11-11', 'pcode', 'smcd']
 			assert_equal(['11-11-11'], @plugin.casrns(row))
 		end
@@ -40,7 +40,7 @@ module ODDB
 			row = ['NAME', 'casrn', 'pcode', 'eancode', 'company', 'c']
 			assert_equal('c', @plugin.category(row))
 			row = ['NAME', 'casrn', 'pcode', 'eancode', 'company', '']
-			assert_nil(@plugin.category(row))
+			assert_equal('a', @plugin.category(row))
 		end
 		def test_report_text
 			row = ['name','text1','text2','text3','text4']
@@ -54,7 +54,7 @@ module ODDB
 			row = ["Dextropropoxyphenhaltige","- - - - -","- - - - -",
 				"- - - - -","- - - - -","c"]
 			assert_equal("Dextropropoxyphenhaltige",
-									 @plugin.update_narcotic(row, "111-111",  :de))
+									 @plugin.update_narcotic(row, 'casrn', :de))
 		end
 		def test_narcotic_text
 			text = "Codeinhaltige"
