@@ -6,7 +6,8 @@ require 'view/admin/selectindication'
 module ODDB
 	module State
 		module Admin
-class SelectIndication < State::Admin::Global
+class Registration < Global; end
+module SelectIndicationMethods
 	class Selection
 		attr_reader :user_input, :selection
 		attr_accessor :registration
@@ -26,7 +27,6 @@ class SelectIndication < State::Admin::Global
 			Persistence::CreateItem.new(pointer)
 		end
 	end
-	VIEW = View::Admin::SelectIndication
 	def update
 		pointer = @session.user_input(:pointer)
 		indication = pointer.resolve(@session.app)
@@ -36,16 +36,21 @@ class SelectIndication < State::Admin::Global
 			}
 			@session.app.update(indication.pointer, update)
 		end
-		if (error?)
+		if(error?)
 			self
 		else
 			hash = {
 				:indication	=>	indication.pointer,
 			}
 			model = @session.app.update(@model.pointer, hash)
-			State::Admin::Registration.new(@session, model)
+			self.class::REGISTRATION_STATE.new(@session, model)
 		end
 	end
+end
+class SelectIndication < State::Admin::Global
+	VIEW = View::Admin::SelectIndication
+	REGISTRATION_STATE = State::Admin::Registration
+	include SelectIndicationMethods
 end
 		end
 	end

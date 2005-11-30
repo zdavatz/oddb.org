@@ -35,10 +35,18 @@ module RegistrationMethods
 			@errors.store(:company_name, err)
 		end
 	end
-	def do_update(keys, mandatory = [])
+	def do_update(keys)
 		new_state = self
-		hash = user_input(keys, mandatory)
+		hash = user_input(keys)
 		resolve_company(hash)
+		if(hash[:registration_date].nil? && hash[:revision_date].nil?)
+			error = create_error('e_missing_reg_rev_date', 
+				:registration_date, nil)
+			@errors.store(:registration_date, error)
+			error = create_error('e_missing_reg_rev_date', 
+				:revision_date, nil)
+			@errors.store(:revision_date, error)
+		end
 		if(@model.is_a?(Persistence::CreateItem) && error?)
 			return self
 		end
@@ -49,9 +57,9 @@ module RegistrationMethods
 		elsif(!ind.empty?)
 			input = hash.dup
 			input.store(:indication, ind)
-			sel = State::Admin::SelectIndication::Selection.new(input, 
+			sel = SelectIndicationMethods::Selection.new(input, 
 				@session.app.search_indications(ind), @model)
-			new_state = State::Admin::SelectIndication.new(@session, sel)
+			new_state = self.class::SELECT_STATE.new(@session, sel)
 		end
 		if((fi_file = @session.user_input(:fachinfo_upload)) \
 			&& language = @session.user_input(:language_select)) 
@@ -102,6 +110,7 @@ module RegistrationMethods
 end
 class Registration < State::Admin::Global
 	VIEW = View::Admin::RootRegistration
+	SELECT_STATE = State::Admin::SelectIndication
 	FI_FILE_DIR = File.expand_path('../../../doc/resources/fachinfo/', File.dirname(__FILE__))
 	include RegistrationMethods
 	def update

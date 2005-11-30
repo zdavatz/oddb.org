@@ -8,7 +8,7 @@ require 'model/sequence'
 
 module ODDB
 	class IncompleteRegistration < RegistrationCommon
-		attr_accessor :errors, :iksnr
+		attr_accessor :errors, :iksnr, :email_suggestion
 		SEQUENCE = IncompleteSequence
 		def initialize
 			super(nil)

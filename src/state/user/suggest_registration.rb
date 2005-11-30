@@ -4,6 +4,7 @@
 require 'state/global_predefine'
 require 'state/admin/registration'
 require 'state/user/contributor'
+require 'state/user/selectindication'
 require 'view/user/suggest_registration'
 
 module ODDB
@@ -13,12 +14,14 @@ class SuggestRegistration < Global
 	include State::Admin::RegistrationMethods
 	VIEW = View::User::SuggestRegistration
 	RECIPIENTS = ['admin@ywesee.com']
+	SELECT_STATE = State::User::SelectIndication
 	def accept
-		keys = [:iksnr, :email]
+		update
+		keys = [:iksnr, :email_suggestion]
 		input = user_input(keys, keys)
 		unless(error?)
 			@session[:allowed].delete(@model)
-			send_notification(input[:email])
+			send_notification(input[:email_suggestion])
 			State::User::Confirm.new(@session, :suggestion_sent)
 		end
 	end
@@ -44,11 +47,21 @@ class SuggestRegistration < Global
 		}
 	end
 	def update
-		keys = [:iksnr, :registration_date, :revision_date, :generic_type]
-		do_update(keys, [:iksnr])
-		(@session[:allowed] ||= []).push(@model).uniq!
-		self.extend(State::User::Contributor)
-		self
+		iksnr = @session.user_input(:iksnr)
+		if(@model.is_a?(Persistence::CreateItem) \
+			&& (reg = @session.app.incomplete_registration_by_iksnr(iksnr)))
+			@model = reg
+		else
+			keys = [
+				:inactive_date, :generic_type, :registration_date, 
+				:revision_date, :market_date, :expiration_date, 
+				:complementary_type, :export_flag, :email_suggestion, 
+			]
+			mandatory = [:iksnr, :indication, :company_name]
+			# check_input
+			user_input(mandatory, mandatory)
+			do_update(keys)
+		end
 	end
 end
 		end

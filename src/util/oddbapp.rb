@@ -489,6 +489,11 @@ class OddbPrevalence
 	def incomplete_registration(oid)
 		@incomplete_registrations[oid.to_i]
 	end
+	def incomplete_registration_by_iksnr(iksnr)
+		@incomplete_registrations.values.select { |reg|
+			reg.iksnr == iksnr
+		}.first
+	end
 	def incomplete_registrations
 		@incomplete_registrations.values
 	end
