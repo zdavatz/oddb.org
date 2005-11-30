@@ -10,13 +10,34 @@ require 'view/admin/activeagent'
 module ODDB
 	module State
 		module Admin
-class ActiveAgent < State::Admin::Global
-	VIEW = View::Admin::RootActiveAgent
+module ActiveAgentMethods
 	def	delete
 		sequence = @model.parent(@session.app) 
-		@session.app.delete(@model.pointer)
-		State::Admin::Sequence.new(@session, sequence)
+		if(klass = resolve_state(sequence.pointer))
+			@session.app.delete(@model.pointer)
+			klass.new(@session, sequence)
+		end
 	end	
+	def new_active_agent
+		unless((sequence = @model.sequence).nil?)
+			aa_pointer = sequence.pointer + [:active_agent]
+			item = Persistence::CreateItem.new(aa_pointer)
+			item.carry(:iksnr, sequence.iksnr)
+			item.carry(:name_base, sequence.name_base)
+			item.carry(:sequence, sequence)
+			#item.carry(:dose, " ")
+			#item.carry(:substance, " ")
+			if (klass=resolve_state(aa_pointer))
+				klass.new(@session, item)
+			else
+				self
+			end
+		else
+			error = create_error(:e_no_seq_to_activeagent, :substance, @model.substance)
+			@errors.store(:substance, error)
+			self
+		end
+	end
 	def update
 		keys = [:substance, :dose, :chemical_substance, :chemical_dose,
 			:spagyric_dose, :equivalent_substance, :equivalent_dose]
@@ -27,7 +48,7 @@ class ActiveAgent < State::Admin::Global
 			if(substance.nil?)
 				selection = self.substance_selection
 				model = ODDB::SelectSubstance.new(input, selection, @model)
-				newstate = State::Admin::SelectSubstance.new(@session, model)
+				newstate = self.class::SELECT_STATE.new(@session, model)
 			elsif(@model.substance != substance && \
 				@model.sequence.active_agent(substance))
 				error = create_error(:e_seq_dup_substance, :substance, input[:substance])
@@ -63,22 +84,11 @@ class ActiveAgent < State::Admin::Global
 		comparable = @session.app.soundex_substances(sub)
 		comparable - sequence.substances
 	end
-	def new_active_agent
-		unless((sequence = @model.sequence).nil?)
-			aa_pointer = sequence.pointer + [:active_agent]
-			item = Persistence::CreateItem.new(aa_pointer)
-			item.carry(:iksnr, sequence.iksnr)
-			item.carry(:name_base, sequence.name_base)
-			item.carry(:sequence, sequence)
-			item.carry(:dose, " ")
-			item.carry(:substance, " ")
-			State::Admin::ActiveAgent.new(@session, item)
-		else
-			error = create_error(:e_no_seq_to_activeagent, :substance, @model.substance)
-			@errors.store(:substance, error)
-			self
-		end
-	end
+end
+class ActiveAgent < State::Admin::Global
+	VIEW = View::Admin::RootActiveAgent
+	SELECT_STATE = State::Admin::SelectSubstance
+	include ActiveAgentMethods
 end
 class CompanyActiveAgent < State::Admin::ActiveAgent
 	def init

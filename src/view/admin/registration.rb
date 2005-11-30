@@ -182,8 +182,8 @@ class RegistrationForm < View::Form
 		input
 	end
 	def iksnr(model, session)
-		klass = if(session.user.is_a?(ODDB::AdminUser) \
-			|| model.is_a?(Persistence::CreateItem))
+		klass = if(model.is_a?(Persistence::CreateItem) \
+			|| model.is_a?(ODDB::IncompleteRegistration))
 			HtmlGrid::InputText
 		else
 			HtmlGrid::Value

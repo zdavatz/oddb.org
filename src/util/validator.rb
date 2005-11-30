@@ -146,7 +146,6 @@ module ODDB
 			:search_registrations,
 			:search_sequences,
 			:select_seq,
-			:send,
 			:sequences,
 			:set_pass,
 			:shadow,

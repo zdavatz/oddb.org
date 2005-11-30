@@ -5,7 +5,6 @@ require 'view/publictemplate'
 
 module ODDB
 	module View
-		module Admin
 class ConfirmComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	'confirmation',
@@ -22,8 +21,7 @@ class ConfirmComposite < HtmlGrid::Composite
 	end
 end
 class Confirm < View::PublicTemplate
-	CONTENT = View::Admin::ConfirmComposite
+	CONTENT = View::ConfirmComposite
 end
-		end
 	end
 end

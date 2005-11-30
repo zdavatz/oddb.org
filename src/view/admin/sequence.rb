@@ -176,9 +176,12 @@ class SequenceForm < Form
 		:regulatory_email		=> HtmlGrid::InputText,
 	}
 	def init
-		if(@model.is_a?(Persistence::CreateItem))
-			components.store([1,4], :submit)
-		else
+		reorganize_components
+		super
+		error_message()
+	end
+	def reorganize_components
+		if(@model.is_a?(ODDB::Sequence))
 			components.update({
 				[0,4]		=>	:patinfo_upload,
 				[2,4]   =>  :patinfo_label,
@@ -205,22 +208,20 @@ class SequenceForm < Form
 					end
 				end
 			end
+		else
+			components.store([1,4], :submit)
 		end
-		super
-		error_message()
 	end
 	def assign_patinfo(model, session)
-		unless(@model.is_a? Persistence::CreateItem)
-			link = HtmlGrid::Link.new(:assign_patinfo, model, session, self)
-			link.href = @lookandfeel.event_url(:assign_patinfo)
-			if(@model.has_patinfo?)
-				link.value = @lookandfeel.lookup(:assign_this_patinfo)
-			else
-				link.value = @lookandfeel.lookup(:assign_other_patinfo)
-			end
-			link.set_attribute('class', 'small')
-			link
+		link = HtmlGrid::Link.new(:assign_patinfo, model, session, self)
+		link.href = @lookandfeel.event_url(:assign_patinfo)
+		if(@model.has_patinfo?)
+			link.value = @lookandfeel.lookup(:assign_this_patinfo)
+		else
+			link.value = @lookandfeel.lookup(:assign_other_patinfo)
 		end
+		link.set_attribute('class', 'small')
+		link
 	end
 	def atc_descr(model, session)
 		if(atc_descr_error?)
