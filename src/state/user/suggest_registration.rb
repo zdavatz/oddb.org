@@ -12,7 +12,7 @@ module ODDB
 class SuggestRegistration < Global
 	include State::Admin::RegistrationMethods
 	VIEW = View::User::SuggestRegistration
-	RECIPIENTS = ['hwyss@ywesee.com']
+	RECIPIENTS = ['admin@ywesee.com']
 	def accept
 		keys = [:iksnr, :email]
 		input = user_input(keys, keys)
