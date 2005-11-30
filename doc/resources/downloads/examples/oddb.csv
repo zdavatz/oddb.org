@@ -1,0 +1,50 @@
+Reg.-Nr.;Packungsnummer;EAN-Code;Pharmacode;Präparat;Galenische Form;Stärke;Packungsgrösse;Numerisch;EFP;PP;Zulassungsinh.;Kat.;SL;Aufnahme in SL;Limitation;Limitationspunkte;Limitationstext;Reg.Dat.;Gültig bis;Deaktiviert;Exportprodukt;CAS Reg.Nr.
+A;ALIMENTÄRES SYSTEM UND STOFFWECHSEL
+A01;STOMATOLOGIKA
+A01A;STOMATOLOGIKA
+10787;017;7680107870176;0351372;Sanogencive Plan;Flüssigkeit;;100 mL;100;;;Laboratoires Plan SA;D;Nein;;;;;29.07.1941;09.11.2008;;;
+10787;033;7680107870336;0351395;Sanogencive Plan;Flüssigkeit;;1000 mL;1000;;;Laboratoires Plan SA;D;Nein;;;;;29.07.1941;09.11.2008;;;
+10787;025;7680107870251;0351389;Sanogencive Plan;Flüssigkeit;;500 mL;500;;;Laboratoires Plan SA;D;Nein;;;;;29.07.1941;09.11.2008;;;
+A01AA;Mittel zur Kariesprophylaxe
+A01AA01;Natriumfluorid
+15219;068;7680152190687;0544042;Zymafluor 0.25 mg;Tabletten;0.25 mg;400 Tabletten;400;;;Novartis Consumer Health Schweiz AG;C;Nein;;;;;21.04.1965;31.12.2007;;;
+15219;076;7680152190762;0544071;Zymafluor 1 mg;Tabletten;1 mg;250 Tabletten;250;;;Novartis Consumer Health Schweiz AG;C;Nein;;;;;21.04.1965;31.12.2007;;;
+55862;009;7680558620092;;Duraphat;Suspension;50 mg;5 x 1 mL;5;;;Colgate-Palmolive AG;B;Nein;;;;;31.07.2003;30.07.2008;;;
+54585;012;7680545850129;;Fluocaril gouttes buvables;Lösung (oral);1.14 mg;20 mL;20;;;Sanofi-Synthélabo (Suisse) SA;C;Nein;;;;;26.11.1999;08.02.2010;;;
+39620;022;7680396200227;;Binaca Fluor;Gel;27.6 mg;10 x 25 g;250;;;Esro AG;D;Nein;;;;;15.07.1977;31.12.2006;;;
+39620;057;7680396200579;;Binaca Fluor;Gel;27.6 mg;200 mL;200;;;Esro AG;C;Nein;;;;;15.07.1977;31.12.2006;;;
+39620;014;7680396200142;0763152;Binaca Fluor;Gel;27.6 mg;25 g;25;;8.70;Esro AG;D;Nein;;;;;15.07.1977;31.12.2006;;;
+A01AA02;Natriummonofluorphosphat
+51862;031;7680518620315;1455429;Emoform F Mundbad;Flüssigkeit;;900 mL;900;;33.80;Dr. Wild & Co. AG;D;Nein;;;;;26.05.1992;;;;
+51862;023;7680518620230;1455412;Emoform F Mundbad;Flüssigkeit;;250 mL;250;;11.50;Dr. Wild & Co. AG;D;Nein;;;;;26.05.1992;;;;
+51862;015;7680518620155;1455406;Emoform F Mundbad;Flüssigkeit;;150 mL;150;;8.10;Dr. Wild & Co. AG;D;Nein;;;;;26.05.1992;;;;
+52494;028;7680524940285;1430079;Emoform-F;Zahnpaste;111.47 mg;50 mL;50;;6.20;Dr. Wild & Co. AG;D;Nein;;;;;24.01.1994;24.03.2009;;;
+52494;036;7680524940360;1430085;Emoform-F;Zahnpaste;111.47 mg;85 mL;85;;8.90;Dr. Wild & Co. AG;D;Nein;;;;;24.01.1994;24.03.2009;;;
+A01AA03;Olaflur
+26924;014;7680269240145;0156334;Elmex fluid;Lösung;10 mg/g;50 mL;50;;19.70;Gaba AG;B;Nein;;;;;02.03.1962;31.12.2006;;;
+51226;011;7680512260111;;Paro Amin Fluor Gelée;Gel;38.74 mg;30 mL;30;;;Esro AG;D;Nein;;;;;09.06.1994;15.04.2009;;;
+51226;038;7680512260388;2576046;Paro Amin Fluor Gelée;Gel;38.74 mg;200 mL;200;;;Esro AG;C;Nein;;;;;09.06.1994;15.04.2009;;;
+34916;039;7680349160394;0931336;Elmex;Gel;;25 g;25;;9.80;Gaba AG;D;Nein;;;;;14.09.1995;10.09.2008;;;
+34916;047;7680349160479;0931342;Elmex;Gel;;215 g;215;;33.55;Gaba AG;C;Nein;;;;;14.09.1995;10.09.2008;;;
+A01AA04;Zinn(II)-fluorid
+A01AA30;Kombinationen
+48880;010;7680488800106;1473901;Fluocaril bi-fluoré 150 sans menthe;Zahnpaste;150 mg;75 mL;75;;7.50;Sanofi-Synthélabo (Suisse) SA;D;Nein;;;;;15.12.1992;31.12.2006;;;
+49107;013;7680491070138;1999520;Fluocaril bi-fluoré 250 menthe;Zahnpaste;250 mg;75 mL;75;;8.00;Sanofi-Synthélabo (Suisse) SA;D;Nein;;;;;26.03.1997;07.11.2007;;;
+49107;021;7680491070213;1999537;Fluocaril bi-fluoré 250 anis;Zahnpaste;250 mg;75 mL;75;;8.00;Sanofi-Synthélabo (Suisse) SA;D;Nein;;;;;26.03.1997;07.11.2007;;;
+32778;038;7680327780385;1473918;Fluocaril bi-fluoré 150 menthe;Zahnpaste;150 mg;75 mL;75;;7.50;Sanofi-Synthélabo (Suisse) SA;D;Nein;;;;;15.12.1992;31.12.2006;;;
+A01AA51;Natriumfluorid, Kombinationen
+A01AB;Antiinfektiva und Antiseptika zur oralen Lokalbehandlung
+10425;050;7680104250506;;Sansilla;Flüssigkeit;;70 mL;70;;;Vifor (International) AG;D;Nein;;;;;22.10.1935;;;;
+10425;042;7680104250421;;Sansilla;Flüssigkeit;;40 mL;40;;;Vifor (International) AG;D;Nein;;;;;22.10.1935;;;;
+41918;039;7680419180390;;Halspastillen Rezeptur 535;Pastillen;0.3 mg;24 Lutschpastillen;24;;;Iromedica AG;D;Nein;;;;;29.02.1980;;;;
+46863;011;7680468630112;1191195;Orofar mit Lidocain;Lutschtabletten;;24 Tabletten;24;;;Novartis Consumer Health Schweiz AG;D;Nein;;;;;03.09.1985;16.12.2009;;;
+51808;010;7680518080102;1511926;Sangerol;Spray;;20 mL;20;;10.20;Novartis Consumer Health Schweiz;D;Ja;15.04.2000;Nein;;;24.05.1993;09.12.2007;;;
+55370;003;7680553700034;;Atridox;Gel;42.5 mg;1 Packung(en);1;;;Heico U. Heinimann;A;Nein;;;;;29.06.2001;;;;
+55370;005;7680553700058;;Atridox;Gel;42.5 mg;1 Packung(en);1;;;Heico U. Heinimann;A;Nein;;;;;29.06.2001;;;;
+22582;054;7680225820541;2149522;Tyrothricine  Gramicidine Democal;Pastillen;2.55 mg;24 comprimés à sucer;24;;;Vifor SA;D;Nein;;;;;23.08.1991;27.11.2007;;;
+22582;062;7680225820626;2149491;Tyrothricine  Gramicidine Democal;Pastillen;2.55 mg;24 comprimés à sucer;24;;;Vifor SA;D;Nein;;;;;23.08.1991;27.11.2007;;;
+A01AB02;Wasserstoffperoxid
+A01AB03;Chlorhexidin
+38034;073;7680380340731;;Plak-Out;Gel;2 mg;20 x 5 g;100;;;KerrHawe SA;D;Nein;;;;;11.07.2001;03.11.2009;;;
+38034;065;7680380340656;;Plak-Out;Gel;2 mg;33 g;33;;;KerrHawe SA;D;Nein;;;;;11.07.2001;03.11.2009;;;
+38989;022;7680389890220;;Plak-Out;Lösung;100 mg;50 mL;50;;;KerrHawe SA;D;Nein;;;;;14.04.1975;03.11.2009;;;

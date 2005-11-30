@@ -11,20 +11,24 @@ module ODDB
 			def breakline(txt, length)
 				name = ''
 				line = ''
+				last = ''
 				txt.to_s.split(/(:?[\s-])/).each { |part|
-					if((line.length + part.length) > length)
-						name << line << '<br>'
-						line = part
+					if((line.length + last.length + part.length) > length \
+						&& part.length > 3)
+						name << line << last << '<br>'
+						line = ''
 					else
-						line << part
+						line << last
 					end
+					last = part
 				}
-				name << line
+				name << line << last
 			end
 			def most_precise_dose(model, session=@session)
 				if(model.respond_to?(:most_precise_dose))
 					dose = model.most_precise_dose
-					(dose && (dose.qty > 0)) ? dose : nil
+					dose = (dose && (dose.qty > 0)) ? dose : nil
+					dose.to_s.gsub(/\s+/, '&nbsp;')
 				end
 			end
 			def name_base(model, session=@session)

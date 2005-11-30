@@ -12,9 +12,7 @@ require 'util/log'
 module ODDB
 	module State
 		module Admin
-class Registration < State::Admin::Global
-	VIEW = View::Admin::RootRegistration
-	FI_FILE_DIR = File.expand_path('../../../doc/resources/fachinfo/', File.dirname(__FILE__))
+module RegistrationMethods
 	def new_sequence
 		pointer = @session.user_input(:pointer)
 		model = pointer.resolve(@session.app)
@@ -28,27 +26,6 @@ class Registration < State::Admin::Global
 			self
 		end
 	end
-	def update
-		keys = [
-			:inactive_date, :generic_type, :registration_date, 
-			:revision_date, :market_date, :expiration_date, 
-			:complementary_type, :export_flag
-		]
-		if(@model.is_a? Persistence::CreateItem)
-			iksnr = @session.user_input(:iksnr)
-			if(error_check_and_store(:iksnr, iksnr, [:iksnr]))
-				return self
-			elsif(@session.app.registration(iksnr))
-				error = create_error('e_duplicate_iksnr', :iksnr, iksnr)
-				@errors.store(:iksnr, error)
-				return self
-			else
-				@model.append(iksnr)
-			end
-		end
-		do_update(keys)
-	end
-	private
 	def resolve_company(hash)
 		comp_name = @session.user_input(:company_name)
 		if(company = @session.company_by_name(comp_name) || @model.company)
@@ -58,9 +35,9 @@ class Registration < State::Admin::Global
 			@errors.store(:company_name, err)
 		end
 	end
-	def do_update(keys)
+	def do_update(keys, mandatory = [])
 		new_state = self
-		hash = user_input(keys)
+		hash = user_input(keys, mandatory)
 		resolve_company(hash)
 		if(@model.is_a?(Persistence::CreateItem) && error?)
 			return self
@@ -70,8 +47,6 @@ class Registration < State::Admin::Global
 		if(indication = @session.app.indication_by_text(ind))
 			hash.store(:indication, indication.pointer)
 		elsif(!ind.empty?)
-			#err = create_error(:e_unknown_indication, :indication, ind)
-			#@errors.store(:indication, err)
 			input = hash.dup
 			input.store(:indication, ind)
 			sel = State::Admin::SelectIndication::Selection.new(input, 
@@ -92,14 +67,6 @@ class Registration < State::Admin::Global
 					fh.write(fi_file.read)
 				}
 				fi_file.rewind
-=begin
-				if(pdf_fachinfos = @model.pdf_fachinfos)
-					pdf_fachinfos.store(language, filename)
-				else
-					pdf_fachinfos = {language => filename}
-				end
-				#hash.store(:pdf_fachinfos, pdf_fachinfos)
-=end
 				new_state = State::Admin::WaitForFachinfo.new(@session, @model)
 				new_state.previous = self
 				@session.app.async {
@@ -124,7 +91,7 @@ class Registration < State::Admin::Global
 				}
 			end
 		end
-		ODBA.batch { 
+		ODBA.transaction { 
 			@model = @session.app.update(@model.pointer, hash)
 		}
 		if(sel)
@@ -132,6 +99,32 @@ class Registration < State::Admin::Global
 		end
 		new_state
 	end
+end
+class Registration < State::Admin::Global
+	VIEW = View::Admin::RootRegistration
+	FI_FILE_DIR = File.expand_path('../../../doc/resources/fachinfo/', File.dirname(__FILE__))
+	include RegistrationMethods
+	def update
+		keys = [
+			:inactive_date, :generic_type, :registration_date, 
+			:revision_date, :market_date, :expiration_date, 
+			:complementary_type, :export_flag
+		]
+		if(@model.is_a? Persistence::CreateItem)
+			iksnr = @session.user_input(:iksnr)
+			if(error_check_and_store(:iksnr, iksnr, [:iksnr]))
+				return self
+			elsif(@session.app.registration(iksnr))
+				error = create_error('e_duplicate_iksnr', :iksnr, iksnr)
+				@errors.store(:iksnr, error)
+				return self
+			else
+				@model.append(iksnr)
+			end
+		end
+		do_update(keys)
+	end
+	private
 	def parse_fachinfo_doc(file)
 		begin
 			# establish connection to fachinfo_parser

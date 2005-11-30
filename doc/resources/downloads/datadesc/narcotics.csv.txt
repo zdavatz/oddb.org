@@ -1,0 +1,48 @@
+Datenbeschrieb narcotics.csv
+
+Version: 1.0.0
+Erstellt: 25.11.2005 (1.0.0) durch hwyss@ywesee.com
+
+## Struktur ##
+Encoding: ISO-8859-1
+Record-Separator: \n (Für New-Lines in Feldern siehe Glossar: New-Line)
+Field-Separator:  ;
+
+Narcotic-Record:
+00: cas-rn                 (*)             -> CAS-Registry Number
+01: smcd                   (*)             -> Swissmedic-Code
+02: substance_de           (*)             -> Substanz-Bezeichnung De.
+03: substance_fr           (*)             -> Substanz-Bezeichnung Fr.
+04: category               (b-d)           -> siehe Glossar: Kategorie
+05: reservation_de         (*)             -> Vorbehaltstext De.
+06: reservation_fr         (*)             -> Vorbehaltstext Fr.
+
+## Glossar ##
+* CAS Registry Number
+  http://www.cas.org/EO/regsys.html
+
+* Kategorie
+  b) von der Kontrolle teilweise Ausgenommen
+	c) in kleinen Mengen ohne ärztliche Verschreibung erhältlich und von
+     der Kontrolle teilweise Ausgenommen
+  d) verboten
+
+* Sprachen
+  De. - Deutsch
+  Fr. - Französisch
+
+* New-Line
+  In den Ausgangsdaten wurden Zeilenumbrüche mit ASCII-11 (Vertical Tab)
+  formatiert. In unseren Datenbanksystemen sind diese Daten jedoch als
+  ACSCII-10 (Line-Feed) gespeichert.
+  Aufgrund der Tatsache, das viele CSV-Parser mühe haben, Record-Seperators
+  innerhalb von Fields anzutreffen, sind die Daten im CSV-Export mit den
+  Vertical-Tabs formatiert.
+          
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+Die komplette Version-History ist zu finden unter:
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/narcotics.csv.txt

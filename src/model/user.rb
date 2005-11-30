@@ -15,8 +15,9 @@ module ODDB
 		def init(app)
 			@pointer.append(@oid)
 		end
-		def identified_by?(*args) # email, hashed_password
-			args == [@unique_email, @pass_hash]
+		def identified_by?(email, pass_hash) # email, hashed_password
+			pass_hash == @pass_hash \
+				&& email.to_s.downcase == @unique_email.to_s.downcase
 		end
 		def allowed?(obj)
 			false

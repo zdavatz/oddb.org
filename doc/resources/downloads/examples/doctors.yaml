@@ -1,0 +1,239 @@
+!oddb.org,2003/ODDB::Doctor 
+oid: 28766
+ean13: "7601000616715"
+email: amig@amig.ch
+language: "franz\xF6sisch"
+firstname: Fabrice
+name: Dami
+exam: "1998"
+praxis: false
+salutation: Herrn
+title: Arzt
+specialities: 
+member: 
+addresses: []
+
+
+!oddb.org,2003/ODDB::Doctor 
+oid: 20547
+ean13: "7601000044648"
+email: 
+language: "franz\xF6sisch"
+firstname: Bernard
+name: Reith
+exam: "1990"
+praxis: true
+salutation: Herrn
+title: Dr. med.
+specialities: 
+- Psychiatrie und Psychotherapie
+member: 
+addresses: 
+- !oddb.org,2003/ODDB::Address2 
+  title: Monsieur le Docteur
+  name: Bernard Reith
+  additional_lines: 
+  - "Cabinet m\xE9dical"
+  address: "28, rue de Gen\xE8ve"
+  location: "1225 Ch\xEAne-Bourg"
+  canton: 
+  fon: 
+  - 022 349 86 86
+  fax: 
+  - 022 349 53 11
+  type: at_praxis
+
+!oddb.org,2003/ODDB::Doctor 
+oid: 12328
+ean13: 
+email: awey@bluewin.ch
+language: deutsch
+firstname: Andreas
+name: Wey
+exam: "1981"
+praxis: true
+salutation: Herrn
+title: Dr. med.
+specialities: 
+- Allgemeinmedizin
+member: 
+addresses: 
+- !oddb.org,2003/ODDB::Address2 
+  title: Herrn Dr. med.
+  name: Andreas Wey
+  additional_lines: 
+  - Arztpraxis
+  - Postfach 105
+  address: "B\xFCrenstr. 2"
+  location: 3296 Arch
+  canton: 
+  fon: 
+  - 032 679 21 20
+  fax: 
+  - 032 679 21 93
+  type: at_praxis
+
+!oddb.org,2003/ODDB::Doctor 
+oid: 4109
+ean13: "7601000024947"
+email: 
+language: "franz\xF6sisch"
+firstname: Paul
+name: "H\xE9ritier"
+exam: "1967"
+praxis: false
+salutation: Herrn
+title: Dr. med.
+specialities: 
+- Urologie
+member: 
+addresses: []
+
+
+!oddb.org,2003/ODDB::Doctor 
+oid: 32876
+ean13: 
+email: sigrid.voneckardstein@usz.ch
+language: deutsch
+firstname: Sigrid
+name: von Eckardstein
+exam: "1986"
+praxis: false
+salutation: Frau
+title: PD Dr. med.
+specialities: 
+- "Gyn\xE4kologie und Geburtshilfe"
+member: 
+addresses: 
+- !oddb.org,2003/ODDB::Address2 
+  title: 
+  name: U S Z
+  additional_lines: 
+  - Departement Frauenheilkunde
+  - "Klinik f\xFCr Gyn\xE4kologie"
+  address: Frauenklinikstr. 10
+  location: "8091 Z\xFCrich"
+  canton: 
+  fon: 
+  - 044 255 52 00
+  fax: 
+  - 044 255 44 33
+  type: at_work
+
+!oddb.org,2003/ODDB::Doctor 
+oid: 24657
+ean13: "7601000356635"
+email: 
+language: deutsch
+firstname: Ruth Elisabeth
+name: Kranz
+exam: "1994"
+praxis: true
+salutation: Frau
+title: Dr. med.
+specialities: 
+- Innere Medizin
+member: 
+addresses: 
+- !oddb.org,2003/ODDB::Address2 
+  title: Frau Dr. med.
+  name: Ruth Elisabeth Kranz
+  additional_lines: 
+  - Arztpraxis
+  address: Landstr. 342
+  location: 9495 Triesen
+  canton: 
+  fon: 
+  - 00423 392 13 13
+  fax: 
+  - 00423 392 13 00
+  type: at_praxis
+
+!oddb.org,2003/ODDB::Doctor 
+oid: 16438
+ean13: "7601000124449"
+email: iwhiteho@hin.ch
+language: deutsch
+firstname: Ian John
+name: Whitehouse
+exam: "1988"
+praxis: true
+salutation: Herrn
+title: Dr. med.
+specialities: 
+- Innere Medizin
+- Rheumatologie
+member: 
+addresses: 
+- !oddb.org,2003/ODDB::Address2 
+  title: Herrn Dr. med.
+  name: Ian John Whitehouse
+  additional_lines: 
+  - Arztpraxis
+  - Schmerzklinik Hirschgarten
+  address: "Hirschg\xE4sslein 11-15"
+  location: 4051 Basel
+  canton: 
+  fon: 
+  - 061 295 88 88
+  fax: []
+
+  type: at_praxis
+- !oddb.org,2003/ODDB::Address2 
+  title: 
+  name: Schmerzklinik Kirschgarten
+  additional_lines: 
+  - Abteilung Rheumatologie
+  address: "Hirschg\xE4sslein 11 - 15"
+  location: 4010 Basel
+  canton: 
+  fon: 
+  - 061 295 89 89
+  fax: []
+
+  type: at_work
+
+!oddb.org,2003/ODDB::Doctor 
+oid: 8219
+ean13: "7601000135162"
+email: leuthardt@datacomm.ch
+language: deutsch
+firstname: Rudolf
+name: Leuthardt
+exam: "1976"
+praxis: false
+salutation: Herrn
+title: Dr. med.
+specialities: 
+- Kinderchirurgie
+member: 
+addresses: 
+- !oddb.org,2003/ODDB::Address2 
+  title: 
+  name: Ospedale San Giovanni
+  additional_lines: 
+  - Reparto pediatria
+  address: Soleggio
+  location: 6500 Bellinzona
+  canton: 
+  fon: 
+  - 091 811 91 95
+  fax: 
+  - 091 811 87 87
+  type: at_work
+
+!oddb.org,2003/ODDB::Doctor 
+oid: 28767
+ean13: "7601000706478"
+email: 
+language: deutsch
+firstname: Rolf
+name: Gimmi
+exam: "1998"
+praxis: false
+salutation: Herrn
+title: Arzt
+specialities: 
+member: 
+addresses: []
+

@@ -169,8 +169,16 @@ module ODDB
 			end
 			def download_export(model, session)
 				link = HtmlGrid::Link.new(:download_export, model, session, self)
-				link.href = @lookandfeel.event_url(:download_export)
+				link.href = @lookandfeel._event_url(:download_export)
 				link.label = true
+				link.set_attribute('class', 'list')
+				link
+			end
+			def download_generics(model, session)
+				link = HtmlGrid::Link.new(:download_generics, 
+																	model, session, self)
+				args = {'download[generics.xls]' => 1}
+				link.href = @lookandfeel._event_url(:download_export, args)
 				link.set_attribute('class', 'list')
 				link
 			end

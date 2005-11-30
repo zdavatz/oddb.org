@@ -55,6 +55,7 @@ require	'state/user/help'
 require 'state/user/mailinglist'
 require 'state/user/passthru'
 require 'state/user/register_poweruser'
+require 'state/user/suggest_registration'
 require 'state/paypal/return'
 require 'state/paypal/ipn'
 require 'state/user/paypal_thanks'
@@ -325,14 +326,25 @@ module ODDB
 				end
 			end
 			def proceed_download
-				keys = [:download, :months]
+				keys = [:download, :months, :compression]
 				input = user_input(keys, keys) 
 				items = []
+				dir = File.expand_path('../../data/downloads', 
+					File.dirname(__FILE__))
+				compression = input[:compression]
 				if(files = input[:download])
 					files.each { |filename, val|
 						if(val)
 							item = AbstractInvoiceItem.new
-							item.text = filename
+							suffix = case compression
+							when 'compr_gz'
+								['.gz', '.tar.gz'].select { |sfx|
+									File.exist?(File.join(dir, filename + sfx))
+								}.first
+							else 
+								'.zip'
+							end
+							item.text = filename + suffix
 							item.type = :download
 							item.vat_rate = VAT_RATE
 							months = input[:months][filename]
@@ -353,12 +365,15 @@ module ODDB
 				if(items.empty?)
 					@errors.store(:download, create_error('e_no_download_selected', 
 						:download, nil))
-					return self
 				end
-				pointer = Persistence::Pointer.new(:invoice)
-				invoice = Persistence::CreateItem.new(pointer)
-				invoice.carry(:items, items)
-				State::User::RegisterDownload.new(@session, invoice)
+				if(error?)
+					self
+				else
+					pointer = Persistence::Pointer.new(:invoice)
+					invoice = Persistence::CreateItem.new(pointer)
+					invoice.carry(:items, items)
+					State::User::RegisterDownload.new(@session, invoice)
+				end
 			end
 			def proceed_poweruser
 				keys = [:days]
@@ -515,9 +530,15 @@ module ODDB
 				end
 			end
 			def new_registration
-				state = State::Admin::TransparentLogin.new(@session, @model)
-				state.desired_event = :new_registration
-				state
+				@session[:allowed] ||= []
+				item = @session[:allowed].select { |obj| 
+					obj.is_a?(ODDB::IncompleteRegistration)
+				}.first
+				unless(item)
+					pointer = Persistence::Pointer.new(:incomplete_registration)
+					item = Persistence::CreateItem.new(pointer)
+				end
+				State::User::SuggestRegistration.new(@session, item)
 			end
 			def user_input(keys=[], mandatory=[])
 				keys = [keys] unless keys.is_a?(Array)

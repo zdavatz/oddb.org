@@ -7,8 +7,7 @@ require 'view/admin/incompletepackage'
 module ODDB
 	module State
 		module Admin
-class IncompletePackage < State::Admin::Package
-	VIEW = View::Admin::IncompletePackage
+class IncompletePackage < Package
 	unless(instance_methods.include?("do_update"))
 		alias :do_update :update
 	end

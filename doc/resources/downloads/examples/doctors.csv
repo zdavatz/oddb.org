@@ -1,0 +1,13 @@
+ean13;exam;salutation;title;firstname;name;praxis;addresstype;address_name;lines;address;plz;city;canton;fon;fax;email;language;specialities
+7601000616715;1998;Herrn;Arzt;Fabrice;Dami;false;;;;;;;;;;amig@amig.ch;französisch;
+7601000044648;1990;Herrn;Dr. med.;Bernard;Reith;true;at_praxis;Bernard Reith;Cabinet médical;28, rue de Genève;1225;Chêne-Bourg;;022 349 86 86;022 349 53 11;;französisch;Psychiatrie und Psychotherapie
+;1981;Herrn;Dr. med.;Andreas;Wey;true;at_praxis;Andreas Wey;Arztpraxis,Postfach 105;Bürenstr. 2;3296;Arch;;032 679 21 20;032 679 21 93;awey@bluewin.ch;deutsch;Allgemeinmedizin
+7601000024947;1967;Herrn;Dr. med.;Paul;Héritier;false;;;;;;;;;;;französisch;Urologie
+;1986;Frau;PD Dr. med.;Sigrid;von Eckardstein;false;at_work;U S Z;Departement Frauenheilkunde,Klinik für Gynäkologie;Frauenklinikstr. 10;8091;Zürich;;044 255 52 00;044 255 44 33;sigrid.voneckardstein@usz.ch;deutsch;Gynäkologie und Geburtshilfe
+7601000356635;1994;Frau;Dr. med.;Ruth Elisabeth;Kranz;true;at_praxis;Ruth Elisabeth Kranz;Arztpraxis;Landstr. 342;9495;Triesen;;00423 392 13 13;00423 392 13 00;;deutsch;Innere Medizin
+7601000124449;1988;Herrn;Dr. med.;Ian John;Whitehouse;true;at_praxis;Ian John Whitehouse;Arztpraxis,Schmerzklinik Hirschgarten;Hirschgässlein 11-15;4051;Basel;;061 295 88 88;;iwhiteho@hin.ch;deutsch;Innere Medizin,Rheumatologie
+7601000135162;1976;Herrn;Dr. med.;Rudolf;Leuthardt;false;at_work;Ospedale San Giovanni;Reparto pediatria;Soleggio;6500;Bellinzona;;091 811 91 95;091 811 87 87;leuthardt@datacomm.ch;deutsch;Kinderchirurgie
+7601000706478;1998;Herrn;Arzt;Rolf;Gimmi;false;;;;;;;;;;;deutsch;
+7601000159366;1989;Frau;Dr. med.;Katarina;Longauer;false;at_work;Kantonsspital Aarau;Pathologisches Institut;Buchserstrasse;5001;Aarau;;062 838 41 41;;;deutsch;Pathologie
+7601000000811;1981;Frau;Dr. med.;Réna;Pippa;false;;;;;;;;;;;französisch;
+7601000054463;1967;Herrn;Dr. med.;Jean-Marie;Scholler;true;at_praxis;Jean-Marie Scholler;Cabinet médical;Hôpital de la Gruyère;1632;Riaz;;026 919 94 71;026 919 95 11;jeanmarie.scholler@freesurf.ch;französisch;Orthopädische Chirurgie und Traumatologie des Bewegungsapparates

@@ -26,12 +26,35 @@ class IncompleteSequenceInnerComposite < HtmlGrid::Composite
 	def active_sequence(model, session)
 		if((reg = @session.app.registration(model.iksnr)) \
 			&& (seq = reg.sequence(model.seqnr)))
-			View::Admin::RootSequenceComposite.new(seq, session, self)
+			if(@session.user.allowed?(seq))
+				View::Admin::RootSequenceComposite.new(seq, session, self)
+			else
+				View::Admin::SequenceComposite.new(seq, session, self)
+			end
 		end
 	end
 end
 class IncompleteSequenceForm < View::Admin::SequenceForm
 	EVENT = :update_incomplete
+=begin
+	COMPONENTS = {
+		[0,0]		=>	:iksnr,
+		[2,0]		=>	:seqnr,
+		[0,1]		=>	:name_base,
+		[2,1]		=>	:name_descr,
+		[0,2]		=>	:dose,
+		[2,2]		=>	:galenic_form,
+		[0,3]		=>	:atc_class,
+		[2,3]		=>	:atc_descr,
+		[1,4]		=>	:submit,
+	}
+=end
+	def reorganize_components
+		components.store([1,4], :submit)
+		unless(@model.is_a?(Persistence::CreateItem))
+			components.store([1,4,0], :delete_item)
+		end
+	end
 end
 class IncompleteSequenceComposite < View::Admin::RootSequenceComposite
 	COMPONENTS = {

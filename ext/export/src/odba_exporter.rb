@@ -16,10 +16,12 @@ require 'odba'
 module ODDB
 	module OdbaExporter
 		def OdbaExporter.clear
+=begin
 			Thread.new { 
 				sleep 1
 				DRb.thread.exit
 			}
+=end
 			nil
 		end
 		def OdbaExporter.compress(dir, name)
@@ -97,6 +99,15 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 					odba_ids.each { |odba_id|
 					item = ODBA.cache_server.fetch(odba_id, nil)
 					CsvExporter.dump(CsvExporter::MIGEL, item, fh)
+					ODBA.cache_server.clear
+				}
+			}
+		end
+		def OdbaExporter.export_narcotics_csv(odba_ids, dir, name)
+			safe_export(dir, name) { |fh|
+				odba_ids.each { |odba_id|
+					item = ODBA.cache_server.fetch(odba_id, nil)
+					CsvExporter.dump(CsvExporter::NARCOTIC, item, fh)
 					ODBA.cache_server.clear
 				}
 			}

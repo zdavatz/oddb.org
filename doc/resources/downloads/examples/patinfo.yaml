@@ -1,0 +1,1686 @@
+!oddb.org,2003/ODDB::Patinfo 
+oid: 2579
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  fr: !oddb.org,2003/ODDB::PatinfoDocument 
+    name: "Dolocyl\xAE"
+    company: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: NOVARTIS CONSUMER HEALTH
+      sections: []
+
+    galenic_form: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: ""
+      sections: []
+
+    effects: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Propri\xE9t\xE9s/Emploi th\xE9rapeutique"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Qu'est-ce que le Dolocyl et quand est-il utilis\xE9:\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le Dolocyl contient la substance active ibuprof\xE8ne. Celle-ci calme la douleur, exerce un effet anti-inflammatoire et abaisse la fi\xE8vre. Son effet commence le plus souvent apr\xE8s 30 minutes et dure environ 6 heures."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le Dolocyl ne doit \xEAtre pris que pendant une courte p\xE9riode (pas plus de 3 jours) pour le traitement de:"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: douleurs au niveau des articulations et des ligaments;
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: douleurs dorsales;
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "maux de t\xEAte;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: maux de dents;
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "douleurs pendant la menstruation (dysm\xE9norrh\xE9e);"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "douleurs apr\xE8s blessures (par ex. blessures de sport);"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "fi\xE8vre lors d'un \xE9tat grippal."
+          preformatted: false
+    amendments: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Compl\xE9ment d'information"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          De quoi faut-il tenir compte en dehors du traitement?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Sauf avis contraire du m\xE9decin, n'utilisez le Dolocyl que pendant une courte p\xE9riode et seulement pour le traitement des maux \xE9num\xE9r\xE9s plus haut."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si, malgr\xE9 la prise de Dolocyl, les douleurs augmentent ou si l'endroit douloureux devient rouge ou enfl\xE9, veuillez consulter votre m\xE9decin. Ces manifestations peuvent \xEAtre provoqu\xE9es par une maladie grave."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si ces douleurs n'ont pas diminu\xE9 dans un d\xE9lai de 3 jours au plus tard, veuillez l\xE0 aussi consulter votre m\xE9decin afin d'en clarifier la raison."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si \xE0 l'heure actuelle, vous suivez un traitement m\xE9dical pour une maladie grave, veuillez ne prendre le Dolocyl que sur prescription de votre m\xE9decin."
+          preformatted: false
+    contra_indications: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Contre-indications
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Quand le Dolocyl ne doit-il pas \xEAtre utilis\xE9?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le Dolocyl ne doit pas \xEAtre administr\xE9 dans les cas suivants:"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "si vous souffrez d'un ulc\xE8re gastrique duod\xE9nal;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "si vous \xEAtes asthmatique;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "si vous r\xE9agissez par une allergie \xE0 la substance active ibuprof\xE8ne ou \xE0 d'autres anti-inflammatoires (m\xE9dicaments contre les rhumatismes) ou m\xE9dicaments calmant la douleur ou abaissant la fi\xE8vre. Cette hypersensibilit\xE9 se manifeste par exemple par de l'asthme, des difficult\xE9s respiratoires, des troubles circulatoires, des tum\xE9factions de la peau et des muqueuses ou des \xE9ruptions cutan\xE9es (urticaire). Si vous pr\xE9sentez de telles r\xE9actions \xE0 l'Aspirine\xAE (acide ac\xE9tylsalicylique), \xE0 l'Alcalcyl\xAE ou autres anti-inflammatoires ou m\xE9dicaments contre les douleurs ou abaissant la fi\xE8vre, de telles manifestations peuvent aussi surgir apr\xE8s la prise de petites quantit\xE9s de Dolocyl;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "lors de troubles r\xE9naux;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "le Dolocyl ne doit \xEAtre administr\xE9 aux enfants de moins de 12 ans que sur prescription du m\xE9decin."
+          preformatted: false
+    precautions: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Pr\xE9cautions"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Quelles sont les mesures de pr\xE9caution \xE0 observer lors de la prise de Dolocyl?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dans les cas suivants, vous ne devez prendre le Dolocyl que sur prescription et sous surveillance de votre m\xE9decin:"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "si vous avez d\xE9j\xE0 eu un ulc\xE8re gastrique ou duod\xE9nal;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "si vous souffrez d'insuffisance r\xE9nale ou d'insuffisance h\xE9patique s\xE9v\xE8re;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "si vous \xEAtes sous traitement pour une maladie cardiaque, notamment en raison d'insuffisance cardiaque ou de tension art\xE9rielle \xE9lev\xE9e;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: si vous souffrez de troubles de la coagulation sanguine.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Veuillez informer votre m\xE9decin ou votre pharmacien si vous souffrez d'une autre maladie, vous \xEAtes allergique ou vous prenez d\xE9j\xE0 d'autres m\xE9dicaments (m\xEAme en autom\xE9dication!), comme des m\xE9dicaments contre le diab\xE8te (\xE0 l'exception de l'insuline), des m\xE9dicaments augmentant l'excr\xE9tion urinaire (diur\xE9tiques) ou contre l'hypertension, des anticoagulants, des m\xE9dicaments antirhumatismaux ou des autres m\xE9dicaments analg\xE9siques comme p.ex. acide ac\xE9tylsalicylique (Aspirine), certains m\xE9dicaments contre les infections (antibiotiques de la classe des quinolones) ou d'autres m\xE9dicaments contenant l'une des substances suivantes: lithium, digoxine, m\xE9thotrexate, baclof\xE8ne, ph\xE9nyto\xEFne, prob\xE9n\xE9cide ou sulfinpyrazone."
+          preformatted: false
+    pregnancy: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Grossesse/Allaitement
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Le Dolocyl peut-il \xEAtre pris pendant la grossesse ou l'allaitement?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 93
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 94
+            end: 104
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 105
+            end: -1
+          text: "Le Dolocyl ne doit \xEAtre pris que sur conseil du m\xE9decin pendant la grossesse ou l'allaitement. Important: lors de la prise de Dolocyl pendant la seconde moiti\xE9 de la grossesse, le danger d'une l\xE9sion caus\xE9e au nouveau-n\xE9 ou le danger de complications \xE0 la naissance subsiste. Pendant cette p\xE9riode, le m\xE9decin ne prescrira par cons\xE9quent le Dolocyl qu'en cas d'absolue n\xE9cessit\xE9 et sous surveillance effectu\xE9e avec soin."
+          preformatted: false
+    usage: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Posologie/Mode d'emploi
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Comment utiliser le Dolocyl?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Adultes et enfants de plus de 12 ans: 1 \xE0 2 comprim\xE9s toutes les 4 \xE0 6 heures avec un peu de liquide."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Sauf avis contraire du m\xE9decin, ne prenez toutefois pas plus de 6 comprim\xE9s en l'espace de 24 heures."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Lors de douleurs menstruelles, il est recommand\xE9 de commencer le traitement avec 2 comprim\xE9s d\xE8s l'apparition des premi\xE8res douleurs."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Veuillez vous conformer au dosage figurant sur la notice jointe \xE0 l'emballlage ou prescrit par votre m\xE9decin. Adressez-vous \xE0 votre m\xE9decin ou \xE0 votre pharmacien lorsque vous pensez que l'action de ce m\xE9dicament est trop faible ou au contraire trop forte."
+          preformatted: false
+    unwanted_effects: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Effets ind\xE9sirables"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Quels effets ind\xE9sirables le Dolocyl peut-il avoir?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Il peut se produire occasionnellement des troubles gastro-intestinaux, tels que des naus\xE9es, des aigreurs d'estomac, des maux d'estomac ou des diarrh\xE9es le cas \xE9ch\xE9ant."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le Dolocyl peut provoquer des irritations des muqueuses de l'estomac et dans de rares cas entra\xEEner des ulc\xE8res gastriques. Cela peut aboutir \xE0 une h\xE9morragie gastrointestinale."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le Dolocyl peut entra\xEEner des r\xE9actions d'hypersensibilit\xE9 de la peau et des muqueuses, notamment chez des patients souffrant d'asthme, pr\xE9sentant une hypersensibilit\xE9 \xE0 d'autres anti-inflammatoires ou \xE0 des m\xE9dicaments calmant la douleur ou abaissant la fi\xE8vre de m\xEAme que chez des patients souffrant d'une urticaire chronique."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si le patient souffre d\xE9j\xE0 de troubles r\xE9naux s\xE9v\xE8res, cet \xE9tat peut soudainement s'aggraver avec la prise de Dolocyl. Si vous souffrez d'une maladie des reins, vous ne devez utiliser le Dolocyl que sur avis du m\xE9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "En particulier, lors d'une diminution de la fonction cardiaque ou en cas d'hypertension, le Dolocyl peut conduire \xE0 une accumulation d'eau dans les tissus (oed\xE8mes) et, en raison d'un engorgement des poumons, entra\xEEner des difficult\xE9s respiratoires. Si vous \xEAtes trait\xE9 pour des troubles cardiaques, veuillez n'utiliser le Dolocyl que sur avis du m\xE9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "S'il se produit, sous Dolocyl, des maux de gorge (angine), une forte fi\xE8vre et \xE9ventuellement aussi un gonflement des ganglions lymphatiques de la r\xE9gion du cou (tableau clinique tr\xE8s rarement observ\xE9), de m\xEAme que des douleurs dans le haut de l'abdomen et/ou une coloration noire des selles, il faut interrompre le traitement et consulter le m\xE9decin sans retard."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolocyl peut provoquer dans de rares cas de violents maux de t\xEAte, accompagn\xE9s de naus\xE9es, de vomissements ou de raideur dans la nuque; dans ce cas, il faut alors interrompre le traitement et consulter imm\xE9diatement le m\xE9decin."
+          preformatted: false
+    general_advice: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Remarques particuli\xE8res"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          De quoi faut-il en outre tenir compte?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "M\xE9dicament \xE0 tenir hors de la port\xE9e des enfants!"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Conserver l'emballage dans un endroit frais et sec.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le Dolocyl est susceptible de modifier votre capacit\xE9 de r\xE9action, ce dont il faut tenir compte lors de la conduite d'un v\xE9hicule ou de l'utilisation d'unemachine."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le m\xE9dicament ne doit \xEAtre utilis\xE9 que jusqu'\xE0 la date indiqu\xE9e sur l'emballage par \xABEXP\xBB."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Votre m\xE9decin ou votre pharmacien, qui dispose de l'information d\xE9taill\xE9e destin\xE9e aux professions m\xE9dicales, vous donnera de plus amples informations au sujet de ce produit."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le principe actif ibuprof\xE8ne est aussi pr\xE9sent dans certains m\xE9dicaments antirhumatismaux. Veuillez observer les donn\xE9es correspondantes."
+          preformatted: false
+    composition: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Composition
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Substance active:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "200\xA0mg d'ibuprof\xE8ne par comprim\xE9 film\xE9."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Excipients:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "colorant E\xA0127 (\xE9rythrosine)."
+          preformatted: false
+    packages: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Mode de vente/Pr\xE9sentation"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dans les pharmacies sans ordonnance m\xE9dicale."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 16
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 17
+            end: 34
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 35
+            end: -1
+          text: "Bo\xEEte de 10 ou 20 comprim\xE9s film\xE9s."
+          preformatted: false
+    distribution: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Distributeur
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Novartis Consumer Health Schweiz SA, 3001 Berne.
+          preformatted: false
+    date: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Mise \xE0 jour de l'information"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Avril 2000.
+          preformatted: false
+  de: !oddb.org,2003/ODDB::PatinfoDocument 
+    name: "Dolocyl\xAE"
+    company: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: NOVARTIS CONSUMER HEALTH
+      sections: []
+
+    galenic_form: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: ""
+      sections: []
+
+    effects: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Eigenschaften/Verwendungszweck
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Was ist Dolocyl und wann wird es angewendet?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolocyl enth\xE4lt den Wirkstoff Ibuprofen. Dieser hat schmerzlindernde, entz\xFCndungshemmende und fiebersenkende Eigenschaften. Die Wirkung tritt meist innert 30 Minuten ein und h\xE4lt etwa 6 Stunden an."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolocyl kommt in Frage zur kurzfristigen (nicht mehr als 3 Tage) Behandlung von:"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Schmerzen im Bereich von Gelenken und B\xE4ndern;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "R\xFCckenschmerzen;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Kopfschmerzen;
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Zahnschmerzen;
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Schmerzen w\xE4hrend der Monatsblutung (Dysmenorrhoe);"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Schmerzen nach Verletzungen (z.B. Sportverletzungen);
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Fieber bei grippalen Zust\xE4nden."
+          preformatted: false
+    amendments: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Erg\xE4nzungen"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Was sollte dazu beachtet werden?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Verwenden Sie, ausser auf Anweisung des Arztes, Dolocyl nur kurzfristig und nur zur Behandlung von Beschwerden, die oben aufgef\xFChrt sind."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Falls die Beschwerden trotz Einnahme von Dolocyl zunehmen oder falls die schmerzende Stelle rot oder geschwollen wird, konsultieren Sie Ihren Arzt. Eine ernsthafte Krankheit kann die Ursache sein.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Auch wenn die Beschwerden nicht sp\xE4testens innert 3 Tagen bessern, sollten Sie Ihren Arzt konsultieren, damit der Grund abgekl\xE4rt werden kann."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Wenn Sie gegenw\xE4rtig wegen einer ernsthaften Krankheit in \xE4rztlicher Behandlung stehen, sollten Sie Dolocyl nur auf Verordnung Ihres Arztes einnehmen."
+          preformatted: false
+    contra_indications: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Kontraindikationen
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Wann darf Dolocyl nicht angewendet werden?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "In folgenden Situationen d\xFCrfen Sie Dolocyl nicht anwenden:"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "wenn Sie an einem Magen- oder Zw\xF6lffingerdarmgeschw\xFCr leiden;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: wenn Sie an Asthma leiden;
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "wenn Sie \xFCberempfindlich sind auf den Wirkstoff Ibuprofen oder auf andere Entz\xFCndungshemmer (Rheumamittel) oder Schmerz- und Fiebermittel. Eine solche \xDCberempfindlichkeit \xE4ussert sich z.B. durch Asthma, Atemnot, Kreislaufbeschwerden, Schwellungen der Haut und Schleimh\xE4ute oder Hautausschl\xE4ge (Nesselfieber). Wenn Sie solche Reaktionen auf Aspirin\xAE (Acetylsalicyls\xE4ure), Alcalcyl\xAE oder andere Entz\xFCndungshemmer oder Schmerz- und Fiebermittel durchgemacht haben, k\xF6nnen die gleichen Erscheinungen auch nach Einnahme kleiner Mengen von Dolocyl auftreten;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: bei Nierenleiden;
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Kinder unter 12 Jahren d\xFCrfen nur auf \xE4rztliche Verordnung mit Dolocyl behandelt werden."
+          preformatted: false
+    precautions: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Vorsichtsmassnahmen
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Wann ist bei der Anwendung von Dolocyl Vorsicht geboten?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "In folgenden Situationen d\xFCrfen Sie Dolocyl nur auf Verordnung und unter \xDCberwachung Ihres Arztes einnehmen:"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "wenn Sie fr\xFCher ein Magen- oder Zw\xF6lffingerdarmgeschw\xFCr durchgemacht haben;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: wenn Sie ein Nierenleiden oder ein ernsthaftes Leberleiden haben;
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "wenn Sie wegen einer Herzkrankheit, besonders wegen Herzschw\xE4che oder Bluthochdruck, behandelt werden;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "wenn Sie an einer St\xF6rung der Blutgerinnung leiden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Informieren Sie Ihren Arzt oder Apotheker, wenn Sie an anderen Krankheiten leiden, Allergien haben oder andere Medikamente (auch selbstgekaufte!) einnehmen, wie z.B. Medikamente zur Behandlung der Zuckerkrankheit mit Ausnahme von Insulin), Medikamente zur Erh\xF6hung der Urinausscheidung (harntreibende Mittel) oder zur Behandlung von Bluthochdruck, gerinnungshemmende Medikamente (Antikoagulantien), Rheumamittel oder andere Schmerzmittel wie z.B. Acetylsalicyls\xE4ure (Aspirin), gewisse Medikamente zur Behandlung von Infektionen (Chinolon-Antibiotika) oder Medikamente mit einer der folgenden Substanzen: Lithium, Digoxin, Methotrexat, Baclofen, Phenytoin, Probenecid oder Sulfinpyrazon."
+          preformatted: false
+    pregnancy: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Schwangerschaft/Stillzeit
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Darf Dolocyl w\xE4hrend einer Schwangerschaft oder w\xE4hrend der Stillzeit eingenommen werden?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 102
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 103
+            end: 111
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 112
+            end: -1
+          text: "In der Schwangerschaft oder Stillzeit sollten Sie Dolocyl nur nach R\xFCcksprache mit Ihrem Arzt anwenden. Wichtig: Bei Anwendung in der zweiten Schwangerschaftsh\xE4lfte besteht die Gefahr einer Sch\xE4digung des Neugeborenen oder die Gefahr von Geburtskomplikationen. In dieser Zeit wird der Arzt Dolocyl deshalb nur verordnen, wenn es unbedingt n\xF6tig ist und unter besonders sorgf\xE4ltiger Kontrolle."
+          preformatted: false
+    usage: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Dosierung/Anwendung
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Wie verwenden Sie Dolocyl?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Erwachsene und Kinder \xFCber 12 Jahren: 1 bis 2 Tabletten alle 4 bis 6 Stunden mit etwas Fl\xFCssigkeit einnehmen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Nehmen Sie aber nicht mehr als 6 Tabletten innerhalb von 24 Stunden, es sei denn auf Verordnung des Arztes.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Bei Schmerzen w\xE4hrend der Monatsblutung wird empfohlen, die Behandlung bereits bei ersten Anzeichen der Beschwerden mit 2 Tabletten zu beginnen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Halten Sie sich an die in der Packungsbeilage angegebene oder vom Arzt verschriebene Dosierung. Wenn Sie glauben, das Medikament wirke zu schwach oder zu stark, so sprechen Sie mit Ihrem Arzt oder Apotheker.
+          preformatted: false
+    unwanted_effects: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Unerw\xFCnschte Wirkungen"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Welche Nebenwirkungen kann Dolocyl haben?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Gelegentlich kommt es zu Magen-Darm-Beschwerden wie \xDCbelkeit, Sodbrennen, Magenweh oder allenfalls Durchfall."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolocyl kann die Magenschleimhaut reizen und in seltenen F\xE4llen zu Magengeschw\xFCren f\xFChren. Dies kann eine Magen-Darm-Blutung zur Folge haben."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolocyl kann zu \xDCberempfindlichkeitsreaktionen der Haut und Schleimh\xE4ute f\xFChren, dies besonders bei Patienten mit Asthma, mit \xDCberempfindlichkeit auf andere Entz\xFCndungshemmer oder Schmerz- und Fiebermittel sowie bei Patienten mit chronischem Nesselfieber."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Eine vorbestehende ernsthafte St\xF6rung der Nierenfunktion kann sich unter Dolocyl \xFCberraschend verschlechtern. Wenn Sie an einer Nierenkrankheit leiden, d\xFCrfen Sie Dolocyl deshalb nur auf Anweisung des Arztes einnehmen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Besonders bei verminderter Herzleistung oder Bluthochdruck kann Dolocyl zu vermehrter Ansammlung von Wasser in den Geweben (\xD6demen) und wegen Lungenstauung zu Atemnot f\xFChren. Wenn Sie wegen eines Herzleidens behandelt werden, sollten Sie Dolocyl nur auf Anweisung des Arztes anwenden. Sollten w\xE4hrend der Behandlung Halsbeschwerden (Angina), hohes Fieber und eventuell auch eine Anschwellung der Lymphknoten in der Halsregion auftreten (ein sehr selten zu beobachtendes Krankheitsbild) sowie bei Schmerzen im Oberbauch und/oder Schwarzf\xE4rbung des Stuhls, ist das Medikament abzusetzen und sofort der Arzt aufzusuchen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Sehr selten sind nach der Einnahme von Ibuprofen starke Kopfschmerzen, verbunden mit \xDCbelkeit, Erbrechen und Nackensteifigkeit, aufgetreten; in dieser Situation ist das Arzneimittel abzusetzen und sofort der Arzt aufzusuchen."
+          preformatted: false
+    general_advice: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Allgemeine Hinweise
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Was ist ferner zu beachten?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Medikament vor Kinderhand gesch\xFCtzt aufbewahren!"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Die Packung ist vor W\xE4rme und Feuchtigkeit zu sch\xFCtzen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolocyl kann das Reaktionsverm\xF6gen ver\xE4ndern, so dass die Teilnahme am Strassenverkehr oder das Bedienen von Maschinen beeintr\xE4chtigt ist."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Das Medikament darf nur bis zu dem auf dem Beh\xE4lter mit \xABEXP\xBB bezeichneten Datum verwendet werden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Weitere Ausk\xFCnfte erteilt Ihnen Ihr Arzt oder Apotheker, der \xFCber die ausf\xFChrliche Fachinformation verf\xFCgt."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Der Wirkstoff Ibuprofen ist auch in gewissen Rheumamitteln vorhanden.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Beachten Sie die entsprechenden Angaben.
+          preformatted: false
+    composition: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Zusammensetzung
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Wirkstoff:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "200\xA0mg Ibuprofen pro Filmtablette."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Hilfsstoffe:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Farbstoff E\xA0127 (Erythrosin)."
+          preformatted: false
+    packages: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Verkaufsart/Packungen
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "In Apotheken ohne \xE4rztliches Rezept."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 27
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 28
+            end: 41
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 42
+            end: -1
+          text: "Faltschachteln zu 10 und 20\xA0Filmtabletten."
+          preformatted: false
+    distribution: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Vertriebsfirma
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Novartis Consumer Health Schweiz AG, 3001 Bern.
+          preformatted: false
+    date: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Stand der Information
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: April 2000.
+          preformatted: false
+
+!oddb.org,2003/ODDB::Patinfo 
+oid: 1273
+descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+  fr: !oddb.org,2003/ODDB::PatinfoDocument 
+    name: "Dolo Target\xAE Gel"
+    company: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: WHITEHALL-ROBINS
+      sections: []
+
+    galenic_form: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: ""
+      sections: []
+
+    effects: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Propri\xE9t\xE9s/Emploi th\xE9rapeutique"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Qu'est-ce que Dolo Target Gel et quand est-il appliqu\xE9?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolo Target Gel poss\xE8de des propri\xE9t\xE9s anti-inflammatoires et analg\xE9siques. Il est appliqu\xE9 pour le traitement des contusions, des \xE9longations et des entorses encourues lors de la pratique d'un sport ou pour d'autres blessures, ainsi que contractures musculaires, raideurs de la nuque de l'\xE9pole, inflammatoires des articulations, des tendons et des ligaments. Traitement d'appoint local des affections rhumatismales d\xE9g\xE9neratives (arthrose)."
+          preformatted: false
+    amendments: 
+    contra_indications: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Contre-indications
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Quand Dolo Target Gel ne doit-il pas \xEAtre utilis\xE9?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "En cas d'hypersensibilit\xE9 connue \xE0 la substance active, Felbinac ou aux autres analg\xE9siques et antiphlogistiques (anti-inflammatoires) comme par exemple l'acide ac\xE9tylsalicylique."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Chez les enfants.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolo Target Gel ne peut pas \xEAtre appliqu\xE9 sur des plaies ou sur des zones cutan\xE9es ouvertes ou sur la peau ecz\xE9mateuse."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Il faut \xE9viter le contact des yeux et des muqueuses avec la pr\xE9paration. Dolo Target Gel ne sera pas appliqu\xE9 sous un pansement de protection \xE9tanche (pansement occlusif)."
+          preformatted: false
+    precautions: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Pr\xE9cautions"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Quelles sont les mesures de pr\xE9caution \xE0 observer lors de l'application de Dolo Target Gel?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "La pr\xE9paration ne peut \xEAtre appliqu\xE9e que pendant une p\xE9riode de courte dur\xE9e (maximum 4 semaines) et sur de grandes surfaces n'aura lieu qu'avec l'autorisation du m\xE9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Veuillez informer votre m\xE9decin ou votre pharmacien si vous souffrez d'une autre maladie, vous \xEAtes allergique, vous prenez d\xE9j\xE0 d'autres m\xE9dicaments m\xEAme en autom\xE9dication \xE0 usage interne ou externe!"
+          preformatted: false
+    pregnancy: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Grossesse/Allaitement
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Dolo Target Gel peut-il \xEAtre utilis\xE9 pendant la grossesse ou la p\xE9riode de lactation?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolo Target Gel ne sera pas appliqu\xE9 au cours de la grossesse ou pendant la p\xE9riode de lactation."
+          preformatted: false
+    usage: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Posologie/Mode d'emploi
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Comment utiliser Dolo Target Gel?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'application de Dolo Target Gel suivie d'un l\xE9ger massage se fera sur les zones douloureuses. On appliquera 1-2\xA0g de gel (un trait de 3-6\xA0cm) 2-4 fois par jour."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Ind\xE9pendamment de l'\xE9tendue de la surface \xE0 traiter, on ne d\xE9passera pas une dose journali\xE8re de 20\xA0g de gel."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Ne changez pas le dosage prescrit de votre propre initiative. Adressez-vous \xE0 votre m\xE9decin ou \xE0 votre pharmacien lorsque vous pensez que l'efficacit\xE9 de votre m\xE9dicament est trop faible ou au contraire trop forte."
+          preformatted: false
+    unwanted_effects: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Effets ind\xE9sirables"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Quels effets ind\xE9sirables Dolo Target Gel peut-il avoir?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Chez environ 2% des patients, on a rapport\xE9 du prurit local, des dermatities et des oed\xE8mes. Ces affections r\xE9gressent normalement \xE0 l'arr\xEAt du traitement. Dans des cas isol\xE9s, il est possible que des crises d'asthme se d\xE9clenchent chez des patients pr\xE9dispos\xE9s. Au cas o\xF9 l'un des effets secondaires suivants devait appara\xEEtre, interrompez le traitement avec Dolo Target Gel et informez imm\xE9diatement votre m\xE9decin: importante \xE9ruption cutan\xE9e, respiration haletante, essoufflement ou tum\xE9faction du visage."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si Dolo Target Gel est ing\xE9r\xE9 par m\xE9garde par des enfants, avertissez-en votre m\xE9decin."
+          preformatted: false
+    general_advice: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Remarques particuli\xE8res"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          De quoi faut-il en outre tenir compte?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolo Target Gel est \xE0 conserver hors de la port\xE9e des enfants."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le m\xE9dicament ne peut \xEAtre utilis\xE9 au-del\xE0 de la date imprim\xE9e avec \xABEXP\xBB sur le r\xE9cipient."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Ne pas stocker \xE0 une temp\xE9rature sup\xE9rieure \xE0 25\xA0\xB0C."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Des informations compl\xE9mentaires peuvent \xEAtre obtenues aupr\xE8s de votre m\xE9decin ou de votre pharmacien qui disposent d'une information scientifique d\xE9taill\xE9e."
+          preformatted: false
+    composition: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Composition
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le Dolo Target Gel contient 30\xA0mg de Felbinac pour 1\xA0g de gel. Le composant de base du gel est exempt de mati\xE8re grasse et contient de l'alcool."
+          preformatted: false
+    packages: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Mode de vente/Pr\xE9sentation"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolo Target Gel est disponible dans les pharmacies en tubes de 50 et 100\xA0g, sans ordonnance m\xE9dicale."
+          preformatted: false
+    distribution: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Distributeur
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Whitehall-Robins AG, 6301 Zoug.
+          preformatted: false
+    date: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Mise \xE0 jour de l'information"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Mai 1999.
+          preformatted: false
+  de: !oddb.org,2003/ODDB::PatinfoDocument 
+    name: "Dolo Target\xAE Gel"
+    company: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: WHITEHALL-ROBINS
+      sections: []
+
+    galenic_form: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: ""
+      sections: []
+
+    effects: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Eigenschaften/Verwendungszweck
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Was ist Dolo Target Gel und wann wird es angewendet?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolo Target Gel besitzt entz\xFCndungshemmende und schmerzlindernde Eigenschaften. Es wird zur Behandlung von Prellungen, Zerrungen und Verstauchungen bei Sport- oder anderen Verletzungen sowie von Muskelverspannungen, Nacken- und Schultersteife, Hexenschuss, Entz\xFCndungen der Sehnen und Sehnenscheiden, B\xE4nder und Gelenke eingesetzt. Lokale unterst\xFCtzende Behandlung von degenerativen rheumatischen Erkrankungen (Arthrose)."
+          preformatted: false
+    amendments: 
+    contra_indications: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Kontraindikationen
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Wann darf Dolo Target Gel nicht angewendet werden?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Bei bekannter \xDCberempfindlichkeit gegen den Wirkstoff Felbinac oder andere Schmerz- und Rheumamittel (z.B. Acetylsalicyls\xE4ure)."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Bei Kindern.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolo Target Gel darf nicht auf Wunden, offene Hautstellen oder ekzemat\xF6se Haut aufgetragen werden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Augen und Schleimh\xE4ute d\xFCrfen nicht mit dem Pr\xE4parat in Ber\xFChrung kommen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Dolo Target Gel sollte nicht unter einem luftdichten Schutzverband (Okklusivverband) angewendet werden.
+          preformatted: false
+    precautions: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Vorsichtsmassnahmen
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Wann ist bei der Anwendung mit Dolo Target Gel Vorsicht geboten?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Das Pr\xE4parat darf nur kurzfristig (maximal 4 Wochen) und ohne Befragen des Arztes nicht grossfl\xE4chig angewendet werden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Informieren Sie Ihren Arzt oder Apotheker, wenn Sie an anderen Krankheiten leiden, Allergien haben oder andere Medikamente (auch selbstgekaufte) einnehmen oder \xE4usserlich anwenden!"
+          preformatted: false
+    pregnancy: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Schwangerschaft/Stillzeit
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Darf Dolo Target Gel w\xE4hrend der Schwangerschaft oder in der Stillzeit angewendet werden?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolo Target Gel sollte w\xE4hrend der Schwangerschaft und Stillzeit nicht angewendet werden."
+          preformatted: false
+    usage: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Dosierung/Anwendung
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Wie verwenden Sie Dolo Target Gel?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolo Target Gel ist auf die schmerzenden Partien aufzutragen und leicht einzumassieren. Die Anwendung von 1-2\xA0g Gel (ca. 3-6\xA0cm Gelstrang) kann 2 bis 4mal t\xE4glich erfolgen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Unabh\xE4ngig von der Gr\xF6sse der zu behandelnden Fl\xE4che sollte eine Tagesdosis von 20\xA0g Gel nicht \xFCberschritten werden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "\xC4ndern Sie nicht von sich aus die vorgeschriebene Dosierung. Wenn Sie glauben, das Medikament wirke zu schwach oder zu stark, so sprechen Sie mit Ihrem Arzt oder Apotheker."
+          preformatted: false
+    unwanted_effects: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Unerw\xFCnschte Wirkungen"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Welche Nebenwirkungen kann Dolo Target Gel haben?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Bei ungef\xE4hr 2% der Patienten wurden \xFCber leichte, lokale Juckreize, Hauterkrankungen und Wasseransammlungen in den Gef\xE4ssen berichtet. Bei Absetzen der Behandlung bilden sich diese Erkrankungen normalerweise wieder zur\xFCck. Vereinzelt ist bei entsprechend veranlagten Patienten eine Ausl\xF6sung von Asthmaanf\xE4llen m\xF6glich. Falls eine der nachfolgenden Nebenwirkungen auftreten sollte, beenden Sie die Behandlung mit Dolo Target Gel und informieren Sie sofort Ihren Arzt: starker Hautausschlag, keuchende Atmung, Kurzatmigkeit oder Schwellung im Gesicht."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Sollte Dolo Target Gel versehentlich z.B. von Kindern eingenommen werden, so ist der Arzt zu informieren.
+          preformatted: false
+    general_advice: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Allgemeine Hinweise
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Was ist ferner zu beachten?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Dolo Target Gel ist ausserhalb der Reichweite von Kindern aufzubewahren.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Das Medikament darf nur bis zu dem auf dem Beh\xE4ltnis mit \xABEXP\xBB angegebenen Datum verwendet werden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Nicht \xFCber 25\xA0\xB0C aufbewahren."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Weitere Ausk\xFCnfte erteilt Ihnen Ihr Arzt oder Apotheker, der \xFCber die ausf\xFChrliche Fachinformation verf\xFCgt."
+          preformatted: false
+    composition: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Zusammensetzung
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolo Target Gel enth\xE4lt pro 1 g Gel 30\xA0mg Felbinac."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Die Gelgrundlage ist fettfrei und enth\xE4lt Alkohol."
+          preformatted: false
+    packages: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Verkaufsart/Packungen
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dolo Target Gel ist in Tuben zu 50 und 100\xA0g in Apotheken ohne \xE4rztliches Rezept erh\xE4ltlich."
+          preformatted: false
+    distribution: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Vertriebsfirma
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Whitehall-Robins AG, 6301 Zug.
+          preformatted: false
+    date: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Stand der Information
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Mai 1999.
+          preformatted: false
+
