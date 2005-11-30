@@ -15,51 +15,15 @@ require 'tmail'
 module ODDB
 	module State
 		module Admin
-class Sequence < State::Admin::Global
-	RECIPIENTS = []
-	VIEW = View::Admin::RootSequence
-	PDF_DIR = File.expand_path('../../../doc/resources/patinfo/', File.dirname(__FILE__))
-	def assign_patinfo
-		if(@model.has_patinfo?)
-			State::Admin::AssignPatinfo.new(@session, @model)
-		else
-			State::Admin::AssignDeprivedSequence.new(@session, @model)
-		end
-	end	
-	def atc_request
-		if((company = @model.company) && (addr = company.regulatory_email))
-			lookandfeel = @session.lookandfeel
-			mail = TMail::Mail.new
-			mail.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
-			mail.to = [addr]
-			mail.from = MAIL_FROM
-			mail.subject = "#{@model.name_base} #{@model.iksnr}"
-			mail.date = Time.now
-			mail.body = [
-				lookandfeel.lookup(:atc_request_email),
-				lookandfeel.lookup(:name) + ": " + @model.name_base,
-				lookandfeel.lookup(:registration) + ": " + @model.iksnr,
-				lookandfeel.lookup(:package) + ": " \
-					+ @model.packages.keys.join(","),
-				lookandfeel._event_url(:resolve, {:pointer => @model.pointer}),
-				nil, 
-				lookandfeel.lookup(:thanks_for_cooperation),
-			].join("\n")
-			mail['User-Agent'] = 'ODDB Download'
-			Net::SMTP.start(SMTP_SERVER) { |smtp|
-				smtp.sendmail(mail.encoded, SMTP_FROM, [addr] + RECIPIENTS)
-			}
-			@model.atc_request_time = Time.now
-			@model.odba_isolated_store
-		end
-		self
-	end
+module SequenceMethods
 	def delete
 		registration = @model.parent(@session.app) 
-		ODBA.batch {
-			@session.app.delete(@model.pointer)
-		}
-		State::Admin::Registration.new(@session, registration)
+		if(klass = resolve_state(registration.pointer))
+			ODBA.transaction {
+				@session.app.delete(@model.pointer)
+			}
+			klass.new(@session, registration)
+		end
 	end
 	def new_active_agent
 		pointer = @session.user_input(:pointer)
@@ -165,6 +129,47 @@ class Sequence < State::Admin::Global
 			@model = @session.app.update(@model.pointer, input)
 		}
 		newstate
+	end
+end
+class Sequence < State::Admin::Global
+	RECIPIENTS = []
+	VIEW = View::Admin::RootSequence
+	PDF_DIR = File.expand_path('../../../doc/resources/patinfo/', File.dirname(__FILE__))
+	include SequenceMethods
+	def assign_patinfo
+		if(@model.has_patinfo?)
+			State::Admin::AssignPatinfo.new(@session, @model)
+		else
+			State::Admin::AssignDeprivedSequence.new(@session, @model)
+		end
+	end	
+	def atc_request
+		if((company = @model.company) && (addr = company.regulatory_email))
+			lookandfeel = @session.lookandfeel
+			mail = TMail::Mail.new
+			mail.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
+			mail.to = [addr]
+			mail.from = MAIL_FROM
+			mail.subject = "#{@model.name_base} #{@model.iksnr}"
+			mail.date = Time.now
+			mail.body = [
+				lookandfeel.lookup(:atc_request_email),
+				lookandfeel.lookup(:name) + ": " + @model.name_base,
+				lookandfeel.lookup(:registration) + ": " + @model.iksnr,
+				lookandfeel.lookup(:package) + ": " \
+					+ @model.packages.keys.join(","),
+				lookandfeel._event_url(:resolve, {:pointer => @model.pointer}),
+				nil, 
+				lookandfeel.lookup(:thanks_for_cooperation),
+			].join("\n")
+			mail['User-Agent'] = 'ODDB Download'
+			Net::SMTP.start(SMTP_SERVER) { |smtp|
+				smtp.sendmail(mail.encoded, SMTP_FROM, [addr] + RECIPIENTS)
+			}
+			@model.atc_request_time = Time.now
+			@model.odba_isolated_store
+		end
+		self
 	end
 	private
 	def store_slate

@@ -12,40 +12,47 @@ require 'state/hospitals/hospital'
 
 module ODDB
 	module State
+		module Companies
+class Global < State::Global; end
+class Company < Global; end
+class UserCompany < Company; end
+class RootCompany < UserCompany; end
+		end
+		module Substances
+class Global < State::Global; end
+class Substance < Global; end
+class Substances < Global; end
+class EffectiveSubstances < Substances; end
+		end
 		module Admin
-class State::Admin::ActiveAgent < State::Admin::Global; end
-class State::Admin::AddressSuggestion < State::Admin::Global; end
-class State::Admin::AssignDeprivedSequence < State::Admin::Global; end
-class State::Admin::AtcClass < State::Admin::Global; end
-class State::Companies::Company < State::Companies::Global; end
-class State::Companies::UserCompany < State::Companies::Company; end
-class State::Companies::RootCompany < State::Companies::UserCompany; end
-class State::Admin::Addresses < State::Admin::Global; end
-class State::Admin::GalenicForm < State::Admin::Global; end
-class State::Admin::GalenicGroup < State::Admin::Global; end
-class State::Admin::GalenicGroups < State::Admin::Global; end
-class State::Admin::OrphanedFachinfos < State::Admin::Global; end
-class State::Admin::OrphanedFachinfoAssign < State::Admin::Global; end
-class State::Admin::OrphanedPatinfo < State::Admin::Global; end
-class State::Admin::OrphanedPatinfos < State::Admin::Global; end
-class State::Admin::Package < State::Admin::Global; end
-class State::Admin::PatinfoDeprivedSequences < State::Admin::Global; end
-class State::Admin::Registration < State::Admin::Global; end
-class State::Admin::Sequence < State::Admin::Global; end
-class State::Admin::SlEntry < State::Admin::Global; end
-class State::Admin::PatinfoStatsCommon < State::Admin::Global; end
-class State::Admin::PatinfoStats < State::Admin::PatinfoStatsCommon; end
-class State::Admin::Sponsor < State::Admin::Global; end
-class State::Substances::Substance < State::Substances::Global; end
-class State::Substances::Substances < State::Substances::Global; end
-class State::Substances::EffectiveSubstances < State::Substances::Substances; end
-class State::Admin::IncompleteRegs < State::Admin::Global; end
-class State::Admin::IncompleteReg < State::Admin::Registration; end
-class State::Admin::IncompleteSequence < State::Admin::Sequence; end
-class State::Admin::IncompletePackage < State::Admin::Package; end
-class State::Admin::IncompleteActiveAgent < State::Admin::ActiveAgent; end
-class State::Admin::Indication < State::Admin::Global; end
-class State::Admin::Indication < State::Admin::Global; end
+class Global < State::Global; end
+class ActiveAgent < Global; end
+class Addresses < Global; end
+class AddressSuggestion < Global; end
+class AssignDeprivedSequence < Global; end
+class AtcClass < Global; end
+class GalenicForm < Global; end
+class GalenicGroup < Global; end
+class GalenicGroups < Global; end
+class IncompleteRegs < Global; end
+class OrphanedFachinfos < Global; end
+class OrphanedFachinfoAssign < Global; end
+class OrphanedPatinfo < Global; end
+class OrphanedPatinfos < Global; end
+class Package < Global; end
+class PatinfoDeprivedSequences < Global; end
+class Registration < Global; end
+class Sequence < Global; end
+class SlEntry < Global; end
+class PatinfoStatsCommon < Global; end
+class PatinfoStats < PatinfoStatsCommon; end
+class Sponsor < Global; end
+class SuggestReg < Registration; end
+class IncompleteReg < Registration; end
+class IncompleteSequence < Sequence; end
+class IncompleteActiveAgent < ActiveAgent; end
+class IncompletePackage < Package; end
+class Indication < Global; end
 module Root
 	include State::Admin::User
 	RESOLVE_STATES = {

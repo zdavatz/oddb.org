@@ -7,17 +7,13 @@ require 'view/admin/package'
 module ODDB
 	module State
 		module Admin
-class Package < State::Admin::Global
-	VIEW = View::Admin::RootPackage
+module PackageMethods
 	def delete
 		sequence = @model.parent(@session.app) 
-		@session.app.delete(@model.pointer)
-		State::Admin::Sequence.new(@session, sequence)
-	end
-	def new_item
-		item = Persistence::CreateItem.new(@model.pointer + [:sl_entry])
-		item.carry(:limitation, false)
-		State::Admin::SlEntry.new(@session, item)
+		if(klass = resolve_state(sequence.pointer))
+			@session.app.delete(@model.pointer)
+			klass.new(@session, sequence)
+		end
 	end
 	def update
 		if(@model.is_a? Persistence::CreateItem)
@@ -55,6 +51,15 @@ class Package < State::Admin::Global
 			}
 		end
 		self
+	end
+end
+class Package < State::Admin::Global
+	include PackageMethods
+	VIEW = View::Admin::RootPackage
+	def new_item
+		item = Persistence::CreateItem.new(@model.pointer + [:sl_entry])
+		item.carry(:limitation, false)
+		State::Admin::SlEntry.new(@session, item)
 	end
 end
 class CompanyPackage < State::Admin::Package

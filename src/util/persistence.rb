@@ -308,8 +308,7 @@ Grammar OddbSize
 				Pointer.new(*dir)
 			end
 			def ==(other)
-				other.is_a?(Pointer) \
-					&& @directions == other.directions
+				eql?(other)
 			end
 			def hash
 				to_s.hash

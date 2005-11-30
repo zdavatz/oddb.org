@@ -33,6 +33,8 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[2,7]		=>	:price_public,
 		[0,8]		=>	:feedback_label,
 		[1,8]		=>	:feedback,
+		[2,8]		=>	:narcotic_label,
+		[3,8]		=>	:narcotic,
 	}
 	CSS_MAP = {
 		[0,0,4,9]	=>	'list',
@@ -46,6 +48,7 @@ class PackageInnerComposite < HtmlGrid::Composite
 		:patinfo_label	=> HtmlGrid::LabelText,
 		:fachinfo_label	=> HtmlGrid::LabelText,
 		:feedback_label	=> HtmlGrid::LabelText,
+		:narcotic_label	=> HtmlGrid::LabelText,
 	}
 	def init
 		if(@model.sl_entry)

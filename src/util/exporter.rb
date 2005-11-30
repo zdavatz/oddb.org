@@ -91,10 +91,10 @@ module ODDB
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
-		def export_meddrugs_xls(date = Date.today)
+		def export_swissdrug_xls(date = Date.today)
 			plug = OuwerkerkPlugin.new(@app)
 			plug.export_xls
-			name = 'meddrugs-update.xls'
+			name = 'swissdrug-update.xls'
 			path = File.join(EXPORT_DIR, name)
 			FileUtils.cp(plug.file_path, path)
 			EXPORT_SERVER.compress(EXPORT_DIR, name)

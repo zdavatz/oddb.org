@@ -10,7 +10,6 @@ module ODDB
 	module State
 		module Admin
 class IncompleteReg < State::Admin::Registration
-	SEQUENCE_STATE = State::Admin::IncompleteSequence
 	VIEW = View::Admin::IncompleteRegistration
 	def accept
 		update_incomplete()

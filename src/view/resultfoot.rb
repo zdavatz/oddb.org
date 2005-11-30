@@ -28,6 +28,7 @@ module ODDB
 				[2,3]	=>	'explain_narc',
 				[2,4]	=>	'explain_pi',
 				[2,5]	=>	'explain_li',
+				[2,6]	=>	:explain_cas,
 			}
 			CSS_MAP = {	
 				[0,4]	=>	'explain-unknown',
@@ -44,6 +45,16 @@ module ODDB
 			end
 			def explain_vaccine(model, session=@session)
 				explain_link(model, :vaccine)
+			end
+			def explain_cas(model, session=@session)
+				link = HtmlGrid::Link.new(:explain_cas,
+					model, @session, self)
+				link.href = "http://cas.org"
+				link
+			end
+			def explain_narc(model, session=@session)
+				create_link(:explain_narc, 
+					'http://wiki.oddb.org/wiki.php?pagename=ODDB.Pi-Upload')
 			end
 			def explain_link(model, key)
 				link = external_link(model, "explain_#{key}")

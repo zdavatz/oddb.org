@@ -7,12 +7,11 @@ require 'view/admin/selectsubstance'
 module ODDB
 	module State
 		module Admin
-class SelectSubstance < State::Admin::Global
-	VIEW = View::Admin::SelectSubstance
+module SelectSubstanceMethods
 	def update
 		pointer = @session.user_input(:pointer)
 		substance = nil
-		ODBA.batch { 
+		ODBA.transaction { 
 			substance = pointer.resolve(@session.app)
 			if(pointer.skeleton == [:create])
 				update = {
@@ -21,23 +20,28 @@ class SelectSubstance < State::Admin::Global
 				@session.app.update(substance.pointer, update)
 			end
 		}
-		if (error?)
-			self
-		else
-			hash = {
-				:dose				=>	@model.user_input[:dose],
-				:substance	=>	substance.pointer,
-			}
-			if(@model.active_agent.is_a?(Persistence::CreateItem))
-				@model.active_agent.append(substance.name)
-			end
+		active_agent = @model.active_agent
+		aptr = active_agent.pointer
+		hash = {
+			:dose				=>	@model.user_input[:dose],
+			:substance	=>	substance.pointer,
+		}
+		if(active_agent.is_a?(Persistence::CreateItem))
+			active_agent.append(substance.name)
+			aptr = active_agent.inner_pointer
+		end
+		if(!error? && (klass = resolve_state(aptr)))
 			model = nil
 			ODBA.batch { 
 				model = @session.app.update(@model.pointer, hash)
 			}
-			State::Admin::ActiveAgent.new(@session, model)
+			klass.new(@session, model)
 		end
 	end
+end
+class SelectSubstance < State::Admin::Global
+	VIEW = View::Admin::SelectSubstance
+	include State::Admin::SelectSubstanceMethods
 end
 		end
 	end

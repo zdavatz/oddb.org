@@ -5,9 +5,2436 @@
   business_area: 
   generic_type: 
   registrations: 
+  - &id4350 !oddb.org,2003/ODDB::Registration 
+    iksnr: "13188"
+    registration_date: 1948-12-09
+    revision_date: 2003-07-18
+    expiration_date: 2006-12-31
+    inactive_date: 
+    sequences: 
+      "01": &id10919 !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Unguentolan
+        name_descr: Salbe
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 100.3
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: D03
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: "ZUBEREITUNGEN ZUR BEHANDLUNG VON WUNDEN UND GESCHW\xDCREN"
+            en: PREPARATIONS FOR TREATMENT OF WOUNDS AND ULCERS
+          guidelines: !oddb.org,2003/ODDB::Text::Document 
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              en: !oddb.org,2003/ODDB::Text::Chapter 
+                heading: ""
+                sections: 
+                - !oddb.org,2003/ODDB::Text::Section 
+                  subheading: ""
+                  paragraphs: 
+                  - !oddb.org,2003/ODDB::Text::Paragraph 
+                    formats: 
+                    - !oddb.org,2003/ODDB::Text::Format 
+                      values: &id6409 []
+
+                      start: 0
+                      end: -1
+                    text: Topical preparations used in the treatment of wounds and ulcers, e.g. leg ulcers, are classified in this group. Protective ointments are classified in D02A - Emollients and protectives.
+                    preformatted: false
+                - !oddb.org,2003/ODDB::Text::Section 
+                  subheading: ""
+                  paragraphs: 
+                  - !oddb.org,2003/ODDB::Text::Paragraph 
+                    formats: 
+                    - !oddb.org,2003/ODDB::Text::Format 
+                      values: []
+
+                      start: 0
+                      end: -1
+                    text: See also
+                    preformatted: false
+                  - !oddb.org,2003/ODDB::Text::Paragraph 
+                    formats: 
+                    - !oddb.org,2003/ODDB::Text::Format 
+                      values: []
+
+                      start: 0
+                      end: -1
+                    text: D06 - Antibiotic and chemotherapeutics for dermatological use.
+                    preformatted: false
+                  - !oddb.org,2003/ODDB::Text::Paragraph 
+                    formats: 
+                    - !oddb.org,2003/ODDB::Text::Format 
+                      values: []
+
+                      start: 0
+                      end: -1
+                    text: D08 - Antiseptics and disinfectants.
+                    preformatted: false
+                  - !oddb.org,2003/ODDB::Text::Paragraph 
+                    formats: 
+                    - !oddb.org,2003/ODDB::Text::Format 
+                      values: []
+
+                      start: 0
+                      end: -1
+                    text: D09 - Medicated dressings.
+                    preformatted: false
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: &id050 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 4
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Salbe
+          galenic_group: &id041 !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 1
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              fr: unbekannt
+              de: unbekannt
+              en: unbekannt
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 3410
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Retinoli Acetas
+            synonyms: []
+
+            effective_form: &id001 !oddb.org,2003/ODDB::Substance 
+              oid: 3820
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Retinolum
+              synonyms: []
+
+              effective_form: *id001
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 0.3
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 804
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Morrhuae Oleum
+            synonyms: []
+
+            effective_form: &id002 !oddb.org,2003/ODDB::Substance 
+              oid: 6701
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Gadus Morrhua
+              synonyms: []
+
+              effective_form: *id002
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 100
+            unit: mg
+        packages: 
+          "033": !oddb.org,2003/ODDB::Package 
+            ikscd: "033"
+            size: 100 g
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680131880332
+            pharmacode: "0435761"
+            narcotics: []
+
+          "025": !oddb.org,2003/ODDB::Package 
+            ikscd: "025"
+            size: 50 g
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680131880257
+            pharmacode: "0435755"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 736
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Wundsalbe
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - &id1605 !oddb.org,2003/ODDB::Registration 
+    iksnr: "30866"
+    registration_date: &id959 1964-11-24
+    revision_date: 2003-07-18
+    expiration_date: 2004-12-31
+    inactive_date: 2004-12-31
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Makaphyt
+        name_descr: Balsam
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 370
+          unit: mg
+        atc_class: &id127 !oddb.org,2003/ODDB::AtcClass 
+          code: R05X
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: "ANDERE KOMBINATIONSPR\xC4PARATE GEGEN ERK\xC4LTUNGSKRANKHEITEN"
+            en: OTHER COLD COMBINATION PREPARATIONS
+          guidelines: &id739 !oddb.org,2003/ODDB::Text::Document 
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              en: !oddb.org,2003/ODDB::Text::Chapter 
+                heading: ""
+                sections: 
+                - !oddb.org,2003/ODDB::Text::Section 
+                  subheading: ""
+                  paragraphs: 
+                  - !oddb.org,2003/ODDB::Text::Paragraph 
+                    formats: 
+                    - !oddb.org,2003/ODDB::Text::Format 
+                      values: []
+
+                      start: 0
+                      end: -1
+                    text: This group comprises cold preparations with various ingredients, which cannot be classified in the preceding groups. Combinations with therapeutic amounts of various ingredients (e.g. quinine as an antipyretic, antihistamines, ascorbic acid and caffeine) are classified in this group. Various remedies for symptomatic relief in cough and cold, e.g. inhalants with menthol, camphora, thymol etc. are also classified here.
+                    preformatted: false
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: &id196 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 78
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Balsam
+          galenic_group: &id015 !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 4
+            descriptions: &id1058 !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Salben
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id003 !oddb.org,2003/ODDB::Substance 
+            oid: 3640
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Levomentholum
+            synonyms: []
+
+            effective_form: *id003
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 35
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id087 !oddb.org,2003/ODDB::Substance 
+            oid: 557
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Eucalypti Aetheroleum
+            synonyms: []
+
+            effective_form: &id004 !oddb.org,2003/ODDB::Substance 
+              oid: 6575
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Eucalyptus
+              synonyms: []
+
+              effective_form: *id004
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 90
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id009 !oddb.org,2003/ODDB::Substance 
+            oid: 80
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Pini Silvestris Aetheroleum
+            synonyms: []
+
+            effective_form: &id005 !oddb.org,2003/ODDB::Substance 
+              oid: 6768
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Pinus Silvestris
+              synonyms: []
+
+              effective_form: *id005
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 30
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id138 !oddb.org,2003/ODDB::Substance 
+            oid: 555
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Thymi Aetheroleum
+            synonyms: []
+
+            effective_form: &id074 !oddb.org,2003/ODDB::Substance 
+              oid: 6828
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Thymus Serpyllum
+              synonyms: []
+
+              effective_form: &id006 !oddb.org,2003/ODDB::Substance 
+                oid: 3900
+                descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                  lt: Thymolum
+                synonyms: []
+
+                effective_form: *id006
+                swissmedic_code: 
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id007 !oddb.org,2003/ODDB::Substance 
+            oid: 217
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Dextrocamphora
+            synonyms: []
+
+            effective_form: *id007
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 110
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 4568
+            descriptions: &id1059 !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Cupressi Aetheroleum
+            synonyms: &id1261 []
+
+            effective_form: &id008 !oddb.org,2003/ODDB::Substance 
+              oid: 6522
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Cupressum Sempervirens
+              synonyms: []
+
+              effective_form: *id008
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 35
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 3013
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Pini Pumilionis Aetheroleum
+            synonyms: []
+
+            effective_form: *id005
+            swissmedic_code: 
+          dose: &id5953 !oddb.org,2003/ODDB::Dose 
+            val: 50
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id009
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 30
+            unit: mg
+        - &id993 !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 1979
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Terebinthinae Aetheroleum Medicinale
+            synonyms: []
+
+            effective_form: &id010 !oddb.org,2003/ODDB::Substance 
+              oid: 4877
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Terebinthina Laricina
+              synonyms: []
+
+              effective_form: *id010
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        packages: 
+          "037": !oddb.org,2003/ODDB::Package 
+            ikscd: "037"
+            size: 50 g
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 1265
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680308660378
+            pharmacode: "2388209"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 202
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: "Einreibemittel bei Erk\xE4ltungen"
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "33504"
+    registration_date: 1967-08-23
+    revision_date: 2003-07-18
+    expiration_date: 2006-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Soufrol
+        name_descr: Schwefel-Oelbad
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 100
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: D10AB05
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Mesulfen
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: &id026 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 6
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: "Fl\xFCssigkeit"
+            lt: Liquidum
+          galenic_group: &id012 !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 11
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: "Fl\xFCssigkeit"
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id011 !oddb.org,2003/ODDB::Substance 
+            oid: 3780
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Mesulfenum
+            synonyms: []
+
+            effective_form: *id011
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 100
+            unit: mg
+        packages: 
+          039: !oddb.org,2003/ODDB::Package 
+            ikscd: 039
+            size: 5 Liter
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680335040396
+            pharmacode: "0374226"
+            narcotics: []
+
+          "020": !oddb.org,2003/ODDB::Package 
+            ikscd: "020"
+            size: 800 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 0
+            price_public: 2815
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1993-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680335040204
+            pharmacode: "374203"
+            narcotics: []
+
+          "055": !oddb.org,2003/ODDB::Package 
+            ikscd: "055"
+            size: 300 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680335040556
+            pharmacode: "1497787"
+            narcotics: []
+
+          "047": &id8800 !oddb.org,2003/ODDB::Package 
+            ikscd: "047"
+            size: 150 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 0
+            price_public: 815
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1993-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680335040471
+            pharmacode: "1497770"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 981
+      descriptions: &id999 !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Schwefel-haltiger Badezusatz
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "39255"
+    registration_date: 1994-08-02
+    revision_date: 2003-07-18
+    expiration_date: 2005-12-31
+    inactive_date: 
+    sequences: &id1263 
+      "02": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "02"
+        name_base: Makatussin Comp.
+        name_descr: Hustensirup
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 25
+          unit: mg
+        atc_class: &id302 !oddb.org,2003/ODDB::AtcClass 
+          code: R05DA20
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Kombinationen
+            en: Combinations
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: &id077 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 12
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Sirup
+          galenic_group: *id012
+        composition_text: 
+        active_agents: &id3104 
+          - !oddb.org,2003/ODDB::ActiveAgent 
+            substance: !oddb.org,2003/ODDB::Substance 
+              oid: 3807
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Dihydrocodeini Hydrochloridum
+              synonyms: []
+
+              effective_form: &id013 !oddb.org,2003/ODDB::Substance 
+                oid: 6200
+                descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                  fr: "dihydrocod\xE9ine"
+                  de: Dihydrocodein
+                  lt: Dihydrocodeinum
+                  en: Dihydrocodeine
+                synonyms: []
+
+                effective_form: *id013
+                swissmedic_code: "74603200"
+                narcotic: 125-28-0
+              swissmedic_code: 
+            dose: !oddb.org,2003/ODDB::Dose 
+              val: 10
+              unit: mg
+          - !oddb.org,2003/ODDB::ActiveAgent 
+            substance: &id028 !oddb.org,2003/ODDB::Substance 
+              oid: 4621
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                de: Diphenhydramini Hydrochloridum
+                fr: Diphenhydramini Hydrochloridum
+                lt: Diphenhydramini Hydrochloridum
+                en: Diphenhydramini Hydrochloridum
+              synonyms: []
+
+              effective_form: &id014 !oddb.org,2003/ODDB::Substance 
+                oid: 6208
+                descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                  de: "Diphenhydramin "
+                synonyms: &id1276 []
+
+                effective_form: *id014
+                swissmedic_code: 
+              swissmedic_code: 
+            dose: !oddb.org,2003/ODDB::Dose 
+              val: 15
+              unit: mg
+        packages: 
+          "030": !oddb.org,2003/ODDB::Package 
+            ikscd: "030"
+            size: 80 mL
+            descr: ""
+            ikscat: C
+            price_exfactory: 0
+            price_public: 620
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1989-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680392550302
+            pharmacode: "2388161"
+            narcotics: 
+            - 36418-29-8
+            - 36418-29-8
+    indication: &id076 !oddb.org,2003/ODDB::Indication 
+      oid: 28
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Husten
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "40333"
+    registration_date: 1999-11-16
+    revision_date: 2003-12-09
+    expiration_date: &id5193 2006-12-31
+    inactive_date: 
+    sequences: 
+      "03": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "03"
+        name_base: Carbaderm
+        name_descr: "Cr\xE8me"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 100
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: D02AE01
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Harnstoff
+            en: Carbamide
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: &id100 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 243
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: "Cr\xE8me"
+          galenic_group: *id015
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id016 !oddb.org,2003/ODDB::Substance 
+            oid: 4712
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Ureum
+            synonyms: []
+
+            effective_form: *id016
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 100
+            unit: mg
+        packages: 
+          "037": !oddb.org,2003/ODDB::Package 
+            ikscd: "037"
+            size: 100 mL
+            descr: 
+            ikscat: D
+            price_exfactory: 
+            price_public: 1135
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1989-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680403330374
+            pharmacode: "720639"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 546
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Trockene Haut
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "43916"
+    registration_date: &id1014 1981-10-05
+    revision_date: 2004-03-12
+    expiration_date: 2005-12-31
+    inactive_date: 
+    sequences: 
+      "01": &id1968 !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Normolytoral
+        name_descr: Pulver
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 1240
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: A07CA
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Elektrolyte zur oralen Rehydrierung
+            en: Oral rehydration salt formulations
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: &id102 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 9
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Pulver
+          galenic_group: &id064 !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 7
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: "L\xF6sbare"
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 3937
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Natrii Citras
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 590
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 134
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Natrii Chloridum
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 350
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id082 !oddb.org,2003/ODDB::Substance 
+            oid: 3891
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              fr: Glucosum Anhydricum
+              de: Glucosum Anhydricum
+              lt: Glucosum Anhydricum
+              en: Glucosum Anhydricum
+            synonyms: []
+
+            effective_form: &id017 !oddb.org,2003/ODDB::Substance 
+              oid: 2816
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Glucosum
+                en: Glucosum
+              synonyms: []
+
+              effective_form: *id017
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 4
+            unit: g
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 2880
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Kalii Chloridum
+            synonyms: []
+
+            effective_form: &id018 !oddb.org,2003/ODDB::Substance 
+              oid: 4754
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Kalium
+              synonyms: []
+
+              effective_form: *id018
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 300
+            unit: mg
+        packages: 
+          "025": !oddb.org,2003/ODDB::Package 
+            ikscd: "025"
+            size: 10 Sachets
+            descr: ""
+            ikscat: D
+            price_exfactory: 0
+            price_public: 870
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1982-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680439160259
+            pharmacode: "928819"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 240
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Elektrolyte zur oralen Rehydratation
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - &id4880 !oddb.org,2003/ODDB::Registration 
+    iksnr: "44176"
+    registration_date: 1982-06-15
+    revision_date: 2003-07-18
+    expiration_date: 2006-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Aknex
+        name_descr: Gel
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 50
+          unit: mg
+        atc_class: &id2033 !oddb.org,2003/ODDB::AtcClass 
+          code: D10AE01
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Benzoylperoxid
+            en: Benzoyl peroxide
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: &id031 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 63
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Gel
+            lt: GELATUM
+          galenic_group: *id015
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id019 !oddb.org,2003/ODDB::Substance 
+            oid: 224
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Benzoylis Peroxidum
+            synonyms: []
+
+            effective_form: *id019
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 50
+            unit: mg
+        packages: 
+          "017": !oddb.org,2003/ODDB::Package 
+            ikscd: "017"
+            size: 40 g
+            descr: ""
+            ikscat: C
+            price_exfactory: 0
+            price_public: 865
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1983-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680441760171
+            pharmacode: "1413141"
+            narcotics: &id1785 []
+
+    indication: &id092 !oddb.org,2003/ODDB::Indication 
+      oid: 300
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Akne vulgaris
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "44461"
+    registration_date: 1982-04-30
+    revision_date: 2003-07-18
+    expiration_date: 2006-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Epicrin mit Zink-Komplex
+        name_descr: Kapseln
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 1
+          unit: U.I.
+        atc_class: &id488 !oddb.org,2003/ODDB::AtcClass 
+          code: A11JC
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Vitamine, andere Kombinationen
+            en: Vitamins, other combinations
+          guidelines: !oddb.org,2003/ODDB::Text::Document 
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              en: !oddb.org,2003/ODDB::Text::Chapter 
+                heading: ""
+                sections: 
+                - !oddb.org,2003/ODDB::Text::Section 
+                  subheading: ""
+                  paragraphs: 
+                  - !oddb.org,2003/ODDB::Text::Paragraph 
+                    formats: 
+                    - !oddb.org,2003/ODDB::Text::Format 
+                      values: []
+
+                      start: 0
+                      end: -1
+                    text: This group comprises all products, which contain vitamins (with or without minerals) and in addition other substances, e.g. caffeine and strychnine. Combinations with folic acid are classified in B03BB if "folic acid deficiency" is the main indication.
+                    preformatted: false
+                  - !oddb.org,2003/ODDB::Text::Paragraph 
+                    formats: 
+                    - !oddb.org,2003/ODDB::Text::Format 
+                      values: []
+
+                      start: 0
+                      end: -1
+                    text: This group contains products, which may also be regarded as tonics. No sharp line has been drawn between these two groups.
+                    preformatted: false
+                  - !oddb.org,2003/ODDB::Text::Paragraph 
+                    formats: 
+                    - !oddb.org,2003/ODDB::Text::Format 
+                      values: []
+
+                      start: 0
+                      end: -1
+                    text: Tonics are classified in A13. The vitamin content of tonics should be rather low.
+                    preformatted: false
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: &id058 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 24
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Kapseln
+            fr: capsules
+            lt: CAPSULA
+            en: capsules
+          galenic_group: &id045 !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 2
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Tabletten
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id020 !oddb.org,2003/ODDB::Substance 
+            oid: 1788
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Biotinum
+            synonyms: []
+
+            effective_form: *id020
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id021 !oddb.org,2003/ODDB::Substance 
+            oid: 931
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Dexpanthenolum
+            synonyms: []
+
+            effective_form: *id021
+            swissmedic_code: 
+          dose: &id1427 !oddb.org,2003/ODDB::Dose 
+            val: 15
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id344 !oddb.org,2003/ODDB::Substance 
+            oid: 1118
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Milii Extractum
+            synonyms: []
+
+            effective_form: &id022 !oddb.org,2003/ODDB::Substance 
+              oid: 6699
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Milium Vernale
+              synonyms: []
+
+              effective_form: *id022
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 70
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id325 !oddb.org,2003/ODDB::Substance 
+            oid: 5323
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Retinoli Palmitas
+            synonyms: []
+
+            effective_form: *id001
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1
+            unit: U.I.
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id345 !oddb.org,2003/ODDB::Substance 
+            oid: 449
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Cystinum
+            synonyms: []
+
+            effective_form: &id023 !oddb.org,2003/ODDB::Substance 
+              oid: 4635
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Cysteinum
+              synonyms: []
+
+              effective_form: *id023
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 1976
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Proteina Hydrolysata Zincica
+            synonyms: []
+
+            effective_form: &id024 !oddb.org,2003/ODDB::Substance 
+              oid: 1906
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Proteina
+              synonyms: []
+
+              effective_form: *id024
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 20
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id346 !oddb.org,2003/ODDB::Substance 
+            oid: 5455
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Tritici Embryonis Oleum
+            synonyms: []
+
+            effective_form: &id025 !oddb.org,2003/ODDB::Substance 
+              oid: 6885
+              descriptions: &id655 !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Triticum
+              synonyms: []
+
+              effective_form: *id025
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 200
+            unit: mg
+        packages: 
+          "021": !oddb.org,2003/ODDB::Package 
+            ikscd: "021"
+            size: 90 Kapseln
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 5990
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680444610213
+            pharmacode: 0938255
+            narcotics: []
+
+          "013": !oddb.org,2003/ODDB::Package 
+            ikscd: "013"
+            size: 30 Kapseln
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 2290
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680444610138
+            pharmacode: 0938249
+            narcotics: []
+
+          048: !oddb.org,2003/ODDB::Package 
+            ikscd: 048
+            size: 180 Kapseln
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 9880
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680444610480
+            pharmacode: 0961892
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 947
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: "Bei Haar- und Nagelwuchsst\xF6rungen"
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "44867"
+    registration_date: 1983-04-07
+    revision_date: 2003-07-18
+    expiration_date: 2007-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: No Pic
+        name_descr: "fl\xFCssig"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 55
+          unit: mg
+        atc_class: &id030 !oddb.org,2003/ODDB::AtcClass 
+          code: D04AB01
+          descriptions: &id813 !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Lidocain
+            en: Lidocaine
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: *id026
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id027 !oddb.org,2003/ODDB::Substance 
+            oid: 1251
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Benzalkonii Chloridum
+            synonyms: []
+
+            effective_form: *id027
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        - &id1152 !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id028
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id029 !oddb.org,2003/ODDB::Substance 
+            oid: 5940
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Lidocain
+              lt: Lidocainum
+              en: Lidocaine
+            synonyms: []
+
+            effective_form: *id029
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id003
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 20
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id021
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 5
+            unit: mg
+        packages: 
+          "036": !oddb.org,2003/ODDB::Package 
+            ikscd: "036"
+            size: 10 mL
+            descr: Roller
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680448670367
+            pharmacode: "1622270"
+            narcotics: []
+
+    indication: &id032 !oddb.org,2003/ODDB::Indication 
+      oid: 648
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Behandlung von Insektenstichen
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "46694"
+    registration_date: 1986-03-13
+    revision_date: 2003-07-18
+    expiration_date: 2007-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: No Pic Gel forte
+        name_descr: 
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 100
+          unit: mg
+        atc_class: *id030
+        galenic_form: *id031
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id027
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id028
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 20
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id029
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 20
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id003
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 20
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id021
+          dose: &id1586 !oddb.org,2003/ODDB::Dose 
+            val: 30
+            unit: mg
+        packages: 
+          "015": &id3338 !oddb.org,2003/ODDB::Package 
+            ikscd: "015"
+            size: 24 g
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680466940152
+            pharmacode: "1257801"
+            narcotics: []
+
+    indication: *id032
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "48839"
+    registration_date: 1993-08-20
+    revision_date: 2003-07-18
+    expiration_date: 2007-11-14
+    inactive_date: 
+    sequences: 
+      "02": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "02"
+        name_base: Yal
+        name_descr: "L\xF6sung"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 13.4
+          unit: g
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: A06AG07
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Sorbitol
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: &id066 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 22
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            fr: Solution
+            de: "L\xF6sung"
+            lt: SOLUTIO
+            en: Solution
+          galenic_group: *id012
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id033 !oddb.org,2003/ODDB::Substance 
+            oid: 5481
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Sorbitolum
+            synonyms: []
+
+            effective_form: *id033
+            swissmedic_code: 
+          dose: &id1149 !oddb.org,2003/ODDB::Dose 
+            val: 13.4
+            unit: g
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id034 !oddb.org,2003/ODDB::Substance 
+            oid: 5410
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Docusatum Natricum
+            synonyms: []
+
+            effective_form: *id034
+            swissmedic_code: 
+          dose: &id6149 !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        packages: 
+          "010": !oddb.org,2003/ODDB::Package 
+            ikscd: "010"
+            size: 2 x 67 mL
+            descr: ""
+            ikscat: C
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680488390102
+            pharmacode: "1363615"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 522
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: "Reinigungseinlauf f\xFCr R\xF6ntgendiagnostik"
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "49290"
+    registration_date: 1988-09-23
+    revision_date: 2003-05-07
+    expiration_date: 2007-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Destrobac
+        name_descr: "Tinktur ungef\xE4rbt"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 551
+          unit: mg
+        atc_class: &id036 !oddb.org,2003/ODDB::AtcClass 
+          code: D08AG02
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Povidon-Iod
+            en: Povidone-iodine
+          guidelines: 
+          ddd_guidelines: 
+          ddds: &id2690 {}
+
+        galenic_form: &id037 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 48
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Tinktur
+          galenic_group: *id012
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id038 !oddb.org,2003/ODDB::Substance 
+            oid: 2068
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Alcohol Isopropylicus
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 550
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id035 !oddb.org,2003/ODDB::Substance 
+            oid: 2601
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Iodum
+            synonyms: 
+            - Iodidum
+            effective_form: *id035
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1
+            unit: mg
+        packages: 
+          039: !oddb.org,2003/ODDB::Package 
+            ikscd: 039
+            size: 5 x 1000 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 20285
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680492900397
+            pharmacode: "1342205"
+            narcotics: []
+
+          "020": !oddb.org,2003/ODDB::Package 
+            ikscd: "020"
+            size: 1000 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 6950
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680492900205
+            pharmacode: "1342197"
+            narcotics: []
+
+          "012": !oddb.org,2003/ODDB::Package 
+            ikscd: "012"
+            size: 50 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 720
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680492900120
+            pharmacode: "1334619"
+            narcotics: []
+
+      "02": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "02"
+        name_base: Destrobac
+        name_descr: "Tinktur gef\xE4rbt"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 551
+          unit: mg
+        atc_class: *id036
+        galenic_form: *id037
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id035
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id038
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 550
+            unit: mg
+        packages: 
+          "063": !oddb.org,2003/ODDB::Package 
+            ikscd: "063"
+            size: 5 x 1000 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 20285
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680492900632
+            pharmacode: "1342228"
+            narcotics: []
+
+          "055": &id1006 !oddb.org,2003/ODDB::Package 
+            ikscd: "055"
+            size: 1000 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 6950
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680492900557
+            pharmacode: "1342211"
+            narcotics: []
+
+          "047": !oddb.org,2003/ODDB::Package 
+            ikscd: "047"
+            size: 50 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 720
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680492900472
+            pharmacode: "1334625"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 872
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Haut- und Wunddesinfiziens
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "49533"
+    registration_date: 1988-11-18
+    revision_date: 2003-12-12
+    expiration_date: 2008-12-11
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Halset
+        name_descr: Lutschtabletten
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 1.5
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: R02AA06
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Cetylpyridinium
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: &id350 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 60
+          descriptions: &id5984 !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Lutschtabletten
+          galenic_group: &id310 !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 10
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Lutschtabletten
+        composition_text: 
+        active_agents: 
+        - &id1311 !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 3037
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Mentholum Racemicum
+            synonyms: []
+
+            effective_form: &id039 !oddb.org,2003/ODDB::Substance 
+              oid: 6684
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Mentholum
+              synonyms: []
+
+              effective_form: *id039
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1.2
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id040 !oddb.org,2003/ODDB::Substance 
+            oid: 348
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Cetylpyridinii Chloridum
+            synonyms: []
+
+            effective_form: *id040
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1.5
+            unit: mg
+        packages: 
+          "012": !oddb.org,2003/ODDB::Package 
+            ikscd: "012"
+            size: 24 Lutschtabletten
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 1095
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680495330122
+            pharmacode: "1362490"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 953
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: "Bei Entz\xFCndungen des Mund- und Rachenraumes"
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "49798"
+    registration_date: 1989-04-24
+    revision_date: 2003-12-19
+    expiration_date: 2008-12-18
+    inactive_date: 
+    sequences: &id656 
+      "02": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "02"
+        name_base: Laxasan
+        name_descr: Tropfen
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 7.5
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: A06AB58
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Natriumpicosulfat, Kombinationen
+            en: Sodium picosulfate, combinations
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: &id071 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 16
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Tropfen
+          galenic_group: *id041
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 4036
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Natrii Picosulfas
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 7.5
+            unit: mg
+        packages: 
+          "032": !oddb.org,2003/ODDB::Package 
+            ikscd: "032"
+            size: 20 mL
+            descr: 
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680497980325
+            pharmacode: 
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 438
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Laxans
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "51236"
+    registration_date: &id1529 1993-10-15
+    revision_date: 2002-12-03
+    expiration_date: 2007-12-02
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Cremol Ritter
+        name_descr: "Baby-Bade\xF6l"
+        dose: 
+        atc_class: &id068 !oddb.org,2003/ODDB::AtcClass 
+          code: D02AC
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Vaseline und Fett-haltige Mittel
+            en: Soft paraffin and fat products
+          guidelines: !oddb.org,2003/ODDB::Text::Document 
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              en: !oddb.org,2003/ODDB::Text::Chapter 
+                heading: ""
+                sections: 
+                - !oddb.org,2003/ODDB::Text::Section 
+                  subheading: ""
+                  paragraphs: 
+                  - !oddb.org,2003/ODDB::Text::Paragraph 
+                    formats: 
+                    - !oddb.org,2003/ODDB::Text::Format 
+                      values: []
+
+                      start: 0
+                      end: -1
+                    text: Some similar products with a higher water content (creams) are classified in D02AX - Other emollients and protectives. Soft paraffin dressings, see D09AX.
+                    preformatted: false
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: !oddb.org,2003/ODDB::GalenicForm 
+          oid: 216
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: "Baby-Bade\xF6l"
+          galenic_group: &id069 !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 8
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Badezusatz
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id229 !oddb.org,2003/ODDB::Substance 
+            oid: 2081
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Paraffinum Perliquidum
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 670
+            unit: mg
+        packages: 
+          "033": !oddb.org,2003/ODDB::Package 
+            ikscd: "033"
+            size: 300 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 1550
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680512360330
+            pharmacode: "1469182"
+            narcotics: []
+
+          "025": !oddb.org,2003/ODDB::Package 
+            ikscd: "025"
+            size: 150 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 950
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680512360255
+            pharmacode: "1469176"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 553
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: "Badezusatz f\xFCr die trockene, empfindliche Haut"
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "51506"
+    registration_date: &id4430 1999-03-05
+    revision_date: 2003-07-18
+    expiration_date: 2008-01-19
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Becetamol 250 mg
+        name_descr: Kautabletten
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 250
+          unit: mg
+        atc_class: &id043 !oddb.org,2003/ODDB::AtcClass 
+          code: N02BE01
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Paracetamol
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+            O: !oddb.org,2003/ODDB::AtcClass::DDD 
+              administration_route: O
+              dose: !oddb.org,2003/ODDB::Dose 
+                val: 3
+                unit: g
+              note: 
+            P: !oddb.org,2003/ODDB::AtcClass::DDD 
+              administration_route: P
+              dose: 
+              note: 
+            R: !oddb.org,2003/ODDB::AtcClass::DDD 
+              administration_route: R
+              dose: !oddb.org,2003/ODDB::Dose 
+                val: 3
+                unit: g
+              note: 
+        galenic_form: &id044 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 31
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Kautabletten
+          galenic_group: &id285 !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 754720
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              fr: Chewing Gum
+              de: Kaugummi
+              en: Chewing Gum
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id042 !oddb.org,2003/ODDB::Substance 
+            oid: 6120
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Paracetamol
+              fr: Paracetamol
+              lt: Paracetamolum
+              en: Paracetamol
+            synonyms: []
+
+            effective_form: *id042
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 250
+            unit: mg
+        packages: 
+          "014": !oddb.org,2003/ODDB::Package 
+            ikscd: "014"
+            size: 20 Kautabletten
+            descr: ""
+            ikscat: D
+            price_exfactory: 306
+            price_public: 565
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1995-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680515060145
+            pharmacode: "1510944"
+            narcotics: []
+
+      "03": &id3585 !oddb.org,2003/ODDB::Sequence 
+        seqnr: "03"
+        name_base: Becetamol 500 mg
+        name_descr: Kautabletten
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 500
+          unit: mg
+        atc_class: *id043
+        galenic_form: *id044
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 500
+            unit: mg
+        packages: 
+          "022": !oddb.org,2003/ODDB::Package 
+            ikscd: "022"
+            size: 20 Kautabletten
+            descr: ""
+            ikscat: D
+            price_exfactory: 306
+            price_public: 565
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 2005-07-01
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680515060220
+            pharmacode: "2152889"
+            narcotics: []
+
+    indication: &id049 !oddb.org,2003/ODDB::Indication 
+      oid: 68
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Analgetikum, Antipyretikum
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "51838"
+    registration_date: 1992-12-18
+    revision_date: 2003-07-18
+    expiration_date: 2006-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Hova
+        name_descr: Filmtabletten
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 245.5
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: N05CX99
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Hypnotika und Sedativa, kombiniert, exkl. Barbiturate (Diverse)
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: &id055 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 21
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Filmtabletten
+            lt: COMPRESSO OBDUCTO
+          galenic_group: *id045
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 209
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Valerianae Extractum Ethanolicum Siccum
+            synonyms: []
+
+            effective_form: &id046 !oddb.org,2003/ODDB::Substance 
+              oid: 361
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Valeriana Officinalis
+              synonyms: []
+
+              effective_form: *id046
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 200
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 584
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Lupuli Extractum Siccum
+            synonyms: []
+
+            effective_form: &id047 !oddb.org,2003/ODDB::Substance 
+              oid: 4961
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Humulus Lupulus
+              synonyms: []
+
+              effective_form: *id047
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 45.5
+            unit: mg
+        packages: 
+          "041": !oddb.org,2003/ODDB::Package 
+            ikscd: "041"
+            size: 60 Filmtabletten
+            descr: ""
+            ikscat: D
+            price_exfactory: 0
+            price_public: 2255
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 2001-04-01
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680518380417
+            pharmacode: "2347771"
+            narcotics: []
+
+          "033": !oddb.org,2003/ODDB::Package 
+            ikscd: "033"
+            size: 30 Filmtabletten
+            descr: ""
+            ikscat: D
+            price_exfactory: 0
+            price_public: 1280
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1998-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680518380332
+            pharmacode: "1598620"
+            narcotics: []
+
+    indication: &id073 !oddb.org,2003/ODDB::Indication 
+      oid: 261
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: "Bei Nervosit\xE4t"
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "52106"
+    registration_date: 2001-12-28
+    revision_date: 2003-07-18
+    expiration_date: 2006-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Becetamol 125 mg
+        name_descr: Suppositorien
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 125
+          unit: mg
+        atc_class: *id043
+        galenic_form: &id048 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 11
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Suppositorien
+          galenic_group: !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 17
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              fr: Suppositorien
+              de: Suppositorien
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 125
+            unit: mg
+        packages: 
+          028: !oddb.org,2003/ODDB::Package 
+            ikscd: 028
+            size: 10 Suppositorien
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680521060283
+            pharmacode: 
+            narcotics: []
+
+      "02": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "02"
+        name_base: Becetamol 250 mg
+        name_descr: Suppositorien
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 250
+          unit: mg
+        atc_class: *id043
+        galenic_form: *id048
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 250
+            unit: mg
+        packages: 
+          "036": !oddb.org,2003/ODDB::Package 
+            ikscd: "036"
+            size: 10 Suppositorien
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680521060368
+            pharmacode: 
+            narcotics: []
+
+      "03": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "03"
+        name_base: Becetamol 500 mg
+        name_descr: Suppositorien
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 500
+          unit: mg
+        atc_class: *id043
+        galenic_form: *id048
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 500
+            unit: mg
+        packages: 
+          "044": !oddb.org,2003/ODDB::Package 
+            ikscd: "044"
+            size: 10 Suppositorien
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680521060443
+            pharmacode: 
+            narcotics: []
+
+      "04": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "04"
+        name_base: Becetamol 1000 mg
+        name_descr: Suppositorien
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 1000
+          unit: mg
+        atc_class: *id043
+        galenic_form: *id048
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1000
+            unit: mg
+        packages: 
+          "052": !oddb.org,2003/ODDB::Package 
+            ikscd: "052"
+            size: 10 Suppositorien
+            descr: ""
+            ikscat: B
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680521060528
+            pharmacode: 
+            narcotics: []
+
+    indication: *id049
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "52206"
+    registration_date: 1994-03-09
+    revision_date: 2003-07-18
+    expiration_date: 2003-12-31
+    inactive_date: 2004-05-18
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Lipocremol
+        name_descr: Creme
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 30
+          unit: mg
+        atc_class: 
+        galenic_form: &id093 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 33
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Creme
+          galenic_group: *id015
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id051 !oddb.org,2003/ODDB::Substance 
+            oid: 1291
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Oenotherae Seminis Oleum
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 30
+            unit: mg
+        packages: &id745 {}
+
+    indication: &id052 !oddb.org,2003/ODDB::Indication 
+      oid: 1001
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Bei trockener Haut
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "52207"
+    registration_date: 1994-03-09
+    revision_date: 2003-07-18
+    expiration_date: 2003-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Lipocremol
+        name_descr: Salbe
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 30
+          unit: mg
+        atc_class: 
+        galenic_form: *id050
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id051
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 30
+            unit: mg
+        packages: {}
+
+    indication: *id052
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "52373"
+    registration_date: 1994-05-10
+    revision_date: &id1607 2003-07-18
+    expiration_date: 2003-12-31
+    inactive_date: 
+    sequences: 
+      "01": &id7279 !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Grisol
+        name_descr: Dosier-Pumpspray
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 0.4
+          unit: mg
+        atc_class: &id819 !oddb.org,2003/ODDB::AtcClass 
+          code: D01AA08
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Griseofulvin
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: &id164 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 54
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Spray
+          galenic_group: *id041
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id053 !oddb.org,2003/ODDB::Substance 
+            oid: 6062
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Griseofulvinum
+              en: Griseofulvin
+            synonyms: []
+
+            effective_form: *id053
+            swissmedic_code: 
+          dose: &id7162 !oddb.org,2003/ODDB::Dose 
+            val: 0.4
+            unit: mg
+        packages: &id1436 
+          018: !oddb.org,2003/ODDB::Package 
+            ikscd: 018
+            size: 50 mL
+            descr: Dosier-Pumpspray
+            ikscat: B
+            price_exfactory: 1465
+            price_public: 3160
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680523730184
+            pharmacode: 
+            narcotics: []
+
+    indication: &id239 !oddb.org,2003/ODDB::Indication 
+      oid: 544
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Antimykotikum
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "53802"
+    registration_date: 1997-02-12
+    revision_date: 2003-07-18
+    expiration_date: 2006-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Vividrin
+        name_descr: Augentropfen
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 20
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: S01GX01
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: "Cromoglicins\xE4ure"
+            en: Cromoglicic acid
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: &id200 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 52
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Augentropfen
+          galenic_group: &id214 !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 5
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Augenmittel
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 3588
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Natrii Cromoglicas
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 20
+            unit: mg
+        packages: 
+          028: !oddb.org,2003/ODDB::Package 
+            ikscd: 028
+            size: 10 mL
+            descr: ""
+            ikscat: C
+            price_exfactory: 0
+            price_public: 1290
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1998-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680538020287
+            pharmacode: "1968850"
+            narcotics: &id2696 []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 109
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Allergische Konjunktivitis
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "54173"
+    registration_date: 1998-01-30
+    revision_date: 2003-11-12
+    expiration_date: 2008-11-11
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Bio-H-Tin
+        name_descr: Tabletten
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 2.5
+          unit: mg
+        atc_class: &id595 !oddb.org,2003/ODDB::AtcClass 
+          code: A11HA05
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Biotin
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: &id061 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 1
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Tabletten
+            lt: COMPRESSO
+          galenic_group: *id045
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id020
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 2.5
+            unit: mg
+        packages: 
+          "024": !oddb.org,2003/ODDB::Package 
+            ikscd: "024"
+            size: 100 Tabletten
+            descr: ""
+            ikscat: C
+            price_exfactory: 
+            price_public: 8300
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680541730241
+            pharmacode: "2056252"
+            narcotics: []
+
+          "016": !oddb.org,2003/ODDB::Package 
+            ikscd: "016"
+            size: 40 Tabletten
+            descr: ""
+            ikscat: C
+            price_exfactory: 
+            price_public: 4200
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680541730166
+            pharmacode: "2056246"
+            narcotics: []
+
+    indication: &id596 !oddb.org,2003/ODDB::Indication 
+      oid: 683
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: "Biotin-Pr\xE4parat"
+    generic_type: :original
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "54616"
+    registration_date: 2002-08-23
+    revision_date: 2003-12-22
+    expiration_date: 2008-12-21
+    inactive_date: 
+    sequences: 
+      "02": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "02"
+        name_base: Nocutil
+        name_descr: Nasenspray
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 0.1
+          unit: mg/ml
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: H01BA02
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Desmopressin
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+            N: !oddb.org,2003/ODDB::AtcClass::DDD 
+              administration_route: N
+              dose: !oddb.org,2003/ODDB::Dose 
+                val: 25
+                unit: mcg
+              note: 
+            O: !oddb.org,2003/ODDB::AtcClass::DDD 
+              administration_route: O
+              dose: !oddb.org,2003/ODDB::Dose 
+                val: 0.4
+                unit: mg
+              note: 
+            P: !oddb.org,2003/ODDB::AtcClass::DDD 
+              administration_route: P
+              dose: !oddb.org,2003/ODDB::Dose 
+                val: 4
+                unit: mcg
+              note: 
+        galenic_form: &id168 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 56
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Nasenspray
+          galenic_group: &id308 !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 13
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Nasenmittel
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 4360
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Desmopressini Acetas
+            synonyms: []
+
+            effective_form: &id054 !oddb.org,2003/ODDB::Substance 
+              oid: 4914
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Desmopressinum
+              synonyms: []
+
+              effective_form: *id054
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: &id1789 !oddb.org,2003/ODDB::Dose 
+            val: 0.1
+            unit: mg
+        packages: 
+          "074": !oddb.org,2003/ODDB::Package 
+            ikscd: "074"
+            size: 3 x 5 mL
+            descr: ""
+            ikscat: B
+            price_exfactory: 11938
+            price_public: 15695
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 2001-05-01
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680546160746
+            pharmacode: "2350655"
+            narcotics: []
+
+          "066": !oddb.org,2003/ODDB::Package 
+            ikscd: "066"
+            size: 5 mL
+            descr: ""
+            ikscat: B
+            price_exfactory: 4695
+            price_public: 7170
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1999-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680546160661
+            pharmacode: "2153423"
+            narcotics: []
+
+          058: !oddb.org,2003/ODDB::Package 
+            ikscd: 058
+            size: 2.5 mL
+            descr: ""
+            ikscat: B
+            price_exfactory: 2735
+            price_public: 4860
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1999-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680546160586
+            pharmacode: "2153400"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 194
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Diabetes insipidus, Polyurie, Polydipsie nach Hypophysenoperationen; Enuresis nocturna
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
   - !oddb.org,2003/ODDB::Registration 
     iksnr: "54767"
-    registration_date: 2000-06-28
+    registration_date: &id1275 2000-06-28
     revision_date: 2003-07-18
     expiration_date: 2005-12-31
     inactive_date: 
@@ -19,38 +2446,30 @@
         dose: !oddb.org,2003/ODDB::Dose 
           val: 200
           unit: mg
-        atc_class: &id002 !oddb.org,2003/ODDB::AtcClass 
+        atc_class: &id057 !oddb.org,2003/ODDB::AtcClass 
           code: M01AE14
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
             de: Dexibuprofen
           guidelines: 
           ddd_guidelines: 
-          ddds: 
+          ddds: &id5092 
             O: !oddb.org,2003/ODDB::AtcClass::DDD 
               administration_route: O
               dose: !oddb.org,2003/ODDB::Dose 
                 val: 0.8
                 unit: g
               note: 
-        galenic_form: &id003 !oddb.org,2003/ODDB::GalenicForm 
-          oid: 21
-          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-            de: Filmtabletten
-            lt: COMPRESSO OBDUCTO
-          galenic_group: &id019 !oddb.org,2003/ODDB::GalenicGroup 
-            oid: 2
-            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-              de: Tabletten
+        galenic_form: *id055
         composition_text: 
         active_agents: 
         - !oddb.org,2003/ODDB::ActiveAgent 
-          substance: &id001 !oddb.org,2003/ODDB::Substance 
+          substance: &id056 !oddb.org,2003/ODDB::Substance 
             oid: 1784
             descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
               lt: Dexibuprofenum
             synonyms: []
 
-            effective_form: *id001
+            effective_form: *id056
             swissmedic_code: 
           dose: !oddb.org,2003/ODDB::Dose 
             val: 200
@@ -64,7 +2483,7 @@
             price_exfactory: 2229
             price_public: 4265
             sl_entry: !oddb.org,2003/ODDB::SlEntry 
-              introduction_date: 
+              introduction_date: 2001-01-01
               limitation: false
               limitation_points: 
               limitation_text: 
@@ -80,13 +2499,13 @@
             price_exfactory: 790
             price_public: 1750
             sl_entry: !oddb.org,2003/ODDB::SlEntry 
-              introduction_date: 
+              introduction_date: 2001-01-01
               limitation: false
               limitation_points: 
               limitation_text: 
             ean13: !str:ODDB::Ean13 7680547670138
             pharmacode: "2376790"
-            narcotics: &id117 []
+            narcotics: []
 
       "02": !oddb.org,2003/ODDB::Sequence 
         seqnr: "02"
@@ -95,12 +2514,12 @@
         dose: !oddb.org,2003/ODDB::Dose 
           val: 300
           unit: mg
-        atc_class: *id002
-        galenic_form: *id003
+        atc_class: *id057
+        galenic_form: *id055
         composition_text: 
         active_agents: 
         - !oddb.org,2003/ODDB::ActiveAgent 
-          substance: *id001
+          substance: *id056
           dose: !oddb.org,2003/ODDB::Dose 
             val: 300
             unit: mg
@@ -113,7 +2532,7 @@
             price_exfactory: 3200
             price_public: 5405
             sl_entry: !oddb.org,2003/ODDB::SlEntry 
-              introduction_date: 
+              introduction_date: 2001-01-01
               limitation: false
               limitation_points: 
               limitation_text: 
@@ -129,7 +2548,7 @@
             price_exfactory: 1160
             price_public: 2595
             sl_entry: !oddb.org,2003/ODDB::SlEntry 
-              introduction_date: 
+              introduction_date: 2001-01-01
               limitation: false
               limitation_points: 
               limitation_text: 
@@ -144,13 +2563,13 @@
         dose: !oddb.org,2003/ODDB::Dose 
           val: 400
           unit: mg
-        atc_class: *id002
-        galenic_form: *id003
+        atc_class: *id057
+        galenic_form: *id055
         composition_text: 
         active_agents: 
         - !oddb.org,2003/ODDB::ActiveAgent 
-          substance: *id001
-          dose: !oddb.org,2003/ODDB::Dose 
+          substance: *id056
+          dose: &id5499 !oddb.org,2003/ODDB::Dose 
             val: 400
             unit: mg
         packages: 
@@ -162,7 +2581,7 @@
             price_exfactory: 1310
             price_public: 2975
             sl_entry: !oddb.org,2003/ODDB::SlEntry 
-              introduction_date: 
+              introduction_date: 2001-01-01
               limitation: false
               limitation_points: 
               limitation_text: 
@@ -178,13 +2597,13 @@
             price_exfactory: 2132
             price_public: 4150
             sl_entry: !oddb.org,2003/ODDB::SlEntry 
-              introduction_date: 
+              introduction_date: 2001-01-01
               limitation: false
               limitation_points: 
               limitation_text: 
             ean13: !str:ODDB::Ean13 7680547670992
             pharmacode: "2376867"
-            narcotics: &id388 []
+            narcotics: []
 
           080: !oddb.org,2003/ODDB::Package 
             ikscd: 080
@@ -194,7 +2613,7 @@
             price_exfactory: 515
             price_public: 1220
             sl_entry: !oddb.org,2003/ODDB::SlEntry 
-              introduction_date: 
+              introduction_date: 2001-01-01
               limitation: false
               limitation_points: 
               limitation_text: 
@@ -202,10 +2621,1457 @@
             pharmacode: "2376844"
             narcotics: []
 
-    indication: &id046 !oddb.org,2003/ODDB::Indication 
+    indication: !oddb.org,2003/ODDB::Indication 
       oid: 807
       descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
         la: Antirheumatikum, Antiphlogistikum
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "54859"
+    registration_date: 2004-04-29
+    revision_date: 2003-09-12
+    expiration_date: 2008-09-11
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Mandal 425
+        name_descr: Kapseln
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 425
+          unit: ""
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: N06AX99
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Sonstige Antidepressiva (Diverse)
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: *id058
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 2886
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Hyperici Herbae Extractum Ethanolicum Siccum
+            synonyms: &id661 []
+
+            effective_form: &id059 !oddb.org,2003/ODDB::Substance 
+              oid: 6359
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                de: Hypericum
+              synonyms: []
+
+              effective_form: *id059
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 425
+            unit: mg
+        packages: 
+          "031": !oddb.org,2003/ODDB::Package 
+            ikscd: "031"
+            size: 100 Kapseln
+            descr: 
+            ikscat: D
+            price_exfactory: 0
+            price_public: 5595
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680548590312
+            pharmacode: 
+            narcotics: []
+
+          "015": !oddb.org,2003/ODDB::Package 
+            ikscd: "015"
+            size: 30 Kapseln
+            descr: 
+            ikscat: D
+            price_exfactory: 0
+            price_public: 1910
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680548590152
+            pharmacode: 
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 959
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: "Bei Verstimmungszust\xE4nden"
+    generic_type: :original
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "55274"
+    registration_date: 2000-10-03
+    revision_date: 2003-07-18
+    expiration_date: 2005-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Makatussin neue Formel
+        name_descr: Hustentropfen
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 13.6
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: R05DA04
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Codein
+            en: Codeine
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+            O: !oddb.org,2003/ODDB::AtcClass::DDD 
+              administration_route: O
+              dose: !oddb.org,2003/ODDB::Dose 
+                val: 0.1
+                unit: g
+              note: 
+        galenic_form: &id084 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 151
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Hustentropfen
+          galenic_group: *id041
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id118 !oddb.org,2003/ODDB::Substance 
+            oid: 1502
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Codeini Phosphas Hemihydricus
+            synonyms: []
+
+            effective_form: &id060 !oddb.org,2003/ODDB::Substance 
+              oid: 5926
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                de: Codein
+                lt: Codeinum
+                en: Codeine
+              synonyms: []
+
+              effective_form: *id060
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 13.6
+            unit: mg
+        packages: 
+          "005": !oddb.org,2003/ODDB::Package 
+            ikscd: "005"
+            size: 30 g
+            descr: ""
+            ikscat: C
+            price_exfactory: 582
+            price_public: 1095
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 2002-11-01
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680552740055
+            pharmacode: "2388155"
+            narcotics: 
+            - 41444-62-6
+            - 41444-62-6
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 958
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Husten (verschiedener Genese), insbesondere trockener Reizhusten
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "55339"
+    registration_date: 2000-05-11
+    revision_date: 2005-08-25
+    expiration_date: 2010-08-24
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Sanalgin N
+        name_descr: Tabletten
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 550
+          unit: mg
+        atc_class: &id063 !oddb.org,2003/ODDB::AtcClass 
+          code: N02BE51
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Paracetamol, Kombinationen exkl. Psycholeptika
+            en: Paracetamol, combinations excl. psycholeptics
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: *id061
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 500
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id062 !oddb.org,2003/ODDB::Substance 
+            oid: 2409
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Coffein
+              fr: Caffeine
+              lt: Coffeinum
+              en: Caffeine
+            synonyms: 
+            - Kaffee Tee (Coffein)
+            - Kaffee
+            - Tee
+            - Coffee
+            - Tea
+            - "Th\xE9"
+            - "Caf\xE9"
+            effective_form: *id062
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 50
+            unit: mg
+        packages: 
+          "002": !oddb.org,2003/ODDB::Package 
+            ikscd: "002"
+            size: 10 Tabletten
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680553390020
+            pharmacode: "2336974"
+            narcotics: []
+
+    indication: *id049
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "55651"
+    registration_date: 2001-05-04
+    revision_date: 2003-07-18
+    expiration_date: 2006-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Becetamol C
+        name_descr: Brausepulver
+        dose: 
+        atc_class: *id063
+        galenic_form: !oddb.org,2003/ODDB::GalenicForm 
+          oid: 65
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Brausepulver
+          galenic_group: *id064
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id065 !oddb.org,2003/ODDB::Substance 
+            oid: 3683
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Acidum Ascorbicum
+            synonyms: []
+
+            effective_form: *id065
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 300
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 500
+            unit: mg
+        packages: 
+          "002": !oddb.org,2003/ODDB::Package 
+            ikscd: "002"
+            size: 10 Beutel
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680556510029
+            pharmacode: 
+            narcotics: []
+
+          "004": !oddb.org,2003/ODDB::Package 
+            ikscd: "004"
+            size: 20 Beutel
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680556510043
+            pharmacode: 
+            narcotics: []
+
+    indication: &id440 !oddb.org,2003/ODDB::Indication 
+      oid: 69
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: "Linderung von Fieber und Schmerzen bei Erk\xE4ltungskrankheiten"
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "55916"
+    registration_date: 2001-09-14
+    revision_date: 2003-07-18
+    expiration_date: 2006-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Aknex Cleaning
+        name_descr: Aknelotion
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 2
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: D08AJ02
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Cetrimonium
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: *id066
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 1404
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Cetrimonii Bromidum
+            synonyms: []
+
+            effective_form: &id067 !oddb.org,2003/ODDB::Substance 
+              oid: 6485
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Cetrimonium
+              synonyms: []
+
+              effective_form: *id067
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 2
+            unit: mg
+        packages: 
+          "001": !oddb.org,2003/ODDB::Package 
+            ikscd: "001"
+            size: 200 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 1490
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680559160016
+            pharmacode: "2428587"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 929
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Desinfizierende Hautreinigung
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "44584"
+    registration_date: 1983-01-24
+    revision_date: 2005-09-29
+    expiration_date: 2010-09-28
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Cremol-Ritter
+        name_descr: Lotion
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 0
+          unit: 1 g
+        atc_class: *id068
+        galenic_form: &id095 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 53
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Lotion
+          galenic_group: *id012
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id070 !oddb.org,2003/ODDB::Substance 
+            oid: 5
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: ""
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 0
+            unit: ""
+        packages: 
+          "107": !oddb.org,2003/ODDB::Package 
+            ikscd: "107"
+            size: 300 mL
+            descr: "Nachf\xFCllflasche"
+            ikscat: D
+            price_exfactory: 
+            price_public: 2575
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680445841074
+            pharmacode: "1524751"
+            narcotics: []
+
+          085: !oddb.org,2003/ODDB::Package 
+            ikscd: 085
+            size: 150 mL
+            descr: "Nachf\xFCllflasche"
+            ikscat: D
+            price_exfactory: 
+            price_public: 1495
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680445840855
+            pharmacode: "1524745"
+            narcotics: []
+
+          "123": !oddb.org,2003/ODDB::Package 
+            ikscd: "123"
+            size: 800 mL
+            descr: "Nachf\xFCllflasche"
+            ikscat: D
+            price_exfactory: 
+            price_public: 5095
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680445841234
+            pharmacode: "1483087"
+            narcotics: []
+
+          "115": !oddb.org,2003/ODDB::Package 
+            ikscd: "115"
+            size: 800 mL
+            descr: mit Pumpe
+            ikscat: D
+            price_exfactory: 
+            price_public: 5650
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680445841159
+            pharmacode: "1514758"
+            narcotics: []
+
+          093: !oddb.org,2003/ODDB::Package 
+            ikscd: 093
+            size: 300 mL
+            descr: mit Pumpe
+            ikscat: D
+            price_exfactory: 
+            price_public: 2825
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680445840930
+            pharmacode: "1516378"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 602
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Trockene, empfindliche Haut
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "47763"
+    registration_date: 1986-06-26
+    revision_date: 2005-09-29
+    expiration_date: 2010-09-28
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Cremol-Ritter fett
+        name_descr: "\xD6l-Bad"
+        dose: 
+        atc_class: *id068
+        galenic_form: &id115 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 292
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: "\xD6l-Bad"
+          galenic_group: *id069
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id070
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 0
+            unit: ""
+        packages: 
+          029: !oddb.org,2003/ODDB::Package 
+            ikscd: 029
+            size: 800 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 3645
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680477630295
+            pharmacode: "1258551"
+            narcotics: []
+
+          "045": !oddb.org,2003/ODDB::Package 
+            ikscd: "045"
+            size: 300 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 1445
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680477630455
+            pharmacode: "1499929"
+            narcotics: []
+
+          "037": !oddb.org,2003/ODDB::Package 
+            ikscd: "037"
+            size: 150 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 0
+            price_public: 730
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1987-03-15
+              limitation: true
+              limitation_points: 20
+              limitation_text: !oddb.org,2003/ODDB::LimitationText 
+                descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                  it: !oddb.org,2003/ODDB::Text::Chapter 
+                    heading: ""
+                    sections: &id871 
+                      - !oddb.org,2003/ODDB::Text::Section 
+                        subheading: ""
+                        paragraphs: 
+                        - !oddb.org,2003/ODDB::Text::Paragraph 
+                          formats: 
+                          - !oddb.org,2003/ODDB::Text::Format 
+                            values: []
+
+                            start: 0
+                            end: -1
+                          text: "Ammessi in totale: 60 punti."
+                          preformatted: false
+                  de: !oddb.org,2003/ODDB::Text::Chapter 
+                    heading: ""
+                    sections: 
+                    - !oddb.org,2003/ODDB::Text::Section 
+                      subheading: ""
+                      paragraphs: 
+                      - !oddb.org,2003/ODDB::Text::Paragraph 
+                        formats: 
+                        - !oddb.org,2003/ODDB::Text::Format 
+                          values: []
+
+                          start: 0
+                          end: -1
+                        text: "Gesamthaft zugelassen: 60 Punkte."
+                        preformatted: false
+                  fr: !oddb.org,2003/ODDB::Text::Chapter 
+                    heading: ""
+                    sections: 
+                    - !oddb.org,2003/ODDB::Text::Section 
+                      subheading: ""
+                      paragraphs: 
+                      - !oddb.org,2003/ODDB::Text::Paragraph 
+                        formats: 
+                        - !oddb.org,2003/ODDB::Text::Format 
+                          values: []
+
+                          start: 0
+                          end: -1
+                        text: "Prescription limit\xE9e au maximum \xE0: 60 points."
+                        preformatted: false
+            ean13: !str:ODDB::Ean13 7680477630370
+            pharmacode: "1499912"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 802121
+      descriptions: &id1444 !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: "Badezusatz f\xFCr die sehr trockene, schuppende Haut"
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "49287"
+    registration_date: 1989-04-21
+    revision_date: 2003-07-18
+    expiration_date: 2007-10-08
+    inactive_date: 
+    sequences: 
+      "01": &id9845 !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Passelyt
+        name_descr: Nerventropfen
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 0.97
+          unit: ml
+        atc_class: &id132 !oddb.org,2003/ODDB::AtcClass 
+          code: N05CM99
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: "Sonstige Hypnotika und Sedativa (Diverse Monopr\xE4parate)"
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: *id071
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 2770
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Passiflorae Alcoholatura
+            synonyms: []
+
+            effective_form: &id072 !oddb.org,2003/ODDB::Substance 
+              oid: 90
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Passiflora Incarnata
+              synonyms: []
+
+              effective_form: *id072
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 0.97
+            unit: ml
+        packages: 
+          "011": !oddb.org,2003/ODDB::Package 
+            ikscd: "011"
+            size: 30 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680492870119
+            pharmacode: 
+            narcotics: []
+
+          038: !oddb.org,2003/ODDB::Package 
+            ikscd: 038
+            size: 100 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680492870386
+            pharmacode: 
+            narcotics: []
+
+    indication: *id073
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "40913"
+    registration_date: 1978-11-07
+    revision_date: 2004-03-23
+    expiration_date: 2007-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Dinacode N
+        name_descr: "Sirup f\xFCr Erwachsene"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 507.9
+          unit: mg
+        atc_class: &id125 !oddb.org,2003/ODDB::AtcClass 
+          code: R05FA02
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Opium-Derivate und Expektoranzien
+            en: Opium derivatives and expectorants
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: !oddb.org,2003/ODDB::GalenicForm 
+          oid: 264
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: "Sirup f\xFCr Erwachsene"
+          galenic_group: *id041
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id060
+          dose: &id1977 !oddb.org,2003/ODDB::Dose 
+            val: 5.9
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id126 !oddb.org,2003/ODDB::Substance 
+            oid: 1753
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Natrii Benzoas
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 89
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 2204
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Thymi Tinctura
+            synonyms: []
+
+            effective_form: *id074
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 177
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 4694
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Balsami Tolutani Extractum pro Sirupo
+            synonyms: []
+
+            effective_form: &id075 !oddb.org,2003/ODDB::Substance 
+              oid: 2483
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Balsamum Tolutanum
+              synonyms: []
+
+              effective_form: *id075
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 236
+            unit: mg
+        packages: 
+          "017": &id1078 !oddb.org,2003/ODDB::Package 
+            ikscd: "017"
+            size: 180 mL
+            descr: ""
+            ikscat: C
+            price_exfactory: 
+            price_public: 875
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680409130176
+            pharmacode: 0828822
+            narcotics: []
+
+    indication: *id076
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "46380"
+    registration_date: 1985-08-06
+    revision_date: 2004-09-17
+    expiration_date: 2009-09-16
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Makaphyt
+        name_descr: Hustensirup
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 873
+          unit: mg
+        atc_class: &id083 !oddb.org,2003/ODDB::AtcClass 
+          code: R05CA10
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: "Expektorantia, Kombinationspr\xE4parate"
+            fr: "Expektorantia, Kombinationspr\xE4parate"
+            en: Combinations
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: *id077
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 609
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Liquiritiae Extractum
+            synonyms: []
+
+            effective_form: &id078 !oddb.org,2003/ODDB::Substance 
+              oid: 6654
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Glycyrrhiza Glabra
+              synonyms: []
+
+              effective_form: *id078
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 156
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 4224
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Thymi Extractum
+            synonyms: []
+
+            effective_form: *id074
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 468
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 4705
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Droserae Extractum
+            synonyms: []
+
+            effective_form: &id079 !oddb.org,2003/ODDB::Substance 
+              oid: 1082
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Drosera
+              synonyms: []
+
+              effective_form: *id079
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 62
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 4084
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Polygalae Extractum
+            synonyms: []
+
+            effective_form: &id080 !oddb.org,2003/ODDB::Substance 
+              oid: 6776
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Polygala Amara
+              synonyms: []
+
+              effective_form: *id080
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 187
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id081 !oddb.org,2003/ODDB::Substance 
+            oid: 4524
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Fructosum
+            synonyms: []
+
+            effective_form: *id081
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 2.5
+            unit: g
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id082
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 2.5
+            unit: g
+        packages: 
+          "037": !oddb.org,2003/ODDB::Package 
+            ikscd: "037"
+            size: 200 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 1635
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680463800374
+            pharmacode: "2388178"
+            narcotics: []
+
+    indication: &id088 !oddb.org,2003/ODDB::Indication 
+      oid: 315
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: "Bei Erk\xE4ltungshusten"
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "23209"
+    registration_date: 1957-07-02
+    revision_date: 2004-09-17
+    expiration_date: 2009-09-16
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Makaphyt
+        name_descr: Hustentropfen
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 514.9
+          unit: mg
+        atc_class: *id083
+        galenic_form: *id084
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id003
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 14.6
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 4349
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Droserae Extractum Liquidum
+            synonyms: []
+
+            effective_form: *id079
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 39
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 2681
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Liquiritiae Extractum Liquidum
+            synonyms: []
+
+            effective_form: *id078
+            swissmedic_code: 
+          dose: &id1180 !oddb.org,2003/ODDB::Dose 
+            val: 146.3
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 3279
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Polygalae Extractum Liquidum
+            synonyms: []
+
+            effective_form: *id080
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 58.5
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 4046
+            descriptions: &id3022 !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Pimpinellae Extractum Liquidum
+            synonyms: []
+
+            effective_form: &id085 !oddb.org,2003/ODDB::Substance 
+              oid: 6766
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Pimpinella Anisum
+              synonyms: []
+
+              effective_form: *id085
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 58.5
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 3586
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Thymi Extractum Liquidum
+            synonyms: []
+
+            effective_form: *id074
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 175.5
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id007
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 7.8
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 2624
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Anisi Aetheroleum
+            synonyms: []
+
+            effective_form: &id086 !oddb.org,2003/ODDB::Substance 
+              oid: 4716
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Anisi Stellati Fructus
+              synonyms: []
+
+              effective_form: *id086
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 8.8
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id087
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 5.9
+            unit: mg
+        packages: 
+          039: !oddb.org,2003/ODDB::Package 
+            ikscd: 039
+            size: 30 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 1155
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680232090395
+            pharmacode: "2388190"
+            narcotics: []
+
+    indication: *id088
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "47057"
+    registration_date: 1985-06-14
+    revision_date: 2004-12-22
+    expiration_date: &id4152 2009-12-21
+    inactive_date: 
+    sequences: &id10793 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Becetamol
+        name_descr: Sirup
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 25
+          unit: mg
+        atc_class: *id043
+        galenic_form: *id077
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 25
+            unit: mg
+        packages: 
+          "035": !oddb.org,2003/ODDB::Package 
+            ikscd: "035"
+            size: 100 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680470570352
+            pharmacode: 
+            narcotics: []
+
+    indication: *id049
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "51390"
+    registration_date: 1991-11-15
+    revision_date: 2004-12-22
+    expiration_date: 2009-12-21
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Becetamol
+        name_descr: Tropfen
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 100
+          unit: mg
+        atc_class: *id043
+        galenic_form: *id071
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 100
+            unit: mg
+        packages: 
+          "024": !oddb.org,2003/ODDB::Package 
+            ikscd: "024"
+            size: 20 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 0
+            price_public: 695
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1993-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680513900245
+            pharmacode: "1828681"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 932
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: "Fieber und Schmerzmittel f\xFCr Kinder"
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "50433"
+    registration_date: 1990-02-27
+    revision_date: 2004-12-02
+    expiration_date: 2009-12-01
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Destrobac
+        name_descr: "w\xE4ssrige L\xF6sung gef\xE4rbt"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 1
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: D08AG03
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Iod
+            en: Iodine
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: *id066
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id035
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1
+            unit: mg
+        packages: 
+          "021": !oddb.org,2003/ODDB::Package 
+            ikscd: "021"
+            size: 1000 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680504330211
+            pharmacode: 
+            narcotics: []
+
+          "013": !oddb.org,2003/ODDB::Package 
+            ikscd: "013"
+            size: 50 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680504330136
+            pharmacode: 
+            narcotics: []
+
+          048: !oddb.org,2003/ODDB::Package 
+            ikscd: 048
+            size: 5 x 1000 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680504330488
+            pharmacode: 
+            narcotics: []
+
+    indication: &id089 !oddb.org,2003/ODDB::Indication 
+      oid: 945
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Haut-, Schleimhaut- und Wunddesinfiziens
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "46693"
+    registration_date: 1985-06-04
+    revision_date: 2004-12-02
+    expiration_date: 2009-12-01
+    inactive_date: 
+    sequences: &id3001 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Destrobac
+        name_descr: "w\xE4ssrige L\xF6sung ungef\xE4rbt"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 1
+          unit: mg
+        atc_class: *id036
+        galenic_form: *id026
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id035
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1
+            unit: mg
+        packages: 
+          019: !oddb.org,2003/ODDB::Package 
+            ikscd: 019
+            size: 1 x 50 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 720
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680466930191
+            pharmacode: "1334602"
+            narcotics: []
+
+          "035": !oddb.org,2003/ODDB::Package 
+            ikscd: "035"
+            size: 5 x 1000 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 15990
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680466930351
+            pharmacode: "1342180"
+            narcotics: []
+
+          "027": !oddb.org,2003/ODDB::Package 
+            ikscd: "027"
+            size: 1 x 1000 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 4640
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680466930276
+            pharmacode: "1342174"
+            narcotics: []
+
+    indication: *id089
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "53788"
+    registration_date: 
+    revision_date: 2004-12-13
+    expiration_date: 2009-12-12
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Lopisol
+        name_descr: Brausetabletten
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 2
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: A07DA03
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Loperamid
+            en: Loperamide
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+            O: !oddb.org,2003/ODDB::AtcClass::DDD 
+              administration_route: O
+              dose: !oddb.org,2003/ODDB::Dose 
+                val: 10
+                unit: mg
+              note: 
+        galenic_form: &id235 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 5
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Brausetabletten
+          galenic_group: *id064
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 2786
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Loperamidi Hydrochloridum
+            synonyms: []
+
+            effective_form: &id090 !oddb.org,2003/ODDB::Substance 
+              oid: 6657
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Loperamidum
+              synonyms: []
+
+              effective_form: *id090
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 2
+            unit: mg
+        packages: 
+          "025": !oddb.org,2003/ODDB::Package 
+            ikscd: "025"
+            size: 10 Brausetabletten
+            descr: 
+            ikscat: C
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680537880257
+            pharmacode: 
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 800
+      descriptions: &id693 !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Antidiarrhoikum
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "54523"
+    registration_date: 1999-09-28
+    revision_date: 2004-12-15
+    expiration_date: 2009-12-14
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Tasmacyclin Akne
+        name_descr: Tabletten
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 50
+          unit: mg
+        atc_class: &id628 !oddb.org,2003/ODDB::AtcClass 
+          code: J01AA02
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Doxycyclin
+            en: Doxycycline
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+            O: !oddb.org,2003/ODDB::AtcClass::DDD 
+              administration_route: O
+              dose: !oddb.org,2003/ODDB::Dose 
+                val: 0.1
+                unit: g
+              note: 
+            P: !oddb.org,2003/ODDB::AtcClass::DDD 
+              administration_route: P
+              dose: !oddb.org,2003/ODDB::Dose 
+                val: 0.1
+                unit: g
+              note: 
+        galenic_form: *id061
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id091 !oddb.org,2003/ODDB::Substance 
+            oid: 4957
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Doxycyclinum
+            synonyms: []
+
+            effective_form: *id091
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 50
+            unit: mg
+        packages: 
+          "025": !oddb.org,2003/ODDB::Package 
+            ikscd: "025"
+            size: 30 Tabletten
+            descr: ""
+            ikscat: A
+            price_exfactory: 1906
+            price_public: 3880
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 2002-04-01
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680545230259
+            pharmacode: "2594860"
+            narcotics: []
+
+    indication: *id092
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "41179"
+    registration_date: 1981-02-11
+    revision_date: 2004-12-16
+    expiration_date: 2009-12-15
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Tasmaderm
+        name_descr: "Cr\xE8me (Vanishing cream)"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 1
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: D10AX
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Andere Aknemittel zur topischen Anwendung
+            en: Other anti-acne preparations for topical use
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: *id093
+        composition_text: 
+        active_agents: &id3026 
+          - !oddb.org,2003/ODDB::ActiveAgent 
+            substance: &id094 !oddb.org,2003/ODDB::Substance 
+              oid: 2258
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Motretinidum
+              synonyms: []
+
+              effective_form: *id094
+              swissmedic_code: 
+            dose: !oddb.org,2003/ODDB::Dose 
+              val: 1
+              unit: mg
+        packages: 
+          "015": !oddb.org,2003/ODDB::Package 
+            ikscd: "015"
+            size: 20 g
+            descr: ""
+            ikscat: C
+            price_exfactory: 0
+            price_public: 1185
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: &id3028 1982-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680411790153
+            pharmacode: "890152"
+            narcotics: &id581 []
+
+    indication: &id096 !oddb.org,2003/ODDB::Indication 
+      oid: 988
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Akne
     generic_type: 
     export_flag: 
     fachinfo_oid: 
@@ -223,7 +4089,7 @@
         dose: !oddb.org,2003/ODDB::Dose 
           val: 1
           unit: mg
-        atc_class: &id016 !oddb.org,2003/ODDB::AtcClass 
+        atc_class: &id294 !oddb.org,2003/ODDB::AtcClass 
           code: M01AE02
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
             de: Naproxen
@@ -242,25 +4108,11 @@
                 val: 0.5
                 unit: g
               note: 
-        galenic_form: &id418 !oddb.org,2003/ODDB::GalenicForm 
-          oid: 53
-          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-            de: Lotion
-          galenic_group: &id055 !oddb.org,2003/ODDB::GalenicGroup 
-            oid: 11
-            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-              de: "Fl\xFCssigkeit"
+        galenic_form: *id095
         composition_text: 
         active_agents: 
         - !oddb.org,2003/ODDB::ActiveAgent 
-          substance: &id004 !oddb.org,2003/ODDB::Substance 
-            oid: 2258
-            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-              lt: Motretinidum
-            synonyms: []
-
-            effective_form: *id004
-            swissmedic_code: 
+          substance: *id094
           dose: !oddb.org,2003/ODDB::Dose 
             val: 1
             unit: mg
@@ -273,7 +4125,7 @@
             price_exfactory: 0
             price_public: 1740
             sl_entry: !oddb.org,2003/ODDB::SlEntry 
-              introduction_date: 
+              introduction_date: 1982-03-15
               limitation: false
               limitation_points: 
               limitation_text: 
@@ -281,10 +4133,1584 @@
             pharmacode: "890169"
             narcotics: []
 
+    indication: *id096
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "42773"
+    registration_date: 1981-01-15
+    revision_date: 2004-12-28
+    expiration_date: 2009-12-27
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Xyloneural
+        name_descr: "Injektionsl\xF6sung (ohne Konservierungsmittel)"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 10
+          unit: mg
+        atc_class: &id097 !oddb.org,2003/ODDB::AtcClass 
+          code: N01BB02
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Lidocain
+            en: Lidocaine
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: &id098 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 25
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            fr: solution injectable
+            de: "Injektionsl\xF6sung"
+          galenic_group: &id252 !oddb.org,2003/ODDB::GalenicGroup 
+            oid: 3
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              fr: Injection/Infusion
+              de: Injektion/Infusion
+              en: Injection/Infusion
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id029
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id099 !oddb.org,2003/ODDB::Substance 
+            oid: 1736
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Lidocaini Hydrochloridum Anhydricum
+            synonyms: &id6396 []
+
+            effective_form: *id029
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        packages: &id2778 
+          018: !oddb.org,2003/ODDB::Package 
+            ikscd: 018
+            size: 5 x 5 mL Ampulle(n)
+            descr: ""
+            ikscat: B
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680427730181
+            pharmacode: 0898604
+            narcotics: []
+
+          "026": !oddb.org,2003/ODDB::Package 
+            ikscd: "026"
+            size: 50 x 5 mL Ampulle(n)
+            descr: ""
+            ikscat: B
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680427730266
+            pharmacode: 0906083
+            narcotics: []
+
+      "02": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "02"
+        name_base: Xyloneural
+        name_descr: "Injektionsl\xF6sung"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 10
+          unit: mg
+        atc_class: *id097
+        galenic_form: *id098
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id099
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        packages: 
+          "034": !oddb.org,2003/ODDB::Package 
+            ikscd: "034"
+            size: 1 x 50 mL Stechampulle(n)
+            descr: 
+            ikscat: B
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680427730341
+            pharmacode: 
+            narcotics: []
+
     indication: !oddb.org,2003/ODDB::Indication 
-      oid: 988
+      oid: 997
       descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-        la: Akne
+        la: Neuraltherapie
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "56147"
+    registration_date: 2005-01-24
+    revision_date: 
+    expiration_date: 2010-01-23
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Zalain
+        name_descr: "Cr\xE8me"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 20
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: D01AC14
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Sertaconazol
+            en: Sertaconazole
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: *id100
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 687398
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Sertaconazoli Nitras
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 20
+            unit: mg
+        packages: 
+          "002": !oddb.org,2003/ODDB::Package 
+            ikscd: "002"
+            size: 30 g
+            descr: 
+            ikscat: B
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680561470028
+            pharmacode: 
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 687391
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Tinea pedis
+    generic_type: :original
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "38658"
+    registration_date: 1974-12-11
+    revision_date: 2005-09-29
+    expiration_date: 2010-09-28
+    inactive_date: 
+    sequences: &id695 
+      "02": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "02"
+        name_base: Cremol-Ritter, Douche
+        name_descr: "fl\xFCssig"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 10
+          unit: mg/g
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: D09AA06
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Triclosan
+          guidelines: 
+          ddd_guidelines: 
+          ddds: {}
+
+        galenic_form: *id026
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id101 !oddb.org,2003/ODDB::Substance 
+            oid: 1401
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Triclosanum
+            synonyms: []
+
+            effective_form: *id101
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        packages: 
+          "050": !oddb.org,2003/ODDB::Package 
+            ikscd: "050"
+            size: 300 mL
+            descr: 
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680386580506
+            pharmacode: 
+            narcotics: []
+
+          "042": !oddb.org,2003/ODDB::Package 
+            ikscd: "042"
+            size: 150 mL
+            descr: 
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680386580421
+            pharmacode: 
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 939
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Trockene, schuppende Haut
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "51102"
+    registration_date: 1994-02-25
+    revision_date: 
+    expiration_date: 
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Lactoferment 10 Sachets
+        name_descr: 
+        dose: 
+        atc_class: &id108 !oddb.org,2003/ODDB::AtcClass 
+          code: A07FA01
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: "Milchs\xE4urebildner"
+            en: Lactic acid producing organisms
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: *id102
+        composition_text: 
+        active_agents: 
+        - &id1005 !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id110 !oddb.org,2003/ODDB::Substance 
+            oid: 5153
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Lactobacillus Acidophilus Mortuus Cryodesiccatus
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: ut
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id111 !oddb.org,2003/ODDB::Substance 
+            oid: 712398
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Lactose Calciumcarbonat Bakterienlyophilisat
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 0.34
+            unit: g
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id112 !oddb.org,2003/ODDB::Substance 
+            oid: 712402
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: "enthaltend: inaktivierte Keime von: Lactobacillus acidophilus"
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: ""
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id113 !oddb.org,2003/ODDB::Substance 
+            oid: 712406
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Fermentiertes Kulturmedium
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 0.16
+            unit: g
+        packages: 
+          029: !oddb.org,2003/ODDB::Package 
+            ikscd: 029
+            size: "Packung mit 10 Sachets "
+            descr: 
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680511020297
+            pharmacode: 
+            narcotics: []
+
+    indication: &id114 !oddb.org,2003/ODDB::Indication 
+      oid: 711523
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        de: "symptomatische Behandlung der Diarrh\xF6e"
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "35695"
+    registration_date: 1972-05-01
+    revision_date: 
+    expiration_date: 
+    inactive_date: 
+    sequences: 
+      "01": &id5100 !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Ribolac
+        name_descr: Kapseln
+        dose: 
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: A07FA
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Mikrobielle Antidiarrhoika
+            en: Antidiarrheal microorganisms
+          guidelines: !oddb.org,2003/ODDB::Text::Document 
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              en: !oddb.org,2003/ODDB::Text::Chapter 
+                heading: ""
+                sections: 
+                - !oddb.org,2003/ODDB::Text::Section 
+                  subheading: ""
+                  paragraphs: 
+                  - !oddb.org,2003/ODDB::Text::Paragraph 
+                    formats: 
+                    - !oddb.org,2003/ODDB::Text::Format 
+                      values: []
+
+                      start: 0
+                      end: -1
+                    text: Preparations with e.g. lactic acid producing organisms are classified in this group.
+                    preformatted: false
+          ddd_guidelines: !oddb.org,2003/ODDB::Text::Document 
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              en: !oddb.org,2003/ODDB::Text::Chapter 
+                heading: ""
+                sections: 
+                - !oddb.org,2003/ODDB::Text::Section 
+                  subheading: ""
+                  paragraphs: 
+                  - !oddb.org,2003/ODDB::Text::Paragraph 
+                    formats: 
+                    - !oddb.org,2003/ODDB::Text::Format 
+                      values: []
+
+                      start: 0
+                      end: -1
+                    text: The DDDs are given in UDs (e.g. numbers of tablets).
+                    preformatted: false
+          ddds: {}
+
+        galenic_form: &id109 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 37
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Gelatinekapseln
+          galenic_group: *id045
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id065
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 50
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id297 !oddb.org,2003/ODDB::Substance 
+            oid: 853
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Pyridoxini Hydrochloridum
+            synonyms: []
+
+            effective_form: &id103 !oddb.org,2003/ODDB::Substance 
+              oid: 3367
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Pyridoxinum
+              synonyms: []
+
+              effective_form: *id103
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1.5
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id299 !oddb.org,2003/ODDB::Substance 
+            oid: 4806
+            descriptions: &id5972 !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Thiamini Hydrochloridum
+            synonyms: []
+
+            effective_form: &id104 !oddb.org,2003/ODDB::Substance 
+              oid: 5596
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Thiaminum
+              synonyms: []
+
+              effective_form: *id104
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 0.75
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id105 !oddb.org,2003/ODDB::Substance 
+            oid: 1139
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Riboflavinum
+            synonyms: []
+
+            effective_form: *id105
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id106 !oddb.org,2003/ODDB::Substance 
+            oid: 4306
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Nicotinamidum
+            synonyms: []
+
+            effective_form: *id106
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 15
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id316 !oddb.org,2003/ODDB::Substance 
+            oid: 3452
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Riboflavini Natrii Phosphas
+            synonyms: &id1745 []
+
+            effective_form: *id105
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 0
+            unit: ""
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id298 !oddb.org,2003/ODDB::Substance 
+            oid: 5055
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Calcii Pantothenas
+            synonyms: []
+
+            effective_form: &id107 !oddb.org,2003/ODDB::Substance 
+              oid: 4516
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Calcium
+              synonyms: []
+
+              effective_form: *id107
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1.125
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 2361
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Lactobacillus Acidophilus Vivus
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 0
+            unit: ""
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 1813
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Lactobacillus Acidophilus Cryodesiccatus
+            synonyms: &id866 []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 180.1
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 712982
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Lactobacillus acidophilus
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 25
+            unit: ""
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 713243
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Thiaminchloridhydrochlorid
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 0.75
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 713247
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Pyridoxinhydrochlorid
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1.5
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 713251
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Nikotinamid
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 15
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 713255
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: Calciumpantothenat
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1.125
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 713259
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              de: "Ascorbins\xE4ure"
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 50
+            unit: mg
+        packages: 
+          028: !oddb.org,2003/ODDB::Package 
+            ikscd: 028
+            size: Flasche mit 20 Kapseln
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680356950285
+            pharmacode: 0595246
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 711954
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        de: "Normalisierung der Darmflora, symptomatische Behandlung der Diarrh\xF6e"
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "53746"
+    registration_date: 1996-08-07
+    revision_date: 
+    expiration_date: 
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Lactoferment 5 Kapseln
+        name_descr: 
+        dose: 
+        atc_class: *id108
+        galenic_form: *id109
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id110
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 5
+            unit: ut
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id111
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 0.16
+            unit: g
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id112
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 5
+            unit: ""
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id113
+          dose: &id1310 !oddb.org,2003/ODDB::Dose 
+            val: 0.08
+            unit: g
+        packages: 
+          "020": !oddb.org,2003/ODDB::Package 
+            ikscd: "020"
+            size: 2 Blister mit je 10 Kapseln
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 1495
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680537460206
+            pharmacode: "1762108"
+            narcotics: []
+
+    indication: *id114
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "35152"
+    registration_date: 1970-03-02
+    revision_date: 2005-09-29
+    expiration_date: 2010-09-28
+    inactive_date: 
+    sequences: 
+      "02": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "02"
+        name_base: Cremol-Ritter
+        name_descr: "\xD6l-Bad"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 0
+          unit: 1 g
+        atc_class: *id068
+        galenic_form: *id115
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 1054
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Sojae Oleum
+            synonyms: []
+
+            effective_form: &id116 !oddb.org,2003/ODDB::Substance 
+              oid: 6832
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Soja
+              synonyms: []
+
+              effective_form: *id116
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 0
+            unit: ""
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id117 !oddb.org,2003/ODDB::Substance 
+            oid: 4192
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Propylenglycolum
+            synonyms: []
+
+            effective_form: *id117
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 0
+            unit: ""
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 723585
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: "Antiox.: E 321"
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: &id1430 !oddb.org,2003/ODDB::Dose 
+            val: 0
+            unit: ""
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 723589
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Excipiens ad Emulsionem pro
+            synonyms: []
+
+            effective_form: 
+            swissmedic_code: 
+          dose: &id11533 !oddb.org,2003/ODDB::Dose 
+            val: 1
+            unit: g
+        packages: 
+          083: !oddb.org,2003/ODDB::Package 
+            ikscd: 083
+            size: 800 mL
+            descr: 
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680351520834
+            pharmacode: 
+            narcotics: []
+
+          "075": !oddb.org,2003/ODDB::Package 
+            ikscd: "075"
+            size: 300 mL
+            descr: 
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680351520759
+            pharmacode: 
+            narcotics: []
+
+          "067": !oddb.org,2003/ODDB::Package 
+            ikscd: "067"
+            size: 150 mL
+            descr: 
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680351520674
+            pharmacode: 
+            narcotics: []
+
+          091: !oddb.org,2003/ODDB::Package 
+            ikscd: 091
+            size: 5 Liter
+            descr: 
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680351520919
+            pharmacode: 
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 941
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: "Badezusatz f\xFCr die trockene, schuppende Haut"
+    generic_type: :complementary
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "53906"
+    registration_date: 2000-09-28
+    revision_date: 2004-11-04
+    expiration_date: &id2171 2009-11-03
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Co-Becetamol forte
+        name_descr: Kapseln
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 530
+          unit: mg
+        atc_class: *id063
+        galenic_form: *id058
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 500
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id118
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 30
+            unit: mg
+        packages: 
+          "044": !oddb.org,2003/ODDB::Package 
+            ikscd: "044"
+            size: 20 Kapseln
+            descr: 
+            ikscat: B
+            price_exfactory: 290
+            price_public: 750
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 2005-07-01
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680539060442
+            pharmacode: "2820061"
+            narcotics: 
+            - 41444-62-6
+            - 41444-62-6
+    indication: &id119 !oddb.org,2003/ODDB::Indication 
+      oid: 34
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Analgetikum
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "46357"
+    registration_date: 1986-03-10
+    revision_date: 2004-11-04
+    expiration_date: 2009-11-03
+    inactive_date: 
+    sequences: 
+      "02": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "02"
+        name_base: "Co-Becetamol f\xFCr Kleinkinder"
+        name_descr: Suppositorien
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 255
+          unit: mg
+        atc_class: *id063
+        galenic_form: *id048
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 250
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id118
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 5
+            unit: mg
+        packages: 
+          078: !oddb.org,2003/ODDB::Package 
+            ikscd: 078
+            size: 10 Suppositorien
+            descr: 
+            ikscat: B
+            price_exfactory: 250
+            price_public: 705
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 2005-07-01
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680463570789
+            pharmacode: "2820003"
+            narcotics: 
+            - 41444-62-6
+            - 41444-62-6
+      "03": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "03"
+        name_base: "Co-Becetamol f\xFCr Schulkinder"
+        name_descr: Suppositorien
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 510
+          unit: mg
+        atc_class: *id063
+        galenic_form: *id048
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 500
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id118
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        packages: 
+          086: !oddb.org,2003/ODDB::Package 
+            ikscd: 086
+            size: 10 Suppositorien
+            descr: 
+            ikscat: B
+            price_exfactory: 295
+            price_public: 755
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 2005-07-01
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680463570864
+            pharmacode: "2820026"
+            narcotics: 
+            - 41444-62-6
+            - 41444-62-6
+      "04": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "04"
+        name_base: "Co-Becetamol f\xFCr Erwachsene"
+        name_descr: Suppositorien
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 1
+          unit: g
+        atc_class: *id063
+        galenic_form: *id048
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 1
+            unit: g
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id118
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 20
+            unit: mg
+        packages: 
+          094: !oddb.org,2003/ODDB::Package 
+            ikscd: 094
+            size: 10 Suppositorien
+            descr: 
+            ikscat: B
+            price_exfactory: 350
+            price_public: 820
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 2005-07-01
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680463570949
+            pharmacode: "2820032"
+            narcotics: 
+            - 41444-62-6
+            - 41444-62-6
+    indication: *id119
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "46356"
+    registration_date: 1986-03-10
+    revision_date: 2004-11-04
+    expiration_date: &id3025 2009-11-03
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Co-Becetamol
+        name_descr: Saft
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 205
+          unit: mg
+        atc_class: *id063
+        galenic_form: !oddb.org,2003/ODDB::GalenicForm 
+          oid: 59
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Saft
+          galenic_group: *id012
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id118
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 5
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 200
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id120 !oddb.org,2003/ODDB::Substance 
+            oid: 1422
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Saccharum
+            synonyms: []
+
+            effective_form: *id120
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 2.5
+            unit: g
+        packages: 
+          039: !oddb.org,2003/ODDB::Package 
+            ikscd: 039
+            size: 85 mL
+            descr: 
+            ikscat: B
+            price_exfactory: 498
+            price_public: 1200
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1994-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680463560391
+            pharmacode: "2820055"
+            narcotics: 
+            - 41444-62-6
+            - 41444-62-6
+    indication: *id119
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "46358"
+    registration_date: 1986-03-10
+    revision_date: &id1906 2004-11-04
+    expiration_date: 2009-11-03
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Co-Becetamol
+        name_descr: Tabletten
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 520
+          unit: mg
+        atc_class: *id063
+        galenic_form: *id061
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id042
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 500
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id118
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 20
+            unit: mg
+        packages: 
+          058: !oddb.org,2003/ODDB::Package 
+            ikscd: 058
+            size: 20 Tabletten
+            descr: 
+            ikscat: B
+            price_exfactory: 277
+            price_public: 665
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1992-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680463580580
+            pharmacode: "2820049"
+            narcotics: 
+            - 41444-62-6
+            - 41444-62-6
+    indication: *id119
+    generic_type: :generic
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "43068"
+    registration_date: 1980-07-08
+    revision_date: 2004-11-11
+    expiration_date: 2009-11-10
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Sebo-Soufrol
+        name_descr: Medizinalshampoo
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 20
+          unit: mg
+        atc_class: !oddb.org,2003/ODDB::AtcClass 
+          code: D11AC08
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Schwefel-haltige Verbindungen
+            en: Sulfur compounds
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: !oddb.org,2003/ODDB::GalenicForm 
+          oid: 82
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Shampoo
+          galenic_group: *id041
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id121 !oddb.org,2003/ODDB::Substance 
+            oid: 1498
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Pyrithionum Zincicum
+            synonyms: []
+
+            effective_form: *id121
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 15
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id122 !oddb.org,2003/ODDB::Substance 
+            oid: 1928
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Sulfur
+            synonyms: []
+
+            effective_form: *id122
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 5
+            unit: mg
+        packages: 
+          "024": !oddb.org,2003/ODDB::Package 
+            ikscd: "024"
+            size: 125 g
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680430680244
+            pharmacode: "2360116"
+            narcotics: []
+
+          "016": !oddb.org,2003/ODDB::Package 
+            ikscd: "016"
+            size: 60 g
+            descr: ""
+            ikscat: D
+            price_exfactory: 0
+            price_public: 970
+            sl_entry: !oddb.org,2003/ODDB::SlEntry 
+              introduction_date: 1981-03-15
+              limitation: false
+              limitation_points: 
+              limitation_text: 
+            ean13: !str:ODDB::Ean13 7680430680169
+            pharmacode: "2360085"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 979
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Zur Behandlung von Kopfschuppen und Haarverfettung
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "57272"
+    registration_date: 2005-09-02
+    revision_date: 
+    expiration_date: &id4432 2010-09-01
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Metoject 7.5 mg
+        name_descr: "Injektionsl\xF6sung"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 7.5
+          unit: mg
+        atc_class: &id124 !oddb.org,2003/ODDB::AtcClass 
+          code: L01BA01
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: Methotrexat
+            en: Methotrexate
+          guidelines: 
+          ddd_guidelines: 
+          ddds: 
+        galenic_form: *id098
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id123 !oddb.org,2003/ODDB::Substance 
+            oid: 4246
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Methotrexatum
+            synonyms: []
+
+            effective_form: *id123
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 7.5
+            unit: mg
+        packages: 
+          "007": !oddb.org,2003/ODDB::Package 
+            ikscd: "007"
+            size: 30 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720075
+            pharmacode: 
+            narcotics: &id701 []
+
+          "001": !oddb.org,2003/ODDB::Package 
+            ikscd: "001"
+            size: 1 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720013
+            pharmacode: 
+            narcotics: []
+
+          "003": !oddb.org,2003/ODDB::Package 
+            ikscd: "003"
+            size: 5 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720037
+            pharmacode: 
+            narcotics: []
+
+          "005": !oddb.org,2003/ODDB::Package 
+            ikscd: "005"
+            size: 10 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720051
+            pharmacode: 
+            narcotics: []
+
+      "02": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "02"
+        name_base: Metoject 10 mg
+        name_descr: "Injektionsl\xF6sung"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 10
+          unit: mg
+        atc_class: *id124
+        galenic_form: *id098
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id123
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 10
+            unit: mg
+        packages: 
+          009: !oddb.org,2003/ODDB::Package 
+            ikscd: 009
+            size: 1 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720099
+            pharmacode: 
+            narcotics: []
+
+          "011": !oddb.org,2003/ODDB::Package 
+            ikscd: "011"
+            size: 5 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720112
+            pharmacode: 
+            narcotics: []
+
+          "013": !oddb.org,2003/ODDB::Package 
+            ikscd: "013"
+            size: 10 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720136
+            pharmacode: 
+            narcotics: []
+
+          "015": !oddb.org,2003/ODDB::Package 
+            ikscd: "015"
+            size: 30 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720150
+            pharmacode: 
+            narcotics: []
+
+      "03": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "03"
+        name_base: Metoject 15 mg
+        name_descr: "Injektionsl\xF6sung"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 15
+          unit: mg
+        atc_class: *id124
+        galenic_form: *id098
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id123
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 15
+            unit: mg
+        packages: 
+          "017": &id1007 !oddb.org,2003/ODDB::Package 
+            ikscd: "017"
+            size: 1 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720174
+            pharmacode: 
+            narcotics: []
+
+          019: !oddb.org,2003/ODDB::Package 
+            ikscd: 019
+            size: 5 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720198
+            pharmacode: 
+            narcotics: []
+
+          "021": !oddb.org,2003/ODDB::Package 
+            ikscd: "021"
+            size: 10 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720211
+            pharmacode: 
+            narcotics: &id868 []
+
+          "023": !oddb.org,2003/ODDB::Package 
+            ikscd: "023"
+            size: 30 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720235
+            pharmacode: 
+            narcotics: []
+
+      "04": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "04"
+        name_base: Metoject 20 mg
+        name_descr: "Injektionsl\xF6sung"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 20
+          unit: mg
+        atc_class: *id124
+        galenic_form: *id098
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id123
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 20
+            unit: mg
+        packages: 
+          029: !oddb.org,2003/ODDB::Package 
+            ikscd: 029
+            size: 10 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720297
+            pharmacode: 
+            narcotics: []
+
+          "031": !oddb.org,2003/ODDB::Package 
+            ikscd: "031"
+            size: 30 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720310
+            pharmacode: 
+            narcotics: []
+
+          "025": !oddb.org,2003/ODDB::Package 
+            ikscd: "025"
+            size: 1 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720259
+            pharmacode: 
+            narcotics: []
+
+          "027": !oddb.org,2003/ODDB::Package 
+            ikscd: "027"
+            size: 5 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720273
+            pharmacode: 
+            narcotics: []
+
+      "05": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "05"
+        name_base: Metoject 25 mg
+        name_descr: "Injektionsl\xF6sung"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 25
+          unit: mg
+        atc_class: *id124
+        galenic_form: *id098
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id123
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 25
+            unit: mg
+        packages: &id1590 
+          039: !oddb.org,2003/ODDB::Package 
+            ikscd: 039
+            size: 30 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720396
+            pharmacode: 
+            narcotics: []
+
+          "033": !oddb.org,2003/ODDB::Package 
+            ikscd: "033"
+            size: 1 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720334
+            pharmacode: 
+            narcotics: []
+
+          "035": !oddb.org,2003/ODDB::Package 
+            ikscd: "035"
+            size: 5 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720358
+            pharmacode: 
+            narcotics: []
+
+          "037": !oddb.org,2003/ODDB::Package 
+            ikscd: "037"
+            size: 10 Fertigspritze(n)
+            descr: 
+            ikscat: A
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680572720372
+            pharmacode: 
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 801791
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Arthritis und Psoriasis
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "40912"
+    registration_date: 1978-11-07
+    revision_date: 2005-02-22
+    expiration_date: 2007-12-31
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Makatussin mit Natriumbenzoat
+        name_descr: "Hustendrag\xE9es"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 60
+          unit: mg
+        atc_class: *id125
+        galenic_form: &id162 !oddb.org,2003/ODDB::GalenicForm 
+          oid: 15
+          descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+            de: "Drag\xE9es"
+          galenic_group: *id045
+        composition_text: 
+        active_agents: &id747 
+          - &id1518 !oddb.org,2003/ODDB::ActiveAgent 
+            substance: *id060
+            dose: !oddb.org,2003/ODDB::Dose 
+              val: 10
+              unit: mg
+          - &id1158 !oddb.org,2003/ODDB::ActiveAgent 
+            substance: *id126
+            dose: !oddb.org,2003/ODDB::Dose 
+              val: 50
+              unit: mg
+        packages: 
+          029: !oddb.org,2003/ODDB::Package 
+            ikscd: 029
+            size: "30 Drag\xE9es"
+            descr: 
+            ikscat: C
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680409120290
+            pharmacode: 
+            narcotics: 
+            - 76-57-3
+            - 76-57-3
+    indication: *id076
     generic_type: 
     export_flag: 
     fachinfo_oid: 
@@ -303,6 +5729,282 @@
 
     fax: []
 
+    type: 
+  contact: 
+  contact_email: 
+196: !oddb.org,2003/ODDB::Company 
+  oid: 196
+  ean13: "7601001000810"
+  name: "Hom\xF6opharm AG"
+  business_area: 
+  generic_type: 
+  registrations: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "33767"
+    registration_date: 1968-07-19
+    revision_date: 2002-10-25
+    expiration_date: 2007-10-24
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Inhalant
+        name_descr: "L\xF6sung"
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 900.1
+          unit: mg
+        atc_class: *id127
+        galenic_form: *id066
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id007
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 22.5
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id006
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 4.5
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id128 !oddb.org,2003/ODDB::Substance 
+            oid: 1281
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Cineolum
+            synonyms: []
+
+            effective_form: *id128
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 300
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id003
+          dose: &id1160 !oddb.org,2003/ODDB::Dose 
+            val: 22.5
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id131 !oddb.org,2003/ODDB::Substance 
+            oid: 2896
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Melaleucae Viridiflorae Aetheroleum
+            synonyms: []
+
+            effective_form: &id129 !oddb.org,2003/ODDB::Substance 
+              oid: 6678
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Melaleuca Viridiflora
+              synonyms: []
+
+              effective_form: *id129
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: &id948 !oddb.org,2003/ODDB::Dose 
+            val: 45
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id009
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 505.6
+            unit: mg
+        packages: 
+          "021": !oddb.org,2003/ODDB::Package 
+            ikscd: "021"
+            size: 200 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 2850
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680337670218
+            pharmacode: "1245732"
+            narcotics: []
+
+          "013": !oddb.org,2003/ODDB::Package 
+            ikscd: "013"
+            size: 30 mL
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 980
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680337670133
+            pharmacode: "1245726"
+            narcotics: []
+
+    indication: !oddb.org,2003/ODDB::Indication 
+      oid: 354
+      descriptions: &id659 !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        la: Zur Inhalation
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "53938"
+    registration_date: 1996-10-25
+    revision_date: 
+    expiration_date: 
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Inhalant Caps
+        name_descr: Kapseln
+        dose: 
+        atc_class: *id127
+        galenic_form: *id109
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id006
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 2.5
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id128
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 166.7
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id003
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 12.5
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 2353
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Camphora Racemica
+            synonyms: []
+
+            effective_form: &id130 !oddb.org,2003/ODDB::Substance 
+              oid: 3543
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Camphora
+              synonyms: []
+
+              effective_form: *id130
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 12.5
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id131
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 25
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: *id009
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 280.8
+            unit: mg
+        packages: 
+          019: !oddb.org,2003/ODDB::Package 
+            ikscd: 019
+            size: 15 Kapseln
+            descr: ""
+            ikscat: D
+            price_exfactory: 
+            price_public: 1090
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680539380199
+            pharmacode: "1770183"
+            narcotics: []
+
+    indication: 
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  - !oddb.org,2003/ODDB::Registration 
+    iksnr: "54203"
+    registration_date: 1998-01-14
+    revision_date: 
+    expiration_date: 
+    inactive_date: 
+    sequences: 
+      "01": !oddb.org,2003/ODDB::Sequence 
+        seqnr: "01"
+        name_base: Kavasporal
+        name_descr: Kapseln
+        dose: !oddb.org,2003/ODDB::Dose 
+          val: 150
+          unit: mg
+        atc_class: *id132
+        galenic_form: *id058
+        composition_text: 
+        active_agents: 
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: &id133 !oddb.org,2003/ODDB::Substance 
+            oid: 3703
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Kavapyrona
+            synonyms: []
+
+            effective_form: *id133
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 47
+            unit: mg
+        - !oddb.org,2003/ODDB::ActiveAgent 
+          substance: !oddb.org,2003/ODDB::Substance 
+            oid: 5160
+            descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+              lt: Kava-Kava Extractum Siccum
+            synonyms: []
+
+            effective_form: !oddb.org,2003/ODDB::Substance 
+              oid: 6641
+              descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                lt: Kava-Kava
+              synonyms: []
+
+              effective_form: &id134 !oddb.org,2003/ODDB::Substance 
+                oid: 232
+                descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+                  lt: Piper Methysticum
+                synonyms: []
+
+                effective_form: *id134
+                swissmedic_code: 
+              swissmedic_code: 
+            swissmedic_code: 
+          dose: !oddb.org,2003/ODDB::Dose 
+            val: 150
+            unit: mg
+        packages: 
+          "012": !oddb.org,2003/ODDB::Package 
+            ikscd: "012"
+            size: 30 Kapseln
+            descr: 
+            ikscat: D
+            price_exfactory: 
+            price_public: 
+            sl_entry: 
+            ean13: !str:ODDB::Ean13 7680542030128
+            pharmacode: 
+            narcotics: []
+
+    indication: 
+    generic_type: 
+    export_flag: 
+    fachinfo_oid: 
+  url: 
+  email: 
+  addresses: 
+  - !oddb.org,2003/ODDB::Address2 
+    title: 
+    name: 
+    additional_lines: []
+
+    address: Werkhofstrasse 13
+    location: 4702 Oensingen
+    canton: 
+    fon: 
+    - 062 3883220
+    fax: 
+    - 062 3883221
     type: 
   contact: 
   contact_email: 

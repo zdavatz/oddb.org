@@ -55,6 +55,7 @@ require	'state/user/help'
 require 'state/user/mailinglist'
 require 'state/user/passthru'
 require 'state/user/register_poweruser'
+require 'state/user/suggest_registration'
 require 'state/paypal/return'
 require 'state/paypal/ipn'
 require 'state/user/paypal_thanks'
@@ -123,9 +124,10 @@ module ODDB
 					:limitation_text ] =>  State::Migel::LimitationText,
 				[	:migel_group,
 					:limitation_text ] => State::Migel::LimitationText,
-				[ :patinfo ]	=>	State::Drugs::Patinfo,
 				[ :narcotic ]	=>	State::Drugs::Narcotic,
 				[ :patinfo ]	=>	State::Drugs::Patinfo,
+				[ :registration, :sequence, 
+					:package, :narcotics ]	=>	State::Drugs::NarcoticPlus,
 			}	
 			READONLY_STATES = RESOLVE_STATES.dup.update({
 				[	:registration, :sequence, 
@@ -528,9 +530,15 @@ module ODDB
 				end
 			end
 			def new_registration
-				state = State::Admin::TransparentLogin.new(@session, @model)
-				state.desired_event = :new_registration
-				state
+				@session[:allowed] ||= []
+				item = @session[:allowed].select { |obj| 
+					obj.is_a?(ODDB::IncompleteRegistration)
+				}.first
+				unless(item)
+					pointer = Persistence::Pointer.new(:incomplete_registration)
+					item = Persistence::CreateItem.new(pointer)
+				end
+				State::User::SuggestRegistration.new(@session, item)
 			end
 			def user_input(keys=[], mandatory=[])
 				keys = [keys] unless keys.is_a?(Array)
