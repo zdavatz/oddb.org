@@ -585,6 +585,7 @@ Zeno Davatz
 				:heading									=>	'Titel',
 				:help_link								=>	"Hilfe",
 				:help_pagename						=>	"ODDB.Hilfe",
+				:help_suggest_registration=>	"Hilfe! Ich komm nicht weiter!",
 				:helps										=>	'Wirkung',
 				:home_admin								=>	'Admin-Home',
 				:home_companies						=>	'Firmen-Home',

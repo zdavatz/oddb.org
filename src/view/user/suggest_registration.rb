@@ -15,7 +15,6 @@ class StepList < HtmlGrid::List
 		[0,0]	=>	:step,
 	}
 	LEGACY_INTERFACE = false
-
 end
 class SuggestRegistrationForm < View::Admin::RegistrationForm
 	include HtmlGrid::ErrorMessage
@@ -79,13 +78,27 @@ class SuggestRegistrationComposite < View::Admin::RootRegistrationComposite
 	COMPONENTS = {
 		#[0,1]	=>	:steps,
 		[0,1]	=>	View::User::SuggestRegistrationForm,
+		[1,1]	=>	:help,
 		[0,2]	=>	:registration_sequences,
 		[0,3]	=>	View::User::SuggestRegistrationInnerComposite,
+	}
+	COLSPAN_MAP = {
+		[0,0]	=> 2,
+		[0,2]	=> 2,
+		[0,3]	=> 2,
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
 		#[0,4]	=>	'composite',
+		[1,1]	=>	'top list-r',
 	}
+	def help(model, session=@session)
+		link = HtmlGrid::Link.new(:help, model, @session, self)
+		txt = @lookandfeel.lookup(:help_suggest_registration)
+		link.value = txt
+		link.href = "mailto:#{MAIL_FROM}?subject=#{txt}"
+		link
+	end
 end
 class SuggestRegistration < View::PrivateTemplate
 	CONTENT = View::User::SuggestRegistrationComposite
