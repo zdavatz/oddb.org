@@ -77,10 +77,10 @@ class SuggestRegistrationInnerComposite < HtmlGrid::Composite
 end
 class SuggestRegistrationComposite < View::Admin::RootRegistrationComposite
 	COMPONENTS = {
-		[0,1]	=>	:steps,
-		[0,2]	=>	View::User::SuggestRegistrationForm,
-		[0,3]	=>	:registration_sequences,
-		[0,4]	=>	View::User::SuggestRegistrationInnerComposite,
+		#[0,1]	=>	:steps,
+		[0,1]	=>	View::User::SuggestRegistrationForm,
+		[0,2]	=>	:registration_sequences,
+		[0,3]	=>	View::User::SuggestRegistrationInnerComposite,
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',

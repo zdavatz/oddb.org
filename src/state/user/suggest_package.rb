@@ -14,7 +14,14 @@ class SuggestPackage < Global
 	def update_incomplete
 		mandatory = [:size, :ikscat]
 		user_input(mandatory, mandatory)
-		update
+		newstate = update
+		if((reg = @session.app.registration(@model.iksnr)) \
+			&& (pac = reg.package(@model.ikscd)))
+			filled = @model.fill_blanks(pac)
+			@model.odba_store unless(filled.empty?)
+			filled.each { |key| @errors.delete(key) }
+		end
+		newstate
 	end
 end
 		end
