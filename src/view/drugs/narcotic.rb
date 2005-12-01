@@ -12,10 +12,12 @@ module ODDB
 				COMPONENTS = {
 					[0,0]	=> :ikskey,
 					[1,0]	=> :name_base,
+					[2,0]	=> :size,
 				}
 				CSS_MAP = {
 					[0,0]	=>	'top list',
 					[1,0]	=>	'list',
+					[2,0]	=>	'list',
 				}
 				DEFAULT_CLASS = HtmlGrid::Value
 				DEFAULT_HEAD_CLASS = 'subheading'
@@ -25,6 +27,7 @@ module ODDB
 				LOOKANDFEEL_MAP = {
 					:ikskey	=>	:title_packages,
 					:name_base	=>	:nbsp,
+					:size	=> :nbsp,
 				}
 				def ikskey(model)
 					item = model.ikskey
@@ -33,6 +36,9 @@ module ODDB
 				def name_base(model)
 					item  = model.name_base
 					self.link(model, item)
+				end
+				def size(model)
+					model.size
 				end
 				def link(model, item)
 					link = HtmlGrid::Link.new(:show, model, @session, self)
@@ -56,8 +62,13 @@ module ODDB
 					[0,0,1,4] => 'list top',
 					[1,0,1,4] => 'list',
 				}
+				COLSPAN_MAP = {
+					[0,3]	=>	2,
+				}
 				def reservation_text(model)
 					if(text = model.reservation_text)
+						css_map.store(components.index(:reservation_text), 
+							'list-bg')
 						txt = text.send(@session.language)
 						if(match = /SR (\d{3}\.\d{3}\.\d{2})/.match(txt))
 							url = sprintf('http://www.admin.ch/ch/%s/sr/c%s.html',
@@ -101,6 +112,9 @@ module ODDB
 			class NarcoticPlusComposite < HtmlGrid::List
 				COMPONENTS = {
 					[0,0]	=> NarcoticComposite,
+				}
+				CSS_MAP = {
+					[0,0]	=>	'top',
 				}
 				LEGACY_INTERFACE = false
 				CSS_CLASS = 'composite'
