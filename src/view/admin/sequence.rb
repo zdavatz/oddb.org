@@ -15,24 +15,25 @@ module ODDB
 		module Admin
 module SequenceAgentList
 	COMPONENTS = {
-		[0,0]	=>	:substance,
-		[1,0]	=>	:dose,
-		[3,0]	=>	:chemical_substance,
-		[4,0]	=>	:chemical_dose,
-		[6,0]	=>	:equivalent_substance,
-		[7,0]	=>	:equivalent_dose,
+		[0,0]	=>	:narcotic,
+		[1,0]	=>	:substance,
+		[2,0]	=>	:dose,
+		[4,0]	=>	:chemical_substance,
+		[5,0]	=>	:chemical_dose,
+		[7,0]	=>	:equivalent_substance,
+		[8,0]	=>	:equivalent_dose,
 	}
 	CSS_HEAD_MAP = {
-		[1,0]	=>	'subheading-r',
-		[4,0]	=>	'subheading-r',
+		[2,0]	=>	'subheading-r',
+		[5,0]	=>	'subheading-r',
 	}
 	CSS_MAP = {
-		[0,0]	=>	'list',
-		[1,0]	=>	'list-r',
-		[2,0,2]	=>	'list',
-		[4,0]	=>	'list-r',
-		[5,0,2]	=>	'list',
-		[7,0]	=>	'list-r',
+		[1,0]	=>	'list',
+		[2,0]	=>	'list-r',
+		[3,0,2]	=>	'list',
+		[5,0]	=>	'list-r',
+		[6,0,2]	=>	'list',
+		[8,0]	=>	'list-r',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'subheading'
@@ -41,6 +42,17 @@ module SequenceAgentList
 	def substance(model, session)
 		if(sub = model.substance)
 			sub.name
+		end
+	end
+	def narcotic(model, session=@session)
+		if((sub = model.substance) && (narc = sub.narcotic))
+			link = HtmlGrid::Link.new(:narc_short,
+					narc, @session, self)
+			link.href = @lookandfeel._event_url(:resolve,
+				{'pointer' => narc.pointer})
+			link.css_class = 'result-infos'
+			link.set_attribute('title', @lookandfeel.lookup(:nacotic))
+			link
 		end
 	end
 end
