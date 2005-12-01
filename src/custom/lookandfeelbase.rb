@@ -913,6 +913,7 @@ Zeno Davatz
 				:salutation								=>	'Anrede',
 				:salutation_f							=>	'Frau',
 				:salutation_m							=>	'Herr',
+				:search_again							=>	'Neu Suchen',
 				:search_explain						=>	'Vergleichen Sie einfach und schnell Medikamentenpreise.<br> Suchen Sie nach Medikament, Wirkstoff oder Anwendungsgebiet<br>(z.B. Kopfschmerzen, Akne, Verstauchung, Verletzung).',
 				:search_help							=>	'Hilfe',
 				:search_narcotics					=>	'Suchen',

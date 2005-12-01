@@ -31,6 +31,7 @@ class SuggestRegistrationForm < View::Admin::RegistrationForm
 		[2,3]		=>	:market_date,
 		[2,4]		=>	:inactive_date,
 		[1,5]		=>	:submit,
+		[1,5,0]	=>	:new_registration,
 	}
 	CSS_MAP = { 
 		[0,0,4,6] => 'list' 
@@ -38,6 +39,12 @@ class SuggestRegistrationForm < View::Admin::RegistrationForm
 	LOOKANDFEEL_MAP = {
 		:email_suggestion	=>	:suggest_addr_sender,
 	}
+	def new_registration(model, session=@session)
+		button = HtmlGrid::Button.new(:search_again, model, @session, self)
+		url = @lookandfeel.event_url(:new_registration)
+		button.set_attribute('onclick', "location.href='#{url}'")
+		button
+	end
 	def reorganize_components
 		unless(@model.is_a?(Persistence::CreateItem))
 			components.update({
