@@ -58,7 +58,7 @@ module ODDB
 				DEFAULT_CLASS = HtmlGrid::Value
 				LEGACY_INTERFACE = false
 				CSS_MAP = {
-					[0,0,1,3] => 'list top',
+					[0,0,1,3] => 'top list',
 					[1,0,1,3] => 'list',
 				}
 			end
@@ -108,6 +108,7 @@ module ODDB
 				SNAPBACK_EVENT = :result
 			end
 			class NarcoticPlusComposite < HtmlGrid::List
+				STRIPED_BG = false
 				COMPONENTS = {
 					[0,0]	=> NarcoticComposite,
 				}
