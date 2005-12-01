@@ -587,6 +587,8 @@ BSV-XLS Swissmedic-Nr: %5s %3s
 			if(registration = ptr.resolve(@app))
 				if(package.generic_type)
 					@app.update(ptr, {:generic_type => :generic})
+				elsif(registration.generic_type == :generic)
+					@app.update(ptr, {:generic_type => nil})
 				end
 				registration
 			else

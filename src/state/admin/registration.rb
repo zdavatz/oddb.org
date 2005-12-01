@@ -13,31 +13,12 @@ module ODDB
 	module State
 		module Admin
 module RegistrationMethods
-	def new_sequence
-		pointer = @session.user_input(:pointer)
-		model = pointer.resolve(@session.app)
-		seq_pointer = pointer + [:sequence]
-		item = Persistence::CreateItem.new(seq_pointer)
-		item.carry(:iksnr, model.iksnr)
-		item.carry(:company, model.company)
-		if (klass=resolve_state(seq_pointer))
-			klass.new(@session, item)
-		else
-			self
-		end
-	end
-	def resolve_company(hash)
-		comp_name = @session.user_input(:company_name)
-		if(company = @session.company_by_name(comp_name) || @model.company)
-			hash.store(:company, company.oid)
-		else
-			err = create_error(:e_unknown_company, :company_name, comp_name)
-			@errors.store(:company_name, err)
-		end
-	end
 	def do_update(keys)
 		new_state = self
 		hash = user_input(keys)
+		if(@model.is_a?(Persistence::CreateItem) && error?)
+			return new_state
+		end
 		resolve_company(hash)
 		if(hash[:registration_date].nil? && hash[:revision_date].nil?)
 			error = create_error('e_missing_reg_rev_date', 
@@ -46,9 +27,6 @@ module RegistrationMethods
 			error = create_error('e_missing_reg_rev_date', 
 				:revision_date, nil)
 			@errors.store(:revision_date, error)
-		end
-		if(@model.is_a?(Persistence::CreateItem) && error?)
-			return self
 		end
 		ind = @session.user_input(:indication)
 		sel = nil
@@ -106,6 +84,28 @@ module RegistrationMethods
 			sel.registration = @model
 		end
 		new_state
+	end
+	def new_sequence
+		pointer = @session.user_input(:pointer)
+		model = pointer.resolve(@session.app)
+		seq_pointer = pointer + [:sequence]
+		item = Persistence::CreateItem.new(seq_pointer)
+		item.carry(:iksnr, model.iksnr)
+		item.carry(:company, model.company)
+		if (klass=resolve_state(seq_pointer))
+			klass.new(@session, item)
+		else
+			self
+		end
+	end
+	def resolve_company(hash)
+		comp_name = @session.user_input(:company_name)
+		if(company = @session.company_by_name(comp_name) || @model.company)
+			hash.store(:company, company.oid)
+		else
+			err = create_error(:e_unknown_company, :company_name, comp_name)
+			@errors.store(:company_name, err)
+		end
 	end
 end
 class Registration < State::Admin::Global

@@ -605,7 +605,7 @@ a progressé pendant ou après le traitement standard.
 			end
 		end
 		class StubRegistration
-			attr_accessor :packages, :iksnr, :name_base, :sequences
+			attr_accessor :packages, :iksnr, :name_base, :sequences, :generic_type
 			def initialize(iksnr)
 				@iksnr = iksnr
 			end

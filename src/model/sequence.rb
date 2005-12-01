@@ -277,5 +277,13 @@ module ODDB
 				agent.accepted!(app, ptr)
 			} 
 		end
+		def fill_blanks(sequence)
+			[	:name_base, :name_descr, :dose, :galenic_form, 
+				:atc_class ].select { |key|
+				if(self.send(key).to_s.empty?)
+					self.send("#{key}=", sequence.send(key))
+				end
+			}
+		end
 	end
 end
