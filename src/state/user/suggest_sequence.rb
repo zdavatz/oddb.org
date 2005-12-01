@@ -12,6 +12,8 @@ class SuggestSequence < Global
 	include State::Admin::SequenceMethods
 	VIEW = View::Admin::IncompleteSequence
 	def update_incomplete
+		mandatory = [:name_base, :galenic_form, :atc_class]
+		user_input(mandatory, mandatory)
 		update
 		(@session[:allowed] ||= []).push(@model).uniq!
 		self

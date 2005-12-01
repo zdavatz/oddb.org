@@ -7,6 +7,16 @@ require 'util/persistence'
 module ODDB
 	module View
 		module User
+class StepList < HtmlGrid::List
+	CSS_MAP = {
+		[0,0]	=> 'subheading'
+	}
+	COMPONENTS = {
+		[0,0]	=>	:step,
+	}
+	LEGACY_INTERFACE = false
+
+end
 class SuggestRegistrationForm < View::Admin::RegistrationForm
 	include HtmlGrid::ErrorMessage
 	DEFAULT_CLASS = HtmlGrid::InputText
@@ -27,16 +37,16 @@ class SuggestRegistrationForm < View::Admin::RegistrationForm
 		[0,0,4,6] => 'list' 
 	}
 	LOOKANDFEEL_MAP = {
-		:email	=>	:suggest_addr_sender,
+		:email_suggestion	=>	:suggest_addr_sender,
 	}
 	def reorganize_components
 		unless(@model.is_a?(Persistence::CreateItem))
 			components.update({
-				[0,6]	=>	:email,
+				[0,6]	=>	:email_suggestion,
 				[1,7]	=>	:suggest,
 			})
 			component_css_map.store([0,6], 'standard')
-			symbol_map.store(:email, HtmlGrid::InputText)
+			symbol_map.store(:email_suggestion, HtmlGrid::InputText)
 			css_map.store([0,6,4,2], 'list')
 		end
 	end
@@ -67,13 +77,14 @@ class SuggestRegistrationInnerComposite < HtmlGrid::Composite
 end
 class SuggestRegistrationComposite < View::Admin::RootRegistrationComposite
 	COMPONENTS = {
-		[0,1]	=>	View::User::SuggestRegistrationForm,
-		[0,2]	=>	:registration_sequences,
-		[0,3]	=>	View::User::SuggestRegistrationInnerComposite,
+		[0,1]	=>	:steps,
+		[0,2]	=>	View::User::SuggestRegistrationForm,
+		[0,3]	=>	:registration_sequences,
+		[0,4]	=>	View::User::SuggestRegistrationInnerComposite,
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
-		[0,3]	=>	'composite',
+		#[0,4]	=>	'composite',
 	}
 end
 class SuggestRegistration < View::PrivateTemplate

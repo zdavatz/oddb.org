@@ -376,6 +376,7 @@ Zeno Davatz
 				:e_missing_name						=>	'Bitte geben Sie einen Namen an.',
 				:e_missing_password				=>	'Leere Passwörter sind nicht erlaubt. Bitte wählen Sie ein Passwort von mindestens 4 Zeichen länge.',
 				:e_missing_pointers				=>	'Nichts ausgewählt.',
+				:e_missing_reg_rev_date		=>	'Bitte geben Sie ein Registrations- und/oder Revisionsdatum an',
 				:e_missing_seqnr					=>	'Bitte geben Sie die 2-stellige Sequenz-Nummer an.',
 				:e_missing_sponsor_until	=>	'Bitte geben Sie ein Datum an.',
 				:e_missing_substance			=>	'Bitte geben Sie einen Wirkstoff an.',

@@ -12,9 +12,9 @@ class SuggestPackage < Global
 	include State::Admin::PackageMethods
 	VIEW = View::Admin::IncompletePackage
 	def update_incomplete
+		mandatory = [:size, :ikscat]
+		user_input(mandatory, mandatory)
 		update
-		(@session[:allowed] ||= []).push(@model).uniq!
-		self
 	end
 end
 		end
