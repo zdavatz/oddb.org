@@ -53,18 +53,39 @@ module ODDB
 					[0,0]	=> :casrn,
 					[0,1]	=> :swissmedic_code,
 					[0,2] => :substance,
-					[0,3] => :reservation_text,
 				}
 				LABELS = true
 				DEFAULT_CLASS = HtmlGrid::Value
 				LEGACY_INTERFACE = false
 				CSS_MAP = {
-					[0,0,1,4] => 'list top',
-					[1,0,1,4] => 'list',
+					[0,0,1,3] => 'list top',
+					[1,0,1,3] => 'list',
 				}
-				COLSPAN_MAP = {
-					[0,3]	=>	2,
+			end
+			class NarcoticComposite < HtmlGrid::Composite
+				COMPONENTS = {
+					[0,0] => :narcotic_connection,
+					[0,1]	=> NarcoticInnerComposite,
+					[0,2]	=> :reservation_text,
+					[0,3] => :packages,
 				}
+				CSS_MAP = {
+					[0,0]	=> 'th',
+					[0,2]	=> 'list bg',
+					[0,3] => 'list',
+				}
+				LEGACY_INTERFACE = false
+				CSS_CLASS = 'composite'
+				DEFAULT_CLASS = HtmlGrid::Value
+				def narcotic_connection(model)
+					@lookandfeel.lookup(:narcotic_connection, model.substance)
+				end
+				def packages(model)
+					pack = model.packages
+					unless(pack.empty?)
+						PackagesList.new(pack, @session, self)
+					end
+				end
 				def reservation_text(model)
 					if(text = model.reservation_text)
 						css_map.store(components.index(:reservation_text), 
@@ -79,29 +100,6 @@ module ODDB
 						else
 							txt
 						end
-					end
-				end
-			end
-			class NarcoticComposite < HtmlGrid::Composite
-				COMPONENTS = {
-					[0,0] => :narcotic_connection,
-					[0,1]	=> NarcoticInnerComposite,
-					[0,2] => :packages,
-				}
-				CSS_MAP = {
-					[0,0]	=> 'th',
-					[0,2] => 'list',
-				}
-				LEGACY_INTERFACE = false
-				CSS_CLASS = 'composite'
-				DEFAULT_CLASS = HtmlGrid::Value
-				def narcotic_connection(model)
-					@lookandfeel.lookup(:narcotic_connection, model.substance)
-				end
-				def packages(model)
-					pack = model.packages
-					unless(pack.empty?)
-						PackagesList.new(pack, @session, self)
 					end
 				end
 			end
