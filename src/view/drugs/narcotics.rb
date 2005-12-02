@@ -37,6 +37,9 @@ class NarcoticList < HtmlGrid::List
 	SYMBOL_MAP = {
 		:casrn	=>	PointerLink,
 	}
+	def casrn(model, session=@session)
+		PointerLink.new(:casrn, model.narcotic, @session, self)
+	end
 	def category(model, session=@session)
 		txt = HtmlGrid::Span.new(model ,session, self)
 		cat = model.narcotic.category.to_s

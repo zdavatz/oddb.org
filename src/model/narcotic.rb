@@ -46,7 +46,7 @@ module ODDB
 			}
 		end
 		def pointer_descr
-			substance
+			to_s
 		end
 		def remove_package(package)
 			if(@packages.delete(package))
@@ -73,6 +73,5 @@ module ODDB
 				sub.to_s
 			}.join(',')
 		end
-
 	end
 end
