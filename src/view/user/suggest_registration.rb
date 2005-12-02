@@ -40,13 +40,15 @@ class SuggestRegistrationForm < View::Admin::RegistrationForm
 		:email_suggestion	=>	:suggest_addr_sender,
 	}
 	def new_registration(model, session=@session)
-		button = HtmlGrid::Button.new(:search_again, model, @session, self)
-		url = @lookandfeel.event_url(:new_registration)
-		button.set_attribute('onclick', "location.href='#{url}'")
-		button
+		unless(model.is_a?(Persistence::CreateItem))
+			button = HtmlGrid::Button.new(:search_again, model, @session, self)
+			url = @lookandfeel.event_url(:new_registration)
+			button.set_attribute('onclick', "location.href='#{url}'")
+			button
+		end
 	end
 	def reorganize_components
-		unless(@model.is_a?(Persistence::CreateItem))
+		if(@model.acceptable? && @model.package_count > 0)
 			components.update({
 				[0,6]	=>	:email_suggestion,
 				[1,7]	=>	:suggest,
@@ -105,6 +107,11 @@ class SuggestRegistrationComposite < View::Admin::RootRegistrationComposite
 		link.value = txt
 		link.href = "mailto:#{MAIL_FROM}?subject=#{txt}"
 		link
+	end
+	def registration_sequences(model, session=@session)
+		if(model._acceptable?)
+			super
+		end
 	end
 end
 class SuggestRegistration < View::PrivateTemplate

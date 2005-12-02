@@ -47,10 +47,11 @@ class SuggestRegistration < Global
 		}
 	end
 	def update
-		mandatory = [:indication, :company_name]
 		iksnr = @session.user_input(:iksnr)
 		error_check_and_store(:iksnr, iksnr, [:iksnr])
 		if(error?)
+			mandatory = [:indication, :company_name, :registration_date,
+				:revision_date]
 			user_input(mandatory, mandatory)
 			self
 		elsif(@model.is_a?(Persistence::CreateItem) && iksnr \
@@ -64,6 +65,7 @@ class SuggestRegistration < Global
 				:complementary_type, :export_flag, :email_suggestion, 
 			]
 			newstate = do_update(keys)
+			mandatory = [:indication, :company_name]
 			user_input(mandatory, mandatory)
 			if(reg = @session.app.registration(@session.user_input(:iksnr)))
 				filled = @model.fill_blanks(reg)

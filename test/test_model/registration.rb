@@ -8,7 +8,9 @@ require 'test/unit'
 require 'util/persistence'
 require 'model/registration'
 require 'model/incompleteregistration'
+require 'stub/odba'
 require 'mock'
+require 'flexmock'
 
 module ODDB
 	class RegistrationCommon
@@ -306,22 +308,37 @@ class TestIncompleteRegistration < Test::Unit::TestCase
 		@seq.name = ''
 		@reg.sequences = {'01'	=>	@seq}
 	end
-	def test_acceptable
-		assert(!@reg.acceptable?)
+	def test__acceptable
+		assert(!@reg._acceptable?)
 		@reg.iksnr = '12345'
-		assert(!@reg.acceptable?)
-		@seq.atc_class = 'foo'
-		assert(!@reg.acceptable?)
-		@reg.iksnr = nil
-		assert(!@reg.acceptable?)
-		@seq.name = 'bar'
-		assert(!@reg.acceptable?)
-		@reg.iksnr = '12345'
-		assert(!@reg.acceptable?)
+		assert(!@reg._acceptable?)
 		@reg.company = 'ywesee'
-		assert(@reg.acceptable?)
-		@seq.atc_class = nil
+		assert(!@reg._acceptable?)
+		@reg.iksnr = nil
+		assert(!@reg._acceptable?)
+		@reg.iksnr = '12345'
+		assert(!@reg._acceptable?)
+		@reg.indication = 'foo'
+		assert(!@reg._acceptable?)
+		@reg.registration_date = Date.today
+		assert(@reg._acceptable?)
+		@reg.registration_date = nil
+		@reg.revision_date = Date.today
+		assert(@reg._acceptable?)
+		@reg.company = nil
+		assert(!@reg._acceptable?)
+	end
+	def test_acceptable
+		seq = FlexMock.new
+		@reg.sequences = {'01'	=>	seq}
+		@reg.iksnr = '12345'
+		@reg.company = 'ywesee'
+		@reg.indication = 'foo'
+		@reg.registration_date = Date.today
+		seq.mock_handle(:acceptable?) { false }
 		assert(!@reg.acceptable?)
+		seq.mock_handle(:acceptable?) { true }
+		assert(@reg.acceptable?)
 	end
 	def test_accepted
 		app = StubRegistrationApp.new
