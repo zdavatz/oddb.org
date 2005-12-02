@@ -110,7 +110,7 @@ module ODDB
 			lines.join("\n")
 		end
 		def update
-			@app.each_each_sequence { |seq| 
+			@app.each_sequence { |seq| 
 				if(seq.active?)
 					seq.each_package { |pack|
 					@checked += 1
@@ -138,9 +138,9 @@ module ODDB
 				val.gsub!(/\240/, ' ')
 				val.strip!
 			}
-			unless(update.empty?)
+			unless(data.empty?)
 				@updated.push(pack.barcode)
-				@app.update(pack.pointer, update)
+				@app.update(pack.pointer, data)
 			end
 		end
 	end

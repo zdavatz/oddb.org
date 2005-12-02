@@ -118,6 +118,15 @@ class TestMedwinCompanyPlugin < Test::Unit::TestCase
 	end
 end
 class TestMedwinPackagePlugin < Test::Unit::TestCase
+	class StubSequence
+		attr_accessor :packages
+		def active?
+			true
+		end
+		def each_package(&block)
+			@packages.each_value(&block)
+		end
+	end
 	class StubApp
 		attr_reader :pointers, :values, :packages
 		def initialize
@@ -129,9 +138,14 @@ class TestMedwinPackagePlugin < Test::Unit::TestCase
 				:multiple	=>	StubPackage.new('multiple'),
 				#:nil			=>	StubPackage.new('nil'),
 			}
+			@sequence = StubSequence.new
+			@sequence.packages = @packages
 		end
 		def each_package(&block)
 			@packages.each_value(&block)
+		end
+		def each_sequence(&block)
+			block.call(@sequence)
 		end
 		def update(pointer, values)
 			@pointers << pointer
@@ -139,7 +153,7 @@ class TestMedwinPackagePlugin < Test::Unit::TestCase
 		end
 	end
 	class StubPackage
-		attr_accessor :barcode, :pointer
+		attr_accessor :barcode, :pointer, :pharmacode
 		attr_reader :name_base
 		def initialize(barcode)
 			@barcode = barcode
