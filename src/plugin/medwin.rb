@@ -110,11 +110,15 @@ module ODDB
 			lines.join("\n")
 		end
 		def update
-			@app.each_package { |pack| 
-				@checked += 1
-				if(!pack.pharmacode && pack.empty?)
-					@found += 1
-					update_package(pack)
+			@app.each_each_sequence { |seq| 
+				if(seq.active?)
+					seq.each_package { |pack|
+					@checked += 1
+					if(!pack.pharmacode)
+						@found += 1
+						update_package(pack)
+					end
+					}
 				end
 			}
 		end
