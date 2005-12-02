@@ -83,7 +83,7 @@ class RegistrationInnerComposite < HtmlGrid::Composite
 		[2,5]		=>  :fachinfo_label,
 	}
 	CSS_MAP = {
-		[0,0,4,4]	=>	'list',
+		[0,0,4,6]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true

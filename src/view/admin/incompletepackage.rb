@@ -25,8 +25,11 @@ class IncompletePackageInnerComposite < HtmlGrid::Composite
 	def active_package(model, session)
 		if((reg = @session.app.registration(model.iksnr)) \
 			&& (pack = reg.package(model.ikscd)))
-			View::Admin::PackageComposite.new(pack, session, self)
+			_active_package(pack)
 		end
+	end
+	def _active_package(pack)
+		View::Admin::PackageComposite.new(pack, @session, self)
 	end
 	def source(model, session)
 		HtmlGrid::Value.new(:source, model.parent(session.app), session, self)	
