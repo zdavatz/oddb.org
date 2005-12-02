@@ -95,7 +95,7 @@ module ODDB
 			# When smcd and casrn are nil, we have a text description
 			if(category == "c" && (subst = text2name(name, language)))
 				@narcotic_texts.store(subst, name)
-			elsif(casrn || smcd)
+			elsif(casrn)
 				if(category)
 					values.store(:category, category)
 				end

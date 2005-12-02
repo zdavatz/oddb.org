@@ -10,7 +10,7 @@ module ODDB
 	module State
 		module Drugs
 class Narcotics < State::Drugs::Global
-	include Interval
+	include IndexedInterval
 	VIEW = View::Drugs::Narcotics
 	DIRECT_EVENT = :narcotics
 	PERSISTENT_RANGE  = true
@@ -44,9 +44,15 @@ class Narcotics < State::Drugs::Global
 		'|unknown'=>	'|unknown',
 	}
 	Limited = true
+=begin
 	def init
-		@model = @session.narcotics.values
+		#@model = @session.narcotics.values
+		@model = @session.substances.select { |sub| sub.narcotic }
 		filter_interval
+	end
+=end
+	def index_lookup(range)
+		@session.search_narcotics(range, @session.language)
 	end
 end
 		end

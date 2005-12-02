@@ -15,7 +15,7 @@ class NarcoticList < HtmlGrid::List
 	COMPONENTS = {
 		[0,0] => :casrn,
 		[1,0] => :swissmedic_code,
-		[2,0] => :substance,
+		[2,0] => :name,
 		[3,0]	=> :category,
 		[4,0] => :num_packages,
 	}
@@ -39,21 +39,25 @@ class NarcoticList < HtmlGrid::List
 	}
 	def category(model, session=@session)
 		txt = HtmlGrid::Span.new(model ,session, self)
-		cat = model.category.to_s
+		cat = model.narcotic.category.to_s
 		key = "category_" + cat
 		txt.value = cat
 		txt.set_attribute('title', @lookandfeel.lookup(key))
 		txt
 	end
 	def num_packages(model)
-		model.packages.size
+		model.narcotic.packages.size
 	end
-	def substance(model)
-		link = PointerLink.new(:substance, model, @session, self)
+	def name(model)
+		#link = HtmlGrid::Link.new(:narcotic, model, @session, self)
+		#link.value = 
+=begin
 		if(sub = model.substance)
 			link.value = sub.send(@session.language)
 		end
-		link
+=end
+		#link
+		model.send(@session.language)
 	end
 end
 class NarcoticsComposite < HtmlGrid::Composite
