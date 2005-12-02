@@ -52,7 +52,7 @@ module ODDB
 				COMPONENTS = {
 					[0,0]	=> :casrn,
 					[0,1]	=> :swissmedic_code,
-					[0,2] => :substance,
+					[0,2] => :substances,
 				}
 				LABELS = true
 				DEFAULT_CLASS = HtmlGrid::Value
@@ -78,7 +78,7 @@ module ODDB
 				CSS_CLASS = 'composite'
 				DEFAULT_CLASS = HtmlGrid::Value
 				def narcotic_connection(model)
-					@lookandfeel.lookup(:narcotic_connection, model.substance)
+					@lookandfeel.lookup(:narcotic_connection, model.substances)
 				end
 				def packages(model)
 					pack = model.packages
