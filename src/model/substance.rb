@@ -165,12 +165,10 @@ module ODDB
 		alias :pointer_descr :name
 		def narcotic=(narc)
 			if(@narcotic)
-				@narcotic.substance = nil
-				@narcotic.odba_store
+				@narcotic.remove_substance(self)
 			end
 			if(narc)
-				narc.substance = self
-				narc.odba_store
+				narc.add_substance(self)
 			end
 			@narcotic = narc
 		end

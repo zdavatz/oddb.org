@@ -547,14 +547,24 @@ class OddbPrevalence
 		@narcotics[odba_id.to_i]
 	end
 	def narcotic_by_casrn(casrn)
-		@narcotics.values.select { |narc| 
-			narc.casrn == casrn 
-		}.first
+		unless(casrn.nil?)
+			@narcotics.values.each { |narc| 
+				if(narc.casrn == casrn)
+					return narc
+				end
+			}
+		end
+		nil
 	end
 	def narcotic_by_smcd(smcd)
-		@narcotics.values.select { |narc| 
-			narc.swissmedic_code == smcd 
-		}.first
+		unless(smcd.nil?)
+			@narcotics.values.each { |narc| 
+				if(narc.swissmedic_code == smcd)
+					return narc
+				end
+			}
+		end
+		nil
 	end
 	def narcotics_count
 		@narcotics.size
@@ -743,6 +753,13 @@ class OddbPrevalence
 			lang = "de"
 		end
 		index_name = "migel_index_#{lang}"
+		ODBA.cache_server.retrieve_from_index(index_name, query)
+	end
+	def search_narcotics(query, lang)
+		if(lang.to_s != "fr") 
+			lang = "de"
+		end
+		index_name = "narcotics_#{lang}"
 		ODBA.cache_server.retrieve_from_index(index_name, query)
 	end
 	def search_exact_sequence(query)

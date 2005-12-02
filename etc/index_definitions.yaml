@@ -223,3 +223,23 @@ resolve_target: ''
 resolve_origin: ''
 init_source: 'self.fachinfos.values'
 fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'narcotics_de'
+origin_klass: 'ODDB::Narcotic'
+target_klass: 'ODDB::Substance'
+resolve_search_term: 'substances.collect { |sub| sub.de }'
+resolve_target: 'substances'
+resolve_origin: 'narcotic'
+init_source: 'self.substances.select { |sub| sub.narcotic }'
+fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'narcotics_fr'
+origin_klass: 'ODDB::Narcotic'
+target_klass: 'ODDB::Substance'
+resolve_search_term: 'substances.collect { |sub| sub.fr }'
+resolve_target: 'substances'
+resolve_origin: 'narcotic'
+init_source: 'self.substances.select { |sub| sub.narcotic }'
+fulltext: false
+
+
