@@ -43,6 +43,15 @@ module ODDB
 			app.delete(@pointer)
 			reg
 		end
+		def fill_blanks(registration)
+			[	:company, :generic_type, :indication, :registration_date, 
+				:revision_date, :expiration_date, :inactive_date, 
+				:market_date ].select { |key|
+				if(self.send(key).to_s.empty?)
+					self.send("#{key}=", registration.send(key))
+				end
+			}
+		end
 		def pointer_descr
 			super || '???????'
 		end

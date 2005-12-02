@@ -47,20 +47,33 @@ class SuggestRegistration < Global
 		}
 	end
 	def update
+		mandatory = [:indication, :company_name]
 		iksnr = @session.user_input(:iksnr)
-		if(@model.is_a?(Persistence::CreateItem) \
+		error_check_and_store(:iksnr, iksnr, [:iksnr])
+		if(error?)
+			user_input(mandatory, mandatory)
+			self
+		elsif(@model.is_a?(Persistence::CreateItem) && iksnr \
 			&& (reg = @session.app.incomplete_registration_by_iksnr(iksnr)))
 			@model = reg
+			self
 		else
 			keys = [
-				:inactive_date, :generic_type, :registration_date, 
+				:iksnr, :inactive_date, :generic_type, :registration_date, 
 				:revision_date, :market_date, :expiration_date, 
 				:complementary_type, :export_flag, :email_suggestion, 
 			]
-			mandatory = [:iksnr, :indication, :company_name]
-			# check_input
+			newstate = do_update(keys)
 			user_input(mandatory, mandatory)
-			do_update(keys)
+			if(reg = @session.app.registration(@session.user_input(:iksnr)))
+				filled = @model.fill_blanks(reg)
+				@model.odba_store unless(filled.empty?)
+				filled.each { |key| @errors.delete(key) }
+				if(filled.include?(:company))
+					@errors.delete(:company_name)
+				end
+			end
+			newstate
 		end
 	end
 end

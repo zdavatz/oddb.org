@@ -15,7 +15,6 @@ class StepList < HtmlGrid::List
 		[0,0]	=>	:step,
 	}
 	LEGACY_INTERFACE = false
-
 end
 class SuggestRegistrationForm < View::Admin::RegistrationForm
 	include HtmlGrid::ErrorMessage
@@ -32,6 +31,7 @@ class SuggestRegistrationForm < View::Admin::RegistrationForm
 		[2,3]		=>	:market_date,
 		[2,4]		=>	:inactive_date,
 		[1,5]		=>	:submit,
+		[1,5,0]	=>	:new_registration,
 	}
 	CSS_MAP = { 
 		[0,0,4,6] => 'list' 
@@ -39,6 +39,12 @@ class SuggestRegistrationForm < View::Admin::RegistrationForm
 	LOOKANDFEEL_MAP = {
 		:email_suggestion	=>	:suggest_addr_sender,
 	}
+	def new_registration(model, session=@session)
+		button = HtmlGrid::Button.new(:search_again, model, @session, self)
+		url = @lookandfeel.event_url(:new_registration)
+		button.set_attribute('onclick', "location.href='#{url}'")
+		button
+	end
 	def reorganize_components
 		unless(@model.is_a?(Persistence::CreateItem))
 			components.update({
@@ -77,15 +83,29 @@ class SuggestRegistrationInnerComposite < HtmlGrid::Composite
 end
 class SuggestRegistrationComposite < View::Admin::RootRegistrationComposite
 	COMPONENTS = {
-		[0,1]	=>	:steps,
-		[0,2]	=>	View::User::SuggestRegistrationForm,
-		[0,3]	=>	:registration_sequences,
-		[0,4]	=>	View::User::SuggestRegistrationInnerComposite,
+		#[0,1]	=>	:steps,
+		[0,1]	=>	View::User::SuggestRegistrationForm,
+		[1,1]	=>	:help,
+		[0,2]	=>	:registration_sequences,
+		[0,3]	=>	View::User::SuggestRegistrationInnerComposite,
+	}
+	COLSPAN_MAP = {
+		[0,0]	=> 2,
+		[0,2]	=> 2,
+		[0,3]	=> 2,
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
 		#[0,4]	=>	'composite',
+		[1,1]	=>	'top list-r',
 	}
+	def help(model, session=@session)
+		link = HtmlGrid::Link.new(:help, model, @session, self)
+		txt = @lookandfeel.lookup(:help_suggest_registration)
+		link.value = txt
+		link.href = "mailto:#{MAIL_FROM}?subject=#{txt}"
+		link
+	end
 end
 class SuggestRegistration < View::PrivateTemplate
 	CONTENT = View::User::SuggestRegistrationComposite

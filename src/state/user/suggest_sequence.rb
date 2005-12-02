@@ -13,10 +13,15 @@ class SuggestSequence < Global
 	VIEW = View::Admin::IncompleteSequence
 	def update_incomplete
 		mandatory = [:name_base, :galenic_form, :atc_class]
-		user_input(mandatory, mandatory)
-		update
-		(@session[:allowed] ||= []).push(@model).uniq!
-		self
+		input = user_input(mandatory, mandatory)
+		newstate = update
+		if((reg = @session.app.registration(@model.iksnr)) \
+			&& (seq = reg.sequence(@model.seqnr)))
+			filled = @model.fill_blanks(seq)
+			@model.odba_store unless(filled.empty?)
+			filled.each { |key| @errors.delete(key) }
+		end
+		newstate
 	end
 end
 		end

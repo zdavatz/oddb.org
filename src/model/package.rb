@@ -337,5 +337,13 @@ Grammar OddbSize
 			}.delete_if { |key, val| val.nil? }
 			app.update(ptr.creator, hash) 
 		end
+		def fill_blanks(sequence)
+			[	:descr, :dose, :ikscat, :price_exfactory, :generic_group, 
+				:size, :price_public ].select { |key|
+				if(self.send(key).to_s.empty?)
+					self.send("#{key}=", sequence.send(key))
+				end
+			}
+		end
 	end
 end
