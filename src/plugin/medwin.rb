@@ -123,21 +123,17 @@ module ODDB
 			}
 		end
 		def update_package(pack)
-				criteria = {
-				:ean =>  pack.ean13 
+			criteria = {
+				:ean =>  pack.barcode
 			}
 			results = MEDDATA_SERVER.search(criteria)
 			if(results.size == 1)
 				result = results.first
 				details = MEDDATA_SERVER.detail(result, @medwin_template)
-				update_package_data(pack, data)
+				update_package_data(pack, details)
 			end
 		end
 		def update_package_data(pack, data)
-			data.each_value { |val|
-				val.gsub!(/\240/, ' ')
-				val.strip!
-			}
 			unless(data.empty?)
 				@updated.push(pack.barcode)
 				@app.update(pack.pointer, data)
