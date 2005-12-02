@@ -100,7 +100,7 @@ module ODDB
 		def report
 			lines = [
 				"Checked #{@checked} Packages",
-				"Compared #{@found} Medwin Entries",
+				"Tried #{@found} Medwin Entries",
 				"Updated  #{@updated.size} Packages",
 			]
 			lines.push("Errors:")
@@ -110,7 +110,13 @@ module ODDB
 			lines.join("\n")
 		end
 		def update
-			@app.each_package { |pack| update_package(pack) }
+			@app.each_package { |pack| 
+				@checked += 1
+				if(!pack.pharmacode && pack.empty?)
+					@found += 1
+					update_package(pack)
+				end
+			}
 		end
 		def update_package(pack)
 				criteria = {
@@ -122,28 +128,11 @@ module ODDB
 				details = MEDDATA_SERVER.detail(result, @medwin_template)
 				update_package_data(pack, data)
 			end
-=begin
-		@checked += 1
-#			@temp_count += 1
-			if(html = package_html(pack))
-				@found += 1
-				data = extract(html)
-				update_package_data(pack, data)
-
-
-			if(@temp_count==100)
-				sleep 300
-				@temp_count = 0
-			end
-=end
-			end
+		end
 		def update_package_data(pack, data)
-			update = data.inject({}) { |inj, pair|
-				key, val = pair
+			data.each_value { |val|
 				val.gsub!(/\240/, ' ')
 				val.strip!
-				inj.store(*pair)
-				inj
 			}
 			unless(update.empty?)
 				@updated.push(pack.barcode)
