@@ -3,16 +3,18 @@
 
 require 'state/global_predefine'
 require 'state/admin/sequence'
-require 'view/admin/incompletesequence'
+require 'view/user/suggest_sequence'
 
 module ODDB
 	module State
 		module User
 class SuggestSequence < Global
 	include State::Admin::SequenceMethods
-	VIEW = View::Admin::IncompleteSequence
+	VIEW = View::User::SuggestSequence
 	def update_incomplete
-		mandatory = [:name_base, :galenic_form, :atc_class]
+		mandatory = [:name_base, :galenic_form]
+		error_check_and_store(:atc_class, 
+													@session.user_input(:code), [:atc_class])
 		input = user_input(mandatory, mandatory)
 		newstate = update
 		if((reg = @session.app.registration(@model.iksnr)) \

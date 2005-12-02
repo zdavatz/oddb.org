@@ -326,6 +326,9 @@ Grammar OddbSize
 		end
 	end
 	class IncompletePackage < PackageCommon
+		def acceptable?
+			@size && @ikscat
+		end
 		def accepted!(app, sequence_pointer)
 			ptr = sequence_pointer + [:package, @ikscd]
 			hash = {

@@ -257,7 +257,13 @@ module ODDB
 		ACTIVE_AGENT = IncompleteActiveAgent
 		PACKAGE = IncompletePackage
 		def acceptable?
-			@atc_class && @name_base
+			_acceptable? && !@active_agents.empty? \
+			&& @packages.all? { |key, val|
+				val.acceptable?
+			}
+		end
+		def _acceptable?
+			@atc_class && @name_base && @galenic_form
 		end
 		def accepted!(app, reg_pointer)
 			ptr = reg_pointer + [:sequence, @seqnr]

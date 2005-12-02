@@ -192,7 +192,6 @@ class TestMedwinPackagePlugin < Test::Unit::TestCase
 			@plugin.instance_eval <<-EOS
 				alias :original_update_package :update_package
 				def update_package(comp)
-					@checked += 1
 					@update_package_called = true
 				end
 			EOS

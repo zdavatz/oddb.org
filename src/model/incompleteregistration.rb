@@ -19,9 +19,14 @@ module ODDB
 			super
 		end
 		def acceptable?
-			 @iksnr && @company && @sequences.values.all? { |seq| 
+			_acceptable? && !@sequences.empty? \
+			&& @sequences.values.all? { |seq| 
 				seq.acceptable?
 			}
+		end
+		def _acceptable?
+			@iksnr && @company && @indication \
+				&& (@registration_date || @revision_date)
 		end
 		def accepted!(app)
 			ptr = Persistence::Pointer.new([:registration, @iksnr])
