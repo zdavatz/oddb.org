@@ -59,7 +59,8 @@ module ODDB
 	class UnknownUser < SBSM::UnknownUser
 		HOME = State::Drugs::Init
 		def allowed?(obj)
-			false
+			[ODDB::IncompleteSequence, ODDB::IncompletePackage, 
+				ODDB::IncompleteActiveAgent].include?(obj.class)
 		end
 		def cache_html?
 			true

@@ -124,7 +124,7 @@ module ODDB
 		end
 		def update_package(pack)
 			criteria = {
-				:ean =>  pack.barcode
+				:ean =>  pack.barcode.to_s,
 			}
 			results = MEDDATA_SERVER.search(criteria)
 			if(results.size == 1)

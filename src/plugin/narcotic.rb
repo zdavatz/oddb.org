@@ -25,7 +25,7 @@ module ODDB
 		def casrns(row)
 			casrns = row.at(1).to_s.split('/').collect { |casrn|
 				if(/\d+/.match(casrn))
-					casrn.to_s
+					casrn.to_s.strip
 				end
 			}.compact
 		end

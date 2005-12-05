@@ -110,13 +110,16 @@ class IncompleteRegistrationInnerComposite < HtmlGrid::Composite
 	}
 	def active_registration(model, session)
 		if(registration = session.app.registration(@model.iksnr))
-			if(@session.user.allowed?(registration))
-				View::Admin::RootRegistrationComposite.new(registration, 
-																									 session, self)
-			else
-				View::Admin::RegistrationComposite.new(registration, 
-																							 session, self)
-			end
+			_active_registration(registration)
+		end
+	end
+	def _active_registration(registration)
+		if(@session.user.allowed?(registration))
+			View::Admin::RootRegistrationComposite.new(registration, 
+																								 @session, self)
+		else
+			View::Admin::RegistrationComposite.new(registration, 
+																						 @session, self)
 		end
 	end
 end

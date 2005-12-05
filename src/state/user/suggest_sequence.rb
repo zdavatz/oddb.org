@@ -11,6 +11,28 @@ module ODDB
 class SuggestSequence < Global
 	include State::Admin::SequenceMethods
 	VIEW = View::User::SuggestSequence
+	def suggest_choose
+		if(@model._acceptable? && (ptr = @session.user_input(:pointer)) \
+			&& (item = @session.resolve(ptr)))
+			add = nil
+			#klass = nil
+			case item
+			when Package
+				add = [:package, item.ikscd]
+				#klass = State::User::SuggestPackage
+			when ActiveAgent
+				add = [:active_agent, item.substance.name]
+				#klass = State::Admin::IncompleteActiveAgent
+			end
+			if(add)
+				inc = @model.pointer + add
+				mdl = @session.app.create(inc)
+				mdl.fill_blanks(item)
+				mdl.odba_store
+				self #klass.new(@session, mdl)
+			end
+		end
+	end
 	def update_incomplete
 		mandatory = [:name_base, :galenic_form]
 		error_check_and_store(:atc_class, 

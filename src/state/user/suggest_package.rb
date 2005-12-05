@@ -3,14 +3,14 @@
 
 require 'state/global_predefine'
 require 'state/admin/package'
-require 'view/admin/incompletepackage'
+require 'view/user/suggest_package'
 
 module ODDB
 	module State
 		module User
 class SuggestPackage < Global
 	include State::Admin::PackageMethods
-	VIEW = View::Admin::IncompletePackage
+	VIEW = View::User::SuggestPackage
 	def update_incomplete
 		mandatory = [:size, :ikscat]
 		user_input(mandatory, mandatory)

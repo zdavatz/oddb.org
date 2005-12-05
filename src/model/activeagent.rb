@@ -109,5 +109,14 @@ module ODDB
 			}.delete_if { |key, va| va.nil? }
 			app.update(ptr.creator, hash)
 		end
+		def fill_blanks(sequence)
+			[	:substance, :chemical_substance, :equivalent_substance, 
+				:dose, :chemical_dose, :equivalent_dose, :spagyric_type,
+				:spagyric_dose ].select { |key|
+				if(self.send(key).to_s.empty?)
+					self.send("#{key}=", sequence.send(key))
+				end
+			}
+		end
 	end
 end

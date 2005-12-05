@@ -26,11 +26,14 @@ class IncompleteSequenceInnerComposite < HtmlGrid::Composite
 	def active_sequence(model, session)
 		if((reg = @session.app.registration(model.iksnr)) \
 			&& (seq = reg.sequence(model.seqnr)))
-			if(@session.user.allowed?(seq))
-				View::Admin::RootSequenceComposite.new(seq, session, self)
-			else
-				View::Admin::SequenceComposite.new(seq, session, self)
-			end
+			_active_sequence(seq)
+		end
+	end
+	def _active_sequence(seq)
+		if(@session.user.allowed?(seq))
+			View::Admin::RootSequenceComposite.new(seq, @session, self)
+		else
+			View::Admin::SequenceComposite.new(seq, @session, self)
 		end
 	end
 end

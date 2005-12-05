@@ -1534,8 +1534,7 @@ td.info {
 	color : green;
 }
 td.processingerror {
-	padding-bottom : 4px;
-	padding-top : 4px;
+	padding: 4px;
 	color : red;
 }
 td.warning {
@@ -1756,4 +1755,14 @@ div.just-medical {
 	padding : 4px;
 	text-align : left;
 	text-decoration : none;
+}
+td.next-step {
+	padding: 4px;
+	border: 2px dotted red;
+	width: auto;
+}
+td.active-item {
+	padding-top: 15px;
+	opacity: .75;
+	filter: alpha(opacity=75);
 }

@@ -64,7 +64,7 @@ class SuggestRegistrationForm < View::Admin::RegistrationForm
 		button
 	end
 end
-class SuggestRegistrationInnerComposite < HtmlGrid::Composite
+class SuggestRegistrationInnerComposite < View::Admin::IncompleteRegistrationInnerComposite
 	COMPONENTS = {
 		[0,0]	=>	:th_active_registration,
 		[0,1]	=>	:active_registration,
@@ -77,10 +77,8 @@ class SuggestRegistrationInnerComposite < HtmlGrid::Composite
 	SYMBOL_MAP = {
 		:th_active_registration	=>	HtmlGrid::Text,
 	}
-	def active_registration(model, session)
-		if(registration = session.app.registration(@model.iksnr))
-			View::Admin::RegistrationComposite.new(registration, session, self)
-		end
+	def active_registration(model, session=@session)
+		_active_registration(model)
 	end
 end
 class SuggestRegistrationComposite < View::Admin::RootRegistrationComposite
@@ -89,7 +87,7 @@ class SuggestRegistrationComposite < View::Admin::RootRegistrationComposite
 		[0,1]	=>	View::User::SuggestRegistrationForm,
 		[1,1]	=>	:help,
 		[0,2]	=>	:registration_sequences,
-		[0,3]	=>	View::User::SuggestRegistrationInnerComposite,
+		[0,3]	=>	:active_registration,
 	}
 	COLSPAN_MAP = {
 		[0,0]	=> 2,
@@ -98,9 +96,14 @@ class SuggestRegistrationComposite < View::Admin::RootRegistrationComposite
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
-		#[0,4]	=>	'composite',
 		[1,1]	=>	'top list-r',
+		[0,3]	=>	'active-item',
 	}
+	def active_registration(model, session)
+		if(registration = session.app.registration(@model.iksnr))
+			View::User::SuggestRegistrationInnerComposite.new(registration, session, self)
+		end
+	end
 	def help(model, session=@session)
 		link = HtmlGrid::Link.new(:help, model, @session, self)
 		txt = @lookandfeel.lookup(:help_suggest_registration)
@@ -110,13 +113,17 @@ class SuggestRegistrationComposite < View::Admin::RootRegistrationComposite
 	end
 	def registration_sequences(model, session=@session)
 		if(model._acceptable?)
+			if(model.sequences.empty?)
+				matrix = components.index(:registration_sequences)
+				css_map.store(matrix, 'next-step')
+			end
 			super
 		end
 	end
 end
 class SuggestRegistration < View::PrivateTemplate
 	CONTENT = View::User::SuggestRegistrationComposite
-	SNAPBACK_EVENT = :user_home
+	SNAPBACK_EVENT = :home_user
 end
 		end
 	end
