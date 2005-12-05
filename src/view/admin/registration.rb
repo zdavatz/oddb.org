@@ -54,6 +54,7 @@ class RegistrationSequences < HtmlGrid::List
 end
 class RootRegistrationSequences < View::FormList
 	include View::Admin::RegistrationSequenceList
+	EMPTY_LIST_KEY = :empty_sequence_list
 end
 class FachinfoLanguageSelect < HtmlGrid::AbstractSelect
 	attr_accessor :value

@@ -1757,3 +1757,8 @@ div.just-medical {
 	text-align : left;
 	text-decoration : none;
 }
+td.next-step {
+	padding: 4px;
+	border: 2px dotted red;
+	width: auto;
+}

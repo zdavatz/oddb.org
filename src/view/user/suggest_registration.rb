@@ -113,6 +113,10 @@ class SuggestRegistrationComposite < View::Admin::RootRegistrationComposite
 	end
 	def registration_sequences(model, session=@session)
 		if(model._acceptable?)
+			if(model.sequences.empty?)
+				matrix = components.index(:registration_sequences)
+				css_map.store(matrix, 'next-step')
+			end
 			super
 		end
 	end

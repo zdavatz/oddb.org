@@ -61,6 +61,7 @@ class SequenceAgents < HtmlGrid::List
 end
 class RootSequenceAgents < View::FormList
 	include SequenceAgentList
+	EMPTY_LIST_KEY = :empty_agent_list
 	def substance(model, session)
 		link = View::PointerLink.new(:substance, model, session, self)
 		link.value = super
@@ -108,6 +109,7 @@ class SequencePackages < HtmlGrid::List
 end
 class RootSequencePackages < View::FormList
 	include View::Admin::SequencePackageList
+	EMPTY_LIST_KEY = :empty_package_list
 end
 module SequenceDisplay
 	def atc_class(model, session)

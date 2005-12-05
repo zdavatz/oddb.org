@@ -38,11 +38,19 @@ class SuggestSequenceComposite < View::Admin::IncompleteSequenceComposite
 	end
 	def sequence_agents(model, session=@session)
 		if(model._acceptable?)
+			if(model.active_agents.empty?)
+				matrix = components.index(:sequence_agents)
+				css_map.store(matrix, 'next-step')
+			end
 			super
 		end
 	end
 	def sequence_packages(model, session=@session)
-		if(model._acceptable?)
+		if(model._acceptable? && !model.active_agents.empty?)
+			if(model.packages.empty?)
+				matrix = components.index(:sequence_packages)
+				css_map.store(matrix, 'next-step')
+			end
 			super
 		end
 	end
