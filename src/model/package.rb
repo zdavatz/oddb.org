@@ -300,6 +300,7 @@ Grammar OddbSize
 		end
 	end
 	class Package < PackageCommon
+		attr_reader :feedbacks
 		def initialize(ikscd)
 			super
 			@feedbacks = {}
@@ -316,13 +317,10 @@ Grammar OddbSize
 		def feedback(id)
 			@feedbacks[id.to_i]
 		end
-		def feedbacks
-			@feedbacks ||= {}
-		end
 		def create_feedback
 			feedback = Feedback.new
 			feedback.oid = self.feedbacks.keys.max.to_i.next
-			self.feedbacks.store(feedback.oid, feedback) 
+			@feedbacks.store(feedback.oid, feedback) 
 		end
 	end
 	class IncompletePackage < PackageCommon
