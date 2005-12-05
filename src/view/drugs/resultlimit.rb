@@ -17,29 +17,30 @@ class ResultLimitList < HtmlGrid::List
 	COMPONENTS = {
 		[0,0]	=>  :fachinfo,
 		[1,0]	=>	:patinfo,
-		[2,0]	=>	:name_base,
-		[3,0]	=>	:galenic_form,
-		[4,0]	=>	:most_precise_dose,
-		[5,0]	=>	:size,
-		[6,0]	=>	:price_exfactory,
-		[7,0]	=>	:price_public,
-		[8,0]	=>	:ikscat,
-		[9,0]	=>	:feedback,
-		[10,0]	=>  :google_search,
-		[11,0]	=>	:notify,
+		[2,0]	=>	:narcotic,
+		[3,0]	=>	:name_base,
+		[4,0]	=>	:galenic_form,
+		[5,0]	=>	:most_precise_dose,
+		[6,0]	=>	:size,
+		[7,0]	=>	:price_exfactory,
+		[8,0]	=>	:price_public,
+		[9,0]	=>	:ikscat,
+		[10,0]	=>	:feedback,
+		[11,0]	=>  :google_search,
+		[12,0]	=>	:notify,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
 	SORT_HEADER = false
 	CSS_MAP = {
 		[0,0,2]	=>	'result-infos',
-		[2,0] => 'list-big',
-		[3,0] => 'list',
-		[4,0,5] => 'list-r',
-		[9,0,3]=>	'list-r',
+		[3,0] => 'list-big',
+		[4,0] => 'list',
+		[5,0,5] => 'list-r',
+		[10,0,3]=>	'list-r',
 	}
 	CSS_HEAD_MAP = {
-		[4,0,8] => 'th-r',
+		[5,0,8] => 'th-r',
 	}
 	def compose_empty_list(offset)
 		count = @session.state.package_count.to_i

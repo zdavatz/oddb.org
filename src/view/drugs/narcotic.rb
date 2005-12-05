@@ -22,13 +22,19 @@ module ODDB
 				DEFAULT_CLASS = HtmlGrid::Value
 				DEFAULT_HEAD_CLASS = 'subheading'
 				SORT_HEADER = false
-				SORT_DEFAULT = :name_base
+				SORT_DEFAULT = nil
 				LEGACY_INTERFACE = false
 				LOOKANDFEEL_MAP = {
 					:ikskey	=>	:title_packages,
 					:name_base	=>	:nbsp,
-					:size	=> :nbsp,
+					:size	=>	:nbsp,
 				}
+				def init
+					@model = @model.sort_by { |package|
+						[package.name_base.to_s, package.size.to_f]
+					}
+					super
+				end
 				def ikskey(model)
 					item = model.ikskey
 					self.link(model, item)
@@ -71,7 +77,6 @@ module ODDB
 				}
 				CSS_MAP = {
 					[0,0]	=> 'th',
-					[0,2]	=> 'list bg',
 					[0,3] => 'list',
 				}
 				LEGACY_INTERFACE = false
@@ -88,10 +93,10 @@ module ODDB
 				end
 				def reservation_text(model)
 					if(text = model.reservation_text)
-						css_map.store(components.index(:reservation_text), 
-							'list-bg')
+						div = HtmlGrid::Div.new(model, @session, self)
+						div.css_class = 'long-text list-bg'
 						txt = text.send(@session.language)
-						if(match = /SR (\d{3}\.\d{3}\.\d{2})/.match(txt))
+						div.value = if(match = /SR (\d{3}\.\d{3}\.\d{2})/.match(txt))
 							url = sprintf('http://www.admin.ch/ch/%s/sr/c%s.html',
 								@session.language[0,1], 
 								match[1].gsub('.', '_'))
@@ -100,6 +105,7 @@ module ODDB
 						else
 							txt
 						end
+						div
 					end
 				end
 			end
