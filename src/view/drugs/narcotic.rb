@@ -22,13 +22,19 @@ module ODDB
 				DEFAULT_CLASS = HtmlGrid::Value
 				DEFAULT_HEAD_CLASS = 'subheading'
 				SORT_HEADER = false
-				SORT_DEFAULT = :name_base
+				SORT_DEFAULT = nil
 				LEGACY_INTERFACE = false
 				LOOKANDFEEL_MAP = {
 					:ikskey	=>	:title_packages,
 					:name_base	=>	:nbsp,
-					:size	=> :nbsp,
+					:size	=>	:nbsp,
 				}
+				def init
+					@model = @model.sort_by { |package|
+						[package.name_base.to_s, package.size.to_f]
+					}
+					super
+				end
 				def ikskey(model)
 					item = model.ikskey
 					self.link(model, item)
@@ -74,6 +80,7 @@ module ODDB
 					[0,2]	=> 'list bg',
 					[0,3] => 'list',
 				}
+				MAX_WIDTH = 200
 				LEGACY_INTERFACE = false
 				CSS_CLASS = 'composite'
 				DEFAULT_CLASS = HtmlGrid::Value
