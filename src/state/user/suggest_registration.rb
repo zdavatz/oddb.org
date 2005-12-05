@@ -46,6 +46,16 @@ class SuggestRegistration < Global
 			}
 		}
 	end
+	def suggest_choose
+		if(@model._acceptable? && (ptr = @session.user_input(:pointer)) \
+			&& (seq = @session.resolve(ptr)))
+			inc = @model.pointer + [:sequence, seq.seqnr]
+			mdl = @session.app.create(inc)
+			mdl.fill_blanks(seq)
+			mdl.odba_store
+			self #State::User::SuggestSequence.new(@session, mdl)
+		end
+	end
 	def update
 		iksnr = @session.user_input(:iksnr)
 		error_check_and_store(:iksnr, iksnr, [:iksnr])

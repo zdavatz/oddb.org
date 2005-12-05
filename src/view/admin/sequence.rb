@@ -39,7 +39,14 @@ module SequenceAgentList
 	DEFAULT_HEAD_CLASS = 'subheading'
 	EVENT = :new_active_agent	
 	SORT_HEADER = false
-	def substance(model, session)
+	def substance(model, session=@session)
+		link = HtmlGrid::Link.new(:substance, model, @session, self)
+		link.value = _substance(model)
+		args = {:pointer => model.pointer}
+		link.href = @lookandfeel.event_url(:suggest_choose, args)
+		link
+	end
+	def _substance(model)
 		if(sub = model.substance)
 			sub.name
 		end
@@ -64,7 +71,7 @@ class RootSequenceAgents < View::FormList
 	EMPTY_LIST_KEY = :empty_agent_list
 	def substance(model, session)
 		link = View::PointerLink.new(:substance, model, session, self)
-		link.value = super
+		link.value = _substance(model)
 		link
 	end
 end
@@ -100,7 +107,18 @@ module SequencePackageList
 	SYMBOL_MAP = {
 		:ikscd =>	View::PointerLink,
 	}
-	def sl_entry(model, session)
+	def ikscd(model, session=@session)
+		if(@session.user.allowed?(model))
+			PointerLink.new(:ikscd, model, @session, self)
+		else
+			link = HtmlGrid::Link.new(:ikscd, model, @session, self)
+			link.value = model.ikscd
+			args = {:pointer => model.pointer}
+			link.href = @lookandfeel.event_url(:suggest_choose, args)
+			link
+		end
+	end
+	def sl_entry(model, session=@session)
 		@lookandfeel.lookup(:sl) unless model.sl_entry.nil?
 	end
 end

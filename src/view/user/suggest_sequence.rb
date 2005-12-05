@@ -28,7 +28,7 @@ class SuggestSequenceComposite < View::Admin::IncompleteSequenceComposite
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
-		[0,4]	=>	'composite',
+		[0,4]	=>	'active-item',
 	}
 	def active_sequence(model, session=@session)
 		if((reg = @session.app.registration(model.iksnr)) \

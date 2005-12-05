@@ -43,9 +43,20 @@ module RegistrationSequenceList
 	SYMBOL_MAP = {
 		:seqnr	=>	View::PointerLink,
 	}
-	def atc_class(model, session)
+	def atc_class(model, session=@session)
 		if atc = model.atc_class
 			atc.code
+		end
+	end
+	def seqnr(model, session=@session)
+		if(@session.user.allowed?(model))
+			PointerLink.new(:seqnr, model, @session, self)
+		else
+			link = HtmlGrid::Link.new(:seqnr, model, @session, self)
+			args = {:pointer => model.pointer}
+			link.href = @lookandfeel.event_url(:suggest_choose, args)
+			link.value = model.seqnr
+			link
 		end
 	end
 end
@@ -55,6 +66,14 @@ end
 class RootRegistrationSequences < View::FormList
 	include View::Admin::RegistrationSequenceList
 	EMPTY_LIST_KEY = :empty_sequence_list
+	def compose_empty_list(offset)
+		@grid.add(@lookandfeel.lookup(self::class::EMPTY_LIST_KEY), 
+			*offset)
+		@grid.add_attribute('class', 'list', *offset)
+		#@grid[*offset].add_style('list')
+		@grid.set_colspan(*offset)
+		resolve_offset(offset, self::class::OFFSET_STEP)
+	end
 end
 class FachinfoLanguageSelect < HtmlGrid::AbstractSelect
 	attr_accessor :value

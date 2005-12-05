@@ -110,6 +110,7 @@ class IncompleteRegistrationInnerComposite < HtmlGrid::Composite
 	}
 	def active_registration(model, session)
 		if(registration = session.app.registration(@model.iksnr))
+			_active_registration(registration)
 		end
 	end
 	def _active_registration(registration)

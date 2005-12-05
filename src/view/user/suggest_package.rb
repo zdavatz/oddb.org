@@ -24,6 +24,10 @@ class SuggestPackageComposite < View::Admin::IncompletePackageComposite
 		[0,1]	=>	View::Admin::IncompletePackageForm,
 		[0,2]	=>	:active_package,
 	}
+	CSS_MAP = {
+		[0,0]	=>	'th',
+		[0,2]	=>	'active-item',
+	}
 	def active_package(model, session=@session)
 		if((reg = @session.app.registration(model.iksnr)) \
 			&& (pack = reg.package(model.ikscd)))

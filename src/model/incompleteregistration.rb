@@ -49,13 +49,22 @@ module ODDB
 			reg
 		end
 		def fill_blanks(registration)
-			[	:company, :generic_type, :indication, :registration_date, 
+			scalars = [	:company, :generic_type, :indication, :registration_date, 
 				:revision_date, :expiration_date, :inactive_date, 
 				:market_date ].select { |key|
 				if(self.send(key).to_s.empty?)
 					self.send("#{key}=", registration.send(key))
 				end
 			}
+			registration.sequences.each { |snr, seq|
+				nseq = @sequences.fetch(snr) { 
+					nseq = create_sequence(snr)
+					nseq.pointer = @pointer + [:sequence, snr]
+					nseq
+				}
+				nseq.fill_blanks(seq)
+			}
+			scalars
 		end
 		def pointer_descr
 			super || '???????'

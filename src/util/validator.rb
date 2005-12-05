@@ -157,6 +157,7 @@ module ODDB
 			:sponsorlink,
 			:substances,
 			:suggest_address,
+			:suggest_choose,
 			:switch,
 			:update,
 			:update_bsv,

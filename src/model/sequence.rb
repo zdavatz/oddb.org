@@ -284,12 +284,29 @@ module ODDB
 			} 
 		end
 		def fill_blanks(sequence)
-			[	:name_base, :name_descr, :dose, :galenic_form, 
+			scalars = [	:name_base, :name_descr, :dose, :galenic_form, 
 				:atc_class ].select { |key|
 				if(self.send(key).to_s.empty?)
 					self.send("#{key}=", sequence.send(key))
 				end
 			}
+			sequence.packages.each { |ikscd, pac|
+				npac = @packages.fetch(ikscd) { 
+					npac = create_package(ikscd)
+					npac.pointer = @pointer + [:package, ikscd]
+					npac
+				}
+				npac.fill_blanks(pac)
+			}
+			sequence.active_agents.each { |agent|
+				if(sub = agent.substance)
+					name = sub.name
+					nagent = create_active_agent(name)
+					nagent.pointer = @pointer + [:active_agent, name]
+					nagent.fill_blanks(agent)
+				end
+			}
+			scalars
 		end
 	end
 end
