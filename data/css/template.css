@@ -1766,3 +1766,6 @@ td.active-item {
 	opacity: .75;
 	filter: alpha(opacity=75);
 }
+div.long-text {
+	max-width: 50%;
+}

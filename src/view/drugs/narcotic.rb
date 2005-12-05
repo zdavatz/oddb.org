@@ -77,10 +77,8 @@ module ODDB
 				}
 				CSS_MAP = {
 					[0,0]	=> 'th',
-					[0,2]	=> 'list bg',
 					[0,3] => 'list',
 				}
-				MAX_WIDTH = 200
 				LEGACY_INTERFACE = false
 				CSS_CLASS = 'composite'
 				DEFAULT_CLASS = HtmlGrid::Value
@@ -95,10 +93,10 @@ module ODDB
 				end
 				def reservation_text(model)
 					if(text = model.reservation_text)
-						css_map.store(components.index(:reservation_text), 
-							'list-bg')
+						div = HtmlGrid::Div.new(model, @session, self)
+						div.css_class = 'long-text list-bg'
 						txt = text.send(@session.language)
-						if(match = /SR (\d{3}\.\d{3}\.\d{2})/.match(txt))
+						div.value = if(match = /SR (\d{3}\.\d{3}\.\d{2})/.match(txt))
 							url = sprintf('http://www.admin.ch/ch/%s/sr/c%s.html',
 								@session.language[0,1], 
 								match[1].gsub('.', '_'))
@@ -107,6 +105,7 @@ module ODDB
 						else
 							txt
 						end
+						div
 					end
 				end
 			end
