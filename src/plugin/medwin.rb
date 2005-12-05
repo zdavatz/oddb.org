@@ -96,13 +96,32 @@ module ODDB
 			@medwin_template = {
 				:pharmacode	=>	[3,2],
 			}	
+			@nonmatching_template = {
+				:ean13			=>	[1,2],
+				:pharmacode	=>	[3,2],
+			}
+			@probable_errors_oddb = []
+			@probable_errors_medwin = []
 		end
 		def report
 			lines = [
 				"Checked #{@checked} Packages",
 				"Tried #{@found} Medwin Entries",
 				"Updated  #{@updated.size} Packages",
+				"Probable Errors in ODDB: #{@probable_errors_oddb.size}",
+				"Probable Errors in Medwin: #{@probable_errors_medwin.size}",
+				nil,
+				"Probable Errors in ODDB: #{@probable_errors_oddb.size}",
 			]
+			@probable_errors_oddb.each { |pack|
+				lines.push("http://www.oddb.org/de/gcc/resolve/pointer/#{pack.pointer}")
+			}
+			lines.push
+			lines.push "Probable Errors in Medwin: #{@probable_errors_medwin.size}",
+			@probable_errors_medwin.each { |pack|
+				lines.push("http://www.oddb.org/de/gcc/resolve/pointer/#{pack.pointer}")
+			}
+			lines.push
 			lines.push("Errors:")
 			@errors.each { |key, value|
 				lines.push(key + " => " + value)
@@ -126,10 +145,26 @@ module ODDB
 			criteria = {
 				:ean =>  pack.barcode.to_s,
 			}
+			template = @medwin_template
 			results = MEDDATA_SERVER.search(criteria)
+			if(results.empty? && pack.registration.package_count == 1)
+				criteria = {
+					:ean => pack.barcode.to_s[0,9]
+				}
+				template = @nonmatching_template
+				results = MEDDATA_SERVER.search(criteria)
+			end
 			if(results.size == 1)
 				result = results.first
-				details = MEDDATA_SERVER.detail(result, @medwin_template)
+				details = MEDDATA_SERVER.detail(result, template)
+				if(ean13 = details.delete(:ean13))
+					 details.store(:medwin_ikscd, ean13[9,3])
+					 if(ean13 > pack.barcode.to_s)
+						 @probable_errors_oddb.push(pack)
+					 else
+						 @probable_errors_medwin.push(pack)
+					 end
+				end
 				update_package_data(pack, details)
 			end
 		end
