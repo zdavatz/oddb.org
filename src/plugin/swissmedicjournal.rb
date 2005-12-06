@@ -81,6 +81,21 @@ module ODDB
 			hash.store(:pointers, @incomplete_pointers)
 			hash
 		end
+		def reconsider_deletions(month)
+			name = month.strftime('%m_%Y.txt')
+			path = File.join(ARCHIVE_PATH, 'txt', name)
+			document = SwissmedicJournal::Document.new(File.read(path))
+			document.each { |part|
+				if(part.is_a?(SwissmedicJournal::InactiveRegistration))
+					part.parse
+					if((reg = @app.registration(part.iksnr)) && reg.active?)
+						puts reg
+						deactivate_registration(part)
+					end
+				end
+			}
+			@incomplete_deactivations
+		end
 		def report
 			reg_pointers = @registration_pointers.collect { |pointer|
 				resolve_link(pointer)
@@ -212,6 +227,8 @@ module ODDB
 				''
 			end
 			str << 'http://www.oddb.org/de/gcc/resolve/pointer/' << CGI.escape(pointer.to_s) << ' '
+		rescue Exception
+			"Error creating Link for #{pointer.inspect}"
 		end
 		def smj_incomplete?(smj_reg)
 			smj_reg.incomplete? #&& smj_reg.iksnr.nil?

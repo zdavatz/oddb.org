@@ -98,6 +98,10 @@ module ODDB
 				}
 			end
 		end
+		def reconsider_deletions(month)
+			update_simple(SwissmedicJournalPlugin, 'Reconsider Deletions', 
+										:reconsider_deletions, month)
+		end
 		def run
 			logfile_stats
 			update_swissmedicjournal
@@ -268,10 +272,10 @@ module ODDB
 				nil
 			end
 		end
-		def update_simple(klass, subj, update_method=:update)
+		def update_simple(klass, subj, update_method=:update, *update_args)
 			wrap_update(klass, subj) {
 				plug = klass.new(@app)
-				plug.send(update_method)
+				plug.send(update_method, *update_args)
 				log = Log.new(Date.today)
 				log.update_values(log_info(plug))
 				log.notify(subj)
