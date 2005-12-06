@@ -73,6 +73,10 @@ module ODDB
 					end
 					title_elements.push(sl_str)
 				end
+				unless(model.pharmacode)
+					text_elements.push(@lookandfeel.lookup(:hors_commerce))
+					title_elements.push(@lookandfeel.lookup(:explain_hc))
+				end
 				txt.value = text_elements.join('&nbsp;/&nbsp;')
 				title = title_elements.join('&nbsp;/&nbsp;')
 				txt.set_attribute('title', title)
