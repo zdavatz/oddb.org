@@ -112,12 +112,12 @@ module ODDB
 			@probable_errors_oddb.each { |pack|
 				lines.push("http://www.oddb.org/de/gcc/resolve/pointer/#{pack.pointer}")
 			}
-			lines.push
-			lines.push "Probable Errors in Medwin: #{@probable_errors_medwin.size}",
+			lines.push nil
+			lines.push "Probable Errors in Medwin: #{@probable_errors_medwin.size}"
 			@probable_errors_medwin.each { |pack|
 				lines.push("http://www.oddb.org/de/gcc/resolve/pointer/#{pack.pointer}")
 			}
-			lines.push
+			lines.push nil
 			lines.push("Errors:")
 			@errors.each { |key, value|
 				lines.push(key + " => " + value)
