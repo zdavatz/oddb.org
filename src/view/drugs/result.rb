@@ -66,7 +66,7 @@ class ResultForm < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]		=>	:title_found,
 		[0,0,1]	=>	:dsp_sort,
-		[1,0]		=>	View::Drugs::ExportCSV,
+		[1,0]		=>	:export_csv,
 		[0,1]		=>	'price_compare',
 		[1,1]		=>	SearchForm,
 		[0,2]		=>	View::Drugs::ResultList,
@@ -100,6 +100,11 @@ class ResultForm < HtmlGrid::Composite
 		link = HtmlGrid::Link.new(:dsp_sort, model, @session, self)
 		link.href = url
 		link
+	end
+	def export_csv(model, session=@session)
+		if(@lookandfeel.enabled?(:export_csv))
+			View::Drugs::ExportCSV.new(model, @session, self)
+		end
 	end
 	def title_found(model, session)
 		query = session.persistent_user_input(:search_query)

@@ -13,6 +13,9 @@ module ODDB
 				LookandfeelExtern,
 				LookandfeelAtupri, 
 			],
+			'atupri-web'=>	[
+				LookandfeelAtupriWeb, 
+			],
 			'just-medical'=>	[
 				LookandfeelExtern,
 				LookandfeelJustMedical, 

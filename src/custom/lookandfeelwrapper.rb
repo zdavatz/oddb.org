@@ -7,15 +7,21 @@ module ODDB
 	class LookandfeelExtern < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:atc_chooser,
+			:currency_switcher,
+			:data_counts,
 			:drugs, 
+			:export_csv,
 			:faq_link,
+			:full_result,
 			:help_link,
 			:home,
 			:home_drugs,
 			:home_migel,
 			:migel,
 			:recent_registrations,
+			:search_reset,
 			:sequences,
+			:topfoot,
 			:ywesee_contact,
 			:logout,
 		]
@@ -142,6 +148,31 @@ module ODDB
 				'height'	=>	'92',
 			},
 		}
+	end
+	class LookandfeelAtupriWeb < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:drugs, 
+			:external_css,
+			:help_link,
+			:logout,
+			:migel,
+			:sequences,
+		]
+		DICTIONARIES = {
+			'de'	=>	{
+				:home_welcome	=>	'',
+			},
+			'fr'	=>	{
+				:home_welcome	=>	'',
+			},
+			'en'	=>	{
+				:home_welcome	=>	'',
+			},
+		}
+		RESOURCES = { 
+			:external_css	=>	'http://www.atupri.ch/misc/generika.css',
+		}
+		HTML_ATTRIBUTES = { }
 	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
 		ENABLED = [

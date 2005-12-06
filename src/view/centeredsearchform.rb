@@ -23,9 +23,6 @@ module ODDB
 			NAV_LINK_CLASS = CenteredNavigationLink
 			NAV_LINK_CSS = 'list'
 			NAV_METHOD = :zone_navigation
-			HTML_ATTRIBUTES = {
-				'align' => 'center',
-			}
 		end
 		class PayPalForm < HtmlGrid::Form
 			CSS_CLASS = 'center'
@@ -91,10 +88,12 @@ module ODDB
 				button
 			end
 			def search_reset(model, session)
-				button = HtmlGrid::Button.new(:search_reset, model, session, self)
-				button.set_attribute("type", "reset")
-				button.set_attribute("align", "center")
-				button
+				if(@lookandfeel.enabled?(:search_reset))
+					button = HtmlGrid::Button.new(:search_reset, model, session, self)
+					button.set_attribute("type", "reset")
+					button.set_attribute("align", "center")
+					button
+				end
 			end
 		end
 		class CenteredSearchComposite < HtmlGrid::Composite
@@ -123,9 +122,6 @@ module ODDB
 				:ddd_count_text		=>	HtmlGrid::Text,
 				:fipi_offer				=>	HtmlGrid::Link,
 				:interactions			=>	HtmlGrid::Link,
-				:language_de			=>	HtmlGrid::Link,
-				:language_en			=>	HtmlGrid::Link,
-				:language_fr			=>	HtmlGrid::Link,
 				:mailinglist			=>	HtmlGrid::Link,
 				:narcotics				=>	HtmlGrid::Link,
 				:plugin						=>	HtmlGrid::Link,

@@ -1258,7 +1258,7 @@ a.subheading:active, a.subheading-bold:active {
 }
 
 /* navigation-classes */
-.navigation {
+td.navigation {
 	background : $bg_dark;
 	color : $bg_dark_font_color;
 	text-align : center;
@@ -1333,9 +1333,7 @@ table.navigation-foot {
 	width : 100%;
 	position : relative;
 	bottom : 0px;
-}
-td.navigation-foot {
-	vertical-align : bottom;
+	padding: 3px;
 }
 table.pager {
 	position : relative;
@@ -1768,4 +1766,10 @@ td.active-item {
 }
 div.long-text {
 	max-width: 400px;
+}
+td.navigation-right {
+	text-align: right;
+}
+td.navigation-right table {
+	float: right;
 }

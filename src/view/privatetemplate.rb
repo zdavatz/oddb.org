@@ -24,21 +24,39 @@ module ODDB
 			}
 		end
 		class PrivateTemplate < PublicTemplate
-			COLSPAN_MAP = {
-				[0,0]	=>	2,
-				[0,1]	=>	2,
-				[0,3]	=>	2,
-				[0,4]	=>	2,
-			}
-			COMPONENTS = {
-				[0,0]		=>	:topfoot,
-				[0,1]		=>	:head,
-				[0,2]		=>	View::PointerSteps,
-				[1,2]		=>	View::SearchHead,
-				[0,3]		=>	:content,
-				[0,4]		=>	:foot,
-			}
 			include View::Snapback
+			def init
+				if(@lookandfeel.enabled?(:topfoot))
+					@components = {
+						[0,0]		=>	:topfoot,
+						[0,1]		=>	:head,
+						[0,2]		=>	View::PointerSteps,
+						[1,2]		=>	View::SearchHead,
+						[0,3]		=>	:content,
+						[0,4]		=>	:foot,
+					}
+					@colspan_map = {
+						[0,0]	=>	2,
+						[0,1]	=>	2,
+						[0,3]	=>	2,
+						[0,4]	=>	2,
+					}
+				else
+					@components = {
+						[0,0]		=>	:head,
+						[0,1]		=>	View::PointerSteps,
+						[1,1]		=>	View::SearchHead,
+						[0,2]		=>	:content,
+						[0,3]		=>	:foot,
+					}
+					@colspan_map = {
+						[0,0]	=>	2,
+						[0,2]	=>	2,
+						[0,3]	=>	2,
+					}
+				end
+				super
+			end
 		end
 	end
 end

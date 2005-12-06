@@ -37,42 +37,59 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,1]		=>	View::Drugs::CenteredSearchForm,
 		[0,2]		=>	:search_explain, 
 		[0,3]		=>	View::CenteredNavigation,
-		[0,4]		=>	:database_size,
-		[0,4,1]	=>	'database_size_text',
-		[0,4,2]	=>	'comma_separator',
-		[0,4,3]	=>	:narcotics_size,
-		[0,4,4]	=>	:narcotics,
-		[0,5]		=>	:fachinfo_size,
-		[0,5,1]	=>	:fi_count_text,
-		[0,5,2]	=>	'comma_separator',
-		[0,5,3] =>	:patinfo_size,
-		[0,5,4] =>	:pi_count_text,
-		[0,6]		=>	:atc_ddd_size,
-		[0,6,1]	=>	:ddd_count_text,
-		[0,6,2]	=>	'comma_separator',
-		[0,6,3]	=>	:limitation_size,
-		[0,6,4]	=>	:sl_count_text,
-		[0,7]		=>	'database_last_updated_txt',
-		[0,7,1]	=>	:database_last_updated,
-		[0,8]		=>	:new_feature,
-		[0,8,1]	=>	:download_generics,
-		[0,9]		=>	:generic_definition,
-		[0,10]	=>	:legal_note,
-		[0,11]	=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,11]		=>	'ccomponent',
-	}
-	COMPONENT_CSS_MAP = {
-		[0,10]	=>	'legal-note-center',
+		[0,0,1,4]		=>	'ccomponent',
 	}
 	def init
 		if(@lookandfeel.enabled?(:just_medical_structure, false))
 			@components = {
-				[0,0]		=>	:language_chooser,
-				[0,1]		=>	View::Drugs::CenteredSearchForm,
-				[0,2]		=>	'search_explain', 
+				[0,0]	=>	:choosers,
+				[0,1]	=>	View::Drugs::CenteredSearchForm,
+				[0,2]	=>	'search_explain', 
+				[0,3]	=>	'database_last_updated_txt',
+				[0,3,1]	=>	:database_last_updated,
+				[0,4]	=>	:generic_definition,
+				[0,5]	=>	:legal_note,
 			}
+			css_map.store([0,4,1,2], 'ccomponent')
+			component_css_map.store([0,5], 'legal-note-center')
+		elsif(@lookandfeel.enabled?(:data_counts))
+			components.update({
+				[0,4]		=>	:database_size,
+				[0,4,1]	=>	'database_size_text',
+				[0,4,2]	=>	'comma_separator',
+				[0,4,3]	=>	:narcotics_size,
+				[0,4,4]	=>	:narcotics,
+				[0,5]		=>	:fachinfo_size,
+				[0,5,1]	=>	:fi_count_text,
+				[0,5,2]	=>	'comma_separator',
+				[0,5,3] =>	:patinfo_size,
+				[0,5,4] =>	:pi_count_text,
+				[0,6]		=>	:atc_ddd_size,
+				[0,6,1]	=>	:ddd_count_text,
+				[0,6,2]	=>	'comma_separator',
+				[0,6,3]	=>	:limitation_size,
+				[0,6,4]	=>	:sl_count_text,
+				[0,7]		=>	'database_last_updated_txt',
+				[0,7,1]	=>	:database_last_updated,
+				[0,8]		=>	:new_feature,
+				[0,8,1]	=>	:download_generics,
+				[0,9]		=>	:generic_definition,
+				[0,10]	=>	:legal_note,
+				[0,11]	=>	:paypal,
+			})
+			css_map.store([0,4,1,7], 'ccomponent')
+			component_css_map.store([0,10], 'legal-note-center')
+		else
+			components.update({
+				[0,4]	=>	'database_last_updated_txt',
+				[0,4,1]	=>	:database_last_updated,
+				[0,5]	=>	:generic_definition,
+				[0,6]	=>	:legal_note,
+			})
+			css_map.store([0,4,1,3], 'ccomponent')
+			component_css_map.store([0,6], 'legal-note-center')
 		end
 		super
 	end

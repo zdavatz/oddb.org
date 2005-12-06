@@ -89,15 +89,8 @@ class ResultList < HtmlGrid::List
 		[6,0]		=>	:galenic_form,
 		[7,0]		=>	:most_precise_dose,
 		[8,0]		=>	:comparable_size,
-		[9,0]		=>	:price_exfactory,
-		[10,0]		=>	:price_public,
-		[11,0]		=>	:substances,
-		[12,0]	=>	:company_name,
-		[13,0]	=>	:ikscat,
-		[14,0]	=>	:registration_date,
-		[15,0]	=>	:feedback,
-		[16,0]	=>  :google_search,
-		[17,0]	=>	:notify,
+		[9,0]		=>	:price_public,
+		[10,0]	=>	:substances,
 	}	
 	REVERSE_MAP = {
 		:company_name			=> false,
@@ -131,15 +124,7 @@ class ResultList < HtmlGrid::List
 		[6,0]	=>	'th',
 		[7,0]	=>	'th-r',
 		[8,0]	=>	'th-r',
-		[9,0]	=>	'th-r',
-		[10,0] =>	'th-r',
-		[11,0] =>	'th',
-		[12,0]	=>	'th',
-		[13,0]	=>	'th',
-		[14,0]=>	'th',
-		[15,0]=>	'th-r',
-		[16,0]=>	'th-r',
-		[17,0]=>	'th-r',
+		[9,0] =>	'th',
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -155,6 +140,43 @@ class ResultList < HtmlGrid::List
 	LOOKANDFEEL_MAP = {
 		:limitation_text	=>	:ltext,
 	}
+	def init
+		if(@lookandfeel.enabled?(:full_result))
+			components.update({
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:substances,
+				[12,0]	=>	:company_name,
+				[13,0]	=>	:ikscat,
+				[14,0]	=>	:registration_date,
+				[15,0]	=>	:feedback,
+				[16,0]	=>  :google_search,
+				[17,0]	=>	:notify,
+
+			})
+			@css_map = {
+				[0,0,5]	=>	'result-infos',
+				[5,0]		=>	'result-big',
+				[6,0]		=>	'result',
+				[7,0,3]	=>	'result-r',
+				[10,0]		=>	'result-pubprice',
+				[11,0,4]	=>	'result-i',
+				[15,0,3]=>	'result-b-r',
+			}
+			css_head_map.update({
+				[9,0]	=>	'th-r',
+				[10,0] =>	'th-r',
+				[11,0] =>	'th',
+				[12,0]	=>	'th',
+				[13,0]	=>	'th',
+				[14,0]=>	'th',
+				[15,0]=>	'th-r',
+				[16,0]=>	'th-r',
+				[17,0]=>	'th-r',
+			})
+		end
+		super
+	end
 	def company_name(model, session)
 		if(comp = model.company)
 			link = nil
