@@ -23,8 +23,6 @@ module ODDB
 		end
 	end
 	class MedwinCompanyPlugin < MedwinPlugin
-		#HTTP_PATH = '/frmSearchPartner.aspx?lang=de' 
-		HTTP_PATH = '/refdata_wa_medwin/frmSearchPartner.aspx?lang=de' 
 		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
 		def initialize(app)
 			super
@@ -88,8 +86,6 @@ module ODDB
 		end
 	end
 	class MedwinPackagePlugin < MedwinPlugin
-		#HTTP_PATH = '/frmSearchPartner.aspx?lang=de' 
-		HTTP_PATH = '/refdata_wa_medwin/frmSearchPartner.aspx?lang=de' 
 		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
 		def initialize(app)
 			super
@@ -146,13 +142,13 @@ module ODDB
 				:ean =>  pack.barcode.to_s,
 			}
 			template = @medwin_template
-			results = MEDDATA_SERVER.search(criteria)
+			results = MEDDATA_SERVER.search(criteria, :product)
 			if(results.empty? && pack.registration.package_count == 1)
 				criteria = {
 					:ean => pack.barcode.to_s[0,9]
 				}
 				template = @nonmatching_template
-				results = MEDDATA_SERVER.search(criteria)
+				results = MEDDATA_SERVER.search(criteria, :product)
 			end
 			if(results.size == 1)
 				result = results.first
