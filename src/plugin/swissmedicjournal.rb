@@ -90,7 +90,7 @@ module ODDB
 			document.each { |part|
 				if(part.is_a?(SwissmedicJournal::InactiveRegistration))
 					part.parse
-					deactivate_registration(part, month)
+					deactivate_registration(part)
 				end
 			}
 			@incomplete_deactivations
