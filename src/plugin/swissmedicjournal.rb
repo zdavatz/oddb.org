@@ -88,10 +88,7 @@ module ODDB
 			document.each { |part|
 				if(part.is_a?(SwissmedicJournal::InactiveRegistration))
 					part.parse
-					if((reg = @app.registration(part.iksnr)) && reg.active?)
-						puts reg
-						deactivate_registration(part)
-					end
+					deactivate_registration(part)
 				end
 			}
 			@incomplete_deactivations
