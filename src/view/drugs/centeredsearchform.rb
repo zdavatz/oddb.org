@@ -50,8 +50,6 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,3]	=>	'database_last_updated_txt',
 				[0,3,1]	=>	:database_last_updated,
 			}
-			css_map.store([0,4,1,2], 'ccomponent')
-			component_css_map.store([0,5], 'legal-note-center')
 		elsif(@lookandfeel.enabled?(:data_counts))
 			components.update({
 				[0,4]		=>	:database_size,
