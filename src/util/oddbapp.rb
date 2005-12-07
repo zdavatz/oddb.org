@@ -114,7 +114,7 @@ class OddbPrevalence
 	def active_pdf_patinfos
 		active = {}
 		each_sequence { |seq|
-			if(str = seq.pdf_patinfo)
+			if(seq.active? && (str = seq.pdf_patinfo))
 				active.store(str, 1)
 			end
 		}
