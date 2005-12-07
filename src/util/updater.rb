@@ -24,9 +24,7 @@ require 'ext/meddata/src/ean_factory'
 module ODDB
 	class Updater
 		# Recipients for all Update-Logs go here...
-		RECIPIENTS = [
-			'admin@ywesee.com',
-		]
+		RECIPIENTS = []
 		LOG_RECIPIENTS = {
 			:powerlink	=>	['matthijs.ouwerkerk@just-medical.com'],
 			:passthru		=>	[],	

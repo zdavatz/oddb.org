@@ -301,6 +301,7 @@ Grammar OddbSize
 	end
 	class Package < PackageCommon
 		attr_reader :feedbacks
+		attr_accessor :medwin_ikscd
 		def initialize(ikscd)
 			super
 			@feedbacks = {}

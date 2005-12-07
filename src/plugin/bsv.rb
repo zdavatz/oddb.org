@@ -435,7 +435,7 @@ module ODDB
 				sl_iks = row.at(4).to_i.to_s
 				package = ParsedPackage.new
 				package.company = row.at(0).to_s
-				package.generic_type = (row.at(1).to_s.downcase == 'G')
+				package.generic_type = (/g/i.match(row.at(1).to_s))
 				if(field = row.at(6))
 					package.introduction_date = field.date
 				end
