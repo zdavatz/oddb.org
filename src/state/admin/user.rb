@@ -27,6 +27,11 @@ module User
 		end
 		newstate
 	end
+	def user_navigation
+		[
+			State::Admin::Logout,
+		]
+	end
 end
 		end
 	end

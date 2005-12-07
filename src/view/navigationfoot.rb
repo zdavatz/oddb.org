@@ -15,10 +15,10 @@ module ODDB
 				[1,0]		=>	View::Navigation,
 			}
 			HTML_ATTRIBUTES = {
-				'valign'	=>	'bottom',
+				#'valign'	=>	'bottom',
 			}
 			CSS_MAP = {
-				[0,0]	=>	'navigation',
+				[0,0]	=>	'navigation left',
 				[1,0]	=>	'navigation-right',
 			}
 		end

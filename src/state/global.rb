@@ -155,8 +155,8 @@ module ODDB
 				self
 			end
 			def allowed?(test = @model)
-				if(@model.is_a?(Persistence::CreateItem)) 
-					test = @model.parent(@session.app)
+				if(test.is_a?(Persistence::CreateItem)) 
+					test = test.parent(@session.app)
 				end
 				@session.user.allowed?(test)
 			end

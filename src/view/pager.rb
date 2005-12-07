@@ -11,14 +11,14 @@ module ODDB
 			COMPONENTS = {
 				[0,0]	=>	:number_link,
 			}
-			CSS_CLASS = 'pager'
+			CSS_CLASS = 'pager right'
 			CSS_HEAD_MAP = {
 				[0,0]	=>	'pager-head',
 			}
 			CSS_MAP = {
 				[0,0]	=>	'pager',
 			}
-			HTML_ATTRIBUTES = {"align"=>"right"}
+			#HTML_ATTRIBUTES = {"align"=>"right"}
 			OFFSET_STEP = [1,0]
 			SORT_DEFAULT = :to_i
 			SORT_HEADER = false

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # State::Companies::Company -- oddb -- 27.05.2003 -- mhuggler@ywesee.com
 
-require 'state/companies/global'
+require 'state/global_predefine'
 require 'state/companies/setpass'
 require 'view/companies/company'
 require 'model/company'
@@ -10,17 +10,17 @@ require 'fileutils'
 module ODDB
 	module State
 		module Companies
-class Company < State::Companies::Global
+class Company < Global
 	VIEW = View::Companies::UnknownCompany
 	LIMITED = true
 end
-class UserCompany < State::Companies::Company
+class UserCompany < Company
 	VIEW = View::Companies::UserCompany
 	LOGO_PATH = File.expand_path('../../doc/resources/logos',
 		File.dirname(__FILE__))
 	def set_pass
 		update() # save user input
-		unless(error?)
+		if(allowed? && !error?)
 			State::Companies::SetPass.new(@session, user_or_creator)
 		end
 	end
@@ -125,11 +125,11 @@ class UserCompany < State::Companies::Company
 		mdl
 	end
 end
-class RootCompany < State::Companies::UserCompany
+class RootCompany < UserCompany
 	VIEW = View::Companies::RootCompany
 	def delete
 		if(@model.empty?)
-			ODBA.batch {
+			ODBA.transaction {
 				@session.app.delete(@model.pointer)
 			}
 			State::Companies::CompanyList.new(@session, @session.app.companies)
@@ -163,6 +163,17 @@ class RootCompany < State::Companies::UserCompany
 			:url,
 		]
 		do_update(keys)
+	end
+end
+class PowerLinkCompany < Company
+	VIEW = View::Companies::PowerLinkCompany
+	def update
+		keys = [:powerlink]
+		input = user_input(keys)
+		ODBA.transaction {
+			@model = @session.app.update(@model.pointer, input)
+		}
+		self
 	end
 end
 		end

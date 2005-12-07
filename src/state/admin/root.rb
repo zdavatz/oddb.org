@@ -170,11 +170,6 @@ module Root
 	def patinfo_stats
 		State::Admin::PatinfoStats.new(@session,[])
 	end
-	def user_navigation
-		[
-			State::Admin::Logout,
-		]
-	end
 	def sponsor
 		model = @session.app.sponsor
 		State::Admin::Sponsor.new(@session, model)

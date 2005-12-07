@@ -64,14 +64,22 @@ class SuggestedAddress < HtmlGrid::Composite
 	end
 	def init_components
 		ypos = ystart = self.class.const_get(:YPOS)
+		if(@model.type)
+			components.store([0,ypos], :type)
+			ypos += 1
+		end
 		components.update({
-			[0,ypos]			=>	:type,
-			[0,ypos + 1]	=>	:lines,
-			[0,ypos + 2]	=>	:map,
-			[0,ypos + 3]	=>	:fons_header,
-			[0,ypos + 4]	=>	:fons,
+			[0,ypos]			=>	:lines,
+			[0,ypos + 1]	=>	:map,
 		})
-		ypos += 5
+		ypos += 2
+		unless(@model.fon.empty?)
+			components.update({
+				[0,ypos]			=>	:fons_header,
+				[0,ypos + 1]	=>	:fons,
+			})
+			ypos += 2
+		end
 		unless(@model.fax.to_s.strip.empty?)
 			components.update({
 				[0,ypos]		 =>	:fax_header,

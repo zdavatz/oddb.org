@@ -16,7 +16,7 @@ module ODDB
 				[4,0]			=>	:oddb_version,
 			}
 			CSS_CLASS = "navigation"
-			HTML_ATTRIBUTES = {"align"=>"left"}
+			#HTML_ATTRIBUTES = {"align"=>"left"}
 			LEGACY_INTERFACE = false
 =begin
 			def cpr_date(model, session)

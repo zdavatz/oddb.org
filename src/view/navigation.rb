@@ -17,7 +17,7 @@ module ODDB
 			NAV_LINK_CSS = 'navigation'
 			NAV_METHOD = :navigation
 			HTML_ATTRIBUTES = {
-				'align'	=>	'right',
+				#'align'	=>	'right',
 			}
 			SYMBOL_MAP = {
 				:navigation_divider	=>	HtmlGrid::Text,

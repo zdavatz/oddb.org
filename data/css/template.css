@@ -1336,8 +1336,7 @@ table.navigation-foot {
 	padding: 3px;
 }
 table.pager {
-	position : relative;
-	right : 0px;
+	float:right; 
 }
 td.pager {
 	font-weight: bold;
@@ -1766,9 +1765,6 @@ td.active-item {
 }
 div.long-text {
 	max-width: 400px;
-}
-td.navigation-right {
-	text-align: right;
 }
 td.navigation-right table {
 	float: right;

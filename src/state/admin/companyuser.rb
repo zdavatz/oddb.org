@@ -52,7 +52,7 @@ module CompanyUser
 		false
 	end
 	def resolve_state(pointer, type=:standard)
-		if(@session.user_equiv?(pointer))
+		if(allowed?(pointer.resolve(@session)))
 			State::Companies::UserCompany
 		else
 			super
@@ -70,11 +70,6 @@ module CompanyUser
 	end
 	def patinfo_stats_company
 		State::Admin::PatinfoStatsCompanyUser.new(@session,[])
-	end
-	def user_navigation
-		[
-			State::Admin::Logout,
-		]
 	end
 	def zones
 		[:admin, :interactions,:drugs, :migel, :user, :substances, :companies]

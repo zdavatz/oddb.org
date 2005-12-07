@@ -70,14 +70,15 @@ module ODDB
 			CSS_MAP = {
 				[0,2,1,2]	=>	'search-center',
 			}
+			CSS_CLASS = 'center'
 			EVENT = :search
 			FORM_METHOD = 'POST'
 			SYMBOL_MAP = {
 				:search_query			=>	View::SearchBar,	
 			}
 			HTML_ATTRIBUTES = {
-				'width'				=>	'100%',
-				'text-align'	=>	'center',
+				#'width'				=>	'100%',
+				#'text-align'	=>	'center',
 			}
 			def search_help(model, session)
 				button = HtmlGrid::Button.new(:search_help, model, session, self)
@@ -91,7 +92,7 @@ module ODDB
 				if(@lookandfeel.enabled?(:search_reset))
 					button = HtmlGrid::Button.new(:search_reset, model, session, self)
 					button.set_attribute("type", "reset")
-					button.set_attribute("align", "center")
+					#button.set_attribute("align", "center")
 					button
 				end
 			end

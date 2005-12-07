@@ -203,6 +203,37 @@ class RootCompanyForm < View::Companies::UserCompanyForm
 		:pref_invoice_date		=>	HtmlGrid::InputDate,
 	}
 end
+class PowerLinkCompanyForm < View::Form
+	include HtmlGrid::ErrorMessage
+	include HtmlGrid::InfoMessage
+	COMPONENTS = {
+		[0,0]		=>	:contact,
+		[0,1]		=>	:contact_email,
+		[0,2]		=>	:address_header,
+		[1,3]		=>	:address,
+		[0,4]		=>	:url,
+		[0,5]		=>	:powerlink,
+		[1,6]		=>	:submit,
+	}
+	DEFAULT_CLASS = HtmlGrid::Value
+	CSS_MAP = {
+		[0,0,4,7]	=>	'list',
+	}
+	LABELS = true
+	LOOKANDFEEL_MAP = {
+		:contact_email	=>	:address_email,
+	}
+	SYMBOL_MAP = {
+		:address_header =>	HtmlGrid::LabelText,
+		:contact_email	=>	HtmlGrid::MailLink,
+		:powerlink			=>	HtmlGrid::InputText,	
+		:url						=>	HtmlGrid::HttpLink,
+	}
+	LEGACY_INTERFACE = false
+	def address(model)
+		Address.new(model.address(0), @session, self)
+	end
+end
 class UnknownCompanyComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]		=>	:company_name,
@@ -264,6 +295,13 @@ class RootCompanyComposite < View::Companies::CompanyComposite
 		[0,3]	=>	:inactive_registrations,
 	}
 end
+class PowerLinkCompanyComposite < View::Companies::CompanyComposite
+	COMPONENTS = {
+		[0,0]	=>	:nbsp,
+		[0,1]	=>	View::Companies::PowerLinkCompanyForm,
+		[1,1]	=>	View::CompanyLogo,
+	}
+end
 class UnknownCompany < View::PrivateTemplate
 	CONTENT = View::Companies::UnknownCompanyComposite
 	SNAPBACK_EVENT = :home_companies
@@ -274,6 +312,10 @@ class UserCompany < View::PrivateTemplate
 end
 class RootCompany < View::PrivateTemplate
 	CONTENT = View::Companies::RootCompanyComposite
+	SNAPBACK_EVENT = :home_companies
+end
+class PowerLinkCompany < View::PrivateTemplate
+	CONTENT = View::Companies::PowerLinkCompanyComposite
 	SNAPBACK_EVENT = :home_companies
 end
 		end

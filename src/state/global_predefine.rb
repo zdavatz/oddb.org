@@ -12,6 +12,7 @@ class Global < State::Global; end
 module Root; end
 module CompanyUser; end
 module PowerUser; end
+module PowerLinkUser; end
 		end
 		module Companies
 class Global < State::Global; end

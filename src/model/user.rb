@@ -136,6 +136,9 @@ module ODDB
 			@unique_email
 		end
 	end
+	class PowerLinkUser < User
+		VIRAL_MODULE = State::Admin::PowerLinkUser
+	end
 	module UserObserver
 		attr_reader :user
 		def contact_email

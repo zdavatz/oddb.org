@@ -18,10 +18,11 @@ class CompanyResult < State::Companies::Global
 	DIRECT_EVENT = :result
 	LIMITED = true
 	VIEW = {
-		ODDB::UnknownUser	=>	View::Companies::UnknownCompanies,
-		ODDB::CompanyUser	=>	View::Companies::UnknownCompanies,
-		ODDB::RootUser		=>	View::Companies::RootCompanies,
-		ODDB::AdminUser		=>	View::Companies::RootCompanies,
+		ODDB::UnknownUser		=>	View::Companies::UnknownCompanies,
+		ODDB::PowerLinkUser	=>	View::Companies::UnknownCompanies,
+		ODDB::CompanyUser		=>	View::Companies::UnknownCompanies,
+		ODDB::RootUser			=>	View::Companies::RootCompanies,
+		ODDB::AdminUser			=>	View::Companies::RootCompanies,
 	}	
 	def init
 		if(!@model.is_a?(Array) || @model.empty?)

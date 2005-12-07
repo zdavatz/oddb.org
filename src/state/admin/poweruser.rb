@@ -14,11 +14,6 @@ module PowerUser
 	def limit_state
 		State::User::InvalidUser.new(@session, @session.user)
 	end
-	def user_navigation
-		[
-			State::Admin::Logout,
-		]
-	end
 end
 		end
 	end
