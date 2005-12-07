@@ -100,6 +100,8 @@ module ODDB
 				:list_link_color					=>	'#e00f8f',
 				:list_link_hover_color		=>	'#19738a',
 			},
+			:swissmedic		=>		{
+			},
 		}
 		DEFAULT = {
 			:bg												=>	'white',
