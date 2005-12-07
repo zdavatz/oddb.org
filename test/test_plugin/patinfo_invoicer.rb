@@ -179,11 +179,17 @@ module ODDB
 			item4.time = Time.local(today.year, today.month,
 				today.day)
 			item4.text = '12345 04'
+			item5 = AbstractInvoiceItem.new
+			item5.item_pointer = ptr
+			item5.time = Time.local(today.year, today.month,
+				today.day, 23, 59, 58) - (24*60*60)
+			item5.text = '12345 03'
 			items = {
 				1	=>	item1,
 				2	=>	item2,
 				3	=>	item3,
 				4	=>	item4,
+				5	=>	item5,
 			}
 			slate = FlexMock.new
 			slate.mock_handle(:items) {
@@ -196,10 +202,12 @@ module ODDB
 			@app.mock_handle(:active_pdf_patinfos) {
 				{
 					'12345_01.pdf' => 1, '12345_02.12347435.pdf' => 1,
-					'12345_03.pdf' => 1, '12345_04.e1718.pdf' => 1 
+					'12345_03.pdf' => 1, '12345_04.e1718.pdf' => 1, 
+															 '12345_03.12345654.pdf' => 1,
 				}	
 			}
-			assert_equal([item1, item3], @plugin.recent_items(today - 1))
+			assert_equal(2, @plugin.recent_items(today - 1).size)
+			assert_equal([item3, item1], @plugin.recent_items(today - 1))
 		end
 		def test_group_by_company
 			old_invoice = FlexMock.new

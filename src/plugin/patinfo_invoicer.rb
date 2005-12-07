@@ -97,8 +97,10 @@ module ODDB
 				inj
 			}
 			## all items for which the product still exists 
-			@app.slate(:patinfo).items.values.select { |item| 
-				active.include?(pdf_name(item))
+			@app.slate(:patinfo).items.values.sort_by { |item|
+				item.time
+			}.reverse.select { |item| 
+				active.delete(pdf_name(item))
 			}
 		end
 		def assemble_pdf_invoice(pdfinvoice, day, company, items, email)
@@ -106,7 +108,9 @@ module ODDB
 			lines = [ company.name, "z.H. #{company.contact}", email ]
 			lines += company.address(0).lines
 			pdfinvoice.debitor_address = lines
-			pdfinvoice.items = items.collect { |item|
+			pdfinvoice.items = items.sort_by { |item| 
+				item.text.to_s
+			}.collect { |item|
 				lines = [item.text, item_name(item)]
 				if((data = item.data) && (date = data[:last_valid_date]) \
 					&& (days = data[:days]))
