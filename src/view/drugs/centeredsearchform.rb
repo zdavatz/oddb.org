@@ -47,10 +47,6 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,0]	=>	:language_chooser,
 				[0,1]	=>	View::Drugs::CenteredSearchForm,
 				[0,2]	=>	'search_explain', 
-				[0,3]	=>	'database_last_updated_txt',
-				[0,3,1]	=>	:database_last_updated,
-				[0,4]	=>	:generic_definition,
-				[0,5]	=>	:legal_note,
 			}
 			css_map.store([0,4,1,2], 'ccomponent')
 			component_css_map.store([0,5], 'legal-note-center')

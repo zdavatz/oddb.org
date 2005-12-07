@@ -193,7 +193,7 @@ module ODDB
 				:sequences									=>	'Medikamente alphabetisch',
 			},
 			'fr'	=>	{
-				:all_drugs_pricecomparison	=>	'Encyclopédie complète des médicaments de la Suisse',
+				:all_drugs_pricecomparison	=>	'Encyclopédie complète des médicaments commercialisés en Suisse',
 				:atc_chooser								=>	'ATC-Codes', 
 				:data_declaration						=>	'Source des dates',
 				:home_drugs									=>	'Médicaments',
