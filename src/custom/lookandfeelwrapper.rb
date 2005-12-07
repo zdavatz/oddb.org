@@ -228,9 +228,24 @@ module ODDB
 		end
 	end
 	class LookandfeelSwissmedic < SBSM::LookandfeelWrapper
+		DICTIONARIES = {
+			'de'	=>	{
+				:home_welcome							=>  "Willkommen bei swissmedic.oddb.org!",
+			},
+			'fr'	=>	{
+				:home_welcome							=>  "Bienvenue sur swissmedic.oddb.org!",
+			},
+			'en'	=>	{
+				:home_welcome							=>  "Welcome to swissmedic.oddb.org!",
+			}
+		}
 		def enabled?(event, default=true)
-			(event.to_sym != :query_limit) \
-				&& @component.enabled?(event, default)
+			case event.to_sym
+			when :query_limit, :google_adsense
+				false
+			else
+				@component.enabled?(event, default)
+			end
 		end
 	end
 end
