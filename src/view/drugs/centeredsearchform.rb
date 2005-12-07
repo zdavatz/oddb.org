@@ -44,7 +44,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	def init
 		if(@lookandfeel.enabled?(:just_medical_structure, false))
 			@components = {
-				[0,0]	=>	:choosers,
+				[0,0]	=>	:language_chooser,
 				[0,1]	=>	View::Drugs::CenteredSearchForm,
 				[0,2]	=>	'search_explain', 
 				[0,3]	=>	'database_last_updated_txt',
