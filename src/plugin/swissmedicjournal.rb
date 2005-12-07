@@ -11,7 +11,7 @@ require 'cgi'
 module ODDB
 	class SwissmedicJournalPlugin < Plugin
 		RECIPIENTS = [
-			#'matthijs.ouwerkerk@just-medical.com',
+			'matthijs.ouwerkerk@just-medical.com',
 		]
 		attr_reader :incomplete_pointers
 		def initialize(app)
