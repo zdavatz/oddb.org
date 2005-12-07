@@ -141,6 +141,10 @@ class ResultList < HtmlGrid::List
 		:limitation_text	=>	:ltext,
 	}
 	def init
+		reorganize_components
+		super
+	end
+	def reorganize_components
 		if(@lookandfeel.enabled?(:full_result))
 			components.update({
 				[9,0]		=>	:price_exfactory,
@@ -175,7 +179,6 @@ class ResultList < HtmlGrid::List
 				[17,0]=>	'th-r',
 			})
 		end
-		super
 	end
 	def company_name(model, session)
 		if(comp = model.company)

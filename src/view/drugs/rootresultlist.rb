@@ -8,11 +8,11 @@ module ODDB
 	module View
 		module Drugs
 class RootResultList < View::Drugs::ResultList
-	def init
+	def reorganize_components
+		super
 		hash_insert(css_head_map, [0,0], 'th')
 		hash_insert(css_map, [0,0], 'result-edit')
 		hash_insert(components, [0,0], :ikskey)
-		super
 	end
 	def iksnr(model, session)
 		reg = model.registration
