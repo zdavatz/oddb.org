@@ -227,4 +227,10 @@ module ODDB
 				State::Drugs::Sequences, :migel ]
 		end
 	end
+	class LookandfeelSwissmedic < SBSM::LookandfeelWrapper
+		def enabled?(event, default=true)
+			(event.to_sym != :query_limit) \
+				&& @component.enabled?(event, default)
+		end
+	end
 end

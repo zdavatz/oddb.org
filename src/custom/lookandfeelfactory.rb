@@ -34,6 +34,9 @@ module ODDB
 				LookandfeelButtons, 
 				LookandfeelSantesuisse, 
 			],
+			'swissmedic'	=>	[
+				LookandfeelSwissmedic,
+			],
 		}
 	end
 end
