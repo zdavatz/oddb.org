@@ -248,8 +248,7 @@ Thank you for your patronage
 			year = day.year
 			all_items.select { |item|
 				tim = item.time
-				(item.type == :annual_fee || tim.year == year) \
-					&& tim.day == mday && tim.month == month
+				tim.day == mday && tim.month == month && tim.year == year
 			}
 		end
 		def resend_invoice(invoice, day = Date.today)
