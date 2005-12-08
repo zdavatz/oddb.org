@@ -32,8 +32,10 @@ module ODDB
 						end
 						time = Time.local(date.year, date.month, date.day)
 						items.each { |item|
-							item.expiry_time = time
-							item.odba_store
+							if(item.respond_to?(:odba_store))
+								item.expiry_time = time
+								item.odba_store
+							end
 						}
 					end
 				elsif(user = company.user)
