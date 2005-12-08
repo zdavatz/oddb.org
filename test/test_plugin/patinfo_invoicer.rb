@@ -91,6 +91,7 @@ module ODDB
 			## (inv1) - should be in new invoice
 			item1 = AbstractInvoiceItem.new
 			item1.item_pointer = 'model 1'
+			item1.text = '11111 11'
 			item1.type = :annual_fee
 			item1.time = Time.local(day.year, day.month, 
 				day.day, 10, 32)
@@ -98,6 +99,7 @@ module ODDB
 			## should be in new invoice
 			item2 = AbstractInvoiceItem.new
 			item2.item_pointer = 'model 2'
+			item2.text = '22222 22'
 			item2.type = :annual_fee
 			item2.time = Time.local(day.year, day.month, 
 				day.day, 10, 32)
@@ -105,6 +107,7 @@ module ODDB
 			## (item1) - should not be in new invoice
 			item3 = AbstractInvoiceItem.new
 			item3.item_pointer = 'model 1'
+			item3.text = '11111 11'
 			item3.type = :annual_fee
 			item3.time = Time.local(day.year, day.month, 
 				day.day, 16, 23)
@@ -112,6 +115,7 @@ module ODDB
 			## (inv2) - should not be in new invoice
 			item4 = AbstractInvoiceItem.new
 			item4.item_pointer = 'model 3'
+			item4.text = '33333 33'
 			item4.type = :annual_fee
 			item4.time = Time.local(day.year, day.month, 
 				day.day, 16, 23)
@@ -123,10 +127,12 @@ module ODDB
 				itm1.mock_handle(:expired?) { true }
 				itm1.mock_handle(:type) { :annual_fee }
 				itm1.mock_handle(:item_pointer) { 'model 1' }
+				itm1.mock_handle(:text) { '11111 11' }
 				itm2 = FlexMock.new
 				itm2.mock_handle(:expired?) { false }
 				itm2.mock_handle(:type) { :processing }
 				itm2.mock_handle(:item_pointer) { 'model 1' }
+				itm2.mock_handle(:text) { '11111 11' }
 				{1 => itm1, 2 => itm2}
 			}
 			inv2 = FlexMock.new
@@ -135,6 +141,7 @@ module ODDB
 				itm1.mock_handle(:expired?) { false }
 				itm1.mock_handle(:type) { :annual_fee }
 				itm1.mock_handle(:item_pointer) { 'model 3' }
+				itm1.mock_handle(:text) { '33333 33' }
 				{1 => itm1}
 			}
 			inv3 = FlexMock.new
@@ -143,6 +150,7 @@ module ODDB
 				itm1.mock_handle(:expired?) { false }
 				itm1.mock_handle(:type) { :annual_fee }
 				itm1.mock_handle(:item_pointer) { 'model 4' }
+				itm1.mock_handle(:text) { '44444 44' }
 				{1 => itm1}
 			}
 			@app.mock_handle(:invoices) { 
@@ -231,18 +239,23 @@ module ODDB
 			item1 = AbstractInvoiceItem.new
 			item1.user_pointer = 'user1'
 			item1.item_pointer = pointer
+			item1.text = '11111 11'
 			item1.time = time
 			item2 = AbstractInvoiceItem.new
 			item2.user_pointer = 'user2'
 			item2.item_pointer = pointer
+			item2.text = '22222 22'
+			item1.time = time
 			item2.time = time
 			item3 = AbstractInvoiceItem.new
 			item3.user_pointer = 'user1'
 			item3.item_pointer = pointer
+			item3.text = '33333 33'
 			item3.time = time
 			item4 = AbstractInvoiceItem.new
 			item4.user_pointer = 'user2'
 			item4.item_pointer = pointer
+			item4.text = '44444 44'
 			item4.time = time
 			company_donor1 = FlexMock.new
 			company_donor2 = FlexMock.new

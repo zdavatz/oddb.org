@@ -12,7 +12,7 @@ module ODDB
 	class PatinfoInvoicer < Plugin
 		RECIPIENTS = [ 
 			'hwyss@ywesee.com', 
-			'zdavatz@ywesee.com',
+			#'zdavatz@ywesee.com',
 		]
 		def run(day = Date.today)
 			send_daily_invoices(day - 1)
@@ -32,6 +32,8 @@ module ODDB
 					if(day == company.pref_invoice_date)
 						## adjust the annual fee according to company settings
 						adjust_company_fee(company, items)
+						## adjust the fee according to date
+						adjust_overlap_fee(day, items)
 						## first send the invoice 
 						send_invoice(day, company, items) 
 						## then store it in the database
@@ -91,6 +93,29 @@ module ODDB
 				}
 			end
 		end
+		def adjust_overlap_fee(date, items)
+			date_end = (date >> 12)
+			diy = (date_end - date).to_f
+			items.each { |item|
+				days = diy
+				date_start = date
+				if(tim = item.expiry_time)
+					valid = Date.new(tim.year, tim.month, tim.day)
+					if(valid > date_start)
+						date_start = valid
+						days = (date_end - valid).to_f
+						factor = days/diy
+						item.quantity = factor
+					end
+				end
+				item.data ||= {}
+				item.data.update({
+					:days => days,
+					:first_valid_date => date_start, 
+					:last_valid_date => date_end,
+				})
+			}
+		end
 		def all_items
 			active = @app.active_pdf_patinfos.keys.inject({}) { |inj, key|
 				inj.store(key[0,8], 1)
@@ -113,13 +138,17 @@ module ODDB
 				item.text.to_s
 			}.collect { |item|
 				lines = [item.text, item_name(item)]
-				if((data = item.data) && (date = data[:last_valid_date]) \
-					&& (days = data[:days]))
-					lines.push(sprintf("%s - %s", 
-						item.time.strftime("%d.%m.%Y"), date.strftime("%d.%m.%Y")))
-					lines.push(sprintf("%i Tage", days))
+				if(data = item.data) 
+					first_date = data[:first_valid_date] || item.time
+					last_date = data[:last_valid_date]
+					days = data[:days]
+					if(last_date && days)
+						lines.push(sprintf("%s - %s", 
+							first_date.strftime("%d.%m.%Y"), last_date.strftime("%d.%m.%Y")))
+						lines.push(sprintf("%i Tage", days))
+					end
 				end
-				[ day, lines.compact.join("\n"), item.unit, 
+				[ item.time, lines.compact.join("\n"), item.unit, 
 					item.quantity.to_f, item.price.to_f ]
 			}
 			pdfinvoice
@@ -166,10 +195,12 @@ Thank you for your patronage
 			prc_names = []
 			@app.invoices.each_value { |invoice|
 				invoice.items.each_value { |item|
-					if(item.type == :annual_fee && !item.expired?)
-						fee_names.push(pdf_name(item))
-					elsif(item.type == :processing && !item.expired?)
-						prc_names.push(pdf_name(item))
+					if(name = pdf_name(item))
+						if(item.type == :annual_fee && !item.expired?)
+							fee_names.push(name)
+						elsif(item.type == :processing && !item.expired?)
+							prc_names.push(name)
+						end
 					end
 				}
 			}
@@ -179,13 +210,14 @@ Thank you for your patronage
 			# 5. Duplikate löschen
 			result = []
 			items.each { |item| 
-				name = pdf_name(item)
-				if(item.type == :annual_fee && !fee_names.include?(name))
-					fee_names.push(name)
-					result.push(item)
-				elsif(item.type == :processing && !prc_names.include?(name))
-					prc_names.push(name)
-					result.push(item)
+				if(name = pdf_name(item))
+					if(item.type == :annual_fee && !fee_names.include?(name))
+						fee_names.push(name)
+						result.push(item)
+					elsif(item.type == :processing && !prc_names.include?(name))
+						prc_names.push(name)
+						result.push(item)
+					end
 				end
 			}
 			result
@@ -195,7 +227,7 @@ Thank you for your patronage
 			@app.invoices.each_value { |inv|
 				inv.items.each_value { |item|
 					if(item.type == :annual_fee && (ptr = item.item_pointer) \
-						&& (seq = ptr.resolve(@app)) && (company = seq.company))
+						&& (seq = sequence_resolved(ptr)) && (company = seq.company))
 						active_companies.push(company.odba_instance)
 					end
 				}
@@ -204,7 +236,7 @@ Thank you for your patronage
 			companies = {}
 			items.each { |item| 
 				ptr = item.item_pointer
-				if(seq = ptr.resolve(@app))
+				if(seq = sequence_resolved(ptr))
 					(companies[seq.company.odba_instance] ||= []).push(item)
 				end
 			}
@@ -238,9 +270,10 @@ Thank you for your patronage
 			name = item.text
 			if(/^[0-9]{5} [0-9]{2}$/.match(name))
 				name.tr(' ', '_')
-			elsif((ptr = item.item_pointer) && (seq = ptr.resolve(@app)))
+			elsif((ptr = item.item_pointer) && (seq = sequence_resolved(ptr)))
 				[seq.iksnr, seq.seqnr].join('_')
 			end
+		rescue Persistence::UninitializedPathError
 		end
 		def recent_items(day)
 			mday = day.day
@@ -278,7 +311,7 @@ Thank you for your patronage
 			header.add('Content-Transfer-Encoding', 'base64')
 			fpart.body = [invoice.to_pdf].pack('m')
 			smtp = Net::SMTP.new(SMTP_SERVER)
-			recipients = RECIPIENTS.dup.push(to).uniq
+			recipients = RECIPIENTS.dup#.push(to).uniq
 			smtp.start {
 				recipients.each { |recipient|
 					smtp.sendmail(fpart.to_s, SMTP_FROM, recipient)
@@ -286,10 +319,13 @@ Thank you for your patronage
 			}
 		end
 		def sequence_name(pointer)
-			if(pointer.is_a?(Persistence::Pointer) \
-				&& (seq = pointer.resolve(@app)))
+			if(seq = sequence_resolved(pointer))
 				seq.name
 			end
+		end
+		def sequence_resolved(pointer)
+			pointer.resolve(@app)
+		rescue StandardError
 		end
 	end
 end
