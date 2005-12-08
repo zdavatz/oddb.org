@@ -26,7 +26,7 @@ module ODDB
 				## invoice-start and -end-dates should be adjusted to that date.
 				if(company.disable_autoinvoice)
 					if(date = company.pref_invoice_date)
-						if(date == Date.today)
+						if(date == day)
 							date = company.pref_invoice_date = date + 1
 							company.odba_store
 						end
