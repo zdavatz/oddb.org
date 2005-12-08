@@ -100,6 +100,7 @@ module ODDB
 			@app.slate(:patinfo).items.values.sort_by { |item|
 				item.time
 			}.reverse.select { |item| 
+				# but only once per sequence.
 				active.delete(pdf_name(item))
 			}
 		end
@@ -151,7 +152,7 @@ Thank you for your patronage
 			# Für jedes item in items:
 			# Gibt es ein Invoice, welches nicht expired? ist 
 			# und welches ein Item beinhaltet, das den typ 
-			# :annual_fee hat und den selben item_pointer wie item
+			# :annual_fee hat und den selben pdf_name wie item
 
 			items = items.sort_by { |item| item.time }
 
@@ -159,31 +160,31 @@ Thank you for your patronage
 			# 1. alle invoices von app
 			# 2. davon alle items, die nicht expired? und den 
 			#    typ :annual_fee haben
-			# 3. davon den item_pointer
+			# 3. davon den pdf_name
 			# 4. -> neue Collection pointers
-			fee_pointers = []
-			prc_pointers = []
+			fee_names = []
+			prc_names = []
 			@app.invoices.each_value { |invoice|
 				invoice.items.each_value { |item|
 					if(item.type == :annual_fee && !item.expired?)
-						fee_pointers.push(item.item_pointer)
+						fee_names.push(pdf_name(item))
 					elsif(item.type == :processing && !item.expired?)
-						prc_pointers.push(item.item_pointer)
+						prc_names.push(pdf_name(item))
 					end
 				}
 			}
-			fee_pointers.uniq!
-			prc_pointers.uniq!
+			fee_names.uniq!
+			prc_names.uniq!
 			
 			# 5. Duplikate löschen
 			result = []
 			items.each { |item| 
-				ptr = item.item_pointer
-				if(item.type == :annual_fee && !fee_pointers.include?(ptr))
-					fee_pointers.push(ptr)
+				name = pdf_name(item)
+				if(item.type == :annual_fee && !fee_names.include?(name))
+					fee_names.push(name)
 					result.push(item)
-				elsif(item.type == :processing && !prc_pointers.include?(ptr))
-					prc_pointers.push(ptr)
+				elsif(item.type == :processing && !prc_names.include?(name))
+					prc_names.push(name)
 					result.push(item)
 				end
 			}
@@ -244,9 +245,11 @@ Thank you for your patronage
 		def recent_items(day)
 			mday = day.day
 			month = day.month
+			year = day.year
 			all_items.select { |item|
 				tim = item.time
-				tim.day == mday && tim.month == month
+				(item.type == :annual_fee || tim.year == year) \
+					&& tim.day == mday && tim.month == month
 			}
 		end
 		def resend_invoice(invoice, day = Date.today)
