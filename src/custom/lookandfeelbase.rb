@@ -302,6 +302,8 @@ Zeno Davatz
 				:ean13_header							=>	'EAN:',
 				:ean_code0								=>	'EAN-Code: ',
 				:ean_code1								=>	'',
+				:e_date_must_be_in_future0=>	'Das fr&uuml;heste m&ouml;gliche Datum ist "',
+				:e_date_must_be_in_future1=>	'".',
 				:e_different_connection_key	=>	'Die beiden Substanzen besitzen verschiedene Interaktionsverbindungen und k&ouml;nnen darum nicht zusammengelegt werden.',
 				:edit_atc_class						=>	'bearbeiten',
 				:edit_registration				=>	'bearbeiten',

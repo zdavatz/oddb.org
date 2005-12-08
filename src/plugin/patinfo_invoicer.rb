@@ -22,7 +22,21 @@ module ODDB
 			items = all_items.select { |item| item.type == :annual_fee }
 			groups = group_by_company(items)
 			groups.each { |company, items|
-				if(!company.disable_autoinvoice && (user = company.user))
+				## if autoinvoice is disabled, but a preferred invoice_date is set, 
+				## invoice-start and -end-dates should be adjusted to that date.
+				if(company.disable_autoinvoice)
+					if(date = company.pref_invoice_date)
+						if(date == Date.today)
+							date = company.pref_invoice_date = date + 1
+							company.odba_store
+						end
+						time = Time.local(date.year, date.month, date.day)
+						items.each { |item|
+							item.expiry_time = time
+							item.odba_store
+						}
+					end
+				elsif(user = company.user)
 					if(company.pref_invoice_date.nil?)
 						time = items.collect { |item| item.time }.min
 						date = Date.new(time.year, time.month, time.day)
