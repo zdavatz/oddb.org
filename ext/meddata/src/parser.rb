@@ -20,6 +20,7 @@ class ResultWriter < NullWriter
 	DG_PATTERNS = {
 		:partner => /DgMedwinPartner/,
 		:product => /DgMedrefProduct/,
+		:refdata => /DgMedrefProduct/,
 	}
 	def initialize(search_type=:partner)
 		@dg_pattern = DG_PATTERNS[search_type]
