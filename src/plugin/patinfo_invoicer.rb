@@ -14,6 +14,7 @@ module ODDB
 			'hwyss@ywesee.com', 
 			'zdavatz@ywesee.com',
 		]
+		SECONDS_IN_DAY = 60*60*24
 		def run(day = Date.today)
 			send_daily_invoices(day - 1)
 			send_annual_invoices(day)
@@ -151,7 +152,7 @@ module ODDB
 			lines += company.address(0).lines
 			pdfinvoice.debitor_address = lines
 			pdfinvoice.items = items.sort_by { |item| 
-				item.text.to_s
+				[item.time.to_i / SECONDS_IN_DAY, item.text.to_s]
 			}.collect { |item|
 				lines = [item.text, item_name(item)]
 				if(data = item.data) 
