@@ -260,6 +260,7 @@ module ODDB
 			'@size',
 			'@descr',
 			'@ikscat',
+			'@out_of_trade',
 			'@price_exfactory',
 			'@price_public',
 			'@sl_entry',

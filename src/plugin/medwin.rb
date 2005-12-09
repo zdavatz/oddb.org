@@ -128,11 +128,21 @@ module ODDB
 			@app.each_sequence { |seq| 
 				if(seq.active?)
 					seq.each_package { |pack|
-					@checked += 1
-					if(!pack.pharmacode)
-						@found += 1
-						update_package(pack)
-					end
+						@checked += 1
+						if(!pack.pharmacode)
+							@found += 1
+							update_package(pack)
+						end
+					}
+				end
+			}
+		end
+		def update_trade_status
+			@app.each_sequence { |seq|
+				if(seq.active?)
+					seq.each_package { |pack|
+						@checked += 1
+						update_package_trade_status(pack)
 					}
 				end
 			}
@@ -162,6 +172,23 @@ module ODDB
 					 end
 				end
 				update_package_data(pack, details)
+			end
+		end
+		def update_package_trade_status(pack)
+			criteria = {
+				:ean =>  pack.barcode.to_s,
+			}
+			results = MEDDATA_SERVER.search(criteria, :refdata)
+			if(results.empty? && pack.registration.package_count == 1)
+				criteria = {
+					:ean => pack.barcode.to_s[0,9]
+				}
+				results = MEDDATA_SERVER.search(criteria, :refdata)
+			end
+			if(results.size == 0 && !pack.out_of_trade)
+				update_package_data(pack, {:out_of_trade => true})
+			elsif(results.size == 1 && pack.out_of_trade)
+				update_package_data(pack, {:out_of_trade => false})
 			end
 		end
 		def update_package_data(pack, data)

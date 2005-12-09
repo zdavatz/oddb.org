@@ -303,6 +303,7 @@ module ODDB
 					20	=>	generic_code(@package.registration),
 					22	=>	iks_date(@package.registration),
 					29	=>	(@package.sl_entry) ? '3' : nil,
+					32	=>	(@package.out_of_trade) ? 'H' : nil,
 					39	=>	inscode,
 					40	=>	limitation,
 					41	=>	limitation_points,

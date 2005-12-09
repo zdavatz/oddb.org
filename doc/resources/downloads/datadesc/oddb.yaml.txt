@@ -1,6 +1,7 @@
 Datenbeschrieb oddb.yaml
 
-Version:  1.2.0
+Version:  1.3.0
+Geändert: 09.12.2005 (1.3.0) durch hwyss@ywesee.com
 Geändert: 14.11.2005 (1.2.0) durch hwyss@ywesee.com
 Geändert: 30.09.2005 (1.1.3) durch hwyss@ywesee.com
 Geändert: 02.09.2005 (1.1.2) durch hwyss@ywesee.com
@@ -66,6 +67,7 @@ Package:
 - size              (String)               -> Grössenbezeichnung
 - descr             (String)               -> Zusätzlicher Beschreibungstext. Selten.
 - ikscat            (String)               -> Abgabekategorie. A-E
+- out_of_trade      (Boolean)              -> Nicht im Handel erhältlich
 - price_exfactory   (Integer)              -> Exfactorypreis in Rappen
 - price_public      (Integer)              -> Publikumspreis in Rappen
 - sl_entry          (SlEntry)              -> Eintrag in der SL, NULL = Nein, SlEntry = Ja.

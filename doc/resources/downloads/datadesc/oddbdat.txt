@@ -1,6 +1,7 @@
 Datenbeschrieb oddbdat
 
-Version: 1.1.0
+Version: 1.2.0
+Geändert: 09.12.2005 (1.2.0) durch hwyss@ywesee.com
 Geändert: 14.11.2005 (1.1.0) durch hwyss@ywesee.com
 Geändert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
 Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
@@ -31,6 +32,8 @@ Primärschlüssel: oddb_id
 21: registration_date (yyyymmdd)                -> Registrations-Datum
 [...]
 28: mwst-code         (Integer (1))             -> 3: Preis exkl MwSt
+[...]
+32: sale_code         (Char (1))                -> H: Produkt ist nicht im Handel erhältlich
 [...]
 38: insurance_code    (Integer (1))             -> 1: Produkt ist in SL
 39: limitation        (Char (1))                -> Y: Produkt hat Limitation

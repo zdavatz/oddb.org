@@ -140,7 +140,7 @@ Grammar OddbSize
 		attr_reader :descr, :addition, :scale, :sl_entry, :narcotics
 		attr_accessor :sequence, :ikscat, :generic_group
 		attr_accessor :price_exfactory, :price_public, :pretty_dose
-		attr_accessor :pharmacode, :market_date, :medwin_ikscd
+		attr_accessor :pharmacode, :market_date, :medwin_ikscd, :out_of_trade
 		alias :pointer_descr :ikscd
 		def initialize(ikscd)
 			super()

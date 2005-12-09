@@ -27,17 +27,29 @@ class Session < HttpSession
 			[:pharmacode, 'txtSearchPharmacode'],
 			[:company,	'txtSearchProducer'],
 		],
+		:refdata => [
+			[:name,	'txtSearchProductName'],
+			[:ean,	'txtSearchEAN'],
+			[:company,	'txtSearchProducer'],
+		],
 	}
 	HTTP_PATHS = {
 		:partner =>	'/refdata_wa_medwin/frmSearchPartner.aspx?lang=de',
 		:product =>	'/refdata_wa_medwin/frmSearchProduct.aspx?lang=de',
+		:refdata => '/refdata_wa/frmSearchProduct.aspx?lang=de'
 	}
 	DETAIL_KEYS = {
 		:partner => "DgMedwinPartner",
 		:product => "DgMedrefProduct",
+		:refdata => "DgMedrefProduct",
+	}
+	SERVERS = {
+		:partner	=>	'www.medwin.ch',
+		:product	=>	'www.medwin.ch',
+		:refdata	=>	'www.refdata.ch',
 	}
 	attr_accessor :http_path, :form_keys, :detail_key
-	def initialize(server, search_type=:partner)
+	def initialize(search_type=:partner, server=SERVERS[search_type])
 		@http_path = HTTP_PATHS[search_type]
 		@form_keys = FORM_KEYS[search_type]
 		@detail_key = DETAIL_KEYS[search_type]

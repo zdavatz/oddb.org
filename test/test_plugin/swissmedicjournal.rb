@@ -625,6 +625,9 @@ module ODDB
 			@plugin.update_company(smj_company)
 		end
 		def test_deactivate_registration1
+			existing = FlexMock.new
+			@app.mock_handle(:registration) { existing }
+			existing.mock_handle(:inactive_date) { }
 			reg = StubSmjRegistration.new
 			date = reg.date = Date.new(1975,8,21)
 			expected = {
@@ -638,6 +641,9 @@ module ODDB
 			@plugin.deactivate_registration(reg)	
 		end
 		def test_deactivate_registration2
+			existing = FlexMock.new
+			@app.mock_handle(:registration) { existing }
+			existing.mock_handle(:inactive_date) { }
 			reg = StubSmjRegistration.new
 			expected = {
 				:inactive_date	=>	Date.today,
@@ -648,26 +654,6 @@ module ODDB
 				assert_equal(pointer, ptr)
 			}
 			@plugin.deactivate_registration(reg)	
-		end
-		def test_report
-			@app.mock_handle(:atcless_sequences) { [] }
-			expected = [
-				'ODDB::SwissmedicJournalPlugin - Report ',
-				'Updated Registrations: 0',
-				'Incomplete Registrations: 0',
-				'Deactivated Registrations: 0',
-				'Incomplete Deactivations: 0',
-				'Pruned Sequences: 0',
-				'Pruned Packages: 0',
-				'Total Sequences without ATC-Class: 0',
-				nil,
-				'Updated Registrations: 0',
-				'Incomplete Registrations: 0',
-				'Deactivated Registrations: 0',
-				'Incomplete Deactivations: 0',
-				'Total Sequences without ATC-Class: 0',
-			].join("\n")
-			assert_equal(expected, @plugin.report)
 		end
 		def test_log_info
 			@app.mock_handle(:atcless_sequences) { [] }

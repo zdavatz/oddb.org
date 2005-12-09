@@ -180,6 +180,9 @@ module ODDB
 		def update_medwin_packages
 			update_simple(MedwinPackagePlugin, 'Medwin-Packages')
 		end
+		def update_trade_status
+			update_simple(MedwinPackagePlugin, 'Trade-Status', :update_trade_status)
+		end
 		def update_migel
 			klass = MiGeLPlugin
 			subj = 'MiGeL'

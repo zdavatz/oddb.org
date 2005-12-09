@@ -73,7 +73,7 @@ module ODDB
 					end
 					title_elements.push(sl_str)
 				end
-				unless(model.pharmacode)
+				if(model.out_of_trade)
 					text_elements.push(@lookandfeel.lookup(:hors_commerce))
 					title_elements.push(@lookandfeel.lookup(:explain_hc))
 				end

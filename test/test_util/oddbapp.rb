@@ -98,7 +98,7 @@ class TestOddbApp < Test::Unit::TestCase
 		def initialize(key=nil)
 			@iksnr = key
 		end
-		def package_count
+		def active_package_count
 			3
 		end
 		def replace(registration)

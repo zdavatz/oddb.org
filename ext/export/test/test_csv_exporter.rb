@@ -36,7 +36,7 @@ module ODDB
 			end
 			def test_dump_1
 				expected = <<-CSV
-7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;false;at_work;Foobodenstrasse 1;1234 Neuchâtel;NE;fon1,fon2;;amig@amig.ch;französisch;Kardiologie,Psychokardiologie
+7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;false;at_work;;;Foobodenstrasse 1;1234 Neuchâtel;NE;fon1,fon2;;amig@amig.ch;französisch;Kardiologie,Psychokardiologie
 				CSV
 				fh = ''
 				CsvExporter.dump(CsvExporter::DOCTOR, @doc, fh)
@@ -46,7 +46,7 @@ module ODDB
 				@addr.type = 'at_praxis'
 				@doc.praxis = true
 				expected = <<-CSV
-7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;true;at_praxis;Foobodenstrasse 1;1234 Neuchâtel;NE;fon1,fon2;;amig@amig.ch;französisch;Kardiologie,Psychokardiologie
+7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;true;at_praxis;;;Foobodenstrasse 1;1234 Neuchâtel;NE;fon1,fon2;;amig@amig.ch;französisch;Kardiologie,Psychokardiologie
 				CSV
 				fh = ''
 				CsvExporter.dump(CsvExporter::DOCTOR, @doc, fh)

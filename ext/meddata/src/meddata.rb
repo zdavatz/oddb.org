@@ -27,7 +27,7 @@ def MedData.remove_whitespace(data)
 	}
 end
 def MedData.search(criteria, search_type=:partner, &block)
-	session = Session.new(MEDDATA_SERVER, search_type)
+	session = Session.new(search_type)
 	html = session.get_result_list(criteria)
 	if(html.include?('lblcountPreciseSearch'))
 		raise OverflowError, 'not all valid entries in result!'
