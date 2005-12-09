@@ -11,7 +11,7 @@ module ODDB
 		include Persistence
 		attr_reader :seqnr, :name_base, :name_descr, :packages,
 								:active_agents
-		attr_accessor :registration, :dose, :atc_class, 
+		attr_accessor :registration, :dose, :atc_class, :export_flag,
 									:galenic_form, :patinfo, :pdf_patinfo, :atc_request_time
 		attr_writer :composition_text
 		alias :pointer_descr :seqnr
@@ -183,6 +183,37 @@ module ODDB
 			self.name.split(/\s+/).push(self.name).uniq.delete_if { |term| 
 				term.empty? 
 			}
+		end
+		def seqnr=(seqnr)
+			## FIXME: this is just a quick spaghetti-hack to get all data correct
+			if(/^[0-9]{2}$/.match(seqnr) \
+				&& @registration.sequence(seqnr).nil?)
+				seqs = @registration.sequences
+				seqs.delete(@seqnr)
+				seqs.store(seqnr, self)
+				seqs.odba_store
+				@pointer = @registration.pointer + [:sequence, seqnr]
+				self.odba_store
+				@packages.each { |ikscd, package|
+					ppointer = @pointer + [:package, ikscd]
+					package.pointer = ppointer
+					if(sl = package.sl_entry)
+						sl.pointer = ppointer + [:sl_entry]
+						sl.odba_store
+					end
+					package.feedbacks.each { |id, fb|
+						fb.pointer = ppointer + [:feedback, id]
+						fb.odba_store
+					}
+					package.odba_store
+				}
+				@active_agents.each { |agent|
+					agent.pointer = @pointer + [:active_agent, agent.substance.to_s]
+					agent.odba_store
+				}
+				@seqnr = seqnr
+				odba_store
+			end
 		end
 		def source
 			@registration.source

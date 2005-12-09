@@ -26,6 +26,15 @@ module ODDB
 				&& (@expiration_date.nil? || @expiration_date > today) \
 				&& (@market_date.nil? || @market_date <= today) 
 		end
+		def active_package_count
+			if(active?)
+				@sequences.values.inject(0) { |inj, seq|
+					inj + seq.active_package_count
+				}
+			else
+				0
+			end
+		end
 		def atc_classes
 			@sequences.values.collect { |seq|
 				seq.atc_class

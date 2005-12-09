@@ -1,9 +1,10 @@
 Datenbeschrieb oddb.csv
 
-Version: 1.0.2
+Version: 1.0.3
+Geändert: 09.12.2005 (1.0.3) durch hwyss@ywesee.com
 Geändert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
 Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
-Erstellt: 01.09.2005 (1.0)   durch hwyss@ywesee.com
+Erstellt: 01.09.2005 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
 Encoding: ISO-8859-1
@@ -29,7 +30,7 @@ Produkt-Record:
 09: price_exfactory   (Float)                   -> Exfactorypreis in Franken und Rappen
 10: price_public      (Float)                   -> Publikumspreis in Franken und Rappen 
 11: company           (*)                       -> Registrationsinhaber
-12: ikscat            (*)                       -> Abgabekategorie. A-E
+12: ikscat            (*)                       -> Abgabekategorie. A-E. siehe Glossar (Abgabekategorie)
 13: sl_entry          (Ja/Nein)                 -> Eintrag in der SL
 14: introduction_date (dd.mm.yyyy)              -> Datum der Aufnahme in die Spezialitätenliste
 15: limitation        (Ja/Nein)                 -> Limitation
@@ -48,6 +49,13 @@ Level 2: +NN     -> Therapeutische Gruppierung, z.B. A02:     Mittel bei Säure b
 Level 3:   +C    -> Therapeutische Untergruppe, z.B. A02A:    Antacida
 Level 4:    +C   -> Chemische Gruppierung,      z.B. A02AA:   Magnesium-haltige Verbindungen
 Level 5:     +NN -> Wirkstoff(-Kombination),    z.B. A02AA01: Magnesiumcarbonat
+
+* Abgabekategorie
+A: verschärft Rezeptpflichtig
+B: Rezeptpflichtig
+C: erhältlich in Apotheken ohne Rezept
+D: erhältlich in Apotheken und Drogerien
+http://www.trichema.ch/D/faq.php#15
 
 * CAS Registry Number:
   http://www.cas.org/EO/regsys.html

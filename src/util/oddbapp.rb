@@ -102,6 +102,32 @@ class OddbPrevalence
 		}
 		item
 	end
+	def clean_odba_stubs
+		_clean_odba_stubs_hash(@substances)
+		@substances.each_value { |sub| _clean_odba_stubs_array(sub.sequences) }
+		_clean_odba_stubs_hash(@atc_classes)
+		@atc_classes.each_value { |atc| _clean_odba_stubs_array(atc.sequences) }
+		_clean_odba_stubs_hash(@registrations)
+		@registrations.each_value { |reg|
+			_clean_odba_stubs_hash(reg.sequences)
+			reg.sequences.each_value { |seq|
+				_clean_odba_stubs_hash(seq.packages)
+				_clean_odba_stubs_array(seq.active_agents)
+			}
+		}
+	end
+	def _clean_odba_stubs_hash(hash)
+		if(hash.values.any? { |val| val.odba_instance.nil? })
+			hash.delete_if { |key, val| val.odba_instance.nil? }
+			hash.odba_store
+		end
+	end
+	def _clean_odba_stubs_array(array)
+		if(array.any? { |val| val.odba_instance.nil? })
+			array.delete_if { |val| val.odba_instance.nil? }
+			array.odba_store
+		end
+	end
 	#####################################################
 	def admin(oid)
 		@users[oid.to_i]
@@ -194,7 +220,7 @@ class OddbPrevalence
 	end
 	def count_packages
 		@registrations.values.inject(0) { |inj, reg|
-			inj + reg.package_count
+			inj + reg.active_package_count
 		}
 	end
 	def count_patinfos
