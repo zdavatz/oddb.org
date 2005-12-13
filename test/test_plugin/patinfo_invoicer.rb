@@ -41,10 +41,6 @@ module ODDB
 			item3.price = 120
 			items = [item1, item2, item3]
 			day = Date.today - 1
-			invoice.mock_handle(:invoice_number=, 1) { |num|
-				expected = day.strftime('Patinfo-Upload-%d.%m.%Y')
-				assert_equal(expected, num)
-			}
 			invoice.mock_handle(:debitor_address=, 1) { |arry|
 				lines = [
 					'Test AG',
@@ -72,7 +68,7 @@ module ODDB
 			}
 			email = 'abachman@test.com'
 			company.mock_handle(:contact) { 'A. Bachmann' }
-			@plugin.assemble_pdf_invoice(invoice, day, company, items, email)
+			@plugin.assemble_pdf_invoice(invoice, company, items, email)
 			invoice.mock_verify
 		end
 		def test_adjust_annual_fee

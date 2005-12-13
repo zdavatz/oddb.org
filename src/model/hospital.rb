@@ -12,7 +12,7 @@ module ODDB
 		include UserObserver
 		ODBA_SERIALIZABLE = ['@addresses']
 		attr_accessor :name, :business_unit, :narcotics,
-			:addresses, :email
+			:addresses, :email, :invoice_email
 		attr_reader :ean13
 		alias :fullname :name
 		def initialize(ean13)

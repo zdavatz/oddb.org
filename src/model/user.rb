@@ -33,6 +33,7 @@ module ODDB
 		end
 		def model=(model)
 			model.user = self
+			model.odba_store
 			@model = model
 		end
 		def pointer_descr

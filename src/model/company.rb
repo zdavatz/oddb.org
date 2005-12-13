@@ -17,8 +17,10 @@ module ODDB
 			:cl_status, :complementary_type, :contact, :ean13, 
 			:generic_type, :invoice_email, :logo_filename, :name,
 			:disable_autoinvoice, :powerlink, :regulatory_email, :url, 
-			:patinfo_price
-		attr_writer :pref_invoice_date
+			:patinfo_price, :lookandfeel_price, :lookandfeel_member_count, 
+			:lookandfeel_member_price, :index_price, :index_package_price
+		attr_writer :pref_invoice_date, :lookandfeel_invoice_date, 
+			:index_invoice_date
 		alias :fullname :name
 		alias :power_link= :powerlink=
 		alias :power_link :powerlink
@@ -32,6 +34,11 @@ module ODDB
 		def init(app)
 			@pointer.append(@oid)
 		end
+		def active_package_count
+			@registrations.inject(0) { |sum, reg|
+				sum + reg.active_package_count
+			}
+		end
 		def atc_classes
 			@registrations.collect { |registration|
 				registration.atc_classes				
@@ -42,8 +49,14 @@ module ODDB
 				registration.active? && registration.package_count > 0
 			}
 		end
+		def index_invoice_date
+			@index_invoice_date = _yearly_repetition(@index_invoice_date)
+		end
 		def listed?
 			@cl_status
+		end
+		def lookandfeel_invoice_date
+			@lookandfeel_invoice_date = _yearly_repetition(@lookandfeel_invoice_date)
 		end
 		def merge(other)
 			regs = other.registrations.dup
@@ -57,13 +70,7 @@ module ODDB
 			@name
 		end
 		def pref_invoice_date
-			if(@pref_invoice_date)
-				today = Date.today
-				while(@pref_invoice_date < today)
-					@pref_invoice_date = @pref_invoice_date >> 12
-				end
-				@pref_invoice_date
-			end
+			@pref_invoice_date = _yearly_repetition(@pref_invoice_date)
 		end
 		def refactor_addresses
 			addr = Address2.new
@@ -89,16 +96,28 @@ module ODDB
 			input.each { |key, val|
 				case key
 				when :powerlink
-					if(val.empty?)
+					if(val.to_s.empty?)
 						input[key] = nil
 					end
 				when :generic_type, :complementary_type
 					if(val.is_a? String)
 						input[key] = val.intern
 					end
+				when :lookandfeel_price, :lookandfeel_member_price, 
+					:index_price, :index_package_price
+					input[key] = (val.to_f * 100) unless(val.nil?)
 				end
 			}
 			input
+		end
+		def _yearly_repetition(date)
+			if(date)
+				today = Date.today
+				while(date < today)
+					date = date >> 12
+				end
+				date
+			end
 		end
 	end
 end

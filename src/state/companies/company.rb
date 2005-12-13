@@ -134,6 +134,15 @@ class UserCompany < Company
 end
 class RootCompany < UserCompany
 	VIEW = View::Companies::RootCompany
+	def ajax
+		ba = @session.user_input(:business_area)
+		if(@model.is_a?(Persistence::CreateItem))
+			@model.business_area = ba
+		else
+			@session.app.update(@model.pointer, {:business_area => ba})
+		end
+		AjaxCompany.new(@session, @model)
+	end
 	def delete
 		if(@model.empty?)
 			ODBA.transaction {
@@ -149,23 +158,30 @@ class RootCompany < UserCompany
 			:address,
 			:address_email,
 			:business_area,
+			:city,
 			:cl_status,
 			:complementary_type,
 			:contact,
 			:contact_email,
+			:disable_autoinvoice,
 			:ean13,
 			:fax,
 			:generic_type,
+			:index_invoice_date,
+			:index_package_price,
+			:index_price,
 			:invoice_email,
-			:disable_autoinvoice,
-			:pref_invoice_date,
-			:city,
 			:logo_file,
+			:lookandfeel_invoice_date,
+			:lookandfeel_member_count,
+			:lookandfeel_member_price,
+			:lookandfeel_price,
 			:name,
 			:patinfo_price,
 			:phone,
 			:plz,
 			:powerlink,
+			:pref_invoice_date,
 			:regulatory_email,
 			:url,
 		]
@@ -181,6 +197,13 @@ class PowerLinkCompany < Company
 			@model = @session.app.update(@model.pointer, input)
 		}
 		self
+	end
+end
+class AjaxCompany < Global
+	VOLATILE = true
+	def init
+		@default_view = View::Companies::RootCompany.select_company_content(@model)
+		super
 	end
 end
 		end

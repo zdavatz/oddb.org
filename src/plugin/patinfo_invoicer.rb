@@ -1,25 +1,17 @@
 #!/usr/bin/env ruby
 # PatinfoInvoicer -- oddb -- 16.08.2005 -- jlang@ywesee.com
 
-require 'plugin/plugin'
-require 'pdfinvoice/config'
-require 'pdfinvoice/invoice'
-require 'util/oddbconfig'
-require 'rmail'
-require 'date'
+require 'plugin/invoicer'
 
 module ODDB
-	class PatinfoInvoicer < Plugin
-		RECIPIENTS = [ 
-			'hwyss@ywesee.com', 
-			'zdavatz@ywesee.com',
-		]
+	class PatinfoInvoicer < Invoicer
 		SECONDS_IN_DAY = 60*60*24
 		def run(day = Date.today)
 			send_daily_invoices(day - 1)
 			send_annual_invoices(day)
 		end
 		def send_annual_invoices(day = Date.today)
+			@invoice_number = sprintf('Patinfo-Upload-%i-%i', day.year, day.year.next)
 			items = all_items.select { |item| item.type == :annual_fee }
 			groups = group_by_company(items)
 			groups.each { |company, items|
@@ -66,6 +58,7 @@ module ODDB
 			}
 		end
 		def send_daily_invoices(day)
+			@invoice_number = day.strftime('Patinfo-Upload-%d.%m.%Y')
 			items = recent_items(day)
 			payable_items = filter_paid(items)
 			groups = group_by_company(payable_items)
@@ -145,39 +138,6 @@ module ODDB
 				# but only once per sequence.
 				active.delete(pdf_name(item))
 			}
-		end
-		def assemble_pdf_invoice(pdfinvoice, day, company, items, email)
-			pdfinvoice.invoice_number = day.strftime('Patinfo-Upload-%d.%m.%Y')
-			lines = [ company.name, "z.H. #{company.contact}", email ]
-			lines += company.address(0).lines
-			pdfinvoice.debitor_address = lines
-			pdfinvoice.items = items.sort_by { |item| 
-				[item.time.to_i / SECONDS_IN_DAY, item.text.to_s]
-			}.collect { |item|
-				lines = [item.text, item_name(item)]
-				if(data = item.data) 
-					first_date = data[:first_valid_date] || item.time
-					last_date = data[:last_valid_date]
-					days = data[:days]
-					if(last_date && days)
-						lines.push(sprintf("%s - %s", 
-							first_date.strftime("%d.%m.%Y"), last_date.strftime("%d.%m.%Y")))
-						lines.push(sprintf("%i Tage", days))
-					end
-				end
-				[ item.time, lines.compact.join("\n"), item.unit, 
-					item.quantity.to_f, item.price.to_f ]
-			}
-			pdfinvoice
-		end
-		def create_pdf_invoice(day, company, items, email)
-			config = PdfInvoice.config
-			config.texts['thanks'] = <<-EOS
-Ohne Ihre Gegenmeldung erfolgt der Rechnungsversand nur per Email.
-Thank you for your patronage
-			EOS
-			pdfinvoice = PdfInvoice::Invoice.new(config)
-			assemble_pdf_invoice(pdfinvoice, day, company, items, email)
 		end
 		def create_invoice(user, items)
 			pointer = Persistence::Pointer.new(:invoice)
@@ -273,6 +233,14 @@ Thank you for your patronage
 			}
 			companies
 		end
+		def invoice_number(day)
+			@invoice_number			
+		end
+		def invoice_subject(items, date)
+			fee_items = items.select { |item| item.type == :annual_fee }
+			sprintf("Rechnung %i x PI-Upload %s", 
+				fee_items.size, date.strftime("%d.%m.%Y"))
+		end
 		def item_name(item)
 			name = ''
 			if(data = item.data)
@@ -282,6 +250,20 @@ Thank you for your patronage
 				name = sequence_name(ptr).to_s.strip
 			end
 			name unless(name.empty?)
+		end
+		def item_text(item)
+			lines = [item.text, item_name(item)]
+			if(data = item.data) 
+				first_date = data[:first_valid_date] || item.time
+				last_date = data[:last_valid_date]
+				days = data[:days]
+				if(last_date && days)
+					lines.push(sprintf("%s - %s", 
+						first_date.strftime("%d.%m.%Y"), last_date.strftime("%d.%m.%Y")))
+					lines.push(sprintf("%i Tage", days))
+				end
+			end
+			lines.compact.join("\n")
 		end
 		def pdf_name(item)
 			name = item.text
@@ -301,40 +283,6 @@ Thank you for your patronage
 				tim.day == mday && tim.month == month && tim.year == year
 			}
 		end
-		def resend_invoice(invoice, day = Date.today)
-			if((user = invoice.user_pointer.resolve(@app)) \
-				&& (company = user.model))
-				items = invoice.items.values
-				send_invoice(day, company, items)
-			end
-		end
-		def send_invoice(day, company, items)
-			to = company.invoice_email || company.user.unique_email
-			invoice = create_pdf_invoice(day, company, items, to)
-			invoice_name = sprintf('Patinfo-Upload-%s-%s.pdf', 
-				company.name.tr(' ', '_'),
-				day.strftime('%d.%m.%Y'))
-			invoice_name = "#{invoice.invoice_number}.pdf"
-			fpart = RMail::Message.new
-			header = fpart.header
-			header.to = to
-			header.from = MAIL_FROM
-			fee_items = items.select { |item| item.type == :annual_fee }
-			header.subject = sprintf("Rechnung %i * PI-Upload %s", 
-				fee_items.size, day.strftime("%d.%m.%Y"))
-			header.add('Content-Type', 'application/pdf')
-			header.add('Content-Disposition', 'attachment', nil,
-				{'filename' => invoice_name })
-			header.add('Content-Transfer-Encoding', 'base64')
-			fpart.body = [invoice.to_pdf].pack('m')
-			smtp = Net::SMTP.new(SMTP_SERVER)
-			recipients = RECIPIENTS.dup.push(to).uniq
-			smtp.start {
-				recipients.each { |recipient|
-					smtp.sendmail(fpart.to_s, SMTP_FROM, recipient)
-				}
-			}
-		end
 		def sequence_name(pointer)
 			if(seq = sequence_resolved(pointer))
 				seq.name
@@ -343,6 +291,11 @@ Thank you for your patronage
 		def sequence_resolved(pointer)
 			pointer.resolve(@app)
 		rescue StandardError
+		end
+		def sort_items(items)
+			items.sort_by { |item| 
+				[item.time.to_i / SECONDS_IN_DAY, item.text.to_s]
+			}
 		end
 	end
 end

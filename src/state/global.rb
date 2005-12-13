@@ -353,6 +353,7 @@ module ODDB
 							end
 							item.text = filename + suffix
 							item.type = :download
+							item.unit = 'Download'
 							item.vat_rate = VAT_RATE
 							months = input[:months][filename]
 							item.quantity = months.to_f

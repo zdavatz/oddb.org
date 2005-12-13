@@ -35,6 +35,7 @@ class RegisterDownload < Global
 			:search_query => @search_query,
 			:search_type	=> @search_type,
 		}
+		item.unit = 'Download'
 		item.vat_rate = VAT_RATE
 		item.total_netto = self.class.price(package_count)
 		pointer = Persistence::Pointer.new(:invoice)
