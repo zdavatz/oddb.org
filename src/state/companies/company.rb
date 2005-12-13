@@ -137,7 +137,7 @@ class RootCompany < UserCompany
 	def ajax
 		ba = @session.user_input(:business_area)
 		if(@model.is_a?(Persistence::CreateItem))
-			@model.business_area = ba
+			@model.carry(:business_area, ba)
 		else
 			@session.app.update(@model.pointer, {:business_area => ba})
 		end
