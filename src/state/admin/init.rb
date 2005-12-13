@@ -17,6 +17,7 @@ class Init < State::Admin::Global
 		@session.app.async {
 			updater = Updater.new(@session.app)
 			updater.update_medwin_packages
+			updater.update_market_status
 			updater.reconsider_bsv
 			updater.export_ouwerkerk
 			exporter = Exporter.new(@session.app)
