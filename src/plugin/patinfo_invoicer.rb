@@ -39,6 +39,8 @@ module ODDB
 						company.odba_store
 					end
 					if(day == company.pref_invoice_date)
+						## work with duplicates
+						items = items.collect { |item| item.dup }
 						## adjust the annual fee according to company settings
 						adjust_company_fee(company, items)
 						## adjust the fee according to date
@@ -48,7 +50,7 @@ module ODDB
 						## then store it in the database
 						create_invoice(user, items)
 					elsif((day >> 12) == company.pref_invoice_date)
-						## if the date has been sent to one year from now,
+						## if the date has been set to one year from now,
 						## this invoice has already been sent manually.
 						## store the items anyway to prevent sending a 2-year
 						## invoice on the following day..

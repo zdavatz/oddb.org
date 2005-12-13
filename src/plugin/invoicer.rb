@@ -12,7 +12,7 @@ module ODDB
 	class Invoicer < Plugin
 		RECIPIENTS = [ 
 			'hwyss@ywesee.com', 
-			'zdavatz@ywesee.com' 
+			#'zdavatz@ywesee.com' 
 		]
 		def address_lines(comp_or_hosp, email)
 			lines = [ comp_or_hosp.name, "z.H. #{comp_or_hosp.contact}", email ]
@@ -90,7 +90,7 @@ Thank you for your patronage
 			header.add('Content-Transfer-Encoding', 'base64')
 			fpart.body = [invoice.to_pdf].pack('m')
 			smtp = Net::SMTP.new(SMTP_SERVER)
-			recipients = RECIPIENTS.dup.push(to).uniq
+			recipients = RECIPIENTS#.dup.push(to).uniq
 			smtp.start {
 				recipients.each { |recipient|
 					smtp.sendmail(fpart.to_s, SMTP_FROM, recipient)
@@ -170,6 +170,7 @@ Thank you for your patronage
 			package_count = comp.active_package_count
 			package_sum = package_price * package_count
 			if(date == idate && price > 0)
+				time = Time.now
 				expiry_time = Time.local(date.year, date.month, date.day)
 				base_item = AbstractInvoiceItem.new
 				year = date.year
