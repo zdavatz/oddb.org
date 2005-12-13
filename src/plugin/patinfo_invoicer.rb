@@ -274,6 +274,9 @@ module ODDB
 			end
 		rescue Persistence::UninitializedPathError
 		end
+		def quantity_format
+			'%1.3f'
+		end
 		def recent_items(day)
 			mday = day.day
 			month = day.month

@@ -43,6 +43,7 @@ module ODDB
 		end
 		def create_pdf_invoice(day, comp_or_hosp, items, email)
 			config = PdfInvoice.config
+			config.formats['quantity'] = quantity_format
 			config.texts['thanks'] = <<-EOS
 Ohne Ihre Gegenmeldung erfolgt der Rechnungsversand nur per Email.
 Thank you for your patronage
@@ -60,6 +61,9 @@ Thank you for your patronage
 		end
 		def item_text(item)
 			item.text
+		end
+		def quantity_format
+			'%i'
 		end
 		def resend_invoice(invoice, day = Date.today)
 			if((user = invoice.user_pointer.resolve(@app)) \
