@@ -230,13 +230,13 @@ module ODDB
 	class LookandfeelSwissmedic < SBSM::LookandfeelWrapper
 		DICTIONARIES = {
 			'de'	=>	{
-				:home_welcome							=>  "Willkommen bei swissmedic.oddb.org!",
+				:home_welcome							=>  "<b>Willkommen bei swissmedic.oddb.org!</b>",
 			},
 			'fr'	=>	{
-				:home_welcome							=>  "Bienvenue sur swissmedic.oddb.org!",
+				:home_welcome							=>  "<b>Bienvenue sur swissmedic.oddb.org!</b>",
 			},
 			'en'	=>	{
-				:home_welcome							=>  "Welcome to swissmedic.oddb.org!",
+				:home_welcome							=>  "<b>Welcome to swissmedic.oddb.org!</b>",
 			}
 		}
 		def enabled?(event, default=true)
