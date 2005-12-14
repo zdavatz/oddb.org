@@ -93,7 +93,13 @@ class UserCompany < Company
 						(Date.today + 1).strftime('%d.%m.%Y'))
 					@errors.store(:pref_invoice_date, err)
 				end
-				addr = @model.address(0)
+				addr = nil
+				if(@model.is_a?(Persistence::CreateItem))
+					addr = Address2.new
+					@model.carry(:addresses, [addr])
+				else
+					addr = @model.address(0)
+				end
 				addr.address = input.delete(:address)
 				addr.location = [
 					input.delete(:plz),
