@@ -98,7 +98,7 @@ class UserCompany < Company
 					addr = Address2.new
 					@model.carry(:addresses, [addr])
 				else
-					addr = @model.address(0)
+					addr = @model.address(0) || @model.create_address
 				end
 				addr.address = input.delete(:address)
 				addr.location = [
