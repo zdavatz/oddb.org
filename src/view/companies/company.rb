@@ -232,6 +232,37 @@ class AjaxPharmaCompanyForm < AjaxCompanyForm
 		[1,7,3,10]	=>	'standard',
 	}
 end
+class AjaxInfoCompanyForm < AjaxCompanyForm
+	COMPONENTS = {
+		[0,0]		=>	:business_area,
+		[0,1]		=>	:company_name,
+		[2,1]		=>	:invoice_email,
+		[0,2]		=>	:contact,
+		[2,2]		=>	:contact_email,
+		[1,3]		=>	:set_pass,
+		[0,4]		=>	:lookandfeel_price,
+		[2,4]		=>	:lookandfeel_invoice_date,
+		[0,6]		=>	:address,
+		[0,7]		=>	:plz,
+		[2,7]		=>	:city,
+		[0,8]		=>	:phone,
+		[2,8]		=>	:fax,
+		[0,9]	=>	:url,
+		[2,9]	=>	:address_email,
+		[0,10]	=>	:ean13,
+		[2,10]	=>	:logo_file,
+		[0,11]	=>	:cl_status,
+		[1,12]	=>	:submit,
+		[1,12,0]=>	:delete_item,
+	}
+	CSS_MAP = {
+		[0,0,4,13]	=>	'list',
+	}
+	COMPONENT_CSS_MAP = {
+		[1,0,3,3]	=>	'standard',
+		[1,4,3,8]	=>	'standard',
+	}
+end
 class AjaxInsuranceCompanyForm < AjaxCompanyForm
 	COMPONENTS = {
 		[0,0]		=>	:business_area,
@@ -394,6 +425,8 @@ class AjaxCompanyComposite < CompanyComposite
 			AjaxPharmaCompanyForm
 		when 'ba_insurance'
 			AjaxInsuranceCompanyForm
+		when 'ba_info'
+			AjaxInfoCompanyForm
 		else 
 			AjaxOtherCompanyForm
 		end
