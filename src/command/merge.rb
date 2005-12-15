@@ -11,6 +11,7 @@ module ODDB
 			target = @target_pointer.resolve(app)
 			ODBA.batch { 
 				target.merge(source)
+				target.odba_store
 				app.delete(@source_pointer)
 			}
 			nil

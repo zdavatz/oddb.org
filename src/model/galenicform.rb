@@ -30,7 +30,7 @@ module ODDB
 				seq.galenic_form = self
 				seq.odba_isolated_store
 			}
-			self.synonyms = other.all_descriptions - self.all_descriptions
+			self.synonyms += other.all_descriptions - self.all_descriptions
 		end
 		def sequence_count
 			@sequences.size
