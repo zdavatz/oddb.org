@@ -94,9 +94,7 @@ class Compare < View::PrivateTemplate
 	SNAPBACK_EVENT = :result
 	CONTENT = CompareComposite
 end
-
 class EmptyCompareComposite < HtmlGrid::Composite
-
 	COMPONENTS = {
 		[0,0]		=>	'compare_title_no_atc',
 		[0,1]		=>	:compare_desc0_no_atc,

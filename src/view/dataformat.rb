@@ -37,6 +37,10 @@ module ODDB
 				link.value = breakline(model.name_base, 25)
 				link.set_attribute('class', 
 					'result-big' << resolve_suffix(model))
+				query = @session.persistent_user_input(:search_query)
+				if(model.good_result?(query))
+					 link.set_attribute('name', 'best_result')
+				end
 				indication = model.registration.indication
 				descr = model.descr
 				if(descr && descr.empty?)

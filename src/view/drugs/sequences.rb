@@ -41,12 +41,12 @@ class SequenceList < HtmlGrid::List
 	include AlphaHeader
 	def name_base(model)
 		link = HtmlGrid::Link.new(:name_base, model, @session, self)
-		link.value = model.name_base
-		query = (atc = model.atc_class) ? atc.code : 'atcless'
+		name = model.name_base
+		link.value = name
 		args = {
-			'search_query'	=>	query,
+			'search_query'	=>	name,
 		}
-		link.href = @lookandfeel._event_url(:search, args)
+		link.href = @lookandfeel._event_url(:search, args, 'best_result')
 		link.css_class = 'result-big' << resolve_suffix(model)
 		link
 	end

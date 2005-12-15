@@ -28,16 +28,23 @@ class Result < State::Drugs::Global
 		if(@model.atc_classes.nil? || @model.atc_classes.empty?)
 			@default_view = View::Drugs::EmptyResult
 		else
+			query = @session.persistent_user_input(:search_query).to_s.downcase
 			sorted_atc_classes = @model.atc_sorted
 			@pages = []
 			page  = 0
 			count = 0
+			best_found = false
 			@package_count = 0
 			sorted_atc_classes.each { |atc|
 				@pages[page] ||= State::PageFacade.new(page) 
 				@pages[page].push(atc)
-				@package_count += atc.package_count
-				count += atc.package_count	
+				tmp_cnt = atc.package_count
+				@package_count += tmp_cnt
+				count += tmp_cnt
+				if(!best_found && atc.packages.any? { |pac| pac.good_result?(query) })
+					best_found = true
+					@page = page
+				end
 				if(count >= ITEM_LIMIT)
 					page += 1
 					count = 0
@@ -96,8 +103,13 @@ class Result < State::Drugs::Global
 		end
 		@page = @pages[pge || 0]
 	end
+	def request_path
+		if(str = super)
+			str.to_s + '#best_result'
+		end
+	end
 	def search
-		query = query.to_s.downcase
+		query = @session.persistent_user_input(:search_query).to_s.downcase
 		stype = @session.user_input(:search_type) 
 		if(@search_type != stype || @search_query != query)
 			super

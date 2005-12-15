@@ -41,11 +41,11 @@ module ODDB
 		end
 		def active_packages
 			@sequences.inject([]) { |inj, seq| 
-				inj.concat(seq.active_packages) }
+				inj.concat(seq.public_packages) }
 		end
 		def package_count(generic_type=nil)
 			@sequences.inject(0) { |inj, seq|
-				inj + seq.active_package_count(generic_type)
+				inj + seq.public_package_count(generic_type)
 			}
 		end
 		def checkout

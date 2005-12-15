@@ -16,7 +16,7 @@ class Sequences < State::Drugs::Global
 	LIMITED = true
 	def index_lookup(range)
 		sequences = @session.search_sequences(range, false) 
-		sequences.delete_if { |seq| seq.active_packages.empty? }
+		sequences.delete_if { |seq| seq.public_packages.empty? }
 		sequences
 	end
 end

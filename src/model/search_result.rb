@@ -7,7 +7,6 @@ require 'delegate'
 module ODDB
 	class AtcFacade
 		include ResultSort
-		attr_reader :packages, :package_count
 		def initialize(atc, session)
 			@atc = atc
 			@session = session

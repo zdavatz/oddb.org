@@ -41,7 +41,7 @@ module ODDB
 			end
 		end
 		def active?
-			@registration.active?
+			@registration && @registration.active?
 		end
 		def active_agent(substance)
 			@active_agents.each { |active|
@@ -165,6 +165,22 @@ module ODDB
 		end
 		def package_count
 			@packages.length
+		end
+		def public_packages
+			active_packages.reject { |pac| pac.out_of_trade }
+		end
+		def public_package_count(generic_type=nil)
+			if(active? && (generic_type.nil? \
+				|| @registration.generic_type == generic_type))
+				@packages.values.inject(0) { |count, pack|
+					if(!pack.out_of_trade && pack.active?)
+						count += 1
+					end
+					count
+				}
+			else
+				0
+			end
 		end
 		def limitation_text
 			@packages.each_value { |package|

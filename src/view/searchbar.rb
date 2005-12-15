@@ -17,8 +17,9 @@ class SearchBar < HtmlGrid::InputText
 			@attributes.store('value', txt_val)
 		end
 		@attributes.update({
-			'onFocus'	=>	"if (value=='#{val}') { value='' }",
-			'onBlur'	=>	"if (value=='') { value='#{val}' }",
+			'onFocus'	=>	"if (value=='#{val}') { value='' };",
+			'onBlur'	=>	"if (value=='') { value='#{val}' };",
+			'id'			=>	"searchbar",
 		})
 		args = ['zone', @session.zone, @name, '']
 		submit = @lookandfeel._event_url(@container.event, args)
@@ -27,6 +28,7 @@ class SearchBar < HtmlGrid::InputText
 		script << "+escape(#{@name}.value.replace(/\\//, '%2F'));"
 		script << "if(this.search_type)"
 		script << "href += '/search_type/' + this.search_type.value;"
+		script << "href += '#best_result';"
 		script << "document.location.href=href; } return false"
 		self.onsubmit = script
 	end

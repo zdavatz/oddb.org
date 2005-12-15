@@ -80,6 +80,10 @@ module ODDB
 				#'width'				=>	'100%',
 				#'text-align'	=>	'center',
 			}
+			def init
+				self.onload = "document.getElementById('searchbar').focus();"
+				super
+			end
 			def search_help(model, session)
 				button = HtmlGrid::Button.new(:search_help, model, session, self)
 				url = @lookandfeel._event_url(:help)
