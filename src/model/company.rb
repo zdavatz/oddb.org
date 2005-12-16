@@ -27,7 +27,7 @@ module ODDB
 		alias :to_s :name
 		alias :email :address_email
 		def initialize
-			@addresses = []
+			@addresses = [Address2.new]
 			@cl_status = false
 			super
 		end	

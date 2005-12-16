@@ -16,7 +16,7 @@ module ODDB
 		attr_reader :ean13
 		alias :fullname :name
 		def initialize(ean13)
-			@addresses = []
+			@addresses = [Address2.new]
 			@ean13 = ean13
 		end
 		def contact
