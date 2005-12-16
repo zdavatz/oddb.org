@@ -16,7 +16,7 @@ class Init < State::Admin::Global
 	def release
 		@session.app.async {
 			updater = Updater.new(@session.app)
-			updater.update_market_status
+			updater.update_trade_status
 			updater.update_medwin_packages
 			updater.reconsider_bsv
 			updater.export_ouwerkerk

@@ -143,6 +143,7 @@ module ODDB
 					seq.each_package { |pack|
 						@checked += 1
 						update_package_trade_status(pack)
+						sleep(0.1)
 					}
 				end
 			}
