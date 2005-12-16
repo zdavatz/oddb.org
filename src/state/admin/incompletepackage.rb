@@ -8,6 +8,7 @@ module ODDB
 	module State
 		module Admin
 class IncompletePackage < Package
+	VIEW = View::Admin::IncompletePackage
 	unless(instance_methods.include?("do_update"))
 		alias :do_update :update
 	end
