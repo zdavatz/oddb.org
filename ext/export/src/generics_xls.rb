@@ -27,7 +27,9 @@ module ODDB
 			}
 			def initialize(path)
 				@workbook = Spreadsheet::Excel.new(path)
-				fmt_title = Format.new(:bold=>true)
+				@fmt_default = Format.new(:bg_color => 0x00)
+				fmt_title = Format.new(:bold=>true, :bg_color => 0x00)
+				@workbook.add_format(@fmt_default)
 				@workbook.add_format(fmt_title)
 				@worksheet = @workbook.add_worksheet("Generikaliste")
 				columns = [
@@ -58,7 +60,7 @@ module ODDB
 			end
 			def export_comparable(package, comp)
 				row = format_row(package, comp)
-				@worksheet.write(@rows, 0, row)
+				@worksheet.write(@rows, 0, row, @fmt_default)
 				@rows += 1
 			end
 			def export_comparables(package)
