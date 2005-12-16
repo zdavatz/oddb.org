@@ -61,12 +61,23 @@ module ODDB
 			super(@http)
 		end
 		def post(path, hash)
+			retries = 3
 			headers = post_headers
-			resp = @http.post(path, post_body(hash), headers)
-			if(resp.is_a? Net::HTTPOK)
-				ResponseWrapper.new(resp)
-			else
-				raise("could not connect to #{@http_server}: #{resp}")
+			begin
+				resp = @http.post(path, post_body(hash), headers)
+				if(resp.is_a? Net::HTTPOK)
+					ResponseWrapper.new(resp)
+				else
+					raise("could not connect to #{@http_server}: #{resp}")
+				end
+			rescue Errno::ECONNRESET
+				if(retries > 0)
+					retries -= 1
+					sleep 1
+					retry
+				else
+					raise
+				end
 			end
 		end
 		def post_headers
