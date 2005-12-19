@@ -1,13 +1,36 @@
 #!/usr/bin/env ruby
 # VaccinePlugin -- oddb -- 22.03.2005 -- hwyss@ywesee.com
 
+require 'drb'
 require 'plugin/plugin'
 require 'rockit/rockit'
 require 'util/persistence'
+require 'util/html_parser'
+require 'util/oddbconfig'
+require 'model/dose'
 require 'parseexcel/parseexcel'
 
 module ODDB
+	class VaccineIndexWriter < NullWriter
+		attr_reader :path
+		def new_linkhandler(link)
+			if(link)
+				if((name = link.attribute('name')) && name == 'Impfstoff')
+					@vaccine_section = true
+				end
+				if(@vaccine_section && (href = link.attribute('href')) \
+					 && /\/files\/pdf\/B.*\.xls/.match(href))
+					@path = href
+					@vaccine_section = false
+				end
+			end
+		end
+	end
 	class VaccinePlugin	< Plugin
+		SWISSMEDIC_SERVER = 'www.swissmedic.ch'
+		INDEX_PATH = '/de/fach/overall.asp?theme=0.00085.00003&theme_id=939'
+		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
+		DOSE_PATTERN = /(\d+(?:[,.]\d+)?)\s*((?:\/\d+)|[^\s\d]*)?/
 		class ParsedRegistration
 			attr_accessor :iksnr, :indication, :company, :ikscat
 			attr_reader :sequences
@@ -49,7 +72,8 @@ module ODDB
 		class ParsedSequence
 			attr_accessor :name, :seqnr
 			attr_reader :packages, :active_agents
-			@@dose_pattern = /\d+([,.]\d+)?\s*(%|ml)?/
+			attr_writer :dose
+			
 			def initialize
 				@packages = {}
 				@active_agents = []
@@ -64,13 +88,21 @@ module ODDB
 			def data
 				{
 					:name	=>	@name,
+					:dose	=>	self.dose,
 				}
 			end
 			def dose
-				@name.to_s[@@dose_pattern]
+				@dose || if(match = DOSE_PATTERN.match(name.to_s))
+					Dose.new(match[1], match[2])
+				end
 			end
 			def ikscds
 				@packages.keys
+			end
+			def dup
+				dp = ParsedSequence.new
+				dp.name = @name
+				dp
 			end
 		end
 		class ParsedActiveAgent
@@ -83,116 +115,143 @@ module ODDB
 			end
 		end
 		class ParsedPackage
-			attr_accessor :ikscd, :size
+			attr_accessor :ikscd, :size, :sizestring, :dose
 			def data
-				{ :size => @size }
+				{ :size => @sizestring }
 			end
 		end
-		def parse_from_smj(fname)
-			path = File.join(ARCHIVE_PATH, 'txt', fname)
-			txt = File.read(path)
+		def initialize(app)
+			super
+			@active = []
+			@created = []
+			@updated = []
+			@deactivated = []
+			@latest_path = File.join(ARCHIVE_PATH, 'xls', 'vaccines-latest.xls')
+		end
+		def update
+			if(path = get_latest_file)
+				update_registrations(registrations_from_xls(path))
+				FileUtils.cp(path, @latest_path) 
+			end
+		end
+		def extract_latest_filepath(html)
+			writer = VaccineIndexWriter.new
+			formatter = HtmlFormatter.new(writer)
+			parser = HtmlParser.new(formatter)
+			parser.feed(html)	
+			writer.path
+		end
+		def get_latest_file
+			if(index = http_body(SWISSMEDIC_SERVER, INDEX_PATH))
+				path = extract_latest_filepath(index)
+				if(download = http_body(SWISSMEDIC_SERVER, path))
+					latest = ''
+					if(File.exist?(@latest_path))
+						latest = File.read(@latest_path)
+					end
+					if(download != latest)
+						target = File.join(ARCHIVE_PATH, 'xls',
+															 Date.today.strftime('vaccines-%Y.%m.%d.xls'))
+						File.open(target, 'w') { |fh| fh.puts(download) }
+						target
+					end
+				end
+			end
+		end
+		def get_packages(reg)
+			criteria = { :ean => "7680" + reg.iksnr }
+			template = { :info => [0,1] }
+			seqs = reg.sequences
+			results = MEDDATA_SERVER.search(criteria, :refdata)
+			if(results.size == 1 && seqs.size == 1)
+				detail = MEDDATA_SERVER.detail(results.first, template)
+				pack = parse_refdata_detail(detail[:info])
+				seqs.first.packages.store(pack.ikscd, pack)
+			else
+				results.each { |result|
+					detail = MEDDATA_SERVER.detail(result, template)
+					pack = parse_refdata_detail(detail[:info])
+					sequence = nil
+					sequence = seqs.select { |seq|
+						(sd = seq.dose) && (pd = pack.dose) \
+							&& (pd == sd || (sd.unit.to_s.empty? && sd.qty == pd.qty))
+					}.first
+					sequence ||= seqs.select { |seq|
+						seq.dose.nil?
+					}.first
+					if(sequence.nil?) 
+						sequence = seqs.first.dup
+						reg.sequences.push(sequence)
+					end
+					if(sequence.dose.nil?)
+						sequence.dose = pack.dose
+					end
+					sequence.packages.store(pack.ikscd, pack)
+				}
+			end
+		end
+		def parse_refdata_detail(str)
+			ean = str[0,13]
+			name = str[13..-1]
+			if(/^7680[0-9]{9}$/.match(ean))
+				pack = ParsedPackage.new
+				pack.ikscd = ean[-4..-2,]
+				if(sstring = name.slice!(/(\d+(?:[.,]\d+)?)?\s+([^\d\s]*)$/))
+					qty, unit = sstring.split(/\s+/, 2)
+					if(qty.empty?)
+						qty = 1
+					end
+					pack.sizestring = sstring
+					pack.size = Dose.new(qty, unit)
+				else
+					pack.size = Dose.new(1)
+				end
+				if(dstring = name.slice!(DOSE_PATTERN))
+					pack.dose = Dose.new(*dstring.split(/\s+/, 2))
+				end
+				pack
+			end
+		end
+		def parse_worksheet(worksheet)
 			registrations = {}
-			txt.each_line { |line|
-				if(pair = parse_smj_line(line))
+			worksheet.each { |row|
+				if(row && (pair = parse_worksheet_row(row)))
 					reg, seq = pair
 					(registrations[reg.iksnr] ||= reg).sequences.push(seq)
 				end
 			}
-			update_registrations(registrations)
-		end
-		def parse_from_xls(fname)
-			path = File.join(ARCHIVE_PATH, 'xls', fname)
-			update_registrations(registrations_from_xls(path))
-		end
-		def parse_worksheet(worksheet)
-			registrations = {}
-			reg = nil
-			seq_name = nil
-			substance = nil
-			subs_str = ''
-			ikscd = nil
-			packages = nil
-			sequence = nil
-			offset = 0
-			worksheet.each { |row|
-				if(row)
-					## is this an xls with ean13?
-					if(match = /[0-9]{13}/.match(row.at(3).to_s))
-						ikscd = match[0][9,3]
-						package = ParsedPackage.new
-						package.size = row.at(2).to_s
-						package.ikscd = ikscd
-					end
-					iksval = row.at(1).to_i
-					if(iksval > 0)
-						iksnr = sprintf('%05i', iksval)
-						## new sequence
-						sequence = ParsedSequence.new
-						seq_name = sequence.name = row.at(0).to_s
-						reg = (registrations[iksnr] ||= ParsedRegistration.new)
-						reg.iksnr = iksnr
-						unless(package)
-							reg.company = row.at(2).to_s
-						end
-						offset = reg.sequences.size
-						reg.sequences.push(sequence)
-					end
-					dose_str = row.at(6).to_s.strip
-					subs_str << ' ' << row.at(4).to_s
-					subs_str.strip!
-					dose_str.split('/').each_with_index { |dose, idx|
-						if(dose.to_f > 0)
-							sequence = reg.sequences[idx + offset] or begin
-								sequence = ParsedSequence.new
-								sequence.name = seq_name
-								reg.sequences[idx + offset] = sequence
-							end
-							active_agent = ParsedActiveAgent.new
-							active_agent.substance = subs_str
-							active_agent.dose = dose
-							active_agent.unit = row.at(7).to_s
-							sequence.active_agents.push(active_agent)
-						end
-					}
-					if(package)
-						sequence.packages.store(ikscd, package)
-						package, ikscd = nil
-					end
-					if(!dose_str.empty?)
-						## reset substance
-						subs_str = ''
-						substance = nil
-					end
-				end
-			}
 			registrations
 		end
-		def parse_smj_line(line)
-			if(nrpos = line.index(/[0-9]{5}/))
-				registration = ParsedRegistration.new
-				sequence = ParsedSequence.new
-				catpos = line.index(/\b[A-D]\b/, nrpos)
-				flagpos = line.rindex(/\bx\b/) || catpos.next
-				sequence.name = line[0...nrpos].strip
-				registration.iksnr = line[nrpos, 5]
-				registration.indication = line[(nrpos + 5)...catpos].strip
-				registration.ikscat = line[catpos, 1]
-				registration.company = line[flagpos.next..-1].strip
-				[registration, sequence]
+		def parse_worksheet_row(row)
+			row_at(row, 1)
+			if((iksval = row_at(row, 1)) \
+				 && /^[0-9]{3,5}(\.[0-9]+)?$/.match(iksval))
+				reg = ParsedRegistration.new
+				reg.iksnr = sprintf('%05i', iksval.to_i)
+				reg.indication = row_at(row, 2)
+				reg.ikscat = row_at(row, 3)
+				reg.company = row_at(row, 9)
+				seq = ParsedSequence.new
+				seq.name = row_at(row, 0)
+				[reg, seq]
 			end
 		end
 		def registrations_from_xls(path)
 			workbook = Spreadsheet::ParseExcel.parse(path)
-			parse_worksheet(workbook.worksheet(0))
+			registrations = parse_worksheet(workbook.worksheet(0))
+			registrations.each_value { |reg|
+				get_packages(reg)
+			}
 		end
-		def update_active_agent(agent, seq_pointer)
-			update_substance(agent.substance)
-			pointer = seq_pointer + [:active_agent, agent.substance]
-			active_agent = @app.resolve(pointer)
-			if(active_agent.nil?)
-				active_agent = @app.create(pointer)
-			end
-			@app.update(active_agent.pointer, agent.data)
+		def report
+			fmt = "%-14s %3i"
+			['@created', '@updated', '@deactivated'].collect { |var|
+				sprintf(fmt, var[1..-1].capitalize << ':', instance_variable_get(var))
+			}.join("\n")
+		end
+		def row_at(row, index)
+			val = row.at(index).to_s
+			val unless val.empty?
 		end
 		def update_company(data)
 			if((name = data.delete(:company)) && !name.empty?)
@@ -223,12 +282,16 @@ module ODDB
 			update_company(data)
 			update_indication(data)
 			pointer = nil
-			registration = @app.registration(reg.iksnr)
+			iksnr = reg.iksnr
+			registration = @app.registration(iksnr)
+			@active.push(iksnr)
 			reg.assign_seqnrs(registration)
 			if(registration)
+				@updated.push(iksnr)
 				pointer = registration.pointer
 				@app.update(pointer, data) unless(data.empty?)
 			else
+				@created.push(iksnr)
 				pointer = Persistence::Pointer.new([:registration, reg.iksnr])
 				registration = @app.update(pointer.creator, data)
 			end
@@ -251,6 +314,13 @@ module ODDB
 			ODBA.transaction {
 				registrations.each_value { |reg|
 					update_registration(reg)
+				}
+				today = Date.today
+				@app.registrations.each_value { |reg|
+					if(reg.generic_type == :vaccine && !@active.include?(reg.iksnr))
+						@deactivated.push(reg.iksnr)
+						@app.update(reg.pointer, {:inactive_date => today})
+					end
 				}
 			}
 		end

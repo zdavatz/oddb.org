@@ -112,6 +112,7 @@ module ODDB
 			update_swissmedicjournal
 			update_fxcrossrate
 			update_fachinfo
+			update_vaccines
 			if(update_bsv)
 				update_limitation_text
 			#elsif(@smj_updated)
@@ -141,19 +142,7 @@ module ODDB
 			update_simple(Doctors::DoctorPlugin, 'Doctors')
 		end
 		def update_fachinfo
-			klass = FachinfoPlugin
-			subj = 'Fachinfo'
-			wrap_update(klass, subj) {
-				plug = klass.new(@app)
-				if(plug.update)
-					log = Log.new(Date.today)
-					log.update_values(log_info(plug))
-					log.notify(subj)
-				end
-			}
-		end
-		def update_fachinfo_news
-			update_simple(FachinfoPlugin, 'Fachinfo', :update_news)
+			update_notify_simple(FachinfoPlugin, 'Fachinfo')
 		end
 		def update_fxcrossrate
 			klass = FXCrossratePlugin
@@ -164,9 +153,6 @@ module ODDB
 		end
 		def update_hospitals
 			update_simple(HospitalPlugin, 'Hospitals')
-		end
-		def update_all_fachinfo
-			update_simple(FachinfoPlugin, "Complete Fachinfo", :update_all)
 		end
 		def update_interactions
 			update_simple(Interaction::InteractionPlugin, 'Interaktionen')
@@ -244,15 +230,7 @@ module ODDB
 			end
 		end
 		def update_vaccines
-			wrap_update(VaccinePlugin, 'blutprodukte') { 
-				plugin = VaccinePlugin.new(@app)
-				# registrations, indications, sequences
-				plugin.parse_from_smj('vaccines.txt')
-				# sequences, substances, active_agents
-				plugin.parse_from_xls('vaccines.xls')
-				# packages
-				plugin.parse_from_xls('vaccines_ean.xls')
-			}
+			update_notify_simple(VaccinePlugin, 'blutprodukte')
 		end
 		private
 		def log_notify_bsv(plug, date, subj='SL-Update')
@@ -279,6 +257,16 @@ module ODDB
 				log.notify("Error: #{subj}")
 				nil
 			end
+		end
+		def update_notify_simple(klass, subj, update_method=:update)
+			wrap_update(klass, subj) {
+				plug = klass.new(@app)
+				if(plug.send(update_method))
+					log = Log.new(Date.today)
+					log.update_values(log_info(plug))
+					log.notify(subj)
+				end
+			}
 		end
 		def update_simple(klass, subj, update_method=:update)
 			wrap_update(klass, subj) {

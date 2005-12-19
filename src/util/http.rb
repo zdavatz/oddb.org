@@ -10,15 +10,20 @@ require 'fileutils'
 module ODDB
 	module HttpFile
 		def http_file(server, source, target, session=nil, hdrs = nil)
-			session ||= Net::HTTP.new(server)
-			resp = session.get(source, hdrs)
-			if resp.is_a? Net::HTTPOK
+			if(body = http_body(server, source, session, hdrs))
 				dir = File.dirname(target)
 				FileUtils.mkdir_p(dir)
 				File.open(target, 'w') { |file|
-					file << resp.body
+					file << body
 				}
 				true
+			end
+		end
+		def http_body(server, source, session=nil, hdrs=nil)
+			session ||= Net::HTTP.new(server)
+			resp = session.get(source, hdrs)
+			if resp.is_a? Net::HTTPOK
+				resp.body
 			end
 		end
 	end

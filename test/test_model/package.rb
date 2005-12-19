@@ -45,6 +45,9 @@ class StubPackageSequence
 	def initialize
 		@active_packages = []
 	end
+	def public_packages
+		@active_packages
+	end
 	def iksnr
 		'12345'
 	end

@@ -157,34 +157,6 @@ module ODDB
 			log_news(updates)
 			!updates.empty?
 		end
-		def update_all
-			1000.upto(10010) { |idx| 
-				languages = package_languages(idx)
-				unless(languages.empty?)
-					update_registrations(languages)
-				end
-			}
-		end
-		def update_news
-			newsdir = File.expand_path('news', self::class::PDF_PATH)
-			updates = self::class::LANGUAGES.inject([]) { |inj, lang|
-				target_dir = File.expand_path(lang, self::class::PDF_PATH)
-				source_dir = File.expand_path(lang, newsdir)
-				Dir.foreach(source_dir) { |entry|
-					if(match = /([0-9A-F\-]{36})\.pdf/.match(entry))
-						inj << match[1].to_s
-						File.rename(File.expand_path(entry, source_dir), 
-							File.expand_path(entry, target_dir))
-					end
-				}
-				inj
-			}.uniq
-			updates.each { |idx| 
-				languages = package_languages(idx)	
-				update_registrations(languages) unless languages.empty?
-			}
-			log_news(updates)
-		end
 		def update_registrations(languages)
 			iksnrs = begin
 				extract_iksnrs(languages)

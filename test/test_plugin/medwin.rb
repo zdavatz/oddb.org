@@ -153,7 +153,7 @@ class TestMedwinPackagePlugin < Test::Unit::TestCase
 		end
 	end
 	class StubPackage
-		attr_accessor :barcode, :pointer, :pharmacode
+		attr_accessor :barcode, :pointer, :pharmacode, :out_of_trade
 		attr_reader :name_base
 		def initialize(barcode)
 			@barcode = barcode
