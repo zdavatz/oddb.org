@@ -75,9 +75,9 @@ module ODDB
 ean13;exam;salutation;title;firstname;name;praxis;addresstype;address_name;lines;address;plz;city;canton;fon;fax;email;language;specialities
 				HEAD
 				odba_ids.each { |odba_id|
-					item = ODBA.cache_server.fetch(odba_id, nil)
+					item = ODBA.cache.fetch(odba_id, nil)
 					CsvExporter.dump(CsvExporter::DOCTOR, item, fh)
-					ODBA.cache_server.clear
+					ODBA.cache.clear
 				}
 			}
 		end
@@ -85,7 +85,7 @@ ean13;exam;salutation;title;firstname;name;praxis;addresstype;address_name;lines
 			safe_export(dir, name) { |fh|
 				exporter = GenericXls.new(fh.path)
 				odba_ids.each { |odba_id|
-					package = ODBA.cache_server.fetch(odba_id)
+					package = ODBA.cache.fetch(odba_id)
 					exporter.export_comparables(package)
 				}
 				exporter.close
@@ -97,18 +97,18 @@ ean13;exam;salutation;title;firstname;name;praxis;addresstype;address_name;lines
 migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limitation_fr;group_limitation_it;subgroup_code;subgroup_de;subgroup_fr;subgroup_it;subgroup_limitation_de;subgroup_limitation_fr;subgroup_limitation_it;product_code;product_de;product_fr;product_it;accessory_code;accessory_de;accessory_fr;accessory_it;product_limitation_de;product_limitation_fr;product_limitation_it;price;unit_de;unite_fr;unite_it;limitation_flag;date
 				HEAD
 					odba_ids.each { |odba_id|
-					item = ODBA.cache_server.fetch(odba_id, nil)
+					item = ODBA.cache.fetch(odba_id, nil)
 					CsvExporter.dump(CsvExporter::MIGEL, item, fh)
-					ODBA.cache_server.clear
+					ODBA.cache.clear
 				}
 			}
 		end
 		def OdbaExporter.export_narcotics_csv(odba_ids, dir, name)
 			safe_export(dir, name) { |fh|
 				odba_ids.each { |odba_id|
-					item = ODBA.cache_server.fetch(odba_id, nil)
+					item = ODBA.cache.fetch(odba_id, nil)
 					CsvExporter.dump(CsvExporter::NARCOTIC, item, fh)
-					ODBA.cache_server.clear
+					ODBA.cache.clear
 				}
 			}
 		end
@@ -125,11 +125,11 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 				}
 			else
 				odba_ids.each { |odba_id|
-					item = ODBA.cache_server.fetch(odba_id, nil)
+					item = ODBA.cache.fetch(odba_id, nil)
 					files.each { |file, table|
 						file.puts table.lines(item)
 					}
-					ODBA.cache_server.clear
+					ODBA.cache.clear
 				}
 			end
 			files.each { |file, table|
@@ -145,9 +145,9 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 		def OdbaExporter.export_yaml(odba_ids, dir, name)
 			safe_export(dir, name) { |fh|
 				odba_ids.each { |odba_id|
-					YAML.dump(ODBA.cache_server.fetch(odba_id, nil), fh)
+					YAML.dump(ODBA.cache.fetch(odba_id, nil), fh)
 					fh.puts
-					ODBA.cache_server.clear
+					ODBA.cache.clear
 					$stdout.flush
 				}
 			}

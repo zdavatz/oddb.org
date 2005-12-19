@@ -64,7 +64,7 @@ module ODDB
 				product.mock_verify
 			end
 			def test_add_accessory
-				odba = ODBA.cache_server = FlexMock.new
+				odba = ODBA.cache = FlexMock.new
 				odba.mock_handle(:store, 2) { |arg|
 					assert_equal(@product.accessories, arg)
 				}
@@ -77,10 +77,10 @@ module ODDB
 				assert_equal([acc, acc2], @product.accessories)
 				assert_equal(acc2, res)
 			ensure
-				ODBA.cache_server = nil
+				ODBA.cache = nil
 			end
 			def test_remove_accessory
-				odba = ODBA.cache_server = FlexMock.new
+				odba = ODBA.cache = FlexMock.new
 				odba.mock_handle(:store, 2) { |arg|
 					assert_equal(@product.accessories, arg)
 				}
@@ -98,7 +98,7 @@ module ODDB
 				assert_equal([], @product.accessories)
 				assert_equal(acc2, res)
 			ensure
-				ODBA.cache_server = nil
+				ODBA.cache = nil
 			end
 		end
 	end

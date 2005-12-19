@@ -224,12 +224,12 @@ module ODDB
 	class TestPersistencePointer < Test::Unit::TestCase
 		def setup
 			ODBA.storage = ODBA::StorageStub.new
-			ODBA.cache_server = ODBA::CacheStub.new
+			ODBA.cache = ODBA::CacheStub.new
 			@pointer = ODDB::Persistence::Pointer.new(:foo, [:bar, '12345'])
 		end
 		def teardown
 			ODBA.storage = nil
-			ODBA.cache_server = nil
+			ODBA.cache = nil
 		end
 		def test_initialize
 			expected = [
@@ -431,12 +431,12 @@ module ODDB
 			end
 		end
 		def setup
-			ODBA.cache_server = CacheStub.new
+			ODBA.cache = CacheStub.new
 			@pointer = ODDB::Persistence::Pointer.new([:fap, "fap"])
 			@item = ODDB::Persistence::CreateItem.new(@pointer)
 		end
 		def teardown
-			ODBA.cache_server = nil
+			ODBA.cache = nil
 		end
 		def test_carry
 			@item.carry(:grok, "pak")

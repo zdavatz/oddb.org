@@ -387,7 +387,7 @@ class TestOddbApp < Test::Unit::TestCase
 		seq = @app.create(pointer)
 		substpointer = ODDB::Persistence::Pointer.new(['substance', 'LEVOMENTHOLUM'])
 		substance = @app.create(substpointer)
-		#ODBA.cache_server.retrieve_from_index = [substance]
+		#ODBA.cache.retrieve_from_index = [substance]
 		pointer += ['active_agent', 'LEVOMENTHOLUM']
 		agent = @app.create(pointer)
 		values = {
@@ -656,18 +656,18 @@ class TestOddbApp < Test::Unit::TestCase
 	end
 	def test_unique_atc_class
 		atc_array = []
-		ODBA.cache_server.retrieve_from_index = atc_array
+		ODBA.cache.retrieve_from_index = atc_array
 		assert_nil(@app.unique_atc_class('substance'))
 
 		atc1 = Mock.new('ATC1')
 		atc_array = [atc1]
-		ODBA.cache_server.retrieve_from_index = atc_array
+		ODBA.cache.retrieve_from_index = atc_array
 		assert_equal(atc1, @app.unique_atc_class('substance'))
 		atc1.__verify
 
 		atc2 = Mock.new('ATC2')
 		#atc_array = [atc1, atc2]
-		#ODBA.cache_server.retrieve_from_index = atc_array
+		#ODBA.cache.retrieve_from_index = atc_array
 		#atc1.__next(:substances) { ['substance'] }
 		#atc2.__next(:substances) { ['substance'] }
 		#assert_nil(@app.unique_atc_class('substance'))
@@ -675,19 +675,19 @@ class TestOddbApp < Test::Unit::TestCase
 		#atc2.__verify
 
 		atc_array = [atc1]
-		ODBA.cache_server.retrieve_from_index = atc_array
+		ODBA.cache.retrieve_from_index = atc_array
 		assert_equal(atc1, @app.unique_atc_class('substance'))
 		atc1.__verify
 
 		#atc1.__next(:substances) { ['sub1', 'sub2'] }
 		#atc2.__next(:substances) { ['substance'] }
 		#atc_array = [atc1, atc2]
-		#ODBA.cache_server.retrieve_from_index = atc_array
+		#ODBA.cache.retrieve_from_index = atc_array
 		#assert_equal(atc2, @app.unique_atc_class('substance'))
 		#atc1.__verify
 		#atc2.__verify
 
-		ODBA.cache_server.retrieve_from_index = nil
+		ODBA.cache.retrieve_from_index = nil
 	end
 	def test_create_log_group
 		@app.log_groups = {}

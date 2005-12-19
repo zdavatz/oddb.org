@@ -46,7 +46,7 @@ module ODDB
 					'Zulassungsinhaberin', 'Kat.', 'SL', 'Reg.Dat.', 'Bemerkung',
 				]
 				@worksheet.write(0, 0, columns, fmt_title)
-				app = ODBA.cache_server.fetch_named('oddbapp', nil)
+				app = ODBA.cache.fetch_named('oddbapp', nil)
 				smj_grp = app.log_group(:swissmedic_journal)
 				smj_log = smj_grp.latest
 				@smj_flags = smj_log.change_flags

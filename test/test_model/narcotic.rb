@@ -15,7 +15,7 @@ module ODDB
 			@narcotic = Narcotic.new
 		end
 		def test_add_package
-			odba = ODBA.cache_server = FlexMock.new
+			odba = ODBA.cache = FlexMock.new
 			odba.mock_handle(:store, 2) { |arg|
 				assert_equal(@narcotic.packages, arg)
 			}
@@ -29,10 +29,10 @@ module ODDB
 			assert_equal(narc2, res)
 			odba.mock_verify
 		ensure
-			ODBA.cache_server = nil
+			ODBA.cache = nil
 		end
 		def test_remove_package
-			odba = ODBA.cache_server = FlexMock.new
+			odba = ODBA.cache = FlexMock.new
 			odba.mock_handle(:store, 2) { |arg|
 				assert_equal(@narcotic.packages, arg)
 			}
@@ -51,7 +51,7 @@ module ODDB
 			assert_equal(narc2, res)
 			odba.mock_verify
 		ensure
-			ODBA.cache_server = nil
+			ODBA.cache = nil
 		end
 	end
 end

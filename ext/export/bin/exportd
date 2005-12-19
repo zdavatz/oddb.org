@@ -25,5 +25,5 @@ end
 
 DRb.start_service(ODDB::EXPORT_URI, ODDB::OdbaExporter)
 $0 = "Oddb (Export)"
-ODBA.cache_server.clean_prefetched
+ODBA.cache.clean_prefetched
 DRb.thread.join

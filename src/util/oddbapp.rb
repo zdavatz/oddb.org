@@ -133,7 +133,7 @@ class OddbPrevalence
 		@users[oid.to_i]
 	end
 	def admin_subsystem
-		ODBA.cache_server.fetch_named('admin', self) {
+		ODBA.cache.fetch_named('admin', self) {
 			ODDB::Admin::Subsystem.new
 		}
 	end
@@ -147,7 +147,7 @@ class OddbPrevalence
 		active
 	end
 	def atcless_sequences
-		ODBA.cache_server.retrieve_from_index('atcless', 'true')
+		ODBA.cache.retrieve_from_index('atcless', 'true')
 	end
 	def atc_class(code)
 		@atc_classes[code]
@@ -495,7 +495,7 @@ class OddbPrevalence
 		if(lang.to_s != "fr") 
 			lang = "de"
 		end
-		ODBA.cache_server.retrieve_from_index("fachinfo_name_#{lang}", 
+		ODBA.cache.retrieve_from_index("fachinfo_name_#{lang}", 
 			name)
 	end
 	def galenic_form(name)
@@ -731,10 +731,10 @@ class OddbPrevalence
 		result
 	end
 	def search_by_atc(key)
-		ODBA.cache_server.retrieve_from_index('atc_index', key.dup)
+		ODBA.cache.retrieve_from_index('atc_index', key.dup)
 	end
 	def search_by_company(key)
-		atcs = ODBA.cache_server.retrieve_from_index('atc_index_company', key.dup)
+		atcs = ODBA.cache.retrieve_from_index('atc_index_company', key.dup)
 		filtered = atcs.collect { |atc|
 			atc.company_filter_search(key.dup)
 		}
@@ -744,24 +744,24 @@ class OddbPrevalence
 		if(lang.to_s != "fr") 
 			lang = "de"
 		end
-		atcs = ODBA.cache_server.\
+		atcs = ODBA.cache.\
 			retrieve_from_index("fachinfo_index_#{lang}", key.dup, result)
-		atcs += ODBA.cache_server.\
+		atcs += ODBA.cache.\
 			retrieve_from_index("indication_index_atc_#{lang}",
 			key.dup, result)
 		atcs.uniq
 	end
 	def search_by_sequence(key, result=nil)
-		ODBA.cache_server.retrieve_from_index('sequence_index_atc', key.dup, result)
+		ODBA.cache.retrieve_from_index('sequence_index_atc', key.dup, result)
 	end
 	def search_by_substance(key)
-		ODBA.cache_server.retrieve_from_index('substance_index_atc', key.dup)
+		ODBA.cache.retrieve_from_index('substance_index_atc', key.dup)
 	end
 	def search_doctors(key)
-		ODBA.cache_server.retrieve_from_index("doctor_index", key)
+		ODBA.cache.retrieve_from_index("doctor_index", key)
 	end
 	def search_companies(key)
-		ODBA.cache_server.retrieve_from_index("company_index", key)
+		ODBA.cache.retrieve_from_index("company_index", key)
 	end
 	def search_exact_company(query)
 		result = ODDB::SearchResult.new
@@ -779,21 +779,21 @@ class OddbPrevalence
 			lang = "de"
 		end
 		index_name = "migel_index_#{lang}"
-		ODBA.cache_server.retrieve_from_index(index_name, query)
+		ODBA.cache.retrieve_from_index(index_name, query)
 	end
 	def search_narcotics(query, lang)
 		if(lang.to_s != "fr") 
 			lang = "de"
 		end
 		index_name = "narcotics_#{lang}"
-		ODBA.cache_server.retrieve_from_index(index_name, query)
+		ODBA.cache.retrieve_from_index(index_name, query)
 	end
 	def search_exact_sequence(query)
 		sequences = search_sequences(query)
 		_search_exact_classified_result(sequences)
 	end
 	def search_exact_substance(query)
-		sequences = ODBA.cache_server.\
+		sequences = ODBA.cache.\
 			retrieve_from_index('substance_index_sequence', query)
 		_search_exact_classified_result(sequences)
 	end
@@ -813,13 +813,13 @@ class OddbPrevalence
 		result
 	end
 	def search_hospitals(key)
-		ODBA.cache_server.retrieve_from_index("hospital_index", key)
+		ODBA.cache.retrieve_from_index("hospital_index", key)
 	end
 	def search_indications(query)
-		ODBA.cache_server.retrieve_from_index("indication_index", query)
+		ODBA.cache.retrieve_from_index("indication_index", query)
 	end
 	def search_interactions(query)
-		result = ODBA.cache_server.retrieve_from_index("sequence_index_substance", query)
+		result = ODBA.cache.retrieve_from_index("sequence_index_substance", query)
 		if(subs = substance(query))
 			result.unshift(subs)
 		end
@@ -830,12 +830,12 @@ class OddbPrevalence
 	end
 	def search_sequences(query, chk_all_words=true)
 		index = (chk_all_words) ? 'sequence_index' : 'sequence_index_exact'
-		ODBA.cache_server.retrieve_from_index(index, query)
+		ODBA.cache.retrieve_from_index(index, query)
 	end
 	def search_single_substance(key)
 		result = ODDB::SearchResult.new
 		result.exact = true
-		ODBA.cache_server.retrieve_from_index("substance_index", key, result).first
+		ODBA.cache.retrieve_from_index("substance_index", key, result).first
 	end
 	def search_substances(query)
 		if(subs = substance(query))
@@ -859,7 +859,7 @@ class OddbPrevalence
 		parts = ODDB::Text::Soundex.prepare(name).split(/\s+/)
 		soundex = ODDB::Text::Soundex.soundex(parts)
 		key = soundex.join(' ')
-		ODBA.cache_server.retrieve_from_index("substance_soundex_index", key)
+		ODBA.cache.retrieve_from_index("substance_soundex_index", key)
 	end
 	def sponsor
 		if(@sponsor.nil?)
@@ -934,7 +934,7 @@ class OddbPrevalence
 	 end
   end
 	def rebuild_indices(name=nil)
-		ODBA.cache_server.indices.size
+		ODBA.cache.indices.size
 		begin
 			start = Time.now
 			path = File.expand_path("../../etc/index_definitions.yaml", 
@@ -946,18 +946,18 @@ class OddbPrevalence
 					index_start = Time.now
 					begin
 						puts "dropping: #{index_definition.index_name}"
-						ODBA.cache_server.drop_index(index_definition.index_name)
+						ODBA.cache.drop_index(index_definition.index_name)
 					rescue Exception => e
 						puts e.message
 					end
 					puts "creating: #{index_definition.index_name}"
-					ODBA.cache_server.create_index(index_definition, ODDB)
+					ODBA.cache.create_index(index_definition, ODDB)
 					begin 
 						puts "filling: #{index_definition.index_name}"
 						puts index_definition.init_source
 						source = instance_eval(index_definition.init_source)
 						puts "source.size: #{source.size}"
-						ODBA.cache_server.fill_index(index_definition.index_name, 
+						ODBA.cache.fill_index(index_definition.index_name, 
 							source)
 					rescue Exception => e
 						puts e.message
@@ -1024,7 +1024,7 @@ module ODDB
 		VALIDATOR = Validator
 		attr_reader :cleaner, :updater
 		def initialize
-			@system = ODBA.cache_server.fetch_named('oddbapp', self){
+			@system = ODBA.cache.fetch_named('oddbapp', self){
 				OddbPrevalence.new
 			}
 			puts "init system"

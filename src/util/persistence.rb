@@ -8,7 +8,7 @@ module ODBA
 	class Stub
 		def odba_replace(name=nil)
 			@receiver || begin
-				@receiver = ODBA.cache_server.fetch(@odba_id, @odba_container)
+				@receiver = ODBA.cache.fetch(@odba_id, @odba_container)
 				if(@odba_container)
 					@odba_container.odba_replace_stubs(self, @receiver)
 				end

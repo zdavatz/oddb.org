@@ -32,14 +32,14 @@ module ODBA
 		block.call
 	end
 	alias :transaction :batch
-	def cache_server
-		@cache_server ||= CacheStub.new
+	def cache
+		@cache ||= CacheStub.new
 	end
 	def storage
 		@storage ||= StorageStub.new
 	end
 	module_function :batch
-	module_function :cache_server
+	module_function :cache
 	module_function :transaction
 	module_function :storage
 end

@@ -49,7 +49,7 @@ class RecentRegs < State::Drugs::Global
 		PackageMonth.new(date, regs_by_month(date), @session)
 	end
 	def regs_by_month(month)
-		ODBA.cache_server.retrieve_from_index('date_index_registration',
+		ODBA.cache.retrieve_from_index('date_index_registration',
 			month.strftime('%Y-%m'))
 	end
 end

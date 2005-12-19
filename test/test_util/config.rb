@@ -14,11 +14,11 @@ module ODDB
 	end
 	class TestConfig < Test::Unit::TestCase
 		def setup
-			@cache = ODBA.cache_server = Mock.new('Cache')
+			@cache = ODBA.cache = Mock.new('Cache')
 			@config = Config.new
 		end
 		def teardown
-			ODBA.cache_server = nil
+			ODBA.cache = nil
 			ODBA.storage = nil
 		end
 		def test_reader
