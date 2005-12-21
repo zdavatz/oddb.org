@@ -38,7 +38,8 @@ module ODDB
 			end
 			def data
 				data = {
-					:pharmacode	=>	@pharmacode,
+					:pharmacode				=>	@pharmacode,
+					:sl_generic_type	=>  (@generic_type ? :generic : :original),
 				}
 				if(@price_public)
 					data.store(:price_public, @price_public)
@@ -585,11 +586,6 @@ BSV-XLS Swissmedic-Nr: %5s %3s
 		def update_registration(package)
 			ptr = Persistence::Pointer.new([:registration, package.iksnr])
 			if(registration = ptr.resolve(@app))
-				if(package.generic_type)
-					@app.update(ptr, {:generic_type => :generic})
-				elsif(registration.generic_type == :generic)
-					@app.update(ptr, {:generic_type => :original})
-				end
 				registration
 			else
 				@unknown_registrations.push(package)

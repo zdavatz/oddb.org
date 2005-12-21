@@ -138,7 +138,7 @@ Grammar OddbSize
 		end
 		attr_reader :ikscd, :size, :count, :multi, :measure, :comform 
 		attr_reader :descr, :addition, :scale, :sl_entry, :narcotics
-		attr_accessor :sequence, :ikscat, :generic_group
+		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type
 		attr_accessor :price_exfactory, :price_public, :pretty_dose
 		attr_accessor :pharmacode, :market_date, :medwin_ikscd, :out_of_trade
 		alias :pointer_descr :ikscd
