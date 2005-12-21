@@ -10,6 +10,7 @@ module ODDB
 		BASE = LookandfeelBase
 		WRAPPERS = {
 			'atupri'=>	[
+				LookandfeelLanguages,
 				LookandfeelExtern,
 				LookandfeelAtupri, 
 			],
@@ -17,10 +18,12 @@ module ODDB
 				LookandfeelAtupriWeb, 
 			],
 			'just-medical'=>	[
+				LookandfeelLanguages,
 				LookandfeelExtern,
 				LookandfeelJustMedical, 
 			],
 			'generika'	=>	[
+				LookandfeelLanguages,
 				LookandfeelExtern,
 				LookandfeelGenerika,
 			],
@@ -29,11 +32,13 @@ module ODDB
 				LookandfeelOekk,
 			],
 			'provita'			=>	[
+				LookandfeelLanguages,
 				LookandfeelExtern,
 				LookandfeelButtons, 
 				LookandfeelProvita, 
 			],
 			'santesuisse' =>	[
+				LookandfeelLanguages,
 				LookandfeelExtern,
 				LookandfeelButtons, 
 				LookandfeelSantesuisse, 

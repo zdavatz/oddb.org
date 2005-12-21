@@ -7,7 +7,9 @@ module ODDB
 	module View
 module UserSettings
 	def language_chooser(model, session)
-		LanguageChooser.new(@lookandfeel.languages, session, self)
+		if(@lookandfeel.enabled?(:language_switcher))
+			LanguageChooser.new(@lookandfeel.languages, session, self)
+		end
 	end
 end
 class LanguageChooser < Navigation

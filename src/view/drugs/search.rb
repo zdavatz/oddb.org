@@ -4,21 +4,16 @@
 require 'view/publictemplate'
 require 'view/drugs/centeredsearchform'
 require 'view/welcomehead'
+require 'view/custom/head'
 
 module ODDB
 	module View
 		module Drugs
 class Search < View::PublicTemplate
+	include View::Custom::Head
 	CONTENT = View::Drugs::GoogleAdSenseComposite
 	CSS_CLASS = 'composite'
 	HEAD = View::WelcomeHead
-	def head(model, session=@session)
-		if(@lookandfeel.enabled?(:just_medical_structure, false))
-			just_medical(model)
-		else
-			super
-		end
-	end
 end
 		end
 	end

@@ -4,21 +4,16 @@
 require 'view/publictemplate'
 require 'view/migel/welcomehead'
 require 'view/migel/centeredsearchform'
+require 'view/custom/head'
 
 module ODDB
 	module View
 		module Migel
 class Search < View::PublicTemplate
+	include View::Custom::Head
 	CONTENT = View::Migel::GoogleAdSenseComposite
 	CSS_CLASS = 'composite'
 	HEAD = View::Migel::WelcomeHeadMigel
-	def head(model, session=@session)
-		if(@lookandfeel.enabled?(:just_medical_structure, false))
-			just_medical(model)
-		else
-			super
-		end
-	end
 end
 		end
 	end

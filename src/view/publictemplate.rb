@@ -5,10 +5,12 @@ require 'htmlgrid/template'
 require 'view/logohead'
 require 'view/navigationfoot'
 require 'sbsm/time'
+require 'view/custom/head'
 
 module ODDB
 	module View
 		class PublicTemplate < HtmlGrid::Template
+			include View::Custom::HeadMethods
 			CONTENT = nil
 			CSS_CLASS = "composite"
 			COMPONENTS = {
@@ -46,12 +48,6 @@ module ODDB
 			end
 			def head(model, session)
 				self::class::HEAD.new(model, session, self)
-			end
-			def just_medical(model, session=@session)
-				div = HtmlGrid::Div.new(model, @session, self)
-				div.css_class = 'just-medical'
-				div.value = @lookandfeel.lookup(:all_drugs_pricecomparison)
-				div
 			end
 			def other_html_headers(context)
 				attrs_load = {
@@ -93,6 +89,8 @@ urchinTracker();
 			def topfoot(model, session)
 				if(@lookandfeel.enabled?(:just_medical_structure, false))
 					just_medical(model, session)
+				elsif(@lookandfeel.enabled?(:oekk_structure, false))
+					oekk_head(model)
 				else
 					foot(model, session)
 				end

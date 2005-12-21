@@ -4,10 +4,15 @@
 require 'sbsm/lookandfeelwrapper'
 
 module ODDB
+	class LookandfeelLanguages < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:currency_switcher,
+			:language_switcher,
+		]
+	end
 	class LookandfeelExtern < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:atc_chooser,
-			:currency_switcher,
 			:data_counts,
 			:drugs, 
 			:export_csv,
@@ -154,6 +159,7 @@ module ODDB
 			:drugs, 
 			:external_css,
 			:help_link,
+			:language_switcher,
 			:logout,
 			:migel,
 			:sequences,
@@ -256,22 +262,29 @@ module ODDB
 			:help_link,
 			:logout,
 			:migel,
+			:oekk_structure,
 			:sequences,
 		]
 		DICTIONARIES = {
 			'de'	=>	{
-				:home_welcome	=>	'',
+				:de								=>	'd',
+				:en								=>	'e',
+				:fr								=>	'f',
+				:oekk_department	=>	'1. Allgemeine Angaben',
+				:oekk_logo				=>	'&Ouml;KK - jung und unkompliziert',
+				:oekk_title				=>	'&Ouml;KK-Online offerte',
 			},
 			'fr'	=>	{
-				:home_welcome	=>	'',
 			},
 			'en'	=>	{
-				:home_welcome	=>	'',
 			},
 		}
 		RESOURCES = { 
 			:external_css	=>	'http://www.oekk.ch/assets/styles/oddb.css',
 		}
 		HTML_ATTRIBUTES = { }
+		def languages
+			[:de, :fr, :en]
+		end
 	end
 end
