@@ -270,13 +270,19 @@ module ODDB
 				:de								=>	'd',
 				:en								=>	'e',
 				:fr								=>	'f',
-				:oekk_department	=>	'1. Allgemeine Angaben',
-				:oekk_logo				=>	'&Ouml;KK - jung und unkompliziert',
-				:oekk_title				=>	'&Ouml;KK-Online offerte',
+				:oekk_department	=>	'Medikamentenvergleich online',
+				:oekk_logo				=>	'&Ouml;KK - jung und unkompliziert.',
+				:oekk_title				=>	'Ihr Einsparungspotential mit Generika',
 			},
 			'fr'	=>	{
+				:oekk_department	=>	'Comparaison de m&eacute;dicaments sur ligne',
+				:oekk_logo				=>	'&Ouml;KK - jeune et sympa.',
+				:oekk_title				=>	'V&ocirc;tre &eacute;conomie potentielle avec g&eacute;n&eacute;riques',
 			},
 			'en'	=>	{
+				:oekk_department	=>	'Drug comparison online',
+				:oekk_logo				=>	'&Ouml;KK - young and easy.',
+				:oekk_title				=>	'Your potential savings with generics',
 			},
 		}
 		RESOURCES = { 
