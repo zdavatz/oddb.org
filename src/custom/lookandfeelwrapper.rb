@@ -249,4 +249,29 @@ module ODDB
 			end
 		end
 	end
+	class LookandfeelOekk < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:drugs, 
+			:external_css,
+			:help_link,
+			:logout,
+			:migel,
+			:sequences,
+		]
+		DICTIONARIES = {
+			'de'	=>	{
+				:home_welcome	=>	'',
+			},
+			'fr'	=>	{
+				:home_welcome	=>	'',
+			},
+			'en'	=>	{
+				:home_welcome	=>	'',
+			},
+		}
+		RESOURCES = { 
+			:external_css	=>	'http://www.oekk.ch/assets/styles/oddb.css',
+		}
+		HTML_ATTRIBUTES = { }
+	end
 end

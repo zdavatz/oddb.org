@@ -24,6 +24,10 @@ module ODDB
 				LookandfeelExtern,
 				LookandfeelGenerika,
 			],
+			'oekk'	=>	[
+				LookandfeelExtern,
+				LookandfeelOekk,
+			],
 			'provita'			=>	[
 				LookandfeelExtern,
 				LookandfeelButtons, 
