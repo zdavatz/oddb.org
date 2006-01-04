@@ -14,6 +14,7 @@ require 'htmlgrid/select'
 require 'htmlgrid/text'
 require 'htmlgrid/urllink'
 require 'htmlgrid/value'
+require 'htmlgrid/booleanvalue'
 require 'view/address'
 require 'view/descriptionform'
 require 'view/form'
@@ -30,9 +31,10 @@ class InactiveRegistrations < HtmlGrid::List
 		[1,0]	=>	:name_base,
 		[2,0]	=>	:inactive_date,
 		[3,0]	=>	:market_date,
+		[4,0]	=>	:out_of_trade,
 	}
 	CSS_MAP = {
-		[0,0,3]	=>	'list',
+		[0,0,5]	=>	'list',
 		[3,0]		=> 'result-infos',
 	}
 	COMPONENT_CSS_MAP = {
@@ -45,6 +47,7 @@ class InactiveRegistrations < HtmlGrid::List
 	SORT_DEFAULT = :iksnr
 	SYMBOL_MAP = {
 		:iksnr	=>	View::PointerLink,
+		:out_of_trade			=>	HtmlGrid::BooleanValue,
 	}
 	CSS_CLASS = 'composite'
 end
@@ -419,8 +422,8 @@ class AjaxCompanyComposite < CompanyComposite
 	CSS_ID = 'company-content'
 	def AjaxCompanyComposite.select_company_form(company)
 		case company.business_area
-		when nil 
-			AjaxUnknownCompanyForm
+			#when nil 
+			#AjaxUnknownCompanyForm
 		when 'ba_pharma'
 			AjaxPharmaCompanyForm
 		when 'ba_insurance'

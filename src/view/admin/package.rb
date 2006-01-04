@@ -41,6 +41,7 @@ class PackageForm < View::Form
 		[0,0]		=>	:iksnr,
 		[2,0]		=>	:ikscd,
 		[0,1]		=>	:descr,
+		[2,1]		=>	:out_of_trade,
 		[0,2]		=>	:pretty_dose,
 		[2,2]		=>	:size,
 		[0,3]		=>	:ikscat,
@@ -65,6 +66,7 @@ class PackageForm < View::Form
 		:price_public			=>	HtmlGrid::InputCurrency,
 		:iksnr						=>	HtmlGrid::Value,
 		:market_date			=>	HtmlGrid::InputDate,
+		:out_of_trade			=>	HtmlGrid::BooleanValue,
 	}
 	def init
 		super
