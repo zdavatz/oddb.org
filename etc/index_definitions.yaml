@@ -20,7 +20,7 @@ fulltext: false
 index_name: 'atc_index_company'
 origin_klass: 'ODDB::Company'
 target_klass: 'ODDB::AtcClass'
-resolve_search_term: 'name'
+resolve_search_term: 'search_terms'
 resolve_target: 'atc_classes'
 resolve_origin: 'sequences.collect { |seq| seq.company }.uniq'
 init_source: '@atc_classes.values'
