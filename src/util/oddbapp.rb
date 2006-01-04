@@ -1174,7 +1174,7 @@ module ODDB
 			}
 		end
 		def assign_effective_forms(arg=nil)
-			ODBA.batch {
+			ODBA.transaction {
 				_assign_effective_forms(arg)
 			}
 		end

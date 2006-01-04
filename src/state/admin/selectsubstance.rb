@@ -32,7 +32,7 @@ module SelectSubstanceMethods
 		end
 		if(!error? && (klass = resolve_state(aptr)))
 			model = nil
-			ODBA.batch { 
+			ODBA.transaction { 
 				model = @session.app.update(@model.pointer, hash)
 			}
 			klass.new(@session, model)

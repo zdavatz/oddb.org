@@ -22,7 +22,7 @@ class Substance < State::Substances::Global
 	end
 	def delete
 		if(@model.empty?)
-			ODBA.batch {
+			ODBA.transaction {
 				@session.app.delete(@model.pointer)
 			}
 			#substances() # from RootState

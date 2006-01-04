@@ -12,7 +12,7 @@ class GalenicGroup < State::Admin::Global
 	VIEW = View::Admin::GalenicGroup
 	def delete
 		begin
-			ODBA.batch {
+			ODBA.transaction {
 				@session.app.delete(@model.pointer)
 			}
 			galenic_groups() # from RootState
@@ -25,7 +25,7 @@ class GalenicGroup < State::Admin::Global
 			inj.store(key, @session.user_input(key.intern))
 			inj
 		}
-		ODBA.batch {
+		ODBA.transaction {
 			@model = @session.app.update(@model.pointer, input)
 		}
 		self

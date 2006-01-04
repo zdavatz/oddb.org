@@ -34,7 +34,7 @@ class IncompleteReg < State::Admin::Registration
 		end
 	end
 	def delete
-		ODBA.batch {
+		ODBA.transaction {
 			@session.app.delete(@model.pointer)
 		}
 		State::Admin::IncompleteRegs.new(@session, @session.app.incomplete_registrations)

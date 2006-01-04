@@ -33,7 +33,7 @@ module ODDB
 					range = base...(base+step)
 					puts "Next-Step: #{range.first} - #{range.last}"
 					$stdout.flush
-					ODBA.batch {
+					ODBA.transaction {
 				top_doc_id = 0
 				(range.to_a - empty_ids).each { |doc_id| 
 					if(data = get_doctor_data(doc_id))
