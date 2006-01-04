@@ -118,7 +118,14 @@ Thank you for your patronage
 				time = Time.now
 				expiry_time = Time.local(date.year, date.month, date.day)
 				base_item = AbstractInvoiceItem.new
-				base_item.text = 'Grundgebühr Krankenkasse'
+				base_item.text = case comp.business_area
+				when 'ba_info'
+					'Grundgebühr Look & Feel Medi-Information'
+				when 'ba_insurance'
+					'Grundgebühr Krankenkasse'
+				else
+					'Grundgebühr'
+				end
 				base_item.type = :lookandfeel
 				base_item.unit = 'Jahr'
 				base_item.price = price.to_f

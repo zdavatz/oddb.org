@@ -6,6 +6,7 @@ require 'plugin/invoicer'
 module ODDB
 	class PatinfoInvoicer < Invoicer
 		SECONDS_IN_DAY = 60*60*24
+		attr_accessor :invoice_number
 		def run(day = Date.today)
 			send_daily_invoices(day - 1)
 			send_annual_invoices(day)
@@ -138,7 +139,7 @@ module ODDB
 				item.time
 			}.reverse.select { |item| 
 				# but only once per sequence.
-				active.delete(pdf_name(item))
+				(item.type == :processing) || active.delete(pdf_name(item))
 			}
 		end
 		def create_invoice(user, items)
@@ -299,7 +300,7 @@ module ODDB
 		end
 		def sort_items(items)
 			items.sort_by { |item| 
-				[item.time.to_i / SECONDS_IN_DAY, item.text.to_s]
+				[item.time.to_i / SECONDS_IN_DAY, item.text.to_s, item.type.to_s]
 			}
 		end
 	end
