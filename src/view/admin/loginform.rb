@@ -20,9 +20,15 @@ class LoginForm < HtmlGrid::Form
 	EVENT = :login
 	LABELS = true
 	SYMBOL_MAP = {
-		:email=>	HtmlGrid::InputText,
 		:pass	=>	HtmlGrid::Pass,
 	}
+	LEGACY_INTERFACE = false
+	def email(model)
+		input = HtmlGrid::InputText.new(:email, model, @session, self)
+		input.css_id = 'email'
+		self.onload = "document.getElementById('email').focus();"
+		input
+	end
 end
 		end
 	end

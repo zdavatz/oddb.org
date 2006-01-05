@@ -13,6 +13,9 @@ module ODDB
 class Company < Global
 	VIEW = View::Companies::UnknownCompany
 	LIMITED = true
+	def snapback_event
+		@model.name
+	end
 end
 class UserCompany < Company
 	VIEW = View::Companies::UserCompany

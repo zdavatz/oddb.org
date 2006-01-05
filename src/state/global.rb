@@ -71,7 +71,7 @@ module ODDB
 		class Global < SBSM::State
 			include UmlautSort
 			include Admin::LoginMethods
-			attr_reader :model
+			attr_reader :model, :snapback_model
 			DIRECT_EVENT = nil 
 			GLOBAL_MAP = {
 				:companylist					=>	State::Companies::CompanyList,
@@ -145,6 +145,7 @@ module ODDB
 				[ :patinfo ]	=>	State::Drugs::PatinfoPrint,
 			}
 			REVERSE_MAP = {}
+			SNAPBACK_EVENT = nil
 			VIEW = View::Search
 			ZONE_NAVIGATION = []
 			def add_to_interaction_basket
@@ -188,6 +189,13 @@ module ODDB
 			end
 			def creditable?
 				@session.user.creditable?(@model)
+			end
+			def direct_request_path
+				if(event = self.direct_event)
+					@session.lookandfeel._event_url(event)
+				else
+					@request_path
+				end
 			end
 			def doctorlist
 				model = @session.doctors.values
@@ -464,6 +472,7 @@ module ODDB
 					self
 				end
 			end
+			alias :result :search
 			def _search_drugs(query, stype)
 				case stype
 				when 'st_sequence'
@@ -495,7 +504,9 @@ module ODDB
 			rescue Persistence::UninitializedPathError
 				self
 			end
-			alias :result :search
+			def snapback_event
+				self::class::SNAPBACK_EVENT || self::class::DIRECT_EVENT
+			end
 			def sort
 				return self unless @model.is_a? Array
 				get_sortby!

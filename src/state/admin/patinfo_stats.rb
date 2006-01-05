@@ -96,6 +96,8 @@ class PatinfoStatsCommon < State::Admin::Global
 		}
 		@model = model.values
 	end
+	def snapback_event
+	end
 end
 class PatinfoStatsCompanyUser < State::Admin::PatinfoStatsCommon
 	def init
@@ -113,8 +115,8 @@ class PatinfoStats < State::Admin::PatinfoStatsCommon
 	def init
 		super 
 		if((pointer = @session.user_input(:pointer)) \
-			&& (company = pointer.resolve(@session.app)))
-			name = company.name
+			&& (@snapback_model = pointer.resolve(@session.app)))
+			name = @snapback_model.name
 			@model.delete_if { |comp|
 				comp.name != name
 			}

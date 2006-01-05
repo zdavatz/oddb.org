@@ -32,8 +32,10 @@ module ODDB
 				offset = resolve_offset(offset, self::class::OFFSET_STEP)
 				offset = compose_snapback(offset)
 				model = if(model.respond_to? :ancestors)
-					model.ancestors(@session.app) 
-				end || []	
+									model.ancestors(@session.app) 
+								elsif(sbm = @session.state.snapback_model)
+									[sbm]
+								end || []	
 				offset = compose_list(model, offset)
 				compose_footer(offset)
 			end
@@ -77,6 +79,9 @@ module ODDB
 						end
 						link.set_attribute('href', url)
 						link.set_attribute('class', 'th-pointersteps')
+						if(link.value.nil?)
+							link.value = event
+						end
 					end
 					@grid.add(link, *offset)
 					offset = resolve_offset(offset, self::class::OFFSET_STEP)
@@ -89,12 +94,12 @@ module ODDB
 			def snapback
 				state = @session.state
 				event = state.direct_event
+				ignore = nil
 				path = {}
-				while(event.nil? && state)
-					if((state = state.previous) \
-						&& (event = state.direct_event))
-						path = state.request_path
-					end
+				while((event.nil? || event == ignore) && (state = state.previous))
+					ignore ||= @session.state.snapback_event
+					event = state.snapback_event
+					path = state.direct_request_path
 				end
 				[event || self.class::SNAPBACK_EVENT, path]
 			end

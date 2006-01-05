@@ -5,7 +5,7 @@ require 'htmlgrid/composite'
 require 'htmlgrid/list'
 require 'htmlgrid/link'
 require 'view/form'
-require 'view/publictemplate'
+require 'view/privatetemplate'
 require 'view/pointervalue'
 require 'view/resulttemplate'
 require 'view/additional_information'
@@ -95,11 +95,7 @@ class PatinfoStatsList < PatinfoStatsCompanyList
 end
 class PatinfoStatsComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		#	[0,0]		=> 'patinfo_stats',
-		[0,1]		=> View::Admin::PatinfoStatsList,
-	}
-	CSS_MAP = {
-		#[0,0]	=> 'th',
+		[0,0]		=> View::Admin::PatinfoStatsList,
 	}
 	CSS_CLASS = 'composite'
 end	
@@ -110,7 +106,7 @@ class PatinfoStatsCompanyComposite < HtmlGrid::Composite
 	}
 	CSS_CLASS = 'composite'
 end
-class PatinfoStats < View::ResultTemplate
+class PatinfoStats < View::PrivateTemplate
 	CONTENT = View::Admin::PatinfoStatsComposite
 end
 class PatinfoStatsCompany < PatinfoStats
