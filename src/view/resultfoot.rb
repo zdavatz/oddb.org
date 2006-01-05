@@ -35,7 +35,7 @@ module ODDB
 			}
 			CSS_MAP = {	
 				[0,4]	=>	'explain-unknown',
-				[0,6]	=>	'explain-infos',
+				[0,7]	=>	'explain-infos',
 				[1,0,2,8]	=>	'explain-infos',
 			}
 			def explain_original(model, session=@session)
