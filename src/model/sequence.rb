@@ -169,8 +169,9 @@ module ODDB
 		def public_packages
 			active_packages.select { |pac| pac.public? }
 		end
-		def public_package_count
-			if(active?)
+		def public_package_count(generic_type=nil)
+			if(active? && (generic_type.nil? \
+				|| @registration.generic_type == generic_type))
 				@packages.values.inject(0) { |count, pack|
 					if(pack.public?)
 						count += 1
