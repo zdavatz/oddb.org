@@ -15,7 +15,7 @@ module ODDB
 				[0,2]	=>	:explain_complementary,
 				[0,3]	=>	:explain_vaccine,
 				[0,4]	=>	'explain_unknown',
-				[0,6]	=>	:explain_cas,
+				[0,7]	=>	:explain_cas,
 				[1,0]	=>	'explain_li',
 				[1,1]	=>	'explain_fi',
 				[1,2]	=>	'explain_pi',
@@ -23,19 +23,20 @@ module ODDB
 				[1,4]	=>	'explain_a',
 				[1,5]	=>	'explain_h',
 				[1,6]	=>	'explain_p',
+				[1,7]	=>	'explain_pr',
 				[2,0]	=>	'explain_efp',
 				[2,1]	=>	'explain_pbp',
 				[2,2]	=>	'explain_sl',
 				#[2,3]	=>	'explain_hors_commerce',
-				[2,3]	=>	'explain_slgt',
-				[2,4]	=>	'explain_fd',
-				[2,5]	=>	'explain_g',
-				[2,6]	=>	'explain_pr',
+				[2,3]	=>	'explain_slo',
+				[2,4]	=>	'explain_slg',
+				[2,5]	=>	'explain_fd',
+				[2,6]	=>	'explain_g',
 			}
 			CSS_MAP = {	
 				[0,4]	=>	'explain-unknown',
 				[0,6]	=>	'explain-infos',
-				[1,0,2,7]	=>	'explain-infos',
+				[1,0,2,8]	=>	'explain-infos',
 			}
 			def explain_original(model, session=@session)
 				explain_link(model, :original)
