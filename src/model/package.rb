@@ -136,11 +136,11 @@ Grammar OddbSize
 				(value.to_f*100).round
 			end
 		end
-		attr_reader :ikscd, :size, :count, :multi, :measure, :comform 
-		attr_reader :descr, :addition, :scale, :sl_entry, :narcotics
-		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type
-		attr_accessor :price_exfactory, :price_public, :pretty_dose
-		attr_accessor :pharmacode, :market_date, :medwin_ikscd, :out_of_trade
+		attr_reader :ikscd, :size, :count, :multi, :measure, :comform, :descr,
+			:addition, :scale, :sl_entry, :narcotics
+		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type,
+			:price_exfactory, :price_public, :pretty_dose, :pharmacode, :market_date,
+			:medwin_ikscd, :out_of_trade, :refdata_override
 		alias :pointer_descr :ikscd
 		def initialize(ikscd)
 			super()
@@ -149,7 +149,7 @@ Grammar OddbSize
 			@narcotics = []
 		end
 		def active?
-			!@out_of_trade && (@market_date.nil? || @market_date <= Date.today)
+			@market_date.nil? || @market_date <= Date.today
 		end
 		def active_agents
 			@sequence.active_agents
@@ -256,6 +256,9 @@ Grammar OddbSize
 		end
 		def pdf_patinfo
 			@sequence.pdf_patinfo
+		end
+		def public?
+			(@refdata_override || !@out_of_trade) && active?
 		end
 		def registration
 			@sequence.registration

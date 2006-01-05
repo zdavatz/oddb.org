@@ -76,6 +76,28 @@ module ODDB
 			assert_equal('012', @package.ikscd)
 			assert_not_nil(@package.oid)
 		end
+		def test_active
+			assert_equal(true, @package.active?)
+			@package.out_of_trade = true
+			assert_equal(true, @package.active?)
+			@package.refdata_override = true
+			assert_equal(true, @package.active?)
+			@package.market_date = Date.today + 1
+			assert_equal(false, @package.active?)
+			@package.market_date = Date.today
+			assert_equal(true, @package.active?)
+		end
+		def test_public
+			assert_equal(true, @package.public?)
+			@package.out_of_trade = true
+			assert_equal(false, @package.public?)
+			@package.refdata_override = true
+			assert_equal(true, @package.public?)
+			@package.market_date = Date.today + 1
+			assert_equal(false, @package.public?)
+			@package.market_date = Date.today
+			assert_equal(true, @package.public?)
+		end
 		def test_barcode
 			assert_equal('7680123450123', @package.barcode)
 		end

@@ -5,6 +5,7 @@ require 'view/privatetemplate'
 require 'view/form'
 require 'view/dataformat'
 require 'view/pointervalue'
+require 'htmlgrid/booleanvalue'
 require 'htmlgrid/errormessage'
 require 'htmlgrid/text'
 require 'htmlgrid/labeltext'
@@ -76,7 +77,7 @@ class RootSequenceAgents < View::FormList
 	end
 end
 module SequencePackageList 
-		include DataFormat
+	include DataFormat
 	COMPONENTS = {
 		[0,0]	=>	:ikscd,
 		[1,0]	=>	:most_precise_dose,
@@ -85,16 +86,12 @@ module SequencePackageList
 		[4,0]	=>	:price_public,
 		[5,0]	=>	:ikscat,
 		[6,0]	=>	:sl_entry,
+		[7,0]	=>	:out_of_trade,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'list',
-		[1,0]	=>	'list-r',
-		[2,0]	=>	'list-r',
-		[3,0]	=>	'list-r',
-		[4,0]	=>	'list-r',
-		[5,0]	=>	'list-r',
-		[6,0]	=>	'list-r',
+		[0,0]		=>	'list',
+		[1,0,7]	=>	'list-r',
 	}
 	CSS_HEAD_MAP = {
 		[0,0]	=>	'subheading',
@@ -105,7 +102,8 @@ module SequencePackageList
 	SORT_DEFAULT = :ikscd
 	SORT_HEADER = false
 	SYMBOL_MAP = {
-		:ikscd =>	View::PointerLink,
+		:ikscd				=>	View::PointerLink,
+		:out_of_trade	=>	HtmlGrid::BooleanValue,
 	}
 	def ikscd(model, session=@session)
 		if(@session.user.allowed?(model))

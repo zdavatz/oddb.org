@@ -13,8 +13,8 @@ module ODDB
 		alias :notify_recipient :email
 		alias :receiver_email :email
 		BOOLEAN = [
-			:cl_status,  :download, :experience, :recommend, :impression,
-			:helps, :show_email, :export_flag, :disable_autoinvoice
+			:cl_status,  :download, :experience, :recommend, :impression, :helps,
+			:show_email, :export_flag, :disable_autoinvoice, :refdata_override,
 		]
 		DATES = [
 			:inactive_date,

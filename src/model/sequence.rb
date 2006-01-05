@@ -160,9 +160,6 @@ module ODDB
 		def name_descr=(name_descr)
 			@name_descr = nil_if_empty(name_descr)
 		end
-		def out_of_trade
-			@packages.values.all? { |pac| pac.out_of_trade }
-		end
 		def package(ikscd)
 			@packages[sprintf('%03d', ikscd.to_i)]
 		end
@@ -170,13 +167,12 @@ module ODDB
 			@packages.length
 		end
 		def public_packages
-			active_packages.reject { |pac| pac.out_of_trade }
+			active_packages.select { |pac| pac.public? }
 		end
-		def public_package_count(generic_type=nil)
-			if(active? && (generic_type.nil? \
-				|| @registration.generic_type == generic_type))
+		def public_package_count
+			if(active?)
 				@packages.values.inject(0) { |count, pack|
-					if(!pack.out_of_trade && pack.active?)
+					if(pack.public?)
 						count += 1
 					end
 					count

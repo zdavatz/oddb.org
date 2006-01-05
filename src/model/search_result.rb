@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # SearchResult -- oddb -- 08.07.2004 -- mwalder@ywesee.com , rwaltert@ywesee.com
+
 require 'model/atcclass'
 require 'util/resultsort'
 require 'delegate'
@@ -14,7 +15,7 @@ module ODDB
 			@packages_sorted = false
 		end
 		def active_packages
-			@atc.active_packages
+			@packages ||= @atc.active_packages
 		end
 		def description(*args)
 			@atc.description(*args)

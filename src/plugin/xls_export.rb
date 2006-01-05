@@ -11,7 +11,7 @@ module ODDB
 			ids = @app.registrations.values.inject([]) { |pacs, reg|
 				if(reg.active? && reg.original?)
 					reg.each_package { |pac|
-						if(pac.active? && !pac.out_of_trade && !pac.comparables.empty?)
+						if(pac.public? && !pac.comparables.empty?)
 							pacs << pac
 						end
 					}

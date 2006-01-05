@@ -46,7 +46,7 @@ module ODDB
 		end
 		def inactive_registrations
 			@registrations.reject { |registration|
-				registration.active_package_count > 0
+				registration.public_package_count > 0
 			}
 		end
 		def index_invoice_date

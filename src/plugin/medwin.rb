@@ -189,7 +189,8 @@ module ODDB
 			if(results.size == 0 && !pack.out_of_trade)
 				update_package_data(pack, {:out_of_trade => true})
 			elsif(results.size == 1 && pack.out_of_trade)
-				update_package_data(pack, {:out_of_trade => false})
+				data = {:out_of_trade => false, :refdata_override => false}
+				update_package_data(pack, data)
 			end
 		end
 		def update_package_data(pack, data)

@@ -5,6 +5,7 @@ require 'view/publictemplate'
 require 'view/form'
 require 'view/pointervalue'
 require 'view/dataformat'
+require 'htmlgrid/inputcheckbox'
 require 'htmlgrid/inputcurrency'
 require 'htmlgrid/inputdate'
 require 'htmlgrid/errormessage'
@@ -41,7 +42,6 @@ class PackageForm < View::Form
 		[0,0]		=>	:iksnr,
 		[2,0]		=>	:ikscd,
 		[0,1]		=>	:descr,
-		[2,1]		=>	:out_of_trade,
 		[0,2]		=>	:pretty_dose,
 		[2,2]		=>	:size,
 		[0,3]		=>	:ikscat,
@@ -50,8 +50,9 @@ class PackageForm < View::Form
 		[2,4]		=>	:price_public,
 		[0,5]		=>	:generic_group,
 		[2,5]		=>	:market_date,
-		[1,6]		=>	:submit,
-		[1,6,0]	=>	:delete_item,
+		[0,6]		=>	:out_of_trade,
+		[1,7]		=>	:submit,
+		[1,7,0]	=>	:delete_item,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,4,6]	=>	'standard',
@@ -67,8 +68,12 @@ class PackageForm < View::Form
 		:iksnr						=>	HtmlGrid::Value,
 		:market_date			=>	HtmlGrid::InputDate,
 		:out_of_trade			=>	HtmlGrid::BooleanValue,
+		:refdata_override	=>	HtmlGrid::InputCheckbox,
 	}
 	def init
+		if(@model.out_of_trade)
+			components.store([2,6], :refdata_override)
+		end
 		super
 		error_message()
 	end

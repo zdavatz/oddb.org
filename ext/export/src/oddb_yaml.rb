@@ -260,7 +260,6 @@ module ODDB
 			'@size',
 			'@descr',
 			'@ikscat',
-			'@out_of_trade',
 			'@price_exfactory',
 			'@price_public',
 			'@sl_entry',
@@ -272,6 +271,7 @@ module ODDB
 						map.add( m[1..-1], instance_variable_get( m ) )
 					}
 					map.add('ean13', self.barcode)
+					map.add('out_of_trade', !self.public?)
 					map.add('pharmacode', self.pharmacode)
 					map.add('narcotics', @narcotics.collect { |narc| narc.casrn})
 				}

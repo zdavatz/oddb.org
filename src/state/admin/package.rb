@@ -40,10 +40,11 @@ module PackageMethods
 			:descr,
 			:size, 
 			:ikscat,
+			:market_date,
 			:pretty_dose,
 			:price_exfactory,
 			:price_public,
-			:market_date,
+			:refdata_override,
 		]
 		input = user_input(keys)
 		unless(error?)
