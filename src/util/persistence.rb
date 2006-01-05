@@ -81,32 +81,9 @@ module ODDB
 				end
 			}
 		end
-=begin
-		def current_oid(klass)
-			oids = []
-			ObjectSpace.each_object(klass) { |obj|
-				oids << obj.oid.to_i
-			}
-			oids.max
-		end
-=end
 		def set_oid
-=begin
-			self.class.instance_eval <<-EOS unless(self.class.respond_to?(:next_oid))
-				@oid = nil
-				class << self
-					def next_oid
-						# Persistence.current_oid(self).next # will break many tests,
-						# but might solve the problem of mysterious reseting of oids
-						@oid = (@oid || Persistence.current_oid(self)).next
-					end
-				end
-			EOS
-			@oid ||= self.class.next_oid
-=end
 			@oid ||= self.odba_id
 		end
-		#module_function :current_oid
 	end
 	module Persistence
 		include PersistenceMethods
@@ -242,7 +219,7 @@ Grammar OddbSize
 						obj.odba_delete
 					end
 			rescue InvalidPathError, UninitializedPathError => e
-				puts "Could not delete: #{to_s}, reason: #{e.message}"
+				warn "Could not delete: #{to_s}, reason: #{e.message}"
 			end
 			def issue_update(hook, values)
 				obj = resolve(hook)
@@ -274,7 +251,7 @@ Grammar OddbSize
 						laststep = step
 						hook = begin
 							hook.send(*step)
-						rescue
+						rescue 
 						end
 					else
 						call = step.shift
@@ -329,7 +306,7 @@ Grammar OddbSize
 				@inner_pointer.append(val)
 			end
 			def carry(key, val=nil)
-				instance_eval("@#{key} = val")
+				instance_variable_set("@#{key}", val)
 				instance_eval <<-EOS
 					def #{key}(*args)
 						@#{key}

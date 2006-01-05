@@ -21,6 +21,9 @@ module ODBA
 		def fetch_named(*argsm, &block)
 			block.call
 		end
+		def next_id
+			ODBA.storage.next_id
+		end
 	end
 	class StorageStub
 		def next_id
@@ -28,18 +31,16 @@ module ODBA
 			@id = @id.next
 		end
 	end
-	def batch(&block)
-		block.call
+	def ODBA.transaction
+		yield
 	end
-	alias :transaction :batch
-	def cache
+	def ODBA.cache
 		@cache ||= CacheStub.new
 	end
-	def storage
+	def ODBA.storage
 		@storage ||= StorageStub.new
 	end
-	module_function :batch
-	module_function :cache
-	module_function :transaction
-	module_function :storage
+	def ODBA.storage=(storage)
+		@storage = storage
+	end
 end

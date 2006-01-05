@@ -189,25 +189,6 @@ module ODDB
 			# for such a value to end up in a snapshot...
 			assert_nil(obj.oid)
 		end
-=begin
-		def test_separate_oid
-			StubPersistenceOid.reset_oid
-			StubPersistenceOtherOid.reset_oid
-			assert_equal(false, StubPersistenceOid.respond_to?(:next_oid))
-			obj = StubPersistenceOid.new
-			assert_equal(true, StubPersistenceOid.respond_to?(:next_oid))
-			assert_equal(1, @obj.oid)
-			assert_equal(1, obj.oid)
-			obj = StubPersistenceOid.new
-			assert_equal(1, @obj.oid)
-			assert_equal(2, obj.oid)
-			other = StubPersistenceOtherOid.new
-			assert_equal(1, other.oid)
-			assert_equal(1, ODDB::Persistence.current_oid(StubPersistenceOtherOid))
-			assert_equal(2, ODDB::Persistence.current_oid(StubPersistenceOid))
-			assert_equal(1, ODDB::Persistence.current_oid(StubPersistenceDiffable))
-		end
-=end
 		def test_update_values
 			values = {
 				'bar'	=>	'Boofar',
@@ -424,14 +405,7 @@ module ODDB
 		end
 	end
 	class TestPersistenceCreateItem < Test::Unit::TestCase
-		class CacheStub
-			def store(anything)
-			end
-			def delete(anything)
-			end
-		end
 		def setup
-			ODBA.cache = CacheStub.new
 			@pointer = ODDB::Persistence::Pointer.new([:fap, "fap"])
 			@item = ODDB::Persistence::CreateItem.new(@pointer)
 		end

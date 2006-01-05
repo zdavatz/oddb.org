@@ -10,7 +10,7 @@ require 'mock'
 require 'util/language'
 #require 'sbsm/validator'
 require 'sbsm/state'
-require 'odba'
+require 'stub/odba'
 
 
 module ODDB

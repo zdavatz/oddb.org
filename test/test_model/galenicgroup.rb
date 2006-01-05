@@ -45,7 +45,6 @@ class TestGalenicGroup < Test::Unit::TestCase
 			@galenic_groups[oid]
 		end
 	end
-
 	def setup
 		ODBA.storage = Mock.new
 		ODBA.storage.__next(:next_id) {
