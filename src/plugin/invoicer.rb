@@ -23,7 +23,7 @@ module ODDB
 			pdfinvoice.items = sort_items(items).each { |item| 
 			}.collect { |item|
 				[ item.time, item_text(item), item.unit, 
-					item.quantity.to_i, item.price.to_f ]
+					item.quantity.to_f, item.price.to_f ]
 			}
 			pdfinvoice
 		end
