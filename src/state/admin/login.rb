@@ -38,6 +38,7 @@ end
 class Login < State::Global
 	DIRECT_EVENT = :login_form
 	VIEW = View::Admin::Login
+	SNAPBACK_EVENT = nil
 end
 class TransparentLogin < State::Admin::Login
 	attr_accessor :desired_event

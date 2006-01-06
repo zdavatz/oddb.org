@@ -15,7 +15,7 @@ module ODDB
 	module State
 		module Drugs
 class Result < State::Drugs::Global
-	DIRECT_EVENT = :result
+	SNAPBACK_EVENT = :result
 	VIEW = View::Drugs::Result
 	LIMITED = true
 	ITEM_LIMIT = 100
@@ -104,8 +104,8 @@ class Result < State::Drugs::Global
 		@page = @pages[pge || 0]
 	end
 	def request_path
-		if(str = super)
-			str.to_s + '#best_result'
+		if(@request_path)
+			@request_path + '#best_result'
 		end
 	end
 	def search
@@ -114,6 +114,7 @@ class Result < State::Drugs::Global
 		if(@search_type != stype || @search_query != query)
 			super
 		else
+			@request_path = @session.request_path
 			self
 		end
 	end

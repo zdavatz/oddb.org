@@ -145,7 +145,6 @@ module ODDB
 				[ :patinfo ]	=>	State::Drugs::PatinfoPrint,
 			}
 			REVERSE_MAP = {}
-			SNAPBACK_EVENT = nil
 			VIEW = View::Search
 			ZONE_NAVIGATION = []
 			def add_to_interaction_basket
@@ -194,7 +193,7 @@ module ODDB
 				if(event = self.direct_event)
 					@session.lookandfeel._event_url(event)
 				else
-					@request_path
+					self.request_path
 				end
 			end
 			def doctorlist
@@ -414,7 +413,9 @@ module ODDB
 				end
 			end
 			def resolve
-				if((pointer = @session.user_input(:pointer)) \
+				if(@session.request_path == @request_path)
+					self
+				elsif((pointer = @session.user_input(:pointer)) \
 					&& pointer.is_a?(Persistence::Pointer) \
 					&& (model = pointer.resolve(@session.app)))
 					if(klass = resolve_state(pointer))
@@ -495,7 +496,9 @@ module ODDB
 					state
 			end
 			def show
-				if((pointer = @session.user_input(:pointer)) \
+				if(@session.request_path == @request_path)
+					self
+				elsif((pointer = @session.user_input(:pointer)) \
 					&& pointer.is_a?(Persistence::Pointer) \
 					&& (model = pointer.resolve(@session.app)) \
 					&& klass = resolve_state(pointer, :readonly))
@@ -505,7 +508,11 @@ module ODDB
 				self
 			end
 			def snapback_event
-				self::class::SNAPBACK_EVENT || self::class::DIRECT_EVENT
+				if(defined?(self.class::SNAPBACK_EVENT))
+					self.class::SNAPBACK_EVENT
+				else
+					self.class::DIRECT_EVENT
+				end
 			end
 			def sort
 				return self unless @model.is_a? Array

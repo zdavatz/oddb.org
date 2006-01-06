@@ -11,6 +11,7 @@ module ODDB
 class PatinfoStatsCommon < State::Admin::Global
 	VIEW = View::Admin::PatinfoStatsCompany
 	DIRECT_EVENT = :patinfo_stats	
+	SNAPBACK_EVENT = nil
 	class InvoiceItemFacade
 		attr_accessor :user, :sequence, :time
 		def initialize(invoice_item)
@@ -95,8 +96,6 @@ class PatinfoStatsCommon < State::Admin::Global
 			end
 		}
 		@model = model.values
-	end
-	def snapback_event
 	end
 end
 class PatinfoStatsCompanyUser < State::Admin::PatinfoStatsCommon
