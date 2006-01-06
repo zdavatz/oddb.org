@@ -26,7 +26,7 @@ class Result < State::Migel::Global
 	end
 	def init
 		if(@model.nil? || @model.empty?)
-			@default_view = View::Drugs::MigelEmptyResult
+			@default_view = View::Migel::EmptyResult
 		else
 		subgroups = {}
 		@model.each { |product|

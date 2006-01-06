@@ -128,10 +128,8 @@ class ResultList < HtmlGrid::List
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
-	#SORT_AUTO = true
 	SORT_DEFAULT = nil
 	SUBHEADER = View::Drugs::AtcHeader
-	#SORT_REVERSE = true
 	SYMBOL_MAP = {
 		:galenic_form				=>	View::DescriptionValue,
 		:registration_date	=>	HtmlGrid::DateValue,
