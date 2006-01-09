@@ -15,8 +15,10 @@ module ODDB
 			'zdavatz@ywesee.com' 
 		]
 		def address_lines(comp_or_hosp, email)
-			lines = [ comp_or_hosp.name, "z.H. #{comp_or_hosp.contact}", email ]
+			lines = [ comp_or_hosp.name, "z.H. #{comp_or_hosp.contact}" ]
 			lines += comp_or_hosp.address(0).lines
+			lines.push email
+			lines
 		end
 		def assemble_pdf_invoice(pdfinvoice, comp_or_hosp, items, email)
 			pdfinvoice.debitor_address = address_lines(comp_or_hosp, email)
