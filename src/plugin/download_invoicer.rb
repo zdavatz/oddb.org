@@ -56,9 +56,9 @@ module ODDB
 		def invoice_number(day)
 			day.strftime('Downloads-%m.%Y')
 		end
-		def invoice_subject(items, date)
-			sprintf("Rechnung %i * CSV-Download %s", 
-				items.size, date.strftime("%m/%Y"))
+		def invoice_subject(items, date, hospital)
+			sprintf("Rechnung %s %i * CSV-Download %s", hospital.name,
+							items.size, date.strftime("%m/%Y"))
 		end
 		def recent_items(date)
 			slate = @app.slate(:download)

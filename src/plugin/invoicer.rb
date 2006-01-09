@@ -55,9 +55,9 @@ Thank you for your patronage
 		def invoice_number(day)
 			day.strftime('Rechnung-%d.%m.%Y')
 		end
-		def invoice_subject(items, date)
-			sprintf("Rechnung (%i x) %s", 
-				items.size, date.strftime("%m/%Y"))
+		def invoice_subject(items, date, comp_or_hosp)
+			sprintf("Rechnung %s (%i x) %s", comp_or_hosp.name, items.size,
+							date.strftime("%m/%Y"))
 		end
 		def item_text(item)
 			item.text
@@ -83,7 +83,7 @@ Thank you for your patronage
 			header = fpart.header
 			header.to = to
 			header.from = MAIL_FROM
-			header.subject = invoice_subject(items, date)
+			header.subject = invoice_subject(items, date, comp_or_hosp)
 			header.add('Content-Type', 'application/pdf')
 			header.add('Content-Disposition', 'attachment', nil,
 				{'filename' => invoice_name })
@@ -158,9 +158,10 @@ Thank you for your patronage
 				@app.update(comp.pointer, {:lookandfeel_invoice_date => (date >> 12)})
 			end
 		end
-		def invoice_subject(items, date)
+		def invoice_subject(items, date, comp_or_hosp)
 			year = date.year
-			sprintf("Rechnung Lookandfeel-Integration %i/%i", year, year.next)
+			sprintf("Rechnung %s Lookandfeel-Integration %i/%i", comp_or_hosp.name,
+							year, year.next)
 		end
 	end
 	class CompanyIndexInvoicer < Invoicer
@@ -215,9 +216,10 @@ Thank you for your patronage
 				@app.update(comp.pointer, {:index_invoice_date => (date >> 12)})
 			end
 		end
-		def invoice_subject(items, date)
+		def invoice_subject(items, date, company)
 			year = date.year
-			sprintf("Rechnung Firmenverzeichnis %i/%i", year, year.next)
+			sprintf("Rechnung %s Firmenverzeichnis %i/%i", company.name, year,
+							year.next)
 		end
 	end
 end

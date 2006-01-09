@@ -244,16 +244,16 @@ module ODDB
 		def invoice_number(day)
 			@invoice_number			
 		end
-		def invoice_subject(items, date)
+		def invoice_subject(items, date, company)
 			fee_items = items.select { |item| item.type == :annual_fee }
 			datestr = if(date.is_a?(Range))
-				sprintf('%s-%s', date.first.strftime('%d.%m.%Y'), 
-					date.last.strftime('%d.%m.%Y'))
+				sprintf('%s-%s', date.first.strftime('%d.%m.%Y'),
+								date.last.strftime('%d.%m.%Y'))
 			else
 				date.strftime("%d.%m.%Y")
 			end
-			sprintf("Rechnung %i x PI-Upload %s", 
-				fee_items.size, datestr)
+			sprintf("Rechnung %s %i x PI-Upload %s", company.name, 
+							fee_items.size, datestr)
 		end
 		def item_name(item)
 			name = ''
