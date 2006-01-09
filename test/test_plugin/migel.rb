@@ -18,7 +18,13 @@ module ODDB
 		end
 		def test_update_group__id
 			row = [
-"3","APPLIKATIONSHILFEN","GerŠtereparaturen beim Kaufsystem: Bei sorgfŠltigemGebrauch ohne Selbstverschuldung, VergŸtung nach Aufwand nur nach vorgŠngiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehšr und Verbrauchsmaterial.Limitation: KostenŸbernahme nur auf vorgŠngige besondere Gutsprache des Krankenversicherers und mit ausdrŸcklicher Bewilligung des Vertrauensarztes oder der VertrauensŠrztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		RŸcksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"
+"03.","","APPLIKATIONSHILFEN","Gerätereparaturen beim Kaufsystem: Bei sorgfältigem Gebrauch ohne Selbstverschuldung, Vergütung nach Aufwand nur nach vorgängiger Kostengutsprache durch den Krankenversicherer.","03.02","","Insulinpumpen","","","","","","","03.02.01.00.2","L","Insulinpumpen-System, Miete
+Inkl. Zubehör und Verbrauchsmaterial.
+Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.
+Zur Insulintherapie bei:
+- Extrem labiler Diabetes.
+-  Einstellung auch mit der Methode der   Mehrfachinjektionen unbefriedigend.
+-  Indikationen des Pumpeneinsatzes und   Betreuung des Patienten durch ein   qualifiziertes Zentrum oder, nach    Rücksprache mit dem Vertrauensarzt, durch  einen Arzt, der in der Anwendung der   Insulinpumpen ausgebildet ist.","","Miete/Tag","9","B","01.01.2006"
 			]
 			id = %w(03 02 01 00 199)
 			ptr = Persistence::Pointer.new([:migel_group, '03'])
@@ -43,7 +49,13 @@ module ODDB
 		end
 		def test_update_group__de
 			row = [
-"3","APPLIKATIONSHILFEN","GerŠtereparaturen beim Kaufsystem: Bei sorgfŠltigemGebrauch ohne Selbstverschuldung, VergŸtung nach Aufwand nur nach vorgŠngiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehšr und Verbrauchsmaterial.Limitation: KostenŸbernahme nur auf vorgŠngige besondere Gutsprache des Krankenversicherers und mit ausdrŸcklicher Bewilligung des Vertrauensarztes oder der VertrauensŠrztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		RŸcksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"
+"03.","","APPLIKATIONSHILFEN","Gerätereparaturen beim Kaufsystem: Bei sorgfältigem Gebrauch ohne Selbstverschuldung, Vergütung nach Aufwand nur nach vorgängiger Kostengutsprache durch den Krankenversicherer.","03.02","","Insulinpumpen","","","","","","","03.02.01.00.2","L","Insulinpumpen-System, Miete
+Inkl. Zubehör und Verbrauchsmaterial.
+Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.
+Zur Insulintherapie bei:
+- Extrem labiler Diabetes.
+-  Einstellung auch mit der Methode der   Mehrfachinjektionen unbefriedigend.
+-  Indikationen des Pumpeneinsatzes und   Betreuung des Patienten durch ein   qualifiziertes Zentrum oder, nach    Rücksprache mit dem Vertrauensarzt, durch  einen Arzt, der in der Anwendung der   Insulinpumpen ausgebildet ist.","","Miete/Tag","9","B","01.01.2006"
 			]
 			id = %w(03 02 01 00 2)
 			ptr = Persistence::Pointer.new([:migel_group, '03'])
@@ -68,7 +80,12 @@ module ODDB
 		end
 		def test_update_group__fr
 			row = [
-"3","APPLIKATIONSHILFEN","GerŠtereparaturen beim Kaufsystem: Bei sorgfŠltigemGebrauch ohne Selbstverschuldung, VergŸtung nach Aufwand nur nach vorgŠngiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehšr und Verbrauchsmaterial.Limitation: KostenŸbernahme nur auf vorgŠngige besondere Gutsprache des Krankenversicherers und mit ausdrŸcklicher Bewilligung des Vertrauensarztes oder der VertrauensŠrztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		RŸcksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"
+"03.","","MOYENS D'APPLICATION","Réparation des appareils selon le système d'achat: en cas d'utilisation soigneuse sans erreur de la part de l'utilisateur, contribution selon les frais, seulement après demande de remboursement préalable auprès de l'assureur-maladie.","03.02","","Pompes à insuline","","","","","","","03.02.01.00.2","L","Système pompe à insuline, location
+Y c. accessoires et matériel à usage unique.
+Limitation: prise en charge seulement si l'assureur-maladie a donné préalablement une garantie spéciale et avec l'autorisation expresse du médecin-conseil. La thérapie est liée aux conditions suivantes:
+-  diabète extrêmement labile;  
+-  impossibilité de stabiliser l'affection de manière  satisfaisante par la méthode des injections  multiples;  
+-  indication d'une pose de pompe et suivi du  patient dans un centre spécialisé ou, avec  l'accord du  médecinconseil, par un médecin  expérimenté dans l'utilisation des pompes à  insuline.","","location/jour",9,"B","01.01.2006"
 			]
 			id = %w(03 02 01 00 2)
 			ptr = Persistence::Pointer.new([:migel_group, '03'])
@@ -76,10 +93,10 @@ module ODDB
 			expecteds = [
 				{
 					:code => '03',
-					:fr    => 'APPLIKATIONSHILFEN',
+					:fr    => 'MOYENS D\'APPLICATION',
 				},
 				{
-					:fr    => "Gerätereparaturen beim Kaufsystem: Bei sorgfältigem Gebrauch ohne Selbstverschuldung, Vergütung nach Aufwand nur nach vorgängiger Kostengutsprache durch den Krankenversicherer.",
+					:fr    => "Réparation des appareils selon le système d'achat: en cas d'utilisation soigneuse sans erreur de la part de l'utilisateur, contribution selon les frais, seulement après demande de remboursement préalable auprès de l'assureur-maladie.",
 				},
 			]
 			@app.mock_handle(:update, 2) { |pointer, values|
@@ -93,7 +110,13 @@ module ODDB
 		end
 		def test_update_subgroup
 			row = [
-"3","APPLIKATIONSHILFEN","GerŠtereparaturen beim Kaufsystem: Bei sorgfŠltigemGebrauch ohne Selbstverschuldung, VergŸtung nach Aufwand nur nach vorgŠngiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehšr und Verbrauchsmaterial.Limitation: KostenŸbernahme nur auf vorgŠngige besondere Gutsprache des Krankenversicherers und mit ausdrŸcklicher Bewilligung des Vertrauensarztes oder der VertrauensŠrztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		RŸcksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"
+"03.","","APPLIKATIONSHILFEN","Gerätereparaturen beim Kaufsystem: Bei sorgfältigem Gebrauch ohne Selbstverschuldung, Vergütung nach Aufwand nur nach vorgängiger Kostengutsprache durch den Krankenversicherer.","03.02","","Insulinpumpen","","","","","","","03.02.01.00.2","L","Insulinpumpen-System, Miete
+Inkl. Zubehör und Verbrauchsmaterial.
+Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.
+Zur Insulintherapie bei:
+- Extrem labiler Diabetes.
+-  Einstellung auch mit der Methode der   Mehrfachinjektionen unbefriedigend.
+-  Indikationen des Pumpeneinsatzes und   Betreuung des Patienten durch ein   qualifiziertes Zentrum oder, nach    Rücksprache mit dem Vertrauensarzt, durch  einen Arzt, der in der Anwendung der   Insulinpumpen ausgebildet ist.","","Miete/Tag","9","B","01.01.2006"
 			]
 			id = %w(03 02 01 00 2)
 			group = FlexMock.new 
@@ -115,7 +138,7 @@ module ODDB
 		end
 		def test_update_subgroup__limitation
 			row = [
-"3","APPLIKATIONSHILFEN","GerŠtereparaturen beim Kaufsystem: Bei sorgfŠltigemGebrauch ohne Selbstverschuldung, VergŸtung nach Aufwand nur nach vorgŠngiger Kostengutsprache durch den Krankenversicherer.","3.03","Infusionspumpen","Limitation: Zur Zytostatika-, Antibiotika-, Schmerz-, Chelatbildner-, Parkinsontherapie sowie fŸr die parenterale ErnŠhrung.","","","03.03.02.06.2","Nadel","","1","StŸck",".5","1.1.1997"
+"03.","","APPLIKATIONSHILFEN","Gerätereparaturen beim Kaufsystem: Bei sorgfältigem Gebrauch ohne Selbstverschuldung, Vergütung nach Aufwand nur nach vorgängiger Kostengutsprache durch den Krankenversicherer.","03.03","L","Infusionspumpen","Limitation: Zur Zytostatika-, Antibiotika-, Schmerz-, Chelatbildner-, Parkinsontherapie sowie für die parenterale Ernährung.","","","","","","03.03.02.06.2","","Nadel","1","Stück",0.45,"B","01.01.2006"
 			]
 			id = %w(03 02 01 00 2)
 			group = FlexMock.new 
@@ -145,7 +168,13 @@ module ODDB
 		end
 		def test_update_product__naked_de
 			row = [
-"3","APPLIKATIONSHILFEN","GerŠtereparaturen beim Kaufsystem: Bei sorgfŠltigemGebrauch ohne Selbstverschuldung, VergŸtung nach Aufwand nur nach vorgŠngiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehšr und Verbrauchsmaterial.Limitation: KostenŸbernahme nur auf vorgŠngige besondere Gutsprache des Krankenversicherers und mit ausdrŸcklicher Bewilligung des Vertrauensarztes oder der VertrauensŠrztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		RŸcksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"
+"03.","","APPLIKATIONSHILFEN","Gerätereparaturen beim Kaufsystem: Bei sorgfältigem Gebrauch ohne Selbstverschuldung, Vergütung nach Aufwand nur nach vorgängiger Kostengutsprache durch den Krankenversicherer.","03.02","","Insulinpumpen","","","","","","","03.02.01.00.2","L","Insulinpumpen-System, Miete
+Inkl. Zubehör und Verbrauchsmaterial.
+Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.
+Zur Insulintherapie bei:
+- Extrem labiler Diabetes.
+-  Einstellung auch mit der Methode der   Mehrfachinjektionen unbefriedigend.
+-  Indikationen des Pumpeneinsatzes und   Betreuung des Patienten durch ein   qualifiziertes Zentrum oder, nach    Rücksprache mit dem Vertrauensarzt, durch  einen Arzt, der in der Anwendung der   Insulinpumpen ausgebildet ist.","","Miete/Tag","9","B","01.01.2006"
 			]
 			id = %w(03 02 01 00 2)
 			subgroup = FlexMock.new
@@ -162,10 +191,10 @@ module ODDB
 			]
 			expecteds = [
 				{
-					:de => "Insulinpumpen-System,\nInkl. Zubehör und Verbrauchsmaterial.",
-					:price =>	1000,
+					:de => "Insulinpumpen-System, Miete\nInkl. Zubehör und Verbrauchsmaterial.",
+					:price =>	900,
 					:type	 => :rent,
-					:date  => Date.new(2003),
+					:date  => Date.new(2006),
 					:limitation => true,
 				},
 				{
@@ -186,7 +215,12 @@ module ODDB
 		end
 		def test_update_product__naked_fr
 			row = [
-"3","APPLIKATIONSHILFEN","GerŠtereparaturen beim Kaufsystem: Bei sorgfŠltigemGebrauch ohne Selbstverschuldung, VergŸtung nach Aufwand nur nach vorgŠngiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehšr und Verbrauchsmaterial.Limitation: KostenŸbernahme nur auf vorgŠngige besondere Gutsprache des Krankenversicherers und mit ausdrŸcklicher Bewilligung des Vertrauensarztes oder der VertrauensŠrztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		RŸcksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"
+"03.","","MOYENS D'APPLICATION","Réparation des appareils selon le système d'achat: en cas d'utilisation soigneuse sans erreur de la part de l'utilisateur, contribution selon les frais, seulement après demande de remboursement préalable auprès de l'assureur-maladie.","03.02","","Pompes à insuline","","","","","","","03.02.01.00.2","L","Système pompe à insuline, location
+Y c. accessoires et matériel à usage unique.
+Limitation: prise en charge seulement si l'assureur-maladie a donné préalablement une garantie spéciale et avec l'autorisation expresse du médecin-conseil. La thérapie est liée aux conditions suivantes:
+-  diabète extrêmement labile;  
+-  impossibilité de stabiliser l'affection de manière  satisfaisante par la méthode des injections  multiples;  
+-  indication d'une pose de pompe et suivi du  patient dans un centre spécialisé ou, avec  l'accord du  médecinconseil, par un médecin  expérimenté dans l'utilisation des pompes à  insuline.","","location/jour",9,"B","01.01.2006"
 			]
 			id = %w(03 02 01 00 2)
 			subgroup = FlexMock.new
@@ -203,17 +237,17 @@ module ODDB
 			]
 			expecteds = [
 				{
-					:fr => "Insulinpumpen-System,\nInkl. Zubehör und Verbrauchsmaterial.",
-					:price =>	1000,
+					:fr => "Système pompe à insuline, location\nY c. accessoires et matériel à usage unique.",
+					:price =>	900,
 					:type	 => :rent,
-					:date  => Date.new(2003),
+					:date  => Date.new(2006),
 					:limitation => true,
 				},
 				{
-					:fr => "Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.\nZur Insulintherapie bei:\n- Extrem labiler Diabetes.\n- Einstellung auch mit der Methode der Mehrfachinjektionen unbefriedigend.\n- Indikationen des Pumpeneinsatzes und Betreuung des Patienten durch ein qualifiziertes Zentrum oder, nach Rücksprache mit dem Vertrauensarzt, durch einen Arzt, der in der Anwendung der Insulinpumpen ausgebildet ist.",
+					:fr => "Limitation: prise en charge seulement si l'assureur-maladie a donné préalablement une garantie spéciale et avec l'autorisation expresse du médecin-conseil. La thérapie est liée aux conditions suivantes:\n- diabète extrêmement labile; \n- impossibilité de stabiliser l'affection de manière satisfaisante par la méthode des injections multiples; \n- indication d'une pose de pompe et suivi du patient dans un centre spécialisé ou, avec l'accord du médecinconseil, par un médecin expérimenté dans l'utilisation des pompes à insuline.",
 				},
 				{
-					:fr => 'Miete/Tag',
+					:fr => 'location/jour',
 				},
 			]
 			@app.mock_handle(:update, 3) { |pointer, values|
@@ -225,50 +259,10 @@ module ODDB
 			@plugin.update_product(id, subgroup, row, :fr)
 			@app.mock_verify
 		end
-		def test_update_product__naked_it
-			row = [
-"3","APPLIKATIONSHILFEN","GerŠtereparaturen beim Kaufsystem: Bei sorgfŠltigemGebrauch ohne Selbstverschuldung, VergŸtung nach Aufwand nur nach vorgŠngiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehšr und Verbrauchsmaterial.Limitation: KostenŸbernahme nur auf vorgŠngige besondere Gutsprache des Krankenversicherers und mit ausdrŸcklicher Bewilligung des Vertrauensarztes oder der VertrauensŠrztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		RŸcksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"
-			]
-			id = %w(03 02 01 00 2)
-			subgroup = FlexMock.new
-			sg_pointer = Persistence::Pointer.new([:migel, '03'],
-				[:subgroup, '02']) 
-			subgroup.mock_handle(:pointer) {
-				sg_pointer
-			}
-			pointer = sg_pointer + [:product, '01.00.2']
-			pointers = [
-				pointer,
-				pointer + [:limitation_text],
-				pointer + [:unit],
-			]
-			expecteds = [
-				{
-					:it => "Insulinpumpen-System,\nInkl. Zubehör und Verbrauchsmaterial.",
-					:price =>	1000,
-					:type	 => :rent,
-					:date  => Date.new(2003),
-					:limitation => true,
-				},
-				{
-					:it => "Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.\nZur Insulintherapie bei:\n- Extrem labiler Diabetes.\n- Einstellung auch mit der Methode der Mehrfachinjektionen unbefriedigend.\n- Indikationen des Pumpeneinsatzes und Betreuung des Patienten durch ein qualifiziertes Zentrum oder, nach Rücksprache mit dem Vertrauensarzt, durch einen Arzt, der in der Anwendung der Insulinpumpen ausgebildet ist.",
-				},
-				{
-					:it => 'Miete/Tag',
-				},
-			]
-			@app.mock_handle(:update, 3) { |pointer, values|
-				ptr = pointers.shift
-				assert_equal(ptr.creator, pointer) 	
-				expected = expecteds.shift
-				assert_equal(expected, values)	
-		  }	
-			@plugin.update_product(id, subgroup, row, :it)
-			@app.mock_verify
-		end
 		def test_update_product__no_extras
 			row = [
-"3","APPLIKATIONSHILFEN","GerŠtereparaturen beim Kaufsystem: Bei sorgfŠltigemGebrauch ohne Selbstverschuldung, VergŸtung nach Aufwand nur nach vorgŠngiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehšr und Verbrauchsmaterial.","L","","","10","1.1.2003"
+"03.","","APPLIKATIONSHILFEN","Gerätereparaturen beim Kaufsystem: Bei sorgfältigem Gebrauch ohne Selbstverschuldung, Vergütung nach Aufwand nur nach vorgängiger Kostengutsprache durch den Krankenversicherer.","03.02","","Insulinpumpen","","","","","","","03.02.01.00.2","L","Insulinpumpen-System, Miete
+Inkl. Zubehör und Verbrauchsmaterial.","","","9","B","01.01.2006"
 			]
 			id = %w(03 02 01 00 2)
 			subgroup = FlexMock.new
@@ -281,54 +275,13 @@ module ODDB
 				ptr = sg_pointer + [:product, '01.00.2']
 				assert_equal(ptr.creator, pointer) 	
 				expected = {
-					:de => "Insulinpumpen-System,\nInkl. Zubehör und Verbrauchsmaterial.",
-					:price =>	1000,
+					:de => "Insulinpumpen-System, Miete\nInkl. Zubehör und Verbrauchsmaterial.",
+					:price =>	900,
 					:type	 => :rent,
-					:date  => Date.new(2003),
+					:date  => Date.new(2006),
 					:limitation => true,
 				}
 				assert_equal(expected, values)
-		  }	
-			@plugin.update_product(id, subgroup, row, :de)
-			@app.mock_verify
-		end
-		def test_update_accessory
-			row = [
-"3","APPLIKATIONSHILFEN","GerŠtereparaturen beim Kaufsystem: Bei sorgfŠltigemGebrauch ohne Selbstverschuldung, VergŸtung nach Aufwand nur nach vorgŠngiger Kostengutsprache durch den Krankenversicherer.","3.02","Insulinpumpen","","","","03.02.01.00.2","Insulinpumpen-System,Inkl. Zubehšr und Verbrauchsmaterial.Limitation: KostenŸbernahme nur auf vorgŠngige besondere Gutsprache des Krankenversicherers und mit ausdrŸcklicher Bewilligung des Vertrauensarztes oder der VertrauensŠrztin.Zur Insulintherapie bei:- 	Extrem labiler Diabetes.- 	Einstellung auch mit der Methode der 		Mehrfachinjektionen unbefriedigend.- 	Indikationen des Pumpeneinsatzes und 	Betreuung des Patienten durch ein 		qualifiziertes Zentrum oder, nach 		RŸcksprache mit dem Vertrauensarzt, durch 	einen Arzt, der in der Anwendung der 	Insulinpumpen ausgebildet ist.","L","","Miete/Tag","10","1.1.2003"
-			]
-			id = %w(03 02 01 00 2)
-			subgroup = FlexMock.new
-			sg_pointer = Persistence::Pointer.new([:migel, '03'],
-				[:subgroup, '02']) 
-			subgroup.mock_handle(:pointer) {
-				sg_pointer
-			}
-			pointer = sg_pointer + [:product, '01.00.2']
-			pointers = [
-				pointer,
-				pointer + [:limitation_text],
-				pointer + [:unit],
-			]
-			expecteds = [
-				{
-					:de => "Insulinpumpen-System,\nInkl. Zubehör und Verbrauchsmaterial.",
-					:price =>	1000,
-					:type	 => :rent,
-					:date  => Date.new(2003),
-					:limitation => true,
-				},
-				{
-					:de => "Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.\nZur Insulintherapie bei:\n- Extrem labiler Diabetes.\n- Einstellung auch mit der Methode der Mehrfachinjektionen unbefriedigend.\n- Indikationen des Pumpeneinsatzes und Betreuung des Patienten durch ein qualifiziertes Zentrum oder, nach Rücksprache mit dem Vertrauensarzt, durch einen Arzt, der in der Anwendung der Insulinpumpen ausgebildet ist.",
-				},
-				{
-					:de => 'Miete/Tag',
-				},
-			]
-			@app.mock_handle(:update, 3) { |pointer, values|
-				ptr = pointers.shift
-				assert_equal(ptr.creator, pointer) 	
-				expected = expecteds.shift
-				assert_equal(expected, values)	
 		  }	
 			@plugin.update_product(id, subgroup, row, :de)
 			@app.mock_verify

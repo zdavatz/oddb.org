@@ -11,6 +11,7 @@ module Checkout
 	CURRENCY = 'EUR'
 	def checkout
 		input = user_input(checkout_keys(), checkout_mandatory)
+		puts input.inspect
 		if(error?)
 			self
 		else

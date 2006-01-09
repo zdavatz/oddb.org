@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-#  -- oddb -- 13.09.2005 -- ffricker@ywesee.com
+# Migel::Group -- oddb -- 13.09.2005 -- ffricker@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -19,6 +19,11 @@ module ODDB
 				@code = sgcd
 				@subgroups = {}
 			end
+			def checkout
+				raise "cannot delete nonempty group" unless(@groups.empty?)
+				@groups.odba_delete
+				@limitation_text.odba_delete unless(@limitation_text.nil?)
+			end
 			def create_limitation_text
 				@limitation_text = LimitationText.new
 			end
@@ -26,6 +31,19 @@ module ODDB
 				subgroup = Subgroup.new(sgcd)
 				subgroup.group = self
 				@subgroups.store(sgcd, subgroup)
+			end
+			def delete_limitation_text
+				if(lt = @limitation_text)
+					@limitation_text = nil
+					lt.odba_delete
+					lt
+				end
+			end
+			def delete_subgroup(code)
+				if(sbg = @subgroups[code])
+					@subgroups.odba_isolated_store
+					sbg
+				end
 			end
 			def migel_code
 				@code

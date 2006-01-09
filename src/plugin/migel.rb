@@ -15,23 +15,88 @@ module ODDB
 			'2' => :rent,
 			'3'	=> :both,
 		}
-		def convert_charset(txt)
-			txt = txt.gsub("\317", "oe")
-			txt = txt.gsub("\320", "-")
-			txt = txt.gsub("\324", " ")
-			txt = txt.gsub("\325", "'")
-			Iconv.iconv('latin1', 'mac', txt).first
-		end
 		def date_object(date)
 			date = date.split(".")
 			if(date.size == 3)
 				Date.new(date.at(2).to_i, date.at(1).to_i, date.at(0).to_i)
 			end
 		end
+		def prime_old_revisions
+			rev = Time.local(Time.now.year - 1)
+			@app.migel_groups.each_value { |grp|
+				grp.subgroups.each_value { |sbg|
+					sbg.products.each_value { |prd|
+						if(lt = prd.limitation_text)
+							lt.revision = rev
+							lt.odba_store
+						end
+						if(gt = prd.product_text)
+							gt.revision = rev
+							gt.odba_store
+						end
+						if(ut = prd.unit)
+							ut.revision = rev
+							ut.odba_store
+						end
+						prd.revision = rev
+						prd.odba_store
+					}
+					if(lt = sbg.limitation_text)
+						lt.revision = rev
+						lt.odba_store
+					end
+					sbg.revision = rev
+					sbg.odba_store
+				}
+				if(lt = grp.limitation_text)
+					lt.revision = rev
+					lt.odba_store
+				end
+				grp.revision = rev
+				grp.odba_store
+			}
+		end
+		def prune_old_revisions
+			@revision = Time.local(Time.now.year)
+			@app.migel_groups.each_value { |grp|
+				grp.subgroups.each_value { |sbg|
+					sbg.products.each_value { |prd|
+						if((lt = prd.limitation_text) && lt.revision < @revision)
+							@app.delete(lt.pointer)
+						end
+						if((pt = prd.product_text) && pt.revision < @revision)
+							@app.delete(pt.pointer)
+						end
+						if((ut = prd.unit) && ut.revision < @revision)
+							@app.delete(ut.pointer)
+						end
+						if(prd.revision < @revision)
+							@app.delete(prd.pointer)
+						end
+					}
+					if((lt = sbg.limitation_text) && lt.revision < @revision)
+						@app.delete(lt.pointer)
+					end
+					if(sbg.products.empty? && sbg.revision < @revision)
+						@app.delete(sbg.pointer)
+					end
+				}
+				if((lt = grp.limitation_text) && lt.revision < @revision)
+					@app.delete(lt.pointer)
+				end
+				if(grp.subgroups.empty? && grp.revision < @revision)
+					@app.delete(grp.pointer)
+				end
+			}
+		end
 		def update(path, language)
 			CSVParser.parse_with_file(path).each { |row|
-				id = row.at(8).split('.')
-				id[-1]=id[-1][0,1]
+				id = row.at(13).split('.')
+				if(id.empty?)
+					id = row.at(4).split('.')
+				else
+					id[-1].replace(id[-1][0,1])
+				end
 				group = update_group(id, row, language)
 				subgroup = update_subgroup(id, group, row, language)
 				if(id.size > 2)
@@ -44,10 +109,10 @@ module ODDB
 			pointer = Persistence::Pointer.new([:migel_group, groupcd])
 			hash = {
 				:code => groupcd,
-				language  => convert_charset(row.at(1)), 
+				language  => row.at(2), 
 			}
 			group = @app.update(pointer.creator, hash)
-			text = convert_charset(row.at(2))
+			text = row.at(3)
 			text.tr!("\v", " ")
 			text.strip!
 			unless(text.empty?)
@@ -61,10 +126,10 @@ module ODDB
 			pointer = group.pointer + [:subgroup, sgcd]
 			hash = {
 				:code => sgcd,
-				language => convert_charset(row.at(4))
+				language => row.at(6),
 			}
 			subgroup = @app.update(pointer.creator, hash)
-			text = convert_charset(row.at(5))
+			text = row.at(7)
 			unless(text.empty?)
 				lim_ptr = pointer + [:limitation_text]
 				@app.update(lim_ptr.creator, {language => text})
@@ -74,8 +139,8 @@ module ODDB
 		def update_product(id,  subgroup, row, language)
 			productcd = id[2,3].join(".")
 			pointer = subgroup.pointer + [:product, productcd]
-			input = row.at(9).tr("\t", "")
-			text = convert_charset(input)
+			input = row.at(15).gsub(/[ \t]+/, " ")
+			text = input
 			text.tr!("\v", "\n")
 			limitation = ''
 			if(idx = text.index("Limitation"))
@@ -85,9 +150,9 @@ module ODDB
 				text.strip!
 			end
 			type = SALE_TYPES[id.at(4)]
-			price = ((convert_charset(row.at(13)).to_f) * 100).round
-			date = date_object(convert_charset(row.at(14)))
-			lim_flag = convert_charset(row.at(10))
+			price = ((row.at(18).to_f) * 100).round
+			date = date_object(row.at(20))
+			lim_flag = row.at(14)
 			hash = {
 				language => text,
 				:limitation => (lim_flag == 'L'),
@@ -95,6 +160,10 @@ module ODDB
 				:type => type,
 				:date => date,
 			}
+			qty = row.at(16).to_i
+			if(qty > 0)
+				hash.store(:qty, qty)
+			end
 			product = @app.update(pointer.creator, hash) 
 			if(id[3] != "00")
 				1.upto(3) { |num|
@@ -104,7 +173,7 @@ module ODDB
 					end
 				}
 			end
-			product_text = convert_charset(row.at(7))
+			product_text = row.at(12)
 			unless(product_text.empty?)
 				pt_ptr = pointer + [:product_text]
 				@app.update(pt_ptr.creator, {language => product_text})
@@ -113,10 +182,10 @@ module ODDB
 				lim_ptr = pointer + [:limitation_text]
 				@app.update(lim_ptr.creator, {language => limitation})
 			end
-			unless(row.at(12).empty?)
+			unit = row.at(17)
+			unless(unit.empty?)
 				uni_ptr = pointer + [:unit]
-				@app.update(uni_ptr.creator,
-					{language => convert_charset(row.at(12))})
+				@app.update(uni_ptr.creator, {language => unit})
 			end
 			product
 		end

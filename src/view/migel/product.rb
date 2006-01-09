@@ -55,6 +55,7 @@ class ProductInnerComposite < HtmlGrid::Composite
 		[0,5] => :limitation_text,
 		[0,6] => :date,
 		[0,7] => :price,
+		[1,7]	=> :qty_unit, 
 		[0,8] => :feedback_label,
 		[1,8] => :feedback,
 	}
@@ -65,6 +66,7 @@ class ProductInnerComposite < HtmlGrid::Composite
 	LABELS = true
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
+	@@migel_pattern = /(\d\d)(?:\.(\d\d)(?:\.(\d\d\.\d\d\.\d))?)?/
 	def description(model, key = :descr)
 		value = HtmlGrid::Value.new(key, model, @session, self)
 		if(model)
@@ -76,7 +78,23 @@ class ProductInnerComposite < HtmlGrid::Composite
 		pointer_link(model.group)
 	end
 	def limitation_text(model)
-		description(model.limitation_text, :limitation_text)
+		obj = description(model.limitation_text, :limitation_text)
+		if(str = obj.value)
+			obj.value = str.gsub(@@migel_pattern) {
+				code = $~[1]
+				ptr = Persistence::Pointer.new([:migel_group, code])
+				if(code = $~[2])
+					ptr += [:subgroup, code]
+					if(code = $~[3])
+						ptr += [:product, code]
+					end
+				end
+				args = {:pointer => ptr}
+				'<a class="list" href="' << @lookandfeel._event_url(:resolve, args) << 
+					'">' << $~[0] << '</a>'
+			}
+		end
+		obj
 	end
 	def subgroup(model)
 		pointer_link(model.subgroup)

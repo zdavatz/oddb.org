@@ -30,30 +30,33 @@ class ResultList < HtmlGrid::List
 		[2,0]	=>	:product_description,
 		[3,0] =>  :date,
 		[4,0] =>  :price,
-		[5,0] =>	:feedback,
-		[6,0]	=>  :google_search,
-		[7,0] =>  :notify,
+		[5,0]	=>	:qty_unit,
+		[6,0] =>	:feedback,
+		[7,0]	=>  :google_search,
+		[8,0] =>  :notify,
 	}
 	CSS_MAP = {
-		[0,0,7]	=>	'list',
-		[7,0] =>	'list-r',
+		[0,0,4]	=>	'list',
+		[4,0,5] =>	'list-r',
+		[5,0]		=>	'list',
 	}
 	CSS_HEAD_MAP = {
 		[0,0]	=> 'th',
 		[1,0]	=> 'th',
 		[2,0] => 'th',
 		[3,0] => 'th',
-		[4,0] => 'th',
+		[4,0] => 'th-r',
 		[5,0] => 'th',
-		[6,0] => 'th',
+		[6,0] => 'th-r',
 		[7,0] => 'th-r',
+		[8,0] => 'th-r',
 	}
 	LOOKANDFEEL_MAP = {
 		:limitation_text => :nbsp,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	SORT_DEFAULT = nil
-	WIDTH = 7
+	WIDTH = 8
 	LEGACY_INTERFACE = false
 	def compose_list(model=@model, offset=[0,0])
 		bg_flag = false

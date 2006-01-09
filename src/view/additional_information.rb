@@ -150,6 +150,15 @@ module ODDB
 					link
 				end
 			end
+		def qty_unit(model, session=@session)
+			if(model.qty || model.unit)
+				unit = nil
+				if(u = model.unit)
+					unit = u.send(@session.language)
+				end
+				[ '&nbsp;(', model.qty, unit, ')' ].compact.join(' ')
+			end
+		end
 		end
 	end
 end

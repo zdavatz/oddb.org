@@ -175,11 +175,13 @@ module ODDB
 			status_report = "MiGeL is now up to date"
 			wrap_update(klass, subj) {
 				plug = klass.new(@app)
+				plug.prime_old_revisions
 				[:de, :fr, :it].each { |lang|
 					path = File.expand_path("../../data/csv/migel_#{lang}.csv", 
 						File.dirname(__FILE__))
 					plug.update(path, lang)
 				}
+				plug.prune_old_revisions
 				status_report
 			}
 		end

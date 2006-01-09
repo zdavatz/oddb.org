@@ -316,7 +316,7 @@ module ODDB
 			validate_string(value).to_s[0,500]
 		end
 		def search_query(value)
-			result = validate_string(value)
+			result = validate_string(value).gsub(/[*%]/, '')
 			if(result.length > 2)
 				result
 			else

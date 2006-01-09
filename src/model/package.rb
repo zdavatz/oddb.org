@@ -6,7 +6,7 @@ require 'util/persistence'
 require 'model/dose'
 require 'model/slentry'
 require 'model/ean13'
-require 'model/feedback'
+require 'model/feedback_observer'
 
 module ODDB
 	module SizeParser
@@ -307,11 +307,16 @@ Grammar OddbSize
 		end
 	end
 	class Package < PackageCommon
-		attr_reader :feedbacks
 		attr_accessor :medwin_ikscd
+		include FeedbackObserver
 		def initialize(ikscd)
 			super
 			@feedbacks = {}
+		end
+		def checkout
+			super
+			@feedbacks.values.each { |fb| fb.odba_delete }
+			@feedbacks.odba_delete
 		end
 		def generic_group=(generic_group)
 			unless(@generic_group.nil?)
@@ -321,14 +326,6 @@ Grammar OddbSize
 				generic_group.add_package(self)
 			end
 			@generic_group = generic_group
-		end
-		def feedback(id)
-			@feedbacks[id.to_i]
-		end
-		def create_feedback
-			feedback = Feedback.new
-			feedback.oid = self.feedbacks.keys.max.to_i.next
-			@feedbacks.store(feedback.oid, feedback) 
 		end
 	end
 	class IncompletePackage < PackageCommon

@@ -30,7 +30,7 @@ end
 module ODDB
 	module PersistenceMethods
 		attr_reader :oid
-		attr_accessor :pointer
+		attr_accessor :pointer, :revision
 		def init(app)
 		end
 		def ancestors(app)
@@ -66,6 +66,7 @@ module ODDB
 			defined?(val.class::DISABLE_DIFF) && val.class::DISABLE_DIFF
 		end
 		def update_values(values)
+			@revision = Time.now
 			values.each { |key, value|
 				self.send(key.to_s + '=', value)
 			}
@@ -90,6 +91,7 @@ module ODDB
 		include ODBA::Persistable
 		ODBA_CARRY_METHODS = [:pointer]
 		def initialize(*args)
+			@revision = Time.now
 			super
 			set_oid()
 		end

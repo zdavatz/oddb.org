@@ -26,10 +26,9 @@ end
 		class Global < SBSM::State
 			attr_accessor :model
 		end
-
 		class TestGlobal < Test::Unit::TestCase
 			class StubSession
-				attr_accessor :user_input
+				attr_accessor :user_input, :request_path
 				def app
 					@app ||= StubApp.new
 				end
@@ -52,6 +51,10 @@ end
 				end
 				def user
 					self
+				end
+				def request_path
+					# disable self-caching for tests
+					@rp = @rp.to_i.next
 				end
 			end
 			class StubApp

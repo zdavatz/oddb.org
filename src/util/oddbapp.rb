@@ -414,6 +414,12 @@ class OddbPrevalence
 			inv
 		end
 	end
+	def delete_migel_group(code)
+		if(grp = @migel_groups[code])
+			@migel_groups.odba_isolated_store
+			grp
+		end
+	end
 	def delete_orphaned_fachinfo(oid)
 		if(fi = @orphaned_fachinfos.delete(oid.to_i))
 			@orphaned_fachinfos.odba_isolated_store

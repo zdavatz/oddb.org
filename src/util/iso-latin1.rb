@@ -5,7 +5,7 @@ module ODDB
 	module Util
 		module IsoLatin1
 			def locale_downcase!
-				self.tr!('ДБВАЛЙКИПНОМЦУФТЬЪЫЩ', 'дбвалйкипномцуфтьъыщ')
+				self.tr!('ЕЖДБВАЛЙКИПНОМЦУФТЬЪЫЩ', 'еждбвалйкипномцуфтьъыщ')
 			end
 		end
 	end
