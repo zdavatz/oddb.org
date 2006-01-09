@@ -61,7 +61,12 @@ module ODDB
 			}
 		end
 		def send_daily_invoices(day)
-			@invoice_number = day.strftime('Patinfo-Upload-%d.%m.%Y')
+			if(day.is_a?(Range))
+				@invoice_number = sprintf('Patinfo-Upload %s-%s', 
+					day.first.strftime('%d.%m.%Y'), day.last.strftime('%d.%m.%Y'))
+			else
+				@invoice_number = day.strftime('Patinfo-Upload %d.%m.%Y')
+			end
 			items = recent_items(day)
 			payable_items = filter_paid(items)
 			groups = group_by_company(payable_items)
@@ -241,8 +246,14 @@ module ODDB
 		end
 		def invoice_subject(items, date)
 			fee_items = items.select { |item| item.type == :annual_fee }
+			datestr = if(date.is_a?(Range))
+				sprintf('%s-%s', date.first.strftime('%d.%m.%Y'), 
+					date.last.strftime('%d.%m.%Y'))
+			else
+				date.strftime("%d.%m.%Y")
+			end
 			sprintf("Rechnung %i x PI-Upload %s", 
-				fee_items.size, date.strftime("%d.%m.%Y"))
+				fee_items.size, datestr)
 		end
 		def item_name(item)
 			name = ''
@@ -280,13 +291,21 @@ module ODDB
 		def quantity_format
 			'%1.3f'
 		end
-		def recent_items(day)
-			mday = day.day
-			month = day.month
-			year = day.year
+		def recent_items(day) # also takes a range of Dates
+			fd = nil
+			ld = nil
+			if(day.is_a?(Range))
+				fd = day.first
+				ld = day.last.next
+			else
+				fd = day
+				ld = day.next
+			end
+			ft = Time.local(fd.year, fd.month, fd.mday)
+			lt = Time.local(ld.year, ld.month, ld.mday)
+			range = ft...lt
 			all_items.select { |item|
-				tim = item.time
-				tim.day == mday && tim.month == month && tim.year == year
+				range.include?(item.time)
 			}
 		end
 		def sequence_name(pointer)
