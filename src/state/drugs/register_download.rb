@@ -44,11 +44,9 @@ class RegisterDownload < Global
 		@model.carry(:currency, self.class.const_get(:CURRENCY))
 		user = @session.user
 		if(creditable? && (hosp = user.model))
-			if(addr = hosp.address(0))
-				name, last = addr.name.split(' ')
-				@model.carry(:name, last)
-				@model.carry(:name_first, name)
-			end
+			name, last = hosp.contact.split(' ')
+			@model.carry(:name, last)
+			@model.carry(:name_first, name)
 			@model.carry(:email, user.unique_email)
 		end
 	end

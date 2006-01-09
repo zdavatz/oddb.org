@@ -123,6 +123,9 @@ module ODDB
 		def company_name
 			@model ? @model.name : ''
 		end
+		def creditable?(obj)
+			!@model.nil?
+		end
 	end
 	class PowerUser < User
 		include InvoiceObserver
