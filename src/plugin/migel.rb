@@ -21,41 +21,6 @@ module ODDB
 				Date.new(date.at(2).to_i, date.at(1).to_i, date.at(0).to_i)
 			end
 		end
-		def prime_old_revisions
-			rev = Time.local(Time.now.year - 1)
-			@app.migel_groups.each_value { |grp|
-				grp.subgroups.each_value { |sbg|
-					sbg.products.each_value { |prd|
-						if(lt = prd.limitation_text)
-							lt.revision = rev
-							lt.odba_store
-						end
-						if(gt = prd.product_text)
-							gt.revision = rev
-							gt.odba_store
-						end
-						if(ut = prd.unit)
-							ut.revision = rev
-							ut.odba_store
-						end
-						prd.revision = rev
-						prd.odba_store
-					}
-					if(lt = sbg.limitation_text)
-						lt.revision = rev
-						lt.odba_store
-					end
-					sbg.revision = rev
-					sbg.odba_store
-				}
-				if(lt = grp.limitation_text)
-					lt.revision = rev
-					lt.odba_store
-				end
-				grp.revision = rev
-				grp.odba_store
-			}
-		end
 		def prune_old_revisions
 			@revision = Time.local(Time.now.year)
 			@app.migel_groups.each_value { |grp|
