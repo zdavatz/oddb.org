@@ -52,7 +52,7 @@ module CompanyUser
 		false
 	end
 	def resolve_state(pointer, type=:standard)
-		if(allowed?(pointer.resolve(@session)))
+		if(pointer.skeleton == [:company] && allowed?(pointer.resolve(@session)))
 			State::Companies::UserCompany
 		else
 			super
