@@ -51,6 +51,7 @@ Ohne Ihre Gegenmeldung erfolgt der Rechnungsversand nur per Email.
 Thank you for your patronage
 			EOS
 			pdfinvoice = PdfInvoice::Invoice.new(config)
+			pdfinvoice.date = day
 			pdfinvoice.invoice_number = invoice_number(day)
 			assemble_pdf_invoice(pdfinvoice, comp_or_hosp, items, email)
 		end
