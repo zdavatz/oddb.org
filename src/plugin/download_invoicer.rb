@@ -57,7 +57,7 @@ module ODDB
 			day.strftime('Downloads-%m.%Y')
 		end
 		def invoice_subject(items, date, hospital)
-			sprintf("Rechnung %s %i * CSV-Download %s", hospital.name,
+			sprintf("Rechnung %s %i x CSV-Download %s", hospital.name,
 							items.size, date.strftime("%m/%Y"))
 		end
 		def recent_items(date)

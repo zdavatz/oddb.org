@@ -81,12 +81,13 @@ Thank you for your patronage
 		def send_invoice(date, comp_or_hosp, items)
 			to = comp_or_hosp.invoice_email || comp_or_hosp.user.unique_email
 			invoice = create_pdf_invoice(date, comp_or_hosp, items, to)
-			invoice_name = "#{invoice.invoice_number}.pdf"
+			subject = invoice_subject(items, date, comp_or_hosp)
+			invoice_name = sprintf("%s.pdf", subject.tr(' ', '_'))
 			fpart = RMail::Message.new
 			header = fpart.header
 			header.to = to
 			header.from = MAIL_FROM
-			header.subject = invoice_subject(items, date, comp_or_hosp)
+			header.subject = subject
 			header.add('Content-Type', 'application/pdf')
 			header.add('Content-Disposition', 'attachment', nil,
 				{'filename' => invoice_name })
