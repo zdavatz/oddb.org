@@ -108,6 +108,8 @@ class UserCompany < Company
 					input.delete(:plz),
 					input.delete(:city),
 				].compact.join(' ')
+				addr.fon = input.delete(:fon).to_s.split(/\s*,\s*/)
+				addr.fax = input.delete(:fax).to_s.split(/\s*,\s*/)
 				ODBA.transaction {
 					@model = @session.app.update(@model.pointer, input)
 				}
@@ -175,7 +177,10 @@ class RootCompany < UserCompany
 			:disable_autoinvoice,
 			:ean13,
 			:fax,
+			:fon,
 			:generic_type,
+			:hosting_invoice_date,
+			:hosting_price,
 			:index_invoice_date,
 			:index_package_price,
 			:index_price,
@@ -187,7 +192,6 @@ class RootCompany < UserCompany
 			:lookandfeel_price,
 			:name,
 			:patinfo_price,
-			:phone,
 			:plz,
 			:powerlink,
 			:pref_invoice_date,

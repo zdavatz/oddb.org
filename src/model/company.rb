@@ -18,7 +18,8 @@ module ODDB
 			:generic_type, :invoice_email, :logo_filename, :name,
 			:disable_autoinvoice, :powerlink, :regulatory_email, :url, 
 			:patinfo_price, :lookandfeel_price, :lookandfeel_member_count, 
-			:lookandfeel_member_price, :index_price, :index_package_price
+			:lookandfeel_member_price, :index_price, :index_package_price,
+			:hosting_price, :hosting_invoice_date
 		attr_writer :pref_invoice_date, :lookandfeel_invoice_date, 
 			:index_invoice_date
 		alias :fullname :name
@@ -105,7 +106,7 @@ module ODDB
 						input[key] = val.intern
 					end
 				when :lookandfeel_price, :lookandfeel_member_price, 
-					:index_price, :index_package_price
+					:index_price, :index_package_price, :hosting_price
 					input[key] = (val.to_f * 100) unless(val.nil?)
 				end
 			}

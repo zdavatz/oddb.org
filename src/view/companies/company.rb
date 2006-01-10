@@ -99,7 +99,7 @@ class UserCompanyForm < View::Form
 		[0,4]			=>	:address,
 		[0,5]			=>	:plz,
 		[2,5]			=>	:city,
-		[0,6]			=>	:phone,
+		[0,6]			=>	:fon,
 		[2,6]			=>	:fax,
 		[0,7]			=>	:url,
 		[2,7]			=>	:address_email,
@@ -138,14 +138,24 @@ class UserCompanyForm < View::Form
 		address_delegate(model, :address)
 	end
 	def address_delegate(model, symbol)
-		HtmlGrid::InputText.new(symbol,
+		input = HtmlGrid::InputText.new(symbol,
 			model.address(0), @session, self)
+		if(input.value.is_a?(Array))
+			input.value = input.value.join(', ')
+		end
+		input
 	end
 	def city(model, session)
 		address_delegate(model, :city)
 	end
 	def company_name(model, session)
 		HtmlGrid::InputText.new('name', model, session, self)
+	end
+	def fax(model, session=@session)
+		address_delegate(model, :fax)
+	end
+	def fon(model, session=@session)
+		address_delegate(model, :fon)
 	end
 	def patinfo_stats(model, session)
 		link = HtmlGrid::Link.new(:patinfo_stats, model , session, self)
@@ -173,6 +183,8 @@ class AjaxCompanyForm < UserCompanyForm
 		:complementary_type				=>	HtmlGrid::Select,
 		:disable_autoinvoice			=>	HtmlGrid::InputCheckbox,
 		:generic_type							=>	HtmlGrid::Select,
+		:hosting_invoice_date			=>	HtmlGrid::InputDate,
+		:hosting_price						=>	HtmlGrid::InputCurrency,
 		:index_invoice_date				=>	HtmlGrid::InputDate,
 		:index_package_price			=>	HtmlGrid::InputCurrency,
 		:index_price							=>	HtmlGrid::InputCurrency,
@@ -210,7 +222,7 @@ class AjaxPharmaCompanyForm < AjaxCompanyForm
 		[0,8]		=>	:address,
 		[0,9]		=>	:plz,
 		[2,9]		=>	:city,
-		[0,10]		=>	:phone,
+		[0,10]		=>	:fon,
 		[2,10]		=>	:fax,
 		[0,11]		=>	:url,
 		[2,11]		=>	:address_email,
@@ -235,6 +247,29 @@ class AjaxPharmaCompanyForm < AjaxCompanyForm
 		[1,7,3,10]	=>	'standard',
 	}
 end
+class AjaxHostingCompanyForm < AjaxCompanyForm
+	COMPONENTS = {
+		[0,0]		=>	:business_area,
+		[2,0]		=>	:url,
+		[0,1]		=>	:company_name,
+		[0,2]		=>	:contact,
+		[2,2]		=>	:invoice_email,
+		[0,3]		=>	:hosting_price,
+		[2,3]		=>	:hosting_invoice_date,
+		[0,4]		=>	:address,
+		[2,4]		=>	:fon,
+		[0,5]		=>	:plz,
+		[2,5]		=>	:city,
+		[1,6]		=>	:submit,
+		[1,6,0]	=>	:delete_item,
+	}
+	CSS_MAP = {
+		[0,0,4,7]	=>	'list',
+	}
+	COMPONENT_CSS_MAP = {
+		[1,0,3,6]	=>	'standard',
+	}
+end
 class AjaxInfoCompanyForm < AjaxCompanyForm
 	COMPONENTS = {
 		[0,0]		=>	:business_area,
@@ -248,7 +283,7 @@ class AjaxInfoCompanyForm < AjaxCompanyForm
 		[0,6]		=>	:address,
 		[0,7]		=>	:plz,
 		[2,7]		=>	:city,
-		[0,8]		=>	:phone,
+		[0,8]		=>	:fon,
 		[2,8]		=>	:fax,
 		[0,9]	=>	:url,
 		[2,9]	=>	:address_email,
@@ -281,7 +316,7 @@ class AjaxInsuranceCompanyForm < AjaxCompanyForm
 		[0,7]		=>	:address,
 		[0,8]		=>	:plz,
 		[2,8]		=>	:city,
-		[0,9]		=>	:phone,
+		[0,9]		=>	:fon,
 		[2,9]		=>	:fax,
 		[0,10]	=>	:url,
 		[2,10]	=>	:address_email,
@@ -309,7 +344,7 @@ class AjaxOtherCompanyForm < AjaxCompanyForm
 		[0,3]		=>	:address,
 		[0,4]		=>	:plz,
 		[2,4]		=>	:city,
-		[0,5]		=>	:phone,
+		[0,5]		=>	:fon,
 		[2,5]		=>	:fax,
 		[0,6]		=>	:url,
 		[2,6]		=>	:address_email,
@@ -430,6 +465,8 @@ class AjaxCompanyComposite < CompanyComposite
 			AjaxInsuranceCompanyForm
 		when 'ba_info'
 			AjaxInfoCompanyForm
+		when 'ba_hosting'
+			AjaxHostingCompanyForm
 		else 
 			AjaxOtherCompanyForm
 		end

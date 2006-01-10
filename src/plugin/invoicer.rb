@@ -105,6 +105,108 @@ Thank you for your patronage
 			items
 		end
 	end
+	class CompanyIndexInvoicer < Invoicer
+		def run
+			@app.companies.each_value { |comp| 
+				invoice_company_index(comp)
+			}
+		end
+		def invoice_company_index(comp, date = Date.today)
+			idate = comp.index_invoice_date
+			price = rp2fr(comp.index_price)
+			## package_price is stored in Rappen
+			package_price = rp2fr(comp.index_package_price)
+			package_count = comp.active_package_count
+			package_sum = package_price * package_count
+			if(date == idate && price > 0)
+				time = Time.now
+				expiry_time = Time.local(date.year, date.month, date.day)
+				base_item = AbstractInvoiceItem.new
+				year = date.year
+				base_item.text = sprintf('Eintrag Firmenverzeichnis %i/%i', 
+																 year, year.next)
+				base_item.type = :index
+				base_item.unit = 'Jahr'
+				base_item.price = price.to_f
+				base_item.vat_rate = VAT_RATE
+				base_item.time = time
+				base_item.expiry_time = expiry_time
+				items = [base_item]
+				if(package_sum > 0)
+					package_item = AbstractInvoiceItem.new
+					package_item.type = :index_per_package
+					package_item.text = sprintf('Anzahl Produktelinks (%i)', package_count)
+					package_item.unit = 'Produkt'
+					package_item.quantity = package_count
+					package_item.price = package_price
+					package_item.vat_rate = VAT_RATE
+					package_item.time = time
+					package_item.expiry_time = expiry_time
+					items.push(package_item)
+				end
+				## first send the invoice 
+				send_invoice(date, comp, items) 
+				## then store it in the database
+				user = comp.user
+				if(user.nil?)
+					values = {:model, comp.pointer}	
+					ptr = Persistence::Pointer.new(:user)
+					user = @app.update(ptr.creator, values)
+				end
+				create_invoice(user, items)
+				@app.update(comp.pointer, {:index_invoice_date => (date >> 12)})
+			end
+		end
+		def invoice_number(date)
+			year = date.year
+			sprintf("Firmenverzeichnis %i/%i", year, year.next)
+		end
+		def invoice_subject(items, date, comp_or_hosp)
+			sprintf("Rechnung %s %s", comp_or_hosp.name, invoice_number(date))
+		end
+	end
+	class HostingInvoicer < Invoicer
+		def run
+			@app.companies.each_value { |comp| 
+				invoice_hosting(comp)
+			}
+		end
+		def invoice_hosting(comp, date = Date.today)
+			idate = comp.hosting_invoice_date
+			price = rp2fr(comp.hosting_price)
+			if(date == idate && price > 0)
+				time = Time.now
+				expiry_time = Time.local(date.year, date.month, date.day)
+				item = AbstractInvoiceItem.new
+				item.text = sprintf("Hosting %s", comp.url)
+				item.type = :hosting
+				item.unit = 'Jahr'
+				item.price = price.to_f
+				item.vat_rate = VAT_RATE
+				item.time = time
+				item.expiry_time = expiry_time
+				items = [item]
+				## first send the invoice 
+				send_invoice(date, comp, items) 
+				## then store it in the database
+				user = comp.user
+				if(user.nil?)
+					values = {:model, comp.pointer}	
+					ptr = Persistence::Pointer.new(:user)
+					user = @app.update(ptr.creator, values)
+				end
+				create_invoice(user, items)
+				@app.update(comp.pointer, {:hosting_invoice_date => (date >> 12)})
+			end
+		end
+		def invoice_number(date)
+			year = date.year
+			sprintf("Hosting %i/%i", year, year.next)
+		end
+		def invoice_subject(items, date, company)
+			sprintf("Rechnung %s %s", company.name, invoice_number(date))
+		end
+	end
 	class LookandfeelInvoicer < Invoicer
 		def run
 			@app.companies.each_value { |comp| 
@@ -165,66 +267,6 @@ Thank you for your patronage
 		def invoice_number(date)
 			year = date.year
 			sprintf("Lookandfeel-Integration %i/%i", year, year.next)
-		end
-		def invoice_subject(items, date, comp_or_hosp)
-			sprintf("Rechnung %s %s", comp_or_hosp.name, invoice_number(date))
-		end
-	end
-	class CompanyIndexInvoicer < Invoicer
-		def run
-			@app.companies.each_value { |comp| 
-				invoice_company_index(comp)
-			}
-		end
-		def invoice_company_index(comp, date = Date.today)
-			idate = comp.index_invoice_date
-			price = rp2fr(comp.index_price)
-			## package_price is stored in Rappen
-			package_price = rp2fr(comp.index_package_price)
-			package_count = comp.active_package_count
-			package_sum = package_price * package_count
-			if(date == idate && price > 0)
-				time = Time.now
-				expiry_time = Time.local(date.year, date.month, date.day)
-				base_item = AbstractInvoiceItem.new
-				year = date.year
-				base_item.text = sprintf('Eintrag Firmenverzeichnis %i/%i', 
-																 year, year.next)
-				base_item.type = :index
-				base_item.unit = 'Jahr'
-				base_item.price = price.to_f
-				base_item.vat_rate = VAT_RATE
-				base_item.time = time
-				base_item.expiry_time = expiry_time
-				items = [base_item]
-				if(package_sum > 0)
-					package_item = AbstractInvoiceItem.new
-					package_item.type = :index_per_package
-					package_item.text = sprintf('Anzahl Produktelinks (%i)', package_count)
-					package_item.unit = 'Produkt'
-					package_item.quantity = package_count
-					package_item.price = package_price
-					package_item.vat_rate = VAT_RATE
-					package_item.time = time
-					package_item.expiry_time = expiry_time
-					items.push(package_item)
-				end
-				## first send the invoice 
-				send_invoice(date, comp, items) 
-				## then store it in the database
-				user = comp.user
-				if(user.nil?)
-					values = {:model, comp.pointer}	
-					ptr = Persistence::Pointer.new(:user)
-					user = @app.update(ptr.creator, values)
-				end
-				create_invoice(user, items)
-				@app.update(comp.pointer, {:index_invoice_date => (date >> 12)})
-			end
-		end
-		def invoice_number(date)
-			year = date.year
-			sprintf("Firmenverzeichnis %i/%i", year, year.next)
 		end
 		def invoice_subject(items, date, comp_or_hosp)
 			sprintf("Rechnung %s %s", comp_or_hosp.name, invoice_number(date))
