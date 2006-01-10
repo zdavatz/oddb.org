@@ -56,7 +56,7 @@ Thank you for your patronage
 			assemble_pdf_invoice(pdfinvoice, comp_or_hosp, items, email)
 		end
 		def invoice_number(day)
-			day.strftime('Rechnung-%d.%m.%Y')
+			day.strftime('%d.%m.%Y')
 		end
 		def invoice_subject(items, date, comp_or_hosp)
 			sprintf("Rechnung %s (%i x) %s", comp_or_hosp.name, items.size,
@@ -162,10 +162,12 @@ Thank you for your patronage
 				@app.update(comp.pointer, {:lookandfeel_invoice_date => (date >> 12)})
 			end
 		end
-		def invoice_subject(items, date, comp_or_hosp)
+		def invoice_number(date)
 			year = date.year
-			sprintf("Rechnung %s Lookandfeel-Integration %i/%i", comp_or_hosp.name,
-							year, year.next)
+			sprintf("Lookandfeel-Integration %i/%i", year, year.next)
+		end
+		def invoice_subject(items, date, comp_or_hosp)
+			sprintf("Rechnung %s %s", comp_or_hosp.name, invoice_number(date))
 		end
 	end
 	class CompanyIndexInvoicer < Invoicer
@@ -220,10 +222,12 @@ Thank you for your patronage
 				@app.update(comp.pointer, {:index_invoice_date => (date >> 12)})
 			end
 		end
-		def invoice_subject(items, date, company)
+		def invoice_number(date)
 			year = date.year
-			sprintf("Rechnung %s Firmenverzeichnis %i/%i", company.name, year,
-							year.next)
+			sprintf("Firmenverzeichnis %i/%i", year, year.next)
+		end
+		def invoice_subject(items, date, comp_or_hosp)
+			sprintf("Rechnung %s %s", comp_or_hosp.name, invoice_number(date))
 		end
 	end
 end
