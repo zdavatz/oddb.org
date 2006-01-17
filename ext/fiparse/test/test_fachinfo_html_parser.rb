@@ -534,7 +534,7 @@ class TestFachinfoHtmlWriter9927 < Test::Unit::TestCase
 			assert_equal(4, section1.paragraphs.size, section1)
 			paragraph1 = section1.paragraphs.first
 			assert_instance_of(ODDB::Text::ImageLink, paragraph1)
-			assert_equal('/images/fachinfo/de/00001.gif', paragraph1.src)
+			assert_equal('/images/fachinfo/de/00001.gif', paragraph1.out)
 			assert_equal(true, File.exist?(expected), "File: #{expected} not found")
 		ensure
 			if(File.exist?(expected))

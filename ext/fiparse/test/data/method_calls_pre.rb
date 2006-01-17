@@ -48340,4 +48340,4 @@ EOS
 @writer.send_paragraph()
 @writer.send_flowing_data("Arzneimittel-Kompendium der Schweiz (C) Copyright 2004 by Documed AG, Basel.                                      Seite 16 von 16")
 @writer.send_page()
-@writer.src()
+@writer.out()

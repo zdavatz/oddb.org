@@ -16,12 +16,12 @@ require 'odba'
 module ODDB
 	module OdbaExporter
 		def OdbaExporter.clear
-=begin
+begin
 			Thread.new { 
 				sleep 1
 				DRb.thread.exit
 			}
-=end
+end
 			nil
 		end
 		def OdbaExporter.compress(dir, name)

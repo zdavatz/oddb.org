@@ -17,13 +17,13 @@ module ODDB
 			end
 			def detect_tableheader?
 				## ignore empty lines at the start of the page
-				if(@tableheader_lineno == 0 && @src.strip.empty?)
+				if(@tableheader_lineno == 0 && @out.strip.empty?)
 					return true
 				end
 				lines = @paragraph.to_s.split("\n")
 				if(@tableheader_lineno \
 					&& (line = lines.at(@tableheader_lineno)) \
-					&& line.strip == @src.strip)
+					&& line.strip == @out.strip)
 					@tableheader_lineno += 1
 					true
 				else
@@ -45,7 +45,7 @@ module ODDB
 			end
 			def add_text
 				if(@font.bold? && @font.italic?)
-					heading = self.src.strip
+					heading = self.out.strip
 					unless(heading.empty?)
 						@chapter = next_chapter
 						@chapter.heading = heading
@@ -53,7 +53,7 @@ module ODDB
 						@section = @chapter.next_section
 					end
 				elsif(@font.bold?)
-					@name = self.src.strip
+					@name = self.out.strip
 				elsif(@font.italic?)
 					## special case: italic after company-name is the 
 					## galenic_form-chapter of the pre AMZV-form of fi
@@ -63,21 +63,21 @@ module ODDB
 					end
 					if(@fresh_paragraph || @preformatted)
 						@section = @chapter.next_section
-						@section.subheading << self.src
+						@section.subheading << self.out
 						@wrote_section_heading = true
 					else
 						@paragraph.set_format(:italic)
-						@paragraph << self.src
+						@paragraph << self.out
 						@paragraph.reduce_format(:italic)
 					end
 				else
-					str_check = self.src.strip
+					str_check = self.out.strip
 					font_name = @font.basefont_name
 					courier = !/courier/i.match(font_name).nil?
 					symbol = !/symbol/i.match(font_name).nil?
-					skip_paragraph = /documed|copyright/i.match(self.src)
+					skip_paragraph = /documed|copyright/i.match(self.out)
 					if(!@chapter.nil? && !str_check.empty? && !skip_paragraph)
-						str = self.src
+						str = self.out
 						@wrote_section_heading = false
 						#for the first paragraph after a preformated paragraph
 						if(!(courier || symbol) && @preformatted)
@@ -111,18 +111,18 @@ module ODDB
 						@fresh_paragraph = false
 					end
 				end
-				@src = ''
+				@out = ''
 			end
 			def send_flowing_data(data)
 				@chars_since_last_linebreak += data.size
-				self.src << data unless(/[kc]ompendium/i.match(data))
+				self.out << data unless(/[kc]ompendium/i.match(data))
 			end
 			def send_page
 				## in newer fi-pdfs there is no change of font for 
 				## pagenumbers. Here in send_page we can recognize 
 				## and delete the page-numbering
-				if(pos = @src.index(/\w+\s+\d+$/))
-					@src[pos..-1] = ''
+				if(pos = @out.index(/\w+\s+\d+$/))
+					@out[pos..-1] = ''
 				end
 				self.add_text
 				if(@preformatted)
@@ -132,30 +132,30 @@ module ODDB
 			def send_line_break
 				## After ther first period in 'Valid until' 
 				## we can go on to the next chapter
-				if(@chapter == @date && /\.\s*$/.match(self.src))
+				if(@chapter == @date && /\.\s*$/.match(self.out))
 					self.add_text
 					@chapter = next_chapter
 					@section = @chapter.next_section
 					@paragraph = @section.next_paragraph
-					@src = ''
+					@out = ''
 					return
 				end
 				if(@preformatted)
 					if(detect_tableheader?)
-						@src = ''
+						@out = ''
 					else
 						self.add_text
 						@paragraph << "\n"
 					end
 				elsif(!@preformatted && @chars_since_last_linebreak < 80)
 					self.send_paragraph
-				elsif(!/[\s-]$/.match(self.src))
-					self.src << " "
+				elsif(!/[\s-]$/.match(self.out))
+					self.out << " "
 				end
 				@chars_since_last_linebreak = 0
 			end
 			def send_paragraph
-				if(@wrote_section_heading && self.src.strip.empty?)
+				if(@wrote_section_heading && self.out.strip.empty?)
 					@section.subheading << "\n"
 				end
 				self.add_text
