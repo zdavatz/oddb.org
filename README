@@ -20,8 +20,8 @@ Install
 -------
 Just copy everything into a directory of your choice, Configure your favorite Webserver to serve the $ODDBDIR/doc directory and to rewrite urls as follows:
 http://your.tld/(\w{2})/(\w+)/(\w+)/(\w+) => http://your.tld/index.rbx?language=\1&flavor=\2&\3=\4
-If you're interested in having the data that we provide online we can send you our MADELEINE snapshot.
-Please contact us: oddb.org@ywesee.com
+If you're interested in having the data that we provide online we can send you our ODBA snapshot.
+Please contact us: zdavatz@ywesee.com
 
 Usage
 -----
