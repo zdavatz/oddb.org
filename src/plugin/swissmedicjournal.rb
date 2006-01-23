@@ -200,7 +200,8 @@ module ODDB
 			end
 		end
 		def prune_packages(smj_seq, sequence)
-			ikscds = smj_seq.packages.collect { |package| package.ikscd }
+			ikscds = smj_seq.packages.collect { |package| 
+				sprintf('%03i', package.ikscd) }
 			sequence.packages.dup.each { |ikscd, package| 
 				unless ikscds.include?(ikscd)
 					@pruned_packages += 1
@@ -210,7 +211,7 @@ module ODDB
 			}
 		end
 		def prune_sequences(smj_reg, registration)
-			seqnrs = smj_reg.products.keys
+			seqnrs = smj_reg.products.keys.collect { |seqnr| sprintf('%02i', seqnr) }
 			registration.sequences.dup.each { |seqnr, sequence|
 				if(seqnrs.include?(seqnr))
 					smj_seq = smj_reg.products[seqnr]
@@ -306,7 +307,7 @@ module ODDB
 		end
 		def update_packages(smj_packages, sequence)
 			smj_packages.each { |package|
-				pointer = sequence.pointer + [:package, package.ikscd]
+				pointer = sequence.pointer + [:package, sprintf('%03i', package.ikscd)]
 				hash = {
 					:ikscat	=>	package.ikscat,
 					:size		=>	package.package_size,
@@ -360,7 +361,7 @@ module ODDB
 			registration
 		end
 		def update_sequence(smj_seq, parent_pointer)
-			pointer = parent_pointer + [:sequence, smj_seq.seqnr]
+			pointer = parent_pointer + [:sequence, sprintf('%02i', smj_seq.seqnr)]
 			hash = {}
 			name_base = [
 				smj_seq.name_base, 
