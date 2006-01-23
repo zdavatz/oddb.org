@@ -115,8 +115,7 @@ module ODDB
 			update_vaccines
 			if(update_bsv)
 				update_limitation_text
-			#elsif(@smj_updated)
-				#reconsider_bsv
+				export_ouwerkerk
 			end
 			if(@smj_updated)
 				update_medwin_companies
