@@ -101,9 +101,14 @@ class TestDose < Test::Unit::TestCase
 		dose2 = ODDB::Dose.new(1, 'g')
 		assert(dose2 == dose1, "dose2 was not == dose1")
 	end
-	def test_comparable6
+	def test_comparable7
 		dose1 = ODDB::Dose.new('400-600', 'mg')
 		dose2 = ODDB::Dose.new('0.4-0.6', 'g')
+		assert(dose2 == dose1, "dose2 was not == dose1")
+	end
+	def test_comparable8
+		dose1 = ODDB::Dose.new('1000', 'µg')
+		dose2 = ODDB::Dose.new('1', 'mg')
 		assert(dose2 == dose1, "dose2 was not == dose1")
 	end
 	def test_complex_unit

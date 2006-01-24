@@ -62,7 +62,7 @@ class Quanty
     end
 
     def decomp(a)
-      if /^([A-Za-z_]+([A-Za-z_0-9-]+[A-Za-z_])?)$|^[$%'"]'?$/o =~ a
+      if /^([µA-Za-z_]+([A-Za-z_0-9-]+[A-Za-z_])?)$|^[$%'"]'?$/o =~ a
       #if /^[A-Za-z_0-9$%-]+$/o =~ a
 	unit = List[a] || find_prefix(a,0) ||
 	  if a.size>3 && /chs$/o !~ a && /(.*[a-rt-y])s$/o =~ a
@@ -176,7 +176,7 @@ class Quanty
 	#s = open("units.succ","w")
 	#f = open("units.fail","w")
 	open("units.dat","r").readlines.each do |str|
-	  if /^([A-Za-z_0-9%$"'-]+)\s+([^#]+)/ =~ str
+	  if /^([µA-Za-z_0-9%$"'-]+)\s+([^#]+)/ =~ str
 	    name,repr = $1,$2.strip
 	    # conversion due to the different rule from GNU units:
 	    #   A / B C => A / (B C)
