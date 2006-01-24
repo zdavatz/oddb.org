@@ -315,8 +315,10 @@ Grammar OddbSize
 		end
 		def checkout
 			super
-			@feedbacks.values.each { |fb| fb.odba_delete }
-			@feedbacks.odba_delete
+			if(@feedbacks)
+				@feedbacks.values.each { |fb| fb.odba_delete }
+				@feedbacks.odba_delete
+			end
 		end
 		def generic_group=(generic_group)
 			unless(@generic_group.nil?)
