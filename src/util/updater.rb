@@ -240,23 +240,25 @@ module ODDB
 			log.notify(subj)
 		end
 		def wrap_update(klass, subj, &block)
-			begin
-				ODBA.transaction {
+			ODBA.transaction {
+				begin
 					block.call
-				}
-			rescue Exception => e #RuntimeError, StandardError => e
-				log = Log.new(Date.today)
-				log.report = [
-					"Plugin: #{klass}",
-					"Error: #{e.class}",
-					"Message: #{e.message}",
-					"Backtrace:",
-					e.backtrace.join("\n"),
-				].join("\n")
-				log.recipients = RECIPIENTS.dup
-				log.notify("Error: #{subj}")
-				nil
-			end
+				rescue Exception => e #RuntimeError, StandardError => e
+					log = Log.new(Date.today)
+					log.report = [
+						"Plugin: #{klass}",
+						"Error: #{e.class}",
+						"Message: #{e.message}",
+						"Backtrace:",
+						e.backtrace.join("\n"),
+					].join("\n")
+					log.recipients = RECIPIENTS.dup
+					log.notify("Error: #{subj}")
+					raise
+				end
+			}
+		rescue Exception
+			nil
 		end
 		def update_notify_simple(klass, subj, update_method=:update)
 			wrap_update(klass, subj) {
