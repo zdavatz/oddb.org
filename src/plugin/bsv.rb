@@ -430,6 +430,12 @@ module ODDB
 			sprintf("%-30s%5i", name, size)
 		end
 		def load_database(path)
+			known_pcodes = {}
+			@app.each_package { |pac|
+				if(pcode = pac.pharmacode)
+					known_pcodes.store(pcode, pac.ikskey)
+				end
+			}
 			workbook = Spreadsheet::ParseExcel.parse(path)
 			worksheet = workbook.worksheet(0)
 			worksheet.each(1) { |row|
@@ -452,10 +458,8 @@ module ODDB
 				unless(pcode == '0')
 					package.pharmacode = pcode
 					@ptable.store(pcode, package)
-					unless(medwin_iks = load_ikskey(pcode))
-						@medwin_out_of_sale.push(package)
-					end
-					sleep(MEDDATA_SLEEP)
+					medwin_iks = known_pcodes[pcode] || load_ikskey(pcode)
+					#sleep(MEDDATA_SLEEP)
 				end
 				package.ikskey = (medwin_iks || sl_iks)
 				if(!(medwin_iks.nil? || medwin_iks == sl_iks))
@@ -531,7 +535,7 @@ BSV-XLS Swissmedic-Nr: %5s %3s
 				report_format(pac).join("\n")
 			}.sort
 			[
-				format_header("Ausser Handel (laut Medwin):", @medwin_out_of_sale.size),
+				format_header("Ausser Handel (laut Refdata):", @medwin_out_of_sale.size),
 				medwin_out_of_sale.join("\n\n"),
 			].join("\n")
 		end
@@ -580,6 +584,9 @@ BSV-XLS Swissmedic-Nr: %5s %3s
 				@successful_updates.push(pac)
 			else
 				@unknown_packages.push(pac)
+			end
+			if(pac.pharmacode.nil? || (pack && pack.out_of_trade))
+				@medwin_out_of_sale.push(pac)
 			end
 			pack
 		end

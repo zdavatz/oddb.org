@@ -981,6 +981,7 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 		def test_load_database
 			db_file = File.expand_path('../data/xls/BSV_per_2005.04.01.xls',
 				File.dirname(__FILE__))
+			@app.packages = []
 			@plugin.load_database(db_file)
 			pack1 = @plugin.ptable['2591407']
 			assert_equal('55725040', pack1.ikskey)
