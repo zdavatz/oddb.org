@@ -584,6 +584,339 @@ a progressé pendant ou après le traitement standard.
 			assert_equal(24.81, pack.price_exfactory)
 		end
 	end
+	class TestBsvMutationParser_2006 < Test::Unit::TestCase
+		def setup
+			src = File.read(File.expand_path('../data/txt/PR060101.txt',
+				File.dirname(__FILE__)))
+			@parser = BsvPlugin2::MutationParser.new(src)
+		end
+		def test_identify_parts
+			additions = <<-EOS
+Kapitel:01.01.30
+
+		Tradonal One 			VIATRIS GMBH
+		(Tramadoli HCl)
+		18239		20 Compr. retard 150 mg Fr. 28.95 {14.15}		[55175026]		01.01.2006, A
+		18239		50 Compr. retard 150 mg Fr. 52.40 {30.60}		[55175028]		01.01.2006, A
+ 	
+		Tradonal One 			VIATRIS GMBH
+		(Tramadoli HCl)
+		18239		20 Compr. retard 200 mg Fr. 36.55 {17.14}		[55175032]		01.01.2006, A
+		18239		50 Compr. retard 200 mg Fr. 62.30 {39.01}		[55175034]		01.01.2006, A
+ 
+		Tradonal One 			VIATRIS GMBH
+		(Tramadoli HCl)
+		18239		50 Compr. retard 300 mg Fr. 75.50 {50.18}		[55175040]		01.01.2006, A
+
+		Tradonal One			VIATRIS GMBH
+		(Tramadoli HCl)
+		18239		50 Compr. retard 400 mg Fr. 91.75 {63.98}		[55175044]		01.01.2006, A
+ 
+Kapitel:03.04.30
+
+		Foradil HFA 			NOVARTIS PHARMA SCHWEIZ AG
+		(Formoteroli fumaras dihydric.)
+		18225		100 Inhalationen 12 mcg pro dosi Fr. 93.15 {65.18}	[57298001]		01.01.2006, B
+
+Kapitel:07.10.10
+
+		Voltfast			NOVARTIS PHARMA SCHWEIZ AG
+		(Diclofenac. kalic.)
+		18260		9 Sach. 50 mg Fr. 8.95 {4.14}				[57310001]		01.01.2006, B
+		18260		30 Sach. 50 mg Fr. 26.10 {11.73}			[57310003]		01.01.2006, B
+ 
+Kapitel:07.10.60				GEBRO PHARMA AG
+		(Methotrexat.)
+		18298		1 Amp. ad iniect. parat. 7,5 mg Fr. 46.40 {25.50}	[57272001]		01.01.2006, A
+ 
+		Metoject 			GEBRO PHARMA AG
+		(Methotrexat.)
+		18298		1 Amp. ad iniect. parat. 10 mg Fr. 47.95 {26.80}	[57272009]		01.01.2006, A
+ 
+		Metoject 			GEBRO PHARMA AG
+		(Methotrexat.)
+		18298		1 Amp. ad iniect. parat. 15 mg Fr. 52.75 {30.90}	[57272017]		01.01.2006, A
+ 
+		Metoject 			GEBRO PHARMA AG
+		(Methotrexat.)
+		18298		1 Amp. ad iniect. parat. 20 mg Fr. 57.10 {34.60}	[57272025]		01.01.2006, A
+ 
+		Metoject 			GEBRO PHARMA AG
+		(Methotrexat.)
+		18298		1 Amp. ad iniect. parat. 25 mg Fr. 62.30 {39.00}	[57272033]		01.01.2006, A
+ 
+Kapitel:07.12.00
+
+		Inegy 				MSD ESSEX GMBH
+		(Ezetimib., Simvastatin.)
+		18299		28 Compr. (10+10 mg) Fr. 84.60 {57.91}			[56953002]		01.01.2006, B
+		18299		98 Compr. (10+10 mg) Fr. 254.40 {202.12}		[56953010]		01.01.2006, B
+ 
+		Inegy 				MSD ESSEX GMBH
+		(Ezetimib., Simvastatin.)
+		18299		28 Compr. (10+20 mg Fr. 93.20 {65.24}			[56953004]		01.01.2006, B
+		18299		98 Compr. (10+20 mg) Fr. 284.60 {227.78}		[56953012]		01.01.2006, B
+ 
+		Inegy 				MSD ESSEX GMBH
+		(Ezetimib., Simvastatin.)
+		18299		28 Compr. (10+40 mg) Fr. 105.90 {76.02}			[56953006]		01.01.2006, B
+		18299		98 Compr. (10+40 mg) Fr. 325.35 {262.39}		[56953014]		01.01.2006, B
+ 
+G 		Pravastatin Helvepharm 		HELVEPHARM AG
+		(Pravastatin. natric.)
+		18344		30 Compr. 20 mg Fr. 27.00 {12.50}			[57535006]		01.01.2006, B
+		18344		100 Compr. 20 mg Fr. 78.90 {53.10}			[57535008]		01.01.2006, B
+ 
+G 		Pravastatin Helvepharm 		HELVEPHARM AG
+		(Pravastatin. natric.)
+		18344		30 Compr. 40 mg Fr. 36.30 {16.90}			[57535010]		01.01.2006, B
+		18344		100 Compr. 40 mg Fr. 99.75 {70.80}			[57535012]		01.01.2006, B
+ 	
+G 		Pravastatin Streuli 		G. STREULI & CO. AG
+		(Pravastatin. natric.)
+		18345		30 Compr. 20 mg Fr. 28.35 {13.66}			[57534005]		01.01.2006, B
+		18345		100 Compr. 20 mg Fr. 71.20 {46.55}			[57534007]		01.01.2006, B
+ 	
+G 		Pravastatin Streuli 		G. STREULI & CO. AG
+		(Pravastatin. natric.)
+		18345		30 Compr. 40 mg Fr. 36.85 {17.40}			[57534009]		01.01.2006, B
+		18345		100 Compr. 40 mg Fr. 93.00 {65.08}			[57534011]		01.01.2006, B
+ 
+Kapitel:08.01.60
+
+G 		Clarithromycin Sandoz 		SANDOZ PHARMACEUTICALS AG
+		(Clarithromycin.)
+		18355		14 Filmtabs 250 mg Fr. 36.35 {16.97}			[57129002]		01.01.2006, A
+		18355		20 Filmtabs 250 mg Fr. 44.15 {23.58}			[57129004]		01.01.2006, A
+ 
+G 		Clarithromycin Sandoz 		SANDOZ PHARMACEUTICALS AG
+		(Clarithromycin.)
+		18355		14 Filmtabs 500 mg Fr. 49.15 {27.83}			[57129008]		01.01.2006, A
+		18355		20 Filmtabs 500 mg Fr. 61.90 {38.67}			[57129010]		01.01.2006, A
+ 
+G 		Clarithromycin Sandoz 		SANDOZ PHARMACEUTICALS AG
+		(Clarithromycin.)
+		18356		100 ml Susp. 125 mg/5 ml Fr. 29.55 {14.65}		[57388001]		01.01.2006, A
+ 
+G 		Clarithromycin Sandoz 		SANDOZ PHARMACEUTICALS AG
+		(Clarithromycin.)
+		18356		100 ml Susp. 250 mg/5 ml Fr. 45.40 {24.63}		[57388003]		01.01.2006, A
+			EOS
+			deletions = <<-EOS
+Kapitel:02.04.10
+
+		Nitroglycerin Wander 		NOVARTIS PHARMA SCHWEIZ AG
+		(Glyceroli trinitras)
+		  124		30 Caps. manducabil. 0,8 mg Fr. 6.60 {2.74}		[18857014]		1955, B
+ 
+Kapitel:02.07.20
+
+G 		Co-Atenolol-Cophar 		COPHAR SA
+		(Atenolol., Chlortalidon.)
+		16922		28 Filmtabs (50+12,5 mg) Fr. 21.05 {9.20}		[54429037]		1998, B
+		16922		98 Filmtabs (50+12,5 mg) Fr. 51.35 {29.71}		[54429045]		1998, B
+ 
+G 		Co-Atenolol-Cophar 		COPHAR SA
+		(Atenolol., Chlortalidon.)
+		16922		14 Filmtabs (100+25 mg) Fr. 18.30 {8.57}		[54429010]		1998, B
+		16922		98 Filmtabs (100+25 mg) Fr. 81.95 {55.68}		[54429029]		1998, B
+ 
+Kapitel:02.09.10
+
+		Titanoréine 			F. UHLMANN-EYRAUD SA
+		(Carrageen 40 mg, Zn oxid. 20 mg, Ti dioxid. 20 mg, Lidocain. 20 mg/g)
+		16054		20 g Ungt. Fr. 5.90 { }					[45378012]		1993, D
+ 
+		Titanoréine 			F. UHLMANN-EYRAUD SA
+		(Carrageen 40 mg, Zn oxid. 20 mg, Ti dioxid. 20 mg, Lidocain. 20 mg/g)
+		16055		12 Supp. (300+400+200+0 mg) Fr. 9.10 { }		[45379019]		1993, D
+ 
+Kapitel:03.02.00
+
+G 		Ecomucyl 			ECOSOL AG
+		(Acetylcystein.)
+		17627		150 ml Sirup. (100 mg/5 ml) Fr. 10.00 {4.52}		[53811019]		01.07.2001, D
+ 
+Kapitel:03.04.10
+
+		Escophyllin 			G. STREULI & CO. AG
+		(Theophyllin.)
+		13452		5 Amp. i.v. 10 ml 24 mg/ml Fr. 8.05 {3.35}		[32556019]		1980, B
+ 
+Kapitel:03.04.30
+
+		Foradil 			NOVARTIS PHARMA SCHWEIZ AG		
+		(Formoteroli fumaras dihydric.)
+		16207		100 Dosen Dosieraerosol (12 mcg pro dosi) Fr. 93.15 {65.18}		[49852010]		1991, B
+		16207		200 Dosen Dosieraerosol (12 mcg pro dosi) Fr. 157.30 {119.67}		[49852029]		1991, B
+ 
+Kapitel:04.01.00
+
+		Refluxin 			SPIRIG PHARMA AG
+		(Acid. alginic., Na hydrogenocarbonas, Al hydroxyd. - Mg carbonas)
+		12674		30 Compr. (350+105+100 mg) Fr. 9.10 { }			[39847019]		1977, D
+		12674		150 Compr. (350+105+100 mg) Fr. 35.55 { }		[39847027]		1977, D
+
+Kapitel:07.06.10
+
+		Lantus				AVENTIS PHARMA AG
+		(Insulin. glargin.)
+		18295		5 Kart. 3 ml 100 I.E./ml (OptiClik-System) Fr. 108.05 {77.86}	[57385001]														01.12.2005, B
+ 
+Kapitel:07.10.40
+
+		Thermocutan 			G. STREULI & CO. AG
+		(Nonivamid. 0,4%, Ethylis nicotinas 1,5%, Benzylis nicotinas 1,5%, Aminophenazoni salicylas 5%)
+		 9147		20 g Ungt. Fr. 3.35 { }					[27700055]		1962, D
+ 
+Kapitel:07.13.10
+
+		Histacyl compos. 		G. STREULI & CO. AG
+		(Diphenhydramini HCl, Mepyramin. maleas)
+		13459		100 ml Sirup. (1,25+1,25 mg/ml) Fr. 5.35 { }		[34289018]		1980, C
+ 
+		Histacyletten forte 		G. STREULI & CO. AG
+		(Coffein., Diphenhydramini HCl, Mepyramini maleas)
+		 5514		20 Obd. (40+25+25 mg) Fr. 3.60 { }			[18675072]		1955, C
+ 
+Kapitel:07.16.10
+
+G 		Doxorubicin Ebewe 		NYCOMED AG
+		(Doxorubicini HCl)
+		17731		1 Amp. 10  mg Fr. 62.20 {38.91}				[54828012]		01.04.2002, A
+ 
+G 		Doxorubicin Ebewe 		NYCOMED AG
+		(Doxorubicini HCl)
+		17731		1 Amp. 50 mg Fr. 227.20 {179.00}			[54828020]		01.04.2002, A
+ 
+Kapitel:08.01.23
+
+G 		Flemoxin 			DOETSCH GRETHER AG
+		(Amoxicillin.)
+		15545		16 Compr. 375 mg Fr. 17.60 {7.99}			[50007154]		1995, A
+ 
+G 		Flemoxin 			DOETSCH GRETHER AG
+		(Amoxicillin.)
+		15545		20 Compr. 750 mg Fr. 37.20 {17.67}			[50007162]		1995, A
+ 
+Kapitel:10.02.00
+
+		Aknefug BP 			SPIRIG PHARMA AG
+		(Benzoylis peroxid.)
+		14539		55 ml Lotio 10% Fr. 10.25 { }				[45539040]		1986, C
+ 
+Kapitel:10.05.10
+
+		Hexacorton 			SPIRIG PHARMA AG
+		(Prednisoloni acetas)
+		10843		30 g Crème 0,5% Fr. 13.50 {6.24}			[32329039]		1964, B
+ 
+		Locoid 				ASTELLAS PHARMA SA
+		(Hydrocortison. butyric.)
+		12437		30 g Ungt. 0,1% Fr. 21.10 {9.24}			[36483024]		1976, B
+ 
+Kapitel:11.06.20
+
+		Alomide 			ALCON PHARMACEUTICALS LTD
+		(Lodoxamid.)
+		16718		5 ml Guttae 0,1% Fr. 10.70 {5.80}			[53308015]		1997, C
+ 
+Kapitel:12.03.30
+
+		Anginesin neue Formulierung 	DR. GROSSMANN AG
+		(Al acetatis tartratis Sol., Salviae Extract. Liquid.)
+		11928		100 ml Liquid. (100+40 mg/ml) Fr. 7.20 { }		[15774010]		1975, D
+ 
+		Perubare 			F. UHLMANN-EYRAUD SA
+		(Balsam. peruvian. 37 mg, Lavandulae Aetheroleum 9 mg, Rosmarini Aetheroleum 24 mg, Thymi Aetheroleum 17 mg, Thymol. 1 mg)
+		11713		30 Compr. efferv. Fr. 6.80 { }				[21285013]		1973, D
+			EOS
+			reductions = <<-EOS
+Miflonide		Novartis Pharma Schweiz AG	03.04.40
+	60 Caps. Pulv. 200 mcg + 1 Aerolizer	2310420	17561		26.15		11.76	
+	60 Caps. Pulv. 400 mcg + 1 Aerolizer	2331439	17561		44.10		23.52	
+ 
+Sertralin Helvepharm	HELVEPHARM AG			01.06.00
+	100 Filmtabs 50 mg			3037618	18275		123.85		91.25	
+			EOS
+			augmentations = <<-EOS
+			EOS
+			limitations = <<-EOS
+			EOS
+			@parser.identify_parts
+=begin
+			expected.split('').each_with_index { |char, idx|
+				assert_equal(char, result[idx,1], expected[0..idx])
+			}
+=end
+			assert_equal(additions.strip, @parser.src_additions)
+			assert_equal(deletions.strip, @parser.src_deletions)
+			assert_equal(reductions.strip, @parser.src_reductions)
+			assert_equal(augmentations.strip, @parser.src_augmentations)
+			assert_equal(limitations.strip, @parser.src_limitations)
+		end
+		def test_parse_line__1
+			line = <<-EOS	
+		18239		20 Compr. retard 150 mg Fr. 28.95 {14.15}		[55175026]		01.01.2006, A
+			EOS
+			package = @parser.parse_line(line)
+			assert_equal('18239', package.sl_dossier)
+			assert_equal('55175', package.iksnr)
+			assert_equal('026', package.ikscd)
+			assert_equal(Date.new(2006, 1), package.introduction_date)
+			assert_equal(28.95, package.price_public)
+			assert_equal(14.15, package.price_exfactory)
+		end
+		def test_parse_line__2
+			line = <<-EOS	
+		16922		14 Filmtabs (100+25 mg) Fr. 18.30 {8.57}		[54429010]		1998, B
+			EOS
+			package = @parser.parse_line(line)
+			assert_equal('16922', package.sl_dossier)
+			assert_equal('54429', package.iksnr)
+			assert_equal('010', package.ikscd)
+			assert_equal(Date.new(1998), package.introduction_date)
+			assert_equal(18.30, package.price_public)
+			assert_equal(8.57, package.price_exfactory)
+		end
+		def test_parse_line__2a
+			line = <<-EOS
+		17627		150 ml Sirup. (100 mg/5 ml) Fr. 10.00 {4.52}		[53811019]		01.07.2001, D
+			EOS
+			package = @parser.parse_line(line)
+			assert_equal('17627', package.sl_dossier)
+			assert_equal('53811', package.iksnr)
+			assert_equal('019', package.ikscd)
+			assert_equal(Date.new(2001,7), package.introduction_date)
+			assert_equal(10.00, package.price_public)
+			assert_equal(4.52, package.price_exfactory)
+		end
+		def test_parse_line__3
+			line = <<-EOS
+	60 Caps. Pulv. 200 mcg + 1 Aerolizer	2310420	17561		26.15		11.76	
+			EOS
+			pack = @parser.parse_line(line)
+			assert_equal('17561', pack.sl_dossier)
+			assert_equal('2310420', pack.pharmacode)
+			assert_equal(26.15, pack.price_public)
+			assert_equal(11.76, pack.price_exfactory)
+		end
+		def test_counts
+			additions = 0
+			deletions = 0
+			reductions = 0
+			augmentations = 0
+			@parser.identify_parts
+			@parser.each_addition { additions += 1 }
+			assert_equal(34, additions)
+			@parser.each_deletion { deletions += 1 }
+			assert_equal(27, deletions)
+			@parser.each_reduction { reductions += 1 }
+			assert_equal(3, reductions)
+			@parser.each_augmentation { augmentations += 1 }
+			assert_equal(0, augmentations)
+		end
+	end
 	class TestBsvPlugin2 < Test::Unit::TestCase
 		class StubApp
 			attr_accessor :registrations, :updates, :packages, :deletions

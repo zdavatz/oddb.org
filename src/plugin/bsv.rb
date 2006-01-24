@@ -105,6 +105,7 @@ module ODDB
 				}
 			end
 			def identify_parts
+				number = '[IVX]+[a-z]?\.'
 				target = ''
 				skip = 0
 				@src.each_line { |line|
@@ -112,26 +113,26 @@ module ODDB
 						skip -= 1
 					else
 						case line
-						when /^[IVX]+\. Neuzugang/
+						when /^#{number} Neuzugang/
 							target = @src_additions = ''
-						when /^[IVX]+\. Neu gestrichen/
+						when /^#{number} Neu gestrichen/
 							target = @src_deletions = ''
-						when /^[IVX]+\. Preissenkung/
+						when /^#{number} Preissenkung/
 							target = @src_reductions = ''
 							skip = 5
-						when /^[IVX]+\. Preismutation/
+						when /^#{number} Preismutation/
 							target = @src_augmentations = ''
 							skip = 1
-						when /^[IVX]+\. Preiskorrektur/
+						when /^#{number} Preiskorrektur/
 							target = @src_corrections = ''
-						when /^[IVX]+\. Aenderung der Limitation/, 
-							/^[IVX]+\. Limitations.nderung/
+						when /^#{number} Aenderung der Limitation/, 
+							/^#{number} Limitations.nderung/
 							target = @src_limitations = ''
-						when /^[IVX]+\. Streichung der Limitation/
+						when /^#{number} Streichung der Limitation/
 							target = @src_limitation_deletions = ''
-						when /^[IVX]+\. Bisherige/
+						when /^#{number} Bisherige/
 							target = @src_previous = ''
-						when /^Therap\.Gruppe/, /^Präparate/
+						when /^Therap\.Gruppe/, /^Präparate/, /^#{number} Namens.nderung/
 							## ignore this bit
 							target = ''
 						else
@@ -467,7 +468,6 @@ module ODDB
 				unless(ikskey.to_i == 0)
 					@ikstable.store(ikskey, package)
 				end
-				#break if(@medwin_sl_diffs.size > 0)
 			}
 		end
 		def load_ikskey(pcode)

@@ -1,0 +1,533 @@
+SPEZIALITATENLISTE - LISTE DES SPECIALITES
+_____________________________________________________
+Gültig ab 01.01.2006 / Valable à partir du 01.01.2006
+_____________________________________________________
+Therap.Gruppe
+Groupe thér.
+		Präparate/Wirkstoffe		Verantwortliche Firma
+		Préparation/Substances actives	Maison responsable
+		Dossier-Nr.	Packungen		Pub-Preis {FAP}			SHI-Nr.		Aufnahmejahr
+		No du dossier	Emballages		Prix-pub {PDF}			No d'ISM	Année d'admission
+
+{}Der dem verfügten Publikumspreis zugrunde liegende Fabrikabgabepreis
+{}Le prix de fabrique servant de base au prix public autorisé
+
+Ia. Neuzugang Präparate/ Nouvelle admissions des préparations
+
+
+Kapitel:01.01.30
+
+		Tradonal One 			VIATRIS GMBH
+		(Tramadoli HCl)
+		18239		20 Compr. retard 150 mg Fr. 28.95 {14.15}		[55175026]		01.01.2006, A
+		18239		50 Compr. retard 150 mg Fr. 52.40 {30.60}		[55175028]		01.01.2006, A
+ 	
+		Tradonal One 			VIATRIS GMBH
+		(Tramadoli HCl)
+		18239		20 Compr. retard 200 mg Fr. 36.55 {17.14}		[55175032]		01.01.2006, A
+		18239		50 Compr. retard 200 mg Fr. 62.30 {39.01}		[55175034]		01.01.2006, A
+ 
+		Tradonal One 			VIATRIS GMBH
+		(Tramadoli HCl)
+		18239		50 Compr. retard 300 mg Fr. 75.50 {50.18}		[55175040]		01.01.2006, A
+
+		Tradonal One			VIATRIS GMBH
+		(Tramadoli HCl)
+		18239		50 Compr. retard 400 mg Fr. 91.75 {63.98}		[55175044]		01.01.2006, A
+ 
+Kapitel:03.04.30
+
+		Foradil HFA 			NOVARTIS PHARMA SCHWEIZ AG
+		(Formoteroli fumaras dihydric.)
+		18225		100 Inhalationen 12 mcg pro dosi Fr. 93.15 {65.18}	[57298001]		01.01.2006, B
+
+Kapitel:07.10.10
+
+		Voltfast			NOVARTIS PHARMA SCHWEIZ AG
+		(Diclofenac. kalic.)
+		18260		9 Sach. 50 mg Fr. 8.95 {4.14}				[57310001]		01.01.2006, B
+		18260		30 Sach. 50 mg Fr. 26.10 {11.73}			[57310003]		01.01.2006, B
+ 
+Kapitel:07.10.60				GEBRO PHARMA AG
+		(Methotrexat.)
+		18298		1 Amp. ad iniect. parat. 7,5 mg Fr. 46.40 {25.50}	[57272001]		01.01.2006, A
+ 
+		Metoject 			GEBRO PHARMA AG
+		(Methotrexat.)
+		18298		1 Amp. ad iniect. parat. 10 mg Fr. 47.95 {26.80}	[57272009]		01.01.2006, A
+ 
+		Metoject 			GEBRO PHARMA AG
+		(Methotrexat.)
+		18298		1 Amp. ad iniect. parat. 15 mg Fr. 52.75 {30.90}	[57272017]		01.01.2006, A
+ 
+		Metoject 			GEBRO PHARMA AG
+		(Methotrexat.)
+		18298		1 Amp. ad iniect. parat. 20 mg Fr. 57.10 {34.60}	[57272025]		01.01.2006, A
+ 
+		Metoject 			GEBRO PHARMA AG
+		(Methotrexat.)
+		18298		1 Amp. ad iniect. parat. 25 mg Fr. 62.30 {39.00}	[57272033]		01.01.2006, A
+ 
+Kapitel:07.12.00
+
+		Inegy 				MSD ESSEX GMBH
+		(Ezetimib., Simvastatin.)
+		18299		28 Compr. (10+10 mg) Fr. 84.60 {57.91}			[56953002]		01.01.2006, B
+		18299		98 Compr. (10+10 mg) Fr. 254.40 {202.12}		[56953010]		01.01.2006, B
+ 
+		Inegy 				MSD ESSEX GMBH
+		(Ezetimib., Simvastatin.)
+		18299		28 Compr. (10+20 mg Fr. 93.20 {65.24}			[56953004]		01.01.2006, B
+		18299		98 Compr. (10+20 mg) Fr. 284.60 {227.78}		[56953012]		01.01.2006, B
+ 
+		Inegy 				MSD ESSEX GMBH
+		(Ezetimib., Simvastatin.)
+		18299		28 Compr. (10+40 mg) Fr. 105.90 {76.02}			[56953006]		01.01.2006, B
+		18299		98 Compr. (10+40 mg) Fr. 325.35 {262.39}		[56953014]		01.01.2006, B
+ 
+G 		Pravastatin Helvepharm 		HELVEPHARM AG
+		(Pravastatin. natric.)
+		18344		30 Compr. 20 mg Fr. 27.00 {12.50}			[57535006]		01.01.2006, B
+		18344		100 Compr. 20 mg Fr. 78.90 {53.10}			[57535008]		01.01.2006, B
+ 
+G 		Pravastatin Helvepharm 		HELVEPHARM AG
+		(Pravastatin. natric.)
+		18344		30 Compr. 40 mg Fr. 36.30 {16.90}			[57535010]		01.01.2006, B
+		18344		100 Compr. 40 mg Fr. 99.75 {70.80}			[57535012]		01.01.2006, B
+ 	
+G 		Pravastatin Streuli 		G. STREULI & CO. AG
+		(Pravastatin. natric.)
+		18345		30 Compr. 20 mg Fr. 28.35 {13.66}			[57534005]		01.01.2006, B
+		18345		100 Compr. 20 mg Fr. 71.20 {46.55}			[57534007]		01.01.2006, B
+ 	
+G 		Pravastatin Streuli 		G. STREULI & CO. AG
+		(Pravastatin. natric.)
+		18345		30 Compr. 40 mg Fr. 36.85 {17.40}			[57534009]		01.01.2006, B
+		18345		100 Compr. 40 mg Fr. 93.00 {65.08}			[57534011]		01.01.2006, B
+ 
+Kapitel:08.01.60
+
+G 		Clarithromycin Sandoz 		SANDOZ PHARMACEUTICALS AG
+		(Clarithromycin.)
+		18355		14 Filmtabs 250 mg Fr. 36.35 {16.97}			[57129002]		01.01.2006, A
+		18355		20 Filmtabs 250 mg Fr. 44.15 {23.58}			[57129004]		01.01.2006, A
+ 
+G 		Clarithromycin Sandoz 		SANDOZ PHARMACEUTICALS AG
+		(Clarithromycin.)
+		18355		14 Filmtabs 500 mg Fr. 49.15 {27.83}			[57129008]		01.01.2006, A
+		18355		20 Filmtabs 500 mg Fr. 61.90 {38.67}			[57129010]		01.01.2006, A
+ 
+G 		Clarithromycin Sandoz 		SANDOZ PHARMACEUTICALS AG
+		(Clarithromycin.)
+		18356		100 ml Susp. 125 mg/5 ml Fr. 29.55 {14.65}		[57388001]		01.01.2006, A
+ 
+G 		Clarithromycin Sandoz 		SANDOZ PHARMACEUTICALS AG
+		(Clarithromycin.)
+		18356		100 ml Susp. 250 mg/5 ml Fr. 45.40 {24.63}		[57388003]		01.01.2006, A
+ 
+Therap.Gruppe
+Groupe thér.
+		Präparate/Wirkstoffe		Verantwortliche Firma
+		Préparation/Substances actives	Maison responsable
+		Dossier-Nr.	Packungen		Pub-Preis {FAP}			SHI-Nr.		Aufnahmejahr
+		No du dossier	Emballages		Prix-pub {PDF}			No d'ISM	Année d'admission
+
+Gemäss Art. 68 Abs. 2 der Verordnung über die Krankenversicherung (KVV) wird eine Streichung von Medikamenten aus der
+SL erst drei Monate nach Veröffentlichung im BAG-Bulletin wirksam.
+
+Conformément à l'art. 68, al. 2, de l'Ordonnance sur l'assurance-maladie (OAMal), la radiation d'un médicament de la
+LS prend effet trois mois après avoir été publiée dans le bulletin de l'OFSP.
+
+{}Der dem verfügten Publikumspreis zugrunde liegende Fabrikabgabepreis
+{}Le prix de fabrique servant de base au prix public autorisé
+
+II. Neu gestrichene Präparate/Packungen / Préparations/emballages radiés
+
+Kapitel:02.04.10
+
+		Nitroglycerin Wander 		NOVARTIS PHARMA SCHWEIZ AG
+		(Glyceroli trinitras)
+		  124		30 Caps. manducabil. 0,8 mg Fr. 6.60 {2.74}		[18857014]		1955, B
+ 
+Kapitel:02.07.20
+
+G 		Co-Atenolol-Cophar 		COPHAR SA
+		(Atenolol., Chlortalidon.)
+		16922		28 Filmtabs (50+12,5 mg) Fr. 21.05 {9.20}		[54429037]		1998, B
+		16922		98 Filmtabs (50+12,5 mg) Fr. 51.35 {29.71}		[54429045]		1998, B
+ 
+G 		Co-Atenolol-Cophar 		COPHAR SA
+		(Atenolol., Chlortalidon.)
+		16922		14 Filmtabs (100+25 mg) Fr. 18.30 {8.57}		[54429010]		1998, B
+		16922		98 Filmtabs (100+25 mg) Fr. 81.95 {55.68}		[54429029]		1998, B
+ 
+Kapitel:02.09.10
+
+		Titanoréine 			F. UHLMANN-EYRAUD SA
+		(Carrageen 40 mg, Zn oxid. 20 mg, Ti dioxid. 20 mg, Lidocain. 20 mg/g)
+		16054		20 g Ungt. Fr. 5.90 { }					[45378012]		1993, D
+ 
+		Titanoréine 			F. UHLMANN-EYRAUD SA
+		(Carrageen 40 mg, Zn oxid. 20 mg, Ti dioxid. 20 mg, Lidocain. 20 mg/g)
+		16055		12 Supp. (300+400+200+0 mg) Fr. 9.10 { }		[45379019]		1993, D
+ 
+Kapitel:03.02.00
+
+G 		Ecomucyl 			ECOSOL AG
+		(Acetylcystein.)
+		17627		150 ml Sirup. (100 mg/5 ml) Fr. 10.00 {4.52}		[53811019]		01.07.2001, D
+ 
+Kapitel:03.04.10
+
+		Escophyllin 			G. STREULI & CO. AG
+		(Theophyllin.)
+		13452		5 Amp. i.v. 10 ml 24 mg/ml Fr. 8.05 {3.35}		[32556019]		1980, B
+ 
+Kapitel:03.04.30
+
+		Foradil 			NOVARTIS PHARMA SCHWEIZ AG		
+		(Formoteroli fumaras dihydric.)
+		16207		100 Dosen Dosieraerosol (12 mcg pro dosi) Fr. 93.15 {65.18}		[49852010]		1991, B
+		16207		200 Dosen Dosieraerosol (12 mcg pro dosi) Fr. 157.30 {119.67}		[49852029]		1991, B
+ 
+Kapitel:04.01.00
+
+		Refluxin 			SPIRIG PHARMA AG
+		(Acid. alginic., Na hydrogenocarbonas, Al hydroxyd. - Mg carbonas)
+		12674		30 Compr. (350+105+100 mg) Fr. 9.10 { }			[39847019]		1977, D
+		12674		150 Compr. (350+105+100 mg) Fr. 35.55 { }		[39847027]		1977, D
+
+Kapitel:07.06.10
+
+		Lantus				AVENTIS PHARMA AG
+		(Insulin. glargin.)
+		18295		5 Kart. 3 ml 100 I.E./ml (OptiClik-System) Fr. 108.05 {77.86}	[57385001]														01.12.2005, B
+ 
+Kapitel:07.10.40
+
+		Thermocutan 			G. STREULI & CO. AG
+		(Nonivamid. 0,4%, Ethylis nicotinas 1,5%, Benzylis nicotinas 1,5%, Aminophenazoni salicylas 5%)
+		 9147		20 g Ungt. Fr. 3.35 { }					[27700055]		1962, D
+ 
+Kapitel:07.13.10
+
+		Histacyl compos. 		G. STREULI & CO. AG
+		(Diphenhydramini HCl, Mepyramin. maleas)
+		13459		100 ml Sirup. (1,25+1,25 mg/ml) Fr. 5.35 { }		[34289018]		1980, C
+ 
+		Histacyletten forte 		G. STREULI & CO. AG
+		(Coffein., Diphenhydramini HCl, Mepyramini maleas)
+		 5514		20 Obd. (40+25+25 mg) Fr. 3.60 { }			[18675072]		1955, C
+ 
+Kapitel:07.16.10
+
+G 		Doxorubicin Ebewe 		NYCOMED AG
+		(Doxorubicini HCl)
+		17731		1 Amp. 10  mg Fr. 62.20 {38.91}				[54828012]		01.04.2002, A
+ 
+G 		Doxorubicin Ebewe 		NYCOMED AG
+		(Doxorubicini HCl)
+		17731		1 Amp. 50 mg Fr. 227.20 {179.00}			[54828020]		01.04.2002, A
+ 
+Kapitel:08.01.23
+
+G 		Flemoxin 			DOETSCH GRETHER AG
+		(Amoxicillin.)
+		15545		16 Compr. 375 mg Fr. 17.60 {7.99}			[50007154]		1995, A
+ 
+G 		Flemoxin 			DOETSCH GRETHER AG
+		(Amoxicillin.)
+		15545		20 Compr. 750 mg Fr. 37.20 {17.67}			[50007162]		1995, A
+ 
+Kapitel:10.02.00
+
+		Aknefug BP 			SPIRIG PHARMA AG
+		(Benzoylis peroxid.)
+		14539		55 ml Lotio 10% Fr. 10.25 { }				[45539040]		1986, C
+ 
+Kapitel:10.05.10
+
+		Hexacorton 			SPIRIG PHARMA AG
+		(Prednisoloni acetas)
+		10843		30 g Crème 0,5% Fr. 13.50 {6.24}			[32329039]		1964, B
+ 
+		Locoid 				ASTELLAS PHARMA SA
+		(Hydrocortison. butyric.)
+		12437		30 g Ungt. 0,1% Fr. 21.10 {9.24}			[36483024]		1976, B
+ 
+Kapitel:11.06.20
+
+		Alomide 			ALCON PHARMACEUTICALS LTD
+		(Lodoxamid.)
+		16718		5 ml Guttae 0,1% Fr. 10.70 {5.80}			[53308015]		1997, C
+ 
+Kapitel:12.03.30
+
+		Anginesin neue Formulierung 	DR. GROSSMANN AG
+		(Al acetatis tartratis Sol., Salviae Extract. Liquid.)
+		11928		100 ml Liquid. (100+40 mg/ml) Fr. 7.20 { }		[15774010]		1975, D
+ 
+		Perubare 			F. UHLMANN-EYRAUD SA
+		(Balsam. peruvian. 37 mg, Lavandulae Aetheroleum 9 mg, Rosmarini Aetheroleum 24 mg, Thymi Aetheroleum 17 mg, Thymol. 1 mg)
+		11713		30 Compr. efferv. Fr. 6.80 { }				[21285013]		1973, D
+ 
+
+III. Preissenkungen / Réductions de prix
+
+Präparate/Packungen	Firma			Therap. Gruppe
+Préparations/emballages	Maison			Groupe thérapeutique
+						Pharma	Dossier Nr.	Preis neu	Ex-Fact.neu
+						Code	No du dossier	nouveau prix	nouveau ex-fact.
+Miflonide		Novartis Pharma Schweiz AG	03.04.40
+	60 Caps. Pulv. 200 mcg + 1 Aerolizer	2310420	17561		26.15		11.76	
+	60 Caps. Pulv. 400 mcg + 1 Aerolizer	2331439	17561		44.10		23.52	
+ 
+Sertralin Helvepharm	HELVEPHARM AG			01.06.00
+	100 Filmtabs 50 mg			3037618	18275		123.85		91.25	
+
+IV. Namensänderung / Changement de nom
+
+Remexal heisst neu /s'appelle dès lors : ASSAN REM
+
+
+V. Bisherige Veröffentlichungen / Publications jusqu'à présent
+
+Aufnahmen (für Details: vgl. das konkrete Bulletin)			per	Bull.BAG.Nr.
+Admissions (pour les détails voir le bulletin s'y référant)		au	Bull.OFSP No
+
+17965	Abilify								1.12.05	49/05
+17827	Accupaque							1.12.05	49/05
+18270	Aesculamed Forte						1.9.05	36/05
+18061	Amevive								1.11.05	45/05
+18246	Amlodipin Winthrop						1.12.05	49/05
+17343	Antidry Hautwasch-Oel						1.9.05	36/05
+18147	Antidry Mandelöl-Salbe						1.7.05	27/05
+18255	Apidra								1.9.05	36/05
+18256	Apidra Optiset							1.9.05	36/05
+18321	Aptivus								1.12.05	49/05
+18254	Aranesp Sureclick						1.9.05	36/05
+17849	Artirem								1.8.05	31/05
+18184	Avandamet							1.9.05	36/05
+18019	Avonex								1.9.05	36/05
+
+16348	Becetamol							1.7.05	27/05
+18291	Beriplex							1.12.05	49/05
+17509	Bondronat							1.7.05	27/05
+18304	Bonviva								1.12.05	49/05
+
+16483	Casodex								1.12.05	49/05
+18232	Cefurim eco							1.7.05	27/05
+18227	Certican							1.7.05	27/05
+18228	Certican							1.7.05	27/05
+18261	Cerzin-Mepha							1.9.05	36/05
+18127	Chirocaine							1.7.05	27/05
+18319	Cimifemin uno							1.12.05	49/05
+17734	Cip eco								1.11.05	45/05
+18215	Citalopram Winthrop						1.9.05	36/05
+18263	Clamycin							1.10.05	40/05
+18197	Clarithrocin-Mepha						1.10.05 40/05
+18233	Clarithrocin-Mepha						1.10.05	40/05
+18305	Claromycin							1.11.05	45/05
+17956	Climavita							1.7.05	27/05
+18200	Co-Amoxi-Mepha							1.7.05	27/05
+15856	Co-Becetamol							1.7.05	27/05
+18237	Co-Becetamol							1.7.05	27/05
+18238	Co-Becetamol Forte						1.7.05	27/05
+
+18165	Depakine Chronospheres						1.12.05	49/05
+13974	Dexamethasonum							1.7.05	27/05
+18223	Diclofenac Viatris						1.7.05  27/05
+
+18192	Eligard								1.9.05	36/05
+18193	Eligard								1.9.05	36/05
+18268	Emla Patch							1.9.05	36/05
+18253	Emselex								1.10.05	40/05
+17495	Enbrel								1.12.05	49/05
+18297	Estranor eco							1.12.05	49/05
+18148	Eucerin Trockene Haut						1.7.05	27/05
+18149	Eucerin Trockene Haut						1.7.05	27/05
+
+18320	Feminelle							1.12.05	49/05
+18292	Fibrogammin HS							1.12.05	49/05
+18267	Fluconazol-Mepha						1.9.05	36/05
+18242	Fluoxetin Sandoz						1.9.05	36/05
+17985	Forsteo								1.11.05	45/05
+
+17490	Hyperiplant							1.7.05	27/05
+17470	Hypurin Porcine 30/70 Mix					1.7.05	27/05
+17468	Hypurin Porcine Isophane					1.7.05	27/05
+17466	Hypurin Porcine Neutral						1.7.05	27/05
+
+18224	Inflamac							1.9.05	36/05
+18265	Integrilin							1.9.05	36/05
+18272	Integrilin							1.9.05	36/05
+18264	Invirase							1.9.05	36/05
+
+18307	Kivexa								1.12.05	49/05
+
+16046	Lamictal							1.7.05	27/05
+18216	Lamotrin-Mepha							1.9.05	36/05
+18295	Lantus								1.12.05	49/05
+18312	LUR Shampoo							1.12.05	49/05
+18130	Lyrica								1.7.05	27/05
+
+18181	Maltofer Fol							1.9.05	36/05
+18222	MaxiCalc D3							1.7.05	27/05
+17957	Maxifem eco natura						1.7.05	27/05
+18108	Metformin-Mepha							1.11.05	45/05
+18245	Meto Zerok							1.11.05	45/05
+16928	Mucofluid 600							1.9.05	36/05
+18271	Myconormin							1.9.05	36/05
+
+18116	Navelbine							1.8.05	31/05
+16099	Nemexin								1.12.05	49/05
+18220	Nexium i.v.							1.7.05	27/05
+18257	Niaspan								1.10.05	40/05
+18278	Nootropil							1.12.05	49/05
+
+18218	Olmetec								1.7.05	27/05
+18286	Olmetec Plus							1.12.05	49/05
+18103	Omeprazol Helvepharm						1.11.05	45/05
+18309	Onymax								1.11.05	45/05
+17356	Oxycontin							1.7.05	27/05
+
+18191	Paclitaxel Ebewe						1.9.05	36/05
+18302	Paclitaxel-Mepha						1.12.05	49/05
+18229	Pamorelin LA							1.7.05	27/05
+18230	Pamorelin LA							1.7.05	27/05
+18058	Paronex								1.9.05	36/05
+18155	Phytovir							1.8.05	31/05
+18290	Pradif T							1.12.05	49/05
+18186	Pravasta eco							1.9.05	36/05
+18301	Pravastatin Sandoz						1.11.05	45/05
+18300	Pravatin							1.11.05	45/05
+18010	Propycil							1.7.05	27/05
+
+18282	Quiril								1.12.05	49/05
+18217	Quiril comp							1.11.05	45/05
+
+18168	Reminyl PR							1.7.05	27/05
+
+18123	Scanlux								1.9.05	36/05
+18159	Sedovalin							1.7.05	27/05
+18276	Sertra-Med							1.12.05	49/05
+18277	Sertragen							1.12.05	49/05
+18275	Sertralin Helvepharm						1.12.05	49/05
+18313	Siccafluid UD							1.12.05	49/05
+18013	Simcora								1.8.05	31/05
+18008	Singulair							1.8.05	31/05
+15028	Solmucol							1.12.05	49/05
+15028	Solmucol							1.10.05	40/05
+18231	Somavert							1.12.05	49/05
+16982	Sortis								1.11.05	45/05
+
+18205	Terbifil							1.8.05	31/05
+18202	Terbinafin-Mepha						1.8.05	31/05
+18266	Terbinax							1.9.05	36/05
+18143	Tetralysal							1.10.05	40/05
+18234	Tineafin							1.8.05	31/05
+18236	Tobrex								1.7.05	27/05
+18221	Toramid								1.7.05	27/05
+18252	Torasem-Mepha							1.9.05	36/05
+18251	Torasemid Sandoz						1.9.05	36/05
+18250	Torasis								1.9.05	36/05
+
+18247	Votum								1.7.05	27/05
+18287	Votum plus							1.12.05	49/05
+
+18079	Zavesca								1.10.05	40/05
+18107	Zemplar								1.7.05	27/05
+18212	Zoldorm								1.8.05	31/05
+18241	Zolpi-Med							1.9.05	36/05
+18213	Zolpidem Helvepharm						1.7.05	27/05
+18214	Zolpidem Mepha							1.8.05	31/05
+18160	Zolpidem Sandoz							1.9.05	36/05
+18273	Zolpidem-Mepha							1.12.05	49/05
+
+
+Streichungen (für Details: vgl. das konkrete Bulletin)			per	Bull.BAG.Nr.
+Radiations (pour les détails voir le bulletin s'y référant)		au	Bull.OFSP No
+
+15093	Aarane								1.11.05	45/05
+12478	Algesal								1.10.05	40/05
+15094	Allergo-spasmin							1.11.05	45/05
+12587	Anacidol							1.7.05	27/05
+
+16891	Beloc Cor							1.11.05	45/05
+17811	Bextra								1.11.05	45/05
+17858	Bisoprolol-Mepha						1.7.05	27/05
+17509	Bondronat							1.7.05	27/05
+10949	Brinerdin							1.12.05	49/05
+15529	Brufen								1.7.05	27/05
+16079	Brufen								1.7.05	27/05
+
+16015	Cephoral							1.11.05	45/05
+11705	Clofibrat-Tripharma						1.12.05	49/05
+13372	Cotrim								1.7.05	27/05
+
+16063	Darmol								1.11.05	45/05
+15181	Delonal								1.12.05	49/05
+15182	Delonal								1.12.05	49/05
+11411	Dexalocal							1.11.05	45/05
+11412	Dexalocal Scalp							1.11.05	45/05
+16580	Diflucan							1.7.05	27/05
+14040	Diopine								1.7.05	27/05
+12981	Dispersa Hydrocortisone						1.11.05	45/05
+17951	DiTe Anatoxal N Berna						1.9.05	36/05
+14138	Doxycyclin HelvePharm						1.11.05	45/05
+
+10037	Erythrocin							1.8.05	31/05
+10037	Erythrocin							1.9.05	36/05
+11260	Euglucon							1.8.05	31/05
+13365	Expectoran Codein						1.9.05	36/05
+
+14097	Farlutal							1.7.05	27/05
+16848	Fotil								1.9.05	36/05
+17226	Furosemid Helvepharm						1.8.05	31/05
+
+13537	Gamonil								1.11.05	45/05
+11728	Gramipan cum Vitamin C						1.12.05	49/05
+
+17490	Hyperiplant							1.7.05	27/05
+17470	Hypurin Porcine 30/70 Mix					1.7.05	27/05
+17468	Hypurin Porcine Isophane					1.7.05	27/05
+17466	Hypurin Porcine Neutral						1.7.05	27/05
+
+14912	Loftyl								1.10.05	40/05
+
+9250	Melleretten							1.10.05	40/05
+9252	Melleril							1.10.05	40/05
+10455	Melleril							1.10.05	40/05
+15722	Mixtard 10 HM Penfill						1.9.05	36/05
+15723	Mixtard 20 HM Penfill						1.9.05	36/05
+15724	Mixtard 40 HM Penfill						1.9.05	36/05
+15725	Mixtard 50 HM Penfill						1.9.05	36/05
+
+13124	Nootropil							1.12.05	49/05
+14509	Normison							1.11.05	45/05
+
+17654	Ocuflur Liquifilm Unit Dose					1.7.05	27/05
+15286	Oftan Timolol							1.10.05	40/05
+17873	Ovitrelle							1.10.05	40/05
+
+17749	Pegintron							1.11.05	45/05
+14920	Propranolol Helvepharm						1.7.05	27/05
+16669	Protamin ICN							1.11.05	45/05
+
+17533	Reminyl								1.7.05	27/05
+17681	Rescula								1.10.05	40/05
+
+18042	Simvast								1.12.05	49/05
+12594	Stesolid							1.8.05	31/05
+9970	Synalar-N							1.7.05	27/05
+
+15042	Tilcotil							1.10.05	40/05
+11490	Topsym								1.7.05	27/05
+11847	Topsym-F							1.7.05	27/05
+17832	Tramacet							1.10.05	40/05
+
+12612	Ultracorten-H							1.10.05	40/05
+
+15392	Vistagan							1.7.05	27/05
+
+15858	Zofran								1.10.05	40/05
