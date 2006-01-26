@@ -38,6 +38,36 @@ module ODDB
 				[0,7]	=>	'explain-infos',
 				[1,0,2,8]	=>	'explain-infos',
 			}
+			def init
+				if(@lookandfeel.enabled?(:atupri_web, false))
+					@components = {
+						[0,0]	=>	:explain_original,
+						[0,1]	=>	:explain_generic,
+						[0,2]	=>	:explain_complementary,
+						[0,3]	=>	:explain_vaccine,
+						[0,4]	=>	'explain_unknown',
+						[0,6]	=>	'explain_li',
+						[0,7]	=>	'explain_fi',
+						[0,8]	=>	'explain_pi',
+						[0,9]	=>	'explain_narc',
+						[1,1]	=>	'explain_a',
+						[1,2]	=>	'explain_h',
+						[1,3]	=>	'explain_p',
+						[1,4]	=>	'explain_pr',
+						[1,5]	=>	'explain_efp',
+						[1,6]	=>	'explain_pbp',
+						[1,7]	=>	'explain_sl',
+						[1,8]	=>	'explain_slo',
+						[1,9]	=>	'explain_slg',
+					}
+					@css_map = {
+						[0,4]	=>	'explain-unknown',
+						[0,5,1,5]	=>	'explain-infos',
+						[1,0,1,10]	=>	'explain-infos',
+					}
+				end
+				super
+			end
 			def explain_original(model, session=@session)
 				explain_link(model, :original)
 			end
@@ -67,22 +97,30 @@ module ODDB
 				link 
 			end
 		end
+		module ResultFootBuilder
+			def result_foot(model, session=@session)
+				if(@lookandfeel.navigation.include?(:legal_note))
+					View::ExplainResult.new(model, @session, self)
+				else
+					View::ResultFoot.new(model, @session, self)
+				end
+			end
+		end
 		class ResultFoot < HtmlGrid::Composite
 			include ExternalLinks
 			COLSPAN_MAP	= {
-				[0,0]	=> 2,
 			}
 			COMPONENTS = {
-				[0,1]	=>	View::ExplainResult,
-				[1,1]	=>	:legal_note,
+				[0,0]	=>	View::ExplainResult,
+				[1,0]	=>	:legal_note,
 			}
 			COMPONENT_CSS_MAP = {
-				[0,1]	=>	'explain-result',
-				[1,1]	=>	'explain-result-r',
+				[0,0]	=>	'explain-result',
+				[1,0]	=>	'explain-result-r',
 			}
 			CSS_MAP = {
-				[0,1]	=>	'explain-result',
-				[1,1]	=>	'explain-result-r',
+				[0,0]	=>	'explain-result',
+				[1,0]	=>	'explain-result-r',
 			}
 			CSS_CLASS = 'composite'
 			def legal_note(model, session=@session)

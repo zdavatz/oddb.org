@@ -43,7 +43,7 @@ module ODDB
 				Time.now.year.to_s
 			end
 			def standard_link(key, model)
-				klass = if(@lookandfeel.enabled?(:just_medical_structure, false))
+				klass = if(@lookandfeel.enabled?(:popup_links, false))
 					HtmlGrid::PopupLink
 				else
 					HtmlGrid::Link

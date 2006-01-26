@@ -67,6 +67,10 @@ class PackageInnerComposite < HtmlGrid::Composite
 				css_map.store([0,9,4], 'list')
 			end
 		end
+		if(@lookandfeel.enabled?(:atupri_web))
+			components.delete(@components.index(:feedback))
+			components.delete(@components.index(:feedback_label))
+		end
 		super
 	end
 	def atc_class(model, session)

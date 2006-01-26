@@ -59,6 +59,7 @@ class ExportCSV < View::Form
 	end
 end
 class ResultForm < HtmlGrid::Composite
+	include ResultFootBuilder
 	COLSPAN_MAP	= {
 		[0,2]	=> 2,
 		[0,3]	=> 2,
@@ -70,7 +71,7 @@ class ResultForm < HtmlGrid::Composite
 		[0,1]		=>	'price_compare',
 		[1,1]		=>	SearchForm,
 		[0,2]		=>	View::Drugs::ResultList,
-		[0,3]		=>	View::ResultFoot,
+		[0,3]		=>	:result_foot,
 	}
 	CSS_CLASS = 'composite'
 	EVENT = :search
@@ -81,6 +82,7 @@ class ResultForm < HtmlGrid::Composite
 	CSS_MAP = {
 		[0,0] =>	'result-found',
 		[0,1] =>	'result-price-compare',
+		[0,3]	=>	'explain-result'
 	}
 	COMPONENT_CSS_MAP = {
 		[0,3]	=>	'result-foot',

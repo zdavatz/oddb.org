@@ -50,6 +50,14 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,3]	=>	'database_last_updated_txt',
 				[0,3,1]	=>	:database_last_updated,
 			}
+		elsif(@lookandfeel.enabled?(:atupri_web, false))
+			@components = {
+				[0,0]	=>	View::Drugs::CenteredSearchForm,
+				[0,1]	=>	'search_explain', 
+				[0,2]	=>	'database_last_updated_txt',
+				[0,2,1]	=>	:database_last_updated,
+				[0,3]	=>	:generic_definition,
+			}
 		elsif(@lookandfeel.enabled?(:data_counts))
 			components.update({
 				[0,4]		=>	:database_size,

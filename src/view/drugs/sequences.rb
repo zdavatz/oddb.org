@@ -52,11 +52,12 @@ class SequenceList < HtmlGrid::List
 	end
 end
 class SequencesComposite < HtmlGrid::Composite
+	include ResultFootBuilder
 	COMPONENTS = {
 		[0,0]	=> :title_sequences,
 		[1,0]		=>	SearchForm,
 		[0,1]	=> View::Drugs::SequenceList,
-		[0,2]	=> View::ResultFoot,
+		[0,2]	=> :result_foot,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {

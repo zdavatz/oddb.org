@@ -5,8 +5,7 @@ module ODDB
 	module View
 		module ExternalLinks
 			def external_link(model, key)
-				klass = if(@lookandfeel.enabled?(:just_medical_structure,
-																				 false))
+				klass = if(@lookandfeel.enabled?(:popup_links, false))
 					HtmlGrid::PopupLink
 				else
 					HtmlGrid::Link

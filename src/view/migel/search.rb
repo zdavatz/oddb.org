@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-#  -- oddb -- 04.10.2005 -- ffricker@ywesee.com
+# View::Migel::Search -- oddb -- 04.10.2005 -- ffricker@ywesee.com
 
 require 'view/publictemplate'
 require 'view/migel/welcomehead'

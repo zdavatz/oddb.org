@@ -156,34 +156,48 @@ module ODDB
 	end
 	class LookandfeelAtupriWeb < SBSM::LookandfeelWrapper
 		ENABLED = [
+			:atupri_web,
 			:drugs, 
 			:external_css,
 			:help_link,
-			:language_switcher,
 			:logout,
 			:migel,
+			:popup_links,
 			:sequences,
 		]
 		DICTIONARIES = {
 			'de'	=>	{
-				:home_welcome	=>	'',
+				:explain_complementary		=>	'Lila&nbsp;=&nbsp;Arzneimittel der Komplement&auml;rmedizin',
+				:explain_original					=>	'Blau&nbsp;=&nbsp;Original',
+				:explain_unknown					=>	'Grau&nbsp;=&nbsp;Nicht&nbsp;klassifiziert',
+				:home_welcome							=>  "",
 			},
 			'fr'	=>	{
-				:home_welcome	=>	'',
+				:explain_complementary		=>	'Lilas&nbsp;=&nbsp;Produit Compl&eacute;mentaire',
+				:explain_original					=>	'bleu&nbsp;=&nbsp;original',
+				:explain_unknown					=>	'gris&nbsp;=&nbsp;pas classes',
+				:home_welcome							=>  "",
 			},
 			'en'	=>	{
-				:home_welcome	=>	'',
+				:explain_complementary		=>	'Mauve&nbsp;=&nbsp;Complementary Drug',
+				:explain_original					=>	'Blue&nbsp;=&nbsp;Original',
+				:explain_unknown					=>	'Gray&nbsp;=&nbsp;not&nbsp;classified',
+				:home_welcome							=>  "",
 			},
 		}
 		RESOURCES = { 
 			:external_css	=>	'http://www.atupri.ch/misc/generika.css',
 		}
 		HTML_ATTRIBUTES = { }
+		def navigation
+			[ :legal_note, :sequences, :home ]
+		end
 	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:just_medical_structure,	
 			:external_css,
+			:popup_links,
 			:powerlink,
 		]
 		DICTIONARIES = {

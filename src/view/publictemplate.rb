@@ -13,6 +13,7 @@ module ODDB
 			include View::Custom::HeadMethods
 			CONTENT = nil
 			CSS_CLASS = "composite"
+			CSS_ID = "template"
 			COMPONENTS = {
 				[0,0]		=>	:head,
 				[0,1]		=>	:content,

@@ -89,8 +89,9 @@ class ResultList < HtmlGrid::List
 		[6,0]		=>	:galenic_form,
 		[7,0]		=>	:most_precise_dose,
 		[8,0]		=>	:comparable_size,
-		[9,0]		=>	:price_public,
-		[10,0]	=>	:substances,
+		[9,0]		=>	:price_exfactory,
+		[10,0]	=>	:price_public,
+		[11,0]	=>	:substances,
 	}	
 	REVERSE_MAP = {
 		:company_name			=> false,
@@ -110,9 +111,8 @@ class ResultList < HtmlGrid::List
 		[5,0]		=>	'result-big',
 		[6,0]		=>	'result',
 		[7,0,3]	=>	'result-r',
-		[10,0]		=>	'result-pubprice',
-		[11,0,4]	=>	'result-i',
-		[15,0,3]=>	'result-b-r',
+		[10,0]	=>	'result-pubprice',
+		[11,0]	=>	'result-i',
 	}
 	CSS_HEAD_MAP = {
 		[0,0] =>	'th',
@@ -124,7 +124,9 @@ class ResultList < HtmlGrid::List
 		[6,0]	=>	'th',
 		[7,0]	=>	'th-r',
 		[8,0]	=>	'th-r',
-		[9,0] =>	'th',
+		[9,0] =>	'th-r',
+		[10,0] =>	'th-r',
+		[11,0] =>	'th',
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value

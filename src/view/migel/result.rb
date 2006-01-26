@@ -31,13 +31,10 @@ class ResultList < HtmlGrid::List
 		[3,0] =>  :date,
 		[4,0] =>  :price,
 		[5,0]	=>	:qty_unit,
-		[6,0] =>	:feedback,
-		[7,0]	=>  :google_search,
-		[8,0] =>  :notify,
 	}
 	CSS_MAP = {
 		[0,0,4]	=>	'list',
-		[4,0,5] =>	'list-r',
+		[4,0] =>	'list-r',
 		[5,0]		=>	'list',
 	}
 	CSS_HEAD_MAP = {
@@ -47,17 +44,31 @@ class ResultList < HtmlGrid::List
 		[3,0] => 'th',
 		[4,0] => 'th-r',
 		[5,0] => 'th',
-		[6,0] => 'th-r',
-		[7,0] => 'th-r',
-		[8,0] => 'th-r',
 	}
 	LOOKANDFEEL_MAP = {
 		:limitation_text => :nbsp,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	SORT_DEFAULT = nil
-	WIDTH = 8
 	LEGACY_INTERFACE = false
+	def init
+		@width = 5
+		unless(@lookandfeel.enabled?(:atupri_web, false))
+			@width += 3
+			components.update({
+				[6,0] =>	:feedback,
+				[7,0]	=>  :google_search,
+				[8,0] =>  :notify,
+			})
+			css_map.store([6,0,3], 'list-r')
+			css_head_map.update({
+				[6,0] => 'th-r',
+				[7,0] => 'th-r',
+				[8,0] => 'th-r',
+			})
+		end
+		super
+	end
 	def compose_list(model=@model, offset=[0,0])
 		bg_flag = false
 		group = nil
@@ -80,7 +91,7 @@ class ResultList < HtmlGrid::List
 			product_description(item)]
 		@grid.add(values, xval, yval)
 		@grid.add_style(css, xval, yval, 3)
-		@grid.set_colspan(xval + 2, yval, WIDTH - xval - 1)
+		@grid.set_colspan(xval + 2, yval, @width - xval - 1)
 	end
 	def limitation_text(model)
 		if(sltxt = model.limitation_text)
@@ -100,10 +111,11 @@ class ResultList < HtmlGrid::List
 	end
 end
 class ResultComposite < HtmlGrid::Composite
+	include ResultFootBuilder
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
 		[0,0]	=>	ResultList,
-		[0,1]	=>	View::ResultFoot,
+		[0,1]	=>	:result_foot,
 	}
 end
 class Result < View::PrivateTemplate
