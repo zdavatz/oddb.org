@@ -54,7 +54,7 @@ module ODDB
 		end
 		def inject(invoice)
 			if(id = invoice.ydim_id)
-				client.invoice(id)
+				ydim_connect { |client| client.invoice(id) }
 			else
 				user = invoice.user_pointer.resolve(@app)
 				comp_or_hosp = (user.respond_to?(:model)) ? user.model : user
@@ -72,12 +72,12 @@ module ODDB
 				ydim_inv.description = invoice_description(items)
 				ydim_inv.date = date
 				ydim_inv.payment_period = 10
-				items = invoice.items.values.collect { |item| 
+				item_data = items.collect { |item| 
 					data = item.ydim_data 
 					data[:text] = item_text(item)
 					data
 				}
-				client.add_items(ydim_inv.unique_id, items)
+				client.add_items(ydim_inv.unique_id, item_data)
 				ydim_inv
 			}
 		end

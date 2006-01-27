@@ -4,6 +4,7 @@
 require 'rmail'
 require 'date'
 require 'plugin/plugin'
+require 'plugin/ydim'
 require 'util/oddbconfig'
 
 module ODDB
