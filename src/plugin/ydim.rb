@@ -55,9 +55,8 @@ module ODDB
 		def inject(invoice)
 			if(id = invoice.ydim_id)
 				ydim_connect { |client| client.invoice(id) }
-			else
-				user = invoice.user_pointer.resolve(@app)
-				comp_or_hosp = (user.respond_to?(:model)) ? user.model : user
+			elsif((ptr = invoice.user_pointer) && (user = ptr.resolve(@app)))
+				comp_or_hosp = ((user.respond_to?(:model)) ? user.model : user) || user
 				items = invoice.items.values
 				ydim_inv = inject_from_items(invoice_date(items), comp_or_hosp, items)
 				ydim_inv.payment_received = invoice.payment_received?

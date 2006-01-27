@@ -8,13 +8,11 @@ require 'digest'
 module ODDB
 	module Admin
 		class DownloadUser
-			include Persistence
 			include InvoiceObserver
+			include Persistence
 			ODBA_SERIALIZABLE = ['@challenges']
 			attr_reader :email
-			attr_accessor :salutation, :name, :name_first, :company_name,
-				:address, :plz, :location, :phone, :business_area, :ydim_id
-			alias :invoice_email :email
+			attr_accessor :company_name, :phone, :business_area
 			alias :fullname :company_name
 			class Challenge
 				AGE_LIMIT = 72*60*60 # 72h
@@ -66,15 +64,6 @@ module ODDB
 				@challenges.push(challenge)
 				odba_isolated_store
 				challenge
-			end
-			def contact
-				[@name_first, @name].compact.join(' ')
-			end
-			def ydim_address_lines
-				[@address].compact
-			end
-			def ydim_location
-				[@plz, @location].compact.join(' ')
 			end
 		end
 	end

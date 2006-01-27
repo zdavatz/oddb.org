@@ -3,8 +3,8 @@
 
 module ODDB
 	module InvoiceObserver
-		attr_accessor :salutation, :name, :name_first, :address, 
-			:location, :plz
+		attr_accessor :salutation, :name, :name_first, :fullname, :address, 
+			:location, :plz, :ydim_id
 		def add_invoice(invoice)
 			self.invoices.push(invoice)
 			@invoices.odba_isolated_store
@@ -12,12 +12,18 @@ module ODDB
 			invoice.odba_isolated_store
 			invoice
 		end
+		def contact
+			[@name_first, @name].compact.join(' ')
+		end
 		def invoice(oid)
 			oid = oid.to_i
 			self.invoices.each { |invoice|
 				return invoice if(invoice.oid == oid)
 			}
 			nil
+		end
+		def invoice_email
+			self.email
 		end
 		def remove_invoice(invoice)
 			if(self.invoices.delete(invoice))
@@ -31,6 +37,12 @@ module ODDB
 				odba_store
 			end
 			@invoices
+		end
+		def ydim_address_lines
+			[@address].compact
+		end
+		def ydim_location
+			[@plz, @location].compact.join(' ')
 		end
 	end
 end
