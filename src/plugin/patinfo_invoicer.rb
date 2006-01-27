@@ -5,7 +5,6 @@ require 'plugin/invoicer'
 
 module ODDB
 	class PatinfoInvoicer < Invoicer
-		SECONDS_IN_DAY = 60*60*24
 		attr_accessor :invoice_number
 		def run(day = Date.today)
 			send_daily_invoices(day - 1)
@@ -237,12 +236,5 @@ module ODDB
 				range.include?(item.time)
 			}
 		end
-=begin
-		def sort_items(items)
-			items.sort_by { |item| 
-				[item.time.to_i / SECONDS_IN_DAY, item.text.to_s, item.type.to_s]
-			}
-		end
-=end
 	end
 end

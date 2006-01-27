@@ -8,6 +8,7 @@ require 'openssl'
 
 module ODDB
 	class YdimPlugin < Plugin
+		SECONDS_IN_DAY = 60*60*24
 		def create_debitor(comp_or_hosp)
 			ydim_connect { |client|
 				debitor = client.create_debitor
@@ -31,6 +32,7 @@ module ODDB
 																	 'dt_pharma'
 																 end
 															 end
+				debitor.odba_store
 				debitor
 			}
 		end
@@ -71,7 +73,7 @@ module ODDB
 				ydim_inv.description = invoice_description(items)
 				ydim_inv.date = date
 				ydim_inv.payment_period = 10
-				item_data = items.collect { |item| 
+				item_data = sort_items(items).collect { |item| 
 					data = item.ydim_data 
 					data[:text] = item_text(item)
 					data
@@ -105,7 +107,7 @@ module ODDB
 				if(timstr == expstr)
 					timstr = time.strftime("%m/%Y")
 				end
-				sprintf("%i x CSV-Download %s", items.size, timestr)
+				sprintf("%i x CSV-Download %s", items.size, timstr)
 			elsif(types.include?(:download))
 				sprintf('%i x Download %s', items.size, 
 								time.strftime('Downloads %d.%m.%Y'))
@@ -155,6 +157,11 @@ module ODDB
 		end
 		def send_invoice(ydim_invoice_id)
 			ydim_connect { |client| client.send_invoice(ydim_invoice_id) }
+		end
+		def sort_items(items)
+			items.sort_by { |item| 
+				[item.time.to_i / SECONDS_IN_DAY, item.text.to_s, item.type.to_s]
+			}
 		end
 		def ydim_connect(&block)
 			config = YDIM::Client::CONFIG
