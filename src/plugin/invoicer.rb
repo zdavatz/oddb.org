@@ -4,8 +4,6 @@
 require 'rmail'
 require 'date'
 require 'plugin/plugin'
-require 'pdfinvoice/config'
-require 'pdfinvoice/invoice'
 require 'util/oddbconfig'
 
 module ODDB
@@ -14,26 +12,12 @@ module ODDB
 			'hwyss@ywesee.com', 
 			'zdavatz@ywesee.com' 
 		]
-		def address_lines(comp_or_hosp, email)
-			lines = [ comp_or_hosp.name, "z.H. #{comp_or_hosp.contact}" ]
-			lines += comp_or_hosp.address(0).lines
-			lines.push email
-			lines
-		end
-		def assemble_pdf_invoice(pdfinvoice, comp_or_hosp, items, email)
-			pdfinvoice.debitor_address = address_lines(comp_or_hosp, email)
-			pdfinvoice.items = sort_items(items).each { |item| 
-			}.collect { |item|
-				[ item.time, item_text(item), item.unit, 
-					item.quantity.to_f, item.price.to_f ]
-			}
-			pdfinvoice
-		end
-		def create_invoice(user, items)
+		def create_invoice(user, items, ydim_id)
 			pointer = Persistence::Pointer.new(:invoice)
 			values = {
 				:user_pointer		=>	user.pointer,
 				:keep_if_unpaid =>	true,
+				:ydim_id				=>	ydim_id,
 			}
 			ODBA.transaction { 
 				invoice = @app.update(pointer.creator, values)
@@ -43,66 +27,18 @@ module ODDB
 				}
 			}
 		end
-		def create_pdf_invoice(day, comp_or_hosp, items, email)
-			config = PdfInvoice.config
-			config.formats['quantity'] = quantity_format
-			config.texts['thanks'] = <<-EOS
-Ohne Ihre Gegenmeldung erfolgt der Rechnungsversand nur per Email.
-Thank you for your patronage
-			EOS
-			pdfinvoice = PdfInvoice::Invoice.new(config)
-			pdfinvoice.date = day
-			pdfinvoice.invoice_number = invoice_number(day)
-			assemble_pdf_invoice(pdfinvoice, comp_or_hosp, items, email)
-		end
-		def invoice_number(day)
-			day.strftime('%d.%m.%Y')
-		end
-		def invoice_subject(items, date, comp_or_hosp)
-			sprintf("Rechnung %s (%i x) %s", comp_or_hosp.name, items.size,
-							date.strftime("%m/%Y"))
-		end
-		def item_text(item)
-			item.text
-		end
-		def quantity_format
-			'%i'
-		end
 		def resend_invoice(invoice, day = Date.today)
-			if((user = invoice.user_pointer.resolve(@app)) \
-				&& (comp_or_hosp = user.model))
-				items = invoice.items.values
-				send_invoice(day, comp_or_hosp, items)
-			end
+			YdimPlugin.new(@app).send_invoice(invoice.ydim_id)
 		end
 		def rp2fr(price)
 			price.to_f / 100.0
 		end
 		def send_invoice(date, comp_or_hosp, items)
-			to = comp_or_hosp.invoice_email || comp_or_hosp.user.unique_email
-			invoice = create_pdf_invoice(date, comp_or_hosp, items, to)
-			subject = invoice_subject(items, date, comp_or_hosp)
-			invoice_name = sprintf("%s.pdf", subject.tr(' /', '_-'))
-			fpart = RMail::Message.new
-			header = fpart.header
-			header.to = to
-			header.from = MAIL_FROM
-			header.subject = subject
-			header.add('Content-Type', 'application/pdf')
-			header.add('Content-Disposition', 'attachment', nil,
-				{'filename' => invoice_name })
-			header.add('Content-Transfer-Encoding', 'base64')
-			fpart.body = [invoice.to_pdf].pack('m')
-			smtp = Net::SMTP.new(SMTP_SERVER)
-			recipients = RECIPIENTS.dup.push(to).uniq
-			smtp.start {
-				recipients.each { |recipient|
-					smtp.sendmail(fpart.to_s, SMTP_FROM, recipient)
-				}
-			}
-		end
-		def sort_items(items)
-			items
+			plugin = YdimPlugin.new(@app)
+			ydim_inv = plugin.inject_from_items(date, comp_or_hosp, items)
+			ydim_id = ydim_inv.unique_id
+			plugin.send_invoice(ydim_id)
+			ydim_id
 		end
 	end
 	class CompanyIndexInvoicer < Invoicer
@@ -145,7 +81,7 @@ Thank you for your patronage
 					items.push(package_item)
 				end
 				## first send the invoice 
-				send_invoice(date, comp, items) 
+				ydim_id = send_invoice(date, comp, items) 
 				## then store it in the database
 				user = comp.user
 				if(user.nil?)
@@ -153,58 +89,9 @@ Thank you for your patronage
 					ptr = Persistence::Pointer.new(:user)
 					user = @app.update(ptr.creator, values)
 				end
-				create_invoice(user, items)
+				create_invoice(user, items, ydim_id)
 				@app.update(comp.pointer, {:index_invoice_date => (date >> 12)})
 			end
-		end
-		def invoice_number(date)
-			year = date.year
-			sprintf("Firmenverzeichnis %i/%i", year, year.next)
-		end
-		def invoice_subject(items, date, comp_or_hosp)
-			sprintf("Rechnung %s %s", comp_or_hosp.name, invoice_number(date))
-		end
-	end
-	class HostingInvoicer < Invoicer
-		def run
-			@app.companies.each_value { |comp| 
-				invoice_hosting(comp)
-			}
-		end
-		def invoice_hosting(comp, date = Date.today)
-			idate = comp.hosting_invoice_date
-			price = rp2fr(comp.hosting_price)
-			if(date == idate && price > 0)
-				time = Time.now
-				expiry_time = Time.local(date.year, date.month, date.day)
-				item = AbstractInvoiceItem.new
-				item.text = sprintf("Hosting %s", comp.url)
-				item.type = :hosting
-				item.unit = 'Jahr'
-				item.price = price.to_f
-				item.vat_rate = VAT_RATE
-				item.time = time
-				item.expiry_time = expiry_time
-				items = [item]
-				## first send the invoice 
-				send_invoice(date, comp, items) 
-				## then store it in the database
-				user = comp.user
-				if(user.nil?)
-					values = {:model, comp.pointer}	
-					ptr = Persistence::Pointer.new(:user)
-					user = @app.update(ptr.creator, values)
-				end
-				create_invoice(user, items)
-				@app.update(comp.pointer, {:hosting_invoice_date => (date >> 12)})
-			end
-		end
-		def invoice_number(date)
-			year = date.year
-			sprintf("Hosting %i/%i", year, year.next)
-		end
-		def invoice_subject(items, date, company)
-			sprintf("Rechnung %s %s", company.name, invoice_number(date))
 		end
 	end
 	class LookandfeelInvoicer < Invoicer
@@ -252,7 +139,7 @@ Thank you for your patronage
 					items.push(member_item)
 				end
 				## first send the invoice 
-				send_invoice(date, comp, items) 
+				ydim_id = send_invoice(date, comp, items) 
 				## then store it in the database
 				user = comp.user
 				if(user.nil?)
@@ -260,16 +147,9 @@ Thank you for your patronage
 					ptr = Persistence::Pointer.new(:user)
 					user = @app.update(ptr.creator, values)
 				end
-				create_invoice(user, items)
+				create_invoice(user, items, ydim_id)
 				@app.update(comp.pointer, {:lookandfeel_invoice_date => (date >> 12)})
 			end
-		end
-		def invoice_number(date)
-			year = date.year
-			sprintf("Lookandfeel-Integration %i/%i", year, year.next)
-		end
-		def invoice_subject(items, date, comp_or_hosp)
-			sprintf("Rechnung %s %s", comp_or_hosp.name, invoice_number(date))
 		end
 	end
 end

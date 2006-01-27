@@ -183,8 +183,6 @@ class AjaxCompanyForm < UserCompanyForm
 		:complementary_type				=>	HtmlGrid::Select,
 		:disable_autoinvoice			=>	HtmlGrid::InputCheckbox,
 		:generic_type							=>	HtmlGrid::Select,
-		:hosting_invoice_date			=>	HtmlGrid::InputDate,
-		:hosting_price						=>	HtmlGrid::InputCurrency,
 		:index_invoice_date				=>	HtmlGrid::InputDate,
 		:index_package_price			=>	HtmlGrid::InputCurrency,
 		:index_price							=>	HtmlGrid::InputCurrency,
@@ -245,29 +243,6 @@ class AjaxPharmaCompanyForm < AjaxCompanyForm
 		[1,0,3,3]	=>	'standard',
 		[3,3,1,4]	=>	'standard',
 		[1,7,3,10]	=>	'standard',
-	}
-end
-class AjaxHostingCompanyForm < AjaxCompanyForm
-	COMPONENTS = {
-		[0,0]		=>	:business_area,
-		[2,0]		=>	:url,
-		[0,1]		=>	:company_name,
-		[0,2]		=>	:contact,
-		[2,2]		=>	:invoice_email,
-		[0,3]		=>	:hosting_price,
-		[2,3]		=>	:hosting_invoice_date,
-		[0,4]		=>	:address,
-		[2,4]		=>	:fon,
-		[0,5]		=>	:plz,
-		[2,5]		=>	:city,
-		[1,6]		=>	:submit,
-		[1,6,0]	=>	:delete_item,
-	}
-	CSS_MAP = {
-		[0,0,4,7]	=>	'list',
-	}
-	COMPONENT_CSS_MAP = {
-		[1,0,3,6]	=>	'standard',
 	}
 end
 class AjaxInfoCompanyForm < AjaxCompanyForm
@@ -465,8 +440,6 @@ class AjaxCompanyComposite < CompanyComposite
 			AjaxInsuranceCompanyForm
 		when 'ba_info'
 			AjaxInfoCompanyForm
-		when 'ba_hosting'
-			AjaxHostingCompanyForm
 		else 
 			AjaxOtherCompanyForm
 		end

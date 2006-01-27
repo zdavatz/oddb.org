@@ -17,7 +17,6 @@ module ODDB
 			:show_email, :export_flag, :disable_autoinvoice, :refdata_override,
 		]
 		DATES = [
-			:hosting_invoice_date,
 			:inactive_date,
 			:index_invoice_date,
 			:introduction_date,
@@ -33,7 +32,7 @@ module ODDB
 			:address_type	=>	[nil, 'at_work', 'at_praxis',
 				'at_private'],
 			:business_area=>	[nil, 'ba_hospital', 'ba_pharma', 'ba_insurance',
-				'ba_doctor', 'ba_health', 'ba_info', 'ba_hosting' ],
+				'ba_doctor', 'ba_health', 'ba_info' ],
 			:canton				=>	[nil, 'AG', 'AI', 'AR', 'BE',
 				'BL', 'BS', 'FR', 'GE', 'GL', 'GR', 'JU', 'LU',
 				'NE', 'NW', 'OW', 'SG', 'SH', 'SO', 'SZ', 'TG',
@@ -180,7 +179,6 @@ module ODDB
 			:change_flags,
 			:days,
 			:fi_quantity,
-			:hosting_price,
 			:index,
 			:invoice,
 			:index_package_price,

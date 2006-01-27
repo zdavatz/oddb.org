@@ -13,9 +13,9 @@ module ODDB
 				groups.each { |pointer, items|
 					if((user = pointer.resolve(@app)) && (hospital = user.model))
 						## first send the invoice 
-						send_invoice(month, hospital, items) 
+						ydim_id = send_invoice(month, hospital, items) 
 						## then store it in the database
-						create_invoice(user, items)
+						create_invoice(user, items, ydim_id)
 					end
 				}
 			end
@@ -52,13 +52,6 @@ module ODDB
 				(groups[item.user_pointer] ||= []).push(item)
 				groups
 			}
-		end
-		def invoice_number(day)
-			day.strftime('Downloads-%m.%Y')
-		end
-		def invoice_subject(items, date, hospital)
-			sprintf("Rechnung %s %i x CSV-Download %s", hospital.name,
-							items.size, date.strftime("%m/%Y"))
 		end
 		def recent_items(date)
 			slate = @app.slate(:download)

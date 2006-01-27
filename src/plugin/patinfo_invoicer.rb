@@ -12,7 +12,6 @@ module ODDB
 			send_annual_invoices(day)
 		end
 		def send_annual_invoices(day = Date.today)
-			@invoice_number = sprintf('Patinfo-Upload-%i-%i', day.year, day.year.next)
 			items = all_items.select { |item| item.type == :annual_fee }
 			groups = group_by_company(items)
 			groups.each { |company, items|
@@ -47,26 +46,20 @@ module ODDB
 						## adjust the fee according to date
 						adjust_overlap_fee(day, items)
 						## first send the invoice 
-						send_invoice(day, company, items) 
+						ydim_id = send_invoice(day, company, items) 
 						## then store it in the database
-						create_invoice(user, items)
+						create_invoice(user, items, ydim_id)
 					elsif((day >> 12) == company.pref_invoice_date)
 						## if the date has been set to one year from now,
 						## this invoice has already been sent manually.
 						## store the items anyway to prevent sending a 2-year
 						## invoice on the following day..
-						create_invoice(user, items)
+						create_invoice(user, items, nil)
 					end
 				end
 			}
 		end
 		def send_daily_invoices(day)
-			if(day.is_a?(Range))
-				@invoice_number = sprintf('Patinfo-Upload %s-%s', 
-					day.first.strftime('%d.%m.%Y'), day.last.strftime('%d.%m.%Y'))
-			else
-				@invoice_number = day.strftime('Patinfo-Upload %d.%m.%Y')
-			end
 			items = recent_items(day)
 			payable_items = filter_paid(items)
 			groups = group_by_company(payable_items)
@@ -79,9 +72,9 @@ module ODDB
 					## adjust the annual fee according to date
 					adjust_annual_fee(company, items)
 					## first send the invoice 
-					send_invoice(day, company, items) 
+					ydim_id = send_invoice(day, company, items) 
 					## then store it in the database
-					create_invoice(user, items)
+					create_invoice(user, items, ydim_id)
 				end
 			}
 			nil
@@ -145,20 +138,6 @@ module ODDB
 			}.reverse.select { |item| 
 				# but only once per sequence.
 				(item.type == :processing) || active.delete(pdf_name(item))
-			}
-		end
-		def create_invoice(user, items)
-			pointer = Persistence::Pointer.new(:invoice)
-			values = {
-				:user_pointer		=>	user.pointer,
-				:keep_if_unpaid =>	true,
-			}
-			ODBA.transaction { 
-				invoice = @app.update(pointer.creator, values)
-				pointer = invoice.pointer + [:item]
-				items.each { |item|
-					@app.update(pointer.dup.creator, item.values)
-				}
 			}
 		end
 		def filter_paid(items)
@@ -241,56 +220,6 @@ module ODDB
 			}
 			companies
 		end
-		def invoice_number(day)
-			@invoice_number			
-		end
-		def invoice_subject(items, date, company)
-			fee_items = items.select { |item| item.type == :annual_fee }
-			datestr = if(date.is_a?(Range))
-				sprintf('%s-%s', date.first.strftime('%d.%m.%Y'),
-								date.last.strftime('%d.%m.%Y'))
-			else
-				date.strftime("%d.%m.%Y")
-			end
-			sprintf("Rechnung %s %i x PI-Upload %s", company.name, 
-							fee_items.size, datestr)
-		end
-		def item_name(item)
-			name = ''
-			if(data = item.data)
-				name = data[:name].to_s.strip
-			end
-			if(name.empty? && (ptr = item.item_pointer))
-				name = sequence_name(ptr).to_s.strip
-			end
-			name unless(name.empty?)
-		end
-		def item_text(item)
-			lines = [item.text, item_name(item)]
-			if(data = item.data) 
-				first_date = data[:first_valid_date] || item.time
-				last_date = data[:last_valid_date]
-				days = data[:days]
-				if(last_date && days)
-					lines.push(sprintf("%s - %s", 
-						first_date.strftime("%d.%m.%Y"), last_date.strftime("%d.%m.%Y")))
-					lines.push(sprintf("%i Tage", days))
-				end
-			end
-			lines.compact.join("\n")
-		end
-		def pdf_name(item)
-			name = item.text
-			if(/^[0-9]{5} [0-9]{2}$/.match(name))
-				name.tr(' ', '_')
-			elsif((ptr = item.item_pointer) && (seq = sequence_resolved(ptr)))
-				[seq.iksnr, seq.seqnr].join('_')
-			end
-		rescue Persistence::UninitializedPathError
-		end
-		def quantity_format
-			'%1.3f'
-		end
 		def recent_items(day) # also takes a range of Dates
 			fd = nil
 			ld = nil
@@ -308,19 +237,12 @@ module ODDB
 				range.include?(item.time)
 			}
 		end
-		def sequence_name(pointer)
-			if(seq = sequence_resolved(pointer))
-				seq.name
-			end
-		end
-		def sequence_resolved(pointer)
-			pointer.resolve(@app)
-		rescue StandardError
-		end
+=begin
 		def sort_items(items)
 			items.sort_by { |item| 
 				[item.time.to_i / SECONDS_IN_DAY, item.text.to_s, item.type.to_s]
 			}
 		end
+=end
 	end
 end

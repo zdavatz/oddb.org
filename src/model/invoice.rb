@@ -7,7 +7,7 @@ module ODDB
 	class Invoice
 		include Persistence
 		attr_reader :items
-		attr_accessor :user_pointer, :keep_if_unpaid
+		attr_accessor :user_pointer, :keep_if_unpaid, :ydim_id
 		def initialize
 			super
 			@items = {}
@@ -105,6 +105,18 @@ module ODDB
 				:type					=>	@type,
 				:unit					=>	@unit,
 				:user_pointer	=>	@user_pointer,
+				:vat_rate			=>	@vat_rate,
+			}
+		end
+		def ydim_data
+			{
+				:data					=>	@data,
+				:expiry_time	=>	@expiry_time,
+				:price				=>	@price,
+				:quantity			=>	@quantity,
+				:text					=>	@text,
+				:time					=>	@time,
+				:unit					=>	@unit,
 				:vat_rate			=>	@vat_rate,
 			}
 		end

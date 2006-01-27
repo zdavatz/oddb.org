@@ -115,6 +115,9 @@ module ODDB
 				match.to_s.strip
 			end
 		end
+		def ydim_lines
+			[@address].concat(@additional_lines)
+		end
 		def <=>(other)
 			self.lines <=> other.lines
 		end
@@ -129,6 +132,12 @@ module ODDB
 			addr = Address2.new
 			@addresses.push(addr)
 			addr
+		end
+		def ydim_address_lines(pos=0)
+			@addresses.at(pos).ydim_lines
+		end
+		def ydim_location(pos=0)
+			@addresses.at(pos).location
 		end
 	end
 	class AddressSuggestion < Address2

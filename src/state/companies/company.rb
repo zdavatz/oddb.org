@@ -179,8 +179,6 @@ class RootCompany < UserCompany
 			:fax,
 			:fon,
 			:generic_type,
-			:hosting_invoice_date,
-			:hosting_price,
 			:index_invoice_date,
 			:index_package_price,
 			:index_price,
