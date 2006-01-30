@@ -109,8 +109,7 @@ module ODDB
 				end
 				sprintf("%i x CSV-Download %s", items.size, timstr)
 			elsif(types.include?(:download))
-				sprintf('%i x Download %s', items.size, 
-								time.strftime('Downloads %d.%m.%Y'))
+				sprintf('%i x Download %s', items.size, time.strftime('%d.%m.%Y'))
 			elsif(types.include?(:index))
 				sprintf("Firmenverzeichnis %i/%i", year, year.next)
 			elsif(types.include?(:lookandfeel))

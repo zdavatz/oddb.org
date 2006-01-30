@@ -19,59 +19,17 @@ module ODDB
 			@app = FlexMock.new
 			@plugin = PatinfoInvoicer.new(@app)
 		end
-		def test_assemble_pdf_invoice
-			invoice = FlexMock.new
-			item1 = AbstractInvoiceItem.new
-			item1.user_pointer = 'user1'
-			item1.text = '12345 03'
-			item1.unit = 'Jahresgebühr'
-			item1.quantity = 1
-			item1.price = 120
-			item2 = AbstractInvoiceItem.new
-			item2.user_pointer = 'user1'
-			item2.text = '12345 03'
-			item2.unit = 'Jahresgebühr'
-			item2.quantity = 1
-			item2.price = 120
-			item3 = AbstractInvoiceItem.new
-			item3.user_pointer = 'user1'
-			item3.text = '12345 03'
-			item3.unit = 'Jahresgebühr'
-			item3.quantity = 1
-			item3.price = 120
-			items = [item1, item2, item3]
-			day = Date.today - 1
-			invoice.mock_handle(:debitor_address=, 1) { |arry|
-				lines = [
-					'Test AG',
-					'z.H. A. Bachmann',
-					'abachman@test.com',
-					'Bümplitzstrasse 2',
-					'3006 Bern',
-				]
-				assert_equal(lines, arry)
-			}
-			invoice.mock_handle(:items=, 1) { |list|
-				expected = [
-					[day, '12345 03 (Ponstan)', 'Jahresgebühr', 1, 120],
-					[day, '12345 03 (Zithromax)', 'Jahresgebühr', 1, 120],
-					[day, '12345 03 (Celebrex)', 'Jahresgebühr', 1, 120],
-				]
-			}
-			invoice.mock_handle(:to_pdf) { 'pdf-document' }
-			company = FlexMock.new
-			address = FlexMock.new
-			company.mock_handle(:address) { address }
-			company.mock_handle(:name) { 'Test AG' }
-			address.mock_handle(:lines) { 
-				['Bümplitzstrasse 2', '3006 Bern']
-			}
-			email = 'abachman@test.com'
-			company.mock_handle(:contact) { 'A. Bachmann' }
-			@plugin.assemble_pdf_invoice(invoice, company, items, email)
-			invoice.mock_verify
-		end
 		def test_adjust_annual_fee
+			item1 = AbstractInvoiceItem.new
+			item1.type = :annual_fee
+			item1.time = Time.local(2005, 7, 1, 18, 26, 42)
+			company = FlexMock.new
+			company.mock_handle(:pref_invoice_date) { Date.new(2006) }
+			company.mock_handle(:patinfo_price) { 100 }
+			@plugin.adjust_annual_fee(company, [item1])
+			assert_equal(184.0/365.0, item1.quantity)
+		end
+		def test_adjust_annual_fee__2
 			item1 = AbstractInvoiceItem.new
 			item1.type = :annual_fee
 			item1.time = Time.local(2005, 7, 2, 18, 26, 42)
@@ -79,7 +37,7 @@ module ODDB
 			company.mock_handle(:pref_invoice_date) { Date.new(2006) }
 			company.mock_handle(:patinfo_price) { 100 }
 			@plugin.adjust_annual_fee(company, [item1])
-			assert_equal(183.0/365.0, item1.quantity)
+			assert_equal(548.0/365.0, item1.quantity)
 		end
 		def test_filter_paid
 			day = Date.today - 1
@@ -309,7 +267,7 @@ module ODDB
 			item_vals3.store(:item_pointer, 'item3')
 			expected = [
 				[pointer.creator, {:user_pointer => 'user1', 
-					:keep_if_unpaid => true}, invoice],
+					:keep_if_unpaid => true, :ydim_id => 2134}, invoice],
 				[item_ptr.dup.creator, item_vals1, nil],
 				[item_ptr.dup.creator, item_vals2, nil],
 				[item_ptr.dup.creator, item_vals3, nil],
@@ -325,7 +283,7 @@ module ODDB
 			}
 			user = FlexMock.new
 			user.mock_handle(:pointer) { 'user1' }
-			@plugin.create_invoice(user, items)
+			@plugin.create_invoice(user, items, 2134)
 			@app.mock_verify
 		end
 	end

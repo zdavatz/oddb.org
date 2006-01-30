@@ -41,7 +41,7 @@ class RegisterDownload < Global
 		pointer = Persistence::Pointer.new(:invoice)
 		@model = Persistence::CreateItem.new(pointer)
 		@model.carry(:items, [item])
-		@model.carry(:currency, self.class.const_get(:CURRENCY))
+		@model.carry(:currency, currency)
 		user = @session.user
 		if(creditable? && (hosp = user.model))
 			name, last = hosp.contact.split(' ')
@@ -49,9 +49,6 @@ class RegisterDownload < Global
 			@model.carry(:name_first, name)
 			@model.carry(:email, user.unique_email)
 		end
-	end
-	def currency
-		self.class.const_get(:CURRENCY)
 	end
 end
 class RegisterInvoicedDownload < RegisterDownload

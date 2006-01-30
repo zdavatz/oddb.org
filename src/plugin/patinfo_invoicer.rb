@@ -84,11 +84,15 @@ module ODDB
 				items.each { |item|
 					if(item.type == :annual_fee)
 						tim = item.time
-						days = (date - Date.new(tim.year, tim.month, tim.day)).to_f
+						item_date = Date.new(tim.year, tim.month, tim.day)
+						exp = (item_date > (date << 6)) ? (date >> 12) : date
+						exp_time = Time.local(exp.year, exp.month, exp.day)
+						days = (exp - item_date).to_f
 						factor = days/diy
 						item.data ||= {}
-						item.data.update({:last_valid_date => date, :days => days})
+						item.data.update({:last_valid_date => exp, :days => days})
 						item.quantity = factor
+						item.expiry_time = exp_time
 					end
 				}
 			end
@@ -219,6 +223,14 @@ module ODDB
 			}
 			companies
 		end
+		def pdf_name(item)
+			name = item.text
+			if(/^[0-9]{5} [0-9]{2}$/.match(name))
+				name.tr(' ', '_')
+			elsif((ptr = item.item_pointer) && (seq = ptr.resolve(@app)))
+				[seq.iksnr, seq.seqnr].join('_')
+			end
+		end
 		def recent_items(day) # also takes a range of Dates
 			fd = nil
 			ld = nil
@@ -235,6 +247,10 @@ module ODDB
 			all_items.select { |item|
 				range.include?(item.time)
 			}
+		end
+		def sequence_resolved(pointer)
+			pointer.resolve(@app)
+		rescue StandardError
 		end
 	end
 end
