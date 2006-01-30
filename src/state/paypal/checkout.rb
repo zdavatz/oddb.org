@@ -34,9 +34,9 @@ module Checkout
 	end
 	def create_invoice(input)
 		pointer = Persistence::Pointer.new([:invoice])
-		invoice = @session.app.update(pointer, {:currency => currency})
+		invoice = @session.app.update(pointer.creator, {:currency => currency})
 		@model.items.each { |abstract|
-			item_ptr = pointer + [:item]
+			item_ptr = invoice.pointer + [:item]
 			time = Time.now
 			file = abstract.text
 			duration = abstract.duration
