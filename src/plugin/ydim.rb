@@ -60,18 +60,20 @@ module ODDB
 			elsif((ptr = invoice.user_pointer) && (user = ptr.resolve(@app)))
 				comp_or_hosp = ((user.respond_to?(:model)) ? user.model : user) || user
 				items = invoice.items.values
-				ydim_inv = inject_from_items(invoice_date(items), comp_or_hosp, items)
+				ydim_inv = inject_from_items(invoice_date(items), comp_or_hosp, items,
+																		invoice.currency || 'CHF')
 				ydim_inv.payment_received = invoice.payment_received?
 				ydim_inv.odba_store
 				invoice.ydim_id = ydim_inv.unique_id
 				invoice.odba_store
 			end
 		end
-		def inject_from_items(date, comp_or_hosp, items)
+		def inject_from_items(date, comp_or_hosp, items, currency='CHF')
 			ydim_connect { |client|
 				ydim_inv = client.create_invoice(debitor_id(comp_or_hosp))
 				ydim_inv.description = invoice_description(items)
 				ydim_inv.date = date
+				ydim_inv.currency = currency
 				ydim_inv.payment_period = 10
 				item_data = sort_items(items).collect { |item| 
 					data = item.ydim_data 

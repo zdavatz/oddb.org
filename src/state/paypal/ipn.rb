@@ -4,6 +4,7 @@
 require 'state/global_predefine'
 require 'net/https'
 require 'util/http'
+require 'plugin/ydim'
 require 'view/paypal/ipn'
 
 module ODDB
@@ -35,7 +36,8 @@ class Ipn < State::Global
 				status = response.body
 				if(status == 'VERIFIED')
 					invoice.payment_received!
-					invoice.odba_isolated_store
+					YdimPlugin.new(@session.app).inject(invoice)
+					#invoice.odba_isolated_store
 					invoice.types.each { |type|
 						case type
 						when :poweruser
