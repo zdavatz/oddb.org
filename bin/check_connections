@@ -17,9 +17,9 @@ def check(name, obj, odba_id)
 	end
 end
 def check_reached(name, obj, stub, reached)
-	if(stub && stub.is_a?(ODBA::Stub))
-		reached.push(stub.odba_id)
-		check(name, obj, stub.odba_id)
+	if(stub && stub.is_a?(ODBA::Persistable) && !stub.odba_unsaved?)
+		reached.push(stub.odba_id.to_i)
+		#check(name, obj, stub.odba_id)
 	end
 end
 def check_collection(odba_id, &block)
@@ -45,66 +45,77 @@ def check_hash(obj, odba_id, reached, target_ids)
 	}
 end
 
-checked = []
+found = []
 reached = []
+checked = []
 max = ODBA.storage.max_id
 puts "#### Starting ID-Check ####"
 $stdout.flush
 
 1.upto(max) { |id|
-	if(dump = ODBA.storage.restore(id))
-		obj = ODBA.marshaller.load(dump)
+	checked.push(id)
+	begin
+		if(dump = ODBA.storage.restore(id))
+			found.push(id)
+			obj = ODBA.marshaller.load(dump)
 
 ## don't lose any target_ids
-		target_ids = obj.odba_target_ids
+			target_ids = obj.odba_target_ids.collect { |tid| tid.to_i }
 
 ## check reachability
-#=begin
-		checked.push(id)
-		unless(obj.odba_name.nil?)
-			reached.push(id)
-		end
-		obj.instance_variables.each { |name|
-			check_reached(name, obj, obj.instance_variable_get(name), reached)
-		}
-#=end
+begin
+			if(obj.odba_name)
+				reached.push(id)
+			end
+			obj.instance_variables.each { |name|
+				check_reached(name, obj, obj.instance_variable_get(name), reached)
+			}
+end
 
 ## move all collections to collection table
-#=begin
-		size = obj.odba_collection.size
-		if(size > 0)
-			puts "moving #{size} elements to collection-table"
-			obj.odba_collection.each { |key, value|
-				begin
-					key_dump = ODBA.marshaller.dump(key.odba_isolated_stub)
-					value_dump = ODBA.marshaller.dump(value.odba_isolated_stub)
-					ODBA.storage.collection_store(id, key_dump, value_dump)	
-				rescue DBI::ProgrammingError => e
-					puts "rescued #{e.message}"
-				end
-			}
-		end
-#=end
+=begin
+			size = obj.odba_collection.size
+			if(size > 0)
+				puts "moving #{size} elements to collection-table"
+				obj.odba_collection.each { |key, value|
+					begin
+						key_dump = ODBA.marshaller.dump(key.odba_isolated_stub)
+						value_dump = ODBA.marshaller.dump(value.odba_isolated_stub)
+						ODBA.storage.collection_store(id, key_dump, value_dump)	
+					rescue DBI::ProgrammingError => e
+						puts "rescued #{e.message}"
+					end
+				}
+			end
+=end
 ## correct prefetchability
-#=begin
-		obj.odba_prefetch = false
-		obj.instance_variable_set('@odba_target_ids', nil)
-		dump = obj.odba_isolated_dump
-		ODBA.storage.store(id, dump, obj.odba_name, obj.odba_prefetch?)
-#=end
+=begin
+			obj.odba_prefetch = false
+			obj.instance_variable_set('@odba_target_ids', nil)
+=end
+
+## store back corrected
+=begin
+			dump = obj.odba_isolated_dump
+			ODBA.storage.store(id, dump, obj.odba_name, obj.odba_prefetch?)
+=end
 
 ## ensure object connections
-#=begin
-		if(obj.is_a?(Hash))
-			check_hash(obj, id, reached, target_ids)
-		elsif(obj.is_a?(Array))
-			check_array(obj, id, reached, target_ids)
-		end
-		target_ids.compact!
-		target_ids.uniq!
-		ODBA.storage.ensure_object_connections(id, target_ids)
-#=end
+begin
+			if(obj.is_a?(Hash))
+				check_hash(obj, id, reached, target_ids)
+			elsif(obj.is_a?(Array))
+				check_array(obj, id, reached, target_ids)
+			end
+			target_ids.compact!
+			target_ids.uniq!
+			#ODBA.storage.ensure_object_connections(id, target_ids)
+end
 
+		end
+	rescue Exception => e
+		printf("%s while checking %i\n", e.class, id)
+		next
 	end
 	print " " * 8
 	print "\b" * 8
@@ -112,14 +123,18 @@ $stdout.flush
 	print "\b" * 8
 	$stdout.flush
 }
-checked.uniq!
-reached.uniq!
-puts "checked #{checked.size} objects"
-puts "reached #{reached.size} objects"
+checked = checked.compact.uniq
+reached = reached.compact.uniq
+puts "checked:   #{max} objects"
+puts "valid:     #{(found & reached).size} objects"
+puts "found:     #{found.size} objects"
+puts "reached:   #{reached.size} objects"#: #{reached.inspect}"
+puts "unreached: #{(found - reached).size}"
+puts "not found: #{(reached - found).size}"
 
 ## delete unreached (collect garbage)
-#=begin
-unreached = (checked - reached)
+begin
+unreached = (found - reached)
 del_size = unreached.size
 puts "deleting #{del_size} objects"
 unreached.each_with_index { |id, idx|
@@ -130,5 +145,6 @@ unreached.each_with_index { |id, idx|
 	print "\b" * 8
 	$stdout.flush
 }
-#=end
+end
 puts "#### ID-Check complete ####"
+ODBA.cache_server.print_stats
