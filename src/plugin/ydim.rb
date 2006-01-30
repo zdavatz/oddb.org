@@ -31,8 +31,12 @@ module ODDB
 																 else
 																	 'dt_pharma'
 																 end
+															 else
+																 'dt_info'
 															 end
 				debitor.odba_store
+				comp_or_hosp.ydim_id = debitor.unique_id
+				comp_or_hosp.odba_store
 				debitor
 			}
 		end
