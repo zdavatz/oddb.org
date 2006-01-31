@@ -23,11 +23,15 @@ module ODDB
 					@attributes['src'] = @lookandfeel.resource_global(:sponsor, name)
 					@attributes['alt'] = @model.name
 				end
+				@span = HtmlGrid::Span.new(@model, @session, self)
+				@span.value = @lookandfeel.lookup(:sponsor_until, 
+					@lookandfeel.format_date(@model.sponsor_until))
+				@span.css_class = 'logo-r'
 			end
 			def to_html(context)
 				url = @lookandfeel._event_url(:sponsorlink)
 				context.a({'href' => url}) { 
-					context.img(@attributes)
+					context.img(@attributes) << @span.to_html(context)
 				}
 			end
 		end

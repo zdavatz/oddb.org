@@ -5,12 +5,13 @@ require 'htmlgrid/composite'
 require 'htmlgrid/text'
 require 'htmlgrid/link'
 #require 'htmlgrid/flash'
-require 'view/logohead'
+require 'view/sponsorhead'
 
 module ODDB
 	module View
 		class WelcomeHead < HtmlGrid::Composite
 			include Personal
+			include SponsorDisplay
 			CSS_CLASS = 'composite'
 			CSS_MAP = {
 				[0,0]	=>	'logo',
@@ -46,12 +47,6 @@ module ODDB
 						link.set_attribute('href', href)
 						link
 					#end
-				end
-			end
-			def sponsor(model, session)
-				if((spons = @session.sponsor) && spons.valid? \
-					&& @lookandfeel.enabled?(:sponsorlogo))
-					View::SponsorLogo.new(spons, session, self)
 				end
 			end
 		end

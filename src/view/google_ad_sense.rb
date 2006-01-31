@@ -16,8 +16,9 @@ module ODDB
 				end
 			end
 			def active_sponsor?
-				((spons = @session.sponsor) && spons.valid? \
-					&& @lookandfeel.enabled?(:sponsorlogo, false))
+				((spons = @session.sponsor) && spons.valid?)
+				# \
+				#	&& @lookandfeel.enabled?(:sponsorlogo))
 			end
 		end
 		class GoogleAdSense < HtmlGrid::Component
