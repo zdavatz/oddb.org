@@ -32,8 +32,8 @@ class SponsorHead < CommonLogoHead
 	def sponsor(model, session)
 		#if((spons = @session.sponsor) \
 		#&& sponsor_represents?(spons, model))
-		if((spons = @session.sponsor) \
-			&& @lookandfeel.enabled?(:sponsorlogo, false))
+		if(((spons = @session.sponsor) \
+				&& @lookandfeel.enabled?(:sponsorlogo)))
 			View::SponsorLogo.new(spons, session, self)
 		elsif(@lookandfeel.enabled?(:google_adsense))
 			ad_sense(model, session)
@@ -58,7 +58,7 @@ class SponsorHead < CommonLogoHead
 end
 module SponsorMethods
 	def head(model, session)
-		if(@lookandfeel.enabled?(:sponsorlogo, false))
+		if(@lookandfeel.enabled?(:sponsorlogo))
 			View::SponsorHead.new(model, session, self)
 		else
 			View::LogoHead.new(model, session, self)

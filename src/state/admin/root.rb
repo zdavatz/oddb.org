@@ -171,7 +171,8 @@ module Root
 		State::Admin::PatinfoStats.new(@session,[])
 	end
 	def sponsor
-		model = @session.app.sponsor
+		pointer = Persistence::Pointer.new([:sponsor, @session.flavor])
+		model = pointer.resolve(@session.app) || Persistence::CreateItem.new(pointer)
 		State::Admin::Sponsor.new(@session, model)
 	end
 	def substances

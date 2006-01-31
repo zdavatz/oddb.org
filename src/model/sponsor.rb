@@ -12,7 +12,7 @@ module ODDB
 		attr_accessor :sponsor_until, :company, :url
 		attr_reader :logo_filenames
 		def initialize
-			@pointer = Pointer.new([:sponsor])
+			super
 			@logo_filenames = {}
 		end
 		def company_name

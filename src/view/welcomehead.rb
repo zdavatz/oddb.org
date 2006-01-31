@@ -50,7 +50,7 @@ module ODDB
 			end
 			def sponsor(model, session)
 				if((spons = @session.sponsor) && spons.valid? \
-					&& @lookandfeel.enabled?(:sponsorlogo, false))
+					&& @lookandfeel.enabled?(:sponsorlogo))
 					View::SponsorLogo.new(spons, session, self)
 				end
 			end

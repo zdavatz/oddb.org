@@ -68,6 +68,7 @@ class OddbPrevalence
 		@notification_logger ||= ODDB::NotificationLogger.new
 		@patinfos ||= {}
 		@registrations ||= {}
+		@sponsors ||= {}
 		@substances ||= {}
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
@@ -320,6 +321,10 @@ class OddbPrevalence
 	def create_slate(name)
 		slate = ODDB::Slate.new(name)
 		@slates.store(name, slate)
+	end
+	def create_sponsor(flavor)
+		sponsor = ODDB::Sponsor.new
+		@sponsors.store(flavor, sponsor)
 	end
 	def create_substance(key=nil)
 		if(!key.nil? && (subs = substance(key)))
@@ -868,12 +873,8 @@ class OddbPrevalence
 		key = soundex.join(' ')
 		ODBA.cache.retrieve_from_index("substance_soundex_index", key)
 	end
-	def sponsor
-		if(@sponsor.nil?)
-			@sponsor = ODDB::Sponsor.new
-			odba_store
-		end
-		@sponsor
+	def sponsor(flavor)
+		@sponsors[flavor]
 	end
 	def substance(key)
 		if(key.to_i.to_s == key.to_s)

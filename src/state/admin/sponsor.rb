@@ -14,8 +14,8 @@ class Sponsor < State::Admin::Global
 	PATH = File.expand_path('../../../doc/resources/sponsor', 
 		File.dirname(__FILE__))
 	def update
-		keys = [:sponsor_until, :company_name, :logo_file, :logo_fr, :url]
-		input = user_input(keys)#, keys)
+		keys = [:sponsor_until, :company_name, :logo_file, :logo_fr, :url ]
+		input = user_input(keys)
 		name = input[:company_name]
 		values = {
 			:sponsor_until	=>	input[:sponsor_until],
@@ -41,7 +41,7 @@ class Sponsor < State::Admin::Global
 					name = store_logo(logo_fr, :fr, @model.logo_filenames[:fr])
 					@model.logo_filenames.store(:fr, name)
 				end
-				@model.odba_isolated_store
+				@model.odba_store
 			rescue StandardError => e
 				err = create_error(:e_exception, :logo_file, e.message)	
 				@errors.store(:logo_file, err)
@@ -65,7 +65,7 @@ class Sponsor < State::Admin::Global
 		filename
 	end
 	def keyname(io, key)
-		[key, io.original_filename].join('_')
+		[@session.flavor, key, io.original_filename].join('_')
 	end
 end
 		end

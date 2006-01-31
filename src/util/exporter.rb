@@ -29,7 +29,6 @@ module ODDB
 			mail_patinfo_invoices
 			mail_lookandfeel_invoices
 			mail_company_index_invoices
-			mail_hosting_invoices
 			run_on_monthday(1) {
 				mail_download_invoices
 			}
@@ -168,9 +167,6 @@ module ODDB
 		end
 		def mail_feedback_stats
 			mail_stats('feedback')
-		end
-		def mail_hosting_invoices
-			HostingInvoicer.new(@app).run
 		end
 		def mail_lookandfeel_invoices
 			LookandfeelInvoicer.new(@app).run
