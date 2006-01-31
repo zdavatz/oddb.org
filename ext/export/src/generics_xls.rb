@@ -27,9 +27,24 @@ module ODDB
 			}
 			def initialize(path)
 				@workbook = Spreadsheet::Excel.new(path)
-				fmt_title = Format.new(:bold=>true)
-				@workbook.add_format(fmt_title)
+				@fmt_title = Format.new(:bold=>true)
+				@workbook.add_format(@fmt_title)
+				@fmt_original = Format.new(:color => 'red')
+				@workbook.add_format(@fmt_original)
+				@fmt_original_name = Format.new(:bold => true, :color => 'red')
+				@workbook.add_format(@fmt_original_name)
+				@fmt_generic = Format.new(:color => 'green')
+				@workbook.add_format(@fmt_generic)
+				@fmt_generic_name = Format.new(:bold => true, :color => 'green')
+				@workbook.add_format(@fmt_generic_name)
 				@worksheet = @workbook.add_worksheet("Generikaliste")
+				@worksheet.format_column(0, 24.0, @fmt_original_name)
+				@worksheet.format_column(1..3, 4.0, @fmt_original)
+				@worksheet.format_column(4, 24.0, @fmt_original_name)
+				@worksheet.format_column(5..12, 4.0, @fmt_original)
+				@worksheet.format_column(13..14, 4.0, @fmt_generic)
+				@worksheet.format_column(15, 24.0, @fmt_generic_name)
+				@worksheet.format_column(16..23, 4.0, @fmt_generic)
 				columns = [
 					'Basename Original', 'Basename Original erweitert',
 					'EAN-Code Original', 'Pharmacode  Original', 
@@ -43,7 +58,7 @@ module ODDB
 					'Publikums-preis Generikum (inkl. MwSt)',
 					'Zulassungsinhaberin', 'Kat.', 'SL', 'Reg.Dat.', 'Bemerkung',
 				]
-				@worksheet.write(0, 0, columns, fmt_title)
+				@worksheet.write(0, 0, columns, @fmt_title)
 				app = ODBA.cache.fetch_named('oddbapp', nil)
 				smj_grp = app.log_group(:swissmedic_journal)
 				smj_log = smj_grp.latest
@@ -79,7 +94,7 @@ module ODDB
 					package.basename, 
 					sprintf("%s %s/%i", package.basename, 
 						package.dose, package.comparable_size),
-					package.barcode.to_s, package.pharmacode, 
+					package.barcode, package.pharmacode, 
 					package.name, package.dose, 
 					package.comparable_size, 
 					format_price(package.price_exfactory),
@@ -94,7 +109,8 @@ module ODDB
 					comparable.company_name,
 					comparable.ikscat, (comparable.sl_entry ? 'SL' : nil),
 					comparable.registration_date, remarks(package, comparable)
-				].collect { |item| item.to_s }
+				].collect { |item| 
+					(item.is_a?(Date)) ? item.strftime('%d.%m.%Y') : item.to_s }
 			end
 			def remarks(package, comparable)
 				[
