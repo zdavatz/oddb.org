@@ -40,11 +40,11 @@ class SponsorHead < CommonLogoHead
 		end
 	end
 	def sponsor_until(model, session)
-		#if((spons = @session.sponsor) \
-			#&& sponsor_represents?(spons, model))
-		@lookandfeel.lookup(:sponsor_until, 
-												@lookandfeel.format_date(spons.sponsor_until))
-		#end
+		if(spons = @session.sponsor)
+				#&& sponsor_represents?(spons, model))
+			@lookandfeel.lookup(:sponsor_until, 
+													@lookandfeel.format_date(spons.sponsor_until))
+		end
 	end
 	private
 	def sponsor_represents?(spons, model)
