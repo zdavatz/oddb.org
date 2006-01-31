@@ -120,6 +120,7 @@ module ODDB
 				export_ouwerkerk
 			end
 			if(@smj_updated)
+				update_trade_status
 				update_medwin_companies
 			end
 		end
@@ -168,7 +169,7 @@ module ODDB
 			update_simple(MedwinPackagePlugin, 'Medwin-Packages')
 		end
 		def update_trade_status
-			update_simple(MedwinPackagePlugin, 'Trade-Status', :update_trade_status)
+			update_immediate(MedwinPackagePlugin, 'Trade-Status', :update_trade_status)
 		end
 		def update_migel
 			klass = MiGeLPlugin
@@ -241,26 +242,38 @@ module ODDB
 			log = @app.update(pointer.creator, values)
 			log.notify(subj)
 		end
+		def notify_error(klass, subj, error)
+			log = Log.new(Date.today)
+			log.report = [
+				"Plugin: #{klass}",
+				"Error: #{error.class}",
+				"Message: #{error.message}",
+				"Backtrace:",
+				error.backtrace.join("\n"),
+			].join("\n")
+			log.recipients = RECIPIENTS.dup
+			log.notify("Error: #{subj}")
+		end
 		def wrap_update(klass, subj, &block)
 			ODBA.transaction {
 				begin
 					block.call
 				rescue Exception => e #RuntimeError, StandardError => e
-					log = Log.new(Date.today)
-					log.report = [
-						"Plugin: #{klass}",
-						"Error: #{e.class}",
-						"Message: #{e.message}",
-						"Backtrace:",
-						e.backtrace.join("\n"),
-					].join("\n")
-					log.recipients = RECIPIENTS.dup
-					log.notify("Error: #{subj}")
+					notify_error(klass, subj, e)
 					raise
 				end
 			}
 		rescue Exception
 			nil
+		end
+		def update_immediate(klass, subj, update_method=:update)
+			plug = klass.new(@app)
+			plug.send(update_method)
+			log = Log.new(Date.today)
+			log.update_values(log_info(plug))
+			log.notify(subj)
+		rescue Exception => e #RuntimeError, StandardError => e
+			notify_error(klass, subj, e)
 		end
 		def update_notify_simple(klass, subj, update_method=:update)
 			wrap_update(klass, subj) {
