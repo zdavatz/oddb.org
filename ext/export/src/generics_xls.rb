@@ -27,9 +27,7 @@ module ODDB
 			}
 			def initialize(path)
 				@workbook = Spreadsheet::Excel.new(path)
-				fmt_default = Format.new(:bg_color => 0x7FFF)
-				@workbook.instance_variable_set('@format', fmt_default)
-				fmt_title = Format.new(:bold=>true, :bg_color => 0x7FFF)
+				fmt_title = Format.new(:bold=>true)
 				@workbook.add_format(fmt_title)
 				@worksheet = @workbook.add_worksheet("Generikaliste")
 				columns = [
