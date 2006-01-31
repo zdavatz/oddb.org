@@ -25,7 +25,7 @@ class SponsorLink < HtmlGrid::PassThru
 			@session.remote_addr,
 			nil,
 		].join(';')
-		LogFile.append(:sponsor, line, Time.now)
+		LogFile.append("sponsor_#{@session.flavor}", line, Time.now)
 		super
 	end
 end

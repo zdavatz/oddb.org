@@ -24,16 +24,18 @@ require 'ext/meddata/src/ean_factory'
 module ODDB
 	class Updater
 		# Recipients for all Update-Logs go here...
-		RECIPIENTS = []
+		RECIPIENTS = ['hwyss@ywesee.com']
 		LOG_RECIPIENTS = {
-			:powerlink	=>	['matthijs.ouwerkerk@just-medical.com'],
-			:passthru		=>	[],	
-			:sponsor		=>	['christina.kobi@helvepharm.ch'],	
+			:powerlink					=>	['matthijs.ouwerkerk@just-medical.com'],
+			:passthru						=>	[],	
+			:sponsor_generika		=>	['christina.kobi@helvepharm.ch'],	
+			:sponsor_gcc				=>	['mediservice@ywesee.com'],	
 		}
 		LOG_FILES = {
-			:powerlink		=>	'Powerlink-Statistics',
-			#:passthru		=>	'Banner-Clicks',
-			:sponsor			=>	'Exklusiv-Sponsoring'
+			:powerlink				=>	'Powerlink-Statistics',
+			#:passthru				=>	'Banner-Clicks',
+			:sponsor_generika	=>	'Exklusiv-Sponsoring',
+			:sponsor_gcc			=>	'Exklusiv-Sponsoring',
 		}
 		def initialize(app)
 			@app = app

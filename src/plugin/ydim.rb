@@ -23,9 +23,9 @@ module ODDB
 				debitor.address_lines = comp_or_hosp.ydim_address_lines
 				debitor.location = comp_or_hosp.ydim_location.to_s
 				debitor.debitor_type = case comp_or_hosp
-															 when Hospital
+															 when ODDB::Hospital
 																 'dt_hospital'
-															 when Company
+															 when ODDB::Company
 																 if(ba = comp_or_hosp.business_area)
 																	 ba.gsub(/^ba/, 'dt')
 																 else

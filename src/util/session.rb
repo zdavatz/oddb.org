@@ -218,5 +218,8 @@ module ODDB
 		def set_persistent_user_input(key, val)
 			@persistent_user_input.store(key, val)
 		end
+		def sponsor
+			@app.sponsor(flavor)
+		end
   end
 end
