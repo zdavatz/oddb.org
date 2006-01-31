@@ -11,7 +11,6 @@ module Checkout
 	CURRENCY = 'EUR'
 	def checkout
 		input = user_input(checkout_keys(), checkout_mandatory)
-		puts input.inspect
 		if(error?)
 			self
 		else
@@ -34,9 +33,9 @@ module Checkout
 	end
 	def create_invoice(input)
 		pointer = Persistence::Pointer.new([:invoice])
-		invoice = @session.app.update(pointer, {:currency => currency})
+		invoice = @session.app.update(pointer.creator, {:currency => currency})
 		@model.items.each { |abstract|
-			item_ptr = pointer + [:item]
+			item_ptr = invoice.pointer + [:item]
 			time = Time.now
 			file = abstract.text
 			duration = abstract.duration
@@ -58,9 +57,8 @@ module Checkout
 	end
 	def create_user(input)
 		input.each { |key, val| @session.set_cookie_input(key, val) }
-		email = input.delete(:email)
 		pointer = Persistence::Pointer.new([:admin_subsystem], 
-			[:download_user, email])
+			[:download_user, input[:email]])
 		@session.app.update(pointer.creator, input)
 	end
 	def currency
