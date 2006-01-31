@@ -20,7 +20,7 @@ module ODDB
 		DEFAULT_ZONE = :drugs
 		SERVER_NAME = 'www.oddb.org'
 		PERSISTENT_COOKIE_NAME = 'oddb-preferences'
-		QUERY_LIMIT = 10
+		QUERY_LIMIT = 5
 		QUERY_LIMIT_AGE = 60 * 60 * 24
 		PROCESS_TIMEOUT = 30
 		HTML_TIMEOUT = 30
