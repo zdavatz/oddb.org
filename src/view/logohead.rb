@@ -3,6 +3,7 @@
 
 require 'htmlgrid/composite'
 require 'view/logo'
+require 'view/sponsorlogo'
 require 'view/google_ad_sense'
 require 'view/personal.rb'
 require 'view/tab_navigation'
@@ -12,28 +13,38 @@ require 'view/language_chooser'
 
 module ODDB
 	module View
+		module SponsorDisplay
+			def sponsor(model, session=@session)
+				unless(@session.user.valid?)
+					if((spons = @session.sponsor) && spons.valid?)
+						View::SponsorLogo.new(spons, session, self)
+					elsif(@lookandfeel.enabled?(:google_adsense))
+						ad_sense(model, session)
+					end
+				end
+			end
+=begin ## unused code: does the sponsor represent at least one product?
+			private
+			def sponsor_represents?(spons, model)
+				model.respond_to?(:any?) \
+				&& (date = spons.sponsor_until) \
+				&& date >= Date.today \
+				&& model.any? { |item| 
+					spons.represents?(item) || (item.respond_to?(:packages) \
+						&& item.packages.any? { |pac| spons.represents?(pac)})
+				}
+			end
+=end
+		end
 		class CommonLogoHead < HtmlGrid::Composite
 			include GoogleAdSenseMethods
 			include Personal
+			include SponsorDisplay
 			CSS_CLASS = 'composite'
 			GOOGLE_CHANNEL = '6336403681'
 			GOOGLE_FORMAT = '468x60_as'
 			GOOGLE_WIDTH = '468'
 			GOOGLE_HEIGHT = '60'
-			def sponsor(model, session)
-				if((spons = @session.sponsor) && spons.valid? \
-					&& @lookandfeel.enabled?(:sponsorlogo, false))
-					View::SponsorLogo.new(spons, session, self)
-				elsif(@lookandfeel.enabled?(:google_adsense))
-					ad_sense(model, session)
-				end
-			end
-			def sponsor_until(model, session)
-				if((spons = @session.sponsor) && spons.valid?)
-					@lookandfeel.lookup(:sponsor_until, 
-						@lookandfeel.format_date(spons.sponsor_until))
-				end
-			end
 		end
 		class LogoHead < CommonLogoHead
 			include UserSettings
