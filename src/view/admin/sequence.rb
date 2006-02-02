@@ -23,18 +23,19 @@ module SequenceAgentList
 		[5,0]	=>	:chemical_dose,
 		[7,0]	=>	:equivalent_substance,
 		[8,0]	=>	:equivalent_dose,
+		[9,0]	=>	:spagyric_dose,
 	}
 	CSS_HEAD_MAP = {
 		[2,0]	=>	'subheading-r',
 		[5,0]	=>	'subheading-r',
 	}
 	CSS_MAP = {
-		[1,0]	=>	'list',
-		[2,0]	=>	'list-r',
+		[1,0]		=>	'list',
+		[2,0]		=>	'list-r',
 		[3,0,2]	=>	'list',
-		[5,0]	=>	'list-r',
+		[5,0]		=>	'list-r',
 		[6,0,2]	=>	'list',
-		[8,0]	=>	'list-r',
+		[8,0,2]	=>	'list-r',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'subheading'

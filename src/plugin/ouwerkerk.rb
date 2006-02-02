@@ -210,7 +210,7 @@ module ODDB
 		private
 		def date_str
 			[
-				@smj.date.strftime("Swissmedic %m/%Y"),
+				(@smj.date.strftime("Swissmedic %m/%Y") unless @smj.nil?),
 				(@bsv.date.strftime("SL %m/%Y") unless @bsv.nil?),
 			].compact.join(" - ")
 		end

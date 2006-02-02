@@ -34,7 +34,7 @@ module PackageMethods
 				return self
 			end
 			@model.append(ikscode)
-			@model = @session.app.update(@model.pointer, {})
+			@model = @session.app.create(@model.pointer)
 		end
 		keys = [
 			:descr,
