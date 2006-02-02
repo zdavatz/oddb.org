@@ -8,7 +8,6 @@ require 'spreadsheet/excel'
 module ODDB
 	class OuwerkerkPlugin < Plugin
 		RECIPIENTS = [
-			'beatrix.struchen@just-medical.com',
 			'matthijs.ouwerkerk@just-medical.com',
 			'Josef.Hunkeler@pue.admin.ch',
 		]
