@@ -78,7 +78,7 @@ module ODDB
 				ydim_inv.description = invoice_description(items)
 				ydim_inv.date = date
 				ydim_inv.currency = currency
-				ydim_inv.payment_period = 10
+				ydim_inv.payment_period = 30
 				item_data = sort_items(items).collect { |item| 
 					data = item.ydim_data 
 					data[:text] = item_text(item)
