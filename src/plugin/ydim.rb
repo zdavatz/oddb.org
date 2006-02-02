@@ -80,6 +80,9 @@ module ODDB
 				ydim_inv.currency = currency
 				ydim_inv.payment_period = 30
 				item_data = sort_items(items).collect { |item| 
+					if(item.quantity.to_i.to_f != item.quantity.to_f)
+						ydim_inv.precision = 3
+					end
 					data = item.ydim_data 
 					data[:text] = item_text(item)
 					data
