@@ -167,22 +167,19 @@ module ODDB
 		]
 		DICTIONARIES = {
 			'de'	=>	{
+				:DOCTYPE									=>	' <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 transitional//EN">',
 				:explain_complementary		=>	'Lila&nbsp;=&nbsp;Arzneimittel der Komplement&auml;rmedizin',
 				:explain_original					=>	'Blau&nbsp;=&nbsp;Original',
 				:explain_unknown					=>	'Grau&nbsp;=&nbsp;Nicht&nbsp;klassifiziert',
 				:home_welcome							=>  "",
+				:price_compare						=>	'F&uuml;r den Direktvergleich klicken Sie bitte <br>auf den Medikamentennamen im Suchergebnis!',
 			},
 			'fr'	=>	{
 				:explain_complementary		=>	'Lilas&nbsp;=&nbsp;Produit Compl&eacute;mentaire',
 				:explain_original					=>	'bleu&nbsp;=&nbsp;original',
 				:explain_unknown					=>	'gris&nbsp;=&nbsp;pas classes',
 				:home_welcome							=>  "",
-			},
-			'en'	=>	{
-				:explain_complementary		=>	'Mauve&nbsp;=&nbsp;Complementary Drug',
-				:explain_original					=>	'Blue&nbsp;=&nbsp;Original',
-				:explain_unknown					=>	'Gray&nbsp;=&nbsp;not&nbsp;classified',
-				:home_welcome							=>  "",
+				:price_compare						=>	'Pour la comparaison directe, cliquez s.v.p.<br>sur le nom du m&eacute;dicament dans le r&eacute;sultat de la recherche!',
 			},
 		}
 		RESOURCES = { 

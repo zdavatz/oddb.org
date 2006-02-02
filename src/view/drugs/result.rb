@@ -67,7 +67,6 @@ class ResultForm < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]		=>	:title_found,
 		[0,0,1]	=>	:dsp_sort,
-		[1,0]		=>	:export_csv,
 		[0,1]		=>	'price_compare',
 		[1,1]		=>	SearchForm,
 		[0,2]		=>	View::Drugs::ResultList,
@@ -94,6 +93,11 @@ class ResultForm < HtmlGrid::Composite
 		case @session.user
 		when ODDB::AdminUser, ODDB::CompanyUser
 			components.store([0,2], self::class::ROOT_LISTCLASS)
+		end
+		if(@lookandfeel.enabled?(:export_csv))
+			components.store([1,0], :export_csv)
+		else
+			colspan_map.store([0,0], 2)
 		end
 		super
 	end
