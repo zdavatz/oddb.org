@@ -111,6 +111,7 @@ module ODDB
 			:logout,
 			:mailinglist,
 			:merge,
+			:migel_alphabetical,
 			:narcotics,
 			:new_active_agent,
 			:new_company,

@@ -786,11 +786,18 @@ class OddbPrevalence
 		result.atc_classes = search_by_indication(query, lang, result)
 		result
 	end
-	def search_migel_products(query, lang)
+	def search_migel_alphabetical(query, lang)
 		if(lang.to_s != "fr") 
 			lang = "de"
 		end
 		index_name = "migel_index_#{lang}"
+		ODBA.cache.retrieve_from_index(index_name, query)
+	end
+	def search_migel_products(query, lang)
+		if(lang.to_s != "fr") 
+			lang = "de"
+		end
+		index_name = "migel_fulltext_index_#{lang}"
 		ODBA.cache.retrieve_from_index(index_name, query)
 	end
 	def search_narcotics(query, lang)

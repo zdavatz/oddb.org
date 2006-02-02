@@ -104,22 +104,23 @@ module ODDB
 		def update_product(id,  subgroup, row, language)
 			productcd = id[2,3].join(".")
 			pointer = subgroup.pointer + [:product, productcd]
-			input = row.at(15).gsub(/[ \t]+/, " ")
-			text = input
-			text.tr!("\v", "\n")
+			name = row.at(12)
+			product_text = row.at(15).gsub(/[ \t]+/, " ")
+			product_text.tr!("\v", "\n")
 			limitation = ''
-			if(idx = text.index("Limitation"))
-				limitation = text[idx..-1].strip
-				text = text[0...idx].strip
-			else
-				text.strip!
+			if(idx = product_text.index(/Limitation|Limitazione/))
+				limitation = product_text.slice!(idx..-1).strip
 			end
+			if(name.to_s.strip.empty?)
+				name = product_text.slice!(/^[^\n]+/)
+			end
+			product_text.strip!
 			type = SALE_TYPES[id.at(4)]
 			price = ((row.at(18).to_f) * 100).round
 			date = date_object(row.at(20))
 			lim_flag = row.at(14)
 			hash = {
-				language => text,
+				language => name,
 				:limitation => (lim_flag == 'L'),
 				:price => price,
 				:type => type,
@@ -130,6 +131,10 @@ module ODDB
 				hash.store(:qty, qty)
 			end
 			product = @app.update(pointer.creator, hash) 
+			unless(product_text.empty?)
+				pt_ptr = pointer + [:product_text]
+				@app.update(pt_ptr.creator, {language => product_text})
+			end
 			if(id[3] != "00")
 				1.upto(3) { |num|
 					prodcd =  [id[2], '00', num].join('.')
@@ -137,11 +142,6 @@ module ODDB
 						product.add_product(prod)
 					end
 				}
-			end
-			product_text = row.at(12)
-			unless(product_text.empty?)
-				pt_ptr = pointer + [:product_text]
-				@app.update(pt_ptr.creator, {language => product_text})
 			end
 			unless(limitation.empty?)
 				lim_ptr = pointer + [:limitation_text]

@@ -10,6 +10,7 @@ module ODDB
 class Global < State::Global
 	HOME_STATE = State::Migel::Init
 	ZONE = :migel
+	ZONE_NAVIGATION = [:migel_alphabetical]
 	def limit_state
 		State::Migel::Limit.new(@session, nil)
 	end

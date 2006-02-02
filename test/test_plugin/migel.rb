@@ -186,16 +186,20 @@ Zur Insulintherapie bei:
 			pointer = sg_pointer + [:product, '01.00.2']
 			pointers = [
 				pointer,
+				pointer + [:product_text],
 				pointer + [:limitation_text],
 				pointer + [:unit],
 			]
 			expecteds = [
 				{
-					:de => "Insulinpumpen-System, Miete\nInkl. Zubehör und Verbrauchsmaterial.",
+					:de => "Insulinpumpen-System, Miete",
 					:price =>	900,
 					:type	 => :rent,
 					:date  => Date.new(2006),
 					:limitation => true,
+				},
+				{
+					:de => "Inkl. Zubehör und Verbrauchsmaterial.",
 				},
 				{
 					:de => "Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenversicherers und mit ausdrücklicher Bewilligung des Vertrauensarztes oder der Vertrauensärztin.\nZur Insulintherapie bei:\n- Extrem labiler Diabetes.\n- Einstellung auch mit der Methode der Mehrfachinjektionen unbefriedigend.\n- Indikationen des Pumpeneinsatzes und Betreuung des Patienten durch ein qualifiziertes Zentrum oder, nach Rücksprache mit dem Vertrauensarzt, durch einen Arzt, der in der Anwendung der Insulinpumpen ausgebildet ist.",
@@ -204,7 +208,7 @@ Zur Insulintherapie bei:
 					:de => 'Miete/Tag',
 				},
 			]
-			@app.mock_handle(:update, 3) { |pointer, values|
+			@app.mock_handle(:update, 4) { |pointer, values|
 				ptr = pointers.shift
 				assert_equal(ptr.creator, pointer) 	
 				expected = expecteds.shift
@@ -232,16 +236,20 @@ Limitation: prise en charge seulement si l'assureur-maladie a donné préalablemen
 			pointer = sg_pointer + [:product, '01.00.2']
 			pointers = [
 				pointer,
+				pointer + [:product_text],
 				pointer + [:limitation_text],
 				pointer + [:unit],
 			]
 			expecteds = [
 				{
-					:fr => "Système pompe à insuline, location\nY c. accessoires et matériel à usage unique.",
+					:fr => "Système pompe à insuline, location",
 					:price =>	900,
 					:type	 => :rent,
 					:date  => Date.new(2006),
 					:limitation => true,
+				},
+				{
+					:fr => "Y c. accessoires et matériel à usage unique.",
 				},
 				{
 					:fr => "Limitation: prise en charge seulement si l'assureur-maladie a donné préalablement une garantie spéciale et avec l'autorisation expresse du médecin-conseil. La thérapie est liée aux conditions suivantes:\n- diabète extrêmement labile; \n- impossibilité de stabiliser l'affection de manière satisfaisante par la méthode des injections multiples; \n- indication d'une pose de pompe et suivi du patient dans un centre spécialisé ou, avec l'accord du médecinconseil, par un médecin expérimenté dans l'utilisation des pompes à insuline.",
@@ -250,7 +258,7 @@ Limitation: prise en charge seulement si l'assureur-maladie a donné préalablemen
 					:fr => 'location/jour',
 				},
 			]
-			@app.mock_handle(:update, 3) { |pointer, values|
+			@app.mock_handle(:update, 4) { |pointer, values|
 				ptr = pointers.shift
 				assert_equal(ptr.creator, pointer) 	
 				expected = expecteds.shift
@@ -271,16 +279,25 @@ Inkl. Zubehör und Verbrauchsmaterial.","","","9","B","01.01.2006"
 			subgroup.mock_handle(:pointer) {
 				sg_pointer
 			}
-			@app.mock_handle(:update, 1) { |pointer, values|
-				ptr = sg_pointer + [:product, '01.00.2']
-				assert_equal(ptr.creator, pointer) 	
-				expected = {
-					:de => "Insulinpumpen-System, Miete\nInkl. Zubehör und Verbrauchsmaterial.",
+
+			pointer = sg_pointer + [:product, '01.00.2']
+			pointers = [
+				pointer, pointer + :product_text,	
+			]
+			expecteds = [
+				{
+					:de => "Insulinpumpen-System, Miete",
 					:price =>	900,
 					:type	 => :rent,
 					:date  => Date.new(2006),
 					:limitation => true,
-				}
+				},
+				{	:de	=>	"Inkl. Zubehör und Verbrauchsmaterial."  },
+			]
+			@app.mock_handle(:update, 2) { |pointer, values|
+				ptr = pointers.shift
+				assert_equal(ptr.creator, pointer) 	
+				expected = expecteds.shift
 				assert_equal(expected, values)
 		  }	
 			@plugin.update_product(id, subgroup, row, :de)

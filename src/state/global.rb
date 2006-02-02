@@ -37,6 +37,7 @@ require 'state/interactions/basket'
 require 'state/interactions/init'
 require 'state/interactions/result'
 require 'state/migel/init'
+require 'state/migel/alphabetical'
 require 'state/migel/limitationtext'
 require 'state/migel/group'
 require 'state/migel/subgroup'
@@ -95,6 +96,7 @@ module ODDB
 				:limitation_texts			=>	State::Drugs::LimitationTexts,
 				:login_form						=>	State::Admin::Login,
 				:mailinglist					=>	State::User::MailingList,
+				:migel_alphabetical		=>	State::Migel::Alphabetical,
 				:patinfos							=>	State::Drugs::Patinfos,
 				:narcotics						=>	State::Drugs::Narcotics,
 				:plugin								=>	State::User::Plugin,

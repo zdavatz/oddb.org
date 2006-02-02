@@ -17,13 +17,9 @@ require 'view/resultfoot'
 module ODDB
 	module View
 		module Migel
-class ResultList < HtmlGrid::List
+class List < HtmlGrid::List
 	include View::AdditionalInformation
 	include DataFormat
-	CSS_CLASS = 'composite'
-	SYMBOL_MAP = {
-		:date		=> HtmlGrid::DateValue,
-	}
 	COMPONENTS = {
 		[0,0] =>	:limitation_text,
 		[1,0] =>	:migel_code,
@@ -32,11 +28,7 @@ class ResultList < HtmlGrid::List
 		[4,0] =>  :price,
 		[5,0]	=>	:qty_unit,
 	}
-	CSS_MAP = {
-		[0,0,4]	=>	'list',
-		[4,0] =>	'list-r',
-		[5,0]		=>	'list',
-	}
+	CSS_CLASS = 'composite'
 	CSS_HEAD_MAP = {
 		[0,0]	=> 'th',
 		[1,0]	=> 'th',
@@ -45,8 +37,17 @@ class ResultList < HtmlGrid::List
 		[4,0] => 'th-r',
 		[5,0] => 'th',
 	}
+	CSS_MAP = {
+		[0,0,4]	=>	'list',
+		[4,0] =>	'list-r',
+		[5,0]		=>	'list',
+	}
 	LOOKANDFEEL_MAP = {
 		:limitation_text => :nbsp,
+	}
+	SORT_HEADER = false
+	SYMBOL_MAP = {
+		:date		=> HtmlGrid::DateValue,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	SORT_DEFAULT = nil
@@ -69,6 +70,27 @@ class ResultList < HtmlGrid::List
 		end
 		super
 	end
+	def limitation_text(model)
+		if(sltxt = model.limitation_text)
+			limitation_link(sltxt)
+		end
+	end
+	def product_description(model)
+		link = PointerLink.new(:to_s, model, @session, self)
+		text = [
+			model,
+			(model.product_text if(model.respond_to?(:product_text))),
+		].compact.collect { |item| 
+			item.send(@session.language) 
+		}.join(': ').gsub("\n", ' ')
+		if(text.size > 60)
+			text = text[0,57] << '...'
+		end
+		link.value = text
+		link
+	end
+end
+class ResultList < View::Migel::List
 	def compose_list(model=@model, offset=[0,0])
 		bg_flag = false
 		group = nil
@@ -92,22 +114,6 @@ class ResultList < HtmlGrid::List
 		@grid.add(values, xval, yval)
 		@grid.add_style(css, xval, yval, 3)
 		@grid.set_colspan(xval + 2, yval, @width - xval - 1)
-	end
-	def limitation_text(model)
-		if(sltxt = model.limitation_text)
-			limitation_link(sltxt)
-		end
-	end
-	def product_description(model)
-		link = PointerLink.new(:to_s, model, @session, self)
-		text = [
-			(model.product_text if(model.respond_to?(:product_text))),
-			model
-		].compact.collect { |item| 
-			item.send(@session.language) 
-		}.join(': ').gsub("\n", ' ')
-		link.value = text
-		link
 	end
 end
 class ResultComposite < HtmlGrid::Composite
