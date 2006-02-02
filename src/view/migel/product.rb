@@ -66,7 +66,7 @@ class ProductInnerComposite < HtmlGrid::Composite
 	LABELS = true
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
-	@@migel_pattern = /(\d\d)(?:\.(\d\d)(?:\.(\d\d\.\d\d\.\d))?)?/
+	@@migel_pattern = /Pos(?:ition|\.)?\s*(\d\d)(?:\.(\d\d)(?:\.(\d\d\.\d\d\.\d))?)?/
 	def description(model, key = :migel_product)
 		value = HtmlGrid::Value.new(key, model, @session, self)
 		if(model && (str = model.send(@session.language)))

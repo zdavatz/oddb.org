@@ -26,10 +26,25 @@ class ProductList < HtmlGrid::List
 	SYMBOL_MAP = {
 		:migel_code	=>	PointerLink,
 	}
+	LEGACY_INTERFACE = false
 	LOOKANDFEEL_MAP = {
 		:migel_code	=>	:title_product,
 		:description	=>	:nbsp,
 	}
+	def description(model)
+		link = PointerLink.new(:to_s, model, @session, self)
+		text = [
+			model,
+			(model.product_text if(model.respond_to?(:product_text))),
+		].compact.collect { |item| 
+			item.send(@session.language) 
+		}.join(': ').gsub("\n", ' ')
+		if(text.size > 60)
+			text = text[0,57] << '...'
+		end
+		link.value = text
+		link
+	end
 end
 class SubgroupInnerComposite < HtmlGrid::Composite
 	COMPONENTS = {
