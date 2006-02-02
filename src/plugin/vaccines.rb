@@ -30,7 +30,10 @@ module ODDB
 		SWISSMEDIC_SERVER = 'www.swissmedic.ch'
 		INDEX_PATH = '/de/fach/overall.asp?theme=0.00085.00003&theme_id=939'
 		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
-		DOSE_PATTERN = /(\d+(?:[,.]\d+)?)\s*((?:\/\d+)|[^\s\d]*)?/
+		DOSE_PATTERN  = /(\d+(?:[,.]\d+)?)\s*((?:\/\d+)|[^\s\d]*)?/
+		ENDMULTI_PATTERN = /\d+\s*Stk$/
+		MULTI_PATTERN = /(\d+\s+)\b(Fl|Fertigspr)\b/
+		SIZE_PATTERN  = /((\d+([.,]\d+)?x)?\d+([.,]\d+)?)?\s*([^\d\s]*)$/
 		class ParsedRegistration
 			attr_accessor :iksnr, :indication, :company, :ikscat
 			attr_reader :sequences
@@ -196,10 +199,22 @@ module ODDB
 			if(/^7680[0-9]{9}$/.match(ean))
 				pack = ParsedPackage.new
 				pack.ikscd = ean[-4..-2,]
-				if(sstring = name.slice!(/(\d+(?:[.,]\d+)?)?\s+([^\d\s]*)$/))
+				mult, desc = nil
+				if(mstring = name.slice!(ENDMULTI_PATTERN))
+					mult, desc = mstring.split(/\s+/, 2)
+					name.strip!
+				end
+				if(sstring = name.slice!(SIZE_PATTERN))
 					qty, unit = sstring.split(/\s+/, 2)
 					if(qty.empty?)
 						qty = 1
+					end
+					if(mstring = name.slice!(MULTI_PATTERN))
+						mult ||= mstring.split(/\s+/, 2).first
+					end
+					if(mult)
+						sstring = mult + ' x ' + sstring
+						qty = qty.to_i * mult.to_i
 					end
 					pack.sizestring = sstring
 					pack.size = Dose.new(qty, unit)
@@ -246,7 +261,7 @@ module ODDB
 		def report
 			fmt = "%-14s %3i"
 			['@created', '@updated', '@deactivated'].collect { |var|
-				sprintf(fmt, var[1..-1].capitalize << ':', instance_variable_get(var))
+				sprintf(fmt, var[1..-1].capitalize << ':', instance_variable_get(var).size)
 			}.join("\n")
 		end
 		def row_at(row, index)

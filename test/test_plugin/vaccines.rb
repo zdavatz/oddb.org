@@ -94,6 +94,28 @@ module ODDB
 			assert_equal(Dose.new(2, 'ml'), pack.size)
 			assert_equal(Dose.new(200 ,'mcg'), pack.dose)
 		end
+		def test_parse_refdata_detail_10x
+			refdata = "7680006400023INFANRIX HEXA Inj Lös 10 Fertigspr 1 Dos"
+			pack = @plugin.parse_refdata_detail(refdata)
+			assert_instance_of(VaccinePlugin::ParsedPackage, pack)
+			assert_equal('002', pack.ikscd)
+			assert_equal(Dose.new(10, 'Fertigspr'), pack.size)
+			assert_equal('10 x 1 Dos', pack.sizestring)
+		end
+		def test_parse_refdata_detail_tachosil_1
+			refdata = "7680006700178TACHOSIL Schwamm 3x2.5cm"
+			pack = @plugin.parse_refdata_detail(refdata)
+			assert_instance_of(VaccinePlugin::ParsedPackage, pack)
+			assert_equal('017', pack.ikscd)
+			assert_equal('3x2.5cm', pack.sizestring)
+		end
+		def test_parse_refdata_detail_tachosil_2
+			refdata = "7680006701168TACHOSIL Schwamm 4.8x4.8cm 2 Stk"
+			pack = @plugin.parse_refdata_detail(refdata)
+			assert_instance_of(VaccinePlugin::ParsedPackage, pack)
+			assert_equal('116', pack.ikscd)
+			assert_equal('2 x 4.8x4.8cm', pack.sizestring)
+		end
 		def test_get_packages__1_on_1
 			reg = FlexMock.new
 			reg.mock_handle(:iksnr) { 'iksnr' }
