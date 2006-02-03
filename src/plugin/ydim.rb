@@ -9,6 +9,10 @@ require 'openssl'
 module ODDB
 	class YdimPlugin < Plugin
 		SECONDS_IN_DAY = 60*60*24
+		SALUTATIONS = {
+			'salutation_m'	=>	'Herr',	
+			'salutation_f'	=>	'Frau',	
+		}
 		def create_debitor(comp_or_hosp)
 			ydim_connect { |client|
 				debitor = client.create_debitor
@@ -16,7 +20,15 @@ module ODDB
 					|| comp_or_hosp.user.unique_email
 				if((name = comp_or_hosp.fullname) && !name.empty?)
 					debitor.name = name
-					debitor.contact = comp_or_hosp.contact
+					if(comp_or_hosp.is_a?(InvoiceObserver))
+						debitor.salutation = SALUTATIONS[comp_or_hosp.salutation]
+						debitor.contact_firstname = comp_or_hosp.name_first
+						debitor.contact = comp_or_hosp.name
+					else
+						contact = comp_or_hosp.contact.to_s.dup
+						debitor.salutation = contact.slice!(/^(Herr|Frau)\s+/).strip
+						debitor.contact_firstname, debitor.contact = contact.split(' ', 2)
+					end
 				else
 					debitor.name = comp_or_hosp.contact
 				end
