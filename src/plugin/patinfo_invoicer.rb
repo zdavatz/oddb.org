@@ -40,6 +40,8 @@ module ODDB
 					if(day == company.pref_invoice_date)
 						## work with duplicates
 						items = items.collect { |item| item.dup }
+						## augment with active html-patinfos
+						items += html_items(company)
 						## adjust the annual fee according to company settings
 						adjust_company_fee(company, items)
 						## adjust the fee according to date
@@ -108,12 +110,14 @@ module ODDB
 			end
 		end
 		def adjust_overlap_fee(date, items)
+			first_invoice = items.any? { |item| item.type == :activation }
 			date_end = (date >> 12)
+			exp_time = Time.local(date_end.year, date_end.month, date_end.day)
 			diy = (date_end - date).to_f
 			items.each { |item|
 				days = diy
 				date_start = date
-				if(tim = item.expiry_time)
+				if(!first_invoice && (tim = item.expiry_time))
 					valid = Date.new(tim.year, tim.month, tim.day)
 					if(valid > date_start)
 						date_start = valid
@@ -122,12 +126,15 @@ module ODDB
 						item.quantity = factor
 					end
 				end
-				item.data ||= {}
-				item.data.update({
-					:days => days,
-					:first_valid_date => date_start, 
-					:last_valid_date => date_end,
-				})
+				item.expiry_time = exp_time
+				if(item.type == :annual_fee)
+					item.data ||= {}
+					item.data.update({
+						:days => days,
+						:first_valid_date => date_start, 
+						:last_valid_date => date_end,
+					})
+				end
 			}
 		end
 		def all_items
@@ -222,6 +229,31 @@ module ODDB
 				end
 			}
 			companies
+		end
+		def html_items(company)
+			invoiced = {}
+			first = Date.today
+			last = first >> 12
+			company.registrations.inject([]) { |items, reg|
+				if(reg.active?)
+					reg.each_sequence { |seq|
+						if(seq.public_package_count > 0 && !seq.pdf_patinfo \
+							 && (patinfo = seq.patinfo.odba_instance) \
+							 && !invoiced.include?(patinfo))
+							invoiced.store(patinfo, true)
+							item = AbstractInvoiceItem.new
+							item.price = PI_UPLOAD_PRICES[:annual_fee]
+							item.time = Time.now
+							item.type = :annual_fee
+							item.unit = 'Jahresgebühr'
+							item.vat_rate = VAT_RATE
+							item.item_pointer = seq.pointer
+							items.push(item)
+						end
+					}
+				end
+				items
+			}
 		end
 		def pdf_name(item)
 			name = item.text

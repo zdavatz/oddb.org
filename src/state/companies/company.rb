@@ -183,6 +183,7 @@ class RootCompany < UserCompany
 			:index_package_price,
 			:index_price,
 			:invoice_email,
+			:invoice_htmlinfos,
 			:logo_file,
 			:lookandfeel_invoice_date,
 			:lookandfeel_member_count,

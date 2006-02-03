@@ -180,7 +180,8 @@ module ODDB
 		end
 		def sort_items(items)
 			items.sort_by { |item| 
-				[item.time.to_i / SECONDS_IN_DAY, item.text.to_s, item.type.to_s]
+				[item.time.to_i / SECONDS_IN_DAY, (item.type == :activation) ? 0 : 1,
+					item_text(item), item.type.to_s]
 			}
 		end
 		def ydim_connect(&block)
