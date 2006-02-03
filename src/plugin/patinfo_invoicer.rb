@@ -12,6 +12,8 @@ module ODDB
 		end
 		def send_annual_invoices(day = Date.today)
 			items = all_items.select { |item| item.type == :annual_fee }
+			## augment with active html-patinfos
+			items += html_items(day)
 			groups = group_by_company(items)
 			groups.each { |company, items|
 				## if autoinvoice is disabled, but a preferred invoice_date is set, 
@@ -40,8 +42,6 @@ module ODDB
 					if(day == company.pref_invoice_date)
 						## work with duplicates
 						items = items.collect { |item| item.dup }
-						## augment with active html-patinfos
-						items += html_items(company)
 						## adjust the annual fee according to company settings
 						adjust_company_fee(company, items)
 						## adjust the fee according to date
@@ -230,31 +230,35 @@ module ODDB
 			}
 			companies
 		end
-		def html_items(company)
+		def html_items(first)
 			invoiced = {}
-			first = Date.today
+			items = []
 			last = first >> 12
-			company.registrations.inject([]) { |items, reg|
-				if(reg.active?)
-					reg.each_sequence { |seq|
-						if(seq.public_package_count > 0 && !seq.pdf_patinfo \
-							 && (patinfo = seq.patinfo.odba_instance) \
-							 && !invoiced.include?(patinfo))
-							invoiced.store(patinfo, true)
-							item = AbstractInvoiceItem.new
-							item.price = PI_UPLOAD_PRICES[:annual_fee]
-							item.text = [reg.iksnr, seq.seqnr].join(' ')
-							item.time = Time.now
-							item.type = :annual_fee
-							item.unit = 'Jahresgebühr'
-							item.vat_rate = VAT_RATE
-							item.item_pointer = seq.pointer
-							items.push(item)
+			@app.companies.each_value { |company|
+				if(company.invoice_htmlinfos && company.pref_invoice_date == first)
+					company.registrations.each { |reg|
+						if(reg.active?)
+							reg.each_sequence { |seq|
+								if(seq.public_package_count > 0 && !seq.pdf_patinfo \
+									 && (patinfo = seq.patinfo.odba_instance) \
+									 && !invoiced.include?(patinfo))
+									invoiced.store(patinfo, true)
+									item = AbstractInvoiceItem.new
+									item.price = PI_UPLOAD_PRICES[:annual_fee]
+									item.text = [reg.iksnr, seq.seqnr].join(' ')
+									item.time = Time.now
+									item.type = :annual_fee
+									item.unit = 'Jahresgebühr'
+									item.vat_rate = VAT_RATE
+									item.item_pointer = seq.pointer
+									items.push(item)
+								end
+							}
 						end
 					}
 				end
-				items
 			}
+			items
 		end
 		def pdf_name(item)
 			name = item.text
