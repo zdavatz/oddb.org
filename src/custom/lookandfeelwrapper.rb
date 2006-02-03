@@ -23,6 +23,7 @@ module ODDB
 			:home_drugs,
 			:home_migel,
 			:migel,
+			:migel_alphabetical,
 			:recent_registrations,
 			:search_reset,
 			:sequences,
@@ -187,7 +188,15 @@ module ODDB
 		}
 		HTML_ATTRIBUTES = { }
 		def navigation
-			[ :legal_note, :sequences, :home ]
+			[ :legal_note ] + zone_navigation + [ :home ]
+		end
+		def zone_navigation
+			case @session.zone
+			when :migel
+				[:migel_alphabetical]
+			else
+				[:sequences]
+			end
 		end
 	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
@@ -236,12 +245,20 @@ module ODDB
 			:external_css	=>	'http://www.just-medical.com/css/oddb.css',
 		}
 		def navigation
-			[ :meddrugs_update, :legal_note, :data_declaration, 
-				:home ]
+			[ :meddrugs_update, :legal_note, :data_declaration ] \
+				+ zone_navigation + [ :home ]
 		end
 		def zones
 			[ State::Drugs::Init, State::Drugs::AtcChooser, 
 				State::Drugs::Sequences, :migel ]
+		end
+		def zone_navigation
+			case @session.zone
+			when :migel
+				[:migel_alphabetical]
+			else
+				[]
+			end
 		end
 	end
 	class LookandfeelSwissmedic < SBSM::LookandfeelWrapper
