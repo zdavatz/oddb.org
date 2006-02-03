@@ -243,6 +243,7 @@ module ODDB
 							invoiced.store(patinfo, true)
 							item = AbstractInvoiceItem.new
 							item.price = PI_UPLOAD_PRICES[:annual_fee]
+							item.text = [reg.iksnr, seq.seqnr].join(' ')
 							item.time = Time.now
 							item.type = :annual_fee
 							item.unit = 'Jahresgebühr'
