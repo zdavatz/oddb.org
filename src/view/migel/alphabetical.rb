@@ -12,6 +12,7 @@ class AlphabeticalList < View::Migel::List
 end
 class AlphabeticalComposite < HtmlGrid::Composite
 	include ResultFootBuilder
+	EXPLAIN_RESULT = View::Migel::ExplainResult
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
 		[0,0]	=>	AlphabeticalList,

@@ -116,8 +116,19 @@ class ResultList < View::Migel::List
 		@grid.set_colspan(xval + 2, yval, @width - xval - 1)
 	end
 end
+class ExplainResult < HtmlGrid::Composite
+	COMPONENTS = {
+		[0,0]	=>	'explain_migel_position',
+		[0,2]	=>	'explain_migel_date',
+		[0,3]	=>	'explain_migel_price',
+	}
+	CSS_MAP = {	
+		[0,0,1,4]	=>	'explain-infos',
+	}
+end
 class ResultComposite < HtmlGrid::Composite
 	include ResultFootBuilder
+	EXPLAIN_RESULT = View::Migel::ExplainResult
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
 		[0,0]	=>	ResultList,

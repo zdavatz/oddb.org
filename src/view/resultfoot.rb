@@ -98,9 +98,10 @@ module ODDB
 			end
 		end
 		module ResultFootBuilder
+			EXPLAIN_RESULT = ExplainResult
 			def result_foot(model, session=@session)
 				if(@lookandfeel.navigation.include?(:legal_note))
-					View::ExplainResult.new(model, @session, self)
+					self.class::EXPLAIN_RESULT.new(model, @session, self)
 				else
 					View::ResultFoot.new(model, @session, self)
 				end
@@ -111,7 +112,7 @@ module ODDB
 			COLSPAN_MAP	= {
 			}
 			COMPONENTS = {
-				[0,0]	=>	View::ExplainResult,
+				[0,0]	=>	:explain_result,
 				[1,0]	=>	:legal_note,
 			}
 			COMPONENT_CSS_MAP = {
@@ -123,6 +124,9 @@ module ODDB
 				[1,0]	=>	'explain-result-r',
 			}
 			CSS_CLASS = 'composite'
+			def explain_result(model, session=@session)
+				@container.class::EXPLAIN_RESULT.new(model, @session, self)
+			end
 			def legal_note(model, session=@session)
 			  link = super(model)
 				link.css_class = 'subheading'

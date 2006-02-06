@@ -444,6 +444,10 @@ Zeno Davatz
 				:explain_hc								=>	'ausser Handel',
 				:explain_hors_commerce		=>	'a.H. = ausser Handel, d.h. nicht in <a href="http://www.refdata.ch">refdata.ch</a> aufgelistet',
 				:explain_li								=>	'L = Limitationen',
+				:explain_migel_date				=>	'Datum = Datum der Preisaktualisierung',
+				:explain_migel_position		=>	'Positionsnummer = Die ersten zwei Ziffern der Positionsnummer bezeichnen die Produktgruppe. Die folgenden Ziffernpaare, getrennt durch einen Punkt, bezeichnen in Folge die Untergruppe, das jeweilige Produkt und das Zubehör/Verbrauchsmaterial. Die letzte Einzelziffer bezeichnet, ob die Position beim Miet- und/oder Kaufsystem anwendbar ist. Ziffer 1 = Kauf, 2 = Miete, 3 = Kauf und Miete. Eine Positionsnummer für den Kauf eines Gerätes hat die Endziffer 1 und eine Position für die Miete eine Gerätes hat die Endziffer 2. Bei Positionen für Zubehör, Verbrauchsmaterial und anderen Abgeltungen (z.B. Lieferung) im Zusammenhang mit einem Gerät, können Positionen mit Endziffer 1 nur beim Kauf des dazugehörigen Gerätes und Positionen mit Endziffer 2 nur bei der Miete des Gerätes zusätzlich verrechnet werden. Positionen mit Endziffer 3 können zu einem gekauften oder gemieteten Gerät zusätzlich verrechnet werden.
+',
+				:explain_migel_price			=>	'Preis = Von den Krankenversicherern im Rahmen der <a href="http://www.bag.admin.ch/kv/gesetze/d/">obligatorischen Krankenpflegeversicherung</a> als Pflichtleistung zu vergütender Maximalbetrag.',
 				:explain_narc							=>	'BM = Bet&auml;ubungsmittel',
 				:explain_original					=>	'Rot&nbsp;=&nbsp;Original',
 				:explain_original_url			=>	'http://www.interpharma.ch',
