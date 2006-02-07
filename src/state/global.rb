@@ -17,6 +17,7 @@ require 'state/drugs/register_download'
 require 'state/drugs/init'
 require 'state/drugs/limitationtext'
 require 'state/drugs/limitationtexts'
+require 'state/drugs/vaccines'
 require 'state/admin/orphaned_patinfos'
 require 'state/admin/orphaned_patinfo'
 require 'state/admin/patinfo_deprived_sequences'
@@ -105,6 +106,7 @@ module ODDB
 				:paypal_thanks				=>	State::User::PayPalThanks,
 				:recent_registrations =>	State::Drugs::RecentRegs,
 				:sequences						=>	State::Drugs::Sequences,
+				:vaccines							=>	State::Drugs::Vaccines,
 			}	
 			HOME_STATE = State::Drugs::Init
 			LIMITED = false

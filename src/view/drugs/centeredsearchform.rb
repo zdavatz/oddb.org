@@ -65,6 +65,9 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,4,2]	=>	'comma_separator',
 				[0,4,3]	=>	:narcotics_size,
 				[0,4,4]	=>	:narcotics,
+				[0,4,5]	=>	'comma_separator',
+				[0,4,6]	=>	:vaccines_size,
+				[0,4,7]	=>	:vaccines,
 				[0,5]		=>	:fachinfo_size,
 				[0,5,1]	=>	:fi_count_text,
 				[0,5,2]	=>	'comma_separator',
@@ -131,6 +134,12 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	def narcotics(model, session)
 		link = HtmlGrid::Link.new(:narcotics, model, session, self)
 		link.href = @lookandfeel._event_url(:narcotics)
+		link.set_attribute('class', 'list')
+		link
+	end
+	def vaccines(model, session)
+		link = HtmlGrid::Link.new(:vaccines, model, session, self)
+		link.href = @lookandfeel._event_url(:vaccines)
 		link.set_attribute('class', 'list')
 		link
 	end

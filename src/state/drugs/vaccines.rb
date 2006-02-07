@@ -1,17 +1,17 @@
 #!/usr/bin/env ruby
-#State::Drugs::Narcotics  -- oddb -- 16.11.2005 -- spfenninger@ywesee.com
+# State::Drugs::Vaccines -- oddb -- 06.02.2006 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
 require 'util/interval'
-require 'view/drugs/narcotics'
+require 'view/drugs/vaccines'
 
 module ODDB
 	module State
 		module Drugs
-class Narcotics < State::Drugs::Global
+class Vaccines < State::Drugs::Global
 	include IndexedInterval
-	VIEW = View::Drugs::Narcotics
-	DIRECT_EVENT = :narcotics
+	VIEW = View::Drugs::Vaccines
+	DIRECT_EVENT = :vaccines
 	PERSISTENT_RANGE  = true
 	RANGE_PATTERNS = {
 		'a'			=>	'aäÄáÁàÀâÂ',
@@ -44,7 +44,7 @@ class Narcotics < State::Drugs::Global
 	}
 	Limited = true
 	def index_lookup(range)
-		@session.search_narcotics(range, @session.language)
+		@session.search_vaccines(range)
 	end
 end
 		end

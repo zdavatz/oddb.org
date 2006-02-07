@@ -167,6 +167,7 @@ module ODDB
 			:update,
 			:update_bsv,
 			:update_incomplete,
+			:vaccines,
 			:vcard,
 			:wait,
 			:ywesee_contact,

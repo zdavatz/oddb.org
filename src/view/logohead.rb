@@ -14,6 +14,12 @@ require 'view/language_chooser'
 module ODDB
 	module View
 		module SponsorDisplay
+			include GoogleAdSenseMethods
+			CSS_CLASS = 'composite'
+			GOOGLE_CHANNEL = '6336403681'
+			GOOGLE_FORMAT = '468x60_as'
+			GOOGLE_WIDTH = '468'
+			GOOGLE_HEIGHT = '60'
 			def sponsor(model, session=@session)
 				unless(@session.user.valid?)
 					if((spons = @session.sponsor) && spons.valid?)
@@ -37,21 +43,14 @@ module ODDB
 =end
 		end
 		class CommonLogoHead < HtmlGrid::Composite
-			include GoogleAdSenseMethods
 			include Personal
 			include SponsorDisplay
-			CSS_CLASS = 'composite'
-			GOOGLE_CHANNEL = '6336403681'
-			GOOGLE_FORMAT = '468x60_as'
-			GOOGLE_WIDTH = '468'
-			GOOGLE_HEIGHT = '60'
 		end
 		class LogoHead < CommonLogoHead
 			include UserSettings
 			COMPONENTS = {
 				[0,0]		=>	View::Logo,
 				[0,1]		=>	:language_chooser,
-				#[1,0]		=>	:ad_sense,
 				[1,0]		=>	:sponsor,
 				[1,0,2]	=>	:welcome,
 				[1,1]		=>	View::TabNavigation,
@@ -69,7 +68,6 @@ module ODDB
 		class PopupLogoHead < CommonLogoHead
 			COMPONENTS = {
 				[0,0]		=>	View::PopupLogo,
-				#[1,0]		=>	:ad_sense,
 				[1,0]		=>	:sponsor,
 				[0,1]		=>	:language_chooser,
 			}

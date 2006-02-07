@@ -125,7 +125,12 @@ module ODDB
 			}
 			CSS_CLASS = 'composite'
 			def explain_result(model, session=@session)
-				@container.class::EXPLAIN_RESULT.new(model, @session, self)
+				klass = nil
+				if(defined?(@container.class::EXPLAIN_RESULT))
+					klass = @container.class::EXPLAIN_RESULT
+				end
+				klass ||= View::ExplainResult
+				klass.new(model, @session, self)
 			end
 			def legal_note(model, session=@session)
 			  link = super(model)

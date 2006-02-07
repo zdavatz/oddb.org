@@ -118,12 +118,10 @@ class ResultList < View::Migel::List
 end
 class ExplainResult < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]	=>	'explain_migel_position',
-		[0,2]	=>	'explain_migel_date',
-		[0,3]	=>	'explain_migel_price',
+		[0,0]	=>	'explain_vaccines',
 	}
 	CSS_MAP = {	
-		[0,0,1,4]	=>	'explain-infos',
+		[0,0]	=>	'explain-infos',
 	}
 end
 class ResultComposite < HtmlGrid::Composite

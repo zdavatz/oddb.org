@@ -228,6 +228,14 @@ class OddbPrevalence
 	def count_patinfos
 		@patinfos.size + active_pdf_patinfos.size
 	end
+	def count_vaccines
+		@registrations.values.inject(0) { |inj, reg|
+			if(reg.generic_type == :vaccine)
+				inj += reg.active_package_count
+			end
+			inj
+		}
+	end
 	def cyp450(id)
 		@cyp450s[id]
 	end
@@ -656,6 +664,7 @@ class OddbPrevalence
 			@migel_count = migel_products.size
 			@package_count = count_packages()
 			@patinfo_count = count_patinfos()
+			@vaccine_count = count_vaccines()
 		}
 		self.odba_isolated_store
 	end
@@ -807,6 +816,18 @@ class OddbPrevalence
 		index_name = "narcotics_#{lang}"
 		ODBA.cache.retrieve_from_index(index_name, query)
 	end
+	def search_vaccines(query)
+		conditions = {
+			'generic_type'	=> {
+				'value'				=>	'vaccine',
+			},
+			'name'					=> {
+				'condition'		=>	'like',
+				'value'				=>	query.downcase,
+			},
+		}
+		ODBA.cache.retrieve_from_index('sequence_generic_type_index', conditions)
+	end
 	def search_exact_sequence(query)
 		sequences = search_sequences(query)
 		_search_exact_classified_result(sequences)
@@ -948,6 +969,11 @@ class OddbPrevalence
 		 atc_array.first
 	 end
   end
+	def vaccine_count
+		@vaccine_count ||= count_vaccines()
+	end
+
+	## indices
 	def rebuild_indices(name=nil)
 		ODBA.cache.indices.size
 		begin
@@ -975,7 +1001,9 @@ class OddbPrevalence
 						ODBA.cache.fill_index(index_definition.index_name, 
 							source)
 					rescue Exception => e
+						puts e.class
 						puts e.message
+						puts e.backtrace
 					end
 					puts "finished in #{(Time.now - index_start) / 60.0} min"
 				end

@@ -268,6 +268,9 @@ module ODDB
 			def patinfo_size(model, session)
 				@session.app.patinfo_count
 			end
+			def vaccines_size(model, session)
+				@session.app.vaccine_count
+			end
 		end
 	end
 end

@@ -229,7 +229,6 @@ resolve_search_term: 'de.name.to_s.downcase'
 resolve_target: ''
 resolve_origin: ''
 init_source: 'self.fachinfos.values'
-fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'fachinfo_name_fr'
 origin_klass: 'ODDB::Fachinfo'
@@ -238,7 +237,6 @@ resolve_search_term: 'fr.name.to_s.downcase'
 resolve_target: ''
 resolve_origin: ''
 init_source: 'self.fachinfos.values'
-fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'narcotics_de'
 origin_klass: 'ODDB::Narcotic'
@@ -247,7 +245,6 @@ resolve_search_term: 'substances.collect { |sub| sub.de }'
 resolve_target: 'substances'
 resolve_origin: 'narcotic'
 init_source: 'self.substances.select { |sub| sub.narcotic }'
-fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'narcotics_fr'
 origin_klass: 'ODDB::Narcotic'
@@ -256,6 +253,17 @@ resolve_search_term: 'substances.collect { |sub| sub.fr }'
 resolve_target: 'substances'
 resolve_origin: 'narcotic'
 init_source: 'self.substances.select { |sub| sub.narcotic }'
-fulltext: false
-
-
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'sequence_generic_type_index'
+origin_klass: 'ODDB::Sequence'
+target_klass: 'ODDB::Sequence'
+resolve_search_term: 
+ generic_type:
+  type: varchar(20)
+  resolve: generic_type.to_s
+ name:
+  type: varchar(256)
+  resolve: name.downcase
+resolve_target: ''
+resolve_origin: ''
+init_source: 'self.sequences'

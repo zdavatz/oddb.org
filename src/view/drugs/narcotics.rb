@@ -63,12 +63,23 @@ class NarcoticList < HtmlGrid::List
 		model.send(@session.language)
 	end
 end
+class ExplainNarcotics < HtmlGrid::Composite
+	COMPONENTS = {
+		[0,0]	=>	'explain_narc_overview',
+		[1,0]	=>	'explain_narc_controlled',
+	}
+	CSS_MAP = {	
+		[0,0,2]	=>	'explain-infos',
+	}
+end
 class NarcoticsComposite < HtmlGrid::Composite
+	include ResultFootBuilder
+	EXPLAIN_RESULT = View::Drugs::ExplainNarcotics
 	COMPONENTS = {
 		[0,0] => :title_narcotics,
 		[1,0] => SearchForm,
 		[0,1] => NarcoticList,
-		[0,2] => View::ResultFoot,
+		[0,2] => :result_foot,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
