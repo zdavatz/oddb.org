@@ -33,7 +33,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,8]	=>	'legal-note-center',
 	}
 	def substance_count(model, session)
-		@session.app.substance_count
+		@session.app.substance_count.to_s << '&nbsp;'
 	end
 end	
 class GoogleAdSenseComposite < View::GoogleAdSenseComposite

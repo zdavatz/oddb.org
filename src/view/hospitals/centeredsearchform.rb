@@ -26,7 +26,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENT_CSS_MAP = {
 	}
 	def hospitals_count(model, session)
-		@session.hospital_count
+		@session.hospital_count.to_s << '&nbsp;'
 	end
 end	
 class GoogleAdSenseComposite < View::GoogleAdSenseComposite

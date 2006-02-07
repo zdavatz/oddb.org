@@ -36,7 +36,8 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,0]		=>	:language_chooser,
 		[0,1]		=>	View::Drugs::CenteredSearchForm,
 		[0,2]		=>	:search_explain, 
-		[0,3]		=>	View::CenteredNavigation,
+		#[0,3]		=>	View::CenteredNavigation,
+		[0,3]		=>	:atc_chooser,
 	}
 	CSS_MAP = {
 		[0,0,1,4]		=>	'ccomponent',
@@ -61,7 +62,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		elsif(@lookandfeel.enabled?(:data_counts))
 			components.update({
 				[0,4]		=>	:database_size,
-				[0,4,1]	=>	'database_size_text',
+				[0,4,1]	=>	:sequences,
 				[0,4,2]	=>	'comma_separator',
 				[0,4,3]	=>	:narcotics_size,
 				[0,4,4]	=>	:narcotics,
@@ -78,8 +79,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,6,2]	=>	'comma_separator',
 				[0,6,3]	=>	:limitation_size,
 				[0,6,4]	=>	:sl_count_text,
-				[0,7]		=>	'database_last_updated_txt',
-				[0,7,1]	=>	:database_last_updated,
+				[0,7]		=>	:recent_registrations,
 				[0,8]		=>	:new_feature,
 				[0,8,1]	=>	:download_generics,
 				[0,9]		=>	:generic_definition,

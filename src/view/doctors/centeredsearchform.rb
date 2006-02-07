@@ -29,7 +29,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	}
 	COMPONENT_CSS_MAP = { }
 	def doctor_count(model, session)
-		@session.doctor_count
+		@session.doctor_count.to_s << '&nbsp;'
 	end
 	def download_doctors(model, session)
 		link = HtmlGrid::Link.new(:download_doctors1, model, session, self)

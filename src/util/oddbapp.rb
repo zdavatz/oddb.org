@@ -73,6 +73,7 @@ class OddbPrevalence
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
 		@slates ||= {}
+		recount()
 		rebuild_atc_chooser()
 	end
 	# prevalence-methods ################################
@@ -227,6 +228,16 @@ class OddbPrevalence
 	end
 	def count_patinfos
 		@patinfos.size + active_pdf_patinfos.size
+	end
+	def count_recent_registrations
+		if((grp = log_group(:swissmedic_journal)) \
+			 && (log = grp.latest))
+			log.change_flags.select { |ptr, flags|
+				flags.include?(:new)
+			}.size
+		else 
+			0
+		end
 	end
 	def count_vaccines
 		@registrations.values.inject(0) { |inj, reg|
@@ -473,7 +484,7 @@ class OddbPrevalence
 		@hospitals.size
 	end
 	def doctor_count
-		@doctor_count ||= @doctors.size
+		@doctors.size
 	end
 	def doctor_by_origin(origin_db, origin_id)
 		# values.each instead of each_value for testing
@@ -650,6 +661,9 @@ class OddbPrevalence
 			@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
 		}
 	end
+	def recent_registration_count
+		@recent_registration_count ||= count_recent_registrations()
+	end
 	def recount
 		if(@bean_counter.is_a?(Thread) && @bean_counter.status)
 			@bean_counter.kill
@@ -664,9 +678,10 @@ class OddbPrevalence
 			@migel_count = migel_products.size
 			@package_count = count_packages()
 			@patinfo_count = count_patinfos()
+			@recent_registration_count = count_recent_registrations()
 			@vaccine_count = count_vaccines()
+			self.odba_isolated_store
 		}
-		self.odba_isolated_store
 	end
 	def registration(registration_id)
 		@registrations[registration_id]

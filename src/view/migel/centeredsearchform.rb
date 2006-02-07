@@ -54,7 +54,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		super
 	end
 	def migel_count(model, session)
-		@session.migel_count
+		@session.migel_count.to_s << '&nbsp;'
 	end
 	def download_migel(model, session)
 		link = HtmlGrid::Link.new(:download_migel1, model, session, self)

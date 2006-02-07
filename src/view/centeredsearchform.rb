@@ -121,7 +121,7 @@ module ODDB
 			}
 			SYMBOL_MAP = {
 				:atc_chooser_text	=>	HtmlGrid::Text,
-				:atc_chooser			=>	HtmlGrid::Link,
+				:atc_chooser			=>	CenteredNavigationLink,
 				:database_size		=>	HtmlGrid::Text,
 				:database_size_text	=>	HtmlGrid::Text,
 				:ddd_count_text		=>	HtmlGrid::Text,
@@ -131,17 +131,20 @@ module ODDB
 				:narcotics				=>	HtmlGrid::Link,
 				:plugin						=>	HtmlGrid::Link,
 				:search_explain		=>	HtmlGrid::Text,
+				:sequences				=>	CenteredNavigationLink,
 				:software_feedback=>	HtmlGrid::Link,
 			}
+=begin
 			def atc_chooser(model, session)
 				link = HtmlGrid::Link.new(:atc_chooser, model, session, self)
 				link.href = @lookandfeel._event_url(:atc_chooser)
 				link.label = true
-				link.set_attribute('class', 'list-b')
+				link.set_attribute('class', 'list')
 				link
 			end
+=end
 			def atc_ddd_size(mode, session)
-				@session.app.atc_ddd_count
+				@session.app.atc_ddd_count.to_s << '&nbsp;'
 			end
 			def beta(model, session)
 				link = HtmlGrid::Link.new(:beta, model, session, self)
@@ -150,7 +153,7 @@ module ODDB
 				link
 			end
 			def database_size(model, session)
-				@session.app.package_count
+				@session.app.package_count.to_s << '&nbsp;'
 			end
 			def database_last_updated(model, session)
 				HtmlGrid::DateValue.new(:last_medication_update, session.app, session, self)
@@ -194,7 +197,7 @@ module ODDB
 				link
 			end
 			def fachinfo_size(model, session)
-				@session.app.fachinfo_count
+				@session.app.fachinfo_count.to_s << '&nbsp;'
 			end
 			def generic_definition(model, session)
 				link = nil
@@ -227,7 +230,7 @@ module ODDB
 				link
 			end
 			def limitation_size(mode, session)
-				@session.app.limitation_text_count
+				@session.app.limitation_text_count.to_s << '&nbsp;'
 			end
 			def plugin(model, session)
 				link = HtmlGrid::Link.new(:plugin, model, session, self)
@@ -237,7 +240,7 @@ module ODDB
 				link
 			end
 			def narcotics_size(model, session)
-				@session.app.narcotics_count
+				@session.app.narcotics_count.to_s << '&nbsp;'
 			end
 			def new_feature(model, session)
 				span = HtmlGrid::Span.new(model, session, self)
@@ -247,11 +250,14 @@ module ODDB
 				span
 			end
 			def recent_registrations(model, session)
-				link = HtmlGrid::Link.new(:recent_registrations, model, session, self)
+				link = HtmlGrid::Link.new(:new_registrations, model, session, self)
 				link.href = @lookandfeel._event_url(:recent_registrations)
-				link.label = true
 				link.set_attribute('class', 'list')
-				link
+				if(grp = @session.app.log_group(:swissmedic_journal))
+					count = @session.app.recent_registration_count
+					date = HtmlGrid::DateValue.new(:newest_date, grp, @session, self)
+					[date, ',&nbsp;', count, '&nbsp;', link]
+				end
 			end
 			def paypal(model, session)
 				if(@lookandfeel.enabled?(:paypal))
@@ -266,10 +272,10 @@ module ODDB
 				link
 			end
 			def patinfo_size(model, session)
-				@session.app.patinfo_count
+				@session.app.patinfo_count.to_s << '&nbsp;'
 			end
 			def vaccines_size(model, session)
-				@session.app.vaccine_count
+				@session.app.vaccine_count.to_s << '&nbsp;'
 			end
 		end
 	end

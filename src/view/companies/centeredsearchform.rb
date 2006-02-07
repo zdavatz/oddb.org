@@ -28,7 +28,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,5]	=>	'legal-note-center',
 	}
 	def company_count(model, session)
-		@session.app.company_count
+		@session.app.company_count.to_s << '&nbsp;'
 	end
 end	
 class GoogleAdSenseComposite < View::GoogleAdSenseComposite

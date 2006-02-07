@@ -11,6 +11,7 @@ module ODDB
 			ODBA.transaction {
 				incomplete.accepted!(app)
 			}
+			app.recount
 		end
 	end
 end
