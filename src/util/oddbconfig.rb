@@ -19,8 +19,8 @@ module ODDB
 	PAYPAL_RECEIVER = 'zdavatz@ywesee.com'
 	## Prices and Durations
 	DOWNLOAD_EXPORT_PRICES = {
-		'doctors.csv'					=> 900,
-		'doctors.yaml'				=> 1100,
+		'doctors.csv'					=> 1900,
+		'doctors.yaml'				=> 2100,
 		'fachinfo.yaml'				=> 800,
 		'generics.xls'				=> 150,
 		'swissdrug-update.xls'=> 150,
