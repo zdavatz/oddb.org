@@ -155,8 +155,9 @@ module ODDB
 			def database_size(model, session)
 				@session.app.package_count.to_s << '&nbsp;'
 			end
-			def database_last_updated(model, session)
-				HtmlGrid::DateValue.new(:last_medication_update, session.app, session, self)
+			def database_last_updated(model, session=@session)
+				HtmlGrid::DateValue.new(:last_medication_update, 
+																@session.app, @session, self)
 			end
 			def ddd_count_text(model, session)
 				link = HtmlGrid::Link.new(:ddd_count_text, model, session, self)
@@ -253,11 +254,8 @@ module ODDB
 				link = HtmlGrid::Link.new(:new_registrations, model, session, self)
 				link.href = @lookandfeel._event_url(:recent_registrations)
 				link.set_attribute('class', 'list')
-				if(grp = @session.app.log_group(:swissmedic_journal))
-					count = @session.app.recent_registration_count
-					date = HtmlGrid::DateValue.new(:newest_date, grp, @session, self)
-					[date, ',&nbsp;', count, '&nbsp;', link]
-				end
+				count = @session.app.recent_registration_count
+				[database_last_updated(model), ',&nbsp;', count, '&nbsp;', link]
 			end
 			def paypal(model, session)
 				if(@lookandfeel.enabled?(:paypal))

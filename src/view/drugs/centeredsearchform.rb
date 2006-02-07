@@ -61,6 +61,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 			}
 		elsif(@lookandfeel.enabled?(:data_counts))
 			components.update({
+				[0,3]		=>	:recent_registrations,
 				[0,4]		=>	:database_size,
 				[0,4,1]	=>	:sequences,
 				[0,4,2]	=>	'comma_separator',
@@ -79,7 +80,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,6,2]	=>	'comma_separator',
 				[0,6,3]	=>	:limitation_size,
 				[0,6,4]	=>	:sl_count_text,
-				[0,7]		=>	:recent_registrations,
+				[0,7]		=>	:atc_chooser,
 				[0,8]		=>	:new_feature,
 				[0,8,1]	=>	:download_generics,
 				[0,9]		=>	:generic_definition,

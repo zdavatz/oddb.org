@@ -41,6 +41,7 @@ class OddbPrevalence
 		:users, :narcotics, :accepted_orphans
 	def initialize
 		init
+		@last_medication_update ||= Time.now()
 	end
 	def init
 		create_unknown_galenic_group()
@@ -62,7 +63,6 @@ class OddbPrevalence
 		@incomplete_registrations ||= {}
 		@indications ||= {}
 		@invoices ||= {}
-		@last_medication_update ||= Time.now()
 		@log_groups ||= {}
 		@narcotics ||= {}
 		@notification_logger ||= ODDB::NotificationLogger.new
@@ -955,6 +955,7 @@ class OddbPrevalence
 		case item
 		when ODDB::Registration, ODDB::Sequence, ODDB::Package, ODDB::AtcClass
 			@last_medication_update = Date.today
+			odba_isolated_store
 		when ODDB::LimitationText, ODDB::AtcClass::DDD
 		when ODDB::Substance
 			@substances.each_value { |subs|
