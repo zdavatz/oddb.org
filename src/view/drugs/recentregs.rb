@@ -15,24 +15,32 @@ class DateChooser < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 	LEGACY_INTERFACE = false
 	def years(model)
-		month = @session.state.date.month
+		date = @session.state.date
+		cyear = date.year
+		month = date.month
 		separator = @lookandfeel.lookup(:dash_separator)
 		@session.state.years.collect { |year|
-			link = HtmlGrid::Link.new(:recent_registrations, model, @session, self)
-			args = { :year => year, :month => month } 
-			link.href = @lookandfeel._event_url(:recent_registrations, args)
-			link.value = year
-			link.css_class = 'list'
-			[link, separator]
+			if(cyear == year)
+				 [year, separator]
+			else
+				link = HtmlGrid::Link.new(:recent_registrations, model, @session, self)
+				args = { :year => year, :month => month } 
+				link.href = @lookandfeel._event_url(:recent_registrations, args)
+				link.value = year
+				link.css_class = 'list'
+				[link, separator]
+			end
 		}.flatten[0..-2]
 	end
 	def months(model)
-		year = @session.state.date.year
+		date = @session.state.date
+		year = date.year
+		cmonth = date.month
 		months = @session.state.months
 		separator = @lookandfeel.lookup(:dash_separator)
 		(1..12).collect { |month|
 			mstr = @lookandfeel.lookup("month_#{month}")
-			if(months.include?(month))
+			if(cmonth != month && months.include?(month))
 				link = HtmlGrid::Link.new(:recent_registrations, model, @session, self)
 				args = { :year => year, :month => month } 
 				link.href = @lookandfeel._event_url(:recent_registrations, args)
