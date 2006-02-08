@@ -208,7 +208,7 @@ Grammar OddbSize
 		end
 		def good_result?(query)
 			query = query.to_s.downcase
-			basename.downcase[0,query.length] == query
+			basename.to_s.downcase[0,query.length] == query
 		end
 		def localized_name(language)
 			@sequence.localized_name(language)

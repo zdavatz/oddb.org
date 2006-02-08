@@ -1769,3 +1769,6 @@ div.long-text {
 td.navigation-right table {
 	float: right;
 }
+td.date-chooser {
+	border-bottom: 1px solid $bg_dark;
+}
