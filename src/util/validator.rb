@@ -192,11 +192,13 @@ module ODDB
 			:lookandfeel_member_count,
 			:lookandfeel_member_price,
 			:meaning_index,
+			:month,
 			:months,
 			:patinfo_price,
 			:pi_quantity,
 			:price_exfactory,
 			:price_public,
+			:year,
 		]
 		STRINGS = [
 			:additional_lines,

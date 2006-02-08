@@ -22,8 +22,18 @@ module ODDB
 		def log(date)
 			@logs[date]
 		end
+		def months(year)
+			@logs.keys.select { |date| 
+				date.year == year 
+			}.collect { |date| 
+				date.month 
+			}.sort
+		end
 		def newest_date
 			@logs.keys.max
+		end
+		def years
+			@logs.keys.collect { |date| date.year }.uniq.sort
 		end
 	end
 end

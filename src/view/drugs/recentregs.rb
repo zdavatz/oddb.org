@@ -6,12 +6,52 @@ require 'view/drugs/result'
 module ODDB
 	module View
 		module Drugs
+class DateChooser < HtmlGrid::Composite
+	COMPONENTS = {
+		[0,0,0]	=>	:years,
+		[0,0,1]	=>	'navigation_divider',
+		[0,0,2]	=>	:months,
+	}
+	CSS_CLASS = 'composite'
+	LEGACY_INTERFACE = false
+	def years(model)
+		month = @session.state.date.month
+		separator = @lookandfeel.lookup(:dash_separator)
+		@session.state.years.collect { |year|
+			link = HtmlGrid::Link.new(:recent_registrations, model, @session, self)
+			args = { :year => year, :month => month } 
+			link.href = @lookandfeel._event_url(:recent_registrations, args)
+			link.value = year
+			link.css_class = 'list'
+			[link, separator]
+		}.flatten[0..-2]
+	end
+	def months(model)
+		year = @session.state.date.year
+		months = @session.state.months
+		separator = @lookandfeel.lookup(:dash_separator)
+		(1..12).collect { |month|
+			mstr = @lookandfeel.lookup("month_#{month}")
+			if(months.include?(month))
+				link = HtmlGrid::Link.new(:recent_registrations, model, @session, self)
+				args = { :year => year, :month => month } 
+				link.href = @lookandfeel._event_url(:recent_registrations, args)
+				link.value = mstr
+				link.css_class = 'list'
+				[link, separator]
+			else
+				[mstr, separator]
+			end
+		}.flatten[0..-2]
+	end
+end
 class DateHeader < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	:date_packages,
 	}
 	CSS_CLASS = 'composite'
-	def date_packages(model, session)
+	LEGACY_INTERFACE = false
+	def date_packages(model)
 		date = model.date
 		[
 			@lookandfeel.lookup('month_' + date.month.to_s),
@@ -24,9 +64,21 @@ class DateHeader < HtmlGrid::Composite
 end
 class RootRecentRegsList < View::Drugs::RootResultList
 	SUBHEADER = View::Drugs::DateHeader
+	def init
+		super
+		@grid.insert_row(1, create(DateChooser))
+		@grid.add_style('migel-group', 0, 1)
+		@grid.set_colspan(0, 1)
+	end
 end
 class RecentRegsList < View::Drugs::ResultList
 	SUBHEADER = View::Drugs::DateHeader
+	def init
+		super
+		@grid.insert_row(1, create(DateChooser))
+		@grid.add_style('migel-group', 0, 1)
+		@grid.set_colspan(0, 1)
+	end
 end
 class RecentRegsForm < View::Drugs::ResultForm
 	COMPONENTS = {

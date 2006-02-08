@@ -27,22 +27,30 @@ class RecentRegs < State::Drugs::Global
 			@packages.size
 		end
 	end
-	attr_accessor :regs_this_month, :regs_last_month
+	attr_reader :years, :months, :date
 	VIEW = View::Drugs::RecentRegs
 	DIRECT_EVENT = :recent_registrations
 	LIMITED = true
 	def init
-		if((loggroup = @session.app.log_group(:swissmedic_journal)) \
-			&& (date = loggroup.newest_date))
-			@model = [
-				create_package_month(date), 
-				create_package_month(date << 1), 
-			]
+		@model = nil
+		if(loggroup = @session.app.log_group(:swissmedic_journal))
+			if((month = @session.user_input(:month)) \
+				 && (year = @session.user_input(:year)))
+				@date = Date.new(year.to_i, month.to_i)
+				@model = [
+					create_package_month(@date)
+				]
+			elsif(@date = loggroup.newest_date)
+				@model = [
+					create_package_month(date), 
+					create_package_month(date << 1), 
+				]
+			end
 			@model.delete_if { |month| 
 				month.package_count == 0
 			}
-		else
-			@model = nil
+			@years = loggroup.years
+			@months = loggroup.months(@date.year)
 		end
 	end
 	def create_package_month(date)
