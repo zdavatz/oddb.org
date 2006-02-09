@@ -895,7 +895,7 @@ Zeno Davatz
 				:query_limit1							=>	' Abfragen pro Tag',
 				:query_limit_download			=>	'Haben Sie Interesse an den Daten von ODDB.org? Falls ja können Sie unsere Daten runterladen und bei sich in Ihrer Applikation einbauen.<br>Klicken Sie dafür hier: ',
 				:query_limit_empty0				=>	"Es wurden ",
-				:query_limit_empty1				=>	" Einträge gefunden, diese werden jedoch nicht angzeigt weil Sie nicht angemeldet sind.<br>Wenn Sie sich jetzt anmelden dann sind Ihre Abfragemöglichkeiten auch nach der ",
+				:query_limit_empty1				=>	" Einträge gefunden, diese werden jedoch nicht angezeigt weil Sie nicht angemeldet sind.<br>Wenn Sie sich jetzt anmelden, dann sind Ihre Abfragemöglichkeiten auch nach der ",
 				:query_limit_empty2				=>	". Abfrage unbeschränkt. Besten Dank für Ihr Verständnis.",
 				:query_limit_explain0			=>	"ODDB.org misst die Anzahl Abfragen von einer IP-Adresse. Bei Ihrer IP-Adresse <",
 				:query_limit_explain1			=>	"> haben wir innerhalb von einem Tag mehr als ",
