@@ -75,7 +75,6 @@ module ODDB
 		def process(request)
 			logtype = 'PRIN'
 			timeout(PROCESS_TIMEOUT) { 
-				Thread.current.priority = -1
 				@request = request
 				unless(is_crawler?)
 					@@html_cache.delete(@request_path)
@@ -85,6 +84,7 @@ module ODDB
 				@process_start = Time.now
 				request_log('INIT')
 				logtype = 'PRCS'
+				Thread.current.priority = -1
 				if(is_crawler?)
 					if(@@html_cache[@request_path].nil?)
 						Thread.current.priority = -3
@@ -131,7 +131,7 @@ module ODDB
 						logtype = 'CCHE'
 						html
 					else
-						#Thread.current.priority = -3
+						Thread.current.priority = -3
 						logtype = 'CRWL'
 						sleep(5)
 						#@@stub_html

@@ -58,10 +58,10 @@ end
 class IncompleteRegList < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	View::Admin::InnerIncompleteRegList,
-		#[0,1]	=>	View::Admin::BsvForm,
-		[0,1]	=>	:orphaned_patinfos,
-		[0,2] =>  :patinfo_deprived_sequences,
-		[0,3] =>  :orphaned_fachinfos,
+		[0,1]	=>	:release,
+		[0,2]	=>	:orphaned_patinfos,
+		[0,3] =>  :patinfo_deprived_sequences,
+		[0,4] =>  :orphaned_fachinfos,
 	}	
 	COLSPAN_MAP	= {
 		[0,0]	=> 2,
@@ -100,6 +100,15 @@ class IncompleteRegList < HtmlGrid::Composite
 	#	count = anazahl sequenzen ohne patinfo
 		link.value = @lookandfeel.lookup(:patinfo_deprived_sequences)
 		link
+	end
+	def release(model, session)
+		if(@session.user.is_a?(RootUser) && @model.empty?)
+			button = HtmlGrid::Button.new(:release, 
+				model, session, self)
+			url = @lookandfeel.event_url(:release)
+			button.set_attribute('onclick', "window.location.href='#{url}'")
+			button
+		end
 	end
 end
 class IncompleteRegistrations < View::PrivateTemplate

@@ -44,6 +44,7 @@ module ODDB
 			export_yaml
 			export_oddbdat
 			export_csv
+			export_generics_xls
 			export_doc_csv
 		rescue StandardError => e
 			EXPORT_SERVER.clear

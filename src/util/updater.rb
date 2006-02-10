@@ -117,10 +117,11 @@ module ODDB
 			update_vaccines
 			if(update_bsv)
 				update_limitation_text
+				update_trade_status
+				update_medwin_packages
 				export_ouwerkerk
 			end
 			if(@smj_updated)
-				update_trade_status
 				update_medwin_companies
 			end
 		end

@@ -13,18 +13,6 @@ module ODDB
 class Init < State::Admin::Global
 	VIEW = View::Admin::Search
 	DIRECT_EVENT = :home_admin
-	def release
-		@session.app.async {
-			updater = Updater.new(@session.app)
-			updater.update_trade_status
-			updater.update_medwin_packages
-			updater.reconsider_bsv
-			updater.export_ouwerkerk
-			exporter = Exporter.new(@session.app)
-			exporter.export_generics_xls
-		}
-		State::Admin::Confirm.new(@session, :release_ouwerkerk_confirm)
-	end
 end
 		end
 	end

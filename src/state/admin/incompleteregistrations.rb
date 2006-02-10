@@ -51,6 +51,17 @@ class IncompleteRegs < State::Admin::Global
 		end
 	end
 =end
+	def release
+		@session.app.async {
+			updater = Updater.new(@session.app)
+			updater.update_trade_status
+			updater.update_medwin_packages
+			updater.reconsider_bsv
+			exporter = Exporter.new(@session.app)
+			exporter.export_generics_xls
+		}
+		State::Admin::Confirm.new(@session, :release_confirm)
+	end
 end
 		end
 	end
