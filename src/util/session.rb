@@ -84,6 +84,7 @@ module ODDB
 				@process_start = Time.now
 				request_log('INIT')
 				logtype = 'PRCS'
+				## let other Requests that are in the to_html-stage finish first
 				Thread.current.priority = -1
 				if(is_crawler?)
 					if(@@html_cache[@request_path].nil?)
@@ -163,7 +164,7 @@ module ODDB
 		end
 		def __checkout
 			@@html_cache.delete(@request_path)
-			true
+			super
 		end
 		def clear_interaction_basket
 			@interaction_basket.clear
