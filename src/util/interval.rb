@@ -69,55 +69,35 @@ module ODDB
 	end
 	module IndexedInterval
 		include Interval
-		RANGE_PATTERNS = {
-			'a'			=>	'aäÄáÁàÀâÂ',
-			'b'			=>	'b',
-			'c'			=>	'cçÇ',
-			'd'			=>	'd',
-			'e'			=>	'eëËéÉèÈêÊ',
-			'f'			=>	'f',
-			'g'			=>	'g',
-			'h'			=>	'h',
-			'i'			=>	'i',
-			'j'			=>	'j',
-			'k'			=>	'k',
-			'l'			=>	'l',
-			'm'			=>	'm',
-			'n'			=>	'n',
-			'o'			=>	'oöÖóÓòÒôÔ',
-			'p'			=>	'p',
-			'q'			=>	'q',
-			'r'			=>	'r',
-			's'			=>	's',
-			't'			=>	't',
-			'u'			=>	'uüÜúÚùÙûÛ',
-			'v'			=>	'v',
-			'w'			=>	'w',
-			'x'			=>	'x',
-			'y'			=>	'y',
-			'z'			=>	'z',
-			'0-9'		=>	'^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ',
-		}
-	def init
-		super
-		sortvalue = self.symbol
-		@filter = Proc.new { |model|
+		RANGE_PATTERNS = ('a'..'z').to_a.push('0-9')
+		def init
+			super
+			@filter = method(:filter)
+		end
+		def default_interval
+		end
+		def load_model
+			items = []
 			if(@range = user_range)
-				index_lookup(@range).sort_by { |item| 
-					item.send(*sortvalue).to_s.downcase
+				parts = @range.split('-')
+				if(parts.size == 2)
+					parts = ((parts.first)..(parts.last)).to_a
+				end
+				parts.each { |part|
+					items.concat(index_lookup(part).sort_by { |item| 
+						item.send(*symbol).to_s.downcase })
 				}
-			else
-				[]
 			end
-		}
-	end
-	def default_interval
-	end
-	def interval
-		@range
-	end
-	def intervals
-		('a'..'z').to_a.push('0-9')
-	end
+			items
+		end
+		def filter(model)
+			load_model
+		end
+		def interval
+			@range
+		end
+		def intervals
+			('a'..'z').to_a.push('0-9')
+		end
 	end
 end

@@ -10,6 +10,24 @@ require 'view/resultcolors'
 module ODDB
 	module View
 		module Drugs
+class OffsetPager < View::Pager
+	COMPONENTS = {
+		[0,0]	=>	:offset_link,
+	}
+	CSS_CLASS = 'pager'
+	def compose_header(offset)
+		offset
+	end
+	def compose_footer(offset)
+		offset
+	end
+	def offset_link(model, session)
+		page_link(:content, model)
+	end
+	def resolve_suffix(model, bg_flag=false)
+		model == @page ? ' migel-group' : ''
+	end
+end
 class SequenceList < HtmlGrid::List
 	include View::ResultColors
 	include View::AdditionalInformation
@@ -39,6 +57,16 @@ class SequenceList < HtmlGrid::List
 	}
 	LEGACY_INTERFACE = false
 	include AlphaHeader
+	def compose_header(offset=[0,0])
+		offset = super
+		unless(@model.empty?)
+			@grid.add(OffsetPager.new(@session.state.pages, @session, self), *offset)
+			@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
+			@grid.add_style('tab', *offset)
+			offset = resolve_offset(offset, self::class::OFFSET_STEP)
+		end
+		offset
+	end
 	def name_base(model)
 		link = HtmlGrid::Link.new(:name_base, model, @session, self)
 		name = model.name_base
@@ -71,7 +99,7 @@ class SequencesComposite < HtmlGrid::Composite
 	def title_sequences(model)
 		unless(model.empty?)
 			@lookandfeel.lookup(:title_sequences, 
-				@session.state.interval, @model.size)
+				@session.state.interval, @session.state.model.size)
 		end
 	end
 end

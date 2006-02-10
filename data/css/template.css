@@ -1335,9 +1335,6 @@ table.navigation-foot {
 	bottom : 0px;
 	padding: 3px;
 }
-table.pager {
-	float:right; 
-}
 td.pager {
 	font-weight: bold;
 	padding-left: 6px;
@@ -1777,4 +1774,8 @@ td.expired {
   -moz-opacity: 0.65;
   opacity: 0.65;
 	background-color: #CCC;
+}
+td.tab {
+	background-color: $bg_bright;
+	border-top: 2px solid $bg_medium;
 }

@@ -21,5 +21,11 @@ module ODDB
 				@int
 			end
 		end
+		class OffsetPageFacade < PageFacade
+			attr_accessor :size, :offset
+			def content
+				"#{@offset.next} - #{@offset + @size}"
+			end
+		end
 	end
 end

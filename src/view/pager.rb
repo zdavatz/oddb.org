@@ -69,7 +69,7 @@ module ODDB
 					link.href = @lookandfeel.event_url(@event, values)
 					link
 				else
-					page.to_s
+					page.send(key)
 				end
 			end
 			def page_number(model, session)
