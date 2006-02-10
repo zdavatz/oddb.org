@@ -23,7 +23,7 @@ module ODDB
 				}
 				@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 				@grid.add_style('subheading-bold', *offset)
-				offset = resolve_offset(offset, self::class::OFFSET_STEP)
+				resolve_offset(offset, self::class::OFFSET_STEP)
 			end
 		end
 	end
