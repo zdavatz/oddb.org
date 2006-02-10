@@ -134,7 +134,6 @@ class ResultList < HtmlGrid::List
 	SUBHEADER = View::Drugs::AtcHeader
 	SYMBOL_MAP = {
 		:galenic_form				=>	View::DescriptionValue,
-		:registration_date	=>	HtmlGrid::DateValue,
 		:ikskey							=>	View::PointerLink,
 	}	
 	LOOKANDFEEL_MAP = {
@@ -180,7 +179,7 @@ class ResultList < HtmlGrid::List
 			})
 		end
 	end
-	def company_name(model, session)
+	def company_name(model, session=@session)
 		if(comp = model.company)
 			link = nil
 			if(@lookandfeel.enabled?(:powerlink, false) && comp.powerlink)
@@ -197,10 +196,10 @@ class ResultList < HtmlGrid::List
 			link
 		end
 	end
-	def comparable_size(model, session)
+	def comparable_size(model, session=@session)
 		HtmlGrid::Value.new(:size, model, session, self)
 	end
-	def complementary_type(model, session)
+	def complementary_type(model, session=@session)
 		if(model.generic_type == :complementary \
 			&& (ctype = model.complementary_type))
 			square = HtmlGrid::Span.new(model, @session, self)
@@ -225,10 +224,20 @@ class ResultList < HtmlGrid::List
 		@grid.add_style('result-atc', *offset)
 		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 	end
-	def fachinfo(model, session)
+	def fachinfo(model, session=@session)
 		super(model, session, 'important-infos')
 	end	
-	def substances(model, session)
+	def registration_date(model, session=@session)
+		span = HtmlGrid::Span.new(model, @session, self)
+		span.value = HtmlGrid::DateValue.new(:registration_date, 
+																				 model, @session, self)
+		if(exp = (model.inactive_date || model.expiration_date))
+			span.set_attribute('title', 
+				@lookandfeel.lookup(:valid_until, @lookandfeel.format_date(exp)))
+		end
+		span
+	end
+	def substances(model, session=@session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
 		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
 		if (model.active_agents.size > 1)

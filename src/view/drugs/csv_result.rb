@@ -37,10 +37,10 @@ class CsvResult < HtmlGrid::Component
 		formatted_date(pack, :expiration_date)
 	end
 	def export_flag(pack)
-		pack.registration_data(:export_flag)
+		pack.export_flag
 	end
 	def formatted_date(pack, key)
-		if(date = pack.registration_data(key))
+		if(date = pack.send(key))
 			@lookandfeel.format_date(date)
 		end
 	end

@@ -135,6 +135,15 @@ Grammar OddbSize
 			def price_internal(value)
 				(value.to_f*100).round
 			end
+			def registration_data(*names)
+				names.each { |name|
+					define_method(name) { 
+						if(@sequence && (reg = @sequence.registration))
+							reg.send(name)
+						end
+					}
+				}
+			end
 		end
 		attr_reader :ikscd, :size, :count, :multi, :measure, :comform, :descr,
 			:addition, :scale, :sl_entry, :narcotics
@@ -142,6 +151,9 @@ Grammar OddbSize
 			:price_exfactory, :price_public, :pretty_dose, :pharmacode, :market_date,
 			:medwin_ikscd, :out_of_trade, :refdata_override
 		alias :pointer_descr :ikscd
+		registration_data :complementary_type, :expiration_date, :expired?,
+			:export_flag, :generic_type, :inactive_date, :pdf_fachinfos,
+			:registration_date
 		def initialize(ikscd)
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)
@@ -189,9 +201,6 @@ Grammar OddbSize
 		def company_name
 			company.name
 		end
-		def complementary_type
-			registration.complementary_type
-		end
 		def create_sl_entry
 			@sl_entry = SlEntry.new
 		end
@@ -203,9 +212,6 @@ Grammar OddbSize
 		def dose
 			@sequence.dose
 		end
-		def expired?
-			registration.expired?
-		end
 		def fachinfo
 			@sequence.fachinfo
 		end
@@ -216,14 +222,8 @@ Grammar OddbSize
 		def localized_name(language)
 			@sequence.localized_name(language)
 		end
-		def pdf_fachinfos
-			registration.pdf_fachinfos
-		end
 		def galenic_form
 			@sequence.galenic_form
-		end
-		def generic_type
-			registration.generic_type
 		end
 		def has_patinfo?
 			@sequence.has_patinfo?
@@ -270,10 +270,6 @@ Grammar OddbSize
 			if(@sequence && (reg = @sequence.registration))
 				reg.send(key)
 			end
-		end
-		def registration_date
-			#@sequence.registration.registration_date
-			registration_data(:registration_date)
 		end
 		def remove_narcotic(narc)
 			if(res = @narcotics.delete(narc))

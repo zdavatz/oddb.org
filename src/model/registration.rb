@@ -87,8 +87,8 @@ module ODDB
 		end
 		def expired?
 			today = Date.today
-			(@inactive_date.nil? || @inactive_date <= today) \
-				&& (@expiration_date.nil? || @expiration_date <= today)
+			(@inactive_date && @inactive_date <= today) \
+				|| (@expiration_date && @expiration_date <= today)
 		end
 		def generic?
 			self.generic_type == :generic

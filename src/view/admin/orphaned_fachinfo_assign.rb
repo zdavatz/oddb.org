@@ -49,9 +49,8 @@ class OrphanedFachinfoRegistrations < View::FormList
 end
 class OrphanedDelete < View::Form
 	COMPONENTS = {
-		[0,0] => :delete_orphaned_fachinfo,
-		[0,0,1] => :submit
-		}
+		[0,0] => :submit
+	}
 	EVENT = :delete_orphaned_fachinfo
 	FORM_METHOD = 'POST'
 end

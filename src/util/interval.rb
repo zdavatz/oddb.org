@@ -11,7 +11,7 @@ module ODDB
 			'm-p'			=>	'm-pöÖóÓôÔòÒ',
 			'q-t'			=>	'q-t',
 			'u-z'			=>	'u-züÜúÚûÛùÙ',
-			'|unknown'=>	'^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ',
+			#'|unknown'=>	'^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ',
 			'|unknown'=>	'|unknown',
 		}
 		FILTER_THRESHOLD = 30
@@ -22,7 +22,7 @@ module ODDB
 					self::class::RANGE_PATTERNS[default_interval]
 				}
 				pattern = if(@range=='|unknown')
-					/^[^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ]/i
+					#/^[^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ]/i
 					/^($|[^a-zäÄáÁâÂàÀçÇëËéÉêÊèÈïÏíÍîÎìÌöÖóÓôÔòÒüÜúÚûÛùÙ])/i
 				elsif(@range)
 					/^[#{@range}]/i
