@@ -126,6 +126,9 @@ module ODDB
 		def each_package(&block)
 			@packages.values.each(&block)
 		end
+		def expired?
+			@registration.expired?
+		end
 		def fachinfo
 			@registration.fachinfo
 		end

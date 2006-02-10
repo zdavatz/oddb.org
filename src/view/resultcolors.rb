@@ -7,7 +7,8 @@ module ODDB
 			private
 			def resolve_suffix(model, bg_flag=false)
 				gt = model.generic_type || 'unknown'
-				'-' + gt.to_s + super
+				es = model.expired? ? ' expired' : ''
+				'-' + gt.to_s + super + es
 			end
 		end
 	end

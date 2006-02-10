@@ -22,8 +22,9 @@ module ODDB
 		end
 		def active?
 			today = Date.today
-			(@inactive_date.nil? || @inactive_date > today) \
-				&& (@expiration_date.nil? || @expiration_date > today) \
+			two_years_ago = today << 24
+			(@inactive_date.nil? || @inactive_date > two_years_ago) \
+				&& (@expiration_date.nil? || @expiration_date > two_years_ago) \
 				&& (@market_date.nil? || @market_date <= today) 
 		end
 		def active_package_count
@@ -83,6 +84,11 @@ module ODDB
 		end
 		def each_sequence(&block)
 			@sequences.values.each(&block)
+		end
+		def expired?
+			today = Date.today
+			(@inactive_date.nil? || @inactive_date <= today) \
+				&& (@expiration_date.nil? || @expiration_date <= today)
 		end
 		def generic?
 			self.generic_type == :generic

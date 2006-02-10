@@ -203,6 +203,9 @@ Grammar OddbSize
 		def dose
 			@sequence.dose
 		end
+		def expired?
+			registration.expired?
+		end
 		def fachinfo
 			@sequence.fachinfo
 		end

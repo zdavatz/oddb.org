@@ -1772,3 +1772,9 @@ td.navigation-right table {
 td.date-chooser {
 	border-bottom: 1px solid $bg_dark;
 }
+td.expired { 
+	filter: alpha(opacity=65);
+  -moz-opacity: 0.65;
+  opacity: 0.65;
+	background-color: #CCC;
+}

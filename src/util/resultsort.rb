@@ -17,6 +17,7 @@ module ODDB
 			begin
 				packages.sort_by { |package|
 					[
+						package.expired? ? 1 : -1,
 						generic_type_weight(package),
 						package.name_base.to_s,
 						galform_str(package.galenic_form, session),
