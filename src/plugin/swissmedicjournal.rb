@@ -320,7 +320,11 @@ module ODDB
 			}
 		end
 		def update_registration(smj_reg, pointer=nil)
-			date_key = if (smj_reg.flags == [:new])
+			flags = smj_reg.flags
+			if((iksnr = smj_reg.iksnr) && @app.registration(iksnr))
+				flags.delete(:new)	
+			end
+			date_key = if(flags.include?(:new))
 				:registration_date	
 			else
 				:revision_date
@@ -355,10 +359,10 @@ module ODDB
 				@incomplete_pointers
 			else
 				prune_sequences(smj_reg, registration)
-				@change_flags.store(registration.pointer, smj_reg.flags)
+				@change_flags.store(registration.pointer, flags)
 				@registration_pointers
 			end.push(registration.pointer)
-			update_sequences(smj_reg, registration, smj_reg.flags)
+			update_sequences(smj_reg, registration, flags)
 			registration
 		end
 		def update_sequence(smj_seq, parent_pointer, reg_flags=[])
