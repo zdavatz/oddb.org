@@ -48,6 +48,13 @@ class Sequences < State::Drugs::Global
 	def page
 		@page = @pages[@session.user_input(:page).to_i] || []
 	end
+	def sequences
+		if(@range == user_range)
+			self
+		else
+			Sequences.new(@session, [])
+		end
+	end
 end
 		end
 	end

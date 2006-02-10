@@ -60,7 +60,9 @@ class SequenceList < HtmlGrid::List
 	def compose_header(offset=[0,0])
 		offset = super
 		unless(@model.empty?)
-			@grid.add(OffsetPager.new(@session.state.pages, @session, self), *offset)
+			@grid.add(OffsetPager.new(@session.state.pages, @session, self, 
+																:sequences, {:range => @session.state.range}), 
+																*offset)
 			@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 			@grid.add_style('tab', *offset)
 			offset = resolve_offset(offset, self::class::OFFSET_STEP)

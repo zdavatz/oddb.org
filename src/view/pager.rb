@@ -66,7 +66,7 @@ module ODDB
 					values = @arguments.merge({
 						:page	=>	page.to_s,
 					})
-					link.href = @lookandfeel.event_url(@event, values)
+					link.href = @lookandfeel._event_url(@event, values)
 					link
 				else
 					page.send(key)
