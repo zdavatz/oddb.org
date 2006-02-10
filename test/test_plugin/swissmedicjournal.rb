@@ -578,7 +578,30 @@ module ODDB
 				assert_equal(package_pointer.creator, ptr)
 				assert_equal(expected, values)
 			}
-			@plugin.update_packages(packages, sequence)
+			@plugin.update_packages(packages, sequence, [])
+		end
+		def test_update_packages__new
+			pointer = ODDB::Persistence::Pointer.new(:sequence)
+			sequence = StubSequence.new
+			sequence.pointer = pointer
+			package_pointer = pointer + [:package, "007"]
+			smj_package = StubPackage.new
+			smj_package.package_size = '12 Tabletten'
+			smj_package.ikscat = 'B'
+			smj_package.ikscd = '007'
+			packages = [
+				smj_package
+			]
+			expected = {
+				:size							=>	'12 Tabletten',
+				:ikscat						=>	'B',
+				:refdata_override => true,
+			}
+			@app.mock_handle(:update) { |ptr, values|
+				assert_equal(package_pointer.creator, ptr)
+				assert_equal(expected, values)
+			}
+			@plugin.update_packages(packages, sequence, [:new])
 		end
 		def test_update_company
 			# Szenarien

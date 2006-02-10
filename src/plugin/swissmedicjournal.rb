@@ -62,7 +62,7 @@ module ODDB
 							end
 							if((pacs = pseq.packages) \
 								&& flags.include?(:packages))
-								succ = update_packages(pacs, seq)
+								succ = update_packages(pacs, seq, [])
 							end
 						end
 					}
@@ -265,7 +265,6 @@ module ODDB
 				}
 				# remove stragglers
 				seq.active_agents.dup.each { |agent|
-					puts "straggler: #{agent.pointer}"
 					if(sub = agent.substance)
 						sub.remove_sequence(seq)
 						agent.odba_delete
@@ -304,7 +303,7 @@ module ODDB
 			end
 			indication
 		end
-		def update_packages(smj_packages, sequence)
+		def update_packages(smj_packages, sequence, reg_flags=[])
 			smj_packages.each { |package|
 				pointer = sequence.pointer + [:package, package.ikscd]
 				hash = {
@@ -313,6 +312,9 @@ module ODDB
 				}
 				if(descr = package.description)
 					hash.store(:descr, descr)
+				end
+				if(reg_flags.include?(:new))
+					hash.store(:refdata_override, true)
 				end
 				@app.update(pointer.creator, hash)
 			}
@@ -356,10 +358,10 @@ module ODDB
 				@change_flags.store(registration.pointer, smj_reg.flags)
 				@registration_pointers
 			end.push(registration.pointer)
-			update_sequences(smj_reg, registration)
+			update_sequences(smj_reg, registration, smj_reg.flags)
 			registration
 		end
-		def update_sequence(smj_seq, parent_pointer)
+		def update_sequence(smj_seq, parent_pointer, reg_flags=[])
 			pointer = parent_pointer + [:sequence, smj_seq.seqnr]
 			hash = {}
 			name_base = [
@@ -403,12 +405,12 @@ module ODDB
 				end
 			end
 			if(packages = smj_seq.packages)
-				update_packages(packages, sequence)
+				update_packages(packages, sequence, reg_flags)
 			end
 		end
-		def update_sequences(smj_reg, registration)
+		def update_sequences(smj_reg, registration, reg_flags=[])
 			smj_reg.products.each_value { |seq| 
-				update_sequence(seq, registration.pointer)	
+				update_sequence(seq, registration.pointer, reg_flags)	
 			}
 		end
 	end
