@@ -24,11 +24,11 @@ module ODDB
 		QUERY_LIMIT_AGE = 60 * 60 * 24
 		PROCESS_TIMEOUT = 30
 		HTML_TIMEOUT = 30
-		begin
+=begin
 			@@stub_html = File.read(File.expand_path('../../data/stub.html', File.dirname(__FILE__)))
 		rescue
 			@@stub_html = ''
-		end
+=end
 		@@requests ||= {}
 		@@html_cache ||= {}
 		def Session.clear_html_cache
@@ -84,11 +84,8 @@ module ODDB
 				@process_start = Time.now
 				request_log('INIT')
 				logtype = 'PRCS'
-				## let other Requests that are in the to_html-stage finish first
-				Thread.current.priority = -1
 				if(is_crawler?)
 					if(@@html_cache[@request_path].nil?)
-						Thread.current.priority = -3
 						super
 					end
 				else
@@ -108,7 +105,6 @@ module ODDB
 		rescue Exception => ex
 			logtype = ex.message
 		ensure
-			Thread.current.priority = 0
 			request_log(logtype)
 		end
 		def request_log(phase)
@@ -126,13 +122,11 @@ module ODDB
 		def to_html
 			logtype = 'HTML'
 			timeout(HTML_TIMEOUT) {
-				Thread.current.priority = 0
 				if(is_crawler?)
 					if(html = @@html_cache[@request_path])
 						logtype = 'CCHE'
 						html
 					else
-						Thread.current.priority = -3
 						logtype = 'CRWL'
 						sleep(5)
 						#@@stub_html
@@ -152,7 +146,6 @@ module ODDB
 		rescue Exception => ex
 			logtype = ex.message
 		ensure
-			Thread.current.priority = 0
 			request_log(logtype)
 		end
 		def initialize(key, app, validator=nil)
