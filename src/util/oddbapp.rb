@@ -73,7 +73,7 @@ class OddbPrevalence
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
 		@slates ||= {}
-		recount()
+		#recount()
 		rebuild_atc_chooser()
 	end
 	# prevalence-methods ################################
@@ -1083,6 +1083,7 @@ module ODDB
 		VALIDATOR = Validator
 		attr_reader :cleaner, :updater
 		def initialize
+			@admin_threads = []
 			@system = ODBA.cache.fetch_named('oddbapp', self){
 				OddbPrevalence.new
 			}
@@ -1146,14 +1147,13 @@ module ODDB
 		end
 		#####################################################
 		def _admin(src, result, priority=-1)
-			Thread.new {
+			t = Thread.new {
 				Thread.current.priority = priority
 				Thread.current.abort_on_exception = false
 				result << failsafe {
 					response = begin
 						instance_eval(src)
 					rescue NameError => e
-					#@system.instance_eval(src)
 						e
 					end
 					str = response.to_s
@@ -1164,6 +1164,8 @@ module ODDB
 					end
 				}.to_s
 			}
+			@admin_threads.push(t)
+			t
 		end
 		def login(session)
 			pair = session.user_input(:email, :pass)

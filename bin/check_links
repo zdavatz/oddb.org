@@ -13,7 +13,7 @@ begin
 rescue LoadError
 end
 
-threads = 1
+num_threads = 1
 flavor = 'gcc'
 $respect_session = false
 while(arg = ARGV.shift)
@@ -22,7 +22,7 @@ while(arg = ARGV.shift)
 		$respect_session = true
 	when
 		/\d+/
-		threads = [arg.to_i, threads].max
+		num_threads = [arg.to_i, num_threads].max
 	when /[a-z]{3,}/
 		flavor = arg
 	end
@@ -34,7 +34,10 @@ module ODDB
 			@links = []
 		end
 		def new_linkhandler(handler)
-			@links.push(handler.attribute("href")) if(handler)
+			if(handler && (href = handler.attribute("href")))
+				#printf("href: %s\n", href.inspect)
+				@links.push(href) 
+			end
 		end
 		def send_meta(attrs)
 			if(attrs.any? { |key, val| /http-equiv/i.match(key) \
@@ -47,7 +50,8 @@ module ODDB
 		end
 	end
 	class Crawler
-		def initialize(flavor)
+		def initialize(id, flavor)
+			@id = id
 			@links = [ "/de/#{flavor}" ]
 			@visited = []
 			@errors = []
@@ -61,19 +65,31 @@ module ODDB
 		end
 		def check_links
 			@links.each_with_index { |link, idx|
-				puts "#{sprintf("%8d", idx)}: #{link}"
+				printf("Session: %3d - requested: %8d: %s\n", @id, idx, link)
 				@visited.push(link)
-				if(links = check(link))
-					schedule_links(links, idx)
+				start = Time.now
+				if(html = get_http(link))
+					time = Time.now - start
+					if(@load_max.nil? || @load_max < time)
+						@load_max = time
+						@load_max_url = link
+					end
+					if(@load_min.nil? || @load_min > time)
+						@load_min = time
+						@load_min_url = link
+					end
+					printf("Session: %3d - received:  %8d: %s in %1.2fs\n", @id, idx, link, time)
+					if(links = extract_links(html))
+						schedule_links(links, idx)
+					end
 				else
-					puts "## error: #{link}"
+					printf("Session: %3d - ## error:  %8d: %s in %1.2fs\n", @id, idx, link, Time.now - start)
 					@errors.push(link)
 				end
 			}
-		ensure
-			report
 		end
 		def report
+			puts "# Session #{@id} ####################################"
 			puts "Visited #{@visited.size} links."
 			puts "Encountered #{@errors.size} errors:"
 			puts @errors
@@ -102,28 +118,15 @@ module ODDB
 				end
 			}
 		end
-		def check(link)
-			start = Time.now
-			if(html = get_http(link))
-				time = Time.now - start
-				if(@load_max.nil? || @load_max < time)
-					@load_max = time
-					@load_max_url = link
-				end
-				if(@load_min.nil? || @load_min > time)
-					@load_min = time
-					@load_min_url = link
-				end
-				puts "received: #{link}"
-				writer = CrawlerWriter.new
-				formatter = HtmlFormatter.new(writer)
-				parser = HtmlParser.new(formatter)
-				parser.feed(html)
-				if(links = writer.links)
-					links.compact.collect { |link| 
-						link.gsub(@state_id_regexp, '')
-					}
-				end
+		def extract_links(html)
+			writer = CrawlerWriter.new
+			formatter = HtmlFormatter.new(writer)
+			parser = HtmlParser.new(formatter)
+			parser.feed(html)
+			if(links = writer.links)
+				links.compact.collect { |link| 
+					link.gsub(@state_id_regexp, '')
+				}
 			end
 		end
 		def get_http(link)
@@ -176,13 +179,21 @@ end
 puts "checking links for #{ODDB::SERVER_NAME}"
 puts "flavor:      #{flavor}"
 puts "sessions:    #{$respect_session}"
-puts "concurrent:  #{threads}"
-thread = nil
-threads.times { |num|
-	thread = Thread.new {
-		crawler = ODDB::Crawler.new(flavor)
+puts "concurrent:  #{num_threads}"
+crawlers = []
+threads = []
+num_threads.times { |num|
+	threads.push Thread.new {
+		crawler = ODDB::Crawler.new(num, flavor)
+		crawlers.push(crawler)
 		crawler.check_links
 	}
 }
 
-thread.join
+at_exit {
+	crawlers.each { |crawler| crawler.report } 
+}
+
+threads.each { |thread|
+	thread.join
+}
