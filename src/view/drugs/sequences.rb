@@ -37,9 +37,9 @@ class SequenceList < HtmlGrid::List
 		[2,0]	=>	:patinfo,
 		[3,0]	=>	:name_base,
 		[4,0]	=>	:galenic_form,
-		[5,0]	=>	:feedback,
-		[6,0]	=>  :google_search,
-		[7,0]	=>	:notify,
+		#[5,0]	=>	:feedback,
+		[5,0]	=>  :google_search,
+		[6,0]	=>	:notify,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
@@ -48,7 +48,7 @@ class SequenceList < HtmlGrid::List
 		[1,0,2]	=>	'result-infos',
 		[3,0]		=>	'result-big',
 		[4,0]		=>	'result',
-		[5,0,3]	=>	'result-b-r',
+		[5,0,2]	=>	'result-b-r',
 	}
 	SORT_DEFAULT = false
 	SORT_HEADER = false

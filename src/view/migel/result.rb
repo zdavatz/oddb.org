@@ -73,6 +73,8 @@ class List < HtmlGrid::List
 	def limitation_text(model)
 		if(sltxt = model.limitation_text)
 			limitation_link(sltxt)
+		else
+			''
 		end
 	end
 	def product_description(model)
@@ -109,7 +111,7 @@ class ResultList < View::Migel::List
 	end
 	def compose_subheader(item, offset, css='result-atc')
 		xval, yval = offset
-		values = [limitation_text(item), item.migel_code, 
+		values = [limitation_text(item), nil, item.migel_code, nil,
 			product_description(item)]
 		@grid.add(values, xval, yval)
 		@grid.add_style(css, xval, yval, 3)

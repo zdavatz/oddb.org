@@ -38,8 +38,9 @@ class AtcChooserList < HtmlGrid::List
 		code = @session.persistent_user_input(:code)
 		model.each{ |mdl|
 			if(mdl.has_sequence?)
-				compose_components(mdl, offset)
-				compose_css(offset)
+				_compose(mdl, offset)
+				#compose_components(mdl, offset)
+				#compose_css(offset)
 				offset = resolve_offset(offset, self::class::OFFSET_STEP)
 				if(mdl.path_to?(code))
 					open = AtcChooserList.new(mdl, @session, self)

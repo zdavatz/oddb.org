@@ -96,7 +96,7 @@ module ODBA
 			"hwyss@ywesee.com",
 		]
 		SMTP_SERVER = ::ODDB::SMTP_SERVER
-		CLEANING_INTERVAL = 10
+		CLEANING_INTERVAL = 120
 		CLEANER_PRIORITY = 0
 	end
 end

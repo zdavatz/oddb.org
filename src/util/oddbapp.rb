@@ -1083,7 +1083,7 @@ module ODDB
 		VALIDATOR = Validator
 		attr_reader :cleaner, :updater
 		def initialize
-			@admin_threads = []
+			@admin_threads = ThreadGroup.new
 			@system = ODBA.cache.fetch_named('oddbapp', self){
 				OddbPrevalence.new
 			}
@@ -1148,7 +1148,6 @@ module ODDB
 		#####################################################
 		def _admin(src, result, priority=-1)
 			t = Thread.new {
-				Thread.current.priority = priority
 				Thread.current.abort_on_exception = false
 				result << failsafe {
 					response = begin
@@ -1164,7 +1163,9 @@ module ODDB
 					end
 				}.to_s
 			}
-			@admin_threads.push(t)
+			t[:source] = src
+			t.priority = priority
+			@admin_threads.add(t)
 			t
 		end
 		def login(session)

@@ -55,14 +55,15 @@ module ODDB
 				@grid.add_style('th-pointersteps', *offset)
 			end
 			def compose_list(model=@model, offset=[0,0])
-				bg_flag = false
+				#bg_flag = false
 				model.each{ |mdl|
 					@grid.add_field(self::class::STEP_DIVISOR, *offset)
 					offset = resolve_offset(offset, self::class::OFFSET_STEP)
-					compose_components(mdl, offset)
-					compose_css(offset, resolve_suffix(mdl, bg_flag))
+					_compose(mdl, offset)#, bg_flag)
+					#compose_components(mdl, offset)
+					#compose_css(offset, resolve_suffix(mdl, bg_flag))
 					offset = resolve_offset(offset, self::class::OFFSET_STEP)
-					bg_flag = !bg_flag if self::class::STRIPED_BG
+					#bg_flag = !bg_flag if self::class::STRIPED_BG
 				}
 				offset
 			end
