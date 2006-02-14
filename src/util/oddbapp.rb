@@ -484,7 +484,7 @@ class OddbPrevalence
 		@hospitals.size
 	end
 	def doctor_count
-		@doctors.size
+		@doctor_count ||= @doctors.size
 	end
 	def doctor_by_origin(origin_db, origin_id)
 		# values.each instead of each_value for testing
