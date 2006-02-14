@@ -96,14 +96,15 @@ module ODDB
 						limit_queries 
 					end
 					## return empty string across the drb-border
-					''
 				end
 			}
+			''
 		rescue Timeout::Error
 			logtype = 'PRTO'
 			'your request has timed out. please try again later.'
 		rescue Exception => ex
 			logtype = ex.message
+			''
 		ensure
 			request_log(logtype)
 		end

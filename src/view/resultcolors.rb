@@ -4,6 +4,7 @@
 module ODDB
 	module View
 		module ResultColors
+=begin
 			@@expired ||= {}
 			@midnight_walker ||= Thread.new {
 				loop {
@@ -13,16 +14,20 @@ module ODDB
 					@@expired.clear
 				}
 			}
+=end
 			private
 			def resolve_suffix(model, bg_flag=false)
-				exp = false
+				gt = model.generic_type || 'unknown'
+				'-' << gt.to_s << super
+			end
+			def row_css(model)
+				'expired' if(model.expired?)
+=begin
 				if(model.respond_to?(:iksnr))
 					iksnr = model.iksnr
 					exp = @@expired[iksnr] ||= model.expired?
 				end
-				gt = model.generic_type || 'unknown'
-				es = exp ? ' expired' : ''
-				'-' + gt.to_s + super + es
+=end
 			end
 		end
 	end

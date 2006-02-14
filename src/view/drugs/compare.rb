@@ -55,9 +55,9 @@ class CompareList < HtmlGrid::List
 		:registration_date	=>	HtmlGrid::DateValue,
 	}
 	def package_line(offset)
-		package = @model.package
-		compose_components(package, offset)
-		compose_css(offset, resolve_suffix(package, false))
+		_compose(@model.package, offset)
+		#compose_components(package, offset)
+		#compose_css(offset, resolve_suffix(package, false))
 	end
 	def compose_empty_list(offset)
 		package_line(offset)
