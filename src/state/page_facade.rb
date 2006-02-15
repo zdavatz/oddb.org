@@ -37,7 +37,7 @@ module ODDB
 				@model = load_model
 				@pages = []
 				msize = @model.size
-				num_pages = ((msize - ITEM_SLACK) / ITEM_LIMIT).next
+				num_pages = [((msize - ITEM_SLACK) / ITEM_LIMIT), 0].max.next
 				num_pages.times { |pagenum|
 					page = OffsetPageFacade.new(pagenum)
 					offset = pagenum * ITEM_LIMIT
