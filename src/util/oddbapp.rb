@@ -728,6 +728,9 @@ class OddbPrevalence
 		if(query == 'atcless')
 			atc = ODDB::AtcClass.new('n.n.')
 			atc.sequences = atcless_sequences
+			atc.instance_eval {
+				alias :active_packages :packages
+			}
 			result.atc_classes = [atc]
 			return result
 		# iksnr or ean13
