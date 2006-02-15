@@ -7,9 +7,9 @@ module ODDB
 	module View
 		class InputDescription < HtmlGrid::InputText
 			def init
-				lang = @session.language
-				@value = @model.send(lang) if(@model.respond_to?(lang))
 				super
+				lang = @session.language
+				self.value = @model.send(lang) if(@model.respond_to?(lang))
 			end
 		end
 	end
