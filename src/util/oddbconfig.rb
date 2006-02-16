@@ -17,6 +17,7 @@ module ODDB
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
 	PAYPAL_SERVER = 'www.paypal.com'
 	PAYPAL_RECEIVER = 'zdavatz@ywesee.com'
+	ENCODING = 'latin1'
 	## Prices and Durations
 	DOWNLOAD_EXPORT_PRICES = {
 		'doctors.csv'					=> 1900,
