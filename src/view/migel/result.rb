@@ -13,7 +13,6 @@ require 'view/privatetemplate'
 require 'view/pointervalue'
 require 'view/resultfoot'
 
-
 module ODDB
 	module View
 		module Migel
@@ -120,10 +119,12 @@ class ResultList < View::Migel::List
 end
 class ExplainResult < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]	=>	'explain_vaccines',
+		[0,0]	=>	'explain_migel_position',
+		[0,1]	=>	'explain_migel_date',
+		[0,2]	=>	'explain_migel_price',
 	}
 	CSS_MAP = {	
-		[0,0]	=>	'explain-infos',
+		[0,0,1,3]	=>	'explain-infos',
 	}
 end
 class ResultComposite < HtmlGrid::Composite
