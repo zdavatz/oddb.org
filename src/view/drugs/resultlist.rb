@@ -177,22 +177,17 @@ class ResultList < HtmlGrid::List
 				[17,0]=>	'th-r',
 			})
 		end
-	end
-	def company_name(model, session=@session)
-		if(comp = model.company)
-			link = nil
-			if(@lookandfeel.enabled?(:powerlink, false) && comp.powerlink)
-				link = HtmlGrid::PopupLink.new(:name, comp, session, self)
-				link.href = @lookandfeel._event_url(:powerlink, {'pointer'=>comp.pointer})
-				link.set_attribute("class", "powerlink")
-			elsif(@lookandfeel.enabled?(:companylist) \
-				&& comp.listed?)
-				link = View::PointerLink.new(:name, comp, session, self)
-			else
-				link = HtmlGrid::Value.new(:name, comp, session, self)
-			end
-			link.value = breakline(comp.name, 21)
-			link
+		if(@lookandfeel.enabled?(:deductible, false))
+			pp_index = components.index(:price_exfactory)
+			dd_index = components.index(:price_public)
+			components.update({
+				pp_index	=>	:price_public,	
+				dd_index	=>	:deductible,	
+			})
+			css_map.update({
+				pp_index	=>	'result-pubprice',
+				dd_index	=>	'result-r',
+			})
 		end
 	end
 	def comparable_size(model, session=@session)
@@ -222,6 +217,9 @@ class ResultList < HtmlGrid::List
 		@grid.add(subheader, *offset)
 		@grid.add_style('result-atc', *offset)
 		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
+	end
+	def deductible(model, session=@session)
+		@lookandfeel.lookup(model.deductible || 'deductible_unknown')
 	end
 	def fachinfo(model, session=@session)
 		super(model, session, 'important-infos')

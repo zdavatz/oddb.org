@@ -67,6 +67,11 @@ module ODDB
 						[0,5,1,5]	=>	'explain-infos',
 						[1,0,1,10]	=>	'explain-infos',
 					}
+				elsif(@lookandfeel.enabled?(:deductible))
+					components.update({
+						components.index('explain_efp')	=>	'explain_pbp',	
+						components.index('explain_pbp')	=>	'explain_deductible',	
+					})
 				end
 				super
 			end

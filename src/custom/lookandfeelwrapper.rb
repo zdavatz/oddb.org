@@ -201,8 +201,9 @@ module ODDB
 	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
 		ENABLED = [
-			:just_medical_structure,	
+			:deductible,
 			:external_css,
+			:just_medical_structure,	
 			:popup_links,
 			:powerlink,
 		]

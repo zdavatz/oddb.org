@@ -24,6 +24,23 @@ module ODDB
 				}
 				name << line << last
 			end
+			def company_name(model, session=@session)
+				if(comp = model.company)
+					link = nil
+					if(@lookandfeel.enabled?(:powerlink, false) && comp.powerlink)
+						link = HtmlGrid::PopupLink.new(:name, comp, session, self)
+						link.href = @lookandfeel._event_url(:powerlink, {'pointer'=>comp.pointer})
+						link.set_attribute("class", "powerlink")
+					elsif(@lookandfeel.enabled?(:companylist) \
+						&& comp.listed?)
+						link = View::PointerLink.new(:name, comp, session, self)
+					else
+						link = HtmlGrid::Value.new(:name, comp, session, self)
+					end
+					link.value = breakline(comp.name, 21)
+					link
+				end
+			end
 			def most_precise_dose(model, session=@session)
 				if(model.respond_to?(:most_precise_dose))
 					dose = model.most_precise_dose
