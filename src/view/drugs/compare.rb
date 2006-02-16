@@ -54,6 +54,23 @@ class CompareList < HtmlGrid::List
 	SYMBOL_MAP = {
 		:registration_date	=>	HtmlGrid::DateValue,
 	}
+	def init
+		if(@lookandfeel.enabled?(:deductible))
+			components.update({
+				[7,0]	=>	:deductible,
+				[8,0]	=>	:ikscat,
+			})
+			css_map.update({
+				[7,0]	=>	'result-r',
+				[8,0]	=>	'result-i',
+			})
+			css_head_map.update({
+				[7,0]	=>	'th-r',
+				[8,0]	=>	'th',
+			})
+		end
+		super
+	end
 	def package_line(offset)
 		_compose(@model.package, offset)
 		#compose_components(package, offset)

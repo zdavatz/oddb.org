@@ -216,8 +216,9 @@ module ODDB
 				:legal_note									=>	'Rechtliche Hinweise',
 				:meddrugs_update						=>	'med-drugs update', 
 				:migel											=>	'Medizinprodukte (MiGeL)',
+				:migel_alphabetical					=>	'Medizinprodukte (MiGeL) A-Z',
 				:search_explain							=>	'Vergleichen Sie einfach und schnell Medikamentenpreise.<br> Suchen Sie nach Medikament, Wirkstoff oder Anwendungsgebiet.',
-				:sequences									=>	'Medikamente alphabetisch',
+				:sequences									=>	'Medikamente A-Z',
 			},
 			'fr'	=>	{
 				:all_drugs_pricecomparison	=>	'Encyclopédie complète des médicaments commercialisés en Suisse',
@@ -227,8 +228,9 @@ module ODDB
 				:legal_note									=>	'Notice légale',
 				:meddrugs_update						=>	'med-drugs update', 
 				:migel											=>	'Dispositifs médicaux (MiGeL)',
+				:migel_alphabetical					=>	'Dispositifs médicaux (MiGeL) A-Z',
 				:search_explain							=>	'Comparez simplement et rapidement les prix des médicaments.<br>Cherchez le nom du médicament, le principe actif ou l\'indication.',
-				:sequences									=>	'Médicaments alphabétiques',
+				:sequences									=>	'Médicaments A-Z',
 			},
 			'en'	=>	{
 				:all_drugs_pricecomparison	=>	'Complete Swiss encyclopaedia of drugs',
@@ -238,8 +240,9 @@ module ODDB
 				:legal_note									=>	'Legal Disclaimer',
 				:meddrugs_update						=>	'med-drugs update', 
 				:migel											=>	'Medical devices (MiGeL)',
+				:migel_alphabetical					=>	'Medical devices (MiGeL) A-Z',
 				:search_explain							=>	'Compare prices of drugs - fast and easy.<br>Search by name of drug, active agent or indication.',
-				:sequences									=>	'Drugs alphabetical',
+				:sequences									=>	'Drugs A-Z',
 			},
 		}
 		RESOURCES = {
@@ -251,15 +254,10 @@ module ODDB
 		end
 		def zones
 			[ State::Drugs::Init, State::Drugs::AtcChooser, 
-				State::Drugs::Sequences, :migel ]
+				State::Drugs::Sequences, State::Migel::Alphabetical ]
 		end
 		def zone_navigation
-			case @session.zone
-			when :migel
-				[:migel_alphabetical]
-			else
-				[]
-			end
+			[]
 		end
 	end
 	class LookandfeelSwissmedic < SBSM::LookandfeelWrapper

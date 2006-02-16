@@ -218,9 +218,6 @@ class ResultList < HtmlGrid::List
 		@grid.add_style('result-atc', *offset)
 		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 	end
-	def deductible(model, session=@session)
-		@lookandfeel.lookup(model.deductible || 'deductible_unknown')
-	end
 	def fachinfo(model, session=@session)
 		super(model, session, 'important-infos')
 	end	
