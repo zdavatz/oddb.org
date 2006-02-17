@@ -23,6 +23,9 @@ module ODDB
 					atc.code
 				end
 			end
+			def deductible(model, session=@session)
+				@lookandfeel.lookup(model.deductible || 'deductible_unknown')
+			end
 			def fachinfo(model, session=@session, css='result-infos')
 				_fachinfo(model.fachinfo, css)
 			end

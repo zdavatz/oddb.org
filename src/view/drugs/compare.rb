@@ -16,6 +16,7 @@ module ODDB
 class CompareList < HtmlGrid::List
 	include DataFormat
 	include View::ResultColors
+	include View::AdditionalInformation
 	COMPONENTS = {
 		[0,0]	=>	:name_base,
 		[1,0]	=>	:company_name,
