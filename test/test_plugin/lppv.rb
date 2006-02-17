@@ -34,7 +34,7 @@ module ODDB
 			@app = FlexMock.new
 			@plugin = LppvPlugin.new(@app)
 		end
-	def test_update_package__price_up
+		def test_update_package__price_up
 			data = {
 				'1234567'	=>	'9.90',		
 			}
@@ -54,7 +54,6 @@ module ODDB
 			assert_instance_of(LppvPlugin::PriceUpdate, update)
 			assert(update.up?)
 			@app.mock_verify
-			puts @plugin.report
 		end
 		def test_update_package__price_down
 			data = {
@@ -128,7 +127,6 @@ module ODDB
 			update = @plugin.updated_packages.first
 			assert_instance_of(LppvPlugin::PriceUpdate, update)
 			@app.mock_verify
-			puts @plugin.report
 		end
 	end
 end

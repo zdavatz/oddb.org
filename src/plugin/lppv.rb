@@ -4,6 +4,7 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 
 require "plugin/plugin"
+require 'model/package'
 require "util/html_parser"
 require "net/http"
 
@@ -63,13 +64,13 @@ module ODDB
 				pointer = model.pointer
 				str = 'http://www.oddb.org/de/gcc/resolve/pointer'.concat(CGI.escape(pointer.to_s))
 			end
-			def report_line
-				report = [
-					sprintf("%-20s  %-20.2f  %-20.2f %s", @package.iksnr, @old.to_f/100, @current.to_f/100, @package.name),
-					nil			
+			def report_lines
+				[
+					resolve_link(package),
+					sprintf("%-20s  %-20.2f  %-20.2f %s", @package.iksnr, 
+									@old.to_f/100, @current.to_f/100, @package.name),
+					nil,
 				]
-				report.push(resolve_link(package))
-				report.flatten.join("\n")
 			end
 		end
 		LPPV_HOST = 'www.lppa.ch'
@@ -80,21 +81,25 @@ module ODDB
 			@updated_packages = []
 			@packages_with_sl_entry = []
 		end
-		def update(range='D'..'D')
+		def update(range='A'..'Z')
 			data = {}
-			range.each { |char| 
-				data.update(get_prices(char))
+			Net::HTTP.new(LPPV_HOST).start { |http| 
+				range.each { |char| 
+					puts "getting #{char}"
+					@prices = get_prices(char, http)
+					puts "got #{prices.size} prices"
+					$stdout.flush
+					data.update(@prices)
+				}
 			}
 			update_packages(data)
 		end
-		def get_prices(char)
+		def get_prices(char, http)
 			writer = LppvWriter.new
-			Net::HTTP.new(LPPV_HOST).start { |http| 
-				response = http.get(sprintf(LPPV_PATH, char))
-				formatter = HtmlFormatter.new(writer)
-				parser = HtmlParser.new(formatter)
-				parser.feed(response.body)
-			}
+			response = http.get(sprintf(LPPV_PATH, char))
+			formatter = HtmlFormatter.new(writer)
+			parser = HtmlParser.new(formatter)
+			parser.feed(response.body)
 			writer.prices
 		end		
 		def update_package(package, data)
@@ -112,24 +117,26 @@ module ODDB
 			}
 		end
 		def report
-			ups, downs = @updated_packages.partition { |price| 
-				price.up? } 
-				lines = [
-				"UPDATED PACKAGES: #{@updated_packages.size}",nil,
-				"PACKAGES WITH SL-ENTRY: #{@packages_with_sl_entry.size}",
+			ups, downs = @updated_packages.partition { |price| price.up? } 
+			lines = [
+				"Downloaded Prices: #{@prices.size}",
+				"Updated Packages: #{@updated_packages.size}",
 				nil,
-				]
-				lines.push("THE FOLLOWING PACKAGES EXPERIENCED A PRICE RAISE:\n ")
-				lines.push(sprintf("%-20s  %-20s  %-20s %-s", "IKS-Number", "Old Price", "New Price", "Package Name"))
-				lines.push(nil)
-				lines.push(ups.reverse.collect { |price| price.report_line + "\n" })
-				lines.push(nil)
-				lines.push("THE FOLLOWING PACKAGES EXPERIENCED A PRICE CUT:\n ")
-				lines.push(sprintf("%-20s  %-20s  %-20s %-s,", "IKS-Number", "Old Price", "New Price", "Package Name"))
-				lines.push(nil)
-				lines.push(downs.reverse.collect { |price| price.report_line + "\n"})
-				lines.flatten.join("\n")
-
+				"Packages with SL-Entry: #{@packages_with_sl_entry.size}",
+				nil,
+				"The following Packages experienced a Price RAISE:",
+				sprintf("%-20s  %-20s  %-20s %-s", 
+								"IKS-Number", "Old Price", "New Price", "Package Name"),
+			]
+			ups.reverse.each { |price| lines.concat(price.report_lines) }
+			lines.concat([
+				nil,
+				"The following Packages experienced a Price CUT:",
+				sprintf("%-20s  %-20s  %-20s %-s,", 
+								"IKS-Number", "Old Price", "New Price", "Package Name"),
+			])
+			downs.reverse.each { |price| lines.concat(price.report_lines) }
+			lines.flatten.join("\n")
 		end
 		def	do_price_update(package, price)
 			price_obj = PriceUpdate.new(package, price)
