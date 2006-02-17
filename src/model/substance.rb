@@ -227,7 +227,7 @@ module ODDB
 					format_connection_key(key)
 			}.delete_if { |key| key.empty? }.uniq.sort
 		end
-		def update_values(values)
+		def update_values(values, origin=nil)
 			super
 			update_connection_keys
 		end

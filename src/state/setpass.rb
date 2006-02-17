@@ -37,7 +37,7 @@ module SetPass
 			end
 			begin
 				ODBA.transaction { 
-					@session.app.update(@model.pointer, hash)
+					@session.app.update(@model.pointer, hash, unique_email)
 				}
 				if(klass = resolve_state(mdl.pointer))
 					klass.new(@session, mdl)

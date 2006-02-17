@@ -54,7 +54,7 @@ class AssignDeprivedSequence < State::Admin::Global
 			else
 				values.store(:patinfo, pointer)
 			end
-			@session.app.update(@model.pointer, values)
+			@session.app.update(@model.pointer, values, unique_email)
 			_patinfo_deprived_sequences
 		else
 			err = create_error(:e_no_sequence_selected, :pointers, nil)
@@ -91,7 +91,7 @@ class AssignDeprivedSequence < State::Admin::Global
 	end
 	def shadow
 		if(allowed?(:patinfo_shadow))
-			@session.app.update(@model.pointer, {:patinfo_shadow => true})
+			@session.app.update(@model.pointer, {:patinfo_shadow => true}, unique_email)
 			_patinfo_deprived_sequences
 		end
 	end

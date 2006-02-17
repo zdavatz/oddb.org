@@ -6,17 +6,18 @@ require 'digest/md5'
 
 module ODDB
 	class AcceptOrphan
-		def initialize(orphan, pointers, otype)
+		def initialize(orphan, pointers, otype, origin=nil)
 			@orphan = orphan
 			@pointers = pointers
 			@orphantype = otype
+			@origin = origin
 		end
 		def	execute(app)
 			pointer = ODDB::Persistence::Pointer.new(@orphantype)
 			digest = Digest::MD5.hexdigest(@orphan.sort.to_s)
 			ODBA.transaction { 
 				info = app.accepted_orphans.fetch(digest) {
-					inf = app.update(pointer.creator, @orphan)
+					inf = app.update(pointer.creator, @orphan, @origin)
 					app.accepted_orphans.store(digest, inf)
 					app.accepted_orphans.odba_store
 					inf

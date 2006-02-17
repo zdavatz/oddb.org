@@ -77,7 +77,6 @@ module ODDB
 			else
 				while @stack.length > found
 					tag = @stack[-1]
-					#puts "pop #{tag}"
 					method = 'end_' + tag
 					if respond_to?(method)
 						handle_endtag(tag, method)

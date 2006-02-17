@@ -33,7 +33,7 @@ class PatinfoDeprivedSequences < State::Admin::Global
 				pattern = Regexp.new(str)
 				@session.each_sequence { |seq|
 					if(pattern.match(seq.name_base))
-						@session.app.update(seq.pointer, {:patinfo_shadow => true})
+						@session.app.update(seq.pointer, {:patinfo_shadow => true}, unique_email)
 					end
 				}
 				patinfo_deprived_sequences

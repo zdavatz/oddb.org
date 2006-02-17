@@ -33,7 +33,7 @@ module Checkout
 	end
 	def create_invoice(input)
 		pointer = Persistence::Pointer.new([:invoice])
-		invoice = @session.app.update(pointer.creator, {:currency => currency})
+		invoice = @session.app.update(pointer.creator, {:currency => currency}, unique_email)
 		@model.items.each { |abstract|
 			item_ptr = invoice.pointer + [:item]
 			time = Time.now
@@ -51,7 +51,7 @@ module Checkout
 				:data					=> abstract.data,
 				:vat_rate			=> VAT_RATE,
 			}
-			item = @session.app.update(item_ptr.creator, data)
+			item = @session.app.update(item_ptr.creator, data, unique_email)
 		}
 		invoice
 	end
@@ -59,7 +59,7 @@ module Checkout
 		input.each { |key, val| @session.set_cookie_input(key, val) }
 		pointer = Persistence::Pointer.new([:admin_subsystem], 
 			[:download_user, input[:email]])
-		@session.app.update(pointer.creator, input)
+		@session.app.update(pointer.creator, input, unique_email)
 	end
 	def currency
 		self.class.const_get(:CURRENCY)

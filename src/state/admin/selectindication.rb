@@ -34,7 +34,7 @@ module SelectIndicationMethods
 			update = {
 				@session.language	=>	@model.user_input[:indication],
 			}
-			@session.app.update(indication.pointer, update)
+			@session.app.update(indication.pointer, update, unique_email)
 		end
 		if(error?)
 			self
@@ -42,7 +42,7 @@ module SelectIndicationMethods
 			hash = {
 				:indication	=>	indication.pointer,
 			}
-			model = @session.app.update(@model.pointer, hash)
+			model = @session.app.update(@model.pointer, hash, unique_email)
 			self.class::REGISTRATION_STATE.new(@session, model)
 		end
 	end

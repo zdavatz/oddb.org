@@ -8,7 +8,7 @@ require 'fileutils'
 module ODDB
 	module LogFile
 		LOG_ROOT = File.expand_path('log', PROJECT_ROOT)
-		def append(key, line, time=Time.now)
+		def append(key, line, time=Time.local)
 			file = filename(key, time)
 			dir = File.dirname(file)
 			FileUtils.mkdir_p(dir)

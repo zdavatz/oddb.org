@@ -32,7 +32,7 @@ class TestMedwinCompanyPlugin < Test::Unit::TestCase
 				'comp2'	=>	StubCompany.new('foobar', 'comp2'),
 			}
 		end
-		def update(pointer, values)
+		def update(pointer, values, origin)
 			@pointers << pointer
 			@values << values
 		end
@@ -147,7 +147,7 @@ class TestMedwinPackagePlugin < Test::Unit::TestCase
 		def each_sequence(&block)
 			block.call(@sequence)
 		end
-		def update(pointer, values)
+		def update(pointer, values, origin)
 			@pointers << pointer
 			@values << values
 		end

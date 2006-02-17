@@ -46,7 +46,7 @@ module ODDB
 		def initialize(arg)
 			@bar = arg
 		end
-		def update_values(values)
+		def update_values(values, origin=nil)
 			super
 			@values = values
 		end

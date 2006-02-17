@@ -580,7 +580,7 @@ BSV-XLS Swissmedic-Nr: %5s %3s
 			end
 			if(pack)
 				pac.pointer = pack.pointer
-				@app.update(pack.pointer, pac.data)
+				@app.update(pack.pointer, pac.data, :sl)
 				@successful_updates.push(pac)
 			else
 				@unknown_packages.push(pac)
@@ -601,7 +601,7 @@ BSV-XLS Swissmedic-Nr: %5s %3s
 		end
 		def update_sl_entry(package, pac)
 			sl_ptr = package.pointer + [:sl_entry]
-			@app.update(sl_ptr.creator, pac.sl_data)
+			@app.update(sl_ptr.creator, pac.sl_data, :sl)
 		end
 	end
 end

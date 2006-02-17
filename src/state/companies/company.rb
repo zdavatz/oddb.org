@@ -111,7 +111,7 @@ class UserCompany < Company
 				addr.fon = input.delete(:fon).to_s.split(/\s*,\s*/)
 				addr.fax = input.delete(:fax).to_s.split(/\s*,\s*/)
 				ODBA.transaction {
-					@model = @session.app.update(@model.pointer, input)
+					@model = @session.app.update(@model.pointer, input, unique_email)
 				}
 				update_company_user(contact_email)
 			end
@@ -126,7 +126,7 @@ class UserCompany < Company
 					:unique_email => contact_email, 
 					:model => @model
 				}
-				@session.app.update(user.pointer, args)
+				@session.app.update(user.pointer, args, unique_email)
 			}
 		end
 	rescue RuntimeError => e
@@ -150,7 +150,7 @@ class RootCompany < UserCompany
 		if(@model.is_a?(Persistence::CreateItem))
 			@model.carry(:business_area, ba)
 		else
-			@session.app.update(@model.pointer, {:business_area => ba})
+			@session.app.update(@model.pointer, {:business_area => ba}, unique_email)
 		end
 		AjaxCompany.new(@session, @model)
 	end
@@ -206,7 +206,7 @@ class PowerLinkCompany < Company
 		keys = [:powerlink]
 		input = user_input(keys)
 		ODBA.transaction {
-			@model = @session.app.update(@model.pointer, input)
+			@model = @session.app.update(@model.pointer, input, unique_email)
 		}
 		self
 	end

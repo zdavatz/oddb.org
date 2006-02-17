@@ -28,7 +28,7 @@ class Indication < State::Admin::Global
 			inj
 		}
 		unless error?
-			@model = @session.app.update(@model.pointer, input)	
+			@model = @session.app.update(@model.pointer, input, unique_email)	
 		end
 		self
 	end

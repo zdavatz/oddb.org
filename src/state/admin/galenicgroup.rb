@@ -26,7 +26,7 @@ class GalenicGroup < State::Admin::Global
 			inj
 		}
 		ODBA.transaction {
-			@model = @session.app.update(@model.pointer, input)
+			@model = @session.app.update(@model.pointer, input, unique_email)
 		}
 		self
 	end

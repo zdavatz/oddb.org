@@ -51,7 +51,7 @@ class RootHospital < Hospital
 			addr.fon = input.delete(:fon).to_s.split(/\s*,\s*/)
 			addr.fax = input.delete(:fax).to_s.split(/\s*,\s*/)
 			ODBA.transaction {
-				@model = @session.app.update(@model.pointer, input)
+				@model = @session.app.update(@model.pointer, input, unique_email)
 			}
 		end
 	end

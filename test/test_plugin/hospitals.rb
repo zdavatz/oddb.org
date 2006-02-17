@@ -29,10 +29,11 @@ def test_update_hospital__1
 		assert_equal('7680123456789', ean)
 		nil
 	}
-	@app.__next(:update) { |ptr, vals|
+	@app.__next(:update) { |ptr, vals, orig|
 		assert_equal(values, vals)
 		assert_instance_of(Persistence::Pointer, ptr)
 		assert_equal([:create], ptr.skeleton)
+		assert_equal(:refdata, orig)
 	}
 	@plugin.update_hospital(values)
 end
@@ -46,9 +47,10 @@ def test_update_hospital__2
 		assert_equal('1324657675434', ean)
 		mock1
 	}
-	@app.__next(:update) { |ptr, vals|
+	@app.__next(:update) { |ptr, vals, orig|
 		assert_equal(values, vals)
 		assert_equal("pointer", ptr)
+		assert_equal(:refdata, orig)
 	}
 	@plugin.update_hospital(values)
 end

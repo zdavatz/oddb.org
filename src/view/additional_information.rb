@@ -72,6 +72,9 @@ module ODDB
 							date.strftime(@lookandfeel.lookup(:date_format)))
 					end
 					title_elements.push(sl_str)
+				elsif(model.data_origin(:price_public) == :lppv)
+					catstr = @lookandfeel.lookup(:lppv)
+					text_elements.push(catstr)
 				end
 =begin
 				if(model.out_of_trade)
@@ -150,15 +153,15 @@ module ODDB
 					link
 				end
 			end
-		def qty_unit(model, session=@session)
-			if(model.qty || model.unit)
-				unit = nil
-				if(u = model.unit)
-					unit = u.send(@session.language)
+			def qty_unit(model, session=@session)
+				if(model.qty || model.unit)
+					unit = nil
+					if(u = model.unit)
+						unit = u.send(@session.language)
+					end
+					[ '&nbsp;(', model.qty, unit, ')' ].compact.join(' ')
 				end
-				[ '&nbsp;(', model.qty, unit, ')' ].compact.join(' ')
 			end
-		end
 		end
 	end
 end

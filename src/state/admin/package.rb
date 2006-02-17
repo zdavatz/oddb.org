@@ -49,7 +49,7 @@ module PackageMethods
 		input = user_input(keys)
 		unless(error?)
 			ODBA.transaction {
-				@model = @session.app.update(@model.pointer, user_input(keys))
+				@model = @session.app.update(@model.pointer, input, unique_email)
 			}
 		end
 		self

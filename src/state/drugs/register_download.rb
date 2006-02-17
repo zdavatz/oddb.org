@@ -73,7 +73,7 @@ class RegisterInvoicedDownload < RegisterDownload
 				values = item.values
 				values.store(:user_pointer, @session.user.pointer)
 				values.store(:time, Time.now)
-				@paid = app.update(item_ptr.creator, values)
+				@paid = app.update(item_ptr.creator, values, unique_email)
 			end
 			State::User::Download.new(@session, @paid)
 		end

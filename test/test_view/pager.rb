@@ -26,6 +26,7 @@ module ODDB
 						event,
 					] + values.to_a.flatten ).join('/')
 				end
+				alias :_event_url :event_url
 				def state
 					self
 				end

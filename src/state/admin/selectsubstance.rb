@@ -17,7 +17,7 @@ module SelectSubstanceMethods
 				update = {
 					'lt'	=>	@model.user_input[:substance],
 				}
-				@session.app.update(substance.pointer, update)
+				@session.app.update(substance.pointer, update, unique_email)
 			end
 		}
 		active_agent = @model.active_agent
@@ -33,7 +33,7 @@ module SelectSubstanceMethods
 		if(!error? && (klass = resolve_state(aptr)))
 			model = nil
 			ODBA.transaction { 
-				model = @session.app.update(@model.pointer, hash)
+				model = @session.app.update(@model.pointer, hash, unique_email)
 			}
 			klass.new(@session, model)
 		end

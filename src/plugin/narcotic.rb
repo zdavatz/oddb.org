@@ -109,7 +109,7 @@ module ODDB
 				else
 					pointer = Persistence::Pointer.new(:narcotic).creator
 				end
-				@app.update(pointer, values)
+				@app.update(pointer, values, :swissmedic)
 			end
 		end
 		def update_narcotic_texts(language)
@@ -120,7 +120,7 @@ module ODDB
 						args = {
 							language	=> text,
 						}	
-						@app.update(ptr.creator, args)
+						@app.update(ptr.creator, args, :swissmedic)
 					end
 				}
 			}
@@ -156,7 +156,7 @@ module ODDB
 			else
 				@new_substances.push(report_text(row))
 			end
-			substance = @app.update(pointer, data)
+			substance = @app.update(pointer, data, :swissmedic)
 			if(rest)
 				@reserve_substances.push(substance)
 			end

@@ -28,7 +28,7 @@ module ODDB
 		def to_s
 			[@substance, @dose].compact.join(' ')
 		end
-		def update_values(values)
+		def update_values(values, origin=nil)
 			super
 			@pointer = @pointer.parent + [:active_agent, @substance.name]
 		end

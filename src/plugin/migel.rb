@@ -76,13 +76,13 @@ module ODDB
 				:code => groupcd,
 				language  => row.at(2), 
 			}
-			group = @app.update(pointer.creator, hash)
+			group = @app.update(pointer.creator, hash, :migel)
 			text = row.at(3)
 			text.tr!("\v", " ")
 			text.strip!
 			unless(text.empty?)
 				desc_ptr = pointer + [:limitation_text]
-				@app.update(desc_ptr.creator, {language => text})
+				@app.update(desc_ptr.creator, {language => text}, :migel)
 			end
 			group
 		end
@@ -93,11 +93,11 @@ module ODDB
 				:code => sgcd,
 				language => row.at(6),
 			}
-			subgroup = @app.update(pointer.creator, hash)
+			subgroup = @app.update(pointer.creator, hash, :migel)
 			text = row.at(7)
 			unless(text.empty?)
 				lim_ptr = pointer + [:limitation_text]
-				@app.update(lim_ptr.creator, {language => text})
+				@app.update(lim_ptr.creator, {language => text}, :migel)
 			end
 			subgroup
 		end	
@@ -130,10 +130,11 @@ module ODDB
 			if(qty > 0)
 				hash.store(:qty, qty)
 			end
-			product = @app.update(pointer.creator, hash) 
+			product = @app.update(pointer.creator, hash, :migel) 
 			unless(product_text.empty?)
 				pt_ptr = pointer + [:product_text]
-				@app.update(pt_ptr.creator, {language => product_text})
+				@app.update(pt_ptr.creator, {language => product_text}, 
+									 :migel)
 			end
 			if(id[3] != "00")
 				1.upto(3) { |num|
@@ -145,12 +146,13 @@ module ODDB
 			end
 			unless(limitation.empty?)
 				lim_ptr = pointer + [:limitation_text]
-				@app.update(lim_ptr.creator, {language => limitation})
+				@app.update(lim_ptr.creator, {language => limitation},
+									 :migel)
 			end
 			unit = row.at(17)
 			unless(unit.empty?)
 				uni_ptr = pointer + [:unit]
-				@app.update(uni_ptr.creator, {language => unit})
+				@app.update(uni_ptr.creator, {language => unit}, :migel)
 			end
 			product
 		end

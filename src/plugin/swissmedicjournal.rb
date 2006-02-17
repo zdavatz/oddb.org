@@ -54,7 +54,7 @@ module ODDB
 									:name_base	=>	name_base,
 									:dose				=>	dose,
 								}
-								@app.update(seq.pointer, values)
+								@app.update(seq.pointer, values, :swissmedic)
 							end
 							if((comp = pseq.composition) \
 								&& flags.include?(:composition))
@@ -166,7 +166,7 @@ module ODDB
 				hash = {
 					language	=>	smj_seq.most_precise_galform
 				}
-				@app.update(galform_pointer.creator, hash)
+				@app.update(galform_pointer.creator, hash, :swissmedic)
 			end
 			result
 		end
@@ -192,7 +192,7 @@ module ODDB
 				@deactivations.push(pointer)
 				@change_flags.store(pointer, smj_reg.flags)
 				if((reg = @app.registration(smj_reg.iksnr)) && reg.inactive_date.nil?)
-					@app.update(pointer, {:inactive_date => date})
+					@app.update(pointer, {:inactive_date => date}, :swissmedic)
 					@deactivated_pointers.push(pointer)
 				end
 			else
@@ -223,14 +223,7 @@ module ODDB
 		end
 		def resolve_link(pointer)
 			model = pointer.resolve(@app)
-			str = if(model.respond_to?(:name_base)) 
-				(model.name_base.to_s + ': ').ljust(50) 
-			else
-				''
-			end
-			str << 'http://www.oddb.org/de/gcc/resolve/pointer/' << CGI.escape(pointer.to_s) << ' '
-		rescue Exception
-			"Error creating Link for #{pointer.inspect}"
+			super(model)
 		end
 		def smj_incomplete?(smj_reg)
 			smj_reg.incomplete? #&& smj_reg.iksnr.nil?
@@ -253,7 +246,7 @@ module ODDB
 				end
 				values.update(extract_agent(agent, :chemical))
 				values.update(extract_agent(agent, :equivalent))
-				@app.update(pointer.creator, values)
+				@app.update(pointer.creator, values, :swissmedic)
 			end
 		end
 		def update_active_agents(smj_composition, seq_pointer)
@@ -290,7 +283,7 @@ module ODDB
 				:name				=>	smj_company.name,
 				:addresses	=>	[addr],
 			}
-			@app.update(pointer, hash)
+			@app.update(pointer, hash, :swissmedic)
 		end
 		def update_indication(indication_name)
 			indication = @app.indication_by_text(indication_name)
@@ -299,7 +292,7 @@ module ODDB
 				indication_hash = {
 					:la	=>	indication_name,
 				}
-				indication = @app.update(indication_pointer.creator, indication_hash)
+				indication = @app.update(indication_pointer.creator, indication_hash, :swissmedic)
 			end
 			indication
 		end
@@ -316,7 +309,7 @@ module ODDB
 				if(reg_flags.include?(:new))
 					hash.store(:refdata_override, true)
 				end
-				@app.update(pointer.creator, hash)
+				@app.update(pointer.creator, hash, :swissmedic)
 			}
 		end
 		def update_registration(smj_reg, pointer=nil)
@@ -354,7 +347,7 @@ module ODDB
 				[:registration, smj_reg.iksnr]
 			end
 			pointer ||= Persistence::Pointer.new(args)
-			registration = @app.update(pointer.creator, hash)
+			registration = @app.update(pointer.creator, hash, :swissmedic)
 			if(smj_incomplete?(smj_reg))
 				@incomplete_pointers
 			else
@@ -386,7 +379,7 @@ module ODDB
 				smj_seq.most_precise_unit,
 			]#.compact.join(' ').strip
 			hash.store(:dose, dose) unless dose.compact.empty?
-			sequence = @app.update(pointer.creator, hash)
+			sequence = @app.update(pointer.creator, hash, :swissmedic)
 			if(composition = smj_seq.composition)
 				update_active_agents(composition, pointer)
 			end
@@ -405,7 +398,7 @@ module ODDB
 					hash = {
 						:atc_class => code,
 					}	
-					@app.update(sequence.pointer, hash)
+					@app.update(sequence.pointer, hash, :swissmedic)
 				end
 			end
 			if(packages = smj_seq.packages)

@@ -16,7 +16,7 @@ class Substance < State::Substances::Global
 			args = {
 				:effective_form	=>	substance.pointer,
 			}
-			@session.app.update(@model.pointer, args)
+			@session.app.update(@model.pointer, args, unique_email)
 		end
 		self
 	end
@@ -38,7 +38,7 @@ class Substance < State::Substances::Global
 		if(key = @session.user_input(:connection_key))
 			keys = @model.connection_keys
 			keys.delete(key)
-			@session.app.update(@model.pointer, keys)
+			@session.app.update(@model.pointer, keys, unique_email)
 		end
 		self
 	end
@@ -91,7 +91,7 @@ class Substance < State::Substances::Global
 		end
 		unless error?
 			ODBA.transaction {
-				@model = @session.app.update(@model.pointer, input)	
+				@model = @session.app.update(@model.pointer, input, unique_email)	
 			}
 		end
 		self

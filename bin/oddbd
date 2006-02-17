@@ -26,6 +26,7 @@ end
 start = Time.now
 puts "prefetching..."
 $stdout.flush
+ODBA.cache.setup
 ODBA.cache.prefetch
 puts "prefetch completed in #{Time.now-start} seconds"
 $stdout.flush

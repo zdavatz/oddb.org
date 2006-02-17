@@ -9,6 +9,7 @@ require 'util/persistence'
 require 'drb'
 require 'ext/meddata/src/meddata'
 require 'ext/meddata/src/ean_factory'
+require 'model/address'
 require 'plugin/hospitals'
 
 module ODDB
@@ -81,7 +82,7 @@ module ODDB
 			addr.fax = [values.delete(:fax)]
 			addr.additional_lines = [values[:business_unit]]
 			values.store(:addresses, [addr])
-			@app.update(pointer, values)
+			@app.update(pointer, values, :refdata)
 		end
 	end
 end

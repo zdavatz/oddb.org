@@ -11,6 +11,7 @@ require 'plugin/hospitals'
 require 'plugin/bsv'
 require 'plugin/ouwerkerk'
 require 'plugin/limitation'
+require 'plugin/lppv'
 require 'plugin/medwin'
 require 'plugin/migel'
 require 'plugin/narcotic'
@@ -111,6 +112,7 @@ module ODDB
 		end
 		def run
 			logfile_stats
+			update_lppv
 			update_swissmedicjournal
 			update_fxcrossrate
 			update_fachinfo
@@ -119,9 +121,11 @@ module ODDB
 				update_limitation_text
 				update_trade_status
 				update_medwin_packages
+				update_lppv
 				export_ouwerkerk
 			end
 			if(@smj_updated)
+				update_lppv
 				update_medwin_companies
 			end
 		end
@@ -162,6 +166,9 @@ module ODDB
 		end
 		def update_limitation_text
 			update_simple(LimitationPlugin, 'LimitationText')
+		end
+		def update_lppv
+			update_immediate(LppvPlugin, 'Lppv prices')
 		end
 		def update_medwin_companies
 			update_simple(MedwinCompanyPlugin, 'Medwin-Companies')

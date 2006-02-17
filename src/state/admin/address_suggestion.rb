@@ -55,10 +55,10 @@ class AddressSuggestion < Global
 				parent_input = {
 					:email	=>	email,
 				}
-				@session.app.update(pointer, input)
+				@session.app.update(pointer, input, unique_email)
 				addr.replace_with(sugg)
 				@session.app.update(addr_pointer.parent, 
-					parent_input)
+					parent_input, unique_email)
 				## nur nötig wenn suggestion nicht gelöscht wird
 				@active_address.email_suggestion = email
 			}

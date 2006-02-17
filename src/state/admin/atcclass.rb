@@ -17,7 +17,7 @@ class AtcClass < State::Admin::Global
 		input = user_input(keys)
 		unless error?
 			ODBA.transaction {
-				@model = @session.app.update(@model.pointer, input)
+				@model = @session.app.update(@model.pointer, input, unique_email)
 			}
 		end
 		self

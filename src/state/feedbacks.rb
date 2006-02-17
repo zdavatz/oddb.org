@@ -69,7 +69,7 @@ def update
 		time = Time.now
 		hash.store(:time , time)
 		@model.current_feedback = @session.app.update(
-			@model.current_feedback.pointer, hash)
+			@model.current_feedback.pointer, hash, unique_email)
 		@infos = [info_key]
 
 		# in case this was a new feedback, drop a line into a logfile

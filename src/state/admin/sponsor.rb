@@ -31,7 +31,7 @@ class Sponsor < State::Admin::Global
 		end
 		unless error?
 			begin
-				@model = @session.app.update(@model.pointer, values)
+				@model = @session.app.update(@model.pointer, values, unique_email)
 				if(logo_default = input[:logo_file])
 					name = store_logo(logo_default, :default, 
 						@model.logo_filenames[:default])

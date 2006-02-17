@@ -95,12 +95,12 @@ class OddbPrevalence
 			pointer.issue_delete(self)
 		}
 	end
-	def update(pointer, values)
+	def update(pointer, values, origin=nil)
 		#puts [__FILE__,__LINE__,"update(#{pointer}, #{values})"].join(':')
 		@last_update = Time.now()
 		item = nil
 		failsafe(ODDB::Persistence::UninitializedPathError, nil) {
-			item = pointer.issue_update(self, values)
+			item = pointer.issue_update(self, values, origin)
 			updated(item) unless(item.nil?)
 		}
 		item
@@ -1101,8 +1101,8 @@ module ODDB
 			@system.execute_command(command)
 			registration(reg.iksnr)
 		end
-		def accept_orphaned(orphan, pointer, symbol)
-			command = AcceptOrphan.new(orphan, pointer,symbol)
+		def accept_orphaned(orphan, pointer, symbol, origin=nil)
+			command = AcceptOrphan.new(orphan, pointer,symbol, origin)
 			@system.execute_command(command)
 		end
 		def clean
@@ -1141,8 +1141,9 @@ module ODDB
 		def replace_fachinfo(iksnr, pointer)
 			@system.execute_command(ReplaceFachinfoCommand.new(iksnr, pointer))
 		end
-		def update(pointer, values)
-			@system.execute_command(UpdateCommand.new(pointer, values))
+		def update(pointer, values, origin=nil)
+			#@system.execute_command(UpdateCommand.new(pointer, values))
+			@system.update(pointer, values, origin)
 		end
 		#####################################################
 		def _admin(src, result, priority=-1)

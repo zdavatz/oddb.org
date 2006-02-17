@@ -307,7 +307,7 @@ module ODDB
 				@code_handler.push(code)
 				if(!(atc = @app.atc_class(code)) || atc.en != description)	
 					pointer = Persistence::Pointer.new([:atc_class, code])
-					@app.update(pointer.creator, {:en => description})
+					@app.update(pointer.creator, {:en => description}, :who)
 				end
 			}
 		end
@@ -324,7 +324,7 @@ module ODDB
 					ddd_ptr = pointer + [:ddd, hash[:administration_route]||'*']
 					if(!(ddd = @app.resolve(ddd_ptr)) || ddd != hash)
 						hash.delete(:administration_route)
-						@app.update(ddd_ptr.creator, hash)
+						@app.update(ddd_ptr.creator, hash, :who)
 					end
 				}
 			}
@@ -335,7 +335,7 @@ module ODDB
 					[name])
 				if(!(document = @app.resolve(pointer)) \
 					|| document.en != guidelines)
-					@app.update(pointer.creator, {:en => guidelines})
+					@app.update(pointer.creator, {:en => guidelines}, :who)
 				end
 			}
 		end

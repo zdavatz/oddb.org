@@ -81,7 +81,7 @@ module ODDB
 					:addresses => [addr],
 				}
 				@updated.push(comp.name)
-				@app.update(comp.pointer, update)
+				@app.update(comp.pointer, update, :refdata)
 			end
 		end
 	end
@@ -198,7 +198,7 @@ module ODDB
 		def update_package_data(pack, data)
 			unless(data.empty?)
 				@updated.push(pack.barcode)
-				@app.update(pack.pointer, data)
+				@app.update(pack.pointer, data, :refdata)
 			end
 		end
 	end

@@ -34,7 +34,7 @@ module ODDB
 				input.store(:time, Time.now)
 				unless error?
 					@session.set_cookie_input(:email, input[:email])
-					@session.app.update(pointer.creator, input)
+					@session.app.update(pointer.creator, input, unique_email)
 				end
 			end
 			def send_notification(suggestion)

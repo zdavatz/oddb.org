@@ -273,7 +273,7 @@ module ODDB
 				company = @app.company_by_name(name)
 				if(company.nil?)
 					pointer = Persistence::Pointer.new(:company)
-					company = @app.update(pointer.creator, {:name => name})
+					company = @app.update(pointer.creator, {:name => name}, :swissmedic)
 				end
 				data.store(:company, company.pointer)
 			end
@@ -283,14 +283,14 @@ module ODDB
 				indication = @app.indication_by_text(text)
 				if(indication.nil?)
 					pointer = Persistence::Pointer.new(:indication)
-					indication = @app.update(pointer.creator, { 'de' => text})
+					indication = @app.update(pointer.creator, { 'de' => text}, :swissmedic)
 				end
 				data.store(:indication, indication.pointer)
 			end
 		end
 		def update_package(pack, seq_pointer)
 			pointer = seq_pointer + [:package, pack.ikscd]
-			@app.update(pointer.creator, pack.data)
+			@app.update(pointer.creator, pack.data, :swissmedic)
 		end
 		def update_registration(reg)
 			data = reg.data
@@ -304,7 +304,7 @@ module ODDB
 			if(registration)
 				@updated.push(iksnr)
 				pointer = registration.pointer
-				@app.update(pointer, data) unless(data.empty?)
+				@app.update(pointer, data, :swissmedic) unless(data.empty?)
 			else
 				@created.push(iksnr)
 				pointer = Persistence::Pointer.new([:registration, reg.iksnr])
@@ -321,7 +321,7 @@ module ODDB
 			end
 			if(ikscat = reg.ikscat)
 				registration.each_package { |pack|
-					@app.update(pack.pointer, {:ikscat => ikscat})
+					@app.update(pack.pointer, {:ikscat => ikscat}, :swissmedic)
 				}
 			end
 		end
@@ -334,14 +334,14 @@ module ODDB
 				@app.registrations.each_value { |reg|
 					if(reg.generic_type == :vaccine && !@active.include?(reg.iksnr))
 						@deactivated.push(reg.iksnr)
-						@app.update(reg.pointer, {:inactive_date => today})
+						@app.update(reg.pointer, {:inactive_date => today}, :swissmedic)
 					end
 				}
 			}
 		end
 		def update_sequence(seq, reg_pointer)
 			pointer = reg_pointer + [:sequence, seq.seqnr]
-			sequence = @app.update(pointer.creator, seq.data)
+			sequence = @app.update(pointer.creator, seq.data, :swissmedic)
 			seq.packages.each_value { |pack| update_package(pack, pointer) }
 			seq.active_agents.each { |act| 
 				update_active_agent(act, pointer) }
@@ -357,7 +357,7 @@ module ODDB
 		def update_substance(substance_name)
 			@app.substance(substance_name) or begin
 				pointer = Persistence::Pointer.new(:substance)
-				@app.update(pointer.creator, {'de' => substance_name})
+				@app.update(pointer.creator, {'de' => substance_name}, :swissmedic)
 			end
 		end
 	end

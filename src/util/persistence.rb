@@ -38,6 +38,12 @@ module ODDB
 				@pointer.ancestors.collect { |pointer| pointer.resolve(app) }
 			end
 		end
+		def data_origin(key)
+			data_origins[key.to_s]
+		end
+		def data_origins
+			@data_origins ||= {}
+		end
 		def diff(values, app=nil)
 			result = {}
 			adjust_types(values, app).each { |key, value|
@@ -65,10 +71,12 @@ module ODDB
 		def undiffable?(val)
 			defined?(val.class::DISABLE_DIFF) && val.class::DISABLE_DIFF
 		end
-		def update_values(values)
+		def update_values(values, origin=nil)
 			@revision = Time.now
 			values.each { |key, value|
-				self.send(key.to_s + '=', value)
+				key = key.to_s
+				data_origins.store(key, origin)
+				self.send(key + '=', value)
 			}
 		end
 		private
@@ -89,7 +97,7 @@ module ODDB
 	module Persistence
 		include PersistenceMethods
 		include ODBA::Persistable
-		ODBA_CARRY_METHODS = [:pointer]
+		ODBA_PREDEFINE_SERIALIZABLE = ['@data_origins']
 		def initialize(*args)
 			@revision = Time.now
 			super
@@ -223,10 +231,10 @@ Grammar OddbSize
 			rescue InvalidPathError, UninitializedPathError => e
 				warn "Could not delete: #{to_s}, reason: #{e.message}"
 			end
-			def issue_update(hook, values)
+			def issue_update(hook, values, origin = nil)
 				obj = resolve(hook)
 				unless(obj.nil?)
-					obj.update_values(obj.diff(values, hook))
+					obj.update_values(obj.diff(values, hook), origin)
 					obj.odba_store
 				end
 				obj

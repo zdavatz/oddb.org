@@ -68,9 +68,9 @@ class RootFachinfo < Fachinfo
 			}
 			ODBA.transaction {
 				@model.add_change_log_item(email, name, lang)
-				@session.app.update(pointer, args)
-				@session.app.update(doc_pointer, {})
-				@session.app.update(@model.pointer, {})
+				@session.app.update(pointer, args, unique_email)
+				@session.app.update(doc_pointer, {}, unique_email)
+				@session.app.update(@model.pointer, {}, unique_email)
 			}
 		end
 		self

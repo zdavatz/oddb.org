@@ -22,7 +22,7 @@ class SlEntry < State::Admin::Global
 			:limitation_points
 		]
 		input = user_input(keys)
-		@model = @session.app.update(@model.pointer, input) unless error?
+		@model = @session.app.update(@model.pointer, input, unique_email) unless error?
 		self
 	end
 end

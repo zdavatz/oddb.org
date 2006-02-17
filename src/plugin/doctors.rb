@@ -159,7 +159,7 @@ module ODDB
 				values = {
 					:empty_ids	=> ids,
 				}
-				@app.update(@config.pointer, values)
+				@app.update(@config.pointer, values, :fmh)
 			end
 
 			MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)

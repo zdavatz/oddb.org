@@ -27,5 +27,16 @@ module ODDB
 		def report
 			''
 		end
+		def resolve_link(model)
+			pointer = model.pointer
+			str = if(model.respond_to?(:name_base)) 
+				(model.name_base.to_s + ': ').ljust(50) 
+			else
+				''
+			end
+			str << 'http://www.oddb.org/de/gcc/resolve/pointer/' << CGI.escape(pointer.to_s) << ' '
+		rescue Exception
+			"Error creating Link for #{pointer.inspect}"
+		end
 	end
 end

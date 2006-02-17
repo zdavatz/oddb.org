@@ -55,7 +55,7 @@ class FachinfoConfirm < State::Admin::Global
 				add_warning(:w_no_fachinfo_saved, :fachinfo_upload, nil)
 				return self
 			end
-			fachinfo = @session.app.update(pointer, values)
+			fachinfo = @session.app.update(pointer, values, unique_email)
 			@valid_iksnrs.each { |iksnr|
 				@session.app.replace_fachinfo(iksnr, fachinfo.pointer)
 			}

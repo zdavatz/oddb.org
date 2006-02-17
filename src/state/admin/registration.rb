@@ -78,7 +78,7 @@ module RegistrationMethods
 			end
 		end
 		ODBA.transaction { 
-			@model = @session.app.update(@model.pointer, hash)
+			@model = @session.app.update(@model.pointer, hash, unique_email)
 		}
 		if(sel)
 			sel.registration = @model

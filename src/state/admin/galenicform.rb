@@ -49,7 +49,7 @@ class GalenicForm < State::Admin::Global
 		end
 		input.store(:galenic_group, @session.user_input(:galenic_group))
 		unless error?
-			@model = @session.app.update(@model.pointer, input)
+			@model = @session.app.update(@model.pointer, input, unique_email)
 		end
 		self
 	end

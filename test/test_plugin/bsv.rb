@@ -933,7 +933,7 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			def registration(iksnr)
 				(@registrations ||={})[iksnr]
 			end
-			def update(pointer, values)
+			def update(pointer, values, origin=nil)
 				@updates.store(pointer, values)
 			end
 		end

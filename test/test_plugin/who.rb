@@ -433,7 +433,7 @@ bar=Bar&foo=test%40escapism.com
 			def atc_class(code)
 				@atc_classes[code]
 			end
-			def update(pointer, values)
+			def update(pointer, values, origin)
 				@pointers << pointer
 				@values << values
 				@results.shift

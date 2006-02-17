@@ -213,9 +213,7 @@ module ODDB
 					resp.body
 				end
 			rescue Timeout::Error
-				puts "timeout-error"
 				if(retr > 0)
-					puts "retry #{RETRIES - retr + 1} in #{RETRY_WAIT} seconds"
 					sleep RETRY_WAIT
 					retr -= 1
 					retry
@@ -317,11 +315,12 @@ module ODDB
 		def update_package(pack, values)
 			sl_pointer = pack.pointer + [:sl_entry]
 			unless(pack.sl_entry)
-				@app.update(sl_pointer.creator, {:limitation => true})
+				@app.update(sl_pointer.creator, {:limitation => true}, 
+									 :galinfo)
 			end
 			@updated_packages.push(pack)
 			pointer = sl_pointer + [:limitation_text]
-			@app.update(pointer.creator, values)
+			@app.update(pointer.creator, values, :galinfo)
 		end
 		def update_packages(data_hsh)
 			data_hsh.each { |ikskey, values|

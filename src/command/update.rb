@@ -3,12 +3,13 @@
 
 module ODDB
 	class UpdateCommand
-		def initialize(pointer, values)
+		def initialize(pointer, values, origin = nil)
 			@pointer = pointer
 			@values = values
+			@origin = origin
 		end
 		def execute(app)
-			app.update(@pointer, @values)
+			app.update(@pointer, @values, @origin)
 		end
 	end
 end

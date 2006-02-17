@@ -168,7 +168,6 @@ class TestLimitationSequenceWriter < Test::Unit::TestCase
 		parser = ODDB::HtmlParser.new(formatter)
 		parser.feed(html)
 		limitations = writer.get_limitations
-		puts limitations.inspect
 		assert_equal(1, limitations.size)
 		expected = [
 			"[55453 004] (250 19 01)",
@@ -365,7 +364,6 @@ class TestLimitationSequenceWriter < Test::Unit::TestCase
 		res = result.first.languages["it"].to_s
 		assert_equal("", res)
 		res = result.first.languages["fr"].to_s
-		puts res.inspect
 		assert_equal("lim1_fr", res)
 	end
 	def test_handle_data
@@ -444,7 +442,7 @@ class TestLimitationPlugin < Test::Unit::TestCase
 			@ikscds << ikscd
 			@packages[0]
 		end	
-		def update(pointer, values)
+		def update(pointer, values, origin=nil)
 			if(values.keys.include?(:limitation))
 				@update_limitation = values	
 			end

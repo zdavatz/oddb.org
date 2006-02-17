@@ -94,7 +94,7 @@ module SequenceMethods
 			values = {
 				@session.language	=> descr,	
 			}
-			@session.app.update(pointer.creator, values)
+			@session.app.update(pointer.creator, values, unique_email)
 			input.store(:atc_class, atc_code)
 		elsif(@session.app.atc_class(atc_code))
 			input.store(:atc_class, atc_code)
@@ -123,10 +123,10 @@ module SequenceMethods
 		end
 		if((company = @model.company) \
 			&& (mail = user_input(:regulatory_email)) && !mail.empty?)
-			@session.app.update(company.pointer, mail)
+			@session.app.update(company.pointer, mail, unique_email)
 		end
 		ODBA.transaction {
-			@model = @session.app.update(@model.pointer, input)
+			@model = @session.app.update(@model.pointer, input, unique_email)
 		}
 		newstate
 	end
@@ -199,7 +199,7 @@ class Sequence < State::Admin::Global
 			:user_pointer	=>	@session.user.pointer,
 			:vat_rate			=>	VAT_RATE, 
 		} 
-		@session.app.update(item_pointer.creator, values)
+		@session.app.update(item_pointer.creator, values, unique_email)
 	end
 end
 class CompanySequence < State::Admin::Sequence

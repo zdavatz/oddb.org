@@ -43,7 +43,7 @@ class RegisterPowerUser < Global
 		else
 			Persistence::Pointer.new(:poweruser).creator
 		end
-		@user = @session.app.update(pointer, hash)
+		@user = @session.app.update(pointer, hash, unique_email)
 		@session.force_login(@user)
 		@user
 	rescue RuntimeError => e

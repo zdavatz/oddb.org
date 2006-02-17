@@ -16,7 +16,7 @@ module ODDB
 					inj
 				}
 			end
-			def update_values(values)
+			def update_values(values, origin=nil)
 				if(self.default.nil? || self.default.empty?)
 					self.default = values.sort.first.at(1) unless values.empty?
 				else
@@ -50,14 +50,14 @@ module ODDB
 		def to_s
 			descriptions.default.to_s
 		end
-		def update_values(values)
+		def update_values(values, origin=nil)
 			values = values.dup
 			descr = values.keys.inject({}) { |inj, key|
 				inj.store(key.to_s, values.delete(key)) if(key.to_s.length==2)
 				inj
 			}
 			descriptions.update_values(descr)
-			super(values)
+			super(values, origin)
 		end
 		alias :pointer_descr :description
 		alias :name :to_s
@@ -79,7 +79,7 @@ module ODDB
 					inj
 				}
 			end
-			def update_values(values)
+			def update_values(values, origin=nil)
 				if(self.default.nil? || self.default.empty?)
 					self.default = values.sort.first.at(1) unless values.empty?
 				else

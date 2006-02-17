@@ -29,7 +29,7 @@ class AssignPatinfo < AssignDeprivedSequence
 			end
 			ODBA.transaction { 
 				pointers.each { |pointer|
-					@session.app.update(pointer, args)
+					@session.app.update(pointer, args, unique_email)
 				}
 			}
 		end
