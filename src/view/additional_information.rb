@@ -78,7 +78,8 @@ module ODDB
 							date.strftime(@lookandfeel.lookup(:date_format)))
 					end
 					title_elements.push(sl_str)
-				elsif(model.data_origin(:price_public) == :lppv)
+				end
+				if(model.lppv)
 					catstr = @lookandfeel.lookup(:lppv)
 					text_elements.push(catstr)
 				end

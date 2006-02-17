@@ -52,6 +52,7 @@ class PackageForm < View::Form
 		[0,5]		=>	:generic_group,
 		[2,5]		=>	:market_date,
 		[0,6]		=>	:out_of_trade,
+		[2,6]		=>	:lppv,
 		[1,7]		=>	:submit,
 		[1,7,0]	=>	:delete_item,
 	}
@@ -70,6 +71,7 @@ class PackageForm < View::Form
 		:market_date			=>	HtmlGrid::InputDate,
 		:out_of_trade			=>	HtmlGrid::BooleanValue,
 		:refdata_override	=>	HtmlGrid::InputCheckbox,
+		:lppv							=>	HtmlGrid::Select,
 	}
 	def init
 		if(@model.out_of_trade)

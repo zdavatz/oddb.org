@@ -105,6 +105,8 @@ module ODDB
 				else
 					do_price_update(package, price_dat)
 				end
+			elsif(package.lppv)
+				@app.update(package.pointer, {:lppv => false}, :lppv)
 			end
 		end
 		def update_packages(data)
@@ -136,9 +138,10 @@ module ODDB
 		end
 		def	do_price_update(package, price)
 			price_obj = PriceUpdate.new(package, price)
-			if(price_obj.changed?)
+			if(price_obj.changed? || !package.lppv)
 				args = {
-					:price_public => price
+					:price_public => price,
+					:lppv					=> true,
 				}
 				@app.update(package.pointer, args, :lppv)
 				@updated_packages.push(price_obj)

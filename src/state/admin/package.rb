@@ -45,6 +45,7 @@ module PackageMethods
 			:price_exfactory,
 			:price_public,
 			:refdata_override,
+			:lppv,
 		]
 		input = user_input(keys)
 		unless(error?)

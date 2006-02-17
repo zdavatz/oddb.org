@@ -15,7 +15,7 @@ module ODDB
 		BOOLEAN = [
 			:cl_status,  :download, :experience, :recommend, :impression,
 			:invoice_htmlinfos, :helps, :show_email, :export_flag,
-			:disable_autoinvoice, :refdata_override,
+			:disable_autoinvoice, :refdata_override, :lppv,
 		]
 		DATES = [
 			:inactive_date,
@@ -130,6 +130,8 @@ module ODDB
 			:orphaned_fachinfos,
 			:orphaned_patinfos,
 			:passthru,
+			:password_lost,
+			:password_reset,
 			:patinfo_deprived_sequences,
 			:patinfos,
 			:patinfo_stats,
