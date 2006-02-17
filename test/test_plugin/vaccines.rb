@@ -20,6 +20,11 @@ module ODDB
 		MEDDATA_SERVER = FlexMock.new
 	end
 	class TestVaccinePlugin < Test::Unit::TestCase
+		class EncodedString < String
+			def to_s(target_encoding)
+				super()
+			end
+		end
 		def setup
 			@app = FlexMock.new
 			@plugin = VaccinePlugin.new(@app)
@@ -37,22 +42,25 @@ module ODDB
 			assert_nil(@plugin.parse_worksheet_row(row))
 		end
 		def test_parse_worksheet_row_1
-			row = [nil, 'Legende']
+			row = [nil, EncodedString.new('Legende')]
 			assert_nil(@plugin.parse_worksheet_row(row))
 		end
 		def test_parse_worksheet_row_2
-			row = [nil, '* Art. 17 HMG  -  Behördliche Chargenfreigabe erforderlich (Auskunft Tel. 031 324 88 20/Impfstoffe oder 031 324 90 35/Blutprodukte)']
+			row = [nil, EncodedString.new('* Art. 17 HMG  -  Behördliche Chargenfreigabe erforderlich (Auskunft Tel. 031 324 88 20/Impfstoffe oder 031 324 90 35/Blutprodukte)')]
 			assert_nil(@plugin.parse_worksheet_row(row))
 		end
 		def test_parse_worksheet_row_7
-			row = ['Handelsname', 'Zul.-Nr.']
+			row = [EncodedString.new('Handelsname'), EncodedString.new('Zul.-Nr.')]
 			assert_nil(@plugin.parse_worksheet_row(row))
 		end
 		def test_parse_worksheet_row_8
-			indication = 'Wiederherstellung und Erhaltung des Kreislaufvolumens, wenn ein Volumendefizit festgestellt wurde und die Verwendung eines Kolloids angezeigt ist'
+			indication = EncodedString.new('Wiederherstellung und Erhaltung des Kreislaufvolumens, wenn ein Volumendefizit festgestellt wurde und die Verwendung eines Kolloids angezeigt ist')
 			row = [
-				'Albumin Human Octapharma 20%', '55536', indication, 
-				'B', 'x', 'x', 'x', '', '', 'Octapharma AG'
+				EncodedString.new('Albumin Human Octapharma 20%'), 
+				EncodedString.new('55536'), indication, EncodedString.new('B'),
+				EncodedString.new('x'), EncodedString.new('x'), EncodedString.new('x'),
+				EncodedString.new(''), EncodedString.new(''),
+				EncodedString.new('Octapharma AG') 
 			]
 			reg, seq = @plugin.parse_worksheet_row(row)
 			assert_instance_of(VaccinePlugin::ParsedRegistration, reg)
@@ -65,12 +73,18 @@ module ODDB
 			assert_equal(Dose.new(20, '%'), seq.dose)
 		end
 		def test_parse_worksheet
-			indication = 'Wiederherstellung und Erhaltung des Kreislaufvolumens, wenn ein Volumendefizit festgestellt wurde und die Verwendung eines Kolloids angezeigt ist'
+			indication = EncodedString.new('Wiederherstellung und Erhaltung des Kreislaufvolumens, wenn ein Volumendefizit festgestellt wurde und die Verwendung eines Kolloids angezeigt ist')
 			sheet = [
-				[ 'Albumin Human Octapharma 20%', '55536', indication, 
-					'B', 'x', 'x', 'x', '', '', 'Octapharma AG' ],
-				[ 'Albumin Human Octapharma 5%', '55536', indication, 
-					'B', 'x', 'x', 'x', '', '', 'Octapharma AG' ],
+				[ EncodedString.new('Albumin Human Octapharma 20%'),
+					EncodedString.new('55536'), indication, EncodedString.new('B'),
+					EncodedString.new('x'), EncodedString.new('x'),
+					EncodedString.new('x'), EncodedString.new(''), EncodedString.new(''),
+					EncodedString.new('Octapharma AG') ],
+				[ EncodedString.new('Albumin Human Octapharma 5%'),
+					EncodedString.new('55536'), indication, EncodedString.new('B'),
+					EncodedString.new('x'), EncodedString.new('x'),
+					EncodedString.new('x'), EncodedString.new(''), EncodedString.new(''),
+					EncodedString.new('Octapharma AG') ],
 			]
 			regs = @plugin.parse_worksheet(sheet)
 			assert_equal(1, regs.size)
@@ -101,6 +115,15 @@ module ODDB
 			assert_equal('002', pack.ikscd)
 			assert_equal(Dose.new(10, 'Fertigspr'), pack.size)
 			assert_equal('10 x 1 Dos', pack.sizestring)
+		end
+		def test_parse_refdata_detail_10x__2
+			refdata = "7680524760623ALBUMIN ZLB Inf Lös 5 % 10 x 250 ml"
+			pack = @plugin.parse_refdata_detail(refdata)
+			assert_instance_of(VaccinePlugin::ParsedPackage, pack)
+			assert_equal('062', pack.ikscd)
+			assert_equal(Dose.new(5, '%'), pack.dose)
+			assert_equal('10 x 250 ml', pack.sizestring)
+			assert_equal(Dose.new(2500, 'ml'), pack.size)
 		end
 		def test_parse_refdata_detail_tachosil_1
 			refdata = "7680006700178TACHOSIL Schwamm 3x2.5cm"

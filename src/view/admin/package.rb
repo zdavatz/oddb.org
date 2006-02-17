@@ -9,6 +9,7 @@ require 'htmlgrid/inputcheckbox'
 require 'htmlgrid/inputcurrency'
 require 'htmlgrid/inputdate'
 require 'htmlgrid/errormessage'
+require 'htmlgrid/select'
 require 'htmlgrid/link'
 require 'htmlgrid/booleanvalue'
 
@@ -106,6 +107,33 @@ class PackageForm < View::Form
 		end
 	end
 end
+class DeductiblePackageForm < View::Admin::PackageInnerComposite
+	include HtmlGrid::FormMethods
+	include View::HiddenPointer
+	LABELS = true
+	DEFAULT_CLASS = HtmlGrid::Value
+	EVENT = :update
+	COMPONENTS = {
+		[0,0]		=>	:iksnr,
+		[2,0]		=>	:ikscd,
+		[0,1]		=>	:descr,
+		[0,2]		=>	:pretty_dose,
+		[2,2]		=>	:size,
+		[0,3]		=>	:ikscat,
+		[2,3]		=>	:sl_entry,
+		[0,4]		=>	:price_exfactory,
+		[2,4]		=>	:price_public,
+		[0,5]		=>	:deductible,
+		[1,6]		=>	:submit,
+	}
+	SYMBOL_MAP = {
+		:deductible	=>	HtmlGrid::Select,
+		:sl_entry	=>	HtmlGrid::BooleanValue,
+	}
+	CSS_MAP = {
+		[0,0,4,7]	=>	'list',
+	}
+end
 class PackageComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	:package_name,
@@ -135,12 +163,30 @@ class RootPackageComposite < View::Admin::PackageComposite
 		HtmlGrid::Value.new(:source, model.sequence, @session, self)
 	end
 end
+class DeductiblePackageComposite < View::Admin::RootPackageComposite
+	COMPONENTS = {
+		[0,0]	=>	:package_name,
+		[0,1]	=>	View::Admin::DeductiblePackageForm,
+		[0,2]	=>	'th_source',
+		[0,3]	=>	:source,
+	}
+	CSS_MAP = {
+		[0,0]	=>	'th',
+		[0,2]	=>	'subheading',
+	}
+	def source(model, session)
+		HtmlGrid::Value.new(:source, model.sequence, @session, self)
+	end
+end
 class Package < View::PrivateTemplate
 	CONTENT = View::Admin::PackageComposite
 	SNAPBACK_EVENT = :result
 end
 class RootPackage < View::Admin::Package
 	CONTENT = View::Admin::RootPackageComposite
+end
+class DeductiblePackage < View::Admin::Package
+	CONTENT = View::Admin::DeductiblePackageComposite
 end
 		end
 	end

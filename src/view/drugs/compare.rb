@@ -16,6 +16,7 @@ module ODDB
 class CompareList < HtmlGrid::List
 	include DataFormat
 	include View::ResultColors
+	include View::AdditionalInformation
 	COMPONENTS = {
 		[0,0]	=>	:name_base,
 		[1,0]	=>	:company_name,
@@ -54,10 +55,27 @@ class CompareList < HtmlGrid::List
 	SYMBOL_MAP = {
 		:registration_date	=>	HtmlGrid::DateValue,
 	}
+	def init
+		if(@lookandfeel.enabled?(:deductible, false))
+			components.update({
+				[7,0]	=>	:deductible,
+				[8,0]	=>	:ikscat,
+			})
+			css_map.update({
+				[7,0]	=>	'result-r',
+				[8,0]	=>	'result-i',
+			})
+			css_head_map.update({
+				[7,0]	=>	'th-r',
+				[8,0]	=>	'th',
+			})
+		end
+		super
+	end
 	def package_line(offset)
-		package = @model.package
-		compose_components(package, offset)
-		compose_css(offset, resolve_suffix(package, false))
+		_compose(@model.package, offset)
+		#compose_components(package, offset)
+		#compose_css(offset, resolve_suffix(package, false))
 	end
 	def compose_empty_list(offset)
 		package_line(offset)

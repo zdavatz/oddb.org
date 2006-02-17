@@ -89,8 +89,11 @@ while(line = readline(prompt, true))
 		$stdout.puts "setting Priority to #{priority}"
 	else
 		begin
+			bgflag = line.slice!(/\s*\&\s*$/)
 			$current = oddb._admin(line, result, priority)
-			$current.join
+			unless(bgflag)
+				$current.join
+			end
 			$stdout.puts result
 		rescue Exception => last_error
 			$stdout.puts last_error

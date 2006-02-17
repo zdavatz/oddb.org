@@ -61,7 +61,7 @@ module ODDB
 				pac.checkout 
 				pac.odba_delete
 			}
-			@active_agents.each { |act| 
+			@active_agents.dup.each { |act| 
 				act.checkout 
 				act.odba_delete
 			}

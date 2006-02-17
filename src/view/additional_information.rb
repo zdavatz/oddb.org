@@ -1,9 +1,12 @@
 #!/usr/bin/env ruby
 # View::AdditionalInformation -- oddb -- 09.12.2003 -- rwaltert@ywesee.com
 
+require 'iconv'
+
 module ODDB
 	module View
 		module AdditionalInformation
+			@@utf8 = {}
 			def atc_ddd_link(atc, session=@session)
 				if(atc && atc.has_ddd?)
 					link = HtmlGrid::Link.new(:ddd, atc, session, self)
@@ -19,6 +22,9 @@ module ODDB
 				else
 					atc.code
 				end
+			end
+			def deductible(model, session=@session)
+				@lookandfeel.lookup(model.deductible || 'deductible_unknown')
 			end
 			def fachinfo(model, session=@session, css='result-infos')
 				_fachinfo(model.fachinfo, css)
@@ -48,7 +54,7 @@ module ODDB
 			end
 			def google_search(model, session=@session)
 				text = model.localized_name(@session.language)
-				glink = Iconv.iconv('UTF-8', 'ISO_8859-1', text).first
+				glink = utf8(text)
 				link = HtmlGrid::Link.new(:google_search, @model, @session, self)
 				link.href =  "http://www.google.com/search?q=#{glink}"
 				link.css_class= 'google_search square'
@@ -161,6 +167,9 @@ module ODDB
 					end
 					[ '&nbsp;(', model.qty, unit, ')' ].compact.join(' ')
 				end
+			end
+			def utf8(text)
+				@@utf8[text] ||= Iconv.iconv('UTF-8', 'ISO_8859-1', text).first
 			end
 		end
 	end

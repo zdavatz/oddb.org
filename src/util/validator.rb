@@ -43,6 +43,7 @@ module ODDB
 				'phytotherapy', ],
 			:compression	=>	[ 'compr_zip', 'compr_gz' ],
 			:currency			=>  ['CHF', 'EUR', 'USD'],
+			:deductible		=>	[nil, 'deductible_g', 'deductible_o'],
 			:search_type	=>	['st_oddb', 'st_sequence', 
 				'st_substance', 'st_company', 'st_indication',],
 			:fi_status		=>	['false', 'true'],

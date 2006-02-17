@@ -96,14 +96,15 @@ module ODDB
 						limit_queries 
 					end
 					## return empty string across the drb-border
-					''
 				end
 			}
+			''
 		rescue Timeout::Error
 			logtype = 'PRTO'
 			'your request has timed out. please try again later.'
 		rescue Exception => ex
 			logtype = ex.message
+			''
 		ensure
 			request_log(logtype)
 		end
@@ -112,7 +113,7 @@ module ODDB
 			asterisk = is_crawler? ? "*" : " "
 			now = Time.now
 			Session.request_log.puts(sprintf(
-				"%s | %sip: %15s | session:%12i | request:%12i | time:%4is | mem:%6iMB | %s %s",
+				"%s | %sip: %15s | session:%12i | request:%12i | time:%7.3fs | mem:%6iMB | %s %s",
 				now.strftime('%Y-%m-%d %H:%M:%S'), asterisk, remote_ip, self.object_id, @request_id, 
 				now - @process_start, bytes / (2**20), phase, @request_path))
 			Session.request_log.flush

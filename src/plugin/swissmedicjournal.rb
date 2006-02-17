@@ -324,7 +324,7 @@ module ODDB
 			end
 			hash = {
 				date_key			=>	smj_reg.last_update,
-				:export_flag	=>	smj_reg.exportvalue,
+				:export_flag	=>	!!smj_reg.exportvalue,
 				:source				=>	smj_reg.src,
 				:index_therapeuticus => smj_reg.indexth,
 			}

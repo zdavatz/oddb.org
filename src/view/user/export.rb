@@ -96,7 +96,7 @@ module Export
 			end
 			price = State::User::DownloadExport.subscription_price(filename)
 			price2 = @lookandfeel.format_price(price.to_i * 100, 'EUR')
-			[radio1, price1, radio2, price2]
+			[radio1, nil, price1, nil, radio2, nil, price2]
 		end
 	end
 	def file_path(filename)

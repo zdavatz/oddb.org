@@ -87,6 +87,17 @@ class CompanyPackage < State::Admin::Package
 		end
 	end
 end
+class DeductiblePackage < State::Admin::Global
+	VIEW = View::Admin::DeductiblePackage
+	def update
+		keys = [:pointer, :deductible]
+		input = user_input(keys, [:pointer])
+		unless(error?)
+			@session.app.update(input.delete(:pointer), input)
+		end
+		self
+	end
+end
 		end
 	end
 end

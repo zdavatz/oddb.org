@@ -53,8 +53,9 @@ class AssignDeprivedSequenceForm < View::FormList
 	}
 	SORT_DEFAULT = nil
 	def compose_list(model, offset)
-		compose_components(model.sequence, offset)
-		compose_css(offset)
+		_compose(model.sequence, offset)
+		#compose_components(model.sequence, offset)
+		#compose_css(offset)
 		offset = resolve_offset(offset, self::class::OFFSET_STEP)
 		offset = resolve_offset(offset, self::class::OFFSET_STEP)
 		super(model, offset)

@@ -73,7 +73,7 @@ class OddbPrevalence
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
 		@slates ||= {}
-		recount()
+		#recount()
 		rebuild_atc_chooser()
 	end
 	# prevalence-methods ################################
@@ -484,7 +484,7 @@ class OddbPrevalence
 		@hospitals.size
 	end
 	def doctor_count
-		@doctors.size
+		@doctor_count ||= @doctors.size
 	end
 	def doctor_by_origin(origin_db, origin_id)
 		# values.each instead of each_value for testing
@@ -728,6 +728,9 @@ class OddbPrevalence
 		if(query == 'atcless')
 			atc = ODDB::AtcClass.new('n.n.')
 			atc.sequences = atcless_sequences
+			atc.instance_eval {
+				alias :active_packages :packages
+			}
 			result.atc_classes = [atc]
 			return result
 		# iksnr or ean13
@@ -1083,6 +1086,7 @@ module ODDB
 		VALIDATOR = Validator
 		attr_reader :cleaner, :updater
 		def initialize
+			@admin_threads = ThreadGroup.new
 			@system = ODBA.cache.fetch_named('oddbapp', self){
 				OddbPrevalence.new
 			}
@@ -1147,14 +1151,12 @@ module ODDB
 		end
 		#####################################################
 		def _admin(src, result, priority=-1)
-			Thread.new {
-				Thread.current.priority = priority
+			t = Thread.new {
 				Thread.current.abort_on_exception = false
 				result << failsafe {
 					response = begin
 						instance_eval(src)
 					rescue NameError => e
-					#@system.instance_eval(src)
 						e
 					end
 					str = response.to_s
@@ -1165,6 +1167,10 @@ module ODDB
 					end
 				}.to_s
 			}
+			t[:source] = src
+			t.priority = priority
+			@admin_threads.add(t)
+			t
 		end
 		def login(session)
 			pair = session.user_input(:email, :pass)

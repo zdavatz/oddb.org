@@ -33,7 +33,7 @@ module ODDB
 		DOSE_PATTERN  = /(\d+(?:[,.]\d+)?)\s*((?:\/\d+)|[^\s\d]*)?/
 		ENDMULTI_PATTERN = /\d+\s*Stk$/
 		MULTI_PATTERN = /(\d+\s+)\b(Fl|Fertigspr)\b/
-		SIZE_PATTERN  = /((\d+([.,]\d+)?x)?\d+([.,]\d+)?)?\s*([^\d\s]*)$/
+		SIZE_PATTERN  = /(?:(?:(\d+(?:[.,]\d+)?)\s*x\s*)?(\d+(?:[.,]\d+)?))?\s*([^\d\s]*)$/
 		class ParsedRegistration
 			attr_accessor :iksnr, :indication, :company, :ikscat
 			attr_reader :sequences
@@ -205,8 +205,12 @@ module ODDB
 					name.strip!
 				end
 				if(sstring = name.slice!(SIZE_PATTERN))
-					qty, unit = sstring.split(/\s+/, 2)
-					if(qty.empty?)
+					qty = $2.to_i
+					if($1)
+						qty *= $1.to_i
+					end
+					unit = $3
+					if(qty == 0)
 						qty = 1
 					end
 					if(mstring = name.slice!(MULTI_PATTERN))
@@ -265,8 +269,10 @@ module ODDB
 			}.join("\n")
 		end
 		def row_at(row, index)
-			val = row.at(index).to_s
-			val unless val.empty?
+			if(cell = row.at(index))
+				val = cell.to_s(ENCODING)
+				val unless val.empty?
+			end
 		end
 		def update_company(data)
 			if((name = data.delete(:company)) && !name.empty?)

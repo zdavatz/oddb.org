@@ -13,7 +13,6 @@ require 'view/privatetemplate'
 require 'view/pointervalue'
 require 'view/resultfoot'
 
-
 module ODDB
 	module View
 		module Migel
@@ -73,6 +72,8 @@ class List < HtmlGrid::List
 	def limitation_text(model)
 		if(sltxt = model.limitation_text)
 			limitation_link(sltxt)
+		else
+			''
 		end
 	end
 	def product_description(model)
@@ -109,7 +110,7 @@ class ResultList < View::Migel::List
 	end
 	def compose_subheader(item, offset, css='result-atc')
 		xval, yval = offset
-		values = [limitation_text(item), item.migel_code, 
+		values = [limitation_text(item), nil, item.migel_code, nil,
 			product_description(item)]
 		@grid.add(values, xval, yval)
 		@grid.add_style(css, xval, yval, 3)
@@ -118,10 +119,12 @@ class ResultList < View::Migel::List
 end
 class ExplainResult < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]	=>	'explain_vaccines',
+		[0,0]	=>	'explain_migel_position',
+		[0,1]	=>	'explain_migel_date',
+		[0,2]	=>	'explain_migel_price',
 	}
 	CSS_MAP = {	
-		[0,0]	=>	'explain-infos',
+		[0,0,1,3]	=>	'explain-infos',
 	}
 end
 class ResultComposite < HtmlGrid::Composite

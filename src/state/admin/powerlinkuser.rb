@@ -10,10 +10,13 @@ class Company < Global; end
 class PowerLinkCompany < Company; end
 		end
 		module Admin
+class DeductiblePackage < Global; end
 module PowerLinkUser
 	include User
 	RESOLVE_STATES = {
-		[ :company ]	=>	State::Companies::PowerLinkCompany,
+		[ :company ]						=>	State::Companies::PowerLinkCompany,
+		[ :registration,
+			:sequence, :package ]	=>	State::Admin::DeductiblePackage,
 	}	
 	def limited?
 		false

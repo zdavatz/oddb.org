@@ -442,17 +442,25 @@ module ODDB
 				pcode = row.at(2).to_i.to_s
 				sl_iks = row.at(4).to_i.to_s
 				package = ParsedPackage.new
-				package.company = row.at(0).to_s
-				package.generic_type = (/g/i.match(row.at(1).to_s))
-				if(field = row.at(6))
-					package.introduction_date = field.date
+				if(cell = row.at(0))
+					package.company = cell.to_s(ENCODING)
 				end
-				package.name = row.at(7).to_s
+				if(cell = row.at(1))
+					package.generic_type = (/g/i.match(cell.to_s(ENCODING)))
+				end
+				if(cell = row.at(6))
+					package.introduction_date = cell.date
+				end
+				if(cell = row.at(7))
+					package.name = cell.to_s(ENCODING)
+				end
 				exf = row.at(8).to_f
 				package.price_exfactory = exf if(exf > 0)
 				pub = row.at(9).to_f
 				package.price_public = pub if(pub > 0)
-				package.limitation = (row.at(10).to_s.downcase=='y')
+				if(cell = row.at(10))
+					package.limitation = (cell.to_s(ENCODING).downcase=='y')
+				end
 				package.limitation_points = row.at(11).to_i
 				medwin_iks = nil
 				unless(pcode == '0')

@@ -32,14 +32,17 @@ class AtcChooserList < HtmlGrid::List
 			components.store([2,0], :edit)
 			css_map.store([2,0], 'list small')
 		end
+		## only call persistent_user_input once
+		@atc = @session.persistent_user_input(:code)
 		super
 	end
 	def compose_list(model=@model, offset=[0,0])
 		code = @session.persistent_user_input(:code)
 		model.each{ |mdl|
 			if(mdl.has_sequence?)
-				compose_components(mdl, offset)
-				compose_css(offset)
+				_compose(mdl, offset)
+				#compose_components(mdl, offset)
+				#compose_css(offset)
 				offset = resolve_offset(offset, self::class::OFFSET_STEP)
 				if(mdl.path_to?(code))
 					open = AtcChooserList.new(mdl, @session, self)
@@ -80,9 +83,8 @@ class AtcChooserList < HtmlGrid::List
 		link
 	end
 	def result_link?(mdl)
-		atc = @session.persistent_user_input(:code)
 		mdl.code.length > 2 \
-			&& (mdl.path_to?(atc) \
+			&& (mdl.path_to?(@atc) \
 			|| (!mdl.children.any?{ |child| 
 				child.has_sequence? } \
 			&& !mdl.sequences.empty?))
