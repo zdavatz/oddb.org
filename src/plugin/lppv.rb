@@ -82,17 +82,13 @@ module ODDB
 			@packages_with_sl_entry = []
 		end
 		def update(range='A'..'Z')
-			data = {}
+			@prices = {}
 			Net::HTTP.new(LPPV_HOST).start { |http| 
 				range.each { |char| 
-					puts "getting #{char}"
-					@prices = get_prices(char, http)
-					puts "got #{prices.size} prices"
-					$stdout.flush
-					data.update(@prices)
+					@prices.update(get_prices(char, http))
 				}
 			}
-			update_packages(data)
+			update_packages(@prices.dup)
 		end
 		def get_prices(char, http)
 			writer = LppvWriter.new
