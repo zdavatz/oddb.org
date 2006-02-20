@@ -26,7 +26,7 @@ class StatusBar < HtmlGrid::Composite
 end
 class WaitForFachinfoComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0] => :please_wait,
+		[0,0] => 'please_wait',
 		[0,1] => View::Admin::StatusBar,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -35,9 +35,6 @@ class WaitForFachinfoComposite < HtmlGrid::Composite
 		[0,0]	=>	'th',
 		[0,1,1,1]	=>	'subheading',
 	}
-	def please_wait(model, session)
-		@lookandfeel.lookup(:please_wait)
-	end
 end
 class WaitForFachinfo < View::PopupTemplate
 	CONTENT = View::Admin::WaitForFachinfoComposite

@@ -10,7 +10,7 @@ require 'state/global_predefine'
 module ODDB
 	class User < SBSM::KnownUser
 		include Persistence
-		attr_accessor :model, :unique_email, :pass_hash
+		attr_accessor :model, :unique_email, :pass_hash, :reset_token, :reset_until
 		HOME = State::Drugs::Init
 		def init(app)
 			@pointer.append(@oid)

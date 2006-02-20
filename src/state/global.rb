@@ -21,6 +21,8 @@ require 'state/drugs/vaccines'
 require 'state/admin/orphaned_patinfos'
 require 'state/admin/orphaned_patinfo'
 require 'state/admin/patinfo_deprived_sequences'
+require 'state/admin/password_lost'
+require 'state/admin/password_reset'
 require 'state/drugs/patinfo'
 require 'state/drugs/patinfos'
 require 'state/drugs/recentregs'
@@ -98,6 +100,7 @@ module ODDB
 				:login_form						=>	State::Admin::Login,
 				:mailinglist					=>	State::User::MailingList,
 				:migel_alphabetical		=>	State::Migel::Alphabetical,
+				:password_lost				=>	State::Admin::PasswordLost,
 				:patinfos							=>	State::Drugs::Patinfos,
 				:narcotics						=>	State::Drugs::Narcotics,
 				:plugin								=>	State::User::Plugin,
@@ -303,6 +306,17 @@ module ODDB
 				+ zone_navigation \
 				+ user_navigation \
 				+ home_navigation
+			end
+			def password_reset
+				keys = [:token, :email]
+				input = user_input(keys, keys)
+				unless(error?)
+					if((user = @session.user_by_email(input[:email])) \
+						&& Digest::MD5.hexdigest(input[:token]) == user.reset_token \
+						&& user.reset_until > Time.now)
+						State::Admin::PasswordReset.new(@session, user)
+					end
+				end
 			end
 			def paypal_return
 				if(@session.is_crawler?)

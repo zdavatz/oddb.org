@@ -11,7 +11,7 @@ require 'fachinfo_pdf'
 require 'fachinfo_html'
 require 'fachinfo_pdf'
 require 'fachinfo_news'
-#require 'fachinfo_doc'
+require 'fachinfo_doc'
 require 'patinfo_html'
 require 'rpdf2txt/parser'
 

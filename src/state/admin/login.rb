@@ -12,27 +12,22 @@ module ODDB
 module LoginMethods
 	def login
 		if(user = @session.login)
-			newstate = if(user.valid?)
-			#case user
-			#	when ODDB::CompanyUser
-			#		name = user.company_name
-			#		type = 'st_company'
-			#		@session.set_persistent_user_input(:search_query, name)
-			#		@session.set_persistent_user_input(:search_type, type)
-			#		_search_drugs_state(name.downcase, type)
-			#else
-					des = @session.desired_state
-					@session.desired_state = nil
-					des || @previous || trigger(:home)
-			#end
-			else
-				State::User::InvalidUser.new(@session, user)
-			end
-			if(viral = user.viral_module)
-				newstate.extend(viral)
-			end
-			newstate
+			autologin(user)
 		end
+	end
+	private
+	def autologin(user, default=@previous)
+		newstate = if(user.valid?)
+			des = @session.desired_state
+			@session.desired_state = nil
+			des || default || trigger(:home)
+		else
+			State::User::InvalidUser.new(@session, user)
+		end
+		if(viral = user.viral_module)
+			newstate.extend(viral)
+		end
+		newstate
 	end
 end
 class Login < State::Global

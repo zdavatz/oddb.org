@@ -208,6 +208,8 @@ module ODDB
 				else
 					link = HtmlGrid::PopupLink.new(:generic_definition, model, session, self)
 					link.href = @lookandfeel._event_url(:generic_definition)
+					link.width = 850
+					link.height = 500
 				end
 				link.value = @lookandfeel.lookup(:generic_definition) 
 				link.set_attribute('class', 'list')

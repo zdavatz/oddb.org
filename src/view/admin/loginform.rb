@@ -3,6 +3,7 @@
 
 require 'htmlgrid/form'
 require 'htmlgrid/pass'
+require 'view/composite'
 
 module ODDB
 	module View
@@ -12,9 +13,10 @@ class LoginForm < HtmlGrid::Form
 		[0,0]   =>  :email,
 		[0,1]   =>  :pass,
 		[1,2]   =>  :submit,
+		[1,3]	=>	:password_lost,
 	}
 	CSS_MAP = {
-		[0,0,2,3]	=>	'list',
+		[0,0,2,4]	=>	'list',
 	}
 	CSS_CLASS = 'component'
 	EVENT = :login
@@ -23,6 +25,7 @@ class LoginForm < HtmlGrid::Form
 		:pass	=>	HtmlGrid::Pass,
 	}
 	LEGACY_INTERFACE = false
+	event_link :password_lost
 	def email(model)
 		input = HtmlGrid::InputText.new(:email, model, @session, self)
 		input.css_id = 'email'

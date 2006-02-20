@@ -7,6 +7,7 @@ module ODDB
 	SERVER_NAME = 'www.oddb.org'
 	SMTP_SERVER = 'mail.ywesee.com'
 	MAIL_FROM = '"Zeno R.R. Davatz" <zdavatz@ywesee.com>'
+	MAIL_TO = ['hwyss@ywesee.com']
 	SMTP_FROM = 'zdavatz@ywesee.com'
 	SERVER_URI = "druby://localhost:10000"
 	FIPARSE_URI = "druby://localhost:10002"

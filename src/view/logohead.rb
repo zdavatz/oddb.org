@@ -45,14 +45,14 @@ module ODDB
 		class CommonLogoHead < HtmlGrid::Composite
 			include Personal
 			include SponsorDisplay
+			include UserSettings
 		end
 		class LogoHead < CommonLogoHead
-			include UserSettings
 			COMPONENTS = {
 				[0,0]		=>	View::Logo,
-				[0,1]		=>	:language_chooser,
 				[1,0]		=>	:sponsor,
 				[1,0,2]	=>	:welcome,
+				[0,1]		=>	:language_chooser,
 				[1,1]		=>	View::TabNavigation,
 			}
 			CSS_MAP = {
@@ -69,12 +69,12 @@ module ODDB
 			COMPONENTS = {
 				[0,0]		=>	View::PopupLogo,
 				[1,0]		=>	:sponsor,
-				[0,1]		=>	:language_chooser,
 			}
 			CSS_MAP = {
 				[0,0]	=>	'logo',
 				[1,0]	=>	'logo-r',
 			}
+			COMPONENT_CSS_MAP = {}
 			GOOGLE_FORMAT = '234x60_as'
 			GOOGLE_WIDTH = '234'
 			GOOGLE_HEIGHT = '60'

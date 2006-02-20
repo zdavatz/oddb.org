@@ -972,7 +972,7 @@ class OddbPrevalence
 		@users[oid]
 	end
 	def user_by_email(email)
-		@users.values.select { |user| user.unique_email == email }.first
+		@users.values.find { |user| user.unique_email == email }
 	end
 	def unique_atc_class(substance)
 	 atc_array = search_by_substance(substance)
