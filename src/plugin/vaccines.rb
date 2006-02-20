@@ -242,9 +242,8 @@ module ODDB
 			registrations
 		end
 		def parse_worksheet_row(row)
-			row_at(row, 1)
 			if((iksval = row_at(row, 1)) \
-				 && /^[0-9]{3,5}(\.[0-9]+)?$/.match(iksval))
+				 && /^[0-9]{3,5}(\.[0-9]+)?$/.match(iksval.to_s))
 				reg = ParsedRegistration.new
 				reg.iksnr = sprintf('%05i', iksval.to_i)
 				reg.indication = row_at(row, 2)
@@ -270,8 +269,12 @@ module ODDB
 		end
 		def row_at(row, index)
 			if(cell = row.at(index))
-				val = cell.to_s(ENCODING)
-				val unless val.empty?
+				if(cell.type == :numeric)
+					cell.to_f
+				else
+					val = cell.to_s(ENCODING)
+					val unless val.empty?
+				end
 			end
 		end
 		def update_company(data)

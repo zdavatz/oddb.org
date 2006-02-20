@@ -105,7 +105,7 @@ module ODDB
 				else
 					do_price_update(package, price_dat)
 				end
-			elsif(package.lppv)
+			elsif(package.lppv && package.data_origin(:lppv) == :lppv)
 				@app.update(package.pointer, {:lppv => false}, :lppv)
 			end
 		end

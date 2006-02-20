@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # ODDB::Invoicer -- ydpm -- 12.12.2005 -- hwyss@ywesee.com
 
-require 'rmail'
 require 'date'
 require 'plugin/plugin'
 require 'plugin/ydim'
