@@ -23,7 +23,7 @@ def login
 		newstate = if(user.valid?)
 			des = @session.desired_state
 			@session.desired_state = nil
-			@session.valid_input.update(@desired_input, unique_email)
+			@session.valid_input.update(@desired_input)
 			des || trigger(:home)
 		else
 			State::User::InvalidUser.new(@session, user)
