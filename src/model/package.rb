@@ -254,6 +254,9 @@ Grammar OddbSize
 		def name_base
 			@sequence.name_base
 		end
+		def narcotic?
+			@narcotics.any? { |narc| narc.category == 'a' }
+		end
 		def patinfo
 			@sequence.patinfo
 		end

@@ -120,9 +120,9 @@ module ODDB
 				link
 			end
 			def narcotic(model, session=@session)
-				if(narc = model.narcotics.first)
+				if(model.narcotic?)
 					link = HtmlGrid::Link.new(:narc_short, 
-							narc, @session, self)
+							model, @session, self)
 					link.href = @lookandfeel._event_url(:resolve,
 						{'pointer' => model.pointer + :narcotics})
 					link.css_class = 'result-infos'
