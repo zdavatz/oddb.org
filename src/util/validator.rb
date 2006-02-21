@@ -61,6 +61,7 @@ module ODDB
 			:ajax,
 			:assign,
 			:assign_deprived_sequence,
+			:assign_fachinfo,
 			:assign_patinfo,
 			:atc_chooser,
 			:atc_request,

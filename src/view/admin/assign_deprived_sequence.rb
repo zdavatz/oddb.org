@@ -83,14 +83,12 @@ class AssignDeprivedSequenceComposite < HtmlGrid::Composite
 		[0,0] => :name_base,
 		[0,1] => View::Admin::SearchField,
 		[0,2] => View::Admin::AssignDeprivedSequenceForm,
-		#[0,2]	=>	View::Admin::AssignRegistrationForm,
 	}
 	CSS_MAP = {
 		[0,0] => 'th',
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
-	DEFAULT_HEAD_CLASS = 'th'
 end
 class AssignDeprivedSequence < View::PrivateTemplate
 	CONTENT = View::Admin::AssignDeprivedSequenceComposite

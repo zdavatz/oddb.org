@@ -169,6 +169,7 @@ class RegistrationForm < View::Form
 				[0,6]		=>	'fi_upload_instruction0',
 				[2,6]		=>	:fachinfo_label,
 				[3,6]		=>	:fachinfo,
+				[3,6,1]	=>	:assign_fachinfo,
 				[0,7]		=>	'fi_upload_instruction1',
 				[1,7]		=>	:language_select,
 				[0,8]		=>	'fi_upload_instruction2',
@@ -187,6 +188,15 @@ class RegistrationForm < View::Form
 			css_map.store([1,8], 'list-bg')
 			#css_map.store([1,6], 'button')
 		end
+	end
+	def assign_fachinfo(model, session)
+		link = HtmlGrid::Link.new(:assign_fachinfo, model, session, self)
+		link.href = @lookandfeel.event_url(:assign_fachinfo)
+		if(@model.fachinfo)
+			link.value = @lookandfeel.lookup(:assign_this_fachinfo)
+		end
+		link.set_attribute('class', 'small')
+		link
 	end
 	def company_name(model, session)
 		klass = if(session.user.is_a?(ODDB::CompanyUser))

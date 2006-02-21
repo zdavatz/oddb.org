@@ -5,6 +5,7 @@ require 'state/admin/global'
 require 'state/admin/sequence'
 require 'state/admin/selectindication'
 require 'state/admin/fachinfoconfirm'
+require 'state/admin/assign_fachinfo'
 require 'model/fachinfo'
 require 'view/admin/registration'
 require 'util/log'
@@ -113,6 +114,11 @@ class Registration < State::Admin::Global
 	SELECT_STATE = State::Admin::SelectIndication
 	FI_FILE_DIR = File.expand_path('../../../doc/resources/fachinfo/', File.dirname(__FILE__))
 	include RegistrationMethods
+	def assign_fachinfo
+		if(@model.fachinfo)
+			State::Admin::AssignFachinfo.new(@session, @model)
+		end
+	end	
 	def update
 		keys = [
 			:inactive_date, :generic_type, :registration_date, 
