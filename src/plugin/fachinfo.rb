@@ -37,11 +37,11 @@ module ODDB
 			iksnrs = []
 			languages.each_value { |doc|
 				src = doc.iksnrs.to_s.gsub("'", "")
-				if(match = src.match(/[0-9]{4,5}(?:\s*,\s*[0-9]{4,5})*/))
+				if(match = src.match(/[0-9]{3,5}(?:\s*,\s*[0-9]{3,5})*/))
 					iksnrs += match.to_s.split(/\s*,\s*/)
 				end
 			}
-			iksnrs.uniq
+			iksnrs.collect { |iksnr| sprintf("%05i", iksnr) }.uniq
 		end
 		def extract_name(languages)
 			languages.sort.first.last.name.to_s rescue 'Unknown'

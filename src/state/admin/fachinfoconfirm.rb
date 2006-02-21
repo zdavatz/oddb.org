@@ -77,14 +77,14 @@ class FachinfoConfirm < State::Admin::Global
 		nil
 	end
 	def validate_iksnrs
-		@valid_iksnrs = []
+		@valid_iksnrs = [@model.registration.iksnr]
 		@errors = {}
 		all_iksnrs = @model.inject([]) { |array, fi_document|
 			array | iksnrs(fi_document)
 		}
 		all_iksnrs.each { |iksnr|
 			if(reg = @session.app.registration(iksnr))
-				if(@session.user_equiv?(reg.company))	
+				if(allowed?(reg))	
 					@valid_iksnrs.push(iksnr)
 				else
 					add_warning(:w_access_denied_iksnr, :fachinfo_upload, iksnr)

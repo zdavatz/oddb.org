@@ -116,7 +116,11 @@ module ODDB
 						@templates = named_chapters [
 							:date, :rest,
 						]
-					when ''
+					when /Stand\s+der\s+Information/i, /Mise\s+.\s+jour/i
+						@date = chapter
+						@templates = named_chapters [
+							:rest,
+						]
 					end
 				else
 					case chapter.heading

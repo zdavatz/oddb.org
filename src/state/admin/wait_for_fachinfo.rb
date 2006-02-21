@@ -50,12 +50,14 @@ class WaitForFachinfo < State::Admin::Global
 			@language = language
 			@document = document
 		else
+=begin
 			hash = {}
 			last_model = @previous.model
 			filename = "#{last_model.iksnr}_#{language}.pdf"
 			pdf_fachinfos = {language => filename}
 			hash.store(:pdf_fachinfos, pdf_fachinfos)
 			@session.app.update(last_model.pointer, hash, unique_email)
+=end
 			log = Log.new(Time.now)
 			report = link
 			if(document.is_a?(Exception))

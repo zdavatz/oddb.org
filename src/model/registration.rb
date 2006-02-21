@@ -12,7 +12,7 @@ module ODDB
 		attr_writer :generic_type, :complementary_type
 		attr_accessor :registration_date, :export_flag, :company, 
 			:revision_date, :indication, :expiration_date, :inactive_date,
-			:market_date, :fachinfo, :source, :pdf_fachinfos,
+			:market_date, :fachinfo, :source #, :pdf_fachinfos,
 			:index_therapeuticus
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
