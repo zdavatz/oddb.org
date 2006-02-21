@@ -133,8 +133,18 @@ module ODDB
 						@templates = named_chapters [
 							:registration_owner, :date, :rest,
 						]
+					when /Zulassungsvermerk/, /Estampille/
+						@iksnrs = @switch
+						@templates = named_chapters [
+							:switch,
+						]
 					when /(Registration|Zulassung)sinhaber/, /Titulaire/
 						@registration_owner = @switch
+						@templates = named_chapters [
+							:switch,
+						]
+					when /Hersteller/, /Fabricant/
+						@fabrication = chapter
 						@templates = named_chapters [
 							:switch,
 						]
@@ -142,11 +152,6 @@ module ODDB
 						@date = chapter
 						@templates = named_chapters [
 							:rest,
-						]
-					when /Zulassungsvermerk/, /Estampille/
-						@iksnrs = @switch
-						@templates = named_chapters [
-							:switch,
 						]
 					end
 				end

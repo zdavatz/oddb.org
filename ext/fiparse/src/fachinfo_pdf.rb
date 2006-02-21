@@ -145,7 +145,7 @@ module ODDB
 						@out = ''
 					else
 						self.add_text
-						@paragraph << "\n"
+						@paragraph << "\n" if(@paragraph)
 					end
 				elsif(!@preformatted && @chars_since_last_linebreak < 80)
 					self.send_paragraph

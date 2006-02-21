@@ -1485,5 +1485,30 @@ Hypotension        -          3          8
 				}
 			end
 		end
+		class TestFachinfoPDFHBVAXPRO < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_hbvaxpro.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_first_paragraph_is_preformatted
+				chapter = @fachinfo.composition
+				assert_equal(1, chapter.sections.size)
+				section = chapter.sections.at(0)
+				expected = "Eine Impfdosis"
+				assert_equal(expected, section.subheading.to_s)
+				paragraph = section.paragraphs.at(0)
+				assert_equal(2, section.paragraphs.size)
+				expected = <<-EOS
+				EOS
+				lines = paragraph.to_s.split(/\n/)
+				expected.split(/\n/).each_with_index { |line, idx|
+					assert_not_nil(lines[idx], line)
+					assert_equal(line.rstrip, lines[idx].rstrip)
+				}
+			end
+		end
 	end
 end

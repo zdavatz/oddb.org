@@ -169,6 +169,9 @@ class Registration < State::Admin::Global
 			].join(' ')
 			err = create_error(:e_pdf_not_parsed, :fachinfo_upload, msg)
 			@errors.store(:fachinfo_upload, err)
+			puts e.class
+			puts e.message
+			puts e.backtrace
 			e
 		end
 	end
