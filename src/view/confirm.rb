@@ -25,7 +25,7 @@ class Confirm < View::PublicTemplate
 	def http_headers
 		headers = super
 		link = @lookandfeel._event_url(:home)
-		headers.store("Refresh", "5; url=#{link}")
+		headers.store("Refresh", "10; url=#{link}")
 		headers
 	end
 end
