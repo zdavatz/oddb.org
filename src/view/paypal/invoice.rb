@@ -20,9 +20,9 @@ class InvoiceItems < HtmlGrid::List
 	OMIT_HEADER = true
 	STRIPED_BG = false
 	def compose_footer(matrix)
-		total_net = ['', @lookandfeel.lookup(:total_netto), total_netto()]
-		vat = ['', @lookandfeel.lookup(:vat), vat()]
-		total = ['', @lookandfeel.lookup(:total_brutto), total_brutto()]
+		total_net = [nil, @lookandfeel.lookup(:total_netto), nil, total_netto()]
+		vat = [nil, @lookandfeel.lookup(:vat), nil, vat()]
+		total = [nil, @lookandfeel.lookup(:total_brutto), nil, total_brutto()]
 		@grid.add(total_net, *matrix)
 		@grid.add_style('list-bg', matrix.at(0), matrix.at(1), 2)
 		@grid.add_style('list-r-bg', *resolve_offset(matrix, [2,0]))
