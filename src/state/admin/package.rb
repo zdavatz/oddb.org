@@ -37,6 +37,7 @@ module PackageMethods
 			@model = @session.app.create(@model.pointer)
 		end
 		keys = [
+			:deductible,
 			:descr,
 			:size, 
 			:ikscat,

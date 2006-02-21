@@ -51,20 +51,22 @@ class PackageForm < View::Form
 		[2,4]		=>	:price_public,
 		[0,5]		=>	:generic_group,
 		[2,5]		=>	:market_date,
-		[0,6]		=>	:out_of_trade,
+		[0,6]		=>	:deductible,
 		[2,6]		=>	:lppv,
-		[1,7]		=>	:submit,
-		[1,7,0]	=>	:delete_item,
+		[0,7]		=>	:out_of_trade,
+		[1,8]		=>	:submit,
+		[1,8,0]	=>	:delete_item,
 	}
 	COMPONENT_CSS_MAP = {
-		[0,0,4,6]	=>	'standard',
+		[0,0,4,7]	=>	'standard',
 		[3,3]			=>	'list',
 	}
 	CSS_MAP = {
-		[0,0,4,7]	=>	'list',
+		[0,0,4,8]	=>	'list',
 	}
 	LABELS = true
 	SYMBOL_MAP = {
+		:deductible				=>	HtmlGrid::Select,
 		:price_exfactory	=>	HtmlGrid::InputCurrency,
 		:price_public			=>	HtmlGrid::InputCurrency,
 		:iksnr						=>	HtmlGrid::Value,
