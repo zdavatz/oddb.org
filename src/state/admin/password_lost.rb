@@ -37,7 +37,7 @@ class PasswordLost < State::Global
 		header.from = MAIL_FROM
 		header.subject = lnf.lookup(:password_lost_subject)
 		url = lnf._event_url(:password_reset, {:token => token, :email => recipient})
-		mail.body = lnf.lookup(:password_lost_body, url, 
+		mail.body = lnf.lookup(:password_lost_body, recipient, url, 
 			user.reset_until.strftime(lnf.lookup(:time_format_long)))
 		smtp = Net::SMTP.new(SMTP_SERVER)
 		recipients = [recipient] + MAIL_TO

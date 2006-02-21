@@ -22,6 +22,12 @@ class ConfirmComposite < HtmlGrid::Composite
 end
 class Confirm < View::PublicTemplate
 	CONTENT = View::ConfirmComposite
+	def http_headers
+		headers = super
+		link = @lookandfeel._event_url(:home)
+		headers.store("Refresh", "5; url=#{link}")
+		headers
+	end
 end
 	end
 end
