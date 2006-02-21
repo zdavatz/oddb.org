@@ -13,6 +13,13 @@ require 'oddbdat'
 require 'generics_xls'
 require 'odba'
 
+module ODBA
+	class Stub
+		def to_yaml(*args)
+			odba_instance.to_yaml(*args)
+		end
+	end
+end
 module ODDB
 	module OdbaExporter
 		def OdbaExporter.clear
