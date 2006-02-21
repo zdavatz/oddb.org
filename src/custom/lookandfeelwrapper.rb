@@ -42,6 +42,7 @@ module ODDB
 	end
 	class LookandfeelGenerika < SBSM::LookandfeelWrapper
 		ENABLED = [
+			:companylist,
 			:fachinfos,
 			:google_adsense,
 			:limitation_texts,
