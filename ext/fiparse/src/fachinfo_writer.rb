@@ -53,7 +53,7 @@ module ODDB
 							:usage, :contra_indications, :restrictions,
 							:interactions, :pregnancy, :driving_ability,
 							:unwanted_effects, :overdose, :effects,
-							:kinetic, :preclinic, :other_advice, :switch,
+							:kinetic, :preclinic, :switch,
 						]
 					when /Zusammensetzung/, /Composition/
 						@composition = chapter
@@ -124,19 +124,24 @@ module ODDB
 					end
 				else
 					case chapter.heading
+					when /Sonstige/, /Remarques/
+						@other_advice = chapter
+						@templates = named_chapters [
+							:switch
+						]
 					when /Weitere Angaben/, /Informations supp/
 						@templates = named_chapters [
 							:iksnrs, :registration_owner, :date, :rest,
-						]
-					when /Packungen/, /Pr.sentation/
-						@packages = chapter
-						@templates = named_chapters [
-							:registration_owner, :date, :rest,
 						]
 					when /Zulassungsvermerk/, /Estampille/
 						@iksnrs = @switch
 						@templates = named_chapters [
 							:switch,
+						]
+					when /Packungen/, /Pr.sentation/
+						@packages = chapter
+						@templates = named_chapters [
+							:registration_owner, :date, :rest,
 						]
 					when /(Registration|Zulassung)sinhaber/, /Titulaire/
 						@registration_owner = @switch
