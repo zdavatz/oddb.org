@@ -96,7 +96,7 @@ module ODDB
 						div = HtmlGrid::Div.new(model, @session, self)
 						div.css_class = 'long-text list-bg'
 						txt = text.send(@session.language)
-						div.value = if(match = /(SR|RS) (\d{3}\.\d{3}\.\d{2})/.match(txt))
+						div.value = if(match = /(?:SR|RS) (\d{3}\.\d{3}\.\d{2})/.match(txt))
 							url = sprintf('http://www.admin.ch/ch/%s/sr/c%s.html',
 								(@session.language.to_s == 'fr') ? 'f' : 'd', 
 								match[1].gsub('.', '_'))
