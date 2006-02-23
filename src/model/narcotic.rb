@@ -9,9 +9,6 @@ module ODDB
 		include Persistence
 		attr_reader	:packages, :reservation_text, :substances
 		attr_accessor :category
-		def create_reservation_text
-			@reservation_text = Text::Document.new
-		end
 		def initialize
 			@packages = []
 			@substances = []
@@ -44,6 +41,9 @@ module ODDB
 				pack.remove_narcotic(self)
 				pack.odba_store 
 			}
+		end
+		def create_reservation_text
+			@reservation_text = Text::Document.new
 		end
 		def pointer_descr
 			to_s

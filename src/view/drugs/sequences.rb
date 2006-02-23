@@ -74,7 +74,7 @@ class SequenceList < HtmlGrid::List
 		name = model.name_base
 		link.value = name
 		args = {
-			'search_query'	=>	name,
+			'search_query'	=>	CGI.escape(name),
 		}
 		link.href = @lookandfeel._event_url(:search, args, 'best_result')
 		link.css_class = 'result-big' << resolve_suffix(model)

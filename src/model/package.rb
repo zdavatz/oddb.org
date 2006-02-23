@@ -176,7 +176,7 @@ Grammar OddbSize
 		end
 		def barcode
 			if(key = ikskey)
-				Ean13.new_unchecked('7680'+key)
+				Ean13.new_unchecked('7680'+key).to_s
 			end
 		end
 		def atc_class

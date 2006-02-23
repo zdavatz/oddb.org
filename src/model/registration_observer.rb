@@ -15,6 +15,21 @@ module ODDB
 			end
 			registration
 		end
+		def article_codes
+			codes = []
+			@registrations.collect { |reg| 
+				reg.each_package { |pac|
+					cds = {
+						:article_ean13 => pac.barcode.to_s,
+					}
+					if(pcode = pac.pharmacode)
+						cds.store(:article_pcode, pcode)
+					end
+					codes.push(cds)
+				}
+			}
+			codes
+		end
 		def empty?
 			@registrations.empty?
 		end

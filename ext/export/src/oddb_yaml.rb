@@ -156,7 +156,7 @@ module ODDB
 					to_yaml_properties.each { |m|
 						map.add( m[1..-1], instance_variable_get( m ) )
 					}
-					map.add('iksnrs', self.iksnrs)
+					map.add('article_codes', self.article_codes)
 				}
 			}
 		end

@@ -1,9 +1,10 @@
 Datenbeschrieb fachinfo.yaml
 
-Version: 1.0.2
+Version: 1.1.0
+Geändert: 22.02.2006 (1.1.0) durch hwyss@ywesee.com
 Geändert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
 Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
-Erstellt: 01.09.2005 (1.0)   durch hwyss@ywesee.com
+Erstellt: 01.09.2005 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
 Encoding: ISO-8859-1
@@ -12,7 +13,8 @@ Top-Level:
 - Stream von voneinander unabhängigen YAML-Documents, wovon jedes ein Fachinfo beschreibt.
 
 Fachinfo:
-- oid               (Integer, NOT NULL)    -> Unique Identifier
+- oid               (Integer, NOT NULL)     -> Unique Identifier
+- article_codes     (Array(Hash))           -> Ean13-Barcodes im 7680*-Bereich und Pharmacodes
 - descriptions      (SimpleLanguage::Descriptions (String, FachinfoDocument|FachinfoDocument2001)) -> Sprache, Dokument. siehe Glossar (SimpleLanguage::Descriptions)
 
 FachinfoDocument:
