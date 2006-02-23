@@ -166,6 +166,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 				fh.flush
 				newpath = File.join(dir, name)
 				FileUtils.mv(fh.path, newpath)
+				FileUtils.chmod(0644, newpath)
 				compress(dir, name)
 			}
 			name
