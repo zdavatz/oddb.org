@@ -112,7 +112,6 @@ module ODDB
 		end
 		def run
 			logfile_stats
-			update_lppv
 			update_swissmedicjournal
 			update_fxcrossrate
 			update_fachinfo

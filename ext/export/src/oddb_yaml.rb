@@ -270,7 +270,7 @@ module ODDB
 					to_yaml_properties.each { |m|
 						map.add( m[1..-1], instance_variable_get( m ) )
 					}
-					map.add('ean13', self.barcode)
+					map.add('ean13', self.barcode.to_s)
 					map.add('out_of_trade', !self.public?)
 					map.add('pharmacode', self.pharmacode)
 					map.add('narcotics', @narcotics.collect { |narc| narc.casrn})
