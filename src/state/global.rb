@@ -585,7 +585,10 @@ module ODDB
 				State::User::SuggestRegistration.new(@session, item)
 			end
 			def unique_email
-				@session.user.unique_email
+				user = @session.user
+				if(user.respond_to?(:unique_email))
+					user.unique_email
+				end
 			end
 			def user_input(keys=[], mandatory=[])
 				keys = [keys] unless keys.is_a?(Array)
