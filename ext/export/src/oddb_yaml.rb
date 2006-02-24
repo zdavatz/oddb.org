@@ -16,7 +16,7 @@ module ODDB
 		yaml_as YAML_URI
   end		
 	module SimpleLanguage
-		class Descriptions < Hash
+		class Descriptions #< Hash
 			include OddbYaml
 		end
 	end
@@ -64,7 +64,7 @@ module ODDB
 			]
 		end
 	end
-	class ActiveAgent < ActiveAgentCommon
+	class ActiveAgent #< ActiveAgentCommon
 		include OddbYaml
 		EXPORT_PROPERTIES = [
 			'@substance',
@@ -137,7 +137,7 @@ module ODDB
 			'@addresses',
 		]
 	end	
-	class Dose < Quanty
+	class Dose #< Quanty
 		include OddbYaml
 		EXPORT_PROPERTIES = [
 			'@val',
@@ -145,7 +145,9 @@ module ODDB
 		]
 	end	
 	class Ean13 < String
-		yaml_as "tag:yaml.org,2002:str"
+    def self.yaml_tag_subclasses?
+			false
+		end
 	end
 	class Fachinfo
 		include OddbYaml
@@ -256,7 +258,7 @@ module ODDB
 			}
 		end
 	end
-	class Package < PackageCommon
+	class Package #< PackageCommon
 		include OddbYaml
 		EXPORT_PROPERTIES = [	
 			'@ikscd',
@@ -328,7 +330,7 @@ module ODDB
 			'@date',
 		]
 	end
-	class Registration < RegistrationCommon
+	class Registration #< RegistrationCommon
 		include OddbYaml
 		EXPORT_PROPERTIES = [
 			'@iksnr',
@@ -343,7 +345,7 @@ module ODDB
 			'@fachinfo_oid',
 		]
 	end
-	class Sequence < SequenceCommon
+	class Sequence #< SequenceCommon
 		include OddbYaml
 		EXPORT_PROPERTIES = [
 			'@seqnr',
