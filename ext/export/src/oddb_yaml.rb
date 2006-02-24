@@ -144,6 +144,9 @@ module ODDB
 			'@unit',
 		]
 	end	
+	class Ean13 < String
+		yaml_as "tag:yaml.org,2002:str"
+	end
 	class Fachinfo
 		include OddbYaml
 		EXPORT_PROPERTIES = [
