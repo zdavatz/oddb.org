@@ -26,7 +26,7 @@ module ODDB
 						debitor.contact = comp_or_hosp.name
 					else
 						contact = comp_or_hosp.contact.to_s.dup
-						debitor.salutation = contact.slice!(/^(Herr|Frau)\s+/).strip
+						debitor.salutation = contact.slice!(/^(Herr|Frau)\s+/).to_s.strip
 						debitor.contact_firstname, debitor.contact = contact.split(' ', 2)
 					end
 				else
