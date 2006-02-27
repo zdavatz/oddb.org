@@ -10,6 +10,7 @@ module ODDB
 		module Drugs
 class CsvResult < HtmlGrid::Component
 	CSV_KEYS = [
+		:rectype,
 		:barcode,
 		:name_base,
 		:galenic_form,
@@ -27,6 +28,11 @@ class CsvResult < HtmlGrid::Component
 	def boolean(bool)
 		key = bool ? :true : :false
 		@lookandfeel.lookup(key)
+	end
+	def bsv_dossier(pack)
+		if(sl = pack.sl_entry)
+			sl.bsv_dossier
+		end
 	end
 	def casrn(pack)
 		pack.narcotics.collect { |narc|
@@ -49,6 +55,9 @@ class CsvResult < HtmlGrid::Component
 			galform.description(@lookandfeel.language)
 		end
 	end
+	def has_generic(pack)
+		boolean(pack.generic_type == :original && !pack.comparables.empty?)
+	end
 	def http_headers
 		file = @session.user_input(:filename)
 		url = @lookandfeel._event_url(:home)
@@ -65,6 +74,9 @@ class CsvResult < HtmlGrid::Component
 			@lookandfeel.format_date(date)
 		end
 	end
+	def is_generic(pack)
+		boolean(pack.generic_type == :generic && !pack.comparables.empty?)
+	end
 	def limitation(pack)
 		if(sl = pack.sl_entry)
 			boolean(sl.limitation)
@@ -80,6 +92,9 @@ class CsvResult < HtmlGrid::Component
 			txt.send(@lookandfeel.language).to_s.gsub(/\n/, '|')
 		end
 	end
+	def lppv(pack)
+		boolean(pack.lppv)
+	end
 	def numerical_size(pack)
 		pack.comparable_size.qty
 	end
@@ -88,6 +103,9 @@ class CsvResult < HtmlGrid::Component
 	end
 	def price_public(pack)
 		@lookandfeel.format_price(pack.price_public.to_i)
+	end
+	def rectype(pack)
+		'#Medi'
 	end
 	def registration_date(pack)
 		formatted_date(pack, :registration_date)
@@ -98,7 +116,7 @@ class CsvResult < HtmlGrid::Component
 	def to_html(context)
 		to_csv(CSV_KEYS)
 	end
-	def to_csv(keys)
+	def to_csv(keys, symbol=:active_packages)
 		result = []
 		lang = @lookandfeel.language
 		header = keys.collect { |key|
@@ -106,8 +124,8 @@ class CsvResult < HtmlGrid::Component
 		}
 		result.push(header)
 		@model.each { |atc|
-			result.push([atc.code.to_s, atc.description(lang).to_s])
-			atc.active_packages.each { |pack|
+			result.push(['#MGrp', atc.code.to_s, atc.description(lang).to_s])
+			atc.send(symbol).each { |pack|
 				line = keys.collect { |key|
 					if(self.respond_to?(key))
 						self.send(key, pack)
@@ -122,8 +140,8 @@ class CsvResult < HtmlGrid::Component
 			CSVLine.new(line).to_s(false, ';')
 		}.join("\n")
 	end
-	def to_csv_file(keys, path)
-		File.open(path, 'w') { |fh| fh.puts to_csv(keys) }
+	def to_csv_file(keys, path, symbol=:active_packages)
+		File.open(path, 'w') { |fh| fh.puts to_csv(keys, symbol) }
 	end
 end
 		end

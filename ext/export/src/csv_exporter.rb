@@ -40,6 +40,12 @@ module ODDB
 					end
 				}
 			end
+			def CsvExporter.defr(item)
+				self.collect_data(DEFR, item)
+			end
+			def CsvExporter.defrit(item)
+				self.collect_data(DEFRIT, item)
+			end
 			def CsvExporter.dump(keys, item, fh)
 				data = collect_data(keys, item).flatten
 				fh << CSVLine.new(data).to_s(false, ';') << "\n"
@@ -58,12 +64,6 @@ module ODDB
 			def CsvExporter.format_price(item)
 				item.price = item.price / 100.0
 				item.price = sprintf("%.2f", item.price)
-			end
-			def CsvExporter.defr(item)
-				self.collect_data(DEFR, item)
-			end
-			def CsvExporter.defrit(item)
-				self.collect_data(DEFRIT, item)
 			end
 			def CsvExporter.migel_limitation(item)
 				self.defrit(item.limitation_text)
