@@ -77,12 +77,12 @@ module ODDB
 	end
 	class AdminUser < User
 		SESSION_WEIGHT = 4
-		VIRAL_MODULE = State::Admin::Root
+		VIRAL_MODULE = State::Admin::Admin
 		def allowed?(obj)
 			case obj.odba_instance
 			when Hospital
 				@model.odba_instance == obj
-			else
+			when Registration, Sequence, Package, ActiveAgent, SlEntry
 				true
 			end
 		end
@@ -90,7 +90,9 @@ module ODDB
 			true
 		end
 	end
-	class RootUser < AdminUser
+	class RootUser < User
+		SESSION_WEIGHT = 4
+		VIRAL_MODULE = State::Admin::Root
 		def initialize
 			@oid = 0
 			@unique_email = 'hwyss@ywesee.com'
@@ -98,6 +100,9 @@ module ODDB
 			@pointer = Pointer.new([:user, 0])
 		end
 		def allowed?(obj)
+			true
+		end
+		def creditable?(obj)
 			true
 		end
 	end		
