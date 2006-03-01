@@ -268,6 +268,7 @@ module ODDB
 			'@price_exfactory',
 			'@price_public',
 			'@sl_entry',
+			'@narcotics',
 		]
 		def to_yaml( opts = {} )
 			YAML::quick_emit( self.object_id, opts ) { |out|
@@ -278,7 +279,7 @@ module ODDB
 					map.add('ean13', self.barcode.to_s)
 					map.add('out_of_trade', !self.public?)
 					map.add('pharmacode', self.pharmacode)
-					map.add('narcotics', @narcotics.collect { |narc| narc.casrn})
+					#map.add('narcotics', @narcotics.collect { |narc| narc.casrn})
 				}
 			}
 		end
