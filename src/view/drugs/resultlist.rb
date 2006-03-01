@@ -20,7 +20,7 @@ module ODDB
 		module Drugs
 class User < SBSM::KnownUser; end
 class UnknownUser < SBSM::UnknownUser; end
-class AdminUser < View::Drugs::User; end
+class RootUser < View::Drugs::User; end
 class CompanyUser < View::Drugs::User; end
 class AtcHeader < HtmlGrid::Composite
 	include View::AdditionalInformation
@@ -34,7 +34,7 @@ class AtcHeader < HtmlGrid::Composite
 		[0,0]	=>	'atc-result',
 	}
 	def init
-		if(@session.user.is_a? AdminUser)
+		if(@session.user.is_a? RootUser)
 			components.store([0,0,0], :edit)
 		end
 		super

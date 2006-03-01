@@ -91,7 +91,7 @@ class ResultForm < HtmlGrid::Composite
 	}
 	def init
 		case @session.user
-		when ODDB::AdminUser, ODDB::CompanyUser, ODDB::PowerLinkUser
+		when ODDB::RootUser, ODDB::AdminUser, ODDB::CompanyUser, ODDB::PowerLinkUser
 			components.store([0,2], self::class::ROOT_LISTCLASS)
 		end
 		if(@lookandfeel.enabled?(:export_csv))
