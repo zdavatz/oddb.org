@@ -92,9 +92,6 @@ module ODDB
 				if(model.sl_generic_type == :generic)
 					text_elements.push(@lookandfeel.lookup(:sl_generic_short))
 					title_elements.push(@lookandfeel.lookup(:sl_generic))
-				elsif(model.sl_generic_type == :original)
-					text_elements.push(@lookandfeel.lookup(:sl_original_short))
-					title_elements.push(@lookandfeel.lookup(:sl_original))
 				end
 				txt.value = text_elements.join('&nbsp;/&nbsp;')
 				title = title_elements.join('&nbsp;/&nbsp;')
