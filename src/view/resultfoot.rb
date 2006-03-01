@@ -29,10 +29,9 @@ module ODDB
 				[2,0]	=>	'explain_efp',
 				[2,1]	=>	'explain_pbp',
 				[2,2]	=>	'explain_sl',
-				#[2,3]	=>	'explain_hors_commerce',
-				[2,5]	=>	'explain_slg',
-				[2,6]	=>	'explain_fd',
-				[2,7]	=>	'explain_g',
+				[2,3]	=>	'explain_slg',
+				[2,4]	=>	'explain_fd',
+				[2,5]	=>	'explain_g',
 			}
 			CSS_MAP = {	
 				[0,5]	=>	'explain-unknown',
