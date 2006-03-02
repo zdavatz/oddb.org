@@ -24,7 +24,7 @@ module ODDB
 			prices = {}
 			pcode_style = /[0-9]{6,8}/
 			price_style = /\d+\.\d\d/
-			@tables.last.each_row { |row|
+			@tables.at(1).each_row { |row|
 				if(pcode_style.match(row.cdata(3)) \
 					 && price_style.match(row.cdata(5)))
 					prices.store(row.cdata(3), row.cdata(5))
@@ -69,7 +69,7 @@ module ODDB
 					resolve_link(package),
 					sprintf("%-20s  %-20.2f  %-20.2f %s", @package.iksnr, 
 									@old.to_f/100, @current.to_f/100, @package.name),
-					nil,
+									nil,
 				]
 			end
 		end
@@ -80,8 +80,9 @@ module ODDB
 			super
 			@updated_packages = []
 			@packages_with_sl_entry = []
+			@not_updated_chars = []
 		end
-		def update(range='A'..'Z')
+		def update(range = 'A'..'Z')
 			@prices = {}
 			Net::HTTP.new(LPPV_HOST).start { |http| 
 				range.each { |char| 
@@ -96,8 +97,11 @@ module ODDB
 			formatter = HtmlFormatter.new(writer)
 			parser = HtmlParser.new(formatter)
 			parser.feed(response.body)
+			if writer.prices.empty?
+				@not_updated_chars.push(char)
+			end
 			writer.prices
-		end		
+		end				
 		def update_package(package, data)
 			if(price_dat = data.delete(package.pharmacode))
 				if(package.sl_entry && package.price_public)
@@ -115,26 +119,27 @@ module ODDB
 			}
 		end
 		def report
-			ups, downs = @updated_packages.partition { |price| price.up? } 
-			lines = [
-				"Downloaded Prices: #{@prices.size}",
-				"Updated Packages: #{@updated_packages.size}",
-				nil,
-				"Packages with SL-Entry: #{@packages_with_sl_entry.size}",
-				nil,
-				"The following Packages experienced a Price RAISE:",
-				sprintf("%-20s  %-20s  %-20s %-s", 
-								"IKS-Number", "Old Price", "New Price", "Package Name"),
-			]
-			ups.reverse.each { |price| lines.concat(price.report_lines) }
-			lines.concat([
-				nil,
-				"The following Packages experienced a Price CUT:",
-				sprintf("%-20s  %-20s  %-20s %-s,", 
-								"IKS-Number", "Old Price", "New Price", "Package Name"),
-			])
-			downs.reverse.each { |price| lines.concat(price.report_lines) }
-			lines.flatten.join("\n")
+			ups, downs = @updated_packages.sort_by { |price| 
+				price.package.name }.partition { |price| price.up? } 
+				lines = [
+					"Downloaded Prices: #{@prices.size}",
+					"Updated Packages: #{@updated_packages.size}",
+					nil,
+					"Packages with SL-Entry: #{@packages_with_sl_entry.size}",
+					nil,
+					"The following Packages experienced a Price RAISE:",
+					sprintf("%-20s  %-20s  %-20s %-s", 
+									"IKS-Number", "Old Price", "New Price", "Package Name"),
+				]
+				ups.each { |price| lines.concat(price.report_lines) }
+				lines.concat([ nil,
+					"The following Packages experienced a Price CUT:",
+					sprintf("%-20s  %-20s  %-20s %-s,", 
+									"IKS-Number", "Old Price", "New Price", "Package Name"),
+				])
+				downs.each { |price| lines.concat(price.report_lines) }
+				lines.push("Not updated were: " << @not_updated_chars.join(', '))
+				lines.flatten.join("\n")
 		end
 		def	do_price_update(package, price)
 			price_obj = PriceUpdate.new(package, price)

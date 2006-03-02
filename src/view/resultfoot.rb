@@ -32,7 +32,8 @@ module ODDB
 				[2,3]	=>	'explain_slo',
 				[2,4]	=>	'explain_slg',
 				[2,5]	=>	'explain_fd',
-				[2,6]	=>	'explain_g',
+				[2,6]	=>	:explain_lppv,
+				[2,7]	=>	'explain_g',
 			}
 			CSS_MAP = {	
 				[0,4]	=>	'explain-unknown',
@@ -95,6 +96,11 @@ module ODDB
 				link.href = "http://cas.org"
 				link
 			end
+			def explain_lppv(model, session=@session)
+				link = HtmlGrid::Link.new(:explain_lppv, model, @session, self)
+				link.href = @lookandfeel.lookup(:lppv_url)
+				link
+			end
 			def explain_narc(model, session=@session)
 				create_link(:explain_narc, 
 					'http://wiki.oddb.org/wiki.php?pagename=ODDB.Pi-Upload')
@@ -142,10 +148,10 @@ module ODDB
 				klass.new(model, @session, self)
 			end
 			def legal_note(model, session=@session)
-			  link = super(model)
+				link = super(model)
 				link.css_class = 'subheading'
-			  link
-		  end
+				link
+			end
 		end
 	end
 end
