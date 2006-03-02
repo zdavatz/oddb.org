@@ -105,6 +105,15 @@ td.result-generic-bg {
 	color : #2ba476;
 	padding : 4px;
 }
+td.result-comarketing {
+	color : #f61;
+	padding : 4px;
+}
+td.result-comarketing-bg {
+	background : $rslt_bg;
+	color : #f61;
+	padding : 4px;
+}
 td.result-original {
 	color : red;
 	padding : 4px;
@@ -169,6 +178,40 @@ a.result-b-r-generic-bg:active {
 td.result-b-r-generic-bg {
 	background : $rslt_bg;
 	color : #2ba476;
+	font-weight: bold;
+	padding : 4px;
+	text-align : right;
+}
+a.result-b-r-comarketing {
+	color : #f61;
+	font-weight: bold;
+}
+a.result-b-r-comarketing:hover {
+	color : $rslt_link_hover_color;
+}
+a.result-b-r-comarketing:active {
+	color : gold;
+}
+td.result-b-r-comarketing {
+	color : #f61;
+	font-weight: bold;
+	padding : 4px;
+	text-align : right;
+}
+a.result-b-r-comarketing-bg {
+	background : $rslt_bg;
+	color : #f61;
+	font-weight: bold;
+}
+a.result-b-r-comarketing-bg:hover {
+	color : $rslt_link_hover_color;
+}
+a.result-b-r-comarketing-bg:active {
+	color : gold;
+}
+td.result-b-r-comarketing-bg { 
+	background : $rslt_bg;
+	color : #f61;
 	font-weight: bold;
 	padding : 4px;
 	text-align : right;
@@ -339,6 +382,30 @@ td.result-i-r-generic-bg {
 	padding : 4px;
 	text-align : right;
 }
+td.result-i-comarketing {
+	color : #f61;
+	font-style : italic;
+	padding : 4px;
+}
+td.result-i-comarketing-bg {
+	background : $rslt_bg;
+	color : #f61;
+	font-style : italic;
+	padding : 4px;
+}
+td.result-i-r-comarketing {
+	color : #f61;
+	font-style : italic;
+	padding : 4px;
+	text-align : right;
+}
+td.result-i-r-comarketing-bg {
+	background : $rslt_bg;
+	color : #f61;
+	font-style : italic;
+	padding : 4px;
+	text-align : right;
+}
 td.result-i-original {
 	color : red;
 	font-style : italic;
@@ -442,6 +509,17 @@ td.result-r-generic-bg {
 	padding : 4px;
 	text-align : right;
 }
+td.result-r-comarketing {
+	color : #f61;
+	padding : 4px;
+	text-align : right;
+}
+td.result-r-comarketing-bg {
+	background : $rslt_bg;
+	color : #f61;
+	padding : 4px;
+	text-align : right;
+}
 td.result-r-original {
 	color : red;
 	padding : 4px;
@@ -523,6 +601,31 @@ td.result-big-generic {
 td.result-big-generic-bg {
 	background : $rslt_bg;
 	color : #2ba476;
+	font-size : 14px;
+	font-weight : bold;
+	padding : 4px;
+}
+a.result-big-comarketing, 
+a.result-big-comarketing:link, 
+a.result-big-comarketing:visited {
+	color : #f61;
+	text-decoration : none;
+}
+a.result-big-comarketing:hover {
+	color : $rslt_link_hover_color;
+}
+a.result-big-comarketing:active {
+	color : gold;
+}
+td.result-big-comarketing {
+	color : #f61;
+	font-size : 14px;
+	font-weight : bold;
+	padding : 4px;
+}
+td.result-big-comarketing-bg {
+	background : $rslt_bg;
+	color : #f61;
 	font-size : 14px;
 	font-weight : bold;
 	padding : 4px;
@@ -647,9 +750,11 @@ td.result-small-font-bg {
 	padding : 4px;
 }
 td.result-edit-generic, td.result-edit-original, 
+td.result-edit-comarketing,
 td.result-edit-unknown, td.result-edit-complementary,
 td.result-edit-vaccine,
 a.result-edit-generic, a.result-edit-original, 
+a.result-edit-comarketing,
 a.result-edit-unknown, a.result-edit-complementary,
 a.result-edit-vaccine
 {
@@ -659,9 +764,11 @@ a.result-edit-vaccine
 	padding : 4px;
 }
 td.result-edit-generic-bg, td.result-edit-original-bg, 
+td.result-edit-comarketing-bg,
 td.result-edit-unknown-bg, td.result-edit-complementary-bg,
 td.result-edit-vaccine-bg,
 a.result-edit-generic-bg, a.result-edit-original-bg, 
+a.result-edit-comarketing-bg,
 a.result-edit-unknown-bg, a.result-edit-complementary-bg,
 a.result-edit-vaccine-bg
 {
@@ -690,6 +797,19 @@ td.result-pubprice-generic {
 td.result-pubprice-generic-bg {
 	background : $rslt_bg;
 	color : #2ba476;
+	font-weight : bold;
+	padding-right : 10px;
+	text-align : right;
+}
+td.result-pubprice-comarketing {
+	color : #f61;
+	font-weight : bold;
+	padding-right : 10px;
+	text-align : right;
+}
+td.result-pubprice-comarketing-bg {
+	background : $rslt_bg;
+	color : #f61;
 	font-weight : bold;
 	padding-right : 10px;
 	text-align : right;
@@ -760,11 +880,11 @@ a.google_search, a.google_search:link, a.google_search:visited, a.square {
 	text-decoration : none;
 	padding : 2px 5px 2px 5px;
 }
-td.square, td.square-original, td.square-generic,
+td.square, td.square-original, td.square-generic, td.square-comarketing,
 td.square-complementary, td.square-vaccine, td.square-unknown {
 	padding : 2px;
 }
-td.square-bg, td.square-original-bg, 
+td.square-bg, td.square-original-bg, td.square-comarketing-bg,
 td.square-generic-bg, td.square-complementary-bg, td.square-vaccine-bg,
 td.square-unknown-bg {
 	padding : 2px;
@@ -780,6 +900,8 @@ a.result-infos-original, a.result-infos-original:link,
 a.result-infos-original:visited,
 a.result-infos-generic, a.result-infos-generic:link, 
 a.result-infos-generic:visited,
+a.result-infos-comarketing, a.result-infos-comarketing:link, 
+a.result-infos-comarketing:visited,
 a.result-infos-complementary, a.result-infos-complementary:link, 
 a.result-infos-complementary:visited,
 a.result-infos-vaccine, a.result-infos-vaccine:link, 
@@ -797,6 +919,7 @@ a.result-infos-unknown:visited
 td.result-infos,
 td.result-infos-original, 
 td.result-infos-generic, 
+td.result-infos-comarketing, 
 td.result-infos-complementary, 
 td.result-infos-vaccine, 
 td.result-infos-unknown
@@ -810,6 +933,8 @@ a.result-infos-original-bg, a.result-infos-original-bg:link,
 a.result-infos-original-bg:visited, 
 a.result-infos-generic-bg, a.result-infos-generic-bg:link, 
 a.result-infos-generic-bg:visited,
+a.result-infos-comarketing-bg, a.result-infos-comarketing-bg:link, 
+a.result-infos-comarketing-bg:visited, 
 a.result-infos-complementary-bg, a.result-infos-complementary-bg:link, 
 a.result-infos-complementary-bg:visited, 
 a.result-infos-vaccine-bg, a.result-infos-vaccine-bg:link, 
@@ -827,6 +952,7 @@ a.result-infos-unknown-bg:visited
 
 td.result-infos-original-bg, 
 td.result-infos-generic-bg, 
+td.result-infos-comarketing-bg, 
 td.result-infos-complementary-bg, 
 td.result-infos-vaccine-bg, 
 td.result-infos-unknown-bg
@@ -848,6 +974,8 @@ a.important-infos-original, a.important-infos-original:link,
 a.important-infos-original:visited,
 a.important-infos-generic, a.important-infos-generic:link, 
 a.important-infos-generic:visited,
+a.important-infos-comarketing, a.important-infos-comarketing:link, 
+a.important-infos-comarketing:visited,
 a.important-infos-unknown, a.important-infos-unknown:link, 
 a.important-infos-unknown:visited,
 a.important-infos-complementary, a.important-infos-complementary:link,
@@ -866,6 +994,7 @@ a.important-infos-vaccine:visited
 td.important-infos,
 td.important-infos-original, 
 td.important-infos-generic, 
+td.important-infos-comarketing, 
 td.important-infos-unknown,
 td.important-infos-vaccine,
 td.important-infos-complementary
@@ -883,6 +1012,8 @@ a.important-infos-original-bg, a.important-infos-original-bg:link,
 a.important-infos-original-bg:visited, 
 a.important-infos-generic-bg, a.important-infos-generic-bg:link, 
 a.important-infos-generic-bg:visited,
+a.important-infos-comarketing-bg, a.important-infos-comarketing-bg:link, 
+a.important-infos-comarketing-bg:visited, 
 a.important-infos-unknown-bg, a.important-infos-unknown-bg:link, 
 a.important-infos-unknown-bg:visited,
 a.important-infos-vaccine-bg, a.important-infos-vaccine-bg:link, 
@@ -902,6 +1033,7 @@ a.important-infos-complementary-bg:visited
 
 td.important-infos-original-bg, 
 td.important-infos-generic-bg, 
+td.important-infos-comarketing-bg, 
 td.important-infos-unknown-bg,
 td.important-infos-vaccine-bg,
 td.important-infos-complementary-bg
@@ -1436,6 +1568,11 @@ td.button {
 a.explain-generic {
 	font-weight : bold;
 	color : $bg_dark;
+	padding-left : 4px;
+}
+a.explain-comarketing {
+	font-weight : bold;
+	color : #f61;
 	padding-left : 4px;
 }
 a.explain-original {

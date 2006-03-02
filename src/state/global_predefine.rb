@@ -10,6 +10,7 @@ module ODDB
 		module Admin 
 class Global < State::Global; end
 module Root; end
+module Admin; end
 module CompanyUser; end
 module PowerUser; end
 module PowerLinkUser; end

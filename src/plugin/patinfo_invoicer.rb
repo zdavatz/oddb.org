@@ -14,7 +14,8 @@ module ODDB
 			items = all_items.select { |item| item.type == :annual_fee }
 			## augment with active html-patinfos
 			items += html_items(day)
-			groups = group_by_company(items)
+			payable_items = filter_paid(items)
+			groups = group_by_company(payable_items)
 			groups.each { |company, items|
 				## if autoinvoice is disabled, but a preferred invoice_date is set, 
 				## invoice-start and -end-dates should be adjusted to that date.
@@ -184,11 +185,14 @@ module ODDB
 			# 5. Duplikate löschen
 			result = []
 			items.each { |item| 
+				## as patinfos can be assigned to other sequences, check at least all
+				## sequences in the current registration for non-expired invoices
+				names = neighborhood_pdf_names(item)
 				if(name = pdf_name(item))
-					if(item.type == :annual_fee && !fee_names.include?(name))
+					if(item.type == :annual_fee && (fee_names & names).empty?)
 						fee_names.push(name)
 						result.push(item)
-					elsif(item.type == :processing && !prc_names.include?(name))
+					elsif(item.type == :processing && (prc_names & names).empty?)
 						prc_names.push(name)
 						result.push(item)
 					end
@@ -259,6 +263,18 @@ module ODDB
 				end
 			}
 			items
+		end
+		def neighborhood_pdf_names(item)
+			names = [pdf_name(item)].compact
+			if((ptr = item.item_pointer) && (seq = ptr.resolve(@app)))
+				active = seq.pdf_patinfo
+				seq.registration.sequences.each_value { |other|
+					if(other.pdf_patinfo == active)
+						names.push([other.iksnr, other.seqnr].join('_'))
+					end
+				}
+			end
+			names.uniq
 		end
 		def pdf_name(item)
 			name = item.text

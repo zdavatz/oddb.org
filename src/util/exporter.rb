@@ -59,12 +59,13 @@ module ODDB
 			nil
 		end
 		def export_csv
-			keys = [ :iksnr, :ikscd, :barcode, :pharmacode, :name_base,
-				:galenic_form, :most_precise_dose, :size, :numerical_size,
-				:price_exfactory, :price_public, :company_name, :ikscat,
-				:sl_entry, :introduction_date, :limitation,
-				:limitation_points, :limitation_text, :registration_date,
-				:expiration_date, :inactive_date, :export_flag, :casrn ]
+			keys = [ :rectype, :iksnr, :ikscd, :ikskey, :barcode, :bsv_dossier,
+				:pharmacode, :name_base, :galenic_form, :most_precise_dose, :size,
+				:numerical_size, :price_exfactory, :price_public, :company_name,
+				:ikscat, :sl_entry, :introduction_date, :limitation,
+				:limitation_points, :limitation_text, :lppv, :registration_date,
+				:expiration_date, :inactive_date, :export_flag, :casrn, :is_generic,
+				:has_generic ]
 			session = SessionStub.new
 			session.language = 'de'
 			session.flavor = 'gcc'
@@ -73,7 +74,7 @@ module ODDB
 			name = 'oddb.csv'
 			path = File.join(EXPORT_DIR, name)
 			exporter = View::Drugs::CsvResult.new(model, session)
-			exporter.to_csv_file(keys, path)
+			exporter.to_csv_file(keys, path, :packages)
 			EXPORT_SERVER.compress(EXPORT_DIR, name)
 			EXPORT_SERVER.clear
 			sleep(30)

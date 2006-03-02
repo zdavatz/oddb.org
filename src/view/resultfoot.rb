@@ -12,10 +12,11 @@ module ODDB
 			COMPONENTS = {
 				[0,0]	=>	:explain_original,
 				[0,1]	=>	:explain_generic,
-				[0,2]	=>	:explain_complementary,
-				[0,3]	=>	:explain_vaccine,
-				[0,4]	=>	'explain_unknown',
-				[0,5]	=>	'explain_expired',
+				[0,2]	=>	:explain_comarketing,
+				[0,3]	=>	:explain_complementary,
+				[0,4]	=>	:explain_vaccine,
+				[0,5]	=>	'explain_unknown',
+				[0,6]	=>	'explain_expired',
 				[0,7]	=>	:explain_cas,
 				[1,0]	=>	'explain_li',
 				[1,1]	=>	'explain_fi',
@@ -28,16 +29,14 @@ module ODDB
 				[2,0]	=>	'explain_efp',
 				[2,1]	=>	'explain_pbp',
 				[2,2]	=>	'explain_sl',
-				#[2,3]	=>	'explain_hors_commerce',
-				[2,3]	=>	'explain_slo',
-				[2,4]	=>	'explain_slg',
-				[2,5]	=>	'explain_fd',
-				[2,6]	=>	:explain_lppv,
-				[2,7]	=>	'explain_g',
+				[2,3]	=>	'explain_slg',
+				[2,4]	=>	'explain_fd',
+				[2,5]	=>	:explain_lppv,
+				[2,6]	=>	'explain_g',
 			}
 			CSS_MAP = {	
-				[0,4]	=>	'explain-unknown',
-				[0,5]	=>	'explain-unknown expired',
+				[0,5]	=>	'explain-unknown',
+				[0,6]	=>	'explain-unknown expired',
 				[0,7]	=>	'explain-infos',
 				[1,0,2,8]	=>	'explain-infos',
 			}
@@ -77,6 +76,9 @@ module ODDB
 					end
 				end
 				super
+			end
+			def explain_comarketing(model, session=@session)
+				explain_link(model, :comarketing)
 			end
 			def explain_original(model, session=@session)
 				explain_link(model, :original)

@@ -1,6 +1,7 @@
 Datenbeschrieb oddb.csv
 
-Version: 1.0.3
+Version: 1.1.0
+Geändert: 27.02.2006 (1.1.0) durch hwyss@ywesee.com
 Geändert: 09.12.2005 (1.0.3) durch hwyss@ywesee.com
 Geändert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
 Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
@@ -14,32 +15,39 @@ Field-Separator:  ;
 Es kommen zwei Record-Arten vor: ATC-Record und Produkt-Record
 
 ATC-Record: alle folgenden Produkt-Records gehören zu diesem ATC-Code
-00: code              (1-7), NOT NULL           -> Atc-Code. siehe Glossar (AtcCode)
-01: de                (*)                       -> Deutsche Bezeichnung 
+00: rectype           (#MGroup), CONST          -> Record-Type
+01: code              (1-7), NOT NULL           -> Atc-Code. siehe Glossar (AtcCode)
+02: de                (*)                       -> Deutsche Bezeichnung 
 
 Produkt-Record:
-00: iksnr             (Integer (5)), NOT NULL   -> Registrationsnummer der Swissmedic
-01: ikscd             (Integer (3)), NOT NULL   -> Packungsnummer der Swissmedic
-02: barcode           (Integer (13)), NOT NULL  -> Packungs-Barcode, zusammengesetzt aus iksnr und ikscd
-03: pharmacode        (Integer)                 -> Pharmacode, wo vorhanden
-04: name_base         (*)                       -> Hauptname der Sequenz aus der Registrationsurkunde, enthält z.T. Dosisangaben.
-05: galenic_form      (*)                       -> Galenische Form, Deutsche Bezeichnung
-06: dose              (*)                       -> Dosierung. Wird falls möglich aus dem Namen gewonnen, andernfalls aus der Zusammensetzung.
-07: size              (*)                       -> Packungsgrösse (z.B. 5 x 28 Tabletten)
-08: numerical_size    (Integer)                 -> Packungsgrösse, verrechnet (z.B. 140)
-09: price_exfactory   (Float)                   -> Exfactorypreis in Franken und Rappen
-10: price_public      (Float)                   -> Publikumspreis in Franken und Rappen 
-11: company           (*)                       -> Registrationsinhaber
-12: ikscat            (*)                       -> Abgabekategorie. A-E. siehe Glossar (Abgabekategorie)
-13: sl_entry          (Ja/Nein)                 -> Eintrag in der SL
-14: introduction_date (dd.mm.yyyy)              -> Datum der Aufnahme in die Spezialitätenliste
-15: limitation        (Ja/Nein)                 -> Limitation
-16: limitation_points (Integer)                 -> Limitationspunkte
-17: limitation_text   (*)                       -> Limitationstext in Deutsch
-18: registration_date (dd.mm.yyyy)              -> Datum der ersten Zulassung in der Schweiz
-19: inactive_date     (dd.mm.yyyy)              -> Falls ein Produkt unabhängig von der Swissmedic ausser Handel genommen wird: Datum der Ausserhandelnahme
-20: export_flag       (*)                       -> Wenn gesetzt: Produkt ist nur für den Export Bestimmt
-21: narcotic          (*)                       -> Wenn gesetzt: CAS Registry Number des Eintrags in der Betäubungsmittelliste
+00: rectype           (#Medi), CONST            -> Record-Type
+01: iksnr             (Integer (5)), NOT NULL   -> Registrationsnummer der Swissmedic
+02: ikscd             (Integer (3)), NOT NULL   -> Packungsnummer der Swissmedic
+03: ikskey            (Integer (8)), NOT NULL   -> Swissmedic-Nr, zusammengesetzt aus iksnr und ikscd
+04: barcode           (Integer (13)), NOT NULL  -> Packungs-Barcode, zusammengesetzt aus iksnr und ikscd
+05: bsv_dossier       (Integer)                 -> BSV-Dossier
+06: pharmacode        (Integer)                 -> Pharmacode, wo vorhanden
+07: name_base         (*)                       -> Hauptname der Sequenz aus der Registrationsurkunde, enthält z.T. Dosisangaben.
+08: galenic_form      (*)                       -> Galenische Form, Deutsche Bezeichnung
+09: dose              (*)                       -> Dosierung. Wird falls möglich aus dem Namen gewonnen, andernfalls aus der Zusammensetzung.
+10: size              (*)                       -> Packungsgrösse (z.B. 5 x 28 Tabletten)
+11: numerical_size    (Integer)                 -> Packungsgrösse, verrechnet (z.B. 140)
+12: price_exfactory   (Float)                   -> Exfactorypreis in Franken und Rappen
+13: price_public      (Float)                   -> Publikumspreis in Franken und Rappen 
+14: company           (*)                       -> Registrationsinhaber
+15: ikscat            (*)                       -> Abgabekategorie. A-E. siehe Glossar (Abgabekategorie)
+16: sl_entry          (Ja/Nein)                 -> Eintrag in der SL
+17: introduction_date (dd.mm.yyyy)              -> Datum der Aufnahme in die Spezialitätenliste
+18: limitation        (Ja/Nein)                 -> Limitation
+19: limitation_points (Integer)                 -> Limitationspunkte
+20: limitation_text   (*)                       -> Limitationstext in Deutsch
+21: lppv              (Ja/Nein)                 -> Eintrag in der LPPV
+22: registration_date (dd.mm.yyyy)              -> Datum der ersten Zulassung in der Schweiz
+23: inactive_date     (dd.mm.yyyy)              -> Falls ein Produkt unabhängig von der Swissmedic ausser Handel genommen wird: Datum der Ausserhandelnahme
+24: export_flag       (*)                       -> Wenn gesetzt: Produkt ist nur für den Export Bestimmt
+25: narcotic          (*)                       -> Wenn gesetzt: CAS Registry Number des Eintrags in der Betäubungsmittelliste
+26: is_generic        (Ja/Nein)                 -> Wenn Ja: das Produkt ist ein Generikum
+27: has_generic       (Ja/Nein)                 -> Wenn Ja: es ist mindestens ein Generikum zu diesem Produkt bekannt
 
 ## Glossar ##
 * AtcCode:
