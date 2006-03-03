@@ -81,7 +81,9 @@ module ODDB
 				end
 				if(model.lppv)
 					catstr = @lookandfeel.lookup(:lppv)
+					cat = @lookandfeel.lookup(:explain_lppv)
 					text_elements.push(catstr)
+					title_elements.push(cat)
 				end
 =begin
 				if(model.out_of_trade)
