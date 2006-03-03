@@ -235,6 +235,7 @@ Zeno Davatz
 				:compare_descr0		 				=>	'Preisvergleich f&uuml;r ',
 				:compare_descr1		 				=>	'',
 				:compare_title_no_atc			=>	'Keine ATC-Klasse',
+				:competition_email				=>	'Email Konkurrenzanalyse',
 				:complementary						=>	"Komplement&auml;rprodukt",
 				:complementary_type				=>	"Art des Komplement&auml;rprodukts",
 				:compression							=>	'Gew&uuml;nschte Komprimierung',

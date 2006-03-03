@@ -51,6 +51,24 @@ module ODDB
 				log.notify(subj)
 			}
 		end
+		def export_competition_xls(company)
+			subj = "Generika-Preisvergleich #{company.name}"
+			wrap_update(XlsExportPlugin, subj) {
+				plug = Exporter.new(@app).export_competition_xls(company)
+				log = Log.new(Date.today)
+				log.update_values(log_info(plug))
+				log.notify(subj)
+			}
+			plug = XlsExportPlugin.new(@app)
+			path = plug.export_competition(company)
+		end
+		def export_competition_xlss
+			@app.companies.each_value { |comp|
+				if(comp.competition_email)
+					export_competition_xls(comp)
+				end
+			}
+		end
 		def log_info(plugin)
 			hash = plugin.log_info
 			hash[:recipients] = if(rcp = hash[:recipients])
@@ -122,6 +140,7 @@ module ODDB
 				update_medwin_packages
 				update_lppv
 				export_ouwerkerk
+				export_competition_xlss
 			end
 			if(@smj_updated)
 				update_lppv

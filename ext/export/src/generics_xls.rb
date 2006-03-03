@@ -133,5 +133,89 @@ module ODDB
 				end
 			end
 		end
+		class CompetitionXls
+			def initialize(path)
+				@workbook = Spreadsheet::Excel.new(path)
+				@fmt_title = Format.new(:bold=>true)
+				@workbook.add_format(@fmt_title)
+				@fmt_original = Format.new(:color => 'red')
+				@workbook.add_format(@fmt_original)
+				@fmt_original_name = Format.new(:bold => true, :color => 'red')
+				@workbook.add_format(@fmt_original_name)
+				@fmt_original_price = Format.new(:bold => true, :color => 'red')
+				@fmt_original_price.align = 'right'
+				@workbook.add_format(@fmt_original_price)
+				@fmt_generic = Format.new(:color => 'green')
+				@workbook.add_format(@fmt_generic)
+				@fmt_generic_name = Format.new(:bold => true, :color => 'green')
+				@workbook.add_format(@fmt_generic_name)
+				@fmt_generic_price = Format.new(:bold => true, :color => 'green')
+				@fmt_generic_price.align = 'right'
+				@workbook.add_format(@fmt_generic_price)
+				@worksheet = @workbook.add_worksheet("Generikaliste")
+				@worksheet.format_column(0, 8.0, @fmt_original)
+				@worksheet.format_column(1, 24.0, @fmt_original_name)
+				@worksheet.format_column(2..3, 8.0, @fmt_original_price)
+				@worksheet.format_column(4, 8.0, @fmt_generic)
+				@worksheet.format_column(5, 24.0, @fmt_generic_name)
+				@worksheet.format_column(6..7, 8.0, @fmt_generic_price)
+				columns = [
+					'Pharmacode Original', 'Name Original', 
+					'Fabrikabgabe-preis Original', 
+					'Publikums-preis Original (inkl. MwSt)', 
+					'Pharmacode Generikum', 'Name Generikum', 
+					'Fabrikabgabe-preis Generikum', 
+					'Publikums-preis Generikum (inkl. MwSt)', 
+				]
+				@worksheet.write(0, 0, columns, @fmt_title)
+				@rows = 1
+			end
+			def close
+				@workbook.close
+			end
+			def export_comparable(package, comp)
+				row = format_row(package, comp)
+				@worksheet.write(@rows, 0, row)
+				@rows += 1
+			end
+			def export_comparables(package)
+				comps = package.comparables.reject { |pac| 
+					pac.price_exfactory.to_i == 0 
+				}.sort_by { |pac| 
+					pac.price_exfactory
+				}
+				origs, others = comps.partition { |pac| pac.registration.original? }
+				generics = [package]
+				if((cheapest = others.first) \
+					 && cheapest.price_exfactory <= package.price_exfactory)
+					generics.push(cheapest)
+				end
+				origs.each { |original|
+					generics.each { |generic|
+						export_comparable(original, generic)
+					}
+				}
+				@rows
+			end
+			def format_price(price)
+				if(price && price > 0.0)
+					sprintf("%4.2f", price.to_f / 100.0)
+				end
+			end
+			def format_row(original, generic)
+				[
+					original.pharmacode, 
+					sprintf("%s %s/%i", original.basename, 
+						original.dose, original.comparable_size),
+					format_price(original.price_exfactory),
+					format_price(original.price_public),
+					generic.pharmacode, 
+					sprintf("%s %s/%i", generic.basename, 
+						generic.dose, generic.comparable_size),
+					format_price(generic.price_exfactory),
+					format_price(generic.price_public),
+				].collect { |item| item.to_s }
+			end
+		end
 	end
 end

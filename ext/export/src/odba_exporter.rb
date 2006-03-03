@@ -76,6 +76,16 @@ end
 			FileUtils.mv(zip_name, name + '.zip')
 			name
 		end
+		def OdbaExporter.export_competition_xls(odba_ids, dir, name)
+			safe_export(dir, name) { |fh|
+				exporter = CompetitionXls.new(fh.path)
+				odba_ids.each { |odba_id|
+					package = ODBA.cache.fetch(odba_id)
+					exporter.export_comparables(package)
+				}
+				exporter.close
+			}
+		end
 		def OdbaExporter.export_doc_csv(odba_ids, dir, name)
 			safe_export(dir, name) { |fh|
 				fh << <<-HEAD
@@ -84,7 +94,7 @@ ean13;exam;salutation;title;firstname;name;praxis;addresstype;address_name;lines
 				odba_ids.each { |odba_id|
 					item = ODBA.cache.fetch(odba_id, nil)
 					CsvExporter.dump(CsvExporter::DOCTOR, item, fh)
-					ODBA.cache.clear
+					#ODBA.cache.clear
 				}
 			}
 		end
@@ -106,7 +116,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 					odba_ids.each { |odba_id|
 					item = ODBA.cache.fetch(odba_id, nil)
 					CsvExporter.dump(CsvExporter::MIGEL, item, fh)
-					ODBA.cache.clear
+					#ODBA.cache.clear
 				}
 			}
 		end
@@ -115,7 +125,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 				odba_ids.each { |odba_id|
 					item = ODBA.cache.fetch(odba_id, nil)
 					CsvExporter.dump(CsvExporter::NARCOTIC, item, fh)
-					ODBA.cache.clear
+					#ODBA.cache.clear
 				}
 			}
 		end
@@ -136,7 +146,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 					files.each { |file, table|
 						file.puts table.lines(item)
 					}
-					ODBA.cache.clear
+					#ODBA.cache.clear
 				}
 			end
 			files.each { |file, table|
@@ -154,7 +164,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 				odba_ids.each { |odba_id|
 					YAML.dump(ODBA.cache.fetch(odba_id, nil), fh)
 					fh.puts
-					ODBA.cache.clear
+					#ODBA.cache.clear
 					$stdout.flush
 				}
 			}

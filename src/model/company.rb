@@ -19,7 +19,8 @@ module ODDB
 			:disable_autoinvoice, :powerlink, :regulatory_email, :url, 
 			:patinfo_price, :lookandfeel_price, :lookandfeel_member_count, 
 			:lookandfeel_member_price, :index_price, :index_package_price,
-			:hosting_price, :hosting_invoice_date, :ydim_id, :invoice_htmlinfos
+			:hosting_price, :hosting_invoice_date, :ydim_id, :invoice_htmlinfos,
+			:competition_email
 		attr_writer :pref_invoice_date, :lookandfeel_invoice_date, 
 			:index_invoice_date
 		alias :fullname :name

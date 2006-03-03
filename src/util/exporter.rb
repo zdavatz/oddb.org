@@ -58,6 +58,11 @@ module ODDB
 			log.notify("Error: Export")
 			nil
 		end
+		def export_competition_xls(company)
+			plug = XlsExportPlugin.new(@app)
+			plug.export_competition(company)
+			plug
+		end
 		def export_csv
 			keys = [ :rectype, :iksnr, :ikscd, :ikskey, :barcode, :bsv_dossier,
 				:pharmacode, :name_base, :galenic_form, :most_precise_dose, :size,
