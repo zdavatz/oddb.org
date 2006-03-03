@@ -1372,7 +1372,7 @@ Zeno Davatz
 				:download_doctors0				=>	'Pour recharger les adresses de tous les docteurs dans une fichier-YAML cliquer ',
 				:download_doctors1				=>	'ici',
 				:download_doctors2				=>	' s.v.p.',
-				:download_generics				=>	'Tous les m&eacute;dicaments et les correspondants G&eacute;n&eacute;riques dans un fichier d\'Excel, atualis&eacute; chaque mois!',
+				:download_generics				=>	'Tous les m&eacute;dicaments et les G&eacute;n&eacute;riques correspondants dans un fichier d\'Excel, actualis&eacute; chaque mois!',
 				:download_export_descr				=>	"Plus d'information sur les donn&eacute;es de base d'ODDB.org",
 				:download_export					=>	'Download les donn&eacute;es de base',
 				:download_export_feedback			=>	'La r&eacute;troaction demande dessus zdavatz at ywesee dot com',
