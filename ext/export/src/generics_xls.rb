@@ -59,11 +59,11 @@ module ODDB
 					'Zulassungsinhaberin', 'Kat.', 'SL', 'Reg.Dat.', 'Bemerkung',
 				]
 				@worksheet.write(0, 0, columns, @fmt_title)
-				app = ODBA.cache.fetch_named('oddbapp', nil)
-				smj_grp = app.log_group(:swissmedic_journal)
+				@app = ODBA.cache.fetch_named('oddbapp', nil)
+				smj_grp = @app.log_group(:swissmedic_journal)
 				smj_log = smj_grp.latest
 				@smj_flags = smj_log.change_flags
-				bsv_grp = app.log_group(:bsv_sl)
+				bsv_grp = @app.log_group(:bsv_sl)
 				bsv_log = bsv_grp.latest
 				@bsv_flags = bsv_log.change_flags
 				@rows = 1
@@ -84,13 +84,31 @@ module ODDB
 				}
 				@rows
 			end
-			def format_price(price)
-				if(price && price > 0.0)
-					sprintf("%4.2f", price.to_f / 100.0)
-				end
+			def export_generic(package)
+				Array.new(13, '').concat(format_generic(package))\
+					.push(_remarks(package, 'Generikum').to_s)
 			end
-			def format_row(package, comparable)
-				[
+			def export_generics
+				originals = []
+				generics = []
+				comparables = []
+				@app.each_package { |pac|
+					if(pac.public? && pac.registration.active?)
+						if(pac.registration.original? && (comps = pac.comparables) \
+							 && !comps.empty?)
+							originals.push(pac)
+							comparables.concat(comps)
+						elsif(pac.registration.generic?)
+							generics.push(pac)
+						end
+					end
+				}
+				originals.sort.each { |pac| export_comparables(pac) }
+				@rows += 1 # leave a space in the xls
+				(generics - comparables).sort.each { |pac| export_generic(pac) }
+			end
+			def format_original(package)
+				preprocess_fields [
 					package.basename, 
 					sprintf("%s %s/%i", package.basename, 
 						package.dose, package.comparable_size),
@@ -101,6 +119,10 @@ module ODDB
 					format_price(package.price_public), package.company_name,
 					package.ikscat, (package.sl_entry ? 'SL' : nil),
 					package.registration_date,
+				]
+			end
+			def format_generic(comparable)
+				preprocess_fields [
 					comparable.barcode, comparable.pharmacode,
 					comparable.name, comparable.dose, 
 					comparable.comparable_size, 
@@ -108,8 +130,20 @@ module ODDB
 					format_price(comparable.price_public), 
 					comparable.company_name,
 					comparable.ikscat, (comparable.sl_entry ? 'SL' : nil),
-					comparable.registration_date, remarks(package, comparable)
-				].collect { |item| 
+					comparable.registration_date,
+				]
+			end
+			def format_price(price)
+				if(price && price > 0.0)
+					sprintf("%4.2f", price.to_f / 100.0)
+				end
+			end
+			def format_row(package, comparable)
+				fields = format_original(package).concat(format_generic(comparable))
+				fields.push(remarks(package, comparable))
+			end
+			def preprocess_fields(fields)
+				fields.collect { |item| 
 					(item.is_a?(Date)) ? item.strftime('%d.%m.%Y') : item.to_s }
 			end
 			def remarks(package, comparable)

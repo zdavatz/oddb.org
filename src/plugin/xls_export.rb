@@ -16,10 +16,9 @@ module ODDB
 			EXPORT_SERVER.export_competition_xls(ids, dir, file)
 		end
 		def export_generics
-			regs = @app.registrations.values.select { |reg| reg.original? }
-			ids = public_package_ids(regs)
-			EXPORT_SERVER.export_generics_xls(ids, 
-				EXPORT_DIR, 'generics.xls')
+			#regs = @app.registrations.values.select { |reg| reg.original? }
+			#ids = public_package_ids(regs)
+			EXPORT_SERVER.export_generics_xls(EXPORT_DIR, 'generics.xls')
 		end
 		def public_package_ids(registrations)
 			registrations.inject([]) { |pacs, reg|

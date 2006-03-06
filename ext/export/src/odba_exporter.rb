@@ -98,13 +98,10 @@ ean13;exam;salutation;title;firstname;name;praxis;addresstype;address_name;lines
 				}
 			}
 		end
-		def OdbaExporter.export_generics_xls(odba_ids, dir, name)
+		def OdbaExporter.export_generics_xls(dir, name)
 			safe_export(dir, name) { |fh|
 				exporter = GenericXls.new(fh.path)
-				odba_ids.each { |odba_id|
-					package = ODBA.cache.fetch(odba_id)
-					exporter.export_comparables(package)
-				}
+				exporter.export_generics
 				exporter.close
 			}
 		end
