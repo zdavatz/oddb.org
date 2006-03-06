@@ -85,8 +85,10 @@ module ODDB
 				@rows
 			end
 			def export_generic(package)
-				Array.new(13, '').concat(format_generic(package))\
+				row = Array.new(13, '').concat(format_generic(package))\
 					.push(_remarks(package, 'Generikum').to_s)
+				@worksheet.write(@rows, 0, row)
+				@rows += 1
 			end
 			def export_generics
 				originals = []
@@ -106,6 +108,7 @@ module ODDB
 				originals.sort.each { |pac| export_comparables(pac) }
 				@rows += 1 # leave a space in the xls
 				(generics - comparables).sort.each { |pac| export_generic(pac) }
+				@rows
 			end
 			def format_original(package)
 				preprocess_fields [
