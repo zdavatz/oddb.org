@@ -58,9 +58,9 @@ module ODDB
 			log.notify("Error: Export")
 			nil
 		end
-		def export_competition_xls(company)
+		def export_competition_xls(company, db_path=nil)
 			plug = XlsExportPlugin.new(@app)
-			plug.export_competition(company)
+			plug.export_competition(company, db_path)
 			plug
 		end
 		def export_csv

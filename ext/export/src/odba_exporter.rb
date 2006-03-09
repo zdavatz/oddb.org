@@ -77,13 +77,11 @@ end
 			FileUtils.mv(zip_name, name + '.zip')
 			name
 		end
-		def OdbaExporter.export_competition_xls(odba_ids, dir, name)
+		def OdbaExporter.export_competition_xls(comp_id, dir, name, db_path=nil)
 			safe_export(dir, name) { |fh|
-				exporter = CompetitionXls.new(fh.path)
-				packages = odba_ids.collect { |odba_id|
-					ODBA.cache.fetch(odba_id)
-				}
-				exporter.export_competition(packages)
+				exporter = CompetitionXls.new(fh.path, db_path)
+				company = ODBA.cache.fetch(comp_id)
+				exporter.export_competition(company)
 				exporter.close
 			}
 		end

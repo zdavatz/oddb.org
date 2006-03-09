@@ -51,10 +51,10 @@ module ODDB
 				log.notify(subj)
 			}
 		end
-		def export_competition_xls(company)
+		def export_competition_xls(company, db_path=nil)
 			subj = "Generika-Preisvergleich #{company.name}"
 			wrap_update(XlsExportPlugin, subj) {
-				plug = Exporter.new(@app).export_competition_xls(company)
+				plug = Exporter.new(@app).export_competition_xls(company, db_path)
 				log = Log.new(Date.today)
 				log.update_values(log_info(plug))
 				log.notify(subj)
@@ -62,10 +62,10 @@ module ODDB
 			plug = XlsExportPlugin.new(@app)
 			path = plug.export_competition(company)
 		end
-		def export_competition_xlss
+		def export_competition_xlss(db_path=nil)
 			@app.companies.each_value { |comp|
 				if(comp.competition_email)
-					export_competition_xls(comp)
+					export_competition_xls(comp, db_path)
 				end
 			}
 		end

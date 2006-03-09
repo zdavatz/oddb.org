@@ -2,11 +2,12 @@
 # OdbaExporter -- CompetitionXls -- 07.03.2006 -- hwyss@ywesee.com
 
 require 'spreadsheet/excel'
+require 'parseexcel/parser'
 
 module ODDB
 	module OdbaExporter
 		class CompetitionXls
-			def initialize(path)
+			def initialize(path, db_path)
 				@workbook = Spreadsheet::Excel.new(path)
 				@fmt_title = Format.new(:bold=>true)
 				@workbook.add_format(@fmt_title)
@@ -36,70 +37,137 @@ module ODDB
 					'Differenz in CHF', 'Differenz in %', 'Bemerkung', 'In SL?',
 				]
 				@worksheet.write(0, 0, columns, @fmt_title)
+				@app = ODBA.cache.fetch_named('oddbapp', nil)
 				@rows = 1
+				load_price_db(db_path)
 			end
 			def close
 				@workbook.close
 			end
-			def export_competition(packages)
-				packages.inject([]) { |sortable, package|
-					comps = package.comparables.reject { |pac| 
-						pac.price_exfactory.to_i == 0 
-					}.sort_by { |pac| 
-						pac.price_exfactory
-					}
-					origs, others = comps.partition { |pac| pac.registration.original? }
-					generics = [package]
-					if((cheapest = others.first) \
-						 && cheapest.price_exfactory <= package.price_exfactory)
-						generics.push(cheapest)
+			def export_competition(company)
+				originals = []
+				owns = {}
+				@app.each_package { |pac|
+					pac = pac.odba_instance
+					if(pac.sl_entry && pac.public? && pac.registration.active?)
+						if(pac.sl_generic_type == :original && !pac.comparables.empty?)
+							originals.push(pac)
+						elsif(pac.company == company)
+							owns.store(pac.ikskey, pac)
+						end
 					end
-					origs.each { |original|
-						sortable.push([original, generics])
-					}
-					sortable
-				}.sort.each { |original, generics|
-					generics.each { |generic|
-						export_comparable(original, generic)
-					}
+				}
+				originals.sort.each { |package|
+					cheapest = nil
+					generics = package.comparables.select { |pac|
+						pac.sl_entry && pac.sl_generic_type == :generic
+					}.collect { |pac| pac.odba_instance }.sort_by { |pac| 
+						[price_public(pac), (pac.company == company) ? 1 : 0 ] } 
+					if(cheapest = generics.first)
+						owns.delete(cheapest.ikskey)
+						export_comparable(package, cheapest)
+					#else
+					#	export_original(package)
+					end
+					if((own = generics.find { |pac| pac.company.odba_instance == company }) \
+						 && own != cheapest)
+						owns.delete(own.ikskey)
+						export_comparable(package, own)
+					end
+				}
+				owns.values.sort.each { |package|
+					export_generic(package)
 				}
 				@rows
 			end
 			def export_comparable(package, comp)
-				row = format_row(package, comp)
-				@worksheet.write(@rows, 0, row)
-				@rows += 1
+				write_row(format_row(package, comp))
+			end
+			def export_generic(package)
+				write_row(format_generic(package))
+			end
+			def export_original(package)
+				write_row(format_original(package))
 			end
 			def format_price(price)
 				if(price && price > 0.0)
 					sprintf("%4.2f", price.to_f / 100.0)
 				end
 			end
+			def format_generic(generic)
+				remarks = 'kein passendes original gefunden'
+				Array.new(5, '').concat(_format_generic(nil, generic, remarks))
+			end
+			def _format_generic(orig, gen, remarks)
+				ppub = price_public(gen)
+				[
+					gen.name_base, gen.dose, gen.comparable_size,
+					format_price(price_exfactory(gen)),
+					format_price(ppub),
+					gen.pharmacode, gen.company, 
+					(format_price(price_public(orig) - ppub) if(orig)),
+					(sprintf("%1.1f%%", price_difference(orig, gen)) if(orig)),
+					remarks, (gen.sl_entry) ? 'Ja' : 'Nein',
+				].collect { |item| item.to_s }
+			end
+			def format_original(original)
+				_format_original(original)
+			end
+			def _format_original(original)
+				[
+					original.name_base, original.dose, original.comparable_size,
+					format_price(price_exfactory(original)),
+					format_price(price_public(original)),
+				].collect { |item| item.to_s }
+			end
 			def format_row(original, generic)
 				remarks = if(original.comparable_size != generic.comparable_size)
 										'unterschiedliche Packungsgrösse'
 									end
-				[
-					original.basename, original.dose, original.comparable_size,
-					format_price(original.price_exfactory),
-					format_price(original.price_public),
-					generic.basename, generic.dose, generic.comparable_size,
-					format_price(generic.price_exfactory),
-					format_price(generic.price_public),
-					generic.pharmacode, generic.company, 
-					format_price(original.price_public - generic.price_public),
-					sprintf("%1.1f%%", price_difference(original, generic)),
-					remarks, (generic.sl_entry) ? 'Ja' : 'Nein',
-				].collect { |item| item.to_s }
+				_format_original(original).concat(_format_generic(original, 
+																													generic, remarks))
+			end
+			def load_price_db(path)
+				@exf_pcd_prices = {}
+				@pbl_pcd_prices = {}
+				@exf_iks_prices = {}
+				@pbl_iks_prices = {}
+				if(path)
+					parser = Spreadsheet::ParseExcel::Parser.new
+					workbook = parser.parse(path)
+					worksheet = workbook.worksheet(0)
+					worksheet.each(1) { |row|
+						pcode = row.at(8).to_s
+						ikskey = row.at(10).to_s
+						efp = (row.at(15).to_f * 100.0).to_i
+						pbp = (row.at(16).to_f * 100.0).to_i
+						@exf_pcd_prices.store(pcode, efp)
+						@exf_iks_prices.store(ikskey, efp)
+						@pbl_pcd_prices.store(pcode, pbp)
+						@pbl_iks_prices.store(ikskey, pbp)
+					}
+				end
 			end
 			def price_difference(original, generic)
-				oprice = original.price_public.to_f
-				pprice = generic.price_public.to_f
+				oprice = price_public(original).to_f
+				pprice = price_public(generic).to_f
 				osize = original.comparable_size.qty.to_f 
 				psize = generic.comparable_size.qty.to_f
 				unless ( (oprice <= 0) || (pprice <= 0) || (osize <= 0) || (psize <= 0))
 					(( (osize * pprice) / (psize * oprice) ) - 1.0).abs * 100.0
 				end
+			end
+			def price_exfactory(package)
+				@exf_pcd_prices[package.pharmacode] \
+					|| @exf_iks_prices[package.ikskey] || package.price_exfactory
+			end
+			def price_public(package)
+				@pbl_pcd_prices[package.pharmacode] \
+					|| @pbl_iks_prices[package.ikskey] || package.price_public
+			end
+			def write_row(row)
+				@worksheet.write(@rows, 0, row)
+				@rows += 1
 			end
 		end
 	end
