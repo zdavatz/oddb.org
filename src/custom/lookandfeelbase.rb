@@ -706,6 +706,7 @@ Zeno Davatz
 				:lookandfeel_member_price	=>	'Betrag/Versicherungsnehmer',
 				:lookandfeel_price				=>	'Preis Lookandfeel',
 				:lppv											=>	'LPPV',
+				:lppv_ajax								=>	'Liste pharmazeutischer Pr&auml;parate mit spezieller Verwendung',
 				:lppv_url									=>	'http://www.lppv.ch',
 				:lt												=>	'Latein',
 				:mailinglist_form_descr		=>	'Bitte verwenden Sie folgendes Eingabefeld, um sich mit Ihrer Emailadresse bei unserer Mailinglist an- oder abzumelden.',
@@ -1687,6 +1688,7 @@ Zeno Davatz
 				:logo											=>	'oddb.org',
 				:logout										=>	'Logout',
 				:lppv											=>	'LPPA',
+				:lppv_ajax								=>	'Liste des produits pharmaceutiques pour application speciale',
 				:lppv_url									=>	'http://www.lppa.ch',
 				:lt												=>	'Latin',
 				:mailinglist_form_descr		=>	"Veuillez utiliser la zone d'entr&eacute;e suivante, pour annoncer ou d&eacute;clarer le d&eacute;part leur adresse d'&eacute;mail",
@@ -2570,6 +2572,7 @@ Zeno Davatz
 				:logo											=>	'oddb.org',
 				:logout										=>	'Logout',
 				:lppv											=>	'LPPV',
+				:lppv_ajax								=>	'List of pharmaceutical products with special application',
 				:lppv_url									=>	'http://www.lppv.ch',
 				:lt												=>	'Latin',
 				:mailinglist_form_descr		=>	'Please use the following field to subscribe or unsubscribe to our mailinglist.',
@@ -3082,6 +3085,7 @@ Zeno Davatz
 			:plugin_download_src => 'plugins/oddb.org.src',
 			:plugin_download_gif => 'plugins/oddb.org.gif',
 			:richtext_js		=>	'javascript/richtext.js',
+			:dojo_js				=>	'javascript/dojo.js',
 			:sponsor				=>	'sponsor',
 		}
 		def currencies
