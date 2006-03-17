@@ -7,14 +7,13 @@ module ODDB
 	module View
 		module Ajax
 class SwissmedicCat < HtmlGrid::Composite
-	COMPONENTS = { }
+	COMPONENTS = {}
 	LEGACY_INTERFACE = false
 	DEFAULT_CLASS = HtmlGrid::Value
 	def init
 		@components = {}
-		@css_map = {
-		}
-		reorganize_components
+		@css_map = {}
+		reorganize_components if(@model)
 		super
 	end
 	def reorganize_components
@@ -45,6 +44,7 @@ class SwissmedicCat < HtmlGrid::Composite
 		end
 		@css_map.store([1,0,1,y], 'list')
 		@css_map.store([0,0,1,y], 'bold top list')
+		puts @components.inspect
 	end
 	def sl_since(model)
 		sl = model.sl_entry
@@ -52,7 +52,7 @@ class SwissmedicCat < HtmlGrid::Composite
 		@lookandfeel.lookup(:sl_since, 
 												@lookandfeel.format_date(date))
 	end
-	def lppv_ajax(model, session=@session)
+	def lppv_ajax(model)
 		link = HtmlGrid::Link.new(:lppv_ajax, model, @session, self)
 		link.href = @lookandfeel.lookup(:lppv_url)
 		link.css_class = 'list'
