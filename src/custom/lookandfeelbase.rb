@@ -3085,7 +3085,7 @@ Zeno Davatz
 			:plugin_download_src => 'plugins/oddb.org.src',
 			:plugin_download_gif => 'plugins/oddb.org.gif',
 			:richtext_js		=>	'javascript/richtext.js',
-			:dojo_js				=>	'javascript/dojo.js',
+			:dojo_js				=>	'dojo/dojo.js',
 			:sponsor				=>	'sponsor',
 		}
 		def currencies
