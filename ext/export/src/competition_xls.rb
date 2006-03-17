@@ -50,29 +50,48 @@ module ODDB
 				@app.each_package { |pac|
 					pac = pac.odba_instance
 					if(pac.sl_entry && pac.public? && pac.registration.active?)
-						if(pac.sl_generic_type == :original && !pac.comparables.empty?)
-							originals.push(pac)
-						elsif(pac.company == company)
+						if(pac.company == company)
 							owns.store(pac.ikskey, pac)
+						elsif(pac.sl_generic_type == :original && !pac.comparables.empty?)
+							originals.push(pac)
 						end
 					end
 				}
-				originals.sort.each { |package|
+				originals.sort!
+				last_export = nil
+				originals.each_with_index { |package, idx|
 					cheapest = nil
 					generics = package.comparables.select { |pac|
-						pac.sl_entry && pac.sl_generic_type == :generic
-					}.collect { |pac| pac.odba_instance }.sort_by { |pac| 
+						pac.sl_entry && (pac.sl_generic_type == :generic \
+														 || pac.company.odba_instance == company)
+					}.sort_by { |pac| 
 						[price_public(pac), (pac.company == company) ? 1 : 0 ] } 
 					if(cheapest = generics.first)
 						owns.delete(cheapest.ikskey)
 						export_comparable(package, cheapest)
-					#else
-					#	export_original(package)
+						last_export = package.iksnr
 					end
-					if((own = generics.find { |pac| pac.company.odba_instance == company }) \
-						 && own != cheapest)
+					if((own = generics.find { |pac| 
+						pac.company.odba_instance == company }) && own != cheapest)
 						owns.delete(own.ikskey)
 						export_comparable(package, own)
+						last_export = package.iksnr
+					end
+					unless((nxt = originals.at(idx.next)) && package.iksnr == nxt.iksnr)
+						if(last_export == package.iksnr) ## omit phantom exports
+							subs = package.substances.sort
+							galform = package.galenic_form
+							owns.values.select { |pac| 
+								pac.galenic_form.equivalent_to?(galform) \
+									&& pac.substances.sort == subs
+							}.sort.each { |pac|
+								unless(pac.comparables.any? { |comp| 
+									(comp.sl_generic_type == :original) && comp.sl_entry })
+									export_generic(pac)
+									owns.delete(pac.ikskey)
+								end
+							}
+						end
 					end
 				}
 				owns.values.sort.each { |package|
