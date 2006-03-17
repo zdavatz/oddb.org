@@ -724,6 +724,7 @@ class OddbPrevalence
 		# 8. sequence
 		result = ODDB::SearchResult.new
 		result.exact = true
+		result.query = query
 		# atcless
 		if(query == 'atcless')
 			atc = ODDB::AtcClass.new('n.n.')
@@ -732,6 +733,7 @@ class OddbPrevalence
 				alias :active_packages :packages
 			}
 			result.atc_classes = [atc]
+			result.type = :atcless
 			return result
 		# iksnr or ean13
 		elsif(match = /(?:\d{4})?(\d{5})(?:\d{4})?/.match(query))
@@ -740,31 +742,38 @@ class OddbPrevalence
 				atc = ODDB::AtcClass.new('n.n.')
 				atc.sequences = reg.sequences.values
 				result.atc_classes = [atc]
+				result.type = :iksnr
 				return result
 			end
 		end
 		key = query.to_s.downcase
 		# atc-code
 		atcs = search_by_atc(key)
+		result.type = :atc
 		# exact word in sequence name
 		if(atcs.empty?)
 			atcs = search_by_sequence(key, result)
+			result.type = :sequence
 		end
 		# company-name
 		if(atcs.empty?)
 			atcs = search_by_company(key)
+			result.type = :company
 		end
 		# substance
 		if(atcs.empty?)
 			atcs = search_by_substance(key)
+			result.type = :substance
 		end
 		# indication
 		if(atcs.empty?)
 			atcs = search_by_indication(key, lang, result)
+			result.type = :indication
 		end
 		# sequence
 		if(atcs.empty?)
 			atcs = search_by_sequence(key)
+			result.type = :sequence
 		end
 		result.atc_classes = atcs
 		result
@@ -804,12 +813,14 @@ class OddbPrevalence
 	end
 	def search_exact_company(query)
 		result = ODDB::SearchResult.new
+		result.type = :company
 		result.atc_classes = search_by_company(query)
 		result
 	end
 	def search_exact_indication(query, lang)
 		result = ODDB::SearchResult.new
 		result.exact = true
+		result.type = :indication
 		result.atc_classes = search_by_indication(query, lang, result)
 		result
 	end
@@ -848,14 +859,14 @@ class OddbPrevalence
 	end
 	def search_exact_sequence(query)
 		sequences = search_sequences(query)
-		_search_exact_classified_result(sequences)
+		_search_exact_classified_result(sequences, :sequence)
 	end
 	def search_exact_substance(query)
 		sequences = ODBA.cache.\
 			retrieve_from_index('substance_index_sequence', query)
-		_search_exact_classified_result(sequences)
+		_search_exact_classified_result(sequences, :substance)
 	end
-	def _search_exact_classified_result(sequences)
+	def _search_exact_classified_result(sequences, type=:unknown)
 		atc_classes = {}
 		sequences.each { |seq|
 			code = (atc = seq.atc_class) ? atc.code : 'n.n'
@@ -867,6 +878,7 @@ class OddbPrevalence
 			new_atc.sequences.push(seq)
 		}
 		result = ODDB::SearchResult.new
+		result.type = type
 		result.atc_classes = atc_classes.values
 		result
 	end

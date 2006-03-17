@@ -51,7 +51,7 @@ module ODDB
 		end
 	end
 	class SearchResult
-		attr_accessor  :atc_classes, :session, :relevance, :exact
+		attr_accessor  :atc_classes, :session, :relevance, :exact, :type, :query
 		def initialize
 			@relevance = {}
 		end
@@ -62,16 +62,26 @@ module ODDB
 		end
 		def atc_sorted
 			@atc_facades = if(@relevance.empty?)
-				atc_facades.sort_by { |atc_class|
-					atc_class.package_count.to_i
-				}
+											 case @type
+				when :substance
+					atc_facades.sort_by { |atc_class|
+						atc_class.packages.select { |pac|
+							pac.active_agents.any? { |act| 
+								act.same_as?(@query)
+							}
+						}.size
+					}
+				else
+					atc_facades.sort_by { |atc_class|
+						atc_class.package_count.to_i
+					}
+				end
 			else
 				@atc_facades = atc_facades.sort_by { |atc_class|
 					count = atc_class.package_count.to_i
-					[
+					comp = [
 						(@relevance[atc_class.odba_id].to_f / count.to_f), 
 						atc_class.package_count(:complementary).to_i,
-						#atc_class.package_count.to_i,
 						count,
 					]
 				}
