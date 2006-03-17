@@ -242,9 +242,9 @@ module ODDB
 			info = super
 			parts = [
 				['text/plain', 'todo.txt', report_todo],
+				['text/plain', 'bsv_out_of_sale.txt', report_out_of_sale],
 				['text/plain', 'medwin_bsv_differences.txt', 
 					report_medwin_diffs],
-				['text/plain', 'bsv_out_of_sale.txt', report_out_of_sale],
 			]
 			info.store(:parts, parts)
 			info
