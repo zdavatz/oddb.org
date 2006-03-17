@@ -60,6 +60,7 @@ module ODDB
 			:add_to_interaction_basket,
 			:addresses,
 			:ajax,
+			:ajax_swissmedic_cat,
 			:assign,
 			:assign_deprived_sequence,
 			:assign_fachinfo,

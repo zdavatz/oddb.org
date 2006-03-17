@@ -6,11 +6,14 @@ require 'view/logohead'
 require 'view/navigationfoot'
 require 'sbsm/time'
 require 'view/custom/head'
+require 'htmlgrid/dojotoolkit'
 
 module ODDB
 	module View
 		class PublicTemplate < HtmlGrid::Template
 			include View::Custom::HeadMethods
+			include HtmlGrid::DojoToolkit::DojoTemplate
+			DOJO_REQUIRE = [ 'dojo.widget.Tooltip' ]
 			CONTENT = nil
 			CSS_CLASS = "composite"
 			CSS_ID = "template"
