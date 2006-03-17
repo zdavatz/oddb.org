@@ -33,6 +33,7 @@ Grammar OddbSize
 			ODDB::Dose.from_quanty(@comparable_size)
 		end
 		def comparables
+=begin
 			bottom = [
 				@comparable_size / 2, 
 				Dose.new(@comparable_size.value - 20, 
@@ -43,6 +44,9 @@ Grammar OddbSize
 				Dose.new(@comparable_size.value + 20, 
 					@comparable_size.unit)
 			].min
+=end
+			bottom = @comparable_size * 0.75
+			top = @comparable_size * 1.25
 			@sequence.comparables.collect { |seq|
 				seq.public_packages.select { |pack|
 					comparable?(bottom, top, pack)

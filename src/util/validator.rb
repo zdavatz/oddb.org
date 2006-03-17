@@ -12,6 +12,7 @@ module ODDB
 		alias :notify_sender :email
 		alias :notify_recipient :email
 		alias :receiver_email :email
+		alias :competition_email :email
 		BOOLEAN = [
 			:cl_status,  :download, :experience, :recommend, :impression,
 			:invoice_htmlinfos, :helps, :show_email, :export_flag,

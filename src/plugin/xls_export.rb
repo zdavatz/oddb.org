@@ -7,19 +7,30 @@ module ODDB
 	class XlsExportPlugin < Plugin
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
+		def export_competition(company, db_path=nil)
+			dir = File.join(ARCHIVE_PATH, "xls")
+			file = "#{company.name}.Preisvergleich.xls".tr(' ', '_')
+			@file_path = File.join(dir, file)
+			@recipient = company.competition_email
+			EXPORT_SERVER.export_competition_xls(company.odba_id, dir, file, db_path)
+		end
 		def export_generics
-			ids = @app.registrations.values.inject([]) { |pacs, reg|
-				if(reg.active? && reg.original?)
-					reg.each_package { |pac|
-						if(pac.public? && !pac.comparables.empty?)
-							pacs << pac
-						end
-					}
-				end
-				pacs
-			}.sort.collect { |pac| pac.odba_id }
-			EXPORT_SERVER.export_generics_xls(ids, 
-				EXPORT_DIR, 'generics.xls')
+			#regs = @app.registrations.values.select { |reg| reg.original? }
+			#ids = public_package_ids(regs)
+			EXPORT_SERVER.export_generics_xls(EXPORT_DIR, 'generics.xls')
+		end
+		def log_info
+			hash = super
+			if @file_path
+				hash.update({
+					:files			=> { @file_path => "application/vnd.ms-excel"},
+					:recipients => [@recipient],
+				})
+			end
+			hash
+		end
+		def report
+			@file_path.to_s
 		end
 	end
 end
