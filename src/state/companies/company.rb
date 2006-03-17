@@ -171,6 +171,7 @@ class RootCompany < UserCompany
 			:business_area,
 			:city,
 			:cl_status,
+			:competition_email,
 			:complementary_type,
 			:contact,
 			:contact_email,

@@ -11,6 +11,7 @@ require 'oddb_yaml'
 require 'csv_exporter'
 require 'oddbdat'
 require 'generics_xls'
+require 'competition_xls'
 require 'odba'
 
 module ODBA
@@ -50,8 +51,8 @@ end
 			FileUtils.mv(zip_name, name + '.zip')
 			name
 		ensure
-			gzwriter.close unless gzwriter.nil?
-			zipwriter.close unless zipwriter.nil?
+			gzwriter.close if(gzwriter)
+			zipwriter.close if(zipwriter)
 		end
 		def OdbaExporter.compress_many(dir, name, files)
 			FileUtils.mkdir_p(dir)
@@ -76,6 +77,14 @@ end
 			FileUtils.mv(zip_name, name + '.zip')
 			name
 		end
+		def OdbaExporter.export_competition_xls(comp_id, dir, name, db_path=nil)
+			safe_export(dir, name) { |fh|
+				exporter = CompetitionXls.new(fh.path, db_path)
+				company = ODBA.cache.fetch(comp_id)
+				exporter.export_competition(company)
+				exporter.close
+			}
+		end
 		def OdbaExporter.export_doc_csv(odba_ids, dir, name)
 			safe_export(dir, name) { |fh|
 				fh << <<-HEAD
@@ -84,17 +93,14 @@ ean13;exam;salutation;title;firstname;name;praxis;addresstype;address_name;lines
 				odba_ids.each { |odba_id|
 					item = ODBA.cache.fetch(odba_id, nil)
 					CsvExporter.dump(CsvExporter::DOCTOR, item, fh)
-					ODBA.cache.clear
+					#ODBA.cache.clear
 				}
 			}
 		end
-		def OdbaExporter.export_generics_xls(odba_ids, dir, name)
+		def OdbaExporter.export_generics_xls(dir, name)
 			safe_export(dir, name) { |fh|
 				exporter = GenericXls.new(fh.path)
-				odba_ids.each { |odba_id|
-					package = ODBA.cache.fetch(odba_id)
-					exporter.export_comparables(package)
-				}
+				exporter.export_generics
 				exporter.close
 			}
 		end
@@ -106,7 +112,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 					odba_ids.each { |odba_id|
 					item = ODBA.cache.fetch(odba_id, nil)
 					CsvExporter.dump(CsvExporter::MIGEL, item, fh)
-					ODBA.cache.clear
+					#ODBA.cache.clear
 				}
 			}
 		end
@@ -115,7 +121,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 				odba_ids.each { |odba_id|
 					item = ODBA.cache.fetch(odba_id, nil)
 					CsvExporter.dump(CsvExporter::NARCOTIC, item, fh)
-					ODBA.cache.clear
+					#ODBA.cache.clear
 				}
 			}
 		end
@@ -136,7 +142,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 					files.each { |file, table|
 						file.puts table.lines(item)
 					}
-					ODBA.cache.clear
+					#ODBA.cache.clear
 				}
 			end
 			files.each { |file, table|
@@ -154,7 +160,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 				odba_ids.each { |odba_id|
 					YAML.dump(ODBA.cache.fetch(odba_id, nil), fh)
 					fh.puts
-					ODBA.cache.clear
+					#ODBA.cache.clear
 					$stdout.flush
 				}
 			}
