@@ -1295,6 +1295,7 @@ a.list-b:hover {
 }
 td.list {
 	padding : 4px;
+	font-size : $std_font_size; 
 }
 td.list-b {
 	padding : 4px;

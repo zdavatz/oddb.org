@@ -73,7 +73,7 @@ module ODDB
 			end
 		end
 		def process(request)
-			logtype = 'PRIN'
+			#logtype = 'PRIN'
 			timeout(PROCESS_TIMEOUT) { 
 				@request = request
 				unless(is_crawler?)
@@ -82,8 +82,8 @@ module ODDB
 				@request_id = request.object_id
 				@request_path = request.unparsed_uri
 				@process_start = Time.now
-				request_log('INIT')
-				logtype = 'PRCS'
+				#request_log('INIT')
+				#logtype = 'PRCS'
 				if(is_crawler?)
 					if(@@html_cache[@request_path].nil?)
 						super
@@ -100,13 +100,13 @@ module ODDB
 			}
 			''
 		rescue Timeout::Error
-			logtype = 'PRTO'
+			#logtype = 'PRTO'
 			'your request has timed out. please try again later.'
 		rescue StandardError => ex
-			logtype = ex.message
+			#logtype = ex.message
 			''
-		ensure
-			request_log(logtype)
+		#ensure
+			#request_log(logtype)
 		end
 		def request_log(phase)
 			bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
@@ -121,14 +121,14 @@ module ODDB
 			## don't die for logging
 		end
 		def to_html
-			logtype = 'HTML'
+			#logtype = 'HTML'
 			timeout(HTML_TIMEOUT) {
 				if(is_crawler?)
 					if(html = @@html_cache[@request_path])
-						logtype = 'CCHE'
+						#logtype = 'CCHE'
 						html
 					else
-						logtype = 'CRWL'
+						#logtype = 'CRWL'
 						sleep(5)
 						#@@stub_html
 						super
@@ -142,12 +142,12 @@ module ODDB
 				end.dup
 			}
 		rescue Timeout::Error
-			logtype = 'TMOT'
+			#logtype = 'TMOT'
 			'your request has timed out. please try again later.'
 		rescue Exception => ex
-			logtype = ex.message
-		ensure
-			request_log(logtype)
+			#logtype = ex.message
+		#ensure
+			#request_log(logtype)
 		end
 		def initialize(key, app, validator=nil)
 			super(key, app, validator)

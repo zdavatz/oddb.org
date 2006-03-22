@@ -44,7 +44,6 @@ class SwissmedicCat < HtmlGrid::Composite
 		end
 		@css_map.store([1,0,1,y], 'list')
 		@css_map.store([0,0,1,y], 'bold top list')
-		puts @components.inspect
 	end
 	def sl_since(model)
 		sl = model.sl_entry

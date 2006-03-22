@@ -11,7 +11,7 @@ class OrphanedFachinfos < State::Admin::Global
 	DIRECT_EVENT = :orphaned_fachinfos
 	PERSISTENT_RANGE = true
 	VIEW = View::Admin::OrphanedFachinfos
-	FILTER_THRESHOLD = 0
+	FILTER_THRESHOLD = 10
 	include Interval
 	def init
 		filter_interval
