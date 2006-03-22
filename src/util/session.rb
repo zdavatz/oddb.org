@@ -102,7 +102,7 @@ module ODDB
 		rescue Timeout::Error
 			logtype = 'PRTO'
 			'your request has timed out. please try again later.'
-		rescue Exception => ex
+		rescue StandardError => ex
 			logtype = ex.message
 			''
 		ensure

@@ -14,6 +14,7 @@ module ODDB
 			include View::Custom::HeadMethods
 			include HtmlGrid::DojoToolkit::DojoTemplate
 			DOJO_REQUIRE = [ 'dojo.widget.Tooltip' ]
+			DOJO_PARSE_WIDGETS = false
 			CONTENT = nil
 			CSS_CLASS = "composite"
 			CSS_ID = "template"

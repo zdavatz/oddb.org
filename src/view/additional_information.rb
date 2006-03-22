@@ -66,36 +66,20 @@ module ODDB
 				@ikscat_count += 1
 				txt = HtmlGrid::Span.new(model, session, self)
 				text_elements = []
-				title_elements = []
 				if(cat = model.ikscat)
 					text_elements.push(cat)
 				end
 				if(sl = model.sl_entry)
 					text_elements.push(@lookandfeel.lookup(:sl))
-					sl_str = @lookandfeel.lookup(:sl_list).dup
-					if(date = sl.introduction_date)
-						sl_str << @lookandfeel.lookup(:sl_since, 
-							date.strftime(@lookandfeel.lookup(:date_format)))
-					end
 				end
 				if(model.lppv)
 					catstr = @lookandfeel.lookup(:lppv)
 					text_elements.push(catstr)
 				end
-=begin
-				if(model.out_of_trade)
-					text_elements.push(@lookandfeel.lookup(:hors_commerce))
-					title_elements.push(@lookandfeel.lookup(:explain_hc))
-				end
-=end
 				if(model.sl_generic_type == :generic)
 					text_elements.push(@lookandfeel.lookup(:sl_generic_short))
 				end
 				txt.value = text_elements.join('&nbsp;/&nbsp;')
-				#title = title_elements.join('&nbsp;/&nbsp;')
-				#txt.set_attribute('title', title)
-				#tooltip = HtmlGrid::Div.new(model, @session, self)
-				#tooltip.value = text_elements.join('&nbsp;/&nbsp;')
 				url = @lookandfeel._event_url(:ajax_swissmedic_cat,
 					{:pointer => model.pointer})
 				txt.css_id = "ikscat_#{@ikscat_count}"
