@@ -186,8 +186,9 @@ module ODDB
 						(sd = seq.dose) && (pd = pack.dose) \
 							&& (pd == sd || (sd.unit.to_s.empty? && sd.qty == pd.qty))
 					}
+					## assign a new sequence since none could be identified
 					sequence ||= seqs.find { |seq|
-						seq.dose.nil?
+						seq.packages.empty?
 					}
 					if(sequence.nil?) 
 						sequence = seqs.first.dup
@@ -202,6 +203,7 @@ module ODDB
 					sequence.packages.store(pack.ikscd, pack)
 				}
 			end
+			seqs.delete_if { |seq| seq.packages.empty? }
 		end
 		def parse_refdata_detail(str)
 			ean = str[0,13]
