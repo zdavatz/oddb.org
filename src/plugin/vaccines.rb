@@ -161,7 +161,7 @@ module ODDB
 				end
 			end
 		end
-		def get_packages(reg)
+		def get_packages(reg, active=nil)
 			criteria = { :ean => "7680" + reg.iksnr }
 			template = { :info => [0,1] }
 			seqs = reg.sequences
@@ -175,16 +175,26 @@ module ODDB
 					detail = MEDDATA_SERVER.detail(result, template)
 					pack = parse_refdata_detail(detail[:info])
 					sequence = nil
-					sequence = seqs.select { |seq|
+					activeseq = nil
+					if(active && (activepac = active.package(pack.ikscd)) \
+						&& (activeseq = activepac.sequence))
+						sequence = seqs.find { |seq|
+							seq.seqnr == activeseq.seqnr
+						}
+					end
+					sequence ||= seqs.find { |seq|
 						(sd = seq.dose) && (pd = pack.dose) \
 							&& (pd == sd || (sd.unit.to_s.empty? && sd.qty == pd.qty))
-					}.first
-					sequence ||= seqs.select { |seq|
+					}
+					sequence ||= seqs.find { |seq|
 						seq.dose.nil?
-					}.first
+					}
 					if(sequence.nil?) 
 						sequence = seqs.first.dup
 						reg.sequences.push(sequence)
+					end
+					if(activeseq && sequence.seqnr.nil?)
+						sequence.seqnr = activeseq.seqnr
 					end
 					if(sequence.dose.nil?)
 						sequence.dose = pack.dose
@@ -258,7 +268,7 @@ module ODDB
 			workbook = Spreadsheet::ParseExcel.parse(path)
 			registrations = parse_worksheet(workbook.worksheet(0))
 			registrations.each_value { |reg|
-				get_packages(reg)
+				get_packages(reg, @app.registration(reg.iksnr))
 			}
 		end
 		def report

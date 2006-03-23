@@ -226,7 +226,8 @@ module ODDB
 			super(model)
 		end
 		def smj_incomplete?(smj_reg)
-			smj_reg.incomplete? #&& smj_reg.iksnr.nil?
+			smj_reg.incomplete? || ((date = smj_reg.valid_until) && date.year < 2000)
+				#&& smj_reg.iksnr.nil?
 		end
 		def update_active_agent(agent, seq_pointer)
 			unless(agent.substance.nil?)
