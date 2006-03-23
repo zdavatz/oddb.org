@@ -203,7 +203,6 @@ module ODDB
 					sequence.packages.store(pack.ikscd, pack)
 				}
 			end
-			seqs.delete_if { |seq| seq.packages.empty? }
 		end
 		def parse_refdata_detail(str)
 			ean = str[0,13]
