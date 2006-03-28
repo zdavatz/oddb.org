@@ -17,15 +17,19 @@ module ODDB
 			'atupri-web'=>	[
 				LookandfeelAtupriWeb, 
 			],
+			'generika'	=>	[
+				LookandfeelLanguages,
+				LookandfeelExtern,
+				LookandfeelGenerika,
+			],
 			'just-medical'=>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,
 				LookandfeelJustMedical, 
 			],
-			'generika'	=>	[
-				LookandfeelLanguages,
+			'medical-tribune' => [
 				LookandfeelExtern,
-				LookandfeelGenerika,
+				LookandfeelMedicalTribune,
 			],
 			'oekk'	=>	[
 				LookandfeelExtern,

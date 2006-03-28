@@ -321,4 +321,20 @@ module ODDB
 			[:de, :fr, :en]
 		end
 	end
+	class LookandfeelMedicalTribune < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:drugs, 
+			:external_css,
+			:help_link,
+			:logout,
+			:migel,
+			:sequences,
+		]
+		RESOURCES = { 
+			:external_css	=>	'http://www.medical-tribune.ch/css/default_de.css',
+		}
+		def languages
+			[:de, :fr, :en]
+		end
+	end
 end
