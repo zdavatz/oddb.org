@@ -58,6 +58,9 @@ module ODDB
 				super
 			end
 		end
+		def flavor
+			@flavor ||= (@valid_input[:partner] || super)
+		end
 		def limit_queries
 			requests = (@@requests[remote_ip] ||= [])
 			if(@state.limited?)

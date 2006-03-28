@@ -7,6 +7,7 @@ require 'cgi'
 
 module ODDB
 	class Validator < SBSM::Validator
+		alias :partner :flavor
 		alias :set_pass_2 :pass
 		alias :unique_email :email
 		alias :notify_sender :email
