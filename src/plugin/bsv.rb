@@ -37,9 +37,15 @@ module ODDB
 				end
 			end
 			def data
+				deductible = if(@generic_type == :original)
+											 'deductible_o'
+										 else
+											 'deductible_g'
+										 end
 				data = {
 					:pharmacode				=>	@pharmacode,
-					:sl_generic_type	=>  (@generic_type ? :generic : :original),
+					:sl_generic_type	=>  @generic_type,
+					:deductible				=>	deductible,
 				}
 				if(@price_public)
 					data.store(:price_public, @price_public)
@@ -446,7 +452,12 @@ module ODDB
 					package.company = cell.to_s(ENCODING)
 				end
 				if(cell = row.at(1))
-					package.generic_type = (/g/i.match(cell.to_s(ENCODING)))
+					str = cell.to_s(ENCODING)
+					if(/g/i.match(str))
+						package.generic_type = :generic
+					elsif(/o/i.match(str))
+						package.generic_type = :original
+					end
 				end
 				if(cell = row.at(6))
 					package.introduction_date = cell.date

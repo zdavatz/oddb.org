@@ -18,6 +18,8 @@ class SwissmedicCat < HtmlGrid::Composite
 	end
 	def reorganize_components
 		y=0
+		puts @model.class
+		puts @model.sl_generic_type
 		if(cat = @model.ikscat)
 			iks = "ikscat_" << cat.to_s.downcase
 			@components.store([0,y], :ikscat)
@@ -32,14 +34,19 @@ class SwissmedicCat < HtmlGrid::Composite
 			end
 			y += 1
 		end
+		if(gt = @model.sl_generic_type)
+			@components.store([0,y], "sl_#{gt}_short")
+			@components.store([1,y], "sl_#{gt}")
+			y += 1
+		end
+		if(deductible = @model.deductible)
+			@components.store([0,y], "deductible")
+			@components.store([1,y], deductible)
+			y += 1
+		end
 		if(@model.lppv)
 			@components.store([0,y], "lppv")
 			@components.store([1,y], :lppv_ajax)
-			y += 1
-		end
-		if(@model.sl_generic_type == :generic)
-			@components.store([0,y], "sl_generic_short")
-			@components.store([1,y], "sl_generic")
 			y += 1
 		end
 		@css_map.store([1,0,1,y], 'list')

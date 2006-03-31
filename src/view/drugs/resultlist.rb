@@ -143,10 +143,10 @@ class ResultList < HtmlGrid::List
 		super
 	end
 	def reorganize_components
-		if(@lookandfeel.enabled?(:full_result))
+		if(@lookandfeel.enabled?(:deductible, false))
 			components.update({
-				[9,0]		=>	:price_exfactory,
-				[10,0]	=>	:price_public,
+				[9,0]	=>	:price_public,
+				[10,0]	=>	:deductible,
 				[11,0]	=>	:substances,
 				[12,0]	=>	:company_name,
 				[13,0]	=>	:ikscat,
@@ -166,7 +166,7 @@ class ResultList < HtmlGrid::List
 				[15,0,3]=>	'result-b-r',
 			}
 			css_head_map.update({
-				[9,0]	=>	'th-r',
+				[9,0] =>	'th-r',
 				[10,0] =>	'th-r',
 				[11,0] =>	'th',
 				[12,0]	=>	'th',
@@ -176,17 +176,40 @@ class ResultList < HtmlGrid::List
 				[16,0]=>	'th-r',
 				[17,0]=>	'th-r',
 			})
-		end
-		if(@lookandfeel.enabled?(:deductible, false))
-			pp_index = components.index(:price_exfactory)
-			dd_index = components.index(:price_public)
+		elsif(@lookandfeel.enabled?(:full_result))
 			components.update({
-				pp_index	=>	:price_public,	
-				dd_index	=>	:deductible,	
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:deductible,
+				[12,0]	=>	:substances,
+				[13,0]	=>	:company_name,
+				[14,0]	=>	:ikscat,
+				[15,0]	=>	:registration_date,
+				[16,0]	=>	:feedback,
+				[17,0]	=>  :google_search,
+				[18,0]	=>	:notify,
+
 			})
-			css_map.update({
-				pp_index	=>	'result-pubprice',
-				dd_index	=>	'result-r',
+			@css_map = {
+				[0,0,5]	=>	'result-infos',
+				[5,0]		=>	'result-big',
+				[6,0]		=>	'result',
+				[7,0,4]	=>	'result-r',
+				[11,0]		=>	'result-pubprice',
+				[12,0,4]	=>	'result-i',
+				[16,0,3]=>	'result-b-r',
+			}
+			css_head_map.update({
+				[9,0]	=>	'th-r',
+				[10,0] =>	'th-r',
+				[11,0] =>	'th-r',
+				[12,0] =>	'th',
+				[13,0]	=>	'th',
+				[14,0]	=>	'th',
+				[15,0]=>	'th',
+				[16,0]=>	'th-r',
+				[17,0]=>	'th-r',
+				[18,0]=>	'th-r',
 			})
 		end
 	end

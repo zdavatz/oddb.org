@@ -76,8 +76,8 @@ module ODDB
 					catstr = @lookandfeel.lookup(:lppv)
 					text_elements.push(catstr)
 				end
-				if(model.sl_generic_type == :generic)
-					text_elements.push(@lookandfeel.lookup(:sl_generic_short))
+				if(gt = model.sl_generic_type)
+					text_elements.push(@lookandfeel.lookup("sl_#{gt}_short"))
 				end
 				txt.value = text_elements.join('&nbsp;/&nbsp;')
 				url = @lookandfeel._event_url(:ajax_swissmedic_cat,
