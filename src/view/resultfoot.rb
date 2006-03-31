@@ -28,11 +28,12 @@ module ODDB
 				[1,7]	=>	'explain_pr',
 				[2,0]	=>	'explain_efp',
 				[2,1]	=>	'explain_pbp',
-				[2,2]	=>	'explain_sl',
-				[2,3]	=>	'explain_slg',
-				[2,4]	=>	'explain_fd',
-				[2,5]	=>	:explain_lppv,
-				[2,6]	=>	'explain_g',
+				[2,2]	=>	:explain_deductible,
+				[2,3]	=>	'explain_sl',
+				[2,4]	=>	'explain_slg',
+				[2,5]	=>	'explain_fd',
+				[2,6]	=>	:explain_lppv,
+				[2,7]	=>	'explain_g',
 			}
 			CSS_MAP = {	
 				[0,5]	=>	'explain-unknown',
@@ -52,12 +53,13 @@ module ODDB
 						[0,7]	=>	'explain_fi',
 						[0,8]	=>	'explain_pi',
 						[0,9]	=>	'explain_narc',
-						[1,1]	=>	'explain_a',
-						[1,2]	=>	'explain_h',
-						[1,3]	=>	'explain_p',
-						[1,4]	=>	'explain_pr',
-						[1,5]	=>	'explain_efp',
-						[1,6]	=>	'explain_pbp',
+						[1,0]	=>	'explain_a',
+						[1,1]	=>	'explain_h',
+						[1,2]	=>	'explain_p',
+						[1,3]	=>	'explain_pr',
+						[1,4]	=>	'explain_efp',
+						[1,5]	=>	'explain_pbp',
+						[1,6]	=>	:explain_deductible,
 						[1,7]	=>	'explain_sl',
 						[1,8]	=>	'explain_slo',
 						[1,9]	=>	'explain_slg',
@@ -68,17 +70,24 @@ module ODDB
 						[1,0,1,10]	=>	'explain-infos',
 					}
 				elsif(@lookandfeel.enabled?(:deductible, false))
-					if(idx = components.index('explain_pbp'))
-						@components.store(idx, 'explain_deductible')
-					end
-					if(idx = @components.index('explain_efp'))
-						@components.store(idx, 'explain_pbp')
-					end
+					components.update({
+						[2,0]	=>	'explain_pbp',
+						[2,1]	=>	:explain_deductible,
+						[2,2]	=>	'explain_sl',
+						[2,3]	=>	'explain_slg',
+						[2,4]	=>	'explain_fd',
+						[2,5]	=>	:explain_lppv,
+						[2,6]	=>	'explain_g',
+					})
+					components.delete([2,7])
 				end
 				super
 			end
 			def explain_comarketing(model, session=@session)
 				explain_link(model, :comarketing)
+			end
+			def explain_deductible(model, session=@session)
+				explain_link(model, :deductible)
 			end
 			def explain_original(model, session=@session)
 				explain_link(model, :original)
