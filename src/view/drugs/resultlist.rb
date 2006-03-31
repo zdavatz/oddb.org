@@ -194,9 +194,10 @@ class ResultList < HtmlGrid::List
 				[0,0,5]	=>	'result-infos',
 				[5,0]		=>	'result-big',
 				[6,0]		=>	'result',
-				[7,0,4]	=>	'result-r',
-				[11,0]		=>	'result-pubprice',
-				[12,0,4]	=>	'result-i',
+				[7,0,3]	=>	'result-r',
+				[10,0]	=>	'result-pubprice',
+				[11,0]	=>	'result-r',
+				[12,0,4]=>	'result-i',
 				[16,0,3]=>	'result-b-r',
 			}
 			css_head_map.update({
