@@ -29,6 +29,7 @@ module ODDB
 			:price_rise				=>	13,
 			:delete						=>	14,
 			:price_cut				=>	15,
+			:not_specified		=>	16,
 		}
 		attr_reader :file_path
 		def initialize(app)
@@ -109,11 +110,13 @@ module ODDB
 					rows += export_registration(reg, [flags], pac_flags)
 				end
 			}
-			rows.delete_if { |row| 
+			rows.each { |row| 
 				row[0] = row[0].collect { |flg| 
 					self::class::NUMERIC_FLAGS[flg] 
 				}.compact.uniq.sort
-				row.first.empty? 
+				if(row.first.empty?)
+					row[0].push(self::class::NUMERIC_FLAGS[:not_specified])
+				end
 			}
 			rows.sort_by { |row| 
 				[ 
