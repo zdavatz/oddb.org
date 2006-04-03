@@ -63,7 +63,7 @@ module ODDB
 			row[7] = reg.export_flag ? 'Export' : ''
 			if(company = reg.company)
 				row[12] = reg.company.name
-				row[19] = reg.company.url
+				row[19] = reg.company.powerlink
 			end
 			if(reg.sequences.empty?)
 				rows.push(row)
