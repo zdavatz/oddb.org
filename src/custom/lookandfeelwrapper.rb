@@ -416,6 +416,9 @@ module ODDB
 		def languages
 			[:de, :fr, :en]
 		end
+		def navigation(filter=false)
+			[:help_link, :logout]
+		end
 		def result_list_components
 			{
 				[0,0]		=>	:patinfo,
