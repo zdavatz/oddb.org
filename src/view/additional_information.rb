@@ -24,7 +24,11 @@ module ODDB
 				end
 			end
 			def deductible(model, session=@session)
-				@lookandfeel.lookup(model.deductible || 'deductible_unknown')
+				span = HtmlGrid::Span.new(model, @session, self)
+				if(deductible = model.deductible)
+					span.set_attribute('title', @lookandfeel.lookup())
+				end
+				span.value = @lookandfeel.lookup(deductible || 'deductible_unknown')
 			end
 			def fachinfo(model, session=@session, css='result-infos')
 				_fachinfo(model.fachinfo, css)
