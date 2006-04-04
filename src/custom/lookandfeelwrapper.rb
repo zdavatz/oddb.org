@@ -417,7 +417,7 @@ module ODDB
 			[:de, :fr, :en]
 		end
 		def navigation(filter=false)
-			[:help_link, :logout]
+			[:help_link]
 		end
 		def result_list_components
 			{
@@ -425,11 +425,11 @@ module ODDB
 				[1,0,0]	=>	'result_item_start',
 				[1,0,1]	=>	:name_base,
 				[1,0,2]	=>	'result_item_end',
-				#[6,0]		=>	:galenic_form,
-				#[7,0]		=>	:most_precise_dose,
-				#[8,0]		=>	:comparable_size,
-				[2,0]		=>	:price_exfactory,
-				[3,0]	=>	:price_public,
+				[2,0]		=>	:galenic_form,
+				[3,0]		=>	:most_precise_dose,
+				[4,0]		=>	:comparable_size,
+				[5,0]		=>	:price_exfactory,
+				[6,0]		=>	:price_public,
 			}
 		end
 		def search_type_selection
