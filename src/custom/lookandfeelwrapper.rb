@@ -432,5 +432,8 @@ module ODDB
 		def search_type_selection
 			['st_sequence', 'st_substance', 'st_indication']
 		end
+		def zones(filter=false)
+			[]
+		end
 	end
 end
