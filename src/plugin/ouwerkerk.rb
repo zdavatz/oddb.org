@@ -94,6 +94,9 @@ module ODDB
 			registrations.each { |pointer, flags| 
 				key = pointer.to_s
 				pointer_table.store(key, pointer)
+				if(flags.empty?)
+					flags.push(:not_specified)
+				end
 				reg_flags.store(key, flags)
 			}
 			packages.each { |pointer, flags|
@@ -110,13 +113,11 @@ module ODDB
 					rows += export_registration(reg, [flags], pac_flags)
 				end
 			}
-			rows.each { |row| 
+			rows.delete_if { |row| 
 				row[0] = row[0].collect { |flg| 
 					self::class::NUMERIC_FLAGS[flg] 
 				}.compact.uniq.sort
-				if(row.first.empty?)
-					row[0].push(self::class::NUMERIC_FLAGS[:not_specified])
-				end
+				row.first.empty?
 			}
 			rows.sort_by { |row| 
 				[ 
