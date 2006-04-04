@@ -26,7 +26,7 @@ module ODDB
 			def deductible(model, session=@session)
 				span = HtmlGrid::Span.new(model, @session, self)
 				if(deductible = model.deductible)
-					span.set_attribute('title', @lookandfeel.lookup())
+					span.set_attribute('title', @lookandfeel.lookup('deductible_unknown_title'))
 				end
 				span.value = @lookandfeel.lookup(deductible || 'deductible_unknown')
 			end
