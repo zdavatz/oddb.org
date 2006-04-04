@@ -17,7 +17,6 @@ module ODDB
 			:drugs, 
 			:export_csv,
 			:faq_link,
-			:full_result,
 			:help_link,
 			:home,
 			:home_drugs,
@@ -43,7 +42,6 @@ module ODDB
 	class LookandfeelGenerika < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:companylist,
-			:deductible,
 			:fachinfos,
 			:google_adsense,
 			:limitation_texts,
@@ -89,7 +87,7 @@ module ODDB
 		end
 	end
 	class LookandfeelProvita < SBSM::LookandfeelWrapper
-		ENABLED = [ :deductible ]
+		ENABLED = [ ]
 		DICTIONARIES = {
 			'de'	=>	{
 				:home_welcome	=>	'Willkommen bei Provita und oddb.org',
@@ -110,7 +108,7 @@ module ODDB
 		}
 	end
 	class LookandfeelSantesuisse < SBSM::LookandfeelWrapper
-		ENABLED = [ :deductible, :doctors ]
+		ENABLED = [ :doctors ]
 		DICTIONARIES = {
 			'de'	=>	{
 				:home_welcome		=>	'',
@@ -134,7 +132,6 @@ module ODDB
 	end
 	class LookandfeelAtupri < SBSM::LookandfeelWrapper
 		ENABLED = [
-			:deductible,
 			:logo,
 		]
 		DICTIONARIES = {
@@ -162,7 +159,6 @@ module ODDB
 	class LookandfeelAtupriWeb < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:atupri_web,
-			:deductible,
 			:drugs, 
 			:external_css,
 			:help_link,
@@ -195,6 +191,25 @@ module ODDB
 		def navigation
 			[ :legal_note ] + zone_navigation + [ :home ]
 		end
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:deductible,
+				[12,0]	=>	:substances,
+			}
+		end
 		def zone_navigation
 			case @session.zone
 			when :migel
@@ -206,7 +221,6 @@ module ODDB
 	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
 		ENABLED = [
-			:deductible,
 			:external_css,
 			:just_medical_structure,	
 			:popup_links,
@@ -257,6 +271,30 @@ module ODDB
 			[ :meddrugs_update, :legal_note, :data_declaration ] \
 				+ zone_navigation + [ :home ]
 		end
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]	=>	:price_public,
+				[10,0]	=>	:deductible,
+				[11,0]	=>	:substances,
+				[12,0]	=>	:company_name,
+				[13,0]	=>	:ikscat,
+				[14,0]	=>	:registration_date,
+				[15,0]	=>	:feedback,
+				[16,0]	=>  :google_search,
+				[17,0]	=>	:notify,
+			}
+		end
 		def zones
 			[ State::Drugs::Init, State::Drugs::AtcChooser, 
 				State::Drugs::Sequences, State::Migel::Alphabetical ]
@@ -289,7 +327,6 @@ module ODDB
 	end
 	class LookandfeelOekk < SBSM::LookandfeelWrapper
 		ENABLED = [
-			:deductible,
 			:drugs, 
 			:external_css,
 			:help_link,
@@ -336,10 +373,64 @@ module ODDB
 			:sequences,
 		]
 		RESOURCES = { 
-			:external_css	=>	'http://www.medical-tribune.ch/css/default_de.css',
+			:external_css	=>	'http://www.medical-tribune.ch/css/oddb_deutsch.css',
 		}
 		def languages
 			[:de, :fr, :en]
+		end
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:substances,
+				[12,0]	=>	:company_name,
+				[13,0]	=>	:ikscat,
+				[14,0]	=>	:registration_date,
+				[15,0]	=>	:feedback,
+				[16,0]	=>  :google_search,
+				[17,0]	=>	:notify,
+			}
+		end
+	end
+	class LookandfeelMedicalTribune1 < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:drugs, 
+			:external_css,
+			:help_link,
+			:logout,
+		]
+		RESOURCES = { 
+			:external_css	=>	'http://www.medical-tribune.ch/css/oddb_public.css',
+		}
+		def languages
+			[:de, :fr, :en]
+		end
+		def result_list_components
+			{
+				[0,0]		=>	:patinfo,
+				[1,0,0]	=>	'result_item_start',
+				[1,0,1]	=>	:name_base,
+				[1,0,2]	=>	'result_item_end',
+				#[6,0]		=>	:galenic_form,
+				#[7,0]		=>	:most_precise_dose,
+				#[8,0]		=>	:comparable_size,
+				[2,0]		=>	:price_exfactory,
+				[3,0]	=>	:price_public,
+			}
+		end
+		def search_type_selection
+			['st_sequence', 'st_substance', 'st_indication']
 		end
 	end
 end

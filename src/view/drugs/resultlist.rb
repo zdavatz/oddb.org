@@ -76,22 +76,7 @@ class ResultList < HtmlGrid::List
 	include DataFormat
 	include View::ResultColors
 	include View::AdditionalInformation
-	COMPONENTS = {
-		[0,0]		=>	:limitation_text,
-		[1,0]		=>  :fachinfo,
-		[2,0]		=>	:patinfo,
-		[3,0]		=>	:narcotic,
-		[4,0]		=>	:complementary_type,
-		[5,0,0]	=>	'result_item_start',
-		[5,0,1]	=>	:name_base,
-		[5,0,2]	=>	'result_item_end',
-		[6,0]		=>	:galenic_form,
-		[7,0]		=>	:most_precise_dose,
-		[8,0]		=>	:comparable_size,
-		[9,0]		=>	:price_exfactory,
-		[10,0]	=>	:price_public,
-		[11,0]	=>	:substances,
-	}	
+	COMPONENTS = {}	
 	REVERSE_MAP = {
 		:company_name			=> false,
 		:most_precise_dose=> false,
@@ -105,28 +90,29 @@ class ResultList < HtmlGrid::List
 		:size							=> false,
 		:substances				=> true,
 	}
-	CSS_MAP = {
-		[0,0,5]	=>	'result-infos',
-		[5,0]		=>	'result-big',
-		[6,0]		=>	'result',
-		[7,0,3]	=>	'result-r',
-		[10,0]	=>	'result-pubprice',
-		[11,0]	=>	'result-i',
+	CSS_MAP = {}
+	CSS_KEYMAP = {
+		:limitation_text		=>	'result-infos',
+		:fachinfo						=>	'result-infos',
+		:patinfo						=>	'result-infos',
+		:narcotic						=>	'result-infos',
+		:complementary_type	=>	'result-infos',
+		:name_base					=>	'result-big',
+		:galenic_form				=>	'result',
+		:most_precise_dose	=>	'result-r',
+		:comparable_size		=>	'result-r',
+		:price_exfactory		=>	'result-r',
+		:price_public				=>	'result-pubprice',
+		:deductible					=>	'result-r',
+		:substances					=>	'result-i',
+		:company_name				=>	'result-i',
+		:ikscat							=>	'result-i',
+		:registration_date	=>	'result-i',
+		:feedback						=>	'result-b-r',
+		:google_search			=>	'result-b-r',
+		:notify							=>	'result-b-r',
 	}
-	CSS_HEAD_MAP = {
-		[0,0] =>	'th',
-		[1,0] =>	'th',
-		[2,0] =>	'th',
-		[3,0] =>	'th',
-		[4,0] =>	'th',
-		[5,0,1] =>	'th',
-		[6,0]	=>	'th',
-		[7,0]	=>	'th-r',
-		[8,0]	=>	'th-r',
-		[9,0] =>	'th-r',
-		[10,0] =>	'th-r',
-		[11,0] =>	'th',
-	}
+	CSS_HEAD_MAP = {}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
 	SORT_DEFAULT = nil
@@ -143,109 +129,21 @@ class ResultList < HtmlGrid::List
 		super
 	end
 	def reorganize_components
-		if(@lookandfeel.enabled?(:full_result) && @lookandfeel.enabled?(:deductible))
-			components.update({
-				[9,0]		=>	:price_exfactory,
-				[10,0]	=>	:price_public,
-				[11,0]	=>	:deductible,
-				[12,0]	=>	:substances,
-				[13,0]	=>	:company_name,
-				[14,0]	=>	:ikscat,
-				[15,0]	=>	:registration_date,
-				[16,0]	=>	:feedback,
-				[17,0]	=>  :google_search,
-				[18,0]	=>	:notify,
-
-			})
-			@css_map = {
-				[0,0,5]	=>	'result-infos',
-				[5,0]		=>	'result-big',
-				[6,0]		=>	'result',
-				[7,0,3]	=>	'result-r',
-				[10,0]	=>	'result-pubprice',
-				[11,0]	=>	'result-r',
-				[12,0,4]=>	'result-i',
-				[16,0,3]=>	'result-b-r',
-			}
-			css_head_map.update({
-				[9,0]	=>	'th-r',
-				[10,0] =>	'th-r',
-				[11,0] =>	'th-r',
-				[12,0] =>	'th',
-				[13,0]	=>	'th',
-				[14,0]	=>	'th',
-				[15,0]=>	'th',
-				[16,0]=>	'th-r',
-				[17,0]=>	'th-r',
-				[18,0]=>	'th-r',
-			})
-		elsif(@lookandfeel.enabled?(:full_result))
-			components.update({
-				[9,0]		=>	:price_exfactory,
-				[10,0]	=>	:price_public,
-				[11,0]	=>	:substances,
-				[12,0]	=>	:company_name,
-				[13,0]	=>	:ikscat,
-				[14,0]	=>	:registration_date,
-				[15,0]	=>	:feedback,
-				[16,0]	=>  :google_search,
-				[17,0]	=>	:notify,
-
-			})
-			@css_map = {
-				[0,0,5]	=>	'result-infos',
-				[5,0]		=>	'result-big',
-				[6,0]		=>	'result',
-				[7,0,3]	=>	'result-r',
-				[10,0]	=>	'result-pubprice',
-				[11,0,4]=>	'result-i',
-				[15,0,3]=>	'result-b-r',
-			}
-			css_head_map.update({
-				[9,0]	=>	'th-r',
-				[10,0] =>	'th-r',
-				[11,0] =>	'th',
-				[12,0]	=>	'th',
-				[13,0]	=>	'th',
-				[14,0]=>	'th',
-				[15,0]=>	'th-r',
-				[16,0]=>	'th-r',
-				[17,0]=>	'th-r',
-			})
-		elsif(@lookandfeel.enabled?(:deductible, false))
-			components.update({
-				[9,0]	=>	:price_public,
-				[10,0]	=>	:deductible,
-				[11,0]	=>	:substances,
-				[12,0]	=>	:company_name,
-				[13,0]	=>	:ikscat,
-				[14,0]	=>	:registration_date,
-				[15,0]	=>	:feedback,
-				[16,0]	=>  :google_search,
-				[17,0]	=>	:notify,
-
-			})
-			@css_map = {
-				[0,0,5]	=>	'result-infos',
-				[5,0]		=>	'result-big',
-				[6,0]		=>	'result',
-				[7,0,3]	=>	'result-r',
-				[10,0]		=>	'result-pubprice',
-				[11,0,4]	=>	'result-i',
-				[15,0,3]=>	'result-b-r',
-			}
-			css_head_map.update({
-				[9,0] =>	'th-r',
-				[10,0] =>	'th-r',
-				[11,0] =>	'th',
-				[12,0]	=>	'th',
-				[13,0]	=>	'th',
-				[14,0]=>	'th',
-				[15,0]=>	'th-r',
-				[16,0]=>	'th-r',
-				[17,0]=>	'th-r',
-			})
-		end
+		@components = @lookandfeel.result_list_components
+		@css_map = {}
+		@css_head_map = {}
+		@components.each { |key, val|
+			if(klass = self::class::CSS_KEYMAP[val])
+				@css_map.store(key, klass)
+				th_klass = case klass
+									 when 'result-pubprice', /r$/
+										 'th-r'
+									 else
+										 'th'
+									 end
+				@css_head_map.store(key, th_klass)
+			end
+		}
 	end
 	def comparable_size(model, session=@session)
 		HtmlGrid::Value.new(:size, model, session, self)

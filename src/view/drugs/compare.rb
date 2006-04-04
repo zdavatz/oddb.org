@@ -56,7 +56,7 @@ class CompareList < HtmlGrid::List
 		:registration_date	=>	HtmlGrid::DateValue,
 	}
 	def init
-		if(@lookandfeel.enabled?(:deductible, false))
+		if(@lookandfeel.result_list_components.has_value?(:deductible))
 			components.update({
 				[7,0]	=>	:deductible,
 				[8,0]	=>	:ikscat,
