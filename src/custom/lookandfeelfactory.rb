@@ -32,7 +32,6 @@ module ODDB
 				LookandfeelMedicalTribune,
 			],
 			'medical-tribune1' => [
-				LookandfeelExtern,
 				LookandfeelMedicalTribune1,
 			],
 			'oekk'	=>	[
