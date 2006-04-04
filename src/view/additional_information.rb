@@ -29,6 +29,7 @@ module ODDB
 					span.set_attribute('title', @lookandfeel.lookup('deductible_unknown_title'))
 				end
 				span.value = @lookandfeel.lookup(deductible || 'deductible_unknown')
+				span
 			end
 			def fachinfo(model, session=@session, css='result-infos')
 				_fachinfo(model.fachinfo, css)
