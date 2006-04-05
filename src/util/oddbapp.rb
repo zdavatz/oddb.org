@@ -6,6 +6,7 @@ require 'odba/index_definition'
 require 'custom/lookandfeelbase'
 require 'util/failsafe'
 require 'util/oddbconfig'
+require 'util/searchterms'
 require 'util/session'
 require 'util/updater'
 require 'util/exporter'
@@ -724,7 +725,7 @@ class OddbPrevalence
 		# 8. sequence
 		result = ODDB::SearchResult.new
 		result.exact = true
-		result.query = query
+		result.search_query = query
 		# atcless
 		if(query == 'atcless')
 			atc = ODDB::AtcClass.new('n.n.')
@@ -733,7 +734,7 @@ class OddbPrevalence
 				alias :active_packages :packages
 			}
 			result.atc_classes = [atc]
-			result.type = :atcless
+			result.search_type = :atcless
 			return result
 		# iksnr or ean13
 		elsif(match = /(?:\d{4})?(\d{5})(?:\d{4})?/.match(query))
@@ -742,38 +743,38 @@ class OddbPrevalence
 				atc = ODDB::AtcClass.new('n.n.')
 				atc.sequences = reg.sequences.values
 				result.atc_classes = [atc]
-				result.type = :iksnr
+				result.search_type = :iksnr
 				return result
 			end
 		end
 		key = query.to_s.downcase
 		# atc-code
 		atcs = search_by_atc(key)
-		result.type = :atc
+		result.search_type = :atc
 		# exact word in sequence name
 		if(atcs.empty?)
 			atcs = search_by_sequence(key, result)
-			result.type = :sequence
+			result.search_type = :sequence
 		end
 		# company-name
 		if(atcs.empty?)
 			atcs = search_by_company(key)
-			result.type = :company
+			result.search_type = :company
 		end
 		# substance
 		if(atcs.empty?)
 			atcs = search_by_substance(key)
-			result.type = :substance
+			result.search_type = :substance
 		end
 		# indication
 		if(atcs.empty?)
 			atcs = search_by_indication(key, lang, result)
-			result.type = :indication
+			result.search_type = :indication
 		end
 		# sequence
 		if(atcs.empty?)
 			atcs = search_by_sequence(key)
-			result.type = :sequence
+			result.search_type = :sequence
 		end
 		result.atc_classes = atcs
 		result
@@ -813,14 +814,14 @@ class OddbPrevalence
 	end
 	def search_exact_company(query)
 		result = ODDB::SearchResult.new
-		result.type = :company
+		result.search_type = :company
 		result.atc_classes = search_by_company(query)
 		result
 	end
 	def search_exact_indication(query, lang)
 		result = ODDB::SearchResult.new
 		result.exact = true
-		result.type = :indication
+		result.search_type = :indication
 		result.atc_classes = search_by_indication(query, lang, result)
 		result
 	end
@@ -878,7 +879,7 @@ class OddbPrevalence
 			new_atc.sequences.push(seq)
 		}
 		result = ODDB::SearchResult.new
-		result.type = type
+		result.search_type = type
 		result.atc_classes = atc_classes.values
 		result
 	end

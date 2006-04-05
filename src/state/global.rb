@@ -460,7 +460,7 @@ module ODDB
 			end
 			def search
 				zone = @session.zone
-				query = @session.persistent_user_input(:search_query)
+				query = ODDB.search_term(@session.persistent_user_input(:search_query))
 				if(query.is_a? RuntimeError)
 					State::Exception.new(@session, query)
 				elsif(!query.nil?)
