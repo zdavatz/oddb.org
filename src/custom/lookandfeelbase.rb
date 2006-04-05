@@ -273,7 +273,7 @@ Zeno Davatz
 				:deductible_g							=>	'10%',
 				:deductible_o							=>	'20%',
 				:deductible_title0				=>	'F&uuml;r dieses Produkt bezahlen Sie ',
-				:deductible_title1				=>	' Selbstbehalt.<br>Achten Sie auf Ihre Krankenkassen-Rechnung!',
+				:deductible_title1				=>	' Selbstbehalt.<br>Achten Sie auf Ihre Krankenkassen-Abrechnung!',
 				:deductible_unknown				=>	'k.A.',
 				:deductible_unknown_title	=>	'Keine Angaben in der SL',
 				:delete										=>	'L&ouml;schen',
