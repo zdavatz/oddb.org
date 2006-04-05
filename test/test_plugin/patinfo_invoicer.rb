@@ -40,11 +40,19 @@ module ODDB
 			assert_equal(548.0/365.0, item1.quantity)
 		end
 		def test_filter_paid
+			ptr1 = FlexMock.new
+			ptr2 = FlexMock.new
+			ptr3 = FlexMock.new
+			ptr4 = FlexMock.new
+			ptr1.mock_handle(:resolve) { } # disables the neighborhood_names check
+			ptr2.mock_handle(:resolve) { }
+			ptr3.mock_handle(:resolve) { }
+			ptr4.mock_handle(:resolve) { }
 			day = Date.today - 1
 			## Item that has been paid more than a year ago
 			## (inv1) - should be in new invoice
 			item1 = AbstractInvoiceItem.new
-			item1.item_pointer = 'model 1'
+			item1.item_pointer = ptr1
 			item1.text = '11111 11'
 			item1.type = :annual_fee
 			item1.time = Time.local(day.year, day.month, 
@@ -52,7 +60,7 @@ module ODDB
 			## Item that has never before been uploaded
 			## should be in new invoice
 			item2 = AbstractInvoiceItem.new
-			item2.item_pointer = 'model 2'
+			item2.item_pointer = ptr2
 			item2.text = '22222 22'
 			item2.type = :annual_fee
 			item2.time = Time.local(day.year, day.month, 
@@ -60,7 +68,7 @@ module ODDB
 			## Item that is already once in new invoice
 			## (item1) - should not be in new invoice
 			item3 = AbstractInvoiceItem.new
-			item3.item_pointer = 'model 1'
+			item3.item_pointer = ptr3
 			item3.text = '11111 11'
 			item3.type = :annual_fee
 			item3.time = Time.local(day.year, day.month, 
@@ -68,7 +76,7 @@ module ODDB
 			## Item that has been paid less than a year ago
 			## (inv2) - should not be in new invoice
 			item4 = AbstractInvoiceItem.new
-			item4.item_pointer = 'model 3'
+			item4.item_pointer = ptr4
 			item4.text = '33333 33'
 			item4.type = :annual_fee
 			item4.time = Time.local(day.year, day.month, 
@@ -231,15 +239,21 @@ module ODDB
 			assert_equal([item2, item4], comp2)
 		end
 		def test_create_invoice
+			ptr1 = FlexMock.new
+			ptr2 = FlexMock.new
+			ptr3 = FlexMock.new
+			ptr1.mock_handle(:resolve) { } # disables the neighborhood_names check
+			ptr2.mock_handle(:resolve) { }
+			ptr3.mock_handle(:resolve) { }
 			item1 = AbstractInvoiceItem.new
 			item1.user_pointer = 'user1'
-			item1.item_pointer = 'item1'
+			item1.item_pointer = ptr1
 			item2 = AbstractInvoiceItem.new
 			item2.user_pointer = 'user1'
-			item2.item_pointer = 'item2'
+			item2.item_pointer = ptr2
 			item3 = AbstractInvoiceItem.new
 			item3.user_pointer = 'user1'
-			item3.item_pointer = 'item3'
+			item3.item_pointer = ptr3
 			items = [item1, item2, item3]
 			pointer = Persistence::Pointer.new(:invoice)
 			invoice = FlexMock.new
@@ -251,7 +265,7 @@ module ODDB
 				:data					=>	{},
 				:duration			=>	1,
 				:expiry_time	=>	nil,
-				:item_pointer	=>	'item1',
+				:item_pointer	=>	ptr1,
 				:price				=>	nil,
 				:quantity			=>	1,
 				:text					=>	nil,
@@ -262,9 +276,9 @@ module ODDB
 				:vat_rate			=>	nil,
 			}
 			item_vals2 = item_vals1.dup
-			item_vals2.store(:item_pointer, 'item2')
+			item_vals2.store(:item_pointer, ptr2)
 			item_vals3 = item_vals1.dup
-			item_vals3.store(:item_pointer, 'item3')
+			item_vals3.store(:item_pointer, ptr3)
 			expected = [
 				[pointer.creator, {:user_pointer => 'user1', 
 					:keep_if_unpaid => true, :ydim_id => 2134}, invoice],
@@ -272,13 +286,13 @@ module ODDB
 				[item_ptr.dup.creator, item_vals2, nil],
 				[item_ptr.dup.creator, item_vals3, nil],
 			]
-			@app.mock_handle(:update, 4) { |ptr, values| 
+			@app.mock_handle(:update, 4) { |uptr, values| 
 				exp_ptr, exp_vals, res = expected.shift
-				assert_equal(exp_ptr, ptr)
+				assert_equal(exp_ptr, uptr)
 				assert_equal(exp_vals, values)
 				## flag the pointer as used (because Item.init appends 
 				## an odba_id) the pointer must not be reused
-				ptr.instance_variable_get('@directions').at(0).at(1).append('used')
+				uptr.instance_variable_get('@directions').at(0).at(1).append('used')
 				res
 			}
 			user = FlexMock.new

@@ -7,6 +7,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'model/sponsor'
 require 'util/upload'
+require 'stub/odba'
 
 module ODDB
 	class Sponsor
@@ -40,10 +41,13 @@ class TestSponsor < Test::Unit::TestCase
 		File.delete(@file) if File.exists?(@file)
 		File.delete(@file2) if File.exists?(@file2)
 	end
+=begin # deleted test: pointer needs to be set by creator, because 
+       # multiple sponsors are possible
 	def test_initialize
 		expected = ODDB::Persistence::Pointer.new(:sponsor)
 		assert_equal(expected, @sponsor.pointer)
 	end
+=end
 	def test_adjust_types
 		values = {
 			:company				=>	'ywesee',

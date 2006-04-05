@@ -82,17 +82,25 @@ module ODDB
 				steps = View::PointerSteps.new(@model, @session, @container)
 				expected = <<-EOS
 <TABLE cellspacing="0">
-<TR>
-<TH class="th-pointersteps">Th_pointer_descr</TH>
-<TD>
-<A href="http://www.oddb.org/de/gcc/backsnap/zone/drugs" name="backsnap" class="th-pointersteps">Backsnap</A>
-</TD>
-<TD>#{View::PointerSteps::STEP_DIVISOR}</TD>
-<TD class="th-pointersteps">bon</TD>
-</TR>
+  <TR>
+    <TD class="th-pointersteps">
+      Th_pointer_descr
+    </TD>
+    <TD>
+      <A href="http://www.oddb.org/de/gcc/backsnap/zone/drugs" name="backsnap" class="th-pointersteps">
+        Backsnap
+      </A>
+    </TD>
+    <TD>
+      #{View::PointerSteps::STEP_DIVISOR}
+    </TD>
+    <TD class="th-pointersteps">
+      bon
+    </TD>
+  </TR>
 </TABLE>
 				EOS
-				assert_equal(expected.tr("\n", ""), steps.to_html(CGI.new))
+				assert_equal(expected, CGI.pretty(steps.to_html(CGI.new)))
 			end
 			def test_to_html2
 				@model.ancestors = [
@@ -102,7 +110,7 @@ module ODDB
 				expected = <<-EOS
 <TABLE cellspacing="0">
 <TR>
-<TH class="th-pointersteps">Th_pointer_descr</TH>
+<TD class="th-pointersteps">Th_pointer_descr</TD>
 <TD>
 <A href="http://www.oddb.org/de/gcc/backsnap/zone/drugs" name="backsnap" class="th-pointersteps">Backsnap</A>
 </TD>
@@ -127,7 +135,7 @@ module ODDB
 				expected = <<-EOS
 <TABLE cellspacing="0">
 <TR>
-<TH class="th-pointersteps">Th_pointer_descr</TH>
+<TD class="th-pointersteps">Th_pointer_descr</TD>
 <TD>
 <A href="http://www.oddb.org/de/gcc/backsnap/zone/drugs" name="backsnap" class="th-pointersteps">Backsnap</A>
 </TD>
@@ -157,7 +165,7 @@ module ODDB
 				expected = <<-EOS
 <TABLE cellspacing="0">
 <TR>
-<TH class="th-pointersteps">Th_pointer_descr</TH>
+<TD class="th-pointersteps">Th_pointer_descr</TD>
 <TD>
 <A href="http://www.oddb.org/de/gcc/backsnap/zone/drugs" name="backsnap" class="th-pointersteps">Backsnap</A>
 </TD>

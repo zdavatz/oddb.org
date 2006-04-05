@@ -8,6 +8,7 @@ require 'test/unit'
 require 'model/sequence'
 require 'model/atcclass'
 require 'model/substance'
+require 'util/searchterms'
 require 'stub/odba'
 require 'flexmock'
 require 'mock'
@@ -368,7 +369,12 @@ class TestSequence < Test::Unit::TestCase
 		assert_equal(1, text_count)
 	end
 	def test_search_terms
-		expected = [ 'Similasan', 'Kava-Kava', 'Similasan Kava-Kava']
+		expected = [ 
+			'Similasan', 
+			'KavaKava', 'Kava Kava', 
+			'Similasan KavaKava',
+			'Similasan Kava Kava',
+		]
 		@seq.name = 'Similasan Kava-Kava'
 		assert_equal(expected, @seq.search_terms)
 	end

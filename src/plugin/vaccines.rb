@@ -188,7 +188,7 @@ module ODDB
 					}
 					## assign a new sequence since none could be identified
 					sequence ||= seqs.find { |seq|
-						seq.packages.empty?
+						seq.packages.empty? || seq.dose.nil?
 					}
 					if(sequence.nil?) 
 						sequence = seqs.first.dup
