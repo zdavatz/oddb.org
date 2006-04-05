@@ -4,6 +4,7 @@
 require 'util/language'
 require 'model/text'
 require 'model/feedback_observer'
+require 'util/searchterms'
 
 module ODDB
 	module Migel
@@ -121,18 +122,15 @@ module ODDB
 				prod.remove_accessory(self)
 			end
 			def search_terms(lang = :de)
-				terms = [
-				migel_code,
-				]
+				terms = [ migel_code, ]
 				[ @subgroup.group, @subgroup, 
 				@product_text, self ].compact.each { |item|
 					terms.push(item.send(lang))
 				}
-				terms.delete_if { |str| str.empty? }
+				ODDB.search_terms(terms)
 			end
 			def search_text(lang = :de)
-				text = search_terms(lang).join(' ').downcase
-				text
+				search_terms(lang).join(' ').downcase
 			end
 		end
 	end

@@ -199,9 +199,8 @@ module ODDB
 			}.size
 		end
 		def search_terms
-			self.name.split(/\s+/).push(self.name).uniq.delete_if { |term| 
-				term.empty? 
-			}
+			str = self.name
+			ODDB.search_terms(str.split(/\s+/).push(str))
 		end
 		def seqnr=(seqnr)
 			## FIXME: this is just a quick spaghetti-hack to get all data correct

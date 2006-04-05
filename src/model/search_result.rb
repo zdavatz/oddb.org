@@ -51,7 +51,8 @@ module ODDB
 		end
 	end
 	class SearchResult
-		attr_accessor  :atc_classes, :session, :relevance, :exact, :type, :query
+		attr_accessor  :atc_classes, :session, :relevance, :exact, 
+			:search_type, :search_query
 		def initialize
 			@relevance = {}
 		end

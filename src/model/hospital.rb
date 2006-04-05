@@ -42,7 +42,7 @@ module ODDB
 			@addresses.each { |addr| 
 				terms += addr.search_terms
 			}
-			terms.compact
+			ODDB.search_terms(terms)
 		end
 		def search_text
 			search_terms.join(' ')

@@ -176,7 +176,7 @@ module ODDB
 			@primary_connection_key ||= format_connection_key(self.name)
 		end
 		def same_as?(substance)
-			teststr = substance.to_s.downcase
+			teststr = ODDB.search_term(substance.to_s.downcase)
 			_search_keys.any? { |desc|
 				desc.downcase == teststr
 			} || (connection_keys.include?(format_connection_key(teststr)))
@@ -196,14 +196,14 @@ module ODDB
 			keys = self.descriptions.values + self.connection_keys \
 				+ self.synonyms
 			keys.push(name)
-			keys.compact
+			ODDB.search_terms(keys)
 		end
 		def similar_name?(astring)
 			name.length/3.0 >= name.downcase.ld(astring.downcase)
 		end
 		def soundex_keys
 			keys = self.search_keys.collect { |key|
-				parts = key.split(/\s/)
+				parts = ODDB.search_term(key).split(/\s/)
 				soundex = Text::Soundex.soundex(parts)
 				soundex.join(' ')
 			}

@@ -32,7 +32,7 @@ module ODDB
 			end
 		end
 		def search_terms
-			[self.lines_without_title, @fon, @fax, @plz, @city].flatten
+			ODDB.search_terms([self.lines_without_title, @fon, @fax, @plz, @city])
 		end
 		def street
 			if(match = /[^0-9,]+/.match(self.lines[-2]))
@@ -107,8 +107,8 @@ module ODDB
 			end
 		end
 		def search_terms
-			[self.lines_without_title, @fon, @fax, 
-				self.city, self.plz].flatten
+			ODDB.search_terms([self.lines_without_title, @fon, @fax, 
+				self.city, self.plz])
 		end
 		def street
 			if(match = /[^0-9,]+/.match(@address.to_s))
