@@ -3111,6 +3111,35 @@ Zeno Davatz
 		def currencies
 			['CHF', 'EUR', 'USD']
 		end
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_comarketing,
+				[0,3]	=>	:explain_complementary,
+				[0,4]	=>	:explain_vaccine,
+				[0,5]	=>	'explain_unknown',
+				[0,6]	=>	'explain_expired',
+				[0,8]	=>	:explain_cas,
+				[1,0]	=>	'explain_li',
+				[1,1]	=>	'explain_fi',
+				[1,2]	=>	'explain_pi',
+				[1,3]	=>	'explain_narc',
+				[1,4]	=>	'explain_a',
+				[1,5]	=>	'explain_h',
+				[1,6]	=>	'explain_p',
+				[1,7]	=>	'explain_pr',
+				[2,0]	=>	'explain_efp',
+				[2,1]	=>	'explain_pbp',
+				[2,2]	=>	:explain_deductible,
+				[2,3]	=>	'explain_sl',
+				[2,4]	=>	'explain_slg',
+				[2,5]	=>	'explain_slg',
+				[2,6]	=>	'explain_fd',
+				[2,7]	=>	:explain_lppv,
+				[2,8]	=>	'explain_g',
+			}
+		end
 		def result_list_components
 			{
 				[0,0]		=>	:limitation_text,

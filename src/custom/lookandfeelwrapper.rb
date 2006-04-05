@@ -188,6 +188,29 @@ module ODDB
 			:external_css	=>	'http://www.atupri.ch/misc/generika.css',
 		}
 		HTML_ATTRIBUTES = { }
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_complementary,
+				[0,3]	=>	:explain_vaccine,
+				[0,4]	=>	'explain_unknown',
+				[0,6]	=>	'explain_li',
+				[0,7]	=>	'explain_fi',
+				[0,8]	=>	'explain_pi',
+				[0,9]	=>	'explain_narc',
+				[1,0]	=>	'explain_a',
+				[1,1]	=>	'explain_h',
+				[1,2]	=>	'explain_p',
+				[1,3]	=>	'explain_pr',
+				[1,4]	=>	'explain_efp',
+				[1,5]	=>	'explain_pbp',
+				[1,6]	=>	:explain_deductible,
+				[1,7]	=>	'explain_sl',
+				[1,8]	=>	'explain_slo',
+				[1,9]	=>	'explain_slg',
+			}
+		end
 		def navigation
 			[ :legal_note ] + zone_navigation + [ :home ]
 		end
@@ -267,6 +290,34 @@ module ODDB
 		RESOURCES = {
 			:external_css	=>	'http://www.just-medical.com/css/oddb.css',
 		}
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_comarketing,
+				[0,3]	=>	:explain_complementary,
+				[0,4]	=>	:explain_vaccine,
+				[0,5]	=>	'explain_unknown',
+				[0,6]	=>	'explain_expired',
+				[0,7]	=>	:explain_cas,
+				[1,0]	=>	'explain_li',
+				[1,1]	=>	'explain_fi',
+				[1,2]	=>	'explain_pi',
+				[1,3]	=>	'explain_narc',
+				[1,4]	=>	'explain_a',
+				[1,5]	=>	'explain_h',
+				[1,6]	=>	'explain_p',
+				[1,7]	=>	'explain_pr',
+				[2,0]	=>	'explain_pbp',
+				[2,1]	=>	:explain_deductible,
+				[2,2]	=>	'explain_sl',
+				[2,3]	=>	'explain_slg',
+				[2,4]	=>	'explain_slg',
+				[2,5]	=>	'explain_fd',
+				[2,6]	=>	:explain_lppv,
+				[2,7]	=>	'explain_g',
+			}
+		end
 		def navigation
 			[ :meddrugs_update, :legal_note, :data_declaration ] \
 				+ zone_navigation + [ :home ]
@@ -375,6 +426,34 @@ module ODDB
 		RESOURCES = { 
 			:external_css	=>	'http://www.medical-tribune.ch/css/oddb_deutsch.css',
 		}
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_comarketing,
+				[0,3]	=>	:explain_complementary,
+				[0,4]	=>	:explain_vaccine,
+				[0,5]	=>	'explain_unknown',
+				[0,6]	=>	'explain_expired',
+				[0,7]	=>	:explain_cas,
+				[1,0]	=>	'explain_li',
+				[1,1]	=>	'explain_fi',
+				[1,2]	=>	'explain_pi',
+				[1,3]	=>	'explain_narc',
+				[1,4]	=>	'explain_a',
+				[1,5]	=>	'explain_h',
+				[1,6]	=>	'explain_p',
+				[1,7]	=>	'explain_pr',
+				[2,0]	=>	'explain_efp',
+				[2,1]	=>	'explain_pbp',
+				[2,2]	=>	'explain_sl',
+				[2,3]	=>	'explain_slg',
+				[2,4]	=>	'explain_slg',
+				[2,5]	=>	'explain_fd',
+				[2,6]	=>	:explain_lppv,
+				[2,7]	=>	'explain_g',
+			}
+		end
 		def languages
 			[:de, :fr, :en]
 		end
@@ -413,6 +492,34 @@ module ODDB
 		RESOURCES = { 
 			:external_css	=>	'http://www.medical-tribune.ch/css/oddb_public.css',
 		}
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_comarketing,
+				[0,3]	=>	:explain_complementary,
+				[0,4]	=>	:explain_vaccine,
+				[0,5]	=>	'explain_unknown',
+				[0,6]	=>	'explain_expired',
+				[0,7]	=>	:explain_cas,
+				[1,0]	=>	'explain_li',
+				[1,1]	=>	'explain_fi',
+				[1,2]	=>	'explain_pi',
+				[1,3]	=>	'explain_narc',
+				[1,4]	=>	'explain_a',
+				[1,5]	=>	'explain_h',
+				[1,6]	=>	'explain_p',
+				[1,7]	=>	'explain_pr',
+				[2,0]	=>	'explain_efp',
+				[2,1]	=>	'explain_pbp',
+				[2,2]	=>	'explain_sl',
+				[2,3]	=>	'explain_slg',
+				[2,4]	=>	'explain_slg',
+				[2,5]	=>	'explain_fd',
+				[2,6]	=>	:explain_lppv,
+				[2,7]	=>	'explain_g',
+			}
+		end
 		def languages
 			[:de, :fr, :en]
 		end
@@ -444,7 +551,55 @@ module ODDB
 			:external_css,
 		]
 		RESOURCES = {
-			:external_css	=>	'http://www.gerimedi.ch/css/oddb.css',
+			#:external_css	=>	'http://www.gerimedi.ch/css/oddb.css',
+			:external_css	=>	'http://kunde.aixede.ch/gerimedi/screen.css',
 		}
+		DICTIONARIES = {
+			'de'	=>	{
+				:explain_generic					=>	'Blau&nbsp;=&nbsp;Generikum',
+			},
+			'fr'	=>	{
+				:explain_generic					=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
+			},
+			'en'	=>	{
+				:explain_generic					=>	'Blue&nbsp;=&nbsp;Generic Drug',
+			},
+		}
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_complementary,
+				[0,3]	=>	:explain_cas,
+				[1,0]	=>	'explain_fi',
+				[1,1]	=>	'explain_pi',
+				[1,2]	=>	'explain_pbp',
+				[1,3]	=>	:explain_deductible,
+				[2,0]	=>	'explain_sl',
+				[2,1]	=>	'explain_slg',
+				[2,2]	=>	'explain_fd',
+				[2,3]	=>	'explain_g',
+			}
+		end
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:complementary_type,
+				[4,0,0]	=>	'result_item_start',
+				[4,0,1]	=>	:name_base,
+				[4,0,2]	=>	'result_item_end',
+				[5,0]		=>	:deductible,
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_public,
+				[10,0]	=>	:company_name,
+				[11,0]	=>	:ikscat,
+				[12,0]	=>	:feedback,
+				[13,0]	=>  :google_search,
+			}
+		end
 	end
 end
