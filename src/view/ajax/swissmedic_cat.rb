@@ -18,8 +18,6 @@ class SwissmedicCat < HtmlGrid::Composite
 	end
 	def reorganize_components
 		y=0
-		puts @model.class
-		puts @model.sl_generic_type
 		if(cat = @model.ikscat)
 			iks = "ikscat_" << cat.to_s.downcase
 			@components.store([0,y], :ikscat)

@@ -24,11 +24,19 @@ module ODDB
 				end
 			end
 			def deductible(model, session=@session)
+				@deductible_count ||= 0
+				@deductible_count += 1
 				span = HtmlGrid::Span.new(model, @session, self)
-				unless(deductible = model.deductible)
-					span.set_attribute('title', @lookandfeel.lookup('deductible_unknown_title'))
+				tooltip = HtmlGrid::Div.new(model, @session, self)
+				if(deductible = model.deductible)
+					tooltip.value = @lookandfeel.lookup(:deductible_title, 
+																							@lookandfeel.lookup(deductible))
+				else
+					tooltip.value = @lookandfeel.lookup(:deductible_unknown_title)
 				end
-				span.value = @lookandfeel.lookup(deductible || 'deductible_unknown')
+				span.css_id = "deductible_#{@deductible_count}"
+				span.dojo_tooltip = tooltip
+				span.value = @lookandfeel.lookup(deductible || :deductible_unknown)
 				span
 			end
 			def fachinfo(model, session=@session, css='result-infos')
