@@ -439,4 +439,12 @@ module ODDB
 			[]
 		end
 	end
+	class LookandfeelGeriMedi < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:external_css,
+		]
+		RESOURCES = {
+			:external_css	=>	'http://www.gerimedi.ch/css/oddb.css',
+		}
+	end
 end

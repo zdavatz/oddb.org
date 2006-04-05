@@ -22,6 +22,9 @@ module ODDB
 				LookandfeelExtern,
 				LookandfeelGenerika,
 			],
+			'gerimedi'=>	[
+				LookandfeelGeriMedi, 
+			],
 			'just-medical'=>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,
