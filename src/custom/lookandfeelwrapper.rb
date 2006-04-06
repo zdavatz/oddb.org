@@ -417,9 +417,11 @@ module ODDB
 	class LookandfeelMedicalTribune < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:drugs, 
+			:home_drugs,
+			:home_migel,
 			:external_css,
 			:help_link,
-			:logout,
+			#:logout,
 			:migel,
 			:sequences,
 		]
@@ -485,9 +487,10 @@ module ODDB
 	class LookandfeelMedicalTribune1 < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:drugs, 
+			:home_drugs,
 			:external_css,
 			:help_link,
-			:logout,
+			#:logout,
 		]
 		RESOURCES = { 
 			:external_css	=>	'http://www.medical-tribune.ch/css/oddb_public.css',
@@ -548,7 +551,12 @@ module ODDB
 	end
 	class LookandfeelGeriMedi < SBSM::LookandfeelWrapper
 		ENABLED = [
-			:external_css,
+			#:external_css,
+			:home_drugs,
+			:help_link,
+			:faq_link,
+			:ywesee_contact,
+			:sequences,
 		]
 		RESOURCES = {
 			#:external_css	=>	'http://www.gerimedi.ch/css/oddb.css',
@@ -570,15 +578,14 @@ module ODDB
 				[0,0]	=>	:explain_original,
 				[0,1]	=>	:explain_generic,
 				[0,2]	=>	:explain_complementary,
-				[0,3]	=>	:explain_cas,
-				[1,0]	=>	'explain_fi',
-				[1,1]	=>	'explain_pi',
-				[1,2]	=>	'explain_pbp',
-				[1,3]	=>	:explain_deductible,
-				[2,0]	=>	'explain_sl',
-				[2,1]	=>	'explain_slg',
-				[2,2]	=>	'explain_fd',
-				[2,3]	=>	'explain_g',
+				[0,4]	=>	'explain_fi',
+				[0,5]	=>	'explain_pi',
+				[1,0]	=>	'explain_pbp',
+				[1,1]	=>	:explain_deductible,
+				[1,2]	=>	'explain_sl',
+				[1,3]	=>	'explain_slg',
+				[1,4]	=>	'explain_fd',
+				[1,5]	=>	'explain_g',
 			}
 		end
 		def result_list_components
@@ -590,16 +597,19 @@ module ODDB
 				[4,0,0]	=>	'result_item_start',
 				[4,0,1]	=>	:name_base,
 				[4,0,2]	=>	'result_item_end',
-				[5,0]		=>	:deductible,
-				[6,0]		=>	:galenic_form,
-				[7,0]		=>	:most_precise_dose,
-				[8,0]		=>	:comparable_size,
-				[9,0]		=>	:price_public,
+				[5,0]		=>	:galenic_form,
+				[6,0]		=>	:most_precise_dose,
+				[7,0]		=>	:comparable_size,
+				[8,0]		=>	:price_public,
+				[9,0]		=>	:deductible,
 				[10,0]	=>	:company_name,
 				[11,0]	=>	:ikscat,
 				[12,0]	=>	:feedback,
 				[13,0]	=>  :google_search,
 			}
+		end
+		def section_style
+			'font-size: 20px; margin-top: 8px; line-height: 120%'
 		end
 	end
 end

@@ -3165,5 +3165,8 @@ Zeno Davatz
 				[18,0]	=>	:notify,
 			}
 		end
+		def section_style
+			'font-size: 13px; margin-top: 4px; line-height: 120%'
+		end
 	end
 end

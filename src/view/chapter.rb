@@ -9,7 +9,6 @@ module ODDB
 	module View
 		class Chapter < HtmlGrid::Value
 			PAR_STYLE = 'padding-bottom: 4px; white-space: normal'
-			SEC_STYLE = 'font-size: 13px; margin-top: 4px; line-height: 120%'
 			SUB_STYLE = 'font-style: italic' 
 			def formats(context, paragraph)
 				res = ''
@@ -57,7 +56,7 @@ module ODDB
 				context.h3 { self.escape(@value.heading) }
 			end
 			def sections(context, sections)
-				section_attr = { 'style' => self.class::SEC_STYLE }
+				section_attr = { 'style' => @lookandfeel.section_style }
 				subhead_attr = { 'style' => self.class::SUB_STYLE }
 				#attr = {}
 				sections.collect { |section|
