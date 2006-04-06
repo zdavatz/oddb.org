@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::OrphanedFachinfos -- oddb -- 11.12.2003 -- rwaltert@ywesee.com
 
-require 'view/publictemplate'
-#require 'view/export'
+require 'view/drugs/privatetemplate'
 require 'view/alphaheader'
 require 'htmlgrid/link'
 
@@ -28,7 +27,7 @@ class OrphanedFachinfosList < HtmlGrid::List
 	}
 	include View::AlphaHeader
 end
-class OrphanedFachinfos < View::PrivateTemplate
+class OrphanedFachinfos < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::OrphanedFachinfosList
 	SNAPBACK_EVENT = :incomplete_registrations
 end

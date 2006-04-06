@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::GalenicGroups -- oddb -- 25.03.2003 -- andy@jetnet.ch
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/descriptionlist'
 require 'view/pointervalue'
 
@@ -23,7 +23,7 @@ class GalenicGroupsList < View::DescriptionList
 		:oid					=>	View::PointerLink,
 	}
 end
-class GalenicGroups < View::PrivateTemplate
+class GalenicGroups < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::GalenicGroupsList
 	SNAPBACK_EVENT = :galenic_groups
 end

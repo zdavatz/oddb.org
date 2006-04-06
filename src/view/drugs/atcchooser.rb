@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # View::Drugs::AtcChooser -- oddb -- 14.07.2003 -- mhuggler@ywesee.com
 
+require 'view/drugs/privatetemplate'
 require 'view/additional_information'
-require 'view/privatetemplate'
 require 'view/publictemplate'
 require 'htmlgrid/list'
 require 'view/pointervalue'
@@ -103,7 +103,7 @@ class AtcChooserComposite < HtmlGrid::Composite
 		[0,1]	=>	'component',
 	}
 end
-class AtcChooser < View::PrivateTemplate
+class AtcChooser < PrivateTemplate
 	CONTENT = View::Drugs::AtcChooserComposite
 	SNAPBACK_EVENT = :atc_chooser
 end

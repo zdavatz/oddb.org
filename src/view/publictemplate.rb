@@ -13,6 +13,7 @@ module ODDB
 		class PublicTemplate < HtmlGrid::Template
 			include View::Custom::HeadMethods
 			include HtmlGrid::DojoToolkit::DojoTemplate
+			DOJO_DEBUG = true
 			DOJO_REQUIRE = [ 'dojo.widget.Tooltip' ]
 			DOJO_PARSE_WIDGETS = false
 			CONTENT = nil

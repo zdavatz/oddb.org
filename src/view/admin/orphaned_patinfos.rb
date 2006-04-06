@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::Orphaned_patinfos -- oddb -- 20.11.2003 -- rwaltert@ywesee.com
 
-require 'view/publictemplate'
-#require 'view/export'
+require 'view/drugs/privatetemplate'
 require 'view/alphaheader'
 require 'htmlgrid/link'
 
@@ -29,7 +28,7 @@ class OrphanedPatinfosList < HtmlGrid::List
 	}
 	include View::AlphaHeader
 end
-class OrphanedPatinfos < View::PrivateTemplate
+class OrphanedPatinfos < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::OrphanedPatinfosList
 	SNAPBACK_EVENT = :incomplete_registrations
 end

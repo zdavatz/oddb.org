@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::Package -- oddb -- 14.03.2003 -- hwyss@ywesee.com 
 
-require 'view/publictemplate'
+require 'view/drugs/privatetemplate'
 require 'view/form'
 require 'view/pointervalue'
 require 'view/dataformat'
@@ -182,7 +182,7 @@ class DeductiblePackageComposite < View::Admin::RootPackageComposite
 		HtmlGrid::Value.new(:source, model.sequence, @session, self)
 	end
 end
-class Package < View::PrivateTemplate
+class Package < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::PackageComposite
 	SNAPBACK_EVENT = :result
 end

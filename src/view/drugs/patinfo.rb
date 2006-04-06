@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Drugs::Patinfo -- oddb -- 11.11.2003 -- rwaltert@ywesee.com
 
-require 'view/popuptemplate'
+require 'view/drugs/privatetemplate'
 require 'view/chapter'
 require 'view/printtemplate'
 require 'model/patinfo'
@@ -112,7 +112,7 @@ class PatinfoPrintComposite < View::Drugs::PatinfoComposite
 	INNER_COMPOSITE = View::Drugs::PatinfoInnerComposite
 	PRINT_TYPE = :print_type_patinfo
 end
-class Patinfo < View::PrivateTemplate
+class Patinfo < PrivateTemplate
 	CONTENT = View::Drugs::PatinfoComposite
 	SNAPBACK_EVENT = :result
 end

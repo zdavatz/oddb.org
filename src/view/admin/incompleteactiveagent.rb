@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::IncompleteActiveAgent -- oddb -- 23.06.2003 -- hwyss@ywesee.com 
 
+require 'view/drugs/privatetemplate'
 require 'view/admin/activeagent'
 
 module ODDB
@@ -32,7 +33,7 @@ class IncompleteActiveAgentComposite < View::Admin::ActiveAgentComposite
 		HtmlGrid::Value.new(:source, model.parent(session.app), session, self)	
 	end
 end
-class IncompleteActiveAgent < View::PrivateTemplate
+class IncompleteActiveAgent < View::Drugs::PrivateTemplate
 	SNAPBACK_EVENT = :incomplete_registrations
 	CONTENT = View::Admin::IncompleteActiveAgentComposite
 end

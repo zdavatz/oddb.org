@@ -4,7 +4,7 @@
 require 'htmlgrid/composite'
 require 'htmlgrid/datevalue'
 require 'htmlgrid/list'
-require 'view/popuptemplate'
+require 'view/drugs/privatetemplate'
 require 'view/resultcolors'
 require 'view/resultfoot'
 require 'view/dataformat'
@@ -107,10 +107,10 @@ class CompareComposite < HtmlGrid::Composite
 		[0,1] => View::ResultFoot,
 	}
 end
-class Compare < View::PrivateTemplate
+class Compare < PrivateTemplate
 	include View::SponsorMethods
-	SNAPBACK_EVENT = :result
 	CONTENT = CompareComposite
+	SNAPBACK_EVENT = :result
 end
 class EmptyCompareComposite < HtmlGrid::Composite
 	COMPONENTS = {
@@ -140,7 +140,7 @@ class EmptyCompareComposite < HtmlGrid::Composite
 		link
 	end
 end
-class EmptyCompare < View::PrivateTemplate
+class EmptyCompare < PrivateTemplate
 	CONTENT = View::Drugs::EmptyCompareComposite
 	SNAPBACK_EVENT = :result
 end

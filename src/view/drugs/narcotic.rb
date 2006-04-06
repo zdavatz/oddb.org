@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #View::Narcotic -- oddb -- 08.11.2005 -- spfenninger@ywesee.com
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/resultfoot'
 require 'view/additional_information'
 
@@ -110,7 +110,7 @@ module ODDB
 					end
 				end
 			end
-			class Narcotic < View::PrivateTemplate
+			class Narcotic < PrivateTemplate
 				CONTENT = View::Drugs::NarcoticComposite
 				SNAPBACK_EVENT = :result
 			end
@@ -127,7 +127,7 @@ module ODDB
 				OFFSET_STEP = [1,0]
 				OMIT_HEADER = true
 			end
-			class NarcoticPlus < View::PrivateTemplate
+			class NarcoticPlus < PrivateTemplate
 				CONTENT = View::Drugs::NarcoticPlusComposite
 				SNAPBACK_EVENT = :result
 			end

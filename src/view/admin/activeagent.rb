@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::ActiveAgent -- oddb -- 22.04.2003 -- hwyss@ywesee.com 
 
-require 'view/publictemplate'
+require 'view/drugs/privatetemplate'
 require 'view/form'
 require 'htmlgrid/errormessage'
 require 'htmlgrid/value'
@@ -87,7 +87,7 @@ class RootActiveAgentComposite < View::Admin::ActiveAgentComposite
 		HtmlGrid::Value.new(:source, model.sequence, @session, self)
 	end
 end
-class ActiveAgent < View::PrivateTemplate
+class ActiveAgent < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::ActiveAgentComposite
 	SNAPBACK_EVENT = :result
 end

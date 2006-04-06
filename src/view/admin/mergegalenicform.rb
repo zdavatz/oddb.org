@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::MergeGalenicForm -- oddb -- 04.04.2003 -- hwyss@ywesee.com 
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/form'
 require 'htmlgrid/button'
 require 'htmlgrid/composite'
@@ -46,7 +46,7 @@ class MergeGalenicFormComposite < HtmlGrid::Composite
 		@lookandfeel.lookup(:merge_galenic_form, @model.sequence_count)
 	end
 end
-class MergeGalenicForm < View::PrivateTemplate
+class MergeGalenicForm < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::MergeGalenicFormComposite
 	SNAPBACK_EVENT = :galenic_groups
 end

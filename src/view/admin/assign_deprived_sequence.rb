@@ -2,13 +2,13 @@
 # View::Admin::AssignDeprivedSequences -- oddb -- 15.12.2003 -- rwaltert@ywesee.com
 
 
+require 'view/drugs/privatetemplate'
 require 'htmlgrid/list'
 require 'htmlgrid/link'
 require 'htmlgrid/inputradio'
 require 'view/additional_information'
 require 'view/form'
 require 'view/searchbar'
-require 'view/publictemplate'
 require 'view/admin/orphaned_languages'
 require 'view/admin/patinfo_deprived_sequences'
 require 'view/admin/registration'
@@ -90,7 +90,7 @@ class AssignDeprivedSequenceComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
 end
-class AssignDeprivedSequence < View::PrivateTemplate
+class AssignDeprivedSequence < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::AssignDeprivedSequenceComposite
 	SNAPBACK_EVENT = :patinfo_deprived_sequences
 end

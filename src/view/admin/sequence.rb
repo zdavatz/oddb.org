@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::Sequence -- oddb -- 11.03.2003 -- hwyss@ywesee.com 
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/form'
 require 'view/dataformat'
 require 'view/pointervalue'
@@ -364,7 +364,7 @@ class RootSequenceComposite < View::Admin::SequenceComposite
 	DEFAULT_CLASS = HtmlGrid::Value
 	PACKAGES = View::Admin::RootSequencePackages
 end
-class Sequence < View::PrivateTemplate
+class Sequence < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::SequenceComposite
 	SNAPBACK_EVENT = :result
 end

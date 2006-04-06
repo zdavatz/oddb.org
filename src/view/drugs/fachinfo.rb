@@ -1,10 +1,9 @@
 #!/usr/bin/env ruby
 # View::Drugs::Fachinfo -- oddb -- 17.09.2003 -- rwaltert@ywesee.com
 
-require 'view/popuptemplate'
+require 'view/drugs/privatetemplate'
 require 'view/chapter'
 require 'view/printtemplate'
-require 'view/privatetemplate'
 require 'view/additional_information'
 require 'view/changelog'
 
@@ -220,11 +219,11 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 		super(model, session)
 	end
 end
-class Fachinfo < View::PrivateTemplate
+class Fachinfo < PrivateTemplate
 	CONTENT = View::Drugs::FachinfoComposite
 	SNAPBACK_EVENT = :result
 end
-class FachinfoPreview < View::PrivateTemplate
+class FachinfoPreview < PrivateTemplate
 	CONTENT = View::Drugs::FachinfoPreviewComposite
 end
 class FachinfoPrint < View::PrintTemplate
@@ -245,7 +244,7 @@ class RootFachinfoComposite < View::Drugs::FachinfoComposite
 	CHAPTER_CLASS = View::EditChapterForm
 	CHOOSER_CLASS = EditFiChapterChooser
 end
-class RootFachinfo < View::PrivateTemplate
+class RootFachinfo < PrivateTemplate
 	CONTENT = View::Drugs::RootFachinfoComposite
 	SNAPBACK_EVENT = :result
 	def other_html_headers(context)

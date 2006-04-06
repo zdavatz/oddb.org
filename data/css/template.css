@@ -1528,9 +1528,9 @@ form.search {
 	margin: 0px;
 }
 input.search {
-	width : 260px;
+	width : 160px;
 } 
-input.search-center {
+td.search-center input.search {
 	width : 260px;
 	padding : 0px;
 	margin : 7px;

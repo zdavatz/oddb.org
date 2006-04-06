@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Drugs::Package -- oddb -- 15.02.2005 -- hwyss@ywesee.com
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/additional_information'
 require 'view/admin/sequence'
 require 'htmlgrid/booleanvalue'
@@ -122,7 +122,7 @@ class PackageComposite < HtmlGrid::Composite
 		end
 	end
 end
-class Package < View::PrivateTemplate
+class Package < PrivateTemplate
 	CONTENT = View::Drugs::PackageComposite
 	SNAPBACK_EVENT = :result
 end

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::IncompleteRegistration -- oddb -- 19.06.2003 -- hwyss@ywesee.com 
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/admin/registration'
 require 'htmlgrid/value'
 require 'htmlgrid/text'
@@ -134,7 +134,7 @@ class IncompleteRegistrationComposite < View::Admin::RootRegistrationComposite
 		[0,3]	=>	'composite',
 	}
 end
-class IncompleteRegistration < View::PrivateTemplate
+class IncompleteRegistration < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::IncompleteRegistrationComposite
 	SNAPBACK_EVENT = :incomplete_registrations
 end

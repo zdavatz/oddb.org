@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::Indication -- oddb -- 07.07.2003 -- hwyss@ywesee.com 
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/descriptionform'
 
 module ODDB
@@ -20,7 +20,7 @@ class IndicationComposite < HtmlGrid::Composite
 		[0,0]	=>	'th',
 	}
 end
-class Indication < View::PrivateTemplate
+class Indication < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::IndicationComposite
 	SNAPBACK_EVENT = :indications
 end

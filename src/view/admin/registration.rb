@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::Registration -- oddb -- 07.03.2003 -- hwyss@ywesee.com 
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'htmlgrid/errormessage'
 require 'htmlgrid/datevalue'
 require 'htmlgrid/inputdate'
@@ -264,7 +264,7 @@ class RootRegistrationComposite < View::Admin::RegistrationComposite
 		[0,3]	=>	"subheading",
 	}
 end
-class Registration < View::PrivateTemplate
+class Registration < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::RegistrationComposite
 	SNAPBACK_EVENT = :result
 end

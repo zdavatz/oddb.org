@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
 # View::Druges::Orphaned Patinfo -- oddb -- 20.11.2003 -- rwaltert@ywesee.com
 
-require 'view/publictemplate'
+require 'view/drugs/privatetemplate'
 require 'view/admin/orphaned_languages'
-#require 'view/export'
 require 'htmlgrid/link'
 require 'htmlgrid/list'
 require 'htmlgrid/form'
@@ -78,7 +77,7 @@ class OrphanedPatinfoComposite < HtmlGrid::Composite
 		View::Admin::OrphanedPatinfoList.new(model.meanings, session, self)
 	end
 end
-class OrphanedPatinfo < View::PrivateTemplate
+class OrphanedPatinfo < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::OrphanedPatinfoComposite
 	SNAPBACK_EVENT = :orphaned_patinfos
 end

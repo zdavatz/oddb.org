@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::SelectSubstance -- oddb -- 28.04.2003 -- benfay@ywesee.com
 
-require 'view/publictemplate'
+require 'view/drugs/privatetemplate'
 require 'view/privatetemplate'
 require 'view/form'
 require 'htmlgrid/list'
@@ -111,7 +111,7 @@ class SelectSubstanceComposite < HtmlGrid::Composite
 		View::Admin::AssignedList.new(model.assigned, session, self)	
 	end
 end	
-class SelectSubstance < View::PrivateTemplate
+class SelectSubstance < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::SelectSubstanceComposite
 	SNAPBACK_EVENT = :result
 end

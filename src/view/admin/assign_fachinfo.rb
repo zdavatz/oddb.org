@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::AssignFachinfo -- oddb -- 21.02.2006 -- hwyss@ywesee.com
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/admin/assign_deprived_sequence'
 require 'view/additional_information'
 require 'view/form'
@@ -71,7 +71,7 @@ class AssignFachinfoComposite < HtmlGrid::Composite
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 end
-class AssignFachinfo < PrivateTemplate
+class AssignFachinfo < View::Drugs::PrivateTemplate
 	CONTENT = AssignFachinfoComposite
 end
 		end
