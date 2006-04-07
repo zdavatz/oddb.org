@@ -16,7 +16,7 @@ module ODDB
 			attr_accessor :sl_dossier, :iksnr, :ikscd, :introduction_date, 
 				:price_public, :price_exfactory, :pharmacode, :limitation,
 				:limitation_points, :generic_type, :name, :company, :pointer,
-				:guessed_ikscd, :medwin_ikskey, :sl_ikskey
+				:guessed_ikscd, :medwin_ikskey, :sl_ikskey, :deductible
 			def ikskey
 				[@iksnr, @ikscd].join
 			end
@@ -37,15 +37,11 @@ module ODDB
 				end
 			end
 			def data
-				deductible = if(@generic_type == :original)
-											 'deductible_o'
-										 else
-											 'deductible_g'
-										 end
 				data = {
 					:pharmacode				=>	@pharmacode,
 					:sl_generic_type	=>  @generic_type,
-					:deductible				=>	deductible,
+					:generic_type			=>	@generic_type,
+					:deductible				=>	@deductible,
 				}
 				if(@price_public)
 					data.store(:price_public, @price_public)
@@ -457,6 +453,8 @@ module ODDB
 						package.generic_type = :generic
 					elsif(/o/i.match(str))
 						package.generic_type = :original
+					else
+						package.generic_type = :unknown
 					end
 				end
 				if(cell = row.at(6))
@@ -473,6 +471,11 @@ module ODDB
 					package.limitation = (cell.to_s(ENCODING).downcase=='y')
 				end
 				package.limitation_points = row.at(11).to_i
+				if(row.at(15).to_i == 1)
+					package.deductible = :deductible_o
+				else
+					package.deductible = :deductible_g
+				end
 				medwin_iks = nil
 				unless(pcode == '0')
 					package.pharmacode = pcode
