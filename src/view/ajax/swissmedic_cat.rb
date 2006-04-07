@@ -37,7 +37,8 @@ class SwissmedicCat < HtmlGrid::Composite
 			@components.store([1,y], "sl_#{gt}")
 			y += 1
 		end
-		if(@lookandfeel.enabled?(:deductible) && (deductible = @model.deductible))
+		if(@lookandfeel.result_list_components.has_value?(:deductible) \
+			 && (deductible = @model.deductible))
 			@components.store([0,y], "deductible")
 			@components.store([1,y], :deductible)
 			y += 1
