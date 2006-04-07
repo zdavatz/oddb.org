@@ -40,7 +40,6 @@ module ODDB
 				data = {
 					:pharmacode				=>	@pharmacode,
 					:sl_generic_type	=>  @generic_type,
-					:generic_type			=>	@generic_type,
 					:deductible				=>	@deductible,
 				}
 				if(@price_public)
@@ -615,7 +614,7 @@ BSV-XLS Swissmedic-Nr: %5s %3s
 		def update_registration(package)
 			ptr = Persistence::Pointer.new([:registration, package.iksnr])
 			if(registration = ptr.resolve(@app))
-				registration
+				@app.update(ptr, { :generic_type => package.generic_type })
 			else
 				@unknown_registrations.push(package)
 				nil
