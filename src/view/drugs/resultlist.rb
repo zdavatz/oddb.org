@@ -103,7 +103,7 @@ class ResultList < HtmlGrid::List
 		:comparable_size		=>	'result-r',
 		:price_exfactory		=>	'result-r',
 		:price_public				=>	'result-pubprice',
-		:deductible					=>	'deductible',
+		:deductible					=>	'result-b-r',
 		:substances					=>	'result-i',
 		:company_name				=>	'result-i',
 		:ikscat							=>	'result-i',

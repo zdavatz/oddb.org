@@ -35,6 +35,7 @@ module ODDB
 					tooltip.value = @lookandfeel.lookup(:deductible_unknown_title)
 				end
 				span.css_id = "deductible_#{@deductible_count}"
+				span.css_class = deductible.to_s
 				span.dojo_tooltip = tooltip
 				span.value = @lookandfeel.lookup(deductible || :deductible_unknown)
 				span

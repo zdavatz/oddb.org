@@ -1926,21 +1926,19 @@ td.tab {
 div.dojoTooltip {
 	min-width: 300px;
 }
-td.deductible-original, td.deductible-original-bg, td.deductible-generic,
-td.deductible-generic-bg, td.deductible-unknown, td.deductible-unknown-bg,
-td.deductible-complementary, td.deductible-complementary-bg, 
-td.deductible-comarketing, td.deductible-comarketing-bg
-{
-	padding: 2px;
-}
-td.deductible-original span, td.deductible-original-bg span,
-td.deductible-generic span, td.deductible-generic-bg span,
-td.deductible-unknown span, td.deductible-unknown-bg span,
-td.deductible-complementary span, td.deductible-complementary-bg span,
-td.deductible-comarketing span, td.deductible-comarketing-bg span
+span.deductible_g
 {
 	color : black;
-	background : #FFF455;
+	background-color : #FFF455;
+	font-weight : bold;
+	text-align : center;
+	text-decoration : none;
+	padding : 2px 2px 2px 4px;
+}
+span.deductible_o
+{
+	color : black;
+	background-color : #ffc455;
 	font-weight : bold;
 	text-align : center;
 	text-decoration : none;

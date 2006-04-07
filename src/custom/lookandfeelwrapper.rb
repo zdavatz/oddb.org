@@ -609,7 +609,7 @@ module ODDB
 			}
 		end
 		def section_style
-			'font-size: 20px; margin-top: 8px; line-height: 120%'
+			'font-size: 16px; margin-top: 8px; line-height: 120%; max-width: 600px'
 		end
 	end
 end
