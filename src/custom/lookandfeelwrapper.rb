@@ -578,6 +578,7 @@ module ODDB
 				[0,0]	=>	:explain_original,
 				[0,1]	=>	:explain_generic,
 				[0,2]	=>	:explain_complementary,
+				[0,3]	=>	'explain_expired',
 				[0,4]	=>	'explain_fi',
 				[0,5]	=>	'explain_pi',
 				[1,0]	=>	'explain_pbp',
