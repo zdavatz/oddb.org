@@ -116,6 +116,14 @@ class CsvResult < HtmlGrid::Component
 	def sl_entry(pack)
 		boolean(pack.sl_entry)
 	end
+	def sl_generic(pack)
+		case pack.sl_generic_type
+		when :original
+			'O'
+		when :generic
+			'G'
+		end
+	end
 	def to_html(context)
 		to_csv(CSV_KEYS)
 	end

@@ -70,7 +70,7 @@ module ODDB
 				:ikscat, :sl_entry, :introduction_date, :limitation,
 				:limitation_points, :limitation_text, :lppv, :registration_date,
 				:expiration_date, :inactive_date, :export_flag, :casrn, :is_generic,
-				:has_generic, :deductible ]
+				:has_generic, :sl_generic, :deductible ]
 			session = SessionStub.new
 			session.language = 'de'
 			session.flavor = 'gcc'
