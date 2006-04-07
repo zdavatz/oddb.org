@@ -39,6 +39,9 @@ class CsvResult < HtmlGrid::Component
 			narc.casrn
 		}.compact.join(',')
 	end
+	def deductible(pack)
+		@lookandfeel.lookup(pack.deductible)
+	end
 	def expiration_date(pack)
 		formatted_date(pack, :expiration_date)
 	end
