@@ -23,6 +23,18 @@ module ODDB
 					atc.code
 				end
 			end
+			def ddd_price(model, session=@session)
+				if((atc = model.atc_class) && atc.has_ddd? && (ddd = atc.ddds['O']) \
+					&& (grp = model.galenic_form.galenic_group) \
+					&& grp.has_description?('Tabletten') \
+					&& (price = model.price_public) \
+					&& (ddose = ddd.dose) && (mdose = model.dose))
+					dose = ddose / mdose.want(ddose.unit)
+					size = (price.to_f / model.comparable_size.to_f)
+					cost = dose * size
+					@lookandfeel.format_price(cost)
+				end
+			end
 			def deductible(model, session=@session)
 				@deductible_count ||= 0
 				@deductible_count += 1

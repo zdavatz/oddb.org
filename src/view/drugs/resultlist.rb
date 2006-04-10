@@ -109,6 +109,7 @@ class ResultList < HtmlGrid::List
 		:substances					=>	'result-i',
 		:company_name				=>	'result-i',
 		:ikscat							=>	'result-i',
+		:ddd_price					=>	'result-r',
 		:registration_date	=>	'result-i',
 		:feedback						=>	'result-b-r',
 		:google_search			=>	'result-b-r',
