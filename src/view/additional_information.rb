@@ -29,7 +29,7 @@ module ODDB
 				span = HtmlGrid::Span.new(model, @session, self)
 				tooltip = HtmlGrid::Div.new(model, @session, self)
 				deductible = if(@lookandfeel.enabled?(:just_medical_structure, false) \
-											 && Time.now >= Time.local(2006,4,1)) #remove this in April
+											 && Time.now >= Time.local(2006,5,1)) #remove this in May
 											 model.deductible_m
 										 else
 											 model.deductible
