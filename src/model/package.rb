@@ -153,7 +153,8 @@ Grammar OddbSize
 			:addition, :scale, :sl_entry, :narcotics
 		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type,
 			:price_exfactory, :price_public, :pretty_dose, :pharmacode, :market_date,
-			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv
+			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
+			:deductible_m # for just-medical
 		alias :pointer_descr :ikscd
 		registration_data :complementary_type, :expiration_date, :expired?,
 			:export_flag, :generic_type, :inactive_date, :pdf_fachinfos,

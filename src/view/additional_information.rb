@@ -28,7 +28,12 @@ module ODDB
 				@deductible_count += 1
 				span = HtmlGrid::Span.new(model, @session, self)
 				tooltip = HtmlGrid::Div.new(model, @session, self)
-				if(deductible = model.deductible)
+				deductible = if(@lookandfeel.enabled?(:just_medical_structure, false))
+											 model.deductible_m
+										 else
+											 model.deductible
+										 end
+				if(deductible)
 					tooltip.value = @lookandfeel.lookup(:deductible_title, 
 																							@lookandfeel.lookup(deductible))
 				else

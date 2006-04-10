@@ -58,7 +58,7 @@ class PackageForm < View::Form
 		[1,8,0]	=>	:delete_item,
 	}
 	COMPONENT_CSS_MAP = {
-		[0,0,4,7]	=>	'standard',
+		[0,0,4,6]	=>	'standard',
 		[3,3]			=>	'list',
 	}
 	CSS_MAP = {
@@ -127,15 +127,18 @@ class DeductiblePackageForm < View::Admin::PackageInnerComposite
 		[2,3]		=>	:sl_entry,
 		[0,4]		=>	:price_exfactory,
 		[2,4]		=>	:price_public,
-		[0,5]		=>	:deductible,
+		[0,5]		=>	:deductible_m,
 		[1,6]		=>	:submit,
 	}
 	SYMBOL_MAP = {
-		:deductible	=>	HtmlGrid::Select,
-		:sl_entry	=>	HtmlGrid::BooleanValue,
+		:deductible_m	=>	HtmlGrid::Select,
+		:sl_entry			=>	HtmlGrid::BooleanValue,
 	}
 	CSS_MAP = {
 		[0,0,4,7]	=>	'list',
+	}
+	LOOKANDFEEL_MAP = {
+		:deductible_m	=>	:deductible,	
 	}
 end
 class PackageComposite < HtmlGrid::Composite

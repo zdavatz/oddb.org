@@ -335,7 +335,7 @@ module ODDB
 				[6,0]		=>	:galenic_form,
 				[7,0]		=>	:most_precise_dose,
 				[8,0]		=>	:comparable_size,
-				[9,0]	=>	:price_public,
+				[9,0]		=>	:price_public,
 				[10,0]	=>	:deductible,
 				[11,0]	=>	:substances,
 				[12,0]	=>	:company_name,
