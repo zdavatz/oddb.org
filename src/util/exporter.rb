@@ -44,7 +44,6 @@ module ODDB
 			export_yaml
 			export_oddbdat
 			export_csv
-			export_generics_xls
 			export_doc_csv
 		rescue StandardError => e
 			EXPORT_SERVER.clear
@@ -97,8 +96,7 @@ module ODDB
 		def export_generics_xls
 			plug = XlsExportPlugin.new(@app)
 			plug.export_generics
-			EXPORT_SERVER.clear
-			sleep(30)
+			plug
 		end
 		def export_swissdrug_xls(date = Date.today)
 			plug = OuwerkerkPlugin.new(@app)

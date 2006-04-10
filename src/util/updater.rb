@@ -42,15 +42,6 @@ module ODDB
 			@app = app
 			@smj_updated = false
 		end
-		def export_ouwerkerk(date = Date.today)
-			subj = 'Med-Drugs' 
-			wrap_update(OuwerkerkPlugin, subj) {
-				plug = Exporter.new(@app).export_swissdrug_xls
-				log = Log.new(date)
-				log.update_values(log_info(plug))
-				log.notify(subj)
-			}
-		end
 		def export_competition_xls(company, db_path=nil)
 			subj = "Generika-Preisvergleich #{company.name}"
 			wrap_update(XlsExportPlugin, subj) {
@@ -67,6 +58,24 @@ module ODDB
 				if(comp.competition_email)
 					export_competition_xls(comp, db_path)
 				end
+			}
+		end
+		def export_generics_xls(date = Date.today)
+			subj = 'Generikaliste'
+			wrap_update(XlsExportPlugin, subj) {
+				plug = Exporter.new(@app).export_generics_xls
+				log = Log.new(date)
+				log.update_values(log_info(plug))
+				log.notify(subj)
+			}
+		end
+		def export_ouwerkerk(date = Date.today)
+			subj = 'Med-Drugs' 
+			wrap_update(OuwerkerkPlugin, subj) {
+				plug = Exporter.new(@app).export_swissdrug_xls
+				log = Log.new(date)
+				log.update_values(log_info(plug))
+				log.notify(subj)
 			}
 		end
 		def log_info(plugin)
@@ -140,6 +149,7 @@ module ODDB
 				update_medwin_packages
 				update_lppv
 				export_ouwerkerk
+				export_generics_xls
 				export_competition_xlss
 			end
 			if(@smj_updated)
