@@ -558,6 +558,7 @@ module ODDB
 			:ywesee_contact,
 			:sequences,
 		]
+		DISABLED = [ :atc_ddd ]
 		RESOURCES = {
 			#:external_css	=>	'http://www.gerimedi.ch/css/oddb.css',
 			:external_css	=>	'http://kunde.aixede.ch/gerimedi/screen.css',
