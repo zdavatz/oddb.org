@@ -209,6 +209,13 @@ Grammar OddbSize
 		def create_sl_entry
 			@sl_entry = SlEntry.new
 		end
+		def ddd_price
+			if((atc = atc_class) && atc.has_ddd? && (ddd = atc.ddds['O']) \
+				&& (grp = galenic_form.galenic_group) && grp.match(/tabletten/i) \
+				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose))
+				(ddose / mdose.want(ddose.unit)).to_f * (price.to_f / comparable_size.to_f)
+			end
+		end
 		def delete_sl_entry
 			@sl_entry = nil
 			self.odba_isolated_store

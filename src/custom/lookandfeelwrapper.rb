@@ -590,10 +590,7 @@ module ODDB
 		end
 		def result_list_components
 			{
-				#[0,0]		=>	:limitation_text,
-				#[1,0]		=>  :fachinfo,
 				[0,0]		=>	:patinfo,
-				#[0,0]		=>	:complementary_type,
 				[1,0,0]	=>	'result_item_start',
 				[1,0,1]	=>	:name_base,
 				[1,0,2]	=>	'result_item_end',
@@ -603,10 +600,10 @@ module ODDB
 				[5,0]		=>	:price_public,
 				[6,0]		=>	:deductible,
 				[7,0]		=>	:company_name,
-				#[8,0]		=>	:ikscat,
 				[8,0]		=>	:ddd_price,
-				[9,0]		=>	:feedback,
-				[10,0]	=>  :google_search,
+				[9,0]		=>	'nbsp',
+				[10,0]	=>	:feedback,
+				[11,0]	=>  :google_search,
 			}
 		end
 		def section_style

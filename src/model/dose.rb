@@ -76,6 +76,9 @@ module ODDB
 				[val, @unit].join(' ')
 			end
 		end
+		def want(unit)
+			Dose.from_quanty(super)
+		end
 		def * (other)
 			Dose.from_quanty(super)
 		end

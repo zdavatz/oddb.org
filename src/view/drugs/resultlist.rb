@@ -109,11 +109,35 @@ class ResultList < HtmlGrid::List
 		:substances					=>	'result-i',
 		:company_name				=>	'result-i',
 		:ikscat							=>	'result-i',
-		:ddd_price					=>	'result-r',
+		:ddd_price					=>	'result-b-r',
 		:registration_date	=>	'result-i',
 		:feedback						=>	'result-b-r',
 		:google_search			=>	'result-b-r',
 		:notify							=>	'result-b-r',
+		'nbsp'							=>	'result',
+	}
+	CSS_HEAD_KEYMAP = {
+		:limitation_text		=>	'th',
+		:fachinfo						=>	'th',
+		:patinfo						=>	'th',
+		:narcotic						=>	'th',
+		:complementary_type	=>	'th',
+		:name_base					=>	'th',
+		:galenic_form				=>	'th',
+		:most_precise_dose	=>	'th-r',
+		:comparable_size		=>	'th-r',
+		:price_exfactory		=>	'th-r',
+		:price_public				=>	'th-r',
+		:deductible					=>	'th-r',
+		:substances					=>	'th',
+		:company_name				=>	'th',
+		:ikscat							=>	'th',
+		:ddd_price					=>	'th-r',
+		:registration_date	=>	'th',
+		:feedback						=>	'th-r',
+		:google_search			=>	'th-r',
+		:notify							=>	'th-r',
+		'nbsp'							=>	'th',
 	}
 	CSS_HEAD_MAP = {}
 	CSS_CLASS = 'composite'
@@ -138,13 +162,7 @@ class ResultList < HtmlGrid::List
 		@components.each { |key, val|
 			if(klass = self::class::CSS_KEYMAP[val])
 				@css_map.store(key, klass)
-				th_klass = case klass
-									 when 'result-pubprice', /r$/
-										 'th-r'
-									 else
-										 'th'
-									 end
-				@css_head_map.store(key, th_klass)
+				@css_head_map.store(key, self::class::CSS_HEAD_KEYMAP[val] || 'th')
 			end
 		}
 	end

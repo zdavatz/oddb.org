@@ -70,6 +70,12 @@ class CompareList < HtmlGrid::List
 				[8,0]	=>	'th',
 			})
 		end
+		if(@lookandfeel.result_list_components.has_value?(:ddd_price))
+			ikscat_key = components.index(:ikscat)
+			components.store(ikscat_key, :ddd_price)
+			css_map.store(ikscat_key, 'result-r')
+			css_head_map.store(ikscat_key, 'th-r')
+		end
 		super
 	end
 	def package_line(offset)

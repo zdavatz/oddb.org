@@ -3,6 +3,7 @@
 
 require 'htmlgrid/urllink'
 require 'state/admin/login'
+require 'state/ajax/ddd_price'
 require 'state/ajax/swissmedic_cat'
 require 'state/companies/company'
 require 'state/companies/companylist'
@@ -79,6 +80,7 @@ module ODDB
 			attr_reader :model, :snapback_model
 			DIRECT_EVENT = nil 
 			GLOBAL_MAP = {
+				:ajax_ddd_price				=>	State::Ajax::DDDPrice,
 				:ajax_swissmedic_cat	=>	State::Ajax::SwissmedicCat,
 				:companylist					=>	State::Companies::CompanyList,
 				:compare							=>	State::Drugs::Compare,

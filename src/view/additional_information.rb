@@ -24,15 +24,15 @@ module ODDB
 				end
 			end
 			def ddd_price(model, session=@session)
-				if((atc = model.atc_class) && atc.has_ddd? && (ddd = atc.ddds['O']) \
-					&& (grp = model.galenic_form.galenic_group) \
-					&& grp.has_description?('Tabletten') \
-					&& (price = model.price_public) \
-					&& (ddose = ddd.dose) && (mdose = model.dose))
-					dose = ddose / mdose.want(ddose.unit)
-					size = (price.to_f / model.comparable_size.to_f)
-					cost = dose * size
-					@lookandfeel.format_price(cost)
+				if(ddd_price = model.ddd_price)
+					@ddd_price_count ||= 0
+					@ddd_price_count += 1
+					span = HtmlGrid::Span.new(model, @session, self)
+					span.value = @lookandfeel.format_price(ddd_price)
+					span.css_id = "ddd_price_#{@ddd_price_count}"
+					args = {:pointer => model.pointer}
+					span.dojo_tooltip = @lookandfeel._event_url(:ajax_ddd_price, args)
+					span
 				end
 			end
 			def deductible(model, session=@session)
