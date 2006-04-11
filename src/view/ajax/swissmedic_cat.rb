@@ -10,6 +10,11 @@ class SwissmedicCat < HtmlGrid::Composite
 	COMPONENTS = {}
 	LEGACY_INTERFACE = false
 	DEFAULT_CLASS = HtmlGrid::Value
+	SYMBOL_MAP = {
+		:registration_date	=>	HtmlGrid::DateValue,
+		:revision_date			=>	HtmlGrid::DateValue,
+		:expiration_date		=>	HtmlGrid::DateValue,
+	}
 	def init
 		@components = {}
 		@css_map = {}
@@ -46,6 +51,21 @@ class SwissmedicCat < HtmlGrid::Composite
 		if(@model.lppv)
 			@components.store([0,y], "lppv")
 			@components.store([1,y], :lppv_ajax)
+			y += 1
+		end
+		if(@model.registration_date)
+			@components.store([0,y], "registration_date")
+			@components.store([1,y], :registration_date)
+			y += 1
+		end
+		if(@model.revision_date)
+			@components.store([0,y], "revision_date")
+			@components.store([1,y], :revision_date)
+			y += 1
+		end
+		if(@model.expiration_date)
+			@components.store([0,y], "expiration_date")
+			@components.store([1,y], :expiration_date)
 			y += 1
 		end
 		@css_map.store([1,0,1,y], 'list')

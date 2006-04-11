@@ -16,58 +16,70 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[0,0]		=>	:ikskey,
 		[2,0]		=>	:registration_holder,
 		[0,1]		=>	:name,
-		[2,1]		=>	:most_precise_dose,
-		[0,2]		=>	:atc_class,
-		[1,2,1]	=>	:atc_ddd_link,
-		[2,2]		=>	:descr,
-		[0,3]		=>	:galenic_form,
-		[2,3]		=>	:size,
-		[0,4]		=>	:ikscat,
-		[2,4]		=>	:indication,
-		[0,5]		=>	:fachinfo_label,
-		[1,5]		=>	:fachinfo,
-		[2,5]		=>	:patinfo_label,
-		[3,5]		=>	:patinfo,
-		[0,6]		=>	:sl_entry,
-		[0,7]		=>	:price_exfactory,
-		[2,7]		=>	:price_public,
-		[0,8]		=>	:feedback_label,
-		[1,8]		=>	:feedback,
-		[2,8]		=>	:narcotic_label,
-		[3,8]		=>	:narcotic,
+		[2,1]		=>	:registration_date,
+		[0,2]		=>	:most_precise_dose,
+		[2,2]		=>	:revision_date,
+		[2,3]		=>	:expiration_date,
+		[0,3]		=>	:atc_class,
+		[1,3,1]	=>	:atc_ddd_link,
+		[2,4]		=>	:descr,
+		[0,4]		=>	:galenic_form,
+		[2,4]		=>	:size,
+		[0,5]		=>	:ikscat,
+		[2,5]		=>	:indication,
+		[0,6]		=>	:fachinfo_label,
+		[1,6]		=>	:fachinfo,
+		[2,6]		=>	:patinfo_label,
+		[3,6]		=>	:patinfo,
+		[0,7]		=>	:sl_entry,
+		[0,8]		=>	:price_exfactory,
+		[2,8]		=>	:price_public,
+		[0,9]		=>	:deductible,
+		[2,9]		=>	:ddd_price,
+		[0,10]	=>	:feedback_label,
+		[1,10]	=>	:feedback,
+		[2,10]	=>	:narcotic_label,
+		[3,10]	=>	:narcotic,
 	}
 	CSS_MAP = {
-		[0,0,4,9]	=>	'list',
+		[0,0,4,11]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
 	COLSPAN_MAP = { }
 	SYMBOL_MAP = {
-		:sl_entry				=>	HtmlGrid::BooleanValue,
-		:limitation			=>	HtmlGrid::BooleanValue,
-		:patinfo_label	=> HtmlGrid::LabelText,
-		:fachinfo_label	=> HtmlGrid::LabelText,
-		:feedback_label	=> HtmlGrid::LabelText,
-		:narcotic_label	=> HtmlGrid::LabelText,
+		:sl_entry						=>	HtmlGrid::BooleanValue,
+		:limitation					=>	HtmlGrid::BooleanValue,
+		:patinfo_label			=>	HtmlGrid::LabelText,
+		:fachinfo_label			=>	HtmlGrid::LabelText,
+		:feedback_label			=>	HtmlGrid::LabelText,
+		:narcotic_label			=>	HtmlGrid::LabelText,
+		:registration_date	=>	HtmlGrid::DateValue,
+		:revision_date			=>	HtmlGrid::DateValue,
+		:expiration_date		=>	HtmlGrid::DateValue,
 	}
 	def init
 		if(@model.sl_entry)
-			components.store([2,6], :limitation)
+			components.store([2,7], :limitation)
 			if(@model.limitation_text)
-				colspan_map.store([1,7], 3)
-				components.delete([2,7])
-				components.delete([1,8])
+				components.delete([2,8])
+				components.delete([1,10])
+				components.delete([3,10])
 				components.update({
-					[0,7]		=>	:limitation_text,
-					[0,8]		=>	:price_exfactory,
-					[2,8]		=>	:price_public,
-					[0,9]		=>	:feedback_label,
-					[1,9]		=>	:feedback,
+					[0,8]		=>	:limitation_text,
+					[0,9]		=>	:price_exfactory,
+					[2,9]		=>	:price_public,
+					[0,10]	=>	:deductible,
+					[2,10]	=>	:ddd_price,
+					[0,11]	=>	:feedback_label,
+					[1,11]	=>	:feedback,
+					[2,11]	=>	:narcotic_label,
+					[3,11]	=>	:narcotic,
 				})
-				css_map.store([0,9,4], 'list')
+				css_map.store([0,11,4], 'list')
 			end
 		end
-		if(@lookandfeel.enabled?(:atupri_web))
+		if(@lookandfeel.enabled?(:atupri_web, false))
 			components.delete(@components.index(:feedback))
 			components.delete(@components.index(:feedback_label))
 		end

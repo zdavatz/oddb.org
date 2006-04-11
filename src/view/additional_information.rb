@@ -24,16 +24,17 @@ module ODDB
 				end
 			end
 			def ddd_price(model, session=@session)
+				span = HtmlGrid::Span.new(model, @session, self)
 				if(ddd_price = model.ddd_price)
 					@ddd_price_count ||= 0
 					@ddd_price_count += 1
-					span = HtmlGrid::Span.new(model, @session, self)
 					span.value = @lookandfeel.format_price(ddd_price)
 					span.css_id = "ddd_price_#{@ddd_price_count}"
 					args = {:pointer => model.pointer}
 					span.dojo_tooltip = @lookandfeel._event_url(:ajax_ddd_price, args)
-					span
 				end
+				span.label = true
+				span
 			end
 			def deductible(model, session=@session)
 				@deductible_count ||= 0
@@ -56,6 +57,7 @@ module ODDB
 				span.css_class = deductible.to_s
 				span.dojo_tooltip = tooltip
 				span.value = @lookandfeel.lookup(deductible || :deductible_unknown)
+				span.label = true
 				span
 			end
 			def fachinfo(model, session=@session, css='result-infos')
