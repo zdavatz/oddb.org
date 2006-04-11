@@ -1919,6 +1919,7 @@ td.tab {
 }
 div.dojoTooltip {
   font-size : $std_font_size;
+	white-space: nowrap;
 }
 span.deductible_g
 {

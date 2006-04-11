@@ -1925,6 +1925,7 @@ td.tab {
 }
 div.dojoTooltip {
 	font-size : 14px; 
+	white-space: nowrap;
 }
 span.deductible_g
 {

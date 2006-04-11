@@ -56,7 +56,7 @@ class DDDPrice < HtmlGrid::Composite
 			curr = @session.currency
 			comp = HtmlGrid::Value.new(:ddd_calculation, model, @session, self)
 			comp.value = @lookandfeel.lookup(:ddd_calculation, ddose, mdose,
-																			 mprice, curr, model.size, dprice, curr)
+																			 mprice, model.size, dprice, curr)
 			comp
 		end
 	end
