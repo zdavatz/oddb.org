@@ -106,6 +106,31 @@ module ODDB
 				'height'	=>	'50',
 			},
 		}
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:deductible,
+				[12,0]	=>	:substances,
+				[13,0]	=>	:company_name,
+				[14,0]	=>	:ikscat,
+				[15,0]	=>	:registration_date,
+				[16,0]	=>	:feedback,
+				[17,0]	=>  :google_search,
+				[18,0]	=>	:notify,
+			}
+		end
 	end
 	class LookandfeelSantesuisse < SBSM::LookandfeelWrapper
 		ENABLED = [ :doctors ]
@@ -129,6 +154,31 @@ module ODDB
 				'height'	=>	'96',
 			},
 		}
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:deductible,
+				[12,0]	=>	:substances,
+				[13,0]	=>	:company_name,
+				[14,0]	=>	:ikscat,
+				[15,0]	=>	:registration_date,
+				[16,0]	=>	:feedback,
+				[17,0]	=>  :google_search,
+				[18,0]	=>	:notify,
+			}
+		end
 	end
 	class LookandfeelAtupri < SBSM::LookandfeelWrapper
 		ENABLED = [
@@ -155,6 +205,31 @@ module ODDB
 				'height'	=>	'92',
 			},
 		}
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:deductible,
+				[12,0]	=>	:substances,
+				[13,0]	=>	:company_name,
+				[14,0]	=>	:ikscat,
+				[15,0]	=>	:registration_date,
+				[16,0]	=>	:feedback,
+				[17,0]	=>  :google_search,
+				[18,0]	=>	:notify,
+			}
+		end
 	end
 	class LookandfeelAtupriWeb < SBSM::LookandfeelWrapper
 		ENABLED = [
@@ -375,6 +450,31 @@ module ODDB
 				@component.enabled?(event, default)
 			end
 		end
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:deductible,
+				[12,0]	=>	:substances,
+				[13,0]	=>	:company_name,
+				[14,0]	=>	:ikscat,
+				[15,0]	=>	:registration_date,
+				[16,0]	=>	:feedback,
+				[17,0]	=>  :google_search,
+				[18,0]	=>	:notify,
+			}
+		end
 	end
 	class LookandfeelOekk < SBSM::LookandfeelWrapper
 		ENABLED = [
@@ -412,6 +512,31 @@ module ODDB
 		HTML_ATTRIBUTES = { }
 		def languages
 			[:de, :fr, :en]
+		end
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:deductible,
+				[12,0]	=>	:substances,
+				[13,0]	=>	:company_name,
+				[14,0]	=>	:ikscat,
+				[15,0]	=>	:registration_date,
+				[16,0]	=>	:feedback,
+				[17,0]	=>  :google_search,
+				[18,0]	=>	:notify,
+			}
 		end
 	end
 	class LookandfeelMedicalTribune < SBSM::LookandfeelWrapper
