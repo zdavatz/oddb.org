@@ -1533,7 +1533,7 @@ form.search {
 	margin: 0px;
 }
 input.search {
-	width : 260px;
+	width : 160px;
 } 
 input.search-center {
 	width : 260px;
@@ -1924,7 +1924,7 @@ td.tab {
 	border-top: 2px solid #7bcf88;
 }
 div.dojoTooltip {
-	min-width: 300px;
+	font-size : 14px; 
 }
 span.deductible_g
 {
