@@ -460,11 +460,11 @@ module ODDB
 			end
 			def search
 				zone = @session.zone
-				query = ODDB.search_term(@session.persistent_user_input(:search_query))
+				query = @session.persistent_user_input(:search_query)
 				if(query.is_a? RuntimeError)
 					State::Exception.new(@session, query)
 				elsif(!query.nil?)
-					query.gsub!(/\s+/, ' ')
+					query = ODDB.search_term(query)
 					case zone
 					when :hospitals
 						result = @session.search_hospitals(query)
