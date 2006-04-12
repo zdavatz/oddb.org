@@ -4,6 +4,62 @@
 require 'sbsm/lookandfeelwrapper'
 
 module ODDB
+	class LookandfeelStandardResult < SBSM::LookandfeelWrapper
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:deductible,
+				[12,0]	=>	:substances,
+				[13,0]	=>	:company_name,
+				[14,0]	=>	:ikscat,
+				[15,0]	=>	:registration_date,
+				[16,0]	=>	:feedback,
+				[17,0]	=>  :google_search,
+				[18,0]	=>	:notify,
+			}
+		end
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_comarketing,
+				[0,3]	=>	:explain_complementary,
+				[0,4]	=>	:explain_vaccine,
+				[0,5]	=>	'explain_unknown',
+				[0,6]	=>	'explain_expired',
+				[0,8]	=>	:explain_cas,
+				[1,0]	=>	'explain_li',
+				[1,1]	=>	'explain_fi',
+				[1,2]	=>	'explain_pi',
+				[1,3]	=>	'explain_narc',
+				[1,4]	=>	'explain_a',
+				[1,5]	=>	'explain_h',
+				[1,6]	=>	'explain_p',
+				[1,7]	=>	'explain_pr',
+				[2,0]	=>	'explain_efp',
+				[2,1]	=>	'explain_pbp',
+				[2,2]	=>	:explain_deductible,
+				[2,3]	=>	'explain_sl',
+				[2,4]	=>	'explain_slo',
+				[2,5]	=>	'explain_slg',
+				[2,6]	=>	:explain_lppv,
+				[2,7]	=>	'explain_g',
+				[2,8]	=>	'explain_fd',
+			}
+		end
+	end
 	class LookandfeelLanguages < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:currency_switcher,
@@ -106,31 +162,6 @@ module ODDB
 				'height'	=>	'50',
 			},
 		}
-		def result_list_components
-			{
-				[0,0]		=>	:limitation_text,
-				[1,0]		=>  :fachinfo,
-				[2,0]		=>	:patinfo,
-				[3,0]		=>	:narcotic,
-				[4,0]		=>	:complementary_type,
-				[5,0,0]	=>	'result_item_start',
-				[5,0,1]	=>	:name_base,
-				[5,0,2]	=>	'result_item_end',
-				[6,0]		=>	:galenic_form,
-				[7,0]		=>	:most_precise_dose,
-				[8,0]		=>	:comparable_size,
-				[9,0]		=>	:price_exfactory,
-				[10,0]	=>	:price_public,
-				[11,0]	=>	:deductible,
-				[12,0]	=>	:substances,
-				[13,0]	=>	:company_name,
-				[14,0]	=>	:ikscat,
-				[15,0]	=>	:registration_date,
-				[16,0]	=>	:feedback,
-				[17,0]	=>  :google_search,
-				[18,0]	=>	:notify,
-			}
-		end
 	end
 	class LookandfeelSantesuisse < SBSM::LookandfeelWrapper
 		ENABLED = [ :doctors ]
@@ -154,31 +185,6 @@ module ODDB
 				'height'	=>	'96',
 			},
 		}
-		def result_list_components
-			{
-				[0,0]		=>	:limitation_text,
-				[1,0]		=>  :fachinfo,
-				[2,0]		=>	:patinfo,
-				[3,0]		=>	:narcotic,
-				[4,0]		=>	:complementary_type,
-				[5,0,0]	=>	'result_item_start',
-				[5,0,1]	=>	:name_base,
-				[5,0,2]	=>	'result_item_end',
-				[6,0]		=>	:galenic_form,
-				[7,0]		=>	:most_precise_dose,
-				[8,0]		=>	:comparable_size,
-				[9,0]		=>	:price_exfactory,
-				[10,0]	=>	:price_public,
-				[11,0]	=>	:deductible,
-				[12,0]	=>	:substances,
-				[13,0]	=>	:company_name,
-				[14,0]	=>	:ikscat,
-				[15,0]	=>	:registration_date,
-				[16,0]	=>	:feedback,
-				[17,0]	=>  :google_search,
-				[18,0]	=>	:notify,
-			}
-		end
 	end
 	class LookandfeelAtupri < SBSM::LookandfeelWrapper
 		ENABLED = [
@@ -205,31 +211,6 @@ module ODDB
 				'height'	=>	'92',
 			},
 		}
-		def result_list_components
-			{
-				[0,0]		=>	:limitation_text,
-				[1,0]		=>  :fachinfo,
-				[2,0]		=>	:patinfo,
-				[3,0]		=>	:narcotic,
-				[4,0]		=>	:complementary_type,
-				[5,0,0]	=>	'result_item_start',
-				[5,0,1]	=>	:name_base,
-				[5,0,2]	=>	'result_item_end',
-				[6,0]		=>	:galenic_form,
-				[7,0]		=>	:most_precise_dose,
-				[8,0]		=>	:comparable_size,
-				[9,0]		=>	:price_exfactory,
-				[10,0]	=>	:price_public,
-				[11,0]	=>	:deductible,
-				[12,0]	=>	:substances,
-				[13,0]	=>	:company_name,
-				[14,0]	=>	:ikscat,
-				[15,0]	=>	:registration_date,
-				[16,0]	=>	:feedback,
-				[17,0]	=>  :google_search,
-				[18,0]	=>	:notify,
-			}
-		end
 	end
 	class LookandfeelAtupriWeb < SBSM::LookandfeelWrapper
 		ENABLED = [
@@ -450,31 +431,6 @@ module ODDB
 				@component.enabled?(event, default)
 			end
 		end
-		def result_list_components
-			{
-				[0,0]		=>	:limitation_text,
-				[1,0]		=>  :fachinfo,
-				[2,0]		=>	:patinfo,
-				[3,0]		=>	:narcotic,
-				[4,0]		=>	:complementary_type,
-				[5,0,0]	=>	'result_item_start',
-				[5,0,1]	=>	:name_base,
-				[5,0,2]	=>	'result_item_end',
-				[6,0]		=>	:galenic_form,
-				[7,0]		=>	:most_precise_dose,
-				[8,0]		=>	:comparable_size,
-				[9,0]		=>	:price_exfactory,
-				[10,0]	=>	:price_public,
-				[11,0]	=>	:deductible,
-				[12,0]	=>	:substances,
-				[13,0]	=>	:company_name,
-				[14,0]	=>	:ikscat,
-				[15,0]	=>	:registration_date,
-				[16,0]	=>	:feedback,
-				[17,0]	=>  :google_search,
-				[18,0]	=>	:notify,
-			}
-		end
 	end
 	class LookandfeelOekk < SBSM::LookandfeelWrapper
 		ENABLED = [
@@ -512,31 +468,6 @@ module ODDB
 		HTML_ATTRIBUTES = { }
 		def languages
 			[:de, :fr, :en]
-		end
-		def result_list_components
-			{
-				[0,0]		=>	:limitation_text,
-				[1,0]		=>  :fachinfo,
-				[2,0]		=>	:patinfo,
-				[3,0]		=>	:narcotic,
-				[4,0]		=>	:complementary_type,
-				[5,0,0]	=>	'result_item_start',
-				[5,0,1]	=>	:name_base,
-				[5,0,2]	=>	'result_item_end',
-				[6,0]		=>	:galenic_form,
-				[7,0]		=>	:most_precise_dose,
-				[8,0]		=>	:comparable_size,
-				[9,0]		=>	:price_exfactory,
-				[10,0]	=>	:price_public,
-				[11,0]	=>	:deductible,
-				[12,0]	=>	:substances,
-				[13,0]	=>	:company_name,
-				[14,0]	=>	:ikscat,
-				[15,0]	=>	:registration_date,
-				[16,0]	=>	:feedback,
-				[17,0]	=>  :google_search,
-				[18,0]	=>	:notify,
-			}
 		end
 	end
 	class LookandfeelMedicalTribune < SBSM::LookandfeelWrapper
@@ -708,7 +639,7 @@ module ODDB
 				[0,4]	=>	'explain_pi',
 				[1,0]	=>	'explain_pbp',
 				[1,1]	=>	:explain_deductible,
-				[1,2]	=>	'explain_ddd_price',
+				[1,2]	=>	:explain_ddd_price,
 				[1,3]	=>	'explain_fd',
 				[1,4]	=>	'explain_g',
 			}

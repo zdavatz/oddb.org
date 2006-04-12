@@ -9,32 +9,7 @@ module ODDB
 	module View
 		class ExplainResult < HtmlGrid::Composite
 			include ExternalLinks
-			COMPONENTS = {
-				[0,0]	=>	:explain_original,
-				[0,1]	=>	:explain_generic,
-				[0,2]	=>	:explain_comarketing,
-				[0,3]	=>	:explain_complementary,
-				[0,4]	=>	:explain_vaccine,
-				[0,5]	=>	'explain_unknown',
-				[0,6]	=>	'explain_expired',
-				[0,7]	=>	:explain_cas,
-				[1,0]	=>	'explain_li',
-				[1,1]	=>	'explain_fi',
-				[1,2]	=>	'explain_pi',
-				[1,3]	=>	'explain_narc',
-				[1,4]	=>	'explain_a',
-				[1,5]	=>	'explain_h',
-				[1,6]	=>	'explain_p',
-				[1,7]	=>	'explain_pr',
-				[2,0]	=>	'explain_efp',
-				[2,1]	=>	'explain_pbp',
-				[2,2]	=>	:explain_deductible,
-				[2,3]	=>	'explain_sl',
-				[2,4]	=>	'explain_slg',
-				[2,5]	=>	'explain_fd',
-				[2,6]	=>	:explain_lppv,
-				[2,7]	=>	'explain_g',
-			}
+			COMPONENTS = {}
 			CSS_MAP = {}
 			CSS_KEYMAP = {
 				'explain_unknown'	=>	'explain-unknown',
@@ -62,6 +37,9 @@ module ODDB
 			end
 			def explain_comarketing(model, session=@session)
 				explain_link(model, :comarketing)
+			end
+			def explain_ddd_price(model, session=@session)
+				explain_link(model, :ddd_price)
 			end
 			def explain_deductible(model, session=@session)
 				explain_link(model, :deductible)

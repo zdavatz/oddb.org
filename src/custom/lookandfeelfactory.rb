@@ -12,6 +12,7 @@ module ODDB
 			'atupri'=>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,
+				LookandfeelStandardResult,
 				LookandfeelAtupri, 
 			],
 			'atupri-web'=>	[
@@ -39,18 +40,21 @@ module ODDB
 			],
 			'oekk'	=>	[
 				LookandfeelExtern,
+				LookandfeelStandardResult,
 				LookandfeelOekk,
 			],
 			'provita'			=>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,
 				LookandfeelButtons, 
+				LookandfeelStandardResult,
 				LookandfeelProvita, 
 			],
 			'santesuisse' =>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,
 				LookandfeelButtons, 
+				LookandfeelStandardResult,
 				LookandfeelSantesuisse, 
 			],
 			'swissmedic'	=>	[

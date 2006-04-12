@@ -44,7 +44,7 @@ class SwissmedicCat < HtmlGrid::Composite
 		end
 		if(@lookandfeel.result_list_components.has_value?(:deductible) \
 			 && (deductible = @model.deductible))
-			@components.store([0,y], "deductible")
+			@components.store([0,y], :deductible_label)
 			@components.store([1,y], :deductible)
 			y += 1
 		end
@@ -76,6 +76,11 @@ class SwissmedicCat < HtmlGrid::Composite
 		link.value = @lookandfeel.lookup(model.deductible)
 		link.href = @lookandfeel.lookup(:explain_deductible_url)
 		link.css_class = 'list'
+		link
+	end
+	def deductible_label(model)
+		link = HtmlGrid::Link.new(:deductible, model, @session, self)
+		link.href = @lookandfeel.lookup(:deductible_legal_url)
 		link
 	end
 	def sl_since(model)
