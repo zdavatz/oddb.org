@@ -56,8 +56,7 @@ class UserCompany < Company
 		do_update(keys)
 	end
 	private
-	def do_update(keys)
-		mandatory = [:name]
+	def do_update(keys, mandatory=[:name])
 		input = user_input(keys, mandatory)
 		if((upload = input.delete(:logo_file)) \
 			&& !upload.original_filename.empty?)
@@ -85,7 +84,10 @@ class UserCompany < Company
 		end
 		unless (error?)
 			contact_email = input.delete(:contact_email)
-			company = @session.app.company_by_name(input[:name])
+			company = @model
+			if(name = input[:name])
+				company = @session.app.company_by_name(name)
+			end
 			unless(company.nil? || company==@model)
 				@errors.store(:name, create_error('e_duplicate_company', :name, input[:name]))
 			else
@@ -201,14 +203,24 @@ class RootCompany < UserCompany
 		do_update(keys)
 	end
 end
-class PowerLinkCompany < Company
+class PowerLinkCompany < UserCompany
 	VIEW = View::Companies::PowerLinkCompany
 	def update
-		keys = [:powerlink]
-		input = user_input(keys)
-		ODBA.transaction {
-			@model = @session.app.update(@model.pointer, input, unique_email)
-		}
+		mandatory = [
+			:address,
+			:city,
+			:contact,
+			:fon,
+			:invoice_email,
+			:plz,
+		]
+		email = @session.user_input(:invoice_email)
+		if(email == @session.user.unique_email)
+			err = create_error(:e_duplicate_email, :invoice_email, email)
+			@errors.store(:invoice_email, err)
+		end
+		keys = mandatory.dup.push(:powerlink)
+		do_update(keys, mandatory)
 		self
 	end
 end

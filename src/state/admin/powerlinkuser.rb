@@ -7,7 +7,8 @@ module ODDB
 	module State
 		module Companies
 class Company < Global; end
-class PowerLinkCompany < Company; end
+class UserCompany < Company; end
+class PowerLinkCompany < UserCompany; end
 		end
 		module Admin
 class DeductiblePackage < Global; end
@@ -15,6 +16,9 @@ module PowerLinkUser
 	include User
 	RESOLVE_STATES = {
 		[ :company ]						=>	State::Companies::PowerLinkCompany,
+		[ :registration ]				=>	State::Admin::ResellerRegistration,
+		[ :registration,
+			:sequence ]						=>	State::Admin::ResellerSequence,
 		[ :registration,
 			:sequence, :package ]	=>	State::Admin::DeductiblePackage,
 	}	

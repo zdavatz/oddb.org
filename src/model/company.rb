@@ -54,6 +54,11 @@ module ODDB
 		def index_invoice_date
 			@index_invoice_date = _yearly_repetition(@index_invoice_date)
 		end
+		def invoiceable?
+			addr = address(0)
+			![ @name, @contact, addr.address, addr.plz, 
+				addr.city, @invoice_email, addr.fon ].any? { |datum| datum.nil? }
+		end
 		def listed?
 			@cl_status
 		end

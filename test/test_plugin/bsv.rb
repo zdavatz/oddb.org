@@ -918,6 +918,18 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 		end
 	end
 	class TestBsvPlugin2 < Test::Unit::TestCase
+		class StubRegistration
+			attr_accessor :packages, :iksnr, :name_base, :sequences, :generic_type
+			def initialize(iksnr)
+				@iksnr = iksnr
+			end
+			def package(iksnr)
+				(@packages ||={})[iksnr]
+			end
+			def each_package(&block)
+				(@packages ||= {}).each_value(&block)
+			end
+		end
 		class StubApp
 			attr_accessor :registrations, :updates, :packages, :deletions
 			def initialize
@@ -935,18 +947,7 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			end
 			def update(pointer, values, origin=nil)
 				@updates.store(pointer, values)
-			end
-		end
-		class StubRegistration
-			attr_accessor :packages, :iksnr, :name_base, :sequences, :generic_type
-			def initialize(iksnr)
-				@iksnr = iksnr
-			end
-			def package(iksnr)
-				(@packages ||={})[iksnr]
-			end
-			def each_package(&block)
-				(@packages ||= {}).each_value(&block)
+				StubRegistration.new('auto')
 			end
 		end
 		class StubSequence

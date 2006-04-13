@@ -14,9 +14,23 @@ class RootResultList < View::Drugs::ResultList
 		hash_insert(css_map, [0,0], 'result-edit')
 		hash_insert(components, [0,0], :ikskey)
 	end
-	def iksnr(model, session)
-		reg = model.registration
-		View::PointerLink.new(:iksnr, reg, session, self)
+	def ikskey(model, session=@session)
+		#@ikskey_count ||= 0
+		#@ikskey_count += 1
+		span = HtmlGrid::Span.new(model, @session, self)
+		#tooltip = HtmlGrid::Div.new(model, @session, self)
+		span.value = [
+			[:iksnr, model.registration], [:seqnr, model.sequence], [:ikscd, model]
+		].collect { |key, item|
+			View::PointerLink.new(key, item, @session, self)
+		}
+=begin
+		span.css_id = "iksnr_#@ikskey_count"
+		span.dojo_tooltip = tooltip
+		link = View::PointerLink.new(:ikskey, model, @session, self)
+		span.value = link
+=end
+		span
 	end
 	private
 	def hash_insert(hash, key, val)

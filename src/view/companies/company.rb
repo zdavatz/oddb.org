@@ -120,6 +120,7 @@ class UserCompanyForm < View::Form
 		[1,4,3,8]	=>	'standard',
 	}
 	LABELS = true
+	LEGACY_INTERFACE = false
 	SYMBOL_MAP = {
 		:nbsp									=>	HtmlGrid::Text,
 		:address_header				=>	HtmlGrid::Text,
@@ -134,7 +135,7 @@ class UserCompanyForm < View::Form
 		error_message()
 		info_message()
 	end
-	def address(model, session)
+	def address(model, session=@session)
 		address_delegate(model, :address)
 	end
 	def address_delegate(model, symbol)
@@ -145,10 +146,10 @@ class UserCompanyForm < View::Form
 		end
 		input
 	end
-	def city(model, session)
+	def city(model, session=@session)
 		address_delegate(model, :city)
 	end
-	def company_name(model, session)
+	def company_name(model, session=@session)
 		HtmlGrid::InputText.new('name', model, session, self)
 	end
 	def fax(model, session=@session)
@@ -157,7 +158,7 @@ class UserCompanyForm < View::Form
 	def fon(model, session=@session)
 		address_delegate(model, :fon)
 	end
-	def patinfo_stats(model, session)
+	def patinfo_stats(model, session=@session)
 		link = HtmlGrid::Link.new(:patinfo_stats, model , session, self)
 		args = {
 			:pointer	=>	model.pointer,
@@ -166,10 +167,10 @@ class UserCompanyForm < View::Form
 		link.set_attribute('title', @lookandfeel.lookup(:patinfo_stats))
 		link
 	end
-	def plz(model, session)
+	def plz(model, session=@session)
 		address_delegate(model, :plz)
 	end
-	def set_pass(model, session)
+	def set_pass(model, session=@session)
 		button = HtmlGrid::Button.new(:set_pass, model, session, self)
 		script = 'this.form.event.value="set_pass"; this.form.submit();'
 		button.set_attribute('onClick', script)
@@ -348,36 +349,31 @@ class AjaxUnknownCompanyForm < AjaxCompanyForm
 		[0,0,2]	=>	'list',
 	}
 end
-class PowerLinkCompanyForm < View::Form
-	include HtmlGrid::ErrorMessage
-	include HtmlGrid::InfoMessage
+class PowerLinkCompanyForm < UserCompanyForm
 	COMPONENTS = {
 		[0,0]		=>	:contact,
-		[0,1]		=>	:contact_email,
-		[0,2]		=>	:address_header,
-		[1,3]		=>	:address,
-		[0,4]		=>	:url,
-		[0,5]		=>	:powerlink,
-		[1,6]		=>	:submit,
+		[0,1]		=>	:address,
+		[0,2]		=>	:plz,
+		[0,3]		=>	:city,
+		[0,4]		=>	:fon,
+		[0,5]		=>	:invoice_email,
+		[0,6]		=>	:url,
+		[0,7]		=>	:powerlink,
+		[1,8]		=>	:submit,
 	}
-	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_MAP = {
-		[0,0,4,7]	=>	'list',
+		[0,0,4,9]	=>	'list',
 	}
-	LABELS = true
+	COMPONENT_CSS_MAP = {
+		[1,0,3,8]	=>	'standard',
+	}
 	LOOKANDFEEL_MAP = {
-		:contact_email	=>	:address_email,
+		#:invoice_email	=>	:address_email,
 	}
 	SYMBOL_MAP = {
 		:address_header =>	HtmlGrid::LabelText,
-		:contact_email	=>	HtmlGrid::MailLink,
-		:powerlink			=>	HtmlGrid::InputText,	
 		:url						=>	HtmlGrid::HttpLink,
 	}
-	LEGACY_INTERFACE = false
-	def address(model)
-		Address.new(model.address(0), @session, self)
-	end
 end
 class UnknownCompanyComposite < HtmlGrid::Composite
 	COMPONENTS = {

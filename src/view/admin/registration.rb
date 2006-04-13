@@ -119,9 +119,33 @@ class RegistrationInnerComposite < HtmlGrid::Composite
 		label(HtmlGrid::Text.new(model.generic_type, model, session, self))
 	end
 end
+module FachinfoPdfMethods
+	TAG_METHOD = :multipart_form
+	def assign_fachinfo(model, session=@session)
+		link = HtmlGrid::Link.new(:assign_fachinfo, model, session, self)
+		link.href = @lookandfeel.event_url(:assign_fachinfo)
+		if(@model.fachinfo)
+			link.value = @lookandfeel.lookup(:assign_this_fachinfo)
+		end
+		link.set_attribute('class', 'small')
+		link
+	end
+	def fachinfo_upload(model, session=@session)
+		input = HtmlGrid::InputFile.new(:fachinfo_upload, model, session, self)
+		input.label = false
+		input
+	end
+	def language_select(model, session=@session)
+		sel = View::Admin::FachinfoLanguageSelect.new(:language_select, model, 
+			session, self)
+		sel.label = false
+		sel
+	end
+end
 class RegistrationForm < View::Form
 	include HtmlGrid::ErrorMessage
 	include View::AdditionalInformation
+	include FachinfoPdfMethods
 	COMPONENTS = {
 		[0,0]		=>	:iksnr,
 		[2,0]		=>	:registration_date,
@@ -154,7 +178,6 @@ class RegistrationForm < View::Form
 		:fachinfo_label			=>	HtmlGrid::LabelText,
 		:export_flag				=>	HtmlGrid::InputCheckbox,
 	}
-	TAG_METHOD = :multipart_form
 	def init
 		reorganize_components()
 		super
@@ -189,15 +212,6 @@ class RegistrationForm < View::Form
 			#css_map.store([1,6], 'button')
 		end
 	end
-	def assign_fachinfo(model, session)
-		link = HtmlGrid::Link.new(:assign_fachinfo, model, session, self)
-		link.href = @lookandfeel.event_url(:assign_fachinfo)
-		if(@model.fachinfo)
-			link.value = @lookandfeel.lookup(:assign_this_fachinfo)
-		end
-		link.set_attribute('class', 'small')
-		link
-	end
 	def company_name(model, session)
 		klass = if(session.user.is_a?(ODDB::CompanyUser))
 			HtmlGrid::Value
@@ -205,11 +219,6 @@ class RegistrationForm < View::Form
 			HtmlGrid::InputText
 		end
 		klass.new(:company_name, model, session, self)
-	end
-	def fachinfo_upload(model, session)
-		input = HtmlGrid::InputFile.new(:fachinfo_upload, model, session, self)
-		input.label = false
-		input
 	end
 	def iksnr(model, session)
 		klass = if(model.is_a?(Persistence::CreateItem) \
@@ -220,17 +229,73 @@ class RegistrationForm < View::Form
 		end
 		klass.new(:iksnr, model, session, self)
 	end
-	def language_select(model, session)
-		sel = View::Admin::FachinfoLanguageSelect.new(:language_select, model, 
-			session, self)
-		sel.label = false
-		sel
-	end
 	def indication(model, session)
 		InputDescription.new(:indication, model.indication, session, self)
 	end
 	def new_registration(model, session)
 		get_event_button(:new_registration)
+	end
+end
+class ResellerRegistrationForm < View::Form
+	include HtmlGrid::ErrorMessage
+	include View::AdditionalInformation
+	include FachinfoPdfMethods
+	COMPONENTS = {
+		[0,0]		=>	:iksnr,
+		[2,0]		=>	:registration_date,
+		[0,1]		=>	:company_name,
+		[2,1]		=>	:revision_date,
+		[0,2]		=>	:indication,
+		[2,2]		=>	:inactive_date,
+		[0,3]		=>	:fi_upload_instruction0,
+		[1,3]		=>	:not_invoiceable,
+		[2,3]		=>	:fachinfo_label,
+		[3,3]		=>	:fachinfo,
+	}
+	CSS_MAP = {
+		[0,0,4,3]	=>	'list',
+		[0,3]			=>	'list',
+		[1,3]			=>	'list',
+		[2,3,2]		=>	'list',
+	}
+	DEFAULT_CLASS = HtmlGrid::Value
+	LABELS = true
+	SYMBOL_MAP = {
+		:expiration_date		=>	HtmlGrid::DateValue,
+		:registration_date	=>	HtmlGrid::DateValue,
+		:revision_date			=>	HtmlGrid::DateValue,
+		:fachinfo_label			=>	HtmlGrid::LabelText,
+		:fi_upload_instruction0=>	HtmlGrid::LabelText,
+	}
+	def init
+		reorganize_components
+		super
+		error_message()
+	end
+	def reorganize_components
+		if(@model.company.invoiceable?)
+			components.update({
+				[3,3,1]	=>	:assign_fachinfo,
+				[0,4]		=>	'fi_upload_instruction1',
+				[1,4]		=>	:language_select,
+				[0,5]		=>	'fi_upload_instruction2',
+				[1,5]		=>	:fachinfo_upload,
+				[0,6]		=>	'fi_upload_instruction3',
+				[1,6]		=>	:submit,
+			})
+			components.delete([1,3])
+			css_map.update({
+				[0,3]			=>	'result-b-r-unknown-left',
+				[1,3]			=>	'list-bg',
+				[0,4,2,3]	=>	'list-bg',
+			})
+		end
+	end
+	def not_invoiceable(model, session=@session)
+		link = PointerLink.new(:e_company_not_invoiceable, 
+													 model.company, @session, self)
+		link.label = false
+		link
 	end
 end
 class RegistrationComposite < HtmlGrid::Composite
@@ -264,12 +329,23 @@ class RootRegistrationComposite < View::Admin::RegistrationComposite
 		[0,3]	=>	"subheading",
 	}
 end
+class ResellerRegistrationComposite < View::Admin::RootRegistrationComposite
+	COMPONENTS = {
+		[0,1]		=>	View::Admin::ResellerRegistrationForm,
+		[0,2]		=>	:registration_sequences,
+		[0,3]		=>	"th_source",
+		[0,4]		=>	:source,
+	}
+end
 class Registration < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::RegistrationComposite
 	SNAPBACK_EVENT = :result
 end
 class RootRegistration < View::Admin::Registration
 	CONTENT = View::Admin::RootRegistrationComposite
+end
+class ResellerRegistration < View::Admin::Registration
+	CONTENT = View::Admin::ResellerRegistrationComposite
 end
 		end
 	end

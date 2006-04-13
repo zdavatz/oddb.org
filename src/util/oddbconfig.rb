@@ -77,6 +77,7 @@ module ODDB
 		:annual_fee => 350,
 		:processing => 150,
 	}
+	FI_UPLOAD_DURATION = 365
 	PI_UPLOAD_DURATION = 365
 	PI_UPLOAD_PRICES = {
 		:activation => 1000,

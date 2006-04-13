@@ -15,7 +15,72 @@ require 'tmail'
 module ODDB
 	module State
 		module Admin
+module PatinfoPdfMethods
+	PDF_DIR = File.expand_path('../../../doc/resources/patinfo/', File.dirname(__FILE__))
+	def assign_patinfo
+		if(@model.has_patinfo?)
+			State::Admin::AssignPatinfo.new(@session, @model)
+		else
+			State::Admin::AssignDeprivedSequence.new(@session, @model)
+		end
+	end	
+	def get_patinfo_input(input)
+		newstate = self
+		if(pi_file = @session.user_input(:patinfo_upload))
+			company = @model.company
+			if(!company.invoiceable?)
+				err = create_error(:e_company_not_invoiceable, :pdf_patinfo, nil)
+				newstate = resolve_state(company.pointer).new(@session, company)
+				newstate.errors.store(:pdf_patinfo, err)
+			elsif(pi_file.read(4) == "%PDF")
+				pi_file.rewind
+				filename = "#{@model.iksnr}_#{@model.seqnr}_#{Time.now.to_f}.pdf"
+				FileUtils.mkdir_p(self::class::PDF_DIR)
+				store_file = File.new(File.expand_path(filename, 
+					self::class::PDF_DIR), "w")
+				store_file.write(pi_file.read)
+				store_file.close
+				@model.pdf_patinfo = filename
+				store_slate()
+				input.store(:pdf_patinfo, filename)
+				newstate = State::Admin::AssignPatinfo.new(@session, @model)
+			else
+				add_warning(:w_no_patinfo_saved, :patinfo_upload, nil)
+			end
+		elsif(@session.user_input(:patinfo) == 'delete')
+			input.store(:patinfo, nil)
+			input.store(:pdf_patinfo, nil)
+		end
+		newstate
+	end
+	def store_slate
+		store_slate_item(Time.now, :annual_fee)
+	end
+	def store_slate_item(time, type)
+		slate_pointer = Persistence::Pointer.new([:slate, :patinfo])
+		@session.app.create(slate_pointer)
+		item_pointer = slate_pointer + :item
+		expiry_time = InvoiceItem.expiry_time(PI_UPLOAD_DURATION, time)
+		unit = @session.lookandfeel.lookup("pi_upload_#{type}")
+		text = sprintf("%s %s", @model.iksnr, @model.seqnr)
+		values = {
+			:data					=>	{:name => @model.name},
+			:duration			=>	PI_UPLOAD_DURATION,
+			:expiry_time	=>	expiry_time,
+			:item_pointer =>	@model.pointer,
+			:price				=>	PI_UPLOAD_PRICES[type],
+			:text					=>	text,
+			:time					=>	time,
+			:type					=>	type,
+			:unit					=>	unit,
+			:user_pointer	=>	@session.user.pointer,
+			:vat_rate			=>	VAT_RATE, 
+		} 
+		@session.app.update(item_pointer.creator, values, unique_email)
+	end
+end
 module SequenceMethods
+	include PatinfoPdfMethods
 	def delete
 		registration = @model.parent(@session.app) 
 		if(klass = resolve_state(registration.pointer))
@@ -101,26 +166,7 @@ module SequenceMethods
 		else
 			@errors.store(:atc_class, create_error(:e_unknown_atc_class, :code, atc_code))
 		end
-		if(pi_file = @session.user_input(:patinfo_upload))
-			if(pi_file.read(4) == "%PDF")
-				pi_file.rewind
-				filename = "#{@model.iksnr}_#{@model.seqnr}_#{Time.now.to_f}.pdf"
-				FileUtils.mkdir_p(self::class::PDF_DIR)
-				store_file = File.new(File.expand_path(filename, 
-					self::class::PDF_DIR), "w")
-				store_file.write(pi_file.read)
-				store_file.close
-				@model.pdf_patinfo = filename
-				store_slate()
-				input.store(:pdf_patinfo, filename)
-				newstate = State::Admin::AssignPatinfo.new(@session, @model)
-			else
-				add_warning(:w_no_patinfo_saved, :patinfo_upload, nil)
-			end
-		elsif(@session.user_input(:patinfo) == 'delete')
-			input.store(:patinfo, nil)
-			input.store(:pdf_patinfo, nil)
-		end
+		newstate = get_patinfo_input(input)
 		if((company = @model.company) \
 			&& (mail = user_input(:regulatory_email)) && !mail.empty?)
 			@session.app.update(company.pointer, mail, unique_email)
@@ -134,15 +180,7 @@ end
 class Sequence < State::Admin::Global
 	RECIPIENTS = []
 	VIEW = View::Admin::RootSequence
-	PDF_DIR = File.expand_path('../../../doc/resources/patinfo/', File.dirname(__FILE__))
 	include SequenceMethods
-	def assign_patinfo
-		if(@model.has_patinfo?)
-			State::Admin::AssignPatinfo.new(@session, @model)
-		else
-			State::Admin::AssignDeprivedSequence.new(@session, @model)
-		end
-	end	
 	def atc_request
 		if((company = @model.company) && (addr = company.regulatory_email))
 			lookandfeel = @session.lookandfeel
@@ -179,28 +217,6 @@ class Sequence < State::Admin::Global
 			store_slate_item(time, :processing)
 		}
 	end
-	def store_slate_item(time, type)
-		slate_pointer = Persistence::Pointer.new([:slate, :patinfo])
-		@session.app.create(slate_pointer)
-		item_pointer = slate_pointer + :item
-		expiry_time = InvoiceItem.expiry_time(PI_UPLOAD_DURATION, time)
-		unit = @session.lookandfeel.lookup("pi_upload_#{type}")
-		text = sprintf("%s %s", @model.iksnr, @model.seqnr)
-		values = {
-			:data					=>	{:name => @model.name},
-			:duration			=>	PI_UPLOAD_DURATION,
-			:expiry_time	=>	expiry_time,
-			:item_pointer =>	@model.pointer,
-			:price				=>	PI_UPLOAD_PRICES[type],
-			:text					=>	text,
-			:time					=>	time,
-			:type					=>	type,
-			:unit					=>	unit,
-			:user_pointer	=>	@session.user.pointer,
-			:vat_rate			=>	VAT_RATE, 
-		} 
-		@session.app.update(item_pointer.creator, values, unique_email)
-	end
 end
 class CompanySequence < State::Admin::Sequence
 	def init
@@ -231,6 +247,18 @@ class CompanySequence < State::Admin::Sequence
 	end
 	def store_slate
 		store_slate_item(Time.now, :annual_fee)
+	end
+end
+class ResellerSequence < Global
+	include PatinfoPdfMethods
+	VIEW = View::Admin::ResellerSequence
+	def update
+		input = {}
+		newstate = get_patinfo_input(input)
+		ODBA.transaction {
+			@model = @session.app.update(@model.pointer, input, unique_email)
+		}
+		newstate
 	end
 end
 		end
