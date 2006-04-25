@@ -21,7 +21,7 @@ module ODDB
 				'-' << gt.to_s << super
 			end
 			def row_css(model)
-				'expired' if(model.expired?)
+				'expired' if(model.respond_to?(:expired?) && model.expired?)
 =begin
 				if(model.respond_to?(:iksnr))
 					iksnr = model.iksnr
