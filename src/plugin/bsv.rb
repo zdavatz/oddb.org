@@ -326,6 +326,15 @@ module ODDB
 		def database(date)
 			sprintf('BSV_per_%4d.%02d.01.xls', date.year, date.month)
 		end
+		def deductible_originals(workbook)
+			map = {}
+			deductibles = workbook.worksheet(2)
+			deductibles.each(1) { |row|
+				map.store(row.at(2).to_i.to_s, true)
+				map.store(row.at(4).to_i.to_s, true)
+			}
+			map
+		end
 		def delete_sl_entry(package, pac)
 			@app.delete(package.pointer + [:sl_entry])
 		end
@@ -438,6 +447,7 @@ module ODDB
 				end
 			}
 			workbook = Spreadsheet::ParseExcel.parse(path)
+			do_map = deductible_originals(workbook)
 			worksheet = workbook.worksheet(0)
 			worksheet.each(1) { |row|
 				pcode = row.at(2).to_i.to_s
@@ -470,7 +480,7 @@ module ODDB
 					package.limitation = (cell.to_s(ENCODING).downcase=='y')
 				end
 				package.limitation_points = row.at(11).to_i
-				if(row.at(15).to_i == 1)
+				if(do_map.has_key?(pcode) || do_map.has_key?(sl_iks))
 					package.deductible = :deductible_o
 				else
 					package.deductible = :deductible_g
