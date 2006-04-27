@@ -12,13 +12,16 @@ module ODDB
 			COMPONENTS = {}
 			CSS_MAP = {}
 			CSS_KEYMAP = {
-				'explain_unknown'	=>	'explain-unknown',
-				'explain_expired'	=>	'explain-unknown expired',
-				:explain_cas			=>	'explain-infos',
-				'explain_li'			=>	'explain-infos',
-				'explain_fi'			=>	'explain-infos',
-				'explain_pi'			=>	'explain-infos',
-				'explain_narc'		=>	'explain-infos',
+				'explain_unknown'		=>	'explain-unknown',
+				'explain_expired'		=>	'explain-unknown expired',
+				:explain_cas				=>	'explain-infos',
+				:explain_ddd_price	=>	'explain-infos',
+				:explain_deductible	=>	'explain-infos',
+				'explain_li'				=>	'explain-infos',
+				'explain_fi'				=>	'explain-infos',
+				'explain_pbp'				=>	'explain-infos',
+				'explain_pi'				=>	'explain-infos',
+				'explain_narc'			=>	'explain-infos',
 			}
 			def init
 				@components = @lookandfeel.explain_result_components

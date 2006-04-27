@@ -636,12 +636,16 @@ module ODDB
 				[0,1]	=>	:explain_generic,
 				[0,2]	=>	:explain_complementary,
 				[0,3]	=>	'explain_expired',
-				[0,4]	=>	'explain_pi',
-				[1,0]	=>	'explain_pbp',
-				[1,1]	=>	:explain_deductible,
-				[1,2]	=>	:explain_ddd_price,
-				[1,3]	=>	'explain_fd',
-				[1,4]	=>	'explain_g',
+				[0,4]	=>	'explain_pbp',
+				[0,5]	=>	:explain_deductible,
+				[0,6]	=>	:explain_ddd_price,
+				[1,0]	=>	'explain_pi',
+				[1,1]	=>	'explain_fd',
+				[1,2]	=>	'explain_g',
+				[1,3]	=>	'explain_sl',
+				[1,4]	=>	'explain_slo',
+				[1,5]	=>	'explain_slg',
+				[1,6]	=>	:explain_lppv,
 			}
 		end
 		def result_list_components
@@ -658,8 +662,9 @@ module ODDB
 				[7,0]		=>	:company_name,
 				[8,0]		=>	:ddd_price,
 				[9,0]		=>	'nbsp',
-				[10,0]	=>	:feedback,
-				[11,0]	=>  :google_search,
+				[10,0]	=>	:ikscat,
+				[11,0]	=>	:feedback,
+				[12,0]	=>  :google_search,
 			}
 		end
 		def section_style
