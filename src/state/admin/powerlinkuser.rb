@@ -22,6 +22,12 @@ module PowerLinkUser
 		[ :registration,
 			:sequence, :package ]	=>	State::Admin::DeductiblePackage,
 	}	
+	def new_fachinfo
+		if((pointer = @session.user_input(:pointer)) \
+				&& (registration = pointer.resolve(@session)))
+			_new_fachinfo(registration)
+		end
+	end
 	def limited?
 		false
 	end

@@ -52,7 +52,7 @@ class FiChapterChooser < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	:full_text,
 		[1,0]	=>	:ddd,
-		[2,0]	=>	:print,
+		#[2,0]	=>	:print,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,2]	=>	'chapter-tab',
@@ -66,9 +66,13 @@ class FiChapterChooser < HtmlGrid::Composite
 	}
 	def init
 		xwidth = self::class::XWIDTH
-		if(@session.state.allowed?)
-			components.store([2,0], :print_edit)
-			components.store([xwidth-1,0], :changelog)
+		unless(@model.pointer.skeleton == [:create])
+			if(@session.state.allowed?)
+				components.store([2,0], :print_edit)
+				components.store([xwidth-1,0], :changelog)
+			else
+				components.store([2,0], :print)
+			end
 		end
 		document = @model.send(@session.language)
 		names = display_names(document)

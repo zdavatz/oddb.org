@@ -67,7 +67,8 @@ module ODDB
 					link = HtmlGrid::Link.new(:fachinfo_create, model, @session, self)
 					ptr = model.is_a?(Registration) ? 
 						model.pointer : model.registration.pointer
-					link.href = @lookandfeel.event_url(:new_fachinfo, {:pointer => ptr})
+					args = {:pointer => ptr, :chapter => 'composition'}
+					link.href = @lookandfeel._event_url(:new_fachinfo, args)
 					link.css_class = 'create-infos'
 					link
 				end

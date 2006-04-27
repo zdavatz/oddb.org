@@ -83,10 +83,10 @@ urchinTracker();
 			def title_part_three
 				event = @session.state.direct_event || @session.event
 				if([nil, :resolve, :login, :update, :delete].include?(event))
-					if(@model.respond_to?(:name))
-						@model.name
-					elsif(@model.respond_to?(:pointer_descr))
+					if(@model.respond_to?(:pointer_descr))
 						@model.pointer_descr
+					elsif(@model.respond_to?(:name))
+						@model.name
 					end
 				else
 					@lookandfeel.lookup(event)
