@@ -30,6 +30,11 @@ module ODDB
 		def change_log
 			@change_log ||= []
 		end
+		def company
+			if(reg = @registrations.first)
+				reg.company
+			end
+		end
 		def company_name
 			if(reg = @registrations.first)
 				reg.company_name

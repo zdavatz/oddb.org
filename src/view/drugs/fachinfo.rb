@@ -110,12 +110,16 @@ class FiChapterChooser < HtmlGrid::Composite
 		document.chapter_names
 	end
 	def full_text(model, session)
-		link = HtmlGrid::Link.new(:fachinfo_all, model, session, self)
-		link.set_attribute('title', @lookandfeel.lookup(:fachinfo_all_title))
-		unless(@session.user_input(:chapter).nil?)
-			link.href = @lookandfeel._event_url(:resolve, {:pointer => model.pointer})
+		if(@model.pointer.skeleton == [:create])
+			@lookandfeel.lookup(:fachinfo_all)
+		else
+			link = HtmlGrid::Link.new(:fachinfo_all, model, session, self)
+			link.set_attribute('title', @lookandfeel.lookup(:fachinfo_all_title))
+			unless(@session.user_input(:chapter).nil?)
+				link.href = @lookandfeel._event_url(:resolve, {:pointer => model.pointer})
+			end
+			link
 		end
-		link
 	end
 end
 class FachinfoInnerComposite < HtmlGrid::DivComposite
@@ -186,7 +190,6 @@ class FachinfoPrintComposite < HtmlGrid::DivComposite #View::Drugs::FachinfoPrev
 	}
 end
 class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
-	CHAPTER_CLASS = View::Chapter
 	CHOOSER_CLASS = View::Drugs::FiChapterChooser
 	COMPONENTS = {
 		[0,0]	=>	:fachinfo_name,
@@ -208,16 +211,18 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 			klass.new(model, session, self)
 		end
 	end
+	def chapter_view(chapter, document)
+		View::Chapter.new(chapter, document, @session, self)
+	end
 	def document(model, session)
 		document = model.send(session.language)
 		chapter = @session.user_input(:chapter)
 		if(chapter == 'ddd')
-				View::Drugs::DDDTree.new(model.atc_class, session, self)
+			View::Drugs::DDDTree.new(model.atc_class, session, self)
 		elsif(chapter == 'changelog')
 		  View::ChangeLog.new(model.change_log, session, self)
 		elsif(chapter != nil)
-			self.class.const_get(:CHAPTER_CLASS).new(chapter, 
-				document, session, self)
+			chapter_view(chapter, document)
 		else
 			View::Drugs::FachinfoInnerComposite.new(document, session, self)
 		end
@@ -249,8 +254,29 @@ class EditFiChapterChooser < FiChapterChooser
 	end
 end
 class RootFachinfoComposite < View::Drugs::FachinfoComposite
-	CHAPTER_CLASS = View::EditChapterForm
 	CHOOSER_CLASS = EditFiChapterChooser
+	def init
+		unless(@model.company.invoiceable?)
+			components.update({
+				[0,2], :invoiceability,
+				[0,3], :document,
+			})
+			css_map.store([0,3], 'list')
+		end
+		super
+	end
+	def chapter_view(chapter, document)
+		if(@model.company.invoiceable?)
+			View::EditChapterForm.new(chapter, document, @session, self)
+		elsif(@model.pointer.skeleton == [:create])
+			# don't show anything
+		else
+			super
+		end
+	end
+	def invoiceability(model, session=@session)
+		PointerLink.new(:e_fi_not_invoiceable, model.company, @session, self)
+	end
 end
 class RootFachinfo < PrivateTemplate
 	CONTENT = View::Drugs::RootFachinfoComposite

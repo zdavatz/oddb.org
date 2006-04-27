@@ -362,6 +362,7 @@ Zeno Davatz
 				:effective_substances			=>	'Wirkformen',
 				:e_file_not_found0				=>	'"',
 				:e_file_not_found1				=>	'" wurde leider nicht gefunden',
+				:e_fi_not_invoiceable			=>	'Bevor Sie diese Fachinformation administrieren geben Sie bitte zuerst das Firmenprofil an.',
 				:e_invalid_atc_class0			=>	'"',
 				:e_invalid_atc_class1			=>	'" ist keine g&uuml;ltige ATC-Klasse. Bitte &uuml;berpr&uuml;fen Sie die Schreibweise.',
 				:e_invalid_date0					=>	'"',

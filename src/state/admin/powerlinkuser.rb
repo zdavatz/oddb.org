@@ -16,6 +16,7 @@ module PowerLinkUser
 	include User
 	RESOLVE_STATES = {
 		[ :company ]						=>	State::Companies::PowerLinkCompany,
+		[ :fachinfo ]						=>	State::Drugs::RootFachinfo,
 		[ :registration ]				=>	State::Admin::ResellerRegistration,
 		[ :registration,
 			:sequence ]						=>	State::Admin::ResellerSequence,

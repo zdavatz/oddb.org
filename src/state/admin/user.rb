@@ -40,6 +40,7 @@ module User
 		fi = Persistence::CreateItem.new(fi_pointer)
 		fi.carry(:name_base, registration.name_base)
 		fi.carry(:registrations, [registration])
+		fi.carry(:company, registration.company)
 		fi.carry(@session.language, doc)
 		Drugs::RootFachinfo.new(@session, fi)
 	end
