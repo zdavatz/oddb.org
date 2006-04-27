@@ -44,7 +44,6 @@ module ODDB
 				descriptions[language]
 			else
 				super
-				#raise NoMethodError.new("Undefined or Private Method: #{language} for #{self.class}:#{self}")
 			end
 		end
 		def respond_to?(symbol)

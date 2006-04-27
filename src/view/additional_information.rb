@@ -61,10 +61,18 @@ module ODDB
 				span
 			end
 			def fachinfo(model, session=@session, css='result-infos')
-				_fachinfo(model.fachinfo, css)
+				if(link = _fachinfo(model.fachinfo, css))
+					link
+				elsif(@session.user.allowed?(model))
+					link = HtmlGrid::Link.new(:fachinfo_create, model, @session, self)
+					ptr = model.is_a?(Registration) ? 
+						model.pointer : model.registration.pointer
+					link.href = @lookandfeel.event_url(:new_fachinfo, {:pointer => ptr})
+					link.css_class = 'create-infos'
+					link
+				end
 			end
 			def _fachinfo(fachinfo, css='result-infos')
-				visitor_language = @lookandfeel.language.intern
 				if(fachinfo)
 					link = HtmlGrid::Link.new(:fachinfo_short, 
 							fachinfo, @session, self)
@@ -77,7 +85,8 @@ module ODDB
 			end
 			def feedback(model, session=@session)
 				link = HtmlGrid::Link.new(:feedback_text_short, model, session, self)
-				link.href = @lookandfeel._event_url(:feedbacks, {'pointer'=>model.pointer})
+				link.href = @lookandfeel._event_url(:feedbacks, 
+																						{'pointer'=>model.pointer})
 				pos = components.index(:feedback)
 				component_css_map.store(pos, "feedback square")
 				css_map.store(pos, "square")

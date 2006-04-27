@@ -90,9 +90,12 @@ end
 		def empty?
 		end
 		def chapter_names
-			self::class::CHAPTERS.select { |chapter|
+			chapters.select { |chapter|
 				respond_to?(chapter) && self.send(chapter)
 			}
+		end
+		def chapters
+			self::class::CHAPTERS
 		end
 		def each_chapter(&block)
 			chapter_names.each { |chap|

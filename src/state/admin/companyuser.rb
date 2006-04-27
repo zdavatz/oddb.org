@@ -40,6 +40,13 @@ module CompanyUser
 		[ :registration, :sequence,
 			:package, :sl_entry ]				=>	State::Admin::CompanySlEntry,
 	}	
+	def new_fachinfo
+		if((pointer = @session.user_input(:pointer)) \
+				&& (registration = pointer.resolve(@session)) \
+				&& allowed?(registration))
+			_new_fachinfo(registration)
+		end
+	end
 	def home_companies
 		klass = State::Companies::UserCompany
 		if(self.is_a?(klass))

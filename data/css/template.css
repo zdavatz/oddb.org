@@ -1943,3 +1943,16 @@ td.nowrap
 {
 	white-space: nowrap;
 }
+a.create-infos, a.create-infos-bg
+{
+	color : black;
+	border : 1px solid #ffbc6f;
+	font-weight : bold;
+	text-align : center;
+	text-decoration : none;
+	padding : 2px 2px 2px 4px;
+}
+a.create-infos:hover, a.create-infos-bg:hover
+{
+	background: $rslt_infos_bg_bright;
+}

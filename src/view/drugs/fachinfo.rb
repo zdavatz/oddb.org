@@ -34,7 +34,11 @@ class FiChapterChooserLink < HtmlGrid::Link
 			:pointer, @model.pointer,
 		]
 		unless(@session.user_input(:chapter) == @name.to_s)
-			self.href = @lookandfeel._event_url(:resolve, args)
+			if(@model.pointer.skeleton == [:create])
+				self.href = @lookandfeel.event_url(:self, {:chapter => @name})
+			else
+				self.href = @lookandfeel._event_url(:resolve, args)
+			end
 		end
 	end
 end
@@ -237,7 +241,7 @@ class CompanyFachinfoPrint < FachinfoPrint
 end
 class EditFiChapterChooser < FiChapterChooser
 	def display_names(document)
-		document.class.const_get(:CHAPTERS)
+		document.chapters
 	end
 end
 class RootFachinfoComposite < View::Drugs::FachinfoComposite

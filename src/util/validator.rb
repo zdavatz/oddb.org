@@ -123,6 +123,7 @@ module ODDB
 			:narcotics,
 			:new_active_agent,
 			:new_company,
+			:new_fachinfo,
 			:new_galenic_form,
 			:new_galenic_group,
 			:new_indication,

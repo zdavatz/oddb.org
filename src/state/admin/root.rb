@@ -108,6 +108,12 @@ module Root
 		pointer = Persistence::Pointer.new(:company)
 		State::Companies::RootCompany.new(@session, Persistence::CreateItem.new(pointer))
 	end
+	def new_fachinfo
+		if((pointer = @session.user_input(:pointer)) \
+				&& (registration = pointer.resolve(@session)))
+			_new_fachinfo(registration)
+		end
+	end
 	def new_galenic_form
 		pointer = @session.user_input(:pointer)
 		model = pointer.resolve(@session.app)
