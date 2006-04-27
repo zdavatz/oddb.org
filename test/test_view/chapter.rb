@@ -8,12 +8,18 @@ require 'test/unit'
 require 'view/chapter'
 require 'stub/cgi'
 require 'model/text'
+require 'flexmock'
 
 module ODDB
 	module View
 		class TestChapter < Test::Unit::TestCase
 			def setup 
-				@view = View::Chapter.new(:name, nil, nil)
+				@lookandfeel = FlexMock.new
+				@lookandfeel.mock_handle(:section_style) { 'section_style' }
+				session = FlexMock.new
+				session.mock_handle(:lookandfeel) { @lookandfeel }
+				assert(session.respond_to?(:lookandfeel))
+				@view = View::Chapter.new(:name, nil, session)
 			end	
 			def test_escaped_paragraphs
 				txt = "Guten Tag! & wie gehts uns Heute? < oder >?"
@@ -42,7 +48,7 @@ module ODDB
 				section.subheading = "Für Zwerge > 1.5 m"
 				@view.value = chapter
 				expected = <<-EOS
-<DIV style="#{View::Chapter.const_get(:SEC_STYLE)}"><SPAN style="font-style: italic">Für Zwerge &gt; 1.5 m</SPAN>&nbsp;</DIV>
+<DIV style="section_style"><SPAN style="font-style: italic">Für Zwerge &gt; 1.5 m</SPAN>&nbsp;</DIV>
 				EOS
 				result = @view.to_html(CGI.new)
 				assert_equal(expected.strip, result)
