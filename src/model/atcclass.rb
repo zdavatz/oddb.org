@@ -65,7 +65,7 @@ module ODDB
 			atc = self.dup
 			atc_sequences = @sequences.odba_instance.dup
 			atc_sequences.delete_if { |seq|
-				!(seq.company.to_s.downcase.include?(company_name))
+				!(ODDB.search_term(seq.company.to_s.downcase).include?(company_name))
 			}
 			atc.sequences = atc_sequences
 			atc
