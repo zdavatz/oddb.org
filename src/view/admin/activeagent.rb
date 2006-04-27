@@ -2,6 +2,7 @@
 # View::Admin::ActiveAgent -- oddb -- 22.04.2003 -- hwyss@ywesee.com 
 
 require 'view/drugs/privatetemplate'
+require 'view/admin/sequence'
 require 'view/form'
 require 'htmlgrid/errormessage'
 require 'htmlgrid/value'
@@ -76,13 +77,17 @@ class RootActiveAgentComposite < View::Admin::ActiveAgentComposite
 	COMPONENTS = {
 		[0,0]	=>	:agent_name,
 		[0,1]	=>	View::Admin::ActiveAgentForm,
-		[0,2]	=>	'th_source',
-		[0,3]	=>	:source,
+		[0,2]	=>	:active_agents,
+		[0,3]	=>	'th_source',
+		[0,4]	=>	:source,
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
-		[0,2]	=>	'subheading',
+		[0,3]	=>	'subheading',
 	}
+	def active_agents(model, session=@session)
+		RootSequenceAgents.new(model.sequence.active_agents, @session, self)
+	end
 	def source(model, session)
 		HtmlGrid::Value.new(:source, model.sequence, @session, self)
 	end
