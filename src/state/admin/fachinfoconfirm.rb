@@ -56,6 +56,8 @@ class FachinfoConfirm < State::Admin::Global
 				return self
 			end
 			fachinfo = @session.app.update(pointer, values, unique_email)
+			fachinfo.add_change_log_item(unique_email, 'uploaded', @language)
+			@session.app.update(fachinfo.pointer, {})
 			@valid_iksnrs.each { |iksnr|
 				@session.app.replace_fachinfo(iksnr, fachinfo.pointer)
 			}
