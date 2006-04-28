@@ -61,7 +61,7 @@ class RootFachinfo < Fachinfo
 					doc = @fachinfo.send(lang)
 					@fachinfo = @session.app.update(@fachinfo.pointer, {lang => doc}, email)
 					@model = FachinfoWrapper.new(@fachinfo)
-					@model.add_change_log_item(email, 'Created', lang)
+					@model.add_change_log_item(email, 'created', lang)
 					@session.app.update(registration.pointer, 
 															{:fachinfo => @model.pointer}, email)
 				end

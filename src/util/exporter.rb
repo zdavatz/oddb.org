@@ -6,6 +6,7 @@ require 'plugin/fipdf'
 require 'plugin/yaml'
 require 'plugin/csv_export'
 require 'plugin/patinfo_invoicer'
+require 'plugin/fachinfo_invoicer'
 require 'plugin/download_invoicer'
 require 'plugin/ouwerkerk'
 require 'plugin/xls_export'
@@ -40,6 +41,7 @@ module ODDB
 				mail_feedback_stats
 				#mail_notification_stats
 			}
+			mail_fachinfo_log
 			export_sl_pcodes
 			export_yaml
 			export_oddbdat
@@ -169,6 +171,14 @@ module ODDB
 		end
 		def mail_download_invoices
 			DownloadInvoicer.new(@app).run
+		end
+		def mail_fachinfo_log(day = Date.today - 1)
+			plug = FachinfoInvoicer.new(@app)
+			plug.run(day)
+			log = Log.new(day)
+			log.date_str = day.strftime("%d.%m.%Y")
+			log.report = plug.report
+			log.notify("Fachinfo-Uploads")
 		end
 		def mail_feedback_stats
 			mail_stats('feedback')
