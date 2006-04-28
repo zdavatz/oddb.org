@@ -215,6 +215,7 @@ Grammar OddbSize
 				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose))
 				(ddose / mdose.want(ddose.unit)).to_f * (price.to_f / comparable_size.to_f)
 			end
+		rescue RuntimeError
 		end
 		def delete_sl_entry
 			@sl_entry = nil
