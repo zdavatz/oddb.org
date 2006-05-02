@@ -6,11 +6,11 @@ require 'plugin/invoicer'
 module ODDB
 	class PatinfoInvoicer < Invoicer
 		attr_accessor :invoice_number
-		def run(day = Date.today)
+		def run(day = @@today)
 			send_daily_invoices(day - 1)
 			send_annual_invoices(day)
 		end
-		def send_annual_invoices(day = Date.today)
+		def send_annual_invoices(day = @@today)
 			items = all_items.select { |item| item.type == :annual_fee }
 			## augment with active html-patinfos
 			items += html_items(day)

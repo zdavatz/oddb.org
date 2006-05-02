@@ -34,7 +34,7 @@ class OddbDatExport < ODDB::Plugin
 	EXPORT_DIR = File.expand_path('../../data/downloads', 
 		File.dirname(__FILE__))
 	def initialize(app)
-		@date = Date.today 
+		@date = @@today 
 		super
 	end
 	def export

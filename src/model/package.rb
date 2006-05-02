@@ -166,7 +166,7 @@ Grammar OddbSize
 			@narcotics = []
 		end
 		def active?
-			@market_date.nil? || @market_date <= Date.today
+			@market_date.nil? || @market_date <= @@today
 		end
 		def active_agents
 			@sequence.active_agents

@@ -40,8 +40,7 @@ module ODDB
 			super()
 		end
 		def active_packages
-			@sequences.inject([]) { |inj, seq| 
-				inj.concat(seq.public_packages) }
+			@sequences.inject([]) { |inj, seq| inj.concat(seq.public_packages) }
 		end
 		def package_count(generic_type=nil)
 			@sequences.inject(0) { |inj, seq|
@@ -52,15 +51,6 @@ module ODDB
 			@sequences.each { |seq| seq.atc_class = nil } 
 			@sequences.odba_delete
 		end
-=begin
-		def company_filter(companies)
-			atc = self.dup
-			atc.sequences = @sequences.select { |seq| 
-				companies.include?(seq.company)
-			}
-			atc
-		end
-=end
 		def company_filter_search(company_name)
 			atc = self.dup
 			atc_sequences = @sequences.odba_instance.dup
@@ -70,17 +60,6 @@ module ODDB
 			atc.sequences = atc_sequences
 			atc
 		end
-=begin
-		def substance_filter_search(substance_name)
-			atc = self.dup
-			atc_sequences = @sequences.dup
-			atc_sequences.delete_if { |seq|
-				!(seq.substance_names.to_s.downcase.include?(substance_name))
-			}
-			atc.sequences = atc_sequences
-			atc
-		end	
-=end
 		def create_ddd(roa)
 			@ddds ||= {}
 			@ddds[roa] = DDD.new(roa)	

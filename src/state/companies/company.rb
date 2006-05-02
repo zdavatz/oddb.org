@@ -92,10 +92,10 @@ class UserCompany < Company
 				@errors.store(:name, create_error('e_duplicate_company', :name, input[:name]))
 			else
 				if((date = input[:pref_invoice_date]) \
-					 && date != company.pref_invoice_date && date <= Date.today)
+					 && date != company.pref_invoice_date && date <= @@today)
 					input.delete(:pref_invoice_date)
 					err = create_error('e_date_must_be_in_future', :pref_invoice_date, 
-						(Date.today + 1).strftime('%d.%m.%Y'))
+						(@@today + 1).strftime('%d.%m.%Y'))
 					@errors.store(:pref_invoice_date, err)
 				end
 				addr = nil

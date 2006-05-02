@@ -41,7 +41,7 @@ module ODDB
 			end
 		end
 		def active?
-			@registration && @registration.active?
+			@registration && @registration.active? && !violates_patent?
 		end
 		def active_agent(substance)
 			@active_agents.each { |active|
@@ -198,6 +198,9 @@ module ODDB
 				package.limitation_text
 			}.size
 		end
+		def patent_protected?
+			@registration.patent_protected? if(@registration)
+		end
 		def search_terms
 			str = self.name
 			ODDB.search_terms(str.split(/\s+/).push(str))
@@ -243,6 +246,11 @@ module ODDB
 		end
 		def substance_names
 			substances.collect { |subst| subst.to_s }
+		end
+		def violates_patent?
+			@registration.may_violate_patent?	&& @atc_class.sequences.any? { |seq| 
+				seq.patent_protected? && seq.company != @registration.company
+			}
 		end
 		private
 		def adjust_types(values, app=nil)

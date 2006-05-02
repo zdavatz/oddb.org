@@ -155,28 +155,32 @@ class RegistrationForm < View::Form
 		[2,2]		=>	:expiration_date,
 		[0,3]		=>	:complementary_type,
 		[2,3]		=>	:market_date,
-		[0,4]		=>	:indication,
+		[0,4]		=>	:index_therapeuticus,
 		[2,4]		=>	:inactive_date,
-		[0,5]		=>	:export_flag,
+		[0,5]		=>	:indication,
+		[2,5]		=>	:patented_until,
+		[0,6]		=>	:export_flag,
 	}
 	COMPONENT_CSS_MAP = {
-		[0,0,4,5]	=>	'standard',
+		[0,0,4,6]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,4,10]	=>	'list',
+		[0,0,4,7]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
 	SYMBOL_MAP = {
 		:complementary_type	=>	HtmlGrid::Select,
 		:expiration_date		=>	HtmlGrid::InputDate,
+		:export_flag				=>	HtmlGrid::InputCheckbox,
+		:fachinfo_label			=>	HtmlGrid::LabelText,
 		:generic_type				=>	HtmlGrid::Select,
 		:inactive_date			=>	HtmlGrid::InputDate,
+		:index_therapeuticus=>	HtmlGrid::InputText,
 		:market_date				=>	HtmlGrid::InputDate,
+		:patented_until			=>	HtmlGrid::InputDate,
 		:registration_date	=>	HtmlGrid::InputDate,
 		:revision_date			=>	HtmlGrid::InputDate,
-		:fachinfo_label			=>	HtmlGrid::LabelText,
-		:export_flag				=>	HtmlGrid::InputCheckbox,
 	}
 	def init
 		reorganize_components()
@@ -185,31 +189,26 @@ class RegistrationForm < View::Form
 	end
 	def reorganize_components
 		if(@model.is_a?(Persistence::CreateItem))
-			components.store([1,6], :submit)
-			#css_map.store([1,5], 'button')
+			components.store([1,7], :submit)
+			css_map.store([1,7], 'list')
 		else
 			components.update({
-				[0,6]		=>	'fi_upload_instruction0',
-				[2,6]		=>	:fachinfo_label,
-				[3,6]		=>	:fachinfo,
-				[3,6,1]	=>	:assign_fachinfo,
-				[0,7]		=>	'fi_upload_instruction1',
-				[1,7]		=>	:language_select,
-				[0,8]		=>	'fi_upload_instruction2',
-				[1,8]		=>	:fachinfo_upload,
-				[0,9]		=>	'fi_upload_instruction3',
-				[1,9]		=>	:submit,
-				[1,9,1]	=>	:new_registration,
+				[0,7]		=>	'fi_upload_instruction0',
+				[2,7]		=>	:fachinfo_label,
+				[3,7]		=>	:fachinfo,
+				[3,7,1]	=>	:assign_fachinfo,
+				[0,8]		=>	'fi_upload_instruction1',
+				[1,8]		=>	:language_select,
+				[0,9]		=>	'fi_upload_instruction2',
+				[1,9]		=>	:fachinfo_upload,
+				[0,10]	=>	'fi_upload_instruction3',
+				[1,10]	=>	:submit,
+				[1,10,1]=>	:new_registration,
 			})
-			#component_css_map.store([0,5,4], 'standard')
-			#css_map.store([0,7,4], 'list')
-			css_map.store([0,6], 'result-b-r-unknown-left')
-			css_map.store([1,6], 'list-bg')
-			css_map.store([0,7], 'list-bg')
+			css_map.store([0,7], 'result-b-r-unknown-left')
 			css_map.store([1,7], 'list-bg')
-			css_map.store([0,8], 'list-bg')
-			css_map.store([1,8], 'list-bg')
-			#css_map.store([1,6], 'button')
+			css_map.store([2,7,2], 'list')
+			css_map.store([0,8,2,2], 'list-bg')
 		end
 	end
 	def company_name(model, session)

@@ -228,6 +228,7 @@ class TestSequence < Test::Unit::TestCase
 	def test_comparables1
 		reg = FlexMock.new
 		reg.mock_handle(:active?) { true }
+		reg.mock_handle(:may_violate_patent?) { false }
 		@seq.registration = reg
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
@@ -246,6 +247,7 @@ class TestSequence < Test::Unit::TestCase
 	def test_comparables2
 		reg = FlexMock.new
 		reg.mock_handle(:active?) { true }
+		reg.mock_handle(:may_violate_patent?) { false }
 		@seq.registration = reg
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
@@ -265,6 +267,7 @@ class TestSequence < Test::Unit::TestCase
 	def test_comparables3
 		reg = FlexMock.new
 		reg.mock_handle(:active?) { true }
+		reg.mock_handle(:may_violate_patent?) { false }
 		@seq.registration = reg
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc

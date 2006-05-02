@@ -8,7 +8,7 @@ module ODDB
 			@@expired ||= {}
 			@midnight_walker ||= Thread.new {
 				loop {
-					tomorrow = Date.today + 1
+					tomorrow = @@today + 1
 					midnight = Time.local(tomorrow.year, tomorrow.month, tomorrow.day)
 					sleep(midnight - Time.now)
 					@@expired.clear

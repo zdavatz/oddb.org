@@ -26,6 +26,23 @@ require 'fileutils'
 require 'yaml'
 require 'model/migel/group'
 
+class Object
+	unless(defined?(@@date_arithmetic_optimization))
+		@@date_arithmetic_optimization = Thread.new {
+			loop {
+				@@today = Date.today
+				@@one_year_ago = @@today << 12
+				@@two_years_ago = @@today << 24
+				tomorrow = Time.local(@@today.year, @@today.month, @@today.day)
+				sleep(tomorrow - Time.now)
+			}	
+		}
+		def today
+			@@today
+		end
+	end
+end
+
 class OddbPrevalence
 	include ODDB::Failsafe
 	include ODBA::Persistable
@@ -970,7 +987,7 @@ class OddbPrevalence
 	def updated(item)
 		case item
 		when ODDB::Registration, ODDB::Sequence, ODDB::Package, ODDB::AtcClass
-			@last_medication_update = Date.today
+			@last_medication_update = @@today
 			odba_isolated_store
 		when ODDB::LimitationText, ODDB::AtcClass::DDD
 		when ODDB::Substance
@@ -1204,14 +1221,14 @@ module ODDB
 				Thread.current.priority=-10
 				Thread.current.abort_on_exception = true
 				today = (EXPORT_HOUR > Time.now.hour) ? \
-					Date.today : Date.today.next
+					@@today : @@today.next
 				loop {
 					next_run = Time.local(today.year, today.month, today.day, 
 						EXPORT_HOUR)
 					sleep(next_run - Time.now)
 					Exporter.new(self).run
 					GC.start
-					today = Date.today.next
+					today = @@today.next
 				}
 			}
 		end
@@ -1219,13 +1236,13 @@ module ODDB
 			Thread.new {
 				Thread.current.priority=-10
 				Thread.current.abort_on_exception = true
-				today = (10 > Time.now.hour) ? Date.today : Date.today.next
+				today = (10 > Time.now.hour) ? @@today : @@today.next
 				loop {
 					next_run = Time.local(today.year, today.month, today.day, 10)
 					sleep(next_run - Time.now)
 					Exporter.new(self).mail_notification_stats
 					GC.start
-					today = Date.today.next
+					today = @@today.next
 				}
 			}
 		end
@@ -1236,7 +1253,7 @@ module ODDB
 				Thread.current.priority=-5
 				Thread.current.abort_on_exception = true
 				today = (update_hour > Time.now.hour) ? \
-					Date.today : Date.today.next
+					Date.today : @@today.next
 				loop {
 					next_run = Time.local(today.year, today.month, today.day, 
 						update_hour, update_min)
@@ -1246,7 +1263,7 @@ module ODDB
 					Updater.new(self).run
 					@system.recount
 					GC.start
-					today = Date.today.next
+					today = @@today.next
 					update_hour = rand(24)
 					update_min = rand(60)
 				}

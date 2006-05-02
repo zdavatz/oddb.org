@@ -27,7 +27,7 @@ module ODDB
 				}
 			}
 		end
-		def resend_invoice(invoice, day = Date.today)
+		def resend_invoice(invoice, day = @@today)
 			YdimPlugin.new(@app).send_invoice(invoice.ydim_id)
 		end
 		def rp2fr(price)
@@ -47,7 +47,7 @@ module ODDB
 				invoice_company_index(comp)
 			}
 		end
-		def invoice_company_index(comp, date = Date.today)
+		def invoice_company_index(comp, date = @@today)
 			idate = comp.index_invoice_date
 			price = rp2fr(comp.index_price)
 			## package_price is stored in Rappen
@@ -100,7 +100,7 @@ module ODDB
 				invoice_lookandfeel(comp)
 			}
 		end
-		def invoice_lookandfeel(comp, date = Date.today)
+		def invoice_lookandfeel(comp, date = @@today)
 			idate = comp.lookandfeel_invoice_date
 			price = rp2fr(comp.lookandfeel_price)
 			## lookandfeel_member_price is stored in Rappen

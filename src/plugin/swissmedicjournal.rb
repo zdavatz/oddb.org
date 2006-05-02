@@ -188,7 +188,7 @@ module ODDB
 		def deactivate_registration(smj_reg)
 			unless(smj_reg.incomplete?)
 				pointer = Persistence::Pointer.new([:registration, smj_reg.iksnr])
-				date = smj_reg.date || @month || Date.today
+				date = smj_reg.date || @month || @@today
 				@deactivations.push(pointer)
 				@change_flags.store(pointer, smj_reg.flags)
 				if((reg = @app.registration(smj_reg.iksnr)) && reg.inactive_date.nil?)

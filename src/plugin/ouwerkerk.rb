@@ -34,8 +34,7 @@ module ODDB
 		attr_reader :file_path
 		def initialize(app)
 			super
-			date = Date.today
-			@file_name = date.strftime("med-drugs-%Y%m%d.xls")
+			@file_name = @@today.strftime("med-drugs-%Y%m%d.xls")
 			@file_path = File.expand_path("xls/#{@file_name}", self::class::ARCHIVE_PATH)
 		end
 		def export_package(pack, row, pac_flags)

@@ -154,7 +154,7 @@ module ODDB
 					end
 					if(download != latest)
 						target = File.join(ARCHIVE_PATH, 'xls',
-															 Date.today.strftime('vaccines-%Y.%m.%d.xls'))
+															 @@today.strftime('vaccines-%Y.%m.%d.xls'))
 						File.open(target, 'w') { |fh| fh.puts(download) }
 						target
 					end
@@ -350,11 +350,10 @@ module ODDB
 				registrations.each_value { |reg|
 					update_registration(reg)
 				}
-				today = Date.today
 				@app.registrations.each_value { |reg|
 					if(reg.generic_type == :vaccine && !@active.include?(reg.iksnr))
 						@deactivated.push(reg.iksnr)
-						@app.update(reg.pointer, {:inactive_date => today}, :swissmedic)
+						@app.update(reg.pointer, {:inactive_date => @@today}, :swissmedic)
 					end
 				}
 			}

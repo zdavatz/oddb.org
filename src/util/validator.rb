@@ -20,15 +20,16 @@ module ODDB
 			:disable_autoinvoice, :refdata_override, :lppv,
 		]
 		DATES = [
+			:expiration_date,
 			:inactive_date,
 			:index_invoice_date,
 			:introduction_date,
 			:lookandfeel_invoice_date,
+			:market_date,
+			:patented_until,
+			:pref_invoice_date,
 			:registration_date,
 			:revision_date,
-			:market_date,
-			:expiration_date,
-			:pref_invoice_date,
 			:sponsor_until,
 		]
 		ENUMS = {
@@ -241,6 +242,7 @@ module ODDB
 			:galenic_form,
 			:heading,
 			:html_chapter,
+			:index_therapeuticus,
 			:indication,
 			:language_select,
 			:location,

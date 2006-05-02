@@ -120,8 +120,7 @@ module ODDB
 		end
 		def _yearly_repetition(date)
 			if(date)
-				today = Date.today
-				while(date < today)
+				while(date < @@today)
 					date = date >> 12
 				end
 				date
