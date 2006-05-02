@@ -330,8 +330,14 @@ module ODDB
 			map = {}
 			deductibles = workbook.worksheet(2)
 			deductibles.each(1) { |row|
-				map.store(row.at(2).to_i.to_s, true)
-				map.store(row.at(4).to_i.to_s, true)
+				pcode = row.at(2).to_i
+				if(pcode > 0)
+					map.store(pcode.to_s, true)
+				end
+				iksnr = row.at(4).to_i
+				if(iksnr > 0)
+					map.store(sprintf("%05i", iksnr), true)
+				end
 			}
 			map
 		end
