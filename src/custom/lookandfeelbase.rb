@@ -851,7 +851,7 @@ Zeno Davatz
 				:password_request_confirm	=>	'Vielen Dank. Sie erhalten in K&uuml;rze ein E-Mail mit weiteren Anweisungen.',
 				:password_reset						=>	'Passwort neu setzen',
 				:password_reset_confirm		=>	'Vielen Dank. Ihr Passwort wurde neu gesetzt.',
-				:patented_until						=>	'Patentschutz bis',
+				:patented_until						=>	'Patentablaufdatum',
 				:patinfo_column						=>	'Patienteninformation:',
 				:patinfo_deprived_sequences => 'Sequenzen ohne Patinfos',
 				:patinfo_descr0						=>	'Patienteninformation zu ',
