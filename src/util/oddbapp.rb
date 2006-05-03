@@ -34,7 +34,7 @@ class Object
 				@@one_year_ago = @@today << 12
 				@@two_years_ago = @@today << 24
 				tomorrow = Time.local(@@today.year, @@today.month, @@today.day)
-				sleep(tomorrow - Time.now)
+				sleep([tomorrow - Time.now, 3600].max)
 			}	
 		}
 		def today
