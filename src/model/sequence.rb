@@ -248,7 +248,8 @@ module ODDB
 			substances.collect { |subst| subst.to_s }
 		end
 		def violates_patent?
-			@registration.may_violate_patent?	&& @atc_class.sequences.any? { |seq| 
+			@atc_class && @registration.may_violate_patent?	\
+				&& @atc_class.sequences.any? { |seq| 
 				seq.patent_protected? && seq.company != @registration.company
 			}
 		end
