@@ -68,6 +68,11 @@ class SwissmedicCat < HtmlGrid::Composite
 			@components.store([1,y], :expiration_date)
 			y += 1
 		end
+		if(@model.patent_protected?)
+			@components.store([0,y], "patented_until")
+			@components.store([1,y], :patent_protected)
+			y += 1
+		end
 		@css_map.store([1,0,1,y], 'list')
 		@css_map.store([0,0,1,y], 'bold top list')
 	end
@@ -83,17 +88,29 @@ class SwissmedicCat < HtmlGrid::Composite
 		link.href = @lookandfeel.lookup(:deductible_legal_url)
 		link
 	end
-	def sl_since(model)
-		sl = model.sl_entry
-		date = sl.introduction_date
-		@lookandfeel.lookup(:sl_since, 
-												@lookandfeel.format_date(date))
-	end
 	def lppv_ajax(model)
 		link = HtmlGrid::Link.new(:lppv_ajax, model, @session, self)
 		link.href = @lookandfeel.lookup(:lppv_url)
 		link.css_class = 'list'
 		link
+	end
+	def patent_protected(model)
+		patent = model.patent
+		date = nil
+		if(srid = patent.srid)
+			date = HtmlGrid::Link.new(:patent_protected, patent, @session, self)
+			date.href = @lookandfeel.lookup(:swissreg_url, srid)
+		else
+			date = HtmlGrid::Value.new(:patent_protected, patent, @session, self)
+		end
+		date.value = @lookandfeel.format_date(patent.expiry_date)
+		date
+	end
+	def sl_since(model)
+		sl = model.sl_entry
+		date = sl.introduction_date
+		@lookandfeel.lookup(:sl_since, 
+												@lookandfeel.format_date(date))
 	end
 end
 		end

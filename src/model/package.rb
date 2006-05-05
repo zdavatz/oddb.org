@@ -158,7 +158,7 @@ Grammar OddbSize
 		alias :pointer_descr :ikscd
 		registration_data :complementary_type, :expiration_date, :expired?,
 			:export_flag, :generic_type, :inactive_date, :pdf_fachinfos,
-			:registration_date, :revision_date
+			:registration_date, :revision_date, :patent, :patent_protected?
 		def initialize(ikscd)
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)

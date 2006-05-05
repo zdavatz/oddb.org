@@ -4,16 +4,17 @@
 require 'date'
 require 'util/persistence'
 require 'model/sequence'
+require 'model/patent'
 
 module ODDB
 	class RegistrationCommon
 		include Persistence
-		attr_reader :iksnr, :sequences 
+		attr_reader :iksnr, :sequences, :patent
 		attr_writer :generic_type, :complementary_type
 		attr_accessor :registration_date, :export_flag, :company, 
 			:revision_date, :indication, :expiration_date, :inactive_date,
 			:market_date, :fachinfo, :source, #, :pdf_fachinfos,
-			:index_therapeuticus, :patented_until
+			:index_therapeuticus
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
 		def initialize(iksnr)
@@ -61,12 +62,18 @@ module ODDB
 				@company.complementary_type
 			end
 		end
+		def create_patent
+			@patent = Patent.new
+		end
 		def create_sequence(seqnr)
 			seq = self::class::SEQUENCE.new(seqnr)
 			unless @sequences.include?(seq.seqnr)
 				seq.registration = self
 				@sequences.store(seq.seqnr, seq)
 			end
+		end
+		def delete_patent
+			@patent = nil
 		end
 		def delete_sequence(seqnr)
 			seqnr = sprintf('%02d', seqnr.to_i)
@@ -131,7 +138,8 @@ module ODDB
 			}
 		end
 		def patent_protected?
-			@patented_until && (@patented_until >= @@today)
+			@patent && @patent.protected?
+			#@patented_until && (@patented_until >= @@today)
 		end
 		def public_package_count
 			if(active?)

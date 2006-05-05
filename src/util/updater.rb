@@ -1,20 +1,21 @@
 #!/usr/bin/env ruby
 # Updater-- oddb -- 19.02.2003 -- hwyss@ywesee.com 
 
-require 'plugin/swissmedicjournal'
+require 'plugin/bsv'
 require 'plugin/doctors'
 require 'plugin/fachinfo'
 require 'plugin/fxcrossrate'
-require 'plugin/interaction'
-require 'plugin/patinfo'
 require 'plugin/hospitals'
-require 'plugin/bsv'
-require 'plugin/ouwerkerk'
+require 'plugin/interaction'
 require 'plugin/limitation'
 require 'plugin/lppv'
 require 'plugin/medwin'
 require 'plugin/migel'
 require 'plugin/narcotic'
+require 'plugin/ouwerkerk'
+require 'plugin/patinfo'
+require 'plugin/swissmedicjournal'
+require 'plugin/swissreg'
 require 'plugin/vaccines'
 require 'plugin/who'
 require 'util/log'
@@ -266,6 +267,9 @@ module ODDB
 					@smj_updated = latest
 				end
 			end
+		end
+		def update_swissreg
+			update_simple(SwissregPlugin, 'Patents')
 		end
 		def update_vaccines
 			update_notify_simple(VaccinePlugin, 'blutprodukte')

@@ -3,6 +3,7 @@
 
 require 'cgi'
 require 'net/http'
+require 'uri'
 require 'delegate'
 require 'iconv'
 require 'fileutils'
@@ -27,8 +28,8 @@ module ODDB
 			end
 		end
 	end
-	class HttpSession < DelegateClass(Net::HTTP)
-		class ResponseWrapper < DelegateClass(Net::HTTPOK)
+	class HttpSession < SimpleDelegator
+		class ResponseWrapper < SimpleDelegator
 			def initialize(resp)
 				@response = resp
 				super
@@ -70,8 +71,14 @@ module ODDB
 			headers = post_headers
 			begin
 				resp = @http.post(path, post_body(hash), headers)
-				if(resp.is_a? Net::HTTPOK)
+				case resp
+				when Net::HTTPOK
 					ResponseWrapper.new(resp)
+				when Net::HTTPFound
+					uri = URI.parse(resp['location'])
+					path = (uri.respond_to?(:request_uri)) ? uri.request_uri : uri.to_s
+					warn(sprintf("redirecting to: %s", path))
+					get(path)
 				else
 					raise("could not connect to #{@http_server}: #{resp}")
 				end

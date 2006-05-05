@@ -15,6 +15,7 @@ module ODDB
 	DOCPARSE_URI = "druby://localhost:10004"
 	EXPORT_URI = "druby://localhost:10005"
 	MEDDATA_URI = "druby://localhost:10006"
+	SWISSREG_URI = "druby://localhost:10007"
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
 	PAYPAL_SERVER = 'www.paypal.com'
 	PAYPAL_RECEIVER = 'zdavatz@ywesee.com'

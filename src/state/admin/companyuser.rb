@@ -4,6 +4,7 @@
 require 'state/admin/user'
 require 'state/companies/global'
 require 'state/admin/patinfo_stats'
+require 'state/admin/patent'
 
 module ODDB
 	module State
@@ -32,6 +33,7 @@ module CompanyUser
 	RESOLVE_STATES = {
 		[ :fachinfo ]									=>	State::Drugs::CompanyFachinfo,
 		[ :registration ]							=>	State::Admin::CompanyRegistration,
+		[ :registration, :patent ]		=>	State::Admin::CompanyPatent,
 		[ :registration, :sequence ]	=>	State::Admin::CompanySequence,
 		[ :registration,
 			:sequence, :active_agent ]	=>	State::Admin::CompanyActiveAgent,

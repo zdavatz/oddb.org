@@ -20,14 +20,19 @@ module ODDB
 			:disable_autoinvoice, :refdata_override, :lppv,
 		]
 		DATES = [
+			:base_patent_date, 
 			:expiration_date,
+			:expiry_date,
 			:inactive_date,
 			:index_invoice_date,
 			:introduction_date,
+			:issue_date,
 			:lookandfeel_invoice_date,
 			:market_date,
 			:patented_until,
 			:pref_invoice_date,
+			:protection_date,
+			:publication_date,
 			:registration_date,
 			:revision_date,
 			:sponsor_until,
@@ -130,6 +135,7 @@ module ODDB
 			:new_indication,
 			:new_item,
 			:new_package,
+			:new_patent,
 			:new_registration,
 			:new_sequence,
 			:new_substance,
@@ -191,6 +197,7 @@ module ODDB
 			:patinfo_upload,
 		]
 		NUMERIC = [
+			:base_patent_srid,
 			:change_flags,
 			:days,
 			:fi_quantity,
@@ -210,6 +217,7 @@ module ODDB
 			:pi_quantity,
 			:price_exfactory,
 			:price_public,
+			:srid,
 			:year,
 		]
 		STRINGS = [
@@ -219,6 +227,7 @@ module ODDB
 			:atc_descr,
 			:bsv_url,
 			:business_unit,
+			:certificate_number,
 			:challenge,
 			:chapter,
 			:chemical_substance,

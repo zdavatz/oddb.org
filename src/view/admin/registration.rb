@@ -178,7 +178,6 @@ class RegistrationForm < View::Form
 		:inactive_date			=>	HtmlGrid::InputDate,
 		:index_therapeuticus=>	HtmlGrid::InputText,
 		:market_date				=>	HtmlGrid::InputDate,
-		:patented_until			=>	HtmlGrid::InputDate,
 		:registration_date	=>	HtmlGrid::InputDate,
 		:revision_date			=>	HtmlGrid::InputDate,
 	}
@@ -211,7 +210,7 @@ class RegistrationForm < View::Form
 			css_map.store([0,8,2,2], 'list-bg')
 		end
 	end
-	def company_name(model, session)
+	def company_name(model, session=@session)
 		klass = if(session.user.is_a?(ODDB::CompanyUser))
 			HtmlGrid::Value
 		else
@@ -219,7 +218,7 @@ class RegistrationForm < View::Form
 		end
 		klass.new(:company_name, model, session, self)
 	end
-	def iksnr(model, session)
+	def iksnr(model, session=@session)
 		klass = if(model.is_a?(Persistence::CreateItem) \
 			|| model.is_a?(ODDB::IncompleteRegistration))
 			HtmlGrid::InputText
@@ -228,11 +227,30 @@ class RegistrationForm < View::Form
 		end
 		klass.new(:iksnr, model, session, self)
 	end
-	def indication(model, session)
+	def indication(model, session=@session)
 		InputDescription.new(:indication, model.indication, session, self)
 	end
-	def new_registration(model, session)
+	def new_registration(model, session=@session)
 		get_event_button(:new_registration)
+	end
+	def patented_until(model, session=@session)
+		unless (model.is_a? Persistence::CreateItem)
+			link = nil
+			if((patent = model.patent) && (date = patent.expiry_date))
+				link = HtmlGrid::Link.new(:patented_until, patent, @session, self)
+				args = {'pointer' => patent.pointer}
+				link.href = @lookandfeel._event_url(:resolve, args)
+				link.value = @lookandfeel.format_date(date)
+			else
+				link = HtmlGrid::Link.new(:patented_until, nil, @session, self)
+				args = {:pointer => model.pointer}
+				link.href = @lookandfeel.event_url(:new_patent, args)
+				link.value = @lookandfeel.lookup(:new_patent)
+			end
+			link.label = true
+			link.set_attribute('class', 'list')
+			link
+		end
 	end
 end
 class ResellerRegistrationForm < View::Form

@@ -136,6 +136,18 @@ module RegistrationMethods
 		end
 		new_state
 	end
+	def new_patent
+		pointer = @session.user_input(:pointer)
+		model = pointer.resolve(@session.app)
+		pat_pointer = pointer + [:patent]
+		item = Persistence::CreateItem.new(pat_pointer)
+		item.carry(:iksnr, model.iksnr)
+		if(klass=resolve_state(pat_pointer))
+			klass.new(@session, item)
+		else
+			self
+		end
+	end
 	def new_sequence
 		pointer = @session.user_input(:pointer)
 		model = pointer.resolve(@session.app)
@@ -193,6 +205,11 @@ class CompanyRegistration < State::Admin::Registration
 	end
 	def allowed?
 		@session.user.allowed?(@model.company)
+	end
+	def new_patent
+		if(allowed?)
+			super
+		end
 	end
 	def new_sequence
 		if(allowed?)

@@ -1,12 +1,13 @@
 #!/usr/bin/env ruby
 # State::Admin::Root -- oddb -- 14.03.2003 -- hwyss@ywesee.com 
 
-require 'state/admin/user'
-require 'state/admin/incompleteregistrations'
 require 'state/admin/galenicgroups'
+require 'state/admin/incompleteregistrations'
 require 'state/admin/indications'
-require 'state/admin/logout'
 require 'state/admin/init'
+require 'state/admin/logout'
+require 'state/admin/patent'
+require 'state/admin/user'
 require 'state/drugs/fachinfo'
 require 'state/hospitals/hospital'
 
@@ -75,6 +76,7 @@ module Root
 		[ :orphaned_fachinfo ]				=>	State::Admin::OrphanedFachinfoAssign,
 		[ :orphaned_patinfo ]					=>	State::Admin::OrphanedPatinfo,
 		[ :registration ]							=>	State::Admin::Registration,
+		[ :registration, :patent ]		=>	State::Admin::Patent,
 		[ :registration, :sequence ]	=>	State::Admin::Sequence,
 		[ :registration,
 			:sequence, :active_agent ]	=>	State::Admin::ActiveAgent,

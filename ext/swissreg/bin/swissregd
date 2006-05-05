@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+# SwissregServer -- oddb -- 04.05.2005 -- hwyss@ywesee.com
+
+$: << File.expand_path("../../../src", File.dirname(__FILE__))
+$: << File.expand_path("../src", File.dirname(__FILE__))
+
+require 'drb/drb'
+require 'util/oddbconfig'
+require 'swissreg'
+
+DRb.start_service(ODDB::SWISSREG_URI, ODDB::Swissreg)
+DRb.thread.join
+
