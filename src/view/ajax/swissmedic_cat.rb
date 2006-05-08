@@ -68,7 +68,7 @@ class SwissmedicCat < HtmlGrid::Composite
 			@components.store([1,y], :expiration_date)
 			y += 1
 		end
-		if(@model.patent_protected?)
+		if(@model.patent)
 			@components.store([0,y], "patented_until")
 			@components.store([1,y], :patent_protected)
 			y += 1

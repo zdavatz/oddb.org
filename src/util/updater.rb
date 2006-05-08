@@ -269,7 +269,7 @@ module ODDB
 			end
 		end
 		def update_swissreg
-			update_simple(SwissregPlugin, 'Patents')
+			update_immediate(SwissregPlugin, 'Patents')
 		end
 		def update_vaccines
 			update_notify_simple(VaccinePlugin, 'blutprodukte')
