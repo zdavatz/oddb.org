@@ -66,22 +66,24 @@ module ODDB
 			# define Struct
 			_define_struct
 			unless(data.nil?)
-				results = MEDDATA_SERVER.search(data)
-				keys = []
-				results.select { |result|
-					if(result.values[1] == data[:firstname])
-						keys.push(result)
+				MEDDATA_SERVER.session { |meddata|
+					results = meddata.search(data)
+					keys = []
+					results.select { |result|
+						if(result.values[1] == data[:firstname])
+							keys.push(result)
+						end
+					}
+					ean13 = nil
+					if(keys.size == 1)
+						data = meddata.detail(keys.first, {:ean13 => [1,0]})
+						ean13 = data[:ean13]
+						puts "######### >>> #{ean13}"
+					end
+					unless(ean13.nil?)
+						data.store(:ean13, ean13)
 					end
 				}
-				ean13 = nil
-				if(keys.size == 1)
-					data = MEDDATA_SERVER.detail(keys.first, {:ean13 => [1,0]})
-					ean13 = data[:ean13]
-					puts "######### >>> #{ean13}"
-				end
-				unless(ean13.nil?)
-					data.store(:ean13, ean13)
-				end
 			end
 			data
 		end

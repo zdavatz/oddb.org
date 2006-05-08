@@ -176,21 +176,24 @@ module ODDB
 						criteria.store(:city, addr.city)
 						check.push(addr.city)
 					end
-					begin
-						results = MEDDATA_SERVER.search(criteria).select { |res|
-							check_with = res.values[0,check.size]
-							check_with.at(1).gsub!(/\d/, '')
-							check_with.at(1).strip!
-							check_with == check
+					eans = []
+					MEDDATA_SERVER.session { |meddata|
+						begin
+							results = meddata.search(criteria).select { |res|
+								check_with = res.values[0,check.size]
+								check_with.at(1).gsub!(/\d/, '')
+								check_with.at(1).strip!
+								check_with == check
+							}
+						rescue RuntimeError
+							puts check.inspect, criteria.inspect
+							hypothesis.store(doc, [ambiguous])
+							next
+						end
+						eans = results.collect { |result|
+							details = meddata.detail(result, {:ean13 => [1,0]})
+							details[:ean13]
 						}
-					rescue RuntimeError
-						puts check.inspect, criteria.inspect
-						hypothesis.store(doc, [ambiguous])
-						next
-					end
-					eans = results.collect { |result|
-						details = MEDDATA_SERVER.detail(result, {:ean13 => [1,0]})
-						details[:ean13]
 					}
 					if(eans.size == 1)
 						found.store(doc, eans.first)

@@ -29,6 +29,7 @@ module ODDB
 			@app = FlexMock.new
 			@plugin = VaccinePlugin.new(@app)
 			@meddata = VaccinePlugin::MEDDATA_SERVER
+			@meddata.mock_handle(:session) { |arg, block| block.call(@meddata) }
 		end
 		def test_extract_latest_filepath
 			path = File.expand_path('../data/html/swissmedic/index.html',

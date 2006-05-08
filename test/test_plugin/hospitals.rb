@@ -7,6 +7,7 @@ $: << File.expand_path('../../src', File.dirname(__FILE__))
 require 'plugin/hospitals'
 require 'test/unit'
 require 'mock'
+require 'flexmock'
 
 module ODDB
 	module MedData
@@ -15,7 +16,9 @@ def setup
 	@app = Mock.new("app")
 	@plugin = ODDB::HospitalPlugin.new(@app)
 	@meddata = Mock.new('meddata')
-	@plugin.meddata_server = @meddata
+	@meddata_server = FlexMock.new
+	@meddata_server.mock_handle(:session) { yield @meddata }
+	@plugin.meddata_server = @meddata_server
 end
 def teardown
 	@meddata.__verify
@@ -68,7 +71,6 @@ def test_hospital_details__1
 		:narcotics			=>	[1,10],
 	}
 	result = Mock.new('result_mock')
-	result.__next(:session) {}
 	result.__next(:ctl) {}
 	@meddata.__next(:detail) { |result, templ| 
 		assert_equal(template, templ)
@@ -76,7 +78,7 @@ def test_hospital_details__1
 			:name	=> 'Hospital',
 		}
 	}
-	retval = @plugin.hospital_details(result)
+	retval = @plugin.hospital_details(@meddata, result)
 	expected = {
 		:name	=> 'Hospital',
 		#:business_area => :hospital,

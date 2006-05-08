@@ -57,13 +57,14 @@ module ODDB
 			criteria = {
 				:ean =>  comp.ean13 
 			}
-			results = MEDDATA_SERVER.search(criteria)
-			if(results.size == 1)
-				result = results.first
-				details = MEDDATA_SERVER.detail(result, @medwin_template)
-				update_company_data(comp, details)
-			end
-			#comp_name = comp.name.gsub(/\W/," ").split(" ")
+			MEDDATA_SERVER.session(:partner) { |meddata|
+				results = meddata.search(criteria)
+				if(results.size == 1)
+					result = results.first
+					details = meddata.detail(result, @medwin_template)
+					update_company_data(comp, details)
+				end
+			}
 		end
 		def update_company_data(comp, data)
 			unless(comp.listed? || comp.has_user?)
@@ -153,47 +154,51 @@ module ODDB
 				:ean =>  pack.barcode.to_s,
 			}
 			template = @medwin_template
-			results = MEDDATA_SERVER.search(criteria, :product)
-			if(results.empty? && pack.registration.package_count == 1)
-				criteria = {
-					:ean => pack.barcode.to_s[0,9]
-				}
-				template = @nonmatching_template
-				results = MEDDATA_SERVER.search(criteria, :product)
-			end
-			if(results.size == 1)
-				result = results.first
-				details = MEDDATA_SERVER.detail(result, template)
-				if(ean13 = details.delete(:ean13))
-					 details.store(:medwin_ikscd, ean13[9,3])
-					 if(ean13 > pack.barcode.to_s)
-						 @probable_errors_oddb.push(pack)
-					 else
-						 @probable_errors_medwin.push(pack)
-					 end
+			MEDDATA_SERVER.session(:product) { |meddata|
+				results = meddata.search(criteria)
+				if(results.empty? && pack.registration.package_count == 1)
+					criteria = {
+						:ean => pack.barcode.to_s[0,9]
+					}
+					template = @nonmatching_template
+					results = meddata.search(criteria)
 				end
-				update_package_data(pack, details)
-			end
+				if(results.size == 1)
+					result = results.first
+					details = meddata.detail(result, template)
+					if(ean13 = details.delete(:ean13))
+						 details.store(:medwin_ikscd, ean13[9,3])
+						 if(ean13 > pack.barcode.to_s)
+							 @probable_errors_oddb.push(pack)
+						 else
+							 @probable_errors_medwin.push(pack)
+						 end
+					end
+					update_package_data(pack, details)
+				end
+			}
 		end
 		def update_package_trade_status(pack)
 			criteria = {
 				:ean =>  pack.barcode.to_s,
 			}
-			results = MEDDATA_SERVER.search(criteria, :refdata)
-			if(results.empty? && pack.registration.package_count == 1)
-				criteria = {
-					:ean => pack.barcode.to_s[0,9]
-				}
-				results = MEDDATA_SERVER.search(criteria, :refdata)
-			end
-			if(results.size == 0 && !pack.out_of_trade)
-				update_package_data(pack, {:out_of_trade => true})
-			elsif(results.size == 1 && pack.out_of_trade)
-				data = {:out_of_trade => false, :refdata_override => false}
-				update_package_data(pack, data)
-			else
-				sleep(0.05)
-			end
+			MEDDATA_SERVER.session(:refdata) { |meddata|
+				results = meddata.search(criteria)
+				if(results.empty? && pack.registration.package_count == 1)
+					criteria = {
+						:ean => pack.barcode.to_s[0,9]
+					}
+					results = meddata.search(criteria)
+				end
+				if(results.size == 0 && !pack.out_of_trade)
+					update_package_data(pack, {:out_of_trade => true})
+				elsif(results.size == 1 && pack.out_of_trade)
+					data = {:out_of_trade => false, :refdata_override => false}
+					update_package_data(pack, data)
+				else
+					sleep(0.05)
+				end
+			}
 		end
 		def update_package_data(pack, data)
 			unless(data.empty?)

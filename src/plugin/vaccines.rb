@@ -165,44 +165,47 @@ module ODDB
 			criteria = { :ean => "7680" + reg.iksnr }
 			template = { :info => [0,1] }
 			seqs = reg.sequences
-			results = MEDDATA_SERVER.search(criteria, :refdata)
-			if(results.size == 1 && seqs.size == 1)
-				detail = MEDDATA_SERVER.detail(results.first, template)
-				pack = parse_refdata_detail(detail[:info])
-				seqs.first.packages.store(pack.ikscd, pack)
-			else
-				results.each { |result|
-					detail = MEDDATA_SERVER.detail(result, template)
+			MEDDATA_SERVER.session(:refdata) { |session|
+				results = session.search(criteria)
+				if(results.size == 1 && seqs.size == 1)
+					result = results.first
+					detail = session.detail(result, template)
 					pack = parse_refdata_detail(detail[:info])
-					sequence = nil
-					activeseq = nil
-					if(active && (activepac = active.package(pack.ikscd)) \
-						&& (activeseq = activepac.sequence))
-						sequence = seqs.find { |seq|
-							seq.seqnr == activeseq.seqnr
+					seqs.first.packages.store(pack.ikscd, pack)
+				else
+					results.each { |result|
+						detail = session.detail(result, template)
+						pack = parse_refdata_detail(detail[:info])
+						sequence = nil
+						activeseq = nil
+						if(active && (activepac = active.package(pack.ikscd)) \
+							&& (activeseq = activepac.sequence))
+							sequence = seqs.find { |seq|
+								seq.seqnr == activeseq.seqnr
+							}
+						end
+						sequence ||= seqs.find { |seq|
+							(sd = seq.dose) && (pd = pack.dose) \
+								&& (pd == sd || (sd.unit.to_s.empty? && sd.qty == pd.qty))
 						}
-					end
-					sequence ||= seqs.find { |seq|
-						(sd = seq.dose) && (pd = pack.dose) \
-							&& (pd == sd || (sd.unit.to_s.empty? && sd.qty == pd.qty))
+						## assign a new sequence since none could be identified
+						sequence ||= seqs.find { |seq|
+							seq.packages.empty? || seq.dose.nil?
+						}
+						if(sequence.nil?) 
+							sequence = seqs.first.dup
+							reg.sequences.push(sequence)
+						end
+						if(activeseq && sequence.seqnr.nil?)
+							sequence.seqnr = activeseq.seqnr
+						end
+						if(sequence.dose.nil?)
+							sequence.dose = pack.dose
+						end
+						sequence.packages.store(pack.ikscd, pack)
 					}
-					## assign a new sequence since none could be identified
-					sequence ||= seqs.find { |seq|
-						seq.packages.empty? || seq.dose.nil?
-					}
-					if(sequence.nil?) 
-						sequence = seqs.first.dup
-						reg.sequences.push(sequence)
-					end
-					if(activeseq && sequence.seqnr.nil?)
-						sequence.seqnr = activeseq.seqnr
-					end
-					if(sequence.dose.nil?)
-						sequence.dose = pack.dose
-					end
-					sequence.packages.store(pack.ikscd, pack)
-				}
-			end
+				end
+			}
 		end
 		def parse_refdata_detail(str)
 			ean = str[0,13]

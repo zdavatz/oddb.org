@@ -513,14 +513,18 @@ module ODDB
 		end
 		def load_ikskey(pcode)
 			tries = 3
+			ikskey = nil
 			begin
-				results = MEDDATA_SERVER.search({:pharmacode => pcode}, :product)
-				if(results.size == 1)
-					data = MEDDATA_SERVER.detail(results.first, {:ean13 => [1,2]})
-					if(ean13 = data[:ean13])
-						ean13[4,8]
+				MEDDATA_SERVER.session(:product) { |meddata|
+					results = meddata.search({:pharmacode => pcode})
+					if(results.size == 1)
+						data = meddata.detail(results.first, {:ean13 => [1,2]})
+						if(ean13 = data[:ean13])
+							ikskey = ean13[4,8]
+						end
 					end
-				end
+				}
+				ikskey
 			rescue Errno::ECONNRESET
 				if(tries > 0)
 					tries -= 1

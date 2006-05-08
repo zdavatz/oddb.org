@@ -37,9 +37,11 @@ module ODDB
 					:ean				=> current,
 				}
 				begin
-					@meddata_server.search(criteria) { |result|
-						values = hospital_details(result)
-						update_hospital(values)
+					@meddata_server.session { |meddata|
+						meddata.search(criteria) { |result|
+							values = hospital_details(meddata, result)
+							update_hospital(values)
+						}
 					}
 				rescue MedData::OverflowError
 					current = factory.clarify
@@ -50,7 +52,7 @@ module ODDB
 				end
 			end
 		end
-		def hospital_details(result)
+		def hospital_details(meddata, result)
 			template = {
 				:ean13					=>	[1,0],
 				:name						=>	[1,2],
@@ -63,7 +65,7 @@ module ODDB
 				:canton					=>	[3,5],
 				:narcotics			=>	[1,10],
 			}
-			@meddata_server.detail(result, template)
+			meddata.detail(result, template)
 		end
 		def update_hospital(values)
 			ean13 = values.delete(:ean13)

@@ -15,6 +15,7 @@ module ODDB
 			attr_accessor :both, :bsv, :smj
 		end
 		flexo = FlexMock.new
+		flexo.mock_handle(:session) { flexo }
 		flexo.mock_handle(:search) { [] }
 		MEDDATA_SERVER = flexo
 		MEDDATA_SLEEP = 0
