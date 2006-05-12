@@ -12,14 +12,30 @@ module ODDB
 		SOURCE_URI = "http://www.swissmedic.ch/files/pdf/Co-Marketing-Praeparate_nach_Basis.pdf"
 		def find(name)
 			while(!name.empty?)
-				search_term = ODDB.search_term(name)
-				registrations = @app.search_sequences(search_term, false).collect { |seq|
-					seq.registration }.uniq
-				if(registrations.size == 1)
-					return registrations.first
+				if(registration = (_find(name) || _find(name, true)))
+					return registration
 				end
 				name = name.gsub(/(\s+|^)\S+$/, '')
 			end
+		end
+		def _find(name, fuzz=false)
+			search_term = ODDB.search_term(name)
+			sequences = @app.search_sequences(search_term, fuzz)
+			registrations = sequence_registrations(sequences)
+			if(registrations.size > 1)
+				if((match = /,\s*([^,]+)$/.match(name)) \
+					 && (galform = @app.galenic_form(match[1])))
+					registrations = sequence_registrations(sequences.select { |seq|
+						galform.equivalent_to?(seq.galenic_form)
+					})
+				end
+			end
+			if(registrations.size == 1)
+				return registrations.first
+			end
+		end
+		def sequence_registrations(sequences)
+			sequences.collect { |seq| seq.registration }.uniq
 		end
 		def report
 			fmt =  "Found            %3i Co-Marketing-Pairs\n"
