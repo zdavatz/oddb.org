@@ -153,7 +153,8 @@ class RegistrationForm < View::Form
 		[2,1]		=>	:revision_date,
 		[0,2]		=>	:generic_type,
 		[2,2]		=>	:expiration_date,
-		[0,3]		=>	:complementary_type,
+		[0,3]		=>	:complementary_select,
+		[0,3,1]	=>	:complementary_type,
 		[2,3]		=>	:market_date,
 		[0,4]		=>	:index_therapeuticus,
 		[2,4]		=>	:inactive_date,
@@ -164,7 +165,8 @@ class RegistrationForm < View::Form
 		[0,7]		=>	:parallel_import,
 	}
 	COMPONENT_CSS_MAP = {
-		[0,0,4,6]	=>	'standard',
+		[1,0,6]	=>	'standard',
+		[3,0,6]	=>	'standard',
 	}
 	CSS_MAP = {
 		[0,0,4,8]	=>	'list',
@@ -172,7 +174,6 @@ class RegistrationForm < View::Form
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
 	SYMBOL_MAP = {
-		:complementary_type	=>	HtmlGrid::Select,
 		:expiration_date		=>	HtmlGrid::InputDate,
 		:export_flag				=>	HtmlGrid::InputCheckbox,
 		:vaccine						=>	HtmlGrid::InputCheckbox,
@@ -221,6 +222,9 @@ class RegistrationForm < View::Form
 			HtmlGrid::InputText
 		end
 		klass.new(:company_name, model, session, self)
+	end
+	def complementary_select(model, session=@session)
+		HtmlGrid::Select.new(:complementary_type, model, @session, self)
 	end
 	def iksnr(model, session=@session)
 		klass = if(model.is_a?(Persistence::CreateItem) \
