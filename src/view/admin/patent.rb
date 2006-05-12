@@ -38,15 +38,17 @@ class PatentInnerComposite < HtmlGrid::Composite
 		[0,4]	=>	:publication_date,
 		[0,5]	=>	:issue_date,
 		[2,5]	=>	:protection_date,
+		[0,6]	=>	:deletion_date,
 	}
 	CSS_MAP = {
-		[0,0,4,6]	=>	'list',
+		[0,0,4,7]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
 	LEGACY_INTERFACE = false
 	SYMBOL_MAP = {
 		:base_patent_date		=>	HtmlGrid::DateValue,
+		:deletion_date			=>	HtmlGrid::DateValue,
 		:registration_date	=>	HtmlGrid::DateValue,
 		:publication_date		=>	HtmlGrid::DateValue,
 		:issue_date					=>	HtmlGrid::DateValue,
@@ -67,16 +69,18 @@ class PatentForm < HtmlGrid::Form
 		[0,4]	=>	:publication_date,
 		[0,5]	=>	:issue_date,
 		[2,5]	=>	:protection_date,
-		[1,6]	=>	:submit,
+		[0,6]	=>	:deletion_date,
+		[1,7]	=>	:submit,
 	}
 	CSS_MAP = {
-		[0,0,4,7]	=>	'list',
+		[0,0,4,8]	=>	'list',
 	}
 	EVENT = :update
 	LABELS = true
 	LEGACY_INTERFACE = false
 	SYMBOL_MAP = {
 		:base_patent_date		=>	HtmlGrid::InputDate,
+		:deletion_date			=>	HtmlGrid::InputDate,
 		:registration_date	=>	HtmlGrid::InputDate,
 		:publication_date		=>	HtmlGrid::InputDate,
 		:issue_date					=>	HtmlGrid::InputDate,

@@ -29,6 +29,8 @@ module ODDB
 							end
 						when /schutzdauerbeginn/i
 							data.store(:protection_date, date(cdata.at(1)))
+						when /esz gel.scht am/i
+							data.store(:deletion_date, date(cdata.at(1)))
 						end
 					end
 				}

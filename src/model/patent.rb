@@ -8,12 +8,12 @@ module ODDB
 		include Persistence
 		attr_accessor :srid, :base_patent, :base_patent_date, :base_patent_srid,
 			:certificate_number, :expiry_date, :iksnr, :issue_date, :protection_date,
-			:publication_date, :registration_date
+			:publication_date, :registration_date, :deletion_date
 		def pointer_descr
 			:patent
 		end
 		def protected?
-			@expiry_date && @expiry_date >= @@today
+			!@deletion_date && @expiry_date && @expiry_date >= @@today
 		end
 	end
 end

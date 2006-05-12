@@ -21,6 +21,7 @@ module ODDB
 		]
 		DATES = [
 			:base_patent_date, 
+			:deletion_date,
 			:expiration_date,
 			:expiry_date,
 			:inactive_date,
