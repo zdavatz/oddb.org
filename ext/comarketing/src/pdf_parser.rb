@@ -17,7 +17,7 @@ module ODDB
 					str.strip.split(/\s+/, 2).first
 				end
 				def reset
-					@current_column = -1
+					@current_column = 0
 					@raw_original = ''
 					@raw_comarketing = ''
 				end
