@@ -25,14 +25,16 @@ module ODDB
 				end
 			end
 			def comarketing(model, session=@session)
-				if(comarketing = model.comarketing_with)
-					link = HtmlGrid::Link.new(:square_comarketing, model, @session, self)
-					link.href = CoMarketingPlugin::SOURCE_URI
-					square(:comarketing, link)
-				elsif(model.patent_protected?)
+				if(model.patent_protected?)
 					link = HtmlGrid::Link.new(:square_patent, model, @session, self)
 					link.href = @lookandfeel.lookup(:swissreg_url, model.patent.srid)
 					square(:patent, link)
+				elsif(comarketing = model.comarketing_with)
+					link = HtmlGrid::Link.new(:square_comarketing, model, @session, self)
+					link.href = CoMarketingPlugin::SOURCE_URI
+					link.set_attribute('title', 
+						 @lookandfeel.lookup(:comarketing, comarketing.name_base))
+					square(:comarketing, link)
 				end
 			end
 			def complementary_type(model, session=@session)
@@ -222,7 +224,7 @@ module ODDB
 			def square(key, square=nil)
 				square ||= HtmlGrid::Span.new(nil, @session, self)
 				square.value = @lookandfeel.lookup("square_#{key}")
-				square.set_attribute('title', @lookandfeel.lookup(key))
+				square.attributes['title'] ||= @lookandfeel.lookup(key)
 				square.css_class = "square #{key}"
 				square
 			end

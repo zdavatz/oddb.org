@@ -925,7 +925,6 @@ td.result-infos-vaccine,
 td.result-infos-unknown
 {
 	padding : 2px;
-	max-width: 20px;
 }
 
 a.result-infos-bg, a.result-infos-bg:link, a.result-infos-bg:visited, 
