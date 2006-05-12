@@ -23,19 +23,21 @@ module ODDB
 			sequences = @app.search_sequences(search_term, fuzz)
 			registrations = sequence_registrations(sequences)
 			if(registrations.size > 1)
-				if((match = /,\s*([^,]+)$/.match(name)) \
+				if(registrations.size > 1 && (match = /,\s*([^,]+)$/.match(name)) \
 					 && (galform = @app.galenic_form(match[1])))
-					registrations = sequence_registrations(sequences.select { |seq|
+					registrations = sequence_registrations(sequences) { |seq|
 						galform.equivalent_to?(seq.galenic_form)
-					})
+					}
+					if(registrations.size > 1)
+						registrations = sequence_registrations(sequences) { |seq|
+							galform == seq.galenic_form
+						}
+					end
 				end
 			end
 			if(registrations.size == 1)
 				return registrations.first
 			end
-		end
-		def sequence_registrations(sequences)
-			sequences.collect { |seq| seq.registration }.uniq
 		end
 		def report
 			fmt =  "Found            %3i Co-Marketing-Pairs\n"
@@ -47,6 +49,20 @@ module ODDB
 				txt << sprintf("%s\n -> %s\n\n", original, comarketing)
 			}
 			txt
+		end
+		def sequence_registrations(sequences, &block)
+			if(block)
+				sequences = sequences.select(&block)
+			end
+			regs = _sequence_registrations(sequences)
+			if(regs.size > 1)
+				regs = _sequence_registrations(sequences.select { |seq| seq.active? })
+			end
+			regs
+		end
+		def _sequence_registrations(sequences)
+			sequences.collect { |seq| 
+				seq.registration }.uniq.reject { |reg| reg.parallel_import }
 		end
 		def update
 			@updated = 0
