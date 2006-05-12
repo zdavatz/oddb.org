@@ -3,6 +3,7 @@
 
 require 'plugin/plugin'
 require 'util/oddbconfig'
+require 'util/searchterms'
 require 'drb'
 
 module ODDB
@@ -11,7 +12,8 @@ module ODDB
 		SOURCE_URI = "http://www.swissmedic.ch/files/pdf/Co-Marketing-Praeparate_nach_Basis.pdf"
 		def find(name)
 			while(!name.empty?)
-				registrations = @app.search_sequences(name, false).collect { |seq|
+				search_term = ODDB.search_term(name)
+				registrations = @app.search_sequences(search_term, false).collect { |seq|
 					seq.registration }.uniq
 				if(registrations.size == 1)
 					return registrations.first
