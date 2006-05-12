@@ -1852,6 +1852,11 @@ span.homeopathy {
 	color: white;
 	background-color: #9900ff;
 }
+span.parallel_import {
+	font-weight: bold;
+	color: white;
+	background-color: #0A0;
+}
 span.phytotherapy {
 	font-weight: bold;
 	color: white;

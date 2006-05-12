@@ -161,12 +161,13 @@ class RegistrationForm < View::Form
 		[2,5]		=>	:patented_until,
 		[0,6]		=>	:export_flag,
 		[2,6]		=>	:vaccine,
+		[0,7]		=>	:parallel_import,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,4,6]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,4,7]	=>	'list',
+		[0,0,4,8]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
@@ -180,6 +181,7 @@ class RegistrationForm < View::Form
 		:inactive_date			=>	HtmlGrid::InputDate,
 		:index_therapeuticus=>	HtmlGrid::InputText,
 		:market_date				=>	HtmlGrid::InputDate,
+		:parallel_import		=>	HtmlGrid::InputCheckbox,
 		:registration_date	=>	HtmlGrid::InputDate,
 		:revision_date			=>	HtmlGrid::InputDate,
 	}
@@ -190,26 +192,26 @@ class RegistrationForm < View::Form
 	end
 	def reorganize_components
 		if(@model.is_a?(Persistence::CreateItem))
-			components.store([1,7], :submit)
-			css_map.store([1,7], 'list')
+			components.store([1,8], :submit)
+			css_map.store([1,8], 'list')
 		else
 			components.update({
-				[0,7]		=>	'fi_upload_instruction0',
-				[2,7]		=>	:fachinfo_label,
-				[3,7]		=>	:fachinfo,
-				[3,7,1]	=>	:assign_fachinfo,
-				[0,8]		=>	'fi_upload_instruction1',
-				[1,8]		=>	:language_select,
-				[0,9]		=>	'fi_upload_instruction2',
-				[1,9]		=>	:fachinfo_upload,
-				[0,10]	=>	'fi_upload_instruction3',
-				[1,10]	=>	:submit,
-				[1,10,1]=>	:new_registration,
+				[0,8]		=>	'fi_upload_instruction0',
+				[2,8]		=>	:fachinfo_label,
+				[3,8]		=>	:fachinfo,
+				[3,8,1]	=>	:assign_fachinfo,
+				[0,9]		=>	'fi_upload_instruction1',
+				[1,9]		=>	:language_select,
+				[0,10]		=>	'fi_upload_instruction2',
+				[1,10]		=>	:fachinfo_upload,
+				[0,11]	=>	'fi_upload_instruction3',
+				[1,11]	=>	:submit,
+				[1,11,1]=>	:new_registration,
 			})
-			css_map.store([0,7], 'result-b-r-unknown-left')
-			css_map.store([1,7], 'list-bg')
-			css_map.store([2,7,2], 'list')
-			css_map.store([0,8,2,2], 'list-bg')
+			css_map.store([0,8], 'result-b-r-unknown-left')
+			css_map.store([1,8], 'list-bg')
+			css_map.store([2,8,2], 'list')
+			css_map.store([0,9,2,2], 'list-bg')
 		end
 	end
 	def company_name(model, session=@session)

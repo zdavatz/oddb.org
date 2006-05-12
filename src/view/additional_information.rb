@@ -25,7 +25,9 @@ module ODDB
 				end
 			end
 			def comarketing(model, session=@session)
-				if(model.patent_protected?)
+				if(model.parallel_import)
+					square(:parallel_import)
+				elsif(model.patent_protected?)
 					link = HtmlGrid::Link.new(:square_patent, model, @session, self)
 					link.href = @lookandfeel.lookup(:swissreg_url, model.patent.srid)
 					square(:patent, link)

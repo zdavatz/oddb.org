@@ -17,7 +17,7 @@ module ODDB
 		BOOLEAN = [
 			:cl_status,  :download, :experience, :recommend, :impression,
 			:invoice_htmlinfos, :helps, :show_email, :export_flag,
-			:disable_autoinvoice, :refdata_override, :lppv, :vaccine,
+			:disable_autoinvoice, :refdata_override, :lppv, :vaccine, :parallel_import
 		]
 		DATES = [
 			:base_patent_date, 

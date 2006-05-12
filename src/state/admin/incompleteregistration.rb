@@ -50,7 +50,13 @@ class IncompleteReg < State::Admin::Registration
 		result_state
 	end
 	def update_incomplete
-		keys = [:iksnr, :registration_date, :revision_date, :generic_type]
+		#keys = [:iksnr, :registration_date, :revision_date, :generic_type]
+		keys = [
+			:generic_type, :registration_date, 
+			:revision_date, :market_date, :expiration_date, 
+			:complementary_type, :export_flag, :patented_until, 
+			:parallel_import
+		]
 		do_update(keys)
 	end
 end

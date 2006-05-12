@@ -179,7 +179,8 @@ class Registration < State::Admin::Global
 		keys = [
 			:inactive_date, :generic_type, :registration_date, 
 			:revision_date, :market_date, :expiration_date, 
-			:complementary_type, :export_flag, :patented_until
+			:complementary_type, :export_flag, :patented_until, 
+			:parallel_import
 		]
 		if(@model.is_a? Persistence::CreateItem)
 			iksnr = @session.user_input(:iksnr)
