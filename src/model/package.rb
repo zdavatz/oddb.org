@@ -156,9 +156,9 @@ Grammar OddbSize
 			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
 			:deductible_m # for just-medical
 		alias :pointer_descr :ikscd
-		registration_data :complementary_type, :expiration_date, :expired?,
-			:export_flag, :generic_type, :inactive_date, :pdf_fachinfos,
-			:registration_date, :revision_date, :patent, :patent_protected?
+		registration_data :comarketing_with, :complementary_type, :expiration_date,
+			:expired?, :export_flag, :generic_type, :inactive_date, :pdf_fachinfos,
+			:registration_date, :revision_date, :patent, :patent_protected?, :vaccine
 		def initialize(ikscd)
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)

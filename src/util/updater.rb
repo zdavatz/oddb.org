@@ -2,6 +2,7 @@
 # Updater-- oddb -- 19.02.2003 -- hwyss@ywesee.com 
 
 require 'plugin/bsv'
+require 'plugin/comarketing'
 require 'plugin/doctors'
 require 'plugin/fachinfo'
 require 'plugin/fxcrossrate'
@@ -172,6 +173,9 @@ module ODDB
 					log_notify_bsv(plug, plug.month, subj)
 				end
 			}
+		end
+		def update_comarketing
+			update_immediate(CoMarketingPlugin, 'Co-Marketing')
 		end
 		def update_doctors
 			update_simple(Doctors::DoctorPlugin, 'Doctors')

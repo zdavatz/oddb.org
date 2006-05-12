@@ -160,6 +160,7 @@ class RegistrationForm < View::Form
 		[0,5]		=>	:indication,
 		[2,5]		=>	:patented_until,
 		[0,6]		=>	:export_flag,
+		[2,6]		=>	:vaccine,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,4,6]	=>	'standard',
@@ -173,6 +174,7 @@ class RegistrationForm < View::Form
 		:complementary_type	=>	HtmlGrid::Select,
 		:expiration_date		=>	HtmlGrid::InputDate,
 		:export_flag				=>	HtmlGrid::InputCheckbox,
+		:vaccine						=>	HtmlGrid::InputCheckbox,
 		:fachinfo_label			=>	HtmlGrid::LabelText,
 		:generic_type				=>	HtmlGrid::Select,
 		:inactive_date			=>	HtmlGrid::InputDate,

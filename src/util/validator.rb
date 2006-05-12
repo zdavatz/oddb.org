@@ -17,7 +17,7 @@ module ODDB
 		BOOLEAN = [
 			:cl_status,  :download, :experience, :recommend, :impression,
 			:invoice_htmlinfos, :helps, :show_email, :export_flag,
-			:disable_autoinvoice, :refdata_override, :lppv,
+			:disable_autoinvoice, :refdata_override, :lppv, :vaccine,
 		]
 		DATES = [
 			:base_patent_date, 
@@ -47,8 +47,8 @@ module ODDB
 				'NE', 'NW', 'OW', 'SG', 'SH', 'SO', 'SZ', 'TG',
 				'TI', 'UR', 'VD', 'VS', 'ZG', 'ZH'],
 			:cl_status		=>	['false', 'true'],
-			:complementary_type =>	[nil, 'anthroposophy', 'homeopathy', 
-				'phytotherapy', ],
+			:complementary_type =>	[nil, 'complementary', 'anthroposophy',
+				'homeopathy', 'phytotherapy', ],
 			:compression	=>	[ 'compr_zip', 'compr_gz' ],
 			:currency			=>  ['CHF', 'EUR', 'USD'],
 			:deductible		=>	[nil, 'deductible_g', 'deductible_o'],
@@ -56,8 +56,8 @@ module ODDB
 			:search_type	=>	['st_oddb', 'st_sequence', 
 				'st_substance', 'st_company', 'st_indication',],
 			:fi_status		=>	['false', 'true'],
-			:generic_type =>	[nil, 'generic', 'original', 'comarketing', 
-				'complementary', 'vaccine' ],
+			:generic_type =>	[nil, 'generic', 'original'], 
+				# 'comarketing', 'complementary', 'vaccine' ],
 			:limitation		=>	['true', 'false'],
 			:payment_method => ['pm_invoice', 'pm_paypal'],
 			:patinfo			=>	['delete', 'keep'],

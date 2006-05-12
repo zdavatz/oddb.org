@@ -58,7 +58,7 @@ module ODDB
 			end
 		end
 		HTTP_CLASS = Net::HTTP
-		RETRIES = 0
+		RETRIES = 3
 		RETRY_WAIT = 10
 		def initialize(http_server, port=80)
 			@http_server = http_server
@@ -67,7 +67,7 @@ module ODDB
 			super(@http)
 		end
 		def post(path, hash)
-			retries = 3
+			retries = RETRIES
 			headers = post_headers
 			begin
 				resp = @http.post(path, post_body(hash), headers)
@@ -82,10 +82,10 @@ module ODDB
 				else
 					raise("could not connect to #{@http_server}: #{resp}")
 				end
-			rescue Errno::ECONNRESET
+			rescue Errno::ECONNRESET, EOFError
 				if(retries > 0)
 					retries -= 1
-					sleep 1
+					sleep RETRIES - retries
 					retry
 				else
 					raise
@@ -95,6 +95,20 @@ module ODDB
 		def post_headers
 			headers = get_headers
 			headers.push(['Content-Type', 'application/x-www-form-urlencoded'])
+		end
+		def get(*args)
+			retries = RETRIES
+			begin
+				@http.get(*args)
+			rescue Errno::ECONNRESET, EOFError
+				if(retries > 0)
+					retries -= 1
+					sleep RETRIES - retries
+					retry
+				else
+					raise
+				end
+			end
 		end
 		def get_headers
 			[	

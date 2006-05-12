@@ -2,6 +2,7 @@
 # View::AdditionalInformation -- oddb -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'iconv'
+require 'plugin/comarketing'
 
 module ODDB
 	module View
@@ -21,6 +22,22 @@ module ODDB
 					descr.dup.to_s << ' (' << atc.code << ')' 
 				else
 					atc.code
+				end
+			end
+			def comarketing(model, session=@session)
+				if(comarketing = model.comarketing_with)
+					link = HtmlGrid::Link.new(:square_comarketing, model, @session, self)
+					link.href = CoMarketingPlugin::SOURCE_URI
+					square(:comarketing, link)
+				elsif(model.patent_protected?)
+					link = HtmlGrid::Link.new(:square_patent, model, @session, self)
+					link.href = @lookandfeel.lookup(:swissreg_url, model.patent.srid)
+					square(:patent, link)
+				end
+			end
+			def complementary_type(model, session=@session)
+				if(ctype = model.complementary_type)
+					square(ctype)
 				end
 			end
 			def ddd_price(model, session=@session)
@@ -101,7 +118,7 @@ module ODDB
 				glink = utf8(text)
 				link = HtmlGrid::Link.new(:google_search, @model, @session, self)
 				link.href =  "http://www.google.com/search?q=#{glink}"
-				link.css_class= 'google_search square'
+				link.css_class= 'square google_search'
 				link.set_attribute('title', "#{@lookandfeel.lookup(:google_alt)}#{text}")
 				link
 			end
@@ -157,6 +174,10 @@ module ODDB
 					link.css_class = 'result-infos'
 					link.set_attribute('title', @lookandfeel.lookup(:narcotic))
 					link
+				elsif(model.vaccine)
+					square(:vaccine)
+				#elsif(model.export_flag)
+				#	square(:export_flag)
 				end
 			end
 			def notify(model, session=@session)
@@ -197,6 +218,13 @@ module ODDB
 					end
 					[ '&nbsp;(', model.qty, unit, ')' ].compact.join(' ')
 				end
+			end
+			def square(key, square=nil)
+				square ||= HtmlGrid::Span.new(nil, @session, self)
+				square.value = @lookandfeel.lookup("square_#{key}")
+				square.set_attribute('title', @lookandfeel.lookup(key))
+				square.css_class = "square #{key}"
+				square
 			end
 			def utf8(text)
 				@@utf8[text] ||= Iconv.iconv('UTF-8', 'ISO_8859-1', text).first

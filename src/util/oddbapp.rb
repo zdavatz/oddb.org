@@ -687,7 +687,7 @@ class OddbPrevalence
 			@bean_counter.kill
 		end
 		@bean_counter = Thread.new {
-			Thread.current.priority = -5
+			#Thread.current.priority = -5
 			@atc_ddd_count = count_atc_ddd()
 			@doctor_count = @doctors.size
 			@company_count = @companies.size
@@ -1180,7 +1180,7 @@ module ODDB
 			@system.update(pointer, values, origin)
 		end
 		#####################################################
-		def _admin(src, result, priority=-1)
+		def _admin(src, result, priority=0)
 			t = Thread.new {
 				Thread.current.abort_on_exception = false
 				result << failsafe {
@@ -1218,7 +1218,7 @@ module ODDB
 		end
 		def run_exporter
 			Thread.new {
-				Thread.current.priority=-10
+				#Thread.current.priority=-10
 				Thread.current.abort_on_exception = true
 				today = (EXPORT_HOUR > Time.now.hour) ? \
 					@@today : @@today.next
@@ -1234,7 +1234,7 @@ module ODDB
 		end
 		def run_exporter_notify
 			Thread.new {
-				Thread.current.priority=-10
+				#Thread.current.priority=-10
 				Thread.current.abort_on_exception = true
 				today = (10 > Time.now.hour) ? @@today : @@today.next
 				loop {
@@ -1250,7 +1250,7 @@ module ODDB
 			update_hour = rand(24)
 			update_min = rand(60)
 			Thread.new {
-				Thread.current.priority=-5
+				#Thread.current.priority=-5
 				Thread.current.abort_on_exception = true
 				today = (update_hour > Time.now.hour) ? \
 					Date.today : @@today.next

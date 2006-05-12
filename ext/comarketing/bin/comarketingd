@@ -6,8 +6,8 @@ $: << File.expand_path("../src", File.dirname(__FILE__))
 
 require 'drb/drb'
 require 'util/oddbconfig'
-require 'swissreg'
+require 'comarketing'
 
-DRb.start_service(ODDB::SWISSREG_URI, ODDB::Swissreg)
+DRb.start_service(ODDB::COMARKETING_URI, ODDB::CoMarketing)
 DRb.thread.join
 

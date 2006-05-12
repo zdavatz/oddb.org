@@ -1831,19 +1831,42 @@ div.minus {
 span.square {
 	text-align: center;
 	vertical-align: middle;
-	padding: 2px 4px;
+	padding: 1px 4px;
 }
 span.anthroposophy {
+	font-weight: bold;
 	color: white;
 	background-color: #ff00ff;
 }
+a.comarketing {
+	font-weight: bold;
+	color: white;
+	background-color : #f61;
+}
+span.complementary {
+	font-weight: bold;
+	color: white;
+	background-color : #dd1cff;
+}
 span.homeopathy {
+	font-weight: bold;
 	color: white;
 	background-color: #9900ff;
 }
 span.phytotherapy {
+	font-weight: bold;
 	color: white;
-	background-color: #6600ff;
+	background-color: #60f;
+}
+a.patent {
+	font-weight: bold;
+	color: white;
+	background-color: #C00;
+}
+span.vaccine {
+	font-weight: bold;
+	color: white;
+	background-color: brown;
 }
 table.wait {
 	cell-spacing: 20px;

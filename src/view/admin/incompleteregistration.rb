@@ -59,14 +59,16 @@ class IncompleteRegistrationForm < View::Admin::RegistrationForm
 		[0,3]		=>	:indication,
 		[2,3]		=>	:market_date,
 		[2,4]		=>	:inactive_date,
-		[1,5]		=>	:submit,
-		[1,5,1]	=>	:delete_item,
+		[0,5]		=>	:export_flag,
+		[2,5]		=>	:vaccine,
+		[1,6]		=>	:submit,
+		[1,6,1]	=>	:delete_item,
 	}
 	def reorganize_components
 		if(acceptable?(@model))
-			components.store([2,6], :change_flags)
-			components.store([1,6], :accept)
-			css_map.store([1,6,3], 'list top')
+			components.store([2,7], :change_flags)
+			components.store([1,7], :accept)
+			css_map.store([1,7,3], 'list top')
 		end
 	end
 	def acceptable?(model)

@@ -14,7 +14,7 @@ module ODDB
 		attr_accessor :registration_date, :export_flag, :company, 
 			:revision_date, :indication, :expiration_date, :inactive_date,
 			:market_date, :fachinfo, :source, #, :pdf_fachinfos,
-			:index_therapeuticus
+			:index_therapeuticus, :comarketing_with, :vaccine
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
 		def initialize(iksnr)
@@ -114,7 +114,8 @@ module ODDB
 			# be considered old enough to fall out of consideration for 
 			# patent violation
 			@registration_date \
-				&& (![:original, :comarketing].include?(@generic_type)) \
+				&& !@comarketing_with \
+				&& (@generic_type != :original) \
 				&& (@registration_date > @@one_year_ago)
 		end
 		def name_base

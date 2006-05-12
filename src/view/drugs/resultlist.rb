@@ -169,16 +169,6 @@ class ResultList < HtmlGrid::List
 	def comparable_size(model, session=@session)
 		HtmlGrid::Value.new(:size, model, session, self)
 	end
-	def complementary_type(model, session=@session)
-		if(model.generic_type == :complementary \
-			&& (ctype = model.complementary_type))
-			square = HtmlGrid::Span.new(model, @session, self)
-			square.value = @lookandfeel.lookup("c_type_#{ctype}")
-			square.set_attribute('title', @lookandfeel.lookup(ctype))
-			square.css_class = "square #{ctype}"
-			square
-		end
-	end
 	def compose_list(model=@model, offset=[0,0])
 		model.each { |atc|	
 			compose_subheader(atc, offset)
