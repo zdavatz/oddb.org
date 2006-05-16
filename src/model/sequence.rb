@@ -13,7 +13,7 @@ module ODDB
 								:active_agents
 		attr_accessor :registration, :dose, :atc_class, :export_flag,
 									:galenic_form, :patinfo, :pdf_patinfo, :atc_request_time
-		attr_writer :composition_text
+		attr_writer :composition_text, :inactive_date
 		alias :pointer_descr :seqnr
 		def initialize(seqnr)
 			@seqnr = sprintf('%02d', seqnr.to_i)
@@ -41,15 +41,11 @@ module ODDB
 			end
 		end
 		def active?
-			@registration && @registration.active? && !violates_patent?
+			(!@inactive_date || (@inactive_date > @@two_years_ago)) \
+				&& @registration && @registration.active? && !violates_patent?
 		end
-		def active_agent(substance)
-			@active_agents.each { |active|
-				if(active.same_as?(substance))
-					return active
-				end
-			}
-			nil
+		def active_agent(substance_or_oid, spag=nil)
+			@active_agents.find { |active| active.same_as?(substance_or_oid, spag) }
 		end
 		def basename
 			@name_base.to_s[/^.[^0-9]+/]
@@ -279,6 +275,10 @@ module ODDB
 						else
 							@galenic_form
 						end
+					when :inactive_date
+						if(value.is_a?(String))
+							hash.store(key, Date.parse(value.tr('.', '-')))
+						end
 					end 
 				end
 			}
@@ -324,13 +324,19 @@ module ODDB
 			@atc_class && @name_base && @galenic_form
 		end
 		def accepted!(app, reg_pointer)
+			reg = reg_pointer.resolve(app)
+			seq = reg.sequence(@seqnr)
+			galform = if(@galenic_form && ((@galenic_form.galenic_group.oid > 1) \
+																		 || seq.galenic_form.nil?))
+									@galenic_form.pointer
+								end
 			ptr = reg_pointer + [:sequence, @seqnr]
 			hash = {
 				:name_base				=>	@name_base,
 				:name_descr				=>	@name_descr,
 				:dose							=>	@dose,
 				:atc_class				=>	(@atc_class.code if @atc_class), 
-				:galenic_form			=>	(@galenic_form.pointer if @galenic_form),
+				:galenic_form			=>	galform,
 				:composition_text	=>	@composition_text,
 			}.delete_if { |key, val| val.nil? }
 			app.update(ptr.creator, hash)

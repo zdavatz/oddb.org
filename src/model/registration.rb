@@ -13,7 +13,7 @@ module ODDB
 		attr_writer :generic_type, :complementary_type
 		attr_accessor :registration_date, :export_flag, :company, 
 			:revision_date, :indication, :expiration_date, :inactive_date,
-			:market_date, :fachinfo, :source, #, :pdf_fachinfos,
+			:market_date, :fachinfo, :source, :ikscat, #:pdf_fachinfos,
 			:index_therapeuticus, :comarketing_with, :vaccine, :parallel_import
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
@@ -22,9 +22,9 @@ module ODDB
 			@sequences = {}
 		end
 		def active?
-			(@inactive_date.nil? || @inactive_date > @@two_years_ago) \
-				&& (@expiration_date.nil? || @expiration_date > @@two_years_ago) \
-				&& (@market_date.nil? || @market_date <= @@today) 
+			(!@inactive_date || (@inactive_date > @@two_years_ago)) \
+				&& (!@expiration_date || @expiration_date > @@two_years_ago) \
+				&& (!@market_date || @market_date <= @@today) 
 		end
 		def active_package_count
 			if(active?)
@@ -179,7 +179,7 @@ module ODDB
 					when :registration_date, :revision_date, 
 						:expiration_date, :inactive_date, :market_date
 						#key != for elements that can be nil
-						if(!value.is_a?(Date) && !value.nil?)
+						if(value.is_a?(String))
 							hash.store(key, Date.parse(value.tr('.', '-')))
 						end
 					when :company

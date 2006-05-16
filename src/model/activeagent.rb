@@ -12,6 +12,7 @@ module ODDB
 		attr_accessor :dose, :chemical_dose, :equivalent_dose, :sequence
 		attr_accessor :spagyric_dose, :spagyric_type
 		def initialize(substance_name)
+			super
 			@substance_name = substance_name
 		end
 		def init(app)
@@ -22,15 +23,17 @@ module ODDB
 				@substance.remove_sequence(@sequence)
 			end
 		end
-		def same_as?(substance)
-			!@substance.nil? && @substance.same_as?(substance)
+		def same_as?(substance_or_oid, spag=nil)
+			oid == substance_or_oid.to_i \
+				||(!@substance.nil? && @substance.same_as?(substance_or_oid) \
+					 && @spagyric_dose == spag)
 		end
 		def to_s
 			[@substance, @dose].compact.join(' ')
 		end
 		def update_values(values, origin=nil)
 			super
-			@pointer = @pointer.parent + [:active_agent, @substance.name]
+			@pointer = @pointer.parent + [:active_agent, oid]
 		end
 		alias :pointer_descr :to_s
 		def ==(other)

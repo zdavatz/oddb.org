@@ -191,6 +191,9 @@ module ODDB
 				date = smj_reg.date || @month || @@today
 				@deactivations.push(pointer)
 				@change_flags.store(pointer, smj_reg.flags)
+				if(seqnr = smj_reg.seqnr)
+					pointer += [:sequence, seqnr]
+				end
 				if((reg = @app.registration(smj_reg.iksnr)) && reg.inactive_date.nil?)
 					@app.update(pointer, {:inactive_date => date}, :swissmedic)
 					@deactivated_pointers.push(pointer)
@@ -231,8 +234,13 @@ module ODDB
 		end
 		def update_active_agent(agent, seq_pointer)
 			unless(agent.substance.nil?)
-				substance = [agent.substance, 
-					agent.special, agent.spagyric].compact.join(' ')
+				# FIXME: agent.special and agent.spagyric should not be part of the
+				#        substance-name. They are atm, because some products include
+				#        more than one spagyric version of a substance and the pointer
+				#        cannot handle that yet.
+				#substance = [agent.substance, 
+				#	agent.special, agent.spagyric].compact.join(' ')
+				substance = agent.substance
 				unless(@app.substance(substance))
 					pointer = Persistence::Pointer.new([:substance, substance])
 					@app.create(pointer)
@@ -253,21 +261,12 @@ module ODDB
 		def update_active_agents(smj_composition, seq_pointer)
 			agents = smj_composition.active_agents
 			unless(agents.empty?)
-				seq = seq_pointer.resolve(@app)
-				seq.active_agents.dup.each { |agent|
-					@app.delete(agent.pointer)
-				}
-				# remove stragglers
-				seq.active_agents.dup.each { |agent|
-					if(sub = agent.substance)
-						sub.remove_sequence(seq)
-						agent.odba_delete
-						sub.sequences.delete_if { |sseq| sseq.odba_instance.nil? }
-						sub.sequences.odba_store
-					end
-				}
-				agents.each { |agent|
+				created = agents.collect { |agent|
 					update_active_agent(agent, seq_pointer)
+				}
+				seq = seq_pointer.resolve(@app)
+				(seq.active_agents - created).each { |agent|
+					@app.delete(agent.pointer)
 				}
 			end
 		end
@@ -301,9 +300,11 @@ module ODDB
 			smj_packages.each { |package|
 				pointer = sequence.pointer + [:package, package.ikscd]
 				hash = {
-					:ikscat	=>	package.ikscat,
 					:size		=>	package.package_size,
 				}
+				if(ikscat = package.ikscat || sequence.registration.ikscat)
+					hash.store(:ikscat, ikscat)
+				end
 				if(descr = package.description)
 					hash.store(:descr, descr)
 				end
@@ -328,6 +329,7 @@ module ODDB
 				:export_flag	=>	!!smj_reg.exportvalue,
 				:source				=>	smj_reg.src,
 				:index_therapeuticus => smj_reg.indexth,
+				:ikscat				=>	smj_reg.ikscat,
 			}
 			if(indication_name = smj_reg.indication)
 				indication = update_indication(indication_name)
