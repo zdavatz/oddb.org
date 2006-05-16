@@ -327,7 +327,7 @@ module ODDB
 			reg = reg_pointer.resolve(app)
 			seq = reg.sequence(@seqnr)
 			galform = if(@galenic_form && ((@galenic_form.galenic_group.oid > 1) \
-																		 || seq.galenic_form.nil?))
+																			|| seq.nil? || seq.galenic_form.nil?))
 									@galenic_form.pointer
 								end
 			ptr = reg_pointer + [:sequence, @seqnr]

@@ -73,7 +73,9 @@ module ODDB
 						end
 					#deprecated
 					when :substance, :chemical_substance, :equivalent_substance
-						values[key] = app.substance(value)
+						if(value)
+							values[key] = app.substance(value)
+						end
 						if(values[key].nil? && key == :substance)
 							values.delete(key) 
 						end

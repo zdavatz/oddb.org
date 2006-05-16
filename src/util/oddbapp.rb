@@ -955,8 +955,6 @@ class OddbPrevalence
 	def substance(key)
 		if(key.to_i.to_s == key.to_s)
 			@substances[key.to_i]
-		elsif(substance = @substances[key.to_s.downcase])
-			substance
 		elsif(substance = search_single_substance(key))
 			substance
 		else

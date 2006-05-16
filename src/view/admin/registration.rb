@@ -165,11 +165,11 @@ class RegistrationForm < View::Form
 		[0,7]		=>	:parallel_import,
 	}
 	COMPONENT_CSS_MAP = {
-		[1,0,6]	=>	'standard',
-		[3,0,6]	=>	'standard',
+		[1,0,1,6]	=>	'standard',
+		[3,0,1,6]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,4,8]	=>	'list',
+		[0,0,4,9]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
