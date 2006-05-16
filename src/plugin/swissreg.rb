@@ -50,6 +50,21 @@ module ODDB
 				update_registrations(substance_name) 
 			}
 		end
+		def update_news
+			substances = []
+			if((group = @app.log_group(:swissmedic_journal)) && (log = group.latest))
+				log.change_flags.each_key { |ptr| 
+					if(reg = ptr.resolve(@app))
+						reg.each_sequence { |seq|
+							substances += seq.active_agents.collect { |act| act.substance }
+						}
+					end
+				}
+			end
+			substances.uniq.each { |substance_name|
+				update_registrations(substance_name) 
+			}
+		end
 		def update_registrations(substance_name)
 			@substances += 1
 			puts substance_name.inspect

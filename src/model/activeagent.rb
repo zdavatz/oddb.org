@@ -12,7 +12,7 @@ module ODDB
 		attr_accessor :dose, :chemical_dose, :equivalent_dose, :sequence
 		attr_accessor :spagyric_dose, :spagyric_type
 		def initialize(substance_name)
-			super
+			super()
 			@substance_name = substance_name
 		end
 		def init(app)

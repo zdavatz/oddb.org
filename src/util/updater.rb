@@ -275,6 +275,9 @@ module ODDB
 		def update_swissreg
 			update_immediate(SwissregPlugin, 'Patents')
 		end
+		def update_swissreg_news
+			update_immediate(SwissregPlugin, 'Patents', :update_news)
+		end
 		def update_vaccines
 			update_notify_simple(VaccinePlugin, 'blutprodukte')
 		end
