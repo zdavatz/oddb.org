@@ -152,16 +152,15 @@ module ODDB
 				 && (download = http_body(SWISSMEDIC_SERVER, path)))
 =end
 			if(download = http_body(SWISSMEDIC_SERVER, PDF_PATH))
-					latest = ''
-					if(File.exist?(@latest_path))
-						latest = File.read(@latest_path)
-					end
-					if(download != latest)
-						target = File.join(ARCHIVE_PATH, 'xls',
-															 @@today.strftime('vaccines-%Y.%m.%d.xls'))
-						File.open(target, 'w') { |fh| fh.puts(download) }
-						target
-					end
+				latest = ''
+				if(File.exist?(@latest_path))
+					latest = File.read(@latest_path)
+				end
+				if(download != latest)
+					target = File.join(ARCHIVE_PATH, 'xls',
+														 @@today.strftime('vaccines-%Y.%m.%d.xls'))
+					File.open(target, 'w') { |fh| fh.puts(download) }
+					target
 				end
 			end
 		end
