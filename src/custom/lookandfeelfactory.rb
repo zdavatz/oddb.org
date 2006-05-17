@@ -60,6 +60,9 @@ module ODDB
 			'swissmedic'	=>	[
 				LookandfeelSwissmedic,
 			],
+			'swissmedinfo'=>	[
+				LookandfeelSwissMedInfo, 
+			],
 		}
 	end
 end

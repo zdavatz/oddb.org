@@ -10,6 +10,7 @@ body {
 	font-size : $std_font_size; 
 	border : 0px dotted darkred;
 	background-color: $bg; 
+	margin: $body_margin;
 }
 label {
 	font-weight : bold;
@@ -66,30 +67,16 @@ p {
 /* Fachinfo */
 h3 {
 	font-family: $std_font_family;
-	font-size: $std_font_size;
-	margin-bottom: 2px;
+	font-size: $h3_font_size;
+	margin-bottom: $h3_margin;
 }
-div.section {
-	font-family: $std_font_family;
-	font-size: 13px;
-	line-height : 120%;
-	margin-top : 4px;
-}
-span.section {
-	font-style:italic;
-}
-pre, div.preformatted {
+pre {
 	font-style : normal;
 	font-family: Courier New, Courier, monospace;
-	font-size: $std_font_size;
+	font-size: $pre_font_size;
 	margin-top : 0px;
 	text-align : left;
 	white-space : pre;
-}
-span.paragraph {
-	font-style : normal;
-	font-size: $std_font_size;
-	padding-bottom: 4px;
 }
 
 /* standard-result-classes */
@@ -1495,6 +1482,10 @@ td.pager-head {
 }
 
 /* input-classes */
+select { 
+	font-family : $std_font_family;
+	font-size: $std_font_size;
+}
 input.button {
 	background: $button_background;
 	color: $button_font_color;
@@ -1611,6 +1602,7 @@ table.explain-result {
 	color : $bg_bright_font_color;
 	text-align : left;
 	width : 100%;
+	font-size: $explain_font_size;
 }
 td.explain-result {
 	background : $bg_bright;
@@ -1618,7 +1610,6 @@ td.explain-result {
 	padding-top : 3px;
 	padding-bottom : 3px;
 	width : 85%;
-	font-size: 11px;
 }
 td.explain-result-r {
 	background : $bg_bright;
@@ -1639,7 +1630,6 @@ td.legal-note-center {
 td.legal-note-right {
 	vertical-align : bottom;
 	text-align: right;
-	/*width : 100%;*/
 	padding: 4px;
 }
 a.legal-note {
