@@ -714,8 +714,7 @@ module ODDB
 		def result_list_components
 			{
 				[0,0]		=>	:patinfo,
-				[1,0]		=>	:complementary_type,
-				[1,0,1]	=>	:comarketing,
+				[1,0]		=>	:comarketing,
 				[2,0,0]	=>	'result_item_start',
 				[2,0,1]	=>	:name_base,
 				[2,0,2]	=>	'result_item_end',
