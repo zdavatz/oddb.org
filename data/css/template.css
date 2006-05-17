@@ -851,15 +851,16 @@ td.result-pubprice-vaccine-bg {
 	padding-right : 10px;
 	text-align : right;
 }
-a.feedback, a.feedback:link, a.feedback:visited, a.square {
+a.feedback, a.feedback:link, a.feedback:visited {
 	color: black;
 	background-color : #ffbc6f;
 	font-weight : bold;
 	text-align : center;
 	text-decoration : none;
 	padding : 2px 2px 2px 3px;
+	font-size: $square_font_size;
 }
-a.google_search, a.google_search:link, a.google_search:visited, a.square {
+a.google_search, a.google_search:link, a.google_search:visited {
 	color: white;
 	background-color : #184fca;
 	font-weight : bold;
@@ -1817,10 +1818,11 @@ div.plus {
 div.minus {
 	background-color: #ffbc6f;
 }
-span.square {
+span.square, a.square {
 	text-align: center;
 	vertical-align: middle;
 	padding: 1px 4px;
+	font-size: $square_font_size;
 }
 span.anthroposophy {
 	font-weight: bold;

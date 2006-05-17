@@ -111,6 +111,7 @@ module ODDB
 				:h3_margin								=>	'6px',
 				:pre_font_size						=>	'20px',
 				:bg_dark_link_hover_color	=>	'#999',
+				:square_font_size					=>	'12px',
 				:std_font_size						=>	'14px',
 			},
 		}
@@ -149,6 +150,7 @@ module ODDB
 			:tabnavigation_link_hover_color =>	'black',
 			:tabnavigation_link_color =>	'blue',
 			:tabnavigation_text_color	=>	'black',
+			:square_font_size					=>	'11px',
 			:std_font_family					=>	'Arial, Helvetica, sans-serif',
 			:std_font_size						=>	'12px',
 		}
