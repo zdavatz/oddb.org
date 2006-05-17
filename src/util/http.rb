@@ -100,7 +100,7 @@ module ODDB
 			retries = RETRIES
 			begin
 				@http.get(*args)
-			rescue Errno::ECONNRESET, EOFError
+			rescue Errno::ECONNRESET, Errno::ECONNREFUSED, EOFError
 				if(retries > 0)
 					retries -= 1
 					sleep RETRIES - retries
@@ -115,7 +115,8 @@ module ODDB
 				['Host', @http_server],
 				['User-Agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7) Gecko/20040917 Firefox/0.9.3'],
 				['Accept', 'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1'],
-				['Accept-Language', 'de-ch,en-us;q=0.7,en;q=0.3'],       ['Accept-Encoding', 'gzip,deflate'],
+				['Accept-Language', 'de-ch,en-us;q=0.7,en;q=0.3'],       
+				['Accept-Encoding', 'gzip,deflate'],
 				['Accept-Charset', 'ISO-8859-1'],
 				['Keep-Alive', '300'],
 				['Connection', 'keep-alive'],
