@@ -153,7 +153,7 @@ module ODDB
 				}
 			}
 		end
-		def update_package(pack)
+		def update_package(meddata, pack)
 			criteria = {
 				:ean =>  pack.barcode.to_s,
 			}
@@ -180,7 +180,7 @@ module ODDB
 				update_package_data(pack, details)
 			end
 		end
-		def update_package_trade_status(pack, meddata)
+		def update_package_trade_status(meddata, pack)
 			criteria = {
 				:ean =>  pack.barcode.to_s,
 			}
