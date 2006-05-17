@@ -33,6 +33,7 @@ module ODDB
 		DOSE_PATTERN  = /(\d+(?:[,.]\d+)?)\s*((?:\/\d+)|[^\s\d]*)?/
 		ENDMULTI_PATTERN = /\d+\s*Stk$/
 		MULTI_PATTERN = /(\d+\s+)\b(Fl|Fertigspr)\b/
+		PDF_PATH = '/files/pdf/B3.1.35-d.pdf'
 		SIZE_PATTERN  = /(?:(?:(\d+(?:[.,]\d+)?)\s*x\s*)?(\d+(?:[.,]\d+)?))?\s*([^\d\s]*)$/
 		class ParsedRegistration
 			attr_accessor :iksnr, :indication, :company, :ikscat
@@ -145,9 +146,12 @@ module ODDB
 			writer.path
 		end
 		def get_latest_file
-			if(index = http_body(SWISSMEDIC_SERVER, INDEX_PATH))
-				path = extract_latest_filepath(index)
-				if(download = http_body(SWISSMEDIC_SERVER, path))
+=begin
+			if((index = http_body(SWISSMEDIC_SERVER, INDEX_PATH)) \
+				 && (path = extract_latest_filepath(index)) \
+				 && (download = http_body(SWISSMEDIC_SERVER, path)))
+=end
+			if(download = http_body(SWISSMEDIC_SERVER, PDF_PATH))
 					latest = ''
 					if(File.exist?(@latest_path))
 						latest = File.read(@latest_path)
