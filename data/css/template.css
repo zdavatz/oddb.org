@@ -1820,8 +1820,7 @@ div.minus {
 }
 span.square, a.square {
 	text-align: center;
-	vertical-align: middle;
-	padding: 1px 4px;
+	padding: 2px 4px;
 	font-size: $square_font_size;
 }
 span.anthroposophy {
