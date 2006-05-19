@@ -40,7 +40,9 @@ class CsvResult < HtmlGrid::Component
 		}.compact.join(',')
 	end
 	def deductible(pack)
-		@lookandfeel.lookup(pack.deductible)
+    if(pack.sl_entry)
+      @lookandfeel.lookup(pack.deductible || :deductible_g)
+    end
 	end
 	def expiration_date(pack)
 		formatted_date(pack, :expiration_date)
