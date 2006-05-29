@@ -42,7 +42,7 @@ module ODDB
 			def content(model, session)
 				self::class::CONTENT.new(model, session, self)
 			end
-			def css_link(context)
+			def css_link(context, path=nil)
 				if(@lookandfeel.enabled?(:external_css, false))
 					super(context, @lookandfeel.resource_external(:external_css))
 				else
