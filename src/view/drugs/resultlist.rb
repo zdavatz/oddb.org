@@ -94,6 +94,7 @@ class ResultList < HtmlGrid::List
 	}
 	CSS_MAP = {}
 	CSS_KEYMAP = {
+		:active_agents			=>	'result-i',
 		:limitation_text		=>	'result-infos',
 		:fachinfo						=>	'result-infos',
 		:patinfo						=>	'result-infos',
@@ -117,6 +118,7 @@ class ResultList < HtmlGrid::List
 		'nbsp'							=>	'result',
 	}
 	CSS_HEAD_KEYMAP = {
+		:active_agents			=>	'th',
 		:limitation_text		=>	'th',
 		:fachinfo						=>	'th',
 		:patinfo						=>	'th',
@@ -165,6 +167,17 @@ class ResultList < HtmlGrid::List
 				@css_head_map.store(key, self::class::CSS_HEAD_KEYMAP[val] || 'th')
 			end
 		}
+	end
+	def active_agents(model, session=@session)
+		link = HtmlGrid::Link.new(:show, model, session, self)
+		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
+		if (model.active_agents.size > 1)
+			link.set_attribute('title', model.active_agents.join(', '))
+			link.value = @lookandfeel.lookup(:active_agents, model.active_agents.size)
+		else
+			link.value = model.active_agents.to_s
+		end
+		link
 	end
 	def comparable_size(model, session=@session)
 		HtmlGrid::Value.new(:size, model, session, self)
