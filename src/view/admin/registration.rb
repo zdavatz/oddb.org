@@ -153,6 +153,7 @@ class RegistrationForm < View::Form
 		[2,1]		=>	:revision_date,
 		[0,2]		=>	:generic_type,
 		[2,2]		=>	:expiration_date,
+		[4,2]		=>	:renewal_flag,
 		[0,3]		=>	:complementary_select,
 		[0,3,1]	=>	:complementary_type,
 		[2,3]		=>	:market_date,
@@ -169,8 +170,9 @@ class RegistrationForm < View::Form
 		[3,0,1,6]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,4,9]	=>	'list',
+		[0,0,6,9]	=>	'list',
 	}
+  COLSPAN_MAP = { }
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
 	SYMBOL_MAP = {
@@ -184,6 +186,7 @@ class RegistrationForm < View::Form
 		:market_date				=>	HtmlGrid::InputDate,
 		:parallel_import		=>	HtmlGrid::InputCheckbox,
 		:registration_date	=>	HtmlGrid::InputDate,
+		:renewal_flag				=>	HtmlGrid::InputCheckbox,
 		:revision_date			=>	HtmlGrid::InputDate,
 	}
 	def init
@@ -209,6 +212,7 @@ class RegistrationForm < View::Form
 				[1,11]	=>	:submit,
 				[1,11,1]=>	:new_registration,
 			})
+      colspan_map.store([3,8], 3)
 			css_map.store([0,8], 'result-b-r-unknown-left')
 			css_map.store([1,8], 'list-bg')
 			css_map.store([2,8,2], 'list')

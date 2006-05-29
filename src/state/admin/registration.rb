@@ -179,7 +179,7 @@ class Registration < State::Admin::Global
 		keys = [
 			:inactive_date, :generic_type, :registration_date, 
 			:revision_date, :market_date, :expiration_date, 
-			:complementary_type, :export_flag,
+			:complementary_type, :export_flag, :renewal_flag,
 			:parallel_import, :index_therapeuticus
 		]
 		if(@model.is_a? Persistence::CreateItem)

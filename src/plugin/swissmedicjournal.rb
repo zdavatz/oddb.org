@@ -330,6 +330,7 @@ module ODDB
 				:source				=>	smj_reg.src,
 				:index_therapeuticus => smj_reg.indexth,
 				:ikscat				=>	smj_reg.ikscat,
+        :renewal_flag =>  false,
 			}
 			if(indication_name = smj_reg.indication)
 				indication = update_indication(indication_name)

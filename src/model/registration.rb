@@ -13,7 +13,7 @@ module ODDB
 		attr_writer :generic_type, :complementary_type
 		attr_accessor :registration_date, :export_flag, :company, 
 			:revision_date, :indication, :expiration_date, :inactive_date,
-			:market_date, :fachinfo, :source, :ikscat, #:pdf_fachinfos,
+			:market_date, :fachinfo, :source, :ikscat, :renewal_flag, #:pdf_fachinfos,
 			:index_therapeuticus, :comarketing_with, :vaccine, :parallel_import
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
@@ -92,7 +92,7 @@ module ODDB
 		end
 		def expired?
 			(@inactive_date && @inactive_date <= @@today) \
-				|| (@expiration_date && @expiration_date <= @@today)
+				|| (!@renewal_flag && @expiration_date && @expiration_date <= @@today)
 		end
 		def generic?
 			self.generic_type == :generic

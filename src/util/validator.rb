@@ -16,7 +16,7 @@ module ODDB
 		alias :competition_email :email
 		BOOLEAN = [
 			:cl_status,  :download, :experience, :recommend, :impression,
-			:invoice_htmlinfos, :helps, :show_email, :export_flag,
+			:invoice_htmlinfos, :helps, :show_email, :export_flag, :renewal_flag,
 			:disable_autoinvoice, :refdata_override, :lppv, :vaccine, :parallel_import
 		]
 		DATES = [
