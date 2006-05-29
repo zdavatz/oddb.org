@@ -103,6 +103,9 @@ class CsvResult < HtmlGrid::Component
 	def numerical_size(pack)
 		pack.comparable_size.qty
 	end
+  def out_of_trade(pack)
+		boolean(!pack.public?)
+  end
 	def price_exfactory(pack)
 		@lookandfeel.format_price(pack.price_exfactory.to_i)
 	end
@@ -119,12 +122,14 @@ class CsvResult < HtmlGrid::Component
 		boolean(pack.sl_entry)
 	end
 	def sl_generic(pack)
-		case pack.sl_generic_type
-		when :original
-			'O'
-		when :generic
-			'G'
-		end
+		if(sl = pack.sl_entry)
+      case pack.sl_generic_type
+      when :original
+        'O'
+      when :generic
+        'G'
+      end
+    end
 	end
 	def to_html(context)
 		to_csv(CSV_KEYS)
