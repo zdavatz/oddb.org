@@ -1574,7 +1574,7 @@ Zeno Davatz
 				:explain_deductible				=>	'QP = Quote-Part',
 				:explain_deductible_url		=>	'http://www.galinfo.net',
 				:explain_efp							=>	'PEF = Prix exfactory, TVA excl.(CHF, USD, EURO)',
-				:explain_expired					=>	'Fond gris = Permission Vacante',
+				:explain_expired					=>	'Fond gris = Prolongation de l\'autorisation vacante',
 				:explain_fd								=>	'FB = R&eacute;troaction pour le m&eacute;dicament',
 				:explain_fi								=>	'IPro = Information destin&eacute;e aux professionnels',
 				:explain_fon							=>	'Séparer plusieurs numéros par virgule.',
