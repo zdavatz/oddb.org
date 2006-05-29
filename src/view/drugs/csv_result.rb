@@ -79,9 +79,6 @@ class CsvResult < HtmlGrid::Component
 			@lookandfeel.format_date(date)
 		end
 	end
-	def is_generic(pack)
-		boolean(pack.generic_type == :generic && !pack.comparables.empty?)
-	end
 	def limitation(pack)
 		if(sl = pack.sl_entry)
 			boolean(sl.limitation)
@@ -121,14 +118,12 @@ class CsvResult < HtmlGrid::Component
 	def sl_entry(pack)
 		boolean(pack.sl_entry)
 	end
-	def sl_generic(pack)
-		if(sl = pack.sl_entry)
-      case pack.sl_generic_type
-      when :original
-        'O'
-      when :generic
-        'G'
-      end
+	def generic_type(pack)
+    case pack.sl_generic_type || pack.generic_type
+    when :original
+      'O'
+    when :generic
+      'G'
     end
 	end
 	def to_html(context)

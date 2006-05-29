@@ -70,8 +70,8 @@ module ODDB
 				:numerical_size, :price_exfactory, :price_public, :company_name,
 				:ikscat, :sl_entry, :introduction_date, :limitation,
 				:limitation_points, :limitation_text, :lppv, :registration_date,
-				:expiration_date, :inactive_date, :export_flag, :casrn, :is_generic,
-				:has_generic, :sl_generic, :deductible, :out_of_trade ]
+				:expiration_date, :inactive_date, :export_flag, :casrn, :generic_type,
+				:has_generic, :deductible, :out_of_trade ]
 			session = SessionStub.new
 			session.language = 'de'
 			session.flavor = 'gcc'
