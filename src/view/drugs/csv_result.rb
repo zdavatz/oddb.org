@@ -39,6 +39,9 @@ class CsvResult < HtmlGrid::Component
 			narc.casrn
 		}.compact.join(',')
 	end
+  def c_type(pack)
+    @lookandfeel.lookup("square_#{pack.complementary_type}")
+  end
 	def deductible(pack)
     if(pack.sl_entry)
       @lookandfeel.lookup(pack.deductible || :deductible_g)
