@@ -1158,6 +1158,36 @@ module ODDB
 		def delete(pointer)
 			@system.execute_command(DeleteCommand.new(pointer))
 		end
+    def inject_poweruser(email, pass, days)
+      user_pointer = Persistence::Pointer.new(:poweruser)
+      user_data = {
+        :unique_email => email,
+        :pass_hash    => Digest::MD5.hexdigest(pass),
+      }
+      invoice_pointer = Persistence::Pointer.new(:invoice)
+      time = Time.now
+      expiry = InvoiceItem.expiry_time(days, time)
+      invoice_data = { :currency => State::PayPal::Checkout::CURRENCY }
+      item_data = {
+        :duration     => days,
+        :expiry_time  => expiry,
+        :total_netto  => State::Limit.price(days.to_i),
+        :quantity     => days,
+        :text         => 'unlimited access',
+        :time         => time,
+        :type         => :poweruser,
+        :vat_rate     => VAT_RATE,
+      }
+      ODBA.transaction {
+        user = @system.update(user_pointer.creator, user_data, :admin)
+        invoice = @system.update(invoice_pointer.creator, invoice_data, :admin)
+        item_pointer = invoice.pointer + [:item]
+        @system.update(item_pointer.creator, item_data, :admin)
+        user.add_invoice(invoice)
+        invoice.payment_received!
+        invoice.odba_isolated_store
+      }
+    end
 		def merge_companies(source_pointer, target_pointer)
 			command = MergeCommand.new(source_pointer, target_pointer)
 			@system.execute_command(command)
