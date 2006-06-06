@@ -132,8 +132,8 @@ module ODDB
 			@deactivated = []
 			@latest_path = File.join(ARCHIVE_PATH, 'xls', 'vaccines-latest.xls')
 		end
-		def update
-			if(path = get_latest_file)
+		def update(manual_download=nil)
+			if(path = (manual_download || get_latest_file))
 				update_registrations(registrations_from_xls(path))
 				FileUtils.cp(path, @latest_path) 
 			end
