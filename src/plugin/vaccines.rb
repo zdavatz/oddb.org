@@ -13,22 +13,21 @@ require 'parseexcel/parseexcel'
 module ODDB
 	class VaccineIndexWriter < NullWriter
 		attr_reader :path
+    def initialize(*args)
+      super
+			@vaccine_section = true
+    end
 		def new_linkhandler(link)
-			if(link)
-				if((name = link.attribute('name')) && name == 'Impfstoff')
-					@vaccine_section = true
-				end
-				if(@vaccine_section && (href = link.attribute('href')) \
-					 && /\/files\/pdf\/B.*\.xls/.match(href))
-					@path = href
-					@vaccine_section = false
-				end
+      if(link && @vaccine_section && (href = link.attribute('href')) \
+				 && /.*\.xls$/.match(href))
+        @path = href
+        @vaccine_section = false
 			end
 		end
 	end
 	class VaccinePlugin	< Plugin
 		SWISSMEDIC_SERVER = 'www.swissmedic.ch'
-		INDEX_PATH = '/de/fach/overall.asp?theme=0.00085.00003&theme_id=939'
+		INDEX_PATH = '/html/content/Impfstoffe-d.html'
 		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
 		DOSE_PATTERN  = /(\d+(?:[,.]\d+)?)\s*((?:\/\d+)|[^\s\d]*)?/
 		ENDMULTI_PATTERN = /\d+\s*Stk$/
@@ -146,12 +145,12 @@ module ODDB
 			writer.path
 		end
 		def get_latest_file
-=begin
 			if((index = http_body(SWISSMEDIC_SERVER, INDEX_PATH)) \
 				 && (path = extract_latest_filepath(index)) \
 				 && (download = http_body(SWISSMEDIC_SERVER, path)))
-=end
+=begin
 			if(download = http_body(SWISSMEDIC_SERVER, XLS_PATH))
+=end
 				latest = ''
 				if(File.exist?(@latest_path))
 					latest = File.read(@latest_path)
