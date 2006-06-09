@@ -140,6 +140,7 @@ module ODDB
 			:new_registration,
 			:new_sequence,
 			:new_substance,
+      :new_user,
 			:notify,
 			:notify_send,
 			:orphaned_fachinfos,
@@ -186,6 +187,8 @@ module ODDB
 			:update,
 			:update_bsv,
 			:update_incomplete,
+      :user,
+      :users,
 			:vaccines,
 			:vcard,
 			:wait,
@@ -380,7 +383,11 @@ module ODDB
 		end
 		def pointer(value)
 			begin
-				Persistence::Pointer.parse(value)
+				pointer = Persistence::Pointer.parse(value)
+        if(pointer.insecure?)
+          raise SBSM::InvalidDataError.new('e_insecure_pointer', :pointer, value)
+        end
+        pointer
 			rescue StandardError, ParseException
 				if(value[-1] != ?.)
 					value << "."
