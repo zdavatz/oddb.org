@@ -54,17 +54,19 @@ module ODDB
 			}
 		end
 		def update_company(comp)
-			criteria = {
-				:ean =>  comp.ean13 
-			}
-			MEDDATA_SERVER.session(:partner) { |meddata|
-				results = meddata.search(criteria)
-				if(results.size == 1)
-					result = results.first
-					details = meddata.detail(result, @medwin_template)
-					update_company_data(comp, details)
-				end
-			}
+      if(ean = comp.ean13)
+        criteria = {
+          :ean =>  comp.ean13 
+        }
+        MEDDATA_SERVER.session(:partner) { |meddata|
+          results = meddata.search(criteria)
+          if(results.size == 1)
+            result = results.first
+            details = meddata.detail(result, @medwin_template)
+            update_company_data(comp, details)
+          end
+        }
+      end
 		end
 		def update_company_data(comp, data)
 			unless(comp.listed? || comp.has_user?)
