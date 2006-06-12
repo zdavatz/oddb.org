@@ -122,7 +122,7 @@ module ODDB
         :address_suggestion, :migel_group, :subgroup, :product, :narcotic,
         :orphaned_fachinfo, :orphaned_patinfo, :package, :patent, :patinfo,
         :poweruser, :registration, :sequence, :slate, :sl_entry, :sponsor,
-        :substance, :user
+        :substance, :user, :limitation_text
       ]
 			@parser = Parse.generate_parser <<-EOG
 Grammar OddbSize
