@@ -11,15 +11,17 @@ module SelectSubstanceMethods
 	def update
 		pointer = @session.user_input(:pointer)
 		substance = nil
-		ODBA.transaction { 
+    if(pointer.is_a?(SBSM::InvalidDataError))
+      pointer = Persistence::Pointer.new(:substance).creator
+      update = {
+        'lt'	=>	@model.user_input[:substance],
+      }
+		  ODBA.transaction { 
+        substance = @session.app.update(pointer, update, unique_email)
+      }
+    else
 			substance = pointer.resolve(@session.app)
-			if(pointer.skeleton == [:create])
-				update = {
-					'lt'	=>	@model.user_input[:substance],
-				}
-				@session.app.update(substance.pointer, update, unique_email)
-			end
-		}
+    end
 		active_agent = @model.active_agent
 		aptr = active_agent.pointer
 		hash = {
