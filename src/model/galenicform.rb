@@ -17,7 +17,7 @@ module ODDB
 			end
 		end
 		def equivalent_to?(other)
-			@galenic_group == other.galenic_group
+			(self == other) || (@galenic_group == other.galenic_group)
 		end
 		def galenic_group=(group)
 			@galenic_group.remove(self) unless(@galenic_group.nil?)
