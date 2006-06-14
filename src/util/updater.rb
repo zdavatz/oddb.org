@@ -2,6 +2,7 @@
 # Updater-- oddb -- 19.02.2003 -- hwyss@ywesee.com 
 
 require 'plugin/swissmedicjournal'
+require 'plugin/analysis'
 require 'plugin/doctors'
 require 'plugin/fachinfo'
 require 'plugin/fxcrossrate'
@@ -146,6 +147,15 @@ module ODDB
 				update_lppv
 				update_medwin_companies
 			end
+		end
+		def update_analysis(path)
+			klass = AnalysisPlugin
+			subj = 'Analysis'
+			plug = klass.new(@app)
+			wrap_update(klass, subj) {
+				klass.update(path)	
+			}
+			update_simple(AnalysisPlugin, 'Analysis')
 		end
 		def update_bsv
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])

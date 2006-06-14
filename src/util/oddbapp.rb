@@ -24,6 +24,7 @@ require 'util/config'
 require 'fileutils'
 require 'yaml'
 require 'model/migel/group'
+require 'model/analysis/group'
 
 class OddbPrevalence
 	include ODDB::Failsafe
@@ -47,6 +48,7 @@ class OddbPrevalence
 		create_unknown_galenic_group()
 		create_root_user()
 		@accepted_orphans ||= {}
+		@analysis_groups ||= {}
 		@atc_classes ||= {}
 		@address_suggestions ||= {}
 		@patinfos_deprived_sequences ||= []
@@ -149,6 +151,17 @@ class OddbPrevalence
 		}
 		active
 	end
+	def address_suggestion(oid)
+		@address_suggestions[oid.to_i]
+	end
+	def analysis_group(grpcd)
+		@analysis_groups[grpcd]
+	end
+	def analysis_positions
+		@analysis_groups.values.inject([]) { |memo, group| 
+			memo.concat(group.positions.values)
+		}
+	end
 	def atcless_sequences
 		ODBA.cache.retrieve_from_index('atcless', 'true')
 	end
@@ -158,9 +171,6 @@ class OddbPrevalence
 	def atc_ddd_count
 		@atc_ddd_count ||= count_atc_ddd()
 	end
-	def address_suggestion(oid)
-		@address_suggestions[oid.to_i]
-	end
 	def clean_invoices
 		@invoices.delete_if { |oid, invoice| invoice.odba_instance.nil? }
 		deletables = @invoices.values.select { |invoice|
@@ -169,7 +179,8 @@ class OddbPrevalence
 		unless(deletables.empty?)
 			deletables.each { |invoice|
 				if((ptr = invoice.user_pointer) \
-					&& (user = ptr.resolve(self)))
+					&& (user = ptr.resolve(self)) \
+					&& user.respond_to?(:remove_invoice))
 					user.remove_invoice(invoice)	
 				end
 				delete(invoice.pointer)
@@ -256,6 +267,10 @@ class OddbPrevalence
 	def create_admin
 		user = ODDB::AdminUser.new
 		@users.store(user.oid, user)
+	end
+	def create_analysis_group(groupcd)
+		group = ODDB::Analysis::Group.new(groupcd)
+		@analysis_groups.store(groupcd, group)
 	end
 	def create_atc_class(atc_class)
 		atc = ODDB::AtcClass.new(atc_class)
