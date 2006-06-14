@@ -51,6 +51,13 @@ module ODDB
 					end
 				}
 			end
+			def to_html(context)
+				if(components.empty?)
+					"&nbsp;"
+				else
+					super
+				end
+			end
 		end
 	end
 end

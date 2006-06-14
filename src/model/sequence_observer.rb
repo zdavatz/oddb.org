@@ -17,6 +17,9 @@ module ODDB
 			seq
 		end
 		def remove_sequence(seq)
+			## failsafe-code
+			@sequences.delete_if { |s| s.odba_instance.nil? }
+			##
 			if(@sequences.delete(seq))
 				@sequences.odba_isolated_store
 			end

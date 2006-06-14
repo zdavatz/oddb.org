@@ -40,10 +40,12 @@ class AtcHeader < HtmlGrid::Composite
 		super
 	end
 	def atc_ddd_link(atc, session)
-		while(atc && !atc.has_ddd? && (code = atc.parent_code))
-			atc = session.app.atc_class(code)
+		unless(@lookandfeel.disabled?(:atc_ddd))
+			while(atc && !atc.has_ddd? && (code = atc.parent_code))
+				atc = session.app.atc_class(code)
+			end
+			super(atc, session)
 		end
-		super(atc, session)
 	end
 	def atc_description(model, session)
 		[
@@ -76,22 +78,7 @@ class ResultList < HtmlGrid::List
 	include DataFormat
 	include View::ResultColors
 	include View::AdditionalInformation
-	COMPONENTS = {
-		[0,0]		=>	:limitation_text,
-		[1,0]		=>  :fachinfo,
-		[2,0]		=>	:patinfo,
-		[3,0]		=>	:narcotic,
-		[4,0]		=>	:complementary_type,
-		[5,0,0]	=>	'result_item_start',
-		[5,0,1]	=>	:name_base,
-		[5,0,2]	=>	'result_item_end',
-		[6,0]		=>	:galenic_form,
-		[7,0]		=>	:most_precise_dose,
-		[8,0]		=>	:comparable_size,
-		[9,0]		=>	:price_exfactory,
-		[10,0]	=>	:price_public,
-		[11,0]	=>	:substances,
-	}	
+	COMPONENTS = {}	
 	REVERSE_MAP = {
 		:company_name			=> false,
 		:most_precise_dose=> false,
@@ -105,28 +92,56 @@ class ResultList < HtmlGrid::List
 		:size							=> false,
 		:substances				=> true,
 	}
-	CSS_MAP = {
-		[0,0,5]	=>	'result-infos',
-		[5,0]		=>	'result-big',
-		[6,0]		=>	'result',
-		[7,0,3]	=>	'result-r',
-		[10,0]	=>	'result-pubprice',
-		[11,0]	=>	'result-i',
+	CSS_MAP = {}
+	CSS_KEYMAP = {
+		:active_agents			=>	'result-i',
+		:limitation_text		=>	'result-infos',
+		:fachinfo						=>	'result-infos',
+		:patinfo						=>	'result-infos',
+		:narcotic						=>	'result-infos',
+		:complementary_type	=>	'result-infos',
+		:name_base					=>	'result-big',
+		:galenic_form				=>	'result',
+		:most_precise_dose	=>	'result-r',
+		:comparable_size		=>	'result-r',
+		:price_exfactory		=>	'result-r',
+		:price_public				=>	'result-pubprice',
+		:deductible					=>	'result-b-r',
+		:substances					=>	'result-i',
+		:company_name				=>	'result-i',
+		:ikscat							=>	'result-i',
+		:ddd_price					=>	'result-b-r',
+		:registration_date	=>	'result-i',
+		:feedback						=>	'result-b-r',
+		:google_search			=>	'result-b-r',
+		:notify							=>	'result-b-r',
+		'nbsp'							=>	'result',
 	}
-	CSS_HEAD_MAP = {
-		[0,0] =>	'th',
-		[1,0] =>	'th',
-		[2,0] =>	'th',
-		[3,0] =>	'th',
-		[4,0] =>	'th',
-		[5,0,1] =>	'th',
-		[6,0]	=>	'th',
-		[7,0]	=>	'th-r',
-		[8,0]	=>	'th-r',
-		[9,0] =>	'th-r',
-		[10,0] =>	'th-r',
-		[11,0] =>	'th',
+	CSS_HEAD_KEYMAP = {
+		:active_agents			=>	'th',
+		:limitation_text		=>	'th',
+		:fachinfo						=>	'th',
+		:patinfo						=>	'th',
+		:narcotic						=>	'th',
+		:complementary_type	=>	'th',
+		:name_base					=>	'th',
+		:galenic_form				=>	'th',
+		:most_precise_dose	=>	'th-r',
+		:comparable_size		=>	'th-r',
+		:price_exfactory		=>	'th-r',
+		:price_public				=>	'th-r',
+		:deductible					=>	'th-r',
+		:substances					=>	'th',
+		:company_name				=>	'th',
+		:ikscat							=>	'th',
+		:ddd_price					=>	'th-r',
+		:registration_date	=>	'th',
+		:feedback						=>	'th-r',
+		:google_search			=>	'th-r',
+		:notify							=>	'th-r',
+		'nbsp'							=>	'th',
 	}
+	CSS_HEAD_MAP = {}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
 	SORT_DEFAULT = nil
@@ -143,65 +158,29 @@ class ResultList < HtmlGrid::List
 		super
 	end
 	def reorganize_components
-		if(@lookandfeel.enabled?(:full_result))
-			components.update({
-				[9,0]		=>	:price_exfactory,
-				[10,0]	=>	:price_public,
-				[11,0]	=>	:substances,
-				[12,0]	=>	:company_name,
-				[13,0]	=>	:ikscat,
-				[14,0]	=>	:registration_date,
-				[15,0]	=>	:feedback,
-				[16,0]	=>  :google_search,
-				[17,0]	=>	:notify,
-
-			})
-			@css_map = {
-				[0,0,5]	=>	'result-infos',
-				[5,0]		=>	'result-big',
-				[6,0]		=>	'result',
-				[7,0,3]	=>	'result-r',
-				[10,0]		=>	'result-pubprice',
-				[11,0,4]	=>	'result-i',
-				[15,0,3]=>	'result-b-r',
-			}
-			css_head_map.update({
-				[9,0]	=>	'th-r',
-				[10,0] =>	'th-r',
-				[11,0] =>	'th',
-				[12,0]	=>	'th',
-				[13,0]	=>	'th',
-				[14,0]=>	'th',
-				[15,0]=>	'th-r',
-				[16,0]=>	'th-r',
-				[17,0]=>	'th-r',
-			})
+		@components = @lookandfeel.result_list_components
+		@css_map = {}
+		@css_head_map = {}
+		@components.each { |key, val|
+			if(klass = self::class::CSS_KEYMAP[val])
+				@css_map.store(key, klass)
+				@css_head_map.store(key, self::class::CSS_HEAD_KEYMAP[val] || 'th')
+			end
+		}
+	end
+	def active_agents(model, session=@session)
+		link = HtmlGrid::Link.new(:show, model, session, self)
+		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
+		if (model.active_agents.size > 1)
+			link.set_attribute('title', model.active_agents.join(', '))
+			link.value = @lookandfeel.lookup(:active_agents, model.active_agents.size)
+		else
+			link.value = model.active_agents.to_s
 		end
-		if(@lookandfeel.enabled?(:deductible, false))
-			pp_index = components.index(:price_exfactory)
-			dd_index = components.index(:price_public)
-			components.update({
-				pp_index	=>	:price_public,	
-				dd_index	=>	:deductible,	
-			})
-			css_map.update({
-				pp_index	=>	'result-pubprice',
-				dd_index	=>	'result-r',
-			})
-		end
+		link
 	end
 	def comparable_size(model, session=@session)
 		HtmlGrid::Value.new(:size, model, session, self)
-	end
-	def complementary_type(model, session=@session)
-		if(model.generic_type == :complementary \
-			&& (ctype = model.complementary_type))
-			square = HtmlGrid::Span.new(model, @session, self)
-			square.value = @lookandfeel.lookup("c_type_#{ctype}")
-			square.set_attribute('title', @lookandfeel.lookup(ctype))
-			square.css_class = "square #{ctype}"
-			square
-		end
 	end
 	def compose_list(model=@model, offset=[0,0])
 		model.each { |atc|	

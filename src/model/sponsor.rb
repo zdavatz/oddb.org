@@ -26,7 +26,7 @@ module ODDB
 			pac.respond_to?(:company) && (pac.company == @company)
 		end
 		def valid?
-			@sponsor_until && @sponsor_until >= Date.today
+			@sponsor_until && @sponsor_until >= @@today
 		end
 		private
 		def adjust_types(values, app=nil)

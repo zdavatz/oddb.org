@@ -8,7 +8,7 @@ module ODDB
 			@@expired ||= {}
 			@midnight_walker ||= Thread.new {
 				loop {
-					tomorrow = Date.today + 1
+					tomorrow = @@today + 1
 					midnight = Time.local(tomorrow.year, tomorrow.month, tomorrow.day)
 					sleep(midnight - Time.now)
 					@@expired.clear
@@ -21,7 +21,7 @@ module ODDB
 				'-' << gt.to_s << super
 			end
 			def row_css(model)
-				'expired' if(model.expired?)
+				'expired' if(model.respond_to?(:expired?) && model.expired?)
 =begin
 				if(model.respond_to?(:iksnr))
 					iksnr = model.iksnr

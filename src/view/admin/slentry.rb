@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::SlEntry -- oddb -- 22.04.2003 -- benfay@ywesee.com
 
-require 'view/publictemplate'
+require 'view/drugs/privatetemplate'
 require 'view/form'
 require 'htmlgrid/inputdate'
 require 'htmlgrid/select'
@@ -79,7 +79,7 @@ class RootSlEntryComposite < View::Admin::SlEntryComposite
 		[0,1]	=>	View::Admin::SlEntryForm,
 	}
 end
-class SlEntry < View::PrivateTemplate
+class SlEntry < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::SlEntryComposite
 	SNAPBACK_EVENT = :result
 end

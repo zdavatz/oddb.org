@@ -2,6 +2,7 @@
 # View::AdditionalInformation -- oddb -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'iconv'
+require 'plugin/comarketing'
 
 module ODDB
 	module View
@@ -23,14 +24,77 @@ module ODDB
 					atc.code
 				end
 			end
+			def comarketing(model, session=@session)
+				if(model.parallel_import)
+					square(:parallel_import)
+				elsif(model.patent_protected?)
+					link = HtmlGrid::Link.new(:square_patent, model, @session, self)
+					link.href = @lookandfeel.lookup(:swissreg_url, model.patent.srid)
+					square(:patent, link)
+				elsif(comarketing = model.comarketing_with)
+					link = HtmlGrid::Link.new(:square_comarketing, model, @session, self)
+					link.href = CoMarketingPlugin::SOURCE_URI
+					link.set_attribute('title', 
+						 @lookandfeel.lookup(:comarketing, comarketing.name_base))
+					square(:comarketing, link)
+				end
+			end
+			def complementary_type(model, session=@session)
+				if(ctype = model.complementary_type)
+					square(ctype)
+				end
+			end
+			def ddd_price(model, session=@session)
+				span = HtmlGrid::Span.new(model, @session, self)
+				if(ddd_price = model.ddd_price)
+					@ddd_price_count ||= 0
+					@ddd_price_count += 1
+					span.value = @lookandfeel.format_price(ddd_price)
+					span.css_id = "ddd_price_#{@ddd_price_count}"
+					args = {:pointer => model.pointer}
+					span.dojo_tooltip = @lookandfeel._event_url(:ajax_ddd_price, args)
+				end
+				span.label = true
+				span
+			end
 			def deductible(model, session=@session)
-				@lookandfeel.lookup(model.deductible || 'deductible_unknown')
+				@deductible_count ||= 0
+				@deductible_count += 1
+				span = HtmlGrid::Span.new(model, @session, self)
+				tooltip = HtmlGrid::Div.new(model, @session, self)
+				deductible = if(@lookandfeel.enabled?(:just_medical_structure, false) \
+											 && Time.now >= Time.local(2006,5,1)) #remove this in May
+											 model.deductible_m
+										 else
+											 model.deductible
+										 end
+				if(deductible)
+					tooltip.value = @lookandfeel.lookup(:deductible_title, 
+																							@lookandfeel.lookup(deductible))
+				else
+					tooltip.value = @lookandfeel.lookup(:deductible_unknown_title)
+				end
+				span.css_id = "deductible_#{@deductible_count}"
+				span.css_class = deductible.to_s
+				span.dojo_tooltip = tooltip
+				span.value = @lookandfeel.lookup(deductible || :deductible_unknown)
+				span.label = true
+				span
 			end
 			def fachinfo(model, session=@session, css='result-infos')
-				_fachinfo(model.fachinfo, css)
+				if(link = _fachinfo(model.fachinfo, css))
+					link
+				elsif(@session.user.allowed?(model))
+					link = HtmlGrid::Link.new(:fachinfo_create, model, @session, self)
+					ptr = model.is_a?(Registration) ? 
+						model.pointer : model.registration.pointer
+					args = {:pointer => ptr, :chapter => 'composition'}
+					link.href = @lookandfeel._event_url(:new_fachinfo, args)
+					link.css_class = 'create-infos'
+					link
+				end
 			end
 			def _fachinfo(fachinfo, css='result-infos')
-				visitor_language = @lookandfeel.language.intern
 				if(fachinfo)
 					link = HtmlGrid::Link.new(:fachinfo_short, 
 							fachinfo, @session, self)
@@ -43,7 +107,8 @@ module ODDB
 			end
 			def feedback(model, session=@session)
 				link = HtmlGrid::Link.new(:feedback_text_short, model, session, self)
-				link.href = @lookandfeel._event_url(:feedbacks, {'pointer'=>model.pointer})
+				link.href = @lookandfeel._event_url(:feedbacks, 
+																						{'pointer'=>model.pointer})
 				pos = components.index(:feedback)
 				component_css_map.store(pos, "feedback square")
 				css_map.store(pos, "square")
@@ -57,7 +122,7 @@ module ODDB
 				glink = utf8(text)
 				link = HtmlGrid::Link.new(:google_search, @model, @session, self)
 				link.href =  "http://www.google.com/search?q=#{glink}"
-				link.css_class= 'google_search square'
+				link.css_class= 'square google_search'
 				link.set_attribute('title', "#{@lookandfeel.lookup(:google_alt)}#{text}")
 				link
 			end
@@ -66,36 +131,20 @@ module ODDB
 				@ikscat_count += 1
 				txt = HtmlGrid::Span.new(model, session, self)
 				text_elements = []
-				title_elements = []
 				if(cat = model.ikscat)
 					text_elements.push(cat)
 				end
 				if(sl = model.sl_entry)
 					text_elements.push(@lookandfeel.lookup(:sl))
-					sl_str = @lookandfeel.lookup(:sl_list).dup
-					if(date = sl.introduction_date)
-						sl_str << @lookandfeel.lookup(:sl_since, 
-							date.strftime(@lookandfeel.lookup(:date_format)))
-					end
 				end
 				if(model.lppv)
 					catstr = @lookandfeel.lookup(:lppv)
 					text_elements.push(catstr)
 				end
-=begin
-				if(model.out_of_trade)
-					text_elements.push(@lookandfeel.lookup(:hors_commerce))
-					title_elements.push(@lookandfeel.lookup(:explain_hc))
-				end
-=end
-				if(model.sl_generic_type == :generic)
-					text_elements.push(@lookandfeel.lookup(:sl_generic_short))
+				if(gt = model.sl_generic_type)
+					text_elements.push(@lookandfeel.lookup("sl_#{gt}_short"))
 				end
 				txt.value = text_elements.join('&nbsp;/&nbsp;')
-				#title = title_elements.join('&nbsp;/&nbsp;')
-				#txt.set_attribute('title', title)
-				#tooltip = HtmlGrid::Div.new(model, @session, self)
-				#tooltip.value = text_elements.join('&nbsp;/&nbsp;')
 				url = @lookandfeel._event_url(:ajax_swissmedic_cat,
 					{:pointer => model.pointer})
 				txt.css_id = "ikscat_#{@ikscat_count}"
@@ -129,6 +178,10 @@ module ODDB
 					link.css_class = 'result-infos'
 					link.set_attribute('title', @lookandfeel.lookup(:narcotic))
 					link
+				elsif(model.vaccine)
+					square(:vaccine)
+				#elsif(model.export_flag)
+				#	square(:export_flag)
 				end
 			end
 			def notify(model, session=@session)
@@ -169,6 +222,13 @@ module ODDB
 					end
 					[ '&nbsp;(', model.qty, unit, ')' ].compact.join(' ')
 				end
+			end
+			def square(key, square=nil)
+				square ||= HtmlGrid::Span.new(nil, @session, self)
+				square.value = @lookandfeel.lookup("square_#{key}")
+				square.attributes['title'] ||= @lookandfeel.lookup(key)
+				square.css_class = "square #{key}"
+				square
 			end
 			def utf8(text)
 				@@utf8[text] ||= Iconv.iconv('UTF-8', 'ISO_8859-1', text).first

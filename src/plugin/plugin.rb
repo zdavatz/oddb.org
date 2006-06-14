@@ -22,7 +22,7 @@ module ODDB
 			}
 		end
 		def recipients
-			self::class::RECIPIENTS
+			@recipients || self::class::RECIPIENTS
 		end
 		def report
 			''

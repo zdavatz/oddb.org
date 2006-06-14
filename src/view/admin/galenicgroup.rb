@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::GalenicGroup -- oddb -- 26.03.2003 -- andy@jetnet.ch
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/descriptionlist'
 require 'view/descriptionform'
 require 'view/pointervalue'
@@ -44,7 +44,7 @@ class GalenicGroupComposite < HtmlGrid::Composite
 		View::Admin::GalenicForms.new(mdl, session, self) unless model.is_a?(Persistence::CreateItem)
 	end
 end
-class GalenicGroup < View::PrivateTemplate
+class GalenicGroup < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::GalenicGroupComposite
 	SNAPBACK_EVENT = :galenic_groups
 end

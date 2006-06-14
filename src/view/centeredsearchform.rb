@@ -134,15 +134,11 @@ module ODDB
 				:sequences				=>	CenteredNavigationLink,
 				:software_feedback=>	HtmlGrid::Link,
 			}
-=begin
 			def atc_chooser(model, session)
-				link = HtmlGrid::Link.new(:atc_chooser, model, session, self)
-				link.href = @lookandfeel._event_url(:atc_chooser)
-				link.label = true
-				link.set_attribute('class', 'list')
-				link
+				if(@lookandfeel.enabled?(:atc_chooser))
+					CenteredNavigationLink.new(:atc_chooser, model, @session, self)
+				end
 			end
-=end
 			def atc_ddd_size(mode, session)
 				@session.app.atc_ddd_count.to_s << '&nbsp;'
 			end

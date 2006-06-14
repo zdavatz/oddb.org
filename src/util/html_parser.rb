@@ -366,7 +366,7 @@ module ODDB
 			@column_widths = []
 			@rows.each { |row|
 				row.each_cell_with_index { |cell, idx|
-					oldval = @column_widths[idx]
+					oldval = @column_widths[idx].to_i
 					newval = cell.width 
 					@column_widths[idx] = [oldval, newval].max
 				}
@@ -402,6 +402,9 @@ module ODDB
 		attr_reader :value, :attributes
 		def send_adata(string)
 			@value = string.strip
+		end
+		def to_s
+			@value.to_s
 		end
 	end
 	class HtmlFontHandler < HtmlAttributesHandler

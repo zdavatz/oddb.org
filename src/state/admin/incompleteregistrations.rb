@@ -57,6 +57,8 @@ class IncompleteRegs < State::Admin::Global
 			updater.update_trade_status
 			updater.update_medwin_packages
 			updater.reconsider_bsv
+			updater.update_comarketing
+			updater.update_swissreg_news
 			exporter = Exporter.new(@session.app)
 			exporter.export_generics_xls
 		}

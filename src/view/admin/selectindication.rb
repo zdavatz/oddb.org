@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::SelectIndication -- oddb -- 23.11.2004 -- hwyss@ywesee.com
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/admin/selectsubstance'
 
 module ODDB
@@ -61,7 +61,7 @@ class SelectIndicationComposite < HtmlGrid::Composite
 		].compact.join('&nbsp;-&nbsp;')	
 	end
 end	
-class SelectIndication < View::PrivateTemplate
+class SelectIndication < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::SelectIndicationComposite
 	SNAPBACK_EVENT = :result
 end

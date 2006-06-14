@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::Sequence -- oddb -- 11.03.2003 -- hwyss@ywesee.com 
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/form'
 require 'view/dataformat'
 require 'view/pointervalue'
@@ -243,7 +243,7 @@ class SequenceForm < Form
 			components.store([1,4], :submit)
 		end
 	end
-	def assign_patinfo(model, session)
+	def assign_patinfo(model, session=@session)
 		link = HtmlGrid::Link.new(:assign_patinfo, model, session, self)
 		link.href = @lookandfeel.event_url(:assign_patinfo)
 		if(@model.has_patinfo?)
@@ -254,7 +254,7 @@ class SequenceForm < Form
 		link.set_attribute('class', 'small')
 		link
 	end
-	def atc_descr(model, session)
+	def atc_descr(model, session=@session)
 		if(atc_descr_error?)
 			HtmlGrid::InputText.new(:atc_descr, model, session, self)
 		else
@@ -267,10 +267,10 @@ class SequenceForm < Form
 			|| ((atc = @model.atc_class) \
 			&& atc.description.empty?)
 	end
-	def delete_item(model, session)
+	def delete_item(model, session=@session)
 		delete_item_warn(model, :w_delete_sequence)
 	end
-	def delete_patinfo(model, session)
+	def delete_patinfo(model, session=@session)
 		if(model.has_patinfo?)
 			button = HtmlGrid::Button.new(:delete_patinfo, 
 				model, session, self)
@@ -279,7 +279,7 @@ class SequenceForm < Form
 			button
 		end
 	end
-	def seqnr(model, session)
+	def seqnr(model, session=@session)
 		klass = if(model.seqnr.nil?)
 			HtmlGrid::InputText
 		else
@@ -287,14 +287,14 @@ class SequenceForm < Form
 		end
 		klass.new(:seqnr, model, session, self)
 	end
-	def patinfo(model, session)
+	def patinfo(model, session=@session)
 		if(link = super)
 			pos = components.index(:patinfo)
 			link.set_attribute('class', 'result-infos')
 			link
 		end
 	end
-	def profile_link(model, session)
+	def profile_link(model, session=@session)
 		if(comp = model.company)
 			link = HtmlGrid::Link.new(:company_link, model, session, self)  
 			args = { :pointer	=>	comp.pointer }
@@ -304,18 +304,37 @@ class SequenceForm < Form
 			link  
 		end
 	end
-	def patinfo_label(model, session)
+	def patinfo_label(model, session=@session)
 		HtmlGrid::LabelText.new(:patinfo, model, session , self)
 	end
-	def patinfo_upload(model, session)
-		HtmlGrid::InputFile.new(:patinfo_upload, model, session, self)
+	def patinfo_upload(model, session=@session)
+		if(model.company.invoiceable?)
+			HtmlGrid::InputFile.new(:patinfo_upload, model, @session, self)
+		else
+			PointerLink.new(:e_company_not_invoiceable, model.company, @session, self)
+		end
 	end
 	def hidden_fields(context)
 		super << context.hidden('patinfo', 'keep')
 	end
 end
+class ResellerSequenceForm < SequenceForm
+	include HtmlGrid::ErrorMessage
+	include View::Admin::SequenceDisplay
+	include View::AdditionalInformation
+	DEFAULT_CLASS = HtmlGrid::Value
+=begin
+	SYMBOL_MAP = {
+		:iksnr							=>	HtmlGrid::Value,
+		:patinfo_label			=> HtmlGrid::LabelText,
+		:atc_request_label	=> HtmlGrid::LabelText,
+		:no_company					=> HtmlGrid::LabelText,
+		:regulatory_email		=> HtmlGrid::InputText,
+	}
+=end
+end
 class SequenceComposite < HtmlGrid::Composite
-	AGENTS = View::Admin::SequenceAgents
+	AGENTS = View::Admin::RootSequenceAgents
 	COMPONENTS = {
 		[0,0]	=>	:sequence_name,
 		[0,1]	=>	View::Admin::SequenceInnerComposite,
@@ -364,12 +383,31 @@ class RootSequenceComposite < View::Admin::SequenceComposite
 	DEFAULT_CLASS = HtmlGrid::Value
 	PACKAGES = View::Admin::RootSequencePackages
 end
-class Sequence < View::PrivateTemplate
+class ResellerSequenceComposite < View::Admin::SequenceComposite
+	COMPONENTS = {
+		[0,0]	=>	:sequence_name,
+		[0,1]	=>	View::Admin::ResellerSequenceForm,
+		[0,2]	=>	:sequence_agents,
+		[0,3]	=>	:sequence_packages,
+		[0,4]	=>	"th_source",
+		[0,5]	=>	:source,
+	}
+	CSS_MAP = {
+		[0,0]	=>	'th',
+		[0,4]	=>	'subheading',
+	}
+	DEFAULT_CLASS = HtmlGrid::Value
+	PACKAGES = View::Admin::RootSequencePackages
+end
+class Sequence < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::SequenceComposite
 	SNAPBACK_EVENT = :result
 end
 class RootSequence < View::Admin::Sequence
 	CONTENT = View::Admin::RootSequenceComposite
+end
+class ResellerSequence < View::Admin::Sequence
+	CONTENT = View::Admin::ResellerSequenceComposite
 end
 		end
 	end

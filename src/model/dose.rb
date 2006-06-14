@@ -5,6 +5,7 @@ require 'util/quanty'
 
 module ODDB
 	class Dose < Quanty
+		include Comparable
 		alias :qty :val 
 		DISABLE_DIFF = true
 		def Dose.from_quanty(other)
@@ -76,6 +77,9 @@ module ODDB
 				[val, @unit].join(' ')
 			end
 		end
+		def want(unit)
+			Dose.from_quanty(super)
+		end
 		def * (other)
 			Dose.from_quanty(super)
 		end
@@ -91,17 +95,19 @@ module ODDB
 		def ** (other)
 			Dose.from_quanty(super)
 		end
+=begin
 		def ==(other)
 			begin
-				other && super
-			rescue StandardError, RuntimeError => e
+				 other && (@val * 1000).round == (adjust(other) * 1000).round
+			rescue StandardError
 				false
 			end
 		end
+=end
 		def <=>(other)
 			begin
-				super
-			rescue StandardError => e
+				(@val * 1000).round <=> (adjust(other) * 1000).round
+			rescue StandardError
 				if(@unit.nil? && other.unit.nil?)
 					0
 				elsif(@unit.nil?)

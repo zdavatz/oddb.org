@@ -33,6 +33,25 @@ class SearchBar < HtmlGrid::InputText
 		self.onsubmit = script
 	end
 end
+class SelectSearchForm < View::Form
+	COMPONENTS = {
+		[0,0]	=>	:search_query,
+		[0,0,0]	=>	:search_type,
+	}
+	SYMBOL_MAP = {
+		:search_query	=>	View::SearchBar,	
+	}
+	CSS_CLASS = 'right'
+	LEGACY_INTERFACE = false
+	EVENT = :search
+	FORM_METHOD = 'GET'
+	def search_type(model)
+		select = HtmlGrid::Select.new(:search_type, model, @session, self)
+		select.set_attribute('onChange', 'this.form.onsubmit();')
+		select.selected = @session.persistent_user_input(:search_type)
+		select
+	end
+end
 class SearchForm < View::Form
 	COMPONENTS = {
 		[0,0]	=>	:search_query,

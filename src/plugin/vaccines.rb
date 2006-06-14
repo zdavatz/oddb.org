@@ -13,26 +13,26 @@ require 'parseexcel/parseexcel'
 module ODDB
 	class VaccineIndexWriter < NullWriter
 		attr_reader :path
+    def initialize(*args)
+      super
+			@vaccine_section = true
+    end
 		def new_linkhandler(link)
-			if(link)
-				if((name = link.attribute('name')) && name == 'Impfstoff')
-					@vaccine_section = true
-				end
-				if(@vaccine_section && (href = link.attribute('href')) \
-					 && /\/files\/pdf\/B.*\.xls/.match(href))
-					@path = href
-					@vaccine_section = false
-				end
+      if(link && @vaccine_section && (href = link.attribute('href')) \
+				 && /.*\.xls$/.match(href))
+        @path = href
+        @vaccine_section = false
 			end
 		end
 	end
 	class VaccinePlugin	< Plugin
 		SWISSMEDIC_SERVER = 'www.swissmedic.ch'
-		INDEX_PATH = '/de/fach/overall.asp?theme=0.00085.00003&theme_id=939'
+		INDEX_PATH = '/html/content/Impfstoffe-d.html'
 		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
 		DOSE_PATTERN  = /(\d+(?:[,.]\d+)?)\s*((?:\/\d+)|[^\s\d]*)?/
 		ENDMULTI_PATTERN = /\d+\s*Stk$/
 		MULTI_PATTERN = /(\d+\s+)\b(Fl|Fertigspr)\b/
+		XLS_PATH = '/files/pdf/B3.1.35-d.xls'
 		SIZE_PATTERN  = /(?:(?:(\d+(?:[.,]\d+)?)\s*x\s*)?(\d+(?:[.,]\d+)?))?\s*([^\d\s]*)$/
 		class ParsedRegistration
 			attr_accessor :iksnr, :indication, :company, :ikscat
@@ -131,8 +131,8 @@ module ODDB
 			@deactivated = []
 			@latest_path = File.join(ARCHIVE_PATH, 'xls', 'vaccines-latest.xls')
 		end
-		def update
-			if(path = get_latest_file)
+		def update(manual_download=nil)
+			if(path = (manual_download || get_latest_file))
 				update_registrations(registrations_from_xls(path))
 				FileUtils.cp(path, @latest_path) 
 			end
@@ -145,53 +145,69 @@ module ODDB
 			writer.path
 		end
 		def get_latest_file
-			if(index = http_body(SWISSMEDIC_SERVER, INDEX_PATH))
-				path = extract_latest_filepath(index)
-				if(download = http_body(SWISSMEDIC_SERVER, path))
-					latest = ''
-					if(File.exist?(@latest_path))
-						latest = File.read(@latest_path)
-					end
-					if(download != latest)
-						target = File.join(ARCHIVE_PATH, 'xls',
-															 Date.today.strftime('vaccines-%Y.%m.%d.xls'))
-						File.open(target, 'w') { |fh| fh.puts(download) }
-						target
-					end
+			if((index = http_body(SWISSMEDIC_SERVER, INDEX_PATH)) \
+				 && (path = extract_latest_filepath(index)) \
+				 && (download = http_body(SWISSMEDIC_SERVER, path)))
+=begin
+			if(download = http_body(SWISSMEDIC_SERVER, XLS_PATH))
+=end
+				latest = ''
+				if(File.exist?(@latest_path))
+					latest = File.read(@latest_path)
+				end
+				if(download != latest)
+					target = File.join(ARCHIVE_PATH, 'xls',
+														 @@today.strftime('vaccines-%Y.%m.%d.xls'))
+					File.open(target, 'w') { |fh| fh.puts(download) }
+					target
 				end
 			end
 		end
-		def get_packages(reg)
+		def get_packages(reg, active=nil)
 			criteria = { :ean => "7680" + reg.iksnr }
 			template = { :info => [0,1] }
 			seqs = reg.sequences
-			results = MEDDATA_SERVER.search(criteria, :refdata)
-			if(results.size == 1 && seqs.size == 1)
-				detail = MEDDATA_SERVER.detail(results.first, template)
-				pack = parse_refdata_detail(detail[:info])
-				seqs.first.packages.store(pack.ikscd, pack)
-			else
-				results.each { |result|
-					detail = MEDDATA_SERVER.detail(result, template)
+			MEDDATA_SERVER.session(:refdata) { |session|
+				results = session.search(criteria)
+				if(results.size == 1 && seqs.size == 1)
+					result = results.first
+					detail = session.detail(result, template)
 					pack = parse_refdata_detail(detail[:info])
-					sequence = nil
-					sequence = seqs.select { |seq|
-						(sd = seq.dose) && (pd = pack.dose) \
-							&& (pd == sd || (sd.unit.to_s.empty? && sd.qty == pd.qty))
-					}.first
-					sequence ||= seqs.select { |seq|
-						seq.dose.nil?
-					}.first
-					if(sequence.nil?) 
-						sequence = seqs.first.dup
-						reg.sequences.push(sequence)
-					end
-					if(sequence.dose.nil?)
-						sequence.dose = pack.dose
-					end
-					sequence.packages.store(pack.ikscd, pack)
-				}
-			end
+					seqs.first.packages.store(pack.ikscd, pack)
+				else
+					results.each { |result|
+						detail = session.detail(result, template)
+						pack = parse_refdata_detail(detail[:info])
+						sequence = nil
+						activeseq = nil
+						if(active && (activepac = active.package(pack.ikscd)) \
+							&& (activeseq = activepac.sequence))
+							sequence = seqs.find { |seq|
+								seq.seqnr == activeseq.seqnr
+							}
+						end
+						sequence ||= seqs.find { |seq|
+							(sd = seq.dose) && (pd = pack.dose) \
+								&& (pd == sd || (sd.unit.to_s.empty? && sd.qty == pd.qty))
+						}
+						## assign a new sequence since none could be identified
+						sequence ||= seqs.find { |seq|
+							seq.packages.empty? || seq.dose.nil?
+						}
+						if(sequence.nil?) 
+							sequence = seqs.first.dup
+							reg.sequences.push(sequence)
+						end
+						if(activeseq && sequence.seqnr.nil?)
+							sequence.seqnr = activeseq.seqnr
+						end
+						if(sequence.dose.nil?)
+							sequence.dose = pack.dose
+						end
+						sequence.packages.store(pack.ikscd, pack)
+					}
+				end
+			}
 		end
 		def parse_refdata_detail(str)
 			ean = str[0,13]
@@ -258,7 +274,7 @@ module ODDB
 			workbook = Spreadsheet::ParseExcel.parse(path)
 			registrations = parse_worksheet(workbook.worksheet(0))
 			registrations.each_value { |reg|
-				get_packages(reg)
+				get_packages(reg, @app.registration(reg.iksnr))
 			}
 		end
 		def report
@@ -339,11 +355,10 @@ module ODDB
 				registrations.each_value { |reg|
 					update_registration(reg)
 				}
-				today = Date.today
 				@app.registrations.each_value { |reg|
 					if(reg.generic_type == :vaccine && !@active.include?(reg.iksnr))
 						@deactivated.push(reg.iksnr)
-						@app.update(reg.pointer, {:inactive_date => today}, :swissmedic)
+						@app.update(reg.pointer, {:inactive_date => @@today}, :swissmedic)
 					end
 				}
 			}

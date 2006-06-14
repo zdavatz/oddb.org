@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::IncompletePackage -- oddb -- 23.06.2003 -- hwyss@ywesee.com 
 
+require 'view/drugs/privatetemplate'
 require 'view/admin/package'
 
 module ODDB
@@ -66,7 +67,7 @@ class IncompletePackageComposite < View::Admin::PackageComposite
 		[0,2]	=>	View::Admin::IncompletePackageInnerComposite,
 	}
 end
-class IncompletePackage < View::PrivateTemplate
+class IncompletePackage < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::IncompletePackageComposite
 	SNAPBACK_EVENT = :incomplete_registrations
 end

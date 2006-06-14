@@ -5,7 +5,7 @@ require 'plugin/invoicer'
 
 module ODDB
 	class DownloadInvoicer < Invoicer
-		def run(month = (Date.today - 1))
+		def run(month = (@@today - 1))
 			items = recent_items(month)
 			unless(items.empty?)
 				payable_items = filter_paid(items)

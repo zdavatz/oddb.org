@@ -39,6 +39,14 @@ class CsvResult < HtmlGrid::Component
 			narc.casrn
 		}.compact.join(',')
 	end
+  def c_type(pack)
+    @lookandfeel.lookup("square_#{pack.complementary_type}")
+  end
+	def deductible(pack)
+    if(pack.sl_entry)
+      @lookandfeel.lookup(pack.deductible || :deductible_g)
+    end
+	end
 	def expiration_date(pack)
 		formatted_date(pack, :expiration_date)
 	end
@@ -74,9 +82,6 @@ class CsvResult < HtmlGrid::Component
 			@lookandfeel.format_date(date)
 		end
 	end
-	def is_generic(pack)
-		boolean(pack.generic_type == :generic && !pack.comparables.empty?)
-	end
 	def limitation(pack)
 		if(sl = pack.sl_entry)
 			boolean(sl.limitation)
@@ -98,6 +103,9 @@ class CsvResult < HtmlGrid::Component
 	def numerical_size(pack)
 		pack.comparable_size.qty
 	end
+  def out_of_trade(pack)
+		boolean(!pack.public?)
+  end
 	def price_exfactory(pack)
 		@lookandfeel.format_price(pack.price_exfactory.to_i)
 	end
@@ -112,6 +120,14 @@ class CsvResult < HtmlGrid::Component
 	end
 	def sl_entry(pack)
 		boolean(pack.sl_entry)
+	end
+	def generic_type(pack)
+    case pack.sl_generic_type || pack.generic_type
+    when :original
+      'O'
+    when :generic
+      'G'
+    end
 	end
 	def to_html(context)
 		to_csv(CSV_KEYS)

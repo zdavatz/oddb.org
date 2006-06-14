@@ -17,8 +17,8 @@ module ODDB
 		LOG_PATH = File.expand_path('../../log/fachinfo.txt', 
 			File.dirname(__FILE__))
 		PARSER = DRbObject.new(nil, FIPARSE_URI)
-		NEWS_PATHS = ['/deutsch/index.html', 
-			#'/deutsch/news/docunews/docunews.html'
+		NEWS_PATHS = [
+			'/content/page_1.aspx',
 		]
 		RECIPIENTS = [ ]
 		def initialize(app)

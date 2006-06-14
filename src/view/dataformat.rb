@@ -98,9 +98,7 @@ module ODDB
 					}
 					display = prices.delete(@session.currency)
 					span = HtmlGrid::Span.new(model, @session, self)
-					price = HtmlGrid::NamedComponent.new(key, model, @session, self)
-					price.value = display
-					span.value = price
+					span.value = display
 					title = prices.sort.collect { |pair| pair.join(': ') }.join(' / ')
 					span.set_attribute('title', title)
 					span

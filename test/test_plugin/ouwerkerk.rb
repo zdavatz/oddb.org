@@ -43,9 +43,9 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 		end
 	end
 	class StubCompany
-		attr_reader :name, :url
+		attr_reader :name, :powerlink
 		def initialize(name, url)
-			@name, @url = name, url
+			@name, @powerlink = name, url
 		end
 	end
 	class StubLogGroup

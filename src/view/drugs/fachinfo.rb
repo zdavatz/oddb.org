@@ -1,10 +1,9 @@
 #!/usr/bin/env ruby
 # View::Drugs::Fachinfo -- oddb -- 17.09.2003 -- rwaltert@ywesee.com
 
-require 'view/popuptemplate'
+require 'view/drugs/privatetemplate'
 require 'view/chapter'
 require 'view/printtemplate'
-require 'view/privatetemplate'
 require 'view/additional_information'
 require 'view/changelog'
 
@@ -35,7 +34,11 @@ class FiChapterChooserLink < HtmlGrid::Link
 			:pointer, @model.pointer,
 		]
 		unless(@session.user_input(:chapter) == @name.to_s)
-			self.href = @lookandfeel._event_url(:resolve, args)
+			if(@model.pointer.skeleton == [:create])
+				self.href = @lookandfeel.event_url(:self, {:chapter => @name})
+			else
+				self.href = @lookandfeel._event_url(:resolve, args)
+			end
 		end
 	end
 end
@@ -49,7 +52,7 @@ class FiChapterChooser < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	:full_text,
 		[1,0]	=>	:ddd,
-		[2,0]	=>	:print,
+		#[2,0]	=>	:print,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,2]	=>	'chapter-tab',
@@ -63,9 +66,13 @@ class FiChapterChooser < HtmlGrid::Composite
 	}
 	def init
 		xwidth = self::class::XWIDTH
-		if(@session.state.allowed?)
-			components.store([2,0], :print_edit)
-			components.store([xwidth-1,0], :changelog)
+		unless(@model.pointer.skeleton == [:create])
+			if(@session.state.allowed?)
+				components.store([2,0], :print_edit)
+				components.store([xwidth-1,0], :changelog)
+			else
+				components.store([2,0], :print)
+			end
 		end
 		document = @model.send(@session.language)
 		names = display_names(document)
@@ -103,12 +110,16 @@ class FiChapterChooser < HtmlGrid::Composite
 		document.chapter_names
 	end
 	def full_text(model, session)
-		link = HtmlGrid::Link.new(:fachinfo_all, model, session, self)
-		link.set_attribute('title', @lookandfeel.lookup(:fachinfo_all_title))
-		unless(@session.user_input(:chapter).nil?)
-			link.href = @lookandfeel._event_url(:resolve, {:pointer => model.pointer})
+		if(@model.pointer.skeleton == [:create])
+			@lookandfeel.lookup(:fachinfo_all)
+		else
+			link = HtmlGrid::Link.new(:fachinfo_all, model, session, self)
+			link.set_attribute('title', @lookandfeel.lookup(:fachinfo_all_title))
+			unless(@session.user_input(:chapter).nil?)
+				link.href = @lookandfeel._event_url(:resolve, {:pointer => model.pointer})
+			end
+			link
 		end
-		link
 	end
 end
 class FachinfoInnerComposite < HtmlGrid::DivComposite
@@ -179,7 +190,6 @@ class FachinfoPrintComposite < HtmlGrid::DivComposite #View::Drugs::FachinfoPrev
 	}
 end
 class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
-	CHAPTER_CLASS = View::Chapter
 	CHOOSER_CLASS = View::Drugs::FiChapterChooser
 	COMPONENTS = {
 		[0,0]	=>	:fachinfo_name,
@@ -201,16 +211,18 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 			klass.new(model, session, self)
 		end
 	end
+	def chapter_view(chapter, document)
+		View::Chapter.new(chapter, document, @session, self)
+	end
 	def document(model, session)
 		document = model.send(session.language)
 		chapter = @session.user_input(:chapter)
 		if(chapter == 'ddd')
-				View::Drugs::DDDTree.new(model.atc_class, session, self)
+			View::Drugs::DDDTree.new(model.atc_class, session, self)
 		elsif(chapter == 'changelog')
 		  View::ChangeLog.new(model.change_log, session, self)
 		elsif(chapter != nil)
-			self.class.const_get(:CHAPTER_CLASS).new(chapter, 
-				document, session, self)
+			chapter_view(chapter, document)
 		else
 			View::Drugs::FachinfoInnerComposite.new(document, session, self)
 		end
@@ -220,11 +232,11 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 		super(model, session)
 	end
 end
-class Fachinfo < View::PrivateTemplate
+class Fachinfo < PrivateTemplate
 	CONTENT = View::Drugs::FachinfoComposite
 	SNAPBACK_EVENT = :result
 end
-class FachinfoPreview < View::PrivateTemplate
+class FachinfoPreview < PrivateTemplate
 	CONTENT = View::Drugs::FachinfoPreviewComposite
 end
 class FachinfoPrint < View::PrintTemplate
@@ -238,14 +250,35 @@ class CompanyFachinfoPrint < FachinfoPrint
 end
 class EditFiChapterChooser < FiChapterChooser
 	def display_names(document)
-		document.class.const_get(:CHAPTERS)
+		document.chapters
 	end
 end
 class RootFachinfoComposite < View::Drugs::FachinfoComposite
-	CHAPTER_CLASS = View::EditChapterForm
 	CHOOSER_CLASS = EditFiChapterChooser
+	def init
+		unless(@model.company.invoiceable?)
+			components.update({
+				[0,2], :invoiceability,
+				[0,3], :document,
+			})
+			css_map.store([0,3], 'list')
+		end
+		super
+	end
+	def chapter_view(chapter, document)
+		if(@model.company.invoiceable?)
+			View::EditChapterForm.new(chapter, document, @session, self)
+		elsif(@model.pointer.skeleton == [:create])
+			# don't show anything
+		else
+			super
+		end
+	end
+	def invoiceability(model, session=@session)
+		PointerLink.new(:e_fi_not_invoiceable, model.company, @session, self)
+	end
 end
-class RootFachinfo < View::PrivateTemplate
+class RootFachinfo < PrivateTemplate
 	CONTENT = View::Drugs::RootFachinfoComposite
 	SNAPBACK_EVENT = :result
 	def other_html_headers(context)

@@ -6,6 +6,7 @@ require 'odba/index_definition'
 require 'custom/lookandfeelbase'
 require 'util/failsafe'
 require 'util/oddbconfig'
+require 'util/searchterms'
 require 'util/session'
 require 'util/updater'
 require 'util/exporter'
@@ -25,6 +26,23 @@ require 'fileutils'
 require 'yaml'
 require 'model/migel/group'
 require 'model/analysis/group'
+
+class Object
+	unless(defined?(@@date_arithmetic_optimization))
+		@@date_arithmetic_optimization = Thread.new {
+			loop {
+				@@today = Date.today
+				@@one_year_ago = @@today << 12
+				@@two_years_ago = @@today << 24
+				tomorrow = Time.local(@@today.year, @@today.month, @@today.day)
+				sleep([tomorrow - Time.now, 3600].max)
+			}	
+		}
+		def today
+			@@today
+		end
+	end
+end
 
 class OddbPrevalence
 	include ODDB::Failsafe
@@ -684,7 +702,7 @@ class OddbPrevalence
 			@bean_counter.kill
 		end
 		@bean_counter = Thread.new {
-			Thread.current.priority = -5
+			#Thread.current.priority = -5
 			@atc_ddd_count = count_atc_ddd()
 			@doctor_count = @doctors.size
 			@company_count = @companies.size
@@ -739,7 +757,7 @@ class OddbPrevalence
 		# 8. sequence
 		result = ODDB::SearchResult.new
 		result.exact = true
-		result.query = query
+		result.search_query = query
 		# atcless
 		if(query == 'atcless')
 			atc = ODDB::AtcClass.new('n.n.')
@@ -748,7 +766,7 @@ class OddbPrevalence
 				alias :active_packages :packages
 			}
 			result.atc_classes = [atc]
-			result.type = :atcless
+			result.search_type = :atcless
 			return result
 		# iksnr or ean13
 		elsif(match = /(?:\d{4})?(\d{5})(?:\d{4})?/.match(query))
@@ -757,38 +775,38 @@ class OddbPrevalence
 				atc = ODDB::AtcClass.new('n.n.')
 				atc.sequences = reg.sequences.values
 				result.atc_classes = [atc]
-				result.type = :iksnr
+				result.search_type = :iksnr
 				return result
 			end
 		end
 		key = query.to_s.downcase
 		# atc-code
 		atcs = search_by_atc(key)
-		result.type = :atc
+		result.search_type = :atc
 		# exact word in sequence name
 		if(atcs.empty?)
 			atcs = search_by_sequence(key, result)
-			result.type = :sequence
+			result.search_type = :sequence
 		end
 		# company-name
 		if(atcs.empty?)
 			atcs = search_by_company(key)
-			result.type = :company
+			result.search_type = :company
 		end
 		# substance
 		if(atcs.empty?)
 			atcs = search_by_substance(key)
-			result.type = :substance
+			result.search_type = :substance
 		end
 		# indication
 		if(atcs.empty?)
 			atcs = search_by_indication(key, lang, result)
-			result.type = :indication
+			result.search_type = :indication
 		end
 		# sequence
 		if(atcs.empty?)
 			atcs = search_by_sequence(key)
-			result.type = :sequence
+			result.search_type = :sequence
 		end
 		result.atc_classes = atcs
 		result
@@ -828,14 +846,14 @@ class OddbPrevalence
 	end
 	def search_exact_company(query)
 		result = ODDB::SearchResult.new
-		result.type = :company
+		result.search_type = :company
 		result.atc_classes = search_by_company(query)
 		result
 	end
 	def search_exact_indication(query, lang)
 		result = ODDB::SearchResult.new
 		result.exact = true
-		result.type = :indication
+		result.search_type = :indication
 		result.atc_classes = search_by_indication(query, lang, result)
 		result
 	end
@@ -893,7 +911,7 @@ class OddbPrevalence
 			new_atc.sequences.push(seq)
 		}
 		result = ODDB::SearchResult.new
-		result.type = type
+		result.search_type = type
 		result.atc_classes = atc_classes.values
 		result
 	end
@@ -952,8 +970,6 @@ class OddbPrevalence
 	def substance(key)
 		if(key.to_i.to_s == key.to_s)
 			@substances[key.to_i]
-		elsif(substance = @substances[key.to_s.downcase])
-			substance
 		elsif(substance = search_single_substance(key))
 			substance
 		else
@@ -984,7 +1000,7 @@ class OddbPrevalence
 	def updated(item)
 		case item
 		when ODDB::Registration, ODDB::Sequence, ODDB::Package, ODDB::AtcClass
-			@last_medication_update = Date.today
+			@last_medication_update = @@today
 			odba_isolated_store
 		when ODDB::LimitationText, ODDB::AtcClass::DDD
 		when ODDB::Substance
@@ -1157,6 +1173,36 @@ module ODDB
 		def delete(pointer)
 			@system.execute_command(DeleteCommand.new(pointer))
 		end
+    def inject_poweruser(email, pass, days)
+      user_pointer = Persistence::Pointer.new(:poweruser)
+      user_data = {
+        :unique_email => email,
+        :pass_hash    => Digest::MD5.hexdigest(pass),
+      }
+      invoice_pointer = Persistence::Pointer.new(:invoice)
+      time = Time.now
+      expiry = InvoiceItem.expiry_time(days, time)
+      invoice_data = { :currency => State::PayPal::Checkout::CURRENCY }
+      item_data = {
+        :duration     => days,
+        :expiry_time  => expiry,
+        :total_netto  => State::Limit.price(days.to_i),
+        :quantity     => days,
+        :text         => 'unlimited access',
+        :time         => time,
+        :type         => :poweruser,
+        :vat_rate     => VAT_RATE,
+      }
+      ODBA.transaction {
+        user = @system.update(user_pointer.creator, user_data, :admin)
+        invoice = @system.update(invoice_pointer.creator, invoice_data, :admin)
+        item_pointer = invoice.pointer + [:item]
+        @system.update(item_pointer.creator, item_data, :admin)
+        user.add_invoice(invoice)
+        invoice.payment_received!
+        invoice.odba_isolated_store
+      }
+    end
 		def merge_companies(source_pointer, target_pointer)
 			command = MergeCommand.new(source_pointer, target_pointer)
 			@system.execute_command(command)
@@ -1177,7 +1223,7 @@ module ODDB
 			@system.update(pointer, values, origin)
 		end
 		#####################################################
-		def _admin(src, result, priority=-1)
+		def _admin(src, result, priority=0)
 			t = Thread.new {
 				Thread.current.abort_on_exception = false
 				result << failsafe {
@@ -1215,31 +1261,31 @@ module ODDB
 		end
 		def run_exporter
 			Thread.new {
-				Thread.current.priority=-10
+				#Thread.current.priority=-10
 				Thread.current.abort_on_exception = true
 				today = (EXPORT_HOUR > Time.now.hour) ? \
-					Date.today : Date.today.next
+					@@today : @@today.next
 				loop {
 					next_run = Time.local(today.year, today.month, today.day, 
 						EXPORT_HOUR)
 					sleep(next_run - Time.now)
 					Exporter.new(self).run
 					GC.start
-					today = Date.today.next
+					today = @@today.next
 				}
 			}
 		end
 		def run_exporter_notify
 			Thread.new {
-				Thread.current.priority=-10
+				#Thread.current.priority=-10
 				Thread.current.abort_on_exception = true
-				today = (10 > Time.now.hour) ? Date.today : Date.today.next
+				today = (10 > Time.now.hour) ? @@today : @@today.next
 				loop {
 					next_run = Time.local(today.year, today.month, today.day, 10)
 					sleep(next_run - Time.now)
 					Exporter.new(self).mail_notification_stats
 					GC.start
-					today = Date.today.next
+					today = @@today.next
 				}
 			}
 		end
@@ -1247,10 +1293,10 @@ module ODDB
 			update_hour = rand(24)
 			update_min = rand(60)
 			Thread.new {
-				Thread.current.priority=-5
+				#Thread.current.priority=-5
 				Thread.current.abort_on_exception = true
 				today = (update_hour > Time.now.hour) ? \
-					Date.today : Date.today.next
+					Date.today : @@today.next
 				loop {
 					next_run = Time.local(today.year, today.month, today.day, 
 						update_hour, update_min)
@@ -1260,7 +1306,7 @@ module ODDB
 					Updater.new(self).run
 					@system.recount
 					GC.start
-					today = Date.today.next
+					today = @@today.next
 					update_hour = rand(24)
 					update_min = rand(60)
 				}

@@ -4,7 +4,7 @@
 require 'htmlgrid/composite'
 require 'htmlgrid/datevalue'
 require 'htmlgrid/list'
-require 'view/popuptemplate'
+require 'view/drugs/privatetemplate'
 require 'view/resultcolors'
 require 'view/resultfoot'
 require 'view/dataformat'
@@ -56,7 +56,7 @@ class CompareList < HtmlGrid::List
 		:registration_date	=>	HtmlGrid::DateValue,
 	}
 	def init
-		if(@lookandfeel.enabled?(:deductible, false))
+		if(@lookandfeel.result_list_components.has_value?(:deductible))
 			components.update({
 				[7,0]	=>	:deductible,
 				[8,0]	=>	:ikscat,
@@ -69,6 +69,12 @@ class CompareList < HtmlGrid::List
 				[7,0]	=>	'th-r',
 				[8,0]	=>	'th',
 			})
+		end
+		if(@lookandfeel.result_list_components.has_value?(:ddd_price))
+			ikscat_key = components.index(:ikscat)
+			components.store(ikscat_key, :ddd_price)
+			css_map.store(ikscat_key, 'result-r')
+			css_head_map.store(ikscat_key, 'th-r')
 		end
 		super
 	end
@@ -107,10 +113,10 @@ class CompareComposite < HtmlGrid::Composite
 		[0,1] => View::ResultFoot,
 	}
 end
-class Compare < View::PrivateTemplate
+class Compare < PrivateTemplate
 	include View::SponsorMethods
-	SNAPBACK_EVENT = :result
 	CONTENT = CompareComposite
+	SNAPBACK_EVENT = :result
 end
 class EmptyCompareComposite < HtmlGrid::Composite
 	COMPONENTS = {
@@ -140,7 +146,7 @@ class EmptyCompareComposite < HtmlGrid::Composite
 		link
 	end
 end
-class EmptyCompare < View::PrivateTemplate
+class EmptyCompare < PrivateTemplate
 	CONTENT = View::Drugs::EmptyCompareComposite
 	SNAPBACK_EVENT = :result
 end

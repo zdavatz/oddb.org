@@ -56,9 +56,12 @@ class FachinfoConfirm < State::Admin::Global
 				return self
 			end
 			fachinfo = @session.app.update(pointer, values, unique_email)
+			fachinfo.add_change_log_item(unique_email, 'uploaded', @language)
+			@session.app.update(fachinfo.pointer, {})
 			@valid_iksnrs.each { |iksnr|
 				@session.app.replace_fachinfo(iksnr, fachinfo.pointer)
 			}
+			store_slate
 			@previous.previous
 		end
 	end
@@ -75,6 +78,34 @@ class FachinfoConfirm < State::Admin::Global
 			end
 		}
 		nil
+	end
+	def store_slate
+		if(@session.user.is_a?(RootUser))
+			store_slate_item(Time.now, :processing)
+		end
+		store_slate_item(Time.now, :annual_fee)
+	end
+	def store_slate_item(time, type)
+		slate_pointer = Persistence::Pointer.new([:slate, :fachinfo])
+		@session.app.create(slate_pointer)
+		reg = @model.registration
+		item_pointer = slate_pointer + :item
+		expiry_time = InvoiceItem.expiry_time(FI_UPLOAD_DURATION, time)
+		unit = @session.lookandfeel.lookup("fi_upload_#{type}")
+		values = {
+			:data					=>	{:name => reg.name_base},
+			:duration			=>	FI_UPLOAD_DURATION,
+			:expiry_time	=>	expiry_time,
+			:item_pointer =>	reg.pointer,
+			:price				=>	FI_UPLOAD_PRICES[type],
+			:text					=>	reg.iksnr,
+			:time					=>	time,
+			:type					=>	type,
+			:unit					=>	unit,
+			:user_pointer	=>	@session.user.pointer,
+			:vat_rate			=>	VAT_RATE, 
+		} 
+		@session.app.update(item_pointer.creator, values, unique_email)
 	end
 	def validate_iksnrs
 		@valid_iksnrs = [@model.registration.iksnr]

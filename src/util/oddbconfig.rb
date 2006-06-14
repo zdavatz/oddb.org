@@ -16,6 +16,8 @@ module ODDB
 	EXPORT_URI = "druby://localhost:10005"
 	MEDDATA_URI = "druby://localhost:10006"
 	ANALYSISPARSE_URI = "druby://localhost:10006"
+	SWISSREG_URI = "druby://localhost:10007"
+	COMARKETING_URI = "druby://localhost:10008"
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
 	PAYPAL_SERVER = 'www.paypal.com'
 	PAYPAL_RECEIVER = 'zdavatz@ywesee.com'
@@ -78,6 +80,7 @@ module ODDB
 		:annual_fee => 350,
 		:processing => 150,
 	}
+	FI_UPLOAD_DURATION = 365
 	PI_UPLOAD_DURATION = 365
 	PI_UPLOAD_PRICES = {
 		:activation => 1000,

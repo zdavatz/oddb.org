@@ -136,17 +136,23 @@ module ODDB
 		include InvoiceObserver
 		SESSION_WEIGHT = 4
 		VIRAL_MODULE = State::Admin::PowerUser
+		def email
+			@unique_email
+		end
 		def valid?
 			self.invoices.any? { |invoice|
 				invoice.payment_received? && !invoice.expired?
 			}
 		end
-		def email
-			@unique_email
-		end
 	end
 	class PowerLinkUser < User
 		VIRAL_MODULE = State::Admin::PowerLinkUser
+		def allowed?(obj)
+			case obj.odba_instance
+			when Registration, Sequence, Package, ActiveAgent, SlEntry
+				true
+			end
+		end
 	end
 	module UserObserver
 		attr_reader :user

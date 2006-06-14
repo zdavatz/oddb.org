@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::AssignPatinfo -- oddb -- 19.10.2005 -- hwyss@ywesee.com
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/admin/assign_deprived_sequence'
 require 'htmlgrid/errormessage'
 
@@ -55,7 +55,7 @@ class AssignPatinfoComposite < HtmlGrid::Composite
 		@lookandfeel.lookup(:assign_patinfo_explain, model.name_base)
 	end
 end
-class AssignPatinfo < PrivateTemplate
+class AssignPatinfo < View::Drugs::PrivateTemplate
 	SNAPBACK_EVENT = :result
 	CONTENT = AssignPatinfoComposite
 end

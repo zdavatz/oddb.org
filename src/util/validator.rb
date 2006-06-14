@@ -7,6 +7,7 @@ require 'cgi'
 
 module ODDB
 	class Validator < SBSM::Validator
+		alias :partner :flavor
 		alias :set_pass_2 :pass
 		alias :unique_email :email
 		alias :notify_sender :email
@@ -15,19 +16,26 @@ module ODDB
 		alias :competition_email :email
 		BOOLEAN = [
 			:cl_status,  :download, :experience, :recommend, :impression,
-			:invoice_htmlinfos, :helps, :show_email, :export_flag,
-			:disable_autoinvoice, :refdata_override, :lppv,
+			:invoice_htmlinfos, :helps, :show_email, :export_flag, :renewal_flag,
+			:disable_autoinvoice, :refdata_override, :lppv, :vaccine, :parallel_import
 		]
 		DATES = [
+			:base_patent_date, 
+			:deletion_date,
+			:expiration_date,
+			:expiry_date,
 			:inactive_date,
 			:index_invoice_date,
 			:introduction_date,
+			:issue_date,
 			:lookandfeel_invoice_date,
+			:market_date,
+			:patented_until,
+			:pref_invoice_date,
+			:protection_date,
+			:publication_date,
 			:registration_date,
 			:revision_date,
-			:market_date,
-			:expiration_date,
-			:pref_invoice_date,
 			:sponsor_until,
 		]
 		ENUMS = {
@@ -40,16 +48,17 @@ module ODDB
 				'NE', 'NW', 'OW', 'SG', 'SH', 'SO', 'SZ', 'TG',
 				'TI', 'UR', 'VD', 'VS', 'ZG', 'ZH'],
 			:cl_status		=>	['false', 'true'],
-			:complementary_type =>	[nil, 'anthroposophy', 'homeopathy', 
-				'phytotherapy', ],
+			:complementary_type =>	[nil, 'complementary', 'anthroposophy',
+				'homeopathy', 'phytotherapy', ],
 			:compression	=>	[ 'compr_zip', 'compr_gz' ],
 			:currency			=>  ['CHF', 'EUR', 'USD'],
 			:deductible		=>	[nil, 'deductible_g', 'deductible_o'],
+			:deductible_m	=>	[nil, 'deductible_g', 'deductible_o'],
 			:search_type	=>	['st_oddb', 'st_sequence', 
 				'st_substance', 'st_company', 'st_indication',],
 			:fi_status		=>	['false', 'true'],
-			:generic_type =>	[nil, 'generic', 'original', 'comarketing', 
-				'complementary', 'vaccine' ],
+			:generic_type =>	[nil, 'generic', 'original'], 
+				# 'comarketing', 'complementary', 'vaccine' ],
 			:limitation		=>	['true', 'false'],
 			:payment_method => ['pm_invoice', 'pm_paypal'],
 			:patinfo			=>	['delete', 'keep'],
@@ -60,6 +69,7 @@ module ODDB
 			:add_to_interaction_basket,
 			:addresses,
 			:ajax,
+			:ajax_ddd_price,
 			:ajax_swissmedic_cat,
 			:assign,
 			:assign_deprived_sequence,
@@ -120,14 +130,17 @@ module ODDB
 			:narcotics,
 			:new_active_agent,
 			:new_company,
+			:new_fachinfo,
 			:new_galenic_form,
 			:new_galenic_group,
 			:new_indication,
 			:new_item,
 			:new_package,
+			:new_patent,
 			:new_registration,
 			:new_sequence,
 			:new_substance,
+      :new_user,
 			:notify,
 			:notify_send,
 			:orphaned_fachinfos,
@@ -174,6 +187,8 @@ module ODDB
 			:update,
 			:update_bsv,
 			:update_incomplete,
+      :user,
+      :users,
 			:vaccines,
 			:vcard,
 			:wait,
@@ -186,6 +201,7 @@ module ODDB
 			:patinfo_upload,
 		]
 		NUMERIC = [
+			:base_patent_srid,
 			:change_flags,
 			:days,
 			:fi_quantity,
@@ -205,6 +221,7 @@ module ODDB
 			:pi_quantity,
 			:price_exfactory,
 			:price_public,
+			:srid,
 			:year,
 		]
 		STRINGS = [
@@ -214,6 +231,7 @@ module ODDB
 			:atc_descr,
 			:bsv_url,
 			:business_unit,
+			:certificate_number,
 			:challenge,
 			:chapter,
 			:chemical_substance,
@@ -237,6 +255,7 @@ module ODDB
 			:galenic_form,
 			:heading,
 			:html_chapter,
+			:index_therapeuticus,
 			:indication,
 			:language_select,
 			:location,
@@ -364,7 +383,11 @@ module ODDB
 		end
 		def pointer(value)
 			begin
-				Persistence::Pointer.parse(value)
+				pointer = Persistence::Pointer.parse(value)
+        if(pointer.insecure?)
+          raise SBSM::InvalidDataError.new('e_insecure_pointer', :pointer, value)
+        end
+        pointer
 			rescue StandardError, ParseException
 				if(value[-1] != ?.)
 					value << "."

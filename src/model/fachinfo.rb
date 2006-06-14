@@ -30,6 +30,11 @@ module ODDB
 		def change_log
 			@change_log ||= []
 		end
+		def company
+			if(reg = @registrations.first)
+				reg.company
+			end
+		end
 		def company_name
 			if(reg = @registrations.first)
 				reg.company_name
@@ -90,9 +95,12 @@ end
 		def empty?
 		end
 		def chapter_names
-			self::class::CHAPTERS.select { |chapter|
+			chapters.select { |chapter|
 				respond_to?(chapter) && self.send(chapter)
 			}
+		end
+		def chapters
+			self::class::CHAPTERS
 		end
 		def each_chapter(&block)
 			chapter_names.each { |chap|

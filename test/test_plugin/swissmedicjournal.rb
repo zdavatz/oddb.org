@@ -134,6 +134,7 @@ module ODDB
 
 		def setup
 			@app = FlexMock.new
+			@app.mock_handle(:registration) {}
 			@plugin = ODDB::SwissmedicJournalPlugin.new(@app)
 		end
 		def test_update
@@ -156,7 +157,7 @@ module ODDB
 				:registration_date	=>	Date.new(2003,1,1),
 				:company						=>	:foobar_pointer,
 				:indication					=>	ind_pointer,
-				:export_flag				=>	nil,
+				:export_flag				=>	false,
 				:source							=>	nil,
 				:index_therapeuticus =>  nil,
 			}
@@ -190,7 +191,7 @@ module ODDB
 				:expiration_date=>	Date.new(2004,1,1),
 				:company				=>	:pointer,
 				:indication			=>	ind_pointer,
-				:export_flag		=>	nil,
+				:export_flag		=>	false,
 				:source					=>	nil,
 				:index_therapeuticus =>  nil,
 			}
@@ -225,9 +226,10 @@ module ODDB
 			reg.indication = nil
 			reg.last_update = nil
 			reg.iksnr = nil
+			reg.flags = []
 			expected = { 
 				:revision_date	=>	nil,
-				:export_flag		=>	nil,
+				:export_flag		=>	false,
 				:source					=>	nil,
 				:index_therapeuticus =>  nil,
 			}

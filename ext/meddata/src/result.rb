@@ -4,9 +4,8 @@
 module ODDB
 	module MedData
 		class Result
-			attr_reader :session, :values, :ctl
-			def initialize(session, values, ctl)
-				@session = session
+			attr_reader :values, :ctl
+			def initialize(values, ctl)
 				@values = values
 				@ctl = ctl
 			end

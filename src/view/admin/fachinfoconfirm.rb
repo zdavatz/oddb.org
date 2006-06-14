@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::FachinfoConfirm -- oddb -- 26.09.2003 -- rwaltert@ywesee.com
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'htmlgrid/select'
 require 'htmlgrid/errormessage'
 
@@ -64,7 +64,7 @@ class FachinfoConfirmComposite < HtmlGrid::Composite
 		[0,0]	=>	"th",
 	}
 end
-class FachinfoConfirm < View::PrivateTemplate
+class FachinfoConfirm < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::FachinfoConfirmComposite
 	SNAPBACK_EVENT = :result
 end

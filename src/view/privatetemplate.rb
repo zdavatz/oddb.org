@@ -8,30 +8,16 @@ require 'view/searchbar'
 
 module ODDB
 	module View
-		class SearchHead < View::Form
-			COMPONENTS = {
-				[0,0]		=>	:search_query,
-				[0,0,1]	=>	:submit,
-			}
-			CSS_CLASS = 'composite'
-			CSS_MAP = {
-				[0,0]	=>	'search',
-			}
-			EVENT = :search
-			FORM_METHOD = 'GET'
-			SYMBOL_MAP = {
-				:search_query	=>	View::SearchBar,
-			}
-		end
 		class PrivateTemplate < PublicTemplate
 			include View::Snapback
+			SEARCH_HEAD = View::SearchForm
 			def init
 				if(@lookandfeel.enabled?(:topfoot))
 					@components = {
 						[0,0]		=>	:topfoot,
 						[0,1]		=>	:head,
 						[0,2]		=>	View::PointerSteps,
-						[1,2]		=>	View::SearchHead,
+						[1,2]		=>	self.class::SEARCH_HEAD,
 						[0,3]		=>	:content,
 						[0,4]		=>	:foot,
 					}
@@ -45,7 +31,7 @@ module ODDB
 					@components = {
 						[0,0]		=>	:head,
 						[0,1]		=>	View::PointerSteps,
-						[1,1]		=>	View::SearchHead,
+						[1,1]		=>	self.class::SEARCH_HEAD,
 						[0,2]		=>	:content,
 						[0,3]		=>	:foot,
 					}

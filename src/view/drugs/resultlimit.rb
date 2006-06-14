@@ -40,7 +40,14 @@ class ResultLimitList < HtmlGrid::List
 		[10,0,3]=>	'list-r',
 	}
 	CSS_HEAD_MAP = {
-		[5,0,8] => 'th-r',
+		[5,0] => 'th-r',
+		[6,0] => 'th-r',
+		[7,0] => 'th-r',
+		[8,0] => 'th-r',
+		[9,0] => 'th-r',
+		[10,0] => 'th-r',
+		[11,0] => 'th-r',
+		[12,0] => 'th-r',
 	}
 	def compose_empty_list(offset)
 		count = @session.state.package_count.to_i

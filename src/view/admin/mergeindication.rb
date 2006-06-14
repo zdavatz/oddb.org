@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::MergeIndication -- oddb -- 07.07.2003 -- hwyss@ywesee.com 
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 
 module ODDB
 	module View
@@ -41,7 +41,7 @@ class MergeIndicationComposite < HtmlGrid::Composite
 		@lookandfeel.lookup(:merge_indication, @model.registration_count)
 	end
 end
-class MergeIndication < View::PrivateTemplate
+class MergeIndication < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::MergeIndicationComposite
 	SNAPBACK_EVENT = :indications
 end

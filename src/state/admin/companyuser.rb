@@ -4,6 +4,7 @@
 require 'state/admin/user'
 require 'state/companies/global'
 require 'state/admin/patinfo_stats'
+require 'state/admin/patent'
 
 module ODDB
 	module State
@@ -32,6 +33,7 @@ module CompanyUser
 	RESOLVE_STATES = {
 		[ :fachinfo ]									=>	State::Drugs::CompanyFachinfo,
 		[ :registration ]							=>	State::Admin::CompanyRegistration,
+		[ :registration, :patent ]		=>	State::Admin::CompanyPatent,
 		[ :registration, :sequence ]	=>	State::Admin::CompanySequence,
 		[ :registration,
 			:sequence, :active_agent ]	=>	State::Admin::CompanyActiveAgent,
@@ -40,6 +42,13 @@ module CompanyUser
 		[ :registration, :sequence,
 			:package, :sl_entry ]				=>	State::Admin::CompanySlEntry,
 	}	
+	def new_fachinfo
+		if((pointer = @session.user_input(:pointer)) \
+				&& (registration = pointer.resolve(@session)) \
+				&& allowed?(registration))
+			_new_fachinfo(registration)
+		end
+	end
 	def home_companies
 		klass = State::Companies::UserCompany
 		if(self.is_a?(klass))

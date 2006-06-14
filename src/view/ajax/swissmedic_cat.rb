@@ -10,6 +10,11 @@ class SwissmedicCat < HtmlGrid::Composite
 	COMPONENTS = {}
 	LEGACY_INTERFACE = false
 	DEFAULT_CLASS = HtmlGrid::Value
+	SYMBOL_MAP = {
+		:registration_date	=>	HtmlGrid::DateValue,
+		:revision_date			=>	HtmlGrid::DateValue,
+		:expiration_date		=>	HtmlGrid::DateValue,
+	}
 	def init
 		@components = {}
 		@css_map = {}
@@ -32,31 +37,80 @@ class SwissmedicCat < HtmlGrid::Composite
 			end
 			y += 1
 		end
+		if(gt = @model.sl_generic_type)
+			@components.store([0,y], "sl_#{gt}_short")
+			@components.store([1,y], "sl_#{gt}")
+			y += 1
+		end
+		if(@lookandfeel.result_list_components.has_value?(:deductible) \
+			 && (deductible = @model.deductible))
+			@components.store([0,y], :deductible_label)
+			@components.store([1,y], :deductible)
+			y += 1
+		end
 		if(@model.lppv)
 			@components.store([0,y], "lppv")
 			@components.store([1,y], :lppv_ajax)
 			y += 1
 		end
-		if(@model.sl_generic_type == :generic)
-			@components.store([0,y], "sl_generic_short")
-			@components.store([1,y], "sl_generic")
+		if(@model.registration_date)
+			@components.store([0,y], "registration_date")
+			@components.store([1,y], :registration_date)
+			y += 1
+		end
+		if(@model.revision_date)
+			@components.store([0,y], "revision_date")
+			@components.store([1,y], :revision_date)
+			y += 1
+		end
+		if(@model.expiration_date)
+			@components.store([0,y], "expiration_date")
+			@components.store([1,y], :expiration_date)
+			y += 1
+		end
+		if(@model.patent)
+			@components.store([0,y], "patented_until")
+			@components.store([1,y], :patent_protected)
 			y += 1
 		end
 		@css_map.store([1,0,1,y], 'list')
 		@css_map.store([0,0,1,y], 'bold top list')
-		puts @components.inspect
 	end
-	def sl_since(model)
-		sl = model.sl_entry
-		date = sl.introduction_date
-		@lookandfeel.lookup(:sl_since, 
-												@lookandfeel.format_date(date))
+	def deductible(model)
+		link = HtmlGrid::Link.new(:deductible, model, @session, self)
+		link.value = @lookandfeel.lookup(model.deductible)
+		link.href = @lookandfeel.lookup(:explain_deductible_url)
+		link.css_class = 'list'
+		link
+	end
+	def deductible_label(model)
+		link = HtmlGrid::Link.new(:deductible, model, @session, self)
+		link.href = @lookandfeel.lookup(:deductible_legal_url)
+		link
 	end
 	def lppv_ajax(model)
 		link = HtmlGrid::Link.new(:lppv_ajax, model, @session, self)
 		link.href = @lookandfeel.lookup(:lppv_url)
 		link.css_class = 'list'
 		link
+	end
+	def patent_protected(model)
+		patent = model.patent
+		date = nil
+		if(srid = patent.srid)
+			date = HtmlGrid::Link.new(:patent_protected, patent, @session, self)
+			date.href = @lookandfeel.lookup(:swissreg_url, srid)
+		else
+			date = HtmlGrid::Value.new(:patent_protected, patent, @session, self)
+		end
+		date.value = @lookandfeel.format_date(patent.expiry_date)
+		date
+	end
+	def sl_since(model)
+		sl = model.sl_entry
+		date = sl.introduction_date
+		@lookandfeel.lookup(:sl_since, 
+												@lookandfeel.format_date(date))
 	end
 end
 		end

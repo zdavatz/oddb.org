@@ -153,11 +153,13 @@ Grammar OddbSize
 			:addition, :scale, :sl_entry, :narcotics
 		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type,
 			:price_exfactory, :price_public, :pretty_dose, :pharmacode, :market_date,
-			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv
+			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
+			:deductible_m # for just-medical
 		alias :pointer_descr :ikscd
-		registration_data :complementary_type, :expiration_date, :expired?,
-			:export_flag, :generic_type, :inactive_date, :pdf_fachinfos,
-			:registration_date
+		registration_data :comarketing_with, :complementary_type, :expiration_date,
+			:expired?, :export_flag, :generic_type, :inactive_date, :pdf_fachinfos,
+			:registration_date, :revision_date, :patent, :patent_protected?, :vaccine,
+			:parallel_import
 		def initialize(ikscd)
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)
@@ -165,7 +167,7 @@ Grammar OddbSize
 			@narcotics = []
 		end
 		def active?
-			@market_date.nil? || @market_date <= Date.today
+			@market_date.nil? || @market_date <= @@today
 		end
 		def active_agents
 			@sequence.active_agents
@@ -207,6 +209,14 @@ Grammar OddbSize
 		end
 		def create_sl_entry
 			@sl_entry = SlEntry.new
+		end
+		def ddd_price
+			if((atc = atc_class) && atc.has_ddd? && (ddd = atc.ddds['O']) \
+				&& (grp = galenic_form.galenic_group) && grp.match(/tabletten/i) \
+				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose))
+				(ddose / mdose.want(ddose.unit)).to_f * (price.to_f / comparable_size.to_f)
+			end
+		rescue RuntimeError
 		end
 		def delete_sl_entry
 			@sl_entry = nil

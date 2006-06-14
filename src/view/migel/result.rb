@@ -165,7 +165,7 @@ class EmptyResultForm < HtmlGrid::Form
 	end
 end
 class EmptyResult < View::ResultTemplate
-	CONTENT = View::Drugs::EmptyResultForm
+	CONTENT = EmptyResultForm
 end
 		end
 	end

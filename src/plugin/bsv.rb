@@ -16,7 +16,7 @@ module ODDB
 			attr_accessor :sl_dossier, :iksnr, :ikscd, :introduction_date, 
 				:price_public, :price_exfactory, :pharmacode, :limitation,
 				:limitation_points, :generic_type, :name, :company, :pointer,
-				:guessed_ikscd, :medwin_ikskey, :sl_ikskey
+				:guessed_ikscd, :medwin_ikskey, :sl_ikskey, :deductible
 			def ikskey
 				[@iksnr, @ikscd].join
 			end
@@ -39,7 +39,8 @@ module ODDB
 			def data
 				data = {
 					:pharmacode				=>	@pharmacode,
-					:sl_generic_type	=>  (@generic_type ? :generic : :original),
+					:sl_generic_type	=>  @generic_type,
+					:deductible				=>	@deductible,
 				}
 				if(@price_public)
 					data.store(:price_public, @price_public)
@@ -325,6 +326,21 @@ module ODDB
 		def database(date)
 			sprintf('BSV_per_%4d.%02d.01.xls', date.year, date.month)
 		end
+		def deductible_originals(workbook)
+			map = {}
+			deductibles = workbook.worksheet(2)
+			deductibles.each(1) { |row|
+				pcode = row.at(2).to_i
+				if(pcode > 0)
+					map.store(pcode.to_s, true)
+				end
+				iksnr = row.at(4).to_i
+				if(iksnr > 0)
+					map.store(sprintf("%05i", iksnr), true)
+				end
+			}
+			map
+		end
 		def delete_sl_entry(package, pac)
 			@app.delete(package.pointer + [:sl_entry])
 		end
@@ -437,6 +453,7 @@ module ODDB
 				end
 			}
 			workbook = Spreadsheet::ParseExcel.parse(path)
+			do_map = deductible_originals(workbook)
 			worksheet = workbook.worksheet(0)
 			worksheet.each(1) { |row|
 				pcode = row.at(2).to_i.to_s
@@ -446,7 +463,14 @@ module ODDB
 					package.company = cell.to_s(ENCODING)
 				end
 				if(cell = row.at(1))
-					package.generic_type = (/g/i.match(cell.to_s(ENCODING)))
+					str = cell.to_s(ENCODING)
+					if(/g/i.match(str))
+						package.generic_type = :generic
+					elsif(/o/i.match(str))
+						package.generic_type = :original
+					else
+						package.generic_type = :unknown
+					end
 				end
 				if(cell = row.at(6))
 					package.introduction_date = cell.date
@@ -462,6 +486,11 @@ module ODDB
 					package.limitation = (cell.to_s(ENCODING).downcase=='y')
 				end
 				package.limitation_points = row.at(11).to_i
+				if(do_map.has_key?(pcode) || do_map.has_key?(sl_iks))
+					package.deductible = :deductible_o
+				else
+					package.deductible = :deductible_g
+				end
 				medwin_iks = nil
 				unless(pcode == '0')
 					package.pharmacode = pcode
@@ -484,14 +513,18 @@ module ODDB
 		end
 		def load_ikskey(pcode)
 			tries = 3
+			ikskey = nil
 			begin
-				results = MEDDATA_SERVER.search({:pharmacode => pcode}, :product)
-				if(results.size == 1)
-					data = MEDDATA_SERVER.detail(results.first, {:ean13 => [1,2]})
-					if(ean13 = data[:ean13])
-						ean13[4,8]
+				MEDDATA_SERVER.session(:product) { |meddata|
+					results = meddata.search({:pharmacode => pcode})
+					if(results.size == 1)
+						data = meddata.detail(results.first, {:ean13 => [1,2]})
+						if(ean13 = data[:ean13])
+							ikskey = ean13[4,8]
+						end
 					end
-				end
+				}
+				ikskey
 			rescue Errno::ECONNRESET
 				if(tries > 0)
 					tries -= 1
@@ -601,7 +634,7 @@ BSV-XLS Swissmedic-Nr: %5s %3s
 		def update_registration(package)
 			ptr = Persistence::Pointer.new([:registration, package.iksnr])
 			if(registration = ptr.resolve(@app))
-				registration
+				@app.update(ptr, { :generic_type => package.generic_type })
 			else
 				@unknown_registrations.push(package)
 				nil

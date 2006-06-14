@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::OrphanedFachinfoAssign -- oddb -- 11.12.2003 -- rwaltert@ywesee.com
 
-require 'view/publictemplate'
+require 'view/drugs/privatetemplate'
 require 'htmlgrid/list'
 require 'htmlgrid/link'
 require 'view/additional_information'
@@ -92,7 +92,7 @@ class OrphanedFachinfoAssignComposite < HtmlGrid::Composite
 		end
 	end
 end
-class OrphanedFachinfoAssign< View::PrivateTemplate
+class OrphanedFachinfoAssign< View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::OrphanedFachinfoAssignComposite
 	SNAPBACK_EVENT = :orphaned_fachinfos
 end

@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # View::Admin::PatinfoDeprivedSequences -- oddb -- 08.12.2003 -- rwaltert@ywesee.com
 
+require 'view/drugs/privatetemplate'
 require 'view/alphaheader'
-require 'view/publictemplate'
 #require 'view/export'
 require 'htmlgrid/link'
 
@@ -52,7 +52,7 @@ class PatinfoDeprivedSequencesComposite < HtmlGrid::Composite
 		[0,1]	=>	View::Admin::PatinfoDeprivedSequencesList,
 	}
 end
-class PatinfoDeprivedSequences < View::PrivateTemplate
+class PatinfoDeprivedSequences < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::PatinfoDeprivedSequencesComposite
 	SNAPBACK_EVENT = :incomplete_registrations
 end

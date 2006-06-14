@@ -8,6 +8,7 @@ require 'test/unit'
 require 'model/sequence'
 require 'model/atcclass'
 require 'model/substance'
+require 'util/searchterms'
 require 'stub/odba'
 require 'flexmock'
 require 'mock'
@@ -227,6 +228,7 @@ class TestSequence < Test::Unit::TestCase
 	def test_comparables1
 		reg = FlexMock.new
 		reg.mock_handle(:active?) { true }
+		reg.mock_handle(:may_violate_patent?) { false }
 		@seq.registration = reg
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
@@ -245,6 +247,7 @@ class TestSequence < Test::Unit::TestCase
 	def test_comparables2
 		reg = FlexMock.new
 		reg.mock_handle(:active?) { true }
+		reg.mock_handle(:may_violate_patent?) { false }
 		@seq.registration = reg
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
@@ -264,6 +267,7 @@ class TestSequence < Test::Unit::TestCase
 	def test_comparables3
 		reg = FlexMock.new
 		reg.mock_handle(:active?) { true }
+		reg.mock_handle(:may_violate_patent?) { false }
 		@seq.registration = reg
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
@@ -368,7 +372,12 @@ class TestSequence < Test::Unit::TestCase
 		assert_equal(1, text_count)
 	end
 	def test_search_terms
-		expected = [ 'Similasan', 'Kava-Kava', 'Similasan Kava-Kava']
+		expected = [ 
+			'Similasan', 
+			'KavaKava', 'Kava Kava', 
+			'Similasan KavaKava',
+			'Similasan Kava Kava',
+		]
 		@seq.name = 'Similasan Kava-Kava'
 		assert_equal(expected, @seq.search_terms)
 	end

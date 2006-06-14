@@ -2,7 +2,7 @@
 # View::Drugs::DDD -- oddb -- 01.03.2004 -- hwyss@ywesee.com
 
 require 'htmlgrid/list'
-require 'view/popuptemplate'
+require 'view/drugs/privatetemplate'
 require 'view/chapter'
 require 'view/external_links'
 
@@ -127,7 +127,7 @@ class DDDTree < HtmlGrid::Composite
 		end
 	end
 end
-class DDD < View::PrivateTemplate
+class DDD < PrivateTemplate
 	CONTENT = View::Drugs::DDDTree
 	SNAPBACK_EVENT = :result
 end

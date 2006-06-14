@@ -138,6 +138,9 @@ module ODDB
 			def end_font
 				release_tag
 			end
+			def end_h2
+				end_i
+			end
 			def end_span
 				release_tag
 			end
@@ -181,6 +184,9 @@ module ODDB
 						end
 					end
 				}
+			end
+			def start_h2(attrs)
+				start_i(attrs)
 			end
 			def start_span(attrs)
 				register_release_tag { |release|

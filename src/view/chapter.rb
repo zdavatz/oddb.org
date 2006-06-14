@@ -9,7 +9,6 @@ module ODDB
 	module View
 		class Chapter < HtmlGrid::Value
 			PAR_STYLE = 'padding-bottom: 4px; white-space: normal'
-			SEC_STYLE = 'font-size: 13px; margin-top: 4px; line-height: 120%'
 			SUB_STYLE = 'font-style: italic' 
 			def formats(context, paragraph)
 				res = ''
@@ -41,7 +40,6 @@ module ODDB
 				else
 					## this must be an inline element, to enable starting 
 					## paragraphs on the same line as the section-subheading
-					#context.span({ 'class' => 'paragraph' }) { 
 					context.span({ 'style' => self.class::PAR_STYLE }) { 
 						res } << context.br
 				end
@@ -57,9 +55,8 @@ module ODDB
 				context.h3 { self.escape(@value.heading) }
 			end
 			def sections(context, sections)
-				section_attr = { 'style' => self.class::SEC_STYLE }
+				section_attr = { 'style' => @lookandfeel.section_style }
 				subhead_attr = { 'style' => self.class::SUB_STYLE }
-				#attr = {}
 				sections.collect { |section|
 					context.div(section_attr) { 
 						head = context.span(subhead_attr) {
@@ -74,7 +71,6 @@ module ODDB
 				}.join
 			end
 			def paragraphs(context, paragraphs)
-				#attr = { 'class' => 'paragraph' }
 				attr = { 'style' => self.class::PAR_STYLE }
 				paragraphs.collect { |paragraph|
 					if(paragraph.is_a? Text::ImageLink)

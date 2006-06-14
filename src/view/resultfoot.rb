@@ -9,76 +9,43 @@ module ODDB
 	module View
 		class ExplainResult < HtmlGrid::Composite
 			include ExternalLinks
-			COMPONENTS = {
-				[0,0]	=>	:explain_original,
-				[0,1]	=>	:explain_generic,
-				[0,2]	=>	:explain_comarketing,
-				[0,3]	=>	:explain_complementary,
-				[0,4]	=>	:explain_vaccine,
-				[0,5]	=>	'explain_unknown',
-				[0,6]	=>	'explain_expired',
-				[0,7]	=>	:explain_cas,
-				[1,0]	=>	'explain_li',
-				[1,1]	=>	'explain_fi',
-				[1,2]	=>	'explain_pi',
-				[1,3]	=>	'explain_narc',
-				[1,4]	=>	'explain_a',
-				[1,5]	=>	'explain_h',
-				[1,6]	=>	'explain_p',
-				[1,7]	=>	'explain_pr',
-				[2,0]	=>	'explain_efp',
-				[2,1]	=>	'explain_pbp',
-				[2,2]	=>	'explain_sl',
-				[2,3]	=>	'explain_slg',
-				[2,4]	=>	'explain_fd',
-				[2,5]	=>	:explain_lppv,
-				[2,6]	=>	'explain_g',
-			}
-			CSS_MAP = {	
-				[0,5]	=>	'explain-unknown',
-				[0,6]	=>	'explain-unknown expired',
-				[0,7]	=>	'explain-infos',
-				[1,0,2,8]	=>	'explain-infos',
+			COMPONENTS = {}
+			CSS_MAP = {}
+			CSS_KEYMAP = {
+				'explain_unknown'		=>	'explain-unknown',
+				'explain_expired'		=>	'explain-unknown expired',
+				:explain_cas				=>	'explain-infos',
+				:explain_ddd_price	=>	'explain-infos',
+				:explain_deductible	=>	'explain-infos',
+				'explain_li'				=>	'explain-infos',
+				'explain_fi'				=>	'explain-infos',
+				'explain_pbp'				=>	'explain-infos',
+				'explain_pi'				=>	'explain-infos',
+				'explain_narc'			=>	'explain-infos',
 			}
 			def init
-				if(@lookandfeel.enabled?(:atupri_web, false))
-					@components = {
-						[0,0]	=>	:explain_original,
-						[0,1]	=>	:explain_generic,
-						[0,2]	=>	:explain_complementary,
-						[0,3]	=>	:explain_vaccine,
-						[0,4]	=>	'explain_unknown',
-						[0,6]	=>	'explain_li',
-						[0,7]	=>	'explain_fi',
-						[0,8]	=>	'explain_pi',
-						[0,9]	=>	'explain_narc',
-						[1,1]	=>	'explain_a',
-						[1,2]	=>	'explain_h',
-						[1,3]	=>	'explain_p',
-						[1,4]	=>	'explain_pr',
-						[1,5]	=>	'explain_efp',
-						[1,6]	=>	'explain_pbp',
-						[1,7]	=>	'explain_sl',
-						[1,8]	=>	'explain_slo',
-						[1,9]	=>	'explain_slg',
-					}
-					@css_map = {
-						[0,4]	=>	'explain-unknown',
-						[0,5,1,5]	=>	'explain-infos',
-						[1,0,1,10]	=>	'explain-infos',
-					}
-				elsif(@lookandfeel.enabled?(:deductible, false))
-					if(idx = components.index('explain_pbp'))
-						@components.store(idx, 'explain_deductible')
+				@components = @lookandfeel.explain_result_components
+				width = 1
+				height = 1
+				@components.each { |key, val| 
+					if(klass = CSS_KEYMAP[val])
+						css_map.store(key, klass)
 					end
-					if(idx = @components.index('explain_efp'))
-						@components.store(idx, 'explain_pbp')
-					end
-				end
+					x, y, = key
+					width = [x, width].max
+					height = [y.next, height].max
+				}
+				@css_map.store([1, 0, width, height], 'explain-infos')
 				super
 			end
 			def explain_comarketing(model, session=@session)
 				explain_link(model, :comarketing)
+			end
+			def explain_ddd_price(model, session=@session)
+				explain_link(model, :ddd_price)
+			end
+			def explain_deductible(model, session=@session)
+				explain_link(model, :deductible)
 			end
 			def explain_original(model, session=@session)
 				explain_link(model, :original)

@@ -13,7 +13,9 @@ module ODDB
 		class PublicTemplate < HtmlGrid::Template
 			include View::Custom::HeadMethods
 			include HtmlGrid::DojoToolkit::DojoTemplate
+			DOJO_DEBUG = false
 			DOJO_REQUIRE = [ 'dojo.widget.Tooltip' ]
+			DOJO_PARSE_WIDGETS = false
 			CONTENT = nil
 			CSS_CLASS = "composite"
 			CSS_ID = "template"
@@ -40,7 +42,7 @@ module ODDB
 			def content(model, session)
 				self::class::CONTENT.new(model, session, self)
 			end
-			def css_link(context)
+			def css_link(context, path=nil)
 				if(@lookandfeel.enabled?(:external_css, false))
 					super(context, @lookandfeel.resource_external(:external_css))
 				else
@@ -81,10 +83,10 @@ urchinTracker();
 			def title_part_three
 				event = @session.state.direct_event || @session.event
 				if([nil, :resolve, :login, :update, :delete].include?(event))
-					if(@model.respond_to?(:name))
-						@model.name
-					elsif(@model.respond_to?(:pointer_descr))
+					if(@model.respond_to?(:pointer_descr))
 						@model.pointer_descr
+					elsif(@model.respond_to?(:name))
+						@model.name
 					end
 				else
 					@lookandfeel.lookup(event)

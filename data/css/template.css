@@ -10,6 +10,7 @@ body {
 	font-size : $std_font_size; 
 	border : 0px dotted darkred;
 	background-color: $bg; 
+	margin: $body_margin;
 }
 label {
 	font-weight : bold;
@@ -66,30 +67,16 @@ p {
 /* Fachinfo */
 h3 {
 	font-family: $std_font_family;
-	font-size: $std_font_size;
-	margin-bottom: 2px;
+	font-size: $h3_font_size;
+	margin-bottom: $h3_margin;
 }
-div.section {
-	font-family: $std_font_family;
-	font-size: 13px;
-	line-height : 120%;
-	margin-top : 4px;
-}
-span.section {
-	font-style:italic;
-}
-pre, div.preformatted {
+pre {
 	font-style : normal;
 	font-family: Courier New, Courier, monospace;
-	font-size: $std_font_size;
+	font-size: $pre_font_size;
 	margin-top : 0px;
 	text-align : left;
 	white-space : pre;
-}
-span.paragraph {
-	font-style : normal;
-	font-size: $std_font_size;
-	padding-bottom: 4px;
 }
 
 /* standard-result-classes */
@@ -864,15 +851,16 @@ td.result-pubprice-vaccine-bg {
 	padding-right : 10px;
 	text-align : right;
 }
-a.feedback, a.feedback:link, a.feedback:visited, a.square {
+a.feedback, a.feedback:link, a.feedback:visited {
 	color: black;
 	background-color : #ffbc6f;
 	font-weight : bold;
 	text-align : center;
 	text-decoration : none;
 	padding : 2px 2px 2px 3px;
+	font-size: $square_font_size;
 }
-a.google_search, a.google_search:link, a.google_search:visited, a.square {
+a.google_search, a.google_search:link, a.google_search:visited {
 	color: white;
 	background-color : #184fca;
 	font-weight : bold;
@@ -925,7 +913,6 @@ td.result-infos-vaccine,
 td.result-infos-unknown
 {
 	padding : 2px;
-	max-width: 20px;
 }
 
 a.result-infos-bg, a.result-infos-bg:link, a.result-infos-bg:visited, 
@@ -1295,6 +1282,7 @@ a.list-b:hover {
 }
 td.list {
 	padding : 4px;
+	font-size : $std_font_size; 
 }
 td.list-b {
 	padding : 4px;
@@ -1495,6 +1483,10 @@ td.pager-head {
 }
 
 /* input-classes */
+select { 
+	font-family : $std_font_family;
+	font-size: $std_font_size;
+}
 input.button {
 	background: $button_background;
 	color: $button_font_color;
@@ -1527,9 +1519,9 @@ form.search {
 	margin: 0px;
 }
 input.search {
-	width : 260px;
+	width : 160px;
 } 
-input.search-center {
+td.search-center input.search {
 	width : 260px;
 	padding : 0px;
 	margin : 7px;
@@ -1611,6 +1603,7 @@ table.explain-result {
 	color : $bg_bright_font_color;
 	text-align : left;
 	width : 100%;
+	font-size: $explain_font_size;
 }
 td.explain-result {
 	background : $bg_bright;
@@ -1618,7 +1611,6 @@ td.explain-result {
 	padding-top : 3px;
 	padding-bottom : 3px;
 	width : 85%;
-	font-size: 11px;
 }
 td.explain-result-r {
 	background : $bg_bright;
@@ -1639,7 +1631,6 @@ td.legal-note-center {
 td.legal-note-right {
 	vertical-align : bottom;
 	text-align: right;
-	/*width : 100%;*/
 	padding: 4px;
 }
 a.legal-note {
@@ -1827,22 +1818,50 @@ div.plus {
 div.minus {
 	background-color: #ffbc6f;
 }
-span.square {
+span.square, a.square {
 	text-align: center;
-	vertical-align: middle;
 	padding: 2px 4px;
+	font-size: $square_font_size;
 }
 span.anthroposophy {
+	font-weight: bold;
 	color: white;
 	background-color: #ff00ff;
 }
+a.comarketing {
+	font-weight: bold;
+	color: white;
+	background-color : #f61;
+}
+span.complementary {
+	font-weight: bold;
+	color: white;
+	background-color : #dd1cff;
+}
 span.homeopathy {
+	font-weight: bold;
 	color: white;
 	background-color: #9900ff;
 }
-span.phytotherapy {
+span.parallel_import {
+	font-weight: bold;
 	color: white;
-	background-color: #6600ff;
+	background-color: #0A0;
+}
+span.phytotherapy {
+	font-weight: bold;
+	color: white;
+	background-color: #60f;
+}
+a.patent {
+	font-weight: bold;
+	color: white;
+	background-color: #C00;
+}
+span.vaccine {
+	font-weight: bold;
+	color: white;
+	background-color: brown;
 }
 table.wait {
 	cell-spacing: 20px;
@@ -1915,4 +1934,43 @@ tr.expired td, td.expired {
 td.tab {
 	background-color: $bg_bright;
 	border-top: 2px solid $bg_medium;
+}
+div.dojoTooltip {
+  font-size : $std_font_size;
+	white-space: nowrap;
+}
+span.deductible_g
+{
+	color : black;
+	background-color : #FFF455;
+	font-weight : bold;
+	text-align : center;
+	text-decoration : none;
+	padding : 2px 2px 2px 4px;
+}
+span.deductible_o
+{
+	color : black;
+	background-color : #ffc455;
+	font-weight : bold;
+	text-align : center;
+	text-decoration : none;
+	padding : 2px 2px 2px 4px;
+}
+td.nowrap 
+{
+	white-space: nowrap;
+}
+a.create-infos, a.create-infos-bg
+{
+	color : black;
+	border : 1px solid #ffbc6f;
+	font-weight : bold;
+	text-align : center;
+	text-decoration : none;
+	padding : 2px 2px 2px 4px;
+}
+a.create-infos:hover, a.create-infos-bg:hover
+{
+	background: $rslt_infos_bg_bright;
 }

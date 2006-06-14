@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::IncompleteRegistrations -- oddb -- 19.06.2003 -- hwyss@ywesee.com 
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/pointervalue'
 require 'view/form'
 require	'htmlgrid/errormessage'
@@ -111,7 +111,7 @@ class IncompleteRegList < HtmlGrid::Composite
 		end
 	end
 end
-class IncompleteRegistrations < View::PrivateTemplate
+class IncompleteRegistrations < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::IncompleteRegList
 	SNAPBACK_EVENT = :incomplete_registrations
 end

@@ -204,8 +204,10 @@ class TestRegistration < Test::Unit::TestCase
 		@registration.inactive_date = (Date.today >> 1)
 		assert_equal(true, @registration.active?)
 		@registration.inactive_date = Date.today 
+		assert_equal(true, @registration.active?)
+		@registration.inactive_date = (Date.today << 24)
 		assert_equal(false, @registration.active?)
-		@registration.inactive_date = (Date.today << 1)
+		@registration.inactive_date = (Date.today << 25)
 		assert_equal(false, @registration.active?)
 	end
 	def test_indication_writer

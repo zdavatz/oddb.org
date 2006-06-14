@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::IncompleteRegistration -- oddb -- 19.06.2003 -- hwyss@ywesee.com 
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/admin/registration'
 require 'htmlgrid/value'
 require 'htmlgrid/text'
@@ -56,17 +56,22 @@ class IncompleteRegistrationForm < View::Admin::RegistrationForm
 		[2,1]		=>	:revision_date,
 		[0,2]		=>	:generic_type,
 		[2,2]		=>	:expiration_date,
-		[0,3]		=>	:indication,
-		[2,3]		=>	:market_date,
+		[0,3]		=>	:complementary_select,
+		[0,3,1]	=>	:complementary_type,
+		[0,4]		=>	:index_therapeuticus,
 		[2,4]		=>	:inactive_date,
-		[1,5]		=>	:submit,
-		[1,5,1]	=>	:delete_item,
+		[0,5]		=>	:indication,
+		[0,6]		=>	:export_flag,
+		[2,6]		=>	:vaccine,
+		[0,7]		=>	:parallel_import,
+		[1,8]		=>	:submit,
+		[1,8,1]	=>	:delete_item,
 	}
 	def reorganize_components
 		if(acceptable?(@model))
-			components.store([2,6], :change_flags)
-			components.store([1,6], :accept)
-			css_map.store([1,6,3], 'list top')
+			components.store([2,9], :change_flags)
+			components.store([1,9], :accept)
+			css_map.store([1,9,3], 'list top')
 		end
 	end
 	def acceptable?(model)
@@ -134,7 +139,7 @@ class IncompleteRegistrationComposite < View::Admin::RootRegistrationComposite
 		[0,3]	=>	'composite',
 	}
 end
-class IncompleteRegistration < View::PrivateTemplate
+class IncompleteRegistration < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::IncompleteRegistrationComposite
 	SNAPBACK_EVENT = :incomplete_registrations
 end

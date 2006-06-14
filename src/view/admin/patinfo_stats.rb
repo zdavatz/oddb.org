@@ -57,7 +57,9 @@ class PatinfoStatsCompanyList < HtmlGrid::List
 		time.strftime("%A %d.%m.%Y &nbsp;&nbsp;-&nbsp;&nbsp;%H.%M Uhr %Z")
 	end
 	def email(model, session)
-		model.user.unique_email
+		if(user = model.user)
+			user.unique_email
+		end
 	end
 	SUBHEADER = View::Admin::CompanyHeader
 	def compose_list(model=@model, offset=[0,0])

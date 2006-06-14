@@ -29,12 +29,12 @@ module ODDB
 			:price_rise				=>	13,
 			:delete						=>	14,
 			:price_cut				=>	15,
+			:not_specified		=>	16,
 		}
 		attr_reader :file_path
 		def initialize(app)
 			super
-			date = Date.today
-			@file_name = date.strftime("med-drugs-%Y%m%d.xls")
+			@file_name = @@today.strftime("med-drugs-%Y%m%d.xls")
 			@file_path = File.expand_path("xls/#{@file_name}", self::class::ARCHIVE_PATH)
 		end
 		def export_package(pack, row, pac_flags)
@@ -63,7 +63,7 @@ module ODDB
 			row[7] = reg.export_flag ? 'Export' : ''
 			if(company = reg.company)
 				row[12] = reg.company.name
-				row[19] = reg.company.url
+				row[19] = reg.company.powerlink
 			end
 			if(reg.sequences.empty?)
 				rows.push(row)
@@ -93,6 +93,9 @@ module ODDB
 			registrations.each { |pointer, flags| 
 				key = pointer.to_s
 				pointer_table.store(key, pointer)
+				if(flags.empty?)
+					flags.push(:not_specified)
+				end
 				reg_flags.store(key, flags)
 			}
 			packages.each { |pointer, flags|
@@ -113,7 +116,7 @@ module ODDB
 				row[0] = row[0].collect { |flg| 
 					self::class::NUMERIC_FLAGS[flg] 
 				}.compact.uniq.sort
-				row.first.empty? 
+				row.first.empty?
 			}
 			rows.sort_by { |row| 
 				[ 

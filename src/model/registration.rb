@@ -4,16 +4,17 @@
 require 'date'
 require 'util/persistence'
 require 'model/sequence'
+require 'model/patent'
 
 module ODDB
 	class RegistrationCommon
 		include Persistence
-		attr_reader :iksnr, :sequences 
+		attr_reader :iksnr, :sequences, :patent
 		attr_writer :generic_type, :complementary_type
 		attr_accessor :registration_date, :export_flag, :company, 
 			:revision_date, :indication, :expiration_date, :inactive_date,
-			:market_date, :fachinfo, :source #, :pdf_fachinfos,
-			:index_therapeuticus
+			:market_date, :fachinfo, :source, :ikscat, :renewal_flag, #:pdf_fachinfos,
+			:index_therapeuticus, :comarketing_with, :vaccine, :parallel_import
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
 		def initialize(iksnr)
@@ -21,11 +22,9 @@ module ODDB
 			@sequences = {}
 		end
 		def active?
-			today = Date.today
-			two_years_ago = today << 24
-			(@inactive_date.nil? || @inactive_date > two_years_ago) \
-				&& (@expiration_date.nil? || @expiration_date > two_years_ago) \
-				&& (@market_date.nil? || @market_date <= today) 
+			(!@inactive_date || (@inactive_date > @@two_years_ago)) \
+				&& (!@expiration_date || @expiration_date > @@two_years_ago) \
+				&& (!@market_date || @market_date <= @@today) 
 		end
 		def active_package_count
 			if(active?)
@@ -63,12 +62,18 @@ module ODDB
 				@company.complementary_type
 			end
 		end
+		def create_patent
+			@patent = Patent.new
+		end
 		def create_sequence(seqnr)
 			seq = self::class::SEQUENCE.new(seqnr)
 			unless @sequences.include?(seq.seqnr)
 				seq.registration = self
 				@sequences.store(seq.seqnr, seq)
 			end
+		end
+		def delete_patent
+			@patent = nil
 		end
 		def delete_sequence(seqnr)
 			seqnr = sprintf('%02d', seqnr.to_i)
@@ -86,9 +91,8 @@ module ODDB
 			@sequences.values.each(&block)
 		end
 		def expired?
-			today = Date.today
-			(@inactive_date && @inactive_date <= today) \
-				|| (@expiration_date && @expiration_date <= today)
+			(@inactive_date && @inactive_date <= @@today) \
+				|| (!@renewal_flag && @expiration_date && @expiration_date <= @@today)
 		end
 		def generic?
 			self.generic_type == :generic
@@ -102,6 +106,17 @@ module ODDB
 			@sequences.values.inject(0) { |inj, seq|			
 				inj + seq.limitation_text_count
 			}
+		end
+		def may_violate_patent?
+			# we are making the assumption that no generic registration will be
+			# created more than a year before the original's patent protection 
+			# expires. Registrations where the @registration_date is not known can 
+			# be considered old enough to fall out of consideration for 
+			# patent violation
+			@registration_date \
+				&& !@comarketing_with \
+				&& (@generic_type != :original) \
+				&& (@registration_date > @@one_year_ago)
 		end
 		def name_base
 			if(seq = @sequences.values.first)
@@ -122,6 +137,10 @@ module ODDB
 			@sequences.values.inject(0) { |inj, seq|
 				inj + seq.package_count
 			}
+		end
+		def patent_protected?
+			@patent && @patent.protected?
+			#@patented_until && (@patented_until >= @@today)
 		end
 		def public_package_count
 			if(active?)
@@ -160,7 +179,7 @@ module ODDB
 					when :registration_date, :revision_date, 
 						:expiration_date, :inactive_date, :market_date
 						#key != for elements that can be nil
-						if(!value.is_a?(Date) && !value.nil?)
+						if(value.is_a?(String))
 							hash.store(key, Date.parse(value.tr('.', '-')))
 						end
 					when :company

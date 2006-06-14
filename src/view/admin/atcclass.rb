@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::AtcClass -- oddb -- 18.07.2003 -- hwyss@ywesee.com 
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/descriptionform'
 
 module ODDB
@@ -20,7 +20,7 @@ class AtcClassComposite < HtmlGrid::Composite
 		[0,0]	=>	'th',
 	}
 end
-class AtcClass < View::PrivateTemplate
+class AtcClass < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::AtcClassComposite
 	SNAPBACK_EVENT = :atc_chooser
 	def snapback

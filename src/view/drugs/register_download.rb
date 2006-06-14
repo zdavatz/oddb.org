@@ -109,11 +109,10 @@ class RegisterInvoicedDownloadComposite < HtmlGrid::Composite
 	}
 	LEGACY_INTERFACE = false
 	def invoice_descr(model)
-		today = Date.today
-		date = if(today.day < 15) 
-			Date.new(today.year, today.month, 15)
+		date = if(@@today.day < 15) 
+			Date.new(@@today.year, @@today.month, 15)
 		else
-			Date.new(today.year, today.month) >> 1
+			Date.new(@@today.year, @@today.month) >> 1
 		end
 		@lookandfeel.lookup(:invoice_descr, 
 			date.strftime(@lookandfeel.lookup(:date_format)),

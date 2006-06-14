@@ -15,6 +15,7 @@ module ODDB
 			attr_accessor :both, :bsv, :smj
 		end
 		flexo = FlexMock.new
+		flexo.mock_handle(:session) { flexo }
 		flexo.mock_handle(:search) { [] }
 		MEDDATA_SERVER = flexo
 		MEDDATA_SLEEP = 0
@@ -918,6 +919,18 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 		end
 	end
 	class TestBsvPlugin2 < Test::Unit::TestCase
+		class StubRegistration
+			attr_accessor :packages, :iksnr, :name_base, :sequences, :generic_type
+			def initialize(iksnr)
+				@iksnr = iksnr
+			end
+			def package(iksnr)
+				(@packages ||={})[iksnr]
+			end
+			def each_package(&block)
+				(@packages ||= {}).each_value(&block)
+			end
+		end
 		class StubApp
 			attr_accessor :registrations, :updates, :packages, :deletions
 			def initialize
@@ -935,18 +948,9 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			end
 			def update(pointer, values, origin=nil)
 				@updates.store(pointer, values)
-			end
-		end
-		class StubRegistration
-			attr_accessor :packages, :iksnr, :name_base, :sequences, :generic_type
-			def initialize(iksnr)
-				@iksnr = iksnr
-			end
-			def package(iksnr)
-				(@packages ||={})[iksnr]
-			end
-			def each_package(&block)
-				(@packages ||= {}).each_value(&block)
+				pointer.dup.resolve(self)
+			rescue Persistence::InvalidPathError
+				StubRegistration.new('auto')
 			end
 		end
 		class StubSequence
@@ -979,14 +983,14 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			}
 		end
 		def test_load_database
-			db_file = File.expand_path('../data/xls/BSV_per_2005.04.01.xls',
+			db_file = File.expand_path('../data/xls/BSV_per_2006.04.01.xls',
 				File.dirname(__FILE__))
 			@app.packages = []
 			@plugin.load_database(db_file)
-			pack1 = @plugin.ptable['2591407']
-			assert_equal('55725040', pack1.ikskey)
-			pack2 = @plugin.ikstable['55725040']
-			assert_equal('2591407', pack2.pharmacode)
+			pack1 = @plugin.ptable['1585310']
+			assert_equal('51920031', pack1.ikskey)
+			pack2 = @plugin.ikstable['51920031']
+			assert_equal('1585310', pack2.pharmacode)
 			assert_equal(pack1, pack2)
 			assert_equal(false, @plugin.ptable.include?(''))
 			assert_equal(false, @plugin.ptable.include?('0'))
@@ -1038,7 +1042,7 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			pac.limitation_points = 0
 			@plugin.handle_addition(pac)
 			pointer = ODDB::Persistence::Pointer.new([:registration, '39437'])
-			assert_equal({}, @app.updates)
+			assert_equal({pointer => {:generic_type => nil}}, @app.updates)
 			assert_equal([], @plugin.unknown_registrations)
 			assert_equal([pac], @plugin.unknown_packages)
 		end
@@ -1060,7 +1064,7 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			pac.generic_type = :generic
 			@plugin.handle_addition(pac)
 			pointer = ODDB::Persistence::Pointer.new([:registration, '39437'])
-			assert_equal(0, @app.updates.size)
+			assert_equal(1, @app.updates.size)
 			assert_equal([], @plugin.unknown_registrations)
 			assert_equal([pac], @plugin.unknown_packages)
 		end
@@ -1085,7 +1089,7 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			pac.generic_type = :generic
 			@plugin.handle_addition(pac)
 			pointer = ODDB::Persistence::Pointer.new([:registration, '39437'])
-			assert_equal(2, @app.updates.size)
+			assert_equal(3, @app.updates.size)
 			assert_equal([], @plugin.unknown_registrations)
 			assert_equal([], @plugin.unknown_packages)
 			assert_equal([pac], @plugin.successful_updates)
@@ -1113,7 +1117,7 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			@plugin.handle_deletion(pac)
 			pointer = ODDB::Persistence::Pointer.new([:registration, '39437'])
 			assert_equal(1, @app.deletions.size)
-			assert_equal(1, @app.updates.size)
+			assert_equal(2, @app.updates.size)
 			assert_equal([], @plugin.unknown_registrations)
 			assert_equal([], @plugin.unknown_packages)
 			assert_equal([pac], @plugin.successful_updates)
@@ -1141,7 +1145,7 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			@plugin.handle_reduction(pac)
 			pointer = ODDB::Persistence::Pointer.new([:registration, '39437'])
 			assert_equal(0, @app.deletions.size)
-			assert_equal(2, @app.updates.size)
+			assert_equal(3, @app.updates.size)
 			assert_equal([], @plugin.unknown_registrations)
 			assert_equal([], @plugin.unknown_packages)
 			assert_equal([pac], @plugin.successful_updates)
@@ -1169,7 +1173,7 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			@plugin.handle_augmentation(pac)
 			pointer = ODDB::Persistence::Pointer.new([:registration, '39437'])
 			assert_equal(0, @app.deletions.size)
-			assert_equal(2, @app.updates.size)
+			assert_equal(3, @app.updates.size)
 			assert_equal([], @plugin.unknown_registrations)
 			assert_equal([], @plugin.unknown_packages)
 			assert_equal([pac], @plugin.successful_updates)
@@ -1232,8 +1236,7 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			@plugin.handle_unknown_package(pac)
 			assert_equal(0, @app.deletions.size)
 			assert_equal(1, @app.updates.size)
-			assert_equal([(pack1.pointer + :sl_entry).creator], 
-				@app.updates.keys)
+			assert_equal([(pack1.pointer + [:sl_entry]).creator], @app.updates.keys)
 		end
 	end
 	class TestParsedPackage < Test::Unit::TestCase

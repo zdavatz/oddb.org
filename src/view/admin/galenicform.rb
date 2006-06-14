@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::GalenicForm -- oddb -- 25.03.2003 -- andy@jetnet.ch
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/descriptionform'
 require 'htmlgrid/select'
 
@@ -57,7 +57,7 @@ class GalenicFormComposite < HtmlGrid::Composite
 		[0,0]	=>	'th',
 	}
 end
-class GalenicForm < View::PrivateTemplate
+class GalenicForm < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::GalenicFormComposite
 	SNAPBACK_EVENT = :galenic_groups
 end

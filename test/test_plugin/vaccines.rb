@@ -29,6 +29,7 @@ module ODDB
 			@app = FlexMock.new
 			@plugin = VaccinePlugin.new(@app)
 			@meddata = VaccinePlugin::MEDDATA_SERVER
+			@meddata.mock_handle(:session) { |arg, block| block.call(@meddata) }
 		end
 		def test_extract_latest_filepath
 			path = File.expand_path('../data/html/swissmedic/index.html',
@@ -218,6 +219,36 @@ module ODDB
 			reg.mock_handle(:sequences) { seqs }
 			@plugin.get_packages(reg)
 			assert_equal(3, seqs.size)
+		end
+		def test_get_packages__active
+			active = FlexMock.new
+			apac = FlexMock.new
+			aseq = FlexMock.new
+			active.mock_handle(:package) { apac }
+			apac.mock_handle(:sequence) { aseq }
+			aseq.mock_handle(:seqnr) { '01' }
+
+			reg = FlexMock.new
+			reg.mock_handle(:iksnr) { 'iksnr' }
+			seq = VaccinePlugin::ParsedSequence.new
+			seqs = [seq]
+			@meddata.mock_handle(:search) { 
+				['result1', 'result2', 'result3']
+			}
+			details = [
+				{:info => "7680006660038OCTANATE Trockensub 1000 IE c Solv Fl 10 ml"},
+				{:info => "7680006660014OCTANATE Trockensub 250 IE c Solv Fl 5 ml"},
+				{:info => "7680006660021OCTANATE Trockensub 500 IE c Solv Fl 10 ml"},
+			]
+			@meddata.mock_handle(:detail) { 
+				details.shift
+			}
+			reg.mock_handle(:sequences) { seqs }
+			@plugin.get_packages(reg, active)
+			assert_equal(1, seqs.size)
+			sequence = seqs.first
+			assert_equal('01', sequence.seqnr)
+			assert_equal(3, sequence.packages.size)
 		end
 	end
 end

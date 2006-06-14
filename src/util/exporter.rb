@@ -6,6 +6,7 @@ require 'plugin/fipdf'
 require 'plugin/yaml'
 require 'plugin/csv_export'
 require 'plugin/patinfo_invoicer'
+require 'plugin/fachinfo_invoicer'
 require 'plugin/download_invoicer'
 require 'plugin/ouwerkerk'
 require 'plugin/xls_export'
@@ -40,15 +41,15 @@ module ODDB
 				mail_feedback_stats
 				#mail_notification_stats
 			}
+			mail_fachinfo_log
 			export_sl_pcodes
 			export_yaml
 			export_oddbdat
 			export_csv
-			export_generics_xls
 			export_doc_csv
 		rescue StandardError => e
 			EXPORT_SERVER.clear
-			log = Log.new(Date.today)
+			log = Log.new(@@today)
 			log.report = [
 				"Error: #{e.class}",
 				"Message: #{e.message}",
@@ -69,8 +70,8 @@ module ODDB
 				:numerical_size, :price_exfactory, :price_public, :company_name,
 				:ikscat, :sl_entry, :introduction_date, :limitation,
 				:limitation_points, :limitation_text, :lppv, :registration_date,
-				:expiration_date, :inactive_date, :export_flag, :casrn, :is_generic,
-				:has_generic ]
+				:expiration_date, :inactive_date, :export_flag, :casrn, :generic_type,
+				:has_generic, :deductible, :out_of_trade, :c_type ]
 			session = SessionStub.new
 			session.language = 'de'
 			session.flavor = 'gcc'
@@ -97,10 +98,9 @@ module ODDB
 		def export_generics_xls
 			plug = XlsExportPlugin.new(@app)
 			plug.export_generics
-			EXPORT_SERVER.clear
-			sleep(30)
+			plug
 		end
-		def export_swissdrug_xls(date = Date.today)
+		def export_swissdrug_xls(date = @@today)
 			plug = OuwerkerkPlugin.new(@app)
 			plug.export_xls
 			name = 'swissdrug-update.xls'
@@ -172,6 +172,14 @@ module ODDB
 		def mail_download_invoices
 			DownloadInvoicer.new(@app).run
 		end
+		def mail_fachinfo_log(day = @@today - 1)
+			plug = FachinfoInvoicer.new(@app)
+			plug.run(day)
+			log = Log.new(day)
+			log.date_str = day.strftime("%d.%m.%Y")
+			log.report = plug.report
+			log.notify("Fachinfo-Uploads")
+		end
 		def mail_feedback_stats
 			mail_stats('feedback')
 		end
@@ -185,13 +193,13 @@ module ODDB
 				:mime_type => 'text/csv',
 				:subject => 'Täglicher CSV-Export der Notifications', 
 			}
-			Log.new(Date.today).notify_attachment(file, headers)
+			Log.new(@@today).notify_attachment(file, headers)
 		end
 		def mail_patinfo_invoices
 			PatinfoInvoicer.new(@app).run
 		end
 		def mail_stats(key)
-			date = Date.today
+			date = @@today
 			if(date.mday < 8)
 				date = date << 1
 			end
@@ -209,12 +217,12 @@ module ODDB
 			log.notify("#{key.capitalize}-Statistics")
 		end
 		def run_on_monthday(day, &block)
-			if(Date.today.day == day)
+			if(@@today.day == day)
 				block.call
 			end
 		end
 		def run_on_weekday(day, &block)
-			if(Date.today.wday == day)
+			if(@@today.wday == day)
 				block.call
 			end
 		end

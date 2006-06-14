@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # View::Admin::IncompleteSequence -- oddb -- 20.06.2003 -- hwyss@ywesee.com 
 
+require 'view/drugs/privatetemplate'
 require 'view/admin/sequence'
-require 'view/privatetemplate'
 
 module ODDB
 	module View
@@ -59,7 +59,7 @@ class IncompleteSequenceComposite < View::Admin::RootSequenceComposite
 		[0,4]	=>	'composite',
 	}
 end
-class IncompleteSequence < View::PrivateTemplate
+class IncompleteSequence < View::Drugs::PrivateTemplate
 	SNAPBACK_EVENT = :incomplete_registrations
 	CONTENT = View::Admin::IncompleteSequenceComposite
 end

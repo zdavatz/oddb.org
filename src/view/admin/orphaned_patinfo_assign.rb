@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::OrphanedPatinfoAssign -- oddb -- 26.11.2003 -- rwaltert@ywesee.com
 
-require 'view/publictemplate'
-#require 'view/export'
+require 'view/drugs/privatetemplate'
 require 'htmlgrid/list'
 require 'htmlgrid/link'
 require 'view/additional_information'
@@ -84,7 +83,7 @@ class OrphanedPatinfoAssignComposite < HtmlGrid::Composite
 		end
 	end
 end
-class OrphanedPatinfoAssign < View::PrivateTemplate
+class OrphanedPatinfoAssign < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::OrphanedPatinfoAssignComposite
 	SNAPBACK_EVENT = :orphaned_patinfos
 end

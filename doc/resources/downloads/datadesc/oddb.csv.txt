@@ -1,6 +1,7 @@
 Datenbeschrieb oddb.csv
 
-Version: 1.1.0
+Version: 1.2.0
+Geändert: 06.06.2006 (1.2.0) durch hwyss@ywesee.com
 Geändert: 27.02.2006 (1.1.0) durch hwyss@ywesee.com
 Geändert: 09.12.2005 (1.0.3) durch hwyss@ywesee.com
 Geändert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
@@ -46,8 +47,11 @@ Produkt-Record:
 23: inactive_date     (dd.mm.yyyy)              -> Falls ein Produkt unabhängig von der Swissmedic ausser Handel genommen wird: Datum der Ausserhandelnahme
 24: export_flag       (*)                       -> Wenn gesetzt: Produkt ist nur für den Export Bestimmt
 25: narcotic          (*)                       -> Wenn gesetzt: CAS Registry Number des Eintrags in der Betäubungsmittelliste
-26: is_generic        (Ja/Nein)                 -> Wenn Ja: das Produkt ist ein Generikum
+26: generic_type      (O/G)                     -> O: Original, G: Generikum
 27: has_generic       (Ja/Nein)                 -> Wenn Ja: es ist mindestens ein Generikum zu diesem Produkt bekannt
+28: deductible        (10%/20%)                 -> Selbstbehalt für SL-Produkte
+29: out_of_trade      (Ja/Nein)                 -> Ausser Handel laut http://www.refdata.ch ?
+30: complementary     (C/A/H/P)                 -> Komplementärprodukt,siehe Glossar (Komplementärprodukt)
 
 ## Glossar ##
 * AtcCode:
@@ -67,6 +71,12 @@ http://www.trichema.ch/D/faq.php#15
 
 * CAS Registry Number:
   http://www.cas.org/EO/regsys.html
+
+* Komplementärprodukt:
+C: Komplementärprodukt
+A: Antroposophisches Heilmittel
+H: Homöopathisches Heilmittel
+P: Phytotherapeutisches Heilmittel
 
 * Version
 Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"

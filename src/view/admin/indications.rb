@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::Indications -- oddb -- 03.07.2003 -- hwyss@ywesee.com 
 
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/descriptionlist'
 require 'view/pointervalue'
 require 'view/pointervalue'
@@ -21,7 +21,7 @@ class IndicationList < View::DescriptionList
 	}
 	include View::AlphaHeader
 end
-class Indications < View::PrivateTemplate
+class Indications < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::IndicationList
 	SNAPBACK_EVENT = :indications
 end

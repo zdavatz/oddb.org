@@ -23,7 +23,7 @@ module ODDB
 			DEFAULT_CLASS = HtmlGrid::InputText
 			EVENT = :update
 			private 
-			def delete_item(model, session)
+			def delete_item(model, session=@session)
 				unless(@model.is_a? Persistence::CreateItem)
 					button = HtmlGrid::Button.new(:delete, model, session, self)
 					button.set_attribute("onclick", "form.event.value='delete'; form.submit();")

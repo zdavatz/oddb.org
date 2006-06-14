@@ -4,6 +4,62 @@
 require 'sbsm/lookandfeelwrapper'
 
 module ODDB
+	class LookandfeelStandardResult < SBSM::LookandfeelWrapper
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:deductible,
+				[12,0]	=>	:substances,
+				[13,0]	=>	:company_name,
+				[14,0]	=>	:ikscat,
+				[15,0]	=>	:registration_date,
+				[16,0]	=>	:feedback,
+				[17,0]	=>  :google_search,
+				[18,0]	=>	:notify,
+			}
+		end
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_comarketing,
+				[0,3]	=>	:explain_complementary,
+				[0,4]	=>	:explain_vaccine,
+				[0,5]	=>	'explain_unknown',
+				[0,6]	=>	'explain_expired',
+				[0,8]	=>	:explain_cas,
+				[1,0]	=>	'explain_li',
+				[1,1]	=>	'explain_fi',
+				[1,2]	=>	'explain_pi',
+				[1,3]	=>	'explain_narc',
+				[1,4]	=>	'explain_a',
+				[1,5]	=>	'explain_h',
+				[1,6]	=>	'explain_p',
+				[1,7]	=>	'explain_pr',
+				[2,0]	=>	'explain_efp',
+				[2,1]	=>	'explain_pbp',
+				[2,2]	=>	:explain_deductible,
+				[2,3]	=>	'explain_sl',
+				[2,4]	=>	'explain_slo',
+				[2,5]	=>	'explain_slg',
+				[2,6]	=>	:explain_lppv,
+				[2,7]	=>	'explain_g',
+				[2,8]	=>	'explain_fd',
+			}
+		end
+	end
 	class LookandfeelLanguages < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:currency_switcher,
@@ -17,7 +73,6 @@ module ODDB
 			:drugs, 
 			:export_csv,
 			:faq_link,
-			:full_result,
 			:help_link,
 			:home,
 			:home_drugs,
@@ -88,6 +143,7 @@ module ODDB
 		end
 	end
 	class LookandfeelProvita < SBSM::LookandfeelWrapper
+		ENABLED = [ ]
 		DICTIONARIES = {
 			'de'	=>	{
 				:home_welcome	=>	'Willkommen bei Provita und oddb.org',
@@ -188,8 +244,50 @@ module ODDB
 			:external_css	=>	'http://www.atupri.ch/misc/generika.css',
 		}
 		HTML_ATTRIBUTES = { }
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_complementary,
+				[0,3]	=>	:explain_vaccine,
+				[0,4]	=>	'explain_unknown',
+				[0,6]	=>	'explain_li',
+				[0,7]	=>	'explain_fi',
+				[0,8]	=>	'explain_pi',
+				[0,9]	=>	'explain_narc',
+				[1,0]	=>	'explain_a',
+				[1,1]	=>	'explain_h',
+				[1,2]	=>	'explain_p',
+				[1,3]	=>	'explain_pr',
+				[1,4]	=>	'explain_efp',
+				[1,5]	=>	'explain_pbp',
+				[1,6]	=>	:explain_deductible,
+				[1,7]	=>	'explain_sl',
+				[1,8]	=>	'explain_slo',
+				[1,9]	=>	'explain_slg',
+			}
+		end
 		def navigation
 			[ :legal_note ] + zone_navigation + [ :home ]
+		end
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:deductible,
+				[12,0]	=>	:substances,
+			}
 		end
 		def zone_navigation
 			case @session.zone
@@ -202,7 +300,6 @@ module ODDB
 	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
 		ENABLED = [
-			:deductible,
 			:external_css,
 			:just_medical_structure,	
 			:popup_links,
@@ -249,9 +346,61 @@ module ODDB
 		RESOURCES = {
 			:external_css	=>	'http://www.just-medical.com/css/oddb.css',
 		}
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_comarketing,
+				[0,3]	=>	:explain_complementary,
+				[0,4]	=>	:explain_vaccine,
+				[0,5]	=>	'explain_unknown',
+				[0,6]	=>	'explain_expired',
+				[0,7]	=>	:explain_cas,
+				[1,0]	=>	'explain_li',
+				[1,1]	=>	'explain_fi',
+				[1,2]	=>	'explain_pi',
+				[1,3]	=>	'explain_narc',
+				[1,4]	=>	'explain_a',
+				[1,5]	=>	'explain_h',
+				[1,6]	=>	'explain_p',
+				[1,7]	=>	'explain_pr',
+				[2,0]	=>	'explain_pbp',
+				[2,1]	=>	:explain_deductible,
+				[2,2]	=>	'explain_sl',
+				[2,3]	=>	'explain_slg',
+				[2,4]	=>	'explain_slg',
+				[2,5]	=>	'explain_fd',
+				[2,6]	=>	:explain_lppv,
+				[2,7]	=>	'explain_g',
+			}
+		end
 		def navigation
 			[ :meddrugs_update, :legal_note, :data_declaration ] \
 				+ zone_navigation + [ :home ]
+		end
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_public,
+				[10,0]	=>	:deductible,
+				[11,0]	=>	:substances,
+				[12,0]	=>	:company_name,
+				[13,0]	=>	:ikscat,
+				[14,0]	=>	:registration_date,
+				[15,0]	=>	:feedback,
+				[16,0]	=>  :google_search,
+				[17,0]	=>	:notify,
+			}
 		end
 		def zones
 			[ State::Drugs::Init, State::Drugs::AtcChooser, 
@@ -319,6 +468,271 @@ module ODDB
 		HTML_ATTRIBUTES = { }
 		def languages
 			[:de, :fr, :en]
+		end
+	end
+	class LookandfeelMedicalTribune < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:drugs, 
+			:home_drugs,
+			:home_migel,
+			:external_css,
+			:help_link,
+			#:logout,
+			:migel,
+			:sequences,
+		]
+		RESOURCES = { 
+			:external_css	=>	'http://www.medical-tribune.ch/css/oddb_deutsch.css',
+		}
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_comarketing,
+				[0,3]	=>	:explain_complementary,
+				[0,4]	=>	:explain_vaccine,
+				[0,5]	=>	'explain_unknown',
+				[0,6]	=>	'explain_expired',
+				[0,7]	=>	:explain_cas,
+				[1,0]	=>	'explain_li',
+				[1,1]	=>	'explain_fi',
+				[1,2]	=>	'explain_pi',
+				[1,3]	=>	'explain_narc',
+				[1,4]	=>	'explain_a',
+				[1,5]	=>	'explain_h',
+				[1,6]	=>	'explain_p',
+				[1,7]	=>	'explain_pr',
+				[2,0]	=>	'explain_efp',
+				[2,1]	=>	'explain_pbp',
+				[2,2]	=>	'explain_sl',
+				[2,3]	=>	'explain_slg',
+				[2,4]	=>	'explain_slg',
+				[2,5]	=>	'explain_fd',
+				[2,6]	=>	:explain_lppv,
+				[2,7]	=>	'explain_g',
+			}
+		end
+		def languages
+			[:de, :fr, :en]
+		end
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:substances,
+				[12,0]	=>	:company_name,
+				[13,0]	=>	:ikscat,
+				[14,0]	=>	:registration_date,
+				[15,0]	=>	:feedback,
+				[16,0]	=>  :google_search,
+				[17,0]	=>	:notify,
+			}
+		end
+	end
+	class LookandfeelMedicalTribune1 < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:drugs, 
+			:home_drugs,
+			:external_css,
+			:help_link,
+			#:logout,
+		]
+		RESOURCES = { 
+			:external_css	=>	'http://www.medical-tribune.ch/css/oddb_public.css',
+		}
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_comarketing,
+				[0,3]	=>	:explain_complementary,
+				[0,4]	=>	:explain_vaccine,
+				[0,5]	=>	'explain_unknown',
+				[0,6]	=>	'explain_expired',
+				[0,7]	=>	:explain_cas,
+				[1,0]	=>	'explain_li',
+				[1,1]	=>	'explain_fi',
+				[1,2]	=>	'explain_pi',
+				[1,3]	=>	'explain_narc',
+				[1,4]	=>	'explain_a',
+				[1,5]	=>	'explain_h',
+				[1,6]	=>	'explain_p',
+				[1,7]	=>	'explain_pr',
+				[2,0]	=>	'explain_efp',
+				[2,1]	=>	'explain_pbp',
+				[2,2]	=>	'explain_sl',
+				[2,3]	=>	'explain_slg',
+				[2,4]	=>	'explain_slg',
+				[2,5]	=>	'explain_fd',
+				[2,6]	=>	:explain_lppv,
+				[2,7]	=>	'explain_g',
+			}
+		end
+		def languages
+			[:de, :fr, :en]
+		end
+		def navigation(filter=false)
+			[:help_link]
+		end
+		def result_list_components
+			{
+				[0,0]		=>	:patinfo,
+				[1,0,0]	=>	'result_item_start',
+				[1,0,1]	=>	:name_base,
+				[1,0,2]	=>	'result_item_end',
+				[2,0]		=>	:galenic_form,
+				[3,0]		=>	:most_precise_dose,
+				[4,0]		=>	:comparable_size,
+				[5,0]		=>	:price_exfactory,
+				[6,0]		=>	:price_public,
+			}
+		end
+		def search_type_selection
+			['st_sequence', 'st_substance', 'st_indication']
+		end
+		def zones(filter=false)
+			[]
+		end
+	end
+	class LookandfeelGeriMedi < SBSM::LookandfeelWrapper
+		ENABLED = [
+			#:external_css,
+			:home_drugs,
+			:help_link,
+			:faq_link,
+			:ywesee_contact,
+			:sequences,
+		]
+		DISABLED = [ :atc_ddd ]
+		RESOURCES = {
+			#:external_css	=>	'http://www.gerimedi.ch/css/oddb.css',
+			:external_css	=>	'http://kunde.aixede.ch/gerimedi/screen.css',
+		}
+		DICTIONARIES = {
+			'de'	=>	{
+				:explain_generic					=>	'Blau&nbsp;=&nbsp;Generikum',
+			},
+			'fr'	=>	{
+				:explain_generic					=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
+			},
+			'en'	=>	{
+				:explain_generic					=>	'Blue&nbsp;=&nbsp;Generic Drug',
+			},
+		}
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_complementary,
+				[0,3]	=>	'explain_expired',
+				[0,4]	=>	'explain_pbp',
+				[0,5]	=>	:explain_deductible,
+				[0,6]	=>	:explain_ddd_price,
+				[1,0]	=>	'explain_pi',
+				[1,1]	=>	'explain_fd',
+				[1,2]	=>	'explain_g',
+				[1,3]	=>	'explain_sl',
+				[1,4]	=>	'explain_slo',
+				[1,5]	=>	'explain_slg',
+				[1,6]	=>	:explain_lppv,
+			}
+		end
+		def result_list_components
+			{
+				[0,0]		=>	:patinfo,
+				[1,0,0]	=>	'result_item_start',
+				[1,0,1]	=>	:name_base,
+				[1,0,2]	=>	'result_item_end',
+				[2,0]		=>	:galenic_form,
+				[3,0]		=>	:most_precise_dose,
+				[4,0]		=>	:comparable_size,
+				[5,0]		=>	:price_public,
+				[6,0]		=>	:deductible,
+				[7,0]		=>	:company_name,
+				[8,0]		=>	:ddd_price,
+				[9,0]		=>	'nbsp',
+				[10,0]	=>	:ikscat,
+				[11,0]	=>	:feedback,
+				[12,0]	=>  :google_search,
+			}
+		end
+		def section_style
+			'font-size: 16px; margin-top: 8px; line-height: 120%; max-width: 600px'
+		end
+	end
+	class LookandfeelSwissMedInfo < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:home_drugs,
+			:help_link,
+			:faq_link,
+			:ywesee_contact,
+			:sequences,
+		]
+		DISABLED = [ :atc_ddd ]
+=begin
+		DICTIONARIES = {
+			'de'	=>	{
+				:explain_generic					=>	'Blau&nbsp;=&nbsp;Generikum',
+			},
+			'fr'	=>	{
+				:explain_generic					=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
+			},
+			'en'	=>	{
+				:explain_generic					=>	'Blue&nbsp;=&nbsp;Generic Drug',
+			},
+		}
+=end
+		def explain_result_components
+			{
+				[0,0]	=>	:explain_original,
+				[0,1]	=>	:explain_generic,
+				[0,2]	=>	:explain_complementary,
+				[0,3]	=>	'explain_expired',
+				[0,4]	=>	'explain_pbp',
+				[0,5]	=>	:explain_deductible,
+				[0,6]	=>	:explain_ddd_price,
+				[1,0]	=>	'explain_pi',
+				[1,1]	=>	'explain_fd',
+				[1,2]	=>	'explain_g',
+				[1,3]	=>	'explain_sl',
+				[1,4]	=>	'explain_slo',
+				[1,5]	=>	'explain_slg',
+				[1,6]	=>	:explain_lppv,
+			}
+		end
+		def result_list_components
+			{
+				[0,0]		=>	:patinfo,
+				[1,0]		=>	:comarketing,
+				[2,0,0]	=>	'result_item_start',
+				[2,0,1]	=>	:name_base,
+				[2,0,2]	=>	'result_item_end',
+				[3,0]		=>	:galenic_form,
+				[4,0]		=>	:most_precise_dose,
+				[5,0]		=>	:comparable_size,
+				[6,0]		=>	:price_public,
+				[7,0]		=>	:deductible,
+				[8,0]		=>	:company_name,
+				[9,0]		=>	:ddd_price,
+				[10,0]		=>	'nbsp',
+				[11,0]	=>	:ikscat,
+				[12,0]	=>	:feedback,
+				[13,0]	=>  :google_search,
+			}
+		end
+		def section_style
+			'font-size: 18px; margin-top: 8px; line-height: 120%; max-width: 600px'
 		end
 	end
 end

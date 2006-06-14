@@ -88,17 +88,17 @@ class RecentRegsList < View::Drugs::ResultList
 		@grid.set_colspan(0, 1)
 	end
 end
-class RecentRegsForm < View::Drugs::ResultForm
+class RecentRegsComposite < View::Drugs::ResultComposite
 	COMPONENTS = {
 		[0,1]		=>	'price_compare',
-		[1,1]		=>	SearchForm,
+		[1,1]		=>	SelectSearchForm,
 		[0,2]		=>	View::Drugs::RecentRegsList,
 		[0,3]		=>	View::ResultFoot,
 	}
 	ROOT_LISTCLASS = View::Drugs::RootRecentRegsList
 end
 class RecentRegs < View::ResultTemplate
-	CONTENT = View::Drugs::RecentRegsForm
+	CONTENT = View::Drugs::RecentRegsComposite
 end
 		end
 	end

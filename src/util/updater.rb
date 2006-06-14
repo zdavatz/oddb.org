@@ -1,21 +1,23 @@
 #!/usr/bin/env ruby
 # Updater-- oddb -- 19.02.2003 -- hwyss@ywesee.com 
 
-require 'plugin/swissmedicjournal'
 require 'plugin/analysis'
+require 'plugin/bsv'
+require 'plugin/comarketing'
 require 'plugin/doctors'
 require 'plugin/fachinfo'
 require 'plugin/fxcrossrate'
-require 'plugin/interaction'
-require 'plugin/patinfo'
 require 'plugin/hospitals'
-require 'plugin/bsv'
-require 'plugin/ouwerkerk'
+require 'plugin/interaction'
 require 'plugin/limitation'
 require 'plugin/lppv'
 require 'plugin/medwin'
 require 'plugin/migel'
 require 'plugin/narcotic'
+require 'plugin/ouwerkerk'
+require 'plugin/patinfo'
+require 'plugin/swissmedicjournal'
+require 'plugin/swissreg'
 require 'plugin/vaccines'
 require 'plugin/who'
 require 'util/log'
@@ -43,20 +45,11 @@ module ODDB
 			@app = app
 			@smj_updated = false
 		end
-		def export_ouwerkerk(date = Date.today)
-			subj = 'Med-Drugs' 
-			wrap_update(OuwerkerkPlugin, subj) {
-				plug = Exporter.new(@app).export_swissdrug_xls
-				log = Log.new(date)
-				log.update_values(log_info(plug))
-				log.notify(subj)
-			}
-		end
 		def export_competition_xls(company, db_path=nil)
 			subj = "Generika-Preisvergleich #{company.name}"
 			wrap_update(XlsExportPlugin, subj) {
 				plug = Exporter.new(@app).export_competition_xls(company, db_path)
-				log = Log.new(Date.today)
+				log = Log.new(@@today)
 				log.update_values(log_info(plug))
 				log.notify(subj)
 			}
@@ -68,6 +61,24 @@ module ODDB
 				if(comp.competition_email)
 					export_competition_xls(comp, db_path)
 				end
+			}
+		end
+		def export_generics_xls(date = @@today)
+			subj = 'Generikaliste'
+			wrap_update(XlsExportPlugin, subj) {
+				plug = Exporter.new(@app).export_generics_xls
+				log = Log.new(date)
+				log.update_values(log_info(plug))
+				log.notify(subj)
+			}
+		end
+		def export_ouwerkerk(date = @@today)
+			subj = 'Med-Drugs' 
+			wrap_update(OuwerkerkPlugin, subj) {
+				plug = Exporter.new(@app).export_swissdrug_xls
+				log = Log.new(date)
+				log.update_values(log_info(plug))
+				log.notify(subj)
 			}
 		end
 		def log_info(plugin)
@@ -86,7 +97,7 @@ module ODDB
 			log.notify(subj)
 		end
 		def logfile_stats
-			date = Date.today << 1
+			date = @@today << 1
 			if(date.day == 1)
 				_logfile_stats(date)
 			end
@@ -141,6 +152,7 @@ module ODDB
 				update_medwin_packages
 				update_lppv
 				export_ouwerkerk
+				export_generics_xls
 				export_competition_xlss
 			end
 			if(@smj_updated)
@@ -160,8 +172,7 @@ module ODDB
 		def update_bsv
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
 			logs = @app.create(logs_pointer)
-			today = Date.today
-			this_month = Date.new(today.year, today.month)
+			this_month = Date.new(@@today.year, @@today.month)
 			latest = logs.newest_date || (this_month << 1)
 			months = [this_month, this_month >> 1].select { |month| month > latest }
 			klass = BsvPlugin2
@@ -172,6 +183,9 @@ module ODDB
 					log_notify_bsv(plug, plug.month, subj)
 				end
 			}
+		end
+		def update_comarketing
+			update_immediate(CoMarketingPlugin, 'Co-Marketing')
 		end
 		def update_doctors
 			update_simple(Doctors::DoctorPlugin, 'Doctors')
@@ -233,7 +247,7 @@ module ODDB
 					path = File.expand_path("../../data/csv/betaeubungsmittel_a_#{lang}.csv",
 						File.dirname(__FILE__))
 					plug.update(path, lang)
-					log = Log.new(Date.today)
+					log = Log.new(@@today)
 					log.update_values(log_info(plug))
 					log.notify(subj)
 				}
@@ -252,7 +266,7 @@ module ODDB
 			# The first issue of SwissmedicJournal is 2002,1
 			latest = logs.newest_date || Date.new(2002,4) 
 			success = true
-			while((latest < Date.today) && success)
+			while((latest < @@today) && success)
 				latest = latest >> 1
 				klass = SwissmedicJournalPlugin
 				plug = klass.new(@app)
@@ -268,6 +282,12 @@ module ODDB
 				end
 			end
 		end
+		def update_swissreg
+			update_immediate(SwissregPlugin, 'Patents')
+		end
+		def update_swissreg_news
+			update_immediate(SwissregPlugin, 'Patents', :update_news)
+		end
 		def update_vaccines
 			update_notify_simple(VaccinePlugin, 'blutprodukte')
 		end
@@ -279,7 +299,7 @@ module ODDB
 			log.notify(subj)
 		end
 		def notify_error(klass, subj, error)
-			log = Log.new(Date.today)
+			log = Log.new(@@today)
 			log.report = [
 				"Plugin: #{klass}",
 				"Error: #{error.class}",
@@ -305,7 +325,7 @@ module ODDB
 		def update_immediate(klass, subj, update_method=:update)
 			plug = klass.new(@app)
 			plug.send(update_method)
-			log = Log.new(Date.today)
+			log = Log.new(@@today)
 			log.update_values(log_info(plug))
 			log.notify(subj)
 		rescue Exception => e #RuntimeError, StandardError => e
@@ -315,7 +335,7 @@ module ODDB
 			wrap_update(klass, subj) {
 				plug = klass.new(@app)
 				if(plug.send(update_method))
-					log = Log.new(Date.today)
+					log = Log.new(@@today)
 					log.update_values(log_info(plug))
 					log.notify(subj)
 				end
@@ -325,7 +345,7 @@ module ODDB
 			wrap_update(klass, subj) {
 				plug = klass.new(@app)
 				plug.send(update_method)
-				log = Log.new(Date.today)
+				log = Log.new(@@today)
 				log.update_values(log_info(plug))
 				log.notify(subj)
 			}

@@ -6,6 +6,7 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
 require 'test/unit'
+require 'util/searchterms'
 require 'model/migel/group'
 require 'model/migel/product'
 require 'stub/odba'

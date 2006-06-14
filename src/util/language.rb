@@ -35,13 +35,15 @@ module ODDB
 		def has_description?(description)
 			descriptions.has_value?(description)
 		end
+		def match(pattern)
+			descriptions.values.any? { |desc| pattern.match(desc) }
+		end
 		def method_missing(symbol, *args, &block)
 			language = symbol.to_s
 			if(language.length == 2)
 				descriptions[language]
 			else
 				super
-				#raise NoMethodError.new("Undefined or Private Method: #{language} for #{self.class}:#{self}")
 			end
 		end
 		def respond_to?(symbol)

@@ -19,7 +19,6 @@ class CenteredSearchForm < View::CenteredSearchForm
 		[0,4,0,4]	=>	:search_reset,
 	}
 	SYMBOL_MAP = {
-		:search_type	=>	HtmlGrid::Select,
 		:search_query	=>	View::SearchBar,	
 	}
 	COMPONENT_CSS_MAP = {
@@ -30,6 +29,15 @@ class CenteredSearchForm < View::CenteredSearchForm
 		[0,2,1,3]	=>	'search-center',
 	}
 	EVENT = :search
+	def search_type(model, session=@session)
+		select = HtmlGrid::Select.new(:search_type, model, @session, self)
+		if(@lookandfeel.respond_to?(:search_type_selection))
+			select.valid_values = @lookandfeel.search_type_selection
+		end
+		select.set_attribute('onChange', 'this.form.onsubmit();')
+		select.selected = @session.persistent_user_input(:search_type)
+		select
+	end
 end
 class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENTS = {
@@ -91,10 +99,10 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 			component_css_map.store([0,10], 'legal-note-center')
 		else
 			components.update({
-				[0,4]	=>	'database_last_updated_txt',
+				[0,4]		=>	'database_last_updated_txt',
 				[0,4,1]	=>	:database_last_updated,
-				[0,5]	=>	:generic_definition,
-				[0,6]	=>	:legal_note,
+				[0,5]		=>	:generic_definition,
+				[0,6]		=>	:legal_note,
 			})
 			css_map.store([0,4,1,3], 'ccomponent')
 			component_css_map.store([0,6], 'legal-note-center')

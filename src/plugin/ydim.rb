@@ -92,7 +92,7 @@ module ODDB
 				ydim_inv.currency = currency
 				ydim_inv.payment_period = 30
 				item_data = sort_items(items).collect { |item| 
-					if(item.quantity.to_i.to_f != item.quantity.to_f)
+					if(sprintf('%1.2f', item.quantity) == "0.00")
 						ydim_inv.precision = 3
 					end
 					data = item.ydim_data 
@@ -136,15 +136,8 @@ module ODDB
 			elsif(types.include?(:lookandfeel))
 				sprintf("Lookandfeel-Integration %i/%i", year, year.next)
 			else
-				fmt = 'Patinfo-Upload %d.%m.%Y'
-				timstr = time.strftime(fmt)
-				expstr = last.strftime(fmt)
 				count = items.select { |item| item.type == :annual_fee }.size
-				if(timstr == expstr)
-					sprintf("%i x %s", count, timstr)
-				else
-					sprintf("%i x Patinfo-Upload %i/%i", count, year, year.next)
-				end
+				sprintf("%i x Patinfo-Upload %i/%i", count, year, year.next)
 			end
 		end
 		def item_name(item)

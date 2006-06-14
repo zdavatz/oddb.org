@@ -32,13 +32,16 @@ module ODDB
 			ptr = Persistence::Pointer.new([:registration, @iksnr])
 			hash = {
 				:company						=>	(@company.oid if @company), 
+				:complementary_type	=>	@complementary_type, 
 				:expiration_date		=>	@expiration_date, 
+				:export_flag				=>	@export_flag,
+				:generic_type				=>	@generic_type, 
 				:inactive_date			=>	@inactive_date,
+				:index_therapeuticus=>	@index_therapeuticus,
+				:indication					=>	(@indication.pointer if @indication), 
+				:parallel_import		=>	@parallel_import,
 				:registration_date	=>	@registration_date, 
 				:revision_date			=>	@revision_date,
-				:indication					=>	(@indication.pointer if @indication), 
-				:generic_type				=>	@generic_type, 
-				:export_flag				=>	@export_flag,
 				:source							=>	@source,
 			}.delete_if { |key, val| val.nil? }
 			reg = app.update(ptr.creator, hash)

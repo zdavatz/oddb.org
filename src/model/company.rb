@@ -54,6 +54,11 @@ module ODDB
 		def index_invoice_date
 			@index_invoice_date = _yearly_repetition(@index_invoice_date)
 		end
+		def invoiceable?
+			addr = address(0)
+			![ @name, @contact, addr.address, addr.plz, 
+				addr.city, @invoice_email, addr.fon ].any? { |datum| datum.nil? }
+		end
 		def listed?
 			@cl_status
 		end
@@ -92,7 +97,7 @@ module ODDB
 			@addresses.each { |addr| 
 				terms += addr.search_terms
 			}
-			terms.compact
+			ODDB.search_terms(terms)
 		end
 		private
 		def adjust_types(input, app=nil)
@@ -115,8 +120,7 @@ module ODDB
 		end
 		def _yearly_repetition(date)
 			if(date)
-				today = Date.today
-				while(date < today)
+				while(date < @@today)
 					date = date >> 12
 				end
 				date

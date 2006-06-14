@@ -12,39 +12,56 @@ module ODDB
 			'atupri'=>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,
+				LookandfeelStandardResult,
 				LookandfeelAtupri, 
 			],
 			'atupri-web'=>	[
 				LookandfeelAtupriWeb, 
-			],
-			'just-medical'=>	[
-				LookandfeelLanguages,
-				LookandfeelExtern,
-				LookandfeelJustMedical, 
 			],
 			'generika'	=>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,
 				LookandfeelGenerika,
 			],
+			'gerimedi'=>	[
+				LookandfeelGeriMedi, 
+			],
+			'just-medical'=>	[
+				LookandfeelLanguages,
+				LookandfeelExtern,
+				LookandfeelJustMedical, 
+			],
+			'medical-tribune' => [
+				LookandfeelExtern,
+				LookandfeelMedicalTribune,
+			],
+			'medical-tribune1' => [
+				LookandfeelMedicalTribune1,
+			],
 			'oekk'	=>	[
 				LookandfeelExtern,
+				LookandfeelStandardResult,
 				LookandfeelOekk,
 			],
 			'provita'			=>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,
 				LookandfeelButtons, 
+				LookandfeelStandardResult,
 				LookandfeelProvita, 
 			],
 			'santesuisse' =>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,
 				LookandfeelButtons, 
+				LookandfeelStandardResult,
 				LookandfeelSantesuisse, 
 			],
 			'swissmedic'	=>	[
 				LookandfeelSwissmedic,
+			],
+			'swissmedinfo'=>	[
+				LookandfeelSwissMedInfo, 
 			],
 		}
 	end

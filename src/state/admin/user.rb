@@ -32,6 +32,18 @@ module User
 			State::Admin::Logout,
 		]
 	end
+	private
+	def _new_fachinfo(registration)
+		doc = FachinfoDocument2001.new
+		doc.name = registration.name_base
+		fi_pointer = Persistence::Pointer.new(:fachinfo)
+		fi = Persistence::CreateItem.new(fi_pointer)
+		fi.carry(:name_base, registration.name_base)
+		fi.carry(:registrations, [registration])
+		fi.carry(:company, registration.company)
+		fi.carry(@session.language, doc)
+		Drugs::RootFachinfo.new(@session, fi)
+	end
 end
 		end
 	end

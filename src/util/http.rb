@@ -3,6 +3,7 @@
 
 require 'cgi'
 require 'net/http'
+require 'uri'
 require 'delegate'
 require 'iconv'
 require 'fileutils'
@@ -27,8 +28,8 @@ module ODDB
 			end
 		end
 	end
-	class HttpSession < DelegateClass(Net::HTTP)
-		class ResponseWrapper < DelegateClass(Net::HTTPOK)
+	class HttpSession < SimpleDelegator
+		class ResponseWrapper < SimpleDelegator
 			def initialize(resp)
 				@response = resp
 				super
@@ -57,7 +58,7 @@ module ODDB
 			end
 		end
 		HTTP_CLASS = Net::HTTP
-		RETRIES = 0
+		RETRIES = 3
 		RETRY_WAIT = 10
 		def initialize(http_server, port=80)
 			@http_server = http_server
@@ -66,19 +67,25 @@ module ODDB
 			super(@http)
 		end
 		def post(path, hash)
-			retries = 3
+			retries = RETRIES
 			headers = post_headers
 			begin
 				resp = @http.post(path, post_body(hash), headers)
-				if(resp.is_a? Net::HTTPOK)
+				case resp
+				when Net::HTTPOK
 					ResponseWrapper.new(resp)
+				when Net::HTTPFound
+					uri = URI.parse(resp['location'])
+					path = (uri.respond_to?(:request_uri)) ? uri.request_uri : uri.to_s
+					warn(sprintf("redirecting to: %s", path))
+					get(path)
 				else
 					raise("could not connect to #{@http_server}: #{resp}")
 				end
-			rescue Errno::ECONNRESET
+			rescue Errno::ECONNRESET, EOFError
 				if(retries > 0)
 					retries -= 1
-					sleep 1
+					sleep RETRIES - retries
 					retry
 				else
 					raise
@@ -89,12 +96,27 @@ module ODDB
 			headers = get_headers
 			headers.push(['Content-Type', 'application/x-www-form-urlencoded'])
 		end
+		def get(*args)
+			retries = RETRIES
+			begin
+				@http.get(*args)
+			rescue Errno::ECONNRESET, Errno::ECONNREFUSED, EOFError
+				if(retries > 0)
+					retries -= 1
+					sleep RETRIES - retries
+					retry
+				else
+					raise
+				end
+			end
+		end
 		def get_headers
 			[	
 				['Host', @http_server],
 				['User-Agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7) Gecko/20040917 Firefox/0.9.3'],
 				['Accept', 'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1'],
-				['Accept-Language', 'de-ch,en-us;q=0.7,en;q=0.3'],       ['Accept-Encoding', 'gzip,deflate'],
+				['Accept-Language', 'de-ch,en-us;q=0.7,en;q=0.3'],       
+				['Accept-Encoding', 'gzip,deflate'],
 				['Accept-Charset', 'ISO-8859-1'],
 				['Keep-Alive', '300'],
 				['Connection', 'keep-alive'],

@@ -271,7 +271,7 @@ module ODDB
 			pack.size = '12 Tabletten'
 			seq.active_packages = [pack]
 			@package.sequence.comparables = [seq]
-			@package.size = '20 Tabletten'
+			@package.size = '15 Tabletten'
 			assert_equal([pack], @package.comparables)
 		end
 		def test_comparables2
@@ -292,7 +292,7 @@ module ODDB
 			seq.active_packages = [pack]
 			@package.sequence.comparables = [seq]
 			@package.sequence.active_packages = [seqpack, @package]
-			@package.size = '20 Tabletten'
+			@package.size = '15 Tabletten'
 			assert_equal([pack, seqpack], @package.comparables)
 		end
 		def test_respond_to_name_base

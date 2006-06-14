@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
 # View::Drugs::LimitationText -- oddb -- 12.11.2003 -- mhuggler@ywesee.com
 
-require 'view/popuptemplate'
-require 'view/privatetemplate'
+require 'view/drugs/privatetemplate'
 require 'view/chapter'
 require 'util/pointerarray'
 
@@ -40,7 +39,7 @@ class LimitationTextComposite < HtmlGrid::Composite
 		end
 	end
 end
-class LimitationText < View::PrivateTemplate
+class LimitationText < PrivateTemplate
 	CONTENT = View::Drugs::LimitationTextComposite
 	SNAPBACK_EVENT = :result
 end

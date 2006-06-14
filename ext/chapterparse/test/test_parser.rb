@@ -207,5 +207,33 @@ module ODDB
 				EOS
 			end
 		end
+		class TestParserCopyPasteOpenOffice < Test::Unit::TestCase
+			class Formatter < NullFormatter
+				attr_accessor :font_stack
+				def initialize(*args)
+					@font_stack = []
+				end
+				def push_font(*args)
+					@font_stack.push(args)
+				end
+				def pop_font
+					@font_stack.pop
+				end
+			end
+			def setup
+				@formatter = Formatter.new
+				@parser = Parser.new(@formatter)
+			end
+			def test_parse__h2
+				src=<<-EOS
+<h2>Text
+				EOS
+				@parser.feed(src)
+				assert_equal([[nil, 1, nil, nil]],
+					@formatter.font_stack)
+				@parser.feed('</h2>')
+				assert_equal([], @formatter.font_stack)
+			end
+		end
 	end
 end
