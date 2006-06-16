@@ -60,10 +60,11 @@ module ODDB
 				EncodedString.new('Albumin Human Octapharma 20%'), 
 				EncodedString.new('55536'), indication, EncodedString.new('B'),
 				EncodedString.new('x'), EncodedString.new('x'), EncodedString.new('x'),
-				EncodedString.new(''), EncodedString.new(''),
+				EncodedString.new(''), EncodedString.new(''), EncodedString.new(''),
 				EncodedString.new('Octapharma AG') 
 			]
-			reg, seq = @plugin.parse_worksheet_row(row)
+			reg, seqs = @plugin.parse_worksheet_row(row)
+      seq = seqs.first
 			assert_instance_of(VaccinePlugin::ParsedRegistration, reg)
 			assert_equal('55536', reg.iksnr)
 			assert_equal('B', reg.ikscat)
@@ -72,6 +73,29 @@ module ODDB
 			assert_instance_of(VaccinePlugin::ParsedSequence, seq)
 			assert_equal('Albumin Human Octapharma 20%', seq.name)
 			assert_equal(Dose.new(20, '%'), seq.dose)
+		end
+		def test_parse_worksheet_row__rhophylac
+			indication = EncodedString.new('Prophylaxe der Rhesusimmunisierung')
+			row = [
+				EncodedString.new('Rhophylac 200/300'), 
+				EncodedString.new('53609'), indication, EncodedString.new('B'),
+				EncodedString.new('x'), EncodedString.new('x'), EncodedString.new('x'),
+				EncodedString.new(''), EncodedString.new(''), EncodedString.new('x'),
+				EncodedString.new('ZLB Behring AG'), Date.new(2010,12,31)
+			]
+			reg, seqs = @plugin.parse_worksheet_row(row)
+      seq1, seq2 = seqs
+			assert_instance_of(VaccinePlugin::ParsedRegistration, reg)
+			assert_equal('53609', reg.iksnr)
+      assert_equal(true, reg.out_of_trade)
+			assert_equal('B', reg.ikscat)
+			assert_equal(indication, reg.indication)
+			assert_equal('ZLB Behring AG', reg.company)
+			assert_instance_of(VaccinePlugin::ParsedSequence, seq1)
+			assert_equal('Rhophylac 200', seq1.name)
+			assert_equal('Rhophylac 300', seq2.name)
+			assert_equal(Dose.new(200, ''), seq1.dose)
+			assert_equal(Dose.new(300, ''), seq2.dose)
 		end
 		def test_parse_worksheet
 			indication = EncodedString.new('Wiederherstellung und Erhaltung des Kreislaufvolumens, wenn ein Volumendefizit festgestellt wurde und die Verwendung eines Kolloids angezeigt ist')
