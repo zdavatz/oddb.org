@@ -84,7 +84,7 @@ module ODDB
 			def fachinfo(model, session=@session, css='result-infos')
 				if(link = _fachinfo(model.fachinfo, css))
 					link
-				elsif(@session.user.allowed?(model))
+				elsif(@session.user.allowed?('edit', model))
 					link = HtmlGrid::Link.new(:fachinfo_create, model, @session, self)
 					ptr = model.is_a?(Registration) ? 
 						model.pointer : model.registration.pointer

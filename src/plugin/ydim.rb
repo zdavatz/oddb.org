@@ -8,64 +8,85 @@ require 'openssl'
 
 module ODDB
 	class YdimPlugin < Plugin
+    class DebitorFacade
+      attr_reader :invoice_email
+      def initialize(email, app)
+        @app = app
+        @email = email
+        @debitor = app.yus_model(email)
+        @invoice_email = method_missing(:invoice_email) || email
+      end
+      def method_missing(method, *args, &block)
+        if(@debitor.respond_to?(method))
+          @debitor.send(method, *args, &block)
+        else
+          @app.yus_get_preference(@email, method)
+        end
+      end
+      def ydim_id=(id)
+        if(@debitor.respond_to?(:ydim_id=))
+          @debitor.ydim_id = id
+          @debitor.odba_store
+        else
+          @app.yus_set_preference(@email, 'ydim_id', id)
+        end
+      end
+      def ===(test)
+        @debitor === test
+      end
+    end
 		SECONDS_IN_DAY = 60*60*24
 		SALUTATIONS = {
 			'salutation_m'	=>	'Herr',	
 			'salutation_f'	=>	'Frau',	
 		}
-		def create_debitor(comp_or_hosp)
+		def create_debitor(facade)
 			ydim_connect { |client|
 				debitor = client.create_debitor
-				debitor.email = comp_or_hosp.invoice_email \
-					|| comp_or_hosp.user.unique_email
-				if((name = comp_or_hosp.fullname) && !name.empty?)
-					debitor.name = name
-					if(comp_or_hosp.is_a?(InvoiceObserver))
-						debitor.salutation = SALUTATIONS[comp_or_hosp.salutation]
-						debitor.contact_firstname = comp_or_hosp.name_first
-						debitor.contact = comp_or_hosp.name
-					else
-						contact = comp_or_hosp.contact.to_s.dup
-						debitor.salutation = contact.slice!(/^(Herr|Frau)\s+/).to_s.strip
-						debitor.contact_firstname, debitor.contact = contact.split(' ', 2)
-					end
-				else
-					debitor.name = comp_or_hosp.contact
-				end
-				debitor.address_lines = comp_or_hosp.ydim_address_lines
-				debitor.location = comp_or_hosp.ydim_location.to_s
-				debitor.debitor_type = case comp_or_hosp
-															 when ODDB::Hospital
-																 'dt_hospital'
-															 when ODDB::Company
-																 if(ba = comp_or_hosp.business_area)
-																	 ba.gsub(/^ba/, 'dt')
-																 else
-																	 'dt_pharma'
-																 end
-															 else
-																 'dt_info'
-															 end
+        debitor.name = facade.fullname || facade.company_name || facade.contact
+        contact = facade.contact.to_s.dup
+        salutation = contact.slice!(/^(Herr|Frau)\s+/).to_s.strip
+        name_first, name_last = contact.split(' ', 2)
+        debitor.salutation = SALUTATIONS[facade.salutation] || salutation
+        debitor.contact_firstname = facade.name_first || name_first
+        debitor.contact = facade.name_last || name_last
+        debitor.address_lines = facade.ydim_address_lines || []
+        debitor.location = facade.ydim_location.to_s
+        debitor.debitor_type = case facade
+                               when ODDB::Hospital
+                                 'dt_hospital'
+                               when ODDB::Company
+                                 if(ba = facade.business_area)
+                                   ba.gsub(/^ba/, 'dt')
+                                 else
+                                   'dt_pharma'
+                                 end
+                               else
+                                 'dt_info'
+                               end
+				debitor.email = facade.invoice_email
 				debitor.odba_store
-				comp_or_hosp.ydim_id = debitor.unique_id
-				comp_or_hosp.odba_store
+				facade.ydim_id = debitor.unique_id
 				debitor
 			}
 		end
-		def debitor_id(comp_or_hosp)
-			if(id = comp_or_hosp.ydim_id)
-				id
-			elsif(debitor = identify_debitor(comp_or_hosp))
-				debitor.unique_id
-			else
-				create_debitor(comp_or_hosp).unique_id
-			end
+		def debitor_id(facade)
+      ## since not all users can be associated with a business-object,
+      #  ydim_id needs to be a yus_preference. However, if a business-object 
+      #  exists, it should take precedence.
+      if(id = facade.ydim_id)
+        id
+      elsif(debitor = identify_debitor(facade))
+        debitor.unique_id
+      else
+        create_debitor(facade).unique_id
+      end
 		end
-		def identify_debitor(comp_or_hosp)
+		def identify_debitor(facade)
 			ydim_connect { |client|
-				if(debitor = client.search_debitors(comp_or_hosp.fullname).first)
-					comp_or_hosp.ydim_id = debitor.unique_id
-					comp_or_hosp.odba_store
+        term = facade.fullname || facade.invoice_email
+				if(debitor = client.search_debitors(term).first)
+          facade.ydim_id = debitor.unique_id
 					debitor
 				end
 			}
@@ -73,10 +94,9 @@ module ODDB
 		def inject(invoice)
 			if(id = invoice.ydim_id)
 				ydim_connect { |client| client.invoice(id) }
-			elsif((ptr = invoice.user_pointer) && (user = ptr.resolve(@app)))
-				comp_or_hosp = ((user.respond_to?(:model)) ? user.model : user) || user
+			elsif(email = invoice.yus_name)
 				items = invoice.items.values
-				ydim_inv = inject_from_items(invoice_date(items), comp_or_hosp, items,
+				ydim_inv = inject_from_items(invoice_date(items), email, items,
 																		invoice.currency || 'CHF')
 				ydim_inv.payment_received = invoice.payment_received?
 				ydim_inv.odba_store
@@ -84,9 +104,10 @@ module ODDB
 				invoice.odba_store
 			end
 		end
-		def inject_from_items(date, comp_or_hosp, items, currency='CHF')
+		def inject_from_items(date, email, items, currency='CHF')
+      facade = DebitorFacade.new(email, @app)
 			ydim_connect { |client|
-				ydim_inv = client.create_invoice(debitor_id(comp_or_hosp))
+				ydim_inv = client.create_invoice(debitor_id(facade))
 				ydim_inv.description = invoice_description(items)
 				ydim_inv.date = date
 				ydim_inv.currency = currency

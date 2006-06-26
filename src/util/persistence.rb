@@ -146,6 +146,13 @@ Grammar OddbSize
 					ast.compact!
 					produce_pointer(ast)
 				end
+        def from_yus_privilege(string)
+          ## does not support encapsulated pointers
+          args = string.scan(/!([^!]+)/).collect { |matches|
+            matches.first.split('.').compact
+          }
+          self.new(*args)
+        end
 				private
 				def produce_argument(ast)
 					arg = ast.argument
@@ -307,6 +314,13 @@ Grammar OddbSize
 					'!' << step.join(',')
 				}.join << '.'
 			end
+      def to_yus_privilege
+        @directions.inject('org.oddb.model') { |yus, steps|
+          steps = steps.dup
+          yus << '.!' << steps.shift.to_s
+          steps.inject(yus) { |yus, step| yus << '.' << step.to_s }
+        }
+      end
 			def +(other)
 				dir = @directions.dup << [other].flatten
 				Pointer.new(*dir)

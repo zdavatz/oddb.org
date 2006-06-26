@@ -34,7 +34,7 @@ class AtcHeader < HtmlGrid::Composite
 		[0,0]	=>	'atc-result',
 	}
 	def init
-		if(@session.user.is_a? RootUser)
+		if(@session.user.allowed?('edit', 'org.oddb.model.!atc_class.*'))
 			components.store([0,0,0], :edit)
 		end
 		super

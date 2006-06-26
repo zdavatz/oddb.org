@@ -8,8 +8,10 @@ require 'state/admin/init'
 require 'state/admin/logout'
 require 'state/admin/patent'
 require 'state/admin/user'
+require 'state/admin/entities'
 require 'state/drugs/fachinfo'
 require 'state/hospitals/hospital'
+require 'ostruct'
 
 module ODDB
 	module State
@@ -56,6 +58,9 @@ class IncompletePackage < Package; end
 class Indication < Global; end
 module Root
 	include State::Admin::User
+  EVENT_MAP = {
+    :users  =>  State::Admin::Entities, 
+  }
 	RESOLVE_STATES = {
 		[ :address_suggestion ]				=>	State::Admin::AddressSuggestion,
 		[ :atc_class ]								=>	State::Admin::AtcClass,
@@ -90,6 +95,12 @@ module Root
 	def addresses
 		model = @session.app.address_suggestions.values
 		State::Admin::Addresses.new(@session, model)
+	end
+	def effective_substances
+		model = @session.substances.select { |sub| 
+			sub.is_effective_form?
+		}
+		State::Substances::EffectiveSubstances.new(@session, model)
 	end
 	def galenic_groups
 		model = @session.app.galenic_groups.values
@@ -148,6 +159,26 @@ module Root
 		item.carry(:connection_keys, [])
 		State::Substances::Substance.new(@session, item)
 	end
+  def new_user
+    pointer = Persistence::Pointer.new(:user)
+    user = Persistence::CreateItem.new(pointer)
+    case @model.odba_instance
+    when ODDB::Company # and not: ODDB::State::Companies::Company
+      aff = OpenStruct.new
+      aff.name = 'CompanyUser'
+      user.carry(:affiliations, [aff])
+      user.carry(:association, @model.pointer.to_yus_privilege)
+      user.carry(:name, @model.contact_email)
+      if(fullname = @model.contact)
+        first, last = fullname.split(' ', 2)
+        user.carry(:name_first, first)
+        user.carry(:name_last, last)
+      end
+    else
+      user.carry(:affiliations, [])
+    end
+    State::Admin::Entity.new(@session, user)
+  end
 	def	orphaned_fachinfos
 		model = @session.app.orphaned_fachinfos.values
 		State::Admin::OrphanedFachinfos.new(@session, model)
@@ -187,12 +218,11 @@ module Root
 		model = @session.substances
 		State::Substances::Substances.new(@session, model)
 	end
-	def effective_substances
-		model = @session.substances.select { |sub| 
-			sub.is_effective_form?
-		}
-		State::Substances::EffectiveSubstances.new(@session, model)
-	end
+  def user
+    name = @session.user_input(:name)
+    user = @session.user.find_entity(name)
+    State::Admin::Entity.new(@session, user)
+  end
 	def zones
 		[:admin, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :substances, :companies]
 	end

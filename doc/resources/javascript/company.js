@@ -7,6 +7,7 @@ function sbsm_encode(value)
 
 function update_company(url)
 {
+  document.body.style.cursor = 'wait';
 	dojo.io.bind({
 		url: url,
 		load: function(type, data, evt) { 
@@ -15,6 +16,7 @@ function update_company(url)
 			{
 				content.parentNode.innerHTML = data	;
 			}
+      document.body.style.cursor = 'auto';
 		},
 		mimetype: "text/html"
 	});

@@ -17,20 +17,13 @@ class CompanyResult < State::Companies::Global
 	attr_reader :range
 	DIRECT_EVENT = :result
 	LIMITED = true
-	VIEW = {
-		ODDB::UnknownUser		=>	View::Companies::UnknownCompanies,
-		ODDB::PowerLinkUser	=>	View::Companies::UnknownCompanies,
-		ODDB::CompanyUser		=>	View::Companies::UnknownCompanies,
-		ODDB::RootUser			=>	View::Companies::RootCompanies,
-		ODDB::AdminUser			=>	View::Companies::RootCompanies,
-	}	
 	def init
+    priv = @session.user.allowed?('edit', 'org.oddb.model.!company.*')
+    @default_view = priv ? View::Companies::RootCompanies \
+                         : View::Companies::UnknownCompanies
 		if(!@model.is_a?(Array) || @model.empty?)
-			if(@session.user.is_a?(AdminUser))
-				@default_view = View::Companies::RootEmptyResult
-			else
-				@default_view = View::Companies::EmptyResult
-			end
+      @default_view = priv ? View::Companies::RootEmptyResult \
+                           : View::Companies::EmptyResult
 		end
 		filter_interval
 	end
@@ -39,15 +32,12 @@ class CompanyList < CompanyResult
 	DIRECT_EVENT = :companylist
 	def init
 		model = @session.app.companies.values
-		if(@session.user.is_a?(ODDB::AdminUser))
+		if(@session.user.allowed?('edit', 'org.oddb.model.!company.*'))
 			@model = model
-		elsif(@session.user.is_a?(ODDB::CompanyUser))
+    else
+      association = @session.user.model
 			@model = model.select { |company|
-				(company.listed? || @session.user_equiv?(company))
-			}
-		else
-			@model = model.select { |company|
-				company.listed?
+				company.listed? || company == association
 			}
 		end
 		super

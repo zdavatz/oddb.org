@@ -47,7 +47,7 @@ class AssignFachinfoForm < View::FormList
 	end
 	def fachinfo_pointer(model, session=@session)
 		reg = @model.registration
-		if(model == reg || !@session.user.allowed?(model))
+		if(model == reg || !@session.user.allowed?('edit', model))
 			# nothing
 		elsif(model.fachinfo == reg.fachinfo)
 			@lookandfeel.lookup(:assign_fachinfo_equal)			

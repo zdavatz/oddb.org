@@ -11,21 +11,26 @@ module User
 	RESOLVE_STATES = {}
 	def resolve_state(pointer, type=:standard)
 		if((type == :standard))
-			@viral_module::RESOLVE_STATES.fetch(pointer.skeleton) {
-				super
-			}
+			@viral_modules.collect { |mod|
+        mod::RESOLVE_STATES[pointer.skeleton]
+			}.compact.first || super
 		else
 			super
 		end
 	end
 	def trigger(event)
 		newstate = super
-		unless(event==:logout)
-			unless(@viral_module.nil? || newstate.is_a?(@viral_module))
-				newstate.extend(@viral_module) 
-			end
+		if(event==:logout)
+      @session.logout
+    else
+      @viral_modules.uniq.each { |mod|
+        newstate.extend(mod) unless newstate.is_a?(mod)
+      }
 		end
 		newstate
+  rescue DRb::DRbError, RangeError
+    @session.logout
+    home
 	end
 	def user_navigation
 		[

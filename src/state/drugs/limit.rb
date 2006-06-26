@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # State::Drugs::Limit -- oddb -- 28.10.2005 -- hwyss@ywesee.com
 
+require 'state/global_predefine'
 require 'state/limit'
 require 'view/drugs/resultlimit'
 
