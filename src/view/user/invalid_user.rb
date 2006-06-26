@@ -23,18 +23,16 @@ class InvalidUserComposite < HtmlGrid::Composite
 	def invalid_user_explain(model)
 		lkey = 'query_limit_poweruser_'
 		user = @session.user
-		name = ''
-		salutation = ''
-		if(user.is_a?(PowerUser) && (inv = user.invoices.last))
-			lkey += inv.max_duration.to_s
-			pointer = inv.user_pointer
-			dluser = pointer.resolve(@session)
-			name = dluser.name
-			salutation = @lookandfeel.lookup(dluser.salutation)
+		salutation = name_first = name_last = ''
+		if(user.is_a?(YusUser))
+			lkey += user.poweruser_duration.to_s
+			salutation = @lookandfeel.lookup(user.salutation)
+			name_first = user.name_first
+			name_last = user.name_last
 		end
 		usertype = @lookandfeel.lookup(lkey)
 		@lookandfeel.lookup(:invalid_user_explain, 
-			salutation, name, usertype)
+			salutation, name_first, name_last, usertype)
 	end
 	def renew_poweruser(model)
 		link = HtmlGrid::Link.new(:renew_poweruser, model, @session, self)

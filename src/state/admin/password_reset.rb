@@ -23,15 +23,11 @@ class PasswordReset < Global
 			@errors.store(:set_pass_2, err2)
 		end
 		unless(error?)
-			hash = {
-				:pass_hash		=>	pass1,
-				:reset_token	=>	nil,
-				:reset_until	=>	Time.now,
-			}
-			ODBA.transaction { 
-				@session.app.update(@model.pointer, hash, @model.unique_email)
-			}
-			@session.force_login(@model)
+      email = @model.email
+      @session.yus_reset_password(email, @model.token, pass1)
+      @session.valid_input.store(:email, email)
+      @session.valid_input.store(:pass, pass1)
+      @model = @session.login
 			autologin(@model, Confirm.new(@session, :password_reset_confirm))
 		end
 	end

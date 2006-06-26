@@ -36,8 +36,20 @@ class Ipn < State::Global
 				status = response.body
 				if(status == 'VERIFIED')
 					invoice.payment_received!
+          yus_name = invoice.yus_name
+          invoice.items.each_value { |item|
+            case item.type
+            when :poweruser
+              @session.yus_set_preference(yus_name, 'poweruser_duration',
+                                         invoice.max_duration)
+              @session.yus_grant(yus_name, 'login', 'org.oddb.PowerUser')
+              @session.yus_grant(yus_name, 'view', 'org.oddb', item.expiry_time)
+            when :download
+              @session.yus_grant(yus_name, 'download', item.text, 
+                                 item.expiry_time)
+            end
+          }
 					YdimPlugin.new(@session.app).inject(invoice)
-					#invoice.odba_isolated_store
 					invoice.types.each { |type|
 						case type
 						when :poweruser
@@ -54,7 +66,7 @@ class Ipn < State::Global
 					sleep(3-tries)
 					retry
 				else
-					send_notification(invoice) { |outgoing, user, lookandfeel|
+					send_notification(invoice) { |outgoing, recipient, lookandfeel|
 						outgoing.subject = error.message
 						parts = [ 
 							lookandfeel.lookup(:paypal_msg_error),
@@ -69,8 +81,7 @@ class Ipn < State::Global
 		end
 	end
 	def send_download_notification(invoice)
-		send_notification(invoice) { |outgoing, user, lookandfeel|
-			recipient = user.email
+		send_notification(invoice) { |outgoing, recipient, lookandfeel|
 			outgoing.subject = lookandfeel.lookup(:download_mail_subject)
 			urls = invoice.items.values.collect { |item|
 				data = {
@@ -80,14 +91,15 @@ class Ipn < State::Global
 				}
 				lookandfeel._event_url(:download, data)
 			}
-			salut = lookandfeel.lookup(user.salutation)
+			salut = lookandfeel.lookup(yus(recipient, :salutation))
 			suffix = (urls.size == 1) ? 's' : 'p'
 			lines = [
 				lookandfeel.lookup(:download_mail_body),
 				lookandfeel.lookup("download_mail_instr_#{suffix}"),
 			]
 			parts = [
-				lookandfeel.lookup(:download_mail_salut, salut, user.name),
+				lookandfeel.lookup(:download_mail_salut, salut, 
+                           yus(recipient, :name_last)),
 				lines.join("\n"),
 				urls.join("\n"), 
 				lookandfeel.lookup(:download_mail_feedback),
@@ -97,8 +109,7 @@ class Ipn < State::Global
 		}
 	end
 	def send_download_seller_notification(invoice)
-		if((pointer = invoice.user_pointer) \
-			&& user = @session.resolve(pointer))
+		if(name = invoice.yus_name)
 			lookandfeel = @session.lookandfeel
 			recipient = PAYPAL_RECEIVER
 			outgoing = TMail::Mail.new
@@ -106,19 +117,19 @@ class Ipn < State::Global
 			outgoing.to = [recipient]
 			outgoing.from = MAIL_FROM
 			outgoing.subject = lookandfeel.lookup(:download_mail_subject)
-			salut = lookandfeel.lookup(user.salutation)
-			company = user.company_name
-			business = lookandfeel.lookup(user.business_area)
+			salut = lookandfeel.lookup(yus(name, :salutation))
+			company = yus(name, :company_name)
+			business = lookandfeel.lookup(yus(name, :business_area))
 			if(!company.to_s.strip.empty?)
 				business = "#{company} (#{business})"
 			end
 			body = [
-				[salut, user.name_first, user.name].join(' '),
+				[salut, yus(name, :name_first), yus(name, :name_last)].join(' '),
 				business,
-				user.address,
-				[user.plz, user.location].join(' '),
-				user.phone,
-				user.email,
+				yus(name, :address),
+				[yus(name, :plz), yus(name, :location)].join(' '),
+				yus(name, :phone),
+				yus(name, :email),
 			].compact
 			body.push(nil)
 			body.push(format_invoice(invoice, lookandfeel))
@@ -136,14 +147,15 @@ class Ipn < State::Global
 		puts e.backtrace
 	end
 	def send_poweruser_notification(invoice)
-		send_notification(invoice) { |outgoing, user, lookandfeel|
+		send_notification(invoice) { |outgoing, recipient, lookandfeel|
 			outgoing.subject = lookandfeel.lookup(:poweruser_mail_subject)
-			salut = lookandfeel.lookup(user.salutation)
+			salut = lookandfeel.lookup(yus(recipient, :salutation))
 			item = invoice.item_by_text('unlimited access')
 			dkey = "poweruser_duration_#{item.duration.to_i}"
 			duration = lookandfeel.lookup(dkey)
 			parts = [
-				lookandfeel.lookup(:poweruser_mail_salut, salut, user.name),
+				lookandfeel.lookup(:poweruser_mail_salut, salut, 
+                           yus(recipient, :name_last)),
 				lookandfeel.lookup(:poweruser_mail_body),
 				lookandfeel.lookup(:poweruser_mail_instr, duration,
 					lookandfeel._event_url(:login_form)),
@@ -153,10 +165,8 @@ class Ipn < State::Global
 		}
 	end
 	def send_notification(invoice, &block)
-		if((pointer = invoice.user_pointer) \
-			&& user = @session.resolve(pointer))
+		if(recipient = invoice.yus_name)
 			lookandfeel = @session.lookandfeel
-			recipient = user.email
 			outgoing = TMail::Mail.new
 			outgoing.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
 			outgoing.to = [recipient]
@@ -164,7 +174,7 @@ class Ipn < State::Global
 			outgoing.date = Time.now
 			outgoing['User-Agent'] = 'ODDB Paypal-IPN'
 
-			block.call(outgoing, user, lookandfeel) 
+			block.call(outgoing, recipient, lookandfeel) 
 
 			recipients = ([recipient] + RECIPIENTS).uniq
 			Net::SMTP.start(SMTP_SERVER) { |smtp|
@@ -231,6 +241,9 @@ class Ipn < State::Global
 		sprintf("%#{sizes.at(0)}s %-#{sizes.at(1)}s  EUR %#{sizes.at(2)}s",
 			*data)
 	end
+  def yus(recipient, key)
+    @session.yus_get_preference(recipient, key)
+  end
 end
 		end
 	end

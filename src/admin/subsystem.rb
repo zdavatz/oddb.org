@@ -8,6 +8,7 @@ module ODDB
 	module Admin
 		class Subsystem
 			include ODBA::Persistable
+      attr_reader :download_users
 			def initialize
 				@download_users = {}
 			end
