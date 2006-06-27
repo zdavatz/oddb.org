@@ -19,7 +19,6 @@ class Entity < Global
     begin
       pass1 = input[:set_pass_1]
       pass2 = input[:set_pass_2]
-      puts pass1.inspect, pass2.inspect
       if(pass1 || pass2)
         if(pass1 != pass2)
           err1 = create_error(:e_non_matching_set_pass, :set_pass_1, pass1)
@@ -40,7 +39,6 @@ class Entity < Global
           @session.user.set_password(name, pass1)
         end
         preferences.each { |pref|
-          puts "#{pref} => #{input[pref]}"
           @session.user.set_entity_preference(name, pref, input[pref], 'global')
         }
         privs = input[:yus_privileges] || {}
