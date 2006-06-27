@@ -60,7 +60,7 @@ module ODDB
 	end
 	class AbstractInvoiceItem
 		attr_accessor :data, :duration, :expiry_time, :item_pointer,
-			:price, :quantity, :text, :time, :type, :unit, :user_pointer, :yus_name
+			:price, :quantity, :text, :time, :type, :unit, :user_pointer, :yus_name,
 			:vat_rate
 		def initialize
 			@quantity = 1.0

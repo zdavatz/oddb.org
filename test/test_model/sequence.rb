@@ -60,6 +60,8 @@ class StubSequenceApp
 	def galenic_form(galform)
 		@galforms[galform] ||= StubSequenceGalenicForm.new
 	end
+  def sequence(key)
+  end
 	def substance(key)
 		@substances.first
 	end
