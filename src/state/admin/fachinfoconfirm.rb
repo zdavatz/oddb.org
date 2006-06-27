@@ -102,7 +102,7 @@ class FachinfoConfirm < State::Admin::Global
 			:time					=>	time,
 			:type					=>	type,
 			:unit					=>	unit,
-			:user_pointer	=>	@session.user.pointer,
+			:yus_name   	=>	@session.user.name,
 			:vat_rate			=>	VAT_RATE, 
 		} 
 		@session.app.update(item_pointer.creator, values, unique_email)

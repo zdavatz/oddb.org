@@ -71,7 +71,7 @@ class RegisterInvoicedDownload < RegisterDownload
 				slate = app.create(slate_ptr)
 				item_ptr = slate_ptr + [:item]
 				values = item.values
-				values.store(:user_pointer, @session.user.pointer)
+				values.store(:yus_name, @session.user.name)
 				values.store(:time, Time.now)
 				@paid = app.update(item_ptr.creator, values, unique_email)
 			end

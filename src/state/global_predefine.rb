@@ -7,6 +7,7 @@ module ODDB
 	module State
 		class Global < SBSM::State
 		end
+    module Limit; end
 		module Admin 
 class Global < State::Global; end
 module Root; end

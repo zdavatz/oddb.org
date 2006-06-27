@@ -49,7 +49,7 @@ module ODDB
 		end
 		def group_by_user(items)
 			items.inject({}) { |groups, item|
-				(groups[item.user_pointer] ||= []).push(item)
+				(groups[item.yus_name] ||= []).push(item)
 				groups
 			}
 		end

@@ -187,10 +187,12 @@ class OddbPrevalence
 		}
 		unless(deletables.empty?)
 			deletables.each { |invoice|
+=begin # replaced by Yus
 				if((ptr = invoice.user_pointer) \
 					&& (user = ptr.resolve(self)))
 					user.remove_invoice(invoice)	
 				end
+=end
 				delete(invoice.pointer)
 			}
 			@invoices.odba_isolated_store
@@ -1543,6 +1545,26 @@ module ODDB
           inv.odba_store
         }
       }
+
+      # Fix all Invoices and InvoiceItems - user_pointer -> yus_name
+      ptr_replace = Proc.new { |item|
+        if((ptr = item.user_pointer) && user = ptr.resolve(@system))
+          item.yus_name = user.unique_email
+          item.odba_store
+        end
+      }
+      @system.invoices.each_value { |inv|
+        ptr_replace.call(inv)
+        inv.items.each_value { |item|
+          ptr_replace.call(item)
+        }
+      }
+      @system.slates.each_value { |slate|
+        slate.items.each_value { |item|
+          ptr_replace.call(item)
+        }
+      }
+
       YUS_SERVER.logout(session)
     end
 	end
