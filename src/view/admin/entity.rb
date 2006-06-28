@@ -76,6 +76,9 @@ class EntityForm < Form
   include HtmlGrid::ErrorMessage
   LABELS = true
   LEGACY_INTERFACE = false
+  LOOKANDFEEL_MAP = {
+    :name => :email, 
+  }
   COMPONENTS = {
     [0,0] =>  :name,
     [0,1] =>  :salutation,
@@ -95,8 +98,6 @@ class EntityForm < Form
   COMPONENT_CSS_MAP = {
     [1,0,4,5] =>  'standard',
     [1,6]     =>  'standard',
-    [1,7]     =>  'standard',
-    [3,7]     =>  'standard',
   }
   CSS_MAP = {
     [0,0,4,5] =>  'list',

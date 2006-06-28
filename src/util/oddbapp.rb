@@ -1499,7 +1499,8 @@ module ODDB
             end
             session.set_entity_preference(email, 'association', model.odba_id)
           end
-          if(userobj.respond_to?(:invoices))
+          if(userobj.respond_to?(:paid_invoices))
+            userobj.invoices.delete_if { |inv| inv.odba_instance.nil? }
             pair = userobj.paid_invoices.inject([]) { |memo, invoice|
               invoice.items.each_value { |item|
                 if(item.type == :poweruser && time = item.expiry_time)
@@ -1524,10 +1525,16 @@ module ODDB
       }
       session.grant('hwyss@ywesee.com', 'grant', 'grant')
       session.grant('hwyss@ywesee.com', 'grant', 'login')
+      klass = 'DownloadUser'
+      unless(group = session.find_entity(klass))
+        group = session.create_entity(klass)
+        session.grant(klass, 'login', 'org.oddb.DownloadUser')
+      end
       @system.admin_subsystem.download_users.each { |email, userobj|
         unless(user = session.find_entity(email))
           user = session.create_entity(email)
         end
+        session.affiliate(email, klass)
         userobj.invoices.each { |invoice|
           invoice.items.each_value { |item|
             if(item.type == :download && item.expiry_time > Time.now)

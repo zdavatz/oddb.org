@@ -58,6 +58,9 @@ module ODDB
 				super
 			end
 		end
+		def expired?
+      super || (logged_in? && @user.expired?)
+		end
 		def flavor
 			@flavor ||= (@valid_input[:partner] || super)
 		end

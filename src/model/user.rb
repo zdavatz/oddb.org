@@ -146,7 +146,7 @@ module ODDB
 		end
     def paid_invoices
       self.invoices.select { |invoice|
-        invoice.payment_received?
+        invoice.odba_instance && invoice.payment_received?
       }
     end
     alias :name_last :name
@@ -191,6 +191,11 @@ module ODDB
         remote_call(:allowed?, action, key)
 			end
       result
+    end
+    def expired?
+      !@yus_session.ping
+    rescue StandardError #RangeError, DRb::DRbConnError and others
+      true
     end
     def model
       if(id = remote_call(:get_preference, 'association'))
