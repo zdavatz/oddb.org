@@ -126,7 +126,7 @@ module ODDB
 			end
 		end
 		def company_name
-			@model ? @model.name : ''
+			@model.odba_instance ? @model.name : ''
 		end
 		def creditable?(obj)
 			!@model.nil?
@@ -199,9 +199,12 @@ module ODDB
       end
       allowed?('credit', obj)
     end
+		def creditable?(obj)
+			allowed?('credit')
+		end
     def expired?
       !@yus_session.ping
-    rescue StandardError #RangeError, DRb::DRbConnError and others
+    rescue RangeError, DRb::DRbConnError
       true
     end
     def fullname

@@ -127,7 +127,7 @@ class Ipn < State::Global
 				[salut, yus(name, :name_first), yus(name, :name_last)].join(' '),
 				business,
 				yus(name, :address),
-				[yus(name, :plz), yus(name, :location)].join(' '),
+				[yus(name, :plz), yus(name, :city)].join(' '),
 				yus(name, :phone),
 				yus(name, :email),
 			].compact
