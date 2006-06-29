@@ -24,7 +24,7 @@ class Redirect < HtmlGrid::Component
 		if((user = @session.user).is_a?(YusUser))
 			url << "&email=#{utf8(user.email)}&first_name=#{utf8(user.name_first)}" \
 				<< "&last_name=#{utf8(user.name_last)}&address1=#{utf8(user.address)}" \
-				<< "&city=#{utf8(user.location)}&zip=#{utf8(user.plz)}" \
+				<< "&city=#{utf8(user.city)}&zip=#{utf8(user.plz)}" \
 				<< "&redirect_cmd=_xclick&cmd=_ext-enter"
 		else
 			url << '&cmd=_xclick'
