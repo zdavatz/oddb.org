@@ -1445,8 +1445,8 @@ module ODDB
         case klass 
         when 'RootUser' 
           #'view|org.oddb',
-          privileges.concat [ 'grant|edit', 'edit|yus.entities', 
-            'edit|org.oddb.drugs', 'set_password',
+          privileges.concat [ 'grant|create', 'grant|edit', 'grant|credit',
+            'edit|yus.entities', 'edit|org.oddb.drugs', 'set_password',
             'edit|org.oddb.model.!company.*', 'create|org.oddb.registration',
             'edit|org.oddb.model.!sponsor.*', 
             'edit|org.oddb.model.!indication.*', 
@@ -1515,6 +1515,9 @@ module ODDB
               inv.yus_name = email
               inv.odba_store
             }
+          end
+          if(userobj.creditable?('download'))
+            session.grant(email, 'credit', 'org.oddb.download')
           end
           YusUser::PREFERENCE_KEYS.each { |key|
             if(userobj.respond_to?(key) && (val = userobj.send(key)))

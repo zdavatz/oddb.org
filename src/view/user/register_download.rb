@@ -123,6 +123,52 @@ class RegisterDownload < View::PublicTemplate
   JAVASCRIPTS = ['autofill']
 	CONTENT = RegisterDownloadComposite
 end
+=begin # experimental Implementation of Invoiced Download. 
+class RegisterInvoicedDownloadForm < Form
+	EVENT = :checkout
+	COMPONENTS = {
+		[0,0]	=>	:submit,
+	}
+	def submit(model, session=@session)
+		super(model, session, :checkout_invoice)
+	end
+end
+class RegisterInvoicedDownloadComposite < HtmlGrid::Composite 
+	include View::PayPal::InvoiceMethods
+	include View::DataDeclaration
+	COMPONENTS = {
+		[0,0]	=>	"register_download",
+		[0,0,0]	=>	'dash_separator',
+		[0,0,1]	=>	:data_declaration,
+		[0,1]		=>	:invoice_descr,
+		[0,2]		=>	:invoice_items,
+		[0,3]		=>	RegisterInvoicedDownloadForm,
+	}
+	CSS_CLASS = 'composite'
+	CSS_MAP = {
+		[0,0]	=>	'th',
+		[0,1,1,3]	=>	'list',
+	}
+	COLSPAN_MAP = {
+		[0,0] => 2,
+		[0,1] => 2,
+	}
+	LEGACY_INTERFACE = false
+	def invoice_descr(model)
+		date = if(@@today.day < 15) 
+			Date.new(@@today.year, @@today.month, 15)
+		else
+			Date.new(@@today.year, @@today.month) >> 1
+		end
+		@lookandfeel.lookup(:invoice_descr, 
+			date.strftime(@lookandfeel.lookup(:date_format)),
+			@session.user.unique_email)
+	end
+end
+class RegisterInvoicedDownload < View::ResultTemplate
+	CONTENT = RegisterInvoicedDownloadComposite
+end
+=end
 		end
 	end
 end

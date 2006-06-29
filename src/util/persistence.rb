@@ -339,6 +339,7 @@ Grammar OddbSize
 			def initialize(pointer=Pointer.new)
 				@inner_pointer = pointer
 				@pointer = Pointer.new([:create, pointer])
+        @data = {}
 			end
 			def ancestors(app)
 				@inner_pointer.ancestors.collect { |pointer| pointer.resolve(app) }
@@ -347,15 +348,10 @@ Grammar OddbSize
 				@inner_pointer.append(val)
 			end
 			def carry(key, val=nil)
-				instance_variable_set("@#{key}", val)
-				instance_eval <<-EOS
-					def #{key}(*args)
-						@#{key}
-					end
-				EOS
+        @data.store(key, val)
 			end
-			def method_missing(*args)
-				nil
+			def method_missing(key, *args)
+        @data[key]
 			end
 			def parent(app)
 				@inner_pointer.parent.resolve(app)

@@ -67,7 +67,10 @@ module ODDB
       :yus_privileges => [ 
         'edit|yus.entities', 
         'grant|login', 
+        'grant|view', 
+        'grant|create', 
         'grant|edit', 
+        'grant|credit', 
         'set_password',
         'login|org.oddb.RootUser', 
         'login|org.oddb.AdminUser', 
@@ -88,6 +91,7 @@ module ODDB
         'invoice|org.oddb.processing', 
         'view|org.oddb.patinfo_stats', 
         'view|org.oddb.patinfo_stats.associated', 
+        'credit|org.oddb.download', 
       ],
 		}	
 		EVENTS = [

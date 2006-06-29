@@ -10,13 +10,11 @@ module ODDB
 			unless(items.empty?)
 				payable_items = filter_paid(items)
 				groups = group_by_user(payable_items)
-				groups.each { |pointer, items|
-					if((user = pointer.resolve(@app)) && (hospital = user.model))
-						## first send the invoice 
-						ydim_id = send_invoice(month, hospital, items) 
-						## then store it in the database
-						create_invoice(user, items, ydim_id)
-					end
+				groups.each { |email, items|
+					## first send the invoice 
+					ydim_id = send_invoice(month, email, items) 
+					## then store it in the database
+					create_invoice(email, items, ydim_id)
 				}
 			end
 			nil

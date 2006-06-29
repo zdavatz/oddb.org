@@ -199,8 +199,8 @@ module ODDB
 				@session.clear_interaction_basket
 				State::Interactions::EmptyBasket.new(@session, [])
 			end
-			def creditable?
-				@session.user.creditable?(@model)
+			def creditable?(item = @model)
+				@session.user.creditable?(item)
 			end
 			def direct_request_path
 				if(event = self.direct_event)
@@ -416,7 +416,14 @@ module ODDB
 					pointer = Persistence::Pointer.new(:invoice)
 					invoice = Persistence::CreateItem.new(pointer)
 					invoice.carry(:items, items)
-					State::User::RegisterDownload.new(@session, invoice)
+          # experimental Implementation of Invoiced Download. 
+          # Does not work yet, because an Invoice-Id is needed for downloading,
+          # but no invoice is created until the next run of DownloadInvoicer
+          #if(creditable?('org.oddb.download'))
+          #  State::User::PaymentMethod.new(@session, invoice)
+          #else
+            State::User::RegisterDownload.new(@session, invoice)
+          #end
 				end
 			end
 			def proceed_poweruser

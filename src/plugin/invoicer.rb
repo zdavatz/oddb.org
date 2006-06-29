@@ -27,21 +27,23 @@ module ODDB
 				}
 			}
 		end
+    def ensure_yus_user(comp_or_hosp)
+      mail = comp_or_hosp.invoice_email
+      @app.yus_create_user(mail)
+      @app.yus_grant(mail, 'edit', comp_or_hosp.pointer.to_yus_privilege)
+      @app.yus_set_preference(mail, 'association', comp_or_hosp.odba_id)
+      mail
+    rescue Yus::YusError
+      ## assume user exists
+      mail
+    end
 		def resend_invoice(invoice, day = @@today)
 			YdimPlugin.new(@app).send_invoice(invoice.ydim_id)
 		end
 		def rp2fr(price)
 			price.to_f / 100.0
 		end
-		def send_invoice(date, comp_or_hosp, items)
-      mail = comp_or_hosp.invoice_email
-      begin
-        @app.yus_create_user(mail)
-        @app.yus_grant(mail, 'edit', comp_or_hosp.pointer.to_yus_privilege)
-        @app.yus_set_preference(mail, 'association', comp_or_hosp.odba_id)
-      rescue Yus::YusError
-        ## assume user exists
-      end
+		def send_invoice(date, mail, items)
 			plugin = YdimPlugin.new(@app)
 			ydim_inv = plugin.inject_from_items(date, mail, items)
 			ydim_id = ydim_inv.unique_id
@@ -88,10 +90,11 @@ module ODDB
 					package_item.expiry_time = expiry_time
 					items.push(package_item)
 				end
+        mail = ensure_yus_user(comp)
 				## first send the invoice 
-				ydim_id = send_invoice(date, comp, items) 
+				ydim_id = send_invoice(date, mail, items) 
 				## then store it in the database
-				create_invoice(comp.invoice_email, items, ydim_id)
+				create_invoice(mail, items, ydim_id)
 				@app.update(comp.pointer, {:index_invoice_date => (date >> 12)})
 			end
 		end
@@ -140,10 +143,11 @@ module ODDB
 					member_item.expiry_time = expiry_time
 					items.push(member_item)
 				end
+        mail = ensure_yus_user(comp)
 				## first send the invoice 
-				ydim_id = send_invoice(date, comp, items) 
+				ydim_id = send_invoice(date, mail, items) 
 				## then store it in the database
-				create_invoice(comp.invoice_email, items, ydim_id)
+				create_invoice(mail, items, ydim_id)
 				@app.update(comp.pointer, {:lookandfeel_invoice_date => (date >> 12)})
 			end
 		end

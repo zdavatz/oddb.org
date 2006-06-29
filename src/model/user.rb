@@ -192,10 +192,20 @@ module ODDB
 			end
       result
     end
+    def creditable?(obj)
+      unless(obj.is_a?(String))
+        klass = obj.class.to_s.split('::').last
+        obj = "org.oddb.#{klass}"
+      end
+      allowed?('credit', obj)
+    end
     def expired?
       !@yus_session.ping
     rescue StandardError #RangeError, DRb::DRbConnError and others
       true
+    end
+    def fullname
+      [name_first, name_last].join(' ')
     end
     def model
       if(id = remote_call(:get_preference, 'association'))
