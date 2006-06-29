@@ -2,12 +2,13 @@
 # State::Admin::User -- oddb -- 23.07.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'
+require 'sbsm/viralstate'
 
 module ODDB
 	module State
 		module Admin
 module User
-	VIRAL = true
+  include SBSM::ViralState
 	RESOLVE_STATES = {}
 	def resolve_state(pointer, type=:standard)
 		if((type == :standard))
@@ -17,20 +18,6 @@ module User
 		else
 			super
 		end
-	end
-	def trigger(event)
-		newstate = super
-		if(event==:logout)
-      @session.logout
-    else
-      @viral_modules.uniq.each { |mod|
-        newstate.extend(mod) unless newstate.is_a?(mod)
-      }
-		end
-		newstate
-  rescue DRb::DRbError, RangeError
-    @session.logout
-    home
 	end
 	def user_navigation
 		[
