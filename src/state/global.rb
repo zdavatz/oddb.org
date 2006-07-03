@@ -308,8 +308,8 @@ module ODDB
 				State::Drugs::Init.new(@session, user)
 			end
 			def navigation
+				#+ zone_navigation \
 				help_navigation \
-				+ zone_navigation \
 				+ user_navigation \
 				+ home_navigation
 			end
