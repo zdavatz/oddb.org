@@ -454,7 +454,8 @@ class AjaxCompanyComposite < CompanyComposite
     users = @session.user.entities.select { |entity|
       entity.get_preference('association', YUS_DOMAIN) == model.odba_id
     }
-    View::Admin::InnerEntityList.new(users, @session, self)
+		model = View::Admin::Entities.wrap_all(users)
+    View::Admin::InnerEntityList.new(model, @session, self)
   end
 end
 class RootPharmaCompanyComposite < AjaxCompanyComposite

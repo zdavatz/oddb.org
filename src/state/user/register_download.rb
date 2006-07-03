@@ -16,7 +16,7 @@ class RegisterDownload < Global
 		checkout_mandatory() + [:business_area, :company_name]
 	end
 	def checkout_mandatory
-		super + [ :address, :plz, :location, :phone ]
+		super + [ :address, :plz, :city, :phone ]
 	end
 end
 =begin # experimental Implementation of Invoiced Download. 

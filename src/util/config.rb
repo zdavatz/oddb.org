@@ -17,6 +17,7 @@ module ODDB
 			key = method.to_s
 			if(match = /^create_(.*)$/.match(key))
 				@values[match[1]] ||= Config.new
+				@values.odba_store
 			elsif(match = /^(.*)=$/.match(key))
 				old = @values[match[1]]
 				ret = @values[match[1]] = args.first

@@ -34,14 +34,44 @@ class EntityList < HtmlGrid::FormList
   end
 end
 class InnerEntityList < EntityList
-  LOOKANDFEEL_MAP = {
-    :name =>  :email,
-  }
   DEFAULT_HEAD_CLASS = 'subheading'
   SORT_HEADER = false
 end
 class Entities < View::PrivateTemplate
   CONTENT = EntityList
+  class Wrapper
+    def Wrapper.delegators(*args)
+      args.each { |key|
+        define_method(key) { 
+          @entity.send(key)
+        }
+      }
+    end
+    def Wrapper.preferences(*args)
+      args.each { |key|
+        define_method(key) { 
+          @entity.send(:get_preference, key)
+        }
+      }
+    end
+    preferences :name_first, :name_last
+    delegators :name
+    def initialize(entity)
+      @entity = entity
+    end
+    def affiliations
+      @entity.affiliations.collect { |aff| aff.name }
+    end
+  end
+	def Entities.wrap_all(entities)
+		entities.collect { |entity|
+			Wrapper.new(entity)
+		}
+	end
+	def init
+		@model = Entities.wrap_all(@model)
+		super
+	end
 end
     end
   end

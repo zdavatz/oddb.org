@@ -1481,7 +1481,13 @@ module ODDB
         privileges.each { |priv|
           session.grant(klass, *priv.split('|'))
         }
-        if((email = userobj.unique_email) && !email.empty?)
+				empty = if(userobj.respond_to?(:invoices))
+									userobj.invoices.delete_if { |inv| inv.odba_instance.nil? }
+									userobj.invoices.empty?
+								else
+									false 
+								end
+        if(!empty && (email = userobj.unique_email) && !email.empty?)
           unless(user = session.find_entity(email))
             user = session.create_entity(email)
           end
@@ -1489,8 +1495,8 @@ module ODDB
           if(hash = userobj.pass_hash)
             session.set_password(email, hash)
           end
-          if(model = userobj.model)
-            session.grant(email, "edit", userobj.model.pointer.to_yus_privilege)
+          if(model = userobj.model.odba_instance)
+            session.grant(email, "edit", model.pointer.to_yus_privilege)
             if(contact = model.contact)
               contact.slice!(/^(Herr|Frau)\s+/)
               name_first, name_last = contact.split(' ', 2)
@@ -1534,26 +1540,30 @@ module ODDB
         session.grant(klass, 'login', 'org.oddb.DownloadUser')
       end
       @system.admin_subsystem.download_users.each { |email, userobj|
-        unless(user = session.find_entity(email))
-          user = session.create_entity(email)
-        end
-        session.affiliate(email, klass)
-        userobj.invoices.each { |invoice|
-          invoice.items.each_value { |item|
-            if(item.type == :download && item.expiry_time > Time.now)
-              session.grant(email, 'download', item.text, item.expiry_time)
-            end
-          }
-        }
-        YusUser::PREFERENCE_KEYS.each { |key|
-          if(userobj.respond_to?(key) && (val = userobj.send(key)))
-            session.set_entity_preference(email, key, val, YUS_DOMAIN)
-          end
-        }
-        userobj.invoices.each { |inv|
-          inv.yus_name = email
-          inv.odba_store
-        }
+				userobj.invoices.delete_if { |inv| inv.odba_instance.nil? }
+				unless(userobj.invoices.empty?)
+					unless(user = session.find_entity(email))
+						user = session.create_entity(email)
+					end
+					session.affiliate(email, klass)
+					userobj.invoices.delete_if { |inv| inv.odba_instance.nil? }
+					userobj.invoices.each { |invoice|
+						invoice.items.each_value { |item|
+							if(item.type == :download && item.expiry_time > Time.now)
+								session.grant(email, 'download', item.text, item.expiry_time)
+							end
+						}
+					}
+					YusUser::PREFERENCE_KEYS.each { |key|
+						if(userobj.respond_to?(key) && (val = userobj.send(key)))
+							session.set_entity_preference(email, key, val, YUS_DOMAIN)
+						end
+					}
+					userobj.invoices.each { |inv|
+						inv.yus_name = email
+						inv.odba_store
+					}
+				end
       }
 
       # Fix all Invoices and InvoiceItems - user_pointer -> yus_name
@@ -1574,7 +1584,10 @@ module ODDB
           ptr_replace.call(item)
         }
       }
-
+		rescue StandardError => e
+			puts e.class, e.message	
+			puts e.backtrace
+		ensure
       YUS_SERVER.logout(session)
     end
 	end
