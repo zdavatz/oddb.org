@@ -44,12 +44,8 @@ class AssignDeprivedSequenceForm < View::FormList
 		[9,0] =>  :patinfo,
 	}
 	CSS_MAP = {
-		[0,0]		=>	'small small-font list',
-		[1,0,8]	=>	'list',
-		[9,0] => 'result-infos',
-	}
-	COMPONENT_CSS_MAP = {
-		[6,0] => 'result-infos',
+		[0,0]		=>	'small list',
+		[1,0,9]	=>	'list',
 	}
 	SORT_DEFAULT = nil
 	def compose_list(model, offset)

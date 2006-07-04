@@ -56,13 +56,13 @@ class FiChapterChooser < HtmlGrid::Composite
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,2]	=>	'chapter-tab',
-		[2,0]		=>	'chapter-tab-b',
+		[2,0]		=>	'chapter-tab bold',
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0,2]	=>	'chapter-tab',
-		[2,0]		=>	'chapter-tab-b',
-		[XWIDTH-1,0]		=>	'chapter-tab-b',
+		[2,0]		=>	'chapter-tab bold',
+		[XWIDTH-1,0]		=>	'chapter-tab bold',
 	}
 	def init
 		xwidth = self::class::XWIDTH
@@ -169,7 +169,7 @@ class FachinfoPreviewComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0] => 'th',
-		[1,0]	=> 'th-r',
+		[1,0]	=> 'th right',
 	}	
 	DEFAULT_CLASS = HtmlGrid::Value
 	def fachinfo_name(model, session)
@@ -185,8 +185,8 @@ class FachinfoPrintComposite < HtmlGrid::DivComposite #View::Drugs::FachinfoPrev
 	PRINT_TYPE = :print_type_fachinfo
 	CSS_MAP = {
 		0	=> 'print-type',
-		1	=> 'print-big',
-		2	=> 'list-r',
+		1	=> 'print big',
+		2	=> 'list right',
 	}
 end
 class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
@@ -203,7 +203,7 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 	}
 	CSS_MAP = {
 		[0,0] => 'th',
-		[1,0]	=> 'th-r',
+		[1,0]	=> 'th right',
 		[0,2]	=> 'list',
 	}	
 	def chapter_chooser(model, session)

@@ -27,11 +27,7 @@ class OrphanedFachinfoRegistrations < View::FormList
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0,3]	=>	'list',
-		[3,0] => 'result-infos',
-	}
-	COMPONENT_CSS_MAP = {
-		[3,0] => 'result-infos',
+		[0,0,4]	=>	'list',
 	}
 	DEFAULT_HEAD_CLASS = 'subheading'
 	EVENT = :assign

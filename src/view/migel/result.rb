@@ -33,12 +33,12 @@ class List < HtmlGrid::List
 		[1,0]	=> 'th',
 		[2,0] => 'th',
 		[3,0] => 'th',
-		[4,0] => 'th-r',
+		[4,0] => 'th right',
 		[5,0] => 'th',
 	}
 	CSS_MAP = {
 		[0,0,4]	=>	'list',
-		[4,0] =>	'list-r',
+		[4,0] =>	'list right',
 		[5,0]		=>	'list',
 	}
 	LOOKANDFEEL_MAP = {
@@ -60,11 +60,11 @@ class List < HtmlGrid::List
 				[7,0]	=>  :google_search,
 				[8,0] =>  :notify,
 			})
-			css_map.store([6,0,3], 'list-r')
+			css_map.store([6,0,3], 'list right')
 			css_head_map.update({
-				[6,0] => 'th-r',
-				[7,0] => 'th-r',
-				[8,0] => 'th-r',
+				[6,0] => 'th right',
+				[7,0] => 'th right',
+				[8,0] => 'th right',
 			})
 		end
 		super
@@ -108,7 +108,7 @@ class ResultList < View::Migel::List
 			offset[1] += products.size
 		}
 	end
-	def compose_subheader(item, offset, css='result-atc')
+	def compose_subheader(item, offset, css='list atc')
 		xval, yval = offset
 		values = [limitation_text(item), nil, item.migel_code, nil,
 			product_description(item)]
@@ -124,7 +124,7 @@ class ExplainResult < HtmlGrid::Composite
 		[0,2]	=>	'explain_migel_price',
 	}
 	CSS_MAP = {	
-		[0,0,1,3]	=>	'explain-infos',
+		[0,0,1,3]	=>	'explain infos',
 	}
 end
 class ResultComposite < HtmlGrid::Composite
@@ -151,7 +151,7 @@ class EmptyResultForm < HtmlGrid::Form
 	CSS_MAP = {
 		[0,0]			=>	'search',	
 		[0,1]			=>	'th',
-		[0,2,1,2]	=>	'result-atc',
+		[0,2,1,2]	=>	'list atc',
 	}
 	CSS_CLASS = 'composite'
 	EVENT = :search

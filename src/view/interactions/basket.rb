@@ -17,7 +17,7 @@ class BasketHeader < HtmlGrid::Composite
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'atc-result',
+		[0,0]	=>	'atc',
 	}
 end
 class List < HtmlGrid::Component
@@ -117,7 +117,7 @@ class BasketForm < View::Form
 		[0,0] =>	'result-found',
 		[0,1] =>	'list',
 		[1,1]	=>	'search',	
-		[0,3]	=>	'button left padding',
+		[0,3,2]	=>	'list bg',
 	}
 	def interaction_basket_count(model, session)
 		count = session.interaction_basket_count

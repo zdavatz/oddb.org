@@ -12,7 +12,7 @@ class OrphanedLanguagesList < HtmlGrid::List
 		[3,0]	=>	:preview,
 	}
 	COMPONENT_CSS_MAP = {
-		[3,0]		=>	'small-padding',
+		[3,0]		=>	'small',
 	}
 	SORT_DEFAULT = :language
 	def language(model, session)

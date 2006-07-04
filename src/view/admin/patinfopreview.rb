@@ -18,7 +18,7 @@ class PatinfoPreviewComposite < View::Drugs::PatinfoComposite
 	}
 	CSS_MAP = {
 		[0,0] => 'th',
-		[1,0]	=> 'th-r',
+		[1,0]	=> 'th right',
 	}	
 	def document(model, session)
 		document_composite(model, session)

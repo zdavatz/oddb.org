@@ -27,7 +27,7 @@ class OrphanedPatinfoListInnerComposite < HtmlGrid::Composite
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0]	=>	'list',
-		[1,0]	=>	'list-small',
+		[1,0]	=>	'small',
 	}
 	def meaning_index(model, session)
 		link = HtmlGrid::Link.new(:choice, model, session, self)
@@ -46,7 +46,7 @@ class OrphanedPatinfoList < HtmlGrid::List
 	CSS_CLASS = 'composite'
 	STRIPED_BG = true
 	OMIT_HEADER = true
-	BACKGROUND_SUFFIX = '-bg'
+	BACKGROUND_SUFFIX = ' bg'
 	COMPONENTS = {
 		[0,0]	=> View::Admin::OrphanedPatinfoListInnerComposite,
 	}

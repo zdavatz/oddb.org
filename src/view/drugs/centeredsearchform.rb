@@ -25,8 +25,8 @@ class CenteredSearchForm < View::CenteredSearchForm
 		[0,0]		=>	'component tabnavigation center',
 	}
 	CSS_MAP = {
-		[0,1]	=>	'ccomponent', ## gives a nice padding
-		[0,2,1,3]	=>	'search-center',
+		[0,1]	=>	'center', ## gives a nice padding
+		[0,2,1,3]	=>	'center',
 	}
 	EVENT = :search
 	def search_type(model, session=@session)
@@ -48,7 +48,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,3]		=>	:atc_chooser,
 	}
 	CSS_MAP = {
-		[0,0,1,4]		=>	'ccomponent',
+		[0,0,1,4]		=>	'center',
 	}
 	def init
 		if(@lookandfeel.enabled?(:just_medical_structure, false))
@@ -95,8 +95,8 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,10]	=>	:legal_note,
 				[0,11]	=>	:paypal,
 			})
-			css_map.store([0,4,1,7], 'ccomponent')
-			component_css_map.store([0,10], 'legal-note-center')
+			css_map.store([0,4,1,7], 'center')
+			component_css_map.store([0,10], 'legal-note center')
 		else
 			components.update({
 				[0,4]		=>	'database_last_updated_txt',
@@ -104,8 +104,8 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,5]		=>	:generic_definition,
 				[0,6]		=>	:legal_note,
 			})
-			css_map.store([0,4,1,3], 'ccomponent')
-			component_css_map.store([0,6], 'legal-note-center')
+			css_map.store([0,4,1,3], 'center')
+			component_css_map.store([0,6], 'legal-note center')
 		end
 		super
 	end

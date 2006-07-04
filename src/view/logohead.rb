@@ -57,9 +57,9 @@ module ODDB
 			}
 			CSS_MAP = {
 				[0,0]	=>	'logo',
-				[1,0]	=>	'logo-r',
+				[1,0]	=>	'right',
 				[0,1] =>	'list',
-				[1,1]	=>	'tabnavigation-right',
+				[1,1]	=>	'tabnavigation right',
 			}
 			COMPONENT_CSS_MAP = {	
 				[0,1] =>	'component',
@@ -72,7 +72,7 @@ module ODDB
 			}
 			CSS_MAP = {
 				[0,0]	=>	'logo',
-				[1,0]	=>	'logo-r',
+				[1,0]	=>	'right',
 			}
 			COMPONENT_CSS_MAP = {}
 			GOOGLE_FORMAT = '234x60_as'

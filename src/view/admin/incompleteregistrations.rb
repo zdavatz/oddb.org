@@ -35,7 +35,7 @@ class BsvForm < View::Form
 	end
 end
 class InnerIncompleteRegList < HtmlGrid::List
-	BACKGROUND_SUFFIX = '-bg'
+	BACKGROUND_SUFFIX = ' bg'
 	COMPONENTS = {
 		[0,0]	=>	:oid,
 		[1,0]	=>	:iksnr,

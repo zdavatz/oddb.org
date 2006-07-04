@@ -85,21 +85,6 @@ module ODDB
 				:list_link_hover_color		=>	'#4b81d4',
 				:navigation_link_font_weight	=>	'bold',
 			},
-			:schoenenberger => {
-				:bg_bright								=>	'#ffeb00',
-				:bg_bright_font_color			=>	'#19738a',
-				:bg_dark									=>	'#e00f8f',
-				:bg_dark_link_hover_color	=>	'#19738a',
-				:bg_dark_link_active_color=>	'#19738a',
-				:button_background				=>	'#e00f8f',
-				:button_font_color				=>	'white',
-				:button_font_size					=>	'12px',
-				:home_link_color					=>	'#e00f8f',
-				:home_link_hover_color		=>	'#3a64a4',
-				:list_font_color					=>	'black',
-				:list_link_color					=>	'#e00f8f',
-				:list_link_hover_color		=>	'#19738a',
-			},
 			:swissmedic		=>		{
 			},
 			:swissmedinfo		=>		{

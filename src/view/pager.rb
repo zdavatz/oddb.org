@@ -13,7 +13,7 @@ module ODDB
 			}
 			CSS_CLASS = 'pager right'
 			CSS_HEAD_MAP = {
-				[0,0]	=>	'pager-head',
+				[0,0]	=>	'pager-head bold',
 			}
 			CSS_MAP = {
 				[0,0]	=>	'pager',
@@ -35,7 +35,7 @@ module ODDB
 			end
 			def compose_header(offset)
 				@grid.add(page_number(@model, @session), *offset)
-				@grid.add_style('pager-head', *offset)
+				@grid.add_style('pager-head bold', *offset)
 				offset = resolve_offset(offset, self::class::OFFSET_STEP)
 				if(@page != @model.first)
 					link = page_link(:pager_back, @page.previous)

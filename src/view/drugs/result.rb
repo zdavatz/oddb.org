@@ -76,18 +76,10 @@ class ResultComposite < HtmlGrid::Composite
 	EVENT = :search
 	FORM_METHOD = 'GET'
 	ROOT_LISTCLASS = View::Drugs::RootResultList
-	SYMBOL_MAP = {
-	}
+	SYMBOL_MAP = { }
 	CSS_MAP = {
 		[0,0] =>	'result-found',
-		[0,1] =>	'result-price-compare',
-		[0,3]	=>	'explain-result'
-	}
-	COMPONENT_CSS_MAP = {
-		[0,3]	=>	'result-foot',
-=begin
-		[1,3]	=>	'legal-note',
-=end
+		[0,1] =>	'list',
 	}
 	def init
 		case @session.user
@@ -131,7 +123,7 @@ class EmptyResultComposite < HtmlGrid::Composite
 	CSS_MAP = {
 		[0,0]			=>	'search',	
 		[0,1]			=>	'th',
-		[0,2,1,2]	=>	'result-atc',
+		[0,2,1,2]	=>	'list atc',
 	}
 	CSS_CLASS = 'composite'
 	def title_none_found(model, session)

@@ -96,7 +96,7 @@ class SuggestRegistrationComposite < View::Admin::RootRegistrationComposite
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
-		[1,1]	=>	'top list-r',
+		[1,1]	=>	'top list right',
 		[0,3]	=>	'active-item',
 	}
 	def active_registration(model, session)

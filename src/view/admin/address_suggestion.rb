@@ -94,7 +94,7 @@ class ActiveAddress < View::SuggestedAddress
 	CSS_CLASS = 'component'
 	CSS_MAP = {
 		[0,0]	=>	'subheading',
-		[1,0]	=>	'subheading-bold',
+		[1,0]	=>	'subheading bold',
 	}
 	YPOS = 1
 	LEGACY_INTERFACE = false

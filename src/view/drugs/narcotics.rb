@@ -24,14 +24,14 @@ class NarcoticList < HtmlGrid::List
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0,4] => 'list',
-		[4,0] 	=> 'list-r',
+		[4,0] 	=> 'list right',
 	}
 	CSS_HEAD_MAP = {
 		[0,0] => 'th',
 		[1,0] => 'th',
 		[2,0] => 'th',
 		[3,0] => 'th',
-		[4,0] => 'th-r',
+		[4,0] => 'th right',
 	}
 	SORT_HEADER = false
 	SYMBOL_MAP = {
@@ -69,7 +69,7 @@ class ExplainNarcotics < HtmlGrid::Composite
 		[1,0]	=>	'explain_narc_controlled',
 	}
 	CSS_MAP = {	
-		[0,0,2]	=>	'explain-infos',
+		 [0,0,2]	=>	'explain infos',
 	}
 end
 class NarcoticsComposite < HtmlGrid::Composite

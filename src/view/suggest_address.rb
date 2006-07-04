@@ -32,9 +32,8 @@ class SuggestAddressForm < View::Form
 	CSS_MAP = {
 		[0,0,4,12]	=>	'list',	
 		[0,3]	=> 'list top',
+		[1,9]	=> 'list small',
 		[2,3]	=> 'list top',
-		#[1,9]	=> 'small-font top',
-		[1,9]	=> 'list-small',
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,4,11]	=>	'standard',	

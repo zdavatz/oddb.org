@@ -12,9 +12,9 @@ class InvoiceItems < HtmlGrid::List
 	}
 	CSS_CLASS = 'invoice top'
 	CSS_MAP = {
-		[0,0]	=>	'list-r',
+		[0,0]	=>	'list right',
 		[1,0]	=>	'list',
-		[2,0]	=>	'list-r',
+		[2,0]	=>	'list right',
 	}
 	LEGACY_INTERFACE = false
 	OMIT_HEADER = true
@@ -24,16 +24,16 @@ class InvoiceItems < HtmlGrid::List
 		vat = [nil, @lookandfeel.lookup(:vat), nil, vat()]
 		total = [nil, @lookandfeel.lookup(:total_brutto), nil, total_brutto()]
 		@grid.add(total_net, *matrix)
-		@grid.add_style('list-bg', matrix.at(0), matrix.at(1), 2)
-		@grid.add_style('list-r-bg', *resolve_offset(matrix, [2,0]))
+		@grid.add_style('list bg', matrix.at(0), matrix.at(1), 2)
+		@grid.add_style('list right bg', *resolve_offset(matrix, [2,0]))
 		matrix = resolve_offset(matrix, [0,1])
 		@grid.add(vat, *matrix)
-		@grid.add_style('list-bg', matrix.at(0), matrix.at(1), 2)
-		@grid.add_style('list-r-bg', *resolve_offset(matrix, [2,0]))
+		@grid.add_style('list bg', matrix.at(0), matrix.at(1), 2)
+		@grid.add_style('list right bg', *resolve_offset(matrix, [2,0]))
 		matrix = resolve_offset(matrix, [0,1])
 		@grid.add(total, *matrix)
-		@grid.add_style('list-bg bold', matrix.at(0), matrix.at(1), 2)
-		@grid.add_style('list-r-bg bold', *resolve_offset(matrix, [2,0]))
+		@grid.add_style('list bg bold', matrix.at(0), matrix.at(1), 2)
+		@grid.add_style('list right bg bold', *resolve_offset(matrix, [2,0]))
 	end
 	def text(model)
 		model.text

@@ -18,8 +18,8 @@ module ODDB
 				#'valign'	=>	'bottom',
 			}
 			CSS_MAP = {
-				[0,0]	=>	'navigation left',
-				[1,0]	=>	'navigation-right',
+				[0,0]	=>	'navigation',
+				[1,0]	=>	'navigation right',
 			}
 		end
 	end

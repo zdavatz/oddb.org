@@ -26,16 +26,16 @@ module SequenceAgentList
 		[9,0]	=>	:spagyric_dose,
 	}
 	CSS_HEAD_MAP = {
-		[2,0]	=>	'subheading-r',
-		[5,0]	=>	'subheading-r',
+		[2,0]	=>	'subheading right',
+		[5,0]	=>	'subheading right',
 	}
 	CSS_MAP = {
 		[1,0]		=>	'list',
-		[2,0]		=>	'list-r',
+		[2,0]		=>	'list right',
 		[3,0,2]	=>	'list',
-		[5,0]		=>	'list-r',
+		[5,0]		=>	'list right',
 		[6,0,2]	=>	'list',
-		[8,0,2]	=>	'list-r',
+		[8,0,2]	=>	'list right',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'subheading'
@@ -56,10 +56,10 @@ module SequenceAgentList
 	def narcotic(model, session=@session)
 		if((sub = model.substance) && (narc = sub.narcotic))
 			link = HtmlGrid::Link.new(:narc_short,
-					narc, @session, self)
+																narc, @session, self)
 			link.href = @lookandfeel._event_url(:resolve,
-				{'pointer' => narc.pointer})
-			link.css_class = 'result-infos'
+																					{'pointer' => narc.pointer})
+			link.css_class = 'square infos'
 			link.set_attribute('title', @lookandfeel.lookup(:nacotic))
 			link
 		end
@@ -92,13 +92,13 @@ module SequencePackageList
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0]		=>	'list',
-		[1,0,7]	=>	'list-r',
+		[1,0,7]	=>	'list right',
 	}
 	CSS_HEAD_MAP = {
 		[0,0]	=>	'subheading',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
-	DEFAULT_HEAD_CLASS = 'subheading-r'
+	DEFAULT_HEAD_CLASS = 'subheading right'
 	EVENT = :new_package
 	SORT_DEFAULT = :ikscd
 	SORT_HEADER = false
@@ -143,7 +143,7 @@ module SequenceDisplay
 	def atc_request(model, session)
 		if(time = model.atc_request_time)
 			days = ((((Time.now - @model.atc_request_time) / 60) / 60) / 24)
-				output = "#{@lookandfeel.lookup(:atc_request_time)}"
+			output = "#{@lookandfeel.lookup(:atc_request_time)}"
 			if(days > 1)
 				output + "#{days.round} #{@lookandfeel.lookup(:atc_request_days)}"
 			else
@@ -223,11 +223,11 @@ class SequenceForm < Form
 				[1,5,0] =>  :delete_item,
 			})
 			css_map.update({
-				[3,4]		=>	'result-infos',
+				[3,4]		=>	'list',
 				[0,5,4] =>	'list',
 			})
 			if(@model.atc_class.nil? && !atc_descr_error?)
-			  if(@model.company.nil?)
+				if(@model.company.nil?)
 					components.store([5,3], :atc_request_label)
 					components.store([3,3], :no_company)
 				else
@@ -263,9 +263,9 @@ class SequenceForm < Form
 	end
 	def atc_descr_error?
 		((err = @session.error(:atc_class)) \
-			&& err.message == "e_unknown_atc_class") \
-			|| ((atc = @model.atc_class) \
-			&& atc.description.empty?)
+		 && err.message == "e_unknown_atc_class") \
+		 || ((atc = @model.atc_class) \
+				 && atc.description.empty?)
 	end
 	def delete_item(model, session=@session)
 		delete_item_warn(model, :w_delete_sequence)
@@ -273,7 +273,7 @@ class SequenceForm < Form
 	def delete_patinfo(model, session=@session)
 		if(model.has_patinfo?)
 			button = HtmlGrid::Button.new(:delete_patinfo, 
-				model, session, self)
+																		model, session, self)
 			script = "this.form.patinfo.value = 'delete'; this.form.submit();"
 			button.set_attribute('onclick', script)
 			button
@@ -281,16 +281,16 @@ class SequenceForm < Form
 	end
 	def seqnr(model, session=@session)
 		klass = if(model.seqnr.nil?)
-			HtmlGrid::InputText
-		else
-			HtmlGrid::Value
-		end
+							HtmlGrid::InputText
+						else
+							HtmlGrid::Value
+						end
 		klass.new(:seqnr, model, session, self)
 	end
 	def patinfo(model, session=@session)
 		if(link = super)
 			pos = components.index(:patinfo)
-			link.set_attribute('class', 'result-infos')
+			link.set_attribute('class', 'square infos')
 			link
 		end
 	end
@@ -323,15 +323,6 @@ class ResellerSequenceForm < SequenceForm
 	include View::Admin::SequenceDisplay
 	include View::AdditionalInformation
 	DEFAULT_CLASS = HtmlGrid::Value
-=begin
-	SYMBOL_MAP = {
-		:iksnr							=>	HtmlGrid::Value,
-		:patinfo_label			=> HtmlGrid::LabelText,
-		:atc_request_label	=> HtmlGrid::LabelText,
-		:no_company					=> HtmlGrid::LabelText,
-		:regulatory_email		=> HtmlGrid::InputText,
-	}
-=end
 end
 class SequenceComposite < HtmlGrid::Composite
 	AGENTS = View::Admin::RootSequenceAgents
@@ -395,6 +386,7 @@ class ResellerSequenceComposite < View::Admin::SequenceComposite
 	CSS_MAP = {
 		[0,0]	=>	'th',
 		[0,4]	=>	'subheading',
+		[0,5]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	PACKAGES = View::Admin::RootSequencePackages

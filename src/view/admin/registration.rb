@@ -29,11 +29,7 @@ module RegistrationSequenceList
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0,6]	=>	'list',
-		[6,0]		=> 'result-infos',
-	}
-	COMPONENT_CSS_MAP = {
-		[6,0]			=> 'result-infos',
+		[0,0,7]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'subheading'
@@ -170,7 +166,8 @@ class RegistrationForm < View::Form
 		[3,0,1,6]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,6,9]	=>	'list',
+		[0,0,6,8]	=>	'list',
+		[0,8]			=>	'list',
 	}
   COLSPAN_MAP = { }
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -213,10 +210,10 @@ class RegistrationForm < View::Form
 				[1,11,1]=>	:new_registration,
 			})
       colspan_map.store([3,8], 3)
-			css_map.store([0,8], 'result-b-r-unknown-left')
-			css_map.store([1,8], 'list-bg')
+			css_map.store([0,8], 'list bold')
+			css_map.store([1,8], 'list bg')
 			css_map.store([2,8,2], 'list')
-			css_map.store([0,9,2,2], 'list-bg')
+			css_map.store([0,9,2,3], 'list bg')
 		end
 	end
 	def company_name(model, session=@session)
@@ -314,9 +311,9 @@ class ResellerRegistrationForm < View::Form
 			})
 			components.delete([1,3])
 			css_map.update({
-				[0,3]			=>	'result-b-r-unknown-left',
-				[1,3]			=>	'list-bg',
-				[0,4,2,3]	=>	'list-bg',
+				[0,3]			=>	'list bold',
+				[1,3]			=>	'list bg',
+				[0,4,2,3]	=>	'list bg',
 			})
 		end
 	end

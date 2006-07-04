@@ -11,7 +11,7 @@ class ExplainVaccines < View::ExplainResult
 		[2,0]	=>	'explain_g',
 	}
 	CSS_MAP = {
-		[1,0,2]	=> 'explain-infos',
+		[1,0,2]	=> 'explain infos',
 	}
 end
 class VaccinesComposite < HtmlGrid::Composite

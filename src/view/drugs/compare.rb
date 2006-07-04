@@ -29,23 +29,23 @@ class CompareList < HtmlGrid::List
 	}	
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'result-big',
-		[1,0]	=>	'result-i',
-		[2,0]	=>	'result-r',
-		[3,0]	=>	'result',
-		[4,0]	=>	'result-i',
-		[5,0]	=>	'result-pubprice',
-		[6,0]	=>	'result-b-r',
-		[7,0]	=>	'result-i',
+		[0,0]	=>	'list big',
+		[1,0]	=>	'list talic',
+		[2,0]	=>	'list right',
+		[3,0]	=>	'list',
+		[4,0]	=>	'list italic',
+		[5,0]	=>	'list pubprice',
+		[6,0]	=>	'list bold right',
+		[7,0]	=>	'list italic',
 	}
 	CSS_HEAD_MAP = {
 		[0,0] =>	'th',
 		[1,0] =>	'th',
-		[2,0] =>	'th-r',
+		[2,0] =>	'th right',
 		[3,0]	=>	'th',
 		[4,0]	=>	'th',
-		[5,0]	=>	'th-pad-r',
-		[6,0]	=>	'th-r',
+		[5,0]	=>	'th right',
+		[6,0]	=>	'th right',
 		[7,0] =>	'th',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -62,19 +62,19 @@ class CompareList < HtmlGrid::List
 				[8,0]	=>	:ikscat,
 			})
 			css_map.update({
-				[7,0]	=>	'result-r',
-				[8,0]	=>	'result-i',
+				[7,0]	=>	'list right',
+				[8,0]	=>	'list italic',
 			})
 			css_head_map.update({
-				[7,0]	=>	'th-r',
+				[7,0]	=>	'th right',
 				[8,0]	=>	'th',
 			})
 		end
 		if(@lookandfeel.result_list_components.has_value?(:ddd_price))
 			ikscat_key = components.index(:ikscat)
 			components.store(ikscat_key, :ddd_price)
-			css_map.store(ikscat_key, 'result-r')
-			css_head_map.store(ikscat_key, 'th-r')
+			css_map.store(ikscat_key, 'list right')
+			css_head_map.store(ikscat_key, 'th right')
 		end
 		super
 	end
@@ -111,6 +111,9 @@ class CompareComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0] => CompareList,
 		[0,1] => View::ResultFoot,
+	}
+	CSS_MAP = {
+		[0,1]	=>	'explain list',
 	}
 end
 class Compare < PrivateTemplate

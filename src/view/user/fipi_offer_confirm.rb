@@ -56,8 +56,9 @@ class FiPiCalculations < HtmlGrid::Composite
 			if(@model.fi_activation_count > 0)
 				components.update(COMPONENTS_FI)
 			css_map.update({
-				[0,1,3,4] => 'padding bg',
-				[0,0]			=> 'padding bg bold sum',
+				[1,1,2,4] => 'list bg',
+				[0,1,1,4]	=>	'list right bg',	
+				[0,0]			=> 'list bg bold sum',
 			})
 			colspan_map.update({
 				[0,0] => 3, 
@@ -71,8 +72,9 @@ class FiPiCalculations < HtmlGrid::Composite
 				components.store(newkey, val)
 			}
 			css_map.update({
-				[0,offset+1,3,3] => 'padding bg',
-				[0,offset]		 => 'padding bg bold sum',
+				[1,offset+1,2,3] => 'list bg',
+				[0,offset+1,1,3]	=>	'list right bg',	
+				[0,offset]		 => 'list bg bold sum',
 			})
 			colspan_map.update({
 				[0,offset] => 3, 
@@ -85,11 +87,11 @@ class FiPiCalculations < HtmlGrid::Composite
 			components.store(newkey, val)
 		}
 		css = {
-			[0,offset,2]				=>	'padding bg',
-			[2,offset]					=>	'padding bg sum',
-			[0,offset + 1,3,3]	=>	'padding bg bold',
-			[2,offset + 2]			=>	'padding bg bold sum',
-			[2,offset + 3]			=>	'padding bg bold total',
+			[0,offset,2]				=>	'list bg',
+			[2,offset]					=>	'list bg sum',
+			[0,offset + 1,3,3]	=>	'list bg bold',
+			[2,offset + 2]			=>	'list bg bold sum',
+			[2,offset + 3]			=>	'list bg bold total',
 		}
 		css_map.update(css)
 		super
@@ -159,14 +161,14 @@ class FiPiOfferConfirmComposite < HtmlGrid::Composite
 		[0,0,5]	=>	:amzv_article14_link,
 		[0,0,6]	=>	'point',
 		[0,1]	=>	'fipi_offer_confirmation',
-		[0,3]	=>	View::User::FiPiCalculations,
-		[0,5]	=>	:fipi_offer_disclaimer,
+		[0,2]	=>	View::User::FiPiCalculations,
+		[0,3]	=>	:fipi_offer_disclaimer,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0]	=>	'th',
-		[0,1]	=>	'padding',
-		[0,5]	=>	'padding',
+		[0,1]	=>	'list',
+		[0,3]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	def amzv_link(model, session)

@@ -21,7 +21,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,7]		=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,7]		=>	'ccomponent',
+		[0,0,1,7]		=>	'center',
 	}
 	COMPONENT_CSS_MAP = {
 	}

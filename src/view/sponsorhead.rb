@@ -23,8 +23,8 @@ class SponsorHead < CommonLogoHead
 	CSS_MAP = {
 		[0,0]	=>	'logo',
 		[0,1] =>	'list',
-		[1,0]	=>	'logo-r',
-		[1,1]	=>	'tabnavigation-right',
+		[1,0]	=>	'right',
+		[1,1]	=>	'tabnavigation right',
 	}
 	COMPONENT_CSS_MAP = {	
 		[0,1] =>	'component',

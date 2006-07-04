@@ -11,7 +11,7 @@ class RootResultList < View::Drugs::ResultList
 	def reorganize_components
 		super
 		hash_insert(css_head_map, [0,0], 'th')
-		hash_insert(css_map, [0,0], 'result-edit')
+		hash_insert(css_map, [0,0], 'list edit')
 		hash_insert(components, [0,0], :ikskey)
 	end
 	def ikskey(model, session=@session)

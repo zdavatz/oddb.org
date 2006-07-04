@@ -33,21 +33,21 @@ class ResultLimitList < HtmlGrid::List
 	CSS_CLASS = 'composite'
 	SORT_HEADER = false
 	CSS_MAP = {
-		[0,0,3]	=>	'result-infos',
-		[3,0] => 'list-big',
+		[0,0,3]	=>	'list',
+		[3,0] => 'list big',
 		[4,0] => 'list',
-		[5,0,5] => 'list-r',
-		[10,0,3]=>	'list-r',
+		[5,0,5] => 'list right',
+		[10,0,3]=>	'list right',
 	}
 	CSS_HEAD_MAP = {
-		[5,0] => 'th-r',
-		[6,0] => 'th-r',
-		[7,0] => 'th-r',
-		[8,0] => 'th-r',
-		[9,0] => 'th-r',
-		[10,0] => 'th-r',
-		[11,0] => 'th-r',
-		[12,0] => 'th-r',
+		[5,0] => 'th right',
+		[6,0] => 'th right',
+		[7,0] => 'th right',
+		[8,0] => 'th right',
+		[9,0] => 'th right',
+		[10,0] => 'th right',
+		[11,0] => 'th right',
+		[12,0] => 'th right',
 	}
 	def compose_empty_list(offset)
 		count = @session.state.package_count.to_i
@@ -62,7 +62,7 @@ class ResultLimitList < HtmlGrid::List
 		end
 	end
 	def fachinfo(model, session)
-		super(model, session, 'important-infos')
+		super(model, session, 'square important infos')
 	end	
 	def name_base(model, session)
 		model.name_base

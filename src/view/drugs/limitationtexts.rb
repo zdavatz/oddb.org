@@ -19,8 +19,8 @@ class LimitationTextList < HtmlGrid::List
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'small result',
-		[1,0]	=>	'result-big',
+		[0,0]	=>	'small list',
+		[1,0]	=>	'list big',
 	}
 	SORT_DEFAULT = false
 	SORT_HEADER = false
@@ -38,7 +38,7 @@ class LimitationTextList < HtmlGrid::List
 			'search_query'	=>	model.name_base,
 		}
 		link.href = @lookandfeel._event_url(:search, args)
-		link.css_class = 'result-big' << resolve_suffix(model)
+		link.css_class = 'list big' << resolve_suffix(model)
 		link
 	end
 end

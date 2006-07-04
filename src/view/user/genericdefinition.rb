@@ -25,7 +25,7 @@ class GenericDefinitionInfo < HtmlGrid::Composite
 		[0,3]	=>	'list',
 		[0,4]	=>	'list',
 		[0,5]	=>	'list',
-		[0,6]	=>	'list-title',
+		[0,6]	=>	'list title',
 		[0,7]	=>	'list',
 	}
 end

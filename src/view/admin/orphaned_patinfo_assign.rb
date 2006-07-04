@@ -30,8 +30,7 @@ class OrphanedPatinfoSequences < View::FormList
 		[7,0]	=>	:patinfo,
 	}
 	CSS_MAP = {
-		[0,0,7]	=>	'list',
-		[0,7]	=>	'result-info',
+		[0,0,8]	=>	'list',
 	}
 	EVENT = :assign
 	SORT_DEFAULT = :name_base

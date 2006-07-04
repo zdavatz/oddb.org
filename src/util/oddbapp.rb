@@ -187,7 +187,8 @@ class OddbPrevalence
 		unless(deletables.empty?)
 			deletables.each { |invoice|
 				if((ptr = invoice.user_pointer) \
-					&& (user = ptr.resolve(self)))
+					&& (user = ptr.resolve(self)) \
+					&& user.respond_to?(:remove_invoice))
 					user.remove_invoice(invoice)	
 				end
 				delete(invoice.pointer)

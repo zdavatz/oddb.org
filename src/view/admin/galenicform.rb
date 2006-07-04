@@ -34,7 +34,7 @@ class GalenicFormForm < View::DescriptionForm
 		:sequence_count =>	HtmlGrid::Value,
 	}
 	CSS_MAP = {
-		[3,1]	=>	'list-r'
+		[3,1]	=>	'list right'
 	}
 	def languages
 		@lookandfeel.languages + ['lt', 'synonym_list']

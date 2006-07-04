@@ -56,7 +56,6 @@ class IncompleteSequenceComposite < View::Admin::RootSequenceComposite
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
-		[0,4]	=>	'composite',
 	}
 end
 class IncompleteSequence < View::Drugs::PrivateTemplate
