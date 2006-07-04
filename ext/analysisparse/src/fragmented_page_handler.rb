@@ -8,9 +8,11 @@ require 'appendix_list_parser'
 module ODDB
 	module AnalysisParse
 		class FragmentedPageHandler
-			attr_accessor :list_title
+			attr_accessor :permission, :taxpoint_type, :list_title
 			attr_reader :footnotes
 			def initialize
+				@taxpoint_type = nil
+				@permission = nil
 				@footnotes = {}
 				@chapters = [
 					/^ *teilliste\s*1/i,
@@ -39,10 +41,10 @@ module ODDB
 			end
 			def parse_fragment(fragment, pagenum)
 				parser = ExtendedListParser.new
+				parser.taxpoint_type = @taxpoint_type
+				parser.permission = @permission
+				parser.list_title = @list_title
 				positions = parser.parse_page(fragment, pagenum)
-				positions.each { |pos| 
-					pos.store(:list_title, @list_title)
-				}
 				@footnotes.update(parser.footnotes)
 				positions
 			end
@@ -63,7 +65,17 @@ module ODDB
 				indices.each_with_index { |start, idx|
 					stop = indices.at(idx.next).to_i - 1	
 					src = txt[start..stop]
-					@list_title = src.match(ptrns.at(idx)).to_s
+					case src
+					when /teilliste\s*1/i
+						@taxpoint_type = :fixed
+						@permission = src.match(ptrns.at(idx)).to_s
+					when /teilliste\s*2/i
+						@taxpoint_type = :default
+						@permission = src.match(ptrns.at(idx)).to_s
+					else
+						@taxpoint_type = nil
+						@permission = src.match(ptrns.at(idx)).to_s
+					end
 					yield src
 				}
 			end

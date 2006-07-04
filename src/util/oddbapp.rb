@@ -745,6 +745,9 @@ class OddbPrevalence
 		puts "finished refactoring addresses"
 		$stdout.flush
 	end
+	def search_analysis(key)
+		ODBA.cache.retrieve_from_index("analysis_index", key)
+	end
 	def search_oddb(query, lang)
 		# current search_order:
 		# 1. atcless
@@ -1227,11 +1230,7 @@ module ODDB
 			t = Thread.new {
 				Thread.current.abort_on_exception = false
 				result << failsafe {
-					response = begin
-						instance_eval(src)
-					rescue NameError => e
-						e
-					end
+					response = instance_eval(src)
 					str = response.to_s
 					if(str.length > 200)
 						response.class

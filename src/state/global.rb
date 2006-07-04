@@ -5,6 +5,7 @@ require 'htmlgrid/urllink'
 require 'state/admin/login'
 require 'state/ajax/ddd_price'
 require 'state/ajax/swissmedic_cat'
+require 'state/analysis/result'
 require 'state/companies/company'
 require 'state/companies/companylist'
 require 'state/drugs/atcchooser'
@@ -91,6 +92,7 @@ module ODDB
 				:help									=>	State::User::Help,
 				:home									=>	State::Drugs::Init,
 				:home_admin						=>	State::Admin::Init,
+				:home_analysis				=>	State::Analysis::Init,
 				:home_companies				=>	State::Companies::Init,
 				:home_doctors					=>	State::Doctors::Init,
 				:home_hospitals				=>	State::Hospitals::Init,
@@ -118,6 +120,7 @@ module ODDB
 			HOME_STATE = State::Drugs::Init
 			LIMITED = false
 			RESOLVE_STATES = {
+				[ :analysis_group, :position ]	=>	State::Analysis::Position,
 				[ :company ]	=>	State::Companies::Company,
 				[ :doctor	]  =>	State::Doctors::Doctor,
 				[ :hospital ]  =>	State::Hospitals::Hospital,
@@ -486,6 +489,9 @@ module ODDB
 					when :migel
 						result = @session.search_migel_products(query)
 						State::Migel::Result.new(@session, result)
+					when :analysis
+						result = @session.search_analysis(query)
+						State::Analysis::Result.new(@session, result)
 					else
 						query = query.to_s.downcase
 						stype = @session.user_input(:search_type) 
@@ -632,7 +638,7 @@ module ODDB
 				State::User::YweseeContact.new(@session, model)
 			end
 			def zones
-			[ :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies]
+			[ :analysis, :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies]
 			end
 			def zone_navigation
 				self::class::ZONE_NAVIGATION

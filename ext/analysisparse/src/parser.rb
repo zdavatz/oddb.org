@@ -10,7 +10,7 @@ module ODDB
 			LINE_PTRN = /^\s*([CNS]|N,\s*ex|TP)?\s*\d{4}\.\d{2,}\s*[\d\*]/
 			STOPCHARS = ';.'
 			attr_reader :footnotes
-			attr_accessor :list_title
+			attr_accessor :list_title, :permission, :taxpoint_type
 			def initialize
 				@footnotes = {}
 			end
@@ -36,17 +36,22 @@ module ODDB
 				@footnotes.update(footnotes)
 			end
 			def parse_line(src)
+				data = {
+					:list_title			=> @list_title,
+					:permission			=> @permission,
+					:taxpoint_type	=> @taxpoint_type,
+				}
 				src << "\n"
 				ast = self.class::PARSER.parse(src)
 			rescue Exception	=>	e
 				ptrn = /(\d{4})\.(\d{2})\s*(\d{1,2})\s*(.*)/
-				data = {
+				data.update({
 					:error			=>	e,
-					:line				=>	src,
-					:list_title	=>	@list_title,
-				}
+					:line						=>	src,
+				})
 				if(match = ptrn.match(src))
 					data.update({
+						:code					=> [match[1], match[2]].join('.'), 
 						:group				=> match[1],
 						:position			=> match[2],
 						:taxpoints		=> match[3],
@@ -57,12 +62,17 @@ module ODDB
 			else
 				desc = ''
 				position = ast.position.value
-				data = {
-					:group				=> ast.group.value,
+				group = ast.group.value
+				if(position.size > 2)
+					data.store(:footnote, position.slice!(2..-1))
+				end
+				data.update({
+					:code					=> [group, position].join('.'),
+					:group				=> group,
 					:position			=> position,
 					:taxpoints		=> ast.taxpoints.value.to_i,	
 					:description	=> desc,
-				}
+				})
 				extract_text(ast.description, desc)
 				if(lba = child_if_exists(ast, 'labarea'))
 					data.store(:lab_areas, lba.value.strip.split(''))
@@ -93,16 +103,16 @@ module ODDB
 					data.store(:taxnumber, taxnumber)
 					data.store(:taxnote, taxnote)
 				end
-				[:revision, :finding, :footnote].each { |key|
+				if(revision = child_if_exists(ast, 'revision'))
+					data.store(:analysis_revision, revision.value)
+				end
+				[:finding, :footnote].each { |key|
 					if(node = child_if_exists(ast, key.to_s))
 						data.store(key, node.value)
 					end
 				}
 				if(child_if_exists(ast, 'anonymous'))
 					data.store(:anonymous, true)
-				end
-				if(position.size > 2)
-					data.store(:footnote, position.slice!(2..-1))
 				end
 				data
 			end
@@ -154,7 +164,8 @@ module ODDB
 						if(subnode.is_a?(ArrayNode))
 							subnode.each { |nd| 
 								val = nd.value
-								unless(/^[#{STOPCHARS}]/.match(val))
+								unless(/^[#{STOPCHARS}]/.match(val) \
+											 || str.empty?)
 									str.strip!
 									str << ' '	
 								end
@@ -166,7 +177,8 @@ module ODDB
 							str = subnode.value
 						end
 						target << tmp
-						unless(/^[#{STOPCHARS}]/.match(str))
+						unless(/^[#{STOPCHARS}]/.match(str) \
+									 || target.empty?)
 							target.strip!
 							target << ' '	
 						end

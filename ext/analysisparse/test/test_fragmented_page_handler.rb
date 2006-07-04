@@ -121,40 +121,62 @@ Rev. Pos.-Nr. A TP Bezeichnung (Liste Gynäkologie und Geburtshilfe)
 
 				EOS
 				begin
-					@handler.list_title = "Gynäkologie und Geburtshilfe"
 					result = @handler.parse_fragment(src, 111)
 				end
 				expected = [
 					{
+					:code						=> '8455.20',
 					:group					=> '8455',
 					:position				=> '20',
 					:taxpoints			=> 60,
 					:description		=> 'Penetrationstest',
-					:list_title			=>	'Gynäkologie und Geburtshilfe',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				},
 				{
 					:group					=> '8528',
+					:code						=> '8528.01',
 					:position				=> '01',
 					:taxpoints			=> 30,
 					:description		=> 'Spermiennachweis nach Vasektomie',
-					:list_title			=>	'Gynäkologie und Geburtshilfe',
+					:list_title			=>	nil,
+					:taxpoint_type	=>	nil,
+					:permission			=>	nil,
 				},
 				{
+					:code						=> '9343.50',
 					:group					=> '9343',
 					:position				=> '50',
 					:taxpoints			=> 16,
 					:description		=> 'Pilznachweis mit kommerziellen Medien',
-					:list_title			=>	'Gynäkologie und Geburtshilfe',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				},
 				{
+					:code						=> '9356.30',
 					:group					=> '9356',
 					:position				=> '30',
 					:taxpoints			=> 25,
 					:description		=> 'Spezielle Mikroskopie (Acridineorange, Ziehl-Neelsen, Auramin-Rhodamin, inklusive Dunkelfeld, Phasenkontrast etc., KOH, Pilze)',
-					:list_title			=>	'Gynäkologie und Geburtshilfe',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				},
 				]
-				assert_equal(expected, result)
+					assert_equal(expected, result)
+				expected_first = {
+					:code					=>	'8455.20',
+					:group				=>	'8455',
+					:position			=>	'20',
+					:taxpoints		=>	60,
+					:description	=>	'Penetrationstest',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
+				}
+				assert_equal(expected_first, result.first)
 			end
 			def test_parse_page__1
 				src = <<-EOS
@@ -180,39 +202,54 @@ Rev. Pos.-Nr. A TP Bezeichnung (Liste Gynäkologie und Geburtshilfe)
 				end
 				expected = [
 					{
+					:code					=>	'8149.00',
 					:group				=>	'8149',
 					:position			=>	'00',
 					:taxpoints		=>	9,
 					:description	=>	'Calcium, total, im Blut/Plasma/Serum',
-					:list_title		=>	'Endokrinologie - Diabetologie',
+					:permission			=>	'Endokrinologie - Diabetologie',
+					:list_title			=>	nil,
+					:taxpoint_type	=>	nil,
 				},
 				{
+					:code					=>	'8243.00',
 					:group				=>	'8243',
 					:position			=>	'00',
 					:taxpoints		=>	25,
 					:description	=>	'Fruktosamin',
-					:list_title		=>	'Endokrinologie - Diabetologie',
+					:permission		=>	'Endokrinologie - Diabetologie',
+					:list_title			=>	nil,
+					:taxpoint_type	=>	nil,
 				},
 				{
+					:code					=>	'9366.00',
 					:group				=>	'9366',
 					:position			=>	'00',
 					:taxpoints		=>	15,
 					:description	=>	'Urease-Test (Helicobacter pylori)',
-					:list_title		=>	'Gastroenterologie',
+					:permission		=>	'Gastroenterologie',
+					:list_title			=>	nil,
+					:taxpoint_type	=>	nil,
 				},
 				{
+					:code					=>	'8455.20',
 					:group				=>	'8455',
 					:position			=>	'20',
 					:taxpoints		=>	60,
 					:description	=>	'Penetrationstest',
-					:list_title		=>	'Gynäkologie und Geburtshilfe',
+					:permission		=>	'Gynäkologie und Geburtshilfe',
+					:list_title			=>	nil,
+					:taxpoint_type	=>	nil,
 				},
 				{
+					:code					=>	'8528.01',
 					:group				=>	'8528',
 					:position			=>	'01',
 					:taxpoints		=>	30,
 					:description	=>	'Spermiennachweis nach Vasektomie',
-					:list_title		=>	'Gynäkologie und Geburtshilfe',
+					:permission		=>	'Gynäkologie und Geburtshilfe',
+					:list_title			=>	nil,
+					:taxpoint_type	=>	nil,
 				},
 				]
 				assert_equal(expected, result)
@@ -251,48 +288,109 @@ Untersuchungen an Patientenproben"
 				end
 				expected1 = [
 					{
+					:code						=>	'8259.00',
 					:group					=>	'8259',
 					:position				=>	'00',
 					:taxpoints			=>	9,
 					:description		=>	'Glukose, im Blut/Plasma/Serum',
-					:list_title			=>	'Teilliste 1',
+					:taxpoint_type			=>	:fixed,
+					:list_title					=>	nil,
+					:permission				=>	'Teilliste 1',
 				},
 				{
+					:code						=>	'8273.00',
 					:group					=>	'8273',
 					:position				=>	'00',
-					:revision				=>	'C',
+					:analysis_revision				=>	'C',
 					:taxpoints			=>	7,
 					:description		=>	'Hämatokrit, manuelle Bestimmung, kumulierbar mit 8210.00 Erythrozyten-Zählung, 8275.00 Hämoglobin, 8406.00 Leukozyten-Zählung und 8560.00 Thrombozyten-Zählung bis max. Taxpunktzahl 15 (Hämatogramm II)',
 					:limitation			=>	'nicht mit QBC-Methode',
-					:list_title			=>	'Teilliste 1',
+					:taxpoint_type			=>	:fixed,
+					:list_title					=>	nil,
+					:permission				=>	'Teilliste 1',
 				},
 				]
 				expected2 = [
 					{
+					:code						=>	'8579.00',
 					:group					=>	'8579',
 					:position				=>	'00',
 					:taxpoints			=>	16,
 					:description		=>	'Urin-Status (5-10 Parameter)',
-					:list_title			=>	'Teilliste 1',
+					:taxpoint_type			=>	:fixed,
+					:list_title					=>	nil,
+					:permission				=>	'Teilliste 1',
 				},
 				{
+					:code						=>	'9309.00',
 					:group					=>	'9309',
 					:position				=>	'00',
 					:taxpoints			=>	4,
 					:description		=>	'Urin-Teilstatus (5-10 Parameter)',
-					:list_title			=>	'Teilliste 1',
+					:taxpoint_type			=>	:fixed,
+					:list_title					=>	nil,
+					:permission				=>	'Teilliste 1',
 				},
 				{
+					:code						=>	'8000.00',
 					:group					=>	'8000',
 					:position				=>	'00',
-					:revision				=>	'C',
+					:analysis_revision				=>	'C',
 					:description		=>	'ABO/D-Antigen, Kontrolle nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben"',
-					:list_title			=>	'Teilliste 2',
+					:taxpoint_type			=>	:default,
 					:taxpoints			=>	8,
+					:list_title			=>	nil,
+					:permission		=>	'Teilliste 2',
 				},
 				]
+				expected_res2_first = {
+					:code						=>	'8579.00',
+					:group					=>	'8579',
+					:position				=>	'00',
+					:taxpoints			=>	16,
+					:description		=>	'Urin-Status (5-10 Parameter)',
+					:taxpoint_type			=>	:fixed,
+					:list_title					=>	nil,
+					:permission				=>	'Teilliste 1',
+				}
+				expected_res2_last = {
+					:code						=>	'8000.00',
+					:group					=>	'8000',
+					:position				=>	'00',
+					:analysis_revision				=>	'C',
+					:description		=>	'ABO/D-Antigen, Kontrolle nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben"',
+					:taxpoint_type			=>	:default,
+					:taxpoints			=>	8,
+					:list_title			=>	nil,
+					:permission		=>	'Teilliste 2',
+				}
+				expected_res2_at1 = {
+					:code						=>	'9309.00',
+					:group					=>	'9309',
+					:position				=>	'00',
+					:taxpoints			=>	4,
+					:description		=>	'Urin-Teilstatus (5-10 Parameter)',
+					:taxpoint_type			=>	:fixed,
+					:list_title					=>	nil,
+					:permission				=>	'Teilliste 1',
+				}
+				expected_res1_first = 
+					{
+					:code						=>	'8259.00',
+					:group					=>	'8259',
+					:position				=>	'00',
+					:taxpoints			=>	9,
+					:description		=>	'Glukose, im Blut/Plasma/Serum',
+					:taxpoint_type			=>	:fixed,
+					:list_title					=>	nil,
+					:permission				=>	'Teilliste 1',
+				}
 				assert_equal(expected1, res1)
+				assert_equal(expected_res1_first, res1.first)
 				assert_equal(expected2, res2)
+				assert_equal(expected_res2_first, res2.first)
+				assert_equal(expected_res2_last, res2.last)
+				assert_equal(expected_res2_at1, res2.at(1))
 			end
 			def test_parse_page__3
 				src1 =<<-EOS
@@ -338,51 +436,69 @@ KOH, Pilze)
 				end
 				expected1 = [
 					{
+					:code							=>	'8317.01',
 					:group						=>	'8317',
 					:position					=>	'01',
 					:taxnumber				=>	'1',
 					:taxpoints				=>	25,
 					:description			=>	'Immunglobulin IgE - multispezifischer oder gruppenspezifischer Atopie-Screeningtest, ql/sq, ohne Unterscheidung einzelner spez. IgE',
 					:taxnote					=>	'analog abgestuftem Blocktarif gemäss Punkt 5.7 der Vorbemerkungen, je nach Anzahl Allergene im verwendeten Testsystem',
-					:list_title				=>	'Kinder- und Jugendmedizin',
+					:permission				=>	'Kinder- und Jugendmedizin',
+					:list_title					=>	nil,
+					:taxpoint_type			=>	nil,
 				},
 				{
+					:code							=>	'8543.00',
 					:group						=>	'8543',
 					:position					=>	'00',
 					:footnote					=>	'Nur bei Kindern bis zu 6 Jahren',
 					:taxpoints				=>	40,
 					:description			=>	'Theophyllin (Blut)',
-					:list_title				=>	'Kinder- und Jugendmedizin',
+					:permission				=>	'Kinder- und Jugendmedizin',
+					:list_title					=>	nil,
+					:taxpoint_type			=>	nil,
 				},
 				{
+					:code							=>	'8388.00',
 					:group						=>	'8388',
 					:position					=>	'00',
 					:taxpoints				=>	20,
 					:description				=>	'Kristallnachweis mit polarisiertem Licht',
-					:list_title				=>	'Physikalische Medizin und Rehabilitation',
+					:permission				=>	'Physikalische Medizin und Rehabilitation',
+					:list_title					=>	nil,
+					:taxpoint_type			=>	nil,
 				},
 				{
+					:code							=>	'8600.00',
 					:group						=>	'8600',
 					:position					=>	'00',
 					:taxpoints				=>	25,
 					:description			=>	'Zellzählung, sowie Differenzierung nach Anreicherung und Färbung von Körperflüssigkeiten',
-					:list_title				=>	'Physikalische Medizin und Rehabilitation'
+					:permission				=>	'Physikalische Medizin und Rehabilitation',
+					:list_title					=>	nil,
+					:taxpoint_type			=>	nil,
 				}
 				]
 				expected2 = [
 					{
+					:code							=>	'9356.30',
 					:group						=>	'9356',
 					:position					=>	'30',
 					:taxpoints				=>	25,
 					:description			=>	'Spezielle Mikroskopie (Acridineorange, Ziehl-Neelsen, Auramin-Rhodamin, inklusive Dunkelfeld, Phasenkontrast etc., KOH, Pilze)',
-					:list_title				=>	'Tropenmedizin',
+					:permission				=>	'Tropenmedizin',
+					:list_title					=>	nil,
+					:taxpoint_type			=>	nil,
 				},
 				{
+					:code							=>	'9652.00',
 					:group						=>	'9652',
 					:position					=>	'00',
 					:taxpoints				=>	25,
 					:description			=>	'Mikroskopischer Nachweis von Parasiten (z.B. Klebestreifenmethode), nativ',
-					:list_title				=>	'Tropenmedizin',
+					:permission				=>	'Tropenmedizin',
+					:list_title					=>	nil,
+					:taxpoint_type			=>	nil,
 				}
 				]
 				assert_equal(expected1, res1)

@@ -20,12 +20,16 @@ module ODDB
 					result = @parser.parse_line(src)
 				end
 				expected = {
+					:code							=>	'8531.00',
 					:group						=>	'8531',
 					:position					=>	'00',
 					:taxpoints				=>	50,
 					:description			=>	'Sqamous Cell Carcinoma (SCC)',
 					:anonymousgroup		=>	'9800',
 					:anonymouspos			=>	'22',
+					:list_title				=>	nil,
+					:permission				=>	nil,
+					:taxpoint_type		=>	nil,
 				}
 				assert_equal(expected,result)
 			end
@@ -37,12 +41,16 @@ module ODDB
 					result = @parser.parse_line(src)
 				end
 				expected = {
+					:code						=>	'8804.00',
 					:group					=>	'8804',
 					:position				=>	'00',
 					:taxpoints			=>	50,
 					:description		=>	'Chromosomenuntersuchung, Zuschlag für Benützung von zusätzlicher Färbung (G-,Q-,R- oder C-Bänderung, Ag-NOR, hohe Auflösung, andere), pro Färbung',
 					:anonymousgroup =>	'9800',
 					:anonymouspos		=>	'22',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 
 				}
 				assert_equal(expected, result)
@@ -55,12 +63,16 @@ module ODDB
 					result = @parser.parse_line(src)
 				end
 				expected = {
+					:code						=>	'8485.00',
 					:group					=>	'8485',
 					:position				=>	'00',
 					:taxpoints			=>	45,
 					:description		=>	'Prostata spezifisches Antigen (PSA)',
 					:anonymousgroup	=>	'9800',
 					:anonymouspos		=>	'20',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -72,12 +84,16 @@ module ODDB
 					result = @parser.parse_line(src)
 				end
 				expected = {
-				:group					=>	'8806',
-				:position				=>	'00',
-				:taxpoints			=>	300,
-				:description		=>	'In situ-Hybridisierung an Interphasekernen inkl. Präparation und Analyse von 20 oder mehr Zellen',
-				:anonymousgroup	=>	'9800',
-				:anonymouspos		=>	'48',
+					:code						=>	'8806.00',
+					:group					=>	'8806',
+					:position				=>	'00',
+					:taxpoints			=>	300,
+					:description		=>	'In situ-Hybridisierung an Interphasekernen inkl. Präparation und Analyse von 20 oder mehr Zellen',
+					:anonymousgroup	=>	'9800',
+					:anonymouspos		=>	'48',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -89,12 +105,16 @@ module ODDB
 					result = @parser.parse_line(src)
 				end
 				expected = {
-				:group					=>	'8477',
-				:position				=>	'01',
-				:taxpoints			=>	70,
-				:description		=>	'Primidon, inkl. Phenobarbital (Blut)',
-				:anonymousgroup	=>	'9800',
-				:anonymouspos		=>	'26',
+					:code						=>	'8477.01',
+					:group					=>	'8477',
+					:position				=>	'01',
+					:taxpoints			=>	70,
+					:description		=>	'Primidon, inkl. Phenobarbital (Blut)',
+					:anonymousgroup	=>	'9800',
+					:anonymouspos		=>	'26',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -120,6 +140,7 @@ MSH2, MSH6 und PMS2
 					result = @parser.parse_line(src)
 				end
 				expected = {
+					:code							=>	'8810.19',
 					:group						=>	'8810',
 					:position					=>	'19',
 					:taxpoints				=>	50,
@@ -130,6 +151,9 @@ MSH2, MSH6 und PMS2
 - Multiplen endokrinen Neoplasien',
 					:anonymousgroup		=>	'9800',
 					:anonymouspos			=>	'22',
+					:list_title				=>	nil,
+					:taxpoint_type		=>	nil,
+					:permission				=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -153,20 +177,28 @@ Rev. Pos.-Nr. TP Bezeichnung Anonyme Nr.
 				rescue AmbigousParseException => e
 				end
 				expected_first = {
+					:code							=>	'8800.04',
 					:group						=>	'8800',
 					:position					=>	'04',
 					:taxpoints				=>	100,
 					:description			=>	'Chromosomenuntersuchung, maligne Hämopathien, Zuschlag für Zelltrennung und Einfrieren',
 					:anonymousgroup		=>	'9800',
 					:anonymouspos			=>	'30',
+					:list_title				=>	nil,
+					:permission				=>	nil,
+					:taxpoint_type		=>	nil,
 				}
 				expected_last = {
+					:code							=>	'8806.00',
 					:group						=>	'8806',
 					:position					=>	'00',
 					:taxpoints				=>	300,
 					:description			=>	'In situ-Hybridisierung an Interphasekernen inkl. Präparation und Analyse von 20 oder mehr Zellen',
 					:anonymousgroup		=>	'9800',
 					:anonymouspos			=>	'48',
+					:list_title				=>	nil,
+					:permission				=>	nil,
+					:taxpoint_type		=>	nil,
 				}
 				expected_size = 11
 				assert_equal(expected_first, result.first)

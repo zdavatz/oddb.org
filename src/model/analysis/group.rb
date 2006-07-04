@@ -8,7 +8,6 @@ module ODDB
 	module Analysis
 		class Group
 			include Persistence
-			attr_accessor :name
 			attr_reader :groupcd, :positions
 			def initialize(groupcd)
 				@groupcd = groupcd

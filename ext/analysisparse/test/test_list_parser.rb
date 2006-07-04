@@ -18,11 +18,15 @@ module ODDB
 				EOS
 				result = @parser.parse_line(src)
 				expected = {
-					:group				=>	'8006',
-					:position			=>	'00',
-					:taxpoints		=>	9,
-					:description	=>	'Alanin-Aminotransferase (ALAT)',
-					:lab_areas		=>	['C'],
+					:code						=>	'8006.00',
+					:group					=>	'8006',
+					:position				=>	'00',
+					:taxpoints			=>	9,
+					:description		=>	'Alanin-Aminotransferase (ALAT)',
+					:lab_areas			=>	['C'],
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -33,12 +37,16 @@ C    8021.00  200  Alpha-Amanitin (Urin)                                        
 				EOS
 				result = @parser.parse_line(src)
 				expected = {
-					:revision			=>	'C',
-					:group				=>	'8021',
-					:position			=>	'00',
-					:taxpoints		=>	200,
-					:description	=>	'Alpha-Amanitin (Urin)',
-					:lab_areas		=>	['C'],
+					:analysis_revision	=>	'C',
+					:code								=>	'8021.00',
+					:group							=>	'8021',
+					:position						=>	'00',
+					:taxpoints					=>	200,
+					:description				=>	'Alpha-Amanitin (Urin)',
+					:lab_areas					=>	['C'],
+					:permission					=>	nil,
+					:taxpoint_type			=>	nil,
+					:list_title					=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -48,12 +56,16 @@ C    8021.00  200  Alpha-Amanitin (Urin)                                        
 				EOS
 				result = @parser.parse_line(src)
 				expected = {
-					:anonymous		=>	true,
-					:group				=>	'8003',
-					:position			=>	'01',
-					:taxpoints		=>	100,
-					:description	=>	'Acetylcholinesterase-Isoenzyme',
-					:lab_areas		=>	['C'],
+					:anonymous					=>	true,
+					:code								=>	'8003.01',
+					:group							=>	'8003',
+					:position						=>	'01',
+					:taxpoints					=>	100,
+					:taxpoint_type			=>	nil,
+					:permission					=>	nil,
+					:list_title					=>	nil,
+					:description				=>	'Acetylcholinesterase-Isoenzyme',
+					:lab_areas					=>	['C'],
 				}
 				assert_equal(expected, result)
 			end
@@ -64,11 +76,15 @@ C    8021.00  200  Alpha-Amanitin (Urin)                                        
 				result = @parser.parse_line(src)
 				description = ""
 				expected = {
-					:group				=>	'8040',
-					:position			=>	'00',
-					:taxpoints		=>	60,
-					:description	=>	'Angiotensin I',
-					:lab_areas		=>	['C'],
+					:code							=>	'8040.00',
+					:group						=>	'8040',
+					:position					=>	'00',
+					:taxpoints				=>	60,
+					:description			=>	'Angiotensin I',
+					:lab_areas				=>	['C'],
+					:list_title				=>	nil,
+					:permission				=>	nil,
+					:taxpoint_type		=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -79,11 +95,15 @@ Test-Panel
 				EOS
 				result = @parser.parse_line(src)
 				expected = {
-					:group				=>	'8043',
-					:position			=>	'00',
-					:taxpoints		=>	300,
-					:description	=>	'Anti-HLA Alloantikörper, Nachweis mit Test-Panel',
-					:lab_areas		=>	['H', 'I'],
+					:code							=>	'8043.00',
+					:group						=>	'8043',
+					:position					=>	'00',
+					:taxpoints				=>	300,
+					:description			=>	'Anti-HLA Alloantikörper, Nachweis mit Test-Panel',
+					:lab_areas				=>	['H', 'I'],
+					:list_title				=>	nil,
+					:permission				=>	nil,
+					:taxpoint_type		=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -95,13 +115,17 @@ Gerinnung (DIC)
 				EOS
 				result = @parser.parse_line(src)
 				expected = {
-					:revision			=>	'C',
-					:group				=>	'8179',
-					:position			=>	'00',
-					:taxpoints		=>	25,
-					:description	=>	'D-Dimere, ql',
-					:lab_areas		=>	['H'],
-					:limitation		=>	'nur zum Ausschluss der dissem inierten intravasalen Gerinnung (DIC)',
+					:code								=>	'8179.00',
+					:analysis_revision	=>	'C',
+					:group							=>	'8179',
+					:position						=>	'00',
+					:taxpoints					=>	25,
+					:description				=>	'D-Dimere, ql',
+					:lab_areas					=>	['H'],
+					:limitation					=>	'nur zum Ausschluss der dissem inierten intravasalen Gerinnung (DIC)',
+					:list_title					=>	nil,
+					:permission					=>	nil,
+					:taxpoint_type			=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -116,12 +140,16 @@ Herzinsuffizienz   ; nicht zur Therapie-
 				EOS
 				result = @parser.parse_line(src)
 				expected = {
-					:group				=>	'8059',
-					:position			=>	'10',
-					:taxpoints		=>	80,
-					:description	=>	'Natriuretisches Peptid (BNP, NT-proBNP)',
-					:lab_areas		=>	['C'],
-					:limitation		=>	'Abklärung der akuten Dyspnoe zum Ausschluss der akuten oder chronischen Herzinsuffizienz; nicht zur Therapieüberwachung',
+					:code							=>	'8059.10',
+					:group						=>	'8059',
+					:position					=>	'10',
+					:taxpoints				=>	80,
+					:description			=>	'Natriuretisches Peptid (BNP, NT-proBNP)',
+					:lab_areas				=>	['C'],
+					:limitation				=>	'Abklärung der akuten Dyspnoe zum Ausschluss der akuten oder chronischen Herzinsuffizienz; nicht zur Therapieüberwachung',
+					:list_title				=>	nil,
+					:permission				=>	nil,
+					:taxpoint_type		=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -131,13 +159,17 @@ S    8144.00 *  50  CA 50                                                       
 				EOS
 				result = @parser.parse_line(src)
 				expected = {
-					:anonymous		=>	true,
-					:group				=>	'8144',
-					:revision			=>	'S',
-					:position			=>	'00',
-					:taxpoints		=>	50,
-					:description	=>	'CA 50',
-					:lab_areas		=>	['C', 'I'],
+					:code								=>	'8144.00',
+					:anonymous					=>	true,
+					:group							=>	'8144',
+					:analysis_revision	=>	'S',
+					:position						=>	'00',
+					:taxpoints					=>	50,
+					:description				=>	'CA 50',
+					:lab_areas					=>	['C', 'I'],
+					:list_title					=>	nil,
+					:permission					=>	nil,
+					:taxpoint_type			=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -148,12 +180,16 @@ Anaerobier-Nachweis)
 				EOS
 				result = @parser.parse_line(src)
 				expected = {
-					:finding			=>	'n',
-					:group				=>	'9300',
-					:position			=>	'00',
-					:taxpoints		=>	60,
-					:description	=>	'Blutkultur (2 Flaschen, inkl. Anaerobier-Nachweis)',
-					:lab_areas		=>	['M'],
+					:code							=>	'9300.00',
+					:finding					=>	'n',
+					:group						=>	'9300',
+					:position					=>	'00',
+					:taxpoints				=>	60,
+					:description			=>	'Blutkultur (2 Flaschen, inkl. Anaerobier-Nachweis)',
+					:lab_areas				=>	['M'],
+					:list_title				=>	nil,
+					:permission				=>	nil,
+					:taxpoint_type		=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -171,13 +207,17 @@ Schweizerischen Heilmittelinstitut
 					puts e.inspect
 				end
 				expected = {
-					:footnote			=>	'1',
-					:revision			=>	'C',
-					:group				=>	'9367',
-					:position			=>	'00',
-					:taxpoints		=>	90,
-					:description	=>	'Helicobacter pylori, Atemtest mit 13C-Harnstoff inkl. 13C-Harnstoff Das 13C-Harnstoff-Präparat muss beim Schweizerischen Heilmittelinstitut (Swissmedic) registriert sein.',
-					:lab_areas		=>	['C', 'M'],
+					:code								=>	'9367.00',
+					:footnote						=>	'1',
+					:analysis_revision	=>	'C',
+					:group							=>	'9367',
+					:position						=>	'00',
+					:taxpoints					=>	90,
+					:description				=>	'Helicobacter pylori, Atemtest mit 13C-Harnstoff inkl. 13C-Harnstoff Das 13C-Harnstoff-Präparat muss beim Schweizerischen Heilmittelinstitut (Swissmedic) registriert sein.',
+					:lab_areas					=>	['C', 'M'],
+					:list_title					=>	nil,
+					:permission					=>	nil,
+					:taxpoint_type			=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -191,11 +231,15 @@ Schweizerischen Heilmittelinstitut
 					puts e.inspect
 				end
 				expected = {
-					:group				=>	'9504',
-					:position			=>	'80',
-					:taxpoints		=>	40,
-					:description	=>	'Borrelia burgdorferi anti-p39',
-					:lab_areas		=>	['M'],
+					:code						=>	'9504.80',
+					:group					=>	'9504',
+					:position				=>	'80',
+					:taxpoints			=>	40,
+					:description		=>	'Borrelia burgdorferi anti-p39',
+					:lab_areas			=>	['M'],
+					:permission			=>	nil,
+					:list_title			=>	nil,
+					:taxpoint_type	=>	nil
 				}
 				assert_equal(expected, result)
 			end
@@ -212,11 +256,15 @@ Schweizerischen Heilmittelinstitut
 					puts e.inspect
 				end
 				expected = {
-					:group				=>	'9356',
-					:position			=>	'31',
-					:taxpoints		=>	35,
-					:description	=>	'Immunologische Färbung Fluoreszenz/Peroxydase, kumulierbar mit Spezialmikroskopie, nicht kumulierbar mit Kultur',
-					:lab_areas		=>	['M'],
+					:code						=>	'9356.31',
+					:group					=>	'9356',
+					:position				=>	'31',
+					:taxpoints			=>	35,
+					:description		=>	'Immunologische Färbung Fluoreszenz/Peroxydase, kumulierbar mit Spezialmikroskopie, nicht kumulierbar mit Kultur',
+					:lab_areas			=>	['M'],
+					:permission			=>	nil,
+					:list_title			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end	
@@ -231,11 +279,15 @@ Schweizerischen Heilmittelinstitut
 					puts e.inspect
 				end
 				expected = {
-					:group						=>	'8064',
-					:position					=>	'01',
-					:taxpoints				=>	40,
-					:description			=>	'Autoantikörper gegen GAD (Glutamat-Decarboxylase), ql',
-					:lab_areas				=>	['I']
+					:code								=>	'8064.01',
+					:group							=>	'8064',
+					:position						=>	'01',
+					:taxpoints					=>	40,
+					:description				=>	'Autoantikörper gegen GAD (Glutamat-Decarboxylase), ql',
+					:lab_areas					=>	['I'],
+					:permission					=>	nil,
+					:list_title					=>	nil,
+					:taxpoint_type			=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -252,12 +304,16 @@ Universitätskliniken
 					puts e.inspect
 				end
 				expected = {
-					:group					=>	'8619',
-					:position				=>	'00',
-					:taxpoints			=>	65,
-					:description		=>	'Dihydropteridinreduktase (DHPR)-Aktivität in Erythrozyten',
-					:limitation			=>	'in Stoffwechsellaboratorien der Universitätskliniken',
-					:lab_areas			=>	['C']
+					:code								=>	'8619.00',
+					:group							=>	'8619',
+					:position						=>	'00',
+					:taxpoints					=>	65,
+					:description				=>	'Dihydropteridinreduktase (DHPR)-Aktivität in Erythrozyten',
+					:limitation					=>	'in Stoffwechsellaboratorien der Universitätskliniken',
+					:lab_areas					=>	['C'],
+					:permission					=>	nil,
+					:list_title					=>	nil,
+					:taxpoint_type			=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -272,13 +328,17 @@ Universitätskliniken
 					puts e.inspect
 				end
 				expected = {
-					:group					=>	'9115',
-					:position				=>	'01',
-					:taxpoints			=>	800,
-					:description		=>	'HIV 1-Resistenz gegen antiretrovirale Substanzen: genotypische Testung inklusive Interpretationshilfe',
-					:lab_areas			=>	['I', 'M'],
-					:limitation			=>	'Indikation und Durchfuffffhrung gemuffffss den Richtlinien der "EuroGuidelines Group for HIV Resistance" vom November 2000 (AIDS 2001; 15:309-320), maximal 3 Tests pro Patient und Jahr, nicht kumulierbar mit Position 9115.02 In folgenden Laboratorien: 1. Universitufffft Basel, Institut fuffffr Medizinische Mikrobiologie 2. HUG, Laboratoire Central de Virologie 3. CHUV, Duffffp. de muffffdecine de laboratoire, Service d~Rimmunologie et d~Qallergie 4. Universitufffft Zuffffrich, Nationales Zentrum f Retroviren Guffffltig ab 1.1.2003 bis 31.12.2005 In Evaluation (Monitoring, systematische Literaturreview, Kosten-Nutzen-Analyse)',
-					:anonymous			=>	true,
+					:code								=>	'9115.01',
+					:group							=>	'9115',
+					:position						=>	'01',
+					:taxpoints					=>	800,
+					:description				=>	'HIV 1-Resistenz gegen antiretrovirale Substanzen: genotypische Testung inklusive Interpretationshilfe',
+					:lab_areas					=>	['I', 'M'],
+					:limitation					=>	'Indikation und Durchfuffffhrung gemuffffss den Richtlinien der "EuroGuidelines Group for HIV Resistance" vom November 2000 (AIDS 2001; 15:309-320), maximal 3 Tests pro Patient und Jahr, nicht kumulierbar mit Position 9115.02 In folgenden Laboratorien: 1. Universitufffft Basel, Institut fuffffr Medizinische Mikrobiologie 2. HUG, Laboratoire Central de Virologie 3. CHUV, Duffffp. de muffffdecine de laboratoire, Service d~Rimmunologie et d~Qallergie 4. Universitufffft Zuffffrich, Nationales Zentrum f Retroviren Guffffltig ab 1.1.2003 bis 31.12.2005 In Evaluation (Monitoring, systematische Literaturreview, Kosten-Nutzen-Analyse)',
+					:anonymous					=>	true,
+					:permission					=>	nil,
+					:list_title					=>	nil,
+					:taxpoint_type			=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -290,12 +350,16 @@ Universitätskliniken
 					puts e.inspect
 				end
 				expected = {
-					:group					=>	'8810',
-					:position				=>	'10',
-					:taxpoints			=>	50,
-					:description		=>	"H\344matologische Erkrankungen, maligne (Leuk\344mien, Lymphome); Nachweis eines Fusionsgens oder Fusions-Transkripts oder eines Rearrangements, ql oder qn, n\344mlich:\n- t(9; 22) BCR-ABL\n- t(8; 21) AML1-ETO\n- t(15; 17) PML-RARa\n- inv(16) CBF-b-MYH11\n- t(4; 11) MLL-AF4\n- FLT3 ITD\n- t(12; 21) TEL-AML1\n- t(1; 19) E2A-PBX1\n- t(11; 14) BCL-1\n- t(14; 18) BCL-2\n- IgH rearrangement\n- TCR rearrangement",
-					:lab_areas			=>	['G', 'H'],
-					:anonymous			=>	true,
+					:code								=>	'8810.10',
+					:group							=>	'8810',
+					:position						=>	'10',
+					:taxpoints					=>	50,
+					:description				=>	"H\344matologische Erkrankungen, maligne (Leuk\344mien, Lymphome); Nachweis eines Fusionsgens oder Fusions-Transkripts oder eines Rearrangements, ql oder qn, n\344mlich:\n- t(9; 22) BCR-ABL\n- t(8; 21) AML1-ETO\n- t(15; 17) PML-RARa\n- inv(16) CBF-b-MYH11\n- t(4; 11) MLL-AF4\n- FLT3 ITD\n- t(12; 21) TEL-AML1\n- t(1; 19) E2A-PBX1\n- t(11; 14) BCL-1\n- t(14; 18) BCL-2\n- IgH rearrangement\n- TCR rearrangement",
+					:lab_areas					=>	['G', 'H'],
+					:anonymous					=>	true,
+					:permission					=>	nil,
+					:list_title					=>	nil,
+					:taxpoint_type			=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -310,11 +374,15 @@ Universitätskliniken
 					result = @parser.parse_line(src)
 				end
 				expected = {
-					:group				=>	'8535',
-					:position			=>	'03',
-					:taxpoints		=>	125,
-					:lab_areas		=>	['C'],
-					:description	=>	'Suchtstoffe (in der AL aufgeführt), Such- und Bestätigungsanalytik, HPLC-MS/GC-MS (Blut, Urin)'
+					:code								=>	'8535.03',
+					:group							=>	'8535',
+					:position						=>	'03',
+					:taxpoints					=>	125,
+					:lab_areas					=>	['C'],
+					:description				=>	'Suchtstoffe (in der AL aufgeführt), Such- und Bestätigungsanalytik, HPLC-MS/GC-MS (Blut, Urin)',
+					:permission					=>	nil,
+					:list_title					=>	nil,
+					:taxpoint_type			=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -330,11 +398,15 @@ Universitätskliniken
 					puts e.inspect
 				end
 				expected = {
-					:group				=>	'8535',
-					:position			=>	'02',
-					:taxpoints		=>	80,
-					:lab_areas		=>	['C'],
-					:description	=>	'Suchtstoffe (in der AL aufgeführt), Such- und Bestätigungsanalytik, HPLC, GC (Blut, Urin)'
+					:code						=>	'8535.02',
+					:group					=>	'8535',
+					:position				=>	'02',
+					:taxpoints			=>	80,
+					:lab_areas			=>	['C'],
+					:description		=>	'Suchtstoffe (in der AL aufgeführt), Such- und Bestätigungsanalytik, HPLC, GC (Blut, Urin)',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -347,12 +419,16 @@ Universitätskliniken
 					result = @parser.parse_line(src)
 				end
 				expected = {
-					:group				=>	'8017',
-					:position			=>	'00',
-					:taxpoints		=>	45,
-					:lab_areas		=>	['C','I'],
-					:description	=>	'Alpha-1-Fetoprotein (AFP)',
-					:anonymous		=>	true
+					:code						=>	'8017.00',
+					:group					=>	'8017',
+					:position				=>	'00',
+					:taxpoints			=>	45,
+					:lab_areas			=>	['C','I'],
+					:description		=>	'Alpha-1-Fetoprotein (AFP)',
+					:anonymous			=>	true,
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(result, expected)
 			end
@@ -368,12 +444,16 @@ Patientenproben"
 				result = @parser.parse_line(src)
 			end
 				expected = {
-					:group				=>	'8000',
-					:position			=>	'00',
-					:taxpoints		=>	8,
-					:description	=>	'ABO/D-Antigen, Kontrolle nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben"',
-					:lab_areas		=>	['H'],
-					:revision			=>	'C'
+					:code								=>	'8000.00',
+					:group							=>	'8000',
+					:position						=>	'00',
+					:taxpoints					=>	8,
+					:description				=>	'ABO/D-Antigen, Kontrolle nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben"',
+					:lab_areas					=>	['H'],
+					:analysis_revision	=>	'C',
+					:list_title					=>	nil,
+					:permission					=>	nil,
+					:taxpoint_type			=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -387,11 +467,15 @@ Patientenproben"
 					result = @parser.parse_line(src)
 				end
 				expected = {
-				:group				=>	'9365',
-				:position			=>	'50',
-				:taxpoints		=>	170,
-				:description	=>	'Bartonella henselae/quintana, Nukleinsäureamplifikation, inkl. Amplifikatnachweis',
-				:lab_areas		=>	['M']
+				:code						=>	'9365.50',
+				:group					=>	'9365',
+				:position				=>	'50',
+				:taxpoints			=>	170,
+				:description		=>	'Bartonella henselae/quintana, Nukleinsäureamplifikation, inkl. Amplifikatnachweis',
+				:lab_areas			=>	['M'],
+				:list_title			=>	nil,
+				:permission			=>	nil,
+				:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -403,12 +487,16 @@ Patientenproben"
 					result = @parser.parse_line(src)
 				end
 				expected = {
-						:group				=>	'9366',
-						:position			=>	'00',
-						:taxpoints		=>	15,
-						:lab_areas		=>	['C','M'],
-						:description	=>	'Urease-Test (Helicobacter pylori)',
-						:footnote			=>	'1'
+					:code						=>	'9366.00',
+					:group					=>	'9366',
+					:position				=>	'00',
+					:taxpoints			=>	15,
+					:lab_areas			=>	['C','M'],
+					:description		=>	'Urease-Test (Helicobacter pylori)',
+					:footnote				=>	'1',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -483,18 +571,26 @@ Patientenproben"
 					result = @parser.parse_page(src, 44)
 				end
 				expected_last = {
-					:group				=>	'8083',
-					:position			=>	'02',
-					:taxpoints		=>	50,
-					:description	=>	'Autoantikörper gegen M2 (Mitochondrial), qn',
-					:lab_areas		=>	['I'],
+					:code						=>	'8083.02',
+					:group					=>	'8083',
+					:position				=>	'02',
+					:taxpoints			=>	50,
+					:description		=>	'Autoantikörper gegen M2 (Mitochondrial), qn',
+					:lab_areas			=>	['I'],
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				expected_first = {
+					:code					=>	'8069.00',
 					:group				=>	'8069',
 					:position			=>	'00',
 					:taxpoints		=>	50,
 					:lab_areas		=>	['I'],
 					:description	=>	'Autoantikörper gegen glomerulöre Basalmembran, qn',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				expected_size	= 30
 				assert_equal(expected_first, result.first)
@@ -548,18 +644,26 @@ Patientenproben"
 					puts e.inspect
 				end
 				expected_first = {
+					:code					=>	'8523.00',
 					:group				=>	'8523',
 					:position			=>	'00',
 					:taxpoints		=>	40,
 					:description	=>	'Sideroblasten, Färbung und Zählung inkl. Beurteilung',
-					:lab_areas		=>	['H']
+					:lab_areas		=>	['H'],
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				expected_last = {
+					:code					=>	'8535.05',
 					:group				=>	'8535',
 					:position			=>	'05',
 					:taxpoints		=>	10,
 					:description	=>	'Suchtstoffe, Screening, jeder weitere Suchtstoff (Urin), max. 10',
 					:lab_areas		=>	['C'],
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				expected_size =	16
 				assert_equal(expected_first, result.first)
@@ -569,48 +673,48 @@ Patientenproben"
 			def test_parse_page__3
 				src = <<-EOS
 				Rev.    Pos.-Nr. A TP  Bezeichnung (Chemie/Hämatologie/Immunologie) B
-                     
-				     8017.00 * 45  Alpha-1-Fetoprotein (AFP)                                  CI
-				     8017.01    25  Alpha-1-Mikroglobulin                                            C
-				     8018.00    30  Alpha-1-saures Glykoprotein                              C
-				     8020.00    30  Alpha-2-Makroglobulin                                           C
-				     8021.00  200  Alpha-Amanitin (Urin)                                              C
-				     8026.00    80  Alpha-Naphthylacetatesterase                           H
-				     8027.00  100  Aluminium, mit AAS                                                  C
-				     8029.00    60  Aminosäurenchromatographie (z.B. nach       C
+
+						 8017.00 * 45  Alpha-1-Fetoprotein (AFP)                                  CI
+						 8017.01    25  Alpha-1-Mikroglobulin                                            C
+						 8018.00    30  Alpha-1-saures Glykoprotein                              C
+						 8020.00    30  Alpha-2-Makroglobulin                                           C
+						 8021.00  200  Alpha-Amanitin (Urin)                                              C
+						 8026.00    80  Alpha-Naphthylacetatesterase                           H
+						 8027.00  100  Aluminium, mit AAS                                                  C
+						 8029.00    60  Aminosäurenchromatographie (z.B. nach       C
 				Stein und Moore, Kurzprogramm), qn
-				     8030.00  200  Aminosäurenchromatographie (z.B. nach       C
+						 8030.00  200  Aminosäurenchromatographie (z.B. nach       C
 				Stein u. Moore, vollständig), qn,
 				und/oder Acylcarnitine (Tandem-
 				Massenspektrometrie, min. 6
 				Komponenten), qn
-				     8032.00    60  Aminosäurenchromatographie, ql                       C
-				     8035.00    50  Ammoniak                                                                   C
-				     8036.00    16  Amphetamine, ql (Urin) (im Screening mit      C
+						 8032.00    60  Aminosäurenchromatographie, ql                       C
+						 8035.00    50  Ammoniak                                                                   C
+						 8036.00    16  Amphetamine, ql (Urin) (im Screening mit      C
 				anderen Suchtstoffen: siehe
 				8535.04/05)
-				     8037.00     9  Amylase, im Blut/Plasma/Serum                      C
-				     8037.01  100  Amylase-Isoenzyme (elektrophoretische         C
+						 8037.00     9  Amylase, im Blut/Plasma/Serum                      C
+						 8037.01  100  Amylase-Isoenzyme (elektrophoretische         C
 				Differenzierung)
-				     8037.02     9  Amylase, in einer weiteren Körper-                    C
+						 8037.02     9  Amylase, in einer weiteren Körper-                    C
 				flüssigkeit
-				     8038.00    60  Androstendion                                                           C
-				     8039.00    60  Androsteron                                                                C
-				     8040.00    60  Angiotensin I                                                              C
-				     8041.00    60  Angiotensin II                                                             C
-				     8042.00    80  Angiotensin-Converting-Enzym                         C
-				     8043.00  300  Anti-HLA Alloantikörper, Nachweis mit            HI
+						 8038.00    60  Androstendion                                                           C
+						 8039.00    60  Androsteron                                                                C
+						 8040.00    60  Angiotensin I                                                              C
+						 8041.00    60  Angiotensin II                                                             C
+						 8042.00    80  Angiotensin-Converting-Enzym                         C
+						 8043.00  300  Anti-HLA Alloantikörper, Nachweis mit            HI
 				Test-Panel
-				     8044.00    60  Antidiuretisches Hormon (Vasopressin,           C
+						 8044.00    60  Antidiuretisches Hormon (Vasopressin,           C
 				ADH)
-				     8046.00    60  Antikörper gegen Wachstumshormon              CI
-				     8048.00    45  Antiplasmin, immunologisch                                H
-				     8049.00    50  Antiplasmin, funktionell                                          H
-				     8050.00    50  Antithrombin III, funktionell                                   H
-				     8051.00    45  Antithrombin III, immunologisch                         H
-				     8052.00    25  Apolipoprotein A1                                                    C
-				     8053.00    25  Apolipoprotein A2                                                    C
-				     8054.00    25  Apolipoprotein B                                                       C
+						 8046.00    60  Antikörper gegen Wachstumshormon              CI
+						 8048.00    45  Antiplasmin, immunologisch                                H
+						 8049.00    50  Antiplasmin, funktionell                                          H
+						 8050.00    50  Antithrombin III, funktionell                                   H
+						 8051.00    45  Antithrombin III, immunologisch                         H
+						 8052.00    25  Apolipoprotein A1                                                    C
+						 8053.00    25  Apolipoprotein A2                                                    C
+						 8054.00    25  Apolipoprotein B                                                       C
 				42
 
 				EOS
@@ -620,19 +724,27 @@ Patientenproben"
 					puts e.inspect
 				end
 				expected_first = {
-							:group				=>	'8017',
-							:position			=>	'00',
-							:anonymous		=>	true,
-							:taxpoints		=>	45,
-							:description	=>	'Alpha-1-Fetoprotein (AFP)',
-							:lab_areas		=>	['C','I'],
+					:code					=>	'8017.00',
+					:group				=>	'8017',
+					:position			=>	'00',
+					:anonymous		=>	true,
+					:taxpoints		=>	45,
+					:description	=>	'Alpha-1-Fetoprotein (AFP)',
+					:lab_areas		=>	['C','I'],
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				expected_last  = {
-							:group				=>	'8054',
-							:position			=>	'00',
-							:taxpoints		=>	25,
-							:description	=>	'Apolipoprotein B',
-							:lab_areas			=>	['C']
+					:code					=>	'8054.00',
+					:group				=>	'8054',
+					:position			=>	'00',
+					:taxpoints		=>	25,
+					:description	=>	'Apolipoprotein B',
+					:lab_areas			=>	['C'],
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				expected_size	 = 30
 				assert_equal(expected_first, result.first)
@@ -647,9 +759,9 @@ Patientenproben"
 
 				1. Kapitel:  Chemie/Hämatologie/Immunologie
 
-				      Zu anonymisierende Positionen (A) = * (mit Stern bezeichnet) ?   Kapitel 4.2
-				      Fachbereiche (B) = Suffix C (klinische Chemie), H (Hämatologie),
-				      I (klinische Immunologie), M (medizinische Mikrobiologie)
+							Zu anonymisierende Positionen (A) = * (mit Stern bezeichnet) ?   Kapitel 4.2
+							Fachbereiche (B) = Suffix C (klinische Chemie), H (Hämatologie),
+							I (klinische Immunologie), M (medizinische Mikrobiologie)
 
 				Rev.    Pos.-Nr. A TP  Bezeichnung (Chemie/Hämatologie/Immunologie) B
 
@@ -666,42 +778,50 @@ C 8000.00 8 ABO/D-Antigen, Kontrolle nach Empfeh-         H
 				S    8002.00    12  ABO-Blutgruppen und -Antigen D                       H
 				Bestimmung (ohne Du) nach Richtlinien
 				BSD SRK 8.3.2/8.3.3
-				     8003.01 * 100  Acetylcholinesterase-Isoenzyme                        C
-				     8004.00    60  ADP in Thrombozyten                                              H
-				     8006.00     9  Alanin-Aminotransferase (ALAT)                     C
-				     8007.00     9  Albumin, chemisch                                                 C
-				     8008.00    25  Albumin, immunologisch                                       C
-				     8008.50    12  Albumin im Urin, sq                                                   C
-				     8009.00    25  Aldolase                                                                       C
-				     8010.00    60  Aldosteron                                                                   C
-				     8011.00    50  Alkalische Phosphatase in Leukozyten            H
-				     8012.00     9  Alkalische Phosphatase                                       C
-				     8013.00  100  Alkalische Phosphatase-Isoenzyme                 C
+						 8003.01 * 100  Acetylcholinesterase-Isoenzyme                        C
+						 8004.00    60  ADP in Thrombozyten                                              H
+						 8006.00     9  Alanin-Aminotransferase (ALAT)                     C
+						 8007.00     9  Albumin, chemisch                                                 C
+						 8008.00    25  Albumin, immunologisch                                       C
+						 8008.50    12  Albumin im Urin, sq                                                   C
+						 8009.00    25  Aldolase                                                                       C
+						 8010.00    60  Aldosteron                                                                   C
+						 8011.00    50  Alkalische Phosphatase in Leukozyten            H
+						 8012.00     9  Alkalische Phosphatase                                       C
+						 8013.00  100  Alkalische Phosphatase-Isoenzyme                 C
 				(elektrophoretische Differenzierung)
-				     8013.01    60  Alkalische Phosphatase,                                       C
+						 8013.01    60  Alkalische Phosphatase,                                       C
 				knochenspezifisch
-				     8014.00    30  Alpha-1-Antichymotrypsin                                    C
-				     8015.00    30  Alpha-1-Antitrypsin                                                  C
-				     8016.00    80  Alpha-1-Antitrypsin Typisierung                         C
-				                                                                                                                       41
+						 8014.00    30  Alpha-1-Antichymotrypsin                                    C
+						 8015.00    30  Alpha-1-Antitrypsin                                                  C
+						 8016.00    80  Alpha-1-Antitrypsin Typisierung                         C
+																																																															 41
 				EOS
 				begin
 					result = @parser.parse_page(src, 41)
 				end
 				expected_first = {
-						:group				=>		'8000',
-						:position			=>		'00',
-						:taxpoints		=>		8,
-						:lab_areas		=>		['H'],
-						:revision			=>		'C',
-						:description	=>		'ABO/D-Antigen, Kontrolle nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben"',
+					:code								=>		'8000.00',
+					:group							=>		'8000',
+					:position						=>		'00',
+					:taxpoints					=>		8,
+					:lab_areas					=>		['H'],
+					:analysis_revision	=>		'C',
+					:description				=>		'ABO/D-Antigen, Kontrolle nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben"',
+					:list_title					=>	nil,
+					:permission					=>	nil,
+					:taxpoint_type			=>	nil,
 				}
 				expected_last = {
-						:group				=>		'8016',
-						:position			=>		'00',
-						:taxpoints		=>		80,
-						:lab_areas		=>		['C'],
-						:description	=>		'Alpha-1-Antitrypsin Typisierung',
+					:code								=>		'8016.00',
+					:group							=>		'8016',
+					:position						=>		'00',
+					:taxpoints					=>		80,
+					:lab_areas					=>		['C'],
+					:description				=>		'Alpha-1-Antitrypsin Typisierung',
+					:list_title					=>	nil,
+					:permission					=>	nil,
+					:taxpoint_type			=>	nil,
 				}
 				expected_size = 18
 				assert_equal(expected_first, result.first)
@@ -712,46 +832,46 @@ C 8000.00 8 ABO/D-Antigen, Kontrolle nach Empfeh-         H
 				src = <<-EOS
 				Rev.      Pos. Nr. A   TP   R   Bezeichnung (Bakteriologie/Mykologie)                        B
 
-				     9354.40 * 35    Neisseria gonorrhoeae, IF oder                      M
+						 9354.40 * 35    Neisseria gonorrhoeae, IF oder                      M
 				Hybridisierung
-				     9354.50 * 80    Neisseria gonorrhoeae, Nukleinsüure-        M
+						 9354.50 * 80    Neisseria gonorrhoeae, Nukleinsüure-        M
 				amplifikation, inkl. Amplifikatnachweis
-				     9355.30    20    Traditionelle Mikroskopie (Gram,                 M
+						 9355.30    20    Traditionelle Mikroskopie (Gram,                 M
 				Giemsa, Methylenblau, etc.), Fürbung
 				inbegriffen, nicht kumulierbar mit
 				Kultur
-				     9356.30    25      Spezielle Mikroskopie (Acridineorange,      M
+						 9356.30    25      Spezielle Mikroskopie (Acridineorange,      M
 				Ziehl-Neelsen, Auramin-Rhodamin,
 				inklusive Dunkelfeld, Phasenkontrast
 				etc., KOH, Pilze)
-				     9356.31    35      Immunologische Fürbung Fluoreszenz/      M
+						 9356.31    35      Immunologische Fürbung Fluoreszenz/      M
 				Peroxydase, kumulierbar mit Spezial-
 				mikroskopie, nicht kumulierbar mit
 				Kultur
-				     9357.50  170     Borrelia burgdorferi, Nukleinsüure-               M
+						 9357.50  170     Borrelia burgdorferi, Nukleinsüure-               M
 				amplifikation, inkl. Amplifikatnachweis
-				     9358.00    40 n   Pilznachweis, Blutkultur, auf Verlangen      M
-				     9358.10  100 p Pilznachweis, Blutkultur, auf Verlangen      M
-				     9359.00    80 n   Bronchoalveolüre Lavage (Kultur qn)           M
-				     9359.10  135 p   Bronchoalveolüre Lavage (Kultur qn)           M
-				     9360.50    80    Chlamydia trachomatis, Nukleinsüure-        M
+						 9358.00    40 n   Pilznachweis, Blutkultur, auf Verlangen      M
+						 9358.10  100 p Pilznachweis, Blutkultur, auf Verlangen      M
+						 9359.00    80 n   Bronchoalveolüre Lavage (Kultur qn)           M
+						 9359.10  135 p   Bronchoalveolüre Lavage (Kultur qn)           M
+						 9360.50    80    Chlamydia trachomatis, Nukleinsüure-        M
 				Amplifikation inkl. Amplifikatnachweis
-				     9361.50  170      Chlamydia pneumoniae, Nukleinsüure-       M
+						 9361.50  170      Chlamydia pneumoniae, Nukleinsüure-       M
 				amplifikation, inkl. Amplifikatnachweis
-				     9362.83    10    Cyto-Zentrifugation (kumulierbar)                  M
-				     9363.84    10    Quantitative Bakt. (andere Mat. als               M
+						 9362.83    10    Cyto-Zentrifugation (kumulierbar)                  M
+						 9363.84    10    Quantitative Bakt. (andere Mat. als               M
 				Urin), kumulierbar
-				     9364.00    40      Bartonella Henselae IgG                                   M
-				     9365.00    45      Bartonella Henselae IgM                                   M
-				     9365.50  170     Bartonella henselae / quintana,                      M
+						 9364.00    40      Bartonella Henselae IgG                                   M
+						 9365.00    45      Bartonella Henselae IgM                                   M
+						 9365.50  170     Bartonella henselae / quintana,                      M
 				Nukleinsüureamplifikation, inkl.
 				Amplifikatnachweis
-				    9366.001   15    Urease-Test (Helicobacter pylori)              CM
+						9366.001   15    Urease-Test (Helicobacter pylori)              CM
 
 				1 Zur Durchführung dieser Analyse ist keine Anerkennung des Bundesamtes für Gesundheit im
 				Sinne des Art. 5 Abs. 1 des Epidemiengesetzes vom 18. Dezember 1970 erforderlich
 
-				                                                                                                                     101
+																																																														 101
 
 
 				EOS
@@ -761,20 +881,28 @@ C 8000.00 8 ABO/D-Antigen, Kontrolle nach Empfeh-         H
 					puts e.inspect
 				end
 				expected_first = {
-						:group				=>	'9354',
-						:position			=>	'40',
-						:taxpoints		=>	35,
-						:anonymous		=>	true,
-						:lab_areas		=>	['M'],
-						:description	=>	'Neisseria gonorrhoeae, IF oder Hybridisierung',
+					:code					=>	'9354.40',
+					:group				=>	'9354',
+					:position			=>	'40',
+					:taxpoints		=>	35,
+					:anonymous		=>	true,
+					:lab_areas		=>	['M'],
+					:description	=>	'Neisseria gonorrhoeae, IF oder Hybridisierung',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				expected_last = {
-						:group				=>	'9366',
-						:position			=>	'00',
-						:taxpoints		=>	15,
-						:lab_areas		=>	['C','M'],
-						:description	=>	'Urease-Test (Helicobacter pylori)',
-						:footnote			=>	'Zur Durchführung dieser Analyse ist keine Anerkennung des Bundesamtes für Gesundheit im Sinne des Art. 5 Abs. 1 des Epidemiengesetzes vom 18. Dezember 1970 erforderlich'
+					:code					=>	'9366.00',
+					:group				=>	'9366',
+					:position			=>	'00',
+					:taxpoints		=>	15,
+					:lab_areas		=>	['C','M'],
+					:description	=>	'Urease-Test (Helicobacter pylori)',
+					:footnote			=>	'Zur Durchführung dieser Analyse ist keine Anerkennung des Bundesamtes für Gesundheit im Sinne des Art. 5 Abs. 1 des Epidemiengesetzes vom 18. Dezember 1970 erforderlich',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				expected_size = 18
 				assert_equal(expected_first, result.first)
@@ -784,48 +912,48 @@ C 8000.00 8 ABO/D-Antigen, Kontrolle nach Empfeh-         H
 			def test_parse_page__6
 				src = <<-EOS
 Rev.    Pos.-Nr. A TP  Bezeichnung (Chemie/Hämatologie/Immunologie) B
-                                   
-      8055.00    25  Apolipoprotein E                                           C
-      8056.00    70  Apolipoprotein E Phänotypen                        C
-      8056.01   100  Arsen, mit AAS                                               C
-      8058.00     9  Aspartat-Aminotransferase (ASAT)             C
-      8059.10    80   Natriuretisches Peptid (BNP, NT-                  C
+
+			8055.00    25  Apolipoprotein E                                           C
+			8056.00    70  Apolipoprotein E Phänotypen                        C
+			8056.01   100  Arsen, mit AAS                                               C
+			8058.00     9  Aspartat-Aminotransferase (ASAT)             C
+			8059.10    80   Natriuretisches Peptid (BNP, NT-                  C
 proBNP)  
-  Limitation: Abklärung der akuten Dyspnoe 
+	Limitation: Abklärung der akuten Dyspnoe 
 zum Ausschluss der akuten oder chronischen 
 Herzinsuffizien z; nicht zur Therapie-
 überwachung
-      8060.00    40  Autoantikörper gegen Colon-Epithel               I
-      8060.01    40  Autoantikörper gegen                                    I
+			8060.00    40  Autoantikörper gegen Colon-Epithel               I
+			8060.01    40  Autoantikörper gegen                                    I
 Acetylcholinrezeptoren, ql 
-      8060.02    50  Autoantikörper gegen                                    I
+			8060.02    50  Autoantikörper gegen                                    I
 Acetylcholinrezeptoren, qn 
-      8060.03    40   Autoantikörper gegen Actin, ql                        I
-      8060.04    50  Autoantikörper gegen Actin, qn                       I
-      8060.05    40   Autoantikörper gegen Centromer, ql               I
-      8060.06    50  Autoantikörper gegen Centromer, qn              I
-      8061.00    50   Autoantikörper gegen DNA, ql                        I
-      8062.00    60   Autoantikörper gegen DNA, qn                       I
-      8063.00    40  Autoantikörper gegen Endomysium, ql           I
-      8064.00    50   Autoantikörper gegen Endomysium, qn          I
-      8064.01    40  Autoantikörper gegen GAD (Glutamat-           I
+			8060.03    40   Autoantikörper gegen Actin, ql                        I
+			8060.04    50  Autoantikörper gegen Actin, qn                       I
+			8060.05    40   Autoantikörper gegen Centromer, ql               I
+			8060.06    50  Autoantikörper gegen Centromer, qn              I
+			8061.00    50   Autoantikörper gegen DNA, ql                        I
+			8062.00    60   Autoantikörper gegen DNA, qn                       I
+			8063.00    40  Autoantikörper gegen Endomysium, ql           I
+			8064.00    50   Autoantikörper gegen Endomysium, qn          I
+			8064.01    40  Autoantikörper gegen GAD (Glutamat-           I
 Decarboxylase), ql 
-      8064.02    50  Autoantikörper gegen GAD (Glutamat-           I
+			8064.02    50  Autoantikörper gegen GAD (Glutamat-           I
 Decarboxylase), qn 
-      8064.03    40   Autoantikörper gegen Gangliosid, ql               I
-      8064.04    50  Autoantikörper gegen Gangliosid, qn              I
-      8064.05    50   Autoantikörper gegen Gangliosid GM1           I
-      8064.06    50   Autoantikörper gegen Gangliosid GM2           I
-      8064.07    50   Autoantikörper gegen Gangliosid GD1           I
-      8064.50    50  Autoantikörper gegen Gewebstrans-              I
+			8064.03    40   Autoantikörper gegen Gangliosid, ql               I
+			8064.04    50  Autoantikörper gegen Gangliosid, qn              I
+			8064.05    50   Autoantikörper gegen Gangliosid GM1           I
+			8064.06    50   Autoantikörper gegen Gangliosid GM2           I
+			8064.07    50   Autoantikörper gegen Gangliosid GD1           I
+			8064.50    50  Autoantikörper gegen Gewebstrans-              I
 glutaminase, qn, nicht kumulierbar mit 
 8063.00 und 8064.00 
-      8065.00    40  Autoantikörper gegen glatte Muskulatur         I
-      8066.00    35   Gliadin, Antikörper gegen ~, IgG                     I
-      8067.00    35   Gliadin, Antikörper gegen ~, IgA                     I
-      8068.00    40  Autoantikörper gegen glomeruläre                  I
+			8065.00    40  Autoantikörper gegen glatte Muskulatur         I
+			8066.00    35   Gliadin, Antikörper gegen ~, IgG                     I
+			8067.00    35   Gliadin, Antikörper gegen ~, IgA                     I
+			8068.00    40  Autoantikörper gegen glomeruläre                  I
 Basalmembran, ql 
-                                                                                                     43
+																																																		 43
 
 				EOS
 				begin
@@ -834,18 +962,26 @@ Basalmembran, ql
 					puts e.inspect
 				end
 				expected_first = {
-						:group				=>	'8055',
-						:position			=>	'00',
-						:taxpoints		=>	25,
-						:lab_areas		=>	['C'],
-						:description	=>	'Apolipoprotein E',
+					:code					=>	'8055.00',
+					:group				=>	'8055',
+					:position			=>	'00',
+					:taxpoints		=>	25,
+					:lab_areas		=>	['C'],
+					:description	=>	'Apolipoprotein E',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				expected_last = {
-						:group				=>	'8068',
-						:position			=>	'00',
-						:taxpoints		=>	40,
-						:lab_areas		=>	['I'],
-						:description	=>	'Autoantikörper gegen glomeruläre Basalmembran, ql',
+					:code					=>	'8068.00',
+					:group				=>	'8068',
+					:position			=>	'00',
+					:taxpoints		=>	40,
+					:lab_areas		=>	['I'],
+					:description	=>	'Autoantikörper gegen glomeruläre Basalmembran, ql',
+					:list_title			=>	nil,
+					:permission=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				expected_size = 28
 				assert_equal(expected_first, result.first)

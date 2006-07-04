@@ -25,62 +25,92 @@ module ODDB
 			end
 		end
 		class IndexHandler < PageHandler
-			attr_reader :index, :positions
+			attr_reader :index
 			def initialize(index)
 				@index = index
 				@incomplete = {}
-				@positions = []
-				@list_title = ''
+				@positions = {}
 			end
 			def analyze(page, pagenum)
 				case @index[pagenum]
 				when /Chemie\/H\344matologie\/Immunologie/i
 					@parser = ListParser.new
+					@list_title = $~.to_s
 				when /genetik/i
 					@parser = ListParser.new
+					@list_title = $~.to_s
 				when /mikrobiologie/i
 					@parser = ListParser.new
+					@list_title = $~.to_s
 				when /allgemeine positionen/i
 					@parser = SimpleListParser.new
+					@list_title = $~.to_s
 				when /Anonyme Positionen/i
+					@list_title = nil
 					@parser = AnonymousListParser.new
 				when /Fixe Analysenblöcke/
 					@parser = BlockListParser.new
+					@list_title = $~.to_s
 				when /Liste seltener Autoantikörper/
 					@parser = nil #AntibodyListParser.new
 				when /Im Rahmen der Grundversorgung durchgef\374hrte Analysen/i
 					@parser = FragmentedPageHandler.new
+					@list_title = nil
+					@permission = nil
 				when /Von Chiropraktoren oder Chiropraktorinnen veranlasste Analysen/i
 					@parser = AppendixListParser.new
+					@permission = $~.to_s
 				when /Von Hebammen veranlasste Analysen/i
 					@parser = AppendixListParser.new
+					@permission = $~.to_s
 				end
-				@list_title = $~.to_s
 				if(@parser)
-					@parser.list_title = @list_title
 					handler = Rpdf2txt::SimpleHandler.new
 					page.text(handler)
 					txt = handler.out
-					parse_pages(txt, pagenum, @parser)
+					parse_page(txt, pagenum, @parser)
 				end
 				self
 			end
-			def parse_pages(txt, pagenum, parser)
+			def parse_page(txt, pagenum, parser)
+				parser.list_title = @list_title
+				parser.permission = @permission
 				pos = parser.parse_page(txt, pagenum)
-				pos.each { |ps|
-					fn = ps[:footnote]
-					if(fn.is_a?(Integer))
-						@incomplete.store(fn, ps)
-					end
-				}
 				parser.footnotes.each { |key, fn|
-					if(ps = @incomplete.delete(key))
-						ps[:footnote] = fn
+					if(pairs = @incomplete.delete(key))
+						pairs.each { |pair|
+							pair[1] = fn
+						}
 					end
 				}
-				@positions.concat(pos)
+				pos.each { |ps|
+					same = nil
+					fn = ps.delete(:footnote)
+					perm = ps.delete(:permission)
+					if(same = @positions[ps[:code]])
+						ps.delete_if { |key, value|
+							value.nil?
+						}
+						same.update(ps)
+					else
+						same = ps
+						ps.store(:permissions, [])
+						@positions.store(ps[:code], ps)
+					end
+					pair = [perm, fn]
+					if(perm)
+						same[:permissions].push(pair)
+					end
+					if(/^\d+$/.match(fn))
+						(@incomplete[fn] ||= []).push(pair)
+					end
+				}
 				@list_title = parser.list_title
+				@permission = parser.permission 
 				pos
+			end
+			def positions
+				@positions.values
 			end
 		end
 		class IndexFinder < PageHandler

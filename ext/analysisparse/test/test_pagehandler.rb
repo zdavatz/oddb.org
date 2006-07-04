@@ -280,6 +280,9 @@ Systematische Auflistung der Analysen inkl. Anhänge
 			end
 			def test_parse_pages__1
 				page_1 = <<-EOS
+5.1.3 Analysen der Grundversorgung im engern Sinn
+
+
 Teilliste 2
 
 Für diese Analysen gilt auch für das ärztliche Praxislaboratorium der
@@ -288,56 +291,39 @@ Analysenlistentarif (Taxpunktwert und Taxpunktzahl).
 Rev. Pos. Nr.  A TP  Bezeichnung (Liste Grundversorgung, Teilliste 2)
 
 1
-C     8000.00        8    ABO/D-Antigen, Kontrolle nach Empfehlun-
+C     8000.00 1       8    ABO/D-Antigen, Kontrolle nach Empfehlun-
 gen BSD SRK "Erythrozytenserologische
 Untersuchungen an Patientenproben"
-        8006.00          9  Alanin-Aminotransferase (ALAT)
-      8007.00          9  Albumin, chemisch
-      8008.50         12   Albumin im Urin, sq
-      8012.00          9  Alkalische Phosphatase
-      8036.00 2      16   Amphetamine, ql (Urin) (im Screening mit
+				8006.00          9  Alanin-Aminotransferase (ALAT)
+			8007.00          9  Albumin, chemisch
+			8036.00 2      16   Amphetamine, ql (Urin) (im Screening mit
 anderen Suchtstoffen: siehe 8535.04/05)
-      8037.00          9    Amylase, im Blut/Plasma/Urin
-      8058.00          9  Aspartat-Aminotransferase (ASAT)
-      8116.00 2      16  Barbiturate, ql (Blut, Urin) (im Screening mit
-anderen Suchtstoffen: siehe 8535.04/05)
-      8119.00 2      16   Benzodiazepine, ql (Blut, Urin) (im
-Screening mit anderen Suchtstoffen: siehe
-8535.04/05)
-      8126.00          9  Bilirubin, gesamt
-      8129.00 3      30   Blutgase (pH, pCO , pO
-abgeleitete Werte) 2          2, Bikarbonat, inkl.
-      8129.10 4      50  Oxymetrieblock (Oxyhämoglobin,
+			8129.00 3      30   Blutgase (pH, pCO, pO
+abgeleitete Werte)
+			8129.10 4      50  Oxymetrieblock (Oxyhämoglobin,
 Carboxyhämoglobin, Methämoglobin)
-      8137.00         23   C-reaktives Protein (CRP), qn
-         8137.10         12  C-reaktives Protein (CRP), Schnelltest, sq
-      8158.00          9  Cholesterin, total
-      8169.00 2      14  Cocain, ql (Urin)(im Screening mit anderen
-Suchtstoffen: siehe 8535.04/05)
-      8184.00 2      16   Cannabis, ql (Urin) (im Screening mit
-anderen Suchtstoffen: siehe 8535.04/05)
 N     8191.00         10   Spezielle Mikroskopie, Nativpräparat
 (Dunkelfeld, Polarisation, Phasenkontrast)
-                                                                                                                    129
+																																																										129
 				EOS
 				page_2 = <<-EOS
 Rev. Pos. Nr.  A TP  Bezeichnung (Liste Grundversorgung, Teilliste 2)
 
 N     8560.10
-    6    Hämatologische Untersuchungen mit QBC-
+		6    Hämatologische Untersuchungen mit QBC-
 Methode
 Limitation: nur für Hämoglobin und Hämatokrit.
 Gültig ab 1.1.2006 bis 31.12.2006.
-      8572.00          9  Triglyceride
-      8574.11         16  Troponin (T oder I), Schnelltest, nicht
+			8572.00          9  Triglyceride
+			8574.11         16  Troponin (T oder I), Schnelltest, nicht
 kumulierbar mit 8384.00 Kreatin-Kinase
 (CK), total
-      8578.00          9  Urat
+			8578.00          9  Urat
 C     8587.00 1      25   Verträglichkeitsprobe: Kreuzprobe nach
 Empfehlungen BSD SRK "Erythrozyten-
 serologische Untersuchungen an Patien-
 tenproben", pro Erythrozytenkonzentrat
-      9116.40    *  12   HIV-1+2 -Antikörper (Screening) Schnelltest,
+			9116.40    *  12   HIV-1+2 -Antikörper (Screening) Schnelltest,
 ql
 S     9710.00          8  Blutentnahme, Kapillarblut oder
 Venenpunktion, nur anwendbar durch
@@ -345,7 +331,7 @@ Venenpunktion, nur anwendbar durch
 der Präsenzdiagnostik nach Artikel 54
 Absatz 1 Buchstabe a KVV und Kapitel
 5.1.2 der Analysenliste
-  Limitation: gültig ab 1.5.2004 bis 31.12.2005
+	Limitation: gültig ab 1.5.2004 bis 31.12.2005
 ___________________________________________________________
 *Anonyme Position
 1  Nur für Spitäler
@@ -353,82 +339,208 @@ ___________________________________________________________
 ihrer eigenen Patienten
 3 Nur für Spitäler und Pneumologen
 4 Nur für Spitäler, Pneumologen und Hämatologen
-                                                                                                                    131
+																																																										130
 				EOS
 				begin
-					res1 = @index_handler.parse_pages(page_1, 1, @parser)
-					res2 = @index_handler.parse_pages(page_2, 2, @parser)
+					res1 = @index_handler.parse_page(page_1, 129, @parser)
+					res2 = @index_handler.parse_page(page_2, 130, @parser)
 				end
 				item1 = res1.last
 				item2 = res2.first
-				assert_equal('Teilliste 2', item2[:list_title])
-				expected = {
-				:group				=>	'8191',
-				:position			=>	'00',
-				:taxpoints		=>	10,
-				:description	=>	'Spezielle Mikroskopie, Nativpräparat (Dunkelfeld, Polarisation, Phasenkontrast)',
-				:revision			=>	'N',
-				:list_title		=>	'Teilliste 2'
+				expected_res_1 = [
+					{
+					:code							=>		'8000.00',
+					:group						=>		'8000',
+					:position					=>		'00',
+					:taxpoints				=>		8,
+					:description			=>		'ABO/D-Antigen, Kontrolle nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben"',
+					:taxpoint_type		=>		:default,
+					:permissions			=>		[['Teilliste 2','Nur für Spitäler']],
+					:list_title				=>		nil,
+					:analysis_revision	=>	'C',
+				},
+				{
+					:code						=>		'8006.00',
+					:group					=>		'8006',
+					:position				=>		'00',
+					:taxpoints			=>		9, 
+					:description		=>		'Alanin-Aminotransferase (ALAT)',
+					:taxpoint_type	=>		:default,
+					:permissions		=>		[['Teilliste 2', nil]],
+					:list_title			=>		nil,
+				},
+				{
+					:code						=>		'8007.00',
+					:group					=>		'8007',
+					:position				=>		'00',
+					:taxpoints			=>		9,
+					:description		=>		'Albumin, chemisch',
+					:taxpoint_type	=>		:default,
+					:permissions		=>		[['Teilliste 2', nil]],
+					:list_title			=>		nil,
+				},
+				{
+					:code						=>		'8036.00',
+					:group					=>		'8036',
+					:position				=>		'00',
+					:taxpoints			=>		16,
+					:description		=>		'Amphetamine, ql (Urin) (im Screening mit anderen Suchtstoffen: siehe 8535.04/05)',
+					:taxpoint_type	=>		:default,
+					:permissions		=>		[['Teilliste 2','Nur für autorisierte Medizinalpersonen in Substitutions- oder Entzugsbehandlungen ihrer eigenen Patienten']],
+					:list_title			=>		nil,
+				},
+				{    
+					:code						=>		'8129.00',
+					:group					=>		'8129',
+					:position				=>		'00',
+					:taxpoints			=>		30,
+					:description		=>		'Blutgase (pH, pCO, pO abgeleitete Werte)',
+					:taxpoint_type	=>		:default,
+					:permissions		=>		[['Teilliste 2','Nur für Spitäler und Pneumologen']],
+					:list_title			=>		nil,
+				},
+				{
+					:code							=>		'8129.10',
+					:group						=>		'8129',
+					:position					=>		'10',
+					:description			=>		'Oxymetrieblock (Oxyhämoglobin, Carboxyhämoglobin, Methämoglobin)',
+					:taxpoints				=>		50,
+					:list_title				=>		nil,
+					:permissions			=>		[['Teilliste 2', 'Nur für Spitäler, Pneumologen und Hämatologen']],
+					:taxpoint_type		=>		:default
+				},
+					{
+					:code								=>	'8191.00',
+					:group							=>	'8191',
+					:position						=>	'00',
+					:taxpoints					=>	10,
+					:description				=>	'Spezielle Mikroskopie, Nativpräparat (Dunkelfeld, Polarisation, Phasenkontrast)',
+					:analysis_revision	=>	"N",
+					:list_title					=>	nil,
+					:permissions				=>	[['Teilliste 2', nil]],
+					:taxpoint_type			=>	:default,
 				}
-				assert_equal(expected, item1)
+				]
+				expected = {
+					:code								=>	'8191.00',
+					:group							=>	'8191',
+					:position						=>	'00',
+					:taxpoints					=>	10,
+					:description				=>	'Spezielle Mikroskopie, Nativpräparat (Dunkelfeld, Polarisation, Phasenkontrast)',
+					:analysis_revision	=>	"N",
+					:list_title					=>	nil,
+					:permissions				=>	[['Teilliste 2',nil]],
+					:taxpoint_type			=>	:default,
+				}
+				assert_equal(expected[:analysis_revision], item1[:analysis_revision])
+				assert_equal(7, res1.size)
+				assert_equal(expected_res_1.first, res1.first)
+				assert_equal(expected_res_1.last, res1.last)
+				assert_equal(expected_res_1.at(4), res1.at(4))
+				assert_equal(expected_res_1, res1)
 				expected = [
 					{
-				:revision			=>	'N',
-				:group				=>	'8560',
-				:position			=>	'10',
-				:taxpoints		=>	6,
-				:description	=>	'Hämatologische Untersuchungen mit QBC-Methode',
-				:limitation		=>	'nur für Hämoglobin und Hämatokrit. Gültig ab 1.1.2006 bis 31.12.2006.',
-				:list_title		=>	'Teilliste 2',
+					:code									=>	'8560.10',	
+					:analysis_revision		=>	'N',
+					:group								=>	'8560',
+					:position							=>	'10',
+					:taxpoints						=>	6,
+					:description					=>	'Hämatologische Untersuchungen mit QBC-Methode',
+					:limitation						=>	'nur für Hämoglobin und Hämatokrit. Gültig ab 1.1.2006 bis 31.12.2006.',
+					:list_title						=>	nil,
+					:permissions					=>	[['Teilliste 2', nil]],
+					:taxpoint_type				=>	:default,
 				},
-					{
-				:group				=>	'8572',
-				:position			=>	'00',
-				:taxpoints		=>	9,
-				:description	=>	'Triglyceride',
-				:list_title		=>	'Teilliste 2',
+				{
+					:code									=>	'8572.00',
+					:group								=>	'8572',
+					:position							=>	'00',
+					:taxpoints						=>	9,
+					:description					=>	'Triglyceride',
+					:list_title						=>	nil,
+					:permissions					=>	[['Teilliste 2', nil]],
+					:taxpoint_type				=>	:default,
 				},
-					{
-				:group				=>	'8574',
-				:position			=>	'11',
-				:taxpoints		=>	16,
-				:description	=>	'Troponin (T oder I), Schnelltest, nicht kumulierbar mit 8384.00 Kreatin-Kinase (CK), total',
-				:list_title		=>	'Teilliste 2',
+				{
+					:code									=>	'8574.11',
+					:group								=>	'8574',
+					:position							=>	'11',
+					:taxpoints						=>	16,
+					:description					=>	'Troponin (T oder I), Schnelltest, nicht kumulierbar mit 8384.00 Kreatin-Kinase (CK), total',
+					:list_title						=>	nil,
+					:permissions					=>	[['Teilliste 2', nil]],
+					:taxpoint_type				=>	:default,
 				},
-					{
-				:group				=>	'8578',
-				:position			=>	'00',
-				:taxpoints		=>	9,
-				:description	=>	'Urat',
-				:list_title		=>	'Teilliste 2',	
+				{
+					:code									=>	'8578.00',
+					:group								=>	'8578',
+					:position							=>	'00',
+					:taxpoints						=>	9,
+					:description					=>	'Urat',
+					:list_title						=>	nil,
+					:taxpoint_type				=>	:default,
+					:permissions					=>	[['Teilliste 2', nil]],
 				},
-					{
-				:group				=>	'8587',
-				:position			=>	'00',
-				:taxpoints		=>	25,
-				:description	=>	'Verträglichkeitsprobe: Kreuzprobe nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben", pro Erythrozytenkonzentrat',
-				:list_title		=>	'Teilliste 2',
-				:footnote			=>	'Nur für Spitäler',
-				:revision			=>	'C',
+				{
+					:code									=>	'8587.00',
+					:group								=>	'8587',
+					:position							=>	'00',
+					:taxpoints						=>	25,
+					:description					=>	'Verträglichkeitsprobe: Kreuzprobe nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben", pro Erythrozytenkonzentrat',
+					:list_title						=>	nil,
+					:permissions					=>	[['Teilliste 2','Nur für Spitäler']],
+					:taxpoint_type				=>	:default,
+					:analysis_revision		=>	'C',
 				},
-					{
-				:group				=>	'9116',
-				:position			=>	'40',
-				:taxpoints		=>	12,
-				:description	=>	'HIV-1+2-Antikörper (Screening) Schnelltest, ql',
-				:list_title		=>	'Teilliste 2',
-				:anonymous		=>	true,
+				{
+					:code									=>	'9116.40',
+					:group								=>	'9116',
+					:position							=>	'40',
+					:taxpoints						=>	12,
+					:permissions					=>	[['Teilliste 2', nil]],
+					:list_title						=>	nil,
+					:description					=>	'HIV-1+2-Antikörper (Screening) Schnelltest, ql',
+					:taxpoint_type				=>	:default,
+					:anonymous						=>	true,
 				},
-					{
-				:revision			=>	'S',
-				:group				=>	'9710',
-				:position			=>	'00',
-				:taxpoints		=>	8,
-				:description	=>	'Blutentnahme, Kapillarblut oder Venenpunktion, nur anwendbar durch ärztliches Praxislaboratorium im Rahmen der Präsenzdiagnostik nach Artikel 54 Absatz 1 Buchstabe a KVV und Kapitel 5.1.2 der Analysenliste',
-				:limitation		=>	'gültig ab 1.5.2004 bis 31.12.2005',
-				:list_title		=>	'Teilliste 2',
+				{
+					:analysis_revision		=>	'S',
+					:code									=>	'9710.00',
+					:group								=>	'9710',
+					:position							=>	'00',
+					:taxpoints						=>	8,
+					:description					=>	'Blutentnahme, Kapillarblut oder Venenpunktion, nur anwendbar durch ärztliches Praxislaboratorium im Rahmen der Präsenzdiagnostik nach Artikel 54 Absatz 1 Buchstabe a KVV und Kapitel 5.1.2 der Analysenliste',
+					:limitation						=>	'gültig ab 1.5.2004 bis 31.12.2005',
+					:taxpoint_type				=>	:default,
+					:permissions					=>	[['Teilliste 2', nil]],
+					:list_title						=>	nil,
 				},
 				] 
+				expected_res2_first = {	
+					:code									=>	'8560.10',	
+					:analysis_revision		=>	'N',
+					:group								=>	'8560',
+					:position							=>	'10',
+					:taxpoints						=>	6,
+					:description					=>	'Hämatologische Untersuchungen mit QBC-Methode',
+					:limitation						=>	'nur für Hämoglobin und Hämatokrit. Gültig ab 1.1.2006 bis 31.12.2006.',
+					:list_title						=>	nil,
+					:permissions					=>	[['Teilliste 2', nil]],
+					:taxpoint_type				=>	:default,
+				}
+				expected_res2_fifth = {
+					:code									=>	'8587.00',
+					:group								=>	'8587',
+					:position							=>	'00',
+					:taxpoints						=>	25,
+					:description					=>	'Verträglichkeitsprobe: Kreuzprobe nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben", pro Erythrozytenkonzentrat',
+					:list_title						=>	nil,
+					:permissions					=>	[['Teilliste 2', 'Nur für Spitäler']],
+					:taxpoint_type				=>	:default,
+					:analysis_revision		=>	'C',
+				}
+				assert_equal(expected_res2_fifth, res2.at(4))
+				assert_equal(expected_res2_first, res2.first)
 				assert_equal(expected, res2)
 			end
 		end

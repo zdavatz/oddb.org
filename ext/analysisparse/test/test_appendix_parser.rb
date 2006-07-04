@@ -22,11 +22,15 @@ C 8001.00 18 ABO-Blutgruppen und Antigen D Bestimmung (inkl. Ausschluss schwache
 					puts e.inspect
 				end
 				expected = {
-				:group				=>	'8001',
-				:position			=>	'00',
-				:taxpoints		=>	18,
-				:revision			=>	'C',
-				:description	=>	'ABO-Blutgruppen und Antigen D Bestimmung (inkl. Ausschluss schwaches D Antigen bei Rhesus D negativ) nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben"',
+				:code						=>	'8001.00',
+				:group					=>	'8001',
+				:position				=>	'00',
+				:taxpoints			=>	18,
+				:analysis_revision				=>	'C',
+				:description		=>	'ABO-Blutgruppen und Antigen D Bestimmung (inkl. Ausschluss schwaches D Antigen bei Rhesus D negativ) nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben"',
+				:permission			=>	nil,
+				:list_title			=>	nil,
+				:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -40,11 +44,15 @@ C 8001.00 18 ABO-Blutgruppen und Antigen D Bestimmung (inkl. Ausschluss schwache
 					puts e.inspect
 				end
 				expected = {
+				:code					=>	'8017.00',
 				:group				=>	'8017',
 				:position			=>	'00',
 				:taxpoints		=>	45,
 				:description	=>	'Alpha-1-Fetoprotein (AFP)',
-				:anonymous		=>	true
+				:anonymous		=>	true,
+				:list_title		=>	nil,
+				:taxpoint_type	=>	nil,
+				:permission		=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -56,10 +64,14 @@ C 8001.00 18 ABO-Blutgruppen und Antigen D Bestimmung (inkl. Ausschluss schwache
 					result = @parser.parse_line(src)
 				end
 				expected = {
+					:code					=>	'8606.00',
 					:group				=>	'8606',
 					:position			=>	'00',
 					:taxpoints		=>	30,
 					:description	=>	'Guthrie-Test',			
+					:list_title		=>	nil,
+					:taxpoint_type	=>	nil,
+					:permission		=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -75,12 +87,16 @@ Limitation: nicht mit QBC-Methode
 					puts e.inspect
 				end
 				expected = {
+				:code					=>	'8269.00',
 				:group				=>	'8269',
 				:position			=>	'00',
 				:taxpoints		=>	15,
-				:revision			=>	'C',
+				:analysis_revision			=>	'C',
 				:description	=>	'Hämatogramm II (automatisiert): Hämatogramm I, plus Thrombozyten',
 				:limitation		=>	'nicht mit QBC-Methode',
+				:permission		=>	nil,
+				:list_title			=>	nil,
+				:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -116,17 +132,25 @@ ____*   _________________________________________
 					puts e.inspect
 				end
 				expected_first = {
+				:code						=>	'8001.00',
 				:group					=>	'8001',
-				:revision				=>	'C',
+				:analysis_revision				=>	'C',
 				:position				=>	'00',
 				:taxpoints			=>	18,
 				:description		=>	'ABO-Blutgruppen und Antigen D Bestimmung (inkl. Ausschluss schwaches D Antigen bei Rhesus D negativ) nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben"',
+				:list_title			=>	nil,
+				:taxpoint_type	=>	nil,
+				:permission			=>	nil,
 				}
 				expected_last = {
+				:code						=>	'9645.30',
 				:group					=>	'9645',
 				:position				=>	'30',
 				:taxpoints			=>	45,
 				:description		=>	'Toxoplasma gondii (IgM)',
+				:list_title			=>	nil,
+				:taxpoint_type	=>	nil,
+				:permission			=>	nil,
 				}
 				expected_size = 13
 				assert_equal(expected_first, result.first)
@@ -173,16 +197,24 @@ EOS
 					result = @parser.parse_page(src, 127)
 				end
 				expected_first = {
+				:code						=> '8259.00',
 				:group					=> '8259',
 				:position				=> '00',
 				:taxpoints			=> 9,
 				:description		=> 'Glukose, im Blut/Plasma/Serum',
+				:list_title			=>	nil,
+				:permission			=>	nil,
+				:taxpoint_type	=>	nil,
 				}
 				expected_last = {
+				:code						=> '8548.00',
 				:group					=> '8548',
 				:position				=> '00',
 				:taxpoints			=> 14,
 				:description		=> 'Thromboplastinzeit nach Quick',
+				:list_title			=>	nil,
+				:permission			=>	nil,
+				:taxpoint_type	=>	nil,
 				}
 				expected_size = 8
 				assert_equal(expected_first, result.first)

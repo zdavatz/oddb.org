@@ -25,11 +25,15 @@ Inkl. abgeleitete Werte
 					result = @parser.parse_line(src)
 				end
 				expected = {
+					:code					=>	'8129.00',
 					:group				=>	'8129',
 					:position			=>	'00',
 					:taxpoints		=>	30,
 					:lab_areas		=>	['C'],
-					:description	=>	'Blutgase pH pCO2 pO2 Bikarbonat Inkl. abgeleitete Werte'
+					:description	=>	'Blutgase pH pCO2 pO2 Bikarbonat Inkl. abgeleitete Werte',
+					:list_title		=>	nil,
+					:permission		=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -44,11 +48,15 @@ Inkl. abgeleitete Werte
 					result = @parser.parse_line(src)
 				end
 				expected = {
+					:code						=>	'8614.00',
 					:group					=>	'8614',
 					:position				=>	'00',
 					:taxpoints			=>	25,
 					:description		=>	'Lipidblock 8158.00 Cholesterin total 8288.00 HDL-Cholesterin, ohne separate FÃ¼llung 8572.00 Triglyceride',
-				:lab_areas			=>	['C']
+				:lab_areas			=>	['C'],
+				:list_title			=>	nil,
+				:taxpoint_type	=>	nil,
+				:permission			=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -87,18 +95,26 @@ separate Füllung
 					result = @parser.parse_page(src,120)
 				end
 				expected_first = {
+				:code						=>	'8129.00',
 				:group					=>	'8129',
 				:position				=>	'00',
 				:taxpoints			=>	30,
 				:lab_areas			=>	['C'],
 				:description		=>	'Blutgase pH pCO2 pO2 Bikarbonat Inkl. abgeleitete Werte',
+				:list_title			=>	nil,
+				:taxpoint_type	=>	nil,
+				:permission			=>	nil,
 				}
 				expected_last = {
+				:code						=>	'8614.00',
 				:group					=>	'8614',
 				:position				=>	'00',
 				:taxpoints			=>	25,
 				:lab_areas			=>	['C'],
 				:description		=>	'Lipidblock 8158.00 Cholesterin total 8288.00 HDL-Cholesterin, ohne separate Füllung 8572.00 Triglyceride',
+				:list_title			=>	nil,
+				:permission			=>	nil,
+				:taxpoint_type	=>	nil,
 				}
 				expected_size	=	4
 				assert_equal(expected_first, result.first)

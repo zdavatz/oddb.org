@@ -23,9 +23,13 @@ module ODDB
 				end
 				expected = {
 				:group				=>	'8317',
+				:code					=>	'8317.00',
 				:position			=>	'00',
 				:taxpoints		=>	35,
-				:description	=>	'Immunglobulin IgE total, qn'
+				:description	=>	'Immunglobulin IgE total, qn',
+				:taxpoint_type	=>	nil,
+				:list_title			=>	nil,
+				:permission			=>	nil,	
 				}
 				assert_equal(expected, result)
 			end
@@ -42,12 +46,16 @@ Limitation: nicht mit QBC-Methode
 					puts e.inspect
 				end
 				expected = {
-				:group					=>	'8272',
-				:position				=>	'00',
-				:revision				=>	'C',
-				:taxpoints			=>	30,
-				:description		=>	'Hämatogramm V (automatisiert): wie Hämatogramm IV, flowzytometrische Differenzierung der Leukozyten',
-				:limitation			=>	'nicht mit QBC-Methode',
+					:code						=>	'8272.00',
+					:group					=>	'8272',
+					:position				=>	'00',
+					:analysis_revision				=>	'C',
+					:taxpoints			=>	30,
+					:description		=>	'Hämatogramm V (automatisiert): wie Hämatogramm IV, flowzytometrische Differenzierung der Leukozyten',
+					:limitation			=>	'nicht mit QBC-Methode',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -62,12 +70,16 @@ Limitation: nicht mit QBC-Methode
 					puts e.inspect
 				end
 				expected = {
-				:group				=>	'8317',
-				:position			=>	'01',
-				:taxpoints		=>	25,
-				:description	=>	'Immunglobulin IgE - multispezifischer oder gruppenspezifischer Atopie-Screeningtest, ql/sq, ohne Unterscheidung einzelner spez. IgE',
-				:taxnumber		=>	'1',
-				:taxnote			=>	'analog abgestuftem Blocktarif gemäss Punkt 5.7 der Vorbemerkungen, je nach Anzahl Allergene im verwendeten Testsystem',
+					:code					=>	'8317.01',
+					:group				=>	'8317',
+					:position			=>	'01',
+					:taxpoints		=>	25,
+					:description	=>	'Immunglobulin IgE - multispezifischer oder gruppenspezifischer Atopie-Screeningtest, ql/sq, ohne Unterscheidung einzelner spez. IgE',
+					:taxnumber		=>	'1',
+					:taxnote			=>	'analog abgestuftem Blocktarif gemäss Punkt 5.7 der Vorbemerkungen, je nach Anzahl Allergene im verwendeten Testsystem',
+					:list_title		=>	nil,
+					:permission		=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -87,12 +99,16 @@ verwendeten Testsystem
 					puts e.inspect
 				end
 				expected = {
-				:group				=>	'8317',
-				:position			=>	'02',
-				:taxpoints		=>	45,
-				:taxnumber		=>	'1',
-				:description	=>	'Immunglobulin IgE - monospezifischer Multi-Screeningtest, mindestens sq, mit Unterscheidung einzelner spez. IgE (nicht kumulierbar mit 8317.04)',
-				:taxnote			=>	'analog abgestuftem Blocktarif gemäss Punkt 5.7 der Vorbemerkungen, je nach Anzahl Allergene im verwendeten Testsystem',
+					:code					=>	'8317.02',
+					:group				=>	'8317',
+					:position			=>	'02',
+					:taxpoints		=>	45,
+					:taxnumber		=>	'1',
+					:description	=>	'Immunglobulin IgE - monospezifischer Multi-Screeningtest, mindestens sq, mit Unterscheidung einzelner spez. IgE (nicht kumulierbar mit 8317.04)',
+					:taxnote			=>	'analog abgestuftem Blocktarif gemäss Punkt 5.7 der Vorbemerkungen, je nach Anzahl Allergene im verwendeten Testsystem',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -104,10 +120,14 @@ verwendeten Testsystem
 					puts e.inspect
 				end
 				expected = {
-					:description=>"Triglyceride", 
-					:position=>"00", 
-					:taxpoints=>9, 
-					:group=>"8572"
+					:code					=>	'8572.00',
+					:description	=>"Triglyceride", 
+					:position			=>"00", 
+					:taxpoints		=>9, 
+					:group				=>"8572",
+					:list_title		=>	nil,
+					:permission		=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -120,11 +140,15 @@ Ziehl-Neelsen, Auramin Phasenkontrast etc., KOH, Pilze)
 					result = @parser.parse_line(src)
 				end
 				expected = {
-				:group					=>	'9356',
-				:anonymous			=>	true,
-				:position				=>	'30',
-				:taxpoints			=>	25,
-				:description		=>	'Spezielle Mikroskopie (Acridineorange, Ziehl-Neelsen, Auramin Phasenkontrast etc., KOH, Pilze)',
+					:code						=>	'9356.30',
+					:group					=>	'9356',
+					:anonymous			=>	true,
+					:position				=>	'30',
+					:taxpoints			=>	25,
+					:description		=>	'Spezielle Mikroskopie (Acridineorange, Ziehl-Neelsen, Auramin Phasenkontrast etc., KOH, Pilze)',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -141,12 +165,16 @@ Limitation: gültig ab 1.5.2004 bis 31.12.2005
 					result = @parser.parse_line(src)
 				end
 				expected = {
-				:group				=>	'9710',
-				:position			=>	'00',
-				:taxpoints		=>	8,
-				:revision			=>	'S',
-				:description	=>	'Blutentnahme, Kapillarblut oder Venenpunktion, nur anwendbar durch ärztliches Praxislaboratorium im Rahmen der Präsenzdiagnostik nach Artikel 54 Absatz 1 Buchstabe a KVV und Kapitel 5.1.2 der Analysenliste',
-				:limitation		=>	'gültig ab 1.5.2004 bis 31.12.2005',
+					:code					=>	'9710.00',
+					:group				=>	'9710',
+					:position			=>	'00',
+					:taxpoints		=>	8,
+					:analysis_revision			=>	'S',
+					:description	=>	'Blutentnahme, Kapillarblut oder Venenpunktion, nur anwendbar durch ärztliches Praxislaboratorium im Rahmen der Präsenzdiagnostik nach Artikel 54 Absatz 1 Buchstabe a KVV und Kapitel 5.1.2 der Analysenliste',
+					:limitation		=>	'gültig ab 1.5.2004 bis 31.12.2005',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
@@ -212,16 +240,24 @@ EOS
 				end
 				expected = [
 					{
-				:group				=>	'8388',
-				:position			=>	'00',
-				:taxpoints		=>	20,
-				:description	=>	'Kristallnachweis mit polarisiertem Licht',
+					:code					=>	'8388.00',
+					:group				=>	'8388',
+					:position			=>	'00',
+					:taxpoints		=>	20,
+					:description	=>	'Kristallnachweis mit polarisiertem Licht',
+					:list_title		=>	nil,
+					:permission		=>	nil,
+					:taxpoint_type	=>	nil,
 				},
-					{
-				:group				=>	'8600',
-				:position			=>	'00',
-				:taxpoints		=>	25,
-				:description	=>	'Zellzählung, sowie Differenzierung nach Anreicherung und Färbung von Körperflüssigkeiten',
+				{
+					:code					=>	'8600.00',
+					:group				=>	'8600',
+					:position			=>	'00',
+					:taxpoints		=>	25,
+					:description	=>	'Zellzählung, sowie Differenzierung nach Anreicherung und Färbung von Körperflüssigkeiten',
+					:list_title		=>	nil,
+					:permission		=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				]
 				assert_equal(expected, result)
@@ -238,11 +274,15 @@ EOS
 				end
 				expected = [
 					{
-				:group				=>	'8543',
-				:position			=>	'00',
-				:taxpoints		=>	40,
-				:description	=>	'Theophyllin (Blut)',
-				:footnote			=>	'Nur bei Kindern bis zu 6 Jahren',
+					:code					=>	'8543.00',
+					:group				=>	'8543',
+					:position			=>	'00',
+					:taxpoints		=>	40,
+					:description	=>	'Theophyllin (Blut)',
+					:footnote			=>	'Nur bei Kindern bis zu 6 Jahren',
+					:list_title		=>	nil,
+					:taxpoint_type	=>	nil,
+					:permission		=>	nil,
 				}
 				]
 				assert_equal(expected, result)
@@ -265,20 +305,28 @@ Rev. Pos.-Nr. A TP Bezeichnung (Liste Kinder- und Jugendmedizin)
 				end
 				expected = [
 					{
-				:group					=>	'8317',
-				:position				=>	'01',
-				:taxpoints			=>	25,
-				:anonymous			=>	true,
-				:description		=>	'Immunglobulin IgE - multispezifischer oder gruppenspezifischer Atopie-Screeningtest, ql/sq, ohne Unterscheidung einzelner spez. IgE',
-				:taxnumber			=>	'1',
-				:taxnote				=>	'analog abgestuftem Blocktarif gemäss Punkt 5.7 der Vorbemerkungen, je nach Anzahl Allergene im Verwendeten Testsystem',
+					:code						=>	'8317.01',
+					:group					=>	'8317',
+					:position				=>	'01',
+					:taxpoints			=>	25,
+					:anonymous			=>	true,
+					:description		=>	'Immunglobulin IgE - multispezifischer oder gruppenspezifischer Atopie-Screeningtest, ql/sq, ohne Unterscheidung einzelner spez. IgE',
+					:taxnumber			=>	'1',
+					:taxnote				=>	'analog abgestuftem Blocktarif gemäss Punkt 5.7 der Vorbemerkungen, je nach Anzahl Allergene im Verwendeten Testsystem',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				},
-					{
-				:group					=>	'8543',
-				:position				=>	'00',
-				:taxpoints			=>	40,
-				:description		=>	'Theophyllin (Blut)',
-				:footnote				=>	'Nur bei Kindern bis zu 6 Jahren',
+				{
+					:code						=>	'8543.00',
+					:group					=>	'8543',
+					:position				=>	'00',
+					:taxpoints			=>	40,
+					:description		=>	'Theophyllin (Blut)',
+					:footnote				=>	'Nur bei Kindern bis zu 6 Jahren',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				]
 				assert_equal(expected, result)
@@ -300,24 +348,36 @@ ___________________
 				end
 				expected = [
 					{
+					:code					=>	'8249.00',
 					:group				=>	'8249',
 					:position			=>	'00',
 					:taxpoints		=>	9,
 					:description	=>	'Gamma-Glutamyltranspeptidase (GGT)',
+					:list_title		=>	nil,
+					:permission		=>	nil,
+					:taxpoint_type	=>	nil,
 				},
 				{
+					:code					=>	'8265.00',
 					:group				=>	'8265',
 					:position			=>	'00',
 					:taxpoints		=>	30,
 					:description	=>	'Glykiertes Hämoglobin (HbA1c)',
 					:footnote			=>	'Nur für mich',
+					:list_title		=>	nil,
+					:permission		=>	nil,
+					:taxpoint_type	=>	nil,
 				},
 				{
+					:code					=>	'8268.00',
 					:group				=>	'8268',
 					:position			=>	'00',
-					:revision			=>	'C',
+					:analysis_revision			=>	'C',
 					:taxpoints		=>	12,
 					:description	=>	'Hämatogramm I (automatisiert)',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				]
 				assert_equal(expected, result)
@@ -325,10 +385,10 @@ ___________________
 			def test_update_footnotes__1
 				data = [
 					{
-				:group					=>	'8317',
-				:position				=>	'00',
-				:description		=>	'Immunglobulin IgE',
-				:footnote				=>	'1',
+					:group					=>	'8317',
+					:position				=>	'00',
+					:description		=>	'Immunglobulin IgE',
+					:footnote				=>	'1',
 				}
 				]
 				footnotes = {
@@ -339,10 +399,10 @@ ___________________
 				end
 				expected = [
 					{
-				:group					=>	'8317',
-				:position				=>	'00',
-				:description		=>	'Immunglobulin IgE',
-				:footnote				=>	'analog wie etwas anderes',
+					:group					=>	'8317',
+					:position				=>	'00',
+					:description		=>	'Immunglobulin IgE',
+					:footnote				=>	'analog wie etwas anderes',
 				}
 				]
 				assert_equal(expected, result)

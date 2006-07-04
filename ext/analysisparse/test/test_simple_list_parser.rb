@@ -14,22 +14,26 @@ module ODDB
 			end
 			def test_parse_line__1
 				src = <<-EOS
-          8606.00    30  Guthrie-Test
+					8606.00    30  Guthrie-Test
 				EOS
 				begin
 					result = @parser.parse_line(src)
 				end
 				expected = {
-				:group				=>	'8606',
-				:position			=>	'00',
-				:taxpoints		=>	30,
-				:description	=>	'Guthrie-Test',
+					:code					=>	'8606.00',
+					:group				=>	'8606',
+					:position			=>	'00',
+					:taxpoints		=>	30,
+					:description	=>	'Guthrie-Test',
+					:list_title		=>	nil,
+					:permission		=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
-end
+			end
 			def test_parse_line__2
 				src = <<-EOS
-				     9700.00    12  Bearbeitungstaxe für Auftragnehmer von externen Aufträgen, pro Patient und Auftrag; nur anwendbar durch Spitallaboratorien nach Artikel 54 Absatz 1 Buchstabe c und Absatz 2 KVV, durch Laboratorien nach Artikel 54 Absatz 3 KVV und durch die Offizin eines Apothekers oder einer Apothekerin nach Artikel 54 Absatz 1 Buchstabe c KVV
+						 9700.00    12  Bearbeitungstaxe für Auftragnehmer von externen Aufträgen, pro Patient und Auftrag; nur anwendbar durch Spitallaboratorien nach Artikel 54 Absatz 1 Buchstabe c und Absatz 2 KVV, durch Laboratorien nach Artikel 54 Absatz 3 KVV und durch die Offizin eines Apothekers oder einer Apothekerin nach Artikel 54 Absatz 1 Buchstabe c KVV
 				EOS
 				begin
 					result = @parser.parse_line(src)
@@ -38,26 +42,30 @@ end
 				end
 				expected = {
 					:group				=>	'9700',
+					:code					=>	'9700.00',
 					:position			=>	'00',
 					:taxpoints		=>	12,
-					:description	=>	'Bearbeitungstaxe für Auftragnehmer von externen Aufträgen, pro Patient und Auftrag; nur anwendbar durch Spitallaboratorien nach Artikel 54 Absatz 1 Buchstabe c und Absatz 2 KVV, durch Laboratorien nach Artikel 54 Absatz 3 KVV und durch die Offizin eines Apothekers oder einer Apothekerin nach Artikel 54 Absatz 1 Buchstabe c KVV'
+					:description	=>	'Bearbeitungstaxe für Auftragnehmer von externen Aufträgen, pro Patient und Auftrag; nur anwendbar durch Spitallaboratorien nach Artikel 54 Absatz 1 Buchstabe c und Absatz 2 KVV, durch Laboratorien nach Artikel 54 Absatz 3 KVV und durch die Offizin eines Apothekers oder einer Apothekerin nach Artikel 54 Absatz 1 Buchstabe c KVV',
+					:list_title		=>	nil,
+					:permission		=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				assert_equal(expected, result)
 			end
 			def test_parse_page__1
 				src = <<-EOS
 4.Kapitel:  Übrige
-	
+
 	4.1 Allgemeine Positionen
-	
+
 	Bemerkungen
-	
+
 	Diese allgemeinen Positionen dürfen nur bei ambulanter Behand-
 	lung angewendet werden, bei stationärer Behandlung sind die
 	Analysen grundsätzlich in der Pauschale inbegriffen (Art. 49 KVG).
 	Im ärztlichen Praxislaboratorium dürfen diese allgemeinen Positio-
 	nen nicht verrechnet werden.
-	
+
 	Rev.    Pos.-Nr.        TP    Bezeichnung (allgemeine Positionen)
 
 			 9700.00    12  Bearbeitungstaxe für Auftragnehmer von
@@ -89,16 +97,24 @@ end
 					puts e.inspect
 				end
 				expected_first = {
+					:code					=>	'9700.00',
 					:group				=>	'9700',
 					:position			=>	'00',
 					:taxpoints		=>	12,
 					:description	=>	'Bearbeitungstaxe für Auftragnehmer von externen Aufträgen, pro Patient und Auftrag; nur anwendbar durch Spitallaboratorien nach Artikel 54 Absatz 1 Buchstabe c und Absatz 2 KVV, durch Laboratorien nach Artikel 54 Absatz 3 KVV und durch die Offizin eines Apothekers oder einer Apothekerin nach Artikel 54 Absatz 1 Buchstabe c KVV',
+					:list_title		=>	nil,
+					:permission		=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				expected_last = {
+					:code					=>	'9704.00',
 					:group				=>	'9704',
 					:position			=>	'00',
 					:taxpoints		=>	4,
 					:description	=>	'Zuschlag für jeden weiteren km; nur anwendbar durch Laboratorien nach Artikel 54 Absatz 3 KVV',
+					:list_title		=>	nil,
+					:permission		=>	nil,
+					:taxpoint_type	=>	nil,
 				}
 				expected_size = 4
 				assert_equal(expected_size, result.size)

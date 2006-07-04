@@ -9,17 +9,22 @@ module ODDB
 		def update(path)
 			ANALYSIS_PARSER.parse_pdf(path).each { |position|
 				group = update_group(position)
-				update_position(group, position)
+				position = update_position(group, position)
 			}
 		end
 		def update_group(position)
 			groupcd = position.delete(:group)
-			title = position.delete(:list_title)
 			ptr = Persistence::Pointer.new([:analysis_group, groupcd])
-			@app.update(ptr.creator, {:name => title})
+			@app.create(ptr)
 		end
 		def update_position(group, position)
 			poscd = position.delete(:position)
+			position.delete(:code)
+			if(perms = position[:permissions])
+				perms.collect! { |pair|
+					Analysis::Permission.new(*pair)	
+				}
+			end
 			ptr = group.pointer + [:position, poscd]
 			@app.update(ptr.creator, position)
 		end
