@@ -71,7 +71,7 @@ end
 		attr_accessor :effects, :kinetic, :indications, :usage
 		attr_accessor :restrictions, :unwanted_effects
 		attr_accessor :interactions, :overdose, :other_advice
-		attr_accessor :date, :iksnrs, :reference
+		attr_accessor :date, :iksnrs, :reference, :packages
 		attr_accessor :delivery, :distribution, :fabrication
 		CHAPTERS = [
 			:galenic_form,
@@ -90,6 +90,7 @@ end
 			:fabrication,
 			#:reference,
 			:iksnrs,
+			:packages,
 			:date,
 		]
 		def empty?
@@ -135,6 +136,7 @@ end
 			:preclinic,
 			:other_advice,
 			:iksnrs,
+			:packages,
 			:registration_owner,
 			:date,
 		]

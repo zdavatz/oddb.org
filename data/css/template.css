@@ -1,10 +1,4 @@
 /* Top-Level */
-a {
-	text-decoration: none;
-}	
-a img {
-	border : 0px;
-}
 body {
 	font-family : $std_font_family;
 	font-size : $std_font_size; 
@@ -26,29 +20,6 @@ ol {
 }
 ol li {
 	margin: 5px 0px;
-}
-form {
-	margin : 0px;
-}
-table {
-	border: 0px solid red;
-	margin: 0px;
-}
-textarea {
-	width: 400px;
-	height: 100px;
-	font-family : $std_font_family;
-}
-td {
-	border : 0px dashed green;
-	padding: 0px;
-}
-th {
-	background : $bg_dark;
-	color : $bg_dark_font_color;
-	font-weight: bold;
-	padding : 4px;
-	text-align : left;
 }
 
 /* ErrorPage */
@@ -79,25 +50,13 @@ pre {
 	white-space : pre;
 }
 
+a {
+	text-decoration: none;
+}	
+a img {
+	border : 0px;
+}
 /* standard-result-classes */
-td.generic, a.generic {
-	color : #2ba476;
-}
-td.original, a.original {
-	color : red;
-}
-td.vaccine, a.vaccine {
-	color : #a52a2a;
-}
-td.unknown, a.unknown {
-	color : $bg_bright_font_color;
-}
-td.bold, a.bold, span.bold {
-	font-weight: bold;
-}
-td.italic, a.italic, span.italic {
-	font-style : italic;
-}
 a.generic:hover, a.original:hover, a.unknown:hover {
 	color : $rslt_link_hover_color;
 }
@@ -105,44 +64,11 @@ a.generic:active, a.original:active, a.unknown:active {
 	color : #f5e84d;
 }
 /* other result-classes */
-td.atc {
-	background : $bg_bright;
-	color : $bg_bright_font_color;
-}
-td.seq {
-	background : #dbffc3;
-	color : $bg_bright_font_color;
-}
-td.indent {
-	padding-left : 15px;
-}
-td.big, td.list.big {
-	font-size : 14px;
-	font-weight : bold;
-}
-td.small {
-	width : 20px;
-	font-size : 11px;
-}
 a.small {
 	color : $home_link_color;
 }
 a.small:hover {
 	color : $home_link_hover_color;
-}
-td.edit, td.edit a {
-	color : $list_font_color;
-	font-size : 11px;
-}
-td.result-found {
-	padding-left : 4px; 
-	padding-top : 4px; 
-	font-weight : bold;
-}
-td.pubprice {
-	font-weight : bold;
-	padding-right : 10px;
-	text-align : right;
 }
 a.feedback, span.feedback, a.feedback:link, a.feedback:visited {
 	color: black;
@@ -158,12 +84,6 @@ td.bg a.feedback {
 a.infos {
 	color : black;
 	background : $rslt_infos_bg_bright;
-}
-td.list a.important.square {
-	font-size: 14px;
-}
-td.bg a.infos, td.atc a.infos, span.limitation, span.narc, span.fachinfo, span.patinfo  {
-	background : $rslt_infos_bg_dark;
 }
 
 /* atc-chooser-classes */
@@ -215,55 +135,6 @@ a.atcchooser4, a.atclink4 {
 a.atcchooser5, a.atclink5 {
 	margin-left: 86px;
 }
-
-/* layout-classes */
-table.composite {
-	width : 100%;
-}
-td.logo {
-	vertical-align : top;
-	position : relative;
-	top : 3px;
-	padding-bottom : 3px;
-}
-.sponsor {
-	font-size: 11px;
-	color: silver;
-}
-.logo {
-	border : 0px dotted red;
-}
-.personal {
-	font-weight : bold;
-	font-size : 11px;
-	margin-top : 40px;
-	color : black;
-}
-th, td.th {
-	background : $bg_dark;
-	color : $bg_dark_font_color;
-	font-weight : bold;
-	padding : 4px;
-	text-decoration : none;
-}
-th a, td.th a, th a:visited, td.th a:visited {
-	color : $bg_dark_font_color;
-}
-a.th:hover {
-	color : $bg_dark_link_hover_color;
-}
-a.th:active {
-	color : $bg_dark_link_active_color;
-}
-td.section-title {
-	font-weight : bold;
-	padding-top : 8px;
-}
-td.welcome {
-	text-align : right;
-	vertical-align : bottom;
-	text-decoration : none;
-}
 a.welcome {
 	padding : 0px;
 	padding-right : 0px;
@@ -276,29 +147,6 @@ a.text {
 	color : $home_link_color;
 }
 
-/* pointersteps-classes */
-th.th-pointersteps {
-	background : $bg;
-	color : black;
-	font-weight : bold;
-	text-align : left;
-	text-decoration : none;
-}
-a.th-pointersteps {
-	background : $bg;
-	color : $list_font_color;
-	text-align : left;
-	
-}
-
-/* validation-classes */
-td.error {
-	background : #f9e7f3;
-	color : red;
-	font-weight : bold;
-	padding : 8px;
-}
-
 /* standard-list-classes */
 a.list, a.list:hover {
 	color: $home_link_hover_color;
@@ -309,13 +157,7 @@ a.list:link, a.list:visited {
 a.list:active {
 	color : black;
 }
-td.list {
-	padding : 4px;
-}
-td.title {
-	font-weight : bold;
-}
-.subheading {
+td.subheading, th.subheading {
 	background : $bg_bright;
 	color : $bg_bright_font_color;
 	font-weight : normal;
@@ -340,15 +182,6 @@ a.subheading:active {
 }
 
 /* navigation-classes */
-td.navigation {
-	background : $bg_dark;
-	color : $bg_dark_font_color;
-	text-decoration : none;
-	padding : 1px;
-}
-table.right {
-	float: right;
-}
 a.navigation{
 	color : $bg_dark_link_hover_color;
   background : $bg_dark;
@@ -362,24 +195,6 @@ a.navigation:hover {
 }
 a.navigation:active {
 	color : $bg_dark_link_active_color;
-}
-td.tabnavigation.right table {
-	margin-bottom : 4px;
-	float :right;
-	border-right: 1px solid $bg_dark;
-	border-bottom: 1px solid $bg_dark;
-	border-left: 0px;
-	border-top: 0px;
-}
-table.tabnavigation {
-	padding : 4px;
-	background : $bg_bright;
-	color : $tabnavigation_text_color;
-	text-decoration : none;
-	border-right: 0px;
-	border-bottom: 0px;
-	border-left: 1px solid $bg_dark;
-	border-top: 1px solid $bg_dark;
 }
 a.tabnavigation
 {
@@ -396,17 +211,7 @@ a.tabnavigation, a.tabnavigation:hover {
 a.tabnavigation:active {
 	color : $tabnavigation_link_active_color;
 }
-table.navigation-foot {
-	background : $bg_dark;
-	color : $bg_dark_font_color;
-	width : 100%;
-	padding: 3px;
-}
-td.pager {
-	font-weight: bold;
-	padding-left: 6px;
-	padding-right: 6px;
-}
+/*pager-class*/
 a.pager:link, a.pager:visit,  a.fbpager:hover {
 	color: blue;
 }
@@ -419,10 +224,458 @@ a.pager:active {
 a.fbpager {
 	color: white;
 }
+/* explain-classes */
+a.explain.original, a.explain.generic, td.explain.unknown {
+	font-weight: bold;
+}
+a.legal-note:link, a.legal-note:visited {
+	color: $home_link_color;
+}
+a.legal-note:hover {
+	color: $home_link_hover_color;
+}
+a.legal-note:active {
+	color : #f5e84d;
+}
+/* tab-classes */
+a.chapter-tab {
+	background : $bg_bright;
+	color: red;
+}
+a.chapter-tab:link, a.chapter-tab:visited {
+	background : $bg_bright;
+	color: blue;
+}
+/* misc */
+a.powerlink {
+	color : blue;
+	text-decoration : underline;
+}
+a.powerlink:hover {
+	color : red;
+}
+a.powerlink:active {
+	color : #f5e84d;
+}
+a.create-infos {
+	color : black;
+	border : 1px solid #ffbc6f;
+	font-weight : bold;
+}
+a.patent {
+	font-weight: bold;
+	color: white;
+	background-color: #C00;
+}
+a.create-infos:hover {
+	background: $rslt_infos_bg_bright;
+}
+/*table class*/
+table {
+	border: 0px solid red;
+	margin: 0px;
+}
+table.right {
+	float: right;
+}
+table.tabnavigation {
+	padding : 4px;
+	background : $bg_bright;
+	color : $tabnavigation_text_color;
+	text-decoration : none;
+	border-right: 0px;
+	border-bottom: 0px;
+	border-left: 1px solid $bg_dark;
+	border-top: 1px solid $bg_dark;
+}
+table.navigation-foot {
+	background : $bg_dark;
+	color : $bg_dark_font_color;
+	width : 100%;
+	padding: 3px;
+}
+table.center {
+	margin: auto;
+}
+table.explain {
+	background : $bg_bright;
+	color : $bg_bright_font_color;
+	text-align : left;
+	width : 100%;
+	font-size: $explain_font_size;
+}
+table.legal-note {
+	width : 100%;
+	text-align : right;
+}
+table.interaction-basket td {
+	padding-top : 4px;
+	padding-left : 4px;
+	padding-bottom : 4px;
+	vertical-align : top;
+}
+table.wait {
+	cell-spacing: 20px;
+}
+table.invoice {
+	width: 300px;
+	border: 1px solid $bg_bright;
+}
+table.border, table.border td {
+	border: 1px solid green;
+}
+table.composite {
+	width : 100%;
+}
+/*td class*/
+td {
+	border : 0px dashed green;
+	padding: 0px;
+}
+td.list a.important.square {
+	font-size: 14px;
+}
+td.bg a.infos, td.atc a.infos, span.limitation, span.narc, span.fachinfo, span.patinfo  {
+	background : $rslt_infos_bg_dark;
+}
+/*td standard-result-classes */
+td.generic, a.generic {
+	color : #2ba476;
+}
+td.original, a.original {
+	color : red;
+}
+td.vaccine, a.vaccine {
+	color : #a52a2a;
+}
+td.unknown, a.unknown {
+	color : $bg_bright_font_color;
+}
+td.bold, a.bold, span.bold {
+	font-weight: bold;
+}
+td.italic, a.italic, span.italic {
+	font-style : italic;
+}
+/* other result-classes */
+td.atc {
+	background : $bg_bright;
+	color : $bg_bright_font_color;
+}
+td.seq {
+	background : #dbffc3;
+	color : $bg_bright_font_color;
+}
+td.indent {
+	padding-left : 15px;
+}
+td.big, td.list.big {
+	font-size : 14px;
+	font-weight : bold;
+}
+td.small {
+	width : 20px;
+	font-size : 11px;
+}
+td.edit, td.edit a {
+	color : $list_font_color;
+	font-size : 11px;
+}
+td.result-found {
+	padding-left : 4px; 
+	padding-top : 4px; 
+	font-weight : bold;
+}
+td.pubprice {
+	font-weight : bold;
+	padding-right : 10px;
+	text-align : right;
+}
+td.logo {
+	vertical-align : top;
+	position : relative;
+	top : 3px;
+	padding-bottom : 3px;
+}
+td.section-title {
+	font-weight : bold;
+	padding-top : 8px;
+}
+td.welcome {
+	text-align : right;
+	vertical-align : bottom;
+	text-decoration : none;
+}
+
+/* validation-classes */
+td.error {
+	background : #f9e7f3;
+	color : red;
+	font-weight : bold;
+	padding : 8px;
+}
+td.list {
+	padding : 4px;
+}
+td.title {
+	font-weight : bold;
+}
+td.navigation {
+	background : $bg_dark;
+	color : $bg_dark_font_color;
+	text-decoration : none;
+	padding : 4px;
+}
+td.tabnavigation.right table {
+	margin-bottom : 4px;
+	float :right;
+	border-right: 1px solid $bg_dark;
+	border-bottom: 1px solid $bg_dark;
+	border-left: 0px;
+	border-top: 0px;
+}
 td.pager-head {
 	padding-right : 12px;
 }
-
+td.pager {
+	font-weight: bold;
+	padding-left: 6px;
+	padding-right: 6px;
+}
+td.search {
+	text-align : right;
+	padding: 0px;
+}
+td.center{
+	padding: 3px;
+	text-align : center;
+}
+td.donate {
+	text-align : center;
+}
+td.button {
+	padding-bottom : 5px;
+	margin : 5px;
+}
+td.explain.infos{
+	color : $bg_bright_font_color;
+}
+td.explain {
+	padding: 4px;
+	background : $bg_bright;
+	vertical-align : bottom;
+}
+td.legal-note{
+	font-size: 8pt;
+	text-align : center;
+	padding: 4px;
+	padding-bottom: 10px;
+}
+/* error_classes */
+label.error {
+	color : red;
+}
+td.info {
+	padding-bottom : 4px;
+	padding-top : 4px;
+	color : green;
+}
+td.processingerror {
+	padding: 4px;
+	color : red;
+}
+td.warning {
+	padding-bottom : 4px;
+	padding-top : 4px;
+	color : #ff6600;
+}
+/* tab-classes */
+td.chapter-tab {
+	background : $bg_bright;
+	border-style : solid;
+	border-color : black;
+	border-width : 0px 0px thin 0px;
+	padding : 4px;
+}
+/* print-classes */
+td.print.big { 
+	padding-top: 12px;
+	font-weight: bold;
+	font-size: 26px;
+}
+/* new style of formatting */
+/* use multiple classes to style! */
+td.interaction-connection { 
+	margin-top: 0px;
+	list-style-type : circle;
+	width : 30%;
+}
+td.bg {
+	background : $rslt_bg;
+}
+td.interaction-substance {
+	font-size: 14px;
+	width : 10%;
+}
+td.sum {
+	border-color : black;
+	border-style : solid;
+	border-width : 0px 0px 1px 0px;
+}
+td.total {
+	border-color : black;
+	border-style : double;
+	border-width : 0px 0px 3px 0px;
+}
+td.top {
+	vertical-align : top;
+}
+td.address-width {
+	width: 180px;
+}
+td.border-left {
+	float: right;
+	border-left: 1.5px solid $bg_dark;
+	width: 400px;
+}
+td.radio {
+	vertical-align: top;
+	width: 5px;
+	height: 12px;
+	max-width: 5px;
+}
+td.list span.square, td.list a.square {
+	padding: 2px 4px;
+	font-size: $square_font_size;
+}
+td.infos span.square, td.infos a.square {
+	padding: 0px 1px;
+	font-size: $explain_font_size;
+}
+td.wait {
+	width: 25px;
+	height: 25px;
+	border: 1px solid $bg_dark;
+	background-color : #e9f7f3;
+}
+td.bg-red{
+	background-color: #FF0000;
+}
+td.confirm {
+	padding: 6px;
+	background : $rslt_bg;
+	font-size: 14px;
+	font-weight: bold;
+}
+td.migel-group, td.migel-group a {
+	background: $bg_medium;
+	color: $bg_medium_font_color;
+}
+td.migel-group {
+	padding: 4px;
+}
+td.next-step {
+	padding: 4px;
+	border: 2px dotted red;
+	width: auto;
+}
+td.active-item {
+	padding-top: 15px;
+	opacity: .75;
+	filter: alpha(opacity=75);
+}
+td.navigation.right table {
+	float: right;
+}
+td.date-chooser {
+	border-bottom: 1px solid $bg_dark;
+}
+td.tab {
+	background-color: $bg_bright;
+	border-top: 2px solid $bg_medium;
+}
+td.nowrap {
+	white-space: nowrap;
+}
+span.square, a.square {
+	text-align: center;
+	font-weight : bold;
+}
+span.square.vaccine{
+	font-weight: bold;
+	color: white;
+}
+span.vaccine, a.vaccine {
+	color: white;
+	background-color : #a52a2a;
+}
+span.anthroposophy {
+	color: white;
+	background-color: #ff00ff;
+}
+ span.comarketing, a.comarketing {
+	font-weight: bold;
+	color: white;
+	background-color : #f61;
+}
+span.complementary, a.complementary {
+	color: white;
+	background-color : #dd1cff;
+}
+span.homeopathy, a.homeopathy {
+	color: white;
+	background-color: #9900ff;
+}
+span.parallel_import, a.parallel_import {
+	color: white;
+	background-color: #0A0;
+}
+span.phytotherapy, a.phytotherapy {
+	color: white;
+	background-color: #60f;
+}
+span.deductible_g, span.deductible_o {
+	font-weight : bold;
+	text-align : center;
+	text-decoration : none;
+	padding : 2px 2px 2px 4px;
+}
+span.deductible_o {
+	color: black; 
+	background-color: #ffc455;
+}
+span.deductible_g {
+	color: black; 
+	background-color: #fff455;
+}
+div.square {
+	max-width: 20px;
+	height: 20px;
+	text-align: center;
+	vertical-align: middle;
+	font-size : 16px;
+}
+div.plus {
+	background-color: #cf9;
+}
+div.minus {
+	background-color: #ffbc6f;
+}
+div.just-medical {
+	background : $bg_dark;
+	color : $bg_dark_font_color;
+	font-weight : bold;
+	padding : 4px;
+	text-align : left;
+	text-decoration : none;
+}
+div.long-text {
+	max-width: 400px;
+}
+div.dojoTooltip {
+  font-size : $std_font_size;
+	white-space: nowrap;
+}
 /* input-classes */
 input, select {
 	font-family : $std_font_family;
@@ -456,315 +709,59 @@ input.mailinglist {
 	margin : 7px;
 	margin-left : 0px;
 }
-td.center input.search {
-	width : 260px;
-	padding : 0px;
-	margin : 7px;
-}
-td.center{
-	padding: 3px;
-	text-align : center;
-}
-table.center {
-	margin: auto;
-}
-td.search {
-	text-align : right;
-	padding: 0px;
-}
-textarea.standard {
-	width : 200px;
-	height: 60px;
-	font-family : $std_font_family;
-	font-size : $std_font_size; 
-}
-form.search {
-	vertical-align: bottom;
-	padding: 0px;
-	margin: 0px;
-}
-td.donate {
-	text-align : center;
-}
-td.button {
-	padding-bottom : 5px;
-	margin : 5px;
-}
-
-/* explain-classes */
-a.explain.original, a.explain.generic, td.explain.unknown {
+/*th class*/
+th {
+	background : $bg_dark;
+	color : $bg_dark_font_color;
 	font-weight: bold;
-}
-td.explain.infos{
-	color : $bg_bright_font_color;
-}
-table.explain {
-	background : $bg_bright;
-	color : $bg_bright_font_color;
-	text-align : left;
-	width : 100%;
-	font-size: $explain_font_size;
-}
-td.explain {
-	padding: 4px;
-	background : $bg_bright;
-	vertical-align : bottom;
-}
-table.legal-note {
-	width : 100%;
-	text-align : right;
-}
-td.legal-note{
-	font-size: 8pt;
-	text-align : center;
-	padding: 4px;
-	padding-bottom: 10px;
-}
-a.legal-note:link, a.legal-note:visited {
-	color: $home_link_color;
-}
-a.legal-note:hover {
-	color: $home_link_hover_color;
-}
-a.legal-note:active {
-	color : #f5e84d;
-}
-
-/* error_classes */
-label.error {
-	color : red;
-}
-td.info {
-	padding-bottom : 4px;
-	padding-top : 4px;
-	color : green;
-}
-td.processingerror {
-	padding: 4px;
-	color : red;
-}
-td.warning {
-	padding-bottom : 4px;
-	padding-top : 4px;
-	color : #ff6600;
-}
-
-/* tab-classes */
-td.chapter-tab {
-	background : $bg_bright;
-	border-style : solid;
-	border-color : black;
-	border-width : 0px 0px thin 0px;
 	padding : 4px;
+	text-align : left;
 }
-a.chapter-tab {
-	background : $bg_bright;
-	color: red;
-}
-a.chapter-tab:link, a.chapter-tab:visited {
-	background : $bg_bright;
-	color: blue;
-}
-
-/* print-classes */
-td.print.big { 
-	padding-top: 12px;
-	font-weight: bold;
-	font-size: 26px;
-}
-
-/* misc */
-a.powerlink {
-	color : blue;
-	text-decoration : underline;
-}
-a.powerlink:hover {
-	color : red;
-}
-a.powerlink:active {
-	color : #f5e84d;
-}
-
-/* new style of formatting */
-/* use multiple classes to style! */
-td.interaction-connection { 
-	margin-top: 0px;
-	list-style-type : circle;
-	width : 30%;
-}
-td.bg {
-	background : $rslt_bg;
-}
-td.interaction-substance {
-	font-size: 14px;
-	width : 10%;
-}
-table.interaction-basket td {
-	padding-top : 4px;
-	padding-left : 4px;
-	padding-bottom : 4px;
-	vertical-align : top;
-}
-.right {
-	text-align : right;
-}
-td.sum {
-	border-color : black;
-	border-style : solid;
-	border-width : 0px 0px 1px 0px;
-}
-td.total {
-	border-color : black;
-	border-style : double;
-	border-width : 0px 0px 3px 0px;
-}
-td.top {
-	vertical-align : top;
-}
-td.address-width {
-	width: 180px;
-}
-td.border-left {
-	float: right;
-	border-left: 1.5px solid $bg_dark;
-	width: 400px;
-}
-td.radio {
-	vertical-align: top;
-	width: 5px;
-	height: 12px;
-	max-width: 5px;
-}
-div.square {
-	max-width: 20px;
-	height: 20px;
-	text-align: center;
-	vertical-align: middle;
-	font-size : 16px;
-}
-div.plus {
-	background-color: #cf9;
-
-}
-div.minus {
-	background-color: #ffbc6f;
-}
-a.create-infos {
+/* pointersteps-classes */
+th.th-pointersteps {
+	background : $bg;
 	color : black;
-	border : 1px solid #ffbc6f;
 	font-weight : bold;
+	text-align : left;
+	text-decoration : none;
 }
-a.create-infos:hover {
-	background: $rslt_infos_bg_bright;
-}
-span.square, a.square {
-	text-align: center;
-	font-weight : bold;
-}
-td.list span.square, td.list a.square {
-	padding: 2px 4px;
-	font-size: $square_font_size;
-}
-td.infos span.square, td.infos a.square {
-	padding: 0px 1px;
-	font-size: $explain_font_size;
-}
-span.square.vaccine{
-	font-weight: bold;
-	color: white;
-}
-a.vaccine, span.vaccine {
-	color: white;
-	background-color : #a52a2a;
-}
-span.anthroposophy {
-	color: white;
-	background-color: #ff00ff;
-}
-a.comarketing, span.comarketing {
-	font-weight: bold;
-	color: white;
-	background-color : #f61;
-}
-span.complementary, a.complementary {
-	color: white;
-	background-color : #dd1cff;
-}
-span.homeopathy, a.homeopathy {
-	color: white;
-	background-color: #9900ff;
-}
-span.parallel_import, a.parallel_import {
-	color: white;
-	background-color: #0A0;
-}
-span.phytotherapy, a.phytotherapy {
-	color: white;
-	background-color: #60f;
-}
-a.patent {
-	font-weight: bold;
-	color: white;
-	background-color: #C00;
-}
-table.wait {
-	cell-spacing: 20px;
-}
-td.wait {
-	width: 25px;
-	height: 25px;
-	border: 1px solid $bg_dark;
-	background-color : #e9f7f3;
-}
-td.bg-red{
-	background-color: #FF0000;
-}
-td.confirm {
-	padding: 6px;
-	background : $rslt_bg;
-	font-size: 14px;
-	font-weight: bold;
-}
-table.invoice {
-	width: 300px;
-	border: 1px solid $bg_bright;
-}
-table.border, table.border td {
-	border: 1px solid green;
-}
-td.migel-group, td.migel-group a {
-	background: $bg_medium;
-	color: $bg_medium_font_color;
-}
-td.migel-group {
-	padding: 4px;
-}
-div.just-medical {
+th, td.th {
 	background : $bg_dark;
 	color : $bg_dark_font_color;
 	font-weight : bold;
 	padding : 4px;
-	text-align : left;
 	text-decoration : none;
 }
-td.next-step {
-	padding: 4px;
-	border: 2px dotted red;
-	width: auto;
+th a, td.th a, th a:visited, td.th a:visited {
+	color : $bg_dark_font_color;
 }
-td.active-item {
-	padding-top: 15px;
-	opacity: .75;
-	filter: alpha(opacity=75);
+a.th:hover {
+	color : $bg_dark_link_hover_color;
 }
-div.long-text {
-	max-width: 400px;
+a.th:active {
+	color : $bg_dark_link_active_color;
 }
-td.navigation.right table {
-	float: right;
+a.th-pointersteps {
+	background : $bg;
+	color : $list_font_color;
+	text-align : left;
 }
-td.date-chooser {
-	border-bottom: 1px solid $bg_dark;
+/* layout-classes */
+.sponsor {
+	font-size: 11px;
+	color: silver;
+}
+.logo {
+	border : 0px dotted red;
+}
+.personal {
+	font-weight : bold;
+	font-size : 11px;
+	margin-top : 40px;
+	color : black;
+}
+.right {
+	text-align : right;
 }
 tr.expired td, td.expired { 
 	filter: alpha(opacity=65);
@@ -772,29 +769,26 @@ tr.expired td, td.expired {
   opacity: 0.65;
 	background-color: #CCC;
 }
-td.tab {
-	background-color: $bg_bright;
-	border-top: 2px solid $bg_medium;
+tr.disabled {
+	opacity: .75;
+	filter: alpha(opacity=75);
 }
-div.dojoTooltip {
-  font-size : $std_font_size;
-	white-space: nowrap;
+textarea {
+	width: 400px;
+	height: 100px;
+	font-family : $std_font_family;
 }
-span.deductible_g, span.deductible_o {
-	font-weight : bold;
-	text-align : center;
-	text-decoration : none;
-	padding : 2px 2px 2px 4px;
+textarea.standard {
+	width : 200px;
+	height: 60px;
+	font-family : $std_font_family;
+	font-size : $std_font_size; 
 }
-span.deductible_o {
-	color: black; 
-	background-color: #ffc455;
+form {
+	margin : 0px;
 }
-span.deductible_g {
-	color: black; 
-	background-color: #fff455;
+form.search {
+	vertical-align: bottom;
+	padding: 0px;
+	margin: 0px;
 }
-td.nowrap {
-	white-space: nowrap;
-}
-

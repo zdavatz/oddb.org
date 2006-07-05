@@ -17,7 +17,8 @@ module ODDB
 		BOOLEAN = [
 			:cl_status,  :download, :experience, :recommend, :impression,
 			:invoice_htmlinfos, :helps, :show_email, :export_flag, :renewal_flag,
-			:disable_autoinvoice, :refdata_override, :lppv, :vaccine, :parallel_import
+			:disable_autoinvoice, :refdata_override, :lppv, :vaccine, :parallel_import,
+      :yus_groups, :yus_privileges,
 		]
 		DATES = [
 			:base_patent_date, 
@@ -63,12 +64,42 @@ module ODDB
 			:payment_method => ['pm_invoice', 'pm_paypal'],
 			:patinfo			=>	['delete', 'keep'],
 			:salutation		=>	['salutation_m', 'salutation_f'],
+      :yus_privileges => [ 
+        'edit|yus.entities', 
+        'grant|login', 
+        'grant|view', 
+        'grant|create', 
+        'grant|edit', 
+        'grant|credit', 
+        'set_password',
+        'login|org.oddb.RootUser', 
+        'login|org.oddb.AdminUser', 
+        'login|org.oddb.PowerUser', 
+        'login|org.oddb.CompanyUser', 
+        'login|org.oddb.PowerLinkUser', 
+        'view|org.oddb', 
+        'edit|org.oddb.drugs', 
+        'edit|org.oddb.powerlinks',
+        'create|org.oddb.registration',
+        'edit|org.oddb.model.!company.*', 
+        'edit|org.oddb.model.!sponsor.*', 
+        'edit|org.oddb.model.!indication.*', 
+        'edit|org.oddb.model.!galenic_group.*', 
+        'edit|org.oddb.model.!incomplete_registration.*', 
+        'edit|org.oddb.model.!address.*', 
+        'edit|org.oddb.model.!atc_class.*',
+        'invoice|org.oddb.processing', 
+        'view|org.oddb.patinfo_stats', 
+        'view|org.oddb.patinfo_stats.associated', 
+        'credit|org.oddb.download', 
+      ],
 		}	
 		EVENTS = [
 			:accept,
 			:add_to_interaction_basket,
 			:addresses,
 			:ajax,
+			:ajax_autofill,
 			:ajax_ddd_price,
 			:ajax_swissmedic_cat,
 			:assign,
@@ -77,7 +108,7 @@ module ODDB
 			:assign_patinfo,
 			:atc_chooser,
 			:atc_request,
-			:authenticate,
+			#:authenticate,
 			:address_send,
 			:back,
 			:calculate_offer,
@@ -140,6 +171,7 @@ module ODDB
 			:new_registration,
 			:new_sequence,
 			:new_substance,
+      :new_user,
 			:notify,
 			:notify_send,
 			:orphaned_fachinfos,
@@ -186,6 +218,8 @@ module ODDB
 			:update,
 			:update_bsv,
 			:update_incomplete,
+      :user,
+      :users,
 			:vaccines,
 			:vcard,
 			:wait,
@@ -261,6 +295,7 @@ module ODDB
 			:name_base,
 			:name_descr,
 			:name_first,
+			:name_last,
 			:notify_message,
 			:pattern,
 			:payment_status,
@@ -380,7 +415,11 @@ module ODDB
 		end
 		def pointer(value)
 			begin
-				Persistence::Pointer.parse(value)
+				pointer = Persistence::Pointer.parse(value)
+        if(pointer.insecure?)
+          raise SBSM::InvalidDataError.new('e_insecure_pointer', :pointer, value)
+        end
+        pointer
 			rescue StandardError, ParseException
 				if(value[-1] != ?.)
 					value << "."
@@ -389,6 +428,15 @@ module ODDB
 				raise SBSM::InvalidDataError.new("e_invalid_pointer", :pointer, value)
 			end
 		end
+    def yus_association(value)
+      value = value.to_s
+      if(/^org\.oddb\.model\.[!*.a-z]+/.match(value.to_s))
+        value
+      elsif(!value.empty?)
+				raise SBSM::InvalidDataError.new("e_invalid_yus_association", 
+                                         :yus_association, value)
+      end
+    end
 		def zone(value)
 			if(value.to_s.empty?)
 				raise SBSM::InvalidDataError.new("e_invalid_zone", :zone, value)

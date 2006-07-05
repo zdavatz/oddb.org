@@ -24,7 +24,7 @@ class Fachinfo < State::Drugs::Global
 		@model.pointer_descr = descr
 	end
 	def allowed?
-		@session.user.allowed?(@fachinfo.registrations.first)
+		@session.user.allowed?('edit', @fachinfo.registrations.first)
 	end
 end
 class FachinfoPreview < State::Drugs::Global

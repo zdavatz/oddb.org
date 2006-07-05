@@ -56,7 +56,7 @@ class Result < State::Drugs::Global
 		end
 	end
 	def export_csv
-		if(creditable?)
+		if(creditable?('org.oddb.download'))
 			PaymentMethod.new(@session, @model)
 		else
 			RegisterDownload.new(@session, @model)

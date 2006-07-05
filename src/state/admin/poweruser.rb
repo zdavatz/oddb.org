@@ -2,17 +2,21 @@
 # State::Admin::PowerUser -- oddb -- 29.07.2005 -- hwyss@ywesee.com
 
 require 'state/admin/user'
+require 'state/admin/login'
 
 module ODDB
 	module State
 		module Admin
 module PowerUser
 	include State::Admin::User
+  include State::Admin::LoginMethods
 	def limited?
-		super && !@session.user.valid?
+		super && !@session.user.allowed?('view', 'org.oddb')
 	end
 	def limit_state
-		State::User::InvalidUser.new(@session, @session.user)
+    user = @session.user
+    state = State::User::InvalidUser.new(@session, user)
+		reconsider_permissions(user, state)
 	end
 end
 		end

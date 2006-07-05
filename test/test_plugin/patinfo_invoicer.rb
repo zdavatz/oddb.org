@@ -199,23 +199,23 @@ module ODDB
 			pointer = FlexMock.new
 			time = Time.now
 			item1 = AbstractInvoiceItem.new
-			item1.user_pointer = 'user1'
+			item1.yus_name = 'user1'
 			item1.item_pointer = pointer
 			item1.text = '11111 11'
 			item1.time = time
 			item2 = AbstractInvoiceItem.new
-			item2.user_pointer = 'user2'
+			item2.yus_name = 'user2'
 			item2.item_pointer = pointer
 			item2.text = '22222 22'
 			item1.time = time
 			item2.time = time
 			item3 = AbstractInvoiceItem.new
-			item3.user_pointer = 'user1'
+			item3.yus_name = 'user1'
 			item3.item_pointer = pointer
 			item3.text = '33333 33'
 			item3.time = time
 			item4 = AbstractInvoiceItem.new
-			item4.user_pointer = 'user2'
+			item4.yus_name = 'user2'
 			item4.item_pointer = pointer
 			item4.text = '44444 44'
 			item4.time = time
@@ -246,13 +246,13 @@ module ODDB
 			ptr2.mock_handle(:resolve) { }
 			ptr3.mock_handle(:resolve) { }
 			item1 = AbstractInvoiceItem.new
-			item1.user_pointer = 'user1'
+			item1.yus_name = 'user1'
 			item1.item_pointer = ptr1
 			item2 = AbstractInvoiceItem.new
-			item2.user_pointer = 'user1'
+			item2.yus_name = 'user1'
 			item2.item_pointer = ptr2
 			item3 = AbstractInvoiceItem.new
-			item3.user_pointer = 'user1'
+			item3.yus_name = 'user1'
 			item3.item_pointer = ptr3
 			items = [item1, item2, item3]
 			pointer = Persistence::Pointer.new(:invoice)
@@ -272,7 +272,7 @@ module ODDB
 				:time					=>	nil,
 				:type					=>	nil,
 				:unit					=>	nil,
-				:user_pointer	=>	'user1',
+				:yus_name	=>	'user1',
 				:vat_rate			=>	nil,
 			}
 			item_vals2 = item_vals1.dup
@@ -280,7 +280,7 @@ module ODDB
 			item_vals3 = item_vals1.dup
 			item_vals3.store(:item_pointer, ptr3)
 			expected = [
-				[pointer.creator, {:user_pointer => 'user1', 
+				[pointer.creator, {:yus_name => 'user1', 
 					:keep_if_unpaid => true, :ydim_id => 2134}, invoice],
 				[item_ptr.dup.creator, item_vals1, nil],
 				[item_ptr.dup.creator, item_vals2, nil],
@@ -295,9 +295,7 @@ module ODDB
 				uptr.instance_variable_get('@directions').at(0).at(1).append('used')
 				res
 			}
-			user = FlexMock.new
-			user.mock_handle(:pointer) { 'user1' }
-			@plugin.create_invoice(user, items, 2134)
+			@plugin.create_invoice('user1', items, 2134)
 			@app.mock_verify
 		end
 	end

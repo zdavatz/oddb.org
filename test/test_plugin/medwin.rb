@@ -7,6 +7,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'plugin/medwin'
 require 'util/html_parser'
+require 'flexmock'
 
 module ODDB
 	class MedwinPlugin < Plugin
@@ -186,23 +187,6 @@ class TestMedwinPackagePlugin < Test::Unit::TestCase
 		target = File.expand_path('../../test/data/html/medwin', File.dirname(__FILE__))
 		table = 'medwin_package.html'
 		@html = File.read([target, table].join("/"))
-	end
-	def test_update
-		begin
-			@plugin.instance_eval <<-EOS
-				alias :original_update_package :update_package
-				def update_package(comp)
-					@update_package_called = true
-				end
-			EOS
-			@plugin.update
-			assert_equal(3, @plugin.checked)
-			assert_equal(true, @plugin.update_package_called)
-		ensure
-			@plugin.instance_eval <<-EOS
-				alias :update_package :original_update_package
-			EOS
-		end
 	end
 	def test_update_package_data
 		@plugin.updated.clear

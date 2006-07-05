@@ -12,6 +12,7 @@ module ODDB
 			include Persistence
 			ODBA_SERIALIZABLE = ['@challenges']
 			attr_reader :email
+			alias :unique_email :email
 			attr_accessor :company_name, :phone, :business_area
 			alias :fullname :company_name
 			class Challenge

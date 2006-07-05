@@ -20,10 +20,9 @@ class Return < State::Global
 		if(@model)
 			invoice = @model
 			@model = InvoiceWrapper.new(invoice)
-			user = @session.resolve(invoice.user_pointer)
 			@model.items = invoice.items.values.collect { |item|
 				wrap = ItemWrapper.new(item)
-				wrap.email = user.email
+				wrap.email = invoice.yus_name
 				wrap.oid = invoice.oid
 				wrap
 			}

@@ -169,12 +169,13 @@ module ODDB
 				if(test.is_a?(Persistence::CreateItem)) 
 					test = test.parent(@session.app)
 				end
-				@session.user.allowed?(test)
+				@session.user.allowed?('edit', test)
 			end
 			def atc_chooser
 				mdl = @session.app.atc_chooser
 				State::Drugs::AtcChooser.new(@session, mdl)
 			end
+=begin # was never used?
 			def authenticate
 				email = @session.user_input(:email)
 				key = @session.user_input(:challenge)
@@ -185,6 +186,7 @@ module ODDB
 					State::User::RegisterDownload.new(@session, user)
 				end
 			end
+=end
 			def checkout
 				case @session.zone
 				when :user
@@ -197,8 +199,8 @@ module ODDB
 				@session.clear_interaction_basket
 				State::Interactions::EmptyBasket.new(@session, [])
 			end
-			def creditable?
-				@session.user.creditable?(@model)
+			def creditable?(item = @model)
+				@session.user.creditable?(item)
 			end
 			def direct_request_path
 				if(event = self.direct_event)
@@ -219,8 +221,8 @@ module ODDB
 				email ||= @session.get_cookie_input(:email)
 				oid = @session.user_input(:invoice)
 				file = @session.user_input(:filename)
-				if((user = @session.admin_subsystem.download_user(email)) \
-					&& (invoice = user.invoice(oid)) \
+				if((invoice = user.invoice(oid)) \
+          && invoice.yus_name == email \
 					&& invoice.payment_received? \
 					&& (item = invoice.item_by_text(file)) \
 					&& !item.expired?)
@@ -306,8 +308,8 @@ module ODDB
 				State::Drugs::Init.new(@session, user)
 			end
 			def navigation
+				#+ zone_navigation \
 				help_navigation \
-				+ zone_navigation \
 				+ user_navigation \
 				+ home_navigation
 			end
@@ -315,10 +317,13 @@ module ODDB
 				keys = [:token, :email]
 				input = user_input(keys, keys)
 				unless(error?)
-					if((user = @session.user_by_email(input[:email])) \
-						&& Digest::MD5.hexdigest(input[:token]) == user.reset_token \
-						&& user.reset_until > Time.now)
-						State::Admin::PasswordReset.new(@session, user)
+          email = input[:email]
+          token = input[:token]
+					if(@session.yus_allowed?(email, 'reset_password', token))
+            model = OpenStruct.new
+            model.token = token
+            model.email = email
+						State::Admin::PasswordReset.new(@session, model)
 					end
 				end
 			end
@@ -327,16 +332,18 @@ module ODDB
 					State::Drugs::Init.new(@session, nil)
 				elsif((id = @session.user_input(:invoice)) \
 					&& (invoice = @session.invoice(id)))
-					state = State::PayPal::Return.new(@session, invoice)
+          state = State::PayPal::Return.new(@session, invoice)
 					if(invoice.types.all? { |type| type == :poweruser } \
-						&& invoice.payment_received? \
+						&& @session.user.allowed?('view', 'org.oddb') \
 						&& (des = @session.desired_state))
-						state = des
-						if(viral = @session.user.viral_module)
-							state.extend(viral)
-						end
+            # since the permissions of the current User may have changed, we
+            # need to reconsider his viral modules
+            if((user = @session.user).is_a?(YusUser))
+              reconsider_permissions(user, des)
+            end
+            state = des
 					end
-					state
+          state
 				else
 					State::PayPal::Return.new(@session, nil)
 				end
@@ -409,7 +416,14 @@ module ODDB
 					pointer = Persistence::Pointer.new(:invoice)
 					invoice = Persistence::CreateItem.new(pointer)
 					invoice.carry(:items, items)
-					State::User::RegisterDownload.new(@session, invoice)
+          # experimental Implementation of Invoiced Download. 
+          # Does not work yet, because an Invoice-Id is needed for downloading,
+          # but no invoice is created until the next run of DownloadInvoicer
+          #if(creditable?('org.oddb.download'))
+          #  State::User::PaymentMethod.new(@session, invoice)
+          #else
+            State::User::RegisterDownload.new(@session, invoice)
+          #end
 				end
 			end
 			def proceed_poweruser
@@ -615,7 +629,7 @@ module ODDB
 					else
 						carryval = value
 					end
-					if (@model.is_a? Persistence::CreateItem)
+					if(@model.is_a? Persistence::CreateItem)
 						@model.carry(key, carryval)
 					end
 				}

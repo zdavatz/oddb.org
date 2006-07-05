@@ -30,7 +30,7 @@ module ODDB
 				par1.preformatted!
 				result = @view.paragraphs(CGI.new, [par1, par2])
 				expected = <<-EOS
-		<PRE>Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</PRE><SPAN style="#{View::Chapter.const_get(:PAR_STYLE)}">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</SPAN><BR>
+		<SPAN style="#{View::Chapter.const_get(:PRE_STYLE)}">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</SPAN><SPAN style="#{View::Chapter.const_get(:PAR_STYLE)}">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</SPAN><BR>
 				EOS
 				assert_equal(expected.strip, result)
 			end

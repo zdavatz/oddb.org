@@ -10,8 +10,8 @@ module ODDB
 class PaymentMethodForm < Form
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
-		[0,0]	=>	:name,
-		[0,1]	=>	:contact,
+		[0,0]	=>	:company_name,
+		[0,1]	=>	:fullname,
 		[0,2]	=>	:email,
 		[0,3]	=>	:payment_method,
 		[1,4]	=>	:submit,
@@ -33,16 +33,15 @@ class PaymentMethodForm < Form
 	SYMBOL_MAP = {
 		:payment_method	=>	HtmlGrid::Select,
 	}
+  LOOKANDFEEL_MAP = {
+    :fullname => :contact,
+  }
 	def init
 		super
 		if(@session.error?)
 			error = RuntimeError.new('e_need_all_input')
 			message(error, 'processingerror')
 		end
-	end
-	def email(model)
-		HtmlGrid::Value.new(:unique_email, model.user, 
-			@session, self) if(model)
 	end
 	def hidden_fields(context)
 		hidden = super

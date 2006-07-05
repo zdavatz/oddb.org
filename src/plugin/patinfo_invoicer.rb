@@ -33,7 +33,7 @@ module ODDB
 							end
 						}
 					end
-				elsif(user = company.user)
+				elsif(email = company.invoice_email)
 					if(company.pref_invoice_date.nil?)
 						time = items.collect { |item| item.time }.min
 						date = Date.new(time.year, time.month, time.day)
@@ -51,16 +51,17 @@ module ODDB
 						adjust_company_fee(company, items)
 						## adjust the fee according to date
 						adjust_overlap_fee(day, items)
+            ensure_yus_user(company)
 						## first send the invoice 
-						ydim_id = send_invoice(invoice_date, company, items) 
+						ydim_id = send_invoice(invoice_date, email, items) 
 						## then store it in the database
-						create_invoice(user, items, ydim_id)
+						create_invoice(email, items, ydim_id)
 					elsif((day >> 12) == company.pref_invoice_date)
 						## if the date has been set to one year from now,
 						## this invoice has already been sent manually.
 						## store the items anyway to prevent sending a 2-year
 						## invoice on the following day..
-						create_invoice(user, items, nil)
+						create_invoice(email, items, nil)
 					end
 				end
 			}
@@ -70,17 +71,18 @@ module ODDB
 			payable_items = filter_paid(items)
 			groups = group_by_company(payable_items)
 			groups.each { |company, items|
-				if(!company.disable_autoinvoice && (user = company.user))
+				if(!company.disable_autoinvoice && (email = company.invoice_email))
 					## work with duplicates
 					items = items.collect { |item| item.dup }
 					## adjust the annual fee according to company settings
 					adjust_company_fee(company, items)
 					## adjust the annual fee according to date
 					adjust_annual_fee(company, items)
+          ensure_yus_user(company)
 					## first send the invoice 
-					ydim_id = send_invoice(day, company, items) 
+					ydim_id = send_invoice(day, email, items) 
 					## then store it in the database
-					create_invoice(user, items, ydim_id)
+					create_invoice(email, items, ydim_id)
 				end
 			}
 			nil

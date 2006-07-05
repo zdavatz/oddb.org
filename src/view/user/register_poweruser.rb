@@ -3,6 +3,7 @@
 
 require 'view/resulttemplate'
 require 'view/paypal/invoice'
+require 'view/user/autofill'
 require 'htmlgrid/pass'
 require 'htmlgrid/errormessage'
 
@@ -10,19 +11,21 @@ module ODDB
 	module View
 		module User
 class RegisterPowerUserForm < Form
+  include AutoFill
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
-		[0,0]	=>	:salutation,
-		[0,1]	=>	:name,
-		[0,2]	=>	:name_first,
-		[0,3]	=>	:email,
-		[0,4]	=>	:pass,
-		[3,4]	=>	:set_pass_2,
+		[0,0]	=>	:email,
+		[0,1]	=>	:pass,
+		[3,1]	=>	:set_pass_2,
+		[0,2]	=>	:salutation,
+		[0,3]	=>	:name_last,
+		[0,4]	=>	:name_first,
 		[1,5]	=>	:submit,
 	}
 	CSS_CLASS = 'component'
 	EVENT = :checkout
 	LABELS = true
+  LEGACY_INTERFACE = false
 	CSS_MAP = {
 		[0,0,4,6]	=>	'list',
 	}
@@ -59,34 +62,23 @@ class RegisterPowerUserComposite < HtmlGrid::Composite
 	LEGACY_INTERFACE = false
 end
 class RegisterPowerUser < View::ResultTemplate
+  JAVASCRIPTS = ['autofill']
 	CONTENT = RegisterPowerUserComposite
 end
 class RenewPowerUserForm < RegisterPowerUserForm
 	COMPONENTS = {
-		[0,0]	=>	:name,
-		[0,1]	=>	:email,
-		[1,2]	=>	:submit,
+		[0,0]	=>	:email,
+		[0,1]	=>	:salutation,
+		[0,2]	=>	:name_last,
+		[0,3]	=>	:name_first,
+		[1,4]	=>	:submit,
 	}
 	CSS_MAP = {
-		[0,0,2,3]	=>	'list',
+		[0,0,2,5]	=>	'list',
 	}
-	COMPONENT_CSS_MAP = {}
-	DEFAULT_CLASS = HtmlGrid::Value
-	SYMBOL_MAP = {}
-	def name(model, session)
-		user = @session.user
-		salutation = if(user.respond_to?(:salutation))
-			@lookandfeel.lookup(@session.user.salutation)
-		end
-		text = HtmlGrid::Text.new(:name, model, @session, self)
-		text.value = [
-			salutation, 
-			model.name_first,
-			model.name
-		].compact.join(' ')
-		text.label = true
-		text
-	end
+	COMPONENT_CSS_MAP = {
+		[1,0,4,4]	=>	'standard',
+	}
 end
 class RenewPowerUserComposite < HtmlGrid::Composite 
 	include View::PayPal::InvoiceMethods

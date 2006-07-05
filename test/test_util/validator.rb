@@ -47,8 +47,8 @@ class TestOddbValidator < Test::Unit::TestCase
 		assert_equal(SBSM::InvalidDataError, @validator.validate(:iksnr, '1a345').class)
 	end
 	def test_pointer1
-		pointer = ODDB::Persistence::Pointer.new(:foo, [:bar, '12345'])
-		assert_equal(pointer, @validator.validate(:pointer, ':!foo!bar,12345.'))
+    error = @validator.validate(:pointer, ':!foo!bar,12345.')
+		assert_instance_of(SBSM::InvalidDataError, error)
 	end
 	def test_pointer2
 		pointer = ODDB::Persistence::Pointer.new([:registration, '49390'])

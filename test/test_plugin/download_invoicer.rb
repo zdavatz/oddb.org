@@ -52,17 +52,17 @@ module ODDB
 		end
 		def test_group_by_user
 			item1 = AbstractInvoiceItem.new
-			item1.user_pointer = Persistence::Pointer.new([:user, 1])
+			item1.yus_name = 'name1' 
 			item2 = AbstractInvoiceItem.new
-			item2.user_pointer = Persistence::Pointer.new([:user, 1])
+			item2.yus_name = 'name1' 
 			item3 = AbstractInvoiceItem.new
-			item3.user_pointer = Persistence::Pointer.new([:user, 1])
+			item3.yus_name = 'name1' 
 			item4 = AbstractInvoiceItem.new
-			item4.user_pointer = Persistence::Pointer.new([:user, 2])
+			item4.yus_name = 'name2' 
 			items = [item1, item2, item3, item4]
 			groups = @plugin.group_by_user(items)
-			group1 = groups[Persistence::Pointer.new([:user, 1])]
-			group2 = groups[Persistence::Pointer.new([:user, 2])]
+			group1 = groups['name1']
+			group2 = groups['name2']
 			assert_equal(3, group1.size)
 			assert_equal([item1, item2, item3], group1)
 			assert_equal([item4], group2)

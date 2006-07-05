@@ -128,17 +128,22 @@ module ODDB
 		def address(pos)
 			@addresses[pos.to_i]
 		end
+    def address_item(key, pos=0)
+      if(addr = @addresses.at(pos))
+        addr.send(key)
+      end
+    end
 		def create_address(pos=nil)
 			addr = Address2.new
 			@addresses.push(addr)
 			addr
 		end
 		def ydim_address_lines(pos=0)
-			@addresses.at(pos).ydim_lines
+			address_item(:ydim_lines, pos) || []
 		end
 		def ydim_location(pos=0)
-			@addresses.at(pos).location
-		end
+			address_item(:location, pos)
+    end 
 	end
 	class AddressSuggestion < Address2
 		include Persistence

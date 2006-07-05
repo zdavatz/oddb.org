@@ -46,7 +46,7 @@ end
 						})[key]
 					end
 				end
-				def allowed?(foo)
+				def allowed?(foo, bar)
 					true
 				end
 				def user

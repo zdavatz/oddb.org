@@ -1,0 +1,48 @@
+---
+shortcut: 
+  '/medikamente': 
+    'language': 'de'
+    'event': 'home_drugs'
+  '/medicaments':
+    'language': 'fr'
+    'event': 'home_drugs'
+  '/drugs': 
+    'language': 'en'
+    'event': 'home_drugs'
+  '/interaktionen': 
+    'language': 'de'
+    'event': 'home_interactions'
+  '/interactions': 
+    'language': 'en'
+    'event': 'home_interactions'
+  '/firmen': 
+    'language': 'de'
+    'event': 'home_companies'
+  '/entreprises': 
+    'language': 'fr'
+    'event': 'home_companies'
+  '/companies': 
+    'language': 'en'
+    'event': 'home_companies'
+  '/aerzte_schweiz': 
+    'language': 'de'
+    'event': 'home_doctors'
+  '/medecins_suisses': 
+    'language': 'fr'
+    'event': 'home_doctors'
+  '/doctors_switzerland':
+    'language': 'en'
+    'event': 'home_doctors'
+  '/services': 
+    'event': 'home_user'
+  '/wirkstoffe': 
+    'language': 'de'
+    'event': 'home_substances'
+  '/principes_actifs': 
+    'language': 'fr'
+    'event': 'home_substances'
+  '/substances': 
+    'language': 'en'
+    'event': 'home_substances'
+  '/admin': 
+    'event': 'home_admin'

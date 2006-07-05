@@ -115,6 +115,15 @@ module ODDB
 		class InvalidPathError < PathError
 		end
 		class Pointer
+      SECURE_COMMANDS = [
+        :active_agent, :address, :address_suggestion, :atc_class, :company,
+        :doctor, :hospital, :cyp450, :fachinfo, :feedback, :galenic_group,
+        :generic_group, :incomplete_registration, :indication, :invoice,
+        :address_suggestion, :migel_group, :subgroup, :product, :narcotic,
+        :orphaned_fachinfo, :orphaned_patinfo, :package, :patent, :patinfo,
+        :poweruser, :registration, :sequence, :slate, :sl_entry, :sponsor,
+        :substance, :user, :limitation_text
+      ]
 			@parser = Parse.generate_parser <<-EOG
 Grammar OddbSize
 	Tokens
@@ -137,6 +146,13 @@ Grammar OddbSize
 					ast.compact!
 					produce_pointer(ast)
 				end
+        def from_yus_privilege(string)
+          ## does not support encapsulated pointers
+          args = string.scan(/!([^!]+)/).collect { |matches|
+            matches.first.split('.').compact
+          }
+          self.new(*args)
+        end
 				private
 				def produce_argument(ast)
 					arg = ast.argument
@@ -188,6 +204,14 @@ Grammar OddbSize
 			def eql?(other)
 				to_s.eql?(other.to_s)
 			end
+      def insecure?
+        @directions.any? { |step|
+          !SECURE_COMMANDS.include?(step.first.to_sym) \
+          || step.any? { |arg|
+            arg.is_a?(Pointer)
+          }
+        }
+      end
 			def issue_create(app)
 				new_obj = resolve(app)
 				unless new_obj.nil?
@@ -290,6 +314,13 @@ Grammar OddbSize
 					'!' << step.join(',')
 				}.join << '.'
 			end
+      def to_yus_privilege
+        @directions.inject('org.oddb.model') { |yus, steps|
+          steps = steps.dup
+          yus << '.!' << steps.shift.to_s
+          steps.inject(yus) { |yus, step| yus << '.' << step.to_s }
+        }
+      end
 			def +(other)
 				dir = @directions.dup << [other].flatten
 				Pointer.new(*dir)
@@ -308,6 +339,7 @@ Grammar OddbSize
 			def initialize(pointer=Pointer.new)
 				@inner_pointer = pointer
 				@pointer = Pointer.new([:create, pointer])
+        @data = {}
 			end
 			def ancestors(app)
 				@inner_pointer.ancestors.collect { |pointer| pointer.resolve(app) }
@@ -316,15 +348,10 @@ Grammar OddbSize
 				@inner_pointer.append(val)
 			end
 			def carry(key, val=nil)
-				instance_variable_set("@#{key}", val)
-				instance_eval <<-EOS
-					def #{key}(*args)
-						@#{key}
-					end
-				EOS
+        @data.store(key, val)
 			end
-			def method_missing(*args)
-				nil
+			def method_missing(key, *args)
+        @data[key]
 			end
 			def parent(app)
 				@inner_pointer.parent.resolve(app)

@@ -15,6 +15,7 @@ require 'htmlgrid/text'
 require 'htmlgrid/urllink'
 require 'htmlgrid/value'
 require 'htmlgrid/booleanvalue'
+require 'view/admin/entities'
 require 'view/address'
 require 'view/descriptionform'
 require 'view/form'
@@ -91,7 +92,7 @@ class UserCompanyForm < View::Form
 		[0,1]			=>	:contact,
 		[2,1]			=>	:contact_email,
 		[2,2]			=>	:regulatory_email,
-		[1,2]			=>	:set_pass,
+		#[1,2]			=>	:set_pass,
 		[0,4]			=>	:address,
 		[0,5]			=>	:plz,
 		[2,5]			=>	:city,
@@ -207,7 +208,7 @@ class AjaxPharmaCompanyForm < AjaxCompanyForm
 		[2,1]		=>	:invoice_email,
 		[0,2]		=>	:contact,
 		[2,2]		=>	:contact_email,
-		[1,3]		=>	:set_pass,
+		#[1,3]		=>	:set_pass,
 		[2,3]		=>	:regulatory_email,
 		[2,4]		=>	:competition_email,
 		[0,5]		=>	:disable_autoinvoice,
@@ -226,7 +227,6 @@ class AjaxPharmaCompanyForm < AjaxCompanyForm
 		[2,12]		=>	:address_email,
 		[0,13]	=>	:powerlink,
 		[2,13]	=>	:logo_file,
-		[0,15]	=>	:business_area,
 		[2,15]	=>	:ean13,
 		[0,16]	=>	:cl_status,
 		[2,16]	=>	:registration_count,
@@ -252,7 +252,7 @@ class AjaxInfoCompanyForm < AjaxCompanyForm
 		[2,1]		=>	:invoice_email,
 		[0,2]		=>	:contact,
 		[2,2]		=>	:contact_email,
-		[1,3]		=>	:set_pass,
+		#[1,3]		=>	:set_pass,
 		[0,4]		=>	:lookandfeel_price,
 		[2,4]		=>	:lookandfeel_invoice_date,
 		[0,6]		=>	:address,
@@ -283,7 +283,7 @@ class AjaxInsuranceCompanyForm < AjaxCompanyForm
 		[2,1]		=>	:invoice_email,
 		[0,2]		=>	:contact,
 		[2,2]		=>	:contact_email,
-		[1,3]		=>	:set_pass,
+		#[1,3]		=>	:set_pass,
 		[0,4]		=>	:lookandfeel_price,
 		[2,4]		=>	:lookandfeel_invoice_date,
 		[0,5]		=>	:lookandfeel_member_price,
@@ -315,7 +315,7 @@ class AjaxOtherCompanyForm < AjaxCompanyForm
 		[2,0]		=>	:company_name,
 		[0,1]		=>	:contact,
 		[2,1]		=>	:contact_email,
-		[1,2]		=>	:set_pass,
+		#[1,2]		=>	:set_pass,
 		[0,3]		=>	:address,
 		[0,4]		=>	:plz,
 		[2,4]		=>	:city,
@@ -400,15 +400,18 @@ class CompanyComposite < HtmlGrid::Composite
 	CSS_MAP = {
 		[0,0]	=>	'th',
 		[1,1]	=>	'logo right',
+    [0,2,2]   =>  'list',
 	}	
 	COLSPAN_MAP = {
 		[0,0]	=>	2,
 		[0,2]	=>	2,
 		[0,3]	=>	2,
+		[0,4]	=>	2,
 	}
 	SYMBOL_MAP = {
 		:nbsp	=>	HtmlGrid::Text,
 		:inactive_text => HtmlGrid::LabelText,
+		:users         => HtmlGrid::LabelText,
 	}
 	def inactive_registrations(model, session)
 		InactiveRegistrations.new(model.inactive_registrations, session, self)
@@ -443,21 +446,38 @@ class AjaxCompanyComposite < CompanyComposite
 		klass = AjaxCompanyComposite.select_company_form(model)
 		klass.new(model, @session, self)
 	end
+  def company_users(model, session=@session)
+    users = @session.user.entities.select { |entity|
+      entity.get_preference('association', YUS_DOMAIN) == model.odba_id
+    }
+		model = View::Admin::Entities.wrap_all(users)
+    View::Admin::InnerEntityList.new(model, @session, self)
+  end
 end
 class RootPharmaCompanyComposite < AjaxCompanyComposite
 	COMPONENTS = {
 		[0,0]	=>	:nbsp,
 		[0,1]	=>	:company_form,
 		[1,1]	=>	View::CompanyLogo,
-		[0,2]	=>  :inactive_text,
-		[0,3]	=>	:inactive_registrations,
+    [0,2] =>  :users,
+    [0,3] =>  :company_users,
+		[0,4]	=>  :inactive_text,
+		[0,5]	=>	:inactive_registrations,
 	}
+	CSS_MAP = {
+		[0,0]	    =>	'th',
+		[1,1]	    =>	'logo-r',
+    [0,2,2]   =>  'list',
+    [0,4,2]   =>  'list',
+	}	
 end
 class RootOtherCompanyComposite < AjaxCompanyComposite
 	COMPONENTS = {
 		[0,0]	=>	:nbsp,
 		[0,1]	=>	:company_form,
 		[1,1]	=>	View::CompanyLogo,
+    [0,2] =>  :users,
+    [0,3] =>  :company_users,
 	}
 end
 class PowerLinkCompanyComposite < View::Companies::CompanyComposite
@@ -465,6 +485,8 @@ class PowerLinkCompanyComposite < View::Companies::CompanyComposite
 		[0,0]	=>	:nbsp,
 		[0,1]	=>	View::Companies::PowerLinkCompanyForm,
 		[1,1]	=>	View::CompanyLogo,
+    [0,2] =>  :users,
+    [0,3] =>  :company_users,
 	}
 end
 class UnknownCompany < View::PrivateTemplate

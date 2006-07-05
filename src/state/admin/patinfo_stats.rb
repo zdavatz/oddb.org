@@ -13,7 +13,7 @@ class PatinfoStatsCommon < State::Admin::Global
 	DIRECT_EVENT = :patinfo_stats	
 	SNAPBACK_EVENT = nil
 	class InvoiceItemFacade
-		attr_accessor :user, :sequence, :time
+		attr_accessor :email, :sequence, :time
 		def initialize(invoice_item)
 			@time = invoice_item.time
 		end
@@ -87,7 +87,7 @@ class PatinfoStatsCommon < State::Admin::Global
 				&& (sequence = @session.app.resolve(item.item_pointer)))
 				item_facade = InvoiceItemFacade.new(item)
 				item_facade.sequence = sequence
-				item_facade.user = @session.app.resolve(item.user_pointer)
+				item_facade.email = item.yus_name 
 				company = sequence.company
 				company_facade = model.fetch(company.name) {
 					model.store(company.name, CompanyFacade.new(company))

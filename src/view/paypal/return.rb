@@ -91,7 +91,7 @@ class Return < PublicTemplate
 	CONTENT = ReturnComposite
 	def http_headers
 		headers = super
-		unless(@model && @model.payment_received?)
+		if(@model && !@model.payment_received?)
 			args = { :invoice => @model.oid }
 			## use event_url as opposed to _event_url in order to include
 			## the state-id, so we stay in the same state instead of

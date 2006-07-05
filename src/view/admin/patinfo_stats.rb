@@ -28,12 +28,6 @@ class CompanyHeader < HtmlGrid::Composite
 	SYMBOL_MAP = {
 		:name =>	View::PointerLink,
 	}
-	def init
-		if(@session.user.is_a? RootUser)
-			components.store([0,0,0], :edit)
-		end
-		super
-	end
 end
 class PatinfoStatsCompanyList < HtmlGrid::List
 	COMPONENTS = {
@@ -46,6 +40,7 @@ class PatinfoStatsCompanyList < HtmlGrid::List
 		[1,0]	=> 'list',
 	}
 	#SORT_DEFAULT = :newest_date
+  DEFAULT_CLASS = HtmlGrid::Value
 	SORT_REVERSE = true
 	SORT_HEADER = false
 	LOOKANDFEEL_MAP = {
@@ -55,11 +50,6 @@ class PatinfoStatsCompanyList < HtmlGrid::List
 	def date(model, session)
 		time = model.time
 		time.strftime("%A %d.%m.%Y &nbsp;&nbsp;-&nbsp;&nbsp;%H.%M Uhr %Z")
-	end
-	def email(model, session)
-		if(user = model.user)
-			user.unique_email
-		end
 	end
 	SUBHEADER = View::Admin::CompanyHeader
 	def compose_list(model=@model, offset=[0,0])
@@ -103,8 +93,7 @@ class PatinfoStatsComposite < HtmlGrid::Composite
 end	
 class PatinfoStatsCompanyComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0] => 'patinfo_stats',
-		[0,1]	=>	View::Admin::PatinfoStatsCompanyList
+		[0,0]	=>	View::Admin::PatinfoStatsCompanyList
 	}
 	CSS_CLASS = 'composite'
 end

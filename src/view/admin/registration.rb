@@ -45,7 +45,7 @@ module RegistrationSequenceList
 		end
 	end
 	def seqnr(model, session=@session)
-		if(@session.user.allowed?(model))
+		if(@session.user.allowed?('edit', model))
 			PointerLink.new(:seqnr, model, @session, self)
 		else
 			link = HtmlGrid::Link.new(:seqnr, model, @session, self)
@@ -210,7 +210,7 @@ class RegistrationForm < View::Form
 				[1,11,1]=>	:new_registration,
 			})
       colspan_map.store([3,8], 3)
-			css_map.store([0,8], 'list bold')
+			css_map.store([0,8], 'list bg bold')
 			css_map.store([1,8], 'list bg')
 			css_map.store([2,8,2], 'list')
 			css_map.store([0,9,2,3], 'list bg')
