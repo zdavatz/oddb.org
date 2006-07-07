@@ -221,7 +221,7 @@ module ODDB
 				email ||= @session.get_cookie_input(:email)
 				oid = @session.user_input(:invoice)
 				file = @session.user_input(:filename)
-				if((invoice = user.invoice(oid)) \
+				if((invoice = @session.invoice(oid)) \
           && invoice.yus_name == email \
 					&& invoice.payment_received? \
 					&& (item = invoice.item_by_text(file)) \
