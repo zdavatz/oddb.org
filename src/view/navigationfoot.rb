@@ -28,7 +28,8 @@ module ODDB
 				[1,1]	=>	'subheading right',
 			}
       def init
-        if(@lookandfeel.zone_navigation.empty?)
+        if(@lookandfeel.enabled?(:custom_navigation, false) \
+					 || @lookandfeel.zone_navigation.empty?)
           @components = {
             [0,0]		=>	View::Copyright,
             [1,0]		=>	View::Navigation,

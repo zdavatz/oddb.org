@@ -66,6 +66,7 @@ a.generic:active, a.original:active, a.unknown:active {
 /* other result-classes */
 a.small {
 	color : $home_link_color;
+	font-size : 11px;
 }
 a.small:hover {
 	color : $home_link_hover_color;
@@ -168,7 +169,7 @@ a.subheading {
 	padding : 0px;
 	color : $bg_bright_font_color;
 }
-a.subheading.bold {
+td.subheading a.bold {
 	padding : 4px;
 }
 a.subheading:link, a.subheading:visited {
@@ -225,7 +226,7 @@ a.fbpager {
 	color: white;
 }
 /* explain-classes */
-a.explain.original, a.explain.generic, td.explain.unknown {
+td.explain a.original, td.explain a.generic{
 	font-weight: bold;
 }
 a.legal-note:link, a.legal-note:visited {
@@ -279,7 +280,6 @@ table.right {
 	float: right;
 }
 table.tabnavigation {
-	padding : 4px;
 	background : $bg_bright;
 	color : $tabnavigation_text_color;
 	text-decoration : none;
@@ -288,14 +288,20 @@ table.tabnavigation {
 	border-left: 1px solid $bg_dark;
 	border-top: 1px solid $bg_dark;
 }
+table.tabnavigation td {
+	padding: 4px 2px;
+}
+table.tabnavigation td:first-child {
+	padding: 4px 2px 4px 5px;
+}
+table.tabnavigation td:last-child {
+	padding: 4px 5px 4px 2px;
+}
 table.navigation-foot {
 	background : $bg_dark;
 	color : $bg_dark_font_color;
 	width : 100%;
 	padding: 3px;
-}
-table.center {
-	margin: auto;
 }
 table.explain {
 	background : $bg_bright;
@@ -332,7 +338,7 @@ td {
 	border : 0px dashed green;
 	padding: 0px;
 }
-td.list a.important.square {
+tr td.list a.important {
 	font-size: 14px;
 }
 td.bg a.infos, td.atc a.infos, span.limitation, span.narc, span.fachinfo, span.patinfo  {
@@ -369,7 +375,7 @@ td.seq {
 td.indent {
 	padding-left : 15px;
 }
-td.big, td.list.big {
+tr td.big {
 	font-size : 14px;
 	font-weight : bold;
 }
@@ -426,7 +432,7 @@ td.navigation {
 	text-decoration : none;
 	padding : 4px;
 }
-td.tabnavigation.right table {
+td.right table.tabnavigation {
 	margin-bottom : 4px;
 	float :right;
 	border-right: 1px solid $bg_dark;
@@ -447,8 +453,10 @@ td.search {
 	padding: 0px;
 }
 td.center{
-	padding: 3px;
 	text-align : center;
+}
+td.center table {
+	margin: auto;
 }
 td.donate {
 	text-align : center;
@@ -457,12 +465,10 @@ td.button {
 	padding-bottom : 5px;
 	margin : 5px;
 }
-td.explain.infos{
-	color : $bg_bright_font_color;
-}
 td.explain {
 	padding: 4px;
 	background : $bg_bright;
+	color : $bg_bright_font_color;
 	vertical-align : bottom;
 }
 td.legal-note{
@@ -494,11 +500,11 @@ td.chapter-tab {
 	background : $bg_bright;
 	border-style : solid;
 	border-color : black;
-	border-width : 0px 0px thin 0px;
+	border-width : 0px 0px 1px 0px;
 	padding : 4px;
 }
 /* print-classes */
-td.print.big { 
+div.big { 
 	padding-top: 12px;
 	font-weight: bold;
 	font-size: 26px;
@@ -584,7 +590,7 @@ td.active-item {
 	opacity: .75;
 	filter: alpha(opacity=75);
 }
-td.navigation.right table {
+td.right table {
 	float: right;
 }
 td.date-chooser {
@@ -600,10 +606,6 @@ td.nowrap {
 span.square, a.square {
 	text-align: center;
 	font-weight : bold;
-}
-span.square.vaccine{
-	font-weight: bold;
-	color: white;
 }
 span.vaccine, a.vaccine {
 	color: white;
@@ -697,6 +699,10 @@ input.search {
 	width : 160px;
 	padding: 0px;
 } 
+td.center input.search {
+  width : 260px;
+  margin : 7px;
+}
 input.xl {
 	width : 350px;
 }

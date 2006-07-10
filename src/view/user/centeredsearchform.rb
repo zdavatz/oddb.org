@@ -31,10 +31,10 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,9]		=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,9]		=>	'center',
+		[0,0,1,10]		=>	'list center',
 	}
 	COMPONENT_CSS_MAP = {
-		[0,8]	=>	'legal-note center',
+		[0,8]	=>	'legal-note',
 	}
 	def new_registration(model, session)
 		link = HtmlGrid::Link.new(:new_registration, model, @session, self)

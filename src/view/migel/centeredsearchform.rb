@@ -25,7 +25,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,7]		=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,7]		=>	'center',
+		[0,0,1,8]		=>	'list center',
 	}
 	COMPONENT_CSS_MAP = { }
 	def init

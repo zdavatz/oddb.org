@@ -3342,8 +3342,6 @@ Zeno Davatz
 				[4,0,0]	=>	'result_item_start',
 				[4,0,1]	=>	:name_base,
 				[4,0,2]	=>	'result_item_end',
-				#[5,0]		=>	:galenic_form,
-				#[6,0]		=>	:most_precise_dose,
 				[5,0]		=>	:comparable_size,
 				[6,0]		=>	:price_exfactory,
 				[7,0]	=>	:price_public,

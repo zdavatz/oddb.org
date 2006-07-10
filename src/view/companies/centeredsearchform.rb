@@ -22,10 +22,10 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,6]		=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,6]		=>	'center',
+		[0,0,1,7]		=>	'list center',
 	}
 	COMPONENT_CSS_MAP = {
-		[0,5]	=>	'legal-note center',
+		[0,5]	=>	'legal-note',
 	}
 	def company_count(model, session)
 		@session.app.company_count.to_s << '&nbsp;'
