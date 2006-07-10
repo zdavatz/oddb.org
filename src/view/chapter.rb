@@ -10,7 +10,7 @@ require 'view/form'
 module ODDB
   module View
     module ChapterMethods
-      PRE_STYLE = 'white-space: pre; font-family: Courier New, monospace; font-size: 12px;'
+      PRE_STYLE = 'font-family: Courier New, monospace; font-size: 12px;'
       PAR_STYLE = 'padding-bottom: 4px; white-space: normal; line-height: 1.4em;'
       SUB_STYLE = 'font-style: italic' 
       def formats(context, paragraph)
@@ -49,7 +49,7 @@ module ODDB
           end
         }
         if(paragraph.preformatted?)
-          context.pre { res }
+          context.pre({ 'style' => self.class::PRE_STYLE }) { res }
         else
           ## this must be an inline element, to enable starting 
           ## paragraphs on the same line as the section-subheading
