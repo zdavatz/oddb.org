@@ -10,7 +10,7 @@ require 'view/form'
 module ODDB
   module View
     module ChapterMethods
-      PRE_STYLE = 'white-space: pre; font-family: Courier New, monospace'
+      PRE_STYLE = 'white-space: pre; font-family: Courier New, monospace; font-size: 12px;'
       PAR_STYLE = 'padding-bottom: 4px; white-space: normal; line-height: 1.4em;'
       SUB_STYLE = 'font-style: italic' 
       def formats(context, paragraph)
@@ -28,7 +28,10 @@ module ODDB
           end
           if(format.superscript?)
             tag = :sup
-            style << 'line-height: 0em'
+            style << 'line-height: 0em;'
+            if(paragraph.preformatted?)
+              style << 'font-size: 12px;'
+            end
           end
           if(format.subscript?)
             tag = :sub
@@ -110,7 +113,7 @@ module ODDB
       end
       def _to_html(context, value=@value)
         if(value)
-          sections(context, @value.sections)
+          sections(context, value.sections)
         end
       end
     end
