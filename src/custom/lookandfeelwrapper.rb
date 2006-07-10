@@ -680,7 +680,7 @@ module ODDB
 			}
 		end
 		def section_style
-			'font-size: 16px; margin-top: 8px; line-height: 120%; max-width: 600px'
+			'font-size: 16px; margin-top: 8px; line-height: 1.4em; max-width: 600px'
 		end
 	end
 	class LookandfeelSwissMedInfo < SBSM::LookandfeelWrapper
@@ -744,7 +744,7 @@ module ODDB
 			}
 		end
 		def section_style
-			'font-size: 18px; margin-top: 8px; line-height: 120%; max-width: 600px'
+			'font-size: 18px; margin-top: 8px; line-height: 1.4em; max-width: 600px'
 		end
 	end
 end

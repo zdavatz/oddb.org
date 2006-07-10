@@ -281,13 +281,11 @@ end
 class RootFachinfo < PrivateTemplate
 	CONTENT = View::Drugs::RootFachinfoComposite
 	SNAPBACK_EVENT = :result
+	DOJO_REQUIRE = [ 'dojo.widget.Editor2', 'ywesee.widget.SymbolPalette' ]
+  JAVASCRIPTS = ['dojo/Editor']
+	DOJO_PARSE_WIDGETS = true
 	def other_html_headers(context)
-		args = {
-			'language'	=>	'JavaScript',
-			'type'			=>	'text/javascript',
-			'src'				=>	@lookandfeel.resource_global(:richtext_js),
-		}
-		super << context.script(args)
+		super 
 	end
 end
 		end

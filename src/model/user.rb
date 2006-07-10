@@ -69,6 +69,8 @@ module ODDB
 		def creditable?(obj)
 			false
 		end
+		def model
+		end
 		def valid?
 			false
 		end
