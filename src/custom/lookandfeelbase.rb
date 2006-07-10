@@ -676,6 +676,7 @@ Zeno Davatz
 				:hospital_count_text			=>	'Spit&auml;ler',
 				:hospitallist							=>	'Spitalverzeichnis',
 				:hospitals								=>	'Spital',
+				:html_chapter						  =>	'Inhalt',
 				:html_title								=>	'ODDB.org: Open Drug Database',
 				:i_bsv_in_progress				=>	'Das BSV-File wird importiert...',
 				:ikscat										=>	'Abgabekategorie',
@@ -1741,6 +1742,7 @@ Zeno Davatz
 				:hospital_count_text			=>	'H&ocirc;pital',
 				:hospitallist							=>	'H&ocirc;pitals',
 				:hospitals								=>	'H&ocirc;pital',
+				:html_chapter							=>	'Contenu',
 				:html_title								=>	'ODDB.org: Open Drug Database',
 				:i_bsv_in_progress				=>	'Le BSV-File est import&eacute; ...',
 				:ikscat_a									=>	'Remise sur ordonnance m&eacute;dicale non renouvable',
@@ -2687,6 +2689,7 @@ Zeno Davatz
 				:hospital_count_text			=>	'Hospitals',
 				:hospitallist							=>	'Hospitals',
 				:hospitals								=>	'Hospital',
+				:html_chapter							=>	'Content',
 				:html_title								=>	'ODDB.org: Open Drug Database',
 				:i_bsv_in_progress				=>	'The BSV-File is being imported...',
 				:ikscat_a									=>	'One time release after prescription by doctor',
@@ -3350,7 +3353,7 @@ Zeno Davatz
 			}
 		end
 		def section_style
-			'font-size: 13px; margin-top: 4px; line-height: 120%'
+			'font-size: 13px; margin-top: 4px; line-height: 1.4em'
 		end
 	end
 end

@@ -49,6 +49,12 @@ module ODDB
 					else
 						@target.reduce_format(:symbol)
 					end
+					if(fh && (align = fh.attribute('vertical-align')))
+						@target.augment_format(align.to_sym)
+					else
+						@target.reduce_format(:superscript)
+						@target.reduce_format(:subscript)
+					end
 				end
 			end
 			def new_tablehandler(th)

@@ -52,7 +52,7 @@ module ODDB
 		def end_tr
 			@formatter.pop_tablerow
 		end
-		def finish_endtag(tag)
+    def finish_endtag(tag)
 			if tag == ''
 				found = @stack.length - 1
 				if found < 0

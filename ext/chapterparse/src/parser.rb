@@ -141,9 +141,20 @@ module ODDB
 			def end_h2
 				end_i
 			end
+      def end_pre
+        @nofill = @nofill - 1
+        if(@nofill <= 0)
+          @nofill = 0
+          @formatter.end_paragraph(1)
+        end
+        @formatter.pop_font()
+      end
 			def end_span
 				release_tag
 			end
+      def end_sup
+				@formatter.pop_fonthandler
+      end
 			def fetch_attribute(name, attrs)
 				attrs.reverse.each { |key, value|
 					if(key == name)
@@ -188,11 +199,21 @@ module ODDB
 			def start_h2(attrs)
 				start_i(attrs)
 			end
+      def start_pre(attrs)
+        if(@nofill <= 0)
+          @formatter.end_paragraph(1)
+        end
+        @formatter.push_font(nil, nil, nil, 1)
+        @nofill = @nofill + 1
+      end
 			def start_span(attrs)
 				register_release_tag { |release|
 					analyse_attributes(attrs, release)
 				}
 			end
+      def start_sup(attrs)
+				@formatter.push_fonthandler([['vertical-align', 'superscript']])
+      end
 			def suspend_pre(release)
 				if(@nofill > 0)
 					end_pre
