@@ -32,6 +32,12 @@ module ODDB
 			def italic?
 				@values.include?(:italic)
 			end
+      def subscript?
+        @values.include?(:subscript)
+      end
+      def superscript?
+        @values.include?(:superscript)
+      end
 			def range
 				@start..@end
 			end
