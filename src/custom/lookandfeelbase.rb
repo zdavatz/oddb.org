@@ -299,6 +299,7 @@ Zeno Davatz
 				:descr										=>	'Beschreibung',
 				:detail_view							=>  'Detailansicht',
 				:disable_autoinvoice			=>	'KEINE PI-Rechnung',
+				:disable_patinfo					=>	'KEINE Patinfo anzeigen',
 				:doctor_count_text				=>	'&Auml;rzte',
 				:doctorlist								=>	'&Auml;rzteverzeichnis',
 				:doctors									=>  'Arzt',
