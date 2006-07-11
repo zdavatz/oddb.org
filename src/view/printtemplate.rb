@@ -31,8 +31,8 @@ module ODDB
 			def head(model, session=@session)
 				@lookandfeel.lookup(:print_head)
 			end
-			def css_link(context)
-				super(context, @lookandfeel.resource_global(:css_print))
+			def css_link(context, path=@lookandfeel.resource_global(:css_print))
+				super(context, path)
 			end
 		end
 		module PrintComposite
