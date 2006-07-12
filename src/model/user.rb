@@ -177,17 +177,17 @@ module ODDB
     end
     def allowed?(action, key=nil)
  			result = case key.odba_instance
-			when ActiveAgent
+			when ActiveAgentCommon
 				allowed?(action, key.sequence)
 			when Company
         allowed?(action, key.pointer.to_yus_privilege)
 			when Fachinfo
 				allowed?(action, key.registrations.first)
-			when Package
+			when PackageCommon
 				allowed?(action, key.sequence)
-			when Registration
+			when RegistrationCommon
 				allowed?(action, key.company)
-			when Sequence
+			when SequenceCommon
 				allowed?(action, key.registration)	
       else
         remote_call(:allowed?, action, key)

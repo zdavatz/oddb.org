@@ -81,6 +81,7 @@ module ODDB
         'edit|org.oddb.drugs', 
         'edit|org.oddb.powerlinks',
         'create|org.oddb.registration',
+        'create|org.oddb.task.background',
         'edit|org.oddb.model.!company.*', 
         'edit|org.oddb.model.!sponsor.*', 
         'edit|org.oddb.model.!indication.*', 
