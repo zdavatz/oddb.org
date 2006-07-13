@@ -137,6 +137,10 @@ module ODDB
 				@raw_txt << text
 				if(@preformatted)
 					@raw_txt.gsub!(/[\n\r]+/, "\n")
+          @raw_txt.gsub!(/(.*?)\t/) { |match|
+            str = match[0..-2]
+            str << (" " * (8 - (str.length % 8)))
+          }
 				end
 				@text = @raw_txt.strip
 			end

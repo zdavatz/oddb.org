@@ -225,6 +225,8 @@ module ODDB
 					@formatter.push_fonthandler([['face', 'Symbol']])
 					self.handle_data(char)
 					@formatter.pop_fonthandler
+        else 
+					self.handle_data("?")
 				end
 			end
 		end
