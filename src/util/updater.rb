@@ -163,11 +163,10 @@ module ODDB
 		def update_analysis(path)
 			klass = AnalysisPlugin
 			subj = 'Analysis'
-			plug = klass.new(@app)
 			wrap_update(klass, subj) {
-				klass.update(path)	
+				plug = klass.new(@app)
+				plug.update(path)	
 			}
-			update_simple(AnalysisPlugin, 'Analysis')
 		end
 		def update_bsv
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
