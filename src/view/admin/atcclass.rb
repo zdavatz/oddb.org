@@ -23,10 +23,6 @@ end
 class AtcClass < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::AtcClassComposite
 	SNAPBACK_EVENT = :atc_chooser
-	def snapback
-		[super, 
-			['code', @session.persistent_user_input(:code)]]
-	end
 end
 		end
 	end

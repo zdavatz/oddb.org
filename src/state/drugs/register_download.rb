@@ -42,12 +42,10 @@ class RegisterDownload < Global
 		@model = Persistence::CreateItem.new(pointer)
 		@model.carry(:items, [item])
 		@model.carry(:currency, currency)
-		user = @session.user
-		if(creditable? && (hosp = user.model))
-			name, last = hosp.contact.split(' ')
-			@model.carry(:name, last)
-			@model.carry(:name_first, name)
-			@model.carry(:email, user.unique_email)
+    user = @session.user
+		if(user.creditable?('org.oddb.download'))
+			@model.carry(:yus_name, user.name)
+			@model.carry(:email, user.name)
 		end
 	end
 end
@@ -63,7 +61,7 @@ class RegisterInvoicedDownload < RegisterDownload
 	end
 	CURRENCY = 'CHF'
 	def checkout
-		if(creditable?)
+		if(creditable?('org.oddb.download'))
 			if(@paid.nil?)
 				app = @session.app
 				item = @model.items.first
@@ -71,7 +69,7 @@ class RegisterInvoicedDownload < RegisterDownload
 				slate = app.create(slate_ptr)
 				item_ptr = slate_ptr + [:item]
 				values = item.values
-				values.store(:user_pointer, @session.user.pointer)
+				values.store(:yus_name, @session.user.name)
 				values.store(:time, Time.now)
 				@paid = app.update(item_ptr.creator, values, unique_email)
 			end

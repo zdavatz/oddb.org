@@ -28,8 +28,7 @@ class UserCompany < Company
 		end
 	end
 	def update
-		unless(@session.user_equiv?(@model))
-			#(@model.user == @session.user)
+		unless(@session.user.allowed?('edit', @model.pointer.to_yus_privilege))
 			return State::Companies::Company.new(@session, @model) 
 		end
 		keys = [

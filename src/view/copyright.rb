@@ -15,14 +15,7 @@ module ODDB
 				[3,0]			=>	:cpr_link,
 				[4,0]			=>	:oddb_version,
 			}
-			CSS_CLASS = "navigation"
-			#HTML_ATTRIBUTES = {"align"=>"left"}
 			LEGACY_INTERFACE = false
-=begin
-			def cpr_date(model, session)
-				HtmlGrid::DateValue.new(:last_update, session.app, session, self)
-			end
-=end
 			def oddb_version(model)
 				link = standard_link(:oddb_version, model)
 				link.href = 'http://scm.ywesee.com/?p=oddb.org;a=summary'
@@ -49,7 +42,7 @@ module ODDB
 					HtmlGrid::Link
 				end
 				link = klass.new(key, model, @session, self)
-				link.css_class = 'navigation'
+				#link.css_class = 'navigation'
 				link
 			end
 		end

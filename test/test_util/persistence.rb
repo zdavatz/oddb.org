@@ -403,6 +403,20 @@ module ODDB
 			assert_equal('test', 
 				hash[Persistence::Pointer.new(:foo, [:bar, 1])])
 		end
+		def test_to_yus_privilege
+      pointer = Persistence::Pointer.new(:foo, [:bar, 1])
+			assert_equal('org.oddb.model.!foo.!bar.1', pointer.to_yus_privilege)
+      pointer = Persistence::Pointer.new([:foo, 'meep'], [:bar, 1])
+			assert_equal('org.oddb.model.!foo.meep.!bar.1', pointer.to_yus_privilege)
+		end
+    def test_from_yus_privilege
+      src = 'org.oddb.model.!foo.!bar.1'
+      pointer = Persistence::Pointer.new(:foo, [:bar, 1])
+      assert_equal(pointer, Persistence::Pointer.from_yus_privilege(src))
+			src = 'org.oddb.model.!foo.meep.!bar.1'
+      pointer = Persistence::Pointer.new([:foo, 'meep'], [:bar, 1])
+      assert_equal(pointer, Persistence::Pointer.from_yus_privilege(src))
+    end
 	end
 	class TestPersistenceCreateItem < Test::Unit::TestCase
 		def setup

@@ -49,7 +49,7 @@ module RegistrationSequenceList
 		end
 	end
 	def seqnr(model, session=@session)
-		if(@session.user.allowed?(model))
+		if(@session.user.allowed?('edit', model))
 			PointerLink.new(:seqnr, model, @session, self)
 		else
 			link = HtmlGrid::Link.new(:seqnr, model, @session, self)

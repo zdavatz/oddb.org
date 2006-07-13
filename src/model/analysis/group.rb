@@ -9,6 +9,7 @@ module ODDB
 		class Group
 			include Persistence
 			attr_reader :groupcd, :positions
+			alias :pointer_descr :groupcd
 			def initialize(groupcd)
 				@groupcd = groupcd
 				@positions = {}

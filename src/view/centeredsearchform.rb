@@ -18,7 +18,7 @@ module ODDB
 		class CenteredNavigationLink < NavigationLink
 			CSS_CLASS = "list"
 		end
-		class CenteredNavigation < Navigation 
+		class CenteredNavigation < ZoneNavigation 
 			CSS_CLASS = "ccomponent"
 			NAV_LINK_CLASS = CenteredNavigationLink
 			NAV_LINK_CSS = 'list'

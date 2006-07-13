@@ -16,10 +16,10 @@ class PaymentMethod < Global
 		@search_query = @session.user_input(:search_query)
 		@search_type = @session.user_input(:search_type)
 		@result = @model
-		@model = @session.user.model
+		@model = @session.user
 	end
 	def proceed_payment
-		if(creditable? \
+		if(creditable?('org.oddb.download') \
 			&& @session.user_input(:payment_method) == 'pm_invoice')
 			RegisterInvoicedDownload.new(@session, @result)
 		else

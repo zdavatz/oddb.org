@@ -7,18 +7,20 @@ require 'view/resulttemplate'
 require 'view/paypal/invoice'
 require 'view/datadeclaration'
 require 'view/form'
+require 'view/user/autofill'
 
 module ODDB
 	module View
 		module Drugs
 class RegisterDownloadForm < Form
+  include View::User::AutoFill
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
-		[0,0]	=>	:salutation,
-		[0,1]	=>	:name,
-		[0,2]	=>	:name_first,
-		[0,3]	=>	:email,
-		[1,4]	=>	:submit,
+		[0,0]	=>	:email,
+		[0,1]	=>	:salutation,
+		[0,2]	=>	:name_last,
+		[0,3]	=>	:name_first,
+		[1,4] =>	:submit,
 	}
 	CSS_CLASS = 'component'
 	HTML_ATTRIBUTES = {
@@ -27,15 +29,23 @@ class RegisterDownloadForm < Form
 	EVENT = :checkout
 	LABELS = true
 	CSS_MAP = {
-		[0,0,2,5]	=>	'list',
+		[0,0,4,5]	=>	'list',
 	}
 	COMPONENT_CSS_MAP = {
-		[1,0,2,4]	=>	'standard',
+		[1,0,3,4]	=>	'standard',
 	}
 	SYMBOL_MAP = {
+		:pass				    =>	HtmlGrid::Pass,
+		:set_pass_2	    =>	HtmlGrid::Pass,
 		:salutation			=>	HtmlGrid::Select,
 	}
 	def init
+    unless(@session.logged_in?)
+      hash_insert(components, [0,1], :pass)
+      components.store([3,1], :set_pass_2)
+      css_map.store([0,11,4], 'list')
+		  component_css_map.store([1,10], 'standard')
+    end
 		super
 		if(@session.error?)
 			error = RuntimeError.new('e_need_all_input')
@@ -51,6 +61,18 @@ class RegisterDownloadForm < Form
 	end
 	def submit(model, session=@session)
 		super(model, session, :checkout_paypal)
+	end
+	def hash_insert(hash, key, val)
+		tmp = hash.sort.reverse
+		hash.clear
+		tmp.each { |matrix, value|
+			mtrx = matrix.dup
+			unless((mtrx[1] <=> key[1]) == -1)
+				mtrx[1] += 1
+			end
+			hash.store(mtrx, value)
+		}
+		hash.store(key, val)
 	end
 end
 class RegisterDownloadComposite < HtmlGrid::Composite 
@@ -76,6 +98,7 @@ class RegisterDownloadComposite < HtmlGrid::Composite
 	LEGACY_INTERFACE = false
 end
 class RegisterDownload < View::ResultTemplate
+  JAVASCRIPTS = ['autofill']
 	CONTENT = RegisterDownloadComposite
 end
 class RegisterInvoicedDownloadForm < Form

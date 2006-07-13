@@ -1974,3 +1974,7 @@ a.create-infos:hover, a.create-infos-bg:hover
 {
 	background: $rslt_infos_bg_bright;
 }
+tr.disabled {
+	opacity: .75;
+	filter: alpha(opacity=75);
+}

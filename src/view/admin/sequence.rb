@@ -107,7 +107,7 @@ module SequencePackageList
 		:out_of_trade	=>	HtmlGrid::BooleanValue,
 	}
 	def ikscd(model, session=@session)
-		if(@session.user.allowed?(model))
+		if(@session.user.allowed?('edit', model))
 			PointerLink.new(:ikscd, model, @session, self)
 		else
 			link = HtmlGrid::Link.new(:ikscd, model, @session, self)

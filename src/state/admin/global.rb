@@ -11,32 +11,23 @@ class Global < State::Global
 	HOME_STATE = State::Admin::Init
 	ZONE = :admin
 	def zone_navigation
-		case @session.user
-		when ODDB::RootUser
-			[
-				:new_registration,
-				State::Admin::PatinfoStats,
-				State::Admin::Sponsor,
-				State::Admin::Indications,
-				State::Admin::GalenicGroups,
-				State::Admin::IncompleteRegs,
-				State::Admin::Addresses,
-			]
-		when ODDB::AdminUser
-			[
-				:new_registration,
-				State::Admin::PatinfoStats,
-				State::Admin::Indications,
-				State::Admin::GalenicGroups,
-				State::Admin::IncompleteRegs,
-			]
-		else
-			[
-				:new_registration,
-				State::Admin::GalenicGroups,
-				State::Admin::PatinfoStatsCompanyUser,
-			]
-		end
+    links =	[ 
+      ['create', 'org.oddb.registration', :new_registration],
+      ['view', 'org.oddb.patinfo_stats', State::Admin::PatinfoStats],
+      ['edit', 'org.oddb.model.!sponsor.*', State::Admin::Sponsor],
+      ['edit', 'org.oddb.model.!indication.*', State::Admin::Indications],
+      ['edit', 'org.oddb.model.!galenic_group.*', State::Admin::GalenicGroups],
+      ['edit', 'org.oddb.model.!incomplete_registration.*', 
+        State::Admin::IncompleteRegs],
+      ['edit', 'org.oddb.model.!address.*', State::Admin::Addresses],
+      ['view', 'org.oddb.patinfo_stats.associated', 
+        State::Admin::PatinfoStatsCompanyUser],
+      ['edit', 'yus.entities', State::Admin::Entities],
+    ]
+    links.inject([]) { |memo, (action, item, link)|
+      memo.push(link) if(@session.user.allowed?(action, item))
+      memo
+    }
 	end
 end
 		end

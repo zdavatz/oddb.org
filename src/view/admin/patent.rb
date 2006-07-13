@@ -4,6 +4,7 @@
 require 'view/privatetemplate'
 require 'view/form'
 require 'htmlgrid/errormessage'
+require 'htmlgrid/inputdate'
 
 module ODDB
 	module View

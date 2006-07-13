@@ -146,6 +146,13 @@ Grammar OddbSize
 					ast.compact!
 					produce_pointer(ast)
 				end
+        def from_yus_privilege(string)
+          ## does not support encapsulated pointers
+          args = string.scan(/!([^!]+)/).collect { |matches|
+            matches.first.split('.').compact
+          }
+          self.new(*args)
+        end
 				private
 				def produce_argument(ast)
 					arg = ast.argument
@@ -307,6 +314,13 @@ Grammar OddbSize
 					'!' << step.join(',')
 				}.join << '.'
 			end
+      def to_yus_privilege
+        @directions.inject('org.oddb.model') { |yus, steps|
+          steps = steps.dup
+          yus << '.!' << steps.shift.to_s
+          steps.inject(yus) { |yus, step| yus << '.' << step.to_s }
+        }
+      end
 			def +(other)
 				dir = @directions.dup << [other].flatten
 				Pointer.new(*dir)
@@ -325,6 +339,7 @@ Grammar OddbSize
 			def initialize(pointer=Pointer.new)
 				@inner_pointer = pointer
 				@pointer = Pointer.new([:create, pointer])
+        @data = {}
 			end
 			def ancestors(app)
 				@inner_pointer.ancestors.collect { |pointer| pointer.resolve(app) }
@@ -333,15 +348,10 @@ Grammar OddbSize
 				@inner_pointer.append(val)
 			end
 			def carry(key, val=nil)
-				instance_variable_set("@#{key}", val)
-				instance_eval <<-EOS
-					def #{key}(*args)
-						@#{key}
-					end
-				EOS
+        @data.store(key, val)
 			end
-			def method_missing(*args)
-				nil
+			def method_missing(key, *args)
+        @data[key]
 			end
 			def parent(app)
 				@inner_pointer.parent.resolve(app)

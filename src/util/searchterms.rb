@@ -27,7 +27,7 @@ module ODDB
 	def ODDB.search_terms(words)
 		terms = []
 		words.flatten.compact.uniq.inject(terms) { |terms, term| 
-			parts = term.split('-')
+			parts = term.split(/[\/-]/)
 			if(parts.size > 1)
 				terms.push(ODDB.search_term(parts.join))
 				terms.push(ODDB.search_term(parts.join(' ')))

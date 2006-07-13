@@ -12,7 +12,7 @@ require 'timeout'
 module ODDB
   class Session < SBSM::Session
 		attr_reader :interaction_basket
-		attr_writer :desired_state
+		attr_accessor :desired_state
 		LF_FACTORY = LookandfeelFactory
 		DEFAULT_FLAVOR = "gcc"
 		DEFAULT_LANGUAGE = "de"
@@ -58,6 +58,9 @@ module ODDB
 				super
 			end
 		end
+		def expired?
+      super || (logged_in? && @user.expired?)
+		end
 		def flavor
 			@flavor ||= (@valid_input[:partner] || super)
 		end
@@ -75,6 +78,16 @@ module ODDB
 				end
 			end
 		end
+    def login
+      # @app.login raises Yus::YusError
+			@user = @app.login(user_input(:email), user_input(:pass))
+    end
+    def logout
+      if(@user.respond_to?(:yus_session))
+        @app.logout(@user.yus_session)
+      end
+      super
+    end
 		def process(request)
 			#logtype = 'PRIN'
 			timeout(PROCESS_TIMEOUT) { 
@@ -169,14 +182,19 @@ module ODDB
 		def currency 
 			cookie_set_or_get(:currency) || "CHF"
 		end
+=begin
 		def desired_state
 			if(mod = @user.viral_module)
 				@desired_state.extend(mod)
 			end
 			@desired_state
 		end
+=end
 		def interaction_basket_count
 			@interaction_basket.size
+		end
+		def analysis_alphabetical(range)
+			@app.search_analysis_alphabetical(range)
 		end
 		def migel_alphabetical(range)
 			@app.search_migel_alphabetical(range, self.language)

@@ -11,14 +11,15 @@ module ODDB
 				user = session.user
 				div = HtmlGrid::Div.new(model, session, self)
 				div.css_class = 'personal'
-				if(user.is_a?(ODDB::User))
-					if((mdl = user.model) && mdl.respond_to?(:contact))
-						div.value = @lookandfeel.lookup(:welcome, mdl.contact)
-						div
-					else
-						div.value = @lookandfeel.lookup(:welcome, user.unique_email)
-						div
-					end
+				if(user.is_a?(ODDB::YusUser))
+          name = [
+            user.name_first, user.name_last
+          ].compact.join(' ')
+          if(name.empty?)
+            name = user.name
+          end
+          div.value = @lookandfeel.lookup(:welcome, name)
+          div
 				end
 			end
 		end

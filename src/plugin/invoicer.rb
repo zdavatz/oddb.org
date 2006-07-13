@@ -12,10 +12,10 @@ module ODDB
 			'hwyss@ywesee.com', 
 			'zdavatz@ywesee.com' 
 		]
-		def create_invoice(user, items, ydim_id)
+		def create_invoice(email, items, ydim_id)
 			pointer = Persistence::Pointer.new(:invoice)
 			values = {
-				:user_pointer		=>	user.pointer,
+				:yus_name		    =>	email,
 				:keep_if_unpaid =>	true,
 				:ydim_id				=>	ydim_id,
 			}
@@ -27,24 +27,34 @@ module ODDB
 				}
 			}
 		end
+    def ensure_yus_user(comp_or_hosp)
+      mail = comp_or_hosp.invoice_email
+      @app.yus_create_user(mail)
+      @app.yus_grant(mail, 'edit', comp_or_hosp.pointer.to_yus_privilege)
+      @app.yus_set_preference(mail, 'association', comp_or_hosp.odba_id)
+      mail
+    rescue Yus::YusError
+      ## assume user exists
+      mail
+    end
 		def resend_invoice(invoice, day = @@today)
 			YdimPlugin.new(@app).send_invoice(invoice.ydim_id)
 		end
 		def rp2fr(price)
 			price.to_f / 100.0
 		end
-		def send_invoice(date, comp_or_hosp, items)
+		def send_invoice(date, mail, items)
 			plugin = YdimPlugin.new(@app)
-			ydim_inv = plugin.inject_from_items(date, comp_or_hosp, items)
+			ydim_inv = plugin.inject_from_items(date, mail, items)
 			ydim_id = ydim_inv.unique_id
 			plugin.send_invoice(ydim_id)
 			ydim_id
 		end
 	end
 	class CompanyIndexInvoicer < Invoicer
-		def run
+		def run(date = @@today)
 			@app.companies.each_value { |comp| 
-				invoice_company_index(comp)
+				invoice_company_index(comp, date)
 			}
 		end
 		def invoice_company_index(comp, date = @@today)
@@ -80,24 +90,19 @@ module ODDB
 					package_item.expiry_time = expiry_time
 					items.push(package_item)
 				end
+        mail = ensure_yus_user(comp)
 				## first send the invoice 
-				ydim_id = send_invoice(date, comp, items) 
+				ydim_id = send_invoice(date, mail, items) 
 				## then store it in the database
-				user = comp.user
-				if(user.nil?)
-					values = {:model, comp.pointer}	
-					ptr = Persistence::Pointer.new(:user)
-					user = @app.update(ptr.creator, values)
-				end
-				create_invoice(user, items, ydim_id)
+				create_invoice(mail, items, ydim_id)
 				@app.update(comp.pointer, {:index_invoice_date => (date >> 12)})
 			end
 		end
 	end
 	class LookandfeelInvoicer < Invoicer
-		def run
+		def run(date = @@today)
 			@app.companies.each_value { |comp| 
-				invoice_lookandfeel(comp)
+				invoice_lookandfeel(comp, date)
 			}
 		end
 		def invoice_lookandfeel(comp, date = @@today)
@@ -138,16 +143,11 @@ module ODDB
 					member_item.expiry_time = expiry_time
 					items.push(member_item)
 				end
+        mail = ensure_yus_user(comp)
 				## first send the invoice 
-				ydim_id = send_invoice(date, comp, items) 
+				ydim_id = send_invoice(date, mail, items) 
 				## then store it in the database
-				user = comp.user
-				if(user.nil?)
-					values = {:model, comp.pointer}	
-					ptr = Persistence::Pointer.new(:user)
-					user = @app.update(ptr.creator, values)
-				end
-				create_invoice(user, items, ydim_id)
+				create_invoice(mail, items, ydim_id)
 				@app.update(comp.pointer, {:lookandfeel_invoice_date => (date >> 12)})
 			end
 		end

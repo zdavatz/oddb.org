@@ -8,6 +8,9 @@ require 'test/unit'
 require 'flexmock'
 require 'plugin/swissmedicjournal'
 
+class Object
+  @@today = Date.today
+end
 module ODDB
 	class SwissmedicJournalPlugin
 		public :accept_galenic_form?, :update_registration, :deactivate_registration
@@ -76,7 +79,7 @@ module ODDB
 		class StubSmjRegistration
 			attr_accessor :flags, :valid_until, :indication, :pointer
 			attr_accessor :exportvalue, :incomplete, :last_update, :iksnr
-			attr_accessor :company, :date, :sequences, :src, :indexth
+			attr_accessor :company, :date, :sequences, :src, :indexth, :seqnr, :ikscat
 			attr_writer :products
 			def initialize
 				@company = StubCompany.new('Bayer')
@@ -160,6 +163,8 @@ module ODDB
 				:export_flag				=>	false,
 				:source							=>	nil,
 				:index_therapeuticus =>  nil,
+        :ikscat             =>  nil,
+        :renewal_flag       =>  false,
 			}
 			registration = FlexMock.new
 			@app.mock_handle(:update) { |pointer, values| 
@@ -194,6 +199,8 @@ module ODDB
 				:export_flag		=>	false,
 				:source					=>	nil,
 				:index_therapeuticus =>  nil,
+        :ikscat             =>  nil,
+        :renewal_flag       =>  false,
 			}
 			## update indication
 			indication = FlexMock.new
@@ -232,6 +239,8 @@ module ODDB
 				:export_flag		=>	false,
 				:source					=>	nil,
 				:index_therapeuticus =>  nil,
+        :ikscat             =>  nil,
+        :renewal_flag       =>  false,
 			}
 			registration = FlexMock.new
 			@app.mock_handle(:update) { |pointer, values|

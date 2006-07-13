@@ -11,10 +11,9 @@ module ODDB
 	module View
 		class Navigation < HtmlGrid::Composite
 			COMPONENTS = {}
-			#CSS_CLASS = "navigation-right"
 			LEGACY_INTERFACE = false
 			NAV_LINK_CLASS = NavigationLink
-			NAV_LINK_CSS = 'navigation'
+			NAV_LINK_CSS = 'subheading'
 			NAV_METHOD = :navigation
 			HTML_ATTRIBUTES = {
 				#'align'	=>	'right',
@@ -27,17 +26,16 @@ module ODDB
 				build_navigation()
 				super
 			end
-			def build_navigation
-				@lookandfeel.send(self::class::NAV_METHOD).each_with_index { |state, idx| 
+			def build_navigation(links = @lookandfeel.send(self::class::NAV_METHOD))
+				links.each_with_index { |state, idx| 
 					pos = [idx*2,0]
 					if(state.is_a?(String))
 						state = state.intern
 					end
+					#css_map.store(pos, self::class::NAV_LINK_CSS)
+					component_css_map.store(pos, self::class::NAV_LINK_CSS)
 					evt = if(state.is_a?(Symbol))
-						if(self.respond_to?(state))
-							css_map.store(pos, self::class::NAV_LINK_CSS)
-							component_css_map.store(pos, self::class::NAV_LINK_CSS)
-						else
+						unless(self.respond_to?(state))
 							symbol_map.store(state, self::class::NAV_LINK_CLASS)
 						end
 						state
@@ -51,10 +49,26 @@ module ODDB
 				}
 			end
 			def home(model)
-				link = NavigationLink.new(:home_drugs, model, @session, self)
+				link = self.class::NAV_LINK_CLASS.new(:home_drugs, model, @session, self)
 				link.value = @lookandfeel.lookup(:home)
 				link
 			end
 		end
+    class ZoneNavigation < Navigation
+			NAV_METHOD = :zone_navigation
+			NAV_LINK_CSS = 'navigation right'
+      def build_navigation(links = [])
+        links = @lookandfeel.zone_navigation.sort_by { |state|
+          state = case state
+                  when String, Symbol
+                    state
+                  else
+                    state.direct_event
+                  end
+          @lookandfeel.lookup(state.to_sym).to_s.downcase
+        }
+        super(links)
+      end
+    end
 	end
 end

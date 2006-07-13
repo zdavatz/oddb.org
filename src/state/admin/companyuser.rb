@@ -2,7 +2,7 @@
 # State::Admin::CompanyUser -- oddb -- 23.07.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/user'
-require 'state/companies/global'
+require 'state/global_predefine'
 require 'state/admin/patinfo_stats'
 require 'state/admin/patent'
 
@@ -61,7 +61,8 @@ module CompanyUser
 		false
 	end
 	def resolve_state(pointer, type=:standard)
-		if(pointer.skeleton == [:company] && allowed?(pointer.resolve(@session)))
+		if(pointer.skeleton == [:company] \
+       && @session.user.allowed?('edit', pointer.to_yus_privilege))
 			State::Companies::UserCompany
 		else
 			super
@@ -81,7 +82,7 @@ module CompanyUser
 		State::Admin::PatinfoStatsCompanyUser.new(@session,[])
 	end
 	def zones
-		[:admin, :interactions,:drugs, :migel, :user, :substances, :companies]
+		[:admin, :analysis, :interactions,:drugs, :migel, :user, :substances, :companies]
 	end
 end
 		end

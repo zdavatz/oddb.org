@@ -35,7 +35,7 @@ module ODDB
 		XLS_PATH = '/files/pdf/B3.1.35-d.xls'
 		SIZE_PATTERN  = /(?:(?:(\d+(?:[.,]\d+)?)\s*x\s*)?(\d+(?:[.,]\d+)?))?\s*([^\d\s]*)$/
 		class ParsedRegistration
-			attr_accessor :iksnr, :indication, :company, :ikscat
+			attr_accessor :iksnr, :indication, :company, :ikscat, :out_of_trade
 			attr_reader :sequences
 			def initialize
 				@sequences = []
@@ -251,8 +251,8 @@ module ODDB
 			registrations = {}
 			worksheet.each { |row|
 				if(row && (pair = parse_worksheet_row(row)))
-					reg, seq = pair
-					(registrations[reg.iksnr] ||= reg).sequences.push(seq)
+					reg, seqs = pair
+					(registrations[reg.iksnr] ||= reg).sequences.concat(seqs)
 				end
 			}
 			registrations
@@ -264,10 +264,20 @@ module ODDB
 				reg.iksnr = sprintf('%05i', iksval.to_i)
 				reg.indication = row_at(row, 2)
 				reg.ikscat = row_at(row, 3)
-				reg.company = row_at(row, 9)
+        reg.out_of_trade = row_at(row, 9) == 'x'
+				reg.company = row_at(row, 10)
 				seq = ParsedSequence.new
-				seq.name = row_at(row, 0)
-				[reg, seq]
+        seqs = [seq]
+        name = row_at(row, 0)
+        if(match = /^(.*?)(\d+)\/(\d+)$/.match(name))
+				  seq2 = seq.dup
+          seq.name = match[1] + match[2]
+          seq2.name = match[1] + match[3]
+          seqs = [seq, seq2]
+        else
+          seq.name = name
+        end
+				[reg, seqs]
 			end
 		end
 		def registrations_from_xls(path)

@@ -18,6 +18,8 @@ module ODDB
 	ANALYSISPARSE_URI = "druby://localhost:10006"
 	SWISSREG_URI = "druby://localhost:10007"
 	COMARKETING_URI = "druby://localhost:10008"
+  YUS_URI = "drbssl://localhost:9997"
+  YUS_DOMAIN = 'oddb.org'
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
 	PAYPAL_SERVER = 'www.paypal.com'
 	PAYPAL_RECEIVER = 'zdavatz@ywesee.com'

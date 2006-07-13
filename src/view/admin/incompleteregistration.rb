@@ -78,21 +78,21 @@ class IncompleteRegistrationForm < View::Admin::RegistrationForm
 		(@session.app.registration(model.iksnr) || model.acceptable?)
 	end
 	def accept(model, session)
-		if(@session.user.allowed?(model))
+		if(@session.user.allowed?('edit', model))
 			button = HtmlGrid::Button.new(:accept, model, session, self)
 			button.attributes["onClick"] = 'this.form.event.value="accept";this.form.submit();'
 			button
 		end
 	end
 	def change_flags(model, session)
-		if(@session.user.allowed?(model))
+		if(@session.user.allowed?('edit', model))
 			box = ChangeFlags.new(model, session, self)
 			box.label = true
 			box
 		end
 	end
 	def delete_item(model, session)
-		if(@session.user.allowed?(model))
+		if(@session.user.allowed?('edit', model))
 			super
 		end
 	end
@@ -119,7 +119,7 @@ class IncompleteRegistrationInnerComposite < HtmlGrid::Composite
 		end
 	end
 	def _active_registration(registration)
-		if(@session.user.allowed?(registration))
+		if(@session.user.allowed?('edit', registration))
 			View::Admin::RootRegistrationComposite.new(registration, 
 																								 @session, self)
 		else

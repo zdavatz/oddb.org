@@ -24,6 +24,7 @@ require 'util/drb'
 require 'util/config'
 require 'fileutils'
 require 'yaml'
+require 'yus/session'
 require 'model/migel/group'
 require 'model/analysis/group'
 
@@ -52,7 +53,7 @@ class OddbPrevalence
 	]
 	ODBA_SERIALIZABLE = [ '@currency_rates' ]
 	ODBA_PREFETCH = true
-	attr_reader :address_suggestions, :atc_chooser, :atc_classes,
+	attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
 		:companies, :doctors, :fachinfos, :galenic_groups, :migel_groups,
 		:hospitals, :invoices, :last_medication_update, :last_update,
 		:notification_logger, :orphaned_fachinfos, :orphaned_patinfos,
@@ -196,11 +197,13 @@ class OddbPrevalence
 		}
 		unless(deletables.empty?)
 			deletables.each { |invoice|
+=begin # replaced by Yus
 				if((ptr = invoice.user_pointer) \
 					&& (user = ptr.resolve(self)) \
 					&& user.respond_to?(:remove_invoice))
 					user.remove_invoice(invoice)	
 				end
+=end
 				delete(invoice.pointer)
 			}
 			@invoices.odba_isolated_store
@@ -605,9 +608,6 @@ class OddbPrevalence
 	def limitation_text_count
 		@limitation_text_count ||= count_limitation_texts()
 	end
-	def login(email, pass)
-		@users.values.select { |user| user.identified_by?(email, pass)}.first
-	end
 	def log_group(key)
 		@log_groups[key]
 	end
@@ -746,7 +746,13 @@ class OddbPrevalence
 		$stdout.flush
 	end
 	def search_analysis(key)
-		ODBA.cache.retrieve_from_index("analysis_index", key)
+		res = ODBA.cache.retrieve_from_index("analysis_index", key)
+		res += ODBA.cache.retrieve_from_index("analysis_group_index", key)
+		res
+	end
+	def search_analysis_alphabetical(query)
+		index_name = "analysis_alphabetical_index"
+		ODBA.cache.retrieve_from_index(index_name, query)
 	end
 	def search_oddb(query, lang)
 		# current search_order:
@@ -1130,6 +1136,7 @@ module ODDB
 		UNKNOWN_USER = UnknownUser
 		UPDATE_INTERVAL = 24*60*60
 		VALIDATOR = Validator
+    YUS_SERVER = DRb::DRbObject.new(nil, YUS_URI)
 		attr_reader :cleaner, :updater
 		def initialize
 			@admin_threads = ThreadGroup.new
@@ -1244,10 +1251,13 @@ module ODDB
 			@admin_threads.add(t)
 			t
 		end
-		def login(session)
-			pair = session.user_input(:email, :pass)
-			@system.login(pair[:email], pair[:pass])
+		def login(email, pass)
+      YusUser.new(YUS_SERVER.login(email, pass, YUS_DOMAIN))
 		end
+    def logout(session)
+      YUS_SERVER.logout(session)
+    rescue DRb::DRbError, RangeError
+    end
 		def reset
 			@updater.kill if(@updater.is_a? Thread)
 			@exporter.kill if(@exporter.is_a? Thread)
@@ -1395,6 +1405,211 @@ module ODDB
 			}
 			nil
 		end
+
+    def yus_allowed?(email, action, key=nil)
+      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
+        session.entity_allowed?(email, action, key)
+      }
+    end
+    def yus_create_user(email, pass=nil)
+      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
+        session.create_entity(email, pass)
+      }
+      # if there is a password, we can log in
+      login(email, pass) if(pass)
+    end
+    def yus_grant(name, key, item, expires=nil)
+      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
+        session.grant(name, key, item, expires)
+      }
+    end
+    def yus_get_preference(name, key)
+      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
+        session.get_entity_preference(name, key)
+      }
+    end
+    def yus_get_preferences(name, keys)
+      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
+        session.get_entity_preferences(name, keys)
+      }
+    end
+    def yus_model(name)
+      if(odba_id = yus_get_preference(name, 'association'))
+        ODBA.cache.fetch(odba_id, nil)
+      end
+    rescue Yus::YusError, ODBA::OdbaError
+      # association not found
+    end
+    def yus_reset_password(name, token, password)
+      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
+        session.reset_entity_password(name, token, password)
+      }
+    end
+    def yus_set_preference(name, key, value, domain=YUS_DOMAIN)
+      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
+        session.set_entity_preference(name, key, value, domain)
+      }
+    end
+
+    def migrate_to_yus(email, pass)
+      session = YUS_SERVER.login(email, pass, YUS_DOMAIN)
+      @system.users.each_value { |userobj|
+        klass = userobj.class.to_s.split('::').last
+        group, user = nil
+        unless(group = session.find_entity(klass))
+          group = session.create_entity(klass)
+        end
+        privileges = [
+          "login|org.oddb.#{klass}", 
+        ]
+        case klass 
+        when 'RootUser' 
+          #'view|org.oddb',
+          privileges.concat [ 'grant|create', 'grant|edit', 'grant|credit',
+            'edit|yus.entities', 'edit|org.oddb.drugs', 'set_password',
+            'edit|org.oddb.model.!company.*', 'create|org.oddb.registration',
+            'edit|org.oddb.model.!sponsor.*', 
+            'edit|org.oddb.model.!indication.*', 
+            'edit|org.oddb.model.!galenic_group.*', 
+            'edit|org.oddb.model.!incomplete_registration.*', 
+            'edit|org.oddb.model.!address.*', 
+            'edit|org.oddb.model.!atc_class.*',
+            'view|org.oddb.patinfo_stats', 
+            'invoice|org.oddb.processing', 
+          ]
+        when 'AdminUser'
+          privileges.concat [ 'edit|org.oddb.drugs', #'view|org.oddb',
+            'create|org.oddb.registration', 
+            'edit|org.oddb.model.!incomplete_registration.*', 
+            'edit|org.oddb.model.!indication', 
+            'edit|org.oddb.model.!galenic_group.*', 
+          ]
+        when 'CompanyUser'
+          privileges.concat [ 'edit|org.oddb.drugs', #'view|org.oddb',
+            'create|org.oddb.registration', 
+            'edit|org.oddb.model.!galenic_group.*', 
+            'view|org.oddb.patinfo_stats.associated', 
+          ]
+        when 'PowerLinkUser'
+          privileges.concat [ 'edit|org.oddb.powerlinks', #'view|org.oddb',
+            'edit|org.oddb.drugs', 
+          ]
+        #when 'PowerUser'
+        else
+          [] # no further privileges
+        end
+        privileges.each { |priv|
+          session.grant(klass, *priv.split('|'))
+        }
+				empty = if(userobj.respond_to?(:invoices))
+									userobj.invoices.delete_if { |inv| inv.odba_instance.nil? }
+									userobj.invoices.empty?
+								else
+									false 
+								end
+        if(!empty && (email = userobj.unique_email) && !email.empty?)
+          unless(user = session.find_entity(email))
+            user = session.create_entity(email)
+          end
+          session.affiliate(email, klass)
+          if(hash = userobj.pass_hash)
+            session.set_password(email, hash)
+          end
+          if(model = userobj.model.odba_instance)
+            session.grant(email, "edit", model.pointer.to_yus_privilege)
+            if(contact = model.contact)
+              contact.slice!(/^(Herr|Frau)\s+/)
+              name_first, name_last = contact.split(' ', 2)
+              session.set_entity_preference(email, 'name_first', name_first)
+              session.set_entity_preference(email, 'name_last', name_last)
+            end
+            session.set_entity_preference(email, 'association', model.odba_id)
+          end
+          if(userobj.respond_to?(:paid_invoices))
+            userobj.invoices.delete_if { |inv| inv.odba_instance.nil? }
+            pair = userobj.paid_invoices.inject([]) { |memo, invoice|
+              invoice.items.each_value { |item|
+                if(item.type == :poweruser && time = item.expiry_time)
+                  memo.push([time, item.duration])
+                end
+              }
+              memo
+            }.max || [Time.now, 1]
+            session.grant(email, 'view', 'org.oddb', pair.first)
+            session.set_entity_preference(email, 'poweruser_duration', pair.last)
+            userobj.invoices.each { |inv|
+              inv.yus_name = email
+              inv.odba_store
+            }
+          end
+          if(userobj.creditable?('download'))
+            session.grant(email, 'credit', 'org.oddb.download')
+          end
+          YusUser::PREFERENCE_KEYS.each { |key|
+            if(userobj.respond_to?(key) && (val = userobj.send(key)))
+              session.set_entity_preference(email, key, val, YUS_DOMAIN)
+            end
+          }
+        end
+      }
+      session.grant('hwyss@ywesee.com', 'grant', 'grant')
+      session.grant('hwyss@ywesee.com', 'grant', 'login')
+      klass = 'DownloadUser'
+      unless(group = session.find_entity(klass))
+        group = session.create_entity(klass)
+        session.grant(klass, 'login', 'org.oddb.DownloadUser')
+      end
+      @system.admin_subsystem.download_users.each { |email, userobj|
+				userobj.invoices.delete_if { |inv| inv.odba_instance.nil? }
+				unless(userobj.invoices.empty?)
+					unless(user = session.find_entity(email))
+						user = session.create_entity(email)
+					end
+					session.affiliate(email, klass)
+					userobj.invoices.delete_if { |inv| inv.odba_instance.nil? }
+					userobj.invoices.each { |invoice|
+						invoice.items.each_value { |item|
+							if(item.type == :download && item.expiry_time > Time.now)
+								session.grant(email, 'download', item.text, item.expiry_time)
+							end
+						}
+					}
+					YusUser::PREFERENCE_KEYS.each { |key|
+						if(userobj.respond_to?(key) && (val = userobj.send(key)))
+							session.set_entity_preference(email, key, val, YUS_DOMAIN)
+						end
+					}
+					userobj.invoices.each { |inv|
+						inv.yus_name = email
+						inv.odba_store
+					}
+				end
+      }
+
+      # Fix all Invoices and InvoiceItems - user_pointer -> yus_name
+      ptr_replace = Proc.new { |item|
+        if((ptr = item.user_pointer) && user = ptr.resolve(@system))
+          item.yus_name = user.unique_email
+          item.odba_store
+        end
+      }
+      @system.invoices.each_value { |inv|
+        ptr_replace.call(inv)
+        inv.items.each_value { |item|
+          ptr_replace.call(item)
+        }
+      }
+      @system.slates.each_value { |slate|
+        slate.items.each_value { |item|
+          ptr_replace.call(item)
+        }
+      }
+		rescue StandardError => e
+			puts e.class, e.message	
+			puts e.backtrace
+		ensure
+      YUS_SERVER.logout(session)
+    end
 	end
 end
 

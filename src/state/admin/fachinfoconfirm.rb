@@ -80,7 +80,7 @@ class FachinfoConfirm < State::Admin::Global
 		nil
 	end
 	def store_slate
-		if(@session.user.is_a?(RootUser))
+		if(@session.user.allowed?('invoice', 'org.oddb.processing'))
 			store_slate_item(Time.now, :processing)
 		end
 		store_slate_item(Time.now, :annual_fee)
@@ -102,7 +102,7 @@ class FachinfoConfirm < State::Admin::Global
 			:time					=>	time,
 			:type					=>	type,
 			:unit					=>	unit,
-			:user_pointer	=>	@session.user.pointer,
+			:yus_name   	=>	@session.user.name,
 			:vat_rate			=>	VAT_RATE, 
 		} 
 		@session.app.update(item_pointer.creator, values, unique_email)
