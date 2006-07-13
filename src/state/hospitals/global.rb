@@ -13,8 +13,6 @@ class Global < State::Global
 	HOME_STATE = State::Hospitals::Init
 	ZONE = :hospitals
 	ZONE_NAVIGATION = [
-		:help_link,
-		:faq_link,
 		State::Hospitals::HospitalList,
 	]
 	EVENT_MAP = {

@@ -27,6 +27,23 @@ module ODDB
 				[0,1]	=>	'atc',
 				[1,1]	=>	'atc right',
 			}
+      def init
+        if(@lookandfeel.zone_navigation.empty?)
+          @components = {
+            [0,0]		=>	View::Copyright,
+            [1,0]		=>	View::Navigation,
+          }
+          @css_map = {
+            [0,0]	=>	'list subheading',
+            [1,0]	=>	'list subheading right',
+          }
+          @component_css_map = {
+            [0,0]	=>	'atc',
+            [1,0]	=>	'atc right',
+          }
+        end
+        super
+      end
 		end
 	end
 end

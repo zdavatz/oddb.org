@@ -132,7 +132,7 @@ module ODDB
 			@registration.generic_type
 		end
 		def has_patinfo?
-			!@patinfo.nil? || !@pdf_patinfo.nil?
+			(!@patinfo.nil? || !@pdf_patinfo.nil?) && !company.disable_patinfo
 		end
 		def iksnr
 			@registration.iksnr
