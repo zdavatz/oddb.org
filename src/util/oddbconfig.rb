@@ -15,9 +15,11 @@ module ODDB
 	DOCPARSE_URI = "druby://localhost:10004"
 	EXPORT_URI = "druby://localhost:10005"
 	MEDDATA_URI = "druby://localhost:10006"
-	ANALYSISPARSE_URI = "druby://localhost:10006"
 	SWISSREG_URI = "druby://localhost:10007"
 	COMARKETING_URI = "druby://localhost:10008"
+	## holidaymanager: "druby://localhost:10009"
+	## xmlconv2: "druby://localhost:10010"
+	ANALYSISPARSE_URI = "druby://localhost:10011"
   YUS_URI = "drbssl://localhost:9997"
   YUS_DOMAIN = 'oddb.org'
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
