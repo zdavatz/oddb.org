@@ -408,6 +408,9 @@ class OddbPrevalence
 		migel = ODDB::Migel::Group.new(groupcd)
 		@migel_groups.store(groupcd, migel)
 	end
+	def analysis_count
+		@analysis_count || analysis_positions.size
+	end
 	def delete_address_suggestion(oid)
 		if(sug = @address_suggestions.delete(oid))
 			@address_suggestions.odba_isolated_store
@@ -703,6 +706,7 @@ class OddbPrevalence
 		end
 		@bean_counter = Thread.new {
 			#Thread.current.priority = -5
+			@analysis_count = analysis_positions.count
 			@atc_ddd_count = count_atc_ddd()
 			@doctor_count = @doctors.size
 			@company_count = @companies.size

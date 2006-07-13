@@ -18,8 +18,10 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	#	[0,4,2]	=>	'download_analysis2',
 	#	[0,5,1] =>	'database_last_updated_txt',
 #		[0,5,2]	=>	:database_last_updated,
-		[0,6]		=>	:legal_note,
-		[0,7]		=>	:paypal,
+		[0,4]		=>	:analysis_count,
+		[0,4,1]	=>	'analysis_count',
+		[0,5]		=>	:legal_note,
+		[0,6]		=>	:paypal,
 	}
 	CSS_MAP = {
 		[0,0,1,7]	=>	'ccomponent',
@@ -29,6 +31,9 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		link = HtmlGrid::Link.new(:download_analysis1, model, session, self)
 #		link.href = something
 		link
+	end
+	def analysis_count(model, session)
+		@session.analysis_count
 	end
 end
 class GoogleAdSenseComposite < View::GoogleAdSenseComposite
