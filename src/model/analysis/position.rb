@@ -29,20 +29,12 @@ module ODDB
 			def groupcd
 				@group.groupcd
 			end
-			def search_alpha
-				terms = [@description]
-				ODDB.search_terms(terms)
-			end
-			def search_group
-				terms = [code]
-				terms.concat(groupcd)
-				ODDB.search_terms(terms)
-			end
 			def search_terms
 				terms = [@list_title]
 				terms.concat(@list_title.split(' '))
 				terms.concat(@list_title.split('/'))
 				terms.concat(@description.split(' '))
+				terms.push(groupcd, code)
 				ODDB.search_terms(terms)
 			end
 			def localized_name(language)

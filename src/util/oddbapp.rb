@@ -746,9 +746,7 @@ class OddbPrevalence
 		$stdout.flush
 	end
 	def search_analysis(key)
-		res = ODBA.cache.retrieve_from_index("analysis_index", key)
-		res += ODBA.cache.retrieve_from_index("analysis_group_index", key)
-		res
+		ODBA.cache.retrieve_from_index("analysis_index", key)
 	end
 	def search_analysis_alphabetical(query)
 		index_name = "analysis_alphabetical_index"

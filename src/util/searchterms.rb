@@ -36,7 +36,8 @@ module ODDB
 			end
 			terms
 		}.select { |term| 
-			term.length > 2 && !/^[0-9]+$/.match(term)
+			                # don't exclude analysis-codes
+			term.length > 2 # && !/^[0-9]+$/.match(term)
 		}
 	end
 end
