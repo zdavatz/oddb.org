@@ -9,8 +9,15 @@ module ODDB
 		def update(path)
 			ANALYSIS_PARSER.parse_pdf(path).each { |position|
 				group = update_group(position)
-				position = update_position(group, position)
+				if(position[:revision] == 'S')
+					delete_position(group, position)
+				else
+					position = update_position(group, position)
+				end
 			}
+		end
+		def delete_position(group, position)
+			## TODO
 		end
 		def update_group(position)
 			groupcd = position.delete(:group)
