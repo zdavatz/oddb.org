@@ -409,7 +409,7 @@ class OddbPrevalence
 		@migel_groups.store(groupcd, migel)
 	end
 	def analysis_count
-		@analysis_count || analysis_positions.size
+		@analysis_count ||= analysis_positions.size
 	end
 	def delete_address_suggestion(oid)
 		if(sug = @address_suggestions.delete(oid))

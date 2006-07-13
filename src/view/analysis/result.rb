@@ -17,7 +17,7 @@ class List < HtmlGrid::List
 		[0,0]	=> :code,
 		[1,0]	=> :lab_areas,
 		[2,0]	=> :list_title,
-		[3,0]	=> :analysis_description,
+		[3,0]	=> :description,
 		[4,0]	=> :taxpoints,
 		[5,0]	=> :analysis_revision,
 #		[6,0]	=> :feedback,
@@ -38,8 +38,11 @@ class List < HtmlGrid::List
 		[6,0,1]	=>	'list-r',
 	}
 	LEGACY_INTERFACE = false
+	LOOKANDFEEL_MAP = {
+		:description => :analysis_description,
+	}
 	SORT_DEFAULT = :code
-	def analysis_description(model)
+	def description(model)
 		link = PointerLink.new(:to_s, model, @session, self)
 		text = model.description.gsub("\n", ' ')
 		if(text.size > 60)
