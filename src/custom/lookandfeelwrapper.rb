@@ -407,7 +407,12 @@ module ODDB
 				State::Drugs::Sequences, State::Migel::Alphabetical ]
 		end
 		def zone_navigation
-			[]
+			case @session.zone
+			when :analysis
+				[:analysis_alphabetical]
+			else
+				[]
+			end
 		end
 	end
 	class LookandfeelSwissmedic < SBSM::LookandfeelWrapper
