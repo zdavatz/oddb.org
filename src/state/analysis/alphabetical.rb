@@ -12,6 +12,7 @@ class Alphabetical < Global
 	VIEW = View::Analysis::Alphabetical
 	DIRECT_EVENT = :analysis_alphabetical
 	PERSISTENT_RANGE = true
+	LIMITED = true
 	def index_lookup(range)
 		@session.analysis_alphabetical(range)
 	end
@@ -26,6 +27,9 @@ class Alphabetical < Global
 			end
 			@intervals
 		end
+	end
+	def comparison_value(item)
+		item.send(@session.user_input(:sortvalue) || :description)
 	end
 end
 		end

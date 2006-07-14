@@ -71,23 +71,29 @@ module ODDB
 		RANGE_PATTERNS = ('a'..'z').to_a.push('0-9')
 		def init
 			super
+			@model = []
 			@filter = method(:filter)
+		end
+		def comparison_value(item)
+			item.send(*symbol).to_s.downcase
 		end
 		def default_interval
 		end
 		def load_model
-			items = []
-			if(@range = user_range)
+			if((tmp_rng = user_range) && tmp_rng != @range)
+				@model.clear
+				@range = tmp_rng
 				parts = @range.split('-')
 				if(parts.size == 2)
 					parts = ((parts.first)..(parts.last)).to_a
 				end
 				parts.each { |part|
-					items.concat(index_lookup(part).sort_by { |item| 
-						item.send(*symbol).to_s.downcase })
+					@model.concat(index_lookup(part).sort_by { |item| 
+						comparison_value(item)
+					})
 				}
 			end
-			items
+			@model
 		end
 		def filter(model)
 			load_model

@@ -10,6 +10,7 @@ module ODDB
 class Result < Global
 	VIEW = View::Analysis::Result
 	DIRECT_EVENT = :result
+	LIMITED = true
 	def init
 		if(model.nil? || @model.empty?)
 			@default_view = View::Analysis::EmptyResult
