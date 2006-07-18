@@ -4,7 +4,7 @@
 module ODDB
 	def ODDB.search_term(term)
 		term = term.to_s.gsub(/[\s\-]+/, ' ')
-		term.gsub!(/[,']/, '')
+		term.gsub!(/[,'()]/, '')
 		term.gsub!(/[ÁÂÀ]/, 'A')
 		term.gsub!(/[áâà]/, 'a')
 		term.gsub!(/Ä/, 'Ae')
@@ -27,7 +27,7 @@ module ODDB
 	def ODDB.search_terms(words)
 		terms = []
 		words.flatten.compact.uniq.inject(terms) { |terms, term| 
-			parts = term.split('-')
+			parts = term.split(/[\/-]/)
 			if(parts.size > 1)
 				terms.push(ODDB.search_term(parts.join))
 				terms.push(ODDB.search_term(parts.join(' ')))
@@ -36,7 +36,8 @@ module ODDB
 			end
 			terms
 		}.select { |term| 
-			term.length > 2 && !/^[0-9]+$/.match(term)
+			                # don't exclude analysis-codes
+			term.length > 2 # && !/^[0-9]+$/.match(term)
 		}
 	end
 end

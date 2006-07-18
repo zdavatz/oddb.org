@@ -41,7 +41,7 @@ module Admin
 		State::Admin::Registration.new(@session, item)
 	end
 	def zones
-		[:doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies]
+		[:analysis, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :companies]
 	end
 end
 		end

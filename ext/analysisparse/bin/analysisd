@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# AnalysisParseServer -- oddb -- 12.06.2006 -- sfrischknecht@ywesee.com
+
+$: << File.expand_path("../../../src", File.dirname(__FILE__))
+$: << File.expand_path("../src", File.dirname(__FILE__))
+
+require 'drb/drb'
+require 'util/oddbconfig'
+require 'analysisparse'
+
+$0 = "Oddb (AnalysisParse)"
+DRb.start_service(ODDB::ANALYSISPARSE_URI, 
+									ODDB::AnalysisParse)
+DRb.thread.join
+

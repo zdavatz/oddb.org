@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+#  -- oddb.org -- 17.05.2006 -- sfrischknecht@ywesee.com
+
+			def parse_page(txt, pagenum)
+				positions = []
+				identify_fragments(txt).each { |fragment|
+					case fragment
+					when /Teilliste\s*1/
+						parser = AppendixListParser.new
+						positions.concat(parser.parse_page(fragment))
+					end
+				
+				}
+			end
+			def parse_analysis_fragment(fragment)
+				parser = ...
+
+			end

@@ -103,6 +103,7 @@ module ODDB
 			:ajax_autofill,
 			:ajax_ddd_price,
 			:ajax_swissmedic_cat,
+			:analysis_alphabetical,
 			:assign,
 			:assign_deprived_sequence,
 			:assign_fachinfo,
@@ -138,6 +139,7 @@ module ODDB
 			:help,
 			:home,
 			:home_admin,
+			:home_analysis,
 			:home_companies,
 			:home_doctors,
 			:home_drugs,
@@ -321,7 +323,7 @@ module ODDB
 			:unsubscribe,
 			:url,
 		]
-		ZONES = [:admin, :doctors, :interactions, :drugs, :migel, :user, 
+		ZONES = [:admin, :analysis, :doctors, :interactions, :drugs, :migel, :user, 
 			:hospitals, :substances, :companies]
 		def code(value)
 			pattern = /^[A-Z]([0-9]{2}([A-Z]([A-Z]([0-9]{2})?)?)?)?$/i

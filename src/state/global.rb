@@ -5,6 +5,10 @@ require 'htmlgrid/urllink'
 require 'state/admin/login'
 require 'state/ajax/ddd_price'
 require 'state/ajax/swissmedic_cat'
+require 'state/analysis/group'
+require 'state/analysis/position'
+require 'state/analysis/alphabetical'
+require 'state/analysis/result'
 require 'state/companies/company'
 require 'state/companies/companylist'
 require 'state/drugs/atcchooser'
@@ -82,6 +86,7 @@ module ODDB
 			GLOBAL_MAP = {
 				:ajax_ddd_price				=>	State::Ajax::DDDPrice,
 				:ajax_swissmedic_cat	=>	State::Ajax::SwissmedicCat,
+				:analysis_alphabetical	=>	State::Analysis::Alphabetical,
 				:companylist					=>	State::Companies::CompanyList,
 				:compare							=>	State::Drugs::Compare,
 				:ddd									=>	State::Drugs::DDD,
@@ -91,6 +96,7 @@ module ODDB
 				:help									=>	State::User::Help,
 				:home									=>	State::Drugs::Init,
 				:home_admin						=>	State::Admin::Init,
+				:home_analysis				=>	State::Analysis::Init,
 				:home_companies				=>	State::Companies::Init,
 				:home_doctors					=>	State::Doctors::Init,
 				:home_hospitals				=>	State::Hospitals::Init,
@@ -118,6 +124,8 @@ module ODDB
 			HOME_STATE = State::Drugs::Init
 			LIMITED = false
 			RESOLVE_STATES = {
+				[ :analysis_group, :position ]	=>	State::Analysis::Position,
+				[ :analysis_group ]		=>	State::Analysis::Group,
 				[ :company ]	=>	State::Companies::Company,
 				[ :doctor	]  =>	State::Doctors::Doctor,
 				[ :hospital ]  =>	State::Hospitals::Hospital,
@@ -258,6 +266,8 @@ module ODDB
 						State::Drugs::Feedbacks.new(@session, item)
 					when ODDB::Migel::Product
 						State::Migel::Feedbacks.new(@session, item)
+					when ODDB::Analysis::Position
+						State::Analysis::Feedbacks.new(@session, item)
 					end
 				end
 			end
@@ -270,6 +280,8 @@ module ODDB
 						State::Drugs::Notify.new(@session, item)
 					when ODDB::Migel::Product
 						State::Migel::Notify.new(@session, item)
+					when ODDB::Analysis::Position
+						State::Analysis::Notify.new(@session, item)
 					end
 				end
 			end
@@ -500,6 +512,9 @@ module ODDB
 					when :migel
 						result = @session.search_migel_products(query)
 						State::Migel::Result.new(@session, result)
+					when :analysis
+						result = @session.search_analysis(query)
+						State::Analysis::Result.new(@session, result)
 					else
 						query = query.to_s.downcase
 						stype = @session.user_input(:search_type) 
@@ -646,7 +661,7 @@ module ODDB
 				State::User::YweseeContact.new(@session, model)
 			end
 			def zones
-			[ :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies]
+			[ :analysis, :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies]
 			end
 			def zone_navigation
 				self::class::ZONE_NAVIGATION

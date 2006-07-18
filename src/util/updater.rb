@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # Updater-- oddb -- 19.02.2003 -- hwyss@ywesee.com 
 
+require 'plugin/analysis'
 require 'plugin/bsv'
 require 'plugin/comarketing'
 require 'plugin/doctors'
@@ -158,6 +159,14 @@ module ODDB
 				update_lppv
 				update_medwin_companies
 			end
+		end
+		def update_analysis(path)
+			klass = AnalysisPlugin
+			subj = 'Analysis'
+			wrap_update(klass, subj) {
+				plug = klass.new(@app)
+				plug.update(path)	
+			}
 		end
 		def update_bsv
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
