@@ -1429,11 +1429,15 @@ module ODDB
       YUS_SERVER.autosession(YUS_DOMAIN) { |session|
         session.get_entity_preference(name, key)
       }
+    rescue Yus::YusError
+      # user not found
     end
     def yus_get_preferences(name, keys)
       YUS_SERVER.autosession(YUS_DOMAIN) { |session|
         session.get_entity_preferences(name, keys)
       }
+    rescue Yus::YusError
+      {} # return an empty hash
     end
     def yus_model(name)
       if(odba_id = yus_get_preference(name, 'association'))

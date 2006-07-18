@@ -21,11 +21,7 @@ module Checkout
     prefs = {:email => email}
     keys = checkout_keys()
     keys.delete(:email)
-    begin
-      prefs.update @session.yus_get_preferences(email, keys)
-    rescue Yus::YusError
-      prefs = {} # return an empty hash
-    end
+    prefs.update @session.yus_get_preferences(email, keys)
     AjaxCheckout.new(@session, prefs)
   end
 	def checkout
