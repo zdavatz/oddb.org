@@ -75,6 +75,7 @@ module ODDB
 					request_log('DENY')
 					@desired_state = @state
 					@active_state = @state = @state.limit_state
+          @state.request_path = @desired_state.request_path
 				end
 			end
 		end
