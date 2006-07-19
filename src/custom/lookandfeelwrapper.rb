@@ -215,6 +215,7 @@ module ODDB
 	class LookandfeelAtupriWeb < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:atupri_web,
+			:custom_navigation,
 			:drugs, 
 			:external_css,
 			:help_link,
@@ -300,6 +301,7 @@ module ODDB
 	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
 		ENABLED = [
+			:custom_navigation,
 			:external_css,
 			:just_medical_structure,	
 			:popup_links,
@@ -477,6 +479,7 @@ module ODDB
 	end
 	class LookandfeelMedicalTribune < SBSM::LookandfeelWrapper
 		ENABLED = [
+			:custom_navigation,
 			:drugs, 
 			:home_drugs,
 			:home_migel,
@@ -547,6 +550,7 @@ module ODDB
 	end
 	class LookandfeelMedicalTribune1 < SBSM::LookandfeelWrapper
 		ENABLED = [
+			:custom_navigation,
 			:drugs, 
 			:home_drugs,
 			:external_css,
