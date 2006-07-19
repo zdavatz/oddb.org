@@ -26,6 +26,7 @@ require 'fileutils'
 require 'yaml'
 require 'yus/session'
 require 'model/migel/group'
+require 'model/analysis/group'
 
 class Object
 	unless(defined?(@@date_arithmetic_optimization))
@@ -52,7 +53,7 @@ class OddbPrevalence
 	]
 	ODBA_SERIALIZABLE = [ '@currency_rates' ]
 	ODBA_PREFETCH = true
-	attr_reader :address_suggestions, :atc_chooser, :atc_classes,
+	attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
 		:companies, :doctors, :fachinfos, :galenic_groups, :migel_groups,
 		:hospitals, :invoices, :last_medication_update, :last_update,
 		:notification_logger, :orphaned_fachinfos, :orphaned_patinfos,
@@ -66,6 +67,7 @@ class OddbPrevalence
 		create_unknown_galenic_group()
 		create_root_user()
 		@accepted_orphans ||= {}
+		@analysis_groups ||= {}
 		@atc_classes ||= {}
 		@address_suggestions ||= {}
 		@patinfos_deprived_sequences ||= []
@@ -168,6 +170,17 @@ class OddbPrevalence
 		}
 		active
 	end
+	def address_suggestion(oid)
+		@address_suggestions[oid.to_i]
+	end
+	def analysis_group(grpcd)
+		@analysis_groups[grpcd]
+	end
+	def analysis_positions
+		@analysis_groups.values.inject([]) { |memo, group| 
+			memo.concat(group.positions.values)
+		}
+	end
 	def atcless_sequences
 		ODBA.cache.retrieve_from_index('atcless', 'true')
 	end
@@ -176,9 +189,6 @@ class OddbPrevalence
 	end
 	def atc_ddd_count
 		@atc_ddd_count ||= count_atc_ddd()
-	end
-	def address_suggestion(oid)
-		@address_suggestions[oid.to_i]
 	end
 	def clean_invoices
 		@invoices.delete_if { |oid, invoice| invoice.odba_instance.nil? }
@@ -278,6 +288,10 @@ class OddbPrevalence
 	def create_admin
 		user = ODDB::AdminUser.new
 		@users.store(user.oid, user)
+	end
+	def create_analysis_group(groupcd)
+		group = ODDB::Analysis::Group.new(groupcd)
+		@analysis_groups.store(groupcd, group)
 	end
 	def create_atc_class(atc_class)
 		atc = ODDB::AtcClass.new(atc_class)
@@ -393,6 +407,9 @@ class OddbPrevalence
 	def create_migel_group(groupcd)
 		migel = ODDB::Migel::Group.new(groupcd)
 		@migel_groups.store(groupcd, migel)
+	end
+	def analysis_count
+		@analysis_count ||= analysis_positions.size
 	end
 	def delete_address_suggestion(oid)
 		if(sug = @address_suggestions.delete(oid))
@@ -689,6 +706,7 @@ class OddbPrevalence
 		end
 		@bean_counter = Thread.new {
 			#Thread.current.priority = -5
+			@analysis_count = analysis_positions.count
 			@atc_ddd_count = count_atc_ddd()
 			@doctor_count = @doctors.size
 			@company_count = @companies.size
@@ -730,6 +748,13 @@ class OddbPrevalence
 		}
 		puts "finished refactoring addresses"
 		$stdout.flush
+	end
+	def search_analysis(key)
+		ODBA.cache.retrieve_from_index("analysis_index", key)
+	end
+	def search_analysis_alphabetical(query)
+		index_name = "analysis_alphabetical_index"
+		ODBA.cache.retrieve_from_index(index_name, query)
 	end
 	def search_oddb(query, lang)
 		# current search_order:
@@ -1214,11 +1239,7 @@ module ODDB
 			t = Thread.new {
 				Thread.current.abort_on_exception = false
 				result << failsafe {
-					response = begin
-						instance_eval(src)
-					rescue NameError => e
-						e
-					end
+					response = instance_eval(src)
 					str = response.to_s
 					if(str.length > 200)
 						response.class
@@ -1408,11 +1429,15 @@ module ODDB
       YUS_SERVER.autosession(YUS_DOMAIN) { |session|
         session.get_entity_preference(name, key)
       }
+    rescue Yus::YusError
+      # user not found
     end
     def yus_get_preferences(name, keys)
       YUS_SERVER.autosession(YUS_DOMAIN) { |session|
         session.get_entity_preferences(name, keys)
       }
+    rescue Yus::YusError
+      {} # return an empty hash
     end
     def yus_model(name)
       if(odba_id = yus_get_preference(name, 'association'))

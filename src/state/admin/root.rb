@@ -224,7 +224,7 @@ module Root
     State::Admin::Entity.new(@session, user)
   end
 	def zones
-		[:admin, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :substances, :companies]
+		[:admin, :analysis, :doctors, :interactions, :drugs, :migel, :user, :hospitals, :substances, :companies]
 	end
 end
 		end

@@ -161,19 +161,20 @@ module ODDB
 	end
 	class HtmlTableHandler
 		class Cell
-			attr_reader :attributes, :colspan, :children
+			attr_reader :attributes, :colspan, :children, :rowspan
 			MAX_WIDTH = 32
 			def initialize(attr, keep=false)
 				@keep_empty_lines = keep
 				@attributes = attr.inject({}) { |inj, pair| 
 					key, val = pair
-					inj.store(key.downcase, val)
+					inj.store(key.downcase, val.gsub(/(^['"])|(['"])$/, ''))
 					inj
 				}
 				@current_line = ''
 				@cdata = [@current_line]
 				@children = []
 				@colspan = [@attributes["colspan"].to_i, 1].max
+				@rowspan = [@attributes["rowspan"].to_i, 1].max
 				@current_formats = {}
 				@formats = [@current_formats]
 			end
@@ -221,6 +222,8 @@ module ODDB
 			end
 			def send_cdata(data)
 				@current_line << data
+        @current_line.gsub!(/\s+/, ' ')
+        @current_line
 			end
 			def send_format(fmtstr)
 				@current_formats[@current_line.size] = fmtstr
@@ -278,6 +281,7 @@ module ODDB
 		def initialize(attributes)
 			@attributes = attributes
 			@rows = []
+      @rowspans = []
 		end
 		def add_child(child)
 			@current_row.add_child(child)
@@ -309,7 +313,14 @@ module ODDB
 			@current_row.next_line
 		end
 		def next_cell(attr, keep=false)
-			(@current_row || next_row({})).next_cell(attr, keep)
+      row = @current_row || next_row({})
+      @rows.each_with_index { |rw, idy|
+        test = @rows.size - idy
+        while((cl = rw.cells[row.cells.size]) && (cl.rowspan >= test))
+          row.next_cell({}, keep)
+        end
+      }
+			row.next_cell(attr, keep)
 		end
 		def next_row(attr={})
 			@current_row = Row.new(attr)
@@ -317,7 +328,7 @@ module ODDB
 			@current_row
 		end
 		def send_cdata(data)
-			(@current_row || next_row).send_cdata(data)
+			(@current_row || next_row).send_cdata(data.gsub(/\s/, ' '))
 		end
 		alias :<< :send_cdata
 		def to_s
@@ -326,40 +337,57 @@ module ODDB
 			end
 			hline = "-" * width
 			lines = [ hline ]
-			@rows.each { |row|
+      rowspans = []
+			@rows.each_with_index { |row, rdx|
+			  hline = "-" * width
 				row.height.times { |idy|
 					cells = []
 					colspan = 1
+          #row_w = 1
 					@column_widths.each_with_index { |pad, idx|
-						if(colspan > 1)
+            if(colspan > 1)
 							colspan -= 1
 							next
 						end
 						cdata = ''
 						#formatted_cdata = ''
 						if(cell = row.cells[idx])
+              rowspan = cell.rowspan
+              #str = " " * pad
+              if(idy == 0)
+                if(rowspan > 1)
+                  rowspans[idx] = rowspan
+                end
+                if(rowspans[idx].to_i > 1)
+                  rowspans[idx] -= 1
+                  #hline[row_w - 1, str.length+4] = '  ' << str << '  '
+                end
+              end
 							colspan = cell.colspan
 							cdata = cell._cdata(false)[idy].to_s.strip
-							#formatted_cdata = cell.formatted_cdata[idy].to_s.strip
 							if(colspan > 1)
 								total_w = 0
 								colspan.times { |offset|
 									total_w += @column_widths[offset + idx]
 								}
-								total_w += (colspan - 1) * 3
+								#total_w += (colspan - 1) * 3
+								total_w += (colspan - 1) * 2
 								pad = total_w - cdata.size 
 							else
 								pad -= cdata.size
 							end
 						end
 
-						#cells.push(formatted_cdata << (" " * pad))
-						cells.push(cdata << (" " * pad))
+            padded = cdata << (" " * pad)
+            #row_w += padded.length + 3
+						cells.push(padded)
 					}
-					lines.push("| " << cells.join(' | ') << " |")
+					#lines.push("| " << cells.join(' | ') << " |")
+					lines.push(cells.join('  '))
 				}
-				lines.push(hline)
+				#lines.push(hline)
 			}
+		  lines.push(hline)
 			lines.join("\n") << "\n"
 		end
 		def width
@@ -374,7 +402,8 @@ module ODDB
 			width = @column_widths.inject { |wdt, inj|
 				wdt + inj 
 			}
-			width + (@column_widths.size * 3) + 1
+			#width + (@column_widths.size * 3) + 1
+			width + ((@column_widths.size - 1) * 2)
 		end
 	end
 	class HtmlLimitationHandler

@@ -109,6 +109,7 @@ module ODDB
           'dojoType'    => 'Editor2',  
           'shareToolbar'=> 'true',
           'htmlEditing' => 'false',
+          'useActiveX'  => 'false',
         })
       end
       def _to_html(context, value=@value)

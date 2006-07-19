@@ -3,8 +3,6 @@ dojo.require("dojo.widget.Editor2");
 dojo.require("dojo.widget.Editor2Toolbar");
 
 dojo.lang.extend(dojo.widget.html.Editor2Toolbar, {
-  debugmi: function(mi) { dojo.debug(mi); dojo.debug(mi.args); },
-
   superscriptButton: null,
   superscriptClick: function() { this.exec("superscript"); },
 

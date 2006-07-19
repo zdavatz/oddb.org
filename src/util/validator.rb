@@ -18,7 +18,7 @@ module ODDB
 			:cl_status,  :download, :experience, :recommend, :impression,
 			:invoice_htmlinfos, :helps, :show_email, :export_flag, :renewal_flag,
 			:disable_autoinvoice, :refdata_override, :lppv, :vaccine, :parallel_import,
-      :yus_groups, :yus_privileges,
+      :yus_groups, :yus_privileges, :disable_patinfo, 
 		]
 		DATES = [
 			:base_patent_date, 
@@ -81,6 +81,7 @@ module ODDB
         'edit|org.oddb.drugs', 
         'edit|org.oddb.powerlinks',
         'create|org.oddb.registration',
+        'create|org.oddb.task.background',
         'edit|org.oddb.model.!company.*', 
         'edit|org.oddb.model.!sponsor.*', 
         'edit|org.oddb.model.!indication.*', 
@@ -102,6 +103,7 @@ module ODDB
 			:ajax_autofill,
 			:ajax_ddd_price,
 			:ajax_swissmedic_cat,
+			:analysis_alphabetical,
 			:assign,
 			:assign_deprived_sequence,
 			:assign_fachinfo,
@@ -137,6 +139,7 @@ module ODDB
 			:help,
 			:home,
 			:home_admin,
+			:home_analysis,
 			:home_companies,
 			:home_doctors,
 			:home_drugs,
@@ -320,7 +323,7 @@ module ODDB
 			:unsubscribe,
 			:url,
 		]
-		ZONES = [:admin, :doctors, :interactions, :drugs, :migel, :user, 
+		ZONES = [:admin, :analysis, :doctors, :interactions, :drugs, :migel, :user, 
 			:hospitals, :substances, :companies]
 		def code(value)
 			pattern = /^[A-Z]([0-9]{2}([A-Z]([A-Z]([0-9]{2})?)?)?)?$/i
@@ -417,6 +420,9 @@ module ODDB
 			begin
 				pointer = Persistence::Pointer.parse(value)
         if(pointer.insecure?)
+					path = File.expand_path('../../log/insecure_pointers',
+						File.dirname(__FILE__))
+					File.open(path, 'a') { |fh| fh.puts value }
           raise SBSM::InvalidDataError.new('e_insecure_pointer', :pointer, value)
         end
         pointer

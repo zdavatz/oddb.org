@@ -177,6 +177,7 @@ class RootCompany < UserCompany
 			:contact,
 			:contact_email,
 			:disable_autoinvoice,
+			:disable_patinfo,
 			:ean13,
 			:fax,
 			:fon,

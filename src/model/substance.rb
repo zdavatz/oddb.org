@@ -212,6 +212,9 @@ module ODDB
 		def substrate_connections
 			@substrate_connections ||= {}
 		end
+		def to_i
+			oid
+		end
 		def to_s
 			name
 		end

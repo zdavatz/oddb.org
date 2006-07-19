@@ -407,11 +407,16 @@ module ODDB
 			}
 		end
 		def zones
-			[ State::Drugs::Init, State::Drugs::AtcChooser, 
+			[ :analysis, State::Drugs::Init, State::Drugs::AtcChooser, 
 				State::Drugs::Sequences, State::Migel::Alphabetical ]
 		end
 		def zone_navigation
-			[]
+			case @session.zone
+			when :analysis
+				[:analysis_alphabetical]
+			else
+				[]
+			end
 		end
 	end
 	class LookandfeelSwissmedic < SBSM::LookandfeelWrapper
@@ -481,6 +486,7 @@ module ODDB
 	end
 	class LookandfeelMedicalTribune < SBSM::LookandfeelWrapper
 		ENABLED = [
+			:custom_navigation,
 			:drugs, 
 			:home_drugs,
 			:home_migel,

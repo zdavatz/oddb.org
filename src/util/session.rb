@@ -75,6 +75,7 @@ module ODDB
 					request_log('DENY')
 					@desired_state = @state
 					@active_state = @state = @state.limit_state
+          @state.request_path = @desired_state.request_path
 				end
 			end
 		end
@@ -192,6 +193,9 @@ module ODDB
 =end
 		def interaction_basket_count
 			@interaction_basket.size
+		end
+		def analysis_alphabetical(range)
+			@app.search_analysis_alphabetical(range)
 		end
 		def migel_alphabetical(range)
 			@app.search_migel_alphabetical(range, self.language)
