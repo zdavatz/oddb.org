@@ -64,7 +64,7 @@ module ODDB
         section_attr = { 'style' => @lookandfeel.section_style }
         subhead_attr = { 'style' => self.class::SUB_STYLE }
         sections.collect { |section|
-          context.div(section_attr) { 
+          context.p(section_attr) { 
             head = context.span(subhead_attr) {
               self.escape(section.subheading) }
             if(/\n\s*$/.match(section.subheading))  

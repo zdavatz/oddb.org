@@ -5,6 +5,8 @@ dojo.require("dojo.widget.Editor2Toolbar");
 dojo.lang.extend(dojo.widget.html.Editor2Toolbar, {
   superscriptButton: null,
   superscriptClick: function() { this.exec("superscript"); },
+  subscriptButton: null,
+  subscriptClick: function() { this.exec("subscript"); },
 
   symbolButton: null,
   symbolDropDown: null,
@@ -27,11 +29,11 @@ dojo.lang.extend(dojo.widget.html.Editor2Toolbar, {
         position = "absolute";
       }
 
-
+      var cmd = (dojo.render.html.safari) ? "inserttext" : "inserthtml";
       dojo.event.connect(	"after",
                 pal, "onSymbolSelect",
                 this, "exec",
-                function(mi){ mi.args.unshift("inserthtml"); return mi.proceed(); }
+                function(mi){ mi.args.unshift(cmd); return mi.proceed(); }
       );
 
       dojo.event.connect(	"after",
@@ -108,6 +110,7 @@ dojo.lang.extend(dojo.widget.html.Editor2Toolbar, {
 
 
 dojo.lang.extend(dojo.widget.html.Editor2, {
+  currentSelection: null,
   editorOnLoad: function(){
     var toolbars = dojo.widget.byType("Editor2Toolbar");
     if((!toolbars.length)||(!this.shareToolbar)){
@@ -130,17 +133,49 @@ dojo.lang.extend(dojo.widget.html.Editor2, {
       // FIXME: 	selecting in one shared toolbar doesn't clobber
       // 			selection in the others. This is problematic.
       this.toolbarWidget = toolbars[0];
+      this.toolbarWidget.hideUnusableButtons(this);
     }
     var src = document["documentElement"]||window;
     this.scrollInterval = setInterval(dojo.lang.hitch(this, "globalOnScrollHandler"), 100);
     // dojo.event.connect(src, "onscroll", this, "globalOnScrollHandler");
     dojo.event.connect("before", this, "destroyRendering", this, "unhookScroller");
 
-    dojo.event.topic.registerPublisher("Editor2.clobberFocus", this.editNode, "onfocus");
-    // dojo.event.topic.registerPublisher("Editor2.clobberFocus", this.editNode, "onclick");
-    dojo.event.topic.subscribe("Editor2.clobberFocus", this, "setBlur");
-    dojo.event.connect(this.editNode, "onfocus", this, "setFocus");
+    // firefox does not let us attach events to an iframe retrieved using 
+    // getElementById. For Details see 
+    // http://www.digitalmediaminute.com/article/1706/firefoxjavascript-challenge
+    // therefore we cannot defer setting up the handlers to when the iframe is
+    // loaded. Safari on the other hand does not like onFocus/onBlur for 
+    // this.editNode (which is at this point undefined). We need to defer 
+    // setting up the handlers, otherwise an OS-Level Application-Switch is 
+    // needed to trigger onBlur/onFocus..
+    // also, it appears that onFocus/onBlur is actually non-standard behavior 
+    // for this.editNode, which is a <body> - only form-elements are supposed
+    // to trigger onFocus-Events. In a couple of years, when support improves,
+    // we should use onDOMFocusIn and onDOMFocusOut. In the meantime, we work 
+    // around this with onMouseDown
+    if(dojo.render.html.safari) {
+      dojo.event.connect("after", this, "onLoad", dojo.lang.hitch(this, function() { 
+        dojo.event.topic.registerPublisher("Editor2.clobberFocus", this.editNode, "onmousedown");
+        dojo.event.topic.subscribe("Editor2.clobberFocus", this, "setBlur");
+        dojo.event.connect(this.editNode, "onmousedown", this, "setFocus");
 
+        // store selection for later
+        dojo.event.browser.addListener(this.editNode, "mouseup", 
+          dojo.lang.hitch(this, function() { 
+            var sel = this.window.getSelection();
+            this.currentSelection = {
+              baseNode:     sel.baseNode,
+              baseOffset:   sel.baseOffset,
+              extentNode:   sel.extentNode,
+              extentOffset: sel.extentOffset
+            }
+        }));
+      }));
+    } else {
+      dojo.event.topic.registerPublisher("Editor2.clobberFocus", this.editNode, "onfocus");
+      dojo.event.topic.subscribe("Editor2.clobberFocus", this, "setBlur");
+      dojo.event.connect(this.editNode, "onfocus", this, "setFocus");
+    } 
     var node;
     if(node = this.toolbarWidget.linkButton) {
       dojo.event.connect(node, "onclick", 
