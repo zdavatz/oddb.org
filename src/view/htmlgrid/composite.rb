@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# HtmlGrid::Component -- oddb -- 17.02.2006 -- hwyss@ywesee.com
+# HtmlGrid::Composite -- oddb -- 17.02.2006 -- hwyss@ywesee.com
 
 require 'htmlgrid/composite'
 
