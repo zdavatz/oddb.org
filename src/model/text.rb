@@ -213,6 +213,9 @@ module ODDB
 				lines.delete_if { |line| line.empty? }
 				lines.join("\n")
 			end
+			def to_search
+        ODDB.search_term(to_s)
+			end
 			def match(pattern)
 				pattern.match(@heading) or
 				@sections.collect { |seq| 
