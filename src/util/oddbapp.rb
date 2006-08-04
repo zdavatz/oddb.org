@@ -1047,7 +1047,7 @@ class OddbPrevalence
 	end
 
 	## indices
-	def rebuild_indices(name=nil)
+	def rebuild_indices(name=nil, &block)
 		ODBA.cache.indices.size
 		begin
 			start = Time.now
@@ -1056,7 +1056,14 @@ class OddbPrevalence
 			FileUtils.mkdir_p(File.dirname(path))
 			file = File.open(path)
 			YAML.load_documents(file) { |index_definition|
-				if(name.nil? || name.match(index_definition.index_name))
+        doit = if(name)
+                 name.match(index_definition.index_name)
+               elsif(block)
+                 block.call(index_definition)
+               else
+                 true
+               end
+				if(doit)
 					index_start = Time.now
 					begin
 						puts "dropping: #{index_definition.index_name}"
