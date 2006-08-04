@@ -1,957 +1,1233 @@
-#
-#	Ispell affix table for German language
-#
-# This file has been heavily modified by Björn Jacke to fit to the affixes
-# used in the German dictionary igerman98. You can assume almost every line
-# as changed, seen from the original version of Geoff Kuenning; it was
-# impossible to mark them all as changes.
-#
-# Copyright 1988, 1989, 1992, 1993, Geoff Kuenning, Granada Hills, CA
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-#
-# 1. Redistributions of source code must retain the above copyright
-#    notice, this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the above copyright
-#    notice, this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the distribution.
-# 3. All modifications to the source code must be clearly marked as
-#    such.  Binary redistributions based on modified source code
-#    must be clearly marked as modified versions in the documentation
-#    and/or other materials provided with the distribution.
-# 4. All advertising materials mentioning features or use of this software
-#    must display the following acknowledgment:
-#      This product includes software developed by Geoff Kuenning and
-#      other unpaid contributors.
-# 5. The name of Geoff Kuenning may not be used to endorse or promote
-#    products derived from this software without specific prior
-#    written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY GEOFF KUENNING AND CONTRIBUTORS ``AS IS'' AND
-# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-# ARE DISCLAIMED.  IN NO EVENT SHALL GEOFF KUENNING OR CONTRIBUTORS BE LIABLE
-# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-# SUCH DAMAGE.
-#
-# Here's a record of flags used, in case you want to add new ones.
-#
-#            ABCDEFGHIJKLMNOPQRSTUVWXYZ       abcdefghijklmnopqrstuvwxyz
-# Used:      **************************            *         **
-#            ABCDEFGHIJKLMNOPQRSTUVWXYZ       abcdefghijklmnopqrstuvwxyz
-# Available:			       
-#
-#
-# [ Note: The flags   G, L, J, K, H and M   are the
-#	  least used for now and may eventually disappear. ]
-#
-#
-# PARTICULAR SETTINGS FOR ISPELL ARE NECESSARY !!!
-# The default 32 MASKBITS for ispell are NOT SUFFICIENT. You
-# need 64 MASKBITS now.
-# Find out with `ispell -vv |grep MASKBITS' and eventually recompile
-# it with appropriate settings.
-#
-# Here is a small example list of words.  You may enter
-# them to "ispell -d some-german.hash -e" to see them expanded.
-# ( The command
-#	echo "ttttt" > tmp; buildhash tmp -l german.aff some-german.hash
-#   can build an empty german dictionary for you. )
-#
-# A"gypter/FSN
-# a"hneln/WIXYD
-#
+#SET ISO8859-1
+#TRY esianrtolcdugmphbyfvkwäüößáéêàâñESIANRTOLCDUGMPHBYFVKWÄÜÖ
 
-compoundwords off
-allaffixes on
-
-# Character-set definitions.  The special-character strings are appropriate
-# for use with the "-mm" nroff/troff macro package.  Users of other formatters
-# or macro packages will undoubtedly have to modify these definitions.
-# The definition of "ess-zed" requires that you define two characters in
-# your ".mm" files;  "\*(ss" should expand to "\*b" (the Greek beta, which
-# is fairly close to ess-zed) and "\*(SS" should expand to "SS" (two capital
-# esses).
-#
-# These definitions also illustrate a cute little trick.  By declaring the
-# non-special string 'ss' as a stringchar, we cause ispell to represent it
-# as a single character internally.  This allows ispell to suggest spellings
-# that use ess-zed as corrections for spellings using double esses, which is
-# good because this is a common spelling error.  The price we pay is that
-# ispell will not generate proper corrections for less common typos such
-# as "st" for "ss".
+compoundwords controlled z
+compoundmin 3
 
 #
-# generic umlauts and sz as used in german word list
-# All other types are defined relative to this one.
+#  Used chars: Prefix: GUV
+#  Suffix: ABCDEF_HIJKLMNOPQRST_WXYZ
+#  suffix: _f_mnopqrstuvw_
+#  erstellt von transam email: transam45@gmx.net
+#  (c) owner: transam45.gmx.net
+# The *.dic and *.aff file contained in this package are distributed
+#  under the LGPL license, see http://www.fsf.org for the text of this licence.
+# History:  First Version in December 2003
+#           Added German village names Febr, 2004
+#           Added German names Febr, 2004
+#           Minor corrections in affixes Febr, 2004
+#           Eliminated erroneous words, updated affixes May, 2004
+#           Affixes corrected, thanks to Oliver Cromm for the hints.
+#           16.May, 2004
+#           F enhanced to handle most in endings 25. June,2004
 #
-defstringtype "list" "nroff" ".list"
 
-wordchars	[a-z]	[A-Z]
-stringchar	a\"	A\"	# ä
-stringchar	o\"	O\"	# ö
-stringchar	ss	SS	# tricky :-)
-stringchar	sS	Ss	# ß (no captalized version of ß - use SS for it)
-stringchar	u\"	U\"	# ü
-stringchar	à
-stringchar	â
-stringchar	ç	Ç
-stringchar	é
-stringchar	ë
-stringchar	ê
-#stringchar	ï
-stringchar	ñ
-########## Does anyone want more characters?
-
-#
-# TeX/LaTeX a` la german.sty
-#
-altstringtype "tex" "TeX" ".tex" ".bib"
-
-altstringchar	\"a	a\"
-altstringchar	\"A	A\"
-altstringchar	\"o	o\"
-altstringchar	\"O	O\"
-altstringchar	\"u	u\"
-altstringchar	\"U	U\"
-altstringchar	\"s	sS
-altstringchar	\"S	Ss
-altstringchar	ss	ss
-altstringchar	SS	SS
-altstringchar	\\`a	à
-altstringchar	\\^a	â
-altstringchar	\\c{c}	ç
-altstringchar	\\c{C}	Ç
-altstringchar	\\'e	é
-altstringchar	\\"e	ë
-altstringchar	\\^e	ê
-#altstringchar	\\\"{\\i}	ï
-altstringchar	\\~n	ñ
-
-#
-# Plain TeX
-#
-altstringtype "plaintex" "TeX" ".tex"
-
-altstringchar	\\\"a	a\"
-altstringchar	\\\"A	A\"
-altstringchar	\\\"o	o\"
-altstringchar	\\\"O	O\"
-altstringchar	\\\"u	u\"
-altstringchar	\\\"U	U\"
-altstringchar	{\\ss}	sS
-altstringchar	{\\SS}	Ss
-altstringchar	ss	ss
-altstringchar	SS	SS
-altstringchar	\\`a	à
-altstringchar	\\^a	â
-altstringchar	\\c{c}	ç
-altstringchar	\\c{C}	Ç
-altstringchar	\\'e	é
-altstringchar	\\"e	ë
-altstringchar	\\^e	ê
-#altstringchar	\\\"{\\i}	ï
-altstringchar	\\~n	ñ
-
-#
-# Alternate forms for ISO latin1 charset
-#
-altstringtype "latin1" "TeX" ".latin1" ".txt" ".tex" ".bib"
-
-altstringchar	\344	a\"
-altstringchar	\304	A\"	#swiss-umlaut
-#altstringchar	Ae	A\"	#swiss-noumlaut
-altstringchar	\366	o\"
-altstringchar	\326	O\"	#swiss-umlaut
-#altstringchar	Oe	O\"	#swiss-noumlaut
-altstringchar	\374	u\"
-altstringchar	\334	U\"	#swiss-umlaut
-#altstringchar	Ue	U\"	#swiss-noumlaut
-altstringchar	\337	sS
-altstringchar	SS	Ss	# using two definitions of SS is difficult:
-             			# GROSS will not be accepted but suggested at
-             			# the same time :-|
-altstringchar	ss	ss
-altstringchar	SS	SS	# this definition is used for checking
-altstringchar	à	à
-altstringchar	â	â
-altstringchar	ç	ç
-altstringchar	Ç	Ç
-altstringchar	é	é
-altstringchar	ë	ë
-altstringchar	ê	ê
-#altstringchar	ï	ï
-altstringchar	ñ	ñ
-
-#
-# Alternate forms for plain ASCII text files
-altstringtype "ascii" "nroff" ".ascii" ".txt"
-
-altstringchar	ae	a\"
-altstringchar	Ae	A\"
-altstringchar	oe	o\"
-altstringchar	Oe	O\"
-altstringchar	ue	u\"
-altstringchar	Ue	U\"
-altstringchar	ss	sS
-altstringchar	SS	Ss
-altstringchar	ss	ss
-altstringchar	SS	SS
- 
-#
-# Alternate forms for PC charset
-#
-altstringtype "pc" "TeX" ".pc" ".txt" ".tex"
-
-altstringchar	\204	a\"
-altstringchar	\216	A\"
-altstringchar	\224	o\"
-altstringchar	\231	O\"
-altstringchar	\201	u\"
-altstringchar	\232	U\"
-altstringchar	\341	sS
-altstringchar	SS	Ss
-altstringchar	ss	ss
-altstringchar	SS	SS
-
-#
-# HTML/SGML/XML `entities' (useful if you have the Ispell-HTML patch)
-#
-#altstringtype "HTML" "TeX" ".html" ".htm" ".sgml" ".xml"
-
-#altstringchar	\&auml\;	a\"
-#altstringchar	\&Auml\;	A\"
-#altstringchar	\&ouml\;	o\"
-#altstringchar	\&Ouml\;	O\"
-#altstringchar	\&uuml\;	u\"
-#altstringchar	\&Uuml\;	U\"
-#altstringchar	\&szlig\;	sS
-#altstringchar	SS	Ss
-#altstringchar	ss	ss
-#altstringchar	SS	SS
-
-#
-# N/Troff with -ms/-me macros packages
-#
-#altstringtype "nroff" "nroff" ".nr" ".ms" ".me"
-
-#altstringchar	a\\*\:	a\"
-#altstringchar	A\\*\:	A\"
-#altstringchar	o\\*\:	o\"
-#altstringchar	O\\*\:	O\"
-#altstringchar	u\\*\:	u\"
-#altstringchar	U\\*\:	U\"
-#altstringchar	\\*8	sS
-#altstringchar	SS	Ss
-#altstringchar	ss	ss
-#altstringchar	SS	SS
-
-#
-# N/Troff with -mm macros
-#
-#altstringtype "-mm" "nroff" ".nr" ".mm"
-
-#altstringchar	a\\*\:	a\"
-#altstringchar	A\\*\;	A\"
-#altstringchar	o\\*\:	o\"
-#altstringchar	O\\*\;	O\"
-#altstringchar	u\\*\:	u\"
-#altstringchar	U\\*\;	U\"
-#altstringchar	\\*(ss	sS
-#altstringchar	SS	Ss
-#altstringchar	ss      ss
-#altstringchar	SS      SS
- 
-#
-# Alternate form for NeXTSTEP charset
-#
-#altstringtype "NeXT" "TeX" ".NeXT" ".txt" ".tex"
-
-#altstringchar	\331	a\"
-#altstringchar	\205	A\"
-#altstringchar	\360	o\"
-#altstringchar	\226	O\"
-#altstringchar	\366	u\"
-#altstringchar	\271	U\"
-#altstringchar	\373	sS
-#altstringchar	SS	Ss
-#altstringchar	ss	ss
-#altstringchar	SS	SS
-
-#
-# Alternate forms for HP-Roman8 charset
-# (used on HP-9000 machines under HP-VUE and maybe others)
-#
-#altstringtype "roman8" "TeX" ".roman8" ".txt" ".tex"
-#
-#altstringchar	\314	a\"
-#altstringchar	\330	A\"
-#altstringchar	\316	o\"
-#altstringchar	\332	O\"
-#altstringchar	\317	u\"
-#altstringchar	\333	U\"
-#altstringchar	\336	sS
-#altstringchar	SS	Ss
-#altstringchar	ss	ss
-#altstringchar	SS	SS
-
-#
-# Alternate forms for ATARI charset
-#
-#altstringtype "atari" "TeX" ".atari" ".txt" ".tex"
-#
-#altstringchar	\204	a\"
-#altstringchar	\216	A\"
-#altstringchar	\224	o\"
-#altstringchar	\231	O\"
-#altstringchar	\201	u\"
-#altstringchar	\232	U\"
-#altstringchar	\341	sS
-#altstringchar	SS	Ss
-#altstringchar	ss	ss
-#altstringchar	SS	SS
-
-
-#
-#			Quick Reference
-#			===============
-#
-# nouns and adjectives:
-#	E   -e			A  adj.: -e,-er,-en,-em,-es
-#	N   -n
-#	P   -en 		C  adj. comp.:	-ere, -erer, -eren, ...
-#	p	plural for special words like Markt -> Märkte
-#	R   -er, -ern
-#	S   -s	        
-#	T   -es 		D  verb > adj.: -d,   -de,  -den, 
-#	Q   -s > sse,ssen			-dem, -der, -des
-#			        
-# verbs:
-#	W   Du-imperative form			holen  > hol
-#	D	Gerundium: -de, -der, -des, -den, -dem
-#	I   ich- and ihr-form present tense	nehmen > nehme, nehmt
-#	O   Partizip: -tete, -teter, tetes, teten, tetem
-#	X   other present tense forms		legen  > legst, legt
-#	Y   past tense forms			wagen  > wagte, wagtest, ...
-#	Z   past tense and conditional forms from ich-from
-#	    e.g.  nahm > nahmen, nahmst, nahmt
-#
-# other suffixes:
-#	L   -lich, -liche, -licher, ...
-#	B   -bar, -bare, -barer, ...
-#	J   -ung, -ungen, ...
-#	M   -chen, -chens
-#
-# prefixes and msic. suffixes:
-#	U  un-			F   -in,   -innen
-#	G  ge-			H   -heit, -heiten
-#	V  ver- 		K   -keit, -keiten
+PFX G N 1
+   .    > GE
 
 prefixes
 
-flag G:	# Inseparable ge- prefix for verbs
-	.	>	GE	# rufen > gerufen
+flag U:
+   .    > UN
 
-
-flag *U:	# un- prefix for anything
-	.	>	UN	# gesund > ungesund
-
-
-flag *V:	# Inseparable ver- prefix for verbs
-	.	>	VER	# kaufen > verkaufen
-
+flag V:
+   .    > VER
 
 suffixes
 
-flag F:	# IN, INNEN for feminizing nouns and NEN for xxxIN nouns
-	I N	>	NEN	# Bäuerin > Bäuerinnen
-	E	>	-E,IN	# Bote > Botin
-	E	>	-E,INNEN
-	[^I] N	>	IN	# Spion > Spionin
-	[^I] N	>	INNEN
-	[^EN]	>	IN	# Freund > Freundin
-	[^EN]	>	INNEN
+flag *A:
+   E    > R
+   E    > N
+   E    > M
+   E    > S
+   [^ELR]    > E
+   [^ELR]    > ER
+   [^ELR]    > EN
+   [^ELR]    > EM
+   [^ELR]    > ES
+   [^E][RL]    > E
+   [^E][RL]    > ER
+   [^E][RL]    > EN
+   [^E][RL]    > EM
+   [^E][RL]    > ES
+   [^U]ER    > E
+   [^U]ER    > ER
+   [^U]ER    > EN
+   [^U]ER    > EM
+   [^U]ER    > ES
+   UER    > -ER,RE
+   UER    > -ER,RER
+   UER    > -ER,REN
+   UER    > -ER,REM
+   UER    > -ER,RES
+   [EIL]EL    > E
+   [EIL]EL    > ER
+   [EIL]EL    > EN
+   [EIL]EL    > EM
+   [EIL]EL    > ES
+   [^EIL]EL    > -EL,LE
+   [^EIL]EL    > -EL,LER
+   [^EIL]EL    > -EL,LEN
+   [^EIL]EL    > -EL,LEM
+   [^EIL]EL    > -EL,LES
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIG
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGE
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGER
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGEN
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGEM
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGES
+   [^HI]ERIG    > -ERIG,RIG
+   [^HI]ERIG    > -ERIG,RIGE
+   [^HI]ERIG    > -ERIG,RIGER
+   [^HI]ERIG    > -ERIG,RIGEN
+   [^HI]ERIG    > -ERIG,RIGEM
+   [^HI]ERIG    > -ERIG,RIGES
 
+flag B:
+   E[LR]N    > -N,BAR
+   E[LR]N    > -N,BARE
+   E[LR]N    > -N,BAREN
+   E[LR]N    > -N,BARER
+   E[LR]N    > -N,BARES
+   E[LR]N    > -N,BAREM
+   EN    > -EN,BAR
+   EN    > -EN,BARE
+   EN    > -EN,BAREN
+   EN    > -EN,BARER
+   EN    > -EN,BARES
+   EN    > -EN,BAREM
 
-# The question is: How to switch Capitalization off?
-# This will not serve us much otherwise!
-flag L: 	# LICHxx for creating adverbs and adjectives:
-	N	>	TLICH	# verschieden > verschiedentlich
-	N	>	TLICHE
-	N	>	TLICHER
-	N	>	TLICHES
-	N	>	TLICHEM
-	N	>	TLICHEN
-	[^N]	>	LICH	# bitter > bitterlich #nn
-	[^N]	>	LICHE	#nn
-	[^N]	>	LICHER	#nn
-	[^N]	>	LICHES	#nn
-	[^N]	>	LICHEM	#nn
-	[^N]	>	LICHEN	#nn
+flag *C:
+   [^ELR]    > ER
+   [^ELR]    > ERE
+   [^ELR]    > ERER
+   [^ELR]    > EREN
+   [^ELR]    > EREM
+   [^ELR]    > ERES
+   E    > R
+   E    > RE
+   E    > RER
+   E    > REN
+   E    > REM
+   E    > RES
+   [^E][LR]    > ER
+   [^E][LR]    > ERE
+   [^E][LR]    > ERER
+   [^E][LR]    > EREN
+   [^E][LR]    > EREM
+   [^E][LR]    > ERES
+   [^D]EL    > -EL,LER
+   [^D]EL    > -EL,LERE
+   [^D]EL    > -EL,LERER
+   [^D]EL    > -EL,LEREN
+   [^S]EL    > -EL,LEREM
+   [^D]EL    > -EL,LERES
+   UER    > -ER,RER
+   UER    > -ER,RERE
+   UER    > -ER,RERER
+   UER    > -ER,REREN
+   UER    > -ER,REREM
+   UER    > -ER,RERES
+   [^U]ER    > ER
+   [^U]ER    > ERE
+   [^U]ER    > ERER
+   [^U]ER    > EREN
+   [^U]ER    > EREM
+   [^U]ER    > ERES
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGER
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGERE
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGERER
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGEREN
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGEREM
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGERES
+   [^HI]ERIG    > -ERIG,RIGER
+   [^HI]ERIG    > -ERIG,RIGERE
+   [^HI]ERIG    > -ERIG,RIGERER
+   [^HI]ERIG    > -ERIG,RIGEREN
+   [^HI]ERIG    > -ERIG,RIGEREM
+   [^HI]ERIG    > -ERIG,RIGERES
+   [KßSUXZ]    > EST
+   [KßSUXZ]    > ESTE
+   [KßSUXZ]    > ESTER
+   [KßSUXZ]    > ESTEN
+   [KßSUXZ]    > ESTEM
+   [KßSUXZ]    > ESTES
+   SS    > EST
+   SS    > ESTE
+   SS    > ESTER
+   SS    > ESTEN
+   SS    > ESTEM
+   SS    > ESTES
+   ET    > ST
+   ET    > STE
+   ET    > STER
+   ET    > STEN
+   ET    > STEM
+   ET    > STES
+   [^E]T    > EST
+   [^E]T    > ESTE
+   [^E]T    > ESTER
+   [^E]T    > ESTEN
+   [^E]T    > ESTEM
+   [^E]T    > ESTES
+   [^KßSTXZ]    > ST
+   [^KßSTXZ]    > STE
+   [^KßSTXZ]    > STER
+   [^KßSTXZ]    > STEN
+   [^KßSTXZ]    > STEM
+   [^KßSTXZ]    > STES
+   ND    > ST
+   ND    > STE
+   ND    > STER
+   ND    > STEN
+   ND    > STEM
+   ND    > STES
+   [^N]D    > EST
+   [^N]D    > ESTE
+   [^N]D    > ESTER
+   [^N]D    > ESTEN
+   [^N]D    > ESTEM
+   [^N]D    > ESTES
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGST
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGSTE
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGSTER
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGSTEN
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGSTEM
+   [^AEIOUHLRäüö]LIG    > -LIG,ELIGSTES
+   [^HI]ERIG    > -ERIG,RIGST
+   [^HI]ERIG    > -ERIG,RIGSTE
+   [^HI]ERIG    > -ERIG,RIGSTER
+   [^HI]ERIG    > -ERIG,RIGSTEN
+   [^HI]ERIG    > -ERIG,RIGSTEM
+   [^HI]ERIG    > -ERIG,RIGSTES
 
-
-#
-# How to force Capitals on for heit/keit ?
-#
-flag H:	# HEIT substantivation:
-	.	>	HEIT	# gemein > Gemeinheit
-	.	>	HEITEN	# fein > Feinheiten
-
-
-flag K:	# KEIT substantivation:
-	.	>	KEIT	# heimlich > Heimlichkeit
-	.	>	KEITEN	# eitel > Eitelkeiten
-
-
-flag M:	# CHEN diminuitiv:
-	[^SSE]	>	CHEN	# Tür > Türchen
-	[^SSE]	>	CHENS	# Heft > Heftchens
-#	A S E	>	-ASE,A"SCHEN
-#	O S E	>	-OSE,O"SCHEN
-#	U S E	>	-USE,U"SCHEN
-	A SS	>	-ASS,A"SSCHEN
-	A SS	>	-ASS,A"SSCHENS
-	O SS	>	-OSS,O"SSCHEN
-	O SS	>	-OSS,O"SSCHENS
-	U SS	>	-USS,U"SSCHEN
-	U SS	>	-USS,U"SSCHENS
-	E	>	-E,CHEN
-	E	>	-E,CHENS
-
-
-flag *A:	# for adjectives:
-	E	>	R	# älteste > ältester
-	E	>	N
-	E	>	M
-	E	>	S
-	[^ELR]	>	E	# formbar > formbare
-	[^ELR]	>	ER
-	[^ELR]	>	EN
-	[^ELR]	>	EM
-	[^ELR]	>	ES
-	[^E] [RL]	>	E	# schnell > schnelle
-	[^E] [RL]	>	ER	# schal > schale
-	[^E] [RL]	>	EN
-	[^E] [RL]	>	EM
-	[^E] [RL]	>	ES
-	[^U] E R	>	E	# schwer > schwere
-	[^U] E R	>	ER
-	[^U] E R	>	EN
-	[^U] E R	>	EM
-	[^U] E R	>	ES
-
-	U E R	>	-ER,RE	# teuer > teure
-	U E R	>	-ER,RER	# sauer	> saurer
-	U E R	>	-ER,REN
-	U E R	>	-ER,REM
-	U E R	>	-ER,RES
-
-	[EIL] E L 	>	E	# parallel > parallele
-	[EIL] E L 	>	ER	# viel > viele
-	[EIL] E L 	>	EN	# scheel > scheele
-	[EIL] E L 	>	EM
-	[EIL] E L 	>	ES
-#	[^EIL] E L 	>	-EL,LE	# eitel > eitle #qqq
-#	[^EIL] E L	>	-EL,LER	# simpel > simple #qqq
-#	[^EIL] E L	>	-EL,LEN #qqq
-#	[^EIL] E L	>	-EL,LEM #qqq
-#	[^EIL] E L	>	-El,LES #qqq
-	[^EIL] E L 	>	-EL,LE	# eitel > eitle #nnn
-	[^EIL] E L	>	-EL,LER	# simpel > simple #nnn
-	[^EIL] E L	>	-EL,LEN #nnn
-	[^EIL] E L	>	-EL,LEM #nnn
-	[^EIL] E L	>	-El,LES #nnn
-
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIG	# adlig > adelig
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGE
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGER
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGEN
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGEM
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGES
-
-	[^HI] E R I G	>	-ERIG,RIG	# zitterig > zittrig
-	[^HI] E R I G	>	-ERIG,RIGE
-	[^HI] E R I G	>	-ERIG,RIGER
-	[^HI] E R I G	>	-ERIG,RIGEN
-	[^HI] E R I G	>	-ERIG,RIGEM
-	[^HI] E R I G	>	-ERIG,RIGES
-
-
-flag *C:		# for comparative forms of adjectives:
-	[^ELR]	>	ERE	# neu > neuere
-	[^ELR]	>	ERER
-	[^ELR]	>	EREN
-	[^ELR]	>	EREM
-	[^ELR]	>	ERES
-
-	[E]	>	RE	# prüde > prüdere
-	[E]	>	RER
-	[E]	>	REN
-	[E]	>	REM
-	[E]	>	RES
-
-	[^E] [LR]	>	ERE	# schmal > schmale
-	[^E] [LR]	>	ERER	#
-	[^E] [LR]	>	EREN	#
-	[^E] [LR]	>	EREM	#
-	[^E] [LR]	>	ERES	#
-
-#	E L	>	-EL,LERE	# eitel	> eitlere #qqq
-#	E L	>	-EL,LERER	#qqq
-#	E L	>	-EL,LEREN	#qqq
-#	E L	>	-EL,LEREM	#qqq
-#	E L	>	-EL,LERES	#qqq
-	E L	>	-EL,LERE	# eitel	> eitlere #nnn
-	E L	>	-EL,LERER	#nnn
-	E L	>	-EL,LEREN	#nnn
-	E L	>	-EL,LEREM	#nnn
-	E L	>	-EL,LERES	#nnn
-
-	U E R	>	-ER,RERE	# teuer > teurere
-	U E R	>	-ER,RERER	#
-	U E R	>	-ER,REREN	#
-	U E R	>	-ER,REREM	#
-	U E R	>	-ER,RERES	#
-
-	[^U] E R	>	ERE	# schwer > schwerere
-	[^U] E R	>	ERER	#
-	[^U] E R	>	EREN	#
-	[^U] E R	>	EREM	#
-	[^U] E R	>	ERES	#
-
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGERE	# adlig	> adeligere
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGERER
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGEREN
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGEREM
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGERES
-
-	[^HI] E R I G	>	-ERIG,RIGERE	# zitterig > zittrigere
-	[^HI] E R I G	>	-ERIG,RIGERER
-	[^HI] E R I G	>	-ERIG,RIGEREN
-	[^HI] E R I G	>	-ERIG,RIGEREM
-	[^HI] E R I G	>	-ERIG,RIGERES
-# superlatives ...	
-	[KSSSUXZ]	>	ESTE	# neu > neueste
-	[KSSSUXZ]	>	ESTER
-	[KSSSUXZ]	>	ESTEN	# mies > miesesten
-	[KSSSUXZ]	>	ESTEM	# lax > laxestem
-	[KSSSUXZ]	>	ESTES	# spitz > spitzestes
-
-	E T	>	STE	# geeignet > geeignetste
-	E T	>	STER
-	E T	>	STEN
-	E T	>	STEM
-	E T	>	STES
-
-	[^E] T	>	ESTE	# matt > matteste
-	[^E] T	>	ESTER
-	[^E] T	>	ESTEN
-	[^E] T	>	ESTEM
-	[^E] T	>	ESTES
-
-	[^KSSSTXZ]	>	STE	# teuer > teuerste
-	[^KSSSTXZ]	>	STER	# dick > dickster
-	[^KSSSTXZ]	>	STEN	# lahm > lahmsten
-	[^KSSSTXZ]	>	STEM	# teuer	> teuerstem
-	[^KSSSTXZ]	>	STES	# teuer > teuerstes
-
-	N D	>	STE	# wohlhabend > wohlhabendste
-	N D	>	STER
-	N D	>	STEN
-	N D	>	STEM
-	N D	>	STES
-
-	[^N] D	>	ESTE	# wild > wildeste
-	[^N] D	>	ESTER
-	[^N] D	>	ESTEN
-	[^N] D	>	ESTEM
-	[^N] D	>	ESTES
-
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGSTE	# adlig > adeligste
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGSTER
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGSTEN
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGSTEM
-	[^AEIOUHLRA"U"O"] L I G	>	-LIG,ELIGSTES
-
-	[^HI] E R I G	>	-ERIG,RIGSTE	# zitterig > zittrig
-	[^HI] E R I G	>	-ERIG,RIGSTER
-	[^HI] E R I G	>	-ERIG,RIGSTEN
-	[^HI] E R I G	>	-ERIG,RIGSTEM
-	[^HI] E R I G	>	-ERIG,RIGSTES
-
-# a few 'catch all' plural forms:
-# All plurals seem to boil down to one of 'N', 'E', 'P' or 'Q'
-# (or are 'irregular')
-
+flag *D:
+   N    > D
+   N    > DE
+   N    > DEN
+   N    > DER
+   N    > DES
+   N    > DEM
 
 flag *E:
-	.	>	E	# Wind > Winde
+   .    > E
 
+flag F:
+   IN    > NEN
+   E    > -E,IN
+   E    > -E,INNEN
+   [^I]N    > IN
+   [^I]N    > INNEN
+   [^EN]    > IN
+   [^EN]    > INNEN
+   ABE    > -ABE,äBIN  
+   ABE    > -ABE,äBINNEN  
+   ACHS    > -ACHS,äCHSIN  
+   ACHS    > -ACHS,äCHSINNEN  
+   ACHSE    > -ACHSE,äCHSIN  
+   ACHSE    > -ACHSE,äCHSINNEN  
+   AF    > -AF,äFIN  
+   AF    > -AF,äFINNEN  
+   AGER    > -AGER,äGERIN  
+   AGER    > -AGER,äGERINNEN  
+   ALE    > -ALE,äLIN  
+   ALE    > -ALE,äLINNEN  
+   ANKE    > -ANKE,äNKIN  
+   ANKE    > -ANKE,äNKINNEN  
+   APST    > -APST,äPSTIN  
+   APST    > -APST,äPSTINNEN  
+   ARR    > -ARR,äRRIN  
+   ARR    > -ARR,äRRINNEN  
+   ARZT    > -ARZT,äRZTIN  
+   ARZT    > -ARZT,äRZTINNEN  
+   ASE    > -ASE,äSIN  
+   ASE    > -ASE,äSINNEN  
+   AT    > -AT,äTIN
+   AT    > -AT,äTINNEN  
+   ATZE    > -ATZE,äTZIN
+   ATZE    > -ATZE,äTZINNEN  
+   AUER    > -AUER,äUERIN  
+   AUER    > -AUER,äUERINNEN  
+   ERER    > ERIN  
+   ERER    > ERINNEN  
+   INZ    > ESSIN  
+   INZ    > ESSINNEN  
+   MANN    > -MANN,MäNNIN  
+   MANN    > -MANN,MäNNINNEN  
+   SACHSE    > -SACHSE,SäCHSIN  
+   SACHSE    > -SACHSE,SäCHSINNEN  
+   OCH    > -OCH,öCHIN  
+   OCH    > -OCH,öCHINNEN  
+   ORCH    > -ORCH,öRCHIN  
+   ORCH    > -ORCH,öRCHINNEN  
+   OLF    > -OLF,öLFIN  
+   OLF    > -OLF,öLFINNEN  
+   OF    > -OF,öFIN  
+   OF    > -OF,öFINNEN  
+   OSE    > -OSE,öSIN  
+   OSE    > -OSE,öSINNEN  
+   OTT    > -OTT,öTTIN  
+   OTT    > -OTT,öTTINNEN  
+   UCHS    > -UCHS,üCHSIN  
+   UCHS    > -UCHS,üCHSINNEN  
+   UDE    > -UDE,üDIN  
+   UDE    > -UDE,üDINNEN 
+   UND    > -UND,üNDIN  
+   UND    > -UND,üNDINNEN  
+   WALT    > -WALT,WäLTIN  
+   WALT    > -WALT,WäLTINNEN  
 
-flag *f:
-	P H 	>	-PH,F	# Paragraph > Paragraf
-	P H 	>	-PH,FEN
-	P H I E	>	-PHIE,FIE	# Typographie > Typografie #nn
-	P H I E	>	-PHIE,FIEN #nn
+flag H:
+   .    > HEIT
+   .    > HEITEN
 
+flag *I:
+   EN    > -N,
+   ELN    > -ELN,LE
+   ELN    > -N,E
+   ERN    > -ERN,RE
+   ERN    > -N,E
+   E[LR]N    > -N,T
+   [DT]EN    > -N,T
+   [^DIMNT]EN    > -EN,T
+   EIEN    > -EN,T
+   [^E]IEN    > -N,T
+   CHNEN    > -N,T
+   [^C]H[MN]EN    > -EN,T
+   [^AäEHILMNOöUüR][MN]EN    > -N,T
+   [AäEILMNOöUüR][MN]EN    > -EN,T
+   UN    > -N,E
+   UN    > -N,T
+
+flag *J:
+   [BGKPßSZ]ELN    > -N,UNG
+   [BGKPßSZ]ELN    > -N,UNGEN
+   ELN    > -ELN,LUNG
+   ERN    > -N,UNG
+   EN    > -EN,UNG
+   ELN    > -ELN,LUNGEN
+   ERN    > -N,UNGEN
+   EN    > -EN,UNGEN
+   [^N]    > UNG
+   [^N]    > UNGEN
+   EL    > -EL,LUNG
+   EL    > -EL,LUNGEN
+
+flag K:
+   .    > KEIT
+   .    > KEITEN
+
+flag L:
+   N    > TLICH
+   N    > TLICHE
+   N    > TLICHER
+   N    > TLICHES
+   N    > TLICHEM
+   N    > TLICHEN
+   [^N]    > LICH
+   [^N]    > LICHE
+   [^N]    > LICHER
+   [^N]    > LICHES
+   [^N]    > LICHEM
+   [^N]    > LICHEN
+
+flag M:
+   [^S][^S]    > CHEN
+   [^S][^S]    > CHENS
+   [^E]    > CHEN
+   [^E]    > CHENS
+   ASS    > -ASS,äSSCHEN
+   ASS    > -ASS,äSSCHENS
+   OSS    > -OSS,öSSCHEN
+   OSS    > -OSS,öSSCHENS
+   USS    > -USS,üSSCHEN
+   USS    > -USS,üSSCHENS
+   E    > -E,CHEN
+   E    > -E,CHENS
 
 flag *N:
-	.	>	N	# Lampe > Lampen
+   .    > N
 
+flag *O:
+   E[LR]N    > -N,TES
+   [DTW]EN    > -N,TES
+   [^DMNTW]EN    > -EN,TES
+   CHNEN    > -N,TES
+   [^C]H[MN]EN    > -EN,TES
+   [^AäEHILMNOöUüR][MN]EN    > -N,TES
+   [AäEILMNOöUüR][MN]EN    > -EN,TES
+   E[LR]N    > -N,TER
+   [DTW]EN    > -N,TER
+   [^DMNTW]EN    > -EN,TER
+   CHNEN    > -N,TER
+   [^C]H[MN]EN    > -EN,TER
+   [^AäEHILMNOöUüR][MN]EN    > -N,TER
+   [AäEILMNOöUüR][MN]EN    > -EN,TER
+   E[LR]N    > -N,TEM
+   [DTW]EN    > -N,TEM
+   [^DMNTW]EN    > -EN,TEM
+   CHNEN    > -N,TEM
+   [^C]H[MN]EN    > -EN,TEM
+   [^AäEHILMNOöUüR][MN]EN    > -N,TEM
+   [AäEILMNOöUüR][MN]EN    > -EN,TEM
 
 flag *P:
-	.	>	EN	# Tat > Taten
+   .    > EN
+
+flag *Q:
+   S    > -S,SSE
+   S    > -S,SSEN
+   S    > -S,SSES
+
+flag *R:
+   [^E]    > ER
+   [^E]    > ERN
+   E    > R
+   E    > RN
+
+flag *S:
+   [^Sß]    > S
+   ß    > ES
+   SS    > ES
+   [^S]S    > -S,SES
+
+flag *T:
+   .    > ES
+
+flag *W:
+   [^IMN]EN    > -EN,
+   EIEN    > -EN,
+   [^BGHT][MN]EN    > -EN,
+   [^C]HNEN    > -EN,
+   E[LR]N    > -N,
+   [^S]ST    > -ST,
+   SST    > -T,
+   [^S]T    > -T,
+
+flag *X:
+   E[LR]N    > -N,T
+   [DTW]EN    > -N,T
+   EIEN    > -EN,T
+   [^E]IEN    > -N,T
+   [^DITMNW]EN    > -EN,T
+   CHNEN    > -N,T
+   [^C]H[MN]EN    > -EN,T
+   [^AäEHILMNOöUüR][MN]EN    > -N,T
+   [AäEILMNOöUüR][MN]EN    > -EN,T
+   UN    > -N,T
+   TST    > -ST,
+   E[LR]N    > -N,ST
+   [DTW]EN    > -N,ST
+   [^DIMNßSTWZX]EN    > -EN,ST
+   EIEN    > -EN,ST
+   [^E]IEN    > -N,ST
+   CHNEN    > -N,ST
+   [^C]H[MN]EN    > -EN,ST
+   [^AäEHILMNOöUüR][MN]EN    > -N,ST
+   [AäEILMNOöUüR][MN]EN    > -EN,ST
+   UN    > -N,ST
+   [ßSXZ]EN    > -N,ST
+   SSEN    > -N,ST
+   SCHEN    > -N,ST
+   [^SZ]T    > -T,ST
+   ZT    > -T,EST
+
+flag *Y:
+   E[LR]N    > -N,TE
+   [DTW]EN    > -N,TE
+   [^DIMNTW]EN    > -EN,TE
+   EIEN    > -EN,TE
+   [^E]IEN    > -N,TE
+   CHNEN    > -N,TE
+   [^C]H[MN]EN    > -EN,TE
+   [^AäEHILMNOöUüR][MN]EN    > -N,TE
+   [AäEILMNOöUüR][MN]EN    > -EN,TE
+   E[LR]N    > -N,TEST
+   [DTW]EN    > -N,TEST
+   [^DIMNTW]EN    > -EN,TEST
+   EIEN    > -EN,TEST
+   [^E]IEN    > -N,TEST
+   CHNEN    > -N,TEST
+   [^C]H[MN]EN    > -EN,TEST
+   [^AäEHILMNOöUüR][MN]EN    > -N,TEST
+   [AäEILMNOöUüR][MN]EN    > -EN,TEST
+   E[LR]N    > -N,TET
+   [DTW]EN    > -N,TET
+   [^DIMNTW]EN    > -EN,TET
+   EIEN    > -EN,TET
+   [^E]IEN    > -N,TET
+   CHNEN    > -N,TET
+   [^C]H[MN]EN    > -EN,TET
+   [^AäEHILMNOöUüR][MN]EN    > -N,TET
+   [AäEILMNOöUüR][MN]EN    > -EN,TET
+   E[LR]N    > -N,TEN
+   [DTW]EN    > -N,TEN
+   [^DIMNTW]EN    > -EN,TEN
+   EIEN    > -EN,TEN
+   [^E]IEN    > -N,TEN
+   CHNEN    > -N,TEN
+   [^C]H[MN]EN    > -EN,TEN
+   [^AäEHILMNOöUüR][MN]EN    > -N,TEN
+   [AäEILMNOöUüR][MN]EN    > -EN,TEN
+
+flag *Z:
+   [^HßSZ]    > ST
+   [^C]H    > ST
+   [^S]CH    > ST
+   [DFKSTZ]    > EST
+   CH    > EST
+   [AU]ß    > EST
+   IEß    > EST
+   [IO]SS    > EST
+   [^DT]    > T
+   [DTGB]    > ET
+   E    > N
+   IE    > EN
+   [^E]    > EN
+
+flag *f:
+   PH    > -PH,F
+   PH    > -PH,FEN
+   PHIE    > -PHIE,FIE
+   PHIE    > -PHIE,FIEN
+
+flag *m:
+   ACH    > -ACH,äCHER
+   ACH    > -ACH,äCHERE
+   ACH    > -ACH,äCHEREN
+   ACH    > -ACH,äCHEREM
+   ACH    > -ACH,äCHERER
+   ACH    > -ACH,äCHERES
+   ACH    > -ACH,äCHSTE
+   ACH    > -ACH,äCHSTEN
+   ACH    > -ACH,äCHSTEM
+   ACH    > -ACH,äCHSTEN
+   ACH    > -ACH,äCHSTES
+   AH    > -AH,äHER
+   AH    > -AH,äHERE
+   AH    > -AH,äHEREN
+   AH    > -AH,äHEREM
+   AH    > -AH,äHERER
+   AH    > -AH,äHERES
+   AH    > -AH,äHSTE
+   AH    > -AH,äHSTEN
+   AH    > -AH,äHSTEM
+   AH    > -AH,äHSTEN
+   AH    > -AH,äHSTES
+   ALT    > -ALT,äLTER
+   ALT    > -ALT,äLTERE
+   ALT    > -ALT,äLTEREN
+   ALT    > -ALT,äLTEREM
+   ALT    > -ALT,äLTERER
+   ALT    > -ALT,äLTERES
+   ALT    > -ALT,äLTESTE
+   ALT    > -ALT,äLTESTEN
+   ALT    > -ALT,äLTESTEM
+   ALT    > -ALT,äLTESTEN
+   ALT    > -ALT,äLTESTES
+   ARG    > -ARG,äRGER
+   ARG    > -ARG,äRGERE
+   ARG    > -ARG,äRGEREN
+   ARG    > -ARG,äRGEREM
+   ARG    > -ARG,äRGERER
+   ARG    > -ARG,äRGERES
+   ARG    > -ARG,äRGESTE
+   ARG    > -ARG,äRGESTEN
+   ARG    > -ARG,äRGESTEM
+   ARG    > -ARG,äRGESTEN
+   ARG    > -ARG,äRGESTES
+   ASS    > -ASS,äSSER
+   ASS    > -ASS,äSSERE
+   ASS    > -ASS,äSSEREN
+   ASS    > -ASS,äSSEREM
+   ASS    > -ASS,äSSERER
+   ASS    > -ASS,äSSERES
+   ASS    > -ASS,äSSESTE
+   ASS    > -ASS,äSSESTEN
+   ASS    > -ASS,äSSESTEM
+   ASS    > -ASS,äSSESTEN
+   ASS    > -ASS,äSSESTES
+   Aß    > -Aß,äSSER
+   Aß    > -Aß,äSSERE
+   Aß    > -Aß,äSSEREN
+   Aß    > -Aß,äSSEREM
+   Aß    > -Aß,äSSERER
+   Aß    > -Aß,äSSERES
+   Aß    > -Aß,äSSESTE
+   Aß    > -Aß,äSSESTEN
+   Aß    > -Aß,äSSESTEM
+   Aß    > -Aß,äSSESTEN
+   Aß    > -Aß,äSSESTES
+   ANG    > -ANG,äNGER
+   ANG    > -ANG,äNGERE
+   ANG    > -ANG,äNGEREN
+   ANG    > -ANG,äNGEREM
+   ANG    > -ANG,äNGERER
+   ANG    > -ANG,äNGERES
+   ANG    > -ANG,äNGSTE
+   ANG    > -ANG,äNGSTEN
+   ANG    > -ANG,äNGSTEM
+   ANG    > -ANG,äNGSTEN
+   ANG    > -ANG,äNGSTES
+   ANK    > -ANK,äNKER
+   ANK    > -ANK,äNKERE
+   ANK    > -ANK,äNKEREN
+   ANK    > -ANK,äNKEREM
+   ANK    > -ANK,äNKERER
+   ANK    > -ANK,äNKERES
+   ANK    > -ANK,äNKSTE
+   ANK    > -ANK,äNKSTEN
+   ANK    > -ANK,äNKSTEM
+   ANK    > -ANK,äNKSTEN
+   ANK    > -ANK,äNKSTES
+   ARK    > -ARK,äRKER
+   ARK    > -ARK,äRKERE
+   ARK    > -ARK,äRKEREN
+   ARK    > -ARK,äRKEREM
+   ARK    > -ARK,äRKERER
+   ARK    > -ARK,äRKERES
+   ARK    > -ARK,äRKSTE
+   ARK    > -ARK,äRKSTEN
+   ARK    > -ARK,äRKSTEM
+   ARK    > -ARK,äRKSTEN
+   ARK    > -ARK,äRKSTES
+   ARM    > -ARM,äRMER
+   ARM    > -ARM,äRMERE
+   ARM    > -ARM,äRMEREN
+   ARM    > -ARM,äRMEREM
+   ARM    > -ARM,äRMERER
+   ARM    > -ARM,äRMERES
+   ARM    > -ARM,äRMSTE
+   ARM    > -ARM,äRMSTEN
+   ARM    > -ARM,äRMSTEM
+   ARM    > -ARM,äRMSTEN
+   ARM    > -ARM,äRMSTES
+   ART    > -ART,äRTER
+   ART    > -ART,äRTERE
+   ART    > -ART,äRTEREN
+   ART    > -ART,äRTEREM
+   ART    > -ART,äRTERER
+   ART    > -ART,äRTERES
+   ART    > -ART,äRTESTE
+   ART    > -ART,äRTESTEN
+   ART    > -ART,äRTESTEM
+   ART    > -ART,äRTESTEN
+   ART    > -ART,äRTESTES
+   Oß    > -Oß,öSSER
+   Oß    > -Oß,öSSERE
+   Oß    > -Oß,öSSEREN
+   Oß    > -Oß,öSSEREM
+   Oß    > -Oß,öSSERER
+   Oß    > -Oß,öSSERES
+   Oß    > -Oß,öSSTE
+   Oß    > -Oß,öSSTEN
+   Oß    > -Oß,öSSTEM
+   Oß    > -Oß,öSSTEN
+   Oß    > -Oß,öSSTES
+   Oß    > -Oß,ößER
+   Oß    > -Oß,ößERE
+   Oß    > -Oß,ößEREN
+   Oß    > -Oß,ößEREM
+   Oß    > -Oß,ößERER
+   Oß    > -Oß,ößERES
+   Oß    > -Oß,ößTE
+   Oß    > -Oß,ößTEN
+   Oß    > -Oß,ößTEM
+   Oß    > -Oß,ößTEN
+   Oß    > -Oß,ößTES
+   OCH    > -OCH,öHER
+   OCH    > -OCH,öHERE
+   OCH    > -OCH,öHEREN
+   OCH    > -OCH,öHEREM
+   OCH    > -OCH,öHERER
+   OCH    > -OCH,öHERES
+   OCH    > -OCH,öHSTE
+   OCH    > -OCH,öHSTEN
+   OCH    > -OCH,öHSTEM
+   OCH    > -OCH,öHSTEN
+   OCH    > -OCH,öHSTES
+   UG    > -UG,üGER
+   UG    > -UG,üGERE
+   UG    > -UG,üGEREN
+   UG    > -UG,üGEREM
+   UG    > -UG,üGERER
+   UG    > -UG,üGERES
+   UG    > -UG,üGSTE
+   UG    > -UG,üGSTEN
+   UG    > -UG,üGSTEM
+   UG    > -UG,üGSTEN
+   UG    > -UG,üGSTES
+   UMM    > -UMM,üMMER
+   UMM    > -UMM,üMMERE
+   UMM    > -UMM,üMMEREN
+   UMM    > -UMM,üMMEREM
+   UMM    > -UMM,üMMERER
+   UMM    > -UMM,üMMERES
+   UMM    > -UMM,üMMSTE
+   UMM    > -UMM,üMMSTEN
+   UMM    > -UMM,üMMSTEM
+   UMM    > -UMM,üMMSTEN
+   UMM    > -UMM,üMMSTES
+   UNG    > -UNG,üNGER
+   UNG    > -UNG,üNGERE
+   UNG    > -UNG,üNGEREN
+   UNG    > -UNG,üNGEREM
+   UNG    > -UNG,üNGERER
+   UNG    > -UNG,üNGERES
+   UNG    > -UNG,üNGSTE
+   UNG    > -UNG,üNGSTEN
+   UNG    > -UNG,üNGSTEM
+   UNG    > -UNG,üNGSTEN
+   UNG    > -UNG,üNGSTES
+   URZ    > -URZ,üRZER
+   URZ    > -URZ,üRZERE
+   URZ    > -URZ,üRZEREN
+   URZ    > -URZ,üRZEREM
+   URZ    > -URZ,üRZERER
+   URZ    > -URZ,üRZERES
+   URZ    > -URZ,üRZESTE
+   URZ    > -URZ,üRZESTEN
+   URZ    > -URZ,üRZESTEM
+   URZ    > -URZ,üRZESTEN
+   URZ    > -URZ,üRZESTES
+
+
+flag *n:
+   .    > IG
+   .    > IGE
+   .    > IGER
+   .    > IGEN
+   .    > IGEM
+
+
+flag *o:
+   .    > E
+   .    > ER
+   .    > EN
+   .    > EM
+   .    > ES
+   .    > ERE
+   .    > ERER
+   .    > ERES
+   .    > EREM
+   .    > STE
+   .    > STEM
+   .    > STEN
+   .    > STER
+   .    > ESTE
+   .    > ESTEM
+   .    > ESTEN
+   .    > ESTER
 
 
 flag *p:
-# this is for some irregular plural forms with vowel -> umlaut conversions
-	A U F	>	-AUF,A"UFE	# Lauf > Läufe
-	A U F	>	-AUF,A"UFEN
-	H A U S	>	-AUS,A"USER		# Haus > Häuser
-	H A U S	>	-AUS,A"USERN
-	M A R K T	>	-ARKT,A"RKTE	# Markt > Märkte
-	M A R K T	>	-ARKT,A"RKTEN
-	A N G	>	-ANG,A"NGE	# Gang > Gänge
-	A N G	>	-ANG,A"NGEN
-	O SS	>	-OSS,O"SSE	# Stoß > Stöße #swiss-convert
-	O SS	>	-OSS,O"SSEN	#swiss-convert
-	A U M	>	-AUM,A"UME	# Raum > Räume
-	A U M	>	-AUM,A"UMEN
-	A G	>	-AG,A"GE	# Betrag > Beträge
-	A G	>	-AG,A"GEN
-	U G	>	-UG,U"GE	# Zug > Züge
-	U G	>	-UG,U"GEN
-#	A N D	>	-AND,A"NDE	#... ??? TODO ???
-#	A N D	>	-AND,A"NDEN	#... ???
-	A L L	>	-ALL,A"LLE	# Fall > Fälle
-	A L L	>	-ALL,A"LLEN
-	A SS	>	-ASS,A"SSE	# Pass > Pässe
-	A SS	>	-ASS,A"SSEN
-	U SS	>	-USS,U"SSE	# Nuss > Nüsse
-	U SS	>	-USS,U"SSEN
-#  be carefull with Erlass, Fass, Hass, Kompass, ???,
-#  Stuss, ..druss, ???        ... they don't pluralize via the /p flag !
-
-
-flag *R:
-	[^E]	>	ER	# Licht > Lichter
-	[^E]	>	ERN
-	E	>	R	# Beamte > Beamter
-
-
-flag *S:
-	.	>	S	# Wolfgang > Wolfgangs
-
-
-flag *q:	# for feminin nouns who don't have -SSES like `Erlaubnisses'
-	S	>	-S,SSE	# Erlaubnis > Erlaubnisse
-	S	>	-S,SSEN	# Erlaubnis > Erlaubnissen
-
-
-flag *Q:	
-	S	>	-S,SSE	# Geheimnis > Geheimnisse
-	S	>	-S,SSEN	# Geheimnis > Geheimnissen
-	S	>	-S,SSES	# Geheimnis > Geheimnisses
-
-
-########
-
-# Genitiv seperate -s and -es, many words may take them both! (Muts, Mutes)
-flag *T:
-	.	>	ES	# Platz	> Platzes
-				# Reis	> Reises
-
-# verbs:
-
-flag *J: 	# -ung (verb -> noun)
-# capitalization problem revisited!
-	E L N	>	-ELN,LUNG	# handeln > Handlung #nn
-	E R N	>	-N,UNG	# wandern > Wanderung
-	E N	>	-EN,UNG	# reiben > Reibung
-	E L N	>	-ELN,LUNGEN	# handeln > Handlungen #nn
-	E R N	>	-N,UNGEN	# wandern > Wanderungen
-	E N	>	-EN,UNGEN	# reiben > Reibungen
-	[^N] 	>	UNG	# Bild > Bildung
-	[^N] 	>	UNGEN	# Abbild > Abbildungen
-#	E L	>	-EL,LUNG	# Drossel > Drosslung #qqq
-#	E L	>	-EL,LUNGEN	#qqq
-	E L	>	-EL,LUNG	# Drossel > Drosslung #nnn
-	E L	>	-EL,LUNGEN	#nnn
-
-
-flag B: 	# -bar	(verb -> adj.):
-	E [LR] N	>	-N,BAR	# wundern > wunderbar
-	E [LR] N	>	-N,BARE
-	E [LR] N	>	-N,BAREN
-	E [LR] N	>	-N,BARER
-	E [LR] N	>	-N,BARES
-	E [LR] N	>	-N,BAREM
-	E N	>	-EN,BAR	# halten > haltbar
-	E N	>	-EN,BARE
-	E N	>	-EN,BAREN
-	E N	>	-EN,BARER
-	E N	>	-EN,BARES
-	E N	>	-EN,BAREM
-
-
-flag *D:	# -d..	(verb -> Partizip Präs.):
-	N	>	D	# schlafen > schlafend
-	N	>	DE
-	N	>	DEN
-	N	>	DER
-	N	>	DES
-	N	>	DEM
-
-
-flag *W:
-# Du-form imperative endings
-	[^IMN] E N	>	-EN,-	# reimen > reim
-	E I E N	>	-EN,-	# schreien > schrei
-					# aber nicht: knien > kni
-	[^BGHT] [MN] E N	>	-EN,-	# rennen > renn
-	[^C] H N E N	>	-EN,-	# dehnen	> dehn
-
-	E L N	>	-N,-	# lächeln > lächel
-	E R N	>	-N,-	# nähern > näher
-					# otherwise: ich-ending below
-# Du-form imperative endings from du- or er/sie/es-form:
-	S T	>	-ST,-	# trittst > tritt
-	[^S] T	>	-T,-	# nimmt > nimm
-
-#
-# Present tense:
-#
-# ich, ihr-forms are seperated from du,er/sie/es-forms.
-# Many (starke) verbs can only build the ich,ihr-form from the infinitive.
-#	tragen/I > trage, tragt
-#
-# Also flag X is sometimes useful for past tense of Konjunktiv:
-#	abnahmen/X > abnahmst, abnahmt
-#
-# For present tense regular (schwache) verbs, I and X will go together.
-#
-flag *I:
-# ich
-	E N	>	-N,-	# kommen > komme
-#	E L N 	>	-ELN,QQLE	# lächeln > lächle #qqq
-	E L N 	>	-ELN,LE	# lächeln > lächle #nnn
-	E L N	>	-N,E	# auch: lächeln > lächele
-	E R N	>	-ERN,RE	# wandern > wandre
-	E R N	>	-N,E	# auch: nähern > nähere
-
-# Ihr-form endings (redundant with er/sie/es most of the time)
-	E [LR] N	>	-N,T	# lächeln > lächelt
-	[DT] E N	>	-N,T
-	[^DIMNT] E N	>	-EN,T	# schaff"|t
-
-	E I E N	>	-EN,T	# schreien > schreit
-	[^E] I E N	>	-N,T	# knien > kniet
-
-	C H N E N	>	-N,T
-	[^C] H [MN] E N	>	-EN,T	# nehmen > nehmt
-
-
-	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,T
-	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,T
-
-# special treatment for 'tun': (worthwile?)
-	U N	>	-N,E	# tun > ich tue
-	U N	>	-N,T	# tun > er tut
-
-
-flag *X:	# other present tense verb endings:
-# Er/sie/es-form endings
-	E [LR] N	>	-N,T	# lächeln > lächelt
-	[DTW] E N	>	-N,T	# arbeiten > arbeitet
-	E I E N	>	-EN,T	# schreien > schreit
-# old form:
-#    E I E N	>	-N,T	# schreien > schreiet
-
-	[^E] I E N	>	-N,T	# knien > kniet
-	[^DITMNW] E N	>	-EN,T	# leben > lebt
-
-	C H N E N	>	-N,T	# rechnen > rechnet
-	[^C] H [MN] E N	>	-EN,T	# ahnen > ahnt
-
-	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,T	# atmen > atmet
-	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,T	# lernen > lernt
-
-
-# old fashioned imperative and ihr- form:
-#	[BFGHKLMNPRSVX] E N	>	-N,T	# lernen > lernet
-
-	U N 	>	-N, T	# tun > tut
-# old fashioned form:
-#	U N	>	-N, ET	# tun > tuet
-
-# Er/sie/es-form ending from Du-form:
-	T S T	>	-ST,-	# trittst > tritt
-
-# Du-form endings
-	E [LR] N	>	-N,ST	# nähern > näherst
-	[DTW] E N	>	-N,ST	# arbeiten > arbeitest
-	[^DIMNSSSTWZX] E N	>	-EN,ST	# leben > lebst
-
-	E I E N	>	-EN,ST	# schreien > schreist
-	[^E] I E N	>	-N,ST	# knien > kniest
-
-	C H N E N	>	-N,ST	# rechnen > rechnest
-	[^C] H [MN] E N	>	-EN,ST	# ahnen > ahnst
-
-	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,ST	# atmen > atmest
-	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,ST	# lernen > lernst
-
-	U N	>	-N, ST	# tun > tust
-
-	[SSSXZ] E N	>	-N,ST	# heißen > heißest
-
-#   alternate form for -schen:
-	S C H E N	>	-N,ST	# wischen > wischest
-
-
-# Du-form ending from Er/sie/es-form:
-	[^SZ] T	>	-T,ST	# nimmt > nimmst
-	Z T	>	-T,EST	# schmilzt > schmilzest
-
-
-flag *Y:
-# Past-tense ich/er/sie/es-form endings
-	E [LR] N	>	-N,TE	# lächeln > lächelte
-	[DTW] E N	>	-N,TE	# arbeiten > arbeitete
-	[^DIMNTW] E N	>	-EN,TE	# leben > lebte
-
-	E I E N		>	-EN,TE	# freien > freite
-	[^E] I E N	>	-N,TE	# knien > kniete
-
-	C H N E N	>	-N,TE	# rechnen > rechnete
-	[^C] H [MN] E N	>	-EN,TE	# ahnen > ahnte
-
-	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,TE	# atmen > atmete
-	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TE	# lernen > lernte
-
-# Past-tense du-form endings
-	E [LR] N	>	-N,TEST	# lächeln > lächeltest
-	[DTW] E N	>	-N,TEST # arbeiten > arbeitetest
-	[^DIMNTW] E N	>	-EN,TEST	# leben > lebtest
-
-	E I E N	>	-EN,TEST	# freien > freitest
-	[^E] I E N	>	-N,TEST	# knien > knietest
-
-	C H N E N	>	-N,TEST 	# rechnen > rechnetest
-	[^C] H [MN] E N	>	-EN,TEST	# ahnen > ahntest
-
-	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,TEST	# atmen > atmetest
-	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TEST	# lernen > lerntest
-
-# Past-tense ihr-form endings
-	E [LR] N	>	-N,TET	# nähern > nähertet
-	[DTW] E N		>	-N,TET	# rasten > rastetet
-	[^DIMNTW] E N	>	-EN,TET	# rasen > rastet
-
-	E I E N	>	-EN,TET	# freien > freitet
-	[^E] I E N	>	-N,TET	# knien > knietet
-
-	C H N E N	>	-N,TET	# rechnen > rechnetet
-	[^C] H [MN] E N	>	-EN,TET # ahnen > ahntet
-
-	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,TET	# atmen > atmetet
-	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TET	# lernen > lerntet
-
-# Past-tense sie/Sie-form endings
-	E [LR] N	>	-N, TEN	# lächeln > lächelten
-	[DTW] E N	>	-N, TEN	# arbeiten > arbeiteten
-	[^DIMNTW] E N	>	-EN,TEN	# leben > lebten
-
-	E I E N	>	-EN,TEN	# freien > freiten
-	[^E] I E N	>	-N,TEN	# knien > knieten
-
-	C H N E N	>	-N, TEN	# rechnen > rechneten
-	[^C] H [MN] E N	>	-EN,TEN	# ahnen	> ahnten
-
-	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N, TEN	# atmen > atmeten
-	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TEN	# lernen > lernten
-
-
-# Past-tense endings for non-regular verbs and Konjunktiv forms from ich-form:
-flag *Z:
-# er/sie/es = ich
-# du
-	[^HSSSZ]	>	ST	# wusste > wusstest
-	[^C] H	>	ST	# floh > flohest
-	[^S] C H	>	ST	# wich > wichst
-# CH,D,F,K and T may also have an 'e' before 'st':
-	[DFKSTZ]	>	EST	# riet > rietest
-# There are verbs which don't have the -chest form below, such as 'brachst'
-# or 'rochst'.	Then use 'brachen/WX', which is only slightly less elegant.
-	C H	>	EST	# wusch > wuschest
-	[AU] SS	>	EST	# aß > aßest #swiss-convert
-	I E SS	>	EST	# ließ > ließt #swiss-convert
-	[IO] SS	>	EST	# goss > gossest
-
-# ihr
-	[^DT]	>	T	# wüsste > wüsstet
-	[DT]	>	ET	# riet > rietet
-#   If you insist on all past tense ihr-forms ending in -et,
-#   here is how to do it:
-#   [ I didn't check if this is 'normal' or not, but it seems somewhat
-#     old-fashioned to me.  ]
-#	.	>	ET	# hob > hobet
-#				# schoss > schosset
-
-# wir/sie
-	E	>	N	# hatte > hatten
-	I E 	>	EN	# auch: schrie > schrieen
-	[^E]	>	EN	# nahm > nahmen
-
-
-flag *O:
-#
-# Partizip dekliniert: Wie  verarbeiten -> verarbeiteter
-#
-# This is similar to flag Y,  but will not necessaryly apply
-# to all verbs which have regular (Y) past tense form.
-#
-# The forms to be generated are the same as for the A flag
-# (which could be used with a different stem to do the same thing).
-#
-# flag *Y wil already produce the -e, -en forms.
-#
-# -tes
-	E [LR] N	>	-N,TES	# vererben > vererbtes
-	[DTW] E N	>	-N,TES
-	[^DMNTW] E N	>	-EN,TES
-
-	C H N E N	>	-N,TES
-	[^C] H [MN] E N	>	-EN,TES
-
-	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,TES
-	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TES
-# -ter		# Wie erzielen > erzielter
-	E [LR] N	>	-N,TER
-	[DTW] E N	>	-N,TER
-	[^DMNTW] E N	>	-EN,TER
-
-	C H N E N	>	-N,TER
-	[^C] H [MN] E N	>	-EN,TER
-
-	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,TER
-	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TER
-# -tem		# Wie verfluchen > verfluchtem
-	E [LR] N	>	-N,TEM
-	[DTW] E N	>	-N,TEM
-	[^DMNTW] E N	>	-EN,TEM
-
-	C H N E N	>	-N,TEM
-	[^C] H [MN] E N	>	-EN,TEM
-
-	[^AA"EHILMNOO"UU"R] [MN] E N	>	-N,TEM
-	[AA"EILMNOO"UU"R] [MN] E N	>	-EN,TEM
-
+   A    > -A,EN
+   AAL    > -AAL,ÄLE
+   AAL    > -AAL,ÄLEN
+   AAL    > -AAL,äLE
+   AAL    > -AAL,äLEN
+   AB    > -AB,äBE
+   AB    > -AB,äBEN
+   ABEN    > -ABEN,äBEN
+   ABEL    > -ABEL,äBEL
+   ABEL    > -ABEL,äBELN
+   ACH    > -ACH,äCHE
+   ACH    > -ACH,äCHEN
+   ACHT    > -ACHT,äCHTE
+   ACHT    > -ACHT,äCHTEN
+   ACHS    > -ACHS,äCHSE
+   ACHS    > -ACHS,äCHSEN
+   ACK    > -ACK,äCKE
+   ACK    > -ACK,äCKEN
+   ADT    > -ADT,äDTE
+   ADT    > -ADT,äDTEN
+   ADE    > -ADE,äDE
+   ADE    > -ADE,äDEN
+   ADEN    > -ADEN,äDEN
+   AFEL    > -AFEL,äFEL
+   AFEL    > -AFEL,äFELN
+   AGEL    > -AGEL,äGEL
+   AGEL    > -AGEL,äGELN
+   AGEN    > -AGEN,äGEN
+   AFEN    > -AFEN,äFEN
+   AFT    > -AFT,äFTE
+   AFT    > -AFT,äFTEN
+   AG    > -AG,äGE
+   AG    > -AG,äGEN
+   AGEN    > -AGEN,äGEN
+   AHL    > -AHL,äHLE
+   AHL    > -AHL,äHLEN
+   AHN    > -AHN,äHNE
+   AHN    > -AHN,äHNEN
+   AHT    > -AHT,äHTE
+   AHT    > -AHT,äHTEN
+   AL    > -AL,äLE
+   AL    > -AL,äLEN
+   ALER    > -ALER,äLER
+   ALER    > -ALER,äLERN
+   ALG    > -ALG,äLGE
+   ALG    > -ALG,äLGEN
+   ALL    > -ALL,äLLE
+   ALL    > -ALL,äLLEN
+   ALS    > -ALS,äLSE
+   ALS    > -ALS,äLSEN
+   ALT    > -ALT,äLTE
+   ALT    > -ALT,äLTEN
+   AMM    > -AMM,äMME
+   AMM    > -AMM,äMMEN
+   AMMER    > -AMMER,äMMER
+   AMMER    > -AMMER,äMMERN
+   AMS    > -AMS,äMSE
+   AMS    > -AMS,äMSEN
+   AMPF    > -AMPF,äMPFE
+   AMPF    > -AMPF,äMPFEN
+   AN    > -AN,äNE
+   AN    > -AN,äNEN
+   ANAL    > -ANAL,ANäLE
+   ANAL    > -ANAL,ANäLEN
+   AND    > -AND,äNDE
+   AND    > -AND,äNDEN
+   ANDEL    > -ANDEL,äNDEL
+   ANDEL    > -ANDEL,äNDELN
+   ANG    > -ANG,äNGE
+   ANG    > -ANG,äNGEN
+   ANGEL    > -ANGEL,äNGEL
+   ANGEL    > -ANGEL,äNGELN
+   ANGEL    > -ANGEL,ÄNGEL
+   ANGEL    > -ANGEL,ÄNGELN
+   ANGST    > -ANGST,ÄNGSTE
+   ANGST    > -ANGST,ÄNGSTEN
+   ANGST    > -ANGST,äNGSTE
+   ANGST    > -ANGST,äNGSTEN
+   ANFT    > -ANFT,äNFTE
+   ANFT    > -ANFT,äNFTEN
+   ANK    > -ANK,äNKE
+   ANK    > -ANK,äNKEN
+   ANKER    > -ANKER,äNKER
+   ANKER    > -ANKER,äNKERN
+   ANS    > -ANS,äNSE
+   ANS    > -ANS,äNSEN
+   ANST    > -ANST,äNSTE
+   ANST    > -ANST,äNSTEN
+   ANTEL    > -ANTEL,äNTEL
+   ANTEL    > -ANTEL,äNTELN
+   ANZ    > -ANZ,äNZE
+   ANZ    > -ANZ,äNZEN
+   APF    > -APF,äPFE
+   APF    > -APF,äPFEN
+   APFEN    > -APFEN,äPFEN
+   APS    > -APS,äPSE
+   APS    > -APS,äPSEN
+   APST    > -APST,äPSTE
+   APST    > -APST,äPSTEN
+   APFE    > -APFE,äPFE
+   APFE    > -APFE,äPFEN
+   APFEL    > -APFEL,äPFEL
+   APFEL    > -APFEL,äPFELN
+   APFEL    > -APFEL,ÄPFEL
+   APFEL    > -APFEL,ÄPFELN
+   AR    > -AR,äRE
+   AR    > -AR,äREN
+   ARG    > -ARG,äRGE
+   ARG    > -ARG,äRGEN
+   ARG    > -ARG,ÄRGE
+   ARG    > -ARG,ÄRGEN
+   ARK    > -ARK,äRKE
+   ARK    > -ARK,äRKEN
+   ARKT    > -ARKT,äRKTE
+   ARKT    > -ARKT,äRKTEN
+   ARM    > -ARM,äRME
+   ARM    > -ARM,äRMEN
+   ARM    > -ARM,ÄRME
+   ARM    > -ARM,ÄRMEN
+   ART    > -ART,äRTE
+   ART    > -ART,äRTEN
+   ARTEN    > -ARTEN,äRTEN
+   ASSER    > -ASSER,äSSER
+   ASSER    > -ASSER,äSSERN
+   AST    > -AST,äSTE
+   AST    > -AST,äSTEN
+   AST    > -AST,ÄSTE
+   AST    > -AST,ÄSTEN
+   ASTEN    > -ASTEN,äSTEN
+   ARSCH    > -ARSCH,äRSCHE
+   ARSCH    > -ARSCH,äRSCHEN
+   ARSCH    > -ARSCH,ÄRSCHE
+   ARSCH    > -ARSCH,ÄRSCHEN
+   ARZT    > -ARZT,äRZTE
+   ARZT    > -ARZT,äRZTEN
+   ARZT    > -ARZT,ÄRZTE
+   ARZT    > -ARZT,ÄRZTEN
+   AS    > -AS,äSE
+   AS    > -AS,äSEN
+   ASS    > -ASS,äSSE
+   ASS    > -ASS,äSSEN
+   Aß    > -Aß,ASSES
+   Aß    > -Aß,äßE
+   Aß    > -Aß,äßEN
+   ASTEN    > -ASTEN,äSTEN
+   AT    > -AT,äTE
+   AT    > -AT,äTEN
+   ATER    > -ATER,äTER
+   ATER    > -ATER,äTERN
+   ATT    > -ATT,äTTE
+   ATT    > -ATT,äTTEN
+   ATTEL    > -ATTEL,äTTEL
+   ATTEL    > -ATTEL,äTTELN
+   ATZ    > -ATZ,äTZE
+   ATZ    > -ATZ,äTZEN
+   AU    > -AU,äUE
+   AU    > -AU,äUEN
+   AUCH    > -AUCH,äUCHE
+   AUCH    > -AUCH,äUCHEN
+   AUF    > -AUF,äUFE
+   AUF    > -AUF,äUFEN
+   AUFE    > -AUFE,äUFE
+   AUFE    > -AUFE,äUFEN
+   AUL    > -AUL,äULE
+   AUL    > -AUL,äULEN
+   AUM    > -AUM,äUME
+   AUM    > -AUM,äUMEN
+   AUN    > -AUN,äUNE
+   AUN    > -AUN,äUNEN
+   AUS    > -AUS,äUSE
+   AUS    > -AUS,äUSEN
+   AUS    > -AUS,äUSE
+   AUS    > -AUS,äUSEN
+   AUSS    > -AUSS,äUSSE
+   AUSS    > -AUSS,äUSSEN
+   AUSCH    > -AUSCH,äUSCHE
+   AUSCH    > -AUSCH,äUSCHEN
+   AUST    > -AUST,äUSTE
+   AUST    > -AUST,äUSTEN
+   AUT    > -AUT,äUTE
+   AUT    > -AUT,äUTEN
+   AXT    > -AXT,äXTE
+   AXT    > -AXT,äXTEN
+   AXT    > -AXT,ÄXTE
+   AXT    > -AXT,ÄXTEN
+   ENS    > -ENS,ENTIA
+   ENS    > -ENS,ENZIEN
+   Eß    > -Eß,ESSES
+   IS    > -IS,EN
+   IRMA    > -IRMA,IRMEN
+   IUM    > -IUM,IEN
+   IUM    > -IUM,IEN
+   O    > -O,EN
+   OCH    > -OCH,öCHE
+   OCH    > -OCH,öCHEN
+   OCHTER    > -OCHTER,öCHTER
+   OCHTER    > -OCHTER,öCHTERN
+   OCK    > -OCK,öCKE
+   OCK    > -OCK,öCKEN
+   OF    > -OF,öFE
+   OF    > -OF,öFEN
+   OG    > -OG,öGE
+   OG    > -OG,öGEN
+   OGT    > -OGT,öGTE
+   OGT    > -OGT,öGTEN
+   OGEL    > -OGEL,öGEL
+   OGEL    > -OGEL,öGELN
+   ODEN    > -ODEN,öDEN
+   OFEN    > -OFEN,öFEN
+   OGEN    > -OGEN,öGEN
+   OH    > -OH,öHE
+   OH    > -OH,öHEN
+   OHN    > -OHN,öHNE
+   OHN    > -OHN,öHNEN
+   OHR    > -OHR,öHRE
+   OHR    > -OHR,öHREN
+   OLF    > -OLF,öLFE
+   OLF    > -OLF,öLFEN
+   OLL    > -OLL,öLLE
+   OLL    > -OLL,öLLEN
+   OM    > -OM,öME
+   OM    > -OM,öMEN
+   ON    > -ON,öNE
+   ON    > -ON,öNEN
+   OOG    > -OOG,öGE
+   OOG    > -OOG,öGEN
+   OPF    > -OPF,öPFE
+   OPF    > -OPF,öPFEN
+   OPS    > -OPS,öPSE
+   OPS    > -OPS,öPSEN
+   OR    > -OR,öRE
+   OR    > -OR,öREN
+   ORB    > -ORB,öRBE
+   ORB    > -ORB,öRBEN
+   ORCH    > -ORCH,öRCHE
+   ORCH    > -ORCH,öRCHEN
+   ORUS    > -ORUS,öRE
+   ORUS    > -ORUS,öREN
+   OSCH    > -OSCH,öSCHE
+   OSCH    > -OSCH,öSCHEN
+   OSTER    > -OSTER,öSTER
+   OSTER    > -OSTER,öSTERN
+   OSS    > -OSS,öSSE
+   OSS    > -OSS,öSSEN
+   Oß    > -Oß,öSSE
+   Oß    > -Oß,öSSEN
+   Oß    > -Oß,ößE
+   Oß    > -Oß,ößEN
+   OT    > -OT,öTE
+   OT    > -OT,öTEN
+   OTZ    > -OTZ,öTZE
+   OTZ    > -OTZ,öTZEN
+   UB    > -UB,üBE
+   UB    > -UB,üBEN
+   UCH    > -UCH,üCHE
+   UCH    > -UCH,üCHEN
+   UCHS    > -UCHS,üCHSE
+   UCHS    > -UCHS,üCHSEN
+   UCHT    > -UCHT,üCHTE
+   UCHT    > -UCHT,üCHTEN
+   UCK    > -UCK,üCKE
+   UCK    > -UCK,üCKEN
+   UDER    > -UDER,üDER
+   UDER    > -UDER,üDERN
+   UFT    > -UFT,üFTE
+   UFT    > -UFT,üFTEN
+   UG    > -UG,üGE
+   UG    > -UG,üGEN
+   UH    > -UH,üHE
+   UH    > -UH,üHEN
+   UHL    > -UHL,üHLE
+   UHL    > -UHL,üHLEN
+   ULST    > -ULST,üLSTE
+   ULST    > -ULST,üLSTEN
+   UMPF    > -UMPF,üMPFE
+   UMPF    > -UMPF,üMPFEN
+   UND    > -UND,üNDE
+   UND    > -UND,üNDEN
+   UNG    > -UNG,üNGE
+   UNG    > -UNG,üNGEN
+   UNFT    > -UNFT,üNFTE
+   UNFT    > -UNFT,üNFTEN
+   UNK    > -UNK,üNKE
+   UNK    > -UNK,üNKEN
+   UNKT    > -UNKT,üNKTE
+   UNKT    > -UNKT,üNKTEN
+   UNST    > -UNST,üNSTE
+   UNST    > -UNST,üNSTEN
+   UNSCH    > -UNSCH,üNSCHE
+   UNSCH    > -UNSCH,üNSCHEN
+   UPF    > -UPF,üPFE
+   UPF    > -UPF,üPFEN
+   UPS    > -UPS,üPSE
+   UPS    > -UPS,üPSEN
+   UR    > -UR,üRE
+   UR    > -UR,üREN
+   URF    > -URF,üRFE
+   URF    > -URF,üRFEN
+   URM    > -URM,üRME
+   URM    > -URM,üRMEN
+   URZ    > -URZ,üRZE
+   URZ    > -URZ,üRZEN
+   URSCHT    > -URSCHT,üRSCHTE
+   URSCHT    > -URSCHT,üRSCHTEN
+   URST    > -URST,üRSTE
+   URST    > -URST,üRSTEN
+   UT    > -UT,üTE
+   UT    > -UT,üTEN
+   USCH    > -USCH,üSCHE
+   USCH    > -USCH,üSCHEN
+   USS    > -USS,üSSE
+   USS    > -USS,üSSEN
+   UST    > -UST,üSTE
+   UST    > -UST,üSTEN
+   Uß    > -Uß,üßE
+   Uß    > -Uß,üßEN
+   Uß    > -Uß,üSSE
+   Uß    > -Uß,üSSEN
+   UTTER    > -UTTER,üTTER
+   UTTER    > -UTTER,üTTERN
+
+flag *q:
+   SS    > -SS,SSE
+   SS    > -SS,SSES
+   SS    > -SS,SSEN
+   ß    > -ß,SSE
+   ß    > -ß,SSES
+   ß    > -ß,SSEN
+
+
+flag *r:
+   AU    > -AU,AUTEN
+   ON    > -ON,EN
+   OS    > -OS,EN
+   UM    > -UM,EN
+   US    > -US,EN
+
+flag *s:
+   ACH    > -ACH,äCHER
+   ACH    > -ACH,äCHERN
+   ACK    > -ACK,äCKER
+   ACK    > -ACK,äCKERN
+   AD    > -AD,äDER
+   AD    > -AD,äDERN
+   AL    > -AL,äLER
+   AL    > -AL,äLERN
+   ALB    > -ALB,äLBER
+   ALB    > -ALB,äLBERN
+   ALD    > -ALD,äLDER
+   ALD    > -ALD,äLDERN
+   ALT    > -ALT,äLTER
+   ALT    > -ALT,äLTERN
+   AMM    > -AMM,äMMER
+   AMM    > -AMM,äMMERN
+   AMS    > -AMS,äMSER
+   AMS    > -AMS,äMSERN
+   AMT    > -AMT,äMTER
+   AMT    > -AMT,äMTERN
+   AND    > -AND,äNDER
+   AND    > -AND,äNDERN
+   ANK    > -ANK,äNKER
+   ANK    > -ANK,äNKERN
+   ANN    > -ANN,äNNER
+   ANN    > -ANN,äNNERN
+   AS    > -AS,äSER
+   AS    > -AS,äSERN
+   Aß    > -Aß,äSSER
+   Aß    > -Aß,äSSERN
+   ASS    > -ASS,äSSER
+   ASS    > -ASS,äSSERN
+   ATT    > -ATT,äTTER
+   ATT    > -ATT,äTTERN
+   AUCH    > -AUCH,äUCHER
+   AUCH    > -AUCH,äUCHERN
+   AUL    > -AUL,äULER
+   AUL    > -AUL,äULERN
+   AUPT    > -AUPT,äUPTER
+   AUPT    > -AUPT,äUPTERN
+   AUS    > -AUS,äUSER
+   AUS    > -AUS,äUSERN
+   AUT    > -AUT,äUTER
+   AUT    > -AUT,äUTERN
+   IEH    > -IEH,IECHER
+   OCH    > -OCH,öCHER
+   OCH    > -OCH,öCHERN
+   OLK    > -OLK,öLKER
+   OLK    > -OLK,öLKERN
+   OLZ    > -OLZ,öLZER
+   OLZ    > -OLZ,öLZERN
+   ORF    > -ORF,öRFER
+   ORF    > -ORF,öRFERN
+   ORN    > -ORN,öRNER
+   ORN    > -ORN,öRNERN
+   ORT    > -ORT,öRTER
+   ORT    > -ORT,öRTERN
+   OTT    > -OTT,öTTER
+   OTT    > -OTT,öTTERN
+   Oß    > -Oß,öSSES
+   Oß    > -Oß,öSSER
+   Oß    > -Oß,öSSERN
+   OSS    > -OSS,öSSES
+   OSS    > -OSS,öSSER
+   OSS    > -OSS,öSSERN
+   OTT    > -OTT,öTTER
+   OTT    > -OTT,öTTERN
+   UCH    > -UCH,üCHER
+   UCH    > -UCH,üCHERN
+   UHN    > -UHN,üHNER
+   UHN    > -UHN,üHNERN
+   UM    > -UM,üMER
+   UM    > -UM,üMERN
+   URM    > -URM,üRMER
+   URM    > -URM,üRMERN
+   UT    > -UT,üTER
+   UT    > -UT,üTERN
+
+flag *t:
+   E    > NS
+
+flag *u:
+   UM    > -UM,A
+   US    > -US,I
+   ON    > -ON,A
+   O    > -O,EN
+   E    > -E,I
+   A    > -A,E
+
+flag *v:
+   US    > -US,IER
+   IS    > -IS,EN
+   AS    > -AS,EN
+   OS    > -OS,EN
+   NS    > -S,ZIEN
+   NS    > -S,TEN
+   NS    > -S,TIA
+   IV    > A
+   ON    > -ON,EN
+   STA    > -STA,STEN
+
+flag *w:
+   Y    > -Y,IES
+   Y    > -Y,YS
+   IS    > -IS,IDEN
+   IX    > -IX,IZES
+   IX    > -IX,ICES
+   EX    > -EX,IZES
+   EX    > -EX,ICES
+   O    > -O,I
+   S    > -S,ZIEN
+   ENS    > -S,TIA
+   [BLPRZGS]    > IEN
+   E    > -E,IEN
+   E    > -E,IA
+   EN    > -EN,INA
+   MAN    > -MAN,MEN
+   MAN    > -MAN,MEN
+
+REP 52
+REP f ph
+REP ph f
+REP ß ss
+REP ss ß
+REP s ss
+REP ss s
+REP i ie
+REP ie i
+REP ee e
+REP e ee
+REP o oh
+REP oh o
+REP a ah
+REP ah a
+REP e eh
+REP eh e
+REP ue ü
+REP ü ue
+REP oe ö
+REP ö oe
+REP ae ä
+REP ä ae
+REP ou o
+REP o ou
+REP d t
+REP t d
+REP g k
+REP k g
+REP rr r
+REP r  rr
+REP ei ie
+REP ie ei
+REP ai ia
+REP ia ai
+REP ao oa
+REP oa ao
+REP au ua
+REP ua au
+REP eo oe
+REP oe eo
+REP eu ue
+REP ue eu
+REP äu uä
+REP uä äu
+REP eu ue
+REP ue eu
+REP ou uo
+REP uo ou
+REP üe ü
+REP ü üe
+REP öe ö
+REP ö öe
