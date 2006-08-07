@@ -86,10 +86,14 @@ module ODDB
 				}
 			end
 			def data
-				{
+				data = {
 					:name	=>	@name,
 					:dose	=>	self.dose,
 				}
+        if(@atc_class)
+          data.store(:atc_class, @atc_class)
+        end
+        data
 			end
 			def dose
 				@dose || if(match = DOSE_PATTERN.match(name.to_s))
@@ -102,6 +106,7 @@ module ODDB
 			def dup
 				dp = ParsedSequence.new
 				dp.name = @name
+        dp.atc_class = @atc_class
 				dp
 			end
 		end
@@ -132,6 +137,7 @@ module ODDB
 			if(path = (manual_download || get_latest_file))
 				update_registrations(registrations_from_xls(path))
 				FileUtils.cp(path, @latest_path) 
+        @app.rebuild_atc_chooser
 			end
 		end
 		def extract_latest_filepath(html)
@@ -266,7 +272,9 @@ module ODDB
 				reg.ikscat = row_at(row, 3)
         reg.out_of_trade = row_at(row, 9) == 'x'
 				reg.company = row_at(row, 10)
-        reg.expiration_date = row_at(row, 11)
+        if((date = row_at(row, 11)) && date.is_a?(Date))
+          reg.expiration_date = date
+        end
 				seq = ParsedSequence.new
         seq.atc_class = row_at(row, 12)
         seqs = [seq]
@@ -307,6 +315,14 @@ module ODDB
 				end
 			end
 		end
+    def update_atc_class(seq)
+      if((code = seq.atc_class) \
+         && !(atc = @app.atc_class(code)))
+        begin
+          atc = @app.create(Persistence::Pointer.new([:atc_class, code]))
+        end while((code = atc.parent_code) && !@app.atc_class(code))
+      end
+    end
 		def update_company(data)
 			if((name = data.delete(:company)) && !name.empty?)
 				company = @app.company_by_name(name)
@@ -379,6 +395,7 @@ module ODDB
 		end
 		def update_sequence(seq, reg_pointer)
 			pointer = reg_pointer + [:sequence, seq.seqnr]
+      update_atc_class(seq)
 			sequence = @app.update(pointer.creator, seq.data, :swissmedic)
 			seq.packages.each_value { |pack| update_package(pack, pointer) }
 			seq.active_agents.each { |act| 
