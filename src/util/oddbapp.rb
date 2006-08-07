@@ -682,20 +682,10 @@ class OddbPrevalence
 	end
 	def rebuild_atc_chooser
 		chooser = ODDB::AtcNode.new(nil)
-		@atc_classes.values.sort_by { |atc| 
-			atc.code 
-		}.each { |atc|
+		@atc_classes.sort.each { |key, atc| 
 			chooser.add_offspring(ODDB::AtcNode.new(atc))
 		}
 		@atc_chooser = chooser
-	end
-	def rebuild_atc_chooser
-		@atc_chooser = ODDB::AtcNode.new(nil)
-		@atc_classes.values.sort_by { |atc| 
-			atc.code 
-		}.each { |atc|
-			@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
-		}
 	end
 	def recent_registration_count
 		@recent_registration_count ||= count_recent_registrations()
@@ -960,7 +950,7 @@ class OddbPrevalence
 	end
 	def sequences
 		@registrations.values.inject([]) { |seq, reg| 
-			seq + reg.sequences.values 
+			seq.concat(reg.sequences.values)
 		}
 	end
 	def set_currency_rate(symbol, value)
