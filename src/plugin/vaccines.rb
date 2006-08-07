@@ -35,7 +35,8 @@ module ODDB
 		XLS_PATH = '/files/pdf/B3.1.35-d.xls'
 		SIZE_PATTERN  = /(?:(?:(\d+(?:[.,]\d+)?)\s*x\s*)?(\d+(?:[.,]\d+)?))?\s*([^\d\s]*)$/
 		class ParsedRegistration
-			attr_accessor :iksnr, :indication, :company, :ikscat, :out_of_trade
+			attr_accessor :iksnr, :indication, :company, :ikscat, :out_of_trade, 
+        :expiration_date
 			attr_reader :sequences
 			def initialize
 				@sequences = []
@@ -60,20 +61,16 @@ module ODDB
 				data = {
 					:generic_type => :vaccine,
 				}
-				if(@indication)
-					data.store(:indication, @indication)
-				end
-				if(@company)
-					data.store(:company, @company)
-				end
-				if(@ikscat)
-					data.store(:ikscat, @ikscat)
-				end
+        [:indication, :company, :ikscat, :expiration_date].each { |key|
+          if(val = self.send(key))
+            data.store(key, val)
+          end
+        }
 				data
 			end
 		end
 		class ParsedSequence
-			attr_accessor :name, :seqnr
+			attr_accessor :name, :seqnr, :atc_class
 			attr_reader :packages, :active_agents
 			attr_writer :dose
 			
@@ -155,6 +152,9 @@ module ODDB
 				if(File.exist?(@latest_path))
 					latest = File.read(@latest_path)
 				end
+        if(download[-1] != ?\n)
+          download << "\n"
+        end
 				if(download != latest)
 					target = File.join(ARCHIVE_PATH, 'xls',
 														 @@today.strftime('vaccines-%Y.%m.%d.xls'))
@@ -266,7 +266,9 @@ module ODDB
 				reg.ikscat = row_at(row, 3)
         reg.out_of_trade = row_at(row, 9) == 'x'
 				reg.company = row_at(row, 10)
+        reg.expiration_date = row_at(row, 11)
 				seq = ParsedSequence.new
+        seq.atc_class = row_at(row, 12)
         seqs = [seq]
         name = row_at(row, 0)
         if(match = /^(.*?)(\d+)\/(\d+)$/.match(name))
@@ -297,6 +299,8 @@ module ODDB
 			if(cell = row.at(index))
 				if(cell.type == :numeric)
 					cell.to_f
+        elsif(cell.type == :date)
+          cell.date
 				else
 					val = cell.to_s(ENCODING)
 					val unless val.empty?

@@ -25,6 +25,15 @@ module ODDB
 				super()
 			end
 		end
+    class DateCell
+      attr_reader :date
+      def initialize(date)
+        @date = date
+      end
+      def type
+        :date
+      end
+    end
 		def setup
 			@app = FlexMock.new
 			@plugin = VaccinePlugin.new(@app)
@@ -50,18 +59,20 @@ module ODDB
 			row = [nil, EncodedString.new('* Art. 17 HMG  -  Behördliche Chargenfreigabe erforderlich (Auskunft Tel. 031 324 88 20/Impfstoffe oder 031 324 90 35/Blutprodukte)')]
 			assert_nil(@plugin.parse_worksheet_row(row))
 		end
-		def test_parse_worksheet_row_7
+		def test_parse_worksheet_row_8
 			row = [EncodedString.new('Handelsname'), EncodedString.new('Zul.-Nr.')]
 			assert_nil(@plugin.parse_worksheet_row(row))
 		end
-		def test_parse_worksheet_row_8
+		def test_parse_worksheet_row_9
 			indication = EncodedString.new('Wiederherstellung und Erhaltung des Kreislaufvolumens, wenn ein Volumendefizit festgestellt wurde und die Verwendung eines Kolloids angezeigt ist')
+      date = Date.new(2008,3,10)
 			row = [
 				EncodedString.new('Albumin Human Octapharma 20%'), 
 				EncodedString.new('55536'), indication, EncodedString.new('B'),
 				EncodedString.new('x'), EncodedString.new('x'), EncodedString.new('x'),
 				EncodedString.new(''), EncodedString.new(''), EncodedString.new(''),
-				EncodedString.new('Octapharma AG') 
+				EncodedString.new('Octapharma AG'), DateCell.new(date),
+				EncodedString.new('B05AA01') 
 			]
 			reg, seqs = @plugin.parse_worksheet_row(row)
       seq = seqs.first
@@ -69,10 +80,12 @@ module ODDB
 			assert_equal('55536', reg.iksnr)
 			assert_equal('B', reg.ikscat)
 			assert_equal(indication, reg.indication)
+      assert_equal(date, reg.expiration_date)
 			assert_equal('Octapharma AG', reg.company)
 			assert_instance_of(VaccinePlugin::ParsedSequence, seq)
 			assert_equal('Albumin Human Octapharma 20%', seq.name)
 			assert_equal(Dose.new(20, '%'), seq.dose)
+			assert_equal('B05AA01', seq.atc_class)
 		end
 		def test_parse_worksheet_row__rhophylac
 			indication = EncodedString.new('Prophylaxe der Rhesusimmunisierung')
@@ -81,7 +94,7 @@ module ODDB
 				EncodedString.new('53609'), indication, EncodedString.new('B'),
 				EncodedString.new('x'), EncodedString.new('x'), EncodedString.new('x'),
 				EncodedString.new(''), EncodedString.new(''), EncodedString.new('x'),
-				EncodedString.new('ZLB Behring AG'), Date.new(2010,12,31)
+				EncodedString.new('ZLB Behring AG'), DateCell.new(Date.new(2010,12,31))
 			]
 			reg, seqs = @plugin.parse_worksheet_row(row)
       seq1, seq2 = seqs
