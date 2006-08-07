@@ -16,9 +16,9 @@ class Sequences < State::Drugs::Global
 	DIRECT_EVENT = :sequences
 	LIMITED = true
 	def index_lookup(range)
-		sequences = @session.search_sequences(range, false) 
-		sequences.delete_if { |seq| seq.public_packages.empty? }
-		sequences
+		@session.search_sequences(range, false).select { |seq|
+		  seq.has_public_packages? 
+    }
 	end
 	def sequences
 		if(@range == user_range)

@@ -16,7 +16,9 @@ class Vaccines < State::Drugs::Global
 	DIRECT_EVENT = :vaccines
 	LIMITED = true
 	def index_lookup(range)
-		@session.search_vaccines(range)
+		@session.search_vaccines(range).select { |seq|
+		  seq.has_public_packages? 
+    }
 	end
 	def vaccines
 		if(@range == user_range)
