@@ -276,7 +276,9 @@ module ODDB
           reg.expiration_date = date
         end
 				seq = ParsedSequence.new
-        seq.atc_class = row_at(row, 12)
+        if(atc = row_at(row, 12))
+          seq.atc_class = atc.gsub(/[^A-Z0-9]/, '')
+        end
         seqs = [seq]
         name = row_at(row, 0)
         if(match = /^(.*?)(\d+)\/(\d+)$/.match(name))
