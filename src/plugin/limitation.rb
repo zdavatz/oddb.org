@@ -19,7 +19,8 @@ module ODDB
 		end
 	end
 	class GeneralLimitationResult < LimitationResult
-		ACCEPTABLE_LINKS = ['5501.htm', '5810.htm', '4875.htm','5900.htm', '4665.htm']
+		ACCEPTABLE_LINKS = ['5501.htm', '5810.htm', '4875.htm','5900.htm', 
+			'4665.htm', '6037.htm']
 		def acceptable?
 			@par_count == 1 || ACCEPTABLE_LINKS.include?(@link)
 		end
