@@ -3517,7 +3517,7 @@ Zeno Davatz
 				[0,0]		=>	:limitation_text,
 				[1,0]		=>  :fachinfo,
 				[2,0]		=>	:patinfo,
-				[3,0]		=>	:narcotic,
+				[3,0,0]	=>	:narcotic,
 				[3,0,1]	=>	:complementary_type,
 				[3,0,2]	=>	:comarketing,
 				[4,0,0]	=>	'result_item_start',
