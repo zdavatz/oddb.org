@@ -26,10 +26,10 @@ class HospitalInnerComposite < HtmlGrid::Composite
 	include VCardMethods
 	include AddressMap
 	COMPONENTS = {
-		[0,0]			=>	:business_unit_header,
-		[0,0,1]		=>	:nbsp,
-		[0,0,2]		=>	:business_unit,
-		[0,1]		=>	:ean13_header,
+		[0,0,0]	=>	:business_unit_header,
+		[0,0,1]	=>	:nbsp,
+		[0,0,2]	=>	:business_unit,
+		[0,1,0]	=>	:ean13_header,
 		[0,1,1]	=>	:nbsp,
 		[0,1,2]	=>	:ean13,
 		[0,2]			=>	:address_header,
@@ -136,7 +136,7 @@ end
 class HospitalComposite < HtmlGrid::Composite
 	include VCardMethods
 	COMPONENTS = {
-		[0,0]		=>	:title,
+		[0,0,0]	=>	:title,
 		[0,0,1]	=>	:nbsp,
 		[0,0,2]	=>	:firstname,
 		[0,0,3]	=>	:nbsp,
@@ -157,7 +157,7 @@ class HospitalComposite < HtmlGrid::Composite
 end
 class RootHospitalComposite < HospitalComposite
 	COMPONENTS = {
-		[0,0]		=>	:title,
+		[0,0,0]	=>	:title,
 		[0,0,1]	=>	:nbsp,
 		[0,0,2]	=>	:firstname,
 		[0,0,3]	=>	:nbsp,

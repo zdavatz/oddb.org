@@ -13,8 +13,8 @@ module ODDB
 class SearchRegistrations < View::Form
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
-		[0,0] => :search_query,
-		[0,0,1]=>:submit
+		[0,0,0] => :search_query,
+		[0,0,1] => :submit,
 	}
 	EVENT = :search_registrations
 	FORM_METHOD = 'GET'

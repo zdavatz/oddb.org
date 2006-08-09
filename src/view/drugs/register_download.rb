@@ -79,9 +79,9 @@ class RegisterDownloadComposite < HtmlGrid::Composite
 	include View::PayPal::InvoiceMethods
 	include View::DataDeclaration
 	COMPONENTS = {
-		[0,0]		=>	"export_csv",
-		[0,0,0]	=>	'dash_separator',
-		[0,0,1]	=>	:data_declaration,
+		[0,0,0]	=>	"export_csv",
+		[0,0,1]	=>	'dash_separator',
+		[0,0,2]	=>	:data_declaration,
 		[0,1]		=>	"export_csv_descr",
 		[0,2]		=>	RegisterDownloadForm,
 		[1,2]		=>	:invoice_items,
@@ -114,9 +114,9 @@ class RegisterInvoicedDownloadComposite < HtmlGrid::Composite
 	include View::PayPal::InvoiceMethods
 	include View::DataDeclaration
 	COMPONENTS = {
-		[0,0]		=>	"export_csv",
-		[0,0,0]	=>	'dash_separator',
-		[0,0,1]	=>	:data_declaration,
+		[0,0,0]	=>	"export_csv",
+		[0,0,1]	=>	'dash_separator',
+		[0,0,2]	=>	:data_declaration,
 		[0,1]		=>	:invoice_descr,
 		[0,2]		=>	:invoice_items,
 		[0,3]		=>	RegisterInvoicedDownloadForm,

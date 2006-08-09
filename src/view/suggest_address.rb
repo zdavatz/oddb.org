@@ -83,7 +83,7 @@ class SuggestAddressForm < View::Form
 end
 class SuggestAddressComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]		=>	'suggest_addr_title',
+		[0,0,0]	=>	'suggest_addr_title',
 		[0,0,1]	=>	:fullname,
 		[0,1]		=>	SuggestAddressForm,
 	}

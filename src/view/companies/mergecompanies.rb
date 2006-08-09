@@ -15,9 +15,9 @@ class MergeCompaniesForm < View::Form
 	include HtmlGrid::ErrorMessage
 	LABELS = false
 	COMPONENTS = {
-		[0,0,1] =>	'merge_companies_form',
-		[1,0,2]	=>	:company_form,
-		[1,1]		=>	:submit,
+		[0,0] =>	'merge_companies_form',
+		[1,0]	=>	:company_form,
+		[1,1]	=>	:submit,
 	}
 	EVENT = 'merge'
 	SYMBOL_MAP = {

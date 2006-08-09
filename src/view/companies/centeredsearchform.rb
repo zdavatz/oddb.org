@@ -13,7 +13,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,1]		=>	View::CenteredSearchForm,
 		[0,2]		=>	'companies_search_explain', 
 		[0,3]		=>	View::CenteredNavigation,
-		[0,4]		=>	:company_count,
+		[0,4,0]	=>	:company_count,
 		[0,4,1]	=>	'company_count_text',
 		[0,4,2]	=>	'comma_separator',
 		[0,4,3]	=>	'database_last_updated_txt',

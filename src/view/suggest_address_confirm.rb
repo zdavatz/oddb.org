@@ -31,7 +31,7 @@ end
 class AddressConfirmComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
-		[0,0]		=>	'suggest_addr_title',
+		[0,0,0]	=>	'suggest_addr_title',
 		[0,0,1]	=>	:fullname,
 		[0,1]	  =>	AddressSent,
 	}

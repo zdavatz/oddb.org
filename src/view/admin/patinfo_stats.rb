@@ -17,7 +17,7 @@ module ODDB
 class CompanyHeader < HtmlGrid::Composite
 	include View::AdditionalInformation
 	COMPONENTS = {
-		[0,0] => :name,
+		[0,0,0] => :name,
 		[0,0,1] => 'nbsp',
 		[0,0,2] => 'total',
 		[0,0,3] => 'nbsp',

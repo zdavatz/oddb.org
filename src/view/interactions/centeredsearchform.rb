@@ -15,7 +15,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,3]		=>	'interaction_search_explain2', 
 		[0,4]		=>	'interaction_search_explain3', 
 		[0,6]		=>	View::CenteredNavigation,
-		[0,7]		=>	:database_size,
+		[0,7,0]	=>	:database_size,
 		[0,7,1]	=>	'database_size_text',
 		[0,7,2]	=>	'comma_separator',
 		[0,7,3]	=>	:substance_count,

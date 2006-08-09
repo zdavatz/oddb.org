@@ -57,8 +57,8 @@ class PackageForm < View::Form
 		[0,6]		=>	:deductible,
 		[2,6]		=>	:lppv,
 		[0,7]		=>	:out_of_trade,
-		[1,8]		=>	:submit,
-		[1,8,0]	=>	:delete_item,
+		[1,8,0]	=>	:submit,
+		[1,8,1]	=>	:delete_item,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,4,6]	=>	'standard',

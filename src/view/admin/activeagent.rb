@@ -38,8 +38,8 @@ class ActiveAgentForm < View::Form
 		[2,1]		=>	:chemical_dose,
 		[0,2]		=>	:equivalent_substance,
 		[2,2]		=>	:equivalent_dose,
-		[1,3]		=>	:submit,
-		[1,3,0]	=>	:delete_item,
+		[1,3,0]	=>	:submit,
+		[1,3,1]	=>	:delete_item,
 		[1,4]		=>	:new_active_agent_button,
 	}
 	COMPONENT_CSS_MAP = {

@@ -100,9 +100,9 @@ class BasketForm < View::Form
 	}
 	COMPONENTS = {
 		[0,0]		=>	:interaction_basket_count,
-		[0,1]		=>	'interaction_basket_explain',
+		[0,1,0]	=>	'interaction_basket_explain',
 		[0,1,1]	=>  :pub_med_search_link,
-		[1,1]		=>	:search_query,
+		[1,1,0]	=>	:search_query,
 		[1,1,1]	=>	:submit,
 		[0,2]		=>	View::Interactions::BasketSubstrates,
 		[0,3]		=>	:clear_interaction_basket,

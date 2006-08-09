@@ -122,9 +122,9 @@ class EmptyCompareComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]		=>	'compare_title_no_atc',
 		[0,1]		=>	:compare_desc0_no_atc,
-		[0,2]		=>	:compare_desc1_no_atc,
-		[0,2,0]	=>	:ywesee_contact_email,
-		[0,2,1]	=>	'point',
+		[0,2,0]	=>	:compare_desc1_no_atc,
+		[0,2,1]	=>	:ywesee_contact_email,
+		[0,2,2]	=>	'point',
 	}
 	CSS_MAP = {
 		[0,0]			=>	'th',

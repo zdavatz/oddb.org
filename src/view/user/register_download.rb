@@ -92,9 +92,9 @@ class RegisterDownloadComposite < HtmlGrid::Composite
 	include View::PayPal::InvoiceMethods
 	include View::DataDeclaration
 	COMPONENTS = {
-		[0,0]	=>	"register_download",
-		[0,0,0]	=>	'dash_separator',
-		[0,0,1]	=>	:data_declaration,
+		[0,0,0]	=>	"register_download",
+		[0,0,1]	=>	'dash_separator',
+		[0,0,2]	=>	:data_declaration,
 		[0,1]	=>	"register_download_descr",
 		[0,2]	=>	:register_download_form,
 		[1,2]	=>	:invoice_items,

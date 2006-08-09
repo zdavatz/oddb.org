@@ -12,7 +12,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,1]		=>	View::CenteredSearchForm,
 		[0,2]		=>	'hospitals_search_explain', 
 		[0,3]		=>	View::CenteredNavigation,
-		[0,5]		=>	:hospitals_count,
+		[0,5,0]	=>	:hospitals_count,
 		[0,5,1]	=>	'hospital_count_text',
 		[0,5,2]	=>	'comma_separator',
 		[0,5,6]	=>	'database_last_updated_txt',

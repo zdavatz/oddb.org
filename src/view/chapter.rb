@@ -121,8 +121,8 @@ module ODDB
     class EditChapterForm < Form
       COMPONENTS = {
         [0,0]  =>  :heading,
-        [1,1]    =>  :toolbar,
-        [0,2,1]  =>  :edit_chapter,
+        [1,1]  =>  :toolbar,
+        [0,2,1]=>  :edit_chapter,
         [1,3]  =>  :submit,
       }
       LABELS = true

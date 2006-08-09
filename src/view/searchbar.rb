@@ -35,8 +35,8 @@ class SearchBar < HtmlGrid::InputText
 end
 class SelectSearchForm < View::Form
 	COMPONENTS = {
-		[0,0]	=>	:search_query,
-		[0,0,0]	=>	:search_type,
+		[0,0,0]	=>	:search_query,
+		[0,0,1]	=>	:search_type,
 	}
 	SYMBOL_MAP = {
 		:search_query	=>	View::SearchBar,	

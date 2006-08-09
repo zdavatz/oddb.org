@@ -19,7 +19,7 @@ module ODDB
 			}
 			COMPONENTS = {
 				[0,0]		=>	View::Logo,
-				[1,0]		=>	:sponsor,
+				[1,0,0]	=>	:sponsor,
 				[1,0,1]	=>	"break",
 				[1,0,2]	=>	"home_welcome",
 				[1,0,3]	=>	:welcome,

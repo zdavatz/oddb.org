@@ -21,7 +21,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,0]		=>	:language_chooser,
 		[0,1]		=>	View::Admin::CenteredSearchForm,
 		[0,3]		=>	View::CenteredNavigation,
-		[0,4]		=>	:database_size,
+		[0,4,0]	=>	:database_size,
 		[0,4,1]	=>	'database_size_text',
 		[0,4,2]	=>	'comma_separator',
 		[0,4,3]	=>	'database_last_updated_txt',

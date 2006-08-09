@@ -12,7 +12,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,0]		=>	:language_chooser,
 		[0,1]		=>	View::CenteredSearchForm,
 		[0,2]		=>	'analysis_search_explain',
-		[0,3]		=>	:analysis_count,
+		[0,3,0]	=>	:analysis_count,
 		[0,3,1]	=>	'analysis_count',
 		[0,4]		=>	View::CenteredNavigation,
 	#	[0,4]		=>	'download_analysis0',
