@@ -54,8 +54,8 @@ class SelectSearchForm < View::Form
 end
 class SearchForm < View::Form
 	COMPONENTS = {
-		[0,0]	=>	:search_query,
-		[0,0,0]	=>	:submit,
+		[0,0,0]	=>	:search_query,
+		[0,0,1]	=>	:submit,
 	}
 	CSS_CLASS = 'right'
 	EVENT = :search
