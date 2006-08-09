@@ -209,7 +209,7 @@ class RegistrationForm < View::Form
 				[0,10]	=>	'fi_upload_instruction2',
 				[1,10]	=>	:fachinfo_upload,
 				[0,11]	=>	'fi_upload_instruction3',
-				[1,11]	=>	:submit,
+				[1,11,0]=>	:submit,
 				[1,11,1]=>	:new_registration,
 			})
       colspan_map.store([3,8], 3)
