@@ -33,6 +33,9 @@ class PackageInnerComposite < HtmlGrid::Composite
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
+  LOOKANDFEEL_MAP = {
+    :descr  =>  :description,
+  }
 	SYMBOL_MAP = {
 		:sl_entry	=>	HtmlGrid::BooleanValue,
 	}
@@ -65,6 +68,9 @@ class PackageForm < View::Form
 		[0,0,4,8]	=>	'list',
 	}
 	LABELS = true
+  LOOKANDFEEL_MAP = {
+    :descr  =>  :description,
+  }
 	SYMBOL_MAP = {
 		:deductible				=>	HtmlGrid::Select,
 		:price_exfactory	=>	HtmlGrid::InputCurrency,
