@@ -1,21 +1,25 @@
 #!/usr/bin/env ruby
 # Analysis::Position -- oddb.org -- 12.06.2006 -- sfrischknecht@ywesee.com
 
+require 'util/language'
 require 'util/searchterms'
 require 'model/analysis/permission'
 require 'model/feedback_observer'
+require 'model/text'
 
 module ODDB
 	module Analysis
 		class Position
 			include FeedbackObserver
 			include Persistence
-			ODBA_SERIALIZABLE = ['@permissions']
-			attr_accessor :taxpoints, :limitation, :list_title,
-				:description, :anonymous, :footnote,
-				:anonymousgroup, :anonymouspos, :lab_areas,
-				:taxnumber, :taxnote, :analysis_revision, :finding,
-				:poscd, :group, :taxpoint_type, :permissions
+			include SimpleLanguage
+			ODBA_SERIALIZABLE = ['@descriptions']
+			attr_accessor :taxpoints, :anonymous, :anonymousgroup,
+				:anonymouspos, :lab_areas, :taxnumber,
+				:analysis_revision, :finding, :poscd, :group,
+				:taxpoint_type
+			attr_reader :limitation_text, :footnote, :list_title, 
+				:taxnote, :permissions
 			alias	:pointer_descr :poscd
 			def initialize(poscd)
 				@positions = {}
@@ -26,14 +30,67 @@ module ODDB
 			def code
 				[groupcd, @poscd].join('.')
 			end
+			def create_footnote
+				@footnote = Text::Document.new
+			end
+			def create_limitation_text
+				@limitation_text = LimitationText.new
+			end
+			def create_list_title
+				@list_title = Text::Document.new
+			end
+			def create_permissions
+				@permissions = Text::Document.new
+			end
+			def create_taxnote
+				@taxnote = Text::Document.new
+			end
+			def delete_footnote
+				if(fn = @footnote)
+					@footnote = nil
+					fn
+				end
+			end
+			def delete_limitation_text
+				if(lt = @limitation_text)
+					@limitation_text = nil
+					lt
+				end
+			end
+			def delete_list_title
+				if(title = @list_title)
+					@list_title = nil
+					title
+				end
+			end
+			def delete_permissions
+				if(perm = @permissions)
+					@permissions = nil
+					perm
+				end
+			end
+			def delete_taxnote
+				if(tn = @taxnote)
+					@taxnote = nil
+					tn
+				end
+			end
 			def groupcd
 				@group.groupcd
 			end
-			def search_terms
-				terms = [@list_title]
-				terms.concat(@list_title.split(' '))
-				terms.concat(@list_title.split('/'))
-				terms.concat(@description.split(' '))
+			def search_terms(language)
+				terms = [@list_title, @taxnote, @footnote,
+					@limitation_text, self].compact.collect { |doc|
+					doc.send(language).split(/\s+/)
+				}
+				if(@permissions)
+					@permissions.send(language).each { |perm|
+						if(rest = perm.restriction)
+							terms.concat(rest.split(' '))
+						end
+						terms.concat(perm.specialization.split(' '))
+					}
+				end
 				terms.push(groupcd, code)
 				ODDB.search_terms(terms)
 			end

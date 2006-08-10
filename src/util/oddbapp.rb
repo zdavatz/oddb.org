@@ -749,11 +749,17 @@ class OddbPrevalence
 		puts "finished refactoring addresses"
 		$stdout.flush
 	end
-	def search_analysis(key)
-		ODBA.cache.retrieve_from_index("analysis_index", key)
+	def search_analysis(key, lang)
+		if(lang == 'en')
+			lang = 'de'
+		end
+		ODBA.cache.retrieve_from_index("analysis_index_#{lang}", key)
 	end
-	def search_analysis_alphabetical(query)
-		index_name = "analysis_alphabetical_index"
+	def search_analysis_alphabetical(query, lang)
+		if(lang == 'en')
+			lang = 'de'
+		end
+		index_name = "analysis_alphabetical_index_#{lang}"
 		ODBA.cache.retrieve_from_index(index_name, query)
 	end
 	def search_oddb(query, lang)
@@ -1612,6 +1618,36 @@ module ODDB
 		ensure
       YUS_SERVER.logout(session)
     end
+		def multilinguify_analysis
+			@system.analysis_positions.each { |pos|
+				if(fn = pos.footnote)
+					pos.instance_variable_set('@footnote', nil)
+					ptr = pos.pointer + :footnote
+					@system.update(ptr.creator, {:de => fn})
+				end
+				if(lt = pos.list_title)
+					pos.instance_variable_set('@list_title', nil)
+					ptr = pos.pointer + :list_title
+					@system.update(ptr.creator, {:de => lt})
+				end
+				if(tn = pos.taxnote)
+					pos.instance_variable_set('@taxnote', nil)
+					ptr = pos.pointer + :taxnote
+					@system.update(ptr.creator, {:de => tn})
+				end
+				if(perm = pos.permissions)
+					pos.instance_variable_set('@permissions', nil)
+					ptr = pos.pointer + :permissions
+					@system.update(ptr.creator, {:de => perm})
+				end
+				if(lim = pos.instance_variable_get('@limitation'))
+					pos.instance_variable_set('@limitation', nil)
+					ptr = pos.pointer + :limitation_text
+					@system.update(ptr.creator, {:de => lim})
+				end
+				pos.odba_store
+			}
+		end
 	end
 end
 

@@ -7,8 +7,9 @@ module ODDB
 	module AnalysisParse
 		class Parser
 			FOOTNOTE_PTRN = /^\s*_*\s*(\d|\*)\s*_*\s*[^\d\*\.]+/m
+			FOOTNOTE_TYPE = :footnote
 			LINE_PTRN = /^\s*([CNS]|N,\s*ex|TP)?\s*\d{4}\.\d{2,}\s*[\d\*]/
-			STOPCHARS = ';.'
+			STOPCHARS = ";.\n"
 			attr_reader :footnotes
 			attr_accessor :list_title, :permission, :taxpoint_type
 			def initialize
@@ -22,8 +23,12 @@ module ODDB
 				line.gsub!(/\s+/, ' ')
 				footnotes.store(fn, line)
 			end
+			def footnote_type
+				self.class::FOOTNOTE_TYPE
+			end
 			def parse_footnotes(src)
 				src.gsub!(/_*/, '')
+				src.gsub!(/~R/, '\'')
 				footnotes = {}
 				stop = 0
 				start = 0
@@ -64,7 +69,7 @@ module ODDB
 				position = ast.position.value
 				group = ast.group.value
 				if(position.size > 2)
-					data.store(:footnote, position.slice!(2..-1))
+					data.store(footnote_type, position.slice!(2..-1))
 				end
 				data.update({
 					:code					=> [group, position].join('.'),
@@ -95,6 +100,9 @@ module ODDB
 						limitation = extract_text(lim.description)
 						data.store(:limitation, limitation)
 					end
+				elsif(lim2 = child_if_exists(ast, 'limitation2'))
+					limitation = extract_text(lim2.description)
+					data.store(:limitation, limitation)
 				end
 				if((number = child_if_exists(ast, 'taxnumber')) \
 						&& (note = child_if_exists(ast, 'taxnote')))
@@ -106,7 +114,7 @@ module ODDB
 				if(revision = child_if_exists(ast, 'revision'))
 					data.store(:analysis_revision, revision.value)
 				end
-				[:finding, :footnote].each { |key|
+				[:finding, footnote_type].each { |key|
 					if(node = child_if_exists(ast, key.to_s))
 						data.store(key, node.value)
 					end
@@ -143,9 +151,9 @@ module ODDB
 			end
 			def update_footnotes(new_data, footnotes)
 				new_data.each { |data|
-				if(fn = footnotes[data[:footnote]])
-					data.store(:footnote, fn)
-				end
+					if(fn = footnotes[data[:footnote]])
+						data.store(:footnote, fn)
+					end
 				}
 				new_data
 			end
@@ -196,6 +204,7 @@ module ODDB
 					target.gsub!(/(\S)\s+(\))/,'\\1\\2')
 					target.gsub!(/(\.)\s*(,)/,'\\1\\2')
 					target.gsub!(/(\w)\s+(-\S)/, '\\1\\2')
+					target.gsub!(/(_+)/, '')
 					target.strip!
 				end
 				target

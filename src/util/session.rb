@@ -194,7 +194,7 @@ module ODDB
 			@interaction_basket.size
 		end
 		def analysis_alphabetical(range)
-			@app.search_analysis_alphabetical(range)
+			@app.search_analysis_alphabetical(range, self.language)
 		end
 		def migel_alphabetical(range)
 			@app.search_migel_alphabetical(range, self.language)

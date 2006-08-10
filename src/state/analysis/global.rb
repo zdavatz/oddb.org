@@ -14,6 +14,41 @@ class Global < State::Global
 	def limit_state
 		State::Analysis::Limit.new(@session, nil)
 	end
+	def compare_entries(a, b)
+		@sortby.each { |sortby|
+			case sortby
+			when :description
+				sortby = [@session.language]
+			when :list_title
+				sortby = [sortby, @session.language]
+			else
+				sortby = [sortby]
+			end
+			puts sortby.inspect
+			aval, bval = nil
+			begin
+				aval = umlaut_filter(sortby.inject(a) { |memo, meth|
+					memo.send(meth) })
+				bval = umlaut_filter(sortby.inject(b) { |memo, meth|
+					memo.send(meth) })
+				puts [aval, bval].inspect
+			rescue Exception => e
+				puts e
+				next
+			end
+			res = if (aval.nil? && bval.nil?)
+				0
+			elsif (aval.nil?)
+				1
+			elsif (bval.nil?)
+				-1
+			else 
+				aval <=> bval
+			end
+			return res unless(res == 0)
+		}
+		0
+	end
 end
 		end
 	end

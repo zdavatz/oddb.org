@@ -279,7 +279,7 @@ EOS
 					:position			=>	'00',
 					:taxpoints		=>	40,
 					:description	=>	'Theophyllin (Blut)',
-					:footnote			=>	'Nur bei Kindern bis zu 6 Jahren',
+					:restriction	=>	'1',
 					:list_title		=>	nil,
 					:taxpoint_type	=>	nil,
 					:permission		=>	nil,
@@ -323,7 +323,7 @@ Rev. Pos.-Nr. A TP Bezeichnung (Liste Kinder- und Jugendmedizin)
 					:position				=>	'00',
 					:taxpoints			=>	40,
 					:description		=>	'Theophyllin (Blut)',
-					:footnote				=>	'Nur bei Kindern bis zu 6 Jahren',
+					:restriction		=>	'1',
 					:list_title			=>	nil,
 					:permission			=>	nil,
 					:taxpoint_type	=>	nil,
@@ -363,7 +363,7 @@ ___________________
 					:position			=>	'00',
 					:taxpoints		=>	30,
 					:description	=>	'Glykiertes Hämoglobin (HbA1c)',
-					:footnote			=>	'Nur für mich',
+					:restriction	=>	'1',
 					:list_title		=>	nil,
 					:permission		=>	nil,
 					:taxpoint_type	=>	nil,
@@ -403,6 +403,140 @@ ___________________
 					:position				=>	'00',
 					:description		=>	'Immunglobulin IgE',
 					:footnote				=>	'analog wie etwas anderes',
+				}
+				]
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_line__1
+				src = <<-EOS
+C 8210.00 6  Érythrocytes, numération, détermination manuelle, cumulable avec 8273.00
+hématocrite, 8275.00 hémoglobine,
+8406.00 leucocytes (numération) et
+8560.00 thrombocytes (numération),
+jusqu'à un total de max. 15 points
+(hémogramme II)
+Limitation: pas avec la méthode QBC
+				EOS
+				begin 
+					result = @parser.parse_line(src)
+				end
+				expected = {
+					:code						=>	'8210.00',
+					:group					=>	'8210',	
+					:position				=>	'00',
+					:description		=>	'Érythrocytes, numération, détermination manuelle, cumulable avec 8273.00 hématocrite, 8275.00 hémoglobine, 8406.00 leucocytes (numération) et 8560.00 thrombocytes (numération), jusqu\'à un total de max. 15 points (hémogramme II)',
+					:analysis_revision	=>	'C',
+					:taxpoints			=>	6,
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
+					:limitation			=>	'pas avec la méthode QBC',
+				}
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_footnotes__1
+				src = <<-EOS
+				* position anonyme
+				1 seulement pour hôpitaux
+				2 seulement pour les personnes médicales autorisées, dans le cadre de traitements de
+				substitution ou de sevrage de leurs propres patients
+				3 seulement pour hôpitaux et pneumologues
+				4 seulement pour hôpitaux, pneumologues et hématologues
+				
+				EOS
+				begin
+					result = @parser.parse_footnotes(src)
+				end
+				expected = {
+				'*'	=>	'position anonyme',
+				'1'	=>	'seulement pour hôpitaux',
+				'2'	=>	'seulement pour les personnes médicales autorisées, dans le cadre de traitements de substitution ou de sevrage de leurs propres patients',
+				'3'	=>	'seulement pour hôpitaux et pneumologues',
+				'4'	=>	'seulement pour hôpitaux, pneumologues et hématologues',
+				}
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_footnotes__2
+				src = <<-EOS
+_______________________________________________________________
+* position anonyme
+1	ta mère
+				EOS
+				begin
+					result = @parser.parse_footnotes(src)
+				end
+				expected = {
+				'*'	=>	'position anonyme',
+				'1'	=>	'ta mère',
+				}
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_footnotes__3
+				src = <<-EOS
+				1_____________________________________________________________________________________
+				 seulement pour enfants jusqu~Rà 6 ans
+				* position anonyme
+
+				EOS
+				begin
+					result = @parser.parse_footnotes(src)
+				end
+				expected =	{
+					'*'		=>	'position anonyme',	
+					'1'		=>	'seulement pour enfants jusqu\'à 6 ans',
+				}
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_page__1
+				src = <<-EOS
+Oncologie médicale
+Pour le moment comme hématologie
+Pédiatrie
+Rév. No pos. A TP Dénomination (liste pédiatrie)
+8543.00 1 40 Théophylline (sang)
+1____________________________________________________________________
+ seulement pour enfants jusqu'à 6 ans
+* position anonyme
+				EOS
+				begin
+					result = @parser.parse_page(src, 121)
+				end
+				expected = [
+					{
+					:code					=>	'8543.00',
+					:group				=>	'8543',
+					:position			=>	'00',
+					:taxpoints		=>	40,
+					:description	=>	'Théophylline (sang)',
+					:restriction	=>	'1',
+					:list_title		=>	nil,
+					:taxpoint_type	=>	nil,
+					:permission		=>	nil,
+				}
+				]
+				assert_equal(expected, result)
+			end
+			def test_fr_update_footnotes__1
+				data = [
+					{
+					:group					=>	'8317',
+					:position				=>	'00',
+					:description		=>	'Immunoglobuline IgE totale, qn',
+					:footnote				=>	'1',
+				}
+				] 
+				footnotes = {
+					'1'	=>	'seulement pour enfants jusqu\'à 6 ans',
+				}
+				begin
+					result = @parser.update_footnotes(data, footnotes)
+				end
+				expected = [
+					{
+					:group					=>	'8317',
+					:position				=>	'00',
+					:description		=>	'Immunoglobuline IgE totale, qn',
+					:footnote				=>	'seulement pour enfants jusqu\'à 6 ans',
 				}
 				]
 				assert_equal(expected, result)

@@ -33,34 +33,36 @@ module ODDB
 			end
 			def analyze(page, pagenum)
 				case @index[pagenum]
-				when /Chemie\/H\344matologie\/Immunologie/i
+				when /Chemie\/H\344matologie\/Immunologie/i \
+					, /Chimie\/Hématologie\/Immunologie/i
 					@parser = ListParser.new
 					@list_title = $~.to_s
-				when /genetik/i
+				when /genetik/i , /génétique/i
 					@parser = ListParser.new
 					@list_title = $~.to_s
-				when /mikrobiologie/i
+				when /mikrobiologie/i , /microbiologie/i
 					@parser = ListParser.new
 					@list_title = $~.to_s
-				when /allgemeine positionen/i
+				when /allgemeine positionen/i , /positions générales/i
 					@parser = SimpleListParser.new
 					@list_title = $~.to_s
-				when /Anonyme Positionen/i
+				when /Anonyme Positionen/i , /positions anonymes/i
 					@list_title = nil
 					@parser = AnonymousListParser.new
-				when /Fixe Analysenblöcke/
+				when /Fixe Analysenblöcke/i , /Blocs\s*d[\'\222]analyses\s*fixes/i
 					@parser = BlockListParser.new
 					@list_title = $~.to_s
 				when /Liste seltener Autoantikörper/
 					@parser = nil #AntibodyListParser.new
-				when /Im Rahmen der Grundversorgung durchgef\374hrte Analysen/i
+				when /Im Rahmen der Grundversorgung durchgef\374hrte Analysen/i , /analyses effectuées dans le cadre des soins de base/i 
 					@parser = FragmentedPageHandler.new
 					@list_title = nil
 					@permission = nil
-				when /Von Chiropraktoren oder Chiropraktorinnen veranlasste Analysen/i
+				when /Von Chiropraktoren oder Chiropraktorinnen veranlasste Analysen/i , /analyses prescrites par des chiropraticiens/i
 					@parser = AppendixListParser.new
 					@permission = $~.to_s
-				when /Von Hebammen veranlasste Analysen/i
+				when /Von Hebammen veranlasste Analysen/i \
+					, /analyses prescrites par des sages-femmes/i
 					@parser = AppendixListParser.new
 					@permission = $~.to_s
 				end
@@ -76,16 +78,16 @@ module ODDB
 				parser.list_title = @list_title
 				parser.permission = @permission
 				pos = parser.parse_page(txt, pagenum)
-				parser.footnotes.each { |key, fn|
+				parser.footnotes.each { |key, rs|
 					if(pairs = @incomplete.delete(key))
 						pairs.each { |pair|
-							pair[1] = fn
+							pair[1] = rs
 						}
 					end
 				}
 				pos.each { |ps|
 					same = nil
-					fn = ps.delete(:footnote)
+					rs = ps.delete(:restriction)
 					perm = ps.delete(:permission)
 					if(same = @positions[ps[:code]])
 						ps.delete_if { |key, value|
@@ -97,12 +99,12 @@ module ODDB
 						ps.store(:permissions, [])
 						@positions.store(ps[:code], ps)
 					end
-					pair = [perm, fn]
+					pair = [perm, rs]
 					if(perm)
 						same[:permissions].push(pair)
 					end
-					if(/^\d+$/.match(fn))
-						(@incomplete[fn] ||= []).push(pair)
+					if(/^\d+$/.match(rs))
+						(@incomplete[rs] ||= []).push(pair)
 					end
 				}
 				@list_title = parser.list_title
@@ -132,15 +134,27 @@ module ODDB
 			end
 			def next_pagehandler(txt)
 				@index ||= {}
-				if(/vorbemerkungen/i.match(txt) && !@index.empty?)
+				if((/vorbemerkungen/i.match(txt) \
+						|| /remarques\s*préliminaires/i.match(txt)) \
+						&& !@index.empty?)
 					IndexHandler.new(@index)
 				else
+					txt.gsub!(/~R/, '\'')
+					txt.gsub!(/\222/, '\'')
 					find_subchapters(/^\s*\d\.\s+(.*?)\.*\s*(\d*)/, txt)
 					find_subchapters(/^\s*\d\.\s*([^\d]+?)\..+?(\d+)/, txt)
 					find_subchapters(/^\s*\d\.\s*kapitel\s*:\s*(.*?)\s*[\d\.]{2,7}\s*.*?\.*\s*(\d+)\s*/im, txt)
-					find_subchapters(/^\s*4\.\d\s*([\w\säöü]+)\.*\s*?(\d{3})\s*?$/i, txt)
+					find_subchapters(/\s*4\.\d\s*([\w\säöü\-\']+)\.*\s*?(\d{3})\s*?/i, txt)
 					find_subchapters(/^\s*5\.\d\s*anhang\s*[ABC]\s*(.*?)\s*\.*\s*(\d+)\s*$/, txt)
 					find_subchapters(/^\s*5\.\d\s*anhang\s*[ABC]\s*(.*?)[\d\.]{5,7}\s*.*?\.*\s*(\d+)\s*$/im, txt)
+					find_subchapters(/^\s*chapitre\s*\d:\s*(.*?)\s*[\d\.]{2,7}\s*.*?\.*\s*(\d+)\s*/im, txt)
+					find_subchapters(/\s*4\.\d\s*([\w\s\222éèà]+)\.*\s*(\d+)\s*/i, txt)
+					find_subchapters(/^\s*5\.\d\s*annexe\s*A\s*:\s*(.*?)\s*[\d\.]{5,7}\s*.*?\.*\s*(\d+)/im, txt)
+					find_subchapters(/^\s*5\.\d\s*annexe\s*[BC]\s*:\s*(.*?)\.*\s*(\d+)/i, txt)
+					@index.each_value { |val| 
+						val = val.gsub!(/\s*\/\s*/,'/')
+					}
+					@index.each_value { |val| val.gsub!(/\222/,'\'')}
 					self
 				end
 			end

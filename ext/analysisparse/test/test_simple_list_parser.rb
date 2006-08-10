@@ -121,6 +121,79 @@ module ODDB
 				assert_equal(expected_first, result.first)
 				assert_equal(expected_last, result.last)
 			end
+			def test_fr_parse_page__1
+				src = <<-EOS
+Chapitre 4:  Autres
+
+4.1 Positions générales
+
+Remarques
+
+Ces positions générales ne doivent être utilisées que pour les
+traitements ambulatoires; pour les traitements effectués durant une
+hospitalisation, le forfait comprend aussi les analyses (art. 49
+LAMal). Elles ne doivent pas non plus être facturées dans un
+laboratoire de cabinet médical.
+
+Rév. No. pos.    TP    Dénomination (positions générales)
+
+9700.00 12 Taxe administrative applicable aux demandes
+externes, par patient et par prescription ;
+uniquement pour les laboratoires d'hôpitaux
+au sens de l'art. 54, al. 1, let c, et al. 2,
+OAMal, les laboratoires au sens de l'art. 54,
+al. 3, OAMal et les officines de pharmaciens
+au sens de l'art. 54, al. 1, let. c, OAMal.
+9701.00 8 Prélèvement de sang capillaire ou de sang
+veineux ; uniquement pour les laboratoires
+d'hôpitaux au sens de l'art. 54, al. 1, let. c, et
+al. 2, OAMal, les laboratoires au sens de
+l'art. 54, al. 3, OAMal et les officines de
+pharmaciens au sens de l'art. 54, al. 1,
+let. c, OAMal
+9703.00 25 Supplément pour prélèvement de sang à
+domicile, dans un rayon de 3 km ;
+uniquement pour les laboratoires au sens de
+l'art. 54, al. 3, OAMal
+9704.00 4 Supplément pour chaque km en plus ;
+uniquement pour les laboratoires au sens de
+l'art. 54, al. 3, OAMal
+9706.00     50   Supplément pour nuit (de 19 h à 7 h),
+dimanche et jours fériés : par prescription (et
+non par résultat) ; uniquement pour les
+laboratoires d'hôpitaux au sens de l'art. 54,
+al. 1, let. c et al. 2 OAMal et les laboratoires
+au sens de l'art. 54, al. 3, OAMal
+
+				                                                          109
+				
+				EOS
+				begin
+					result = @parser.parse_page(src, 109)
+				end
+				expected_first = {
+					:code						=>	'9700.00',
+					:group					=>	'9700',
+					:position				=>	'00',
+					:description		=>	'Taxe administrative applicable aux demandes externes, par patient et par prescription; uniquement pour les laboratoires d\'hôpitaux au sens de l\'art. 54, al. 1, let c, et al. 2, OAMal, les laboratoires au sens de l\'art. 54, al. 3, OAMal et les officines de pharmaciens au sens de l\'art. 54, al. 1, let. c, OAMal.',
+					:taxpoints			=>	12,
+					:taxpoint_type	=>	nil,
+					:list_title			=>	nil,
+					:permission			=>	nil,
+				}
+				expected_last = {
+					:code						=>	'9706.00',
+					:group					=>	'9706',
+					:position				=>	'00',
+					:description		=>	'Supplément pour nuit (de 19 h à 7 h), dimanche et jours fériés : par prescription (et non par résultat); uniquement pour les laboratoires d\'hôpitaux au sens de l\'art. 54, al. 1, let. c et al. 2 OAMal et les laboratoires au sens de l\'art. 54, al. 3, OAMal',
+					:taxpoints			=>	50,
+					:taxpoint_type	=>	nil,
+					:list_title			=>	nil,
+					:permission			=>	nil,
+				}
+				assert_equal(expected_first, result.first)
+				assert_equal(expected_last, result.last)
+			end
 		end
 	end
 end
