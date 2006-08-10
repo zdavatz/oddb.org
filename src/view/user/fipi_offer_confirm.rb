@@ -151,16 +151,16 @@ class FiPiCalculations < HtmlGrid::Composite
 end
 class FiPiOfferConfirmComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]	=>	'fipi_offer_confirm',
+		[0,0,0]	=>	'fipi_offer_confirm',
 		[0,0,1]	=>	:amzv_link,
 		[0,0,2]	=>	'comma_separator',
 		[0,0,3]	=>	:amzv_article13_link,
 		[0,0,4]	=>	'nbsp_and_nbsp',
 		[0,0,5]	=>	:amzv_article14_link,
 		[0,0,6]	=>	'point',
-		[0,1]	=>	'fipi_offer_confirmation',
-		[0,3]	=>	View::User::FiPiCalculations,
-		[0,5]	=>	:fipi_offer_disclaimer,
+		[0,1]	  =>	'fipi_offer_confirmation',
+		[0,3]	  =>	View::User::FiPiCalculations,
+		[0,5]	  =>	:fipi_offer_disclaimer,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {

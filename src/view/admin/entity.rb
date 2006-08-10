@@ -115,7 +115,9 @@ class EntityForm < Form
   def association(model)
     ass, priv = nil
     input = HtmlGrid::InputText.new(:yus_association, model, @session, self)
-    if(ass = @session.app.yus_model(model.name))
+    if(model.respond_to?(:association) && (priv = model.association))
+      input.value = priv
+    elsif(ass = @session.app.yus_model(model.name))
       priv = ass.pointer.to_yus_privilege
       input.value = priv
     end
@@ -134,7 +136,7 @@ class EntityForm < Form
   end
   def salutation(model)
     input = HtmlGrid::Select.new(:salutation, model, @session, self)
-    input.selected = @session.yus_get_preference(model.name, 'salutation')
+    input.selected = @session.yus_get_preference(model.name, :salutation)
     input
   end
   def set_pass_1(model)

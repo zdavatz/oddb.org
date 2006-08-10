@@ -35,7 +35,8 @@ module ODDB
 		XLS_PATH = '/files/pdf/B3.1.35-d.xls'
 		SIZE_PATTERN  = /(?:(?:(\d+(?:[.,]\d+)?)\s*x\s*)?(\d+(?:[.,]\d+)?))?\s*([^\d\s]*)$/
 		class ParsedRegistration
-			attr_accessor :iksnr, :indication, :company, :ikscat, :out_of_trade
+			attr_accessor :iksnr, :indication, :company, :ikscat, :out_of_trade, 
+        :expiration_date
 			attr_reader :sequences
 			def initialize
 				@sequences = []
@@ -60,20 +61,16 @@ module ODDB
 				data = {
 					:generic_type => :vaccine,
 				}
-				if(@indication)
-					data.store(:indication, @indication)
-				end
-				if(@company)
-					data.store(:company, @company)
-				end
-				if(@ikscat)
-					data.store(:ikscat, @ikscat)
-				end
+        [:indication, :company, :ikscat, :expiration_date].each { |key|
+          if(val = self.send(key))
+            data.store(key, val)
+          end
+        }
 				data
 			end
 		end
 		class ParsedSequence
-			attr_accessor :name, :seqnr
+			attr_accessor :name, :seqnr, :atc_class
 			attr_reader :packages, :active_agents
 			attr_writer :dose
 			
@@ -89,10 +86,14 @@ module ODDB
 				}
 			end
 			def data
-				{
+				data = {
 					:name	=>	@name,
 					:dose	=>	self.dose,
 				}
+        if(@atc_class)
+          data.store(:atc_class, @atc_class)
+        end
+        data
 			end
 			def dose
 				@dose || if(match = DOSE_PATTERN.match(name.to_s))
@@ -105,6 +106,7 @@ module ODDB
 			def dup
 				dp = ParsedSequence.new
 				dp.name = @name
+        dp.atc_class = @atc_class
 				dp
 			end
 		end
@@ -135,6 +137,7 @@ module ODDB
 			if(path = (manual_download || get_latest_file))
 				update_registrations(registrations_from_xls(path))
 				FileUtils.cp(path, @latest_path) 
+        @app.rebuild_atc_chooser
 			end
 		end
 		def extract_latest_filepath(html)
@@ -155,6 +158,9 @@ module ODDB
 				if(File.exist?(@latest_path))
 					latest = File.read(@latest_path)
 				end
+        if(download[-1] != ?\n)
+          download << "\n"
+        end
 				if(download != latest)
 					target = File.join(ARCHIVE_PATH, 'xls',
 														 @@today.strftime('vaccines-%Y.%m.%d.xls'))
@@ -266,7 +272,13 @@ module ODDB
 				reg.ikscat = row_at(row, 3)
         reg.out_of_trade = row_at(row, 9) == 'x'
 				reg.company = row_at(row, 10)
+        if((date = row_at(row, 11)) && date.is_a?(Date))
+          reg.expiration_date = date
+        end
 				seq = ParsedSequence.new
+        if(atc = row_at(row, 12))
+          seq.atc_class = atc.gsub(/[^A-Z0-9]/, '')
+        end
         seqs = [seq]
         name = row_at(row, 0)
         if(match = /^(.*?)(\d+)\/(\d+)$/.match(name))
@@ -297,12 +309,22 @@ module ODDB
 			if(cell = row.at(index))
 				if(cell.type == :numeric)
 					cell.to_f
+        elsif(cell.type == :date)
+          cell.date
 				else
 					val = cell.to_s(ENCODING)
 					val unless val.empty?
 				end
 			end
 		end
+    def update_atc_class(seq)
+      if((code = seq.atc_class) \
+         && !(atc = @app.atc_class(code)))
+        begin
+          atc = @app.create(Persistence::Pointer.new([:atc_class, code]))
+        end while((code = atc.parent_code) && !@app.atc_class(code))
+      end
+    end
 		def update_company(data)
 			if((name = data.delete(:company)) && !name.empty?)
 				company = @app.company_by_name(name)
@@ -375,6 +397,7 @@ module ODDB
 		end
 		def update_sequence(seq, reg_pointer)
 			pointer = reg_pointer + [:sequence, seq.seqnr]
+      update_atc_class(seq)
 			sequence = @app.update(pointer.creator, seq.data, :swissmedic)
 			seq.packages.each_value { |pack| update_package(pack, pointer) }
 			seq.active_agents.each { |act| 

@@ -22,7 +22,7 @@ class ResultForm < View::Form
 	COMPONENTS = {
 		[0,0]		=>	:title_found,
 		[0,1]		=>	'add_to_interaction',
-		[1,1]		=>	:search_query,
+		[1,1,0]	=>	:search_query,
 		[1,1,1]	=>	:submit,
 		[0,2]		=>	View::Interactions::ResultList,
 		[0,3]		=>	:interaction_basket,
@@ -58,7 +58,7 @@ class Result < View::ResultTemplate
 end
 class EmptyResultForm < HtmlGrid::Form
 	COMPONENTS = {
-		[0,0]		=>	:search_query,
+		[0,0,0]	=>	:search_query,
 		[0,0,1]	=>	:submit,
 		[0,1]		=>	:title_none_found,
 		[0,2]		=>	'e_empty_result',

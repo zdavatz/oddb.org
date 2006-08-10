@@ -36,17 +36,17 @@ end
 class DoctorInnerComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]		=>	:specialities_header,
-		[0,1]	=>	:specialities,
-		[0,2]		=>	:language_header,
+		[0,1]	  =>	:specialities,
+		[0,2,0]	=>	:language_header,
 		[0,2,1]	=>	:nbsp,
 		[0,2,2]	=>	:language,
-		[0,3]		=>	:exam_header,
+		[0,3,0]	=>	:exam_header,
 		[0,3,1] =>	:nbsp,
 		[0,3,2]	=>	:exam,
-		[0,4]		=>	:ean13_header,
+		[0,4,0]	=>	:ean13_header,
 		[0,4,1]	=>	:nbsp,
 		[0,4,2]	=>	:ean13,
-		[0,5]		=>	:email_header_doctor,
+		[0,5,0]	=>	:email_header_doctor,
 		[0,5,1]	=>	:nbsp,
 		[0,5,2]	=>	:email,
 	}
@@ -85,7 +85,7 @@ end
 class DoctorComposite < HtmlGrid::Composite
 	include VCardMethods
 	COMPONENTS = {
-		[0,0]		=>	:title,
+		[0,0,0]	=>	:title,
 		[0,0,1]	=>	:nbsp,
 		[0,0,2]	=>	:firstname,
 		[0,0,3]	=>	:nbsp,

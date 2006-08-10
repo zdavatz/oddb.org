@@ -234,27 +234,30 @@ Grammar OddbSize
 				hook.odba_store
 				new_obj
 			end
-			def issue_delete(app)
-				obj = resolve(app)
-					if obj.respond_to?(:checkout)
-						obj.checkout
-					end
-					pointer = dup
-					command = pointer.directions.pop
-					command[0] = 'delete_' << command.first.to_s
-					hook = pointer.resolve(app)
-					if(hook.respond_to?(command.first))
-						hook.send(*(command.compact))
-						### ODBA needs the delete_<command> method to call
-						### odba_store or odba_isolated_store on whoever was the
-						### last connection to this item.
-					end
-					if(obj.respond_to?(:odba_delete))
-						obj.odba_delete
-					end
-			rescue InvalidPathError, UninitializedPathError => e
-				warn "Could not delete: #{to_s}, reason: #{e.message}"
-			end
+      def issue_delete(app)
+        obj = resolve(app)
+        if(obj.respond_to?(:odba_delete))
+          ## checkout the object from all indices
+          ## if this happens after hook.send(*command), some index-updates 
+          ## will fail.
+          obj.odba_delete
+        end
+        if obj.respond_to?(:checkout)
+          obj.checkout
+        end
+        pointer = dup
+        command = pointer.directions.pop
+        command[0] = 'delete_' << command.first.to_s
+        hook = pointer.resolve(app)
+        if(hook.respond_to?(command.first))
+          hook.send(*(command.compact))
+          ### ODBA needs the delete_<command> method to call
+          ### odba_store or odba_isolated_store on whoever was the
+          ### last connection to this item.
+        end
+      rescue InvalidPathError, UninitializedPathError => e
+        warn "Could not delete: #{to_s}, reason: #{e.message}"
+      end
 			def issue_update(hook, values, origin = nil)
 				obj = resolve(hook)
 				unless(obj.nil?)

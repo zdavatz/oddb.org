@@ -379,8 +379,8 @@ class PowerLinkCompanyForm < UserCompanyForm
 end
 class UnknownCompanyComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]		=>	:company_name,
-		[0,0,0]	=>	:ean13,
+		[0,0,0]	=>	:company_name,
+		[0,0,1]	=>	:ean13,
 		[0,1]		=>	View::Companies::UnknownCompanyInnerComposite,	
 		[1,1]		=>	View::CompanyLogo,
 	}

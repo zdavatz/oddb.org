@@ -13,8 +13,8 @@ module ODDB
 class SelectionList < HtmlGrid::List
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
-		[0,0]	=>	:pointer,
-		[0,0,0]	=>	:name,
+		[0,0,0]	=>	:pointer,
+		[0,0,1]	=>	:name,
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'subheading'
@@ -28,9 +28,9 @@ class SelectSubstanceForm < HtmlGrid::Form
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
 		[0,0]			=>	:selection_list,
-		[0,1]			=>	:pointer,
-		[0,1,0]		=>	:user_input,
-		[0,1,0,0]	=>	:user_input_hint,
+		[0,1,0]		=>	:pointer,
+		[0,1,1]		=>	:user_input,
+		[0,1,2] 	=>	:user_input_hint,
 		[0,2]			=>	:submit,
 	}
 	LABELS = false
@@ -41,9 +41,9 @@ class SelectSubstanceForm < HtmlGrid::Form
 	def init
 		if(@model.selection.empty?)
 			@components = {
-				[0,0]			=>	:pointer,
-				[0,0,0]		=>	:user_input,
-				[0,0,0,0]	=>	:user_input_hint,
+				[0,0,0]		=>	:pointer,
+				[0,0,1]		=>	:user_input,
+				[0,0,2]	  =>	:user_input_hint,
 				[0,1]			=>	:submit,
 			}
 		end

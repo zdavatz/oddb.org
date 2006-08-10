@@ -126,6 +126,13 @@ module ODDB
 						start_i(attrs)
 						release.push(:end_i)
 					end
+					if(/\bvertical-align\s*:\s*super\b/i.match(style))
+						start_sup(attrs)
+						release.push(:end_sup)
+					elsif(/\bvertical-align\s*:\s*sub\b/i.match(style))
+						start_sub(attrs)
+						release.push(:end_sub)
+					end
 				elsif((klass = fetch_attribute('class', attrs)) \
 					&& /\bpreformatted\b/i.match(klass))
 					start_pre(attrs)
@@ -152,6 +159,9 @@ module ODDB
 			def end_span
 				release_tag
 			end
+      def end_sub
+				@formatter.pop_fonthandler
+      end
       def end_sup
 				@formatter.pop_fonthandler
       end
@@ -211,6 +221,9 @@ module ODDB
 					analyse_attributes(attrs, release)
 				}
 			end
+      def start_sub(attrs)
+				@formatter.push_fonthandler([['vertical-align', 'subscript']])
+      end
       def start_sup(attrs)
 				@formatter.push_fonthandler([['vertical-align', 'superscript']])
       end

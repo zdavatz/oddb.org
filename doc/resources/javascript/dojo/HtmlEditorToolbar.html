@@ -94,18 +94,30 @@
 					</span>
 				</td>
         -->
+				<!--
 				<td>
+        -->
 					<!-- bold -->
+				  <!--
 					<span class="iconContainer" dojoAttachPoint="boldButton"
 						unselectable="on" dojoOnClick="boldClick; buttonClick;">
 						<span title="Toggle Bold (Ctrl-B)" class="icon bold" unselectable="on">&nbsp;</span>
 					</span>
 				</td>
+        -->
 				<td>
 					<!-- italic -->
 					<span class="iconContainer" dojoAttachPoint="italicButton"
 						dojoOnClick="italicClick; buttonClick;">
 						<span title="Toggle Italic (Ctrl-I)" class="icon italic" unselectable="on">&nbsp;</span>
+					</span>
+				</td>
+				<td>
+					<!-- subscript -->
+					<span class="iconContainer" dojoAttachPoint="subscriptButton"
+						dojoOnClick="subscriptClick; buttonClick;">
+						<span title="Toggle subscript" 
+							class="icon subscript" unselectable="on">&nbsp;</span>
 					</span>
 				</td>
 				<td>
@@ -137,8 +149,8 @@
 				</td>
 				<td>
 					<!-- font select -->
-					<select dojoOnChange="formatSelectClick; buttonClick;"
-						dojoAttachPoint="formatSelectBox" unselectable="on">
+          <select dojoOnChange="formatSelectClick; buttonClick;"
+            dojoAttachPoint="formatSelectBox" unselectable="on">
 						<option value="">-- format --</option>
 						<option value="p">Normal</option>
 						<option value="pre">ASCII-Table</option>

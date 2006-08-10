@@ -682,20 +682,10 @@ class OddbPrevalence
 	end
 	def rebuild_atc_chooser
 		chooser = ODDB::AtcNode.new(nil)
-		@atc_classes.values.sort_by { |atc| 
-			atc.code 
-		}.each { |atc|
+		@atc_classes.sort.each { |key, atc| 
 			chooser.add_offspring(ODDB::AtcNode.new(atc))
 		}
 		@atc_chooser = chooser
-	end
-	def rebuild_atc_chooser
-		@atc_chooser = ODDB::AtcNode.new(nil)
-		@atc_classes.values.sort_by { |atc| 
-			atc.code 
-		}.each { |atc|
-			@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
-		}
 	end
 	def recent_registration_count
 		@recent_registration_count ||= count_recent_registrations()
@@ -966,7 +956,7 @@ class OddbPrevalence
 	end
 	def sequences
 		@registrations.values.inject([]) { |seq, reg| 
-			seq + reg.sequences.values 
+			seq.concat(reg.sequences.values)
 		}
 	end
 	def set_currency_rate(symbol, value)
@@ -1053,7 +1043,7 @@ class OddbPrevalence
 	end
 
 	## indices
-	def rebuild_indices(name=nil)
+	def rebuild_indices(name=nil, &block)
 		ODBA.cache.indices.size
 		begin
 			start = Time.now
@@ -1062,7 +1052,14 @@ class OddbPrevalence
 			FileUtils.mkdir_p(File.dirname(path))
 			file = File.open(path)
 			YAML.load_documents(file) { |index_definition|
-				if(name.nil? || name.match(index_definition.index_name))
+        doit = if(name)
+                 name.match(index_definition.index_name)
+               elsif(block)
+                 block.call(index_definition)
+               else
+                 true
+               end
+				if(doit)
 					index_start = Time.now
 					begin
 						puts "dropping: #{index_definition.index_name}"
@@ -1435,11 +1432,15 @@ module ODDB
       YUS_SERVER.autosession(YUS_DOMAIN) { |session|
         session.get_entity_preference(name, key)
       }
+    rescue Yus::YusError
+      # user not found
     end
     def yus_get_preferences(name, keys)
       YUS_SERVER.autosession(YUS_DOMAIN) { |session|
         session.get_entity_preferences(name, keys)
       }
+    rescue Yus::YusError
+      {} # return an empty hash
     end
     def yus_model(name)
       if(odba_id = yus_get_preference(name, 'association'))

@@ -40,9 +40,9 @@ end
 class IncompleteSequenceForm < View::Admin::SequenceForm
 	EVENT = :update_incomplete
 	def reorganize_components
-		components.store([1,4], :submit)
+		components.store([1,4,0], :submit)
 		unless(@model.is_a?(Persistence::CreateItem))
-			components.store([1,4,0], :delete_item)
+			components.store([1,4,1], :delete_item)
 		end
 	end
 end

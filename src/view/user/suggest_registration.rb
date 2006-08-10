@@ -30,8 +30,8 @@ class SuggestRegistrationForm < View::Admin::RegistrationForm
 		[0,3]		=>	:indication,
 		[2,3]		=>	:market_date,
 		[2,4]		=>	:inactive_date,
-		[1,5]		=>	:submit,
-		[1,5,0]	=>	:new_registration,
+		[1,5,0]	=>	:submit,
+		[1,5,1]	=>	:new_registration,
 	}
 	CSS_MAP = { 
 		[0,0,4,6] => 'list' 

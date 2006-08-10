@@ -41,8 +41,8 @@ class ReturnComposite < HtmlGrid::Composite
 	include View::DataDeclaration
 	## in this class, COMPONENTS only includes the unchanging components
 	COMPONENTS = {
-		[0,0,0]	=>	'dash_separator',
-		[0,0,1]	=>	:data_declaration,
+		[0,0,1]	=>	'dash_separator',
+		[0,0,2]	=>	:data_declaration,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
@@ -53,26 +53,26 @@ class ReturnComposite < HtmlGrid::Composite
 	def init
 		if(@model.nil?)
 			components.update({
-				[0,0]	=>	'paypal_unconfirmed',
-				[0,1]	=>	'paypal_e_missing_invoice',
-				[0,2]	=>	:back,
+				[0,0,0]	=>	'paypal_unconfirmed',
+				[0,1]	  =>	'paypal_e_missing_invoice',
+				[0,2]	  =>	:back,
 			})
 			css_map.store([0,1], 'error')
 		else
 			if(@model.payment_received?)
 				suffix = @model.items.size == 1 ? 's' : 'p'
 				components.update({
-					[0,0]	=>	'paypal_success',
-					[0,1]	=>	"paypal_msg_success_#{suffix}",
-					[0,2]	=>	:download_links,
-					[0,3]	=>	:back,
+					[0,0,0]	=>	'paypal_success',
+					[0,1] 	=>	"paypal_msg_success_#{suffix}",
+					[0,2] 	=>	:download_links,
+					[0,3] 	=>	:back,
 				})
 				css_map.store([0,2], 'list')
 			else
 				components.update({
-					[0,0]	=>	'paypal_unconfirmed',
-					[0,1]	=>	'paypal_msg_unconfirmed',
-					[0,2]	=>	:back,
+					[0,0,0]	=>	'paypal_unconfirmed',
+					[0,1]	  =>	'paypal_msg_unconfirmed',
+					[0,2]	  =>	:back,
 				})
 			end
 		end

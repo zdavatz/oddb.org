@@ -219,8 +219,8 @@ class SequenceForm < Form
 				[3,4,1] =>  :patinfo,
 				[3,4,2] =>  :assign_patinfo,
 				[3,4,3] =>  :delete_patinfo,
-				[1,5]		=>	:submit,
-				[1,5,0] =>  :delete_item,
+				[1,5,0]	=>	:submit,
+				[1,5,1] =>  :delete_item,
 			})
 			css_map.update({
 				[3,4]		=>	'result-infos',

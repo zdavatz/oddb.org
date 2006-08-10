@@ -12,10 +12,13 @@ class Alphabetical < Global
 	VIEW = View::Migel::Alphabetical
 	DIRECT_EVENT = :migel_alphabetical
 	PERSISTENT_RANGE = true
-	#LIMITED = true
+	LIMITED = true
 	def index_lookup(range)
 		@session.migel_alphabetical(range)
 	end
+  def intervals
+    ('a'..'z').to_a
+  end
 end
 		end
 	end

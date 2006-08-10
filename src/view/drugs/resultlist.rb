@@ -25,9 +25,9 @@ class CompanyUser < View::Drugs::User; end
 class AtcHeader < HtmlGrid::Composite
 	include View::AdditionalInformation
 	COMPONENTS = {
-		[0,0] => :atc_description,
-		[0,0,1] => :atc_ddd_link,
-		[1,0] => :pages,
+		[0,0,0] => :atc_description,
+		[0,0,2] => :atc_ddd_link,
+		[1,0]   => :pages,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
@@ -35,7 +35,7 @@ class AtcHeader < HtmlGrid::Composite
 	}
 	def init
 		if(@session.user.allowed?('edit', 'org.oddb.model.!atc_class.*'))
-			components.store([0,0,0], :edit)
+			components.store([0,0,1], :edit)
 		end
 		super
 	end

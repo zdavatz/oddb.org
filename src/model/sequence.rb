@@ -134,6 +134,11 @@ module ODDB
 		def has_patinfo?
 			(!@patinfo.nil? || !@pdf_patinfo.nil?) && !company.disable_patinfo
 		end
+    def has_public_packages?
+      @packages.any? { |key, pac|
+        pac.public?
+      }
+    end
 		def iksnr
 			@registration.iksnr
 		end
@@ -171,12 +176,13 @@ module ODDB
 		def public_package_count(generic_type=nil)
 			if(active? && (generic_type.nil? \
 				|| @registration.generic_type == generic_type))
-				@packages.values.inject(0) { |count, pack|
+        count = 0
+				@packages.values.each { |pack|
 					if(pack.public?)
 						count += 1
 					end
-					count
 				}
+        count
 			else
 				0
 			end

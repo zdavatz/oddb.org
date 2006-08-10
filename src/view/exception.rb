@@ -10,7 +10,7 @@ module ODDB
 	module View
 		class ExceptionComposite < HtmlGrid::Form
 			COMPONENTS = {
-				[0,0]		=>	:search_query,
+				[0,0,0]	=>	:search_query,
 				[0,0,1]	=>	:submit,
 				[0,1]		=>	:exception_header,
 				[0,2]		=>	:exception,
