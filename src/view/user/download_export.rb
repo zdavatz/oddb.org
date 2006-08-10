@@ -260,9 +260,9 @@ class DownloadExportComposite < Form
 	include HtmlGrid::ErrorMessage
 	include View::DataDeclaration
 	COMPONENTS = {
-		[0,0]		=>	'download_export',
-		[0,0,0]	=>	'dash_separator',
-		[0,0,1]	=>	:data_declaration,
+		[0,0,0]		=>	'download_export',
+		[0,0,1]	=>	'dash_separator',
+		[0,0,2]	=>	:data_declaration,
 		[0,1]		=>	:download_export_descr,
 		[0,2]		=>	DownloadExportInnerComposite,
 		[0,3]		=>	:submit,

@@ -82,10 +82,10 @@ class DDDTree < HtmlGrid::Composite
 	SORT_DEFAULT = nil
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
-		[0,0]	=>	:description,
-		[1,0]	=>	:ddd_version,
-		[1,0,0]	=>	:source,
-		[0,1]	=>	View::Drugs::DDDTreeList,
+		[0,0]	  =>	:description,
+		[1,0,0]	=>	:ddd_version,
+		[1,0,1]	=>	:source,
+		[0,1]	  =>	View::Drugs::DDDTreeList,
 	}
 	COLSPAN_MAP = {
 		[0,1]	=>	2,

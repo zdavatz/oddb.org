@@ -137,7 +137,7 @@ class FiPiOfferInputForm < View::Form
 end
 class FiPiOfferInputComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]	=>	'fipi_offer_input',
+		[0,0,0]	=>	'fipi_offer_input',
 		[0,0,1]	=>	:amzv_link,
 		[0,0,2]	=>	'comma_separator',
 		[0,0,3]	=>	:amzv_article13_link,

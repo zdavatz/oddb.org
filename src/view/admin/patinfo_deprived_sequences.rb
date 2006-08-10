@@ -37,7 +37,7 @@ end
 class ShadowPatternForm < View::Form
 	EVENT = :shadow_pattern
 	COMPONENTS = {
-		[0,0]	=>	:pattern,	
+		[0,0,0]	=>	:pattern,	
 		[0,0,1]	=>	:submit,
 	}
 	LABELS = false

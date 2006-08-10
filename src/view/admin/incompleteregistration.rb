@@ -56,7 +56,7 @@ class IncompleteRegistrationForm < View::Admin::RegistrationForm
 		[2,1]		=>	:revision_date,
 		[0,2]		=>	:generic_type,
 		[2,2]		=>	:expiration_date,
-		[0,3]		=>	:complementary_select,
+		[0,3,0]	=>	:complementary_select,
 		[0,3,1]	=>	:complementary_type,
 		[0,4]		=>	:index_therapeuticus,
 		[2,4]		=>	:inactive_date,
@@ -64,7 +64,7 @@ class IncompleteRegistrationForm < View::Admin::RegistrationForm
 		[0,6]		=>	:export_flag,
 		[2,6]		=>	:vaccine,
 		[0,7]		=>	:parallel_import,
-		[1,8]		=>	:submit,
+		[1,8,0]	=>	:submit,
 		[1,8,1]	=>	:delete_item,
 	}
 	def reorganize_components

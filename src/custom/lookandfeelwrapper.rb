@@ -98,6 +98,7 @@ module ODDB
 	end
 	class LookandfeelGenerika < SBSM::LookandfeelWrapper
 		ENABLED = [
+      :ajax,
 			:companylist,
 			:fachinfos,
 			:google_adsense,
@@ -144,7 +145,8 @@ module ODDB
 		end
 	end
 	class LookandfeelProvita < SBSM::LookandfeelWrapper
-		ENABLED = [ ]
+		ENABLED = [ 
+    ]
 		DICTIONARIES = {
 			'de'	=>	{
 				:home_welcome	=>	'Willkommen bei Provita und oddb.org',
@@ -165,7 +167,9 @@ module ODDB
 		}
 	end
 	class LookandfeelSantesuisse < SBSM::LookandfeelWrapper
-		ENABLED = [ :doctors ]
+		ENABLED = [ 
+      :doctors 
+    ]
 		DICTIONARIES = {
 			'de'	=>	{
 				:home_welcome		=>	'',
@@ -626,6 +630,7 @@ module ODDB
 	class LookandfeelGeriMedi < SBSM::LookandfeelWrapper
 		ENABLED = [
 			#:external_css,
+      :ajax,
 			:home_drugs,
 			:help_link,
 			:faq_link,

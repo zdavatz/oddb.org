@@ -50,8 +50,8 @@ module ODDB
 		class LogoHead < CommonLogoHead
 			COMPONENTS = {
 				[0,0]		=>	View::Logo,
-				[1,0]		=>	:sponsor,
-				[1,0,2]	=>	:welcome,
+				[1,0,0]	=>	:sponsor,
+				[1,0,1]	=>	:welcome,
 				[0,1]		=>	:language_chooser,
 				[1,1]		=>	View::TabNavigation,
 			}

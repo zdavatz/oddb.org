@@ -36,21 +36,21 @@ class FeedbackFormMigel < View::FeedbackForm
 end
 class FeedbackListMigel < View::FeedbackList
 	COMPONENTS = {
-		[0,0]			=>	'feedback_title_name',
+		[0,0,0]		=>	'feedback_title_name',
 		[0,0,1]		=>	:name,
 		[0,0,2]		=>	'feedback_title_time',
 		[0,0,3]		=>	:time,
-		[0,1]			=>	:email_label,
+		[0,1,0]		=>	:email_label,
 		[1,1,1]		=>	:show_email,
-		[0,2]			=>	:message_label,
+		[0,2,0]		=>	:message_label,
 		[1,2,1]		=>	:message,
-		[0,3]			=>	'experience',
+		[0,3,0]		=>	'experience',
 		[1,3,1]		=>	:experience,
-		[0,4]			=>	'recommend',
+		[0,4,0]		=>	'recommend',
 		[1,4,1]		=>	:recommend,
-		[0,5]			=>	'impression',
+		[0,5,0]		=>	'impression',
 		[1,5,1]		=>	:impression,
-		[0,6]			=>	'helps',
+		[0,6,0]		=>	'helps',
 		[1,6,1]		=>	:helps,
 	}
 end

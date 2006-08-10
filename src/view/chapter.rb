@@ -64,7 +64,7 @@ module ODDB
         section_attr = { 'style' => @lookandfeel.section_style }
         subhead_attr = { 'style' => self.class::SUB_STYLE }
         sections.collect { |section|
-          context.div(section_attr) { 
+          context.p(section_attr) { 
             head = context.span(subhead_attr) {
               self.escape(section.subheading) }
             if(/\n\s*$/.match(section.subheading))  
@@ -121,8 +121,8 @@ module ODDB
     class EditChapterForm < Form
       COMPONENTS = {
         [0,0]  =>  :heading,
-        [1,1]    =>  :toolbar,
-        [0,2,1]  =>  :edit_chapter,
+        [1,1]  =>  :toolbar,
+        [0,2,1]=>  :edit_chapter,
         [1,3]  =>  :submit,
       }
       LABELS = true

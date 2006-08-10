@@ -123,8 +123,8 @@ module ODDB
 			end
 			def search_terms(lang = :de)
 				terms = [ migel_code, ]
-				[ @subgroup.group, @subgroup, 
-				@product_text, self ].compact.each { |item|
+        [ group, group.limitation_text, @subgroup, @subgroup.limitation_text,
+          @product_text, self, @limitation_text ].compact.each { |item|
 					terms.push(item.send(lang))
 				}
 				ODDB.search_terms(terms)

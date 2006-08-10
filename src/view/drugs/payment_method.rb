@@ -55,11 +55,11 @@ class PaymentMethodComposite < HtmlGrid::Composite
 	include View::PayPal::InvoiceMethods
 	include View::DataDeclaration
 	COMPONENTS = {
-		[0,0]		=>	"export_csv",
-		[0,0,0]	=>	'dash_separator',
-		[0,0,1]	=>	"payment_method",
-		[0,0,2]	=>	'dash_separator',
-		[0,0,3]	=>	:data_declaration,
+		[0,0,0]	=>	"export_csv",
+		[0,0,1]	=>	'dash_separator',
+		[0,0,2]	=>	"payment_method",
+		[0,0,3]	=>	'dash_separator',
+		[0,0,4]	=>	:data_declaration,
 		[0,1]		=>	"payment_method_descr",
 		[0,2]		=>	PaymentMethodForm,
 	}

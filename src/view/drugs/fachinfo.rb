@@ -284,9 +284,6 @@ class RootFachinfo < PrivateTemplate
 	DOJO_REQUIRE = [ 'dojo.widget.Editor2', 'ywesee.widget.SymbolPalette' ]
   JAVASCRIPTS = ['dojo/Editor']
 	DOJO_PARSE_WIDGETS = true
-	def other_html_headers(context)
-		super 
-	end
 end
 		end
 	end

@@ -11,7 +11,7 @@ class FachinfoPDFDownloadInnerComposite < HtmlGrid::Composite
 		[0,0]		=>	:fachinfo_pdf_download,
 	}
 	CSS_MAP = {
-		[0,0,1,1]	=>	'list',
+		[0,0]	=>	'list',
 	}
 	EXPORT_FILE = 'fachinfo'
 	def fachinfo_pdf_download(model, session)

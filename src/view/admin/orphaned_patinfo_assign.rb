@@ -47,8 +47,8 @@ class OrphanedPatinfoSequences < View::FormList
 end
 class SearchFieldPatinfo < View::Form
 	COMPONENTS = {
-		[0,0] => :search_query,
-		[0,0,1]=>:submit
+		[0,0,0] => :search_query,
+		[0,0,1] => :submit,
 	}
 	EVENT = :search_sequences
 	FORM_METHOD = 'GET'

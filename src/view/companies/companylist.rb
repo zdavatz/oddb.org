@@ -79,7 +79,7 @@ end
 class CompaniesComposite < Form
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
-		[0,0]		=>	:search_query,
+		[0,0,0]	=>	:search_query,
 		[0,0,1]	=>	:submit,
 		[0,1]		=>	:company_list,
 	}
@@ -110,7 +110,7 @@ class RootCompaniesComposite < CompaniesComposite
 	include NewCompany
 	COMPANY_LIST = RootCompanyList
 	COMPONENTS = {
-		[0,0]		=>	:search_query,
+		[0,0,0]	=>	:search_query,
 		[0,0,1]	=>	:submit,
 		[0,1]		=>	:company_list,
 		[0,2]		=>	:new_company,
@@ -121,7 +121,7 @@ class RootCompanies < View::ResultTemplate
 end
 class EmptyResultForm < HtmlGrid::Form
 	COMPONENTS = {
-		[0,0]		=>	:search_query,
+		[0,0,0]	=>	:search_query,
 		[0,0,1]	=>	:submit,
 		[0,1]		=>	:title_none_found,
 		[0,2]		=>	'e_empty_result',
@@ -146,7 +146,7 @@ end
 class RootEmptyResultForm < EmptyResultForm
 	include NewCompany
 	COMPONENTS = {
-		[0,0]		=>	:search_query,
+		[0,0,0]	=>	:search_query,
 		[0,0,1]	=>	:submit,
 		[0,1]		=>	:title_none_found,
 		[0,2]		=>	'e_empty_result',

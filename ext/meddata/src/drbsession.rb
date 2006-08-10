@@ -12,14 +12,8 @@ module ODDB
 			def initialize(search_type)
 				@search_type = search_type
 				@session = Session.new(search_type)
-				puts "DRbSession.initialize"
-				puts "session: #{@session.object_id}"
-				puts "form_keys: #{@session.form_keys.inspect}"
 			end
 			def detail(result, template)
-				puts "DRbSession.detail"
-				puts "session: #{@session.object_id}"
-				puts "form_keys: #{@session.form_keys.inspect}"
 				html = @session.detail_html(result.ctl)
 				writer = DetailWriter.new
 				formatter = Formatter.new(writer)
@@ -34,9 +28,6 @@ module ODDB
 				}
 			end
 			def search(criteria, &block)
-				puts "DRbSession.detail"
-				puts "session: #{@session.object_id}"
-				puts "form_keys: #{@session.form_keys.inspect}"
 				html = @session.get_result_list(criteria)
 				if(html.include?('lblcountPreciseSearch'))
 					raise OverflowError, 'not all valid entries in result!'

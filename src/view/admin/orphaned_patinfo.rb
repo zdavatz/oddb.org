@@ -12,8 +12,8 @@ module ODDB
 		module Admin
 class OrphanedPatinfoForm < View::Form
 	COMPONENTS = {
-		[0,0] => :delete_orphaned_patinfo,
-		[0,0,1]=>:submit
+		[0,0,0] => :delete_orphaned_patinfo,
+		[0,0,1] => :submit
 	}
 	EVENT = :delete_orphaned_patinfo
 	FORM_METHOD = 'POST'

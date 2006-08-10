@@ -49,6 +49,9 @@ module ODDB
 		def respond_to?(symbol)
 			symbol.to_s.length == 2 || super
 		end
+    def search_text(language)
+      ODDB.search_term(self.send(language).to_s)
+    end
 		def to_s
 			descriptions.default.to_s
 		end

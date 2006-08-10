@@ -52,8 +52,8 @@ class OrphanedDelete < View::Form
 end
 class SearchFieldFachinfo < View::Form
 	COMPONENTS = {
-		[0,0] => :search_query,
-		[0,0,1]=>:submit
+		[0,0,0] => :search_query,
+		[0,0,1] => :submit,
 	}
 	EVENT = :search_registrations
 	FORM_METHOD = 'GET'

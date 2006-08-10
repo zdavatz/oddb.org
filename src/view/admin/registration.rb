@@ -150,7 +150,7 @@ class RegistrationForm < View::Form
 		[0,2]		=>	:generic_type,
 		[2,2]		=>	:expiration_date,
 		[4,2]		=>	:renewal_flag,
-		[0,3]		=>	:complementary_select,
+		[0,3,0]	=>	:complementary_select,
 		[0,3,1]	=>	:complementary_type,
 		[2,3]		=>	:market_date,
 		[0,4]		=>	:index_therapeuticus,
@@ -199,12 +199,12 @@ class RegistrationForm < View::Form
 			components.update({
 				[0,8]		=>	'fi_upload_instruction0',
 				[2,8]		=>	:fachinfo_label,
-				[3,8]		=>	:fachinfo,
+				[3,8,0]	=>	:fachinfo,
 				[3,8,1]	=>	:assign_fachinfo,
 				[0,9]		=>	'fi_upload_instruction1',
 				[1,9]		=>	:language_select,
-				[0,10]		=>	'fi_upload_instruction2',
-				[1,10]		=>	:fachinfo_upload,
+				[0,10]	=>	'fi_upload_instruction2',
+				[1,10]	=>	:fachinfo_upload,
 				[0,11]	=>	'fi_upload_instruction3',
 				[1,11]	=>	:submit,
 				[1,11,1]=>	:new_registration,
@@ -276,7 +276,7 @@ class ResellerRegistrationForm < View::Form
 		[0,3]		=>	:fi_upload_instruction0,
 		[1,3]		=>	:not_invoiceable,
 		[2,3]		=>	:fachinfo_label,
-		[3,3]		=>	:fachinfo,
+		[3,3,0]	=>	:fachinfo,
 	}
 	CSS_MAP = {
 		[0,0,4,3]	=>	'list',

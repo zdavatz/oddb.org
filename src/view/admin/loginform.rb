@@ -3,7 +3,7 @@
 
 require 'htmlgrid/form'
 require 'htmlgrid/pass'
-require 'view/composite'
+require 'view/htmlgrid/composite'
 
 module ODDB
 	module View

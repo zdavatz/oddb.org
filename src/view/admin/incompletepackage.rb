@@ -48,8 +48,8 @@ class IncompletePackageForm < View::Admin::PackageForm
 		[0,4]		=>	:price_exfactory,
 		[2,4]		=>	:price_public,
 		[0,5]		=>	:generic_group,
-		[1,6]		=>	:submit,
-		[1,6,0]	=>	:delete_item,
+		[1,6,0]	=>	:submit,
+		[1,6,1]	=>	:delete_item,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,4,6]	=>	'standard',

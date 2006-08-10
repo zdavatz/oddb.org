@@ -59,12 +59,15 @@ module ODDB
 		def pointer_descr
 			name_base
 		end
+    def search_text(language)
+      ODDB.search_term(self.send(language).indications.to_s)
+    end
 		def substance_names
 			@registrations.collect { |reg|
 				reg.substance_names
 			}.flatten.uniq
 		end
-end
+  end
 	class FachinfoDocument
 		include Persistence
 		attr_accessor :name, :galenic_form, :composition

@@ -27,11 +27,11 @@ end
 class SlEntryForm < View::Form
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
-		[0,0]	=>	:introduction_date,
-		[0,1]	=>	:limitation,
-		[1,1]	=>	:limitation_points,
-		[1,2]	=>	:submit,
-		[1,2,0]=>	:delete_item,
+		[0,0]	  =>	:introduction_date,
+		[0,1]	  =>	:limitation,
+		[1,1]	  =>	:limitation_points,
+		[1,2,0]	=>	:submit,
+		[1,2,1] =>	:delete_item,
 	}
 	COMPONENT_CSS_MAP = {
 		[1,0]	=>	'standard',

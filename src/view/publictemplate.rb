@@ -6,7 +6,7 @@ require 'view/logohead'
 require 'view/navigationfoot'
 require 'sbsm/time'
 require 'view/custom/head'
-require 'htmlgrid/dojotoolkit'
+require 'view/htmlgrid/component'
 
 module ODDB
 	module View
@@ -52,6 +52,13 @@ module ODDB
 					super
 				end
 			end
+      def dynamic_html_headers(context)
+        if(@lookandfeel.enabled?(:ajax))
+          super
+        else
+          ''
+        end
+      end
 			def foot(model, session)
 				self::class::FOOT.new(model, session, self) unless self::class::FOOT.nil?
 			end

@@ -65,7 +65,7 @@ class ResultComposite < HtmlGrid::Composite
 		[0,3]	=> 2,
 	}
 	COMPONENTS = {
-		[0,0]		=>	:title_found,
+		[0,0,0]	=>	:title_found,
 		[0,0,1]	=>	:dsp_sort,
 		[0,1]		=>	'price_compare',
 		[1,1]		=>	SelectSearchForm,

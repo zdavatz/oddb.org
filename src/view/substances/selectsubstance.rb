@@ -10,12 +10,12 @@ module ODDB
 class TargetList < HtmlGrid::FormList
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
-		[0,0]	=>	:pointer,
-		[0,0,0]	=>	:name,
-		[1,0]	=>	:lt,
-		[2,0]	=>	:de,
-		[3,0]	=>	:fr,
-		[4,0]	=>	:en,
+		[0,0,0]	=>	:pointer,
+		[0,0,1]	=>	:name,
+		[1,0]	  =>	:lt,
+		[2,0]	  =>	:de,
+		[3,0]	  =>	:fr,
+		[4,0]	  =>	:en,
 	}
 	CSS_MAP = {
 		[0,0,5]	=>	'list',
@@ -31,8 +31,8 @@ class TargetList < HtmlGrid::FormList
 end
 class SelectSubstanceComposite < HtmlGrid::Composite
 	COMPONENTS = {
-		[0,0]	=>	:source_name,
-		[0,0,0]	=>	'merge_with',
+		[0,0,0]	=>	:source_name,
+		[0,0,1]	=>	'merge_with',
 		[0,1]	=>	:targets,
 	}
 	CSS_CLASS = 'composite'

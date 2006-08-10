@@ -19,33 +19,36 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[2,1]		=>	:registration_date,
 		[0,2]		=>	:most_precise_dose,
 		[2,2]		=>	:revision_date,
-		[2,3]		=>	:expiration_date,
-		[0,3]		=>	:atc_class,
+		[0,3,0]	=>	:atc_class,
 		[1,3,1]	=>	:atc_ddd_link,
-		[2,4]		=>	:descr,
+		[2,3]		=>	:expiration_date,
 		[0,4]		=>	:galenic_form,
 		[2,4]		=>	:size,
-		[0,5]		=>	:ikscat,
-		[2,5]		=>	:indication,
-		[0,6]		=>	:fachinfo_label,
-		[1,6]		=>	:fachinfo,
-		[2,6]		=>	:patinfo_label,
-		[3,6]		=>	:patinfo,
-		[0,7]		=>	:sl_entry,
-		[0,8]		=>	:price_exfactory,
-		[2,8]		=>	:price_public,
-		[0,9]		=>	:deductible,
-		[2,9]		=>	:ddd_price,
-		[0,10]	=>	:feedback_label,
-		[1,10]	=>	:feedback,
-		[2,10]	=>	:narcotic_label,
-		[3,10]	=>	:narcotic,
+		[2,5]		=>	:descr,
+		[0,6]		=>	:ikscat,
+		[2,6]		=>	:indication,
+		[0,7]		=>	:fachinfo_label,
+		[1,7]		=>	:fachinfo,
+		[2,7]		=>	:patinfo_label,
+		[3,7]		=>	:patinfo,
+		[0,8]		=>	:sl_entry,
+		[0,9]		=>	:price_exfactory,
+		[2,9]		=>	:price_public,
+		[0,10]	=>	:deductible,
+		[2,10]	=>	:ddd_price,
+		[0,11]	=>	:feedback_label,
+		[1,11]	=>	:feedback,
+		[2,11]	=>	:narcotic_label,
+		[3,11]	=>	:narcotic,
 	}
 	CSS_MAP = {
-		[0,0,4,11]	=>	'list',
+		[0,0,4,12]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
+  LOOKANDFEEL_MAP = {
+    :descr  =>  :description,
+  }
 	COLSPAN_MAP = { }
 	SYMBOL_MAP = {
 		:sl_entry						=>	HtmlGrid::BooleanValue,
@@ -60,23 +63,24 @@ class PackageInnerComposite < HtmlGrid::Composite
 	}
 	def init
 		if(@model.sl_entry)
-			components.store([2,7], :limitation)
+			components.store([2,8], :limitation)
 			if(@model.limitation_text)
-				components.delete([2,8])
-				components.delete([1,10])
-				components.delete([3,10])
+				components.delete([2,9])
+				components.delete([1,11])
+				components.delete([3,11])
 				components.update({
-					[0,8]		=>	:limitation_text,
-					[0,9]		=>	:price_exfactory,
-					[2,9]		=>	:price_public,
-					[0,10]	=>	:deductible,
-					[2,10]	=>	:ddd_price,
-					[0,11]	=>	:feedback_label,
-					[1,11]	=>	:feedback,
-					[2,11]	=>	:narcotic_label,
-					[3,11]	=>	:narcotic,
+					[0,9]		=>	:limitation_text,
+					[0,10]		=>	:price_exfactory,
+					[2,10]		=>	:price_public,
+					[0,11]	=>	:deductible,
+					[2,11]	=>	:ddd_price,
+					[0,12]	=>	:feedback_label,
+					[1,12]	=>	:feedback,
+					[2,12]	=>	:narcotic_label,
+					[3,12]	=>	:narcotic,
 				})
-				css_map.store([0,11,4], 'list')
+				css_map.store([0,9], 'list top')
+				css_map.store([0,12,4], 'list')
 			end
 		end
 		if(@lookandfeel.enabled?(:atupri_web, false))
@@ -105,11 +109,13 @@ class PackageInnerComposite < HtmlGrid::Composite
 		HtmlGrid::Value.new(:company_name, model, @session, self)
 	end
 	def limitation_text(model, session)
-		text = HtmlGrid::Value.new(:limitation_text, model, @session, self)
+    text = HtmlGrid::Div.new(model, @session, self)
+    text.label = true
 		if(lim = model.limitation_text)
 			text.value = lim.send(@session.language)
+      text.css_class = "long-text"
 		end
-		text
+    text
 	end
 	def most_precise_dose(model, session)
 		HtmlGrid::Value.new(:most_precise_dose, model, session, self)

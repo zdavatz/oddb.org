@@ -16,7 +16,7 @@ class Patinfos < Global
 	PERSISTENT_RANGE = true
 	def index_lookup(range)
 		@session.search_sequences(range, false).select { |seq|
-			seq.has_patinfo?
+			seq.has_patinfo? && seq.has_public_packages?
 		}
 	end
 end
