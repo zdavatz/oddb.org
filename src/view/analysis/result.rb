@@ -3,6 +3,7 @@
 
 require 'htmlgrid/list'
 require 'model/analysis/position'
+require 'util/language'
 require 'view/additional_information'
 require 'view/pointervalue'
 require 'view/privatetemplate'
@@ -44,7 +45,7 @@ class List < HtmlGrid::List
 	SORT_DEFAULT = :code
 	def description(model)
 		link = PointerLink.new(:to_s, model, @session, self)
-		text = model.description.gsub("\n", ' ')
+		text = model.send(@session.language).gsub("\n", ' ')
 		if(text.size > 60)
 			if(match = /^([\S]*block)/.match(text))
 				text = match[1]
@@ -57,6 +58,13 @@ class List < HtmlGrid::List
 		end
 		link.value = text
 		link
+	end
+	def list_title(model, key = :list_title)
+		if(model.list_title)
+			value = HtmlGrid::Value.new(key, model, @session, self)
+			value.value = model.list_title.send(@session.language)
+			value
+		end
 	end
 end
 class ResultList < View::Analysis::List
@@ -78,39 +86,82 @@ class ExplainAnalysisColumns < HtmlGrid::Composite
 	}
 end
 class ExplainAnalysisTechnical1 < HtmlGrid::Composite
-	COMPONENTS = {
-		[0,0]		=>	'analysis_description',
-		[0,1]		=>	'explain_analysis_tech_AAS',
-		[0,2]		=>	'explain_analysis_tech_AL',
-		[0,3]		=>	'explain_analysis_tech_ALT',
-		[0,4]		=>	'explain_analysis_tech_Bi',
-		[0,5]		=>	'explain_analysis_tech_F',
-		[0,6]		=>	'explain_analysis_tech_GC',
-		[0,7]		=>	'explain_analysis_tech_GC_MS',
-		[0,8]		=>	'explain_analysis_tech_HPLC',
-		[0,9]		=>	'explain_analysis_tech_HPLC_MS',
-		[0,10]	=>	'explain_analysis_tech_IEP',
-		[0,11]	=>	'explain_analysis_tech_IF',
-		[0,12]	=>	'explain_analysis_tech_L',
-		[0,13]	=>	'explain_analysis_tech_n',
-	}	
-end
+	def init
+		if(@session.language == 'fr')
+			@components = {
+				[0,0]		=>	'analysis_description',
+				[0,1]		=>	'explain_analysis_tech_AAS',
+				[0,2]		=>	'explain_analysis_tech_Bi',
+				[0,3]		=>	'explain_analysis_tech_GC',
+				[0,4]		=>	'explain_analysis_tech_GC_MS',
+				[0,5]		=>	'explain_analysis_tech_F',
+				[0,6]		=>	'explain_analysis_tech_HPLC',
+				[0,7]		=>	'explain_analysis_tech_HPLC_MS',
+				[0,8]		=>	'explain_analysis_tech_IEP',
+				[0,9]		=>	'explain_analysis_tech_IF',
+				[0,10]	=>	'explain_analysis_tech_L',
+				[0,11]	=>	'explain_analysis_tech_AL',
+				[0,12]	=>	'explain_analysis_tech_ALT',
+				[0,13]	=>	'explain_analysis_tech_SL',
+			}
+		else
+			@components = {
+				[0,0]		=>	'analysis_description',
+				[0,1]		=>	'explain_analysis_tech_AAS',
+				[0,2]		=>	'explain_analysis_tech_AL',
+				[0,3]		=>	'explain_analysis_tech_ALT',
+				[0,4]		=>	'explain_analysis_tech_Bi',
+				[0,5]		=>	'explain_analysis_tech_F',
+				[0,6]		=>	'explain_analysis_tech_GC',
+				[0,7]		=>	'explain_analysis_tech_GC_MS',
+				[0,8]		=>	'explain_analysis_tech_HPLC',
+				[0,9]		=>	'explain_analysis_tech_HPLC_MS',
+				[0,10]	=>	'explain_analysis_tech_IEP',
+				[0,11]	=>	'explain_analysis_tech_IF',
+				[0,12]	=>	'explain_analysis_tech_L',
+				[0,13]	=>	'explain_analysis_tech_n',
+			}
+		end
+	super
+	end
+end	
 class ExplainAnalysisTechnical2 < HtmlGrid::Composite
-	COMPONENTS = {
-		[0,0]	=>	'explain_analysis_tech_p',
-		[0,1]	=>	'explain_analysis_tech_PCR',
-		[0,2]	=>	'explain_analysis_tech_ql',
-		[0,3]	=>	'explain_analysis_tech_qn',
-		[0,4]	=>	'explain_analysis_tech_R',
-		[0,5]	=>	'explain_analysis_tech_RAST',
-		[0,6]	=>	'explain_analysis_tech_RIA',
-		[0,7]	=>	'explain_analysis_tech_S',
-		[0,8]	=>	'explain_analysis_tech_SL',
-		[0,9]	=>	'explain_analysis_tech_sq',
-		[0,10]	=>	'explain_analysis_tech_ST',
-		[0,11]	=>	'explain_analysis_tech_U',
-		[0,12]	=>	'explain_analysis_tech_WB',
-	}
+	def init
+		if(@session.language == 'fr')
+			@components = {
+				[0,0]		=>	'explain_analysis_tech_n',
+				[0,1]		=>	'explain_analysis_tech_p',
+				[0,2]		=>	'explain_analysis_tech_PCR',
+				[0,3]		=>	'explain_analysis_tech_ql',
+				[0,4]		=>	'explain_analysis_tech_qn',
+				[0,5]		=>	'explain_analysis_tech_R',
+				[0,6]		=>	'explain_analysis_tech_RAST',
+				[0,7]		=>	'explain_analysis_tech_RIA',
+				[0,8]		=>	'explain_analysis_tech_S',
+				[0,9]		=>	'explain_analysis_tech_sq',
+				[0,10]	=>	'explain_analysis_tech_ST',
+				[0,11]	=>	'explain_analysis_tech_U',
+				[0,12]	=>	'explain_analysis_tech_WB',
+			}	
+		else
+			@components = {
+				[0,0]		=>	'explain_analysis_tech_p',
+				[0,1]		=>	'explain_analysis_tech_PCR',
+				[0,2]		=>	'explain_analysis_tech_ql',
+				[0,3]		=>	'explain_analysis_tech_qn',
+				[0,4]		=>	'explain_analysis_tech_R',
+				[0,5]		=>	'explain_analysis_tech_RAST',
+				[0,6]		=>	'explain_analysis_tech_RIA',
+				[0,7]		=>	'explain_analysis_tech_S',
+				[0,8]		=>	'explain_analysis_tech_SL',
+				[0,9]		=>	'explain_analysis_tech_sq',
+				[0,10]	=>	'explain_analysis_tech_ST',
+				[0,11]	=>	'explain_analysis_tech_U',
+				[0,12]	=>	'explain_analysis_tech_WB',
+			}
+		end
+	super
+	end
 end
 class ExplainResult < HtmlGrid::Composite
 	COMPONENTS = {

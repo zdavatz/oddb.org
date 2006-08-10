@@ -205,6 +205,197 @@ Rev. Pos.-Nr. TP Bezeichnung Anonyme Nr.
 				assert_equal(expected_last, result.last)
 				assert_equal(expected_size, result.size)
 			end
+			def test_fr_parse_line__1
+				src = <<-EOS
+8485.00   45  Prostate, antigène spécifique (PSA)  ?  9800.20
+				EOS
+				begin
+					result = @parser.parse_line(src)
+				end
+				expected =	{
+					:code						=>	'8485.00',
+					:group					=>	'8485',
+					:position				=>	'00',
+					:taxpoints			=>	45,
+					:description		=>	'Prostate, antigène spécifique (PSA)',
+					:anonymousgroup	=>	'9800',
+					:anonymouspos		=>	'20',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
+				} 
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_line__2
+				src = <<-EOS
+8810.09     20  Détermination du sexe, utilisation
+lors de maladies héréditaires liées
+au chromosome X..........................?  9800.10
+				EOS
+				begin
+					result = @parser.parse_line(src)
+				end
+				expected = {
+					:code							=>	'8810.09',
+					:group						=>	'8810',
+					:position					=>	'09',
+					:taxpoints				=>	20,
+					:description			=>	'Détermination du sexe, utilisation lors de maladies héréditaires liées au chromosome X',
+					:anonymousgroup		=>	'9800',
+					:anonymouspos			=>	'10',
+					:list_title				=>	nil,
+					:permission				=>	nil,
+					:taxpoint_type		=>	nil,
+				}
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_line__3
+				src = <<-EOS
+8810.13     50  Maladies d'hémostase; recherche
+				d'une mutation ou d'un polymor-
+				phisme lié lors d'hémophilies A et
+				B, troubles du facteur II et du
+				facteur V.........................................?  9800.22
+				EOS
+				begin
+					result = @parser.parse_line(src)
+				end
+				expected = {
+					:code						=>	'8810.13',
+					:group					=>	'8810',
+					:position				=>	'13',
+					:taxpoints			=>	50,
+					:description		=>	'Maladies d\'hémostase; recherche d\'une mutation ou d\'un polymorphisme lié lors d\'hémophilies A et B, troubles du facteur II et du facteur V',
+					:anonymousgroup	=>	'9800',
+					:anonymouspos		=>	'22',
+					:list_title			=>	nil,
+					:taxpoint_type	=>	nil,
+					:permission			=>	nil,
+				}
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_line__4
+				src = <<-EOS
+				     8810.23     50  Dystrophies musculaires; recherche
+				d'une mutation ou d'un polymor-
+				phisme lié lors de dystrophies de
+				Duchenne et de Becker, troubles
+				des protéines associés à la dystro-
+				phine dans d'autres types de dys-
+				trophies musculaires, dystrophie
+				musculaire facio-scapulo-huméral  ?  9800.22
+
+				EOS
+				begin
+					result = @parser.parse_line(src)
+				end
+				expected = {
+					:code							=>	'8810.23',
+					:group						=>	'8810',
+					:position					=>	'23',
+					:taxpoints				=>	50,
+					:description			=>	'Dystrophies musculaires; recherche d\'une mutation ou d\'un polymorphisme lié lors de dystrophies de Duchenne et de Becker, troubles des protéines associés à la dystrophine dans d\'autres types de dystrophies musculaires, dystrophie musculaire facio-scapulo-huméral',	
+					:anonymousgroup		=>	'9800',
+					:anonymouspos			=>	'22',
+					:list_title				=>	nil,
+					:taxpoint_type		=>	nil,
+					:permission				=>	nil,
+				}
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_line__5
+				src = <<-EOS
+				     9116.07    60  HIV 1, test de confirmation des anti-
+				corps p24 + gp41 (par EIA), ql        ?  9800.24
+				EOS
+				begin
+					result = @parser.parse_line(src)
+				end
+				expected = {
+					:code						=>	'9116.07',
+					:group					=>	'9116',
+					:position				=>	'07',
+					:taxpoints			=>	60,
+					:description		=>	'HIV 1, test de confirmation des anticorps p24 + gp41 (par EIA), ql',
+					:anonymousgroup	=>	'9800',
+					:anonymouspos		=>	'24',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
+				}
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_page__1
+				src = <<-EOS
+4.2  Positions anonymes
+Rév. No pos. TP Dénomination No anonyme
+
+8003.01  100 Cholinésterase, iso-enzymes de l'acétyl~..........................................?  9800.30
+8017.00 45 Alpha-1-foetoprotein (AFP)..............?  9800.20
+8120.00 45 Beta-2- microglobuline.....................?  9800.20
+8140.00 50 CA 125.............................................?  9800.22
+8141.00 50 CA 15-3............................................?  9800.22
+8142.00 50 CA 19-9............................................?  9800.22
+8145.00 50 CA 72-4............................................?  9800.22
+8145.01 50 CYFRA 21-1.....................................?  9800.22
+8147.00 60 Calcitonine.......................................?  9800.24
+8152.00 45 Antigène carcino-embryonnaire CEA ?  9800.20
+8194.00 25 Fibres élastiques après enrichisse-
+ment (matériel: lavage)..................?  9800.12
+8212.00 125 Estradiol, récepteurs........................?  9800.34
+8238.00 20 Fluorures..........................................?  9800.10
+8345.00 12 Agglutinines froides, test de recherche.......................................?  9800.04
+8430.01 45 MCA (antigène associé au carcino-
+me de type mucine.........................?  9800.20
+8435.00 80 Méthotrexate (sang).........................?  9800.28
+8461.01 70 Phénytoine, libre, y compris dosage
+de la phénytoine totale (sang)........?  9800.26
+8477.01 70 Primidone, y compris phénobarbital
+(sang).............................................?  9800.26
+8480.00 125 Progestérone, récepteurs.................?  9800.34
+8485.00 45 Prostate, antigène spécifique (PSA)  ?  9800.20
+8485.01 25 Prostate, antigène spécifique (PSA),
+libre, uniquement en combinaison
+avec un PSA total entre 3 et 10
+?g/l.................................................?  9800.12
+8531.00 50 Sqamous Cell Carcinoma (SCC)......?  9800.22
+8567.01 45 TPA (antigène polypeptidique
+tissulaire)........................................?  9800.20
+8800.01  250 Culture cellulaire et préparation
+chromosomique, caryotype
+constitutionnel................................?  9800.44
+				111
+				EOS
+				begin
+					result = @parser.parse_page(src, 111)
+				end
+				expected_first = {
+				:code							=>	'8003.01',
+				:group						=>	'8003',
+				:position					=>	'01',
+				:description			=>	'Cholinésterase, iso-enzymes de l\'acétyl~',
+				:anonymouspos			=>	'30',
+				:anonymousgroup		=>	'9800',
+				:taxpoints				=>	100,
+				:taxpoint_type		=>	nil,
+				:list_title				=>	nil,
+				:permission				=>	nil,
+				}
+				expected_last = {
+				:code							=>	'8800.01',
+				:group						=>	'8800',
+				:position					=>	'01',
+				:description			=>	'Culture cellulaire et préparation chromosomique, caryotype constitutionnel',
+				:anonymouspos			=>	'44',
+				:anonymousgroup		=>	'9800',
+				:taxpoints				=>	250,
+				:taxpoint_type		=>	nil,
+				:list_title				=>	nil,
+				:permission				=>	nil,
+				}
+				assert_equal(expected_first, result.first)
+				assert_equal(expected_last, result.last)
+			end
 		end
 	end
 end

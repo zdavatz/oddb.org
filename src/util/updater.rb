@@ -160,12 +160,12 @@ module ODDB
 				update_medwin_companies
 			end
 		end
-		def update_analysis(path)
+		def update_analysis(path, lang)
 			klass = AnalysisPlugin
 			subj = 'Analysis'
 			wrap_update(klass, subj) {
 				plug = klass.new(@app)
-				plug.update(path)	
+				plug.update(path, lang)	
 			}
 		end
 		def update_bsv

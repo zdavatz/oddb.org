@@ -16,7 +16,7 @@ Grammar AnalysisList
 		POSITION				=	/[0-9]{2}/
 		REVISION				= /^[CS]|N(,\\s*ex)?|TP/
 		TAXPOINTS				=	/[0-9]+/
-		WORD						=	/(\\S(?!\\.))+[^.]|(\\d\\.)/
+		WORD						=	/(\\S(?!\\.))+[^.]|\\w|(\\d\\.)/
 		DOTS						=	/\\./
 	Productions
 		Line				->	REVISION? GROUP '.' POSITION 
@@ -29,6 +29,10 @@ Grammar AnalysisList
 										[^: description ]
 			EOG
 			PARSER = Parse.generate_parser grammar
+			def parse_line(src)
+				src.gsub!(/\s+/,' ')
+				super
+			end
 		end
 	end
 end

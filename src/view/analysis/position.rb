@@ -20,19 +20,22 @@ class PositionInnerComposite < HtmlGrid::Composite
 	}
 	COMPONENTS	= {
 		[0,0]		=>	:code,
-		[0,1]		=>	:description,
-		[0,2]		=>	:limitation,
-		[0,3]		=>	:anonymous,
+		[0,1]		=>	:anonymous,
+		[0,2]		=>	:analysis_revision,
+		[0,3]		=>	:description,
 		[0,4]		=>	:taxpoints,
-		[0,5]		=>	:taxnote,	
-#		[0,6]		=>	:feedback_label,
-#		[1,6]		=>	:feedback,
-		[0,6]		=>	:footnote,
+		[0,5]		=>	:lab_areas,
+		[0,6]		=>	:limitation_text,
+		[0,7]		=>	:finding,
+		[0,8]		=>	:taxnote,	
+#		[0,7]		=>	:feedback_label,
+#		[1,7]		=>	:feedback,
+		[0,9]		=>	:footnote,
 	}
 	CSS_CLASS = ''
 	CSS_MAP = {
-		[0,0,1,8]		=>	'list top',
-		[1,0,1,8]		=>	'list',
+		[0,0,1,10]		=>	'list top',
+		[1,0,1,10]		=>	'list',
 	}
 	CSS_STYLE_MAP = {
 		[1,0,1,6]		=>	'max-width:250px',
@@ -43,52 +46,45 @@ class PositionInnerComposite < HtmlGrid::Composite
 	def anonymous(model, key = :anonymous)
 			value = HtmlGrid::Value.new(key, model, @session, self)
 			if(model.anonymous)
+			value.value = [model.anonymousgroup.dup, model.anonymouspos].join('.')
+			end
+=begin
+			if(model.anonymous)
 			value.value = [model.anonymousgroup.dup,
 				model.anonymouspos].join('.')
 			else value.value = @lookandfeel.lookup(:false)
 			end
+=end
 			value
 	end
 	def description(model, key = :description)
 		value = HtmlGrid::Value.new(key, model, @session, self)
-		value.value = model.description.gsub(/(\d{4})\.(\d{2})/) {
-			group_code = $~[1]
-			pos_code = $~[2]
-			ptr = Persistence::Pointer.new([:analysis_group, group_code])
-			ptr += [:position, pos_code]
-			args = {:pointer => ptr}
-			'<a class="list" href="' << @lookandfeel._event_url(:resolve, args) << '">' << $~[0] << '</a>'
-		}
-		value
-	end
-	def footnote(model, key = :footnote)
-		value = HtmlGrid::Value.new(key, model, @session, self)
-		if(model.footnote)
-			value.value = model.footnote
-		else value.value = @lookandfeel.lookup(:false)
+		if(model && (str = model.send(@session.language)))
+			value.value = str.gsub(/(\d{4})\.(\d{2})/) {
+				group_code = $~[1]
+				pos_code = $~[2]
+				ptr = Persistence::Pointer.new([:analysis_group, group_code])
+				ptr += [:position, pos_code]
+				args = {:pointer => ptr}
+				'<a class="list" href="' << @lookandfeel._event_url(:resolve, args) << '">' << $~[0] << '</a>'
+			}
 		end
 		value
 	end
-	def limitation(model, key = :limitation)
-		value = HtmlGrid::Value.new(key, model, @session, self)
-		if(model.limitation)
-			value.value = model.limitation
-		else value.value = @lookandfeel.lookup(:false)
-		end
-		value
+	def limitation_text(model)
+		description(model.limitation_text, :limitation)
 	end
-	def taxnote(model, key = :taxnote)
-		value = HtmlGrid::Value.new(key, model, @session, self)
-		if(model.taxnote)
-			value.value = model.taxnote
-		else value.value = @lookandfeel.lookup(:false)
-		end
-		value
+	def taxnote(model)
+		description(model.taxnote, :taxnote)
+	end
+	def footnote(model)
+		description(model.footnote, :footnote)
 	end
 	def taxpoints(model, key = :taxpoints)
 		value = HtmlGrid::Value.new(key, model, @session, self)
-		effective_tax = (model.taxpoints.to_i * 0.9).to_s
-		value.value = model.taxpoints.to_s << ', ' << model.taxpoints.to_s << ' * 0.9 = ' << effective_tax
+		effective_tax = sprintf("%1.2f", (model.taxpoints.to_i * 0.9).to_s)
+		
+		value.value = model.taxpoints.to_s << ' (' << model.taxpoints.to_s << ' x 0.90 CHF = ' << effective_tax  << ' CHF)'
 		value
 	end
 end
@@ -116,7 +112,7 @@ class PositionComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
 	def permissions(model)
-		Permissions.new(model.permissions, @session, self)
+		Permissions.new(model.permissions.send(@session.language), @session, self)
 	end
 end
 class Position < View::PrivateTemplate

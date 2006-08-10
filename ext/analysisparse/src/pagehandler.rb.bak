@@ -29,7 +29,6 @@ module ODDB
 						end
 					}
 				}
-				puts @index.inspect
 			end
 		end
 		class IndexHandler < PageHandler
@@ -39,18 +38,14 @@ module ODDB
 				@parser = ListParser.new
 			end
 			def analyze(page, pagenum)
-				puts @index.inspect
 				handler = Rpdf2txt::SimpleHandler.new
 				page.text(handler)
 				txt = handler.out
 				case @index[pagenum]
 				when /rechtsgrundlagen/i
-					puts "RECHTSGRUNDLAGEN SIND DA"
 				when /anhänge zur analysenliste/im
-						puts "APPENDIX FOUND"
 				when /genetik/i
 					@parser.parse_page(txt, pagenum)
-					puts @parser.class
 				else
 					self
 				end

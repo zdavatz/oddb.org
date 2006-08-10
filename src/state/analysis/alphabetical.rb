@@ -18,7 +18,11 @@ class Alphabetical < Global
 	end
 	def intervals
 		@intervals or begin
-			values = ODBA.cache.index_keys('analysis_alphabetical_index', 1)
+		if(@session.language == 'en')
+			lang = 'de'
+		else lang = @session.language
+		end
+			values = ODBA.cache.index_keys("analysis_alphabetical_index_#{lang}", 1)
 			@intervals, numbers = values.partition { |char| 
 				/[a-z]/.match(char)
 			} 
@@ -27,9 +31,6 @@ class Alphabetical < Global
 			end
 			@intervals
 		end
-	end
-	def comparison_value(item)
-		item.send(@session.user_input(:sortvalue) || :description)
 	end
 end
 		end
