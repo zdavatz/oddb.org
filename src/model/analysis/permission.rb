@@ -2,6 +2,8 @@
 # Analysis::Permission -- oddb.org -- 19.06.2006 -- sfrischknecht@ywesee.com
 
 require 'util/persistence'
+require 'util/language'
+require 'model/text'
 
 module ODDB
 	module Analysis

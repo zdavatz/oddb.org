@@ -3,10 +3,12 @@
 
 require 'htmlgrid/list'
 require 'model/analysis/position'
+require 'util/language'
 require 'view/additional_information'
 require 'view/pointervalue'
 require 'view/privatetemplate'
 require 'view/resultfoot'
+require 'view/analysis/explain_result'
 
 module ODDB
 	module View
@@ -44,7 +46,7 @@ class List < HtmlGrid::List
 	SORT_DEFAULT = :code
 	def description(model)
 		link = PointerLink.new(:to_s, model, @session, self)
-		text = model.description.gsub("\n", ' ')
+		text = model.send(@session.language).gsub("\n", ' ')
 		if(text.size > 60)
 			if(match = /^([\S]*block)/.match(text))
 				text = match[1]
@@ -58,73 +60,20 @@ class List < HtmlGrid::List
 		link.value = text
 		link
 	end
-end
-class ResultList < View::Analysis::List
-end
-class ExplainAnalysisColumns < HtmlGrid::Composite
-	COMPONENTS = {
-		[0,0]		=>	'explain_analysis_revision',
-		[0,1]		=>	'explain_analysis_rev_C',
-		[0,2]		=>	'explain_analysis_rev_N',
-		[0,3]		=>	'explain_analysis_rev_Nex',
-		[0,4]		=>	'explain_analysis_rev_S',
-		[0,5]		=>	'explain_analysis_rev_TP',
-		[0,7]		=>	'explain_analysis_labarea',
-		[0,8]		=>	'explain_analysis_lab_C',
-		[0,9]		=>	'explain_analysis_lab_G',
-		[0,10]	=>	'explain_analysis_lab_H',
-		[0,11]	=>	'explain_analysis_lab_I',
-		[0,12]	=>	'explain_analysis_lab_M',
-	}
-end
-class ExplainAnalysisTechnical1 < HtmlGrid::Composite
-	COMPONENTS = {
-		[0,0]		=>	'analysis_description',
-		[0,1]		=>	'explain_analysis_tech_AAS',
-		[0,2]		=>	'explain_analysis_tech_AL',
-		[0,3]		=>	'explain_analysis_tech_ALT',
-		[0,4]		=>	'explain_analysis_tech_Bi',
-		[0,5]		=>	'explain_analysis_tech_F',
-		[0,6]		=>	'explain_analysis_tech_GC',
-		[0,7]		=>	'explain_analysis_tech_GC_MS',
-		[0,8]		=>	'explain_analysis_tech_HPLC',
-		[0,9]		=>	'explain_analysis_tech_HPLC_MS',
-		[0,10]	=>	'explain_analysis_tech_IEP',
-		[0,11]	=>	'explain_analysis_tech_IF',
-		[0,12]	=>	'explain_analysis_tech_L',
-		[0,13]	=>	'explain_analysis_tech_n',
-	}	
-end
-class ExplainAnalysisTechnical2 < HtmlGrid::Composite
-	COMPONENTS = {
-		[0,0]	=>	'explain_analysis_tech_p',
-		[0,1]	=>	'explain_analysis_tech_PCR',
-		[0,2]	=>	'explain_analysis_tech_ql',
-		[0,3]	=>	'explain_analysis_tech_qn',
-		[0,4]	=>	'explain_analysis_tech_R',
-		[0,5]	=>	'explain_analysis_tech_RAST',
-		[0,6]	=>	'explain_analysis_tech_RIA',
-		[0,7]	=>	'explain_analysis_tech_S',
-		[0,8]	=>	'explain_analysis_tech_SL',
-		[0,9]	=>	'explain_analysis_tech_sq',
-		[0,10]	=>	'explain_analysis_tech_ST',
-		[0,11]	=>	'explain_analysis_tech_U',
-		[0,12]	=>	'explain_analysis_tech_WB',
-	}
-end
-class ExplainResult < HtmlGrid::Composite
-	COMPONENTS = {
-		[0,0]		=>	ExplainAnalysisColumns,
-		[1,0]		=>	ExplainAnalysisTechnical1,
-		[2,0]		=>	ExplainAnalysisTechnical2,
-	}
+	def list_title(model, key = :list_title)
+		if(model.list_title)
+			value = HtmlGrid::Value.new(key, model, @session, self)
+			value.value = model.list_title.send(@session.language)
+			value
+		end
+	end
 end
 class ResultComposite < HtmlGrid::Composite
 	include ResultFootBuilder	
 	EXPLAIN_RESULT = View::Analysis::ExplainResult
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
-		[0,0]	=>	ResultList,
+		[0,0]	=>	List,
 		[0,1]	=>	:result_foot,
 	}
 end

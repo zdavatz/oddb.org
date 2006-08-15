@@ -29,7 +29,7 @@ Grammar AnalysisList
 	Productions
 		Line				->	REVISION? GROUP '.' POSITION
 										TAXPOINTS Description LABAREA
-										Description? NEWLINE
+										Description NEWLINE
 										[: revision, group, _, position,
 											taxpoints, description, 
 											labarea, morelines, _ ]

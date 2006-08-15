@@ -6,6 +6,7 @@ require 'parser'
 module ODDB	
 	module AnalysisParse
 		class ExtendedListParser < Parser
+			FOOTNOTE_TYPE = :restriction
 			LINE_PTRN  = /^\s*([CNS]|N,\s*ex|TP)?\s*\d{4}\.\d{2,}\s*[\d\*]/
 			STOPCHARS2 = ';.('
 			grammar = <<-EOG
@@ -28,10 +29,10 @@ Grammar AnalysisList
 										Limitation? Taxnote?
 										NEWLINE
 										[: revision, group, _, position,
-										footnote, anonymous, taxpoints,
+										restriction, anonymous, taxpoints,
 										taxnumber, description, limitation,
 											taxnote, _ ]
-		Description	->	/[A-Zöäü:,]+/i WORD*
+		Description	->	/[A-ZöäüÉéèà:,]+/i WORD*
 		Limitation	->	LIMITATION Description
 										[: _, description ]
 		Taxnote			->	NOTE Description

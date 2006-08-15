@@ -132,7 +132,7 @@ Gerinnung (DIC)
 			def test_parse_line__8
 				src = <<-EOS
 		 8059.10    80   Natriuretisches Peptid (BNP, NT-                       C 
-proBNP);  
+proBNP)  
 	Limitation: Abklärung der akuten Dyspnoe 
 zum Ausschluss der akuten oder chronischen 
 Herzinsuffizienz   ; nicht zur Therapie-
@@ -983,10 +983,279 @@ Basalmembran, ql
 					:permission=>	nil,
 					:taxpoint_type	=>	nil,
 				}
+				expected_fifth = {
+					:code						=>	'8059.10',
+					:group					=>	'8059',
+					:position				=>	'10',
+					:description		=>	'Natriuretisches Peptid (BNP, NT-proBNP)',
+					:lab_areas			=>	['C'],
+					:taxpoints			=>	80,
+					:limitation			=>	'Abklärung der akuten Dyspnoe zum Ausschluss der akuten oder chronischen Herzinsuffizien z; nicht zur Therapieüberwachung',
+					:list_title			=>	nil,
+					:taxpoint_type	=>	nil,
+					:permission		=>	nil,
+				}
+
+					
 				expected_size = 28
+				assert_equal(expected_fifth, result.at(4))
 				assert_equal(expected_first, result.first)
 				assert_equal(expected_last, result.last)
 				assert_equal(expected_size, result.size)
+			end
+			def test_fr_parse_line__1
+				src = <<-EOS
+C 8272.00 30 Hémogramme V (automatisé): comme  H 
+hémogramme IV, répartition des leucocytes par cytométrie de flux
+Limitation: pas avec la méthode QBC
+				EOS
+				begin
+					result = @parser.parse_line(src)
+				end
+				expected = {
+					:code					=>	'8272.00',
+					:group				=>	'8272',
+					:position			=>	'00',
+					:lab_areas		=>	['H'],
+					:analysis_revision	=>	'C',
+					:taxpoints		=>	30,
+					:description	=>	'Hémogramme V (automatisé): comme hémogramme IV, répartition des leucocytes par cytométrie de flux',
+					:limitation		=>	'pas avec la méthode QBC',
+					:list_title		=>	nil,
+					:permission		=>	nil,
+					:taxpoint_type	=>	nil,
+				}
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_line__2
+				src = <<-EOS
+				      8179.00    25  D-dimère, ql; limitation: uniquement pour             H
+				l'exclusion de la coagulopathie intravasculaire
+				disséminée (DIC)
+
+				EOS
+				 begin
+					 result = @parser.parse_line(src)
+				 end
+				expected = {
+					:code					=>	'8179.00',
+					:group				=>	'8179',
+					:position			=>	'00',
+					:taxpoints		=>	25,
+					:description	=>	'D-dimère, ql',
+					:limitation		=>	'uniquement pour l\'exclusion de la coagulopathie intravasculaire disséminée (DIC)',
+					:lab_areas		=>	['H'],
+					:taxpoint_type	=>	nil,
+					:list_title			=>	nil,
+					:permission			=>	nil,
+				}
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_line__3
+				src = <<-EOS
+				      8059.10    80  Peptide natriurétique (BNP, NT-proBNP);     C
+				limitation: recherche d'une dyspnée aiguë
+				EOS
+				begin
+					result = @parser.parse_line(src)
+				end
+				expected = {
+					:code						=>	'8059.10',
+					:group					=>	'8059',
+					:position				=>	'10',
+					:taxpoints			=>	80,
+					:description		=>	'Peptide natriurétique (BNP, NT-proBNP);',
+					:lab_areas			=>	['C'],
+					:limitation			=>	'recherche d\'une dyspnée aiguë',
+					:taxpoint_type	=>	nil,
+					:list_title			=>	nil,
+					:permission			=>	nil,
+				}
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_page__1
+				src = <<-EOS
+Rév. No pos. A TP Dénomination (chimie/hématologie/immunologie) B
+8252.00   150  Culture lymphocytaire mixte, pour                 HI
+chaque donneur supplémentaire
+8256.00    40   Tests globaux des inhibiteurs (type               H
+				PIVKA)
+8258.00    60  Glucagon                                                      C
+8259.00     9    Glucose (sang, plasma, sérum)                     C
+8259.01     9    Glucose (autre liquide biologique)                 C
+8260.00    35  Glucose-6-phosphate-déshydrogénase       C
+		(G-6-PDH)
+8261.00    25   Glucose, test de surcharge, selon OMS        C
+			(uniquement les analyses)
+8262.00    25  Glutamate-déshydrogénase (GLDH)             C
+8262.01    25  Glutamate-décarboxylase                            C
+8263.00    35  Glutathion réduit                                           C
+8265.00    30   Hémoglobine glyquée (HbA1c)                      C
+8266.00   100  Or, par AAS                                                    C
+8267.00    60  Elastase granulocytaire plasmatique          CH
+C     8268.00     12  Hémogramme I (automatisé):                        H
+				érythrocytes, leucocytes, hémoglobine,
+				hématocrite et indices
+				Limitation: pas avec la méthode QBC
+C     8269.00     15   Hémogramme II (automatisé):                       H
+				hémogramme I, plus thrombocytes
+				Limitation: pas avec la méthode QBC
+C     8270.00     20  Hémogramme III (automatisé):                     H
+				hémogramme II, plus 3 sous-
+				populations de  leucocytes
+				Limitation: pas avec la méthode QBC
+C     8271.00     25   Hémogramme IV (automatisé):                      H
+				hémogramme III, plus 5 ou plus de
+				sous-populations de leucocytes
+				Limitation: pas avec la méthode QBC
+C     8272.00     30  Hémogramme V (automatisé): comme          H
+ hémogramme IV, répartition des leucocytes par cytométrie de flux
+Limitation: pas avec la méthode QBC
+
+52
+				EOS
+				begin
+					result = @parser.parse_page(src, 52)
+				end
+				expected_first = {}
+				expected_last = {
+				:analysis_revision				=>	'C',
+				:lab_areas								=>	['H'],
+				:group										=>	'8272',
+				:position									=>	'00',
+				:code											=>	'8272.00',
+				:description							=>	'Hémogramme V (automatisé): comme hémogramme IV, répartition des leucocytes par cytométrie de flux',
+				:limitation								=>	'pas avec la méthode QBC',
+				:taxpoints								=>	30,
+				:taxpoint_type						=>	nil,
+				:list_title								=>	nil,
+				:permission								=>	nil,
+				}
+				assert_equal(expected_last, result.last)
+			end
+			def test_fr_parse_page__2
+				src = <<-EOS
+Rév. No pos. A TP Dénomination (chimie/hématologie/immunologie) B
+8059.10 80 Peptide natriurétique (BNP, NT-proBNP); C
+limitation: recherche d'une dyspnée aiguë pour l'élimination d'une insuffisance cardiaque aiguë ou chronique; pas pour le suivi d'une thérapie
+8060.00 40 Auto-anticorps anti-épithélium du côlon I
+8060.01 40 Auto-anticorps anti-récepteurs de I
+l'acétylcholine, ql
+8060.02 50 Auto-anticorps anti-récepteurs de I
+l'acétylcholine, qn
+8060.03 40 Auto-anticorps anti-actine, ql
+I
+8060.04 50 Auto-anticorps anti-actine, qn
+I
+56
+				EOS
+				begin
+					result = @parser.parse_page(src, 56)
+				end
+				expected = [
+					{
+					:code					=>	'8059.10',
+					:group				=>	'8059',
+					:position			=>	'10',
+					:taxpoints		=>	80,
+					:lab_areas		=>	['C'],
+					:description	=>	'Peptide natriurétique (BNP, NT-proBNP);',
+					:limitation		=>	'recherche d\'une dyspnée aiguë pour l\'élimination d\'une insuffisance cardiaque aiguë ou chronique; pas pour le suivi d\'une thérapie',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
+				},
+				{  
+					:code						=>	'8060.00',
+					:group					=>	'8060',
+					:position				=>	'00',
+					:taxpoints			=>	40,
+					:lab_areas			=>	['I'],
+					:description		=>	'Auto-anticorps anti-épithélium du côlon',
+					:taxpoint_type	=>	nil,
+					:list_title			=>	nil,
+					:permission			=>	nil,
+				},
+			{  
+				:code						=>	'8060.01',
+				:group					=>	'8060',
+				:position				=>	'01',
+				:taxpoints			=>	40,
+				:lab_areas			=>	['I'],
+				:description		=>	'Auto-anticorps anti-récepteurs de l\'acétylcholine, ql',
+				:taxpoint_type	=>	nil,
+				:list_title			=>	nil,
+				:permission			=>	nil,
+			},
+			{  
+				:code						=>	'8060.02',
+				:group					=>	'8060',
+				:position				=>	'02',
+				:taxpoints			=>	50,
+				:lab_areas			=>	['I'],
+				:description		=>	'Auto-anticorps anti-récepteurs de l\'acétylcholine, qn',
+				:taxpoint_type	=>	nil,
+				:list_title			=>	nil,
+				:permission			=>	nil,
+			},
+			{  
+				:code						=>	'8060.03',
+				:group					=>	'8060',
+				:position				=>	'03',
+				:taxpoints			=>	40,
+				:lab_areas			=>	['I'],
+				:description		=>	'Auto-anticorps anti-actine, ql',
+				:taxpoint_type	=>	nil,
+				:list_title			=>	nil,
+				:permission			=>	nil,
+			},
+			{  
+				:code						=>	'8060.04',
+				:group					=>	'8060',
+				:position				=>	'04',
+				:taxpoints			=>	50,
+				:lab_areas			=>	['I'],
+				:description		=>	'Auto-anticorps anti-actine, qn',
+				:taxpoint_type	=>	nil,
+				:list_title			=>	nil,
+				:permission			=>	nil,
+			},
+				]
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_page__3
+				src = <<-EOS
+      9365.50   170 Bartonella henselae/quintana, amplifi-        M
+				cation et détection des acides
+				nucléiques
+				     9366.001    15      Uréase, test à l~R~ (Helicobacter pylori)      CM
+				     9367.001    90     Helicobacter pylori, test respiratoire à       CM
+				l~Rurée 13C, y.c. l'urée 13C
+				  La préparation à l'urée 13C doit être
+				enregistrée par l'Institut suisse des
+				produits thérapeutiques (Swissmedic).
+				      9368.50   170    Tropheryma whippelii, amplification et        M
+				détection des acides nucléiques
+				1 L'exécution de cette analyse ne nécessite pas de reconnaissance par l'Office fédéral de la
+				santé publique au sens de l'art. 5, al. 1, de la loi sur les épidémies du 18 décembre 1970
+				103
+				EOS
+				begin
+					result = @parser.parse_page(src, 103)
+				end
+				expected_second = {
+					:code						=>	'9366.00',
+					:group					=>	'9366',
+					:position				=>	'00',
+					:taxpoints			=>	15,
+					:description		=>	'Uréase, test à l~R~ (Helicobacter pylori)',
+					:lab_areas			=>	['C','M'],
+					:footnote				=>	'L\'exécution de cette analyse ne nécessite pas de reconnaissance par l\'Office fédéral de la santé publique au sens de l\'art. 5, al. 1, de la loi sur les épidémies du 18 décembre 1970',
+					:list_title			=>	nil,
+					:taxpoint_type	=>	nil,
+					:permission			=>	nil,
+				}
+				assert_equal(expected_second, result.at(1))
 			end
 		end
 	end

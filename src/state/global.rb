@@ -513,7 +513,7 @@ module ODDB
 						result = @session.search_migel_products(query)
 						State::Migel::Result.new(@session, result)
 					when :analysis
-						result = @session.search_analysis(query)
+						result = @session.search_analysis(query, @session.language)
 						State::Analysis::Result.new(@session, result)
 					else
 						query = query.to_s.downcase

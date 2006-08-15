@@ -28,6 +28,19 @@ module ODDB
 					/^ *physikalische\s*medizin\s*und\s*rehabilitation/i,
 					/^ *rheumatologie/i,
 					/^ *tropenmedizin/i,
+					/^\s*Liste\s*partielle\s*1/i,
+					/^\s*Liste\s*partielle\s*2/i,
+					/^\s*allergologie\s*et\s*immunologie\s*clinique/i,
+					/^\s*dermatologie\s*et\s*vénérologie/i,
+					/^\s*endocrinologie\s*-\s*diabétologie/i,
+					/^\s*gastro-entérologie/i,
+					/^\s*gynécologie\s*et\s*obstétrique/i,
+					/^\s*hématologie/i,
+					/^\s*médecine\s*physique\s*et\s*réadaptation/i,
+					/^\s*médecine\s*tropicale/i,
+					/^\s*oncologie\s*médicale/i,
+					/^\s*pédiatrie/i,
+					/^\s*rhumatologie/i,
 				]
 			end
 			def parse_page(txt, pagenum)
@@ -66,15 +79,15 @@ module ODDB
 					stop = indices.at(idx.next).to_i - 1	
 					src = txt[start..stop]
 					case src
-					when /teilliste\s*1/i
+					when /teilliste\s*1/i , /Liste\s*partielle\s*1/i
 						@taxpoint_type = :fixed
-						@permission = src.match(ptrns.at(idx)).to_s
-					when /teilliste\s*2/i
+						@permission = src.match(ptrns.at(idx)).to_s.lstrip
+					when /teilliste\s*2/i , /Liste\s*partielle\s*2/i
 						@taxpoint_type = :default
-						@permission = src.match(ptrns.at(idx)).to_s
+						@permission = src.match(ptrns.at(idx)).to_s.lstrip
 					else
 						@taxpoint_type = nil
-						@permission = src.match(ptrns.at(idx)).to_s
+						@permission = src.match(ptrns.at(idx)).to_s.lstrip
 					end
 					yield src
 				}

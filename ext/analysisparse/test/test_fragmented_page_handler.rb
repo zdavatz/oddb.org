@@ -451,10 +451,10 @@ KOH, Pilze)
 					:code							=>	'8543.00',
 					:group						=>	'8543',
 					:position					=>	'00',
-					:footnote					=>	'Nur bei Kindern bis zu 6 Jahren',
 					:taxpoints				=>	40,
 					:description			=>	'Theophyllin (Blut)',
 					:permission				=>	'Kinder- und Jugendmedizin',
+					:restriction			=>	'1',
 					:list_title					=>	nil,
 					:taxpoint_type			=>	nil,
 				},
@@ -503,6 +503,218 @@ KOH, Pilze)
 				]
 				assert_equal(expected1, res1)
 				assert_equal(expected2, res2)
+			end
+			def test_fr_each_fragment__1
+				src = <<-EOS
+5.1.3  Analyses dans le cadre des soins de base au sens strict
+Les analyses effectuées dans le cadre des soins de base au sens strict sont subdivisées dans deux listes partielles. Cette subdivision est de nature tarifaire est ne concerne que les laboratoires de cabinets médicaux.
+Liste partielle 1
+Pour les laboratoires de cabinets médicaux, la valeur du point des analyses suivantes peut être fixée dans des conventions tarifaires, mais le nombre de points indiqué dans la liste des analyses doit être maintenu. En l'absence d'une convention tarifaire, la valeur du point de la liste des analyses est applicable.
+Rév. No pos. A TP Dénomination (liste des soins de base, liste partielle 1)
+8259.00 9 Glucose (sang, plasma, sérum)
+C 8273.00 7 Hématocrite, détermination manuelle, cumulable avec 8210.00 érythrocytes (numération), 8275.00 hémoglobine, 8406.00 leucocytes (numération) et 8560.00 thrombocytes (numération), jusqu'à un total de max. 15 points (hémogramme II) Limitation: pas avec la méthode QBC
+				EOS
+				expected = [
+				<<-EOS,
+5.1.3  Analyses dans le cadre des soins de base au sens strict
+Les analyses effectuées dans le cadre des soins de base au sens strict sont subdivisées dans deux listes partielles. Cette subdivision est de nature tarifaire est ne concerne que les laboratoires de cabinets médicaux.
+				EOS
+				<<-EOS,
+Liste partielle 1
+Pour les laboratoires de cabinets médicaux, la valeur du point des analyses suivantes peut être fixée dans des conventions tarifaires, mais le nombre de points indiqué dans la liste des analyses doit être maintenu. En l'absence d'une convention tarifaire, la valeur du point de la liste des analyses est applicable.
+Rév. No pos. A TP Dénomination (liste des soins de base, liste partielle 1)
+8259.00 9 Glucose (sang, plasma, sérum)
+C 8273.00 7 Hématocrite, détermination manuelle, cumulable avec 8210.00 érythrocytes (numération), 8275.00 hémoglobine, 8406.00 leucocytes (numération) et 8560.00 thrombocytes (numération), jusqu'à un total de max. 15 points (hémogramme II) Limitation: pas avec la méthode QBC
+				EOS
+				]
+				begin
+					positions = []
+					result = @handler.each_fragment(src) { |fragment|
+						check = expected.shift
+						assert_equal(check, fragment)
+					}
+				end
+			end
+			def test_fr_parse_fragment__1
+			src = <<-EOS
+Allergologie et immunologie clinique
+Rév. No pos. A TP Dénomination (list allergologie et immunologie clin.)
+8317.00 35 Immunoglobuline IgE totale, qn
+8317.01 25(1) Immunoglobuline IgE - test de dépistage groupé ou multispécifique de l'atopie, ql/sq, sans différentiation des IgE spécif.
+(1) analogue au tarif échelonné des blocs d'analyses selon point 5.7 des remarques préliminaires, selon le nombre d'allergènes du test utilisé
+			113
+			EOS
+			begin
+				result = @handler.parse_fragment(src,113)
+			end
+			expected = [
+					{
+					:code						=> '8317.00',
+					:group					=> '8317',
+					:position				=> '00',
+					:taxpoints			=> 35,
+					:description		=> 'Immunoglobuline IgE totale, qn',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
+				},
+				{
+					:code						=>	'8317.01',
+					:group					=>	'8317',
+					:position				=>	'01',
+					:taxpoints			=>	25,
+					:description		=>	'Immunoglobuline IgE - test de dépistage groupé ou multispécifique de l\'atopie, ql/sq, sans différentiation des IgE spécif.',
+					:list_title			=>	nil,
+					:permission			=>	nil,
+					:taxpoint_type	=>	nil,
+					:taxnumber			=>	'1',
+					:taxnote				=>	'analogue au tarif échelonné des blocs d\'analyses selon point 5.7 des remarques préliminaires, selon le nombre d\'allergènes du test utilisé',
+			},
+			]
+			assert_equal(expected, result)
+			end
+			def test_fr_parse_page__1
+				src1 = <<-EOS
+Liste partielle 1
+8259.00 9 Glucose (sang, plasma, sérum)
+C 8273.00 7 Hematocrite, détermination manuelle
+Limitation: pas avec la méthode QBC
+				110
+				EOS
+				src2 = <<-EOS
+9355.30 20 Microscopie conventionelle, examen par ~, coloration comprise (Gram, Giemsa, bleu de méthylène, etc.)
+Liste partielle 2
+C 8000.00 8 ABO/D, contrôle selon les recommandations STS CRS "Sérologie érythrocytaire chez le patient"
+				111
+				EOS
+				begin
+					res1 = @handler.parse_page(src1, 110)
+					res2 = @handler.parse_page(src2, 111)
+				end
+				expected1 = [
+					{
+				:code						=>	'8259.00',
+				:group					=>	'8259',
+				:position				=>	'00',
+				:taxpoints			=>	9,
+				:description		=>	'Glucose (sang, plasma, sérum)',
+				:list_title			=>	nil,
+				:taxpoint_type	=>	:fixed,
+				:permission			=>	'Liste partielle 1',
+				},
+					{
+				:code						=>	'8273.00',
+				:group					=>	'8273',
+				:position				=>	'00',
+				:taxpoints			=>	7,
+				:analysis_revision				=>	'C',
+				:description		=>	'Hematocrite, détermination manuelle',
+				:limitation			=>	'pas avec la méthode QBC',
+				:list_title			=>	nil,
+				:taxpoint_type	=>	:fixed,
+				:permission			=>	'Liste partielle 1',
+				},
+				]
+				expected2 = [
+					{
+				:code						=>	'9355.30',
+				:group					=>	'9355',
+				:position				=>	'30',
+				:taxpoints			=>	20,
+				:description		=>	'Microscopie conventionelle, examen par ~, coloration comprise (Gram, Giemsa, bleu de méthylène, etc.)',
+				:list_title			=>	nil,
+				:taxpoint_type	=>	:fixed,
+				:permission			=>	'Liste partielle 1',
+				},
+					{
+				:code						=>	'8000.00',
+				:group					=>	'8000',
+				:position				=>	'00',
+				:taxpoints			=>	8,
+				:description		=>	'ABO/D, contrôle selon les recommandations STS CRS "Sérologie érythrocytaire chez le patient"',
+				:analysis_revision				=>	'C',
+				:list_title			=>	nil,
+				:taxpoint_type	=>	:default,
+				:permission			=>	'Liste partielle 2',
+				},
+				]
+				assert_equal(expected1, res1)
+				assert_equal(expected2, res2)
+			end
+			def test_fr_parse_page__2
+				src = <<-EOS
+Allergologie et immunologie clinique
+Rév. No pos. A TP Dénomination (liste allergologie et immunologie clin.)
+8317.00 35 Immunoglobuline IgE totale, qn
+8317.01 25 Immunoglobuline IgE - test de dépistage groupé ou multispécifique de l'atopie, ql,sq,
+sans différentiation des IgE spécif.
+				55
+				EOS
+				begin
+					result = @handler.parse_page(src, 55)
+				end
+				expected = [
+					{
+					:code						=>	'8317.00',
+					:group					=>	'8317',
+					:position				=>	'00',
+					:taxpoints			=>	35,
+					:description		=>	'Immunoglobuline IgE totale, qn',
+					:permission			=>	'Allergologie et immunologie clinique',
+					:taxpoint_type	=>	nil,
+					:list_title			=>	nil,
+				},
+					{
+					:code						=>	'8317.01',
+					:group					=>	'8317',
+					:position				=>	'01',
+					:taxpoints			=>	25,
+					:description		=>	'Immunoglobuline IgE - test de dépistage groupé ou multispécifique de l\'atopie, ql,sq, sans différentiation des IgE spécif.',
+					:permission			=>	'Allergologie et immunologie clinique',
+					:taxpoint_type	=>	nil,
+					:list_title			=>	nil,
+				},
+				]
+				assert_equal(expected, result)
+			end
+			def test_fr_parse_page__3
+				src = <<-EOS
+				Médecine physique et réadaptation
+
+Rév. No pos. A TP Dénomination (liste médicine physique et réadaption)
+
+				            8388.00       20    Cristaux, recherche en lumière polarisée
+				            8600.00       25    Cellules, numération et différentiation après
+				enrichissement et coloration de liquides
+				biologiques
+				56
+				EOS
+				begin
+					result = @handler.parse_page(src, 56)
+				end
+				expected = [
+					{
+					:code						=>	'8388.00',
+					:group					=>	'8388',
+					:position				=>	'00',
+					:taxpoints			=>	20,
+					:description		=>	'Cristaux, recherche en lumière polarisée',
+					:permission			=>	'Médecine physique et réadaptation',
+					:taxpoint_type	=>	nil,
+					:list_title			=>	nil,
+				},
+					{
+					:code						=>	'8600.00',
+					:group					=>	'8600',
+					:position				=>	'00',
+					:taxpoints			=>	25,
+					:description		=>	'Cellules, numération et différentiation après enrichissement et coloration de liquides biologiques',
+					:permission			=>	'Médecine physique et réadaptation',
+					:taxpoint_type	=>	nil,
+					:list_title			=>	nil,
+				},
+				]
+				assert_equal(expected, result)
 			end
 		end
 	end

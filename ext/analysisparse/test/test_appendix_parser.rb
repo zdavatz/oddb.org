@@ -221,6 +221,54 @@ EOS
 				assert_equal(expected_last, result.last)
 				assert_equal(expected_size, result.size)
 			end
+			def test_fr_parse_page__1
+				src = <<-EOS
+5.3 Annexe C Analyses prescrites par des sages-femmes
+(art. 62 1er al. let. c OAMal)
+Préambule
+Les sages-femmes sont tenues de confier l'éxecution des analyses figurant sur cette liste à des laboratoires au sens de l'article 54 3e alinéa OAMal
+Liste des analyses
+Rév. No pos. A TP Dénomination (liste sages-femmes)
+C 8001.00 18 ABO, groupe sanguin et antigène D faible si Rhésus D nég.) selon les recommandations STS CRS "Sérologie érythrocytaire chez le patient"
+8017.00 * 45 Alpha-1-foetoprotéine (AFP)
+C 8200.00 35 érythrocytes, alloanticorps anti~, test de recherche selon les recommandation STS CRS "Sérologie érythrocytaire chez le patient"
+C 8269.00 15 Hémogramme II (automatisé): hémogramme I, plus thromboytes
+Limitation: pas avec la méthode QBC
+8580.00 4 Status urinaire partiel (5-10 paramètres)
+8606.00 30 Guthrie, test de ~
+9116.40 * 12 HIV 1+2, dépistage des anticorps (par test rapide), ql
+				45
+				EOS
+				begin
+					result = @parser.parse_page(src, 45)
+				end
+				expected_first = {
+					:code					=>	'8001.00',
+					:group				=>	'8001',
+					:position			=>	'00',
+					:taxpoints		=>	18,
+					:description	=>	'ABO, groupe sanguin et antigène D faible si Rhésus D nég.) selon les recommandations STS CRS "Sérologie érythrocytaire chez le patient"',
+					:analysis_revision		=>	'C',
+					:list_title			=>	nil,
+					:taxpoint_type	=>	nil,
+					:permission			=>	nil,
+				}
+				expected_last = {
+					:code					=>	'9116.40',
+					:group				=>	'9116',
+					:position			=>	'40',
+					:description	=>	'HIV 1+2, dépistage des anticorps (par test rapide), ql',
+					:list_title		=>	nil,
+					:taxpoints		=>	12,
+					:taxpoint_type	=>	nil,
+					:permission		=>	nil,
+					:anonymous		=>	true,
+				}
+				expected_size = 7 
+				assert_equal(expected_first, result.first)
+				assert_equal(expected_last, result.last)
+				assert_equal(expected_size, result.size)
+			end
 		end
 	end
 end
