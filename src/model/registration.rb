@@ -126,10 +126,16 @@ module ODDB
 		def original?
 			self.generic_type == :original
 		end
+    def out_of_trade
+			@sequences.all? { |key, seq|
+        seq.out_of_trade
+			}
+    end
 		def package(ikscd)
 			@sequences.each_value { |seq|
-				package = seq.package(ikscd)
-				return package unless package.nil?
+				if(package = seq.package(ikscd))
+          return package 
+        end
 			}
 			nil
 		end
