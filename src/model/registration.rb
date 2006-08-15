@@ -21,9 +21,9 @@ module ODDB
 			@iksnr = iksnr
 			@sequences = {}
 		end
-		def active?
-			(!@inactive_date || (@inactive_date > @@two_years_ago)) \
-				&& (!@expiration_date || @expiration_date > @@two_years_ago) \
+		def active?(cutoff=@@two_years_ago)
+			(!@inactive_date || (@inactive_date > cutoff)) \
+				&& (!@expiration_date || @expiration_date > cutoff) \
 				&& (!@market_date || @market_date <= @@today) 
 		end
 		def active_package_count
