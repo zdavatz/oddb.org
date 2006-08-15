@@ -15,6 +15,7 @@ module ODDB
 					position = update_position(group, position, lang)
 				end
 			}
+			@app.recount
 		end
 		def delete_position(group, position)
 			## TODO

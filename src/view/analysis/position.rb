@@ -7,7 +7,9 @@ require 'view/dataformat'
 require 'view/pointervalue'
 require 'view/privatetemplate'
 require 'view/analysis/result'
+require 'view/resultfoot'
 require 'model/analysis/position'
+require 'view/analysis/explain_result'
 
 module ODDB
 	module View
@@ -46,15 +48,8 @@ class PositionInnerComposite < HtmlGrid::Composite
 	def anonymous(model, key = :anonymous)
 			value = HtmlGrid::Value.new(key, model, @session, self)
 			if(model.anonymous)
-			value.value = [model.anonymousgroup.dup, model.anonymouspos].join('.')
+				value.value = [model.anonymousgroup.dup, model.anonymouspos].join('.')
 			end
-=begin
-			if(model.anonymous)
-			value.value = [model.anonymousgroup.dup,
-				model.anonymouspos].join('.')
-			else value.value = @lookandfeel.lookup(:false)
-			end
-=end
 			value
 	end
 	def description(model, key = :description)
@@ -99,11 +94,14 @@ class Permissions < HtmlGrid::List
 	}
 end
 class PositionComposite < HtmlGrid::Composite
+	include ResultFootBuilder
 	CSS_CLASS = 'composite'
+	EXPLAIN_RESULT = View::Analysis::ExplainResult
 	COMPONENTS = {
 		[0,0]		=>	'position_details',
 		[0,1]		=>	PositionInnerComposite,
 		[0,2]		=>	:permissions,
+		[0,3]		=>	:result_foot,
 	}
 	CSS_MAP	=	{
 		[0,0]		=>	'th',
