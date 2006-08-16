@@ -24,14 +24,12 @@ class Global < State::Global
 			else
 				sortby = [sortby]
 			end
-			puts sortby.inspect
 			aval, bval = nil
 			begin
 				aval = umlaut_filter(sortby.inject(a) { |memo, meth|
 					memo.send(meth) })
 				bval = umlaut_filter(sortby.inject(b) { |memo, meth|
 					memo.send(meth) })
-				puts [aval, bval].inspect
 			rescue Exception => e
 				puts e
 				next
