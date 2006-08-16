@@ -34,7 +34,7 @@ class SwissmedicCat < HtmlGrid::Composite
 		end
 		if(sl = @model.sl_entry)
 			@components.store([0,y], "sl")
-			@components.store([1,y], "sl_list")
+			@components.store([1,y,0], "sl_list")
 			if(date = sl.introduction_date)
 				@components.store([1,y,1], :sl_since)
 			end
