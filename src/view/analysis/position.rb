@@ -85,7 +85,7 @@ class PositionInnerComposite < HtmlGrid::Composite
 end
 class Permissions < HtmlGrid::List
 	DEFAULT_HEAD_CLASS = 'subheading'
-	SORT_HEADER = false
+	SORT_HEADER =	false
 	CSS_MAP = {
 		[0,0,2]	=>	'list',
 	}

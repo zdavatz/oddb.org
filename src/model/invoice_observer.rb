@@ -17,10 +17,9 @@ module ODDB
 		end
 		def invoice(oid)
 			oid = oid.to_i
-			self.invoices.each { |invoice|
-				return invoice if(invoice.oid == oid)
+			self.invoices.find { |invoice|
+        invoice.oid == oid
 			}
-			nil
 		end
 		def invoice_email
 			self.email

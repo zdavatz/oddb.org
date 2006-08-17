@@ -7,6 +7,11 @@ module ODDB
 	class CsvExportPlugin < Plugin
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
+		def export_analysis
+			ids = @app.analysis_positions.sort_by { |pos|
+				pos.code }.collect { |pos| pos.odba_id }
+			EXPORT_SERVER.export_analysis_csv(ids, EXPORT_DIR, 'analysis.csv')
+		end
 		def export_doctors
 			ids = @app.doctors.values.collect { |item| item.odba_id }
 			EXPORT_SERVER.export_doc_csv(ids, EXPORT_DIR, 'doctors.csv')

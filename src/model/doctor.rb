@@ -54,12 +54,9 @@ module ODDB
 			[@title, @firstname, @name].compact.join(' ')
 		end
 		def praxis_address
-			@addresses.each { |addr| 
-				if(addr.type == 'at_praxis')
-					return addr
-				end
+			@addresses.find { |addr| 
+				addr.type == 'at_praxis'
 		  }
-			nil
 		end
 		def praxis_addresses	
 			@addresses.select { |addr| 

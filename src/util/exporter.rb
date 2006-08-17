@@ -89,6 +89,12 @@ module ODDB
 			puts $!.backtrace
 			raise
 		end
+		def export_analysis_csv
+			plug = CsvExportPlugin.new(@app)
+			plug.export.analysis
+			EXPORT_SERVER.clear
+			sleep(30)
+		end
 		def export_doc_csv
 			plug = CsvExportPlugin.new(@app)
 			plug.export_doctors
