@@ -12,7 +12,7 @@ require 'fachinfo_html'
 require 'fachinfo_pdf'
 require 'fachinfo_news'
 require 'fachinfo_doc'
-require 'patinfo_html'
+require 'patinfo_hpricot'
 require 'rpdf2txt/parser'
 
 module ODDB
@@ -54,11 +54,8 @@ module ODDB
 			writer.fi_ids.compact
 		end
 		def parse_patinfo_html(src)
-			writer = PatinfoHtmlWriter.new
-			formatter = HtmlFormatter.new(writer)
-			parser = HtmlParser.new(formatter)
-			parser.feed(src)
-			writer.to_patinfo
+			writer = PatinfoHpricot.new
+      writer.extract(Hpricot(src))
 		end
 		module_function :storage=
 		module_function :parse_fachinfo_doc
