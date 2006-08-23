@@ -18,7 +18,7 @@ module ODDB
 			@pointer.append(@oid)
 		end
 		def item_by_text(text)
-      @items.find { |key, item|
+      @items.values.find { |item|
 				item.text == text
 			}
 		end
