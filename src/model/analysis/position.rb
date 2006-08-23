@@ -95,7 +95,7 @@ module ODDB
 				ODDB.search_terms(terms)
 			end
 			def localized_name(language)
-				 @description
+				 self.send(language)
 			end
 		end
 	end
