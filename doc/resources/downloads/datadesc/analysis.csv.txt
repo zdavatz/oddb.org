@@ -9,9 +9,9 @@ Record-Separator: \n
 Field-Separator: ;
 
 Analysis-Record:
-00: groupcd                                   (GGGG)	   ->  Gruppen-Nr.
+00: groupcd                                   (GGGG)     ->  Gruppen-Nr.
 01: poscd                                     (PP)       ->  Positions-Nr.  
-02: anonymous 												        (GGGG.PP)  ->  Anonyme Gruppen-Nr.
+02: anonymous                                 (GGGG.PP)  ->  Anonyme Gruppen-Nr.
 04: analysis_descriptions_de                  (*)        ->  Analysen-Beschreibung De.
 05: analysis_descriptions_fr                  (*)        ->  Analysen-Beschreibung Fr.
 06: analysis_footnote_de                      (*)        ->  Fussnote De.
@@ -26,7 +26,7 @@ Analysis-Record:
 15: taxpoints                                 (*)        ->  Anzahl Taxpunkte
 16: finding                                   (*)        ->  Analysen-Resultat
 17: analysis_permissions_de                   (*)        ->  Analysen-Zusatzerlaubnis De. (siehe Glossar Zusatzerlaubnis)
-18: analysis_permissions_fr			              (*)        ->  Analysen-Zusatzerlaubnis Fr. (siehe Glossar Zusatzerlaubnis)
+18: analysis_permissions_fr                   (*)        ->  Analysen-Zusatzerlaubnis Fr. (siehe Glossar Zusatzerlaubnis)
 
 ## Glossar ##
 *Laborfachgebiete
@@ -34,7 +34,7 @@ Analysis-Record:
   G - medizinische Genetik
   H - Hämatologie
   I - klinische Immunologie
-	M - medizinische Mikrobiologie
+  M - medizinische Mikrobiologie
 
 * Sprachen
   De. - Deutsch
@@ -48,7 +48,7 @@ Versionsnummern bezeichnen Änderungen nach dem Schema
 - Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/analysis.csv.txt
-		
+    
 * Zusatzerlaubnis
 Die Einträge sind nach dem folgenden Schema aufgebaut:
 {Zusatzerlaubnis},{Einschränkung}
