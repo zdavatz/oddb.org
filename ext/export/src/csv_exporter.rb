@@ -6,11 +6,16 @@ require 'csvparser'
 module ODDB
 	module OdbaExporter
 		module CsvExporter
+			ANALYSIS = [ :groupcd, :poscd, :analysis_anonymous, :defr,
+				:analysis_footnote, :analysis_taxnote, 
+				:analysis_limitation, :analysis_list_title, 
+				:lab_areas, :taxpoints, :finding,
+				:analysis_permissions ]
 			DOCTOR = [ :ean13, :exam, :salutation, :title, :firstname,
 				:name, :praxis, :first_address_data, :email, :language, 
 				:specialities]
-			ADDRESS = [:type, :name, :additional_lines, :address, :plz,
-				:city, :canton, :fon, :fax]
+			ADDRESS = [:type, :name, :additional_lines, :address,
+				:plz, :city, :canton, :fon, :fax]
 			DEFR = [:de, :fr] 
 			DEFRIT = [:de, :fr, :it] 
 			MIGEL = [:migel_code, :migel_subgroup, :product_code,
@@ -24,6 +29,33 @@ module ODDB
 				:category, :narc_reservation_text]
 			def CsvExporter.address_data(item)
 				collect_data(ADDRESS, item)
+			end
+			def CsvExporter.analysis_anonymous(item)
+				if(item.anonymousgroup)
+				[item.anonymousgroup, item.anonymouspos].join('.')
+				else
+					''
+				end
+			end
+			def CsvExporter.analysis_limitation(item)
+				self.defr(item.limitation_text)
+			end
+			def CsvExporter.analysis_list_title(item)
+				self.defr(item.list_title)
+			end
+			def CsvExporter.analysis_permissions(item)
+				[:de, :fr].collect { |lang|
+					item.permissions.send(lang).collect { |perm|
+						'{' << perm.specialization.to_s << '}:{' \
+							<< perm.restriction.to_s << '}'
+					}.join(',')
+				}
+			end
+			def CsvExporter.analysis_footnote(item)
+				self.defr(item.footnote)
+			end
+			def CsvExporter.analysis_taxnote(item)
+				self.defr(item.taxnote)
 			end
 			def CsvExporter.collect_data(keys, item)
 				keys.collect { |key|

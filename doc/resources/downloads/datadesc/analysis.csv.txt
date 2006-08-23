@@ -1,0 +1,56 @@
+Datenbeschrieb analysis.csv
+
+Version: 1.0
+Erstellt: 22.08.2006  (1.0)  durch sfrischknecht@ywesee.com
+
+## Struktur ##
+Encoding: ISO-8859-1
+Record-Separator: \n
+Field-Separator: ;
+
+Analysis-Record:
+00: groupcd                                   (GGGG)	   ->  Gruppen-Nr.
+01: poscd                                     (PP)       ->  Positions-Nr.  
+02: anonymous 												        (GGGG.PP)  ->  Anonyme Gruppen-Nr.
+04: analysis_descriptions_de                  (*)        ->  Analysen-Beschreibung De.
+05: analysis_descriptions_fr                  (*)        ->  Analysen-Beschreibung Fr.
+06: analysis_footnote_de                      (*)        ->  Fussnote De.
+07: analysis_footnote_fr                      (*)        ->  Fussnote Fr.  
+08: analysis_taxnote_de                       (*)        ->  Bemerkung zu Taxpunkten De.
+09: analysis_taxnote_fr                       (*)        ->  Bemerkung zu Taxpunkten Fr.
+10: analysis_limitation_de                    (*)        ->  Analysen-Limitation De.  
+11: analysis_limitation_fr                    (*)        ->  Analysen-Limitation Fr.
+12: analysis_list_title_de                    (*)        ->  Gruppenzugehörigkeit De.
+13: analysis_list_title_fr                    (*)        ->  Gruppenzugehörigkeit Fr.
+14: lab_areas                                 (*)        ->  Laborfachgebiete (siehe Glossar Laborfachgebiete)
+15: taxpoints                                 (*)        ->  Anzahl Taxpunkte
+16: finding                                   (*)        ->  Analysen-Resultat
+17: analysis_permissions_de                   (*)        ->  Analysen-Zusatzerlaubnis De. (siehe Glossar Zusatzerlaubnis)
+18: analysis_permissions_fr			              (*)        ->  Analysen-Zusatzerlaubnis Fr. (siehe Glossar Zusatzerlaubnis)
+
+## Glossar ##
+*Laborfachgebiete
+  C - klinische Chemie
+  G - medizinische Genetik
+  H - Hämatologie
+  I - klinische Immunologie
+	M - medizinische Mikrobiologie
+
+* Sprachen
+  De. - Deutsch
+  Fr. - Französisch
+
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema
+"Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+Die komplette Version-History ist zu finden unter:
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/analysis.csv.txt
+		
+* Zusatzerlaubnis
+Die Einträge sind nach dem folgenden Schema aufgebaut:
+{Zusatzerlaubnis},{Einschränkung}
+Falls mehrere Einträge vorhanden:
+{Zusatzerlaubnis},{Einschränkung}:{Zusatzerlaubnis},{Einschränkung}

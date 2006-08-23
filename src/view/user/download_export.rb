@@ -20,62 +20,66 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[3,0]		=>	'months_1',
 		[5,0]		=>	'months_12',
 		[0,1]		=>	'export_datafiles',
-		[0,2]		=>	:csv_doctors_export,
-		[3,2]		=>	:csv_doctors_price,
-		[6,2]		=>	:datadesc_doctors_csv,
-		[7,2]		=>	:example_doctors_csv,
-		[0,3]		=>	:yaml_doctors_export,
-		[3,3]		=>	:yaml_doctors_price,
-		[6,3]		=>	:datadesc_doctors_yaml,
-		[7,3]		=>	:example_doctors_yaml,
-		[0,4]		=>	:yaml_fachinfo_export,
-		[2,4]		=>	:radio_fachinfo_yaml,
-		[6,4]		=>	:datadesc_fachinfo_yaml,
-		[7,4]		=>	:example_fachinfo_yaml,
-		[0,5]		=>	:csv_migel_export,
-		[3,5]		=>	:csv_migel_price,
-		[6,5]		=>	:datadesc_migel_csv,
-		[7,5]		=>	:example_migel_csv,
-		[0,6]		=>	:csv_narcotics_export,
-		[2,6]		=>	:radio_narcotics_csv,
-		[6,6]		=>	:datadesc_narcotics_csv,
-		[7,6]		=>	:example_narcotics_csv,
-		[0,7]		=>	:yaml_narcotics_export,
-		[2,7]		=>	:radio_narcotics_yaml,
-		[6,7]		=>	:datadesc_narcotics_yaml,
-		[7,7]		=>	:example_narcotics_yaml,
-		[0,8]		=>	:csv_export,
-		[2,8]		=>	:radio_oddb_csv,
-		[6,8]		=>	:datadesc_oddb_csv,
-		[7,8]		=>	:example_oddb_csv,
-		[0,9]		=>	:yaml_export,
-		[2,9]		=>	:radio_oddb_yaml,
-		[6,9]		=>	:datadesc_oddb_yaml,
-		[7,9]		=>	:example_oddb_yaml,
-		[0,10]		=>	:yaml_patinfo_export,
-		[3,10]		=>	:yaml_patinfo_price,
-		[6,10]		=>	:datadesc_patinfo_yaml,
-		[7,10]		=>	:example_patinfo_yaml,
+		[0,2]		=>	:csv_analysis_export,
+		[3,2]		=>	:csv_analysis_price,
+		[6,2]		=>	:datadesc_analysis_csv,
+		[7,2]		=>	:example_analysis_csv,
+		[0,3]		=>	:csv_doctors_export,
+		[3,3]		=>	:csv_doctors_price,
+		[6,3]		=>	:datadesc_doctors_csv,
+		[7,3]		=>	:example_doctors_csv,
+		[0,4]		=>	:yaml_doctors_export,
+		[3,4]		=>	:yaml_doctors_price,
+		[6,4]		=>	:datadesc_doctors_yaml,
+		[7,4]		=>	:example_doctors_yaml,
+		[0,5]		=>	:yaml_fachinfo_export,
+		[2,5]		=>	:radio_fachinfo_yaml,
+		[6,5]		=>	:datadesc_fachinfo_yaml,
+		[7,5]		=>	:example_fachinfo_yaml,
+		[0,6]		=>	:csv_migel_export,
+		[3,6]		=>	:csv_migel_price,
+		[6,6]		=>	:datadesc_migel_csv,
+		[7,6]		=>	:example_migel_csv,
+		[0,7]		=>	:csv_narcotics_export,
+		[2,7]		=>	:radio_narcotics_csv,
+		[6,7]		=>	:datadesc_narcotics_csv,
+		[7,7]		=>	:example_narcotics_csv,
+		[0,8]		=>	:yaml_narcotics_export,
+		[2,8]		=>	:radio_narcotics_yaml,
+		[6,8]		=>	:datadesc_narcotics_yaml,
+		[7,8]		=>	:example_narcotics_yaml,
+		[0,9]		=>	:csv_export,
+		[2,9]		=>	:radio_oddb_csv,
+		[6,9]		=>	:datadesc_oddb_csv,
+		[7,9]		=>	:example_oddb_csv,
+		[0,10]		=>	:yaml_export,
+		[2,10]		=>	:radio_oddb_yaml,
+		[6,10]		=>	:datadesc_oddb_yaml,
+		[7,10]		=>	:example_oddb_yaml,
+		[0,11]		=>	:yaml_patinfo_export,
+		[3,11]		=>	:yaml_patinfo_price,
+		[6,11]		=>	:datadesc_patinfo_yaml,
+		[7,11]		=>	:example_patinfo_yaml,
 
-		[0,12]	=>	'export_added_value',
-		[0,13]	=>	:xls_generics,
-		[2,13]	=>	:radio_generics_xls,
-		[6,13]	=>	:datadesc_generics_xls,
-		[7,13]	=>	:example_generics_xls,
-		[0,14]	=>	:xls_swissdrug_update,
-		[2,14]	=>	:radio_swissdrug_update_xls,
-		[6,14]	=>	:datadesc_swissdrug_update_xls,
-		[7,14]	=>	:example_swissdrug_update_xls,
+		[0,13]	=>	'export_added_value',
+		[0,14]	=>	:xls_generics,
+		[2,14]	=>	:radio_generics_xls,
+		[6,14]	=>	:datadesc_generics_xls,
+		[7,14]	=>	:example_generics_xls,
+		[0,15]	=>	:xls_swissdrug_update,
+		[2,15]	=>	:radio_swissdrug_update_xls,
+		[6,15]	=>	:datadesc_swissdrug_update_xls,
+		[7,15]	=>	:example_swissdrug_update_xls,
 
-		[0,16]	=>	'export_compatibility',
-		[0,17]	=>	:oddbdat_download,
-		[2,17]	=>	:radio_oddbdat,
-		[6,17]	=>	:datadesc_oddbdat,
-		[0,18]	=>	:s31x,
-		[2,18]	=>	:radio_s31x,
-		[6,18]	=>	:datadesc_s31x,
-		[0,19]	=>	:compression_label,
-		[0,20]	=>	:compression,
+		[0,17]	=>	'export_compatibility',
+		[0,18]	=>	:oddbdat_download,
+		[2,18]	=>	:radio_oddbdat,
+		[6,18]	=>	:datadesc_oddbdat,
+		[0,19]	=>	:s31x,
+		[2,19]	=>	:radio_s31x,
+		[6,19]	=>	:datadesc_s31x,
+		[0,20]	=>	:compression_label,
+		[0,21]	=>	:compression,
 	}
 	CSS_MAP = {
 		[0,0,8]			=>	'subheading',
@@ -108,6 +112,12 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def csv_export(model, session)
 		checkbox_with_filesize("oddb.csv")
 	end
+	def csv_analysis_export(model, session)
+		checkbox_with_filesize("analysis.csv")
+	end
+	def csv_analysis_price(model, session)
+		once('analysis.csv')
+	end
 	def csv_doctors_export(model, session)
 		checkbox_with_filesize("doctors.csv")
 	end
@@ -122,6 +132,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def csv_migel_price(model, session)
 		once('migel.csv')
+	end
+	def datadesc_analysis_csv(model, session)
+		datadesc('analysis.csv')
 	end
 	def datadesc_doctors_csv(model, session)
 		datadesc('doctors.csv')
@@ -164,6 +177,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def example_doctors_csv(model, session)
 		example('doctors.csv')
+	end
+	def example_analysis_csv(model, session)
+		example('analysis.csv')
 	end
 	def example_doctors_yaml(model, session)
 		example('doctors.yaml')
