@@ -71,6 +71,7 @@ class FiPiOfferInputForm < View::Form
 		[0,6]		=>	:pi_quantity_txt,
 		[1,6]		=>	:pi_quantity,
 		[1,7]		=>	:pi_update,
+    [0,8]   =>  'fipi_valid_languages',
 		[1,9]		=>	:submit,
 	}
 	CSS_MAP = {
@@ -78,6 +79,9 @@ class FiPiOfferInputForm < View::Form
 		[0,5,2,4]	=>	'list bg',
 		[1,9]			=>	'button left padding',
 	}
+  COLSPAN_MAP = {
+    [0,8] => 2,
+  }
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = false
 	SYMBOL_MAP = {

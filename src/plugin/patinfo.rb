@@ -106,11 +106,10 @@ module ODDB
 		end
 		def parse_patinfo(language, idx)
 			filepath = File.expand_path(
-				sprintf("%s/%05i.html", language, idx),
+				sprintf("%s/%s.html", language, idx),
 				self::class::HTML_PATH
 			)
 			if(File.exist?(filepath))
-				#GC.start
 				begin 
 					pat = self::class::PARSER.parse_patinfo_html(File.read(filepath))
 					unless(pat.date)		
@@ -215,8 +214,8 @@ module ODDB
 				target_dir = File.expand_path(lang, self::class::HTML_PATH)
 				source_dir = File.expand_path(lang, newsdir)
 				Dir.foreach(source_dir) { |entry|
-					if(match = /([1-9][0-9]+)\.html/.match(entry))
-						inj << match[1].to_i
+					if(match = /(.*)\.html$/.match(entry))
+						inj << match[1].to_s
 						File.rename(File.expand_path(entry, source_dir), 
 							File.expand_path(entry, target_dir))
 					end
