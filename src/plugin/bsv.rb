@@ -38,9 +38,10 @@ module ODDB
 			end
 			def data
 				data = {
+					:deductible				=>	@deductible,
+					:generic_type	    =>  @generic_type,
 					:pharmacode				=>	@pharmacode,
 					:sl_generic_type	=>  @generic_type,
-					:deductible				=>	@deductible,
 				}
 				if(@price_public)
 					data.store(:price_public, @price_public)
@@ -225,7 +226,7 @@ module ODDB
 				(coll << ikscd) unless (coll + @both).include?(ikscd)
 			end
 		end
-		GALINFO = 'www.galinfo.net'
+		GALINFO = 'bsv.e-mediat.net'
 		def initialize(app)
 			super
 			@ikstable = {}
@@ -345,16 +346,16 @@ module ODDB
 			@app.delete(package.pointer + [:sl_entry])
 		end
 		def download_bulletin(date)
-			download(bulletin(date))
+			download('www.galinfo.net', '/', bulletin(date), 'txt')
 		end
 		def download_database(date)
-			download(database(date))
+			download('bsv.e-mediat.net', '/sl', database(date), 'xls')
 		end
-		def download(name)
-			path = '/' << name
-			target = File.join(ARCHIVE_PATH, 'txt', path)
-			http_file(GALINFO, path, target) \
-				or raise "Could not download #{path} from #{GALINFO}"
+		def download(host, path, name, archive)
+      dpath = File.join(path, name)
+			target = File.join(ARCHIVE_PATH, archive, name)
+			http_file(GALINFO, dpath, target) \
+				or raise "Could not download #{dpath} from #{host}"
 			target
 		end
 		def handle_addition(package)
