@@ -85,6 +85,7 @@ module ODDB
 				:list_link_hover_color		=>	'#5a9ad6',
 				:navigation_font_color		=>	'black',
 				:navigation_link_font_color =>	'black',
+				:navigation_font_size			=>	'11px',
 				:std_font_size						=>	'11px',
 			},
 			:'medical-tribune' => {
@@ -121,6 +122,7 @@ module ODDB
 				:home_link_color					=>	'#4b8e52',
 				:home_link_hover_color		=>	'red',
 				:list_font_color					=>	'black',
+				:navigation_font_size			=>	'11px',
 				:std_font_size						=>	'11px',
 			},
 			:santesuisse => {
@@ -155,6 +157,7 @@ module ODDB
 				:pre_font_size						=>	'20px',
 				:bg_dark_link_hover_color	=>	'#999',
 				:square_font_size					=>	'12px',
+				:navigation_font_size			=>	'14px',
 				:std_font_size						=>	'14px',
 			},
 		}
