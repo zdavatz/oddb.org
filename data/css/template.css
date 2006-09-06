@@ -73,14 +73,14 @@ a.small:hover {
 }
 a.feedback, span.feedback, a.feedback:link, a.feedback:visited {
 	color: black;
-	background-color : #ffbc6f;
+	background-color : $bg_feedback;
 }
 a.google_search, span.google_search, a.google_search:link, a.google_search:visited {
 	color: white;
-	background-color : #184fca;
+	background-color : $bg_google;
 }
 td.bg a.feedback {
-	background : #ffbc22;
+	background : $bg_feedback_alternate;
 }
 a.infos {
 	color : black;
@@ -118,7 +118,7 @@ a.atcchooser5:hover {
 }
 a.atclink2, a.atclink3, 
 a.atclink4, a.atclink5 {
-	color : #2ba476;
+	color : $atc_link_color;
 }
 a.atclink2:hover, a.atclink3:hover, 
 a.atclink4:hover, a.atclink5:hover {
@@ -346,7 +346,7 @@ td.bg a.infos, td.atc a.infos, span.limitation, span.narc, span.fachinfo, span.p
 }
 /*td standard-result-classes */
 td.generic, a.generic {
-	color : #2ba476;
+	color : $generic_font_color;
 }
 td.original, a.original {
 	color : red;
@@ -431,6 +431,7 @@ td.navigation {
 	color : $navigation_font_color;
 	text-decoration : none;
 	padding : 4px;
+	font-size: $navigation_font_size;
 }
 td.right table.tabnavigation {
 	margin-bottom : 4px;
@@ -453,13 +454,13 @@ td.search {
 	padding: 0px;
 }
 td.center{
-	text-align : center;
+	text-align : $align_center;
 }
 td.center table {
 	margin: auto;
 }
 td.donate {
-	text-align : center;
+	text-align : $align_center;
 }
 td.button {
 	padding-bottom : 5px;
@@ -473,7 +474,7 @@ td.explain {
 }
 td.legal-note{
 	font-size: 8pt;
-	text-align : center;
+	text-align : $align_center;
 	padding: 4px;
 	padding-bottom: 10px;
 }
@@ -701,7 +702,7 @@ input.search {
 } 
 td.center input.search {
   width : 260px;
-  margin : 7px;
+  margin : $align_center_inputmargin;
 }
 input.xl {
 	width : 350px;

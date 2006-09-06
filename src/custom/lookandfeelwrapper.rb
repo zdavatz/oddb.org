@@ -448,7 +448,7 @@ module ODDB
 	class LookandfeelOekk < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:drugs, 
-			:external_css,
+			#:external_css,
 			:help_link,
 			:logout,
 			:migel,
