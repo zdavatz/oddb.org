@@ -438,7 +438,7 @@ module ODDB
 		def enabled?(event, default=true)
 			case event.to_sym
 			when :query_limit, :google_adsense, :doctors, :interactions, :migel, 
-				:user , :hospitals, :companies,
+				:user , :hospitals, :companies, :analysis
 				false
 			else
 				@component.enabled?(event, default)
