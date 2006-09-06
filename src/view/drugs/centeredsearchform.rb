@@ -45,7 +45,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,0]		=>	:language_chooser,
 		[0,1]		=>	View::Drugs::CenteredSearchForm,
 		[0,2]		=>	:search_explain, 
-		[0,3]		=>	:atc_chooser,
+		[0,3]		=>	View::CenteredNavigation,
 	}
 	CSS_MAP = {
 		[0,0,1,4]		=>	'list center',
@@ -65,7 +65,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,1]	  =>	'search_explain', 
 				[0,2,0]	=>	'database_last_updated_txt',
 				[0,2,1]	=>	:database_last_updated,
-				[0,3]	  =>	:generic_definition,
+				[0,3]		=>	:generic_definition,
 			}
 		elsif(@lookandfeel.enabled?(:data_counts))
 			components.update({

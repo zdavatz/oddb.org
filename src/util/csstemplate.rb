@@ -50,6 +50,7 @@ module ODDB
 			},
 			:gerimedi => {
 				:align_center							=>	'left',
+				:align_center_tablemargin	=>	'0px',
 				:align_center_inputmargin	=>	'7px 0px',
 				:atc_link_color						=>	'#234896',
 				:bg_bright								=>	'#D5DFF5',
@@ -181,6 +182,7 @@ module ODDB
 		DEFAULT = {
 			:align_center									=>	'center',
 			:align_center_inputmargin			=>	'7px',
+			:align_center_tablemargin			=>	'auto',
 			:atc_link_color								=>	'#2ba476',
 			:bg_bright										=>	'#ccff99',
 			:bg_bright_font_color					=>	'black',

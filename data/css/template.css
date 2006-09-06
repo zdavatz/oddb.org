@@ -457,7 +457,7 @@ td.center{
 	text-align : $align_center;
 }
 td.center table {
-	margin: auto;
+	margin: $align_center_tablemargin;
 }
 td.donate {
 	text-align : $align_center;
