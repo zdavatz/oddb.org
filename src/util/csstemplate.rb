@@ -90,7 +90,6 @@ module ODDB
 			:'medical-tribune' => {
 				:bg_bright								=>	'#99A8FF',
 				:bg_dark									=>	'#2B47A4',
-				#:bg_dark_font_color				=>	'blue',
 				:bg_dark_link_active_color=>	'red',
 				:bg_dark_link_hover_color	=>	'black',
 				:bg_navigation						=>	'#CCCCCC',
@@ -102,7 +101,6 @@ module ODDB
 			:'medical-tribune1' => {
 				:bg_bright								=>	'#FFD899',
 				:bg_dark									=>	'#FF9900',
-				#:bg_dark_font_color				=>	'blue',
 				:bg_dark_link_active_color=>	'red',
 				:bg_dark_link_hover_color	=>	'black',
 				:bg_navigation						=>	'#FFCC66',
@@ -116,6 +114,7 @@ module ODDB
 				:bg_bright								=>	'#c9eec5',
 				:bg_dark									=>	'#4b8e52',
 				:bg_dark_link_hover_color	=>	'red',
+				:bg_navigation						=>	'#4b8e52',
 				:button_background				=>	'#4b8e52',
 				:button_font_color				=>	'white',
 				:button_font_size					=>	'10px',
@@ -132,6 +131,7 @@ module ODDB
 				:bg_dark_font_color				=>	'white',
 				:bg_dark_link_hover_color	=>	'#c8d8f0',
 				:bg_dark_link_active_color=>	'#c8d8f0',
+				:bg_navigation						=>	'#4b81d4',
 				:button_background				=>	'white',
 				:button_font_color				=>	'black',
 				:button_font_size					=>	'10px',
@@ -147,6 +147,7 @@ module ODDB
 			:swissmedinfo		=>		{
 				:bg_dark									=>	'#A04',
 				:bg_bright								=>	'#ECC', 
+				:bg_navigation						=>	'#A04',
 				:body_margin							=>	'4px',
 				:explain_font_size				=>	'15px',
 				:h3_font_size							=>	'20px',
