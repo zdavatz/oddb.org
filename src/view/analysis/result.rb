@@ -36,7 +36,7 @@ class List < HtmlGrid::List
 	}
 	CSS_MAP = {
 		[0,0,6]	=>	'list',
-		[6,0,1]	=>	'list-r',
+		[6,0,1]	=>	'list right',
 	}
 	LEGACY_INTERFACE = false
 	LOOKANDFEEL_MAP = {
@@ -193,7 +193,7 @@ class EmptyResultForm < HtmlGrid::Form
 	CSS_MAP	=	{
 		[0,0]			=>	'search',
 		[0,1]			=>	'th',
-		[0,2,1,1]	=>	'result-atc',
+		[0,2,1,1]	=>	'atc',
 	}
 	CSS_CLASS = 'composite'
 	EVENT = :search
