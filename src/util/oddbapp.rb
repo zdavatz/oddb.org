@@ -696,7 +696,7 @@ class OddbPrevalence
 		end
 		@bean_counter = Thread.new {
 			#Thread.current.priority = -5
-			@analysis_count = analysis_positions.count
+			@analysis_count = analysis_positions.size
 			@atc_ddd_count = count_atc_ddd()
 			@doctor_count = @doctors.size
 			@company_count = @companies.size
@@ -1621,6 +1621,10 @@ module ODDB
     end
 		def multilinguify_analysis
 			@system.analysis_positions.each { |pos|
+				if(descr = pos.description)
+					pos.instance_variable_set('@description', nil)
+					@system.update(pos.pointer, {:de => descr})
+				end
 				if(fn = pos.footnote)
 					pos.instance_variable_set('@footnote', nil)
 					ptr = pos.pointer + :footnote

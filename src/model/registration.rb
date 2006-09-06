@@ -21,9 +21,9 @@ module ODDB
 			@iksnr = iksnr
 			@sequences = {}
 		end
-		def active?
-			(!@inactive_date || (@inactive_date > @@two_years_ago)) \
-				&& (!@expiration_date || @expiration_date > @@two_years_ago) \
+		def active?(cutoff=@@two_years_ago)
+			(!@inactive_date || (@inactive_date > cutoff)) \
+				&& (!@expiration_date || @expiration_date > cutoff) \
 				&& (!@market_date || @market_date <= @@today) 
 		end
 		def active_package_count
@@ -126,10 +126,16 @@ module ODDB
 		def original?
 			self.generic_type == :original
 		end
+    def out_of_trade
+			@sequences.all? { |key, seq|
+        seq.out_of_trade
+			}
+    end
 		def package(ikscd)
 			@sequences.each_value { |seq|
-				package = seq.package(ikscd)
-				return package unless package.nil?
+				if(package = seq.package(ikscd))
+          return package 
+        end
 			}
 			nil
 		end

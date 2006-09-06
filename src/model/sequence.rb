@@ -164,6 +164,11 @@ module ODDB
 		def name_descr=(name_descr)
 			@name_descr = nil_if_empty(name_descr)
 		end
+    def out_of_trade
+			@packages.all? { |key, pac|
+        pac.out_of_trade
+			}
+    end
 		def package(ikscd)
 			@packages[sprintf('%03d', ikscd.to_i)]
 		end

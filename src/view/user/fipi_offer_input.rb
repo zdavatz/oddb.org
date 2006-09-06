@@ -78,6 +78,9 @@ class FiPiOfferInputForm < View::Form
 		[0,4,2,3]	=>	'list bg',
 		[1,7]			=>	'list',
 	}
+  COLSPAN_MAP = {
+    [0,8] => 2,
+  }
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = false
 	SYMBOL_MAP = {

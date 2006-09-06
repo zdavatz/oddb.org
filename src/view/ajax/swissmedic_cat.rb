@@ -2,6 +2,8 @@
 # View::Ajax::SwissmedicCat -- oddb.org -- 15.03.2006 -- sfrischknecht@ywesee.com
 
 require 'htmlgrid/composite'
+require 'htmlgrid/datevalue'
+require 'htmlgrid/booleanvalue'
 
 module ODDB
 	module View
@@ -14,6 +16,7 @@ class SwissmedicCat < HtmlGrid::Composite
 		:registration_date	=>	HtmlGrid::DateValue,
 		:revision_date			=>	HtmlGrid::DateValue,
 		:expiration_date		=>	HtmlGrid::DateValue,
+    :out_of_trade       =>  HtmlGrid::BooleanValue,
 	}
 	def init
 		@components = {}
@@ -31,7 +34,7 @@ class SwissmedicCat < HtmlGrid::Composite
 		end
 		if(sl = @model.sl_entry)
 			@components.store([0,y], "sl")
-			@components.store([1,y], "sl_list")
+			@components.store([1,y,0], "sl_list")
 			if(date = sl.introduction_date)
 				@components.store([1,y,1], :sl_since)
 			end
@@ -68,6 +71,9 @@ class SwissmedicCat < HtmlGrid::Composite
 			@components.store([1,y], :expiration_date)
 			y += 1
 		end
+    @components.store([0,y], "refdata")
+    @components.store([1,y], :out_of_trade)
+		y += 1
 		if(@model.patent)
 			@components.store([0,y], "patented_until")
 			@components.store([1,y], :patent_protected)

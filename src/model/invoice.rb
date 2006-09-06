@@ -18,10 +18,9 @@ module ODDB
 			@pointer.append(@oid)
 		end
 		def item_by_text(text)
-			@items.values.each { |item|
-				return item if(item.text == text)
+      @items.values.find { |item|
+				item.text == text
 			}
-			nil
 		end
 		def create_item
 			item = InvoiceItem.new

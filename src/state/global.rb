@@ -236,7 +236,7 @@ module ODDB
 					&& !item.expired?)
 					State::User::Download.new(@session, item)
 				else
-					State::PayPal::Return.new(@session, user)
+					State::PayPal::Return.new(@session, invoice)
 				end
 			end
 			def hospitallist

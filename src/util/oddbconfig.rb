@@ -28,6 +28,7 @@ module ODDB
 	ENCODING = 'latin1'
 	## Prices and Durations
 	DOWNLOAD_EXPORT_PRICES = {
+		'analysis.csv'				=> 300,
 		'doctors.csv'					=> 1900,
 		'doctors.yaml'				=> 2100,
 		'fachinfo.yaml'				=> 800,
@@ -54,6 +55,7 @@ module ODDB
 		's31x'								=> 1400,
 	}
 	DOWNLOAD_EXPORT_DURATIONS = { 
+		'analysis.csv'				=> 30,
 		'doctors.csv'					=> 30,
 		'doctors.yaml'				=> 30,
 		'fachinfo.yaml'				=> 30,

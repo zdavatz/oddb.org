@@ -44,9 +44,7 @@ class Narcotics < State::Drugs::Global
 	}
 	Limited = true
 	def index_lookup(range)
-		@session.search_narcotics(range, @session.language).select { |seq|
-      seq.has_public_packages?
-    }
+		@session.search_narcotics(range, @session.language)
 	end
 end
 		end
