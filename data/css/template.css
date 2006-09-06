@@ -149,7 +149,7 @@ a.text {
 }
 
 /* standard-list-classes */
-a.list, a.list:hover {
+a.list, a.list:hover, a.list:link:hover, a.list:visited:hover {
 	color: $home_link_hover_color;
 }
 a.list:link, a.list:visited {

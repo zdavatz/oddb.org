@@ -304,6 +304,27 @@ module ODDB
 			end
 		end
 	end
+	class LookandfeelHirslanden < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:atc_chooser,
+			:analysis,
+			:analysis_alphabetical,
+			:drugs, 
+			:faq_link,
+			:help_link,
+			:home,
+			:home_analysis,
+			:home_drugs,
+			:home_migel,
+			:migel,
+			:migel_alphabetical,
+			:search_reset,
+			:sequences,
+			:topfoot,
+			:ywesee_contact,
+			:logout,
+		]
+	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:custom_navigation,
