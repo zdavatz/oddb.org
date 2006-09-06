@@ -494,7 +494,7 @@ module ODDB
 			:drugs, 
 			:home_drugs,
 			:home_migel,
-			:external_css,
+			#:external_css,
 			:help_link,
 			#:logout,
 			:migel,
@@ -565,7 +565,7 @@ module ODDB
 			:custom_navigation,
 			:drugs, 
 			:home_drugs,
-			:external_css,
+			#:external_css,
 			:help_link,
 			#:logout,
 		]

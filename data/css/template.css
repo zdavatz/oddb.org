@@ -175,7 +175,7 @@ td.subheading a.bold {
 a.subheading:link, a.subheading:visited {
 	color : $tabnavigation_link_color;
 }
-a.subheading:hover {
+a.subheading:link:hover, a.subheading:visited:hover {
 	color : red;
 }
 a.subheading:active {
@@ -185,11 +185,11 @@ a.subheading:active {
 /* navigation-classes */
 a.navigation{
 	color : $bg_dark_link_hover_color;
-  background : $bg_dark;
+  background : $bg_navigation;
 	font-weight: $navigation_link_font_weight;
 }
 a.navigation:link, a.navigation:visited {
-	color : $bg_dark_font_color;
+	color : $navigation_link_font_color;
 }
 a.navigation:hover {
 	color : $bg_dark_link_hover_color;
@@ -285,8 +285,8 @@ table.tabnavigation {
 	text-decoration : none;
 	border-right: 0px;
 	border-bottom: 0px;
-	border-left: 1px solid $bg_dark;
-	border-top: 1px solid $bg_dark;
+	border-left: 1px solid $bg_navigation;
+	border-top: 1px solid $bg_navigation;
 }
 table.tabnavigation td {
 	padding: 4px 2px;
@@ -376,7 +376,7 @@ td.indent {
 	padding-left : 15px;
 }
 tr td.big {
-	font-size : 14px;
+	font-size : $big_font_size;
 	font-weight : bold;
 }
 td.small {
@@ -427,16 +427,16 @@ td.title {
 	font-weight : bold;
 }
 td.navigation {
-	background : $bg_dark;
-	color : $bg_dark_font_color;
+	background : $bg_navigation;
+	color : $navigation_font_color;
 	text-decoration : none;
 	padding : 4px;
 }
 td.right table.tabnavigation {
 	margin-bottom : 4px;
 	float :right;
-	border-right: 1px solid $bg_dark;
-	border-bottom: 1px solid $bg_dark;
+	border-right: 1px solid $bg_navigation;
+	border-bottom: 1px solid $bg_navigation;
 	border-left: 0px;
 	border-top: 0px;
 }
