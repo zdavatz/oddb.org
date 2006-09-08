@@ -23,15 +23,13 @@ ol li {
 }
 
 /* ErrorPage */
-
-h1 {
+body.appdown h1 {
 	font-family : $std_font_family;
 	font-size : $std_font_size; 
 	color : $bg_dark_font_color;
 	background : $bg_dark;
-	padding : 4px;
 }
-p {
+body.appdown h1, body.appdown p {
 	padding : 4px;
 }
 
@@ -41,6 +39,9 @@ h3 {
 	font-size: $h3_font_size;
 	margin-bottom: $h3_margin;
 }
+p {
+	padding : 0px;
+}
 pre {
 	font-style : normal;
 	font-family: Courier New, Courier, monospace;
@@ -49,7 +50,6 @@ pre {
 	text-align : left;
 	white-space : pre;
 }
-
 a {
 	text-decoration: none;
 }	

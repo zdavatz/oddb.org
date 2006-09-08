@@ -76,7 +76,7 @@ class PatinfoComposite < HtmlGrid::Composite
 	CSS_MAP = {
 		[0,0] => 'th',
 		[1,0]	=> 'th right',
-		[0,2]	=> 'list',
+		[0,1,1,2]	=> 'list',
 	}	
 	DEFAULT_CLASS = HtmlGrid::Value
 	COMPONENT_CSS_MAP = {

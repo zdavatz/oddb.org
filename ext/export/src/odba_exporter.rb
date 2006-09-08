@@ -124,7 +124,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 					odba_ids.each { |odba_id|
 					item = ODBA.cache.fetch(odba_id, nil)
 					CsvExporter.dump(CsvExporter::MIGEL, item, fh)
-					#ODBA.cache.clear
+					true
 				}
 			}
 		end

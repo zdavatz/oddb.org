@@ -39,7 +39,7 @@ module ODDB
 			def data
 				data = {
 					:deductible				=>	@deductible,
-					:generic_type	    =>  @generic_type,
+					#:generic_type	    =>  @generic_type,
 					:pharmacode				=>	@pharmacode,
 					:sl_generic_type	=>  @generic_type,
 				}

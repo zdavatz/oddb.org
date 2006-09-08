@@ -66,7 +66,8 @@ module ODDB
 			}
 		end
 		def swissmedic_code 
-			@substance.swissmedic_code unless(@substance.nil?)
+			@substances.collect { |sub| sub.swissmedic_code }
+			#@substance.swissmedic_code unless(@substance.nil?)
 		end
 		def to_s
 			@substances.sort_by { |sub| 
