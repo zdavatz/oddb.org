@@ -43,7 +43,7 @@ class RecentRegs < State::Drugs::Global
 			elsif(@date = loggroup.newest_date)
 				@model = [
 					create_package_month(date), 
-					create_package_month(date << 1), 
+					#create_package_month(date << 1), 
 				]
 			end
 			@model.delete_if { |month| 
