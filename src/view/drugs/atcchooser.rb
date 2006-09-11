@@ -17,7 +17,7 @@ class AtcChooserList < HtmlGrid::List
 		[1,0]	=>	:atc_ddd_link,
 	}	
 	CSS_MAP = {
-		[1,0]	=>	"result-infos right"
+		[1,0]	=>	"list right"
 	}
 	COMPONENT_CSS_MAP = {}
 	CSS_CLASS = "composite"

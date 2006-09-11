@@ -25,7 +25,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,7]		=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,7]		=>	'ccomponent',
+		[0,0,1,8]		=>	'list center',
 	}
 	COMPONENT_CSS_MAP = { }
 	def init
@@ -35,7 +35,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,1]		=>	View::CenteredSearchForm,
 				[0,2]		=>	'migel_search_explain', 
 			}
-			@css_map = { [0,0,1,3] => 'ccomponent' }
+			@css_map = { [0,0,1,3] => 'center' }
 		elsif(@lookandfeel.enabled?(:atupri_web, false))
 			@components = {
 				[0,0]		=>	View::CenteredSearchForm,
@@ -49,7 +49,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,3,6]	=>	'database_last_updated_txt',
 				[0,3,7]	=>	:database_last_updated,
 			}
-			@css_map = { [0,0,1,4] => 'ccomponent' }
+			@css_map = { [0,0,1,4] => 'center' }
 		end
 		super
 	end

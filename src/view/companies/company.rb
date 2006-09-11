@@ -36,10 +36,6 @@ class InactiveRegistrations < HtmlGrid::List
 	}
 	CSS_MAP = {
 		[0,0,5]	=>	'list',
-		[3,0]		=> 'result-infos',
-	}
-	COMPONENT_CSS_MAP = {
-		[3,0]			=> 'result-infos',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'subheading'
@@ -390,7 +386,7 @@ class UnknownCompanyComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0]	=>	'th',
-		[1,1]	=>	'logo-r',
+		[1,1]	=>	'logo right',
 	}
 	def company_name(model, session)
 		name = HtmlGrid::Value.new('name', model, session, self)
@@ -404,8 +400,8 @@ end
 class CompanyComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	    =>	'th',
-		[1,1]	    =>	'logo-r',
+		[0,0]	=>	'th',
+		[1,1]	=>	'logo right',
     [0,2,2]   =>  'list',
 	}	
 	COLSPAN_MAP = {

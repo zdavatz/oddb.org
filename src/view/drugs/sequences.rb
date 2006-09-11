@@ -44,11 +44,14 @@ class SequenceList < HtmlGrid::List
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]		=>	'small result-edit',
-		[1,0,2]	=>	'result-infos',
-		[3,0]		=>	'result-big',
-		[4,0]		=>	'result',
-		[5,0,2]	=>	'result-b-r',
+		[0,0]		=>	'small',
+		[1,0,2]	=>	'list',
+		[3,0]		=>	'list big',
+		[4,0]		=>	'list',
+		[5,0,2]	=>	'list bold right',
+	}
+	COMPONENT_CSS_MAP = {
+		[0,0]		=>	'small',
 	}
 	SORT_DEFAULT = false
 	SORT_HEADER = false
@@ -77,7 +80,7 @@ class SequenceList < HtmlGrid::List
 			'search_query'	=>	CGI.escape(name),
 		}
 		link.href = @lookandfeel._event_url(:search, args, 'best_result')
-		link.css_class = 'result-big' << resolve_suffix(model)
+		link.css_class = 'big' << resolve_suffix(model)
 		link
 	end
 end

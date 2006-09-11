@@ -17,11 +17,11 @@ class FachinfoConfirmForm < View::FormList
 		[3,0]	=>	:language,
 	}
 	COMPONENT_CSS_MAP = {
-		[0,0]		=>	'list-small',
+		[0,0]		=>	'small',
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]		=>	'list-small',
+		[0,0]		=>	'list small',
 		[1,0,3]	=>	'list',
 	}
 	DEFAULT_HEAD_CLASS = 'subheading'

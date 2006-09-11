@@ -61,23 +61,22 @@ class FiPiOfferInputForm < View::Form
 	end
 	include HtmlGrid::ErrorMessage
 	COMPONENTS = {
-		[0,1]		=>	'fi_activation_charge',
-		[1,1]		=>	:fi_activation_charge_value,
-		[0,2]		=>	:fi_quantity_txt,
-		[1,2]		=>	:fi_quantity,
-		[1,3]		=>	:fi_update,
-		[0,5]		=>	'pi_activation_charge',
-		[1,5]		=>	:pi_activation_charge_value,
-		[0,6]		=>	:pi_quantity_txt,
-		[1,6]		=>	:pi_quantity,
-		[1,7]		=>	:pi_update,
-    [0,8]   =>  'fipi_valid_languages',
-		[1,9]		=>	:submit,
+		[0,0]		=>	'fi_activation_charge',
+		[1,0]		=>	:fi_activation_charge_value,
+		[0,1]		=>	:fi_quantity_txt,
+		[1,1]		=>	:fi_quantity,
+		[1,2]		=>	:fi_update,
+		[0,4]		=>	'pi_activation_charge',
+		[1,4]		=>	:pi_activation_charge_value,
+		[0,5]		=>	:pi_quantity_txt,
+		[1,5]		=>	:pi_quantity,
+		[1,6]		=>	:pi_update,
+		[1,7]		=>	:submit,
 	}
 	CSS_MAP = {
-		[0,0,2,4]	=>	'list bg',
-		[0,5,2,4]	=>	'list bg',
-		[1,9]			=>	'button left padding',
+		[0,0,2,3]	=>	'list bg',
+		[0,4,2,3]	=>	'list bg',
+		[1,7]			=>	'list',
 	}
   COLSPAN_MAP = {
     [0,8] => 2,

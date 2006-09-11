@@ -4,24 +4,35 @@
 require 'htmlgrid/composite'
 require 'htmlgrid/link'
 require 'view/external_links'
+require 'view/additional_information'
 
 module ODDB
 	module View
 		class ExplainResult < HtmlGrid::Composite
 			include ExternalLinks
+			include AdditionalInformation
 			COMPONENTS = {}
 			CSS_MAP = {}
 			CSS_KEYMAP = {
-				'explain_unknown'		=>	'explain-unknown',
-				'explain_expired'		=>	'explain-unknown expired',
-				:explain_cas				=>	'explain-infos',
-				:explain_ddd_price	=>	'explain-infos',
-				:explain_deductible	=>	'explain-infos',
-				'explain_li'				=>	'explain-infos',
-				'explain_fi'				=>	'explain-infos',
-				'explain_pbp'				=>	'explain-infos',
-				'explain_pi'				=>	'explain-infos',
-				'explain_narc'			=>	'explain-infos',
+				'explain_unknown'				=>	'infos bold',
+				'explain_expired'				=>	'infos bold expired',
+				:explain_cas						=>	'infos',
+				:explain_comarketing		=>	'infos',
+				:explain_complementary	=>'infos',
+				:explain_vaccine				=>	'infos',
+				:explain_ddd_price			=>	'infos',
+				:explain_deductible			=>	'infos',
+				:explain_phytotherapy		=>  'infos',
+				:explain_anthroposophy	=>	'infos',
+				:explain_homeopathy			=>	'infos',
+				:explain_parallel_import=>  'infos',
+				:explain_fachinfo				=>	'infos',
+				'explain_pbp'						=>	'infos',
+				:explain_patinfo		=>	'infos',
+				:explain_narc						=>	'infos',
+				:explain_limitation			=>  'infos',
+				:explain_google_search					=>  'infos',
+				:explain_feedback				=>	'infos',
 			}
 			def init
 				@components = @lookandfeel.explain_result_components
@@ -35,11 +46,13 @@ module ODDB
 					width = [x, width].max
 					height = [y.next, height].max
 				}
-				@css_map.store([1, 0, width, height], 'explain-infos')
+				@css_map.store([1, 0, width, height], 'infos')
 				super
 			end
 			def explain_comarketing(model, session=@session)
-				explain_link(model, :comarketing)
+				link = HtmlGrid::Link.new(:square_comarketing, model, @session, self)
+				link.href = CoMarketingPlugin::SOURCE_URI
+				[square(:comarketing, link), @lookandfeel.lookup(:explain_comarketing) ]
 			end
 			def explain_ddd_price(model, session=@session)
 				explain_link(model, :ddd_price)
@@ -47,17 +60,48 @@ module ODDB
 			def explain_deductible(model, session=@session)
 				explain_link(model, :deductible)
 			end
-			def explain_original(model, session=@session)
-				explain_link(model, :original)
+			def explain_anthroposophy(model, session=@session)
+				[square(:anthroposophy), @lookandfeel.lookup(:explain_anthroposophy) ]
+			end
+			def explain_complementary(model, session=@session)
+				link = HtmlGrid::Link.new(:square_complementary, model, session, self)
+				link.href = @lookandfeel.lookup(:explain_complementary_url)
+				[square(:complementary, link), @lookandfeel.lookup(:explain_complementary) ]
+			end
+			def explain_fachinfo(model, session=@session)
+				[square(:fachinfo), @lookandfeel.lookup(:explain_fachinfo) ]
+			end
+			def explain_feedback(model, session=@session)
+				[square(:feedback), @lookandfeel.lookup(:explain_feedback) ]
 			end
 			def explain_generic(model, session=@session)
 				explain_link(model, :generic)
 			end
-			def explain_complementary(model, session=@session)
-				explain_link(model, :complementary)
+			def explain_google_search(model, session=@session)
+				[square(:google_search), @lookandfeel.lookup(:explain_google_search) ]
+			end
+			def explain_limitation(model, session=@session)
+				[square(:limitation), @lookandfeel.lookup(:explain_limitation) ]
+			end
+			def explain_original(model, session=@session)
+				explain_link(model, :original)
+			end
+			def explain_patinfo(model, session=@session)
+				[square(:patinfo), @lookandfeel.lookup(:explain_patinfo) ]
+			end
+			def explain_homeopathy(model, session=@session)
+				[square(:homeopathy), @lookandfeel.lookup(:explain_homeopathy) ]
+			end
+			def explain_parallel_import(model, session=@session)
+				[square(:parallel_import), @lookandfeel.lookup(:explain_parallel_import) ]
+			end
+			def explain_phytotherapy(model, session=@session)
+				[square(:phytotherapy), @lookandfeel.lookup(:explain_phytotherapy) ]
 			end
 			def explain_vaccine(model, session=@session)
-				explain_link(model, :vaccine)
+				link = HtmlGrid::Link.new(:square_vaccines, model, session, self)
+				link.href = @lookandfeel.lookup(:explain_vaccine_url)
+				[square(:vaccine, link), @lookandfeel.lookup(:explain_vaccine) ]
 			end
 			def explain_cas(model, session=@session)
 				link = HtmlGrid::Link.new(:explain_cas,
@@ -71,13 +115,12 @@ module ODDB
 				link
 			end
 			def explain_narc(model, session=@session)
-				create_link(:explain_narc, 
-					'http://wiki.oddb.org/wiki.php?pagename=ODDB.Pi-Upload')
+				[square(:narc), @lookandfeel.lookup(:explain_narc) ]
 			end
 			def explain_link(model, key)
 				link = external_link(model, "explain_#{key}")
 				link.href = @lookandfeel.lookup("explain_#{key}_url") 
-				link.attributes['class'] = "explain-#{key}"
+				link.attributes['class'] = "explain #{key}"
 				link 
 			end
 		end
@@ -100,12 +143,12 @@ module ODDB
 				[1,0]	=>	:legal_note,
 			}
 			COMPONENT_CSS_MAP = {
-				[0,0]	=>	'explain-result',
-				[1,0]	=>	'explain-result-r',
+				[0,0]	=>	'explain',
+				[1,0]	=>	'explain right',
 			}
 			CSS_MAP = {
-				[0,0]	=>	'explain-result',
-				[1,0]	=>	'explain-result-r',
+				[0,0]	=>	'explain',
+				[1,0]	=>	'explain right',
 			}
 			CSS_CLASS = 'composite'
 			def explain_result(model, session=@session)

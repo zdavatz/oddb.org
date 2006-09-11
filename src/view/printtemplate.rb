@@ -44,8 +44,8 @@ module ODDB
 				[0,3] =>	:document,
 			}
 			CSS_MAP = {
-				[0,1] => 'print-big',
-				[0,2]	=> 'list-r',
+				[0,1] => 'print big',
+				[0,2]	=> 'list right',
 			}	
 			def name(model, session=@session)
 				if(document = model.send(session.language))

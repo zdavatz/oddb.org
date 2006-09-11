@@ -20,6 +20,7 @@ module ODDB
 	## holidaymanager: "druby://localhost:10009"
 	## xmlconv2: "druby://localhost:10010"
 	ANALYSISPARSE_URI = "druby://localhost:10011"
+	## globopharm.xmlconv.bbmb.ch: "druby://localhost:10012"
   YUS_URI = "drbssl://localhost:9997"
   YUS_DOMAIN = 'oddb.org'
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))

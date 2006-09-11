@@ -9,7 +9,7 @@ module ODDB
 	module View
 		module Admin
 class OrphanedFachinfosList < HtmlGrid::List
-	BACKGROUND_SUFFIX = '-bg'
+	BACKGROUND_SUFFIX = ' bg'
 	COMPONENTS = {
 		[0,0]	=>	:key,
 		[1,0]	=>  :name,

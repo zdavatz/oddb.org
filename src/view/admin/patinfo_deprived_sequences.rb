@@ -10,7 +10,7 @@ module ODDB
 	module View
 		module Admin
 class PatinfoDeprivedSequencesList < HtmlGrid::List
-	BACKGROUND_SUFFIX = '-bg'
+	BACKGROUND_SUFFIX = ' bg'
 	COMPONENTS = {
 		[0,0] => :nr,
 		[1,0] => :name,

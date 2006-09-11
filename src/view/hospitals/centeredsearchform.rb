@@ -21,10 +21,9 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,7]		=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,7]		=>	'ccomponent',
+		[0,0,1,8]		=>	'list center',
 	}
-	COMPONENT_CSS_MAP = {
-	}
+	COMPONENT_CSS_MAP = { }
 	def hospitals_count(model, session)
 		@session.hospital_count.to_s << '&nbsp;'
 	end

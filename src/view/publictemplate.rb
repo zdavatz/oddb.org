@@ -108,7 +108,7 @@ urchinTracker();
 				elsif(@lookandfeel.enabled?(:oekk_structure, false))
 					oekk_head(model)
 				else
-          css_map.store(components.index(:topfoot), 'list navigation navigation-right')
+          css_map.store(components.index(:topfoot), 'navigation right')
 					View::ZoneNavigation.new(model, @session, self)
 				end
 			end

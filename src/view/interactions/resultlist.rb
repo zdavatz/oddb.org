@@ -28,46 +28,18 @@ class ResultList < HtmlGrid::List
 		:interaction_basket_status	=>	false,
 	}
 	CSS_MAP = {
-		[0,0]	=>	'result big unknown',
-		[1,0]	=>	'result-small-font',
-		[2,0]	=>	'result big unknown',
+		[0,0]	=>	'list big',
+		[1,0]	=>	'list',
+		[2,0]	=>	'list big',
+	}
+	COMPONENT_CSS_MAP = {
+		[1,0]	=>	'small',
 	}
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'th'
 	SORT_DEFAULT = nil
 	STRIPED_BG = true
-	#SUBHEADER = FacadeHeader
-=begin
-	def compose_subheader(facade, offset)
-		subheader = self::class::SUBHEADER.new(facade, @session, self)
-		@grid.add(subheader, *offset)
-		@grid.add_style('result-atc', *offset)
-		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
-	end
-	def compose_list(model=@model, offset=[0,0])
-		model.each { |substance|	
-			#compose_subheader(facade, offset)
-			offset = resolve_offset(offset, self::class::OFFSET_STEP)
-			objects = substance
-			super(objects, offset)
-			offset[1] += objects.size+2
-		}
-	end
-	def name(model, session)
-		if(session.interaction_basket.include?(model))
-			model.name
-		else
-			link = HtmlGrid::PopupLink.new(:interaction_basket_confirmation, model, session, self)
-			link.width = 350
-			link.height	= 250
-			link.href = @lookandfeel.event_url(:interaction_basket_confirmation, {'pointer'=>model.pointer})
-			link.value = model.name
-			link.set_attribute('class', 'result-big')
-			link
-		end
-	end
-=end
 	def interaction_basket_status(model, session)
 		if(session.interaction_basket.include?(model))
 			link = HtmlGrid::Link.new(:interaction_basket, model, session, self)
@@ -84,7 +56,7 @@ class ResultList < HtmlGrid::List
 			link = HtmlGrid::Link.new(:add_to_interaction_basket, model, session, self)
 			link.href = @lookandfeel._event_url(:add_to_interaction_basket, {'pointer'=>CGI.escape(model.pointer.to_s)})
 			link.value = model.name
-			link.set_attribute('class', 'result-big')
+			link.set_attribute('class', 'list big')
 			link
 		end
 	end
@@ -92,8 +64,6 @@ class ResultList < HtmlGrid::List
 		active_sequences = model.sequences.select { |seq| 
 			seq.active_package_count > 0 
 		}
-		#result = @session.search_oddb(model.name)
-		#unless(result.atc_classes.empty?)
 		unless(active_sequences.empty?)
 			link = HtmlGrid::Link.new(:substance_result, model, session, self)
 			link.href = @lookandfeel._event_url(:search, {'search_query' => model.name, 'zone'	=> :drugs})

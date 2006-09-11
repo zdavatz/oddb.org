@@ -24,9 +24,11 @@ module ODDB
 					@attributes['alt'] = @model.name
 				end
 				@span = HtmlGrid::Span.new(@model, @session, self)
-				@span.value = @lookandfeel.lookup(:sponsor_until, 
-					@lookandfeel.format_date(@model.sponsor_until))
-				@span.css_class = 'logo-r'
+				if(time = @model.sponsor_until)
+					@span.value = @lookandfeel.lookup(:sponsor_until, 
+						@lookandfeel.format_date(time))
+				end
+				@span.css_class = 'sponsor  right'
 			end
 			def to_html(context)
 				url = @lookandfeel._event_url(:sponsorlink)

@@ -16,31 +16,31 @@ module ODDB
 				[1,1]		=>	View::Navigation,
 			}
 			CSS_MAP = {
-				[0,0]	=>	'list navigation',
-				[1,0]	=>	'list navigation right',
-				[0,1]	=>	'list subheading',
-				[1,1]	=>	'list subheading right',
+				[0,0]	=>	'navigation',
+				[1,0]	=>	'navigation right',
+				[0,1]	=>	'subheading',
+				[1,1]	=>	'subheading right',
 			}
 			COMPONENT_CSS_MAP = {
 				[0,0]	=>	'navigation',
 				[1,0]	=>	'navigation right',
-				[0,1]	=>	'atc',
-				[1,1]	=>	'atc right',
+				[0,1]	=>	'subheading',
+				[1,1]	=>	'subheading right',
 			}
       def init
         if(@lookandfeel.enabled?(:custom_navigation, false) \
-					|| @lookandfeel.zone_navigation.empty?)
+					 || @lookandfeel.zone_navigation.empty?)
           @components = {
             [0,0]		=>	View::Copyright,
             [1,0]		=>	View::Navigation,
           }
           @css_map = {
-            [0,0]	=>	'list subheading',
-            [1,0]	=>	'list subheading right',
+            [0,0]	=>	'subheading',
+            [1,0]	=>	'subheading right',
           }
           @component_css_map = {
-            [0,0]	=>	'atc',
-            [1,0]	=>	'atc right',
+            [0,0]	=>	'subheading',
+            [1,0]	=>	'subheading right',
           }
         end
         super

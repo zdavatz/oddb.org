@@ -15,6 +15,11 @@ require 'view/resultcolors'
 require 'view/descriptionvalue'
 require 'sbsm/user'
 
+module HtmlGrid
+	class List
+		BACKGROUND_SUFFIX = ' bg'
+	end
+end
 module ODDB
 	module View
 		module Drugs
@@ -31,7 +36,7 @@ class AtcHeader < HtmlGrid::Composite
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'atc-result',
+		[0,0]	=>	'atc',
 	}
 	def init
 		if(@session.user.allowed?('edit', 'org.oddb.model.!atc_class.*'))
@@ -64,8 +69,8 @@ class AtcHeader < HtmlGrid::Composite
 	def pages(model, session)
 		state = @session.state
 		if(state.respond_to?(:pages) \
-			&& (pages = state.pages) \
-			&& pages.size > 1)
+			 && (pages = state.pages) \
+			 && pages.size > 1)
 			args = {
 				:search_query => @session.persistent_user_input(:search_query),	
 				:search_type => @session.persistent_user_input(:search_type),	
@@ -94,28 +99,28 @@ class ResultList < HtmlGrid::List
 	}
 	CSS_MAP = {}
 	CSS_KEYMAP = {
-		:active_agents			=>	'result-i',
-		:limitation_text		=>	'result-infos',
-		:fachinfo						=>	'result-infos',
-		:patinfo						=>	'result-infos',
-		:narcotic						=>	'result-infos',
-		:complementary_type	=>	'result-infos',
-		:name_base					=>	'result-big',
-		:galenic_form				=>	'result',
-		:most_precise_dose	=>	'result-r',
-		:comparable_size		=>	'result-r',
-		:price_exfactory		=>	'result-r',
-		:price_public				=>	'result-pubprice',
-		:deductible					=>	'result-b-r',
-		:substances					=>	'result-i',
-		:company_name				=>	'result-i',
-		:ikscat							=>	'result-i',
-		:ddd_price					=>	'result-b-r',
-		:registration_date	=>	'result-i',
-		:feedback						=>	'result-b-r',
-		:google_search			=>	'result-b-r',
-		:notify							=>	'result-b-r',
-		'nbsp'							=>	'result',
+		:active_agents			=>	'list italic',
+		:limitation_text		=>	'list',
+		:fachinfo						=>	'list',
+		:patinfo						=>	'list',
+		:narcotic						=>	'list',
+		:complementary_type	=>	'list',
+		:name_base					=>	'list big',
+		:galenic_form				=>	'list',
+		:most_precise_dose	=>	'list',
+		:comparable_size		=>	'list right',
+		:price_exfactory		=>	'list right',
+		:price_public				=>	'list pubprice',
+		:deductible					=>	'list bold right',
+		:substances					=>	'list italic',
+		:company_name				=>	'list italic',
+		:ikscat							=>	'list italic',
+		:ddd_price					=>	'list bold right',
+		:registration_date	=>	'list italic',
+		:feedback						=>	'list right',
+		:google_search			=>	'list right',
+		:notify							=>	'list right',
+		'nbsp'							=>	'list',
 	}
 	CSS_HEAD_KEYMAP = {
 		:active_agents			=>	'th',
@@ -126,20 +131,20 @@ class ResultList < HtmlGrid::List
 		:complementary_type	=>	'th',
 		:name_base					=>	'th',
 		:galenic_form				=>	'th',
-		:most_precise_dose	=>	'th-r',
-		:comparable_size		=>	'th-r',
-		:price_exfactory		=>	'th-r',
-		:price_public				=>	'th-r',
-		:deductible					=>	'th-r',
+		:most_precise_dose	=>	'th right',
+		:comparable_size		=>	'th right',
+		:price_exfactory		=>	'th right',
+		:price_public				=>	'th right',
+		:deductible					=>	'th right',
 		:substances					=>	'th',
 		:company_name				=>	'th',
 		:ikscat							=>	'th',
-		:ddd_price					=>	'th-r',
+		:ddd_price					=>	'th right',
 		:registration_date	=>	'th',
-		:feedback						=>	'th-r',
-		:google_search			=>	'th-r',
-		:notify							=>	'th-r',
-		'nbsp'							=>	'th',
+		:feedback						=>	'th right',
+		:google_search			=>	'th right',
+		:notify							=>	'th right',
+'nbsp'							=>	'th',
 	}
 	CSS_HEAD_MAP = {}
 	CSS_CLASS = 'composite'
@@ -194,11 +199,11 @@ class ResultList < HtmlGrid::List
 	def compose_subheader(atc, offset)
 		subheader = self::class::SUBHEADER.new(atc, @session, self)
 		@grid.add(subheader, *offset)
-		@grid.add_style('result-atc', *offset)
+		@grid.add_style('list atc', *offset)
 		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 	end
 	def fachinfo(model, session=@session)
-		super(model, session, 'important-infos')
+		super(model, session, 'square important infos')
 	end	
 	def registration_date(model, session=@session)
 		span = HtmlGrid::Span.new(model, @session, self)
@@ -206,7 +211,7 @@ class ResultList < HtmlGrid::List
 																				 model, @session, self)
 		if(exp = (model.inactive_date || model.expiration_date))
 			span.set_attribute('title', 
-				@lookandfeel.lookup(:valid_until, @lookandfeel.format_date(exp)))
+												 @lookandfeel.lookup(:valid_until, @lookandfeel.format_date(exp)))
 		end
 		span
 	end

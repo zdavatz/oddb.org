@@ -26,6 +26,10 @@ module ODDB
 			'gerimedi'=>	[
 				LookandfeelGeriMedi, 
 			],
+			'hirslanden' => [
+				LookandfeelLanguages,
+				LookandfeelHirslanden,
+			],
 			'just-medical'=>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,

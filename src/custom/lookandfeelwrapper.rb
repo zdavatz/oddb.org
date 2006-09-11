@@ -34,29 +34,30 @@ module ODDB
 			{
 				[0,0]	=>	:explain_original,
 				[0,1]	=>	:explain_generic,
-				[0,2]	=>	:explain_comarketing,
-				[0,3]	=>	:explain_complementary,
-				[0,4]	=>	:explain_vaccine,
-				[0,5]	=>	'explain_unknown',
-				[0,6]	=>	'explain_expired',
+				[0,2]	=>	'explain_unknown',
+				[0,3]	=>	'explain_expired',
+				[0,4]	=>	:explain_complementary,
+				[0,5]	=>	:explain_homeopathy,
+				[0,6]	=>	:explain_anthroposophy,
+				[0,7] =>	:explain_phytotherapy,
 				[0,8]	=>	:explain_cas,
-				[1,0]	=>	'explain_li',
-				[1,1]	=>	'explain_fi',
-				[1,2]	=>	'explain_pi',
-				[1,3]	=>	'explain_narc',
-				[1,4]	=>	'explain_a',
-				[1,5]	=>	'explain_h',
-				[1,6]	=>	'explain_p',
-				[1,7]	=>	'explain_pr',
+				[1,0]	=>	:explain_parallel_import,
+				[1,1]	=>	:explain_comarketing,
+				[1,2]	=>	:explain_vaccine,
+				[1,3]	=>	:explain_narc,
+				[1,4]	=>	:explain_fachinfo,
+				[1,5]	=>	:explain_patinfo,
+				[1,6]	=>	:explain_limitation,
+				[1,7]	=>	:explain_google_search,
+				[1,8]	=>	:explain_feedback,
 				[2,0]	=>	'explain_efp',
 				[2,1]	=>	'explain_pbp',
-				[2,2]	=>	:explain_deductible,
-				[2,3]	=>	'explain_sl',
-				[2,4]	=>	'explain_slo',
-				[2,5]	=>	'explain_slg',
-				[2,6]	=>	:explain_lppv,
-				[2,7]	=>	'explain_g',
-				[2,8]	=>	'explain_fd',
+				[2,2]	=>	'explain_pr',
+				[2,3]	=>	:explain_deductible,
+				[2,4]	=>	'explain_sl',
+				[2,5]	=>	'explain_slo',
+				[2,6]	=>	'explain_slg',
+				[2,7]	=>	:explain_lppv,
 			}
 		end
 	end
@@ -231,14 +232,14 @@ module ODDB
 		DICTIONARIES = {
 			'de'	=>	{
 				:DOCTYPE									=>	' <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 transitional//EN">',
-				:explain_complementary		=>	'Lila&nbsp;=&nbsp;Arzneimittel der Komplement&auml;rmedizin',
+				:explain_complementary		=>	'&nbsp;=&nbsp;Arzneimittel der Komplement&auml;rmedizin',
 				:explain_original					=>	'Blau&nbsp;=&nbsp;Original',
 				:explain_unknown					=>	'Grau&nbsp;=&nbsp;Nicht&nbsp;klassifiziert',
 				:home_welcome							=>  "",
 				:price_compare						=>	'F&uuml;r den Direktvergleich klicken Sie bitte <br>auf den Medikamentennamen im Suchergebnis!',
 			},
 			'fr'	=>	{
-				:explain_complementary		=>	'Lilas&nbsp;=&nbsp;Produit Compl&eacute;mentaire',
+				:explain_complementary		=>	'&nbsp;=&nbsp;Produit Compl&eacute;mentaire',
 				:explain_original					=>	'bleu&nbsp;=&nbsp;original',
 				:explain_unknown					=>	'gris&nbsp;=&nbsp;pas classes',
 				:home_welcome							=>  "",
@@ -246,7 +247,7 @@ module ODDB
 			},
 		}
 		RESOURCES = { 
-			:external_css	=>	'http://www.atupri.ch/misc/generika.css',
+			:external_css	=>	'http://www.atupri.ch/misc/new.generika.css',
 		}
 		HTML_ATTRIBUTES = { }
 		def explain_result_components
@@ -303,6 +304,27 @@ module ODDB
 			end
 		end
 	end
+	class LookandfeelHirslanden < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:atc_chooser,
+			:analysis,
+			:analysis_alphabetical,
+			:drugs, 
+			:faq_link,
+			:help_link,
+			:home,
+			:home_analysis,
+			:home_drugs,
+			:home_migel,
+			:migel,
+			:migel_alphabetical,
+			:search_reset,
+			:sequences,
+			:topfoot,
+			:ywesee_contact,
+			:logout,
+		]
+	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:custom_navigation,
@@ -350,7 +372,8 @@ module ODDB
 			},
 		}
 		RESOURCES = {
-			:external_css	=>	'http://www.just-medical.com/css/oddb.css',
+			#:external_css	=>	'http://www.just-medical.com/css/oddb.css',
+			:external_css	=>	'http://www.just-medical.com/css/new.oddb.css',
 		}
 		def explain_result_components
 			{
@@ -436,7 +459,7 @@ module ODDB
 		def enabled?(event, default=true)
 			case event.to_sym
 			when :query_limit, :google_adsense, :doctors, :interactions, :migel, 
-				:user , :hospitals, :companies,
+				:user , :hospitals, :companies, :analysis
 				false
 			else
 				@component.enabled?(event, default)
@@ -446,7 +469,7 @@ module ODDB
 	class LookandfeelOekk < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:drugs, 
-			:external_css,
+			#:external_css,
 			:help_link,
 			:logout,
 			:migel,
@@ -456,6 +479,7 @@ module ODDB
 		DICTIONARIES = {
 			'de'	=>	{
 				:de								=>	'd',
+				:explain_generic	=>	'Blau&nbsp;=&nbsp;Generikum',
 				:en								=>	'e',
 				:fr								=>	'f',
 				:oekk_department	=>	'Medikamentenvergleich online',
@@ -463,18 +487,22 @@ module ODDB
 				:oekk_title				=>	'Ihr Einsparungspotential mit Generika',
 			},
 			'fr'	=>	{
+				:explain_generic	=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
 				:oekk_department	=>	'Comparaison de m&eacute;dicaments sur ligne',
 				:oekk_logo				=>	'&Ouml;KK - jeune et sympa.',
 				:oekk_title				=>	'V&ocirc;tre &eacute;conomie potentielle avec g&eacute;n&eacute;riques',
 			},
 			'en'	=>	{
+				:explain_generic	=>	'Blue&nbsp;=&nbsp;Generic Drug',
 				:oekk_department	=>	'Drug comparison online',
 				:oekk_logo				=>	'&Ouml;KK - young and easy.',
 				:oekk_title				=>	'Your potential savings with generics',
 			},
 		}
 		RESOURCES = { 
-			:external_css	=>	'http://www.oekk.ch/assets/styles/oddb.css',
+			#:external_css	=>	'http://www.oekk.ch/assets/styles/oddb.css',
+			#:external_css	=>	'http://www.oekk.ch/assets/styles/new.oddb.css',
+			:external_css	=>	'/resources/oekk.oddb.css',
 		}
 		HTML_ATTRIBUTES = { }
 		def languages
@@ -487,14 +515,15 @@ module ODDB
 			:drugs, 
 			:home_drugs,
 			:home_migel,
-			:external_css,
+			#:external_css,
 			:help_link,
 			#:logout,
 			:migel,
 			:sequences,
 		]
 		RESOURCES = { 
-			:external_css	=>	'http://www.medical-tribune.ch/css/oddb_deutsch.css',
+			#:external_css	=>	'http://www.medical-tribune.ch/css/oddb_deutsch.css',
+			:external_css	=>	'http://www.medical-tribune.ch/css/new.oddb_deutsch.css',
 		}
 		def explain_result_components
 			{
@@ -557,12 +586,13 @@ module ODDB
 			:custom_navigation,
 			:drugs, 
 			:home_drugs,
-			:external_css,
+			#:external_css,
 			:help_link,
 			#:logout,
 		]
 		RESOURCES = { 
-			:external_css	=>	'http://www.medical-tribune.ch/css/oddb_public.css',
+			#:external_css	=>	'http://www.medical-tribune.ch/css/oddb_public.css',
+			:external_css	=>	'http://www.medical-tribune.ch/css/new.oddb_public.css',
 		}
 		def explain_result_components
 			{
