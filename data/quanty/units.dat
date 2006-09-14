@@ -3539,6 +3539,7 @@ LSU							# lipoprotein lipase releasing units
 tablet					# one of the "official doses" in ATC-DDD
 
 Mio-			1e6
+Mio	  		1e6
 µ-				1e-6
 u-				1e-6
 
