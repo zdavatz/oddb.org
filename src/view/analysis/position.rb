@@ -14,6 +14,60 @@ require 'view/analysis/explain_result'
 module ODDB
 	module View
 		module Analysis
+class AdditionalInfoComposite < HtmlGrid::Composite
+	include View::AdditionalInformation
+	CSS_CLASS = 'composite'
+	COMPONENTS = {
+		[0,0]	=>	'dacapo_title',
+	}	
+	CSS_MAP = {
+		[0,0,2]	=>	'subheading',
+	}
+	COLSPAN_MAP = {
+		[0,0]	=> 2,
+	}
+	DEFAULT_CLASS = HtmlGrid::Value
+	LEGACY_INTERFACE = false
+	LABELS = true
+	def init
+		counter = 1
+		if(@model.info_description)
+			components.update([0, counter]	=>	:info_description)
+			counter += 1
+		end
+		if(@model.info_interpretation)
+			components.update([0, counter]	=>	:info_interpretation)
+			counter += 1
+		end
+		if(@model.info_indication)
+			components.update([0, counter]	=>	:info_indication)
+			counter += 1
+		end
+		if(@model.info_significance)
+			components.update([0, counter]	=>	:info_significance)
+			counter += 1
+		end
+		if(@model.info_ext_material)
+			components.update([0, counter]	=> :info_ext_material)
+			counter += 1
+		end
+		if(@model.info_ext_condition)
+			components.update([0, counter]	=>	:info_ext_condition)
+			counter += 1
+		end
+		if(@model.info_storage_condition)
+			components.update([0, counter]	=>	:info_storage_condition)
+			counter += 1
+		end
+		if(@model.info_storage_time)
+			components.update([0, counter]	=>	:info_storage_time)
+			counter += 1
+		end
+		css_map.update([0,1,1,counter -1]	=>	'list top')
+		css_map.update([1,1,1,counter -1]	=>	'list')
+		super
+	end
+end
 class PositionInnerComposite < HtmlGrid::Composite
 	include View::AdditionalInformation
 	include DataFormat
@@ -102,7 +156,8 @@ class PositionComposite < HtmlGrid::Composite
 		[0,0]		=>	'position_details',
 		[0,1]		=>	PositionInnerComposite,
 		[0,2]		=>	:permissions,
-		[0,3]		=>	:result_foot,
+		[0,3]		=>	:additional_info,
+		[0,4]		=>	:result_foot,
 	}
 	CSS_MAP	=	{
 		[0,0]		=>	'th',
@@ -110,6 +165,11 @@ class PositionComposite < HtmlGrid::Composite
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
+	def additional_info(model)
+		if(info = model.detail_info(:dacapo))
+			AdditionalInfoComposite.new(info, @session, self)
+		end
+	end
 	def permissions(model)
 		Permissions.new(model.permissions.send(@session.language), @session, self)
 	end

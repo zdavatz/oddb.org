@@ -3,6 +3,7 @@
 
 require 'rpdf2txt/parser'
 require 'pagehandler'
+require 'analysis_hpricot'
 
 module ODDB
 	module AnalysisParse
@@ -15,6 +16,10 @@ module ODDB
 				pagenum += 1
 			}
 			ph.positions
+		end
+		def AnalysisParse.dacapo(&block)
+			parser = AnalysisHpricot.new
+			parser.dacapo_infos(&block)
 		end
 	end
 end

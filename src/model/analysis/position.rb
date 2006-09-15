@@ -3,6 +3,7 @@
 
 require 'util/language'
 require 'util/searchterms'
+require 'model/analysis/detail_info'
 require 'model/analysis/permission'
 require 'model/feedback_observer'
 require 'model/text'
@@ -30,6 +31,10 @@ module ODDB
 			def code
 				[groupcd, @poscd].join('.')
 			end
+			def create_detail_info(lab_key)
+				detail_info = DetailInfo.new(lab_key)
+				detail_infos.store(lab_key, detail_info)
+			end
 			def create_footnote
 				@footnote = Text::Document.new
 			end
@@ -44,6 +49,12 @@ module ODDB
 			end
 			def create_taxnote
 				@taxnote = Text::Document.new
+			end
+			def delete_detail_info(lab_key)
+				if(info = detail_infos.delete(lab_key))
+					@detail_infos.odba_isolated_store
+					info
+				end
 			end
 			def delete_footnote
 				if(fn = @footnote)
@@ -74,6 +85,12 @@ module ODDB
 					@taxnote = nil
 					tn
 				end
+			end
+			def detail_info(lab_key)
+				detail_infos[lab_key]
+			end
+			def detail_infos
+				@detail_infos ||= {}
 			end
 			def groupcd
 				@group.groupcd

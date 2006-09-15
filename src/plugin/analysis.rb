@@ -2,6 +2,8 @@
 #  AnalysisPlugin -- oddb.org -- 09.06.2006 -- sfrischknecht@ywesee.com
 
 require 'plugin/plugin'
+require 'ext/analysisparse/src/analysis_hpricot'
+require 'model/analysis/group'
 
 module ODDB
 	class AnalysisPlugin < Plugin
@@ -78,6 +80,18 @@ module ODDB
 			elsif(ps = pos.permissions)
 				@app.delete(ps.pointer)
 			end
+		end
+		def update_dacapo
+			ANALYSIS_PARSER.dacapo { |code, info|
+				unless(info.empty?)
+					groupcd, poscd = code.split('.')
+					if((grp = @app.analysis_group(groupcd)) \
+						 && (pos = grp.position(poscd)))
+						ptr = pos.pointer + [:detail_info, :dacapo]
+						@app.update(ptr.creator, info)	
+					end
+				end
+			}
 		end
 	end
 end
