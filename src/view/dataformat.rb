@@ -58,7 +58,7 @@ module ODDB
 				link.href = @lookandfeel._event_url(:compare, {'pointer'=>model.pointer})
 				link.value = breakline(model.name_base, 25)
 				link.set_attribute('class', 
-					'result-big' << resolve_suffix(model))
+					'big' << resolve_suffix(model))
 				if(model.good_result?(@query))
 					 link.set_attribute('name', 'best_result')
 				end

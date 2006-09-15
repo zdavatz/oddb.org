@@ -69,14 +69,14 @@ class PatinfoStatsCompanyList < HtmlGrid::List
 	def compose_subheader(company, offset)
 		subheader = self::class::SUBHEADER.new(company, @session, self)
 		@grid.add(subheader, *offset)
-		@grid.add_style('result-atc bold', *offset)
+		@grid.add_style('list atc bold', *offset)
 		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 	end
 	def compose_subheader_seq(seq, offset)
 		@grid.add(seq_iks_link(seq), *offset)
-		@grid.add_style('result-seq indent bold', *offset)
+		@grid.add_style('list seq indent bold', *offset)
 		x, y = offset
-		@grid.add_style('result-seq', x + 1, y)
+		@grid.add_style('list seq', x + 1, y)
 	end
 	def seq_iks_link(seq)
 		View::PointerLink.new(:iksnr_seqnr, seq, @session, self)

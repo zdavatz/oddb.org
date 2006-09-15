@@ -50,6 +50,9 @@ module ODDB
 			FileUtils.mkdir_p(File.dirname(path))
 			@@request_log ||= File.open(path, 'a')
 		end
+		def Session.restart_logging
+			@@request_log = nil
+		end
 		def event
 			if(@lookandfeel \
 				&& persistent_user_input(:flavor) != @lookandfeel.flavor)
@@ -72,7 +75,7 @@ module ODDB
 				}
 				requests.push(@process_start)
 				if(requests.size > QUERY_LIMIT)
-					request_log('DENY')
+					#request_log('DENY')
 					@desired_state = @state
 					@active_state = @state = @state.limit_state
           @state.request_path = @desired_state.request_path

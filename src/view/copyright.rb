@@ -15,6 +15,9 @@ module ODDB
 				[3,0]			=>	:cpr_link,
 				[4,0]			=>	:oddb_version,
 			}
+			COMPONENT_CSS_MAP = {
+				[0,0,5] => 'subheading',
+			}
 			LEGACY_INTERFACE = false
 			def oddb_version(model)
 				link = standard_link(:oddb_version, model)

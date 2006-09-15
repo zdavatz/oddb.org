@@ -12,7 +12,7 @@ module ODDB
 class DDDList < HtmlGrid::List
 	CSS_CLASS = 'component'
 	CSS_MAP = {
-		[0,0,3]	=>	'list-r',
+		[0,0,3]	=>	'list right',
 	}
 	COMPONENTS = {
 		[0,0]	=>	:dose, 
@@ -48,7 +48,7 @@ class DDDComposite < HtmlGrid::Composite
 		if(@model.ddd_guidelines)
 			pos = [0,y]
 			components.store(pos, :ddd_guidelines)
-			css_map.store(pos, 'list-bg')
+			css_map.store(pos, 'list bg')
 		end
 		super
 	end
@@ -92,7 +92,7 @@ class DDDTree < HtmlGrid::Composite
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
-		[1,0]	=>	'th-r',
+		[1,0]	=>	'th right',
 	}
 	def init
 		if(@model)

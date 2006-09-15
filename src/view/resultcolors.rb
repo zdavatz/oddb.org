@@ -18,7 +18,7 @@ module ODDB
 			private
 			def resolve_suffix(model, bg_flag=false)
 				gt = model.generic_type || 'unknown'
-				'-' << gt.to_s << super
+				' ' << gt.to_s << super
 			end
 			def row_css(model)
 				'expired' if(model.respond_to?(:expired?) && model.expired?)

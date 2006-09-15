@@ -94,7 +94,7 @@ module ODDB
 				def reservation_text(model)
 					if(text = model.reservation_text)
 						div = HtmlGrid::Div.new(model, @session, self)
-						div.css_class = 'long-text list-bg'
+						div.css_class = 'long-text list bg'
 						txt = text.send(@session.language)
 						div.value = if(match = /(SR|RS) (\d{3}\.\d{3}\.\d{2})/.match(txt))
 							url = sprintf('http://www.admin.ch/ch/%s/%s/c%s.html',

@@ -75,7 +75,7 @@ class RootRecentRegsList < View::Drugs::RootResultList
 	def init
 		super
 		@grid.insert_row(1, create(DateChooser))
-		@grid.add_style('result-atc date-chooser', 0, 1)
+		@grid.add_style('list atc date-chooser', 0, 1)
 		@grid.set_colspan(0, 1)
 	end
 end
@@ -84,7 +84,7 @@ class RecentRegsList < View::Drugs::ResultList
 	def init
 		super
 		@grid.insert_row(1, create(DateChooser))
-		@grid.add_style('result-atc date-chooser', 0, 1)
+		@grid.add_style('list atc date-chooser', 0, 1)
 		@grid.set_colspan(0, 1)
 	end
 end

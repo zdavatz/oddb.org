@@ -19,7 +19,9 @@ module ODDB
 			CSS_CLASS = "list"
 		end
 		class CenteredNavigation < ZoneNavigation 
-			CSS_CLASS = "ccomponent"
+			CSS_CLASS = "center"
+#		class CenteredNavigation < ZoneNavigation 
+#			CSS_CLASS = "ccomponent"
 			NAV_LINK_CLASS = CenteredNavigationLink
 			NAV_LINK_CSS = 'list'
 			NAV_METHOD = :zone_navigation
@@ -65,12 +67,12 @@ module ODDB
 				[0,3,0,3]	=>	:search_reset,
 			}
 			COMPONENT_CSS_MAP = {
-				[0,0]		=>	'component tabnavigation center',
+				[0,0]		=>	'component tabnavigation',
 			}
 			CSS_MAP = {
-				[0,2,1,2]	=>	'search-center',
+				[0,2,1,2]	=>	'center',
 			}
-			CSS_CLASS = 'center'
+			CSS_CLASS = nil #'center'
 			EVENT = :search
 			FORM_METHOD = 'POST'
 			SYMBOL_MAP = {
@@ -107,13 +109,13 @@ module ODDB
 			COMPONENTS = {}
 			CSS_CLASS = 'composite'
 			CSS_MAP = {
-				[0,0,1,5]		=>	'ccomponent',
-				[0,5,1,2]		=>	'small-font',
-				[0,7,1,1]		=>	'ccomponent',				
-				[0,8,1,1]		=>	'small-font',
+				[0,0,1,5]		=>	'list center',
+				[0,5,1,2]		=>	'list small',
+				[0,7,1,1]		=>	'list center',				
+				[0,8,1,1]		=>	'list small',
 			}
 			COMPONENT_CSS_MAP = {
-				[0,9]	=>	'legal-note-center',
+				[0,9]	=>	'legal-note center',
 			}
 			HTML_ATTRIBUTES = {
 				#'align'		=>	'center',

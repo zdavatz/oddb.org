@@ -12,7 +12,7 @@ module ODDB
 				if(atc && atc.has_ddd?)
 					link = HtmlGrid::Link.new(:ddd, atc, session, self)
 					link.href = @lookandfeel._event_url(:ddd, {'pointer'=>atc.pointer})
-					link.set_attribute('class', 'result-infos-bg')
+					link.set_attribute('class', 'square infos')
 					link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
 					link
 				end
@@ -80,7 +80,7 @@ module ODDB
 				span.label = true
 				span
 			end
-			def fachinfo(model, session=@session, css='result-infos')
+			def fachinfo(model, session=@session, css='square infos')
 				if(link = _fachinfo(model.fachinfo, css))
 					link
 				elsif(@session.user.allowed?('edit', model))
@@ -89,13 +89,13 @@ module ODDB
 						model.pointer : model.registration.pointer
 					args = {:pointer => ptr, :chapter => 'composition'}
 					link.href = @lookandfeel._event_url(:new_fachinfo, args)
-					link.css_class = 'create-infos'
+					link.css_class = 'square create-infos'
 					link
 				end
 			end
-			def _fachinfo(fachinfo, css='result-infos')
+			def _fachinfo(fachinfo, css='square infos')
 				if(fachinfo)
-					link = HtmlGrid::Link.new(:fachinfo_short, 
+					link = HtmlGrid::Link.new(:square_fachinfo, 
 							fachinfo, @session, self)
 					link.href = @lookandfeel._event_url(:resolve,
 						{'pointer' => fachinfo.pointer})
@@ -105,12 +105,11 @@ module ODDB
 				end
 			end
 			def feedback(model, session=@session)
-				link = HtmlGrid::Link.new(:feedback_text_short, model, session, self)
+				link = HtmlGrid::Link.new(:square_feedback, model, session, self)
 				link.href = @lookandfeel._event_url(:feedbacks, 
 																						{'pointer'=>model.pointer})
 				pos = components.index(:feedback)
-				component_css_map.store(pos, "feedback square")
-				css_map.store(pos, "square")
+				component_css_map.store(pos, "square feedback")
 
 				link.set_attribute('title', @lookandfeel.lookup(:feedback_alt, 
 					model.localized_name(@session.language)))
@@ -119,7 +118,7 @@ module ODDB
 			def google_search(model, session=@session)
 				text = model.localized_name(@session.language)
 				glink = utf8(text)
-				link = HtmlGrid::Link.new(:google_search, @model, @session, self)
+				link = HtmlGrid::Link.new(:square_google_search, @model, @session, self)
 				link.href =  "http://www.google.com/search?q=#{glink}"
 				link.css_class= 'square google_search'
 				link.set_attribute('title', "#{@lookandfeel.lookup(:google_alt)}#{text}")
@@ -157,24 +156,23 @@ module ODDB
 				end
 			end
 			def limitation_link(sltxt)
-				link = HtmlGrid::Link.new(:limitation_text_short, 
+				link = HtmlGrid::Link.new(:square_limitation, 
 					nil, @session, self)
 				link.href = @lookandfeel._event_url(:resolve, 
 					{'pointer'=>CGI.escape(sltxt.pointer.to_s)})
 				link.set_attribute('title', 
 					@lookandfeel.lookup(:limitation_text))
 				pos = components.index(:limitation_text)
-				link.css_class = "result-infos"
-				#css_map.store(pos, "result-infos")
+				link.css_class = "square infos"
 				link
 			end
 			def narcotic(model, session=@session)
 				if(model.narcotic?)
-					link = HtmlGrid::Link.new(:narc_short, 
+					link = HtmlGrid::Link.new(:square_narc, 
 							model, @session, self)
 					link.href = @lookandfeel._event_url(:resolve,
 						{'pointer' => model.pointer + :narcotics})
-					link.css_class = 'result-infos'
+					link.css_class = 'square infos'
 					link.set_attribute('title', @lookandfeel.lookup(:narcotic))
 					link
 				elsif(model.vaccine)
@@ -206,10 +204,10 @@ module ODDB
 						klass = HtmlGrid::Link
 						href = @lookandfeel._event_url(:resolve, {'pointer' => patinfo.pointer})
 					end
-					link = klass.new(:patinfo_short, model, @session, self)
+					link = klass.new(:square_patinfo, model, @session, self)
 					link.href = href
 					link.set_attribute('title', @lookandfeel.lookup(:patinfo))
-					link.css_class = 'result-infos'
+					link.css_class = 'square infos'
 					link
 				end
 			end

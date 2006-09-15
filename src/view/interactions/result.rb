@@ -35,9 +35,9 @@ class ResultForm < View::Form
 	}
 	CSS_MAP = {
 		[0,0] =>	'result-found',
-		[0,1] =>	'result-price-compare',
+		[0,1] =>	'list',
 		[1,1]	=>	'search',	
-		[0,3]	=>	'button left padding',	
+		[0,3]	=>	'list bg',	
 	}
 	def interaction_basket(model, session)
 		get_event_button(:interaction_basket)
@@ -67,7 +67,7 @@ class EmptyResultForm < HtmlGrid::Form
 	CSS_MAP = {
 		[0,0]			=>	'search',	
 		[0,1]			=>	'th',
-		[0,2,1,2]	=>	'result-atc',
+		[0,2,1,2]	=>	'list atc',
 	}
 	CSS_CLASS = 'composite'
 	EVENT = :search

@@ -13,7 +13,7 @@ module UserSettings
 	end
 end
 class LanguageChooser < Navigation
-	CSS_CLASS = "ccomponent"
+	CSS_CLASS = nil #"center"
 	NAV_METHOD = :languages
 	NAV_LINK_CLASS = LanguageNavigationLink
 	HTML_ATTRIBUTES = { }

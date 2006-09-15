@@ -136,7 +136,6 @@ class IncompleteRegistrationComposite < View::Admin::RootRegistrationComposite
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
-		[0,3]	=>	'composite',
 	}
 end
 class IncompleteRegistration < View::Drugs::PrivateTemplate

@@ -24,7 +24,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		[0,6]		=>	:paypal,
 	}
 	CSS_MAP = {
-		[0,0,1,7]	=>	'ccomponent',
+		[0,0,1,7]	=>	'list center',
 	}
 	COMPONENT_CSS_MAP = {}
 	def download_analysis(model, session) 

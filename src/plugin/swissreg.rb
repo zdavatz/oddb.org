@@ -42,7 +42,8 @@ module ODDB
 				if((substance_name = substance.de.split(' ').first) \
 					 && (substance_name.length > 6) \
 					 && (substance.is_effective_form? \
-					 || (!substance.has_effective_form? && !substance.sequences.empty?)))
+					 || (!substance.has_effective_form? && !substance.sequences.empty?)))# \
+					 #&& !substance.sequences.any? { |seq| seq.registration.patent })
 					substances.push(substance_name.gsub(/(i|e|um)$/, ''))
 				end
 			}
@@ -67,15 +68,13 @@ module ODDB
 		end
 		def update_registrations(substance_name)
 			@substances += 1
-			puts substance_name.inspect
 			SWISSREG_SERVER.search(substance_name).each { |data|
 				@patents += 1
-				puts data.inspect
 				if(iksnr = data[:iksnr])
 					@iksnrs += 1
-					puts iksnr.inspect
 					update_registration(iksnr, data)
 				end
+				sleep(2)
 			}
 		end
 		def update_registration(iksnr, data)

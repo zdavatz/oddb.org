@@ -13,6 +13,9 @@ module ODDB
 					@attributes.store("href", @lookandfeel._event_url(@name))
 				end
 			end
+			def to_html(context)
+				super
+			end
 		end
 		class LanguageNavigationLink < HtmlGrid::Link
 			CSS_CLASS = "list"

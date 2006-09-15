@@ -15,7 +15,7 @@ module Export
 				@model, @session, self)
 			path = File.join('datadesc', "#{filename}.txt")
 			link.href = @lookandfeel.resource_global(:downloads, path)
-			link.css_class = 'list-small'
+			link.css_class = 'small'
 			link
 		end
 	end
@@ -28,7 +28,7 @@ module Export
 		link = HtmlGrid::Link.new(:example_download, 
 															@model, @session, self)
 		link.href = @lookandfeel.resource_global(:examples, filename)
-		link.css_class = 'list-small'
+		link.css_class = 'small'
 		link
 	end
 	def export_link(key, filename)

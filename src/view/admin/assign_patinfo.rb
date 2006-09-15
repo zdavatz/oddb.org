@@ -19,9 +19,9 @@ class AssignPatinfoForm < View::Admin::AssignDeprivedSequenceForm
 			@lookandfeel.lookup(:assign_patinfo_equal)			
 		else
 			check = HtmlGrid::InputCheckbox.new("pointers[#{@list_index}]", 
-				model, session, self)
-			check.value = model.pointer
-			check
+																					model, session, self)
+																					check.value = model.pointer
+																					check
 		end
 	end
 	def compose_footer(matrix)

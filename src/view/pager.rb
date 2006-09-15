@@ -18,7 +18,6 @@ module ODDB
 			CSS_MAP = {
 				[0,0]	=>	'pager',
 			}
-			#HTML_ATTRIBUTES = {"align"=>"right"}
 			OFFSET_STEP = [1,0]
 			SORT_DEFAULT = :to_i
 			SORT_HEADER = false

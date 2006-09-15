@@ -130,7 +130,7 @@ class EmptyResultForm < HtmlGrid::Form
 	CSS_MAP = {
 		[0,0]			=>	'search',	
 		[0,1]			=>	'th',
-		[0,2,1,2]	=>	'result-atc',
+		[0,2,1,2]	=>	'list atc',
 	}
 	CSS_CLASS = 'composite'
 	EVENT = :search
