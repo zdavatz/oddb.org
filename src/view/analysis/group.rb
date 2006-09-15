@@ -12,10 +12,12 @@ module ODDB
 	module View
 		module Analysis
 class	PositionList < HtmlGrid::List
+	include View::AdditionalInformation
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
 		[0,0]	=> :poscd,
-		[1,0]	=> :description
+		[1,0]	=> :description,
+		[2,0]	=> :google_search,
 	}
 	CSS_MAP = {
 		[0,0,2]	=>	'list',
