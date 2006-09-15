@@ -45,9 +45,7 @@ module ODDB
 						result.store(:info_significance, val)
 					when "Entnahmematerial"
 						val = format_string(elements.at(index+1).inner_html)
-						unless(/info@dacapo.ch/.match(val))
 							result.store(:info_ext_material, val)
-						end
 					when "Entnahmebedingungen"
 						val = format_string(elements.at(index+1).inner_html)
 						result.store(:info_ext_condition, val)

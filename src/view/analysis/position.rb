@@ -16,7 +16,7 @@ module ODDB
 		module Analysis
 class AdditionalInfoComposite < HtmlGrid::Composite
 	include View::AdditionalInformation
-	CSS_CLASS = 'composite'
+	CSS_CLASS = ''
 	COMPONENTS = {
 		[0,0]	=>	'dacapo_title',
 	}	
