@@ -262,6 +262,7 @@ class RootFachinfoComposite < View::Drugs::FachinfoComposite
 				[0,3], :document,
 			})
 			css_map.store([0,3], 'list')
+			colspan_map.store([0,3], 2)
 		end
 		super
 	end
