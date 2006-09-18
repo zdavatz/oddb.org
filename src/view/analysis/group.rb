@@ -21,6 +21,7 @@ class	PositionList < HtmlGrid::List
 	}
 	CSS_MAP = {
 		[0,0,2]	=>	'list',
+		[2,0,1]	=>	'list right',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	OMIT_HEADER = true

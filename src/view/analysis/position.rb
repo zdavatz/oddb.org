@@ -79,6 +79,7 @@ class PositionInnerComposite < HtmlGrid::Composite
 		[0,1]		=>	:anonymous,
 		[0,2]		=>	:analysis_revision,
 		[0,3]		=>	:description,
+		[1,3,1]	=>	:google_search,
 		[0,4]		=>	:taxpoints,
 		[0,5]		=>	:lab_areas,
 		[0,6]		=>	:limitation_text,
