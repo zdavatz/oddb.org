@@ -47,8 +47,8 @@ class AdditionalInfoComposite < HtmlGrid::Composite
 			components.update([0, counter]	=>	:info_significance)
 			counter += 1
 		end
-		if(@model.info_ext_material)
-			components.update([0, counter]	=> :info_ext_material)
+		if(ext = @model.info_ext_material)
+			components.update([0, counter]	=>	:info_ext_material)
 			counter += 1
 		end
 		if(@model.info_ext_condition)
@@ -66,6 +66,15 @@ class AdditionalInfoComposite < HtmlGrid::Composite
 		css_map.update([0,1,1,counter -1]	=>	'list top')
 		css_map.update([1,1,1,counter -1]	=>	'list')
 		super
+	end
+	def info_ext_material(model)
+				value = HtmlGrid::Value.new(model.info_ext_material, model, @session, self)
+			if(/info@dacapo.ch/.match(model.info_ext_material))
+				value.value = $` + '<a href="mailto:info@dacapo.ch">' + $& + '</a>' + $'
+			else
+				value.value = model.info_ext_material
+			end
+			value
 	end
 end
 class PositionInnerComposite < HtmlGrid::Composite
@@ -94,9 +103,6 @@ class PositionInnerComposite < HtmlGrid::Composite
 	CSS_MAP = {
 		[0,0,1,10]		=>	'list top',
 		[1,0,1,10]		=>	'list',
-	}
-	CSS_STYLE_MAP = {
-		[1,0,1,6]		=>	'max-width:250px',
 	}
 	LABELS = true
 	DEFAULT_CLASS = HtmlGrid::Value
@@ -135,7 +141,7 @@ class PositionInnerComposite < HtmlGrid::Composite
 		value = HtmlGrid::Value.new(key, model, @session, self)
 		effective_tax = sprintf("%1.2f", (model.taxpoints.to_i * 0.9).to_s)
 		
-		value.value = model.taxpoints.to_s << ' (' << model.taxpoints.to_s << ' x 0.90 CHF = ' << effective_tax  << ' CHF)'
+		value.value = model.taxpoints.to_s + ' (' + model.taxpoints.to_s + ' x 0.90 CHF = ' + effective_tax  + ' CHF)'
 		value
 	end
 end

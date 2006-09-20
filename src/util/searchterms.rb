@@ -3,7 +3,7 @@
 
 module ODDB
 	def ODDB.search_term(term)
-		term = term.to_s.gsub(/[\s\-]+/, ' ')
+		term = term.to_s.gsub(/[\/\s\-]+/, ' ')
 		term.gsub!(/[,'()]/, '')
 		term.gsub!(/[ÁÂÀ]/, 'A')
 		term.gsub!(/[áâà]/, 'a')

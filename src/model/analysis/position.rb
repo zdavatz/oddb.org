@@ -95,7 +95,7 @@ module ODDB
 			def groupcd
 				@group.groupcd
 			end
-			def search_terms(language)
+			def search_text(language)
 				terms = [@list_title, @taxnote, @footnote,
 					@limitation_text, self].compact.collect { |doc|
 					doc.send(language).split(/\s+/)
@@ -108,8 +108,9 @@ module ODDB
 						terms.concat(perm.specialization.split(' '))
 					}
 				end
+				terms.concat(detail_infos.values)
 				terms.push(groupcd, code)
-				ODDB.search_terms(terms)
+				ODDB.search_term(terms.join("\n"))
 			end
 			def localized_name(language)
 				 self.send(language)
