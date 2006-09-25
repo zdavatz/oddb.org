@@ -885,17 +885,11 @@ class OddbPrevalence
 		index_name = "narcotics_#{lang}"
 		ODBA.cache.retrieve_from_index(index_name, query)
 	end
+	def search_patinfos(query)
+		ODBA.cache.retrieve_from_index('sequence_patinfos', query)
+	end
 	def search_vaccines(query)
-		conditions = {
-			'generic_type'	=> {
-				'value'				=>	'vaccine',
-			},
-			'name'					=> {
-				'condition'		=>	'like',
-				'value'				=>	query.downcase,
-			},
-		}
-		ODBA.cache.retrieve_from_index('sequence_generic_type_index', conditions)
+		ODBA.cache.retrieve_from_index('sequence_vaccine', query)
 	end
 	def search_exact_sequence(query)
 		sequences = search_sequences(query)

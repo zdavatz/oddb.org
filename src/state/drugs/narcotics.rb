@@ -44,7 +44,25 @@ class Narcotics < State::Drugs::Global
 	}
 	Limited = true
 	def index_lookup(range)
-		@session.search_narcotics(range, @session.language)
+		lookups = range == '0-9' ? @numbers : [range]
+		result = []
+		lookups.each { |lookup|
+			result.concat(@session.search_narcotics(lookup, @session.language)) 
+		}
+		result
+	end
+	def intervals
+		@intervals or begin
+		lang = @session.language
+		values = ODBA.cache.index_keys("narcotics_#{lang}", 1)
+		@intervals, @numbers = values.partition { |char|
+				/[a-z]/i.match(char)
+		}
+		unless(@numbers.empty?)
+			@intervals.push('0-9')
+		end
+		@intervals
+	end
 	end
 end
 		end

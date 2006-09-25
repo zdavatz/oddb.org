@@ -19,6 +19,18 @@ class LimitationTexts < Global
 			seq.limitation_text
 		}
 	end
+	def intervals
+		@intervals or begin
+		values = ODBA.cache.index_keys('sequence_limitation_text', 1)
+		@intervals, numbers = values.partition { |char|
+			/[a-z]/.match(char.to_s)
+		}
+		unless(numbers.empty?)
+			@intervals.push('0-9')
+		end
+		@intervals
+	end
+	end
 end
 		end
 	end

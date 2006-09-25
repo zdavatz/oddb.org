@@ -91,6 +91,33 @@ resolve_origin: ''
 init_source: 'self.sequences'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
+index_name: 'sequence_limitation_text'
+origin_klass: 'ODDB::Sequence'
+target_klass: 'ODDB::Sequence'
+resolve_search_term: 'name if(origin.limitation_text)'
+resolve_target: ''
+resolve_origin: ''
+init_source: 'self.sequences'
+fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'sequence_vaccine'
+origin_klass: 'ODDB::Registration'
+target_klass: 'ODDB::Sequence'
+resolve_search_term: 'name_base if(origin.vaccine && origin.sequences.values.any? { |seq| seq.has_public_packages?})'
+resolve_target: 'sequences.values'
+resolve_origin: 'registration'
+init_source: 'self.sequences'
+fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'sequence_patinfos'
+origin_klass: 'ODDB::Sequence'
+target_klass: 'ODDB::Sequence'
+resolve_search_term: 'name if(origin.has_patinfo? && origin.has_public_packages?)'
+resolve_target: ''
+resolve_origin: ''
+init_source: 'self.sequences'
+fulltext: false
+--- !ruby/object:ODBA::IndexDefinition 
 index_name: 'sequence_index_substance'
 origin_klass: 'ODDB::Sequence'
 target_klass: 'ODDB::Substance'

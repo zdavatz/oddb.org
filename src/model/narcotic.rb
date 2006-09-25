@@ -60,11 +60,6 @@ module ODDB
 				sub
 			end
 		end
-		def search_terms
-			@substances.inject([]) { |terms, sub|
-				terms + sub._search_keys
-			}
-		end
 		def swissmedic_code 
 			@substances.collect { |sub| sub.swissmedic_code }
 			#@substance.swissmedic_code unless(@substance.nil?)

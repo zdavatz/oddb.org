@@ -16,9 +16,7 @@ class Vaccines < State::Drugs::Global
 	DIRECT_EVENT = :vaccines
 	LIMITED = true
 	def index_lookup(range)
-		@session.search_vaccines(range).select { |seq|
-		  seq.has_public_packages? 
-    }
+		@session.search_vaccines(range)
 	end
 	def vaccines
 		if(@range == user_range)
@@ -26,6 +24,18 @@ class Vaccines < State::Drugs::Global
 		else
 			Vaccines.new(@session, [])
 		end
+	end
+	def intervals
+		@intervals or begin
+		values = ODBA.cache.index_keys('sequence_vaccine', 1)
+		@intervals, numbers = values.partition { |char|
+			/[a-z]/.match(char)
+		}
+		unless(numbers.empty?)
+			@intervals.push('0-9')
+		end
+		@intervals
+	end
 	end
 end
 		end
