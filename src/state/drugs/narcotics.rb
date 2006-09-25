@@ -53,7 +53,11 @@ class Narcotics < State::Drugs::Global
 	end
 	def intervals
 		@intervals or begin
-		lang = @session.language
+		if(@session.language == 'en')
+			lang = 'de'
+		else
+			lang = @session.language
+		end
 		values = ODBA.cache.index_keys("narcotics_#{lang}", 1)
 		@intervals, @numbers = values.partition { |char|
 				/[a-z]/i.match(char)
