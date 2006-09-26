@@ -352,7 +352,7 @@ Grammar OddbSize
 				@inner_pointer.append(val)
 			end
 			def carry(key, val=nil)
-        @data.store(key, val)
+        @data.store(key.to_s.to_sym, val)
 			end
 			def method_missing(key, *args)
         @data[key]

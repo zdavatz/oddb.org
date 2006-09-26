@@ -31,6 +31,7 @@ module User
 		fi_pointer = Persistence::Pointer.new(:fachinfo)
 		fi = Persistence::CreateItem.new(fi_pointer)
 		fi.carry(:name_base, registration.name_base)
+		fi.carry(:name, registration.name_base)
 		fi.carry(:registrations, [registration])
 		fi.carry(:company, registration.company)
 		fi.carry(@session.language, doc)
