@@ -22,18 +22,13 @@ class Fachinfos < Global
 	def symbol 
 		[:localized_name, @session.language]
 	end
-	def intervals
-		@intervals or begin
-		lang = @session.language
-		values = ODBA.cache.index_keys("fachinfo_name_#{lang}", 1)
-		@intervals, numbers = values.partition { |char|
-			/[a-z]/.match(char)
-		}
-		unless(numbers.empty?)
-			@intervals.push('0-9')
+	def index_name
+		if(@session.language == 'en')
+			lang = 'de'
+		else
+			lang = @session.language
 		end
-		@intervals
-	end
+		"fachinfo_name_#{lang}"
 	end
 end
 		end

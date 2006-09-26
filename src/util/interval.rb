@@ -61,7 +61,7 @@ module ODDB
 			else
 				@session.user_input(:range)
 			end
-			unless(range_patterns.include?(range))
+			unless(intervals.include?(range))
 				range = default_interval
 			end
 			range
@@ -86,10 +86,10 @@ module ODDB
 		def load_model
 			if((tmp_rng = user_range) && tmp_rng != @range)
 				@model.clear
-				@range = tmp_rng
-				parts = @range.split('-')
-				if(parts.size == 2)
-					parts = ((parts.first)..(parts.last)).to_a
+				parts = @range = tmp_rng
+				if(@range == '0-9')
+					intervals
+					parts = @numbers
 				end
 				parts.each { |part|
 					@model.concat(index_lookup(part).sort_by { |item| 
@@ -105,8 +105,22 @@ module ODDB
 		def interval
 			@range
 		end
+		def index_lookup(query)
+			ODBA.cache.retrieve_from_index(index_name, query)
+		end
+		def index_name
+		end
 		def intervals
-			('a'..'z').to_a.push('0-9')
+			@intervals or begin
+				values = ODBA.cache.index_keys(index_name, 1)
+				@intervals, @numbers = values.partition { |char|
+					/[a-z]/i.match(char)
+				}
+				unless(@numbers.empty?)
+					@intervals.push('0-9')
+				end
+				@intervals
+			end
 		end
 	end
 end

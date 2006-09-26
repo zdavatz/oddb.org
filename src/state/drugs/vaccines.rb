@@ -15,9 +15,6 @@ class Vaccines < State::Drugs::Global
 	VIEW = View::Drugs::Vaccines
 	DIRECT_EVENT = :vaccines
 	LIMITED = true
-	def index_lookup(range)
-		@session.search_vaccines(range)
-	end
 	def vaccines
 		if(@range == user_range)
 			self
@@ -25,17 +22,8 @@ class Vaccines < State::Drugs::Global
 			Vaccines.new(@session, [])
 		end
 	end
-	def intervals
-		@intervals or begin
-		values = ODBA.cache.index_keys('sequence_vaccine', 1)
-		@intervals, numbers = values.partition { |char|
-			/[a-z]/.match(char)
-		}
-		unless(numbers.empty?)
-			@intervals.push('0-9')
-		end
-		@intervals
-	end
+	def	index_name
+		"sequence_vaccine"
 	end
 end
 		end

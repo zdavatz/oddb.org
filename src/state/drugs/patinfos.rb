@@ -14,20 +14,8 @@ class Patinfos < Global
 	LIMITED = true
 	DIRECT_EVENT = :patinfos
 	PERSISTENT_RANGE = true
-	def index_lookup(range)
-		@session.search_patinfos(range)
-	end
-	def intervals
-		@intervals or begin
-		values = ODBA.cache.index_keys('sequence_patinfos', 1)
-		@intervals, numbers = values.partition { |char|
-			/[a-z]/.match(char)
-		}
-		unless(numbers.empty?)
-			@intervals.push('0-9')
-		end
-		@intervals
-	end
+	def index_name
+		"sequence_patinfos"
 	end
 end
 		end

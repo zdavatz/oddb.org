@@ -13,60 +13,14 @@ class Narcotics < State::Drugs::Global
 	VIEW = View::Drugs::Narcotics
 	DIRECT_EVENT = :narcotics
 	PERSISTENT_RANGE  = true
-	RANGE_PATTERNS = {
-		'a'			=>	'aäÄáÁàÀâÂ',
-		'b'			=>	'b',
-		'c'			=>	'cçÇ',
-		'd'			=>	'd',
-		'e'			=>	'eëËéÉèÈêÊ',
-		'f'			=>	'f',
-		'g'			=>	'g',
-		'h'			=>	'h',
-		'i'			=>	'i',
-		'j'			=>	'j',
-		'k'			=>	'k',
-		'l'			=>	'l',
-		'm'			=>	'm',
-		'n'			=>	'n',
-		'o'			=>	'oöÖóÓòÒôÔ',
-		'p'			=>	'p',
-		'q'			=>	'q',
-		'r'			=>	'r',
-		's'			=>	's',
-		't'			=>	't',
-		'u'			=>	'uüÜúÚùÙûÛ',
-		'v'			=>	'v',
-		'w'			=>	'w',
-		'x'			=>	'x',
-		'y'			=>	'y',
-		'z'			=>	'z',
-		'|unknown'=>	'|unknown',
-	}
-	Limited = true
-	def index_lookup(range)
-		lookups = range == '0-9' ? @numbers : [range]
-		result = []
-		lookups.each { |lookup|
-			result.concat(@session.search_narcotics(lookup, @session.language)) 
-		}
-		result
-	end
-	def intervals
-		@intervals or begin
+	LIMITED = true
+	def index_name
 		if(@session.language == 'en')
 			lang = 'de'
 		else
 			lang = @session.language
 		end
-		values = ODBA.cache.index_keys("narcotics_#{lang}", 1)
-		@intervals, @numbers = values.partition { |char|
-				/[a-z]/i.match(char)
-		}
-		unless(@numbers.empty?)
-			@intervals.push('0-9')
-		end
-		@intervals
-	end
+		"narcotics_#{lang}"
 	end
 end
 		end
