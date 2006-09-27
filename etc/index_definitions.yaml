@@ -8,6 +8,26 @@ resolve_origin: ''
 init_source: '@atc_classes.values'
 fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
+index_name: 'interactions_index_de'
+origin_klass: 'ODDB::Fachinfo'
+target_klass: 'ODDB::AtcClass'
+resolve_search_term: 'interaction_text(:de)'
+resolve_target: 'atc_class'
+resolve_origin: 'sequences.collect { |seq| seq.registration.fachinfo }.uniq'
+init_source: '@atc_classes.values'
+fulltext: true
+dictionary: 'default_german'
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'interactions_index_fr'
+origin_klass: 'ODDB::Fachinfo'
+target_klass: 'ODDB::AtcClass'
+resolve_search_term: 'interaction_text(:fr)'
+resolve_target: 'atc_class'
+resolve_origin: 'sequences.collect { |seq| seq.registration.fachinfo }.uniq'
+init_source: '@atc_classes.values'
+fulltext: true
+dictionary: 'default_french'
+--- !ruby/object:ODBA::IndexDefinition 
 index_name: 'sequence_index_atc'
 origin_klass: 'ODDB::Sequence'
 target_klass: 'ODDB::AtcClass'
