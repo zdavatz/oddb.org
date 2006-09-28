@@ -13,24 +13,13 @@ class Alphabetical < Global
 	DIRECT_EVENT = :analysis_alphabetical
 	PERSISTENT_RANGE = true
 	LIMITED = true
-	def index_lookup(range)
-		@session.analysis_alphabetical(range)
-	end
-	def intervals
-		@intervals or begin
+	def index_name
 		if(@session.language == 'en')
 			lang = 'de'
-		else lang = @session.language
+		else
+			lang = @session.language
 		end
-			values = ODBA.cache.index_keys("analysis_alphabetical_index_#{lang}", 1)
-			@intervals, numbers = values.partition { |char| 
-				/[a-z]/.match(char)
-			} 
-			unless(numbers.empty?)
-				@intervals.push('0-9')
-			end
-			@intervals
-		end
+		"analysis_alphabetical_index_#{lang}"
 	end
 end
 		end

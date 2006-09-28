@@ -13,25 +13,13 @@ class Alphabetical < Global
 	DIRECT_EVENT = :migel_alphabetical
 	PERSISTENT_RANGE = true
 	LIMITED = true
-	def index_lookup(range)
-		@session.migel_alphabetical(range)
-	end
-  def intervals
-		@intervals or begin
-			if(@session.language == 'en')
-				lang = 'de'
-			else
-				lang = @session.language
-			end
-			values = ODBA.cache.index_keys("migel_index_#{lang}", 1).compact
-			@intervals, numbers = values.partition { |char|
-				/[a-z]/.match(char)
-			}
-			unless(numbers.empty?)
-				@intervals.push('0-9')
-			end
-			@intervals
+	def index_name
+		if(@session.language == 'en')
+			lang = 'de'
+		else
+			lang = @session.language
 		end
+		"migel_index_#{lang}"
 	end
 end
 		end
