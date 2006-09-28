@@ -273,7 +273,7 @@ class OddbPrevalence
 	end
 	def count_vaccines
 		@registrations.values.inject(0) { |inj, reg|
-			if(reg.generic_type == :vaccine)
+			if(reg.vaccine)
 				inj += reg.active_package_count
 			end
 			inj

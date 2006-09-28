@@ -20,6 +20,9 @@ class Sequences < State::Drugs::Global
 		  seq.has_public_packages? 
     }
 	end
+	def index_name
+		'sequence_index_exact'
+	end
 	def sequences
 		if(@range == user_range)
 			self
