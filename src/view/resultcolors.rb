@@ -20,7 +20,7 @@ module ODDB
 				gt = model.generic_type || 'unknown'
 				' ' << gt.to_s << super
 			end
-			def row_css(model)
+			def row_css(model, bg_flag=false)
 				'expired' if(model.respond_to?(:expired?) && model.expired?)
 =begin
 				if(model.respond_to?(:iksnr))

@@ -36,7 +36,7 @@ class YusPrivileges < HtmlGrid::List
     end
     [box, model.sub('|', ' ')] #@lookandfeel.lookup(model)]
   end
-  def row_css(model)
+  def row_css(model, bg_flag=false)
     priv = model.split('|')
     'disabled' if(!@entity.privileged?(*priv) && @entity.allowed?(*priv))
   end
