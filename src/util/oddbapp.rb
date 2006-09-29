@@ -818,7 +818,7 @@ class OddbPrevalence
 		result.atc_classes = atcs
 		# interaction
 		if(atcs.empty?)
-			result = search_by_interaction(key, lang, result)
+			result = search_by_interaction(key, lang)
 		end
 		result
 	end
@@ -846,12 +846,13 @@ class OddbPrevalence
 	def search_by_sequence(key, result=nil)
 		ODBA.cache.retrieve_from_index('sequence_index_atc', key.dup, result)
 	end
-	def search_by_interaction(key, lang, result=nil)
-		result ||= ODDB::SearchResult.new
+	def search_by_interaction(key, lang)
+		result = ODDB::SearchResult.new
 		if(lang.to_s != "fr") 
 			lang = "de"
 		end
-		sequences = ODBA.cache.retrieve_from_index("interactions_index_#{lang}", key, result)
+		sequences = ODBA.cache.retrieve_from_index("interactions_index_#{lang}", 
+                                               key, result)
 		_search_exact_classified_result(sequences, :interaction, result)
 	end
 	def search_by_substance(key)
