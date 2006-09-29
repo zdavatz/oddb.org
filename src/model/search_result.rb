@@ -49,6 +49,9 @@ module ODDB
 		def parent_code
 			@atc.parent_code
 		end
+		def sequences
+			@atc.sequences
+		end
 	end
 	class SearchResult
 		attr_accessor  :atc_classes, :session, :relevance, :exact, 
@@ -63,7 +66,7 @@ module ODDB
 		end
 		def atc_sorted
 			@atc_facades = if(@relevance.empty?)
-											 case @type
+				case @search_type
 				when :substance
 					atc_facades.sort_by { |atc_class|
 						atc_class.packages.select { |pac|
@@ -77,18 +80,28 @@ module ODDB
 						atc_class.package_count.to_i
 					}
 				end
+			elsif(@search_type == :interaction)
+				atc_facades.sort_by { |atc| 
+					count = atc.sequences.size
+					atc.sequences.inject(0) { |sum, seq|
+						sum + @relevance[seq.odba_id].to_f } / count
+				}
 			else
-				@atc_facades = atc_facades.sort_by { |atc_class|
+				atc_facades.sort_by { |atc_class|
 					count = atc_class.package_count.to_i
 					comp = [
 						(@relevance[atc_class.odba_id].to_f / count.to_f), 
-						atc_class.package_count(:complementary).to_i,
+						#atc_class.package_count(:complementary).to_i,
 						count,
 					]
 				}
 			end
 			@atc_facades.reverse!
 			delete_empty_packages(@atc_facades)
+		rescue Exception => e
+			puts e.message
+			puts e.backtrace
+			atc_facades
 		end
 		def each(&block)
 			self.atc_sorted.each(&block)
