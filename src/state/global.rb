@@ -535,16 +535,18 @@ module ODDB
 					@session.search_exact_company(query)
 				when 'st_indication'
 					@session.search_exact_indication(query)
+				when 'st_interaction'
+					@session.search_by_interaction(query, @session.language)
 				else
 					@session.search_oddb(query)
 				end
 			end
 			def _search_drugs_state(query, stype)
-					result = _search_drugs(query, stype)
-					state = State::Drugs::Result.new(@session, result)
-					state.search_query = query
-					state.search_type = stype
-					state
+				result = _search_drugs(query, stype)
+				state = State::Drugs::Result.new(@session, result)
+				state.search_query = query
+				state.search_type = stype
+				state
 			end
 			def show
 				if(@session.request_path == @request_path)

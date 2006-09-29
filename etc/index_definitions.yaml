@@ -10,21 +10,21 @@ fulltext: false
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'interactions_index_de'
 origin_klass: 'ODDB::Fachinfo'
-target_klass: 'ODDB::AtcClass'
+target_klass: 'ODDB::Sequence'
 resolve_search_term: 'interaction_text(:de)'
-resolve_target: 'atc_class'
-resolve_origin: 'sequences.collect { |seq| seq.registration.fachinfo }.uniq'
-init_source: '@atc_classes.values'
+resolve_target: 'registrations.collect { |reg| reg.sequences.values }'
+resolve_origin: 'registration.fachinfo'
+init_source: 'sequences'
 fulltext: true
 dictionary: 'default_german'
 --- !ruby/object:ODBA::IndexDefinition 
 index_name: 'interactions_index_fr'
 origin_klass: 'ODDB::Fachinfo'
-target_klass: 'ODDB::AtcClass'
+target_klass: 'ODDB::Sequence'
 resolve_search_term: 'interaction_text(:fr)'
-resolve_target: 'atc_class'
-resolve_origin: 'sequences.collect { |seq| seq.registration.fachinfo }.uniq'
-init_source: '@atc_classes.values'
+resolve_target: 'registrations.collect { |reg| reg.sequences.values }'
+resolve_origin: 'registration.fachinfo'
+init_source: 'sequences'
 fulltext: true
 dictionary: 'default_french'
 --- !ruby/object:ODBA::IndexDefinition 
