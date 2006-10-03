@@ -310,6 +310,7 @@ module ODDB
 			:analysis,
 			:analysis_alphabetical,
 			:drugs, 
+			:external_css,
 			:faq_link,
 			:help_link,
 			:home,
@@ -324,6 +325,9 @@ module ODDB
 			:ywesee_contact,
 			:logout,
 		]
+		RESOURCES = {
+			:external_css	=>	'http://www.hirslandenprofessional.ch/scripts/oddb.css',
+		}
 	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
 		ENABLED = [
