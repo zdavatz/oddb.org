@@ -307,18 +307,12 @@ module ODDB
 	class LookandfeelHirslanden < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:atc_chooser,
-			:analysis,
-			:analysis_alphabetical,
 			:drugs, 
 			:external_css,
 			:faq_link,
 			:help_link,
 			:home,
-			:home_analysis,
 			:home_drugs,
-			:home_migel,
-			:migel,
-			:migel_alphabetical,
 			:search_reset,
 			:sequences,
 			:topfoot,
