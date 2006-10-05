@@ -60,7 +60,6 @@ require 'state/user/download'
 require 'state/user/download_export'
 require 'state/user/fipi_offer_input'
 require 'state/user/fipi_offer_confirm'
-require 'state/user/genericdefinition'
 require	'state/user/help'
 require 'state/user/mailinglist'
 require 'state/user/passthru'
@@ -305,9 +304,6 @@ module ODDB
 				else
 					State::Interactions::Basket.new(@session, array)
 				end
-			end
-			def generic_definition
-				State::User::GenericDefinition.new(@session, nil)
 			end
 			def limited?
 				self.class.const_get(:LIMITED)

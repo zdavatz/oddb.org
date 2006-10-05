@@ -199,19 +199,10 @@ module ODDB
 				@session.app.fachinfo_count.to_s << '&nbsp;'
 			end
 			def generic_definition(model, session)
-				link = nil
-				if(@lookandfeel.language == 'en')
-					link = HtmlGrid::Link.new(:generic_definition, model, session, self)
-					link.href = "http://www.fda.gov/cder/ogd/"
-				else
-					link = HtmlGrid::PopupLink.new(:generic_definition, model, session, self)
-					link.href = @lookandfeel._event_url(:generic_definition)
-					link.width = 850
-					link.height = 500
-				end
-				link.value = @lookandfeel.lookup(:generic_definition) 
+				link = HtmlGrid::Link.new(:generic_definition, model, session, self)
+				link.href = @lookandfeel.lookup(:generic_definition_url)
 				link.set_attribute('class', 'list')
-				link
+        link
 			end
 			def export_divider(model, session)
 				divider(model, session)
