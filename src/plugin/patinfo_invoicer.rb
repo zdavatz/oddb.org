@@ -11,7 +11,7 @@ module ODDB
 			send_annual_invoices(day)
 		end
 		def send_annual_invoices(day = @@today, company_name=nil, invoice_date=day)
-			items = all_items.select { |item| item.type == :annual_fee }
+			items = annual_items
 			## augment with active html-patinfos
 			items += html_items(day)
 			payable_items = filter_paid(items)
@@ -87,6 +87,12 @@ module ODDB
 			}
 			nil
 		end
+    def active_pdf_patinfos
+			@app.active_pdf_patinfos.keys.inject({}) { |inj, key|
+				inj.store(key[0,8], 1)
+				inj
+			}
+    end
 		def adjust_annual_fee(company, items)
 			if(date = company.pref_invoice_date)
 				diy = (date - (date << 12)).to_f
@@ -144,15 +150,18 @@ module ODDB
 				end
 			}
 		end
-		def all_items
-			active = @app.active_pdf_patinfos.keys.inject({}) { |inj, key|
-				inj.store(key[0,8], 1)
-				inj
-			}
+		def annual_items
+      active = active_pdf_patinfos
 			## all items for which the product still exists 
-			@app.slate(:patinfo).items.values.sort_by { |item|
-				item.time
-			}.reverse.select { |item| 
+			slate_items.select { |item| 
+				# but only once per sequence.
+				item.type == :annual_fee && active.delete(pdf_name(item))
+			}
+		end
+		def all_items
+      active = active_pdf_patinfos
+			## all items for which the product still exists 
+			slate_items.reverse.select { |item| 
 				# but only once per sequence.
 				(item.type == :processing) || active.delete(pdf_name(item))
 			}
@@ -311,5 +320,10 @@ module ODDB
 			pointer.resolve(@app)
 		rescue StandardError
 		end
+    def slate_items
+      @app.slate(:patinfo).items.values.sort_by { |item|
+				item.time
+			}
+    end
 	end
 end
