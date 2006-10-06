@@ -820,6 +820,10 @@ class OddbPrevalence
 		if(atcs.empty?)
 			result = search_by_interaction(key, lang)
 		end
+		# unwanted effects
+		if(result.atc_classes.empty?)
+			result = search_by_unwanted_effect(key, lang)
+		end
 		result
 	end
 	def search_by_atc(key)
@@ -857,6 +861,15 @@ class OddbPrevalence
 	end
 	def search_by_substance(key)
 		ODBA.cache.retrieve_from_index('substance_index_atc', key.dup)
+	end
+	def search_by_unwanted_effect(key, lang)
+		result = ODDB::SearchResult.new
+		if(lang.to_s != "fr") 
+			lang = "de"
+		end
+		sequences = ODBA.cache.retrieve_from_index("unwanted_effects_index_#{lang}", 
+                                               key, result)
+		_search_exact_classified_result(sequences, :unwanted_effect, result)
 	end
 	def search_doctors(key)
 		ODBA.cache.retrieve_from_index("doctor_index", key)

@@ -63,14 +63,15 @@ module ODDB
       ODDB.search_term(self.send(language).indications.to_s)
     end
 		def interaction_text(language)
-			doc = self.send(language)
-			txt = [doc.interactions, doc.unwanted_effects].join(' ')
-			ODDB.search_term(txt)
+      ODDB.search_term(self.send(language).interactions.to_s)
 		end
 		def substance_names
 			@registrations.collect { |reg|
 				reg.substance_names
 			}.flatten.uniq
+		end
+		def unwanted_effect_text(language)
+      ODDB.search_term(self.send(language).unwanted_effects.to_s)
 		end
   end
 	class FachinfoDocument

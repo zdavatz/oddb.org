@@ -28,6 +28,26 @@ init_source: 'sequences'
 fulltext: true
 dictionary: 'default_french'
 --- !ruby/object:ODBA::IndexDefinition 
+index_name: 'unwanted_effects_index_de'
+origin_klass: 'ODDB::Fachinfo'
+target_klass: 'ODDB::Sequence'
+resolve_search_term: 'unwanted_effect_text(:de)'
+resolve_target: 'registrations.collect { |reg| reg.sequences.values }'
+resolve_origin: 'registration.fachinfo'
+init_source: 'sequences'
+fulltext: true
+dictionary: 'default_german'
+--- !ruby/object:ODBA::IndexDefinition 
+index_name: 'unwanted_effects_index_fr'
+origin_klass: 'ODDB::Fachinfo'
+target_klass: 'ODDB::Sequence'
+resolve_search_term: 'unwanted_effect_text(:fr)'
+resolve_target: 'registrations.collect { |reg| reg.sequences.values }'
+resolve_origin: 'registration.fachinfo'
+init_source: 'sequences'
+fulltext: true
+dictionary: 'default_french'
+--- !ruby/object:ODBA::IndexDefinition 
 index_name: 'sequence_index_atc'
 origin_klass: 'ODDB::Sequence'
 target_klass: 'ODDB::AtcClass'

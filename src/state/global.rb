@@ -533,6 +533,8 @@ module ODDB
 					@session.search_exact_indication(query)
 				when 'st_interaction'
 					@session.search_by_interaction(query, @session.language)
+				when 'st_unwanted_effect'
+					@session.search_by_unwanted_effect(query, @session.language)
 				else
 					@session.search_oddb(query)
 				end
