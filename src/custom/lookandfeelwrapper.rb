@@ -646,9 +646,9 @@ module ODDB
 			[]
 		end
 	end
-	class LookandfeelGeriMedi < SBSM::LookandfeelWrapper
+	class LookandfeelMyMedi < SBSM::LookandfeelWrapper
 		ENABLED = [
-			#:external_css,
+			:external_css,
       :ajax,
 			:home_drugs,
 			:help_link,
@@ -658,8 +658,7 @@ module ODDB
 		]
 		DISABLED = [ :atc_ddd ]
 		RESOURCES = {
-			#:external_css	=>	'http://www.gerimedi.ch/css/oddb.css',
-			:external_css	=>	'http://kunde.aixede.ch/gerimedi/screen.css',
+			:external_css	=>	'http://www.aixede.ch/mymedi/screen.css',
 		}
 		DICTIONARIES = {
 			'de'	=>	{
@@ -696,17 +695,15 @@ module ODDB
 				[1,0,0]	=>	'result_item_start',
 				[1,0,1]	=>	:name_base,
 				[1,0,2]	=>	'result_item_end',
-				[2,0]		=>	:galenic_form,
-				[3,0]		=>	:most_precise_dose,
-				[4,0]		=>	:comparable_size,
-				[5,0]		=>	:price_public,
-				[6,0]		=>	:deductible,
+				[2,0]		=>	:deductible,
+				[3,0]		=>	:galenic_form,
+				[4,0]		=>	:most_precise_dose,
+				[5,0]		=>	:comparable_size,
+				[6,0]		=>	:price_public,
 				[7,0]		=>	:company_name,
 				[8,0]		=>	:ddd_price,
 				[9,0]		=>	'nbsp',
 				[10,0]	=>	:ikscat,
-				[11,0]	=>	:feedback,
-				[12,0]	=>  :google_search,
 			}
 		end
 		def section_style

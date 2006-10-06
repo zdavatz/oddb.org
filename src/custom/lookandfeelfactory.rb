@@ -23,8 +23,8 @@ module ODDB
 				LookandfeelExtern,
 				LookandfeelGenerika,
 			],
-			'gerimedi'=>	[
-				LookandfeelGeriMedi, 
+			'mymedi'=>	[
+				LookandfeelMyMedi, 
 			],
 			'hirslanden' => [
 				LookandfeelLanguages,
