@@ -107,7 +107,7 @@ class ResultList < HtmlGrid::List
 		:complementary_type	=>	'list',
 		:name_base					=>	'list big',
 		:galenic_form				=>	'list',
-		:most_precise_dose	=>	'list',
+		:most_precise_dose	=>	'list right',
 		:comparable_size		=>	'list right',
 		:price_exfactory		=>	'list right',
 		:price_public				=>	'list pubprice',
