@@ -59,8 +59,8 @@ module ODDB
 			end
 			def data
 				data = {
-					:generic_type => :vaccine,
-				}
+          :vaccine => true, 
+        }
         [:indication, :company, :ikscat, :expiration_date].each { |key|
           if(val = self.send(key))
             data.store(key, val)
@@ -388,7 +388,7 @@ module ODDB
 					update_registration(reg)
 				}
 				@app.registrations.each_value { |reg|
-					if(reg.generic_type == :vaccine && !@active.include?(reg.iksnr))
+					if(reg.vaccine && !@active.include?(reg.iksnr))
 						@deactivated.push(reg.iksnr)
 						@app.update(reg.pointer, {:inactive_date => @@today}, :swissmedic)
 					end
