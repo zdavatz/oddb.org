@@ -98,7 +98,7 @@ class ResultList < View::Migel::List
 		model.each { |subgroup|
 			if(group != subgroup.group)
 				group = subgroup.group
-				compose_subheader(group, offset, 'migel-group')
+				compose_subheader(group, offset, 'list migel-group')
 				offset = resolve_offset(offset, self::class::OFFSET_STEP)
 			end
 			compose_subheader(subgroup, offset)

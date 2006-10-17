@@ -105,7 +105,7 @@ class ResultComposite < HtmlGrid::Composite
 	end
 	def title_found(model, session)
 		query = session.persistent_user_input(:search_query)
-		@lookandfeel.lookup(:title_found, query, session.state.package_count)
+		@lookandfeel.lookup(:title_found, query, model.package_count)
 	end
 end
 class Result < View::ResultTemplate

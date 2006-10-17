@@ -35,12 +35,18 @@ class AtcHeader < HtmlGrid::Composite
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'atc',
+		[0,0]	=>	'atc list',
 	}
 	def init
 		if(@session.user.allowed?('edit', 'org.oddb.model.!atc_class.*'))
 			components.store([0,0,1], :edit)
 		end
+    if(@model.overflow? \
+       && @session.persistent_user_input(:code) == @model.code)
+      @css_map = {
+        [0,0] => 'migel-group list'
+      }
+    end
 		super
 	end
 	def atc_ddd_link(atc, session)
@@ -60,10 +66,9 @@ class AtcHeader < HtmlGrid::Composite
 			@lookandfeel.lookup(:products),
 			nil,
 		].join('&nbsp;')
-    if(@session.state.overflow?)
+    if(model.overflow?)
       args = []
       if(@session.persistent_user_input(:code) == code)
-        link.css_class = 'atclink'
         args = [ :search_query, code ]
       else
         args = [
@@ -71,8 +76,8 @@ class AtcHeader < HtmlGrid::Composite
           :search_type, @session.persistent_user_input(:search_type),	
           :code, code
         ]
-        link.css_class = 'list'
       end
+      link.css_class = 'list'
       link.href = @lookandfeel._event_url(:search, args, code)
     end
     link
@@ -193,7 +198,7 @@ class ResultList < HtmlGrid::List
 		HtmlGrid::Value.new(:size, model, session, self)
 	end
 	def compose_list(model=@model, offset=[0,0])
-    display_all = !@session.state.overflow?
+    display_all = !@model.overflow?
     code = @session.persistent_user_input(:code)
     model.each { |atc|
       compose_subheader(atc, offset)
@@ -208,7 +213,6 @@ class ResultList < HtmlGrid::List
 	def compose_subheader(atc, offset)
 		subheader = self::class::SUBHEADER.new(atc, @session, self)
 		@grid.add(subheader, *offset)
-		@grid.add_style('list atc', *offset)
 		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 	end
 	def fachinfo(model, session=@session)

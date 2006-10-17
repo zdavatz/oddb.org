@@ -8,11 +8,12 @@ require 'delegate'
 module ODDB
 	class AtcFacade
 		include ResultSort
-		def initialize(atc, session)
+		def initialize(atc, session, result)
 			@atc = atc
 			@session = session
 			#@package_count = @packages.size
 			@packages_sorted = false
+      @result = result
 		end
 		def active_packages
 			@packages ||= @atc.active_packages
@@ -32,6 +33,9 @@ module ODDB
 		def has_ddd?
 			@atc.has_ddd?
 		end
+    def overflow?
+      @result.overflow?
+    end
 		def pointer
 			@atc.pointer
 		end
@@ -56,21 +60,26 @@ module ODDB
 	class SearchResult
     include Enumerable
 		attr_accessor  :atc_classes, :session, :relevance, :exact, 
-			:search_type, :search_query
+			:search_type, :search_query, :limit
 		def initialize
+      @limit = 100
 			@relevance = {}
 		end
 		def atc_facades
 			@atc_facades ||= @atc_classes.collect { |atc_class|
-				AtcFacade.new(atc_class, @session)
+				AtcFacade.new(atc_class, @session, self)
 			}
 		end
 		def atc_sorted
-			@atc_facades ||= begin 
-        if(@relevance.empty?)
+			@atc_sorted or begin 
+        if(overflow?)
+          @atc_sorted = atc_facades.sort_by { |atc| 
+            atc.description
+          }
+        elsif(@relevance.empty?)
           case @search_type
           when :substance
-            atc_facades.sort_by { |atc_class|
+            @atc_sorted = atc_facades.sort_by { |atc_class|
               atc_class.packages.select { |pac|
                 pac.active_agents.any? { |act| 
                   act.same_as?(@query)
@@ -78,27 +87,28 @@ module ODDB
               }.size
             }
           else
-            atc_facades.sort_by { |atc_class|
+            @atc_sorted = atc_facades.sort_by { |atc_class|
               atc_class.package_count.to_i
             }
           end
+          @atc_sorted.reverse!
         else 
           case @search_type
           when :interaction, :unwanted_effect
-            atc_facades.sort_by { |atc| 
+            @atc_sorted = atc_facades.sort_by { |atc| 
               count = atc.sequences.size
               atc.sequences.inject(0) { |sum, seq|
                 sum + @relevance[seq.odba_id].to_f } / count
             }
           else
-            atc_facades.sort_by { |atc_class|
+            @atc_sorted = atc_facades.sort_by { |atc_class|
               count = atc_class.package_count.to_i
               @relevance[atc_class.odba_id].to_f / count
             }
           end
+          @atc_sorted.reverse!
         end
-        @atc_facades.reverse!
-        delete_empty_packages(@atc_facades)
+        delete_empty_packages(@atc_sorted)
       rescue Exception => e
         puts e.message
         puts e.backtrace
@@ -109,7 +119,14 @@ module ODDB
 			self.atc_sorted.each(&block)
 		end
     def empty?
-      @atc_facades.nil? || @atc_facades.empty?
+      @atc_classes.nil? || @atc_classes.empty?
+    end
+    def overflow?
+      package_count >= @limit && @atc_classes.size > 1
+    end
+    def package_count
+      @package_count ||= @atc_classes.inject(0) { |count, atc| 
+        count + atc.package_count }
     end
 		def set_relevance(odba_id, relevance)
 			@relevance[odba_id] = @relevance[odba_id].to_f + relevance.to_f

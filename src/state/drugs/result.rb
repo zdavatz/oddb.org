@@ -7,7 +7,6 @@ require 'state/drugs/payment_method'
 require 'view/drugs/result'
 require 'model/registration'
 require 'model/invoice'
-require 'state/page_facade'
 require 'state/admin/registration'
 require 'state/user/limit'
 
@@ -20,19 +19,12 @@ class Result < State::Drugs::Global
 	LIMITED = true
 	ITEM_LIMIT = 100
 	REVERSE_MAP = View::Drugs::ResultList::REVERSE_MAP
-	attr_reader :package_count, :pages
 	attr_accessor :search_query, :search_type
 	include ResultStateSort
 	def init
 		@model.session = @session
 		if(@model.atc_classes.nil? || @model.atc_classes.empty?)
 			@default_view = View::Drugs::EmptyResult
-		else
-			query = @session.persistent_user_input(:search_query).to_s.downcase
-			@package_count = 0
-			@model.each { |atc|
-				@package_count += atc.package_count
-			}
 		end
 	end
 	def export_csv
@@ -59,7 +51,6 @@ class Result < State::Drugs::Global
 		@sortby.uniq!
 	end
 	def limit_state
-		count = @package_count
 		model = if(@search_type == "st_sequence")
 			@model
 		else
@@ -69,22 +60,8 @@ class Result < State::Drugs::Global
 			mdl += atc.active_packages
 		}
 		state = State::Drugs::ResultLimit.new(@session, result)
-		state.package_count = count
+		state.package_count = @model.package_count
 		state
-	end
-  def overflow?
-    @package_count >= ITEM_LIMIT && @model.atc_classes.size > 1
-  end
-	def page
-		pge = nil
-		if(@session.event == :search)
-			## reset page-input
-			pge = @session.user_input(:page)
-			@session.set_persistent_user_input(:page, pge)
-		else
-			pge = @session.persistent_user_input(:page)
-		end
-		@page = @pages[pge || 0]
 	end
 	def request_path
 		if(@request_path)
