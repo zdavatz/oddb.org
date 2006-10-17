@@ -54,6 +54,7 @@ module ODDB
 		end
 	end
 	class SearchResult
+    include Enumerable
 		attr_accessor  :atc_classes, :session, :relevance, :exact, 
 			:search_type, :search_query
 		def initialize
@@ -65,50 +66,52 @@ module ODDB
 			}
 		end
 		def atc_sorted
-			@atc_facades = if(@relevance.empty?)
-				case @search_type
-				when :substance
-					atc_facades.sort_by { |atc_class|
-						atc_class.packages.select { |pac|
-							pac.active_agents.any? { |act| 
-								act.same_as?(@query)
-							}
-						}.size
-					}
-				else
-					atc_facades.sort_by { |atc_class|
-						atc_class.package_count.to_i
-					}
-				end
-			elsif(@search_type == :interaction)
-				atc_facades.sort_by { |atc| 
-					count = atc.sequences.size
-					atc.sequences.inject(0) { |sum, seq|
-						sum + @relevance[seq.odba_id].to_f } / count
-				}
-			else
-				atc_facades.sort_by { |atc_class|
-					count = atc_class.package_count.to_i
-					comp = [
-						(@relevance[atc_class.odba_id].to_f / count.to_f), 
-						#atc_class.package_count(:complementary).to_i,
-						count,
-					]
-				}
-			end
-			@atc_facades.reverse!
-			delete_empty_packages(@atc_facades)
-		rescue Exception => e
-			puts e.message
-			puts e.backtrace
-			atc_facades
-		end
+			@atc_facades ||= begin 
+        if(@relevance.empty?)
+          case @search_type
+          when :substance
+            atc_facades.sort_by { |atc_class|
+              atc_class.packages.select { |pac|
+                pac.active_agents.any? { |act| 
+                  act.same_as?(@query)
+                }
+              }.size
+            }
+          else
+            atc_facades.sort_by { |atc_class|
+              atc_class.package_count.to_i
+            }
+          end
+        else 
+          case @search_type
+          when :interaction, :unwanted_effect
+            atc_facades.sort_by { |atc| 
+              count = atc.sequences.size
+              atc.sequences.inject(0) { |sum, seq|
+                sum + @relevance[seq.odba_id].to_f } / count
+            }
+          else
+            atc_facades.sort_by { |atc_class|
+              count = atc_class.package_count.to_i
+              @relevance[atc_class.odba_id].to_f / count
+            }
+          end
+        end
+        @atc_facades.reverse!
+        delete_empty_packages(@atc_facades)
+      rescue Exception => e
+        puts e.message
+        puts e.backtrace
+        atc_facades
+      end
+    end
 		def each(&block)
 			self.atc_sorted.each(&block)
 		end
+    def empty?
+      @atc_facades.nil? || @atc_facades.empty?
+    end
 		def set_relevance(odba_id, relevance)
-			#relevance = [relevance.to_f, @relevance[odba_id].to_f].max
-			#@relevance.store(odba_id, relevance)
 			@relevance[odba_id] = @relevance[odba_id].to_f + relevance.to_f
 		end
 		private

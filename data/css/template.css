@@ -116,11 +116,11 @@ a.atcchooser3:hover, a.atcchooser4:hover,
 a.atcchooser5:hover {
 	color : $list_link_hover_color;
 }
-a.atclink2, a.atclink3, 
+a.atclink, a.atclink2, a.atclink3, 
 a.atclink4, a.atclink5 {
 	color : $atc_link_color;
 }
-a.atclink2:hover, a.atclink3:hover, 
+a.atclink, a.atclink2:hover, a.atclink3:hover, 
 a.atclink4:hover, a.atclink5:hover {
 	color : $list_link_hover_color;
 }

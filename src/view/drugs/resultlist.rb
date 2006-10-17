@@ -32,7 +32,6 @@ class AtcHeader < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0,0] => :atc_description,
 		[0,0,2] => :atc_ddd_link,
-		[1,0]   => :pages,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
@@ -53,30 +52,36 @@ class AtcHeader < HtmlGrid::Composite
 		end
 	end
 	def atc_description(model, session)
-		[
+    code = model.code
+    link = HtmlGrid::Link.new(code, model, @session, self)
+    link.value = [
 			super,
 			model.package_count,
 			@lookandfeel.lookup(:products),
 			nil,
 		].join('&nbsp;')
+    if(@session.state.overflow?)
+      args = []
+      if(@session.persistent_user_input(:code) == code)
+        link.css_class = 'atclink'
+        args = [ :search_query, code ]
+      else
+        args = [
+          :search_query, @session.persistent_user_input(:search_query),	
+          :search_type, @session.persistent_user_input(:search_type),	
+          :code, code
+        ]
+        link.css_class = 'list'
+      end
+      link.href = @lookandfeel._event_url(:search, args, code)
+    end
+    link
 	end
 	def edit(model, session)
 		link = View::PointerLink.new(:code, model, session, self)
 		link.value = @lookandfeel.lookup(:edit_atc_class) + "&nbsp;"
 		link.attributes['class'] = 'small'
 		link
-	end
-	def pages(model, session)
-		state = @session.state
-		if(state.respond_to?(:pages) \
-			 && (pages = state.pages) \
-			 && pages.size > 1)
-			args = {
-				:search_query => @session.persistent_user_input(:search_query),	
-				:search_type => @session.persistent_user_input(:search_type),	
-			}
-			View::Pager.new(pages, session, self, :search, args)
-		end
 	end
 end
 class ResultList < HtmlGrid::List
@@ -188,13 +193,17 @@ class ResultList < HtmlGrid::List
 		HtmlGrid::Value.new(:size, model, session, self)
 	end
 	def compose_list(model=@model, offset=[0,0])
-		model.each { |atc|	
-			compose_subheader(atc, offset)
-			offset = resolve_offset(offset, self::class::OFFSET_STEP)
-			packages = atc.packages
-			super(packages, offset)
-			offset[1] += packages.size
-		}
+    display_all = !@session.state.overflow?
+    code = @session.persistent_user_input(:code)
+    model.each { |atc|
+      compose_subheader(atc, offset)
+      offset = resolve_offset(offset, self::class::OFFSET_STEP)
+      if(display_all || code == atc.code)
+        packages = atc.packages
+        super(packages, offset)
+        offset[1] += packages.size
+      end
+    }
 	end
 	def compose_subheader(atc, offset)
 		subheader = self::class::SUBHEADER.new(atc, @session, self)

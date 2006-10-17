@@ -29,29 +29,9 @@ class Result < State::Drugs::Global
 			@default_view = View::Drugs::EmptyResult
 		else
 			query = @session.persistent_user_input(:search_query).to_s.downcase
-			sorted_atc_classes = @model.atc_sorted
-			@pages = []
-			page  = 0
-			count = 0
-			best_found = false
 			@package_count = 0
-			sorted_atc_classes.each { |atc|
-				@pages[page] ||= State::PageFacade.new(page) 
-				@pages[page].push(atc)
-				tmp_cnt = atc.package_count
-				@package_count += tmp_cnt
-				count += tmp_cnt
-				if(!best_found && atc.packages.any? { |pac| pac.good_result?(query) })
-					best_found = true
-					@page = page
-				end
-				if(count >= ITEM_LIMIT)
-					page += 1
-					count = 0
-				end	
-			}
-			@filter = Proc.new { |model|
-				page()
+			@model.each { |atc|
+				@package_count += atc.package_count
 			}
 		end
 	end
@@ -92,6 +72,9 @@ class Result < State::Drugs::Global
 		state.package_count = count
 		state
 	end
+  def overflow?
+    @package_count >= ITEM_LIMIT && @model.atc_classes.size > 1
+  end
 	def page
 		pge = nil
 		if(@session.event == :search)
