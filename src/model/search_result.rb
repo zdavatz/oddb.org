@@ -62,7 +62,7 @@ module ODDB
 		attr_accessor  :atc_classes, :session, :relevance, :exact, 
 			:search_type, :search_query, :limit
 		def initialize
-      @limit = 100
+      @limit = 50
 			@relevance = {}
 		end
 		def atc_facades

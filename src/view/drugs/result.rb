@@ -62,7 +62,6 @@ class ResultComposite < HtmlGrid::Composite
 	include ResultFootBuilder
 	COLSPAN_MAP	= {
 		[0,2]	=> 2,
-		[0,3]	=> 2,
 	}
 	COMPONENTS = {
 		[0,0,0]	=>	:title_found,
@@ -70,7 +69,6 @@ class ResultComposite < HtmlGrid::Composite
 		[0,1]		=>	'price_compare',
 		[1,1]		=>	SelectSearchForm,
 		[0,2]		=>	View::Drugs::ResultList,
-		[0,3]		=>	:result_foot,
 	}
 	CSS_CLASS = 'composite'
 	EVENT = :search
@@ -90,6 +88,12 @@ class ResultComposite < HtmlGrid::Composite
 		else
 			colspan_map.store([0,0], 2)
 		end
+    code = @session.persistent_user_input(:code)
+    unless(@model.respond_to?(:overflow?) && @model.overflow? \
+           && (code.nil? || !@model.any? { |atc| atc.code == code }))
+      components.store([0,3], :result_foot)
+      colspan_map.store([0,3], 2)
+    end
 		super
 	end
 	def dsp_sort(model, session)
