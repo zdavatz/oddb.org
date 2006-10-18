@@ -210,16 +210,18 @@ class PowerLinkCompany < UserCompany
 			:address,
 			:city,
 			:contact,
+			:plz,
+		]
+		keys = mandatory + [
 			:fon,
 			:invoice_email,
-			:plz,
+			:powerlink,
 		]
 		email = @session.user_input(:invoice_email)
 		if(email == @session.user.unique_email)
 			err = create_error(:e_duplicate_email, :invoice_email, email)
 			@errors.store(:invoice_email, err)
 		end
-		keys = mandatory.dup.push(:powerlink)
 		do_update(keys, mandatory)
 		self
 	end

@@ -487,8 +487,13 @@ class PowerLinkCompanyComposite < View::Companies::CompanyComposite
 		[0,0]	=>	:nbsp,
 		[0,1]	=>	View::Companies::PowerLinkCompanyForm,
 		[1,1]	=>	View::CompanyLogo,
-    [0,2] =>  :users,
-    [0,3] =>  :company_users,
+	}
+	CSS_MAP = {
+		[0,0]	=>	'th',
+		[1,1]	=>	'logo right',
+	}	
+	COLSPAN_MAP = {
+		[0,0]	=>	2,
 	}
 end
 class UnknownCompany < View::PrivateTemplate
