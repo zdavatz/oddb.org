@@ -18,6 +18,11 @@ module ODDB
 			'atupri-web'=>	[
 				LookandfeelAtupriWeb, 
 			],
+			'carenaschweiz'=>	[
+				LookandfeelLanguages,
+				LookandfeelStandardResult,
+				LookandfeelCarenaSchweiz, 
+			],
 			'generika'	=>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,

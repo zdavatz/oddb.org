@@ -304,6 +304,27 @@ module ODDB
 			end
 		end
 	end
+	class LookandfeelCarenaSchweiz < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:atc_chooser,
+			:data_counts,
+			:drugs, 
+			:export_csv,
+			:faq_link,
+			:help_link,
+			:home,
+			:home_drugs,
+			:recent_registrations,
+			:search_reset,
+			:sequences,
+			:topfoot,
+			:ywesee_contact,
+			:logout,
+		]
+		DICTIONARIES = { }
+		RESOURCES = { }
+		HTML_ATTRIBUTES = { }
+	end
 	class LookandfeelHirslanden < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:atc_chooser,
