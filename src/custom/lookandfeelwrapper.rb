@@ -334,6 +334,7 @@ module ODDB
 			:help_link,
 			:home,
 			:home_drugs,
+			:powerlink,
 			:search_reset,
 			:sequences,
 			:topfoot,
@@ -345,21 +346,27 @@ module ODDB
 		}
     DICTIONARIES = {
       'de' => {
+				:contact_link	=>	'Kontakt',
+				:contact_href	=>	'mailto:med-drugs@just-medical.com',
         :home_drugs   => 'med-drugs Home',
         :home_welcome => '',
       },
       'en' => {
+				:contact_link	=>	'Kontakt',
+				:contact_href	=>	'mailto:med-drugs@just-medical.com',
         :home_drugs   => 'med-drugs Home',
         :home_welcome => '',
       },
       'fr' => {
+				:contact_link	=>	'Kontakt',
+				:contact_href	=>	'mailto:med-drugs@just-medical.com',
         :home_drugs   => 'med-drugs Home',
         :home_welcome => '',
       },
     }
 		DISABLED = [ :generic_definition, :legal_note ]
     def navigation(*args)
-      super[0..-2]
+      [:help_link, :faq_link, :contact_link ]
     end
     def result_list_components
       {

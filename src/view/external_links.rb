@@ -4,6 +4,12 @@
 module ODDB
 	module View
 		module ExternalLinks
+      def contact_link(model, session=@session)
+        link = NavigationLink.new(:contact_link, 
+          model, @session, self)
+        link.href = @lookandfeel.lookup(:contact_href)
+        link
+      end
 			def external_link(model, key)
 				klass = if(@lookandfeel.enabled?(:popup_links, false))
 					HtmlGrid::PopupLink
