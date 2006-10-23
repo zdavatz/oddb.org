@@ -37,24 +37,25 @@ class DoctorInnerComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]		=>	:specialities_header,
 		[0,1]	  =>	:specialities,
-		[0,2,0]	=>	:language_header,
-		[0,2,1]	=>	:nbsp,
-		[0,2,2]	=>	:language,
-		[0,3,0]	=>	:exam_header,
-		[0,3,1] =>	:nbsp,
-		[0,3,2]	=>	:exam,
-		[0,4,0]	=>	:ean13_header,
+		[0,2]		=>	:capabilities_header,
+		[0,3]	  =>	:capabilities,
+		[0,4,0]	=>	:language_header,
 		[0,4,1]	=>	:nbsp,
-		[0,4,2]	=>	:ean13,
-		[0,5,0]	=>	:email_header_doctor,
-		[0,5,1]	=>	:nbsp,
-		[0,5,2]	=>	:email,
+		[0,4,2]	=>	:correspondence,
+		[0,5,0]	=>	:exam_header,
+		[0,5,1] =>	:nbsp,
+		[0,5,2]	=>	:exam,
+		[0,6,0]	=>	:ean13_header,
+		[0,6,1]	=>	:nbsp,
+		[0,6,2]	=>	:ean13,
+		[0,7,0]	=>	:email_header_doctor,
+		[0,7,1]	=>	:nbsp,
+		[0,7,2]	=>	:email,
 	}
 	SYMBOL_MAP = {
 		:address_email	=>	HtmlGrid::MailLink,
-		:praxis_header	=>	HtmlGrid::LabelText,
+		:capabilities_header => HtmlGrid::LabelText,
 		:email	=>	HtmlGrid::MailLink,
-		:contact_header	=>	HtmlGrid::LabelText,
 		:email_header_doctor		=>	HtmlGrid::LabelText,
 		:exam_header		=>	HtmlGrid::LabelText,
 		:ean13_header		=>	HtmlGrid::LabelText,
@@ -68,19 +69,68 @@ class DoctorInnerComposite < HtmlGrid::Composite
 		:work_header		=>	HtmlGrid::LabelText,
 	}		
 	CSS_MAP = {
-		[0,0,4,6]	=>	'list',
+		[0,0,4,8]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
-	def praxis_address(model)
-		if(address = model.praxis_address)
-			address.lines.join('<br>')
-		end
-	end
 	def specialities(model)
 		spc = model.specialities
 		spc.join('<br>') unless spc.nil?
 	end
+	def capabilities(model)
+		spc = model.capabilities
+		spc.join('<br>') unless spc.nil?
+	end
+end
+class DoctorForm < View::Form
+  include HtmlGrid::ErrorMessage
+  COMPONENTS = {
+    [0,0] => :title,
+    [0,1] => :name_first,
+    [2,1] => :name,
+    [0,2] => :specialities,
+    [0,3] => :capabilities,
+    [0,4] => :correspondence,
+    [0,5] => :exam,
+    [0,6] => :ean13,
+    [0,7] => :email,
+    [1,8] => :submit,
+  }
+  COLSPAN_MAP = {
+    [1,2] => 3,
+    [1,3] => 3,
+  }
+	COMPONENT_CSS_MAP = {
+		[0,0]	=>	'standard',
+		[0,1]	=>	'standard',
+		[2,1]	=>	'standard',
+		#[0,2]	=>	'standard',
+		#[0,3]	=>	'standard',
+		[0,4]	=>	'standard',
+		[0,5]	=>	'standard',
+		[0,6]	=>	'standard',
+		[0,7]	=>	'standard',
+	}
+	CSS_MAP = {
+		[0,0,4,8]	=>	'list',
+		[0,2,1,2]	=>	'list top',
+	}
+  LABELS = true
+	LEGACY_INTERFACE = false
+  def init
+    super
+    error_message
+  end
+  def capabilities(model)
+    input = HtmlGrid::Textarea.new(:capabilities, model, @session, self)
+    input.label = true
+    input
+  end
+  def specialities(model)
+    input = HtmlGrid::Textarea.new(:specialities, model, @session, self)
+    input.label = true
+    input
+  end
 end
 class DoctorComposite < HtmlGrid::Composite
 	include VCardMethods
@@ -116,8 +166,24 @@ class DoctorComposite < HtmlGrid::Composite
 		Addresses.new(addrs, @session, self)
 	end
 end
+class RootDoctorComposite < DoctorComposite
+	COMPONENTS = {
+		[0,0,0]	=>	:title,
+		[0,0,1]	=>	:nbsp,
+		[0,0,2]	=>	:firstname,
+		[0,0,3]	=>	:nbsp,
+		[0,0,4]	=>	:name,
+		[0,1]		=> DoctorForm,
+		[0,2]		=>	:addresses,
+		[0,3]		=>	:vcard,
+	}
+end
 class Doctor < PrivateTemplate
 	CONTENT = View::Doctors::DoctorComposite
+	SNAPBACK_EVENT = :result
+end
+class RootDoctor < PrivateTemplate
+	CONTENT = RootDoctorComposite
 	SNAPBACK_EVENT = :result
 end
 		end

@@ -9,6 +9,7 @@ require 'state/admin/logout'
 require 'state/admin/patent'
 require 'state/admin/user'
 require 'state/admin/entities'
+require 'state/doctors/doctor'
 require 'state/drugs/fachinfo'
 require 'state/hospitals/hospital'
 require 'ostruct'
@@ -65,6 +66,7 @@ module Root
 		[ :address_suggestion ]				=>	State::Admin::AddressSuggestion,
 		[ :atc_class ]								=>	State::Admin::AtcClass,
 		[ :company ]									=>	State::Companies::RootCompany,
+    [ :doctor ]                   =>  State::Doctors::RootDoctor,
 		[ :fachinfo ]									=>	State::Drugs::RootFachinfo,
 		[ :galenic_group ]						=>	State::Admin::GalenicGroup,
 		[ :galenic_group,

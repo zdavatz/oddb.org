@@ -9,12 +9,16 @@ module ODDB
 		include Persistence
 		include AddressObserver
 		ODBA_SERIALIZABLE = [
-			'@addresses', '@specialities', '@ean13',
+			'@addresses', '@capabilities', '@specialities', '@ean13',
 		]
-		attr_accessor :title, :name, :firstname,
+		attr_accessor :capabilities, :title, :name, :firstname,
 			:email, :exam, :language, :specialities, 
 			:praxis, :member, :salutation,
 			:origin_db, :origin_id, :addresses, :ean13
+    alias :name_first :firstname
+    alias :name_first= :firstname=
+    alias :correspondence :language
+    alias :correspondence= :language=
 			
 		def initialize
 			@addresses = []
@@ -84,5 +88,16 @@ module ODDB
 				addr.type == 'at_work'
 		  }
 		end
+    private
+    def adjust_types(values, app=nil)
+      values.each { |key, value|
+        case key
+        when :specialities, :capabilities
+          values.store(key, value.to_s.split(/[\r\n]+/))
+        when :exam
+          values.store(key, value.to_i)
+        end
+      }
+    end
 	end
 end
