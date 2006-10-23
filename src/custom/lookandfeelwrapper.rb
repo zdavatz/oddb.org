@@ -343,6 +343,48 @@ module ODDB
 		RESOURCES = {
 			:external_css	=>	'http://www.hirslandenprofessional.ch/scripts/oddb.css',
 		}
+    DICTIONARIES = {
+      'de' => {
+        :home_drugs   => 'med-drugs Home',
+        :home_welcome => '',
+      },
+      'en' => {
+        :home_drugs   => 'med-drugs Home',
+        :home_welcome => '',
+      },
+      'fr' => {
+        :home_drugs   => 'med-drugs Home',
+        :home_welcome => '',
+      },
+    }
+		DISABLED = [ :generic_definition, :legal_note ]
+    def navigation(*args)
+      super[0..-2]
+    end
+    def result_list_components
+      {
+        [0,0]		=>	:limitation_text,
+        [1,0]		=>  :fachinfo,
+        [2,0]		=>	:patinfo,
+        [3,0,0]	=>	:narcotic,
+        [3,0,1]	=>	:complementary_type,
+        [3,0,2]	=>	:comarketing,
+        [4,0,0]	=>	'result_item_start',
+        [4,0,1]	=>	:name_base,
+        [4,0,2]	=>	'result_item_end',
+        [5,0]		=>	:comparable_size,
+        [6,0]		=>	:price_exfactory,
+        [7,0]	=>	:price_public,
+        [8,0]	=>	:deductible,
+        [9,0]	=>	:ddd_price,
+        [10,0]	=>	:active_agents,
+        [11,0]	=>	:company_name,
+        [12,0]	=>	:ikscat,
+      }
+    end
+    def zone_navigation
+      super.push(:home_drugs)
+    end
 	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
 		ENABLED = [

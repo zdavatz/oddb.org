@@ -101,11 +101,17 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 			components.update({
 				[0,4,0]	=>	'database_last_updated_txt',
 				[0,4,1]	=>	:database_last_updated,
-				[0,5]		=>	:generic_definition,
-				[0,6]		=>	:legal_note,
-			})
-			css_map.store([0,4,1,4], 'list center')
-			component_css_map.store([0,6], 'legal-note')
+      })
+			css_map.store([0,4], 'list center')
+      unless(@lookandfeel.disabled?(:generic_definition))
+        components.store([0,5], :generic_definition)
+			  css_map.store([0,5], 'list center')
+      end
+      unless(@lookandfeel.disabled?(:legal_note))
+        components.store([0,6], :legal_note)
+			  css_map.store([0,6], 'list center')
+			  component_css_map.store([0,6], 'legal-note')
+      end
 		end
 		super
 	end
