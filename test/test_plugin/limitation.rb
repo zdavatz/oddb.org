@@ -555,6 +555,7 @@ class TestLimitationPlugin < Test::Unit::TestCase
 			EOS
 		end
 	end
+=begin
 	def test_index_data
 		begin
 			@plugin.instance_eval <<-EOS
@@ -581,6 +582,7 @@ class TestLimitationPlugin < Test::Unit::TestCase
 			assert(exp.match(@plugin.index_data_body('A')), 'Structure of the the online html-page has changed!')
 		}
 	end
+=end
 	def test_index_data_path
 		begin
 			@plugin.instance_eval <<-EOS
@@ -602,6 +604,7 @@ class TestLimitationPlugin < Test::Unit::TestCase
 		expected = '/sl/batchhtm/Index_B.htm'
 		assert_equal(expected, result)
 	end
+=begin
 	def test_sequence_data
 		begin
 			@plugin.instance_eval <<-EOS
@@ -660,6 +663,7 @@ class TestLimitationPlugin < Test::Unit::TestCase
 			assert(exp.match(@plugin.sequence_data_body('5754.htm')), 'Structure of the the online html-page has changed!')
 		}
 	end
+=end
 	def test_sequence_data_path
 		result = @plugin.sequence_data_path('5754.htm')
 		expected = '/sl/batchhtm/5754.htm' 
@@ -723,6 +727,7 @@ class TestLimitationPlugin < Test::Unit::TestCase
 		assert_equal([["55763", "004"]], result.keys)
 		assert_equal([], @plugin.parsing_errors.keys)
 	end
+=begin
 	def test_purge_limitation_texts
 		@pack2.sl_entry.pointer = ODDB::Persistence::Pointer.new
 		@app.packages = [@pack2, @pack3]
@@ -750,6 +755,7 @@ class TestLimitationPlugin < Test::Unit::TestCase
 	def test_update
 		#@plugin.update
 	end
+=end
 	def test_check_data
 		begin
 			@plugin.instance_eval <<-EOS

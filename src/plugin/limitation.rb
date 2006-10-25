@@ -115,15 +115,24 @@ module ODDB
 			chap_fr = Text::Chapter.new
 			chap_it = Text::Chapter.new
 			values.each { |array| 
-				de = chap_de.next_section.next_paragraph
-				fr = chap_fr.next_section.next_paragraph
-				it = chap_it.next_section.next_paragraph
+        sec_de = chap_de.next_section
+				de = sec_de.next_paragraph
+        sec_fr = chap_fr.next_section
+				fr = sec_fr.next_paragraph
+        sec_it = chap_it.next_section
+				it = sec_it.next_paragraph
+        lines = [array.size / 3, 1].max
 				array.each_with_index { |value, idx|
 					if(value.match(/^Limitatio:/))
 						limitatio = true
 						de << value[11..-1]
-						fr << array[idx.next].to_s
-						it << array[idx + 2].to_s
+						fr << array[lines].to_s
+						it << array[2 * lines].to_s
+            1.upto(lines - 1) { |offset|
+              sec_de.next_paragraph << array[offset].to_s
+              sec_fr.next_paragraph << array[lines + offset].to_s
+              sec_it.next_paragraph << array[2 * lines + offset].to_s
+            }
 					end
 				}
 			}
