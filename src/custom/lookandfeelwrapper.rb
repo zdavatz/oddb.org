@@ -387,6 +387,7 @@ module ODDB
         [10,0]	=>	:active_agents,
         [11,0]	=>	:company_name,
         [12,0]	=>	:ikscat,
+        [13,0]	=>  :google_search,
       }
     end
     def zone_navigation
