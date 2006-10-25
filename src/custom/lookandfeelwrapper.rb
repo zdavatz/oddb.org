@@ -310,6 +310,7 @@ module ODDB
 			:data_counts,
 			:drugs, 
 			:export_csv,
+			:external_css,
 			:faq_link,
 			:help_link,
 			:home,
@@ -322,7 +323,9 @@ module ODDB
 			:logout,
 		]
 		DICTIONARIES = { }
-		RESOURCES = { }
+		RESOURCES = { 
+      :external_css	=>	'http://www.carenaschweiz.ch/css/oddb.css',
+    }
 		HTML_ATTRIBUTES = { }
 	end
 	class LookandfeelHirslanden < SBSM::LookandfeelWrapper
