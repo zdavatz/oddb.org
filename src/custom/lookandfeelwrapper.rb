@@ -516,6 +516,30 @@ module ODDB
 			end
 		end
 	end
+	class LookandfeelKonsumInfo < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:atc_chooser,
+			:data_counts,
+			:drugs, 
+			:export_csv,
+			:external_css,
+			:faq_link,
+			:help_link,
+			:home,
+			:home_drugs,
+			:recent_registrations,
+			:search_reset,
+			:sequences,
+			:topfoot,
+			:ywesee_contact,
+			:logout,
+		]
+		DICTIONARIES = { }
+		RESOURCES = { 
+      :external_css	=>	'http://www.konsuminfo.ch/support/css/oddb.css',
+    }
+		HTML_ATTRIBUTES = { }
+	end
 	class LookandfeelSwissmedic < SBSM::LookandfeelWrapper
 		DICTIONARIES = {
 			'de'	=>	{

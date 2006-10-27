@@ -40,6 +40,11 @@ module ODDB
 				LookandfeelExtern,
 				LookandfeelJustMedical, 
 			],
+			'konsuminfo'=>	[
+				LookandfeelLanguages,
+				LookandfeelStandardResult,
+				LookandfeelKonsumInfo, 
+			],
 			'medical-tribune' => [
 				LookandfeelExtern,
 				LookandfeelMedicalTribune,
