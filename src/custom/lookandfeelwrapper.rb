@@ -754,37 +754,40 @@ module ODDB
 			:ywesee_contact,
 			:sequences,
 		]
-		DISABLED = [ :atc_ddd ]
-		RESOURCES = {
-			:external_css	=>	'http://www.aixede.ch/mymedi/screen.css',
-		}
-		DICTIONARIES = {
-			'de'	=>	{
-				:explain_generic					=>	'Blau&nbsp;=&nbsp;Generikum',
-			},
-			'fr'	=>	{
-				:explain_generic					=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
-			},
-			'en'	=>	{
-				:explain_generic					=>	'Blue&nbsp;=&nbsp;Generic Drug',
-			},
-		}
+		DISABLED = [ :atc_ddd, :legal_note, :navigation ]
+    DICTIONARIES = {
+      'de'	=>	{
+        :explain_generic					=>	'Blau&nbsp;=&nbsp;Generikum',
+        :explain_ddd_price_url    =>  'http://www.mymedi.ch/de/tk.htm',
+      },
+      'fr'	=>	{
+        :explain_generic					=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
+        :explain_ddd_price_url    =>  'http://www.mymedi.ch/fr/tk.htm',
+      },
+      'en'	=>	{
+        :explain_generic					=>	'Blue&nbsp;=&nbsp;Generic Drug',
+      },
+    }
+    HTML_ATTRIBUTES = {
+      :explain_ddd_price => {'target' => '_parent'},
+    }
+    RESOURCES = {
+      :external_css	=>	'http://www.aixede.ch/mymedi/screen.css',
+    }
 		def explain_result_components
 			{
 				[0,0]	=>	:explain_original,
 				[0,1]	=>	:explain_generic,
-				[0,2]	=>	:explain_complementary,
-				[0,3]	=>	'explain_expired',
-				[0,4]	=>	'explain_pbp',
-				[0,5]	=>	:explain_deductible,
-				[0,6]	=>	:explain_ddd_price,
+				[0,2]	=>	'explain_expired',
+				[0,3]	=>	'explain_pbp',
+				[0,4]	=>	:explain_deductible,
+				[0,5]	=>	:explain_ddd_price,
 				[1,0]	=>	:explain_patinfo,
-				[1,1]	=>	:explain_feedback,
-				[1,2]	=>	:explain_google_search,
-				[1,3]	=>	'explain_sl',
-				[1,4]	=>	'explain_slo',
-				[1,5]	=>	'explain_slg',
-				[1,6]	=>	:explain_lppv,
+				[1,1]	=>	:explain_complementary,
+				[1,2]	=>	'explain_sl',
+				[1,3]	=>	'explain_slo',
+				[1,4]	=>	'explain_slg',
+				[1,5]	=>	:explain_lppv,
 			}
 		end
 		def result_list_components
@@ -803,6 +806,10 @@ module ODDB
 				[9,0]		=>	'nbsp',
 				[10,0]	=>	:ikscat,
 			}
+		end
+		def search_type_selection
+      ['st_oddb', 'st_sequence', 'st_substance', 'st_company',
+        'st_indication']
 		end
 		def section_style
 			'font-size: 16px; margin-top: 8px; line-height: 1.4em; max-width: 600px'

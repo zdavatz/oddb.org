@@ -127,7 +127,8 @@ module ODDB
 		module ResultFootBuilder
 			EXPLAIN_RESULT = ExplainResult
 			def result_foot(model, session=@session)
-				if(@lookandfeel.navigation.include?(:legal_note))
+				if(@lookandfeel.navigation.include?(:legal_note) \
+          || @lookandfeel.disabled?(:legal_note))
 					self.class::EXPLAIN_RESULT.new(model, @session, self)
 				else
 					View::ResultFoot.new(model, @session, self)

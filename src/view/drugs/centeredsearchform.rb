@@ -9,6 +9,7 @@ module ODDB
 	module View
 		module Drugs
 class CenteredSearchForm < View::CenteredSearchForm
+  include SearchBarMethods
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
 		[0,0]			=>	View::TabNavigation,
@@ -30,15 +31,6 @@ class CenteredSearchForm < View::CenteredSearchForm
 		[0,2,1,3]	=>	'center',
 	}
 	EVENT = :search
-	def search_type(model, session=@session)
-		select = HtmlGrid::Select.new(:search_type, model, @session, self)
-		if(@lookandfeel.respond_to?(:search_type_selection))
-			select.valid_values = @lookandfeel.search_type_selection
-		end
-		select.set_attribute('onChange', 'this.form.onsubmit();')
-		select.selected = @session.persistent_user_input(:search_type)
-		select
-	end
 end
 class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENTS = {
