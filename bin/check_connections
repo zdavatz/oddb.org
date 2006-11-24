@@ -109,7 +109,7 @@ begin
 			end
 			target_ids.compact!
 			target_ids.uniq!
-			#ODBA.storage.ensure_object_connections(id, target_ids)
+			ODBA.storage.ensure_object_connections(id, target_ids)
 end
 
 		end

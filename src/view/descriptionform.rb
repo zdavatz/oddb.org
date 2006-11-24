@@ -38,6 +38,13 @@ module ODDB
 			def languages
 				@lookandfeel.languages
 			end
+      def synonym_list(model, session)
+        input = DEFAULT_CLASS.new(:synonym_list, model, session, self)
+        if(syns = model.synonyms)
+          input.value = syns.join(', ')
+        end
+        input
+      end
 		end
 	end
 end

@@ -58,7 +58,7 @@ class OddbPrevalence
 		:hospitals, :invoices, :last_medication_update, :last_update,
 		:notification_logger, :orphaned_fachinfos, :orphaned_patinfos,
 		:patinfos, :patinfos_deprived_sequences, :registrations, :slates,
-		:users, :narcotics, :accepted_orphans
+		:users, :narcotics, :accepted_orphans, :commercial_forms
 	def initialize
 		init
 		@last_medication_update ||= Time.now()
@@ -71,6 +71,7 @@ class OddbPrevalence
 		@atc_classes ||= {}
 		@address_suggestions ||= {}
 		@patinfos_deprived_sequences ||= []
+		@commercial_forms ||= {}
 		@companies ||= {}
 		@currency_rates ||= {}
 		@cyp450s ||= {}
@@ -209,6 +210,9 @@ class OddbPrevalence
 			@invoices.odba_isolated_store
 		end
 	end
+  def commercial_form(oid)
+    @commercial_forms[oid.to_i]
+  end
 	def company(oid)
 		@companies[oid.to_i]
 	end
@@ -297,6 +301,10 @@ class OddbPrevalence
 		atc = ODDB::AtcClass.new(atc_class)
 		@atc_chooser.add_offspring(ODDB::AtcNode.new(atc))
 		@atc_classes.store(atc_class, atc)
+	end
+	def create_commercial_form
+		form = ODDB::CommercialForm.new
+		@commercial_forms.store(form.oid, form)
 	end
 	def create_company
 		company = ODDB::Company.new
@@ -429,6 +437,12 @@ class OddbPrevalence
 		if(cyp = @cyp450s.delete(cyp_id))
 			@cyp450s.odba_isolated_store
 			cyp
+		end
+	end
+	def delete_commercial_form(oid)
+		if(form = @commercial_forms.delete(oid))
+			@commercial_forms.odba_isolated_store
+			form
 		end
 	end
 	def delete_company(oid)
@@ -1210,6 +1224,38 @@ module ODDB
 				update(pointer.creator, values)
 			end
 		end
+    def create_commercial_forms
+      @system.each_package { |pac| 
+        if(comform = pac.comform)
+          possibilities = [
+            comform.strip,
+            comform.gsub(/\([^\)]+\)/, '').strip,
+            comform.gsub(/[()]/, '').strip,
+          ].uniq.delete_if { |possibility| possibility.empty? }
+          cform = nil
+          possibilities.each { |possibility|
+            if(cform = CommercialForm.find_by_name(possibility))
+              break
+            end
+          }
+          if(cform.nil?)
+            args = { :de => possibilities.first, 
+              :synonyms => possibilities[1..-1] }
+            possibilities.each { |possibility|
+              if(form = @system.galenic_form(possibility))
+                args = form.descriptions
+                args.store(:synonyms, form.synonyms)
+                break
+              end
+            }
+            pointer = Persistence::Pointer.new(:commercial_form)
+            cform = @system.update(pointer.creator, args)
+          end
+          pac.commercial_form = cform
+          pac.odba_store
+        end
+      }
+    end
 		def delete(pointer)
 			@system.execute_command(DeleteCommand.new(pointer))
 		end
@@ -1243,6 +1289,10 @@ module ODDB
         invoice.odba_isolated_store
       }
     end
+		def merge_commercial_forms(source, target)
+			command = MergeCommand.new(source.pointer, target.pointer)
+			@system.execute_command(command)
+		end
 		def merge_companies(source_pointer, target_pointer)
 			command = MergeCommand.new(source_pointer, target_pointer)
 			@system.execute_command(command)
@@ -1501,7 +1551,8 @@ module ODDB
           #'view|org.oddb',
           privileges.concat [ 'grant|create', 'grant|edit', 'grant|credit',
             'edit|yus.entities', 'edit|org.oddb.drugs', 'set_password',
-            'edit|org.oddb.model.!company.*', 'create|org.oddb.registration',
+            'edit|org.oddb.model.!company.*', 
+            'create|org.oddb.registration',
             'edit|org.oddb.model.!sponsor.*', 
             'edit|org.oddb.model.!indication.*', 
             'edit|org.oddb.model.!galenic_group.*', 

@@ -37,6 +37,7 @@ module PackageMethods
 			@model = @session.app.create(@model.pointer)
 		end
 		keys = [
+      :commercial_form,
 			:deductible,
 			:descr,
 			:size, 
@@ -49,6 +50,15 @@ module PackageMethods
 			:lppv,
 		]
 		input = user_input(keys)
+    if(name = input[:commercial_form])
+      if(comform = ODDB::CommercialForm.find_by_name(name))
+        input.store(:commercial_form, comform.pointer)
+      else
+        @errors.store(:commercial_form,
+                      create_error(:e_unknown_comform,
+                                   :commercial_form, name))
+      end
+    end
 		unless(error?)
 			ODBA.transaction {
 				@model = @session.app.update(@model.pointer, input, unique_email)

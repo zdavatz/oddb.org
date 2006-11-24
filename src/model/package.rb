@@ -154,6 +154,7 @@ Grammar OddbSize
 		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type,
 			:price_exfactory, :price_public, :pretty_dose, :pharmacode, :market_date,
 			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
+      :commercial_form,
 			:deductible_m # for just-medical
 		alias :pointer_descr :ikscd
 		registration_data :comarketing_with, :complementary_type, :expiration_date,
@@ -308,7 +309,7 @@ Grammar OddbSize
 			values = values.dup
 			values.each { |key, value|
 				case key
-				when :generic_group
+				when :generic_group, :commercial_form
 					values[key] = value.resolve(app)
 				when :price_public, :price_exfactory
 					values[key] = Package.price_internal(value) 
@@ -336,6 +337,15 @@ Grammar OddbSize
 				@feedbacks.values.each { |fb| fb.odba_delete }
 				@feedbacks.odba_delete
 			end
+		end
+		def commercial_form=(commercial_form)
+			unless(@commercial_form.nil?)
+				@commercial_form.remove_package(self)
+			end
+			unless(commercial_form.nil?)
+				commercial_form.add_package(self)
+			end
+			@commercial_form = commercial_form
 		end
 		def generic_group=(generic_group)
 			unless(@generic_group.nil?)

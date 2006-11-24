@@ -117,13 +117,14 @@ module ODDB
 		class Pointer
       SECURE_COMMANDS = [
 				:active_agent, :address, :address_suggestion, :atc_class,
-				:analysis_group, :company, :doctor, :hospital, :cyp450, :fachinfo,
-				:feedback, :galenic_form, :galenic_group, :generic_group,
-				:incomplete_registration, :indication, :invoice, :address_suggestion,
-				:migel_group, :subgroup, :product, :narcotic, :orphaned_fachinfo,
-				:orphaned_patinfo, :package, :patent, :patinfo, :position, :poweruser,
-				:registration, :sequence, :slate, :sl_entry, :sponsor, :substance,
-				:user, :limitation_text
+        :analysis_group, :commercial_form, :company, :doctor, :hospital,
+        :cyp450, :fachinfo, :feedback, :galenic_form, :galenic_group,
+        :generic_group, :incomplete_registration, :indication, :invoice,
+        :address_suggestion, :migel_group, :subgroup, :product,
+        :narcotic, :orphaned_fachinfo, :orphaned_patinfo, :package,
+        :patent, :patinfo, :position, :poweruser, :registration,
+        :sequence, :slate, :sl_entry, :sponsor, :substance, :user,
+        :limitation_text
       ]
 			@parser = Parse.generate_parser <<-EOG
 Grammar OddbSize

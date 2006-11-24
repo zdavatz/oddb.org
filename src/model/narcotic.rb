@@ -3,24 +3,20 @@
 
 require 'util/persistence'
 require 'util/language'
+require 'model/package_observer'
 
 module ODDB
 	class Narcotic
 		include Persistence
-		attr_reader	:packages, :reservation_text, :substances
+    include PackageObserver
+		attr_reader	:reservation_text, :substances
 		attr_accessor :category
 		def initialize
-			@packages = []
 			@substances = []
 			super
 		end
 		def init(app=nil)
 			@pointer.append(@oid)
-		end
-		def add_package(package)
-			@packages.push(package)
-			@packages.odba_isolated_store
-			@packages.last
 		end
 		def add_substance(substance)
 			unless(@substances.include?(substance))
@@ -47,12 +43,6 @@ module ODDB
 		end
 		def pointer_descr
 			to_s
-		end
-		def remove_package(package)
-			if(@packages.delete(package))
-				@packages.odba_isolated_store
-				package
-			end
 		end
 		def remove_substance(substance)
 			if(sub = @substances.delete(substance))

@@ -46,6 +46,7 @@ class PackageForm < View::Form
 		[0,0]		=>	:iksnr,
 		[2,0]		=>	:ikscd,
 		[0,1]		=>	:descr,
+		[2,1]		=>	:commercial_form,
 		[0,2]		=>	:pretty_dose,
 		[2,2]		=>	:size,
 		[0,3]		=>	:ikscat,
@@ -96,6 +97,14 @@ class PackageForm < View::Form
 		end
 		klass.new(:ikscd, model, session, self)
 	end
+  def commercial_form(model, session=@session)
+    input = HtmlGrid::InputText.new(:commercial_form, 
+                                    model, @session, self)
+    if(comform = model.commercial_form)
+      input.value = comform.send(@session.language)
+    end
+    input
+  end
 	def delete_item(model, session)
 		delete_item_warn(model, :w_delete_package)
 	end

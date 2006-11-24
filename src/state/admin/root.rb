@@ -35,6 +35,8 @@ class Addresses < Global; end
 class AddressSuggestion < Global; end
 class AssignDeprivedSequence < Global; end
 class AtcClass < Global; end
+class CommercialForm < Global; end
+class CommercialForms < Global; end
 class GalenicForm < Global; end
 class GalenicGroup < Global; end
 class GalenicGroups < Global; end
@@ -60,12 +62,13 @@ class Indication < Global; end
 module Root
 	include State::Admin::User
   EVENT_MAP = {
-    :users  =>  State::Admin::Entities, 
+    :users            =>  State::Admin::Entities, 
   }
 	RESOLVE_STATES = {
 		[ :address_suggestion ]				=>	State::Admin::AddressSuggestion,
 		[ :atc_class ]								=>	State::Admin::AtcClass,
 		[ :company ]									=>	State::Companies::RootCompany,
+		[ :commercial_form ]	    		=>	State::Admin::CommercialForm,
     [ :doctor ]                   =>  State::Doctors::RootDoctor,
 		[ :fachinfo ]									=>	State::Drugs::RootFachinfo,
 		[ :galenic_group ]						=>	State::Admin::GalenicGroup,
@@ -98,6 +101,10 @@ module Root
 		model = @session.app.address_suggestions.values
 		State::Admin::Addresses.new(@session, model)
 	end
+  def commercial_forms
+    State::Admin::CommercialForms.new(@session, 
+                                      ODDB::CommercialForm.odba_extent)
+  end
 	def effective_substances
 		model = @session.substances.select { |sub| 
 			sub.is_effective_form?

@@ -10,7 +10,9 @@ module ODDB
 		include Comparable
 		include Language
 		include SequenceObserver
+    include ODBA::Persistable ## include directly to get odba_index
 		ODBA_SERIALIZABLE = [ '@descriptions', '@synonyms' ]
+    odba_index :name, 'all_descriptions'
 		class << self
 			def reset_oid
 				@@oid = 0

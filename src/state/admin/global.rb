@@ -23,6 +23,7 @@ class Global < State::Global
       ['view', 'org.oddb.patinfo_stats.associated', 
         State::Admin::PatinfoStatsCompanyUser],
       ['edit', 'yus.entities', State::Admin::Entities],
+      ['edit', 'org.oddb.model.!galenic_group.*', State::Admin::CommercialForms],
     ]
     links.inject([]) { |memo, (action, item, link)|
       memo.push(link) if(@session.user.allowed?(action, item))

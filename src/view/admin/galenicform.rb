@@ -37,14 +37,7 @@ class GalenicFormForm < View::DescriptionForm
 		[3,1]	=>	'list right'
 	}
 	def languages
-		@lookandfeel.languages + ['lt', 'synonym_list']
-	end
-	def synonym_list(model, session)
-		input = DEFAULT_CLASS.new(:synonym_list, model, session, self)
-		if(syns = model.synonyms)
-			input.value = syns.join(', ')
-		end
-		input
+		super + ['lt', 'synonym_list']
 	end
 end
 class GalenicFormComposite < HtmlGrid::Composite

@@ -16,12 +16,9 @@ class GalenicGroupsList < View::DescriptionList
 	CSS_MAP = {
 		[0,0,2]	=>	'list',
 	}
+  DEFAULT_CLASS = View::PointerLink
 	DEFAULT_HEAD_CLASS = 'th'
 	EVENT = :new_galenic_group
-	SYMBOL_MAP = {
-		:description	=>	View::PointerLink,
-		:oid					=>	View::PointerLink,
-	}
 end
 class GalenicGroups < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::GalenicGroupsList
