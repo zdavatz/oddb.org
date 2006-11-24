@@ -12,7 +12,7 @@ class CommercialForm < Global
   def delete
     if(@model.empty?)
       @session.app.delete(@model.pointer)
-      State::Admin::CommercialForms.new(@session, galenic_group)
+			commercial_forms
     else
       State::Admin::MergeCommercialForm.new(@session, @model)
     end
