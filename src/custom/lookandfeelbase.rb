@@ -869,6 +869,7 @@ Zeno Davatz
 				:nbsp_and_nbsp						=>	'&nbsp;und&nbsp;',
 				:nbsp											=>	'&nbsp;',
 				:new_active_agent					=>	'Neuer Wirkstoff',
+				:new_commercial_form  		=>	'Neue Handelsform',
 				:new_company							=>	'Neue Firma',
 				:new_feature							=>	'Neu!',
 				:new_galenic_form					=>	'Neue Galenische Form',

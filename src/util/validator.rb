@@ -164,6 +164,7 @@ module ODDB
 			:migel_alphabetical,
 			:narcotics,
 			:new_active_agent,
+			:new_commercial_form,
 			:new_company,
 			:new_fachinfo,
 			:new_galenic_form,

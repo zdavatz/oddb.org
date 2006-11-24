@@ -126,6 +126,10 @@ module Root
 	def limited?
 		false
 	end
+	def new_commercial_form
+		pointer = Persistence::Pointer.new(:commercial_form)
+		State::Admin::CommercialForm.new(@session, Persistence::CreateItem.new(pointer))
+	end
 	def new_company
 		pointer = Persistence::Pointer.new(:company)
 		State::Companies::RootCompany.new(@session, Persistence::CreateItem.new(pointer))
