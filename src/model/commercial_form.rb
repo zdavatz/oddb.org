@@ -15,7 +15,7 @@ module ODDB
 			@pointer.append(@oid)
 		end
 		def merge(other)
-			other.packages.each { |pac|
+			other.packages.dup.each { |pac|
 				pac.commercial_form = self
 				pac.odba_isolated_store
 			}

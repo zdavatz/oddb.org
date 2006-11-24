@@ -28,7 +28,7 @@ module ODDB
 			@galenic_group = group
 		end
 		def merge(other)
-			other.sequences.each { |seq|
+			other.sequences.dup.each { |seq|
 				seq.galenic_form = self
 				seq.odba_isolated_store
 			}

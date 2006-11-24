@@ -115,7 +115,7 @@ module ODDB
 			@effective_form == self
 		end
 		def merge(other)
-			other.sequences.uniq.each { |sequence|
+			other.sequences.dup.uniq.each { |sequence|
 				if(active_agent = sequence.active_agent(other))
 					#puts "found active-agent: #{active_agent}"
 					if(active_agent.sequence.nil?)

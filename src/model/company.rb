@@ -65,8 +65,7 @@ module ODDB
 			@lookandfeel_invoice_date = _yearly_repetition(@lookandfeel_invoice_date)
 		end
 		def merge(other)
-			regs = other.registrations.dup
-			regs.each { |reg|
+			other.registrations.dup.each { |reg|
 				reg.company = self
 				reg.odba_isolated_store
 			}
