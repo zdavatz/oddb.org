@@ -16,6 +16,7 @@ class CommercialFormsList < View::DescriptionList
 	}
 	CSS_MAP = {
 		[0,0,2]	=>	'list',
+		[2,0]	  =>	'right list',
 	}
 	DEFAULT_HEAD_CLASS = 'th'
 	EVENT = :new_commercial_form
