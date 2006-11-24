@@ -51,7 +51,9 @@ module PackageMethods
 		]
 		input = user_input(keys)
     if(name = input[:commercial_form])
-      if(comform = ODDB::CommercialForm.find_by_name(name))
+      if(name.empty?)
+        input.store(:commercial_form, nil)
+      elsif(comform = ODDB::CommercialForm.find_by_name(name))
         input.store(:commercial_form, comform.pointer)
       else
         @errors.store(:commercial_form,
