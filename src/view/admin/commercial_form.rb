@@ -17,7 +17,7 @@ class CommercialFormForm < View::DescriptionForm
     :package_count =>  HtmlGrid::Value,
   }
   def languages
-    super + ['lt', 'synonym_list']
+    super + ['synonym_list']
   end
 end
 class CommercialFormComposite < HtmlGrid::Composite
