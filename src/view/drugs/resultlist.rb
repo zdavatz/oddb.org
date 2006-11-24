@@ -196,8 +196,6 @@ class ResultList < HtmlGrid::List
 	end
 	def comparable_size(model, session=@session)
     if(comform = model.commercial_form)
-      puts [model.comparable_size, comform.to_s].inspect
-			[:addition, :multi, :count, :measure, :scale, :comform].each { |key| puts [key, model.send(key).to_s].inspect }
       parts = []
       multi = model.multi
       count = model.count
