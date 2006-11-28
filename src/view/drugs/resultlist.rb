@@ -194,29 +194,6 @@ class ResultList < HtmlGrid::List
 		end
 		link
 	end
-	def comparable_size(model, session=@session)
-    if(comform = model.commercial_form)
-      parts = []
-      multi = model.multi
-      count = model.count
-      if(multi > 1) 
-        parts.push(multi)
-      end
-      if(multi > 1 && count > 1)
-        parts.push('x')
-      end
-      if(count > 1 || multi <= 1)
-        parts.push(model.count)
-      end
-      parts.push(comform.send(@session.language))
-      if((measure = model.measure) && measure != 1)
-        parts.push("&agrave;", measure)
-      end
-      parts.join(' ')
-    else
-      HtmlGrid::Value.new(:size, model, session, self)
-    end
-	end
 	def compose_list(model=@model, offset=[0,0])
     display_all = !@model.overflow?
     code = @session.persistent_user_input(:code)

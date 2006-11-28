@@ -107,9 +107,10 @@ class UserCompanyForm < View::Form
 		[2,11]		=>	:complementary_type,
 		[1,12]		=>	:submit,
 		[3,12]		 =>	:patinfo_stats,
+		[3,13]	=>	:fipi_overview,
 	}
 	CSS_MAP = {
-		[0,0,4,13]	=>	'list',
+		[0,0,4,14]	=>	'list',
 	}
 	COMPONENT_CSS_MAP = {
 		[1,0,3,2]	=>	'standard',
@@ -152,6 +153,12 @@ class UserCompanyForm < View::Form
 	def fax(model, session=@session)
 		address_delegate(model, :fax)
 	end
+  def fipi_overview(model, session=@session)
+    link = HtmlGrid::Link.new(:fipi_overview, model, @session, self)
+    link.href = @lookandfeel._event_url(:fipi_overview, 
+                                        :pointer => @model.pointer)
+    link
+  end
 	def fon(model, session=@session)
 		address_delegate(model, :fon)
 	end
@@ -235,11 +242,12 @@ class AjaxPharmaCompanyForm < AjaxCompanyForm
 		[0,17]	=>	:generic_type,
 		[2,17]	=>	:complementary_type,
 		[1,18]	=>	:patinfo_stats,
-		[1,19]	=>	:submit,
-		[1,19,0]=>	:delete_item,
+		[1,19]	=>	:fipi_overview,
+		[1,20]	=>	:submit,
+		[1,20,0]=>	:delete_item,
 	}
 	CSS_MAP = {
-		[0,0,4,20]	=>	'list',
+		[0,0,4,21]	=>	'list',
 	}
 	COMPONENT_CSS_MAP = {
 		[1,0,3,3]	=>	'standard',
@@ -350,6 +358,7 @@ end
 class PowerLinkCompanyForm < UserCompanyForm
 	COMPONENTS = {
 		[0,0]		=>	:contact,
+		[2,0]		=>	:fipi_overview,
 		[0,1]		=>	:address,
 		[0,2]		=>	:plz,
 		[0,3]		=>	:city,

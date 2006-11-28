@@ -97,6 +97,11 @@ module ODDB
 			}
 			ODDB.search_terms(terms)
 		end
+    def packages
+      @registrations.inject([]) { |memo, reg|
+        memo.concat(reg.packages)
+      }
+    end
 		private
 		def adjust_types(input, app=nil)
 			input.each { |key, val|

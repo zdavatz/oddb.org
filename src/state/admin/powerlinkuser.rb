@@ -23,6 +23,12 @@ module PowerLinkUser
 		[ :registration,
 			:sequence, :package ]	=>	State::Admin::DeductiblePackage,
 	}	
+  def fipi_overview
+    if((pointer = @session.user_input(:pointer)) \
+      && (company = pointer.resolve(@session.app)))
+      State::Companies::FiPiOverview.new(@session, company)
+    end
+  end
 	def new_fachinfo
 		if((pointer = @session.user_input(:pointer)) \
 				&& (registration = pointer.resolve(@session)))

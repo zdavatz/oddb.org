@@ -136,6 +136,7 @@ module ODDB
 			:fachinfos,
 			:feedbacks,
 			:fipi_offer_input,
+			:fipi_overview,
 			:galenic_groups,
 			:help,
 			:home,

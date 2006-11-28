@@ -1,0 +1,90 @@
+#!/usr/bin/env ruby
+# View::Companies::FiPiOverview -- oddb.org -- 27.11.2006 -- hwyss@ywesee.com
+
+require 'view/privatetemplate'
+require 'view/additional_information'
+require 'htmlgrid/list'
+
+module ODDB
+  module View
+    module Companies
+class FiPiOverviewList < HtmlGrid::List
+  include AdditionalInformation
+  COMPONENTS = {
+    [0,0] => :name_base,
+    [1,0] => :galenic_form,
+    [2,0] => :dose,
+    [3,0] => :comparable_size,
+    [4,0] => :barcode,
+    [5,0] => :swissmedic_numbers,
+    [6,0] => :date_fi_de,
+    [7,0] => :date_fi_fr,
+    [8,0] => :date_pi_de,
+    [9,0] => :date_pi_fr,
+  }
+  CSS_CLASS = 'composite'
+  CSS_MAP = {
+    [0,0,2] => 'list',
+    [2,0,2] => 'list right',
+    [4,0,6]  => 'list', 
+  }
+  CSS_HEAD_MAP = {
+    [2,0] => 'subheading right',
+    [3,0] => 'subheading right',
+  }
+  DEFAULT_HEAD_CLASS = 'subheading'
+  SORT_DEFAULT = :name_base
+  SORT_HEADER = false
+  LEGACY_INTERFACE = false
+  def info_date(model, type, language)
+    if((info = model.send(type)) \
+       && (lang = info.descriptions[language.to_s]) \
+       && (chapter = lang.date))
+      chapter.sections.first.to_s[/\S+\s\d{4}/]
+    end
+  end
+  def date_fi_de(model)
+    info_date(model, :fachinfo, :de)
+  end
+  def date_fi_fr(model)
+    info_date(model, :fachinfo, :fr)
+  end
+  def date_pi_de(model)
+    info_date(model, :patinfo, :de)
+  end
+  def date_pi_fr(model)
+    info_date(model, :patinfo, :fr)
+  end
+  def swissmedic_numbers(model)
+    if(fi = model.fachinfo)
+      fi.iksnrs.join(', ')
+    else
+      model.iksnr
+    end
+  end
+end
+class FiPiOverviewComposite < HtmlGrid::Composite
+  COMPONENTS = {
+    [0,0,0] => 'company', 
+    [0,0,1] => :name, 
+    [0,1]   => "fipi_overview_explain", 
+    [0,2]   => :fipi_list, 
+  }
+  CSS_MAP = {
+    [0,0] => 'th',
+    [0,1] => 'migel-group list',
+  }
+  CSS_CLASS = 'composite'
+  DEFAULT_CLASS = HtmlGrid::Value
+  LEGACY_INTERFACE = false
+  def fipi_list(model)
+    FiPiOverviewList.new(model.packages, @session, self)
+  end
+end
+class FiPiOverview < PrivateTemplate
+  CONTENT = FiPiOverviewComposite
+  SNAPBACK_EVENT = :companies
+end
+    end
+  end
+end

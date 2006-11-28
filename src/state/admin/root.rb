@@ -111,6 +111,12 @@ module Root
 		}
 		State::Substances::EffectiveSubstances.new(@session, model)
 	end
+  def fipi_overview
+    if((pointer = @session.user_input(:pointer)) \
+      && (company = pointer.resolve(@session.app)))
+      State::Companies::FiPiOverview.new(@session, company)
+    end
+  end
 	def galenic_groups
 		model = @session.app.galenic_groups.values
 		State::Admin::GalenicGroups.new(@session, model)

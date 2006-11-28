@@ -144,6 +144,11 @@ module ODDB
 				inj + seq.package_count
 			}
 		end
+    def packages
+      @sequences.values.inject([]) { |memo, seq|
+        memo.concat(seq.packages.values)
+      }
+    end
 		def patent_protected?
 			@patent && @patent.protected?
 			#@patented_until && (@patented_until >= @@today)
