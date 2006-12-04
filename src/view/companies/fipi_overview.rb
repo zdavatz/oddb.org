@@ -37,6 +37,18 @@ module FiPiMethods
     end
   end
 end
+class ExportCSV < View::Form
+  CSS_CLASS = 'right'
+  COMPONENTS = {
+    [0,0] => :submit,
+  }
+  EVENT = :export_csv
+  def init
+    super
+    url = @lookandfeel._event_url(:export_csv)
+    self.onsubmit = "location.href='#{url}';return false;"
+  end
+end
 class FiPiOverviewList < HtmlGrid::List
   include AdditionalInformation
   include FiPiMethods
@@ -69,7 +81,7 @@ class FiPiOverviewList < HtmlGrid::List
 end
 class FiPiOverviewComposite < HtmlGrid::Composite
   COMPONENTS = {
-    [0,0]   => View::Drugs::ExportCSV, 
+    [0,0]   => ExportCSV, 
     [0,1,0] => 'company', 
     [0,1,1] => :name, 
     [0,2]   => "fipi_overview_explain", 
