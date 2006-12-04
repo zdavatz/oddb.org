@@ -21,7 +21,7 @@ class CompareList < HtmlGrid::List
 		[0,0]	=>	:name_base,
 		[1,0]	=>	:company_name,
 		[2,0]	=>	:most_precise_dose,
-		[3,0]	=>	:size,
+		[3,0]	=>	:comparable_size,
 		[4,0] =>	:active_agents,
 		[5,0]	=>	:price_public,
 		[6,0]	=>	:price_difference, 
