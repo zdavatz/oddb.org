@@ -3,39 +3,13 @@
 
 require 'view/privatetemplate'
 require 'view/additional_information'
+require 'view/drugs/result'
 require 'htmlgrid/list'
 
 module ODDB
   module View
     module Companies
-class FiPiOverviewList < HtmlGrid::List
-  include AdditionalInformation
-  COMPONENTS = {
-    [0,0] => :name_base,
-    [1,0] => :galenic_form,
-    [2,0] => :dose,
-    [3,0] => :comparable_size,
-    [4,0] => :barcode,
-    [5,0] => :swissmedic_numbers,
-    [6,0] => :date_fi_de,
-    [7,0] => :date_fi_fr,
-    [8,0] => :date_pi_de,
-    [9,0] => :date_pi_fr,
-  }
-  CSS_CLASS = 'composite'
-  CSS_MAP = {
-    [0,0,2] => 'list',
-    [2,0,2] => 'list right',
-    [4,0,6]  => 'list', 
-  }
-  CSS_HEAD_MAP = {
-    [2,0] => 'subheading right',
-    [3,0] => 'subheading right',
-  }
-  DEFAULT_HEAD_CLASS = 'subheading'
-  SORT_DEFAULT = :name_base
-  SORT_HEADER = false
-  LEGACY_INTERFACE = false
+module FiPiMethods
   def info_date(model, type, language)
     if((info = model.send(type)) \
        && (lang = info.descriptions[language.to_s]) \
@@ -63,16 +37,47 @@ class FiPiOverviewList < HtmlGrid::List
     end
   end
 end
+class FiPiOverviewList < HtmlGrid::List
+  include AdditionalInformation
+  include FiPiMethods
+  COMPONENTS = {
+    [0,0] => :name_base,
+    [1,0] => :galenic_form,
+    [2,0] => :dose,
+    [3,0] => :comparable_size,
+    [4,0] => :barcode,
+    [5,0] => :swissmedic_numbers,
+    [6,0] => :date_fi_de,
+    [7,0] => :date_fi_fr,
+    [8,0] => :date_pi_de,
+    [9,0] => :date_pi_fr,
+  }
+  CSS_CLASS = 'composite'
+  CSS_MAP = {
+    [0,0,2] => 'list',
+    [2,0,2] => 'list right',
+    [4,0,6]  => 'list', 
+  }
+  CSS_HEAD_MAP = {
+    [2,0] => 'subheading right',
+    [3,0] => 'subheading right',
+  }
+  DEFAULT_HEAD_CLASS = 'subheading'
+  SORT_DEFAULT = :name_base
+  SORT_HEADER = false
+  LEGACY_INTERFACE = false
+end
 class FiPiOverviewComposite < HtmlGrid::Composite
   COMPONENTS = {
-    [0,0,0] => 'company', 
-    [0,0,1] => :name, 
-    [0,1]   => "fipi_overview_explain", 
-    [0,2]   => :fipi_list, 
+    [0,0]   => View::Drugs::ExportCSV, 
+    [0,1,0] => 'company', 
+    [0,1,1] => :name, 
+    [0,2]   => "fipi_overview_explain", 
+    [0,3]   => :fipi_list, 
   }
   CSS_MAP = {
-    [0,0] => 'th',
-    [0,1] => 'migel-group list',
+    [0,1] => 'th',
+    [0,2] => 'migel-group list',
   }
   CSS_CLASS = 'composite'
   DEFAULT_CLASS = HtmlGrid::Value

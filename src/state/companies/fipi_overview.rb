@@ -2,6 +2,7 @@
 # State::Companies::FiPiOverview -- oddb.org -- 27.11.2006 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
+require 'state/companies/fipi_csv'
 require 'view/companies/fipi_overview'
 require 'ostruct'
 
@@ -18,6 +19,9 @@ class FiPiOverview < Global
       pac.public? && (pac.fachinfo || pac.has_patinfo?)
     }
     @model = model
+  end
+  def export_csv
+    FiPiCsv.new(@session, @model)
   end
 end
     end
