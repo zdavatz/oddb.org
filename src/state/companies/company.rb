@@ -19,7 +19,7 @@ class Company < Global
 end
 class UserCompany < Company
 	VIEW = View::Companies::UserCompany
-	LOGO_PATH = File.expand_path('../../doc/resources/logos',
+	LOGO_PATH = File.expand_path('../../../doc/resources/logos',
 		File.dirname(__FILE__))
 	def set_pass
 		update() # save user input
