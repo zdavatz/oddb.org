@@ -81,19 +81,29 @@ class FiPiOverviewList < HtmlGrid::List
 end
 class FiPiOverviewComposite < HtmlGrid::Composite
   COMPONENTS = {
-    [0,0]   => ExportCSV, 
+    [0,0] => :counts,
+    [1,0] => ExportCSV, 
     [0,1,0] => 'company', 
     [0,1,1] => :name, 
     [0,2]   => "fipi_overview_explain", 
     [0,3]   => :fipi_list, 
   }
+  COLSPAN_MAP = {
+    [0,1] => 2,
+    [0,2] => 2,
+    [0,3] => 2,
+  }
   CSS_MAP = {
+    [0,0] => 'result-found',
     [0,1] => 'th',
     [0,2] => 'migel-group list',
   }
   CSS_CLASS = 'composite'
   DEFAULT_CLASS = HtmlGrid::Value
   LEGACY_INTERFACE = false
+  def counts(model)
+    @lookandfeel.lookup(:fipi_counts, model.fi_count, model.pi_count)
+  end
   def fipi_list(model)
     FiPiOverviewList.new(model.packages, @session, self)
   end

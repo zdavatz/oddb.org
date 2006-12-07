@@ -35,6 +35,8 @@ class FiPiCsv < HtmlGrid::Component
     result = ''
     lang = @session.language
     CSV::Writer.generate(result, ';') { |writer|
+      writer << [@lookandfeel.lookup(:fachinfos), model.fi_count]
+      writer << [@lookandfeel.lookup(:patinfos), model.pi_count]
       writer << keys.collect { |key| 
         @lookandfeel.lookup("th_#{key}") { key.to_s }
       }

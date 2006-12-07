@@ -13,11 +13,26 @@ class FiPiOverview < Global
   DIRECT_EVENT = :fipi_overview
   VIEW = View::Companies::FiPiOverview
   def init
+    fis = []
+    pis = []
     model = OpenStruct.new
     model.name = @model.name
     model.packages = @model.packages.select { |pac|
-      pac.public? && (pac.fachinfo || pac.has_patinfo?)
+      if(pac.public?)
+        take = false
+        if(fi = pac.fachinfo)
+          fis.push(fi)
+          take = true
+        end
+        if(pac.has_patinfo?)
+          pis.push(pac.pdf_patinfo || pac.patinfo)
+          take = true
+        end
+        take
+      end
     }
+    model.fi_count = fis.uniq.size
+    model.pi_count = pis.uniq.size
     @model = model
   end
   def export_csv
