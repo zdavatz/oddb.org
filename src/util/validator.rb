@@ -18,7 +18,7 @@ module ODDB
 			:cl_status,  :download, :experience, :recommend, :impression,
 			:invoice_htmlinfos, :helps, :show_email, :export_flag, :renewal_flag,
 			:disable_autoinvoice, :refdata_override, :lppv, :vaccine, :parallel_import,
-      :yus_groups, :yus_privileges, :disable_patinfo, 
+      :yus_groups, :yus_privileges, :disable_patinfo, :disable
 		]
 		DATES = [
 			:base_patent_date, 

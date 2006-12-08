@@ -40,6 +40,7 @@ module PackageMethods
       :commercial_form,
 			:deductible,
 			:descr,
+      :disable,
 			:size, 
 			:ikscat,
 			:market_date,

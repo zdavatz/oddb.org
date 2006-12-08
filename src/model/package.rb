@@ -168,7 +168,7 @@ Grammar OddbSize
 			@narcotics = []
 		end
 		def active?
-			@market_date.nil? || @market_date <= @@today
+			!@disable && (@market_date.nil? || @market_date <= @@today)
 		end
 		def active_agents
 			@sequence.active_agents
@@ -279,8 +279,8 @@ Grammar OddbSize
 			@sequence.pdf_patinfo
 		end
 		def public?
-			(registration.active?(@@today) || @refdata_override || !@out_of_trade) \
-        && active?
+      active? && (@refdata_override || !@out_of_trade \ 
+                  || registration.active?(@@today))
 		end
 		def registration
 			@sequence.registration

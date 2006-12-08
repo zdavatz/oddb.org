@@ -176,7 +176,11 @@ module ODDB
 			@packages.length
 		end
 		def public_packages
-			active_packages.select { |pac| pac.public? }
+			if(active?) 
+				@packages.values.select { |pac| pac.public? }
+			else
+				[]
+			end
 		end
 		def public_package_count(generic_type=nil)
 			if(active? && (generic_type.nil? \

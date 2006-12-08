@@ -58,15 +58,16 @@ class PackageForm < View::Form
 		[0,6]		=>	:deductible,
 		[2,6]		=>	:lppv,
 		[0,7]		=>	:out_of_trade,
-		[1,8,0]	=>	:submit,
-		[1,8,1]	=>	:delete_item,
+		[0,8]		=>	:disable,
+		[1,9,0]	=>	:submit,
+		[1,9,1]	=>	:delete_item,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,4,6]	=>	'standard',
 		[3,3]			=>	'list',
 	}
 	CSS_MAP = {
-		[0,0,4,8]	=>	'list',
+		[0,0,4,10]	=>	'list',
 	}
 	LABELS = true
   LOOKANDFEEL_MAP = {
@@ -74,6 +75,7 @@ class PackageForm < View::Form
   }
 	SYMBOL_MAP = {
 		:deductible				=>	HtmlGrid::Select,
+		:disable     			=>	HtmlGrid::InputCheckbox,
 		:price_exfactory	=>	HtmlGrid::InputCurrency,
 		:price_public			=>	HtmlGrid::InputCurrency,
 		:iksnr						=>	HtmlGrid::Value,
@@ -84,7 +86,7 @@ class PackageForm < View::Form
 	}
 	def init
 		if(@model.out_of_trade)
-			components.store([2,6], :refdata_override)
+			components.store([2,7], :refdata_override)
 		end
 		super
 		error_message()
