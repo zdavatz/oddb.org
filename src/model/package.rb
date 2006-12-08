@@ -279,7 +279,7 @@ Grammar OddbSize
 			@sequence.pdf_patinfo
 		end
 		def public?
-      active? && (@refdata_override || !@out_of_trade \ 
+      active? && (@refdata_override || !@out_of_trade \
                   || registration.active?(@@today))
 		end
 		def registration
