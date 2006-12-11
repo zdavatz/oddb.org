@@ -32,9 +32,11 @@ class CompanyList < CompanyResult
 	DIRECT_EVENT = :companylist
 	def init
 		model = @session.app.companies.values
-		if(@session.user.allowed?('edit', 'org.oddb.model.!company.*'))
+		if(@session.event != :listed_companies \
+       && @session.user.allowed?('edit', 'org.oddb.model.!company.*'))
 			@model = model
     else
+      @direct_event = :listed_companies
       association = @session.user.model
 			@model = model.select { |company|
 				company.listed? || company == association
@@ -42,6 +44,9 @@ class CompanyList < CompanyResult
 		end
 		super
 	end
+  def direct_event
+    @direct_event || super
+  end
 end
 		end
 	end

@@ -12,6 +12,7 @@ require 'view/form'
 require 'view/resultcolors'
 require 'view/resulttemplate'
 require 'view/alphaheader'
+require 'view/navigationlink'
 
 module ODDB
 	module View
@@ -46,31 +47,32 @@ module CompanyList
 	}
 	SORT_DEFAULT = :name
 	SORT_REVERSE = false 
-	def business_area(model, session)
+	def business_area(model, session=@session)
 		if((area = model.business_area) && !area.empty?)
 			@lookandfeel.lookup(area)
 		end
 	end
-	def name(model, session)
-		link = View::PointerLink.new(:name, model, session, self)
+	def name(model, session=@session)
+		link = View::PointerLink.new(:name, model, @session, self)
 		if(model.ean13)
-			link.set_attribute('title', @lookandfeel.lookup(:ean_code, model.ean13))
+			link.set_attribute('title', @lookandfeel.lookup(:ean_code, 
+                                                      model.ean13))
 		end
 		link
 	end
-	def url(model, session)
-		link = HtmlGrid::HttpLink.new('url', model, session, self)
+	def url(model, session=@session)
+		link = HtmlGrid::HttpLink.new('url', model, @session, self)
 		link.set_attribute('class', 'list')
 		link.target = "_self"
 		link
 	end
-	def contact(model, session)
-		HtmlGrid::MailLink.new('contact_email', model, session, self)
+	def contact(model, session=@session)
+		HtmlGrid::MailLink.new('contact_email', model, @session, self)
 	end
 end
 module NewCompany
-	def new_company(model, session)
-		button = HtmlGrid::Button.new(:new_company, model, session, self)
+	def new_company(model, session=@session)
+		button = HtmlGrid::Button.new(:new_company, model, @session, self)
 		href = "location.href='#{@lookandfeel._event_url(:new_company)}'"
 		button.set_attribute('onClick', href)
 		button
@@ -79,19 +81,24 @@ end
 class CompaniesComposite < Form
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
-		[0,0,0]	=>	:search_query,
-		[0,0,1]	=>	:submit,
+		[1,0,0]	=>	:search_query,
+		[1,0,1]	=>	:submit,
 		[0,1]		=>	:company_list,
 	}
 	EVENT = :search
-	SYMBOL_MAP = {
-		:search_query		=>	View::SearchBar,	
-	}
+  SYMBOL_MAP = {
+    :search_query     =>  View::SearchBar,  
+  }
+  COLSPAN_MAP = {
+    [0,1] => 2, 
+  }
 	CSS_MAP = {
-		[0,0]	=>	'right'
+		[0,0]	=>	'list',
+		[1,0]	=>	'right',
 	}
-	def company_list(model, session)
-		self::class::COMPANY_LIST.new(model, session, self)
+  LEGACY_INTERFACE = false
+	def company_list(model, session=@session)
+		self::class::COMPANY_LIST.new(model, @session, self)
 	end
 end
 class UnknownCompanyList < HtmlGrid::List
@@ -110,11 +117,18 @@ class RootCompaniesComposite < CompaniesComposite
 	include NewCompany
 	COMPANY_LIST = RootCompanyList
 	COMPONENTS = {
-		[0,0,0]	=>	:search_query,
-		[0,0,1]	=>	:submit,
+		[0,0]	  =>	:listed_companies,
+		[1,0,0]	=>	:search_query,
+		[1,0,1]	=>	:submit,
 		[0,1]		=>	:company_list,
 		[0,2]		=>	:new_company,
 	}
+  def listed_companies(model)
+    link = HtmlGrid::Link.new(:listed_companies, model, @session, self)
+    link.href = @lookandfeel._event_url(:listed_companies)
+    link.css_class = 'list'
+    link
+  end
 end
 class RootCompanies < View::ResultTemplate
 	CONTENT = View::Companies::RootCompaniesComposite

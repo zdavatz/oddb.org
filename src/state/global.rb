@@ -106,6 +106,7 @@ module ODDB
 				:home_user						=>  State::User::Init,
 				:hospitallist					=>	State::Hospitals::HospitalList,
 				:limitation_texts			=>	State::Drugs::LimitationTexts,
+				:listed_companies     =>  State::Companies::CompanyList,
 				:login_form						=>	State::Admin::Login,
 				:mailinglist					=>	State::User::MailingList,
 				:migel_alphabetical		=>	State::Migel::Alphabetical,

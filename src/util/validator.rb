@@ -15,11 +15,12 @@ module ODDB
 		alias :receiver_email :email
 		alias :competition_email :email
 		BOOLEAN = [
-			:cl_status,  :download, :experience, :recommend, :impression,
-			:invoice_htmlinfos, :helps, :show_email, :export_flag, :renewal_flag,
-			:disable_autoinvoice, :refdata_override, :lppv, :vaccine, :parallel_import,
-      :yus_groups, :yus_privileges, :disable_patinfo, :disable
-		]
+      :cl_status, :disable, :disable_autoinvoice, :disable_patinfo,
+      :download, :experience, :export_flag, :helps, :impression,
+      :invoice_htmlinfos, :lppv, :parallel_import, :recommend,
+      :refdata_override, :renewal_flag, :show_email, :vaccine,
+      :yus_groups, :yus_privileges,
+    ]
 		DATES = [
 			:base_patent_date, 
 			:deletion_date,
@@ -157,6 +158,7 @@ module ODDB
 			:legal_note,
 			:limitation_text,
 			:limitation_texts,
+      :listed_companies,
 			:login,
 			:login_form,
 			:logout,

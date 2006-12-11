@@ -807,6 +807,7 @@ Zeno Davatz
 				:limitation_text_title0		=>	'Limitationen zu&nbsp;',
 				:limitation_text_title1		=>	':',
 				:list											=>	'Liste',
+				:listed_companies					=>	'Aktuelle Einträge',
 				:location									=>	'PLZ/Ort',
 				:login										=>	'Anmelden',
 				:login_form								=>	'Anmeldung',
