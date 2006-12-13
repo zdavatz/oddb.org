@@ -195,7 +195,7 @@ class ResultList < HtmlGrid::List
 		link
 	end
 	def compose_list(model=@model, offset=[0,0])
-    display_all = !@model.overflow?
+    display_all = !(@model.respond_to?(:overflow?) && @model.overflow?)
     code = @session.persistent_user_input(:code)
     model.each { |atc|
       compose_subheader(atc, offset)

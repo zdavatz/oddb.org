@@ -39,7 +39,7 @@ module ODDB
 			@packages.size
 		end
 		def galform_str(galform, session)
-			if(galform.nil?)
+			if(galform.odba_instance.nil?)
 				''
 			else
 				galform.send(session.language)

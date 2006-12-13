@@ -22,7 +22,7 @@ module ODDB
 			((10-(sum%10))%10).to_s
 		end
 		def Ean13.new_unchecked(str)
-			self.new(str.strip+checksum(str))
+			self.new(str.strip.ljust(12, '0')+checksum(str))
 		end
 		private
 		def valid?

@@ -51,7 +51,7 @@ module ODDB
 			def name_base(model, session=@session)
 				## optimization: there is a new Instance of the including Component for
 				## each new query. Therefore it should be _much_ faster to have an 
-				## instance variable @query thant to call @session.persistent_user_input
+				## instance variable @query than to call @session.persistent_user_input
 				## for every line in a result
 				@query ||= @session.persistent_user_input(:search_query)
 				link = HtmlGrid::Link.new(:compare, model, session, self)
