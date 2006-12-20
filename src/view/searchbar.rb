@@ -2,6 +2,7 @@
 # View::SearchBar -- oddb -- 22.11.2002 -- hwyss@ywesee.com 
 
 require 'view/form'
+require 'htmlgrid/divform'
 require 'htmlgrid/inputtext'
 
 module ODDB
@@ -44,7 +45,7 @@ module SearchBarMethods
 		select
 	end
 end
-class SelectSearchForm < View::Form
+class SelectSearchForm < HtmlGrid::DivForm
   include SearchBarMethods
 	COMPONENTS = {
 		[0,0,0]	=>	:search_query,
@@ -53,17 +54,15 @@ class SelectSearchForm < View::Form
 	SYMBOL_MAP = {
 		:search_query	=>	View::SearchBar,	
 	}
-	CSS_CLASS = 'right'
 	LEGACY_INTERFACE = false
 	EVENT = :search
 	FORM_METHOD = 'GET'
 end
-class SearchForm < View::Form
+class SearchForm < HtmlGrid::DivForm
 	COMPONENTS = {
 		[0,0,0]	=>	:search_query,
 		[0,0,1]	=>	:submit,
 	}
-	CSS_CLASS = 'right'
 	EVENT = :search
 	FORM_METHOD = 'GET'
 	SYMBOL_MAP = {

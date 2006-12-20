@@ -76,9 +76,13 @@ class ResultLimitComposite < HtmlGrid::Composite
 		[0,3]	=> View::LimitComposite,
 	}
 	LEGACY_INTERFACE = false
+  CSS_MAP = {
+    [0,0] => 'right',
+    [0,1] => 'right',
+  }
 	def export_csv(model)
 		if(@session.state.package_count.to_i > 0)
-			View::Drugs::ExportCSV.new(model, @session, self)
+			View::Drugs::DivExportCSV.new(model, @session, self)
 		end
 	end
 end

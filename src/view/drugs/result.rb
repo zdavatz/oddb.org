@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # View::Drugs::Result -- oddb -- 03.03.2003 -- andy@jetnet.ch
 
-require 'htmlgrid/form'
 require 'view/form'
 require 'view/resulttemplate'
 require 'view/drugs/resultlist'
@@ -20,14 +19,14 @@ class CompanyUser < User; end
 		module Drugs
 class User < SBSM::KnownUser; end
 class UnknownUser < SBSM::UnknownUser; end
-class ExportCSV < View::Form
+class DivExportCSV < HtmlGrid::DivForm
 	include View::User::Export
-	CSS_CLASS = 'right'
 	COMPONENTS = {
-		[0,0,0]	=>	:new_feature,
-		[0,0,1]	=>	:example,
-		[0,0,2]	=>	:submit,
+		[0,0]	=>	:new_feature,
+		[1,0]	=>	:example,
+		[2,0]	=>	:submit,
 	}
+  LEGACY_INTERFACE = false
 	EVENT = :export_csv
 	def init
 		super
@@ -39,7 +38,7 @@ class ExportCSV < View::Form
 		url = @lookandfeel._event_url(:export_csv, data)
 		self.onsubmit = "location.href='#{url}';return false;"
 	end
-	def example(model, session)
+	def example(model)
 		super('Inderal.Preisvergleich.csv')
 	end
 	def hidden_fields(context)
@@ -50,8 +49,8 @@ class ExportCSV < View::Form
 		}	
 		hidden
 	end
-	def new_feature(model, session)
-		span = HtmlGrid::Span.new(model, session, self)
+	def new_feature(model)
+		span = HtmlGrid::Span.new(model, @session, self)
 		span.value = @lookandfeel.lookup(:new_feature)
 		span.set_attribute('style','color: red; margin: 5px; font-size: 8pt;')
 		#span.set_attribute('style','color: red; margin: 5px; font-size: 11pt;')
@@ -77,7 +76,9 @@ class ResultComposite < HtmlGrid::Composite
 	SYMBOL_MAP = { }
 	CSS_MAP = {
 		[0,0] =>	'result-found',
+    [1,0] =>  'right',
 		[0,1] =>	'list',
+    [1,1] =>  'right',
 	}
 	def init
     if(@session.user.allowed?('edit', 'org.oddb.drugs'))
@@ -104,7 +105,7 @@ class ResultComposite < HtmlGrid::Composite
 	end
 	def export_csv(model, session=@session)
 		if(@lookandfeel.enabled?(:export_csv))
-			View::Drugs::ExportCSV.new(model, @session, self)
+			View::Drugs::DivExportCSV.new(model, @session, self)
 		end
 	end
 	def title_found(model, session)
