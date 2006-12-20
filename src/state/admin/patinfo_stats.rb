@@ -24,7 +24,7 @@ class PatinfoStatsCommon < State::Admin::Global
 			@iksnr = sequence.iksnr
 			@seqnr = sequence.seqnr
 			@pointer = sequence.pointer
-			@name = sequence.name
+			@name = sequence.name_base
 			@invoice_items = [] 
 		end
 		def add_invoice_item(invoice_item)
