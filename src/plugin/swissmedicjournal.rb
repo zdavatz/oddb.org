@@ -203,7 +203,8 @@ module ODDB
 			end
 		end
 		def prune_packages(smj_seq, sequence)
-			ikscds = smj_seq.packages.collect { |package| package.ikscd }
+			packages = smj_seq.packages || []
+			ikscds = packages.collect { |package| package.ikscd }
 			sequence.packages.dup.each { |ikscd, package| 
 				unless ikscds.include?(ikscd)
 					@pruned_packages += 1
@@ -217,7 +218,7 @@ module ODDB
 			registration.sequences.dup.each { |seqnr, sequence|
 				if(seqnrs.include?(seqnr))
 					smj_seq = smj_reg.products[seqnr]
-					prune_packages(smj_seq, sequence) if smj_seq.packages
+					prune_packages(smj_seq, sequence) unless(smj_reg.incomplete?)
 				else
 					@pruned_sequences += 1
 					@app.delete(sequence.pointer) 

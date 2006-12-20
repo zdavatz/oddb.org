@@ -5,6 +5,7 @@ $: << File.expand_path("../src", File.dirname(__FILE__))
 $: << File.expand_path("../../..", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
+require 'odba'
 require 'rubygems'
 require 'odba_exporter'
 require 'util/oddbconfig'

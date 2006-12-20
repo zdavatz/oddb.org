@@ -28,8 +28,6 @@ module ODDB
 		end
 		def run
 			mail_patinfo_invoices
-			mail_lookandfeel_invoices
-			mail_company_index_invoices
 			run_on_monthday(1) {
 				mail_download_invoices
 			}
@@ -169,9 +167,6 @@ module ODDB
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
-		def mail_company_index_invoices
-			CompanyIndexInvoicer.new(@app).run
-		end
 		def mail_download_stats
 			mail_stats('download')
 		end
@@ -188,9 +183,6 @@ module ODDB
 		end
 		def mail_feedback_stats
 			mail_stats('feedback')
-		end
-		def mail_lookandfeel_invoices
-			LookandfeelInvoicer.new(@app).run
 		end
 		def mail_notification_stats
 			file = @app.notification_logger.create_csv(@app)

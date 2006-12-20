@@ -24,13 +24,14 @@ class PatinfoStatsCommon < State::Admin::Global
 			@iksnr = sequence.iksnr
 			@seqnr = sequence.seqnr
 			@pointer = sequence.pointer
+			@name = sequence.name_base
 			@invoice_items = [] 
 		end
 		def add_invoice_item(invoice_item)
 			@invoice_items.push(invoice_item)
 		end
 		def iksnr_seqnr
-			"#{@iksnr}&nbsp;&nbsp;#{@seqnr}"
+			"#{@iksnr} #{@seqnr}: #{@name}"
 		end
 		def invoice_items
 			@invoice_items.sort_by { |item|
