@@ -302,10 +302,8 @@ EOF
 @writer.send_flowing_data("Fachinformation des Arzneimittel-Kompendium der Schweiz\256")
 @writer.send_flowing_data(" ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_hr()
-@writer.send_line_break()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -603,7 +601,6 @@ EOF
 @writer.new_font(font)
 @writer.send_column()
 @writer.send_hr()
-@writer.send_line_break()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -1119,7 +1116,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Ciprofloxacin Sandoz\256 i.v.")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
@@ -1420,7 +1416,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("SANDOZ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.new_fontsize(-8.0)
 @writer.send_line_break()
@@ -5094,7 +5089,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("\334bliche Dosierung")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
@@ -5398,7 +5392,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("                                  bei Erwachsenen   ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -5407,7 +5400,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("unteren und oberen Harnwege                         ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -5416,7 +5408,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("                                  2\327 400 mg         ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -5425,7 +5416,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("(je nach Schweregrad und Keim)    2\327 400 mg         ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -5736,13 +5726,11 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("die einmalige Infusion von 200 mg.")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
 @writer.send_flowing_data("Seite 1")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_page()
 @writer.send_column()
@@ -6048,7 +6036,6 @@ EOF
 @writer.send_flowing_data("Fachinformation des Arzneimittel-Kompendium der Schweiz\256")
 @writer.send_flowing_data(" ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
@@ -6351,7 +6338,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Bei einer notwendigen intraven\366sen Therapie kann die Dosis auf 3\327 400 mg erh\366ht werden, wenn bestimmte ernsthafte")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -11264,13 +11250,11 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Auf die M\366glichkeit einer Kreuzresistenz zwischen Ciprofloxacin und anderen Fluorochinolonen ist zu achten.")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
 @writer.send_flowing_data("Seite 2")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_page()
 @writer.send_column()
@@ -11576,7 +11560,6 @@ EOF
 @writer.send_flowing_data("Fachinformation des Arzneimittel-Kompendium der Schweiz\256")
 @writer.send_flowing_data(" ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
@@ -11879,7 +11862,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Aufgrund m\366glicher phototoxischer Reaktionen sollten Patienten darauf aufmerksam gemacht werden, \374berm\344ssige")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -17970,13 +17952,11 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("lebensbedrohlichen Leberausfall.")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
 @writer.send_flowing_data("Seite 3")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_page()
 @writer.send_column()
@@ -18282,10 +18262,8 @@ EOF
 @writer.send_flowing_data("Fachinformation des Arzneimittel-Kompendium der Schweiz\256")
 @writer.send_flowing_data(" ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_hr()
-@writer.send_line_break()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -18880,7 +18858,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Wirkungen auf Herz-Kreislauf")
 @writer.send_hr()
-@writer.send_line_break()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -27621,13 +27598,11 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Gegen Treponema pallidum ist Ciprofloxacin nicht wirksam.")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
 @writer.send_flowing_data("Seite 4")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_page()
 @writer.send_column()
@@ -27933,10 +27908,8 @@ EOF
 @writer.send_flowing_data("Fachinformation des Arzneimittel-Kompendium der Schweiz\256")
 @writer.send_flowing_data(" ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_hr()
-@writer.send_line_break()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -28531,7 +28504,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Resistenz")
 @writer.send_hr()
-@writer.send_line_break()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -30215,7 +30187,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("empfohlen:")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
@@ -30519,7 +30490,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("                 Durchmesser (mm)    MHK (mg/l)     ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -30531,7 +30501,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Resistent        <14                 >4             ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -30540,7 +30509,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("                           Isolate   (mg/l)   (mg/l)")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -30594,7 +30562,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Yersinia spp.              550       0,03     0,04  ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -30621,7 +30588,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Gardnerella vaginalis      230       1,33     2,68  ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
@@ -30922,7 +30888,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Seite 5")
 @writer.send_hr()
-@writer.send_line_break()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -31523,10 +31488,8 @@ EOF
 @writer.send_flowing_data("Fachinformation des Arzneimittel-Kompendium der Schweiz\256")
 @writer.send_flowing_data(" ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_hr()
-@writer.send_line_break()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -32122,7 +32085,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Keime                      Zahl der  MHK 50   MHK 90")
 @writer.send_hr()
-@writer.send_line_break()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -32718,7 +32680,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("                           Isolate   (mg/l)   (mg/l)")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -32787,7 +32748,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Campylobacter spp.         1151      0,16     0,68  ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -32853,7 +32813,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Propionibacterium acnes    64        0,96     2,32  ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -32886,7 +32845,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Bifidobacterium spp.       14        4        20    ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -32934,7 +32892,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Rhodococcus spp.           10        0,12     1     ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
@@ -33235,7 +33192,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Seite 6")
 @writer.send_hr()
-@writer.send_line_break()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -33838,11 +33794,9 @@ EOF
 @writer.send_flowing_data("Fachinformation des Arzneimittel-Kompendium der Schweiz\256")
 @writer.send_flowing_data(" ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_column()
 @writer.send_hr()
-@writer.send_line_break()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -34439,7 +34393,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Ciprofloxacin bei Milzbrand")
 @writer.send_hr()
-@writer.send_line_break()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
 attributes: 
@@ -37540,7 +37493,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Die im einzelnen wiedergefundenen Mengen der Metaboliten sind nachstehend aufgef\374hrt.")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_column()
 font = YAML.load <<-EOF
@@ -37851,7 +37803,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Substanz             Harn        F\344ces              ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_column()
 @writer.send_line_break()
@@ -37875,7 +37826,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Oxociprofloxacin     5,6         0,8                ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_column()
 @writer.send_line_break()
@@ -38821,7 +38771,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("unwahrscheinlich.")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_column()
 @writer.send_line_break()
@@ -38829,7 +38778,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Seite 7")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_column()
 @writer.send_page()
@@ -39136,7 +39084,6 @@ EOF
 @writer.send_flowing_data("Fachinformation des Arzneimittel-Kompendium der Schweiz\256")
 @writer.send_flowing_data(" ")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 font = YAML.load <<-EOF
 --- !ruby/object:Rpdf2txt::Font 
@@ -39439,7 +39386,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("Pharmakokinetische Untersuchungen bei Kindern/Jugendlichen mit zystischer Fibrose zeigen, dass die")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
@@ -43944,7 +43890,6 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("August 2006.")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_paragraph()
@@ -43954,13 +43899,11 @@ EOF
 @writer.send_column()
 @writer.send_flowing_data("freigegeben.\251 Copyright 2006 by Documed AG, Basel. Die unberechtigte Nutzung und Weitergabe ist untersagt. [22.11.2006]")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_line_break()
 @writer.send_column()
 @writer.send_flowing_data("Seite 8")
 @writer.send_hr()
-@writer.send_line_break()
 @writer.send_column()
 @writer.send_page()
 @writer.send_eof()
