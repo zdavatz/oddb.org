@@ -1510,5 +1510,20 @@ Hypotension        -          3          8
 				}
 			end
 		end
+		class TestFachinfoPDFCiprofloxacinSandoz < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_ciprofloxacin.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+			def test_remove_page_numbers
+        @fachinfo.each_chapter { |chap|
+          assert(!chap.match(/seite\s*\d+/mi), 
+                 "found page-number in:\n#{chap}")
+        }
+			end
+		end
 	end
 end

@@ -142,7 +142,12 @@ module ODDB
             str << (" " * (8 - (str.length % 8)))
           }
 				end
-				@text = @raw_txt.strip
+        if(@preformatted)
+          @text = @raw_txt.rstrip
+        else
+          @text = @raw_txt.strip
+        end
+        self
 			end
 			def [](*args)
 				@raw_txt[*args]

@@ -10,6 +10,8 @@ module ODDB
 		class FachinfoPDFWriter < Writer
 			include FachinfoWriterMethods
 			include Rpdf2txt::DefaultHandler
+      @@skip_pattern = /documed|copyright|seite|page|[kc]ompendium/i
+      @@hr_pattern = /-{5}\s*$/
 			def initialize(*args)
 				super
 				@chars_since_last_linebreak = 0
@@ -44,6 +46,7 @@ module ODDB
 				@font = font
 			end
 			def add_text
+        return unless(@font)
 				if(@font.bold? && @font.italic?)
 					heading = self.out.strip
 					unless(heading.empty?)
@@ -75,8 +78,8 @@ module ODDB
 					font_name = @font.basefont_name
 					courier = !/courier/i.match(font_name).nil?
 					symbol = !/symbol/i.match(font_name).nil?
-					skip_paragraph = /documed|copyright/i.match(self.out)
-					if(!@chapter.nil? && !str_check.empty? && !skip_paragraph)
+					if(!@chapter.nil? && !str_check.empty? \
+             && !@@skip_pattern.match(self.out))
 						str = self.out
 						@wrote_section_heading = false
 						#for the first paragraph after a preformated paragraph
@@ -95,13 +98,17 @@ module ODDB
 						end
 						if(courier)
 							if(@paragraph.empty?)
-								str.strip!
+								#str.strip!
+                str.gsub(/^[\n\r]+/, '')
 								@paragraph.preformatted!
 							elsif(!@paragraph.preformatted?)
 								@paragraph = @section.next_paragraph
 								@paragraph.preformatted!
 							end
-							#@preformatted = true
+              if(@preceding_hr)
+                str = "-"*80 << "\n" << str
+                @preceding_hr = false
+              end
 						else
 							str.gsub!(/-\n/, "-")
 							str.gsub!(/ ?\n ?/, " ")
@@ -115,8 +122,20 @@ module ODDB
 			end
 			def send_flowing_data(data)
 				@chars_since_last_linebreak += data.size
-				self.out << data unless(/[kc]ompendium/i.match(data))
+				self.out << data #unless(/([kc]ompendium)|(\b(seite|page)\s*\d+)/i.match(data))
+				#self.out << data unless(/[kc]ompendium/i.match(data))
 			end
+      def send_hr
+        if(@paragraph && @paragraph.preformatted?)
+          unless(@@hr_pattern.match(self.out) \
+                 || @@hr_pattern.match(@paragraph[-6..-1]))
+            self.out << "-"*80 << "\n"
+            @preceding_hr = false
+          end
+        else
+          @preceding_hr = true
+        end
+      end
 			def send_page
 				## in newer fi-pdfs there is no change of font for 
 				## pagenumbers. Here in send_page we can recognize 
@@ -130,7 +149,7 @@ module ODDB
 				end
 			end
 			def send_line_break
-				## After ther first period in 'Valid until' 
+				## After the first period in 'Valid until' 
 				## we can go on to the next chapter
 				if(@chapter == @date && /\.\s*$/.match(self.out))
 					self.add_text
