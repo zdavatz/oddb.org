@@ -27,6 +27,7 @@ module ODDB
 						[0,3]	=>	2,
 						[0,4]	=>	2,
 					}
+          css_map.store([1,2], 'right')
 				else
 					@components = {
 						[0,0]		=>	:head,
@@ -40,6 +41,7 @@ module ODDB
 						[0,2]	=>	2,
 						[0,3]	=>	2,
 					}
+          css_map.store([1,1], 'right')
 				end
 				super
 			end
