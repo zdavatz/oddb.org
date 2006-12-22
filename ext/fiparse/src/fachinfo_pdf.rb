@@ -126,10 +126,10 @@ module ODDB
 				#self.out << data unless(/[kc]ompendium/i.match(data))
 			end
       def send_hr
+        send_line_break
         if(@paragraph && @paragraph.preformatted?)
           unless(@@hr_pattern.match(self.out) \
                  || @@hr_pattern.match(@paragraph[-6..-1]))
-            send_line_break
             self.out << "-"*80 << "\n"
             @preceding_hr = false
           end
