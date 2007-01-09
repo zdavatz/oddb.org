@@ -407,7 +407,7 @@ module ODDB
 		]
 		DICTIONARIES = {
 			'de'	=>	{
-				:all_drugs_pricecomparison	=>	'Komplette Schweizer Medikamenten-Enzyklopädie',
+				:all_drugs_pricecomparison	=>	'Schweizer Medikamenten-Enzyklopädie',
 				:atc_chooser								=>	'ATC-Codes', 
 				:data_declaration						=>	'Datenherkunft',
 				:fipi_overview_explain      =>	'Stand der Publikation der Fach- und Patienteninformationen unter www.med-drugs.ch',
@@ -420,7 +420,7 @@ module ODDB
 				:sequences									=>	'Medikamente A-Z',
 			},
 			'fr'	=>	{
-				:all_drugs_pricecomparison	=>	'Encyclopédie complète des médicaments commercialisés en Suisse',
+				:all_drugs_pricecomparison	=>	'Encyclopédie des médicaments commercialisés en Suisse',
 				:atc_chooser								=>	'ATC-Codes', 
 				:data_declaration						=>	'Source des dates',
 				:fipi_overview_explain      =>	'Publications IPro et IPat sous www.just-medical.ch',
