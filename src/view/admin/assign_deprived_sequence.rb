@@ -30,6 +30,7 @@ end
 class AssignDeprivedSequenceForm < View::FormList
 	include View::Admin::RegistrationSequenceList
 	include View::AdditionalInformation
+	include HtmlGrid::ErrorMessage
 	EVENT = :assign_deprived_sequence
 	COMPONENTS = {
 		[0,0]	=>	:patinfo_pointer,
@@ -48,6 +49,10 @@ class AssignDeprivedSequenceForm < View::FormList
 		[1,0,9]	=>	'list',
 	}
 	SORT_DEFAULT = nil
+	def init
+		super
+		error_message
+	end
 	def compose_list(model, offset)
 		_compose(model.sequence, offset)
 		#compose_components(model.sequence, offset)
