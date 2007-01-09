@@ -67,6 +67,11 @@ class ResultLimitList < HtmlGrid::List
 	def name_base(model, session)
 		model.name_base
 	end
+  def most_precise_dose(model, session=@session)
+    model.pretty_dose || if(model.active_agents.size == 1)
+      model.dose
+    end
+  end
 end
 class ResultLimitComposite < HtmlGrid::Composite
 	COMPONENTS = {
