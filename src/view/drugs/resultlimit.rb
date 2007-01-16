@@ -21,7 +21,7 @@ class ResultLimitList < HtmlGrid::List
 		[3,0]	=>	:name_base,
 		[4,0]	=>	:galenic_form,
 		[5,0]	=>	:most_precise_dose,
-		[6,0]	=>	:size,
+		[6,0]	=>	:comparable_size,
 		[7,0]	=>	:price_exfactory,
 		[8,0]	=>	:price_public,
 		[9,0]	=>	:ikscat,
