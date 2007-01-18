@@ -367,7 +367,8 @@ module ODDB
         :home_welcome => '',
       },
     }
-		DISABLED = [ :generic_definition, :legal_note ]
+		DISABLED = [ :generic_definition, :legal_note, 
+      :pointer_steps_header  ]
     def navigation(*args)
       [:help_link, :faq_link, :contact_link ]
     end
@@ -446,6 +447,7 @@ module ODDB
 				:sequences									=>	'Drugs A-Z',
 			},
 		}
+		DISABLED = [ :pointer_steps_header ]
 		RESOURCES = {
 			#:external_css	=>	'http://www.just-medical.com/css/oddb.css',
 			:external_css	=>	'http://www.just-medical.com/css/new.oddb.css',

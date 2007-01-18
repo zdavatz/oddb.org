@@ -28,7 +28,9 @@ module ODDB
 				:pointer_descr =>	View::PointerLink,
 			}
 			def compose(model=@model, offset=[0,0])
-				compose_header(offset)
+        unless(@lookandfeel.disabled?(:pointer_steps_header))
+          compose_header(offset) 
+        end
 				offset = resolve_offset(offset, self::class::OFFSET_STEP)
 				offset = compose_snapback(offset)
 				model = if(model.respond_to? :ancestors)
