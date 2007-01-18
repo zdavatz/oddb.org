@@ -213,7 +213,7 @@ class ResultList < HtmlGrid::List
 	def compose_list(model=@model, offset=[0,0])
     if(model.respond_to?(:overflow?) && model.overflow?)
       @grid.add(resultview_switch(model), *offset)
-      @grid.add_style("list migel-group", *offset)
+      @grid.add_style("list migel-group right", *offset)
       @grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
       offset = resolve_offset(offset, self::class::OFFSET_STEP)
     end
