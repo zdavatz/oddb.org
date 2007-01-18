@@ -338,6 +338,7 @@ module ODDB
 			:home,
 			:home_drugs,
 			:powerlink,
+			:popup_links,
 			:search_reset,
 			:sequences,
 			:topfoot,
@@ -384,14 +385,13 @@ module ODDB
         [4,0,1]	=>	:name_base,
         [4,0,2]	=>	'result_item_end',
         [5,0]		=>	:comparable_size,
-        [6,0]		=>	:price_exfactory,
-        [7,0]	=>	:price_public,
-        [8,0]	=>	:deductible,
-        [9,0]	=>	:ddd_price,
-        [10,0]	=>	:active_agents,
-        [11,0]	=>	:company_name,
-        [12,0]	=>	:ikscat,
-        [13,0]	=>  :google_search,
+        [6,0]	=>	:price_public,
+        [7,0]	=>	:deductible,
+        [8,0]	=>	:ddd_price,
+        [9,0]	=>	:active_agents,
+        [10,0]	=>	:company_name,
+        [11,0]	=>	:ikscat,
+        [12,0]	=>  :google_search,
       }
     end
     def zone_navigation
@@ -408,7 +408,7 @@ module ODDB
 		]
 		DICTIONARIES = {
 			'de'	=>	{
-				:all_drugs_pricecomparison	=>	'Komplette Schweizer Medikamenten-Enzyklopädie',
+				:all_drugs_pricecomparison	=>	'Schweizer Medikamenten-Enzyklopädie',
 				:atc_chooser								=>	'ATC-Codes', 
 				:data_declaration						=>	'Datenherkunft',
 				:fipi_overview_explain      =>	'Stand der Publikation der Fach- und Patienteninformationen unter www.med-drugs.ch',
@@ -421,7 +421,7 @@ module ODDB
 				:sequences									=>	'Medikamente A-Z',
 			},
 			'fr'	=>	{
-				:all_drugs_pricecomparison	=>	'Encyclopédie complète des médicaments commercialisés en Suisse',
+				:all_drugs_pricecomparison	=>	'Encyclopédie des médicaments commercialisés en Suisse',
 				:atc_chooser								=>	'ATC-Codes', 
 				:data_declaration						=>	'Source des dates',
 				:fipi_overview_explain      =>	'Publications IPro et IPat sous www.just-medical.ch',

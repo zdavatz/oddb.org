@@ -41,6 +41,7 @@ module SequenceAgentList
 	DEFAULT_HEAD_CLASS = 'subheading'
 	EVENT = :new_active_agent	
 	SORT_HEADER = false
+	SORT_DEFAULT = :self
 	def substance(model, session=@session)
 		link = HtmlGrid::Link.new(:substance, model, @session, self)
 		link.value = _substance(model)
