@@ -32,24 +32,27 @@ class AtcHeader < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0,0] => :atc_description,
 		[0,0,2] => :atc_ddd_link,
+		[1,0]   => :pages,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'atc list',
+		[0,0,2]	=>	'atc list',
 	}
+  LEGACY_INTERFACE = false
 	def init
 		if(@session.user.allowed?('edit', 'org.oddb.model.!atc_class.*'))
 			components.store([0,0,1], :edit)
 		end
     if(@model.overflow? \
+       && @session.cookie_set_or_get(:resultview) == "atc" \
        && @session.persistent_user_input(:code) == @model.code)
       @css_map = {
-        [0,0] => 'migel-group list'
+        [0,0,2] => 'migel-group list'
       }
     end
 		super
 	end
-	def atc_ddd_link(atc, session)
+	def atc_ddd_link(atc, session=@session)
 		unless(@lookandfeel.disabled?(:atc_ddd))
 			while(atc && !atc.has_ddd? && (code = atc.parent_code))
 				atc = session.app.atc_class(code)
@@ -57,7 +60,7 @@ class AtcHeader < HtmlGrid::Composite
 			super(atc, session)
 		end
 	end
-	def atc_description(model, session)
+	def atc_description(model, session=@session)
     code = model.code
     link = HtmlGrid::Link.new(code, model, @session, self)
     link.value = [
@@ -82,11 +85,24 @@ class AtcHeader < HtmlGrid::Composite
     end
     link
 	end
-	def edit(model, session)
+	def edit(model, session=@session)
 		link = View::PointerLink.new(:code, model, session, self)
 		link.value = @lookandfeel.lookup(:edit_atc_class) + "&nbsp;"
 		link.attributes['class'] = 'small'
 		link
+	end
+	def pages(model, session=@session)
+		state = @session.state
+		if(@session.cookie_set_or_get(:resultview) == "pages" \
+       && state.respond_to?(:pages) \
+			 && (pages = state.pages) \
+			 && pages.size > 1)
+			args = {
+				:search_query => @session.persistent_user_input(:search_query),	
+				:search_type => @session.persistent_user_input(:search_type),	
+			}
+			View::Pager.new(pages, @session, self, :search, args)
+		end
 	end
 end
 class ResultList < HtmlGrid::List
@@ -195,12 +211,17 @@ class ResultList < HtmlGrid::List
 		link
 	end
 	def compose_list(model=@model, offset=[0,0])
-    display_all = !(@model.respond_to?(:overflow?) && @model.overflow?)
+    if(model.respond_to?(:overflow?) && model.overflow?)
+      @grid.add(resultview_switch(model), *offset)
+      @grid.add_style("list migel-group", *offset)
+      @grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
+      offset = resolve_offset(offset, self::class::OFFSET_STEP)
+    end
     code = @session.persistent_user_input(:code)
     model.each { |atc|
       compose_subheader(atc, offset)
       offset = resolve_offset(offset, self::class::OFFSET_STEP)
-      if(display_all || code == atc.code)
+      if(show_packages? || code == atc.code)
         packages = atc.packages
         super(packages, offset)
         offset[1] += packages.size
@@ -225,6 +246,23 @@ class ResultList < HtmlGrid::List
 		end
 		span
 	end
+  def resultview_switch(model, session=@session)
+    current = @session.cookie_set_or_get(:resultview)
+    switched = (current == 'pages' ? 'atc' : 'pages')
+    args = {
+      :search_query => @session.persistent_user_input(:search_query),	
+      :search_type => @session.persistent_user_input(:search_type),	
+      :resultview  => switched,
+    }
+    link = HtmlGrid::Link.new("rv_#{switched}", model, @session, self)
+    link.href = @lookandfeel._event_url(:search, args, "best_result")
+    link.css_class = "list bold"
+    link
+  end
+  def show_packages?
+    !(@model.respond_to?(:overflow?) && @model.overflow?) \
+      || @session.cookie_set_or_get(:resultview) == "pages"
+  end
 	def substances(model, session=@session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
 		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})

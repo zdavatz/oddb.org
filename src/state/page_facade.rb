@@ -4,6 +4,7 @@
 module ODDB
 	module State
 		class PageFacade < Array
+      attr_accessor :model
 			def initialize(int)
 				super()
 				@int = int
@@ -20,6 +21,12 @@ module ODDB
 			def to_i
 				@int
 			end
+      def method_missing(name, *args, &block)
+        @model.send(name, *args, &block)
+      end
+      def respond_to?(name)
+        super || @model.respond_to?(name)
+      end
 		end
 		class OffsetPageFacade < PageFacade
 			attr_accessor :size, :offset

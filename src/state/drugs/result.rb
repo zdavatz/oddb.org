@@ -2,6 +2,7 @@
 # State::Drugs::Result -- oddb -- 03.03.2003 -- hwyss@ywesee.com 
 
 require 'state/global_predefine'
+require 'state/page_facade'
 require 'state/drugs/register_download'
 require 'state/drugs/payment_method'
 require 'view/drugs/result'
@@ -20,11 +21,33 @@ class Result < State::Drugs::Global
 	ITEM_LIMIT = 100
 	REVERSE_MAP = View::Drugs::ResultList::REVERSE_MAP
 	attr_accessor :search_query, :search_type
+  attr_reader :pages
 	include ResultStateSort
 	def init
+    @pages = []
 		@model.session = @session
 		if(@model.atc_classes.nil? || @model.atc_classes.empty?)
 			@default_view = View::Drugs::EmptyResult
+    elsif(@model.overflow?)
+ 			query = @session.persistent_user_input(:search_query).to_s.downcase
+			page  = 0
+			count = 0
+      @model.each { |atc|
+        @pages[page] ||= State::PageFacade.new(page) 
+        @pages[page].push(atc)
+        count += atc.package_count
+        if(count >= ITEM_LIMIT)
+          page += 1
+          count = 0
+        end	
+      }
+      @filter = Proc.new { |model|
+        if(@session.cookie_set_or_get(:resultview) == 'pages')
+          page()
+        else
+          @model
+        end
+      }
 		end
 	end
 	def export_csv
@@ -63,6 +86,19 @@ class Result < State::Drugs::Global
 		state.package_count = @model.package_count
 		state
 	end
+  def page
+    pge = nil
+    if(@session.event == :search)
+      ## reset page-input
+      pge = @session.user_input(:page)
+      @session.set_persistent_user_input(:page, pge)
+    else
+      pge = @session.persistent_user_input(:page)
+    end
+    page = @pages[pge || 0]
+    page.model = @model
+    page
+  end
 	def request_path
 		if(@request_path)
 			@request_path + '#best_result'

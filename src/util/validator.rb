@@ -65,6 +65,7 @@ module ODDB
 			:limitation		=>	['true', 'false'],
 			:payment_method => ['pm_invoice', 'pm_paypal'],
 			:patinfo			=>	['delete', 'keep'],
+      :resultview   =>  ['atc', 'pages'],
 			:salutation		=>	['salutation_m', 'salutation_f'],
       :yus_privileges => [ 
         'edit|yus.entities', 

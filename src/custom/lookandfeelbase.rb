@@ -1099,6 +1099,8 @@ Zeno Davatz
 				:result_item_start				=>	'<!-- RESULT ITEM START -->',
 				:result										=>	'Suchresultat',
 				:revision_date						=>	'Revisionsdatum',
+				:rv_atc                   =>	'Zurück zur ATC-Übersicht',
+				:rv_pages                 =>	'Alle Produkte anzeigen',
 				:s31x_gz									=>	's31x.gz',
 				:s31x_zip									=>	's31x.zip',
 				:salutation								=>	'Anrede',
