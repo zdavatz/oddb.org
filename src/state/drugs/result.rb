@@ -26,6 +26,7 @@ class Result < State::Drugs::Global
 	def init
     @pages = []
 		@model.session = @session
+		@model.atc_classes.delete_if { |atc| atc.package_count == 0 }
 		if(@model.atc_classes.nil? || @model.atc_classes.empty?)
 			@default_view = View::Drugs::EmptyResult
     elsif(@model.overflow?)

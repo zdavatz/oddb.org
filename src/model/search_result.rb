@@ -122,7 +122,7 @@ module ODDB
       @atc_classes.nil? || @atc_classes.empty?
     end
     def overflow?
-      (package_count >= @limit) && @atc_classes.size > 1
+      (@atc_classes.size > 1) && (package_count >= @limit)
     end
     def package_count
       @package_count ||= @atc_classes.inject(0) { |count, atc| 
