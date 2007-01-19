@@ -70,18 +70,17 @@ module ODDB
 			@current_tablehandler.send_cdata(data)
 		end
 		def handle_ddd_guideline(data)
-			new_chapter = (@current_code && @ddd_guidelines[@current_code].nil?)
+			new_chapter = !@ddd_guidelines[@current_code]
 			handle_data(data, new_chapter)	
 			if(new_chapter)
 				@ddd_guidelines[@current_code] = @chapter
 			end
 		end
 		def handle_guideline(code, data)
-			new_chapter = (code != @current_code)
+			new_chapter = !@guidelines[code]
 			handle_data(data, new_chapter)	
 			if(new_chapter)
 				@guidelines[code] = @chapter
-				@current_code = code
 			end
 		end
 		def href2atc(href)
