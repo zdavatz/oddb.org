@@ -84,7 +84,6 @@ module ODDB
 			else
 				@not_found.push([original_iksnr, comarketing_iksnr])
 			end
-=end
 		end
 		def update_registration(original, comarketing)
 			unless((old = comarketing.comarketing_with) \
