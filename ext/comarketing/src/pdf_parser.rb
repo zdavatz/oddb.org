@@ -34,13 +34,13 @@ module ODDB
 					case @current_column
 					when 1
 						@raw_original << data
-					when 2
+					when 3,4
 						@raw_comarketing << data
 					end
 				end
 				def send_line_break
-					if(@original && @current_column == 2 && firstword(@raw_comarketing))
-						@pairs.push([@original, @raw_comarketing.strip])
+					if(@original && (iksnr = @raw_comarketing[/\d{5}/]))
+						@pairs.push([@original, iksnr])
 					end
 					reset
 				end

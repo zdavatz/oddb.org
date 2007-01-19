@@ -10,13 +10,16 @@ module ODDB
 	class CoMarketingPlugin < Plugin
 		COMARKETING_PARSER = DRb::DRbObject.new(nil, COMARKETING_URI)
 		SOURCE_URI = "http://www.swissmedic.ch/files/pdf/Co-Marketing-Praeparate_nach_Basis.pdf"
-		def find(name)
+		def find(iksnr)
+      @app.registration(iksnr)
+=begin
 			while(!name.empty?)
 				if(registration = (_find(name) || _find(name, true)))
 					return registration
 				end
 				name = name.gsub(/(\s+|^)\S+$/, '')
 			end
+=end
 		end
 		def _find(name, fuzz=false)
 			search_term = ODDB.search_term(name)
@@ -73,14 +76,15 @@ module ODDB
 				update_pair(*pair)
 			}
 		end
-		def update_pair(original_name, comarketing_name)
-			if((original = find(original_name)) \
-				 && (comarketing = find(comarketing_name)))
+		def update_pair(original_iksnr, comarketing_iksnr)
+			if((original = find(original_iksnr)) \
+				 && (comarketing = find(comarketing_iksnr)))
 				@found += 1
 				update_registration(original, comarketing)
 			else
-				@not_found.push([original_name, comarketing_name])
+				@not_found.push([original_iksnr, comarketing_iksnr])
 			end
+=end
 		end
 		def update_registration(original, comarketing)
 			unless((old = comarketing.comarketing_with) \
