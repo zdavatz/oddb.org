@@ -92,8 +92,11 @@ module ODDB
 					@section.paragraphs.pop
 				end
 			end
+      if(handler)
+        @linkhandlers.push(handler)
+        @current_code = href2atc(handler.attributes["href"])
+      end
 			@current_linkhandler = handler
-			@linkhandlers.push(handler) unless handler.nil?
 		end
 		def new_tablehandler(handler)
 			@tablehandlers.push(handler) if handler
@@ -131,11 +134,6 @@ module ODDB
 			end
 		end
 		def send_line_break
-      if((lh = @linkhandlers.last) \
-         && (code = href2atc(lh.attributes["href"])))
-				@current_code = code
-      end
-
 			@paragraph = @section.next_paragraph if @section
 		end
 		def send_paragraph(blankline)
@@ -252,12 +250,17 @@ module ODDB
 			super
 			@code_handler = WhoCodeHandler.new
 		end
+    def clean_guidelines(code)
+			store_guidelines({code => nil}, :ddd_guidelines)
+			store_guidelines({code => nil}, :guidelines)
+    end
 		def login
 		end
 		def update
 			@session = WhoSession.new
 			@session.login
 			while(code = @code_handler.shift)
+        clean_guidelines(code)
 				resp = @session.get_code(code)
 				if(resp.is_a?(Net::HTTPOK))
 					begin 
