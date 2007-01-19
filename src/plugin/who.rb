@@ -131,6 +131,11 @@ module ODDB
 			end
 		end
 		def send_line_break
+      if((lh = @linkhandlers.last) \ 
+         && (code = href2atc(lh.attributes["href"])))
+				@current_code = code
+      end
+
 			@paragraph = @section.next_paragraph if @section
 		end
 		def send_paragraph(blankline)
