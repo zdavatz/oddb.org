@@ -17,10 +17,10 @@ module ODDB
 		attr_writer :sequences, :descriptions
 		class DDD
 			include Persistence
-			attr_accessor :dose, :note
-			attr_reader :administration_route
+			attr_accessor :dose, :note, :administration_route
 			def initialize(roa)
-				@administration_route = roa
+        @key = roa
+				@administration_route = roa[0,1]
 			end
 			def ==(other)
 				if(other.is_a? Hash)

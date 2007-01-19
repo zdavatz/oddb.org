@@ -12,7 +12,7 @@ require 'util/persistence'
 
 module ODDB
 	ATC_TOP_LEVEL = %w{A B C D G H J L M N P R S V}
-	#ATC_TOP_LEVEL = %w{BO1AB}
+	#ATC_TOP_LEVEL = %w{A10BB}
 	ATC_PATTERN = "[#{ATC_TOP_LEVEL.join}](?:\\d{2}(?:[A-Z]\\s*(?:[A-Z](?:\\d{2})?)?)?)?"
 	class WhoWriter < NullWriter
 		def initialize
@@ -112,10 +112,6 @@ module ODDB
 				:administration_route	=>	row.cdata(4).strip,
 				:note									=>	note,
 			}
-			ddd.delete_if { |key, item| 
-				item.nil? \
-					|| (item.respond_to?(:empty?) && item.empty?)
-			}
 		end
 		def send_flowing_data(data) 
 			data.tr!("\xA0", ' ') # remove &nbsp;
@@ -162,7 +158,7 @@ module ODDB
 			code
 		end
 	end
-	class WhoSession < DelegateClass(Net::HTTP)
+	class WhoSession < SimpleDelegator
 		CREDENTIALS = File.expand_path('../../etc/who.txt',
 			File.dirname(__FILE__))
 		HTTP_PATH = '/atcddd/database/index.php'
@@ -267,7 +263,7 @@ module ODDB
 						puts e.backtrace
 					end
 				end
-				sleep(rand)
+				sleep(1)
 			end
 			@session.logout
 		end
@@ -321,9 +317,10 @@ module ODDB
 			writer.extract_ddd.each { |code, ddds|
 				pointer = Persistence::Pointer.new([:atc_class, code])
 				ddds.each { |hash|
-					ddd_ptr = pointer + [:ddd, hash[:administration_route]||'*']
+          dkey = sprintf("%s%s", hash[:administration_route]||'*',
+                         hash[:note])
+					ddd_ptr = pointer + [:ddd, dkey]
 					if(!(ddd = @app.resolve(ddd_ptr)) || ddd != hash)
-						hash.delete(:administration_route)
 						@app.update(ddd_ptr.creator, hash, :who)
 					end
 				}
