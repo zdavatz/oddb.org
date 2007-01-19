@@ -40,10 +40,16 @@ module ODDB
 			@descriptions
 		end
 		def extract_chapters(chapters)
-			chapters.delete_if { |code, chapter|
-				chapter.clean!
-				chapter.empty?
+      replace = {}
+			chapters.each { |code, chapter|
+        if(chapter)
+          chapter.clean!
+          if(chapter.empty?)
+            replace[code] = nil
+          end
+        end
 			}
+      chapters.update(replace)
 			chapters
 		end
 		def extract_ddd_guidelines
@@ -94,7 +100,10 @@ module ODDB
 			end
       if(handler)
         @linkhandlers.push(handler)
-        @current_code = href2atc(handler.attributes["href"])
+        if(@current_code = href2atc(handler.attributes["href"]))
+          @ddd_guidelines[@current_code] ||= nil
+          @guidelines[@current_code] ||= nil
+        end
       end
 			@current_linkhandler = handler
 		end
@@ -250,17 +259,12 @@ module ODDB
 			super
 			@code_handler = WhoCodeHandler.new
 		end
-    def clean_guidelines(code)
-			store_guidelines({code => Text::Chapter.new}, :ddd_guidelines)
-			store_guidelines({code => Text::Chapter.new}, :guidelines)
-    end
 		def login
 		end
 		def update
 			@session = WhoSession.new
 			@session.login
 			while(code = @code_handler.shift)
-        clean_guidelines(code)
 				resp = @session.get_code(code)
 				if(resp.is_a?(Net::HTTPOK))
 					begin 
@@ -338,7 +342,9 @@ module ODDB
 			hash.each { |code, guidelines|
 				pointer = Persistence::Pointer.new([:atc_class, code],
 					[name])
-				if(!(document = @app.resolve(pointer)) \
+        if(guidelines.nil?)
+          @app.delete(pointer)
+        elsif(!(document = @app.resolve(pointer)) \
 					|| document.en != guidelines)
 					@app.update(pointer.creator, {:en => guidelines}, :who)
 				end
