@@ -251,8 +251,8 @@ module ODDB
 			@code_handler = WhoCodeHandler.new
 		end
     def clean_guidelines(code)
-			store_guidelines({code => nil}, :ddd_guidelines)
-			store_guidelines({code => nil}, :guidelines)
+			store_guidelines({code => Text::Chapter.new}, :ddd_guidelines)
+			store_guidelines({code => Text::Chapter.new}, :guidelines)
     end
 		def login
 		end
