@@ -77,7 +77,7 @@ module ODDB
         @section = @chapter.next_section
         @paragraph = @section.next_paragraph
         storage[@current_code] = @chapter
-      elsif(storage.index(@chapter) != @current_code)
+      elsif(!@chapter.eql?(chapter))
         @chapter = chapter
         @section = @chapter.next_section
         @paragraph = @section.next_paragraph

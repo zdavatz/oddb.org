@@ -281,6 +281,56 @@ The DDDs for combinations correspond to the DDD for the diuretic component, exce
 			assert_equal(ddd4, ddd['A09AB04'])
 		end
 	end
+	class TestWhoWriter_A14 < Test::Unit::TestCase
+		def setup
+			@writer = WhoWriter.new
+			@dir = File.expand_path('../data/html/who', File.dirname(__FILE__))
+			file = File.expand_path("A14.html", @dir)
+			html = File.read(file)
+			formatter = HtmlFormatter.new(@writer)
+			parser = HtmlParser.new(formatter)
+			parser.feed(html)
+		end
+		def test_extract_guidelines
+			guidelines = @writer.extract_guidelines
+			assert_instance_of(Hash, guidelines)	
+			assert_equal(4, guidelines.size)
+      assert_equal('', guidelines['A'].to_s)
+      assert_equal('', guidelines['A14'].to_s)
+      expected = <<-EOS
+Anabolic steroids are subdivided in different 4th levels according to chemical structure.
+Anabolic steroids used exclusively in cancer therapy, see L - Antineoplastic and immunomodulating agents.
+      EOS
+      assert_equal(expected.chop, guidelines['A14A'].to_s)
+      txt = 'This group comprises all other anabolic agents which cannot be classified in the preceding groups.'
+      assert_equal(txt, guidelines['A14B'].to_s)
+		end
+	end
+	class TestWhoWriter_A14A < Test::Unit::TestCase
+		def setup
+			@writer = WhoWriter.new
+			@dir = File.expand_path('../data/html/who', File.dirname(__FILE__))
+			file = File.expand_path("A14A.html", @dir)
+			html = File.read(file)
+			formatter = HtmlFormatter.new(@writer)
+			parser = HtmlParser.new(formatter)
+			parser.feed(html)
+		end
+		def test_extract_guidelines
+			guidelines = @writer.extract_guidelines
+			assert_instance_of(Hash, guidelines)	
+			assert_equal(5, guidelines.size)
+      assert_equal('', guidelines['A'].to_s)
+      assert_equal('', guidelines['A14'].to_s)
+      expected = <<-EOS
+Anabolic steroids are subdivided in different 4th levels according to chemical structure.
+Anabolic steroids used exclusively in cancer therapy, see L - Antineoplastic and immunomodulating agents.
+      EOS
+      assert_equal(expected.chop, guidelines['A14A'].to_s)
+      assert_equal('', guidelines['A14AA'].to_s)
+      assert_equal('', guidelines['A14AB'].to_s)
+		end
+	end
 	class TestWhoWriter_A14B < Test::Unit::TestCase
 		def setup
 			@writer = WhoWriter.new
@@ -291,7 +341,7 @@ The DDDs for combinations correspond to the DDD for the diuretic component, exce
 			parser = HtmlParser.new(formatter)
 			parser.feed(html)
 		end
-		def test_extract_guidelines_
+		def test_extract_guidelines
 			guidelines = @writer.extract_guidelines
 			assert_instance_of(Hash, guidelines)	
 			assert_equal(3, guidelines.size)
