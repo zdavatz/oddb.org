@@ -90,6 +90,12 @@ module ODDB
 		def ddds
 			@ddds ||= {}
 		end
+    def delete_ddd(roa)
+      if(ddd = @ddds.delete(roa))
+        @ddds.odba_isolated_store
+				ddd
+			end
+    end
 		def packages
 			@sequences.collect { |seq| seq.packages.values }.flatten
 		end
