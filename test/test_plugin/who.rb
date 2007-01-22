@@ -115,6 +115,25 @@ No DDDs are established in this group.
 			assert_equal(section.strip, chapter.sections.first.to_s)
 		end
 	end
+	class TestWhoWriter_A09 < Test::Unit::TestCase
+		def setup
+			@writer = WhoWriter.new
+			@dir = File.expand_path('../data/html/who', File.dirname(__FILE__))
+			file = File.expand_path("A09.html", @dir)
+			html = File.read(file)
+			formatter = HtmlFormatter.new(@writer)
+			parser = HtmlParser.new(formatter)
+			parser.feed(html)
+		end
+		def test_extract_guidelines
+			guidelines = @writer.extract_guidelines
+			assert_instance_of(Hash, guidelines)	
+			assert_equal(3, guidelines.size)
+      assert_equal('', guidelines['A'].to_s)
+      assert_equal('', guidelines['A09'].to_s)
+      assert_equal('', guidelines['A09A'].to_s)
+		end
+	end
 	class TestWhoWriter_C03AA < Test::Unit::TestCase
 		def setup
 			@writer = WhoWriter.new
@@ -272,10 +291,12 @@ The DDDs for combinations correspond to the DDD for the diuretic component, exce
 			parser = HtmlParser.new(formatter)
 			parser.feed(html)
 		end
-		def test_extract_guidelines
+		def test_extract_guidelines_
 			guidelines = @writer.extract_guidelines
 			assert_instance_of(Hash, guidelines)	
 			assert_equal(3, guidelines.size)
+      assert_equal('', guidelines['A'].to_s)
+      assert_equal('', guidelines['A14'].to_s)
       txt = 'This group comprises all other anabolic agents which cannot be classified in the preceding groups.'
       assert_equal(txt, guidelines['A14B'].to_s)
 		end

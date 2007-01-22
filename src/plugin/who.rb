@@ -59,14 +59,6 @@ module ODDB
 			extract_chapters(@guidelines)
 		end
 		def handle_data(data, new_chapter=false)
-			if(new_chapter)
-				@chapter = Text::Chapter.new
-        @section = @chapter.next_section
-        @paragraph = @section.next_paragraph
-      elsif(/^#{ATC_PATTERN}$/.match(data) \
-            && (!@paragraph || @paragraph.empty?))
-        return
-			end
 			@paragraph << data if(@paragraph)
 		end
 		def handle_ddd(data)
@@ -80,16 +72,17 @@ module ODDB
 		end
     def _handle_guideline(storage, data)
       chapter = storage[@current_code]
-      if(chapter && (@chapter != chapter))
+      if(!chapter)
+				@chapter = Text::Chapter.new
+        @section = @chapter.next_section
+        @paragraph = @section.next_paragraph
+        storage[@current_code] = @chapter
+      elsif(storage.index(@chapter) != @current_code)
         @chapter = chapter
         @section = @chapter.next_section
         @paragraph = @section.next_paragraph
       end
-			new_chapter = !chapter
-			handle_data(data, new_chapter)	
-			if(new_chapter)
-				storage[@current_code] = @chapter
-      end
+			handle_data(data)	
     end
 		def href2atc(href)
 			pattern = /query=(#{ATC_PATTERN})(?:$|&)/i
@@ -131,7 +124,10 @@ module ODDB
 		end
 		def send_flowing_data(data) 
 			data.tr!("\xA0", ' ') # remove &nbsp;
-			if(@current_linkhandler)
+      if(/^#{ATC_PATTERN}$/.match(data) \
+            && (!@paragraph || @paragraph.empty?))
+        return
+			elsif(@current_linkhandler)
 				@current_linkhandler.send_adata(data)
 			elsif(@current_tablehandler)
 				if(@current_tablehandler.attributes.any? { |key, val| 
