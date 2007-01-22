@@ -70,10 +70,12 @@ module ODDB
 			@substances += 1
 			SWISSREG_SERVER.search(substance_name).each { |data|
 				@patents += 1
-				if(iksnr = data[:iksnr])
-					@iksnrs += 1
-					update_registration(iksnr, data)
-				end
+        if(iksnrs = data[:iksnrs])
+          @iksnrs += 1
+          iksnrs.each { |iksnr|
+            update_registration(iksnr, data)
+          }
+        end
 				sleep(2)
 			}
 		end

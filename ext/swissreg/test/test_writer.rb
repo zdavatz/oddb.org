@@ -26,7 +26,7 @@ module ODDB
 					#:base_patent_srid		=> "31042544",
 					:certificate_number	=> "C00463756/01",
 					:expiry_date				=> Date.new(2013, 6, 21),
-					:iksnr							=> "54642",
+					:iksnrs							=> ["54642"],
 					:issue_date					=> Date.new(1999, 7, 30),
 					:protection_date		=> Date.new(2011, 6, 7),
 					:publication_date		=> Date.new(1998, 8, 31),
@@ -45,7 +45,7 @@ module ODDB
 					#:base_patent_srid		=> "2000471726",
 					:certificate_number	=> "C00471726/02",
 					:expiry_date				=> Date.new(2012, 2, 25),
-					:iksnr							=> "00595",
+					:iksnrs							=> ["00595"],
 					:issue_date					=> Date.new(1999, 3, 31),
 					:protection_date		=> Date.new(2010, 4, 26),
 					:publication_date		=> Date.new(1997, 9, 15),
@@ -64,11 +64,29 @@ module ODDB
 					#:base_patent_srid		=> "30664152",
 					:certificate_number	=> "C664152/01",
 					:expiry_date				=> Date.new(2006, 8, 13),
-					:iksnr							=> "50709",
+					:iksnrs							=> ["50709"],
 					:issue_date					=> Date.new(1996, 3, 29),
 					:protection_date		=> Date.new(2005, 1, 25),
 					:publication_date		=> Date.new(1995, 10, 13),
 					:registration_date	=> Date.new(1995, 9, 8),
+				}
+				assert_equal(expected, @writer.extract_data)
+			end
+			def test_extract_data__multiple_iksnrs
+        path = File.expand_path('data/venlafaxin_detail.html', 
+                                File.dirname(__FILE__))
+        html = File.read(path)
+				@parser.feed(html)
+				expected = {
+					:base_patent				=> "EP00112669",
+					:base_patent_date		=> Date.new(1983, 12, 7),
+					:certificate_number	=> "C00112669/01",
+					:expiry_date				=> Date.new(2008, 12, 6),
+					:iksnrs							=> ["52762", "52943"],
+					:issue_date					=> Date.new(1996, 4, 30),
+					:protection_date		=> Date.new(2003, 12, 7),
+					:publication_date		=> Date.new(1996, 2, 29),
+					:registration_date	=> Date.new(1995, 10, 17),
 				}
 				assert_equal(expected, @writer.extract_data)
 			end

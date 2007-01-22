@@ -20,12 +20,13 @@ module ODDB
 				@tables.at(1).each_row { |row|
           case(row.cdata(0))
           when /genehmigung/i
-            str = row.cdata(1)
-            if(match = /(?:iks|oicm),?\s+(\d{5})\b/i.match(str))
-              data.store(:iksnr, 	match[1])
-            elsif(match = /bag,?\s+(\d{3,5})\b/i.match(str))
-              data.store(:iksnr, 	sprintf("%05i", match[1]))
-            end
+            data[:iksnrs] = [row.cdata(1)].flatten.collect { |str|
+              if(match = /(?:iks|oicm),?\s+(\d{5})\b/i.match(str))
+                match[1]
+              elsif(match = /bag,?\s+(\d{3,5})\b/i.match(str))
+                sprintf("%05i", match[1])
+              end
+            }.compact
           when /schutzdauerbeginn/i
             data.store(:protection_date, date(row.cdata(1)))
           when /esz gel.scht am/i
