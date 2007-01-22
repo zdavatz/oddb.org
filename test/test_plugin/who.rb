@@ -39,6 +39,7 @@ module ODDB
 			expected = {
 				:dose	=>	ODDB::Dose.new(10, 'TU'),
 				:administration_route	=>	'P',
+        :note => '',
 			}
 			assert_equal(expected, @writer.row2ddd(row))
 		end
@@ -55,7 +56,6 @@ module ODDB
 				:administration_route	=>	'O',
 				:note =>	'LSU = lipoprotein lipase releasing units'
 			}
-			puts "we can expect"
 			assert_equal(expected, @writer.row2ddd(row))
 		end
 	end
@@ -78,7 +78,7 @@ module ODDB
 		def test_extract_guidelines
 			guidelines = @writer.extract_guidelines
 			assert_instance_of(Hash, guidelines)
-			assert_equal(4, guidelines.size)
+			assert_equal(17, guidelines.size)
 			chapter = guidelines["A12"]
 			assert_instance_of(Text::Chapter, chapter)
 			expected = <<-EOS
@@ -89,7 +89,7 @@ This group contains mineral supplements used for treatment of mineral deficiency
 		def test_extract_guidelines__no_ddd
 			guidelines = @writer.extract_guidelines
 			assert_instance_of(Hash, guidelines)
-			assert_equal(4, guidelines.size)
+			assert_equal(17, guidelines.size)
 			chapter = guidelines["A15"]
 			assert_instance_of(Text::Chapter, chapter)
 			assert_equal(2, chapter.sections.size)
@@ -106,7 +106,7 @@ Cyproheptadine, also used as an appetite stimulant in children, is classified in
 		def test_extract_ddd_guidelines
 			guidelines = @writer.extract_ddd_guidelines
 			assert_instance_of(Hash, guidelines)
-			assert_equal(2, guidelines.size)
+			assert_equal(17, guidelines.size)
 			chapter = guidelines["A15"]
 			assert_equal(1, chapter.sections.size)
 			section =  <<-EOS
@@ -134,7 +134,7 @@ No DDDs are established in this group.
 		def test_extract_guidelines__no_ddd
 			guidelines = @writer.extract_guidelines
 			assert_instance_of(Hash, guidelines)
-			assert_equal(2, guidelines.size)
+			assert_equal(14, guidelines.size)
 			chapter = guidelines["C03"]
 			assert_instance_of(Text::Chapter, chapter)
 			assert_equal(6, chapter.sections.size)
@@ -150,7 +150,7 @@ Combinations with agents acting on the renin angiotensin system, see C09B and C0
 		def test_extract_ddd_guidelines
 			guidelines = @writer.extract_ddd_guidelines
 			assert_instance_of(Hash, guidelines)
-			assert_equal(2, guidelines.size)
+			assert_equal(14, guidelines.size)
 			chapter = guidelines["C03"]
 			assert_equal(2, chapter.sections.size)
 			section1 =  <<-EOS
@@ -169,11 +169,13 @@ The DDDs for combinations correspond to the DDD for the diuretic component, exce
 			ddd1 = [{
 				:dose									=>	Dose.new(2.5, 'mg'),
 				:administration_route	=>	'O',
+        :note                 =>  '',
 			}]
 			assert_equal(ddd1, ddd['C03AA01'])
 			ddd9 = [{
 				:dose									=>	Dose.new(5, 'mg'),
 				:administration_route	=>	'O',
+        :note                 =>  '',
 			}]
 			assert_equal(ddd9, ddd['C03AA09'])
 		end
@@ -196,10 +198,12 @@ The DDDs for combinations correspond to the DDD for the diuretic component, exce
 				{
 					:dose									=>	Dose.new(0.8, 'g'),
 					:administration_route	=>	'O',
+          :note                 =>  '',
 				},
 				{
 					:dose									=>	Dose.new(0.8, 'g'),
 					:administration_route	=>	'P',
+          :note                 =>  '',
 				},
 			]
 			assert_equal(ddd2, ddd['C01BB02'])
@@ -207,10 +211,12 @@ The DDDs for combinations correspond to the DDD for the diuretic component, exce
 				{
 					:dose									=>	Dose.new(0.1, 'g'),
 					:administration_route	=>	'O',
+          :note                 =>  '',
 				},
 				{
 					:dose									=>	Dose.new(0.1, 'g'),
 					:administration_route	=>	'P',
+          :note                 =>  '',
 				},
 			]
 			assert_equal(ddd4, ddd['C01BB04'])
@@ -234,6 +240,7 @@ The DDDs for combinations correspond to the DDD for the diuretic component, exce
 				{
 					:dose									=>	Dose.new(1.5, 'g'),
 					:administration_route	=>	'O',
+          :note                 =>  '',
 				},
 			]
 			assert_equal(ddd1, ddd['A09AB01'])
@@ -241,6 +248,7 @@ The DDDs for combinations correspond to the DDD for the diuretic component, exce
 				{
 					:dose									=>	Dose.new(1, 'g'),
 					:administration_route	=>	'O',
+          :note                 =>  '',
 				},
 			]
 			assert_equal(ddd2, ddd['A09AB02'])
@@ -248,9 +256,28 @@ The DDDs for combinations correspond to the DDD for the diuretic component, exce
 				{
 					:dose									=>	Dose.new(2, 'g'),
 					:administration_route	=>	'O',
+          :note                 =>  '',
 				},
 			]
 			assert_equal(ddd4, ddd['A09AB04'])
+		end
+	end
+	class TestWhoWriter_A14B < Test::Unit::TestCase
+		def setup
+			@writer = WhoWriter.new
+			@dir = File.expand_path('../data/html/who', File.dirname(__FILE__))
+			file = File.expand_path("A14B.html", @dir)
+			html = File.read(file)
+			formatter = HtmlFormatter.new(@writer)
+			parser = HtmlParser.new(formatter)
+			parser.feed(html)
+		end
+		def test_extract_guidelines
+			guidelines = @writer.extract_guidelines
+			assert_instance_of(Hash, guidelines)	
+			assert_equal(3, guidelines.size)
+      txt = 'This group comprises all other anabolic agents which cannot be classified in the preceding groups.'
+      assert_equal(txt, guidelines['A14B'].to_s)
 		end
 	end
 	class TestWhoCodeHandler < Test::Unit::TestCase
@@ -584,7 +611,9 @@ bar=Bar&foo=test%40escapism.com
 			@plugin.extract_ddd(writer)
 			pointer = Persistence::Pointer.new([:atc_class, 'A'], [:ddd, 'O'])
 			assert_equal([pointer.creator], @app.pointers)
-			assert_equal([{:dose	=>	Dose.new(1.5, 'g')}], @app.values)
+      expected = {:dose	=>	Dose.new(1.5, 'g'), 
+        :administration_route => 'O'}
+			assert_equal([expected], @app.values)
 		end
 		def test_extract_ddd2
 			writer = StubWriter.new
@@ -603,7 +632,9 @@ bar=Bar&foo=test%40escapism.com
 			@plugin.extract_ddd(writer)
 			pointer = Persistence::Pointer.new([:atc_class, 'A'], [:ddd, 'O'])
 			assert_equal([pointer.creator], @app.pointers)
-			assert_equal([{:dose	=>	Dose.new(1.5, 'g')}], @app.values)
+      expected = {:dose	=>	Dose.new(1.5, 'g'), 
+        :administration_route => 'O'}
+			assert_equal([expected], @app.values)
 		end
 		def test_extract_ddd3
 			writer = StubWriter.new

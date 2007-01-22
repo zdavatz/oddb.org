@@ -61,8 +61,11 @@ module ODDB
 		def handle_data(data, new_chapter=false)
 			if(new_chapter)
 				@chapter = Text::Chapter.new
-				@section = @chapter.next_section
-				@paragraph = @section.next_paragraph
+        @section = @chapter.next_section
+        @paragraph = @section.next_paragraph
+      elsif(/^#{ATC_PATTERN}$/.match(data) \
+            && (!@paragraph || @paragraph.empty?))
+        return
 			end
 			@paragraph << data if(@paragraph)
 		end
@@ -70,19 +73,24 @@ module ODDB
 			@current_tablehandler.send_cdata(data)
 		end
 		def handle_ddd_guideline(data)
-			new_chapter = !@ddd_guidelines[@current_code]
+      _handle_guideline(@ddd_guidelines, data)
+		end
+		def handle_guideline(data)
+      _handle_guideline(@guidelines, data)
+		end
+    def _handle_guideline(storage, data)
+      chapter = storage[@current_code]
+      if(chapter && (@chapter != chapter))
+        @chapter = chapter
+        @section = @chapter.next_section
+        @paragraph = @section.next_paragraph
+      end
+			new_chapter = !chapter
 			handle_data(data, new_chapter)	
 			if(new_chapter)
-				@ddd_guidelines[@current_code] = @chapter
-			end
-		end
-		def handle_guideline(code, data)
-			new_chapter = !@guidelines[code]
-			handle_data(data, new_chapter)	
-			if(new_chapter)
-				@guidelines[code] = @chapter
-			end
-		end
+				storage[@current_code] = @chapter
+      end
+    end
 		def href2atc(href)
 			pattern = /query=(#{ATC_PATTERN})(?:$|&)/i
 			if(match = pattern.match(href))
@@ -93,9 +101,6 @@ module ODDB
 			if(@current_linkhandler \
 				&& (code = href2atc(@current_linkhandler.attributes["href"])))
 				@descriptions[code] = @current_linkhandler.value
-				if(@paragraph && /^#{ATC_PATTERN}$/.match(@paragraph.text))
-					@section.paragraphs.pop
-				end
 			end
       if(handler)
         @linkhandlers.push(handler)
@@ -136,9 +141,8 @@ module ODDB
 				else
 					handle_ddd(data)
 				end
-			elsif((lh = @linkhandlers.last) \
-				&& (code = href2atc(lh.attributes["href"])))
-				handle_guideline(code, data)
+			elsif(@current_code)
+				handle_guideline(data)
 			end
 		end
 		def send_line_break
@@ -146,7 +150,7 @@ module ODDB
 		end
 		def send_paragraph(blankline)
 			if(@chapter)
-				@section = @chapter.next_section 
+				@section = @chapter.next_section
 				@paragraph = @section.next_paragraph
 			end
 		end

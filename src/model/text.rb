@@ -165,7 +165,7 @@ module ODDB
 				@paragraphs.delete_if { |paragraph| paragraph.empty? }
 			end
 			def empty?
-				clean!
+				#clean! ## empty? should have no side-effects!
 				@subheading.empty? && @paragraphs.empty?
 			end
 			def to_s
@@ -207,14 +207,14 @@ module ODDB
 				}
 			end
 			def empty?
-				clean!
+				#clean! ## empty? should have no side-effects!
 				@heading.empty? && @sections.empty?
 			end
 			def include?(section)
 				@sections.include?(section)
 			end
 			def to_s
-				lines = [ @heading ] + @sections
+				lines = [ @heading ] + @sections.collect { |sec| sec.to_s }
 				lines.delete_if { |line| line.empty? }
 				lines.join("\n")
 			end
@@ -247,15 +247,6 @@ module ODDB
 				to_s == other.to_s
 			end
 		end
-=begin
-		class LanguageChapter < Chapter
-			attr_reader :language
-			def initialize(language)
-				@language = language
-				@sections = []
-			end
-		end
-=end
 		class Document
 			include SimpleLanguage
 			ODBA_SERIALIZABLE = [ '@descriptions' ]
