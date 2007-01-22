@@ -71,6 +71,8 @@ module ODDB
       _handle_guideline(@guidelines, data)
 		end
     def _handle_guideline(storage, data)
+      return if(/^#{ATC_PATTERN}$/.match(data) \
+                && (!@paragraph || @paragraph.empty?))
       chapter = storage[@current_code]
       if(!chapter)
 				@chapter = Text::Chapter.new
@@ -124,10 +126,7 @@ module ODDB
 		end
 		def send_flowing_data(data) 
 			data.tr!("\xA0", ' ') # remove &nbsp;
-      if(/^#{ATC_PATTERN}$/.match(data) \
-            && (!@paragraph || @paragraph.empty?))
-        return
-			elsif(@current_linkhandler)
+			if(@current_linkhandler)
 				@current_linkhandler.send_adata(data)
 			elsif(@current_tablehandler)
 				if(@current_tablehandler.attributes.any? { |key, val| 

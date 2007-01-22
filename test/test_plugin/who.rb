@@ -351,6 +351,28 @@ Anabolic steroids used exclusively in cancer therapy, see L - Antineoplastic and
       assert_equal(txt, guidelines['A14B'].to_s)
 		end
 	end
+	class TestWhoWriter_B01AD10 < Test::Unit::TestCase
+		def setup
+			@writer = WhoWriter.new
+			@dir = File.expand_path('../data/html/who', File.dirname(__FILE__))
+			file = File.expand_path("B01AD10.html", @dir)
+			html = File.read(file)
+			formatter = HtmlFormatter.new(@writer)
+			parser = HtmlParser.new(formatter)
+			parser.feed(html)
+		end
+		def test_extract_guidelines
+			ddds = @writer.extract_ddd
+			assert_instance_of(Hash, ddds)	
+			assert_equal(1, ddds.size)
+      expected = {
+        :administration_route => 'P',
+        :dose                 => Dose.new(40, 'mg'),
+        :note                 => '',
+      }
+      assert_equal([expected], ddds['B01AD10'])
+		end
+	end
 	class TestWhoCodeHandler < Test::Unit::TestCase
 		def setup
 			@handler = WhoCodeHandler.new
