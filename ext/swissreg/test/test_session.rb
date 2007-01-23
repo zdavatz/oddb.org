@@ -28,7 +28,7 @@ module ODDB
 					:base_patent_date		=> Date.new(1991, 6, 7),
 					:certificate_number	=> "C00463756/01",
 					:expiry_date				=> Date.new(2013, 6, 21),
-					:iksnr							=> "54642",
+					:iksnrs							=> ["54642"],
 					:issue_date					=> Date.new(1999, 7, 30),
 					:protection_date		=> Date.new(2011, 6, 7),
 					:publication_date		=> Date.new(1998, 8, 31),

@@ -4,6 +4,7 @@
 require 'writer'
 require 'hpricot'
 require 'util/http'
+require 'iconv'
 
 module ODDB
 	module Swissreg
@@ -11,6 +12,7 @@ class Session < HttpSession
 	def initialize
 		super('www.swissreg.ch')
 		@http.read_timeout = 120 
+    @iconv = Iconv.new('latin1', 'utf8')
 	end
 	def extract_result_links(html)
     doc = Hpricot(html)
@@ -43,6 +45,7 @@ class Session < HttpSession
     hdrs
 	end
 	def get_result_list(substance)
+    substance = @iconv.iconv(substance)
     response = get("/srclient/")
     update_cookie(response)
     response = get(response['location'])
