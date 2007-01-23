@@ -12,7 +12,7 @@ class Session < HttpSession
 	def initialize
 		super('www.swissreg.ch')
 		@http.read_timeout = 120 
-    @iconv = Iconv.new('latin1', 'utf8')
+    @iconv = Iconv.new('utf8', 'latin1')
 	end
 	def extract_result_links(html)
     doc = Hpricot(html)
