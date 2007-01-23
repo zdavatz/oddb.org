@@ -69,7 +69,7 @@ class Session < HttpSession
 		response = post(url, criteria)
     update_cookie(response)
 		extract_result_links(response.body)
-	rescue Timeout::Error
+	rescue Timeout::Error, Net::HTTPInternalServerError
 		[]
 	end
   def post(url, *args)

@@ -20,6 +20,13 @@ module ODDB
 				]
 				assert_equal(expected, links)
       end
+      def test_get_result_list__online__server_error
+        links = nil
+        assert_nothing_raised { 
+          links = @session.get_result_list("Ammonia")
+        }
+				assert_equal([], links)
+      end
       def test_get_detail__online
         url = "/srclient/faces/jsp/spc/sr300.jsp?language=de&section=spc&id=C00463756/01"
         data = @session.get_detail(url)
