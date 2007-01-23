@@ -66,7 +66,8 @@ class PatentForm < HtmlGrid::Form
 		[0,3]	=>	:publication_date,
 		[0,4]	=>	:issue_date,
 		[2,4]	=>	:protection_date,
-		[0,5]	=>	:deletion_date,
+		[0,5]	=>	:expiry_date,
+		[2,5]	=>	:deletion_date,
 		[1,6]	=>	:submit,
 	}
 	CSS_MAP = {
@@ -78,6 +79,7 @@ class PatentForm < HtmlGrid::Form
 	SYMBOL_MAP = {
 		:base_patent_date		=>	HtmlGrid::InputDate,
 		:deletion_date			=>	HtmlGrid::InputDate,
+		:expiry_date	  		=>	HtmlGrid::InputDate,
 		:registration_date	=>	HtmlGrid::InputDate,
 		:publication_date		=>	HtmlGrid::InputDate,
 		:issue_date					=>	HtmlGrid::InputDate,

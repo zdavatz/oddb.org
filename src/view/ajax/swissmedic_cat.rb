@@ -110,9 +110,9 @@ class SwissmedicCat < HtmlGrid::Composite
 	def patent_protected(model)
 		patent = model.patent
 		date = nil
-		if(srid = patent.srid)
+		if(cn = patent.certificate_number)
 			date = HtmlGrid::Link.new(:patent_protected, patent, @session, self)
-			date.href = @lookandfeel.lookup(:swissreg_url, srid)
+			date.href = @lookandfeel.lookup(:swissreg_url, cn)
 		else
 			date = HtmlGrid::Value.new(:patent_protected, patent, @session, self)
 		end

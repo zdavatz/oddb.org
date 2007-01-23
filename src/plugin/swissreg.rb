@@ -20,15 +20,15 @@ module ODDB
 			SWISSREG_SERVER.detail(uri.request_uri)
 		end
 		def format_data(data)
-			fmt = "%s -> http://www.swissreg.ch/servlet/ShowServlet?regid=%s&lang=ger\n"
-			sprintf(fmt, data[:iksnr], data[:srid])
+			fmt = "%s -> http://www.swissreg.ch/srclient/faces/jsp/spc/sr300.jsp?language=de&section=spc&id=%s\n"
+			sprintf(fmt, data[:iksnrs].join(','), data[:certificate_number])
 		end
 		def report
-			fmt =  "Checked  %4i Substances for connected Patents\n"
-			fmt << "Found    %4i Patents\n"
-			fmt << "of which %4i had a Swissmedic-Number.\n"
-			fmt << "         %4i Registrations were successfully updated;\n"
-			fmt << "for the  %4i Swissmedic-Numbers no Registration was found.\n\n"
+			fmt =  "Checked   %4i Substances for connected Patents\n"
+			fmt << "Found     %4i Patents\n"
+			fmt << "of which  %4i had a Swissmedic-Number.\n"
+			fmt << "          %4i Registrations were successfully updated;\n"
+			fmt << "for these %4i Swissmedic-Numbers no Registration was found:\n\n"
 			str = sprintf(fmt, 
 										@substances, @patents, @iksnrs, @successes, @failures.size)
 			@failures.each { |data|

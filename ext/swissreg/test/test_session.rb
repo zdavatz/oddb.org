@@ -20,13 +20,6 @@ module ODDB
 				]
 				assert_equal(expected, links)
       end
-      def test_get_result_list__online__server_error
-        links = nil
-        assert_nothing_raised { 
-          links = @session.get_result_list("Ammonia")
-        }
-				assert_equal([], links)
-      end
       def test_get_detail__online
         url = "/srclient/faces/jsp/spc/sr300.jsp?language=de&section=spc&id=C00463756/01"
         data = @session.get_detail(url)
@@ -40,22 +33,6 @@ module ODDB
 					:protection_date		=> Date.new(2011, 6, 7),
 					:publication_date		=> Date.new(1998, 8, 31),
 					:registration_date	=> Date.new(1998, 8, 11),
-				}
-        assert_equal(expected, data)
-      end
-      def test_get_detail__online__pemetrexed
-        url = "/srclient/faces/jsp/spc/sr300.jsp?language=de&section=spc&id=C00432677%2F01"
-        data = @session.get_detail(url)
-				expected = {
-					:base_patent				=> "EP00432677",
-					:base_patent_date		=> Date.new(1990, 12, 10),
-					:certificate_number	=> "C00432677/01",
-					:expiry_date				=> Date.new(2015, 12, 9),
-					:iksnrs							=> ["57039"],
-					:issue_date					=> Date.new(2006, 12, 29),
-					:protection_date		=> Date.new(2010, 12, 10),
-					:publication_date		=> Date.new(2005, 4, 15),
-					:registration_date	=> Date.new(2005, 3, 16),
 				}
         assert_equal(expected, data)
       end

@@ -241,7 +241,6 @@ module ODDB
 			:patinfo_upload,
 		]
 		NUMERIC = [
-			:base_patent_srid,
 			:change_flags,
 			:days,
       :exam,
@@ -262,7 +261,6 @@ module ODDB
 			:pi_quantity,
 			:price_exfactory,
 			:price_public,
-			:srid,
 			:year,
 		]
 		STRINGS = [

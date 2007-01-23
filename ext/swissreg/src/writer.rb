@@ -29,7 +29,7 @@ module ODDB
             }.compact
           when /schutzdauerbeginn/i
             data.store(:protection_date, date(row.cdata(1)))
-          when /esz gel.scht am/i
+          when /l.{1,2}schdatum/i
             data.store(:deletion_date, date(row.cdata(1)))
 					when /anmeldedatum/i
 						data.store(:registration_date, date(row.cdata(1)))

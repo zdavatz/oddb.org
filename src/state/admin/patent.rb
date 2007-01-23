@@ -12,8 +12,8 @@ class Patent < Global
 	VIEW = View::Admin::Patent
 	def update
     keys = [ :base_patent, :base_patent_date, :certificate_number,
-      :expiry_date, :iksnr, :issue_date, :protection_date,
-			:publication_date, :registration_date ]
+      :expiry_date, :deletion_date, :iksnr, :issue_date, 
+      :protection_date, :publication_date, :registration_date ]
 		input = user_input(keys)
 		unless(error?)
 			detail = {}

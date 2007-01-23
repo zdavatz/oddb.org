@@ -6,9 +6,9 @@ require 'util/persistence'
 module ODDB
 	class Patent
 		include Persistence
-		attr_accessor :srid, :base_patent, :base_patent_date, :base_patent_srid,
-			:certificate_number, :expiry_date, :iksnr, :issue_date, :protection_date,
-			:publication_date, :registration_date, :deletion_date
+    attr_accessor :base_patent, :base_patent_date, :certificate_number,
+      :expiry_date, :iksnr, :issue_date, :protection_date,
+      :publication_date, :registration_date, :deletion_date
 		def pointer_descr
 			:patent
 		end
