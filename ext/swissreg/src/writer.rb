@@ -21,7 +21,7 @@ module ODDB
           case(row.cdata(0))
           when /genehmigung/i
             data[:iksnrs] = [row.cdata(1)].flatten.collect { |str|
-              if(match = /(?:iks|oicm),?\s+(\d{5})\b/i.match(str))
+              if(match = /(?:iks|oicm|swissmedic),?\s+(\d{5})\b/i.match(str))
                 match[1]
               elsif(match = /bag,?\s+(\d{3,5})\b/i.match(str))
                 sprintf("%05i", match[1])
