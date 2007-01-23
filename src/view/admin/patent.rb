@@ -11,16 +11,16 @@ module ODDB
 		module Admin
 module PatentMethods
 	def base_patent_link(model, session=@session)
-		if(srid = model.base_patent_srid)
+		if(pn = model.base_patent)
 			link = HtmlGrid::Link.new(:base_patent_detail, model, @session, self)
-			link.href = @lookandfeel.lookup(:swissreg_url, srid)
+			link.href = @lookandfeel.lookup(:swissreg_patent_url, pn)
 			link
 		end
 	end
 	def patent_link(model, session=@session)
-		if(srid = model.srid)
+		if(cn = model.certificate_number)
 			link = HtmlGrid::Link.new(:patent_detail, model, @session, self)
-			link.href = @lookandfeel.lookup(:swissreg_url, srid)
+			link.href = @lookandfeel.lookup(:swissreg_url, cn)
 			link
 		end
 	end
@@ -28,21 +28,19 @@ end
 class PatentInnerComposite < HtmlGrid::Composite
 	include PatentMethods
 	COMPONENTS = {
-		[0,0]	=>	:srid,
-		[2,0]	=>	:base_patent_srid,
+		[0,0]	=>	:certificate_number,
+		[2,0]	=>	:base_patent,
 		[1,1]	=>	:patent_link,
 		[3,1]	=>	:base_patent_link,
-		[0,2]	=>	:certificate_number,
-		[2,2]	=>	:base_patent,
-		[2,3]	=>	:base_patent_date,
-		[0,3]	=>	:registration_date,
-		[0,4]	=>	:publication_date,
-		[0,5]	=>	:issue_date,
-		[2,5]	=>	:protection_date,
-		[0,6]	=>	:deletion_date,
+		[2,2]	=>	:base_patent_date,
+		[0,2]	=>	:registration_date,
+		[0,3]	=>	:publication_date,
+		[0,4]	=>	:issue_date,
+		[2,4]	=>	:protection_date,
+		[0,5]	=>	:deletion_date,
 	}
 	CSS_MAP = {
-		[0,0,4,7]	=>	'list',
+		[0,0,4,6]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
@@ -59,22 +57,20 @@ end
 class PatentForm < HtmlGrid::Form
 	include PatentMethods
 	COMPONENTS = {
-		[0,0]	=>	:srid,
-		[2,0]	=>	:base_patent_srid,
+		[0,0]	=>	:certificate_number,
+		[2,0]	=>	:base_patent,
 		[1,1]	=>	:patent_link,
 		[3,1]	=>	:base_patent_link,
-		[0,2]	=>	:certificate_number,
-		[2,2]	=>	:base_patent,
-		[2,3]	=>	:base_patent_date,
-		[0,3]	=>	:registration_date,
-		[0,4]	=>	:publication_date,
-		[0,5]	=>	:issue_date,
-		[2,5]	=>	:protection_date,
-		[0,6]	=>	:deletion_date,
-		[1,7]	=>	:submit,
+		[2,2]	=>	:base_patent_date,
+		[0,2]	=>	:registration_date,
+		[0,3]	=>	:publication_date,
+		[0,4]	=>	:issue_date,
+		[2,4]	=>	:protection_date,
+		[0,5]	=>	:deletion_date,
+		[1,6]	=>	:submit,
 	}
 	CSS_MAP = {
-		[0,0,4,8]	=>	'list',
+		[0,0,4,7]	=>	'list',
 	}
 	EVENT = :update
 	LABELS = true

@@ -11,14 +11,14 @@ module ODDB
 class Patent < Global
 	VIEW = View::Admin::Patent
 	def update
-		keys = [ :srid, :base_patent, :base_patent_date, :base_patent_srid,
-			:certificate_number, :expiry_date, :iksnr, :issue_date, :protection_date,
+    keys = [ :base_patent, :base_patent_date, :certificate_number,
+      :expiry_date, :iksnr, :issue_date, :protection_date,
 			:publication_date, :registration_date ]
 		input = user_input(keys)
 		unless(error?)
 			detail = {}
-			if(srid = input[:srid])
-				url = @session.lookandfeel.lookup(:swissreg_url, srid)
+			if(cn = input[:certificate_number])
+				url = @session.lookandfeel.lookup(:swissreg_url, cn)
 				plug = SwissregPlugin.new(@session.app)
 				plug.get_detail(url).each { |key, val|
 					if(input[key].nil? || input[key] == '')
