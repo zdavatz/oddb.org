@@ -35,10 +35,10 @@ class FachinfoConfirmForm < View::FormList
 		error_message()
 	end
 	def compose_footer(matrix)
-		@grid.add(back(), *matrix)
 		unless(@session.error?)
 			super
 		end
+		@grid.add(back(), *matrix)
 		@grid.set_colspan(*matrix)
 	end
 	def iksnrs (model, session)
