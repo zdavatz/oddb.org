@@ -13,7 +13,9 @@ class PackageInnerComposite < HtmlGrid::Composite
 	include DataFormat
 	include View::AdditionalInformation
 	COMPONENTS = {
-		[0,0]		=>	:ikskey,
+		[0,0,0]	=>	:ikskey,
+		[1,0,0]	=>	"&nbsp;",
+		[1,0,1]	=>	:comarketing,
 		[2,0]		=>	:registration_holder,
 		[0,1]		=>	:name,
 		[2,1]		=>	:registration_date,
