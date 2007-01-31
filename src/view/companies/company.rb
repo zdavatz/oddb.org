@@ -26,6 +26,26 @@ require 'view/sponsorlogo'
 module ODDB
 	module View
 		module Companies
+class InactivePackages < HtmlGrid::List
+	COMPONENTS = {
+		[0,0]	=>	:ikscd,
+		[1,0]	=>	:name_base,
+		[2,0]	=>	:market_date,
+		[3,0]	=>	:out_of_trade,
+	}
+	CSS_MAP = {
+		[0,0,4]	=>	'list',
+	}
+	DEFAULT_CLASS = HtmlGrid::Value
+	DEFAULT_HEAD_CLASS = 'subheading'
+	SORT_HEADER = false
+	SORT_DEFAULT = :ikscd
+	SYMBOL_MAP = {
+		:ikscd	=>	View::PointerLink,
+		:out_of_trade			=>	HtmlGrid::BooleanValue,
+	}
+	CSS_CLASS = 'composite'
+end
 class InactiveRegistrations < HtmlGrid::List
 	COMPONENTS = {
 		[0,0]	=>	:iksnr,
@@ -397,10 +417,11 @@ class UnknownCompanyComposite < HtmlGrid::Composite
 		[0,0]	=>	'th',
 		[1,1]	=>	'logo right',
 	}
-	def company_name(model, session)
+  LEGACY_INTERFACE = false
+	def company_name(model, session=@session)
 		name = HtmlGrid::Value.new('name', model, session, self)
 	end
-	def ean13(model, session)
+	def ean13(model, session=@session)
 		if(model.ean13)
 			"&nbsp;-&nbsp;"+model.ean13
 		end
@@ -408,23 +429,17 @@ class UnknownCompanyComposite < HtmlGrid::Composite
 end
 class CompanyComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
-	CSS_MAP = {
-		[0,0]	=>	'th',
-		[1,1]	=>	'logo right',
-    [0,2,2]   =>  'list',
-	}	
-	COLSPAN_MAP = {
-		[0,0]	=>	2,
-		[0,2]	=>	2,
-		[0,3]	=>	2,
-		[0,4]	=>	2,
-	}
 	SYMBOL_MAP = {
 		:nbsp	=>	HtmlGrid::Text,
 		:inactive_text => HtmlGrid::LabelText,
+		:inactive_packages_label => HtmlGrid::LabelText,
 		:users         => HtmlGrid::LabelText,
 	}
-	def inactive_registrations(model, session)
+  LEGACY_INTERFACE = false
+  def inactive_packages(model, session=@session)
+    InactivePackages.new(model.inactive_packages, @session, self)
+  end
+	def inactive_registrations(model, session=@session)
 		InactiveRegistrations.new(model.inactive_registrations, session, self)
 	end
 end
@@ -435,7 +450,20 @@ class UserCompanyComposite < View::Companies::CompanyComposite
 		[1,1]	=>	View::CompanyLogo,
 		[0,2] =>	:inactive_text,
 		[0,3]	=>	:inactive_registrations,
+		[0,4]	=>	:inactive_packages_label,
+		[0,5]	=>	:inactive_packages,
 	}
+	COLSPAN_MAP = {
+		[0,0]	=>	2,
+		[0,3]	=>	2,
+		[0,5]	=>	2,
+	}
+	CSS_MAP = {
+		[0,0]	=>	'th',
+		[1,1]	=>	'logo right',
+    [0,2,2]   =>  'list',
+    [0,4,2]   =>  'list',
+	}	
 end
 class AjaxCompanyComposite < CompanyComposite
 	CSS_ID = 'company-content'
@@ -466,6 +494,12 @@ class AjaxCompanyComposite < CompanyComposite
   end
 end
 class RootPharmaCompanyComposite < AjaxCompanyComposite
+	COLSPAN_MAP = {
+		[0,0]	=>	2,
+		[0,3]	=>	2,
+		[0,5]	=>	2,
+		[0,7]	=>	2,
+	}
 	COMPONENTS = {
 		[0,0]	=>	:nbsp,
 		[0,1]	=>	:company_form,
@@ -474,12 +508,15 @@ class RootPharmaCompanyComposite < AjaxCompanyComposite
     [0,3] =>  :company_users,
 		[0,4]	=>  :inactive_text,
 		[0,5]	=>	:inactive_registrations,
+		[0,6]	=>	:inactive_packages_label,
+		[0,7]	=>	:inactive_packages,
 	}
 	CSS_MAP = {
 		[0,0]	    =>	'th',
 		[1,1]	    =>	'logo-r',
     [0,2,2]   =>  'list',
     [0,4,2]   =>  'list',
+    [0,6,2]   =>  'list',
 	}	
 end
 class RootOtherCompanyComposite < AjaxCompanyComposite
@@ -490,6 +527,15 @@ class RootOtherCompanyComposite < AjaxCompanyComposite
     [0,2] =>  :users,
     [0,3] =>  :company_users,
 	}
+	COLSPAN_MAP = {
+		[0,0]	=>	2,
+		[0,3]	=>	2,
+	}
+	CSS_MAP = {
+		[0,0]	=>	'th',
+		[1,1]	=>	'logo right',
+    [0,2,2]   =>  'list',
+	}	
 end
 class PowerLinkCompanyComposite < View::Companies::CompanyComposite
 	COMPONENTS = {

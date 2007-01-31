@@ -45,6 +45,11 @@ module ODDB
 				registration.atc_classes				
 			}.flatten.compact.uniq
 		end
+    def inactive_packages
+      packages.select { |pac|
+        (date = pac.market_date) && date > @@today
+      }
+    end
 		def inactive_registrations
 			@registrations.reject { |registration|
 				registration.public_package_count > 0
