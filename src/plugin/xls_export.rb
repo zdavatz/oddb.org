@@ -7,7 +7,10 @@ module ODDB
 	class XlsExportPlugin < Plugin
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
-		RECIPIENTS = ['andre.dubied@ksb.ch']
+		RECIPIENTS = [
+			'andre.dubied@ksb.ch',
+			'Josef.Hunkeler@pue.admin.ch',
+		]
 		def export_competition(company, db_path=nil)
 			dir = File.join(ARCHIVE_PATH, "xls")
 			file = "#{company.name}.Preisvergleich.xls".tr(' ', '_')

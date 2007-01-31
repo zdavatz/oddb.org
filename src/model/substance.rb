@@ -29,7 +29,9 @@ module ODDB
 		def adjust_types(values, app=nil)
 			values.each { |key, value|
 				if(key.to_s.size == 2)
-					values[key] = value.to_s.gsub(/\b[A-Z].+?\b/) { |match| match.capitalize }
+					values[key] = value.to_s.gsub(/\b[A-Z].+?\b/i) { |match| 
+						match.capitalize 
+					}
 				else
 					case key
 					when :connection_keys
@@ -117,14 +119,10 @@ module ODDB
 		def merge(other)
 			other.sequences.dup.uniq.each { |sequence|
 				if(active_agent = sequence.active_agent(other))
-					#puts "found active-agent: #{active_agent}"
 					if(active_agent.sequence.nil?)
-						#puts "no sequence - deleting active_agent"
 						active_agent.odba_delete
 					else
-						#puts "setting substance to #{self}"
 						active_agent.substance = self
-						#puts "calling active_agent_isolated_store"
 						active_agent.odba_isolated_store
 					end
 				else
