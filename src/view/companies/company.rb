@@ -28,7 +28,7 @@ module ODDB
 		module Companies
 class InactivePackages < HtmlGrid::List
 	COMPONENTS = {
-		[0,0]	=>	:ikscd,
+		[0,0]	=>	:ikskey,
 		[1,0]	=>	:name_base,
 		[2,0]	=>	:market_date,
 		[3,0]	=>	:out_of_trade,
@@ -39,9 +39,9 @@ class InactivePackages < HtmlGrid::List
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'subheading'
 	SORT_HEADER = false
-	SORT_DEFAULT = :ikscd
+	SORT_DEFAULT = :ikskey
 	SYMBOL_MAP = {
-		:ikscd	=>	View::PointerLink,
+		:ikskey	=>	View::PointerLink,
 		:out_of_trade			=>	HtmlGrid::BooleanValue,
 	}
 	CSS_CLASS = 'composite'
