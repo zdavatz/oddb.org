@@ -46,11 +46,17 @@ class TestSubstance < Test::Unit::TestCase
 		values = { 
 			'en'	=>	'EN NAME',
 			'lt'	=>	'DE NAME',
+			'fr'	=>	'Fr PréNom',
+			'hc'  =>  'special Hcl',
+			'c2'  =>  'special C2o6',
 		}
 		result = @substance.adjust_types(values)
 		expected = {
 			'en'	=>	'En Name',
 			'lt'	=>	'De Name',
+			'fr'	=>	'Fr Prénom',
+			'hc'  =>  'Special HCl',
+			'c2'  =>  'Special C2O6',
 		}
 		assert_equal(expected, result)
 	end
