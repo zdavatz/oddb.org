@@ -157,6 +157,7 @@ module ODDB
 			elsif(types.include?(:lookandfeel))
 				sprintf("Lookandfeel-Integration %i/%i", year, year.next)
 			else
+        year = @@today.year
 				count = items.select { |item| item.type == :annual_fee }.size
 				sprintf("%i x Patinfo-Upload %i/%i", count, year, year.next)
 			end
