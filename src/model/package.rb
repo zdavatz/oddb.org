@@ -196,7 +196,7 @@ Grammar OddbSize
 			checkout_helper([@generic_group], :remove_package)
 			@narcotics.each { |narc| 
 				narc.remove_package(self)
-			}
+			} if @narcotics
 			if(@sl_entry.respond_to?(:checkout))
 				@sl_entry.checkout 
 				@sl_entry.odba_delete

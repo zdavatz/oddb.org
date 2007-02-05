@@ -57,7 +57,9 @@ module ODDB
 			}
 			result
 =end
-			adjust_types(values, app)
+			adjust_types(values, app).delete_if { |key, val| 
+				!respond_to?("%s=" % key)
+			}
 		end
 		def checkout
 		end
