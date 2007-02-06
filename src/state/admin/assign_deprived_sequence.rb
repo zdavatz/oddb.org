@@ -48,7 +48,7 @@ class AssignDeprivedSequence < State::Admin::Global
 	def assign_deprived_sequence
 		if(allowed?(@model.sequence) && !@session.error? \
 			&& (pointer = @session.user_input(:patinfo_pointer)))
-			values = {}
+			values = {:pdf_patinfo => nil, :patinfo => nil}
 			if(pointer.last_step == [:pdf_patinfo])
 				values.store(:pdf_patinfo, @session.resolve(pointer))
 			else

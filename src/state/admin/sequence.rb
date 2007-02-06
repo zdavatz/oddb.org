@@ -43,6 +43,7 @@ module PatinfoPdfMethods
 				@model.pdf_patinfo = filename
 				store_slate()
 				input.store(:pdf_patinfo, filename)
+				input.store(:patinfo, nil)
 				newstate = State::Admin::AssignPatinfo.new(@session, @model)
 			else
 				add_warning(:w_no_patinfo_saved, :patinfo_upload, nil)
