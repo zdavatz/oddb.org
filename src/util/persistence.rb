@@ -127,9 +127,9 @@ module ODDB
         :generic_group, :incomplete_registration, :indication, :invoice,
         :address_suggestion, :migel_group, :subgroup, :product,
         :narcotic, :orphaned_fachinfo, :orphaned_patinfo, :package,
-        :patent, :patinfo, :position, :poweruser, :registration,
-        :sequence, :slate, :sl_entry, :sponsor, :substance, :user,
-        :limitation_text
+				:patent, :patinfo, :pdf_patinfo, :position, :poweruser,
+				:registration, :sequence, :slate, :sl_entry, :sponsor,
+				:substance, :user, :limitation_text
       ]
 			@parser = Parse.generate_parser <<-EOG
 Grammar OddbSize
