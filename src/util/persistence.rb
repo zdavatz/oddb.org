@@ -45,7 +45,7 @@ module ODDB
 			@data_origins ||= {}
 		end
 		def diff(values, app=nil)
-=begin
+			#adjust_types(values, app)
 			result = {}
 			adjust_types(values, app).each { |key, value|
 				if(self.respond_to?(key))
@@ -56,10 +56,6 @@ module ODDB
 				end
 			}
 			result
-=end
-			adjust_types(values, app).delete_if { |key, val| 
-				!respond_to?("%s=" % key)
-			}
 		end
 		def checkout
 		end
