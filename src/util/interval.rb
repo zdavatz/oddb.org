@@ -112,7 +112,8 @@ module ODDB
 		end
 		def intervals
 			@intervals or begin
-				values = ODBA.cache.index_keys(index_name, 1)
+				values = ODBA.cache.index_keys(index_name, 1).delete_if { |key|
+					key.empty? }
 				@intervals, @numbers = values.partition { |char|
 					/[a-z]/i.match(char)
 				}

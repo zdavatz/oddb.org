@@ -21,7 +21,8 @@ module ODDB
 		end
 		def format_data(data)
 			fmt = "%s -> http://www.swissreg.ch/srclient/faces/jsp/spc/sr300.jsp?language=de&section=spc&id=%s\n"
-			sprintf(fmt, data[:iksnrs].join(','), data[:certificate_number])
+			iksnrs = data[:iksnrs] || []
+			sprintf(fmt, iksnrs.join(','), data[:certificate_number])
 		end
 		def report
 			fmt =  "Checked   %4i Substances for connected Patents\n"
@@ -42,8 +43,9 @@ module ODDB
 				if((substance_name = substance.de.split(' ').first) \
 					 && (substance_name.length > 6) \
 					 && (substance.is_effective_form? \
-					 || (!substance.has_effective_form? && !substance.sequences.empty?)))# \
-					 #&& !substance.sequences.any? { |seq| seq.registration.patent })
+					 || (!substance.has_effective_form? && !substance.sequences.empty?)) \
+					 && !substance.sequences.any? { |seq| seq.registration.patent })
+					 #|| (!substance.has_effective_form? && !substance.sequences.empty?)))#
 					substances.push(substance_name.gsub(/(i|e|um)$/, ''))
 				end
 			}

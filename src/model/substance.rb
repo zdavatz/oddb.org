@@ -69,6 +69,10 @@ module ODDB
 				cyp
 			end
 		end
+		def empty?
+			@sequences.empty? && @narcotic.nil? \
+				&& @substrate_connections.empty? && !is_effective_form?
+		end
 		def format_connection_key(key)
 			Substance.format_connection_key(key)
 		end

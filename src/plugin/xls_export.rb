@@ -8,7 +8,6 @@ module ODDB
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
 		RECIPIENTS = [
-			'andre.dubied@ksb.ch',
 			'Josef.Hunkeler@pue.admin.ch',
 		]
 		def export_competition(company, db_path=nil)
