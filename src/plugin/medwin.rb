@@ -153,6 +153,7 @@ module ODDB
 							sleep(0.1)
 						}
 					end
+					nil # don't return the packages across DRb
 				}
 			}
 		end

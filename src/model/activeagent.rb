@@ -38,8 +38,15 @@ module ODDB
 		alias :pointer_descr :to_s
 		def ==(other)
 			other.is_a?(ActiveAgent) \
-				&& (@substance == other.substance) \
-				&& (@dose == other.dose)
+				&& [ [@substance, @dose], [@chemical_substance, @chemical_dose],
+						 [@equivalent_substance, @equivalent_dose]].any? { |pair| 
+							 [ [other.substance, other.dose],
+								 [other.chemical_substance, other.chemical_dose],
+								 [other.equivalent_substance, other.equivalent_dose],
+							 ].any? { |others| 
+								 others == pair && !pair.any? { |item| item.nil? }
+							 }
+						 }
 		end
 		def <=>(other)
 			od = other.dose

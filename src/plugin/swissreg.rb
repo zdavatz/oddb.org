@@ -46,12 +46,10 @@ module ODDB
 					 || (!substance.has_effective_form? && !substance.sequences.empty?)) \
 					 && !substance.sequences.any? { |seq| seq.registration.patent })
 					 #|| (!substance.has_effective_form? && !substance.sequences.empty?)))#
-					substances.push(substance_name.gsub(/(i|e|um)$/, ''))
+					substances.push(substance_name)
 				end
 			}
-			substances.uniq.each { |substance_name|
-				update_registrations(substance_name) 
-			}
+			update_substances(substances)
 		end
 		def update_news
 			substances = []
@@ -59,14 +57,14 @@ module ODDB
 				log.change_flags.each_key { |ptr| 
 					if(reg = ptr.resolve(@app))
 						reg.each_sequence { |seq|
-							substances += seq.active_agents.collect { |act| act.substance }
+							substances += seq.active_agents.collect { |act| 
+								act.substance.to_s.split(' ').first
+							}
 						}
 					end
 				}
 			end
-			substances.uniq.each { |substance_name|
-				update_registrations(substance_name) 
-			}
+			update_substances(substances)
 		end
 		def update_registrations(substance_name)
 			@substances += 1
@@ -89,6 +87,13 @@ module ODDB
 			else
 				@failures.push(data)
 			end
+		end
+		def update_substances(substances)
+			substances.collect { |substance|
+				substance.to_s.gsub(/(i|e|um)$/, '')
+			}.compact.uniq.each { |substance_name|
+				update_registrations(substance_name) 
+			}
 		end
 	end
 end

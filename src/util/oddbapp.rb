@@ -509,6 +509,12 @@ class OddbPrevalence
 			pi
 		end
 	end
+	def delete_patinfo(oid)
+		if(fi = @patinfos.delete(oid))
+			@patinfos.odba_isolated_store
+			fi
+		end
+	end
 	def delete_registration(iksnr)
 		if(reg = @registrations.delete(iksnr))
 			@registrations.odba_isolated_store
