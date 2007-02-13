@@ -41,11 +41,7 @@ module ODDB
 					preg.parse.each { |seqnum, pseq|
 						if(seq = reg.sequence(seqnum))
 							if((ndose = pseq.name_dose) || !flags.include?(:dose_only))
-								name_base = [
-									pseq.name_base, 
-									ndose, 
-									pseq.name_descr,
-								].compact.join(' ')
+								name_base = pseq.name_base
 								dose = [
 									pseq.most_precise_dose,
 									pseq.most_precise_unit,
@@ -309,6 +305,15 @@ module ODDB
 				if(descr = package.description)
 					hash.store(:descr, descr)
 				end
+        if(comform_name = sequence.most_precise_comform)
+          comform = CommercialForm.find_by_name(comform_name)
+          if(comform)
+            comform_ptr = Persistence::Pointer.new(:comform)
+            comform = @app.update(comform_ptr.creator, 
+                                  {:de => comform_name})
+          end
+          hash.store(:commercial_form, comform.pointer)
+        end
 				if(reg_flags.include?(:new))
 					hash.store(:refdata_override, true)
 				end
@@ -366,12 +371,9 @@ module ODDB
 		def update_sequence(smj_seq, parent_pointer, reg_flags=[])
 			pointer = parent_pointer + [:sequence, smj_seq.seqnr]
 			hash = {}
-			name_base = [
-				smj_seq.name_base, 
-				smj_seq.name_dose, 
-				smj_seq.name_descr,
-			].compact.join(' ')
-			hash.store(:name_base,	name_base) unless name_base.empty?
+			if(name_base = smj_seq.name_base)
+        hash.store(:name_base,	name_base)
+      end
 			if(galform = smj_seq.galform_name)
 				hash.store(:name_descr, galform)
 			end

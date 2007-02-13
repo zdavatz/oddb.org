@@ -98,13 +98,14 @@ module ODDB
 			attr_accessor :most_precise_galform, :galform_latin, :packages, 
 				:galenic_form, :active_agents, :composition, :seqnr, 
 				:most_precise_dose, :most_precise_unit, :name_base, :name_dose, 
-				:name_descr, :galform_name, :pointer, :atc_class
+				:name_descr, :galform_name, :pointer, :atc_class, 
+        :most_precise_comform
 			def initialize
 				@most_precise_galform = 'Kapseln'
 				@seqnr = '01'
 				@most_precise_dose = 20
 				@most_precise_unit = '%'
-				@name_base = 'Intralipid'
+				@name_base = 'Intralipid 20%'
 				@name_dose = '20%'
 				@name_descr = nil
 				@galform_name = 'Kapseln'
