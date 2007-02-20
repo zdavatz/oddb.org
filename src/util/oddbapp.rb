@@ -3,6 +3,7 @@
 
 require 'odba'
 require 'odba/index_definition'
+require 'odba/drbwrapper'
 require 'custom/lookandfeelbase'
 require 'util/failsafe'
 require 'util/oddbconfig'
@@ -733,6 +734,16 @@ class OddbPrevalence
 	def registration(registration_id)
 		@registrations[registration_id]
 	end
+  def remote_packages(query)
+    seqs = search_sequences(query, false)
+    if(seqs.empty?)
+      seqs = ODBA.cache.\
+        retrieve_from_index('substance_index_sequence', query)
+    end
+    ODBA::DRbWrapper.new seqs.collect { |seq|
+      seq.public_packages
+    }.flatten
+  end
 	def resolve(pointer)
 		pointer.resolve(self)
 	end

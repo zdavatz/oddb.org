@@ -36,6 +36,7 @@ $oddb = ODDB::App.new
 
 $0 = "Oddb (OddbApp)"
 
+DRb.install_id_conv ODBA::DRbIdConv.new
 DRb.start_service(ODDB::SERVER_URI, $oddb)
 
 DRb.thread.join
