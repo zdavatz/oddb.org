@@ -16,6 +16,7 @@ require 'util/loggroup'
 require 'util/soundex'
 require 'util/iso-latin1'
 require 'util/notification_logger'
+require 'remote/package'
 require 'admin/subsystem'
 require 'models'
 require 'commands'
@@ -734,6 +735,21 @@ class OddbPrevalence
 	def registration(registration_id)
 		@registrations[registration_id]
 	end
+  def remote_comparables(package)
+    package = ODDB::Remote::Package.new(package)
+    sequence = package.sequence
+    comparables = []
+    if(atc = atc_class(sequence.atc_code))
+      atc.sequences.each { |seq|
+        if(sequence.comparable?(seq))
+          comparables.concat seq.packages.values.select { |pac|
+            package.comparable?(pac)
+          }
+        end
+      }
+    end
+    ODBA::DRbWrapper.new comparables
+  end
   def remote_packages(query)
     seqs = search_sequences(query, false)
     if(seqs.empty?)

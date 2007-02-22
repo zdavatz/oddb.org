@@ -129,4 +129,7 @@ module ODDB
 			end
 		end
 	end
+  module Drugs
+    class Dose < ODDB::Dose; end
+  end
 end
