@@ -17,37 +17,34 @@ class CompareList < HtmlGrid::List
 	include DataFormat
 	include View::ResultColors
 	include View::AdditionalInformation
-	COMPONENTS = {
-		[0,0]	=>	:name_base,
-		[1,0]	=>	:company_name,
-		[2,0]	=>	:most_precise_dose,
-		[3,0]	=>	:comparable_size,
-		[4,0] =>	:active_agents,
-		[5,0]	=>	:price_public,
-		[6,0]	=>	:price_difference, 
-		[7,0]	=>	:ikscat,
-	}	
+	COMPONENTS = {}
 	CSS_CLASS = 'composite'
-	CSS_MAP = {
-		[0,0]	=>	'list big',
-		[1,0]	=>	'list talic',
-		[2,0]	=>	'list right',
-		[3,0]	=>	'list',
-		[4,0]	=>	'list italic',
-		[5,0]	=>	'list pubprice',
-		[6,0]	=>	'list bold right',
-		[7,0]	=>	'list italic',
+	CSS_KEYMAP = {
+		:active_agents     => 'list italic',
+		:company_name			 => 'list italic',
+		:comparable_size	 => 'list',
+		:ddd_price				 => 'list right',
+		:deductible				 => 'list right',
+		:ikscat						 => 'list italic',
+		:most_precise_dose => 'list right',
+		:name_base				 => 'list big',
+		:price_difference	 => 'list bold right',
+		:price_public			 => 'list pubprice',
 	}
-	CSS_HEAD_MAP = {
-		[0,0] =>	'th',
-		[1,0] =>	'th',
-		[2,0] =>	'th right',
-		[3,0]	=>	'th',
-		[4,0]	=>	'th',
-		[5,0]	=>	'th right',
-		[6,0]	=>	'th right',
-		[7,0] =>	'th',
+	CSS_HEAD_KEYMAP = {
+		:active_agents     => 'th',
+		:company_name			 => 'th',
+		:comparable_size	 => 'th',
+		:ddd_price				 => 'th right',
+		:deductible				 => 'th right',
+		:ikscat						 => 'th',
+		:most_precise_dose => 'th right',
+		:name_base				 => 'th',
+		:price_difference	 => 'th right',
+		:price_public			 => 'th right',
 	}
+	CSS_HEAD_MAP = {}
+	CSS_MAP = {}
 	DEFAULT_CLASS = HtmlGrid::Value
 	SORT_DEFAULT = nil
 	SORT_HEADER = false
@@ -56,27 +53,19 @@ class CompareList < HtmlGrid::List
 		:registration_date	=>	HtmlGrid::DateValue,
 	}
 	def init
-		if(@lookandfeel.result_list_components.has_value?(:deductible))
-			components.update({
-				[7,0]	=>	:deductible,
-				[8,0]	=>	:ikscat,
-			})
-			css_map.update({
-				[7,0]	=>	'list right',
-				[8,0]	=>	'list italic',
-			})
-			css_head_map.update({
-				[7,0]	=>	'th right',
-				[8,0]	=>	'th',
-			})
-		end
-		if(@lookandfeel.result_list_components.has_value?(:ddd_price))
-			ikscat_key = components.index(:ikscat)
-			components.store(ikscat_key, :ddd_price)
-			css_map.store(ikscat_key, 'list right')
-			css_head_map.store(ikscat_key, 'th right')
-		end
+		reorganize_components
 		super
+	end
+	def reorganize_components
+		@components = @lookandfeel.compare_list_components
+		@css_map = {}
+		@css_head_map = {}
+		@components.each { |key, val|
+			if(klass = self::class::CSS_KEYMAP[val])
+				@css_map.store(key, klass)
+				@css_head_map.store(key, self::class::CSS_HEAD_KEYMAP[val] || 'th')
+			end
+		}
 	end
 	def package_line(offset)
 		_compose(@model.package, offset)
