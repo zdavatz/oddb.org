@@ -895,8 +895,8 @@ module ODDB
 				[5,0]		=>	:comparable_size,
 				[6,0]		=>	:price_public,
 				[7,0]		=>	:ddd_price,
-				[8,0]		=>	:company_name,
-				[9,0]		=>	'nbsp',
+				[8,0]		=>	'nbsp',
+				[9,0]		=>	:company_name,
 				[10,0]	=>	:ikscat,
 			}
 		end
