@@ -134,11 +134,16 @@ puts "not found: #{(reached - found).size}"
 
 ## delete unreached (collect garbage)
 begin
+ODBA.cache.clean_prefetched
 unreached = (found - reached)
 del_size = unreached.size
 puts "deleting #{del_size} objects"
 unreached.each_with_index { |id, idx|
-	ODBA.storage.delete_persistable(id)
+  begin
+    ODBA.cache.delete(ODBA.cache.fetch(id))
+  rescue
+    ODBA.storage.delete_persistable(id)
+  end
 	print " " * 8
 	print "\b" * 8
 	print "#{sprintf('%7.3f', idx.to_f/del_size.to_f*100.0)}%"
@@ -146,5 +151,31 @@ unreached.each_with_index { |id, idx|
 	$stdout.flush
 }
 end
+puts "cleaning object_connection"
+puts "deleted %i origins" % ODBA.storage.dbi.do(<<-SQL)
+DELETE FROM object_connection
+WHERE (SELECT odba_id FROM object WHERE odba_id = origin_id) IS NULL;
+SQL
+puts "deleted %i targets" % ODBA.storage.dbi.do(<<-SQL)
+DELETE FROM object_connection
+WHERE (SELECT odba_id FROM object WHERE odba_id = target_id) IS NULL;
+SQL
+puts "cleaning collection"
+puts "deleted %i collection-elements" % ODBA.storage.dbi.do(<<-SQL)
+DELETE FROM collection 
+WHERE (SELECT odba_id FROM object WHERE odba_id = collection.odba_id) 
+IS NULL;
+SQL
+puts "cleaning indices"
+ODBA.cache.indices.each_key { |index_name|
+  puts "cleaning #{index_name}"
+  puts "deleted %i origin-entries" % ODBA.storage.dbi.do(<<-SQL)
+DELETE FROM #{index_name}
+WHERE (SELECT odba_id FROM object WHERE odba_id = origin_id) IS NULL;
+  SQL
+  puts "deleted %i target-entries" % ODBA.storage.dbi.do(<<-SQL)
+DELETE FROM #{index_name}
+WHERE (SELECT odba_id FROM object WHERE odba_id = target_id) IS NULL;
+  SQL
+}
 puts "#### ID-Check complete ####"
-ODBA.cache.print_stats
