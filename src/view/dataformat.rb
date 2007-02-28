@@ -86,7 +86,7 @@ module ODDB
 			private
 			def formatted_price(key, model)
 				price_chf = model.send(key).to_i
-				item = if(price_chf != 0)
+				if(price_chf != 0)
 					prices = {
 						'CHF'	=>	price_chf,
 						'EUR'	=>	convert_price(price_chf, 'EUR'),
@@ -100,12 +100,16 @@ module ODDB
 					span.value = display
 					title = prices.sort.collect { |pair| pair.join(': ') }.join(' / ')
 					span.set_attribute('title', title)
+					span.label = true
 					span
+				elsif(!@lookandfeel.disabled?(:price_request))
+					link = wiki_link(model, :price_request, 
+													 :price_request_pagename)
+					link.label = true
+					link
 				else
-					wiki_link(model, :price_request, :price_request_pagename)
+					@lookandfeel.lookup(:deductible_unknown)
 				end
-				item.label = true
-				item	
 			end
 			def convert_price(price, currency)
 				if(rate = @session.get_currency_rate(currency))

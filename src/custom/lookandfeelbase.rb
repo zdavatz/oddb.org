@@ -3592,6 +3592,19 @@ Zeno Davatz
 			:dojo_js								=>	'dojo/dojo.js',
 			:sponsor								=>	'sponsor',
 		}
+		def compare_list_components
+			{
+				[0,0]	=>	:name_base,
+				[1,0]	=>	:company_name,
+				[2,0]	=>	:most_precise_dose,
+				[3,0]	=>	:comparable_size,
+				[4,0] =>	:active_agents,
+				[5,0]	=>	:price_public,
+				[6,0]	=>	:price_difference, 
+				[7,0]	=>	:deductible,
+				[8,0] =>  :ddd_price,
+			}	
+		end
 		def currencies
 			['CHF', 'EUR', 'USD']
 		end

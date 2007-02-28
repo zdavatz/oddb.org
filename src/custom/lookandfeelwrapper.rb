@@ -5,30 +5,18 @@ require 'sbsm/lookandfeelwrapper'
 
 module ODDB
 	class LookandfeelStandardResult < SBSM::LookandfeelWrapper
-		def result_list_components
+		def compare_list_components
 			{
-				[0,0]		=>	:limitation_text,
-				[1,0]		=>  :fachinfo,
-				[2,0]		=>	:patinfo,
-				[3,0]		=>	:narcotic,
-				[4,0]		=>	:complementary_type,
-				[5,0,0]	=>	'result_item_start',
-				[5,0,1]	=>	:name_base,
-				[5,0,2]	=>	'result_item_end',
-				[6,0]		=>	:galenic_form,
-				[7,0]		=>	:most_precise_dose,
-				[8,0]		=>	:comparable_size,
-				[9,0]		=>	:price_exfactory,
-				[10,0]	=>	:price_public,
-				[11,0]	=>	:deductible,
-				[12,0]	=>	:substances,
-				[13,0]	=>	:company_name,
-				[14,0]	=>	:ikscat,
-				[15,0]	=>	:registration_date,
-				[16,0]	=>	:feedback,
-				[17,0]	=>  :google_search,
-				[18,0]	=>	:notify,
-			}
+				[0,0]	=>	:name_base,
+				[1,0]	=>	:company_name,
+				[2,0]	=>	:most_precise_dose,
+				[3,0]	=>	:comparable_size,
+				[4,0] =>	:active_agents,
+				[5,0]	=>	:price_public,
+				[6,0]	=>	:price_difference, 
+				[7,0]	=>	:deductible,
+				[8,0] =>  :ikscat,
+			}	
 		end
 		def explain_result_components
 			{
@@ -58,6 +46,31 @@ module ODDB
 				[2,5]	=>	'explain_slo',
 				[2,6]	=>	'explain_slg',
 				[2,7]	=>	:explain_lppv,
+			}
+		end
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>  :fachinfo,
+				[2,0]		=>	:patinfo,
+				[3,0]		=>	:narcotic,
+				[4,0]		=>	:complementary_type,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:galenic_form,
+				[7,0]		=>	:most_precise_dose,
+				[8,0]		=>	:comparable_size,
+				[9,0]		=>	:price_exfactory,
+				[10,0]	=>	:price_public,
+				[11,0]	=>	:deductible,
+				[12,0]	=>	:substances,
+				[13,0]	=>	:company_name,
+				[14,0]	=>	:ikscat,
+				[15,0]	=>	:registration_date,
+				[16,0]	=>	:feedback,
+				[17,0]	=>  :google_search,
+				[18,0]	=>	:notify,
 			}
 		end
 	end
@@ -250,6 +263,19 @@ module ODDB
 			:external_css	=>	'http://www.atupri.ch/misc/new.generika.css',
 		}
 		HTML_ATTRIBUTES = { }
+		def compare_list_components
+			{
+				[0,0]	=>	:name_base,
+				[1,0]	=>	:company_name,
+				[2,0]	=>	:most_precise_dose,
+				[3,0]	=>	:comparable_size,
+				[4,0] =>	:active_agents,
+				[5,0]	=>	:price_public,
+				[6,0]	=>	:price_difference, 
+				[7,0]	=>	:deductible,
+				[8,0] =>  :ikscat,
+			}	
+		end
 		def explain_result_components
 			{
 				[0,0]	=>	:explain_original,
@@ -370,6 +396,19 @@ module ODDB
     }
 		DISABLED = [ :generic_definition, :legal_note, 
       :pointer_steps_header  ]
+		def compare_list_components
+			{
+				[0,0]	=>	:name_base,
+				[1,0]	=>	:company_name,
+				[2,0]	=>	:most_precise_dose,
+				[3,0]	=>	:comparable_size,
+				[4,0] =>	:active_agents,
+				[5,0]	=>	:price_public,
+				[6,0]	=>	:price_difference, 
+				[7,0]	=>	:deductible,
+				[8,0] =>  :ddd_price,
+			}	
+		end
     def navigation(*args)
       [:help_link, :faq_link, :contact_link ]
     end
@@ -451,6 +490,19 @@ module ODDB
 			#:external_css	=>	'http://www.just-medical.com/css/oddb.css',
 			:external_css	=>	'http://www.just-medical.com/css/new.oddb.css',
 		}
+		def compare_list_components
+			{
+				[0,0]	=>	:name_base,
+				[1,0]	=>	:company_name,
+				[2,0]	=>	:most_precise_dose,
+				[3,0]	=>	:comparable_size,
+				[4,0] =>	:active_agents,
+				[5,0]	=>	:price_public,
+				[6,0]	=>	:price_difference, 
+				[7,0]	=>	:deductible,
+				[8,0] =>  :ikscat,
+			}	
+		end
 		def explain_result_components
 			{
 				[0,0]	=>	:explain_original,
@@ -625,6 +677,18 @@ module ODDB
 			#:external_css	=>	'http://www.medical-tribune.ch/css/oddb_deutsch.css',
 			:external_css	=>	'http://www.medical-tribune.ch/css/new.oddb_deutsch.css',
 		}
+		def compare_list_components
+			{
+				[0,0]	=>	:name_base,
+				[1,0]	=>	:company_name,
+				[2,0]	=>	:most_precise_dose,
+				[3,0]	=>	:comparable_size,
+				[4,0] =>	:active_agents,
+				[5,0]	=>	:price_public,
+				[6,0]	=>	:price_difference, 
+				[7,0] =>  :ikscat,
+			}	
+		end
 		def explain_result_components
 			{
 				[0,0]	=>	:explain_original,
@@ -694,6 +758,18 @@ module ODDB
 			#:external_css	=>	'http://www.medical-tribune.ch/css/oddb_public.css',
 			:external_css	=>	'http://www.medical-tribune.ch/css/new.oddb_public.css',
 		}
+		def compare_list_components
+			{
+				[0,0]	=>	:name_base,
+				[1,0]	=>	:company_name,
+				[2,0]	=>	:most_precise_dose,
+				[3,0]	=>	:comparable_size,
+				[4,0] =>	:active_agents,
+				[5,0]	=>	:price_public,
+				[6,0]	=>	:price_difference, 
+				[7,0] =>  :ikscat,
+			}	
+		end
 		def explain_result_components
 			{
 				[0,0]	=>	:explain_original,
@@ -758,7 +834,7 @@ module ODDB
 			:ywesee_contact,
 			:sequences,
 		]
-		DISABLED = [ :atc_ddd, :legal_note, :navigation ]
+		DISABLED = [ :atc_ddd, :legal_note, :navigation, :price_request ]
     DICTIONARIES = {
       'de'	=>	{
         :explain_generic					=>	'Blau&nbsp;=&nbsp;Generikum',
@@ -778,6 +854,19 @@ module ODDB
     RESOURCES = {
       :external_css	=>	'http://www.aixede.ch/mymedi/screen.css',
     }
+		def compare_list_components
+			{
+				[0,0]	=>	:name_base,
+				[1,0]	=>	:company_name,
+				[2,0]	=>	:most_precise_dose,
+				[3,0]	=>	:comparable_size,
+				[4,0] =>	:active_agents,
+				[5,0]	=>	:price_public,
+				[6,0]	=>	:ddd_price, 
+				[7,0]	=>	:price_difference, 
+				[8,0]	=>	:deductible, 
+			}	
+		end
 		def explain_result_components
 			{
 				[0,0]	=>	:explain_original,
@@ -805,9 +894,9 @@ module ODDB
 				[4,0]		=>	:most_precise_dose,
 				[5,0]		=>	:comparable_size,
 				[6,0]		=>	:price_public,
-				[7,0]		=>	:company_name,
-				[8,0]		=>	:ddd_price,
-				[9,0]		=>	'nbsp',
+				[7,0]		=>	:ddd_price,
+				[8,0]		=>	'nbsp',
+				[9,0]		=>	:company_name,
 				[10,0]	=>	:ikscat,
 			}
 		end
@@ -841,6 +930,19 @@ module ODDB
 			},
 		}
 =end
+		def compare_list_components
+			{
+				[0,0]	=>	:name_base,
+				[1,0]	=>	:company_name,
+				[2,0]	=>	:most_precise_dose,
+				[3,0]	=>	:comparable_size,
+				[4,0] =>	:active_agents,
+				[5,0]	=>	:price_public,
+				[6,0]	=>	:price_difference, 
+				[7,0]	=>	:ddd_price, 
+				[8,0] =>  :ikscat,
+			}	
+		end
 		def explain_result_components
 			{
 				[0,0]	=>	:explain_original,
