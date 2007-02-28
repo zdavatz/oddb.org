@@ -602,7 +602,7 @@ class OddbPrevalence
 		@generic_groups[package_pointer]
 	end
 	def get_currency_rate(symbol)
-		@currency_rates[symbol]
+    ODDB::Currency.rate('CHF', symbol)
 	end
 	def incomplete_registration(oid)
 		@incomplete_registrations[oid.to_i]

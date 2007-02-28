@@ -22,6 +22,8 @@ trap("USR2") {
 module ODDB
 	headpath = File.expand_path('../.git/HEAD', File.dirname(__FILE__))
 	ODDB_VERSION = File.read(headpath)
+
+  Currency = DRbObject.new(nil, ODDB::CURRENCY_URI)
 end
 
 start = Time.now

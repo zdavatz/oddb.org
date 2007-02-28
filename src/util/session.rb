@@ -53,6 +53,11 @@ module ODDB
 		def Session.restart_logging
 			@@request_log = nil
 		end
+		def initialize(key, app, validator=nil)
+			super(key, app, validator)
+			@interaction_basket = []
+      @currency_rates = {}
+		end
 		def event
 			if(@lookandfeel \
 				&& persistent_user_input(:flavor) != @lookandfeel.flavor)
@@ -169,10 +174,6 @@ module ODDB
 		#ensure
 			#request_log(logtype)
 		end
-		def initialize(key, app, validator=nil)
-			super(key, app, validator)
-			@interaction_basket = []
-		end
 		def add_to_interaction_basket(object)
 			@interaction_basket.push(object)
 		end
@@ -194,6 +195,9 @@ module ODDB
 			@desired_state
 		end
 =end
+    def get_currency_rate(currency)
+      @currency_rates[currency] ||= @app.get_currency_rate(currency)
+    end
 		def interaction_basket_count
 			@interaction_basket.size
 		end

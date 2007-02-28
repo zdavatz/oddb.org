@@ -21,6 +21,7 @@ module ODDB
 	## xmlconv2: "druby://localhost:10010"
 	ANALYSISPARSE_URI = "druby://localhost:10011"
 	## globopharm.xmlconv.bbmb.ch: "druby://localhost:10012"
+	CURRENCY_URI = "druby://localhost:10999"
   YUS_URI = "drbssl://localhost:9997"
   YUS_DOMAIN = 'oddb.org'
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
@@ -110,6 +111,6 @@ module ODBA
 		]
 		SMTP_SERVER = ::ODDB::SMTP_SERVER
 		CLEANING_INTERVAL = 120
-		CLEANER_PRIORITY = 0
+		CLEANER_PRIORITY = -1
 	end
 end

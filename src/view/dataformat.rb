@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # View::DataFormat -- oddb -- 14.03.2003 -- hwyss@ywesee.com 
 
-require 'plugin/fxcrossrate'
 require 'view/external_links'
 
 module ODDB

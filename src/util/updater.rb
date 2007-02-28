@@ -6,7 +6,6 @@ require 'plugin/bsv'
 require 'plugin/comarketing'
 require 'plugin/doctors'
 require 'plugin/fachinfo'
-require 'plugin/fxcrossrate'
 require 'plugin/hospitals'
 require 'plugin/interaction'
 require 'plugin/limitation'
@@ -143,7 +142,6 @@ module ODDB
 		def run
 			logfile_stats
 			update_swissmedicjournal
-			update_fxcrossrate
 			update_fachinfo
 			update_vaccines
 			if(update_bsv)
@@ -191,13 +189,6 @@ module ODDB
 		end
 		def update_fachinfo
 			update_notify_simple(FachinfoPlugin, 'Fachinfo')
-		end
-		def update_fxcrossrate
-			klass = FXCrossratePlugin
-			wrap_update(klass, 'Currency Rates') {
-				plug = klass.new(@app)
-				plug.update
-			}
 		end
 		def update_hospitals
 			update_simple(HospitalPlugin, 'Hospitals')
