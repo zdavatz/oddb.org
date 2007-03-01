@@ -133,7 +133,7 @@ module ODDB
 						@templates = named_chapters [
 							:iksnrs, :registration_owner, :date, :rest,
 						]
-					when /Zulassungsvermerk/, /Estampille/
+					when /Zulassungs(vermerk|nummer)/, /Estampille|Num.ro\s+d.autorisation/
 						@iksnrs = @switch
 						@templates = named_chapters [
 							:switch,
