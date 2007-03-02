@@ -405,8 +405,7 @@ module ODDB
 				[4,0] =>	:active_agents,
 				[5,0]	=>	:price_public,
 				[6,0]	=>	:price_difference, 
-				[7,0]	=>	:deductible,
-				[8,0] =>  :ddd_price,
+				[7,0] =>  :ddd_price,
 			}	
 		end
     def navigation(*args)
@@ -425,11 +424,10 @@ module ODDB
         [4,0,2]	=>	'result_item_end',
         [5,0]		=>	:comparable_size,
         [6,0]	=>	:price_public,
-        [7,0]	=>	:deductible,
-        [8,0]	=>	:ddd_price,
-        [9,0]	=>	:active_agents,
-        [10,0]	=>	:company_name,
-        [11,0]	=>	:ikscat,
+        [7,0]	=>	:ddd_price,
+        [8,0]	=>	:active_agents,
+        [9,0]	=>	:company_name,
+        [10,0]	=>	:ikscat,
       }
     end
     def zone_navigation
