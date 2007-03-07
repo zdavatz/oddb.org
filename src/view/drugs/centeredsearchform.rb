@@ -34,13 +34,14 @@ class CenteredSearchForm < View::CenteredSearchForm
 end
 class CenteredSearchComposite < View::CenteredSearchComposite
 	COMPONENTS = {
-		[0,0]		=>	:language_chooser,
-		[0,1]		=>	View::Drugs::CenteredSearchForm,
-		[0,2]		=>	:search_explain, 
-		[0,3]		=>	View::CenteredNavigation,
+		[0,0]		=>	:screencast,
+		[0,1]		=>	:language_chooser,
+		[0,2]		=>	View::Drugs::CenteredSearchForm,
+		[0,3]		=>	:search_explain, 
+		[0,4]		=>	View::CenteredNavigation,
 	}
 	CSS_MAP = {
-		[0,0,1,4]		=>	'list center',
+		[0,0,1,5]		=>	'list center',
 	}
 	def init
 		if(@lookandfeel.enabled?(:just_medical_structure, false))
@@ -135,6 +136,13 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		link.set_attribute('class', 'list')
 		link
 	end
+  def screencast(model, session=@session)
+    if(@lookandfeel.enabled?(:screencast))
+      link = HtmlGrid::Link.new(:screencast, model, @session, self)
+      link.href = "http://www.youtube.com/watch?v=FjmtBegbAbs"
+      link
+    end
+  end
 	def substance_count(model, session)
 		@session.app.substance_count
 	end

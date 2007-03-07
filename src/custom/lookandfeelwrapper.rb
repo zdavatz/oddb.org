@@ -121,6 +121,7 @@ module ODDB
 			:patinfos, 
 			:paypal,
 			:query_limit,
+      :screencast,
 			:sponsor,
 			:sponsorlogo,
 		]
