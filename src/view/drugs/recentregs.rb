@@ -58,6 +58,9 @@ class DateHeader < HtmlGrid::Composite
 		[0,0]	=>	:date_packages,
 	}
 	CSS_CLASS = 'composite'
+  CSS_MAP = {
+    [0,0] => 'atc list',
+  }
 	LEGACY_INTERFACE = false
 	def date_packages(model)
 		date = model.date

@@ -95,6 +95,7 @@ class SequencesComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0]	=>	'result-found list',
+    [1,0] =>  'right',
 	}
 	COLSPAN_MAP	= {
 		[0,1]	=> 2,
