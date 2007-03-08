@@ -66,6 +66,7 @@ module ODDB
 					details = meddata.detail(result, @medwin_template)
 					update_company_data(comp, details)
 				end
+				nil # return nil across DRb
 			}
 		rescue MedData::OverflowError
 		end
@@ -141,6 +142,7 @@ module ODDB
 						}
 					end
 				}
+				nil # return nil across DRb
 			}
 		end
 		def update_trade_status
@@ -155,6 +157,7 @@ module ODDB
 					end
 					nil # don't return the packages across DRb
 				}
+				nil # return nil across DRb
 			}
 		end
 		def update_package(meddata, pack)
