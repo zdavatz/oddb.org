@@ -61,8 +61,7 @@ module ODDB
 			atc
 		end
 		def create_ddd(roa)
-			@ddds ||= {}
-			@ddds[roa] = DDD.new(roa)	
+			ddds[roa] = DDD.new(roa)	
 		end
 		def create_ddd_guidelines
 			@ddd_guidelines = Text::Document.new

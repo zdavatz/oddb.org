@@ -139,7 +139,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
   def screencast(model, session=@session)
     if(@lookandfeel.enabled?(:screencast))
       link = HtmlGrid::Link.new(:screencast, model, @session, self)
-      link.href = "http://www.youtube.com/watch?v=FjmtBegbAbs"
+      link.href = "http://www.youtube.com/watch?v=MyqsJcdMHJI"
       link
     end
   end

@@ -975,7 +975,7 @@ Zeno Davatz
 				:paypal_msg_error					=>	'Fehler bei PayPal. Wir werden Ihre bezahlung manuell überprüfen und so schnell als möglich mit Ihnen in Kontakt treten. Vielen Dank für Ihr Verständnis.',
 				:paypal_unconfirmed				=>	'Fehler',
 				:paypal_success						=>	'Bereit zum Download',
-        :screencast               =>  'Screencast www.oddb.org',
+        :screencast               =>  'Screencast',
 				:specialization						=>	'Erlaubnis',
 				:phone_label							=>	'Telefon:',
 				:phone										=>	'Telefon:',
