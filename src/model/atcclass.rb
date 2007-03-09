@@ -84,8 +84,7 @@ module ODDB
 			end
 		end
 		def ddd(roa)
-			@ddds ||= {}
-			@ddds[roa]
+			ddds[roa]
 		end
 		def ddds
 			@ddds ||= {}
