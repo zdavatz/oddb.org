@@ -71,6 +71,7 @@ module ODDB
 			def ddd_price(model, session=@session)
 				span = HtmlGrid::Span.new(model, @session, self)
 				if(ddd_price = model.ddd_price)
+          ddd_price = convert_price(ddd_price, @session.currency)
 					@ddd_price_count ||= 0
 					@ddd_price_count += 1
 					span.value = @lookandfeel.format_price(ddd_price)

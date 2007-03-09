@@ -46,8 +46,11 @@ class DDDPrice < HtmlGrid::Composite
 	end
 	def calculation(model)
 		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')))
+      currency = @session.currency
 			mprice = @lookandfeel.format_price(model.price_public)
+      mprice = convert_price(mprice, currency)
 			dprice = @lookandfeel.format_price(model.ddd_price)
+      dprice = convert_price(dprice, currency)
 			mdose = model.dose
 			ddose = ddd.dose
 			wanted = wanted_unit(mdose, ddose)
@@ -55,8 +58,14 @@ class DDDPrice < HtmlGrid::Composite
 			ddose = ddd.dose.want(wanted)
 			curr = @session.currency
 			comp = HtmlGrid::Value.new(:ddd_calculation, model, @session, self)
-			comp.value = @lookandfeel.lookup(:ddd_calculation, ddose, mdose,
-																			 mprice, model.size, dprice, curr)
+      if(mdose > ddose)
+        comp.value = @lookandfeel.lookup(:ddd_calc_tablet, mprice,
+                                         model.size, dprice, curr)
+      else
+        comp.value = @lookandfeel.lookup(:ddd_calculation, ddose,
+                                         mdose, mprice, model.size,
+                                         dprice, curr)
+      end
 			comp
 		end
 	end

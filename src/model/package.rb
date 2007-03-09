@@ -215,7 +215,12 @@ Grammar OddbSize
 			if((atc = atc_class) && atc.has_ddd? && (ddd = atc.ddds['O']) \
 				&& (grp = galenic_form.galenic_group) && grp.match(/tabletten/i) \
 				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose))
-				(ddose.to_f / mdose.want(ddose.unit).to_f) * (price.to_f / comparable_size.to_f)
+        if(mdose > ddose)
+          (price.to_f / comparable_size.to_f)
+        else
+          (ddose.to_f / mdose.want(ddose.unit).to_f) \
+            * (price.to_f / comparable_size.to_f)
+        end
 			end
 		rescue RuntimeError
 		end
