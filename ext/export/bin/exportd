@@ -14,13 +14,6 @@ require 'etc/db_connection'
 module ODBA
 	class Cache
 		CLEANER_PRIORITY = 1
-		CLEANING_INTERVAL = 60
-	end
-	class CacheEntry
-		remove_const :RETIRE_TIME
-		RETIRE_TIME = 60
-		remove_const :DESTROY_TIME
-		DESTROY_TIME = 120
 	end
 end
 
