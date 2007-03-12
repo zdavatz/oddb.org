@@ -8,8 +8,14 @@ module ODDB
   module Remote
     class Package < Remote::Object
       def comparable?(other)
+        csize = comparable_size
+        csize.length == 1 or return false
+        size = csize.first
         range = (size*0.75)..(size*1.25)
         range.include?(other.comparable_size)
+      end
+      def comparable_size
+        @comparable_size ||= @remote.comparable_size
       end
       def sequence
         @sequence ||= Remote::Sequence.new(@remote.sequence)
