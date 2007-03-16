@@ -750,6 +750,14 @@ class OddbPrevalence
     end
     ODBA::DRbWrapper.new comparables
   end
+  def remote_each_package(&block)
+    each_package { |pac|
+      if(pac.public? && !pac.narcotic?)
+        block.call ODBA::DRbWrapper.new(pac)
+      end
+    }
+    nil # don't try to pass all registrations across DRb-Land
+  end
   def remote_packages(query)
     seqs = search_sequences(query, false)
     if(seqs.empty?)
