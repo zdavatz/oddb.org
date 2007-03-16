@@ -56,9 +56,8 @@ module ODDB
 								&& flags.include?(:composition))
 								succ = update_active_agents(comp, seq.pointer)
 							end
-							if((pacs = pseq.packages) \
-								&& flags.include?(:packages))
-								succ = update_packages(pacs, seq, [])
+							if(flags.include?(:packages))
+								succ = update_packages(pseq, seq, [])
 							end
 						end
 					}
@@ -293,32 +292,34 @@ module ODDB
 			end
 			indication
 		end
-		def update_packages(smj_packages, sequence, reg_flags=[])
-			smj_packages.each { |package|
-				pointer = sequence.pointer + [:package, package.ikscd]
-				hash = {
-					:size		=>	package.package_size,
-				}
-				if(ikscat = package.ikscat || sequence.registration.ikscat)
-					hash.store(:ikscat, ikscat)
-				end
-				if(descr = package.description)
-					hash.store(:descr, descr)
-				end
-        if(comform_name = sequence.most_precise_comform)
-          comform = CommercialForm.find_by_name(comform_name)
-          if(comform)
-            comform_ptr = Persistence::Pointer.new(:comform)
-            comform = @app.update(comform_ptr.creator, 
-                                  {:de => comform_name})
+		def update_packages(smj_sequence, sequence, reg_flags=[])
+      if(smj_packages = smj_sequence.packages)
+        smj_packages.each { |package|
+          pointer = sequence.pointer + [:package, package.ikscd]
+          hash = {
+            :size		=>	package.package_size,
+          }
+          if(ikscat = package.ikscat || sequence.registration.ikscat)
+            hash.store(:ikscat, ikscat)
           end
-          hash.store(:commercial_form, comform.pointer)
-        end
-				if(reg_flags.include?(:new))
-					hash.store(:refdata_override, true)
-				end
-				@app.update(pointer.creator, hash, :swissmedic)
-			}
+          if(descr = package.description)
+            hash.store(:descr, descr)
+          end
+          if(comform_name = smj_sequence.most_precise_comform)
+            comform = CommercialForm.find_by_name(comform_name)
+            if(comform)
+              comform_ptr = Persistence::Pointer.new(:comform)
+              comform = @app.update(comform_ptr.creator, 
+                                    {:de => comform_name})
+            end
+            hash.store(:commercial_form, comform.pointer)
+          end
+          if(reg_flags.include?(:new))
+            hash.store(:refdata_override, true)
+          end
+          @app.update(pointer.creator, hash, :swissmedic)
+        }
+      end
 		end
 		def update_registration(smj_reg, pointer=nil)
 			flags = smj_reg.flags
@@ -408,9 +409,7 @@ module ODDB
 					@app.update(sequence.pointer, hash, :swissmedic)
 				end
 			end
-			if(packages = smj_seq.packages)
-				update_packages(packages, sequence, reg_flags)
-			end
+      update_packages(smj_seq, sequence, reg_flags)
 		end
 		def update_sequences(smj_reg, registration, reg_flags=[])
 			smj_reg.products.each_value { |seq| 
