@@ -3584,7 +3584,7 @@ Zeno Davatz
 			:downloads							=>	'downloads',
 			:examples								=>	'downloads/examples',
 			:javascript							=>	'javascript',
-			:logo										=>	'logo_de.gif',
+			:logo										=>	'logo.png',
 			:logo_de								=>	'logo_de.gif',
 			:logo_fr								=>	'logo_fr.gif',
 			:logo_doctors						=>	'logo_doc.gif',
