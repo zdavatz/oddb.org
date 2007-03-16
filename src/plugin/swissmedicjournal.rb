@@ -308,7 +308,7 @@ module ODDB
           if(comform_name = smj_sequence.most_precise_comform)
             comform = CommercialForm.find_by_name(comform_name)
             if(comform.nil?)
-              comform_ptr = Persistence::Pointer.new(:comform)
+              comform_ptr = Persistence::Pointer.new(:commercial_form)
               comform = @app.update(comform_ptr.creator, 
                                     {:de => comform_name})
             end
