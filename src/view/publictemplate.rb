@@ -92,7 +92,7 @@ module ODDB
 				elsif(@lookandfeel.enabled?(:oekk_structure, false))
 					oekk_head(model)
 				else
-					foot(model, session)
+					TopFoot.new(model, session, self)
 				end
 			end
 		end

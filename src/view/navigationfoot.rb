@@ -58,5 +58,20 @@ module ODDB
         super
       end
 		end
+    class TopFoot < HtmlGrid::Composite
+      CSS_CLASS = "composite"
+      COMPONENTS = {
+        [0,0] => View::CountryNavigation,
+        [1,0] =>	View::ZoneNavigation,
+      }
+      CSS_MAP = {
+        [0,0]	=>	'navigation',
+        [1,0]	=>	'navigation right',
+      }
+      COMPONENT_CSS_MAP = {
+        [0,0]	=>	'navigation',
+        [1,0]	=>	'navigation right',
+      }
+    end
 	end
 end
