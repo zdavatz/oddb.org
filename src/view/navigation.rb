@@ -42,7 +42,7 @@ module ODDB
 						evt
 					end
 					components.store(pos, evt)
-					components.store([idx*2-1,0], :navigation_divider) if idx > 0
+					components.store([idx*2-1,0], 'navigation_divider') if idx > 0
 				}
 			end
 			def home(model)
@@ -65,6 +65,26 @@ module ODDB
           @lookandfeel.lookup(state.to_sym).to_s.downcase
         }
         super(links)
+      end
+    end
+    class CountryNavigation < HtmlGrid::Composite
+      COMPONENTS = {
+        [0,0] => :oddb_de,
+        [1,0] => 'navigation_divider',
+        [2,0] => :oddb_chde,
+      }
+      LEGACY_INTERFACE = false
+      def link(key, model)
+        link = HtmlGrid::Link.new('oddb_%s' % key, model, @session, self)
+        link.href = "http://%s.oddb.org/" % key
+        link.css_class = 'navigation'
+        link
+      end
+      def oddb_chde(model)
+        link(:chde, model)
+      end
+      def oddb_de(model)
+        link(:de, model)
       end
     end
 	end
