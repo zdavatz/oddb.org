@@ -92,8 +92,7 @@ module ODDB
 				elsif(@lookandfeel.enabled?(:oekk_structure, false))
 					oekk_head(model)
 				else
-          css_map.store(components.index(:topfoot), 'navigation right')
-					View::ZoneNavigation.new(model, @session, self)
+					foot(model, session)
 				end
 			end
 		end
