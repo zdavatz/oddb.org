@@ -401,8 +401,8 @@ td.pubprice {
 td.logo {
 	vertical-align : top;
 	position : relative;
-	top : 3px;
-	padding-bottom : 3px;
+	padding: 4px;
+	padding-top: 12px;
 }
 td.section-title {
 	font-weight : bold;
