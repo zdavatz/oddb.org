@@ -1,6 +1,7 @@
 Datenbeschrieb oddb.yaml
 
-Version:  1.3.0
+Version:  1.3.1
+Geändert: 21.03.2007 (1.3.1) durch hwyss@ywesee.com
 Geändert: 09.12.2005 (1.3.0) durch hwyss@ywesee.com
 Geändert: 14.11.2005 (1.2.0) durch hwyss@ywesee.com
 Geändert: 30.09.2005 (1.1.3) durch hwyss@ywesee.com
@@ -71,7 +72,8 @@ Package:
 - price_exfactory   (Integer)              -> Exfactorypreis in Rappen
 - price_public      (Integer)              -> Publikumspreis in Rappen
 - sl_entry          (SlEntry)              -> Eintrag in der SL, NULL = Nein, SlEntry = Ja.
-- narcotic          (Narcotic)             -> Betäubungsmitteleintrag
+- ean13             (String)               -> Ean13 des Produkts
+- narcotics         (Array (String))       -> Betäubungsmitteleinträge: CAS Registry Numbers
 
 AtcClass:
 - code              (String(1-7), NOT NULL)-> Atc-Code. siehe Glossar (AtcCode)
@@ -104,7 +106,7 @@ Substance:
 - descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Indikationstext. siehe Glossar (SimpleLanguage::Descriptions)
 - synonyms          (Array (String))			 -> Weitere bezeichnungen
 - effective_form    (Substance)            -> Wirkform
-- narcotic          (Narcotic)             -> Betäubungsmitteleintrag
+- narcotic          (String)               -> CAS Registry Number
 
 Dose:
 - val               (Float, NOT NULL)      -> Wert/Grösse der Dosis
@@ -121,10 +123,6 @@ LimitationText:
 GalenicGroup:
 - oid               (Integer, NOT NULL)    -> Unique Identifier
 - descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Bezeichnung. siehe Glossar (SimpleLanguage::Descriptions)
-
-Narcotic:
-- oid               (Integer, NOT NULL)    -> Unique Identifier
-- casrn             (String)               -> CAS Registry Number
 
 Text::Document:
 - descriptions      (SimpleLanguage::Descriptions (String, Text::Chapter)) -> Sprache, Formatierter Text
