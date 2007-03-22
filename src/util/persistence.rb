@@ -122,10 +122,10 @@ module ODDB
         :cyp450, :fachinfo, :feedback, :galenic_form, :galenic_group,
         :generic_group, :incomplete_registration, :indication, :invoice,
         :address_suggestion, :migel_group, :subgroup, :product,
-        :narcotic, :orphaned_fachinfo, :orphaned_patinfo, :package,
-				:patent, :patinfo, :pdf_patinfo, :position, :poweruser,
-				:registration, :sequence, :slate, :sl_entry, :sponsor,
-				:substance, :user, :limitation_text
+        :narcotic, :narcotics, :orphaned_fachinfo, :orphaned_patinfo,
+        :package, :patent, :patinfo, :pdf_patinfo, :position,
+        :poweruser, :registration, :sequence, :slate, :sl_entry,
+        :sponsor, :substance, :user, :limitation_text
       ]
 			@parser = Parse.generate_parser <<-EOG
 Grammar OddbSize
