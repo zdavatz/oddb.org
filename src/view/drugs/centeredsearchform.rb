@@ -62,48 +62,48 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 			}
 		elsif(@lookandfeel.enabled?(:data_counts))
 			components.update({
-				[0,3]		=>	:recent_registrations,
-				[0,4,0]	=>	:database_size,
-				[0,4,1]	=>	:sequences,
-				[0,4,2]	=>	'comma_separator',
-				[0,4,3]	=>	:narcotics_size,
-				[0,4,4]	=>	:narcotics,
-				[0,4,5]	=>	'comma_separator',
-				[0,4,6]	=>	:vaccines_size,
-				[0,4,7]	=>	:vaccines,
-				[0,5,0]	=>	:fachinfo_size,
-				[0,5,1]	=>	:fi_count_text,
+				[0,4]		=>	:recent_registrations,
+				[0,5,0]	=>	:database_size,
+				[0,5,1]	=>	:sequences,
 				[0,5,2]	=>	'comma_separator',
-				[0,5,3] =>	:patinfo_size,
-				[0,5,4] =>	:pi_count_text,
-				[0,6,0]	=>	:atc_ddd_size,
-				[0,6,1]	=>	:ddd_count_text,
+				[0,5,3]	=>	:narcotics_size,
+				[0,5,4]	=>	:narcotics,
+				[0,5,5]	=>	'comma_separator',
+				[0,5,6]	=>	:vaccines_size,
+				[0,5,7]	=>	:vaccines,
+				[0,6,0]	=>	:fachinfo_size,
+				[0,6,1]	=>	:fi_count_text,
 				[0,6,2]	=>	'comma_separator',
-				[0,6,3]	=>	:limitation_size,
-				[0,6,4]	=>	:sl_count_text,
-				[0,7]		=>	:atc_chooser,
-				[0,8,0]	=>	:new_feature,
-				[0,8,1]	=>	:download_generics,
-				[0,9]		=>	:generic_definition,
-				[0,10]	=>	:legal_note,
-				[0,11]	=>	:paypal,
+				[0,6,3] =>	:patinfo_size,
+				[0,6,4] =>	:pi_count_text,
+				[0,7,0]	=>	:atc_ddd_size,
+				[0,7,1]	=>	:ddd_count_text,
+				[0,7,2]	=>	'comma_separator',
+				[0,7,3]	=>	:limitation_size,
+				[0,7,4]	=>	:sl_count_text,
+				[0,8]		=>	:atc_chooser,
+				[0,9,0]	=>	:new_feature,
+				[0,9,1]	=>	:download_generics,
+				[0,10]		=>	:generic_definition,
+				[0,11]	=>	:legal_note,
+				[0,12]	=>	:paypal,
 			})
-			css_map.store([0,4,1,8], 'list center')
-			component_css_map.store([0,10], 'legal-note')
+			css_map.store([0,4,1,9], 'list center')
+			component_css_map.store([0,11], 'legal-note')
 		else
 			components.update({
-				[0,4,0]	=>	'database_last_updated_txt',
-				[0,4,1]	=>	:database_last_updated,
+				[0,5,0]	=>	'database_last_updated_txt',
+				[0,5,1]	=>	:database_last_updated,
       })
-			css_map.store([0,4], 'list center')
+			css_map.store([0,5], 'list center')
       unless(@lookandfeel.disabled?(:generic_definition))
-        components.store([0,5], :generic_definition)
-			  css_map.store([0,5], 'list center')
+        components.store([0,6], :generic_definition)
+			  css_map.store([0,6], 'list center')
       end
       unless(@lookandfeel.disabled?(:legal_note))
-        components.store([0,6], :legal_note)
-			  css_map.store([0,6], 'list center')
-			  component_css_map.store([0,6], 'legal-note')
+        components.store([0,7], :legal_note)
+			  css_map.store([0,7], 'list center')
+			  component_css_map.store([0,7], 'legal-note')
       end
 		end
 		super
