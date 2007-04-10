@@ -45,13 +45,6 @@ module ODDB
 				LookandfeelStandardResult,
 				LookandfeelKonsumInfo, 
 			],
-			'medical-tribune' => [
-				LookandfeelExtern,
-				LookandfeelMedicalTribune,
-			],
-			'medical-tribune1' => [
-				LookandfeelMedicalTribune1,
-			],
 			'oekk'	=>	[
 				LookandfeelExtern,
 				LookandfeelStandardResult,
