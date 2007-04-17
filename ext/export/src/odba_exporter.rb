@@ -122,7 +122,7 @@ groupcd;poscd;anonymouspos;analysis_description_de;analysis_description_fr;analy
 		def OdbaExporter.export_migel_csv(odba_ids, dir, name)
 			safe_export(dir, name) { |fh|
 				fh << <<-HEAD
-migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limitation_fr;group_limitation_it;subgroup_code;subgroup_de;subgroup_fr;subgroup_it;subgroup_limitation_de;subgroup_limitation_fr;subgroup_limitation_it;product_code;product_de;product_fr;product_it;accessory_code;accessory_de;accessory_fr;accessory_it;product_limitation_de;product_limitation_fr;product_limitation_it;price;unit_de;unite_fr;unite_it;limitation_flag;date
+migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limitation_fr;group_limitation_it;subgroup_code;subgroup_de;subgroup_fr;subgroup_it;subgroup_limitation_de;subgroup_limitation_fr;subgroup_limitation_it;product_code;product_de;product_fr;product_it;accessory_code;accessory_de;accessory_fr;accessory_it;product_limitation_de;product_limitation_fr;product_limitation_it;price;qty;unit_de;unit_fr;unit_it;limitation_flag;date
 				HEAD
 				odba_ids.each { |odba_id|
 					item = ODBA.cache.fetch(odba_id, nil)

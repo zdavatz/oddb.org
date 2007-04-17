@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # OdbaExporter::CsvExporter -- oddb -- 26.08.2005 -- hwyss@ywesee.com
 
-require 'csvparser'
+require 'csv'
 
 module ODDB
 	module OdbaExporter
@@ -20,8 +20,8 @@ module ODDB
 			DEFRIT = [:de, :fr, :it] 
 			MIGEL = [:migel_code, :migel_subgroup, :product_code,
 				:migel_product_text, :accessory_code, :defrit,
-				:migel_limitation, :format_price, :migel_unit, :limitation,
-				:format_date]
+        :migel_limitation, :format_price, :qty, :migel_unit,
+        :limitation, :format_date]
 			MIGEL_SUBGROUP = [:migel_group, :code, :defrit,
 				:migel_limitation]
 			MIGEL_GROUP = [:code, :defrit, :migel_limitation]
@@ -79,8 +79,9 @@ module ODDB
 				self.collect_data(DEFRIT, item)
 			end
 			def CsvExporter.dump(keys, item, fh)
-				data = collect_data(keys, item).flatten
-				fh << CSVLine.new(data).to_s(false, ';') << "\n"
+        CSV::Writer.generate(fh, ';') { |csv|
+          csv << collect_data(keys, item).flatten
+        }
 			end
 			def CsvExporter.first_address_data(item)
 				addr = item.praxis_address || item.address(0)

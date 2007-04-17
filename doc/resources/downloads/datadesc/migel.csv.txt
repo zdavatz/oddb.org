@@ -1,6 +1,7 @@
 Datenbeschrieb migel.csv
 
-Version: 2.0.2
+Version: 2.1
+Geändert: 17.04.2007 (2.1)   durch hwyss@ywesee.com
 Geändert: 30.09.2005 (2.0.2) durch hwyss@ywesee.com
 Geändert: 28.09.2005 (2.0.1) durch ffricker@ywesee.com
 Geändert: 27.09.2005 (2.0)   durch ffricker@ywesee.com
@@ -39,11 +40,12 @@ Migel-Record:
 24: product_limitation_fr  (*)             -> Produkt-Limitation Fr.
 25: product_limitation_it  (*)             -> Produkt-Limitation It.
 26: price                  (Float)         -> Preis
-27: unit_de                (*)             -> Einheit De.
-28: unit_fr                (*)             -> Einheit Fr.
-29: unit_it                (*)             -> Einheit It.
-30: limitation_flag        (Boolean)       -> Limitations Zeichen, siehe Glossar (Limitations Zeichen)
-31: date                   (DD.MM.YYYY)    -> Aufnahme Datum
+27: qty                    (Integer)       -> Anzahl
+28: unit_de                (*)             -> Einheit De.
+29: unit_fr                (*)             -> Einheit Fr.
+30: unit_it                (*)             -> Einheit It.
+31: limitation_flag        (Boolean)       -> Limitations Zeichen, siehe Glossar (Limitations Zeichen)
+32: date                   (DD.MM.YYYY)    -> Aufnahme Datum
 
 ## Glossar ##
 * Sprachen
