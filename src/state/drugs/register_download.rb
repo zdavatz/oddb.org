@@ -23,7 +23,7 @@ class RegisterDownload < Global
 	end
 	def init
 		@search_query = @session.user_input(:search_query)
-		@search_type = @session.user_input(:search_type)
+		@search_type = @session.user_input(:search_type) || 'st_oddb'
 		package_count = @model.atc_classes.inject(0) { |inj, atc|
 			inj + atc.package_count
 		}
