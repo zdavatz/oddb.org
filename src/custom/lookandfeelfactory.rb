@@ -28,9 +28,6 @@ module ODDB
 				LookandfeelExtern,
 				LookandfeelGenerika,
 			],
-			'mymedi'=>	[
-				LookandfeelMyMedi, 
-			],
 			'hirslanden' => [
 				LookandfeelLanguages,
 				LookandfeelHirslanden,
@@ -44,6 +41,12 @@ module ODDB
 				LookandfeelLanguages,
 				LookandfeelStandardResult,
 				LookandfeelKonsumInfo, 
+			],
+			'mediservice' =>	[
+				LookandfeelMediservice, 
+			],
+			'mymedi'=>	[
+				LookandfeelMyMedi, 
 			],
 			'oekk'	=>	[
 				LookandfeelExtern,
