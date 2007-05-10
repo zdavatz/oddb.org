@@ -675,7 +675,7 @@ module ODDB
 			:sequences,
 			:ywesee_contact,
 		]
-		DISABLED = [ :atc_ddd, :legal_note, :navigation, :price_request ]
+		DISABLED = [ :atc_ddd, :legal_note, :price_request ]
     RESOURCES = {
       :external_css	=>	'http://www.mediservice.ch/css/medisuche.css',
     }
@@ -688,7 +688,8 @@ module ODDB
 				[4,0] =>	:active_agents,
 				[5,0]	=>	:price_public,
 				[6,0]	=>	:price_difference, 
-				[7,0] =>  :ddd_price,
+				[7,0]	=>	:deductible,
+				[8,0] =>  :ddd_price,
 			}	
 		end
 		def explain_result_components
@@ -701,22 +702,21 @@ module ODDB
 				[0,5]	=>	:explain_homeopathy,
 				[0,6]	=>	:explain_anthroposophy,
 				[0,7] =>	:explain_phytotherapy,
-				[0,8]	=>	:explain_cas,
 				[1,0]	=>	:explain_parallel_import,
 				[1,1]	=>	:explain_comarketing,
 				[1,2]	=>	:explain_vaccine,
 				[1,3]	=>	:explain_narc,
 				[1,4]	=>	:explain_limitation,
-				[1,5]	=>	:explain_google_search,
-				[1,6]	=>	:explain_feedback,
-				[2,0]	=>	'explain_efp',
-				[2,1]	=>	'explain_pbp',
-				[2,2]	=>	'explain_pr',
-				[2,3]	=>	:explain_ddd_price,
-				[2,4]	=>	'explain_sl',
-				[2,5]	=>	'explain_slo',
-				[2,6]	=>	'explain_slg',
-				[2,7]	=>	:explain_lppv,
+				[1,5]	=>	'explain_efp',
+				[1,6]	=>	'explain_pbp',
+				[1,7]	=>	'explain_pr',
+				[2,0]	=>	:explain_deductible,
+				[2,1]	=>	:explain_ddd_price,
+				[2,2]	=>	'explain_sl',
+				[2,3]	=>	'explain_slo',
+				[2,4]	=>	'explain_slg',
+				[2,5]	=>	:explain_lppv,
+				[2,6]	=>	:explain_cas,
 			}
 		end
 		def result_list_components
@@ -730,13 +730,12 @@ module ODDB
 				[3,0]		=>	:comparable_size,
 				[4,0]		=>	:price_exfactory,
 				[5,0]	  =>	:price_public,
-				[6,0]	  =>	:ddd_price,
-				[7,0]	  =>	:active_agents,
-				[8,0]	  =>	:company_name,
-				[9,0]	  =>	:ikscat,
-				[10,0]	=>	:feedback,
-				[11,0]	=>  :google_search,
-				[12,0]	=>	:notify,
+				[6,0]	  =>	:deductible,
+				[7,0]	  =>	:ddd_price,
+				[8,0]	  =>	:active_agents,
+				[9,0]	  =>	:company_name,
+				[10,0]	=>	:ikscat,
+				[11,0]	=>	:notify,
 			}
 		end
 	end
