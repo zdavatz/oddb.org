@@ -160,7 +160,7 @@ Grammar OddbSize
 		registration_data :comarketing_with, :complementary_type, :expiration_date,
 			:expired?, :export_flag, :generic_type, :inactive_date, :pdf_fachinfos,
 			:registration_date, :revision_date, :patent, :patent_protected?, :vaccine,
-			:parallel_import
+			:parallel_import, :minifi
 		def initialize(ikscd)
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)

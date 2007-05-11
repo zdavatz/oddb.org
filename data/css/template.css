@@ -342,7 +342,7 @@ tr td.list a.important {
 	font-size: 14px;
 }
 td.bg a.infos, td.atc a.infos, td.migel-group a.infos,
-span.limitation, span.narc, span.fachinfo, span.patinfo  {
+span.limitation, span.narc, span.fachinfo, span.patinfo, span.minifi  {
 	background : $rslt_infos_bg_dark;
 }
 /*td standard-result-classes */

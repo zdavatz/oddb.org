@@ -398,18 +398,45 @@ module ODDB
     }
 		DISABLED = [ :generic_definition, :legal_note, 
       :pointer_steps_header  ]
-		def compare_list_components
-			{
-				[0,0]	=>	:name_base,
-				[1,0]	=>	:company_name,
-				[2,0]	=>	:most_precise_dose,
-				[3,0]	=>	:comparable_size,
-				[4,0] =>	:active_agents,
-				[5,0]	=>	:price_public,
-				[6,0]	=>	:price_difference, 
-				[7,0] =>  :ddd_price,
-			}	
-		end
+    def compare_list_components
+      {
+        [0,0]	=>	:name_base,
+        [1,0]	=>	:company_name,
+        [2,0]	=>	:most_precise_dose,
+        [3,0]	=>	:comparable_size,
+        [4,0] =>	:active_agents,
+        [5,0]	=>	:price_public,
+        [6,0]	=>	:price_difference, 
+        [7,0] =>  :ddd_price,
+      }	
+    end
+    def explain_result_components
+      {
+        [0,0]	=>	:explain_original,
+        [0,1]	=>	:explain_generic,
+        [0,2]	=>	'explain_unknown',
+        [0,3]	=>	'explain_expired',
+        [0,4]	=>	:explain_complementary,
+        [0,5]	=>	:explain_homeopathy,
+        [0,6]	=>	:explain_anthroposophy,
+        [0,7] =>	:explain_phytotherapy,
+        [1,0]	=>	:explain_parallel_import,
+        [1,1]	=>	:explain_comarketing,
+        [1,2]	=>	:explain_vaccine,
+        [1,3]	=>	:explain_narc,
+        [1,4]	=>	:explain_fachinfo,
+        [1,5]	=>	:explain_patinfo,
+        [1,6]	=>	:explain_limitation,
+        [1,7]	=>	:explain_cas,
+        [2,0]	=>	'explain_pbp',
+        [2,1]	=>	'explain_pr',
+        [2,2]	=>	:explain_ddd_price,
+        [2,3]	=>	'explain_sl',
+        [2,4]	=>	'explain_slo',
+        [2,5]	=>	'explain_slg',
+        [2,6]	=>	:explain_lppv,
+      }
+    end
     def navigation(*args)
       [:help_link, :faq_link, :contact_link ]
     end

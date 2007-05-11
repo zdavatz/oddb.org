@@ -150,6 +150,7 @@ module ODDB
 					:limitation_text ] =>  State::Migel::LimitationText,
 				[	:migel_group,
 					:limitation_text ] => State::Migel::LimitationText,
+				[ :minifi ]	=>	State::Drugs::MiniFi,
 				[ :narcotic ]	=>	State::Drugs::Narcotic,
 				[ :patinfo ]	=>	State::Drugs::Patinfo,
 				[ :registration, :sequence, 

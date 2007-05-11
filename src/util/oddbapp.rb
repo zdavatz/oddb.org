@@ -58,9 +58,10 @@ class OddbPrevalence
 	attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
 		:companies, :doctors, :fachinfos, :galenic_groups, :migel_groups,
 		:hospitals, :invoices, :last_medication_update, :last_update,
-		:notification_logger, :orphaned_fachinfos, :orphaned_patinfos,
-		:patinfos, :patinfos_deprived_sequences, :registrations, :slates,
-		:users, :narcotics, :accepted_orphans, :commercial_forms
+    :minifis, :notification_logger, :orphaned_fachinfos,
+    :orphaned_patinfos, :patinfos, :patinfos_deprived_sequences,
+    :registrations, :slates, :users, :narcotics, :accepted_orphans,
+    :commercial_forms
 	def initialize
 		init
 		@last_medication_update ||= Time.now()
@@ -83,6 +84,7 @@ class OddbPrevalence
 		@galenic_groups ||= []
 		@generic_groups ||= {}
 		@migel_groups ||= {}
+    @minifis ||= {}
 		@hospitals ||= {}
 		@incomplete_registrations ||= {}
 		@indications ||= {}
@@ -355,6 +357,10 @@ class OddbPrevalence
 	def create_log_group(key)
 		@log_groups[key] ||= ODDB::LogGroup.new(key)
 	end
+  def create_minifi
+    minifi = ODDB::MiniFi.new
+    @minifis.store(minifi.oid, minifi)
+  end
 	def create_narcotic
 		narc = ODDB::Narcotic.new
 		@narcotics.store(narc.oid, narc)
@@ -499,6 +505,12 @@ class OddbPrevalence
 			grp
 		end
 	end
+  def delete_minifi(oid)
+    if(minifi = @minifis.delete(oid.to_i))
+      @minifis.odba_isolated_store
+      minifi
+    end
+  end
 	def delete_orphaned_fachinfo(oid)
 		if(fi = @orphaned_fachinfos.delete(oid.to_i))
 			@orphaned_fachinfos.odba_isolated_store
@@ -658,6 +670,9 @@ class OddbPrevalence
 		}
 		products
 	end
+  def minifi(oid)
+    @minifis[oid.to_i]
+  end
 	def narcotic(odba_id)
 		@narcotics[odba_id.to_i]
 	end

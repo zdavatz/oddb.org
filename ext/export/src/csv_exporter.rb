@@ -72,11 +72,21 @@ module ODDB
 					end
 				}
 			end
+      def CsvExporter.collect_languages(keys, item)
+        descr = if(item.respond_to?(:descriptions))
+                  item.descriptions
+                else
+                  {}
+                end
+        keys.collect { |key|
+          descr.fetch(key.to_s, '')
+        }
+      end
 			def CsvExporter.defr(item)
-				self.collect_data(DEFR, item)
+				self.collect_languages(DEFR, item)
 			end
 			def CsvExporter.defrit(item)
-				self.collect_data(DEFRIT, item)
+				self.collect_languages(DEFRIT, item)
 			end
 			def CsvExporter.dump(keys, item, fh)
         CSV::Writer.generate(fh, ';') { |csv|

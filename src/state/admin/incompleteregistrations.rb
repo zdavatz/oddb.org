@@ -54,6 +54,7 @@ class IncompleteRegs < State::Admin::Global
 	def release
 		@session.app.async {
 			updater = Updater.new(@session.app)
+			updater.update_minifis
 			updater.update_trade_status
 			updater.update_medwin_packages
 			updater.reconsider_bsv

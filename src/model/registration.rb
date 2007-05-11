@@ -14,7 +14,8 @@ module ODDB
 		attr_accessor :registration_date, :export_flag, :company, 
 			:revision_date, :indication, :expiration_date, :inactive_date,
 			:market_date, :fachinfo, :source, :ikscat, :renewal_flag, #:pdf_fachinfos,
-			:index_therapeuticus, :comarketing_with, :vaccine, :parallel_import
+      :index_therapeuticus, :comarketing_with, :vaccine,
+      :parallel_import, :minifi
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
 		def initialize(iksnr)
@@ -218,6 +219,12 @@ module ODDB
 			@fachinfo_oid = (@fachinfo.nil?) ? nil : @fachinfo.oid
 			@fachinfo
 		end
+    def minifi=(minifi)
+      if(@minifi)
+        @minifi.odba_delete
+      end
+      @minifi = minifi
+    end
 		def	replace_observer(target, value)
 			if(target.respond_to?(:remove_registration))
 				target.remove_registration(self)

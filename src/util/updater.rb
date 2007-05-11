@@ -12,6 +12,7 @@ require 'plugin/limitation'
 require 'plugin/lppv'
 require 'plugin/medwin'
 require 'plugin/migel'
+require 'plugin/minifi'
 require 'plugin/narcotic'
 require 'plugin/ouwerkerk'
 require 'plugin/patinfo'
@@ -154,6 +155,7 @@ module ODDB
 				export_competition_xlss
 			end
 			if(@smj_updated)
+        update_minifis(@smj_updated)
 				update_lppv
 				update_medwin_companies
 			end
@@ -208,6 +210,16 @@ module ODDB
 		def update_medwin_packages
 			update_simple(MedwinPackagePlugin, 'Medwin-Packages')
 		end
+    def update_minifis(month=nil)
+      unless(month)
+        month = @app.log_group(:swissmedic_journal).newest_date
+      end
+      if(month)
+        update_simple(MiniFiPlugin, 
+                      month.strftime('Kurzfachinfo %m/%Y'), 
+                      :update, month)
+      end
+    end
 		def update_trade_status
 			update_immediate(MedwinPackagePlugin, 'Trade-Status', :update_trade_status)
 		end
@@ -331,10 +343,13 @@ module ODDB
 				end
 			}
 		end
-		def update_simple(klass, subj, update_method=:update)
+		def update_simple(klass, subj, *update_method)
+      if(update_method.empty?)
+        update_method.push(:update)
+      end
 			wrap_update(klass, subj) {
 				plug = klass.new(@app)
-				plug.send(update_method)
+				plug.send(*update_method)
 				log = Log.new(@@today)
 				log.update_values(log_info(plug))
 				log.notify(subj)

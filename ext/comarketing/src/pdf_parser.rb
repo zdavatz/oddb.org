@@ -50,7 +50,7 @@ module ODDB
 			end
 			def initialize(path)
 				open(path) { |fh|
-					@rpdf2txt = Rpdf2txt::Parser.new(fh.read)
+					@rpdf2txt = Rpdf2txt::Parser.new(fh.read, 'latin1')
 				}
 			end
 			def extract_pairs

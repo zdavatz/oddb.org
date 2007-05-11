@@ -83,6 +83,9 @@ module ODDB
 			def explain_limitation(model, session=@session)
 				[square(:limitation), @lookandfeel.lookup(:explain_limitation) ]
 			end
+			def explain_minifi(model, session=@session)
+				[square(:minifi), @lookandfeel.lookup(:explain_minifi) ]
+			end
 			def explain_original(model, session=@session)
 				explain_link(model, :original)
 			end

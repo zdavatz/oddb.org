@@ -151,6 +151,9 @@ module ODDB
 		def match(query)
 			/#{query}/i.match(@name_base)
 		end
+    def minifi
+      @registration.minifi
+    end
 		def name
 			[@name_base, @name_descr].compact.join(', ')
 		end

@@ -9,7 +9,7 @@ module ODDB
 	module AnalysisParse
 		def AnalysisParse.parse_pdf(path)
 			pagenum = 0
-			parser = Rpdf2txt::Parser.new(File.read(path))
+			parser = Rpdf2txt::Parser.new(File.read(path), 'latin1')
 			ph = ODDB::AnalysisParse::IndexFinder.new
 			parser.page_tree.each { |page|
 				ph = ph.analyze(page, pagenum)

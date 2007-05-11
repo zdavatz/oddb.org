@@ -191,6 +191,16 @@ module ODDB
 				link.css_class = "square infos"
 				link
 			end
+      def minifi(model, session=@session)
+				if(mfi = model.minifi)
+					link = HtmlGrid::Link.new(:square_minifi, mfi, @session, self)
+					link.href = @lookandfeel._event_url(:resolve,
+						{'pointer' => mfi.pointer})
+					link.css_class = 'square infos'
+					link.set_attribute('title', @lookandfeel.lookup(:minifi))
+					link
+				end
+      end
 			def narcotic(model, session=@session)
 				if(model.narcotic?)
 					link = HtmlGrid::Link.new(:square_narc, 

@@ -12,6 +12,7 @@ require 'fachinfo_html'
 require 'fachinfo_pdf'
 require 'fachinfo_news'
 #require 'fachinfo_doc'
+require 'minifi'
 require 'patinfo_hpricot'
 require 'rpdf2txt/parser'
 
@@ -24,6 +25,9 @@ module ODDB
 		def storage=(storage)
 			ODBA.storage = storage
 		end
+    def FiParse.extract_minifi(path)
+      MiniFi.extract(path)
+    end
 		def parse_fachinfo_doc(src)
 			parser = Rwv2.create_parser_from_content(src)
 			handler = FachinfoTextHandler.new
@@ -42,7 +46,7 @@ module ODDB
 		end
 		def parse_fachinfo_pdf(src)
 			writer = FachinfoPDFWriter.new
-			parser = Rpdf2txt::Parser.new(src)
+			parser = Rpdf2txt::Parser.new(src, 'latin1')
 			parser.extract_text(writer)
 			writer.to_fachinfo
 		end
