@@ -42,7 +42,6 @@ module ODDB
 				image = HtmlGrid::Input.new(:submit, model, session, self)
 				image.attributes['src'] = @lookandfeel.resource_global(:paypal_donate)
 				image.attributes['type'] = 'image'
-				image.attributes['border'] = '0'
 				image.attributes['alt'] = "Make payments with PayPal - it's fast, free and secure!"
 				image
 			end

@@ -195,7 +195,7 @@ class GoogleAdSenseComposite < View::GoogleAdSenseComposite
 	CONTENT = CenteredSearchComposite
 	GOOGLE_CHANNEL = '2298340258'
   COMPONENTS = {
-    [0,0]	=>	MiniFis,
+    [0,0]	=>	:minifis,
     [1,0]	=>	:content,
     [2,0]	=>	:ad_sense,
   }
@@ -203,6 +203,11 @@ class GoogleAdSenseComposite < View::GoogleAdSenseComposite
     [0,0] => 'sidebar',
     [2,0] => 'sidebar',
   }
+  def minifis(model, session=@session)
+    if(@lookandfeel.enabled?(:minifis))
+      MiniFis.new(model, @session, self)
+    end
+  end
 end
 		end
 	end

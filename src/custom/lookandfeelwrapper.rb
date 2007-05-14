@@ -118,6 +118,7 @@ module ODDB
 			:google_adsense,
 			:limitation_texts,
 			:logo,
+      :minifis,
 			:multilingual_logo,
 			:patinfos, 
 			:paypal,
