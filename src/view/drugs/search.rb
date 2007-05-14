@@ -14,6 +14,15 @@ class Search < View::PublicTemplate
 	CONTENT = View::Drugs::GoogleAdSenseComposite
 	CSS_CLASS = 'composite'
 	HEAD = View::WelcomeHead
+  def other_html_headers(context)
+    headers = super 
+    @session.valid_values(:channel).each { |channel|
+      url = @lookandfeel._event_url(:rss, :channel => channel)
+      headers << context.link(:href => url, :type => "application/rss+xml",
+                              :title => channel, :rel => "alternate")
+    }
+    headers
+  end
 end
 		end
 	end

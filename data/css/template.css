@@ -800,3 +800,17 @@ form.search {
 span.iconContainer span.insertsymbol {
 	background-image: url(/resources/javascript/dojo/sigma.gif);
 }
+td.sidebar {
+  width: 20%;
+}
+td.sidebar div {
+  padding: 2px;
+  background-color: #dfd;
+}
+div.heading {
+  font-weight: bold;
+  padding-bottom: 6px;
+}
+div.heading img {
+  float: right;
+}

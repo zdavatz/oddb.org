@@ -2,6 +2,8 @@
 # Plugin::MiniFi -- oddb.org -- 26.04.2007 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
+require 'rss/maker'
+require 'iconv'
 
 module ODDB
   class MiniFiPlugin < Plugin

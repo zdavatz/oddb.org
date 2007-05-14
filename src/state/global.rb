@@ -17,6 +17,7 @@ require 'state/drugs/ddd'
 require 'state/drugs/fachinfo'
 require 'state/drugs/fachinfos'
 require 'state/drugs/feedbacks'
+require 'state/drugs/minifi_rss'
 require 'state/drugs/notify'
 require 'state/drugs/package'
 require 'state/drugs/register_download'
@@ -484,6 +485,12 @@ module ODDB
 				type = :standard unless(state_map.include?(type))
 				state_map[type][pointer.skeleton]
 			end
+      def rss
+        case @session.user_input(:channel)
+        when 'minifi.rss'
+          Drugs::MiniFiRss.new(@session, @session.app.sorted_minifis)
+        end
+      end
 			def search
 				zone = @session.zone
 				query = @session.persistent_user_input(:search_query)

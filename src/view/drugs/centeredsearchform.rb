@@ -2,6 +2,7 @@
 # View::Drugs::CenteredSearchForm -- oddb -- 07.09.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/select'
+require 'htmlgrid/divlist'
 require 'view/centeredsearchform'
 require 'view/google_ad_sense'
 
@@ -159,9 +160,49 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		link
 	end
 end	
+class MiniFiList < HtmlGrid::DivList
+  COMPONENTS = {
+    [0,0] => :heading,
+  }
+  def heading(model)
+    link = PointerLink.new(:heading, model, @session, self)
+    link.value = model.send(@session.language).heading
+    link
+  end
+end
+class MiniFis < HtmlGrid::DivComposite
+  COMPONENTS = {
+    [0,0] => :rss_image,
+    [1,0] => :minifi_title,
+    [0,1] => :rss_feed,
+    [0,2] => MiniFiList
+  }
+  CSS_MAP = ['heading']
+  def minifi_title(model)
+    link = HtmlGrid::Link.new(:minifi_title, model, @session, self)
+    link.href = @lookandfeel._event_url(:rss, :channel => 'minifi.rss')
+    link
+  end
+  def rss_image(model)
+    img = HtmlGrid::Image.new(:minifi_title, model, @session, self)
+    img.attributes['src'] = @lookandfeel.resource_global(:rss_feed)
+    link = minifi_title(model)
+    link.value = img
+    link
+  end
+end
 class GoogleAdSenseComposite < View::GoogleAdSenseComposite
 	CONTENT = CenteredSearchComposite
 	GOOGLE_CHANNEL = '2298340258'
+  COMPONENTS = {
+    [0,0]	=>	MiniFis,
+    [1,0]	=>	:content,
+    [2,0]	=>	:ad_sense,
+  }
+  CSS_MAP = {
+    [0,0] => 'sidebar',
+    [2,0] => 'sidebar',
+  }
 end
 		end
 	end
