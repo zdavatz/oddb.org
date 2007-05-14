@@ -179,9 +179,14 @@ class MiniFis < HtmlGrid::DivComposite
   }
   CSS_MAP = ['heading']
   def minifi_title(model)
-    link = HtmlGrid::Link.new(:minifi_title, model, @session, self)
-    link.href = @lookandfeel._event_url(:rss, :channel => 'minifi.rss')
-    link
+    if((minifi = model.first) && (month = minifi.publication_date))
+      link = HtmlGrid::Link.new(:minifi_title, model, @session, self)
+      link.href = @lookandfeel._event_url(:rss, :channel => 'minifi.rss')
+      link.value = [ @lookandfeel.lookup(:minifi_title), '<br>',
+                     @lookandfeel.lookup("month_#{month.month}"),
+                     month.year ].join(' ')
+      link
+    end
   end
   def rss_image(model)
     img = HtmlGrid::Image.new(:minifi_title, model, @session, self)

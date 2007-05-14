@@ -1,22 +1,23 @@
 #!/usr/bin/env ruby
 # View::AdditionalInformation -- oddb -- 09.12.2003 -- rwaltert@ywesee.com
 
+require 'view/drugs/atcchooser'
 require 'iconv'
 require 'plugin/comarketing'
 
 module ODDB
 	module View
 		module AdditionalInformation
+      include Drugs::AtcDddLink
 			@@utf8 = {}
-			def atc_ddd_link(atc, session=@session)
-				if(atc && atc.has_ddd?)
-					link = HtmlGrid::Link.new(:ddd, atc, session, self)
-					link.href = @lookandfeel._event_url(:ddd, {'pointer'=>atc.pointer})
-					link.set_attribute('class', 'square infos')
-					link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
-					link
-				end
-			end
+      def atc_ddd_link(atc, session=@session)
+        unless(@lookandfeel.disabled?(:atc_ddd))
+          while(atc && !atc.has_ddd? && (code = atc.parent_code))
+            atc = session.app.atc_class(code)
+          end
+          super(atc, session)
+        end
+      end
 			def atc_description(atc, session=@session)
 				if(descr = atc.description(@lookandfeel.language))
 					descr.dup.to_s << ' (' << atc.code << ')' 

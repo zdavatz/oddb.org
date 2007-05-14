@@ -2,7 +2,6 @@
 # View::Drugs::AtcChooser -- oddb -- 14.07.2003 -- mhuggler@ywesee.com
 
 require 'view/drugs/privatetemplate'
-require 'view/additional_information'
 require 'view/publictemplate'
 require 'htmlgrid/list'
 require 'view/pointervalue'
@@ -10,8 +9,18 @@ require 'view/pointervalue'
 module ODDB
 	module View
 		module Drugs
+module AtcDddLink
+  def atc_ddd_link(atc, session=@session)
+    if(atc && atc.has_ddd?)
+      link = HtmlGrid::Link.new(:ddd, atc, session, self)
+      link.href = @lookandfeel._event_url(:ddd, {'pointer'=>atc.pointer})
+      link.set_attribute('class', 'square infos')
+      link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
+      link
+    end
+  end
+end
 class AtcChooserList < HtmlGrid::List
-	include View::AdditionalInformation
 	COMPONENTS = {
 		[0,0]	=>	:description,
 		[1,0]	=>	:atc_ddd_link,

@@ -108,6 +108,11 @@ module ODDB
 				inj + seq.limitation_text_count
 			}
 		end
+    def localized_name(lang)
+      if(seq = @sequences.values.first)
+        seq.localized_name(lang)
+      end
+    end
 		def may_violate_patent?
 			# we are making the assumption that no generic registration will be
 			# created more than a year before the original's patent protection 
@@ -220,10 +225,7 @@ module ODDB
 			@fachinfo
 		end
     def minifi=(minifi)
-      if(@minifi)
-        @minifi.odba_delete
-      end
-      @minifi = minifi
+			@minifi = replace_observer(@minifi, minifi)
     end
 		def	replace_observer(target, value)
 			if(target.respond_to?(:remove_registration))
