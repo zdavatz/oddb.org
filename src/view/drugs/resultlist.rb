@@ -13,6 +13,7 @@ require 'view/publictemplate'
 require 'view/dataformat'
 require 'view/resultcolors'
 require 'view/descriptionvalue'
+require 'view/lookandfeel_components'
 require 'sbsm/user'
 
 module HtmlGrid
@@ -51,14 +52,6 @@ class AtcHeader < HtmlGrid::Composite
       }
     end
 		super
-	end
-	def atc_ddd_link(atc, session=@session)
-		unless(@lookandfeel.disabled?(:atc_ddd))
-			while(atc && !atc.has_ddd? && (code = atc.parent_code))
-				atc = session.app.atc_class(code)
-			end
-			super(atc, session)
-		end
 	end
 	def atc_description(model, session=@session)
     code = model.code
@@ -109,6 +102,7 @@ class ResultList < HtmlGrid::List
 	include DataFormat
 	include View::ResultColors
 	include View::AdditionalInformation
+  include View::LookandfeelComponents
 	COMPONENTS = {}	
 	REVERSE_MAP = {
 		:company_name			=> false,
@@ -187,19 +181,8 @@ class ResultList < HtmlGrid::List
 		:limitation_text	=>	:ltext,
 	}
 	def init
-		reorganize_components
+		reorganize_components(:result_list_components)
 		super
-	end
-	def reorganize_components
-		@components = @lookandfeel.result_list_components
-		@css_map = {}
-		@css_head_map = {}
-		@components.each { |key, val|
-			if(klass = self::class::CSS_KEYMAP[val])
-				@css_map.store(key, klass)
-				@css_head_map.store(key, self::class::CSS_HEAD_KEYMAP[val] || 'th')
-			end
-		}
 	end
 	def active_agents(model, session=@session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
@@ -214,9 +197,14 @@ class ResultList < HtmlGrid::List
 	end
 	def compose_list(model=@model, offset=[0,0])
     if(model.respond_to?(:overflow?) && model.overflow?)
-      @grid.add(resultview_switch(model), *offset)
-      @grid.add_style("list migel-group right", *offset)
-      @grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
+      x, y, = offset
+      half = full_colspan / 2
+      @grid.add(explain_atc(model), x, y)
+      @grid.add_style("list migel-group", x, y)
+      @grid.set_colspan(x, y, half)
+      @grid.add(resultview_switch(model), half, y)
+      @grid.add_style("list migel-group right", half, y)
+      @grid.set_colspan(half, y, full_colspan - half)
       offset = resolve_offset(offset, self::class::OFFSET_STEP)
     end
     code = @session.persistent_user_input(:code)
@@ -235,6 +223,12 @@ class ResultList < HtmlGrid::List
 		@grid.add(subheader, *offset)
 		@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
 	end
+  def explain_atc(model)
+    link = HtmlGrid::Link.new(:explain_atc, model, @session, self)
+    link.href = @lookandfeel.lookup(:explain_atc_url)
+    link.css_class = 'list bold'
+    link
+  end
 	def fachinfo(model, session=@session)
 		super(model, session, 'square important infos')
 	end	

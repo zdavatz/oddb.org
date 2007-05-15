@@ -302,6 +302,16 @@ module ODDB
 				[1,9]	=>	'explain_slg',
 			}
 		end
+    def migel_list_components
+      {
+        [0,0] =>	:limitation_text,
+        [1,0] =>	:migel_code,
+        [2,0]	=>	:product_description,
+        [3,0] =>  :date,
+        [4,0] =>  :price,
+        [5,0]	=>	:qty_unit,
+      }
+    end
 		def navigation
 			[ :legal_note ] + zone_navigation + [ :home ]
 		end
@@ -703,7 +713,7 @@ module ODDB
 			:sequences,
 			:ywesee_contact,
 		]
-		DISABLED = [ :atc_ddd, :legal_note, :price_request ]
+		DISABLED = [ :atc_ddd, :feedback, :legal_note, :price_request ]
     RESOURCES = {
       :external_css	=>	'http://www.mediservice.ch/css/medisuche.css',
     }
@@ -726,18 +736,16 @@ module ODDB
 				[0,1]	=>	:explain_generic,
 				[0,2]	=>	'explain_unknown',
 				[0,3]	=>	'explain_expired',
-				[0,4]	=>	:explain_complementary,
-				[0,5]	=>	:explain_homeopathy,
-				[0,6]	=>	:explain_anthroposophy,
-				[0,7] =>	:explain_phytotherapy,
-				[1,0]	=>	:explain_parallel_import,
-				[1,1]	=>	:explain_comarketing,
-				[1,2]	=>	:explain_vaccine,
-				[1,3]	=>	:explain_narc,
-				[1,4]	=>	:explain_limitation,
-				[1,5]	=>	'explain_efp',
-				[1,6]	=>	'explain_pbp',
-				[1,7]	=>	'explain_pr',
+				[0,4]	=>	:explain_vaccine,
+				[0,5]	=>	:explain_narc,
+				[0,6]	=>	:explain_limitation,
+				[1,0]	=>	:explain_complementary,
+				[1,1]	=>	:explain_homeopathy,
+				[1,2]	=>	:explain_anthroposophy,
+				[1,3] =>	:explain_phytotherapy,
+				[1,4]	=>	'explain_efp',
+				[1,5]	=>	'explain_pbp',
+				[1,6]	=>	'explain_pr',
 				[2,0]	=>	:explain_deductible,
 				[2,1]	=>	:explain_ddd_price,
 				[2,2]	=>	'explain_sl',
@@ -747,6 +755,17 @@ module ODDB
 				[2,6]	=>	:explain_cas,
 			}
 		end
+    def migel_list_components
+      {
+        [0,0] =>	:limitation_text,
+        [1,0] =>	:migel_code,
+        [2,0]	=>	:product_description,
+        [3,0] =>  :date,
+        [4,0] =>  :price,
+        [5,0]	=>	:qty_unit,
+        [6,0] =>  :notify,
+      }
+    end
 		def result_list_components
 			{
 				[0,0]		=>	:limitation_text,
@@ -765,6 +784,10 @@ module ODDB
 				[10,0]	=>	:ikscat,
 				[11,0]	=>	:notify,
 			}
+		end
+		def search_type_selection
+      [ 'st_oddb', 'st_sequence', 'st_substance', 'st_company',
+        'st_unwanted_effect' ]
 		end
 	end
 	class LookandfeelMyMedi < SBSM::LookandfeelWrapper

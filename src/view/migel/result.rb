@@ -12,6 +12,7 @@ require 'view/dataformat'
 require 'view/privatetemplate'
 require 'view/pointervalue'
 require 'view/resultfoot'
+require 'view/lookandfeel_components'
 
 module ODDB
 	module View
@@ -19,28 +20,28 @@ module ODDB
 class List < HtmlGrid::List
 	include View::AdditionalInformation
 	include DataFormat
-	COMPONENTS = {
-		[0,0] =>	:limitation_text,
-		[1,0] =>	:migel_code,
-		[2,0]	=>	:product_description,
-		[3,0] =>  :date,
-		[4,0] =>  :price,
-		[5,0]	=>	:qty_unit,
-	}
+  include View::LookandfeelComponents
+	COMPONENTS = {}
 	CSS_CLASS = 'composite'
-	CSS_HEAD_MAP = {
-		[0,0]	=> 'th',
-		[1,0]	=> 'th',
-		[2,0] => 'th',
-		[3,0] => 'th',
-		[4,0] => 'th right',
-		[5,0] => 'th',
-	}
-	CSS_MAP = {
-		[0,0,4]	=>	'list',
-		[4,0] =>	'list right',
-		[5,0]		=>	'list',
-	}
+  CSS_HEAD_KEYMAP = {
+    :feedback             => 'th right',
+    :google_search        => 'th right',
+    :notify               => 'th right',
+    :price                => 'th right',
+  }
+  CSS_KEYMAP = {
+    :date                 => 'list',
+    :feedback             => 'list right',
+    :google_search        => 'list right',
+    :limitation_text      => 'list',
+    :migel_code           => 'list',
+    :notify               => 'list right',
+    :price                => 'list right',
+    :product_description  => 'list',
+    :qty_unit             => 'list',
+  }
+	CSS_HEAD_MAP = {}
+	CSS_MAP = {}
 	LOOKANDFEEL_MAP = {
 		:limitation_text => :nbsp,
 	}
@@ -52,21 +53,8 @@ class List < HtmlGrid::List
 	SORT_DEFAULT = nil
 	LEGACY_INTERFACE = false
 	def init
-		@width = 5
-		unless(@lookandfeel.enabled?(:atupri_web, false))
-			@width += 3
-			components.update({
-				[6,0] =>	:feedback,
-				[7,0]	=>  :google_search,
-				[8,0] =>  :notify,
-			})
-			css_map.store([6,0,3], 'list right')
-			css_head_map.update({
-				[6,0] => 'th right',
-				[7,0] => 'th right',
-				[8,0] => 'th right',
-			})
-		end
+    reorganize_components(:migel_list_components)
+		@width = @components.keys.collect { |x, y| x }.max
 		super
 	end
 	def limitation_text(model)

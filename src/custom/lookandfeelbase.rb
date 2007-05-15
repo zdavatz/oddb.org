@@ -532,6 +532,8 @@ Zeno Davatz
 				:explain_analysis_tech_ST			=>	'ST = Schnelltest',
 				:explain_analysis_tech_U			=>	'U = Urin',
 				:explain_analysis_tech_WB			=>	'WB = Western Blot',
+        :explain_atc                  =>  'Was ist ein ATC-Code?',
+        :explain_atc_url              =>  'http://de.wikipedia.org/wiki/Anatomisch_Therapeutisch_Chemisches_Klassifikationssystem',
 				:explain_cas							=>	'Cas Reg.Nr. =&nbsp;CAS Registry',
 				:explain_comarketing			=>	'&nbsp;=&nbsp;Co-Marketing',
 				:explain_comarketing_url	=>	'http://www.swissmedic.ch/de/industrie/overall.asp?lang=1&theme=0.00106.00003&theme_id=941#Marketing',
@@ -913,8 +915,8 @@ Zeno Davatz
 				:notify_body  						=>	'Message',
 				:notify_message						=>	'Bemerkung <br> Max. 500 Zeichen',
 				:notify_preview						=>	'Vorschau Email',
-				:notify_recipient 				=>	'Empf&auml;nger',
-				:notify_sender						=>	'Absender',
+				:notify_recipient 				=>	'Empf&auml;nger-Email',
+				:notify_sender						=>	'Absender-Email',
 				:notify_send							=>	'Senden',
 				:notify_sent0							=>	'Ihr Email wurde an ',
 				:notify_sent1							=>	' gesendet.',
@@ -1764,6 +1766,8 @@ Zeno Davatz
 				:explain_analysis_tech_ST				=>	'ST = test rapide',
 				:explain_analysis_tech_U				=>	'U = urine',
 				:explain_analysis_tech_WB				=>	'WB = Western Blot',
+        :explain_atc                  =>  'Qu\'est-ce que c\'est le code ATC?',
+        :explain_atc_url              =>  'http://fr.wikipedia.org/wiki/Classification_anatomique%2C_th%C3%A9rapeutique_et_chimique',
 				:explain_comarketing			=>	'&nbsp;=&nbsp;Co-Marketing',
 				:explain_comarketing_url	=>	'http://www.swissmedic.ch/fr/industrie/overall.asp?lang=3&theme=0.00106.00003&theme_id=941#Marketing',
 				:explain_complementary		=>	'&nbsp;=&nbsp;Produit Compl&eacute;mentaire',
@@ -2797,6 +2801,8 @@ Zeno Davatz
 				:explain_analysis_tech_ST				=>	'ST = quick test',
 				:explain_analysis_tech_U				=>	'U = urine',
 				:explain_analysis_tech_WB				=>	'WB = Western Blot',
+        :explain_atc                    =>  'What is an ATC-Code?',
+        :explain_atc_url                =>  'http://en.wikipedia.org/wiki/Anatomical_Therapeutic_Chemical_Classification_System',
 				:explain_comarketing			=>	'&nbsp;=&nbsp;Co-Marketing',
 				:explain_comarketing_url	=>	'http://www.swissmedic.ch/en/industrie/overall.asp?lang=2&theme=0.00106.00003&theme_id=941#Marketing',
 				:explain_complementary		=>	'&nbsp;=&nbsp;Complementary Drug',
@@ -3681,6 +3687,19 @@ Zeno Davatz
 				[2,8]	=>	:explain_lppv,
 			}
 		end
+    def migel_list_components
+      {
+        [0,0] =>	:limitation_text,
+        [1,0] =>	:migel_code,
+        [2,0]	=>	:product_description,
+        [3,0] =>  :date,
+        [4,0] =>  :price,
+        [5,0]	=>	:qty_unit,
+        [6,0] =>	:feedback,
+        [7,0]	=>  :google_search,
+        [8,0] =>  :notify,
+      }
+    end
 		def result_list_components
 			{
 				[0,0]		=>	:limitation_text,

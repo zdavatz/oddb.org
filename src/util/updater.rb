@@ -155,7 +155,6 @@ module ODDB
 				export_competition_xlss
 			end
 			if(@smj_updated)
-        update_minifis(@smj_updated)
 				update_lppv
 				update_medwin_companies
 			end

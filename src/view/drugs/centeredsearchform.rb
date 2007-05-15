@@ -185,6 +185,7 @@ class MiniFis < HtmlGrid::DivComposite
       link.value = [ @lookandfeel.lookup(:minifi_title), '<br>',
                      @lookandfeel.lookup("month_#{month.month}"),
                      month.year ].join(' ')
+      link.css_class = 'list bold'
       link
     end
   end
