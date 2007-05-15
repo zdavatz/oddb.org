@@ -6,6 +6,7 @@ require 'view/additional_information'
 require 'view/resulttemplate'
 require 'view/resultfoot'
 require 'view/resultcolors'
+require 'view/lookandfeel_components'
 
 module ODDB
 	module View
@@ -31,25 +32,20 @@ end
 class SequenceList < HtmlGrid::List
 	include View::ResultColors
 	include View::AdditionalInformation
-	COMPONENTS = {
-		[0,0]	=>	:iksnr,
-		[1,0]	=>  :fachinfo,
-		[2,0]	=>	:patinfo,
-		[3,0]	=>	:name_base,
-		[4,0]	=>	:galenic_form,
-		#[5,0]	=>	:feedback,
-		[5,0]	=>  :google_search,
-		[6,0]	=>	:notify,
-	}
+	COMPONENTS = { }
 	DEFAULT_CLASS = HtmlGrid::Value
 	CSS_CLASS = 'composite'
-	CSS_MAP = {
-		[0,0]		=>	'small',
-		[1,0,2]	=>	'list',
-		[3,0]		=>	'list big',
-		[4,0]		=>	'list',
-		[5,0,2]	=>	'list bold right',
-	}
+  CSS_KEYMAP = {
+    :fachinfo       => 'list',
+    :galenic_form   => 'list',
+    :google_search  => 'list bold right',
+    :iksnr          => 'small',
+    :name_base      => 'list big',
+    :notify         => 'list bold right',
+    :patinfo        => 'list',
+  }
+  CSS_HEAD_KEYMAP = {}
+	CSS_MAP = {}
 	COMPONENT_CSS_MAP = {
 		[0,0]		=>	'small',
 	}
@@ -60,6 +56,11 @@ class SequenceList < HtmlGrid::List
 	}
 	LEGACY_INTERFACE = false
 	include AlphaHeader
+  include LookandfeelComponents
+  def init
+    reorganize_components(:sequence_list_components)
+    super
+  end
 	def compose_header(offset=[0,0])
 		offset = super
 		unless(@model.empty?)

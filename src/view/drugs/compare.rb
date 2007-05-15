@@ -67,10 +67,8 @@ class CompareList < HtmlGrid::List
 			end
 		}
 	end
-	def package_line(offset)
-		_compose(@model.package, offset)
-		#compose_components(package, offset)
-		#compose_css(offset, resolve_suffix(package, false))
+	def active_agents(model, session)
+		model.active_agents.join(',<br>')
 	end
 	def compose_empty_list(offset)
 		package_line(offset)
@@ -83,17 +81,21 @@ class CompareList < HtmlGrid::List
 	def compose_list(model=@model, offset=[0,0])
 		package_line(offset)
 		offset = resolve_offset(offset, self::class::OFFSET_STEP)
-		#offset = resolve_offset(offset, self::class::OFFSET_STEP)
 		super(model.comparables, offset)
+	end
+	def package_line(offset)
+		_compose(@model.package, offset)
 	end
 	def price_difference(model, session)
 		if(diff = model.price_difference)
 			sprintf('%+d%', diff*100.0)
 		end
 	end
-	def active_agents(model, session)
-		model.active_agents.join(',<br>')
-	end
+  def sort_model
+    if((@session.event != :sort) && (block = @lookandfeel.comparison_sorter))
+      @model.sort_by!(&block)
+    end
+  end
 end
 class CompareComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'

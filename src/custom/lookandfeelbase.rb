@@ -3652,6 +3652,8 @@ Zeno Davatz
 				[8,0] =>  :ddd_price,
 			}	
 		end
+    def comparison_sorter
+    end
 		def currencies
 			['CHF', 'EUR', 'USD']
 		end
@@ -3728,5 +3730,16 @@ Zeno Davatz
 		def section_style
 			'font-size: 13px; margin-top: 4px; line-height: 1.4em'
 		end
+    def sequence_list_components
+      {
+        [0,0]	=>	:iksnr,
+        [1,0]	=>  :fachinfo,
+        [2,0]	=>	:patinfo,
+        [3,0]	=>	:name_base,
+        [4,0]	=>	:galenic_form,
+        [5,0]	=>  :google_search,
+        #[6,0]	=>	:notify,
+      }
+    end
 	end
 end

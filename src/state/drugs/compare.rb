@@ -63,6 +63,9 @@ class Compare < State::Drugs::Global
 		def atc_class
 			@package.atc_class
 		end
+    def sort_by!(&block)
+      @comparables = @comparables.sort_by(&block)
+    end
 	end
 	def init
 		@model = nil

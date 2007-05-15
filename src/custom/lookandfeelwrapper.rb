@@ -730,6 +730,23 @@ module ODDB
 				[8,0] =>  :ddd_price,
 			}	
 		end
+    def comparison_sorter
+      Proc.new { |facade|
+        weight = case facade.company_name
+                 when /^helvepharm/i
+                   10
+                 when /^teva/i, /^medika/i
+                   1
+                 when /^ecosol/i, /^sandoz/i
+                   2
+                 when /^spirig/i
+                   3
+                 else
+                   5
+                 end
+        [weight, facade]
+      }
+    end
 		def explain_result_components
 			{
 				[0,0]	=>	:explain_original,
@@ -789,6 +806,14 @@ module ODDB
       [ 'st_oddb', 'st_sequence', 'st_substance', 'st_company',
         'st_unwanted_effect' ]
 		end
+    def sequence_list_components
+      {
+        [0,0]	=>	:iksnr,
+        [1,0]	=>	:name_base,
+        [2,0]	=>	:galenic_form,
+        #[3,0]	=>	:notify,
+      }
+    end
 	end
 	class LookandfeelMyMedi < SBSM::LookandfeelWrapper
 		ENABLED = [
