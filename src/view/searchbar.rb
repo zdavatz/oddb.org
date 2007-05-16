@@ -59,6 +59,7 @@ class SelectSearchForm < HtmlGrid::DivForm
 	FORM_METHOD = 'GET'
 end
 class SearchForm < HtmlGrid::DivForm
+  CSS_CLASS = 'right'
 	COMPONENTS = {
 		[0,0,0]	=>	:search_query,
 		[0,0,1]	=>	:submit,

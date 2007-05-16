@@ -28,8 +28,11 @@ module ODDB
 				||(!@substance.nil? && @substance.same_as?(substance_or_oid) \
 					 && @spagyric_dose == spag)
 		end
+    def to_a
+      [@substance, @dose]
+    end
 		def to_s
-			[@substance, @dose].compact.join(' ')
+			to_a.compact.join(' ')
 		end
 		def update_values(values, origin=nil)
 			super

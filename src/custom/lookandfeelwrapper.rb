@@ -5,6 +5,9 @@ require 'sbsm/lookandfeelwrapper'
 
 module ODDB
 	class LookandfeelStandardResult < SBSM::LookandfeelWrapper
+		ENABLED = [
+      :fachinfos, :feedback,
+    ]
 		def compare_list_components
 			{
 				[0,0]	=>	:name_base,
@@ -115,6 +118,7 @@ module ODDB
 			:companylist,
       :country_navigation,
 			:fachinfos,
+			:feedback,
 			:google_adsense,
 			:limitation_texts,
 			:logo,
@@ -161,8 +165,7 @@ module ODDB
 		end
 	end
 	class LookandfeelProvita < SBSM::LookandfeelWrapper
-		ENABLED = [ 
-    ]
+		ENABLED = [ ]
 		DICTIONARIES = {
 			'de'	=>	{
 				:home_welcome	=>	'Willkommen bei Provita und oddb.org',
@@ -239,6 +242,7 @@ module ODDB
 			:custom_navigation,
 			:drugs, 
 			:external_css,
+      :fachinfos,
 			:help_link,
 			:logout,
 			:migel,
@@ -372,6 +376,7 @@ module ODDB
 			:atc_chooser,
 			:drugs, 
 			:external_css,
+      :fachinfos,
 			:faq_link,
 			:help_link,
 			:home,
@@ -478,6 +483,8 @@ module ODDB
 		ENABLED = [
 			:custom_navigation,
 			:external_css,
+      :fachinfos, 
+      :feedback,
 			:just_medical_structure,	
 			:popup_links,
 			:powerlink,
@@ -741,6 +748,8 @@ module ODDB
                    2
                  when /^spirig/i
                    3
+                 when /^mepha/i
+                   4
                  else
                    5
                  end
@@ -822,8 +831,9 @@ module ODDB
 			:home_drugs,
 			:help_link,
 			:faq_link,
-			:ywesee_contact,
+      :patinfos,
 			:sequences,
+			:ywesee_contact,
 		]
 		DISABLED = [ :atc_ddd, :legal_note, :navigation, :price_request ]
     DICTIONARIES = {
@@ -904,8 +914,9 @@ module ODDB
 			:home_drugs,
 			:help_link,
 			:faq_link,
-			:ywesee_contact,
+      :patinfos,
 			:sequences,
+			:ywesee_contact,
 		]
 		DISABLED = [ :atc_ddd ]
 =begin

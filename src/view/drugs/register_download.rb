@@ -41,7 +41,7 @@ class RegisterDownloadForm < Form
 	}
 	def init
     unless(@session.logged_in?)
-      hash_insert(components, [0,1], :pass)
+      hash_insert_row(components, [0,1], :pass)
       components.store([3,1], :set_pass_2)
       css_map.store([0,11,4], 'list')
 		  component_css_map.store([1,10], 'standard')
@@ -61,18 +61,6 @@ class RegisterDownloadForm < Form
 	end
 	def submit(model, session=@session)
 		super(model, session, :checkout_paypal)
-	end
-	def hash_insert(hash, key, val)
-		tmp = hash.sort.reverse
-		hash.clear
-		tmp.each { |matrix, value|
-			mtrx = matrix.dup
-			unless((mtrx[1] <=> key[1]) == -1)
-				mtrx[1] += 1
-			end
-			hash.store(mtrx, value)
-		}
-		hash.store(key, val)
 	end
 end
 class RegisterDownloadComposite < HtmlGrid::Composite 

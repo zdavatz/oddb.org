@@ -34,6 +34,9 @@ module ODDB
 			LABELS = true
 			EVENT = :preview
 			LEGACY_INTERFACE = false
+      LOOKANDFEEL_MAP = {
+        :name => :name_sender,
+      }
 			def init
 				super
 				error_message()
@@ -51,7 +54,7 @@ module ODDB
 			EVENT = :notify_send 
 			CSS_CLASS = 'composite'
 			COMPONENTS = {
-				[0,0]			=>	'name',
+				[0,0]			=>	'name_sender',
 				[1,0]			=>	:name,
 				[0,1]			=>	'notify_sender',
 				[1,1]			=>	:notify_sender,
@@ -76,7 +79,6 @@ module ODDB
 				button.set_attribute('onclick', "location.href='#{url}'")
 				button
 			end												
-			
 			def name(model)
 				model.name
 			end
@@ -89,8 +91,9 @@ module ODDB
 			def notify_link(model)
 				link = HtmlGrid::PopupLink.new(:detail_view, model, @session, self)
 				args = {:pointer => model.item.pointer}
-				link.href = @lookandfeel._event_url(:show, args)
-				link.value = @lookandfeel._event_url(:show, args)
+        url = @lookandfeel._event_url(:show, args)
+				link.href = url
+				link.value = [url[0,24], url[-23,23]].join('...')
 				link
 			end
 			def notify_message(model)
@@ -121,4 +124,3 @@ module ODDB
 		end
 	end
 end
-

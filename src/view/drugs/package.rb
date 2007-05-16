@@ -29,22 +29,26 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[2,5]		=>	:descr,
 		[0,6]		=>	:ikscat,
 		[2,6]		=>	:indication,
-		[0,7]		=>	:fachinfo_label,
-		[1,7]		=>	:fachinfo,
-		[2,7]		=>	:patinfo_label,
-		[3,7]		=>	:patinfo,
-		[0,8]		=>	:sl_entry,
-		[0,9]		=>	:price_exfactory,
-		[2,9]		=>	:price_public,
-		[0,10]	=>	:deductible,
-		[2,10]	=>	:ddd_price,
-		[0,11]	=>	:feedback_label,
-		[1,11]	=>	:feedback,
-		[2,11]	=>	:narcotic_label,
-		[3,11]	=>	:narcotic,
+		[0,7]		=>	:sl_entry,
+		[0,8]		=>	:price_exfactory,
+		[2,8]		=>	:price_public,
+		[0,9]	  =>	:deductible,
+		[2,9]	  =>	:ddd_price,
+		[2,10]	=>	:narcotic_label,
+		[3,10]	=>	:narcotic,
 	}
 	CSS_MAP = {
-		[0,0,4,12]	=>	'list',
+		[0,0,4]	=>	'list',
+		[0,1,4]	=>	'list',
+		[0,2,4]	=>	'list',
+		[0,3,4]	=>	'list',
+		[0,4,4]	=>	'list',
+		[0,5,4]	=>	'list',
+		[0,6,4]	=>	'list',
+		[0,7,4]	=>	'list',
+		[0,8,4]	=>	'list',
+		[0,9,4]	=>	'list',
+		[0,10,4]=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
@@ -64,31 +68,35 @@ class PackageInnerComposite < HtmlGrid::Composite
 		:expiration_date		=>	HtmlGrid::DateValue,
 	}
 	def init
+    if(@lookandfeel.enabled?(:feedback))
+      components.update([0,10] => :feedback_label, [1,10] => :feedback)
+    end
 		if(@model.sl_entry)
-			components.store([2,8], :limitation)
+			components.store([2,7], :limitation)
 			if(@model.limitation_text)
-				components.delete([2,9])
-				components.delete([1,11])
-				components.delete([3,11])
-				components.update({
-					[0,9]		=>	:limitation_text,
-					[0,10]		=>	:price_exfactory,
-					[2,10]		=>	:price_public,
-					[0,11]	=>	:deductible,
-					[2,11]	=>	:ddd_price,
-					[0,12]	=>	:feedback_label,
-					[1,12]	=>	:feedback,
-					[2,12]	=>	:narcotic_label,
-					[3,12]	=>	:narcotic,
-				})
-				css_map.store([0,9], 'list top')
-				css_map.store([0,12,4], 'list')
-			end
+        hash_insert_row(components, [0,8], :limitation_text)
+        hash_insert_row(css_map, [0,8,4], 'list')
+      end
 		end
-		if(@lookandfeel.enabled?(:atupri_web, false))
-			components.delete(@components.index(:feedback))
-			components.delete(@components.index(:feedback_label))
-		end
+    if(@lookandfeel.enabled?(:fachinfos))
+      hash_insert_row(components, [0,7], :fachinfo_label)
+      hash_insert_row(css_map, [0,7,4], 'list')
+      components.update({
+        [1,7]		=>	:fachinfo,
+        [2,7]		=>	:patinfo_label,
+        [3,7]		=>	:patinfo,
+      })
+    elsif(@lookandfeel.enabled?(:patinfos))
+      hash_insert_row(components, [2,7], :patinfo_label)
+      hash_insert_row(css_map, [0,7,4], 'list')
+      components.store([3,7], :patinfo)
+    end
+    if(idx = components.index(:limitation_text))
+      css_map.store(idx, 'list top')
+      sidx = idx.dup 
+      sidx[0] += 1
+      colspan_map.store(sidx, 3)
+    end
 		super
 	end
 	def atc_class(model, session)

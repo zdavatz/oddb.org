@@ -74,19 +74,6 @@ class RegisterDownloadForm < Form
 		end
 		hidden
 	end
-	private
-	def hash_insert(hash, key, val)
-		tmp = hash.sort.reverse
-		hash.clear
-		tmp.each { |matrix, value|
-			mtrx = matrix.dup
-			unless((mtrx[1] <=> key[1]) == -1)
-				mtrx[1] += 1
-			end
-			hash.store(mtrx, value)
-		}
-		hash.store(key, val)
-	end
 end
 class RegisterDownloadComposite < HtmlGrid::Composite 
 	include View::PayPal::InvoiceMethods

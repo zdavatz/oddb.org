@@ -18,7 +18,7 @@ class NotifySent < HtmlGrid::Composite
 	}
 	CSS_MAP = {
 		[0,0] => 'confirm',
-		[1,0] => 'confirm',
+		[1,0] => 'confirm right',
 	}	
 	def notify_sent(model, session)
 		[

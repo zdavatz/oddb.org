@@ -226,7 +226,7 @@ a.fbpager {
 	color: white;
 }
 /* explain-classes */
-td.explain a.original, td.explain a.generic{
+td.explain a.original, td.explain a.generic {
 	font-weight: bold;
 }
 a.legal-note:link, a.legal-note:visited {
