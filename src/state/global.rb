@@ -17,7 +17,6 @@ require 'state/drugs/ddd'
 require 'state/drugs/fachinfo'
 require 'state/drugs/fachinfos'
 require 'state/drugs/feedbacks'
-require 'state/drugs/minifi_rss'
 require 'state/drugs/notify'
 require 'state/drugs/package'
 require 'state/drugs/register_download'
@@ -68,6 +67,8 @@ require 'state/user/register_poweruser'
 require 'state/user/suggest_registration'
 require 'state/paypal/return'
 require 'state/paypal/ipn'
+require 'state/rss/minifi'
+require 'state/rss/fachinfo'
 require 'state/user/paypal_thanks'
 require 'state/user/powerlink'
 require 'state/user/plugin'
@@ -339,6 +340,8 @@ module ODDB
 				end
 			end
 			def paypal_return
+        puts (id = @session.user_input(:invoice)).inspect
+        puts @session.invoice(id)
 				if(@session.is_crawler?)
 					State::Drugs::Init.new(@session, nil)
 				elsif((id = @session.user_input(:invoice)) \
@@ -487,8 +490,10 @@ module ODDB
 			end
       def rss
         case @session.user_input(:channel)
+        when 'fachinfo.rss'
+          Rss::Fachinfo.new(@session, @session.app.sorted_fachinfos)
         when 'minifi.rss'
-          Drugs::MiniFiRss.new(@session, @session.app.sorted_minifis)
+          Rss::MiniFi.new(@session, @session.app.sorted_minifis)
         end
       end
 			def search

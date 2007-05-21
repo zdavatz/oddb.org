@@ -101,6 +101,7 @@ module ODDB
 		365	=>	400,
 	}
 	VAT_RATE = 7.6
+  RSS_PATH = File.join(PROJECT_ROOT, 'data', 'downloads', 'rss')
 end
 
 module ODBA

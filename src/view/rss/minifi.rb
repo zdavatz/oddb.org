@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
-# View::Drugs::MinifiRss -- oddb.org -- 11.05.2007 -- hwyss@ywesee.com
+# View::Rss::MiniFi -- oddb.org -- 11.05.2007 -- hwyss@ywesee.com
 
 require 'rss/maker'
 require 'view/drugs/minifi'
 
 module ODDB
   module View
-    module Drugs
-class MiniFiRssItem < MiniFiChapter
+    module Rss
+class MiniFiItem < View::Drugs::MiniFiChapter
   def header(context)
     if(@registration)
       context.h3 { self.escape(@registration.company_name) }
@@ -17,7 +17,10 @@ class MiniFiRssItem < MiniFiChapter
     header(context).to_s << super
   end
 end
-class MiniFiRss < HtmlGrid::Component
+class MiniFi < HtmlGrid::Component
+  HTTP_HEADERS = {
+    "Content-Type"  => "application/rss+xml",
+  }
   def to_html(context)
     RSS::Maker.make('2.0') { |feed|
       feed.channel.title = @lookandfeel.lookup(:minifi_feed_title)
@@ -31,7 +34,7 @@ class MiniFiRss < HtmlGrid::Component
         document = minifi.send(@session.language)
         item = feed.items.new_item
 
-        chapter = MiniFiRssItem.new(minifi, @session, self)
+        chapter = MiniFiItem.new(minifi, @session, self)
 
         item.title = chapter.sanitize(document.heading)
         item.guid.content = item.link = @lookandfeel._event_url(:resolve, 

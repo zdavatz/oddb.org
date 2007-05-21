@@ -1066,6 +1066,10 @@ class OddbPrevalence
 		key = soundex.join(' ')
 		ODBA.cache.retrieve_from_index("substance_soundex_index", key)
 	end
+  def sorted_fachinfos
+    @fachinfos.values.select { |fi| 
+      fi.revision }.sort_by { |fi| fi.revision }.reverse
+  end
   def sorted_minifis
     @minifis.values.sort_by { |minifi| 
       [ -minifi.publication_date.year, 

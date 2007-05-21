@@ -160,6 +160,15 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		link
 	end
 end	
+class RssPreview < HtmlGrid::DivComposite
+  def rss_image(model)
+    img = HtmlGrid::Image.new(:minifi_title, model, @session, self)
+    img.attributes['src'] = @lookandfeel.resource_global(:rss_feed)
+    link = title(model)
+    link.value = img
+    link
+  end
+end
 class MiniFiList < HtmlGrid::DivList
   COMPONENTS = {
     [0,0] => :heading,
@@ -170,15 +179,14 @@ class MiniFiList < HtmlGrid::DivList
     link
   end
 end
-class MiniFis < HtmlGrid::DivComposite
+class MiniFis < RssPreview
   COMPONENTS = {
     [0,0] => :rss_image,
-    [1,0] => :minifi_title,
-    [0,1] => :rss_feed,
-    [0,2] => MiniFiList
+    [1,0] => :title,
+    [0,1] => MiniFiList,
   }
   CSS_MAP = ['heading']
-  def minifi_title(model)
+  def title(model)
     if((minifi = model.first) && (month = minifi.publication_date))
       link = HtmlGrid::Link.new(:minifi_title, model, @session, self)
       link.href = @lookandfeel._event_url(:rss, :channel => 'minifi.rss')
@@ -189,19 +197,44 @@ class MiniFis < HtmlGrid::DivComposite
       link
     end
   end
-  def rss_image(model)
-    img = HtmlGrid::Image.new(:minifi_title, model, @session, self)
-    img.attributes['src'] = @lookandfeel.resource_global(:rss_feed)
-    link = minifi_title(model)
-    link.value = img
+end
+class FachinfoNewsList < HtmlGrid::DivList
+  COMPONENTS = {
+    [0,0] => :name_base,
+  }
+  SYMBOL_MAP = {
+    :name_base => PointerLink,
+  }
+  def name(model)
+    link = PointerLink.new(:name_base, model, @session, self)
+    puts link.value = model.name_base
     link
+  end
+end
+class FachinfoNews < RssPreview
+  COMPONENTS = {
+    [0,0] => :rss_image,
+    [1,0] => :title,
+    [0,1] => FachinfoNewsList,
+  }
+  CSS_MAP = ['heading']
+  def title(model)
+    if((fachinfo = model.first) && (month = fachinfo.revision))
+      link = HtmlGrid::Link.new(:fachinfo_news_title, model, @session, self)
+      link.href = @lookandfeel._event_url(:rss, :channel => 'fachinfo.rss')
+      link.value = [ @lookandfeel.lookup(:fachinfo_news_title), '<br>',
+                     @lookandfeel.lookup("month_#{month.month}"),
+                     month.year ].join(' ')
+      link.css_class = 'list bold'
+      link
+    end
   end
 end
 class GoogleAdSenseComposite < View::GoogleAdSenseComposite
 	CONTENT = CenteredSearchComposite
 	GOOGLE_CHANNEL = '2298340258'
   COMPONENTS = {
-    [0,0]	=>	:minifis,
+    [0,0]	=>	:rss_feeds,
     [1,0]	=>	:content,
     [2,0]	=>	:ad_sense,
   }
@@ -209,10 +242,15 @@ class GoogleAdSenseComposite < View::GoogleAdSenseComposite
     [0,0] => 'sidebar',
     [2,0] => 'sidebar',
   }
-  def minifis(model, session=@session)
+  def rss_feeds(model, session=@session)
+    content = []
     if(@lookandfeel.enabled?(:minifis))
-      MiniFis.new(model, @session, self)
+      content.push MiniFis.new(model.minifis, @session, self)
     end
+    if(@lookandfeel.enabled?(:fachinfo_news))
+      content.push FachinfoNews.new(model.fachinfo_news, @session, self)
+    end
+    content
   end
 end
 		end

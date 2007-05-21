@@ -6,6 +6,7 @@ require 'util/oddbconfig'
 require 'drb/drb'
 require 'util/persistence'
 require 'fileutils'
+require 'view/rss/fachinfo'
 
 module ODDB
 	class FachinfoPlugin < Plugin
@@ -114,6 +115,19 @@ module ODDB
 				end
 			end
 		end
+    def postprocess
+      model = @app.sorted_fachinfos
+      l10n_sessions { |stub|
+        view = View::Rss::Fachinfo.new(model, stub, nil)
+        path = File.join(RSS_PATH, stub.language, 'fachinfo.rss')
+        tmp = File.join(RSS_PATH, stub.language, '.fachinfo.rss')
+        FileUtils.mkdir_p(File.dirname(path))
+        File.open(tmp, 'w') { |fh|
+          fh.puts view.to_html(CGI.new('html4'))
+        }
+        File.mv(tmp, path)
+      }
+    end
 		def report
 			unknown_size = @unknown_iksnrs.size
 			unknown = @unknown_iksnrs.collect { |iksnr, name|
@@ -155,6 +169,7 @@ module ODDB
 				end
 			}
 			log_news(updates)
+      postprocess
 			!updates.empty?
 		end
 		def update_registrations(languages)

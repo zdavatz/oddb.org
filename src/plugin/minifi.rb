@@ -2,7 +2,7 @@
 # Plugin::MiniFi -- oddb.org -- 26.04.2007 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
-require 'rss/maker'
+require 'view/rss/minifi'
 require 'iconv'
 
 module ODDB
@@ -21,6 +21,7 @@ module ODDB
         minifi = update_minifi(data)
         update_registration(minifi)
       }
+      postprocess
     end
     def update_minifi(data)
       pointer = Persistence::Pointer.new(:minifi)
@@ -35,6 +36,19 @@ module ODDB
       registrations.each { |reg|
         @attached.push(minifi)
         @app.update(reg.pointer, {:minifi => minifi}, :minifi)
+      }
+    end
+    def postprocess
+      model = @app.sorted_minifis
+      l10n_sessions { |stub|
+        view = View::Rss::MiniFi.new(model, stub, nil)
+        path = File.join(RSS_PATH, stub.language, 'minifi.rss')
+        tmp = File.join(RSS_PATH, stub.language, '.minifi.rss')
+        FileUtils.mkdir_p(File.dirname(path))
+        File.open(tmp, 'w') { |fh|
+          fh.puts view.to_html(CGI.new('html4'))
+        }
+        File.mv(tmp, path)
       }
     end
     def report

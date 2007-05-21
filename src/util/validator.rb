@@ -49,7 +49,7 @@ module ODDB
 				'BL', 'BS', 'FR', 'GE', 'GL', 'GR', 'JU', 'LU',
 				'NE', 'NW', 'OW', 'SG', 'SH', 'SO', 'SZ', 'TG',
 				'TI', 'UR', 'VD', 'VS', 'ZG', 'ZH'],
-      :channel      =>  ['minifi.rss'],
+      :channel      =>  ['fachinfo.rss', 'minifi.rss'],
 			:cl_status		=>	['false', 'true'],
 			:complementary_type =>	[nil, 'complementary', 'anthroposophy',
 				'homeopathy', 'phytotherapy', ],

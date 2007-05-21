@@ -2,10 +2,8 @@
 # State::Drugs::Init -- oddb -- 22.10.2002 -- hwyss@ywesee.com 
 
 require 'state/global_predefine'
-#require 'state/admin/root'
-#require 'state/admin/companyuser'
 require 'view/drugs/search'
-#require 'view/admin/login'
+require 'ostruct'
 
 module ODDB
 	module State
@@ -17,8 +15,18 @@ class Init < State::Drugs::Global
     super
     minifis = @session.app.sorted_minifis
     newest = minifis.first
-    @model = minifis.select { |minifi| 
+    @model = OpenStruct.new
+    @model.minifis = minifis.select { |minifi| 
       minifi.publication_date == newest.publication_date }
+
+    fachinfos = @session.app.sorted_fachinfos
+    newest = fachinfos.first
+    revision = newest ? newest.revision : nil
+    @model.fachinfo_news = fachinfos.select { |fi|
+      rev = fi.revision
+      rev.year == revision.year && rev.month == revision.month \
+        && rev.day == revision.day
+    }
   end
 end
 		end

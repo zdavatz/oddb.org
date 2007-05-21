@@ -2,6 +2,9 @@
 # Plugin -- oddb -- 30.05.2003 -- hwyss@ywesee.com 
 
 require 'util/http'
+require 'ostruct'
+require 'util/session'
+require 'custom/lookandfeelbase'
 
 module ODDB
 	class Plugin
@@ -15,6 +18,18 @@ module ODDB
 			@app = app
 			@change_flags = {}
 		end
+    def l10n_sessions(&block)
+      stub = OpenStruct.new
+      stub.flavor = Session::DEFAULT_FLAVOR
+      stub.http_protocol = 'http'
+      stub.server_name = SERVER_NAME
+      stub.app = @app
+      LookandfeelBase::DICTIONARIES.each_key { |lang|
+        stub.language = lang
+        stub.lookandfeel = LookandfeelBase.new(stub)
+        block.call(stub)
+      }
+    end
 		def log_info
 			[:change_flags, :report, :recipients].inject({}) { |inj, key|
 				inj.store(key, self.send(key))
