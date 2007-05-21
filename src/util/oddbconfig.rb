@@ -4,7 +4,7 @@
 # Do not require any Application-Internals in this file
 
 module ODDB
-	SERVER_NAME = 'www.oddb.org'
+	SERVER_NAME = 'ch.oddb.org'
 	SMTP_SERVER = 'mail.ywesee.com'
 	MAIL_FROM = '"Zeno R.R. Davatz" <zdavatz@ywesee.com>'
 	MAIL_TO = ['hwyss@ywesee.com']
