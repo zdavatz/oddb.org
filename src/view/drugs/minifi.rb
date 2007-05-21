@@ -7,9 +7,18 @@ require 'view/chapter'
 
 module ODDB
   module View
+module Latin1
+  def sanitize(string)
+    string = string.dup
+    string.gsub!("\140", '-')
+    string.gsub!(/[\x00-\x1f\x7f-\x9f]/, '')
+    string
+  end
+end
     module Drugs
 class MiniFiChapter < Chapter
   include AdditionalInformation
+  include View::Latin1
   def initialize(model, session, container)
     super(session.language, model, session, container)
     @registration = @model.registrations.first
@@ -39,9 +48,6 @@ class MiniFiChapter < Chapter
         part.to_html(context) 
       }.join(@lookandfeel.lookup(:navigation_divider))
     end
-  end
-  def sanitize(string)
-    string.gsub(/[^\040-\377]/, '')
   end
 end
 class MiniFiComposite < HtmlGrid::Composite

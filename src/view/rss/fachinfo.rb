@@ -3,6 +3,7 @@
 
 require 'rss/maker'
 require 'view/drugs/fachinfo'
+require 'view/drugs/minifi'
 
 module ODDB
   module View
@@ -18,6 +19,7 @@ class FachinfoItem < View::Drugs::FachinfoInnerComposite
   end
 end
 class Fachinfo < HtmlGrid::Component
+  include View::Latin1
   def to_html(context)
     RSS::Maker.make('2.0') { |feed|
       feed.channel.title = @lookandfeel.lookup(:fachinfo_feed_title)
@@ -35,7 +37,7 @@ class Fachinfo < HtmlGrid::Component
         chapter = View::Drugs::FachinfoInnerComposite.new(document, 
                                                           @session, self)
 
-        name = item.title = fachinfo.name_base
+        name = item.title = sanitize(fachinfo.name_base)
         item.guid.content = item.link = @lookandfeel._event_url(:resolve, 
                                           :pointer => fachinfo.pointer)
         item.guid.isPermaLink = true
@@ -45,7 +47,12 @@ class Fachinfo < HtmlGrid::Component
         link.href = @lookandfeel._event_url(:search, 
                                             :search_type => 'st_sequence', 
                                             :search_query => fachinfo.name)
-        item.description = chapter.to_html(context)
+        html = sanitize(chapter.to_html(context))
+        html.gsub(ptrn) { |match|
+          link.value = match
+          link.to_html(context)
+        }
+        item.description = html
       }
     }.to_s
   end

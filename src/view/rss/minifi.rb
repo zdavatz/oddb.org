@@ -41,11 +41,6 @@ class MiniFi < HtmlGrid::Component
                                           :pointer => minifi.pointer)
         item.guid.isPermaLink = true
         item.date = date2time(minifi.publication_date)
-        ptrn = /#{minifi.name}(\256|\(TM\))?/
-        link = HtmlGrid::Link.new(:name, minifi, @session, self)
-        link.href = @lookandfeel._event_url(:search, 
-                                            :search_type => 'st_sequence', 
-                                            :search_query => minifi.name)
         item.description = chapter.to_html(context)
       }
     }.to_s
