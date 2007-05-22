@@ -49,11 +49,12 @@ module ODDB
 			:unknown
 		end
 		def localized_name(language=:de)
+      name = ''
 			if((doc = self.send(language)) && doc.respond_to?(:name))
-        doc.name
-      else
-        name_base
+        name = doc.name.to_s
       end
+      name = name_base if(name.empty?)
+      name
 		end
 		def name_base
 			if(reg = @registrations.first)
