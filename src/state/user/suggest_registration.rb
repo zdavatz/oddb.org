@@ -53,8 +53,9 @@ class SuggestRegistration < Global
 			mdl = @session.app.create(inc)
 			mdl.fill_blanks(seq)
 			mdl.odba_store
-			self #State::User::SuggestSequence.new(@session, mdl)
+			#self #State::User::SuggestSequence.new(@session, mdl)
 		end
+    self
 	end
 	def update
 		iksnr = @session.user_input(:iksnr)

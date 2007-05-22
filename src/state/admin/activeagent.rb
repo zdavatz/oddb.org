@@ -19,7 +19,7 @@ module ActiveAgentMethods
 		end
 	end	
 	def new_active_agent
-		unless((sequence = @model.sequence).nil?)
+		if(sequence = @model.sequence)
 			aa_pointer = sequence.pointer + [:active_agent]
 			item = Persistence::CreateItem.new(aa_pointer)
 			item.carry(:iksnr, sequence.iksnr)

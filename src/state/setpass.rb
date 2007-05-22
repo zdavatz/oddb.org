@@ -54,7 +54,7 @@ module SetPass
 				@errors.store(:unique_email, err)
 				self
 			end
-		end
+		end or self
 	end
 end
 	end

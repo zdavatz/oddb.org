@@ -2,6 +2,7 @@
 # State::Global -- oddb -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
+require 'state/http_404'
 require 'state/admin/login'
 require 'state/ajax/ddd_price'
 require 'state/ajax/swissmedic_cat'
@@ -186,18 +187,6 @@ module ODDB
 				mdl = @session.app.atc_chooser
 				State::Drugs::AtcChooser.new(@session, mdl)
 			end
-=begin # was never used?
-			def authenticate
-				email = @session.user_input(:email)
-				key = @session.user_input(:challenge)
-				user = @session.admin_subsystem.download_user(email)
-				if(user && user.authenticate!(key))
-					State::User::Download.new(@session, nil)
-				else
-					State::User::RegisterDownload.new(@session, user)
-				end
-			end
-=end
 			def checkout
 				case @session.zone
 				when :user
@@ -213,6 +202,9 @@ module ODDB
 			def creditable?(item = @model)
 				@session.user.creditable?(item)
 			end
+      def default
+        Http404.new(@session, nil)
+      end
 			def direct_request_path
 				if(event = self.direct_event)
 					@session.lookandfeel._event_url(event)
@@ -375,11 +367,7 @@ module ODDB
 					if((model = pointer.resolve(@session.app)) \
 						&& (klass = resolve_state(pointer, :print)))
 						klass.new(@session, model)
-					else
-						self
 					end
-				rescue Persistence::UninitializedPathError
-					self
 				end
 			end
 			def proceed_download
@@ -473,11 +461,7 @@ module ODDB
 					else
 						State::Admin::TransparentLogin.new(@session, model)
 					end
-				else
-					self
 				end
-			rescue Persistence::UninitializedPathError
-				self
 			end
 			def resolve_state(pointer, type=:standard)
 				state_map = {
@@ -526,7 +510,7 @@ module ODDB
 						result = @session.search_analysis(query, @session.language)
 						State::Analysis::Result.new(@session, result)
 					else
-						query = query.to_s.downcase
+						query = query.to_s.downcase.gsub(/\s+/, ' ')
 						stype = @session.user_input(:search_type) 
 						_search_drugs_state(query, stype)
 					end
@@ -569,8 +553,6 @@ module ODDB
 					&& klass = resolve_state(pointer, :readonly))
 					klass.new(@session, model)
 				end
-			rescue Persistence::UninitializedPathError
-				self
 			end
 			def snapback_event
 				if(defined?(self.class::SNAPBACK_EVENT))
@@ -620,6 +602,11 @@ module ODDB
 					self.trigger(event)
 				end
 			end
+      def trigger(event)
+        super
+      rescue Persistence::UninitializedPathError
+        self.default
+      end
 			def new_registration
 				@session[:allowed] ||= []
 				item = @session[:allowed].select { |obj| 

@@ -74,8 +74,6 @@ class OrphanedFachinfoAssign < State::Admin::Global
 		if(lang = @session.user_input(:language_select))
 			doc = @model.languages[lang]
 				State::Drugs::FachinfoPreview.new(@session, doc)
-		else
-			self
 		end
 	end
 end

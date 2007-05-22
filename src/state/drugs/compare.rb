@@ -82,11 +82,10 @@ class Compare < State::Drugs::Global
 				puts e.class
 				puts e.message
 				puts e.backtrace
-				self
 			end
 		end
 		if(@model.nil?)
-			@default_view = View::Drugs::Search
+			@default_view = View::Http404
 		elsif(@model.atc_class.nil?)
 			@default_view = View::Drugs::EmptyCompare
 		else

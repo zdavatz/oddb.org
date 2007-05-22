@@ -29,8 +29,9 @@ class SuggestSequence < Global
 				mdl = @session.app.create(inc)
 				mdl.fill_blanks(item)
 				mdl.odba_store
-				self #klass.new(@session, mdl)
+				#self #klass.new(@session, mdl)
 			end
+      self
 		end
 	end
 	def update_incomplete

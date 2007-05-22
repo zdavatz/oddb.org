@@ -78,8 +78,6 @@ class OrphanedPatinfoAssign < State::Admin::Global
 		if(lang = @session.user_input(:language_select))
 			doc = @model.languages[lang]
 			State::Drugs::PatinfoPreview.new(@session, doc)
-		else
-			self
 		end
 	end
 end
