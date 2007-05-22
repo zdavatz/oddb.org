@@ -8,14 +8,15 @@ require 'view/drugs/minifi'
 module ODDB
   module View
     module Rss
-class FachinfoItem < View::Drugs::FachinfoInnerComposite
-  def header(context)
-    if(@registration)
-      context.h3 { self.escape(@registration.company_name) }
-    end
-  end
-  def to_html(context)
-    header(context).to_s << super
+class FachinfoItem < HtmlGrid::DivComposite
+  COMPONENTS = {}
+  DEFAULT_CLASS = View::Chapter
+  def init
+    @model.chapter_names.each_with_index { |name, idx|
+      components.store([0,idx], name)
+      break if(name == :indications || idx > 4)
+    }
+    super
   end
 end
 class Fachinfo < HtmlGrid::Component
@@ -34,8 +35,7 @@ class Fachinfo < HtmlGrid::Component
         next unless(document.is_a?(FachinfoDocument))
 
         item = feed.items.new_item
-        chapter = View::Drugs::FachinfoInnerComposite.new(document, 
-                                                          @session, self)
+        chapter = FachinfoItem.new(document, @session, self)
 
         name = item.title = sanitize(fachinfo.name_base)
         item.guid.content = item.link = @lookandfeel._event_url(:resolve, 
