@@ -56,7 +56,7 @@ module ODDB
 						@section = @chapter.next_section
 					end
 				elsif(@font.bold?)
-					@name = self.out.strip
+					@name << self.out.strip
 				elsif(@font.italic?)
 					## special case: italic after company-name is the 
 					## galenic_form-chapter of the pre AMZV-form of fi
