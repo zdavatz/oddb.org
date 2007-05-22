@@ -38,11 +38,7 @@ class Fachinfo < HtmlGrid::Component
         item = feed.items.new_item
         chapter = FachinfoItem.new(document, @session, self)
 
-        name = fachinfo.localized_name(language)
-        if(name.empty?)
-          name = fachinfo.name_base
-        end
-        name = item.title = sanitize(name)
+        name = item.title = sanitize(fachinfo.localized_name(language))
         item.guid.content = item.link = @lookandfeel._event_url(:resolve, 
                                           :pointer => fachinfo.pointer)
         item.guid.isPermaLink = true
