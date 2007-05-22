@@ -29,30 +29,40 @@ class Fachinfo < HtmlGrid::Component
       feed.channel.language = @session.language
       feed.encoding = 'ISO-8859-1'
       feed.xml_stylesheets.new_xml_stylesheet.href = @lookandfeel.resource(:css)
+      language = @session.language
       @model.each { |fachinfo|
 
-        document = fachinfo.send(@session.language)
+        document = fachinfo.send(language)
         next unless(document.is_a?(FachinfoDocument))
 
         item = feed.items.new_item
         chapter = FachinfoItem.new(document, @session, self)
 
-        name = item.title = sanitize(fachinfo.name_base)
+        name = fachinfo.localized_name(language)
+        if(name.empty?)
+          name = fachinfo.name_base
+        end
+        name = item.title = sanitize(name)
         item.guid.content = item.link = @lookandfeel._event_url(:resolve, 
                                           :pointer => fachinfo.pointer)
         item.guid.isPermaLink = true
         item.date = fachinfo.revision
-        ptrn = /#{name}(\256|\(TM\))?/
+
+        ptrn = /#{Regexp.escape(name)}(\256|\(TM\))?/
         link = HtmlGrid::Link.new(:name, fachinfo, @session, self)
         link.href = @lookandfeel._event_url(:search, 
                                             :search_type => 'st_sequence', 
-                                            :search_query => fachinfo.name)
-        html = sanitize(chapter.to_html(context))
-        html.gsub(ptrn) { |match|
+                                            :search_query => name)
+        html = chapter.to_html(context)
+        read = PointerLink.new(:fachinfo_feed_link, fachinfo, @session, self)
+        html << read.to_html(context)
+        html.gsub!(%r{<pre\b.*?</pre>}im) { |match|
+          match.gsub(%r{\n}, '<BR>')
+        }
+        item.description = sanitize(html).gsub(ptrn) { |match|
           link.value = match
           link.to_html(context)
         }
-        item.description = html
       }
     }.to_s
   end

@@ -11,7 +11,7 @@ module Latin1
   def sanitize(string)
     string = string.dup
     string.gsub!("\140", '-')
-    string.gsub!(/[\x00-\x1f\x7f-\x9f]/, '')
+    string.gsub!(/[\x00-\x08\x0b-\x1f\x7f-\x9f]/, '')
     string
   end
 end
