@@ -68,8 +68,7 @@ require 'state/user/register_poweruser'
 require 'state/user/suggest_registration'
 require 'state/paypal/return'
 require 'state/paypal/ipn'
-require 'state/rss/minifi'
-require 'state/rss/fachinfo'
+require 'state/rss/passthru'
 require 'state/user/paypal_thanks'
 require 'state/user/powerlink'
 require 'state/user/plugin'
@@ -473,11 +472,8 @@ module ODDB
 				state_map[type][pointer.skeleton]
 			end
       def rss
-        case @session.user_input(:channel)
-        when 'fachinfo.rss'
-          Rss::Fachinfo.new(@session, @session.app.sorted_fachinfos)
-        when 'minifi.rss'
-          Rss::MiniFi.new(@session, @session.app.sorted_minifis)
+        if(channel = @session.user_input(:channel))
+          Rss::PassThru.new(@session, channel)
         end
       end
 			def search
