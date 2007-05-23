@@ -24,19 +24,7 @@ module ODDB
 		QUERY_LIMIT_AGE = 60 * 60 * 24
 		PROCESS_TIMEOUT = 30 * 5
 		HTML_TIMEOUT = 30 * 5
-=begin
-			@@stub_html = File.read(File.expand_path('../../data/stub.html', File.dirname(__FILE__)))
-		rescue
-			@@stub_html = ''
-=end
 		@@requests ||= {}
-		@@html_cache ||= {}
-		def Session.clear_html_cache
-			@@html_cache.clear
-		end
-		def Session.html_cache
-			@@html_cache
-		end
 		def Session.reset_query_limit(ip = nil)
 			if(ip)
 				@@requests.delete(ip)
@@ -101,29 +89,17 @@ module ODDB
 			#logtype = 'PRIN'
 			timeout(PROCESS_TIMEOUT) { 
 				@request = request
-				unless(is_crawler?)
-					@@html_cache.delete(@request_path)
-				end
 				@request_id = request.object_id
 				@request_path = request.unparsed_uri
 				@process_start = Time.now
 				#request_log('INIT')
 				#logtype = 'PRCS'
-				if(is_crawler?)
-					if(@@html_cache[@request_path].nil?)
-						super
-					end
-				else
-					super
-					## @lookandfeel.nil?: the first access from a client has no
-					## lookandfeel here
-					if(self.lookandfeel.enabled?(:query_limit))
-						limit_queries 
-					end
-					## return empty string across the drb-border
+				super
+				if(!is_crawler? && self.lookandfeel.enabled?(:query_limit))
+					limit_queries 
 				end
 			}
-			''
+			'' ## return empty string across the drb-border
 		rescue Timeout::Error
 			#logtype = 'PRTO'
 			'your request has timed out. please try again later.'
@@ -148,23 +124,7 @@ module ODDB
 		def to_html
 			#logtype = 'HTML'
 			timeout(HTML_TIMEOUT) {
-				if(is_crawler?)
-					if(html = @@html_cache[@request_path])
-						#logtype = 'CCHE'
-						html
-					else
-						#logtype = 'CRWL'
-						sleep(5)
-						#@@stub_html
-						super
-					end
-				else
-					html = super
-					if(@user.cache_html?)
-						@@html_cache[@request_path] = html
-					end
-					html
-				end.dup
+				super
 			}
 		rescue Timeout::Error
 			#logtype = 'TMOT'
@@ -177,24 +137,12 @@ module ODDB
 		def add_to_interaction_basket(object)
 			@interaction_basket.push(object)
 		end
-		def __checkout
-			@@html_cache.delete(@request_path)
-			super
-		end
 		def clear_interaction_basket
 			@interaction_basket.clear
 		end
 		def currency 
 			cookie_set_or_get(:currency) || "CHF"
 		end
-=begin
-		def desired_state
-			if(mod = @user.viral_module)
-				@desired_state.extend(mod)
-			end
-			@desired_state
-		end
-=end
     def get_currency_rate(currency)
       @currency_rates[currency] ||= @app.get_currency_rate(currency)
     end
