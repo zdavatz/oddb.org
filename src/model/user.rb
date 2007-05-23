@@ -186,7 +186,8 @@ module ODDB
 			when PackageCommon
 				allowed?(action, key.sequence)
 			when RegistrationCommon
-				allowed?(action, key.company)
+				allowed?(action, key.company) \
+          || allowed?(action, key.pointer.to_yus_privilege)
 			when SequenceCommon
 				allowed?(action, key.registration)	
       else
