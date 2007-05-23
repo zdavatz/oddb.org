@@ -201,9 +201,6 @@ module ODDB
 			def creditable?(item = @model)
 				@session.user.creditable?(item)
 			end
-      def default
-        Http404.new(@session, nil)
-      end
 			def direct_request_path
 				if(event = self.direct_event)
 					@session.lookandfeel._event_url(event)
@@ -598,10 +595,10 @@ module ODDB
 					self.trigger(event)
 				end
 			end
-      def trigger(event)
-        super
+      def _trigger(event)
+        super || Http404.new(@session, nil)
       rescue Persistence::UninitializedPathError
-        self.default
+        Http404.new(@session, nil)
       end
 			def new_registration
 				@session[:allowed] ||= []
