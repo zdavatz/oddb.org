@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-#  -- oddb -- 24.10.2005 -- ffricker@ywesee.com
+# View::Notify -- oddb -- 24.10.2005 -- ffricker@ywesee.com
 
 
 require 'view/publictemplate'
@@ -28,7 +28,7 @@ module ODDB
 				[0,3]	=>	'list top',
 			}
 			COMPONENT_CSS_MAP = {
-				[1,0,1,3] => 'standard',
+				[1,0,1,3] => 'xl',
 			}
 			CSS_CLASS = 'component'
 			LABELS = true
