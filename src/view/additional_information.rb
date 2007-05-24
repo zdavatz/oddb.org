@@ -134,9 +134,7 @@ module ODDB
 				link = HtmlGrid::Link.new(:square_feedback, model, session, self)
 				link.href = @lookandfeel._event_url(:feedbacks, 
 																						{'pointer'=>model.pointer})
-				pos = components.index(:feedback)
-				component_css_map.store(pos, "square feedback")
-
+        link.css_class = "square feedback"
 				link.set_attribute('title', @lookandfeel.lookup(:feedback_alt, 
 					model.localized_name(@session.language)))
 				link
