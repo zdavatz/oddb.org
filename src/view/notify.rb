@@ -28,7 +28,9 @@ module ODDB
 				[0,3]	=>	'list top',
 			}
 			COMPONENT_CSS_MAP = {
-				[1,0,1,3] => 'standard',
+				[1,0] => 'xl',
+				[1,1] => 'xl',
+				[1,2] => 'xl',
 			}
 			CSS_CLASS = 'component'
 			LABELS = true
