@@ -23,13 +23,14 @@ class Package < HtmlGrid::Component
         pcurrent = package.price_public
         plast = package.price_public(1)
         item.title = sanitize [
+          pcurrent.valid_from.strftime(@lookandfeel.lookup(:date_format)),
           package.name, package.size, package.price_public, 
           sprintf("%+.1f%%", (pcurrent - plast) / plast * 100.0),
         ].join(' | ')
         url = @lookandfeel._event_url(:show, :pointer => package.pointer)
         item.guid.content = item.link = url
         item.guid.isPermaLink = true
-        item.date = package.revision
+        item.date = pcurrent.valid_from
 
         comp = View::Drugs::PackageInnerComposite.new(package, @session, self)
         html = comp.to_html(context)
