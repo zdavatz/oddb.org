@@ -28,9 +28,11 @@ module PackageMethods
 			if error
 				@errors.store(:ikscd, error)
 				@model.carry(:price_exfactory, 
-					ODDB::Package.price_internal(@session.user_input(:price_exfactory)))
+					ODDB::Package.price_internal(@session.user_input(:price_exfactory), 
+                                      :exfactory))
 				@model.carry(:price_public, 
-					ODDB::Package.price_internal(@session.user_input(:price_public)))
+					ODDB::Package.price_internal(@session.user_input(:price_public),
+                                      :public))
 				return self
 			end
 			@model.append(ikscode)
@@ -62,6 +64,13 @@ module PackageMethods
                                    :commercial_form, name))
       end
     end
+    [:price_exfactory, :price_public].each { |key|
+      if(price = input[key])
+        price = ODDB::Package.price_internal(price, key)
+        price.origin = unique_email
+        input.store(key, price)
+      end
+    }
 		unless(error?)
 			ODBA.transaction {
 				@model = @session.app.update(@model.pointer, input, unique_email)

@@ -2,6 +2,7 @@
 # LookandfeelBase -- oddb -- hwyss@ywesee.com
 
 require 'sbsm/lookandfeel'
+require 'util/money'
 
 module ODDB
 	class Company; end
@@ -131,6 +132,7 @@ Zeno Davatz
 				:analysis_positions				=>	'Position(en) in',
 				:analysis_revision				=>	'Revision',
 				:analysis_search_explain	=>	'Suchen Sie in der Liste der von den Krankenversicherern im Rahmen der <br>obligatorischen Krankenpflegeversicherung als Pflichtleistung zu verg&uuml;tenden Analysen.',
+        :and                      =>  ' und ',
 				:anonymous								=>	'Anonyme Position',
 				:anthroposophy						=>	'Anthroposophisches Arzneimittel',
 				:assign_deprived_sequence =>  'Zuweisen',
@@ -1047,10 +1049,14 @@ Zeno Davatz
 				:preview									=>	'Vorschau',
 				:price										=>  'Preis',
 				:price_compare						=>	'F&uuml;r den Direktvergleich klicken Sie bitte auf den Medikamentennamen im Suchergebnis!',
+        :price_cut_feed_title     =>  'Preissenkungen SL',
+        :price_cut_feed_description =>  'Preissenkungen von Produkten in der Spezialitäten-Liste',
 				:price_exfactory					=>	'Exfactory-Preis',
 				:price_public							=>	'Publikumspreis',
 				:price_request						=>	'PA',
 				:price_request_pagename		=>	'ODDB.PreisAnfrage',
+        :price_rise_feed_title    =>  'Preiserhöhungen SL',
+        :price_rise_feed_description =>  'Preiserhöhungen von Produkten in der Spezialitäten-Liste',
 				:print										=>	'Drucken',
 				:print_edit								=>  'Drucken mit 1.5 Zeilenabst.',
 				:print_head								=>	'Ausdruck von http://www.oddb.org',
@@ -1485,6 +1491,7 @@ Zeno Davatz
 				:analysis_positions				=>	'Position(s) dans',
 				:analysis_revision				=>	'R&eacute;vision',
 				:analysis_search_explain	=>	'Cherchez dans la liste des analyses prises en charge par les <br>assureurs-maladie dans le cadre de l\'assurance-maladie obligatoire.',	
+        :and                      =>  ' et ',
 				:anonymous								=>	'Position anonyme',
 				:anthroposophy						=>	'M&eacute;dicament anthroposophique',
 				:assigned_substances			=>	'Les principes actifs suivants sont d&eacute;j&agrave; assign&eacute;s &agrave; la s&eacute;quence:',
@@ -2182,10 +2189,14 @@ Zeno Davatz
 				:pref_invoice_date				=>	'Date de la facture annuelle',
 				:pretty_dose							=>	'Force',
 				:price_compare						=>	'Pour la comparaison directe, cliquez s.v.p. sur le nom du m&eacute;dicament dans le r&eacute;sultat de la recherche!',
+        :price_cut_feed_title     =>  'Réduction des prix LS',
+        :price_cut_feed_description =>  'Réduction des prix des produits dans la liste des specialités',
 				:price_exfactory					=>	'Prix exfactory',
 				:price_public							=>	'Prix de public',
 				:price_request						=>	'DDP',
 				:price_request_pagename		=>	'ODDB.DemandeDesPrix',
+        :price_rise_feed_title    =>  'Augmentation des prix LS',
+        :price_rise_feed_description =>  'Augmentation des prix des produits dans la liste des specialités',
 				:print_type_fachinfo			=>	'Information destin&eacute;e aux professionnels',
 				:print_type_patinfo				=>	'Information destin&eacute;e aux patients ',
         :privileges               =>  'Privileges',
@@ -2511,6 +2522,7 @@ Zeno Davatz
 				:analysis_positions				=>	'Position(s) in',
 				:analysis_revision				=>	'Revision',
 				:analysis_search_explain	=>	'Search the list of analyses which are to be compensated as a compulsory <br>benefit by the health insurances according to the mandatory nursing insurance.',
+        :and                      =>  ' and ',
 				:anonymous								=>	'Anonymous Position',
 				:anthroposophy						=>	'Anthroposophy',
 				:assign										=>  'Assign',
@@ -3273,10 +3285,14 @@ Zeno Davatz
 				:pretty_dose							=>	'Dose',
 				:preview									=>	'Preview',
 				:price_compare						=>	'For price comparison between Original and Generic please click onto the name of the drug all the way to the left!',
+        :price_cut_feed_title     =>  'Price cuts SL',
+        :price_cut_feed_description =>  'Price cuts for products in the official reimbursement list of Switzerland.',
 				:price_exfactory					=>	'Ex-factory-Price',
 				:price_public							=>	'Consumer price',
 				:price_request						=>	'PR',
 				:price_request_pagename		=>	'ODDB.PriceRequest',
+        :price_rise_feed_title    =>  'Price rises SL',
+        :price_rise_feed_description =>  'Price rises for products in the official reimbursement list of Switzerland.',
 				:print_head								=>	'Printscreen of http://www.oddb.org',
 				:print										=>	'Print',
 				:print_title							=>	'Printerfriendly version',
@@ -3733,6 +3749,14 @@ Zeno Davatz
 				[2,8]	=>	:explain_lppv,
 			}
 		end
+    def format_price(price, currency=nil)
+      unless(price.is_a?(Util::Money))
+        price = price.to_f / 100.0
+      end
+      if(price.to_i > 0)
+        [currency, sprintf('%.2f', price)].compact.join(' ')
+      end
+    end
     def migel_list_components
       {
         [0,0] =>	:limitation_text,

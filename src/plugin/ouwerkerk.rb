@@ -45,10 +45,10 @@ module ODDB
 			row[10] = pack.ikscat
 			row[13] = pack.size
 			if(price = pack.price_exfactory)
-				row[16] = price / 100.0
+				row[16] = price.to_f
 			end
 			if(price = pack.price_public)
-				row[17] = price / 100.0
+				row[17] = price.to_f
 			end
 			row[23] = pack.pharmacode
 			row[24] = (pack.sl_entry.nil?) ? 'keine' : 'SL'

@@ -49,7 +49,7 @@ class RegisterDownloadForm < Form
   LEGACY_INTERFACE = false
 	def init
     unless(@session.logged_in?)
-      hash_insert(components, [0,1], :pass)
+      hash_insert_row(components, [0,1], :pass)
       components.store([3,1], :set_pass_2)
       css_map.store([0,11,4], 'list')
 		  component_css_map.store([1,10], 'standard')

@@ -21,7 +21,7 @@ class YusPrivileges < HtmlGrid::List
     @entity = @model
     @model = @session.valid_values(:yus_privileges).select { |privilege|
       action, key = privilege.split('|')
-      @session.user.allowed?('grant', action)
+      @session.allowed?('grant', action)
     }
     super
   end
@@ -130,7 +130,7 @@ class EntityForm < Form
     YusGroups.new(model, @session, self)
   end
   def pass(model, key)
-    if(set_pass? && @session.user.allowed?('set_password', model.name))
+    if(set_pass? && @session.allowed?('set_password', model.name))
       HtmlGrid::Pass.new(key, model, @session, self)
     end
   end
@@ -146,7 +146,7 @@ class EntityForm < Form
     pass(model, :set_pass_2)
   end
   def set_pass(model)
-    unless(set_pass? || !@session.user.allowed?('set_password', model.name))
+    unless(set_pass? || !@session.allowed?('set_password', model.name))
       button = HtmlGrid::Button.new(:set_pass, model, @session, self)
       script = 'this.form.event.value="set_pass"; this.form.submit();'
       button.set_attribute('onClick', script)

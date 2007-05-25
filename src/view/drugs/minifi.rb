@@ -4,17 +4,10 @@
 require 'view/drugs/privatetemplate'
 require 'view/additional_information'
 require 'view/chapter'
+require 'view/latin1'
 
 module ODDB
   module View
-module Latin1
-  def sanitize(string)
-    string = string.dup
-    string.gsub!("\140", '-')
-    string.gsub!(/[\x00-\x08\x0b-\x1f\x7f-\x9f]/, '')
-    string
-  end
-end
     module Drugs
 class MiniFiChapter < Chapter
   include AdditionalInformation

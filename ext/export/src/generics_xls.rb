@@ -138,7 +138,7 @@ module ODDB
 			end
 			def format_price(price)
 				if(price && price > 0.0)
-					sprintf("%4.2f", price.to_f / 100.0)
+					sprintf("%4.2f", price.to_f)
 				end
 			end
 			def format_row(package, comparable)

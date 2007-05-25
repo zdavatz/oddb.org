@@ -6,6 +6,8 @@ require 'util/persistence'
 require 'parseexcel/parseexcel'
 require 'model/package'
 require 'util/oddbconfig'
+require 'view/rss/price_cut'
+require 'view/rss/price_rise'
 
 module ODDB
 	class BsvPlugin2 < Plugin
@@ -28,8 +30,8 @@ module ODDB
 				if(other.is_a?(ParsedPackage))
 					other.instance_variables.each { |name|
 						unless(instance_variable_get(name))
-							instance_variable_set(name, 
-							other.instance_variable_get(name))
+              instance_variable_set(name, 
+                                    other.instance_variable_get(name))
 						end
 					}
 				else
@@ -69,7 +71,9 @@ module ODDB
 			@@line = /Fr\.\s+([\d.]+)\s*\{([\s\d.]+)\}\s+\[(\d+)\]\s+([\d.]+),/
 			@@brokenline = /\s+\[(\d+)\]\s+([\d.]+),/
 			@@modline = /(\d+)\s*(\d+)\s+([\d.]+)\s+([\d.]*)/
-			def initialize(src)
+			def initialize(src, time, origin)
+        @time = time
+        @origin = origin
 				@src = src.gsub("\r", "")
 				@src_additions = ''
 				@src_deletions = ''
@@ -148,12 +152,21 @@ module ODDB
 				@src_augmentations.strip!
 				@src_limitations.strip!
 			end
+      def money(amount, type)
+        amount = amount.to_f
+        if(amount > 0)
+          Money.new(amount, type, 'CH')
+          money.valid_from = @time
+          money.origin = @origin
+          money
+        end
+      end
 			def parse_line(line)
 				if(match = @@line.match(line))
 					pack = ParsedPackage.new
 					pack.sl_dossier = line[%r{\d+}]
-					pack.price_public = match[1].to_f
-					pack.price_exfactory = match[2].to_f
+					pack.price_public = money(match[1], :public)
+					pack.price_exfactory = money(match[2], :exfactory)
 					pack.ikskey = match[3]
 					date = match[4].split('.').reverse.collect { |str| str.to_i }
 					pack.introduction_date = Date.new(*date)
@@ -162,8 +175,8 @@ module ODDB
 					pack = ParsedPackage.new
 					pack.pharmacode = match[1]
 					pack.sl_dossier = match[2]
-					pack.price_public = match[3].to_f
-					pack.price_exfactory = match[4].to_f
+					pack.price_public = money(match[3], :public)
+					pack.price_exfactory = money(match[4], :exfactory)
 					pack
 				elsif(match = @@brokenline.match(line))
 					pack = ParsedPackage.new
@@ -226,7 +239,7 @@ module ODDB
 				(coll << ikscd) unless (coll + @both).include?(ikscd)
 			end
 		end
-		GALINFO = 'bsv.e-mediat.net'
+		GALINFO = 'www.galinfo.net'
 		def initialize(app)
 			super
 			@ikstable = {}
@@ -251,6 +264,25 @@ module ODDB
 			info.store(:parts, parts)
 			info
 		end
+    def postprocess(flags=@change_flags)
+      cuts = []
+      rises = []
+      flags.each { |ptr, flgs|
+        target = nil
+        if(!(flgs & [:price_cut, :price_rise]).empty? \
+           && (package = ptr.resolve(@app)) && package.is_a?(Package) \
+           && (previous = package.price_public(1)))
+          if(previous > package.price_public)
+            target = cuts
+          else
+            target = rises
+          end
+          target.push package
+        end rescue Persistence::UninitializedPathError
+      }
+      update_rss_feeds('price_cut.rss', cuts.sort, View::Rss::PriceCut)
+      update_rss_feeds('price_rise.rss', rises.sort, View::Rss::PriceRise)
+    end
 		def report
 			[
 				format_header("Successful Updates:", @successful_updates.size),
@@ -279,7 +311,9 @@ module ODDB
 			## iterate over all changes in the bulletin, identify the 
 			## corresponding package, apply the changes and record them 
 			## in @change_flags
-			parser = MutationParser.new(File.read(bl_file))
+			parser = MutationParser.new(File.read(bl_file), 
+                                  Time.local(month.year, month.month), 
+                                  'http://www.galinfo.net/%s' % bulletin(month))
 			parser.identify_parts
 			parser.each_addition { |package|
 				handle_addition(package)
@@ -309,9 +343,30 @@ module ODDB
 
 			## compile a report that includes missing packages.
 			## -> is being done on the fly
+      
+      # write rss-feeds
+      postprocess
 		rescue RuntimeError
 			## return nil if any of the downloads fail.
 		end
+    def update_prices(month)
+      @month = month
+      lmnth = month << 1
+      last_month = Time.local(lmnth.year, lmnth.month)
+      path = File.join(ARCHIVE_PATH, 'xls', database(month))
+      workbook = Spreadsheet::ParseExcel.parse(path)
+      worksheet = workbook.worksheet(0)
+      worksheet.each(1) { |row|
+        pcode = row.at(2).to_i.to_s
+        sl_iks = row.at(4).to_i.to_s
+        if(package = find_package(sl_iks) || find_package(known_pcodes[pcode]))
+          save = false
+          update_price(row.at(8), :exfactory, last_month) && save = true
+          update_price(row.at(9), :public, last_month) && save = true
+          package.odba_isolated_store if(save)
+        end
+      }
+    end
 		private
 		def balance_package(package)
 			if((package.iksnr.nil? \
@@ -349,7 +404,7 @@ module ODDB
 			download('www.galinfo.net', '/', bulletin(date), 'txt')
 		end
 		def download_database(date)
-			download('bsv.e-mediat.net', '/sl', database(date), 'xls')
+			download('www.galinfo.net', '/sl', database(date), 'xls')
 		end
 		def download(host, path, name, archive)
       dpath = File.join(path, name)
@@ -401,8 +456,6 @@ module ODDB
 		def handle_unknown_package(package)
 			if(reg = @app.registration(package.iksnr))
 				candidates = []
-				puts package.name
-				puts package.ikscd
 				if(match = /(\d+)\s+(\w+)(.*?)((\d,)?\d+\s+\w+)$/.match(package.name))
 					package.size = match[3]
 					dose = Dose.new(match[1], match[2])
@@ -443,16 +496,24 @@ module ODDB
 		rescue ParseException, AmbigousParseException => err
 			@parse_errors.push([err.class.to_s, package.name, match[2]])
 		end
+    def find_package(ikskey)
+      ikskey = ikskey.to_s
+      (reg = @app.registration(ikskey[0,5])) && reg.package(ikskey[5,3])
+    end
 		def format_header(name, size)
 			sprintf("%-30s%5i", name, size)
 		end
-		def load_database(path)
-			known_pcodes = {}
-			@app.each_package { |pac|
-				if(pcode = pac.pharmacode)
-					known_pcodes.store(pcode, pac.ikskey)
-				end
-			}
+    def known_pcodes
+      @known_pcodes or begin
+        @known_pcodes = {}
+        @app.each_package { |pac|
+          if(pcode = pac.pharmacode)
+            @known_pcodes.store(pcode, pac.ikskey)
+          end
+        }
+      end
+    end
+    def load_database(path)
 			workbook = Spreadsheet::ParseExcel.parse(path)
 			do_map = deductible_originals(workbook)
 			worksheet = workbook.worksheet(0)
@@ -479,10 +540,12 @@ module ODDB
 				if(cell = row.at(7))
 					package.name = cell.to_s(ENCODING)
 				end
-				exf = row.at(8).to_f
-				package.price_exfactory = exf if(exf > 0)
-				pub = row.at(9).to_f
-				package.price_public = pub if(pub > 0)
+        if(exf = money(row.at(8), :exfactory))
+          package.price_exfactory = exf
+        end
+        if(pub = money(row.at(9), :public))
+          package.price_public = pub
+        end
 				if(cell = row.at(10))
 					package.limitation = (cell.to_s(ENCODING).downcase=='y')
 				end
@@ -497,7 +560,6 @@ module ODDB
 					package.pharmacode = pcode
 					@ptable.store(pcode, package)
 					medwin_iks = known_pcodes[pcode] || load_ikskey(pcode)
-					#sleep(MEDDATA_SLEEP)
 				end
 				package.ikskey = (medwin_iks || sl_iks)
 				if(!(medwin_iks.nil? || medwin_iks == sl_iks))
@@ -536,6 +598,15 @@ module ODDB
 				end
 			end
 		end
+    def money(amount, type)
+      amount = amount.to_f
+      if(amount > 0)
+        money = Util::Money.new(amount, type, 'CH')
+        money.valid_from = Time.local(@month.year, @month.month)
+        money.origin = 'http://www.galinfo.net/sl/%s' % database(@month)
+        money
+      end
+    end
 		def report_format(package)
 			[
 				:name,
@@ -632,6 +703,17 @@ BSV-XLS Swissmedic-Nr: %5s %3s
 			end
 			pack
 		end
+    def update_price(value, type, last_month)
+      if(money = money(value, type))
+        # is this price a correction of last months'?
+        if(money == package.price(type, 1) \
+           && package.price(type).valid_from == last_month)
+          package.prices[type].shift
+        else
+          package.prices[type].unshift(money)
+        end
+      end
+    end
 		def update_registration(package)
 			ptr = Persistence::Pointer.new([:registration, package.iksnr])
 			if(registration = ptr.resolve(@app))

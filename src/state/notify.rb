@@ -36,11 +36,12 @@ module Notify
 		name << line
 	end
 	def notify_send 
-		if(model.name && model.notify_sender && 
-				model.notify_recipient && model.notify_message)
+    recipients = model.notify_recipient
+		if(model.name && model.notify_sender && recipients.is_a?(Array) \
+				&& !recipients.empty? && model.notify_message)
 			mail = TMail::Mail.new
 			mail.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
-			mail.to = @model.notify_recipient
+			mail.to = recipients
 			mail.from = @model.notify_sender
 			mail.subject = "#{@session.lookandfeel.lookup(:notify_subject)} #{@model.name}"
 			mail.date = Time.now
@@ -51,7 +52,7 @@ module Notify
 				breakline(@model.notify_message, 75),
 			].join("\n")
 			Net::SMTP.start(SMTP_SERVER) { |smtp|
-				smtp.sendmail(mail.encoded, SMTP_FROM, @model.notify_recipient) 
+				smtp.sendmail(mail.encoded, SMTP_FROM, recipients) 
 			}
 			logger = @session.notification_logger
 			key = [

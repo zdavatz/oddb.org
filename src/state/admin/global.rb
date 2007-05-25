@@ -26,7 +26,7 @@ class Global < State::Global
       ['edit', 'org.oddb.model.!galenic_group.*', State::Admin::CommercialForms],
     ]
     links.inject([]) { |memo, (action, item, link)|
-      memo.push(link) if(@session.user.allowed?(action, item))
+      memo.push(link) if(@session.allowed?(action, item))
       memo
     }
 	end

@@ -75,7 +75,7 @@ module ODDB
           ddd_price = convert_price(ddd_price, @session.currency)
 					@ddd_price_count ||= 0
 					@ddd_price_count += 1
-					span.value = @lookandfeel.format_price(ddd_price)
+					span.value = ddd_price
 					span.css_id = "ddd_price_#{@ddd_price_count}"
 					args = {:pointer => model.pointer}
 					span.dojo_tooltip = @lookandfeel._event_url(:ajax_ddd_price, args)
@@ -109,7 +109,7 @@ module ODDB
 			def fachinfo(model, session=@session, css='square infos')
 				if(link = _fachinfo(model.fachinfo, css))
 					link
-				elsif(@session.user.allowed?('edit', model))
+				elsif(@session.allowed?('edit', model))
 					link = HtmlGrid::Link.new(:fachinfo_create, model, @session, self)
 					ptr = model.is_a?(Registration) ? 
 						model.pointer : model.registration.pointer

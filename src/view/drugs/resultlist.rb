@@ -41,7 +41,7 @@ class AtcHeader < HtmlGrid::Composite
 	}
   LEGACY_INTERFACE = false
 	def init
-		if(@session.user.allowed?('edit', 'org.oddb.model.!atc_class.*'))
+		if(@session.allowed?('edit', 'org.oddb.model.!atc_class.*'))
 			components.store([0,0,1], :edit)
 		end
     if(@model.overflow? \

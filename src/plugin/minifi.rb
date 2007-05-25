@@ -39,17 +39,7 @@ module ODDB
       }
     end
     def postprocess
-      model = @app.sorted_minifis
-      l10n_sessions { |stub|
-        view = View::Rss::MiniFi.new(model, stub, nil)
-        path = File.join(RSS_PATH, stub.language, 'minifi.rss')
-        tmp = File.join(RSS_PATH, stub.language, '.minifi.rss')
-        FileUtils.mkdir_p(File.dirname(path))
-        File.open(tmp, 'w') { |fh|
-          fh.puts view.to_html(CGI.new('html4'))
-        }
-        File.mv(tmp, path)
-      }
+      update_rss_feeds('minifi.rss', @app.sorted_minifis, View::Rss::MiniFi)
     end
     def report
       lines = [

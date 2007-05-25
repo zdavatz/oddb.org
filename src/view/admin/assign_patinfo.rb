@@ -13,7 +13,7 @@ class AssignPatinfoForm < View::Admin::AssignDeprivedSequenceForm
 	def patinfo_pointer(model, session)
 		seq = @model.sequence
 		test = seq.pdf_patinfo || seq.patinfo
-		if(model == seq || !@session.user.allowed?('edit', model))
+		if(model == seq || !@session.allowed?('edit', model))
 			# nothing
 		elsif([model.pdf_patinfo, model.patinfo].include?(test))
 			@lookandfeel.lookup(:assign_patinfo_equal)			

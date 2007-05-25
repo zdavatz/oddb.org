@@ -18,7 +18,7 @@ class CompanyResult < State::Companies::Global
 	DIRECT_EVENT = :result
 	LIMITED = true
 	def init
-    priv = @session.user.allowed?('edit', 'org.oddb.model.!company.*')
+    priv = @session.allowed?('edit', 'org.oddb.model.!company.*')
     @default_view = priv ? View::Companies::RootCompanies \
                          : View::Companies::UnknownCompanies
 		if(!@model.is_a?(Array) || @model.empty?)
@@ -33,7 +33,7 @@ class CompanyList < CompanyResult
 	def init
 		model = @session.app.companies.values
 		if(@session.event != :listed_companies \
-       && @session.user.allowed?('edit', 'org.oddb.model.!company.*'))
+       && @session.allowed?('edit', 'org.oddb.model.!company.*'))
 			@model = model
     else
       @direct_event = :listed_companies

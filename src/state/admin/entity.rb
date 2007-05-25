@@ -53,7 +53,7 @@ class Entity < Global
         end
         @session.valid_values(:yus_privileges).each { |privilege|
           action, key = privilege.split('|')
-          if(@session.user.allowed?('grant', action))
+          if(@session.allowed?('grant', action))
             method = privs[privilege] ? :grant : :revoke
             @session.user.send(method, name, action, key)
           end

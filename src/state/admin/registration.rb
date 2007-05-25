@@ -205,7 +205,7 @@ class CompanyRegistration < State::Admin::Registration
 		end
 	end
 	def allowed?
-		@session.user.allowed?('edit', @model.company)
+		@session.allowed?('edit', @model.company)
 	end
 	def new_patent
 		if(allowed?)

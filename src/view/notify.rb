@@ -54,40 +54,27 @@ module ODDB
 			EVENT = :notify_send 
 			CSS_CLASS = 'composite'
 			COMPONENTS = {
-				[0,0]			=>	'name_sender',
-				[1,0]			=>	:name,
-				[0,1]			=>	'notify_sender',
-				[1,1]			=>	:notify_sender,
-				[0,2]			=>	'notify_recipient',
-				[1,2]			=>	:notify_recipient,
+				#[0,0]			=>	'name_sender',
+				[0,0]			=>	:name,
+				#[0,1]			=>	'notify_sender',
+				[0,1]			=>	:notify_sender,
+				#[0,2]			=>	'notify_recipient',
+				[0,2]			=>	:notify_recipient,
 				[0,3]			=>	'notify_body',
 				[1,3]			=>	:notify_link,
 				[1,4]			=>	:notify_message,
-				[0,6]			=>	:submit,
+				[0,5]			=>	:submit,
 			}
 			CSS_MAP = {
-				[0,0] => 'list bold top',
-				[0,1] => 'list bold top',
-				[0,2] => 'list bold top',
-				[0,3] => 'list bold top',
+				[0,0,2,6] => 'list',
+				[0,3]     => 'list bold',
 			}	
 			LEGACY_INTERFACE = false
-			def notifiy_send(model, session)
-				button = HtmlGrid::Button.new(:notifiy_send, @model, @session, self)
-				button.value = @lookandfeel.lookup(:notify_send)
-				url = @lookandfeel.event_url(:notify_send)
-				button.set_attribute('onclick', "location.href='#{url}'")
-				button
-			end												
-			def name(model)
-				model.name
-			end
-			def notify_sender(model)
-				model.notify_sender
-			end
-			def notify_recipient(model)
-				model.notify_recipient
-			end
+      LABELS = true
+      DEFAULT_CLASS = HtmlGrid::Value
+      LOOKANDFEEL_MAP = {
+        :name => :name_sender,
+      }
 			def notify_link(model)
 				link = HtmlGrid::PopupLink.new(:detail_view, model, @session, self)
 				args = {:pointer => model.item.pointer}

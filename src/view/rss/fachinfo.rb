@@ -3,7 +3,7 @@
 
 require 'rss/maker'
 require 'view/drugs/fachinfo'
-require 'view/drugs/minifi'
+require 'view/latin1'
 
 module ODDB
   module View

@@ -30,7 +30,7 @@ class IncompleteSequenceInnerComposite < HtmlGrid::Composite
 		end
 	end
 	def _active_sequence(seq)
-		if(@session.user.allowed?('edit', seq))
+		if(@session.allowed?('edit', seq))
 			View::Admin::RootSequenceComposite.new(seq, @session, self)
 		else
 			View::Admin::SequenceComposite.new(seq, @session, self)

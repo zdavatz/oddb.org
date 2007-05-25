@@ -45,7 +45,7 @@ class CompanySlEntry < State::Admin::SlEntry
 	end
 	private
 	def allowed?
-		@session.user.allowed?('edit', @model.parent(@session.app))
+		@session.allowed?('edit', @model.parent(@session.app))
 	end
 end
 		end

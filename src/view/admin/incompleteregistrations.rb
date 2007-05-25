@@ -103,7 +103,7 @@ class IncompleteRegList < HtmlGrid::Composite
 	end
 	def release(model, session)
 		if(@model.empty? \
-			&& @session.user.allowed?('create', 'org.oddb.task.background'))
+			&& @session.allowed?('create', 'org.oddb.task.background'))
 			button = HtmlGrid::Button.new(:release, 
 				model, session, self)
 			url = @lookandfeel.event_url(:release)

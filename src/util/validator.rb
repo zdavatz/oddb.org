@@ -49,7 +49,8 @@ module ODDB
 				'BL', 'BS', 'FR', 'GE', 'GL', 'GR', 'JU', 'LU',
 				'NE', 'NW', 'OW', 'SG', 'SH', 'SO', 'SZ', 'TG',
 				'TI', 'UR', 'VD', 'VS', 'ZG', 'ZH'],
-      :channel      =>  ['fachinfo.rss', 'minifi.rss'],
+      :channel      =>  ['fachinfo.rss', 'minifi.rss', 'price_cut.rss', 
+                         'price_rise.rss'],
 			:cl_status		=>	['false', 'true'],
 			:complementary_type =>	[nil, 'complementary', 'anthroposophy',
 				'homeopathy', 'phytotherapy', ],
@@ -393,6 +394,9 @@ module ODDB
 		def message(value)
 			validate_string(value).to_s[0,500]
 		end
+    def notify_recipient(value)
+      RMail::Address.parse(value.to_s).collect { |parsed| parsed.address }
+    end
 		def search_query(value)
 			result = validate_string(value).gsub(/\*/, '')
 			if(result.length > 2)

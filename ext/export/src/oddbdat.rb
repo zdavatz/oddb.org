@@ -457,7 +457,7 @@ module ODDB
 						3		=>	@package.oid,
 						4		=>	price_public_type,
 						5		=>	'4',
-						6		=>	sprintf('%2.2f', ppub / 100.0),
+						6		=>	sprintf('%2.2f', ppub.to_f),
 					}
 				end
 			end
@@ -479,7 +479,7 @@ module ODDB
 						3		=>	@package.oid,
 						4		=>	'PSL1',
 						5		=>	'4',
-						6		=>	sprintf('%2.2f', pexf / 100.0),
+						6		=>	sprintf('%2.2f', pexf.to_f),
 					}
 				end
 			end

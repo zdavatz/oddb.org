@@ -47,9 +47,9 @@ class DDDPrice < HtmlGrid::Composite
 	def calculation(model)
 		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')))
       currency = @session.currency
-			mprice = @lookandfeel.format_price(model.price_public)
+			mprice = model.price_public
       mprice = convert_price(mprice, currency)
-			dprice = @lookandfeel.format_price(model.ddd_price)
+			dprice = model.ddd_price
       dprice = convert_price(dprice, currency)
 			mdose = model.dose
 			ddose = ddd.dose

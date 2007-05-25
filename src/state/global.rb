@@ -180,7 +180,7 @@ module ODDB
 				if(test.is_a?(Persistence::CreateItem)) 
 					test = test.parent(@session.app)
 				end
-				@session.user.allowed?('edit', test)
+				@session.allowed?('edit', test)
 			end
 			def atc_chooser
 				mdl = @session.app.atc_chooser
@@ -336,7 +336,7 @@ module ODDB
 					&& (invoice = @session.invoice(id)))
           state = State::PayPal::Return.new(@session, invoice)
 					if(invoice.types.all? { |type| type == :poweruser } \
-						&& @session.user.allowed?('view', 'org.oddb') \
+						&& @session.allowed?('view', 'org.oddb') \
 						&& (des = @session.desired_state))
             # since the permissions of the current User may have changed, we
             # need to reconsider his viral modules

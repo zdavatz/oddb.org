@@ -81,7 +81,7 @@ class ResultComposite < HtmlGrid::Composite
     [1,1] =>  'right',
 	}
 	def init
-    if(@session.user.allowed?('edit', 'org.oddb.drugs'))
+    if(@session.allowed?('edit', 'org.oddb.drugs'))
 			components.store([0,2], self::class::ROOT_LISTCLASS)
 		end
 		if(@lookandfeel.enabled?(:export_csv))

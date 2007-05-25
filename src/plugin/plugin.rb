@@ -8,6 +8,25 @@ require 'custom/lookandfeelbase'
 
 module ODDB
 	class Plugin
+    class SessionStub
+      attr_reader :app, :flavor, :http_protocol, :server_name, :default_language,
+        :currency
+      attr_accessor :language, :lookandfeel
+      def initialize(app)
+        @app = app
+        @flavor = Session::DEFAULT_FLAVOR
+        @http_protocol = 'http'
+        @server_name = SERVER_NAME
+        @default_language = 'de'
+        @currency_rates = {}
+        @currency = 'CHF'
+      end
+      def get_currency_rate(currency)
+        @currency_rates[currency] ||= @app.get_currency_rate(currency)
+      end
+      def method_missing(*args)
+      end
+    end
 		include HttpFile
 		ARCHIVE_PATH = File.expand_path('../../data', File.dirname(__FILE__))
 		# Recipients for Plugin-Specific Update-Logs can be added in 
@@ -19,11 +38,7 @@ module ODDB
 			@change_flags = {}
 		end
     def l10n_sessions(&block)
-      stub = OpenStruct.new
-      stub.flavor = Session::DEFAULT_FLAVOR
-      stub.http_protocol = 'http'
-      stub.server_name = SERVER_NAME
-      stub.app = @app
+      stub = SessionStub.new(@app)
       LookandfeelBase::DICTIONARIES.each_key { |lang|
         stub.language = lang
         stub.lookandfeel = LookandfeelBase.new(stub)
@@ -53,5 +68,18 @@ module ODDB
 		rescue Exception
 			"Error creating Link for #{pointer.inspect}"
 		end
+    def update_rss_feeds(name, model, view_klass)
+      return if model.empty?
+      l10n_sessions { |stub|
+        view = view_klass.new(model, stub, nil)
+        path = File.join(RSS_PATH, stub.language, name)
+        tmp = File.join(RSS_PATH, stub.language, '.' << name)
+        FileUtils.mkdir_p(File.dirname(path))
+        File.open(tmp, 'w') { |fh|
+          fh.puts view.to_html(CGI.new('html4'))
+        }
+        File.mv(tmp, path)
+      }
+    end
 	end
 end

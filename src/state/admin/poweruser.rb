@@ -11,7 +11,7 @@ module PowerUser
 	include State::Admin::User
   include State::Admin::LoginMethods
 	def limited?
-		super && !@session.user.allowed?('view', 'org.oddb')
+		super && !@session.allowed?('view', 'org.oddb')
 	end
 	def limit_state
     user = @session.user

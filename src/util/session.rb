@@ -46,6 +46,9 @@ module ODDB
 			@interaction_basket = []
       @currency_rates = {}
 		end
+    def allowed?(*args)
+      @user.allowed?(*args)
+    end
 		def event
 			if(@lookandfeel \
 				&& persistent_user_input(:flavor) != @lookandfeel.flavor)
@@ -157,19 +160,6 @@ module ODDB
 		end
 		def navigation
 			@active_state.navigation
-		end
-		def user
-			@user.odba_instance
-		end
-		def user_equiv?(test)
-			return true if(@user.is_a?(ODDB::AdminUser))
-			mdl = if(test.is_a?(Persistence::Pointer))
-				test.resolve(@app)
-			else
-				test
-			end 
-			# odba hack: ensure that we are not comparing stubs by mistake
-			(mdl.odba_instance == @user.model.odba_instance)
 		end
 		def search_oddb(query)
 			@persistent_user_input[:search_query] ||= query

@@ -116,17 +116,7 @@ module ODDB
 			end
 		end
     def postprocess
-      model = @app.sorted_fachinfos
-      l10n_sessions { |stub|
-        view = View::Rss::Fachinfo.new(model, stub, nil)
-        path = File.join(RSS_PATH, stub.language, 'fachinfo.rss')
-        tmp = File.join(RSS_PATH, stub.language, '.fachinfo.rss')
-        FileUtils.mkdir_p(File.dirname(path))
-        File.open(tmp, 'w') { |fh|
-          fh.puts view.to_html(CGI.new('html4'))
-        }
-        File.mv(tmp, path)
-      }
+      update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
     end
 		def report
 			unknown_size = @unknown_iksnrs.size

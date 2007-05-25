@@ -3,6 +3,7 @@
 
 require 'rockit/rockit'
 require 'util/persistence'
+require 'util/money'
 require 'model/dose'
 require 'model/slentry'
 require 'model/ean13'
@@ -136,8 +137,11 @@ Grammar OddbSize
 		include Persistence
 		include SizeParser
 		class << self
-			def price_internal(value)
-				(value.to_f*100).round
+			def price_internal(price, type=nil)
+        unless(price.is_a?(Util::Money))
+          price = Util::Money.new(price, type, 'CH')
+        end
+        price
 			end
 			def registration_data(*names)
 				names.each { |name|
@@ -216,10 +220,10 @@ Grammar OddbSize
 				&& (grp = galenic_form.galenic_group) && grp.match(/tabletten/i) \
 				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose))
         if(mdose > ddose)
-          (price.to_f / comparable_size.to_f)
+          (price / comparable_size.to_f)
         else
-          (ddose.to_f / mdose.want(ddose.unit).to_f) \
-            * (price.to_f / comparable_size.to_f)
+          (price / comparable_size.to_f) \
+            * (ddose.to_f / mdose.want(ddose.unit).to_f)
         end
 			end
 		rescue RuntimeError
@@ -317,7 +321,7 @@ Grammar OddbSize
 				when :generic_group, :commercial_form
 					values[key] = value.resolve(app)
 				when :price_public, :price_exfactory
-					values[key] = Package.price_internal(value) 
+					values[key] = Package.price_internal(value, key)
 				when :pretty_dose
 					values[key] = if(value.is_a? Dose)
 						value
@@ -330,6 +334,7 @@ Grammar OddbSize
 		end
 	end
 	class Package < PackageCommon
+    ODBA_SERIALIZABLE = [ '@prices' ]
 		attr_accessor :medwin_ikscd
 		include FeedbackObserver
 		def initialize(ikscd)
@@ -361,6 +366,48 @@ Grammar OddbSize
 			end
 			@generic_group = generic_group
 		end
+    def price(type, ord_or_time=0)
+      candidates = (prices[type] ||= [])
+      if(ord_or_time.is_a?(Time))
+        candidates.find { |price| price.valid_from < Time }
+      else
+        candidates[ord_or_time.to_i]
+      end
+    end
+    def price_exfactory(ord_or_time=0)
+      price(:exfactory, ord_or_time)
+    end
+    def price_exfactory=(price)
+      return price_exfactory if(price_exfactory == price) 
+      (prices[:exfactory] ||= []).unshift(price)
+      price
+    end
+    def price_public(ord_or_time=0)
+      price(:public, ord_or_time)
+    end
+    def price_public=(price)
+      return price_public if(price_public == price) 
+      (prices[:public] ||= []).unshift(price)
+      price
+    end
+    def prices
+      @prices ||= {}
+    end
+    def update_prices # migration, to be removed
+      needs_save = false
+      %w{public private}.each { |type|
+        name = "@price_#{type}"
+        if(price = instance_variable_get(name))
+          needs_save = true
+          money = Package.price_internal(price.to_f / 100.0, type)
+          money.origin = data_origin(name[1..-1])
+          money.valid_from = @revision
+          self.send("price_#{type}=", money)
+          remove_instance_variable(name)
+        end
+      }
+      needs_save && odba_store
+    end
 	end
 	class IncompletePackage < PackageCommon
 		def acceptable?
@@ -372,8 +419,8 @@ Grammar OddbSize
 				:size							=>	@size, 
 				:ikscat						=>	@ikscat, 		
 				:generic_group		=>	(@generic_group.pointer if @generic_group),
-				:price_exfactory	=>	(@price_exfactory/100.0 if @price_exfactory),
-				:price_public			=>	(@price_public/100.0 if @price_public), 
+				:price_exfactory	=>	@price_exfactory,
+				:price_public			=>	@price_public, 
 			}.delete_if { |key, val| val.nil? }
 			app.update(ptr.creator, hash) 
 		end

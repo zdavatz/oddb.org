@@ -161,6 +161,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	end
 end	
 class RssPreview < HtmlGrid::DivComposite
+  CSS_MAP = ['heading']
   def rss_image(model)
     img = HtmlGrid::Image.new(:minifi_title, model, @session, self)
     img.attributes['src'] = @lookandfeel.resource_global(:rss_feed)
@@ -185,7 +186,6 @@ class MiniFis < RssPreview
     [1,0] => :title,
     [0,1] => MiniFiList,
   }
-  CSS_MAP = ['heading']
   def title(model)
     if((minifi = model.first) && (month = minifi.publication_date))
       link = HtmlGrid::Link.new(:minifi_title, model, @session, self)
@@ -207,7 +207,7 @@ class FachinfoNewsList < HtmlGrid::DivList
   }
   def name(model)
     link = PointerLink.new(:name_base, model, @session, self)
-    puts link.value = model.name_base
+    link.value = model.name_base
     link
   end
 end
@@ -217,7 +217,6 @@ class FachinfoNews < RssPreview
     [1,0] => :title,
     [0,1] => FachinfoNewsList,
   }
-  CSS_MAP = ['heading']
   def title(model)
     if((fachinfo = model.first) && (month = fachinfo.revision))
       link = HtmlGrid::Link.new(:fachinfo_news_title, model, @session, self)
@@ -228,6 +227,33 @@ class FachinfoNews < RssPreview
       link.css_class = 'list bold'
       link
     end
+  end
+end
+class SLPriceNews < RssPreview
+  COMPONENTS = {
+    [0,0] => :rss_image,
+    [1,0] => :title,
+  }
+  def title(model)
+=begin
+    group = @session.log_group(:bsv_sl)
+    month = group.newest_date
+    while((log = group.log(month)) && !log.change_flags.any? { |key, vals|
+      vals.include?(model) } )
+      month = month << 1
+    end
+=end
+    title = "#{model}_feed_title"
+    link = HtmlGrid::Link.new(title, model, @session, self)
+    link.href = @lookandfeel._event_url(:rss, :channel => "#{model}.rss")
+=begin
+    link.value = [ @lookandfeel.lookup(title), '<br>',
+                   @lookandfeel.lookup("month_#{month.month}"),
+                   month.year ].join(' ')
+=end
+    link.value = @lookandfeel.lookup(title)
+    link.css_class = 'list bold'
+    link
   end
 end
 class GoogleAdSenseComposite < View::GoogleAdSenseComposite
@@ -249,6 +275,10 @@ class GoogleAdSenseComposite < View::GoogleAdSenseComposite
     end
     if(@lookandfeel.enabled?(:fachinfo_news))
       content.push FachinfoNews.new(model.fachinfo_news, @session, self)
+    end
+    if(@lookandfeel.enabled?(:sl_price_news))
+      content.push SLPriceNews.new(:price_cut, @session, self)
+      content.push SLPriceNews.new(:price_rise, @session, self)
     end
     content
   end

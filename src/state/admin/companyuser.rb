@@ -68,7 +68,7 @@ module CompanyUser
 	end
 	def resolve_state(pointer, type=:standard)
 		if(pointer.skeleton == [:company] \
-       && @session.user.allowed?('edit', pointer.to_yus_privilege))
+       && @session.allowed?('edit', pointer.to_yus_privilege))
 			State::Companies::UserCompany
 		else
 			super

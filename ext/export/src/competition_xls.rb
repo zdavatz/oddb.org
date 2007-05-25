@@ -65,7 +65,7 @@ module ODDB
 						pac.sl_entry && (pac.sl_generic_type == :generic \
 														 || pac.company.odba_instance == company)
 					}.sort_by { |pac| 
-						[price_public(pac), (pac.company == company) ? 1 : 0 ] } 
+						[price_public(pac).to_f, (pac.company == company) ? 1 : 0 ] } 
 					if(cheapest = generics.first)
 						owns.delete(cheapest.ikskey)
 						export_comparable(package, cheapest)
@@ -110,7 +110,7 @@ module ODDB
 			end
 			def format_price(price)
 				if(price && price > 0.0)
-					sprintf("%4.2f", price.to_f / 100.0)
+					sprintf("%4.2f", price.to_f)
 				end
 			end
 			def format_generic(generic)
@@ -125,7 +125,7 @@ module ODDB
 					format_price(ppub),
 					gen.pharmacode, gen.company, 
 					(format_price(price_public(orig) - ppub) if(orig)),
-					(sprintf("%1.1f%%", price_difference(orig, gen)) if(orig)),
+					orig && (dff = price_difference(orig, gen)) && sprintf("%1.1f%%", dff),
 					remarks, (gen.sl_entry) ? 'Ja' : 'Nein',
 				].collect { |item| item.to_s }
 			end

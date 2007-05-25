@@ -265,8 +265,6 @@ module ODDB
 			'@size',
 			'@descr',
 			'@ikscat',
-			'@price_exfactory',
-			'@price_public',
 			'@sl_entry',
 		]
 		def to_yaml( opts = {} )
@@ -275,6 +273,8 @@ module ODDB
 					to_yaml_properties.each { |m|
 						map.add( m[1..-1], instance_variable_get( m ) )
 					}
+					map.add('price_exfactory', self.price_exfactory.to_f)
+					map.add('price_public', self.price_public.to_f)
 					map.add('ean13', self.barcode.to_s)
 					map.add('out_of_trade', !self.public?)
 					map.add('pharmacode', self.pharmacode)
