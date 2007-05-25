@@ -361,8 +361,8 @@ module ODDB
         sl_iks = row.at(4).to_i.to_s
         if(package = find_package(sl_iks) || find_package(known_pcodes[pcode]))
           save = false
-          update_price(row.at(8), :exfactory, last_month) && save = true
-          update_price(row.at(9), :public, last_month) && save = true
+          update_price(package, row.at(8), :exfactory, last_month) && save = true
+          update_price(package, row.at(9), :public, last_month) && save = true
           package.odba_isolated_store if(save)
         end
       }
@@ -703,7 +703,7 @@ BSV-XLS Swissmedic-Nr: %5s %3s
 			end
 			pack
 		end
-    def update_price(value, type, last_month)
+    def update_price(package, value, type, last_month)
       if(money = money(value, type))
         # is this price a correction of last months'?
         if(money == package.price(type, 1) \
