@@ -272,12 +272,13 @@ module ODDB
         if(!(flgs & [:price_cut, :price_rise]).empty? \
            && (package = ptr.resolve(@app)) && package.is_a?(Package) \
            && (previous = package.price_public(1)))
-          if(previous > package.price_public)
+          current = package.price_public
+          if(previous > current)
             target = cuts
-          else
+          elsif(current > previous)
             target = rises
           end
-          target.push package
+          target.push(package) if(target)
         end rescue Persistence::UninitializedPathError
       }
       update_rss_feeds('price_cut.rss', cuts.sort, View::Rss::PriceCut)
