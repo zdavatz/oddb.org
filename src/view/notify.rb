@@ -19,7 +19,7 @@ module ODDB
 			COMPONENTS = {
 				[0,0]			=>	:name,
 				[0,1]			=>	:notify_sender,
-				[0,2]			=>	:notify_recipient,
+				[0,2]			=>	:notify_recipients,
 				[0,3]			=>	:notify_message,
 				[1,4]			=>	:submit,
 			}
@@ -49,6 +49,11 @@ module ODDB
 				input.label = true
 				input
 			end
+      def notify_recipients(model)
+        input = HtmlGrid::InputText.new(:notify_recipient, model, @session, self)
+        input.value = (model.notify_recipient || []).join(', ')
+        input
+      end
 		end
 		class NotifyPreview < Form
 			EVENT = :notify_send 
@@ -59,7 +64,7 @@ module ODDB
 				#[0,1]			=>	'notify_sender',
 				[0,1]			=>	:notify_sender,
 				#[0,2]			=>	'notify_recipient',
-				[0,2]			=>	:notify_recipient,
+				[0,2]			=>	:notify_recipients,
 				[0,3]			=>	'notify_body',
 				[1,3]			=>	:notify_link,
 				[1,4]			=>	:notify_message,
@@ -86,28 +91,33 @@ module ODDB
 			def notify_message(model)
 				model.notify_message.gsub("\n", '<br>')
 			end
+      def notify_recipients(model)
+        val = HtmlGrid::Value.new(:notify_recipient, model, @session, self)
+        val.value = (model.notify_recipient || []).join(', ')
+        val 
+      end
 		end
-		class NotifyComposite < HtmlGrid::Composite
-		CSS_CLASS = 'composite'
-		COMPONENTS = {
-			[1,0]	  =>	View::SearchForm,
-			[0,1]	  =>	:notify_title,
-			[0,2]	  =>	NotifyForm,
-			[1,1]	  =>	'notify_preview',
-			[1,2]	  =>	:preview,
-		}
-		CSS_MAP = {
-			[0,1] => 'th',
-			[1,1] => 'th',
-		}	
-		def preview(model, session)
-			unless model.empty?
-				NotifyPreview.new(model, session, self)
-			end
-		end
-		def notify_title(model, session)
-			[@lookandfeel.lookup(:notify_title), model.item.name].join
-		end
-		end
+    class NotifyComposite < HtmlGrid::Composite
+      CSS_CLASS = 'composite'
+      COMPONENTS = {
+        [1,0]	  =>	View::SearchForm,
+        [0,1]	  =>	:notify_title,
+        [0,2]	  =>	NotifyForm,
+        [1,1]	  =>	'notify_preview',
+        [1,2]	  =>	:preview,
+      }
+      CSS_MAP = {
+        [0,1] => 'th',
+        [1,1] => 'th',
+      }	
+      def preview(model, session)
+        unless model.empty?
+          NotifyPreview.new(model, session, self)
+        end
+      end
+      def notify_title(model, session)
+        [@lookandfeel.lookup(:notify_title), model.item.name].join
+      end
+    end
 	end
 end
