@@ -17,7 +17,14 @@ class MiniFiItem < View::Drugs::MiniFiChapter
     header(context).to_s << super
   end
 end
+class MiniFiTemplate < HtmlGrid::Template
+  LEGACY_INTERFACE = false
+  COMPONENTS = {
+    [0,0] => MiniFiItem, 
+  }
+end
 class MiniFi < HtmlGrid::Component
+  include View::Latin1
   HTTP_HEADERS = {
     "Content-Type"  => "application/rss+xml",
   }
@@ -34,14 +41,14 @@ class MiniFi < HtmlGrid::Component
         document = minifi.send(@session.language)
         item = feed.items.new_item
 
-        chapter = MiniFiItem.new(minifi, @session, self)
+        comp = MiniFiTemplate.new(minifi, @session, self)
 
-        item.title = chapter.sanitize(document.heading)
+        item.title = sanitize(document.heading)
         item.guid.content = item.link = @lookandfeel._event_url(:resolve, 
                                           :pointer => minifi.pointer)
         item.guid.isPermaLink = true
         item.date = date2time(minifi.publication_date)
-        item.description = chapter.to_html(context)
+        item.description = sanitize(comp.to_html(context))
       }
     }.to_s
   end

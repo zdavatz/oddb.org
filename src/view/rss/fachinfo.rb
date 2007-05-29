@@ -19,6 +19,16 @@ class FachinfoItem < HtmlGrid::DivComposite
     super
   end
 end
+class FachinfoTemplate < HtmlGrid::Template
+  LEGACY_INTERFACE = false
+  COMPONENTS = {
+    [0,0] => FachinfoItem, 
+    [0,1] => :fachinfo_feed_link,
+  }
+  SYMBOL_MAP = {
+    :fachinfo_feed_link => PointerLink,
+  }
+end
 class Fachinfo < HtmlGrid::Component
   include View::Latin1
   def to_html(context)
@@ -36,7 +46,6 @@ class Fachinfo < HtmlGrid::Component
         next unless(document.is_a?(FachinfoDocument))
 
         item = feed.items.new_item
-        chapter = FachinfoItem.new(document, @session, self)
 
         name = item.title = sanitize(fachinfo.localized_name(language))
         item.guid.content = item.link = @lookandfeel._event_url(:resolve, 
@@ -44,14 +53,14 @@ class Fachinfo < HtmlGrid::Component
         item.guid.isPermaLink = true
         item.date = fachinfo.revision
 
+        comp = FachinfoTemplate.new(document, @session, self)
+
         ptrn = /#{Regexp.escape(name)}(\256|\(TM\))?/
         link = HtmlGrid::Link.new(:name, fachinfo, @session, self)
         link.href = @lookandfeel._event_url(:search, 
                                             :search_type => 'st_sequence', 
                                             :search_query => name)
-        html = chapter.to_html(context)
-        read = PointerLink.new(:fachinfo_feed_link, fachinfo, @session, self)
-        html << read.to_html(context)
+        html = comp.to_html(context)
         html.gsub!(%r{<pre\b.*?</pre>}im) { |match|
           match.gsub(%r{\n}, '<BR>')
         }
