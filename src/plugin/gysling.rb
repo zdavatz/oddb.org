@@ -2,7 +2,7 @@
 # GyslingPlugin -- oddb -- 13.09.2004 -- mhuggler@ywesee.com
 
 require 'plugin/interaction'
-require 'csvparser'
+require 'csv'
 require 'model/text'
 
 module ODDB
@@ -29,6 +29,7 @@ module ODDB
 						key = 'inducer'
 					elsif(arr.first.match(/Wirkstoffe/))
 						arr.each_with_index { |cyp, idx|
+              cyp = cyp.to_s
 							unless(idx==0)
 								if(GYSLING2HAYES.has_key?(cyp))
 									cyp_map.store(idx, GYSLING2HAYES[cyp])
@@ -39,8 +40,9 @@ module ODDB
 						}
 						create_cytochromes(cyp_map)
 					else
-						conn = create_connection(key, arr.first)
+						conn = create_connection(key, arr.first.to_s)
 						arr.each_with_index { |col, idx|
+              col = col.to_s
 							if(col.match(/1/))
 								cyp_map[idx].each { |cyp_id|
 									@cytochromes[cyp_id].add_connection(conn)
@@ -80,9 +82,10 @@ module ODDB
 			end
 			def parse_csv
 				file = [ FILE_PATH, FILE ].join("/")
-				csv = CSVParser.new_with_file(file)
-				line_arrays = CSVParser.parse(csv.string)
-				writer = GyslingWriter.new(line_arrays)
+				#csv = CSVParser.new_with_file(file)
+				#line_arrays = CSVParser.parse(csv.string)
+        lines = CSV.read(file)
+				writer = GyslingWriter.new(lines)
 				writer.extract_data	
 			end
 		end

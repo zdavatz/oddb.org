@@ -7,7 +7,6 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'plugin/interaction'
 require 'util/html_parser'
-require 'util/oddbapp.rb'
 require 'mock'
 
 module ODDB

@@ -31,7 +31,7 @@ class Result < State::Interactions::Global
 	VIEW = View::Interactions::Result
 	REVERSE_MAP = View::Interactions::ResultList::REVERSE_MAP
 	ITEM_LIMIT = 150
-	LIMITED = true
+	LIMITED = false
 	attr_reader :object_count, :pages
 	def init
 		#@facades = {}
@@ -48,17 +48,6 @@ class Result < State::Interactions::Global
 			}
 		end
 	end
-=begin
-	def check_facades(obj_class, obj)
-		if(@facades.keys.include?(obj_class))
-			@facades[obj_class].add_object(obj)
-		else
-			facade = Facade.new(obj_class)
-			facade.add_object(obj)
-			@facades.store(facade.obj_class, facade)
-		end
-	end
-=end
 end
 		end
 	end

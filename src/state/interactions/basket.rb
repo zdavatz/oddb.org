@@ -11,7 +11,7 @@ module ODDB
 class Basket < State::Interactions::Global
 	VIEW = View::Interactions::Basket
 	DIRECT_EVENT = :interaction_basket
-	LIMITED = true
+	LIMITED = false
 	class Check
 		attr_reader :substance, :cyp450s, :inducers, :inhibitors
 		def initialize(substance)#, cyp450s)
