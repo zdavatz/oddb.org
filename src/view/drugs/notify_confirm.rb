@@ -3,6 +3,7 @@
 
 require 'view/publictemplate'
 require 'view/searchbar'
+require 'view/notify_confirm'
 require 'htmlgrid/form'
 require 'htmlgrid/inputradio'
 require 'htmlgrid/textarea'
