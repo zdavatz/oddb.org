@@ -24,9 +24,11 @@ require 'util/log'
 require 'util/persistence'
 require 'util/exporter'
 require 'ext/meddata/src/ean_factory'
+require 'util/schedule'
 
 module ODDB
 	class Updater
+    include Util::Schedule
 		# Recipients for all Update-Logs go here...
 		RECIPIENTS = []
 		LOG_RECIPIENTS = {
@@ -158,6 +160,9 @@ module ODDB
 				update_lppv
 				update_medwin_companies
 			end
+      run_on_monthday(1) {
+        update_interactions 
+      }
 		end
 		def update_analysis(path, lang)
 			klass = AnalysisPlugin

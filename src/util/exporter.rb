@@ -12,9 +12,11 @@ require 'plugin/ouwerkerk'
 require 'plugin/xls_export'
 require 'util/log'
 require 'util/logfile'
+require 'util/schedule'
 
 module ODDB
 	class Exporter
+    include Util::Schedule
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		EXPORT_DIR = File.expand_path('../../data/downloads',
 																	File.dirname(__FILE__))
@@ -213,16 +215,6 @@ module ODDB
 				] + e.backtrace).join("\n")
 			end
 			log.notify("#{key.capitalize}-Statistics")
-		end
-		def run_on_monthday(day, &block)
-			if(@@today.day == day)
-				block.call
-			end
-		end
-		def run_on_weekday(day, &block)
-			if(@@today.wday == day)
-				block.call
-			end
 		end
 	end
 end
