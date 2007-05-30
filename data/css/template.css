@@ -318,7 +318,7 @@ table.interaction-basket td {
 	padding-top : 4px;
 	padding-left : 4px;
 	padding-bottom : 4px;
-	vertical-align : top;
+	vertical-align : baseline;
 }
 table.wait {
 	cell-spacing: 20px;
@@ -516,14 +516,14 @@ div.big {
 td.interaction-connection { 
 	margin-top: 0px;
 	list-style-type : circle;
-	width : 30%;
+	width : 25%;
 }
 td.bg {
 	background : $rslt_bg;
 }
 td.interaction-substance {
 	font-size: 14px;
-	width : 10%;
+	width : 25%;
 }
 td.sum {
 	border-color : black;

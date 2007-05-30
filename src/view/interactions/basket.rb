@@ -72,7 +72,8 @@ class BasketSubstrates < HtmlGrid::List
 	DEFAULT_CLASS = HtmlGrid::Value
 	SORT_DEFAULT = :substance
 	SUBHEADER = View::Interactions::BasketHeader
-	def cyp450s(model, session)
+  LEGACY_INTERFACE = false
+	def cyp450s(model, session=@session)
 		unless(model.cyp450s.empty?)
 			str = model.cyp450s.sort.join(', ')
 			if(idx = str.rindex(','))
@@ -81,10 +82,10 @@ class BasketSubstrates < HtmlGrid::List
 			str
 		end
 	end
-	def inhibitors(model, session)
+	def inhibitors(model, session=@sessino)
 		interaction_list(model.inhibitors)
 	end
-	def inducers(model, session)
+	def inducers(model, session=@session)
 		interaction_list(model.inducers)
 	end
 	def interaction_list(model)
@@ -92,6 +93,14 @@ class BasketSubstrates < HtmlGrid::List
 			View::Interactions::List.new(model, @session, self)
 		end
 	end
+  def substance(model)
+    sub = model.substance
+    if(sub.has_effective_form? && !sub.is_effective_form?)
+      sprintf("%s (%s)", sub.effective_form, sub)
+    else
+      sub
+    end
+  end
 end
 class BasketForm < View::Form
 	COLSPAN_MAP = {

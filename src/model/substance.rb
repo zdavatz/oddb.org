@@ -106,7 +106,10 @@ module ODDB
 			if(has_effective_form? && !is_effective_form?)
 				interactions += @effective_form._interactions_with(other)
 			end
-			interactions
+      if(other.has_effective_form? && !other.is_effective_form?)
+				interactions += interactions_with(other.effective_form)
+      end
+			interactions.uniq
 		end
 		def _interactions_with(other)
 			if(@substrate_connections)

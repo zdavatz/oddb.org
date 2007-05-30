@@ -17,6 +17,10 @@ class Basket < State::Interactions::Global
 		def initialize(substance)#, cyp450s)
 			@substance = substance
 			@cyp450s = substance.substrate_connections.keys
+      if(substance.has_effective_form?)
+        @cyp450s.concat substance.effective_form.substrate_connections.keys
+        @cyp450s = @cyp450s.uniq
+      end
 			@inducers = {}
 			@inhibitors = {}
 		end
@@ -51,24 +55,6 @@ class Basket < State::Interactions::Global
 			}
 			check
 		}
-=begin
-		@session.interaction_basket.each { |substance|
-			connections = substance.interaction_connections(@session.interaction_basket)
-			cyp450s = []
-			interactions = []
-			connections.each { |cyp450_id, connection|
-				cyp450s.push(cyp450_id)
-				interactions.concat(connection)
-			}
-			check = Check.new(substance)#, cyp450s)
-			interactions.each { |interaction|
-				unless(substance.same_as?(interaction.substance_name))
-					check.add_interaction(interaction)
-				end
-			}
-			@model.push(check)
-		}
-=end
 	end
 end
 class EmptyBasket < State::Interactions::Basket
