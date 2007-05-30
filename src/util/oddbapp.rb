@@ -1040,7 +1040,9 @@ class OddbPrevalence
 	def search_single_substance(key)
 		result = ODDB::SearchResult.new
 		result.exact = true
-		ODBA.cache.retrieve_from_index("substance_index", key, result).first
+		ODBA.cache.retrieve_from_index("substance_index", key, result).find { |sub|
+      sub.same_as? key
+    }
 	end
 	def search_substances(query)
 		if(subs = substance(query))
@@ -1084,12 +1086,9 @@ class OddbPrevalence
 		elsif(substance = search_single_substance(key))
 			substance
 		else
-			@substances.values.each { |subs|
-				if(subs.same_as?(key))
-					return subs
-				end
+			@substances.values.find { |subs|
+				subs.same_as?(key)
 			}
-			nil
 		end
 	end
 	def substance_by_connection_key(connection_key)

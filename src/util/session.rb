@@ -138,7 +138,7 @@ module ODDB
 			#request_log(logtype)
 		end
 		def add_to_interaction_basket(object)
-			@interaction_basket.push(object)
+			@interaction_basket = @interaction_basket.push(object).uniq
 		end
 		def clear_interaction_basket
 			@interaction_basket.clear

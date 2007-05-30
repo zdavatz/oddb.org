@@ -32,9 +32,7 @@ class ResultList < HtmlGrid::List
 		[1,0]	=>	'list',
 		[2,0]	=>	'list big',
 	}
-	COMPONENT_CSS_MAP = {
-		[1,0]	=>	'small',
-	}
+	COMPONENT_CSS_MAP = { }
 	CSS_CLASS = 'composite'
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'th'
@@ -66,8 +64,10 @@ class ResultList < HtmlGrid::List
 		}
 		unless(active_sequences.empty?)
 			link = HtmlGrid::Link.new(:substance_result, model, session, self)
-			link.href = @lookandfeel._event_url(:search, {'search_query' => model.name, 'zone'	=> :drugs})
+			link.href = @lookandfeel._event_url(:search, 'search_query' => model.name, 
+                                                   'zone'	=> :drugs)
 			link.value = @lookandfeel.lookup(:search_oddb)
+      link.css_class = 'small'
 			link
 		end
 	end

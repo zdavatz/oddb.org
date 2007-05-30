@@ -195,13 +195,12 @@ module ODDB
 			keys.delete_if { |key|
 				key.empty?
 			}
-			keys.uniq
+			ODDB.search_terms(keys).uniq
 		end
 		def _search_keys
 			keys = self.descriptions.values + self.connection_keys \
 				+ self.synonyms
-			keys.push(name)
-			ODDB.search_terms(keys)
+			keys.push(name).collect { |key| ODDB.search_term(key) }
 		end
 		def similar_name?(astring)
 			name.length/3.0 >= name.downcase.ld(astring.downcase)
