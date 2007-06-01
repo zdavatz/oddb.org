@@ -155,7 +155,7 @@ module ODDB
       def money(amount, type)
         amount = amount.to_f
         if(amount > 0)
-          Util::Money.new(amount, type, 'CH')
+          money = Util::Money.new(amount, type, 'CH')
           money.valid_from = @time
           money.origin = @origin
           money
