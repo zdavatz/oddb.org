@@ -104,7 +104,7 @@ module ODDB
 		def interactions_with(other)
 			interactions = _interactions_with(other) 
 			if(has_effective_form? && !is_effective_form?)
-				interactions += @effective_form._interactions_with(other)
+				interactions += @effective_form.interactions_with(other)
 			end
       if(other.has_effective_form? && !other.is_effective_form?)
 				interactions += interactions_with(other.effective_form)

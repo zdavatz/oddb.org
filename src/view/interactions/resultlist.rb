@@ -48,12 +48,13 @@ class ResultList < HtmlGrid::List
 		end
 	end
 	def name(model, session)
+		name = model.send(@session.language)
 		if(session.interaction_basket.include?(model))
-			model.name
+			name
 		else
 			link = HtmlGrid::Link.new(:add_to_interaction_basket, model, session, self)
 			link.href = @lookandfeel._event_url(:add_to_interaction_basket, {'pointer'=>CGI.escape(model.pointer.to_s)})
-			link.value = model.name
+			link.value = name
 			link.set_attribute('class', 'list big')
 			link
 		end

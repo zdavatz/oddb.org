@@ -22,6 +22,7 @@ class BasketHeader < HtmlGrid::Composite
 end
 class List < HtmlGrid::Component
 	def to_html(context)
+		lang = @session.language
 		context.ul {
 			@model.collect { |substance, items| 
 				text = HtmlGrid::RichText.new(@model, @session, self)
@@ -31,7 +32,7 @@ class List < HtmlGrid::Component
 				cyp_ids = items.collect { |item| 
 					item.parent(@session).cyp_id
 				}
-				pub_med_search_link.value = substance.name \
+				pub_med_search_link.value = substance.send(lang) \
 					+ " (#{cyp_ids.sort.join(',')})"
 				pub_med_search_link.target = "_blank"
 				text << pub_med_search_link
@@ -95,10 +96,12 @@ class BasketSubstrates < HtmlGrid::List
 	end
   def substance(model)
     sub = model.substance
+		lang = @session.language
+		name = sub.send(lang)
     if(sub.has_effective_form? && !sub.is_effective_form?)
-      sprintf("%s (%s)", sub.effective_form, sub)
+      sprintf("%s (%s)", sub.effective_form.send(lang), name)
     else
-      sub
+      name
     end
   end
 end

@@ -17,10 +17,11 @@ class Basket < State::Interactions::Global
 		def initialize(substance)#, cyp450s)
 			@substance = substance
 			@cyp450s = substance.substrate_connections.keys
-      if(substance.has_effective_form?)
-        @cyp450s.concat substance.effective_form.substrate_connections.keys
-        @cyp450s = @cyp450s.uniq
+      while(substance.has_effective_form? && !substance.is_effective_form?)
+				substance = substance.effective_form
+        @cyp450s.concat substance.substrate_connections.keys
       end
+			@cyp450s = @cyp450s.uniq
 			@inducers = {}
 			@inhibitors = {}
 		end
