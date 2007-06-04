@@ -46,6 +46,12 @@ module ODDB
 		def atc_classes
 			@sequences.collect { |seq| seq.atc_class }.uniq
 		end
+    def checkout
+      @sequences.odba_delete
+      self.narcotic = nil
+      @substrate_connections.values.each { |conn| conn.odba_delete }
+      @substrate_connections.odba_delete
+    end
 		def connection_keys
 			@connection_keys || self.update_connection_keys
 		end
@@ -129,6 +135,8 @@ module ODDB
         other.narcotic = nil
         self.narcotic = narc
       end
+      @swissmedic_code ||= other.swissmedic_code
+      @casrn ||= other.casrn
 			other.sequences.dup.uniq.each { |sequence|
 				if(active_agent = sequence.active_agent(other))
 					if(active_agent.sequence.nil?)
