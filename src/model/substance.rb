@@ -124,6 +124,7 @@ module ODDB
 			@effective_form == self
 		end
 		def merge(other)
+      self.narcotic = other.narcotic unless @narcotic
 			other.sequences.dup.uniq.each { |sequence|
 				if(active_agent = sequence.active_agent(other))
 					if(active_agent.sequence.nil?)
