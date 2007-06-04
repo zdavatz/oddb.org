@@ -68,7 +68,8 @@ module ODDB
 		def export_generics_xls(date = @@today)
 			subj = 'Generikaliste'
 			wrap_update(XlsExportPlugin, subj) {
-				plug = Exporter.new(@app).export_generics_xls
+				plug = Exporter.new(@app)
+        plug.export_generics_xls
 				log = Log.new(date)
 				log.update_values(log_info(plug))
 				log.notify(subj)
@@ -148,13 +149,7 @@ module ODDB
 			update_fachinfo
 			update_vaccines
 			if(update_bsv)
-				update_limitation_text
-				update_trade_status
-				update_medwin_packages
-				update_lppv
-				export_ouwerkerk
-				export_generics_xls
-				export_competition_xlss
+        update_bsv_followers
 			end
 			if(@smj_updated)
 				update_lppv
@@ -187,6 +182,15 @@ module ODDB
 				end
 			}
 		end
+    def update_bsv_followers
+      update_limitation_text
+      update_trade_status
+      update_medwin_packages
+      update_lppv
+      export_ouwerkerk
+      export_generics_xls
+      export_competition_xlss
+    end
 		def update_comarketing
 			update_immediate(CoMarketingPlugin, 'Co-Marketing')
 		end

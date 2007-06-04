@@ -46,13 +46,13 @@ module ODDB
 				if old == nil
 					@old = 0
 				else
-					@old = old.to_i
+					@old = old
 				end
 				@current = Package.price_internal(current, :public)
 				@package = package
 			end
 			def up?
-				@old < @current
+				@current > @old
 			end	
 			def down?
 				@current < @old
