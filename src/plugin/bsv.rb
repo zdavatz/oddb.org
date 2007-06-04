@@ -347,6 +347,7 @@ module ODDB
       
       # write rss-feeds
       postprocess
+      true
 		rescue RuntimeError
 			## return nil if any of the downloads fail.
 		end

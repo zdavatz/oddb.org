@@ -3,7 +3,7 @@
 
 require 'util/http'
 require 'ostruct'
-require 'util/session'
+#require 'util/session'
 require 'custom/lookandfeelbase'
 
 module ODDB

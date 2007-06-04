@@ -53,7 +53,7 @@ module ODDB
 			def has_connection?(other)
 				@inhibitors.each { |inhibitor|
 					if(inhibitor.name == other.description('en'))
-						@interaction.store(:inhibitor, inhibitor)
+						@interactions.store(:inhibitor, inhibitor)
 					end
 				}
 				@inducers.each { |inducers|
@@ -164,6 +164,7 @@ module ODDB
 							flock_conn_arr.each { |flock_conn|
 								# only if it's covered by hayes we want 
 								# flockhart's links and category
+                # FIXME: why?
 								if(similar_name?(hayes_conn.name, flock_conn_name(flock_conn)))
 									found_conn = true
 									hayes_conn.category = flock_conn.category
