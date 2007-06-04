@@ -150,14 +150,17 @@ module ODDB
 					other.remove_sequence(sequence)
 				end
 			}
-			other.substrate_connections.values.each { |substr_conn|
+      ocons = other.substrate_connections
+			ocons.dup.each { |key, substr_conn|
 				unless(cyp450substrate(substr_conn.cyp_id))
 					substr_conn.pointer = self.pointer + substr_conn.pointer.last_step
 					substrate_connections.store(substr_conn.cyp_id, substr_conn)
 					substr_conn.odba_isolated_store
+          ocons.delete(key)
 				end
 			}
 			substrate_connections.odba_isolated_store
+      ocons.odba_isolated_store
 			other.descriptions.dup.each { |key, value|
 				unless(self.descriptions.has_key?(key))
 					self.descriptions.update_values( { key => value } )
