@@ -5,6 +5,7 @@ require 'view/privatetemplate'
 require 'view/descriptionform'
 require 'view/pointersteps'
 require 'view/form'
+require 'view/drugs/narcotic'
 require 'util/pointerarray'
 
 module ODDB
@@ -134,9 +135,15 @@ class AdminComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	View::Substances::MergeSubstancesForm,
 		[0,1]	=>	View::Substances::ActiveFormForm,
+    [0,2] =>  :narcotic,
 	}
 	CSS_MAP = {
 	}
+  def narcotic(model, session)
+    if(narc = model.narcotic)
+      View::Drugs::NarcoticInnerComposite.new(narc, @session, self)
+    end
+  end
 end
 class OuterComposite < HtmlGrid::Composite
 	COMPONENTS = {
