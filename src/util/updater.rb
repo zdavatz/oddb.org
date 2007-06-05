@@ -68,8 +68,8 @@ module ODDB
 		def export_generics_xls(date = @@today)
 			subj = 'Generikaliste'
 			wrap_update(XlsExportPlugin, subj) {
-				plug = Exporter.new(@app)
-        plug.export_generics_xls
+        plug = XlsExportPlugin.new(@app)
+        plug.export_generics
 				log = Log.new(date)
 				log.update_values(log_info(plug))
 				log.notify(subj)
