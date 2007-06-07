@@ -16,12 +16,11 @@ class Basket < State::Interactions::Global
 		attr_reader :substance, :cyp450s, :inducers, :inhibitors
 		def initialize(substance)#, cyp450s)
 			@substance = substance
-			@cyp450s = substance.substrate_connections.keys
+			@cyp450s = substance.substrate_connections
       while(substance.has_effective_form? && !substance.is_effective_form?)
 				substance = substance.effective_form
-        @cyp450s.concat substance.substrate_connections.keys
+        @cyp450s = substance.substrate_connections.merge @cyp450s
       end
-			@cyp450s = @cyp450s.uniq
 			@inducers = {}
 			@inhibitors = {}
 		end

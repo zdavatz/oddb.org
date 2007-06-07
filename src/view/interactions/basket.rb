@@ -79,7 +79,7 @@ class BasketSubstrates < HtmlGrid::List
 	SUBHEADER = View::Interactions::BasketHeader
   LEGACY_INTERFACE = false
 	def cyp450s(model, session=@session)
-    cyp450s = model.substance.substrate_connections
+    cyp450s = model.cyp450s
 		unless(cyp450s.empty?)
       text = HtmlGrid::RichText.new(model, @session, self)
       str = cyp450s.keys.sort.join(', ')
