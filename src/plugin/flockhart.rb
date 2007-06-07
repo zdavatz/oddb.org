@@ -240,21 +240,17 @@ module ODDB
 				@cytochrome
 			end
 			def new_linkhandler(handler)
-				if(handler && handler.attributes["href"])
-					if((href=handler.attributes["href"]).match(/Abstract/))
+				if(handler)
+          if((href = handler.attributes["href"]) \
+             && href.match(/Abstract|abstractplus/))
 						@current_link = href
+          elsif(handler.attributes["name"])
+            @abstractlink = nil
 					end
 				end
 			end
 			def new_font(font)
-				if(font!=nil && font[2]==1)
-					@bold_font = "start"
-				elsif(font!=nil && font[1]==1)
-					@italic_font = "start"
-				else
-					@bold_font = "stop"
-					@italic_font = "stop"
-				end
+        _, @italic, @bold = font
 			end
 			def send_image(src)
 				ODDB::Interaction::FlockhartPlugin::IMAGES.each { |img|
@@ -264,8 +260,29 @@ module ODDB
 				}
 			end
 			def send_flowing_data(data) 
-				unless(@current_table.nil?)
-					if(@bold_font=="start" && data.size>3)
+        data.gsub!("\240", ' ')
+				if(@current_table)
+          case data
+          when /^\s*Article\s*$/
+            return @infotoken = true
+          when /^\s*Authors?\s*$/
+            return @infotoken = false
+          when /^:?\s*Info\s*$/i
+            return @ignore_next = true
+          when /^\s*PubMed\s*$/i, /Updated: \d/
+            return 
+          end
+					if(@infotoken || @italic)
+            unless(data.strip.empty?)
+              if(@abstractlink)
+                @abstractlink.info << data
+              else
+                @abstractlink = ODDB::Interaction::AbstractLink.new
+                @abstractlink.info = data
+                @connection.add_link(@abstractlink)
+              end
+            end
+					elsif(@bold && !@abstractlink && !@ignore_next && data.size > 3)
 						name = data.delete(":").downcase
 						case @current_table
 						when /substrates/
@@ -278,18 +295,22 @@ module ODDB
 						@connection = new_class.new(name, 'en')
 						@cytochrome.add_connection(@connection)
 					end
-					if(@italic_font=="start" && data!="PubMed")
-						@abstractlink = ODDB::Interaction::AbstractLink.new
-						@abstractlink.info = data
-						@connection.add_link(@abstractlink)
-					end
-					if(@current_link && @abstractlink)
+					if(@current_link)
+            unless(@abstractlink)
+              @abstractlink = ODDB::Interaction::AbstractLink.new
+						  @connection.add_link(@abstractlink)
+            end
 						@abstractlink.href = @current_link
 						@abstractlink.text = data
+            @abstractlink = nil
 						@current_link = nil
 					end
+          @ignore_next = false
 				end
 			end
+      def send_line_break(*args)
+        @infotoken = false
+      end
 			def start_tr(attrs)
 			end
 		end
@@ -360,23 +381,14 @@ module ODDB
 					parser = Parser.new(formatter)
 					html = File.read(file_path)
 					parser.feed(html)
-					if(FORMAT_CYT_ID.keys.include?(cyt_name))
-						FORMAT_CYT_ID[cyt_name].each { |name|
+					if(names = FORMAT_CYT_ID[cyt_name])
+						names.each { |name|
 							cytochromes.store(name, writer.extract_data)
 						}
 					else
 						cytochromes.store(cyt_name, writer.extract_data)
 					end
 				}
-=begin
-				cytochromes.each { |cyt|
-					puts "cyt_name: #{cyt.cyt_name}"
-					puts "substrate: #{cyt.substrates.size}"
-					puts "inhibitor: #{cyt.inhibitors.size}"
-					puts "inducers: #{cyt.inducers.size}"
-				}
-				puts "cytochromes: #{cytochromes.size}"
-=end
 				cytochromes
 			end
 			def get_table_links

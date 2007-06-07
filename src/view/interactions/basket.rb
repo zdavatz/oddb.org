@@ -21,6 +21,10 @@ class BasketHeader < HtmlGrid::Composite
 	}
 end
 class List < HtmlGrid::Component
+  def initialize(type, model, session, container)
+    @interaction_type = type
+    super(model, session, container)
+  end
 	def to_html(context)
 		lang = @session.language
 		context.ul {
@@ -75,23 +79,37 @@ class BasketSubstrates < HtmlGrid::List
 	SUBHEADER = View::Interactions::BasketHeader
   LEGACY_INTERFACE = false
 	def cyp450s(model, session=@session)
-		unless(model.cyp450s.empty?)
-			str = model.cyp450s.sort.join(', ')
+    cyp450s = model.substance.substrate_connections
+		unless(cyp450s.empty?)
+      text = HtmlGrid::RichText.new(model, @session, self)
+      str = cyp450s.keys.sort.join(', ')
 			if(idx = str.rindex(','))
 				str[idx,2] = @lookandfeel.lookup(:nbsp_and_nbsp)
 			end
-			str
+			text << "<b>" << str << "</b>"
+      cyp450s.sort.each { |key, item|
+        item.links.each { |link|
+          if(href = link.href)
+            alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
+            alink.href = href
+            alink.value = link.text
+            text << [ "<br>", link.info, "<br>" ].join
+            text << alink
+          end
+        }
+      }
+      text
 		end
 	end
 	def inhibitors(model, session=@sessino)
-		interaction_list(model.inhibitors)
+		interaction_list(model.inhibitors, :inhibitors)
 	end
 	def inducers(model, session=@session)
-		interaction_list(model.inducers)
+		interaction_list(model.inducers, :inducers)
 	end
-	def interaction_list(model)
+	def interaction_list(model, type)
 		if(model && !model.empty?)
-			View::Interactions::List.new(model, @session, self)
+			View::Interactions::List.new(type, model, @session, self)
 		end
 	end
   def substance(model)
