@@ -40,14 +40,16 @@ class List < HtmlGrid::Component
 					+ " (#{cyp_ids.sort.join(',')})"
 				pub_med_search_link.target = "_blank"
 				text << pub_med_search_link
+        links = []
 				items.each { |item|
-					item.links.each { |link|
-						alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
-						alink.href = link.href
-						alink.value = link.text
-						text << [ "<br>", link.info, "<br>" ].join
-						text << alink
-					}
+          links.concat item.links
+        }
+        links.uniq.each { |link|
+          alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
+          alink.href = link.href
+          alink.value = link.text
+          text << [ "<br>", link.info, "<br>" ].join
+          text << alink
 				}
 				context.li { text.to_html(context) } 
 			}.join
@@ -87,16 +89,18 @@ class BasketSubstrates < HtmlGrid::List
 				str[idx,2] = @lookandfeel.lookup(:nbsp_and_nbsp)
 			end
 			text << "<b>" << str << "</b>"
+      links = []
       cyp450s.sort.each { |key, item|
-        item.links.each { |link|
-          if(href = link.href)
-            alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
-            alink.href = href
-            alink.value = link.text
-            text << [ "<br>", link.info, "<br>" ].join
-            text << alink
-          end
-        }
+        links.concat item.links
+      }
+      links.uniq.each { |link|
+        if(href = link.href)
+          alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
+          alink.href = href
+          alink.value = link.text
+          text << [ "<br>", link.info, "<br>" ].join
+          text << alink
+        end
       }
       text
 		end
