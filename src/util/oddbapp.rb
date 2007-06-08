@@ -53,7 +53,7 @@ class OddbPrevalence
 	ODBA_EXCLUDE_VARS = [
 		"@atc_chooser", "@bean_counter",
 	]
-	ODBA_SERIALIZABLE = [ '@currency_rates' ]
+	ODBA_SERIALIZABLE = [ '@currency_rates', '@rss_updates' ]
 	ODBA_PREFETCH = true
 	attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
 		:companies, :doctors, :fachinfos, :galenic_groups, :migel_groups,
@@ -61,7 +61,7 @@ class OddbPrevalence
     :minifis, :notification_logger, :orphaned_fachinfos,
     :orphaned_patinfos, :patinfos, :patinfos_deprived_sequences,
     :registrations, :slates, :users, :narcotics, :accepted_orphans,
-    :commercial_forms
+    :commercial_forms, :rss_updates
 	def initialize
 		init
 		@last_medication_update ||= Time.now()
@@ -99,6 +99,7 @@ class OddbPrevalence
 		@orphaned_patinfos ||= {}
 		@orphaned_fachinfos ||= {}
 		@slates ||= {}
+    @rss_updates ||= {}
 		#recount()
 		rebuild_atc_chooser()
 	end

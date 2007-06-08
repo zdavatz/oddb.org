@@ -80,6 +80,8 @@ module ODDB
         }
         File.mv(tmp, path)
       }
+      @app.rss_updates[name] = [@month, model.size]
+      @app.odba_isolated_store
     end
 	end
 end

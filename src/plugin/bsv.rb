@@ -264,7 +264,7 @@ module ODDB
 			info.store(:parts, parts)
 			info
 		end
-    def postprocess(flags=@change_flags)
+    def postprocess(flags=@change_flags, month=@month||@@today)
       cuts = []
       rises = []
       flags.each { |ptr, flgs|
@@ -348,7 +348,7 @@ module ODDB
       # write rss-feeds
       postprocess
       true
-		rescue RuntimeError
+		rescue RuntimeError => e
 			## return nil if any of the downloads fail.
 		end
     def update_prices(month)

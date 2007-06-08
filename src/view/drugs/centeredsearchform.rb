@@ -163,11 +163,12 @@ end
 class RssPreview < HtmlGrid::DivComposite
   CSS_MAP = ['heading']
   def rss_image(model)
-    img = HtmlGrid::Image.new(:minifi_title, model, @session, self)
-    img.attributes['src'] = @lookandfeel.resource_global(:rss_feed)
-    link = title(model)
-    link.value = img
-    link
+    if(link = title(model))
+      img = HtmlGrid::Image.new(:minifi_title, model, @session, self)
+      img.attributes['src'] = @lookandfeel.resource_global(:rss_feed)
+      link.value = img
+      link
+    end
   end
 end
 class MiniFiList < HtmlGrid::DivList
@@ -235,23 +236,15 @@ class SLPriceNews < RssPreview
     [1,0] => :title,
   }
   def title(model)
-=begin
-    group = @session.log_group(:bsv_sl)
-    month = group.newest_date
-    while((log = group.log(month)) && !log.change_flags.any? { |key, vals|
-      vals.include?(model) } )
-      month = month << 1
-    end
-=end
     title = "#{model}_feed_title"
+    channel = "#{model}.rss"
+    month, number = @session.rss_updates[channel]
+    month ||= @@today
     link = HtmlGrid::Link.new(title, model, @session, self)
-    link.href = @lookandfeel._event_url(:rss, :channel => "#{model}.rss")
-=begin
-    link.value = [ @lookandfeel.lookup(title), '<br>',
+    link.href = @lookandfeel._event_url(:rss, :channel => channel)
+    link.value = [ number.to_i, @lookandfeel.lookup(title), '<br>',
                    @lookandfeel.lookup("month_#{month.month}"),
-                   month.year ].join(' ')
-=end
-    link.value = @lookandfeel.lookup(title)
+                   month.year ].compact.join(' ')
     link.css_class = 'list bold'
     link
   end
