@@ -15,6 +15,7 @@ module ODDB
 			:addresses, :email, :invoice_email, :ydim_id
 		attr_reader :ean13
 		alias :fullname :name
+    alias :contact_email :email
 		def initialize(ean13)
 			@addresses = [Address2.new]
 			@ean13 = ean13

@@ -33,7 +33,7 @@ module ODDB
 							end
 						}
 					end
-				elsif(email = company.invoice_email)
+				elsif((email = company.contact_email) && company.invoice_email)
 					if(company.pref_invoice_date.nil?)
 						time = items.collect { |item| item.time }.min
 						date = Date.new(time.year, time.month, time.day)
@@ -71,7 +71,8 @@ module ODDB
 			payable_items = filter_paid(items)
 			groups = group_by_company(payable_items)
 			groups.each { |company, items|
-				if(!company.disable_autoinvoice && (email = company.invoice_email))
+				if(!company.disable_autoinvoice \
+           && (email = company.contact_email) && company.invoice_email)
 					## work with duplicates
 					items = items.collect { |item| item.dup }
 					## adjust the annual fee according to company settings
