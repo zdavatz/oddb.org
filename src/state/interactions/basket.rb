@@ -68,6 +68,13 @@ class Basket < State::Interactions::Global
     }
   end
   def observed_interactions(sub, other)
+    values = _observed_interactions(sub, other)
+    if(sub.has_effective_form? && !sub.is_effective_form?)
+      values += observed_interactions(sub.effective_form, other)
+    end
+    values
+  end
+  def _observed_interactions(sub, other)
     keys = other.search_keys.join('|').gsub(' ', '[\s-]')
     ptrn = /(^|\s)(#{keys})(\s|$)/i
     found = {}
