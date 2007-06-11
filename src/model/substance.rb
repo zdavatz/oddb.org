@@ -184,6 +184,20 @@ module ODDB
 			end
 		end
 		alias :pointer_descr :name
+    def names
+			names = self._names
+			if(has_effective_form? && !is_effective_form?)
+				names += @effective_form.names
+			end
+			names.compact!
+			names.delete_if { |name|
+				name.empty?
+			}
+      names
+    end
+    def _names
+      self.descriptions.values + self.synonyms
+    end
 		def narcotic=(narc)
 			if(@narcotic)
 				@narcotic.remove_substance(self)
