@@ -95,6 +95,10 @@ module ODDB
           html << heading(context)
         end
         html << sections(context, @value.sections)
+        if(hl = @session.user_input(:highlight))
+          html.gsub!(hl, "<span class='highlight'>%s</span>" % hl)
+        end
+        html
       end
     end
     class PrintChapter < Chapter

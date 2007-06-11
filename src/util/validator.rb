@@ -299,6 +299,7 @@ module ODDB
 			:fr,
 			:galenic_form,
 			:heading,
+      :highlight,
 			:html_chapter,
 			:index_therapeuticus,
 			:indication,

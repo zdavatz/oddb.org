@@ -7,6 +7,7 @@ require 'htmlgrid/value'
 require 'view/form'
 require 'view/searchbar'
 require 'view/resulttemplate'
+require 'view/additional_information'
 
 module ODDB
 	module View
@@ -20,7 +21,7 @@ class BasketHeader < HtmlGrid::Composite
 		[0,0]	=>	'atc',
 	}
 end
-class List < HtmlGrid::Component
+class CyP450List < HtmlGrid::Component
   def initialize(type, model, session, container)
     @interaction_type = type
     super(model, session, container)
@@ -57,6 +58,29 @@ class List < HtmlGrid::Component
 		}
 	end
 end
+class FiList < HtmlGrid::Component
+  include AdditionalInformation
+	def to_html(context)
+		lang = @session.language
+		context.ul {
+			@model.collect { |substance, interactions| 
+        next unless substance
+				text = HtmlGrid::RichText.new(@model, @session, self)
+				text << substance.send(lang) << "<br>"
+        interactions.each { |interaction|
+          (fi = interaction.fachinfo) && (doc = fi.send(lang)) or next
+          link = _fachinfo(fi)
+          link.href << "/chapter/interactions/highlight/" << interaction.match
+          name = HtmlGrid::Link.new(:name, doc, @session, self)
+          name.href = link.href
+          name.value = doc.name
+          text << link << name << '<br>'
+				}
+				context.li { text.to_html(context) } 
+			}.join
+		}
+	end
+end
 class BasketSubstrates < HtmlGrid::List
 	BACKGROUND_SUFFIX = ' bg'
 	COMPONENTS = {
@@ -64,11 +88,12 @@ class BasketSubstrates < HtmlGrid::List
 		[1,0]		=>	:cyp450s,
 		[2,0]		=>	:inducers,
 		[3,0]		=>	:inhibitors,
-		
+    [4,0]   =>  :observed,
 	}
 	CSS_MAP = {
 		[0,0]		=>	'bold interaction-substance',
 		[1,0,3]	=>	'interaction-connection',
+    [4,0]   =>  'list',
 	}
 	CSS_HEAD_MAP = {
 		[0,0]	=>	'th',
@@ -114,9 +139,12 @@ class BasketSubstrates < HtmlGrid::List
 	end
 	def interaction_list(model, type)
 		if(model && !model.empty?)
-			View::Interactions::List.new(type, model, @session, self)
+			CyP450List.new(type, model, @session, self)
 		end
 	end
+  def observed(model)
+    FiList.new(model.observed, @session, self)
+  end
   def substance(model)
     sub = model.substance
 		lang = @session.language

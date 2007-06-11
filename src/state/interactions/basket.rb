@@ -12,8 +12,14 @@ class Basket < State::Interactions::Global
 	VIEW = View::Interactions::Basket
 	DIRECT_EVENT = :interaction_basket
 	LIMITED = false
+  class ObservedInteraction
+    attr_reader :substance, :fachinfo, :pattern, :match
+    def initialize(substance, fachinfo, pattern, match)
+      @substance, @fachinfo, @pattern, @match = substance, fachinfo, pattern, match
+    end
+  end
 	class Check
-		attr_reader :substance, :cyp450s, :inducers, :inhibitors
+		attr_reader :substance, :cyp450s, :inducers, :inhibitors, :observed
 		def initialize(substance)#, cyp450s)
 			@substance = substance
 			@cyp450s = substance.substrate_connections
@@ -23,6 +29,7 @@ class Basket < State::Interactions::Global
       end
 			@inducers = {}
 			@inhibitors = {}
+      @observed = {}
 		end
 		def add_interaction(interaction)
 			case interaction
@@ -30,6 +37,8 @@ class Basket < State::Interactions::Global
 				store_interaction(@inhibitors, interaction)
 			when ODDB::CyP450InducerConnection
 				store_interaction(@inducers, interaction)
+      when ObservedInteraction
+				store_interaction(@observed, interaction)
 			end
 		end
 		def store_interaction(storage, interaction)
@@ -43,18 +52,36 @@ class Basket < State::Interactions::Global
 	def delete
 		init
 	end
-	def calculate_interactions
-		subs = @session.interaction_basket
-		@model = subs.collect { |sub|
-			check = Check.new(sub)
-			(subs - [sub]).each { |other|
-				sub.interactions_with(other).each { |interaction|
-					check.add_interaction(interaction)
-				}
-			}
-			check
-		}
-	end
+  def calculate_interactions
+    subs = @session.interaction_basket
+    @model = subs.collect { |sub|
+      check = Check.new(sub)
+      (subs - [sub]).each { |other|
+        sub.interactions_with(other).each { |interaction|
+          check.add_interaction(interaction)
+        }
+        observed_interactions(sub, other).each { |observed|
+          check.add_interaction(observed)
+        }
+      }
+      check
+    }
+  end
+  def observed_interactions(sub, other)
+    keys = other.search_keys.join('|').gsub(' ', '[\s-]')
+    ptrn = /(^|\s)(#{keys})(\s|$)/i
+    found = {}
+    match = nil
+    sub.sequences.each { |seq|
+      if(seq.substances.size == 1 && (fi = seq.fachinfo) \
+         && (doc = fi.send(@session.language)) && (chapter = doc.interactions) \
+         && (match = chapter.match(ptrn)))
+        found.store(fi, ObservedInteraction.new(other, fi, 
+                                                ptrn.source, match.to_s.strip))
+      end
+    }
+    found.values
+  end
 end
 class EmptyBasket < State::Interactions::Basket
 	VIEW = View::Interactions::Basket

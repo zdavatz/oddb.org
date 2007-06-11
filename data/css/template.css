@@ -516,14 +516,14 @@ div.big {
 td.interaction-connection { 
 	margin-top: 0px;
 	list-style-type : circle;
-	width : 25%;
+	width : 20%;
 }
 td.bg {
 	background : $rslt_bg;
 }
 td.interaction-substance {
 	font-size: 14px;
-	width : 25%;
+	width : 20%;
 }
 td.sum {
 	border-color : black;
@@ -813,4 +813,7 @@ div.heading {
 }
 div.heading img {
   float: right;
+}
+span.highlight {
+  background-color: yellow;
 }
