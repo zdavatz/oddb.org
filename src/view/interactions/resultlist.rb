@@ -41,7 +41,8 @@ class ResultList < HtmlGrid::List
 	def interaction_basket_status(model, session)
 		if(session.interaction_basket.include?(model))
 			link = HtmlGrid::Link.new(:interaction_basket, model, session, self)
-			link.href = @lookandfeel._event_url(:interaction_basket)
+      ids = @session.interaction_basket.collect { |sub| sub.oid }
+			link.href = @session.interaction_basket_link
 			link.value = @lookandfeel.lookup(:in_interaction_basket)
 			link.set_attribute('font-weight', 'bold')
 			link

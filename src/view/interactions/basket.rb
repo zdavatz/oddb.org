@@ -29,6 +29,7 @@ class List < HtmlGrid::Component
 		lang = @session.language
 		context.ul {
 			@model.collect { |substance, items| 
+        next unless substance
 				text = HtmlGrid::RichText.new(@model, @session, self)
 				pub_med_search_link = HtmlGrid::Link.new(:pub_med_search_link, @model, @session, self)
 				pub_med_search_link.href = \

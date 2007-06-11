@@ -11,7 +11,6 @@ require 'timeout'
 
 module ODDB
   class Session < SBSM::Session
-		attr_reader :interaction_basket
 		attr_accessor :desired_state
 		LF_FACTORY = LookandfeelFactory
 		DEFAULT_FLAVOR = "gcc"
@@ -149,9 +148,24 @@ module ODDB
     def get_currency_rate(currency)
       @currency_rates[currency] ||= @app.get_currency_rate(currency)
     end
+    def interaction_basket
+      if(ids = user_input(:substance_ids))
+        ids = ids.split(/[+ ]/).collect { |id| id.to_i }
+        @interaction_basket.delete_if { |sub| !ids.delete(sub.oid) }
+        ids.each { |id| @interaction_basket.push @app.substance(id) }
+      end
+      @interaction_basket = @interaction_basket.compact.uniq
+    end
 		def interaction_basket_count
 			@interaction_basket.size
 		end
+    def interaction_basket_ids
+      @interaction_basket.collect { |sub| sub.oid }.join('+')
+    end
+    def interaction_basket_link
+      lookandfeel._event_url(:interaction_basket, 
+                             :substance_ids => interaction_basket_ids)
+    end
 		def analysis_alphabetical(range)
 			@app.search_analysis_alphabetical(range, self.language)
 		end

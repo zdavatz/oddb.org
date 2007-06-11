@@ -328,6 +328,7 @@ module ODDB
 			:subscribe,
 			:substance,
 			:substance_form,
+      :substance_ids,
 			:synonym_list,
 			:title,
 			:token,

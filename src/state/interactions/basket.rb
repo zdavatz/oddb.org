@@ -44,7 +44,6 @@ class Basket < State::Interactions::Global
 		init
 	end
 	def calculate_interactions
-# work in progress
 		subs = @session.interaction_basket
 		@model = subs.collect { |sub|
 			check = Check.new(sub)
