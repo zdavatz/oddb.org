@@ -76,7 +76,7 @@ class Basket < State::Interactions::Global
   end
   def _observed_interactions(sub, other)
     keys = other.search_keys.join('|').gsub(' ', '[\s-]')
-    ptrn = /(^|\s)(#{keys})(\s|$)/i
+    ptrn = /(^|\s)(#{keys}[esn]{0,2})([\s,.-]|$)/i
     found = {}
     match = nil
     sub.sequences.each { |seq|
@@ -84,7 +84,7 @@ class Basket < State::Interactions::Global
          && (doc = fi.send(@session.language)) && (chapter = doc.interactions) \
          && (match = chapter.match(ptrn)))
         found.store(fi, ObservedInteraction.new(other, fi, 
-                                                ptrn.source, match.to_s.strip))
+                                                ptrn.source, match[2]))
       end
     }
     found.values
