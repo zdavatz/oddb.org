@@ -76,7 +76,8 @@ class Basket < State::Interactions::Global
   end
   def _observed_interactions(sub, other)
     keys = other.names.join('|').gsub(' ', '[\s-]')
-    ptrn = /(^|\s)((#{keys})[esn]{0,2})([\s,.-]|$)/i
+    ptrn = /(^|[\s\(])((#{keys})[esn]{0,2})([\s,.\)-]|$)/i
+    puts ptrn.source
     found = {}
     match = nil
     sub.sequences.each { |seq|
