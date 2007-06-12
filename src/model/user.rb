@@ -206,7 +206,7 @@ module ODDB
 			allowed?('credit')
 		end
     def expired?
-      !@yus_session.ping
+      !(@yus_session.respond_to?(:ping) && @yus_session.ping)
     rescue RangeError, DRb::DRbConnError
       true
     end
