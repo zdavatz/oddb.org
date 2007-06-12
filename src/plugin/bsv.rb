@@ -350,6 +350,7 @@ module ODDB
       true
 		rescue RuntimeError => e
 			## return nil if any of the downloads fail.
+      nil
 		end
     def update_prices(month)
       @month = month
