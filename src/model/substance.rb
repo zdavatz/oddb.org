@@ -29,9 +29,17 @@ module ODDB
 		def adjust_types(values, app=nil)
 			values.each { |key, value|
 				if(key.to_s.size == 2)
-					values[key] = value.to_s.gsub(/\S+/i) { |match| 
+          newval = value.to_s.gsub(/\S+/) { |match| 
 						match.capitalize
-					}.gsub('Hcl', 'HCl').gsub(/\d./) { |match| match.upcase }
+					}
+          newval.gsub!(/(?<=\s)[a-z]{1,3}\s/i) { |match| 
+            match.downcase 
+          }
+					newval.gsub!(/\bhcl\b/i, 'HCl')
+          newval.gsub!(/(\d.)|(\b[dl]{1,2}-.)|(\..)|(\b[IVX]+\b)/i) { |match| 
+            match.upcase 
+          }
+          values[key] = newval
 				else
 					case key
 					when :connection_keys

@@ -49,6 +49,8 @@ class TestSubstance < Test::Unit::TestCase
 			'fr'	=>	'Fr PréNom',
 			'hc'  =>  'special Hcl',
 			'c2'  =>  'special C2o6',
+      '.E'  =>  'F.e.i.a.',
+      'rm'  =>  'Faktor Ii Vom Menschen',
 		}
 		result = @substance.adjust_types(values)
 		expected = {
@@ -57,6 +59,8 @@ class TestSubstance < Test::Unit::TestCase
 			'fr'	=>	'Fr Prénom',
 			'hc'  =>  'Special HCl',
 			'c2'  =>  'Special C2O6',
+      '.E'  =>  'F.E.I.A.',
+      'rm'  =>  'Faktor II vom Menschen',
 		}
 		assert_equal(expected, result)
 	end
