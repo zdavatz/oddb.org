@@ -21,9 +21,11 @@ module ODDB
 			CSS_CLASS = "list"
 			def init
 				super
-				unless(@lookandfeel.language == @name.to_s)
+        lang = @lookandfeel.language
+				unless(lang == @name.to_s)
 					path = @session.request_path.dup
-					path.gsub!(/^.{0,3}/, "/#{@name}")
+          base = "/#{@name}/"
+					path.sub!(%r{/#{lang}/?}, base) || path = base
 					@attributes.store("href", path)
 				end
 			end
