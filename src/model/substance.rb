@@ -36,7 +36,7 @@ module ODDB
             match.downcase 
           }
 					newval.gsub!(/\bhcl\b/i, 'HCl')
-          newval.gsub!(/([\d\(\)].)|(\b[dl]{1,2}-.)|(\..)|(\b[IVX]+\b)/i) { |match| 
+          newval.gsub!(/([\d\(\)\-].)|(\b[dl]{1,2}-.)|(\..)|(\b[IVX]+\b)/i) { |match| 
             match.upcase 
           }
           values[key] = newval
