@@ -41,6 +41,9 @@ module SequencesList
 	DEFAULT_HEAD_CLASS = 'subheading'
 	SORT_HEADER = false
 	SORT_DEFAULT = :name_base
+  SYMBOL_MAP = {
+    :name_base => PointerLink,
+  }
 end
 class MergeSubstancesForm < View::Form
 	include HtmlGrid::ErrorMessage
