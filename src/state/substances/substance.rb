@@ -27,7 +27,8 @@ class Substance < State::Substances::Global
 			}
 			#substances() # from RootState
 			new_state = result()
-			new_state.model.delete(@model)
+      mdl = new_state.model
+			mdl.delete(@model) if(mdl.is_a?(Array))
 			new_state
 		else
 			@errors.store(:substance, create_error('e_substance_not_empty', :substance, @model))

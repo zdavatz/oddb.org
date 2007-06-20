@@ -13,7 +13,7 @@ module ODDB
 				@sequences.push(seq) 
 				@sequences.odba_isolated_store
 			end
-			odba_isolated_store
+			odba_isolated_store # rewrite indices
 			seq
 		end
 		def remove_sequence(seq)
@@ -23,7 +23,7 @@ module ODDB
 			if(@sequences.delete(seq))
 				@sequences.odba_isolated_store
 			end
-			odba_isolated_store
+			odba_isolated_store # rewrite indices
 			seq
 		end
 		def empty?

@@ -17,6 +17,12 @@ class Basket < State::Interactions::Global
     def initialize(substance, fachinfo, pattern, match)
       @substance, @fachinfo, @pattern, @match = substance, fachinfo, pattern, match
     end
+    def eql?(other)
+      @fachinfo.eql? other.fachinfo
+    end
+    def hash
+      @fachinfo.hash
+    end
   end
 	class Check
 		attr_reader :substance, :cyp450s, :inducers, :inhibitors, :observed
@@ -68,27 +74,40 @@ class Basket < State::Interactions::Global
     }
   end
   def observed_interactions(sub, other)
+    values = _observed_interactions_chemical(sub, other)
+    values += _observed_interactions_effective(sub, other)
+    values.uniq!
+    values
+  end
+  def _observed_interactions_chemical(sub, other)
+    values = _observed_interactions(sub, other)
+    sub.chemical_forms.each { |chm|
+      values += _observed_interactions_chemical(chm, other)
+    }
+    values
+  end
+  def _observed_interactions_effective(sub, other)
     values = _observed_interactions(sub, other)
     if(sub.has_effective_form? && !sub.is_effective_form?)
-      values += observed_interactions(sub.effective_form, other)
+      values += _observed_interactions_effective(sub.effective_form, other)
     end
     values
   end
   def _observed_interactions(sub, other)
-    keys = other.names.join('|').gsub(' ', '[\s-]')
+    keys = (other.names - sub.names).join('|').gsub(' ', '[\s-]')
+    return [] if(keys.empty?)
     ptrn = /(^|[\s\(])((#{keys})[esn]{0,2})([\s,.\)-]|$)/i
-    puts ptrn.source
-    found = {}
+    found = []
     match = nil
     sub.sequences.each { |seq|
+      puts sprintf("check: %s -> %s", seq.name_base, keys)
       if(seq.substances.size == 1 && (fi = seq.fachinfo) \
          && (doc = fi.send(@session.language)) && (chapter = doc.interactions) \
          && (match = chapter.match(ptrn)))
-        found.store(fi, ObservedInteraction.new(other, fi, 
-                                                ptrn.source, match[2]))
+        found.push(ObservedInteraction.new(other, fi, ptrn.source, match[2]))
       end
     }
-    found.values
+    found.uniq
   end
 end
 class EmptyBasket < State::Interactions::Basket

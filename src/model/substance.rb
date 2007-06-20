@@ -13,8 +13,9 @@ module ODDB
 		include Persistence
 		include SequenceObserver
 		ODBA_SERIALIZABLE = [ '@descriptions', '@connection_keys', '@synonyms' ]
-		attr_reader :sequences, :narcotic, :substrate_connections
-		attr_accessor :effective_form, :swissmedic_code, :casrn
+    attr_reader :chemical_forms, :effective_form, :sequences, :narcotic,
+      :substrate_connections
+		attr_accessor :swissmedic_code, :casrn
 		include Comparable
 		include Language
 		def Substance.format_connection_key(key)
@@ -25,7 +26,16 @@ module ODDB
 			@sequences = []
 			@substrate_connections = {}
 			@connection_keys = []
+      @chemical_forms = []
 		end
+    def add_chemical_form(form)
+      if(form && form != self && !@chemical_forms.include?(form))
+        @chemical_forms.push(form)
+        @chemical_forms.odba_isolated_store
+      end
+      odba_isolated_store
+      form
+    end
 		def adjust_types(values, app=nil)
 			values.each { |key, value|
 				if(key.to_s.size == 2)
@@ -83,6 +93,15 @@ module ODDB
 				cyp
 			end
 		end
+    def effective_form=(form)
+      if(@effective_form.respond_to?(:remove_chemical_form))
+        @effective_form.remove_chemical_form(self)
+      end
+      if(form.respond_to?(:add_chemical_form))
+        form.add_chemical_form(self)
+      end
+      @effective_form = form
+    end
 		def empty?
 			@sequences.empty? && @narcotic.nil? \
 				&& @substrate_connections.empty? && !is_effective_form?
@@ -218,6 +237,12 @@ module ODDB
 		def primary_connection_key
 			@primary_connection_key ||= format_connection_key(self.name)
 		end
+    def remove_chemical_form(form)
+      if(@chemical_forms.delete(form))
+        @chemical_forms.odba_isolated_store
+      end
+      form
+    end
 		def same_as?(substance)
 			teststr = ODDB.search_term(substance.to_s.downcase)
 			_search_keys.any? { |desc|
