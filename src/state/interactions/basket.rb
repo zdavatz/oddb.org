@@ -100,7 +100,6 @@ class Basket < State::Interactions::Global
     found = []
     match = nil
     sub.sequences.each { |seq|
-      puts sprintf("check: %s -> %s", seq.name_base, keys)
       if(seq.substances.size == 1 && (fi = seq.fachinfo) \
          && (doc = fi.send(@session.language)) && (chapter = doc.interactions) \
          && (match = chapter.match(ptrn)))
