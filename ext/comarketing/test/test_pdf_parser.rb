@@ -18,9 +18,9 @@ module ODDB
 			def test_extract_pairs
 				pairs = @parser.extract_pairs
 				assert_equal(486, pairs.size)
-				first = ["Gynoflor, Vaginaltabletten", "Donaflor, Vaginaltabletten"]
+				first = ["47358", "53442"]
 				assert_equal(first, pairs.first)
-				last = ["Zyrtec, Filmtabletten", "Reactine, Filmtabletten"]
+				last = ["52251", "52783"]
 				assert_equal(last, pairs.last)
 			end
 		end

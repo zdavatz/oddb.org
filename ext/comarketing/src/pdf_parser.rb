@@ -13,16 +13,22 @@ module ODDB
 					@pairs = []
 					reset
 				end
+        def column_width
+          1
+        end
 				def firstword(str)
 					str.strip.split(/\s+/, 2).first
 				end
+        def identify_columns?
+          true
+        end
 				def reset
 					@current_column = 0
 					@raw_original = ''
 					@raw_comarketing = ''
 				end
 				def send_column
-					if(@current_column == 1 && firstword(@raw_original))
+					if(@current_column == 2 && firstword(@raw_original))
 						@original = @raw_original.strip
 					end
 					@current_column += 1
@@ -32,9 +38,9 @@ module ODDB
 						throw :vet_products
 					end
 					case @current_column
-					when 1
+					when 2
 						@raw_original << data
-					when 3,4
+					when 4,5
 						@raw_comarketing << data
 					end
 				end
