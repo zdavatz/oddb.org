@@ -6,6 +6,12 @@ require 'util/persistence'
 module ODDB
 	class AbstractLink
 		attr_accessor :info, :href, :text
+    def eql?(other)
+      @href.eql? other.href
+    end
+    def hash
+      @href.hash
+    end
 	end
 	class CyP450Connection 
 		attr_accessor :category, :links, :substance
