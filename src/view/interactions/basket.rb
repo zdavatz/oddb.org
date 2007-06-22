@@ -22,19 +22,21 @@ class BasketHeader < HtmlGrid::Composite
 	}
 end
 class CyP450List < HtmlGrid::Component
+  attr_accessor :base_substance
   def initialize(type, model, session, container)
     @interaction_type = type
     super(model, session, container)
   end
 	def to_html(context)
 		lang = @session.language
+    other = @base_substance.en
 		context.ul {
 			@model.collect { |substance, items| 
         next unless substance
 				text = HtmlGrid::RichText.new(@model, @session, self)
 				pub_med_search_link = HtmlGrid::Link.new(:pub_med_search_link, @model, @session, self)
 				pub_med_search_link.href = \
-					@lookandfeel.lookup(:pub_med_search_href, substance.en)
+					@lookandfeel.lookup(:pub_med_search_href, other, substance.en)
 				cyp_ids = items.collect { |item| 
 					item.parent(@session).cyp_id
 				}
@@ -132,14 +134,18 @@ class BasketSubstrates < HtmlGrid::List
 		end
 	end
 	def inhibitors(model, session=@sessino)
-		interaction_list(model.inhibitors, :inhibitors)
+		interaction_list(model, :inhibitors)
 	end
 	def inducers(model, session=@session)
-		interaction_list(model.inducers, :inducers)
+		interaction_list(model, :inducers)
 	end
 	def interaction_list(model, type)
-		if(model && !model.empty?)
-			CyP450List.new(type, model, @session, self)
+    mdl = model.send(type)
+		if(mdl && !mdl.empty?)
+			list = CyP450List.new(type, mdl, @session, self)
+      sub = model.substance
+      list.base_substance = sub.effective_form || sub
+      list
 		end
 	end
   def observed(model)
