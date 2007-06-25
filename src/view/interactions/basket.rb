@@ -45,16 +45,23 @@ class CyP450List < HtmlGrid::Component
 				pub_med_search_link.target = "_blank"
 				text << pub_med_search_link
         links = []
-				items.each { |item|
+        items.each { |item|
           links.concat item.links
         }
-        links.uniq.each { |link|
-          alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
-          alink.href = link.href
-          alink.value = link.text
-          text << [ "<br>", link.info, "<br>" ].join
-          text << alink
-				}
+        unless(links.empty?)
+          text << '<br>'
+          flink = HtmlGrid::Link.new(:flockhart_link, @model, @session, self)
+          flink.href = "http://medicine.iupui.edu/flockhart/table.htm"
+          flink.css_class = 'list'
+          text << flink
+          links.uniq.each { |link|
+            alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
+            alink.href = link.href
+            alink.value = link.text
+            text << [ "<br>", link.info, "<br>" ].join
+            text << alink
+          }
+        end
 				context.li { text.to_html(context) } 
 			}.join
 		}
@@ -121,15 +128,22 @@ class BasketSubstrates < HtmlGrid::List
       cyp450s.sort.each { |key, item|
         links.concat item.links
       }
-      links.uniq.each { |link|
-        if(href = link.href)
-          alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
-          alink.href = href
-          alink.value = link.text
-          text << [ "<br>", link.info, "<br>" ].join
-          text << alink
-        end
-      }
+      unless(links.empty?)
+        text << '<br>'
+        flink = HtmlGrid::Link.new(:flockhart_link, @model, @session, self)
+        flink.href = "http://medicine.iupui.edu/flockhart/table.htm"
+        flink.css_class = 'list'
+        text << flink
+        links.uniq.each { |link|
+          if(href = link.href)
+            alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
+            alink.href = href
+            alink.value = link.text
+            text << [ "<br>", link.info, "<br>" ].join
+            text << alink
+          end
+        }
+      end
       text
 		end
 	end
