@@ -7,6 +7,9 @@ module ODDB
   module Interaction
     class AbstractLink
       attr_accessor :info, :href, :text
+      def empty?
+        @href.to_s.empty? && @text.to_s.empty?
+      end
       def eql?(other)
         @href.eql? other.href
       end

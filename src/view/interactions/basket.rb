@@ -48,13 +48,15 @@ class CyP450List < HtmlGrid::Component
         items.each { |item|
           links.concat item.links
         }
+        links.uniq!
+        links.delete_if { |lnk| lnk.empty? }
         unless(links.empty?)
           text << '<br>'
-          flink = HtmlGrid::Link.new(:flockhart_link, @model, @session, self)
-          flink.href = "http://medicine.iupui.edu/flockhart/table.htm"
-          flink.css_class = 'list'
-          text << flink
-          links.uniq.each { |link|
+          fspan = HtmlGrid::Span.new(@model, @session, self)
+          fspan.value = @lookandfeel.lookup(:flockhart_link)
+          fspan.css_class = 'italic'
+          text << fspan
+          links.each { |link|
             alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
             alink.href = link.href
             alink.value = link.text
@@ -128,13 +130,15 @@ class BasketSubstrates < HtmlGrid::List
       cyp450s.sort.each { |key, item|
         links.concat item.links
       }
+      links.uniq!
+      links.delete_if { |lnk| lnk.empty? }
       unless(links.empty?)
         text << '<br>'
-        flink = HtmlGrid::Link.new(:flockhart_link, @model, @session, self)
-        flink.href = "http://medicine.iupui.edu/flockhart/table.htm"
-        flink.css_class = 'list'
-        text << flink
-        links.uniq.each { |link|
+        fspan = HtmlGrid::Span.new(@model, @session, self)
+        fspan.value = @lookandfeel.lookup(:flockhart_link)
+        fspan.css_class = 'italic'
+        text << fspan
+        links.each { |link|
           if(href = link.href)
             alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
             alink.href = href
