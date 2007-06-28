@@ -10,15 +10,17 @@ require 'htmlgrid/textarea'
 
 module ODDB
 	module View
-class NotifySent < HtmlGrid::Composite
+class NotifyConfirmComposite < HtmlGrid::Composite
+  include NotifyTitle
 	CSS_CLASS = 'composite'
 	COMPONENTS = {
-		[0,0]	  =>	:notify_sent,
-		[1,0]	  =>  :go_back,
+		[0,0]	  =>	View::SearchForm,
+		[0,1]	  =>	:notify_title,
+		[0,2]	  =>	:notify_sent,
 	}
 	CSS_MAP = {
-		[0,0] => 'confirm',
-		[1,0] => 'confirm right',
+		[0,1] => 'th',
+		[0,2] => 'confirm',
 	}	
 	def notify_sent(model, session)
     last, *mails = model.notify_recipient.reverse
@@ -29,27 +31,15 @@ class NotifySent < HtmlGrid::Composite
              end
     @lookandfeel.lookup(:notify_sent, string)
 	end
-	def go_back(model, session)
-	link = HtmlGrid::Link.new(:notify_back, model, session, self)
-		link.href = @session.lookandfeel._event_url(:result)
-		link.css_class = 'list'
-		link
-	end
-end
-class NotifyConfirmComposite < HtmlGrid::Composite
-  include NotifyTitle
-	CSS_CLASS = 'composite'
-	COMPONENTS = {
-		[0,0]	  =>	View::SearchForm,
-		[0,1]	  =>	:notify_title,
-		[0,2]	  =>	View::NotifySent,
-	}
-	CSS_MAP = {
-		[0,1] => 'th',
-	}	
 end
 class NotifyConfirm < View::ResultTemplate
 	CONTENT = NotifyConfirmComposite
+  def http_headers
+    headers = super
+		url = @session.lookandfeel._event_url(:result)
+    headers.store('Refresh', "5; URL=#{url}")
+    headers
+  end
 end
 	end
 end
