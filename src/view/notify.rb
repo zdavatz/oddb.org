@@ -11,28 +11,39 @@ require 'htmlgrid/textarea'
 require 'htmlgrid/errormessage'
 require 'htmlgrid/div'
 
-
 module ODDB
 	module View
+    module NotifyTitle
+      def notify_title(model, session=@session)
+        key = case @session.zone
+              when :migel
+                :notify_migel_title
+              else
+                :notify_title
+              end
+        [@lookandfeel.lookup(key), model.item.name].join
+      end
+    end
 		class NotifyForm < HtmlGrid::Form
 			include HtmlGrid::ErrorMessage
 			COMPONENTS = {
 				[0,0]			=>	:name,
 				[0,1]			=>	:notify_sender,
 				[0,2]			=>	:notify_recipients,
-				[0,3]			=>	:notify_message,
-				[1,4]			=>	:submit,
+				[1,3]			=>	:notify_link,
+				[0,4]			=>	:notify_message,
+				[1,5]			=>	:submit,
 			}
 			CSS_MAP = {
-				[0,0,2,5]	=>	'list',
-				[0,3]	=>	'list top',
+				[0,0,2,6]	=>	'list',
+				[0,4]	=>	'list top',
 			}
 			COMPONENT_CSS_MAP = {
 				[1,0,1,3] => 'xl',
 			}
 			CSS_CLASS = 'component'
 			LABELS = true
-			EVENT = :preview
+			EVENT = :notify_send
 			LEGACY_INTERFACE = false
       LOOKANDFEEL_MAP = {
         :name => :name_sender,
@@ -40,6 +51,14 @@ module ODDB
 			def init
 				super
 				error_message()
+			end
+			def notify_link(model)
+				link = HtmlGrid::PopupLink.new(:detail_view, model, @session, self)
+				args = {:pointer => model.item.pointer}
+        url = @lookandfeel._event_url(:show, args)
+				link.href = url
+				link.value = url #[url[0,24], url[-23,23]].join('...')
+				link
 			end
 			def notify_message(model)
 				input = HtmlGrid::Textarea.new(:notify_message, model, @session, self)
@@ -55,69 +74,20 @@ module ODDB
         input
       end
 		end
-		class NotifyPreview < Form
-			EVENT = :notify_send 
-			CSS_CLASS = 'composite'
-			COMPONENTS = {
-				#[0,0]			=>	'name_sender',
-				[0,0]			=>	:name,
-				#[0,1]			=>	'notify_sender',
-				[0,1]			=>	:notify_sender,
-				#[0,2]			=>	'notify_recipient',
-				[0,2]			=>	:notify_recipients,
-				[0,3]			=>	'notify_body',
-				[1,3]			=>	:notify_link,
-				[1,4]			=>	:notify_message,
-				[0,5]			=>	:submit,
-			}
-			CSS_MAP = {
-				[0,0,2,6] => 'list',
-				[0,3]     => 'list bold',
-			}	
-			LEGACY_INTERFACE = false
-      LABELS = true
-      DEFAULT_CLASS = HtmlGrid::Value
-      LOOKANDFEEL_MAP = {
-        :name => :name_sender,
-      }
-			def notify_link(model)
-				link = HtmlGrid::PopupLink.new(:detail_view, model, @session, self)
-				args = {:pointer => model.item.pointer}
-        url = @lookandfeel._event_url(:show, args)
-				link.href = url
-				link.value = [url[0,24], url[-23,23]].join('...')
-				link
-			end
-			def notify_message(model)
-				model.notify_message.gsub("\n", '<br>')
-			end
-      def notify_recipients(model)
-        val = HtmlGrid::Value.new(:notify_recipient, model, @session, self)
-        val.value = (model.notify_recipient || []).join(', ')
-        val 
-      end
-		end
     class NotifyComposite < HtmlGrid::Composite
+      include NotifyTitle
       CSS_CLASS = 'composite'
       COMPONENTS = {
-        [1,0]	  =>	View::SearchForm,
+        [0,0]	  =>	View::SearchForm,
         [0,1]	  =>	:notify_title,
         [0,2]	  =>	NotifyForm,
-        [1,1]	  =>	'notify_preview',
-        [1,2]	  =>	:preview,
       }
       CSS_MAP = {
         [0,1] => 'th',
-        [1,1] => 'th',
       }	
-      def preview(model, session)
-        unless model.empty?
-          NotifyPreview.new(model, session, self)
-        end
-      end
-      def notify_title(model, session)
-        [@lookandfeel.lookup(:notify_title), model.item.name].join
-      end
+    end
+    class Notify < View::ResultTemplate
+      CONTENT = View::NotifyComposite
     end
 	end
 end

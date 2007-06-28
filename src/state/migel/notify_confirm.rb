@@ -2,14 +2,14 @@
 #  State::Notify-- oddb -- 20.10.2005 -- ffricker@ywesee.com
 
 require 'state/migel/global'
-require 'view/migel/notify_confirm'
+require 'view/notify_confirm'
 require 'util/logfile'
 
 module ODDB
 	module State
 		module Migel
 class NotifyConfirm < State::Migel::Global
-	VIEW = View::Migel::NotifyConfirm
+	VIEW = View::NotifyConfirm
 end
 		end
 	end

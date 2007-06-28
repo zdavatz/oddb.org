@@ -3,7 +3,7 @@
 
 require 'state/drugs/global'
 require 'state/notify'
-require 'view/drugs/notify'
+require 'view/notify'
 require 'state/drugs/notify_confirm'
 require 'util/logfile'
 require 'date'
@@ -13,7 +13,7 @@ module ODDB
 		module Drugs
 			class Notify < State::Drugs::Global
 				include State::Notify
-				VIEW = View::Drugs::Notify
+				VIEW = View::Notify
 				CODE_KEY = :ikskey
 				CONFIRM_STATE = NotifyConfirm
 				ITEM_TYPE = :drugs

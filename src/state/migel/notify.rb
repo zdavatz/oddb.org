@@ -3,7 +3,7 @@
 
 require 'state/migel/global'
 require 'state/notify'
-require 'view/migel/notify'
+require 'view/notify'
 require 'state/migel/notify_confirm'
 require 'util/logfile'
 require 'date'
@@ -13,7 +13,7 @@ module ODDB
 		module Migel
 			class Notify < State::Migel::Global
 				include State::Notify
-				VIEW = View::Migel::Notify
+				VIEW = View::Notify
 				CODE_KEY = :migel_code
 				CONFIRM_STATE = NotifyConfirm
 				ITEM_TYPE = :migel

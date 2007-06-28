@@ -36,6 +36,17 @@ module Notify
 		name << line
 	end
 	def notify_send 
+ 		mandatory = [:name, :notify_sender, :notify_recipient]
+		keys = mandatory + [:notify_message]
+		input = user_input(keys, mandatory)
+		if(error?)
+      puts @errors.inspect
+      return self
+		end
+    @model.name = input[:name]
+    @model.notify_sender = input[:notify_sender]
+    @model.notify_recipient = input[:notify_recipient]
+    @model.notify_message = input[:notify_message]
     recipients = model.notify_recipient
 		if(model.name && model.notify_sender && recipients.is_a?(Array) \
 				&& !recipients.empty? && model.notify_message)
@@ -65,18 +76,6 @@ module Notify
 			klass = self.class.const_get(:CONFIRM_STATE)
 			klass.new(@session, @model)
 		end
-	end
-	def preview
-		mandatory = [:name, :notify_sender, :notify_recipient]
-		keys = mandatory + [:notify_message]
-		input = user_input(keys, mandatory)
-		unless(error?)
-			@model.name = input[:name]
-			@model.notify_sender = input[:notify_sender]
-			@model.notify_recipient = input[:notify_recipient]
-			@model.notify_message = input[:notify_message]
-		end
-		self
 	end
 end
 	end
