@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# State::Notify -- oddb -- 19.10.2005 -- ffricker@ywesee.com
+# State::Notify -- oddb -- 28.06.2007 -- hwyss@ywesee.com
+
+require 'rmail'
 
 module ODDB
 	module State
@@ -49,21 +51,38 @@ module Notify
     @model.notify_message = input[:notify_message]
     recipients = model.notify_recipient
 		if(model.name && model.notify_sender && recipients.is_a?(Array) \
-				&& !recipients.empty? && model.notify_message)
-			mail = TMail::Mail.new
-			mail.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
-			mail.to = recipients
-			mail.from = @model.notify_sender
-			mail.subject = "#{@session.lookandfeel.lookup(:notify_subject)} #{@model.name}"
-			mail.date = Time.now
-			mail.body = [
+				&& !recipients.empty?)
+			mail = RMail::Message.new
+      header = mail.header
+      header.add('Content-Type', 'multipart/alternative')
+      header.add('Date', Time.now.rfc822)
+      from = header.from = 'info@oddb.org'
+      to = header.to = recipients
+			header.subject = "#{@session.lookandfeel.lookup(:notify_subject)} #{@model.name}"
+      header.add('Reply-To', @model.notify_sender)
+      header.add('Mime-Version', '1.0')
+
+      text = RMail::Message.new
+      header = text.header
+      header.add('Content-Type', 'text/plain', nil, 'charset' => 'ISO-8859-1')
+      text.body = [
+				breakline(@model.notify_message, 75),
+				"\n",
 				@session.lookandfeel._event_url(:show, 
 					{:pointer => CGI.escape(model.item.pointer.to_s)}),
-				"\n",
-				breakline(@model.notify_message, 75),
 			].join("\n")
+      mail.add_part text
+
+      htmlpart = RMail::Message.new
+      header = htmlpart.header
+      header.add('Content-Type', 'text/html', nil, 'charset' => 'ISO-8859-1')
+      header.add('Content-Transfer-Encoding', 'quoted-printable')
+      html = View::NotifyMail.new(@model, @session).to_html(@session.cgi)
+      htmlpart.body = [html].pack('M')
+      mail.add_part htmlpart
+
 			Net::SMTP.start(SMTP_SERVER) { |smtp|
-				smtp.sendmail(mail.encoded, SMTP_FROM, recipients) 
+				smtp.sendmail(mail.to_s, SMTP_FROM, recipients) 
 			}
 			logger = @session.notification_logger
 			key = [
