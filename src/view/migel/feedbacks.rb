@@ -6,7 +6,7 @@ require 'view/feedbacks'
 module ODDB
 	module View
 		module Migel
-class FeedbackFormMigel < View::FeedbackForm
+class FeedbackForm < View::FeedbackForm
 	COMPONENTS = {
 		[0,0]				=>	:name,
 		[0,1]				=>	:email,
@@ -34,7 +34,7 @@ class FeedbackFormMigel < View::FeedbackForm
 		[0,15]			=>	:submit,
 	}
 end
-class FeedbackListMigel < View::FeedbackList
+class FeedbackList < View::FeedbackList
 	COMPONENTS = {
 		[0,0,0]		=>	'feedback_title_name',
 		[0,0,1]		=>	:name,
@@ -70,10 +70,10 @@ class FeedbacksComposite < HtmlGrid::Composite
 	}	
 	LEGACY_INTERFACE = false
 	def current_feedback(model)
-		FeedbackFormMigel.new(model.current_feedback, @session, self)
+		FeedbackForm.new(model.current_feedback, @session, self)
 	end
 	def feedback_list(model)
-		FeedbackListMigel.new(model.feedback_list, @session, self)
+		FeedbackList.new(model.feedback_list, @session, self)
 	end
 	def feedback_pager(model)
 		if(model.feedback_count > 0)

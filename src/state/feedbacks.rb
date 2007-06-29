@@ -3,6 +3,9 @@
 
 require 'state/global_predefine'
 require 'util/logfile'
+require 'view/rss/feedback'
+require 'plugin/plugin'
+require 'thread'
 
 module ODDB
 	module State
@@ -18,12 +21,14 @@ class ItemWrapper < SimpleDelegator
 		super
 	end
 	def current_feedback
-		@current_feedback ||= Persistence::CreateItem.new(@item.pointer + :feedback)
+		@current_feedback or begin
+      fb = Persistence::CreateItem.new(Persistence::Pointer.new(:feedback))
+      fb.carry(:item, @item)
+      @current_feedback = fb
+    end
 	end
 	def feedback_list
-		@item.feedbacks.values.sort_by { |feedback|
-			feedback.time
-		}.reverse[@index, INDEX_STEP]
+		@item.feedbacks[@index, INDEX_STEP]
 	end
 	def feedback_count
 		@item.feedbacks.size
@@ -63,12 +68,15 @@ def update
 			hash.each { |key, value|
 				feedback.carry(key, value)
 			}
+      hash.store(:item, @model.item)
 		end
 		
 		# store new Feedback
 		time = Time.now
 		hash.store(:time , time)
-		@model.current_feedback = @session.app.update(@model.current_feedback.pointer, hash)
+		@model.current_feedback = @session.app.update(@model.current_feedback.pointer,
+                                                  hash)
+    @session.update_feedback_rss_feed
 		@infos = [info_key]
 
 		# in case this was a new feedback, drop a line into a logfile

@@ -11,8 +11,6 @@ require 'htmlgrid/errormessage'
 require 'htmlgrid/infomessage'
 require 'htmlgrid/div'
 
-
-
 module ODDB
 	module View
 class FeedbackForm < HtmlGrid::Form

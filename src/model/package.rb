@@ -136,6 +136,7 @@ Grammar OddbSize
 	class PackageCommon
 		include Persistence
 		include SizeParser
+    @@ddd_galforms = /tabletten/i
 		class << self
 			def price_internal(price, type=nil)
         unless(price.is_a?(Util::Money))
@@ -217,7 +218,7 @@ Grammar OddbSize
 		end
 		def ddd_price
 			if((atc = atc_class) && atc.has_ddd? && (ddd = atc.ddds['O']) \
-				&& (grp = galenic_form.galenic_group) && grp.match(/tabletten/i) \
+				&& (grp = galenic_form.galenic_group) && grp.match(@@ddd_galforms) \
 				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose))
         if(mdose > ddose)
           (price / comparable_size.to_f)
@@ -339,12 +340,12 @@ Grammar OddbSize
 		include FeedbackObserver
 		def initialize(ikscd)
 			super
-			@feedbacks = {}
+			@feedbacks = []
 		end
 		def checkout
 			super
 			if(@feedbacks)
-				@feedbacks.values.each { |fb| fb.odba_delete }
+				@feedbacks.dup.each { |fb| fb.item = nil; fb.odba_store }
 				@feedbacks.odba_delete
 			end
 		end

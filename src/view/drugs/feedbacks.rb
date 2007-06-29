@@ -15,7 +15,7 @@ require 'htmlgrid/div'
 module ODDB
 	module View
 		module Drugs
-class FeedbackFormDrugs < View::FeedbackForm
+class FeedbackForm < View::FeedbackForm
 	include HtmlGrid::ErrorMessage
 	include HtmlGrid::InfoMessage
 	COMPONENTS = {
@@ -45,7 +45,7 @@ class FeedbackFormDrugs < View::FeedbackForm
 		[0,15]			=>	:submit,
 	}
 end
-class FeedbackListDrugs < View::FeedbackList
+class FeedbackList < View::FeedbackList
 	COMPONENTS = {
 		[0,0,0]		=>	'feedback_title_name',
 		[0,0,1]		=>	:name,
@@ -81,10 +81,10 @@ class FeedbacksComposite < HtmlGrid::Composite
 	}	
 	LEGACY_INTERFACE = false
 	def current_feedback(model)
-		FeedbackFormDrugs.new(model.current_feedback, @session, self)
+		FeedbackForm.new(model.current_feedback, @session, self)
 	end
 	def feedback_list(model)
-		FeedbackListDrugs.new(model.feedback_list, @session, self)
+		FeedbackList.new(model.feedback_list, @session, self)
 	end
 	def feedback_pager(model)
 		if(model.feedback_count > 0)

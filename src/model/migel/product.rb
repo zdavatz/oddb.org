@@ -20,7 +20,7 @@ module ODDB
 				@code = code
 				@accessories = []
 				@products = []
-				@feedbacks = {}
+				@feedbacks = []
 			end
 			def accessory_code
 				@code.split('.', 2).last
@@ -64,7 +64,7 @@ module ODDB
 				}
 				@products.odba_delete
 				if(@feedbacks)
-					@feedbacks.values.each { |fb| fb.odba_delete }
+					@feedbacks.dup.each { |fb| fb.item = nil; fb.odba_store }
 					@feedbacks.odba_delete
 				end
 			end

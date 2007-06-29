@@ -4,17 +4,21 @@
 module ODDB
 	module FeedbackObserver
 		attr_reader :feedbacks
-		def create_feedback
-			feedback = Feedback.new
-			feedback.oid = self.feedbacks.keys.max.to_i.next
-			## lazy init
-			feedbacks.store(feedback.oid, feedback) 
-		end
 		def feedback(id)
-			@feedbacks[id.to_i]
+			@feedbacks.find { |fb| fb.oid == id }
 		end
-		def feedbacks
-			@feedbacks ||= {}
-		end
+    def add_feedback(feedback)
+      unless(@feedbacks.include?(feedback))
+        @feedbacks.unshift feedback
+        @feedbacks.odba_isolated_store
+      end
+      feedback
+    end
+    def remove_feedback(feedback)
+      if(@feedbacks.delete(feedback))
+        @feedbacks.odba_isolated_store
+      end
+      feedback
+    end
 	end
 end

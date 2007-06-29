@@ -49,8 +49,8 @@ module ODDB
 				'BL', 'BS', 'FR', 'GE', 'GL', 'GR', 'JU', 'LU',
 				'NE', 'NW', 'OW', 'SG', 'SH', 'SO', 'SZ', 'TG',
 				'TI', 'UR', 'VD', 'VS', 'ZG', 'ZH'],
-      :channel      =>  ['fachinfo.rss', 'minifi.rss', 'price_cut.rss', 
-                         'price_rise.rss'],
+      :channel      =>  ['fachinfo.rss', 'feedback.rss', 'minifi.rss', 
+                         'price_cut.rss', 'price_rise.rss'],
 			:cl_status		=>	['false', 'true'],
 			:complementary_type =>	[nil, 'complementary', 'anthroposophy',
 				'homeopathy', 'phytotherapy', ],
@@ -349,9 +349,10 @@ module ODDB
 				raise SBSM::InvalidDataError.new(:e_invalid_atc_class, :atc_class, value)
 			end
 		end
+    @@dose = /(\d+(?:[.,]\d+)?)\s*(.*)/
 		def dose(value)
 			return nil if value.empty?
-			if(valid = /(\d+(?:[.,]\d+)?)\s*(.*)/.match(value))
+			if(valid = @@dose.match(value))
 				qty = valid[1].gsub(',', '.')
 				[qty.to_f, valid[2].to_s]
 			else
@@ -379,9 +380,10 @@ module ODDB
 		def galenic_group(value)
 			pointer(value)
 		end
+    @@ikscat = /[ABCDE]|Sp/
 		def ikscat(value)
 			return '' if value.empty?
-			if(valid = /[ABCDE]|Sp/.match(value.capitalize))
+			if(valid = @@ikscat.match(value.capitalize))
 				valid[0]
 			else
 				raise SBSM::InvalidDataError.new(:e_invalid_ikscat, :ikscat, value)
@@ -417,9 +419,10 @@ module ODDB
 		def seqnr(value)
 			swissmedic_id(:seqnr, value, 1..2, 2)
 		end
+    @@swissmedic = /^\d+$/
 		def swissmedic_id(key, value, range, pad=false)
 			return value if value.empty?
-			valid = /^\d+$/.match(value)
+			valid = @@swissmedic.match(value)
 			if(valid && range.include?(valid[0].length))
 				if(pad)
 					sprintf("%0#{pad}d", valid[0].to_i)
@@ -451,9 +454,10 @@ module ODDB
 				raise SBSM::InvalidDataError.new("e_invalid_pointer", :pointer, value)
 			end
 		end
+    @@yus = /^org\.oddb\.model\.[!*.a-z]+/
     def yus_association(value)
       value = value.to_s
-      if(/^org\.oddb\.model\.[!*.a-z]+/.match(value.to_s))
+      if(@@yus.match(value.to_s))
         value
       elsif(!value.empty?)
 				raise SBSM::InvalidDataError.new("e_invalid_yus_association", 

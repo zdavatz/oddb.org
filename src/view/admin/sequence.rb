@@ -43,11 +43,14 @@ module SequenceAgentList
 	SORT_HEADER = false
 	SORT_DEFAULT = :to_a
 	def substance(model, session=@session)
+=begin
 		link = HtmlGrid::Link.new(:substance, model, @session, self)
 		link.value = _substance(model)
 		args = {:pointer => model.pointer}
 		link.href = @lookandfeel.event_url(:suggest_choose, args)
 		link
+=end
+    _substance(model)
 	end
 	def _substance(model)
 		if(sub = model.substance)

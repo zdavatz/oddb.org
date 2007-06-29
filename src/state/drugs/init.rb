@@ -27,6 +27,7 @@ class Init < State::Drugs::Global
       rev.year == revision.year && rev.month == revision.month \
         && rev.day == revision.day
     }
+    @model.feedbacks = @session.app.sorted_feedbacks[0,5]
   end
 end
 		end

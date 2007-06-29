@@ -171,6 +171,41 @@ class RssPreview < HtmlGrid::DivComposite
     end
   end
 end
+class RssFeedbackList < HtmlGrid::DivList
+  COMPONENTS = {
+    [0,0] => :heading,
+  }
+  def heading(model)
+    if(parent = model.item)
+      link = HtmlGrid::Link.new(:feedbacks, model, @session, self)
+      link.href = @lookandfeel._event_url(:feedbacks, :pointer => parent.pointer)
+      link.value = case parent.odba_instance
+                   when ODDB::Package
+                     @lookandfeel.lookup(:feedback_title, 
+                                         parent.name, parent.size)
+                   when ODDB::Migel::Product
+                     [ @lookandfeel.lookup(:feedback_title_migel), 
+                       parent.name].join
+                   end
+      link
+    end
+  end
+end
+class RssFeedbacks < RssPreview
+  COMPONENTS = {
+    [0,0] => :rss_image,
+    [1,0] => :title,
+    [0,1] => RssFeedbackList,
+  }
+  def title(model)
+    if(feedback = model.first)
+      link = HtmlGrid::Link.new(:feedback_feed_title, model, @session, self)
+      link.href = @lookandfeel._event_url(:rss, :channel => 'feedback.rss')
+      link.css_class = 'list bold'
+      link
+    end
+  end
+end
 class MiniFiList < HtmlGrid::DivList
   COMPONENTS = {
     [0,0] => :heading,
@@ -253,15 +288,15 @@ class GoogleAdSenseComposite < View::GoogleAdSenseComposite
 	CONTENT = CenteredSearchComposite
 	GOOGLE_CHANNEL = '2298340258'
   COMPONENTS = {
-    [0,0]	=>	:rss_feeds,
+    [0,0]	=>	:rss_feeds_left,
     [1,0]	=>	:content,
-    [2,0]	=>	:ad_sense,
+    [2,0]	=>	:rss_feeds_right,
   }
   CSS_MAP = {
     [0,0] => 'sidebar',
     [2,0] => 'sidebar',
   }
-  def rss_feeds(model, session=@session)
+  def rss_feeds_left(model, session=@session)
     content = []
     if(@lookandfeel.enabled?(:minifis))
       content.push MiniFis.new(model.minifis, @session, self)
@@ -274,6 +309,11 @@ class GoogleAdSenseComposite < View::GoogleAdSenseComposite
       content.push SLPriceNews.new(:price_rise, @session, self)
     end
     content
+  end
+  def rss_feeds_right(model, session=@session)
+    if(@lookandfeel.enabled?(:feedback_rss))
+      RssFeedbacks.new(model.feedbacks, @session, self)
+    end
   end
 end
 		end

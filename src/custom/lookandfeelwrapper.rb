@@ -119,6 +119,7 @@ module ODDB
       :country_navigation,
 			:fachinfos,
 			:feedback,
+			:feedback_rss,
 			:google_adsense,
 			:limitation_texts,
 			:logo,

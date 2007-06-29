@@ -82,6 +82,7 @@ module ODDB
 				LEGACY_INTERFACE = false
 				CSS_CLASS = 'composite'
 				DEFAULT_CLASS = HtmlGrid::Value
+        @@reservation = /(SR|RS) (\d{3}\.\d{3}\.\d{2})/
 				def narcotic_connection(model)
 					@lookandfeel.lookup(:narcotic_connection, model.substances)
 				end
@@ -96,7 +97,7 @@ module ODDB
 						div = HtmlGrid::Div.new(model, @session, self)
 						div.css_class = 'long-text list bg'
 						txt = text.send(@session.language)
-						div.value = if(match = /(SR|RS) (\d{3}\.\d{3}\.\d{2})/.match(txt))
+						div.value = if(match = @@reservation.match(txt))
 							url = sprintf('http://www.admin.ch/ch/%s/%s/c%s.html',
 								(@session.language.to_s == 'fr') ? 'f' : 'd', 
 								match[1].downcase,

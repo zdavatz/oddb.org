@@ -54,14 +54,13 @@ class OddbPrevalence
 		"@atc_chooser", "@bean_counter",
 	]
 	ODBA_SERIALIZABLE = [ '@currency_rates', '@rss_updates' ]
-	ODBA_PREFETCH = true
 	attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
 		:companies, :doctors, :fachinfos, :galenic_groups, :migel_groups,
 		:hospitals, :invoices, :last_medication_update, :last_update,
     :minifis, :notification_logger, :orphaned_fachinfos,
     :orphaned_patinfos, :patinfos, :patinfos_deprived_sequences,
     :registrations, :slates, :users, :narcotics, :accepted_orphans,
-    :commercial_forms, :rss_updates
+    :commercial_forms, :rss_updates, :feedbacks
 	def initialize
 		init
 		@last_medication_update ||= Time.now()
@@ -70,36 +69,37 @@ class OddbPrevalence
 		create_unknown_galenic_group()
 		create_root_user()
 		@accepted_orphans ||= {}
+		@address_suggestions ||= {}
 		@analysis_groups ||= {}
 		@atc_classes ||= {}
-		@address_suggestions ||= {}
-		@patinfos_deprived_sequences ||= []
 		@commercial_forms ||= {}
 		@companies ||= {}
 		@currency_rates ||= {}
 		@cyp450s ||= {}
-		@fachinfos ||= {}
 		@doctors ||= {}
+		@fachinfos ||= {}
+    @feedbacks ||= {}
 		@galenic_forms ||= []
 		@galenic_groups ||= []
 		@generic_groups ||= {}
-		@migel_groups ||= {}
-    @minifis ||= {}
 		@hospitals ||= {}
 		@incomplete_registrations ||= {}
 		@indications ||= {}
 		@invoices ||= {}
 		@log_groups ||= {}
+		@migel_groups ||= {}
+    @minifis ||= {}
 		@narcotics ||= {}
 		@notification_logger ||= ODDB::NotificationLogger.new
+		@orphaned_fachinfos ||= {}
+		@orphaned_patinfos ||= {}
 		@patinfos ||= {}
+		@patinfos_deprived_sequences ||= []
 		@registrations ||= {}
+    @rss_updates ||= {}
+		@slates ||= {}
 		@sponsors ||= {}
 		@substances ||= {}
-		@orphaned_patinfos ||= {}
-		@orphaned_fachinfos ||= {}
-		@slates ||= {}
-    @rss_updates ||= {}
 		#recount()
 		rebuild_atc_chooser()
 	end
@@ -332,6 +332,10 @@ class OddbPrevalence
 		fachinfo = ODDB::Fachinfo.new
 		@fachinfos.store(fachinfo.oid, fachinfo)
 	end
+  def create_feedback
+    feedback = ODDB::Feedback.new
+    @feedbacks.store(feedback.oid, feedback) 
+  end
 	def create_galenic_group
 		galenic_group = ODDB::GalenicGroup.new
 		@galenic_groups.store(galenic_group.oid, galenic_group)
@@ -577,6 +581,13 @@ class OddbPrevalence
 			galgroup.each_galenic_form(&block)
 		}
 	end
+  def each_migel_product(&block)
+    @migel_groups.each_value { |group| 
+      group.subgroups.each_value { |subgr|
+        subgr.products.each_value(&block)
+      }
+    }
+  end
 	def each_package(&block)
 		@registrations.each_value { |reg|
 			reg.each_package(&block)
@@ -603,6 +614,9 @@ class OddbPrevalence
 		ODBA.cache.retrieve_from_index("fachinfo_name_#{lang}", 
 			name)
 	end
+  def feedback(id)
+    @feedbacks[id.to_i]
+  end
 	def galenic_form(name)
 		@galenic_groups.values.collect { |galenic_group|
 			galenic_group.get_galenic_form(name)
@@ -823,6 +837,7 @@ class OddbPrevalence
 		index_name = "analysis_alphabetical_index_#{lang}"
 		ODBA.cache.retrieve_from_index(index_name, query)
 	end
+  @@iks_or_ean = /(?:\d{4})?(\d{5})(?:\d{4})?/
 	def search_oddb(query, lang)
 		# current search_order:
 		# 1. atcless
@@ -847,7 +862,7 @@ class OddbPrevalence
 			result.search_type = :atcless
 			return result
 		# iksnr or ean13
-		elsif(match = /(?:\d{4})?(\d{5})(?:\d{4})?/.match(query))
+		elsif(match = @@iks_or_ean.match(query))
 			iksnr = match[1]
 			if(reg = registration(iksnr))
 				atc = ODDB::AtcClass.new('n.n.')
@@ -1073,6 +1088,9 @@ class OddbPrevalence
     @fachinfos.values.select { |fi| 
       fi.revision }.sort_by { |fi| fi.revision }.reverse
   end
+  def sorted_feedbacks
+    @feedbacks.values.sort_by { |fb| fb.time }.reverse
+  end
   def sorted_minifis
     @minifis.values.sort_by { |minifi| 
       [ -minifi.publication_date.year, 
@@ -1248,6 +1266,7 @@ module ODDB
     YUS_SERVER = DRb::DRbObject.new(nil, YUS_URI)
 		attr_reader :cleaner, :updater
 		def initialize
+      @rss_mutex = Mutex.new
 			@admin_threads = ThreadGroup.new
 			@system = ODBA.cache.fetch_named('oddbapp', self){
 				OddbPrevalence.new
@@ -1259,6 +1278,7 @@ module ODDB
 			super(@system)
 			puts "reset"
 			reset()
+      log_size
 			puts "system initialized"
 		end
 		# prevalence-methods ################################
@@ -1466,6 +1486,21 @@ module ODDB
 				}
 			}
 		end
+    def update_feedback_rss_feed
+      async {
+        begin
+        @rss_mutex.synchronize {
+          values = @system.sorted_feedbacks
+          plg = Plugin.new(self)
+          plg.update_rss_feeds('feedback.rss', values, View::Rss::Feedback)
+        }
+        rescue Exception => e
+          puts e.message
+          puts e.backtrace
+        end
+      }
+    end
+
 		def assign_effective_forms(arg=nil)
 			ODBA.transaction {
 				_assign_effective_forms(arg)
@@ -1794,6 +1829,88 @@ module ODDB
 				pos.odba_store
 			}
 		end
+    def migrate_feedbacks
+      ODBA.transaction {
+        @system.each_package { |pac|
+          _migrate_feedbacks(pac)
+        }
+        @system.each_migel_product { |prd|
+          _migrate_feedbacks(prd)
+        }
+        @system.feedbacks.odba_store
+        @system.odba_store
+      }
+      update_feedback_rss_feed
+    end
+    def _migrate_feedbacks(item)
+      item = item.odba_instance
+      fbs = item.instance_variable_get('@feedbacks').odba_instance
+      case fbs
+      when Array
+        # already migrated, ignore
+      when Hash
+        new = fbs.values.select { |fb| 
+          fb.is_a?(Feedback) 
+        }.sort_by { |fb| fb.time }.reverse
+        fbs.odba_delete
+        new.odba_store
+        item.instance_variable_set('@feedbacks', new)
+        item.odba_store
+        new.each { |fb|
+          id = fb.odba_id
+          fb.instance_variable_set('@oid', id)
+          ptr = Persistence::Pointer.new([:feedback, id])
+          fb.instance_variable_set('@pointer', ptr)
+          @system.feedbacks.store(id, fb)
+          fb.instance_variable_set('@item', item)
+          fb.odba_store
+        }
+      when nil
+        item.instance_variable_set('@feedbacks', [])
+        item.odba_store
+      end
+    end
+
+    def log_size
+      @size_logger = Thread.new {
+        time = Time.now
+        bytes = 0
+        threads = 0
+        sessions = 0
+        format = "%s %s: sessions: %4i - threads: %4i - memory: %4iMB %s"
+        loop {
+          begin
+            lasttime = time
+            time = Time.now
+            alarm = time - lasttime > 60 ? '*' : ' '
+            lastthreads = threads
+            threads = ObjectSpace.each_object(Thread) {}
+            lastbytes = bytes
+            bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
+            lastsessions = sessions
+            sessions = @sessions.size
+            gc = ''
+            gc << 'S' if sessions < lastsessions
+            gc << 'T' if threads < lastthreads
+            gc << 'M' if bytes < lastbytes
+            path = File.expand_path('../../doc/resources/downloads/status',
+                                    File.dirname(__FILE__))
+            lines = File.readlines(path)[0,100]
+            lines.unshift sprintf(format, alarm, 
+                                  time.strftime('%Y-%m-%d %H:%M:%S'),
+                                  sessions, threads, bytes / (2**20), gc)
+            File.open(path, 'w') { |fh|
+              fh.puts lines
+            }
+          rescue Exception => e
+            puts e.class
+            puts e.message
+            $stdout.flush
+          end
+        sleep 5
+        }
+      }
+    end
 	end
 end
 
