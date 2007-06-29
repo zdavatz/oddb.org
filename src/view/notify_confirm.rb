@@ -36,7 +36,16 @@ class NotifyConfirm < View::ResultTemplate
 	CONTENT = NotifyConfirmComposite
   def http_headers
     headers = super
-		url = @session.lookandfeel._event_url(:result)
+    args = {
+      :search_query => @session.persistent_user_input(:search_query),	
+      :search_type => @session.persistent_user_input(:search_type),	
+    }.delete_if { |key, value| value.nil? }
+    url = if(args.empty?)
+            @lookandfeel._event_url(:home)
+          else
+            args.store(:zone, @session.zone)
+		        @lookandfeel._event_url(:search, args, 'best_result')
+          end
     headers.store('Refresh', "5; URL=#{url}")
     headers
   end
