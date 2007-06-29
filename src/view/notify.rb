@@ -116,7 +116,7 @@ module ODDB
       }
 			CSS_CLASS = "composite"
       CSS_MAP = {
-        [0,0] => 'bg',
+        [0,0] => 'list bg',
         [0,2] => 'bg',
       }
     end

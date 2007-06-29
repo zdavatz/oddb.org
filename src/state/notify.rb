@@ -56,7 +56,7 @@ module Notify
       header = mail.header
       header.add('Content-Type', 'multipart/alternative')
       header.add('Date', Time.now.rfc822)
-      from = header.from = 'info@oddb.org'
+      from = header.from = 'zdavatz@ywesee.com'
       to = header.to = recipients
 			header.subject = "#{@session.lookandfeel.lookup(:notify_subject)} #{@model.name}"
       header.add('Reply-To', @model.notify_sender)
