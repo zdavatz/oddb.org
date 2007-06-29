@@ -48,6 +48,7 @@ class PackageInnerComposite < HtmlGrid::Composite
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
+  LEGACY_INTERFACE = false
   LOOKANDFEEL_MAP = {
     :descr  =>  :description,
   }
@@ -103,26 +104,23 @@ class PackageInnerComposite < HtmlGrid::Composite
     end
 		super
 	end
-	def atc_class(model, session)
+	def atc_class(model, session=@session)
 		val = HtmlGrid::Value.new(:atc_class, model, @session, self)
 		if(atc = model.atc_class)
 			val.value = atc_description(atc, @session)
 		end
 		val
 	end
-	def atc_ddd_link(model, session)
+	def atc_ddd_link(model, session=@session)
 		if(atc = model.atc_class)
 			super(atc, session)
 		end
 	end
 	## ignore AdditionalInformation#ikscat
-	def ikscat(model, session)
+	def ikscat(model, session=@session)
 		HtmlGrid::Value.new(:ikscat, model, @session, self)
 	end
-	def registration_holder(model, session)
-		HtmlGrid::Value.new(:company_name, model, @session, self)
-	end
-	def limitation_text(model, session)
+	def limitation_text(model, session=@session)
     text = HtmlGrid::Div.new(model, @session, self)
     text.label = true
 		if(lim = model.limitation_text)
@@ -131,8 +129,23 @@ class PackageInnerComposite < HtmlGrid::Composite
 		end
     text
 	end
-	def most_precise_dose(model, session)
+	def most_precise_dose(model, session=@session)
 		HtmlGrid::Value.new(:most_precise_dose, model, session, self)
+	end
+  def name(model, session=@session)
+    link = HtmlGrid::Link.new(:name, model, @session, self)
+    link.value = model.name
+    link.label = true
+    args = {
+      :zone => :drugs, 
+      :search_query => model.name_base, 
+      :search_type => :st_oddb,
+    }
+    link.href = @lookandfeel._event_url(:search, args, 'best_result')
+    link
+  end
+	def registration_holder(model, session=@session)
+		HtmlGrid::Value.new(:company_name, model, @session, self)
 	end
 end
 class PackageComposite < HtmlGrid::Composite
