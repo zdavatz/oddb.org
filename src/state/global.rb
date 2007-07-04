@@ -257,8 +257,8 @@ module ODDB
 						State::Drugs::Feedbacks.new(@session, item)
 					when ODDB::Migel::Product
 						State::Migel::Feedbacks.new(@session, item)
-					when ODDB::Analysis::Position
-						State::Analysis::Feedbacks.new(@session, item)
+					#when ODDB::Analysis::Position
+					#	State::Analysis::Feedbacks.new(@session, item)
 					end
 				end
 			end
