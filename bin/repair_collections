@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+$: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path('../src', File.dirname(__FILE__))
+
+require 'odba'
+require 'util/oddbapp'
+require 'etc/db_connection'
+
+max = ODBA.storage.max_id
+
+puts "#### Starting Collection-Check ####"
+$stdout.flush
+
+1.upto(max) { |id|
+
+  collection = ODBA.storage.restore_collection(id)
+  collection.each { |row|
+    key = ODBA.marshaller.load(row[0])
+    value = ODBA.marshaller.load(row[1])
+    item = nil
+    if([key, value].any? { |item| item.instance_variable_get('@receiver') })
+      warn "stub for #{item.class}:#{item.odba_id} was saved with receiver"
+      warn "repair: remove [#{id}, #{row[0]}, #{row[1].length}]"
+      ODBA.storage.collection_remove(id, row[0])	
+      key_dump = ODBA.marshaller.dump(key.odba_isolated_stub)
+      value_dump = ODBA.marshaller.dump(value.odba_isolated_stub)
+      warn "repair: insert [#{id}, #{key_dump}, #{value_dump.length}]"
+      ODBA.storage.collection_store(id, key_dump, value_dump)	
+    end
+  }
+
+	print " " * 8
+	print "\b" * 8
+	print "#{sprintf('%7.3f', id.to_f/max.to_f*100.0)}%"
+	print "\b" * 8
+	$stdout.flush
+}
