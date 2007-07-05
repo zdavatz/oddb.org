@@ -470,7 +470,12 @@ module ODDB
 			end
       def rss
         if(channel = @session.user_input(:channel))
-          Rss::PassThru.new(@session, channel)
+          key = channel.gsub('.', '_').to_sym
+          if(@session.lookandfeel.enabled?(key))
+            Rss::PassThru.new(@session, channel)
+          else
+            Http404.new(@session, nil)
+          end
         end
       end
 			def search
