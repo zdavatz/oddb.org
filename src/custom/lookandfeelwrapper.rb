@@ -129,6 +129,7 @@ module ODDB
 			:paypal,
 			:query_limit,
       :screencast,
+      :sl_price_news,
 			:sponsor,
 			:sponsorlogo,
 		]
