@@ -747,7 +747,6 @@ class OddbPrevalence
 			@bean_counter.kill
 		end
 		@bean_counter = Thread.new {
-			#Thread.current.priority = -5
 			@analysis_count = analysis_positions.size
 			@atc_ddd_count = count_atc_ddd()
 			@doctor_count = @doctors.size
@@ -1895,7 +1894,7 @@ module ODDB
             gc << 'M' if bytes < lastbytes
             path = File.expand_path('../../doc/resources/downloads/status',
                                     File.dirname(__FILE__))
-            lines = File.readlines(path)[0,100]
+            lines = File.readlines(path)[0,100] rescue []
             lines.unshift sprintf(format, alarm, 
                                   time.strftime('%Y-%m-%d %H:%M:%S'),
                                   sessions, threads, bytes / (2**20), gc)
