@@ -298,14 +298,16 @@ class GoogleAdSenseComposite < View::GoogleAdSenseComposite
   }
   def rss_feeds_left(model, session=@session)
     content = []
-    if(@lookandfeel.enabled?(:minifis))
+    if(@lookandfeel.enabled?(:minifi_rss))
       content.push MiniFis.new(model.minifis, @session, self)
     end
-    if(@lookandfeel.enabled?(:fachinfo_news))
+    if(@lookandfeel.enabled?(:fachinfo_rss))
       content.push FachinfoNews.new(model.fachinfo_news, @session, self)
     end
-    if(@lookandfeel.enabled?(:sl_price_news))
+    if(@lookandfeel.enabled?(:price_cut_rss))
       content.push SLPriceNews.new(:price_cut, @session, self)
+    end
+    if(@lookandfeel.enabled?(:price_rise_rss))
       content.push SLPriceNews.new(:price_rise, @session, self)
     end
     content

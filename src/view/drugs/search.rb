@@ -17,9 +17,11 @@ class Search < View::PublicTemplate
   def other_html_headers(context)
     headers = super 
     @session.valid_values(:channel).each { |channel|
-      url = @lookandfeel._event_url(:rss, :channel => channel)
-      headers << context.link(:href => url, :type => "application/rss+xml",
-                              :title => channel, :rel => "alternate")
+      if(@lookandfeel.enabled?(channel.gsub('.', '_').to_sym))
+        url = @lookandfeel._event_url(:rss, :channel => channel)
+        headers << context.link(:href => url, :type => "application/rss+xml",
+                                :title => channel, :rel => "alternate")
+      end
     }
     headers
   end
