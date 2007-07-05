@@ -3,10 +3,10 @@
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
 
-require 'util/html_parser'
 require 'net/http'
 require 'util/oddbconfig'
 require 'util/oddbapp'
+require 'hpricot'
 begin
 	require 'testenvironment'
 	puts "loaded testenvironment"
@@ -15,13 +15,14 @@ end
 
 num_threads = 1
 flavor = 'gcc'
-$respect_session = false
+$respect_session = 100
 while(arg = ARGV.shift)
 	case arg
+  when /session\.(\d+)/
+    $respect_session = $1.to_i
 	when 'session'
-		$respect_session = true
-	when
-		/\d+/
+		$respect_session = 100
+	when /\d+/
 		num_threads = [arg.to_i, num_threads].max
 	when /[a-z]{3,}/
 		flavor = arg
@@ -35,7 +36,7 @@ module ODDB
 		end
 		def new_linkhandler(handler)
 			if(handler && (href = handler.attribute("href")))
-				#printf("href: %s\n", href.inspect)
+				printf("href: %s\n", href.inspect)
 				@links.push(href) 
 			end
 		end
@@ -57,7 +58,7 @@ module ODDB
 			@errors = []
 			@session = Net::HTTP.new(SERVER_NAME)
 			@cookies = {}
-			@state_id_regexp = Regexp.new('state_id/[0-9\-]+/')
+			@state_id_regexp = Regexp.new('state_id/[0-9\-]*/')
 			@load_max = nil
 			@load_max_url = nil
 			@load_min = nil
@@ -78,12 +79,10 @@ module ODDB
 						@load_min = time
 						@load_min_url = link
 					end
-					printf("Session: %3d - received:  %8d: %s in %1.2fs\n", @id, idx, link, time)
-					if(links = extract_links(html))
-						schedule_links(links, idx)
-					end
+					printf("Session: %3d - received:  %8d after %1.2fs: %s\n", @id, idx, time, link)
+          schedule_links(extract_links(html), idx)
 				else
-					printf("Session: %3d - ## error:  %8d: %s in %1.2fs\n", @id, idx, link, Time.now - start)
+					printf("Session: %3d - ## error:  %8d after %1.2fs: %s\n", @id, idx, Time.now - start, link)
 					@errors.push(link)
 				end
 			}
@@ -97,15 +96,6 @@ module ODDB
 			puts "Longest  Load-Time: #@load_max s (#@load_max_url)"
 		end
 		def schedule_links(links, idx)
-=begin
-			puts "scheduling...."
-			puts links
-			puts "-"*40
-			puts @visited
-			puts "="*40
-			puts links-@visited
-			puts "*"*40
-=end
 			links.each { |link|
 				if((link.index(SERVER_NAME) || link[0] == ?/)\
 					&& !link.index('download') \
@@ -119,29 +109,28 @@ module ODDB
 			}
 		end
 		def extract_links(html)
-			writer = CrawlerWriter.new
-			formatter = HtmlFormatter.new(writer)
-			parser = HtmlParser.new(formatter)
-			parser.feed(html)
-			if(links = writer.links)
-				links.compact.collect { |link| 
-					link.gsub(@state_id_regexp, '')
-				}
-			end
+      hp = Hpricot(html)
+      (hp/"//a").collect { |link|
+        (href = link.attributes["href"]) && href.gsub(@state_id_regexp, '')
+      }.compact
 		end
+    def respect_session
+      rand(100) < $respect_session
+    end
 		def get_http(link)
 			try = 3
 			begin
-				continuation = nil
-				callcc { |continuation| }	
+				#continuation = nil
+				#callcc { |continuation| }	
 				resp = @session.get(link, headers)
 				if resp.is_a? Net::HTTPOK
-					if(rand(100) < 30)
-						#impatient 30% that click again
-						continuation.call
-					end
-					update_cookies(resp) if($respect_session)
-					resp.body
+          html = resp.body.dup
+					#if(rand(100) < 30)
+						##impatient 30% that click again
+						#continuation.call
+					#end
+					update_cookies(resp) if(respect_session)
+					html
 				end
 			rescue Timeout::Error, EOFError
 				if(try > 0)
@@ -178,7 +167,7 @@ end
 
 puts "checking links for #{ODDB::SERVER_NAME}"
 puts "flavor:      #{flavor}"
-puts "sessions:    #{$respect_session}"
+puts "sessions:    #{$respect_session}%"
 puts "concurrent:  #{num_threads}"
 crawlers = []
 threads = []
