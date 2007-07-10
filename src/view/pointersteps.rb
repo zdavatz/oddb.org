@@ -93,7 +93,9 @@ module ODDB
 				event = state.direct_event
 				ignore = nil
 				path = {}
-				while((event.nil? || event == ignore) && (state = state.previous))
+				while((event.nil? || event == ignore) \
+              && (prev = state.previous) && prev != state)
+          state = prev
 					ignore ||= @session.state.snapback_event
 					event = state.snapback_event
 					path = state.direct_request_path
