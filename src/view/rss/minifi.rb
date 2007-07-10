@@ -40,6 +40,7 @@ class MiniFi < HtmlGrid::Component
 
         document = minifi.send(@session.language)
         item = feed.items.new_item
+        item.author = "ODDB.org"
 
         comp = MiniFiTemplate.new(minifi, @session, self)
 

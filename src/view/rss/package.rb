@@ -36,6 +36,7 @@ class Package < HtmlGrid::Component
       language = @session.language
       @model.each { |package|
         item = feed.items.new_item
+        item.author = "ODDB.org"
         pcurrent = package.price_public
         plast = package.price_public(1)
         item.title = sanitize sprintf("%s: %s, %s, %s, %+.1f%%",

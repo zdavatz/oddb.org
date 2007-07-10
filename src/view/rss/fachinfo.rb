@@ -46,6 +46,7 @@ class Fachinfo < HtmlGrid::Component
         next unless(document.is_a?(FachinfoDocument))
 
         item = feed.items.new_item
+        item.author = "ODDB.org"
 
         name = item.title = sanitize(fachinfo.localized_name(language))
         item.guid.content = item.link = @lookandfeel._event_url(:resolve, 

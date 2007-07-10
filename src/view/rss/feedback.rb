@@ -50,6 +50,7 @@ class Feedback < HtmlGrid::Component
       @model.each { |feedback|
         if(parent = feedback.item)
           item = feed.items.new_item
+          item.author = "ODDB.org"
           title = case parent.odba_instance
                   when ODDB::Package
                     title = @lookandfeel.lookup(:feedback_title, 
