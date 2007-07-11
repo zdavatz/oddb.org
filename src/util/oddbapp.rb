@@ -16,6 +16,7 @@ require 'util/loggroup'
 require 'util/soundex'
 require 'util/iso-latin1'
 require 'util/notification_logger'
+require 'util/today'
 require 'remote/package'
 require 'admin/subsystem'
 require 'models'
@@ -29,23 +30,6 @@ require 'yaml'
 require 'yus/session'
 require 'model/migel/group'
 require 'model/analysis/group'
-
-class Object
-	unless(defined?(@@date_arithmetic_optimization))
-		@@date_arithmetic_optimization = Thread.new {
-			loop {
-				@@today = Date.today
-				@@one_year_ago = @@today << 12
-				@@two_years_ago = @@today << 24
-				tomorrow = Time.local(@@today.year, @@today.month, @@today.day)
-				sleep([tomorrow - Time.now, 3600].max)
-			}	
-		}
-		def today
-			@@today
-		end
-	end
-end
 
 class OddbPrevalence
 	include ODDB::Failsafe

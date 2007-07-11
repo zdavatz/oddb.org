@@ -302,6 +302,13 @@ class TestRegistration < Test::Unit::TestCase
 		seq1.__verify
 		seq2.__verify
 	end
+  def test_active
+    assert_equal(true, @registration.active?)
+    @registration.expiration_date = @@two_years_ago - 1 
+    assert_equal(nil, @registration.active?)
+    @registration.renewal_flag = true
+    assert_equal(true, @registration.active?)
+  end
 end
 class TestIncompleteRegistration < Test::Unit::TestCase
 	def setup
