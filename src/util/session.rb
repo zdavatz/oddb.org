@@ -7,7 +7,6 @@ require 'state/states'
 require 'util/validator'
 require 'model/user'
 require 'fileutils'
-require 'timeout'
 
 module ODDB
   class Session < SBSM::Session
@@ -21,8 +20,6 @@ module ODDB
 		PERSISTENT_COOKIE_NAME = 'oddb-preferences'
 		QUERY_LIMIT = 5
 		QUERY_LIMIT_AGE = 60 * 60 * 24
-		PROCESS_TIMEOUT = 30 * 5
-		HTML_TIMEOUT = 30 * 5
 		@@requests ||= {}
 		def Session.reset_query_limit(ip = nil)
 			if(ip)
@@ -30,15 +27,6 @@ module ODDB
 			else
 				@@requests.clear
 			end
-		end
-		def Session.request_log
-			path = File.expand_path('../../log/request_log', 
-				File.dirname(__FILE__))
-			FileUtils.mkdir_p(File.dirname(path))
-			@@request_log ||= File.open(path, 'a')
-		end
-		def Session.restart_logging
-			@@request_log = nil
 		end
 		def initialize(key, app, validator=nil)
 			super(key, app, validator)
@@ -70,7 +58,6 @@ module ODDB
 				}
 				requests.push(@process_start)
 				if(requests.size > QUERY_LIMIT)
-					#request_log('DENY')
 					@desired_state = @state
 					@active_state = @state = @state.limit_state
           @state.request_path = @desired_state.request_path
@@ -87,55 +74,15 @@ module ODDB
       end
       super
     end
-		def process(request)
-			#logtype = 'PRIN'
-			timeout(PROCESS_TIMEOUT) { 
-				@request = request
-				@request_id = request.object_id
-				@request_path = request.unparsed_uri
-				@process_start = Time.now
-				#request_log('INIT')
-				#logtype = 'PRCS'
-				super
-				if(!is_crawler? && self.lookandfeel.enabled?(:query_limit))
-					limit_queries 
-				end
-			}
-			'' ## return empty string across the drb-border
-		rescue Timeout::Error
-			#logtype = 'PRTO'
-			'your request has timed out. please try again later.'
-		rescue StandardError => ex
-			#logtype = ex.message
-			''
-		#ensure
-			#request_log(logtype)
-		end
-		def request_log(phase)
-			bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
-			asterisk = is_crawler? ? "*" : " "
-			now = Time.now
-			Session.request_log.puts(sprintf(
-				"%s | %sip: %15s | session:%12i | request:%12i | time:%7.3fs | mem:%6iMB | %s %s",
-				now.strftime('%Y-%m-%d %H:%M:%S'), asterisk, remote_ip, self.object_id, @request_id, 
-				now - @process_start, bytes / (2**20), phase, @request_path))
-			Session.request_log.flush
-		rescue Exception
-			## don't die for logging
-		end
-		def to_html
-			#logtype = 'HTML'
-			timeout(HTML_TIMEOUT) {
-				super
-			}
-		rescue Timeout::Error
-			#logtype = 'TMOT'
-			'your request has timed out. please try again later.'
-		rescue Exception => ex
-			#logtype = ex.message
-		#ensure
-			#request_log(logtype)
-		end
+    def process(request)
+      @request_path = request.unparsed_uri
+      @process_start = Time.now
+      super
+      if(!is_crawler? && self.lookandfeel.enabled?(:query_limit))
+        limit_queries 
+      end
+      '' ## return empty string across the drb-border
+    end
 		def add_to_interaction_basket(object)
 			@interaction_basket = @interaction_basket.push(object).uniq
 		end
