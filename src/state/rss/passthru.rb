@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 # State:Rss::Passthru -- oddb.org -- 23.05.2007 -- hwyss@ywesee.com
 
-require 'sbsm/state'
+require 'state/global_predefine'
 require 'htmlgrid/passthru'
 
 module ODDB
   module State
     module Rss
-class PassThru < SBSM::State
+class PassThru < Global
   VIEW = HtmlGrid::PassThru
   VOLATILE = true
   def init
