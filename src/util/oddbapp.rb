@@ -35,7 +35,8 @@ class OddbPrevalence
 	include ODDB::Failsafe
 	include ODBA::Persistable
 	ODBA_EXCLUDE_VARS = [
-		"@atc_chooser", "@bean_counter",
+		"@atc_chooser", "@bean_counter", "@sorted_fachinfos", "@sorted_feedbacks",
+    "@sorted_minifis",
 	]
 	ODBA_SERIALIZABLE = [ '@currency_rates', '@rss_updates' ]
 	attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
@@ -727,22 +728,26 @@ class OddbPrevalence
 		@recent_registration_count ||= count_recent_registrations()
 	end
 	def recount
+    again = true
 		if(@bean_counter.is_a?(Thread) && @bean_counter.status)
-			@bean_counter.kill
+			return again = true
 		end
 		@bean_counter = Thread.new {
-			@analysis_count = analysis_positions.size
-			@atc_ddd_count = count_atc_ddd()
-			@doctor_count = @doctors.size
-			@company_count = @companies.size
-			@substance_count = @substances.size
-			@limitation_text_count = count_limitation_texts()
-			@migel_count = migel_products.size
-			@package_count = count_packages()
-			@patinfo_count = count_patinfos()
-			@recent_registration_count = count_recent_registrations()
-			@vaccine_count = count_vaccines()
-			self.odba_isolated_store
+      while(again)
+        again = false
+        @analysis_count = analysis_positions.size
+        @atc_ddd_count = count_atc_ddd()
+        @doctor_count = @doctors.size
+        @company_count = @companies.size
+        @substance_count = @substances.size
+        @limitation_text_count = count_limitation_texts()
+        @migel_count = migel_products.size
+        @package_count = count_packages()
+        @patinfo_count = count_patinfos()
+        @recent_registration_count = count_recent_registrations()
+        @vaccine_count = count_vaccines()
+        self.odba_isolated_store
+      end
 		}
 	end
 	def registration(registration_id)
@@ -1068,14 +1073,14 @@ class OddbPrevalence
 		ODBA.cache.retrieve_from_index("substance_soundex_index", key)
 	end
   def sorted_fachinfos
-    @fachinfos.values.select { |fi| 
+    @sorted_fachinfos ||= @fachinfos.values.select { |fi| 
       fi.revision }.sort_by { |fi| fi.revision }.reverse
   end
   def sorted_feedbacks
-    @feedbacks.values.sort_by { |fb| fb.time }.reverse
+    @sorted_feedbacks ||= @feedbacks.values.sort_by { |fb| fb.time }.reverse
   end
   def sorted_minifis
-    @minifis.values.sort_by { |minifi| 
+    @sorted_minifis ||= @minifis.values.sort_by { |minifi| 
       [ -minifi.publication_date.year, 
         -minifi.publication_date.month, minifi.name] }
   end
@@ -1121,6 +1126,12 @@ class OddbPrevalence
 					subs.odba_isolated_store
 				end
 			}
+    when ODDB::Fachinfo, ODDB::FachinfoDocument
+      @sorted_fachinfos = nil
+    when ODDB::Feedback
+      @sorted_feedbacks = nil
+    when ODDB::Minifi
+      @sorted_minifis = nil
 		end
 	end
 	def user(oid)
@@ -1427,6 +1438,7 @@ module ODDB
 						EXPORT_HOUR)
 					sleep(next_run - Time.now)
 					Exporter.new(self).run
+          #Thread.main.exit
 					GC.start
 					today = @@today.next
 				}
@@ -1870,6 +1882,7 @@ module ODDB
             threads = ObjectSpace.each_object(Thread) {}
             lastbytes = bytes
             bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
+            mbytes = bytes / (2**20)
             lastsessions = sessions
             sessions = @sessions.size
             gc = ''
@@ -1881,7 +1894,7 @@ module ODDB
             lines = File.readlines(path)[0,100] rescue []
             lines.unshift sprintf(format, alarm, 
                                   time.strftime('%Y-%m-%d %H:%M:%S'),
-                                  sessions, threads, bytes / (2**20), gc)
+                                  sessions, threads, mbytes, gc)
             File.open(path, 'w') { |fh|
               fh.puts lines
             }
