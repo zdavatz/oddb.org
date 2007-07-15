@@ -44,7 +44,7 @@ module ODDB
 				super
 			end
 		end
-		def expired?
+		def expired?(now=Time.now)
       super || (logged_in? && @user.expired?)
 		end
 		def flavor
