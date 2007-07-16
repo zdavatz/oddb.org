@@ -1130,7 +1130,7 @@ class OddbPrevalence
       @sorted_fachinfos = nil
     when ODDB::Feedback
       @sorted_feedbacks = nil
-    when ODDB::Minifi
+    when ODDB::MiniFi
       @sorted_minifis = nil
 		end
 	end
