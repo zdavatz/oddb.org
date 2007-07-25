@@ -51,7 +51,7 @@ module CompanyUser
 	def new_fachinfo
 		if((pointer = @session.user_input(:pointer)) \
 				&& (registration = pointer.resolve(@session)) \
-				&& allowed?(registration))
+				&& @session.allowed?('edit', registration))
 			_new_fachinfo(registration)
 		end
 	end
