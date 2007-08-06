@@ -174,7 +174,7 @@ Limitation: Kostenübernahme nur auf vorgängige besondere Gutsprache des Krankenv
 Zur Insulintherapie bei:
 - Extrem labiler Diabetes.
 -  Einstellung auch mit der Methode der   Mehrfachinjektionen unbefriedigend.
--  Indikationen des Pumpeneinsatzes und   Betreuung des Patienten durch ein   qualifiziertes Zentrum oder, nach    Rücksprache mit dem Vertrauensarzt, durch  einen Arzt, der in der Anwendung der   Insulinpumpen ausgebildet ist.","","Miete/Tag","9","B","01.01.2006"
+-  Indikationen des Pumpeneinsatzes und   Betreuung des Patienten durch ein   qualifiziertes Zentrum oder, nach    Rücksprache mit dem Vertrauensarzt, durch  einen Arzt, der in der Anwendung der   Insulinpumpen ausgebildet ist.","","Miete/Tag","Fr. 9","B","01.01.2006"
 			]
 			id = %w(03 02 01 00 2)
 			subgroup = FlexMock.new
