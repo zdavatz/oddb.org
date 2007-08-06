@@ -4,7 +4,7 @@
 require 'util/persistence'
 require 'plugin/plugin'
 require 'model/text'
-require 'csvparser'
+require 'csv'
 require 'iconv'
 require 'date'
 
@@ -16,7 +16,7 @@ module ODDB
 			'3'	=> :both,
 		}
 		def date_object(date)
-			date = date.split(".")
+			date = date.to_s.split(".")
 			if(date.size == 3)
 				Date.new(date.at(2).to_i, date.at(1).to_i, date.at(0).to_i)
 			end
@@ -55,10 +55,13 @@ module ODDB
 			}
 		end
 		def update(path, language)
-			CSVParser.parse_with_file(path).each { |row|
-				id = row.at(13).split('.')
+      lines = CSV.read(path)
+			#CSVParser.parse_with_file(path).each { |row|
+      lines.shift
+      lines.each { |row|
+				id = row.at(13).to_s.split('.')
 				if(id.empty?)
-					id = row.at(4).split('.')
+					id = row.at(4).to_s.split('.')
 				else
 					id[-1].replace(id[-1][0,1])
 				end
@@ -74,10 +77,10 @@ module ODDB
 			pointer = Persistence::Pointer.new([:migel_group, groupcd])
 			hash = {
 				:code => groupcd,
-				language  => row.at(2), 
+				language  => row.at(2).to_s, 
 			}
 			group = @app.update(pointer.creator, hash, :migel)
-			text = row.at(3)
+			text = row.at(3).to_s
 			text.tr!("\v", " ")
 			text.strip!
 			unless(text.empty?)
@@ -91,10 +94,10 @@ module ODDB
 			pointer = group.pointer + [:subgroup, sgcd]
 			hash = {
 				:code => sgcd,
-				language => row.at(6),
+				language => row.at(6).to_s,
 			}
 			subgroup = @app.update(pointer.creator, hash, :migel)
-			text = row.at(7)
+			text = row.at(7).to_s
 			unless(text.empty?)
 				lim_ptr = pointer + [:limitation_text]
 				@app.update(lim_ptr.creator, {language => text}, :migel)
@@ -104,7 +107,7 @@ module ODDB
 		def update_product(id,  subgroup, row, language)
 			productcd = id[2,3].join(".")
 			pointer = subgroup.pointer + [:product, productcd]
-			name = row.at(12)
+			name = row.at(12).to_s
 			product_text = row.at(15).gsub(/[ \t]+/, " ")
 			product_text.tr!("\v", "\n")
 			limitation = ''
@@ -149,7 +152,7 @@ module ODDB
 				@app.update(lim_ptr.creator, {language => limitation},
 									 :migel)
 			end
-			unit = row.at(17)
+			unit = row.at(17).to_s
 			unless(unit.empty?)
 				uni_ptr = pointer + [:unit]
 				@app.update(uni_ptr.creator, {language => unit}, :migel)
