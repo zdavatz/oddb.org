@@ -160,6 +160,9 @@ module ODDB
 			@patent && @patent.protected?
 			#@patented_until && (@patented_until >= @@today)
 		end
+    def public?(cutoff=@@two_years_ago)
+      !@export_flag && active?(cutoff)
+    end
 		def public_package_count
 			if(active?)
 				@sequences.values.inject(0) { |inj, seq|

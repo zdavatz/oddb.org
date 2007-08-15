@@ -178,15 +178,18 @@ module ODDB
 		def package_count
 			@packages.length
 		end
+    def public?
+      !@export_flag && @registration.public? && active?
+    end
 		def public_packages
-			if(active?) 
+			if(public?) 
 				@packages.values.select { |pac| pac.public? }
 			else
 				[]
 			end
 		end
 		def public_package_count(generic_type=nil)
-			if(active? && (generic_type.nil? \
+			if(public? && (generic_type.nil? \
 				|| @registration.generic_type == generic_type))
         count = 0
 				@packages.values.each { |pack|
