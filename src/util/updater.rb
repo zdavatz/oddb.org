@@ -16,6 +16,7 @@ require 'plugin/minifi'
 require 'plugin/narcotic'
 require 'plugin/ouwerkerk'
 require 'plugin/patinfo'
+require 'plugin/rss'
 require 'plugin/swissmedicjournal'
 require 'plugin/swissreg'
 require 'plugin/vaccines'
@@ -187,6 +188,7 @@ module ODDB
       update_trade_status
       update_medwin_packages
       update_lppv
+      update_price_feeds
       export_ouwerkerk
       export_generics_xls
       export_competition_xlss
@@ -227,6 +229,9 @@ module ODDB
                       month.strftime('Kurzfachinfo %m/%Y'), 
                       :update, month)
       end
+    end
+    def update_price_feeds(month = @@today)
+      RssPlugin.new(@app).update_price_feeds(month)
     end
 		def update_trade_status
 			update_immediate(MedwinPackagePlugin, 'Trade-Status', :update_trade_status)

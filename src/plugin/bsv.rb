@@ -264,26 +264,6 @@ module ODDB
 			info.store(:parts, parts)
 			info
 		end
-    def postprocess(flags=@change_flags, month=@month||@@today)
-      cuts = []
-      rises = []
-      flags.each { |ptr, flgs|
-        target = nil
-        if(!(flgs & [:price_cut, :price_rise]).empty? \
-           && (package = ptr.resolve(@app)) && package.is_a?(Package) \
-           && (previous = package.price_public(1)))
-          current = package.price_public
-          if(previous > current)
-            target = cuts
-          elsif(current > previous)
-            target = rises
-          end
-          target.push(package) if(target)
-        end rescue Persistence::UninitializedPathError
-      }
-      update_rss_feeds('price_cut.rss', cuts.sort, View::Rss::PriceCut)
-      update_rss_feeds('price_rise.rss', rises.sort, View::Rss::PriceRise)
-    end
 		def report
 			[
 				format_header("Successful Updates:", @successful_updates.size),
@@ -346,7 +326,6 @@ module ODDB
 			## -> is being done on the fly
       
       # write rss-feeds
-      postprocess
       true
 		rescue RuntimeError => e
 			## return nil if any of the downloads fail.
