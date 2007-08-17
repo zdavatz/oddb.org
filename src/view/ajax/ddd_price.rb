@@ -58,7 +58,11 @@ class DDDPrice < HtmlGrid::Composite
 			ddose = ddd.dose.want(wanted)
 			curr = @session.currency
 			comp = HtmlGrid::Value.new(:ddd_calculation, model, @session, self)
-      if(mdose > ddose)
+      if(factor = model.longevity)
+        comp.value = @lookandfeel.lookup(:ddd_calc_long, factor, mprice,
+                                         model.size, dprice, curr)
+
+      elsif(mdose > ddose)
         comp.value = @lookandfeel.lookup(:ddd_calc_tablet, mprice,
                                          model.size, dprice, curr)
       else

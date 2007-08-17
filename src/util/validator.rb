@@ -254,6 +254,7 @@ module ODDB
 			:index_price,
 			:item_number,
 			:limitation_points,
+      :longevity,
 			:lookandfeel_price,
 			:lookandfeel_member_count,
 			:lookandfeel_member_price,

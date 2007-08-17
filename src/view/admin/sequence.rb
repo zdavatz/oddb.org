@@ -192,14 +192,15 @@ class SequenceForm < Form
 		[2,1]		=>	:name_descr,
 		[0,2]		=>	:dose,
 		[2,2]		=>	:galenic_form,
-		[0,3]		=>	:atc_class,
-		[2,3]		=>	:atc_descr,
+		[0,3]		=>	:longevity,
+		[0,4]		=>	:atc_class,
+		[2,4]		=>	:atc_descr,
 	}
 	COMPONENT_CSS_MAP = {
-		[0,0,4,4]	=>	'standard',
+		[0,0,4,5]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,4,5]	=>	'list',
+		[0,0,4,6]	=>	'list',
 	}
 	LABELS = true
 	TAG_METHOD = :multipart_form
@@ -218,33 +219,33 @@ class SequenceForm < Form
 	def reorganize_components
 		if(@model.is_a?(ODDB::Sequence))
 			components.update({
-				[0,4]		=>	:patinfo_upload,
-				[2,4]   =>  :patinfo_label,
-				[3,4,1] =>  :patinfo,
-				[3,4,2] =>  :assign_patinfo,
-				[3,4,3] =>  :delete_patinfo,
-				[1,5,0]	=>	:submit,
-				[1,5,1] =>  :delete_item,
+				[0,5]		=>	:patinfo_upload,
+				[2,5]   =>  :patinfo_label,
+				[3,5,1] =>  :patinfo,
+				[3,5,2] =>  :assign_patinfo,
+				[3,5,3] =>  :delete_patinfo,
+				[1,6,0]	=>	:submit,
+				[1,6,1] =>  :delete_item,
 			})
 			css_map.update({
-				[3,4]		=>	'list',
-				[0,5,4] =>	'list',
+				[3,5]		=>	'list',
+				[0,6,4] =>	'list',
 			})
 			if(@model.atc_class.nil? && !atc_descr_error?)
 				if(@model.company.nil?)
-					components.store([5,3], :atc_request_label)
-					components.store([3,3], :no_company)
+					components.store([5,4], :atc_request_label)
+					components.store([3,4], :no_company)
 				else
 					if(@model.company.regulatory_email.to_s.empty?)
-						components.store([2,3], :regulatory_email)
+						components.store([2,4], :regulatory_email)
 					else
-						components.store([2,3], :atc_request_label)
-						components.store([3,3], :atc_request)
+						components.store([2,4], :atc_request_label)
+						components.store([3,4], :atc_request)
 					end
 				end
 			end
 		else
-			components.store([1,4], :submit)
+			components.store([1,5], :submit)
 		end
 	end
 	def assign_patinfo(model, session=@session)

@@ -153,6 +153,13 @@ Grammar OddbSize
 					}
 				}
 			end
+			def sequence_data(*names)
+				names.each { |name|
+					define_method(name) { 
+						@sequence && @sequence.send(name)
+					}
+				}
+			end
 		end
 		attr_reader :ikscd, :size, :count, :multi, :measure, :comform, :descr,
 			:addition, :scale, :sl_entry, :narcotics
@@ -166,6 +173,9 @@ Grammar OddbSize
 			:expired?, :export_flag, :generic_type, :inactive_date, :pdf_fachinfos,
 			:registration_date, :revision_date, :patent, :patent_protected?, :vaccine,
 			:parallel_import, :minifi
+    sequence_data :active_agents, :atc_class, :basename, :company, :dose, 
+      :fachinfo, :galenic_form, :has_patinfo?, :longevity, :iksnr, :indication, 
+      :name, :name_base, :patinfo, :pdf_patinfo, :registration
 		def initialize(ikscd)
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)
@@ -174,9 +184,6 @@ Grammar OddbSize
 		end
 		def active?
 			!@disable && (@market_date.nil? || @market_date <= @@today)
-		end
-		def active_agents
-			@sequence.active_agents
 		end
 		def add_narcotic(narc)
 			unless(narc.nil? || @narcotics.include?(narc))
@@ -191,12 +198,6 @@ Grammar OddbSize
 				Ean13.new_unchecked('7680'+key).to_s
 			end
 		end
-		def atc_class
-			@sequence.atc_class
-		end
-		def basename
-			@sequence.basename
-		end
 		def checkout
 			checkout_helper([@generic_group], :remove_package)
 			@narcotics.each { |narc| 
@@ -206,9 +207,6 @@ Grammar OddbSize
 				@sl_entry.checkout 
 				@sl_entry.odba_delete
 			end
-		end
-		def company
-			@sequence.company
 		end
 		def company_name
 			company.name
@@ -220,11 +218,12 @@ Grammar OddbSize
 			if((atc = atc_class) && atc.has_ddd? && (ddd = atc.ddds['O']) \
 				&& (grp = galenic_form.galenic_group) && grp.match(@@ddd_galforms) \
 				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose))
-        if(mdose > ddose)
-          (price / comparable_size.to_f)
+        factor = (longevity || 1).to_f
+        if(mdose > (ddose * factor))
+          (price / comparable_size.to_f) / factor
         else
           (price / comparable_size.to_f) \
-            * (ddose.to_f / mdose.want(ddose.unit).to_f)
+            * (ddose.to_f * factor / mdose.want(ddose.unit).to_f) / factor
         end
 			end
 		rescue RuntimeError
@@ -234,12 +233,6 @@ Grammar OddbSize
 			self.odba_isolated_store
 			nil
 		end
-		def dose
-			@sequence.dose
-		end
-		def fachinfo
-			@sequence.fachinfo
-		end
 		def good_result?(query)
 			query = query.to_s.downcase
 			basename.to_s.downcase[0,query.length] == query
@@ -247,22 +240,10 @@ Grammar OddbSize
 		def localized_name(language)
 			@sequence.localized_name(language)
 		end
-		def galenic_form
-			@sequence.galenic_form
-		end
-		def has_patinfo?
-			@sequence.has_patinfo?
-		end
 		def ikskey
 			if(nr = iksnr)
 				nr + @ikscd
 			end
-		end
-		def iksnr
-			@sequence.iksnr if(@sequence.respond_to? :iksnr)
-		end
-		def indication
-			@sequence.indication
 		end
 		def limitation
 			@sl_entry.limitation unless @sl_entry.nil?
@@ -273,30 +254,15 @@ Grammar OddbSize
 		def most_precise_dose
 			@pretty_dose || dose
 		end
-		def name
-			@sequence.name
-		end
-		def name_base
-			@sequence.name_base
-		end
 		def narcotic?
 			@narcotics.any? { |narc| narc.category == 'a' }
-		end
-		def patinfo
-			@sequence.patinfo
-		end
-		def pdf_patinfo
-			@sequence.pdf_patinfo
 		end
 		def public?
       active? && (@refdata_override || !@out_of_trade \
                   || registration.active?(@@today))
 		end
-		def registration
-			@sequence.registration
-		end
 		def registration_data(key)
-			if(@sequence && (reg = @sequence.registration))
+			if(reg = registration)
 				reg.send(key)
 			end
 		end

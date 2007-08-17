@@ -140,6 +140,7 @@ module SequenceMethods
 			:dose,
 			:name_base, 
 			:name_descr,
+      :longevity,
 		]
 		input = user_input(keys)
 		galform = @session.user_input(:galenic_form)

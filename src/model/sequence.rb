@@ -10,7 +10,7 @@ module ODDB
 	class SequenceCommon
 		include Persistence
 		attr_reader :seqnr, :name_base, :name_descr, :packages,
-								:active_agents
+								:active_agents, :longevity
 		attr_accessor :registration, :dose, :atc_class, :export_flag,
 									:galenic_form, :patinfo, :pdf_patinfo, :atc_request_time
 		attr_writer :composition_text, :inactive_date
@@ -215,6 +215,10 @@ module ODDB
 				package.limitation_text
 			}.size
 		end
+    def longevity=(days)
+      days = days.to_i
+      @longevity = (days > 1) ? days : nil
+    end
 		def patent_protected?
 			@registration.patent_protected? if(@registration)
 		end
