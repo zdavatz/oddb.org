@@ -59,6 +59,7 @@ class Patinfo2001InnerComposite < View::Drugs::PatinfoInnerComposite
 		:iksnrs,
 		:packages,
 		:distribution,
+    :fabrication,
 		:date
 	]
 end
