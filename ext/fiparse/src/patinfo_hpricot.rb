@@ -12,8 +12,9 @@ module ODDB
   module FiParse
 class PatinfoHpricot
   attr_reader :amendments, :amzv, :company, :composition, :contra_indications,
-    :date, :distribution, :effects, :iksnrs, :galenic_form, :general_advice,
-    :name, :packages, :precautions, :pregnancy, :unwanted_effects, :usage
+    :date, :distribution, :effects, :iksnrs, :fabrication, :galenic_form,
+    :general_advice, :name, :packages, :precautions, :pregnancy,
+    :unwanted_effects, :usage
   def chapter(elem)
     chapter = Text::Chapter.new
     code = nil
@@ -64,6 +65,10 @@ class PatinfoHpricot
       @packages = chapter
     when '7900'
       @distribution = chapter
+    when '7920'
+      @fabrication = chapter
+    when '7940'
+      @date = chapter
     when nil # special chapers without heading
       case chapter.to_s
       when /^\d{5}/
@@ -100,6 +105,7 @@ class PatinfoHpricot
     pat.composition	= @composition
     pat.packages = @packages
     pat.distribution = @distribution
+    pat.fabrication = @fabrication
     pat.date = @date
     pat
   end
@@ -108,26 +114,30 @@ class PatinfoHpricot
     elem.each_child { |child|
       case child
       when Hpricot::Text
-        ptr.section ||= ptr.chapter.next_section
-        ptr.target ||= ptr.section.next_paragraph
-        ptr.target << text(child)
+        handle_text(ptr, child)
       when Hpricot::Elem
         case child.name
         when 'div'
-          ptr.section = ptr.chapter.next_section
-          ptr.target = ptr.section.subheading
-          handle_element(child, ptr)
-          ptr.target << "\n"
-          ptr.target = ptr.section.next_paragraph
+          if((%w{Untertitel Untertitel1} & child.classes).empty?)
+            handle_text(ptr, child)
+          else
+            ptr.section = ptr.chapter.next_section
+            ptr.target = ptr.section.subheading
+            handle_element(child, ptr)
+            ptr.target << "\n"
+            ptr.target = ptr.section.next_paragraph
+          end
         when 'br'
           ptr.section ||= ptr.chapter.next_section
           ptr.target = ptr.section.next_paragraph
         when 'span'
-          ptr.target << ' '
-          ptr.target.augment_format(:italic)
+          target = ptr.target
+          target << ' '
+          target.augment_format(:italic) if(target.is_a?(Text::Paragraph))
           handle_element(child, ptr)
-          ptr.target.reduce_format(:italic)
-          ptr.target << ' '
+          target = ptr.target
+          target.reduce_format(:italic) if(target.is_a?(Text::Paragraph))
+          target << ' '
         when 'table'
           ptr.target = ptr.section.next_paragraph
           ptr.target.preformatted!
@@ -142,11 +152,16 @@ class PatinfoHpricot
       end
     }
   end
+  def handle_text(ptr, child)
+    ptr.section ||= ptr.chapter.next_section
+    ptr.target ||= ptr.section.next_paragraph
+    ptr.target << text(child)
+  end
   def preformatted(target)
     target.respond_to?(:preformatted?) && target.preformatted?
   end
   def preformatted_text(elem)
-    str = elem.respond_to?(:inner_html) ? elem.inner_html : elem.to_s
+    str = elem.inner_text || elem.to_s
     target_encoding(str.gsub(/(&nbsp;|\302\240)/, ' '))
   end
   def simple_chapter(elem)
@@ -162,7 +177,7 @@ class PatinfoHpricot
     text
   end
   def text(elem)
-    str = elem.respond_to?(:inner_html) ? elem.inner_html : elem.to_s
+    str = elem.inner_text || elem.to_s
     target_encoding(str.gsub(/(&nbsp;|\302\240|\s)+/, ' ').strip)
   end
 end

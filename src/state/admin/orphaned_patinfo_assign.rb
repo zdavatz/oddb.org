@@ -62,7 +62,7 @@ class OrphanedPatinfoAssign < State::Admin::Global
 		end
 	end
 	def search_sequences
-		name = @session.user_input(:search_query)
+		name = @session.user_input(:search_query).to_s
 		if(name.is_a? String)
 			@model.sequences = named_sequences(name)
 		else

@@ -39,13 +39,14 @@ module ODDB
 			:composition,
 			:packages,
 			:distribution,
+      :fabrication,
 			:date,
 		]
 		attr_accessor :name, :company, :galenic_form, :effects
 		attr_accessor :purpose, :amendments, :contra_indications, :precautions
 		attr_accessor :pregnancy, :usage, :unwanted_effects
 		attr_accessor :general_advice, :other_advice, :composition, :packages
-		attr_accessor :distribution, :date
+		attr_accessor :distribution, :date, :fabrication
 		attr_accessor :iksnrs # interface only, no data
 		def to_s
 			self::class::CHAPTERS.collect { |name|

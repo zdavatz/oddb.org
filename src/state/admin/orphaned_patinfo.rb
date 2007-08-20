@@ -39,7 +39,7 @@ class OrphanedPatinfo < State::Admin::Global
 			idx = values[:index].to_i
 			lang = values[:language_select]
 			languages = @model.meanings.at(idx)
-			State::Drugs::PatinfoPreview.new(@session, languages[lang])
+			State::Admin::PatinfoPreview.new(@session, languages[lang])
 		end
 	end
 end

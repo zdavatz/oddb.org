@@ -108,6 +108,7 @@ Jahren   pro Tag        pro Tag     pro Tag         
     assert_equal(1, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
     expected = <<-EOS
+
 ----------------------------------------------------
 Alter    Suspension     Kapseln     Z�pfchen        
 in       zu 10 mg/ml    zu 250 mg   125 bzw. 500 mg 
@@ -502,6 +503,34 @@ class TestPatinfoHpricotPonstanDe < Test::Unit::TestCase
     paragraph = section.paragraphs.at(1)
     expected =  "5 ml enthalten 1 g Zucker (0,1 Brotwert)."
     assert_equal(expected, paragraph.text)
+  end
+end
+class TestPatinfoHpricotNasivinDe < Test::Unit::TestCase
+  def setup
+    @path = File.expand_path('data/html/de/nasivin.html', 
+      File.dirname(__FILE__))
+    @writer = PatinfoHpricot.new
+    open(@path) { |fh| 
+      @patinfo = @writer.extract(Hpricot(fh))
+    }
+  end
+  def test_composition5
+    chapter = @writer.effects
+    assert_instance_of(ODDB::Text::Chapter, chapter )
+    assert_equal('Was ist Nasivin und wann wird es angewendet?', chapter.heading)
+    section = chapter.sections.first
+    assert_instance_of(ODDB::Text::Section, section )
+    assert_equal('', section.subheading)
+    chapter = @writer.composition
+    assert_instance_of(ODDB::Text::Chapter, chapter )
+    assert_equal('Was ist in Nasivin enthalten?', chapter.heading)
+    chapter = @writer.packages
+    assert_instance_of(ODDB::Text::Chapter, chapter )
+    assert_equal('Wo erhalten Sie Nasivin? Welche Packungen sind erh�ltlich?', chapter.heading)
+    section = chapter.sections.first
+    assert_instance_of(ODDB::Text::Section, section )
+    assert_equal("In Apotheken und Drogerien ohne �rztliche Verschreibung\n", section.subheading)
+
   end
 end
   end
