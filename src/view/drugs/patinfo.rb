@@ -26,6 +26,7 @@ class PatinfoInnerComposite < HtmlGrid::Composite
 		:composition,
 		:packages,
 		:distribution,
+    :fabrication,
 		:date
 	]
 	COMPONENTS = {}
