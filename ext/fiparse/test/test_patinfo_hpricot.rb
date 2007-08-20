@@ -530,6 +530,15 @@ class TestPatinfoHpricotNasivinDe < Test::Unit::TestCase
     section = chapter.sections.first
     assert_instance_of(ODDB::Text::Section, section )
     assert_equal("In Apotheken und Drogerien ohne ärztliche Verschreibung\n", section.subheading)
+    chapter = @writer.date
+    assert_instance_of(ODDB::Text::Chapter, chapter )
+    assert_equal('Stand der Information', chapter.heading)
+    section = chapter.sections.first
+    assert_instance_of(ODDB::Text::Section, section )
+    assert_equal("", section.subheading)
+    assert_equal(1, section.paragraphs.size)
+    assert_equal("Diese Packungsbeilage wurde im November 2002 letztmals durch die Arzneimittelbehörde (Swissmedic) geprüft.", section.to_s)
+     
 
   end
 end

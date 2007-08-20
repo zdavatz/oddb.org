@@ -68,6 +68,9 @@ class PatinfoHpricot
     when '7920'
       @fabrication = chapter
     when '7940'
+      if(@date) # we are overwriting an existing @date
+        chapter.sections = @date.sections
+      end
       @date = chapter
     when nil # special chapers without heading
       case chapter.to_s
