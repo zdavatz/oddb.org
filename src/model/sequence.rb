@@ -271,7 +271,8 @@ module ODDB
 		def violates_patent?
 			@atc_class && @registration.may_violate_patent?	\
 				&& @atc_class.sequences.any? { |seq| 
-				seq.patent_protected? && seq.company != @registration.company
+				seq.patent_protected? && seq.company != @registration.company \
+          && seq.substances.sort == substances.sort
 			}
 		end
 		private
