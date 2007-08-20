@@ -41,15 +41,16 @@ module ODDB
 					preg.parse.each { |seqnum, pseq|
 						if(seq = reg.sequence(seqnum))
 							if((ndose = pseq.name_dose) || !flags.include?(:dose_only))
-								name_base = pseq.name_base
 								dose = [
 									pseq.most_precise_dose,
 									pseq.most_precise_unit,
 								]
 								values = {
-									:name_base	=>	name_base,
 									:dose				=>	dose,
 								}
+								if(name_base = pseq.name_base)
+									values.store(:name_base, name_base)
+                end
 								@app.update(seq.pointer, values, :swissmedic)
 							end
 							if((comp = pseq.composition) \
@@ -228,7 +229,7 @@ module ODDB
 			smj_reg.incomplete? || ((date = smj_reg.valid_until) && date.year < 2000)
 				#&& smj_reg.iksnr.nil?
 		end
-		def update_active_agent(agent, seq_pointer)
+		def update_active_agent(agent, seq_pointer, liberation)
 			unless(agent.substance.nil?)
 				# FIXME: agent.special and agent.spagyric should not be part of the
 				#        substance-name. They are atm, because some products include
@@ -246,8 +247,13 @@ module ODDB
 					:spagyric_dose => agent.spagyric,	
 					:spagyric_type => agent.special,	
 				}
+        dkey = :dose
+        if(liberation)
+          values.store(:dose, liberation.split(/\s+/, 2))
+          dkey = :chemical_dose
+        end
 				if(agent.dose)
-					values.store(:dose, [agent.dose.qty, agent.dose.unit])
+					values.store(dkey, [agent.dose.qty, agent.dose.unit])
 				end
 				values.update(extract_agent(agent, :chemical))
 				values.update(extract_agent(agent, :equivalent))
@@ -257,8 +263,9 @@ module ODDB
 		def update_active_agents(smj_composition, seq_pointer)
 			agents = smj_composition.active_agents
 			unless(agents.empty?)
+        liberation = smj_composition.liberation if(agents.size == 1)
 				created = agents.collect { |agent|
-					update_active_agent(agent, seq_pointer)
+					update_active_agent(agent, seq_pointer, liberation)
 				}
 				seq = seq_pointer.resolve(@app)
 				(seq.active_agents - created).each { |agent|

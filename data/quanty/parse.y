@@ -81,7 +81,7 @@ class Quanty
         @q.push [:NUMBER, $&.to_f]
 			when /\A([A-Z]\.){2}/
 			when /\A[A-Za-z_]+ -/
-      when /\A[A-Za-z_]+([A-Za-z_0-9-]+[A-Za-z_])?/o
+      when /\A[A-Za-z_µ]+([A-Za-z_µ0-9-]+[A-Za-z_µ])?/o
         @q.push [:WORD, $&]
       when /\A[$%'"]'?/o
         @q.push [:WORD, $&]

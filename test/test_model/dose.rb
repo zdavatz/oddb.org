@@ -139,4 +139,8 @@ class TestDose < Test::Unit::TestCase
 			dose.to_f
 		}
 	end
+  def test_ug_h
+    dose = ODDB::Dose.new(100, 'µg/h')
+    assert_equal('100 µg/h', dose.to_s)
+  end
 end
