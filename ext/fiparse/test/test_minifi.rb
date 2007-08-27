@@ -323,6 +323,18 @@ Pour des plus amples informations relatives à la préparation, veuillez consulter
         assert_equal "Zulassung eines Arzneimittels mit neuem Wirkstoff: Prac-tic ad us. vet., Spot-on Lösung (Pyriprol); topisches Antiektoparasitikum gegen Zecken und Flöhe für Hunde", mini5[:de].heading
         assert_equal "Autorisation d'un médicament contenant un nouveau principe actif: Prac-tic ad us. vet., solution spot-on (pyriprole); ectoparasiticide à usage topique contre les tiques et les puces chez les chiens", mini5[:fr].heading
       end
+      def test_smj_07_2007
+        eval(File.read(File.expand_path('data/smj_07_2007.rb',
+                                        File.dirname(__FILE__))))
+        assert_equal(1, @writer.minifis.size)
+        expected = [ "Umckaloabo", ] 
+        assert_equal(expected, 
+                     @writer.minifis.collect { |mini| mini[:name] })
+
+        mini1, = @writer.minifis
+        assert_equal "Zulassung eines pflanzlichen Arzneimittels mit neuem Wirstoff: Umckaloabo®, Lösung (Ethanolischer Flüssigextrakt aus den Wurzeln von Pelargonium sidoides)", mini1[:de].heading
+        assert_equal "Autorisation d'un phytom\351dicament contenant un nouveau principe actif: Umckaloabo\256, solution (extrait \351thanolique liquide de racines de pelargonium sidoides)", mini1[:fr].heading
+      end
     end
   end
 end

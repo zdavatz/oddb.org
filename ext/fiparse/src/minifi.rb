@@ -21,10 +21,10 @@ module ODDB
                               }ix
         HYPHEN = /-$/
         NAME_PTRN = /
-                    (?:Wirkstoffe?s:
+                    (?:Wirk?toffe?s:
                     [^\(]*\((?<name>[^,\s\256\(]+))(\256|\(TM\))
                     |
-                    (?:(?:(?:(?:Impf|Wirk)stoffe?s?)
+                    (?:(?:(?:(?:Impf|Wirk?)stoffe?s?)
                          |(?:Zulassung\s*des\s*ersten[^:]+)):
                     (?:\s+Informationen\s+zu)?
                     \s*(?<name>[^,\s\256\(]+(,?\s*ad\s*us\.\s*vet\.)?))
@@ -58,7 +58,7 @@ module ODDB
           case line
           #when %r{^(Neu|Erst)?Zulassung eines (Arzneimittels|Medikamente?s) 
           #         mit( einem)? neue[mn] Wirkstoff}ix,
-          when %r{^Zulassung eines Arzneimittels mit( einem)? neue[mn] Wirkstoff}i,
+          when %r{^Zulassung eines( pflanzlichen)? Arzneimittels mit( einem)? neue[mn] Wirk?stoff}i,
             %r{^Neuzulassung eines Medikamente?s mit( einem)? neue[mn] Wirkstoff}i,
             %r{^(Erst)?Zulassung eines neuen (Impf|Wirk)stoffe?s}i,
             %r{^Zulassung des ersten}i
@@ -67,7 +67,7 @@ module ODDB
               @minifis.push(@current)
               @current[:de] = create_document
             end
-          when %r{^Autorisation d.un m.dicament contenant un nouveau}i,
+          when %r{^Autorisation d.un (phyto)?m.dicament contenant un nouveau}i,
             %r{^Autorisation d.livr.es? pour (un|de) nouveaux? principes? actifs?}i,
             %r{^Autorisation d.livr.es? pour (un|de) nouveaux? produits? de vaccins?}i,
             %r{^Autorisation d.un nouveau (principe actif|vaccin)}i,
