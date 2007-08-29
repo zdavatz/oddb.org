@@ -152,6 +152,11 @@ module ODDB
 				}
 			}
 		end
+    def export_patents_xls
+      plug = XlsExportPlugin.new(@app)
+      plug.export_patents
+      plug
+    end
 		def export_yaml
 			exporter = YamlExporter.new(@app)
 			exporter.export

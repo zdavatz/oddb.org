@@ -22,6 +22,16 @@ module ODDB
 			@file_path = File.join(EXPORT_DIR, name)
 			EXPORT_SERVER.export_generics_xls(EXPORT_DIR, name)
 		end
+    def export_patents(range = @@today...(@@today >> 24))
+      cutoff = @@today >> 24
+      regs = @app.sorted_patented_registrations.select { |reg|
+        range.include? reg.patent.expiry_date
+      }
+      ids = regs.collect { |reg| reg.odba_id }
+      name = 'patents.xls'
+			@file_path = File.join(EXPORT_DIR, name)
+      EXPORT_SERVER.export_patent_xls(ids, EXPORT_DIR, name)
+    end
 		def log_info
 			hash = super
 			if @file_path

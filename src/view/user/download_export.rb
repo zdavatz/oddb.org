@@ -70,37 +70,41 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[2,15]	=>	:radio_swissdrug_update_xls,
 		[6,15]	=>	:datadesc_swissdrug_update_xls,
 		[7,15]	=>	:example_swissdrug_update_xls,
+		[0,16]	=>	:xls_patents,
+		[3,16]	=>	:radio_patents_xls,
+		[6,16]	=>	:datadesc_patents_xls,
+		[7,16]	=>	:example_patents_xls,
 
-		[0,17]	=>	'export_compatibility',
-		[0,18]	=>	:oddbdat_download,
-		[2,18]	=>	:radio_oddbdat,
-		[6,18]	=>	:datadesc_oddbdat,
-		[0,19]	=>	:s31x,
-		[2,19]	=>	:radio_s31x,
-		[6,19]	=>	:datadesc_s31x,
-		[0,20]	=>	:compression_label,
-		[0,21]	=>	:compression,
+		[0,18]	=>	'export_compatibility',
+		[0,19]	=>	:oddbdat_download,
+		[2,19]	=>	:radio_oddbdat,
+		[6,19]	=>	:datadesc_oddbdat,
+		[0,20]	=>	:s31x,
+		[2,20]	=>	:radio_s31x,
+		[6,20]	=>	:datadesc_s31x,
+		[0,21]	=>	:compression_label,
+		[0,22]	=>	:compression,
 	}
 	CSS_MAP = {
 		[0,0,8]			=>	'subheading',
 		[0,1,8]			=>	'list bg sum',
-		[0,2,8,19]	=>	'list',
+		[0,2,8,20]	=>	'list',
 		[0,3,8]			=>	'list bg',
 		[0,5,8]			=>	'list bg',
 		[0,7,8]			=>	'list bg',
 		[0,9,8]			=>	'list bg',
-		[0,12,8]		=>	'list bg sum',
-		[0,14,8]		=>	'list bg',
-		[0,16,8]		=>	'list bg sum',
-		[0,18,8]		=>	'list bg',
+		[0,11,8]		=>	'list bg',
+		[0,13,8]		=>	'list bg sum',
+		[0,15,8]		=>	'list bg',
+		[0,18,8]		=>	'list bg sum',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
 		[0,1]	=>	8,
-		[0,12]=>	8,
-		[0,16]=>	8,
-		[0,19]=>	8,
-		[0,20]=>	8,
+		[0,13]=>	8,
+		[0,18]=>	8,
+		[0,21]=>	8,
+		[0,22]=>	8,
 	}
 	CSS_CLASS = 'component'
 	SYMBOL_MAP = {
@@ -169,6 +173,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def datadesc_oddb_yaml(model, session)
 		datadesc('oddb.yaml')
 	end
+	def datadesc_patents_xls(model, session)
+		datadesc('patents.xls')
+	end
 	def datadesc_patinfo_yaml(model, session)
 		datadesc('patinfo.yaml')
 	end
@@ -211,6 +218,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def example_patinfo_yaml(model, session)
 		example('patinfo.yaml')
 	end
+	def example_patents_xls(model, session)
+		example('patents.xls')
+	end
 	def oddbdat_download(model, session)
 		checkbox_with_filesize("oddbdat")
 	end
@@ -238,6 +248,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def radio_oddb_yaml(model, session)
 		once_or_year('oddb.yaml')
 	end
+	def radio_patents_xls(model, session)
+		once('patents.xls')
+	end
 	def radio_s31x(model, session)
 		once_or_year('s31x')
 	end
@@ -246,6 +259,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def xls_generics(model, session)
 		checkbox_with_filesize('generics.xls')
+	end
+	def xls_patents(model, session)
+		checkbox_with_filesize('patents.xls')
 	end
 	def xls_swissdrug_update(model, session)
 		checkbox_with_filesize('swissdrug-update.xls')

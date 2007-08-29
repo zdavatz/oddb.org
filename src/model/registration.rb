@@ -28,6 +28,9 @@ module ODDB
 				&& (!@expiration_date || @expiration_date > cutoff || @renewal_flag) \
 				&& (!@market_date || @market_date <= @@today) 
 		end
+    def active_packages
+      @sequences.values.inject([]) { |memo, seq| memo.concat seq.active_packages }
+    end
 		def active_package_count
 			if(active?)
 				@sequences.values.inject(0) { |inj, seq|

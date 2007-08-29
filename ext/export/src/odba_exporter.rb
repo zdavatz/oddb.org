@@ -13,6 +13,7 @@ require 'csv_exporter'
 require 'oddbdat'
 require 'generics_xls'
 require 'competition_xls'
+require 'patent_xls'
 require 'odba'
 
 module ODBA
@@ -170,6 +171,14 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 				files.each { |file, table| file.close! }
 			end
 		end
+    def OdbaExporter.export_patent_xls(odba_ids, dir, name)
+      safe_export(dir, name) { |fh|
+        exporter = PatentXls.new(fh.path)
+        exporter.export(odba_ids)
+        exporter.close
+        nil
+      }
+    end
 		def OdbaExporter.export_yaml(odba_ids, dir, name)
 			safe_export(dir, name) { |fh|
 				odba_ids.each { |odba_id|

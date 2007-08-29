@@ -1,0 +1,28 @@
+Datenbeschrieb patents.xls
+
+Version: 1.0.0
+Erstellt: 29.08.2007 (1.0.0) durch hwyss@ywesee.com
+
+## Struktur ##
+A: Bezeichnung
+B: Swissmedic-Nummer
+C: Registrierungsdatum Swissmedic
+D: Eidgenössisches Schutz-Zertifikat Nr. 
+E: Anmeldedatum
+F: Publikationsdatum
+G: Erteilungsdatum
+H: Schutzdauerbeginn
+I: Ablaufdatum
+J: Löschdatum
+K: Grund-Patent Nr.
+L: Schutzbeginn Grund-Patent
+M: Direktlink
+
+## Glossar ##
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+Die komplette Version-History ist zu finden unter:
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/patents.xls.txt

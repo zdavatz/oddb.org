@@ -62,6 +62,7 @@ class IncompleteRegs < State::Admin::Global
 			updater.update_swissreg_news
 			exporter = Exporter.new(@session.app)
 			exporter.export_generics_xls
+      exporter.export_patents_xls
 		}
 		State::Admin::Confirm.new(@session, :release_confirm)
 	end

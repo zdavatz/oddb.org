@@ -1084,6 +1084,11 @@ class OddbPrevalence
       [ -minifi.publication_date.year, 
         -minifi.publication_date.month, minifi.name] }
   end
+  def sorted_patented_registrations
+    @registrations.values.select { |reg|
+      (pat = reg.patent) && pat.expiry_date #_protected?
+    }.sort_by { |reg| reg.patent.expiry_date }
+  end
 	def sponsor(flavor)
 		@sponsors[flavor]
 	end

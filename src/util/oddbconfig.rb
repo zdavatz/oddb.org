@@ -42,6 +42,7 @@ module ODDB
 		'oddb.csv'						=> 500,
 		'oddbdat'							=> 700,
 		'oddb.yaml'						=> 600,
+    'patents.xls'         => 500,
 		'patinfo.yaml'				=> 500,
 		's31x'								=> 900,
 	}
