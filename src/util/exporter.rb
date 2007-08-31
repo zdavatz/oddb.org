@@ -107,7 +107,7 @@ module ODDB
 			plug
 		end
 		def export_swissdrug_xls(date = @@today)
-			plug = OuwerkerkPlugin.new(@app)
+			plug = OuwerkerkPlugin.new(@app, "swissdrug update")
 			plug.export_xls
 			name = 'swissdrug-update.xls'
 			path = File.join(EXPORT_DIR, name)

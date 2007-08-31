@@ -32,8 +32,9 @@ module ODDB
 			:not_specified		=>	16,
 		}
 		attr_reader :file_path
-		def initialize(app)
-			super
+		def initialize(app, title = "med-drugs update")
+			super(app)
+      @title_base = title
 			@file_name = @@today.strftime("med-drugs-%Y%m%d.xls")
 			@file_path = File.expand_path("xls/#{@file_name}", self::class::ARCHIVE_PATH)
 		end
@@ -175,7 +176,7 @@ module ODDB
 			workbook.add_format(fmt_title)
 			workbook.add_format(english)
 			workbook.add_format(german)
-			worksheet = workbook.add_worksheet("med-drugs update")
+			worksheet = workbook.add_worksheet(@title_base)
 			worksheet.write(0, 0, title(), fmt_title)
 			en = [ 
 				'group', 'IKSNo', 'CD', 'sequence', 'product', 'customization',
@@ -207,7 +208,7 @@ module ODDB
 			hash
 		end
 		def title
-			@title ||= "med-drugs update #{date_str}"
+			@title ||= @title_base + " #{date_str}"
 		end
 		alias :report :title
 		private

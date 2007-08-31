@@ -1,6 +1,7 @@
-Datenbeschrieb meddrugs-update.xls
+Datenbeschrieb swissdrug-update.xls
 
-Version: 1.0.0
+Version: 1.0.1
+Geändert: 31.08.2007 (1.0.1) durch hwyss@ywesee.com
 Erstellt: 25.11.2005 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
