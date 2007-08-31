@@ -83,6 +83,13 @@ module ODDB
 			exporter.to_csv_file(keys, path, :packages)
 			EXPORT_SERVER.compress(EXPORT_DIR, name)
 			EXPORT_SERVER.clear
+      backup = @app.log_group(:bsv_sl).newest_date.strftime("oddb.%Y-%m-%d.csv")
+      backup_dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+      backup_path = File.join(backup_dir, backup)
+      unless(File.exist? backup_path)
+        FileUtils.mkdir_p(backup_dir)
+        FileUtils.cp(path, backup_path)
+      end
 			sleep(30)
 		rescue
 			puts $!.message

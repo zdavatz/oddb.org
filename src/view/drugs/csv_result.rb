@@ -2,7 +2,7 @@
 # View::Drugs::CsvResult -- ODDB -- 28.04.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
-require 'csvparser'
+require 'csv'
 require 'view/additional_information'
 
 module ODDB
@@ -153,7 +153,7 @@ class CsvResult < HtmlGrid::Component
 			}
 		}
 		result.collect { |line|
-			CSVLine.new(line).to_s(false, ';')
+			CSV.generate_line(line, ';')
 		}.join("\n")
 	end
 	def to_csv_file(keys, path, symbol=:active_packages)
