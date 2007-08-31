@@ -829,6 +829,7 @@ module ODDB
 	end
 	class LookandfeelMyMedi < SBSM::LookandfeelWrapper
 		ENABLED = [
+      :explain_sort,
 			:external_css,
       :ajax,
 			:home_drugs,
@@ -841,8 +842,10 @@ module ODDB
 		DISABLED = [ :atc_ddd, :legal_note, :navigation, :price_request ]
     DICTIONARIES = {
       'de'	=>	{
-        :explain_generic					=>	'Blau&nbsp;=&nbsp;Generikum',
         :explain_ddd_price_url    =>  'http://www.mymedi.ch/de/tk.htm',
+        :explain_generic					=>	'Blau&nbsp;=&nbsp;Generikum',
+        :explain_sort             =>  'Klicken Sie auf einen der untenstehenden Begriffe um die zugehörige Spalte auf- oder absteigend zu sortieren.',
+        :price_compare            =>  "Für den Direktvergleich klicken Sie bitte auf das für Sie rezeptierte Medikament.",
       },
       'fr'	=>	{
         :explain_generic					=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',

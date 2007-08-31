@@ -67,7 +67,6 @@ class ResultComposite < HtmlGrid::Composite
 		[0,0,1]	=>	:dsp_sort,
 		[0,1]		=>	'price_compare',
 		[1,1]		=>	SelectSearchForm,
-		[0,2]		=>	View::Drugs::ResultList,
 	}
 	CSS_CLASS = 'composite'
 	EVENT = :search
@@ -81,9 +80,16 @@ class ResultComposite < HtmlGrid::Composite
     [1,1] =>  'right',
 	}
 	def init
-    if(@session.allowed?('edit', 'org.oddb.drugs'))
-			components.store([0,2], self::class::ROOT_LISTCLASS)
-		end
+    y = 2
+    if(@lookandfeel.enabled?(:explain_sort, false))
+      components.store([0,y], "explain_sort")
+      css_map.store([0,y], "navigation")
+      y += 1
+      colspan_map.store([0,y], 2)
+    end
+    components.store([0,y], (@session.allowed?('edit', 'org.oddb.drugs')) \
+                            ? self::class::ROOT_LISTCLASS \
+                            : View::Drugs::ResultList)
 		if(@lookandfeel.enabled?(:export_csv))
 			components.store([1,0], :export_csv)
 		else
@@ -92,8 +98,9 @@ class ResultComposite < HtmlGrid::Composite
     code = @session.persistent_user_input(:code)
     unless(@model.respond_to?(:overflow?) && @model.overflow? \
            && (code.nil? || !@model.any? { |atc| atc.code == code }))
-      components.store([0,3], :result_foot)
-      colspan_map.store([0,3], 2)
+      y += 1
+      components.store([0,y], :result_foot)
+      colspan_map.store([0,y], 2)
     end
 		super
 	end
