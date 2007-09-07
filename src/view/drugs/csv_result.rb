@@ -147,7 +147,7 @@ class CsvResult < HtmlGrid::Component
 						self.send(key, pack)
 					else
 						pack.send(key)
-					end.to_s
+					end
 				}
 				result.push(line)
 			}
