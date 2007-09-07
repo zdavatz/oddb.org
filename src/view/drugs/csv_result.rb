@@ -35,9 +35,10 @@ class CsvResult < HtmlGrid::Component
 		end
 	end
 	def casrn(pack)
-		pack.narcotics.collect { |narc|
+		str = pack.narcotics.collect { |narc|
 			narc.casrn
 		}.compact.join(',')
+    str unless str.empty?
 	end
   def c_type(pack)
     @lookandfeel.lookup("square_#{pack.complementary_type}")

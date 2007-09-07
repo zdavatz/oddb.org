@@ -17,7 +17,7 @@ module ODDB
 			EXPORT_SERVER.export_doc_csv(ids, EXPORT_DIR, 'doctors.csv')
 		end
     def export_drugs
-      recipients << "peter.tobler@seconag.com"
+      recipients << "produktion@seconag.com"
       keys = [ :rectype, :iksnr, :ikscd, :ikskey, :barcode, :bsv_dossier,
         :pharmacode, :name_base, :galenic_form, :most_precise_dose, :size,
         :numerical_size, :price_exfactory, :price_public, :company_name,
