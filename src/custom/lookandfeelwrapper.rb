@@ -830,6 +830,7 @@ module ODDB
 	class LookandfeelMyMedi < SBSM::LookandfeelWrapper
 		ENABLED = [
       :explain_sort,
+      :compare_backbutton,
 			:external_css,
       :ajax,
 			:home_drugs,

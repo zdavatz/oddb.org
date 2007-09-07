@@ -11,7 +11,11 @@ module ODDB
 		class PrivateTemplate < PublicTemplate
 			include View::Snapback
 			SEARCH_HEAD = View::SearchForm
-			def init
+      def init
+        reorganize_components
+				super
+			end
+			def reorganize_components
 				if(@lookandfeel.enabled?(:topfoot))
 					@components = {
 						[0,0]		=>	:topfoot,
@@ -43,8 +47,7 @@ module ODDB
 					}
           css_map.store([1,1], 'right')
 				end
-				super
-			end
+      end
 		end
 	end
 end

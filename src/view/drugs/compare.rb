@@ -107,8 +107,30 @@ class CompareComposite < HtmlGrid::Composite
 		[0,1]	=>	'explain list',
 	}
 end
+module InsertBackbutton
+  include Snapback
+  def reorganize_components
+    super
+    if(@lookandfeel.enabled?(:compare_backbutton, false))
+      idx = components.index(View::PointerSteps)
+      components.delete(idx)
+      x,y = idx
+      components.store([x,y,0], View::PointerSteps)
+      components.store([x,y,1], :back_button)
+      css_map.store(idx, 'snapback')
+    end
+  end
+  def back_button(model, session=@session)
+    button = HtmlGrid::Button.new(:compare_backbutton, model, @session, self)
+    event, url = snapback
+    button.set_attribute("onclick", "document.location.href='#{url}'")
+    button.css_class = "button"
+    button
+  end
+end
 class Compare < PrivateTemplate
 	include View::SponsorMethods
+  include InsertBackbutton
 	CONTENT = CompareComposite
 	SNAPBACK_EVENT = :result
 end
@@ -141,6 +163,7 @@ class EmptyCompareComposite < HtmlGrid::Composite
 	end
 end
 class EmptyCompare < PrivateTemplate
+  include InsertBackbutton
 	CONTENT = View::Drugs::EmptyCompareComposite
 	SNAPBACK_EVENT = :result
 end

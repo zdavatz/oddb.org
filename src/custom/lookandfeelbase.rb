@@ -248,6 +248,7 @@ Zeno Davatz
 				:company_link							=>	'Link zum Firmenprofil', 
 				:companylist							=>	'Firmenverzeichnis',
 				:company_name							=>	'Firmenname',
+        :compare_backbutton       =>  '&lt;&lt; Zurück zur Liste &lt;&lt;',
 				:compare_desc0_no_atc0		=>	'Produkte, die keine ATC-Klasse besitzen k&ouml;nnen leider nicht verglichen werden.<b>"',
 				:compare_desc0_no_atc1		=>	'"</b> ist kein ATC-Code zugewiesen.',
 				:compare_desc1_no_atc0		=>	'Wenn Sie den ATC-Code von <b>"',
