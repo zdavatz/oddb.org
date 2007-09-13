@@ -226,7 +226,7 @@ class TestDetailWriter < Test::Unit::TestCase
 		@writer.extract_data.substrates.each { |conn|
 			result << conn
 		}
-		assert_equal(23, result.size)
+		assert_equal(25, result.size)
 	end
 	def test_send_flowing_data2
 		prepare_test("3a457")
@@ -324,11 +324,11 @@ class TestFlockhartPlugin < Test::Unit::TestCase
 		result = @plugin.parse_detail_pages
 		#assert_equal(10, result.keys.size)
 		assert_equal(9, result.keys.size)
-		assert_equal(23, result['1A2'].substrates.size)
+		assert_equal(25, result['1A2'].substrates.size)
 	end
 	def test_parse_table
 		result = @plugin.parse_table
 		assert_equal(10, result.size)
-		assert_equal(23, result['1A2'].substrates.size)
+		assert_equal(56, result['1A2'].substrates.size)
 	end
 end

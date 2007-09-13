@@ -77,6 +77,8 @@ module ODDB
 							data = row.cdata(dig)
 							if(data.is_a?(String))
 								if(data.match(/@\/@\/@/))
+                  # clean out some javascript.
+                  data.gsub!(/^.*function[^}]+\}/, '')
 									parse_cyt_string(data, dig)
 								elsif(data.size>3)
 									@collected_hashes.push(Hash[dig, parse_string(data)])
@@ -117,6 +119,7 @@ module ODDB
 				end
 			end
 			def new_tablehandler(handler)
+        @current_table = nil
 				@current_tablehandler = handler
 				@tablehandlers.push(handler)
 			end	
@@ -164,8 +167,10 @@ module ODDB
 				parse_array(array)
 			end
 			def send_flowing_data(data) 
-				unless(@current_tablehandler.nil?)
-					unless(@current_table.nil?)
+        if(match = /SUBSTRATES|INHIBITORS|INDUCERS/.match(data))
+          @current_table = match.to_s.downcase
+				elsif(@current_tablehandler)
+					if(@current_table)
 						@data = data
 						case @category
 						when "start"
@@ -244,8 +249,11 @@ module ODDB
           if((href = handler.attributes["href"]) \
              && href.match(/Abstract|abstractplus/))
 						@current_link = href
-          elsif(handler.attributes["name"])
+          elsif(name = handler.attributes["name"])
             @abstractlink = nil
+            if(/\dsub$/.match name)
+              @current_table = nil
+            end
 					end
 				end
 			end
@@ -306,6 +314,8 @@ module ODDB
 						@current_link = nil
 					end
           @ignore_next = false
+        elsif(match = /SUBSTRATES|INHIBITORS|INDUCERS/.match(data))
+          @current_table = match.to_s.downcase
 				end
 			end
       def send_line_break(*args)
@@ -325,8 +335,11 @@ module ODDB
 				unless(handler.nil?)
 					link = handler.attribute('href')
 					valid_link = link.split(/#/)[0]
-					if(valid_link!=nil && valid_link.match(/.htm/))
-						@links.push(valid_link) unless @links.include?(valid_link) || ODDB::Interaction::FlockhartPlugin::INVALID_LINKS.include?(valid_link)
+					if(valid_link && valid_link.match(/.htm/) \
+             && !(@links.include?(valid_link) \
+                  || /www.fda.gov/.match(valid_link) \
+                  || FlockhartPlugin::INVALID_LINKS.include?(valid_link)))
+						@links.push(valid_link)
 					end
 				end
 			end
