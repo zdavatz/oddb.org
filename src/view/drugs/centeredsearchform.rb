@@ -302,7 +302,7 @@ class GoogleAdSenseComposite < View::GoogleAdSenseComposite
       content.push MiniFis.new(model.minifis, @session, self)
     end
     if(@lookandfeel.enabled?(:fachinfo_rss))
-      content.push FachinfoNews.new(model.fachinfo_news, @session, self)
+      content.push FachinfoNews.new(model.fachinfo_news[0,5], @session, self)
     end
     if(@lookandfeel.enabled?(:price_cut_rss))
       content.push SLPriceNews.new(:price_cut, @session, self)
