@@ -35,7 +35,7 @@ module ODDB
 		LOG_RECIPIENTS = {
 			:powerlink					=>	['matthijs.ouwerkerk@just-medical.com'],
 			:passthru						=>	[],	
-			:sponsor_generika		=>	['christina.kobi@helvepharm.ch'],	
+			:sponsor_generika		=>	['mediservice@ywesee.com'],	
 			:sponsor_gcc				=>	['mediservice@ywesee.com'],	
 		}
 		LOG_FILES = {
