@@ -1525,5 +1525,18 @@ Hypotension        -          3          8
         }
 			end
 		end
+		class TestFachinfoPDFAssCardioSandoz < Test::Unit::TestCase
+			def setup
+				@writer = FachinfoPDFWriter.new
+				path = File.expand_path('../test/data/method_calls_ass_cardio.rb',
+					File.dirname(__FILE__))
+				eval(File.read(path))
+				@fachinfo = @writer.to_fachinfo
+			end
+      def test_iksnrs
+        assert_instance_of(FachinfoDocument2001, @fachinfo)
+        assert_equal("Zulassungsnummer\n58347 (Swissmedic).", @fachinfo.iksnrs.to_s)
+      end
+		end
 	end
 end

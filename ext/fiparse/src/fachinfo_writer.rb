@@ -46,7 +46,7 @@ module ODDB
 			def set_templates(chapter)
 				if(@amzv.nil?)
 					case chapter.heading
-					when /9\.11\.2001/
+					when /9\.11\.2001/, /AMZV/
 						@amzv = chapter
 						@templates = named_chapters [
 							:composition, :galenic_form, :indications,
