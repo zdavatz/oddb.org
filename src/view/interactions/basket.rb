@@ -35,82 +35,90 @@ class CyP450List < HtmlGrid::Component
   attr_accessor :base_substance
   def initialize(type, model, session, container)
     @interaction_type = type
+    @list_index = container.list_index
     super(model, session, container)
   end
 	def to_html(context)
 		lang = @session.language
     other = @base_substance.en
-		context.ul {
-			@model.collect { |substance, items| 
-        next unless substance
-				text = HtmlGrid::RichText.new(@model, @session, self)
-				pub_med_search_link = HtmlGrid::Link.new(:pub_med_search_link, @model, @session, self)
-				pub_med_search_link.href = \
-					@lookandfeel.lookup(:pub_med_search_href, other, substance.en)
-				items = items.sort_by { |item| 
-					item.cyp_id
-				}
-        val = substance.send(lang) + " (" 
-        val << items.collect { |item|
-          cid = item.cyp_id.to_s
-          if(factor = item.auc_factor)
-            cid = "<span class='auc-factor-#{factor.gsub('.','')}'>" << cid << "</span>"
-          end
-          cid
-        }.join(",")
-        val << ")"
-				pub_med_search_link.value = val
-				pub_med_search_link.target = "_blank"
-				text << pub_med_search_link
-        links = []
-        items.each { |item|
-          links.concat item.links
-        }
-        links.uniq!
-        links.delete_if { |lnk| lnk.empty? }
-        unless(links.empty?)
-          text << '<br>'
-          fspan = HtmlGrid::Span.new(@model, @session, self)
-          fspan.value = @lookandfeel.lookup(:flockhart_link)
-          fspan.css_class = 'italic'
-          text << fspan
-          links.each { |link|
-            alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
-            alink.href = link.href
-            alink.value = link.text
-            text << [ "<br>", link.info, "<br>" ].join
-            text << alink
-          }
+    content = @model.collect { |substance, items| 
+      next unless substance
+      text = HtmlGrid::RichText.new(@model, @session, self)
+      pub_med_search_link = HtmlGrid::Link.new(:pub_med_search_link, @model, @session, self)
+      pub_med_search_link.href = \
+        @lookandfeel.lookup(:pub_med_search_href, other, substance.en)
+      items = items.sort_by { |item| 
+        item.cyp_id
+      }
+      val = substance.send(lang) + " ("
+      val << items.collect { |item|
+        cid = item.cyp_id.to_s
+        if((factor = item.auc_factor) && factor != "1")
+          span = HtmlGrid::Span.new(@model, @session, self)
+          factor = factor.gsub('.','')
+          span.css_class = "auc-factor-#{factor}"
+          span.css_id = "auc-factor-#{@list_index}-#{substance}-#{cid}"
+          span.value = cid
+          tooltip = HtmlGrid::Span.new(@model, @session, self)
+          tooltip.value = @lookandfeel.lookup("explain_auc_factor_#{factor}")
+          span.dojo_tooltip = tooltip
+          cid = span.to_html(context)
         end
-				context.li { text.to_html(context) } 
-			}.join
-		}
+        cid
+      }.join(',')
+      val << ")"
+      pub_med_search_link.value = val
+      pub_med_search_link.target = "_blank"
+      text << pub_med_search_link
+      links = []
+      items.each { |item|
+        links.concat item.links
+      }
+      links.uniq!
+      links.delete_if { |lnk| lnk.empty? }
+      unless(links.empty?)
+        text << '<br>'
+        fspan = HtmlGrid::Span.new(@model, @session, self)
+        fspan.value = @lookandfeel.lookup(:flockhart_link)
+        fspan.css_class = 'italic'
+        text << fspan
+        links.each { |link|
+          alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
+          alink.href = link.href
+          alink.value = link.text
+          text << [ "<br>", link.info, "<br>" ].join
+          text << alink
+        }
+      end
+      context.li { text.to_html(context) } 
+    }.join
+		context.ul { content } unless(content.empty?)
 	end
 end
 class FiList < HtmlGrid::Component
   include AdditionalInformation
 	def to_html(context)
 		lang = @session.language
-		context.ul {
-			@model.collect { |substance, interactions| 
-        next unless substance
-				text = HtmlGrid::RichText.new(@model, @session, self)
-				text << substance.send(lang) << "<br>"
-        interactions.each { |interaction|
-          (fi = interaction.fachinfo) && (doc = fi.send(lang)) or next
-          link = _fachinfo(fi)
-          link.href << "/chapter/interactions/highlight/" << interaction.match
-          name = HtmlGrid::Link.new(:name, doc, @session, self)
-          name.href = link.href
-          name.value = doc.name
-          text << link << name << '<br>'
-				}
-				context.li { text.to_html(context) } 
-			}.join
-		}
+    content = @model.collect { |substance, interactions| 
+      next unless substance
+      text = HtmlGrid::RichText.new(@model, @session, self)
+      text << substance.send(lang) << "<br>"
+      interactions.each { |interaction|
+        (fi = interaction.fachinfo) && (doc = fi.send(lang)) or next
+        link = _fachinfo(fi)
+        link.href << "/chapter/interactions/highlight/" << interaction.match
+        name = HtmlGrid::Link.new(:name, doc, @session, self)
+        name.href = link.href
+        name.value = doc.name
+        text << link << name << '<br>'
+      }
+      context.li { text.to_html(context) } 
+    }.join
+		context.ul { content } unless(content.empty?)
 	end
 end
 class BasketSubstrates < HtmlGrid::List
+  attr_reader :list_index
 	BACKGROUND_SUFFIX = ' bg'
 	COMPONENTS = {
 		[0,0]		=>	:substance,
