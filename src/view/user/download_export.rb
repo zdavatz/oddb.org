@@ -60,51 +60,55 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[3,11]		=>	:yaml_patinfo_price,
 		[6,11]		=>	:datadesc_patinfo_yaml,
 		[7,11]		=>	:example_patinfo_yaml,
+		[0,12]		=>	:yaml_interactions_export,
+		[2,12]		=>	:radio_interactions_yaml,
+		[6,12]		=>	:datadesc_interactions_yaml,
+		[7,12]		=>	:example_interactions_yaml,
 
-		[0,13]	=>	'export_added_value',
-		[0,14]	=>	:xls_generics,
-		[2,14]	=>	:radio_generics_xls,
-		[6,14]	=>	:datadesc_generics_xls,
-		[7,14]	=>	:example_generics_xls,
-		[0,15]	=>	:xls_swissdrug_update,
-		[2,15]	=>	:radio_swissdrug_update_xls,
-		[6,15]	=>	:datadesc_swissdrug_update_xls,
-		[7,15]	=>	:example_swissdrug_update_xls,
-		[0,16]	=>	:xls_patents,
-		[3,16]	=>	:radio_patents_xls,
-		[6,16]	=>	:datadesc_patents_xls,
-		[7,16]	=>	:example_patents_xls,
+		[0,14]	=>	'export_added_value',
+		[0,15]	=>	:xls_generics,
+		[2,15]	=>	:radio_generics_xls,
+		[6,15]	=>	:datadesc_generics_xls,
+		[7,15]	=>	:example_generics_xls,
+		[0,16]	=>	:xls_swissdrug_update,
+		[2,16]	=>	:radio_swissdrug_update_xls,
+		[6,16]	=>	:datadesc_swissdrug_update_xls,
+		[7,16]	=>	:example_swissdrug_update_xls,
+		[0,17]	=>	:xls_patents,
+		[3,17]	=>	:radio_patents_xls,
+		[6,17]	=>	:datadesc_patents_xls,
+		[7,17]	=>	:example_patents_xls,
 
-		[0,18]	=>	'export_compatibility',
-		[0,19]	=>	:oddbdat_download,
-		[2,19]	=>	:radio_oddbdat,
-		[6,19]	=>	:datadesc_oddbdat,
-		[0,20]	=>	:s31x,
-		[2,20]	=>	:radio_s31x,
-		[6,20]	=>	:datadesc_s31x,
-		[0,21]	=>	:compression_label,
-		[0,22]	=>	:compression,
+		[0,19]	=>	'export_compatibility',
+		[0,20]	=>	:oddbdat_download,
+		[2,20]	=>	:radio_oddbdat,
+		[6,20]	=>	:datadesc_oddbdat,
+		[0,21]	=>	:s31x,
+		[2,21]	=>	:radio_s31x,
+		[6,21]	=>	:datadesc_s31x,
+		[0,22]	=>	:compression_label,
+		[0,23]	=>	:compression,
 	}
 	CSS_MAP = {
 		[0,0,8]			=>	'subheading',
 		[0,1,8]			=>	'list bg sum',
-		[0,2,8,20]	=>	'list',
+		[0,2,8,21]	=>	'list',
 		[0,3,8]			=>	'list bg',
 		[0,5,8]			=>	'list bg',
 		[0,7,8]			=>	'list bg',
 		[0,9,8]			=>	'list bg',
 		[0,11,8]		=>	'list bg',
-		[0,13,8]		=>	'list bg sum',
-		[0,15,8]		=>	'list bg',
-		[0,18,8]		=>	'list bg sum',
+		[0,14,8]		=>	'list bg sum',
+		[0,16,8]		=>	'list bg',
+		[0,19,8]		=>	'list bg sum',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
 		[0,1]	=>	8,
-		[0,13]=>	8,
-		[0,18]=>	8,
-		[0,21]=>	8,
+		[0,14]=>	8,
+		[0,19]=>	8,
 		[0,22]=>	8,
+		[0,23]=>	8,
 	}
 	CSS_CLASS = 'component'
 	SYMBOL_MAP = {
@@ -152,6 +156,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def datadesc_generics_xls(model, session)
 		datadesc('generics.xls')
 	end
+	def datadesc_interactions_yaml(model, session)
+		datadesc('interactions.yaml')
+	end
 	def datadesc_swissdrug_update_xls(model, session)
 		datadesc('swissdrug-update.xls')
 	end
@@ -197,6 +204,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def example_generics_xls(model, session)
 		example('generics.xls')
 	end
+	def example_interactions_yaml(model, session)
+		example('interactions.yaml')
+	end
 	def example_swissdrug_update_xls(model, session)
 		example('swissdrug-update.xls')
 	end
@@ -232,6 +242,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def radio_generics_xls(model, session)
 		once_or_year('generics.xls')
+	end
+	def radio_interactions_yaml(model, session)
+		once_or_year('interactions.yaml')
 	end
 	def radio_swissdrug_update_xls(model, session)
 		once_or_year('swissdrug-update.xls')
@@ -277,6 +290,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def yaml_fachinfo_export(model, session)
 		checkbox_with_filesize("fachinfo.yaml")
+	end
+	def yaml_interactions_export(model, session)
+		checkbox_with_filesize("interactions.yaml")
 	end
 	def yaml_narcotics_export(model, session)
 		checkbox_with_filesize('narcotics.yaml')

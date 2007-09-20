@@ -1,6 +1,7 @@
 Datenbeschrieb oddb.yaml
 
-Version:  1.3.1
+Version:  1.3.2
+Geändert: 20.09.2007 (1.3.2) durch hwyss@ywesee.com
 Geändert: 21.03.2007 (1.3.1) durch hwyss@ywesee.com
 Geändert: 09.12.2005 (1.3.0) durch hwyss@ywesee.com
 Geändert: 14.11.2005 (1.2.0) durch hwyss@ywesee.com
@@ -103,7 +104,7 @@ Indication:
 
 Substance:
 - oid               (Integer, NOT NULL)    -> Unique Identifier
-- descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Indikationstext. siehe Glossar (SimpleLanguage::Descriptions)
+- descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Substanzname. siehe Glossar (SimpleLanguage::Descriptions)
 - synonyms          (Array (String))			 -> Weitere bezeichnungen
 - effective_form    (Substance)            -> Wirkform
 - narcotic          (String)               -> CAS Registry Number

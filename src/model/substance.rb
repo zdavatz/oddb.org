@@ -79,6 +79,7 @@ module ODDB
 		end
 		def	create_cyp450substrate(cyp_id)
 			conn = ODDB::CyP450SubstrateConnection.new(cyp_id)
+      conn.substance = self
 			@substrate_connections.store(conn.cyp_id, conn)
 			conn
 		end

@@ -332,4 +332,9 @@ class TestFlockhartPlugin < Test::Unit::TestCase
     inh = inhs.find { |i| i.name == 'fluvoxamine' }
     assert_equal("5", inh.auc_factor)
 	end
+	def test_parse_table__categories
+		result = @plugin.parse_table
+    subs = result['2C9'].substrates
+    assert_equal(5, subs.collect { |sub| sub.category }.uniq.size)
+	end
 end
