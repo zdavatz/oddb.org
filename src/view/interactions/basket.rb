@@ -21,6 +21,16 @@ class BasketHeader < HtmlGrid::Composite
 		[0,0]	=>	'atc',
 	}
 end
+class ExplainResult < HtmlGrid::Composite
+  COMPONENTS = {
+    [0,0] => "explain_auc_factor_5",
+    [0,1] => "explain_auc_factor_2",
+    [0,2] => "explain_auc_factor_125",
+  }
+  CSS_MAP = {
+    [0,0,1,3] => 'list infos',
+  }
+end
 class CyP450List < HtmlGrid::Component
   attr_accessor :base_substance
   def initialize(type, model, session, container)
@@ -37,11 +47,19 @@ class CyP450List < HtmlGrid::Component
 				pub_med_search_link = HtmlGrid::Link.new(:pub_med_search_link, @model, @session, self)
 				pub_med_search_link.href = \
 					@lookandfeel.lookup(:pub_med_search_href, other, substance.en)
-				cyp_ids = items.collect { |item| 
-					item.parent(@session).cyp_id
+				items = items.sort_by { |item| 
+					item.cyp_id
 				}
-				pub_med_search_link.value = substance.send(lang) \
-					+ " (#{cyp_ids.sort.join(',')})"
+        val = substance.send(lang) + " (" 
+        val << items.collect { |item|
+          cid = item.cyp_id.to_s
+          if(factor = item.auc_factor)
+            cid = "<span class='auc-factor-#{factor.gsub('.','')}'>" << cid << "</span>"
+          end
+          cid
+        }.join(",")
+        val << ")"
+				pub_med_search_link.value = val
 				pub_med_search_link.target = "_blank"
 				text << pub_med_search_link
         links = []
@@ -184,6 +202,8 @@ class BasketForm < View::Form
 	COLSPAN_MAP = {
 		[0,0]	=>	2,
 		[0,2]	=>	2,
+		[0,3]	=>	2,
+		[0,4]	=>	2,
 	}
 	COMPONENTS = {
 		[0,0]		=>	:interaction_basket_count,
@@ -193,6 +213,7 @@ class BasketForm < View::Form
 		[1,1,1]	=>	:submit,
 		[0,2]		=>	View::Interactions::BasketSubstrates,
 		[0,3]		=>	:clear_interaction_basket,
+    [0,4]   =>  ExplainResult,
 	}
 	CSS_CLASS = 'composite'
 	EVENT = :search
@@ -200,11 +221,15 @@ class BasketForm < View::Form
 	SYMBOL_MAP = {
 		:search_query		=>	View::SearchBar,	
 	}
+  COMPONENT_CSS_MAP = {
+		[0,4]	=>	'explain',
+  }
 	CSS_MAP = {
 		[0,0] =>	'result-found',
 		[0,1] =>	'list',
 		[1,1]	=>	'search',	
-		[0,3,2]	=>	'list bg',
+		[0,3]	=>	'list bg',
+		[0,4]	=>	'explain',
 	}
 	def interaction_basket_count(model, session)
 		count = session.interaction_basket_count

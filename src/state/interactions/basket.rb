@@ -38,7 +38,8 @@ class Basket < State::Interactions::Global
       @observed = {}
 		end
 		def add_interaction(interaction)
-			case interaction
+      # interaction may be a ODBA::Stub 
+      case interaction.odba_instance
 			when ODDB::CyP450InhibitorConnection
 				store_interaction(@inhibitors, interaction)
 			when ODDB::CyP450InducerConnection

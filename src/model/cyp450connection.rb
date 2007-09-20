@@ -19,7 +19,7 @@ module ODDB
     end
   end
 	class CyP450Connection 
-		attr_accessor :category, :links, :substance
+		attr_accessor :category, :links, :substance, :auc_factor, :cyp450
 		include Persistence
 		def initialize
 			super
@@ -38,6 +38,9 @@ module ODDB
 			end
 			values
 		end
+    def cyp_id
+      @cyp450.cyp_id if(@cyp450)
+    end
 	end
 	class CyP450SubstrateConnection < CyP450Connection
 		attr_accessor :cyp450

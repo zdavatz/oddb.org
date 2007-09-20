@@ -817,3 +817,19 @@ div.heading img {
 span.highlight {
   background-color: yellow;
 }
+span.auc-factor-5 {
+  border: 1px solid #F00;
+  background-color: #FBB;
+}
+span.auc-factor-2 {
+  border: 1px solid #FA0;
+  background-color: #FDB;
+}
+span.auc-factor-175 {
+  border: 1px solid #FF0;
+  background-color: #FFB;
+}
+span.auc-factor-125 {
+  border: 1px solid #0F0;
+  background-color: #BFB;
+}

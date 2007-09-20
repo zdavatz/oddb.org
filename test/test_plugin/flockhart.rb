@@ -17,7 +17,7 @@ module ODDB
 		class FlockhartWriter < NullWriter
 			attr_accessor :cytochromes, :category
 			attr_accessor :tobecombined, :type
-			attr_accessor :current_category
+			attr_accessor :current_category, :auc_factor
 			attr_reader :current_table, :tablehandlers
 			attr_reader :duplicates
 		end
@@ -70,21 +70,21 @@ class TestFlockhartWriter < Test::Unit::TestCase
 	end
 	def test_create_update_objects
 		@writer.type = 'inhibitors'
-		@writer.create_update_objects('base_name', 'categ', 8, nil)
+		@writer.create_update_objects('base_name', {:category => 'categ'}, 8, nil)
 		cyt = @writer.cytochromes["8/cyto"]
 		assert_equal(1, cyt.inhibitors.size)
 		assert_equal('categ', cyt.inhibitors.first.category)
 	end
 	def test_create_update_objects2
 		@writer.type = 'inducers'
-		@writer.create_update_objects('base_name', nil, 8, nil)
+		@writer.create_update_objects('base_name', {}, 8, nil)
 		cyt = @writer.cytochromes["8/cyto"]
 		assert_equal(1, cyt.inducers.size)
 		assert_equal(nil, cyt.inducers.first.category)
 	end
 	def test_create_update_objects3
 		@writer.type = 'inducers'
-		@writer.create_update_objects('base_name', nil, 9, '3A5')
+		@writer.create_update_objects('base_name', {}, 9, '3A5')
 		cyt = @writer.cytochromes["9/3A5"]
 		cyt2 = @writer.cytochromes["9/3A7"]
 		assert_equal(0, cyt.inducers.size)
@@ -92,7 +92,7 @@ class TestFlockhartWriter < Test::Unit::TestCase
 	end
 	def test_extract_data
 		@writer.extract_data
-		assert_equal(13, @writer.cytochromes.size)
+		assert_equal(12, @writer.cytochromes.size)
 	end
 	def test_extract_data2
 		@writer.extract_data
@@ -110,7 +110,7 @@ class TestFlockhartWriter < Test::Unit::TestCase
 		substrates.each { |sub|
 			result << sub if sub.category == 'antipsychotics'	
 		}
-		assert_equal(4, result.size)
+		assert_equal(5, result.size)
 	end
 	def test_extract_data4
 		@writer.extract_data
@@ -118,7 +118,7 @@ class TestFlockhartWriter < Test::Unit::TestCase
 		substrates.each { |sub|
 			@result = sub if sub.name==nil
 		}
-		assert_equal(23, substrates.size)
+		assert_equal(24, substrates.size)
 		substrates.each { |sub|
 			@result = sub if sub.name.match(/phenacetin/)
 		}
@@ -134,12 +134,12 @@ class TestFlockhartWriter < Test::Unit::TestCase
 		assert_equal("start", @writer2.category)
 	end
 	def test_parse_array
-		arr = ["one*/*/*two", "foo*/*/*bar", "asterix*/*/*obelix"]
+		arr = ["one*/*/*two*/*/*3", "foo*/*/*bar*/*/*1.25", "asterix*/*/*obelix*/*/*1.75"]
 		result = @writer2.parse_array(arr)
 		expected = {
-			"one"			=>	"two",
-			"foo"			=>	"bar",
-			"asterix"	=>	"obelix",
+			"one"			=>	{:category => "two", :auc_factor => "3"},
+			"foo"			=>	{:category => "bar", :auc_factor => "1.25"},
+			"asterix"	=>	{:category => "obelix", :auc_factor => "1.75"},
 		}	
 		assert_equal(expected, result)
 	end
@@ -170,11 +170,11 @@ class TestFlockhartWriter < Test::Unit::TestCase
 		assert_equal("3A5-7", @writer2.cytochromes["5/3A5-7"].cyt_name)
 	end
 	def test_parse_string
-		string = "foo*/*/*nil&/&/&bar*/*/*nil"
+		string = "foo*/*/**/*/*&/&/&bar*/*/**/*/*"
 		result = @writer2.parse_string(string)
 		expected = {
-			"foo"	=> nil,
-			"bar"	=> nil,
+			"foo"	=> {:category => nil, :auc_factor => nil},
+			"bar"	=> {:category => nil, :auc_factor => nil},
 		}
 		assert_equal(expected, result)
 	end
@@ -183,30 +183,26 @@ class TestFlockhartWriter < Test::Unit::TestCase
 		result1 = @writer2.parse_string(string)
 		result2 = @writer2.duplicates
 		expected1 = {
-			"bar-/-/-3A4"	=> nil,
+			"bar-/-/-3A4"	=> {:auc_factor=>nil, :category=>"nil"},
 		}
 		expected2 = ["foo*/*/*nil"]
 		assert_equal(expected1, result1)
 		assert_equal(expected2, result2)
 	end
-	def test_send_flowing_data
-		@writer.send_flowing_data(@html)
-	end
 	def test_send_image
-		@writer2.send_image('foo.jpg')
-		assert_equal(nil, @writer2.current_table)
-		@writer2.send_image('substrates.jpg')
-		assert_equal("substrates", @writer2.current_table)
+		@writer2.send_image('red.jpg')
+		assert_equal("5", @writer2.auc_factor)
 	end
 	def test_write_substance_string
 		result = @writer2.write_substance_string("instanz")
-		expected = "instanz*/*/*nil&/&/&"
+		expected = "instanz*/*/**/*/*&/&/&"
 		assert_equal(expected, result)
 	end
 	def test_write_substance_strng2
 		@writer2.current_category = "kat"
+		@writer2.auc_factor = "5"
 		result = @writer2.write_substance_string("instanz")
-		expected = "instanz*/*/*kat&/&/&"
+		expected = "instanz*/*/*kat*/*/*5&/&/&"
 		assert_equal(expected, result)
 	end
 end
@@ -325,10 +321,15 @@ class TestFlockhartPlugin < Test::Unit::TestCase
 		#assert_equal(10, result.keys.size)
 		assert_equal(9, result.keys.size)
 		assert_equal(25, result['1A2'].substrates.size)
+		assert_equal(25, result['2D6'].inhibitors.size)
 	end
 	def test_parse_table
 		result = @plugin.parse_table
-		assert_equal(10, result.size)
-		assert_equal(56, result['1A2'].substrates.size)
+		assert_equal(9, result.size)
+		assert_equal(24, result['1A2'].substrates.size)
+    inhs = result['1A2'].inhibitors
+    assert_equal(9, inhs.size)
+    inh = inhs.find { |i| i.name == 'fluvoxamine' }
+    assert_equal("5", inh.auc_factor)
 	end
 end

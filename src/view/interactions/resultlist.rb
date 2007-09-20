@@ -54,7 +54,9 @@ class ResultList < HtmlGrid::List
 			name
 		else
 			link = HtmlGrid::Link.new(:add_to_interaction_basket, model, session, self)
-			link.href = @lookandfeel._event_url(:add_to_interaction_basket, {'pointer'=>CGI.escape(model.pointer.to_s)})
+			#link.href = @lookandfeel._event_url(:add_to_interaction_basket, {'pointer'=>CGI.escape(model.pointer.to_s)})
+      ids = @session.interaction_basket_ids << "+" << model.oid.to_s
+      link.href = @lookandfeel._event_url(:interaction_basket, :substance_ids => ids)
 			link.value = name
 			link.set_attribute('class', 'list big')
 			link

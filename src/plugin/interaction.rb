@@ -65,7 +65,7 @@ module ODDB
 		end
 		class Connection
 			attr_reader :name, :lang
-			attr_accessor :category, :links
+			attr_accessor :category, :links, :auc_factor
 			def initialize(name, lang)
 				@name = name
 				@lang = lang
@@ -155,9 +155,10 @@ module ODDB
 							flock_conn_found = []
 							flock_conn_arr.each { |flock_conn|
 								# if it's covered by hayes we only want 
-								# flockhart's links and category
+								# flockhart's links, auc_factor and category
 								if(similar_name?(hayes_conn.name, flock_conn_name(flock_conn)))
 									found_conn = true
+                  hayes_conn.auc_factor = flock_conn.auc_factor
 									hayes_conn.category = flock_conn.category
 									hayes_conn.links.concat(flock_conn.links)
 									flock_conn_found.push(flock_conn)
@@ -201,17 +202,26 @@ module ODDB
 				table_hsh = plugin.parse_table 
 				cytochromes = plugin.parse_detail_pages 
 				cytochromes.each { |cyt_id, cyt|
-					CONNECTION_TYPES.each { |type|
-						cyt.send(type).each { |conn|
-							if(conn_arr = table_hsh[cyt_id].send(type))
-								conn_arr.each { |table_conn|
-									if(table_conn.name.downcase==conn.name.downcase)
-										conn.category = table_conn.category
-									end
-								}
-							end
-						}
-					}
+          if(cyt1 = table_hsh[cyt_id])
+            CONNECTION_TYPES.each { |type|
+              if(conns1 = cyt1.send(type))
+                conns = cyt.send(type)
+                lookup = conns.inject({}) { |memo, conn|
+                  memo.store(conn.name.downcase, conn)
+                  memo
+                }
+                conns1.each { |conn|
+                  if(other = lookup[conn.name.downcase])
+                    other.category = conn.category
+                    other.auc_factor = conn.auc_factor
+                  else
+                    lookup.store(conn.name.downcase, conn)
+                    conns.push(conn)
+                  end
+                }
+              end
+            }
+          end
 				}
 				cytochromes	
 			end
@@ -298,6 +308,7 @@ module ODDB
 						:substance	=>	connection_key,
 						:links			=>	conn.links,
 						:category		=>	conn.category,
+            :auc_factor =>  conn.auc_factor,
 					}
 					if(cyp450.send(connection).keys.include?(connection_key))
 						@app.update(pointer, args)

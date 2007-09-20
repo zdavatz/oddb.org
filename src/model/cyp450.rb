@@ -32,10 +32,12 @@ module ODDB
 		end
 		def create_cyp450inducer(substance_name)
 			conn = ODDB::CyP450InducerConnection.new(substance_name)
+      conn.cyp450 = self
 			@inducers.store(substance_name, conn)
 		end
 		def create_cyp450inhibitor(substance_name)
 			conn = ODDB::CyP450InhibitorConnection.new(substance_name)
+      conn.cyp450 = self
 			@inhibitors.store(conn.substance_name, conn)
 		end
 		def cyp450inducer(substance_name)

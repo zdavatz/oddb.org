@@ -17,7 +17,7 @@ module ODDB
 				@duplicates = []
 			end
 			def check_string(string)
-					case string
+        case string
 				when /\240/
 					return false
 				when /^=/
@@ -34,6 +34,10 @@ module ODDB
 					return false
 				when ""
 					return false
+				when /^[0-9]+\s*$/
+					return false
+				when /^Chr\d+\s*$/
+					return false
 				else
 					return true
 				end
@@ -46,7 +50,7 @@ module ODDB
 				string.slice!(/[0-9]-OH/)
 				string.strip
 				end	
-			def create_update_objects(base_name, cat, cyt_id, not_cyt)
+			def create_update_objects(base_name, data, cyt_id, not_cyt)
 				case @type
 				when 'substrates'
 					new_class = ODDB::Interaction::SubstrateConnection
@@ -54,24 +58,25 @@ module ODDB
 					new_class = ODDB::Interaction::InhibitorConnection
 				when 'inducers'
 					new_class = ODDB::Interaction::InducerConnection
-					end
+        end
 				obj = new_class.new(base_name, 'en')
-				obj.category = cat unless cat.nil?
+        data.each { |key, val|
+          obj.send("#{key}=", val) if(val)
+        }
 				@cytochromes.each { |key, value|
-					column = key.split("/").first
-					base_name = key.split("/")[1]
+					column, base_name = key.split("/")
 					if(column==cyt_id.to_s)
 						value.add_connection(obj) unless not_cyt==base_name
 					end
 				}		
-				end
+      end
 			def end_category 
 				@category = "end" unless @current_category.nil?
 			end	
 			def	extract_data
 				links = ODDB::Interaction::FlockhartPlugin::LINKS
 				max = links.size
-				@tablehandlers.compact.each { |th|
+				@tablehandlers.compact.uniq.each { |th|
 					th.each_row { |row|
 						(0...max).each { |dig|
 							data = row.cdata(dig)
@@ -93,14 +98,12 @@ module ODDB
 						@collected_hashes.each { |hash|
 							hash.each { |cyt_id, hsh|
 								if(hsh!=nil)
-									hsh.each { |base_name, cat|
+									hsh.each { |base_name, data|
 										not_cyt = nil
 										if(base_name.match(/-\/-\/-/))
-											arr = base_name.split(/-\/-\/-/)
-											base_name = arr.first
-											not_cyt = arr[1]
+											base_name, not_cyt = base_name.split(/-\/-\/-/)
 										end
-										create_update_objects(base_name, cat, cyt_id, not_cyt)
+										create_update_objects(base_name, data, cyt_id, not_cyt)
 									}
 								end
 							}
@@ -126,12 +129,8 @@ module ODDB
 			def parse_array(array)
 				hsh = {}
 				array.each { |str| 
-					if(arr=str.split(/\*\/\*\/\*/))
-						arr[1] = nil if arr[1].match(/nil/)
-						(0...(arr.size/2)).each { |dig|
-							hsh.store(arr.shift, arr.shift)
-						}
-					end
+					name, category, auc = str.split(/\*\/\*\/\*/)
+          hsh.store(name, {:category => category, :auc_factor => auc})
 				}
 				hsh
 			end
@@ -208,12 +207,18 @@ module ODDB
 				end
 			end
 			def send_image(src)
-				@current_table = nil
-				ODDB::Interaction::FlockhartPlugin::IMAGES.each { |img|
-					if(src.match(/#{img}/))
-						@current_table = src.split(/\./).first.downcase
-					end
-				}
+        case src
+        when "red.jpg"
+          @auc_factor = "5"
+        when "orange.jpg"
+          @auc_factor = "2"
+        when "orangeGreen.jpg"
+          @auc_factor = "1.75"
+        when "green.jpg"
+          @auc_factor = "1.25"
+        when "blue.jpg"
+          @auc_factor = "1"
+        end
 			end
 			def send_line_break
 				unless(@current_tablehandler.nil?)
@@ -228,12 +233,9 @@ module ODDB
 			def write_substance_string(data)
 				cat = @current_category
 				name = data.strip
-				string = "#{name}" 
-				if(cat)
-					string << "*/*/*#{cat}"
-				else
-					string << "*/*/*nil"
-				end
+        string = name.dup
+        string << "*/*/*#{cat}"
+        string << "*/*/*#@auc_factor" 
 				string << "&/&/&"
 			end
 		end
@@ -269,7 +271,9 @@ module ODDB
 			end
 			def send_flowing_data(data) 
         data.gsub!("\240", ' ')
-				if(@current_table)
+        if(match = /SUBSTRATES|INHIBITORS|INDUCERS/.match(data))
+          @current_table = match.to_s.downcase
+				elsif(@current_table)
           case data
           when /^\s*Article\s*$/
             return @infotoken = true
@@ -314,8 +318,6 @@ module ODDB
 						@current_link = nil
 					end
           @ignore_next = false
-        elsif(match = /SUBSTRATES|INHIBITORS|INDUCERS/.match(data))
-          @current_table = match.to_s.downcase
 				end
 			end
       def send_line_break(*args)
@@ -364,6 +366,7 @@ module ODDB
 			FORMAT_CYT_ID = {
 				"3A457"		=>	["3A4", "3A5-7"],
 				"3A4,5,7"	=>	["3A4", "3A5-7"],
+				"3A,4,5,7"=>	["3A4", "3A5-7"],
 			}
 			INVALID_LINKS = [ "clinlist.htm" ]
 			RETRIES = 3
