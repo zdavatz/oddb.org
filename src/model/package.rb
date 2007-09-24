@@ -233,10 +233,32 @@ Grammar OddbSize
 			self.odba_isolated_store
 			nil
 		end
+    def fix_pointers
+      @pointer = @sequence.pointer + [:package, @ikscd]
+      if(sl = @sl_entry)
+        sl.pointer = @pointer + [:sl_entry]
+        sl.odba_store
+      end
+      feedbacks.each { |id, fb|
+        fb.pointer = @pointer + [:feedback, id]
+        fb.odba_store
+      }
+      odba_store
+    end
 		def good_result?(query)
 			query = query.to_s.downcase
 			basename.to_s.downcase[0,query.length] == query
 		end
+    def ikscd=(ikscd)
+      if(/^[0-9]{3}$/.match(ikscd))
+        pacs = @sequence.packages
+        pacs.delete(@ikscd)
+        pacs.store(ikscd, self)
+        pacs.odba_store
+        @ikscd = ikscd
+        fix_pointers
+      end
+    end
 		def localized_name(language)
 			@sequence.localized_name(language)
 		end

@@ -128,6 +128,17 @@ module ODDB
 		def fachinfo
 			@registration.fachinfo
 		end
+    def fix_pointers
+      @pointer = @registration.pointer + [:sequence, @seqnr]
+      @packages.each_value { |package|
+        package.fix_pointers
+      }
+      @active_agents.each { |agent|
+        agent.pointer = @pointer + [:active_agent, agent.substance.to_s]
+        agent.odba_store
+      }
+      odba_store
+    end
 		def generic_type
 			@registration.generic_type
 		end
@@ -234,27 +245,8 @@ module ODDB
 				seqs.delete(@seqnr)
 				seqs.store(seqnr, self)
 				seqs.odba_store
-				@pointer = @registration.pointer + [:sequence, seqnr]
-				self.odba_store
-				@packages.each { |ikscd, package|
-					ppointer = @pointer + [:package, ikscd]
-					package.pointer = ppointer
-					if(sl = package.sl_entry)
-						sl.pointer = ppointer + [:sl_entry]
-						sl.odba_store
-					end
-					package.feedbacks.each { |id, fb|
-						fb.pointer = ppointer + [:feedback, id]
-						fb.odba_store
-					}
-					package.odba_store
-				}
-				@active_agents.each { |agent|
-					agent.pointer = @pointer + [:active_agent, agent.substance.to_s]
-					agent.odba_store
-				}
 				@seqnr = seqnr
-				odba_store
+        fix_pointers
 			end
 		end
 		def source
