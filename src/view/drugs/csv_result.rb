@@ -9,6 +9,7 @@ module ODDB
 	module View
 		module Drugs
 class CsvResult < HtmlGrid::Component
+  attr_reader :duplicates
 	CSV_KEYS = [
 		:rectype,
 		:barcode,
@@ -144,6 +145,7 @@ class CsvResult < HtmlGrid::Component
 		to_csv(CSV_KEYS)
 	end
 	def to_csv(keys, symbol=:active_packages)
+    eans = {}
 		result = []
 		lang = @lookandfeel.language
 		header = keys.collect { |key|
@@ -153,6 +155,7 @@ class CsvResult < HtmlGrid::Component
 		@model.each { |atc|
 			result.push(['#MGrp', atc.code.to_s, atc.description(lang).to_s])
 			atc.send(symbol).each { |pack|
+        eans[pack.ikskey] = eans[pack.ikskey].to_i + 1
 				line = keys.collect { |key|
 					if(self.respond_to?(key))
 						self.send(key, pack)
@@ -163,6 +166,8 @@ class CsvResult < HtmlGrid::Component
 				result.push(line)
 			}
 		}
+    @duplicates = eans.collect { |ikskey, count| 
+      ikskey if count > 1 }.compact.sort
 		result.collect { |line|
 			CSV.generate_line(line, ';')
 		}.join("\n")

@@ -36,6 +36,13 @@ module ODDB
       @file_path = path = File.join(EXPORT_DIR, name)
       exporter = View::Drugs::CsvResult.new(model, session)
       exporter.to_csv_file(keys, path, :packages)
+      dups = exporter.duplicates
+      unless(dups.empty?)
+        log = Log.new(@@today)
+        log.report = sprintf "CSV-Export includes %i duplicates:\n%s",
+                             dups.size, dups.join("\n")
+        log.notify("CSV-Export includes %i duplicates" % dups.size)
+      end
       EXPORT_SERVER.compress(EXPORT_DIR, name)
       backup = @app.log_group(:bsv_sl).newest_date.strftime("oddb.%Y-%m-%d.csv")
       backup_dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
