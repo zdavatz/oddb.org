@@ -9,6 +9,7 @@ module ODDB
 	class GalenicGroup 
 		include Language
 		ODBA_SERIALIZABLE = [ '@descriptions' ]
+    attr_accessor :route_of_administration
 		attr_reader :oid, :galenic_forms
 		def initialize
 			super

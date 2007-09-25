@@ -139,6 +139,9 @@ module ODDB
       }
       odba_store
     end
+    def galenic_group
+      @galenic_form.galenic_group if(@galenic_form)
+    end
 		def generic_type
 			@registration.generic_type
 		end
@@ -233,6 +236,9 @@ module ODDB
 		def patent_protected?
 			@registration.patent_protected? if(@registration)
 		end
+    def route_of_administration
+      @galenic_form.route_of_administration if(@galenic_form)
+    end
 		def search_terms
 			str = self.name
 			ODDB.search_terms(str.split(/\s+/).push(str))

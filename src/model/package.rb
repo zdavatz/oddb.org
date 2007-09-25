@@ -66,15 +66,16 @@ Grammar OddbSize
 				false
 			end
 		end
-		def set_comparable_size!
-			descr_multi = [@descr.to_f, 1].max
-			multi = @multi || 1
+    def multiplier
+      ## used directly in CSV-Export for parenteral products
 			count = @count || 1
 			addition = @addition || 0
+      [@descr.to_f, 1].max * (@multi || 1).to_f * (count + addition)
+    end
+		def set_comparable_size!
 			measure = @measure || Dose.new(1, nil)
 			scale = @scale || Dose.new(1, nil)
-			@comparable_size = descr_multi * multi * ((count + addition) \
-				* measure) / scale
+			@comparable_size = multiplier * measure / scale
 		end
 		def size=(size)
 			@size = size
@@ -174,8 +175,9 @@ Grammar OddbSize
 			:registration_date, :revision_date, :patent, :patent_protected?, :vaccine,
 			:parallel_import, :minifi
     sequence_data :active_agents, :atc_class, :basename, :company, :dose, 
-      :fachinfo, :galenic_form, :has_patinfo?, :longevity, :iksnr, :indication, 
-      :name, :name_base, :patinfo, :pdf_patinfo, :registration
+      :fachinfo, :galenic_form, :galenic_group, :has_patinfo?, :longevity,
+      :iksnr, :indication, :name, :name_base, :patinfo, :pdf_patinfo,
+      :registration, :route_of_administration
 		def initialize(ikscd)
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)

@@ -102,7 +102,12 @@ class CsvResult < HtmlGrid::Component
 		boolean(pack.lppv)
 	end
 	def numerical_size(pack)
-		pack.comparable_size.qty
+    case pack.route_of_administration
+    when 'roa_P'
+      pack.multiplier.to_i
+    else
+      pack.comparable_size.qty
+    end
 	end
   def out_of_trade(pack)
 		boolean(!pack.public?)
@@ -119,6 +124,11 @@ class CsvResult < HtmlGrid::Component
 	def registration_date(pack)
 		formatted_date(pack, :registration_date)
 	end
+  def route_of_administration(pack)
+    if(roa = pack.route_of_administration)
+      roa.gsub('roa_', '')
+    end
+  end
 	def sl_entry(pack)
 		boolean(pack.sl_entry)
 	end

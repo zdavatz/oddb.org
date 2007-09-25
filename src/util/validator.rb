@@ -68,6 +68,8 @@ module ODDB
 			:payment_method => ['pm_invoice', 'pm_paypal'],
 			:patinfo			=>	['delete', 'keep'],
       :resultview   =>  ['atc', 'pages'],
+      :route_of_administration => [nil, 'roa_O', 'roa_P', 'roa_N', 'roa_SL', 
+                         'roa_TD', 'roa_R', 'roa_V'],
 			:salutation		=>	['salutation_m', 'salutation_f'],
       :yus_privileges => [ 
         'edit|yus.entities', 

@@ -209,6 +209,11 @@ module ODDB
 			assert_equal('GBq', @package.measure.unit.to_s)
 			assert_equal(ODDB::Dose.new(10, 'GBq'), @package.comparable_size)
 		end
+		def test_size_writer__multiplier
+			@package.size = '5 Ampulle(n)'
+			assert_equal('5 Ampulle(n)', @package.size)
+			assert_equal(5, @package.multiplier)
+		end
 		def test_descr_writer
 			@package.size = '100 Tabletten'
 			@package.descr = '5 Packungen à'

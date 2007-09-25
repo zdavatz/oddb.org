@@ -7,6 +7,7 @@ module ODDB
 	class CsvExportPlugin < Plugin
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
+    ODDB_RECIPIENTS = [ "produktion@seconag.com" ]
 		def export_analysis
 			ids = @app.analysis_positions.sort_by { |pos|
 				pos.code }.collect { |pos| pos.odba_id }
@@ -17,14 +18,15 @@ module ODDB
 			EXPORT_SERVER.export_doc_csv(ids, EXPORT_DIR, 'doctors.csv')
 		end
     def export_drugs
-      recipients << "produktion@seconag.com"
+      recipients.concat self.class::ODDB_RECIPIENTS
       keys = [ :rectype, :iksnr, :ikscd, :ikskey, :barcode, :bsv_dossier,
         :pharmacode, :name_base, :galenic_form, :most_precise_dose, :size,
         :numerical_size, :price_exfactory, :price_public, :company_name,
         :ikscat, :sl_entry, :introduction_date, :limitation,
         :limitation_points, :limitation_text, :lppv, :registration_date,
         :expiration_date, :inactive_date, :export_flag, :casrn, :generic_type,
-        :has_generic, :deductible, :out_of_trade, :c_type ]
+        :has_generic, :deductible, :out_of_trade, :c_type, 
+        :route_of_administration, :galenic_group ]
       session = SessionStub.new(@app)
       session.language = 'de'
       #session.flavor = 'gcc'

@@ -24,10 +24,21 @@ class GalenicForms < View::DescriptionList
 		:oid					=>	View::PointerLink,
 	}
 end
+class GalenicGroupForm < View::DescriptionForm
+	COMPONENTS = {
+		[2,0]	=>	:route_of_administration,
+	}
+	CSS_MAP = {
+		[2,0,2]	=>	'list'
+	}
+	SYMBOL_MAP = {
+		:route_of_administration	=>	HtmlGrid::Select,
+	}
+end
 class GalenicGroupComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	'galenic_group',
-		[0,1]	=>	View::DescriptionForm,
+		[0,1]	=>	GalenicGroupForm,
 		[0,2]	=>	:galenic_forms,
 	}
 	CSS_CLASS = 'composite'

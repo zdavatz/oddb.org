@@ -34,6 +34,9 @@ module ODDB
 			}
 			self.synonyms += other.all_descriptions - self.all_descriptions
 		end
+    def route_of_administration
+      @galenic_group.route_of_administration if(@galenic_group)
+    end
 		def sequence_count
 			@sequences.size
 		end
