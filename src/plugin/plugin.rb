@@ -52,7 +52,7 @@ module ODDB
 			}
 		end
 		def recipients
-			@recipients || self::class::RECIPIENTS
+			@recipients ||= self::class::RECIPIENTS.dup
 		end
 		def report
 			''
