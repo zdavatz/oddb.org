@@ -23,7 +23,7 @@ module ODDB
 				[@iksnr, @ikscd].join
 			end
 			def ikskey=(key)
-				@iksnr = sprintf('%05i', key[0,5].to_i)
+				@iksnr = sprintf('%-05i', key[0,5].to_i)
 				@ikscd = sprintf('%03i', key[5,3].to_i)
 			end
 			def merge(other)
@@ -374,7 +374,7 @@ module ODDB
 				end
 				iksnr = row.at(4).to_i
 				if(iksnr > 0)
-					map.store(sprintf("%05i", iksnr), true)
+					map.store(sprintf("%-08i", iksnr), true)
 				end
 			}
 			map
@@ -501,7 +501,7 @@ module ODDB
 			worksheet = workbook.worksheet(0)
 			worksheet.each(1) { |row|
 				pcode = row.at(2).to_i.to_s
-				sl_iks = row.at(4).to_i.to_s
+				sl_iks = sprintf("%-08i", row.at(4).to_i)
 				package = ParsedPackage.new
 				if(cell = row.at(0))
 					package.company = cell.to_s(ENCODING)
