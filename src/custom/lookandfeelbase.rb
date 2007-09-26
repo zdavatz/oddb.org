@@ -1250,6 +1250,7 @@ Zeno Davatz
 				:swiss_francs0						=>	'CHF&nbsp;',
 				:swiss_francs1						=>	'.-',
 				:swissmedic_code					=>	'Swissmedic Code:',
+				:swissmedic_email				  =>	'E-Mail Swissmedic-Updates:',
 				:swissreg_patent_url0			=>	'http://www.swissreg.ch/srclient/faces/jsp/patent/sr300.jsp?section=pat&id=',
 				:swissreg_patent_url1			=>	'&language=de',
 				:swissreg_url0						=>	'http://www.swissreg.ch/srclient/faces/jsp/spc/sr300.jsp?section=spc&id=',

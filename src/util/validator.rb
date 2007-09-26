@@ -14,6 +14,7 @@ module ODDB
 		alias :notify_recipient :email
 		alias :receiver_email :email
 		alias :competition_email :email
+		alias :swissmedic_email :email
 		BOOLEAN = [
       :cl_status, :disable, :disable_autoinvoice, :disable_patinfo,
       :download, :experience, :export_flag, :helps, :impression,

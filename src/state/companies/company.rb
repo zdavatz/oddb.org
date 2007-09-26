@@ -198,6 +198,7 @@ class RootCompany < UserCompany
 			:powerlink,
 			:pref_invoice_date,
 			:regulatory_email,
+      :swissmedic_email,
 			:url,
 		]
 		do_update(keys)

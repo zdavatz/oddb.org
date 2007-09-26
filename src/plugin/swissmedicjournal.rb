@@ -13,6 +13,18 @@ module ODDB
 		RECIPIENTS = [
 			'matthijs.ouwerkerk@just-medical.com',
 		]
+    FLAGS = {
+      :new							=>	'Neues Produkt',
+      :productname			=>	'Namensänderung', 
+      :address					=>	'Adresse',
+      :ikscat						=>	'Abgabekategorie',
+      :composition			=>	'Zusammensetzung', 
+      :indication				=>	'Indikation',
+      :sequence					=>	'Handelsform', 
+      :expirydate				=>	'Ablaufdatum der Zulassung',
+      :comment					=>	'Bemerkungen',
+      :delete						=>	'Das Produkt wurde gelöscht',
+    }
 		attr_reader :incomplete_pointers
 		def initialize(app)
 			super
@@ -78,6 +90,30 @@ module ODDB
 			hash.store(:pointers, @incomplete_pointers)
 			hash
 		end
+    def postprocess
+      companies = @registration_pointers.inject({}) { |memo, pointer|
+        reg = pointer.resolve(@app)
+        if(email = reg.company.swissmedic_email)
+          (memo[email] ||= []).push(reg)
+        end
+        memo
+      }
+      date = @month.strftime("%m/%Y")
+      companies.each { |email, registrations|
+        report = <<-EOS % date
+Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorgenommen:
+        EOS
+        registrations.sort_by { |reg| reg.name_base.to_s }.each { |reg|
+          report << sprintf("%s: %s\n%s\n\n", reg.iksnr,
+                            resolve_link(reg.pointer), 
+                            format_flags(@change_flags[reg.pointer]))
+        }
+        log = Log.new(@month)
+        log.report = report
+        log.recipients = [email]
+        log.notify("Swissmedic-Journal")
+      }
+    end
 		def reconsider_deletions(month)
 			@month = month
 			name = month.strftime('%m_%Y.txt')
@@ -140,6 +176,7 @@ module ODDB
 						deactivate_registration(reg)
 					end
 				}
+        postprocess
 				true
 			else
 				false
@@ -198,6 +235,12 @@ module ODDB
 				@incomplete_deactivations.push(smj_reg.src)
 			end
 		end
+    def format_flags(flags)
+      flags.delete(:revision)
+      flags.collect { |flag|
+        "- %s\n" % FLAGS.fetch(flag, "Unbekannt (#{flag})")
+      }.compact.join
+    end
 		def prune_packages(smj_seq, sequence)
 			packages = smj_seq.packages || []
 			ikscds = packages.collect { |package| package.ikscd }
