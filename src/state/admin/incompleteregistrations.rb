@@ -63,6 +63,7 @@ class IncompleteRegs < State::Admin::Global
 			exporter = Exporter.new(@session.app)
 			exporter.export_generics_xls
       exporter.export_patents_xls
+      exporter.mail_swissmedic_notifications
 		}
 		State::Admin::Confirm.new(@session, :release_confirm)
 	end

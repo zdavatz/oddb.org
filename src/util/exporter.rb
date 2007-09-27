@@ -203,5 +203,8 @@ module ODDB
 			end
 			log.notify("#{key.capitalize}-Statistics")
 		end
+    def mail_swissmedic_notifications
+      SwissmedicJournalPlugin.new(@app).mail_notifications
+    end
 	end
 end

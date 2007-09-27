@@ -90,34 +90,40 @@ module ODDB
 			hash.store(:pointers, @incomplete_pointers)
 			hash
 		end
-    def postprocess
+    def mail_notifications
       salutations = {}
-      companies = @registration_pointers.inject({}) { |memo, pointer|
-        reg = pointer.resolve(@app)
-        cmp = reg.company
-        if(email = cmp.swissmedic_email)
-          salutations.store(email, cmp.swissmedic_salutation)
-          (memo[email] ||= []).push(reg)
-        end
-        memo
-      }
-      date = @month.strftime("%m/%Y")
-      companies.each { |email, registrations|
-        report = sprintf(<<-EOS, salutations[email], date)
+      flags = {}
+      if((grp = @app.log_group(:swissmedic_journal)) && (log = grp.latest))
+        all_flags = log.change_flags
+        companies = all_flags.inject({}) { |memo, (pointer, flgs)|
+          puts pointer
+          if((reg = pointer.resolve(@app)) && (cmp = reg.company) \
+             && (email = cmp.swissmedic_email))
+            salutations.store(email, cmp.swissmedic_salutation)
+            flags.store(pointer, flgs)
+            (memo[email] ||= []).push(reg)
+          end
+          memo
+        }
+        month = log.date
+        date = month.strftime("%m/%Y")
+        companies.each { |email, registrations|
+          report = sprintf(<<-EOS, salutations[email], date)
 %s
 
 Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorgenommen:
-        EOS
-        registrations.sort_by { |reg| reg.name_base.to_s }.each { |reg|
-          report << sprintf("%s: %s\n%s\n\n", reg.iksnr,
-                            resolve_link(reg.pointer), 
-                            format_flags(@change_flags[reg.pointer]))
+          EOS
+          registrations.sort_by { |reg| reg.name_base.to_s }.each { |reg|
+            report << sprintf("%s: %s\n%s\n\n", reg.iksnr,
+                              resolve_link(reg.pointer), 
+                              format_flags(flags[reg.pointer]))
+          }
+          mail = Log.new(month)
+          mail.report = report
+          mail.recipients = [email]
+          mail.notify("Swissmedic-Journal")
         }
-        log = Log.new(@month)
-        log.report = report
-        log.recipients = [email]
-        log.notify("Swissmedic-Journal")
-      }
+      end
     end
 		def reconsider_deletions(month)
 			@month = month
@@ -181,7 +187,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
 						deactivate_registration(reg)
 					end
 				}
-        postprocess
 				true
 			else
 				false
