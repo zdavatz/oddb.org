@@ -238,6 +238,7 @@ class AjaxPharmaCompanyForm < AjaxCompanyForm
 		[2,2]		=>	:contact_email,
 		#[1,3]		=>	:set_pass,
 		[2,3]		=>	:regulatory_email,
+		[0,4]		=>	:swissmedic_salutation,
 		[2,4]		=>	:swissmedic_email,
 		[0,5]		=>	:disable_patinfo,
 		[2,5]		=>	:competition_email,
@@ -271,8 +272,8 @@ class AjaxPharmaCompanyForm < AjaxCompanyForm
 		[0,0,4,22]	=>	'list',
 	}
 	COMPONENT_CSS_MAP = {
-		[1,0,3,3]	=>	'standard',
-		[3,3,1,6]	=>	'standard',
+		[1,0,3,5]	=>	'standard',
+		[3,5,1,4]	=>	'standard',
 		[1,9,3,10]	=>	'standard',
 	}
 end

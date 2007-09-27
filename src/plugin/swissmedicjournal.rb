@@ -91,16 +91,21 @@ module ODDB
 			hash
 		end
     def postprocess
+      salutations = {}
       companies = @registration_pointers.inject({}) { |memo, pointer|
         reg = pointer.resolve(@app)
-        if(email = reg.company.swissmedic_email)
+        cmp = reg.company
+        if(email = cmp.swissmedic_email)
+          salutations.store(email, cmp.swissmedic_salutation)
           (memo[email] ||= []).push(reg)
         end
         memo
       }
       date = @month.strftime("%m/%Y")
       companies.each { |email, registrations|
-        report = <<-EOS % date
+        report = sprintf(<<-EOS, salutations[email], date)
+%s
+
 Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorgenommen:
         EOS
         registrations.sort_by { |reg| reg.name_base.to_s }.each { |reg|

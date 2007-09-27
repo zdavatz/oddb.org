@@ -199,6 +199,7 @@ class RootCompany < UserCompany
 			:pref_invoice_date,
 			:regulatory_email,
       :swissmedic_email,
+      :swissmedic_salutation,
 			:url,
 		]
 		do_update(keys)

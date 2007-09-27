@@ -334,6 +334,7 @@ module ODDB
 			:substance,
 			:substance_form,
       :substance_ids,
+      :swissmedic_salutation,
 			:synonym_list,
 			:title,
 			:token,
