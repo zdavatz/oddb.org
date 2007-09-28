@@ -134,7 +134,7 @@ module ODDB
         package.fix_pointers
       }
       @active_agents.each { |agent|
-        agent.pointer = @pointer + [:active_agent, agent.substance.to_s]
+        agent.pointer = @pointer + [:active_agent, agent.oid]
         agent.odba_store
       }
       odba_store

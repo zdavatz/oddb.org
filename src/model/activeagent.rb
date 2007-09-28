@@ -103,9 +103,6 @@ module ODDB
 					@substance.remove_sequence(@sequence)
 				end
 				substance.add_sequence(@sequence)
-				unless(@sequence.nil?)
-					@pointer = @sequence.pointer + [:active_agent, substance.name]
-				end
 				@substance = substance
 			end
 			@substance
