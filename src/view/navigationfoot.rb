@@ -61,7 +61,6 @@ module ODDB
     class TopFoot < HtmlGrid::Composite
       CSS_CLASS = "composite"
       COMPONENTS = {
-        [0,0] => View::CountryNavigation,
         [1,0] =>	View::ZoneNavigation,
       }
       CSS_MAP = {
@@ -72,6 +71,12 @@ module ODDB
         [0,0]	=>	'navigation',
         [1,0]	=>	'navigation right',
       }
+      def init
+        if(@lookandfeel.enabled?(:country_navigation))
+          components.store([0,0], View::CountryNavigation)
+        end
+        super
+      end
     end
 	end
 end
