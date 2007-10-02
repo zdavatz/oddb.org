@@ -6,6 +6,7 @@ require 'plugin/plugin'
 module ODDB
   class RssPlugin < Plugin
     def update_price_feeds(month=@@today)
+      @month = month
       cuts = []
       rises = []
       cutoff = (month << 1) + 1 
