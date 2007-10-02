@@ -1,12 +1,17 @@
 User-agent: Mediapartners-Google*
-Disallow:
-User-Agent: *
+Disallow: /
+User-agent:
+Disallow: /
+User-agent: *
 Disallow: /de/atupri/
 Disallow: /fr/atupri/
 Disallow: /en/atupri/
-Disallow: /de/drouwerkerk/
-Disallow: /fr/drouwerkerk/
-Disallow: /en/drouwerkerk/
+Disallow: /de/just-medical/
+Disallow: /fr/just-medical/
+Disallow: /en/just-medical/
+Disallow: /de/hirslanden/
+Disallow: /fr/hirslanden/
+Disallow: /en/hirslanden/
 Disallow: /de/generika/
 Disallow: /fr/generika/
 Disallow: /en/generika/
