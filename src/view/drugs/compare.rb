@@ -131,7 +131,7 @@ module InsertBackbutton
     dv.css_class = "breadcrumb"
     dv.value = "&lt;"
     span1 = HtmlGrid::Span.new(model, @session, self)
-    span1.css_class = "breadcrumb-3"
+    span1.css_class = "breadcrumb-3 bold"
     link1 = HtmlGrid::Link.new(:back_to_home, model, @session, self)
     link1.href = @lookandfeel._event_url(:home)
     link1.css_class = "list"
@@ -139,6 +139,7 @@ module InsertBackbutton
     span2 = HtmlGrid::Span.new(model, @session, self)
     span2.css_class = "breadcrumb-2"
     link2 = HtmlGrid::Link.new(:result, model, @session, self)
+    link2.css_class = "list"
     query = @session.persistent_user_input(:search_query)
     args = [
       :zone, :drugs, :search_query, query, :search_type, 

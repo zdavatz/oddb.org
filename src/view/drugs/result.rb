@@ -74,7 +74,6 @@ class ResultComposite < HtmlGrid::Composite
 	ROOT_LISTCLASS = View::Drugs::RootResultList
 	SYMBOL_MAP = { }
 	CSS_MAP = {
-		#[0,0] =>	'result-found',
 		[0,0] =>	'breadcrumbs',
     [1,0] =>  'right',
 		[0,1] =>	'list',
@@ -109,6 +108,7 @@ class ResultComposite < HtmlGrid::Composite
 		url = @lookandfeel.event_url(:sort, {:sortvalue => :dsp})
 		link = HtmlGrid::Link.new(:dsp_sort, model, @session, self)
 		link.href = url
+    link.css_class = 'list bold'
 		link
 	end
 	def export_csv(model, session=@session)
@@ -121,7 +121,7 @@ class ResultComposite < HtmlGrid::Composite
     dv.css_class = "breadcrumb"
     dv.value = "&lt;"
     span1 = HtmlGrid::Span.new(model, @session, self)
-    span1.css_class = "breadcrumb-2"
+    span1.css_class = "breadcrumb-2 bold"
     link1 = HtmlGrid::Link.new(:back_to_home, model, @session, self)
     link1.href = @lookandfeel._event_url(:home)
     link1.css_class = "list"
@@ -131,7 +131,10 @@ class ResultComposite < HtmlGrid::Composite
     span2.value = sprintf("%s (%i)", 
                           @session.persistent_user_input(:search_query),
                           model.package_count)
-    [span1, dv, span2]
+    span3 = HtmlGrid::Span.new(model, @session, self)
+    span3.css_class = "breadcrumb"
+    span3.value = '&ndash;'
+    [span1, dv, span2, span3]
 	end
 end
 class Result < View::ResultTemplate
