@@ -105,7 +105,8 @@ class CsvResult < HtmlGrid::Component
 	def numerical_size(pack)
     case pack.route_of_administration
     when 'roa_P'
-      pack.multiplier.to_i
+      multi = pack.multi.to_i
+      (multi > 1) ? multi : pack.multiplier.to_i
     else
       pack.comparable_size.qty
     end
