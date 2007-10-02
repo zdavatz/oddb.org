@@ -76,7 +76,7 @@ class ResultComposite < HtmlGrid::Composite
 	CSS_MAP = {
 		[0,0] =>	'breadcrumbs',
     [1,0] =>  'right',
-		[0,1] =>	'list',
+		[0,1] =>	'list bold',
     [1,1] =>  'right',
 	}
 	def init
@@ -108,7 +108,6 @@ class ResultComposite < HtmlGrid::Composite
 		url = @lookandfeel.event_url(:sort, {:sortvalue => :dsp})
 		link = HtmlGrid::Link.new(:dsp_sort, model, @session, self)
 		link.href = url
-    link.css_class = 'list bold'
 		link
 	end
 	def export_csv(model, session=@session)
