@@ -16,13 +16,6 @@ require 'competition_xls'
 require 'patent_xls'
 require 'odba'
 
-module ODBA
-	class Stub
-		def to_yaml(*args)
-			odba_instance.to_yaml(*args)
-		end
-	end
-end
 module ODDB
 	module OdbaExporter
 		def OdbaExporter.clear
@@ -49,12 +42,11 @@ end
 					zipwriter.puts(line)
 				}
 			}
+			gzwriter.close if(gzwriter)
+			zipwriter.close if(zipwriter)
 			FileUtils.mv(gz_name, name + '.gz')
 			FileUtils.mv(zip_name, name + '.zip')
 			name
-		ensure
-			gzwriter.close if(gzwriter)
-			zipwriter.close if(zipwriter)
 		end
 		def OdbaExporter.compress_many(dir, name, files)
 			FileUtils.mkdir_p(dir)
@@ -192,7 +184,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 			FileUtils.mkdir_p(dir)
 			Tempfile.open(name, dir) { |fh|
 				block.call(fh)
-				fh.flush
+				fh.close
 				newpath = File.join(dir, name)
 				FileUtils.mv(fh.path, newpath)
 				FileUtils.chmod(0644, newpath)

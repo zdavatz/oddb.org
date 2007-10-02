@@ -3,6 +3,13 @@
 
 require 'yaml'
 
+module ODBA
+	class Stub
+		def to_yaml(*args)
+			odba_instance.to_yaml(*args)
+		end
+	end
+end
 module ODDB
 	module OddbYaml
 		YAML_URI = '!oddb.org,2003'
