@@ -63,7 +63,7 @@ class ResultComposite < HtmlGrid::Composite
 		[0,2]	=> 2,
 	}
 	COMPONENTS = {
-		[0,0,0]	=>	:title_found,
+		[0,0,0]	=>	:breadcrumbs,
 		[0,0,1]	=>	:dsp_sort,
 		[0,1]		=>	'price_compare',
 		[1,1]		=>	SelectSearchForm,
@@ -74,7 +74,8 @@ class ResultComposite < HtmlGrid::Composite
 	ROOT_LISTCLASS = View::Drugs::RootResultList
 	SYMBOL_MAP = { }
 	CSS_MAP = {
-		[0,0] =>	'result-found',
+		#[0,0] =>	'result-found',
+		[0,0] =>	'breadcrumbs',
     [1,0] =>  'right',
 		[0,1] =>	'list',
     [1,1] =>  'right',
@@ -115,9 +116,22 @@ class ResultComposite < HtmlGrid::Composite
 			View::Drugs::DivExportCSV.new(model, @session, self)
 		end
 	end
-	def title_found(model, session)
-		query = session.persistent_user_input(:search_query)
-		@lookandfeel.lookup(:title_found, query, model.package_count)
+	def breadcrumbs(model, session=@session)
+    dv = HtmlGrid::Span.new(model, @session, self)
+    dv.css_class = "breadcrumb"
+    dv.value = "&lt;"
+    span1 = HtmlGrid::Span.new(model, @session, self)
+    span1.css_class = "breadcrumb-2"
+    link1 = HtmlGrid::Link.new(:back_to_home, model, @session, self)
+    link1.href = @lookandfeel._event_url(:home)
+    link1.css_class = "list"
+    span1.value = link1
+    span2 = HtmlGrid::Span.new(model, @session, self)
+    span2.css_class = "breadcrumb-1"
+    span2.value = sprintf("%s (%i)", 
+                          @session.persistent_user_input(:search_query),
+                          model.package_count)
+    [span1, dv, span2]
 	end
 end
 class Result < View::ResultTemplate

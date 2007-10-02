@@ -15,12 +15,15 @@ module ODDB
         reorganize_components
 				super
 			end
+      def backtracking(model, session=@session)
+        View::PointerSteps.new(model, @session, self)
+      end
 			def reorganize_components
 				if(@lookandfeel.enabled?(:topfoot))
 					@components = {
 						[0,0]		=>	:topfoot,
 						[0,1]		=>	:head,
-						[0,2]		=>	View::PointerSteps,
+						[0,2]		=>	:backtracking,
 						[1,2]		=>	self.class::SEARCH_HEAD,
 						[0,3]		=>	:content,
 						[0,4]		=>	:foot,
@@ -35,7 +38,7 @@ module ODDB
 				else
 					@components = {
 						[0,0]		=>	:head,
-						[0,1]		=>	View::PointerSteps,
+						[0,1]		=>	:backtracking,
 						[1,1]		=>	self.class::SEARCH_HEAD,
 						[0,2]		=>	:content,
 						[0,3]		=>	:foot,

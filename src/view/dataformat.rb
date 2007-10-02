@@ -53,8 +53,12 @@ module ODDB
 				## instance variable @query than to call @session.persistent_user_input
 				## for every line in a result
 				@query ||= @session.persistent_user_input(:search_query)
+        @type ||= @session.persistent_user_input(:search_type)
 				link = HtmlGrid::Link.new(:compare, model, session, self)
-				link.href = @lookandfeel._event_url(:compare, {'pointer'=>model.pointer})
+        args = [
+          :pointer, model.pointer, :search_type, @type, :search_query, @query,
+        ]
+				link.href = @lookandfeel._event_url(:compare, args)
 				link.value = breakline(model.name_base, 25)
 				link.set_attribute('class', 
 					'big' << resolve_suffix(model))

@@ -833,3 +833,21 @@ span.auc-factor-125 {
   border: 1px solid #0F0;
   background-color: #BFB;
 }
+span.breadcrumb-1 {
+  font-size: $l1_font_size;
+  margin-right: 20px;
+}
+span.breadcrumb-2 {
+  font-size: $l2_font_size;
+}
+span.breadcrumb-3 {
+  font-size: $l3_font_size;
+}
+span.breadcrumb {
+  margin-left: 6px;
+  margin-right: 6px;
+}
+td.breadcrumbs {
+  vertical-align: bottom;
+  padding: 4px;
+}
