@@ -119,6 +119,7 @@ module InsertBackbutton
       x,y = idx
       components.store([x,y,0], :backtracking)
       components.store([x,y,1], :back_button)
+      css_map.store(idx, 'snapback')
     end
   end
   def back_button(model, session=@session)
