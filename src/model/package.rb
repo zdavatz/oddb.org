@@ -24,7 +24,7 @@ Grammar OddbSize
 	Productions
 		Size			->	Multiple* Addition? Count? Measure? Scale? Dose? DESCRIPTION?
 		Count			->	'je'? NUMERIC
-		Multiple	->	NUMERIC UNIT? /[xXà]/
+		Multiple	->	NUMERIC UNIT? /[xXà]|Set/
 		Measure		->	NUMERIC UNIT UNIT?
 		Addition	->	NUMERIC UNIT? '+'
 		Scale			->	'/' NUMERIC? UNIT
@@ -67,7 +67,6 @@ Grammar OddbSize
 			end
 		end
     def multiplier
-      ## used directly in CSV-Export for parenteral products
 			count = @count || 1
 			addition = @addition || 0
       [@descr.to_f, 1].max * (@multi || 1).to_f * (count + addition)

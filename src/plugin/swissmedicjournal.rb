@@ -358,6 +358,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
           pointer = sequence.pointer + [:package, package.ikscd]
           hash = {
             :size		=>	package.package_size,
+            :descr  =>  nil, # delete the description, if not confirmed
           }
           if(ikscat = package.ikscat || sequence.registration.ikscat)
             hash.store(:ikscat, ikscat)
