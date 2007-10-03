@@ -852,6 +852,8 @@ module ODDB
       'fr'	=>	{
         :explain_generic					=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
         :explain_ddd_price_url    =>  'http://www.mymedi.ch/fr/tk.htm',
+        :explain_sort             =>  "Clickez sur un des mot-clé ci-dessous pour accéder au menu déroulant.",
+        :price_compare            =>  'Afin d\'avoir une comparaison, clickez s.v.p. sur le médicament qui vous a été prescrit.',
       },
       'en'	=>	{
         :explain_generic					=>	'Blue&nbsp;=&nbsp;Generic Drug',
