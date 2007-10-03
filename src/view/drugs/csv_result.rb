@@ -106,7 +106,7 @@ class CsvResult < HtmlGrid::Component
     case pack.route_of_administration
     when 'roa_P'
       multi = pack.multi.to_i
-      (multi > 1) ? multi : pack.multiplier.to_i
+      (multi > 1) ? multi : pack.count.to_i
     else
       pack.comparable_size.qty
     end
