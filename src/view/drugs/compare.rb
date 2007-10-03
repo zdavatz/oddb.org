@@ -111,7 +111,9 @@ module InsertBackbutton
   def reorganize_components
     super
     idx = components.index(:backtracking)
-    css_map.store(idx, 'breadcrumbs')
+    if(@lookandfeel.enabled?(:breadcrumbs))
+      css_map.store(idx, 'breadcrumbs')
+    end
     if(@lookandfeel.enabled?(:compare_backbutton, false))
       components.delete(idx)
       x,y = idx
@@ -126,33 +128,37 @@ module InsertBackbutton
     button.css_class = "button"
     button
   end
-	def backtracking(model, session=@session)
-    dv = HtmlGrid::Span.new(model, @session, self)
-    dv.css_class = "breadcrumb"
-    dv.value = "&lt;"
-    span1 = HtmlGrid::Span.new(model, @session, self)
-    span1.css_class = "breadcrumb-3 bold"
-    link1 = HtmlGrid::Link.new(:back_to_home, model, @session, self)
-    link1.href = @lookandfeel._event_url(:home)
-    link1.css_class = "list"
-    span1.value = link1
-    span2 = HtmlGrid::Span.new(model, @session, self)
-    span2.css_class = "breadcrumb-2"
-    link2 = HtmlGrid::Link.new(:result, model, @session, self)
-    link2.css_class = "list"
-    query = @session.persistent_user_input(:search_query)
-    args = [
-      :zone, :drugs, :search_query, query, :search_type, 
-      @session.persistent_user_input(:search_type),
-    ]
-    link2.href = @lookandfeel._event_url(:search, args)
-    link2.value = query
-    span2.value = link2
-    span3 = HtmlGrid::Span.new(model, @session, self)
-    span3.css_class = "breadcrumb-1"
-    span3.value = model.pointer_descr if(model.respond_to? :pointer_descr)
-    [span1, dv, span2, dv, span3]
-	end
+  def backtracking(model, session=@session)
+    if(@lookandfeel.enabled?(:breadcrumbs))
+      dv = HtmlGrid::Span.new(model, @session, self)
+      dv.css_class = "breadcrumb"
+      dv.value = "&lt;"
+      span1 = HtmlGrid::Span.new(model, @session, self)
+      span1.css_class = "breadcrumb-3 bold"
+      link1 = HtmlGrid::Link.new(:back_to_home, model, @session, self)
+      link1.href = @lookandfeel._event_url(:home)
+      link1.css_class = "list"
+      span1.value = link1
+      span2 = HtmlGrid::Span.new(model, @session, self)
+      span2.css_class = "breadcrumb-2"
+      link2 = HtmlGrid::Link.new(:result, model, @session, self)
+      link2.css_class = "list"
+      query = @session.persistent_user_input(:search_query)
+      args = [
+        :zone, :drugs, :search_query, query, :search_type, 
+        @session.persistent_user_input(:search_type),
+      ]
+      link2.href = @lookandfeel._event_url(:search, args)
+      link2.value = @lookandfeel.lookup(:back_to_list_for, query)
+      span2.value = link2
+      span3 = HtmlGrid::Span.new(model, @session, self)
+      span3.css_class = "breadcrumb-1"
+      span3.value = model.pointer_descr if(model.respond_to? :pointer_descr)
+      [span1, dv, span2, dv, span3]
+    else
+      super
+    end
+  end
 end
 class Compare < PrivateTemplate
 	include View::SponsorMethods

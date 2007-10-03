@@ -115,6 +115,7 @@ module ODDB
 	class LookandfeelGenerika < SBSM::LookandfeelWrapper
 		ENABLED = [
       :ajax,
+      :breadcrumbs,
 			:companylist,
       :country_navigation,
 			:fachinfos,

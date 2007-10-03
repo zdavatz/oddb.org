@@ -63,7 +63,7 @@ class ResultComposite < HtmlGrid::Composite
 		[0,2]	=> 2,
 	}
 	COMPONENTS = {
-		[0,0,0]	=>	:breadcrumbs,
+		[0,0,0]	=>	:title_found,
 		[0,0,1]	=>	:dsp_sort,
 		[0,1]		=>	'price_compare',
 		[1,1]		=>	SelectSearchForm,
@@ -74,12 +74,16 @@ class ResultComposite < HtmlGrid::Composite
 	ROOT_LISTCLASS = View::Drugs::RootResultList
 	SYMBOL_MAP = { }
 	CSS_MAP = {
-		[0,0] =>	'breadcrumbs',
+		[0,0] =>	'result-found',
     [1,0] =>  'right',
 		[0,1] =>	'list bold',
     [1,1] =>  'right',
 	}
 	def init
+    if(@lookandfeel.enabled?(:breadcrumbs))
+      components.store([0,0,0], :breadcrumbs)
+      css_map.store([0,0], 'breadcrumbs')
+    end
     y = 2
     if(@lookandfeel.enabled?(:explain_sort, false))
       components.store([0,y], "explain_sort")
@@ -104,18 +108,7 @@ class ResultComposite < HtmlGrid::Composite
     end
 		super
 	end
-	def dsp_sort(model, session)
-		url = @lookandfeel.event_url(:sort, {:sortvalue => :dsp})
-		link = HtmlGrid::Link.new(:dsp_sort, model, @session, self)
-		link.href = url
-		link
-	end
-	def export_csv(model, session=@session)
-		if(@lookandfeel.enabled?(:export_csv))
-			View::Drugs::DivExportCSV.new(model, @session, self)
-		end
-	end
-	def breadcrumbs(model, session=@session)
+  def breadcrumbs(model, session=@session)
     dv = HtmlGrid::Span.new(model, @session, self)
     dv.css_class = "breadcrumb"
     dv.value = "&lt;"
@@ -127,14 +120,28 @@ class ResultComposite < HtmlGrid::Composite
     span1.value = link1
     span2 = HtmlGrid::Span.new(model, @session, self)
     span2.css_class = "breadcrumb-1"
-    span2.value = sprintf("%s (%i)", 
-                          @session.persistent_user_input(:search_query),
-                          model.package_count)
+    query = @session.persistent_user_input(:search_query)
+    span2.value = @lookandfeel.lookup(:list_for, query, model.package_count)
     span3 = HtmlGrid::Span.new(model, @session, self)
     span3.css_class = "breadcrumb"
     span3.value = '&ndash;'
     [span1, dv, span2, span3]
+  end
+	def dsp_sort(model, session)
+		url = @lookandfeel.event_url(:sort, {:sortvalue => :dsp})
+		link = HtmlGrid::Link.new(:dsp_sort, model, @session, self)
+		link.href = url
+		link
 	end
+	def export_csv(model, session=@session)
+		if(@lookandfeel.enabled?(:export_csv))
+			View::Drugs::DivExportCSV.new(model, @session, self)
+		end
+	end
+  def title_found(model, session=@session)
+    query = @session.persistent_user_input(:search_query)
+    @lookandfeel.lookup(:title_found, query, model.package_count)
+  end
 end
 class Result < View::ResultTemplate
 	include View::SponsorMethods
