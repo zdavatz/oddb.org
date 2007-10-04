@@ -918,6 +918,14 @@ module ODDB
 		def section_style
 			'font-size: 16px; margin-top: 8px; line-height: 1.4em; max-width: 600px'
 		end
+    def sequence_list_components
+      {
+        [0,0]	=>	:iksnr,
+        [1,0]	=>	:patinfo,
+        [2,0]	=>	:name_base,
+        [3,0]	=>	:galenic_form,
+      }
+    end
 	end
 	class LookandfeelSwissMedInfo < SBSM::LookandfeelWrapper
 		ENABLED = [
