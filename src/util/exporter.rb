@@ -59,6 +59,11 @@ module ODDB
 			log.notify("Error: Export")
 			nil
 		end
+    def export_helper(name)
+      EXPORT_SERVER.safe_export(EXPORT_DIR, name) { |fh|
+        yield fh
+      }
+    end
 		def export_competition_xls(company, db_path=nil)
 			plug = XlsExportPlugin.new(@app)
 			plug.export_competition(company, db_path)

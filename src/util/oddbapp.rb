@@ -776,6 +776,11 @@ class OddbPrevalence
     }
     nil # don't try to pass all registrations across DRb-Land
   end
+  def remote_export(name)
+    ODDB::Exporter.new(self).export_helper(name) { |fh|
+      yield fh
+    }
+  end
   def remote_packages(query)
     seqs = search_sequences(query, false)
     if(seqs.empty?)

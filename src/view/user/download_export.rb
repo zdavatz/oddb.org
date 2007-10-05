@@ -66,28 +66,32 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[7,12]	=>	:example_patinfo_yaml,
 
 		[0,14]	=>	'export_added_value',
-		[0,15]	=>	:xls_generics,
-		[2,15]	=>	:radio_generics_xls,
-		[6,15]	=>	:datadesc_generics_xls,
-		[7,15]	=>	:example_generics_xls,
-		[0,16]	=>	:xls_patents,
-		[3,16]	=>	:radio_patents_xls,
-		[6,16]	=>	:datadesc_patents_xls,
-		[7,16]	=>	:example_patents_xls,
-		[0,17]	=>	:xls_swissdrug_update,
-		[2,17]	=>	:radio_swissdrug_update_xls,
-		[6,17]	=>	:datadesc_swissdrug_update_xls,
-		[7,17]	=>	:example_swissdrug_update_xls,
+		[0,15]	=>	:xls_chde,
+		[2,15]	=>	:radio_chde_xls,
+		[6,15]	=>	:datadesc_chde_xls,
+		[7,15]	=>	:example_chde_xls,
+		[0,16]	=>	:xls_generics,
+		[2,16]	=>	:radio_generics_xls,
+		[6,16]	=>	:datadesc_generics_xls,
+		[7,16]	=>	:example_generics_xls,
+		[0,17]	=>	:xls_patents,
+		[3,17]	=>	:radio_patents_xls,
+		[6,17]	=>	:datadesc_patents_xls,
+		[7,17]	=>	:example_patents_xls,
+		[0,18]	=>	:xls_swissdrug_update,
+		[2,18]	=>	:radio_swissdrug_update_xls,
+		[6,18]	=>	:datadesc_swissdrug_update_xls,
+		[7,18]	=>	:example_swissdrug_update_xls,
 
-		[0,19]	=>	'export_compatibility',
-		[0,20]	=>	:oddbdat_download,
-		[2,20]	=>	:radio_oddbdat,
-		[6,20]	=>	:datadesc_oddbdat,
-		[0,21]	=>	:s31x,
-		[2,21]	=>	:radio_s31x,
-		[6,21]	=>	:datadesc_s31x,
-		[0,22]	=>	:compression_label,
-		[0,23]	=>	:compression,
+		[0,20]	=>	'export_compatibility',
+		[0,21]	=>	:oddbdat_download,
+		[2,21]	=>	:radio_oddbdat,
+		[6,21]	=>	:datadesc_oddbdat,
+		[0,22]	=>	:s31x,
+		[2,22]	=>	:radio_s31x,
+		[6,22]	=>	:datadesc_s31x,
+		[0,23]	=>	:compression_label,
+		[0,24]	=>	:compression,
 	}
 	CSS_MAP = {
 		[0,0,8]			=>	'subheading',
@@ -100,7 +104,8 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[0,11,8]		=>	'list bg',
 		[0,14,8]		=>	'list bg sum',
 		[0,16,8]		=>	'list bg',
-		[0,19,8]		=>	'list bg sum',
+		[0,18,8]		=>	'list bg',
+		[0,20,8]		=>	'list bg sum',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
@@ -143,6 +148,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def datadesc_analysis_csv(model, session)
 		datadesc('analysis.csv')
+	end
+	def datadesc_chde_xls(model, session)
+		datadesc('chde.xls')
 	end
 	def datadesc_doctors_csv(model, session)
 		datadesc('doctors.csv')
@@ -195,6 +203,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def example_analysis_csv(model, session)
 		example('analysis.csv')
 	end
+	def example_chde_xls(model, session)
+		example('chde.xls')
+	end
 	def example_doctors_yaml(model, session)
 		example('doctors.yaml')
 	end
@@ -234,6 +245,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def oddbdat_download(model, session)
 		checkbox_with_filesize("oddbdat")
 	end
+	def radio_chde_xls(model, session)
+		once_or_year('chde.xls')
+	end
 	def radio_oddb_csv(model, session)
 		once_or_year('oddb.csv')
 	end
@@ -269,6 +283,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def s31x(model, session)
 		checkbox_with_filesize("s31x")
+	end
+	def xls_chde(model, session)
+		checkbox_with_filesize('chde.xls')
 	end
 	def xls_generics(model, session)
 		checkbox_with_filesize('generics.xls')
