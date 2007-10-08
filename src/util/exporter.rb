@@ -60,8 +60,8 @@ module ODDB
 			nil
 		end
     def export_helper(name)
-      EXPORT_SERVER.safe_export(EXPORT_DIR, name) { |fh|
-        yield fh
+      EXPORT_SERVER.remote_safe_export(EXPORT_DIR, name) { |path|
+        yield path
       }
     end
 		def export_competition_xls(company, db_path=nil)

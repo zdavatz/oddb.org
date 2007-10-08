@@ -180,6 +180,18 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 				nil
 			}
 		end
+    def OdbaExporter.remote_safe_export(dir, name, &block)
+      FileUtils.mkdir_p(dir)
+      Tempfile.open(name, dir) { |fh|
+        fh.close
+        block.call(fh.path)
+        newpath = File.join(dir, name)
+        FileUtils.mv(fh.path, newpath)
+        FileUtils.chmod(0644, newpath)
+        compress(dir, name)
+      }
+      name
+    end
 		def OdbaExporter.safe_export(dir, name, &block)
 			FileUtils.mkdir_p(dir)
 			Tempfile.open(name, dir) { |fh|

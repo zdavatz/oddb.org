@@ -31,7 +31,7 @@ module ODDB
 	## Prices and Durations
   DOWNLOAD_EXPORT_PRICES = {
     'analysis.csv'				=> 300,
-    'chde.xls'	          => 400,
+    'chde.xls'	          => 600,
     'doctors.csv'					=> 1900,
     'doctors.yaml'				=> 2100,
     'fachinfo.yaml'				=> 800,
@@ -49,7 +49,7 @@ module ODDB
     'swissdrug-update.xls'=> 150,
   }
   DOWNLOAD_EXPORT_SUBSCRIPTION_PRICES = {
-    'chde.xls'	          => 1400,
+    'chde.xls'	          => 2000,
     'fachinfo.yaml'				=> 1400,
     'generics.xls'				=> 1700,
     'interactions.yaml'   => 1200,

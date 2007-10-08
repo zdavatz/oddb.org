@@ -23,7 +23,6 @@ require 'models'
 require 'commands'
 require 'sbsm/drbserver'
 require 'sbsm/index'
-require 'util/drb'
 require 'util/config'
 require 'fileutils'
 require 'yaml'
@@ -777,8 +776,8 @@ class OddbPrevalence
     nil # don't try to pass all registrations across DRb-Land
   end
   def remote_export(name)
-    ODDB::Exporter.new(self).export_helper(name) { |fh|
-      yield fh
+    ODDB::Exporter.new(self).export_helper(name) { |path|
+      yield path
     }
   end
   def remote_packages(query)
