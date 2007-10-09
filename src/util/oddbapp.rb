@@ -935,10 +935,11 @@ class OddbPrevalence
 		end
 		sequences = ODBA.cache.retrieve_from_index("interactions_index_#{lang}", 
                                                key, result)
+    key = key.downcase
     sequences.reject! { |seq| 
-      ODDB.search_term(seq.search_terms).include?(key) \
+      ODDB.search_terms(seq.search_terms, :downcase => true).include?(key) \
         || seq.substances.any? { |sub|
-        sub.search_keys.any? { |skey| skey.include?(key) }
+        sub.search_keys.any? { |skey| skey.downcase.include?(key) }
       }
     }
 		_search_exact_classified_result(sequences, :interaction, result)

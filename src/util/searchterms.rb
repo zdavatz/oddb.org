@@ -24,9 +24,12 @@ module ODDB
 		term.gsub!(/ü/, 'ue')
 		term
 	end
-	def ODDB.search_terms(words)
+	def ODDB.search_terms(words, opts={})
 		terms = []
 		words.flatten.compact.uniq.inject(terms) { |terms, term| 
+      if(opts[:downcase])
+        term = term.downcase
+      end
 			parts = term.split(/[\/-]/)
 			if(parts.size > 1)
         terms.push(ODDB.search_term(parts.first))
