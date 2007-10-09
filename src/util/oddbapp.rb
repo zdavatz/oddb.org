@@ -936,7 +936,8 @@ class OddbPrevalence
 		sequences = ODBA.cache.retrieve_from_index("interactions_index_#{lang}", 
                                                key, result)
     sequences.reject! { |seq| 
-      ODDB.search_term(seq.name).include?(key) || seq.substances.any? { |sub|
+      ODDB.search_term(seq.search_terms).include?(key) \
+        || seq.substances.any? { |sub|
         sub.search_keys.any? { |skey| skey.include?(key) }
       }
     }
