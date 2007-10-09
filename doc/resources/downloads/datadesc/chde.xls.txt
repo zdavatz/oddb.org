@@ -1,12 +1,13 @@
 Datenbeschrieb chde.xls
 
-Version: 1.0.0
+Version: 1.1.0
+Geändert: 09.10.2007 (1.1.0) durch hwyss@ywesee.com
 Erstellt: 05.10.2007 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
 A: Name DE (Name CH) 
 B: Pkg Grösse DE (Pkg Grösse CH) 
-C: AVP inkl. Mwst in CHF nach Abzug und Zuschlag  
+C: AVP inkl. MwSt in CHF nach Abzug und Zuschlag  
 D: Hersteller DE (Hersteller CH) 
 E: PZN 
 F: EAN 
@@ -16,12 +17,18 @@ I: Wirkstoff (Schreibweise CH)
 J: ATC-Code
 K: Abgabekategorie CH  
 L: SL Schweiz  
-M: Preisunterschied pro Tablette inkl. Mwst. in CHF 
-N: Preisunterschied in % 
+M: Preisunterschied AVP inkl. Mwst. in CHF 
+N: Preisunterschied AVP in % (normalisiert)
 O: Packungsäquivalenzfaktor            
-
+P: FAP DE exkl. MwSt
+Q: FAP CH exkl. MwSt
+R: Preisunterschied FAP in CHF 
+S: Preisunterschied FAP in % (normalisiert)
 
 ## Glossar ##
+* normalisiert
+Prozentualberechnung unter Einbezug des Packungsäquivalenzfaktors
+
 * Version
 Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
