@@ -32,6 +32,7 @@ module ODDB
   DOWNLOAD_EXPORT_PRICES = {
     'analysis.csv'				=> 300,
     'chde.xls'	          => 600,
+    'de.oddb.yaml'				=> 600,
     'doctors.csv'					=> 1900,
     'doctors.yaml'				=> 2100,
     'fachinfo.yaml'				=> 800,
@@ -50,6 +51,7 @@ module ODDB
   }
   DOWNLOAD_EXPORT_SUBSCRIPTION_PRICES = {
     'chde.xls'	          => 2000,
+    'de.oddb.yaml'				=> 2500,
     'fachinfo.yaml'				=> 1400,
     'generics.xls'				=> 1700,
     'interactions.yaml'   => 1200,
@@ -64,6 +66,7 @@ module ODDB
   DOWNLOAD_EXPORT_DURATIONS = { 
     'analysis.csv'				=> 30,
     'chde.xls'	          => 30,
+    'de.oddb.yaml'				=> 30,
     'doctors.csv'					=> 30,
     'doctors.yaml'				=> 30,
     'fachinfo.yaml'				=> 30,
@@ -82,6 +85,7 @@ module ODDB
   }
   DOWNLOAD_EXPORT_SUBSCRIPTION_DURATIONS = { 
     'chde.xls'	          => 365,
+    'de.oddb.yaml'				=> 365,
     'fachinfo.yaml'				=> 365,
     'generics.xls'				=> 365,
     'interactions.yaml'		=> 365,

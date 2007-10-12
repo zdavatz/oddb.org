@@ -24,96 +24,101 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[3,2]		=>	:csv_analysis_price,
 		[6,2]		=>	:datadesc_analysis_csv,
 		[7,2]		=>	:example_analysis_csv,
-		[0,3]		=>	:csv_doctors_export,
-		[3,3]		=>	:csv_doctors_price,
-		[6,3]		=>	:datadesc_doctors_csv,
-		[7,3]		=>	:example_doctors_csv,
-		[0,4]		=>	:yaml_doctors_export,
-		[3,4]		=>	:yaml_doctors_price,
-		[6,4]		=>	:datadesc_doctors_yaml,
-		[7,4]		=>	:example_doctors_yaml,
-		[0,5]		=>	:yaml_fachinfo_export,
-		[2,5]		=>	:radio_fachinfo_yaml,
-		[6,5]		=>	:datadesc_fachinfo_yaml,
-		[7,5]		=>	:example_fachinfo_yaml,
-		[0,6]		=>	:yaml_interactions_export,
-		[2,6]		=>	:radio_interactions_yaml,
-		[6,6]		=>	:datadesc_interactions_yaml,
-		[7,6]		=>	:example_interactions_yaml,
-		[0,7]		=>	:csv_migel_export,
-		[3,7]		=>	:csv_migel_price,
-		[6,7]		=>	:datadesc_migel_csv,
-		[7,7]		=>	:example_migel_csv,
-		[0,8]		=>	:csv_narcotics_export,
-		[2,8]		=>	:radio_narcotics_csv,
-		[6,8]		=>	:datadesc_narcotics_csv,
-		[7,8]		=>	:example_narcotics_csv,
-		[0,9]		=>	:yaml_narcotics_export,
-		[2,9]		=>	:radio_narcotics_yaml,
-		[6,9]		=>	:datadesc_narcotics_yaml,
-		[7,9]		=>	:example_narcotics_yaml,
-		[0,10]	=>	:csv_export,
-		[2,10]	=>	:radio_oddb_csv,
-		[6,10]	=>	:datadesc_oddb_csv,
-		[7,10]	=>	:example_oddb_csv,
-		[0,11]	=>	:yaml_export,
-		[2,11]	=>	:radio_oddb_yaml,
-		[6,11]	=>	:datadesc_oddb_yaml,
-		[7,11]	=>	:example_oddb_yaml,
-		[0,12]	=>	:yaml_patinfo_export,
-		[3,12]	=>	:yaml_patinfo_price,
-		[6,12]	=>	:datadesc_patinfo_yaml,
-		[7,12]	=>	:example_patinfo_yaml,
+		[0,3]	  =>	:de_oddb_yaml,
+		[2,3]	  =>	:radio_de_oddb_yaml,
+		[6,3]	  =>	:datadesc_de_oddb_yaml,
+		[7,3]	  =>	:example_de_oddb_yaml,
+		[0,4]		=>	:csv_doctors_export,
+		[3,4]		=>	:csv_doctors_price,
+		[6,4]		=>	:datadesc_doctors_csv,
+		[7,4]		=>	:example_doctors_csv,
+		[0,5]		=>	:yaml_doctors_export,
+		[3,5]		=>	:yaml_doctors_price,
+		[6,5]		=>	:datadesc_doctors_yaml,
+		[7,5]		=>	:example_doctors_yaml,
+		[0,6]		=>	:yaml_fachinfo_export,
+		[2,6]		=>	:radio_fachinfo_yaml,
+		[6,6]		=>	:datadesc_fachinfo_yaml,
+		[7,6]		=>	:example_fachinfo_yaml,
+		[0,7]		=>	:yaml_interactions_export,
+		[2,7]		=>	:radio_interactions_yaml,
+		[6,7]		=>	:datadesc_interactions_yaml,
+		[7,7]		=>	:example_interactions_yaml,
+		[0,8]		=>	:csv_migel_export,
+		[3,8]		=>	:csv_migel_price,
+		[6,8]		=>	:datadesc_migel_csv,
+		[7,8]		=>	:example_migel_csv,
+		[0,9]		=>	:csv_narcotics_export,
+		[2,9]		=>	:radio_narcotics_csv,
+		[6,9]		=>	:datadesc_narcotics_csv,
+		[7,9]		=>	:example_narcotics_csv,
+		[0,10]	=>	:yaml_narcotics_export,
+		[2,10]	=>	:radio_narcotics_yaml,
+		[6,10]	=>	:datadesc_narcotics_yaml,
+		[7,10]	=>	:example_narcotics_yaml,
+		[0,11]	=>	:csv_export,
+		[2,11]	=>	:radio_oddb_csv,
+		[6,11]	=>	:datadesc_oddb_csv,
+		[7,11]	=>	:example_oddb_csv,
+		[0,12]	=>	:yaml_export,
+		[2,12]	=>	:radio_oddb_yaml,
+		[6,12]	=>	:datadesc_oddb_yaml,
+		[7,12]	=>	:example_oddb_yaml,
+		[0,13]	=>	:yaml_patinfo_export,
+		[3,13]	=>	:yaml_patinfo_price,
+		[6,13]	=>	:datadesc_patinfo_yaml,
+		[7,13]	=>	:example_patinfo_yaml,
 
-		[0,14]	=>	'export_added_value',
-		[0,15]	=>	:xls_chde,
-		[2,15]	=>	:radio_chde_xls,
-		[6,15]	=>	:datadesc_chde_xls,
-		[7,15]	=>	:example_chde_xls,
-		[0,16]	=>	:xls_generics,
-		[2,16]	=>	:radio_generics_xls,
-		[6,16]	=>	:datadesc_generics_xls,
-		[7,16]	=>	:example_generics_xls,
-		[0,17]	=>	:xls_patents,
-		[3,17]	=>	:radio_patents_xls,
-		[6,17]	=>	:datadesc_patents_xls,
-		[7,17]	=>	:example_patents_xls,
-		[0,18]	=>	:xls_swissdrug_update,
-		[2,18]	=>	:radio_swissdrug_update_xls,
-		[6,18]	=>	:datadesc_swissdrug_update_xls,
-		[7,18]	=>	:example_swissdrug_update_xls,
+		[0,15]	=>	'export_added_value',
+		[0,16]	=>	:xls_chde,
+		[2,16]	=>	:radio_chde_xls,
+		[6,16]	=>	:datadesc_chde_xls,
+		[7,16]	=>	:example_chde_xls,
+		[0,17]	=>	:xls_generics,
+		[2,17]	=>	:radio_generics_xls,
+		[6,17]	=>	:datadesc_generics_xls,
+		[7,17]	=>	:example_generics_xls,
+		[0,18]	=>	:xls_patents,
+		[3,18]	=>	:radio_patents_xls,
+		[6,18]	=>	:datadesc_patents_xls,
+		[7,18]	=>	:example_patents_xls,
+		[0,19]	=>	:xls_swissdrug_update,
+		[2,19]	=>	:radio_swissdrug_update_xls,
+		[6,19]	=>	:datadesc_swissdrug_update_xls,
+		[7,19]	=>	:example_swissdrug_update_xls,
 
-		[0,20]	=>	'export_compatibility',
-		[0,21]	=>	:oddbdat_download,
-		[2,21]	=>	:radio_oddbdat,
-		[6,21]	=>	:datadesc_oddbdat,
-		[0,22]	=>	:s31x,
-		[2,22]	=>	:radio_s31x,
-		[6,22]	=>	:datadesc_s31x,
-		[0,23]	=>	:compression_label,
-		[0,24]	=>	:compression,
+		[0,21]	=>	'export_compatibility',
+		[0,22]	=>	:oddbdat_download,
+		[2,22]	=>	:radio_oddbdat,
+		[6,22]	=>	:datadesc_oddbdat,
+		[0,23]	=>	:s31x,
+		[2,23]	=>	:radio_s31x,
+		[6,23]	=>	:datadesc_s31x,
+		[0,24]	=>	:compression_label,
+		[0,25]	=>	:compression,
 	}
 	CSS_MAP = {
 		[0,0,8]			=>	'subheading',
 		[0,1,8]			=>	'list bg sum',
-		[0,2,8,21]	=>	'list',
+		[0,2,8,22]	=>	'list',
 		[0,3,8]			=>	'list bg',
 		[0,5,8]			=>	'list bg',
 		[0,7,8]			=>	'list bg',
 		[0,9,8]			=>	'list bg',
 		[0,11,8]		=>	'list bg',
-		[0,14,8]		=>	'list bg sum',
-		[0,16,8]		=>	'list bg',
-		[0,18,8]		=>	'list bg',
-		[0,20,8]		=>	'list bg sum',
+		[0,13,8]		=>	'list bg',
+		[0,15,8]		=>	'list bg sum',
+		[0,17,8]		=>	'list bg',
+		[0,19,8]		=>	'list bg',
+		[0,21,8]		=>	'list bg sum',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
 		[0,1]	=>	8,
-		[0,14]=>	8,
-		[0,19]=>	8,
-		[0,22]=>	8,
+		[0,15]=>	8,
+		[0,20]=>	8,
 		[0,23]=>	8,
+		[0,24]=>	8,
 	}
 	CSS_CLASS = 'component'
 	SYMBOL_MAP = {
@@ -151,6 +156,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def datadesc_chde_xls(model, session)
 		datadesc('chde.xls')
+	end
+	def datadesc_de_oddb_yaml(model, session)
+		datadesc('de.oddb.yaml')
 	end
 	def datadesc_doctors_csv(model, session)
 		datadesc('doctors.csv')
@@ -197,6 +205,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def datadesc_s31x(model, session)
 		datadesc('s31x')
 	end
+	def de_oddb_yaml(model, session)
+		checkbox_with_filesize("de.oddb.yaml")
+	end
 	def example_doctors_csv(model, session)
 		example('doctors.csv')
 	end
@@ -205,6 +216,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def example_chde_xls(model, session)
 		example('chde.xls')
+	end
+	def example_de_oddb_yaml(model, session)
+		example('de.oddb.yaml')
 	end
 	def example_doctors_yaml(model, session)
 		example('doctors.yaml')
@@ -247,6 +261,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def radio_chde_xls(model, session)
 		once_or_year('chde.xls')
+	end
+	def radio_de_oddb_yaml(model, session)
+		once_or_year('de.oddb.yaml')
 	end
 	def radio_oddb_csv(model, session)
 		once_or_year('oddb.csv')
