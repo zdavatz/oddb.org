@@ -101,7 +101,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	CSS_MAP = {
 		[0,0,8]			=>	'subheading',
 		[0,1,8]			=>	'list bg sum',
-		[0,2,8,22]	=>	'list',
+		[0,2,8,25]	=>	'list',
 		[0,3,8]			=>	'list bg',
 		[0,5,8]			=>	'list bg',
 		[0,7,8]			=>	'list bg',
@@ -117,9 +117,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[5,0]	=>	2,
 		[0,1]	=>	8,
 		[0,15]=>	8,
-		[0,20]=>	8,
-		[0,23]=>	8,
+		[0,21]=>	8,
 		[0,24]=>	8,
+		[0,25]=>	8,
 	}
 	CSS_CLASS = 'component'
 	SYMBOL_MAP = {
