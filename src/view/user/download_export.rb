@@ -91,6 +91,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[0,22]	=>	:oddbdat_download,
 		[2,22]	=>	:radio_oddbdat,
 		[6,22]	=>	:datadesc_oddbdat,
+		[7,22]	=>	:example_oddbdat,
 		[0,23]	=>	:s31x,
 		[2,23]	=>	:radio_s31x,
 		[6,23]	=>	:datadesc_s31x,
@@ -249,6 +250,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def example_oddb_yaml(model, session)
 		example('oddb.yaml')
+	end
+	def example_oddbdat(model, session)
+		example('oddbdat.tar.gz')
 	end
 	def example_patinfo_yaml(model, session)
 		example('patinfo.yaml')
