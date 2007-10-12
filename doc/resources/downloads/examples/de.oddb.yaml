@@ -1,0 +1,118 @@
+--- !de.oddb.org,2007/ODDB::Drugs::Product 
+name: !de.oddb.org,2007/ODDB::Util::Multilingual 
+  canonical: 
+    :de: Navoban Axicorp
+  synonyms: []
+
+company: !de.oddb.org,2007/ODDB::Business::Company 
+  name: !de.oddb.org,2007/ODDB::Util::Multilingual 
+    canonical: 
+      :de: Axicorp Pharma GmbH
+    synonyms: []
+
+sequences: 
+- !de.oddb.org,2007/ODDB::Drugs::Sequence 
+  atc: !de.oddb.org,2007/ODDB::Drugs::Atc 
+    code: A04AA03
+    name: !de.oddb.org,2007/ODDB::Util::Multilingual 
+      canonical: 
+        :en: Tropisetron
+        :de: Tropisetron
+      synonyms: []
+
+    ddds: 
+    - !de.oddb.org,2007/ODDB::Drugs::Ddd 
+      administration: O
+      comment: 
+      dose: !de.oddb.org,2007/ODDB::Drugs::Dose 
+        val: 5
+        unit: mg
+    - !de.oddb.org,2007/ODDB::Drugs::Ddd 
+      administration: P
+      comment: 
+      dose: !de.oddb.org,2007/ODDB::Drugs::Dose 
+        val: 5
+        unit: mg
+  compositions: 
+  - !de.oddb.org,2007/ODDB::Drugs::Composition 
+    equivalence_factor: 1.0
+    galenic_form: !de.oddb.org,2007/ODDB::Drugs::GalenicForm 
+      codes: 
+      - !de.oddb.org,2007/ODDB::Util::Code 
+        country: DE
+        type: galenic_form
+        value: KAPS
+      - !de.oddb.org,2007/ODDB::Util::Code 
+        country: DE
+        type: galenic_form
+        value: KAPS1
+      - !de.oddb.org,2007/ODDB::Util::Code 
+        country: DE
+        type: galenic_form
+        value: KAPS2
+      description: !de.oddb.org,2007/ODDB::Util::Multilingual 
+        canonical: 
+          :de: Kapseln
+        synonyms: []
+
+      group: !de.oddb.org,2007/ODDB::Drugs::GalenicGroup 
+        administration: O
+        name: !de.oddb.org,2007/ODDB::Util::Multilingual 
+          canonical: 
+            :de: Tabletten
+          synonyms: []
+
+    active_agents: 
+    - !de.oddb.org,2007/ODDB::Drugs::ActiveAgent 
+      dose: !de.oddb.org,2007/ODDB::Drugs::Dose 
+        val: 25
+        unit: mg
+      substance: !de.oddb.org,2007/ODDB::Drugs::Substance 
+        codes: 
+        - !de.oddb.org,2007/ODDB::Util::Code 
+          country: DE
+          type: substance
+          value: TRTN
+        name: !de.oddb.org,2007/ODDB::Util::Multilingual 
+          canonical: 
+            :de: Tropisetron
+          synonyms: []
+
+        group: !de.oddb.org,2007/ODDB::Drugs::SubstanceGroup 
+          name: !de.oddb.org,2007/ODDB::Util::Multilingual 
+            canonical: 
+              :de: Serotonin-5HT3-Antagonisten
+            synonyms: []
+
+    parts: 
+    - !de.oddb.org,2007/ODDB::Drugs::Part 
+      size: 1
+      unit: !de.oddb.org,2007/ODDB::Drugs::Unit 
+        name: !de.oddb.org,2007/ODDB::Util::Multilingual 
+          canonical: 
+            :de: Kapseln
+          synonyms: []
+
+  packages: 
+  - !de.oddb.org,2007/ODDB::Drugs::Package 
+    codes: 
+    - !de.oddb.org,2007/ODDB::Util::Code 
+      country: DE
+      type: cid
+      value: "121784"
+    - !de.oddb.org,2007/ODDB::Util::Code 
+      country: DE
+      type: festbetragsgruppe
+      value: "1"
+    - !de.oddb.org,2007/ODDB::Util::Code 
+      country: DE
+      type: festbetragsstufe
+      value: 2
+    name: !de.oddb.org,2007/ODDB::Util::Multilingual 
+      canonical: {}
+
+      synonyms: []
+
+    prices: 
+      festbetrag: 144.04
+      public: 120.48
