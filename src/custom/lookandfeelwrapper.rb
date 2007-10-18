@@ -237,8 +237,8 @@ module ODDB
 		}
 		HTML_ATTRIBUTES = {
 			:logo => {
-				'width'		=>	'323',
-				'height'	=>	'92',
+				'width'		=>	'200',
+				'height'	=>	'50',
 			},
 		}
 	end
