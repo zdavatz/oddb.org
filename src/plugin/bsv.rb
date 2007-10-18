@@ -257,9 +257,8 @@ module ODDB
 			info = super
 			parts = [
 				['text/plain', 'todo.txt', report_todo],
-				['text/plain', 'bsv_out_of_sale.txt', report_out_of_sale],
-				['text/plain', 'medwin_bsv_differences.txt', 
-					report_medwin_diffs],
+				['text/plain', 'sl_products_not_in_medwin.txt', report_out_of_sale],
+				['text/plain', 'smj_sl_differences.txt', report_medwin_diffs],
 			]
 			info.store(:parts, parts)
 			info
@@ -273,9 +272,8 @@ module ODDB
 				format_header("Unknown Packages:", @unknown_packages.size),
 				format_header("Parse Errors:", @parse_errors.size),
 				#format_header("Differences:", @package_diffs.size),
-				format_header("Medwin-Differences:", @medwin_sl_diffs.size),
-				format_header("Ausser Handel (laut Medwin):", 
-					@medwin_out_of_sale.size),
+				format_header("SMJ/SL-Differences:", @medwin_sl_diffs.size),
+				format_header("SL-Produkte nicht in Medwin:", @medwin_out_of_sale.size),
 			].join("\n")
 		end
 		def update(month)
@@ -501,7 +499,12 @@ module ODDB
 			worksheet = workbook.worksheet(0)
 			worksheet.each(1) { |row|
 				pcode = row.at(2).to_i.to_s
-				sl_iks = sprintf("%-08i", row.at(4).to_i)
+        iksnum = row.at(4).to_i
+				sl_iks = if(iksnum < 1000)
+                   sprintf("%-05i000", iksnum)
+                 else
+                   sprintf("%-08i", iksnum)
+                 end
 				package = ParsedPackage.new
 				if(cell = row.at(0))
 					package.company = cell.to_s(ENCODING)
@@ -611,7 +614,7 @@ module ODDB
 			fmt = <<-EOS
 Pharmacode: %s
 %s
-Medwin Swissmedic-Nr:  %5s %3s 
+SMJ Swissmedic-Nr:     %5s %3s 
 BSV-XLS Swissmedic-Nr: %5s %3s
 			EOS
 			medwin_sl_diffs = @medwin_sl_diffs.collect { |package|
@@ -621,7 +624,7 @@ BSV-XLS Swissmedic-Nr: %5s %3s
 					mw[0,5], mw[5,3], sl[0,5], sl[5,3])
 			}.sort
 			[
-				format_header("Medwin-Differences:", @medwin_sl_diffs.size),
+				format_header("SMJ/SL-Differences:", @medwin_sl_diffs.size),
 				medwin_sl_diffs.join("\n"),
 			].join("\n")
 		end
@@ -630,7 +633,7 @@ BSV-XLS Swissmedic-Nr: %5s %3s
 				report_format(pac).join("\n")
 			}.sort
 			[
-				format_header("Ausser Handel (laut Refdata):", @medwin_out_of_sale.size),
+				format_header("SL-Produkte nicht in Medwin:", @medwin_out_of_sale.size),
 				medwin_out_of_sale.join("\n\n"),
 			].join("\n")
 		end
