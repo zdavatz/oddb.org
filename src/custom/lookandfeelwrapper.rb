@@ -216,6 +216,7 @@ module ODDB
 	end
 	class LookandfeelAtupri < SBSM::LookandfeelWrapper
 		ENABLED = [
+			:external_css,
 			:logo,
 		]
 		DICTIONARIES = {
@@ -231,7 +232,8 @@ module ODDB
 			},
 		}
 		RESOURCES = {
-			:logo	=>	'logo.png',
+			:logo	=>	'logo.gif',
+			:external_css	=>	'http://www.atupri.ch/misc/intranet.generika.css',
 		}
 		HTML_ATTRIBUTES = {
 			:logo => {
