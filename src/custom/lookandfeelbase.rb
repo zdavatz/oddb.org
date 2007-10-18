@@ -1021,6 +1021,7 @@ Zeno Davatz
         :screencast               =>  'Video-Anleitung (Screencast)',
         :screencast_url           =>  'http://www.youtube.com/watch?v=hCzO8J9bYcY',
 				:specialization						=>	'Erlaubnis',
+        :pharmacode               =>  'Pharmacode',
 				:phone_label							=>	'Telefon:',
 				:phone										=>	'Telefon:',
 				:phytotherapy							=>	'Phytotherapeutische Arzneimittel',
