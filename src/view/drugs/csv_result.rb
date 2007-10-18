@@ -103,12 +103,15 @@ class CsvResult < HtmlGrid::Component
 		boolean(pack.lppv)
 	end
 	def numerical_size(pack)
+    pack.comparable_size.qty
+	end
+	def numerical_size_extended(pack)
     case pack.route_of_administration
     when 'roa_P'
       multi = pack.multi.to_i
       (multi > 1) ? multi : pack.count.to_i
     else
-      pack.comparable_size.qty
+      numerical_size(pack)
     end
 	end
   def out_of_trade(pack)

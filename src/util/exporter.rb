@@ -72,6 +72,7 @@ module ODDB
     def export_csv
       plug = CsvExportPlugin.new(@app)
       plug.export_drugs
+      plug.export_drugs_extended
       EXPORT_SERVER.clear
       sleep(30)
     end

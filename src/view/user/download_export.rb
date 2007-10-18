@@ -60,66 +60,70 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[2,11]	=>	:radio_oddb_csv,
 		[6,11]	=>	:datadesc_oddb_csv,
 		[7,11]	=>	:example_oddb_csv,
-		[0,12]	=>	:yaml_export,
-		[2,12]	=>	:radio_oddb_yaml,
-		[6,12]	=>	:datadesc_oddb_yaml,
-		[7,12]	=>	:example_oddb_yaml,
-		[0,13]	=>	:yaml_patinfo_export,
-		[3,13]	=>	:yaml_patinfo_price,
-		[6,13]	=>	:datadesc_patinfo_yaml,
-		[7,13]	=>	:example_patinfo_yaml,
+		[0,12]	=>	:csv_export2,
+		[2,12]	=>	:radio_oddb2_csv,
+		[6,12]	=>	:datadesc_oddb2_csv,
+		[7,12]	=>	:example_oddb2_csv,
+		[0,13]	=>	:yaml_export,
+		[2,13]	=>	:radio_oddb_yaml,
+		[6,13]	=>	:datadesc_oddb_yaml,
+		[7,13]	=>	:example_oddb_yaml,
+		[0,14]	=>	:yaml_patinfo_export,
+		[3,14]	=>	:yaml_patinfo_price,
+		[6,14]	=>	:datadesc_patinfo_yaml,
+		[7,14]	=>	:example_patinfo_yaml,
 
-		[0,15]	=>	'export_added_value',
-		[0,16]	=>	:xls_chde,
-		[2,16]	=>	:radio_chde_xls,
-		[6,16]	=>	:datadesc_chde_xls,
-		[7,16]	=>	:example_chde_xls,
-		[0,17]	=>	:xls_generics,
-		[2,17]	=>	:radio_generics_xls,
-		[6,17]	=>	:datadesc_generics_xls,
-		[7,17]	=>	:example_generics_xls,
-		[0,18]	=>	:xls_patents,
-		[3,18]	=>	:radio_patents_xls,
-		[6,18]	=>	:datadesc_patents_xls,
-		[7,18]	=>	:example_patents_xls,
-		[0,19]	=>	:xls_swissdrug_update,
-		[2,19]	=>	:radio_swissdrug_update_xls,
-		[6,19]	=>	:datadesc_swissdrug_update_xls,
-		[7,19]	=>	:example_swissdrug_update_xls,
+		[0,16]	=>	'export_added_value',
+		[0,17]	=>	:xls_chde,
+		[2,17]	=>	:radio_chde_xls,
+		[6,17]	=>	:datadesc_chde_xls,
+		[7,17]	=>	:example_chde_xls,
+		[0,18]	=>	:xls_generics,
+		[2,18]	=>	:radio_generics_xls,
+		[6,18]	=>	:datadesc_generics_xls,
+		[7,18]	=>	:example_generics_xls,
+		[0,19]	=>	:xls_patents,
+		[3,19]	=>	:radio_patents_xls,
+		[6,19]	=>	:datadesc_patents_xls,
+		[7,19]	=>	:example_patents_xls,
+		[0,20]	=>	:xls_swissdrug_update,
+		[2,20]	=>	:radio_swissdrug_update_xls,
+		[6,20]	=>	:datadesc_swissdrug_update_xls,
+		[7,20]	=>	:example_swissdrug_update_xls,
 
-		[0,21]	=>	'export_compatibility',
-		[0,22]	=>	:oddbdat_download,
-		[2,22]	=>	:radio_oddbdat,
-		[6,22]	=>	:datadesc_oddbdat,
-		[7,22]	=>	:example_oddbdat,
-		[0,23]	=>	:s31x,
-		[2,23]	=>	:radio_s31x,
-		[6,23]	=>	:datadesc_s31x,
-		[0,24]	=>	:compression_label,
-		[0,25]	=>	:compression,
+		[0,22]	=>	'export_compatibility',
+		[0,23]	=>	:oddbdat_download,
+		[2,23]	=>	:radio_oddbdat,
+		[6,23]	=>	:datadesc_oddbdat,
+		[7,23]	=>	:example_oddbdat,
+		[0,24]	=>	:s31x,
+		[2,24]	=>	:radio_s31x,
+		[6,24]	=>	:datadesc_s31x,
+		[0,25]	=>	:compression_label,
+		[0,26]	=>	:compression,
 	}
 	CSS_MAP = {
 		[0,0,8]			=>	'subheading',
 		[0,1,8]			=>	'list bg sum',
-		[0,2,8,24]	=>	'list',
+		[0,2,8,25]	=>	'list',
 		[0,3,8]			=>	'list bg',
 		[0,5,8]			=>	'list bg',
 		[0,7,8]			=>	'list bg',
 		[0,9,8]			=>	'list bg',
 		[0,11,8]		=>	'list bg',
 		[0,13,8]		=>	'list bg',
-		[0,15,8]		=>	'list bg sum',
-		[0,17,8]		=>	'list bg',
-		[0,19,8]		=>	'list bg',
-		[0,21,8]		=>	'list bg sum',
+		[0,16,8]		=>	'list bg sum',
+		[0,18,8]		=>	'list bg',
+		[0,20,8]		=>	'list bg',
+		[0,22,8]		=>	'list bg sum',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
 		[0,1]	=>	8,
-		[0,15]=>	8,
-		[0,21]=>	8,
-		[0,24]=>	8,
+		[0,16]=>	8,
+		[0,22]=>	8,
 		[0,25]=>	8,
+		[0,26]=>	8,
 	}
 	CSS_CLASS = 'component'
 	SYMBOL_MAP = {
@@ -130,6 +134,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def csv_export(model, session)
 		checkbox_with_filesize("oddb.csv")
+	end
+	def csv_export2(model, session)
+		checkbox_with_filesize("oddb2.csv")
 	end
 	def csv_analysis_export(model, session)
 		checkbox_with_filesize("analysis.csv")
@@ -191,6 +198,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def datadesc_oddb_csv(model, session)
 		datadesc('oddb.csv')
 	end
+	def datadesc_oddb2_csv(model, session)
+		datadesc('oddb2.csv')
+	end
 	def datadesc_oddbdat(model, session)
 		datadesc('oddbdat')
 	end
@@ -248,6 +258,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def example_oddb_csv(model, session)
 		example('oddb.csv')
 	end
+	def example_oddb2_csv(model, session)
+		example('oddb2.csv')
+	end
 	def example_oddb_yaml(model, session)
 		example('oddb.yaml')
 	end
@@ -271,6 +284,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def radio_oddb_csv(model, session)
 		once_or_year('oddb.csv')
+	end
+	def radio_oddb2_csv(model, session)
+		once_or_year('oddb2.csv')
 	end
 	def radio_fachinfo_yaml(model, session)
 		once_or_year('fachinfo.yaml')

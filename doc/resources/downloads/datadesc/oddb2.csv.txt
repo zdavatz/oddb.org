@@ -1,12 +1,7 @@
-Datenbeschrieb oddb.csv
+Datenbeschrieb oddb2.csv 
 
-Version: 1.2.0
-Geändert: 06.06.2006 (1.2.0) durch hwyss@ywesee.com
-Geändert: 27.02.2006 (1.1.0) durch hwyss@ywesee.com
-Geändert: 09.12.2005 (1.0.3) durch hwyss@ywesee.com
-Geändert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
-Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
-Erstellt: 01.09.2005 (1.0.0) durch hwyss@ywesee.com
+Version: 1.0.0 (vorher: oddb.csv 1.3.0)
+Erstellt: 18.10.2007 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
 Encoding: ISO-8859-1
@@ -32,7 +27,7 @@ Produkt-Record:
 08: galenic_form      (*)                       -> Galenische Form, Deutsche Bezeichnung
 09: dose              (*)                       -> Dosierung. Wird falls möglich aus dem Namen gewonnen, andernfalls aus der Zusammensetzung.
 10: size              (*)                       -> Packungsgrösse (z.B. 5 x 28 Tabletten)
-11: numerical_size    (Integer)                 -> Packungsgrösse, verrechnet (z.B. 140)
+11: numerical_size    (Integer)                 -> Packungsgrösse, verrechnet (z.B. 140); für Parenteral verabreichte Produkte: exkl. Behältervolumen
 12: price_exfactory   (Float)                   -> Exfactorypreis in Franken und Rappen
 13: price_public      (Float)                   -> Publikumspreis in Franken und Rappen 
 14: company           (*)                       -> Registrationsinhaber
@@ -52,6 +47,8 @@ Produkt-Record:
 28: deductible        (10%/20%)                 -> Selbstbehalt für SL-Produkte
 29: out_of_trade      (Ja/Nein)                 -> Ausser Handel laut http://www.refdata.ch ?
 30: complementary     (C/A/H/P)                 -> Komplementärprodukt,siehe Glossar (Komplementärprodukt)
+31: route_of_administration (O/P/N/SL/TD/R/V)   -> Verabreichnungsweg, siehe Glossar (Route of Administration)
+32: galenic_group     (*)                       -> Galenische Gruppe - Galenische Formen innerhalb der gleichen Gruppe sind vergleichbar.
 
 ## Glossar ##
 * AtcCode:
@@ -77,6 +74,15 @@ C: Komplementärprodukt
 A: Antroposophisches Heilmittel
 H: Homöopathisches Heilmittel
 P: Phytotherapeutisches Heilmittel
+
+* Route of Administration:
+O:  oral
+P:  parenteral
+N:  nasal
+SL: sublingual
+TD: transdermal
+R:  rektal
+V:  vaginal
 
 * Version
 Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"

@@ -1363,6 +1363,7 @@ Zeno Davatz
 				:th_note									=>	'Note',
 				:th_num_packages					=>	'Zugeh&ouml;rige Medikamente',
 				:th_numerical_size				=>	'Numerisch',
+				:th_numerical_size_extended =>	'Numerisch',
         :th_observed              =>  'empirisch',
 				:th_oid										=>	'OID',
 				:th_out_of_trade					=>	'Ausser Handel (MedRef)',

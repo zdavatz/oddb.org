@@ -76,6 +76,16 @@ module ODDB
         log.notify(subj)
       }
     end
+    def export_csv_extended(date = @@today)
+      subj = 'oddb.csv'
+      wrap_update(CsvExportPlugin, subj) {
+        plug = CsvExportPlugin.new(@app)
+        plug.export_drugs_extended
+        log = Log.new(date)
+        log.update_values(log_info(plug))
+        log.notify(subj)
+      }
+    end
 		def export_generics_xls(date = @@today)
 			subj = 'Generikaliste'
 			wrap_update(XlsExportPlugin, subj) {
@@ -200,6 +210,7 @@ module ODDB
       update_lppv
       update_price_feeds
       export_csv
+      export_csv_extended
       export_ouwerkerk
       export_generics_xls
       export_competition_xlss
