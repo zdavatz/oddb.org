@@ -46,6 +46,7 @@ module PackageMethods
 			:size, 
 			:ikscat,
 			:market_date,
+      :pharmacode,
 			:pretty_dose,
 			:price_exfactory,
 			:price_public,

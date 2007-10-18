@@ -59,6 +59,7 @@ class PackageForm < View::Form
 		[2,6]		=>	:lppv,
 		[0,7]		=>	:out_of_trade,
 		[0,8]		=>	:disable,
+		[2,8]		=>	:pharmacode,
 		[1,9,0]	=>	:submit,
 		[1,9,1]	=>	:delete_item,
 	}

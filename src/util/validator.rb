@@ -266,6 +266,7 @@ module ODDB
 			:months,
 			:patinfo_price,
 			:pi_quantity,
+      :pharmacode,
 			:price_exfactory,
 			:price_public,
 			:year,
