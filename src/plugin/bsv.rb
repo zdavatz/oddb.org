@@ -271,7 +271,6 @@ module ODDB
 					@unknown_registrations.size),
 				format_header("Unknown Packages:", @unknown_packages.size),
 				format_header("Parse Errors:", @parse_errors.size),
-				#format_header("Differences:", @package_diffs.size),
 				format_header("SMJ/SL-Differences:", @medwin_sl_diffs.size),
 				format_header("SL-Produkte nicht in Medwin:", @medwin_out_of_sale.size),
 			].join("\n")
@@ -322,6 +321,9 @@ module ODDB
 
 			## compile a report that includes missing packages.
 			## -> is being done on the fly
+
+      ## remove duplicates from Reports
+      @medwin_sl_diffs -= @medwin_out_of_sale
       
       # write rss-feeds
       true
