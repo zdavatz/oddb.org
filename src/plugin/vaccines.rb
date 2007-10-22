@@ -345,9 +345,16 @@ module ODDB
 				data.store(:indication, indication.pointer)
 			end
 		end
-		def update_package(pack, seq_pointer)
+		def update_package(pack, seq)
 			pointer = seq_pointer + [:package, pack.ikscd]
-			@app.update(pointer.creator, pack.data, :swissmedic)
+      ## prevent the creation of duplicate ean-codes: if the package exists in 
+      #  another sequence, it's probably been edited manually - use it.
+      if(existing = seq.registration.package(pack.ikscd))
+        pointer = existing.pointer
+      else
+        pointer = pointer.creator
+      end
+			@app.update(pointer, pack.data, :swissmedic)
 		end
 		def update_registration(reg)
 			data = reg.data
@@ -399,7 +406,7 @@ module ODDB
 			pointer = reg_pointer + [:sequence, seq.seqnr]
       update_atc_class(seq)
 			sequence = @app.update(pointer.creator, seq.data, :swissmedic)
-			seq.packages.each_value { |pack| update_package(pack, pointer) }
+			seq.packages.each_value { |pack| update_package(pack, seq) }
 			seq.active_agents.each { |act| 
 				update_active_agent(act, pointer) }
 			## remove old packages
