@@ -246,6 +246,7 @@ module ODDB
 			:fachinfo_upload,
 			:patinfo_upload,
 		]
+    HTML = [:html_chapter]
 		NUMERIC = [
 			:change_flags,
 			:days,
@@ -305,7 +306,6 @@ module ODDB
 			:galenic_form,
 			:heading,
       :highlight,
-			:html_chapter,
 			:index_therapeuticus,
 			:indication,
 			:language_select,
