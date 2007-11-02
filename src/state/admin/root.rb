@@ -151,6 +151,7 @@ module Root
 		model = pointer.resolve(@session.app)
 		item = Persistence::CreateItem.new(pointer + [:galenic_form])
 		item.carry(:galenic_group, model)
+		item.carry(:sequences, [])
 		State::Admin::GalenicForm.new(@session, item)
 	end
 	def new_galenic_group
