@@ -2,6 +2,7 @@
 # View::Admin::GalenicForm -- oddb -- 25.03.2003 -- andy@jetnet.ch
 
 require 'view/drugs/privatetemplate'
+require 'view/admin/registration'
 require 'view/descriptionform'
 require 'htmlgrid/select'
 
@@ -44,11 +45,15 @@ class GalenicFormComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	'galenic_form',
 		[0,1]	=>	View::Admin::GalenicFormForm,
+    [0,2] =>  :sequences,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0]	=>	'th',
 	}
+  def sequences(model, session=@session)
+    RegistrationSequences.new(model.sequences[0,20], @session, self)
+  end
 end
 class GalenicForm < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::GalenicFormComposite
