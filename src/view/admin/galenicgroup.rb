@@ -14,10 +14,15 @@ class GalenicForms < View::DescriptionList
 	COMPONENTS = {
 		[0,0]	=>	:oid,
 		[1,0]	=>	:description,
+		[2,0]	=>	:de,
+		[3,0]	=>	:en,
+		[4,0]	=>	:fr,
+		[5,0]	=>	:lt,
 	}
 	CSS_MAP = {
-		[0,0,2]	=>	'list',
+		[0,0,6]	=>	'list',
 	}
+	DEFAULT_CLASS = HtmlGrid::Value
 	EVENT = :new_galenic_form
 	SYMBOL_MAP = {
 		:description	=>	View::PointerLink,
