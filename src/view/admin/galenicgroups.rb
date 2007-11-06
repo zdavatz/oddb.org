@@ -15,10 +15,9 @@ class GalenicGroupsList < View::DescriptionList
 		[2,0]	=>	:de,
 		[3,0]	=>	:en,
 		[4,0]	=>	:fr,
-		[5,0]	=>	:lt,
 	}
 	CSS_MAP = {
-		[0,0,6]	=>	'list',
+		[0,0,5]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'th'
