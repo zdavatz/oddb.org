@@ -27,7 +27,7 @@ module ODDB
 			end
 		end
 		def description(key=nil)
-			descriptions[key]
+			descriptions[key.to_s]
 		end
 		def descriptions
 			@descriptions ||= Descriptions.new
@@ -46,7 +46,7 @@ module ODDB
 				super
 			end
 		end
-		def respond_to?(symbol)
+		def respond_to?(symbol, priv=false)
 			symbol.to_s.length == 2 || super
 		end
     def search_text(language)
