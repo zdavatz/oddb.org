@@ -60,11 +60,28 @@ class CsvResult < HtmlGrid::Component
 			@lookandfeel.format_date(date)
 		end
 	end
-	def galenic_form(pack)
-		if(galform = pack.galenic_form)
-			galform.description(@lookandfeel.language)
-		end
-	end
+  def galenic_form(pack, lang = @lookandfeel.language)
+    if(galform = pack.galenic_form)
+      galform.description(lang)
+    end
+  end
+  def galenic_form_de(pack)
+    galenic_form(pack, :de)
+  end
+  def galenic_form_fr(pack)
+    galenic_form(pack, :fr)
+  end
+  def galenic_group(pack, lang = @lookandfeel.language)
+    if(galgroup = pack.galenic_group)
+      galgroup.description(lang)
+    end
+  end
+  def galenic_group_de(pack)
+    galenic_group(pack, :de)
+  end
+  def galenic_group_fr(pack)
+    galenic_group(pack, :fr)
+  end
 	def has_generic(pack)
 		boolean(pack.generic_type == :original && !pack.comparables.empty?)
 	end
