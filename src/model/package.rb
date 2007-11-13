@@ -282,7 +282,7 @@ Grammar OddbSize
 		end
 		def public?
       active? && (@refdata_override || !@out_of_trade \
-                  || registration.active?(@@today))
+                  || registration.active?)
 		end
 		def registration_data(key)
 			if(reg = registration)
