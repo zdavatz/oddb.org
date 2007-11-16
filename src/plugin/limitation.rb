@@ -53,6 +53,9 @@ module ODDB
 	end
 	class LimitationSequenceWriter < NullWriter
 		attr_reader :collected_values
+    UNPARSEABLE = { 
+      '[57856 001] (363 10 14)' => [2,1,2],
+    }
 		def initialize
 			@tablehandlers = []
 			@collected_values = {}
@@ -121,17 +124,27 @@ module ODDB
 				fr = sec_fr.next_paragraph
         sec_it = chap_it.next_section
 				it = sec_it.next_paragraph
-        lines = [array.size / 3, 1].max
+        lines_de = lines_fr = lines_it = lines = [array.size / 3, 1].max
+        if( manual = UNPARSEABLE[key] )
+          lines_de, lines_fr, lines_it = manual
+          lines = manual.max
+        end
 				array.each_with_index { |value, idx|
 					if(value.match(/^Limitatio:/))
 						limitatio = true
 						de << value[11..-1]
-						fr << array[lines].to_s
-						it << array[2 * lines].to_s
+						fr << array[lines_de].to_s
+						it << array[lines_de + lines_fr].to_s
             1.upto(lines - 1) { |offset|
-              sec_de.next_paragraph << array[offset].to_s
-              sec_fr.next_paragraph << array[lines + offset].to_s
-              sec_it.next_paragraph << array[2 * lines + offset].to_s
+              if(offset < lines_de)
+                sec_de.next_paragraph << array[offset].to_s
+              end
+              if(offset < lines_fr)
+                sec_fr.next_paragraph << array[lines_de + offset].to_s
+              end
+              if(offset < lines_it)
+                sec_it.next_paragraph << array[lines_de + lines_fr + offset].to_s
+              end
             }
 					end
 				}

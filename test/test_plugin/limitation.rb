@@ -399,6 +399,22 @@ class TestLimitationSequenceWriter < Test::Unit::TestCase
 		assert_equal(expected, result)
 		assert_equal(['55725','042'], arr[0])
 	end
+	def test_handle_data__irregular
+		values	= [
+			[
+				"Limitatio: de_foo",
+				"zweite Zeile",
+				"fr_fèà",
+				"it_foo",
+        "seconda ligna",
+			],
+		]	
+		arr = @writer.handle_data('[57856 001] (363 10 14)', values)
+    hash = arr.at(1)
+		assert_equal("de_foo\nzweite Zeile", hash['de'].to_s)
+		assert_equal("fr_fèà", hash['fr'].to_s)
+		assert_equal("it_foo\nseconda ligna", hash['it'].to_s)
+	end
 	def test_parse_limitatio
 		path = File.expand_path('../data/html/limitation/4940.htm', File.dirname(__FILE__))
 		html = File.read(path)
