@@ -91,6 +91,8 @@ class Compare < State::Drugs::Global
 		else
 			@default_view = View::Drugs::Compare
 		end
+  rescue Persistence::UninitializedPathError
+    @default_view = View::Http404
 	end
 end
 		end
