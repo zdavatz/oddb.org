@@ -16,6 +16,7 @@ end
 num_threads = 1
 flavor = 'gcc'
 $respect_session = 100
+$server = ODDB::SERVER_NAME
 while(arg = ARGV.shift)
 	case arg
   when /session\.(\d+)/
@@ -24,6 +25,8 @@ while(arg = ARGV.shift)
 		$respect_session = 100
 	when /\d+/
 		num_threads = [arg.to_i, num_threads].max
+  when /server:(.*)/
+    $server = $1
 	when /[a-z]{3,}/
 		flavor = arg
 	end
@@ -56,7 +59,7 @@ module ODDB
 			@links = [ "/de/#{flavor}" ]
 			@visited = []
 			@errors = []
-			@session = Net::HTTP.new(SERVER_NAME)
+			@session = Net::HTTP.new($server)
 			@cookies = {}
 			@state_id_regexp = Regexp.new('state_id/[0-9\-]*/')
 			@load_max = nil
@@ -97,7 +100,7 @@ module ODDB
 		end
 		def schedule_links(links, idx)
 			links.each { |link|
-				if((link.index(SERVER_NAME) || link[0] == ?/)\
+				if((link.index($server) || link[0] == ?/)\
 					&& !link.index('download') \
 					&& !@links.include?(link))
 					if(link.index('state_id'))
@@ -120,15 +123,21 @@ module ODDB
 		def get_http(link)
 			try = 3
 			begin
-				#continuation = nil
-				#callcc { |continuation| }	
-				resp = @session.get(link, headers)
+				continuation = nil
+				callcc { |continuation| }	
+        resp = nil
+        thread = Thread.new {
+          resp = @session.get(link, headers)
+        }
+				if(rand(100) < 30)
+				  #impatient 30% that click again
+          thread.exit
+				  continuation.call
+        else
+          thread.join
+			  end
 				if resp.is_a? Net::HTTPOK
           html = resp.body.dup
-					#if(rand(100) < 30)
-						##impatient 30% that click again
-						#continuation.call
-					#end
 					update_cookies(resp) if(respect_session)
 					html
 				end
@@ -165,7 +174,7 @@ end
 
 #trap('INT') { exit }
 
-puts "checking links for #{ODDB::SERVER_NAME}"
+puts "checking links for #{$server}"
 puts "flavor:      #{flavor}"
 puts "sessions:    #{$respect_session}%"
 puts "concurrent:  #{num_threads}"
