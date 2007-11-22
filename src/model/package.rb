@@ -250,6 +250,9 @@ Grammar OddbSize
 			query = query.to_s.downcase
 			basename.to_s.downcase[0,query.length] == query
 		end
+    def has_generic?
+      @generic_type == :original && !comparables.empty?
+    end
     def ikscd=(ikscd)
       if(/^[0-9]{3}$/.match(ikscd))
         pacs = @sequence.packages

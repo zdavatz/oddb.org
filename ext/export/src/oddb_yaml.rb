@@ -318,6 +318,7 @@ module ODDB
 		include OddbYaml
 		EXPORT_PROPERTIES = [	
 			'@ikscd',
+			'@lppv',
 			'@size',
 			'@descr',
 			'@ikscat',
@@ -329,12 +330,14 @@ module ODDB
 					to_yaml_properties.each { |m|
 						map.add( m[1..-1], instance_variable_get( m ) )
 					}
+					map.add('has_generic', self.has_generic?)
 					map.add('price_exfactory', self.price_exfactory.to_f)
 					map.add('price_public', self.price_public.to_f)
 					map.add('ean13', self.barcode.to_s)
 					map.add('out_of_trade', !self.public?)
 					map.add('pharmacode', self.pharmacode)
 					map.add('narcotics', @narcotics.collect { |narc| narc.casrn})
+					map.add('deductible', {'deductible_g' => 10, 'deductible_o' => 20 }[self.deductible.to_s])
 				}
 			}
 		end
@@ -396,10 +399,20 @@ module ODDB
 			'@inactive_date',
 			'@sequences',
 			'@indication',
-			'@generic_type',
 			'@export_flag',
 			'@fachinfo_oid',
 		]
+		def to_yaml( opts = {} )
+			YAML::quick_emit( self.object_id, opts ) { |out|
+				out.map( taguri ) { |map|
+					to_yaml_properties.each { |m|
+						map.add( m[1..-1], instance_variable_get( m ) )
+					}
+					map.add('generic_type', self.generic_type)
+					map.add('complementary_type', self.complementary_type)
+				}
+			}
+		end
 	end
 	class Sequence #< SequenceCommon
 		include OddbYaml
@@ -418,6 +431,7 @@ module ODDB
 	class SlEntry
 		include OddbYaml
 		EXPORT_PROPERTIES = [
+      '@bsv_dossier',
 			'@introduction_date',
 			'@limitation',
 			'@limitation_points',
