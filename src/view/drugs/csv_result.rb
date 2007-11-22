@@ -83,7 +83,7 @@ class CsvResult < HtmlGrid::Component
     galenic_group(pack, :fr)
   end
 	def has_generic(pack)
-		boolean(pack.generic_type == :original && !pack.comparables.empty?)
+		boolean(pack.has_generic?)
 	end
 	def http_headers
 		file = @session.user_input(:filename)
