@@ -13,15 +13,16 @@ require 'parseexcel/parseexcel'
 module ODDB
 	class VaccineIndexWriter < NullWriter
 		attr_reader :path
-    def initialize(*args)
+    def send_flowing_data(data)
+      if(/Excel/i.match data)
+        @path ||= @candidate
+      end
       super
-			@vaccine_section = true
     end
 		def new_linkhandler(link)
-      if(link && @vaccine_section && (href = link.attribute('href')) \
+      if(link && (href = link.attribute('href')) \
 				 && /.*\.xls$/.match(href))
-        @path = href
-        @vaccine_section = false
+        @candidate = href
 			end
 		end
 	end
