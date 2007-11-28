@@ -347,7 +347,7 @@ module ODDB
 			end
 		end
 		def update_package(pack, seq)
-			pointer = seq_pointer + [:package, pack.ikscd]
+			pointer = seq.pointer + [:package, pack.ikscd]
       ## prevent the creation of duplicate ean-codes: if the package exists in 
       #  another sequence, it's probably been edited manually - use it.
       if(existing = seq.registration.package(pack.ikscd))
