@@ -95,9 +95,8 @@ class RecentRegsComposite < View::Drugs::ResultComposite
 	COMPONENTS = {
 		[0,1]		=>	'price_compare',
 		[1,1]		=>	SelectSearchForm,
-		[0,2]		=>	View::Drugs::RecentRegsList,
-		[0,3]		=>	View::ResultFoot,
 	}
+	DEFAULT_LISTCLASS = View::Drugs::RecentRegsList
 	ROOT_LISTCLASS = View::Drugs::RootRecentRegsList
   def breadcrumbs(model, session=@session)
     dv = HtmlGrid::Span.new(model, @session, self)

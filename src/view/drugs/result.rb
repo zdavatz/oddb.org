@@ -71,6 +71,7 @@ class ResultComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 	EVENT = :search
 	FORM_METHOD = 'GET'
+	DEFAULT_LISTCLASS = View::Drugs::ResultList
 	ROOT_LISTCLASS = View::Drugs::RootResultList
 	SYMBOL_MAP = { }
 	CSS_MAP = {
@@ -93,7 +94,7 @@ class ResultComposite < HtmlGrid::Composite
     end
     components.store([0,y], (@session.allowed?('edit', 'org.oddb.drugs')) \
                             ? self::class::ROOT_LISTCLASS \
-                            : View::Drugs::ResultList)
+                            : self::class::DEFAULT_LISTCLASS)
 		if(@lookandfeel.enabled?(:export_csv))
 			components.store([1,0], :export_csv)
 		else
