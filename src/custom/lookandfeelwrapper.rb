@@ -487,13 +487,23 @@ module ODDB
 	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
 		ENABLED = [
+			:atc_chooser,
 			:custom_navigation,
+			:drugs, 
 			:external_css,
       :fachinfos, 
       :feedback,
+			:home,
+			:home_drugs,
+			:home_migel,
 			:just_medical_structure,	
+			:migel,
+			:migel_alphabetical,
 			:popup_links,
 			:powerlink,
+			:search_reset,
+			:sequences,
+      :topfoot,
 		]
 		DICTIONARIES = {
 			'de'	=>	{
@@ -506,7 +516,8 @@ module ODDB
 				:meddrugs_update						=>	'med-drugs update', 
 				:migel											=>	'Medizinprodukte (MiGeL)',
 				:migel_alphabetical					=>	'Medizinprodukte (MiGeL) A-Z',
-				:search_explain							=>	'Vergleichen Sie einfach und schnell Medikamentenpreise.<br> Suchen Sie nach Medikament, Wirkstoff oder Anwendungsgebiet.',
+        :price_compare              =>  "Für Preisvergleich auf Medikamentnamen klicken.",
+				:search_explain							=>	'',
 				:sequences									=>	'Medikamente A-Z',
 			},
 			'fr'	=>	{
@@ -519,7 +530,8 @@ module ODDB
 				:meddrugs_update						=>	'med-drugs update', 
 				:migel											=>	'Dispositifs médicaux (MiGeL)',
 				:migel_alphabetical					=>	'Dispositifs médicaux (MiGeL) A-Z',
-				:search_explain							=>	'Comparez simplement et rapidement les prix des médicaments.<br>Cherchez le nom du médicament, le principe actif ou l\'indication.',
+        :price_compare              =>  "Pour comparaison de prix cliquer sur nom du médicament",
+				:search_explain							=>	'',
 				:sequences									=>	'Médicaments A-Z',
 			},
 			'en'	=>	{
@@ -532,13 +544,13 @@ module ODDB
 				:meddrugs_update						=>	'med-drugs update', 
 				:migel											=>	'Medical devices (MiGeL)',
 				:migel_alphabetical					=>	'Medical devices (MiGeL) A-Z',
-				:search_explain							=>	'Compare prices of drugs - fast and easy.<br>Search by name of drug, active agent or indication.',
+        :price_compare              =>  "Click name of drug for price-comparison",
+				:search_explain							=>	'',
 				:sequences									=>	'Drugs A-Z',
 			},
 		}
 		DISABLED = [ :pointer_steps_header ]
 		RESOURCES = {
-			#:external_css	=>	'http://www.just-medical.com/css/oddb.css',
 			:external_css	=>	'http://www.just-medical.com/css/new.oddb.css',
 		}
 		def compare_list_components
@@ -605,9 +617,7 @@ module ODDB
 				[12,0]	=>	:company_name,
 				[13,0]	=>	:ikscat,
 				[14,0]	=>	:registration_date,
-				[15,0]	=>	:feedback,
-				[16,0]	=>  :google_search,
-				[17,0]	=>	:notify,
+				[15,0]	=>  :google_search,
 			}
 		end
 		def zones

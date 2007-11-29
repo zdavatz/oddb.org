@@ -34,7 +34,6 @@ module ODDB
 			],
 			'just-medical'=>	[
 				LookandfeelLanguages,
-				LookandfeelExtern,
 				LookandfeelJustMedical, 
 			],
 			'konsuminfo'=>	[
