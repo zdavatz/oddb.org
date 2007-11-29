@@ -123,12 +123,14 @@ class CsvResult < HtmlGrid::Component
     pack.comparable_size.qty
 	end
 	def numerical_size_extended(pack)
-    case pack.route_of_administration
-    when 'roa_P'
-      multi = pack.multi.to_i
-      (multi > 1) ? multi : pack.count.to_i
-    else
+    case ((group = pack.galenic_group) && group.de)
+    when 'Brausetabletten', 'Gastrointenstinales Therapiesystem',
+      'Kaugummi', 'Lutschtabletten', 'Pflaster/Transdermale Systeme',
+      'Retard-Tabletten', 'Subkutane Implantate', 'Suppositorien',
+      'Tabletten', 'Tests', 'Vaginal-Produkte'
       numerical_size(pack)
+    else
+      0
     end
 	end
   def out_of_trade(pack)
