@@ -41,8 +41,8 @@ module ODDB
 		LOG_FILES = {
 			:powerlink				=>	'Powerlink-Statistics',
 			#:passthru				=>	'Banner-Clicks',
-			:sponsor_generika	=>	'Exklusiv-Sponsoring',
-			:sponsor_gcc			=>	'Exklusiv-Sponsoring',
+			:sponsor_generika	=>	'Exklusiv-Sponsoring Generika.cc',
+			:sponsor_gcc			=>	'Exklusiv-Sponsoring ODDB.org',
 		}
 		def initialize(app)
 			@app = app
