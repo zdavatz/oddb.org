@@ -62,7 +62,7 @@ module ODDB
 			end
 			def resolve_link(model)
 				pointer = model.pointer
-				str = 'http://www.oddb.org/de/gcc/resolve/pointer'.concat(CGI.escape(pointer.to_s))
+				str = 'http://ch.oddb.org/de/gcc/resolve/pointer/'.concat(CGI.escape(pointer.to_s))
 			end
 			def report_lines
 				[
