@@ -387,7 +387,6 @@ module ODDB
 			:help_link,
 			:home,
 			:home_drugs,
-			:powerlink,
 			:popup_links,
 			:search_reset,
 			:sequences,
