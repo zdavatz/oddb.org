@@ -31,10 +31,28 @@ class FeedbackForm < HtmlGrid::Form
 	EVENT = :update
 	LEGACY_INTERFACE = false
 	def init
+    if(@session.state.passed_turing_test)
+      components.update([1,15]=>:submit)
+    else
+      components.update([0,15]=>:captcha, [1,16]=>:captcha_image, [1,17]=>:submit)
+      colspan_map.update([1,16]=>2, [1,17]=>2)
+    end
 		super
 		error_message
 		info_message
 	end
+  def challenge
+    @challenge ||= @lookandfeel.generate_challenge
+  end
+  def captcha(model)
+    name = "captcha[#{challenge.id}]"
+    HtmlGrid::InputText.new(name, model, @session, self)
+  end
+  def captcha_image(model)
+    img = HtmlGrid::Image.new(:file, challenge, @session, self)
+    img.attributes["src"] = File.join('', 'resources', 'captchas', challenge.file)
+    img
+  end
 	def experience(model)
 		radio_good(:experience)
 	end
@@ -77,7 +95,8 @@ class FeedbackForm < HtmlGrid::Form
 	end
 	def radio_bad(bad_key)
 		radio = HtmlGrid::InputRadio.new(bad_key, model, @session, self)
-		if(model.send(bad_key).eql?(false))
+		if(model.send(bad_key).eql?(false) \
+       || @session.user_input(bad_key).eql?(false))
 			radio.set_attribute('checked', true)
 		end
 		radio.value = '0'
@@ -86,7 +105,7 @@ class FeedbackForm < HtmlGrid::Form
 	end
 	def radio_good(good_key)
 		radio = HtmlGrid::InputRadio.new(good_key, model, @session, self)
-		if(model.send(good_key))
+		if(model.send(good_key) || @session.user_input(good_key))
 			radio.set_attribute('checked', true)
 		end
 		radio.value = '1'

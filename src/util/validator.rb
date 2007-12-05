@@ -280,6 +280,7 @@ module ODDB
 			:bsv_url,
 			:business_unit,
       :capabilities,
+      :captcha,
 			:certificate_number,
 			:challenge,
 			:chapter,

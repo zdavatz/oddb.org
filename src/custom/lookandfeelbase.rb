@@ -2,13 +2,16 @@
 # LookandfeelBase -- oddb -- hwyss@ywesee.com
 
 require 'sbsm/lookandfeel'
+require 'util/oddbconfig'
 require 'util/money'
+require 'turing'
 
 module ODDB
 	class Company; end
 	class Doctor; end
 	class Hospital; end
 	class LookandfeelBase <	SBSM::Lookandfeel
+    CAPTCHA_DIR = File.join(PROJECT_ROOT, 'doc', 'resources', 'captchas')
 		poweruser_regulatory = <<-EOS
 Hinweis: Arbeiten Sie für eine Pharmafirma als Produktmanager oder in der Regulatoryabteilung? Sind Sie Arzt oder Apotheker? Dann beachten Sie bitte folgende Links:
 				
@@ -197,6 +200,7 @@ Zeno Davatz
 				:canton										=>	'Kanton',
 				:capabilities	      			=>	'Fertigkeitsausweise',
 				:capabilities_header			=>	'Fertigkeitsausweise:',
+        :captcha                  =>  'Was steht im untigen Bild?',
 				:casrn										=>	'CAS Reg.Nr:',
 				:category_a								=>	'Listing of all Narcotics (Art. 1BetmG) with the assigned numbering after the product-identification system <<European Article Number International>> (EAN-A)',
 				:category_b								=>	'Listing of the Narcotics which are partyl excluded of control (Art. 3 Abs. 2 BetmG)',
@@ -402,6 +406,7 @@ Zeno Davatz
 				:effective_form_other			=>	'Wirkform:',
 				:effective_form_self			=>	'Dies ist die Wirkform dieser Substanz.',
 				:effective_substances			=>	'Wirkformen',
+				:e_failed_turing_test	    =>	'Ihre Eingabe stimmt nicht mit dem Bild überein. Bitte versuchen Sie es noch einmal.',
 				:e_file_not_found0				=>	'"',
 				:e_file_not_found1				=>	'" wurde leider nicht gefunden',
 				:e_fi_not_invoiceable			=>	'Bevor Sie diese Fachinformation administrieren geben Sie bitte zuerst das Firmenprofil an.',
@@ -1710,6 +1715,7 @@ Zeno Davatz
 				:e_empty_result						=>	"Votre mot cl&eacute; de recherche n'a abouti &agrave; aucun r&eacute;sultat. <br>Veuillez contr&ocirc;ler l'orthographe et essayez encore <br>une fois.",
 				:e_exception0							=>	'Erreur de syst&egrave;me: "',
 				:e_exception1							=>	'"',
+				:e_failed_turing_test	    =>	'Votre entrée ne correspond pas à l\'image. Veuillez essayer encore une fois s.v.p.',
 				:e_file_not_found0				=>	'"',
 				:e_file_not_found1				=>	"\" on n'a malheureusement pas trouv&eacute;",
 				:e_invalid_atc_class0			=>	'"',
@@ -2775,6 +2781,7 @@ Zeno Davatz
 				:effective_form_other			=>	'Effective Substance:',
 				:effective_form_self			=>	'This is the effective form of this substance.',
 				:effective_substances			=>	'Effective Substance',
+				:e_failed_turing_test	    =>	'Your input did not match with the image. Please try again.',
 				:e_file_not_found0				=>	'"',
 				:e_file_not_found1				=>	'" has not been found',
 				:e_invalid_atc_class0			=>	'"',
@@ -3772,6 +3779,10 @@ Zeno Davatz
 			:dojo_js								=>	'dojo/dojo.js',
 			:sponsor								=>	'sponsor',
 		}
+    def captcha
+      @turing ||= Turing::Challenge.new(:outdir => CAPTCHA_DIR,
+                                        :dictionary => File.join(PROJECT_ROOT, 'data', 'captcha', language))
+    end
 		def compare_list_components
 			{
 				[0,0]	=>	:name_base,
@@ -3829,6 +3840,9 @@ Zeno Davatz
       if(price.to_i > 0)
         [currency, sprintf('%.2f', price)].compact.join(' ')
       end
+    end
+    def generate_challenge
+      captcha.generate_challenge
     end
     def migel_list_components
       {

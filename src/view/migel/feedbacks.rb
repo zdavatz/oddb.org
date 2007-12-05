@@ -31,7 +31,6 @@ class FeedbackForm < View::FeedbackForm
 		[2,12,1]		=>	'feedback_text_d_good_migel',
 		[1,13,0]		=>	:helps_bad,
 		[2,13,1]		=>	'feedback_text_d_bad_migel',
-		[0,15]			=>	:submit,
 	}
 end
 class FeedbackList < View::FeedbackList

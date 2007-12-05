@@ -46,6 +46,7 @@ class ItemWrapper < SimpleDelegator
 		@index - INDEX_STEP
 	end
 end
+attr_reader :passed_turing_test
 def init
 	@model = ItemWrapper.new(@model)
 	@filter = Proc.new { |model| 
@@ -58,8 +59,20 @@ end
 def update
 	mandatory = [:name, :email, :show_email, :experience, 
 		:recommend, :impression, :helps]
+  unless @passed_turing_test
+    mandatory.push :captcha
+  end
 	keys = mandatory + [:message]
 	hash = user_input(keys, mandatory)
+  if(@passed_turing_test)
+    # do nothing
+  elsif((candidates = hash[:captcha]) && candidates.any? { |key, word| 
+    @session.lookandfeel.captcha.valid_answer? key, word })
+    @passed_turing_test = true
+  else
+    @errors.store(:captcha, create_error('e_failed_turing_test', 
+      :captcha, nil))
+  end
 	unless(error?)
 		feedback = @model.current_feedback
 		info_key = :feedback_changed
