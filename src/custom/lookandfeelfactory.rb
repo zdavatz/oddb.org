@@ -52,6 +52,11 @@ module ODDB
 				LookandfeelStandardResult,
 				LookandfeelOekk,
 			],
+			'sympany'	=>	[
+				LookandfeelExtern,
+				LookandfeelStandardResult,
+				LookandfeelSympany,
+			],
 			'provita'			=>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,
