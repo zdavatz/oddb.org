@@ -724,11 +724,11 @@ module ODDB
 	class LookandfeelSympany < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:drugs, 
-			#:external_css,
+			:external_css,
 			:help_link,
+			:logo,
 			:logout,
 			:migel,
-			:oekk_structure,
 			:sequences,
 		]
 		DICTIONARIES = {
@@ -755,9 +755,15 @@ module ODDB
 			},
 		}
 		RESOURCES = { 
-			:external_css	=>	'/resources/oekk.oddb.css',
+			:external_css	=> 'http://www.sympany.ch/generika.css',
+			:logo         => 'logo.gif',
 		}
-		HTML_ATTRIBUTES = { }
+		HTML_ATTRIBUTES = {
+			:logo => {
+				'width'		=>	'321',
+				'height'	=>	'121',
+			},
+		}
 		def languages
 			[:de, :fr, :en]
 		end
