@@ -131,7 +131,7 @@ module ODDB
 						]
 					when /Weitere Angaben/, /Informations supp/
 						@templates = named_chapters [
-							:iksnrs, :registration_owner, :date, :rest,
+              :switch,
 						]
 					when /Zulassungs(vermerk|nummer)/, /Estampille|Num.ro\s+d.autorisation/
 						@iksnrs = @switch
