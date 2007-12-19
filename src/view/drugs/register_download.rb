@@ -49,7 +49,7 @@ class RegisterDownloadForm < Form
 		super
 		if(@session.error?)
 			error = RuntimeError.new('e_need_all_input')
-			message(error, 'processingerror')
+			__message(error, 'processingerror')
 		end
 	end
 	def hidden_fields(context)
