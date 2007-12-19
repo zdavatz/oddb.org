@@ -33,6 +33,7 @@ module ODDB
 			}
 			@successes = []	
 			@failures = []	
+      @host = 'www.documedinfo.ch'
 		end
 		def extract_iksnrs(languages)
 			iksnrs = []
@@ -51,10 +52,10 @@ module ODDB
 			ids = []
 			NEWS_PATHS.each { |source|
 				target = File.join(HTML_PATH, File.basename(source))
-				if(http_file('www.documed.ch', source, target, nil, @hdrs))
+				if(http_file(@host, source, target, nil, @hdrs))
 					ids += PARSER.parse_fachinfo_news(File.read(target))
 				else 
-					raise "Could not download #{source} from www.documed.ch"
+					raise "Could not download #{source} from #{@host}"
 				end
 			}
 			ids
