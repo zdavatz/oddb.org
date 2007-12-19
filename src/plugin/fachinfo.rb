@@ -19,7 +19,7 @@ module ODDB
 			File.dirname(__FILE__))
 		PARSER = DRbObject.new(nil, FIPARSE_URI)
 		NEWS_PATHS = [
-			'/content/page_1.aspx',
+			'/content/default.aspx',
 		]
 		RECIPIENTS = [ ]
 		def initialize(app)
