@@ -198,7 +198,9 @@ class SequenceForm < Form
 		[2,4]		=>	:atc_descr,
 	}
 	COMPONENT_CSS_MAP = {
-		[0,0,4,5]	=>	'standard',
+		[1,0,1,5]	=>	'standard',
+		[3,0,1,3]	=>	'standard',
+		[3,4]	    =>	'standard',
 	}
 	CSS_MAP = {
 		[0,0,4,6]	=>	'list',
