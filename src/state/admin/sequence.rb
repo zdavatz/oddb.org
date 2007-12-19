@@ -138,6 +138,7 @@ module SequenceMethods
 		end
 		keys = [
 			:dose,
+      :export_flag,
 			:name_base, 
 			:name_descr,
       :longevity,

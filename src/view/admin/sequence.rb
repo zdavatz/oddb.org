@@ -193,6 +193,7 @@ class SequenceForm < Form
 		[0,2]		=>	:dose,
 		[2,2]		=>	:galenic_form,
 		[0,3]		=>	:longevity,
+		[2,3]		=>	:export_flag,
 		[0,4]		=>	:atc_class,
 		[2,4]		=>	:atc_descr,
 	}
@@ -205,6 +206,7 @@ class SequenceForm < Form
 	LABELS = true
 	TAG_METHOD = :multipart_form
 	SYMBOL_MAP = {
+		:export_flag				=>	HtmlGrid::InputCheckbox,
 		:iksnr							=>	HtmlGrid::Value,
 		:patinfo_label			=> HtmlGrid::LabelText,
 		:atc_request_label	=> HtmlGrid::LabelText,
