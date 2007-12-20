@@ -34,6 +34,7 @@ class Entity < Global
         elsif(input[:name] != name)
           @session.user.rename(name, input[:name])
           name = input[:name]
+          @model = @session.user.find_entity(name)
         end
         if(pass1)
           @session.user.set_password(name, pass1)
