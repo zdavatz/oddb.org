@@ -34,7 +34,7 @@ class OekkHead < HtmlGrid::Composite
 	def oekk_logo(model)
 		img = HtmlGrid::Image.new(:oekk_logo, model, @session, self)
 		img.set_attribute('src', 
-			'http://www.oekk.ch/library/de/images/oekk_logo_left1a.gif')
+			'www.oekk.ch/_img/img_oekk_logo_oddb.gif')
 		img
 	end
 	def oekk_title(model)
