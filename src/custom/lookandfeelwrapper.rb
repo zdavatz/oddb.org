@@ -713,6 +713,7 @@ module ODDB
 		}
 		RESOURCES = { 
 			:external_css	=>	'http://www.oekk.ch/_css/oddb.css',
+			:logo					=>	'http://www.oekk.ch/_img/img_oekk_logo_oddb.gif',
 		}
 		HTML_ATTRIBUTES = { }
 		def languages
