@@ -77,7 +77,7 @@ module ODDB
       }
     end
     def export_csv_extended(date = @@today)
-      subj = 'oddb.csv'
+      subj = 'oddb2.csv'
       wrap_update(CsvExportPlugin, subj) {
         plug = CsvExportPlugin.new(@app)
         plug.export_drugs_extended
