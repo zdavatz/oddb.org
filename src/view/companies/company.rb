@@ -388,10 +388,11 @@ class PowerLinkCompanyForm < UserCompanyForm
 		[0,5]		=>	:invoice_email,
 		[0,6]		=>	:url,
 		[0,7]		=>	:powerlink,
-		[1,8]		=>	:submit,
+		[0,8]		=>	:deductible_display,
+		[1,9]		=>	:submit,
 	}
 	CSS_MAP = {
-		[0,0,4,9]	=>	'list',
+		[0,0,4,10]	=>	'list',
 	}
 	COMPONENT_CSS_MAP = {
 		[1,0,3,8]	=>	'standard',
@@ -400,8 +401,9 @@ class PowerLinkCompanyForm < UserCompanyForm
 		#:invoice_email	=>	:address_email,
 	}
 	SYMBOL_MAP = {
-		:address_header =>	HtmlGrid::LabelText,
-		:url						=>	HtmlGrid::HttpLink,
+		:address_header     =>	HtmlGrid::LabelText,
+		:deductible_display =>	HtmlGrid::InputCheckbox,
+		:url						    =>	HtmlGrid::HttpLink,
 	}
 end
 class UnknownCompanyComposite < HtmlGrid::Composite

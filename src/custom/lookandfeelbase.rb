@@ -319,6 +319,7 @@ Zeno Davatz
 				:ddd											=>	'WHO-DDD',
 				:de												=>	'Deutsch',
 				:deductible								=>	'Selbstbehalt',
+				:deductible_display       =>	'Selbstbehalt anzeigen',
 				:deductible_g							=>	'10%',
 				:deductible_legal_url			=>	'http://www.bag.admin.ch/dokumentation/gesetzgebung/00710/02019/index.html?lang=de&download=M3wBUQCu/8ulmKDu36WenojQ1NTTjaXZnqWfVpzLhmfhnapmmc7Zi6rZnqCkkIV4gn+DbKbXrZ2lhtTN34al3p6YrY7P1oah162apo3X1cjYh2+hoJVn6w==',
 				:deductible_o							=>	'20%',

@@ -14,8 +14,8 @@ module ODDB
 		include AddressObserver
 		ODBA_SERIALIZABLE = ['@addresses']
 		attr_accessor :address_email, :business_area, :business_unit,
-			:cl_status, :complementary_type, :contact, :ean13, 
-			:generic_type, :invoice_email, :logo_filename, :name,
+      :cl_status, :complementary_type, :contact, :deductible_display, :ean13,
+      :generic_type, :invoice_email, :logo_filename, :name,
 			:disable_autoinvoice, :powerlink, :regulatory_email, :url, 
 			:patinfo_price, :lookandfeel_price, :lookandfeel_member_count, 
 			:lookandfeel_member_price, :index_price, :index_package_price,

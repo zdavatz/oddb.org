@@ -215,6 +215,7 @@ class PowerLinkCompany < UserCompany
 			:plz,
 		]
 		keys = mandatory + [
+      :deductible_display,
 			:fon,
 			:invoice_email,
 			:powerlink,

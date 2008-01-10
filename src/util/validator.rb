@@ -16,11 +16,11 @@ module ODDB
 		alias :competition_email :email
 		alias :swissmedic_email :email
 		BOOLEAN = [
-      :cl_status, :disable, :disable_autoinvoice, :disable_patinfo,
-      :download, :experience, :export_flag, :helps, :impression,
-      :invoice_htmlinfos, :lppv, :parallel_import, :recommend,
-      :refdata_override, :renewal_flag, :show_email, :vaccine,
-      :yus_groups, :yus_privileges,
+      :cl_status, :deductible_display, :disable, :disable_autoinvoice,
+      :disable_patinfo, :download, :experience, :export_flag, :helps,
+      :impression, :invoice_htmlinfos, :lppv, :parallel_import, :recommend,
+      :refdata_override, :renewal_flag, :show_email, :vaccine, :yus_groups,
+      :yus_privileges,
     ]
 		DATES = [
 			:base_patent_date, 

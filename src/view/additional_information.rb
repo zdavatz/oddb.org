@@ -89,7 +89,9 @@ module ODDB
 				span = HtmlGrid::Span.new(model, @session, self)
 				tooltip = HtmlGrid::Div.new(model, @session, self)
 				deductible = if(@lookandfeel.enabled?(:just_medical_structure, false))
-											 model.deductible_m
+                       if(model.company.deductible_display)
+                         model.deductible
+                       end
 										 else
 											 model.deductible
 										 end
