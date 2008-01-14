@@ -360,6 +360,7 @@ module ODDB
 		end
 		def update_registration(reg)
 			data = reg.data
+      data.store(:inactive_date, nil)
 			update_company(data)
 			update_indication(data)
 			pointer = nil
@@ -401,7 +402,7 @@ module ODDB
 						@deactivated.push(reg.iksnr)
 						@app.update(reg.pointer, {:inactive_date => @@today}, :swissmedic)
 					end
-				}
+				} unless @active.empty?
 			}
 		end
 		def update_sequence(seq, reg_pointer)
