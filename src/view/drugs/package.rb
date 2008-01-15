@@ -153,11 +153,16 @@ class PackageComposite < HtmlGrid::Composite
 		[0,0]	=>	:package_name,
 		[0,1]	=>	View::Drugs::PackageInnerComposite,
 		[0,3]	=>	:sequence_agents,
+		[0,4]	=>	'th_source',
+		[0,5]	=>	:source,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0]	=>	'th',
+		[0,4]	=>	'subheading',
+    [0,5] =>  'list',
 	}
+  DEFAULT_CLASS = HtmlGrid::Value
 	def package_name(model, session)
 		[model.name, model.size].compact.join('&nbsp;-&nbsp;')
 	end

@@ -172,7 +172,7 @@ Grammar OddbSize
 		registration_data :comarketing_with, :complementary_type, :expiration_date,
 			:expired?, :export_flag, :generic_type, :inactive_date, :pdf_fachinfos,
 			:registration_date, :revision_date, :patent, :patent_protected?, :vaccine,
-			:parallel_import, :minifi
+			:parallel_import, :minifi, :source
     sequence_data :active_agents, :atc_class, :basename, :company, :dose, 
       :fachinfo, :galenic_form, :galenic_group, :has_patinfo?, :longevity,
       :iksnr, :indication, :name, :name_base, :patinfo, :pdf_patinfo,
