@@ -12,8 +12,8 @@ class Entity < Global
   def update
     mandatory = [:name]
     preferences = [:name_first, :name_last, :salutation, :address, :plz, :city]
-    keys = mandatory + preferences + [:yus_privileges, :yus_groups,
-      :set_pass_1, :set_pass_2, :yus_association, ]
+    keys = mandatory + preferences + [ :valid_until, :yus_privileges,
+      :yus_groups, :set_pass_1, :set_pass_2, :yus_association ]
     input = user_input(keys, mandatory)
     pass1 = nil
     begin
@@ -63,10 +63,20 @@ class Entity < Global
         @model.affiliations.each { |group| 
           unless(groups[group.name])
             @session.user.disaffiliate(name, group.name)
+            if(group.name == 'PowerUser')
+              @session.user.revoke(name, 'view', 'org.oddb')
+            end
           end
         }
         groups.each { |groupname, value|
           @session.user.affiliate(name, groupname)
+          time = if(date = input[:valid_until])
+                   date = date.next
+                   Time.local(date.year, date.month, date.day) - 1
+                 end
+          if(groupname == 'PowerUser')
+            @session.user.grant(name, 'view', 'org.oddb', time)
+          end
         }
       end
     rescue Yus::DuplicateNameError => e

@@ -43,7 +43,8 @@ class YusPrivileges < HtmlGrid::List
 end
 class YusGroups < HtmlGrid::List
   COMPONENTS = {
-    [0,0] =>  :checkbox,
+    [0,0] => :checkbox,
+    [1,0] => :privileged_until, 
   }
   LEGACY_INTERFACE = false
   LABEL = true
@@ -61,6 +62,16 @@ class YusGroups < HtmlGrid::List
       box.set_attribute('checked', true)
     end
     [box, name]
+  end
+  def privileged_until(model)
+    if(model.name == 'PowerUser')
+      input = HtmlGrid::Input.new(:valid_until, model, @session, self)
+      entity = @container.model
+      if(time = entity.privileged_until('view', 'org.oddb'))
+        input.value = time.strftime('%d.%m.%Y')
+      end rescue Yus::YusError
+      input
+    end
   end
 end
 class EntityForm < Form

@@ -40,6 +40,7 @@ module ODDB
 			:registration_date,
 			:revision_date,
 			:sponsor_until,
+      :valid_until,
 		]
 		ENUMS = {
 			:address_type	=>	[nil, 'at_work', 'at_praxis',
@@ -85,7 +86,7 @@ module ODDB
         'login|org.oddb.PowerUser', 
         'login|org.oddb.CompanyUser', 
         'login|org.oddb.PowerLinkUser', 
-        'view|org.oddb', 
+        #'view|org.oddb', 
         'edit|org.oddb.drugs', 
         'edit|org.oddb.powerlinks',
         'create|org.oddb.registration',
