@@ -67,9 +67,17 @@ class YusGroups < HtmlGrid::List
     if(model.name == 'PowerUser')
       input = HtmlGrid::Input.new(:valid_until, model, @session, self)
       entity = @container.model
-      if(time = entity.privileged_until('view', 'org.oddb'))
+      time = entity.privileged_until('view', 'org.oddb') rescue Yus::YusError
+      if(time)
         input.value = time.strftime('%d.%m.%Y')
-      end rescue Yus::YusError
+      else
+        txt = @lookandfeel.lookup(:expiration_date)
+        input.set_attribute("onfocus", 
+                            "if(this.value == '#{txt}') this.value='';")
+        input.set_attribute("onblur", 
+                            "if(this.value == '') this.value='#{txt}';")
+        input.value = txt
+      end 
       input
     end
   end
