@@ -324,7 +324,7 @@ Zeno Davatz
 				:deductible_legal_url			=>	'http://www.bag.admin.ch/suchen/index.html?keywords=selbstbehalt&go_search=Suchen&lang=de',
 				:deductible_o							=>	'20%',
 				:deductible_title0				=>	'F&uuml;r dieses Produkt bezahlen Sie ',
-				:deductible_title1				=>	' <a href="http://www.bag.admin.ch/dokumentation/gesetzgebung/00710/02019/index.html?lang=de&download=M3wBUQCu/8ulmKDu36WenojQ1NTTjaXZnqWfVpzLhmfhnapmmc7Zi6rZnqCkkIV4gn+DbKbXrZ2lhtTN34al3p6YrY7P1oah162apo3X1cjYh2+hoJVn6w==">Selbstbehalt</a>.<br>Achten Sie auf Ihre Krankenkassen-Abrechnung!',
+				:deductible_title1				=>	' <a href="http://www.bag.admin.ch/suchen/index.html?keywords=selbstbehalt&go_search=Suchen&lang=de">Selbstbehalt</a>.<br>Achten Sie auf Ihre Krankenkassen-Abrechnung!',
 				:deductible_unknown				=>	'k.A.',
 				:deductible_unknown_title	=>	'Keine Angaben in der SL',
 				:delete										=>	'L&ouml;schen',
@@ -1658,7 +1658,7 @@ Zeno Davatz
 				:deductible_g							=>	'10%',
 				:deductible_legal_url			=>	'http://www.bag.admin.ch/suchen/index.html?keywords=quote-part&go_search=Rechercher&lang=fr',
 				:deductible_o							=>	'20%',
-				:deductible_title0				=>	'Le <a href="http://www.bag.admin.ch/dokumentation/gesetzgebung/00710/02019/index.html?lang=fr&download=M3wBUQCu/8ulmKDu36WenojQ1NTTjaXZnqWfVpzLhmfhnapmmc7Zi6rZnqCkkIV4gn+DbKbXrZ2lhtTN34al3p6YrY7P1oah162apo3X1cjYh2+hoJVn6w==">quote-part</a> pour ce produit est ',
+				:deductible_title0				=>	'Le <a href="http://www.bag.admin.ch/suchen/index.html?keywords=quote-part&go_search=Rechercher&lang=fr">quote-part</a> pour ce produit est ',
 				
 				:deductible_title1				=>	'.<br>Faites attention &agrave; votre facture de la caisse maladie!',
 				:deductible_unknown				=>	'N.O.',
@@ -2719,7 +2719,7 @@ Zeno Davatz
 				:deductible_legal_url			=>	'http://www.bag.admin.ch/suchen/index.html?keywords=selbstbehalt&go_search=Suchen&lang=de',
 				:deductible_o							=>	'20%',
 				:deductible_title0				=>	'For this product you pay a ',
-				:deductible_title1				=>	' <a href="http://www.bag.admin.ch/dokumentation/gesetzgebung/00710/02019/index.html?lang=de&download=M3wBUQCu/8ulmKDu36WenojQ1NTTjaXZnqWfVpzLhmfhnapmmc7Zi6rZnqCkkIV4gn+DbKbXrZ2lhtTN34al3p6YrY7P1oah162apo3X1cjYh2+hoJVn6w==">deductible</a>.<br>Pay attention to your medical insurance bill!',
+				:deductible_title1				=>	' <a href="http://www.bag.admin.ch/suchen/index.html?keywords=selbstbehalt&go_search=Suchen&lang=de">deductible</a>.<br>Pay attention to your medical insurance bill!',
 				:deductible_unknown				=>	'k.A.',
 
 				:delete										=>	'Delete',
