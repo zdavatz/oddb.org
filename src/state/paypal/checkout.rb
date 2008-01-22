@@ -18,10 +18,11 @@ module Checkout
 	CURRENCY = 'EUR'
   def ajax_autofill
     email = @session.user_input(:email)
-    prefs = {:email => email}
+    prefs = {}
     keys = checkout_keys()
     keys.delete(:email)
     prefs.update @session.yus_get_preferences(email, keys)
+    prefs.store(:email, email) unless(prefs.empty?)
     AjaxCheckout.new(@session, prefs)
   end
 	def checkout
