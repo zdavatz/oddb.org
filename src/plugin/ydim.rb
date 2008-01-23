@@ -84,7 +84,7 @@ module ODDB
 		end
 		def identify_debitor(facade)
 			ydim_connect { |client|
-        term = facade.fullname || facade.company_name || facade.contact
+        term = facade.fullname || facade.company_name || facade.contact || facade.invoice_email
 				if(debitor = client.search_debitors(term).first)
           facade.ydim_id = debitor.unique_id
 					debitor
