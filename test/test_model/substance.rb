@@ -53,6 +53,7 @@ class TestSubstance < Test::Unit::TestCase
       'rm'  =>  'Faktor Ii Vom Menschen',
       'bk'  =>  'Heparinoidum (Poly(Methylis Galacturonatis Sulfas) Natricus)',
       'ds'  =>  'L-O-carnitin',
+      'sc'  =>  'Extractum Sicc.',
 		}
 		result = @substance.adjust_types(values)
 		expected = {
@@ -65,6 +66,7 @@ class TestSubstance < Test::Unit::TestCase
       'rm'  =>  'Faktor II vom Menschen',
       'bk'  =>  'Heparinoidum (Poly(Methylis Galacturonatis Sulfas) Natricus)',
       'ds'  =>  'L-O-Carnitin',
+      'sc'  =>  'Extractum sicc.',
 		}
 		assert_equal(expected, result)
 	end

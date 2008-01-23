@@ -42,7 +42,7 @@ module ODDB
           newval = value.to_s.gsub(/\S+/) { |match| 
 						match.capitalize
 					}
-          newval.gsub!(/(?<=\s)[a-z]{1,3}\s/i) { |match| 
+          newval.gsub!(/(?<=\s)[a-z]{1,4}[\s.]/i) { |match| 
             match.downcase 
           }
 					newval.gsub!(/\bhcl\b/i, 'HCl')
