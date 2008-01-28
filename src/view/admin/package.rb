@@ -92,14 +92,6 @@ class PackageForm < View::Form
 		super
 		error_message()
 	end
-	def ikscd(model, session)
-		klass = if(model.ikscd.nil?)
-			HtmlGrid::InputText
-		else
-			HtmlGrid::Value
-		end
-		klass.new(:ikscd, model, session, self)
-	end
   def commercial_form(model, session=@session)
     input = HtmlGrid::InputText.new(:commercial_form, 
                                     model, @session, self)

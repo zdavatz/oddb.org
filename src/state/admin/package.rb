@@ -16,25 +16,28 @@ module PackageMethods
 		end
 	end
 	def update
-		if(@model.is_a? Persistence::CreateItem)
-			ikscode = @session.user_input(:ikscd)
-			error =	if(ikscode.is_a? RuntimeError)
-				ikscode
-			elsif(ikscode.empty?)
-				create_error(:e_missing_ikscd, :ikscd, ikscode)
-			elsif(@model.parent(@session.app).package(ikscode))
-				create_error(:e_duplicate_ikscd, :ikscd, ikscode)
-			end
-			if error
-				@errors.store(:ikscd, error)
-				@model.carry(:price_exfactory, 
-					ODDB::Package.price_internal(@session.user_input(:price_exfactory), 
+    ikscode = @session.user_input(:ikscd)
+    error =	if(ikscode.is_a? RuntimeError)
+      ikscode
+    elsif(ikscode.empty?)
+      create_error(:e_missing_ikscd, :ikscd, ikscode)
+    elsif((dup = @model.parent(@session.app).package(ikscode)) \
+          && dup != @model)
+      create_error(:e_duplicate_ikscd, :ikscd, ikscode)
+    end
+    if error
+      @errors.store(:ikscd, error)
+      if(@model.is_a? Persistence::CreateItem)
+        @model.carry(:price_exfactory, 
+          ODDB::Package.price_internal(@session.user_input(:price_exfactory), 
                                       :exfactory))
-				@model.carry(:price_public, 
-					ODDB::Package.price_internal(@session.user_input(:price_public),
+        @model.carry(:price_public, 
+          ODDB::Package.price_internal(@session.user_input(:price_public),
                                       :public))
-				return self
-			end
+      end
+      return self
+    end
+		if(@model.is_a? Persistence::CreateItem)
 			@model.append(ikscode)
 			@model = @session.app.create(@model.pointer)
 		end
@@ -74,6 +77,9 @@ module PackageMethods
     }
 		unless(error?)
 			ODBA.transaction {
+        if(ikscode != @model.ikscd)
+          @model.ikscd = ikscode
+        end
 				@model = @session.app.update(@model.pointer, input, unique_email)
 			}
 		end
