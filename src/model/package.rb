@@ -259,6 +259,7 @@ Grammar OddbSize
         pacs.delete(@ikscd)
         pacs.store(ikscd, self)
         pacs.odba_store
+        @out_of_trade = false
         @ikscd = ikscd
         fix_pointers
       end
