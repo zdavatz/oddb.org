@@ -67,7 +67,6 @@ require 'state/user/passthru'
 require 'state/user/register_poweruser'
 require 'state/user/suggest_registration'
 require 'state/paypal/return'
-require 'state/paypal/ipn'
 require 'state/rss/passthru'
 require 'state/user/paypal_thanks'
 require 'state/user/powerlink'
@@ -117,7 +116,6 @@ module ODDB
 				:narcotics						=>	State::Drugs::Narcotics,
 				:plugin								=>	State::User::Plugin,
 				:passthru							=>	State::User::PassThru,
-				:paypal_ipn						=>	State::PayPal::Ipn,
 				:paypal_thanks				=>	State::User::PayPalThanks,
 				:recent_registrations =>	State::Drugs::RecentRegs,
 				:sequences						=>	State::Drugs::Sequences,

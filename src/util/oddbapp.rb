@@ -6,6 +6,7 @@ require 'odba/index_definition'
 require 'odba/drbwrapper'
 require 'custom/lookandfeelbase'
 require 'util/failsafe'
+require 'util/ipn'
 require 'util/oddbconfig'
 require 'util/searchterms'
 require 'util/session'
@@ -21,6 +22,7 @@ require 'remote/package'
 require 'admin/subsystem'
 require 'models'
 require 'commands'
+require 'paypal'
 require 'sbsm/drbserver'
 require 'sbsm/index'
 require 'util/config'
@@ -1505,6 +1507,11 @@ module ODDB
           puts e.backtrace
         end
       }
+    end
+
+    def ipn(notification)
+      Util::Ipn.process notification, self
+      nil # don't return the invoice back across drb - it's not defined in yipn
     end
 
 		def assign_effective_forms(arg=nil)

@@ -6,7 +6,7 @@ module ODDB
     module User
 module AutoFill
   def email(model, session=@session)
-    input = HtmlGrid::InputText.new(:email, model, @session, self)
+    input = HtmlGrid::InputText.new(:email, @session.user, @session, self)
     url = @lookandfeel._event_url(:ajax_autofill, {:email => nil})
     if(@session.logged_in?)
       input.set_attribute('disabled', true)

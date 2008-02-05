@@ -15,7 +15,7 @@ class Redirect < HtmlGrid::Component
 		url = 'https://' << PAYPAL_SERVER << '/cgi-bin/webscr?' \
 			<< "business=#{PAYPAL_RECEIVER}&" \
 			<< "item_name=#{names}&item_number=#{invoice}&" \
-			<< "invoice=#{invoice}&" \
+			<< "invoice=#{invoice}&custom=ch.oddb.org&" \
 			<< "amount=#{sprintf('%3.2f', model.total_brutto)}&" \
 			<< 'no_shipping=1&no_note=1&currency_code=EUR&' \
 			<< "return=#{ret_url}&" \
