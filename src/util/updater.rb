@@ -115,10 +115,13 @@ module ODDB
 			hash
 		end
 		def mail_logfile(name, date, subj)
-			log = Log.new(date)
-			log.report = LogFile.read(name, date)
-			log.recipients = recipients + self::class::LOG_RECIPIENTS[name]
-			log.notify(subj)
+      report = LogFile.read(name, date)
+      unless report.empty?
+        log = Log.new(date)
+        log.report = report
+        log.recipients = recipients + self::class::LOG_RECIPIENTS[name]
+        log.notify(subj)
+      end
 		end
 		def logfile_stats
 			date = @@today << 1
