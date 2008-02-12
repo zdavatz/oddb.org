@@ -70,7 +70,7 @@ module ODDB
 				EncodedString.new('Albumin Human Octapharma 20%'), 
 				EncodedString.new('55536'), indication, EncodedString.new('B'),
 				EncodedString.new('x'), EncodedString.new('x'), EncodedString.new('x'),
-				EncodedString.new(''), EncodedString.new(''), EncodedString.new(''),
+				EncodedString.new(''), EncodedString.new(''), #EncodedString.new(''),
 				EncodedString.new('Octapharma AG'), DateCell.new(date),
 				EncodedString.new('B05AA01') 
 			]
@@ -93,14 +93,15 @@ module ODDB
 				EncodedString.new('Rhophylac 200/300'), 
 				EncodedString.new('53609'), indication, EncodedString.new('B'),
 				EncodedString.new('x'), EncodedString.new('x'), EncodedString.new('x'),
-				EncodedString.new(''), EncodedString.new(''), EncodedString.new('x'),
+				EncodedString.new(''), EncodedString.new(''), #EncodedString.new('x'),
 				EncodedString.new('ZLB Behring AG'), DateCell.new(Date.new(2010,12,31))
 			]
 			reg, seqs = @plugin.parse_worksheet_row(row)
       seq1, seq2 = seqs
 			assert_instance_of(VaccinePlugin::ParsedRegistration, reg)
 			assert_equal('53609', reg.iksnr)
-      assert_equal(true, reg.out_of_trade)
+      ## missing as of 02/2008
+      #assert_equal(true, reg.out_of_trade)
 			assert_equal('B', reg.ikscat)
 			assert_equal(indication, reg.indication)
 			assert_equal('ZLB Behring AG', reg.company)
