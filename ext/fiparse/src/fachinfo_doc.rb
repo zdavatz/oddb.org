@@ -3,11 +3,13 @@
 
 require 'rwv2/rwv2'
 require 'fachinfo_writer'
+require 'iconv'
 
 module ODDB
 	module FiParse
 		class FachinfoDocWriter < FachinfoWriter
-			def new_font(char_props)
+      attr_accessor :cutoff_fontsize
+			def new_font(char_props, text=nil)
 				if(@chapter_flag)
 					@chapter_flag = nil
 					if(@chapter == @switch)
@@ -30,14 +32,19 @@ module ODDB
 						]
 					end
 				end
-				if(char_props.fontsize > 40)
+				if(char_props.fontsize >= @cutoff_fontsize && @name.empty?)
 					set_target(@name)
 				#elsif(char_props.italic? && char_props.bold?)
 				elsif(char_props.bold?)
-					@chapter_flag = true
-					@chapter = next_chapter
-					@section = @chapter.next_section
-					set_target(@chapter.heading)
+          if(valid_chapter?(text))
+            @chapter_flag = true
+            @chapter = next_chapter
+            @section = @chapter.next_section
+            set_target(@chapter.heading)
+          elsif(@chapter)
+						@section = @chapter.next_section
+						set_target(@section.subheading)
+          end
 				elsif(char_props.italic?)
 					if(@chapter == @company)
 						@chapter = next_chapter
@@ -62,19 +69,68 @@ module ODDB
 					set_target(target)
 				end
 			end
+      def valid_chapter?(text)
+        case text.strip
+        when "", /Wirkstoffe/, /Hilfsstoffe/, /Klinische Wirksamkeit/, 
+          /Atc.?code/i, /Wirkungsmechanismus/, /Absorption/, /Metabolismus/,
+          /Haltbarkeit/, /Lagerung/, /Handhabung/, /^-/
+          false
+        else
+          true
+				end
+      end
 		end
 		class FachinfoSubDocumentHandler < Rwv2::SubDocumentHandler
 			def initialize(text_handler)
 				@text_handler = text_handler
 			end
 		end
+    class FachinfoTableHandler < Rwv2::TableHandler
+      attr_reader :rows
+      def initialize
+        @tables = []
+        @rows = []
+        @row_descriptors = []
+      end
+      def cell
+        row.last
+      end
+      def cell_start
+        row.push []
+      end
+      def cell_end
+        #puts "cell_end"
+      end
+      def in_table?
+        @in_table
+      end
+      def row
+        @rows.last
+      end
+      def row_start(props)
+        @in_table = true
+        @row_descriptors.push props
+        @rows.push []
+      end
+      def row_end
+        @in_table = false
+      end
+      def send_flowing_data(text)
+        cell << text
+      end
+    end
 		class FachinfoTextHandler < Rwv2::TextHandler
 			CHARS_PER_INCH = 14
 			TWIPS_PER_CHAR =  (72*20 / CHARS_PER_INCH ).to_i
 			DEFAULT_TAB_WIDTH = 720
-			attr_reader :writers
+			attr_reader :writers, :table_handler, :max_fontsize
+      attr_accessor :cutoff_fontsize
 			def initialize
 				@writers = []
+        @table_handler = FachinfoTableHandler.new
+        @cutoff_fontsize = 40
+        @max_fontsize = 0
+        @iconv = Iconv.new('latin1//TRANSLIT//IGNORE', 'utf16')
 			end
 			def paragraph_end
 				unless(@writer.nil?)
@@ -95,13 +151,28 @@ module ODDB
 					@tabs = []
 				end
 			end
-			def run_of_text(text, char_props)
+      def run_of_text(text, char_props)
+        text = @iconv.iconv(text)
 				# remove M$-Word special-chars
 				text.tr!("\031\036\034\023", "'\"\"-")
-				if(!same_font?(@current_char_props, char_props) \
-					&& char_props.fontsize > 40)
-					@writer = FachinfoDocWriter.new
-					@writers.push(@writer)
+        text.gsub!(/,,/, '"')
+        text.split(/\v/).each_with_index { |run, idx|
+          if(idx > 0 && @writer)
+            @writer.send_line_break
+          end
+          _run_of_text(run, char_props)
+        }
+      end
+			def _run_of_text(text, char_props)
+        #puts sprintf("%2i %s -> %s",char_props.fontsize, same_font?(@current_char_props, char_props), text[0,10])
+				if(!same_font?(@current_char_props, char_props))
+					if(char_props.fontsize >= @cutoff_fontsize \
+             && (@writer.nil? || @writer.chapters.length > 12))
+            @writer = FachinfoDocWriter.new
+            @writer.cutoff_fontsize = @cutoff_fontsize
+            @writers.push(@writer)
+          end
+          @max_fontsize = [@max_fontsize, char_props.fontsize].max
 				end
 				if(/^-{5,}$/.match(text))
 					@preformatted = text.length
@@ -114,10 +185,12 @@ module ODDB
 				end
 				unless(@writer.nil?)
 					unless(same_font?(@current_char_props, char_props))
-						@writer.new_font(char_props)
+						@writer.new_font(char_props, text)
 					end
 					if(@preformatted)
 						@writer.send_literal_data(expand_tabs(text))
+          #elsif(@table_handler.in_table?)
+          #  @table_handler.send_flowing_data(text)
 					else
 						@writer.send_flowing_data(text)
 					end
@@ -157,4 +230,3 @@ module ODDB
 		end
 	end
 end
-

@@ -2,7 +2,6 @@
 # Fachinfo -- oddb -- 26.10.2004 -- mwalder@ywesee.com rwaltert@ywesee.com
 
 require	'fachinfo_writer'
-require 'fachinfo_html'
 require 'rpdf2txt/parser'
 
 module ODDB

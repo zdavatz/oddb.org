@@ -39,6 +39,7 @@ module ODDB
 				fi.overdose = @overdose
 				fi.other_advice = @other_advice
 				fi.iksnrs = @iksnrs
+        fi.packages = @packages
 				fi.date = @date
 				fi
 			end
@@ -111,7 +112,8 @@ module ODDB
 						@templates = named_chapters [
 							:switch,
 						]
-					when /IKS-Nummern?/i, /Num.ros? OICM/i
+					when /IKS-Nummern?/i, /Num.ros? OICM/i, 
+            /Zulassungs(vermerk|nummer)/, /Estampille|Num.ro\s+d.autorisation/
 						@iksnrs = chapter
 						@templates = named_chapters [
 							:date, :rest,

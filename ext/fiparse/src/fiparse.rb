@@ -8,10 +8,9 @@ require 'drb/drb'
 require 'util/oddbconfig'
 require 'fachinfo_writer'
 require 'fachinfo_pdf'
-require 'fachinfo_html'
 require 'fachinfo_pdf'
 require 'fachinfo_news'
-#require 'fachinfo_doc'
+require 'fachinfo_doc'
 require 'minifi'
 require 'patinfo_hpricot'
 require 'rpdf2txt/parser'
@@ -32,17 +31,19 @@ module ODDB
 			parser = Rwv2.create_parser_from_content(src)
 			handler = FachinfoTextHandler.new
 			parser.set_text_handler(handler)
+      parser.set_table_handler(handler.table_handler)
 			parser.parse
-			handler.writers.collect { |wt| wt.to_fachinfo }
-		end
-		def parse_fachinfo_html(src)
-			writer = FachinfoHtmlWriter.new
-			formatter = HtmlFormatter.new(writer)
-			parser = HtmlParser.new(formatter)
-			parser.feed(src)
-			unless(writer.pseudo?)
-				writer.to_fachinfo 
-			end
+      if(handler.writers.empty?)
+        ## Product-Name was not written large enough - retry with whatever was 
+        #  the largest fontsize
+        handler.cutoff_fontsize = handler.max_fontsize
+        parser.parse
+      end
+			handler.writers.collect { |wt| wt.to_fachinfo }.compact.first
+    rescue Exception => e
+      puts e.class, e.message
+      puts e.backtrace
+      e
 		end
 		def parse_fachinfo_pdf(src)
 			writer = FachinfoPDFWriter.new
@@ -64,7 +65,6 @@ module ODDB
 		module_function :storage=
 		module_function :parse_fachinfo_doc
 		module_function :parse_fachinfo_pdf
-		module_function :parse_fachinfo_html
 		module_function :parse_fachinfo_news
 		module_function :parse_patinfo_html
 	end

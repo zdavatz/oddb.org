@@ -7,7 +7,7 @@ require 'model/text'
 module ODDB
 	module FiParse
 		class Writer < NullWriter
-			attr_reader :iksnrs, :name
+			attr_reader :iksnrs, :name, :chapters
 			def initialize
 				super
 				@target = nil
@@ -36,6 +36,7 @@ module ODDB
 			end
 			def send_line_break
 				if(@target == @name)
+          @name.strip!
 					@name << "\n"
 				elsif(@chapter == @galenic_form && @section)
 					@section.subheading << "\n"

@@ -21,7 +21,7 @@ module ODDB
                               }ix
         HYPHEN = /-$/
         NAME_PTRN = /
-                    (?:Wirk?toffe?s:
+                    (?:Wirk?s?toffe?s:
                     [^\(]*\((?<name>[^,\s\256\(]+))(\256|\(TM\))
                     |
                     (?:(?:(?:(?:Impf|Wirk?)stoffe?s?)
