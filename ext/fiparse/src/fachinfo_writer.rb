@@ -56,6 +56,15 @@ module ODDB
 							:unwanted_effects, :overdose, :effects,
 							:kinetic, :preclinic, :switch,
 						]
+          when /Galenische\s*Form/i, /Forme\s*gal.nique/i
+            ## this is an amzv-FI without Declaration, switch to amzv-mode.
+            @galenic_form = chapter
+            named_chapter(:amzv)
+						@templates = named_chapters [
+              :indications, :usage, :contra_indications, :restrictions,
+              :interactions, :pregnancy, :driving_ability, :unwanted_effects,
+              :overdose, :effects, :kinetic, :preclinic, :switch,
+						]
 					when /Zusammensetzung/, /Composition/
 						@composition = chapter
 						@templates = named_chapters [
@@ -126,7 +135,7 @@ module ODDB
 					end
 				else
 					case chapter.heading
-					when /Sonstige/, /Remarques/
+					when /Sonstige/, /(Autres\s*)?Remarques/i
 						@other_advice = chapter
 						@templates = named_chapters [
 							:switch
@@ -135,12 +144,13 @@ module ODDB
 						@templates = named_chapters [
               :switch,
 						]
-					when /Zulassungs(vermerk|nummer)/, /Estampille|Num.ro\s+d.autorisation/
+					when /Zulassungs(vermerk|nummer)/, 
+            /Estampille|Num.ro\s+d.autorisation/, /Autorisation/
 						@iksnrs = @switch
 						@templates = named_chapters [
 							:switch,
 						]
-					when /Packungen/, /Pr.sentation/
+					when /Packungen/, /Pr.sentation/, /Conditionnements/
 						@packages = chapter
 						@templates = named_chapters [
 							:registration_owner, :date, :rest,
@@ -158,7 +168,7 @@ module ODDB
 					when /Stand der Information/, /Mise? . jour de l.information/
 						@date = chapter
 						@templates = named_chapters [
-							:rest,
+							:switch#, :rest,
 						]
 					end
 				end

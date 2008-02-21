@@ -679,7 +679,7 @@ class TestFachinfoDocParser7 < Test::Unit::TestCase
 		assert_equal(2, chapter.sections.size)
 		section = chapter.sections.first
 		assert_instance_of(ODDB::Text::Section, section)
-		assert_equal('Wirkstoffe', section.subheading)
+		assert_equal('Wirkstoffe:', section.subheading)
 		assert_equal(2, section.paragraphs.size)
 		paragraph = section.paragraphs.first
 		assert_instance_of(ODDB::Text::Paragraph, paragraph)
@@ -1003,7 +1003,6 @@ class TestFachinfoDocParser9 < Test::Unit::TestCase
 		assert_equal('Titulaire de l\'autorisation', chapter.heading)
 	end
 end
-=begin ## wv2 seems to invert bold/not-bold here...
 class TestFachinfoDocParser10 < Test::Unit::TestCase
   class ReplHandler
     def method_missing(*args)
@@ -1032,11 +1031,10 @@ class TestFachinfoDocParser10 < Test::Unit::TestCase
 		writer = @text_handler.writers.first
 		chapter = writer.composition
 		assert_instance_of(ODDB::Text::Chapter, chapter)
-		assert_equal('Composition', chapter.heading)
+		assert_equal('Zusammensetzung', chapter.heading)
 		assert_equal(2, chapter.sections.size)
 		section = chapter.sections.first
 		assert_instance_of(ODDB::Text::Section, section)
-		assert_equal("Principe actif\240:", section.subheading)
 		assert_equal(1, section.paragraphs.size)
 		paragraph = section.paragraphs.first
 		assert_instance_of(ODDB::Text::Paragraph, paragraph)
@@ -1045,109 +1043,179 @@ class TestFachinfoDocParser10 < Test::Unit::TestCase
 		writer = @text_handler.writers.first
 		chapter = writer.galenic_form
 		assert_instance_of(ODDB::Text::Chapter, chapter)
-		assert_equal("Forme gal\351nique et quantit\351 de principe actif par unit\351", chapter.heading)
+		assert_equal("Galenische Form und Wirkstoffmengen pro Einheit", 
+                 chapter.heading)
 		assert_equal(1, chapter.sections.size)
 		section = chapter.sections.first
 		assert_instance_of(ODDB::Text::Section, section)
-		assert_equal("", section.subheading)
-		assert_equal(2, section.paragraphs.size)
+		assert_equal("Tropfen. 1 ml enthält:\n", section.subheading)
+		assert_equal(1, section.paragraphs.size)
 	end
 	def test_indications10
 		writer = @text_handler.writers.first
 		chapter = writer.indications
 		assert_instance_of(ODDB::Text::Chapter, chapter)
-		assert_equal("Indications/Possibilit\351s d'emploi", chapter.heading)
+		assert_equal("Indikationen/Anwendungsmöglichkeiten", chapter.heading)
 		assert_equal(1, chapter.sections.size)
-	end
-	def test_usage10
-		writer = @text_handler.writers.first
-		chapter = writer.usage
-		assert_instance_of(ODDB::Text::Chapter, chapter)
-  	assert_equal("Posologie/Mode d'emploi", chapter.heading)
-		assert_equal(2, chapter.sections.size)
-	end
-	def test_contra_indiations10
-		writer = @text_handler.writers.first
-		chapter = writer.contra_indications
-		assert_instance_of(ODDB::Text::Chapter, chapter)
-  	assert_equal('Contre-indications', chapter.heading)
-		assert_equal(1, chapter.sections.size)
-	end
-	def test_restrictions10
-		writer = @text_handler.writers.first
-		chapter = writer.restrictions
-		assert_instance_of(ODDB::Text::Chapter, chapter)
-  	assert_equal('Mises en garde et précautions', chapter.heading)
-		assert_equal(1, chapter.sections.size)
-    section = chapter.sections.first
-    paragraph = section.paragraphs.at(6)
-    assert_equal("carence en glucose-6-phosphate-déshydrogénase d'origine génétique;",
-                 paragraph.text)
-    paragraph = section.paragraphs.at(7)
-    assert_equal("traitement concomitant par des anticoagulants\240;",
-                 paragraph.text)
-	end
-	def test_interactions10
-		writer = @text_handler.writers.first
-		chapter = writer.interactions
-		assert_instance_of(ODDB::Text::Chapter, chapter)
-  	assert_equal('Interactions', chapter.heading)
-		assert_equal(1, chapter.sections.size)
-	end
-	def test_pregnancy10
-		writer = @text_handler.writers.first
-		chapter = writer.pregnancy
-		assert_instance_of(ODDB::Text::Chapter, chapter)
-		assert_equal('Grossesse/Allaitement', chapter.heading)
-		assert_equal(2, chapter.sections.size)
-		section = chapter.sections.first
-		assert_equal("Grossesse\n", section.subheading)
-		paragraph = section.paragraphs.at(0)
-    expected = "La prudence s'impose lors de l'utilisation de salicylates durant le premier et le deuxi\350me trimestres de la grossesse. En exp\351rimentation animale, les salicylates ont montr\351 des effets ind\351sirables sur le foetus (tels qu'une augmentation de la mortalit\351, des troubles de la croissance, des intoxications aux salicylates), mais il n'existe pas d'\351tudes contr\364l\351es chez la femme enceinte. En fonction des exp\351riences actuelles, il semble cependant que ce risque soit minime aux doses th\351rapeutiques normales. Au cours du dernier trimestre de la grossesse, la prise de salicylates peut entra\356ner une inhibition des contractions et des h\351morragies, une prolongation de la dur\351e de la gestation et une fermeture pr\351matur\351e du canal art\351riel (ductus arteriosus). Voici pourquoi ils sont contre-indiqu\351s."
-		assert_equal(expected, paragraph.text)
-		section = chapter.sections.last
-		assert_equal("Allaitement\n", section.subheading)
-		paragraph = section.paragraphs.at(0)
-    expected = "Les salicylates passent dans le lait maternel. La concentration dans le lait maternel est la m\352me ou m\352me plus haute que dans le plasma maternel. Aux doses habituelles utilis\351es \340 court terme (pour l'analg\351sie et l'action antipyr\351tique), aucune cons\351quence nuisible pour le nourrisson n'est \340 pr\351voir. Une interruption de l'allaitement n'est pas n\351cessaire si le m\351dicament est utilis\351 occasionnellement aux doses recommand\351es. L'allaitement devrait \352tre interrompu si le m\351dicament est utilis\351 de mani\350re prolong\351e, resp. \340 des doses plus \351lev\351es."
-		assert_equal(expected, paragraph.text)
-	end
-	def test_driving_ability10
-		writer = @text_handler.writers.first
-		chapter = writer.driving_ability
-		assert_instance_of(ODDB::Text::Chapter, chapter)
-		assert_equal("Effet sur l'aptitude \340 la conduite et \340 l'utilisation de machines",
-                 chapter.heading)
-		assert_equal(1, chapter.sections.size)
-	end
-	def test_unwanted_effects10
-		writer = @text_handler.writers.first
-		chapter = writer.unwanted_effects
-		assert_instance_of(ODDB::Text::Chapter, chapter)
-		assert_equal('Effets indésirables', chapter.heading)
-		assert_equal(21, chapter.sections.size)
-    section = chapter.sections.first
-	end
-	def test_company10
-		writer = @text_handler.writers.first
-		chapter = writer.company
-		assert_instance_of(ODDB::Text::Chapter, chapter)
-		assert_equal('ARS VITAE', chapter.heading)
 	end
 	def test_iksnrs10
 		writer = @text_handler.writers.first
 		chapter = writer.iksnrs
 		assert_instance_of(ODDB::Text::Chapter, chapter)
-		assert_equal('Estampille', chapter.heading)
+		assert_equal('Zulassungsnummer', chapter.heading)
 		assert_equal(1, chapter.sections.size)
 		assert_equal(1, chapter.sections.first.paragraphs.size)
 		paragraph = chapter.sections.first.paragraphs.first
-		assert_equal("501063 (Swissmedic).", paragraph.text)
+		assert_equal("47'831  (Swissmedic)", paragraph.text)
 	end
 	def test_registration_owner10
+		writer = @text_handler.writers.first
+		chapter = writer.registration_owner
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal('Zulassungsinhaberin', chapter.heading)
+	end
+end
+class TestFachinfoDocParser11 < Test::Unit::TestCase
+  class ReplHandler
+    def method_missing(*args)
+      puts "inline_replacement_handler received: #{args.inspect}"
+    end
+  end
+	def setup
+		@filename = File.expand_path('data/doc/Yakona_d.doc', 
+			File.dirname(__FILE__))
+		@text_handler = ODDB::FiParse::FachinfoTextHandler.new
+		@parser = Rwv2.create_parser(@filename)
+		@parser.set_text_handler(@text_handler)
+    @table_handler = @text_handler.table_handler
+    @parser.set_table_handler(@table_handler)
+    @parser.set_inline_replacement_handler(ReplHandler.new)
+		@parser.parse
+    #@text_handler.cutoff_fontsize = @text_handler.max_fontsize
+		#@parser.parse
+	end
+	def test_name11
+		assert_equal(1, @text_handler.writers.size)
+		writer = @text_handler.writers.first
+		assert_equal("Yakona-Hypericum\n", writer.name)
+	end
+	def test_composition11
+		writer = @text_handler.writers.first
+		chapter = writer.composition
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal('Zusammensetzung', chapter.heading)
+		assert_equal(2, chapter.sections.size)
+		section = chapter.sections.first
+		assert_instance_of(ODDB::Text::Section, section)
+		assert_equal(1, section.paragraphs.size)
+		paragraph = section.paragraphs.first
+		assert_instance_of(ODDB::Text::Paragraph, paragraph)
+	end
+	def test_galenic_form11
+		writer = @text_handler.writers.first
+		chapter = writer.galenic_form
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal("Galenische Form und Wirkstoffmenge pro Einheit", 
+                 chapter.heading)
+		assert_equal(1, chapter.sections.size)
+		section = chapter.sections.first
+		assert_instance_of(ODDB::Text::Section, section)
+		assert_equal("1 Kapsel\n", section.subheading)
+		assert_equal(1, section.paragraphs.size)
+	end
+	def test_indications11
+		writer = @text_handler.writers.first
+		chapter = writer.indications
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal("Indikationen/Anwendungsmöglichkeiten", chapter.heading)
+		assert_equal(1, chapter.sections.size)
+	end
+	def test_iksnrs11
+		writer = @text_handler.writers.first
+		chapter = writer.iksnrs
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal('Zulassungsvermerk', chapter.heading)
+		assert_equal(1, chapter.sections.size)
+		assert_equal(1, chapter.sections.first.paragraphs.size)
+		paragraph = chapter.sections.first.paragraphs.first
+		assert_equal("56972  (Swissmedic)", paragraph.text)
+	end
+	def test_registration_owner11
+		writer = @text_handler.writers.first
+		chapter = writer.registration_owner
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal('Zulassungsinhaberin', chapter.heading)
+	end
+end
+class TestFachinfoDocParser12 < Test::Unit::TestCase
+  class ReplHandler
+    def method_missing(*args)
+      puts "inline_replacement_handler received: #{args.inspect}"
+    end
+  end
+	def setup
+		@filename = File.expand_path('data/doc/Yakona_f.doc', 
+			File.dirname(__FILE__))
+		@text_handler = ODDB::FiParse::FachinfoTextHandler.new
+		@parser = Rwv2.create_parser(@filename)
+		@parser.set_text_handler(@text_handler)
+    @table_handler = @text_handler.table_handler
+    @parser.set_table_handler(@table_handler)
+    @parser.set_inline_replacement_handler(ReplHandler.new)
+		@parser.parse
+    #@text_handler.cutoff_fontsize = @text_handler.max_fontsize
+		#@parser.parse
+	end
+	def test_name12
+		assert_equal(1, @text_handler.writers.size)
+		writer = @text_handler.writers.first
+		assert_equal("Yakona-Hypericum\n", writer.name)
+	end
+	def test_composition12
+		writer = @text_handler.writers.first
+		chapter = writer.composition
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal('Composition', chapter.heading)
+		assert_equal(2, chapter.sections.size)
+		section = chapter.sections.first
+		assert_instance_of(ODDB::Text::Section, section)
+		assert_equal(1, section.paragraphs.size)
+		paragraph = section.paragraphs.first
+		assert_instance_of(ODDB::Text::Paragraph, paragraph)
+	end
+	def test_galenic_form12
+		writer = @text_handler.writers.first
+		chapter = writer.galenic_form
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal("Forme galénique et quantité de principe actif par unité", 
+                 chapter.heading)
+		assert_equal(1, chapter.sections.size)
+		section = chapter.sections.first
+		assert_instance_of(ODDB::Text::Section, section)
+		assert_equal("1 capsule contient :\n", section.subheading)
+		assert_equal(1, section.paragraphs.size)
+	end
+	def test_indications12
+		writer = @text_handler.writers.first
+		chapter = writer.indications
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal("Indications/domaines d'application", chapter.heading)
+		assert_equal(1, chapter.sections.size)
+	end
+	def test_iksnrs12
+		writer = @text_handler.writers.first
+		chapter = writer.iksnrs
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal('Autorisation', chapter.heading)
+		assert_equal(1, chapter.sections.size)
+		assert_equal(1, chapter.sections.first.paragraphs.size)
+		paragraph = chapter.sections.first.paragraphs.first
+		assert_equal("56972  (Swissmedic)", paragraph.text)
+	end
+	def test_registration_owner12
 		writer = @text_handler.writers.first
 		chapter = writer.registration_owner
 		assert_instance_of(ODDB::Text::Chapter, chapter)
 		assert_equal('Titulaire de l\'autorisation', chapter.heading)
 	end
 end
-=end

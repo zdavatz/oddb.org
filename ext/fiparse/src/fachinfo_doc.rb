@@ -10,6 +10,8 @@ module ODDB
 		class FachinfoDocWriter < FachinfoWriter
       attr_accessor :cutoff_fontsize
 			def new_font(char_props, text=nil)
+        #puts "new_font: bold? #{char_props.bold?} -> #{text}"
+        #puts "new_font: italic? #{char_props.italic?} -> #{text}"
 				if(@chapter_flag)
 					@chapter_flag = nil
 					if(@chapter == @switch)
@@ -59,7 +61,14 @@ module ODDB
 				elsif(@format && @target.is_a?(Text::Paragraph))
 					@format = nil
 					@target.set_format
-				else
+        else
+          text.lstrip!
+          ## sometimes, ill-formated colons are not appended to a subheading. 
+          #  This is fixed manually here:
+          if(text[0] == ?:)
+            send_flowing_data(":")
+            text[0,1] = ''
+          end
 					if(@chapter && !@chapter.include?(@section))
 						@section = @chapter.next_section
 					end
