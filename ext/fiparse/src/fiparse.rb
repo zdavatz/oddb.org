@@ -40,10 +40,6 @@ module ODDB
         parser.parse
       end
 			handler.writers.collect { |wt| wt.to_fachinfo }.compact.first
-    rescue Exception => e
-      puts e.class, e.message
-      puts e.backtrace
-      e
 		end
 		def parse_fachinfo_pdf(src)
 			writer = FachinfoPDFWriter.new

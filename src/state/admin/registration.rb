@@ -29,67 +29,39 @@ module FachinfoMethods
 			four_bytes = fi_file.read(4)
 			fi_file.rewind
 			mail_link = @session.lookandfeel.event_url(:resolve, {'pointer' => model.pointer})
-			if(four_bytes == "%PDF")
-				filename = "#{@model.iksnr}_#{language}.pdf"
-				FileUtils.mkdir_p(self::class::FI_FILE_DIR)
-				path = File.expand_path(filename, self::class::FI_FILE_DIR)
-				File.open(path, "w") { |fh|
-					fh.write(fi_file.read)
-				}
-				fi_file.rewind
-				new_state = State::Admin::WaitForFachinfo.new(@session, @model)
-				new_state.previous = self
-				@session.app.async {
-					@session.app.failsafe { 
-						new_state.signal_done(parse_fachinfo_pdf(fi_file), 
-							path, @model, "application/pdf", language, mail_link)
-					}
-				}
-			else
-				filename = "#{@model.iksnr}_#{language}.doc"
-				FileUtils.mkdir_p(self::class::FI_FILE_DIR)
-				path = File.expand_path(filename, self::class::FI_FILE_DIR)
-				File.open(path, "w") { |fh|
-					fh.write(fi_file.read)
-				}
-				fi_file.rewind
-				new_state = State::Admin::WaitForFachinfo.new(@session, @model)
-				new_state.previous = self
-				@session.app.async {
-					new_state.signal_done(parse_fachinfo_doc(fi_file), 
-						path, @model, "application/msword", language, mail_link)
-				}
-			end
+      type, mimetype = (four_bytes == "%PDF") \
+        ? [:pdf, "application/pdf"] \
+        : [:doc, "application/msword"]
+      filename = "#{@model.iksnr}_#{language}.#{type}"
+      FileUtils.mkdir_p(self::class::FI_FILE_DIR)
+      path = File.expand_path(filename, self::class::FI_FILE_DIR)
+      File.open(path, "w") { |fh|
+        fh.write(fi_file.read)
+      }
+      fi_file.rewind
+      new_state = State::Admin::WaitForFachinfo.new(@session, @model)
+      new_state.previous = self
+      @session.app.async {
+        @session.app.failsafe { 
+          new_state.signal_done(parse_fachinfo(type, fi_file), 
+            path, @model, mimetype, language, mail_link)
+        }
+      }
 		end
 		new_state
 	end
-	def parse_fachinfo_doc(file)
+	def parse_fachinfo(type, file)
 		begin
 			# establish connection to fachinfo_parser
 			parser = DRbObject.new(nil, FIPARSE_URI)
-			result = parser.parse_fachinfo_doc(file.read)
+			result = parser.send("parse_fachinfo_#{type}", file.read)
 			result
-		rescue StandardError => e
-			msg = [
-				@session.lookandfeel.lookup(:fachinfo_upload),
-				'(' << e.message << ')'
-			].join(' ')
-			err = create_error(:e_service_unavailable, :fachinfo_upload, msg)
+    rescue ArgumentError => e
+      msg = @session.lookandfeel.lookup(:e_not_a_wordfile)
+			err = create_error(:e_pdf_not_parsed, :fachinfo_upload, msg)
 			@errors.store(:fachinfo_upload, err)
-			e
-		end
-	end
-	def parse_fachinfo_pdf(file)
-		begin
-			# establish connection to fachinfo_parser
-			parser = DRbObject.new(nil, FIPARSE_URI)
-			result = parser.parse_fachinfo_pdf(file.read)
-			result
 		rescue StandardError => e
-			msg = [
-				@session.lookandfeel.lookup(:fachinfo_upload),
-				'(' << e.message << ')'
-			].join(' ')
+			msg = ' (' << e.message << ')'
 			err = create_error(:e_pdf_not_parsed, :fachinfo_upload, msg)
 			@errors.store(:fachinfo_upload, err)
 			puts e.class

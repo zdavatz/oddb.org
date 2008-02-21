@@ -9,9 +9,10 @@ module ODDB
 	module FiParse
 		class FachinfoDocWriter < FachinfoWriter
       attr_accessor :cutoff_fontsize
+      def complete?
+        @date && !@date.sections.empty?
+      end
 			def new_font(char_props, text=nil)
-        #puts "new_font: bold? #{char_props.bold?} -> #{text}"
-        #puts "new_font: italic? #{char_props.italic?} -> #{text}"
 				if(@chapter_flag)
 					@chapter_flag = nil
 					if(@chapter == @switch)
@@ -176,7 +177,7 @@ module ODDB
         #puts sprintf("%2i %s -> %s",char_props.fontsize, same_font?(@current_char_props, char_props), text[0,10])
 				if(!same_font?(@current_char_props, char_props))
 					if(char_props.fontsize >= @cutoff_fontsize \
-             && (@writer.nil? || @writer.chapters.length > 12))
+             && (@writer.nil? || @writer.complete?))
             @writer = FachinfoDocWriter.new
             @writer.cutoff_fontsize = @cutoff_fontsize
             @writers.push(@writer)

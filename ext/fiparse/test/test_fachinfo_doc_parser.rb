@@ -680,7 +680,7 @@ class TestFachinfoDocParser7 < Test::Unit::TestCase
 		section = chapter.sections.first
 		assert_instance_of(ODDB::Text::Section, section)
 		assert_equal('Wirkstoffe:', section.subheading)
-		assert_equal(2, section.paragraphs.size)
+		assert_equal(1, section.paragraphs.size)
 		paragraph = section.paragraphs.first
 		assert_instance_of(ODDB::Text::Paragraph, paragraph)
 	end
@@ -1217,5 +1217,73 @@ class TestFachinfoDocParser12 < Test::Unit::TestCase
 		chapter = writer.registration_owner
 		assert_instance_of(ODDB::Text::Chapter, chapter)
 		assert_equal('Titulaire de l\'autorisation', chapter.heading)
+	end
+end
+class TestFachinfoDocParser13 < Test::Unit::TestCase
+  class ReplHandler
+    def method_missing(*args)
+      puts "inline_replacement_handler received: #{args.inspect}"
+    end
+  end
+	def setup
+		@filename = File.expand_path('data/doc/Lapidar_f.doc', 
+			File.dirname(__FILE__))
+		@text_handler = ODDB::FiParse::FachinfoTextHandler.new
+		@parser = Rwv2.create_parser(@filename)
+		@parser.set_text_handler(@text_handler)
+    @table_handler = @text_handler.table_handler
+    @parser.set_table_handler(@table_handler)
+    @parser.set_inline_replacement_handler(ReplHandler.new)
+		@parser.parse
+    @text_handler.cutoff_fontsize = @text_handler.max_fontsize
+		@parser.parse
+	end
+	def test_name13
+		assert_equal(1, @text_handler.writers.size)
+		writer = @text_handler.writers.first
+		assert_equal("LAPIDAR \256 10\n", writer.name)
+	end
+	def test_composition13
+		writer = @text_handler.writers.first
+		chapter = writer.composition
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal('Composition', chapter.heading)
+		assert_equal(1, chapter.sections.size)
+		section = chapter.sections.first
+		assert_instance_of(ODDB::Text::Section, section)
+		assert_equal(2, section.paragraphs.size)
+		paragraph = section.paragraphs.first
+		assert_instance_of(ODDB::Text::Paragraph, paragraph)
+	end
+	def test_indications13
+		writer = @text_handler.writers.first
+		chapter = writer.indications
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal("Indications/possibilités d'emploi", chapter.heading)
+		assert_equal(2, chapter.sections.size)
+	end
+	def test_iksnrs13
+		writer = @text_handler.writers.first
+		chapter = writer.iksnrs
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal('Estampille', chapter.heading)
+		assert_equal(1, chapter.sections.size)
+		assert_equal(1, chapter.sections.first.paragraphs.size)
+		paragraph = chapter.sections.first.paragraphs.first
+		assert_equal("10392 (Swissmedic)", paragraph.text)
+	end
+	def test_registration_owner13
+		writer = @text_handler.writers.first
+		chapter = writer.registration_owner
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal('Titulaire de l\'autorisation', chapter.heading)
+	end
+	def test_date13
+		writer = @text_handler.writers.first
+		chapter = writer.date
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal('Mise à jour de l\'information', chapter.heading)
+		paragraph = chapter.sections.first.paragraphs.first
+		assert_equal("Mai 2006", paragraph.text)
 	end
 end
