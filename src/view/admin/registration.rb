@@ -210,6 +210,7 @@ class RegistrationForm < View::Form
 				[1,11,1]=>	:new_registration,
 			})
       colspan_map.store([3,8], 3)
+      colspan_map.store([0,8], 2)
 			css_map.store([0,8], 'list bg bold')
 			css_map.store([1,8], 'list bg')
 			css_map.store([2,8,2], 'list')
