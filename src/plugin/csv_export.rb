@@ -30,6 +30,7 @@ module ODDB
         :c_type ]
     end
     def export_drugs_extended
+      @options = { :compression => 'zip' }
       recipients.concat self.class::ODDB_RECIPIENTS_EXTENDED
       _export_drugs 'oddb2', [ :rectype, :iksnr, :ikscd, :ikskey, :barcode,
         :bsv_dossier, :pharmacode, :name_base, :galenic_form_de, :galenic_form_fr,
@@ -38,7 +39,8 @@ module ODDB
         :limitation, :limitation_points, :limitation_text, :lppv,
         :registration_date, :expiration_date, :inactive_date, :export_flag,
         :casrn, :generic_type, :has_generic, :deductible, :out_of_trade,
-        :c_type, :route_of_administration, :galenic_group_de, :galenic_group_fr ]
+        :c_type, :route_of_administration, :galenic_group_de, 
+        :galenic_group_fr ]
     end
     def _export_drugs(export_name, keys)
       session = SessionStub.new(@app)
@@ -84,10 +86,12 @@ module ODDB
     def log_info
       hash = super
       if @file_path
-        hash.update({
-          :files			=> { @file_path => "text/csv"},
-          :recipients => recipients,
-        })
+        if(@options && (comp = @options[:compression]))
+          hash.store(:files, { @file_path + "." << comp => "application/#{comp}"})
+        else
+          hash.store(:files, { @file_path => "text/csv"})
+        end
+        hash.store(:recipients, recipients)
       end
       hash
     end
