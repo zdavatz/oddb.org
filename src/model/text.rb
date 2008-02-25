@@ -81,6 +81,9 @@ module ODDB
 			def empty?
 				@text.empty?
 			end
+      def length
+        @text.length
+      end
 			def match(pattern)
 				@text.match(pattern)
 			end
@@ -120,6 +123,9 @@ module ODDB
 				@formats.push(@format)
 				@format
 			end
+      def strip
+        @text.strip
+      end
 			def to_s
 				@formats.collect { |fmt|
 					if(fmt.symbol?)
@@ -251,5 +257,95 @@ module ODDB
 			include SimpleLanguage
 			ODBA_SERIALIZABLE = [ '@descriptions' ]
 		end
+    class Cell < Paragraph
+      attr_accessor :col_span, :row_span
+      def initialize(*args)
+        @col_span = 1
+        @row_span = 1
+        super(*args)
+      end
+    end
+    class Table
+      attr_reader :rows
+      def initialize(*args)
+        super
+        @rows = []
+      end
+      def cell(row, cell)
+        @rows[row][cell]
+      end
+      def clean!
+        @rows.each { |row|
+          while((cell = row.last) && cell.empty?)
+            row.pop
+          end
+        }
+        while((row = @rows.last) && row.empty?)
+          @rows.pop
+        end
+      end
+      def column_widths
+        @rows.inject([]) { |memo, row|
+          row.each_with_index { |cell, idx|
+            lens = cell.to_s.split("\n").collect { |part| part.length }
+            candidate = lens.max.to_i / cell.col_span
+            memo[idx] = [memo[idx].to_i, candidate].max
+          }
+          memo
+        }
+      end
+      def current_cell
+        current_row.last rescue nil
+      end
+      def current_row
+        @rows.last rescue nil
+      end
+      def empty?
+        @rows.flatten.all? { |cell| cell.strip.empty? }
+      end
+      def next_cell!
+        cell = Cell.new
+        @rows.last.push cell
+        cell
+      end
+      def next_paragraph
+        current_cell << "\n" if current_cell
+      end
+      def next_row!
+        @rows.push []
+      end
+      def each_normalized(&block)
+        wd = width
+        @rows.each { |row|
+          block.call(row + Array.new(wd - row.length))
+        }
+      end
+      def to_s
+        widths = column_widths
+        @rows.collect { |row|
+          lines = []
+          parts = []
+          heights = []
+          chunks = row.collect { |cell| 
+            chunk = cell.to_s.split("\n")
+            heights.push chunk.size
+            chunk 
+          }
+          height = heights.max
+          chunks.each_with_index { |chunk, x_idx|
+            height.times { |y_idx|
+              (lines[y_idx] ||= '') << chunk[y_idx].to_s.ljust(widths.at(x_idx) + 2)
+            }
+          }
+          lines
+        }.flatten.join("\n")
+      end
+      def width
+        @rows.collect { |row| row.length }.max  
+      end
+      def <<(str)
+        current_cell << str
+      end
+    end
 	end
 end

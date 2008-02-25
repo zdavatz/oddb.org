@@ -50,6 +50,17 @@ pre {
 	text-align : left;
 	white-space : pre;
 }
+table.chapter {
+  margin: 4px;
+  border-collapse: collapse;
+}
+table.chapter tr {
+  border: 1px solid #999;
+}
+table.chapter td {
+  vertical-align: top;
+  padding: 4px;
+}
 a {
 	text-decoration: none;
 }	

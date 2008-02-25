@@ -13,6 +13,8 @@ module ODDB
       PRE_STYLE = 'font-family: Courier New, monospace; font-size: 12px;'
       PAR_STYLE = 'padding-bottom: 4px; white-space: normal; line-height: 1.4em;'
       SUB_STYLE = 'font-style: italic' 
+      TABLE_STYLE = 'border-collapse: collapse;'
+      TD_STYLE = 'padding: 4px; vertical-align: top;'
       def formats(context, paragraph)
         res = ''
         txt = paragraph.text
@@ -54,7 +56,7 @@ module ODDB
           ## this must be an inline element, to enable starting 
           ## paragraphs on the same line as the section-subheading
           context.span({ 'style' => self.class::PAR_STYLE }) { 
-            res } << context.br
+            res.gsub("\n", context.br) } << context.br
         end
       end
       def heading(context)
@@ -81,10 +83,25 @@ module ODDB
         paragraphs.collect { |paragraph|
           if(paragraph.is_a? Text::ImageLink)
             context.p(attr) { context.img(paragraph.attributes) }
+          elsif(paragraph.is_a? Text::Table)
+            table(context, paragraph)
           else
             formats(context, paragraph)
           end
         }.join
+      end
+      def table(context, table)
+        context.table('class' => "chapter") {
+          table.rows.collect { |row|
+            context.tr {
+              row.collect { |cell|
+                context.td('colspan' => cell.col_span) { 
+                  formats(context, cell)
+                }
+              }.join
+            }
+          }.join
+        }
       end
     end
     class Chapter < HtmlGrid::Value
@@ -114,6 +131,7 @@ module ODDB
           'shareToolbar'=> 'true',
           'htmlEditing' => 'false',
           'useActiveX'  => 'false',
+          'minHeight'   => '10em',
         })
       end
       def _to_html(context, value=@value)

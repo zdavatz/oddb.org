@@ -9,8 +9,42 @@ module ODDB
 	module FiParse
 		class FachinfoDocWriter < FachinfoWriter
       attr_accessor :cutoff_fontsize
+      def cell_start
+        idx = @table.current_row.size
+        @target = @table.next_cell!
+        if(desc = @row.cell_descriptors[idx])
+          if(desc.first_merged?)
+            @horizontal_master = @target
+          elsif(desc.merged?)
+            @horizontal_master.col_span += 1
+          end
+          if(desc.vertical_restart?)
+            @vertical_master = @target
+          elsif(desc.vertical_merged?)
+            @vertical_master.row_span += 1
+          end
+        end
+        @target
+      end
+      def cell_end
+        #@target = nil
+      end
       def complete?
         @date && !@date.sections.empty?
+      end
+      def fix_colspans
+        all_boundaries = @boundaries.flatten.uniq.compact
+        @table.rows.each_with_index { |row, y_idx|
+          row.each_with_index { |cell, x_idx|
+            left, right = @boundaries[y_idx][x_idx, 2]
+            between = all_boundaries.select { |bound|
+              bound >= left && ((right.nil?) || bound < right)
+            }.size
+            if(cell.col_span < between)
+              cell.col_span = between
+            end
+          }
+        }
       end
 			def new_font(char_props, text=nil)
 				if(@chapter_flag)
@@ -35,11 +69,13 @@ module ODDB
 						]
 					end
 				end
-				if(char_props.fontsize >= @cutoff_fontsize && @name.empty?)
+				if(!@row && char_props.fontsize >= @cutoff_fontsize && @name.empty?)
 					set_target(@name)
 				#elsif(char_props.italic? && char_props.bold?)
 				elsif(char_props.bold?)
-          if(valid_chapter?(text))
+          if(@row)
+            @format = @target.set_format(:bold) if @target
+          elsif(valid_chapter?(text))
             @chapter_flag = true
             @chapter = next_chapter
             @section = @chapter.next_section
@@ -62,7 +98,7 @@ module ODDB
 				elsif(@format && @target.is_a?(Text::Paragraph))
 					@format = nil
 					@target.set_format
-        else
+        elsif(!@in_table)
           text.lstrip!
           ## sometimes, ill-formated colons are not appended to a subheading. 
           #  This is fixed manually here:
@@ -79,6 +115,33 @@ module ODDB
 					set_target(target)
 				end
 			end
+      def row_start(props)
+        @row = props
+        if( @table.nil? )
+          @table = Text::Table.new
+          @boundaries = []
+        end
+        @boundaries.push props.cell_boundaries
+        @table.next_row!
+      end
+      def row_end
+        @row = nil
+      end
+      def send_flowing_data(text)
+        if(@table && @row.nil?)
+          @section.paragraphs.compact!
+          @section.paragraphs << @table
+          fix_colspans
+          @table = nil
+          @boundaries = nil
+          @target = @section.next_paragraph
+        end
+        super
+      end
+      def set_target(target)
+        return if @row
+        super
+      end
       def valid_chapter?(text)
         case text.strip
         when "", /Wirkstoffe/, /Hilfsstoffe/, /Klinische Wirksamkeit/, 
@@ -97,36 +160,18 @@ module ODDB
 		end
     class FachinfoTableHandler < Rwv2::TableHandler
       attr_reader :rows
-      def initialize
-        @tables = []
-        @rows = []
-        @row_descriptors = []
-      end
-      def cell
-        row.last
-      end
+      attr_accessor :writer
       def cell_start
-        row.push []
+        @writer.cell_start if @writer
       end
       def cell_end
-        #puts "cell_end"
-      end
-      def in_table?
-        @in_table
-      end
-      def row
-        @rows.last
+        @writer.cell_end if @writer
       end
       def row_start(props)
-        @in_table = true
-        @row_descriptors.push props
-        @rows.push []
+        @writer.row_start(props) if @writer
       end
       def row_end
-        @in_table = false
-      end
-      def send_flowing_data(text)
-        cell << text
+        @writer.row_end if @writer
       end
     end
 		class FachinfoTextHandler < Rwv2::TextHandler
@@ -179,6 +224,7 @@ module ODDB
 					if(char_props.fontsize >= @cutoff_fontsize \
              && (@writer.nil? || @writer.complete?))
             @writer = FachinfoDocWriter.new
+            @table_handler.writer = @writer
             @writer.cutoff_fontsize = @cutoff_fontsize
             @writers.push(@writer)
           end
