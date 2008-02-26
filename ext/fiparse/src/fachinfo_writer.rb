@@ -25,7 +25,7 @@ module ODDB
 					fi.reference = @reference
 					fi
 				end
-				fi.name = @name
+				fi.name = @name.gsub(/\?/, '')
 				fi.galenic_form = @galenic_form
 				fi.composition = @composition
 				fi.effects = @effects 

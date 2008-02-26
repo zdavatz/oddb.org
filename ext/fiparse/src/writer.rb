@@ -36,7 +36,6 @@ module ODDB
 			end
 			def send_line_break
 				if(@target == @name)
-          @name.gsub!(/\?/, '')
           @name.strip!
 					@name << "\n"
 				elsif(@chapter == @galenic_form && @section)
