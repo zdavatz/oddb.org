@@ -159,7 +159,12 @@ module ODDB
 			else
         year = @@today.year
 				count = items.select { |item| item.type == :annual_fee }.size
-				sprintf("%i x Patinfo-Upload %i/%i", count, year, year.next)
+        pointers = items.collect { |item| item.item_pointer }.compact.uniq
+        if((ptr = pointers.first) && ptr.resolve(@app).is_a?(Registration))
+          sprintf("%i x Fachinfo-Upload %i/%i", count, year, year.next)
+        else
+          sprintf("%i x Patinfo-Upload %i/%i", count, year, year.next)
+        end
 			end
 		end
 		def item_name(item)

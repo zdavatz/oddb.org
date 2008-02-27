@@ -90,12 +90,12 @@ class UserCompany < Company
 			unless(company.nil? || company==@model)
 				@errors.store(:name, create_error('e_duplicate_company', :name, input[:name]))
 			else
-				if((date = input[:pref_invoice_date]) \
-					 && date != company.pref_invoice_date && date <= @@today)
-					input.delete(:pref_invoice_date)
-					err = create_error('e_date_must_be_in_future', :pref_invoice_date, 
+				if((date = input[:invoice_date_patinfo]) \
+					 && date != company.invoice_date(:patinfo) && date <= @@today)
+					input.delete(:invoice_date_patinfo)
+					err = create_error('e_date_must_be_in_future', :invoice_date_patinfo, 
 						(@@today + 1).strftime('%d.%m.%Y'))
-					@errors.store(:pref_invoice_date, err)
+					@errors.store(:invoice_date_patinfo, err)
 				end
 				addr = nil
 				if(@model.is_a?(Persistence::CreateItem))
@@ -176,27 +176,30 @@ class RootCompany < UserCompany
 			:complementary_type,
 			:contact,
 			:contact_email,
-			:disable_autoinvoice,
+			:disable_invoice_fachinfo,
+			:disable_invoice_patinfo,
 			:disable_patinfo,
 			:ean13,
 			:fax,
 			:fon,
 			:generic_type,
-			:index_invoice_date,
-			:index_package_price,
-			:index_price,
+			:invoice_date_fachinfo,
+			:invoice_date_index,
+			:invoice_date_lookandfeel,
+			:invoice_date_patinfo,
 			:invoice_email,
 			:invoice_htmlinfos,
 			:logo_file,
-			:lookandfeel_invoice_date,
 			:lookandfeel_member_count,
-			:lookandfeel_member_price,
-			:lookandfeel_price,
 			:name,
-			:patinfo_price,
+      :price_fachinfo,
+			:price_index,
+			:price_index_package,
+			:price_lookandfeel,
+			:price_lookandfeel_member,
+			:price_patinfo,
 			:plz,
 			:powerlink,
-			:pref_invoice_date,
 			:regulatory_email,
       :swissmedic_email,
       :swissmedic_salutation,

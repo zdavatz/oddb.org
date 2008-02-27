@@ -153,6 +153,15 @@ class OddbPrevalence
 			ODDB::Admin::Subsystem.new
 		}
 	end
+  def active_fachinfos
+    active = {}
+    @registrations.each_value { |reg|
+      if(reg.active? && reg.fachinfo)
+        active.store(reg.pointer, 1)
+      end
+    }
+    active
+  end
 	def active_pdf_patinfos
 		active = {}
 		each_sequence { |seq|

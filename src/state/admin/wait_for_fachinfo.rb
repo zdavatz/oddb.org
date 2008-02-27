@@ -12,7 +12,7 @@ module ODDB
 		module Admin
 class WaitForFachinfo < State::Admin::Global
 	class Model < Array
-		attr_accessor :registration
+		attr_accessor :registration, :mime_type
 		def ancestors(app = nil)
 			[@registration]
 		end
@@ -38,6 +38,7 @@ class WaitForFachinfo < State::Admin::Global
 			model = Model.new
 			model.push(@document)
 			model.registration = @model
+      model.mime_type = @mime_type
 			fi_confirm = State::Admin::FachinfoConfirm.new(@session, model)
 			fi_confirm.language = @language
 			fi_confirm
@@ -49,6 +50,7 @@ class WaitForFachinfo < State::Admin::Global
 		if(document.is_a?(FachinfoDocument))
 			@language = language
 			@document = document
+      @mime_type = mimetype
 		else
 =begin
 			hash = {}

@@ -46,11 +46,7 @@ class FachinfoConfirm < State::Admin::Global
 				Persistence::Pointer.new(:fachinfo).creator
 			end
 			values = {}
-			#input[:language_select].each { |idx, lang|
-				#	if(lang.length == 2)
-					values.store(@language, @model.at(0))
-					#	end
-					#	}
+      values.store(@language, @model.at(0))
 			if(values.empty?)
 				add_warning(:w_no_fachinfo_saved, :fachinfo_upload, nil)
 				return self
@@ -86,6 +82,8 @@ class FachinfoConfirm < State::Admin::Global
 		store_slate_item(Time.now, :annual_fee)
 	end
 	def store_slate_item(time, type)
+    ## only invoice MS-Word-Uploads for now
+    return if(@model.mime_type != "application/msword")
 		slate_pointer = Persistence::Pointer.new([:slate, :fachinfo])
 		@session.app.create(slate_pointer)
 		reg = @model.registration
