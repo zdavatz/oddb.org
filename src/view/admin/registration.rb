@@ -126,6 +126,12 @@ module FachinfoPdfMethods
 		link.set_attribute('class', 'small')
 		link
 	end
+  def fachinfo_link(model, session=@session)
+    input = HtmlGrid::InputText.new(:fachinfo_link, model, session, self)
+    input.css_class = 'standard'
+    input.label = false
+    input
+  end
 	def fachinfo_upload(model, session=@session)
 		input = HtmlGrid::InputFile.new(:fachinfo_upload, model, session, self)
 		input.label = false
@@ -177,6 +183,7 @@ class RegistrationForm < View::Form
 		:export_flag				=>	HtmlGrid::InputCheckbox,
 		:vaccine						=>	HtmlGrid::InputCheckbox,
 		:fachinfo_label			=>	HtmlGrid::LabelText,
+		:fachinfo_link      =>	HtmlGrid::InputText,
 		:generic_type				=>	HtmlGrid::Select,
 		:inactive_date			=>	HtmlGrid::InputDate,
 		:index_therapeuticus=>	HtmlGrid::InputText,
@@ -203,18 +210,20 @@ class RegistrationForm < View::Form
 				[3,8,1]	=>	:assign_fachinfo,
 				[0,9]		=>	'fi_upload_instruction1',
 				[1,9]		=>	:language_select,
-				[0,10]	=>	'fi_upload_instruction2',
+				[0,10]	=>	'fi_upload_instruction2a',
 				[1,10]	=>	:fachinfo_upload,
-				[0,11]	=>	'fi_upload_instruction3',
-				[1,11,0]=>	:submit,
-				[1,11,1]=>	:new_registration,
+				[0,11]	=>	'fi_upload_instruction2b',
+				[1,11]	=>	:fachinfo_link,
+				[0,12]	=>	'fi_upload_instruction3',
+				[1,12,0]=>	:submit,
+				[1,12,1]=>	:new_registration,
 			})
       colspan_map.store([3,8], 3)
       colspan_map.store([0,8], 2)
 			css_map.store([0,8], 'list bg bold')
 			css_map.store([1,8], 'list bg')
 			css_map.store([2,8,2], 'list')
-			css_map.store([0,9,2,3], 'list bg')
+			css_map.store([0,9,2,4], 'list bg')
 		end
 	end
 	def company_name(model, session=@session)

@@ -13,16 +13,17 @@ module ODDB
 			end
 			def new_linkhandler(link_handler)
 				unless(link_handler.nil?)
-					href = link_handler.attribute("href")
-					if(match = @@fi_ptrn.match(href))
-						@fi_ids << match[1].to_s
-				### Disable patinfo-updates for the time being.. We can't read
-				### pdf-patinfos atm.
-				#	elsif(match = /Info_pi_d.cfm\?Search=([0-9]{5})/.match(href))
-				#		@pi_ids << match[1].to_i
-					end
+          href = link_handler.attribute("href")
+          if(id = FachinfoNewsWriter.extract_fachinfo_id(href))
+            @fi_ids << id
+          end
 				end
 			end
+      def FachinfoNewsWriter.extract_fachinfo_id(href)
+        if(match = @@fi_ptrn.match(href))
+          match[1].to_s
+        end
+      end
 		end
 	end
 end

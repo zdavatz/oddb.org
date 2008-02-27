@@ -23,8 +23,8 @@ module FachinfoMethods
 	private
 	def get_fachinfo
 		new_state = self
-		if((fi_file = @session.user_input(:fachinfo_upload)) \
-			&& language = @session.user_input(:language_select)) 
+    language = @session.user_input(:language_select)
+		if(language && (fi_file = @session.user_input(:fachinfo_upload)))
 			language = language.intern
 			four_bytes = fi_file.read(4)
 			fi_file.rewind
@@ -47,6 +47,20 @@ module FachinfoMethods
             path, @model, mimetype, language, mail_link)
         }
       }
+    elsif(href = @session.user_input(:fachinfo_link))
+      plugin = FachinfoPlugin.new(@session.app)
+      if(id = plugin.extract_fachinfo_id(href))
+        new_state = State::Admin::WaitForFachinfo.new(@session, @model)
+        @session.app.async {
+          @session.app.failsafe { 
+            new_state.signal_done(plugin.parse_from_id(id, [language])[language], 
+              href, @model, "application/pdf", language.to_sym, mail_link)
+          }
+        }
+      else
+        err = create_error(:e_invalid_fachinfo_id, :fachinfo_link, href)
+        @errors.store(:fachinfo_link, err)
+      end
 		end
 		new_state
 	end

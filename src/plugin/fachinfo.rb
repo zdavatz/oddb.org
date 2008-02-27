@@ -35,6 +35,9 @@ module ODDB
 			@failures = []	
       @host = 'www.documedinfo.ch'
 		end
+    def extract_fachinfo_id(href)
+      PARSER.extract_fachinfo_id(href)
+    end
 		def extract_iksnrs(languages)
 			iksnrs = []
 			languages.each_value { |doc|
@@ -60,10 +63,10 @@ module ODDB
 			}
 			ids
 		end
-		def fetch_languages(idx)
+		def fetch_languages(idx, langs=LANGUAGES)
 			host = "www.kompendium.ch"
 			urls = []
-			successes = LANGUAGES.select { |lang|
+			successes = langs.select { |lang|
 				url = sprintf(
 					"/FrmMainMonographie.aspx?Id=%s&lang=%s&MonType=fi", 
 					idx, lang)
@@ -91,8 +94,8 @@ module ODDB
 				[]
 			end
 		end
-		def package_languages(idx)
-			LANGUAGES.inject({}) { |inj, language|
+		def package_languages(idx, langs=LANGUAGES)
+			langs.inject({}) { |inj, language|
 				if(fi = parse_fachinfo(language, idx))
 					inj.store(language, fi)
 				end
@@ -116,6 +119,10 @@ module ODDB
 				end
 			end
 		end
+    def parse_from_id(idx, langs=LANGUAGES)
+      fetch_languages(idx, langs)
+      package_languages(idx, langs)
+    end
     def postprocess
       update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
     end
@@ -150,8 +157,7 @@ module ODDB
 			news = fachinfo_news
 			updates = true_news(news, old_news())
 			updates.each { |idx|
-				fetch_languages(idx)
-				languages = package_languages(idx)
+        languages = parse_from_id(idx)
 				if(languages.empty?)
 					@failures.push(idx)
 				else

@@ -24,6 +24,9 @@ module ODDB
 		def storage=(storage)
 			ODBA.storage = storage
 		end
+    def FiParse.extract_fachinfo_id(href)
+      FachinfoNewsWriter.extract_fachinfo_id(href)
+    end
     def FiParse.extract_minifi(path)
       MiniFi.extract(path)
     end

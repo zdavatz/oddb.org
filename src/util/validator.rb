@@ -305,6 +305,7 @@ module ODDB
 			:effective_form,
 			:en,
 			:equivalent_substance,
+      :fachinfo_link,
 			:fax,
 			:fi_update,
 			:fon,
