@@ -204,7 +204,7 @@ module ODDB
         ## if autoinvoice is disabled, but a preferred invoice_date is set, 
         ## invoice-start and -end-dates should be adjusted to that date.
         if(company.invoice_disabled?(@infotype))
-          if(date = company.pref_invoice_date)
+          if(date = company.invoice_date(@infotype))
             if(date == day)
               date = company.invoice_dates[@infotype] = date + 1
               company.odba_store
