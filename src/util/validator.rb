@@ -64,7 +64,7 @@ module ODDB
 			:deductible_m	=>	[nil, 'deductible_g', 'deductible_o'],
 			:search_type	=>	['st_oddb', 'st_sequence', 
 				'st_substance', 'st_company', 'st_indication', 
-				'st_interaction', 'st_unwanted_effect' ],
+				'st_interaction', 'st_unwanted_effect', 'st_registration' ],
 			:fi_status		=>	['false', 'true'],
 			:generic_type =>	[nil, 'generic', 'original'], 
 				# 'comarketing', 'complementary', 'vaccine' ],

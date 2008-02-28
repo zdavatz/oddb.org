@@ -85,6 +85,15 @@ module ODDB
 				end
 				offset
 			end
+      def pointer_descr(model, session=@session)
+        link = PointerLink.new(:pointer_descr, model, @session, self)
+        puts model.class
+        puts (@session.allowed?('edit', model))
+        unless(@session.allowed?('edit', model))
+          link.href = @lookandfeel._event_url(:show, :pointer => model.pointer)
+        end
+        link
+      end
 		end
 		module Snapback
 			SNAPBACK_EVENT = nil

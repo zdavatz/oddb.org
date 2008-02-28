@@ -23,11 +23,17 @@ module ODDB
 			end
 		end
 		class PointerLink < View::PointerValue
-			def to_html(context)
+      def init
+        super
 				arguments = {'pointer'	=> @model.pointer.to_s}
 				@attributes['href'] = @lookandfeel._event_url(:resolve, arguments)
+      end
+			def to_html(context)
 				context.a(@attributes) { @value }
 			end
+      def href=(href)
+        @attributes['href'] = href
+      end
 		end
 	end
 end

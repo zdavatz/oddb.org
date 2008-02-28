@@ -115,10 +115,11 @@ module SequencePackageList
 		if(@session.allowed?('edit', 'org.oddb.drugs'))
 			PointerLink.new(:ikscd, model, @session, self)
 		else
+      evt = @session.state.respond_to?(:suggest_choose) ? :suggest_choose : :show
 			link = HtmlGrid::Link.new(:ikscd, model, @session, self)
 			link.value = model.ikscd
 			args = {:pointer => model.pointer}
-			link.href = @lookandfeel.event_url(:suggest_choose, args)
+			link.href = @lookandfeel.event_url(evt, args)
 			link
 		end
 	end
@@ -335,7 +336,7 @@ class ResellerSequenceForm < SequenceForm
 	DEFAULT_CLASS = HtmlGrid::Value
 end
 class SequenceComposite < HtmlGrid::Composite
-	AGENTS = View::Admin::RootSequenceAgents
+	AGENTS = View::Admin::SequenceAgents
 	COMPONENTS = {
 		[0,0]	=>	:sequence_name,
 		[0,1]	=>	View::Admin::SequenceInnerComposite,

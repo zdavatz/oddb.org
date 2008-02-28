@@ -21,6 +21,7 @@ require 'state/drugs/feedbacks'
 require 'state/drugs/notify'
 require 'state/drugs/package'
 require 'state/drugs/register_download'
+require 'state/drugs/registration'
 require 'state/drugs/init'
 require 'state/drugs/limitationtext'
 require 'state/drugs/limitationtexts'
@@ -34,6 +35,7 @@ require 'state/drugs/patinfo'
 require 'state/drugs/patinfos'
 require 'state/drugs/recentregs'
 require 'state/drugs/result'
+require 'state/drugs/sequence'
 require 'state/drugs/sequences'
 require 'state/drugs/narcotic'
 require 'state/drugs/narcotics'
@@ -157,9 +159,9 @@ module ODDB
 					:package, :narcotics ]	=>	State::Drugs::NarcoticPlus,
 			}	
 			READONLY_STATES = RESOLVE_STATES.dup.update({
-				[	:registration, :sequence, 
-					:package ]	=>	State::Drugs::Package,
-			})
+				[	:registration ]                      => State::Drugs::Registration,
+				[	:registration, :sequence, ]          => State::Drugs::Sequence,
+				[	:registration, :sequence, :package ] => State::Drugs::Package, })
 			PRINT_STATES = {
 				[ :fachinfo ]	=>	State::Drugs::FachinfoPrint,
 				[ :patinfo ]	=>	State::Drugs::PatinfoPrint,
@@ -326,8 +328,6 @@ module ODDB
 				end
 			end
 			def paypal_return
-        puts (id = @session.user_input(:invoice)).inspect
-        puts @session.invoice(id)
 				if(@session.is_crawler?)
 					State::Drugs::Init.new(@session, nil)
 				elsif((id = @session.user_input(:invoice)) \
@@ -534,11 +534,21 @@ module ODDB
 				end
 			end
 			def _search_drugs_state(query, stype)
-				result = _search_drugs(query, stype)
-				state = State::Drugs::Result.new(@session, result)
-				state.search_query = query
-				state.search_type = stype
-				state
+        if(stype == "st_registration" && (reg = @session.registration(query)))
+          if(allowed?(reg))
+            State::Admin::Registration.new(@session, reg)
+          elsif(pac = reg.active_packages.sort_by { |pc| pc.ikscd }.first)
+            State::Drugs::Package.new(@session, pac)
+          else
+            State::Drugs::Registration.new(@session, reg)
+          end
+        else
+          result = _search_drugs(query, stype)
+          state = State::Drugs::Result.new(@session, result)
+          state.search_query = query
+          state.search_type = stype
+          state
+        end
 			end
 			def show
 				if(@session.request_path == @request_path)

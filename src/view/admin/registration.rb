@@ -47,10 +47,11 @@ module RegistrationSequenceList
 	def seqnr(model, session=@session)
 		if(@session.allowed?('edit', model))
 			PointerLink.new(:seqnr, model, @session, self)
-		else
+    else
+      evt = @session.state.respond_to?(:suggest_choose) ? :suggest_choose : :show
 			link = HtmlGrid::Link.new(:seqnr, model, @session, self)
 			args = {:pointer => model.pointer}
-			link.href = @lookandfeel.event_url(:suggest_choose, args)
+			link.href = @lookandfeel.event_url(evt, args)
 			link.value = model.seqnr
 			link
 		end
@@ -112,7 +113,9 @@ class RegistrationInnerComposite < HtmlGrid::Composite
 		:revision_date			=>	HtmlGrid::DateValue,
 	}
 	def generic_type(model, session)
-		label(HtmlGrid::Text.new(model.generic_type, model, session, self))
+    if(key = model.generic_type)
+      label(HtmlGrid::Text.new(key, model, session, self))
+    end
 	end
 end
 module FachinfoPdfMethods
