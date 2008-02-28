@@ -1327,6 +1327,13 @@ class TestFachinfoDocParser13 < Test::Unit::TestCase
 		assert_equal("Indications/possibilités d'emploi", chapter.heading)
 		assert_equal(2, chapter.sections.size)
 	end
+	def test_preclinic13
+		writer = @text_handler.writers.first
+		chapter = writer.preclinic
+		assert_instance_of(ODDB::Text::Chapter, chapter)
+		assert_equal("Donnés précliniques", chapter.heading)
+		assert_equal(2, chapter.sections.size)
+	end
 	def test_iksnrs13
 		writer = @text_handler.writers.first
 		chapter = writer.iksnrs

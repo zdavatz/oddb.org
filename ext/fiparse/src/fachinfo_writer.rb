@@ -53,8 +53,7 @@ module ODDB
 							:composition, :galenic_form, :indications,
 							:usage, :contra_indications, :restrictions,
 							:interactions, :pregnancy, :driving_ability,
-							:unwanted_effects, :overdose, :effects,
-							:kinetic, :preclinic, :switch,
+              :unwanted_effects, :overdose, :effects, :switch,
 						]
           when /Galenische\s*Form/i, /Forme\s*gal.nique/i
             ## this is an amzv-FI without Declaration, switch to amzv-mode.
@@ -63,7 +62,7 @@ module ODDB
 						@templates = named_chapters [
               :indications, :usage, :contra_indications, :restrictions,
               :interactions, :pregnancy, :driving_ability, :unwanted_effects,
-              :overdose, :effects, :kinetic, :preclinic, :switch,
+              :overdose, :effects, :switch,
 						]
 					when /Zusammensetzung/, /Composition/
 						@composition = chapter
@@ -135,6 +134,16 @@ module ODDB
 					end
 				else
 					case chapter.heading
+          when /Pharmakokinetik?/i, /Pharmacocin.tique?/i
+            @kinetic = chapter
+						@templates = named_chapters [
+              :switch,
+            ]
+          when /Pr.klinische Daten/i, /(R.sultat|Donn.e?)s? pr.-?cliniques?/i
+            @preclinic = chapter
+						@templates = named_chapters [
+              :switch,
+            ]
 					when /Sonstige/, /(Autres\s*)?Remarques/i
 						@other_advice = chapter
 						@templates = named_chapters [

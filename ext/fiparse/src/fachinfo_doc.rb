@@ -50,7 +50,7 @@ module ODDB
 				if(@chapter_flag)
 					@chapter_flag = nil
 					if(@chapter == @switch)
-					# switch between old and new (2001) FI-Schema
+					  # switch between old and new (2001) FI-Schema
 						set_templates(@chapter)
 					elsif([@company, @galenic_form].include?(@chapter) \
 						&& /Zusammensetzung|Composition/i.match(@chapter.heading))
@@ -64,8 +64,7 @@ module ODDB
 							:galenic_form, :indications, :usage, 
 							:contra_indications, :restrictions,
 							:interactions, :pregnancy, :driving_ability,
-							:unwanted_effects, :overdose, :effects,
-							:kinetic, :preclinic, :other_advice, :switch,
+							:unwanted_effects, :overdose, :effects, :switch,
 						]
 					end
 				end
