@@ -150,7 +150,7 @@ module ODDB
 						@templates = named_chapters [
 							:switch,
 						]
-					when /Packungen/, /Pr.sentation/, /Conditionnement/
+					when /Packungen/, /Pr.sentation/, /Conditionnement/, /Darreichungsform/
 						@packages = chapter
 						@templates = named_chapters [
 							:registration_owner, :switch
@@ -165,7 +165,8 @@ module ODDB
 						@templates = named_chapters [
 							:switch,
 						]
-					when /Stand der Information/, /Mise? . jour de l.information/
+					when /Stand der Information/, /Mise? . jour de l.information/,
+            /Informationsstand/
 						@date = chapter
 						@templates = named_chapters [
 							:switch#, :rest,

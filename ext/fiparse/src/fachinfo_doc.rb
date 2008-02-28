@@ -128,6 +128,7 @@ module ODDB
         @row = nil
       end
       def send_flowing_data(text)
+        text.gsub!(/\037/, '')
         if(@table && @row.nil?)
           @section.paragraphs.compact!
           @section.paragraphs << @table
