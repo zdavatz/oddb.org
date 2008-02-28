@@ -59,7 +59,6 @@ module ODDB
 						end
 						@composition = @chapter 
 						@amzv = Text::Chapter.new
-						@amzv.heading << '9.11.2001'
 						@templates = named_chapters [
 							:galenic_form, :indications, :usage, 
 							:contra_indications, :restrictions,
