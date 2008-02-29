@@ -16,8 +16,11 @@ module ODDB
     def active_infos
       @app.active_fachinfos
     end
+    def parent_item_class
+      Registration
+    end
     def run(day = @@today)
-      report_edited_fachinfos(day)
+      report_edited_fachinfos(day - 1)
       super
     end
     def report_edited_fachinfos(day1)

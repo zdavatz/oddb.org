@@ -60,6 +60,9 @@ module ODDB
       end
       names.uniq
     end
+    def parent_item_class
+      Sequence
+    end
     def unique_name(item)
       name = item.text
       if(/^[0-9]{5} [0-9]{2}$/.match(name))

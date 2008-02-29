@@ -30,6 +30,7 @@ module ODDB
 		end
 		def run
 			mail_patinfo_invoices
+			mail_fachinfo_log
 			run_on_monthday(1) {
 				mail_download_invoices
 			}
@@ -41,7 +42,6 @@ module ODDB
 				mail_feedback_stats
 				#mail_notification_stats
 			}
-			mail_fachinfo_log
 			export_sl_pcodes
 			export_yaml
 			export_oddbdat
@@ -168,7 +168,7 @@ module ODDB
 		def mail_download_invoices
 			DownloadInvoicer.new(@app).run
 		end
-		def mail_fachinfo_log(day = @@today - 1)
+		def mail_fachinfo_log(day = @@today)
 			plug = FachinfoInvoicer.new(@app)
 			plug.run(day)
 			log = Log.new(day)

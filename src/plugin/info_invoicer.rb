@@ -10,6 +10,20 @@ module ODDB
       send_daily_invoices(day - 1)
       send_annual_invoices(day)
     end
+    def active_companies
+      active_companies = []
+      @app.invoices.each_value { |inv|
+        inv.items.each_value { |item|
+          if(item.type == :annual_fee && (ptr = item.item_pointer) \
+            && (seq = pointer_resolved(ptr)) && seq.is_a?(parent_item_class) \
+            && (company = seq.company))
+            active_companies.push(company.odba_instance)
+          end
+        }
+      }
+      active_companies.uniq!
+      active_companies
+    end
     def adjust_annual_fee(company, items)
       if(date = company.invoice_date(@infotype))
         diy = (date - (date << 12)).to_f
@@ -134,16 +148,7 @@ module ODDB
       result
     end
     def group_by_company(items)
-      active_companies = []
-      @app.invoices.each_value { |inv|
-        inv.items.each_value { |item|
-          if(item.type == :annual_fee && (ptr = item.item_pointer) \
-            && (seq = pointer_resolved(ptr)) && (company = seq.company))
-            active_companies.push(company.odba_instance)
-          end
-        }
-      }
-      active_companies.uniq!
+      active_comps = active_companies
       companies = {}
       items.each { |item| 
         ptr = item.item_pointer
@@ -154,7 +159,7 @@ module ODDB
       price = activation_fee
       companies.each { |company, items|
         time = items.collect { |item| item.time }.min
-        unless(active_companies.include?(company))
+        unless(active_comps.include?(company))
           item = AbstractInvoiceItem.new
           item.price = price
           item.text = 'Aufschaltgebühr'
@@ -173,6 +178,9 @@ module ODDB
     def neighborhood_unique_names(item)
       [] # does not apply for fachinfos
     end
+    def parent_item_class
+      Object
+    end
     def pointer_resolved(pointer)
       pointer.resolve(@app)
     rescue StandardError
@@ -190,8 +198,13 @@ module ODDB
       ft = Time.local(fd.year, fd.month, fd.mday)
       lt = Time.local(ld.year, ld.month, ld.mday)
       range = ft...lt
-      all_items.select { |item|
+      recents = all_items.select { |item|
         range.include?(item.time)
+      }
+      ## remove duplicate processing items
+      active = active_infos
+      recents.reject { |item| 
+        item.type == :processing && !active.delete(unique_name(item))
       }
     end
     def send_annual_invoices(day = @@today, company_name=nil, invoice_date=day)
