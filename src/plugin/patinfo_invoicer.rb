@@ -67,7 +67,8 @@ module ODDB
       name = item.text
       if(/^[0-9]{5} [0-9]{2}$/.match(name))
         name.tr(' ', '_')
-      elsif((ptr = item.item_pointer) && (seq = ptr.resolve(@app)))
+      elsif((ptr = item.item_pointer) && (seq = ptr.resolve(@app)) \
+            && seq.is_a?(Sequence))
         [seq.iksnr, seq.seqnr].join('_')
       end
     end
