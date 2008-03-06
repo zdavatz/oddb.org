@@ -168,6 +168,27 @@ module ODDB
 			@component.zones(false)
 		end
 	end
+	class LookandfeelGalenos < SBSM::LookandfeelWrapper
+		ENABLED = [
+			:external_css,
+    ]
+		DICTIONARIES = {
+			'de'	=>	{
+				:home_welcome	=>	'Willkommen bei Galenos und oddb.org',
+			},
+			'fr'	=>	{
+				:home_welcome	=>	'Bienvenu sur Galenos et oddb.org',
+				:mailinglist_title	=>	'Mailinglist - Generika.cc',
+			},
+			'en'	=>	{
+				:home_welcome	=>	'Welcome to Galenos and oddb.org',
+			},
+		}
+		HTML_ATTRIBUTES = { }
+		RESOURCES = {
+			:external_css	=>	'http://www.galenos.ch/oddb.css',
+		}
+	end
 	class LookandfeelProvita < SBSM::LookandfeelWrapper
 		ENABLED = [ ]
 		DICTIONARIES = {
@@ -182,12 +203,7 @@ module ODDB
 				:home_welcome	=>	'Welcome to Provita and oddb.org',
 			},
 		}
-		HTML_ATTRIBUTES = {
-			:logo => {
-				'width'		=>	'150',
-				'height'	=>	'50',
-			},
-		}
+		HTML_ATTRIBUTES = { }
 	end
 	class LookandfeelSantesuisse < SBSM::LookandfeelWrapper
 		ENABLED = [ 

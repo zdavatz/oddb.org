@@ -23,6 +23,13 @@ module ODDB
 				LookandfeelStandardResult,
 				LookandfeelCarenaSchweiz, 
 			],
+			'galenos'			=>	[
+				LookandfeelLanguages,
+				LookandfeelExtern,
+				LookandfeelButtons, 
+				LookandfeelStandardResult,
+				LookandfeelGalenos, 
+			],
 			'generika'	=>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,
