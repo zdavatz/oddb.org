@@ -186,7 +186,7 @@ module ODDB
 		}
 		HTML_ATTRIBUTES = { }
 		RESOURCES = {
-			:external_css	=>	'http://www.galenos.ch/oddb.css',
+			:external_css	=>	'http://www.galenos.ch/data/CSS/formate_oddb.css',
 		}
 	end
 	class LookandfeelProvita < SBSM::LookandfeelWrapper
