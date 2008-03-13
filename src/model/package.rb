@@ -329,6 +329,8 @@ Grammar OddbSize
 	end
 	class Package < PackageCommon
     ODBA_SERIALIZABLE = [ '@prices' ]
+    include ODBA::Persistable
+    odba_index :pharmacode
 		attr_accessor :medwin_ikscd
 		include FeedbackObserver
 		def initialize(ikscd)
