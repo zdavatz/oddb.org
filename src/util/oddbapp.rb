@@ -864,8 +864,9 @@ class OddbPrevalence
 			result.atc_classes = [atc]
 			result.search_type = :atcless
 			return result
+    end
 		# iksnr or ean13
-		elsif(match = @@iks_or_ean.match(query))
+		if(match = @@iks_or_ean.match(query))
 			iksnr = match[1]
 			if(reg = registration(iksnr))
 				atc = ODDB::AtcClass.new('n.n.')
@@ -874,6 +875,20 @@ class OddbPrevalence
 				result.search_type = :iksnr
 				return result
 			end
+    end
+		# pharmacode
+    if(match = /^\d{6,}$/.match(query))
+      query.gsub!(/^0+/, '')
+      if(pac = ODDB::Package.find_by_pharmacode(query))
+				atc = ODDB::AtcClass.new('n.n.')
+        seq = ODDB::Sequence.new(pac.sequence.seqnr)
+        seq.registration = pac.registration
+        seq.packages.store pac.ikscd, pac
+				atc.sequences = [seq]
+				result.atc_classes = [atc]
+				result.search_type = :pharmacode
+				return result
+      end
 		end
 		key = query.to_s.downcase
 		# atc-code
