@@ -715,6 +715,9 @@ class OddbPrevalence
 	def orphaned_patinfo(oid)
 		@orphaned_patinfos[oid.to_i]
 	end
+  def package(pcode)
+    ODDB::Package.find_by_pharmacode(pcode.to_s.gsub(/^0+/, ''))
+  end
 	def package_count
 		@package_count ||= count_packages()
 	end
@@ -878,8 +881,7 @@ class OddbPrevalence
     end
 		# pharmacode
     if(match = /^\d{6,}$/.match(query))
-      query.gsub!(/^0+/, '')
-      if(pac = ODDB::Package.find_by_pharmacode(query))
+      if(pac = package(query))
 				atc = ODDB::AtcClass.new('n.n.')
         seq = ODDB::Sequence.new(pac.sequence.seqnr)
         seq.registration = pac.registration

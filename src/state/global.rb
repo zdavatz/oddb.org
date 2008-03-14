@@ -542,6 +542,8 @@ module ODDB
           else
             State::Drugs::Registration.new(@session, reg)
           end
+        elsif(stype == "st_pharmacode" && (pac = @session.package(query)))
+          State::Drugs::Package.new(@session, pac)
         else
           result = _search_drugs(query, stype)
           state = State::Drugs::Result.new(@session, result)

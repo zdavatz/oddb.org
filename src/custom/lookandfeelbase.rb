@@ -1256,6 +1256,7 @@ Zeno Davatz
 				:st_sequence							=>	'Markenname',
 				:st_substance							=>	'Inhaltsstoff',
 				:st_interaction						=>	'Interaktion',
+				:st_pharmacode  					=>	'Pharmacode',
 				:st_registration					=>	'Swissmedic-# (5-stellig)',
 				:subgroup									=>  'Untergruppe',
 				:subscribe								=>	'Eintragen',
