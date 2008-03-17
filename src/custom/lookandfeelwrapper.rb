@@ -922,15 +922,18 @@ module ODDB
         :explain_generic					=>	'Blau&nbsp;=&nbsp;Generikum',
         :explain_sort             =>  'Klicken Sie auf einen der untenstehenden Begriffe um die zugehörige Spalte auf- oder absteigend zu sortieren.',
         :price_compare            =>  "Für den Direktvergleich klicken Sie bitte auf das für Sie rezeptierte Medikament.",
+				:sequences								=>	'Medikamente A-Z',
       },
       'fr'	=>	{
         :explain_generic					=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
         :explain_ddd_price_url    =>  'http://www.mymedi.ch/fr/tk.htm',
         :explain_sort             =>  "Clickez sur un des mot-clé ci-dessous pour accéder au menu déroulant.",
         :price_compare            =>  'Afin d\'avoir une comparaison, clickez s.v.p. sur le médicament qui vous a été prescrit.',
+				:sequences								=>	'Médicaments A-Z',
       },
       'en'	=>	{
         :explain_generic					=>	'Blue&nbsp;=&nbsp;Generic Drug',
+				:sequences								=>	'Drugs A-Z',
       },
     }
     HTML_ATTRIBUTES = {
