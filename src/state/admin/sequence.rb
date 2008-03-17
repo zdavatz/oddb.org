@@ -17,6 +17,7 @@ module ODDB
 		module Admin
 module PatinfoPdfMethods
 	PDF_DIR = File.expand_path('../../../doc/resources/patinfo/', File.dirname(__FILE__))
+  HTML_PARSER = DRbObject.new(nil, FIPARSE_URI)
 	def assign_patinfo
 		if(@model.has_patinfo?)
 			State::Admin::AssignPatinfo.new(@session, @model)
@@ -26,14 +27,28 @@ module PatinfoPdfMethods
 	end	
 	def get_patinfo_input(input)
 		newstate = self
-		if(pi_file = @session.user_input(:patinfo_upload))
+    if((html_file = @session.user_input(:html_upload)) \
+       && (document = parse_patinfo(html_file.read)))
+      @model.pdf_patinfo = nil
+      lang = @session.user_input(:language_select)
+      ptr = nil
+      if(patinfo = @model.patinfo)
+        ptr = patinfo.pointer
+      else
+        ptr = Persistence::Pointer.new(:patinfo).creator
+      end
+      patinfo = @session.app.update(ptr, lang => document)
+      input.store(:patinfo, patinfo.pointer)
+      input.store(:pdf_patinfo, nil)
+      @infos.push(:i_patinfo_assigned)
+		elsif(pi_file = @session.user_input(:patinfo_upload))
 			company = @model.company
 			if(!company.invoiceable?)
 				err = create_error(:e_company_not_invoiceable, :pdf_patinfo, nil)
 				newstate = resolve_state(company.pointer).new(@session, company)
 				newstate.errors.store(:pdf_patinfo, err)
 			elsif(pi_file.read(4) == "%PDF")
-				pi_file.rewind
+        pi_file.rewind
 				filename = "#{@model.iksnr}_#{@model.seqnr}_#{Time.now.to_f}.pdf"
 				FileUtils.mkdir_p(self::class::PDF_DIR)
 				store_file = File.new(File.expand_path(filename, 
@@ -54,6 +69,14 @@ module PatinfoPdfMethods
 		end
 		newstate
 	end
+  def parse_patinfo(src)
+    HTML_PARSER.parse_patinfo_html(src)
+  rescue StandardError => e
+    msg = ' (' << e.message << ')'
+    err = create_error(:e_html_not_parsed, :html_upload, msg)
+    @errors.store(:html_upload, err)
+    nil
+  end
 	def store_slate
 		store_slate_item(Time.now, :annual_fee)
 	end

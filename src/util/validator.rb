@@ -247,6 +247,7 @@ module ODDB
 			:logo_file,
 			:logo_fr,
 			:fachinfo_upload,
+      :html_upload,
 			:patinfo_upload,
 		]
     HTML = [:html_chapter]

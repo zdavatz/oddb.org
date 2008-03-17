@@ -17,16 +17,16 @@ class TestPatinfoHpricot < Test::Unit::TestCase
   end
   def test_chapter
     html = <<-HTML
-  <div class="Abschnitt">
-    <div class="AbschnittTitel">
-      <a name="7840">Was ist in Cimifemin enthalten?</a>
+    <div class="paragraph">
+      <h2><a name="7840">Was ist in Cimifemin enthalten?</a></h2>
+      <p class="spacing"><span style="font-style: italic;">1 Tablette</span>
+        enthält: 0,018-0,026 ml Flüssigextrakt aus Cimicifugawurzelstock
+        (Traubensilberkerze), (DEV: 0,78-1,14:1), Auszugsmittel Isopropanol 40%
+        (V/V).</p>
+      <p class="noSpacing">Dieses Präparat enthält zusätzlich Hilfsstoffe.</p>
     </div>
-    <span style="font-style: italic;">1 Tablette</span>
-enthält: 0,018-0,026 ml Flüssigextrakt aus Cimicifugawurzelstock
-(Traubensilberkerze), (DEV: 0,78-1,14:1), Auszugsmittel Isopropanol 40%
-(V/V).<br>Dieses Präparat enthält zusätzlich Hilfsstoffe.<br></div>
     HTML
-    code, chapter = @writer.chapter(Hpricot(html).at("div.Abschnitt"))
+    code, chapter = @writer.chapter(Hpricot(html).at("div.paragraph"))
     assert_equal('7840', code)
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Was ist in Cimifemin enthalten?', chapter.heading)
@@ -52,35 +52,69 @@ enthält: 0,018-0,026 ml Flüssigextrakt aus Cimicifugawurzelstock
   end
   def test_chapter__with_sections
     html = <<-HTML
-  <div class="Abschnitt">
-    <div class="AbschnittTitel">
-      <a name="7740">Wie verwenden Sie Ponstan?</a>
-  </div>Halten Sie sich generell an die von Ihrem Arzt bzw. Ihrer Ärztin verordneten Richtlinien. Die übliche Dosierung beträgt:<br><div class="Untertitel">Für Erwachsene und Jugendliche über 14 Jahre</div>Täglich 3 mal 1 Filmtablette bzw. 3 mal 2 Kapseln Ponstan während der Mahlzeiten. Je nach Bedarf kann diese Dosis vermindert oder erhöht werden, jedoch sollten Sie am selben Tag nicht mehr als 4 Filmtabletten oder 8 Kapseln einnehmen. Die übliche Dosierung für Zäpfchen beträgt 3mal täglich 1 Zäpfchen Ponstan zu 500 mg.<br>Ponstan Zäpfchen sollten Sie nicht mehr als 7 Tage hintereinander anwenden, da es bei längerer Anwendung zu lokalen Reizerscheinungen kommen kann. <br>Für Kinder im Alter von 6 Monaten bis 14 Jahren wird Ihr Arzt bzw. Ihre Ärztin die Dosis dem Alter entsprechend anpassen. Bei Einnahme von Suspension oder Kapseln gibt man im allgemeinen als Einzeldosis 6,5 mg pro kg Körpergewicht. Bei Verwendung von Zäpfchen werden 12 mg pro kg Körpergewicht verabreicht. Kinder sollten Ponstan nur kurzfristig erhalten, es sei denn zur Behandlung der Still'schen Krankheit.<br>Ändern Sie nicht von sich aus die verschriebene Dosierung. Wenn Sie glauben, das Arzneimittel wirke zu schwach oder zu stark, so sprechen Sie mit Ihrem Arzt oder Apotheker bzw. mit Ihrer Ärztin oder Apothekerin.<br><div class="Untertitel">Dosierungsschema für Kinder</div><table cellSpacing="0" cellPadding="0" border="0"><tr><td class="Tabelle">
-----------------------------------------------------</td></tr><tr><td class="Tabelle">
-Alter    Suspension     Kapseln     Zäpfchen        </td></tr><tr><td class="Tabelle">
-in       zu 10 mg/ml    zu 250 mg   125 bzw. 500 mg </td></tr><tr><td class="Tabelle">
-Jahren   pro Tag        pro Tag     pro Tag         </td></tr><tr><td class="Tabelle">
-----------------------------------------------------</td></tr><tr><td class="Tabelle">
-½        5 ml   3×      -           1 Supp.         </td></tr><tr><td class="Tabelle">
-                                    125 mg 2-3×     </td></tr><tr><td class="Tabelle">
-----------------------------------------------------</td></tr><tr><td class="Tabelle">
-1-3      7,5 ml 3×      -           1 Supp.         </td></tr><tr><td class="Tabelle">
-                                    125 mg 3×       </td></tr><tr><td class="Tabelle">
-----------------------------------------------------</td></tr><tr><td class="Tabelle">
-3-6      10 ml  3×      -           1 Supp.         </td></tr><tr><td class="Tabelle">
-                                    125 mg 4×       </td></tr><tr><td class="Tabelle">
-----------------------------------------------------</td></tr><tr><td class="Tabelle">
-6-9      15 ml  3×      -           1 Supp.         </td></tr><tr><td class="Tabelle">
-                                    500 mg 1-2×     </td></tr><tr><td class="Tabelle">
-----------------------------------------------------</td></tr><tr><td class="Tabelle">
-9-12     20 ml  3×      1 Kps 2-3×  1 Supp.         </td></tr><tr><td class="Tabelle">
-                                    500 mg 2×       </td></tr><tr><td class="Tabelle">
-----------------------------------------------------</td></tr><tr><td class="Tabelle">
-12-14    25 ml  3×      1 Kps 3×    1 Supp.         </td></tr><tr><td class="Tabelle">
-                                    500 mg 3×       </td></tr><tr><td class="Tabelle">
-----------------------------------------------------</td></tr><tr><td class="Tabelle"></td></tr></table></div>
+    <div class="paragraph">
+      <h2><a name="7740">Wie verwenden Sie Ponstan?</a></h2>
+      <p class="noSpacing">Halten Sie sich generell an die von Ihrem Arzt bzw. Ihrer Ärztin verordneten Richtlinien. Die übliche Dosierung beträgt:</p>
+      <h3><span style="font-style:italic">Für Erwachsene und Jugendliche über 14 Jahre</span></h3>
+      <p class="spacing1">Täglich 3 mal 1 Filmtablette bzw. 3 mal 2 Kapseln Ponstan während der Mahlzeiten. Je nach Bedarf kann diese Dosis vermindert oder erhöht werden, jedoch sollten Sie am selben Tag nicht mehr als 4 Filmtabletten oder 8 Kapseln einnehmen. Die übliche Dosierung für Zäpfchen beträgt 3mal täglich 1 Zäpfchen Ponstan zu 500 mg.</p>
+      <p class="spacing1">Ponstan Zäpfchen sollten Sie nicht mehr als 7 Tage hintereinander anwenden, da es bei längerer Anwendung zu lokalen Reizerscheinungen kommen kann.</p>
+      <p class="spacing1">Für Kinder im Alter von 6 Monaten bis 14 Jahren wird Ihr Arzt bzw. Ihre Ärztin die Dosis dem Alter entsprechend anpassen. Bei Einnahme von Suspension oder Kapseln gibt man im allgemeinen als Einzeldosis 6,5 mg pro kg Körpergewicht. Bei Verwendung von Zäpfchen werden 12 mg pro kg Körpergewicht verabreicht. Kinder sollten Ponstan nur kurzfristig erhalten, es sei denn zur Behandlung der Still'schen Krankheit.</p>
+      <p class="spacing1">Ändern Sie nicht von sich aus die verschriebene Dosierung. Wenn Sie glauben, das Arzneimittel wirke zu schwach oder zu stark, so sprechen Sie mit Ihrem Arzt oder Apotheker bzw. mit Ihrer Ärztin oder Apothekerin.</p>
+      <h3><span style="font-style:italic; ">Dosierungsschema für Kinder</span></h3>
+        <table cellSpacing="0" cellPadding="0" border="0">
+          <thead>
+            <tr>
+              <th>Alter\302\240\302\240\302\240\302\240Suspension\302\240\302\240\302\240\302\240\302\240Kapseln\302\240\302\240\302\240\302\240\302\240Z�pfchen\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</th>
+            </tr>
+            <tr>
+              <th>in\302\240\302\240\302\240\302\240\302\240\302\240\302\240zu\302\24010\302\240mg/ml\302\240\302\240\302\240\302\240zu\302\240250\302\240mg\302\240\302\240\302\240125\302\240bzw.\302\240500\302\240mg\302\240</th>
+            </tr>
+            <tr>
+              <th class="rowSepBelow">Jahren\302\240\302\240\302\240pro\302\240Tag\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240pro\302\240Tag\302\240\302\240\302\240\302\240\302\240pro\302\240Tag\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>�\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2405\302\240ml\302\240\302\240\302\2403�\302\240\302\240\302\240\302\240\302\240\302\240-\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+            </tr>
+            <tr>
+              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240125\302\240mg\302\2402-3�\302\240\302\240\302\240\302\240\302\240</td>
+            </tr>
+            <tr>
+              <td>1-3\302\240\302\240\302\240\302\240\302\240\302\2407,5\302\240ml\302\2403�\302\240\302\240\302\240\302\240\302\240\302\240-\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+            </tr>
+            <tr>
+              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240125\302\240mg\302\2403�\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+            </tr>
+            <tr>
+              <td>3-6\302\240\302\240\302\240\302\240\302\240\302\24010\302\240ml\302\240\302\2403�\302\240\302\240\302\240\302\240\302\240\302\240-\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+            </tr>
+            <tr>
+              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240125\302\240mg\302\2404�\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+            </tr>
+            <tr>
+              <td>6-9\302\240\302\240\302\240\302\240\302\240\302\24015\302\240ml\302\240\302\2403�\302\240\302\240\302\240\302\240\302\240\302\240-\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+            </tr>
+            <tr>
+              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240500\302\240mg\302\2401-2�\302\240\302\240\302\240\302\240\302\240</td>
+            </tr>
+            <tr>
+              <td>9-12\302\240\302\240\302\240\302\240\302\24020\302\240ml\302\240\302\2403�\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Kps\302\2402-3�\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+            </tr>
+            <tr>
+              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240500\302\240mg\302\2402�\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+            </tr>
+            <tr>
+              <td>12-14\302\240\302\240\302\240\302\24025\302\240ml\302\240\302\2403�\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Kps\302\2403�\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+            </tr>
+            <tr>
+              <td>\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240500\302\240mg\302\2403�\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     HTML
-    code, chapter = @writer.chapter(Hpricot(html).at("div.Abschnitt"))
+    code, chapter = @writer.chapter(Hpricot(html).at("div.paragraph"))
     assert_equal('7740', code)
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Wie verwenden Sie Ponstan?', chapter.heading)
@@ -108,8 +142,6 @@ Jahren   pro Tag        pro Tag     pro Tag         
     assert_equal(1, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
     expected = <<-EOS
-
-----------------------------------------------------
 Alter    Suspension     Kapseln     Z�pfchen        
 in       zu 10 mg/ml    zu 250 mg   125 bzw. 500 mg 
 Jahren   pro Tag        pro Tag     pro Tag         
@@ -130,8 +162,7 @@ Jahren   pro Tag        pro Tag     pro Tag
                                     500 mg 2�       
 ----------------------------------------------------
 12-14    25 ml  3�      1 Kps 3�    1 Supp.         
-                                    500 mg 3�       
-----------------------------------------------------
+                                    500 mg 3�
     EOS
     assert_equal(expected.chomp, paragraph.text)
     assert_equal(true, paragraph.preformatted?)
@@ -160,7 +191,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
   def test_company1
     chapter = @writer.company
     assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('ZELLER', chapter.heading)
+    assert_equal('ZELLER MEDICAL', chapter.heading)
   end
   def test_galenic_form1
     chapter = @writer.galenic_form
@@ -171,7 +202,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
   def test_amzv1
     chapter = @writer.amzv
     assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('AMZV 9.11.2001', chapter.heading)
+    assert_equal('AMZV', chapter.heading)
     assert_equal(0, chapter.sections.size)
   end
   def test_effects1
@@ -336,8 +367,12 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
   def test_iksnrs1
     chapter = @writer.iksnrs
     assert_instance_of(ODDB::Text::Chapter, chapter)
+    assert_equal("Zulassungsnummer", chapter.heading)
     assert_equal(1, chapter.sections.size)
-    assert_equal('48734 (Swissmedic).', chapter.to_s)
+    section = chapter.sections.first
+    assert_equal(1, section.paragraphs.size)
+    paragraph = section.paragraphs.first
+    assert_equal('48734 (Swissmedic).', paragraph.to_s)
   end
   def test_packages1
     chapter = @writer.packages
@@ -365,7 +400,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal("", section.subheading)
     assert_equal(1, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected =  "Max Zeller S�hne AG, 8590 Romanshorn."
+    expected =  "Zeller Medical AG, 8590 Romanshorn."
     assert_equal(expected, paragraph.text)
   end
   def test_date1
@@ -396,12 +431,12 @@ class TestPatinfoHpricotCimifeminFr < Test::Unit::TestCase
   def test_company2
     chapter = @writer.company
     assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('ZELLER', chapter.heading)
+    assert_equal('ZELLER MEDICAL', chapter.heading)
   end
   def test_amzv2
     chapter = @writer.amzv
     assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('OEM�d 9.11.2001', chapter.heading)
+    assert_equal('OEM�d', chapter.heading)
     assert_equal(0, chapter.sections.size)
   end
   def test_composition2
@@ -528,16 +563,57 @@ class TestPatinfoHpricotNasivinDe < Test::Unit::TestCase
     assert_instance_of(ODDB::Text::Chapter, chapter )
     assert_equal('Wo erhalten Sie Nasivin? Welche Packungen sind erh�ltlich?', chapter.heading)
     section = chapter.sections.first
-    assert_instance_of(ODDB::Text::Section, section )
-    assert_equal("In Apotheken und Drogerien ohne �rztliche Verschreibung\n", section.subheading)
+    paragraph = section.paragraphs.first
+    assert_instance_of(ODDB::Text::Paragraph, paragraph )
+    assert_equal("In Apotheken und Drogerien ohne �rztliche Verschreibung.", 
+                 paragraph.text)
     chapter = @writer.date
     assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('Stand der Information', chapter.heading)
+    assert_equal('', chapter.heading)
     section = chapter.sections.first
     assert_instance_of(ODDB::Text::Section, section )
     assert_equal("", section.subheading)
     assert_equal(1, section.paragraphs.size)
-    assert_equal("Diese Packungsbeilage wurde im November 2002 letztmals durch die Arzneimittelbeh�rde (Swissmedic) gepr�ft.", section.to_s)
+    assert_equal("Diese Packungsbeilage wurde im M�rz 2007 letztmals durch die Arzneimittelbeh�rde (Swissmedic) gepr�ft.", section.to_s)
+     
+
+  end
+end
+class TestPatinfoHpricotAcompliaDe < Test::Unit::TestCase
+  def setup
+    @path = File.expand_path('data/html/de/acomplia.html', 
+      File.dirname(__FILE__))
+    @writer = PatinfoHpricot.new
+    open(@path) { |fh| 
+      @patinfo = @writer.extract(Hpricot(fh))
+    }
+  end
+  def test_composition6
+    chapter = @writer.effects
+    assert_instance_of(ODDB::Text::Chapter, chapter )
+    assert_equal('Was ist Acomplia und wann wird es angewendet?', chapter.heading)
+    section = chapter.sections.first
+    assert_instance_of(ODDB::Text::Section, section )
+    assert_equal('', section.subheading)
+    chapter = @writer.composition
+    assert_instance_of(ODDB::Text::Chapter, chapter )
+    assert_equal('Was ist in Acomplia enthalten?', chapter.heading)
+    chapter = @writer.packages
+    assert_instance_of(ODDB::Text::Chapter, chapter )
+    assert_equal('Wo erhalten Sie Acomplia? Welche Packungen sind erh�ltlich?', chapter.heading)
+    section = chapter.sections.first
+    paragraph = section.paragraphs.first
+    assert_instance_of(ODDB::Text::Paragraph, paragraph )
+    assert_equal("In Apotheken nur gegen �rztliche Verschreibung.", 
+                 paragraph.text)
+    chapter = @writer.date
+    assert_instance_of(ODDB::Text::Chapter, chapter )
+    assert_equal('', chapter.heading)
+    section = chapter.sections.first
+    assert_instance_of(ODDB::Text::Section, section )
+    assert_equal("", section.subheading)
+    assert_equal(1, section.paragraphs.size)
+    assert_equal("Diese Packungsbeilage wurde im September 2007 letztmals durch die Arzneimittelbeh�rde (Swissmedic) gepr�ft.", section.to_s)
      
 
   end

@@ -7,9 +7,12 @@ require 'view/dataformat'
 require 'view/pointervalue'
 require 'htmlgrid/booleanvalue'
 require 'htmlgrid/errormessage'
+require 'htmlgrid/infomessage'
 require 'htmlgrid/inputcheckbox'
+require 'htmlgrid/inputfile'
 require 'htmlgrid/text'
 require 'htmlgrid/labeltext'
+require 'htmlgrid/select'
 require 'util/pointerarray'
 
 module ODDB
@@ -185,6 +188,7 @@ class SequenceInnerComposite < HtmlGrid::Composite
 end
 class SequenceForm < Form
 	include HtmlGrid::ErrorMessage
+	include HtmlGrid::InfoMessage
 	include View::Admin::SequenceDisplay
 	include View::AdditionalInformation
 	COMPONENTS = {
@@ -208,10 +212,14 @@ class SequenceForm < Form
 		[0,0,4,6]	=>	'list',
 	}
 	LABELS = true
+  LOOKANDFEEL_MAP = {
+    :language_select => :language_select_html,
+  }
 	TAG_METHOD = :multipart_form
 	SYMBOL_MAP = {
-		:export_flag				=>	HtmlGrid::InputCheckbox,
-		:iksnr							=>	HtmlGrid::Value,
+		:export_flag				=> HtmlGrid::InputCheckbox,
+		:iksnr							=> HtmlGrid::Value,
+    :html_upload        => HtmlGrid::InputFile,
 		:patinfo_label			=> HtmlGrid::LabelText,
 		:atc_request_label	=> HtmlGrid::LabelText,
 		:no_company					=> HtmlGrid::LabelText,
@@ -221,21 +229,24 @@ class SequenceForm < Form
 		reorganize_components
 		super
 		error_message()
+		info_message()
 	end
 	def reorganize_components
 		if(@model.is_a?(ODDB::Sequence))
 			components.update({
-				[0,5]		=>	:patinfo_upload,
-				[2,5]   =>  :patinfo_label,
-				[3,5,1] =>  :patinfo,
-				[3,5,2] =>  :assign_patinfo,
-				[3,5,3] =>  :delete_patinfo,
-				[1,6,0]	=>	:submit,
-				[1,6,1] =>  :delete_item,
+				[0,5]		=>	:html_upload,
+				[2,5]		=>	:language_select,
+				[0,6]		=>	:patinfo_upload,
+				[2,6]   =>  :patinfo_label,
+				[3,6,1] =>  :patinfo,
+				[3,6,2] =>  :assign_patinfo,
+				[3,6,3] =>  :delete_patinfo,
+				[1,7,0]	=>	:submit,
+				[1,7,1] =>  :delete_item,
 			})
 			css_map.update({
 				[3,5]		=>	'list',
-				[0,6,4] =>	'list',
+				[0,6,5] =>	'list',
 			})
 			if(@model.atc_class.nil? && !atc_descr_error?)
 				if(@model.company.nil?)
@@ -289,6 +300,12 @@ class SequenceForm < Form
 			button.set_attribute('onclick', script)
 			button
 		end
+	end
+	def language_select(model, session=@session)
+		sel = View::Admin::FachinfoLanguageSelect.new(:language_select, model, 
+			session, self)
+		#sel.label = false
+		sel
 	end
 	def seqnr(model, session=@session)
 		klass = if(model.seqnr.nil?)

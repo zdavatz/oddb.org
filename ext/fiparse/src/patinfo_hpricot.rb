@@ -20,7 +20,7 @@ class PatinfoHpricot
     code = nil
     ptr = OpenStruct.new
     ptr.chapter = chapter
-    if(title = elem.at("div.AbschnittTitel"))
+    if(title = elem.at("h2"))
       elem.children.delete(title)
       anchor = title.at("a")
       code = anchor['name']
@@ -31,10 +31,10 @@ class PatinfoHpricot
     [code, chapter]
   end
   def extract(doc)
-    @name = text(doc.at("div.MonographieTitel"))
-    @company = simple_chapter(doc.at("div.FirmenTitel"))
-    @galenic_form = simple_chapter(doc.at("div.Kurzcharakteristikum"))
-    (doc/"div.Abschnitt").each { |elem|
+    @name = text(doc.at("h1"))
+    @company = simple_chapter(doc.at("div.ownerCompany"))
+    @galenic_form = simple_chapter(doc.at("div.shortCharacteristic"))
+    (doc/"div.paragraph").each { |elem|
       identify_chapter(*chapter(elem))
     }
     to_patinfo
@@ -61,6 +61,8 @@ class PatinfoHpricot
       @general_advice = chapter
     when '7840'
       @composition = chapter
+    when '7860'
+      @iksnrs = chapter
     when '7880'
       @packages = chapter
     when '7900'
@@ -120,19 +122,15 @@ class PatinfoHpricot
         handle_text(ptr, child)
       when Hpricot::Elem
         case child.name
-        when 'div'
-          if((%w{Untertitel Untertitel1} & child.classes).empty?)
-            handle_text(ptr, child)
-          else
-            ptr.section = ptr.chapter.next_section
-            ptr.target = ptr.section.subheading
-            handle_element(child, ptr)
-            ptr.target << "\n"
-            ptr.target = ptr.section.next_paragraph
-          end
-        when 'br'
+        when 'h3'
+          ptr.section = ptr.chapter.next_section
+          ptr.target = ptr.section.subheading
+          handle_text(ptr, child)
+          ptr.target << "\n"
+        when 'p'
           ptr.section ||= ptr.chapter.next_section
           ptr.target = ptr.section.next_paragraph
+          handle_element(child, ptr)
         when 'span'
           target = ptr.target
           target << ' '
@@ -142,15 +140,24 @@ class PatinfoHpricot
           target.reduce_format(:italic) if(target.is_a?(Text::Paragraph))
           target << ' '
         when 'table'
+          ptr.tablewidth = nil
           ptr.target = ptr.section.next_paragraph
           ptr.target.preformatted!
           handle_element(child, ptr)
           ptr.target = ptr.section.next_paragraph
+        when 'thead', 'tbody'
+          handle_element(child, ptr)
         when 'tr'
           handle_element(child, ptr)
           ptr.target << "\n"
-        when 'td'
+        when 'td', 'th'
           ptr.target << preformatted_text(child)
+          ## the new format uses td-borders as "row-separators"
+          if(child.classes.include?("rowSepBelow"))
+            ptr.tablewidth ||= ptr.target.to_s.split("\n").collect { |line| 
+              line.length }.max
+            ptr.target << "\n" << ("-" * ptr.tablewidth)
+          end
         end
       end
     }
@@ -181,6 +188,7 @@ class PatinfoHpricot
   end
   def text(elem)
     str = elem.inner_text || elem.to_s
+    str = str.gsub(/[\277]/, '-')
     target_encoding(str.gsub(/(&nbsp;|\302\240|\s)+/, ' ').strip)
   end
 end

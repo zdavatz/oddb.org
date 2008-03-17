@@ -48,6 +48,8 @@ module ODDB
 		attr_accessor :general_advice, :other_advice, :composition, :packages
 		attr_accessor :distribution, :date, :fabrication
 		attr_accessor :iksnrs # interface only, no data
+    def empty?
+    end
 		def to_s
 			self::class::CHAPTERS.collect { |name|
 				self.send(name)
