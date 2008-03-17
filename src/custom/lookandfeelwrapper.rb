@@ -504,6 +504,7 @@ module ODDB
 		ENABLED = [
 			:atc_chooser,
 			:custom_navigation,
+      :custom_tab_navigation,
 			:drugs, 
 			:external_css,
       :fachinfos, 
@@ -904,6 +905,7 @@ module ODDB
 		ENABLED = [
       :explain_sort,
       :compare_backbutton,
+      :custom_tab_navigation,
 			:external_css,
       :ajax,
 			:home_drugs,
@@ -1000,6 +1002,9 @@ module ODDB
         [3,0]	=>	:galenic_form,
       }
     end
+		def zones
+			[ State::Drugs::Sequences ]
+		end
 	end
 	class LookandfeelSwissMedInfo < SBSM::LookandfeelWrapper
 		ENABLED = [

@@ -15,8 +15,8 @@ module ODDB
 				:tabnavigation_divider	=>	HtmlGrid::Text,
 			}
 			def init
-				if(@lookandfeel.enabled?(:just_medical_structure, false))
-					build_jm_navigation()
+				if(@lookandfeel.enabled?(:custom_tab_navigation, false))
+					build_custom_navigation()
 				else
 					build_navigation()
 				end
@@ -35,7 +35,7 @@ module ODDB
 					end
 				}
 			end
-			def build_jm_navigation
+			def build_custom_navigation
 				@lookandfeel.zones.each_with_index { |zone, idx|
 					if(zone.is_a?(Class))
 						zone = zone.direct_event
