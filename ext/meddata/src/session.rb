@@ -108,7 +108,7 @@ class Session < HttpSession
 		@form_keys.each { |key, new_key|
 			if(val = criteria[key])
 				val = Iconv.iconv('utf8', 'latin1', val.to_s).first
-				data.push([new_key, val])
+				data.push([new_key, CGI.escape(val)])
 			end
 		}
 		data.push(['hiddenlang',	'de'])
