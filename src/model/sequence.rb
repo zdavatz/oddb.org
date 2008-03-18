@@ -270,9 +270,22 @@ module ODDB
 			@atc_class && @registration.may_violate_patent?	\
 				&& @atc_class.sequences.any? { |seq| 
 				seq.patent_protected? && seq.company != @registration.company \
-          && seq.substances.sort == substances.sort
+          && _violates_patent?(seq)
 			}
 		end
+    def _violates_patent?(seq)
+      other = seq.active_agents
+      agents = active_agents
+      other.size == agents.size or return false
+      other = other.sort 
+      agents = agents.sort
+      other.each_with_index { |oth, idx|
+        agt = agents.at(idx)
+        oth.substance == agt.substance or return false
+        oth.chemical_substance == agt.chemical_substance or return false
+      }
+      true
+    end
 		private
 		def adjust_types(values, app=nil)
 			values = values.dup
