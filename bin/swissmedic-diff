@@ -1,0 +1,43 @@
+#!/bin/env ruby
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+
+require 'plugin/swissmedic'
+
+def usage
+  puts <<-EOS
+Usage: #$0 [-gnr] <file1> <file2> [<output>]
+
+-g --group         sort by news, deletions and updates
+-n --name          sort by name
+-r --registration  sort by registration
+  EOS
+end
+
+out = nil
+sort = :group
+
+if(/^-/.match ARGV.first)
+  sort = case ARGV.shift
+         when /^-{1,2}n/
+           :name
+         when /^-{1,2}r/
+           :registration
+         else
+           :group
+         end
+end
+
+case ARGV.size
+when 2
+  out = $stdout
+when 3
+  out = File.open(ARGV[2], 'w')
+else
+  usage
+  exit 1
+end
+
+plug = ODDB::SwissmedicPlugin.new
+diff = plug.diff(ARGV[1], ARGV[0])
+out.puts plug.to_s(sort)
