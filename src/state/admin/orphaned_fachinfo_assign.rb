@@ -10,7 +10,7 @@ class OrphanedFachinfoAssign < State::Admin::Global
 	VIEW = View::Admin::OrphanedFachinfoAssign
 	class OrphanedFachinfoFacade < SimpleDelegator
 		attr_accessor :registrations
-		def ancestors(app)
+		def structural_ancestors(app)
 			if(@parent_pointer)
 				[@parent_pointer.resolve(app)]
 			else

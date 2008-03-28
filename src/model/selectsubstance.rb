@@ -14,8 +14,8 @@ module ODDB
 		def pointer
 			@active_agent.pointer
 		end
-		def ancestors(app)
-			@active_agent.ancestors(app)
+		def structural_ancestors(app)
+			@active_agent.structural_ancestors(app)
 		end
 		def	assigned 
 			@active_agent.sequence.substances

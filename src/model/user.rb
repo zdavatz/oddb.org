@@ -22,7 +22,7 @@ module ODDB
 		def allowed?(obj, key=nil)
 			false
 		end
-		def ancestors(app=nil)
+		def structural_ancestors(app=nil)
 			[@model].compact
 		end
 		def cache_html?

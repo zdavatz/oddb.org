@@ -33,7 +33,7 @@ module ODDB
 		attr_accessor :pointer, :revision
 		def init(app)
 		end
-		def ancestors(app)
+		def structural_ancestors(app)
 			if(@pointer)
 				@pointer.ancestors.collect { |pointer| pointer.resolve(app) }
 			end
@@ -347,7 +347,7 @@ Grammar OddbSize
 				@pointer = Pointer.new([:create, pointer])
         @data = {}
 			end
-			def ancestors(app)
+			def structural_ancestors(app)
 				@inner_pointer.ancestors.collect { |pointer| pointer.resolve(app) }
 			end
 			def append(val)

@@ -13,7 +13,7 @@ module ODDB
 class WaitForFachinfo < State::Admin::Global
 	class Model < Array
 		attr_accessor :registration, :mime_type
-		def ancestors(app = nil)
+		def structural_ancestors(app = nil)
 			[@registration]
 		end
 		def pointer_descr

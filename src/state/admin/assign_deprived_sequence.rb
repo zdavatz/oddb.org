@@ -16,8 +16,8 @@ class AssignDeprivedSequence < State::Admin::Global
 			@sequence = seq
 			self.sequences = seq.registration.sequences.values
 		end
-		def ancestors(app)
-			@sequence.ancestors(app)
+		def structural_ancestors(app)
+			@sequence.structural_ancestors(app)
 		end
 		def each(&block)
 			@sequences.each(&block)

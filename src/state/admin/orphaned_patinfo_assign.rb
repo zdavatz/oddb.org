@@ -22,7 +22,7 @@ class OrphanedPatinfoAssign < State::Admin::Global
 				e.message
 			end
 		end
-		def ancestors(app)
+		def structural_ancestors(app)
 			if(@parent_pointer)
 				[@parent_pointer.resolve(app)]
 			else

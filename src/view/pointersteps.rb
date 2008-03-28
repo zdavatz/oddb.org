@@ -33,8 +33,8 @@ module ODDB
         end
 				offset = resolve_offset(offset, self::class::OFFSET_STEP)
 				offset = compose_snapback(offset)
-				model = if(model.respond_to? :ancestors)
-									model.ancestors(@session.app) 
+        model = if(model.respond_to? :structural_ancestors)
+									model.structural_ancestors(@session.app) 
 								elsif(sbm = @session.state.snapback_model)
 									[sbm]
 								end || []	

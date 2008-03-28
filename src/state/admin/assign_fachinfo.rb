@@ -16,7 +16,7 @@ class AssignFachinfo < Global
 			@registration = reg
 			@registrations = []
 		end
-		def ancestors(app)
+		def structural_ancestors(app)
 			[@registration]
 		end
 		def each(&block)

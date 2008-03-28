@@ -19,8 +19,8 @@ module SelectIndicationMethods
 		def pointer
 			@registration.pointer
 		end
-		def ancestors(app)
-			@registration.ancestors(app)
+		def structural_ancestors(app)
+			@registration.structural_ancestors(app)
 		end
 		def new_indication
 			pointer = Persistence::Pointer.new([:indication]) 
