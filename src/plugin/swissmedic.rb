@@ -8,9 +8,11 @@ require 'parseexcel'
 require 'plugin/plugin'
 require 'util/persistence'
 require 'util/today'
+require 'swissmedic-diff'
 
 module ODDB
   class SwissmedicPlugin < Plugin
+    include SwissmedicDiff::Diff
     COLUMNS = [ :iksnr, :seqnr, :name_base, :company, :product_group, 
                 :index_therapeuticus, :production_science, :registration_date,
                 :expiry_date, :ikscd, :size, :unit, :ikscat, :substances,
@@ -38,10 +40,11 @@ module ODDB
       FileUtils.mkdir_p @archive
       @latest = File.join @archive, 'Packungen-latest.xls'
     end
-    def update(agent=WWW::Mechanize.new)
-      if(target = get_latest_file agent)
+    def update(agent=WWW::Mechanize.new, target=get_latest_file(agent))
+      if(target)
         diff target, @latest
         update_registrations @diff.news + @diff.updates, @diff.replacements
+        sanity_check_deletions(@diff)
         delete @diff.package_deletions
         delete @diff.sequence_deletions
         deactivate @diff.registration_deletions
@@ -55,32 +58,10 @@ module ODDB
     def capitalize(string)
       string.split(/\s+/).collect { |word| word.capitalize }.join(' ')
     end
-    def cell(row, pos)
-      if(cell = row.at(pos))
-        case cell
-        when String
-          cell
-        else
-          cell.to_s('latin1')
-        end
-      end
-    rescue
-      cell.to_s
-    end
-    def data_diff(row, other)
-      flags = rows_diff(row, other)
-      package = @app.registration(cell(row, 0)).package(cell(row, 9))
-      flags.select { |flag|
-        origin = package.data_origin(flag)
-        origin ||= package.sequence.data_origin(flag)
-        origin ||= package.registration.data_origin(flag)
-        origin.nil? || origin == :swissmedic
-      }
-    end
     def deactivate(deactivations)
       deactivations.each { |iksnr|
-        @app.update Persistence::Pointer.new([:registration, iksnr], 
-                                             :inactive_date => @@today)
+        @app.update Persistence::Pointer.new([:registration, iksnr]), 
+                    {:inactive_date => @@today}, :swissmedic
       }
     end
     def delete(deletions)
@@ -111,33 +92,16 @@ module ODDB
         sprintf "%s (%s)", txt, cell(row, COLUMNS.index(flag))
       end
     end
-    def diff(target, latest)
-      known_regs = {}
-      known_seqs = {}
-      known_pacs = {}
-      newest_rows = {}
-      replacements = {}
+    def _known_data(latest, known_regs, known_seqs, known_pacs, newest_rows)
       if(File.exist? latest)
-        lbook = Spreadsheet::ParseExcel.parse(latest)
-        lbook.worksheet(0).each(3) { |row| 
-          group = cell(row, 4)
-          if(group != 'TAM')
-            iksnr = cell(row, 0)
-            seqnr = "%02i" % cell(row, 1).to_i
-            pacnr = cell(row, 9)
-            known_regs.store iksnr, row
-            known_seqs.store [iksnr, seqnr], row
-            known_pacs.store [iksnr, seqnr, pacnr], row
-            (newest_rows[iksnr] ||= {})[pacnr] = row
-          end
-        }
+        super
       else
         latest = nil
         @app.registrations.each { |iksnr, reg|
           row = [ iksnr, nil, nil, reg.company_name, reg.product_group,
                   reg.index_therapeuticus, reg.production_science,
                   reg.registration_date, reg.expiration_date ]
-          unless reg.inactive?
+          unless reg.inactive? || reg.vaccine
             known_regs.store iksnr, row
             reg.sequences.each { |seqnr, seq|
               srow = row.dup
@@ -152,57 +116,6 @@ module ODDB
           end
         }
       end
-      @diff = OpenStruct.new
-      @diff.news = news = []
-      @diff.updates = updates = []
-      @diff.changes = changes = {}
-      @diff.newest_rows = newest_rows
-      tbook = Spreadsheet::ParseExcel.parse(target)
-      tbook.worksheet(0).each(3) { |row|
-        group = cell(row, 4)
-        if(group != 'TAM')
-          iksnr = cell(row, 0)
-          seqnr = "%02i" % cell(row, 1).to_i
-          pacnr = cell(row, 9)
-          (newest_rows[iksnr] ||= {})[pacnr] = row
-          if(other = known_regs.delete(iksnr))
-            changes[iksnr] ||= []
-          else
-            changes[iksnr] ||= [:new]
-          end
-          known_seqs.delete([iksnr, seqnr])
-          if(other = known_pacs.delete([iksnr, seqnr, pacnr]))
-            flags = latest ? rows_diff(row, other) : data_diff(row, other)
-            (changes[iksnr].concat flags).uniq!
-            updates.push row unless flags.empty?
-          else
-            replacements.store [iksnr, seqnr, cell(row, 10), cell(row, 11)], row
-            flags = changes[iksnr]
-            flags.push(:sequence).uniq! unless(flags.include? :new)
-            news.push row
-          end
-        end
-      }
-      @diff.replacements = reps = {}
-      known_pacs.each { |(iksnr, seqnr, pacnr), row|
-        key = [iksnr, "%02i" % cell(row, 1).to_i, cell(row, 10), cell(row, 11)]
-        if(rep = replacements[key])
-          changes[iksnr].push :replaced_package
-          reps.store rep, pacnr
-        end
-      }
-      known_regs.each_key { |iksnr| changes[iksnr] = [:delete] }
-      changes.delete_if { |iksnr, flags| flags.empty? }
-      @diff.package_deletions = known_pacs.keys
-      @diff.sequence_deletions = known_seqs.keys
-      @diff.registration_deletions = known_regs.keys
-      @diff
-    end
-    def format_flags(flags)
-      flags.delete(:revision)
-      flags.collect { |flag|
-        "- %s\n" % FLAGS.fetch(flag, "Unbekannt (#{flag})")
-      }.compact.join
     end
     def get_latest_file(agent)
       file = agent.get('http://www.swissmedic.ch/files/pdf/Packungen.xls')
@@ -254,11 +167,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         }
       end
     end
-    def name(diff, iksnr)
-      rows = diff.newest_rows[iksnr]
-      row = rows.sort.first.last
-      cell(row, 2)
-    end
     def pointer(row)
       cmnds = [:registration, :sequence, :package]
       path = cmnds[0, row.size].zip row
@@ -282,35 +190,27 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         "Deleted Sequences: #{@diff.sequence_deletions.size}",
         "Deactivated Registrations: #{@diff.registration_deletions.size}",
         "Total Sequences without ATC-Class: #{atcless.size}",
-        nil, 
-        "Created Packages: #{@diff.news.size}",
-        @diff.news.collect { |row| resolve_link(row) }.sort,
-        "Updated Packages: #{@diff.updates.size}",
-        @diff.updates.collect { |row| resolve_link(row) }.sort,
-        "Deleted Packages: #{@diff.package_deletions.size}",
-        @diff.package_deletions.collect { |row| resolve_link(row) }.sort,
-        "Deleted Sequences: #{@diff.sequence_deletions.size}",
-        @diff.sequence_deletions.collect { |row| resolve_link(row) }.sort,
-        "Deactivated Registrations: #{@diff.registration_deletions.size}",
-        @diff.registration_deletions.collect { |row| resolve_link(row) }.sort,
-        "Total Sequences without ATC-Class: #{atcless.size}",
         atcless,
       ]
       lines.flatten.join("\n")
     end
     def resolve_link(ptr)
       unless(ptr.is_a? Persistence::Pointer)
-        ptr = pointer_from_row(row)
+        ptr = pointer_from_row(ptr)
       end
       "http://#{SERVER_NAME}/de/gcc/resolve/pointer/#{ptr}"
     end
     def rows_diff(row, other)
-      flags = []
-      COLUMNS.each_with_index { |key, idx|
-        if(cell(row, idx) != cell(other, idx))
-          flags.push key
-        end
-      }
+      flags = super(row, other)
+      if(other.first.is_a? String)
+        package = @app.registration(cell(row, 0)).package(cell(row, 9))
+        flags = flags.select { |flag|
+          origin = package.data_origin(flag)
+          origin ||= package.sequence.data_origin(flag)
+          origin ||= package.registration.data_origin(flag)
+          origin.nil? || origin == :swissmedic
+        }
+      end
       flags
     end
     def update_active_agent(seq, name, part)
@@ -483,21 +383,17 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       end
       substance
     end
-    def to_s(sort=:group)
-      return '' unless @diff
-      @diff.changes.sort_by { |iksnr, flags| 
-        _sort_by(sort, iksnr, flags)
-      }.collect { |iksnr, flags|
-        if(flags.include? :new)
-          "+ " << describe(@diff, iksnr)
-        elsif(flags.include? :delete)
-          "- " << describe(@diff, iksnr)
-        else
-          "> " << describe(@diff, iksnr) << "; " \
-            << flags.collect { |flag| describe_flag(@diff, iksnr, flag) 
-          }.compact.join(", ")
-        end
-      }.join("\n")
+    def sanity_check_deletions(diff)
+      return if File.exist? @latest
+      table = diff.registration_deletions.inject({}) { |memo, iksnr|
+        memo.store(iksnr, true)
+        memo
+      }
+      _sanity_check_deletions(diff.sequence_deletions, table)
+      _sanity_check_deletions(diff.package_deletions, table)
+    end
+    def _sanity_check_deletions(deletions, table)
+      deletions.delete_if { |row| table[cell(row,0)] }
     end
     def _sort_by(sort, iksnr, flags)
       case sort

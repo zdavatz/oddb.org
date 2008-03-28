@@ -14,13 +14,15 @@ module ODDB
 		NUMERIC_FLAGS = {
 			:new							=>	1,
 			:sl_entry_delete	=>	2,
-			:productname			=>	3, 
+			:name_base  			=>	3,
+			:productname			=>	3,  #legacy
 			:address					=>	4,
 			:ikscat						=>	5,
 			:composition			=>	6, 
 			:indication				=>	7,
 			:sequence					=>	8, 
-			:expirydate				=>	9,
+			:expirydate				=>	9,  #legacy
+			:expiry_date			=>	9,
 			:sl_entry					=>	10,
 			:price						=>	11, #legacy
 			:price_exfactory	=>	11, #legacy
@@ -77,7 +79,7 @@ module ODDB
 			rows
 		end
 		def export_registrations
-			if(lgrp = @app.log_group(:swissmedic_journal))
+			if(lgrp = @app.log_group(:swissmedic))
 				@smj = lgrp.latest
 			end
 			if(lgrp = @app.log_group(:bsv_sl))
