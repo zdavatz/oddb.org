@@ -328,10 +328,10 @@ Grammar OddbSize
 		end
 	end
 	class Package < PackageCommon
-    ODBA_SERIALIZABLE = [ '@prices' ]
+    ODBA_SERIALIZABLE = [ '@prices', '@ancestors' ]
     include ODBA::Persistable
     odba_index :pharmacode
-		attr_accessor :medwin_ikscd
+		attr_accessor :medwin_ikscd, :ancestors
 		include FeedbackObserver
 		def initialize(ikscd)
 			super

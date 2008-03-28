@@ -213,6 +213,9 @@ class OddbPrevalence
   def commercial_form(oid)
     @commercial_forms[oid.to_i]
   end
+  def commercial_form_by_name(name)
+    ODDB::CommercialForm.find_by_name(name)
+  end
 	def company(oid)
 		@companies[oid.to_i]
 	end

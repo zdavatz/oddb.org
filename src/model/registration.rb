@@ -16,7 +16,7 @@ module ODDB
 			:revision_date, :indication, :expiration_date, :inactive_date,
 			:market_date, :fachinfo, :source, :ikscat, :renewal_flag, #:pdf_fachinfos,
       :index_therapeuticus, :comarketing_with, :vaccine,
-      :parallel_import, :minifi
+      :parallel_import, :minifi, :product_group, :production_science
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
 		def initialize(iksnr)
@@ -96,7 +96,7 @@ module ODDB
 			@sequences.values.each(&block)
 		end
 		def expired?
-			(@inactive_date && @inactive_date <= @@today) \
+			inactive? \
 				|| (!@renewal_flag && @expiration_date && @expiration_date <= @@today)
 		end
 		def generic?
@@ -107,6 +107,9 @@ module ODDB
 				@company.generic_type
 			end
 		end
+    def inactive?
+      @inactive_date && @inactive_date <= @@today
+    end
 		def limitation_text_count
 			@sequences.values.inject(0) { |inj, seq|			
 				inj + seq.limitation_text_count

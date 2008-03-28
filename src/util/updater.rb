@@ -17,6 +17,7 @@ require 'plugin/narcotic'
 require 'plugin/ouwerkerk'
 require 'plugin/patinfo'
 require 'plugin/rss'
+require 'plugin/swissmedic'
 require 'plugin/swissmedicjournal'
 require 'plugin/swissreg'
 require 'plugin/vaccines'
@@ -169,15 +170,16 @@ module ODDB
 		end
 		def run
 			logfile_stats
-			update_swissmedicjournal
+      if(update_swissmedicjournal)
+        update_minifis
+      end
+			if(update_swissmedic)
+        update_swissmedic_followers
+      end
 			update_fachinfo
 			update_vaccines
 			if(update_bsv)
         update_bsv_followers
-			end
-			if(@smj_updated)
-				update_lppv
-				update_medwin_companies
 			end
       run_on_monthday(1) {
         update_interactions 
@@ -300,6 +302,33 @@ module ODDB
 		def update_patinfo_news
 			update_simple(PatinfoPlugin, 'Patinfo', :update_news)
 		end
+    def update_swissmedic(*args)
+      logs_pointer = Persistence::Pointer.new([:log_group, :swissmedic])
+      logs = @app.create(logs_pointer)
+      klass = SwissmedicPlugin
+      plug = klass.new(@app)
+      wrap_update(klass, "swissmedic") { 
+        if(plug.update(*args))
+          pointer = logs.pointer + [:log, @@today]
+          log = @app.update(pointer.creator, log_info(plug))
+          log.notify('Swissmedic')
+          @smj_updated = true
+        end
+      }
+    end
+    def update_swissmedic_followers
+			update_trade_status
+			update_medwin_packages
+			reconsider_bsv
+			update_comarketing
+			update_swissreg_news
+      update_lppv
+      update_medwin_companies
+			exporter = Exporter.new(@app)
+			exporter.export_generics_xls
+      exporter.export_patents_xls
+      exporter.mail_swissmedic_notifications
+    end
 		def update_swissmedicjournal
 			logs_pointer = Persistence::Pointer.new([:log_group, :swissmedic_journal])
 			logs = @app.create(logs_pointer)

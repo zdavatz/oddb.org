@@ -7,6 +7,7 @@ require 'swissmedicjournal/control'
 require 'util/persistence'
 require 'model/address'
 require 'cgi'
+require 'mechanize'
 
 module ODDB
 	class SwissmedicJournalPlugin < Plugin
@@ -28,7 +29,6 @@ module ODDB
 		attr_reader :incomplete_pointers
 		def initialize(app)
 			super
-			@ctrl = SwissmedicJournal::Control.new(ARCHIVE_PATH)
 			@registration_pointers = []
 			@incomplete_pointers = []
 			@deactivated_pointers = []
@@ -96,7 +96,6 @@ module ODDB
       if((grp = @app.log_group(:swissmedic_journal)) && (log = grp.latest))
         all_flags = log.change_flags
         companies = all_flags.inject({}) { |memo, (pointer, flgs)|
-          puts pointer
           if((reg = pointer.resolve(@app)) && (cmp = reg.company) \
              && (email = cmp.swissmedic_email))
             salutations.store(email, cmp.swissmedic_salutation)
@@ -176,21 +175,15 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
 			lines.flatten.join("\n")
 		end
 		def update(month)
-			@month = month
-			regs = @ctrl.registrations(month)
-			unless(regs.nil?)
-				regs.each { |reg|
-					case reg
-					when SwissmedicJournal::ActiveRegistration
-						update_registration(reg) if(reg.patient_type == :human)
-					when SwissmedicJournal::InactiveRegistration
-						deactivate_registration(reg)
-					end
-				}
-				true
-			else
-				false
-			end
+      filename = month.strftime('%m_%Y.pdf')
+      target = File.join(ARCHIVE_PATH, 'pdf', filename)
+      source = "http://www.swissmedic.ch/files/pdf/#{filename}"
+      unless File.exist?(target)
+        agent = WWW::Mechanize.new
+        page = agent.get source
+        page.save target
+      end
+    rescue WWW::Mechanize::ResponseCodeError
 		end
 		private
 		def accept_galenic_form?(pointer, smj_seq)
@@ -204,7 +197,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
 				language = if (smj_seq.most_precise_galform == smj_seq.galform_name)
 					:de
 				else
-					:la
+					:lt
 				end
 				hash = {
 					language	=>	smj_seq.most_precise_galform
