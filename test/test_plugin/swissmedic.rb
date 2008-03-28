@@ -263,6 +263,7 @@ module ODDB
       seq.should_receive(:pointer).and_return ptr
       pac = flexmock 'package'
       pac.should_receive(:pharmacode).and_return '1234567'
+      pac.should_receive(:ancestors).and_return nil
       pac.should_ignore_missing
       seq.should_receive(:package).with('007').and_return pac
       seq.should_receive(:package).with('011')
