@@ -226,9 +226,10 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
               else
                 (seq.pointer + [:active_agent, name]).creator
               end
+        dose = match[:dose].split(/\b\s*/, 2) if match[:dose]
         args = {
           :substance => name,
-          :dose      => match[:dose],
+          :dose      => dose,
         }
         if(chemical = match[:chemical])
           chemical = capitalize(chemical)
@@ -248,7 +249,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         @app.update ptr, { :name => name }
       end
     end
-    def update_composition(seq, row)
+    def update_composition(seq, row, opts={:create_only => false})
+      return if opts[:create_only] && !seq.active_agents.empty?
       if(namestr = cell(row, 13))
         names = namestr.split(/\s*,\s*/).collect { |name| 
           capitalize(name) }
@@ -261,7 +263,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         }
       end
     end
-    def update_galenic_form(seq, row)
+    def update_galenic_form(seq, row, opts={:create_only => false})
+      return if opts[:create_only] && seq.galenic_form
       if((german = seq.name_descr) && !german.empty?)
         _update_galenic_form(seq, :de, german)
       elsif(match = GALFORM_P.match(cell(row, 14)))
@@ -278,7 +281,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       @app.update(ptr, { lang => name }, :swissmedic)
       @app.update(seq.pointer, { :galenic_form => name }, :swissmedic)
     end
-    def update_package(seq, row, replacements={})
+    def update_package(seq, row, replacements={}, opts={:create_only => false})
       cd = cell(row, 9)
       if(cd.to_i > 0)
         args = {
@@ -286,6 +289,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
           :ikscat => cell(row, 12),
         }
         ptr = if(package = seq.package(cd))
+                return package if opts[:create_only]
                 package.pointer
               else
                 args.store :refdata_override, true
@@ -301,12 +305,14 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         @app.update(ptr, args, :swissmedic)
       end
     end
-    def update_registration(row, date=@@today)
+    def update_registration(row, opts = {:date => @@today, :create_only => false})
+      opts[:date] ||= @@today
       group = cell(row, 4)
       if(group != 'TAM')
         iksnr = cell(row, 0)
         science = cell(row, 6)
         ptr = if(registration = @app.registration(iksnr))
+                return registration if opts[:create_only]
                 registration.pointer
               else
                 Persistence::Pointer.new([:registration, iksnr]).creator
@@ -320,7 +326,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
           :expiration_date     => expiration,
           :renewal_flag        => false,
         }
-        if(expiration < date)
+        if(expiration < opts[:date])
           args.store :renewal_flag, true
         end
         case science
@@ -336,19 +342,25 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         end
         @app.update ptr, args, :swissmedic
       end
+    rescue SystemStackError 
+      cells = (0...(row.size)).to_a.collect { |idx| cell(row, idx) }
+      puts "Stack-Error when importing: #{cells.inspect}"
     end
     def update_registrations(rows, replacements)
+      opts = { :create_only => !File.exist?(@latest),
+               :date        => @@today, }
       rows.each { |row|
-        reg = update_registration(row) if row
-        seq = update_sequence(reg, row) if reg
-        update_composition(seq, row) if seq
-        update_galenic_form(seq, row) if seq
-        pac = update_package(seq, row, replacements) if seq
+        reg = update_registration(row, opts) if row
+        seq = update_sequence(reg, row, opts) if reg
+        update_composition(seq, row, opts) if seq
+        update_galenic_form(seq, row, opts) if seq
+        pac = update_package(seq, row, replacements, opts) if seq
       }
     end
-    def update_sequence(registration, row)
+    def update_sequence(registration, row, opts={:create_only => false})
       seqnr = "%02i" % cell(row, 1).to_i
       ptr = if(sequence = registration.sequence(seqnr))
+              return sequence if opts[:create_only]
               sequence.pointer
             else
               (registration.pointer + [:sequence, seqnr]).creator

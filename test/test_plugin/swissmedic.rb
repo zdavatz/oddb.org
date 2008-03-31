@@ -88,7 +88,7 @@ module ODDB
       }
       @app.should_receive(:update).with(ptr.creator, args, :swissmedic)\
         .times(1).and_return { assert true }
-      @plugin.update_registration(row, Date.new(2008,3,19))
+      @plugin.update_registration(row, :date => Date.new(2008,3,19))
     end
     def test_update_registration__update
       row = @workbook.worksheet(0).row(3)
@@ -111,7 +111,7 @@ module ODDB
       }
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
         .times(1).and_return { assert true }
-      @plugin.update_registration(row, Date.new(2008,3,19))
+      @plugin.update_registration(row, :date => Date.new(2008,3,19))
     end
     def test_update_registration__ignore_vet
       row = @workbook.worksheet(0).row(7)
@@ -141,7 +141,7 @@ module ODDB
       }
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
         .times(1).and_return { assert true }
-      @plugin.update_registration(row, Date.new(2008,3,19))
+      @plugin.update_registration(row, :date => Date.new(2008,3,19))
     end
     def test_update_registration__anthropo
       row = @workbook.worksheet(0).row(6)
@@ -165,7 +165,7 @@ module ODDB
       }
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
         .times(1).and_return { assert true }
-      @plugin.update_registration(row, Date.new(2008,3,19))
+      @plugin.update_registration(row, :date => Date.new(2008,3,19))
     end
     def test_update_registration__homoeo
       row = @workbook.worksheet(0).row(8)
@@ -189,7 +189,7 @@ module ODDB
       }
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
         .times(1).and_return { assert true }
-      @plugin.update_registration(row, Date.new(2008,3,19))
+      @plugin.update_registration(row, :date => Date.new(2008,3,19))
     end
     def test_update_registration__renewal
       row = @workbook.worksheet(0).row(3)
@@ -212,7 +212,7 @@ module ODDB
       }
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
         .times(1).and_return { assert true }
-      @plugin.update_registration(row, Date.new(2012,5,10))
+      @plugin.update_registration(row, :date => Date.new(2012,5,10))
     end
     def test_update_sequence__create
       row = @workbook.worksheet(0).row(3)
@@ -322,7 +322,7 @@ module ODDB
       aptr = ptr + [:active_agent, 'Acidum Acetylsalicylicum']
       args =  {
         :substance => 'Acidum Acetylsalicylicum',
-        :dose      => '500 mg',
+        :dose      => ["500", 'mg'],
       }
       @app.should_receive(:update).with(aptr.creator, args, :swissmedic)\
         .times(1).and_return { assert true }
@@ -344,7 +344,7 @@ module ODDB
         .and_return agent
       args =  {
         :substance => 'Acidum Acetylsalicylicum',
-        :dose      => '500 mg',
+        :dose      => ['500', 'mg'],
       }
       @app.should_receive(:update).with(aptr, args, :swissmedic)\
         .times(1).and_return { assert true }
@@ -378,7 +378,7 @@ module ODDB
         .and_return agent2
       args =  {
         :substance          => 'Procainum',
-        :dose               => '10 mg',
+        :dose               => %w{10 mg},
         :chemical_substance => 'Procaini Hydrochloridum',
         :chemical_dose      => nil,
       }
@@ -386,7 +386,7 @@ module ODDB
         .times(1).and_return { assert true }
       args =  {
         :substance          => 'Phenazonum',
-        :dose               => '50 mg',
+        :dose               => %w'50 mg',
       }
       @app.should_receive(:update).with(aptr2, args, :swissmedic)\
         .times(1).and_return { assert true }
