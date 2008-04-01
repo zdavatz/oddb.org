@@ -272,13 +272,12 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       end
     end
     def _update_galenic_form(seq, lang, name)
-      ptr = if(gf = @app.galenic_form(name))
-              gf.pointer
-            else
-              Persistence::Pointer.new([:galenic_group, 1], 
+      unless(gf = @app.galenic_form(name))
+        ptr = Persistence::Pointer.new([:galenic_group, 1], 
                                        [:galenic_form]).creator
-            end
-      @app.update(ptr, { lang => name }, :swissmedic)
+
+        @app.update(ptr, {lang => name}, :swissmedic)
+      end
       @app.update(seq.pointer, { :galenic_form => name }, :swissmedic)
     end
     def update_package(seq, row, replacements={}, opts={:create_only => false})
