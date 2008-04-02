@@ -940,7 +940,7 @@ module ODDB
       :explain_ddd_price => {'target' => '_parent'},
     }
     RESOURCES = {
-      :external_css	=>	'http://www.aixede.ch/mymedi/screen.css',
+      :external_css	=>	'http://www.mymedi.ch/css/oddb.css',
     }
 		def compare_list_components
 			{
