@@ -264,7 +264,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       end
     end
     def update_galenic_form(seq, row, opts={:create_only => false})
-      return if opts[:create_only] && seq.galenic_form
+      return if seq.galenic_form
       if((german = seq.name_descr) && !german.empty?)
         _update_galenic_form(seq, :de, german)
       elsif(match = GALFORM_P.match(cell(row, 14)))
