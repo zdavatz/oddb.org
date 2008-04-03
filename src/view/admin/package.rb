@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::Package -- oddb -- 14.03.2003 -- hwyss@ywesee.com 
 
+require 'view/admin/swissmedic_source'
 require 'view/drugs/privatetemplate'
 require 'view/form'
 require 'view/pointervalue'
@@ -152,6 +153,7 @@ class DeductiblePackageForm < View::Admin::PackageInnerComposite
 	}
 end
 class PackageComposite < HtmlGrid::Composite
+  include SwissmedicSource
 	COMPONENTS = {
 		[0,0]	=>	:package_name,
 		[0,1]	=>	View::Admin::PackageInnerComposite,
@@ -164,6 +166,11 @@ class PackageComposite < HtmlGrid::Composite
 		sequence = model.parent(session.app)
 		[sequence.name, model.size].compact.join('&nbsp;-&nbsp;')
 	end
+  def source(model, session=@session)
+    val = HtmlGrid::Value.new(:source, model, @session, self)
+    val.value = package_source(model) if model
+    val
+  end
 end
 class RootPackageComposite < View::Admin::PackageComposite
 	COMPONENTS = {
@@ -176,9 +183,6 @@ class RootPackageComposite < View::Admin::PackageComposite
 		[0,0]	=>	'th',
 		[0,2]	=>	'subheading',
 	}
-	def source(model, session)
-		HtmlGrid::Value.new(:source, model.sequence, @session, self)
-	end
 end
 class DeductiblePackageComposite < View::Admin::RootPackageComposite
 	COMPONENTS = {

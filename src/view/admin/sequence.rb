@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # View::Admin::Sequence -- oddb -- 11.03.2003 -- hwyss@ywesee.com 
 
+require 'view/admin/swissmedic_source'
 require 'view/drugs/privatetemplate'
 require 'view/form'
 require 'view/dataformat'
@@ -353,6 +354,7 @@ class ResellerSequenceForm < SequenceForm
 	DEFAULT_CLASS = HtmlGrid::Value
 end
 class SequenceComposite < HtmlGrid::Composite
+  include SwissmedicSource
 	AGENTS = View::Admin::SequenceAgents
 	COMPONENTS = {
 		[0,0]	=>	:sequence_name,
@@ -384,6 +386,11 @@ class SequenceComposite < HtmlGrid::Composite
 			self::class::PACKAGES.new(values, session, self)
 		end
 	end
+  def source(model, session=@session)
+    val = HtmlGrid::Value.new(:source, model, @session, self)
+    val.value = sequence_source(model) if model
+    val
+  end
 end
 class RootSequenceComposite < View::Admin::SequenceComposite
 	AGENTS = View::Admin::RootSequenceAgents

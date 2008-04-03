@@ -10,6 +10,7 @@ require 'htmlgrid/inputfile'
 require 'htmlgrid/inputcheckbox'
 require 'view/pointervalue'
 require 'view/additional_information'
+require 'view/admin/swissmedic_source'
 require 'view/inputdescription'
 require 'view/form'
 
@@ -338,6 +339,7 @@ class ResellerRegistrationForm < View::Form
 	end
 end
 class RegistrationComposite < HtmlGrid::Composite
+  include SwissmedicSource
 	COMPONENTS = {
 		[0,1]		=>	View::Admin::RegistrationInnerComposite,
 		[0,2]		=>	:registration_sequences,
@@ -354,6 +356,11 @@ class RegistrationComposite < HtmlGrid::Composite
 			self::class::SEQUENCES.new(values, session, self)
 		end
 	end
+  def source(model, session=@session)
+    val = HtmlGrid::Value.new(:source, model, @session, self)
+    val.value = registration_source(model) if model
+    val
+  end
 end
 class RootRegistrationComposite < View::Admin::RegistrationComposite
 	COMPONENTS = {

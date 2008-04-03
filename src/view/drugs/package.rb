@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # View::Drugs::Package -- oddb -- 15.02.2005 -- hwyss@ywesee.com
 
+require 'view/admin/swissmedic_source'
 require 'view/drugs/privatetemplate'
 require 'view/additional_information'
 require 'view/admin/sequence'
@@ -149,6 +150,7 @@ class PackageInnerComposite < HtmlGrid::Composite
 	end
 end
 class PackageComposite < HtmlGrid::Composite
+  include View::Admin::SwissmedicSource
 	COMPONENTS = {
 		[0,0]	=>	:package_name,
 		[0,1]	=>	View::Drugs::PackageInnerComposite,
@@ -171,6 +173,11 @@ class PackageComposite < HtmlGrid::Composite
 			View::Admin::SequenceAgents.new(agents, session, self)
 		end
 	end
+  def source(model, session=@session)
+    val = HtmlGrid::Value.new(:source, model, @session, self)
+    val.value = package_source(model) if model
+    val
+  end
 end
 class Package < PrivateTemplate
 	CONTENT = View::Drugs::PackageComposite

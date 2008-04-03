@@ -166,7 +166,7 @@ Grammar OddbSize
 		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type,
 			:price_exfactory, :price_public, :pretty_dose, :pharmacode, :market_date,
 			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
-      :commercial_form, :disable,
+      :commercial_form, :disable, :swissmedic_source,
 			:deductible_m # for just-medical
 		alias :pointer_descr :ikscd
 		registration_data :comarketing_with, :complementary_type, :expiration_date,
@@ -328,7 +328,7 @@ Grammar OddbSize
 		end
 	end
 	class Package < PackageCommon
-    ODBA_SERIALIZABLE = [ '@prices', '@ancestors' ]
+    ODBA_SERIALIZABLE = [ '@prices', '@ancestors', '@swissmedic_source' ]
     include ODBA::Persistable
     odba_index :pharmacode
 		attr_accessor :medwin_ikscd, :ancestors

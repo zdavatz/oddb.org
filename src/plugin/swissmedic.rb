@@ -6,6 +6,7 @@ require 'mechanize'
 require 'ostruct'
 require 'parseexcel'
 require 'plugin/plugin'
+require 'pp'
 require 'util/persistence'
 require 'util/today'
 require 'swissmedic-diff'
@@ -117,6 +118,18 @@ module ODDB
         }
       end
     end
+    def fix_compositions
+      row = nil
+      tbook = Spreadsheet::ParseExcel.parse(@latest)
+      tbook.worksheet(0).each(3) { |row|
+        reg = update_registration(row) if row
+        seq = update_sequence(reg, row) if reg
+        update_composition(seq, row) if seq
+      }
+    rescue SystemStackError => err
+      puts "System Stack Error when fixing #{source_row(row).pretty_inspect}"
+      puts err.backtrace[-100..-1]
+    end
     def get_latest_file(agent)
       file = agent.get('http://www.swissmedic.ch/files/pdf/Packungen.xls')
       download = file.body
@@ -213,6 +226,21 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       end
       flags
     end
+    def source_row(row)
+      hsh = { :import_date => @@today }
+      COLUMNS.each_with_index { |key, idx|
+        value = case key
+                when :registration_date, :expiry_date
+                  row.at(idx).date
+                when :seqnr
+                  sprintf "%02i", row.at(idx).to_i
+                else
+                  cell(row, idx)
+                end
+        hsh.store key, value
+      }
+      hsh
+    end
     def update_active_agent(seq, name, part)
       ptrn = %r{(?ix)
                 #{Regexp.escape name}
@@ -233,7 +261,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         }
         if(chemical = match[:chemical])
           chemical = capitalize(chemical)
-          update_substance chemical, name
+          update_substance chemical
           args.update(:chemical_substance => chemical,
                       :chemical_dose      => match[:cdose])
         end
@@ -261,6 +289,13 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         names.each { |name|
           update_active_agent(seq, name, composition)
         }
+        unless(names.empty?)
+          seq.active_agents.dup.each { |act|
+            unless(names.any? { |name| act.substance == name })
+              @app.delete(act.pointer) 
+            end
+          }
+        end
       end
     end
     def update_galenic_form(seq, row, opts={:create_only => false})
@@ -284,8 +319,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       cd = cell(row, 9)
       if(cd.to_i > 0)
         args = {
-          :size   => [cell(row, 10), cell(row, 11)].compact.join(' '),
-          :ikscat => cell(row, 12),
+          :size              => [cell(row, 10), cell(row, 11)].compact.join(' '),
+          :ikscat            => cell(row, 12),
+          :swissmedic_source => source_row(row),
         }
         ptr = if(package = seq.package(cd))
                 return package if opts[:create_only]
@@ -342,8 +378,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         @app.update ptr, args, :swissmedic
       end
     rescue SystemStackError 
-      cells = (0...(row.size)).to_a.collect { |idx| cell(row, idx) }
-      puts "Stack-Error when importing: #{cells.inspect}"
+      puts "Stack-Error when importing: #{source_row(row).pretty_inspect}"
+      puts err.backtrace[-100..-1]
     end
     def update_registrations(rows, replacements)
       opts = { :create_only => !File.exist?(@latest),
@@ -365,7 +401,10 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
               (registration.pointer + [:sequence, seqnr]).creator
             end
       ## some names use commas for dosage --v
-      base, descr = cell(row, 2).split(/\s*,(?!\d)\s*/, 2)
+      parts = cell(row, 2).split(/\s*,(?!\d)\s*/)
+      descr = parts.pop
+      base = parts.join(', ')
+      base, descr = descr, nil if base.empty?
       args = { 
         :composition_text => cell(row, 14),
         :name_base        => base,
@@ -382,15 +421,11 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
 			end
       @app.update ptr, args, :swissmedic
     end
-    def update_substance(name, effective_name=nil)
-      substance = @app.substance(name) \
-                    || @app.update(Persistence::Pointer.new(:substance).creator, 
-                                   {:lt => name}, :swissmedic)
-
-      if(effective_name)
-        effective = update_substance effective_name
-        @app.update substance.pointer, 
-                    {:effective_form => effective.pointer}, :swissmedic
+    def update_substance(name)
+      substance = @app.substance(name)
+      if(substance.nil?)
+        substance = @app.update(Persistence::Pointer.new(:substance).creator, 
+                                {:lt => name}, :swissmedic)
       end
       substance
     end

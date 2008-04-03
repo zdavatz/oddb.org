@@ -247,10 +247,28 @@ module ODDB
       @app.should_receive(:commercial_form_by_name).with('Tablette(n)')\
         .and_return comform
       args = {
-        :commercial_form => 'comform-pointer',
-        :size            => "20 Tablette(n)",
-        :ikscat          => "D",
-        :refdata_override=> true,
+        :commercial_form   => 'comform-pointer',
+        :size              => "20 Tablette(n)",
+        :ikscat            => "D",
+        :refdata_override  => true,
+        :swissmedic_source => {
+          :composition     => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.", 
+          :company         => "Bayer (Schweiz) AG", 
+          :product_group   => "OTC", 
+          :name_base       => "Aspirin, Tabletten", 
+          :iksnr           => "08537", 
+          :import_date     => @@today, 
+          :ikscat          => "D", 
+          :expiry_date     => Date.new(2012,5,9), 
+          :index_therapeuticus => "01.01.1.", 
+          :seqnr           => "01", 
+          :ikscd           => "011", 
+          :production_science => "Synthetika human", 
+          :unit            => "Tablette(n)", 
+          :registration_date => Date.new(1936,6,30), 
+          :size            => "20", 
+          :substances      => "acidum acetylsalicylicum"
+        }
       }
       @app.should_receive(:update).with(pptr.creator, args, :swissmedic)\
         .times(1).and_return { assert true }
@@ -280,6 +298,24 @@ module ODDB
         :refdata_override=> true,
         :pharmacode      => '1234567',
         :ancestors       => ['007'],
+        :swissmedic_source => {
+          :composition     => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.", 
+          :company         => "Bayer (Schweiz) AG", 
+          :product_group   => "OTC", 
+          :name_base       => "Aspirin, Tabletten", 
+          :iksnr           => "08537", 
+          :import_date     => @@today, 
+          :ikscat          => "D", 
+          :expiry_date     => Date.new(2012,5,9), 
+          :index_therapeuticus => "01.01.1.", 
+          :seqnr           => "01", 
+          :ikscd           => "011", 
+          :production_science => "Synthetika human", 
+          :unit            => "Tablette(n)", 
+          :registration_date => Date.new(1936,6,30), 
+          :size            => "20", 
+          :substances      => "acidum acetylsalicylicum"
+        }
       }
       @app.should_receive(:update).with(pptr.creator, args, :swissmedic)\
         .times(1).and_return { assert true }
@@ -303,6 +339,24 @@ module ODDB
         :commercial_form => 'comform-pointer',
         :size            => "20 Tablette(n)",
         :ikscat          => "D",
+        :swissmedic_source => {
+          :composition     => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.", 
+          :company         => "Bayer (Schweiz) AG", 
+          :product_group   => "OTC", 
+          :name_base       => "Aspirin, Tabletten", 
+          :iksnr           => "08537", 
+          :import_date     => @@today, 
+          :ikscat          => "D", 
+          :expiry_date     => Date.new(2012,5,9), 
+          :index_therapeuticus => "01.01.1.", 
+          :seqnr           => "01", 
+          :ikscd           => "011", 
+          :production_science => "Synthetika human", 
+          :unit            => "Tablette(n)", 
+          :registration_date => Date.new(1936,6,30), 
+          :size            => "20", 
+          :substances      => "acidum acetylsalicylicum"
+        }
       }
       @app.should_receive(:update).with(pptr, args, :swissmedic)\
         .times(1).and_return { assert true }
@@ -314,6 +368,7 @@ module ODDB
       ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
       seq.should_receive(:pointer).and_return ptr
       seq.should_receive(:active_agent).with('Acidum Acetylsalicylicum')
+      seq.should_receive(:active_agents).and_return []
       @app.should_receive(:substance).with('Acidum Acetylsalicylicum')
       sptr = Persistence::Pointer.new([:substance]).creator
       args = { :lt => 'Acidum Acetylsalicylicum' }
@@ -334,12 +389,15 @@ module ODDB
       ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
       seq.should_receive(:pointer).and_return ptr
       substance = flexmock 'substance'
+      substance.should_receive(:==).with('Acidum Acetylsalicylicum').and_return true
       #sptr = Persistence::Pointer.new([:substance, 12])
       @app.should_receive(:substance).with('Acidum Acetylsalicylicum')\
         .and_return substance
       aptr = ptr + [:active_agent, 'Acidum Acetylsalicylicum']
       agent = flexmock 'active-agent'
       agent.should_receive(:pointer).and_return aptr
+      agent.should_receive(:substance).and_return substance
+      seq.should_receive(:active_agents).and_return [agent]
       seq.should_receive(:active_agent).with('Acidum Acetylsalicylicum')\
         .and_return agent
       args =  {
@@ -355,6 +413,7 @@ module ODDB
       seq = flexmock 'sequence'
       ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
       seq.should_receive(:pointer).and_return ptr
+      seq.should_receive(:active_agents).and_return []
       substance1 = flexmock 'substance1'
       substance1.should_receive(:pointer).and_return 'substance-ptr'
       @app.should_receive(:substance).with('Procainum')\
@@ -393,41 +452,52 @@ module ODDB
       args =  {
         :effective_form => 'substance-ptr',
       }
-      @app.should_receive(:update).with('equi-ptr', args, :swissmedic)\
+      @plugin.update_composition(seq, row)
+    end
+    def test_update_composition__delete
+      row = @workbook.worksheet(0).row(3)
+      seq = flexmock 'sequence'
+      ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
+      seq.should_receive(:pointer).and_return ptr
+      substance = flexmock 'substance'
+      substance.should_receive(:==).with('Acidum Acetylsalicylicum').and_return false
+      #sptr = Persistence::Pointer.new([:substance, 12])
+      @app.should_receive(:substance).with('Acidum Acetylsalicylicum')\
+        .and_return substance
+      aptr = ptr + [:active_agent, 'Acidum Acetylsalicylicum']
+      agent = flexmock 'active-agent'
+      agent.should_receive(:pointer).and_return aptr
+      agent.should_receive(:substance).and_return substance
+      seq.should_receive(:active_agents).and_return [agent]
+      seq.should_receive(:active_agent).with('Acidum Acetylsalicylicum')\
+        .and_return agent
+      args =  {
+        :substance => 'Acidum Acetylsalicylicum',
+        :dose      => ['500', 'mg'],
+      }
+      @app.should_receive(:update).with(aptr, args, :swissmedic)\
+        .times(1).and_return { assert true }
+      @app.should_receive(:delete).with(aptr)\
         .times(1).and_return { assert true }
       @plugin.update_composition(seq, row)
     end
-    def test_update_galenic_form__update__descr
+    def test_update_galenic_form__dont_update__descr
       row = @workbook.worksheet(0).row(3)
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr).and_return 'Tabletten'
       seq.should_receive(:pointer).and_return 'sequence-ptr'
       galform = flexmock 'galform'
-      galform.should_receive(:pointer).and_return 'galform-ptr'
-      @app.should_receive(:galenic_form).with('Tabletten').and_return galform
-      args = { :de => 'Tabletten' }
-      @app.should_receive(:update).with('galform-ptr', args, :swissmedic)\
-        .times(1).and_return { assert true }
-      args = { :galenic_form => 'Tabletten' }
-      @app.should_receive(:update).with('sequence-ptr', args, :swissmedic)\
-        .times(1).and_return { assert true }
+      seq.should_receive(:galenic_form).and_return galform
       @plugin.update_galenic_form(seq, row)
     end
-    def test_update_galenic_form__update__composition
+    def test_update_galenic_form__dont_update__composition
       row = @workbook.worksheet(0).row(3)
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr)
       seq.should_receive(:pointer).and_return 'sequence-ptr'
       @app.should_receive(:galenic_form).with('Tabletten')
       galform = flexmock 'galenic-form'
-      galform.should_receive(:pointer).and_return 'galform-ptr'
-      @app.should_receive(:galenic_form).with('compresso').and_return galform
-      args = { :lt => 'compresso' }
-      @app.should_receive(:update).with('galform-ptr', args, :swissmedic)\
-        .times(1).and_return { assert true }
-      args = { :galenic_form => 'compresso' }
-      @app.should_receive(:update).with('sequence-ptr', args, :swissmedic)\
-        .times(1).and_return { assert true }
+      seq.should_receive(:galenic_form).and_return galform
       @plugin.update_galenic_form(seq, row)
     end
     def test_update_galenic_form__create__descr
@@ -435,6 +505,7 @@ module ODDB
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr).and_return 'Tabletten'
       seq.should_receive(:pointer).and_return 'sequence-ptr'
+      seq.should_receive(:galenic_form).and_return nil
       @app.should_receive(:galenic_form).with('Tabletten')
       @app.should_receive(:galenic_form).with('compresso')
       args = { :de => 'Tabletten' }
@@ -451,6 +522,7 @@ module ODDB
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr)
       seq.should_receive(:pointer).and_return 'sequence-ptr'
+      seq.should_receive(:galenic_form).and_return nil
       @app.should_receive(:galenic_form).with('unguentum')
       args = { :lt => 'unguentum' }
       ptr = Persistence::Pointer.new([:galenic_group, 1], [:galenic_form]).creator
