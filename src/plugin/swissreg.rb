@@ -53,7 +53,7 @@ module ODDB
 		end
 		def update_news
 			substances = []
-			if((group = @app.log_group(:swissmedic_journal)) && (log = group.latest))
+			if((group = @app.log_group(:swissmedic)) && (log = group.latest))
 				log.change_flags.each_key { |ptr| 
 					if(reg = ptr.resolve(@app))
 						reg.each_sequence { |seq|
