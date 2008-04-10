@@ -240,10 +240,6 @@ Grammar OddbSize
         sl.pointer = @pointer + [:sl_entry]
         sl.odba_store
       end
-      feedbacks.each { |fb|
-        fb.pointer = @pointer + [:feedback, fb.oid]
-        fb.odba_store
-      }
       odba_store
     end
 		def good_result?(query)

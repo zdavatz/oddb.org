@@ -128,6 +128,7 @@ class FeedbackList < HtmlGrid::List
 	OMIT_HEADER = true
 	OFFSET_STEP = [0,7]
 	BACKGROUND_SUFFIX =	' bg'
+  SORT_DEFAULT = nil
 	def experience(model, session)
 		result(model.experience)
 	end
