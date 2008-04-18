@@ -28,6 +28,8 @@ module ODDB
                          |(?:Zulassung\s*des\s*ersten[^:]+)):
                     (?:\s+Informationen\s+zu)?
                     \s*(?<name>[^,\s\256\(]+(,?\s*ad\s*us\.\s*vet\.)?))
+                    |
+                    ^(?:Zulassung\s*von\s*[,"\253«]{1,2})(?<name>[^,"\273»]+)
                     /x
         def initialize
           super('', '')
@@ -61,7 +63,7 @@ module ODDB
           when %r{^Zulassung eines( pflanzlichen)? Arzneimittels mit( einem)? neue[mn] Wirk?stoff}i,
             %r{^Neuzulassung eines Medikamente?s mit( einem)? neue[mn] Wirkstoff}i,
             %r{^(Erst)?Zulassung eines neuen (Impf|Wirk)stoffe?s}i,
-            %r{^Zulassung des ersten}i
+            %r{^Zulassung des ersten}i, %r{^Zulassung von [,"\253«]{1,2}}
             if(@reached_news)
               @current = {}
               @minifis.push(@current)
@@ -71,7 +73,7 @@ module ODDB
             %r{^Autorisation d.livr.es? pour (un|de) nouveaux? principes? actifs?}i,
             %r{^Autorisation d.livr.es? pour (un|de) nouveaux? produits? de vaccins?}i,
             %r{^Autorisation d.un nouveau (principe actif|vaccin)}i,
-            %r{^Autorisation du premier}i,
+            %r{^Autorisation du premier}i, %r{^Autorisation de [,"\253«]{1,2}},
             %r{^Autorisation d.(livr.e pour )?un m.dicament avec un nouveau}i
             @current[:fr] = create_document if @current
           when %r{Arzneimittel Nachrichten( / M.dicaments)?$},

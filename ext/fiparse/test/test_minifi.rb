@@ -335,6 +335,18 @@ Pour des plus amples informations relatives à la préparation, veuillez consulter
         assert_equal "Zulassung eines pflanzlichen Arzneimittels mit neuem Wirstoff: Umckaloabo®, Lösung (Ethanolischer Flüssigextrakt aus den Wurzeln von Pelargonium sidoides)", mini1[:de].heading
         assert_equal "Autorisation d'un phytom\351dicament contenant un nouveau principe actif: Umckaloabo\256, solution (extrait \351thanolique liquide de racines de pelargonium sidoides)", mini1[:fr].heading
       end
+      def test_smj_03_2008
+        eval(File.read(File.expand_path('data/smj_03_2008.rb',
+                                        File.dirname(__FILE__))))
+        assert_equal(1, @writer.minifis.size)
+        expected = [ "Theraflex MB Plasma", ] 
+        assert_equal(expected, 
+                     @writer.minifis.collect { |mini| mini[:name] })
+
+        mini1, = @writer.minifis
+        assert_equal "Zulassung von ,,Theraflex MB Plasma\", einem Methylenblau-Verfahren zur Inaktivierung von beh\374llten Viren in Plasma zur Transfusion unter der Zulassungsnummer 00706 (Zulassung eines Verfahrens nach Art. 19 VAM)", mini1[:de].heading
+        assert_equal "Autorisation de \253Theraflex MB Plasma\273, un proc\351d\351 utilisant le bleu de m\351thyl\350ne pour l'inactivation de virus envelopp\351s pr\351sents dans le plasma destin\351 \340 la transfusion; n\260 d'autorisation 00706 (autorisation d'un proc\351d\351 selon l'art. 19 OM\351d)", mini1[:fr].heading
+      end
     end
   end
 end
