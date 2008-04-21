@@ -74,6 +74,7 @@ class ActiveAgentComposite < HtmlGrid::Composite
 	end
 end
 class RootActiveAgentComposite < View::Admin::ActiveAgentComposite
+  include SwissmedicSource
 	COMPONENTS = {
 		[0,0]	=>	:agent_name,
 		[0,1]	=>	View::Admin::ActiveAgentForm,
@@ -88,9 +89,11 @@ class RootActiveAgentComposite < View::Admin::ActiveAgentComposite
 	def active_agents(model, session=@session)
 		RootSequenceAgents.new(model.sequence.active_agents, @session, self)
 	end
-	def source(model, session)
-		HtmlGrid::Value.new(:source, model.sequence, @session, self)
-	end
+  def source(model, session=@session)
+    val = HtmlGrid::Value.new(:source, model, @session, self)
+    val.value = sequence_source(model.sequence) if model
+    val
+  end
 end
 class ActiveAgent < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::ActiveAgentComposite
