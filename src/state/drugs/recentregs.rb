@@ -33,24 +33,29 @@ class RecentRegs < State::Drugs::Global
 	LIMITED = true
 	def init
 		@model = nil
-		if(loggroup = @session.app.log_group(:swissmedic_journal))
+    journals = @session.app.log_group(:swissmedic_journal)
+    later = @session.app.log_group(:swissmedic)
+    year = nil
+		if(journals || later)
 			if((month = @session.user_input(:month)) \
 				 && (year = @session.user_input(:year)))
-				@date = Date.new(year.to_i, month.to_i)
+        year = year.to_i
+				@date = Date.new(year, month.to_i)
 				@model = [
 					create_package_month(@date)
 				]
-			elsif(@date = loggroup.newest_date)
+			elsif(@date = later.newest_date || journals.newest_date)
 				@model = [
 					create_package_month(date), 
 					#create_package_month(date << 1), 
 				]
+        year = @date.year
 			end
 			@model.delete_if { |month| 
 				month.package_count == 0
 			}
-			@years = loggroup.years
-			@months = loggroup.months(@date.year)
+			@years = (journals.years + later.years).uniq
+			@months = year ? (journals.months(year) + later.months(year)).uniq : []
 		end
 	end
 	def create_package_month(date)

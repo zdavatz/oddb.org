@@ -269,7 +269,7 @@ class OddbPrevalence
 		@patinfos.size + active_pdf_patinfos.size
 	end
 	def count_recent_registrations
-		if((grp = log_group(:swissmedic_journal)) \
+		if((grp = log_group(:swissmedic) || log_group(:swissmedic_journal)) \
 			 && (log = grp.latest))
 			log.change_flags.select { |ptr, flags|
 				flags.include?(:new)
