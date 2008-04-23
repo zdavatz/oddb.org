@@ -45,10 +45,13 @@ class RecentRegs < State::Drugs::Global
 					create_package_month(@date)
 				]
 			elsif(@date = later.newest_date || journals.newest_date)
-				@model = [
-					create_package_month(date), 
-					#create_package_month(date << 1), 
-				]
+        pacs = create_package_month(@date)
+        # the new swissmedic updater appears in March 2008
+        while pacs.package_count == 0 && @date.year > 2007
+          @date = @date << 1
+          pacs = create_package_month(@date)
+        end
+				@model = [ pacs ]
         year = @date.year
 			end
 			@model.delete_if { |month| 
