@@ -309,7 +309,8 @@ module ODDB
       plug = klass.new(@app)
       wrap_update(klass, "swissmedic") { 
         if(plug.update(*args))
-          pointer = logs.pointer + [:log, @@today]
+          month = @@today << 1
+          pointer = logs.pointer + [:log, Date.new(month.year, month.month)]
           log = @app.update(pointer.creator, log_info(plug))
           log.notify('Swissmedic')
           @smj_updated = true
