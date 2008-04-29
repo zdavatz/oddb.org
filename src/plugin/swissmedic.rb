@@ -262,6 +262,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         if(chemical = match[:chemical])
           chemical = capitalize(chemical)
           update_substance chemical
+          chemical = nil if chemical.empty?
           args.update(:chemical_substance => chemical,
                       :chemical_dose      => match[:cdose])
         end
@@ -422,12 +423,15 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       @app.update ptr, args, :swissmedic
     end
     def update_substance(name)
-      substance = @app.substance(name)
-      if(substance.nil?)
-        substance = @app.update(Persistence::Pointer.new(:substance).creator, 
-                                {:lt => name}, :swissmedic)
+      name.strip!
+      unless name.empty?
+        substance = @app.substance(name)
+        if(substance.nil?)
+          substance = @app.update(Persistence::Pointer.new(:substance).creator, 
+                                  {:lt => name}, :swissmedic)
+        end
+        substance
       end
-      substance
     end
     def sanity_check_deletions(diff)
       return if File.exist? @latest
