@@ -54,9 +54,5 @@ module ODDB
 			}
 			values
 		end
-		protected
-		def sequences
-			@sequences.dup
-		end
 	end
 end

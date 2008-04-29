@@ -52,7 +52,7 @@ class GalenicFormComposite < HtmlGrid::Composite
 		[0,0]	=>	'th',
 	}
   def sequences(model, session=@session)
-    RegistrationSequences.new(model.sequences[0,20], @session, self)
+    RegistrationSequences.new(model.sequences[0,30], @session, self)
   end
 end
 class GalenicForm < View::Drugs::PrivateTemplate
