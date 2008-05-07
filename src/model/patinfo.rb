@@ -14,6 +14,10 @@ module ODDB
 		def name_base
 			_sequence_delegate(:name_base)
 		end
+    def odba_store
+      @descriptions.odba_store
+      super
+    end
 		private
 		def _sequence_delegate(symbol)
 			if(seq = @sequences.first)
