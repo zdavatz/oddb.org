@@ -1,141 +1,16 @@
 #!/usr/bin/env ruby
 # Package -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
 
-require 'rockit/rockit'
 require 'util/persistence'
 require 'util/money'
-require 'model/dose'
 require 'model/slentry'
 require 'model/ean13'
 require 'model/feedback_observer'
+require 'model/part'
 
 module ODDB
-	module SizeParser
-		unit_pattern = '(([kmucMG]?([glLJm]|mol|Bq)\b)(\/([mu]?[glL])\b)?)|((Mio\s)?U\.?I\.?)|(%( [mV]\/[mV])?)|(I\.E\.)|(Fl\.)'
-		numeric_pattern = '\d+(\'\d+)*([.,]\d+)?'
-		iso_pattern = "[a-zA-Z#{0xC0.chr}-#{0xFF.chr}()\-]+"
-		@@parser = Parse.generate_parser <<-EOG
-Grammar OddbSize
-	Tokens
-		DESCRIPTION	= /(?!#{unit_pattern}\s)#{iso_pattern}(\s+#{iso_pattern})*/
-		NUMERIC			= /#{numeric_pattern}/
-		SPACE				= /\s+/		[:Skip]
-		UNIT				= /#{unit_pattern}/
-	Productions
-		Size			->	Multiple* Addition? Count? Measure? Scale? Dose? DESCRIPTION?
-		Count			->	'je'? NUMERIC
-		Multiple	->	NUMERIC UNIT? /[xXà]|Set/
-		Measure		->	NUMERIC UNIT UNIT?
-		Addition	->	NUMERIC UNIT? '+'
-		Scale			->	'/' NUMERIC? UNIT
-		Dose			->	'(' NUMERIC UNIT ')'
-		EOG
-		def comparable_size
-			ODDB::Dose.from_quanty(@comparable_size)
-		end
-		def comparables
-=begin
-			bottom = [
-				@comparable_size / 2, 
-				Dose.new(@comparable_size.value - 20, 
-					@comparable_size.unit)
-			].max
-			top = [
-				@comparable_size * 2, 
-				Dose.new(@comparable_size.value + 20, 
-					@comparable_size.unit)
-			].min
-=end
-			bottom = @comparable_size * 0.75
-			top = @comparable_size * 1.25
-			@sequence.comparables.collect { |seq|
-				seq.public_packages.select { |pack|
-					comparable?(bottom, top, pack)
-				}
-			}.flatten + @sequence.public_packages.select { |pack|
-				comparable?(bottom, top, pack)
-			}
-		end
-		def comparable?(bottom, top, pack)
-			begin
-				pack != self \
-					&& bottom < pack.comparable_size \
-					&& top > pack.comparable_size
-			rescue RuntimeError => e
-				puts "Error: #{e} while comparing #{@pointer} to #{pack.pointer}"
-				false
-			end
-		end
-    def multiplier
-			count = @count || 1
-			addition = @addition || 0
-      [@descr.to_f, 1].max * (@multi || 1).to_f * (count + addition)
-    end
-		def set_comparable_size!
-			measure = @measure || Dose.new(1, nil)
-			scale = @scale || Dose.new(1, nil)
-			@comparable_size = multiplier * measure / scale
-		end
-		def size=(size)
-			@size = size
-			unless size.to_s.strip.empty?
-				@addition, @multi, @count, @measure, @scale, @comform = parse_size(size) 
-				set_comparable_size!
-			end
-		end
-		def parse_size(size)
-			multi, addition, count, measure, scale, dose, comform = nil
-			begin
-				ast = @@parser.parse(size)
-				multi, addition, count, measure, scale, dose, comform = ast.flatten
-				count = (count ? count[1].value.to_i : 1)
-			rescue ParseException, AmbigousParseException => e
-				puts '*'*60 
-				puts size
-				puts e.message
-				puts e.backtrace[0,6]
-				count = size.to_i
-			end
-			if(!dose.nil? && @sequence.dose.nil?)
-				@sequence.dose = Dose.new(*(dose.childrens[1,2].collect { |c| c.value }))
-			end
-			[
-				(addition ? addition.first.value.to_i : 0),
-				dose_from_multi(multi),
-				count,
-				dose_from_measure(measure),
-				dose_from_scale(scale),
-				(comform.value if comform),
-			]
-		end
-		def descr=(descr)
-			@descr = descr
-			set_comparable_size!
-			@descr
-		end
-		def dose_from_measure(measure)
-			values = measure ? measure.childrens[0,2].collect{ |c| c.value } : [1,nil]
-			Dose.new(*values)
-		end
-		def dose_from_scale(scale)
-			values = scale ? scale.childrens[1,2].collect{ |c| c.value } : [1,nil]
-			Dose.new(*values)
-		end
-		def dose_from_multi(multi)
-			unless(multi.nil?)
-				multi.childrens.inject(Dose.new(1,nil)) { |inj, node| 
-					unit = (node[1].value if node[1])
-					dose = Dose.new(node[0].value, unit)
-					inj *= dose
-				}
-			else
-				Dose.new(1,nil)
-			end
-		end
-	end
 	class PackageCommon
 		include Persistence
-		include SizeParser
     @@ddd_galforms = /tabletten/i
 		class << self
 			def price_internal(price, type=nil)
@@ -161,31 +36,33 @@ Grammar OddbSize
 				}
 			end
 		end
-		attr_reader :ikscd, :size, :count, :multi, :measure, :comform, :descr,
-			:addition, :scale, :sl_entry, :narcotics
+		attr_reader :ikscd,  :sl_entry, :narcotics, :parts
 		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type,
 			:price_exfactory, :price_public, :pretty_dose, :pharmacode, :market_date,
 			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
-      :commercial_form, :disable, :swissmedic_source,
+      :disable, :swissmedic_source, :descr,
 			:deductible_m # for just-medical
 		alias :pointer_descr :ikscd
 		registration_data :comarketing_with, :complementary_type, :expiration_date,
 			:expired?, :export_flag, :generic_type, :inactive_date, :pdf_fachinfos,
 			:registration_date, :revision_date, :patent, :patent_protected?, :vaccine,
 			:parallel_import, :minifi, :source
-    sequence_data :active_agents, :atc_class, :basename, :company, :dose, 
-      :fachinfo, :galenic_form, :galenic_group, :has_patinfo?, :longevity,
+    sequence_data :atc_class, :basename, :company, :ddds, :dose, 
+      :fachinfo, :galenic_forms, :galenic_group, :has_patinfo?, :longevity,
       :iksnr, :indication, :name, :name_base, :patinfo, :pdf_patinfo,
       :registration, :route_of_administration
 		def initialize(ikscd)
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)
-			@comparable_size = Dose.new(1,'')
 			@narcotics = []
+      @parts = []
 		end
 		def active?
 			!@disable && (@market_date.nil? || @market_date <= @@today)
 		end
+    def active_agents
+      @parts.inject([]) { |acts, part| acts.concat part.active_agents }
+    end
 		def add_narcotic(narc)
 			unless(narc.nil? || @narcotics.include?(narc))
 				@narcotics.push(narc)
@@ -204,20 +81,64 @@ Grammar OddbSize
 			@narcotics.each { |narc| 
 				narc.remove_package(self)
 			} if @narcotics
+      @parts.dup.each { |part|
+        part.checkout
+        part.odba_delete
+      }
+      @parts.odba_delete
 			if(@sl_entry.respond_to?(:checkout))
 				@sl_entry.checkout 
 				@sl_entry.odba_delete
 			end
 		end
+    def commercial_forms
+      @parts.collect { |part| part.commercial_form }
+    end
 		def company_name
 			company.name
 		end
+    def comparable?(bottom, top, pack)
+      begin
+        pack != self \
+          && (other = pack.comparable_size) \
+          && bottom < other \
+          && top > other
+      rescue RuntimeError => e
+        false
+      end
+    end
+    def comparables
+      cs = comparable_size
+      bottom = cs * 0.75
+      top = cs * 1.25
+      @sequence.comparables.collect { |seq|
+        seq.public_packages.select { |pack|
+          comparable?(bottom, top, pack)
+        }
+      }.flatten + @sequence.public_packages.select { |pack|
+        comparable?(bottom, top, pack)
+      }
+    end
+    def comparable_size
+      ODDB::Dose.new @parts.collect { |part| 
+        part.comparable_size }.inject { |a, b| a + b }
+    rescue RuntimeError
+      @parts.inject(Dose.new(0)) { |comp, part|
+        ODDB::Dose.new(comp + part.comparable_size.qty)
+      } rescue nil
+    end
+    def create_part
+      part = Part.new
+      part.package = self
+      @parts.push part
+      part
+    end
 		def create_sl_entry
 			@sl_entry = SlEntry.new
 		end
 		def ddd_price
 			if((atc = atc_class) && atc.has_ddd? && (ddd = atc.ddds['O']) \
-				&& (grp = galenic_form.galenic_group) && grp.match(@@ddd_galforms) \
+				&& (grp = galenic_group) && grp.match(@@ddd_galforms) \
 				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose))
         factor = (longevity || 1).to_f
         if(mdose > (ddose * factor))
@@ -229,6 +150,9 @@ Grammar OddbSize
 			end
 		rescue RuntimeError
 		end
+    def delete_part(oid)
+      @parts.delete_if { |comp| comp.oid == oid }
+    end
 		def delete_sl_entry
 			@sl_entry = nil
 			self.odba_isolated_store
@@ -240,6 +164,9 @@ Grammar OddbSize
         sl.pointer = @pointer + [:sl_entry]
         sl.odba_store
       end
+      @parts.each { |part|
+        part.fix_pointers
+      }
       odba_store
     end
 		def good_result?(query)
@@ -274,12 +201,36 @@ Grammar OddbSize
 		def limitation_text
 			@sl_entry.limitation_text unless @sl_entry.nil?
 		end
+    def _migrate_to_parts(app)
+      unless @parts
+        @parts = []
+        ptr = @pointer + :part
+        part = create_part
+        part.pointer = ptr
+        part.init app
+        part.size = @size
+        part.commercial_form = @commercial_form
+        part.composition = @sequence.compositions.first
+        %w{@size @addition @multi @count @measure @scale @comform
+           @commercial_form}.each { |name|
+          if instance_variable_get(name)
+            remove_instance_variable name
+          end
+        }
+        part.fix_pointers
+        @parts.odba_store
+        odba_store
+      end
+    end
 		def most_precise_dose
 			@pretty_dose || dose
 		end
 		def narcotic?
 			@narcotics.any? { |narc| narc.category == 'a' }
 		end
+    def part(oid)
+      @parts.find { |part| part.oid == oid }
+    end
 		def public?
       active? && (@refdata_override || !@out_of_trade \
                   || registration.active?)
@@ -296,6 +247,9 @@ Grammar OddbSize
 			end
 			res
 		end
+    def size
+      @parts.collect { |part| part.size }.compact.join(' + ')
+    end
 		def substances
 			active_agents.collect { |active| active.substance }.compact
 		end
@@ -308,7 +262,7 @@ Grammar OddbSize
 			values = values.dup
 			values.each { |key, value|
 				case key
-				when :generic_group, :commercial_form
+				when :generic_group
 					values[key] = value.resolve(app)
 				when :price_public, :price_exfactory
 					values[key] = Package.price_internal(value, key)
@@ -339,15 +293,6 @@ Grammar OddbSize
 				@feedbacks.dup.each { |fb| fb.item = nil; fb.odba_store }
 				@feedbacks.odba_delete
 			end
-		end
-		def commercial_form=(commercial_form)
-			unless(@commercial_form.nil?)
-				@commercial_form.remove_package(self)
-			end
-			unless(commercial_form.nil?)
-				commercial_form.add_package(self)
-			end
-			@commercial_form = commercial_form
 		end
 		def generic_group=(generic_group)
 			unless(@generic_group.nil?)

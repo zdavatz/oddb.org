@@ -7,7 +7,38 @@ require 'view/admin/package'
 module ODDB
 	module State
 		module Admin
+class AjaxParts < Global
+  VOLATILE = true
+  VIEW = View::Admin::Parts
+end
 module PackageMethods
+  def ajax_create_part
+    check_model
+    parts = @model.parts.dup
+    if(!error?)
+      part = Persistence::CreateItem.new(@model.pointer + :part)
+      part.carry(:registration, @model.registration)
+      parts.push part
+    end
+    AjaxParts.new @session, parts
+  end
+  def ajax_delete_part
+    check_model
+    keys = [:pointer, :part]
+    input = user_input(keys, keys)
+    if(!error? \
+       && (part = @model.parts[input[:part].to_i]))
+      @session.app.delete part.pointer
+    end
+    AjaxParts.new(@session, @model.parts)
+  end
+  def check_model
+    if(@model.pointer != @session.user_input(:pointer))
+      @errors.store :pointer, create_error(:e_state_expired, :pointer, nil)
+    elsif !allowed?
+      @errors.store :pointer, create_error(:e_not_allowed, :pointer, nil)
+    end
+  end
 	def delete
 		sequence = @model.parent(@session.app) 
 		if(klass = resolve_state(sequence.pointer))
@@ -42,11 +73,9 @@ module PackageMethods
 			@model = @session.app.create(@model.pointer)
 		end
 		keys = [
-      :commercial_form,
 			:deductible,
 			:descr,
       :disable,
-			:size, 
 			:ikscat,
 			:market_date,
       :pharmacode,
@@ -57,17 +86,14 @@ module PackageMethods
 			:lppv,
 		]
 		input = user_input(keys)
-    if(name = input[:commercial_form])
-      if(name.empty?)
-        input.store(:commercial_form, nil)
-      elsif(comform = ODDB::CommercialForm.find_by_name(name))
-        input.store(:commercial_form, comform.pointer)
-      else
-        @errors.store(:commercial_form,
-                      create_error(:e_unknown_comform,
-                                   :commercial_form, name))
-      end
-    end
+    part_keys = [
+      :multi,
+      :count,
+      :measure,
+      :commercial_form,
+      :composition,
+    ]
+    parts = user_input(part_keys)
     [:price_exfactory, :price_public].each { |key|
       if(price = input[key])
         price = ODDB::Package.price_internal(price, key)
@@ -81,10 +107,41 @@ module PackageMethods
           @model.ikscd = ikscode
         end
 				@model = @session.app.update(@model.pointer, input, unique_email)
+        update_parts(parts)
 			}
 		end
 		self
 	end
+  def update_parts(input)
+    if(counts = input[:count])
+      counts.each { |idx, count|
+        part = @model.parts.at(idx.to_i)
+        ptr = part ? part.pointer : (@model.pointer + :part).creator
+        current = { :package => @model.pointer }
+        [:multi, :count, :measure, :commercial_form, :composition].each { |key|
+          values = (input[key] ||= {})
+          current.store(key, values[idx])
+        }
+        if(cidx = current[:composition])
+          comp = @model.registration.compositions[cidx.to_i]
+          current[:composition] = comp ? comp.pointer : nil
+        end
+        comforms = input[:commercial_form] || {}
+        if(name = comforms[idx])
+          if(name.empty?)
+            current.store(:commercial_form, nil)
+          elsif(comform = ODDB::CommercialForm.find_by_name(name))
+            current.store(:commercial_form, comform.pointer)
+          else
+            @errors.store(:commercial_form,
+                          create_error(:e_unknown_comform,
+                                       :commercial_form, name))
+          end
+        end
+        @session.app.update(ptr, current, unique_email)
+      }
+    end
+  end
 end
 class Package < State::Admin::Global
 	include PackageMethods

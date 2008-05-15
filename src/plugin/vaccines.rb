@@ -357,7 +357,14 @@ module ODDB
       else
         pointer = pointer.creator
       end
-			@app.update(pointer, pack.data, :swissmedic)
+			package = @app.update(pointer, pack.data, :swissmedic)
+      ptr = if(part = package.parts.first)
+              part.pointer
+            else
+              (package.pointer + :part).creator
+            end
+			@app.update(ptr, pack.data, :swissmedic)
+      package
 		end
 		def update_registration(reg)
 			data = reg.data

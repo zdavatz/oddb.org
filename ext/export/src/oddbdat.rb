@@ -379,19 +379,22 @@ module ODDB
 			LENGTH = 26
 			def structure
 				seq = @package.sequence
-				galform = if(gf = seq.galenic_form)
+				galform = if(gf = seq.galenic_forms.first)
 					gf.to_s
 				end
 				conc, unit = if(dose = seq.dose)
 					[dose.qty, dose.unit]
 				end
-				measure, munit = if(ms = @package.measure)
-					[ms.qty, ms.unit]
-				end	
+        measures = @package.parts.collect { |part| part.measure }.compact
+				measure, munit = unless(measures.empty?)
+                           ms = measures.inject { |a, b| a + b }
+                           [ms.qty, ms.unit]
+                         end
+        comform = @package.commercial_forms.first
 				qty, qty_unit = if(munit && !munit.empty?)
 					[measure, munit]
 				else
-					[@package.count, @package.comform]
+					[@package.comparable_size.qty, comform]
 				end	
 				{
 					1		=>	'03',
@@ -406,8 +409,8 @@ module ODDB
 					11	=>	galform,
 					12	=>	conc,
 					13	=>	unit,
-					16	=>	@package.multi,
-					17	=>	@package.comform,
+					16	=>	@package.parts.first.multi,
+					17	=>	comform,
 					18	=>	qty,
 					19	=>	qty_unit,
 				}
@@ -419,7 +422,7 @@ module ODDB
 				atccd = if(atc = @package.sequence.atc_class)
 					atc.code
 				end
-				gfid = if(galform = @package.galenic_form)
+				gfid = if(galform = @package.galenic_forms.first)
 					galform.oid
 				end
 				fioid = if(fachinfo = @package.fachinfo)

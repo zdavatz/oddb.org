@@ -12,14 +12,21 @@ module ODDB
         @atc_code ||= (atc = @remote.atc) && atc.code
       end
       def comparable?(other)
-        galenic_form && galenic_form.equivalent_to?(other.galenic_form)\
-          && doses == [other.dose]
+        galenic_forms.size == other.galenic_forms.size \
+          && doses == other.doses \
+          && galenic_forms.each_with_index { |form, idx| 
+            if !form.equivalent_to?(other.galenic_forms[idx])
+              return false
+            end
+        }
       end
       def doses
         @doses ||= @remote.doses
       end
-      def galenic_form
-        @galenic_form ||= Remote::GalenicForm.new(@remote.galenic_forms.first)
+      def galenic_forms
+        @galenic_forms ||= @remote.galenic_forms.collect { |form|
+          Remote::GalenicForm.new(form)
+        }
       end
     end
   end

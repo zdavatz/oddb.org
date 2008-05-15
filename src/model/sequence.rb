@@ -4,13 +4,13 @@
 require 'util/persistence'
 require 'model/package'
 require 'model/dose'
-require 'model/activeagent'
+require 'model/composition'
 
 module ODDB
 	class SequenceCommon
 		include Persistence
 		attr_reader :seqnr, :name_base, :name_descr, :packages,
-								:active_agents, :longevity
+								:compositions, :longevity
 		attr_accessor :registration, :dose, :atc_class, :export_flag,
 									:galenic_form, :patinfo, :pdf_patinfo, :atc_request_time
 		attr_writer :composition_text, :inactive_date
@@ -18,7 +18,7 @@ module ODDB
 		def initialize(seqnr)
 			@seqnr = sprintf('%02d', seqnr.to_i)
 			@packages = {}
-			@active_agents = []
+			@compositions = []
 		end
 		def active_packages
 			if(active?) 
@@ -44,23 +44,26 @@ module ODDB
 			(!@inactive_date || (@inactive_date > @@two_years_ago)) \
 				&& @registration && @registration.active? && !violates_patent?
 		end
-		def active_agent(substance_or_oid, spag=nil)
-			@active_agents.find { |active| active.same_as?(substance_or_oid, spag) }
-		end
+    def active_agents
+      @compositions.inject([]) { |acts, comp|
+        acts.concat comp.active_agents
+      }
+    end
 		def basename
 			@name_base.to_s[/^.[^0-9]+/]
 		end
 		def checkout
-			checkout_helper([@atc_class, @galenic_form, @patinfo], 
-				:remove_sequence)
+			checkout_helper([@atc_class, @patinfo], :remove_sequence)
 			@packages.each_value { |pac| 
 				pac.checkout 
 				pac.odba_delete
 			}
-			@active_agents.dup.each { |act| 
-				act.checkout 
-				act.odba_delete
+      @packages.odba_delete
+			@compositions.dup.each { |comp| 
+				comp.checkout 
+				comp.odba_delete
 			}
+      @compositions.odba_delete
 		end
 		def company
 			@registration.company
@@ -80,23 +83,17 @@ module ODDB
 		def comparable?(seq)
 			seq != self \
 				&& seq.active? \
-				&& !seq.galenic_form.nil? \
-				&& seq.galenic_form.equivalent_to?(@galenic_form) \
-				&& (seq.active_agents.sort == @active_agents.sort)
+        && seq.compositions.sort == @compositions.sort
 		end
-		def composition_text
-			@composition_text || @active_agents.collect { |agent| 
-				agent.to_s 
-			}.join(', ')
-		end
-		def create_active_agent(substance_name)
-			active = active_agent(substance_name)
-			return active unless active.nil?
-			active = self::class::ACTIVE_AGENT.new(substance_name)
-			active.sequence = self
-			@active_agents.push(active)
-			active
-		end
+    def composition(oid)
+      @compositions.find { |comp| comp.oid == oid }
+    end
+    def create_composition
+      comp = Composition.new
+      comp.sequence = self
+      @compositions.push comp
+      comp
+    end
 		def create_package(ikscd)
 			ikscd = sprintf('%03d', ikscd.to_i)
 			unless @packages.include?(ikscd)
@@ -105,19 +102,20 @@ module ODDB
 				@packages.store(ikscd, pkg) 
 			end
 		end
-		def delete_active_agent(substance)
-			if(active = active_agent(substance))
-				@active_agents.delete(active)
-				@active_agents.odba_isolated_store
-				active
-			end
-		end
+    def delete_composition(oid)
+      @compositions.delete_if { |comp| comp.oid == oid }
+    end
 		def delete_package(ikscd)
 			ikscd = sprintf('%03d', ikscd.to_i)
 			if(pac = @packages.delete(ikscd))
 				@packages.odba_isolated_store
 				pac
 			end
+		end
+		def doses
+			@compositions.inject([]) { |subs, comp| 
+				subs.concat comp.doses
+			}.uniq
 		end
 		def each_package(&block)
 			@packages.values.each(&block)
@@ -133,14 +131,20 @@ module ODDB
       @packages.each_value { |package|
         package.fix_pointers
       }
-      @active_agents.each { |agent|
-        agent.pointer = @pointer + [:active_agent, agent.oid]
-        agent.odba_store
+      @compositions.each { |comp|
+        comp.fix_pointers
       }
       odba_store
     end
     def galenic_group
-      @galenic_form.galenic_group if(@galenic_form)
+      groups = galenic_groups
+      groups.first if groups.size == 1
+    end
+    def galenic_groups
+      @compositions.collect { |comp| comp.galenic_group }.compact.uniq
+    end
+    def galenic_forms
+      @compositions.collect { |comp| comp.galenic_form }.compact.uniq
     end
 		def generic_type
 			@registration.generic_type
@@ -165,6 +169,23 @@ module ODDB
 		def match(query)
 			/#{query}/i.match(@name_base)
 		end
+    def _migrate_to_compositions(app)
+      unless @compositions
+        @compositions = []
+        ptr = @pointer + :composition
+        comp = create_composition
+        comp.pointer = ptr
+        comp.init app
+        comp.instance_variable_set '@active_agents', @active_agents
+        remove_instance_variable '@active_agents' if @active_agents
+        comp.galenic_form = @galenic_form
+        remove_instance_variable '@galenic_form' if @galenic_form
+        comp.fix_pointers
+        @compositions.odba_store
+        @packages.each_value { |pac| pac._migrate_to_parts(app) }
+        odba_store
+      end
+    end
     def minifi
       @registration.minifi
     end
@@ -237,7 +258,10 @@ module ODDB
 			@registration.patent_protected? if(@registration)
 		end
     def route_of_administration
-      @galenic_form.route_of_administration if(@galenic_form)
+      roas = @compositions.collect { |comp| 
+        comp.route_of_administration 
+      }.compact.uniq
+      roas.first if(roas.size == 1)
     end
 		def search_terms
 			str = self.name
@@ -259,9 +283,9 @@ module ODDB
 			@registration.source
 		end
 		def substances
-			@active_agents.collect { |agent| 
-				agent.substance
-			}
+			@compositions.inject([]) { |subs, comp| 
+				subs.concat comp.substances
+			}.uniq
 		end
 		def substance_names
 			substances.collect { |subst| subst.to_s }
@@ -306,12 +330,6 @@ module ODDB
 						elsif(value.is_a?(Array))
 							Dose.new(*value)
 						end
-					when :galenic_form
-						values[key] = if(galform = app.galenic_form(value))
-							galform
-						else
-							@galenic_form
-						end
 					when :inactive_date
 						if(value.is_a?(String))
 							hash.store(key, Date.parse(value.tr('.', '-')))
@@ -331,9 +349,6 @@ module ODDB
 			unless(atc_class.nil?)
 				@atc_class = replace_observer(@atc_class, atc_class)
 			end
-		end
-		def galenic_form=(galform)
-			@galenic_form = replace_observer(@galenic_form, galform)
 		end
 		def patinfo=(patinfo)
 			@patinfo = replace_observer(@patinfo, patinfo)

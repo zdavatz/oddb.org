@@ -10,7 +10,7 @@ module ODDB
 		attr_accessor :substance
 		attr_accessor :chemical_substance, :equivalent_substance
 		attr_accessor :dose, :chemical_dose, :equivalent_dose, :sequence
-		attr_accessor :spagyric_dose, :spagyric_type
+		attr_accessor :spagyric_dose, :spagyric_type, :composition
 		def initialize(substance_name)
 			super()
 			@substance_name = substance_name
@@ -102,8 +102,10 @@ module ODDB
 				if(@substance.respond_to?(:remove_sequence))
 					@substance.remove_sequence(@sequence)
 				end
-				substance.add_sequence(@sequence)
 				@substance = substance
+        @sequence.substances.each { |substance|
+          substance.add_sequence(@sequence) if substance
+        }
 			end
 			@substance
 		end

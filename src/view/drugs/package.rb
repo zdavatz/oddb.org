@@ -10,6 +10,45 @@ require 'htmlgrid/booleanvalue'
 module ODDB
 	module View
 		module Drugs
+class Parts < HtmlGrid::List
+  COMPONENTS = {
+    [0,0] => :size,
+    [1,0] => :active_agents,
+  }
+  CSS_MAP = { [0,0,2] => 'list top' }
+  OMIT_HEADER = true
+  SORT_DEFAULT = nil
+  LEGACY_INTERFACE = false
+  def active_agents(model)
+    if(comp = model.composition)
+      comp.active_agents.collect { |act| 
+        [ (sub = act.substance) && sub.send(@session.language), 
+          act.dose ].join(' ')
+      }.join("<BR>")
+    end
+  end
+  def size(model)
+    parts = []
+    multi = model.multi
+    count = model.count
+    if(multi > 1) 
+      parts.push(multi)
+    end
+    if(multi > 1 && count > 1)
+      parts.push('x')
+    end
+    if(count > 1 || multi <= 1)
+      parts.push(model.count)
+    end
+    if(comform = model.commercial_form)
+      parts.push(comform.send(@session.language))
+    end
+    if((measure = model.measure) && measure != 1)
+      parts.push("&agrave;", measure)
+    end
+    parts.join(' ')
+  end
+end
 class PackageInnerComposite < HtmlGrid::Composite
 	include DataFormat
 	include View::AdditionalInformation
@@ -154,13 +193,15 @@ class PackageComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	:package_name,
 		[0,1]	=>	View::Drugs::PackageInnerComposite,
-		[0,3]	=>	:sequence_agents,
+		[0,2]	=>	'th_parts',
+		[0,3]	=>	:parts,
 		[0,4]	=>	'th_source',
 		[0,5]	=>	:source,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0]	=>	'th',
+		[0,2]	=>	'subheading',
 		[0,4]	=>	'subheading',
     [0,5] =>  'list',
 	}
@@ -168,11 +209,9 @@ class PackageComposite < HtmlGrid::Composite
 	def package_name(model, session)
 		[model.name, model.size].compact.join('&nbsp;-&nbsp;')
 	end
-	def sequence_agents(model, session)
-		if(agents = model.sequence.active_agents)
-			View::Admin::SequenceAgents.new(agents, session, self)
-		end
-	end
+  def parts(model, session=@session)
+    View::Drugs::Parts.new(model.parts, @session, self)
+  end
   def source(model, session=@session)
     val = HtmlGrid::Value.new(:source, model, @session, self)
     val.value = package_source(model) if model

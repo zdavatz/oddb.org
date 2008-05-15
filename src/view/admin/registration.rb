@@ -23,14 +23,13 @@ module RegistrationSequenceList
 		[0,0]	=>	:seqnr,
 		[1,0]	=>	:name_base,
 		[2,0]	=>	:name_descr,
-		[3,0]	=>	:dose, 
-		[4,0]	=>	:galenic_form,
-		[5,0]	=>	:atc_class,
-		[6,0] =>	:patinfo,
+		[3,0]	=>	:galenic_form,
+		[4,0]	=>	:atc_class,
+		[5,0] =>	:patinfo,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0,7]	=>	'list',
+		[0,0,6]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'subheading'
@@ -45,6 +44,17 @@ module RegistrationSequenceList
 			atc.code
 		end
 	end
+  def galenic_form(model, session=@session)
+    lang = @session.language
+    model.compositions.collect { |comp|
+      galform = (gf = comp.galenic_form) ? gf.send(lang) : ''
+      agents = comp.active_agents.collect { |act|
+        substance = (sub = act.substance) ? sub.send(lang) : nil
+        [substance, act.dose].compact.join ' '
+      }.join ', '
+      "#{galform} (#{agents})"
+    }.join ' + '
+  end
 	def seqnr(model, session=@session)
 		if(@session.allowed?('edit', model))
 			PointerLink.new(:seqnr, model, @session, self)
