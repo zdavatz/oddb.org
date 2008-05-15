@@ -15,7 +15,7 @@ module ODDB
 		attr_accessor :registration_date, :export_flag, :company, 
 			:revision_date, :indication, :expiration_date, :inactive_date,
 			:market_date, :fachinfo, :source, :ikscat, :renewal_flag, #:pdf_fachinfos,
-      :index_therapeuticus, :comarketing_with, :vaccine,
+      :index_therapeuticus, :comarketing_with, :vaccine, :ignore_patent,
       :parallel_import, :minifi, :product_group, :production_science
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
@@ -126,7 +126,7 @@ module ODDB
 			# expires. Registrations where the @registration_date is not known can 
 			# be considered old enough to fall out of consideration for 
 			# patent violation
-			@registration_date \
+			!@ignore_patent && @registration_date \
 				&& !@comarketing_with \
 				&& (@generic_type != :original) \
 				&& (@registration_date > @@one_year_ago)
