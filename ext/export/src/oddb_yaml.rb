@@ -319,7 +319,6 @@ module ODDB
 		EXPORT_PROPERTIES = [	
 			'@ikscd',
 			'@lppv',
-			'@size',
 			'@descr',
 			'@ikscat',
 			'@sl_entry',
@@ -330,6 +329,7 @@ module ODDB
 					to_yaml_properties.each { |m|
 						map.add( m[1..-1], instance_variable_get( m ) )
 					}
+					map.add('size', self.size)
 					map.add('has_generic', self.has_generic?)
 					map.add('price_exfactory', self.price_exfactory.to_f)
 					map.add('price_public', self.price_public.to_f)
@@ -424,9 +424,18 @@ module ODDB
 			'@atc_class',
 			'@galenic_form',
 			'@composition_text',
-			'@active_agents',
 			'@packages',
 		]
+		def to_yaml( opts = {} )
+			YAML::quick_emit( self.object_id, opts ) { |out|
+				out.map( taguri ) { |map|
+					to_yaml_properties.each { |m|
+						map.add( m[1..-1], instance_variable_get( m ) )
+					}
+					map.add('active_agents', self.active_agents)
+				}
+			}
+		end
 	end
 	class SlEntry
 		include OddbYaml

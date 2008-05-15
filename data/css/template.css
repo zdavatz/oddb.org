@@ -861,3 +861,42 @@ td.breadcrumbs {
   vertical-align: bottom;
   padding: 4px;
 }
+
+/* from de.oddb.org */
+a.ajax {
+  cursor: pointer;
+}
+a.create {
+  color: #000; 
+  cursor: pointer;
+  background-color: #AFA;
+  border: 1px solid #0F0;
+}
+a.delete {
+  color: #000; 
+  cursor: pointer;
+  background-color: #FAA;
+  border: 1px solid #F00;
+}
+a.delete.square {
+  padding: 1px 5px;
+  margin: 1px;
+}
+a.create.square {
+  padding: 1px 4px;
+  margin: 1px;
+}
+div#composition-list div {
+  padding: 4px; 
+  float: left;
+}
+div#composition-list label {
+  padding-right: 4px; 
+}
+div#compositions {
+  overflow: auto;
+}
+div#composition-list td {
+  padding: 0px; 
+  height: 19px;
+}

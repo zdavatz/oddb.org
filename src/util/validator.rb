@@ -112,6 +112,12 @@ module ODDB
 			:addresses,
 			:ajax,
 			:ajax_autofill,
+      :ajax_create_active_agent,
+      :ajax_create_composition,
+      :ajax_create_part,
+      :ajax_delete_active_agent,
+      :ajax_delete_composition,
+      :ajax_delete_part,
 			:ajax_ddd_price,
 			:ajax_swissmedic_cat,
 			:analysis_alphabetical,
@@ -252,7 +258,10 @@ module ODDB
 		]
     HTML = [:html_chapter]
 		NUMERIC = [
+      :active_agent,
 			:change_flags,
+      :composition,
+      :count,
 			:days,
       :exam,
 			:fachinfo_price,
@@ -266,6 +275,8 @@ module ODDB
 			:meaning_index,
 			:month,
 			:months,
+      :multi,
+      :part,
       :price_fachinfo,
 			:price_index,
 			:price_index_package,
@@ -376,6 +387,7 @@ module ODDB
 		alias :pretty_dose :dose
 		alias :chemical_dose :dose
 		alias :equivalent_dose :dose
+		alias :measure :dose
 		def filename(value)
 			if(value == File.basename(value))
 				value

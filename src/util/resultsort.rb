@@ -20,7 +20,7 @@ module ODDB
 						package.expired? ? 1 : -1,
 						generic_type_weight(package),
 						package.name_base.to_s,
-						galform_str(package.galenic_form, session),
+						package.galenic_forms.collect { |gf| galform_str(gf, session) },
 						dose_value(package.dose),
 						package.comparable_size,
 					]

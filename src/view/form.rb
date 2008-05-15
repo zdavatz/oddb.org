@@ -18,7 +18,7 @@ module ODDB
 				hidden
 			end
 		end
-		class Form < HtmlGrid::Form
+    module FormMethods 
 			include View::HiddenPointer
 			DEFAULT_CLASS = HtmlGrid::InputText
 			EVENT = :update
@@ -53,6 +53,9 @@ module ODDB
 				button.set_attribute("onclick", script)
 				button
 			end
+    end
+		class Form < HtmlGrid::Form
+      include FormMethods
 		end
 		class FormList < HtmlGrid::FormList
 			include View::HiddenPointer

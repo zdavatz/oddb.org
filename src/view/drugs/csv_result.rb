@@ -61,7 +61,7 @@ class CsvResult < HtmlGrid::Component
 		end
 	end
   def galenic_form(pack, lang = @lookandfeel.language)
-    if(galform = pack.galenic_form)
+    if(galform = pack.galenic_forms.first)
       galform.description(lang)
     end
   end
@@ -156,6 +156,29 @@ class CsvResult < HtmlGrid::Component
 	def sl_entry(pack)
 		boolean(pack.sl_entry)
 	end
+  def size(model, session=@session)
+    model.parts.collect { |part|
+      parts = []
+      multi = part.multi.to_i
+      count = part.count.to_i
+      if(multi > 1) 
+        parts.push(multi)
+      end
+      if(multi > 1 && count > 1)
+        parts.push('x')
+      end
+      if(count > 1 || multi <= 1)
+        parts.push(part.count)
+      end
+      if(comform = part.commercial_form)
+        parts.push(comform.send(@session.language))
+      end
+      if((measure = part.measure) && measure != 1)
+        parts.push("à", measure)
+      end
+      parts.join(' ')
+    }.join(' + ')
+  end
 	def generic_type(pack)
     case pack.sl_generic_type || pack.generic_type
     when :original

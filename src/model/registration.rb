@@ -67,6 +67,11 @@ module ODDB
 				@company.complementary_type
 			end
 		end
+    def compositions
+      @sequences.sort.inject([]) { |memo, (seqnr, seq)| 
+        memo.concat seq.compositions
+      }
+    end 
 		def create_patent
 			@patent = Patent.new
 		end

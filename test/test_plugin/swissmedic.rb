@@ -21,6 +21,8 @@ module ODDB
                                File.dirname(__FILE__)
       @older = File.expand_path '../data/xls/Packungen.older.xls',
                                 File.dirname(__FILE__)
+      @initial = File.expand_path '../data/xls/Packungen.initial.xls',
+                                  File.dirname(__FILE__)
       @workbook = Spreadsheet::ParseExcel.parse(@data)
     end
     def teardown
@@ -236,10 +238,15 @@ module ODDB
     end
     def test_update_package__create
       row = @workbook.worksheet(0).row(3)
+      reg = flexmock 'registration'
       seq = flexmock 'sequence'
       ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
       seq.should_receive(:pointer).and_return ptr
-      seq.should_receive(:package).with('011')
+      reg.should_receive(:package).with('011')
+      seq.should_receive(:name_base).and_return 'existing sequence'
+      comp = flexmock 'composition'
+      comp.should_receive(:pointer).and_return 'composition-pointer'
+      seq.should_receive(:compositions).and_return [ comp ]
       pptr = Persistence::Pointer.new([:registration, '08537'], 
                                       [:sequence, '01'], [:package, '011'])
       comform = flexmock 'commercial form'
@@ -247,8 +254,6 @@ module ODDB
       @app.should_receive(:commercial_form_by_name).with('Tablette(n)')\
         .and_return comform
       args = {
-        :commercial_form   => 'comform-pointer',
-        :size              => "20 Tablette(n)",
         :ikscat            => "D",
         :refdata_override  => true,
         :swissmedic_source => {
@@ -270,21 +275,47 @@ module ODDB
           :substances      => "acidum acetylsalicylicum"
         }
       }
+      pac = flexmock 'package'
+      pac.should_receive(:pointer).and_return pptr
       @app.should_receive(:update).with(pptr.creator, args, :swissmedic)\
-        .times(1).and_return { assert true }
-      @plugin.update_package seq, row
+        .times(1).and_return { 
+        assert true 
+        pac
+      }
+      pac.should_receive(:parts).and_return []
+      ptptr = pptr + :part
+      part = flexmock 'part'
+      part.should_receive(:pointer).and_return('part-pointer')
+      part.should_ignore_missing
+      @app.should_receive(:create).times(1).with(ptptr).and_return part
+      args = {
+        :commercial_form   => 'comform-pointer',
+        :composition       => 'composition-pointer',
+        :size              => "20 Tablette(n)",
+      }
+      @app.should_receive(:update).with('part-pointer', args, :swissmedic)\
+        .times(1).and_return { 
+        assert true 
+        part
+      }
+      @plugin.update_package reg, seq, row
     end
     def test_update_package__create__replacement
       row = @workbook.worksheet(0).row(3)
+      reg = flexmock 'registration'
       seq = flexmock 'sequence'
       ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
       seq.should_receive(:pointer).and_return ptr
+      seq.should_receive(:name_base).and_return 'existing sequence'
+      comp = flexmock 'composition'
+      comp.should_receive(:pointer).and_return 'composition-pointer'
+      seq.should_receive(:compositions).and_return [ comp ]
       pac = flexmock 'package'
       pac.should_receive(:pharmacode).and_return '1234567'
       pac.should_receive(:ancestors).and_return nil
       pac.should_ignore_missing
-      seq.should_receive(:package).with('007').and_return pac
-      seq.should_receive(:package).with('011')
+      reg.should_receive(:package).with('007').and_return pac
+      reg.should_receive(:package).with('011')
       pptr = Persistence::Pointer.new([:registration, '08537'], 
                                       [:sequence, '01'], [:package, '011'])
       comform = flexmock 'commercial form'
@@ -292,8 +323,6 @@ module ODDB
       @app.should_receive(:commercial_form_by_name).with('Tablette(n)')\
         .and_return comform
       args = {
-        :commercial_form => 'comform-pointer',
-        :size            => "20 Tablette(n)",
         :ikscat          => "D",
         :refdata_override=> true,
         :pharmacode      => '1234567',
@@ -318,16 +347,38 @@ module ODDB
         }
       }
       @app.should_receive(:update).with(pptr.creator, args, :swissmedic)\
-        .times(1).and_return { assert true }
-      @plugin.update_package seq, row, {row => '007'}
+        .times(1).and_return { 
+        assert true 
+        pac
+      }
+      pac.should_receive(:parts).and_return []
+      pac.should_receive(:pointer).and_return pptr
+      ptptr = pptr + :part
+      part = flexmock 'part'
+      part.should_receive(:pointer).and_return('part-pointer')
+      part.should_ignore_missing
+      @app.should_receive(:create).times(1).with(ptptr).and_return part
+      args = {
+        :commercial_form   => 'comform-pointer',
+        :composition       => 'composition-pointer',
+        :size              => "20 Tablette(n)",
+      }
+      @app.should_receive(:update).with('part-pointer', args, :swissmedic)\
+        .times(1).and_return { 
+        assert true 
+        part
+      }
+      @plugin.update_package reg, seq, row, {row => '007'}
     end
     def test_update_package__update
       row = @workbook.worksheet(0).row(3)
+      reg = flexmock 'registration'
       seq = flexmock 'sequence'
       ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
       seq.should_receive(:pointer).and_return ptr
       pac = flexmock 'package'
-      seq.should_receive(:package).with('011').and_return pac
+      reg.should_receive(:package).with('011').and_return pac
+      seq.should_receive(:name_base).and_return 'existing sequence'
       pptr = Persistence::Pointer.new([:registration, '08537'], 
                                       [:sequence, '01'], [:package, '011'])
       pac.should_receive(:pointer).and_return pptr
@@ -336,8 +387,6 @@ module ODDB
       @app.should_receive(:commercial_form_by_name).with('Tablette(n)')\
         .and_return comform
       args = {
-        :commercial_form => 'comform-pointer',
-        :size            => "20 Tablette(n)",
         :ikscat          => "D",
         :swissmedic_source => {
           :composition     => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.", 
@@ -359,22 +408,44 @@ module ODDB
         }
       }
       @app.should_receive(:update).with(pptr, args, :swissmedic)\
-        .times(1).and_return { assert true }
-      @plugin.update_package seq, row
+        .times(1).and_return { 
+        assert true
+        pac
+      }
+      part = flexmock 'part'
+      part.should_receive(:composition).and_return 'some composition'
+      part.should_receive(:pointer).and_return 'part-pointer'
+      pac.should_receive(:parts).and_return [part]
+      args = {
+        :commercial_form   => 'comform-pointer',
+        :size              => "20 Tablette(n)",
+      }
+      @app.should_receive(:update).with('part-pointer', args, :swissmedic)\
+        .times(1).and_return { 
+        assert true
+        pac
+      }
+      @plugin.update_package reg, seq, row
     end
     def test_update_composition__create
       row = @workbook.worksheet(0).row(3)
       seq = flexmock 'sequence'
       ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
       seq.should_receive(:pointer).and_return ptr
-      seq.should_receive(:active_agent).with('Acidum Acetylsalicylicum')
       seq.should_receive(:active_agents).and_return []
+      seq.should_receive(:compositions).and_return []
       @app.should_receive(:substance).with('Acidum Acetylsalicylicum')
       sptr = Persistence::Pointer.new([:substance]).creator
       args = { :lt => 'Acidum Acetylsalicylicum' }
       @app.should_receive(:update).with(sptr, args, :swissmedic)\
         .times(1).and_return { assert true }
-      aptr = ptr + [:active_agent, 'Acidum Acetylsalicylicum']
+      comp = flexmock 'composition'
+      comp.should_receive(:active_agent).with('Acidum Acetylsalicylicum')
+      comp.should_receive(:active_agents).and_return []
+      cptr = ptr + [:composition, 'id']
+      comp.should_receive(:pointer).and_return(cptr)
+      @app.should_receive(:create).with(ptr + :composition).and_return comp
+      aptr = cptr + [:active_agent, 'Acidum Acetylsalicylicum']
       args =  {
         :substance => 'Acidum Acetylsalicylicum',
         :dose      => ["500", 'mg'],
@@ -388,6 +459,8 @@ module ODDB
       seq = flexmock 'sequence'
       ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
       seq.should_receive(:pointer).and_return ptr
+      comp = flexmock 'composition'
+      seq.should_receive(:compositions).and_return [comp]
       substance = flexmock 'substance'
       substance.should_receive(:==).with('Acidum Acetylsalicylicum').and_return true
       #sptr = Persistence::Pointer.new([:substance, 12])
@@ -397,8 +470,8 @@ module ODDB
       agent = flexmock 'active-agent'
       agent.should_receive(:pointer).and_return aptr
       agent.should_receive(:substance).and_return substance
-      seq.should_receive(:active_agents).and_return [agent]
-      seq.should_receive(:active_agent).with('Acidum Acetylsalicylicum')\
+      comp.should_receive(:active_agents).and_return [agent]
+      comp.should_receive(:active_agent).with('Acidum Acetylsalicylicum')\
         .and_return agent
       args =  {
         :substance => 'Acidum Acetylsalicylicum',
@@ -413,7 +486,9 @@ module ODDB
       seq = flexmock 'sequence'
       ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
       seq.should_receive(:pointer).and_return ptr
-      seq.should_receive(:active_agents).and_return []
+      comp = flexmock 'composition'
+      comp.should_receive(:active_agents).and_return []
+      seq.should_receive(:compositions).and_return [comp]
       substance1 = flexmock 'substance1'
       substance1.should_receive(:pointer).and_return 'substance-ptr'
       @app.should_receive(:substance).with('Procainum')\
@@ -428,12 +503,12 @@ module ODDB
       aptr1 = ptr + [:active_agent, 'Procainum']
       agent1 = flexmock 'active-agent1'
       agent1.should_receive(:pointer).and_return aptr1
-      seq.should_receive(:active_agent).with('Procainum')\
+      comp.should_receive(:active_agent).with('Procainum')\
         .and_return agent1
       aptr2 = ptr + [:active_agent, 'Phenazonum']
       agent2 = flexmock 'active-agent1'
       agent2.should_receive(:pointer).and_return aptr2
-      seq.should_receive(:active_agent).with('Phenazonum')\
+      comp.should_receive(:active_agent).with('Phenazonum')\
         .and_return agent2
       args =  {
         :substance          => 'Procainum',
@@ -459,6 +534,8 @@ module ODDB
       seq = flexmock 'sequence'
       ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
       seq.should_receive(:pointer).and_return ptr
+      comp = flexmock 'composition'
+      seq.should_receive(:compositions).and_return [comp]
       substance = flexmock 'substance'
       substance.should_receive(:==).with('Acidum Acetylsalicylicum').and_return false
       #sptr = Persistence::Pointer.new([:substance, 12])
@@ -468,8 +545,8 @@ module ODDB
       agent = flexmock 'active-agent'
       agent.should_receive(:pointer).and_return aptr
       agent.should_receive(:substance).and_return substance
-      seq.should_receive(:active_agents).and_return [agent]
-      seq.should_receive(:active_agent).with('Acidum Acetylsalicylicum')\
+      comp.should_receive(:active_agents).and_return [agent]
+      comp.should_receive(:active_agent).with('Acidum Acetylsalicylicum')\
         .and_return agent
       args =  {
         :substance => 'Acidum Acetylsalicylicum',
@@ -486,9 +563,10 @@ module ODDB
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr).and_return 'Tabletten'
       seq.should_receive(:pointer).and_return 'sequence-ptr'
+      comp = flexmock 'composition'
       galform = flexmock 'galform'
-      seq.should_receive(:galenic_form).and_return galform
-      @plugin.update_galenic_form(seq, row)
+      comp.should_receive(:galenic_form).and_return galform
+      @plugin.update_galenic_form(seq, comp, row)
     end
     def test_update_galenic_form__dont_update__composition
       row = @workbook.worksheet(0).row(3)
@@ -496,16 +574,18 @@ module ODDB
       seq.should_receive(:name_descr)
       seq.should_receive(:pointer).and_return 'sequence-ptr'
       @app.should_receive(:galenic_form).with('Tabletten')
+      comp = flexmock 'composition'
       galform = flexmock 'galenic-form'
-      seq.should_receive(:galenic_form).and_return galform
-      @plugin.update_galenic_form(seq, row)
+      comp.should_receive(:galenic_form).and_return galform
+      @plugin.update_galenic_form(seq, comp, row)
     end
     def test_update_galenic_form__create__descr
       row = @workbook.worksheet(0).row(3)
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr).and_return 'Tabletten'
-      seq.should_receive(:pointer).and_return 'sequence-ptr'
-      seq.should_receive(:galenic_form).and_return nil
+      comp = flexmock 'composition'
+      comp.should_receive(:pointer).and_return 'composition-ptr'
+      comp.should_receive(:galenic_form).and_return nil
       @app.should_receive(:galenic_form).with('Tabletten')
       @app.should_receive(:galenic_form).with('compresso')
       args = { :de => 'Tabletten' }
@@ -513,25 +593,26 @@ module ODDB
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
         .times(1).and_return { assert true }
       args = { :galenic_form => 'Tabletten' }
-      @app.should_receive(:update).with('sequence-ptr', args, :swissmedic)\
+      @app.should_receive(:update).with('composition-ptr', args, :swissmedic)\
         .times(1).and_return { assert true }
-      @plugin.update_galenic_form(seq, row)
+      @plugin.update_galenic_form(seq, comp, row)
     end
     def test_update_galenic_form__create__composition
       row = @workbook.worksheet(0).row(6)
       seq = flexmock 'sequence'
       seq.should_receive(:name_descr)
-      seq.should_receive(:pointer).and_return 'sequence-ptr'
-      seq.should_receive(:galenic_form).and_return nil
+      comp = flexmock 'composition'
+      comp.should_receive(:pointer).and_return 'composition-ptr'
+      comp.should_receive(:galenic_form).and_return nil
       @app.should_receive(:galenic_form).with('unguentum')
       args = { :lt => 'unguentum' }
       ptr = Persistence::Pointer.new([:galenic_group, 1], [:galenic_form]).creator
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
         .times(1).and_return { assert true }
       args = { :galenic_form => 'unguentum' }
-      @app.should_receive(:update).with('sequence-ptr', args, :swissmedic)\
+      @app.should_receive(:update).with('composition-ptr', args, :swissmedic)\
         .times(1).and_return { assert true }
-      @plugin.update_galenic_form(seq, row)
+      @plugin.update_galenic_form(seq, comp, row)
     end
     def test_diff
       result = @plugin.diff(@data, @older)
@@ -552,7 +633,7 @@ module ODDB
       }
       assert_equal(expected, result.changes)
       assert_equal 3, result.package_deletions.size
-      assert_equal 3, result.package_deletions.first.size
+      assert_equal 4, result.package_deletions.first.size
       iksnrs = result.package_deletions.collect { |row| row.at(0) }.sort
       ikscds = result.package_deletions.collect { |row| row.at(2) }.sort
       assert_equal ['10368', '13689', '25144'], iksnrs
@@ -563,6 +644,33 @@ module ODDB
       assert_equal '10368', result.registration_deletions.at(0)
       assert_equal 1, result.replacements.size
       assert_equal '031', result.replacements.values.first
+    end
+    def test_diff__initial
+      File.delete @initial if File.exist? @initial
+      part = flexmock 'part'
+      pac = flexmock 'package'
+      pac.should_receive(:parts).and_return [ part ]
+      seq = flexmock 'sequence'
+      seq.should_receive(:packages).and_return({ '001' => pac })
+      seq.should_receive(:name_base).and_return 'delete me'
+      reg = flexmock 'registration'
+      reg.should_receive(:sequences).and_return({ '01' => seq })
+      reg.should_receive(:company_name).and_return('ywesee.com')
+      reg.should_ignore_missing
+      @app.should_receive(:registrations).and_return({ '11111' => reg })
+      result = @plugin.diff(@data, @initial)
+      assert_equal 16, result.news.size
+      assert_equal 'Aspirin, Tabletten', 
+                   result.news.first.at(2).to_s('latin1')
+      assert_equal 0, result.updates.size
+      assert_equal 12, result.changes.size
+      deletion = result.changes.delete('11111')
+      assert_equal [:delete], deletion
+      assert result.changes.all? { |key, flags| flags == [:new] }
+      assert_equal 1, result.package_deletions.size
+      assert_equal [['11111', '01', '001', 0]], result.package_deletions
+      assert_equal 1, result.sequence_deletions.size
+      assert_equal 1, result.registration_deletions.size
     end
     def test_delete__packages
       ptr = Persistence::Pointer.new([:registration, '12345'], [:sequence, '01'],

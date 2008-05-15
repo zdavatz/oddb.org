@@ -109,9 +109,12 @@ module ODDB
               srow[1,2] = [seqnr, seq.name_base]
               known_seqs.store([iksnr, seqnr], srow)
               seq.packages.each { |pacnr, pac|
-                prow = srow.dup
-                prow.push pacnr
-                known_pacs.store([iksnr, seqnr, pacnr], prow)
+                pac.parts.each_with_index { |part, idx|
+                  prow = srow.dup
+                  prow.push pacnr
+                  prow[15] = idx
+                  known_pacs.store([iksnr, pacnr, idx], prow)
+                } 
               }
             }
           end
@@ -182,7 +185,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
     end
     def pointer(row)
       cmnds = [:registration, :sequence, :package]
-      path = cmnds[0, row.size].zip row
+      path = cmnds[0, row[0,3].size].zip row
       Persistence::Pointer.new(*path)
     end
     def pointer_from_row(row)
@@ -241,7 +244,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       }
       hsh
     end
-    def update_active_agent(seq, name, part)
+    def update_active_agent(seq, name, part, opts={})
       ptrn = %r{(?ix)
                 #{Regexp.escape name}
                 (\s*(?<dose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?)))?
@@ -249,12 +252,15 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
                       \s*(?<cdose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?))?)?
                }
       if(match = ptrn.match(part))
-        ptr = if(agent = seq.active_agent(name))
+        comp = seq.compositions.first
+        comp ||= @app.create(seq.pointer + :composition)
+        ptr = if(agent = comp.active_agent(name))
                 agent.pointer
               else
-                (seq.pointer + [:active_agent, name]).creator
+                (comp.pointer + [:active_agent, name]).creator
               end
         dose = match[:dose].split(/\b\s*/, 2) if match[:dose]
+        cdose = match[:cdose].split(/\b\s*/, 2) if match[:cdose]
         args = {
           :substance => name,
           :dose      => dose,
@@ -264,9 +270,10 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
           update_substance chemical
           chemical = nil if chemical.empty?
           args.update(:chemical_substance => chemical,
-                      :chemical_dose      => match[:cdose])
+                      :chemical_dose      => cdose)
         end
         @app.update(ptr, args, :swissmedic)
+        comp
       end
     end
     def update_company(row)
@@ -279,66 +286,83 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       end
     end
     def update_composition(seq, row, opts={:create_only => false})
-      return if opts[:create_only] && !seq.active_agents.empty?
-      if(namestr = cell(row, 13))
+      if opts[:create_only] && !seq.active_agents.empty?
+        seq.compositions.first
+      elsif(namestr = cell(row, 13))
         names = namestr.split(/\s*,\s*/).collect { |name| 
           capitalize(name) }
         substances = names.collect { |name|
           update_substance(name)
         }
+        comp = nil
         composition = cell(row, 14).gsub(/\n/, ' ')
         names.each { |name|
-          update_active_agent(seq, name, composition)
+          comp = update_active_agent(seq, name, composition, opts)
         }
         unless(names.empty?)
-          seq.active_agents.dup.each { |act|
+          comp.active_agents.dup.each { |act|
             unless(names.any? { |name| act.substance == name })
               @app.delete(act.pointer) 
             end
           }
         end
+        comp
       end
     end
-    def update_galenic_form(seq, row, opts={:create_only => false})
-      return if seq.galenic_form
+    def update_galenic_form(seq, comp, row, opts={:create_only => false})
+      return if comp.galenic_form
       if((german = seq.name_descr) && !german.empty?)
-        _update_galenic_form(seq, :de, german)
+        _update_galenic_form(comp, :de, german)
       elsif(match = GALFORM_P.match(cell(row, 14)))
-        _update_galenic_form(seq, :lt, match[:galform].strip)
+        _update_galenic_form(comp, :lt, match[:galform].strip)
       end
     end
-    def _update_galenic_form(seq, lang, name)
+    def _update_galenic_form(comp, lang, name)
       unless(gf = @app.galenic_form(name))
         ptr = Persistence::Pointer.new([:galenic_group, 1], 
                                        [:galenic_form]).creator
 
         @app.update(ptr, {lang => name}, :swissmedic)
       end
-      @app.update(seq.pointer, { :galenic_form => name }, :swissmedic)
+      @app.update(comp.pointer, { :galenic_form => name }, :swissmedic)
     end
-    def update_package(seq, row, replacements={}, opts={:create_only => false})
+    def update_package(reg, seq, row, replacements={}, 
+                       opts={:create_only => false})
       cd = cell(row, 9)
+      pidx = cell(row, 15).to_i
       if(cd.to_i > 0)
         args = {
-          :size              => [cell(row, 10), cell(row, 11)].compact.join(' '),
           :ikscat            => cell(row, 12),
           :swissmedic_source => source_row(row),
         }
-        ptr = if(package = seq.package(cd))
-                return package if opts[:create_only]
+        package = nil
+        ptr = if(package = reg.package(cd))
+                return package if opts[:create_only] && pidx == 0
                 package.pointer
               else
                 args.store :refdata_override, true
                 (seq.pointer + [:package, cd]).creator
               end
-        if(comform = @app.commercial_form_by_name(cell(row, 11)))
-          args.store :commercial_form, comform.pointer
-        end
-        if((pacnr = replacements[row]) && (old = seq.package(pacnr)))
+        if((pacnr = replacements[row]) && (old = reg.package(pacnr)))
           args.update(:pharmacode => old.pharmacode, 
                       :ancestors  => (old.ancestors || []).push(pacnr))
         end
-        @app.update(ptr, args, :swissmedic)
+        if(pidx == 0 || package.nil?)
+          package = @app.update(ptr, args, :swissmedic)
+        end
+        part = package.parts[pidx]
+        part ||= @app.create(package.pointer + :part)
+        args = {
+          :size => [cell(row, 10), cell(row, 11)].compact.join(' '),
+        }
+        if(comform = @app.commercial_form_by_name(cell(row, 11)))
+          args.store :commercial_form, comform.pointer
+        end
+        if !part.composition \
+          && (comp = seq.compositions[pidx] || seq.compositions.last)
+          args.store :composition, comp.pointer
+        end
+        @app.update(part.pointer, args, :swissmedic)
       end
     end
     def update_registration(row, opts = {:date => @@today, :create_only => false})
@@ -388,9 +412,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       rows.each { |row|
         reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row, opts) if reg
-        update_composition(seq, row, opts) if seq
-        update_galenic_form(seq, row, opts) if seq
-        pac = update_package(seq, row, replacements, opts) if seq
+        comp = update_composition(seq, row, opts) if seq
+        update_galenic_form(seq, comp, row, opts) if comp
+        update_package(reg, seq, row, replacements, opts) if reg
       }
     end
     def update_sequence(registration, row, opts={:create_only => false})
@@ -434,16 +458,19 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       end
     end
     def sanity_check_deletions(diff)
-      return if File.exist? @latest
       table = diff.registration_deletions.inject({}) { |memo, iksnr|
         memo.store(iksnr, true)
         memo
       }
+      ## if we deactivate a registration, we need to keep its sequences
+      #  so we have a name to report.
       _sanity_check_deletions(diff.sequence_deletions, table)
+      ## we could delete remaining packages, but for now we'll keep them 
+      #  as the last active state.
       _sanity_check_deletions(diff.package_deletions, table)
     end
     def _sanity_check_deletions(deletions, table)
-      deletions.delete_if { |row| table[cell(row,0)] }
+      deletions.delete_if { |row| table[cell(row,0)] || cell(row,15).to_i > 0 }
     end
     def _sort_by(sort, iksnr, flags)
       case sort

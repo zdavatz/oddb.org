@@ -14,77 +14,181 @@ require 'htmlgrid/inputfile'
 require 'htmlgrid/text'
 require 'htmlgrid/labeltext'
 require 'htmlgrid/select'
+require 'htmlgrid/divlist'
 require 'util/pointerarray'
 
 module ODDB
 	module View
 		module Admin
-module SequenceAgentList
-	COMPONENTS = {
-		[0,0]	=>	:narcotic,
-		[1,0]	=>	:substance,
-		[2,0]	=>	:dose,
-		[4,0]	=>	:chemical_substance,
-		[5,0]	=>	:chemical_dose,
-		[7,0]	=>	:equivalent_substance,
-		[8,0]	=>	:equivalent_dose,
-		[9,0]	=>	:spagyric_dose,
-	}
-	CSS_HEAD_MAP = {
-		[2,0]	=>	'subheading right',
-		[5,0]	=>	'subheading right',
-	}
-	CSS_MAP = {
-		[1,0]		=>	'list',
-		[2,0]		=>	'list right',
-		[3,0,2]	=>	'list',
-		[5,0]		=>	'list right',
-		[6,0,2]	=>	'list',
-		[8,0,2]	=>	'list right',
-	}
-	DEFAULT_CLASS = HtmlGrid::Value
-	DEFAULT_HEAD_CLASS = 'subheading'
-	EVENT = :new_active_agent	
-	SORT_HEADER = false
-	SORT_DEFAULT = :to_a
-	def substance(model, session=@session)
-=begin
-		link = HtmlGrid::Link.new(:substance, model, @session, self)
-		link.value = _substance(model)
-		args = {:pointer => model.pointer}
-		link.href = @lookandfeel.event_url(:suggest_choose, args)
-		link
-=end
-    _substance(model)
-	end
-	def _substance(model)
-		if(sub = model.substance)
-			sub.name
-		end
-	end
-	def narcotic(model, session=@session)
-		if((sub = model.substance) && (narc = sub.narcotic))
-			link = HtmlGrid::Link.new(:narc_short,
-																narc, @session, self)
-			link.href = @lookandfeel._event_url(:resolve,
-																					{'pointer' => narc.pointer})
-			link.css_class = 'square infos'
-			link.set_attribute('title', @lookandfeel.lookup(:nacotic))
-			link
-		end
-	end
+class ActiveAgents < HtmlGrid::List
+  COMPONENTS = {
+    [0,0] => :substance,
+    [1,0] => :dose,
+  }
+  DEFAULT_CLASS = HtmlGrid::Value
+  EMPTY_LIST = true
+  OMIT_HEADER = false
+  STRIPED_BG = false
+  SORT_DEFAULT = nil
+  LEGACY_INTERFACE = false
+  LABELS = false
+  def compose_header(offset)
+    _compose_header [0,0]
+  end
+  def _compose_header(offset)
+    comp = if act = @model.first
+             act.parent(@session.app)
+           end
+    input = galenic_form(comp)
+    label = HtmlGrid::SimpleLabel.new(:galenic_form, input, @session, self)
+    @grid.add [label, nil, input], *offset
+    [0,1]
+  end
+  def dose(model)
+    model.dose.to_s if model
+  end
+  def galenic_form(model)
+    element = HtmlGrid::Value.new(:galenic_form, model, @session, self)
+    element.label = true
+    if model && gf = model.galenic_form
+      element.value = gf.send @session.language
+    end
+    element
+  end
+  def substance(model)
+    if model && sub = model.substance
+      sub.send(@session.language)
+    end
+  end
 end
-class SequenceAgents < HtmlGrid::List
-	include View::Admin::SequenceAgentList
+class RootActiveAgents < ActiveAgents
+  COMPONENTS = {
+    [0,0] => :delete,
+    [1,0] => :substance,
+    [2,0,0] => :dose,
+    [2,0,1] => :unsaved,
+  }
+  COMPONENT_CSS_MAP = { [2,0] => 'short right' }
+  DEFAULT_CLASS = HtmlGrid::InputText
+  HTTP_HEADERS = {
+    "Content-Type"	=>	"text/html; charset=iso-8859-1",
+    "Cache-Control"	=>	"private, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
+    "Pragma"				=>	"no-cache",
+    "Expires"				=>	Time.now.rfc1123,
+  }
+  def add(model)
+    link = HtmlGrid::Link.new(:plus, model, @session, self)
+    link.set_attribute('title', @lookandfeel.lookup(:create_active_agent))
+    link.css_class = 'create square'
+    args = [ :pointer, @session.state.model.pointer, :composition, composition ]
+    url = @session.lookandfeel.event_url(:ajax_create_active_agent, args)
+    link.onclick = "replace_element('#{css_id}', '#{url}');"
+    link
+  end
+  def compose_footer(offset)
+    if(@model.empty? || @model.last)
+      @grid.add add(@model), *offset
+      offset[0] += 1
+      @grid.add delete_composition(@model), *offset
+      @grid.add_style 'right', *offset
+      @grid.set_colspan offset.at(0), offset.at(1)
+    end
+  end
+  def compose_header(offset)
+    _compose_header [1,0]
+  end
+  def composition
+    @container ? @container.list_index : @session.user_input(:composition)
+  end
+  def css_id
+    @css_id ||= "active-agents-#{composition}"
+  end
+  def delete(model)
+    unless(@model.first.nil?)
+      link = HtmlGrid::Link.new(:minus, model, @session, self)
+      link.set_attribute('title', @lookandfeel.lookup(:delete))
+      link.css_class = 'delete square'
+      args = [ :pointer, @session.state.model.pointer, :composition, composition, 
+               :active_agent, @list_index ]
+      url = @session.lookandfeel.event_url(:ajax_delete_active_agent, args)
+      link.onclick = "replace_element('#{css_id}', '#{url}');"
+      link
+    end
+  end
+  def delete_composition(model)
+    link = HtmlGrid::Link.new(:delete_composition, model, @session, self)
+    link.css_class = 'ajax'
+    args = [ :pointer, @session.state.model.pointer, :composition, composition ]
+    url = @session.lookandfeel.event_url(:ajax_delete_composition, args)
+    link.onclick = "replace_element('composition-list', '#{url}');"
+    link
+  end
+  def dose(model)
+    input = HtmlGrid::InputText.new(name("dose"), model, @session, self)
+    input.value = super
+    input
+  end
+  def galenic_form(model)
+    input = HtmlGrid::InputText.new("galenic_form[#{composition}]", 
+                                    model, @session, self)
+    input.label = true
+    if model && gf = model.galenic_form
+      input.value = gf.send @session.language
+    end
+    input
+  end
+  def name(part)
+    "#{part}[#{composition}][#@list_index]"
+  end
+  def substance(model)
+    input = HtmlGrid::InputText.new(name("substance"), model, @session, self)
+    input.value = super
+    input
+  end
+  def unsaved(model)
+    @lookandfeel.lookup(:unsaved) if model.nil?
+  end
 end
-class RootSequenceAgents < View::FormList
-	include SequenceAgentList
-	EMPTY_LIST_KEY = :empty_agent_list
-	def substance(model, session)
-		link = View::PointerLink.new(:substance, model, session, self)
-		link.value = _substance(model)
-		link
-	end
+class CompositionList < HtmlGrid::DivList
+  COMPONENTS = { [0,0] => :composition }
+  LABELS = true
+  OFFSET_STEP = [1,0]
+  OMIT_HEADER = true
+  def composition(model)
+    ActiveAgents.new(model.active_agents, @session, self)
+  end
+end
+class RootCompositionList < CompositionList
+  attr_reader :list_index
+  def add(model)
+    link = HtmlGrid::Link.new(:create_composition, model, @session, self)
+    link.css_class = 'ajax'
+    args = [ :pointer, @session.state.model.pointer ]
+    url = @session.lookandfeel.event_url(:ajax_create_composition, args)
+    link.onclick = "replace_element('composition-list', '#{url}');"
+    link
+  end
+  def compose
+    super
+    comp = @model.last
+    @grid.push [add(@model)] if comp.nil? || !comp.active_agents.compact.empty?
+  end
+  def composition(model)
+    RootActiveAgents.new(model.active_agents, @session, self)
+  end
+end
+class Compositions < HtmlGrid::DivComposite
+  COMPONENTS = { [0,0] => CompositionList }
+  CSS_ID = 'composition-list'
+end
+class RootCompositions < Compositions
+  COMPONENTS = { [0,0] => RootCompositionList }
+  HTTP_HEADERS = {
+    "Content-Type"	=>	"text/html; charset=iso-8859-1",
+    "Cache-Control"	=>	"private, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
+    "Pragma"				=>	"no-cache",
+    "Expires"				=>	Time.now.rfc1123,
+  }
 end
 module SequencePackageList 
 	include DataFormat
@@ -108,7 +212,7 @@ module SequencePackageList
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'subheading right'
-	EVENT = :new_package
+	#EVENT = :new_package
 	SORT_DEFAULT = :ikscd
 	SORT_HEADER = false
 	SYMBOL_MAP = {
@@ -134,7 +238,7 @@ end
 class SequencePackages < HtmlGrid::List
 	include View::Admin::SequencePackageList
 end
-class RootSequencePackages < View::FormList
+class RootSequencePackages < HtmlGrid::List
 	include View::Admin::SequencePackageList
 	EMPTY_LIST_KEY = :empty_package_list
 end
@@ -176,47 +280,43 @@ class SequenceInnerComposite < HtmlGrid::Composite
 		[2,0]		=>	:seqnr,
 		[0,1]		=>	:name_base,
 		[2,1]		=>	:name_descr,
-		[0,2]		=>	:dose,
-		[2,2]		=>	:galenic_form,
-		[0,3]		=>	:atc_class,
-		[2,3]		=>	:atc_descr,
+		[0,2]		=>	:atc_class,
+		[2,2]		=>	:atc_descr,
 	}
 	CSS_MAP = {
-		[0,0,4,4]	=>	'list',
+		[0,0,4,3]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
 end
-class SequenceForm < Form
+class SequenceForm < HtmlGrid::Composite
 	include HtmlGrid::ErrorMessage
 	include HtmlGrid::InfoMessage
 	include View::Admin::SequenceDisplay
 	include View::AdditionalInformation
+  include FormMethods
 	COMPONENTS = {
 		[0,0]		=>	:iksnr,
 		[2,0]		=>	:seqnr,
 		[0,1]		=>	:name_base,
 		[2,1]		=>	:name_descr,
-		[0,2]		=>	:dose,
-		[2,2]		=>	:galenic_form,
-		[0,3]		=>	:longevity,
-		[2,3]		=>	:export_flag,
-		[0,4]		=>	:atc_class,
-		[2,4]		=>	:atc_descr,
+		[0,2]		=>	:longevity,
+		[2,2]		=>	:export_flag,
+		[0,3]		=>	:atc_class,
+		[2,3]		=>	:atc_descr,
 	}
 	COMPONENT_CSS_MAP = {
-		[1,0,1,5]	=>	'standard',
-		[3,0,1,3]	=>	'standard',
-		[3,4]	    =>	'standard',
+		[1,0,1,4]	=>	'standard',
+		[3,0,1,2]	=>	'standard',
+		[3,3]	    =>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,4,6]	=>	'list',
+		[0,0,4,5]	=>	'list',
 	}
 	LABELS = true
   LOOKANDFEEL_MAP = {
     :language_select => :language_select_html,
   }
-	TAG_METHOD = :multipart_form
 	SYMBOL_MAP = {
 		:export_flag				=> HtmlGrid::InputCheckbox,
 		:iksnr							=> HtmlGrid::Value,
@@ -235,35 +335,35 @@ class SequenceForm < Form
 	def reorganize_components
 		if(@model.is_a?(ODDB::Sequence))
 			components.update({
-				[0,5]		=>	:html_upload,
-				[2,5]		=>	:language_select,
-				[0,6]		=>	:patinfo_upload,
-				[2,6]   =>  :patinfo_label,
-				[3,6,1] =>  :patinfo,
-				[3,6,2] =>  :assign_patinfo,
-				[3,6,3] =>  :delete_patinfo,
-				[1,7,0]	=>	:submit,
-				[1,7,1] =>  :delete_item,
+				[0,4]		=>	:html_upload,
+				[2,4]		=>	:language_select,
+				[0,5]		=>	:patinfo_upload,
+				[2,5]   =>  :patinfo_label,
+				[3,5,1] =>  :patinfo,
+				[3,5,2] =>  :assign_patinfo,
+				[3,5,3] =>  :delete_patinfo,
+				[1,6,0]	=>	:submit,
+				[1,6,1] =>  :delete_item,
 			})
 			css_map.update({
-				[3,5]		=>	'list',
-				[0,6,5] =>	'list',
+				[3,4]		=>	'list',
+				[0,5,5] =>	'list',
 			})
 			if(@model.atc_class.nil? && !atc_descr_error?)
 				if(@model.company.nil?)
-					components.store([5,4], :atc_request_label)
-					components.store([3,4], :no_company)
+					components.store([5,3], :atc_request_label)
+					components.store([3,3], :no_company)
 				else
 					if(@model.company.regulatory_email.to_s.empty?)
-						components.store([2,4], :regulatory_email)
+						components.store([2,3], :regulatory_email)
 					else
-						components.store([2,4], :atc_request_label)
-						components.store([3,4], :atc_request)
+						components.store([2,3], :atc_request_label)
+						components.store([3,3], :atc_request)
 					end
 				end
 			end
 		else
-			components.store([1,5], :submit)
+			components.store([1,4], :submit)
 		end
 	end
 	def assign_patinfo(model, session=@session)
@@ -355,30 +455,29 @@ class ResellerSequenceForm < SequenceForm
 end
 class SequenceComposite < HtmlGrid::Composite
   include SwissmedicSource
-	AGENTS = View::Admin::SequenceAgents
+	#AGENTS = View::Admin::SequenceAgents
 	COMPONENTS = {
 		[0,0]	=>	:sequence_name,
 		[0,1]	=>	View::Admin::SequenceInnerComposite,
-		[0,2]	=>	:sequence_agents,
-		[0,3]	=>	:sequence_packages,
+		[0,2]	=>	'compositions',
+		[0,3]	=>	:compositions,
+		[0,4]	=>	:sequence_packages,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'th'
+		[0,0]	=>	'th',
+		[0,2]	=>	'subheading',
 	}
 	PACKAGES = View::Admin::SequencePackages
+  def compositions(model, session=@session)
+    Compositions.new(model.compositions, @session, self)
+  end
 	def sequence_name(model, session)
 		[ 
 			(model.company.name if model.company),
 			model.name,
 		].compact.join('&nbsp;-&nbsp;')
 		#HtmlGrid::Value.new('name', model, session, self)
-	end
-	def sequence_agents(model, session)
-		if(agents = model.active_agents)
-			values = ODDB::PointerArray.new(agents, model.pointer)
-			self::class::AGENTS.new(values, session, self)
-		end
 	end
 	def sequence_packages(model, session)
 		if(packages = model.packages)
@@ -393,38 +492,50 @@ class SequenceComposite < HtmlGrid::Composite
   end
 end
 class RootSequenceComposite < View::Admin::SequenceComposite
-	AGENTS = View::Admin::RootSequenceAgents
+  include HtmlGrid::FormMethods
+  include FormMethods
+	TAG_METHOD = :multipart_form
 	COMPONENTS = {
 		[0,0]	=>	:sequence_name,
 		[0,1]	=>	View::Admin::SequenceForm,
-		[0,2]	=>	:sequence_agents,
-		[0,3]	=>	:sequence_packages,
-		[0,4]	=>	"th_source",
-		[0,5]	=>	:source,
+		[0,2]	=>	'compositions',
+		[0,3]	=>	:compositions,
+		[0,4]	=>	:sequence_packages,
+		[0,5]	=>	"th_source",
+		[0,6]	=>	:source,
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
-		[0,4]	=>	'subheading',
+		[0,2]	=>	'subheading',
+		[0,5]	=>	'subheading',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	PACKAGES = View::Admin::RootSequencePackages
+  def compositions(model, session=@session)
+    RootCompositions.new(model.compositions, @session, self)
+  end
 end
 class ResellerSequenceComposite < View::Admin::SequenceComposite
 	COMPONENTS = {
 		[0,0]	=>	:sequence_name,
 		[0,1]	=>	View::Admin::ResellerSequenceForm,
-		[0,2]	=>	:sequence_agents,
-		[0,3]	=>	:sequence_packages,
-		[0,4]	=>	"th_source",
-		[0,5]	=>	:source,
+		[0,2]	=>	'compositions',
+		[0,3]	=>	:compositions,
+		[0,4]	=>	:sequence_packages,
+		[0,5]	=>	"th_source",
+		[0,6]	=>	:source,
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
-		[0,4]	=>	'subheading',
-		[0,5]	=>	'list',
+		[0,2]	=>	'subheading',
+		[0,5]	=>	'subheading',
+		[0,6]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	PACKAGES = View::Admin::RootSequencePackages
+  def compositions(model, session=@session)
+    RootCompositions.new(model.compositions, @session, self)
+  end
 end
 class Sequence < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::SequenceComposite
@@ -432,9 +543,11 @@ class Sequence < View::Drugs::PrivateTemplate
 end
 class RootSequence < View::Admin::Sequence
 	CONTENT = View::Admin::RootSequenceComposite
+  JAVASCRIPTS = ['admin']
 end
 class ResellerSequence < View::Admin::Sequence
 	CONTENT = View::Admin::ResellerSequenceComposite
+  JAVASCRIPTS = ['admin']
 end
 		end
 	end

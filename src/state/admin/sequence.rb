@@ -165,8 +165,11 @@ module SequenceMethods
 			:name_base, 
 			:name_descr,
       :longevity,
+      :substance,
+      :galenic_form,
 		]
 		input = user_input(keys)
+=begin
 		galform = @session.user_input(:galenic_form)
 		if(@session.app.galenic_form(galform))
 			input.store(:galenic_form, galform)
@@ -175,6 +178,7 @@ module SequenceMethods
 				:galenic_form, galform)
 			@errors.store(:galenic_form, err)
 		end
+=end
 		atc_input = self.user_input(:code, :code)
 		atc_code = atc_input[:code]
 		if(atc_code.nil?)
@@ -200,8 +204,100 @@ module SequenceMethods
 		ODBA.transaction {
 			@model = @session.app.update(@model.pointer, input, unique_email)
 		}
+    update_compositions input
 		newstate
 	end
+  def ajax_create_active_agent
+    check_model
+    keys = [:pointer, :composition]
+    input = user_input(keys, keys)
+    agents = []
+    if(!error? \
+       && (composition = @model.compositions.at(input[:composition].to_i)))
+      agents = composition.active_agents
+    end
+    AjaxActiveAgents.new(@session, agents.dup.push(nil))
+  end
+  def ajax_create_composition
+    check_model
+    comps = @model.compositions.dup
+    if(!error?)
+      comp = ODDB::Composition.new
+      comp.active_agents.push nil
+      comps.push comp
+    end
+    AjaxCompositions.new @session, comps
+  end
+  def ajax_delete_active_agent
+    check_model
+    keys = [:pointer, :active_agent, :composition]
+    input = user_input(keys, keys)
+    agents = []
+    if(!error? \
+       && (composition = @model.compositions.at(input[:composition].to_i)))
+      if(agent = composition.active_agents.at(input[:active_agent].to_i))
+        @session.app.delete agent.pointer
+        #composition.remove_active_agent(agent)
+        #composition.save
+      end
+      agents = composition.active_agents
+    end
+    AjaxActiveAgents.new(@session, agents)
+  end
+  def ajax_delete_composition
+    check_model
+    keys = [:pointer, :composition]
+    input = user_input(keys, keys)
+    agents = []
+    if(!error? \
+       && (composition = @model.compositions.at(input[:composition].to_i)))
+      @session.app.delete composition.pointer
+    end
+    AjaxCompositions.new(@session, @model.compositions)
+  end
+  def check_model
+    if(@model.pointer != @session.user_input(:pointer))
+      @errors.store :pointer, create_error(:e_state_expired, :pointer, nil)
+    elsif !allowed?
+      @errors.store :pointer, create_error(:e_not_allowed, :pointer, nil)
+    end
+  end
+  def update_compositions(input)
+    saved = nil
+    if(substances = input[:substance])
+      substances.each { |cmp_idx, substances|
+        doses = input[:dose][cmp_idx]
+        galform = input[:galenic_form][cmp_idx]
+        cmp_idx = cmp_idx.to_i
+        comp = @model.compositions.at(cmp_idx)
+        ptr = comp ? comp.pointer : (@model.pointer + :composition).creator
+        comp = @session.app.update ptr, { :galenic_form => galform },
+                                   unique_email
+        substances.each { |sub_idx, sub|
+          parts = doses[sub_idx]
+          sub_idx = sub_idx.to_i
+          agent = comp.active_agents.at(sub_idx)
+          ptr = agent ? agent.pointer \
+                      : (comp.pointer + [:active_agent, sub]).creator
+          agent = @session.app.update ptr, { :dose => parts, :substance => sub },
+                                      unique_email
+          unless agent.substance
+            key = :"substance[#{cmp_idx}][#{sub_idx}]"
+            @errors.store key, create_error(:e_unknown_substance, key, sub)
+          end
+        }
+      }
+    end
+    saved
+  end
+end
+class AjaxActiveAgents < Global
+  VOLATILE = true
+  VIEW = View::Admin::RootActiveAgents
+end
+class AjaxCompositions < Global
+  VOLATILE = true
+  VIEW = View::Admin::RootCompositions
 end
 class Sequence < State::Admin::Global
 	RECIPIENTS = []
