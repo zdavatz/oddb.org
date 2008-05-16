@@ -47,7 +47,7 @@ module FachinfoMethods
             path, @model, mimetype, language, mail_link)
         }
       }
-    elsif(href = @session.user_input(:fachinfo_link))
+    elsif((href = @session.user_input(:fachinfo_link)) && !href.empty?)
       plugin = FachinfoPlugin.new(@session.app)
       if(id = plugin.extract_fachinfo_id(href))
         new_state = State::Admin::WaitForFachinfo.new(@session, @model)
@@ -166,7 +166,7 @@ class Registration < State::Admin::Global
 			:inactive_date, :generic_type, :registration_date, 
 			:revision_date, :market_date, :expiration_date, 
 			:complementary_type, :export_flag, :renewal_flag,
-			:parallel_import, :index_therapeuticus
+			:parallel_import, :index_therapeuticus, :ignore_patent
 		]
 		if(@model.is_a? Persistence::CreateItem)
 			iksnr = @session.user_input(:iksnr)

@@ -112,6 +112,9 @@ module ODDB
 				@company.generic_type
 			end
 		end
+    def ignore_patent?
+      !!@ignore_patent
+    end
     def inactive?
       @inactive_date && @inactive_date <= @@today
     end

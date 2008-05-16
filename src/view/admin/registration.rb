@@ -178,8 +178,10 @@ class RegistrationForm < View::Form
 		[0,5]		=>	:indication,
 		[2,5]		=>	:patented_until,
 		[0,6]		=>	:export_flag,
-		[2,6]		=>	:vaccine,
+    [2,6]   =>  :ignore_patent,
+    [3,6]   =>  :violates_patent,
 		[0,7]		=>	:parallel_import,
+		[2,7]		=>	:vaccine,
 	}
 	COMPONENT_CSS_MAP = {
 		[1,0,1,6]	=>	'standard',
@@ -189,7 +191,7 @@ class RegistrationForm < View::Form
 		[0,0,6,8]	=>	'list',
 		[0,8]			=>	'list',
 	}
-  COLSPAN_MAP = { }
+  COLSPAN_MAP = { [3,6] => 3 }
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
 	SYMBOL_MAP = {
@@ -199,6 +201,7 @@ class RegistrationForm < View::Form
 		:fachinfo_label			=>	HtmlGrid::LabelText,
 		:fachinfo_link      =>	HtmlGrid::InputText,
 		:generic_type				=>	HtmlGrid::Select,
+    :ignore_patent      =>  HtmlGrid::InputCheckbox,
 		:inactive_date			=>	HtmlGrid::InputDate,
 		:index_therapeuticus=>	HtmlGrid::InputText,
 		:market_date				=>	HtmlGrid::InputDate,
@@ -285,6 +288,12 @@ class RegistrationForm < View::Form
 			link
 		end
 	end
+  def violates_patent(model, session=@session)
+    if model.ignore_patent? \
+      || model.sequences.any? { |seqnr, seq| seq.violates_patent? }
+      @lookandfeel.lookup(:violates_patent)
+    end
+  end
 end
 class ResellerRegistrationForm < View::Form
 	include HtmlGrid::ErrorMessage

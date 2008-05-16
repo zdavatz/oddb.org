@@ -19,9 +19,9 @@ module ODDB
       :cl_status, :deductible_display, :disable, :disable_invoice_fachinfo,
       :disable_invoice_patinfo,
       :disable_patinfo, :download, :experience, :export_flag, :helps,
-      :impression, :invoice_htmlinfos, :lppv, :parallel_import, :recommend,
-      :refdata_override, :renewal_flag, :show_email, :vaccine, :yus_groups,
-      :yus_privileges,
+      :ignore_patent, :impression, :invoice_htmlinfos, :lppv,
+      :parallel_import, :recommend, :refdata_override, :renewal_flag,
+      :show_email, :vaccine, :yus_groups, :yus_privileges,
     ]
 		DATES = [
 			:base_patent_date, 
