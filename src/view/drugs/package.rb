@@ -29,22 +29,23 @@ class Parts < HtmlGrid::List
   end
   def size(model)
     parts = []
-    multi = model.multi
-    count = model.count
+    multi = model.multi.to_i
+    count = model.count.to_i
     if(multi > 1) 
       parts.push(multi)
     end
     if(multi > 1 && count > 1)
       parts.push('x')
     end
-    if(count > 1 || multi <= 1)
+    if(count > 1 || (count > 0 && multi > 1))
       parts.push(model.count)
     end
     if(comform = model.commercial_form)
       parts.push(comform.send(@session.language))
     end
     if((measure = model.measure) && measure != 1)
-      parts.push("&agrave;", measure)
+      parts.push "&agrave;" unless parts.empty?
+      parts.push measure
     end
     parts.join(' ')
   end
