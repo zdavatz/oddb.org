@@ -229,6 +229,10 @@ class ResultList < HtmlGrid::List
     link.css_class = 'list bold'
     link
   end
+  def galenic_form(model, session=@session)
+    lang = @session.language
+    model.galenic_forms.collect { |gf| gf.send lang }.compact.join(' / ')
+  end
 	def fachinfo(model, session=@session)
 		super(model, session, 'square important infos')
 	end	
