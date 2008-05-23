@@ -9,7 +9,6 @@ Record-Separator: \n
 Field-Separator:  ;
 
 Der Datensatz besteht aus zwei CSV-Dokumenten, idx_th.csv und ean13_idx_th.csv
-Die Fel
 
 idx_th.csv:
 00: code              (String)                  -> Code. siehe Glossar (Code)
