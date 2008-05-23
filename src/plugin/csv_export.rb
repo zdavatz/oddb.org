@@ -71,6 +71,16 @@ module ODDB
       puts $!.backtrace
       raise
     end
+    def export_index_therapeuticus
+      ids = @app.indices_therapeutici.sort.collect { |code, idx| idx.odba_id }
+      files = []
+      files.push EXPORT_SERVER.export_idx_th_csv(ids, EXPORT_DIR, 'idx_th.csv')
+      ids = @app.packages.sort_by { |pac| pac.ikskey }.collect { |pac| 
+        pac.odba_id }
+      files.push EXPORT_SERVER.export_ean13_idx_th_csv(ids, EXPORT_DIR, 
+                                                       'ean13_idx_th.csv')
+      EXPORT_SERVER.compress_many(EXPORT_DIR, 'index_therapeuticus', files)
+    end
 		def export_migel
 			ids = @app.migel_products.sort_by { |product| 
 				product.migel_code }.collect { |product| product.odba_id }

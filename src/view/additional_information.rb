@@ -181,6 +181,25 @@ module ODDB
 				txt.dojo_tooltip = url
 				txt
 			end
+      def index_therapeuticus(model, session=@session)
+        span = HtmlGrid::Span.new(model, @session, self)
+        span.value = code = model.index_therapeuticus
+        span.css_id = "ith#{model.ikskey}"
+        if code
+          ith = nil
+          until ith || code.empty?
+            ith = IndexTherapeuticus.find_by_code(code)
+            code = code.gsub /\d+\.$/, ''
+          end
+          if ith
+				    tooltip = HtmlGrid::Div.new(model, @session, self)
+            tooltip.value = ith.send(@session.language) 
+            span.dojo_tooltip = tooltip
+          end
+        end
+        span.label = true
+        span
+      end
 			def limitation_text(model, session=@session)
 				if(sltxt = model.limitation_text)
 					#if((sl = model.sl_entry) && (sltxt = sl.limitation_text))

@@ -1,0 +1,38 @@
+Datenbeschrieb index_therapeuticus
+
+Version: 1.0.0
+Erstellt: 23.05.2008 (1.0.0) durch hwyss@ywesee.com
+
+## Struktur ##
+Encoding: ISO-8859-1
+Record-Separator: \n
+Field-Separator:  ;
+
+Der Datensatz besteht aus zwei CSV-Dokumenten, idx_th.csv und ean13_idx_th.csv
+Die Fel
+
+idx_th.csv:
+00: code              (String)                  -> Code. siehe Glossar (Code)
+01: description_de    (String)                  -> Deutsche Bezeichnung 
+02: description_fr    (String)                  -> Französische Bezeichnung
+03: comment_de        (String)                  -> Deutscher Kommentar/Untertitel
+04: comment_fr        (String)                  -> Französischer Kommentar/Untertitel
+05: limitation_de     (String)                  -> Deutscher Limitationstext
+06: limitation_fr     (String)                  -> Französischer Limitationstext
+
+ean13_idx_th.csv: Verbindungstabelle
+00: ean13             (Integer (13)), NOT NULL  -> EAN-13 der Packung
+00: code              (String)                  -> Zugehöriger Index Therapeuticus, falls bekannt
+
+## Glossar ##
+* Code:
+Index Therapeuticus gemäss http://www.galinfo.net, bestehend aus 3
+Gruppierungs-Ebenen die der Regular Expression "(\d{2}\.){1,3}" entsprechen.
+
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+Die komplette Version-History ist zu finden unter:
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/oddb.csv.txt

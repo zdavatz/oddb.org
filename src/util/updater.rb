@@ -7,6 +7,7 @@ require 'plugin/comarketing'
 require 'plugin/doctors'
 require 'plugin/fachinfo'
 require 'plugin/hospitals'
+require 'plugin/index_therapeuticus'
 require 'plugin/interaction'
 require 'plugin/limitation'
 require 'plugin/lppv'
@@ -214,6 +215,7 @@ module ODDB
       update_medwin_packages
       update_lppv
       update_price_feeds
+      update_index_therapeuticus
       export_csv
       export_csv_extended
       export_ouwerkerk
@@ -235,6 +237,9 @@ module ODDB
 		def update_interactions
 			update_simple(Interaction::InteractionPlugin, 'Interaktionen')
 		end
+    def update_index_therapeuticus
+      update_simple(IndexTherapeuticusPlugin, 'IndexTherapeuticus')
+    end
 		def update_limitation_text
 			update_simple(LimitationPlugin, 'LimitationText')
 		end

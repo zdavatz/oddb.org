@@ -112,6 +112,30 @@ groupcd;poscd;anonymouspos;analysis_description_de;analysis_description_fr;analy
 				nil
 			}
 		end
+    def OdbaExporter.export_ean13_idx_th_csv(odba_ids, dir, name)
+      safe_export(dir, name) { |fh|
+        fh << <<-HEAD
+ean13;index_therapeuticus
+        HEAD
+        odba_ids.each { |odba_id|
+          item = ODBA.cache.fetch(odba_id, nil)
+          CsvExporter.dump([ :barcode, :index_therapeuticus ], item, fh)	
+        }
+        nil
+      }
+    end
+    def OdbaExporter.export_idx_th_csv(odba_ids, dir, name)
+      safe_export(dir, name) { |fh|
+        fh << <<-HEAD
+index_therapeuticus;description_de;description_fr;comment_de;comment_fr;limitation_de;limitation_fr
+        HEAD
+        odba_ids.each { |odba_id|
+          item = ODBA.cache.fetch(odba_id, nil)
+          CsvExporter.dump(CsvExporter::INDEX_THERAPEUTICUS, item, fh)	
+        }
+        nil
+      }
+    end
 		def OdbaExporter.export_migel_csv(odba_ids, dir, name)
 			safe_export(dir, name) { |fh|
 				fh << <<-HEAD

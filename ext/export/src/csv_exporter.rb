@@ -18,6 +18,7 @@ module ODDB
 				:plz, :city, :canton, :fon, :fax]
 			DEFR = [:de, :fr] 
 			DEFRIT = [:de, :fr, :it] 
+      INDEX_THERAPEUTICUS = [ :code, :defr, :idx_th_comment, :idx_th_limitation ]
 			MIGEL = [:migel_code, :migel_subgroup, :product_code,
 				:migel_product_text, :accessory_code, :defrit,
         :migel_limitation, :format_price, :qty, :migel_unit,
@@ -79,7 +80,7 @@ module ODDB
                   {}
                 end
         keys.collect { |key|
-          descr.fetch(key.to_s, '')
+          descr.fetch(key.to_s, '').gsub(/\r?\n/, ' / ')
         }
       end
 			def CsvExporter.defr(item)
@@ -108,6 +109,12 @@ module ODDB
 				item.price = item.price / 100.0
 				item.price = sprintf("%.2f", item.price)
 			end
+      def CsvExporter.idx_th_limitation(item)
+				self.defr(item.limitation_text)
+      end
+      def CsvExporter.idx_th_comment(item)
+				self.defr(item.comment)
+      end
 			def CsvExporter.migel_limitation(item)
 				self.defrit(item.limitation_text)
 			end

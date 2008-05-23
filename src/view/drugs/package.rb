@@ -67,6 +67,7 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[2,3]		=>	:expiration_date,
 		[0,4]		=>	:galenic_form,
 		[2,4]		=>	:size,
+    [0,5]		=>	:index_therapeuticus,
 		[2,5]		=>	:descr,
 		[0,6]		=>	:ikscat,
 		[2,6]		=>	:indication,

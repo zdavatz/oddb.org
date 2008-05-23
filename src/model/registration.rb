@@ -223,6 +223,8 @@ module ODDB
 						else
 							app.company(value)
 						end
+          when :index_therapeuticus
+            hash.store key, IndexTherapeuticus.normalize_code(value)
 					end
 				end
 			}

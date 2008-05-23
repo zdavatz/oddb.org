@@ -125,7 +125,8 @@ module ODDB
         :narcotic, :narcotics, :orphaned_fachinfo, :orphaned_patinfo,
         :package, :patent, :patinfo, :pdf_patinfo, :position,
         :poweruser, :registration, :sequence, :slate, :sl_entry,
-        :sponsor, :substance, :user, :limitation_text, :minifi
+        :sponsor, :substance, :user, :limitation_text, :minifi, 
+        :index_therapeuticus
       ]
 			@parser = Parse.generate_parser <<-EOG
 Grammar OddbSize

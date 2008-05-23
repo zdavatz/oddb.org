@@ -47,6 +47,7 @@ module ODDB
 			export_oddbdat
 			export_csv
 			export_doc_csv
+      export_index_therapeuticus_csv
 		rescue StandardError => e
 			EXPORT_SERVER.clear
 			log = Log.new(@@today)
@@ -102,6 +103,12 @@ module ODDB
 			EXPORT_SERVER.compress(EXPORT_DIR, name)
 			plug
 		end
+    def export_index_therapeuticus_csv
+      plug = CsvExportPlugin.new(@app)
+      plug.export_index_therapeuticus
+      EXPORT_SERVER.clear
+      sleep(30)
+    end
 		def export_migel_csv
 			plug = CsvExportPlugin.new(@app)
 			plug.export_migel

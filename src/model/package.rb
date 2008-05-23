@@ -46,7 +46,7 @@ module ODDB
 		registration_data :comarketing_with, :complementary_type, :expiration_date,
 			:expired?, :export_flag, :generic_type, :inactive_date, :pdf_fachinfos,
 			:registration_date, :revision_date, :patent, :patent_protected?, :vaccine,
-			:parallel_import, :minifi, :source
+			:parallel_import, :minifi, :source, :index_therapeuticus
     sequence_data :atc_class, :basename, :company, :ddds, :dose, 
       :fachinfo, :galenic_forms, :galenic_group, :has_patinfo?, :longevity,
       :iksnr, :indication, :name, :name_base, :patinfo, :pdf_patinfo,

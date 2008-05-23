@@ -46,7 +46,7 @@ class OddbPrevalence
     :minifis, :notification_logger, :orphaned_fachinfos,
     :orphaned_patinfos, :patinfos, :patinfos_deprived_sequences,
     :registrations, :slates, :users, :narcotics, :accepted_orphans,
-    :commercial_forms, :rss_updates, :feedbacks
+    :commercial_forms, :rss_updates, :feedbacks, :indices_therapeutici
 	def initialize
 		init
 		@last_medication_update ||= Time.now()
@@ -71,6 +71,7 @@ class OddbPrevalence
 		@hospitals ||= {}
 		@incomplete_registrations ||= {}
 		@indications ||= {}
+    @indices_therapeutici ||= {}
 		@invoices ||= {}
 		@log_groups ||= {}
 		@migel_groups ||= {}
@@ -345,6 +346,11 @@ class OddbPrevalence
 		incomplete = ODDB::IncompleteRegistration.new
 		@incomplete_registrations.store(incomplete.oid, incomplete)
 	end
+  def create_index_therapeuticus(code)
+    code = code.to_s
+    it = ODDB::IndexTherapeuticus.new(code)
+    @indices_therapeutici.store(code, it)
+  end
 	def create_indication
 		indication = ODDB::Indication.new
 		@indications.store(indication.oid, indication)
@@ -490,6 +496,13 @@ class OddbPrevalence
 			reg
 		end
 	end
+  def delete_index_therapeuticus(code)
+    code = code.to_s
+    if(it = @indices_therapeutici.delete(code))
+      @indices_therapeutici.odba_isolated_store
+      it
+    end
+  end
 	def delete_indication(oid)
 		if(ind = @indications.delete(oid))
 			@indications.odba_isolated_store
@@ -640,6 +653,9 @@ class OddbPrevalence
 	def incomplete_registrations
 		@incomplete_registrations.values
 	end
+  def index_therapeuticus(code)
+    @indices_therapeutici[code.to_s]
+  end
 	def indication(oid)
 		@indications[oid.to_i]
 	end
@@ -724,6 +740,11 @@ class OddbPrevalence
 	def package_count
 		@package_count ||= count_packages()
 	end
+  def packages
+    @registrations.inject([]) { |pacs, (iksnr,reg)| 
+      pacs.concat(reg.packages)
+    }
+  end
 	def patinfo(oid)
 		@patinfos[oid.to_i]
 	end
