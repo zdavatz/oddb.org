@@ -143,6 +143,17 @@ module ODDB
       puts "System Stack Error when fixing #{source_row(row).pretty_inspect}"
       puts err.backtrace[-100..-1]
     end
+    def fix_sequences
+      row = nil
+      tbook = Spreadsheet::ParseExcel.parse(@latest)
+      tbook.worksheet(0).each(3) { |row|
+        reg = update_registration(row) if row
+        seq = update_sequence(reg, row) if reg
+      }
+    rescue SystemStackError => err
+      puts "System Stack Error when fixing #{source_row(row).pretty_inspect}"
+      puts err.backtrace[-100..-1]
+    end
     def get_latest_file(agent)
       file = agent.get('http://www.swissmedic.ch/files/pdf/Packungen.xls')
       download = file.body
