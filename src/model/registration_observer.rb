@@ -12,6 +12,7 @@ module ODDB
 			unless(@registrations.include?(registration))
 				@registrations.push(registration)
 				@registrations.odba_isolated_store
+        odba_isolated_store # update indices
 			end
 			registration
 		end
@@ -39,6 +40,7 @@ module ODDB
 		def remove_registration(registration)
 			if(@registrations.delete(registration))
 				@registrations.odba_isolated_store
+        odba_isolated_store # update indices
 			end
 			registration
 		end
