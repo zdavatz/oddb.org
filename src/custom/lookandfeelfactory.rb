@@ -48,9 +48,10 @@ module ODDB
 				LookandfeelStandardResult,
 				LookandfeelKonsumInfo, 
 			],
-			'mediservice' =>	[
-				LookandfeelMediservice, 
-			],
+      'mobile'	=>	[
+        LookandfeelLanguages,
+        LookandfeelMobile,
+      ],
 			'mymedi'=>	[
 				LookandfeelMyMedi, 
 			],

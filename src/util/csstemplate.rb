@@ -105,6 +105,8 @@ module ODDB
 				:navigation_link_font_color =>	'blue',
 				:std_font_family					=>	'Verdana, Arial, Helvetica, sans-serif',
 			},
+      :mobile		=>		{
+      },
 			:provita => {
 				:bg_bright								=>	'#c9eec5',
 				:bg_dark									=>	'#4b8e52',

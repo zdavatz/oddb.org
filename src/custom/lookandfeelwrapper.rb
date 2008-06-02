@@ -783,124 +783,64 @@ module ODDB
 			[:de, :fr, :en]
 		end
 	end
-	class LookandfeelMediservice < SBSM::LookandfeelWrapper
-		ENABLED = [
-      :drugs,
-			:external_css,
-      :home,
-			:home_drugs,
-			:home_migel,
-			:help_link,
+  class LookandfeelMobile < SBSM::LookandfeelWrapper
+    ENABLED = [
+      #:ajax,
+ 			:atc_chooser,
+      :breadcrumbs,
+      :companylist,
+			:data_counts,
+			#:drugs, 
+      #:country_navigation,
+			#:export_csv,
+      :fachinfos,
 			:faq_link,
-			:migel,
-			:migel_alphabetical,
+      :feedback,
+      #:feedback_rss,
+      #:google_adsense,
+			:help_link,
+			:home,
+			:home_drugs,
+      :limitation_texts,
+      :logo,
+			:logout,
+      #:minifi_rss,
+      :patinfos, 
+      #:paypal,
+      #:query_limit,
+			:recent_registrations,
+      #:screencast,
+			:search_reset,
 			:sequences,
+      #:sponsor,
+      #:sponsorlogo,
+			:topfoot,
 			:ywesee_contact,
-		]
-		DISABLED = [ :atc_ddd, :feedback, :legal_note, :price_request ]
-    RESOURCES = {
-      :external_css	=>	'http://www.mediservice.ch/css/medisuche.css',
-    }
-		def compare_list_components
-			{
-				[0,0]	=>	:name_base,
-				[1,0]	=>	:company_name,
-				[2,0]	=>	:most_precise_dose,
-				[3,0]	=>	:comparable_size,
-				[4,0] =>	:active_agents,
-				[5,0]	=>	:price_public,
-				[6,0]	=>	:price_difference, 
-				[7,0]	=>	:deductible,
-				[8,0] =>  :ddd_price,
-			}	
-		end
-    def comparison_sorter
-      Proc.new { |facade|
-        weight = case facade.company_name
-                 when /^helvepharm/i
-                   10
-                 when /^teva/i, /^medika/i
-                   1
-                 when /^ecosol/i, /^sandoz/i
-                   2
-                 when /^spirig/i
-                   3
-                 when /^mepha/i
-                   4
-                 else
-                   5
-                 end
-        [weight, facade]
-      }
-    end
-		def explain_result_components
-			{
-				[0,0]	=>	:explain_original,
-				[0,1]	=>	:explain_generic,
-				[0,2]	=>	'explain_unknown',
-				[0,3]	=>	'explain_expired',
-				[0,4]	=>	:explain_vaccine,
-				[0,5]	=>	:explain_narc,
-				[0,6]	=>	:explain_limitation,
-				[1,0]	=>	:explain_complementary,
-				[1,1]	=>	:explain_homeopathy,
-				[1,2]	=>	:explain_anthroposophy,
-				[1,3] =>	:explain_phytotherapy,
-				[1,4]	=>	'explain_efp',
-				[1,5]	=>	'explain_pbp',
-				[1,6]	=>	'explain_pr',
-				[2,0]	=>	:explain_deductible,
-				[2,1]	=>	:explain_ddd_price,
-				[2,2]	=>	'explain_sl',
-				[2,3]	=>	'explain_slo',
-				[2,4]	=>	'explain_slg',
-				[2,5]	=>	:explain_lppv,
-				[2,6]	=>	:explain_cas,
-			}
-		end
-    def migel_list_components
-      {
-        [0,0] =>	:limitation_text,
-        [1,0] =>	:migel_code,
-        [2,0]	=>	:product_description,
-        [3,0] =>  :date,
-        [4,0] =>  :price,
-        [5,0]	=>	:qty_unit,
-        [6,0] =>  :notify,
-      }
-    end
+   ]
 		def result_list_components
 			{
 				[0,0]		=>	:limitation_text,
-				[1,0,0]	=>	:narcotic,
-				[1,0,1]	=>	:complementary_type,
-				[2,0,0]	=>	'result_item_start',
-				[2,0,1]	=>	:name_base,
-				[2,0,2]	=>	'result_item_end',
-				[3,0]		=>	:comparable_size,
-				[4,0]		=>	:price_exfactory,
-				[5,0]	  =>	:price_public,
-				[6,0]	  =>	:deductible,
-				[7,0]	  =>	:ddd_price,
-				[8,0]	  =>	:active_agents,
-				[9,0]	  =>	:company_name,
-				[10,0]	=>	:ikscat,
-				[11,0]	=>	:notify,
+				[1,0]		=>  :minifi,
+				[2,0]		=>  :fachinfo,
+				[3,0]		=>	:patinfo,
+				[4,0,0]	=>	:narcotic,
+				[4,0,1]	=>	:complementary_type,
+				[4,0,2]	=>	:comarketing,
+				[5,0,0]	=>	'result_item_start',
+				[5,0,1]	=>	:name_base,
+				[5,0,2]	=>	'result_item_end',
+				[6,0]		=>	:comparable_size,
+				[7,0]		=>	:price_exfactory,
+				[8,0]	=>	:price_public,
+				[9,0]	=>	:ddd_price,
+				[10,0]	=>	:active_agents,
+				[11,0]	=>	:ikscat,
+				[12,0]	=>	:feedback,
+				[13,0]	=>  :google_search,
+				[14,0]	=>	:notify,
 			}
 		end
-		def search_type_selection
-      [ 'st_oddb', 'st_sequence', 'st_substance', 'st_company',
-        'st_unwanted_effect' ]
-		end
-    def sequence_list_components
-      {
-        [0,0]	=>	:iksnr,
-        [1,0]	=>	:name_base,
-        [2,0]	=>	:galenic_form,
-        #[3,0]	=>	:notify,
-      }
-    end
-	end
+  end
 	class LookandfeelMyMedi < SBSM::LookandfeelWrapper
 		ENABLED = [
       :explain_sort,

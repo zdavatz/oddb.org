@@ -179,6 +179,7 @@ td.subheading, th.subheading {
 a.subheading {
 	padding : 0px;
 	color : $bg_bright_font_color;
+  white-space: nowrap;
 }
 td.subheading a.bold {
 	padding : 4px;
