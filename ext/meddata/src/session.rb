@@ -88,6 +88,13 @@ class Session < HttpSession
 		resp = post(self.http_path, hash)
 		@viewstate = handle_resp!(resp)
 		resp.body
+  rescue RuntimeError => err
+    if /InternalServerError/.match err.message
+      sleep 600 # wait 10 minutes for the server to recover
+      retry
+    else
+      raise
+    end
 	end
 	def post_hash(criteria, ctl=nil)
 		data = if(ctl)

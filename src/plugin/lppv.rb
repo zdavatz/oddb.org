@@ -68,7 +68,7 @@ module ODDB
 				[
 					resolve_link(package),
 					sprintf("%-20s  %-20.2f  %-20.2f %s", @package.iksnr, 
-									@old.to_f/100, @current.to_f/100, @package.name),
+									@old.to_f, @current.to_f, @package.name),
 									nil,
 				]
 			end

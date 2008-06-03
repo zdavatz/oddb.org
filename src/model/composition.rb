@@ -74,6 +74,7 @@ module ODDB
     end
     def ==(other)
       other.is_a?(Composition) \
+				&& !@galenic_form.nil? \
 				&& !other.galenic_form.nil? \
         && other.galenic_form.equivalent_to?(@galenic_form) \
         && other.active_agents.sort == @active_agents.sort

@@ -147,9 +147,9 @@ module ODDB
 				]
 			end
 			row[11] = seq.active_agents.size
-			if(galform = seq.galenic_form)
+      seq.galenic_forms.collect { |galform|
 				row[14] = galform.de
-			end
+      }.join(', ')
 			row[15] = seq.composition_text
 			if(atc = seq.atc_class)
 				row[21] = atc.code
