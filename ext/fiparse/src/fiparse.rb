@@ -11,6 +11,7 @@ require 'fachinfo_pdf'
 require 'fachinfo_pdf'
 require 'fachinfo_news'
 require 'fachinfo_doc'
+require 'indications'
 require 'minifi'
 require 'patinfo_hpricot'
 require 'rpdf2txt/parser'
@@ -26,6 +27,9 @@ module ODDB
 		end
     def FiParse.extract_fachinfo_id(href)
       FachinfoNewsWriter.extract_fachinfo_id(href)
+    end
+    def FiParse.extract_indications(path)
+      Indications.extract(path)
     end
     def FiParse.extract_minifi(path)
       MiniFi.extract(path)

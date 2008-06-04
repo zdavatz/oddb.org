@@ -357,7 +357,7 @@ module ODDB
       else
         pointer = pointer.creator
       end
-			package = @app.update(pointer, pack.data, :swissmedic)
+			package = @app.update(pointer, {}, :swissmedic)
       ptr = if(part = package.parts.first)
               part.pointer
             else

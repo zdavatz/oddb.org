@@ -47,7 +47,7 @@ module ODDB
         update_registrations @diff.news + @diff.updates, @diff.replacements
         sanity_check_deletions(@diff)
         delete @diff.package_deletions
-        delete @diff.sequence_deletions
+        deactivate @diff.sequence_deletions
         deactivate @diff.registration_deletions
         FileUtils.cp target, @latest
         @change_flags = @diff.changes.inject({}) { |memo, (iksnr, flags)| 
@@ -60,9 +60,8 @@ module ODDB
       string.split(/\s+/).collect { |word| word.capitalize }.join(' ')
     end
     def deactivate(deactivations)
-      deactivations.each { |iksnr|
-        @app.update Persistence::Pointer.new([:registration, iksnr]), 
-                    {:inactive_date => @@today}, :swissmedic
+      deactivations.each { |row|
+        @app.update pointer(row), {:inactive_date => @@today}, :swissmedic
       }
     end
     def delete(deletions)
@@ -103,7 +102,7 @@ module ODDB
                   reg.index_therapeuticus, reg.production_science,
                   reg.registration_date, reg.expiration_date ]
           unless reg.inactive? || reg.vaccine
-            known_regs.store iksnr, row
+            known_regs.store [iksnr], row
             reg.sequences.each { |seqnr, seq|
               srow = row.dup
               srow[1,2] = [seqnr, seq.name_base]
@@ -479,7 +478,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       end
     end
     def sanity_check_deletions(diff)
-      table = diff.registration_deletions.inject({}) { |memo, iksnr|
+      table = diff.registration_deletions.inject({}) { |memo, (iksnr,_)|
         memo.store(iksnr, true)
         memo
       }

@@ -641,7 +641,7 @@ module ODDB
       assert_equal 1, result.sequence_deletions.size
       assert_equal ['10368', '01'], result.sequence_deletions.at(0)
       assert_equal 1, result.registration_deletions.size
-      assert_equal '10368', result.registration_deletions.at(0)
+      assert_equal ['10368'], result.registration_deletions.at(0)
       assert_equal 1, result.replacements.size
       assert_equal '031', result.replacements.values.first
     end

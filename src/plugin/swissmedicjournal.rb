@@ -26,16 +26,9 @@ module ODDB
       :comment					=>	'Bemerkungen',
       :delete						=>	'Das Produkt wurde gelöscht',
     }
-		attr_reader :incomplete_pointers
 		def initialize(app)
 			super
-			@registration_pointers = []
-			@incomplete_pointers = []
-			@deactivated_pointers = []
-			@deactivations = []
-			@incomplete_deactivations = []
-			@pruned_sequences = 0
-			@pruned_packages = 0
+      @indications = []
 		end
 		def fix_from_source(reg, *flags)
 			if(src = reg.source)
@@ -85,11 +78,6 @@ module ODDB
 			puts exc.backtrace
 			$stdout.flush
 		end
-		def log_info
-			hash = super
-			hash.store(:pointers, @incomplete_pointers)
-			hash
-		end
     def mail_notifications
       salutations = {}
       flags = {}
@@ -124,54 +112,16 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
         }
       end
     end
-		def reconsider_deletions(month)
-			@month = month
-			name = month.strftime('%m_%Y.txt')
-			path = File.join(ARCHIVE_PATH, 'txt', name)
-			document = SwissmedicJournal::Document.new(File.read(path))
-			document.each { |part|
-				if(part.is_a?(SwissmedicJournal::InactiveRegistration))
-					part.parse
-					deactivate_registration(part)
-				end
-			}
-			@incomplete_deactivations
-		end
 		def report
-			reg_pointers = @registration_pointers.collect { |pointer|
-				resolve_link(pointer)
-			}.sort
-			inc_pointers = @incomplete_pointers.collect { |pointer|
-				resolve_link(pointer)
-			}.sort
 			atcless = @app.atcless_sequences.collect { |sequence|
 				resolve_link(sequence.pointer)	
 			}.sort
-
-			deactivated = @deactivated_pointers.collect { |pointer|
-				resolve_link(pointer)
-			}.sort
 			lines = [
 				"ODDB::SwissmedicJournalPlugin - Report #{@month}",
-				"Updated Registrations: #{reg_pointers.size}",
-				"Incomplete Registrations: #{inc_pointers.size}",
-				"Deactivated Registrations: #{deactivated.size} (#{@deactivations.size})",
-				"Incomplete Deactivations: #{@incomplete_deactivations.size}",
-				"Pruned Sequences: #{@pruned_sequences}",
-				"Pruned Packages: #{@pruned_packages}",
-				"Total Sequences without ATC-Class: #{atcless.size}",
-				nil, 
-				"Updated Registrations: #{reg_pointers.size}",
-				reg_pointers,
-				"Incomplete Registrations: #{inc_pointers.size}",
-				inc_pointers,
-				"Deactivated Registrations: #{deactivated.size} (#{@deactivations.size})",
-				deactivated,
-				"Incomplete Deactivations: #{@incomplete_deactivations.size}",
-				@incomplete_deactivations,
+				"Updated Indications: #{@indications.size}",
 				"Total Sequences without ATC-Class: #{atcless.size}",
 				atcless,
-			] #+ @ctrl.report.to_a
+			]
 			lines.flatten.join("\n")
 		end
 		def update(month)
@@ -182,9 +132,24 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
         agent = WWW::Mechanize.new
         page = agent.get source
         page.save target
+        update_indications(target)
       end
     rescue WWW::Mechanize::ResponseCodeError
 		end
+    def update_indications(path)
+      @indications, news = DRbObject.new(nil, FIPARSE_URI).extract_indications(path)
+      @indications.each { |iksnr, text|
+        indication = update_indication(text)
+        pointer = Persistence::Pointer.new([:registration, iksnr])
+        @app.update(pointer, {:indication => indication.pointer}, :swissmedic)
+      }
+      log = @app.log_group(:swissmedic).latest
+      news.each { |iksnr|
+        pointer = Persistence::Pointer.new([:registration, iksnr])
+        (log.change_flags[pointer] ||= []).push :indication
+      }
+      @app.update(log.pointer, {:change_flags => log.change_flags}, :swissmedic)
+    end
 		private
 		def accept_galenic_form?(pointer, smj_seq)
 			galform = @app.galenic_form(smj_seq.most_precise_galform)
@@ -221,23 +186,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
 			end
 			values
 		end
-		def deactivate_registration(smj_reg)
-			unless(smj_reg.incomplete?)
-				pointer = Persistence::Pointer.new([:registration, smj_reg.iksnr])
-				date = smj_reg.date || @month || @@today
-				@deactivations.push(pointer)
-				@change_flags.store(pointer, smj_reg.flags)
-				if(seqnr = smj_reg.seqnr)
-					pointer += [:sequence, seqnr]
-				end
-				if((reg = @app.registration(smj_reg.iksnr)) && reg.inactive_date.nil?)
-					@app.update(pointer, {:inactive_date => date}, :swissmedic)
-					@deactivated_pointers.push(pointer)
-				end
-			else
-				@incomplete_deactivations.push(smj_reg.src)
-			end
-		end
     def format_flags(flags)
       flags.delete(:revision)
       flags.collect { |flag|
@@ -249,7 +197,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
 			ikscds = packages.collect { |package| package.ikscd }
 			sequence.packages.dup.each { |ikscd, package| 
 				unless ikscds.include?(ikscd)
-					@pruned_packages += 1
 					pointer = sequence.pointer + [:package, ikscd]
 					@app.delete(pointer) 
 				end
@@ -262,7 +209,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
 					smj_seq = smj_reg.products[seqnr]
 					prune_packages(smj_seq, sequence) unless(smj_reg.incomplete?)
 				else
-					@pruned_sequences += 1
 					@app.delete(sequence.pointer) 
 				end
 			}
@@ -350,7 +296,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
         smj_packages.each { |package|
           pointer = sequence.pointer + [:package, package.ikscd]
           hash = {
-            :size		=>	package.package_size,
+            ## TODO: fix this, in case fix_from_source is ever used again
+            #:size		=>	package.package_size,
             :descr  =>  nil, # delete the description, if not confirmed
           }
           if(ikscat = package.ikscat || sequence.registration.ikscat)
@@ -413,12 +360,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
 			end
 			pointer ||= Persistence::Pointer.new(args)
 			registration = @app.update(pointer.creator, hash, :swissmedic)
-			if(smj_incomplete?(smj_reg))
-				@incomplete_pointers
-			else
+			if(!smj_incomplete?(smj_reg))
 				prune_sequences(smj_reg, registration)
-				@change_flags.store(registration.pointer, flags)
-				@registration_pointers
 			end.push(registration.pointer)
 			update_sequences(smj_reg, registration, flags)
 			registration

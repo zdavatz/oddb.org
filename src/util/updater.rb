@@ -171,11 +171,11 @@ module ODDB
 		end
 		def run
 			logfile_stats
-      if(update_swissmedicjournal)
-        update_minifis
-      end
 			if(update_swissmedic)
         update_swissmedic_followers
+      end
+      if(update_swissmedicjournal)
+        update_minifis
       end
 			update_fachinfo
 			update_vaccines
@@ -340,8 +340,9 @@ module ODDB
 			logs = @app.create(logs_pointer)
 			# The first issue of SwissmedicJournal is 2002,1
 			latest = logs.newest_date || Date.new(2002,4) 
+      latest_swissmedic = @app.log_group(:swissmedic).newest_date
 			success = true
-			while((latest < @@today) && success)
+			while(latest < @@today && latest <= latest_swissmedic && success)
 				latest = latest >> 1
 				klass = SwissmedicJournalPlugin
 				plug = klass.new(@app)
