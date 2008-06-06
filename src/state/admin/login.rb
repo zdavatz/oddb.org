@@ -19,7 +19,6 @@ module LoginMethods
     @errors.store(:pass, create_error(:e_authentication_error, :pass, nil))
     self
   end
-  private
   def autologin(user, default=@previous)
     newstate = if(user.valid?)
       des = @session.desired_state
@@ -31,6 +30,7 @@ module LoginMethods
     end
     reconsider_permissions(user, newstate)
   end
+  private
   def reconsider_permissions(user, state)
     viral_modules(user) { |mod|
       state.extend(mod)

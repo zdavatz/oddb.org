@@ -1476,6 +1476,9 @@ module ODDB
 		def login(email, pass)
       YusUser.new(YUS_SERVER.login(email, pass, YUS_DOMAIN))
 		end
+		def login_token(email, token)
+      YusUser.new(YUS_SERVER.login_token(email, token, YUS_DOMAIN))
+		end
     def logout(session)
       YUS_SERVER.logout(session)
     rescue DRb::DRbError, RangeError

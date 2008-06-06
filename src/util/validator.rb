@@ -20,7 +20,8 @@ module ODDB
       :disable_invoice_patinfo,
       :disable_patinfo, :download, :experience, :export_flag, :helps,
       :ignore_patent, :impression, :invoice_htmlinfos, :lppv,
-      :parallel_import, :recommend, :refdata_override, :renewal_flag,
+      :parallel_import, :recommend, :refdata_override, :remember_me,
+      :renewal_flag,
       :show_email, :vaccine, :yus_groups, :yus_privileges,
     ]
 		DATES = [
@@ -345,6 +346,7 @@ module ODDB
 			:range,
 			:register_update,
 			:regulatory_email,
+      :remember,
 			:size,
 			:sortvalue,
 			:spagyric_dose,

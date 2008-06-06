@@ -33,6 +33,16 @@ module ODDB
 			@interaction_basket = []
       @currency_rates = {}
 		end
+    def active_state
+      state = super
+      unless @token_login_attempted 
+        @token_login_attempted = true
+        if user = login_token
+          state = state.autologin user
+        end
+      end
+      state
+    end
     def allowed?(*args)
       @user.allowed?(*args)
     end
@@ -51,7 +61,8 @@ module ODDB
 			@flavor ||= (@valid_input[:partner] || super)
 		end
 		def limit_queries
-			requests = (@@requests[remote_ip] ||= [])
+			#requests = (@@requests[remote_ip] ||= [])
+			requests = (@requests ||= [])
 			if(@state.limited?)
 				requests.delete_if { |other| 
 					(@process_start - other) >= QUERY_LIMIT_AGE 
@@ -67,9 +78,30 @@ module ODDB
     def login
       # @app.login raises Yus::YusError
 			@user = @app.login(user_input(:email), user_input(:pass))
+      if cookie_set_or_get(:remember_me)
+        set_cookie_input :remember, @user.generate_token
+        set_cookie_input :email, @user.email
+      else
+        @cookie_input.delete :remember
+      end
+      @user
+    end
+    def login_token
+      # @app.login raises Yus::YusError
+      email = get_cookie_input(:email)
+      token = get_cookie_input(:remember)
+      if email && token && !token.empty?
+        @user = @app.login_token email, token
+        set_cookie_input :remember, @user.generate_token
+        @user
+      end
+    rescue Yus::YusError
     end
     def logout
+      token = get_cookie_input(:remember)
+      @cookie_input.delete :remember
       if(@user.respond_to?(:yus_session))
+        @user.remove_token token
         @app.logout(@user.yus_session)
       end
       super
