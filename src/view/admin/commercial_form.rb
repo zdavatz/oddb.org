@@ -2,6 +2,7 @@
 # View::Admin::CommercialForm -- de.oddb.org -- 24.11.2006 -- hwyss@ywesee.com
 
 require 'view/privatetemplate'
+require 'view/admin/sequence'
 
 module ODDB
   module View
@@ -24,11 +25,15 @@ class CommercialFormComposite < HtmlGrid::Composite
   COMPONENTS = {
     [0,0] => 'commercial_form',
     [0,1] => CommercialFormForm,
+    [0,2] => :packages,
   }
   CSS_MAP = {
     [0,0] => 'th'
   }
   CSS_CLASS = 'composite'
+  def packages(model, session=@session)
+    SequencePackages.new(model.packages[0,30], @session, self)
+  end
 end
 class CommercialForm < PrivateTemplate
   CONTENT = CommercialFormComposite

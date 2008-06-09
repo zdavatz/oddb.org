@@ -16,7 +16,12 @@ module ODDB
 		end
 		def merge(other)
 			other.packages.dup.each { |pac|
-				pac.commercial_form = self
+        pac.parts.each { |part|
+          if part.commercial_form == other
+            part.commercial_form = self
+            part.odba_isolated_store
+          end
+        }
 				pac.odba_isolated_store
 			}
 			self.synonyms += other.all_descriptions - self.all_descriptions
