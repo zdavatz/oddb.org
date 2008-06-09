@@ -387,6 +387,8 @@ Zeno Davatz
 				:e_domainless_email_address1	=>	'" hat keine g&uuml;ltige Domain-Endung. Bitte &uuml;berpr&uuml;fen Sie die Eingabe.',
 				:e_duplicate_atc_class0		=>	'Die ATC-Codierung "',
 				:e_duplicate_atc_class1		=>	'" ist bereits vergeben.',
+				:e_duplicate_commercial_form0=>	'Die Handelsform "',
+				:e_duplicate_commercial_form1=>	'" existiert bereits.',
 				:e_duplicate_company0			=>	'Die Firma "',
 				:e_duplicate_company1			=>	'" existiert bereits.',
 				:e_duplicate_company1			=>	'" existiert bereits.',

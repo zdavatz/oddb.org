@@ -28,7 +28,7 @@ class CommercialForm < Global
       value = @session.user_input(sym)
       if(duplicate?(value))
         @errors.store(sym, 
-          create_error('e_duplicate_galenic_form', key, value))
+          create_error('e_duplicate_commercial_form', key, value))
       end
       inj.store(key, value)
       inj
@@ -38,13 +38,13 @@ class CommercialForm < Global
       syns.each { |syn| 
         if(duplicate?(syn))
           @errors.store(:synonym_list, 
-            create_error('e_duplicate_galenic_form', 
+            create_error('e_duplicate_commercial_form', 
               :synonym_list, syn))
         end
       }
       input.store(:synonyms, syns)
     end
-    input.store(:galenic_group, @session.user_input(:galenic_group))
+    puts @errors.inspect, input.inspect
     unless error?
       @model = @session.app.update(@model.pointer, input, unique_email)
     end
