@@ -44,7 +44,6 @@ class CommercialForm < Global
       }
       input.store(:synonyms, syns)
     end
-    puts @errors.inspect, input.inspect
     unless error?
       @model = @session.app.update(@model.pointer, input, unique_email)
     end
