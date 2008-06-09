@@ -162,6 +162,7 @@ a.text {
 /* standard-list-classes */
 a.list, a.list:hover, a.list:link:hover, a.list:visited:hover {
 	color: $home_link_hover_color;
+  white-space: nowrap;
 }
 a.list:link, a.list:visited {
 	color : $home_link_color;
@@ -568,9 +569,12 @@ td.list span.square, td.list a.square {
 	padding: 2px 4px;
 	font-size: $square_font_size;
 }
-td.infos span.square, td.infos a.square {
+td.infos, td.infos span.square, td.infos a.square {
 	padding: 0px 1px;
 	font-size: $explain_font_size;
+}
+td.infos {
+  height: $infos_height;
 }
 td.wait {
 	width: 25px;

@@ -106,6 +106,8 @@ module ODDB
 				:std_font_family					=>	'Verdana, Arial, Helvetica, sans-serif',
 			},
       :mobile		=>		{
+        :explain_font_size => '12px',
+        :infos_height      => '16px',
       },
 			:provita => {
 				:bg_bright								=>	'#c9eec5',
@@ -186,6 +188,7 @@ module ODDB
 			:h3_margin										=>	'2px',
 			:home_link_color							=>	'blue',
 			:home_link_hover_color				=>	'#2ba476',
+      :infos_height                 =>  'auto',
 			:l1_font_size								  =>	'12px',
 			:l2_font_size 								=>	'14px',
 			:l3_font_size 								=>	'16px',

@@ -801,6 +801,7 @@ module ODDB
 			:help_link,
 			:home,
 			:home_drugs,
+      :legal_note_vertical,
       :limitation_texts,
       :login_form,
       :logo,
@@ -818,29 +819,60 @@ module ODDB
 			:topfoot,
 			:ywesee_contact,
    ]
-		def result_list_components
-			{
-				[0,0]		=>	:limitation_text,
-				[1,0]		=>  :minifi,
-				[2,0]		=>  :fachinfo,
-				[3,0]		=>	:patinfo,
-				[4,0,0]	=>	:narcotic,
-				[4,0,1]	=>	:complementary_type,
-				[4,0,2]	=>	:comarketing,
-				[5,0,0]	=>	'result_item_start',
-				[5,0,1]	=>	:name_base,
-				[5,0,2]	=>	'result_item_end',
-				[6,0]		=>	:comparable_size,
-				[7,0]		=>	:price_exfactory,
-				[8,0]	=>	:price_public,
-				[9,0]	=>	:ddd_price,
-				[10,0]	=>	:active_agents,
-				[11,0]	=>	:ikscat,
-				[12,0]	=>	:feedback,
-				[13,0]	=>  :google_search,
-				[14,0]	=>	:notify,
-			}
-		end
+    def result_list_components
+      {
+        [0,0]		=>	:limitation_text,
+        [1,0]		=>  :minifi,
+        [2,0]		=>  :fachinfo,
+        [3,0]		=>	:patinfo,
+        [4,0,0]	=>	:narcotic,
+        [4,0,1]	=>	:complementary_type,
+        [4,0,2]	=>	:comarketing,
+        [5,0,0]	=>	'result_item_start',
+        [5,0,1]	=>	:name_base,
+        [5,0,2]	=>	'result_item_end',
+        [6,0]		=>	:comparable_size,
+        [7,0]		=>	:price_exfactory,
+        [8,0]	=>	:price_public,
+        [9,0]	=>	:ddd_price,
+        [10,0]	=>	:active_agents,
+        [11,0]	=>	:ikscat,
+        [12,0]	=>	:feedback,
+        [13,0]	=>  :google_search,
+        [14,0]	=>	:notify,
+      }
+    end
+    def explain_result_components
+      {
+        [0,0]  => :explain_original,
+        [0,1]  => :explain_generic,
+        [0,2]  => 'explain_unknown',
+        [0,3]  => 'explain_expired',
+        [0,4]  => :explain_complementary,
+        [0,5]  => :explain_homeopathy,
+        [0,6]  => :explain_anthroposophy,
+        [0,7]  => :explain_phytotherapy,
+        [0,8]  => :explain_cas,
+        [0,9]  => :explain_parallel_import,
+        [0,10] => :explain_comarketing,
+        [0,11] => :explain_narc,
+        [0,12] => :explain_google_search,
+        [0,13] => :explain_feedback,
+        [1,0]  => :explain_vaccine,
+        [1,1]  => :explain_minifi,
+        [1,2]  => :explain_fachinfo,
+        [1,3]  => :explain_patinfo,
+        [1,4]  => :explain_limitation,
+        [1,5]  => :explain_ddd_price,
+        [1,6]  => 'explain_efp',
+        [1,7]  => 'explain_pbp',
+        [1,8]  => 'explain_pr',
+        [1,9]  => 'explain_sl',
+        [1,10] => 'explain_slo',
+        [1,11] => 'explain_slg',
+        [1,12] => :explain_lppv,
+      }
+    end
   end
 	class LookandfeelMyMedi < SBSM::LookandfeelWrapper
 		ENABLED = [

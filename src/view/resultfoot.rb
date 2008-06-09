@@ -46,7 +46,7 @@ module ODDB
 					width = [x, width].max
 					height = [y.next, height].max
 				}
-				@css_map.store([1, 0, width, height], 'infos')
+				@css_map.store([0, 0, width.next, height], 'infos')
 				super
 			end
 			def explain_comarketing(model, session=@session)
@@ -144,17 +144,24 @@ module ODDB
 			}
 			COMPONENTS = {
 				[0,0]	=>	:explain_result,
-				[1,0]	=>	:legal_note,
 			}
 			COMPONENT_CSS_MAP = {
 				[0,0]	=>	'explain',
-				[1,0]	=>	'explain right',
 			}
 			CSS_MAP = {
 				[0,0]	=>	'explain',
-				[1,0]	=>	'explain right',
 			}
 			CSS_CLASS = 'composite'
+      def init
+        legal_coords = [1,0]
+        if @lookandfeel.enabled?(:legal_note_vertical, false)
+          legal_coords = [0,1]
+        end
+        components.store legal_coords, :legal_note
+        css_map.store legal_coords, 'explain right'
+        component_css_map.store legal_coords, 'explain right'
+        super
+      end
 			def explain_result(model, session=@session)
 				klass = nil
 				if(defined?(@container.class::EXPLAIN_RESULT))
