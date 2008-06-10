@@ -443,9 +443,6 @@ class SequenceForm < HtmlGrid::Composite
 			PointerLink.new(:e_company_not_invoiceable, model.company, @session, self)
 		end
 	end
-	def hidden_fields(context)
-		super << context.hidden('patinfo', 'keep')
-	end
 end
 class ResellerSequenceForm < SequenceForm
 	include HtmlGrid::ErrorMessage
@@ -513,6 +510,9 @@ class RootSequenceComposite < View::Admin::SequenceComposite
 	PACKAGES = View::Admin::RootSequencePackages
   def compositions(model, session=@session)
     RootCompositions.new(model.compositions, @session, self)
+  end
+  def hidden_fields(context)
+    super << context.hidden('patinfo', 'keep')
   end
 end
 class ResellerSequenceComposite < View::Admin::SequenceComposite

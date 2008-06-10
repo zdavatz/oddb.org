@@ -9,7 +9,6 @@ function replace_element(id, url) {
         container.parentNode.innerHTML = data;
       }
       document.body.style.cursor = 'auto';
-		},
+		}
 	});
- 
 }
