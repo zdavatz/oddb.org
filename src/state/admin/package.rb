@@ -114,11 +114,12 @@ module PackageMethods
 	end
   def update_parts(input)
     if(counts = input[:count])
+      comforms = input[:commercial_form] || {}
       counts.each { |idx, count|
         part = @model.parts.at(idx.to_i)
         ptr = part ? part.pointer : (@model.pointer + :part).creator
         current = { :package => @model.pointer }
-        [:multi, :count, :measure, :commercial_form, :composition].each { |key|
+        [:multi, :count, :measure, :composition].each { |key|
           values = (input[key] ||= {})
           current.store(key, values[idx])
         }
@@ -126,7 +127,6 @@ module PackageMethods
           comp = @model.registration.compositions[cidx.to_i]
           current[:composition] = comp ? comp.pointer : nil
         end
-        comforms = input[:commercial_form] || {}
         if(name = comforms[idx])
           if(name.empty?)
             current.store(:commercial_form, nil)
