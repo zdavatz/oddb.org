@@ -11,6 +11,7 @@ module ODDB
 	module View
 		module Drugs
 class Parts < HtmlGrid::List
+  include PartSize
   COMPONENTS = {
     [0,0] => :size,
     [1,0] => :active_agents,
@@ -28,26 +29,7 @@ class Parts < HtmlGrid::List
     end
   end
   def size(model)
-    parts = []
-    multi = model.multi.to_i
-    count = model.count.to_i
-    if(multi > 1) 
-      parts.push(multi)
-    end
-    if(multi > 1 && count > 1)
-      parts.push('x')
-    end
-    if(count > 1 || (count > 0 && multi > 1))
-      parts.push(model.count)
-    end
-    if(comform = model.commercial_form)
-      parts.push(comform.send(@session.language))
-    end
-    if((measure = model.measure) && measure != 1)
-      parts.push "&agrave;" unless parts.empty?
-      parts.push measure
-    end
-    parts.join(' ')
+    part_size model
   end
 end
 class PackageInnerComposite < HtmlGrid::Composite

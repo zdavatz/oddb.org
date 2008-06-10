@@ -192,6 +192,7 @@ class RootCompositions < Compositions
 end
 module SequencePackageList 
 	include DataFormat
+  include PartSize
 	COMPONENTS = {
 		[0,0]	=>	:ikscd,
 		[1,0]	=>	:most_precise_dose,
@@ -231,6 +232,9 @@ module SequencePackageList
 			link
 		end
 	end
+  def size(model, session=@session)
+    comparable_size model
+  end
 	def sl_entry(model, session=@session)
 		@lookandfeel.lookup(:sl) unless model.sl_entry.nil?
 	end

@@ -145,13 +145,14 @@ Grammar OddbSize
       if(count > 1 || (count > 0 && multi > 1))
         parts.push(count)
       end
+      @measure = nil if @measure == 1
       if(@commercial_form)
         parts.push @commercial_form
+        parts.push "à" if @measure
+      elsif @measure && !parts.empty?
+        parts.push('x')
       end
-      if(@measure && @measure != 1)
-        parts.push "à" unless parts.empty?
-        parts.push @measure
-      end
+      parts.push @measure if @measure
       parts.join(' ')
     end
     private

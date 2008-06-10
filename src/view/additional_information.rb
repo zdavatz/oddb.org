@@ -7,8 +7,45 @@ require 'plugin/comarketing'
 
 module ODDB
 	module View
+    module PartSize
+      def comparable_size(model, session=@session)
+        comforms = model.commercial_forms
+        unless(comforms.compact.empty?)
+          model.parts.collect { |part|
+            part_size part
+          }.join(' + ')
+        else
+          HtmlGrid::Value.new(:size, model, session, self)
+        end
+      end
+      def part_size(part, session=@session)
+        parts = []
+        multi = part.multi.to_i
+        count = part.count.to_i
+        if(multi > 1) 
+          parts.push(multi)
+        end
+        if(multi > 1 && count > 1)
+          parts.push('x')
+        end
+        if(count > 1 || (count > 0 && multi > 1))
+          parts.push(part.count)
+        end
+        measure = part.measure
+        measure = nil if measure == 1
+        if(comform = part.commercial_form)
+          parts.push(comform.send(@session.language))
+          parts.push "&agrave;" if measure
+        elsif(measure && !parts.empty?)
+          parts.push('x')
+        end
+        parts.push measure if(measure)
+        parts.join(' ')
+      end
+    end
 		module AdditionalInformation
       include Drugs::AtcDddLink
+      include PartSize
 			@@utf8 = {}
       def atc_ddd_link(atc, session=@session)
         unless(@lookandfeel.disabled?(:atc_ddd))
@@ -41,35 +78,6 @@ module ODDB
 					square(:comarketing, link)
 				end
 			end
-      def comparable_size(model, session=@session)
-        comforms = model.commercial_forms
-        unless(comforms.compact.empty?)
-          model.parts.collect { |part|
-            parts = []
-            multi = part.multi.to_i
-            count = part.count.to_i
-            if(multi > 1) 
-              parts.push(multi)
-            end
-            if(multi > 1 && count > 1)
-              parts.push('x')
-            end
-            if(count > 1 || (count > 0 && multi > 1))
-              parts.push(part.count)
-            end
-            if(comform = part.commercial_form)
-              parts.push(comform.send(@session.language))
-            end
-            if((measure = part.measure) && measure != 1)
-              parts.push "&agrave;" unless parts.empty?
-              parts.push measure
-            end
-            parts.join(' ')
-          }.join(' + ')
-        else
-          HtmlGrid::Value.new(:size, model, session, self)
-        end
-      end
 			def complementary_type(model, session=@session)
 				if(ctype = model.complementary_type)
 					square(ctype)
