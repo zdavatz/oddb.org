@@ -7,6 +7,29 @@ require 'view/admin/sequence'
 module ODDB
   module View
     module Admin
+class ComformPackages < SequencePackages
+  include RegistrationSequenceList
+  COMPONENTS = {
+    [0,0]	=>	:ikscd,
+		[1,0]	=>	:name_base,
+		[2,0]	=>	:galenic_form,
+    [3,0]	=>	:most_precise_dose,
+    [4,0]	=>	:size,
+    [5,0]	=>	:out_of_trade,
+  }
+	CSS_HEAD_MAP = {
+		[0,0]	=>	'subheading',
+		[1,0]	=>	'subheading',
+		[2,0]	=>	'subheading',
+		[3,0]	=>	'subheading right',
+		[4,0]	=>	'subheading right',
+		[5,0]	=>	'subheading right',
+	}
+  CSS_MAP = {
+    [0,0,2]	=>	'list',
+    [3,0,3]	=>	'list right',
+  }
+end
 class CommercialFormForm < View::DescriptionForm
   COMPONENTS = {
     [2,0]  =>  :package_count,
@@ -32,7 +55,7 @@ class CommercialFormComposite < HtmlGrid::Composite
   }
   CSS_CLASS = 'composite'
   def packages(model, session=@session)
-    SequencePackages.new(model.packages[0,30], @session, self)
+    ComformPackages.new(model.packages[0,30], @session, self)
   end
 end
 class CommercialForm < PrivateTemplate
