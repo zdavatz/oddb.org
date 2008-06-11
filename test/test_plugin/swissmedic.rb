@@ -494,6 +494,36 @@ module ODDB
       }
       @plugin.update_composition(seq, row)
     end
+    def test_update_composition__focus_on_doses_qty_in_scale
+      row = @workbook.worksheet(0).row(20)
+      seq = flexmock 'sequence'
+      ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
+      seq.should_receive(:pointer).and_return ptr
+      seq.should_receive(:active_agents).and_return []
+      seq.should_receive(:compositions).and_return []
+      sub = flexmock 'substance'
+      sub.should_receive(:pointer).and_return 'substance-pointer'
+      @app.should_receive(:substance).and_return sub
+      act = flexmock 'active-agent'
+      act.should_receive(:pointer).and_return 'active-agent-pointer'
+      comp = flexmock 'composition'
+      comp.should_receive(:active_agent).and_return act
+      comp.should_receive(:active_agents).and_return []
+      cptr = ptr + [:composition, 'id']
+      comp.should_receive(:pointer).and_return(cptr)
+      @app.should_receive(:create).with(ptr + :composition).and_return comp
+      aptr = cptr + [:active_agent, 'Acidum Acetylsalicylicum']
+      args =  [
+        { :dose => ["100", 'µg/25 mg'], 
+          :substance => 'Fluticasoni-17 Propionas' },
+      ]
+      @app.should_receive(:update)\
+        .with('active-agent-pointer', Hash, :swissmedic)\
+        .times(1).and_return { |ptr, data, key|
+          assert_equal args.shift, data
+      }
+      @plugin.update_composition(seq, row)
+    end
     def test_update_composition__update
       row = @workbook.worksheet(0).row(3)
       seq = flexmock 'sequence'
@@ -699,11 +729,11 @@ module ODDB
       reg.should_ignore_missing
       @app.should_receive(:registrations).and_return({ '11111' => reg })
       result = @plugin.diff(@data, @initial)
-      assert_equal 16, result.news.size
+      assert_equal 17, result.news.size
       assert_equal 'Aspirin, Tabletten', 
                    result.news.first.at(2).to_s('latin1')
       assert_equal 0, result.updates.size
-      assert_equal 12, result.changes.size
+      assert_equal 13, result.changes.size
       deletion = result.changes.delete('11111')
       assert_equal [:delete], deletion
       assert result.changes.all? { |key, flags| flags == [:new] }

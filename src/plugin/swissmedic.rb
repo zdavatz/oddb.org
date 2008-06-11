@@ -288,7 +288,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
           if num <= 1
             unit << scale[:unit]
           else
-            dose << scale[:scale]
+            unit << scale[:scale]
           end
         end
         args = {
