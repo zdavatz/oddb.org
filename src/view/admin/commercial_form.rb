@@ -29,6 +29,7 @@ class ComformPackages < SequencePackages
     [0,0,2]	=>	'list',
     [3,0,3]	=>	'list right',
   }
+	SORT_DEFAULT = :name_base
 end
 class CommercialFormForm < View::DescriptionForm
   COMPONENTS = {
