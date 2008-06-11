@@ -97,6 +97,9 @@ module ODDB
 		def company_name
 			company.name
 		end
+    def compositions
+      @parts.inject([]) { |comps, part| comps.push part.composition }
+    end
     def comparable?(bottom, top, pack)
       begin
         pack != self \
