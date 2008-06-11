@@ -454,6 +454,46 @@ module ODDB
         .times(1).and_return { assert true }
       @plugin.update_composition(seq, row)
     end
+    def test_update_composition__focus_on_doses
+      row = @workbook.worksheet(0).row(6)
+      seq = flexmock 'sequence'
+      ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
+      seq.should_receive(:pointer).and_return ptr
+      seq.should_receive(:active_agents).and_return []
+      seq.should_receive(:compositions).and_return []
+      sub = flexmock 'substance'
+      sub.should_receive(:pointer).and_return 'substance-pointer'
+      @app.should_receive(:substance).and_return sub
+      act = flexmock 'active-agent'
+      act.should_receive(:pointer).and_return 'active-agent-pointer'
+      comp = flexmock 'composition'
+      comp.should_receive(:active_agent).and_return act
+      comp.should_receive(:active_agents).and_return []
+      cptr = ptr + [:composition, 'id']
+      comp.should_receive(:pointer).and_return(cptr)
+      @app.should_receive(:create).with(ptr + :composition).and_return comp
+      aptr = cptr + [:active_agent, 'Acidum Acetylsalicylicum']
+      args =  [
+        { :dose => ["10", 'mg/g'], :substance => 'Berberidis Fructus Recens' },
+        { :dose => ["10", "mg/g"], 
+          :substance => "Pruni Spinosae Fructus Recens" },
+        { :dose => ["12", "mg/g"], 
+          :substance => "Echinaceae Purpureae Planta Tota Recens" },
+        { :dose => ["0.1", "mg/g"], :substance => "Bryoniae Radix Recens" },
+        { :dose => ["1.1", "mg/g"], :substance=>"Esculosidum" },
+        { :dose => ["0.12", "mg/g"], :substance => "Dextrocamphora" },
+        { :dose => ["3.88", "mg/g"], :substance => "Eucalypti Aetheroleum" },
+        { :dose => ["3.88", "mg/g"],
+          :substance => "Menthae Piperitae Aetheroleum" },
+        { :dose=>["0.12", "mg/g"], :substance => "Thymi Aetheroleum" },
+      ]
+      @app.should_receive(:update)\
+        .with('active-agent-pointer', Hash, :swissmedic)\
+        .times(9).and_return { |ptr, data, key|
+          assert_equal args.shift, data
+      }
+      @plugin.update_composition(seq, row)
+    end
     def test_update_composition__update
       row = @workbook.worksheet(0).row(3)
       seq = flexmock 'sequence'
@@ -512,7 +552,7 @@ module ODDB
         .and_return agent2
       args =  {
         :substance          => 'Procainum',
-        :dose               => %w{10 mg},
+        :dose               => %w{10 mg/g},
         :chemical_substance => 'Procaini Hydrochloridum',
         :chemical_dose      => nil,
       }
@@ -520,7 +560,7 @@ module ODDB
         .times(1).and_return { assert true }
       args =  {
         :substance          => 'Phenazonum',
-        :dose               => %w'50 mg',
+        :dose               => %w'50 mg/g',
       }
       @app.should_receive(:update).with(aptr2, args, :swissmedic)\
         .times(1).and_return { assert true }

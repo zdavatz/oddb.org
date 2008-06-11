@@ -35,6 +35,7 @@ module ODDB
       :production_science  =>  'Heilmittelcode',
     }
     GALFORM_P = %r{excipiens\s+(ad|pro)\s+(?<galform>((?!\bpro\b)[^.])+)}
+    SCALE_P = %r{pro\s+(?<scale>(?<qty>[\d.,]+)\s*(?<unit>[kcmuµn]?[glh]))}
     def initialize(app=nil, archive=ARCHIVE_PATH)
       super app
       @archive = File.join archive, 'xls'
@@ -279,8 +280,17 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
               else
                 (comp.pointer + [:active_agent, name]).creator
               end
-        dose = match[:dose].split(/\b\s*/, 2) if match[:dose]
-        cdose = match[:cdose].split(/\b\s*/, 2) if match[:cdose]
+        dose = match[:dose].split(/\b\s*(?![.,\d])/, 2) if match[:dose]
+        cdose = match[:cdose].split(/\b\s*(?![.,\d])/, 2) if match[:cdose]
+        if scale = SCALE_P.match(part)
+          unit = dose[1] << '/'
+          num = scale[:qty].to_f
+          if num <= 1
+            unit << scale[:unit]
+          else
+            dose << scale[:scale]
+          end
+        end
         args = {
           :substance => name,
           :dose      => dose,
