@@ -26,7 +26,7 @@ class ComformPackages < SequencePackages
 		[5,0]	=>	'subheading right',
 	}
   CSS_MAP = {
-    [0,0,2]	=>	'list',
+    [0,0,3]	=>	'list',
     [3,0,3]	=>	'list right',
   }
 	SORT_DEFAULT = :name_base
