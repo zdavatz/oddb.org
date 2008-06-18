@@ -129,9 +129,9 @@ module ODDB
         seq = update_sequence(reg, row) if reg
         update_composition(seq, row) if seq
       }
-    rescue SystemStackError => err
-      puts "System Stack Error when fixing #{source_row(row).pretty_inspect}"
-      puts err.backtrace[-100..-1]
+    rescue Exception => err
+      puts "#{err.class} when fixing #{source_row(row).pretty_inspect}"
+      puts err.backtrace[0,10]
     end
     def fix_registrations
       row = nil
@@ -282,7 +282,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
               end
         dose = match[:dose].split(/\b\s*(?![.,\d])/, 2) if match[:dose]
         cdose = match[:cdose].split(/\b\s*(?![.,\d])/, 2) if match[:cdose]
-        if scale = SCALE_P.match(part)
+        if dose && scale = SCALE_P.match(part)
           unit = dose[1] << '/'
           num = scale[:qty].to_f
           if num <= 1
@@ -324,14 +324,15 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         substances = names.collect { |name|
           update_substance(name)
         }
-        comp = nil
+        comps = []
         composition = cell(row, 14).gsub(/\n/, ' ')
         names.each { |name|
-          comp = update_active_agent(seq, name, composition, opts)
+          comps.push update_active_agent(seq, name, composition, opts)
         }
-        unless(names.empty?)
+        comp = comps.compact.first
+        unless(names.empty? || comp.nil?)
           comp.active_agents.dup.each { |act|
-            unless(names.any? { |name| act.substance == name })
+            unless(names.any? { |name| act.substance.same_as? name })
               @app.delete(act.pointer) 
             end
           }
@@ -464,6 +465,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         :composition_text => cell(row, 14),
         :name_base        => base,
         :name_descr       => descr,
+        :dose             => nil,
       }
       sequence = registration.sequence(seqnr)
 			if(sequence.nil? || sequence.atc_class.nil?)
