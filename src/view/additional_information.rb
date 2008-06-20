@@ -83,6 +83,24 @@ module ODDB
 					square(ctype)
 				end
 			end
+  def compositions(model, session=@session)
+    link = HtmlGrid::Link.new(:show, model, session, self)
+    link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
+    lang = @session.language
+    parts = model.compositions.collect { |comp|
+      part = ''
+      if galform = comp.galenic_form
+        part << galform.send(lang) << ': '
+      end
+      if comp.active_agents.size > 1
+        part << @lookandfeel.lookup(:active_agents, model.active_agents.size)
+      else
+        part << comp.active_agents.first.to_s
+      end
+    }
+    link.value = parts.join('<br/>')
+    link
+  end
 			def ddd_price(model, session=@session)
 				span = HtmlGrid::Span.new(model, @session, self)
 				if(ddd_price = model.ddd_price)

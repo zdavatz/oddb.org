@@ -26,11 +26,16 @@ Grammar OddbSize
     Scale			->	'/' NUMERIC? UNIT
     Dose			->	'(' NUMERIC UNIT ')'
     EOG
+    UNIT = ODDB::Dose.new(1)
     def active_agents
       @composition ? @composition.active_agents : []
     end
     def comparable_size
-      ODDB::Dose.from_quanty(@comparable_size)
+      factor = (@measure.nil? || @measure == UNIT) \
+             ? _composition_scale \
+             : @measure
+      factor ||= UNIT
+      ODDB::Dose.from_quanty(@comparable_size * factor)
     end
     def multiplier
       count = @count || 1
@@ -38,13 +43,16 @@ Grammar OddbSize
       [@descr.to_f, 1].max * (@multi || 1).to_f * (count + addition)
     end
     def set_comparable_size!
-      measure = @measure || Dose.new(1, nil)
-      scale = @scale || Dose.new(1, nil)
+      measure = @measure || _composition_scale || UNIT
+      scale = @scale || UNIT
       @comparable_size = multiplier * measure / scale
     end
     def size=(size)
       unless size.to_s.strip.empty?
         @addition, @multi, @count, @measure, @scale, @comform = parse_size(size) 
+        if @count == 1 && @multi > 1
+          @count, @multi = @multi, nil
+        end
         set_comparable_size!
       end
     end
@@ -80,13 +88,18 @@ Grammar OddbSize
     end
     def dose_from_multi(multi)
       unless(multi.nil?)
-        multi.childrens.inject(Dose.new(1,nil)) { |inj, node| 
+        multi.childrens.inject(UNIT) { |inj, node|
           unit = (node[1].value if node[1])
           dose = Dose.new(node[0].value, unit)
           inj *= dose
         }
       else
-        Dose.new(1,nil)
+        UNIT
+      end
+    end
+    def _composition_scale
+      if @composition && dose = @composition.doses.compact.first
+        dose.scale
       end
     end
   end

@@ -11,9 +11,9 @@ module ODDB
 		include Persistence
 		attr_reader :seqnr, :name_base, :name_descr, :packages,
 								:compositions, :longevity
-		attr_accessor :registration, :dose, :atc_class, :export_flag,
+		attr_accessor :registration, :atc_class, :export_flag,
 									:galenic_form, :patinfo, :pdf_patinfo, :atc_request_time
-		attr_writer :composition_text, :inactive_date
+		attr_writer :composition_text, :dose, :inactive_date
 		alias :pointer_descr :seqnr
 		def initialize(seqnr)
 			@seqnr = sprintf('%02d', seqnr.to_i)
@@ -112,10 +112,14 @@ module ODDB
 				pac
 			end
 		end
+    def dose # simulate the legacy attribute_reader for dose
+      doses.inject { |a,b| a + b }
+    rescue
+    end
 		def doses
-			@compositions.inject([]) { |subs, comp| 
-				subs.concat comp.doses
-			}.uniq
+			@compositions.inject([]) { |doses, comp|
+				doses.concat comp.doses
+			}
 		end
 		def each_package(&block)
 			@packages.values.each(&block)

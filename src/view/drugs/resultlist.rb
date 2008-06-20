@@ -123,6 +123,7 @@ class ResultList < HtmlGrid::List
 		:company_name				=>	'list italic',
 		:comparable_size		=>	'list right',
 		:complementary_type	=>	'list',
+		:compositions    		=>	'list italic',
 		:ddd_price					=>	'list bold right',
 		:deductible					=>	'list bold right',
 		:fachinfo						=>	'list',
@@ -148,6 +149,7 @@ class ResultList < HtmlGrid::List
 		:company_name				=>	'th',
 		:comparable_size		=>	'th right',
 		:complementary_type	=>	'th',
+		:compositions 			=>	'th',
 		:ddd_price					=>	'th right',
 		:deductible					=>	'th right',
 		:fachinfo						=>	'th',
@@ -187,7 +189,7 @@ class ResultList < HtmlGrid::List
 	def active_agents(model, session=@session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
 		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
-		if (model.active_agents.size > 1)
+		if model.active_agents.size > 1
 			link.set_attribute('title', model.active_agents.join(', '))
 			link.value = @lookandfeel.lookup(:active_agents, model.active_agents.size)
 		else

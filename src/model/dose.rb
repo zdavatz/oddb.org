@@ -57,6 +57,12 @@ module ODDB
 				end
 			end
 		end
+    def scale
+      if @not_normalized && str = @not_normalized[%r{/.*}]
+        Dose.new str[/[\d.]+/], str[/\D+$/]
+      end
+    rescue
+    end
 		def to_f
 			begin
 				super

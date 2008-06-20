@@ -15,8 +15,9 @@ class Parts < HtmlGrid::List
   COMPONENTS = {
     [0,0] => :size,
     [1,0] => :active_agents,
+    [2,0] => :galenic_form,
   }
-  CSS_MAP = { [0,0,2] => 'list top' }
+  CSS_MAP = { [0,0,3] => 'list top' }
   OMIT_HEADER = true
   SORT_DEFAULT = nil
   LEGACY_INTERFACE = false
@@ -26,6 +27,11 @@ class Parts < HtmlGrid::List
         [ (sub = act.substance) && sub.send(@session.language), 
           act.dose ].join(' ')
       }.join("<BR>")
+    end
+  end
+  def galenic_form(model)
+    if((comp = model.composition) && (gf = comp.galenic_form))
+      gf.send @session.language
     end
   end
   def size(model)
