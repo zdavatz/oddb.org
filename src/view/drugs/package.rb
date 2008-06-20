@@ -31,7 +31,8 @@ class Parts < HtmlGrid::List
   end
   def galenic_form(model)
     if((comp = model.composition) && (gf = comp.galenic_form))
-      gf.send @session.language
+      '' << @lookandfeel.lookup(:galenic_form) \
+         << ': ' << gf.send(@session.language)
     end
   end
   def size(model)
