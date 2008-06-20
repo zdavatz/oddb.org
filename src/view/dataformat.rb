@@ -43,7 +43,9 @@ module ODDB
 			def most_precise_dose(model, session=@session)
 				if(model.respond_to?(:most_precise_dose))
 					dose = model.most_precise_dose
-					dose = (dose && (dose.qty > 0)) ? dose : nil
+          if dose.is_a?(Quanty)
+					  dose = (dose && (dose.qty > 0)) ? dose : nil
+          end
 					dose.to_s.gsub(/\s+/, '&nbsp;')
 				end
 			end
