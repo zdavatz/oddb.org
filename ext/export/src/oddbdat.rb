@@ -382,7 +382,7 @@ module ODDB
 				galform = if(gf = seq.galenic_forms.first)
 					gf.to_s
 				end
-				conc, unit = if(dose = seq.dose)
+				conc, unit = if((dose = seq.dose) && dose.is_a?(Quanty))
 					[dose.qty, dose.unit]
 				end
         measures = @package.parts.collect { |part| part.measure }.compact
