@@ -121,10 +121,10 @@ module ODDB
         }
       end
     end
-    def fix_compositions
+    def fix_compositions(skip=3)
       row = nil
       tbook = Spreadsheet::ParseExcel.parse(@latest)
-      tbook.worksheet(0).each(3) { |row|
+      tbook.worksheet(0).each(skip) { |row|
         reg = update_registration(row) if row
         seq = update_sequence(reg, row) if reg
         update_composition(seq, row) if seq
