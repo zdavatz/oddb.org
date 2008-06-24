@@ -76,8 +76,8 @@ module ODDB
 			FILENAME = 's41x'
 			def lines(package)
 				lines = []
-				package.substances.each_with_index { |substance, idx|
-					lines.push(AcscLine.new(package, substance, idx))
+				package.active_agents.each_with_index { |act, idx|
+					lines.push(AcscLine.new(package, act, idx))
 				}
 				lines
 			end
@@ -388,7 +388,7 @@ module ODDB
         measures = @package.parts.collect { |part| part.measure }.compact
 				measure, munit = unless(measures.empty?)
                            ms = measures.inject { |a, b| a + b }
-                           [ms.qty, ms.unit]
+                           [ms.qty, ms.unit] if ms.is_a?(Quanty)
                          end
         comform = @package.commercial_forms.first
 				qty, qty_unit = if(munit && !munit.empty?)
@@ -489,13 +489,13 @@ module ODDB
 		end
 		class AcscLine < SubstanceLine
 			LENGTH = 10
-			def initialize(package, substance, count)
+			def initialize(package, active_agent, count)
 				@count = count
 				super
 			end	
 			def structure
 				return if @substance.nil?
-				qty, unit = if(dose = @package.dose)
+				qty, unit = if((dose = @substance.dose) && dose.is_a?(Quanty))
 					[dose.qty, dose.unit]
 				end
 				{
@@ -504,7 +504,7 @@ module ODDB
 					3		=>	@package.oid,
 					4		=>	@count,
 					5		=>	'4',
-					6		=>	@substance.oid,
+					6		=>	@substance.substance.oid,
 					7		=>	qty,
 					8		=>	unit,
 					9		=>	'W',
