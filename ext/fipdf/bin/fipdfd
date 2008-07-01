@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+# FiPDFd -- oddb -- 23.06.2008 -- hwyss@ywesee.com
+
+$: << File.expand_path("../../../src", File.dirname(__FILE__))
+$: << File.expand_path("../src", File.dirname(__FILE__))
+
+require 'odba'
+require 'drb/drb'
+require 'util/oddbconfig'
+require 'models'
+require 'etc/db_connection'
+require 'fipdf'
+
+$0 = "Oddb (FiPdf)"
+DRb.start_service(ODDB::FIPDF_URI, ODDB::FiPDF)
+DRb.thread.join

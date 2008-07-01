@@ -48,6 +48,9 @@ module ODDB
 			export_csv
 			export_doc_csv
       export_index_therapeuticus_csv
+			run_on_monthday(1) {
+				export_fachinfo_pdf
+			}
 		rescue StandardError => e
 			EXPORT_SERVER.clear
 			log = Log.new(@@today)
@@ -89,6 +92,15 @@ module ODDB
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
+    def export_fachinfo_pdf
+      plug = FiPDFExporter.new(@app)
+      [:de, :fr].each { |lang|
+        name = "fachinfos_#{lang}.pdf"
+        path = File.join(EXPORT_DIR, name)
+        plug.write_pdf(lang, path)
+        EXPORT_SERVER.compress(EXPORT_DIR, name)
+      }
+    end
 		def export_generics_xls
 			plug = XlsExportPlugin.new(@app)
 			plug.export_generics

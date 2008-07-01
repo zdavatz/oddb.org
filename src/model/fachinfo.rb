@@ -125,7 +125,11 @@ module ODDB
 			}
 		end
 		def first_chapter
-			self.send(chapter_names.first)
+      chapter = nil
+      chapters.find { |chapter| 
+        respond_to?(chapter) && chapter = self.send(chapter)
+      }
+      chapter 
 		end
 	end
 	class FachinfoDocument2001 < FachinfoDocument

@@ -27,17 +27,21 @@ module ODDB
 					begin
 						line_count += 1
 						line = @writer.add_text_wrap(0, 0, width,\
-							@size, line, @justification, 0, true)
+							line, @size, @justification, 0, true)
 					end while(!line.empty?)
 				}
 				line_count
 			end
 			def get_height(text, width)
 				line_count(text, width) \
-					* @writer.get_font_height(@size) - spacing_before(text)
+					* @writer.font_height(@size) \
+          - spacing_before(text) - spacing_after(text)
 			end
-			def get_font_height(font)
-				@writer.get_font_height(font)
+			def font_height(font)
+				@writer.font_height(font)
+			end
+			def spacing_after(text)
+				(text.to_s.strip.empty?) ? 0 : @spacing_after
 			end
 			def spacing_before(text)
 				(text.to_s.strip.empty?) ? 0 : @spacing_before

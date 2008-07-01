@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # SectionWrapper -- oddb -- 15.03.2004 -- mwalder@ywesee.com
 
-$: << File.dirname(__FILE__)
 require 'delegate'
 require 'paragraph_wrapper'
 
@@ -30,25 +29,16 @@ module ODDB
 				#puts "height original #{height}"
 				height_subheading = fmt_subheading.get_height(self.subheading, width)
 				#puts "height subheading #{height_subheading}"
-				height = height - height_subheading 
+				height -= height_subheading 
 				#puts "height - subheading  #{height}"
-				first = first_paragraph
+				
 				(height <= 0) \
-					|| (!first.nil? \
-					&& first.need_new_page?(height, width, formats))
+          || ((first = first_paragraph) \
+					    && first.need_new_page?(height, width, formats))
 			end
 			def subheading
 				(fix_subheading?) ? '' : "<i>" +  @section.subheading.strip + "</i>"
 			end
-=begin
-			def subheading_add
-					subheading = ""
-				if(@section.subheading[-1] != ?\n)
-					subheading = @section.subheading
-				end
-				subheading	
-			end
-=end		
 			def first_paragraph
 				return if(@section.paragraphs.empty?)
 				first_paragraph = @section.paragraphs.first

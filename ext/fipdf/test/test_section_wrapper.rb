@@ -14,12 +14,13 @@ module ODDB
 			attr_writer :wrapper_class
 		end
 		class TestSectionWrapper < Test::Unit::TestCase
-			class StubParagraphWrapper
+			class StubParagraphWrapper < SimpleDelegator
 			end
 			class StubSection
 				attr_accessor :subheading, :paragraphs, :prepend
 				def initialize 
 					@subheading = ""
+          @paragraphs = []
 				end
 				def each_paragraph(&block)
 					@paragraphs.each{ |section|
@@ -101,7 +102,7 @@ module ODDB
 
 				wrapper = SectionWrapper.new(section)
 				para_wrapper = wrapper.first_paragraph
-				assert_equal('no newline the Paragraph', para_wrapper.text)
+				assert_equal('<i>no newline </i>the Paragraph', para_wrapper.text)
 				assert_equal('', wrapper.subheading)
 				assert_equal('no newline', section.subheading)
 				assert_equal('the Paragraph', paragraph.text)
@@ -130,4 +131,3 @@ module ODDB
 		end
 	end
 end
-				

@@ -8,7 +8,7 @@ require 'drb/drb'
 require 'util/oddbconfig'
 require 'model/fachinfo'
 require 'fachinfo_writer'
-require 'text/hyphen'
+#require 'text/hyphen'
 require 'delegate'
 
 module ODDB
@@ -59,6 +59,7 @@ module ODDB
 			end
 		end
 		def dictionary(language)
+=begin
 			file = case language
 			when :fr
 				'hyph_fr_FR.dic'
@@ -67,6 +68,9 @@ module ODDB
 			end
 			path = File.expand_path(file, DATA_DIR)
 			::Text::Hyphen::Dictionary.new(path)
+=end
+      require 'text/hyphen'
+      ::Text::Hyphen.new(:language => language.to_s)
 		end
 		def document(filename, language, &block)
 			begin
@@ -74,9 +78,8 @@ module ODDB
 				writer.hyphenator = dictionary(language)
 				pdf = FachinfoWriterProxy.new(writer)
 				block.call(pdf)
-				File.open(filename, 'w') { |fh| 
-					fh << writer.ez_output
-				}
+        writer.save_as filename
+        $stdout.flush
 			rescue Exception => e
 				puts e
 				puts e.backtrace
@@ -91,9 +94,3 @@ module ODDB
 		module_function :dictionary
 	end
 end
-
-DRb.start_service(ODDB::FIPDF_URI, ODDB::FiPDF)
-
-$0 = "Oddb (FiPDF)"
-
-DRb.thread.join

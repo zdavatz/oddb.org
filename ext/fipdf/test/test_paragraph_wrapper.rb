@@ -19,7 +19,7 @@ module ODDB
 				def get_height(*args)
 					@height
 				end
-				def get_font_height(height)
+				def font_height(height)
 					@size
 				end
 				def line_count(*args)
@@ -196,7 +196,7 @@ module ODDB
 				paragraph << "-Tocopherol"
 				wrapper = ParagraphWrapper.new(paragraph)
 				formatted = wrapper.format_text
-				expected = "<s>a</s>-Tocopherol"
+				expected = "<f:Symbol>a</f>-Tocopherol"
 				assert_equal(expected, formatted)
 			end
 		end

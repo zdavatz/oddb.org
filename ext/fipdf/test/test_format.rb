@@ -22,13 +22,13 @@ module ODDB
 				end
 				def add_text_wrap(*args)
 					@calls += 1
-					if (@calls == 2)
-					""
+					if (@calls >= 2)
+					  ""
 					else
 						"foo"
 					end
 				end
-				def get_font_height(*args)
+				def font_height(*args)
 					@height
 				end
 			end
@@ -44,7 +44,7 @@ module ODDB
 			def test_line_count_break
 				@format.writer = StubWriter.new
 				text = "foobaar\nfoobaar"
-				assert_equal(2, @format.line_count(text, 20000))
+				assert_equal(3, @format.line_count(text, 20000))
 			end
 			def test_get_height
 				@format.writer = StubWriter.new

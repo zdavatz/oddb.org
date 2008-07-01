@@ -16,18 +16,13 @@ module ODDB
 				else
 					formats[:paragraph]
 				end
-				#puts "height paragraph original   #{height}"
 				paragraph_height = format.get_height(text(), width)
-				#puts "paragraph height #{paragraph_height}"
 				num_lines = format.line_count(text(), width)
-				#	puts "num_lines #{num_lines}"
 				available_height = height + format.spacing_before(text())
 				lines_on_page = lines_per_height(available_height, format)
-				#puts "line on page #{lines_on_page}"
 				if(num_lines <= 3 && paragraph_height > height)
 					true
 				elsif(num_lines > 3 && lines_on_page < 2)
-					puts "enter"
 					true
 				else 
 					false
@@ -36,8 +31,7 @@ module ODDB
 			def enforce_page_break?(first_height, column_height, width, format)
 				total_lines = format.line_count(text(), width)
 				first_lines = lines_per_height(first_height, format)
-				column_lines = lines_per_height(column_height, format
-)
+				column_lines = lines_per_height(column_height, format)
 				if((total_lines - first_lines) % column_lines == 1)
 					total_lines - 2
 				else
@@ -58,7 +52,10 @@ module ODDB
 						str = "<b>" + str + "</b>"
 					end
 					if(format.symbol?)
-						str = "<s>" + str + "</s>"
+            body = str.dup
+            head = body.slice!(/^\s*/)
+            tail = body.slice!(/\s*$/)
+            str = head << '<f:Symbol>' << body << '</f>' << tail
 					end
 					text << str
 				}
@@ -69,7 +66,7 @@ module ODDB
 			end
 			def lines_per_height(height, format)
 				font_size = format.size
-				(height / format.get_font_height(font_size)).floor
+				(height / format.font_height(font_size)).floor
 			end
 			def preformatted?
 				if(@paragraph.respond_to? :preformatted?)

@@ -3,6 +3,7 @@
 
 require 'plugin/plugin'
 require 'util/oddbconfig'
+require 'util/searchterms'
 require 'drb'
 require 'model/fachinfo'
 require 'delegate'
@@ -10,7 +11,7 @@ require 'delegate'
 module ODDB
 	class FiPDFExporter < Plugin
 		WRITER = DRbObject.new(nil, FIPDF_URI)
-		PDF_PATH = File.expand_path('pdf/fachinfo', ARCHIVE_PATH)
+		PDF_PATH = File.expand_path('downloads', ARCHIVE_PATH)
 		class FachinfoProxy < DelegateClass(FachinfoDocument)
 			include DRb::DRbUndumped
 			attr_reader :fachinfo
@@ -25,6 +26,10 @@ module ODDB
 			def generic_type
 				@fachinfo.generic_type
 			end
+      ## Work around a bug in ruby's Delegate Lib.
+      def respond_to?(method, *args)
+        super method
+      end
 			def substance_names
 				@fachinfo.substance_names
 			end
@@ -32,11 +37,11 @@ module ODDB
 		def run
 			write_pdf
 		end
-		def write_pdf(fachinfos = nil, language = :de, path = nil)
+		def write_pdf(language = :de, path = nil, fachinfos = nil)
 			path ||= File.expand_path('fachinfos.pdf', PDF_PATH)
 			fachinfos ||= @app.fachinfos.values
 			fachinfos = fachinfos.sort_by { |fachinfo|
-				fachinfo.send(language).name
+				ODDB.search_term(fachinfo.send(language).name).downcase
 			}
 			total = fachinfos.size
 			puts "Total: #{total} fachinfos to write"
@@ -47,7 +52,7 @@ module ODDB
 					unless(fachinfo.registrations.empty?)
 						puts "writing Fachinfo: (#{idx}/#{total})"
 						proxy = FachinfoProxy.new(fachinfo, language)
-						document.write_fachinfo(proxy)
+						document.write_fachinfo(proxy) unless(proxy.chapters.empty?)
 						puts "done"
 					end
 				}

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #PdfWriterRules -- oddb -- 10.02.2004 -- mwalder@ywesee.com
 
-require 'pdf/ezwriter'
+require 'pdf/writer'
 require 'model/text'
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))

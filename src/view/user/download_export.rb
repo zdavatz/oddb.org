@@ -52,10 +52,10 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[3,9]		=>	:csv_migel_price,
 		[6,9]		=>	:datadesc_migel_csv,
 		[7,9]		=>	:example_migel_csv,
-		[0,10]		=>	:csv_narcotics_export,
-		[2,10]		=>	:radio_narcotics_csv,
-		[6,10]		=>	:datadesc_narcotics_csv,
-		[7,10]		=>	:example_narcotics_csv,
+		[0,10]	=>	:csv_narcotics_export,
+		[2,10]	=>	:radio_narcotics_csv,
+		[6,10]	=>	:datadesc_narcotics_csv,
+		[7,10]	=>	:example_narcotics_csv,
 		[0,11]	=>	:yaml_narcotics_export,
 		[2,11]	=>	:radio_narcotics_yaml,
 		[6,11]	=>	:datadesc_narcotics_yaml,
@@ -82,29 +82,35 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[2,18]	=>	:radio_chde_xls,
 		[6,18]	=>	:datadesc_chde_xls,
 		[7,18]	=>	:example_chde_xls,
-		[0,19]	=>	:xls_generics,
-		[2,19]	=>	:radio_generics_xls,
-		[6,19]	=>	:datadesc_generics_xls,
-		[7,19]	=>	:example_generics_xls,
-		[0,20]	=>	:xls_patents,
-		[3,20]	=>	:radio_patents_xls,
-		[6,20]	=>	:datadesc_patents_xls,
-		[7,20]	=>	:example_patents_xls,
-		[0,21]	=>	:xls_swissdrug_update,
-		[2,21]	=>	:radio_swissdrug_update_xls,
-		[6,21]	=>	:datadesc_swissdrug_update_xls,
-		[7,21]	=>	:example_swissdrug_update_xls,
+		[0,19]	=>	:fachinfos_de_pdf,
+		[2,19]	=>	:radio_fachinfos_de_pdf,
+		[7,19]	=>	:example_fachinfos_de_pdf,
+		[0,20]	=>	:fachinfos_fr_pdf,
+		[2,20]	=>	:radio_fachinfos_fr_pdf,
+		[7,20]	=>	:example_fachinfos_fr_pdf,
+		[0,21]	=>	:xls_generics,
+		[2,21]	=>	:radio_generics_xls,
+		[6,21]	=>	:datadesc_generics_xls,
+		[7,21]	=>	:example_generics_xls,
+		[0,22]	=>	:xls_patents,
+		[3,22]	=>	:radio_patents_xls,
+		[6,22]	=>	:datadesc_patents_xls,
+		[7,22]	=>	:example_patents_xls,
+		[0,23]	=>	:xls_swissdrug_update,
+		[2,23]	=>	:radio_swissdrug_update_xls,
+		[6,23]	=>	:datadesc_swissdrug_update_xls,
+		[7,23]	=>	:example_swissdrug_update_xls,
 
-		[0,23]	=>	'export_compatibility',
-		[0,24]	=>	:oddbdat_download,
-		[2,24]	=>	:radio_oddbdat,
-		[6,24]	=>	:datadesc_oddbdat,
-		[7,24]	=>	:example_oddbdat,
-		[0,25]	=>	:s31x,
-		[2,25]	=>	:radio_s31x,
-		[6,25]	=>	:datadesc_s31x,
-		[0,26]	=>	:compression_label,
-		[0,27]	=>	:compression,
+		[0,25]	=>	'export_compatibility',
+		[0,26]	=>	:oddbdat_download,
+		[2,26]	=>	:radio_oddbdat,
+		[6,26]	=>	:datadesc_oddbdat,
+		[7,26]	=>	:example_oddbdat,
+		[0,27]	=>	:s31x,
+		[2,27]	=>	:radio_s31x,
+		[6,27]	=>	:datadesc_s31x,
+		[0,28]	=>	:compression_label,
+		[0,29]	=>	:compression,
 	}
 	CSS_MAP = {
 		[0,0,8]			=>	'subheading',
@@ -120,15 +126,16 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[0,17,8]		=>	'list bg sum',
 		[0,19,8]		=>	'list bg',
 		[0,21,8]		=>	'list bg',
-		[0,23,8]		=>	'list bg sum',
+		[0,23,8]		=>	'list bg',
+		[0,25,8]		=>	'list bg sum',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
 		[0,1]	=>	8,
 		[0,17]=>	8,
-		[0,23]=>	8,
-		[0,26]=>	8,
-		[0,27]=>	8,
+		[0,25]=>	8,
+		[0,28]=>	8,
+		[0,29]=>	8,
 	}
 	CSS_CLASS = 'component'
 	SYMBOL_MAP = {
@@ -245,6 +252,12 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def example_fachinfo_yaml(model, session)
 		example('fachinfo.yaml')
 	end
+	def example_fachinfos_de_pdf(model, session)
+		example('fachinfos_de.pdf')
+	end
+	def example_fachinfos_fr_pdf(model, session)
+		example('fachinfos_fr.pdf')
+	end
 	def example_generics_xls(model, session)
 		example('generics.xls')
 	end
@@ -284,6 +297,12 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def example_patents_xls(model, session)
 		example('patents.xls')
 	end
+	def fachinfos_de_pdf(model, session)
+		checkbox_with_filesize('fachinfos_de.pdf')
+	end
+	def fachinfos_fr_pdf(model, session)
+		checkbox_with_filesize('fachinfos_fr.pdf')
+	end
 	def download_index_therapeuticus(model, session)
 		checkbox_with_filesize('index_therapeuticus')
 	end
@@ -295,6 +314,12 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def radio_de_oddb_yaml(model, session)
 		once_or_year('de.oddb.yaml')
+	end
+	def radio_fachinfos_de_pdf(model, session)
+		once_or_year('fachinfos_de.pdf')
+	end
+	def radio_fachinfos_fr_pdf(model, session)
+		once_or_year('fachinfos_fr.pdf')
 	end
 	def radio_oddb_csv(model, session)
 		once_or_year('oddb.csv')

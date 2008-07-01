@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # ChapterWrapper -- oddb -- 15.03.2004 -- mwalder@ywesee.com
 
-$: << File.dirname(__FILE__)
 require 'delegate'
 require 'section_wrapper'
 
