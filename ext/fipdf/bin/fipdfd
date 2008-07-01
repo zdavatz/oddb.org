@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # FiPDFd -- oddb -- 23.06.2008 -- hwyss@ywesee.com
 
+$: << File.expand_path("../../..", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.expand_path("../src", File.dirname(__FILE__))
 
