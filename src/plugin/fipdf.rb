@@ -52,7 +52,7 @@ module ODDB
 					unless(fachinfo.registrations.empty?)
 						puts "writing Fachinfo: (#{idx}/#{total})"
 						proxy = FachinfoProxy.new(fachinfo, language)
-						document.write_fachinfo(proxy) unless(proxy.chapters.empty?)
+						document.write_fachinfo(proxy) if(proxy.first_chapter)
 						puts "done"
 					end
 				}
