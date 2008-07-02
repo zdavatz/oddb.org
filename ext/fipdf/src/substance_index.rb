@@ -11,7 +11,9 @@ module ODDB
 				(self[key] ||= []).push(value)
 			end
 			def sort
-				arr = super
+				arr = sort_by { |key, element|
+          ODDB.search_term(key).downcase
+        }
 				arr.each { |key, element| 
 					element.sort! 
 				}
