@@ -49,7 +49,7 @@ module ODDB
 				start_time = Time.new
 				fachinfos.each_with_index { |fachinfo, idx|
 					puts "checking Fachinfo: (#{idx}/#{total})"
-					unless(fachinfo.registrations.empty?)
+					if(fachinfo.registrations.any? { |reg| reg.public_package_count > 0 })
 						puts "writing Fachinfo: (#{idx}/#{total})"
 						proxy = FachinfoProxy.new(fachinfo, language)
 						document.write_fachinfo(proxy) if(proxy.first_chapter)
