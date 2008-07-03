@@ -31,11 +31,7 @@ Grammar OddbSize
       @composition ? @composition.active_agents : []
     end
     def comparable_size
-      factor = (@measure.nil? || @measure == UNIT) \
-             ? _composition_scale \
-             : @measure
-      factor ||= UNIT
-      ODDB::Dose.from_quanty(@comparable_size * factor)
+      ODDB::Dose.from_quanty(@comparable_size)
     end
     def multiplier
       count = @count || 1
@@ -43,7 +39,10 @@ Grammar OddbSize
       [@descr.to_f, 1].max * (@multi || 1).to_f * (count + addition)
     end
     def set_comparable_size!
-      measure = @measure || _composition_scale || UNIT
+      measure = (@measure.nil? || @measure == UNIT) \
+              ? _composition_scale \
+              : @measure
+      measure ||= UNIT
       scale = @scale || UNIT
       @comparable_size = multiplier * measure / scale
     end
