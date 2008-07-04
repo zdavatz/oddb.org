@@ -27,11 +27,13 @@ module ODDB
     def adjust_annual_fee(company, items)
       if(date = company.invoice_date(@infotype))
         diy = (date - (date << 12)).to_f
+        short = date << 6
         items.each { |item|
           if(item.type == :annual_fee)
             tim = item.time
             item_date = Date.new(tim.year, tim.month, tim.day)
-            exp = (item_date > (date << 6)) ? (date >> 12) : date
+            exp = (!company.limit_invoice_duration && item_date > short) \
+              ? (date >> 12) : date
             exp_time = Time.local(exp.year, exp.month, exp.day)
             days = (exp - item_date).to_f
             factor = days/diy
@@ -97,7 +99,7 @@ module ODDB
         (item.type == :processing) || active.delete(unique_name(item))
       }
     end
-    def filter_paid(items)
+    def filter_paid(items, time = Time.now)
       ## Prinzipielles Vorgehen
       # Für jedes item in items:
       # Gibt es ein Invoice, welches nicht expired? ist 
@@ -117,9 +119,9 @@ module ODDB
       @app.invoices.each_value { |invoice|
         invoice.items.each_value { |item|
           if(name = unique_name(item))
-            if(item.type == :annual_fee && !item.expired?)
+            if(item.type == :annual_fee && !item.expired?(time))
               fee_names.push(name)
-            elsif(item.type == :processing && !item.expired?)
+            elsif(item.type == :processing && !item.expired?(time))
               prc_names.push(name)
             end
           end
@@ -211,7 +213,8 @@ module ODDB
       items = annual_items
       ## augment with active html-patinfos
       items += html_items(day)
-      payable_items = filter_paid(items)
+      time = Time.local(day.year, day.month, day.day) + 1
+      payable_items = filter_paid(items, time)
       groups = group_by_company(payable_items)
       groups.each { |company, items|
         ## if autoinvoice is disabled, but a preferred invoice_date is set, 

@@ -189,6 +189,7 @@ class RootCompany < UserCompany
 			:invoice_date_patinfo,
 			:invoice_email,
 			:invoice_htmlinfos,
+      :limit_invoice_duration,
 			:logo_file,
 			:lookandfeel_member_count,
 			:name,

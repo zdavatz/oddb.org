@@ -29,8 +29,8 @@ module ODDB
 		def deletable?
 			!(@payment_received || @keep_if_unpaid) && expired?
 		end
-		def expired?
-			@items.values.all? { |item| item.expired? }
+		def expired?(time=nil)
+			@items.values.all? { |item| item.expired?(time) }
 		end
 		def item(oid)
 			@items[oid]
@@ -130,9 +130,9 @@ module ODDB
 			super
 			@quantity = 1
 		end
-		def expired?
+		def expired?(time=nil)
 			@time.nil? \
-				|| @expiry_time.nil? || Time.now > @expiry_time
+				|| @expiry_time.nil? || (time || Time.now) > @expiry_time
 		end
 		def init(app)
 			@pointer.append(@oid)

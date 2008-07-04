@@ -19,7 +19,7 @@ module ODDB
       :disable_patinfo, :ean13, :generic_type, :invoice_email,
       :invoice_htmlinfos, :logo_filename, :lookandfeel_member_count, :name, 
       :powerlink, :regulatory_email, :swissmedic_email, :swissmedic_salutation,
-      :url, :ydim_id
+      :url, :ydim_id, :limit_invoice_duration
     attr_reader :invoice_dates, :disabled_invoices
 		alias :fullname :name
 		alias :power_link= :powerlink=

@@ -11,6 +11,7 @@ module ODDB
 	class Doctor; end
 	class Hospital; end
 	class LookandfeelBase <	SBSM::Lookandfeel
+    @@turing = Mutex.new
     CAPTCHA_DIR = File.join(PROJECT_ROOT, 'doc', 'resources', 'captchas')
 		poweruser_regulatory = <<-EOS
 Hinweis: Arbeiten Sie für eine Pharmafirma als Produktmanager oder in der Regulatoryabteilung? Sind Sie Arzt oder Apotheker? Dann beachten Sie bitte folgende Links:
@@ -868,6 +869,7 @@ Zeno Davatz
 				:limitation_texts					=>	'Limitationstexte',
 				:limitation_text_title0		=>	'Limitationen zu&nbsp;',
 				:limitation_text_title1		=>	':',
+				:limit_invoice_duration   =>	'KEINE Mehrjahresrechnung',
 				:list											=>	'Liste',
 				:listed_companies					=>	'Aktuelle Einträge',
         :list_for0                =>  'Liste für "',
@@ -3936,8 +3938,10 @@ Zeno Davatz
 			:sponsor								=>	'sponsor',
 		}
     def captcha
-      @turing ||= Turing::Challenge.new(:outdir => CAPTCHA_DIR,
-                                        :dictionary => File.join(PROJECT_ROOT, 'data', 'captcha', language))
+      @turing ||= @@turing.synchronize {
+        Turing::Challenge.new(:outdir => CAPTCHA_DIR,
+                              :dictionary => File.join(PROJECT_ROOT, 'data', 'captcha', language))
+      }
     end
 		def compare_list_components
 			{
@@ -4049,7 +4053,6 @@ Zeno Davatz
         [3,0]	=>	:name_base,
         [4,0]	=>	:galenic_form,
         [5,0]	=>  :google_search,
-        #[6,0]	=>	:notify,
       }
     end
 	end

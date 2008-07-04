@@ -19,7 +19,7 @@ module ODDB
       :cl_status, :deductible_display, :disable, :disable_invoice_fachinfo,
       :disable_invoice_patinfo,
       :disable_patinfo, :download, :experience, :export_flag, :helps,
-      :ignore_patent, :impression, :invoice_htmlinfos, :lppv,
+      :ignore_patent, :impression, :invoice_htmlinfos, :limit_invoice_duration, :lppv,
       :parallel_import, :recommend, :refdata_override, :remember_me,
       :renewal_flag,
       :show_email, :vaccine, :yus_groups, :yus_privileges,
