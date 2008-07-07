@@ -512,6 +512,7 @@ module ODDB
 			:home,
 			:home_drugs,
 			:home_migel,
+      :interactions, 
 			:just_medical_structure,	
 			:migel,
 			:migel_alphabetical,
@@ -637,7 +638,7 @@ module ODDB
 			}
 		end
 		def zones
-			[ :analysis, State::Drugs::Init, State::Drugs::AtcChooser, 
+			[ :analysis, :interactions, State::Drugs::Init, State::Drugs::AtcChooser, 
 				State::Drugs::Sequences, State::Migel::Alphabetical ]
 		end
 		def zone_navigation
