@@ -132,16 +132,21 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
         agent = WWW::Mechanize.new
         page = agent.get source
         page.save target
-        update_indications(target)
       end
+      update_indications(target)
     rescue WWW::Mechanize::ResponseCodeError
 		end
     def update_indications(path)
       @indications, news = DRbObject.new(nil, FIPARSE_URI).extract_indications(path)
-      @indications.each { |iksnr, text|
-        indication = update_indication(text)
-        pointer = Persistence::Pointer.new([:registration, iksnr])
-        @app.update(pointer, {:indication => indication.pointer}, :swissmedic)
+      @indications.delete_if { |iksnr, text|
+        if registration = @app.registration(iksnr)
+          indication = update_indication(text)
+          @app.update(registration.pointer, 
+                      {:indication => indication.pointer}, :swissmedic)
+          false
+        else
+          true
+        end
       }
       log = @app.log_group(:swissmedic).latest
       news.each { |iksnr|
