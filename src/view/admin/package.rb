@@ -20,15 +20,23 @@ module ODDB
 class CompositionSelect < HtmlGrid::AbstractSelect
   def selection(context)
     lang = @session.language
-    @selected ||= (comp = @model.composition) && comp.to_s#(lang)
+    @selected ||= (comp = @model.composition) && shorten(comp)
     res = []
     @model.registration.compositions.each_with_index { |composition, idx|
-      comp = composition.to_s#(lang)
+      comp = shorten(composition)
       attribs = { "value" => idx }
       attribs.store("selected", 1) if(comp == selected)
       res << context.option(attribs) { comp }
     }
     res
+  end
+  def shorten(comp)
+    str = comp.to_s
+    if(str.length > 60)
+      str[0,57] << '...'
+    else 
+      str
+    end
   end
 end
 class Parts < HtmlGrid::List
