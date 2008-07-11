@@ -3,6 +3,18 @@
 
 require 'sbsm/lookandfeelwrapper'
 
+module SBSM
+  class LookandfeelWrapper < Lookandfeel
+    def format_price(price, currency=nil)
+      unless(price.is_a?(ODDB::Util::Money))
+        price = price.to_f / 100.0
+      end
+      if(price.to_i > 0)
+        [currency, sprintf('%.2f', price)].compact.join(' ')
+      end
+    end
+  end
+end
 module ODDB
 	class LookandfeelStandardResult < SBSM::LookandfeelWrapper
 		ENABLED = [
@@ -786,19 +798,13 @@ module ODDB
 	end
   class LookandfeelMobile < SBSM::LookandfeelWrapper
     ENABLED = [
-      #:ajax,
  			:atc_chooser,
       :breadcrumbs,
       :companylist,
 			:data_counts,
-			#:drugs, 
-      #:country_navigation,
-			#:export_csv,
       :fachinfos,
 			:faq_link,
       :feedback,
-      #:feedback_rss,
-      #:google_adsense,
 			:help_link,
 			:home,
 			:home_drugs,
@@ -807,16 +813,11 @@ module ODDB
       :login_form,
       :logo,
 			:logout,
-      #:minifi_rss,
       :patinfos, 
-      #:paypal,
       :query_limit,
 			:recent_registrations,
-      #:screencast,
 			:search_reset,
 			:sequences,
-      #:sponsor,
-      #:sponsorlogo,
 			:topfoot,
 			:ywesee_contact,
    ]
