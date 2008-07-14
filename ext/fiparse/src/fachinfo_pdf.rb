@@ -3,6 +3,7 @@
 
 require	'fachinfo_writer'
 require 'rpdf2txt/parser'
+require 'fileutils'
 
 module ODDB
 	module FiParse
