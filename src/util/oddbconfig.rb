@@ -25,6 +25,7 @@ module ODDB
   YUS_URI = "drbssl://localhost:9997"
   YUS_DOMAIN = 'oddb.org'
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
+  IMAGE_DIR = File.join(PROJECT_ROOT, 'doc', 'resources', 'images')
 	PAYPAL_SERVER = 'www.paypal.com'
 	PAYPAL_RECEIVER = 'zdavatz@ywesee.com'
 	ENCODING = 'latin1'

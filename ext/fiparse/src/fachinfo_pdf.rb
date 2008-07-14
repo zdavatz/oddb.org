@@ -11,6 +11,7 @@ module ODDB
 			include Rpdf2txt::DefaultHandler
       @@skip_pattern = /documed|copyright|seite|page|[kc]ompendium/i
       @@hr_pattern = /-{5}\s*$/
+      IMAGE_DIR = File.join(IMAGE_DIR, 'fachinfo')
 			def initialize(*args)
 				super
 				@chars_since_last_linebreak = 0
@@ -64,6 +65,7 @@ module ODDB
 						@section = @chapter.next_section
 					end
 					if(@fresh_paragraph || @preformatted)
+            @chapter ||= next_chapter
 						@section = @chapter.next_section
 						@section.subheading << self.out
 						@wrote_section_heading = true
@@ -135,6 +137,31 @@ module ODDB
         else
           @preceding_hr = true
         end
+      end
+      def send_image(handle)
+        img = handle.image
+        prefix = @name.downcase.gsub(/[^a-z]/, '')
+        directory = File.join(IMAGE_DIR, prefix[0,2])
+        FileUtils.mkdir_p directory
+        files = Dir.glob("#{directory}/#{prefix}*")
+        save = files.find { |path|
+          begin
+            other, = Magick::Image.read(path)
+            other == img
+          rescue
+            false
+          end
+        }
+        if save.nil?
+          id = files.collect { |path|
+            match = /(\d+)\.png/.match File.basename(path)
+            match[1].to_i
+          }.max.to_i.next
+          save = File.join directory, "#{prefix}_#{id}.png"
+        end
+        img.write save
+        @section.next_image.src = save[%r!/resources/.*!]
+        send_line_break
       end
 			def send_page
 				## in newer fi-pdfs there is no change of font for 
