@@ -140,6 +140,7 @@ module ODDB
         end
       end
       def send_image(handle)
+        send_line_break
         img = handle.image
         prefix = @name.downcase.gsub(/[^a-z]/, '')
         directory = File.join(IMAGE_DIR, prefix[0,2])
