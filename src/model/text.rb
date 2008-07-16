@@ -140,6 +140,11 @@ module ODDB
 				}.join
 			end
 			def <<(text)
+        if(@raw_txt[-1] == ?- && /^[a-z\336-\377]/.match(text))
+          # if we're appending to a hypen, and text starts with a lowercase
+          # letter from iso-latin-1, we need to remove the hyphen
+          @raw_txt.chop!
+        end
 				@raw_txt << text
 				if(@preformatted)
 					@raw_txt.gsub!(/[\n\r]+/, "\n")

@@ -57,7 +57,13 @@ module ODDB
 						@section = @chapter.next_section
 					end
 				elsif(@font.bold?)
-					@name << self.out.strip
+          if @chapter.nil?
+            @name << self.out.strip
+          elsif(@paragraph)
+            @paragraph.set_format(:bold)
+            @paragraph << self.out
+            @paragraph.reduce_format(:bold)
+          end
 				elsif(@font.italic?)
 					## special case: italic after company-name is the 
 					## galenic_form-chapter of the pre AMZV-form of fi
@@ -66,15 +72,21 @@ module ODDB
 						@section = @chapter.next_section
 					end
 					if(@fresh_paragraph || @preformatted)
-            @chapter ||= next_chapter
-						@section = @chapter.next_section
-						@section.subheading << self.out
+            unless(self.out.empty?)
+              @chapter ||= next_chapter
+              @section = @chapter.next_section
+              @section.subheading << self.out
+              @paragraph = @section.next_paragraph
+            end
 						@wrote_section_heading = true
 					else
 						@paragraph.set_format(:italic)
 						@paragraph << self.out
 						@paragraph.reduce_format(:italic)
 					end
+          if @paragraph && @paragraph.empty?
+            @fresh_paragraph = false
+          end
 				else
 					str_check = self.out.strip
 					font_name = @font.basefont_name
@@ -195,7 +207,7 @@ module ODDB
 						self.add_text
 						@paragraph << "\n" if(@paragraph)
 					end
-				elsif(!@preformatted && @chars_since_last_linebreak < 80)
+				elsif(@chars_since_last_linebreak < 80)
 					self.send_paragraph
 				elsif(!/[\s-]$/.match(self.out))
 					self.out << " "
@@ -203,10 +215,11 @@ module ODDB
 				@chars_since_last_linebreak = 0
 			end
 			def send_paragraph
-				if(@wrote_section_heading && self.out.strip.empty?)
+				self.add_text
+        par = @section.paragraphs.first
+				if(@section.subheading[-1] != ?\n && (par.nil? || par.empty?))
 					@section.subheading << "\n"
 				end
-				self.add_text
 				unless(@preformatted)
 					@fresh_paragraph = true
 				end
