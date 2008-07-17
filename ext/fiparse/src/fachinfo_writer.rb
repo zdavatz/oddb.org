@@ -64,7 +64,7 @@ module ODDB
               :interactions, :pregnancy, :driving_ability, :unwanted_effects,
               :overdose, :effects, :switch,
 						]
-					when /Zusammensetzung/, /Composition/
+					when /Zusammensetzung/, /Composition/, /Principes\s*actifs/
 						@composition = chapter
 						@templates = named_chapters [
 							:switch,
@@ -121,7 +121,8 @@ module ODDB
 							:switch,
 						]
 					when /IKS-Nummern?/i, /Num.ros? OICM/i, 
-            /Zulassungs(vermerk|nummer)/, /Estampille|Num.ro\s+d.autorisation/
+            /Zulassungs(vermerk|nummer)/, /Estampille|Num.ro\s+d.autorisation/,
+            /^\d{5}\s/
 						@iksnrs = chapter
 						@templates = named_chapters [
 							:date, :rest,
@@ -154,7 +155,7 @@ module ODDB
               :switch,
 						]
 					when /Zulassungs(vermerk|nummer)/, 
-            /Estampille|Num.ro\s+d.autorisation/, /Autorisation/
+            /Estampille|Num.ro\s+d.autorisation/, /Autorisation/, /^\d{5}\s/
 						@iksnrs = @switch
 						@templates = named_chapters [
 							:switch,

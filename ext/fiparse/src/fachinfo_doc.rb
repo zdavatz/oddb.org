@@ -53,7 +53,7 @@ module ODDB
 					  # switch between old and new (2001) FI-Schema
 						set_templates(@chapter)
 					elsif([@company, @galenic_form].include?(@chapter) \
-						&& /Zusammensetzung|Composition/i.match(@chapter.heading))
+						&& /Zusammensetzung|Composition|Principes\s*actifs/i.match(@chapter.heading))
 						if(@chapter == @company)
 							@company = nil
 						end
