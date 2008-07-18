@@ -151,7 +151,8 @@ module ODDB
         case text.strip
         when "", '*', /Wirkstoffe/, /Hilfsstoffe/, /Klinische Wirksamkeit/,
           /Atc.?code/i, /Wirkungsmechanismus/, /Absorption/, /Metabolismus/,
-          /Haltbarkeit/, /Lagerung/, /Handhabung/, /Tabe(lle)?/, /^-/
+          /Haltbarkeit/, /Lagerung/, /Handhabung/, /Tabe(lle)?/, /^-/,
+          /Tableau/
           false
         else
           true
