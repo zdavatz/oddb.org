@@ -79,7 +79,7 @@ module ODDB
 						@templates = named_chapters [
 							:switch,
 						]
-					when /Pharmakokinetik/, /Pharmacocin.tique/
+					when /Pharmakokinetik?/i, /Pharmacocin.tique?/i
 						@kinetic = chapter
 						@templates = named_chapters [
 							:switch,

@@ -73,6 +73,9 @@ module ODDB
 				elsif(char_props.bold?)
           if(@row)
             @format = @target.set_format(:bold) if @target
+          elsif(@chapter && @chapter.sections.size == 1 \
+                && @chapter.sections.first.empty?)
+            # stay with the previous heading
           elsif(valid_chapter?(text))
             @chapter_flag = true
             @chapter = next_chapter
@@ -107,9 +110,12 @@ module ODDB
 					if(@chapter && !@chapter.include?(@section))
 						@section = @chapter.next_section
 					end
-					target = if(@section)
-						@section.next_paragraph
-					end
+					target = if(@chapter && @target == @chapter.heading \
+                      && text.to_s.empty?)
+                     @chapter.heading
+                   elsif(@section)
+                     @section.next_paragraph
+                   end
 					set_target(target)
 				end
 			end
@@ -143,9 +149,9 @@ module ODDB
       end
       def valid_chapter?(text)
         case text.strip
-        when "", /Wirkstoffe/, /Hilfsstoffe/, /Klinische Wirksamkeit/, 
+        when "", '*', /Wirkstoffe/, /Hilfsstoffe/, /Klinische Wirksamkeit/,
           /Atc.?code/i, /Wirkungsmechanismus/, /Absorption/, /Metabolismus/,
-          /Haltbarkeit/, /Lagerung/, /Handhabung/, /^-/
+          /Haltbarkeit/, /Lagerung/, /Handhabung/, /Tabe(lle)?/, /^-/
           false
         else
           true
