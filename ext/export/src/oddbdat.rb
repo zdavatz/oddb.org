@@ -159,7 +159,12 @@ module ODDB
 						string << '<I>' << subhead.to_s << '<E>'
 					end
 					sec.paragraphs.each { |par|
-						unless(par.is_a?(ODDB::Text::ImageLink))
+            case par
+            when ODDB::Text::ImageLink
+              string << "<IMG src='http://#{SERVER_NAME}#{par.src}'/>"
+            when ODDB::Text::Table
+              string << '<N>' << par.to_s << '<E>'
+            else
 							par.formats.each { |format|
 								start_tag = ""
 								end_tag = ""
@@ -176,7 +181,7 @@ module ODDB
 								string.gsub!(/ /, '_')
 								string.gsub!(/\n/, "<P>")
 							end
-						end
+            end
 					}
 				}
 				string.gsub(/\n/, ' ')
