@@ -181,11 +181,10 @@ class RssFeedbackList < HtmlGrid::DivList
       link.href = @lookandfeel._event_url(:feedbacks, :pointer => parent.pointer)
       link.value = case parent.odba_instance
                    when ODDB::Package
-                     @lookandfeel.lookup(:feedback_title, 
+                     @lookandfeel.lookup(:feedback_rss_title,
                                          parent.name, parent.size)
                    when ODDB::Migel::Product
-                     [ @lookandfeel.lookup(:feedback_title_migel), 
-                       parent.name].join
+                     parent.name
                    end
       link
     end
