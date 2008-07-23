@@ -36,7 +36,7 @@ Grammar OddbSize
     def multiplier
       count = @count || 1
       addition = @addition || 0
-      [@descr.to_f, 1].max * (@multi || 1).to_f * (count + addition)
+      [@descr.to_f, 1].max * (@multi || 1).to_f * (count.to_i + addition.to_i)
     end
     def set_comparable_size!
       measure = (@measure.nil? || @measure == UNIT) \
@@ -49,7 +49,7 @@ Grammar OddbSize
     def size=(size)
       unless size.to_s.strip.empty?
         @addition, @multi, @count, @measure, @scale, @comform = parse_size(size) 
-        if @count == 1 && @multi > 1
+        if @count == 1 && @multi.to_i > 1
           @count, @multi = @multi, nil
         end
         set_comparable_size!
