@@ -357,6 +357,17 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       end
       @app.update(comp.pointer, { :galenic_form => name }, :swissmedic)
     end
+    def update_indication(name)
+      name = name.to_s.strip
+      unless name.empty?
+        if indication = @app.indication_by_text(name)
+          indication
+        else
+          pointer = Persistence::Pointer.new(:indication)
+          @app.update(pointer.creator, :de => name)
+        end
+      end
+    end
     def update_package(reg, seq, row, replacements={}, 
                        opts={:create_only => false})
       cd = cell(row, 9)
@@ -431,6 +442,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         if(company = update_company(row))
           args.store :company, company.pointer
         end
+        if(indication = update_indication(cell(row, 15)))
+          args.store :indication, indication.pointer
+        end
         @app.update ptr, args, :swissmedic
       end
     rescue SystemStackError 
@@ -476,6 +490,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
           args.store :atc_class, atc.code
 				end
 			end
+      if(indication = update_indication(cell(row, 16)))
+        args.store :indication, indication.pointer
+      end
       @app.update ptr, args, :swissmedic
     end
     def update_substance(name)

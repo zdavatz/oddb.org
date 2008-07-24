@@ -3,16 +3,20 @@
 
 require 'util/language'
 require 'model/registration_observer'
+require 'model/sequence_observer'
 
 module ODDB
 	class Indication
 		include Language
 		include RegistrationObserver
+		include SequenceObserver
 		ODBA_SERIALIZABLE = [ '@descriptions' ]
 		def atc_classes
-			@registrations.collect { |reg| 
+			atcs = @registrations.collect { |reg| 
 				reg.atc_classes
-			}.flatten.compact.uniq
+			}.flatten
+      @sequences.each { |seq| atcs.push seq.atc_class }
+      atcs.compact.uniq
 		end
 		def search_text(lang=nil)
       if(lang)

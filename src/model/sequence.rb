@@ -165,8 +165,11 @@ module ODDB
 			@registration.iksnr
 		end
 		def indication
-			@registration.indication
+			@indication || @registration.indication
 		end
+    def indication=(indication)
+      @indication = replace_observer(@indication,indication)
+    end
 		def localized_name(language)
 			self.name
 		end
