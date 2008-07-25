@@ -92,9 +92,9 @@ module ODDB
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
-    def export_fachinfo_pdf
+    def export_fachinfo_pdf(langs = [:de, :fr])
       plug = FiPDFExporter.new(@app)
-      [:de, :fr].each { |lang|
+      langs.each { |lang|
         name = "fachinfos_#{lang}.pdf"
         path = File.join(EXPORT_DIR, name)
         plug.write_pdf(lang, path)
