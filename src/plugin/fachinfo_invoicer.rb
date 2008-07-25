@@ -47,7 +47,7 @@ module ODDB
         }
         report << "\n"
       }
-      (report.empty?) ? "Es wurden keine FI editiert" : report
+      !report.empty? && report
     end
     def unique_name(item)
       item.pointer

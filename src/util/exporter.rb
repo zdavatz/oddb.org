@@ -190,10 +190,12 @@ module ODDB
 		def mail_fachinfo_log(day = @@today)
 			plug = FachinfoInvoicer.new(@app)
 			plug.run(day)
-			log = Log.new(day)
-			log.date_str = day.strftime("%d.%m.%Y")
-			log.report = plug.report
-			log.notify("Fachinfo-Uploads")
+      if report = plug.report
+        log = Log.new(day)
+        log.date_str = day.strftime("%d.%m.%Y")
+        log.report = report
+        log.notify("Fachinfo-Uploads")
+      end
 		end
 		def mail_feedback_stats
 			mail_stats('feedback')
