@@ -1,60 +1,107 @@
-ODDB.org is an OpenDrugDatabase that enables the search for Drugs by their ActiveAgent, Name, Producer, ATC-Code.
-============
-Version: 0.9.3
-Date: 2003-12-19
+ODDB.org stands for OpenDrugDatabase 
+====================================
 
-Short Description:
-ODDB.org is an OpenDrugDatabase that enables the search for Drugs by their ActiveAgent, Name, Producer, ATC-Code.
-You can do a price comparison between the Original Drug and the Generic by Clicking on the Drug's Name. The database 
-tells you when the Drug has been registred in Switzerland. ODDB.org exports the complete Data in the YAML.org Format 
-(14'702 registred products).
+Date: 2008-08-08-11:08
+
+Short Description: ODDB.org is an OpenDrugDatabase that enables the
+search for Drugs by their ActiveAgent, Name, Producer, ATC-Code.  You
+can do a price comparison between the Original Drug and the Generic by
+Clicking on the Drug's Name. The database tells you when the Drug has
+been registred in Switzerland. ODDB.org exports the complete Data in the
+YAML.org Format (15'881 registred products).
+
+For for more information about the background see:
+
+	* http://www.ywesee.com
+	* http://www.oddb.org
+	* http://dev.ywesee.com
 
 Requirements
 ------------
 
-  * ruby 1.8, mod_ruby, drbsession, spreadsheet 
-  * apache, ruby-zlib, rubyzip, tarsimple, madeleine, rockit, tmail  
+  	* ruby 1.8, mod_ruby, drbsession, spreadsheet 
+  	* apache, ruby-zlib, rubyzip, tarsimple, madeleine, rockit, tmail  
 	* rpdf2txt, rwv2, htmlgrid, datastructure, parseexcel, session-management*) 
 	
-Install
--------
-Just copy everything into a directory of your choice, Configure your favorite Webserver to serve the $ODDBDIR/doc directory and to rewrite urls as follows:
-http://your.tld/(\w{2})/(\w+)/(\w+)/(\w+) => http://your.tld/index.rbx?language=\1&flavor=\2&\3=\4
-If you're interested in having the data that we provide online we can send you our ODBA snapshot.
-Please contact us: zdavatz@ywesee.com
+Install 
+------- 
+
+Just copy everything into a directory of your choice, Configure your
+favorite Webserver to serve the $ODDBDIR/doc directory and to rewrite
+urls as follows: http://your.tld/(\w{2})/(\w+)/(\w+)/(\w+) =>
+http://your.tld/index.rbx?language=\1&flavor=\2&\3=\4 If you're
+interested in having the data that we provide online we can send you our
+ODBA snapshot.  Please contact us: zdavatz@ywesee.com
+
+Install Instructions
+--------------------
+
+	* http://dev.ywesee.com/wiki.php/Oddb/InstallOddb
 
 Usage
 -----
-*)We haven't published this dependency yet, but we're working on it...
-	
+
+	* Normal Consumer
+	* Health Insurance (Krankenkasse)
+	* Pharmacie
+	* Hospital
+	* Doctor / Physician
+	* Pharma Marketing
+
 Background
 ----------
 	
-** README, a discussion on http://www.linuxmednews.org **
-Post by Zeno:
-In Switzerland we have the problem that there is only one provider of the data. And that provider serves all hospitals,
-doctors, old age homes, pharmacies etc. As they have the monopoly the could issue a tax on every transaction that is done 
-with there data; Example: The docotor in the hospital prescribes one drug to the patient. That info goes into the system
-and then gets passed on the specialist (external of hospital) and then gets passed on to the insurance etc. Imagine you must 
-pay 50cent for every transaction of the data...
-Post by Tim:
-This certainly carries some pretty scary scenarios. Are there not laws to prevent abuse? It would seem that a government monoploy
-has been issued here and there would be protections in place.
-Post by Zeno:
-1. Yes, that is exactly the problem. The company that has the monopoly also is working for the government and administrating the 
-database of all drugs that are covered by the public health insurance. 
-2. I have taken the above issues to antitrust department and the 'price governing' department of Switzerland. The first pushed
-the issue to the second and vice versa. I then contacted the leading consumer representative of Switzerland and she gave the
-issue some momentum. 
-3. The result of the above is ODDB.org an independent database for Switzerland. My personal interest is the acceleration of the
-electronic data interchange in the healthcare industry. This can only take place on open standards - I think.
+A discussion on http://www.linuxmednews.org 
 
+Post by Zeno: In Switzerland we have the problem that there is only one
+provider of the data. And that provider serves all hospitals, doctors,
+old age homes, pharmacies etc. As they have the monopoly the could issue
+a tax on every transaction that is done with there data; Example: The
+docotor in the hospital prescribes one drug to the patient. That info
+goes into the system and then gets passed on the specialist (external of
+hospital) and then gets passed on to the insurance etc. Imagine you
+must pay 50cent for every transaction of the data...  
+
+Post by Tim: This certainly carries some pretty scary scenarios. Are
+there not laws to prevent abuse? It would seem that a government
+monoploy has been issued here and there would be protections in place.
+
+Post by Zeno: 1. Yes, that is exactly the problem. The company that has
+the monopoly also is working for the government and administrating the
+database of all drugs that are covered by the public health insurance.
+2. I have taken the above issues to antitrust department and the 'price
+governing' department of Switzerland. The first pushed the issue to the
+second and vice versa. I then contacted the leading consumer
+representative of Switzerland and she gave the issue some momentum.  3.
+The result of the above is ODDB.org an independent database for
+Switzerland. My personal interest is the acceleration of the electronic
+data interchange in the healthcare industry. This can only take place on
+open standards.
+
+More here:
+	
+	* http://www.ywesee.com/pmwiki.php/Main/WekoBlog
+	* http://www.ywesee.com/pmwiki.php/Main/Bundesgerichtsurteil
 
 License
 -------
 
-	LGPL
-
+	* LGPL
 	
-URL: http://download.ywesee.com/ruby/oddb.org
-Author: Hannes Wyss <hwyss@ywesee.com>, Markus Huggler <maege@ywesee.com>, Raphael Waltert <rwaltert@ywesee.com>, Andreas Schrafl <aschrafl@ywesee.com>, Benjamin Fay <benfay@ywesee.com>
+Source Code Download with GIT
+-----------------------------
+
+	* URL: http://scm.ywesee.com/oddb.org
+
+Authors
+-------
+
+	* ywesee GmbH
+
+	* Hannes Wyss <hwyss@ywesee.com>
+	* Markus Huggler <maege@ywesee.com>
+	* Mike Walder <walder@allink.ch> 
+	* Raphael Waltert <rwaltert@ywesee.com>
+	* Andreas Schrafl <aschrafl@ywesee.com>
+	* Benjamin Fay <benfay@ywesee.com> 
+	* Zeno Davatz <zdavatz@ywesee.com>
