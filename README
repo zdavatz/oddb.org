@@ -19,8 +19,8 @@ For for more information about the background see:
 Requirements
 ------------
 
-  	* ruby 1.8, mod_ruby, drbsession, spreadsheet 
-  	* apache, ruby-zlib, rubyzip, tarsimple, madeleine, rockit, tmail  
+	* ruby 1.8, mod_ruby, drbsession, spreadsheet 
+	* apache, ruby-zlib, rubyzip, tarsimple, madeleine, rockit, tmail  
 	* rpdf2txt, rwv2, htmlgrid, datastructure, parseexcel, session-management*) 
 	
 Install 
@@ -104,4 +104,8 @@ Authors
 	* Raphael Waltert <rwaltert@ywesee.com>
 	* Andreas Schrafl <aschrafl@ywesee.com>
 	* Benjamin Fay <benfay@ywesee.com> 
+
+README Author
+-------------
+
 	* Zeno Davatz <zdavatz@ywesee.com>
