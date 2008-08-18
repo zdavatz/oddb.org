@@ -38,7 +38,7 @@ Kernel.trap('INT') {
 	end
 }
 
-prompt = 'oddb> '
+prompt = 'ch.oddb> '
 req = RequestStub.new
 request = DRb.start_service('druby://localhost:0', req)
 oddb = DRbObject.new(nil, ODDB::SERVER_URI)
