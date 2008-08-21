@@ -51,25 +51,29 @@ class Session < HttpSession
     response = get(response['location'])
     data = [
       [ 'id_swissreg_SUBMIT', '1' ],
-      [ 'jsf_sequence', '1' ],
       [ 'id_swissreg:_idcl', 
-       'id_swissreg_sub_nav_ipiNavigation_item8'],
+       'id_swissreg_sub_nav_ipiNavigation_item10'],
+      ["javax.faces.ViewState", view_state(response)],
     ]
     url = "/srclient/faces/jsp/start.jsp"
 		response = post(url, data)
     update_cookie(response)
 		criteria = [
       ["id_swissreg:mainContent:id_txf_title", "%s*" % substance],
+      ["id_swissreg:mainContent:id_txf_basic_pat_no", ""],
+      ["id_swissreg:mainContent:id_txf_spc_no", ""],
       ["id_swissreg:mainContent:sub_fieldset:id_submit", "suchen"],
+      ["id_swissreg:_link_hidden_", ""],
       ["id_swissreg_SUBMIT", "1"],
-      ["jsf_sequence", "2"],
       ["id_swissreg:_idcl", ""],
+      ["autoScroll", "0"],
+      ["javax.faces.ViewState", view_state(response)],
 		]
     url = "/srclient/faces/jsp/spc/sr1.jsp"
 		response = post(url, criteria)
     update_cookie(response)
 		extract_result_links(response.body)
-	rescue Timeout::Error, Net::HTTPInternalServerError
+	rescue Timeout::Error
 		[]
 	end
   def post(url, *args)
@@ -80,6 +84,11 @@ class Session < HttpSession
   def update_cookie(response)
     if(hdr = response['set-cookie'])
       @cookie_id = hdr[/^[^;]+/]
+    end
+  end
+  def view_state(response)
+    if match = /javax.faces.ViewState.*?value="([^"]+)"/.match(response.body)
+      match[1]
     end
   end
 end
