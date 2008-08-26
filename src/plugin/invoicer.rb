@@ -19,13 +19,11 @@ module ODDB
 				:keep_if_unpaid =>	true,
 				:ydim_id				=>	ydim_id,
 			}
-			ODBA.transaction { 
-				invoice = @app.update(pointer.creator, values)
-				pointer = invoice.pointer + [:item]
-				items.each { |item|
-					@app.update(pointer.dup.creator, item.values)
-				}
-			}
+      invoice = @app.update(pointer.creator, values)
+      pointer = invoice.pointer + [:item]
+      items.each { |item|
+        @app.update(pointer.dup.creator, item.values)
+      }
 		end
     def ensure_yus_user(comp_or_hosp)
       mail = comp_or_hosp.contact_email
