@@ -54,7 +54,8 @@ class Session < HttpSession
 		@form_keys = FORM_KEYS[search_type]
 		@detail_key = DETAIL_KEYS[search_type]
 		super(server)
-		resp = get('/')
+    resp = get '/'
+    resp = get @http_path
 		handle_resp!(resp)
 	end
 	def detail_html(ctl)
@@ -75,12 +76,11 @@ class Session < HttpSession
 	end
 	def handle_resp!(resp)
 		@cookie_header = resp["set-cookie"]
-		resp.body.each { |line|
-			if(line.match(/VIEWSTATE/))
-				arr = line.split('value')[1].split('"')
-				@viewstate = arr[1]
-			end
-		}
+    if(match = /VIEWSTATE.*?value="([^"]+)"/.match(resp.body))
+      @viewstate = match[1]
+    else
+      @viewstate = nil
+    end
 		@viewstate
 	end
 	def get_result_list(criteria)
@@ -90,6 +90,9 @@ class Session < HttpSession
 		resp.body
   rescue RuntimeError => err
     if /InternalServerError/.match err.message
+      require 'pp'
+      puts "error for criteria: #{criteria.pretty_inspect}"
+      puts "... post_data: #{hash.pretty_inspect}"
       sleep 600 # wait 10 minutes for the server to recover
       retry
     else
@@ -115,7 +118,7 @@ class Session < HttpSession
 		@form_keys.each { |key, new_key|
 			if(val = criteria[key])
 				val = Iconv.iconv('utf8', 'latin1', val.to_s).first
-				data.push([new_key, CGI.escape(val)])
+				data.push([new_key, val])
 			end
 		}
 		data.push(['hiddenlang',	'de'])

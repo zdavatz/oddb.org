@@ -55,12 +55,14 @@ module ODDB
 		end
 		def update_company(comp)
 			ean = comp.ean13.to_s
-			criteria = { :ean =>  ean }
-			if(ean.empty?)
-				criteria = { :name =>  comp.name.to_s }
-			end
+      eanc = { :ean =>  ean }
+      namec = { :name =>  comp.name.to_s }
+			criteria = ean.empty? ? namec : eanc
 			MEDDATA_SERVER.session(:partner) { |meddata|
 				results = meddata.search(criteria)
+        if(results.empty? && criteria.include?(:ean))
+          results = meddata.search(namec)
+        end
 				if(results.size == 1)
 					result = results.first
 					details = meddata.detail(result, @medwin_template)
