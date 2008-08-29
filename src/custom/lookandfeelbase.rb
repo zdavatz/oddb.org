@@ -3954,10 +3954,8 @@ Zeno Davatz
 			:sponsor								=>	'sponsor',
 		}
     def captcha
-      @turing ||= @@turing.synchronize {
-        Turing::Challenge.new(:outdir => CAPTCHA_DIR,
-                              :dictionary => File.join(PROJECT_ROOT, 'data', 'captcha', language))
-      }
+      @turing ||= Turing::Challenge.new(:outdir => CAPTCHA_DIR,
+                    :dictionary => File.join(PROJECT_ROOT, 'data', 'captcha', language))
     end
 		def compare_list_components
 			{
@@ -4018,7 +4016,9 @@ Zeno Davatz
       end
     end
     def generate_challenge
-      captcha.generate_challenge
+      @@turing.synchronize {
+        captcha.generate_challenge
+      }
     end
     def migel_list_components
       {
