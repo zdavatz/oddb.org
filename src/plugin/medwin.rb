@@ -73,23 +73,24 @@ module ODDB
 		rescue MedData::OverflowError
 		end
 		def update_company_data(comp, data)
-			unless(comp.listed? || comp.has_user?)
-				addr = Address2.new
-				addr.address = data[:address]
-				addr.location = [data[:plz], data[:location]].compact.join(' ')
-				if(fon = data[:phone])
-					addr.fon = [fon]
-				end
-				if(fax = data[:fax])
-					addr.fax = [fax]
-				end
-				update = {
-					:ean13	=>	data[:ean13],
-					:addresses => [addr],
-				}
-				@updated.push(comp.name)
-				@app.update(comp.pointer, update, :refdata)
-			end
+      addr = Address2.new
+      addr.address = data[:address]
+      addr.location = [data[:plz], data[:location]].compact.join(' ')
+      if(fon = data[:phone])
+        addr.fon = [fon]
+      end
+      if(fax = data[:fax])
+        addr.fax = [fax]
+      end
+      update = {
+        :ean13	=>	data[:ean13],
+        :addresses => [addr],
+      }
+      update.delete_if { |key, val| 
+        (orig = comp.data_origin(key)) && orig != :refdata 
+      }
+      @updated.push(comp.name)
+      @app.update(comp.pointer, update, :refdata)
 		end
 	end
 	class MedwinPackagePlugin < MedwinPlugin
