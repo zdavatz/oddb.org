@@ -87,6 +87,9 @@ class Result < State::Drugs::Global
 		state.package_count = @model.package_count
 		state
 	end
+  def package_count
+    @model.package_count
+  end
   def page
     pge = nil
     if(@session.event == :search)

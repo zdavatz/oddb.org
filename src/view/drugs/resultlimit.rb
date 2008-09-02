@@ -87,7 +87,8 @@ class ResultLimitComposite < HtmlGrid::Composite
     [0,1] => 'right',
   }
 	def export_csv(model)
-		if(@session.state.package_count.to_i > 0)
+    state = @session.state
+		if(state.respond_to?(:package_count) && state.package_count.to_i > 0)
 			View::Drugs::DivExportCSV.new(model, @session, self)
 		end
 	end

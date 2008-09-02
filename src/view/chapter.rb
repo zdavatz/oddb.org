@@ -108,12 +108,14 @@ module ODDB
       include ChapterMethods
       def to_html(context)
         html = ''
-        unless(@value.heading.empty?)
-          html << heading(context)
-        end
-        html << sections(context, @value.sections)
-        if(hl = @session.user_input(:highlight))
-          html.gsub!(hl, "<span class='highlight'>%s</span>" % hl)
+        if @value
+          unless(@value.heading.empty?)
+            html << heading(context)
+          end
+          html << sections(context, @value.sections)
+          if(hl = @session.user_input(:highlight))
+            html.gsub!(hl, "<span class='highlight'>%s</span>" % hl)
+          end
         end
         html
       end

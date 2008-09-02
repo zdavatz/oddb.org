@@ -151,7 +151,7 @@ module ODDB
       @compositions.collect { |comp| comp.galenic_form }.compact.uniq
     end
 		def generic_type
-			@registration.generic_type
+			@registration.generic_type if @registration
 		end
 		def has_patinfo?
 			(!@patinfo.nil? || !@pdf_patinfo.nil?) && !company.disable_patinfo
