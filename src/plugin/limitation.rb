@@ -55,6 +55,7 @@ module ODDB
 		attr_reader :collected_values
     UNPARSEABLE = { 
       '[57856 001] (363 10 14)' => [2,1,2],
+      '[57862 001] (348 21 69)' => [5,4,5],
     }
 		def initialize
 			@tablehandlers = []
