@@ -37,6 +37,7 @@ module ODDB
 				pack.remove_narcotic(self)
 				pack.odba_store 
 			}
+      @substances.odba_delete
 		end
 		def create_reservation_text
 			@reservation_text = Text::Document.new

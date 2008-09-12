@@ -14,7 +14,7 @@ module ODDB
 			include FeedbackObserver
 			include Persistence
 			include SimpleLanguage
-			ODBA_SERIALIZABLE = ['@descriptions']
+			ODBA_SERIALIZABLE = ['@descriptions', '@lab_areas']
 			attr_accessor :taxpoints, :anonymous, :anonymousgroup,
 				:anonymouspos, :lab_areas, :taxnumber,
 				:analysis_revision, :finding, :poscd, :group,

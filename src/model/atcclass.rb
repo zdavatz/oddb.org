@@ -10,7 +10,7 @@ module ODDB
 	class AtcClass
 		include Language
 		include SequenceObserver
-		ODBA_SERIALIZABLE = [ '@descriptions', '@ddds' ]
+		ODBA_SERIALIZABLE = [ '@descriptions' ]
 		attr_accessor :code
 		attr_reader :guidelines, :ddd_guidelines
 		# use this instead of add_sequence for temporary atc_classes

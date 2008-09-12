@@ -17,14 +17,15 @@ module ODDB
 				}
 			end
 			def update_values(values, origin=nil)
-				if(self.default.nil? || self.default.empty?)
-					self.default = values.sort.first.at(1) unless values.empty?
-				else
-					key = index(self.default)
-					self.default = values[key] if values.include?(key)
-				end
 				update(values)
 			end
+      def first
+        if empty?
+          nil
+        else
+          sort.first.last
+        end
+      end
 		end
 		def description(key=nil)
 			descriptions[key.to_s]
@@ -41,19 +42,23 @@ module ODDB
 		def method_missing(symbol, *args, &block)
 			language = symbol.to_s
 			if(language.length == 2)
-				descriptions[language]
+				descriptions[language] || descriptions.first
 			else
 				super
 			end
 		end
-		def respond_to?(symbol, priv=false)
+		def respond_to?(symbol, *args)
 			symbol.to_s.length == 2 || super
 		end
     def search_text(language)
       ODDB.search_term(self.send(language).to_s)
     end
 		def to_s
-			descriptions.default.to_s
+      if descriptions.empty?
+        ''
+      else
+        descriptions.first.to_s
+      end
 		end
 		def update_values(values, origin=nil)
 			values = values.dup
@@ -69,31 +74,8 @@ module ODDB
 	end
 	module Language
 		include SimpleLanguage
-		class Descriptions < Hash
-			def initialize
-				super('')
-			end
-			def to_descriptions
-				desc = SimpleLanguage::Descriptions.new
-				desc.update_values(to_hash)
-				desc
-			end
-			def to_hash # mostly for testing purposes...
-				inject({}) { |inj, pair|
-					inj.store(*pair)
-					inj
-				}
-			end
-			def update_values(values, origin=nil)
-				if(self.default.nil? || self.default.empty?)
-					self.default = values.sort.first.at(1) unless values.empty?
-				else
-					key = index(self.default)
-					self.default = values[key] if values.include?(key)
-				end
-				update(values)
-			end
-		end
+		class Descriptions < SimpleLanguage::Descriptions
+    end
 		def init(app=nil)
 			super
 			unless(@pointer.last_step.size > 1)
