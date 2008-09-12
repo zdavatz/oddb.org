@@ -357,6 +357,7 @@ module ODDB
 					@smj_updated = latest
 				end
 			end
+      success
 		end
 		def update_swissreg
 			update_immediate(SwissregPlugin, 'Patents')
