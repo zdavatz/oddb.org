@@ -28,7 +28,7 @@ module ODDB
       end
 		end
 		def description(key=nil)
-			descriptions[key.to_s]
+			descriptions[key.to_s] || descriptions.first
 		end
 		def descriptions
 			@descriptions ||= Descriptions.new
@@ -42,7 +42,7 @@ module ODDB
 		def method_missing(symbol, *args, &block)
 			language = symbol.to_s
 			if(language.length == 2)
-				descriptions[language] || descriptions.first
+				description(language)
 			else
 				super
 			end
