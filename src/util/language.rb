@@ -7,9 +7,6 @@ module ODDB
 	module SimpleLanguage
 		include Persistence
 		class Descriptions < Hash
-			def initialize
-				super('')
-			end
 			def to_hash # mostly for testing purposes...
 				inject({}) { |inj, pair|
 					inj.store(*pair)
