@@ -21,7 +21,7 @@ module ODDB
 			end
       def first
         if empty?
-          nil
+          ''
         else
           sort.first.last
         end
