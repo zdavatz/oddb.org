@@ -15,24 +15,22 @@ module ODDB
 		def	execute(app)
 			pointer = ODDB::Persistence::Pointer.new(@orphantype)
 			digest = Digest::MD5.hexdigest(@orphan.sort.to_s)
-			ODBA.transaction { 
-				info = app.accepted_orphans.fetch(digest) {
-					inf = app.update(pointer.creator, @orphan, @origin)
-					app.accepted_orphans.store(digest, inf)
-					app.accepted_orphans.odba_store
-					inf
-				}
-				@pointers.each { |ptr|
-					parent = ptr.resolve(app)
-					old_info = parent.send(@orphantype)
-					writer = @orphantype.to_s << "="
-					parent.send(writer, info)
-					parent.odba_store
-					if(old_info && old_info.empty?)
-						app.delete(old_info.pointer)
-					end
-				}
-			}
+      info = app.accepted_orphans.fetch(digest) {
+        inf = app.update(pointer.creator, @orphan, @origin)
+        app.accepted_orphans.store(digest, inf)
+        app.accepted_orphans.odba_store
+        inf
+      }
+      @pointers.each { |ptr|
+        parent = ptr.resolve(app)
+        old_info = parent.send(@orphantype)
+        writer = @orphantype.to_s << "="
+        parent.send(writer, info)
+        parent.odba_store
+        if(old_info && old_info.empty?)
+          app.delete(old_info.pointer)
+        end
+      }
 		end
 	end
 end

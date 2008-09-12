@@ -102,13 +102,11 @@ module PackageMethods
       end
     }
 		unless(error?)
-			ODBA.transaction {
-        if(ikscode != @model.ikscd)
-          @model.ikscd = ikscode
-        end
-				@model = @session.app.update(@model.pointer, input, unique_email)
-        update_parts(parts)
-			}
+      if(ikscode != @model.ikscd)
+        @model.ikscd = ikscode
+      end
+      @model = @session.app.update(@model.pointer, input, unique_email)
+      update_parts(parts)
 		end
 		self
 	end

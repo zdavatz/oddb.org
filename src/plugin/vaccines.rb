@@ -401,17 +401,15 @@ module ODDB
 			end
 		end
 		def update_registrations(registrations)
-			ODBA.transaction {
-				registrations.each_value { |reg|
-					update_registration(reg)
-				}
-				@app.registrations.each_value { |reg|
-					if(reg.vaccine && !@active.include?(reg.iksnr))
-						@deactivated.push(reg.iksnr)
-						@app.update(reg.pointer, {:inactive_date => @@today}, :swissmedic)
-					end
-				} unless @active.empty?
-			}
+      registrations.each_value { |reg|
+        update_registration(reg)
+      }
+      @app.registrations.each_value { |reg|
+        if(reg.vaccine && !@active.include?(reg.iksnr))
+          @deactivated.push(reg.iksnr)
+          @app.update(reg.pointer, {:inactive_date => @@today}, :swissmedic)
+        end
+      } unless @active.empty?
 		end
 		def update_sequence(seq, reg_pointer)
 			pointer = reg_pointer + [:sequence, seq.seqnr]

@@ -111,9 +111,7 @@ class UserCompany < Company
 				].compact.join(' ')
 				addr.fon = input.delete(:fon).to_s.split(/\s*,\s*/)
 				addr.fax = input.delete(:fax).to_s.split(/\s*,\s*/)
-				ODBA.transaction {
-					@model = @session.app.update(@model.pointer, input, unique_email)
-				}
+        @model = @session.app.update(@model.pointer, input, unique_email)
 				update_company_user(contact_email)
 			end
 		end
@@ -121,14 +119,12 @@ class UserCompany < Company
 	end
 	def update_company_user(contact_email)
 		if(contact_email && !contact_email.empty?)
-			ODBA.transaction {
-				user = user_or_creator
-				args = {
-					:unique_email => contact_email, 
-					:model => @model
-				}
-				@session.app.update(user.pointer, args, unique_email)
-			}
+      user = user_or_creator
+      args = {
+        :unique_email => contact_email,
+        :model => @model
+      }
+      @session.app.update(user.pointer, args, unique_email)
 		end
 	rescue RuntimeError => e
 		err = create_error(e.message, :unique_email, contact_email)
@@ -157,9 +153,7 @@ class RootCompany < UserCompany
 	end
 	def delete
 		if(@model.empty?)
-			ODBA.transaction {
-				@session.app.delete(@model.pointer)
-			}
+      @session.app.delete(@model.pointer)
 			State::Companies::CompanyList.new(@session, @session.app.companies)
 		else
 			State::Companies::MergeCompanies.new(@session, @model)

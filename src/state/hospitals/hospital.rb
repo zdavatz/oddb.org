@@ -50,9 +50,7 @@ class RootHospital < Hospital
 			addr.canton = input.delete(:canton)
 			addr.fon = input.delete(:fon).to_s.split(/\s*,\s*/)
 			addr.fax = input.delete(:fax).to_s.split(/\s*,\s*/)
-			ODBA.transaction {
-				@model = @session.app.update(@model.pointer, input, unique_email)
-			}
+      @model = @session.app.update(@model.pointer, input, unique_email)
 		end
 	end
 	def user_or_creator

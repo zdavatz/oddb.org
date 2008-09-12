@@ -12,9 +12,7 @@ class GalenicGroup < State::Admin::Global
 	VIEW = View::Admin::GalenicGroup
 	def delete
 		begin
-			ODBA.transaction {
-				@session.app.delete(@model.pointer)
-			}
+      @session.app.delete(@model.pointer)
 			galenic_groups() # from RootState
 		rescue StandardError => e
 			State::Exception.new(@session, e)
@@ -23,9 +21,7 @@ class GalenicGroup < State::Admin::Global
 	def update
     keys = [:route_of_administration].concat @session.lookandfeel.languages
     input = user_input(keys)
-		ODBA.transaction {
-			@model = @session.app.update(@model.pointer, input, unique_email)
-		}
+    @model = @session.app.update(@model.pointer, input, unique_email)
 		self
 	end
 end

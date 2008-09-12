@@ -33,7 +33,6 @@ module ODDB
 					range = base...(base+step)
 					puts "Next-Step: #{range.first} - #{range.last}"
 					$stdout.flush
-					ODBA.transaction {
 				top_doc_id = 0
 				(range.to_a - empty_ids).each { |doc_id| 
 					if(data = get_doctor_data(doc_id))
@@ -48,7 +47,6 @@ module ODDB
 				}
 				empty_ids.delete_if { |id| id > top_doc_id }
 				store_empty_ids(empty_ids)
-					}
 				}
 			end
 			def delete_doctor(doc_id)

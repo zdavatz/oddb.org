@@ -55,11 +55,9 @@ class AssignFachinfo < Global
 		end
 		unless(error?)
 			if(fi = @model.registration.fachinfo)
-				ODBA.transaction { 
-					pointers.each { |pointer|
-						@session.app.update(pointer, {:fachinfo => fi.pointer}, unique_email)
-					}
-				}
+        pointers.each { |pointer|
+          @session.app.update(pointer, {:fachinfo => fi.pointer}, unique_email)
+        }
 			end
 		end
 		self

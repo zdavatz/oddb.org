@@ -71,10 +71,8 @@ module ActiveAgentMethods
 					input.delete(:chemical_dose)
 				end
 				input[:substance] = substance.pointer
-				ODBA.transaction { 
-					@model = @session.app.update(@model.pointer, input, 
-																			unique_email)
-				}
+        @model = @session.app.update(@model.pointer, input,
+                                     unique_email)
 			end
 		end
 		newstate

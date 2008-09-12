@@ -9,11 +9,9 @@ module ODDB
 		def execute(app)
 			source = @source_pointer.resolve(app)
 			target = @target_pointer.resolve(app)
-			ODBA.transaction { 
-				target.merge(source)
-				target.odba_store
-				app.delete(@source_pointer)
-			}
+      target.merge(source)
+      target.odba_store
+      app.delete(@source_pointer)
 			nil
 		end
 	end

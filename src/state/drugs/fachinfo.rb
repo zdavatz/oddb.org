@@ -53,42 +53,40 @@ class RootFachinfo < Fachinfo
 			formatter = HtmlFormatter.new(writer)
 			parser = ChapterParse::Parser.new(formatter)
 			parser.feed(html)
-			ODBA.transaction {
-				lang = @session.language	
-				email = unique_email
-				if(@fachinfo.is_a?(Persistence::CreateItem))
-					registration = @fachinfo.registrations.first
-					doc = @fachinfo.send(lang)
-					@fachinfo = @session.app.update(@fachinfo.pointer, {lang => doc}, email)
-					@model = FachinfoWrapper.new(@fachinfo)
-					@model.add_change_log_item(email, 'created', lang)
-					@session.app.update(registration.pointer, 
-															{:fachinfo => @model.pointer}, email)
-				end
-				doc = @model.descriptions.fetch(lang.to_s) {
-					doc = @model.send(lang).class.new()
-					doc.name = @model.name_base
-					@session.app.update(@model.pointer, {lang => doc}, email)
-					doc
-				}
-				name = input[:chapter]
-				unless(doc.send(name))
-					doc.send("#{name}=", Text::Chapter.new)
-				end
-				doc_pointer = @model.pointer + [lang] 
-				pointer = doc_pointer + [name]
-				args = {
-					:heading	=>	input[:heading],
-					:sections =>	writer.chapter.sections,
-				}
-				@model.add_change_log_item(email, name, lang)
-				@session.app.update(pointer, args, email)
-				@session.app.update(doc_pointer, {}, email)
-				@session.app.update(@model.pointer, {}, email)
-			}
+      lang = @session.language
+      email = unique_email
+      if(@fachinfo.is_a?(Persistence::CreateItem))
+        registration = @fachinfo.registrations.first
+        doc = @fachinfo.send(lang)
+        @fachinfo = @session.app.update(@fachinfo.pointer, {lang => doc}, email)
+        @model = FachinfoWrapper.new(@fachinfo)
+        @model.add_change_log_item(email, 'created', lang)
+        @session.app.update(registration.pointer,
+                            {:fachinfo => @model.pointer}, email)
+      end
+      doc = @model.descriptions.fetch(lang.to_s) {
+        doc = @model.send(lang).class.new()
+        doc.name = @model.name_base
+        @session.app.update(@model.pointer, {lang => doc}, email)
+        doc
+      }
+      name = input[:chapter]
+      unless(doc.send(name))
+        doc.send("#{name}=", Text::Chapter.new)
+      end
+      doc_pointer = @model.pointer + [lang]
+      pointer = doc_pointer + [name]
+      args = {
+        :heading	=>	input[:heading],
+        :sections =>	writer.chapter.sections,
+      }
+      @model.add_change_log_item(email, name, lang)
+      @session.app.update(pointer, args, email)
+      @session.app.update(doc_pointer, {}, email)
+      @session.app.update(@model.pointer, {}, email)
 		end
 		self
-	end	
+	end
 end
 class CompanyFachinfo < RootFachinfo
   VIEW = View::Drugs::RootFachinfo

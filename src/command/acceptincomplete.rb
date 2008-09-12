@@ -8,9 +8,7 @@ module ODDB
 		end
 		def execute(app)
 			incomplete = @pointer.resolve(app)
-			ODBA.transaction {
-				incomplete.accepted!(app)
-			}
+      incomplete.accepted!(app)
 			app.recount
 		end
 	end

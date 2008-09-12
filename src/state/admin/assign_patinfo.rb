@@ -27,11 +27,9 @@ class AssignPatinfo < AssignDeprivedSequence
 			elsif(pat = @model.sequence.patinfo)
 				args.store(:patinfo, pat.pointer)
 			end
-			ODBA.transaction { 
-				pointers.each { |pointer|
-					@session.app.update(pointer, args, unique_email)
-				}
-			}
+      pointers.each { |pointer|
+        @session.app.update(pointer, args, unique_email)
+      }
 		end
 		self
 	end

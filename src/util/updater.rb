@@ -387,14 +387,12 @@ module ODDB
 			log.notify("Error: #{subj}")
 		end
 		def wrap_update(klass, subj, &block)
-			ODBA.transaction {
-				begin
-					block.call
-				rescue Exception => e #RuntimeError, StandardError => e
-					notify_error(klass, subj, e)
-					raise
-				end
-			}
+      begin
+        block.call
+      rescue Exception => e #RuntimeError, StandardError => e
+        notify_error(klass, subj, e)
+        raise
+      end
 		rescue Exception
 			nil
 		end

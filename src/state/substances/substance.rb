@@ -22,9 +22,7 @@ class Substance < State::Substances::Global
 	end
 	def delete
 		if(@model.empty?)
-			ODBA.transaction {
-				@session.app.delete(@model.pointer)
-			}
+      @session.app.delete(@model.pointer)
 			#substances() # from RootState
 			new_state = result()
       mdl = new_state.model
@@ -91,9 +89,7 @@ class Substance < State::Substances::Global
 			input.store(:synonyms, syns)
 		end
 		unless error?
-			ODBA.transaction {
-				@model = @session.app.update(@model.pointer, input, unique_email)	
-			}
+      @model = @session.app.update(@model.pointer, input, unique_email)
 		end
 		self
 	end

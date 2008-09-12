@@ -1421,15 +1421,13 @@ module ODDB
         :type         => :poweruser,
         :vat_rate     => VAT_RATE,
       }
-      ODBA.transaction {
-        user = @system.update(user_pointer.creator, user_data, :admin)
-        invoice = @system.update(invoice_pointer.creator, invoice_data, :admin)
-        item_pointer = invoice.pointer + [:item]
-        @system.update(item_pointer.creator, item_data, :admin)
-        user.add_invoice(invoice)
-        invoice.payment_received!
-        invoice.odba_isolated_store
-      }
+      user = @system.update(user_pointer.creator, user_data, :admin)
+      invoice = @system.update(invoice_pointer.creator, invoice_data, :admin)
+      item_pointer = invoice.pointer + [:item]
+      @system.update(item_pointer.creator, item_data, :admin)
+      user.add_invoice(invoice)
+      invoice.payment_received!
+      invoice.odba_isolated_store
     end
 		def merge_commercial_forms(source, target)
 			command = MergeCommand.new(source.pointer, target.pointer)
@@ -1568,9 +1566,7 @@ module ODDB
     end
 
 		def assign_effective_forms(arg=nil)
-			ODBA.transaction {
-				_assign_effective_forms(arg)
-			}
+      _assign_effective_forms(arg)
 		end
 		def _assign_effective_forms(arg=nil)
 			result = nil
@@ -1896,16 +1892,14 @@ module ODDB
 			}
 		end
     def migrate_feedbacks
-      ODBA.transaction {
-        @system.each_package { |pac|
-          _migrate_feedbacks(pac)
-        }
-        @system.each_migel_product { |prd|
-          _migrate_feedbacks(prd)
-        }
-        @system.feedbacks.odba_store
-        @system.odba_store
+      @system.each_package { |pac|
+        _migrate_feedbacks(pac)
       }
+      @system.each_migel_product { |prd|
+        _migrate_feedbacks(prd)
+      }
+      @system.feedbacks.odba_store
+      @system.odba_store
       update_feedback_rss_feed
     end
     def _migrate_feedbacks(item)
@@ -1950,7 +1944,9 @@ module ODDB
             time = Time.now
             alarm = time - lasttime > 60 ? '*' : ' '
             lastthreads = threads
-            threads = ObjectSpace.each_object(Thread) {}
+            Thread.exclusive {
+              threads = ObjectSpace.each_object(Thread) {}
+            }
             lastbytes = bytes
             bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
             mbytes = bytes / (2**20)

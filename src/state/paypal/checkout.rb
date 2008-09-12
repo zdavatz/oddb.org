@@ -45,10 +45,8 @@ module Checkout
 		if(error?)
 			self
 		else
-			ODBA.transaction { 
-				create_user(input)
-				State::PayPal::Redirect.new(@session, create_invoice(input))
-			}
+      create_user(input)
+      State::PayPal::Redirect.new(@session, create_invoice(input))
 		end
 	rescue SBSM::ProcessingError => err
 		@errors.store(err.key, err)

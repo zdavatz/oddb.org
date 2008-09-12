@@ -114,9 +114,7 @@ module RegistrationMethods
 			new_state = self.class::SELECT_STATE.new(@session, sel)
 		end
 		new_state = get_fachinfo
-		ODBA.transaction { 
-			@model = @session.app.update(@model.pointer, hash, unique_email)
-		}
+    @model = @session.app.update(@model.pointer, hash, unique_email)
 		if(sel)
 			sel.registration = @model
 		end

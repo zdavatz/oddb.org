@@ -108,9 +108,7 @@ module SequenceMethods
 	def delete
 		registration = @model.parent(@session.app) 
 		if(klass = resolve_state(registration.pointer))
-			ODBA.transaction {
-				@session.app.delete(@model.pointer)
-			}
+      @session.app.delete(@model.pointer)
 			klass.new(@session, registration)
 		end
 	end
@@ -201,9 +199,7 @@ module SequenceMethods
 			&& (mail = user_input(:regulatory_email)) && !mail.empty?)
 			@session.app.update(company.pointer, mail, unique_email)
 		end
-		ODBA.transaction {
-			@model = @session.app.update(@model.pointer, input, unique_email)
-		}
+    @model = @session.app.update(@model.pointer, input, unique_email)
     update_compositions input
 		newstate
 	end
@@ -334,10 +330,8 @@ class Sequence < State::Admin::Global
 	private
 	def store_slate
 		time = Time.now
-		ODBA.transaction { 
-			store_slate_item(time, :annual_fee)
-			store_slate_item(time, :processing)
-		}
+    store_slate_item(time, :annual_fee)
+    store_slate_item(time, :processing)
 	end
 end
 class CompanySequence < State::Admin::Sequence
@@ -377,9 +371,7 @@ class ResellerSequence < Global
 	def update
 		input = {}
 		newstate = get_patinfo_input(input)
-		ODBA.transaction {
-			@model = @session.app.update(@model.pointer, input, unique_email)
-		}
+    @model = @session.app.update(@model.pointer, input, unique_email)
 		newstate
 	end
 end
