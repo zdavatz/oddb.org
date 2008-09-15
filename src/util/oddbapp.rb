@@ -1945,7 +1945,12 @@ module ODDB
             alarm = time - lasttime > 60 ? '*' : ' '
             lastthreads = threads
             Thread.exclusive {
-              threads = ObjectSpace.each_object(Thread) {}
+              threads = 0
+              ObjectSpace.each_object { |obj|
+                if !obj.is_a?(ODBA::Persistable) && obj.is_a?(Thread)
+                  threads += 1
+                end
+              }
             }
             lastbytes = bytes
             bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
