@@ -109,6 +109,8 @@ class PackageInnerComposite < HtmlGrid::Composite
     end
 		if(@model.sl_entry)
 			components.store([2,7], :limitation)
+      hash_insert_row(components, [0,8], :introduction_date)
+      hash_insert_row(css_map, [0,8,4], 'list')
 			if(@model.limitation_text)
         hash_insert_row(components, [0,8], :limitation_text)
         hash_insert_row(css_map, [0,8,4], 'list')
@@ -169,6 +171,9 @@ class PackageInnerComposite < HtmlGrid::Composite
     end
     span.label = true
     span
+  end
+  def introduction_date(model, session=@session)
+    HtmlGrid::DateValue.new(:introduction_date, model.sl_entry, @session, self)
   end
 	def limitation_text(model, session=@session)
     text = HtmlGrid::Div.new(model, @session, self)
