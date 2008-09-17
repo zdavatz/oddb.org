@@ -67,21 +67,24 @@ class RegisterDownloadComposite < HtmlGrid::Composite
 	include View::PayPal::InvoiceMethods
 	include View::DataDeclaration
 	COMPONENTS = {
-		[0,0,0]	=>	"export_csv",
-		[0,0,1]	=>	'dash_separator',
-		[0,0,2]	=>	:data_declaration,
-		[0,1]		=>	"export_csv_descr",
-		[0,2]		=>	RegisterDownloadForm,
-		[1,2]		=>	:invoice_items,
+		[0,0]		=>	SelectSearchForm,
+		[0,1,0]	=>	"export_csv",
+		[0,1,1]	=>	'dash_separator',
+		[0,1,2]	=>	:data_declaration,
+		[0,2]		=>	"export_csv_descr",
+		[0,3]		=>	RegisterDownloadForm,
+		[1,3]		=>	:invoice_items,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0,2]	=>	'th',
-		[0,1]	=>	'list',
+    [0,0] =>  'right',
+		[0,1,2]	=>	'th',
+		[0,2]	=>	'list',
 	}
 	COLSPAN_MAP = {
 		[0,0] => 2,
 		[0,1] => 2,
+		[0,2] => 2,
 	}
 	LEGACY_INTERFACE = false
 end
@@ -102,21 +105,24 @@ class RegisterInvoicedDownloadComposite < HtmlGrid::Composite
 	include View::PayPal::InvoiceMethods
 	include View::DataDeclaration
 	COMPONENTS = {
-		[0,0,0]	=>	"export_csv",
-		[0,0,1]	=>	'dash_separator',
-		[0,0,2]	=>	:data_declaration,
-		[0,1]		=>	:invoice_descr,
-		[0,2]		=>	:invoice_items,
-		[0,3]		=>	RegisterInvoicedDownloadForm,
+		[0,0]		=>	SelectSearchForm,
+		[0,1,0]	=>	"export_csv",
+		[0,1,1]	=>	'dash_separator',
+		[0,1,2]	=>	:data_declaration,
+		[0,2]		=>	:invoice_descr,
+		[0,3]		=>	:invoice_items,
+		[0,4]		=>	RegisterInvoicedDownloadForm,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0]	=>	'th',
-		[0,1,1,3]	=>	'list',
+		[0,0]	=>	'right',
+		[0,1]	=>	'th',
+		[0,2,1,3]	=>	'list',
 	}
 	COLSPAN_MAP = {
 		[0,0] => 2,
 		[0,1] => 2,
+		[0,2] => 2,
 	}
 	LEGACY_INTERFACE = false
 	def invoice_descr(model)

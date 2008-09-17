@@ -45,19 +45,22 @@ end
 class RegisterPowerUserComposite < HtmlGrid::Composite 
 	include View::PayPal::InvoiceMethods
 	COMPONENTS = {
-		[0,0]		=>	"power_user",
-		[0,1]		=>	"power_user_descr",
-		[0,2]		=>	RegisterPowerUserForm,
-		[1,2]		=>	:invoice_items,
+		[0,0]		=>	SelectSearchForm,
+		[0,1]		=>	"power_user",
+		[0,2]		=>	"power_user_descr",
+		[0,3]		=>	RegisterPowerUserForm,
+		[1,3]		=>	:invoice_items,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0,2]	=>	'th',
-		[0,1]	=>	'list',
+    [0,0] => 'right',
+		[0,1,2]	=>	'th',
+		[0,2]	=>	'list',
 	}
 	COLSPAN_MAP = {
 		[0,0] => 2,
 		[0,1] => 2,
+		[0,2] => 2,
 	}
 	LEGACY_INTERFACE = false
 end
@@ -83,17 +86,20 @@ end
 class RenewPowerUserComposite < HtmlGrid::Composite 
 	include View::PayPal::InvoiceMethods
 	COMPONENTS = {
-		[0,0]		=>	"renew_poweruser_header",
-		[0,1]		=>	:renew_poweruser_form,
-		[1,1]		=>	:invoice_items,
+		[0,0]		=>	SelectSearchForm,
+		[0,1]		=>	"renew_poweruser_header",
+		[0,2]		=>	:renew_poweruser_form,
+		[1,2]		=>	:invoice_items,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0,2]	=>	'th',
-		[0,1]	=>	'list',
+    [0,0] =>  'right',
+		[0,1,2]	=>	'th',
+		[0,2]	=>	'list',
 	}
 	COLSPAN_MAP = {
 		[0,0] => 2,
+		[0,1] => 2,
 	}
 	LEGACY_INTERFACE = false
 	def renew_poweruser_form(model)

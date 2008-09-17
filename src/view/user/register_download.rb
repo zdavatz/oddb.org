@@ -79,21 +79,24 @@ class RegisterDownloadComposite < HtmlGrid::Composite
 	include View::PayPal::InvoiceMethods
 	include View::DataDeclaration
 	COMPONENTS = {
-		[0,0,0]	=>	"register_download",
-		[0,0,1]	=>	'dash_separator',
-		[0,0,2]	=>	:data_declaration,
-		[0,1]	=>	"register_download_descr",
-		[0,2]	=>	:register_download_form,
-		[1,2]	=>	:invoice_items,
+		[0,0]		=>	SelectSearchForm,
+		[0,1,0]	=>	"register_download",
+		[0,1,1]	=>	'dash_separator',
+		[0,1,2]	=>	:data_declaration,
+		[0,2]	=>	"register_download_descr",
+		[0,3]	=>	:register_download_form,
+		[1,3]	=>	:invoice_items,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
-		[0,0,2]	=>	'th',
-		[0,1]	=>	'list',
+    [0,0] =>  'right',
+		[0,1,2]	=>	'th',
+		[0,2]	=>	'list',
 	}
 	COLSPAN_MAP = {
 		[0,0] => 2,
 		[0,1] => 2,
+		[0,2] => 2,
 	}
 	LEGACY_INTERFACE = false
   def register_download_form(model)
