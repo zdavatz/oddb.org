@@ -5,6 +5,7 @@ require 'sbsm/lookandfeel'
 require 'util/oddbconfig'
 require 'util/money'
 require 'turing'
+require 'fileutils'
 
 module ODDB
 	class Company; end
@@ -12,7 +13,17 @@ module ODDB
 	class Hospital; end
 	class LookandfeelBase <	SBSM::Lookandfeel
     @@turing = Mutex.new
+    @@turing_files = {}
     CAPTCHA_DIR = File.join(PROJECT_ROOT, 'doc', 'resources', 'captchas')
+    @@turing_finalizer = proc { |id|
+      if file = @@turing_files.delete(id)
+        path = File.join(CAPTCHA_DIR, file)
+        File.delete(path) if File.exist?(path)
+      end
+    }
+    Thread.new {
+      FileUtils.rm Dir.glob(File.join(CAPTCHA_DIR, '*'))
+    }
 		poweruser_regulatory = <<-EOS
 Hinweis: Arbeiten Sie für eine Pharmafirma als Produktmanager oder in der Regulatoryabteilung? Sind Sie Arzt oder Apotheker? Dann beachten Sie bitte folgende Links:
 				
@@ -4017,7 +4028,10 @@ Zeno Davatz
     end
     def generate_challenge
       @@turing.synchronize {
-        captcha.generate_challenge
+        challenge = captcha.generate_challenge
+        @@turing_files.store challenge.object_id, challenge.file
+        ObjectSpace.define_finalizer challenge, @@turing_finalizer
+        challenge
       }
     end
     def migel_list_components
