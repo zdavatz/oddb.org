@@ -74,6 +74,11 @@ module ODDB
     def test_update_registration__create
       row = @workbook.worksheet(0).row(3)
       company = flexmock 'company'
+      @app.should_receive(:indication_by_text).and_return nil
+      ptr = Persistence::Pointer.new(:indication)
+      args = {:de=>"Analgetikum, Antipyretikum"}
+      @app.should_receive(:update).with(ptr.creator, args, :swissmedic)\
+        .times(1).and_return { assert true }
       @app.should_receive(:company_by_name)\
         .with('Bayer (Schweiz) AG').and_return company
       company.should_receive(:pointer).and_return 'company-pointer'
@@ -94,6 +99,10 @@ module ODDB
     end
     def test_update_registration__update
       row = @workbook.worksheet(0).row(3)
+      indication = flexmock 'indication'
+      indication.should_receive(:pointer).and_return 'indication-pointer'
+      @app.should_receive(:indication_by_text).with("Analgetikum, Antipyretikum")\
+        .and_return indication
       company = flexmock 'company'
       @app.should_receive(:company_by_name)\
         .with('Bayer (Schweiz) AG').and_return company
@@ -110,6 +119,7 @@ module ODDB
         :expiration_date     => Date.new(2012,5,9),
         :company             => 'company-pointer',
         :renewal_flag        => false,
+        :indication          => 'indication-pointer',
       }
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
         .times(1).and_return { assert true }
@@ -195,6 +205,10 @@ module ODDB
     end
     def test_update_registration__renewal
       row = @workbook.worksheet(0).row(3)
+      indication = flexmock 'indication'
+      indication.should_receive(:pointer).and_return 'indication-pointer'
+      @app.should_receive(:indication_by_text).with("Analgetikum, Antipyretikum")\
+        .and_return indication
       company = flexmock 'company'
       @app.should_receive(:company_by_name)\
         .with('Bayer (Schweiz) AG').and_return company
@@ -211,6 +225,7 @@ module ODDB
         :expiration_date     => Date.new(2012,5,9),
         :company             => 'company-pointer',
         :renewal_flag        => true,
+        :indication          => 'indication-pointer',
       }
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
         .times(1).and_return { assert true }
@@ -231,6 +246,7 @@ module ODDB
         :name_descr       => "Tabletten",
         :composition_text => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.",
         :atc_class        => "A01BC23",
+        :dose             => nil,
       }
       @app.should_receive(:update).with(sptr.creator, args, :swissmedic)\
         .times(1).and_return { assert true }
@@ -257,6 +273,7 @@ module ODDB
         :ikscat            => "D",
         :refdata_override  => true,
         :swissmedic_source => {
+          :atc_class       => "N02BA01",
           :composition     => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.", 
           :company         => "Bayer (Schweiz) AG", 
           :product_group   => "OTC", 
@@ -272,7 +289,9 @@ module ODDB
           :unit            => "Tablette(n)", 
           :registration_date => Date.new(1936,6,30), 
           :size            => "20", 
-          :substances      => "acidum acetylsalicylicum"
+          :substances      => "acidum acetylsalicylicum",
+          :indication_sequence => nil,
+          :indication_registration => 'Analgetikum, Antipyretikum',
         }
       }
       pac = flexmock 'package'
@@ -328,6 +347,7 @@ module ODDB
         :pharmacode      => '1234567',
         :ancestors       => ['007'],
         :swissmedic_source => {
+          :atc_class       => "N02BA01",
           :composition     => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.", 
           :company         => "Bayer (Schweiz) AG", 
           :product_group   => "OTC", 
@@ -343,7 +363,9 @@ module ODDB
           :unit            => "Tablette(n)", 
           :registration_date => Date.new(1936,6,30), 
           :size            => "20", 
-          :substances      => "acidum acetylsalicylicum"
+          :substances      => "acidum acetylsalicylicum",
+          :indication_sequence => nil,
+          :indication_registration => 'Analgetikum, Antipyretikum',
         }
       }
       @app.should_receive(:update).with(pptr.creator, args, :swissmedic)\
@@ -389,6 +411,7 @@ module ODDB
       args = {
         :ikscat          => "D",
         :swissmedic_source => {
+          :atc_class       => "N02BA01",
           :composition     => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.", 
           :company         => "Bayer (Schweiz) AG", 
           :product_group   => "OTC", 
@@ -404,7 +427,9 @@ module ODDB
           :unit            => "Tablette(n)", 
           :registration_date => Date.new(1936,6,30), 
           :size            => "20", 
-          :substances      => "acidum acetylsalicylicum"
+          :substances      => "acidum acetylsalicylicum",
+          :indication_sequence => nil,
+          :indication_registration => 'Analgetikum, Antipyretikum',
         }
       }
       @app.should_receive(:update).with(pptr, args, :swissmedic)\
@@ -494,6 +519,38 @@ module ODDB
       }
       @plugin.update_composition(seq, row)
     end
+    def test_update_composition__focus_on_doses_percent
+      row = @workbook.worksheet(0).row(8)
+      seq = flexmock 'sequence'
+      ptr = Persistence::Pointer.new([:registration, '08537'], [:sequence, '01'])
+      seq.should_receive(:pointer).and_return ptr
+      seq.should_receive(:active_agents).and_return []
+      seq.should_receive(:compositions).and_return []
+      sub = flexmock 'substance'
+      sub.should_receive(:pointer).and_return 'substance-pointer'
+      @app.should_receive(:substance).and_return sub
+      act = flexmock 'active-agent'
+      act.should_receive(:pointer).and_return 'active-agent-pointer'
+      comp = flexmock 'composition'
+      comp.should_receive(:active_agent).and_return act
+      comp.should_receive(:active_agents).and_return []
+      cptr = ptr + [:composition, 'id']
+      comp.should_receive(:pointer).and_return(cptr)
+      @app.should_receive(:create).with(ptr + :composition).and_return comp
+      aptr = cptr + [:active_agent, 'Acidum Acetylsalicylicum']
+      args =  [
+        { :dose => ["5", '%'], :substance => 'Calcii Carbonas Hahnemanni C7' },
+        { :dose => ["22.5", '%'], :substance => 'Chamomilla Recutita D5' },
+        { :dose => ["50", '%'], :substance => 'Magnesii Phosphas C5' },
+        { :dose => ["22.5", '%'], :substance => 'Passiflora Incarnata D5' },
+      ]
+      @app.should_receive(:update)\
+        .with('active-agent-pointer', Hash, :swissmedic)\
+        .times(4).and_return { |ptr, data, key|
+          assert_equal args.shift, data
+      }
+      @plugin.update_composition(seq, row)
+    end
     def test_update_composition__focus_on_doses_qty_in_scale
       row = @workbook.worksheet(0).row(20)
       seq = flexmock 'sequence'
@@ -532,7 +589,7 @@ module ODDB
       comp = flexmock 'composition'
       seq.should_receive(:compositions).and_return [comp]
       substance = flexmock 'substance'
-      substance.should_receive(:==).with('Acidum Acetylsalicylicum').and_return true
+      substance.should_receive(:same_as?).with('Acidum Acetylsalicylicum').and_return true
       #sptr = Persistence::Pointer.new([:substance, 12])
       @app.should_receive(:substance).with('Acidum Acetylsalicylicum')\
         .and_return substance
@@ -607,7 +664,7 @@ module ODDB
       comp = flexmock 'composition'
       seq.should_receive(:compositions).and_return [comp]
       substance = flexmock 'substance'
-      substance.should_receive(:==).with('Acidum Acetylsalicylicum').and_return false
+      substance.should_receive(:same_as?).with('Acidum Acetylsalicylicum').and_return false
       #sptr = Persistence::Pointer.new([:substance, 12])
       @app.should_receive(:substance).with('Acidum Acetylsalicylicum')\
         .and_return substance
@@ -698,7 +755,7 @@ module ODDB
         "10368" => [:delete],
         "10999" => [:new],
         "25144" => [:sequence, :replaced_package],
-        "57678" => [:company, :index_therapeuticus, :expiry_date, :ikscat],
+        "57678" => [:company, :index_therapeuticus, :atc_class, :expiry_date, :ikscat],
         "57699" => [:new],
       }
       assert_equal(expected, result.changes)
@@ -769,11 +826,11 @@ module ODDB
 - 10368: Alcacyl, Tabletten
 > 09232: Weleda Schnupfencrème, anthroposophisches Heilmittel; Namensänderung (Weleda Schnupfencrème, anthroposophisches Heilmittel)
 > 25144: Panadol, Filmtabletten; Packungs-Nummer (031 -> 048)
-> 57678: Amlodipin-besyl-Mepha 5, Tabletten; Zulassungsinhaber (Vifor SA), Index Therapeuticus (07.10.5.), Ablaufdatum der Zulassung (10.05.2017), Abgabekategorie (A)
+> 57678: Amlodipin-besyl-Mepha 5, Tabletten; Zulassungsinhaber (Vifor SA), Index Therapeuticus (07.10.5.), ATC-Code (D11AF), Ablaufdatum der Zulassung (10.05.2017), Abgabekategorie (A)
       EOS
       assert_equal <<-EOS.strip, @plugin.to_s(:name)
 - 10368: Alcacyl, Tabletten
-> 57678: Amlodipin-besyl-Mepha 5, Tabletten; Zulassungsinhaber (Vifor SA), Index Therapeuticus (07.10.5.), Ablaufdatum der Zulassung (10.05.2017), Abgabekategorie (A)
+> 57678: Amlodipin-besyl-Mepha 5, Tabletten; Zulassungsinhaber (Vifor SA), Index Therapeuticus (07.10.5.), ATC-Code (D11AF), Ablaufdatum der Zulassung (10.05.2017), Abgabekategorie (A)
 + 10999: Osanit, homöopathische Kügelchen
 > 25144: Panadol, Filmtabletten; Packungs-Nummer (031 -> 048)
 + 57699: Pyrazinamide Labatec, comprimés
@@ -784,7 +841,7 @@ module ODDB
 - 10368: Alcacyl, Tabletten
 + 10999: Osanit, homöopathische Kügelchen
 > 25144: Panadol, Filmtabletten; Packungs-Nummer (031 -> 048)
-> 57678: Amlodipin-besyl-Mepha 5, Tabletten; Zulassungsinhaber (Vifor SA), Index Therapeuticus (07.10.5.), Ablaufdatum der Zulassung (10.05.2017), Abgabekategorie (A)
+> 57678: Amlodipin-besyl-Mepha 5, Tabletten; Zulassungsinhaber (Vifor SA), Index Therapeuticus (07.10.5.), ATC-Code (D11AF), Ablaufdatum der Zulassung (10.05.2017), Abgabekategorie (A)
 + 57699: Pyrazinamide Labatec, comprimés
       EOS
     end

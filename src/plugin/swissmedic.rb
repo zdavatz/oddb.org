@@ -14,26 +14,6 @@ require 'swissmedic-diff'
 module ODDB
   class SwissmedicPlugin < Plugin
     include SwissmedicDiff::Diff
-    COLUMNS = [ :iksnr, :seqnr, :name_base, :company, :product_group, 
-                :index_therapeuticus, :production_science, :registration_date,
-                :expiry_date, :ikscd, :size, :unit, :ikscat, :substances,
-                :composition ]
-    FLAGS = {
-      :new                 =>  'Neues Produkt',
-      :name_base           =>  'Namensänderung', 
-      :ikscat              =>  'Abgabekategorie',
-      :index_therapeuticus =>  'Index Therapeuticus',
-      :company             =>  'Zulassungsinhaber',
-      :composition         =>  'Zusammensetzung', 
-      :sequence            =>  'Packungen', 
-      :size                =>  'Packungsgrösse',
-      :expiry_date         =>  'Ablaufdatum der Zulassung',
-      :registration_date   =>  'Erstzulassungsdatum',
-      :delete              =>  'Das Produkt wurde gelöscht',
-      :replaced_package    =>  'Packungs-Nummer',
-      :substances          =>  'Wirkstoffe',
-      :production_science  =>  'Heilmittelcode',
-    }
     GALFORM_P = %r{excipiens\s+(ad|pro)\s+(?<galform>((?!\bpro\b)[^.])+)}
     SCALE_P = %r{pro\s+(?<scale>(?<qty>[\d.,]+)\s*(?<unit>[kcmuµn]?[glh]))}
     def initialize(app=nil, archive=ARCHIVE_PATH)
@@ -44,7 +24,7 @@ module ODDB
     end
     def update(agent=WWW::Mechanize.new, target=get_latest_file(agent))
       if(target)
-        diff target, @latest, [:product_group]
+        diff target, @latest, [:product_group, :atc_class]
         update_registrations @diff.news + @diff.updates, @diff.replacements
         sanity_check_deletions(@diff)
         delete @diff.package_deletions
@@ -87,10 +67,10 @@ module ODDB
       when :registration_date, :expiry_date
         row = diff.newest_rows[iksnr].sort.first.last
         sprintf "%s (%s)", txt, 
-                row.at(COLUMNS.index(flag)).date.strftime('%d.%m.%Y')
+                row.at(column(flag)).date.strftime('%d.%m.%Y')
       else
         row = diff.newest_rows[iksnr].sort.first.last
-        sprintf "%s (%s)", txt, cell(row, COLUMNS.index(flag))
+        sprintf "%s (%s)", txt, cell(row, column(flag))
       end
     end
     def _known_data(latest, known_regs, known_seqs, known_pacs, newest_rows)
@@ -112,7 +92,7 @@ module ODDB
                 pac.parts.each_with_index { |part, idx|
                   prow = srow.dup
                   prow.push pacnr
-                  prow[15] = idx
+                  prow[COLUMNS.size] = idx
                   known_pacs.store([iksnr, pacnr, idx], prow)
                 } 
               }
@@ -210,9 +190,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       Persistence::Pointer.new(*path)
     end
     def pointer_from_row(row)
-      iksnr = cell(row, 0)
-      seqnr = (str = cell(row, 1)) ? "%02i" % str.to_i : nil
-      pacnr = cell(row, 9)
+      iksnr = cell(row, column(:iksnr))
+      seqnr = (str = cell(row, column(:seqnr))) ? "%02i" % str.to_i : nil
+      pacnr = cell(row, column(:ikscd))
       pointer [iksnr, seqnr, pacnr].compact
     end
     def report
@@ -240,7 +220,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
     def rows_diff(row, other, ignore = [:product_group])
       flags = super(row, other, ignore)
       if(other.first.is_a? String)
-        package = @app.registration(cell(row, 0)).package(cell(row, 9))
+        package = @app.registration(cell(row, column(:iksnr))).package(cell(row, column(:ikscd)))
         flags = flags.select { |flag|
           origin = package.data_origin(flag)
           origin ||= package.sequence.data_origin(flag)
@@ -307,7 +287,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       end
     end
     def update_company(row)
-      name = cell(row, 3)
+      name = cell(row, column(:company))
       if(company = @app.company_by_name(name)) 
         company
       else
@@ -318,14 +298,14 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
     def update_composition(seq, row, opts={:create_only => false})
       if opts[:create_only] && !seq.active_agents.empty?
         seq.compositions.first
-      elsif(namestr = cell(row, 13))
+      elsif(namestr = cell(row, column(:substances)))
         names = namestr.split(/\s*,\s*/).collect { |name| 
           capitalize(name) }
         substances = names.collect { |name|
           update_substance(name)
         }
         comps = []
-        composition = cell(row, 14).gsub(/\n/, ' ')
+        composition = cell(row, column(:composition)).gsub(/\n/, ' ')
         names.each { |name|
           comps.push update_active_agent(seq, name, composition, opts)
         }
@@ -344,7 +324,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       return if comp.galenic_form
       if((german = seq.name_descr) && !german.empty?)
         _update_galenic_form(comp, :de, german)
-      elsif(match = GALFORM_P.match(cell(row, 14)))
+      elsif(match = GALFORM_P.match(cell(row, column(:composition))))
         _update_galenic_form(comp, :lt, match[:galform].strip)
       end
     end
@@ -364,17 +344,17 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
           indication
         else
           pointer = Persistence::Pointer.new(:indication)
-          @app.update(pointer.creator, :de => name)
+          @app.update(pointer.creator, {:de => name}, :swissmedic)
         end
       end
     end
     def update_package(reg, seq, row, replacements={}, 
                        opts={:create_only => false})
-      cd = cell(row, 9)
-      pidx = cell(row, 15).to_i
+      cd = cell(row, column(:ikscd))
+      pidx = cell(row, COLUMNS.size).to_i
       if(cd.to_i > 0)
         args = {
-          :ikscat            => cell(row, 12),
+          :ikscat            => cell(row, column(:ikscat)),
           :swissmedic_source => source_row(row),
         }
         package = nil
@@ -395,9 +375,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         part = package.parts[pidx]
         part ||= @app.create(package.pointer + :part)
         args = {
-          :size => [cell(row, 10), cell(row, 11)].compact.join(' '),
+          :size => [cell(row, column(:size)), cell(row, column(:unit))].compact.join(' '),
         }
-        if(comform = @app.commercial_form_by_name(cell(row, 11)))
+        if(comform = @app.commercial_form_by_name(cell(row, column(:unit))))
           args.store :commercial_form, comform.pointer
         end
         if !part.composition \
@@ -409,22 +389,22 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
     end
     def update_registration(row, opts = {:date => @@today, :create_only => false})
       opts[:date] ||= @@today
-      group = cell(row, 4)
+      group = cell(row, column(:product_group))
       if(group != 'TAM')
-        iksnr = cell(row, 0)
-        science = cell(row, 6)
+        iksnr = cell(row, column(:iksnr))
+        science = cell(row, column(:production_science))
         ptr = if(registration = @app.registration(iksnr))
                 return registration if opts[:create_only]
                 registration.pointer
               else
                 Persistence::Pointer.new([:registration, iksnr]).creator
               end
-        expiration = row.at(8).date
+        expiration = row.at(column(:expiry_date)).date
         args = { 
           :product_group       => group,
-          :index_therapeuticus => cell(row, 5), 
+          :index_therapeuticus => cell(row, column(:index_therapeuticus)), 
           :production_science  => science,
-          :registration_date   => row.at(7).date,
+          :registration_date   => row.at(column(:registration_date)).date,
           :expiration_date     => expiration,
           :renewal_flag        => false,
         }
@@ -442,7 +422,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         if(company = update_company(row))
           args.store :company, company.pointer
         end
-        if(indication = update_indication(cell(row, 15)))
+        if(indication = update_indication(cell(row, column(:indication_registration))))
           args.store :indication, indication.pointer
         end
         @app.update ptr, args, :swissmedic
@@ -463,7 +443,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       }
     end
     def update_sequence(registration, row, opts={:create_only => false})
-      seqnr = "%02i" % cell(row, 1).to_i
+      seqnr = "%02i" % cell(row, column(:seqnr)).to_i
       ptr = if(sequence = registration.sequence(seqnr))
               return sequence if opts[:create_only]
               sequence.pointer
@@ -471,12 +451,12 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
               (registration.pointer + [:sequence, seqnr]).creator
             end
       ## some names use commas for dosage --v
-      parts = cell(row, 2).split(/\s*,(?!\d)\s*/)
+      parts = cell(row, column(:name_base)).split(/\s*,(?!\d)\s*/)
       descr = parts.pop
       base = parts.join(', ')
       base, descr = descr, nil if base.empty?
       args = { 
-        :composition_text => cell(row, 14),
+        :composition_text => cell(row, column(:composition)),
         :name_base        => base,
         :name_descr       => descr,
         :dose             => nil,
@@ -485,12 +465,12 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
 			if(sequence.nil? || sequence.atc_class.nil?)
 				if(atc = registration.atc_classes.first)
           args.store :atc_class, atc.code
-        elsif((key = cell(row, 13)) && !key.include?(?,) \
+        elsif((key = cell(row, column(:substances))) && !key.include?(?,) \
              && (atc = @app.unique_atc_class(key)))
           args.store :atc_class, atc.code
 				end
 			end
-      if(indication = update_indication(cell(row, 16)))
+      if(indication = update_indication(cell(row, column(:indication_sequence))))
         args.store :indication, indication.pointer
       end
       @app.update ptr, args, :swissmedic
@@ -519,7 +499,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       _sanity_check_deletions(diff.package_deletions, table)
     end
     def _sanity_check_deletions(deletions, table)
-      deletions.delete_if { |row| table[cell(row,0)] || cell(row,15).to_i > 0 }
+      deletions.delete_if { |row| table[cell(row,column(:iksnr))] || cell(row,COLUMNS.size).to_i > 0 }
     end
     def _sort_by(sort, iksnr, flags)
       case sort
