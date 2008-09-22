@@ -17,18 +17,21 @@ class SponsorForm < View::Form
 	COMPONENTS = {
 		[0,0]		=>	:company_name,
 		[0,1]		=>	:sponsor_until,
-		[0,2]		=>	:url,
-		[0,3]		=>	:logo_file,
-		[0,4]		=>	:logo_fr,
-		[1,5]		=>	:submit,
+    [0,2]   =>  :emails,
+		[0,3]		=>	:url_de,
+		[0,4]		=>	:url_fr,
+		[0,5]		=>	:logo_file,
+		[0,6]		=>	:logo_fr,
+		[1,7]		=>	:submit,
 	} 
 	COMPONENT_CSS_MAP = {
-		[0,0,2,3]	=>	'standard',
+		[0,0,2,5]	=>	'standard',
 	}
 	CSS_MAP =	{
-		[0,0,2,6]	=>	'list',
+		[0,0,2,8]	=>	'list',
 	}
 	LABELS = true
+  LEGACY_INTERFACE = false
 	SYMBOL_MAP = {
 		:sponsor_until	=>	HtmlGrid::InputDate,
 		:logo_file			=>	HtmlGrid::InputFile,
@@ -39,6 +42,24 @@ class SponsorForm < View::Form
 		super
 		error_message()
 	end
+  def emails(model)
+    input = HtmlGrid::InputText.new(:emails, model, @session, self)
+    if emails = model.emails
+      input.value = emails.join(', ')
+    end
+    input
+  end
+  def url(lang, model)
+    input = HtmlGrid::InputText.new("urls[#{lang}]", model, @session, self)
+    input.value = model.url(lang)
+    input
+  end
+  def url_de(model)
+    url :de, model
+  end
+  def url_fr(model)
+    url :fr, model
+  end
 end
 class SponsorInnerComposite < HtmlGrid::Composite
 	CSS_MAP = {

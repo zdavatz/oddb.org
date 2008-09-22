@@ -363,6 +363,7 @@ module ODDB
 			:txn_id,
 			:unsubscribe,
 			:url,
+			:urls,
 		]
 		ZONES = [:admin, :analysis, :doctors, :interactions, :drugs, :migel, :user, 
 			:hospitals, :substances, :companies]
@@ -399,6 +400,17 @@ module ODDB
 			return '' if value.empty?
 			ODDB::Ean13.new(value)
 		end
+    def emails(value)
+      return if(value.empty?)
+      parsed = RMail::Address.parse(value)
+      if(parsed.empty?)
+        raise InvalidDataError.new(:e_invalid_email_address, :email, value)
+      elsif(parsed.all? { |addr| addr.domain })
+        parsed.collect { |addr| addr.address }
+      else
+        raise InvalidDataError.new(:e_domainless_email_address, :email, value)
+      end
+    end
 		def email_suggestion(value)
 			unless(value.empty?)
 				email(value)

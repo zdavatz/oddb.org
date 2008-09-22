@@ -8,8 +8,8 @@ require 'util/persistence'
 module ODDB
 	class Sponsor
 		include Persistence
-		ODBA_SERIALIZABLE = ['@logo_filenames']
-		attr_accessor :sponsor_until, :company, :url
+		ODBA_SERIALIZABLE = ['@logo_filenames', '@urls', '@emails']
+		attr_accessor :sponsor_until, :company, :urls, :emails
 		attr_reader :logo_filenames
 		def initialize
 			super
@@ -25,6 +25,9 @@ module ODDB
 		def represents?(pac)
 			pac.respond_to?(:company) && (pac.company == @company)
 		end
+    def url(language='de')
+      @urls.fetch(language.to_s, @urls['de']) if @urls
+    end
 		def valid?
 			@sponsor_until && @sponsor_until >= @@today
 		end

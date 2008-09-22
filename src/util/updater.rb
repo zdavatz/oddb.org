@@ -37,15 +37,15 @@ module ODDB
 		LOG_RECIPIENTS = {
 			:powerlink					=>	['matthijs.ouwerkerk@just-medical.com'],
 			:passthru						=>	[],	
-			:sponsor_generika		=>	['mediservice@ywesee.com'],	
-			:sponsor_gcc				=>	['mediservice@ywesee.com'],	
 		}
 		LOG_FILES = {
 			:powerlink				=>	'Powerlink-Statistics',
 			#:passthru				=>	'Banner-Clicks',
-			:sponsor_generika	=>	'Exklusiv-Sponsoring Generika.cc',
-			:sponsor_gcc			=>	'Exklusiv-Sponsoring ODDB.org',
-		}
+    }
+    SPONSORS = {
+      :generika	=>	'Exklusiv-Sponsoring Generika.cc',
+      :gcc			=>	'Exklusiv-Sponsoring ODDB.org',
+    }
 		def initialize(app)
 			@app = app
 			@smj_updated = false
@@ -116,19 +116,28 @@ module ODDB
 			end
 			hash
 		end
-		def mail_logfile(name, date, subj)
+		def mail_logfile(name, date, subj, emails=nil)
       report = LogFile.read(name, date)
       unless report.empty?
         log = Log.new(date)
         log.report = report
-        log.recipients = recipients + self::class::LOG_RECIPIENTS[name]
+        mails = (emails || self::class::LOG_RECIPIENTS[name] || [])
+        log.recipients = recipients + mails
         log.notify(subj)
       end
 		end
+    def mail_sponsor_logs(date=@@today)
+      self::class::SPONSORS.each { |name, subj|
+        if sponsor = @app.sponsor(name)
+				  mail_logfile("sponsor_#{name}", date, subj, sponsor.emails)
+        end
+      }
+    end
 		def logfile_stats
 			date = @@today << 1
 			if(date.day == 1)
 				_logfile_stats(date)
+        mail_sponsor_logs(date)
 			end
 		end
 		def _logfile_stats(date)
@@ -318,7 +327,6 @@ module ODDB
           pointer = logs.pointer + [:log, Date.new(month.year, month.month)]
           log = @app.update(pointer.creator, log_info(plug))
           log.notify('Swissmedic')
-          @smj_updated = true
         end
       }
     end
@@ -357,7 +365,7 @@ module ODDB
 					@smj_updated = latest
 				end
 			end
-      success
+      @smj_updated
 		end
 		def update_swissreg
 			update_immediate(SwissregPlugin, 'Patents')

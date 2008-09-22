@@ -14,12 +14,13 @@ class Sponsor < State::Admin::Global
 	PATH = File.expand_path('../../../doc/resources/sponsor', 
 		File.dirname(__FILE__))
 	def update
-		keys = [:sponsor_until, :company_name, :logo_file, :logo_fr, :url ]
+		keys = [:sponsor_until, :emails, :company_name, :logo_file, :logo_fr, :urls ]
 		input = user_input(keys)
 		name = input[:company_name]
 		values = {
 			:sponsor_until	=>	input[:sponsor_until],
-			:url						=>	input[:url]
+			:urls						=>	input[:urls],
+      :emails         =>  input[:emails],
 		}
 		if(name.empty?)
 			values.store(:company, nil)

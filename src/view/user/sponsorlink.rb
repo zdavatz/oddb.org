@@ -6,7 +6,7 @@ module ODDB
 		module User
 class SponsorLink < HtmlGrid::PassThru
 	def sponsorlink
-		sl = @model.url
+		sl = @model.url(@session.language)
 		if(sl.nil? || /https?:\/\//.match(sl))
 			sl
 		else

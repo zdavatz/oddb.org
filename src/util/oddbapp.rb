@@ -1148,7 +1148,7 @@ class OddbPrevalence
     }.sort_by { |reg| reg.patent.expiry_date }
   end
 	def sponsor(flavor)
-		@sponsors[flavor]
+		@sponsors[flavor.to_s]
 	end
 	def substance(key)
 		if(key.to_i.to_s == key.to_s)
@@ -1944,6 +1944,7 @@ module ODDB
             time = Time.now
             alarm = time - lasttime > 60 ? '*' : ' '
             lastthreads = threads
+=begin
             Thread.exclusive {
               threads = 0
               ObjectSpace.each_object { |obj|
@@ -1952,6 +1953,7 @@ module ODDB
                 end
               }
             }
+=end
             lastbytes = bytes
             bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
             mbytes = bytes / (2**20)
