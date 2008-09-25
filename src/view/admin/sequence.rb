@@ -213,7 +213,7 @@ module SequencePackageList
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	DEFAULT_HEAD_CLASS = 'subheading right'
-	#EVENT = :new_package
+	EVENT = :new_package
 	SORT_DEFAULT = :ikscd
 	SORT_HEADER = false
 	SYMBOL_MAP = {
@@ -242,7 +242,7 @@ end
 class SequencePackages < HtmlGrid::List
 	include View::Admin::SequencePackageList
 end
-class RootSequencePackages < HtmlGrid::List
+class RootSequencePackages < View::FormList
 	include View::Admin::SequencePackageList
 	EMPTY_LIST_KEY = :empty_package_list
 end
@@ -492,32 +492,38 @@ class SequenceComposite < HtmlGrid::Composite
     val
   end
 end
-class RootSequenceComposite < View::Admin::SequenceComposite
-  include HtmlGrid::FormMethods
+class RootSequenceForm < HtmlGrid::Form
   include FormMethods
-	TAG_METHOD = :multipart_form
-	COMPONENTS = {
-		[0,0]	=>	:sequence_name,
-		[0,1]	=>	View::Admin::SequenceForm,
-		[0,2]	=>	'compositions',
-		[0,3]	=>	:compositions,
-		[0,4]	=>	:sequence_packages,
-		[0,5]	=>	"th_source",
-		[0,6]	=>	:source,
-	}
-	CSS_MAP = {
-		[0,0]	=>	'th',
-		[0,2]	=>	'subheading',
-		[0,5]	=>	'subheading',
-	}
-	DEFAULT_CLASS = HtmlGrid::Value
-	PACKAGES = View::Admin::RootSequencePackages
+  TAG_METHOD = :multipart_form
+  COMPONENTS = {
+    [0,0]	=>	View::Admin::SequenceForm,
+    [0,1]	=>	'compositions',
+    [0,2]	=>	:compositions,
+  }
+  CSS_MAP = {
+    [0,1]	=>	'subheading',
+  }
   def compositions(model, session=@session)
     RootCompositions.new(model.compositions, @session, self)
   end
   def hidden_fields(context)
     super << context.hidden('patinfo', 'keep')
   end
+end
+class RootSequenceComposite < View::Admin::SequenceComposite
+  COMPONENTS = {
+    [0,0]	=>	:sequence_name,
+    [0,1]	=>	RootSequenceForm,
+    [0,2]	=>	:sequence_packages,
+    [0,3]	=>	"th_source",
+    [0,4]	=>	:source,
+  }
+  CSS_MAP = {
+    [0,0]	=>	'th',
+    [0,3]	=>	'subheading',
+  }
+  #DEFAULT_CLASS = HtmlGrid::Value
+	PACKAGES = View::Admin::RootSequencePackages
 end
 class ResellerSequenceComposite < View::Admin::SequenceComposite
 	COMPONENTS = {

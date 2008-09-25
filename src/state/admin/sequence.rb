@@ -134,6 +134,7 @@ module SequenceMethods
 		item.carry(:iksnr, model.iksnr)
 		item.carry(:name_base, model.name_base)
 		item.carry(:sequence, model)
+    item.carry(:parts, [])
 		if (klass=resolve_state(p_pointer))
 			klass.new(@session, item)
 		else

@@ -139,6 +139,8 @@ module RegistrationMethods
 		item = Persistence::CreateItem.new(seq_pointer)
 		item.carry(:iksnr, model.iksnr)
 		item.carry(:company, model.company)
+    item.carry(:compositions, [])
+    item.carry(:packages, {})
 		if (klass=resolve_state(seq_pointer))
 			klass.new(@session, item)
 		else

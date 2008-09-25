@@ -274,16 +274,25 @@ class RootPackageComposite < View::Admin::PackageComposite
 	COMPONENTS = {
 		[0,0]	=>	:package_name,
 		[0,1]	=>	View::Admin::PackageForm,
-    [0,2] =>  :parts,
-    [0,3] =>  :parts_form,
-		[0,4]	=>	'th_source',
-		[0,5]	=>	:source,
+		[0,2]	=>	'th_source',
+		[0,3]	=>	:source,
 	}
 	CSS_MAP = {
 		[0,0]	=>	'th',
 		[0,2]	=>	'subheading',
-		[0,4]	=>	'subheading',
 	}
+  def init
+    unless @model.is_a?(Persistence::CreateItem)
+      components.update(
+        [0,2] =>  :parts,
+        [0,3] =>  :parts_form,
+        [0,4]	=>	'th_source',
+        [0,5]	=>	:source
+      )
+      css_map.store [0,4], 'subheading'
+    end
+    super
+  end
   def parts(model)
     key = model.parts.size > 1 ? :parts : :package_and_substances
     @lookandfeel.lookup(key)
