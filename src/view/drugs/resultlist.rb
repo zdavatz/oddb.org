@@ -257,7 +257,11 @@ class ResultList < HtmlGrid::List
       :resultview  => switched,
     }
     link = HtmlGrid::Link.new("rv_#{switched}", model, @session, self)
-    link.href = @lookandfeel._event_url(:search, args, "best_result")
+    if @lookandfeel.disabled?(:best_result)
+      link.href = @lookandfeel._event_url(:search, args)
+    else
+      link.href = @lookandfeel._event_url(:search, args, "best_result")
+    end
     link.css_class = "list bold"
     link
   end

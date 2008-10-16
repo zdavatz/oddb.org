@@ -741,13 +741,52 @@ module ODDB
 				:oekk_title				=>	'Your potential savings with generics',
 			},
 		}
+    DISABLED = [ :best_result ]
 		RESOURCES = { 
 			:external_css	=>	'http://www.oekk.ch/_css/oddb.css',
 		}
 		HTML_ATTRIBUTES = { }
+    def explain_result_components
+      {
+        [0,0]	=>	'explain_expired',
+        [0,1]	=>	:explain_complementary,
+        [0,2]	=>	:explain_homeopathy,
+        [0,3]	=>	:explain_anthroposophy,
+        [0,4] =>	:explain_phytotherapy,
+        [0,5]	=>	'explain_pbp',
+        [0,6]	=>	'explain_pr',
+        [0,7]	=>	:explain_deductible,
+        [1,0]	=>	:explain_parallel_import,
+        [1,1]	=>	:explain_comarketing,
+        [1,2]	=>	:explain_vaccine,
+        [1,3]	=>	:explain_narc,
+        [1,4]	=>	:explain_fachinfo,
+        [1,5]	=>	:explain_patinfo,
+        [1,6]	=>	:explain_limitation,
+        [0,7]	=>	:explain_cas,
+      }
+    end
 		def languages
 			[:de, :fr, :en]
 		end
+    def result_list_components
+      {
+        [0,0,0] =>  'result_item_start',
+        [0,0,1] =>  :name_base,
+        [0,0,2] =>  'result_item_end',
+        [1,0]   =>  :galenic_form,
+        [2,0]   =>  :most_precise_dose,
+        [3,0]   =>  :comparable_size,
+        [4,0]   =>  :price_public,
+        [5,0]   =>  :deductible,
+        [6,0]   =>  :company_name,
+        [7,0]   =>  :limitation_text,
+        [8,0]   =>  :narcotic,
+        [9,0]   =>  :complementary_type,
+        [10,0]  =>  :fachinfo,
+        [11,0]  =>  :patinfo,
+      }
+    end
 	end
 	class LookandfeelSympany < SBSM::LookandfeelWrapper
 		ENABLED = [

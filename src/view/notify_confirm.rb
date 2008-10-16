@@ -44,7 +44,11 @@ class NotifyConfirm < View::ResultTemplate
             @lookandfeel._event_url(:home)
           else
             args.store(:zone, @session.zone)
-		        @lookandfeel._event_url(:search, args, 'best_result')
+            if @lookandfeel.disabled?(:best_result)
+              @lookandfeel._event_url(:search, args)
+            else
+              @lookandfeel._event_url(:search, args, 'best_result')
+            end
           end
     headers.store('Refresh', "5; URL=#{url}")
     headers

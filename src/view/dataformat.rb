@@ -64,7 +64,7 @@ module ODDB
 				link.value = breakline(model.name_base, 25)
 				link.set_attribute('class', 
 					'big' << resolve_suffix(model))
-				if(model.good_result?(@query))
+				if(model.good_result?(@query) && !@lookandfeel.disabled?(:best_result))
 					 link.set_attribute('name', 'best_result')
 				end
 				indication = model.registration.indication

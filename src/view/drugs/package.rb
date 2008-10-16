@@ -196,7 +196,11 @@ class PackageInnerComposite < HtmlGrid::Composite
       :search_query => model.name_base, 
       :search_type => :st_oddb,
     }
-    link.href = @lookandfeel._event_url(:search, args, 'best_result')
+    if @lookandfeel.disabled?(:best_result)
+      link.href = @lookandfeel._event_url(:search, args)
+    else
+      link.href = @lookandfeel._event_url(:search, args, "best_result")
+    end
     link
   end
 	def registration_holder(model, session=@session)

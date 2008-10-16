@@ -34,8 +34,12 @@ module ODDB
 				:explain_google_search					=>  'infos',
 				:explain_feedback				=>	'infos',
 			}
+      def initialize model, session, container, components=nil
+        @components = components
+        super model, session, container
+      end
 			def init
-				@components = @lookandfeel.explain_result_components
+				@components ||= @lookandfeel.explain_result_components
 				width = 1
 				height = 1
 				@components.each { |key, val| 

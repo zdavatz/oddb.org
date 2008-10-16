@@ -59,9 +59,7 @@ class DivExportCSV < HtmlGrid::DivForm
 end
 class ResultComposite < HtmlGrid::Composite
 	include ResultFootBuilder
-	COLSPAN_MAP	= {
-		[0,2]	=> 2,
-	}
+	COLSPAN_MAP	= {}
 	COMPONENTS = {
 		[0,0,0]	=>	:title_found,
 		[0,0,1]	=>	:dsp_sort,
@@ -77,7 +75,7 @@ class ResultComposite < HtmlGrid::Composite
 	CSS_MAP = {
 		[0,0] =>	'result-found',
     [1,0] =>  'right',
-		[0,1] =>	'list bold',
+		[0,1] =>	'list bold price-compare',
     [1,1] =>  'right',
 	}
 	def init
@@ -89,9 +87,16 @@ class ResultComposite < HtmlGrid::Composite
     if(@lookandfeel.enabled?(:explain_sort, false))
       components.store([0,y], "explain_sort")
       css_map.store([0,y], "navigation")
-      y += 1
       colspan_map.store([0,y], 2)
+      y += 1
     end
+    if @lookandfeel.enabled?(:oekk_structure, false)
+      components.store([0,y], :explain_colors)
+      css_map.store([0,y], "explain")
+      colspan_map.store([0,y], 2)
+      y += 1
+    end
+    colspan_map.store([0,y], 2)
     components.store([0,y], (@session.allowed?('edit', 'org.oddb.drugs')) \
                             ? self::class::ROOT_LISTCLASS \
                             : self::class::DEFAULT_LISTCLASS)
@@ -134,6 +139,14 @@ class ResultComposite < HtmlGrid::Composite
 		link.href = url
 		link
 	end
+  def explain_colors(model, session=@session)
+    comps = {
+      [0,0]	=>	:explain_original,
+      [0,1]	=>	:explain_generic,
+      [0,2]	=>	'explain_unknown',
+    }
+    ExplainResult.new(model, @session, self, comps)
+  end
 	def export_csv(model, session=@session)
 		if(@lookandfeel.enabled?(:export_csv))
 			View::Drugs::DivExportCSV.new(model, @session, self)

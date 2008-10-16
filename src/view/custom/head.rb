@@ -32,10 +32,13 @@ class OekkHead < HtmlGrid::Composite
 		div
 	end
 	def oekk_logo(model)
+    link = HtmlGrid::Link.new(:oekk_logo, model, @session, self)
 		img = HtmlGrid::Image.new(:oekk_logo, model, @session, self)
 		img.set_attribute('src', 
 			'http://www.oekk.ch/_img/img_oekk_logo_oddb.gif')
-		img
+		link.value = img
+    link.href = 'http://www.oekk.ch'
+    link
 	end
 	def oekk_title(model)
 		div = HtmlGrid::Div.new(model, @session, self)

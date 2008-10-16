@@ -105,7 +105,8 @@ class Result < State::Drugs::Global
   end
 	def request_path
 		if(@request_path)
-			@request_path + '#best_result'
+      suffix = @session.lookandfeel.disabled?(:best_result) ? '' : '#best_result'
+			@request_path + suffix
 		end
 	end
 	def search
