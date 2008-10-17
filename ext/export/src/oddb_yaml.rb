@@ -148,7 +148,7 @@ module ODDB
 						map.add( m[1..-1], instance_variable_get( m ) )
 					}
 					map.add('inhibitors', self.inhibitors.values)
-					map.add('inducers', self.inhibitors.values)
+					map.add('inducers', self.inducers.values)
 				}
 			}
 		end
