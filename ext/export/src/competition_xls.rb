@@ -2,23 +2,17 @@
 # OdbaExporter -- CompetitionXls -- 07.03.2006 -- hwyss@ywesee.com
 
 require 'spreadsheet/excel'
-require 'parseexcel/parser'
 
 module ODDB
 	module OdbaExporter
 		class CompetitionXls
 			def initialize(path, db_path)
 				@workbook = Spreadsheet::Excel.new(path)
-				@fmt_title = Format.new(:bold=>true)
-				@workbook.add_format(@fmt_title)
-				@fmt_original = Format.new(:color => 'red')
-				@workbook.add_format(@fmt_original)
-				@fmt_original_name = Format.new(:bold => true, :color => 'red')
-				@workbook.add_format(@fmt_original_name)
-				@fmt_generic = Format.new(:color => 'green')
-				@workbook.add_format(@fmt_generic)
-				@fmt_generic_name = Format.new(:bold => true, :color => 'green')
-				@workbook.add_format(@fmt_generic_name)
+				@fmt_title = Spreadsheet::Format.new(:bold=>true)
+				@fmt_original = Spreadsheet::Format.new(:color => 'red')
+				@fmt_original_name = Spreadsheet::Format.new(:bold => true, :color => 'red')
+				@fmt_generic = Spreadsheet::Format.new(:color => 'green')
+				@fmt_generic_name = Spreadsheet::Format.new(:bold => true, :color => 'green')
 				@worksheet = @workbook.add_worksheet("Generikaliste")
 				@worksheet.format_column(0, 16.0, @fmt_original_name)
 				@worksheet.format_column(1..4, 8.0, @fmt_original)
@@ -152,8 +146,7 @@ module ODDB
 				@exf_iks_prices = {}
 				@pbl_iks_prices = {}
 				if(path)
-					parser = Spreadsheet::ParseExcel::Parser.new
-					workbook = parser.parse(path)
+					workbook = Spreadsheet.open(path)
 					worksheet = workbook.worksheet(0)
 					worksheet.each(1) { |row|
 						pcode = row.at(8).to_s

@@ -5,6 +5,7 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'stub/odba'
 require 'plugin/bsv'
 require 'flexmock'
 require 'date'
@@ -553,7 +554,7 @@ a progressé pendant ou après le traitement standard.
 			assert_equal('018', package.ikscd)
 			assert_equal(Date.new(1977), package.introduction_date)
 			assert_equal(5.05, package.price_public)
-			assert_equal(0.0, package.price_exfactory)
+			assert_equal(nil, package.price_exfactory)
 		end
 		def test_parse_line__2a
 			line = <<-EOS
@@ -954,7 +955,7 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			end
 		end
 		class StubSequence
-			attr_accessor :packages, :dose
+			attr_accessor :packages, :doses
 		end
 		class StubPackage
 			attr_accessor :pointer, :sl_entry, :ikscd, :iksnr,
@@ -986,6 +987,7 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			db_file = File.expand_path('../data/xls/BSV_per_2006.04.01.xls',
 				File.dirname(__FILE__))
 			@app.packages = []
+      @plugin.month = Date.today
 			@plugin.load_database(db_file)
 			pack1 = @plugin.ptable['1585310']
 			assert_equal('51920031', pack1.ikskey)
@@ -1217,7 +1219,7 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			pack2.comparable_size = 11
 			seq = StubSequence.new
 			seq.packages = { '001' => pack1, '002' => pack2 }
-			seq.dose = nil
+			seq.doses = [ Dose.new(0.5, 'ml') ]
 			reg = StubRegistration.new('00646')
 			reg.sequences = { '01' => seq }
 			@app.registrations = {
@@ -1232,6 +1234,36 @@ Sertralin Helvepharm	HELVEPHARM AG			01.06.00
 			pac.price_public = 35.75
 			pac.limitation = false
 			pac.limitation_points = 0
+			pac.generic_type = nil
+			@plugin.handle_unknown_package(pac)
+			assert_equal(0, @app.deletions.size)
+			assert_equal(1, @app.updates.size)
+			assert_equal([(pack1.pointer + [:sl_entry]).creator], @app.updates.keys)
+		end
+		def test_handle_unknown_package_2
+			pack1 = StubPackage.new
+			pack1.pointer = Persistence::Pointer.new(:package, '055')
+			pack1.comparable_size = Dose.new(200, 'ml')
+			pack2 = StubPackage.new
+			pack2.pointer = Persistence::Pointer.new(:package, '063')
+			pack2.comparable_size = Dose.new(500, 'ml')
+			seq = StubSequence.new
+			seq.packages = { '055' => pack1, '063' => pack2 }
+			seq.doses = [ Dose.new(300, 'mg') ]
+			reg = StubRegistration.new('51929')
+			reg.sequences = { '01' => seq }
+			@app.registrations = {
+				'51929'	=>	reg
+			}
+			pac = BsvPlugin2::ParsedPackage.new
+			pac.company = 'Merz Pharma (Schweiz) AG'
+			pac.ikskey = '51929039'
+			pac.introduction_date	 = Date.today
+			pac.name = 'Antidry Hautwasch-Oel Sol. 300 mg/1ml 200 ml Sol. (300+4+380 mg/ml)'
+			pac.price_exfactory	= 6.78
+			pac.price_public = 12.50
+			pac.limitation = true
+			pac.limitation_points = 20
 			pac.generic_type = nil
 			@plugin.handle_unknown_package(pac)
 			assert_equal(0, @app.deletions.size)

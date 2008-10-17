@@ -4,7 +4,6 @@
 require 'fileutils'
 require 'mechanize'
 require 'ostruct'
-require 'parseexcel'
 require 'plugin/plugin'
 require 'pp'
 require 'util/persistence'
@@ -67,7 +66,7 @@ module ODDB
       when :registration_date, :expiry_date
         row = diff.newest_rows[iksnr].sort.first.last
         sprintf "%s (%s)", txt, 
-                row.at(column(flag)).date.strftime('%d.%m.%Y')
+                row.date(column(flag)).strftime('%d.%m.%Y')
       else
         row = diff.newest_rows[iksnr].sort.first.last
         sprintf "%s (%s)", txt, cell(row, column(flag))
@@ -103,7 +102,7 @@ module ODDB
     end
     def fix_compositions(skip=3)
       row = nil
-      tbook = Spreadsheet::ParseExcel.parse(@latest)
+      tbook = Spreadsheet.open(@latest)
       tbook.worksheet(0).each(skip) { |row|
         reg = update_registration(row) if row
         seq = update_sequence(reg, row) if reg
@@ -235,7 +234,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       COLUMNS.each_with_index { |key, idx|
         value = case key
                 when :registration_date, :expiry_date
-                  row.at(idx).date
+                  row.date(idx)
                 when :seqnr
                   sprintf "%02i", row.at(idx).to_i
                 else
@@ -399,12 +398,12 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
               else
                 Persistence::Pointer.new([:registration, iksnr]).creator
               end
-        expiration = row.at(column(:expiry_date)).date
+        expiration = row.date(column(:expiry_date))
         args = { 
           :product_group       => group,
           :index_therapeuticus => cell(row, column(:index_therapeuticus)), 
           :production_science  => science,
-          :registration_date   => row.at(column(:registration_date)).date,
+          :registration_date   => row.date(column(:registration_date)),
           :expiration_date     => expiration,
           :renewal_flag        => false,
         }

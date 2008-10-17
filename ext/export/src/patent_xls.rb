@@ -9,8 +9,7 @@ module ODDB
     class PatentXls
       def initialize(path)
         @workbook = Spreadsheet::Excel.new(path)
-        @fmt_title = Format.new(:bold=>true)
-        @workbook.add_format(@fmt_title)
+        @fmt_title = Spreadsheet::Format.new(:bold=>true)
         @worksheet = @workbook.add_worksheet("Patentablauf")
         columns = [
           'Bezeichnung', 

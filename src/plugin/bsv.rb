@@ -3,14 +3,16 @@
 
 require 'plugin/plugin'
 require 'util/persistence'
-require 'parseexcel/parseexcel'
 require 'model/package'
 require 'util/oddbconfig'
 require 'view/rss/price_cut'
 require 'view/rss/price_rise'
+require 'spreadsheet'
 
 module ODDB
+  Spreadsheet.client_encoding = ENCODING
 	class BsvPlugin2 < Plugin
+    attr_accessor :month
 		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
 		MEDDATA_SLEEP = 0.2
 		class ParsedPackage
@@ -71,7 +73,7 @@ module ODDB
 			@@line = /Fr\.\s+([\d.]+)\s*\{([\s\d.]+)\}\s+\[(\d+)\]\s+([\d.]+),/
 			@@brokenline = /\s+\[(\d+)\]\s+([\d.]+),/
 			@@modline = /(\d+)\s*(\d+)\s+([\d.]+)\s+([\d.]*)/
-			def initialize(src, time, origin)
+			def initialize(src, time=Time.now, origin=:bsv)
         @time = time
         @origin = origin
 				@src = src.gsub("\r", "")
@@ -336,7 +338,7 @@ module ODDB
       lmnth = month << 1
       last_month = Time.local(lmnth.year, lmnth.month)
       path = File.join(ARCHIVE_PATH, 'xls', database(month))
-      workbook = Spreadsheet::ParseExcel.parse(path)
+      workbook = Spreadsheet.open(path)
       worksheet = workbook.worksheet(0)
       worksheet.each(1) { |row|
         pcode = row.at(2).to_i.to_s
@@ -440,10 +442,10 @@ module ODDB
 				candidates = []
 				if(match = /(\d+)\s+(\w+)(.*?)((\d,)?\d+\s+\w+)$/.match(package.name))
 					package.size = match[3]
-					dose = Dose.new(match[1], match[2])
+					doses = [Dose.new(match[1], match[2])]
 					## both dose and size must match for a valid guess
 					candidates = reg.sequences.values.select { |seq|
-						seq.dose == dose
+            seq.doses == doses
 					}.collect { |seq|
 						seq.packages.values.select { |pac|
 							pac.comparable_size == package.comparable_size
@@ -496,7 +498,7 @@ module ODDB
       end
     end
     def load_database(path)
-			workbook = Spreadsheet::ParseExcel.parse(path)
+			workbook = Spreadsheet.open(path)
 			do_map = deductible_originals(workbook)
 			worksheet = workbook.worksheet(0)
 			worksheet.each(1) { |row|
@@ -509,10 +511,10 @@ module ODDB
                  end
 				package = ParsedPackage.new
 				if(cell = row.at(0))
-					package.company = cell.to_s(ENCODING)
+					package.company = cell.to_s
 				end
 				if(cell = row.at(1))
-					str = cell.to_s(ENCODING)
+					str = cell.to_s
 					if(/g/i.match(str))
 						package.generic_type = :generic
 					elsif(/o/i.match(str))
@@ -521,11 +523,11 @@ module ODDB
 						package.generic_type = :unknown
 					end
 				end
-				if(cell = row.at(6))
-					package.introduction_date = cell.date
+				if(date = row.date(6))
+					package.introduction_date = date
 				end
 				if(cell = row.at(7))
-					package.name = cell.to_s(ENCODING)
+					package.name = cell.to_s
 				end
         if(exf = money(row.at(8), :exfactory))
           package.price_exfactory = exf
@@ -534,7 +536,7 @@ module ODDB
           package.price_public = pub
         end
 				if(cell = row.at(10))
-					package.limitation = (cell.to_s(ENCODING).downcase=='y')
+					package.limitation = (cell.to_s.downcase=='y')
 				end
 				package.limitation_points = row.at(11).to_i
 				if(do_map.has_key?(pcode) || do_map.has_key?(sl_iks))
@@ -546,6 +548,7 @@ module ODDB
 				unless(pcode == '0')
 					package.pharmacode = pcode
 					@ptable.store(pcode, package)
+          known_pcodes.is_a? Hash # superwierd bug...
 					medwin_iks = known_pcodes[pcode] || load_ikskey(pcode)
 				end
 				package.ikskey = (medwin_iks || sl_iks)

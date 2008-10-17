@@ -8,7 +8,6 @@ require 'util/persistence'
 require 'util/html_parser'
 require 'util/oddbconfig'
 require 'model/dose'
-require 'parseexcel/parseexcel'
 
 module ODDB
 	class VaccineIndexWriter < NullWriter
@@ -27,6 +26,7 @@ module ODDB
 		end
 	end
 	class VaccinePlugin	< Plugin
+    Spreadsheet.client_encoding = ENCODING
 		SWISSMEDIC_SERVER = 'www.swissmedic.ch'
 		INDEX_PATH = '/html/content/Impfstoffe-d.html'
 		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
@@ -295,7 +295,7 @@ module ODDB
 			end
 		end
 		def registrations_from_xls(path)
-			workbook = Spreadsheet::ParseExcel.parse(path)
+			workbook = Spreadsheet.open(path)
 			registrations = parse_worksheet(workbook.worksheet(0))
 			registrations.each_value { |reg|
 				get_packages(reg, @app.registration(reg.iksnr))
@@ -308,16 +308,7 @@ module ODDB
 			}.join("\n")
 		end
 		def row_at(row, index)
-			if(cell = row.at(index))
-				if(cell.type == :numeric)
-					cell.to_f
-        elsif(cell.type == :date)
-          cell.date
-				else
-					val = cell.to_s(ENCODING)
-					val unless val.empty?
-				end
-			end
+      row[index]
 		end
     def update_atc_class(seq)
       if((code = seq.atc_class) \

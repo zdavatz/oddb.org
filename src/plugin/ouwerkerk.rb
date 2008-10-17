@@ -4,8 +4,10 @@
 require 'date'
 require 'plugin/plugin'
 require 'spreadsheet/excel'
+require 'util/today'
 
 module ODDB
+  Spreadsheet.client_encoding = 'LATIN1'
 	class OuwerkerkPlugin < Plugin
 		RECIPIENTS = [
 			'matthijs.ouwerkerk@just-medical.com',
@@ -172,9 +174,9 @@ module ODDB
 			workbook = Spreadsheet::Excel.new(@file_path)
 			#fmt_default = Format.new(:bg_color => 0x7FFF)
 			#workbook.instance_variable_set('@format', fmt_default)
-			fmt_title = Format.new(:bold=>true)#, :bg_color => 0x7FFF)
-			english = Format.new(:bold=>true,:color=>"green")#, :bg_color => 0x7FFF)
-			german = Format.new(:bold=>true,:color=>"red")#, :bg_color => 0x7FFF)
+			fmt_title = Spreadsheet::Format.new(:bold=>true)#, :bg_color => 0x7FFF)
+			english = Spreadsheet::Format.new(:bold=>true,:color=>"green")#, :bg_color => 0x7FFF)
+			german = Spreadsheet::Format.new(:bold=>true,:color=>"red")#, :bg_color => 0x7FFF)
 			workbook.add_format(fmt_title)
 			workbook.add_format(english)
 			workbook.add_format(german)

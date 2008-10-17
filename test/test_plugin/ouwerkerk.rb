@@ -4,13 +4,13 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'test/unit'
 require 'plugin/ouwerkerk'
 require 'model/atcclass'
 require 'model/galenicform'
 require 'model/indication'
 require 'mock'
-require 'odba'
 
 module ODDB
 	class OuwerkerkPlugin < Plugin
@@ -32,6 +32,9 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 	class StubSequence
 		attr_accessor :seqnr, :packages, :name, :dose, :active_agents, :galenic_form
 		attr_accessor :composition_text, :atc_class
+    def galenic_forms
+      [@galenic_form].compact
+    end
 	end
 	class StubRegistration
 		attr_accessor :iksnr, :export_flag, :indication, :company, :sequences
@@ -88,7 +91,8 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 	end
 	def teardown
 		if(File.exists? @plugin.file_path)
-			File.delete(@plugin.file_path)
+      puts @plugin.file_path
+			#File.delete(@plugin.file_path)
 		end
 		ODBA.storage = nil
 	end
@@ -108,8 +112,8 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 		pack.ikscd = '032'
 		pack.ikscat = 'A'
 		pack.size = "100 Tabletten"
-		pack.price_exfactory = 1234
-		pack.price_public = 5678
+		pack.price_exfactory = 12.34
+		pack.price_public = 56.78
 		flags = [:new]
 		row = @plugin.export_package(pack, [flags], {pointer.to_s => [:price]})
 		expected = [
@@ -133,15 +137,15 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 		pack1.ikscd = '032'
 		pack1.ikscat = 'A'
 		pack1.size = "100 Tabletten"
-		pack1.price_exfactory = 1234
-		pack1.price_public = 5678
+		pack1.price_exfactory = 12.34
+		pack1.price_public = 56.78
 		pack2 = StubPackage.new
 		pack2.pointer = :bar
 		pack2.ikscd = '064'
 		pack2.ikscat = 'B'
 		pack2.size = "200 Kapseln"
-		pack2.price_exfactory = 4321
-		pack2.price_public = 8765
+		pack2.price_exfactory = 43.21
+		pack2.price_public = 87.65
 		seq = StubSequence.new
 		seq.packages = {'032'	=>	pack1, '064' => pack2}
 		seq.seqnr = '01'
@@ -173,15 +177,15 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 		pack1.ikscd = '032'
 		pack1.ikscat = 'A'
 		pack1.size = "100 Tabletten"
-		pack1.price_exfactory = 1234
-		pack1.price_public = 5678
+		pack1.price_exfactory = 12.34
+		pack1.price_public = 56.78
 		pack2 = StubPackage.new
 		pack2.pointer = :bar
 		pack2.ikscd = '064'
 		pack2.ikscat = 'B'
 		pack2.size = "200 Kapseln"
-		pack2.price_exfactory = 4321
-		pack2.price_public = 8765
+		pack2.price_exfactory = 43.21
+		pack2.price_public = 87.65
 		seq = StubSequence.new
 		seq.packages = {'032'	=>	pack1, '064' => pack2}
 		seq.galenic_form = @galform
@@ -220,15 +224,15 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 		pack1.ikscd = '032'
 		pack1.ikscat = 'A'
 		pack1.size = "100 Tabletten"
-		pack1.price_exfactory = 1234
-		pack1.price_public = 5678
+		pack1.price_exfactory = 12.34
+		pack1.price_public = 56.78
 		pack2 = StubPackage.new
 		pack2.pointer = :bar
 		pack2.ikscd = '064'
 		pack2.ikscat = 'B'
 		pack2.size = "200 Kapseln"
-		pack2.price_exfactory = 4321
-		pack2.price_public = 8765
+		pack2.price_exfactory = 43.21
+		pack2.price_public = 87.65
 		seq = StubSequence.new
 		seq.packages = {'032'	=>	pack1, '064' => pack2}
 		seq.galenic_form = @galform
@@ -252,8 +256,8 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 		pack3.ikscd = '007'
 		pack3.ikscat = 'C'
 		pack3.size = "7 cl"
-		pack3.price_exfactory = 700 
-		pack3.price_public = 7000
+		pack3.price_exfactory = 7.00 
+		pack3.price_public = 70.00
 		pack4 = StubPackage.new
 		seq2 = StubSequence.new
 		seq2.packages = {'007'	=>	pack3, '008' => pack4}
@@ -276,8 +280,8 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 		flags = [:price]
 		bsv.change_flags = {bsv_pointer => flags}
 		@app.log_groups = {
-			:swissmedic_journal	=>	log, 
-			:bsv_sl => bsv,
+			:swissmedic =>	log, 
+			:bsv_sl     => bsv,
 		}
 		rows = @plugin.export_registrations
 		assert_equal(3, rows.size)
@@ -291,7 +295,7 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 			[ "11", "12007", "007", "02", "Vodka Martini Dry, shaken - not stirred",
 				nil, "Placebo", '', 7, "cl", "C", 3, "Her Majesty's Secret Service", 
 				"7 cl", "Tabletten", nil, 7.00, 70.00, nil, nil, nil, "A01BC23", nil, nil, 'keine'], 
-		]
+		].sort
 		assert_equal(expected.sort, rows.sort)
 	end
 	def test_export_xls
