@@ -126,7 +126,9 @@ module ODDB
 			end
 			def explain_link(model, key)
 				link = external_link(model, "explain_#{key}")
-				link.href = @lookandfeel.lookup("explain_#{key}_url") 
+        unless @lookandfeel.disabled?(:explain_link)
+          link.href = @lookandfeel.lookup("explain_#{key}_url")
+        end
 				link.attributes['class'] = "explain #{key}"
 				link 
 			end

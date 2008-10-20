@@ -53,6 +53,14 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,3,0]	=>	'database_last_updated_txt',
 				[0,3,1]	=>	:database_last_updated,
 			}
+		elsif(@lookandfeel.enabled?(:oekk_structure, false))
+			@components = {
+				[0,0]	  =>	View::Drugs::CenteredSearchForm,
+				[0,1]	  =>	'search_explain',
+				[0,2]	  =>	:recent_registrations,
+				[0,3]		=>	:generic_definition,
+				[0,4]	  =>	:legal_note,
+			}
 		elsif(@lookandfeel.enabled?(:atupri_web, false))
 			@components = {
 				[0,0]	  =>	View::Drugs::CenteredSearchForm,

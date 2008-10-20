@@ -56,8 +56,6 @@ module ODDB
 				LookandfeelMyMedi, 
 			],
 			'oekk'	=>	[
-				LookandfeelExtern,
-				LookandfeelStandardResult,
 				LookandfeelOekk,
 			],
 			'sympany'	=>	[

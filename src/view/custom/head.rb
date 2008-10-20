@@ -14,8 +14,6 @@ class OekkHead < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0,0]	=>	:oekk_department,
 		[0,0,1]	=>	:oekk_title,
-		[0,0,2]	=>	:language_chooser,
-		[1,0]		=>	:oekk_logo,
 
 	}
 	CSS_MAP = {

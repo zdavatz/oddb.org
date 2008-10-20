@@ -708,44 +708,67 @@ module ODDB
 			end
 		end
 	end
-	class LookandfeelOekk < SBSM::LookandfeelWrapper
-		ENABLED = [
-			:drugs, 
-			:external_css,
-			:help_link,
-			:logout,
-			:migel,
-			:oekk_structure,
-			:sequences,
-		]
-		DICTIONARIES = {
-			'de'	=>	{
-				:de								=>	'd',
-				:explain_generic	=>	'Blau&nbsp;=&nbsp;Generikum',
-				:en								=>	'e',
-				:fr								=>	'f',
-				:oekk_department	=>	'Medikamentenvergleich online',
-				:oekk_logo				=>	'&Ouml;KK - jung und unkompliziert.',
-				:oekk_title				=>	'Ihr Einsparungspotential mit Generika',
-			},
-			'fr'	=>	{
-				:explain_generic	=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
-				:oekk_department	=>	'Comparaison de m&eacute;dicaments sur ligne',
-				:oekk_logo				=>	'&Ouml;KK - jeune et sympa.',
-				:oekk_title				=>	'V&ocirc;tre &eacute;conomie potentielle avec g&eacute;n&eacute;riques',
-			},
-			'en'	=>	{
-				:explain_generic	=>	'Blue&nbsp;=&nbsp;Generic Drug',
-				:oekk_department	=>	'Drug comparison online',
-				:oekk_logo				=>	'&Ouml;KK - young and easy.',
-				:oekk_title				=>	'Your potential savings with generics',
-			},
-		}
-    DISABLED = [ :best_result ]
-		RESOURCES = { 
-			:external_css	=>	'http://www.oekk.ch/_css/oddb.css',
-		}
-		HTML_ATTRIBUTES = { }
+  class LookandfeelOekk < SBSM::LookandfeelWrapper
+    ENABLED = [
+      :atc_chooser,
+      :drugs,
+      :export_csv,
+      :external_css,
+      :faq_link,
+      :help_link,
+      :home,
+      :home_drugs,
+      :home_migel,
+      :logout,
+      :migel,
+      :migel_alphabetical,
+      :oekk_structure,
+      :recent_registrations,
+      :search_reset,
+      :sequences,
+      :ywesee_contact,
+    ]
+    DICTIONARIES = {
+      'de'  =>  {
+        :de                   =>  'd',
+        :explain_generic      =>  'Blau&nbsp;=&nbsp;Generikum',
+        :en                   =>  'e',
+        :fr                   =>  'f',
+        :oekk_department      =>  'Medikamentenvergleich online',
+        :oekk_logo            =>  '&Ouml;KK - jung und unkompliziert.',
+        :oekk_title           =>  'Ihr Einsparungspotential mit Generika',
+      },
+      'fr'  =>	{
+        :explain_generic  =>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
+        :oekk_department  =>	'Comparaison de m&eacute;dicaments sur ligne',
+        :oekk_logo  			=>	'&Ouml;KK - jeune et sympa.',
+        :oekk_title  			=>	'V&ocirc;tre &eacute;conomie potentielle avec g&eacute;n&eacute;riques',
+      },
+      'en'  =>	{
+        :explain_generic  =>	'Blue&nbsp;=&nbsp;Generic Drug',
+        :oekk_department  =>	'Drug comparison online',
+        :oekk_logo  			=>	'&Ouml;KK - young and easy.',
+        :oekk_title  			=>	'Your potential savings with generics',
+      },
+    }
+    DISABLED = [ :best_result, :explain_link ]
+    RESOURCES = {
+      :external_css	=>	'http://www.oekk.ch/_css/oddb.css',
+    }
+    HTML_ATTRIBUTES = { }
+    def compare_list_components
+      {
+        [0,0]	=>	:name_base,
+        [1,0]	=>	:company_name,
+        [2,0]	=>	:most_precise_dose,
+        [3,0]	=>	:comparable_size,
+        [4,0] =>	:compositions,
+        [5,0]	=>	:price_public,
+        [6,0]	=>	:price_difference,
+        [7,0]	=>	:deductible,
+        [8,0] =>  :ikscat,
+      }
+    end
     def explain_result_components
       {
         [0,0]	=>	'explain_expired',
@@ -753,22 +776,20 @@ module ODDB
         [0,2]	=>	:explain_homeopathy,
         [0,3]	=>	:explain_anthroposophy,
         [0,4] =>	:explain_phytotherapy,
-        [0,5]	=>	'explain_pbp',
-        [0,6]	=>	'explain_pr',
-        [0,7]	=>	:explain_deductible,
-        [1,0]	=>	:explain_parallel_import,
-        [1,1]	=>	:explain_comarketing,
-        [1,2]	=>	:explain_vaccine,
+        [0,5]	=>	:explain_parallel_import,
+        [0,6]	=>	:explain_vaccine,
+        [1,0]	=>	:explain_fachinfo,
+        [1,1]	=>	:explain_patinfo,
+        [1,2]	=>	:explain_limitation,
         [1,3]	=>	:explain_narc,
-        [1,4]	=>	:explain_fachinfo,
-        [1,5]	=>	:explain_patinfo,
-        [1,6]	=>	:explain_limitation,
-        [0,7]	=>	:explain_cas,
+        [1,4]	=>	'explain_pbp',
+        [1,5]	=>	'explain_pr',
+        [1,6]	=>	:explain_deductible,
       }
     end
-		def languages
-			[:de, :fr, :en]
-		end
+    def languages
+      [:de, :fr, :en]
+    end
     def result_list_components
       {
         [0,0,0] =>  'result_item_start',
@@ -787,7 +808,7 @@ module ODDB
         [11,0]  =>  :patinfo,
       }
     end
-	end
+  end
 	class LookandfeelSympany < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:drugs, 
