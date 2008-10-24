@@ -133,7 +133,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
         page = agent.get source
         page.save target
       end
-      update_indications(target)
     rescue WWW::Mechanize::ResponseCodeError
 		end
     def update_indications(path)
