@@ -281,8 +281,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
           args.update(:chemical_substance => chemical,
                       :chemical_dose      => cdose)
         end
-        @app.update(ptr, args, :swissmedic)
-        comp
+        agent = @app.update(ptr, args, :swissmedic)
+        [comp, agent]
       end
     end
     def update_company(row)
@@ -304,15 +304,18 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
           update_substance(name)
         }
         comps = []
+        agents = []
         composition = cell(row, column(:composition)).gsub(/\n/, ' ')
         names.each { |name|
-          comps.push update_active_agent(seq, name, composition, opts)
+          comp, agent = update_active_agent(seq, name, composition, opts)
+          comps.push comp
+          agents.push agent
         }
         comp = comps.compact.first
-        unless(names.empty? || comp.nil?)
+        unless(agents.empty? || comp.nil?)
           comp.active_agents.dup.each { |act|
-            unless(names.any? { |name| act.substance.same_as? name })
-              @app.delete(act.pointer) 
+            unless agents.include?(act)
+              @app.delete act.pointer
             end
           }
         end
