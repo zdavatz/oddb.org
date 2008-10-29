@@ -14,6 +14,9 @@ module ODDB
 			def empty?
 				@src.nil?
 			end
+      def gsub! *args
+        @src.gsub! *args
+      end
 			def to_s
 				"(image)"
 			end
@@ -81,6 +84,10 @@ module ODDB
 			def empty?
 				@text.empty?
 			end
+      def gsub! *args
+        @raw_txt.gsub! *args
+        @text.gsub! *args
+      end
       def length
         @text.length
       end
@@ -141,7 +148,7 @@ module ODDB
 			end
 			def <<(text)
         if(@raw_txt[-1] == ?- && /^[a-z\336-\377]/.match(text))
-          # if we're appending to a hypen, and text starts with a lowercase
+          # if we're appending to a hyphen, and text starts with a lowercase
           # letter from iso-latin-1, we need to remove the hyphen
           @raw_txt.chop!
         end
@@ -152,6 +159,8 @@ module ODDB
             str = match[0..-2]
             str << (" " * (8 - (str.length % 8)))
           }
+        else
+          @raw_txt.gsub! /\t+/, ' '
 				end
         if(@preformatted)
           @text = @raw_txt.rstrip
@@ -173,12 +182,17 @@ module ODDB
 			end
 			def clean!
 				@subheading.gsub!(/(^\s*)|([ \t\r]*$)/, '')
+				gsub!(/\t+/, ' ')
 				@paragraphs.delete_if { |paragraph| paragraph.empty? }
 			end
 			def empty?
 				#clean! ## empty? should have no side-effects!
 				@subheading.empty? && @paragraphs.empty?
 			end
+      def gsub! pattern, replacement
+        @paragraphs.each do |paragraph| paragraph.gsub! pattern, replacement end
+        @subheading.gsub! pattern, replacement
+      end
 			def to_s
 				lines = [ @subheading ] + @paragraphs
 				lines.delete_if { |line| line.empty? }
@@ -212,6 +226,7 @@ module ODDB
 			end
 			def clean!
 				@heading.strip!
+				@heading.gsub!(/\t+/, ' ')
 				@sections.delete_if { |section| 
 					section.clean!
 					section.empty? 
@@ -221,6 +236,10 @@ module ODDB
 				#clean! ## empty? should have no side-effects!
 				@heading.empty? && @sections.empty?
 			end
+      def gsub! *args
+        @sections.each do |section| section.gsub! *args end
+        @heading.gsub! *args
+      end
 			def include?(section)
 				@sections.include?(section)
 			end
@@ -307,6 +326,13 @@ module ODDB
       end
       def empty?
         @rows.flatten.all? { |cell| cell.strip.empty? }
+      end
+      def gsub! *args
+        @rows.each do |row|
+          row.each do |cell|
+            cell.gsub! *args
+          end
+        end
       end
       def next_cell!
         cell = Cell.new
