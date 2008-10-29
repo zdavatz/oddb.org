@@ -453,7 +453,6 @@ module ODDB
 			'@oid',
 			'@descriptions',
 			'@synonyms',
-			'@effective_form',
 			'@swissmedic_code',
 		]
 		def to_yaml( opts = {} )
@@ -465,6 +464,9 @@ module ODDB
 					if(@narcotic)
 						map.add('narcotic', @narcotic.casrn)
 					end
+          if @effective_form && @effective_form != self
+						map.add('effective_form', @effective_form)
+          end
 				}
 			}
 		end
