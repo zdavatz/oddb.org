@@ -117,7 +117,7 @@ module ODDB
 				format = Text::Format.new(*format_args)
 				format.end = (text_length - 1)
 				@formats.unshift(format)
-				@raw_txt = text + @raw_txt
+				@raw_txt = text + (@raw_txt || @text)
 				@text = @raw_txt.strip
 			end
 			def reduce_format(*args)
