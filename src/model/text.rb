@@ -11,6 +11,8 @@ module ODDB
 			def attributes
 				{ 'src'	=>	@src }
 			end
+      def clean!
+      end
 			def empty?
 				@src.nil?
 			end
@@ -74,6 +76,10 @@ module ODDB
 			def augment_format(*args)
 				set_format(*(@format.values + args))
 			end
+      def clean!
+        @text.gsub! /\t/, ' '
+        @raw_txt = nil
+      end
 			def clear!
 				@formats = []
 				@raw_txt = ''
@@ -85,7 +91,7 @@ module ODDB
 				@text.empty?
 			end
       def gsub! *args
-        @raw_txt.gsub! *args
+        @raw_txt.gsub! *args if @raw_txt
         @text.gsub! *args
       end
       def length
@@ -170,7 +176,7 @@ module ODDB
         self
 			end
 			def [](*args)
-				@raw_txt[*args]
+				(@raw_txt || @text)[*args]
 			end
 		end
 		class Section
@@ -181,17 +187,19 @@ module ODDB
 				@paragraphs = []
 			end
 			def clean!
+        @paragraphs.compact!
 				@subheading.gsub!(/(^\s*)|([ \t\r]*$)/, '')
-				gsub!(/\t+/, ' ')
+				@subheading.gsub!(/\t+/, ' ')
 				@paragraphs.delete_if { |paragraph| paragraph.empty? }
+        @paragraphs.each do |paragraph| paragraph.clean! end
 			end
 			def empty?
 				#clean! ## empty? should have no side-effects!
 				@subheading.empty? && @paragraphs.empty?
 			end
-      def gsub! pattern, replacement
-        @paragraphs.each do |paragraph| paragraph.gsub! pattern, replacement end
-        @subheading.gsub! pattern, replacement
+      def gsub! *args
+        @paragraphs.each do |paragraph| paragraph.gsub! *args end
+        @subheading.gsub! *args
       end
 			def to_s
 				lines = [ @subheading ] + @paragraphs
@@ -306,6 +314,11 @@ module ODDB
         }
         while((row = @rows.last) && row.empty?)
           @rows.pop
+        end
+        @rows.each do |row|
+          row.each do |cell|
+            cell.clean!
+          end
         end
       end
       def column_widths
