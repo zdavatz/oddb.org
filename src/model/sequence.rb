@@ -11,8 +11,9 @@ module ODDB
 		include Persistence
 		attr_reader :seqnr, :name_base, :name_descr, :packages,
 								:compositions, :longevity
-		attr_accessor :registration, :atc_class, :export_flag,
-									:galenic_form, :patinfo, :pdf_patinfo, :atc_request_time
+    attr_accessor :registration, :atc_class, :export_flag,
+                  :galenic_form, :patinfo, :pdf_patinfo, :atc_request_time,
+                  :deactivate_patinfo
 		attr_writer :composition_text, :dose, :inactive_date
 		alias :pointer_descr :seqnr
 		def initialize(seqnr)
@@ -40,6 +41,9 @@ module ODDB
 				0
 			end
 		end
+    def active_patinfo
+      active? && patinfo_active? && @pdf_patinfo
+    end
 		def active?
 			(!@inactive_date || (@inactive_date > @@two_years_ago)) \
 				&& @registration && @registration.active? && !violates_patent?
@@ -153,9 +157,10 @@ module ODDB
 		def generic_type
 			@registration.generic_type if @registration
 		end
-		def has_patinfo?
-			(!@patinfo.nil? || !@pdf_patinfo.nil?) && !company.disable_patinfo
-		end
+    def has_patinfo?
+      (!@patinfo.nil? || !@pdf_patinfo.nil?) && patinfo_active? \
+        && !company.disable_patinfo
+    end
     def has_public_packages?
       @packages.any? { |key, pac|
         pac.public?
@@ -220,6 +225,9 @@ module ODDB
 		def package_count
 			@packages.length
 		end
+    def patinfo_active?
+      @deactivate_patinfo.nil? || @deactivate_patinfo > @@today
+    end
     def public?
       !@export_flag && @registration.public? && active?
     end

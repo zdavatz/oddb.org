@@ -158,15 +158,16 @@ module SequenceMethods
 			end
 			@model.append(seqnr)
 		end
-		keys = [
-			:dose,
+    keys = [
+      :dose,
       :export_flag,
-			:name_base, 
-			:name_descr,
+      :name_base,
+      :name_descr,
       :longevity,
       :substance,
       :galenic_form,
-		]
+      :deactivate_patinfo,
+    ]
 		input = user_input(keys)
 =begin
 		galform = @session.user_input(:galenic_form)

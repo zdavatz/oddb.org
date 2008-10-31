@@ -314,9 +314,9 @@ class SequenceForm < HtmlGrid::Composite
 		[3,0,1,2]	=>	'standard',
 		[3,3]	    =>	'standard',
 	}
-	CSS_MAP = {
-		[0,0,4,5]	=>	'list',
-	}
+  CSS_MAP = {
+    [0,0,4,4]	=>	'list',
+  }
 	LABELS = true
   LOOKANDFEEL_MAP = {
     :language_select => :language_select_html,
@@ -329,6 +329,7 @@ class SequenceForm < HtmlGrid::Composite
 		:atc_request_label	=> HtmlGrid::LabelText,
 		:no_company					=> HtmlGrid::LabelText,
 		:regulatory_email		=> HtmlGrid::InputText,
+		:deactivate_patinfo => HtmlGrid::InputDate,
 	}
 	def init
 		reorganize_components
@@ -346,12 +347,13 @@ class SequenceForm < HtmlGrid::Composite
 				[3,5,1] =>  :patinfo,
 				[3,5,2] =>  :assign_patinfo,
 				[3,5,3] =>  :delete_patinfo,
+        [2,6]   =>  :deactivate_patinfo,
 				[1,6,0]	=>	:submit,
 				[1,6,1] =>  :delete_item,
 			})
 			css_map.update({
-				[3,4]		=>	'list',
-				[0,5,5] =>	'list',
+				[0,4,4,3]	=>	'list',
+				[0,5,5]   =>	'list',
 			})
 			if(@model.atc_class.nil? && !atc_descr_error?)
 				if(@model.company.nil?)
