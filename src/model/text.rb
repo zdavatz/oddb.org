@@ -158,7 +158,7 @@ module ODDB
           # letter from iso-latin-1, we need to remove the hyphen
           @raw_txt.chop!
         end
-				@raw_txt << text
+				@raw_txt << text.to_s
 				if(@preformatted)
 					@raw_txt.gsub!(/[\n\r]+/, "\n")
           @raw_txt.gsub!(/(.*?)\t/) { |match|
