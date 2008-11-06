@@ -11,6 +11,7 @@ require 'substance_index'
 require 'format'
 require 'fachinfo_wrapper'
 require 'cgi'
+require 'RMagick'
 
 
 $dumped_ids = []
@@ -714,16 +715,34 @@ module ODDB
 				#save_state
 				previous_font = @current_base_font
 				select_font(format.font)
-				move_pointer(format.spacing_before(paragraph.text))
-				text = paragraph.text
-				paragraph.text.each_line { |line|
-          if paragraph.preformatted? && /^-{53,}/.match(line)
-            line = line[0,52]
+        if paragraph.image?
+          path = File.join(PROJECT_ROOT, 'doc', paragraph.src)
+          if File.exist?(path)
+            data = File.read(path)
+            img, = Magick::Image.from_blob(data) do |info|
+              info.size = size
+            end
+            size = "#{@current_width}x"
+            data = img.to_blob do |info|
+              info.depth = 8
+            end
+            height = @current_width * img.rows / img.columns
+            move_pointer(-height)
+            move_pointer(format.spacing_before('nonempty'))
+            add_image data, @left_margin, @y, @current_width
           end
-					text(line.rstrip, :font_size => format.size, 
-                            :justification => format.justification)
-				}
-				#restore_state
+        else
+          move_pointer(format.spacing_before(paragraph.text))
+          text = paragraph.text
+          paragraph.text.each_line { |line|
+            if paragraph.preformatted? && /^-{53,}/.match(line)
+              line = line[0,52]
+            end
+            text(line.rstrip, :font_size => format.size,
+                              :justification => format.justification)
+          }
+        end
+        #restore_state
 				move_pointer(format.spacing_after(paragraph.text))
 				select_font(previous_font)
 			end

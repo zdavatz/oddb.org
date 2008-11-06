@@ -2,6 +2,7 @@
 # ParagraphWrapper -- oddb -- 15.03.2004 -- rwaltert@ywesee.com
 
 require 'delegate'
+require 'pdf/writer/graphics/imageinfo'
 
 module ODDB
 	module FiPDF
@@ -11,23 +12,34 @@ module ODDB
 				super
 			end
 			def need_new_page?(height, width, formats)
-				format = if(preformatted?)
-					formats[:preformatted]
-				else
-					formats[:paragraph]
-				end
-				paragraph_height = format.get_height(text(), width)
-				num_lines = format.line_count(text(), width)
-				available_height = height + format.spacing_before(text())
-				lines_on_page = lines_per_height(available_height, format)
-				if(num_lines <= 3 && paragraph_height > height)
-					true
-				elsif(num_lines > 3 && lines_on_page < 2)
-					true
-				else 
-					false
-				end
+        if image?
+          path = File.join(PROJECT_ROOT, 'doc', @paragraph.src)
+          if File.exist?(path)
+            info = PDF::Writer::Graphics::ImageInfo.new(File.read(path))
+            width * info.height / info.width > height
+          end
+        else
+          format = if(preformatted?)
+            formats[:preformatted]
+          else
+            formats[:paragraph]
+          end
+          paragraph_height = format.get_height(text(), width)
+          num_lines = format.line_count(text(), width)
+          available_height = height + format.spacing_before(text())
+          lines_on_page = lines_per_height(available_height, format)
+          if(num_lines <= 3 && paragraph_height > height)
+            true
+          elsif(num_lines > 3 && lines_on_page < 2)
+            true
+          else
+            false
+          end
+        end
 			end
+      def image?
+        @paragraph.is_a?(Text::ImageLink)
+      end
 			def enforce_page_break?(first_height, column_height, width, format)
 				total_lines = format.line_count(text(), width)
 				first_lines = lines_per_height(first_height, format)

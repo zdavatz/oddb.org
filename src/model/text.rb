@@ -19,6 +19,9 @@ module ODDB
       def gsub! *args
         @src.gsub! *args
       end
+      def preformatted?
+        true
+      end
 			def to_s
 				"(image)"
 			end
