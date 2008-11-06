@@ -82,22 +82,12 @@ module ODDB
       end
     end
 		def dictionary(language)
-=begin
-			file = case language
-			when :fr
-				'hyph_fr_FR.dic'
-			else
-				'hyph_de_CH.dic'
-			end
-			path = File.expand_path(file, DATA_DIR)
-			::Text::Hyphen::Dictionary.new(path)
-=end
       require 'text/hyphen'
       ::Text::Hyphen.new(:language => language.to_s)
 		end
 		def document(filename, language, &block)
 			begin
-				writer = FachinfoWriter.new
+				writer = FachinfoWriter.new :language => language
 				writer.hyphenator = dictionary(language)
 				pdf = FachinfoWriterProxy.new(writer)
 				block.call(pdf)

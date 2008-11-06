@@ -199,13 +199,23 @@ module ODDB
 			PAGE_TITLE_HEIGHT = 20
 			VARIABLE_WIDTH_FONT = "Helvetica"
       SYMBOL_FONT = 'Symbol'
-			def initialize(paper = "A4", orientation = :portrait, color = true)
-				super(:paper => paper, :orientation => orientation)
+      LANGUAGES = {
+        :de => {
+          :combinations    => 'Kombinationen',
+          :substance_index => 'Wirkstoffregister',
+        },
+        :fr => {
+          :combinations    => 'Combinations',
+          :substance_index => 'Registre de substances actives',
+        },
+      }
+			def initialize opts = {}
+        @opts = {:color => true, :language => :de}.update(opts)
+				super(:paper => 'A4', :orientation => :portrait)
         @black = Color::RGB.from_fraction(0, 0, 0)
         @white = Color::RGB.from_fraction(1, 1, 1)
         @color = Color::RGB.from_fraction(*COLOR_STD)
 				@text_space_height = @page_height - MARGIN_TOP - MARGIN_BOTTOM
-				@colored_output = color
 				@current_generic_type = :unknown
 				@flic_name = ""
 				@anchor = 0
@@ -222,6 +232,9 @@ module ODDB
 					:differences => ISO_8859_1_DIFFERENCES)
 				initialize_formats
 			end
+      def _ key
+        LANGUAGES[@opts[:language]][key]
+      end
 			def add_substance_name(fachinfo)
 				value = [
 					fachinfo.name, 
@@ -292,7 +305,7 @@ module ODDB
 				else
 					fi_new_column
 				end
-				if(@colored_output)
+				if(@opts[:color])
 					#@bg_bounds[3] = @bottom_margin - @bg_bounds[1]
           set_bg_bounds
 					draw_background
@@ -304,7 +317,7 @@ module ODDB
 				end
 			end
 			def fi_new_column
-				if(@colored_output)
+				if(@opts[:color])
 					set_bg_bounds
 				end
 				@first_line_of_page = true
@@ -446,7 +459,7 @@ module ODDB
 				@margin_top_column = MARGIN_TOP
 				write_page_number(@fi_page_number, ptype)
 				start_columns(@target_columns, @column_gap)
-				if(@colored_output)
+				if(@opts[:color])
 					set_bg_bounds
 				end
 			end
@@ -462,7 +475,7 @@ module ODDB
 				@write_alphabet = false
 				@write_flic_name = false
 				start_columns(@target_columns, @column_gap)
-				if(@colored_output)
+				if(@opts[:color])
 					set_bg_bounds
 				end
 			end
@@ -479,7 +492,7 @@ module ODDB
 				@write_flic_name = false
 				start_columns(@target_columns, @column_gap)
 				write_flic_name
-				if(@colored_output)
+				if(@opts[:color])
 					set_bg_bounds
 				end
 			end
@@ -572,7 +585,7 @@ module ODDB
 					name = ""
 				end
 				move_pointer(format.spacing_before(name))
-				if(@colored_output)
+				if(@opts[:color])
 					set_bg_bounds
 					draw_background
 				end
@@ -587,7 +600,7 @@ module ODDB
 				move_pointer(format.spacing_before(fachinfo_name))
         height = format.get_height(fachinfo_name, @current_width) - format.margin
 				set_bg_bounds(nil, @y - height, nil, height)
-				map = (@colored_output) ? COLOR_DRUG_NAME_BG : GRAY_DRUG_NAME_BG
+				map = (@opts[:color]) ? COLOR_DRUG_NAME_BG : GRAY_DRUG_NAME_BG
 				draw_background(map)
         color = generic_color(@current_generic_type, COLOR_DRUG_NAME_FNT)
 				fill_color color
@@ -704,6 +717,9 @@ module ODDB
 				move_pointer(format.spacing_before(paragraph.text))
 				text = paragraph.text
 				paragraph.text.each_line { |line|
+          if paragraph.preformatted? && /^-{53,}/.match(line)
+            line = line[0,52]
+          end
 					text(line.rstrip, :font_size => format.size, 
                             :justification => format.justification)
 				}
@@ -717,6 +733,10 @@ module ODDB
 					start_new_page
 				end
 				subheading = section.subheading
+        if (paragraph = section.paragraphs.first) \
+          && paragraph.preformatted? && subheading[-1] != ?\n
+          subheading += "\n"
+        end
 				move_pointer(format.spacing_before(subheading))
 				text(section.subheading, :font_size => format.size)
 				move_pointer(format.spacing_after(subheading))
@@ -735,12 +755,12 @@ module ODDB
 				fi_new_page
         stop_columns
 				select_font(VARIABLE_WIDTH_FONT)
-				draw_page_title("<b> WIRKSTOFFREGISTER </b>")
+				draw_page_title("<b> #{_(:substance_index).upcase} </b>")
 			end
 			def write_substance_index
 				prepare_substance_index
 				set_page_element_type(:page_type_substance_index)
-				@flic_name = "Wirkstoffregister"
+				@flic_name = _(:substance_index)
 				start_columns(@target_columns, @column_gap)
 				write_index
         draw_column_line if column_number > 1
@@ -789,7 +809,7 @@ module ODDB
 				}
 				unless(combinations.empty?)
 					para = wrap_tuple(combinations.first)
-					fmt_str = "<i>Kombinationen</i>"
+					fmt_str = "<i>#{_(:combinations)}</i>"
 					height = @y - @bottom_margin \
 					  - format_kombi.get_height(fmt_str, @current_width)
 					if(para.need_new_page?(height, @current_width, formats))
