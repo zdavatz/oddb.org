@@ -367,8 +367,12 @@ module ODDB
           block.call(row + Array.new(wd - row.length))
         }
       end
-      def to_s
+      def preformatted?
+        true
+      end
+      def to_s(rowseparator=nil)
         widths = column_widths
+        hr = '-' * widths.inject do |a,b| a+b end
         @rows.collect { |row|
           lines = []
           parts = []
@@ -384,8 +388,8 @@ module ODDB
               (lines[y_idx] ||= '') << chunk[y_idx].to_s.ljust(widths.at(x_idx) + 2)
             }
           }
-          lines
-        }.flatten.join("\n")
+          lines.unshift hr
+        }.flatten.push(hr).join("\n")
       end
       def width
         @rows.collect { |row| row.length }.max  

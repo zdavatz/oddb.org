@@ -88,8 +88,15 @@ module ODDB
 				end
 			end
 			def text
-				@text ||= format_text
-			end
+        @text ||= begin
+          case @paragraph
+          when Text::ImageLink, Text::Table
+            @paragraph.to_s
+          else
+            format_text
+          end
+        end
+      end
 		end
 	end
 end

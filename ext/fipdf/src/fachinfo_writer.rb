@@ -728,7 +728,7 @@ module ODDB
             end
             height = @current_width * img.rows / img.columns
             move_pointer(-height)
-            move_pointer(format.spacing_before('nonempty'))
+            move_pointer(format.spacing_before(paragraph.text))
             add_image data, @left_margin, @y, @current_width
           end
         else
