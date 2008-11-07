@@ -698,6 +698,7 @@ module ODDB
 				else
 					@formats[:paragraph]
 				end
+        paragraph.hyphenator = @hyphenator
 				available_height = @y - MARGIN_BOTTOM
 				if(paragraph.need_new_page?(available_height, @current_width, @formats))
 					start_new_page

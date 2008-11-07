@@ -7,6 +7,7 @@ require 'pdf/writer/graphics/imageinfo'
 module ODDB
 	module FiPDF
 		class ParagraphWrapper < SimpleDelegator
+      attr_accessor :hyphenator
 			def initialize(paragraph)
 				@paragraph = paragraph
 				super
@@ -90,8 +91,10 @@ module ODDB
 			def text
         @text ||= begin
           case @paragraph
-          when Text::ImageLink, Text::Table
+          when Text::ImageLink
             @paragraph.to_s
+          when Text::Table
+            @paragraph.to_s :width => 50, :hyphenator => @hyphenator
           else
             format_text
           end

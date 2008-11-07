@@ -22,7 +22,7 @@ module ODDB
       def preformatted?
         true
       end
-			def to_s
+			def to_s opts={}
 				"(image)"
 			end
 			alias :text :to_s
@@ -142,7 +142,7 @@ module ODDB
       def strip
         @text.strip
       end
-			def to_s
+			def to_s opts={}
 				@formats.collect { |fmt|
 					if(fmt.symbol?)
 						str = @text[fmt.range]
@@ -204,8 +204,8 @@ module ODDB
         @paragraphs.each do |paragraph| paragraph.gsub! *args end
         @subheading.gsub! *args
       end
-			def to_s
-				lines = [ @subheading ] + @paragraphs
+			def to_s opts={}
+        lines = [ @subheading ] + @paragraphs.collect do |par| par.to_s opts end
 				lines.delete_if { |line| line.empty? }
 				lines.join("\n")
 			end
@@ -254,8 +254,8 @@ module ODDB
 			def include?(section)
 				@sections.include?(section)
 			end
-			def to_s
-				lines = [ @heading ] + @sections.collect { |sec| sec.to_s }
+			def to_s opts={}
+				lines = [ @heading ] + @sections.collect { |sec| sec.to_s opts }
 				lines.delete_if { |line| line.empty? }
 				lines.join("\n")
 			end
@@ -370,16 +370,24 @@ module ODDB
       def preformatted?
         true
       end
-      def to_s(rowseparator=nil)
+      def to_s opts={}
         widths = column_widths
-        hr = '-' * widths.inject do |a,b| a+b end
+        total_width = widths.inject do |a,b| a+b+2 end
+        if (width = opts[:width]) && width < total_width
+          factor = width.to_f / total_width
+          widths.collect! do |w| (w * factor).floor end
+          total_width = width
+        end
+        hr = '-' * total_width
         @rows.collect { |row|
           lines = []
           parts = []
           heights = []
+          idx = 0
           chunks = row.collect { |cell| 
-            chunk = cell.to_s.split("\n")
+            chunk = wrap(cell.to_s, widths[idx], opts).split("\n")
             heights.push chunk.size
+            idx += 1
             chunk 
           }
           height = heights.max
@@ -396,6 +404,40 @@ module ODDB
       end
       def <<(str)
         current_cell << str
+      end
+      def wrap str, width, opts={}
+        result = ''
+        left, right = nil
+        hyph = opts[:hyphenator]
+        str.split("\n").each do |line|
+          res = ''
+          words = str.split(' ')
+          while word = words.shift
+            rlen = res.length
+            if rlen + word.length > width
+              if hyph
+                left, right = hyph.hyphenate_to(word, width - rlen - 1)
+              end
+              if left
+                result << res << left << "\n"
+                words.unshift right
+                res = ''
+              elsif word.length > width && (cutoff = width - rlen - 2) > 0
+                result << res << word[0, cutoff] << "-\n"
+                words.unshift word[cutoff..-1]
+                res = ''
+              else
+                result << res << "\n"
+                words.unshift word
+                res = ''
+              end
+            else
+              res << word << ' '
+            end
+          end
+          result << res << "\n"
+        end
+        result.strip
       end
     end
 	end
