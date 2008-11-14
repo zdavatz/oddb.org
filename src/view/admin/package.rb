@@ -151,20 +151,21 @@ class PackageForm < HtmlGrid::Composite
 		[2,3]		=>	:price_public,
 		[0,4]		=>	:generic_group,
 		[2,4]		=>	:market_date,
-		[0,5]		=>	:deductible,
-		[2,5]		=>	:lppv,
-		[0,6]		=>	:out_of_trade,
-		[0,7]		=>	:disable,
-		[2,7]		=>	:pharmacode,
-		[1,8,0]	=>	:submit,
-		[1,8,1]	=>	:delete_item,
+    [2,5]   =>  :preview_with_market_date,
+		[0,6]		=>	:deductible,
+		[2,6]		=>	:lppv,
+		[0,7]		=>	:out_of_trade,
+		[0,8]		=>	:disable,
+		[2,8]		=>	:pharmacode,
+		[1,9,0]	=>	:submit,
+		[1,9,1]	=>	:delete_item,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,4,5]	=>	'standard',
 		[3,2]			=>	'list',
 	}
 	CSS_MAP = {
-		[0,0,4,9]	=>	'list',
+		[0,0,4,10]	=>	'list',
 	}
 	LABELS = true
   LOOKANDFEEL_MAP = {
@@ -178,12 +179,13 @@ class PackageForm < HtmlGrid::Composite
 		:iksnr						=>	HtmlGrid::Value,
 		:market_date			=>	HtmlGrid::InputDate,
 		:out_of_trade			=>	HtmlGrid::BooleanValue,
+		:preview_with_market_date =>	HtmlGrid::InputCheckbox,
 		:refdata_override	=>	HtmlGrid::InputCheckbox,
 		:lppv							=>	HtmlGrid::Select,
 	}
 	def init
 		if(@model.out_of_trade)
-			components.store([2,6], :refdata_override)
+			components.store([2,7], :refdata_override)
 		end
 		super
 		error_message()

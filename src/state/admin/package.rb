@@ -80,6 +80,7 @@ module PackageMethods
 			:market_date,
       :pharmacode,
 			:pretty_dose,
+      :preview_with_market_date,
 			:price_exfactory,
 			:price_public,
 			:refdata_override,

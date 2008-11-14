@@ -16,6 +16,7 @@ class SwissmedicCat < HtmlGrid::Composite
 		:registration_date	=>	HtmlGrid::DateValue,
 		:revision_date			=>	HtmlGrid::DateValue,
 		:expiration_date		=>	HtmlGrid::DateValue,
+		:market_date		    =>	HtmlGrid::DateValue,
     :out_of_trade       =>  HtmlGrid::BooleanValue,
 	}
 	def init
@@ -74,6 +75,11 @@ class SwissmedicCat < HtmlGrid::Composite
     @components.store([0,y], "refdata")
     @components.store([1,y], :out_of_trade)
 		y += 1
+    if(@model.preview?)
+      @components.store([0,y], "market_date_preview")
+      @components.store([1,y], :market_date)
+      y += 1
+    end
 		if(@model.patent)
 			@components.store([0,y], "patented_until")
 			@components.store([1,y], :patent_protected)

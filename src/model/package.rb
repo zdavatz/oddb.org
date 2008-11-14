@@ -40,7 +40,7 @@ module ODDB
 		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type,
 			:price_exfactory, :price_public, :pretty_dose, :pharmacode, :market_date,
 			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
-      :disable, :swissmedic_source, :descr,
+      :disable, :swissmedic_source, :descr, :preview_with_market_date
 			:deductible_m # for just-medical
 		alias :pointer_descr :ikscd
 		registration_data :comarketing_with, :complementary_type, :expiration_date,
@@ -58,7 +58,8 @@ module ODDB
       @parts = []
 		end
 		def active?
-			!@disable && (@market_date.nil? || @market_date <= @@today)
+			!@disable && (@preview_with_market_date || @market_date.nil? \
+                    || @market_date <= @@today)
 		end
     def active_agents
       @parts.inject([]) { |acts, part| acts.concat part.active_agents }
@@ -233,6 +234,9 @@ module ODDB
 		end
     def part(oid)
       @parts.find { |part| part.oid == oid }
+    end
+    def preview?
+      @preview_with_market_date && @market_date && @market_date > @@today
     end
 		def public?
       active? && (@refdata_override || !@out_of_trade \
