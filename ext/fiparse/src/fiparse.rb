@@ -9,7 +9,6 @@ require 'util/oddbconfig'
 require 'fachinfo_writer'
 require 'fachinfo_pdf'
 require 'fachinfo_pdf'
-require 'fachinfo_news'
 require 'fachinfo_doc'
 require 'indications'
 require 'minifi'
@@ -25,9 +24,6 @@ module ODDB
 		def storage=(storage)
 			ODBA.storage = storage
 		end
-    def FiParse.extract_fachinfo_id(href)
-      FachinfoNewsWriter.extract_fachinfo_id(href)
-    end
     def FiParse.extract_indications(path)
       Indications.extract(path)
     end
@@ -54,13 +50,6 @@ module ODDB
 			parser.extract_text(writer)
 			writer.to_fachinfo
 		end
-		def parse_fachinfo_news(src)
-			writer = FachinfoNewsWriter.new
-			formatter = HtmlFormatter.new(writer)
-			parser = HtmlParser.new(formatter)
-			parser.feed(src)
-			writer.fi_ids.compact
-		end
 		def parse_patinfo_html(src)
 			writer = PatinfoHpricot.new
       writer.extract(Hpricot(src))
@@ -68,7 +57,6 @@ module ODDB
 		module_function :storage=
 		module_function :parse_fachinfo_doc
 		module_function :parse_fachinfo_pdf
-		module_function :parse_fachinfo_news
 		module_function :parse_patinfo_html
 	end
 end

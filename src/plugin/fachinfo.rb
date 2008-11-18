@@ -7,6 +7,7 @@ require 'drb/drb'
 require 'util/persistence'
 require 'fileutils'
 require 'view/rss/fachinfo'
+require 'mechanize'
 
 module ODDB
 	class FachinfoPlugin < Plugin
@@ -22,21 +23,20 @@ module ODDB
 			'/content/page_1.aspx',
 		]
 		RECIPIENTS = [ ]
+    @@fi_ptrn = /Monographie.aspx\?Id=([0-9A-Fa-f\-]{36}).*MonType=fi/
 		def initialize(app)
 			super
 			@success = 0
 			@unknown_iksnrs = {}
 			@iksless = []
-			@hdrs = {
-				'User-Agent'=>	'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1) ',
-				'Accept'		=>	'image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, */* ',
-			}
+      init_agent
 			@successes = []	
 			@failures = []	
       @host = 'www.documedinfo.ch'
 		end
-    def extract_fachinfo_id(href)
-      PARSER.extract_fachinfo_id(href)
+    def init_agent
+      @agent = WWW::Mechanize.new
+      @agent.user_agent = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_4_11; de-de) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.22"
     end
 		def extract_iksnrs(languages)
 			iksnrs = []
@@ -51,34 +51,57 @@ module ODDB
 		def extract_name(languages)
 			languages.sort.first.last.name.to_s rescue 'Unknown'
 		end
-		def fachinfo_news
-			ids = []
-			NEWS_PATHS.each { |source|
-				target = File.join(HTML_PATH, File.basename(source))
-				if(http_file(@host, source, target, nil, @hdrs))
-					ids += PARSER.parse_fachinfo_news(File.read(target))
-				else 
-					raise "Could not download #{source} from #{@host}"
-				end
-			}
-			ids
-		end
-		def fetch_languages(idx, langs=LANGUAGES)
-			host = "www.kompendium.ch"
-			urls = []
-			successes = langs.select { |lang|
-				url = sprintf(
-					"/FrmMainMonographie.aspx?Id=%s&lang=%s&MonType=fi", 
-					idx, lang)
-				urls.push(url)
-				http_file(host, url, target(lang, idx), nil, @hdrs)
-			}
-			if(successes.empty?)
-				msg = "could not download any fachinfos from #{host}\n"
-				msg << urls.join("\n")
-				raise msg	
-			end
-		end
+    def fachinfo_news
+      ids = []
+      NEWS_PATHS.each do |source|
+        target = File.join(HTML_PATH, File.basename(source))
+        url = "http://#{@host}#{source}"
+        if page = @agent.get(url)
+          page.links.each do |link|
+            if match = @@fi_ptrn.match(link.href)
+              ids.push match[1]
+            end
+          end
+        else
+          raise "Could not download #{source} from #{@host}"
+        end
+      end
+      ids
+    end
+    def fetch_languages(idx, langs=LANGUAGES)
+      host = "www.kompendium.ch"
+      urls = []
+      successes = langs.select { |lang|
+        sleep 1
+        search = sprintf "Id=%s&lang=%s&MonType=fi", idx, lang
+        url = "http://#{host}/Monographie.aspx?#{search}"
+        urls.push(url)
+        page = @agent.get url
+        if (form = page.forms.first) && (button = form.buttons.first)
+          sleep 1
+          page = form.submit button
+        end
+        url = "http://#{host}/FrmMainMonographie.aspx?#{search}"
+        urls.push(url)
+        sleep 1
+        page = @agent.get url
+        page.save_as target(lang, idx)
+      }
+      if(successes.empty?)
+        msg = "could not download any fachinfos from #{host}\n"
+        msg << urls.join("\n")
+        raise msg
+      end
+    rescue WWW::Mechanize::ResponseCodeError, EOFError
+      retries ||= 10
+      if retries > 0
+        retries -= 1
+        init_agent
+        retry
+      else
+        raise
+      end
+    end
 		def log_news(lines)
 			new_news = (lines + (old_news - lines))
 			dir = File.dirname(LOG_PATH)
@@ -156,16 +179,16 @@ module ODDB
 		def update
 			news = fachinfo_news
 			updates = true_news(news, old_news())
-			updates.each { |idx|
+      updates.reverse.each do |idx|
         languages = parse_from_id(idx)
-				if(languages.empty?)
-					@failures.push(idx)
-				else
-					update_registrations(languages) 
-					@successes.push(idx)
-				end
-			}
-			log_news(updates)
+        if(languages.empty?)
+          @failures.push(idx)
+        else
+          update_registrations(languages)
+          @successes.push(idx)
+        end
+        log_news([idx])
+      end
       postprocess
 			!updates.empty?
 		end
