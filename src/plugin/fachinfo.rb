@@ -192,6 +192,17 @@ module ODDB
       postprocess
 			!updates.empty?
 		end
+    def update_from_id idx
+      languages = parse_from_id(idx)
+      if(languages.empty?)
+        @failures.push(idx)
+      else
+        update_registrations(languages)
+        @successes.push(idx)
+      end
+      postprocess
+      @failures.empty?
+    end
 		def update_registrations(languages)
 			iksnrs = begin
 				extract_iksnrs(languages)
