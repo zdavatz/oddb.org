@@ -156,6 +156,7 @@ module ODDB
 				}.join
 			end
 			def <<(text)
+        @raw_txt ||= @text.dup
         if(@raw_txt[-1] == ?- && /^[a-z\336-\377]/.match(text))
           # if we're appending to a hyphen, and text starts with a lowercase
           # letter from iso-latin-1, we need to remove the hyphen
