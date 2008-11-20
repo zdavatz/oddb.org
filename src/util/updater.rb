@@ -2,14 +2,12 @@
 # Updater-- oddb -- 19.02.2003 -- hwyss@ywesee.com 
 
 require 'plugin/analysis'
-require 'plugin/bsv'
+require 'plugin/bsv_xml'
 require 'plugin/comarketing'
 require 'plugin/doctors'
 require 'plugin/fachinfo'
 require 'plugin/hospitals'
-require 'plugin/index_therapeuticus'
 require 'plugin/interaction'
-require 'plugin/limitation'
 require 'plugin/lppv'
 require 'plugin/medwin'
 require 'plugin/migel'
@@ -152,11 +150,11 @@ module ODDB
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
 			logs = @app.create(logs_pointer)
 			if(latest = logs.newest_date)
-				klass = BsvPlugin2
+				klass = BsvXmlPlugin
 				plug = klass.new(@app)
 				subj = 'SL-Update Reconsidered'
 				wrap_update(klass, subj) {
-					if(plug.update(latest))
+					if(plug._update)
 						log = logs.latest
 						change_flags = plug.change_flags.update(log.change_flags.odba_instance) 
 						@app.update(log.pointer, {:change_flags, change_flags})
@@ -207,24 +205,20 @@ module ODDB
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
 			logs = @app.create(logs_pointer)
 			this_month = Date.new(@@today.year, @@today.month)
-			latest = logs.newest_date || (this_month << 1)
-			months = [this_month, this_month >> 1].select { |month| month > latest }
-			klass = BsvPlugin2
+			klass = BsvXmlPlugin
 			plug = klass.new(@app)
-			subj = 'SL-Update'
+			subj = 'SL-Update (XML)'
 			wrap_update(klass, subj) { 
-				if(months.any? { |month| plug.update(month) } )
-					log_notify_bsv(plug, plug.month, subj)
+				if plug.update
+					log_notify_bsv(plug, this_month, subj)
 				end
 			}
 		end
     def update_bsv_followers
-      update_limitation_text
       update_trade_status
       update_medwin_packages
       update_lppv
       update_price_feeds
-      update_index_therapeuticus
       export_csv
       export_csv_extended
       export_ouwerkerk
@@ -245,12 +239,6 @@ module ODDB
 		end
 		def update_interactions
 			update_simple(Interaction::InteractionPlugin, 'Interaktionen')
-		end
-    def update_index_therapeuticus
-      update_simple(IndexTherapeuticusPlugin, 'IndexTherapeuticus')
-    end
-		def update_limitation_text
-			update_simple(LimitationPlugin, 'LimitationText')
 		end
 		def update_lppv
 			update_immediate(LppvPlugin, 'Lppv prices')

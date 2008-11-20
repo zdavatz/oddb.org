@@ -76,10 +76,16 @@ class Session < HttpSession
 	end
 	def handle_resp!(resp)
 		@cookie_header = resp["set-cookie"]
-    if(match = /VIEWSTATE.*?value="([^"]+)"/.match(resp.body))
+    body = resp.body
+    if(match = /VIEWSTATE.*?value="([^"]+)"/.match(body))
       @viewstate = match[1]
     else
       @viewstate = nil
+    end
+    if(match = /EVENTVALIDATION.*?value="([^"]+)"/.match(body))
+      @eventvalidation = match[1]
+    else
+      @eventvalidation = nil
     end
 		@viewstate
 	end
@@ -88,13 +94,31 @@ class Session < HttpSession
 		resp = post(self.http_path, hash)
 		@viewstate = handle_resp!(resp)
 		resp.body
+  rescue Errno::ENETUNREACH
+    require 'pp'
+    puts "error for criteria: #{criteria.pretty_inspect}"
+    puts "... post_data: #{hash.pretty_inspect}"
+    retries ||= 3
+    if retries > 0
+      retries -= 1
+      sleep 60 # wait a minute for the network to recover
+      retry
+    else
+      raise
+    end
   rescue RuntimeError => err
     if /InternalServerError/.match err.message
       require 'pp'
       puts "error for criteria: #{criteria.pretty_inspect}"
       puts "... post_data: #{hash.pretty_inspect}"
-      sleep 600 # wait 10 minutes for the server to recover
-      retry
+      retries ||= 3
+      if retries > 0
+        retries -= 1
+        sleep 600 # wait 10 minutes for the server to recover
+        retry
+      else
+        raise
+      end
     else
       raise
     end
@@ -115,6 +139,9 @@ class Session < HttpSession
 		if(@viewstate)
 			data.push(['__VIEWSTATE', @viewstate])
 		end
+    if @eventvalidation
+			data.push(['__EVENTVALIDATION', @eventvalidation])
+    end
 		@form_keys.each { |key, new_key|
 			if(val = criteria[key])
 				val = Iconv.iconv('utf8', 'latin1', val.to_s).first

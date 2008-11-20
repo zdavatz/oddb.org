@@ -56,5 +56,10 @@ module ODDB
         lt
       end
     end
+    def parent
+      if parent_code = @code[/.+(?=\d{2}.?)/]
+        find_by_code parent_code
+      end
+    end
   end
 end

@@ -9,7 +9,8 @@ module ODDB
 	class SlEntry
 		include Persistence
 		attr_accessor :limitation, :limitation_points
-		attr_accessor :introduction_date, :bsv_dossier
+		attr_accessor :introduction_date, :bsv_dossier, :status, :type,
+                  :valid_from, :valid_until
 		attr_reader :limitation_text
 		def create_limitation_text
 			@limitation_text = LimitationText.new

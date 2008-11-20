@@ -115,13 +115,19 @@ module ODDB
       cs = comparable_size
       bottom = cs * 0.75
       top = cs * 1.25
-      @sequence.comparables.collect { |seq|
-        seq.public_packages.select { |pack|
+      comparables = []
+      if @generic_group
+        comparables.concat @generic_group.packages
+      end
+      @sequence.comparables.each { |seq|
+        comparables.concat seq.public_packages.select { |pack|
           comparable?(bottom, top, pack)
         }
-      }.flatten + @sequence.public_packages.select { |pack|
+      }
+      comparables.concat @sequence.public_packages.select { |pack|
         comparable?(bottom, top, pack)
       }
+      comparables.uniq
     end
     def comparable_size
       ODDB::Dose.new @parts.collect { |part| 

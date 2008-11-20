@@ -7,5 +7,6 @@ module ODDB
 	class LimitationText
 		include SimpleLanguage
 		ODBA_SERIALIZABLE = [ '@descriptions' ]
+    attr_accessor :code, :type, :niveau, :value, :valid_from
 	end
 end

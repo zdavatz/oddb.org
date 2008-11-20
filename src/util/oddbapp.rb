@@ -46,7 +46,8 @@ class OddbPrevalence
     :minifis, :notification_logger, :orphaned_fachinfos,
     :orphaned_patinfos, :patinfos, :patinfos_deprived_sequences,
     :registrations, :slates, :users, :narcotics, :accepted_orphans,
-    :commercial_forms, :rss_updates, :feedbacks, :indices_therapeutici
+    :commercial_forms, :rss_updates, :feedbacks, :indices_therapeutici,
+    :generic_groups
 	def initialize
 		init
 		@last_medication_update ||= Time.now()
@@ -166,7 +167,7 @@ class OddbPrevalence
 	def active_pdf_patinfos
 		active = {}
 		each_sequence { |seq|
-			if(seq.active? && (str = seq.pdf_patinfo))
+			if(str = seq.active_patinfo)
 				active.store(str, 1)
 			end
 		}
