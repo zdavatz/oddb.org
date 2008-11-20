@@ -265,8 +265,11 @@ Grammar OddbSize
 			def issue_update(hook, values, origin = nil)
 				obj = resolve(hook)
 				unless(obj.nil?)
-					obj.update_values(obj.diff(values, hook), origin)
-					obj.odba_store
+          diff = obj.diff(values, hook)
+          unless diff.empty?
+            obj.update_values(diff, origin)
+            obj.odba_store
+          end
 				end
 				obj
 			end
