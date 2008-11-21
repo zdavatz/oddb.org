@@ -2,6 +2,8 @@
 # RssPlugin -- oddb.org -- 16.08.2007 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
+require 'view/rss/price_cut'
+require 'view/rss/price_rise'
 
 module ODDB
   class RssPlugin < Plugin

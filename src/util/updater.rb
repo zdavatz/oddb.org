@@ -154,14 +154,22 @@ module ODDB
 				plug = klass.new(@app)
 				subj = 'SL-Update Reconsidered'
 				wrap_update(klass, subj) {
-					if(plug._update)
-						log = logs.latest
-						change_flags = plug.change_flags.update(log.change_flags.odba_instance) 
-						@app.update(log.pointer, {:change_flags, change_flags})
-						partlog = Log.new(latest)
-						partlog.update_values(log_info(plug))
-						partlog.notify(subj)
-					end
+          if(plug._update)
+            log = logs.latest
+            change_flags = plug.change_flags
+            log.change_flags.each do |ptr, flgs|
+              if flags = change_flags[ptr]
+                flags.concat flgs
+                flags.uniq!
+              else
+                change_flags[ptr] = flgs
+              end
+            end
+            @app.update(log.pointer, {:change_flags, change_flags})
+            partlog = Log.new(latest)
+            partlog.update_values(log_info(plug))
+            partlog.notify(subj)
+          end
 				}
 			end
 		end
@@ -205,6 +213,9 @@ module ODDB
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
 			logs = @app.create(logs_pointer)
 			this_month = Date.new(@@today.year, @@today.month)
+      if (latest = logs.newest_date) && latest >= this_month
+        this_month >> 1
+      end
 			klass = BsvXmlPlugin
 			plug = klass.new(@app)
 			subj = 'SL-Update (XML)'
@@ -368,6 +379,17 @@ module ODDB
 		def log_notify_bsv(plug, date, subj='SL-Update')
 			pointer = Persistence::Pointer.new([:log_group, :bsv_sl], [:log, date])
 			values = log_info(plug)
+      if log = pointer.resolve(@app)
+        change_flags = values[:change_flags]
+        log.change_flags.each do |ptr, flgs|
+          if flags = change_flags[ptr]
+            flags.concat flgs
+            flags.uniq!
+          else
+            change_flags[ptr] = flgs
+          end
+        end
+      end
 			log = @app.update(pointer.creator, values)
 			log.notify(subj)
 		end
