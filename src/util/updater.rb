@@ -169,6 +169,8 @@ module ODDB
             partlog = Log.new(latest)
             partlog.update_values(log_info(plug))
             partlog.notify(subj)
+            ## Store all subsequent BSV-Updates in next month.
+            @app.create(logs_pointer + [:log, latest >> 1])
           end
 				}
 			end
@@ -213,8 +215,8 @@ module ODDB
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
 			logs = @app.create(logs_pointer)
 			this_month = Date.new(@@today.year, @@today.month)
-      if (latest = logs.newest_date) && latest >= this_month
-        this_month >> 1
+      if (latest = logs.newest_date) && latest > this_month
+        this_month = latest
       end
 			klass = BsvXmlPlugin
 			plug = klass.new(@app)
