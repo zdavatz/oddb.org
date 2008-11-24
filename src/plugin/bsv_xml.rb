@@ -34,6 +34,12 @@ module ODDB
       def text text
         @text << @@iconv.iconv(text) if @text
       end
+      def time text
+        unless txt.to_s.empty?
+          parts = txt.split('.', 3).collect do |part| part.to_i end
+          Time.local *parts.reverse
+        end
+      end
       def update_chapter chp, text, subheading=nil
         sec = chp.next_section
         if subheading
@@ -123,6 +129,7 @@ module ODDB
       attr_reader :change_flags, :conflicted_packages,
                   :conflicted_registrations, :unknown_packages,
                   :unknown_registrations
+      attr_accessor :origin
       def initialize *args
         super
         @conflicted_packages = []
@@ -196,6 +203,7 @@ module ODDB
         when /(.+)Price/
           @price_type = $~[1].downcase.to_sym
           @price = Util::Money.new(0, @price_type, 'CH')
+          @price.origin = @origin
         when 'Limitation'
           @in_limitation = true
         when 'ItCode'
@@ -285,7 +293,7 @@ module ODDB
           @price.amount = @text.to_f if @price
         when 'ValidFromDate'
           if @price
-            @price.valid_from = date(@text)
+            @price.valid_from = time(@text)
           elsif @sl_entries
             @sl_entries.each_value do |sl_data|
               sl_data.store :valid_from, date(@text)
@@ -399,7 +407,7 @@ module ODDB
         case entry.name
         when /(.*).xml$/
           updater = $~[1].gsub(/[A-Z]/) do |match| "_" << match.downcase end
-          entry.get_input_stream do |io| send('update' << updater, io) end
+          entry.get_input_stream do |io| send('update' << updater, io, path) end
         when 'Publications.xls'
           # do nothing, is not even an xls as of 11.11.2008
         end
@@ -475,15 +483,16 @@ module ODDB
         packages.join("\n\n"),
       ].join("\n")
     end
-    def update_generics io
+    def update_generics io, path
       listener = GenericsListener.new @app
+      listener.origin = path
       REXML::Document.parse_stream io, listener
     end
-    def update_it_codes io
+    def update_it_codes io, path
       listener = ItCodesListener.new @app
       REXML::Document.parse_stream io, listener
     end
-    def update_preparations io
+    def update_preparations io, path
       @preparations_listener = PreparationsListener.new @app
       REXML::Document.parse_stream io, @preparations_listener
       @change_flags = @preparations_listener.change_flags

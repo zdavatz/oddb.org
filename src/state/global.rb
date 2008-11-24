@@ -33,6 +33,7 @@ require 'state/admin/password_lost'
 require 'state/admin/password_reset'
 require 'state/drugs/patinfo'
 require 'state/drugs/patinfos'
+require 'state/drugs/price_history'
 require 'state/drugs/recentregs'
 require 'state/drugs/result'
 require 'state/drugs/sequence'
@@ -119,6 +120,7 @@ module ODDB
 				:plugin								=>	State::User::Plugin,
 				:passthru							=>	State::User::PassThru,
 				:paypal_thanks				=>	State::User::PayPalThanks,
+        :price_history        =>  State::Drugs::PriceHistory,
 				:recent_registrations =>	State::Drugs::RecentRegs,
 				:sequences						=>	State::Drugs::Sequences,
 				:vaccines							=>	State::Drugs::Vaccines,

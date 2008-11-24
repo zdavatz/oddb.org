@@ -102,10 +102,23 @@ module ODDB
 						prices.store(cur, @lookandfeel.format_price(val))
 					}
 					display = prices.delete(@session.currency)
-					span = HtmlGrid::Span.new(model, @session, self)
+          span = nil
+          suffix = ''
+          if model.respond_to?(:has_price_history?) && model.has_price_history?
+            span = HtmlGrid::Link.new(:price_history, model, @session, self)
+            args = [
+              [:pointer, model.pointer],
+              [:search_type, @session.user_input(:search_type)],
+              [:search_query, @session.user_input(:search_query)]
+            ]
+            span.href = @lookandfeel._event_url(:price_history, args)
+            suffix = @lookandfeel.lookup(:click_for_price_history)
+          else
+            span = HtmlGrid::Span.new(model, @session, self)
+          end
 					span.value = display
 					title = prices.sort.collect { |pair| pair.join(': ') }.join(' / ')
-					span.set_attribute('title', title)
+					span.set_attribute('title', title << suffix)
 					span.label = true
 					span
 				elsif(!@lookandfeel.disabled?(:price_request))
