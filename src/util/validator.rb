@@ -215,6 +215,7 @@ module ODDB
 			:plugin,
 			:powerlink,
 			:preview,
+      :price_history,
 			:print,
 			:proceed_download,
 			:proceed_payment,
