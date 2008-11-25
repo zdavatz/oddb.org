@@ -220,6 +220,11 @@ class PackageForm < HtmlGrid::Composite
 			link
 		end
 	end
+  def generic_group(model, session=@session)
+    if (group = model.generic_group) && (pack = group.packages.first)
+      PointerLink.new(:name, pack, @session, self)
+    end
+  end
 end
 class DeductiblePackageForm < View::Admin::PackageInnerComposite
 	include View::HiddenPointer
