@@ -104,7 +104,8 @@ module ODDB
 					display = prices.delete(@session.currency)
           span = nil
           suffix = ''
-          if model.respond_to?(:has_price_history?) && model.has_price_history?
+          if @lookandfeel.enabled?(:price_history) \
+            && model.respond_to?(:has_price_history?) && model.has_price_history?
             span = HtmlGrid::Link.new(:price_history, model, @session, self)
             args = [
               [:pointer, model.pointer],

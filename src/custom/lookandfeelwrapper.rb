@@ -143,6 +143,7 @@ module ODDB
 			:query_limit,
       :screencast,
       :price_cut_rss,
+      :price_history,
       :price_rise_rss,
 			:sponsor,
 			:sponsorlogo,
