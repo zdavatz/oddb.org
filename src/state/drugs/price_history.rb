@@ -11,7 +11,7 @@ class PriceHistory < State::Drugs::Global
   VIEW = View::Drugs::PriceHistory
   class PriceChange
     attr_reader :valid_from
-    attr_accessor :exfactory, :public
+    attr_accessor :exfactory, :public, :percent_exfactory, :percent_public
     def initialize date
       @valid_from = date
     end
@@ -26,9 +26,15 @@ class PriceHistory < State::Drugs::Global
       @model.package = pack
       dates = {}
       pack.prices.each do |key, prices|
-        prices.each do |price|
+        previous = nil
+        prices.sort_by do |price| price.valid_from end.each do |price|
           date = price.valid_from
-          (dates[date] ||= PriceChange.new(date)).send("#{key}=", price)
+          change = (dates[date] ||= PriceChange.new(date))
+          change.send("#{key}=", price)
+          if previous && (pprice = previous.send(key))
+            change.send "percent_#{key}=", (price - pprice) / pprice * 100
+          end
+          previous = change
         end
       end
       @model.concat dates.values

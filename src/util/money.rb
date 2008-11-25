@@ -5,7 +5,7 @@ module ODDB
   module Util
 class Money
   attr_reader :credits
-  attr_accessor :type, :country, :origin, :valid_from, :mutation_code
+  attr_accessor :type, :country, :origin, :valid_from, :mutation_code, :authority
   include Comparable
   def initialize(amount, type=nil, country=nil)
     self.amount = amount

@@ -34,7 +34,7 @@ module ODDB
       def text text
         @text << @@iconv.iconv(text) if @text
       end
-      def time text
+      def time txt
         unless txt.to_s.empty?
           parts = txt.split('.', 3).collect do |part| part.to_i end
           Time.local *parts.reverse
@@ -129,13 +129,13 @@ module ODDB
       attr_reader :change_flags, :conflicted_packages,
                   :conflicted_registrations, :unknown_packages,
                   :unknown_registrations
-      attr_accessor :origin
       def initialize *args
         super
         @conflicted_packages = []
         @conflicted_registrations = []
         @unknown_packages = []
         @unknown_registrations = []
+        @origin = @@today.strftime "#{ODDB.config.url_bag_sl_zip} (%d.%m.%Y)"
       end
       def flag_change pointer, key
         (@change_flags[pointer] ||= []).push key
@@ -204,6 +204,7 @@ module ODDB
           @price_type = $~[1].downcase.to_sym
           @price = Util::Money.new(0, @price_type, 'CH')
           @price.origin = @origin
+          @price.authority = :sl
         when 'Limitation'
           @in_limitation = true
         when 'ItCode'
@@ -243,8 +244,9 @@ module ODDB
         when 'Preparation'
           @sl_entries.each do |pac_ptr, sl_data|
             pack = pac_ptr.resolve @app
-            unless sl_data.empty?
-              @app.update pac_ptr + :sl_entry, sl_data, :bag
+            unless pack.nil? || sl_data.empty?
+              pointer = pac_ptr + :sl_entry
+              @app.update pointer.creator, sl_data, :bag
             end
           end
           @lim_texts.each do |pac_ptr, lim_data|
@@ -276,8 +278,9 @@ module ODDB
             end
           end
         when 'OrgGenCode'
-          @reg_data.store :generic_type,
-                         GENERIC_TYPES.fetch(@text, :unknown)
+          gtype = GENERIC_TYPES.fetch(@text, :unknown)
+          @reg_data.store :generic_type, gtype
+          @pac_data.store :sl_generic_type, gtype
         when 'FlagSB20'
           @pac_data.store :deductible, @text == 'Y' ? 20 : 10
         when 'FlagNarcosis'
@@ -380,7 +383,6 @@ module ODDB
         end
         @text = nil
       rescue Exception => e
-        puts [@pcode, @pack, @iksnr, @registration, @sl_data, @lim_data].inspect
         puts e.class
         puts e.message
         puts e.backtrace
@@ -405,9 +407,9 @@ module ODDB
     def _update path=@latest
       Zip::ZipFile.foreach(path) do |entry|
         case entry.name
-        when /(.*).xml$/
+        when /(\w+)(-\d+)?.xml$/
           updater = $~[1].gsub(/[A-Z]/) do |match| "_" << match.downcase end
-          entry.get_input_stream do |io| send('update' << updater, io, path) end
+          entry.get_input_stream do |io| send('update' << updater, io) end
         when 'Publications.xls'
           # do nothing, is not even an xls as of 11.11.2008
         end
@@ -483,16 +485,15 @@ module ODDB
         packages.join("\n\n"),
       ].join("\n")
     end
-    def update_generics io, path
+    def update_generics io
       listener = GenericsListener.new @app
-      listener.origin = path
       REXML::Document.parse_stream io, listener
     end
-    def update_it_codes io, path
+    def update_it_codes io
       listener = ItCodesListener.new @app
       REXML::Document.parse_stream io, listener
     end
-    def update_preparations io, path
+    def update_preparations io
       @preparations_listener = PreparationsListener.new @app
       REXML::Document.parse_stream io, @preparations_listener
       @change_flags = @preparations_listener.change_flags

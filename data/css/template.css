@@ -907,3 +907,6 @@ div#composition-list td {
   padding: 0px; 
   height: 19px;
 }
+a.footnote {
+  font-weight: normal;
+}

@@ -14,18 +14,22 @@ class PriceHistoryList < HtmlGrid::List
   COMPONENTS = {
     [0,0] => :valid_from,
     [1,0] => :exfactory,
-    [2,0] => :public,
-    [3,0] => :origins,
-    [4,0] => :mutation_codes,
+    [2,0] => :percent_exfactory,
+    [3,0] => :public,
+    [4,0] => :percent_public,
+    [5,0] => :authorities,
+    [6,0] => :origins,
+    [7,0] => :mutation_codes,
   }
   CSS_HEAD_MAP = {
     [1,0] => 'subheading right',
-    [2,0] => 'subheading right',
+    [3,0] => 'subheading right',
+    [5,0] => 'subheading right',
   }
   CSS_MAP = {
     [0,0]   => 'list',
-    [1,0,2] => 'list right',
-    [3,0,2] => 'list',
+    [1,0,5] => 'list right',
+    [6,0,2] => 'list',
   }
   DEFAULT_HEAD_CLASS = 'subheading'
   LEGACY_INTERFACE = false
@@ -34,8 +38,16 @@ class PriceHistoryList < HtmlGrid::List
   SYMBOL_MAP = {
     :valid_from => HtmlGrid::DateValue,
   }
+  def authorities(model)
+    collect_data(model, :authority).collect do |key|
+      span = HtmlGrid::Span.new model, @session, self
+      span.value = @lookandfeel.lookup(:"price_authority_#{key}") do key end
+      span.set_attribute("title", @lookandfeel.lookup(:"price_authority_title_#{key}") do key end)
+      span
+    end
+  end
   def exfactory(model)
-    formatted_price(:exfactory, model)
+    formatted_price(:exfactory, model) if model.exfactory
   end
   def mutation_codes(model)
     collect_data(model, :mutation_code).collect do |key|
@@ -43,10 +55,24 @@ class PriceHistoryList < HtmlGrid::List
     end.join(', ')
   end
   def origins(model)
-    collect_data(model, :origin).join(', ')
+    collect_data(model, :origin).collect do |url|
+      link = HtmlGrid::Link.new :origin, model, @session, self
+      link.value = url
+      link.href = url
+      link
+    end
+  end
+  def percent(pcnt)
+    "(%+3.2f %%)" % pcnt if pcnt
+  end
+  def percent_exfactory(model)
+    percent model.percent_exfactory
+  end
+  def percent_public(model)
+    percent model.percent_public
   end
   def public(model)
-    formatted_price(:public, model)
+    formatted_price(:public, model) if model.public
   end
   def collect_data(model, key)
     [:public, :exfactory].collect do |type|
@@ -56,14 +82,22 @@ class PriceHistoryList < HtmlGrid::List
 end
 class PriceHistoryComposite < HtmlGrid::Composite
   COMPONENTS = {
-    [0,0]	=>	:package_name,
-    [0,1]	=>	PriceHistoryList,
+    [0,0,0]	=>	:package_name,
+    [0,0,1]	=>	" - ",
+    [0,0,2]	=>	:article_24,
+    [0,1]	  =>	PriceHistoryList,
   }
 	CSS_CLASS = 'composite'
   CSS_MAP = {
     [0,0]	=>	'th',
   }
   LEGACY_INTERFACE = false
+  def article_24(model)
+    link = HtmlGrid::Link.new(:article_24, model, @session, self)
+    link.href = @lookandfeel.lookup(:article_24_url)
+    link.css_class = 'footnote'
+    link
+  end
   def package_name(model)
     if pack = model.package
       sprintf "%s&nbsp;-&nbsp;%s&nbsp;-&nbsp;%s&nbsp;%s", pack.name, 

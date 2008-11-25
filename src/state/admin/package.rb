@@ -99,6 +99,7 @@ module PackageMethods
       if(price = input[key])
         price = ODDB::Package.price_internal(price, key)
         price.origin = unique_email
+        price.authority = :user
         input.store(key, price)
       end
     }

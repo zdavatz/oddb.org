@@ -27,7 +27,9 @@ module ODDB
 			@tables.at(1).each_row { |row|
 				if(pcode_style.match(row.cdata(3)) \
 					 && price_style.match(row.cdata(5)))
-					prices.store(row.cdata(3), row.cdata(5))
+          price = Util::Money.new(row.cdata(5).to_f, :public, 'CH')
+          price.authority = :lppv
+					prices.store(row.cdata(3), price)
 				end
 			}
 			prices
@@ -44,7 +46,7 @@ module ODDB
 			def initialize(package, current)
 				old = package.price_public
 				if old == nil
-					@old = 0
+					@old = Package.price_internal(0)
 				else
 					@old = old
 				end
@@ -93,14 +95,18 @@ module ODDB
 		end
 		def get_prices(char, http)
 			writer = LppvWriter.new
-			response = http.get(sprintf(LPPV_PATH, char))
+      path = sprintf(LPPV_PATH, char)
+			response = http.get(path)
 			formatter = HtmlFormatter.new(writer)
 			parser = HtmlParser.new(formatter)
 			parser.feed(response.body)
 			if writer.prices.empty?
 				@not_updated_chars.push(char)
 			end
-			writer.prices
+      origin = "http://#{LPPV_HOST}#{path}"
+      prices = writer.prices
+      prices.each do |key, price| price.origin = origin end
+      prices
 		end				
 		def update_package(package, data)
 			if(price_dat = data.delete(package.pharmacode))
