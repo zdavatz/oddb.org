@@ -55,11 +55,15 @@ class PriceHistoryList < HtmlGrid::List
     end.join(', ')
   end
   def origins(model)
-    collect_data(model, :origin).collect do |url|
+    collect_data(model, :origin).inject([]) do |memo, url_and_date|
+      url, date = url_and_date.split(' ')
       link = HtmlGrid::Link.new :origin, model, @session, self
-      link.value = url
-      link.href = url
-      link
+      link.href = link.value = url
+      memo.push link
+      if date
+        memo.push ' ', date
+      end
+      memo
     end
   end
   def percent(pcnt)
