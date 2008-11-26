@@ -77,7 +77,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[6,15]	=>	:datadesc_patinfo_yaml,
 		[7,15]	=>	:example_patinfo_yaml,
 		[0,16]	=>	:yaml_price_history_export,
-		[3,16]	=>	:yaml_price_history_price,
+		[2,16]	=>	:yaml_price_history_price,
 		[6,16]	=>	:datadesc_price_history_yaml,
 		[7,16]	=>	:example_price_history_yaml,
 
@@ -413,7 +413,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
     checkbox_with_filesize("price_history.yaml")
   end
   def yaml_price_history_price(model, session)
-    once('price_history.yaml')
+    once_or_year('price_history.yaml')
   end
 end
 class DownloadExportComposite < Form
