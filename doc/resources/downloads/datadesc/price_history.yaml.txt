@@ -1,0 +1,53 @@
+Datenbeschrieb price_history.yaml
+
+Version:  1.0.0
+Erstellt: 26.11.2008 (1.0.0) durch hwyss@ywesee.com
+
+## Struktur ##
+Encoding: ISO-8859-1
+
+Top-Level:
+- Stream von voneinander unabhängigen YAML-Documents, wovon jedes eine Package beschreibt.
+
+Package:
+- iksnr         (String(5) NOT NULL)       -> Registrations-Id der Swissmedic (ehemals IKS)
+- ikscd         (String(3), NOT NULL)      -> Packungsnummer. Ergibt zusammen mit Registration.iksnr die 8-Stellige Swissmedic-Nummer.
+- name          (String)                   -> Name des Produkts
+- size          (String)                   -> Grössenbezeichnung
+- ean13         (String)                   -> Ean13 des Produkts
+- pharmacode    (String)                   -> Pharmacode gemäss RefData
+- out_of_trade  (Boolean)                  -> Nicht im Handel erhältlich
+- prices        (Hash (Price.type, Array)) -> Preise der Packung (siehe Util::Money)
+
+Util::Money
+- amount        (Float)                    -> Betrag
+- authority     (Symbol)                   -> Kategorisierte Preisherkunft
+- origin        (String)                   -> Preisherkunft (Url oder E-Mail-Adresse)
+- type          (String)                   -> Preisart (exfactory/public)
+- valid_from    (Time)                     -> Preis gültig ab diesem Datum (bei authority == :user Datum und Zeit des Eintrags)
+
+## Glossar ##
+* Authority
+- :sl     Preis in SL festgelegt.
+- :lppv   Preis in LPPV festgelegt.
+- :user   Preisempfehlung des Herstellers
+
+* Hash
+Hash-Table. Unsortierte, indexierte Collection.
+
+* Symbol: 
+Interne Repräsentation eines Namens. In anderen Programmiersprachen auch Atom.
+
+* Time:
+Serialisiert als YYYY-mm-dd HH:MM:SS.ms OFFSET
+
+* YAML
+Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml.org
+
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+Die komplette Version-History ist zu finden unter:
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/oddb.yaml.txt
