@@ -11,9 +11,9 @@ module ODDB
 		def export(name='oddb.yaml')
 			export_obj(name, @app.companies)
 		end
-		def export_array(name, array)
+		def export_array(name, array, opts={})
 			ids = array.collect { |item| item.odba_id }
-			EXPORT_SERVER.export_yaml(ids, EXPORT_DIR, name)
+			EXPORT_SERVER.export_yaml(ids, EXPORT_DIR, name, opts)
 		end
 		def export_atc_classes(name='atc.yaml')
 			export_array(name, @app.atc_classes.values.sort_by { |atc| atc.code.to_s })
@@ -36,5 +36,11 @@ module ODDB
 		def export_patinfos(name='patinfo.yaml')
 			export_array(name, @app.patinfos.values)
 		end
+    def export_prices(name='price_history.yaml')
+      packages = @app.packages.reject do |pac|
+        pac.prices.all? do |key, prices| prices.empty? end
+      end
+      export_array(name, packages, :export_prices => true)
+    end
 	end
 end

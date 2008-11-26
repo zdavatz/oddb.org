@@ -195,7 +195,8 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
         nil
       }
     end
-		def OdbaExporter.export_yaml(odba_ids, dir, name)
+		def OdbaExporter.export_yaml(odba_ids, dir, name, opts={})
+      opts.each do |key, val| Thread.current[key] = val end
 			safe_export(dir, name) { |fh|
 				odba_ids.each { |odba_id|
 					YAML.dump(ODBA.cache.fetch(odba_id, nil), fh)

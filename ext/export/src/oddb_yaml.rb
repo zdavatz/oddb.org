@@ -3,6 +3,11 @@
 
 require 'yaml'
 
+class Time
+  def to_yaml_properties
+    []
+  end
+end
 module ODBA
 	class Stub
 		def to_yaml(*args)
@@ -326,18 +331,28 @@ module ODDB
 		def to_yaml( opts = {} )
 			YAML::quick_emit( self.object_id, opts ) { |out|
 				out.map( taguri ) { |map|
-					to_yaml_properties.each { |m|
-						map.add( m[1..-1], instance_variable_get( m ) )
-					}
-					map.add('size', self.size)
-					map.add('has_generic', self.has_generic?)
-					map.add('price_exfactory', self.price_exfactory.to_f)
-					map.add('price_public', self.price_public.to_f)
-					map.add('ean13', self.barcode.to_s)
-					map.add('out_of_trade', !self.public?)
-					map.add('pharmacode', self.pharmacode)
-					map.add('narcotics', @narcotics.collect { |narc| narc.casrn})
-					map.add('deductible', {'deductible_g' => 10, 'deductible_o' => 20 }[self.deductible.to_s])
+          if Thread.current[:export_prices]
+            map.add('iksnr', self.iksnr)
+            map.add('ikscd', self.ikscd)
+            map.add('name', self.name)
+            map.add('size', self.size)
+            map.add('ean13', self.barcode.to_s)
+            map.add('pharmacode', self.pharmacode)
+            map.add('out_of_trade', !self.public?)
+            map.add('prices', self.prices)
+          else
+            to_yaml_properties.each { |m|
+              map.add( m[1..-1], instance_variable_get( m ) )
+            }
+            map.add('size', self.size)
+            map.add('has_generic', self.has_generic?)
+            map.add('ean13', self.barcode.to_s)
+            map.add('price_exfactory', self.price_exfactory.to_f)
+            map.add('price_public', self.price_public.to_f)
+            map.add('pharmacode', self.pharmacode)
+            map.add('narcotics', @narcotics.collect { |narc| narc.casrn})
+            map.add('deductible', {'deductible_g' => 10, 'deductible_o' => 20 }[self.deductible.to_s])
+          end
 				}
 			}
 		end
@@ -471,4 +486,16 @@ module ODDB
 			}
 		end
 	end
+  module Util
+    class Money
+      include OddbYaml
+      EXPORT_PROPERTIES = [
+        '@amount',
+        '@authority',
+        '@origin',
+        '@type',
+        '@valid_from',
+      ]
+    end
+  end
 end

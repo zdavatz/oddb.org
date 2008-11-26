@@ -169,6 +169,7 @@ module ODDB
 			exporter.export_atc_classes
 			exporter.export_interactions
 			exporter.export_narcotics
+      exporter.export_prices
 			run_on_weekday(2) {
 				exporter.export_fachinfos
 			}
