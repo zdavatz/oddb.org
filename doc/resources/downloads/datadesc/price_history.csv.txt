@@ -1,0 +1,42 @@
+Datenbeschrieb price_history.csv
+
+Version: 1.0.0
+Erstellt: 28.11.2008 (1.0.0) durch hwyss@ywesee.com
+
+## Struktur ##
+Encoding: ISO-8859-1
+Record-Separator: \n
+Field-Separator:  ;
+
+Das Dokument ist zwei-dimensional aufgebaut. Auf der Horizontalen achse liegen
+Daten, an welchen Preis-Änderungen vorkommen, auf der Vertikalen die
+Produkte, für welche die Preis-Änderungen gelten.
+
+Produkt-Record:
+  00: iksnr             (Integer (5)), NOT NULL   -> Registrationsnummer der Swissmedic
+  01: ikscd             (Integer (3)), NOT NULL   -> Packungsnummer der Swissmedic
+  02: name              (*)                       -> Hauptname der Sequenz aus der Registrationsurkunde.
+  03: size              (*)                       -> Packungsgrösse (z.B. 5 x 28 Tabletten)
+  04: barcode           (Integer (13)), NOT NULL  -> Packungs-Barcode, zusammengesetzt aus iksnr und ikscd
+  05: pharmacode        (Integer)                 -> Pharmacode, wo vorhanden
+  06: out_of_trade      (Boolean)                 -> true, wenn die Packung ausser Handel ist
+> 07: price_history     (Price-Point)             -> siehe Price-Point
+
+Price-Point:
+a: price_exfactory      (Float)                   -> Exfactory-Preis zum Zeitpunkt des Spaltenkopfs
+b: authority            (*)                       -> Kategorisierte Preisherkunft (siehe Glossar: Authority)
+c: origin               (String)                  -> Preisherkunft (Url oder E-Mail-Adresse)
+
+## Glossar ##
+* Authority
+- :sl     Preis in SL festgelegt.
+- :lppv   Preis in LPPV festgelegt.
+- :user   Preisempfehlung des Herstellers
+
+* Version
+Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+- Major:         Komplett neuer Aufbau des Exports
+- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+Die komplette Version-History ist zu finden unter:
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/price_history.csv.txt

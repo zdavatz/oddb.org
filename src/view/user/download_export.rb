@@ -80,46 +80,50 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[2,16]	=>	:yaml_price_history_price,
 		[6,16]	=>	:datadesc_price_history_yaml,
 		[7,16]	=>	:example_price_history_yaml,
+		[0,17]	=>	:csv_price_history_export,
+		[2,17]	=>	:csv_price_history_price,
+		[6,17]	=>	:datadesc_price_history_csv,
+		[7,17]	=>	:example_price_history_csv,
 
-		[0,18]	=>	'export_added_value',
-		[0,19]	=>	:xls_chde,
-		[2,19]	=>	:radio_chde_xls,
-		[6,19]	=>	:datadesc_chde_xls,
-		[7,19]	=>	:example_chde_xls,
-		[0,20]	=>	:fachinfos_de_pdf,
-		[2,20]	=>	:radio_fachinfos_de_pdf,
-		[7,20]	=>	:example_fachinfos_de_pdf,
-		[0,21]	=>	:fachinfos_fr_pdf,
-		[2,21]	=>	:radio_fachinfos_fr_pdf,
-		[7,21]	=>	:example_fachinfos_fr_pdf,
-		[0,22]	=>	:xls_generics,
-		[2,22]	=>	:radio_generics_xls,
-		[6,22]	=>	:datadesc_generics_xls,
-		[7,22]	=>	:example_generics_xls,
-		[0,23]	=>	:xls_patents,
-		[3,23]	=>	:radio_patents_xls,
-		[6,23]	=>	:datadesc_patents_xls,
-		[7,23]	=>	:example_patents_xls,
-		[0,24]	=>	:xls_swissdrug_update,
-		[2,24]	=>	:radio_swissdrug_update_xls,
-		[6,24]	=>	:datadesc_swissdrug_update_xls,
-		[7,24]	=>	:example_swissdrug_update_xls,
+		[0,19]	=>	'export_added_value',
+		[0,20]	=>	:xls_chde,
+		[2,20]	=>	:radio_chde_xls,
+		[6,20]	=>	:datadesc_chde_xls,
+		[7,20]	=>	:example_chde_xls,
+		[0,21]	=>	:fachinfos_de_pdf,
+		[2,21]	=>	:radio_fachinfos_de_pdf,
+		[7,21]	=>	:example_fachinfos_de_pdf,
+		[0,22]	=>	:fachinfos_fr_pdf,
+		[2,22]	=>	:radio_fachinfos_fr_pdf,
+		[7,22]	=>	:example_fachinfos_fr_pdf,
+		[0,23]	=>	:xls_generics,
+		[2,23]	=>	:radio_generics_xls,
+		[6,23]	=>	:datadesc_generics_xls,
+		[7,23]	=>	:example_generics_xls,
+		[0,24]	=>	:xls_patents,
+		[3,24]	=>	:radio_patents_xls,
+		[6,24]	=>	:datadesc_patents_xls,
+		[7,24]	=>	:example_patents_xls,
+		[0,25]	=>	:xls_swissdrug_update,
+		[2,25]	=>	:radio_swissdrug_update_xls,
+		[6,25]	=>	:datadesc_swissdrug_update_xls,
+		[7,25]	=>	:example_swissdrug_update_xls,
 
-		[0,26]	=>	'export_compatibility',
-		[0,27]	=>	:oddbdat_download,
-		[2,27]	=>	:radio_oddbdat,
-		[6,27]	=>	:datadesc_oddbdat,
-		[7,27]	=>	:example_oddbdat,
-		[0,28]	=>	:s31x,
-		[2,28]	=>	:radio_s31x,
-		[6,28]	=>	:datadesc_s31x,
-		[0,29]	=>	:compression_label,
-		[0,30]	=>	:compression,
+		[0,27]	=>	'export_compatibility',
+		[0,28]	=>	:oddbdat_download,
+		[2,28]	=>	:radio_oddbdat,
+		[6,28]	=>	:datadesc_oddbdat,
+		[7,28]	=>	:example_oddbdat,
+		[0,29]	=>	:s31x,
+		[2,29]	=>	:radio_s31x,
+		[6,29]	=>	:datadesc_s31x,
+		[0,30]	=>	:compression_label,
+		[0,31]	=>	:compression,
 	}
 	CSS_MAP = {
 		[0,0,8]			=>	'subheading',
 		[0,1,8]			=>	'list bg sum',
-		[0,2,8,26]	=>	'list',
+		[0,2,8,30]	=>	'list',
 		[0,3,8]			=>	'list bg',
 		[0,5,8]			=>	'list bg',
 		[0,7,8]			=>	'list bg',
@@ -127,19 +131,20 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[0,11,8]		=>	'list bg',
 		[0,13,8]		=>	'list bg',
 		[0,15,8]		=>	'list bg',
-		[0,18,8]		=>	'list bg sum',
-		[0,20,8]		=>	'list bg',
-		[0,22,8]		=>	'list bg',
-		[0,24,8]		=>	'list bg',
-		[0,26,8]		=>	'list bg sum',
+		[0,17,8]		=>	'list bg',
+		[0,19,8]		=>	'list bg sum',
+		[0,21,8]		=>	'list bg',
+		[0,23,8]		=>	'list bg',
+		[0,25,8]		=>	'list bg',
+		[0,27,8]		=>	'list bg sum',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
 		[0,1]	=>	8,
-		[0,18]=>	8,
-		[0,26]=>	8,
-		[0,29]=>	8,
+		[0,19]=>	8,
+		[0,27]=>	8,
 		[0,30]=>	8,
+		[0,31]=>	8,
 	}
 	CSS_CLASS = 'component'
 	SYMBOL_MAP = {
@@ -175,6 +180,12 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def csv_narcotics_export(model, session)
 		checkbox_with_filesize('narcotics.csv')
 	end
+  def csv_price_history_export(model, session)
+    checkbox_with_filesize("price_history.csv")
+  end
+  def csv_price_history_price(model, session)
+    once_or_year('price_history.csv')
+  end
 	def datadesc_analysis_csv(model, session)
 		datadesc('analysis.csv')
 	end
@@ -231,6 +242,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
   def datadesc_patinfo_yaml(model, session)
     datadesc('patinfo.yaml')
+  end
+  def datadesc_price_history_csv(model, session)
+    datadesc('price_history.csv')
   end
   def datadesc_price_history_yaml(model, session)
     datadesc('price_history.yaml')
@@ -304,6 +318,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def example_patents_xls(model, session)
 		example('patents.xls')
 	end
+  def example_price_history_csv(model, session)
+    example('price_history.csv')
+  end
   def example_price_history_yaml(model, session)
     example('price_history.yaml')
   end

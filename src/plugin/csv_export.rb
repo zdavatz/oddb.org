@@ -93,6 +93,12 @@ module ODDB
 			EXPORT_SERVER.export_narcotics_csv(ids, EXPORT_DIR,
 				'narcotics.csv')
 		end
+    def export_price_history
+      ids = @app.packages.select do |pac| pac.has_price? end.collect do |pac|
+        pac.odba_id
+      end
+      EXPORT_SERVER.export_price_history_csv(ids, EXPORT_DIR, 'price_history.csv')
+    end
     def log_info
       hash = super
       if @file_path

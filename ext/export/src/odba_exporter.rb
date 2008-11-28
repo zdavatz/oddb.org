@@ -195,6 +195,36 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
         nil
       }
     end
+    def OdbaExporter.export_price_history_csv(odba_ids, dir, name)
+      epoch = Date.new 1979
+      safe_export(dir, name) { |fh|
+        dates = {}
+        packages = odba_ids.collect do |odba_id|
+          pack = ODBA.cache.fetch(odba_id, nil)
+          pack.prices.each do |type, prices|
+            prices.each do |price|
+              dates[(time = price.valid_from) ? time.to_date : epoch] = true
+            end
+          end
+          pack
+        end
+        dates = dates.keys.sort
+        if dates.first == epoch
+          dates[0] = nil
+        end
+        head = %w{iksnr ikscd name size barcode pharmacode out_of_trade}
+        dates.each do |date|
+          datestr = date ? date.strftime('%d.%m.%Y') : 'unknown'
+          head.push "#{datestr} (exfactory)", 'authority', 'origin',
+                    "#{datestr} (public)", 'authority', 'origin'
+        end
+        CSV::Writer.generate(fh, ';') do |csv| csv << head end
+        packages.sort_by do |pack| pack.name end.each do |pack|
+          CsvExporter.dump(CsvExporter::PRICE_HISTORY, pack, fh, :dates => dates)
+        end
+        nil
+      }
+    end
 		def OdbaExporter.export_yaml(odba_ids, dir, name, opts={})
       opts.each do |key, val| Thread.current[key] = val end
 			safe_export(dir, name) { |fh|

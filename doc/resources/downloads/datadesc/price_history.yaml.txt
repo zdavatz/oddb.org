@@ -1,6 +1,7 @@
 Datenbeschrieb price_history.yaml
 
-Version:  1.0.0
+Version:  1.0.1
+Geändert: 28.11.2008 (1.0.1) durch hwyss@ywesee.com
 Erstellt: 26.11.2008 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
@@ -21,7 +22,7 @@ Package:
 
 Util::Money
 - amount        (Float)                    -> Betrag
-- authority     (Symbol)                   -> Kategorisierte Preisherkunft
+- authority     (Symbol)                   -> Kategorisierte Preisherkunft (siehe Glossar: Authority)
 - origin        (String)                   -> Preisherkunft (Url oder E-Mail-Adresse)
 - type          (String)                   -> Preisart (exfactory/public)
 - valid_from    (Time)                     -> Preis gültig ab diesem Datum (bei authority == :user Datum und Zeit des Eintrags)
@@ -50,4 +51,4 @@ Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation
 - Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
 - Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
-http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/oddb.yaml.txt
+http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/price_history.yaml.txt

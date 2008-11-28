@@ -316,8 +316,11 @@ module ODDB
 			end
 			@generic_group = generic_group
 		end
+    def has_price?
+      prices.any? do |key, values| !values.empty? end
+    end
     def has_price_history?
-      @prices.any? do |key, values| values.size > 1 end
+      prices.any? do |key, values| values.size > 1 end
     end
     def price(type, ord_or_time=0)
       candidates = (prices[type] ||= [])

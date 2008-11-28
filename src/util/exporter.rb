@@ -48,6 +48,7 @@ module ODDB
 			export_csv
 			export_doc_csv
       export_index_therapeuticus_csv
+      export_price_history_csv
 			run_on_monthday(1) {
 				export_fachinfo_pdf
 			}
@@ -213,6 +214,12 @@ module ODDB
 		def mail_patinfo_invoices
 			PatinfoInvoicer.new(@app).run
 		end
+    def export_price_history_csv
+      plug = CsvExportPlugin.new(@app)
+      plug.export_price_history
+      EXPORT_SERVER.clear
+      sleep(30)
+    end
 		def mail_stats(key)
 			date = @@today
 			if(date.mday < 8)

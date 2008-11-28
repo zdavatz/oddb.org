@@ -52,6 +52,7 @@ module ODDB
     'patents.xls'         => 500,
     'patinfo.yaml'				=> 500,
     'price_history.yaml'  => 1000,
+    'price_history.csv'   => 1000,
     's31x'								=> 900,
     'swissdrug-update.xls'=> 150,
   }
@@ -71,6 +72,7 @@ module ODDB
     'oddbdat'							=> 2500,
     'oddb.yaml'						=> 2500,
     'price_history.yaml'  => 2000,
+    'price_history.csv'   => 2000,
     's31x'								=> 1400,
     'swissdrug-update.xls'=> 1700,
   }
@@ -96,6 +98,7 @@ module ODDB
     'patents.xls'	  			=> 30,
     'patinfo.yaml'				=> 30,
     'price_history.yaml'  => 30,
+    'price_history.csv'   => 30,
     's31x'								=> 30,
     'swissdrug-update.xls'=> 30,
   }
@@ -115,6 +118,7 @@ module ODDB
     'oddbdat'							=> 365,
     'oddb.yaml'						=> 365,
     'price_history.yaml'  => 365,
+    'price_history.csv'   => 365,
     's31x'								=> 365,
     'swissdrug-update.xls'=> 365,
   }

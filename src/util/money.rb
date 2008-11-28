@@ -22,6 +22,7 @@ class Money
   def to_f
     @amount || (@credits.to_f / 100)
   end
+  alias :amount :to_f
   def to_i
     @credits.to_i
   end
