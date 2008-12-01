@@ -13,6 +13,7 @@ module ODDB
   defaults = {
     'config'			        => default_config_files,
     'url_bag_sl_zip'      => 'http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip',
+    'bsv_archives'        => '(?:PR|BSV_per_20)(0[3-8])[\d.]+(?:txt|xls)',
   }
 
   config = RCLConf::RCLConf.new(ARGV, defaults)
