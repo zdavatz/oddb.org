@@ -57,6 +57,9 @@ class Session < HttpSession
     resp = get '/'
     resp = get @http_path
 		handle_resp!(resp)
+  rescue Timeout::Error => err
+    err.message << " - #{server} is not responding"
+    raise err
 	end
 	def detail_html(ctl)
 		hash = post_hash({}, ctl)
@@ -95,9 +98,6 @@ class Session < HttpSession
 		@viewstate = handle_resp!(resp)
 		resp.body
   rescue Errno::ENETUNREACH
-    require 'pp'
-    puts "error for criteria: #{criteria.pretty_inspect}"
-    puts "... post_data: #{hash.pretty_inspect}"
     retries ||= 3
     if retries > 0
       retries -= 1

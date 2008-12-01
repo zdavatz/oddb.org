@@ -271,7 +271,7 @@ module ODDB
           @registration = @app.registration(@iksnr)
         when 'SwissmedicNo8'
           @report.store :swissmedic_no8_bag, @text
-          if @text.strip.empty?
+          if @text.strip.empty? && !@out_of_trade
             @missing_ikscodes.push @report
           end
           if @registration
