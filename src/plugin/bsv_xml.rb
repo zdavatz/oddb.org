@@ -174,6 +174,7 @@ module ODDB
           @report = @report_data.dup.update(@data).update(@reg_data).
                                      update(@seq_data)
           if @pack = Package.find_by_pharmacode(@pcode)
+            @out_of_trade = @pack.out_of_trade
             @registration ||= @pack.registration
             if @registration && !['00000', @registration.iksnr].include?(@iksnr)
               @report.store :swissmedic_no_oddb, @registration.iksnr
