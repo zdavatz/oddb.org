@@ -127,14 +127,18 @@ module ODDB
       MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
       GENERIC_TYPES = { 'O' => :original, 'G' => :generic }
       attr_reader :change_flags, :conflicted_packages,
-                  :conflicted_registrations, :missing_ikscodes, 
-                  :unknown_packages, :unknown_registrations
+                  :conflicted_packages_oot, :conflicted_registrations,
+                  :missing_ikscodes, :missing_ikscodes_oot, :unknown_packages,
+                  :unknown_packages_oot, :unknown_registrations
       def initialize *args
         super
         @conflicted_packages = []
+        @conflicted_packages_oot = []
         @conflicted_registrations = []
         @missing_ikscodes = []
+        @missing_ikscodes_oot = []
         @unknown_packages = []
+        @unknown_packages_oot = []
         @unknown_registrations = []
         @origin = @@today.strftime "#{ODDB.config.url_bag_sl_zip} (%d.%m.%Y)"
       end
@@ -170,15 +174,18 @@ module ODDB
         when 'Pack'
           @pcode = attrs['Pharmacode']
           @data = @pac_data.dup
-          @data.store :pharmacode, @pcode
           @report = @report_data.dup.update(@data).update(@reg_data).
                                      update(@seq_data)
+          @report.store :pharmacode_bag, @pcode
+          @data.store :pharmacode, @pcode
           if @pack = Package.find_by_pharmacode(@pcode)
             @out_of_trade = @pack.out_of_trade
             @registration ||= @pack.registration
-            if @registration && !['00000', @registration.iksnr].include?(@iksnr)
+            if @registration
               @report.store :swissmedic_no_oddb, @registration.iksnr
-              @conflicted_registrations.push @report
+              unless ['00000', @registration.iksnr].include?(@iksnr)
+                @conflicted_registrations.push @report
+              end
             end
           elsif ikskey = load_ikskey(@pcode)
             @iksnr = ikskey[0,5] if @iksnr == '00000'
@@ -272,13 +279,18 @@ module ODDB
           @registration = @app.registration(@iksnr)
         when 'SwissmedicNo8'
           @report.store :swissmedic_no8_bag, @text
-          if @text.strip.empty? && !@out_of_trade
-            @missing_ikscodes.push @report
+          if @text.strip.empty?
+            if @out_of_trade
+              @missing_ikscodes_oot.push @report
+            else
+              @missing_ikscodes.push @report
+            end
           end
           if @registration
             @ikscd = '%03i' % @text[-3,3].to_i
             @pack ||= @registration.package @ikscd
             if @pack && @pack.pharmacode && @pack.pharmacode != @pcode
+              @report.store :pharmacode_oddb, @pack.pharmacode
               @conflict = true
             end
           end
@@ -335,11 +347,14 @@ module ODDB
                 @unknown_packages.push @report
               else
                 if @conflict
-                  @report.store :pharmacode_oddb, @pack.pharmacode
                   @conflicted_packages.push @report
                 end
                 flag_change @pack.pointer, flag if flag
               end
+            elsif @registration && @pack.nil?
+              @unknown_packages_oot.push @report
+            elsif @conflict
+              @conflicted_packages_oot.push @report
             end
           end
         when 'IntegrationDate'
@@ -433,27 +448,29 @@ module ODDB
     def log_info
       info = super
       parts = [
-        ['text/plain', 'todo.txt', report_todo],
-        ['text/plain', 'pharmacode_conflicts.txt', report_conflicts],
-      ]
+        [:missing_ikscodes, 'Missing Swissmedic-Codes in SL %d.%m.%Y'],
+        [:unknown_registrations, 'Unknown Registrations in SL %d.%m.%Y'],
+        [:unknown_packages, 'Unknown Packages in SL %d.%m.%Y'],
+        [:conflicted_registrations, 'SMJ/SL-Differences (Registrations) %d.%m.%Y'],
+        [:conflicted_packages, 'SMJ/SL-Differences (Packages) %d.%m.%Y'],
+        [:missing_ikscodes_oot, 
+          'Missing Swissmedic-Codes in SL (out of trade) %d.%m.%Y'],
+        [:unknown_packages_oot, 'Unknown Packages in SL (out of trade) %d.%m.%Y'],
+        [:conflicted_packages_oot, 
+          'SMJ/SL-Differences (Packages, out of trade) %d.%m.%Y'],
+      ].collect do |collection, fmt|
+        values = @preparations_listener.send(collection).collect do |data|
+          report_format data
+        end.sort
+        name = @@today.strftime fmt
+        report = [
+          report_format_header(name, values.size),
+          values.join("\n\n"),
+        ].join("\n")
+        ['text/plain', name.gsub(/[\s()\/-]/, '_') << '.txt', report]
+      end
       info.store(:parts, parts)
       info
-    end
-    def report_conflicts
-      registrations = @preparations_listener.conflicted_registrations.
-        collect do |data|
-        report_format data
-      end.sort
-      packages = @preparations_listener.conflicted_packages.collect do |pac| 
-        report_format data
-      end.sort
-      [
-        report_format_header("Swissmedic-Conflicts: ", registrations.size),
-        registrations.join("\n\n"),
-        nil, nil, nil,
-        report_format_header("Pharmacode-Conflicts: ", packages.size),
-        packages.join("\n\n"),
-      ].join("\n")
     end
     def report_format_header name, size
       sprintf "%-30s%5i", name, size
@@ -465,7 +482,8 @@ module ODDB
         :atc_class,
         :generic_type,
         :deductible,
-        :pharmacode,
+        :pharmacode_bag,
+        :pharmacode_oddb,
         :swissmedic_no_oddb,
         :swissmedic_no5_bag,
         :swissmedic_no8_bag,
@@ -473,29 +491,6 @@ module ODDB
         label = key.to_s.capitalize.gsub('_', '-') << ':'
         sprintf "%-20s %s", label, hash[key]
       end.join("\n")
-    end
-    def report_todo
-      missing = @preparations_listener.missing_ikscodes.
-        collect do |pac|
-        report_format pac
-      end.sort
-      registrations = @preparations_listener.unknown_registrations.
-        collect do |reg|
-        report_format reg
-      end.sort
-      packages = @preparations_listener.unknown_packages.collect do |pac| 
-        report_format pac
-      end.sort
-      [
-        report_format_header("Missing Swissmedic-Codes:", missing.size),
-        missing.join("\n\n"),
-        nil, nil, nil,
-        report_format_header("Unknown Registrations:", registrations.size),
-        registrations.join("\n\n"),
-        nil, nil, nil,
-        report_format_header("Unknown Packages:", packages.size),
-        packages.join("\n\n"),
-      ].join("\n")
     end
     def update_generics io
       listener = GenericsListener.new @app
