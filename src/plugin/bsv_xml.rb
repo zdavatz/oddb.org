@@ -127,12 +127,13 @@ module ODDB
       MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
       GENERIC_TYPES = { 'O' => :original, 'G' => :generic }
       attr_reader :change_flags, :conflicted_packages,
-                  :conflicted_registrations, :unknown_packages,
-                  :unknown_registrations
+                  :conflicted_registrations, :missing_ikscodes, 
+                  :unknown_packages, :unknown_registrations
       def initialize *args
         super
         @conflicted_packages = []
         @conflicted_registrations = []
+        @missing_ikscodes = []
         @unknown_packages = []
         @unknown_registrations = []
         @origin = @@today.strftime "#{ODDB.config.url_bag_sl_zip} (%d.%m.%Y)"
@@ -270,6 +271,9 @@ module ODDB
           @registration = @app.registration(@iksnr)
         when 'SwissmedicNo8'
           @report.store :swissmedic_no8_bag, @text
+          if @text.strip.empty?
+            @missing_ikscodes.push @report
+          end
           if @registration
             @ikscd = '%03i' % @text[-3,3].to_i
             @pack ||= @registration.package @ikscd
@@ -470,6 +474,10 @@ module ODDB
       end.join("\n")
     end
     def report_todo
+      missing = @preparations_listener.missing_ikscodes.
+        collect do |pac|
+        report_format pac
+      end.sort
       registrations = @preparations_listener.unknown_registrations.
         collect do |reg|
         report_format reg
@@ -478,6 +486,9 @@ module ODDB
         report_format pac
       end.sort
       [
+        report_format_header("Missing Swissmedic-Codes:", missing.size),
+        missing.join("\n\n"),
+        nil, nil, nil,
         report_format_header("Unknown Registrations:", registrations.size),
         registrations.join("\n\n"),
         nil, nil, nil,
