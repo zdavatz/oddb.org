@@ -43,7 +43,7 @@ class Package < HtmlGrid::Component
           package.name, package.size, package.price_public
         fmt = "%s: %s, %s, %s"
         if plast
-          args.push (pcurrent - plast) / plast * 100.0
+          args.push((pcurrent - plast) / plast * 100.0)
           fmt = "%s: %s, %s, %s, %+.1f%%"
         end
         item.title = sanitize sprintf(fmt, *args)

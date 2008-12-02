@@ -122,7 +122,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	end
 	def sl_count_text(model, session)
 		create_link(:sl_count_text, 
-			'http://www.galinfo.net',
+			'http://bag.e-mediat.net/SL2007.WEb.external/slindex.htm',
 			:limitation_texts)
 	end
 	def fi_count_text(model, session)
