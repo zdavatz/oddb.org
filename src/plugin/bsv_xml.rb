@@ -463,6 +463,9 @@ module ODDB
         values = @preparations_listener.send(collection).collect do |data|
           report_format data
         end.sort
+        if collection == :conflicted_packages && values.empty?
+          next
+        end
         name = @@today.strftime fmt
         header = report_format_header(name, values.size)
         body << header << "\n"
