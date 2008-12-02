@@ -31,7 +31,7 @@ class Package < HtmlGrid::Component
       feed.channel.link = @lookandfeel._event_url(:home)
       feed.channel.description = @lookandfeel.lookup(@description)
       feed.channel.language = @session.language
-      feed.image.url = @lookandfeel.resource_localized(:logo)
+      feed.image.url = @lookandfeel.resource(:logo_rss)
       feed.image.title = @lookandfeel.lookup(:logo)
       feed.encoding = 'ISO-8859-1'
       feed.xml_stylesheets.new_xml_stylesheet.href = @lookandfeel.resource(:css)

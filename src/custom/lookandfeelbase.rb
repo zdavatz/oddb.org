@@ -4038,6 +4038,7 @@ Zeno Davatz
 			:logo_doctors						=>	'logo_doc.gif',
 			:logo_doctors_de				=>	'logo_doc.gif',
 			:logo_doctors_fr				=>	'logo_doc.gif',
+			:logo_rss	  						=>	'logo_rss.png',
 			:notify									=>	'mail.gif',
 			:paypal_donate					=>	'paypal_donate.gif',
 			:pdf_patinfo						=>	'patinfo',
