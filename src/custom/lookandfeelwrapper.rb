@@ -145,6 +145,7 @@ module ODDB
       :price_cut_rss,
       :price_history,
       :price_rise_rss,
+      :sl_introduction_rss,
 			:sponsor,
 			:sponsorlogo,
 		]

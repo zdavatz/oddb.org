@@ -446,6 +446,7 @@ module ODDB
       target
     end
     def log_info
+      body = ''
       info = super
       parts = [
         [:missing_ikscodes, 'Missing Swissmedic-Codes in SL %d.%m.%Y'],
@@ -463,17 +464,19 @@ module ODDB
           report_format data
         end.sort
         name = @@today.strftime fmt
+        header = report_format_header(name, values.size)
+        body << header << "\n"
         report = [
-          report_format_header(name, values.size),
+          header,
           values.join("\n\n"),
         ].join("\n")
         ['text/plain', name.gsub(/[\s()\/-]/, '_') << '.txt', report]
       end
-      info.store(:parts, parts)
+      info.update(:parts => parts, :report => body)
       info
     end
     def report_format_header name, size
-      sprintf "%-30s%5i", name, size
+      sprintf "%-58s%5i", name, size
     end
     def report_format hash
       [

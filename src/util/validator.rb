@@ -56,7 +56,7 @@ module ODDB
 				'NE', 'NW', 'OW', 'SG', 'SH', 'SO', 'SZ', 'TG',
 				'TI', 'UR', 'VD', 'VS', 'ZG', 'ZH'],
       :channel      =>  ['fachinfo.rss', 'feedback.rss', 'minifi.rss', 
-                         'price_cut.rss', 'price_rise.rss'],
+                         'price_cut.rss', 'price_rise.rss', 'sl_introduction.rss'],
 			:cl_status		=>	['false', 'true'],
 			:complementary_type =>	[nil, 'complementary', 'anthroposophy',
 				'homeopathy', 'phytotherapy', ],

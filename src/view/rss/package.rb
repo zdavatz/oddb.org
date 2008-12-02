@@ -39,10 +39,14 @@ class Package < HtmlGrid::Component
         item.author = "ODDB.org"
         pcurrent = package.price_public
         plast = package.price_public(1)
-        item.title = sanitize sprintf("%s: %s, %s, %s, %+.1f%%",
-          pcurrent.valid_from.strftime(@lookandfeel.lookup(:date_format)),
-          package.name, package.size, package.price_public, 
-          (pcurrent - plast) / plast * 100.0)
+        args = pcurrent.valid_from.strftime(@lookandfeel.lookup(:date_format)),
+          package.name, package.size, package.price_public
+        fmt = "%s: %s, %s, %s"
+        if plast
+          args.push (pcurrent - plast) / plast * 100.0
+          fmt = "%s: %s, %s, %s, %+.1f%%"
+        end
+        item.title = sanitize sprintf(fmt, *args)
         
         url = @lookandfeel._event_url(:show, :pointer => package.pointer)
         item.guid.content = item.link = url
