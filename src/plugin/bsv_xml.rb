@@ -295,8 +295,8 @@ module ODDB
             end
           end
         when 'OrgGenCode'
-          gtype = GENERIC_TYPES.fetch(@text, :unknown)
-          @reg_data.store :generic_type, gtype
+          gtype = GENERIC_TYPES[@text]
+          @reg_data.store :generic_type, (gtype || :unknown)
           @pac_data.store :sl_generic_type, gtype
         when 'FlagSB20'
           @pac_data.store :deductible, @text == 'Y' ? 20 : 10
