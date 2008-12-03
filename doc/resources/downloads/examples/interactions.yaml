@@ -1,129 +1,161 @@
 --- !oddb.org,2003/ODDB::CyP450SubstrateConnection 
 oid: 705
-cyp450: &id002 !oddb.org,2003/ODDB::CyP450 
+cyp450: !oddb.org,2003/ODDB::CyP450 
   cyp_id: 2D6
   inhibitors: 
-    chlorpheniramine: !oddb.org,2003/ODDB::CyP450InhibitorConnection 
-      oid: 81
-      cyp450: *id002
-      category: ""
-      links: []
+  - !oddb.org,2003/ODDB::CyP450InhibitorConnection 
+    oid: 81
+    category: ""
+    links: []
 
-      substance: &id001 !oddb.org,2003/ODDB::Substance 
-        oid: 6361
-        descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-          fr: "Chlorph\xE9namine"
-          de: Chlorphenamin
-          lt: Chlorphenaminum
-          en: Chlorphenamine
-        synonyms: 
-        - Chlorpheniraminum
-        - Chlorpheniramin
-        - Chlorpheniramine
-        - "Chlorph\xE9niramine"
-        effective_form: *id001
-        swissmedic_code: 
-      auc_factor: "1"
-    sertindolum: !oddb.org,2003/ODDB::CyP450InhibitorConnection 
-      oid: 104
-      cyp450: *id002
-      category: 
-      links: []
+    substance: !oddb.org,2003/ODDB::Substance 
+      oid: 6361
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        de: Chlorphenamin
+        fr: "Chlorph\xE9namine"
+        lt: Chlorphenaminum
+        en: Chlorphenamine
+      synonyms: 
+      - Chlorpheniraminum
+      - Chlorpheniramin
+      - Chlorpheniramine
+      - "Chlorph\xE9niramine"
+      swissmedic_code: 
+    auc_factor: "1"
+  - !oddb.org,2003/ODDB::CyP450InhibitorConnection 
+    oid: 104
+    category: 
+    links: []
 
-      substance: &id003 !oddb.org,2003/ODDB::Substance 
-        oid: 5953
-        descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-          de: Sertindol
-          lt: Sertindolum
-          en: Sertindole
-        synonyms: []
+    substance: !oddb.org,2003/ODDB::Substance 
+      oid: 5953
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        de: Sertindol
+        lt: Sertindolum
+        en: Sertindole
+      synonyms: []
 
-        effective_form: *id003
-        swissmedic_code: 
-      auc_factor: 
-    ritonavirum: !oddb.org,2003/ODDB::CyP450InhibitorConnection 
-      oid: 103
-      cyp450: *id002
-      category: ""
-      links: 
-      - !oddb.org,2003/ODDB::Interaction::AbstractLink 
-        info: Cytochrome P450-mediated metabolism of the HIV-1 protease inhibitor ritonavir (ABT-538) in human liver microsomes.
-        href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=PubMed&cmd=Retrieve&list_uids=8613951&dopt=Abstract
-        text: J Pharmacol Exp Ther 1996;277(1):423-431
-      substance: &id004 !oddb.org,2003/ODDB::Substance 
-        oid: 5851
-        descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-          lt: Ritonavirum
-          en: Ritonavir
-        synonyms: []
+      swissmedic_code: 
+    auc_factor: 
+  - !oddb.org,2003/ODDB::CyP450InhibitorConnection 
+    oid: 103
+    category: ""
+    links: 
+    - !oddb.org,2003/ODDB::Interaction::AbstractLink 
+      info: Cytochrome P450-mediated metabolism of the HIV-1 protease inhibitor ritonavir (ABT-538) in human liver microsomes.
+      href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=PubMed&cmd=Retrieve&list_uids=8613951&dopt=Abstract
+      text: J Pharmacol Exp Ther 1996;277(1):423-431
+    substance: !oddb.org,2003/ODDB::Substance 
+      oid: 5851
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        lt: Ritonavirum
+        en: Ritonavir
+      synonyms: []
 
-        effective_form: *id004
-        swissmedic_code: 
-      auc_factor: "1"
-    paroxetinum: !oddb.org,2003/ODDB::CyP450InhibitorConnection 
-      oid: 98
-      cyp450: *id002
-      category: ""
-      links: 
-      - !oddb.org,2003/ODDB::Interaction::AbstractLink 
-        info: "Apparent mechanism-based inhibition of human CYP2D6 in vitro by paroxetine: comparison with fluoxetine and quinidine."
-        href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=12584155&dopt=Abstract
-        text: Drug Metab Dispos. 2003 Mar;31(3):289-93.
-      - !oddb.org,2003/ODDB::Interaction::AbstractLink 
-        info: CYP2D6 genotype, antidepressant use, and tamoxifen metabolism during adjuvant breast cancer treatment.
-        href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=15632378&dopt=Abstract
-        text: J Natl Cancer Inst. 2005 Jan 5;97(1):30-9.
-      - !oddb.org,2003/ODDB::Interaction::AbstractLink 
-        info: Active tamoxifen metabolite plasma concentrations after coadministration of tamoxifen and the selective serotonin reuptake inhibitor paroxetine.
-        href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=14652237&dopt=Abstract
-        text: J Natl Cancer Inst. 2003 Dec 3;95(23):1758-64.
-      - !oddb.org,2003/ODDB::Interaction::AbstractLink 
-        info: Inhibition by paroxetine of desipramine metabolism in extensive but not in poor metabolizers of sparteine.
-        href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=8513845&dopt=Abstract
-        text: Eur J Clin Pharmacol 44:349-355, 1993.
-      - !oddb.org,2003/ODDB::Interaction::AbstractLink 
-        info: Plasma concentrations of clozapine and its major metabolites during combined treatment with paroxetine or sertraline.
-        href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=11147928&dopt=Abstract
-        text: Pharmacopsychiatry. 2000 Nov;33(6):213-7.
-      - !oddb.org,2003/ODDB::Interaction::AbstractLink 
-        info: "CYP2D6 inhibition by selective serotonin reuptake inhibitors: analysis of achievable steady-state plasma concentrations and the effect of ultrarapid metabolism at CYP2D6."
-        href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=12173784&dopt=Abstract
-        text: Pharmacotherapy. 2002 Aug;22(8):1001-6.
-      substance: &id005 !oddb.org,2003/ODDB::Substance 
-        oid: 6155
-        descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-          de: Paroxetin
-          fr: Paroxetine
-          lt: Paroxetinum
-          en: Paroxetine
-        synonyms: []
+      swissmedic_code: 
+    auc_factor: "1"
+  - !oddb.org,2003/ODDB::CyP450InhibitorConnection 
+    oid: 98
+    category: ""
+    links: 
+    - !oddb.org,2003/ODDB::Interaction::AbstractLink 
+      info: "Apparent mechanism-based inhibition of human CYP2D6 in vitro by paroxetine: comparison with fluoxetine and quinidine."
+      href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=12584155&dopt=Abstract
+      text: Drug Metab Dispos. 2003 Mar;31(3):289-93.
+    - !oddb.org,2003/ODDB::Interaction::AbstractLink 
+      info: CYP2D6 genotype, antidepressant use, and tamoxifen metabolism during adjuvant breast cancer treatment.
+      href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=15632378&dopt=Abstract
+      text: J Natl Cancer Inst. 2005 Jan 5;97(1):30-9.
+    - !oddb.org,2003/ODDB::Interaction::AbstractLink 
+      info: Active tamoxifen metabolite plasma concentrations after coadministration of tamoxifen and the selective serotonin reuptake inhibitor paroxetine.
+      href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=14652237&dopt=Abstract
+      text: J Natl Cancer Inst. 2003 Dec 3;95(23):1758-64.
+    - !oddb.org,2003/ODDB::Interaction::AbstractLink 
+      info: Inhibition by paroxetine of desipramine metabolism in extensive but not in poor metabolizers of sparteine.
+      href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=8513845&dopt=Abstract
+      text: Eur J Clin Pharmacol 44:349-355, 1993.
+    - !oddb.org,2003/ODDB::Interaction::AbstractLink 
+      info: Plasma concentrations of clozapine and its major metabolites during combined treatment with paroxetine or sertraline.
+      href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=11147928&dopt=Abstract
+      text: Pharmacopsychiatry. 2000 Nov;33(6):213-7.
+    - !oddb.org,2003/ODDB::Interaction::AbstractLink 
+      info: "CYP2D6 inhibition by selective serotonin reuptake inhibitors: analysis of achievable steady-state plasma concentrations and the effect of ultrarapid metabolism at CYP2D6."
+      href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=12173784&dopt=Abstract
+      text: Pharmacotherapy. 2002 Aug;22(8):1001-6.
+    substance: !oddb.org,2003/ODDB::Substance 
+      oid: 6155
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        fr: Paroxetine
+        de: Paroxetin
+        lt: Paroxetinum
+        en: Paroxetine
+      synonyms: []
 
-        effective_form: *id005
-        swissmedic_code: 
-      auc_factor: "5"
-    sertralinum: !oddb.org,2003/ODDB::CyP450InhibitorConnection 
-      oid: 105
-      cyp450: *id002
-      category: ""
-      links: 
-      - !oddb.org,2003/ODDB::Interaction::AbstractLink 
-        info: The effect of sertraline on the pharmacokinetics of desipramine and imipramine.
-        href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=9284850&dopt=Abstract
-        text: Clin Pharmacol Ther. 1997 Aug;62(2):145-56.
-      substance: &id044 !oddb.org,2003/ODDB::Substance 
-        oid: 6159
-        descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-          fr: Sertraline
-          de: Sertralin
-          lt: Sertralinum
-          en: Sertraline
-        synonyms: []
+      swissmedic_code: 
+    auc_factor: "5"
+  - !oddb.org,2003/ODDB::CyP450InhibitorConnection 
+    oid: 1421954
+    category: ""
+    links: 
+    - !oddb.org,2003/ODDB::Interaction::AbstractLink 
+      info: Akathisia with combined use of midodrine and promethazine.
+      href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=16670408&query_hl=3&itool=pubmed_DocSum
+      text: JAMA. 2006 May 3;295(17):2000-1.
+    substance: !oddb.org,2003/ODDB::Substance 
+      oid: 6912
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        fr: Midodrine
+        de: Midodrin
+        lt: Midodrinum
+        en: Midodrine
+      synonyms: []
 
-        effective_form: *id044
-        swissmedic_code: 
-      auc_factor: "1.25"
-category: 
-links: []
+      swissmedic_code: 
+    auc_factor: "1"
+  - !oddb.org,2003/ODDB::CyP450InhibitorConnection 
+    oid: 1421969
+    category: ""
+    links: []
 
-substance: *id044
-auc_factor: 
+    substance: !oddb.org,2003/ODDB::Substance 
+      oid: 1227735
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        en: Histamine H1 Receptor Antagonists
+      synonyms: []
+
+      swissmedic_code: 
+    auc_factor: "1"
+  - !oddb.org,2003/ODDB::CyP450InhibitorConnection 
+    oid: 106
+    category: ""
+    links: 
+    - !oddb.org,2003/ODDB::Interaction::AbstractLink 
+      info: Potent inhibition of cytochrome P-450 2D6-mediated dextromethorphan O-demethylation by terbinafine.
+      href: http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=10383919&dopt=Abstract
+      text: Drug Metab Dispos. 1999 Jul;27(7):770-5.
+    substance: !oddb.org,2003/ODDB::Substance 
+      oid: 5971
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        de: Terbinafin
+        lt: Terbinafinum
+        en: Terbinafine
+      synonyms: []
+
+      swissmedic_code: 
+    auc_factor: "2"
+  - !oddb.org,2003/ODDB::CyP450InhibitorConnection 
+    oid: 90
+    category: 
+    links: []
+
+    substance: !oddb.org,2003/ODDB::Substance 
+      oid: 5837
+      descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        fr: Fluvoxamin
+        de: Fluvoxamin
+        lt: Fluvoxamin
+        en: Fluvoxamine
+      synonyms: []
+
+      swissmedic_code: 
+    auc_factor: 

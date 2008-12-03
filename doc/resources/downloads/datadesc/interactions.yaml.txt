@@ -1,6 +1,8 @@
 Datenbeschrieb interactions.yaml
 
+Version:  1.1.0
 Version:  1.0.0
+Geändert: 03.12.2008 (1.1.0) durch hwyss@ywesee.com
 Erstellt: 20.09.2007 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
@@ -31,7 +33,6 @@ Substance:
 
 CyP450InhibitorConnection:
 - oid               (Integer, NOT NULL)    -> Unique Identifier
-- cyp450            (CyP450, NOT NULL)     -> Cytochrom
 - substance         (Substance, NOT NULL)  -> Wirkstoff, Aufnahme wird von cyp450 gehemmt
 - category          (String)               -> Wirkstoffkategorie
 - links             (Array (AbstractLink)) -> Referenzen zur Substratzuweisung
@@ -39,7 +40,6 @@ CyP450InhibitorConnection:
 
 CyP450InducerConnection:
 - oid               (Integer, NOT NULL)    -> Unique Identifier
-- cyp450            (CyP450, NOT NULL)     -> Cytochrom
 - substance         (Substance, NOT NULL)  -> Wirkstoff, Aufnahme wird von cyp450 gefördert
 - category          (String)               -> Wirkstoffkategorie
 - links             (Array (AbstractLink)) -> Referenzen zur Substratzuweisung

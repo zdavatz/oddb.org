@@ -173,7 +173,7 @@ module ODDB
   class CyP450InteractionConnection
     EXPORT_PROPERTIES = [
       '@oid',
-      '@cyp450',
+      #'@cyp450', # some parsers don't like circular references
       '@category',
       '@links',
       '@substance',
