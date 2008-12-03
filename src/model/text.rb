@@ -163,8 +163,9 @@ module ODDB
           @raw_txt.chop!
         end
 				@raw_txt << text.to_s
+        @raw_txt.gsub!(/[\n\r]+/, "\n")
+        @raw_txt.gsub!(/^\n+/, "")
 				if(@preformatted)
-					@raw_txt.gsub!(/[\n\r]+/, "\n")
           @raw_txt.gsub!(/(.*?)\t/) { |match|
             str = match[0..-2]
             str << (" " * (8 - (str.length % 8)))
