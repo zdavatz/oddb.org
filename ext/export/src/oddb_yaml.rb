@@ -415,7 +415,6 @@ module ODDB
 			'@sequences',
 			'@indication',
 			'@export_flag',
-			'@fachinfo_oid',
 		]
 		def to_yaml( opts = {} )
 			YAML::quick_emit( self.object_id, opts ) { |out|
@@ -423,6 +422,9 @@ module ODDB
 					to_yaml_properties.each { |m|
 						map.add( m[1..-1], instance_variable_get( m ) )
 					}
+          if @fachinfo
+            map.add('fachinfo_oid', @fachinfo.oid)
+          end
 					map.add('generic_type', self.generic_type)
 					map.add('complementary_type', self.complementary_type)
 				}

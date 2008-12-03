@@ -241,8 +241,6 @@ module ODDB
 		end
 		def fachinfo=(fachinfo)
 			@fachinfo = replace_observer(@fachinfo, fachinfo)
-			@fachinfo_oid = (@fachinfo.nil?) ? nil : @fachinfo.oid
-			@fachinfo
 		end
     def minifi=(minifi)
 			@minifi = replace_observer(@minifi, minifi)
