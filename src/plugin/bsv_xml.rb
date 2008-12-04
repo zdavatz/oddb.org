@@ -475,7 +475,7 @@ module ODDB
         ].join("\n")
         ['text/plain', name.gsub(/[\s()\/-]/, '_') << '.txt', report]
       end
-      info.update(:parts => parts, :report => body)
+      info.update(:parts => parts.compact, :report => body)
       info
     end
     def report_format_header name, size
