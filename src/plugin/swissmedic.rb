@@ -39,6 +39,11 @@ module ODDB
     def capitalize(string)
       string.split(/\s+/).collect { |word| word.capitalize }.join(' ')
     end
+    def cell(row, pos)
+      if str = super
+        str.gsub(/\n\r|\r\n?/, "\n")
+      end
+    end
     def deactivate(deactivations)
       deactivations.each { |row|
         @app.update pointer(row), {:inactive_date => @@today}, :swissmedic
