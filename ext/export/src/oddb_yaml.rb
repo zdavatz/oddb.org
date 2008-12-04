@@ -141,6 +141,12 @@ module ODDB
 			'@contact_email',
 		]
 	end	
+  class Composition
+    include OddbYaml
+    EXPORT_PROPERTIES = [
+      '@galenic_form', '@active_agents'
+    ]
+  end
   class CyP450
     include OddbYaml
     EXPORT_PROPERTIES = [
@@ -327,6 +333,7 @@ module ODDB
 			'@descr',
 			'@ikscat',
 			'@sl_entry',
+      '@parts',
 		]
 		def to_yaml( opts = {} )
 			YAML::quick_emit( self.object_id, opts ) { |out|
@@ -344,7 +351,6 @@ module ODDB
             to_yaml_properties.each { |m|
               map.add( m[1..-1], instance_variable_get( m ) )
             }
-            map.add('size', self.size)
             map.add('has_generic', self.has_generic?)
             map.add('ean13', self.barcode.to_s)
             map.add('price_exfactory', self.price_exfactory.to_f)
@@ -357,6 +363,22 @@ module ODDB
 			}
 		end
 	end
+  class Part
+    include OddbYaml
+    EXPORT_PROPERTIES = [
+      '@composition',
+    ]
+		def to_yaml( opts = {} )
+			YAML::quick_emit( self.object_id, opts ) { |out|
+				out.map( taguri ) { |map|
+          to_yaml_properties.each { |m|
+            map.add( m[1..-1], instance_variable_get( m ) )
+          }
+          map.add('size', self.size)
+				}
+			}
+		end
+  end
 	class Patinfo
 		include OddbYaml
 		EXPORT_PROPERTIES = [
@@ -439,20 +461,10 @@ module ODDB
 			'@name_descr',
 			'@dose',
 			'@atc_class',
-			'@galenic_form',
 			'@composition_text',
+      '@compositions',
 			'@packages',
 		]
-		def to_yaml( opts = {} )
-			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( taguri ) { |map|
-					to_yaml_properties.each { |m|
-						map.add( m[1..-1], instance_variable_get( m ) )
-					}
-					map.add('active_agents', self.active_agents)
-				}
-			}
-		end
 	end
 	class SlEntry
 		include OddbYaml

@@ -1,6 +1,7 @@
 Datenbeschrieb oddb.yaml
 
-Version:  1.4.0
+Version:  1.5.0
+Geändert: 04.12.2008 (1.5.0) durch hwyss@ywesee.com
 Geändert: 22.11.2007 (1.4.0) durch hwyss@ywesee.com
 Geändert: 20.09.2007 (1.3.2) durch hwyss@ywesee.com
 Geändert: 21.03.2007 (1.3.1) durch hwyss@ywesee.com
@@ -61,16 +62,19 @@ Sequence:
 - name_descr        (String)               -> Zusatzname der Sequenz aus der Registrationsurkunde, z.B. 'Tabletten'
 - dose              (Dose)                 -> Dosierung der Sequenz. Wird falls möglich aus dem Namen gewonnen, andernfalls aus der Zusammensetzung.
 - atc_class         (AtcClass)             -> Atc-Klassierung der Sequenz (siehe AtcClass)
-- galenic_form      (GalenicForm)          -> Galenische Form der Sequenz (siehe GalenicForm)
-- composition_text  (String)               -> noch nicht implementiert.
-- active_agents     (Array (ActiveAgent))  -> Wirkstoff-Dosis Paare der Sequenz (siehe ActiveAgent)
+- composition_text  (String)               -> Text der Zusammensetzung.
+- compositions      (Array (Composition))  -> Zusammensetzungen (siehe Composition)
 - packages          (Hash (Package.ikscd, Package) -> Packungen der Sequenz (siehe Package)
+
+Composition:
+- galenic_form      (GalenicForm)          -> Galenische Form
+- active_agents     (Array (ActiveAgent)   -> Wirkstoff/Dosis
 
 Package:
 - ikscd             (String(3), NOT NULL)  -> Packungsnummer. Ergibt zusammen mit Registration.iksnr die 8-Stellige Swissmedic-Nummer.
-- size              (String)               -> Grössenbezeichnung
 - descr             (String)               -> Zusätzlicher Beschreibungstext. Selten.
 - ikscat            (String)               -> Abgabekategorie. A-E
+- parts             (Array (Part))         -> Packungsbestandteile (siehe Part)
 - out_of_trade      (Boolean)              -> Nicht im Handel erhältlich
 - price_exfactory   (Integer)              -> Exfactorypreis in Rappen
 - price_public      (Integer)              -> Publikumspreis in Rappen
@@ -81,6 +85,10 @@ Package:
 - lppv              (Boolean)              -> Produkt ist in LPPV
 - has_generic       (Boolean)              -> Es gibt Generika zu diesem Produkt
 - deductible        (Integer)              -> Selbstbehalt in Prozent
+
+Part:
+- composition       (Composition)          -> Zusammensetzung dieses Bestandteils
+- size              (String)               -> Grössenbezeichnung
 
 AtcClass:
 - code              (String(1-7), NOT NULL)-> Atc-Code. siehe Glossar (AtcCode)
