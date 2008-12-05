@@ -263,8 +263,6 @@ module ODDB
 </Preparations>
        EOS
     end
-    def test_update
-    end
     def test_download
       target = File.join @archive, 'xml',
                Date.today.strftime("XMLPublications-%Y.%m.%d.zip")
@@ -396,6 +394,7 @@ module ODDB
       pac_pointer = ptr += [:package, '028']
       data = { 
         :price_exfactory => Util::Money.new(2.9),
+        :sl_generic_type => :original,
         :deductible      => 10,
         :price_public    => Util::Money.new(7.5),
         :narcotic        => false,
@@ -409,10 +408,11 @@ module ODDB
         :status            => "0",
         :valid_from        => Date.new(1977,3,15),
         :introduction_date => Date.new(1977,3,15),
+        :limitation_points => nil,
       }
-      expected_updates.store ptr, data
+      expected_updates.store ptr.creator, data
       @app.should_receive(:update).and_return do |ptr, data|
-        assert_equal expected_updates.delete(ptr), data
+        assert_equal expected_updates.delete(ptr), data, ptr.to_s
       end
       @plugin.update_preparations StringIO.new(@conflicted_src)
       assert_equal({}, expected_updates)
@@ -425,7 +425,7 @@ module ODDB
         :swissmedic_no_oddb => "39271",
         :swissmedic_no5_bag => "12345",
         :swissmedic_no8_bag => "39271028",
-        :pharmacode         => "703279",
+        :pharmacode_bag     => "703279",
         :generic_type       => :original,
         :deductible         => 10,
         :atc_class          => "M01AG01",
@@ -480,7 +480,7 @@ module ODDB
         :name_descr         => "Filmtabs 500 mg ",
         :swissmedic_no5_bag => "39271",
         :swissmedic_no8_bag => "39271028",
-        :pharmacode         => "703279",
+        :pharmacode_bag     => "703279",
         :generic_type       => :original,
         :deductible         => 10,
         :atc_class          => "M01AG01",
@@ -517,7 +517,7 @@ module ODDB
         :name_descr         => "Filmtabs 500 mg ",
         :swissmedic_no5_bag => "12345",
         :swissmedic_no8_bag => "39271028",
-        :pharmacode         => "703279",
+        :pharmacode_bag     => "703279",
         :pharmacode_oddb    => "987654",
         :generic_type       => :original,
         :deductible         => 10,
@@ -547,6 +547,7 @@ module ODDB
       pac_pointer = ptr += [:package, '028']
       data = { 
         :price_exfactory => Util::Money.new(2.9),
+        :sl_generic_type => :original,
         :deductible      => 10,
         :price_public    => Util::Money.new(7.5),
         :narcotic        => false,
@@ -560,8 +561,9 @@ module ODDB
         :status            => "0",
         :valid_from        => Date.new(1977,3,15),
         :introduction_date => Date.new(1977,3,15),
+        :limitation_points => nil,
       }
-      expected_updates.store ptr, data
+      expected_updates.store ptr.creator, data
       @app.should_receive(:update).and_return do |ptr, data|
         assert_equal expected_updates.delete(ptr), data
       end

@@ -10,6 +10,7 @@ require 'plugin/plugin'
 require 'rexml/document'
 require 'rexml/streamlistener'
 require 'util/persistence'
+require 'util/today'
 require 'zip/zip'
 
 module ODDB
@@ -129,7 +130,10 @@ module ODDB
       attr_reader :change_flags, :conflicted_packages,
                   :conflicted_packages_oot, :conflicted_registrations,
                   :missing_ikscodes, :missing_ikscodes_oot, :unknown_packages,
-                  :unknown_packages_oot, :unknown_registrations
+                  :unknown_packages_oot, :unknown_registrations, 
+                  :created_sl_entries, :deleted_sl_entries, :updated_sl_entries,
+                  :created_limitation_texts, :deleted_limitation_texts,
+                  :updated_limitation_texts
       def initialize *args
         super
         @conflicted_packages = []
@@ -140,6 +144,12 @@ module ODDB
         @unknown_packages = []
         @unknown_packages_oot = []
         @unknown_registrations = []
+        @created_sl_entries = 0
+        @created_limitation_texts = 0
+        @deleted_sl_entries = 0
+        @deleted_limitation_texts = 0
+        @updated_sl_entries = 0
+        @updated_limitation_texts = 0
         @origin = @@today.strftime "#{ODDB.config.url_bag_sl_zip} (%d.%m.%Y)"
       end
       def flag_change pointer, key
@@ -176,6 +186,7 @@ module ODDB
           @data = @pac_data.dup
           @report = @report_data.dup.update(@data).update(@reg_data).
                                      update(@seq_data)
+          @report.delete(:sl_generic_type)
           @report.store :pharmacode_bag, @pcode
           @data.store :pharmacode, @pcode
           if @pack = Package.find_by_pharmacode(@pcode)
@@ -196,7 +207,7 @@ module ODDB
             # package is out of trade
             @out_of_trade = true
           end
-          @sl_data = {}
+          @sl_data = { :limitation_points => nil }
           @lim_data = {}
           @conflict = false
         when 'Preparation'
@@ -244,25 +255,46 @@ module ODDB
               end
             end
             @app.update @pack.pointer, @data, :bag
-            unless @sl_data.empty?
-              @sl_entries.store @pack.pointer, @sl_data
-              @lim_texts.store @pack.pointer, @lim_data
-            end
+            @sl_entries.store @pack.pointer, @sl_data
+            @lim_texts.store @pack.pointer, @lim_data
           end
           @pcode, @pack, @sl_data, @lim_data, @out_of_trade = nil
         when 'Preparation'
           @sl_entries.each do |pac_ptr, sl_data|
             pack = pac_ptr.resolve @app
-            unless pack.nil? || sl_data.empty?
+            unless pack.nil?
               pointer = pac_ptr + :sl_entry
-              @app.update pointer.creator, sl_data, :bag
+              if sl_data.empty?
+                if pack.sl_entry
+                  @deleted_sl_entries += 1
+                  @app.delete pointer
+                end
+              else
+                if pack.sl_entry
+                  @updated_sl_entries += 1
+                else
+                  @created_sl_entries += 1
+                end
+                @app.update pointer.creator, sl_data, :bag
+              end
             end
           end
           @lim_texts.each do |pac_ptr, lim_data|
-            pac = pac_ptr.resolve(@app)
-            if (sl_entry = pac.sl_entry) && !lim_data.empty?
+            if (pac = pac_ptr.resolve(@app)) && (sl_entry = pac.sl_entry)
               txt_ptr = sl_entry.pointer + :limitation_text
-              @app.update txt_ptr.creator, lim_data, :bag
+              if lim_data.empty?
+                if sl_entry.limitation_text
+                  @deleted_limitation_texts += 1
+                  @app.delete txt_ptr
+                end
+              else
+                if sl_entry.limitation_text
+                  @updated_limitation_texts += 1
+                else
+                  @created_limitation_texts += 1
+                end
+                @app.update txt_ptr.creator, lim_data, :bag
+              end
             end
           end
           if @registration
@@ -446,7 +478,7 @@ module ODDB
       target
     end
     def log_info
-      body = ''
+      body = report << "\n\n"
       info = super
       parts = [
         [:missing_ikscodes, 'Missing Swissmedic-Codes in SL %d.%m.%Y'],
@@ -477,6 +509,15 @@ module ODDB
       end
       info.update(:parts => parts.compact, :report => body)
       info
+    end
+    def report
+      [ 'Created SL-Entries', 'Updated SL-Entries', 'Deleted SL-Entries',
+        'Created Limitation-Texts', 'Updated Limitation-Texts', 
+        'Deleted Limitation-Texts' 
+      ].collect do |title|
+        method = title.downcase.gsub(/[ -]/, '_')
+        report_format_header title, @preparations_listener.send(method)
+      end.join("\n")
     end
     def report_format_header name, size
       sprintf "%-58s%5i", name, size
