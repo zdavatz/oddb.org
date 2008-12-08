@@ -548,6 +548,11 @@ module ODDB
           State::Drugs::Package.new(@session, pac)
         else
           result = _search_drugs(query, stype)
+          if @session.lookandfeel.has_result_filter?
+            lnf = @session.lookandfeel
+            filter_proc = Proc.new do |seq| lnf.result_filter seq end
+            result.filter! filter_proc
+          end
           state = State::Drugs::Result.new(@session, result)
           state.search_query = query
           state.search_type = stype

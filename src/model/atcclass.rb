@@ -51,15 +51,12 @@ module ODDB
 			@sequences.each { |seq| seq.atc_class = nil } 
 			@sequences.odba_delete
 		end
-		def company_filter_search(company_name)
-			atc = self.dup
-			atc_sequences = @sequences.odba_instance.dup
-			atc_sequences.delete_if { |seq|
-				!(ODDB.search_term(seq.company.to_s.downcase).include?(company_name))
-			}
-			atc.sequences = atc_sequences
-			atc
-		end
+    def company_filter_search(company_name)
+      filter_proc = Proc.new do |seq|
+        ODDB.search_term(seq.company.to_s.downcase).include?(company_name)
+      end
+      filter filter_proc
+    end
 		def create_ddd(roa)
 			ddds[roa] = DDD.new(roa)	
 		end
@@ -93,6 +90,13 @@ module ODDB
         @ddds.odba_isolated_store
 				ddd
 			end
+    end
+    def filter filter_proc
+      atc = self.dup
+      atc.sequences = @sequences.select do |seq|
+        filter_proc.call seq
+      end
+      atc
     end
 		def packages
 			@sequences.collect { |seq| seq.packages.values }.flatten

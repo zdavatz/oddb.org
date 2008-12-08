@@ -15,11 +15,16 @@ class Sequences < State::Drugs::Global
 	VIEW = View::Drugs::Sequences
 	DIRECT_EVENT = :sequences
 	LIMITED = true
-	def index_lookup(range)
-		@session.search_sequences(range, false).select { |seq|
-		  seq.has_public_packages? 
-    }
-	end
+  def index_lookup(range)
+    lnf = @session.lookandfeel
+    seqs = @session.search_sequences(range, false)
+    if lnf.has_result_filter?
+      seqs = seqs.select do |seq| lnf.result_filter seq end
+    end
+    seqs.select do |seq|
+      seq.has_public_packages? 
+    end
+  end
 	def index_name
 		'sequence_index_exact'
 	end

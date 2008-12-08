@@ -4120,6 +4120,9 @@ Zeno Davatz
         challenge
       }
     end
+    def has_result_filter?
+      false
+    end
     def migel_list_components
       {
         [0,0] =>	:limitation_text,
@@ -4170,6 +4173,9 @@ Zeno Davatz
         [4,0]	=>	:galenic_form,
         [5,0]	=>  :google_search,
       }
+    end
+    def result_filter pac_or_seq
+      true
     end
 	end
 end

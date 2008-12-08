@@ -83,6 +83,18 @@ module ODDB
 			'swissmedinfo'=>	[
 				LookandfeelSwissMedInfo, 
 			],
+      'anthroposophy' => [
+        LookandfeelComplementaryType,
+        LookandfeelAnthroposophy,
+      ],
+      'homeopathy' => [
+        LookandfeelComplementaryType,
+        LookandfeelHomeopathy,
+      ],
+      'phyto-pharma' => [
+        LookandfeelComplementaryType,
+        LookandfeelPhytoPharma,
+      ],
 		}
 	end
 end

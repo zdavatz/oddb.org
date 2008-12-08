@@ -89,6 +89,9 @@ module ODDB
 				&& seq.active? \
         && seq.compositions.sort == @compositions.sort
 		end
+    def complementary_type
+      @registration.complementary_type
+    end
     def composition(oid)
       @compositions.find { |comp| comp.oid == oid }
     end

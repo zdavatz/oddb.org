@@ -121,6 +121,11 @@ module ODDB
     def empty?
       @atc_classes.nil? || @atc_classes.empty?
     end
+    def filter! filter_proc
+      @atc_classes = @atc_classes.collect do |atc|
+        atc.filter filter_proc
+      end
+    end
     def overflow?
       (@atc_classes.size > 1) && (package_count >= @limit)
     end

@@ -120,6 +120,7 @@ class ResultList < HtmlGrid::List
 	CSS_MAP = {}
 	CSS_KEYMAP = {
 		:active_agents			=>	'list italic',
+		:comarketing        =>	'list',
 		:company_name				=>	'list italic',
 		:comparable_size		=>	'list right',
 		:complementary_type	=>	'list',

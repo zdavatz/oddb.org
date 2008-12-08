@@ -5,6 +5,7 @@ require 'sbsm/lookandfeelwrapper'
 
 module SBSM
   class LookandfeelWrapper < Lookandfeel
+    RESULT_FILTER = nil
     def format_price(price, currency=nil)
       unless(price.is_a?(ODDB::Util::Money))
         price = price.to_f / 100.0
@@ -12,6 +13,16 @@ module SBSM
       if(price.to_i > 0)
         [currency, sprintf('%.2f', price)].compact.join(' ')
       end
+    end
+    def has_result_filter?
+      !!self.class::RESULT_FILTER
+    end
+    def result_filter pac_or_seq
+      res = @component.result_filter pac_or_seq
+      if res && flt = self.class::RESULT_FILTER
+        res &&= flt.call(pac_or_seq)
+      end
+      res
     end
   end
 end
@@ -1124,4 +1135,66 @@ module ODDB
 			'font-size: 18px; margin-top: 8px; line-height: 1.4em; max-width: 600px'
 		end
 	end
+  class LookandfeelComplementaryType < SBSM::LookandfeelWrapper
+    ENABLED = [
+      :home_drugs,
+      :help_link,
+      :faq_link,
+      :patinfos,
+      :sequences,
+      :ywesee_contact,
+      :logo,
+    ]
+    def result_list_components
+      {
+        [0,0]		=>	:limitation_text,
+        [1,0]		=>  :minifi,
+        [2,0]		=>  :fachinfo,
+        [3,0]		=>	:patinfo,
+        [4,0,0]	=>	:narcotic,
+        [4,0,1]	=>	:comarketing,
+        [5,0,0]	=>	'result_item_start',
+        [5,0,1]	=>	:name_base,
+        [5,0,2]	=>	'result_item_end',
+        [6,0]		=>	:comparable_size,
+        [7,0]		=>	:price_exfactory,
+        [8,0]	=>	:price_public,
+        [9,0]	=>	:deductible,
+        [10,0]	=>	:ddd_price,
+        [11,0]	=>	:compositions,
+        [12,0]	=>	:company_name,
+        [13,0]	=>	:ikscat,
+        [14,0]	=>	:feedback,
+        [15,0]	=>  :google_search,
+        [16,0]	=>	:notify,
+      }
+    end
+  end
+  class LookandfeelAnthroposophy < SBSM::LookandfeelWrapper
+    RESULT_FILTER = Proc.new do |seq| seq.complementary_type == :anthroposophy end
+    HTML_ATTRIBUTES = {
+      :logo => {
+        'width'		=>	'370',
+        'height'	=>	'166',
+      },
+    }
+  end
+  class LookandfeelHomeopathy < SBSM::LookandfeelWrapper
+    RESULT_FILTER = Proc.new do |seq| seq.complementary_type == :homeopathy end
+    HTML_ATTRIBUTES = {
+      :logo => {
+        'width'		=>	'370',
+        'height'	=>	'166',
+      },
+    }
+  end
+  class LookandfeelPhytoPharma < SBSM::LookandfeelWrapper
+    RESULT_FILTER = Proc.new do |seq| seq.complementary_type == :phytotherapy end
+    HTML_ATTRIBUTES = {
+      :logo => {
+        'width'		=>	'344',
+        'height'	=>	'106',
+      },
+    }
+  end
 end
