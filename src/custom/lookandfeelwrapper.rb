@@ -1183,16 +1183,22 @@ module ODDB
         :html_title         =>  'anthroposophika.ch - alle anthroposophischen Arzneimittel im schweizer Gesundheitswesen', 
         :home_welcome       =>  "Willkommen bei anthroposophika.ch, dem<br>Portal für anthroposophische Arzneimittel in der Schweiz.",
         :login_welcome      =>  'Willkommen bei anthroposophika.ch',
+        :generic_definition =>  'Was ist ein anthroposophisches Arzneimittel?',
+        :generic_definition_url => 'http://www.google.com/search?hl=en&sa=X&oi=spell&resnum=0&ct=result&cd=1&q=anthroposophische+Arzneimittel&spell=1',
       },
       'fr'  =>  {
         :html_title         =>  'anthroposophika.ch - tous les médicaments anthroposophiques Arzneimittel sur le marché suisse', 
         :home_welcome       =>  "Bienvenue sur anthroposophika.ch,<br>le portail des médicaments anthroposophiques dans la suisse.",
         :login_welcome      =>  'Bienvenue sur anthroposophika.ch',
+        :generic_definition =>  'Qu\'est qu\'n médicament anthroposophique?',
+        :generic_definition_url => 'http://www.google.com/search?hl=en&sa=X&oi=spell&resnum=0&ct=result&cd=1&q=médicament+anthroposophique&spell=1',
       },
       'en'  =>  {
         :html_title         =>  'anthroposophika.ch - all anthroposophical health-care products in the swiss market', 
         :home_welcome       =>  "Welcome to anthroposophika.ch,<br>the database of anthroposophical health-care products in switzerland.",
         :login_welcome      =>  'Welcome to anthroposophika.ch',
+        :generic_definition =>  'What is anthroposophical medicine?',
+        :generic_definition_url => 'http://www.google.com/search?hl=en&sa=X&oi=spell&resnum=0&ct=result&cd=1&q=anthroposophical+medicine&spell=1',
       }
     }
   end
@@ -1209,16 +1215,22 @@ module ODDB
         :html_title         =>  'homöopathika.ch - alle homöopathischen Arzneimittel im schweizer Gesundheitswesen', 
         :home_welcome       =>  "Willkommen bei homöopathika.ch, dem<br>Portal für homöopathische Arzneimittel in der Schweiz.",
         :login_welcome      =>  'Willkommen bei homöopathika.ch',
+        :generic_definition =>  'Was ist ein homöopathisches Arzneimittel?',
+        :generic_definition_url => 'http://de.wikipedia.org/wiki/Hom%C3%B6opathisches_Arzneimittel',
       },
       'fr'  =>  {
         :html_title         =>  'homöopathika.ch - tous les médicaments homéopathiques Arzneimittel sur le marché suisse', 
         :home_welcome       =>  "Bienvenue sur homöopathika.ch,<br>le portail des médicaments homéopathiques dans la suisse.",
         :login_welcome      =>  'Bienvenue sur homöopathika.ch',
+        :generic_definition =>  'Qu\'est qu\'n médicament homéopathique?',
+        :generic_definition_url => 'http://fr.wikipedia.org/wiki/Hom%C3%A9opathie',
       },
       'en'  =>  {
         :html_title         =>  'homöopathika.ch - all homeopathical health-care products in the swiss market', 
         :home_welcome       =>  "Welcome to homöopathika.ch,<br>the database of homeopathical health-care products in switzerland.",
         :login_welcome      =>  'Welcome to homöopathika.ch',
+        :generic_definition =>  'What is anthroposophical medicine?',
+        :generic_definition_url => 'http://en.wikipedia.org/wiki/Homeopathic_medicine',
       }
     }
   end
@@ -1235,16 +1247,23 @@ module ODDB
         :html_title         =>  'phyto-pharma.ch - alle phyto-therapeutischen Arzneimittel im schweizer Gesundheitswesen', 
         :home_welcome       =>  "Willkommen bei phyto-pharma.ch, dem<br>Portal für phyto-therapeutische Arzneimittel in der Schweiz.",
         :login_welcome      =>  'Willkommen bei phyto-pharma.ch',
+        :generic_definition =>  'Was ist ein Phytopharmakon?',
+        :generic_definition_url => 'http://de.wikipedia.org/wiki/Phytopharmakon',
       },
       'fr'  =>  {
         :html_title         =>  'phyto-pharma.ch - tous les médicaments phyto-therapeutiques Arzneimittel sur le marché suisse', 
         :home_welcome       =>  "Bienvenue sur phyto-pharma.ch,<br>le portail des médicaments phyto-therapeutiques dans la suisse.",
         :login_welcome      =>  'Bienvenue sur phyto-pharma.ch',
+        :generic_definition =>  'Was ist ein Phytopharmakon?',
+        :generic_definition =>  'Qu\'est qu\'n médicament pharmacokinétique?',
+        :generic_definition_url => 'http://fr.wikipedia.org/wiki/Phytopharmacie',
       },
       'en'  =>  {
         :html_title         =>  'phyto-pharma.ch - all phyto-therapeutical health-care products in the swiss market', 
         :home_welcome       =>  "Welcome to phyto-pharma.ch,<br>the database of phyto-therapeutical health-care products in switzerland.",
         :login_welcome      =>  'Welcome to phyto-pharma.ch',
+        :generic_definition =>  'What is phyto-therapeutical medicine?',
+        :generic_definition_url => 'http://en.wikipedia.org/wiki/Phytotherapy',
       }
     }
   end
