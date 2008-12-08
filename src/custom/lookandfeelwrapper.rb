@@ -1178,6 +1178,23 @@ module ODDB
         'height'	=>	'166',
       },
     }
+    DICTIONARIES = {
+      'de'  =>  {
+        :html_title         =>  'anthroposophika.ch - alle anthroposophischen Arzneimittel im schweizer Gesundheitswesen', 
+        :home_welcome       =>  "Willkommen bei anthroposophika.ch, dem<br>Portal für anthroposophische Arzneimittel in der Schweiz.",
+        :login_welcome      =>  'Willkommen bei anthroposophika.ch',
+      },
+      'fr'  =>  {
+        :html_title         =>  'anthroposophika.ch - tous les médicaments anthroposophiques Arzneimittel sur le marché suisse', 
+        :home_welcome       =>  "Bienvenue sur anthroposophika.ch,<br>le portail des médicaments anthroposophiques dans la suisse.",
+        :login_welcome      =>  'Bienvenue sur anthroposophika.ch',
+      },
+      'en'  =>  {
+        :html_title         =>  'anthroposophika.ch - all anthroposophical health-care products in the swiss market', 
+        :home_welcome       =>  "Welcome to anthroposophika.ch,<br>the database of anthroposophical health-care products in switzerland.",
+        :login_welcome      =>  'Welcome to anthroposophika.ch',
+      }
+    }
   end
   class LookandfeelHomeopathy < SBSM::LookandfeelWrapper
     RESULT_FILTER = Proc.new do |seq| seq.complementary_type == :homeopathy end
@@ -1187,6 +1204,23 @@ module ODDB
         'height'	=>	'166',
       },
     }
+    DICTIONARIES = {
+      'de'  =>  {
+        :html_title         =>  'homöopathika.ch - alle homöopathischen Arzneimittel im schweizer Gesundheitswesen', 
+        :home_welcome       =>  "Willkommen bei homöopathika.ch, dem<br>Portal für homöopathische Arzneimittel in der Schweiz.",
+        :login_welcome      =>  'Willkommen bei homöopathika.ch',
+      },
+      'fr'  =>  {
+        :html_title         =>  'homöopathika.ch - tous les médicaments homéopathiques Arzneimittel sur le marché suisse', 
+        :home_welcome       =>  "Bienvenue sur homöopathika.ch,<br>le portail des médicaments homéopathiques dans la suisse.",
+        :login_welcome      =>  'Bienvenue sur homöopathika.ch',
+      },
+      'en'  =>  {
+        :html_title         =>  'homöopathika.ch - all homeopathical health-care products in the swiss market', 
+        :home_welcome       =>  "Welcome to homöopathika.ch,<br>the database of homeopathical health-care products in switzerland.",
+        :login_welcome      =>  'Welcome to homöopathika.ch',
+      }
+    }
   end
   class LookandfeelPhytoPharma < SBSM::LookandfeelWrapper
     RESULT_FILTER = Proc.new do |seq| seq.complementary_type == :phytotherapy end
@@ -1195,6 +1229,23 @@ module ODDB
         'width'		=>	'344',
         'height'	=>	'106',
       },
+    }
+    DICTIONARIES = {
+      'de'  =>  {
+        :html_title         =>  'phyto-pharma.ch - alle phyto-therapeutischen Arzneimittel im schweizer Gesundheitswesen', 
+        :home_welcome       =>  "Willkommen bei phyto-pharma.ch, dem<br>Portal für phyto-therapeutische Arzneimittel in der Schweiz.",
+        :login_welcome      =>  'Willkommen bei phyto-pharma.ch',
+      },
+      'fr'  =>  {
+        :html_title         =>  'phyto-pharma.ch - tous les médicaments phyto-therapeutiques Arzneimittel sur le marché suisse', 
+        :home_welcome       =>  "Bienvenue sur phyto-pharma.ch,<br>le portail des médicaments phyto-therapeutiques dans la suisse.",
+        :login_welcome      =>  'Bienvenue sur phyto-pharma.ch',
+      },
+      'en'  =>  {
+        :html_title         =>  'phyto-pharma.ch - all phyto-therapeutical health-care products in the swiss market', 
+        :home_welcome       =>  "Welcome to phyto-pharma.ch,<br>the database of phyto-therapeutical health-care products in switzerland.",
+        :login_welcome      =>  'Welcome to phyto-pharma.ch',
+      }
     }
   end
 end
