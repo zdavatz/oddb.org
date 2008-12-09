@@ -630,6 +630,8 @@ module ODDB
 				unless(item)
 					pointer = Persistence::Pointer.new(:incomplete_registration)
 					item = Persistence::CreateItem.new(pointer)
+          item.carry :sequences, {}
+          item.carry :packages, []
 				end
 				State::User::SuggestRegistration.new(@session, item)
 			end

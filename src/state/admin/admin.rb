@@ -38,6 +38,8 @@ module Admin
 			item.carry(:company, @model)
 			item.carry(:company_name, @model.name)
 		end
+    item.carry :sequences, {}
+    item.carry :packages, []
 		State::Admin::Registration.new(@session, item)
 	end
 	def zones

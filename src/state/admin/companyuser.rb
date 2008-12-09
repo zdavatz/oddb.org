@@ -79,6 +79,8 @@ module CompanyUser
 		item = Persistence::CreateItem.new(pointer)
 		item.carry(:company, @session.user.model)
 		item.carry(:company_name, @session.user.model.name)
+    item.carry :sequences, {}
+    item.carry :packages, []
 		State::Admin::CompanyRegistration.new(@session, item)
 	end
 	def patinfo_stats

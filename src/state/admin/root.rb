@@ -166,6 +166,8 @@ module Root
 	def new_registration
 		pointer = Persistence::Pointer.new(:registration)
 		item = Persistence::CreateItem.new(pointer)
+    item.carry :sequences, {}
+    item.carry :packages, []
 		if(@model.is_a?(Company))
 			item.carry(:company, @model)
 			item.carry(:company_name, @model.name)
