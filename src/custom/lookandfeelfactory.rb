@@ -84,14 +84,17 @@ module ODDB
 				LookandfeelSwissMedInfo, 
 			],
       'anthroposophy' => [
+        LookandfeelLanguages,
         LookandfeelComplementaryType,
         LookandfeelAnthroposophy,
       ],
       'homeopathy' => [
+        LookandfeelLanguages,
         LookandfeelComplementaryType,
         LookandfeelHomeopathy,
       ],
       'phyto-pharma' => [
+        LookandfeelLanguages,
         LookandfeelComplementaryType,
         LookandfeelPhytoPharma,
       ],
