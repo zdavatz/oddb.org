@@ -1145,6 +1145,26 @@ module ODDB
       :ywesee_contact,
       :logo,
     ]
+    def explain_result_components
+      {
+        [0,0]	=>	:explain_minifi,
+        [0,1]	=>	:explain_fachinfo,
+        [0,2]	=>	:explain_patinfo,
+        [0,3]	=>	:explain_limitation,
+        [0,4]	=>	:explain_parallel_import,
+        [0,5]	=>	:explain_comarketing,
+        [0,6]	=>	:explain_google_search,
+        [0,7]	=>	:explain_feedback,
+        [1,0]	=>	'explain_expired',
+        [1,1]	=>	'explain_efp',
+        [1,2]	=>	'explain_pbp',
+        [1,3]	=>	'explain_pr',
+        [1,4]	=>	:explain_deductible,
+        [1,5]	=>	:explain_ddd_price,
+        [1,6]	=>	'explain_sl',
+        [1,7]	=>	:explain_lppv,
+      }
+    end
     def result_list_components
       {
         [0,0]		=>	:limitation_text,
