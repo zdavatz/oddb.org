@@ -83,10 +83,11 @@ class UserCompany < Company
 		end
 		unless (error?)
 			contact_email = input.delete(:contact_email)
-			company = @model
-			if(name = input[:name])
-				company = @session.app.company_by_name(name)
-			end
+      company = nil
+      if(name = input[:name])
+        company = @session.app.company_by_name(name)
+      end
+			company ||= @model
 			unless(company.nil? || company==@model)
 				@errors.store(:name, create_error('e_duplicate_company', :name, input[:name]))
 			else
