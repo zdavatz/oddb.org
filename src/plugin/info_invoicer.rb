@@ -106,6 +106,12 @@ module ODDB
       # und welches ein Item beinhaltet, das den typ 
       # :annual_fee hat und den selben unique_name wie item
 
+      ## Die eigentlich gültige expiry_time sollte das Ende der
+      #  aktuellen Rechnungsperiode sein - also heute in einem Jahr
+      date = Date.new(time.year, time.month, time.day)
+      date >>= 12
+      time = date.to_time
+
       items = items.sort_by { |item| item.time }
 
       ## Vorgeschlagener Algorithmus
