@@ -126,7 +126,7 @@ class Session < HttpSession
 	def post_hash(criteria, ctl=nil)
 		data = if(ctl)
 			[['__EVENTTARGET',
-				"#@detail_key:#{ctl}:_ctl0"],
+				"#@detail_key:#{ctl}:ctl00"],
 				['__EVENTARGUMENT',	''],
 			]
 		else
