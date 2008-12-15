@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 # User -- oddb -- 15.11.2002 -- hwyss@ywesee.com 
 
+require 'drb'
 require 'sbsm/user'
+require 'util/oddbconfig'
 require 'util/persistence'
 require 'model/invoice'
 require 'model/invoice_observer'
