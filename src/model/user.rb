@@ -162,6 +162,26 @@ module ODDB
 			end
 		end
 	end
+  class YusStub
+    YUS_SERVER = DRb::DRbObject.new(nil, YUS_URI)
+    attr_reader :yus_name
+    def initialize yus_name
+      @yus_name = yus_name
+    end
+    alias :invoice_email :yus_name
+    alias :contact_email :yus_name
+    def method_missing key
+      YUS_SERVER.autosession(YUS_DOMAIN) { |session|
+        session.get_entity_preference(@yus_name, key)
+      }
+    rescue Yus::YusError
+      # user not found
+    end
+    def == other
+      other.is_a?(YusStub) && @yus_name == other.yus_name
+    end
+    alias :eql? :==
+  end
   class YusUser < User
     PREFERENCE_KEYS = [ :salutation, :name_first, :name_last, :address, 
       :city, :plz, :company_name, :business_area, :phone, 
@@ -244,17 +264,31 @@ module ODDB
     end
   end
 	module UserObserver
-		attr_reader :user
-		def contact_email
-			@user.unique_email if(@user)
-		end
+    def add_user user
+      unless user.nil? || users.include?(user)
+        users.push user
+        users.odba_store
+        odba_store
+        user
+      end
+    end
+    def invoice_email
+      if usr = users.first
+        usr.yus_name
+      end
+    end
+    alias :contact_email :invoice_email
 		def has_user?
-			!@user.nil?
+      !users.empty?
 		end
-		def user=(user)
-			@user = user
-			self.odba_isolated_store
-			@user
-		end
+    def remove_user user
+      res = users.delete user
+      users.odba_store
+      odba_store
+      res
+    end
+    def users
+      @users ||= [@user].compact
+    end
 	end
 end

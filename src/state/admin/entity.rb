@@ -47,10 +47,15 @@ class Entity < Global
            && (ass_ptr = Persistence::Pointer.from_yus_privilege(ass_str)) \
            && (ass = ass_ptr.resolve(@session)))
           if(old = @session.app.yus_model(name))
+            old.remove_user YusStub.new(@model.name)
             @session.user.revoke(name, 'edit', old.pointer.to_yus_privilege)
           end
+          ass.add_user YusStub.new(@model.name)
           @session.user.grant(name, 'edit', ass_str)
           @session.user.set_entity_preference(name, 'association', ass.odba_id)
+        elsif old = @session.app.yus_model(name)
+          old.remove_user YusStub.new(@model.name)
+          @session.user.revoke(name, 'edit', old.pointer.to_yus_privilege)
         end
         @session.valid_values(:yus_privileges).each { |privilege|
           action, key = privilege.split('|')

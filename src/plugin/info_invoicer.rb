@@ -239,7 +239,7 @@ module ODDB
               end
             }
           end
-        elsif((email = company.contact_email) && company.invoice_email)
+        elsif(email = company.invoice_email)
           if(!company.invoice_date(@infotype))
             time = items.collect { |item| item.time }.min
             date = Date.new(time.year, time.month, time.day)
@@ -259,7 +259,7 @@ module ODDB
             adjust_overlap_fee(day, items)
             ensure_yus_user(company)
             ## first send the invoice 
-            ydim_id = send_invoice(invoice_date, email, items) 
+            ydim_id = send_invoice(invoice_date, email, items, day)
             ## then store it in the database
             create_invoice(email, items, ydim_id)
           elsif((day >> 12) == company.invoice_date(@infotype))
@@ -272,13 +272,14 @@ module ODDB
         end
       }
     end
-    def send_daily_invoices(day)
+    def send_daily_invoices(day, company_name=nil, invoice_date=day)
       items = recent_items(day)
       payable_items = filter_paid(items)
       groups = group_by_company(payable_items)
       groups.each { |company, items|
         if(!company.invoice_disabled?(@infotype) \
-           && (email = company.contact_email) && company.invoice_email)
+           && (email = company.invoice_email) \
+           && (company_name.nil? || company_name == company.name))
           ## work with duplicates
           items = items.collect { |item| item.dup }
           ## adjust the annual fee according to company settings
@@ -287,7 +288,7 @@ module ODDB
           adjust_annual_fee(company, items)
           ensure_yus_user(company)
           ## first send the invoice 
-          ydim_id = send_invoice(day, email, items) 
+          ydim_id = send_invoice(invoice_date, email, items, day)
           ## then store it in the database
           create_invoice(email, items, ydim_id)
         end

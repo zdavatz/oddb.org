@@ -146,6 +146,7 @@ class UserCompanyForm < View::Form
 		:generic_type					=>	HtmlGrid::Select,
 		:complementary_type		=>	HtmlGrid::Select,
 		:registration_count		=>	HtmlGrid::Value,	
+    :invoice_email        =>  HtmlGrid::Value,
 	}
 	TAG_METHOD = :multipart_form
 	def init
@@ -214,6 +215,7 @@ class AjaxCompanyForm < UserCompanyForm
 		:invoice_date_index				=>	HtmlGrid::InputDate,
 		:invoice_date_lookandfeel =>	HtmlGrid::InputDate,
 		:invoice_date_patinfo     =>	HtmlGrid::InputDate,
+    :invoice_email            =>  HtmlGrid::Value,
 		:invoice_htmlinfos				=>	HtmlGrid::InputCheckbox,
 		:limit_invoice_duration  	=>	HtmlGrid::InputCheckbox,
 		:logo_file								=>	HtmlGrid::InputFile,
@@ -409,6 +411,7 @@ class PowerLinkCompanyForm < UserCompanyForm
 		:address_header     =>	HtmlGrid::LabelText,
 		:deductible_display =>	HtmlGrid::InputCheckbox,
 		:url						    =>	HtmlGrid::HttpLink,
+    :invoice_email      =>  HtmlGrid::Value,
 	}
 end
 class UnknownCompanyComposite < HtmlGrid::Composite

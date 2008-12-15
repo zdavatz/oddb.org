@@ -104,11 +104,11 @@ module ODDB
 				invoice.odba_store
 			end
 		end
-		def inject_from_items(date, email, items, currency='CHF')
+		def inject_from_items(date, email, items, currency='CHF', service_date=date)
       facade = DebitorFacade.new(email, @app)
 			ydim_connect { |client|
 				ydim_inv = client.create_invoice(debitor_id(facade))
-				ydim_inv.description = invoice_description(items)
+				ydim_inv.description = invoice_description(items, service_date)
 				ydim_inv.date = date
 				ydim_inv.currency = currency
 				ydim_inv.payment_period = 30
@@ -129,7 +129,7 @@ module ODDB
 			time = times.max
 			Date.new(time.year, time.month, time.day)
 		end
-		def invoice_description(items)
+		def invoice_description(items, date=@@today)
 			types = []
 			times = []
 			items.each { |item| 
@@ -157,7 +157,7 @@ module ODDB
 			elsif(types.include?(:lookandfeel))
 				sprintf("Lookandfeel-Integration %i/%i", year, year.next)
 			else
-        year = @@today.year
+        year = date.year
 				count = items.select { |item| item.type == :annual_fee }.size
         pointers = items.collect { |item| item.item_pointer }.compact.uniq
         if((ptr = pointers.first) && ptr.resolve(@app).is_a?(Registration))

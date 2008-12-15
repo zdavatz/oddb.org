@@ -26,7 +26,7 @@ module ODDB
       }
 		end
     def ensure_yus_user(comp_or_hosp)
-      mail = comp_or_hosp.contact_email
+      mail = comp_or_hosp.invoice_email
       @app.yus_create_user(mail)
       @app.yus_grant(mail, 'edit', comp_or_hosp.pointer.to_yus_privilege)
       @app.yus_set_preference(mail, 'association', comp_or_hosp.odba_id)
@@ -41,9 +41,9 @@ module ODDB
 		def rp2fr(price)
 			price.to_f / 100.0
 		end
-		def send_invoice(date, mail, items)
+		def send_invoice(date, mail, items, service_date=date)
 			plugin = YdimPlugin.new(@app)
-			ydim_inv = plugin.inject_from_items(date, mail, items)
+			ydim_inv = plugin.inject_from_items(date, mail, items, 'CHF', service_date)
 			ydim_id = ydim_inv.unique_id
 			plugin.send_invoice(ydim_id)
 			ydim_id

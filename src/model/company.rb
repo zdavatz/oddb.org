@@ -16,7 +16,7 @@ module ODDB
                          '@prices']
     attr_accessor :address_email, :business_area, :business_unit, :cl_status,
       :competition_email, :complementary_type, :contact, :deductible_display,
-      :disable_patinfo, :ean13, :generic_type, :invoice_email,
+      :disable_patinfo, :ean13, :generic_type,
       :invoice_htmlinfos, :logo_filename, :lookandfeel_member_count, :name, 
       :powerlink, :regulatory_email, :swissmedic_email, :swissmedic_salutation,
       :url, :ydim_id, :limit_invoice_duration
@@ -72,7 +72,7 @@ module ODDB
 		def invoiceable?
 			addr = address(0)
 			![ @name, @contact, addr.address, addr.plz, 
-				addr.city, @invoice_email, addr.fon ].any? { |datum| datum.nil? }
+				addr.city, invoice_email, addr.fon ].any? { |datum| datum.nil? }
 		end
     def invoice_date(key)
       @invoice_dates[key] = _yearly_repetition(@invoice_dates[key])

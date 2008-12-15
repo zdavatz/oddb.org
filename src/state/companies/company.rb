@@ -42,7 +42,6 @@ class UserCompany < Company
 			:fax,
 			:fi_status,
 			:generic_type,
-			:invoice_email,
 			:pi_status,
 			:city,
 			:logo_file,
@@ -113,23 +112,9 @@ class UserCompany < Company
 				addr.fon = input.delete(:fon).to_s.split(/\s*,\s*/)
 				addr.fax = input.delete(:fax).to_s.split(/\s*,\s*/)
         @model = @session.app.update(@model.pointer, input, unique_email)
-				update_company_user(contact_email)
 			end
 		end
 		self
-	end
-	def update_company_user(contact_email)
-		if(contact_email && !contact_email.empty?)
-      user = user_or_creator
-      args = {
-        :unique_email => contact_email,
-        :model => @model
-      }
-      @session.app.update(user.pointer, args, unique_email)
-		end
-	rescue RuntimeError => e
-		err = create_error(e.message, :unique_email, contact_email)
-		@errors.store(:unique_email, err)
 	end
 	def user_or_creator
 		mdl = @model.user
@@ -182,7 +167,6 @@ class RootCompany < UserCompany
 			:invoice_date_index,
 			:invoice_date_lookandfeel,
 			:invoice_date_patinfo,
-			:invoice_email,
 			:invoice_htmlinfos,
       :limit_invoice_duration,
 			:logo_file,
@@ -216,14 +200,8 @@ class PowerLinkCompany < UserCompany
 		keys = mandatory + [
       :deductible_display,
 			:fon,
-			:invoice_email,
 			:powerlink,
 		]
-		email = @session.user_input(:invoice_email)
-		if(email == @session.user.unique_email)
-			err = create_error(:e_duplicate_email, :invoice_email, email)
-			@errors.store(:invoice_email, err)
-		end
 		do_update(keys, mandatory)
 		self
 	end
