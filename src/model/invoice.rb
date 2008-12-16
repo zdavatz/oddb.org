@@ -132,7 +132,19 @@ module ODDB
 		end
 		def expired?(time=nil)
 			@time.nil? \
-				|| @expiry_time.nil? || (time || Time.now) > @expiry_time
+				|| @expiry_time.nil? or
+      begin
+        exp = Date.new(@expiry_time.year, @expiry_time.month, @expiry_time.day)
+        date = case time
+               when Date
+                 time
+               when Time
+                 Date.new(time.year, time.month, time.day)
+               else
+                 @@today
+               end
+        date > exp
+      end
 		end
 		def init(app)
 			@pointer.append(@oid)

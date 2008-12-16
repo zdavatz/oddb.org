@@ -99,18 +99,12 @@ module ODDB
         (item.type == :processing) || active.delete(unique_name(item))
       }
     end
-    def filter_paid(items, time = Time.now)
+    def filter_paid(items, date=@@today)
       ## Prinzipielles Vorgehen
       # Für jedes item in items:
       # Gibt es ein Invoice, welches nicht expired? ist 
       # und welches ein Item beinhaltet, das den typ 
       # :annual_fee hat und den selben unique_name wie item
-
-      ## Die eigentlich gültige expiry_time sollte das Ende der
-      #  aktuellen Rechnungsperiode sein - also heute in einem Jahr
-      date = Date.new(time.year, time.month, time.day)
-      date >>= 12
-      time = date.to_time
 
       items = items.sort_by { |item| item.time }
 
@@ -125,9 +119,9 @@ module ODDB
       @app.invoices.each_value { |invoice|
         invoice.items.each_value { |item|
           if(name = unique_name(item))
-            if(item.type == :annual_fee && !item.expired?(time))
+            if(item.type == :annual_fee && !item.expired?(date))
               fee_names.push(name)
-            elsif(item.type == :processing && !item.expired?(time))
+            elsif(item.type == :processing && !item.expired?(date))
               prc_names.push(name)
             end
           end
@@ -219,7 +213,7 @@ module ODDB
       items = annual_items
       ## augment with active html-patinfos
       items += html_items(day)
-      time = Time.local(day.year, day.month, day.day) + 1
+      time = Time.local(day.year + 1, day.month, day.day) + 1
       payable_items = filter_paid(items, time)
       groups = group_by_company(payable_items)
       groups.each { |company, items|
@@ -274,7 +268,7 @@ module ODDB
     end
     def send_daily_invoices(day, company_name=nil, invoice_date=day)
       items = recent_items(day)
-      payable_items = filter_paid(items)
+      payable_items = filter_paid(items, day)
       groups = group_by_company(payable_items)
       groups.each { |company, items|
         if(!company.invoice_disabled?(@infotype) \
