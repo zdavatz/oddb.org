@@ -471,12 +471,20 @@ module ODDB
       archive = File.join archive_path, 'xml'
       FileUtils.mkdir_p archive
       agent = WWW::Mechanize.new
-      agent.user_agent_alias = 'Mac FireFox'
       zip = agent.get ODDB.config.url_bag_sl_zip
       target = File.join archive,
                Date.today.strftime("XMLPublications-%Y.%m.%d.zip")
       zip.save_as target
       target
+    rescue EOFError
+      retries ||= 10
+      if retries > 0
+        retries -= 1
+        sleep 10 - retries
+        retry
+      else
+        raise
+      end
     end
     def log_info
       body = report << "\n\n"
