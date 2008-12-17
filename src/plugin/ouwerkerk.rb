@@ -166,9 +166,18 @@ module ODDB
 			end
 			rows
 		end
-		def export_xls
+		def export_xls opts={}
 			#require 'debug'
 			rows = export_registrations
+      if opts[:remove_newlines]
+        rows.each do |row|
+          row.each do |data|
+            if data.is_a?(String)
+              data.gsub! /[\n\r]+/, ' / '
+            end
+          end
+        end
+      end
 			dir = File.dirname(@file_path)
 			Dir.mkdir(dir) unless File.exists?(dir)
 			workbook = Spreadsheet::Excel.new(@file_path)
