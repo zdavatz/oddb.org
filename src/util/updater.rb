@@ -99,7 +99,8 @@ module ODDB
 		def export_ouwerkerk(date = @@today)
 			subj = 'Med-Drugs' 
 			wrap_update(OuwerkerkPlugin, subj) {
-				plug = Exporter.new(@app).export_swissdrug_xls :remove_newlines => true
+				plug = Exporter.new(@app).export_swissdrug_xls date, 
+                                                       :remove_newlines => true
 				log = Log.new(date)
 				log.update_values(log_info(plug))
 				log.notify(subj)
