@@ -471,6 +471,7 @@ module ODDB
       archive = File.join archive_path, 'xml'
       FileUtils.mkdir_p archive
       agent = WWW::Mechanize.new
+      agent.user_agent_alias = 'Mac FireFox'
       zip = agent.get ODDB.config.url_bag_sl_zip
       target = File.join archive,
                Date.today.strftime("XMLPublications-%Y.%m.%d.zip")
