@@ -116,9 +116,6 @@ module ODDB
       bottom = cs * 0.75
       top = cs * 1.25
       comparables = []
-      if @generic_group
-        comparables.concat @generic_group.packages
-      end
       @sequence.comparables.each { |seq|
         comparables.concat seq.public_packages.select { |pack|
           comparable?(bottom, top, pack)
