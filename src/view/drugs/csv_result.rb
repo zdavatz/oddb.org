@@ -9,7 +9,7 @@ module ODDB
 	module View
 		module Drugs
 class CsvResult < HtmlGrid::Component
-  attr_reader :duplicates
+  attr_reader :duplicates, :counts
 	CSV_KEYS = [
 		:rectype,
 		:barcode,
@@ -26,13 +26,51 @@ class CsvResult < HtmlGrid::Component
 		:registration_date,
 		:casrn,
 	]
+  def init
+    @counts = {
+      'anthroposophy'            => 0,
+      'bsv_dossiers'             => 0,
+      'complementary'            => 0,
+      'deductible_g'             => 0,
+      'deductible_o'             => 0,
+      'expiration_date'          => 0,
+      'export_registrations'     => 0,
+      'galenic_forms'            => 0,
+      'generics'                 => 0,
+      'has_generic'              => 0,
+      'homeopathy'               => 0,
+      'inactive_date'            => 0,
+      'limitations'              => 0,
+      'limitation_texts'         => 0,
+      'lppv'                     => 0,
+      'missing_size'             => 0,
+      'originals'                => 0,
+      'out_of_trade'             => 0,
+      'phytotherapy'             => 0,
+      'price_exfactory'          => 0,
+      'price_public'             => 0,
+      'registration_date'        => 0,
+      'routes_of_administration' => 0,
+      'sl_entries'               => 0,
+    }
+    @bsv_dossiers = {}
+    @roas = {}
+    @galforms = {}
+    @galgroups = {}
+    super
+  end
 	def boolean(bool)
 		key = bool ? :true : :false
 		@lookandfeel.lookup(key)
 	end
 	def bsv_dossier(pack)
 		if(sl = pack.sl_entry)
-			sl.bsv_dossier
+      dossier = sl.bsv_dossier
+      if dossier
+        @bsv_dossiers.store dossier, true
+        @counts['bsv_dossiers'] = @bsv_dossiers.size
+      end
+      dossier
 		end
 	end
 	def casrn(pack)
@@ -42,26 +80,37 @@ class CsvResult < HtmlGrid::Component
     str unless str.empty?
 	end
   def c_type(pack)
-    @lookandfeel.lookup("square_#{pack.complementary_type}")
+    if ctype = pack.complementary_type
+      @counts[ctype.to_s] += 1
+      @lookandfeel.lookup("square_#{ctype}")
+    end
   end
 	def deductible(pack)
     if(pack.sl_entry)
-      @lookandfeel.lookup(pack.deductible || :deductible_g)
+      deductible = pack.deductible || :deductible_g
+      @counts[deductible.to_s] += 1
+      @lookandfeel.lookup(deductible)
     end
 	end
 	def expiration_date(pack)
 		formatted_date(pack, :expiration_date)
 	end
 	def export_flag(pack)
-		pack.export_flag
+		if flag = pack.export_flag
+      @counts['export_registrations'] += 1
+      flag
+    end
 	end
 	def formatted_date(pack, key)
 		if(date = pack.send(key))
+      @counts[key.to_s] += 1
 			@lookandfeel.format_date(date)
 		end
 	end
   def galenic_form(pack, lang = @lookandfeel.language)
     if(galform = pack.galenic_forms.first)
+      @galforms.store galform, true
+      @counts['galenic_forms'] = @galforms.size
       galform.description(lang)
     end
   end
@@ -73,6 +122,8 @@ class CsvResult < HtmlGrid::Component
   end
   def galenic_group(pack, lang = @lookandfeel.language)
     if(galgroup = pack.galenic_group)
+      @galgroups.store galgroup, true
+      @counts['galenic_groups'] = @galgroups.size
       galgroup.description(lang)
     end
   end
@@ -83,7 +134,11 @@ class CsvResult < HtmlGrid::Component
     galenic_group(pack, :fr)
   end
 	def has_generic(pack)
-		boolean(pack.has_generic?)
+    flag = pack.has_generic?
+    if flag
+      @counts['has_generic'] += 1
+    end
+		boolean(flag)
 	end
 	def http_headers
 		file = @session.user_input(:filename)
@@ -103,7 +158,11 @@ class CsvResult < HtmlGrid::Component
 	end
 	def limitation(pack)
 		if(sl = pack.sl_entry)
-			boolean(sl.limitation)
+      lim = sl.limitation
+      if lim
+        @counts['limitations'] += 1
+      end
+			boolean(lim)
 		end
 	end
 	def limitation_points(pack)
@@ -113,14 +172,22 @@ class CsvResult < HtmlGrid::Component
 	end
 	def limitation_text(pack)
 		if((sl = pack.sl_entry) && (txt = sl.limitation_text))
+      @counts['limitation_texts'] += 1
 			txt.send(@lookandfeel.language).to_s.gsub(/\n/, '|')
 		end
 	end
 	def lppv(pack)
-		boolean(pack.lppv)
+    lppv = pack.lppv
+    if lppv
+      @counts['lppv'] += 1
+    end
+		boolean(lppv)
 	end
 	def numerical_size(pack)
-    pack.comparable_size.qty
+    qty = pack.comparable_size.qty
+    if qty == 0
+      @counts['missing_size'] += 1
+    end
 	end
 	def numerical_size_extended(pack)
     case ((group = pack.galenic_group) && group.de)
@@ -134,13 +201,23 @@ class CsvResult < HtmlGrid::Component
     end
 	end
   def out_of_trade(pack)
-		boolean(!pack.public?)
+    oot = !pack.public?
+    if oot
+      @counts['out_of_trade'] += 1
+    end
+		boolean(oot)
   end
 	def price_exfactory(pack)
-		@lookandfeel.format_price(pack.price_exfactory.to_i)
+		if price = @lookandfeel.format_price(pack.price_exfactory.to_i)
+      @counts['price_exfactory'] += 1
+      price
+    end
 	end
 	def price_public(pack)
-		@lookandfeel.format_price(pack.price_public.to_i)
+		if price = @lookandfeel.format_price(pack.price_public.to_i)
+      @counts['price_public'] += 1
+      price
+    end
 	end
 	def rectype(pack)
 		'#Medi'
@@ -150,11 +227,17 @@ class CsvResult < HtmlGrid::Component
 	end
   def route_of_administration(pack)
     if(roa = pack.route_of_administration)
+      @roas[roa.to_s] = true
+      @counts['routes_of_administration'] = @roas.size
       roa.gsub('roa_', '')
     end
   end
 	def sl_entry(pack)
-		boolean(pack.sl_entry)
+    sl_entry = pack.sl_entry
+    if sl_entry
+      @counts['sl_entries'] += 1
+    end
+		boolean(sl_entry)
 	end
   def size(model, session=@session)
     model.parts.collect { |part|
@@ -182,8 +265,10 @@ class CsvResult < HtmlGrid::Component
 	def generic_type(pack)
     case pack.sl_generic_type || pack.generic_type
     when :original
+      @counts['originals'] += 1
       'O'
     when :generic
+      @counts['generics'] += 1
       'G'
     end
 	end

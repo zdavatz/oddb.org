@@ -52,6 +52,8 @@ module ODDB
       exporter = View::Drugs::CsvResult.new(model, session)
       exporter.to_csv_file(keys, path, :packages)
       dups = exporter.duplicates
+      @counts = exporter.counts
+      @counts['duplicates'] = dups.size
       unless(dups.empty?)
         log = Log.new(@@today)
         log.report = sprintf "CSV-Export includes %i duplicates:\n%s",
@@ -110,6 +112,15 @@ module ODDB
         hash.store(:recipients, recipients)
       end
       hash
+    end
+    def report
+      report = ''
+      if @counts
+        @counts.sort.collect do |key, val|
+          report << sprintf("%-32s %5i\n", key, val)
+        end
+      end
+      report
     end
 	end
 end
