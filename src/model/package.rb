@@ -36,9 +36,9 @@ module ODDB
 				}
 			end
 		end
-		attr_reader :ikscd,  :sl_entry, :narcotics, :parts
+		attr_reader :ikscd,  :sl_entry, :narcotics, :parts, :pharmacode
 		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type,
-			:price_exfactory, :price_public, :pretty_dose, :pharmacode, :market_date,
+			:price_exfactory, :price_public, :pretty_dose, :market_date,
 			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
       :disable, :swissmedic_source, :descr, :preview_with_market_date
 			:deductible_m # for just-medical
@@ -245,6 +245,9 @@ module ODDB
       active? && (@refdata_override || !@out_of_trade \
                   || registration.active?)
 		end
+    def pharmacode= pcode
+      @pharmacode = pcode ? pcode.to_i.to_s : nil
+    end
 		def registration_data(key)
 			if(reg = registration)
 				reg.send(key)
