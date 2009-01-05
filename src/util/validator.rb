@@ -221,7 +221,6 @@ module ODDB
 			:proceed_payment,
 			:proceed_poweruser,
 			:recent_registrations,
-			:release,
 			:resolve,
 			:result,
       :rss,
@@ -418,7 +417,6 @@ module ODDB
 				email(value)
 			end
 		end
-		alias :invoice_email :email_suggestion
 		def galenic_group(value)
 			pointer(value)
 		end
