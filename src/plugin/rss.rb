@@ -23,7 +23,7 @@ module ODDB
           previous = package.price_public(1)
           target = if previous.nil?
                      news if current.authority == :sl
-                   elsif [:sl, :lppv].include?(package.data_origin(:price_public))
+                   elsif [:sl, :lppv, :bag].include?(package.data_origin(:price_public))
                      if previous > current
                        cuts
                      elsif current > previous
