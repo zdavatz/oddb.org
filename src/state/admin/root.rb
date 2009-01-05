@@ -134,7 +134,9 @@ module Root
 	end
 	def new_commercial_form
 		pointer = Persistence::Pointer.new(:commercial_form)
-		State::Admin::CommercialForm.new(@session, Persistence::CreateItem.new(pointer))
+    cform = Persistence::CreateItem.new(pointer)
+    cform.carry :packages, []
+		State::Admin::CommercialForm.new(@session, cform)
 	end
 	def new_company
 		pointer = Persistence::Pointer.new(:company)
