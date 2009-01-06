@@ -195,7 +195,7 @@ module ODDB
 				:ean =>  pack.barcode.to_s,
 			}
 			results = meddata.search(criteria)
-      if results.empty? && (pcode = pack.pharmacode)
+      if results.empty? && (pcode = pack.pharmacode) && !pcode.strip.empty?
         results = meddata.search(:pharmacode => pcode)
       end
 			if(results.empty? && pack.registration.package_count == 1)
