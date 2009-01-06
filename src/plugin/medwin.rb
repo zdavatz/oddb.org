@@ -190,19 +190,22 @@ module ODDB
 				update_package_data(pack, details)
 			end
 		end
-		def update_package_trade_status(meddata, pack)
+		def update_package_trade_status(refdata, pack)
 			criteria = {
 				:ean =>  pack.barcode.to_s,
 			}
-			results = meddata.search(criteria)
+			results = refdata.search(criteria)
       if results.empty? && (pcode = pack.pharmacode) && !pcode.strip.empty?
-        results = meddata.search(:pharmacode => pcode)
+        ## there's no pharmacode in RefData, so we need to escape to MedData here
+        MEDDATA_SERVER.session(:product) { |meddata|
+          results = meddata.search(:pharmacode => pcode)
+        }
       end
 			if(results.empty? && pack.registration.package_count == 1)
 				criteria = {
 					:ean => pack.barcode.to_s[0,9]
 				}
-				results = meddata.search(criteria)
+				results = refdata.search(criteria)
 			end
 			if(results.size == 0 && !pack.out_of_trade)
 				update_package_data(pack, {:out_of_trade => true})
