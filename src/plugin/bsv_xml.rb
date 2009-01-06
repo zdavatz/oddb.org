@@ -233,6 +233,9 @@ module ODDB
         else
           @text = ''
         end
+      rescue Exception => e
+        e.message << "\n@report: " << @report.inspect
+        raise
       end
       def tag_end name
         case name
@@ -377,7 +380,7 @@ module ODDB
             if active && !@out_of_trade
               if @registration && @pack.nil?
                 @unknown_packages.push @report
-              else
+              elsif @pack
                 if @conflict
                   @conflicted_packages.push @report
                 end
@@ -435,9 +438,7 @@ module ODDB
         end
         @text = nil
       rescue Exception => e
-        puts e.class
-        puts e.message
-        puts e.backtrace
+        e.message << "\n@report: " << @report.inspect
         raise
       end
     end
