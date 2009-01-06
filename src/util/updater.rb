@@ -147,7 +147,7 @@ module ODDB
 		def recipients
 			self.class::RECIPIENTS
 		end
-		def reconsider_bsv
+		def reconsider_bsv opts={}
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
 			logs = @app.create(logs_pointer)
 			if(latest = logs.newest_date)
@@ -170,8 +170,10 @@ module ODDB
             partlog = Log.new(latest)
             partlog.update_values(log_info(plug))
             partlog.notify(subj)
-            ## Store all subsequent BSV-Updates in next month.
-            @app.create(logs_pointer + [:log, latest >> 1])
+            if opts[:new_log]
+              ## Store all subsequent BSV-Updates in next month.
+              @app.create(logs_pointer + [:log, latest >> 1])
+            end
           end
 				}
 			end
@@ -335,7 +337,7 @@ module ODDB
     def update_swissmedic_followers
 			update_trade_status
 			update_medwin_packages
-			reconsider_bsv
+			reconsider_bsv :new_log => true
 			update_comarketing
 			update_swissreg_news
       update_lppv
