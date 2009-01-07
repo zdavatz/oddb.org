@@ -130,7 +130,7 @@ module ODDB
       attr_reader :change_flags, :conflicted_packages,
                   :conflicted_packages_oot, :conflicted_registrations,
                   :missing_ikscodes, :missing_ikscodes_oot, :unknown_packages,
-                  :unknown_packages_oot, :unknown_registrations, 
+                  :unknown_packages_oot, :unknown_registrations,
                   :created_sl_entries, :deleted_sl_entries, :updated_sl_entries,
                   :created_limitation_texts, :deleted_limitation_texts,
                   :updated_limitation_texts
@@ -491,17 +491,44 @@ module ODDB
       body = report << "\n\n"
       info = super
       parts = [
-        [:missing_ikscodes, 'Missing Swissmedic-Codes in SL %d.%m.%Y'],
-        [:unknown_registrations, 'Unknown Registrations in SL %d.%m.%Y'],
-        [:unknown_packages, 'Unknown Packages in SL %d.%m.%Y'],
-        [:conflicted_registrations, 'SMJ/SL-Differences (Registrations) %d.%m.%Y'],
-        [:conflicted_packages, 'SMJ/SL-Differences (Packages) %d.%m.%Y'],
-        [:missing_ikscodes_oot, 
-          'Missing Swissmedic-Codes in SL (out of trade) %d.%m.%Y'],
-        [:unknown_packages_oot, 'Unknown Packages in SL (out of trade) %d.%m.%Y'],
-        [:conflicted_packages_oot, 
-          'SMJ/SL-Differences (Packages, out of trade) %d.%m.%Y'],
-      ].collect do |collection, fmt|
+        [ :conflicted_registrations,
+          'SMeX/SL-Differences (Registrations) %d.%m.%Y',
+          'SL hat anderen 5-Stelligen Swissmedic-Code als SMeX' ],
+        [ :conflicted_packages,
+          'SMeX/SL-Differences (Packages) %d.%m.%Y',
+          'SL hat anderen 8-Stelligen Swissmedic-Code als SMeX' ],
+        [ :conflicted_packages_oot,
+          'Critical Pharmacodes BAG-XML %d.%m.%Y',
+          'SL hat anderen Pharmacode als MedWin' ],
+        [ :missing_ikscodes,
+          'Missing Swissmedic-Codes in SL %d.%m.%Y',
+          'SL hat keinen 8-Stelligen Swissmedic-Code' ],
+        [ :missing_ikscodes_oot,
+          'Missing Swissmedic-Codes in SL (out of trade) %d.%m.%Y',
+          <<-EOS
+SL hat keinen 8-Stelligen Swissmedic-Code,
+Produkt ist laut RefData ausser Handel
+          EOS
+        ],
+        [ :unknown_packages,
+          'Unknown Packages in SL %d.%m.%Y',
+          <<-EOS
+es gibt im SMeX keine Zeile mit diesem 8-stelligen Swissmedic-Code, und
+wir konnten auch keine Automatisierte Zuweisung vornehmen, wir wissen
+aber anhand des Pharmacodes, dass die Packung in MedWin vorkommt.
+          EOS
+        ],
+        [ :unknown_registrations,
+          'Unknown Registrations in SL %d.%m.%Y',
+          'es gibt im SMeX keine Zeile mit diesem 5-stelligen Swissmedic-Code' ],
+        [ :unknown_packages_oot,
+          'Unknown Packages in SL (out of trade) %d.%m.%Y',
+          <<-EOS
+es gibt im SMeX keine Zeile mit diesem 8-stelligen Swissmedic-Code, und
+in MedWin kein Resultat mit dem entsprechenden Pharmacode
+          EOS
+        ],
+      ].collect do |collection, fmt, explain|
         values = @preparations_listener.send(collection).collect do |data|
           report_format data
         end.sort
@@ -513,17 +540,29 @@ module ODDB
         body << header << "\n"
         report = [
           header,
+          explain,
           values.join("\n\n"),
         ].join("\n")
         ['text/plain', name.gsub(/[\s()\/-]/, '_') << '.txt', report]
       end
-      info.update(:parts => parts.compact, :report => body)
+      parts.compact!
+      ## combine the last two attachments
+      _, _, unknown_pacs = parts.pop
+      _, _, unknown_regs = parts.pop
+      unknown = unknown_regs << "\n\n" << unknown_pacs
+      name = @@today.strftime('Unknown_Products_in_SL_%d.%m.%Y.txt')
+      parts[-1,0] = [['text/plain', name, unknown]]
+      require 'pp'
+      File.open('/tmp/parts.txt', 'w') do |fh|
+        fh.puts parts.pretty_inspect
+      end
+      info.update(:parts => parts, :report => body)
       info
     end
     def report
       [ 'Created SL-Entries', 'Updated SL-Entries', 'Deleted SL-Entries',
-        'Created Limitation-Texts', 'Updated Limitation-Texts', 
-        'Deleted Limitation-Texts' 
+        'Created Limitation-Texts', 'Updated Limitation-Texts',
+        'Deleted Limitation-Texts'
       ].collect do |title|
         method = title.downcase.gsub(/[ -]/, '_')
         report_format_header title, @preparations_listener.send(method)
