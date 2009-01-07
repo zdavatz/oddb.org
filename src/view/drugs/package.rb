@@ -193,7 +193,7 @@ class PackageInnerComposite < HtmlGrid::Composite
     link.label = true
     args = {
       :zone => :drugs, 
-      :search_query => model.name_base, 
+      :search_query => CGI.escape(model.name_base),
       :search_type => :st_oddb,
     }
     if @lookandfeel.disabled?(:best_result)
