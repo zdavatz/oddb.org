@@ -3,14 +3,22 @@
 
 require 'state/global_predefine'
 require 'view/drugs/package'
+require 'state/admin/package'
 
 module ODDB
-	module State
-		module Drugs
+  module State
+    module Drugs
 class Package < State::Drugs::Global
-	VIEW = View::Drugs::Package
-	LIMITED = true
+  VIEW = View::Drugs::Package
+  LIMITED = true
+  def augment_self
+    if klass = resolve_state(@model.pointer)
+      klass.new(@session, @model)
+    else
+      self
+    end
+  end
 end
-		end
-	end
+    end
+  end
 end

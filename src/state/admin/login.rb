@@ -29,6 +29,11 @@ module LoginMethods
       State::User::InvalidUser.new(@session, user)
     end
     reconsider_permissions(user, newstate)
+    if newstate.respond_to?(:augment_self)
+      reconsider_permissions user, newstate.augment_self
+    else
+      newstate
+    end
   end
   private
   def reconsider_permissions(user, state)
