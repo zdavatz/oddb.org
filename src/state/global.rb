@@ -545,7 +545,11 @@ module ODDB
             State::Drugs::Registration.new(@session, reg)
           end
         elsif(stype == "st_pharmacode" && (pac = @session.package(query)))
-          State::Drugs::Package.new(@session, pac)
+          if(allowed?(pac))
+            State::Admin::Package.new(@session, pac)
+          else
+            State::Drugs::Package.new(@session, pac)
+          end
         else
           result = _search_drugs(query, stype)
           if @session.lookandfeel.has_result_filter?
