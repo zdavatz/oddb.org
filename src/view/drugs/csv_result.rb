@@ -188,6 +188,7 @@ class CsvResult < HtmlGrid::Component
     if qty == 0
       @counts['missing_size'] += 1
     end
+    qty
 	end
 	def numerical_size_extended(pack)
     case ((group = pack.galenic_group) && group.de)
