@@ -551,11 +551,7 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
       _, _, unknown_regs = parts.pop
       unknown = unknown_regs << "\n\n" << unknown_pacs
       name = @@today.strftime('Unknown_Products_in_SL_%d.%m.%Y.txt')
-      parts[-1,0] = [['text/plain', name, unknown]]
-      require 'pp'
-      File.open('/tmp/parts.txt', 'w') do |fh|
-        fh.puts parts.pretty_inspect
-      end
+      parts.push ['text/plain', name, unknown]
       info.update(:parts => parts, :report => body)
       info
     end
