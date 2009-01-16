@@ -139,7 +139,12 @@ module ODDB
       puts err.backtrace[-100..-1]
     end
     def get_latest_file(agent)
-      file = agent.get('http://www.swissmedic.ch/files/pdf/Packungen.xls')
+      page = agent.get('http://www.swissmedic.ch/daten/00080/00251/index.html?lang=de')
+      links = page.links.select do |link|
+        /packungen/i.match link.attributes['title']
+      end
+      link = links.first or raise "could not identify url to Packungen.xls"
+      file = agent.get(link.href)
       download = file.body
       latest = ''
       if(File.exist? @latest)

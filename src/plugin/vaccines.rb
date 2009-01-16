@@ -13,22 +13,23 @@ module ODDB
 	class VaccineIndexWriter < NullWriter
 		attr_reader :path
     def send_flowing_data(data)
-      if(/Excel/i.match data)
+      if(/Excel|xls/i.match data)
         @path ||= @candidate
       end
       super
     end
 		def new_linkhandler(link)
       if(link && (href = link.attribute('href')) \
-				 && /.*\.xls$/.match(href))
-        @candidate = href
+         && (title = link.attribute('title')) \
+				 && /.*\.xls$/.match(title))
+        @candidate = href.gsub /&amp;/, '&'
 			end
 		end
 	end
 	class VaccinePlugin	< Plugin
     Spreadsheet.client_encoding = ENCODING
 		SWISSMEDIC_SERVER = 'www.swissmedic.ch'
-		INDEX_PATH = '/html/content/Impfstoffe-d.html'
+		INDEX_PATH = '/daten/00080/00254/index.html?lang=de'
 		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
 		DOSE_PATTERN  = /(\d+(?:[,.]\d+)?)\s*((?:\/\d+)|[^\s\d]*)?/
 		ENDMULTI_PATTERN = /\d+\s*Stk$/
@@ -152,9 +153,6 @@ module ODDB
 			if((index = http_body(SWISSMEDIC_SERVER, INDEX_PATH)) \
 				 && (path = extract_latest_filepath(index)) \
 				 && (download = http_body(SWISSMEDIC_SERVER, path)))
-=begin
-			if(download = http_body(SWISSMEDIC_SERVER, XLS_PATH))
-=end
 				latest = ''
 				if(File.exist?(@latest_path))
 					latest = File.read(@latest_path)
