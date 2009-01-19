@@ -138,7 +138,7 @@ module ODDB
 					if(seq.active?)
 						seq.each_package { |pack|
 							@checked += 1
-							if(!pack.pharmacode && !pack.out_of_trade)
+							if(!pack.out_of_trade)
 								@found += 1
 								update_package(meddata, pack)
 							end
