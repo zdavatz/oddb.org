@@ -4,12 +4,12 @@
 require 'plugin/plugin'
 require 'util/oddbconfig'
 require 'util/searchterms'
+require 'mechanize'
 require 'drb'
 
 module ODDB
 	class CoMarketingPlugin < Plugin
 		COMARKETING_PARSER = DRb::DRbObject.new(nil, COMARKETING_URI)
-		SOURCE_URI = "http://www.swissmedic.ch/files/pdf/Co-Marketing-Praeparate_nach_Basis.pdf"
 		def find(iksnr)
       @app.registration(iksnr)
 =begin
@@ -67,11 +67,16 @@ module ODDB
 			sequences.collect { |seq| 
 				seq.registration }.uniq.reject { |reg| reg.parallel_import }
 		end
-		def update
+		def update(agent=WWW::Mechanize.new)
 			@updated = 0
 			@found = 0
 			@not_found = []
-			@pairs = COMARKETING_PARSER.get_pairs(SOURCE_URI)
+      page = agent.get 'http://www.swissmedic.ch/daten/00080/00260/index.html?lang=de'
+      link = page.links.find do |node|
+        /Sortiert\s*nach\s*Basis/i.match node.attributes['title']
+      end or raise "unable to identify url for Co-Marketing-data"
+      url = "http://www.swissmedic.ch/#{link.attributes['href']}"
+			@pairs = COMARKETING_PARSER.get_pairs(url)
 			@pairs.each { |pair|
 				update_pair(*pair)
 			}
