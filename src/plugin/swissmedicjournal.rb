@@ -125,13 +125,22 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vorge
 			lines.flatten.join("\n")
 		end
 		def update(month)
-      filename = month.strftime('%m_%Y.pdf')
-      target = File.join(ARCHIVE_PATH, 'pdf', filename)
-      source = "http://www.swissmedic.ch/files/pdf/#{filename}"
-      unless File.exist?(target)
-        agent = WWW::Mechanize.new
-        page = agent.get source
-        page.save target
+      agent = WWW::Mechanize.new
+      main = agent.get 'http://www.swissmedic.ch/org/00064/00065/index.html'
+      link = main.links.find do |node|
+        /Swissmedic\s*Journal/i.match node.attributes['title']
+      end or raise 'unable to identify url for Swissmedic-Journal'
+      smj = link.click
+
+      latest = File.join(ARCHIVE_PATH, 'pdf', 'Swissmedic-Journal-latest.pdf')
+      unless File.exist?(latest) && File.read(latest) == smj.body
+        filename = month.strftime('%m_%Y.pdf')
+        target = File.join(ARCHIVE_PATH, 'pdf', filename)
+        if File.exist?(target) && File.read(target) != smj.body
+          raise "Safety-catch: cannot overwrite #{target} with data from #{link.attributes['href']}"
+        end
+        smj.save latest
+        smj.save target
       end
     rescue WWW::Mechanize::ResponseCodeError
 		end
