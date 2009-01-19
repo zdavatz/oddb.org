@@ -10,6 +10,7 @@ require 'drb'
 module ODDB
 	class CoMarketingPlugin < Plugin
 		COMARKETING_PARSER = DRb::DRbObject.new(nil, COMARKETING_URI)
+		SOURCE_URI = 'http://www.swissmedic.ch/daten/00080/00260/index.html?lang=de'
 		def find(iksnr)
       @app.registration(iksnr)
 =begin
@@ -71,7 +72,7 @@ module ODDB
 			@updated = 0
 			@found = 0
 			@not_found = []
-      page = agent.get 'http://www.swissmedic.ch/daten/00080/00260/index.html?lang=de'
+      page = agent.get SOURCE_URI
       link = page.links.find do |node|
         /Sortiert\s*nach\s*Basis/i.match node.attributes['title']
       end or raise "unable to identify url for Co-Marketing-data"
