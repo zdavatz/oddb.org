@@ -185,7 +185,9 @@ module ODDB
 						 @probable_errors_medwin.push(pack)
 					 end
 				end
-				update_package_data(pack, details)
+        unless pack.pharmacode == details[:pharmacode].to_i.to_s
+          update_package_data(pack, details)
+        end
 			end
 		end
 		def update_package_trade_status(refdata, pack)
