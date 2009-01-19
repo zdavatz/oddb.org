@@ -109,6 +109,7 @@ module ODDB
 		end
 		def report
 			lines = [
+        @header,
 				"Checked #{@checked} Packages",
 				"Tried #{@found} Medwin Entries",
 				"Updated  #{@updated.size} Packages",
@@ -133,15 +134,21 @@ module ODDB
 			lines.join("\n")
 		end
     def update
+      @header = <<-EOS
+Alle Packungen wurden überprüft (checked).
+Packungen, welche im Handel sind, wurden bei MedWin abgefragt (tried).
+Als Update (updated) gekennzeichnet wurden diejenigen, bei denen der Pharmacode
+von MedWin anders war als in der ODDB (inkl. diese, wo die ODDB noch keinen
+Pharmacode hatte)
+
+      EOS
       MEDDATA_SERVER.session(:product) { |meddata|
-        @app.each_sequence { |seq|
-          seq.each_package { |pack|
-            @checked += 1
-            unless pack.out_of_trade
-              @found += 1
-              update_package(meddata, pack)
-            end
-          }
+        @app.each_package { |pack|
+          @checked += 1
+          unless pack.out_of_trade
+            @found += 1
+            update_package(meddata, pack)
+          end
         }
         nil # return nil across DRb
       }
