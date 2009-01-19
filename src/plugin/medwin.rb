@@ -116,13 +116,21 @@ module ODDB
 				"Probable Errors in ODDB: #{@probable_errors_oddb.size}",
 				"Probable Errors in Medwin: #{@probable_errors_medwin.size}",
 				nil,
-				"Probable Errors in ODDB: #{@probable_errors_oddb.size}",
+        <<-EOS
+Probable Errors in ODDB: #{@probable_errors_oddb.size}
+In den folgenden Fällen ist die Swissmedic-Packungsnummer von ODDB.org ziemlich
+sicher falsch, weil Sie tiefer ist als diejenige von Medwin.ch
+        EOS
 			]
 			@probable_errors_oddb.each { |pack|
 				lines.push("http://www.oddb.org/de/gcc/resolve/pointer/#{pack.pointer}")
 			}
 			lines.push nil
-			lines.push "Probable Errors in Medwin: #{@probable_errors_medwin.size}"
+			lines.push <<-EOS
+Probable Errors in Medwin: #{@probable_errors_medwin.size}
+In den folgenden Fällen ist die Swissmedic-Packungsnummer von Medwin.ch
+ziemlich sicher falsch, weil Sie tiefer ist als diejenige von ODDB.org.
+      EOS
 			@probable_errors_medwin.each { |pack|
 				lines.push("http://www.oddb.org/de/gcc/resolve/pointer/#{pack.pointer}")
 			}
