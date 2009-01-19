@@ -132,22 +132,20 @@ module ODDB
 			}
 			lines.join("\n")
 		end
-		def update
-			MEDDATA_SERVER.session(:product) { |meddata|
-				@app.each_sequence { |seq| 
-					if(seq.active?)
-						seq.each_package { |pack|
-							@checked += 1
-							if(!pack.out_of_trade)
-								@found += 1
-								update_package(meddata, pack)
-							end
-						}
-					end
-				}
-				nil # return nil across DRb
-			}
-		end
+    def update
+      MEDDATA_SERVER.session(:product) { |meddata|
+        @app.each_sequence { |seq|
+          seq.each_package { |pack|
+            @checked += 1
+            unless pack.out_of_trade
+              @found += 1
+              update_package(meddata, pack)
+            end
+          }
+        }
+        nil # return nil across DRb
+      }
+    end
 		def update_trade_status
 			MEDDATA_SERVER.session(:refdata) { |meddata|
 				@app.each_sequence { |seq|
