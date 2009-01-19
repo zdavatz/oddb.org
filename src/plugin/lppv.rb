@@ -29,7 +29,7 @@ module ODDB
 					 && price_style.match(row.cdata(5)))
           price = Util::Money.new(row.cdata(5).to_f, :public, 'CH')
           price.authority = :lppv
-					prices.store(row.cdata(3), price)
+					prices.store(row.cdata(3).to_i.to_s, price)
 				end
 			}
 			prices
