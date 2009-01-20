@@ -207,7 +207,7 @@ module ODDB
             # package is out of trade
             @out_of_trade = true
           end
-          @sl_data = { :limitation_points => nil }
+          @sl_data = { :limitation_points => nil, :limitation => nil }
           @lim_data = {}
           @conflict = false
         when 'Preparation'
@@ -284,7 +284,9 @@ module ODDB
           end
           @lim_texts.each do |pac_ptr, lim_data|
             if (pac = pac_ptr.resolve(@app)) && (sl_entry = pac.sl_entry)
-              txt_ptr = sl_entry.pointer + :limitation_text
+              sl_ptr = sl_entry.pointer
+              @app.update sl_ptr, :limitation => true
+              txt_ptr = sl_ptr + :limitation_text
               if lim_data.empty?
                 if sl_entry.limitation_text
                   @deleted_limitation_texts += 1
@@ -320,6 +322,9 @@ module ODDB
             else
               @missing_ikscodes.push @report
             end
+          end
+          unless @registration
+            @registration = @app.registration("%05i" % @text[0..-4].to_i)
           end
           if @registration
             @ikscd = '%03i' % @text[-3,3].to_i
@@ -431,7 +436,10 @@ module ODDB
             @report_data[:name_descr] ||= @text if key == :de
           end
         when 'Points'
-          @sl_data.store :limitation_points, @text.to_i if @sl_data
+          if @sl_data
+            @sl_data.store :limitation_points, @text.to_i
+            @sl_data.store :limitation, true
+          end
         when 'ItCode'
           @itcode = nil
           @it_descriptions = nil
