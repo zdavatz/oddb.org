@@ -64,6 +64,7 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[0,8]		=>	:price_exfactory,
 		[2,8]		=>	:price_public,
 		[0,9]	  =>	:deductible,
+    [0,10]  =>  :pharmacode,
 	}
 	CSS_MAP = {
 		[0,0,4]	=>	'list',
@@ -76,6 +77,7 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[0,7,4]	=>	'list',
 		[0,8,4]	=>	'list',
 		[0,9,4]	=>	'list',
+		[0,10,4]=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
@@ -98,11 +100,11 @@ class PackageInnerComposite < HtmlGrid::Composite
 	def init
     if(@model.narcotic?)
       components.update([2,10] => :narcotic_label, [3,10] => :narcotic)
-      css_map.store([0,10,4], 'list')
     end
     if(@lookandfeel.enabled?(:feedback))
-      components.update([0,10] => :feedback_label, [1,10] => :feedback)
-      css_map.store([0,10,4], 'list')
+      components.update([0,10] => :feedback_label, [1,10] => :feedback,
+                        [0,11] => :pharmacode)
+      css_map.store([0,11,4], 'list')
     end
     if(@model.ddd_price)
       components.store([2,9], :ddd_price)
