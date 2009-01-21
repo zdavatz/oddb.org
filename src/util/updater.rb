@@ -158,12 +158,14 @@ module ODDB
           if(plug._update)
             log = logs.latest
             change_flags = plug.change_flags || {}
-            log.change_flags.each do |ptr, flgs|
-              if flags = change_flags[ptr]
-                flags.concat flgs
-                flags.uniq!
-              else
-                change_flags[ptr] = flgs
+            if previous = log.change_flags
+              previous.each do |ptr, flgs|
+                if flags = change_flags[ptr]
+                  flags.concat flgs
+                  flags.uniq!
+                else
+                  change_flags[ptr] = flgs
+                end
               end
             end
             @app.update(log.pointer, {:change_flags, change_flags})
