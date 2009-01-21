@@ -157,7 +157,7 @@ module ODDB
 				wrap_update(klass, subj) {
           if(plug._update)
             log = logs.latest
-            change_flags = plug.change_flags
+            change_flags = plug.change_flags || {}
             log.change_flags.each do |ptr, flgs|
               if flags = change_flags[ptr]
                 flags.concat flgs
@@ -177,17 +177,6 @@ module ODDB
           end
 				}
 			end
-		end
-		def reconsider_deletions(month)
-			klass = SwissmedicJournalPlugin
-			subj = 'Reconsider Deletions'
-			wrap_update(klass, subj) {
-				plug = klass.new(@app)
-				plug.reconsider_deletions(month)
-				log = Log.new(month)
-				log.update_values(log_info(plug))
-				log.notify(subj)
-			}
 		end
 		def run
 			logfile_stats
