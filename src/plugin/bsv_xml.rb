@@ -437,8 +437,9 @@ module ODDB
           end
         when 'Points'
           if @sl_data
-            @sl_data.store :limitation_points, @text.to_i
-            @sl_data.store :limitation, true
+            value = @text.to_i
+            @sl_data.store :limitation_points, value
+            @sl_data.store :limitation, value > 0
           end
         when 'ItCode'
           @itcode = nil
