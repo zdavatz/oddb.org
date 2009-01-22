@@ -279,6 +279,9 @@ module ODDB
                 else
                   @created_sl_entries += 1
                 end
+                if (lim_data = @lim_texts[pac_ptr]) && !lim_data.empty?
+                  sl_data.store :limitation, true
+                end
                 @app.update pointer.creator, sl_data, :bag
               end
             end
@@ -286,7 +289,6 @@ module ODDB
           @lim_texts.each do |pac_ptr, lim_data|
             if (pac = pac_ptr.resolve(@app)) && (sl_entry = pac.sl_entry)
               sl_ptr = sl_entry.pointer
-              @app.update sl_ptr, :limitation => true
               txt_ptr = sl_ptr + :limitation_text
               if lim_data.empty?
                 if sl_entry.limitation_text
