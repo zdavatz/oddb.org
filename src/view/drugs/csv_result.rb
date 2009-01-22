@@ -41,6 +41,8 @@ class CsvResult < HtmlGrid::Component
       'homeopathy'               => 0,
       'inactive_date'            => 0,
       'limitations'              => 0,
+      'limitation_both'          => 0,
+      'limitation_points'        => 0,
       'limitation_texts'         => 0,
       'lppv'                     => 0,
       'missing_size'             => 0,
@@ -161,13 +163,20 @@ class CsvResult < HtmlGrid::Component
       lim = sl.limitation
       if lim
         @counts['limitations'] += 1
+        boolean(lim)
       end
-			boolean(lim)
 		end
 	end
 	def limitation_points(pack)
 		if(sl = pack.sl_entry)
-			sl.limitation_points
+      points = sl.limitation_points.to_i
+      if points > 0
+        if sl.limitation_text
+          @counts['limitation_both'] += 1
+        end
+        @counts['limitation_points'] += 1
+        points
+      end
 		end
 	end
 	def limitation_text(pack)
