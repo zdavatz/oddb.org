@@ -38,6 +38,11 @@ module ODDB
       @agent = WWW::Mechanize.new
       @agent.user_agent = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_4_11; de-de) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.22"
     end
+    def extract_fachinfo_id(href)
+      if match = @@fi_ptrn.match(href.to_s)
+        match[1]
+      end
+    end
 		def extract_iksnrs(languages)
 			iksnrs = []
 			languages.each_value { |doc|
