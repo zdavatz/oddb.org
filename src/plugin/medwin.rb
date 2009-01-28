@@ -24,17 +24,17 @@ module ODDB
 	end
 	class MedwinCompanyPlugin < MedwinPlugin
 		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
-		def initialize(app)
-			super
-			@medwin_template = {
-				:ean13		=>	[1,0],
-				:address	=>	[1,4],
-				:plz			=>	[1,5],
-				:location	=>	[2,5],
-				:phone		=>	[1,6],
-				:fax			=>	[2,6],
-			}
-		end
+    def initialize(app)
+      super
+      @medwin_template = {
+        :ean13    =>  [1,0],
+        :address  =>  [1,5],
+        :plz      =>  [1,6],
+        :location =>  [2,6],
+        :phone    =>  [1,7],
+        :fax      =>  [2,7],
+      }
+    end
 		def report
 			lines = [
 				"Checked #{@checked} Companies",
