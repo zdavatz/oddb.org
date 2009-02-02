@@ -157,6 +157,7 @@ module ODDB
         (@change_flags[pointer] ||= []).push key
       end
       def load_ikskey pcode
+        return if pcode.to_s.empty?
         tries = 3
         ikskey = nil
         begin
