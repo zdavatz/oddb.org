@@ -213,10 +213,17 @@ Pharmacode hatte)
 			}
 			results = refdata.search(criteria)
       if results.empty? && (pcode = pack.pharmacode) && !pcode.strip.empty?
-        ## there's no pharmacode in RefData, so we need to escape to MedData here
-        MEDDATA_SERVER.session(:product) { |meddata|
-          results = meddata.search(:pharmacode => pcode)
-        }
+        begin
+          ## there's no pharmacode in RefData, so we need to escape to
+          #  MedData here
+          MEDDATA_SERVER.session(:product) { |meddata|
+            results = meddata.search(:pharmacode => pcode)
+          }
+        rescue MedData::OverflowError
+          ## obviously something went wrong, and we have received too many
+          #  results.. since we're only interested in results of size 1, we
+          #  can safely ignore this.
+        end
       end
 			if(results.empty? && pack.registration.package_count == 1)
 				criteria = {
