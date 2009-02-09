@@ -71,7 +71,7 @@ module ODDB
       when :registration_date, :expiry_date
         row = diff.newest_rows[iksnr].sort.first.last
         sprintf "%s (%s)", txt, 
-                row.date(column(flag)).strftime('%d.%m.%Y')
+                row[column(flag)].strftime('%d.%m.%Y')
       else
         row = diff.newest_rows[iksnr].sort.first.last
         sprintf "%s (%s)", txt, cell(row, column(flag))
@@ -228,8 +228,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
     end
     def rows_diff(row, other, ignore = [:product_group])
       flags = super(row, other, ignore)
-      if(other.first.is_a? String)
-        package = @app.registration(cell(row, column(:iksnr))).package(cell(row, column(:ikscd)))
+      if other.first.is_a?(String) \
+        && (reg = @app.registration(cell(row, column(:iksnr)))) \
+        && (package = reg.package(cell(row, column(:ikscd))))
         flags = flags.select { |flag|
           origin = package.data_origin(flag)
           origin ||= package.sequence.data_origin(flag)
@@ -244,7 +245,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       COLUMNS.each_with_index { |key, idx|
         value = case key
                 when :registration_date, :expiry_date
-                  row.date(idx)
+                  row[idx]
                 when :seqnr
                   sprintf "%02i", row.at(idx).to_i
                 else
@@ -411,12 +412,13 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
               else
                 Persistence::Pointer.new([:registration, iksnr]).creator
               end
-        expiration = row.date(column(:expiry_date))
+        expiration = row[column(:expiry_date)]
+        reg_date = row[column(:registration_date)]
         args = { 
           :product_group       => group,
           :index_therapeuticus => cell(row, column(:index_therapeuticus)), 
           :production_science  => science,
-          :registration_date   => row.date(column(:registration_date)),
+          :registration_date   => reg_date,
           :expiration_date     => expiration,
           :renewal_flag        => false,
         }
