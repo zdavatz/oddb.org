@@ -376,10 +376,14 @@ module ODDB
             flag = nil
             case @text
             when '2', '6'
-              flag = :sl_entry
+              if @pack && !@pack.sl_entry
+                flag_change @pack.pointer, :sl_entry
+              end
               active = true
             when '3', '7'
-              flag = :sl_entry_delete
+              if @pack && @pack.sl_entry
+                flag_change @pack.pointer, :sl_entry_delete
+              end
             when '9', '10'
               #  9: inactive
               # 10: pending
@@ -393,7 +397,6 @@ module ODDB
                 if @conflict
                   @conflicted_packages.push @report
                 end
-                flag_change @pack.pointer, flag if flag
               end
             elsif @registration && @pack.nil?
               @unknown_packages_oot.push @report
