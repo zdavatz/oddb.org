@@ -35,10 +35,6 @@ module ODDB
 				LookandfeelExtern,
 				LookandfeelGenerika,
 			],
-			'hirslanden' => [
-				LookandfeelLanguages,
-				LookandfeelHirslanden,
-			],
 			'just-medical'=>	[
 				LookandfeelLanguages,
 				LookandfeelJustMedical, 
