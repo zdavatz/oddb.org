@@ -11,7 +11,7 @@ module ODDB
 class Indication < State::Admin::Global
 	VIEW = View::Admin::Indication
 	def delete
-		if(@model.registrations.empty?)
+		if(@model.registrations.empty? && @model.sequences.empty?)
 			@session.app.delete(@model.pointer)
 			indications() # from RootState
 		else
