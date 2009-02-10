@@ -36,7 +36,7 @@ module ODDB
           seq.indication = self
         end
       end
-      self.synonyms.concat((other.all_descriptions - all_descriptions).uniq)
+      self.synonyms.concat(other.all_descriptions - all_descriptions).uniq!
       other
     end
 	end
