@@ -27,6 +27,8 @@ class Indication < State::Admin::Global
 			inj.store(key, value)
 			inj
 		}
+    input.store :synonyms,
+                @session.user_input(:synonym_list).to_s.split(/\s+\|\s+/)
 		unless error?
 			@model = @session.app.update(@model.pointer, input, unique_email)	
 		end

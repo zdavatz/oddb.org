@@ -12,6 +12,11 @@ class IndicationForm < View::DescriptionForm
   def languages
     super + ['lt', 'synonym_list']
   end
+  def synonym_list *args
+    input = super
+    input.value = @model.synonyms.join(' | ')
+    input
+  end
 end
 class IndicationComposite < HtmlGrid::Composite
 	COMPONENTS = {
