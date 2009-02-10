@@ -33,7 +33,7 @@ module ODDB
 		# Recipients for all Update-Logs go here...
 		RECIPIENTS = []
 		LOG_RECIPIENTS = {
-			:powerlink					=>	['matthijs.ouwerkerk@just-medical.com'],
+			:powerlink					=>	[],
 			:passthru						=>	[],	
 		}
 		LOG_FILES = {

@@ -418,113 +418,6 @@ module ODDB
     }
 		HTML_ATTRIBUTES = { }
 	end
-	class LookandfeelHirslanden < SBSM::LookandfeelWrapper
-		ENABLED = [
-			:atc_chooser,
-			:drugs, 
-			:external_css,
-      :fachinfos,
-			:faq_link,
-			:help_link,
-			:home,
-			:home_drugs,
-			:popup_links,
-			:search_reset,
-			:sequences,
-			:topfoot,
-			:ywesee_contact,
-			:logout,
-		]
-		RESOURCES = {
-			:external_css	=>	'http://www.hirslandenprofessional.ch/scripts/oddb.css',
-		}
-    DICTIONARIES = {
-      'de' => {
-				:contact_link	=>	'Kontakt',
-				:contact_href	=>	'mailto:med-drugs@just-medical.com',
-        :home_drugs   => 'med-drugs Home',
-        :home_welcome => '',
-      },
-      'en' => {
-				:contact_link	=>	'Kontakt',
-				:contact_href	=>	'mailto:med-drugs@just-medical.com',
-        :home_drugs   => 'med-drugs Home',
-        :home_welcome => '',
-      },
-      'fr' => {
-				:contact_link	=>	'Kontakt',
-				:contact_href	=>	'mailto:med-drugs@just-medical.com',
-        :home_drugs   => 'med-drugs Home',
-        :home_welcome => '',
-      },
-    }
-		DISABLED = [ :generic_definition, :legal_note, 
-      :pointer_steps_header  ]
-    def compare_list_components
-      {
-        [0,0]	=>	:name_base,
-        [1,0]	=>	:company_name,
-        [2,0]	=>	:most_precise_dose,
-        [3,0]	=>	:comparable_size,
-        [4,0] =>	:compositions,
-        [5,0]	=>	:price_public,
-        [6,0]	=>	:price_difference, 
-        [7,0] =>  :ddd_price,
-      }	
-    end
-    def explain_result_components
-      {
-        [0,0]	=>	:explain_original,
-        [0,1]	=>	:explain_generic,
-        [0,2]	=>	'explain_unknown',
-        [0,3]	=>	'explain_expired',
-        [0,4]	=>	:explain_complementary,
-        [0,5]	=>	:explain_homeopathy,
-        [0,6]	=>	:explain_anthroposophy,
-        [0,7] =>	:explain_phytotherapy,
-        [1,0]	=>	:explain_parallel_import,
-        [1,1]	=>	:explain_comarketing,
-        [1,2]	=>	:explain_vaccine,
-        [1,3]	=>	:explain_narc,
-        [1,4]	=>	:explain_fachinfo,
-        [1,5]	=>	:explain_patinfo,
-        [1,6]	=>	:explain_limitation,
-        [1,7]	=>	:explain_cas,
-        [2,0]	=>	'explain_pbp',
-        [2,1]	=>	'explain_pr',
-        [2,2]	=>	:explain_ddd_price,
-        [2,3]	=>	'explain_sl',
-        [2,4]	=>	'explain_slo',
-        [2,5]	=>	'explain_slg',
-        [2,6]	=>	:explain_lppv,
-      }
-    end
-    def navigation(*args)
-      [:help_link, :faq_link, :contact_link ]
-    end
-    def result_list_components
-      {
-        [0,0]		=>	:limitation_text,
-        [1,0]		=>  :fachinfo,
-        [2,0]		=>	:patinfo,
-        [3,0,0]	=>	:narcotic,
-        [3,0,1]	=>	:complementary_type,
-        [3,0,2]	=>	:comarketing,
-        [4,0,0]	=>	'result_item_start',
-        [4,0,1]	=>	:name_base,
-        [4,0,2]	=>	'result_item_end',
-        [5,0]		=>	:comparable_size,
-        [6,0]	=>	:price_public,
-        [7,0]	=>	:ddd_price,
-        [8,0]	=>	:compositions,
-        [9,0]	=>	:company_name,
-        [10,0]	=>	:ikscat,
-      }
-    end
-    def zone_navigation
-      super.push(:home_drugs)
-    end
-	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:atc_chooser,
@@ -542,7 +435,6 @@ module ODDB
 			:migel,
 			:migel_alphabetical,
 			:popup_links,
-			:powerlink,
 			:search_reset,
 			:sequences,
       :topfoot,
