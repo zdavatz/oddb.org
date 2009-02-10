@@ -514,6 +514,7 @@ Zeno Davatz
 				:equivalent_dose					=>	'Stärke',
 				:e_search_query_short			=>	'Ihr Such-Stichwort ergibt ein sehr grosses Resultat. Bitte verwenden Sie mindestens 3 Buchstaben.',
 				:e_selfmerge_company			=>	'"Die Registrationen sind dieser Firma bereits zugeordnet"',
+				:e_selfmerge_indication	  =>	'Das ist dieselbe Indikation!',
 				:e_selfmerge_substance		=>	'Das ist dieselbe Substanz!',
 				:e_seq_dup_substance0			=>	'Der Wirkstoff "',
 				:e_seq_dup_substance1			=>	'" ist der aktuellen Sequenz bereits zugeordnet.<br>Bitte geben Sie einen anderen Wirkstoff an.',

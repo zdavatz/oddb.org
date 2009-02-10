@@ -30,7 +30,7 @@ end
 class MergeIndicationComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	'indication',
-		[0,1]	=>	:merge_galenic_form,
+		[0,1]	=>	:merge_indication,
 		[0,2]	=>	View::Admin::MergeIndicationForm,
 	}
 	CSS_CLASS = 'composite'

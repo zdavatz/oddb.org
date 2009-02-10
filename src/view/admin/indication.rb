@@ -9,6 +9,9 @@ module ODDB
 		module Admin
 class IndicationForm < View::DescriptionForm
 	DESCRIPTION_CSS = 'xl'
+  def languages
+    super + ['lt', 'synonym_list']
+  end
 end
 class IndicationComposite < HtmlGrid::Composite
 	COMPONENTS = {

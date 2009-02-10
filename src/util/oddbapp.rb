@@ -1442,6 +1442,10 @@ module ODDB
 			command = MergeCommand.new(source.pointer, target.pointer)
 			@system.execute_command(command)
 		end
+    def merge_indications(source, target)
+      command = MergeCommand.new(source.pointer, target.pointer)
+      @system.execute_command(command)
+    end
 		def merge_substances(source_pointer, target_pointer)
 			command = MergeCommand.new(source_pointer, target_pointer)
 			@system.execute_command(command)

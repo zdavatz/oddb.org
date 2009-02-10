@@ -10,7 +10,7 @@ module ODDB
 		include Language
 		include RegistrationObserver
 		include SequenceObserver
-		ODBA_SERIALIZABLE = [ '@descriptions' ]
+		ODBA_SERIALIZABLE = [ '@descriptions', '@synonyms' ]
 		def atc_classes
 			atcs = @registrations.collect { |reg| 
 				reg.atc_classes
@@ -22,8 +22,22 @@ module ODDB
       if(lang)
         super
       else
-        ODDB.search_term(self.descriptions.values.join(" "))
+        ODDB.search_term(self.all_descriptions.join(" "))
       end
 		end
+    def merge(other)
+      if regs = other.registrations
+        regs.dup.each do |reg|
+          reg.indication = self
+        end
+      end
+      if seqs = other.sequences
+        seqs.dup.each do |seq|
+          seq.indication = self
+        end
+      end
+      self.synonyms.concat((other.all_descriptions - all_descriptions).uniq)
+      other
+    end
 	end
 end
