@@ -1,6 +1,7 @@
 Datenbeschrieb oddb.yaml
 
-Version:  1.5.0
+Version:  1.5.1
+Geändert: 10.02.2009 (1.5.1) durch hwyss@ywesee.com
 Geändert: 04.12.2008 (1.5.0) durch hwyss@ywesee.com
 Geändert: 22.11.2007 (1.4.0) durch hwyss@ywesee.com
 Geändert: 20.09.2007 (1.3.2) durch hwyss@ywesee.com
@@ -123,6 +124,7 @@ Substance:
 - synonyms          (Array (String))			 -> Weitere bezeichnungen
 - effective_form    (Substance)            -> Wirkform
 - narcotic          (String)               -> CAS Registry Number
+- swissmedic_code   (String)               -> Substanz-Code der Swissmedic. siehe Glossar (Swissmedic-Code)
 
 Dose:
 - val               (Float, NOT NULL)      -> Wert/Grösse der Dosis
@@ -216,6 +218,10 @@ Subklasse von Hash. Key-Value pairs für Sprache/Text, wobei folgende Werte als S
 - it -> Italienisch
 - en -> Englisch
 - lt -> Latein
+
+* Swissmedic-Code
+Substanz-Code der Swissmedic. Datenquelle: Betäubungsmittelliste (als GTIN).
+GTIN = 7611 + swissmedic_code + Prüfziffer.
 
 * Symbol: 
 Interne Repräsentation eines Namens. In anderen Programmiersprachen auch Atom.
