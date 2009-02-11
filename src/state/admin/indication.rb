@@ -18,22 +18,38 @@ class Indication < State::Admin::Global
 			State::Admin::MergeIndication.new(@session, @model)
 		end
 	end
-	def update
-		input = @session.lookandfeel.languages.inject({}) { |inj, key|
-			value = @session.user_input(key.intern)
-			unless [nil, @model].include?(@session.app.indication_by_text(value))
-				@errors.store(key.intern, SBSM::ProcessingError.new('e_duplicate_indication', key, value))
-			end
-			inj.store(key, value)
-			inj
-		}
-    input.store :synonyms,
-                @session.user_input(:synonym_list).to_s.split(/\s+\|\s+/)
-		unless error?
-			@model = @session.app.update(@model.pointer, input, unique_email)	
-		end
-		self
-	end
+  def duplicate?(string)
+    !(string.to_s.empty? \
+      || [nil, @model].include?(@session.app.indication_by_text(string)))
+  end
+  def update
+    languages = @session.lookandfeel.languages + ['lt']
+    input = languages.inject({}) { |inj, key|
+      sym = key.intern
+      value = @session.user_input(sym)
+      if duplicate?(value)
+        @errors.store(sym,
+                      create_error('e_duplicate_indication', key, value))
+      end
+      inj.store(key, value)
+      inj
+    }
+    if(syn_list = @session.user_input(:synonym_list))
+      syns = syn_list.split(/\s*\|\s*/)
+      syns.each { |syn|
+        if(duplicate?(syn))
+          @errors.store(:synonym_list,
+            create_error('e_duplicate_indication',
+              :synonym_list, syn))
+        end
+      }
+      input.store(:synonyms, syns)
+    end
+    unless error?
+      @model = @session.app.update(@model.pointer, input, unique_email)
+    end
+    self
+  end
 end
 		end
 	end
