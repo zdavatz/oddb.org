@@ -326,14 +326,24 @@ module ODDB
 		def extract_ddd(writer)
 			writer.extract_ddd.each { |code, ddds|
 				pointer = Persistence::Pointer.new([:atc_class, code])
-				ddds.each { |hash|
+        keep = []
+        ddds.each { |hash|
           dkey = sprintf("%s%s", hash[:administration_route]||'*',
                          hash[:note])
-					ddd_ptr = pointer + [:ddd, dkey]
-					if(!(ddd = @app.resolve(ddd_ptr)) || ddd != hash)
-						@app.update(ddd_ptr.creator, hash, :who)
-					end
-				}
+          ddd_ptr = pointer + [:ddd, dkey]
+          ddd = @app.resolve(ddd_ptr)
+          if(ddd.nil? || ddd != hash)
+            ddd = @app.update(ddd_ptr.creator, hash, :who)
+          end
+          keep.push ddd unless ddd.nil?
+        }
+        if atc = pointer.resolve(@app)
+          atc.ddds.values.each do |ddd|
+            unless keep.include?(ddd)
+              @app.delete(ddd.pointer)
+            end
+          end
+        end
 			}
 		end
 		def store_guidelines(hash, name)
