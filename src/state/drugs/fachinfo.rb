@@ -20,7 +20,7 @@ class Fachinfo < State::Drugs::Global
 		@fachinfo = @model
 		@model = FachinfoWrapper.new(@fachinfo)
 		descr = @session.lookandfeel.lookup(:fachinfo_descr, 
-			@model.name_base)
+			@fachinfo.localized_name(@session.language))
 		@model.pointer_descr = descr
 	end
 	def allowed?

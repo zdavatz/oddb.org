@@ -243,14 +243,11 @@ class MiniFis < RssPreview
 end
 class FachinfoNewsList < HtmlGrid::DivList
   COMPONENTS = {
-    [0,0] => :name_base,
-  }
-  SYMBOL_MAP = {
-    :name_base => PointerLink,
+    [0,0] => :name,
   }
   def name(model)
     link = PointerLink.new(:name_base, model, @session, self)
-    link.value = model.name_base
+    link.value = model.localized_name(@session.language)
     link
   end
 end
