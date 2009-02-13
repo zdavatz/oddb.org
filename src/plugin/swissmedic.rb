@@ -482,6 +482,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         elsif((key = cell(row, column(:substances))) && !key.include?(?,) \
              && (atc = @app.unique_atc_class(key)))
           args.store :atc_class, atc.code
+        elsif(code = cell(row, column(:atc_class)))
+          args.store :atc_class, code
 				end
 			end
       if(indication = update_indication(cell(row, column(:indication_sequence))))
