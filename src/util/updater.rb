@@ -193,6 +193,7 @@ module ODDB
 			if(update_bsv)
         update_bsv_followers
 			end
+      update_narcotics
       run_on_monthday(1) {
         update_interactions 
       }
@@ -288,22 +289,7 @@ module ODDB
 			}
 		end
 		def update_narcotics
-			klass = NarcoticPlugin
-			subj = 'Narcotic'
-			plug = nil
-			status_report = "Narcotics are now up to date"
-			[:de, :fr].each { |lang|
-				wrap_update(klass, subj) {
-					plug = klass.new(@app)
-					path = File.expand_path("../../data/csv/betaeubungsmittel_a_#{lang}.csv",
-						File.dirname(__FILE__))
-					plug.update(path, lang)
-					log = Log.new(@@today)
-					log.update_values(log_info(plug))
-					log.notify(subj)
-				}
-			}		
-			status_report
+			update_notify_simple(NarcoticPlugin, 'Narcotics')
 		end
 		def update_patinfo
 			update_simple(PatinfoPlugin, 'Patinfo')		

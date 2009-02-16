@@ -204,11 +204,11 @@ module ODDB
 			# First call to descriptions should go to lazy-initialisator
 			if(@name)
 				#@descriptions['lt'] = @name if(self.descriptions['lt'].empty?)
-				@name
-			elsif(self.descriptions && !@descriptions['lt'].empty?) 
-				@descriptions['lt']
+				@name.to_s
+			elsif(lt = self.descriptions['lt']) && !lt.empty?
+				lt
 			else
-				@descriptions['en']
+				@descriptions['en'].to_s
 			end
 		end
 		alias :pointer_descr :name
