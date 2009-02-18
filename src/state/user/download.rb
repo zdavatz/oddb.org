@@ -16,7 +16,8 @@ class Download < State::User::Global
 		# if the file is a bespoke export, query and stype should be set
 		query = stype = nil
 		if(@model.respond_to?(:data) && @model.data.is_a?(Hash))
-			query = @model.data[:search_query]
+			query = ODDB.search_term(@model.data[:search_query].to_s)
+      query = query.to_s.downcase.gsub(/\s+/, ' ')
 			stype = @model.data[:search_type]
 		end
 		if(query && stype)
