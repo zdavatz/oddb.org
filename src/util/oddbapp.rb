@@ -708,23 +708,13 @@ class OddbPrevalence
 	end
 	def narcotic_by_casrn(casrn)
 		unless(casrn.nil?)
-			@narcotics.values.each { |narc| 
-				if(narc.casrn == casrn)
-					return narc
-				end
-			}
-		end
-		nil
+      @narcotics.values.find do |narc| narc.casrn == casrn end
+    end
 	end
 	def narcotic_by_smcd(smcd)
 		unless(smcd.nil?)
-			@narcotics.values.each { |narc| 
-				if(narc.swissmedic_code == smcd)
-					return narc
-				end
-			}
+      @narcotics.values.find do |narc| narc.swissmedic_codes.include?(smcd) end
 		end
-		nil
 	end
 	def narcotics_count
 		@narcotics.size

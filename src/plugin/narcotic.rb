@@ -125,7 +125,7 @@ module ODDB
         @app.each_package do |pac|
           unless pac.narcotics.empty?
             upd = @updated_packages[pac.pointer]
-            pac.narcotics.each do |narc|
+            pac.narcotics.dup.each do |narc|
               unless upd && upd.include?(narc)
                 pac.remove_narcotic narc
                 row = [

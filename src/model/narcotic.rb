@@ -51,10 +51,10 @@ module ODDB
 				sub
 			end
 		end
-		def swissmedic_code 
+		def swissmedic_codes
 			@substances.collect { |sub| sub.swissmedic_code }
-			#@substance.swissmedic_code unless(@substance.nil?)
 		end
+    alias :swissmedic_code :swissmedic_codes
 		def to_s
 			@substances.sort_by { |sub| sub.to_s }.first.to_s
 		end
