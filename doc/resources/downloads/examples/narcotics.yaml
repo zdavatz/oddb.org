@@ -1,127 +1,89 @@
-!oddb.org,2003/ODDB::Narcotic 
-oid: 815147
-casrn: 50-13-5
-substance: !oddb.org,2003/ODDB::Substance 
-  oid: 840381
+--- !oddb.org,2003/ODDB::Narcotic 
+casrn: 10061-32-2
+oid: 11156173
+substances: 
+- !oddb.org,2003/ODDB::Substance 
+  oid: 839736
   descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-    de: Pethidin-Hcl, anhydrid(Pethidin-Hcl, anhydrid) (50mg/1ml) (100 Amp.)
-    fr: "Pethidine-Hcl, anhydre(p\xE9thidine-Hcl, anhydre) (50mg/1ml) (100 amp.)"
+    fr: "L\xE9vophenacylmorphane"
+    de: Levophenacylmorphan
   synonyms: []
 
-  effective_form: 
-  swissmedic_code: "74699966"
-  narcotic: 50-13-5
+  swissmedic_code: "74606100"
+  narcotic: 10061-32-2
+packages: []
+
+
+--- !oddb.org,2003/ODDB::Narcotic 
+casrn: 3861-72-1
+oid: 11154610
+substances: 
+- !oddb.org,2003/ODDB::Substance 
+  oid: 839130
+  descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+    de: Acetyldihydrocodein
+    fr: "Ac\xE9tyldihydrocod\xE9ine"
+  synonyms: []
+
+  swissmedic_code: "74600100"
+  narcotic: 3861-72-1
+packages: []
+
+
+--- !oddb.org,2003/ODDB::Narcotic 
+casrn: 84824-87-3
+oid: 11155132
+substances: 
+- !oddb.org,2003/ODDB::Substance 
+  oid: 839067
+  descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+    de: Dihydrocodein-Thiocyanat
+    fr: "Dihydrocod\xE9ine-Thiocyanate"
+  synonyms: []
+
+  swissmedic_code: "74699828"
+  narcotic: 84824-87-3
 packages: 
-- "53572014"
-- "53572030"
-- "13369054"
-- "13369046"
-- "52109019"
-- "52109027"
-- "33492014"
-- "33492022"
-- "22672029"
-- "22672045"
-- "22672053"
-- "22672061"
-- "22672088"
-- "22672118"
-- "22672126"
-- "33491018"
-- "33491026"
+- "30157036"
+- "23774011"
 
-!oddb.org,2003/ODDB::Narcotic 
-oid: 814754
-casrn: 5786-77-6
-substance: !oddb.org,2003/ODDB::Substance 
-  oid: 839472
+--- !oddb.org,2003/ODDB::Narcotic 
+casrn: 520-52-5
+oid: 11157737
+substances: 
+- !oddb.org,2003/ODDB::Substance 
+  oid: 813185
   descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-    de: Dimethylthiambuten-Hcl, anhydrid
-    fr: "dim\xE9thylthiambut\xE8ne-Hcl, anhydre"
+    de: Psilocybin
+    fr: Psilocybine
   synonyms: []
 
-  effective_form: 
-  swissmedic_code: "74696994"
-  narcotic: 5786-77-6
+  swissmedic_code: "74615200"
+  narcotic: 520-52-5
+  effective_form: !oddb.org,2003/ODDB::Substance 
+    oid: 813180
+    descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+      fr: Psilocine
+      de: Psilocin
+      lt: Psilocinum
+    synonyms: []
+
+    swissmedic_code: "74615100"
+    narcotic: 520-53-6
 packages: []
 
 
-!oddb.org,2003/ODDB::Narcotic 
-oid: 814951
-casrn: 17676-08-3
-substance: !oddb.org,2003/ODDB::Substance 
-  oid: 839763
+--- !oddb.org,2003/ODDB::Narcotic 
+casrn: 
+oid: 11167637
+substances: 
+- !oddb.org,2003/ODDB::Substance 
+  oid: 813293
   descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-    de: Lysergid-C4h6o6
-    fr: lysergide-C4h6o6
+    fr: "T\xE9trahydrocannabinol (Thc) tous les Isom\xE8res et Leurs"
+    de: Tetrahydrocannabinol (Thc), alle Isomere und Deren
   synonyms: []
 
-  effective_form: 
-  swissmedic_code: "74614330"
-  narcotic: 17676-08-3
+  swissmedic_code: "74615500"
+  narcotic: 
 packages: []
-
-
-!oddb.org,2003/ODDB::Narcotic 
-oid: 814820
-casrn: 5794-23-0
-substance: !oddb.org,2003/ODDB::Substance 
-  oid: 839562
-  descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-    de: Etoxeridin-Hcl, anhydrid
-    fr: "\xE9tox\xE9ridine-Hcl, anhydre"
-  synonyms: []
-
-  effective_form: 
-  swissmedic_code: "74697042"
-  narcotic: 5794-23-0
-packages: []
-
-
-!oddb.org,2003/ODDB::Narcotic 
-oid: 814886
-casrn: 502-85-2
-substance: !oddb.org,2003/ODDB::Substance 
-  oid: 839673
-  descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-    de: "4-Hydroxybutters\xE4ure-Na (Ghb-Na)"
-    fr: acide 4-hydroxybutyrique-Na (1:1) (Ghb-Na)
-  synonyms: []
-
-  effective_form: 
-  swissmedic_code: "74640020"
-  narcotic: 502-85-2
-packages: []
-
-
-!oddb.org,2003/ODDB::Narcotic 
-oid: 815017
-casrn: 42045-86-3
-substance: !oddb.org,2003/ODDB::Substance 
-  oid: 840004
-  descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-    de: 3-Methylfentanyl
-    fr: "3-m\xE9thylfentanyl"
-  synonyms: []
-
-  effective_form: 
-  swissmedic_code: "74606900"
-  narcotic: 42045-86-3
-packages: []
-
-
-!oddb.org,2003/ODDB::Narcotic 
-oid: 814624
-casrn: 22316-47-8
-substance: !oddb.org,2003/ODDB::Substance 
-  oid: 839298
-  descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-    de: Clobazam
-    fr: clobazam
-  synonyms: []
-
-  effective_form: 
-  swissmedic_code: "74617500"
-  narcotic: 22316-47-8
-packages: 
-- "41383011"

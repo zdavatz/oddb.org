@@ -1,6 +1,7 @@
 Datenbeschrieb narcotics.yaml
 
-Version:  1.0.0
+Version:  1.1.0
+Geändert: 18.02.2009 (1.1.0) durch hwyss@ywesee.com
 Erstellt: 25.11.2005 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
@@ -12,7 +13,7 @@ Top-Level:
 Narcotic:
 - oid               (Integer, NOT NULL)    -> Unique Identifier
 - casrn             (String)               -> CAS-Registry Number
-- substance         (Substance)            -> Substanz
+- substances        (Array (Substance))    -> Substanzen
 - packages          (Array (String))       -> Verknüpfungen zu Package
 
 Substance:
