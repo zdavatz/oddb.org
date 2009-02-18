@@ -18,24 +18,45 @@ module ODDB
     def send_page
       previous = nil
       @lines.each do |line|
+        name, casrn, third = line
+        casrn = casrn.to_s.strip
+        if casrn.empty? && (found = name.slice!(/\s+\d+-\d+-\d+\s*$/))
+          line[1] = found
+        elsif /\d+-\d+-\d/.match(third)
+          line[0] = line[0].to_s + ' ' + casrn
+          line.delete_at(1)
+        end
         line.each do |column| column.strip! if column end
       end
       @lines.delete_if do |line|
         name = line.first.to_s
-        name.empty? || /ad\.?\s*us\.?\s*vet/i.match(name)
+        name.empty? || /\bad\s*us\.?\s*(vet)?/i.match(name)
       end
       @lines.collect! do |line|
         data = line[0,1]
         data.push(line.find do |item| /^\d+-\d+-\d+/.match item end)
-        data.push(line.find do |item| /^\d{7}$/.match item end.to_i.to_s)
+        pcode = line.find do |item| /^\d{7}$/.match item end
+        pcode = pcode.to_i.to_s if pcode
+        data.push pcode
         data.push(line.find do |item| /^76/.match item end)
-        data.push(nil)
+        data.push(line.find do |item|
+          /\w{2,}/.match(item.to_s) && !data.include?(item)
+        end)
         data.push(line.find do |item| /^\s*[a-d]\s*$/.match item end)
-        if(data[1..-1].compact.empty?)
-          if previous && !previous[0].include?(data[0])
+        compact = data[1..-1].compact
+        if(previous && compact.size == 1)
+          previous[4] = previous[4].to_s + ' ' + compact.shift
+        end
+        if(compact.empty?)
+=begin ## it seems impossible to get this right: this code is supposed to
+        # append the following line to the first column, but since it's unclear
+        # when this is desired and when it is not, I've decided to disable it.
+          if previous && !/l.gende/i.match(data[0]) \
+            && !previous[0].include?(data[0])
             previous[0] = previous[0].to_s + ' ' + line[0]
             previous = nil
           end
+=end
         else
           previous = data
         end
@@ -47,16 +68,19 @@ module ODDB
     end
   end
 	class NarcoticPlugin < Plugin
+    MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
 		def initialize(app)
 			@unknown_registrations = []
 			@new_substances = []
+      @new_narcotics = 0
 			@unknown_packages = []
 			@narcotic_texts = {}
 			@reserve_substances = []
 			@unknwon_substances_text = []
 			@removed_narcotics = []
 			@packages = []
-      @updated = {}
+      @updated_packages = {}
+      @updated_narcs = {}
 			@narcs = {}
 			super(app)
 		end
@@ -82,10 +106,25 @@ module ODDB
         update_package(row, language)
 			}
 			update_narcotic_texts(language)
-      unless @updated.empty?
+      prune_narcotics
+		end
+    def process_row(row, language)
+      if /^7611/.match(row.at(3))
+        casrn = casrns(row).first
+        if narc = update_narcotic(row, casrn, language)
+          @narcs.store(casrn, narc) if casrn
+          @updated_narcs.store(narc.oid, narc)
+        end
+        update_substance(row, casrn, narc, language)
+      elsif(/^7680/.match(row.at(3)))
+        @packages.push(row)
+      end
+    end
+    def prune_narcotics
+      unless @updated_packages.empty?
         @app.each_package do |pac|
           unless pac.narcotics.empty?
-            upd = @updated[pac.pointer]
+            upd = @updated_packages[pac.pointer]
             pac.narcotics.each do |narc|
               unless upd && upd.include?(narc)
                 pac.remove_narcotic narc
@@ -103,20 +142,25 @@ module ODDB
           end
         end
       end
-		end
-    def process_row(row, language)
-      if(/^7611/.match(row.at(3)) && casrn = casrns(row).first)
-        narc = update_narcotic(row, casrn, language)
-        @narcs.store(casrn, narc)
-        update_substance(row, casrn, narc, language)
-      elsif(/^7680/.match(row.at(3)))
-        @packages.push(row)
+      unless @narcs.empty?
+        @app.narcotics.each do |oid, narc|
+          unless @updated_narcs.include?(oid)
+            @app.delete narc.pointer
+          end
+        end
       end
     end
     def report
       [
-        "Narcotics Update", "\n",
-        "Time: ", Time.now,
+        "Narcotics: #{@updated_narcs.size}",
+        "Narcotics with CASRN: #{@narcs.size}",
+        "Packages with Narcotics: #{@updated_packages.size}",
+        "Unknown registrations: #{@unknown_registrations.size}",
+        "Unknown packages: #{@unknown_packages.size}",
+        "Created Substances: #{@new_substances.size}",
+        "Created Narcotics: #{@new_narcotics}",
+        "Created Narcotic Texts: #{@narcotic_texts.size}",
+        "Removed Narcotics #{@removed_narcotics.size}",
         "\n",
         "Name", "Casrn | Pharmacode | Ean-Code | Company | Level",
         "\n",
@@ -129,7 +173,7 @@ module ODDB
         "New substances: #{@new_substances.size}\n",
         @new_substances,
         "\n",
-        "New Narcotic Text: #{@narcotic_texts.size}",
+        "New Narcotic Texts: #{@narcotic_texts.size}\n",
         @narcotic_texts,
         "\n",
         "Removed Narcotics #{@removed_narcotics.size}\n",
@@ -137,13 +181,10 @@ module ODDB
       ].join("\n")
     end
     def report_text(row)
-      if(row.at(0))
-        name = row.at(0)
-        row.delete_at(0)
-        text = row.join(" | ")
-        name + "\n" + text + "\n"
+      if(name = row.first)
+        name + "\n" + row[1..-1].join(" | ") + "\n"
       else
-        "Error! Entry has no name!"
+        row.join(" | ") + "\n"
       end
     end
     def smcd(row)
@@ -174,6 +215,7 @@ module ODDB
       agent = WWW::Mechanize.new
       url = "http://www.swissmedic.ch/produktbereiche/00447/00536/index.html"
       dir = File.join ARCHIVE_PATH, 'pdf'
+      success = false
       languages.each do |language|
         page = agent.get url + "?lang=#{language}"
         link = page.links.find do |link| /^a\./.match link.text end
@@ -186,8 +228,10 @@ module ODDB
           update_from_pdf path, language
           ## if everything went well, save the pdf as 'latest'
           pdf.save latest
+          success = true
         end
       end
+      success
     end
 		def update_from_csv(path, language)
 			CSV.open(path, 'r', ';').each { |row|
@@ -210,6 +254,7 @@ module ODDB
 			# When smcd and casrn are nil, we have a text description
 			if(category == "c" && (subst = text2name(name, language)))
 				@narcotic_texts.store(subst, name)
+        nil
 			elsif(casrn || smcd)
 				if(category)
 					values.store(:category, category)
@@ -222,6 +267,7 @@ module ODDB
 				if(narc) 
 					pointer =	narc.pointer
 				else
+          @new_narcotics += 1
 					pointer = Persistence::Pointer.new(:narcotic).creator
 				end
 				@app.update(pointer, values, :swissmedic)
@@ -241,14 +287,32 @@ module ODDB
 			}
 		end
 		def update_package(row, language)
-			if((smcd = smcd(row)) \
-				&& (registration = @app.registration(smcd[0,5])))
-				if(package = registration.package(smcd[5,3]) \
-           || ((pcode = row.at(2)) && Package.find_by_pharmacode(pcode)))
+			if((smcd = smcd(row)) && (registration = @app.registration(smcd[0,5])))
+        package = registration.package(smcd[5,3])
+        if package.nil?
+          pcode = row.at(2)
+          unless pcode
+            begin
+              MEDDATA_SERVER.session(:product) { |meddata|
+                results = meddata.search(:ean13 => row.at(3))
+                if(results.size == 1)
+                  data = meddata.detail(results.first, {:pharmacode => [3,2]})
+                  pcode = data[:pharmacode]
+                end
+              }
+            rescue MedData::OverflowError
+              ## obviously something went wrong, and we have received too many
+              #  results.. since we're only interested in results of size 1, we
+              #  can safely ignore this.
+            end
+          end
+          package = Package.find_by_pharmacode(pcode) if pcode
+        end
+        if package
           casrns(row).each { |casrn|
             if !casrn.to_s.strip.empty? && (narc = @narcs[casrn])
               package.add_narcotic(narc)
-              (@updated[package.pointer] ||= []).push narc
+              (@updated_packages[package.pointer] ||= []).push narc
             end
           }
 					package.odba_store

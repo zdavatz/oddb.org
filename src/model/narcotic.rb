@@ -56,9 +56,7 @@ module ODDB
 			#@substance.swissmedic_code unless(@substance.nil?)
 		end
 		def to_s
-			@substances.sort_by { |sub| 
-				sub.to_s
-			}.join(',')
+			@substances.sort_by { |sub| sub.to_s }.first.to_s
 		end
 	end
 end

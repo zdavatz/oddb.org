@@ -84,7 +84,7 @@ module ODDB
 				DEFAULT_CLASS = HtmlGrid::Value
         @@reservation = /(SR|RS) (\d{3}\.\d{3}\.\d{2})/
 				def narcotic_connection(model)
-					@lookandfeel.lookup(:narcotic_connection, model.substances)
+					@lookandfeel.lookup(:narcotic_connection, model.substances.sort.first)
 				end
 				def packages(model)
 					pack = model.packages
