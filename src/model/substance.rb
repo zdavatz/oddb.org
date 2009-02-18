@@ -165,18 +165,20 @@ module ODDB
       end
       @swissmedic_code ||= other.swissmedic_code
       @casrn ||= other.casrn
-			other.sequences.dup.uniq.each { |sequence|
-				if(active_agent = sequence.active_agent(other))
-					if(active_agent.sequence.nil?)
-						active_agent.odba_delete
-					else
-						active_agent.substance = self
-						active_agent.odba_isolated_store
-					end
-				else
-					warn("Substance.merge: no active agent, only removing sequence")
-					other.remove_sequence(sequence)
-				end
+			other.sequences.uniq.each { |sequence|
+        sequence.compositions.dup.each do |composition|
+          if(active_agent = composition.active_agent(other))
+            if(active_agent.sequence.nil?)
+              active_agent.odba_delete
+            else
+              active_agent.substance = self
+              active_agent.odba_isolated_store
+            end
+          else
+            warn("Substance.merge: no active agent, only removing sequence")
+            other.remove_sequence(sequence)
+          end
+        end
 			}
       ocons = other.substrate_connections
 			ocons.dup.each { |key, substr_conn|
