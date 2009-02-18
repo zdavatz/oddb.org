@@ -311,12 +311,12 @@ module ODDB
 		include OddbYaml
 		EXPORT_PROPERTIES = [
 			'@oid',
-			'@casrn',
-			'@substance',
+			'@substances',
 		]
 		def to_yaml( opts = {} )
 			YAML::quick_emit( self.object_id, opts ) { |out|
 				out.map( taguri ) { |map|
+          map.add('casrn', casrn)
 					to_yaml_properties.each { |m|
 						map.add( m[1..-1], instance_variable_get( m ) )
 					}
