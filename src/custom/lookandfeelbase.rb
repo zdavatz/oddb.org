@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: iso-8859-1
 # LookandfeelBase -- oddb -- hwyss@ywesee.com
 
 require 'sbsm/lookandfeel'
@@ -1380,6 +1381,7 @@ Zeno Davatz
 				:th_c_type		            =>	"Komplementärprodukt",
 				:th_cyp450s								=>	'Substrat von',
 				:th_date									=>	'Datum',
+				:th_ddd_dose  						=>	'ATC-DDD',
 				:th_ddd_price							=>	'TK',
 				:th_ddd_price_title				=>	'Tageskosten',
 				:th_de_description				=>	'Deutsche Bezeichnung',

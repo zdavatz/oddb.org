@@ -143,8 +143,13 @@ module ODDB
 		def create_sl_entry
 			@sl_entry = SlEntry.new
 		end
+    def ddd
+      if (atc = atc_class) && atc.has_ddd?
+        atc.ddds['O']
+      end
+    end
 		def ddd_price
-			if((atc = atc_class) && atc.has_ddd? && (ddd = atc.ddds['O']) \
+			if((ddd = self.ddd) \
 				&& (grp = galenic_group) && grp.match(@@ddd_galforms) \
 				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose))
         factor = (longevity || 1).to_f

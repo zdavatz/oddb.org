@@ -25,6 +25,8 @@ class CsvResult < HtmlGrid::Component
 		:sl_entry,
 		:registration_date,
 		:casrn,
+    :ddd_dose,
+    :ddd_price,
 	]
   def init
     @counts = {
@@ -87,6 +89,11 @@ class CsvResult < HtmlGrid::Component
       @lookandfeel.lookup("square_#{ctype}")
     end
   end
+  def ddd_dose(model, session=@session)
+    if(ddd = model.ddd)
+      ddd.dose
+    end
+  end
 	def deductible(pack)
     if(pack.sl_entry)
       deductible = pack.deductible || :deductible_g
@@ -144,6 +151,9 @@ class CsvResult < HtmlGrid::Component
 	end
 	def http_headers
 		file = @session.user_input(:filename)
+    if file.nil?
+      file = "#{@model.search_query}.#{@session.lookandfeel.lookup(@model.search_type)}.csv"
+    end
 		url = @lookandfeel._event_url(:home)
 		{
 			'Content-Type'				=>	'text/csv',
