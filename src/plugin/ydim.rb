@@ -180,13 +180,21 @@ module ODDB
 		def item_text(item)
 			lines = [item.text, item_name(item)]
 			if(data = item.data) 
-				first_date = data[:first_valid_date] || item.time
+				first_date = data[:first_valid_date]
+        first_date ||= Date.new(item.time.year, item.time.month, item.time.day)
 				last_date = data[:last_valid_date]
 				days = data[:days]
 				if(last_date && days)
 					lines.push(sprintf("%s - %s", 
 						first_date.strftime("%d.%m.%Y"), last_date.strftime("%d.%m.%Y")))
 					lines.push(sprintf("%i Tage", days))
+          if last_date > (first_date >> 12)
+            annual_date = last_date << 12
+            lines.push <<-EOS
+Diese Rechnungsposition wird in der nächsten Jahresrechnung _nicht_ vorkommen.
+Die nächste Jahresrechnung wird am #{annual_date.strftime '%d.%m.%Y'} versandt.
+            EOS
+          end
 				end
 			end
 			lines.compact.join("\n")
