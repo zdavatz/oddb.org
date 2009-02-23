@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: iso-8859-1
 # LookandfeelFactory -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/lookandfeelfactory'
@@ -22,13 +23,6 @@ module ODDB
 				LookandfeelLanguages,
 				LookandfeelStandardResult,
 				LookandfeelCarenaSchweiz, 
-			],
-			'galenos'			=>	[
-				LookandfeelLanguages,
-				LookandfeelExtern,
-				LookandfeelButtons, 
-				LookandfeelStandardResult,
-				LookandfeelGalenos, 
 			],
 			'generika'	=>	[
 				LookandfeelLanguages,

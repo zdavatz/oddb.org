@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: iso-8859-1
 # LookandfeelWrapper - oddb -- 21.07.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/lookandfeelwrapper'
@@ -192,27 +193,6 @@ module ODDB
 		def zones(filter=false)
 			@component.zones(false)
 		end
-	end
-	class LookandfeelGalenos < SBSM::LookandfeelWrapper
-		ENABLED = [
-			:external_css,
-    ]
-		DICTIONARIES = {
-			'de'	=>	{
-				:home_welcome	=>	'Willkommen bei Galenos und oddb.org',
-			},
-			'fr'	=>	{
-				:home_welcome	=>	'Bienvenu sur Galenos et oddb.org',
-				:mailinglist_title	=>	'Mailinglist - Generika.cc',
-			},
-			'en'	=>	{
-				:home_welcome	=>	'Welcome to Galenos and oddb.org',
-			},
-		}
-		HTML_ATTRIBUTES = { }
-		RESOURCES = {
-			:external_css	=>	'http://www.galenos.ch/data/CSS/formate_oddb.css',
-		}
 	end
 	class LookandfeelProvita < SBSM::LookandfeelWrapper
 		ENABLED = [ ]
