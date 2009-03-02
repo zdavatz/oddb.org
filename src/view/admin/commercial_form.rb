@@ -13,9 +13,8 @@ class ComformPackages < SequencePackages
     [0,0]	=>	:ikscd,
 		[1,0]	=>	:name_base,
 		[2,0]	=>	:galenic_form,
-    [3,0]	=>	:most_precise_dose,
-    [4,0]	=>	:size,
-    [5,0]	=>	:out_of_trade,
+    [3,0]	=>	:size,
+    [4,0]	=>	:out_of_trade,
   }
 	CSS_HEAD_MAP = {
 		[0,0]	=>	'subheading',
@@ -23,11 +22,10 @@ class ComformPackages < SequencePackages
 		[2,0]	=>	'subheading',
 		[3,0]	=>	'subheading right',
 		[4,0]	=>	'subheading right',
-		[5,0]	=>	'subheading right',
 	}
   CSS_MAP = {
     [0,0,3]	=>	'list',
-    [3,0,3]	=>	'list right',
+    [3,0,2]	=>	'list right',
   }
 	SORT_DEFAULT = :name_base
 end

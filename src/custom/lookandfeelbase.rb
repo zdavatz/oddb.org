@@ -4061,13 +4061,12 @@ Zeno Davatz
 			{
 				[0,0]	=>	:name_base,
 				[1,0]	=>	:company_name,
-				[2,0]	=>	:most_precise_dose,
-				[3,0]	=>	:comparable_size,
-				[4,0] =>	:compositions,
-				[5,0]	=>	:price_public,
-				[6,0]	=>	:price_difference, 
-				[7,0]	=>	:deductible,
-				[8,0] =>  :ddd_price,
+				[2,0]	=>	:comparable_size,
+				[3,0] =>	:compositions,
+				[4,0]	=>	:price_public,
+				[5,0]	=>	:price_difference,
+				[6,0]	=>	:deductible,
+				[7,0] =>  :ddd_price,
 			}	
 		end
     def comparison_sorter

@@ -86,7 +86,7 @@ class CompareList < HtmlGrid::List
 		super(model.comparables, offset)
 	end
 	def package_line(offset)
-		_compose(@model.package, offset)
+		_compose(@model.package, offset) if(@model.respond_to? :package)
 	end
 	def price_difference(model, session)
 		if(diff = model.price_difference)
