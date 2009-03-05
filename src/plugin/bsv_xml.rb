@@ -23,9 +23,10 @@ module ODDB
         'i' => :italic,
       }
       @@iconv = Iconv.new('latin1//TRANSLIT//IGNORE', 'utf8')
-      def initialize app
+      def initialize app, opts={}
         @app = app
         @change_flags = {}
+        @opts = {}
       end
       def date txt
         unless txt.to_s.empty?
@@ -132,11 +133,23 @@ module ODDB
                   :conflicted_packages_oot, :conflicted_registrations,
                   :missing_ikscodes, :missing_ikscodes_oot, :unknown_packages,
                   :unknown_packages_oot, :unknown_registrations,
-                  :created_sl_entries, :deleted_sl_entries, :updated_sl_entries,
-                  :created_limitation_texts, :deleted_limitation_texts,
-                  :updated_limitation_texts
+                  :created_sl_entries, :deleted_sl_entries,
+                  :updated_sl_entries, :created_limitation_texts,
+                  :deleted_limitation_texts, :updated_limitation_texts
       def initialize *args
         super
+        @known_packages = {}
+        @app.each_package do |pac|
+          if pac.public? && pac.sl_entry
+            @known_packages.store pac.pointer, {
+              :name_base           => pac.name_base,
+              :atc_class           => (atc = pac.atc_class) && atc.code,
+              :pharmacode_oddb     => pac.pharmacode,
+              :swissmedic_no5_oddb => pac.iksnr,
+              :swissmedic_no8_oddb => pac.ikskey,
+            }
+          end
+        end
         @conflicted_packages = []
         @conflicted_packages_oot = []
         @conflicted_registrations = []
@@ -152,6 +165,9 @@ module ODDB
         @updated_sl_entries = 0
         @updated_limitation_texts = 0
         @origin = @@today.strftime "#{ODDB.config.url_bag_sl_zip} (%d.%m.%Y)"
+      end
+      def erroneous_packages
+        @known_packages.values.sort_by do |data| data[:name_base].to_s end
       end
       def flag_change pointer, key
         (@change_flags[pointer] ||= []).push key
@@ -195,7 +211,7 @@ module ODDB
             @out_of_trade = @pack.out_of_trade
             @registration ||= @pack.registration
             if @registration
-              @report.store :swissmedic_no_oddb, @registration.iksnr
+              @report.store :swissmedic_no5_oddb, @registration.iksnr
               unless ['00000', @registration.iksnr].include?(@iksnr)
                 @conflicted_registrations.push @report
               end
@@ -267,6 +283,8 @@ module ODDB
         when 'Preparation'
           @sl_entries.each do |pac_ptr, sl_data|
             pack = pac_ptr.resolve @app
+            @known_packages.delete pac_ptr
+            puts @known_packages.size
             unless pack.nil?
               pointer = pac_ptr + :sl_entry
               if sl_data.empty?
@@ -333,7 +351,8 @@ module ODDB
           if @registration
             @ikscd = '%03i' % @text[-3,3].to_i
             @pack ||= @registration.package @ikscd
-            if @pack && @pack.pharmacode && @pack.pharmacode != @pcode
+            if !@pcode.to_s.empty? && @pack && @pack.pharmacode \
+              && @pack.pharmacode != @pcode
               @report.store :pharmacode_oddb, @pack.pharmacode
               @conflict = true
             end
@@ -484,7 +503,7 @@ module ODDB
         end
       end
     end
-    def download_to archive_path
+    def download_to archive_path=ARCHIVE_PATH
       archive = File.join archive_path, 'xml'
       FileUtils.mkdir_p archive
       agent = WWW::Mechanize.new
@@ -532,6 +551,13 @@ Produkt ist laut RefData ausser Handel
 es gibt im SMeX keine Zeile mit diesem 8-stelligen Swissmedic-Code, und
 wir konnten auch keine Automatisierte Zuweisung vornehmen, wir wissen
 aber anhand des Pharmacodes, dass die Packung in MedWin vorkommt.
+          EOS
+        ],
+        [ :erroneous_packages,
+          'Packages with erroneous (or missing) SL-Entries %d.%m.%Y',
+          <<-EOS
+es gibt im SMeX keine Zeile mit diesem 8-stelligen Swissmedic-Code, aber
+die Packung ist in der ODDB als SL-Produkt gekennzeichnet.
           EOS
         ],
         [ :unknown_registrations,
@@ -592,7 +618,8 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
         :deductible,
         :pharmacode_bag,
         :pharmacode_oddb,
-        :swissmedic_no_oddb,
+        :swissmedic_no5_oddb,
+        :swissmedic_no8_oddb,
         :swissmedic_no5_bag,
         :swissmedic_no8_bag,
       ].collect do |key|
@@ -608,8 +635,8 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
       listener = ItCodesListener.new @app
       REXML::Document.parse_stream io, listener
     end
-    def update_preparations io
-      @preparations_listener = PreparationsListener.new @app
+    def update_preparations io, opts={}
+      @preparations_listener = PreparationsListener.new @app, opts
       REXML::Document.parse_stream io, @preparations_listener
       @change_flags = @preparations_listener.change_flags
     end
