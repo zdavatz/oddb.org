@@ -33,7 +33,7 @@ module ODDB
 		# Recipients for all Update-Logs go here...
 		RECIPIENTS = []
 		LOG_RECIPIENTS = {
-			:powerlink					=>	[],
+			# :powerlink					=>	[], ## Disabled 2.3.2009, there are no Powerlink-Users at the current time
 			:passthru						=>	[],	
 		}
 		LOG_FILES = {

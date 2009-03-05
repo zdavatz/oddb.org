@@ -196,18 +196,17 @@ module SequencePackageList
   include PartSize
 	COMPONENTS = {
 		[0,0]	=>	:ikscd,
-		[1,0]	=>	:most_precise_dose,
-		[2,0]	=>	:size,
-		[3,0]	=>	:price_exfactory,
-		[4,0]	=>	:price_public,
-		[5,0]	=>	:ikscat,
-		[6,0]	=>	:sl_entry,
-		[7,0]	=>	:out_of_trade,
+		[1,0]	=>	:size,
+		[2,0]	=>	:price_exfactory,
+		[3,0]	=>	:price_public,
+		[4,0]	=>	:ikscat,
+		[5,0]	=>	:sl_entry,
+		[6,0]	=>	:out_of_trade,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0]		=>	'list',
-		[1,0,7]	=>	'list right',
+		[1,0,6]	=>	'list right',
 	}
 	CSS_HEAD_MAP = {
 		[0,0]	=>	'subheading',
