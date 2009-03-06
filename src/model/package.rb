@@ -167,6 +167,13 @@ module ODDB
     end
 		def delete_sl_entry
 			@sl_entry = nil
+      @deductible = nil
+      @sl_generic_type = nil
+      reg = @sequence.registration
+      unless reg.nil? || reg.packages.any? do |pac| pac.sl_entry end
+        reg.generic_type = nil
+        reg.odba_isolated_store
+      end
 			self.odba_isolated_store
 			nil
 		end
