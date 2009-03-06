@@ -284,7 +284,6 @@ module ODDB
           @sl_entries.each do |pac_ptr, sl_data|
             pack = pac_ptr.resolve @app
             @known_packages.delete pac_ptr
-            puts @known_packages.size
             unless pack.nil?
               pointer = pac_ptr + :sl_entry
               if sl_data.empty?
