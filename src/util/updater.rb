@@ -66,7 +66,7 @@ module ODDB
 				end
 			}
 		end
-    def export_csv(date = @@today)
+    def export_oddb_csv(date = @@today)
       subj = 'oddb.csv'
       wrap_update(CsvExportPlugin, subj) {
         plug = CsvExportPlugin.new(@app)
@@ -76,7 +76,7 @@ module ODDB
         log.notify(subj)
       }
     end
-    def export_csv_extended(date = @@today)
+    def export_oddb2_csv(date = @@today)
       subj = 'oddb2.csv'
       wrap_update(CsvExportPlugin, subj) {
         plug = CsvExportPlugin.new(@app)
@@ -227,8 +227,8 @@ module ODDB
       update_medwin_packages
       update_lppv
       update_price_feeds
-      export_csv
-      export_csv_extended
+      export_oddb_csv
+      export_oddb2_csv
       export_ouwerkerk
       export_generics_xls
       export_competition_xlss
