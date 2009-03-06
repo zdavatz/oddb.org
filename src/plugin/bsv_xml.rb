@@ -131,7 +131,8 @@ module ODDB
       GENERIC_TYPES = { 'O' => :original, 'G' => :generic }
       attr_reader :change_flags, :conflicted_packages,
                   :conflicted_packages_oot, :conflicted_registrations,
-                  :missing_ikscodes, :missing_ikscodes_oot, :unknown_packages,
+                  :missing_ikscodes, :missing_ikscodes_oot,
+                  :missing_pharmacodes, :unknown_packages,
                   :unknown_packages_oot, :unknown_registrations,
                   :created_sl_entries, :deleted_sl_entries,
                   :updated_sl_entries, :created_limitation_texts,
@@ -155,6 +156,7 @@ module ODDB
         @conflicted_registrations = []
         @missing_ikscodes = []
         @missing_ikscodes_oot = []
+        @missing_pharmacodes = []
         @unknown_packages = []
         @unknown_packages_oot = []
         @unknown_registrations = []
@@ -200,14 +202,17 @@ module ODDB
       def tag_start name, attrs
         case name
         when 'Pack'
-          @pcode = attrs['Pharmacode']
+          @pcode = attrs['Pharmacode'].to_s
           @data = @pac_data.dup
           @report = @report_data.dup.update(@data).update(@reg_data).
                                      update(@seq_data)
           @report.delete(:sl_generic_type)
           @report.store :pharmacode_bag, @pcode
           @data.store :pharmacode, @pcode
-          if @pack = Package.find_by_pharmacode(@pcode)
+          if @pcode.empty?
+            @missing_pharmacodes.push @report
+          end
+          if !@pcode.empty? && @pack = Package.find_by_pharmacode(@pcode)
             @out_of_trade = @pack.out_of_trade
             @registration ||= @pack.registration
             if @registration
@@ -259,6 +264,7 @@ module ODDB
         case name
         when 'Pack'
           if @pack && !@conflict
+            @report.store :pharmacode_oddb, @pack.pharmacode
             if seq = @pack.sequence
               @app.update seq.pointer, @seq_data, :bag
             end
@@ -350,7 +356,7 @@ module ODDB
           if @registration
             @ikscd = '%03i' % @text[-3,3].to_i
             @pack ||= @registration.package @ikscd
-            if !@pcode.to_s.empty? && @pack && @pack.pharmacode \
+            if !@pcode.empty? && @pack && @pack.pharmacode \
               && @pack.pharmacode != @pcode
               @report.store :pharmacode_oddb, @pack.pharmacode
               @conflict = true
@@ -469,6 +475,13 @@ module ODDB
         when 'ItCode'
           @itcode = nil
           @it_descriptions = nil
+        when 'Preparations'
+          @known_packages.each do |pointer, data|
+            @deleted_sl_entries += 1
+            flag_change pointer, :sl_entry_delete
+            sl_ptr = pointer + :sl_entry
+            @app.delete sl_ptr
+          end
         end
         @text = nil
       rescue Exception => e
@@ -537,6 +550,9 @@ module ODDB
         [ :missing_ikscodes,
           'Missing Swissmedic-Codes in SL %d.%m.%Y',
           'SL hat keinen 8-Stelligen Swissmedic-Code' ],
+        [ :missing_pharmacodes,
+          'Missing Pharmacodes in SL %d.%m.%Y',
+          'SL hat keinen Pharmacode' ],
         [ :missing_ikscodes_oot,
           'Missing Swissmedic-Codes in SL (out of trade) %d.%m.%Y',
           <<-EOS
@@ -550,13 +566,6 @@ Produkt ist laut RefData ausser Handel
 es gibt im SMeX keine Zeile mit diesem 8-stelligen Swissmedic-Code, und
 wir konnten auch keine Automatisierte Zuweisung vornehmen, wir wissen
 aber anhand des Pharmacodes, dass die Packung in MedWin vorkommt.
-          EOS
-        ],
-        [ :erroneous_packages,
-          'Packages with erroneous (or missing) SL-Entries %d.%m.%Y',
-          <<-EOS
-es gibt im SL-XML keine Zeile mit diesem 8-stelligen Swissmedic-Code, aber
-die Packung ist in der ODDB als SL-Produkt gekennzeichnet.
           EOS
         ],
         [ :unknown_registrations,
