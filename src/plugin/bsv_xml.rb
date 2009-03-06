@@ -556,7 +556,7 @@ aber anhand des Pharmacodes, dass die Packung in MedWin vorkommt.
         [ :erroneous_packages,
           'Packages with erroneous (or missing) SL-Entries %d.%m.%Y',
           <<-EOS
-es gibt im SMeX keine Zeile mit diesem 8-stelligen Swissmedic-Code, aber
+es gibt im SL-XML keine Zeile mit diesem 8-stelligen Swissmedic-Code, aber
 die Packung ist in der ODDB als SL-Produkt gekennzeichnet.
           EOS
         ],
