@@ -153,28 +153,29 @@ module ODDB
       end
       def send_image(handle)
         send_line_break
-        img = handle.image
-        prefix = @name.downcase.gsub(/[^a-z]/, '')
-        directory = File.join(IMAGE_DIR, prefix[0,2])
-        FileUtils.mkdir_p directory
-        files = Dir.glob("#{directory}/#{prefix}*")
-        save = files.find { |path|
-          begin
-            other, = Magick::Image.read(path)
-            other == img
-          rescue
-            false
+        if img = handle.image
+          prefix = @name.downcase.gsub(/[^a-z]/, '')
+          directory = File.join(IMAGE_DIR, prefix[0,2])
+          FileUtils.mkdir_p directory
+          files = Dir.glob("#{directory}/#{prefix}*")
+          save = files.find { |path|
+            begin
+              other, = Magick::Image.read(path)
+              other == img
+            rescue
+              false
+            end
+          }
+          if save.nil?
+            id = files.collect { |path|
+              match = /(\d+)\.png/.match File.basename(path)
+              match[1].to_i
+            }.max.to_i.next
+            save = File.join directory, "#{prefix}_#{id}.png"
           end
-        }
-        if save.nil?
-          id = files.collect { |path|
-            match = /(\d+)\.png/.match File.basename(path)
-            match[1].to_i
-          }.max.to_i.next
-          save = File.join directory, "#{prefix}_#{id}.png"
+          img.write save
+          @section.next_image.src = save[%r!/resources/.*!]
         end
-        img.write save
-        @section.next_image.src = save[%r!/resources/.*!]
         send_line_break
       end
 			def send_page
