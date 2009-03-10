@@ -15,7 +15,7 @@ require 'zip/zip'
 
 module ODDB
   class BsvXmlPlugin < Plugin
-    RECIPIENTS = [ 'sibylle.imfeld@seconag.com' ]
+    RECIPIENTS = [ 'sibylle.imfeld@seconag.com', 'paul.wiederkehr@pharmasuisse.org' ]
     class Listener
       include REXML::StreamListener
       FORMATS = {
