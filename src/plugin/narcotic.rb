@@ -212,13 +212,14 @@ module ODDB
 			end
 		end
     def update(languages = [:de, :fr])
+      pattern = /^(Verzeichnis\s+aller|Indice\s+de\s+tous)/
       agent = WWW::Mechanize.new
       url = "http://www.swissmedic.ch/produktbereiche/00447/00536/index.html"
       dir = File.join ARCHIVE_PATH, 'pdf'
       success = false
       languages.each do |language|
         page = agent.get url + "?lang=#{language}"
-        link = page.links.find do |link| /^Verzeichnis\s+aller/.match link.text end
+        link = page.links.find do |link| pattern.match link.text end
         pdf = link.click
         latest = File.join dir, "narcotics-#{language}-latest.pdf"
         unless File.exist?(latest) && File.read(latest) == pdf.body
