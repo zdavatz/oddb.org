@@ -172,6 +172,7 @@ Unknown packages: #{@unknown_packages.size}
 Packungen, die weder anhand des Swissmedic-Codes noch anhand des
 Pharmacodes in der ODDB gefunden wurden. Kann auch ausser-Handel
 Packungen beinhalten.
+Diese Produkte werden in ch.oddb.org nicht angezeigt (zu wenig Informationen).
         EOS
         @unknown_packages,
         "\n",
