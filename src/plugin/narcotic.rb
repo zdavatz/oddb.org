@@ -218,7 +218,7 @@ module ODDB
       success = false
       languages.each do |language|
         page = agent.get url + "?lang=#{language}"
-        link = page.links.find do |link| /^a\./.match link.text end
+        link = page.links.find do |link| /^Verzeichnis\s+aller/.match link.text end
         pdf = link.click
         latest = File.join dir, "narcotics-#{language}-latest.pdf"
         unless File.exist?(latest) && File.read(latest) == pdf.body
