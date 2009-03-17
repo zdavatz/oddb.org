@@ -16,7 +16,7 @@ module ODDB
 		]
     FLAGS = {
       :new							=>	'Neues Produkt',
-      :productname			=>	'Namens‰nderung', 
+      :productname			=>	'Namens√§nderung', 
       :address					=>	'Adresse',
       :ikscat						=>	'Abgabekategorie',
       :composition			=>	'Zusammensetzung', 
@@ -24,7 +24,7 @@ module ODDB
       :sequence					=>	'Handelsform', 
       :expirydate				=>	'Ablaufdatum der Zulassung',
       :comment					=>	'Bemerkungen',
-      :delete						=>	'Das Produkt wurde gelˆscht',
+      :delete						=>	'Das Produkt wurde gel√∂scht',
     }
 		def initialize(app)
 			super
@@ -32,7 +32,7 @@ module ODDB
 		end
 		def fix_from_source(reg, *flags)
 			if(src = reg.source)
-				src.gsub!(/-\n/, '')
+				src.gsub!(/-\n/u, '')
 				preg = SwissmedicJournal::ActiveRegistration.new(src, :human)
 				succ = false
 				if(flags.include?(:all))
@@ -98,7 +98,7 @@ module ODDB
           report = sprintf(<<-EOS, salutations[email], date)
 %s
 
-Bei den folgenden Produkten wurden ƒnderungen gem‰ss Swissmedic-Journal %s vorgenommen:
+Bei den folgenden Produkten wurden √Ñnderungen gem√§ss Swissmedic-Journal %s vorgenommen:
           EOS
           registrations.sort_by { |reg| reg.name_base.to_s }.each { |reg|
             report << sprintf("%s: %s\n%s\n\n", reg.iksnr,
@@ -128,7 +128,7 @@ Bei den folgenden Produkten wurden ƒnderungen gem‰ss Swissmedic-Journal %s vorge
       agent = WWW::Mechanize.new
       main = agent.get 'http://www.swissmedic.ch/org/00064/00065/index.html'
       link = main.links.find do |node|
-        /Swissmedic\s*Journal/i.match node.attributes['title']
+        /Swissmedic\s*Journal/iu.match node.attributes['title']
       end or raise 'unable to identify url for Swissmedic-Journal'
       smj = link.click
 
@@ -254,7 +254,7 @@ Bei den folgenden Produkten wurden ƒnderungen gem‰ss Swissmedic-Journal %s vorge
 				}
         dkey = :dose
         if(liberation)
-          values.store(:dose, liberation.split(/\s+/, 2))
+          values.store(:dose, liberation.split(/\s+/u, 2))
           dkey = :chemical_dose
         end
 				if(agent.dose)
@@ -298,7 +298,7 @@ Bei den folgenden Produkten wurden ƒnderungen gem‰ss Swissmedic-Journal %s vorge
 			if(indication.nil?)
 				indication_pointer = Persistence::Pointer.new(:indication)
 				indication_hash = {
-					:la	=>	indication_name,
+					:lt	=>	indication_name,
 				}
 				indication = @app.update(indication_pointer.creator, indication_hash, :swissmedic)
 			end

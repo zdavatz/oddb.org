@@ -20,9 +20,9 @@ module ODDB
       @lines.each do |line|
         name, casrn, third = line
         casrn = casrn.to_s.strip
-        if casrn.empty? && (found = name.slice!(/\s+\d+-\d+-\d+\s*$/))
+        if casrn.empty? && (found = name.slice!(/\s+\d+-\d+-\d+\s*$/u))
           line[1] = found
-        elsif /\d+-\d+-\d/.match(third)
+        elsif /\d+-\d+-\d/u.match(third)
           line[0] = line[0].to_s + ' ' + casrn
           line.delete_at(1)
         end
@@ -30,19 +30,19 @@ module ODDB
       end
       @lines.delete_if do |line|
         name = line.first.to_s
-        name.empty? || /\bad\s*us\.?\s*(vet)?/i.match(name)
+        name.empty? || /\bad\s*us\.?\s*(vet)?/iu.match(name)
       end
       @lines.collect! do |line|
         data = line[0,1]
-        data.push(line.find do |item| /^\d+-\d+-\d+/.match item end)
-        pcode = line.find do |item| /^\d{7}$/.match item end
+        data.push(line.find do |item| /^\d+-\d+-\d+/u.match item end)
+        pcode = line.find do |item| /^\d{7}$/u.match item end
         pcode = pcode.to_i.to_s if pcode
         data.push pcode
-        data.push(line.find do |item| /^76/.match item end)
+        data.push(line.find do |item| /^76/u.match item end)
         data.push(line.find do |item|
-          /\w{2,}/.match(item.to_s) && !data.include?(item)
+          /\w{2,}/u.match(item.to_s) && !data.include?(item)
         end)
-        data.push(line.find do |item| /^\s*[a-d]\s*$/.match item end)
+        data.push(line.find do |item| /^\s*[a-d]\s*$/u.match item end)
         compact = data[1..-1].compact
         if(previous && compact.size == 1)
           previous[4] = previous[4].to_s + ' ' + compact.shift
@@ -86,7 +86,7 @@ module ODDB
 		end
 		def casrns(row)
 			casrns = row.at(1).to_s.split('/').collect { |casrn|
-				if(/\d+/.match(casrn))
+				if(/\d+/u.match(casrn))
 					casrn.to_s.strip
 				end
 			}.compact
@@ -109,14 +109,14 @@ module ODDB
       prune_narcotics
 		end
     def process_row(row, language)
-      if /^7611/.match(row.at(3))
+      if /^7611/u.match(row.at(3))
         casrn = casrns(row).first
         if narc = update_narcotic(row, casrn, language)
           @narcs.store(casrn, narc) if casrn
           @updated_narcs.store(narc.oid, narc)
         end
         update_substance(row, casrn, narc, language)
-      elsif(/^7680/.match(row.at(3)))
+      elsif(/^7680/u.match(row.at(3)))
         @packages.push(row)
       end
     end
@@ -189,22 +189,22 @@ module ODDB
     end
     def smcd(row)
       smcd = row.at(3).to_s
-      if(/\d+/.match(smcd))
+      if(/\d+/u.match(smcd))
         smcd[4,8]
       end
     end
 		def strip_name(row)
 			orig = name(row)
-			orig.split(/\(\s*((unter\s*)?Vorbehalt|voir)/i, 2)
+			orig.split(/\(\s*((unter\s*)?Vorbehalt|voir)/iu, 2)
 		end
 		def text2name(text, language)
 			case language
 			when :de 
-				if(match = /^(.+)haltige/.match(text))
+				if(match = /^(.+)haltige/u.match(text))
 					match[1]
 				end
 			when :fr
-				if(match = /contenant (de la |du |d')([^\s]+)/.match(text))
+				if(match = /contenant (de la |du |d')([^\s]+)/u.match(text))
 					match[2]
 				end
 			else
@@ -212,13 +212,14 @@ module ODDB
 			end
 		end
     def update(languages = [:de, :fr])
+      pattern = /^(Verzeichnis\s+aller|Indice\s+de\s+tous)/u
       agent = WWW::Mechanize.new
       url = "http://www.swissmedic.ch/produktbereiche/00447/00536/index.html"
       dir = File.join ARCHIVE_PATH, 'pdf'
       success = false
       languages.each do |language|
         page = agent.get url + "?lang=#{language}"
-        link = page.links.find do |link| /^a\./.match link.text end
+        link = page.links.find do |link| pattern.match link.text end
         pdf = link.click
         latest = File.join dir, "narcotics-#{language}-latest.pdf"
         unless File.exist?(latest) && File.read(latest) == pdf.body
@@ -240,7 +241,7 @@ module ODDB
       postprocess(language)
     end
     def update_from_pdf(path, language)
-      parser = Rpdf2txt::Parser.new(File.read(path), 'iso-8859-1')
+      parser = Rpdf2txt::Parser.new(File.read(path), 'UTF-8')
       callback = Proc.new do |row| process_row row, language end
       handler = NarcoticHandler.new callback
       parser.extract_text(handler)

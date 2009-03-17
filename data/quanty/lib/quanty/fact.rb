@@ -53,7 +53,7 @@ class Quanty
 
     def find_prefix(a,n)
       Prefix.each{ |key,factor|
-	if /^#{key}-?/ =~ a && (unit = List[b=$']) && b.size>n
+	if /^#{key}-?/u =~ a && (unit = List[b=$']) && b.size>n
 	  #p [a,b,factor]
 	  return Fact.new(b).fac!(factor)
 	end
@@ -62,13 +62,13 @@ class Quanty
     end
 
     def decomp(a)
-      if /^([µA-Za-z_]+([A-Za-z_0-9-]+[A-Za-z_])?)$|^[$%'"]'?$/o =~ a
+      if /^([ÂµA-Za-z_]+([A-Za-z_0-9-]+[A-Za-z_])?)$|^[$%'"]'?$/ou =~ a
       #if /^[A-Za-z_0-9$%-]+$/o =~ a
 	unit = List[a] || find_prefix(a,0) ||
-	  if a.size>3 && /chs$/o !~ a && /(.*[a-rt-y])s$/o =~ a
+	  if a.size>3 && /chs$/ou !~ a && /(.*[a-rt-y])s$/ou =~ a
 	    b = $1
 	    List[b] || find_prefix(b,2) ||
-	      if a.size>4 && /(.*s|.*z|.*ch)es$/o =~ a
+	      if a.size>4 && /(.*s|.*z|.*ch)es$/ou =~ a
 		b = $1
 		List[b] || find_prefix(b,2)
 	      end
@@ -176,19 +176,19 @@ class Quanty
 	#s = open("units.succ","w")
 	#f = open("units.fail","w")
 	open("units.dat","r").readlines.each do |str|
-	  if /^([µA-Za-z_0-9%$"'-]+)\s+([^#]+)/ =~ str
+	  if /^([ÂµA-Za-z_0-9%$"'-]+)\s+([^#]+)/u =~ str
 	    name,repr = $1,$2.strip
 	    # conversion due to the different rule from GNU units:
 	    #   A / B C => A / (B C)
-	    if /\// =~ repr #/
+	    if /\//u =~ repr #/
 	      pre,suf = $`,$'.strip
-	      if /\s/ =~ suf
+	      if /\s/u =~ suf
 		repr = pre + ' / (' + suf + ')'
 	      end
 	    end
 	    if repr=="!"
 	      List[name] = Fact.new(name,true).freeze
-	    elsif /-$/  =~ name
+	    elsif /-$/u  =~ name
 	      Prefix[name[0..-2]] = Prefix[repr] || (List[repr] || repr).to_f
 	    else
 	      #p [name,repr]

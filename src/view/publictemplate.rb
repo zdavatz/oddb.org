@@ -29,7 +29,7 @@ module ODDB
 			}
 			HEAD = View::LogoHead
 			HTTP_HEADERS = {
-				"Content-Type"	=>	"text/html; charset=iso-8859-1",
+				"Content-Type"	=>	"text/html; charset=UTF-8",
 				"Cache-Control"	=>	"private, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
 				"Pragma"				=>	"no-cache",
 				"Expires"				=>	Time.now.rfc1123,

@@ -726,7 +726,7 @@ class OddbPrevalence
 		@orphaned_patinfos[oid.to_i]
 	end
   def package(pcode)
-    ODDB::Package.find_by_pharmacode(pcode.to_s.gsub(/^0+/, ''))
+    ODDB::Package.find_by_pharmacode(pcode.to_s.gsub(/^0+/u, ''))
   end
 	def package_count
 		@package_count ||= count_packages()
@@ -858,7 +858,7 @@ class OddbPrevalence
 		index_name = "analysis_alphabetical_index_#{lang}"
 		ODBA.cache.retrieve_from_index(index_name, query)
 	end
-  @@iks_or_ean = /(?:\d{4})?(\d{5})(?:\d{4})?/
+  @@iks_or_ean = /(?:\d{4})?(\d{5})(?:\d{4})?/u
 	def search_oddb(query, lang)
 		# current search_order:
 		# 1. atcless
@@ -895,7 +895,7 @@ class OddbPrevalence
 			end
     end
 		# pharmacode
-    if(match = /^\d{6,}$/.match(query))
+    if(match = /^\d{6,}$/u.match(query))
       if(pac = package(query))
 				atc = ODDB::AtcClass.new('n.n.')
         seq = ODDB::Sequence.new(pac.sequence.seqnr)
@@ -1116,7 +1116,7 @@ class OddbPrevalence
 		@slates[name]
 	end
 	def soundex_substances(name)
-		parts = ODDB::Text::Soundex.prepare(name).split(/\s+/)
+		parts = ODDB::Text::Soundex.prepare(name).split(/\s+/u)
 		soundex = ODDB::Text::Soundex.soundex(parts)
 		key = soundex.join(' ')
 		ODBA.cache.retrieve_from_index("substance_soundex_index", key)
@@ -1362,8 +1362,8 @@ module ODDB
         if(comform = pac.comform)
           possibilities = [
             comform.strip,
-            comform.gsub(/\([^\)]+\)/, '').strip,
-            comform.gsub(/[()]/, '').strip,
+            comform.gsub(/\([^\)]+\)/u, '').strip,
+            comform.gsub(/[()]/u, '').strip,
           ].uniq.delete_if { |possibility| possibility.empty? }
           cform = nil
           possibilities.each { |possibility|
@@ -1571,12 +1571,12 @@ module ODDB
 			}.sort_by { |subs| subs.name }.each { |subs|
 				puts "Looking for effective form of ->#{subs}<- (#{subs.sequences.size} Sequences)"
 				name = subs.to_s
-				parts = name.split(/\s/)
+				parts = name.split(/\s/u)
 				suggest = if(parts.size == 1)
 					subs
 				elsif(![nil, '', 'Acidum'].include?(parts.first))
 					@system.search_single_substance(parts.first) \
-						|| @system.search_single_substance(parts.first.gsub(/i$/, 'um'))
+						|| @system.search_single_substance(parts.first.gsub(/i$/u, 'um'))
 				end
 				last = result
 				result = nil
@@ -1620,11 +1620,11 @@ module ODDB
 						break
 					when 'q'
 						return
-					when /c .+/
+					when /c .+/u
 						puts "creating:"
 						pointer = Persistence::Pointer.new(:substance)
 						puts "pointer: #{pointer}"
-						args = { :lt => answer.split(/\s+/, 2).last.strip }
+						args = { :lt => answer.split(/\s+/u, 2).last.strip }
 						argstr = args.collect { |*pair| pair.join(' => ') }.join(', ')
 						puts "args: #{argstr}"
 						result = @system.update(pointer.creator, args)
@@ -1760,7 +1760,7 @@ module ODDB
           if(model = userobj.model.odba_instance)
             session.grant(email, "edit", model.pointer.to_yus_privilege)
             if(contact = model.contact)
-              contact.slice!(/^(Herr|Frau)\s+/)
+              contact.slice!(/^(Herr|Frau)\s+/u)
               name_first, name_last = contact.split(' ', 2)
               session.set_entity_preference(email, 'name_first', name_first)
               session.set_entity_preference(email, 'name_last', name_last)
@@ -1924,6 +1924,110 @@ module ODDB
         item.instance_variable_set('@feedbacks', [])
         item.odba_store
       end
+    end
+    def migrate_to_utf8
+      iconv = ::Iconv.new 'UTF-8//TRANSLIT//IGNORE', 'ISO-8859-1'
+      ODBA.cache.retire_age = 5
+      ODBA.cache.cleaner_step = 100000
+      system = @system.odba_instance
+      table = { system.odba_id => true, :serialized => {} }
+      table.store :finalizer, proc { |object_id|
+        table[:serialized].delete object_id }
+      queue = [ system ]
+      last_size = 0
+      system.instance_variable_set '@config', nil
+      while !queue.empty?
+        if (queue.size - last_size).abs >= 10000
+          puts last_size = queue.size
+        end
+        _migrate_to_utf8 queue, table, iconv
+      end
+    end
+    def _migrate_to_utf8 queue, table, iconv
+      obj = queue.shift
+      if obj.is_a?(Numeric)
+        begin
+          obj = ODBA.cache.fetch obj
+        rescue ODBA::OdbaError
+          return
+        end
+      else
+        obj = obj.odba_instance
+      end
+      _migrate_obj_to_utf8 obj, queue, table, iconv
+      obj.odba_store unless obj.odba_unsaved?
+    end
+    def _migrate_obj_to_utf8 obj, queue, table, iconv
+      obj.instance_variables.each do |name|
+        child = obj.instance_variable_get name
+        if child.respond_to?(:odba_unsaved?) && !child.odba_unsaved? \
+          && obj.respond_to?(:odba_serializables) \
+          && obj.odba_serializables.include?(name)
+          child.instance_variable_set '@odba_persistent', nil
+        end
+        child = _migrate_child_to_utf8 child, queue, table, iconv
+        obj.instance_variable_set name, child
+      end
+      case obj
+      when Array
+        obj.collect! do |child|
+          _migrate_child_to_utf8 child, queue, table, iconv
+        end
+      when Hash
+        obj.dup.each do |key, child|
+          obj.store key, _migrate_child_to_utf8(child, queue, table, iconv)
+        end
+      end
+      if obj.is_a?(ODDB::SimpleLanguage::Descriptions)
+        obj.default = _migrate_child_to_utf8 obj.default, queue, table, iconv
+      end
+      obj
+    end
+    def _migrate_child_to_utf8 child, queue, table, iconv
+      @serialized ||= {}
+      case child
+      when ODBA::Persistable, ODBA::Stub
+        if child = child.odba_instance
+          if child.odba_unsaved?
+            _migrate_to_utf8 [child], table, iconv
+          else
+            odba_id = child.odba_id
+            unless table[odba_id]
+              table.store odba_id, true
+              queue.push odba_id
+            end
+          end
+        end
+      when String
+        child = iconv.iconv(child)
+      when ODDB::Text::Section, ODDB::Text::Paragraph, ODDB::PatinfoDocument,
+           ODDB::PatinfoDocument2001, ODDB::Text::Table, ODDB::Text::Cell,
+           ODDB::Analysis::Permission, ODDB::Interaction::AbstractLink
+        child = _migrate_obj_to_utf8 child, queue, table, iconv
+      when ODDB::Address2
+        ## Address2 may cause StackOverflow if not controlled
+        unless table[:serialized][child.object_id]
+          table[:serialized].store child.object_id, true
+          ObjectSpace.define_finalizer child, table[:finalizer]
+          child = _migrate_obj_to_utf8 child, queue, table, iconv
+        end
+      when Float, Fixnum, TrueClass, FalseClass, NilClass,
+        ODDB::Persistence::Pointer, Symbol, Time, Date, ODDB::Dose, Quanty,
+        ODDB::Util::Money, ODDB::Fachinfo::ChangeLogItem, ODDB::AtcNode,
+        DateTime, ODDB::NotificationLogger::LogEntry, ODDB::Text::Format,
+        ODDB::YusStub, ODDB::Text::ImageLink
+        # do nothing
+      else
+        @ignored ||= {}
+        unless @ignored[child.class]
+          @ignored.store child.class, true
+          warn "ignoring #{child.class}"
+        end
+      end
+      child
+    rescue SystemStackError
+      puts child.class
+      raise
     end
 
     def log_size

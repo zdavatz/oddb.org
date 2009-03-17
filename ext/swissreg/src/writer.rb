@@ -19,31 +19,31 @@ module ODDB
 				data = {}
 				@tables.at(1).each_row { |row|
           case(row.cdata(0))
-          when /genehmigung/i
+          when /genehmigung/iu
             data[:iksnrs] = [row.cdata(1)].flatten.collect { |str|
-              if(match = /(?:iks|oicm|swissmedic),?\s+(\d{5})\b/i.match(str))
+              if(match = /(?:iks|oicm|swissmedic),?\s+(\d{5})\b/iu.match(str))
                 match[1]
-              elsif(match = /bag,?\s+(\d{3,5})\b/i.match(str))
+              elsif(match = /bag,?\s+(\d{3,5})\b/iu.match(str))
                 sprintf("%05i", match[1])
               end
             }.compact
-          when /schutzdauerbeginn/i
+          when /schutzdauerbeginn/iu
             data.store(:protection_date, date(row.cdata(1)))
-          when /l.{1,2}schdatum/i
+          when /l.{1,2}schdatum/iu
             data.store(:deletion_date, date(row.cdata(1)))
-					when /anmeldedatum/i
+					when /anmeldedatum/iu
 						data.store(:registration_date, date(row.cdata(1)))
-					when /erteilungsdatum/i
+					when /erteilungsdatum/iu
 						data.store(:issue_date, date(row.cdata(1)))
-					when /esz-nr/i
+					when /esz-nr/iu
 						data.store(:certificate_number, row.cdata(1).strip)
-					when /grundpatent-nr/i
+					when /grundpatent-nr/iu
 						data.store(:base_patent, row.cdata(1))
-					when /maximale laufzeit/i
+					when /maximale laufzeit/iu
 						data.store(:expiry_date, date(row.cdata(1)))
-					when /publikationsdatum/i
+					when /publikationsdatum/iu
 						data.store(:publication_date, date(row.cdata(1)))
-					when /schutzbeginn grundpatent/i
+					when /schutzbeginn grundpatent/iu
 						data.store(:base_patent_date, date(row.cdata(1)))
 					end
 				}

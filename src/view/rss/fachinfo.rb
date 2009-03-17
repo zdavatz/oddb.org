@@ -39,7 +39,7 @@ class Fachinfo < HtmlGrid::Component
       feed.channel.language = @session.language
       feed.image.url = @lookandfeel.resource(:logo_rss)
       feed.image.title = @lookandfeel.lookup(:logo)
-      feed.encoding = 'ISO-8859-1'
+      feed.encoding = 'UTF-8'
       feed.xml_stylesheets.new_xml_stylesheet.href = @lookandfeel.resource(:css)
       language = @session.language
       @model.each { |fachinfo|
@@ -58,14 +58,14 @@ class Fachinfo < HtmlGrid::Component
 
         comp = FachinfoTemplate.new(document, @session, self)
 
-        ptrn = /#{Regexp.escape(name)}(\256|\(TM\))?/
+        ptrn = /#{Regexp.escape(name)}(®|\(TM\))?/u
         link = HtmlGrid::Link.new(:name, fachinfo, @session, self)
         link.href = @lookandfeel._event_url(:search, 
                                             :search_type => 'st_sequence', 
                                             :search_query => name)
         html = comp.to_html(context)
-        html.gsub!(%r{<pre\b.*?</pre>}im) { |match|
-          match.gsub(%r{\n}, '<BR>')
+        html.gsub!(%r{<pre\b.*?</pre>}imu) { |match|
+          match.gsub(%r{\n}u, '<BR>')
         }
         item.description = sanitize(html).gsub(ptrn) { |match|
           link.value = match

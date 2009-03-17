@@ -44,12 +44,12 @@ class RootHospital < Hospital
 			addr.type = input.delete(:address_type)
 			addr.title = input.delete(:title)
 			addr.name = input.delete(:contact)
-			addr.additional_lines = input.delete(:additional_lines).to_s.split(/\r?\n/)
+			addr.additional_lines = input.delete(:additional_lines).to_s.split(/\r?\n/u)
 			addr.address = input.delete(:address)
 			addr.location = input.delete(:location)
 			addr.canton = input.delete(:canton)
-			addr.fon = input.delete(:fon).to_s.split(/\s*,\s*/)
-			addr.fax = input.delete(:fax).to_s.split(/\s*,\s*/)
+			addr.fon = input.delete(:fon).to_s.split(/\s*,\s*/u)
+			addr.fax = input.delete(:fax).to_s.split(/\s*,\s*/u)
       @model = @session.app.update(@model.pointer, input, unique_email)
 		end
 	end

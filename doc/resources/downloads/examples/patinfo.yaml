@@ -1,10 +1,10 @@
-!oddb.org,2003/ODDB::Patinfo 
-oid: 2579
+--- !oddb.org,2003/ODDB::Patinfo 
+oid: 1823
 descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
   fr: !oddb.org,2003/ODDB::PatinfoDocument 
-    name: "Dolocyl\xAE"
+    name: "Rapamune\xC2\xAE"
     company: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: NOVARTIS CONSUMER HEALTH
+      heading: WYETH
       sections: []
 
     galenic_form: !oddb.org,2003/ODDB::Text::Chapter 
@@ -12,10 +12,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
       sections: []
 
     effects: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Propri\xE9t\xE9s/Emploi th\xE9rapeutique"
+      heading: "Propri\xC3\xA9t\xC3\xA9s/Emploi th\xC3\xA9rapeutique"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Qu'est-ce que le Dolocyl et quand est-il utilis\xE9:\n"
+        subheading: "Qu'est-ce que le Rapamune et quand est-il utilis\xC3\xA9?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -24,7 +24,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Le Dolocyl contient la substance active ibuprof\xE8ne. Celle-ci calme la douleur, exerce un effet anti-inflammatoire et abaisse la fi\xE8vre. Son effet commence le plus souvent apr\xE8s 30 minutes et dure environ 6 heures."
+          text: "Rapamune appartient \xC3\xA0 une classe de m\xC3\xA9dicaments appel\xC3\xA9s immunosuppresseurs. Il aide \xC3\xA0 att\xC3\xA9nuer la r\xC3\xA9action immunitaire de votre organisme apr\xC3\xA8s une transplantation d'organe. Il est utilis\xC3\xA9 pour emp\xC3\xAAcher le rejet par votre organisme des reins transplant\xC3\xA9s et il est normalement associ\xC3\xA9 \xC3\xA0 des m\xC3\xA9dicaments appel\xC3\xA9s ciclosporine et corticost\xC3\xA9ro\xC3\xAFdes."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -33,73 +33,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Le Dolocyl ne doit \xEAtre pris que pendant une courte p\xE9riode (pas plus de 3 jours) pour le traitement de:"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: douleurs au niveau des articulations et des ligaments;
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: douleurs dorsales;
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "maux de t\xEAte;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: maux de dents;
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "douleurs pendant la menstruation (dysm\xE9norrh\xE9e);"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "douleurs apr\xE8s blessures (par ex. blessures de sport);"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "fi\xE8vre lors d'un \xE9tat grippal."
+          text: "Vous ne pouvez prendre ce m\xC3\xA9dicament que s'il vous a \xC3\xA9t\xC3\xA9 prescrit par votre m\xC3\xA9decin."
           preformatted: false
     amendments: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Compl\xE9ment d'information"
+      heading: "Compl\xC3\xA9ment d'information"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: |
@@ -113,40 +50,13 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Sauf avis contraire du m\xE9decin, n'utilisez le Dolocyl que pendant une courte p\xE9riode et seulement pour le traitement des maux \xE9num\xE9r\xE9s plus haut."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Si, malgr\xE9 la prise de Dolocyl, les douleurs augmentent ou si l'endroit douloureux devient rouge ou enfl\xE9, veuillez consulter votre m\xE9decin. Ces manifestations peuvent \xEAtre provoqu\xE9es par une maladie grave."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Si ces douleurs n'ont pas diminu\xE9 dans un d\xE9lai de 3 jours au plus tard, veuillez l\xE0 aussi consulter votre m\xE9decin afin d'en clarifier la raison."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Si \xE0 l'heure actuelle, vous suivez un traitement m\xE9dical pour une maladie grave, veuillez ne prendre le Dolocyl que sur prescription de votre m\xE9decin."
+          text: "Le Rapamune diminue par son m\xC3\xA9canisme d'action la r\xC3\xA9sistance de l'organisme aux infections. Il est donc important d'\xC3\xA9viter tout risque d'infection et d'informer le m\xC3\xA9decin traitant des sympt\xC3\xB4mes d'infection tels que rhumes, maux de gorge, plaies suppurantes, etc."
           preformatted: false
     contra_indications: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Contre-indications
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Quand le Dolocyl ne doit-il pas \xEAtre utilis\xE9?\n"
+        subheading: "Quand le Rapamune ne doit-il pas \xC3\xAAtre utilis\xC3\xA9?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -155,58 +65,13 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Le Dolocyl ne doit pas \xEAtre administr\xE9 dans les cas suivants:"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "si vous souffrez d'un ulc\xE8re gastrique duod\xE9nal;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "si vous \xEAtes asthmatique;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "si vous r\xE9agissez par une allergie \xE0 la substance active ibuprof\xE8ne ou \xE0 d'autres anti-inflammatoires (m\xE9dicaments contre les rhumatismes) ou m\xE9dicaments calmant la douleur ou abaissant la fi\xE8vre. Cette hypersensibilit\xE9 se manifeste par exemple par de l'asthme, des difficult\xE9s respiratoires, des troubles circulatoires, des tum\xE9factions de la peau et des muqueuses ou des \xE9ruptions cutan\xE9es (urticaire). Si vous pr\xE9sentez de telles r\xE9actions \xE0 l'Aspirine\xAE (acide ac\xE9tylsalicylique), \xE0 l'Alcalcyl\xAE ou autres anti-inflammatoires ou m\xE9dicaments contre les douleurs ou abaissant la fi\xE8vre, de telles manifestations peuvent aussi surgir apr\xE8s la prise de petites quantit\xE9s de Dolocyl;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "lors de troubles r\xE9naux;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "le Dolocyl ne doit \xEAtre administr\xE9 aux enfants de moins de 12 ans que sur prescription du m\xE9decin."
+          text: "Le Rapamune ne doit pas \xC3\xAAtre utilis\xC3\xA9 en cas de r\xC3\xA9action d'hypersensibilit\xC3\xA9 (allergique) \xC3\xA0 la substance active ou \xC3\xA0 l'un des excipients."
           preformatted: false
     precautions: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Pr\xE9cautions"
+      heading: "Pr\xC3\xA9cautions"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Quelles sont les mesures de pr\xE9caution \xE0 observer lors de la prise de Dolocyl?\n"
+        subheading: "Quelles sont les mesures de pr\xC3\xA9caution \xC3\xA0 observer lors de la prise de Rapamune?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -215,7 +80,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dans les cas suivants, vous ne devez prendre le Dolocyl que sur prescription et sous surveillance de votre m\xE9decin:"
+          text: "Si vous avez des probl\xC3\xA8mes h\xC3\xA9patiques ou si vous avez eu une maladie susceptible d'avoir agi sur votre foie, veuillez en informer votre m\xC3\xA9decin car cela peut influer sur la dose de Rapamune que vous recevez."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -224,7 +89,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "si vous avez d\xE9j\xE0 eu un ulc\xE8re gastrique ou duod\xE9nal;"
+          text: "Les agents immunosuppresseurs peuvent diminuer la capacit\xC3\xA9 de votre organisme \xC3\xA0 lutter contre l'infection et majorer le risque d'apparition de n\xC3\xA9oplasies lympho\xC3\xAFdes ou cutan\xC3\xA9es."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -233,7 +98,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "si vous souffrez d'insuffisance r\xE9nale ou d'insuffisance h\xE9patique s\xE9v\xE8re;"
+          text: "La r\xC3\xA9ponse immunitaire aux vaccinations peut \xC3\xA9galement \xC3\xAAtre diminu\xC3\xA9e. Consultez votre m\xC3\xA9decin avant de vous faire vacciner."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -242,7 +107,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "si vous \xEAtes sous traitement pour une maladie cardiaque, notamment en raison d'insuffisance cardiaque ou de tension art\xE9rielle \xE9lev\xE9e;"
+          text: "Veuillez informer votre m\xC3\xA9decin ou votre pharmacien si vous souffrez d'une autre maladie, si vous \xC3\xAAtes allergique ou si vous prenez d\xC3\xA9j\xC3\xA0 d'autres m\xC3\xA9dicaments (m\xC3\xAAme en autom\xC3\xA9dication), notamment:"
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -251,7 +116,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: si vous souffrez de troubles de la coagulation sanguine.
+          text: "tout autre immunosuppresseur, \xC3\xA0 l'exception de la ciclosporine et des corticost\xC3\xA9ro\xC3\xAFdes;"
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -260,13 +125,40 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Veuillez informer votre m\xE9decin ou votre pharmacien si vous souffrez d'une autre maladie, vous \xEAtes allergique ou vous prenez d\xE9j\xE0 d'autres m\xE9dicaments (m\xEAme en autom\xE9dication!), comme des m\xE9dicaments contre le diab\xE8te (\xE0 l'exception de l'insuline), des m\xE9dicaments augmentant l'excr\xE9tion urinaire (diur\xE9tiques) ou contre l'hypertension, des anticoagulants, des m\xE9dicaments antirhumatismaux ou des autres m\xE9dicaments analg\xE9siques comme p.ex. acide ac\xE9tylsalicylique (Aspirine), certains m\xE9dicaments contre les infections (antibiotiques de la classe des quinolones) ou d'autres m\xE9dicaments contenant l'une des substances suivantes: lithium, digoxine, m\xE9thotrexate, baclof\xE8ne, ph\xE9nyto\xEFne, prob\xE9n\xE9cide ou sulfinpyrazone."
+          text: "antibiotiques et antifongiques, par exemple rifampicine, clarithromycine, \xC3\xA9rythromycine, tri ol\xC3\xA9andomycine, rifabutine, clotrimazole, fluconazole, itraconazole, k\xC3\xA9toconazole;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "antihypertenseurs ou m\xC3\xA9dicaments \xC3\xA0 vis\xC3\xA9e cardiaque, y compris nicardipine, v\xC3\xA9rapamil et diltiazem;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "anti\xC3\xA9pileptiques, y compris carbamaz\xC3\xA9pine, ph\xC3\xA9nobarbital, ph\xC3\xA9nyto\xC3\xAFne;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "cisapride, m\xC3\xA9toclopramide, bromocriptine, cim\xC3\xA9tidine, danazol, antiprot\xC3\xA9ases."
           preformatted: false
     pregnancy: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Grossesse/Allaitement
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Le Dolocyl peut-il \xEAtre pris pendant la grossesse ou l'allaitement?\n"
+        subheading: "Le Rapamune peut-il \xC3\xAAtre pris pendant la grossesse ou l'allaitement?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -274,25 +166,24 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
             values: []
 
             start: 0
-            end: 93
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: 
-            - :italic
-            start: 94
-            end: 104
+            end: -1
+          text: "Ne pas prendre de Rapamune pendant la grossesse et la p\xC3\xA9riode d'allaitement."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
           - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 105
+            start: 0
             end: -1
-          text: "Le Dolocyl ne doit \xEAtre pris que sur conseil du m\xE9decin pendant la grossesse ou l'allaitement. Important: lors de la prise de Dolocyl pendant la seconde moiti\xE9 de la grossesse, le danger d'une l\xE9sion caus\xE9e au nouveau-n\xE9 ou le danger de complications \xE0 la naissance subsiste. Pendant cette p\xE9riode, le m\xE9decin ne prescrira par cons\xE9quent le Dolocyl qu'en cas d'absolue n\xE9cessit\xE9 et sous surveillance effectu\xE9e avec soin."
+          text: "Vous devez utiliser une m\xC3\xA9thode contraceptive efficace durant le traitement par Rapamune et pendant 12 semaines apr\xC3\xA8s la fin du traitement. Si vous pensez \xC3\xAAtre enceinte, veuillez en parler imm\xC3\xA9diatement \xC3\xA0 votre m\xC3\xA9decin."
           preformatted: false
     usage: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Posologie/Mode d'emploi
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: |
-          Comment utiliser le Dolocyl?
+          Comment utiliser le Rapamune?
 
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
@@ -302,7 +193,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Adultes et enfants de plus de 12 ans: 1 \xE0 2 comprim\xE9s toutes les 4 \xE0 6 heures avec un peu de liquide."
+          text: "Rapamune ne doit \xC3\xAAtre pris que par voie orale. Prenez toujours le m\xC3\xA9dicament exactement comme votre m\xC3\xA9decin vous l'a prescrit."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -311,7 +202,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Sauf avis contraire du m\xE9decin, ne prenez toutefois pas plus de 6 comprim\xE9s en l'espace de 24 heures."
+          text: "Il est tr\xC3\xA8s important de prendre Rapamune toujours au m\xC3\xAAme moment de la journ\xC3\xA9e."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -320,7 +211,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Lors de douleurs menstruelles, il est recommand\xE9 de commencer le traitement avec 2 comprim\xE9s d\xE8s l'apparition des premi\xE8res douleurs."
+          text: "Votre m\xC3\xA9decin d\xC3\xA9cidera exactement quelle dose de Rapamune vous devez prendre, quand et combien de fois."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -329,13 +220,141 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Veuillez vous conformer au dosage figurant sur la notice jointe \xE0 l'emballlage ou prescrit par votre m\xE9decin. Adressez-vous \xE0 votre m\xE9decin ou \xE0 votre pharmacien lorsque vous pensez que l'action de ce m\xE9dicament est trop faible ou au contraire trop forte."
+          text: "Habituellement, la dose initiale prescrite est de 6 mg de Rapamune apr\xC3\xA8s la transplantation r\xC3\xA9nale pour les adultes et les jeunes de plus de 13 ans. Vous devrez ensuite prendre chaque jour 2 mg de Rapamune."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si vous prenez \xC3\xA9galement de la ciclosporine, vous devez prendre le Rapamune 4 heures apr\xC3\xA8s la ciclosporine."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Ne changez pas la le dosage prescrit de votre propre chef. Adressez-vous \xC3\xA0 votre m\xC3\xA9decin ou \xC3\xA0 votre pharmacien lorsque vous pensez que l'efficacit\xC3\xA9 de votre m\xC3\xA9dicament est trop faible ou au contraire trop forte."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si vous avez pris une plus grande quantit\xC3\xA9 du m\xC3\xA9dicament que la quantit\xC3\xA9 prescrite, consultez d'urgence un m\xC3\xA9decin ou rendez-vous imm\xC3\xA9diatement au service des urgences de l'h\xC3\xB4pital le plus proche. Apportez toujours le flacon du m\xC3\xA9dicament avec l'\xC3\xA9tiquette, m\xC3\xAAme s'il est vide."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si vous oubliez de prendre Rapamune, prenez-le d\xC3\xA8s que vous vous en souvenez, sauf si vous devez prendre votre dose de ciclosporine dans les 4 heures. Dans ce cas, ne prenez pas la dose oubli\xC3\xA9e de Rapamune et poursuivez votre traitement comme d'habitude. Ne prenez pas une double dose pour compenser une dose oubli\xC3\xA9e et respectez toujours un intervalle d'environ 4 heures entre les prises de Rapamune et de ciclosporine."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Instructions pour la dilution de Rapamune buvable
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "1. Ouvrez le flacon de solution. Retirez le bouchon de s\xC3\xA9curit\xC3\xA9 du flacon en le pressant et en tournant dans le sens inverse des aiguilles d'une montre."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "2. Lorsque vous entamez le flacon, ins\xC3\xA9rez l'adaptateur de seringue (le petit tube en plastique muni d'un capuchon) de fa\xC3\xA7on \xC3\xA0 ce que le capuchon affleure l'ouverture du flacon. Ne retirez plus l'adaptateur du flacon apr\xC3\xA8s insertion."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "3. Pour prendre le m\xC3\xA9dicament, introduisez l'une des seringues doseuses de couleur ambre dans l'orifice de l'adaptateur. Le piston de la seringue doit \xC3\xAAtre enti\xC3\xA8rement enfonc\xC3\xA9."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "4. Aspirez la quantit\xC3\xA9 exacte de Rapamune solution buvable comme prescrit par votre m\xC3\xA9decin en tirant doucement le piston de la seringue doseuse jusqu'\xC3\xA0 ce que le bas de la ligne noire du piston soit au niveau du rep\xC3\xA8re correspondant \xC3\xA0 la dose prescrite sur la seringue doseuse. Le flacon doit \xC3\xAAtre maintenu en position verticale pendant que la solution est aspir\xC3\xA9e. Si des bulles se forment dans la seringue doseuse au cours de l'aspiration, videz la solution de Rapamune dans le flacon et r\xC3\xA9p\xC3\xA9tez la proc\xC3\xA9dure d'aspiration."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "5. Il vous a peut-\xC3\xAAtre \xC3\xA9t\xC3\xA9 demand\xC3\xA9 d'avoir toujours le m\xC3\xA9dicament pr\xC3\xA8s de vous. Si vous devez transporter votre seringue doseuse remplie, fermez-la herm\xC3\xA9tiquement avec le capuchon - vous devez entendre un clic lorsque vous mettez le capuchon en place."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "6. Placez ensuite la seringue doseuse bouch\xC3\xA9e dans l'\xC3\xA9tui de transport fourni avec le m\xC3\xA9dicament. Une fois dans la seringue, le m\xC3\xA9dicament peut \xC3\xAAtre conserv\xC3\xA9 \xC3\xA0 temp\xC3\xA9rature ambiante ou au r\xC3\xA9frig\xC3\xA9rateur et doit \xC3\xAAtre utilis\xC3\xA9 dans les 24 heures. Eviter d'exposer le m\xC3\xA9dicament \xC3\xA0 des temp\xC3\xA9ratures extr\xC3\xAAmes (moins de 2 \xC2\xB0C et plus de 30 \xC2\xB0C)."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 297
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 298
+            end: 304
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 305
+            end: -1
+          text: "7. Videz le contenu de la seringue doseuse dans un verre contenant au moins 60 ml d'eau ou de jus d'orange. M\xC3\xA9langez vigoureusement pendant une minute et buvez imm\xC3\xA9diatement. Remplissez de nouveau le verre avec au moins 120 ml d'eau ou de jus d'orange, agitez vigoureusement et buvez imm\xC3\xA9diatement. Ne pas utiliser d'autre liquide que de l'eau ou du jus d'orange pour la dilution. Jus de pamlemousse ne doit pas \xC3\xAAtre utilis\xC3\xA9. Vous ne devez pas utiliser de r\xC3\xA9cipients en plastique, en papier ou en polystyr\xC3\xA8ne pour la dilution de Rapamune. La seringue doseuse et son capuchon ne doivent \xC3\xAAtre utilis\xC3\xA9s qu'une seule fois. Les jeter apr\xC3\xA8s usage."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Remarque
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Lorsqu'elle est conserv\xC3\xA9e au r\xC3\xA9frig\xC3\xA9rateur, la solution dans le flacon peut s\xC3\xA9dimenter ou avoir un aspect trouble. Dans ce cas, ramenez simplement votre solution buvable de Rapamune \xC3\xA0 la temp\xC3\xA9rature ambiante et agitez doucement. L'aspect trouble n'alt\xC3\xA8re pas la qualit\xC3\xA9 de Rapamune."
           preformatted: false
     unwanted_effects: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Effets ind\xE9sirables"
+      heading: "Effets ind\xC3\xA9sirables"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Quels effets ind\xE9sirables le Dolocyl peut-il avoir?\n"
+        subheading: "Quels effets ind\xC3\xA9sirables le Rapamune peut-il avoir?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -344,7 +363,79 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Il peut se produire occasionnellement des troubles gastro-intestinaux, tels que des naus\xE9es, des aigreurs d'estomac, des maux d'estomac ou des diarrh\xE9es le cas \xE9ch\xE9ant."
+          text: "Fr\xC3\xA9quents: douleurs abdominales, faiblesse, fi\xC3\xA8vre, maux de t\xC3\xAAte, lombalgies, douleurs thoraciques, douleurs articulaires, r\xC3\xA9tention d'eau dans les tissus (oed\xC3\xA8me); occasionnels: frissons, infections, crampes musculaires, atonie musculaire, irritation des gencives."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Syst\xC3\xA8me cardio-vasculaire:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "fr\xC3\xA9quents: hypertension, an\xC3\xA9mie; occasionnels: probl\xC3\xA8mes cardiaques, battements de coeur, tachycardie, hypotension."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Syst\xC3\xA8me gastro-intestinal:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "fr\xC3\xA9quents: constipation, diarrh\xC3\xA9e, naus\xC3\xA9es, vomissements; occasionnels: manque d'app\xC3\xA9tit, troubles digestifs, flatulence."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Syst\xC3\xA8me nerveux et troubles sensoriels:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "fr\xC3\xA9quents: tremblements; occasionnels: insomnies, d\xC3\xA9pression, confusion, anxi\xC3\xA9t\xC3\xA9, \xC3\xA9tourdissements, modification de la sensibilit\xC3\xA9 aux stimuli, somnolence, troubles de la vision."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Peau:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "fr\xC3\xA9quents: acn\xC3\xA9; occasionnels: d\xC3\xA9mangeaisons, rougeurs, augmentation de la pilosit\xC3\xA9, sueurs."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Voies respiratoires:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "fr\xC3\xA9quents: difficult\xC3\xA9 \xC3\xA0 respirer, inflammation de la gorge et du nez; occasionnels: probl\xC3\xA8mes pulmonaires, toux, saignements de nez."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Voies urinaires:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "fr\xC3\xA9quents: infections urinaires; occasionnels: douleurs v\xC3\xA9sicales, douleurs et difficult\xC3\xA9s \xC3\xA0 uriner, incontinence."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -353,7 +444,19 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Le Dolocyl peut provoquer des irritations des muqueuses de l'estomac et dans de rares cas entra\xEEner des ulc\xE8res gastriques. Cela peut aboutir \xE0 une h\xE9morragie gastrointestinale."
+          text: "Si l'un quelconque de ces effets secondaires vous inqui\xC3\xA8te ou si vous constatez un effet autre que ceux qui sont mentionn\xC3\xA9s ci-dessus, veuillez en parler \xC3\xA0 votre m\xC3\xA9decin ou \xC3\xA0 votre pharmacien."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Vous pouvez \xC3\xA9galement pr\xC3\xA9senter des effets ind\xC3\xA9sirables sans le savoir:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "en particulier, modifications du m\xC3\xA9tabolisme, par exemple des graisses, du cholest\xC3\xA9rol (fr\xC3\xA9quents), sucre, sang, syndrome de Cushing (occasionnels)."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -362,46 +465,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Le Dolocyl peut entra\xEEner des r\xE9actions d'hypersensibilit\xE9 de la peau et des muqueuses, notamment chez des patients souffrant d'asthme, pr\xE9sentant une hypersensibilit\xE9 \xE0 d'autres anti-inflammatoires ou \xE0 des m\xE9dicaments calmant la douleur ou abaissant la fi\xE8vre de m\xEAme que chez des patients souffrant d'une urticaire chronique."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Si le patient souffre d\xE9j\xE0 de troubles r\xE9naux s\xE9v\xE8res, cet \xE9tat peut soudainement s'aggraver avec la prise de Dolocyl. Si vous souffrez d'une maladie des reins, vous ne devez utiliser le Dolocyl que sur avis du m\xE9decin."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "En particulier, lors d'une diminution de la fonction cardiaque ou en cas d'hypertension, le Dolocyl peut conduire \xE0 une accumulation d'eau dans les tissus (oed\xE8mes) et, en raison d'un engorgement des poumons, entra\xEEner des difficult\xE9s respiratoires. Si vous \xEAtes trait\xE9 pour des troubles cardiaques, veuillez n'utiliser le Dolocyl que sur avis du m\xE9decin."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "S'il se produit, sous Dolocyl, des maux de gorge (angine), une forte fi\xE8vre et \xE9ventuellement aussi un gonflement des ganglions lymphatiques de la r\xE9gion du cou (tableau clinique tr\xE8s rarement observ\xE9), de m\xEAme que des douleurs dans le haut de l'abdomen et/ou une coloration noire des selles, il faut interrompre le traitement et consulter le m\xE9decin sans retard."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Dolocyl peut provoquer dans de rares cas de violents maux de t\xEAte, accompagn\xE9s de naus\xE9es, de vomissements ou de raideur dans la nuque; dans ce cas, il faut alors interrompre le traitement et consulter imm\xE9diatement le m\xE9decin."
+          text: "Il est indispensable de passer tous les examens de contr\xC3\xB4le prescrits par votre m\xC3\xA9decin, entre autres les tests des fonctions h\xC3\xA9patiques et r\xC3\xA9nales ainsi que les examens sanguins."
           preformatted: false
     general_advice: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Remarques particuli\xE8res"
+      heading: "Remarques particuli\xC3\xA8res"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: |
@@ -415,7 +482,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "M\xE9dicament \xE0 tenir hors de la port\xE9e des enfants!"
+          text: "Rapamune solution buvable contient 2% d'\xC3\xA9thanol. Chaque dose contient jusqu'\xC3\xA0 0,1 g d'alcool. L'alcool peut \xC3\xAAtre nocif pour les personnes qui souffrent d'alcoolisme, d'\xC3\xA9pilepsie, de l\xC3\xA9sion ou de maladies c\xC3\xA9r\xC3\xA9brales, ainsi que pour les femmes enceintes et les enfants. L'alcool peut entraver ou majorer les effets des autres m\xC3\xA9dicaments."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -424,7 +491,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Conserver l'emballage dans un endroit frais et sec.
+          text: "Le Rapamune doit \xC3\xAAtre conserv\xC3\xA9 hors de la port\xC3\xA9e des enfants."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -433,7 +500,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Le Dolocyl est susceptible de modifier votre capacit\xE9 de r\xE9action, ce dont il faut tenir compte lors de la conduite d'un v\xE9hicule ou de l'utilisation d'unemachine."
+          text: "Conservez la solution buvable de Rapamune dans son conditionnement d'origine \xC3\xA0 l'abri de la lumi\xC3\xA8re au r\xC3\xA9frig\xC3\xA9rateur (+2 \xC3\xA0 +8 \xC2\xB0C). Une fois le flacon ouvert, il doit \xC3\xAAtre conserv\xC3\xA9 au r\xC3\xA9frig\xC3\xA9rateur et utilis\xC3\xA9 dans un d\xC3\xA9lai de 30 jours."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -442,7 +509,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Le m\xE9dicament ne doit \xEAtre utilis\xE9 que jusqu'\xE0 la date indiqu\xE9e sur l'emballage par \xABEXP\xBB."
+          text: "Conservez les comprim\xC3\xA9s film\xC3\xA9s de Rapamune dans leurs conditionnement d'origine \xC3\xA0 l'abri de la lumi\xC3\xA8re et \xC3\xA0 la temp\xC3\xA9rature ambiante (15-25 \xC2\xB0C)."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -451,7 +518,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Votre m\xE9decin ou votre pharmacien, qui dispose de l'information d\xE9taill\xE9e destin\xE9e aux professions m\xE9dicales, vous donnera de plus amples informations au sujet de ce produit."
+          text: "Le m\xC3\xA9dicament ne peut \xC3\xAAtre utilis\xC3\xA9 au-del\xC3\xA0 de la date imprim\xC3\xA9e sur le r\xC3\xA9cipient avec la mention \xC2\xABEXP\xC2\xBB."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -460,13 +527,13 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Le principe actif ibuprof\xE8ne est aussi pr\xE9sent dans certains m\xE9dicaments antirhumatismaux. Veuillez observer les donn\xE9es correspondantes."
+          text: "Pour de plus amples renseignements, consultez votre m\xC3\xA9decin ou votre pharmacien qui disposent d'une documentation d\xC3\xA9taill\xC3\xA9e destin\xC3\xA9e aux repr\xC3\xA9sentants des professions m\xC3\xA9dicales."
           preformatted: false
     composition: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Composition
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Substance active:"
+        subheading: 1 ml de Rapamune solution buvable
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -475,10 +542,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "200\xA0mg d'ibuprof\xE8ne par comprim\xE9 film\xE9."
+          text: "contient 1 mg de la substance active, le sirolimus; excipients: \xC3\xA9thanol, propyl\xC3\xA8neglycol, acides gras de soja, polysorbate 80, phosphatidylcholine, glyc\xC3\xA9rine; conservateur: E 304; teneur en alcool: 2 vol.%."
           preformatted: false
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Excipients:"
+        subheading: "1 Rapamune comprim\xC3\xA9 film\xC3\xA9"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -487,10 +554,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "colorant E\xA0127 (\xE9rythrosine)."
+          text: "contient 1 mg de la substance active, le sirolimus; excipients; propyl\xC3\xA8neglycol ainsi que des autres excipents."
           preformatted: false
     packages: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Mode de vente/Pr\xE9sentation"
+      heading: "Mode de vente/Pr\xC3\xA9sentation"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: ""
@@ -502,7 +569,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dans les pharmacies sans ordonnance m\xE9dicale."
+          text: "En pharmacie, uniquement sur ordonnance m\xC3\xA9dicale."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -510,18 +577,37 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
             values: []
 
             start: 0
-            end: 16
+            end: 24
           - !oddb.org,2003/ODDB::Text::Format 
             values: 
             - :italic
-            start: 17
-            end: 34
+            start: 25
+            end: 42
           - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 35
+            start: 43
             end: -1
-          text: "Bo\xEEte de 10 ou 20 comprim\xE9s film\xE9s."
+          text: "Flacon en verre: 60 ml de solution buvable."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 22
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 23
+            end: 40
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 41
+            end: -1
+          text: "Emballages de 30 et 100 comprim\xC3\xA9s film\xC3\xA9s."
           preformatted: false
     distribution: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Distributeur
@@ -536,10 +622,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Novartis Consumer Health Schweiz SA, 3001 Berne.
+          text: AHP (Suisse) SA, Wyeth Division, 6301 Zoug.
           preformatted: false
     date: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Mise \xE0 jour de l'information"
+      heading: "Mise \xC3\xA0 jour de l'information"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: ""
@@ -551,12 +637,12 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Avril 2000.
+          text: Mai 2001.
           preformatted: false
   de: !oddb.org,2003/ODDB::PatinfoDocument 
-    name: "Dolocyl\xAE"
+    name: "Rapamune\xC2\xAE"
     company: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: NOVARTIS CONSUMER HEALTH
+      heading: WYETH
       sections: []
 
     galenic_form: !oddb.org,2003/ODDB::Text::Chapter 
@@ -568,7 +654,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: |
-          Was ist Dolocyl und wann wird es angewendet?
+          Was ist Rapamune und wann wird es angewendet?
 
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
@@ -578,7 +664,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolocyl enth\xE4lt den Wirkstoff Ibuprofen. Dieser hat schmerzlindernde, entz\xFCndungshemmende und fiebersenkende Eigenschaften. Die Wirkung tritt meist innert 30 Minuten ein und h\xE4lt etwa 6 Stunden an."
+          text: "Rapamune geh\xC3\xB6rt zu einer Gruppe von Arzneimitteln, die Immunsuppressiva genannt wird. Es hilft die Immunantwort Ihres K\xC3\xB6rpers zu unterdr\xC3\xBCcken, nachdem Sie ein Organtransplantat erhalten haben. Es verhindert die Abstossung einer transplantierten Niere durch Ihren K\xC3\xB6rper und wird normalerweise zusammen mit den Arzneimitteln Ciclosporin und Kortikosteroiden angewendet."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -587,73 +673,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolocyl kommt in Frage zur kurzfristigen (nicht mehr als 3 Tage) Behandlung von:"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Schmerzen im Bereich von Gelenken und B\xE4ndern;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "R\xFCckenschmerzen;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: Kopfschmerzen;
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: Zahnschmerzen;
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Schmerzen w\xE4hrend der Monatsblutung (Dysmenorrhoe);"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: Schmerzen nach Verletzungen (z.B. Sportverletzungen);
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Fieber bei grippalen Zust\xE4nden."
+          text: Dieses Medikament darf nur auf Verschreibung eines Arztes eingenommen werden.
           preformatted: false
     amendments: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Erg\xE4nzungen"
+      heading: "Erg\xC3\xA4nzungen"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: |
@@ -667,41 +690,14 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Verwenden Sie, ausser auf Anweisung des Arztes, Dolocyl nur kurzfristig und nur zur Behandlung von Beschwerden, die oben aufgef\xFChrt sind."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: Falls die Beschwerden trotz Einnahme von Dolocyl zunehmen oder falls die schmerzende Stelle rot oder geschwollen wird, konsultieren Sie Ihren Arzt. Eine ernsthafte Krankheit kann die Ursache sein.
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Auch wenn die Beschwerden nicht sp\xE4testens innert 3 Tagen bessern, sollten Sie Ihren Arzt konsultieren, damit der Grund abgekl\xE4rt werden kann."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Wenn Sie gegenw\xE4rtig wegen einer ernsthaften Krankheit in \xE4rztlicher Behandlung stehen, sollten Sie Dolocyl nur auf Verordnung Ihres Arztes einnehmen."
+          text: "Rapamune verringert durch seine Wirkungsweise die Widerstandskraft des K\xC3\xB6rpers gegen Infektionen; es ist daher wichtig, Infektionsrisiken zu vermeiden und dem behandelnden Arzt Infektionssymptome wie Schnupfen, Halsweh, eiternde Verletzungen usw. zu melden."
           preformatted: false
     contra_indications: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Kontraindikationen
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: |
-          Wann darf Dolocyl nicht angewendet werden?
+          Wann darf Rapamune nicht angewendet werden?
 
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
@@ -711,59 +707,14 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "In folgenden Situationen d\xFCrfen Sie Dolocyl nicht anwenden:"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "wenn Sie an einem Magen- oder Zw\xF6lffingerdarmgeschw\xFCr leiden;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: wenn Sie an Asthma leiden;
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "wenn Sie \xFCberempfindlich sind auf den Wirkstoff Ibuprofen oder auf andere Entz\xFCndungshemmer (Rheumamittel) oder Schmerz- und Fiebermittel. Eine solche \xDCberempfindlichkeit \xE4ussert sich z.B. durch Asthma, Atemnot, Kreislaufbeschwerden, Schwellungen der Haut und Schleimh\xE4ute oder Hautausschl\xE4ge (Nesselfieber). Wenn Sie solche Reaktionen auf Aspirin\xAE (Acetylsalicyls\xE4ure), Alcalcyl\xAE oder andere Entz\xFCndungshemmer oder Schmerz- und Fiebermittel durchgemacht haben, k\xF6nnen die gleichen Erscheinungen auch nach Einnahme kleiner Mengen von Dolocyl auftreten;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: bei Nierenleiden;
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Kinder unter 12 Jahren d\xFCrfen nur auf \xE4rztliche Verordnung mit Dolocyl behandelt werden."
+          text: "Rapamune darf nicht eingenommen werden, wenn Sie auf den Wirkstoff oder einen der Hilfsstoffe von Rapamune \xC3\xBCberempfindlich (allergisch) reagieren."
           preformatted: false
     precautions: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Vorsichtsmassnahmen
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: |
-          Wann ist bei der Anwendung von Dolocyl Vorsicht geboten?
+          Wann ist bei der Einnahme von Rapamune Vorsicht geboten?
 
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
@@ -773,7 +724,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "In folgenden Situationen d\xFCrfen Sie Dolocyl nur auf Verordnung und unter \xDCberwachung Ihres Arztes einnehmen:"
+          text: "Wenn Sie Probleme mit der Leber haben, oder eine Krankheit hatten, die sich m\xC3\xB6glicherweise auf Ihre Leber ausgewirkt hat, teilen Sie dies bitte Ihrem Arzt mit, weil diese Umst\xC3\xA4nde die Dosis von Rapamune, die Sie erhalten, beeinflussen k\xC3\xB6nnen."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -782,7 +733,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "wenn Sie fr\xFCher ein Magen- oder Zw\xF6lffingerdarmgeschw\xFCr durchgemacht haben;"
+          text: "Immunosuppressive Arzneimittel k\xC3\xB6nnen die F\xC3\xA4higkeit Ihres K\xC3\xB6rpers, Infektionen zu bek\xC3\xA4mpfen, beeintr\xC3\xA4chtigen und k\xC3\xB6nnen das Risiko, b\xC3\xB6sartige Geschw\xC3\xBClste der lymphatischen Gewebe oder der Haut zu entwickeln, erh\xC3\xB6hen."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -791,7 +742,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: wenn Sie ein Nierenleiden oder ein ernsthaftes Leberleiden haben;
+          text: Auch die Immunantwort auf Impfungen kann herabgesetzt werden. Konsultieren Sie Ihren Arzt bevor sie sich impfen lassen.
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -800,7 +751,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "wenn Sie wegen einer Herzkrankheit, besonders wegen Herzschw\xE4che oder Bluthochdruck, behandelt werden;"
+          text: "Informieren Sie Ihren Arzt oder Apotheker, wenn Sie an anderen Krankheiten leiden, Allergien haben oder andere Medikamente (auch selbstgekaufte) einnehmen und zwar:"
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -809,7 +760,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "wenn Sie an einer St\xF6rung der Blutgerinnung leiden."
+          text: andere immunsuppressive Arzneimittel, ausser Ciclosporin oder Kortikosteroide;
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -818,13 +769,40 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Informieren Sie Ihren Arzt oder Apotheker, wenn Sie an anderen Krankheiten leiden, Allergien haben oder andere Medikamente (auch selbstgekaufte!) einnehmen, wie z.B. Medikamente zur Behandlung der Zuckerkrankheit mit Ausnahme von Insulin), Medikamente zur Erh\xF6hung der Urinausscheidung (harntreibende Mittel) oder zur Behandlung von Bluthochdruck, gerinnungshemmende Medikamente (Antikoagulantien), Rheumamittel oder andere Schmerzmittel wie z.B. Acetylsalicyls\xE4ure (Aspirin), gewisse Medikamente zur Behandlung von Infektionen (Chinolon-Antibiotika) oder Medikamente mit einer der folgenden Substanzen: Lithium, Digoxin, Methotrexat, Baclofen, Phenytoin, Probenecid oder Sulfinpyrazon."
+          text: Antibiotika oder Arzneimittel gegen Pilzinfektionen, z.B. Rifampicin, Clarithromycin, Erythromycin, Troleandomycin, Rifabutin, Clotrimazol, Fluconazol, Itraconazol, Ketoconazol;
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Bluthochdruckmittel oder Arzneimittel zur Behandlung von Herzkrankheiten, einschliesslich Nicardipin, Verapamil und Diltiazem;
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Arzneimittel gegen Epilepsie, einschliesslich Carbamazepin, Phenobarbital, Phenytoin;
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Cisaprid, Metoclopramid, Bromocriptin, Cimetidin, Danazol, Proteasehemmer.
           preformatted: false
     pregnancy: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Schwangerschaft/Stillzeit
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Darf Dolocyl w\xE4hrend einer Schwangerschaft oder w\xE4hrend der Stillzeit eingenommen werden?\n"
+        subheading: "Darf Rapamune w\xC3\xA4hrend der Schwangerschaft oder in der Stillzeit eingenommen werden?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -832,25 +810,24 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
             values: []
 
             start: 0
-            end: 102
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: 
-            - :italic
-            start: 103
-            end: 111
+            end: -1
+          text: "Rapamune darf w\xC3\xA4hrend der Schwangerschaft und Stillzeit nicht eingenommen werden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
           - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 112
+            start: 0
             end: -1
-          text: "In der Schwangerschaft oder Stillzeit sollten Sie Dolocyl nur nach R\xFCcksprache mit Ihrem Arzt anwenden. Wichtig: Bei Anwendung in der zweiten Schwangerschaftsh\xE4lfte besteht die Gefahr einer Sch\xE4digung des Neugeborenen oder die Gefahr von Geburtskomplikationen. In dieser Zeit wird der Arzt Dolocyl deshalb nur verordnen, wenn es unbedingt n\xF6tig ist und unter besonders sorgf\xE4ltiger Kontrolle."
+          text: "Sie sollten w\xC3\xA4hrend der Behandlung mit Rapamune und bis zu 12 Wochen nach Beendigung der Behandlung eine wirksame empf\xC3\xA4ngnisverh\xC3\xBCtende Methode verwenden. Sprechen Sie unverz\xC3\xBCglich mit Ihrem Arzt, wenn Sie vermuten, schwanger zu sein."
           preformatted: false
     usage: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Dosierung/Anwendung
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: |
-          Wie verwenden Sie Dolocyl?
+          Wie verwenden Sie Rapamune?
 
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
@@ -860,7 +837,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Erwachsene und Kinder \xFCber 12 Jahren: 1 bis 2 Tabletten alle 4 bis 6 Stunden mit etwas Fl\xFCssigkeit einnehmen."
+          text: Rapamune ist ausschliesslich zur oralen Anwendung bestimmt. Nehmen Sie Ihr Arzneimittel immer so ein, wie Ihr Arzt es Ihnen verordnet hat.
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -869,7 +846,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Nehmen Sie aber nicht mehr als 6 Tabletten innerhalb von 24 Stunden, es sei denn auf Verordnung des Arztes.
+          text: Es ist wichtig, Rapamune stets zur gleichen Zeit einzunehmen.
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -878,7 +855,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Bei Schmerzen w\xE4hrend der Monatsblutung wird empfohlen, die Behandlung bereits bei ersten Anzeichen der Beschwerden mit 2 Tabletten zu beginnen."
+          text: "Ihr Arzt wird genau festlegen, welche Dosis, wann und wie oft Sie Rapamune einnehmen m\xC3\xBCssen."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -887,14 +864,140 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Halten Sie sich an die in der Packungsbeilage angegebene oder vom Arzt verschriebene Dosierung. Wenn Sie glauben, das Medikament wirke zu schwach oder zu stark, so sprechen Sie mit Ihrem Arzt oder Apotheker.
+          text: "In der Regel wird Ihr Arzt f\xC3\xBCr Erwachsene oder Jugendliche \xC3\xBCber 13 Jahre nach der Nierentransplantation eine Anfangsdosis von 6 mg Rapamune verschreiben. Danach werden Sie jeden Tag 2 mg Rapamune einnehmen m\xC3\xBCssen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Wenn Sie auch Ciclosporin einnehmen, m\xC3\xBCssen Sie Rapamune 4 Stunden nach Ciclosporin einnehmen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "\xC3\x84ndern Sie nicht von sich aus die verschriebene Dosierung. Wenn Sie glauben, das Medikament wirke zu schwach oder zu stark, so sprechen Sie mit Ihrem Arzt oder Apotheker."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Wenn Sie eine gr\xC3\xB6ssere Menge Rapamune eingenommen haben als verordnet, suchen Sie sofort einen Arzt auf, oder gehen Sie in die n\xC3\xA4chste Krankenhaus-Notaufnahme. Bringen Sie immer die etikettierte Arzneimittelflasche mit, auch wenn diese leer ist."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Wenn Sie einmal die Einnahme einer Dosis vergessen haben, holen Sie diese nach, sobald Sie sich daran erinnern, ausser wenn Sie die n\xC3\xA4chste Dosis Ciclosporin schon innerhalb der n\xC3\xA4chsten 4 Stunden einnehmen m\xC3\xBCssen. In diesem Fall lassen Sie die vergessene Dosis Rapamune aus und nehmen Ihre Arzneimittel weiter zu den gewohnten Zeiten ein. Nehmen Sie keine doppelte Dosis, um die vergessene Dosis auszugleichen, und nehmen Sie Rapamune und Ciclosporin immer in einem Abstand von 4 Stunden ein."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Hinweise zur Verd\xC3\xBCnnung von Rapamune Trinkl\xC3\xB6sung\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "1. \xC3\x96ffnen Sie die Flasche mit der L\xC3\xB6sung. Entfernen Sie den Sicherheitsverschluss, indem Sie die Kappe zusammendr\xC3\xBCcken und gegen den Uhrzeigersinn drehen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "2. F\xC3\xBChren Sie beim ersten Gebrauch die Adaptereinheit (Kunststoffr\xC3\xB6hrchen mit St\xC3\xB6psel) fest in die Flasche ein, bis sie auf H\xC3\xB6he der Flaschen\xC3\xB6ffnung abschliesst. Entfernen Sie die Adaptereinheit nicht mehr, nachdem Sie sie in die Flasche eingef\xC3\xBChrt haben."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "3. F\xC3\xBChren Sie bei jeder Entnahme eine der bernsteinfarbenen Dosierspritzen fest in die \xC3\x96ffnung des Adapters ein. Der Spritzenkolben sollte dabei ganz nach unten gedr\xC3\xBCckt sein."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "4. Entnehmen Sie die verschriebene Menge Rapamune orale L\xC3\xB6sung, indem Sie den Spritzenkolben vorsichtig herausziehen, bis das untere Ende der schwarzen Linie des Kolbens auf H\xC3\xB6he der entsprechenden Markierung auf der Spritze ist. Die Flasche sollte dabei immer aufrecht stehen. Falls sich in der Spritze Blasen bilden, entleeren Sie den Spritzeninhalt wieder in die Flasche und wiederholen Sie den Vorgang."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "5. M\xC3\xB6glicherweise wurden Sie angewiesen, das Medikament bei sich zu tragen. Falls es notwendig ist, die gef\xC3\xBCllte Dosierspritze mitzuf\xC3\xBChren, verschliessen Sie die Spritze sicher mit der Kappe - die Kappe sollte beim Verschliessen einrasten."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "6. Legen Sie dann die verschlossene Dosierspritze in den beigef\xC3\xBCgten Transportbeh\xC3\xA4lter. Nachdem der Wirkstoff in die Spritze gef\xC3\xBCllt worden ist, kann er bei Zimmertemperatur oder gek\xC3\xBChlt aufbewahrt werden. Er sollte innerhalb von 24 Stunden verwendet werden. Extreme Temperaturen (unter 2 \xC2\xB0C und \xC3\xBCber 30 \xC2\xB0C) sollten vermieden werden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 274
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 275
+            end: 280
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 281
+            end: -1
+          text: "7. Entleeren Sie den Inhalt der Dosierspritze in ein Glas mit mindestens 60 ml Wasser oder Orangensaft. Eine Minute lang gut umr\xC3\xBChren und sofort trinken. Das Glas mit mindestens 120 ml Wasser oder Orangensaft nochmals auff\xC3\xBCllen, gut umr\xC3\xBChren und sofort trinken. Verwenden Sie keine anderen Fl\xC3\xBCssigkeiten als Wasser oder Orangensaft zur Verd\xC3\xBCnnung. Grapefruitsaft darf nicht verwendet werden. Trinkbecher aus Kunststoff, Papier oder Polystyren sollten nicht bei der Verd\xC3\xBCnnung von Rapamune verwendet werden. Die Dosierspritze und der Verschluss sind zur einmaligen Verwendung und sollten dann entsorgt werden."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Hinweis
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Die L\xC3\xB6sung in der Flasche kann bei Aufbewahrung im K\xC3\xBChlschrank zusammenlaufen oder tr\xC3\xBCbe erscheinen. Bringen Sie in diesem Fall einfach Ihre Rapamune L\xC3\xB6sung auf Raumtemperatur und sch\xC3\xBCtteln Sie sie behutsam. Dieses tr\xC3\xBCbe Aussehen beeintr\xC3\xA4chtigt die Qualit\xC3\xA4t von Rapamune nicht."
           preformatted: false
     unwanted_effects: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Unerw\xFCnschte Wirkungen"
+      heading: "Unerw\xC3\xBCnschte Wirkungen"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: |
-          Welche Nebenwirkungen kann Dolocyl haben?
+          Welche Nebenwirkungen kann Rapamune haben?
 
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
@@ -904,7 +1007,79 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Gelegentlich kommt es zu Magen-Darm-Beschwerden wie \xDCbelkeit, Sodbrennen, Magenweh oder allenfalls Durchfall."
+          text: "H\xC3\xA4ufig: Unterleibsschmerzen, Schw\xC3\xA4che, Fieber, Kopfschmerzen, R\xC3\xBCckenschmerzen, Brustschmerzen, Gelenkschmerzen und Wassereinlagerungen im Gewebe (\xC3\x96deme); gelegentlich: Sch\xC3\xBCttelfrost, Infektionen, Muskelkr\xC3\xA4mpfe, Muskelschlaffheit und Probleme mit dem Zahnfleisch."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Herz-Kreislauf-System:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "h\xC3\xA4ufig: Bluthochdruck, Blutarmut; gelegentlich: Herzprobleme, Herzklopfen, Herzrasen und niedriger Blutdruck."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Magen-Darm-Trakt:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "h\xC3\xA4ufig: Verstopfung, Durchfall, \xC3\x9Cbelkeit und Erbrechen; gelegentlich: Appetitlosigkeit, Verdauungsst\xC3\xB6rungen und Bl\xC3\xA4hungen."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Nervensystem und Sinnesorgane:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "h\xC3\xA4ufig: Zittern; gelegentlich: Schlafschwierigkeiten, Depression, Verwirrtheit, \xC3\x84ngstlichkeit, Schwindel, ver\xC3\xA4nderte Reizempfindlichkeit, Schl\xC3\xA4frigkeit und Sehst\xC3\xB6rungen."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Haut:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "h\xC3\xA4ufig: Akne; gelegentlich: Juckreiz, R\xC3\xB6tung der Haut, vermehrte K\xC3\xB6rperbehaarung und Schweissausbr\xC3\xBCche."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Atemwege:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "h\xC3\xA4ufig: erschwertes Atmen und Entz\xC3\xBCndungen des Nasen-Rachen-Raumes; gelegentlich: Lungenprobleme, Husten und Nasenbluten."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Harnwege:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "h\xC3\xA4ufig: Entz\xC3\xBCndungen der Harnwege; gelegentlich: Blasenschmerzen, Schmerzen und Schwierigkeiten beim Wasserlassen und Inkontinenz."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -913,7 +1088,19 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolocyl kann die Magenschleimhaut reizen und in seltenen F\xE4llen zu Magengeschw\xFCren f\xFChren. Dies kann eine Magen-Darm-Blutung zur Folge haben."
+          text: "Wenn Sie bei irgendwelchen Nebenwirkungen verunsichert sind oder falls Sie andere als die oben erw\xC3\xA4hnten Nebenwirkungen bemerken, informieren Sie bitte Ihren Arzt oder Apotheker."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Nebenwirkungen, die Sie nicht selber bemerken k\xC3\xB6nnen:"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Dabei handelt es sich vorwiegend um Ver\xC3\xA4nderungen im Stoffwechsel, z.B. des Fett-, Cholesterin- (h\xC3\xA4ufig), und Zuckerstoffwechsels oder Ver\xC3\xA4nderungen des Blutes, Cushing-Syndrom (gelegentlich)."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -922,34 +1109,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolocyl kann zu \xDCberempfindlichkeitsreaktionen der Haut und Schleimh\xE4ute f\xFChren, dies besonders bei Patienten mit Asthma, mit \xDCberempfindlichkeit auf andere Entz\xFCndungshemmer oder Schmerz- und Fiebermittel sowie bei Patienten mit chronischem Nesselfieber."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Eine vorbestehende ernsthafte St\xF6rung der Nierenfunktion kann sich unter Dolocyl \xFCberraschend verschlechtern. Wenn Sie an einer Nierenkrankheit leiden, d\xFCrfen Sie Dolocyl deshalb nur auf Anweisung des Arztes einnehmen."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Besonders bei verminderter Herzleistung oder Bluthochdruck kann Dolocyl zu vermehrter Ansammlung von Wasser in den Geweben (\xD6demen) und wegen Lungenstauung zu Atemnot f\xFChren. Wenn Sie wegen eines Herzleidens behandelt werden, sollten Sie Dolocyl nur auf Anweisung des Arztes anwenden. Sollten w\xE4hrend der Behandlung Halsbeschwerden (Angina), hohes Fieber und eventuell auch eine Anschwellung der Lymphknoten in der Halsregion auftreten (ein sehr selten zu beobachtendes Krankheitsbild) sowie bei Schmerzen im Oberbauch und/oder Schwarzf\xE4rbung des Stuhls, ist das Medikament abzusetzen und sofort der Arzt aufzusuchen."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Sehr selten sind nach der Einnahme von Ibuprofen starke Kopfschmerzen, verbunden mit \xDCbelkeit, Erbrechen und Nackensteifigkeit, aufgetreten; in dieser Situation ist das Arzneimittel abzusetzen und sofort der Arzt aufzusuchen."
+          text: "Es ist ausserordentlich wichtig, dass Sie sich allen durch Ihren Arzt angeordneten Kontrolluntersuchungen unterziehen, dazu geh\xC3\xB6ren auch die Leber- und Nierenfunktionstests und Blutuntersuchungen."
           preformatted: false
     general_advice: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Allgemeine Hinweise
@@ -966,7 +1126,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Medikament vor Kinderhand gesch\xFCtzt aufbewahren!"
+          text: "Rapamune Trinkl\xC3\xB6sung enth\xC3\xA4lt 2 Vol.% Ethanol. Jede Dosis enth\xC3\xA4lt bis zu 0,1 g Alkohol. Ein gesundheitliches Risiko besteht bei Alkoholkranken, Epileptikern, Hirngesch\xC3\xA4digten, Schwangeren und Kindern. Alkohol kann die Wirkung anderer Arzneimittel beeintr\xC3\xA4chtigen oder verst\xC3\xA4rken."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -975,7 +1135,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Die Packung ist vor W\xE4rme und Feuchtigkeit zu sch\xFCtzen."
+          text: "Rapamune sollte f\xC3\xBCr Kinderhand unerreichbar aufbewahrt werden."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -984,7 +1144,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolocyl kann das Reaktionsverm\xF6gen ver\xE4ndern, so dass die Teilnahme am Strassenverkehr oder das Bedienen von Maschinen beeintr\xE4chtigt ist."
+          text: "Bewahren Sie Rapamune Trinkl\xC3\xB6sung in der Originalverpackung, vor Licht gesch\xC3\xBCtzt und im K\xC3\xBChlschrank (+2-+8 \xC2\xB0C) auf. Wenn die Flasche einmal ge\xC3\xB6ffnet ist, sollte der Inhalt im K\xC3\xBChlschrank aufbewahrt und innerhalb von 30 Tagen aufgebraucht werden."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -993,7 +1153,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Das Medikament darf nur bis zu dem auf dem Beh\xE4lter mit \xABEXP\xBB bezeichneten Datum verwendet werden."
+          text: "Bewahren Sie Rapamune Filmtabletten in der Originalpackung, vor Licht gesch\xC3\xBCtzt und bei Raumtemperatur (15-25 \xC2\xB0C) auf."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1002,7 +1162,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Weitere Ausk\xFCnfte erteilt Ihnen Ihr Arzt oder Apotheker, der \xFCber die ausf\xFChrliche Fachinformation verf\xFCgt."
+          text: "Das Medikament darf nur bis zu dem auf der Packung mit \xC2\xABEXP\xC2\xBB bezeichneten Datum verwendet werden."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1011,22 +1171,13 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Der Wirkstoff Ibuprofen ist auch in gewissen Rheumamitteln vorhanden.
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: Beachten Sie die entsprechenden Angaben.
+          text: "Weitere Ausk\xC3\xBCnfte erteilt Ihnen Ihr Arzt oder Apotheker, der \xC3\xBCber die ausf\xC3\xBChrliche Fachinformation verf\xC3\xBCgt."
           preformatted: false
     composition: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Zusammensetzung
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Wirkstoff:"
+        subheading: "1 ml Rapamune Trinkl\xC3\xB6sung"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1035,10 +1186,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "200\xA0mg Ibuprofen pro Filmtablette."
+          text: "enth\xC3\xA4lt 1 mg Sirolimus (Wirkstoff); Hilfsstoffe: Ethanol, Propylenglycol, Sojafetts\xC3\xA4uren, Polysorbat 80, Phosphatidylcholin, Glycerin; Konservierungsmittel: E 304; Alkoholgehalt: 2 Vol.%."
           preformatted: false
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Hilfsstoffe:"
+        subheading: 1 Rapamune Filmtablette
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1047,7 +1198,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Farbstoff E\xA0127 (Erythrosin)."
+          text: "enth\xC3\xA4lt 1 mg Sirolimus (Wirkstoff); Hilfsstoffe: Propylenglycol sowie weitere Hilfsstoffe."
           preformatted: false
     packages: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Verkaufsart/Packungen
@@ -1062,7 +1213,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "In Apotheken ohne \xE4rztliches Rezept."
+          text: "In Apotheken nur gegen \xC3\xA4rztliches Rezept."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1070,18 +1221,37 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
             values: []
 
             start: 0
-            end: 27
+            end: 20
           - !oddb.org,2003/ODDB::Text::Format 
             values: 
             - :italic
-            start: 28
-            end: 41
+            start: 21
+            end: 33
           - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 42
+            start: 34
             end: -1
-          text: "Faltschachteln zu 10 und 20\xA0Filmtabletten."
+          text: "Glasflaschen zu 60 ml Trinkl\xC3\xB6sung."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 22
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 23
+            end: 37
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 38
+            end: -1
+          text: Packungen zu 30 und 100 Filmtabletten.
           preformatted: false
     distribution: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Vertriebsfirma
@@ -1096,7 +1266,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Novartis Consumer Health Schweiz AG, 3001 Bern.
+          text: AHP (Schweiz) AG, Wyeth Division, 6301 Zug.
           preformatted: false
     date: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Stand der Information
@@ -1111,16 +1281,16 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: April 2000.
+          text: Mai 2001.
           preformatted: false
 
-!oddb.org,2003/ODDB::Patinfo 
-oid: 1273
+--- !oddb.org,2003/ODDB::Patinfo 
+oid: 260
 descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
   fr: !oddb.org,2003/ODDB::PatinfoDocument 
-    name: "Dolo Target\xAE Gel"
+    name: "Asp\xC3\xA9gic\xC2\xAE Baby"
     company: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: WHITEHALL-ROBINS
+      heading: "SANOFI-SYNTH\xC3\x89LABO"
       sections: []
 
     galenic_form: !oddb.org,2003/ODDB::Text::Chapter 
@@ -1128,10 +1298,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
       sections: []
 
     effects: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Propri\xE9t\xE9s/Emploi th\xE9rapeutique"
+      heading: "Propri\xC3\xA9t\xC3\xA9s/Emploi th\xC3\xA9rapeutique"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Qu'est-ce que Dolo Target Gel et quand est-il appliqu\xE9?\n"
+        subheading: "Qu'est-ce que l'Asp\xC3\xA9gic Baby et quand est-il utilis\xC3\xA9?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1140,14 +1310,93 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolo Target Gel poss\xE8de des propri\xE9t\xE9s anti-inflammatoires et analg\xE9siques. Il est appliqu\xE9 pour le traitement des contusions, des \xE9longations et des entorses encourues lors de la pratique d'un sport ou pour d'autres blessures, ainsi que contractures musculaires, raideurs de la nuque de l'\xE9pole, inflammatoires des articulations, des tendons et des ligaments. Traitement d'appoint local des affections rhumatismales d\xE9g\xE9neratives (arthrose)."
+          text: "L'Asp\xC3\xA9gic Baby poss\xC3\xA8de toutes les propri\xC3\xA9t\xC3\xA9s de l'acide ac\xC3\xA9tylsalicylique. Il calme les douleurs et abaisse la fi\xC3\xA8vre."
           preformatted: false
-    amendments: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'Asp\xC3\xA9gic Baby est utilis\xC3\xA9 pour un traitement \xC3\xA0 court terme contre les maux de t\xC3\xAAte, les maux des dents, les douleurs au niveau des articulations et des ligaments, les douleurs dorsales, les douleurs lors de refroidissements, et contre la fi\xC3\xA8vre."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'Asp\xC3\xA9gic Baby peut \xC3\xAAtre dissous dans le liquide du biberon, par exemple: eau, th\xC3\xA9, lait, tisanes, jus de fruits etc. Il ne laisse aucune particule, ni dans le biberon, ni dans la bouche."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'Asp\xC3\xA9gic Baby ne contient pas de sodium et peut donc \xC3\xAAtre administr\xC3\xA9 m\xC3\xAAme en cas de r\xC3\xA9gime sans sel."
+          preformatted: false
+    amendments: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Compl\xC3\xA9ment d'information"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          De quoi faut-il tenir compte en dehors du traitement?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Comme tous les antipyr\xC3\xA9tiques et analg\xC3\xA9siques, l'Asp\xC3\xA9gic Baby ne devrait pas \xC3\xAAtre pris pendant plus de 5 jours, ou plus de 3 jours en cas de fi\xC3\xA8vre, sans pr\xC3\xA9scription m\xC3\xA9dicale."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Les analg\xC3\xA9siques ne devraient pas \xC3\xAAtre pris r\xC3\xA9guli\xC3\xA8rement pendant une p\xC3\xA9riode prolong\xC3\xA9e sans contr\xC3\xB4le m\xC3\xA9dical. En cas de douleurs persistantes, veuillez consulter votre m\xC3\xA9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le dosage indiqu\xC3\xA9 ou pr\xC3\xA9scrit par le m\xC3\xA9decin ne doit pas \xC3\xAAtre d\xC3\xA9pass\xC3\xA9."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Il faut \xC3\xA9galement noter que l'absorption prolong\xC3\xA9e d'analg\xC3\xA9siques peut contribuer \xC3\xA0 faire persister les maux de t\xC3\xAAte."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'absorption prolong\xC3\xA9e d'analg\xC3\xA9sique, surtout la combinaison de plusieurs analg\xC3\xA9siques peut provoquer des troubles durables de la fonction r\xC3\xA9nale avec un risque d'insuffisance r\xC3\xA9nale terminale."
+          preformatted: false
     contra_indications: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Contre-indications
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Quand Dolo Target Gel ne doit-il pas \xEAtre utilis\xE9?\n"
+        subheading: "Quand l'Asp\xC3\xA9gic Baby ne doit-il pas \xC3\xAAtre utilis\xC3\xA9?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1156,7 +1405,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "En cas d'hypersensibilit\xE9 connue \xE0 la substance active, Felbinac ou aux autres analg\xE9siques et antiphlogistiques (anti-inflammatoires) comme par exemple l'acide ac\xE9tylsalicylique."
+          text: "Asp\xC3\xA9gic Baby ne doit pas \xC3\xAAtre administr\xC3\xA9 \xC3\xA0 un enfant:"
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1165,7 +1414,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Chez les enfants.
+          text: "qui pr\xC3\xA9sente une hypersensibilit\xC3\xA9 \xC3\xA0 l'acide ac\xC3\xA9tylsalicylique ou \xC3\xA0 d'autres anti-inflammatoires (antirhumatismaux) ou analg\xC3\xA9siques et antipyr\xC3\xA9tiques. Une telle hypersensibilit\xC3\xA9 se manifeste par des signes tels que: asthme, d\xC3\xA9tresse respiratoire, troubles circulatoires, tum\xC3\xA9faction de la peau et des muqueuses ou urticaire;"
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1174,7 +1423,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolo Target Gel ne peut pas \xEAtre appliqu\xE9 sur des plaies ou sur des zones cutan\xE9es ouvertes ou sur la peau ecz\xE9mateuse."
+          text: "souffrant d'un ulc\xC3\xA8re de l'estomac ou du duod\xC3\xA9num,souffrant d'une maladie h\xC3\xA9morragique;"
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1183,13 +1432,22 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Il faut \xE9viter le contact des yeux et des muqueuses avec la pr\xE9paration. Dolo Target Gel ne sera pas appliqu\xE9 sous un pansement de protection \xE9tanche (pansement occlusif)."
+          text: souffrant d'une grave insuffisance des reins ou du foie;
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "\xC3\xA9tant dans un \xC3\xA9tat impliquant un risque accru d'h\xC3\xA9morragie (blessures, r\xC3\xA9gles dans l'\xC3\xA9ventualit\xC3\xA9 d'une utilisation par des adolescentes ou par des femmes adultes, etc.)."
           preformatted: false
     precautions: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Pr\xE9cautions"
+      heading: "Pr\xC3\xA9cautions"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Quelles sont les mesures de pr\xE9caution \xE0 observer lors de l'application de Dolo Target Gel?\n"
+        subheading: "Quelles sont les mesures de pr\xC3\xA9caution \xC3\xA0 observer lors de la prise d'Asp\xC3\xA9gic Baby?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1198,7 +1456,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "La pr\xE9paration ne peut \xEAtre appliqu\xE9e que pendant une p\xE9riode de courte dur\xE9e (maximum 4 semaines) et sur de grandes surfaces n'aura lieu qu'avec l'autorisation du m\xE9decin."
+          text: "Si votre enfant souffre d'asthme ou d'urticaire, s'il a des polypes dans le nez, s'il prend des anticoagulants, s'il souffre d'un d\xC3\xA9ficit en \xC2\xABglucose-6-phosphate-d\xC3\xA9hydrog\xC3\xA9nase\xC2\xBB, une maladie h\xC3\xA9r\xC3\xA9ditaire rare des globules rouges, s'il souffre de troubles fonctionnels des reins ou du foie, ou s'il a souffert de troubles gastro-intestinaux chroniques ou r\xC3\xA9p\xC3\xA9titifs, Asp\xC3\xA9gic Baby ne devra \xC3\xAAtre administr\xC3\xA9 que sous surveillance stricte du m\xC3\xA9decin."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1207,13 +1465,122 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Veuillez informer votre m\xE9decin ou votre pharmacien si vous souffrez d'une autre maladie, vous \xEAtes allergique, vous prenez d\xE9j\xE0 d'autres m\xE9dicaments m\xEAme en autom\xE9dication \xE0 usage interne ou externe!"
+          text: "Avant toute chose, respectez la posologie indiqu\xC3\xA9e par votre m\xC3\xA9decin. En cas de surdosage accidentel, le traitement d'urgence doit se faire en milieu hospitalier sp\xC3\xA9cialis\xC3\xA9."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 12
+            end: 31
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 32
+            end: -1
+          text: "Les premiers signes de surdosage sont: troubles de l'ou\xC3\xAFe, naus\xC3\xA9es, vomissements, augmentation de la temp\xC3\xA9rature, respiration profonde avec apparition de sueur."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'administration d'Asp\xC3\xA9gic Baby aux enfants de moins de douze ans que l'on soup\xC3\xA7onne atteints de grippe ou de varicelle ne doit se faire que sous surveillance stricte du m\xC3\xA9decin. Si des troubles de la conscience accompagn\xC3\xA9s de forts vomissements se manifestent, un m\xC3\xA9decin doit \xC3\xAAtre imm\xC3\xA9diatement consult\xC3\xA9."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'Asp\xC3\xA9gic Baby peut modifier l'action de certains m\xC3\xA9dicaments administr\xC3\xA9s simultan\xC3\xA9ment:"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'effet des corticost\xC3\xA9ro\xC3\xAFdes, des comprim\xC3\xA9s contre le diab\xC3\xA8te, des anticoagulants, et du m\xC3\xA9thotrexate (qui est prescrit p.ex. en cas de polyarthrite chronique) est augment\xC3\xA9; il en est de m\xC3\xAAme de l'effet des antid\xC3\xA9presseurs au lithium et de leurs effets ind\xC3\xA9sirables."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'effet des certains m\xC3\xA9dicaments contre la goutte (prob\xC3\xA9n\xC3\xA9cide et sulfinpyrazone) ou de certains diur\xC3\xA9tiques est diminu\xC3\xA9."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Les effets secondaires des m\xC3\xA9dicaments contre les rhumatismes ainsi que du m\xC3\xA9thotrexate peuvent \xC3\xAAtre augment\xC3\xA9s si votre enfant prend aussi de l'Asp\xC3\xA9gic Baby."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "C'est pourquoi il est prudent de consulter un m\xC3\xA9decin si votre enfant est d\xC3\xA9j\xC3\xA0 sous traitement."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si la douleur se prolonge au-del\xC3\xA0 de 5 jours ou la fi\xC3\xA8vre au-del\xC3\xA0 de 3 jours, consultez un m\xC3\xA9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Il faut aussi penser que la prise r\xC3\xA9guli\xC3\xA8re de m\xC3\xA9dicaments contre la douleur pendant de larges p\xC3\xA9riodes peut avoir pour effet d'entretenir les maux de t\xC3\xAAte."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Veuillez informer votre m\xC3\xA9decin, votre pharmacien, ou votre droguiste si votre enfant souffre d'une autre maladie, est allergique ou prend d\xC3\xA9j\xC3\xA0 d'autres m\xC3\xA9dicaments (m\xC3\xAAme en autom\xC3\xA9dication!)."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le m\xC3\xA9decin ou le dentiste doivent \xC3\xAAtre consult\xC3\xA9s ou inform\xC3\xA9s de la prise avant une intervention chirurgicale."
           preformatted: false
     pregnancy: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Grossesse/Allaitement
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Dolo Target Gel peut-il \xEAtre utilis\xE9 pendant la grossesse ou la p\xE9riode de lactation?\n"
+        subheading: "L'Asp\xC3\xA9gic Baby peut-il \xC3\xAAtre pris pendant la grossesse ou la p\xC3\xA9riode d'allaitement?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1222,15 +1589,31 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolo Target Gel ne sera pas appliqu\xE9 au cours de la grossesse ou pendant la p\xE9riode de lactation."
+          text: "Cette pr\xC3\xA9paration est destin\xC3\xA9e \xC3\xA0 \xC3\xAAtre utilis\xC3\xA9e uniquement chez les enfants."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Lors de la prise \xC3\xA9ventuelle d'Asp\xC3\xA9gic Baby par des femmes jeunes ou adultes pendant la grossesse et l'allaitement, Asp\xC3\xA9gic Baby devra seulement \xC3\xAAtre pris sous contr\xC3\xB4le m\xC3\xA9dical strict. Durant les trois derniers mois de la grossesse, Asp\xC3\xA9gic Baby ne devra pas \xC3\xAAtre pris."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Il faut renoncer \xC3\xA0 un dosage important pendant l'allaitement."
           preformatted: false
     usage: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Posologie/Mode d'emploi
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Comment utiliser Dolo Target Gel?
-
+        subheading: "Comment utiliser l'Asp\xC3\xA9gic Baby?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1239,7 +1622,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "L'application de Dolo Target Gel suivie d'un l\xE9ger massage se fera sur les zones douloureuses. On appliquera 1-2\xA0g de gel (un trait de 3-6\xA0cm) 2-4 fois par jour."
+          text: "Selon avis m\xC3\xA9dical."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1248,7 +1631,31 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Ind\xE9pendamment de l'\xE9tendue de la surface \xE0 traiter, on ne d\xE9passera pas une dose journali\xE8re de 20\xA0g de gel."
+          text: "Posologie habituelle:"
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "De 6 mois \xC3\xA0 1 an (7-10 kg):"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "selon prescription m\xC3\xA9dicale."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "De 1 \xC3\xA0 3 ans (10-15 kg):"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "jusqu'\xC3\xA0 4 sachets par jour \xC3\xA0 r\xC3\xA9partir en plusieurs prises (3-4 au minimum, si possible apr\xC3\xA8s les repas)."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1257,13 +1664,49 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Ne changez pas le dosage prescrit de votre propre initiative. Adressez-vous \xE0 votre m\xE9decin ou \xE0 votre pharmacien lorsque vous pensez que l'efficacit\xE9 de votre m\xE9dicament est trop faible ou au contraire trop forte."
+          text: "Asp\xC3\xA9gic 250 est plus particuli\xC3\xA8rement adapt\xC3\xA9 au traitement des enfants de 3 \xC3\xA0 12 ans."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Asp\xC3\xA9gic 500 est destin\xC3\xA9 aux enfants \xC3\xA0 partir de 12 ans et \xC3\xA0 l'adulte."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Versez la poudre dans un verre ou dans le biberon; ajoutez de l'eau ou un autre liquide (v. premi\xC3\xA8re rubrique), agitez quelques secondes et donnez \xC3\xA0 boire."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Veuillez vous conformer au dosage figurant dans la notice d'emballage ou prescrit par le m\xC3\xA9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si vous avez l'impression que l'efficacit\xC3\xA9 du m\xC3\xA9dicament est trop faible ou au contraire trop forte, veuillez vous adresser \xC3\xA0 votre m\xC3\xA9decin, votre pharmacien ou votre droguiste."
           preformatted: false
     unwanted_effects: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Effets ind\xE9sirables"
+      heading: "Effets ind\xC3\xA9sirables"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Quels effets ind\xE9sirables Dolo Target Gel peut-il avoir?\n"
+        subheading: "Quels effets secondaires l'Asp\xC3\xA9gic Baby peut-il avoir?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1272,7 +1715,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Chez environ 2% des patients, on a rapport\xE9 du prurit local, des dermatities et des oed\xE8mes. Ces affections r\xE9gressent normalement \xE0 l'arr\xEAt du traitement. Dans des cas isol\xE9s, il est possible que des crises d'asthme se d\xE9clenchent chez des patients pr\xE9dispos\xE9s. Au cas o\xF9 l'un des effets secondaires suivants devait appara\xEEtre, interrompez le traitement avec Dolo Target Gel et informez imm\xE9diatement votre m\xE9decin: importante \xE9ruption cutan\xE9e, respiration haletante, essoufflement ou tum\xE9faction du visage."
+          text: "Des troubles digestifs peuvent se produire. Dans de rares cas, des r\xC3\xA9actions allergiques ou d'hypersensibilit\xC3\xA9 comme tum\xC3\xA9faction de la peau et des muqueuses, urticaire, asthme ou d\xC3\xA9tresse respiratoire ainsi que des ulc\xC3\xA8res gastriques et des h\xC3\xA9morragies digestives peuvent se produire."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1281,10 +1724,37 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Si Dolo Target Gel est ing\xE9r\xE9 par m\xE9garde par des enfants, avertissez-en votre m\xE9decin."
+          text: "D\xC3\xA8s l'apparition de signes d'une r\xC3\xA9action d'hypersensibilit\xC3\xA9, il faut interrompre la prise du m\xC3\xA9dicament et consulter le m\xC3\xA9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si pendant le traitement vous remarquez des selles noir\xC3\xA2tres ou des vomissements sanglants, arr\xC3\xAAtez l'administration du m\xC3\xA9dicament et consultez imm\xC3\xA9diatement votre m\xC3\xA9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Des \xC3\xA9tourdissement, maux de t\xC3\xAAte, troubles visuels ou \xC3\xA9tats de confusion ont \xC3\xA9t\xC3\xA9 observ\xC3\xA9s dans de rares cas et sont g\xC3\xA9n\xC3\xA9ralement la marque d'un surdosage."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "En r\xC3\xA8gle g\xC3\xA9n\xC3\xA9rale, la prise \xC3\xA0 long terme de m\xC3\xA9dicaments contre la douleur, et particuli\xC3\xA8rement l'association de plusieurs principes actifs peut conduire \xC3\xA0 des l\xC3\xA9sions r\xC3\xA9nales durables avec le risque d'une insuffisance r\xC3\xA9nale terminale."
           preformatted: false
     general_advice: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Remarques particuli\xE8res"
+      heading: "Remarques particuli\xC3\xA8res"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: |
@@ -1298,7 +1768,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolo Target Gel est \xE0 conserver hors de la port\xE9e des enfants."
+          text: "En cas de prise non contr\xC3\xB4l\xC3\xA9e (surdosage), consultez imm\xC3\xA9diatement votre m\xC3\xA9decin; le bourdonnement d'oreilles et/ou une transpiration abondante peuvent \xC3\xAAtre les signes d'un surdosage."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1307,7 +1777,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Le m\xE9dicament ne peut \xEAtre utilis\xE9 au-del\xE0 de la date imprim\xE9e avec \xABEXP\xBB sur le r\xE9cipient."
+          text: "Pour de plus amples renseignements, consultez votre m\xC3\xA9decin, votre pharmacien ou votre droguiste qui disposent d'une information d\xC3\xA9taill\xC3\xA9e destin\xC3\xA9e aux repr\xC3\xA9sentants des professions m\xC3\xA9dicales."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1316,7 +1786,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Ne pas stocker \xE0 une temp\xE9rature sup\xE9rieure \xE0 25\xA0\xB0C."
+          text: "Conservez le produit \xC3\xA0 temp\xC3\xA9rature ambiante (15 \xC3\xA0 25 \xC2\xB0C) et \xC3\xA0 l'abri de l'humidit\xC3\xA9."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1325,13 +1795,22 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Des informations compl\xE9mentaires peuvent \xEAtre obtenues aupr\xE8s de votre m\xE9decin ou de votre pharmacien qui disposent d'une information scientifique d\xE9taill\xE9e."
+          text: "Ne le laissez pas \xC3\xA0 port\xC3\xA9e des enfants."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le m\xC3\xA9dicament ne peut \xC3\xAAtre utilis\xC3\xA9 au-del\xC3\xA0 de la date imprim\xC3\xA9e sur la bo\xC3\xAEte avec la mention \xC2\xABExp.\xC2\xBB."
           preformatted: false
     composition: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Composition
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: ""
+        subheading: 1 sachet
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1340,10 +1819,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Le Dolo Target Gel contient 30\xA0mg de Felbinac pour 1\xA0g de gel. Le composant de base du gel est exempt de mati\xE8re grasse et contient de l'alcool."
+          text: "contient: ac\xC3\xA9tylsalicylate de lysine 180 mg (exprim\xC3\xA9 en acide ac\xC3\xA9tylsalicylique, correspond \xC3\xA0 100 mg), des ar\xC3\xB4mes, des excipients."
           preformatted: false
     packages: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Mode de vente/Pr\xE9sentation"
+      heading: "Mode de vente/Pr\xC3\xA9sentation"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: ""
@@ -1354,8 +1833,37 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
             values: []
 
             start: 0
+            end: 10
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 11
+            end: 19
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 20
             end: -1
-          text: "Dolo Target Gel est disponible dans les pharmacies en tubes de 50 et 100\xA0g, sans ordonnance m\xE9dicale."
+          text: "Bo\xC3\xAEte de 20 sachets: vente en pharmacie et droguerie, sans ordonnance m\xC3\xA9dicale."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 12
+            end: 20
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 21
+            end: -1
+          text: "Bo\xC3\xAEte de 100 sachets: vente en pharmacie, sur ordonnance m\xC3\xA9dicale."
           preformatted: false
     distribution: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Distributeur
@@ -1370,10 +1878,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Whitehall-Robins AG, 6301 Zoug.
+          text: "Sanofi-Synth\xC3\xA9labo (Suisse) SA, 1217 Meyrin."
           preformatted: false
     date: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Mise \xE0 jour de l'information"
+      heading: "Mise \xC3\xA0 jour de l'information"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: ""
@@ -1385,12 +1893,12 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Mai 1999.
+          text: Mars 1997.
           preformatted: false
   de: !oddb.org,2003/ODDB::PatinfoDocument 
-    name: "Dolo Target\xAE Gel"
+    name: "Asp\xC3\xA9gic\xC2\xAE Baby"
     company: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: WHITEHALL-ROBINS
+      heading: "SANOFI-SYNTH\xC3\x89LABO"
       sections: []
 
     galenic_form: !oddb.org,2003/ODDB::Text::Chapter 
@@ -1401,8 +1909,50 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
       heading: Eigenschaften/Verwendungszweck
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Was ist Asp\xC3\xA9gic Baby und wann wird es angewendet?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Asp\xC3\xA9gic Baby weist alle Eigenschaften der Acetylsalicyls\xC3\xA4ure auf. Es lindert Schmerzen und wirkt fiebersenkend."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Asp\xC3\xA9gic Baby wird zur Kurzzeittherapie gegen Kopf- und Zahnweh, Gelenk- und B\xC3\xA4nderschmerzen, R\xC3\xBCckenschmerz, Erk\xC3\xA4ltungsschmerz und Fieber verabreicht."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Asp\xC3\xA9gic Baby l\xC3\xA4sst sich in der Schoppenflasche beispielsweise mit Wasser, Schwarztee, Milch, Kr\xC3\xA4utertee, Fruchts\xC3\xA4ften, usw. mischen. Weder in der Flasche noch im Mund verbleiben feste Teilchen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Asp\xC3\xA9gic Baby enth\xC3\xA4lt kein Natrium und kann deshalb auch bei salzarmer Di\xC3\xA4t verabreicht werden."
+          preformatted: false
+    amendments: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Erg\xC3\xA4nzungen"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
         subheading: |
-          Was ist Dolo Target Gel und wann wird es angewendet?
+          Was sollte dazu beachtet werden?
 
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
@@ -1412,16 +1962,49 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolo Target Gel besitzt entz\xFCndungshemmende und schmerzlindernde Eigenschaften. Es wird zur Behandlung von Prellungen, Zerrungen und Verstauchungen bei Sport- oder anderen Verletzungen sowie von Muskelverspannungen, Nacken- und Schultersteife, Hexenschuss, Entz\xFCndungen der Sehnen und Sehnenscheiden, B\xE4nder und Gelenke eingesetzt. Lokale unterst\xFCtzende Behandlung von degenerativen rheumatischen Erkrankungen (Arthrose)."
+          text: "Wie alle Mittel gegen Fieber und Schmerzen sollte Asp\xC3\xA9gic Baby ohne \xC3\xA4rztliche Verordnung nicht l\xC3\xA4nger als f\xC3\xBCnf bzw. drei Tage bei Fieber eingenommen werden."
           preformatted: false
-    amendments: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Schmerzmittel sollten nicht \xC3\xBCber einen l\xC3\xA4ngeren Zeitraum ohne \xC3\xA4rztliche Aufsicht eingenommen werden. Wenden Sie sich bei hartn\xC3\xA4ckigen Schmerzen an Ihren Arzt."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Die \xC3\xA4rztlich empfohlene oder verordnete Dosierung darf nicht \xC3\xBCberschritten werden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Es gilt ausserdem zu beachten, dass die fortgesetzte Einnahme von Schmerzmitteln zu Dauerkopfschmerz f\xC3\xBChren kann."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Eine dauerhafte Einnahme von Schmerzmitteln, insbesondere die Kombination verschiedener schmerzlindernder Medikamente, kann St\xC3\xB6rungen der Nierenfunktion bis hin zu Nierenversagen zur Folge haben."
+          preformatted: false
     contra_indications: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Kontraindikationen
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Wann darf Dolo Target Gel nicht angewendet werden?
-
+        subheading: "Wann darf Asp\xC3\xA9gic Baby nicht angewendet werden?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1430,7 +2013,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Bei bekannter \xDCberempfindlichkeit gegen den Wirkstoff Felbinac oder andere Schmerz- und Rheumamittel (z.B. Acetylsalicyls\xE4ure)."
+          text: "Asp\xC3\xA9gic Baby darf nicht an ein Kind verabreicht werden, das:"
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1439,7 +2022,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Bei Kindern.
+          text: "eine \xC3\x9Cberempfindlichkeit gegen\xC3\xBCber Acetylsalicyls\xC3\xA4ure oder sonstigen entz\xC3\xBCndungshemmenden (antirheumatischen), schmerzlindernden oder fiebersenkenden Mitteln aufweist. Sichtbare Zeichen einer solchen \xC3\x9Cberempfindlichkeit sind: Asthma, Atemnot, Kreislaufst\xC3\xB6rungen, Schwellungen der Haut bzw. der Schleimh\xC3\xA4ute und Nesselfieber;"
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1448,7 +2031,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolo Target Gel darf nicht auf Wunden, offene Hautstellen oder ekzemat\xF6se Haut aufgetragen werden."
+          text: "an einem Magen- oder Zw\xC3\xB6lffingerdarmgeschw\xC3\xBCr;"
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1457,7 +2040,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Augen und Schleimh\xE4ute d\xFCrfen nicht mit dem Pr\xE4parat in Ber\xFChrung kommen."
+          text: "an einer St\xC3\xB6rung des Gerinnungssystems;"
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1466,15 +2049,22 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Dolo Target Gel sollte nicht unter einem luftdichten Schutzverband (Okklusivverband) angewendet werden.
+          text: "oder an einer schweren Nieren- oder Leberfunktionsst\xC3\xB6rung leidet;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "sich in einem Zustand befindet, der ein erh\xC3\xB6htes Risiko von Blutungen birgt (Verletzungen, Regelblutungen im Falle der Verabreichung an jugendliche oder erwachsene Frauen, usw.)."
           preformatted: false
     precautions: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Vorsichtsmassnahmen
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Wann ist bei der Anwendung mit Dolo Target Gel Vorsicht geboten?
-
+        subheading: "Wann ist bei der Einnahme von Asp\xC3\xA9gic Baby Vorsicht geboten?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1483,7 +2073,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Das Pr\xE4parat darf nur kurzfristig (maximal 4 Wochen) und ohne Befragen des Arztes nicht grossfl\xE4chig angewendet werden."
+          text: "Verwenden Sie Asp\xC3\xA9gic Baby nur unter strenger \xC3\xA4rztlicher Aufsicht, falls Ihr Kind an Asthma oder an Nesselfieber leidet, oder an Nasenpolypen leidet, falls es Antikoagulantien (Mittel zur Hemmung der Blutgerinnung) einnimmt, falls es an Glucose-6-Phosphat-Dehydrogenase-Mangel (einer seltenen erblichen Erkrankung der roten Blutk\xC3\xB6rperchen) leidet, falls die Funktion der Nieren oder der Leber gest\xC3\xB6rt ist oder in der Vergangenheit chronische oder wiederholte St\xC3\xB6rungen des Magen-Darm-Trakts aufgetreten sind."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1492,13 +2082,122 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Informieren Sie Ihren Arzt oder Apotheker, wenn Sie an anderen Krankheiten leiden, Allergien haben oder andere Medikamente (auch selbstgekaufte) einnehmen oder \xE4usserlich anwenden!"
+          text: "Vor allem m\xC3\xBCssen Sie die vom Arzt verschriebene Dosierung stets einhalten. Im Falle einer versehentlichen \xC3\x9Cberdosierung muss eine spezielle Behandlung im Spital eingeleitet werden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 9
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 10
+            end: 39
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 40
+            end: -1
+          text: "Die ersten Anzeichen einer \xC3\x9Cberdosierung sind: Geh\xC3\xB6rst\xC3\xB6rungen, \xC3\x9Cbelkeit, Erbrechen, Temperaturanstieg, tiefes Atmen, begleitet von Schweissausbr\xC3\xBCchen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Die Verabreichung von Asp\xC3\xA9gic Baby an Kinder unter 12 Jahren, bei denen ein Verdacht auf Virusgrippe oder auf Windpocken besteht, darf nur unter strenger \xC3\xA4rztlicher Aufsicht erfolgen. Falls Bewusstseinsst\xC3\xB6rungen, begleitet von heftigem Erbrechen auftreten, ist unverz\xC3\xBCglich ein Arzt hinzuzuziehen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Asp\xC3\xA9gic Baby kann die Wirkung gewisser gleichzeitig verabreichter Medikamente beeinflussen:"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Die Wirkung von Corticosteroiden, Tabletten gegen Diabetes, Antikoagulanzien (gerinnungshemmenden Arzneimitteln) und von Methotrexat (das zum Beispiel bei chronischer Polyarthritis verschrieben wird) wird gesteigert. Dasselbe gilt f\xC3\xBCr die Wirkung von lithiumhaltigen Antidepressiva und deren unerw\xC3\xBCnschten Nebenwirkungen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Die Wirkung einer Reihe von Medikamenten gegen Gicht (Probenizid und Sulfinpyrazon) und gewisser Diuretika wird vermindert.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Die Nebenwirkungen von Medikamenten gegen Rheuma wie auch von Methotrexat k\xC3\xB6nnen durch die gleichzeitige Einnahme von Asp\xC3\xA9gic Baby st\xC3\xA4rker werden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Suchen Sie daher \xC3\xA4rztlichen Rat, wenn Ihr Kind bereits andere Medikamente einnimmt."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Wenden Sie sich an Ihren Arzt, falls die Schmerzen l\xC3\xA4nger als f\xC3\xBCnf Tage oder das Fieber l\xC3\xA4nger als drei Tage andauern."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Ferner ist zu beachten, dass die fortgesetzte Einnahme von Schmerzmitteln \xC3\xBCber l\xC3\xA4ngere Zeitr\xC3\xA4ume zu Dauerkopfschmerz beitragen kann."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Informieren Sie Ihren Arzt, Apotheker oder Drogisten, wenn Ihr Kind an weiteren Krankheiten leidet, allergisch reagiert oder weitere Medikamente (auch selbst gekaufte!) einnimmt.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Der Arzt oder Zahnarzt ist vor einem chirurgischen Eingriff zu konsultieren oder von der Einnahme zu unterrichten.
           preformatted: false
     pregnancy: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Schwangerschaft/Stillzeit
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Darf Dolo Target Gel w\xE4hrend der Schwangerschaft oder in der Stillzeit angewendet werden?\n"
+        subheading: "Darf Asp\xC3\xA9gic Baby w\xC3\xA4hrend der Schwangerschaft oder in der Stillzeit eingenommen werden?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1507,15 +2206,31 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolo Target Gel sollte w\xE4hrend der Schwangerschaft und Stillzeit nicht angewendet werden."
+          text: Diese Darreichungsform ist ausschliesslich zur Verabreichung an Kinder gedacht.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Eine eventuelle Einnahme von Asp\xC3\xA9gic Baby w\xC3\xA4hrend der Schwangerschaft und Stillzeit darf nur unter strengster \xC3\xA4rztlicher Aufsicht erfolgen. In den letzten drei Monaten der Schwangerschaft darf Asp\xC3\xA9gic Baby nicht verabreicht werden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "W\xC3\xA4hrend der Stillzeit darf Asp\xC3\xA9gic Baby nur in geringen Dosen eingenommen werden."
           preformatted: false
     usage: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Dosierung/Anwendung
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Wie verwenden Sie Dolo Target Gel?
-
+        subheading: "Wie verwenden Sie Asp\xC3\xA9gic Baby?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1524,7 +2239,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolo Target Gel ist auf die schmerzenden Partien aufzutragen und leicht einzumassieren. Die Anwendung von 1-2\xA0g Gel (ca. 3-6\xA0cm Gelstrang) kann 2 bis 4mal t\xE4glich erfolgen."
+          text: Nach Verordnung des Arztes.
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1533,7 +2248,31 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Unabh\xE4ngig von der Gr\xF6sse der zu behandelnden Fl\xE4che sollte eine Tagesdosis von 20\xA0g Gel nicht \xFCberschritten werden."
+          text: "\xC3\x9Cbliche Dosierung:"
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "S\xC3\xA4uglinge von 6 Monaten bis zu 1 Jahr (7-10 kg):"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: nach Verordnung des Arztes.
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Kleinkinder von 1 bis 3 Jahren (10-15 kg):"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "bis zu 4 Beutel pro Tag, auf mehrere Gaben verteilt (auf mindestens 3-4, m\xC3\xB6glichst nach den Mahlzeiten)."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1542,15 +2281,49 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "\xC4ndern Sie nicht von sich aus die vorgeschriebene Dosierung. Wenn Sie glauben, das Medikament wirke zu schwach oder zu stark, so sprechen Sie mit Ihrem Arzt oder Apotheker."
+          text: "Zur Behandlung von Kindern von 3 bis 12 Jahren ist Asp\xC3\xA9gic 250 besser geeignet."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "F\xC3\xBCr Jugendliche ab 12 Jahren und Erwachsene steht Asp\xC3\xA9gic 500 zur Verf\xC3\xBCgung."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Das Pulver in ein Glas oder die Schoppenflache f\xC3\xBCllen. Wasser oder eine andere Fl\xC3\xBCssigkeit hinzugeben (vgl. ersten Abschnitt); vor dem Verabreichen einige Sekunden lang umr\xC3\xBChren."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Halten Sie sich an die Angaben auf dem Packungszettel oder an die Vorschriften Ihres Arztes.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Wenn Sie glauben, das Medikament wirke zu schwach oder zu stark, sprechen Sie mit Ihrem Arzt, Apotheker oder Drogisten.
           preformatted: false
     unwanted_effects: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Unerw\xFCnschte Wirkungen"
+      heading: "Unerw\xC3\xBCnschte Wirkungen"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Welche Nebenwirkungen kann Dolo Target Gel haben?
-
+        subheading: "Welche Nebenwirkungen kann Asp\xC3\xA9gic Baby haben?\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1559,7 +2332,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Bei ungef\xE4hr 2% der Patienten wurden \xFCber leichte, lokale Juckreize, Hauterkrankungen und Wasseransammlungen in den Gef\xE4ssen berichtet. Bei Absetzen der Behandlung bilden sich diese Erkrankungen normalerweise wieder zur\xFCck. Vereinzelt ist bei entsprechend veranlagten Patienten eine Ausl\xF6sung von Asthmaanf\xE4llen m\xF6glich. Falls eine der nachfolgenden Nebenwirkungen auftreten sollte, beenden Sie die Behandlung mit Dolo Target Gel und informieren Sie sofort Ihren Arzt: starker Hautausschlag, keuchende Atmung, Kurzatmigkeit oder Schwellung im Gesicht."
+          text: "Es k\xC3\xB6nnen Verdauungsst\xC3\xB6rungen auftreten. In seltenen F\xC3\xA4llen k\xC3\xB6nnen \xC3\x9Cberempfindlichkeits-Reaktionen wie ein Anschwellen der Haut oder der Schleimh\xC3\xA4ute, Nesselausschlag, Asthma, Atemnot sowie Magengeschw\xC3\xBCre und Magenblutungen auftreten."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1568,7 +2341,34 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Sollte Dolo Target Gel versehentlich z.B. von Kindern eingenommen werden, so ist der Arzt zu informieren.
+          text: "Beim Auftreten einer \xC3\x9Cberempfindlichkeitsreaktion ist das Medikament sofort abzusetzen und der Arzt zu benachrichtigen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Falls w\xC3\xA4hrend der Behandlung schwarzer Stuhl (Teerstuhl) oder Bluterbrechen auftreten, ist die Behandlung abzubrechen und auf der Stelle der Arzt zu benachrichtigen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "In seltenen F\xC3\xA4llen wurden Schwindel, Kopfschmerz, Sehst\xC3\xB6rungen und Verwirrung festgestellt; dies ist meist ein Anzeichen f\xC3\xBCr eine \xC3\x9Cberdosierung."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Allgemein ist zu beachten, dass die Einnahme von Schmerzmitteln - insbesondere einer Kombination von mehreren Wirkstoffen - \xC3\xBCber einen l\xC3\xA4ngeren Zeitraum zu einer dauerhaften Sch\xC3\xA4digung der Nieren mit dem Risiko von Nierenversagen f\xC3\xBChren kann."
           preformatted: false
     general_advice: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Allgemeine Hinweise
@@ -1585,7 +2385,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Dolo Target Gel ist ausserhalb der Reichweite von Kindern aufzubewahren.
+          text: "Bei unkontrollierter Einnahme (\xC3\x9Cberdosierung) ist Ihr Arzt unverz\xC3\xBCglich zu benachrichtigen. Ohrenpfeifen und/oder vermehrtes Schwitzen k\xC3\xB6nnen Hinweise auf eine \xC3\x9Cberdosierung sein."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1594,7 +2394,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Das Medikament darf nur bis zu dem auf dem Beh\xE4ltnis mit \xABEXP\xBB angegebenen Datum verwendet werden."
+          text: "Weitere Ausk\xC3\xBCnfte erteilt Ihnen Ihr Arzt, Apotheker oder Drogist, der \xC3\xBCber die ausf\xC3\xBChrliche Fachinformation verf\xC3\xBCgt."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1603,7 +2403,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Nicht \xFCber 25\xA0\xB0C aufbewahren."
+          text: "Das Pr\xC3\xA4parat bei Raumtemperatur (15-25 \xC2\xB0C) an einem trockenen Ort und ausserhalb der Reichweite von Kindern aufbewahren."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1612,13 +2412,13 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Weitere Ausk\xFCnfte erteilt Ihnen Ihr Arzt oder Apotheker, der \xFCber die ausf\xFChrliche Fachinformation verf\xFCgt."
+          text: "Das Medikament nach dem auf dem Beh\xC3\xA4lter mit \xC2\xABEXP.\xC2\xBB bezeichneten Datum nicht mehr verwenden."
           preformatted: false
     composition: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Zusammensetzung
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: ""
+        subheading: 1 Beutel
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1627,16 +2427,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dolo Target Gel enth\xE4lt pro 1 g Gel 30\xA0mg Felbinac."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Die Gelgrundlage ist fettfrei und enth\xE4lt Alkohol."
+          text: "enth\xC3\xA4lt: 180 mg Lysin-acetylsalicylat (entsprechend 100 mg Acetylsalicyls\xC3\xA4ure), sowie Geschmacks- und Hilfsstoffe."
           preformatted: false
     packages: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Verkaufsart/Packungen
@@ -1650,8 +2441,37 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
             values: []
 
             start: 0
+            end: 14
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 15
+            end: 22
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 23
             end: -1
-          text: "Dolo Target Gel ist in Tuben zu 50 und 100\xA0g in Apotheken ohne \xE4rztliches Rezept erh\xE4ltlich."
+          text: "Packungen zu 20 Beutel: Verkauf in Apotheken und Drogerien ohne \xC3\xA4rztliches Rezept erhalten."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 15
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 16
+            end: 23
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 24
+            end: -1
+          text: "Packungen zu 100 Beutel: Verkauf in Apotheken gegen \xC3\xA4rztliches Rezept."
           preformatted: false
     distribution: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Vertriebsfirma
@@ -1666,7 +2486,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Whitehall-Robins AG, 6301 Zug.
+          text: "Sanofi-Synth\xC3\xA9labo (Schweiz) AG, 1217 Meyrin."
           preformatted: false
     date: !oddb.org,2003/ODDB::Text::Chapter 
       heading: Stand der Information
@@ -1681,6 +2501,5 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Mai 1999.
+          text: "M\xC3\xA4rz 1997."
           preformatted: false
-

@@ -3404,21 +3404,21 @@ blanc                   1|24 periot
 # Some definitions using ISO 8859-1 characters
 #
 
-¼-                   1|4
-½-                   1|2
-¾-                   3|4
-µ-                   micro
-¢                    cent
-£                    britainpound
-¥                    japanyen
-ångström          angstrom
-Å                    angstrom
-röntgen              roentgen
-°C                      degC
-°F                      degF
-°K                      K             # °K is incorrect notation
-°R                      degR
-°                       degree
+Â¼-                   1|4
+Â½-                   1|2
+Â¾-                   3|4
+Âµ-                   micro
+Â¢                    cent
+Â£                    britainpound
+Â¥                    japanyen
+Ã¥ngstrÃ¶m          angstrom
+Ã…                    angstrom
+rÃ¶ntgen              roentgen
+Â°C                      degC
+Â°F                      degF
+Â°K                      K             # Â°K is incorrect notation
+Â°R                      degR
+Â°                       degree
 
 
 ############################################################################
@@ -3465,7 +3465,7 @@ slugf                   slug force
 slinch                  lbf s^2 / inch  # Mass unit derived from inch second
 slinchf                 slinch force    #   pound-force system.  Used in space
 geepound                slug
-olddidotpoint           1|72 frenchinch   # François Ambroise Didot, one of 
+olddidotpoint           1|72 frenchinch   # FranÃ§ois Ambroise Didot, one of 
 frenchprinterspoint     olddidotpoint     
 denier                  1|9 tex            # used for silk and rayon
 austriaschilling        1|13.7603 euro
@@ -3540,6 +3540,6 @@ tablet					# one of the "official doses" in ATC-DDD
 
 Mio-			1e6
 Mio	  		1e6
-µ-				1e-6
+Âµ-				1e-6
 u-				1e-6
 

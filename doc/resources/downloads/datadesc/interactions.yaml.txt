@@ -1,15 +1,15 @@
 Datenbeschrieb interactions.yaml
 
-Version:  1.1.0
-Version:  1.0.0
-Geändert: 03.12.2008 (1.1.0) durch hwyss@ywesee.com
+Version:  1.2.0
+GeÃ¤ndert: 12.03.2009 (1.2.0) durch hwyss@ywesee.com
+GeÃ¤ndert: 03.12.2008 (1.1.0) durch hwyss@ywesee.com
 Erstellt: 20.09.2007 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
-Encoding: ISO-8859-1
+Encoding: UTF-8
 
 Top-Level:
-- Stream von voneinander unabhängigen YAML-Documents, wovon jedes eine CyP450SubstrateConnection beschreibt
+- Stream von voneinander unabhÃ¤ngigen YAML-Documents, wovon jedes eine CyP450SubstrateConnection beschreibt
 
 CyP450SubstrateConnection:
 - oid               (Integer, NOT NULL)    -> Unique Identifier
@@ -36,19 +36,19 @@ CyP450InhibitorConnection:
 - substance         (Substance, NOT NULL)  -> Wirkstoff, Aufnahme wird von cyp450 gehemmt
 - category          (String)               -> Wirkstoffkategorie
 - links             (Array (AbstractLink)) -> Referenzen zur Substratzuweisung
-- auc_factor        (String)               -> Stärke der Interaktion, entspricht in etwa dem Faktor um welchen die AUC-Plasmawerte mindestens vervielfacht werden.
+- auc_factor        (String)               -> StÃ¤rke der Interaktion, entspricht in etwa dem Faktor um welchen die AUC-Plasmawerte mindestens vervielfacht werden.
 
 CyP450InducerConnection:
 - oid               (Integer, NOT NULL)    -> Unique Identifier
-- substance         (Substance, NOT NULL)  -> Wirkstoff, Aufnahme wird von cyp450 gefördert
+- substance         (Substance, NOT NULL)  -> Wirkstoff, Aufnahme wird von cyp450 gefÃ¶rdert
 - category          (String)               -> Wirkstoffkategorie
 - links             (Array (AbstractLink)) -> Referenzen zur Substratzuweisung
-- auc_factor        (String)               -> Stärke der Interaktion, vorläufig noch leer.
+- auc_factor        (String)               -> StÃ¤rke der Interaktion, vorlÃ¤ufig noch leer.
 
 Interaction::AbstractLink:
 - info              (String)               -> Titel
 - href              (String)               -> Link zum Abstract bei PubMed
-- text              (String)               -> Veröffentlichung
+- text              (String)               -> VerÃ¶ffentlichung
 
 
 ## Glossar ##
@@ -59,9 +59,9 @@ Interaction::AbstractLink:
 Hash-Table. Unsortierte, indexierte Collection.
 
 * SimpleLanguage::Descriptions:
-Subklasse von Hash. Key-Value pairs für Sprache/Text, wobei folgende Werte als Schlüssel vorkommen:
+Subklasse von Hash. Key-Value pairs fÃ¼r Sprache/Text, wobei folgende Werte als SchlÃ¼ssel vorkommen:
 - de -> Deutsch
-- fr -> Französisch
+- fr -> FranzÃ¶sisch
 - it -> Italienisch
 - en -> Englisch
 - lt -> Latein
@@ -70,9 +70,9 @@ Subklasse von Hash. Key-Value pairs für Sprache/Text, wobei folgende Werte als S
 Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml.org
 
 * Version
-Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+Versionsnummern bezeichnen Ã„nderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
-- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+- Minor:         Kleinere Ã„nderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: ErgÃ¤nzungen und Ã„nderungen im Datenbeschrieb, die keine Ã„nderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/interactions.yaml.txt

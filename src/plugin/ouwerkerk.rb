@@ -7,7 +7,7 @@ require 'spreadsheet/excel'
 require 'util/today'
 
 module ODDB
-  Spreadsheet.client_encoding = 'LATIN1'
+  Spreadsheet.client_encoding = 'UTF-8'
 	class OuwerkerkPlugin < Plugin
 		RECIPIENTS = [
 			'matthijs.ouwerkerk@just-medical.com',
@@ -173,7 +173,7 @@ module ODDB
         rows.each do |row|
           row.each do |data|
             if data.is_a?(String)
-              data.gsub! /[\n\r]+/, ' / '
+              data.gsub! /[\n\r]+/u, ' / '
             end
           end
         end
@@ -200,9 +200,9 @@ module ODDB
 			]
 			worksheet.write(1, 0, en, english)
 			de = [
-				'Kategorie', 'Zul.-Nr.', 'CD', 'SEQNR', 'Präparatename', 'Handelsform',
+				'Kategorie', 'Zul.-Nr.', 'CD', 'SEQNR', 'PrÃ¤paratename', 'Handelsform',
 				'Heilmittelcode', 'Export', 'DOSIS', 'Einheit', 'Abgabe-kategorie',
-				'Wirkstoff-anzahl', 'Vertriebsname', 'Packungsgrösse', 'Gal. Form',
+				'Wirkstoff-anzahl', 'Vertriebsname', 'PackungsgrÃ¶sse', 'Gal. Form',
 				'Zusammensetzung', 'Preis ex fac', 'Preis pub', 'Link Produkt',
 				'Link Firma', 'Position', 'ATC Nummer', 'info', 'Pharmacode', 'Liste',
 			]

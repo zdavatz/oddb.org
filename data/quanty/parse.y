@@ -76,18 +76,18 @@ class Quanty
     while str.size > 0 do
       #p str
       case str
-      when /\A[\s\n]+/o
-      when /\A\d+\.?\d*([eE][+-]?\d+)?/o
+      when /\A[\s\n]+/ou
+      when /\A\d+\.?\d*([eE][+-]?\d+)?/ou
         @q.push [:NUMBER, $&.to_f]
-			when /\A([A-Z]\.){2}/
-			when /\A[A-Za-z_]+ -/
-      when /\A[A-Za-z_µ]+([A-Za-z_µ0-9-]+[A-Za-z_µ])?/o
+			when /\A([A-Z]\.){2}/u
+			when /\A[A-Za-z_]+ -/u
+      when /\A[A-Za-z_Âµ]+([A-Za-z_Âµ0-9-]+[A-Za-z_Âµ])?/ou
         @q.push [:WORD, $&]
-      when /\A[$%'"]'?/o
+      when /\A[$%'"]'?/ou
         @q.push [:WORD, $&]
-      when /\A\^|\A\*\*/o
+      when /\A\^|\A\*\*/ou
         @q.push [:POW, $&]
-      when /\A./o
+      when /\A./ou
         @q.push [$&,$&]
       end
         str = $'

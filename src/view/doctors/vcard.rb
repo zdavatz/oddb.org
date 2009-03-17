@@ -12,15 +12,15 @@ class VCard < View::VCard
 		@content = [:name, :title, :email, :addresses]
 	end
 	def get_filename
-		filename = @model.name.sub(/\s/, '_').to_s + 
-			"_" + @model.firstname.sub(/\s/, '_').to_s + ".vcf"
+		filename = @model.name.sub(/\s/u, '_').to_s +
+			"_" + @model.firstname.sub(/\s/u, '_').to_s + ".vcf"
 	end
 	def name
 		if((firstname = @model.firstname) \
 			&& (name = @model.name))
 			[
-				"FN;CHARSET=ISO-8859-1:" + firstname + " " + name,
-				"N;CHARSET=ISO-8859-1:" + name + ";" + firstname,
+				"FN;CHARSET=UTF-8:" + firstname + " " + name,
+				"N;CHARSET=UTF-8:" + name + ";" + firstname,
 			]
 		end
 	end

@@ -192,7 +192,7 @@ class CsvResult < HtmlGrid::Component
 	def limitation_text(pack)
 		if((sl = pack.sl_entry) && (txt = sl.limitation_text))
       @counts['limitation_texts'] += 1
-			txt.send(@lookandfeel.language).to_s.gsub(/\n/, '|')
+			txt.send(@lookandfeel.language).to_s.gsub(/\n/u, '|')
 		end
 	end
 	def lppv(pack)
@@ -277,7 +277,7 @@ class CsvResult < HtmlGrid::Component
         parts.push(comform.send(@session.language))
       end
       if((measure = part.measure) && measure != 1)
-        parts.push("à", measure)
+        parts.push("Ã ", measure)
       end
       parts.join(' ')
     }.join(' + ')

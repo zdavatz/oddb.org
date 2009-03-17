@@ -163,7 +163,7 @@ class PackageInnerComposite < HtmlGrid::Composite
       ith = nil
       until ith || code.empty?
         ith = IndexTherapeuticus.find_by_code(code)
-        code = code.gsub /\d+\.$/, ''
+        code = code.gsub /\d+\.$/u, ''
       end
       if ith
         tooltip = HtmlGrid::Div.new(model, @session, self)

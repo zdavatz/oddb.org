@@ -20,8 +20,8 @@ class FachinfoConfirm < State::Admin::Global
 	end
 	def iksnrs(fi_document)
 		iksnr_src = fi_document.iksnrs.to_s.gsub("'", '')
-		if(iksnr_src && (iksnrs = iksnr_src.match(/[0-9]+(,\s*[0-9]+)*/)))
-			iksnrs[0].split(/,\s*/).collect { |iksnr|
+		if(iksnr_src && (iksnrs = iksnr_src.match(/[0-9]+(,\s*[0-9]+)*/u)))
+			iksnrs[0].split(/,\s*/u).collect { |iksnr|
 				sprintf('%05i', iksnr.to_i)
 			}
 		else

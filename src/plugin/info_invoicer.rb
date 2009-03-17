@@ -101,7 +101,7 @@ module ODDB
     end
     def filter_paid(items, date=@@today)
       ## Prinzipielles Vorgehen
-      # Für jedes item in items:
+      # FÃ¼r jedes item in items:
       # Gibt es ein Invoice, welches nicht expired? ist 
       # und welches ein Item beinhaltet, das den typ 
       # :annual_fee hat und den selben unique_name wie item
@@ -130,7 +130,7 @@ module ODDB
       fee_names.uniq!
       prc_names.uniq!
       
-      # 5. Duplikate löschen
+      # 5. Duplikate lÃ¶schen
       result = []
       items.each { |item| 
         ## as patinfos/fachinfos can be assigned to other sequences, check at
@@ -164,7 +164,7 @@ module ODDB
         unless(active_comps.include?(company))
           item = AbstractInvoiceItem.new
           item.price = price
-          item.text = 'Aufschaltgebühr'
+          item.text = "Aufschaltgeb\374hr"
           item.time = time
           item.type = :activation
           item.unit = 'Einmalig'

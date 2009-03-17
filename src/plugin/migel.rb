@@ -108,18 +108,18 @@ module ODDB
 			productcd = id[2,3].join(".")
 			pointer = subgroup.pointer + [:product, productcd]
 			name = row.at(12).to_s
-			product_text = row.at(15).gsub(/[ \t]+/, " ")
+			product_text = row.at(15).gsub(/[ \t]+/u, " ")
 			product_text.tr!("\v", "\n")
 			limitation = ''
-			if(idx = product_text.index(/Limitation|Limitazione/))
+			if(idx = product_text.index(/Limitation|Limitazione/u))
 				limitation = product_text.slice!(idx..-1).strip
 			end
 			if(name.to_s.strip.empty?)
-				name = product_text.slice!(/^[^\n]+/)
+				name = product_text.slice!(/^[^\n]+/u)
 			end
 			product_text.strip!
 			type = SALE_TYPES[id.at(4)]
-			price = ((row.at(18).to_s[/\d[\d.]*/].to_f) * 100).round
+			price = ((row.at(18).to_s[/\d[\d.]*/u].to_f) * 100).round
 			date = date_object(row.at(20))
 			lim_flag = row.at(14)
 			hash = {

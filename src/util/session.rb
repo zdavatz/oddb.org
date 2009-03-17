@@ -129,7 +129,7 @@ module ODDB
     end
     def interaction_basket
       if(ids = user_input(:substance_ids))
-        ids = ids.split(/[+ ]/).collect { |id| id.to_i }
+        ids = ids.split(/[+ ]/u).collect { |id| id.to_i }
         @interaction_basket.delete_if { |sub| !ids.delete(sub.oid) }
         ids.each { |id| @interaction_basket.push @app.substance(id) }
       end

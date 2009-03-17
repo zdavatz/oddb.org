@@ -147,10 +147,10 @@ module ODDB
 			@formatter.pop_fonthandler
 		end
 		def feed(data)
-			super(data.tr("\222", "'"))
+			super(data.gsub("\302\222", "’"))
 		end
 		def handle_image(src, *args)
-			@formatter.send_image(src.to_s.gsub(/["']/, ''))
+			@formatter.send_image(src.to_s.gsub(/["']/u, ''))
 		end
 		def start_a(attrs)
 			@formatter.push_link(attrs)
@@ -167,7 +167,7 @@ module ODDB
 				@keep_empty_lines = keep
 				@attributes = attr.inject({}) { |inj, pair| 
 					key, val = pair
-					inj.store(key.downcase, val.gsub(/(^['"])|(['"])$/, ''))
+					inj.store(key.downcase, val.gsub(/(^['"])|(['"])$/u, ''))
 					inj
 				}
 				@current_line = ''
@@ -222,7 +222,7 @@ module ODDB
 			end
 			def send_cdata(data)
 				@current_line << data
-        @current_line.gsub!(/\s+/, ' ')
+        @current_line.gsub!(/\s+/u, ' ')
         @current_line
 			end
 			def send_format(fmtstr)
@@ -328,7 +328,7 @@ module ODDB
 			@current_row
 		end
 		def send_cdata(data)
-			(@current_row || next_row).send_cdata(data.gsub(/\s/, ' '))
+			(@current_row || next_row).send_cdata(data.gsub(/\s/u, ' '))
 		end
 		alias :<< :send_cdata
 		def to_s
@@ -419,7 +419,7 @@ module ODDB
 		def initialize(attr)
 			@attributes = attr.inject({}) { |inj, pair| 
 				key, val = pair
-				inj.store(key.downcase, val.gsub(/["']/, ''))
+				inj.store(key.downcase, val.gsub(/["']/u, ''))
 				inj
 			}
 		end

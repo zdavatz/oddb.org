@@ -35,7 +35,7 @@ module ODDB
 			end
 			def test_parse_line__2
 				src = <<-EOS
-8804.00  50 Chromosomenuntersuchung, Zuschlag für Benützung von zusätzlicher Färbung (G-,Q-,R- oder C-Bänderung, Ag-NOR, hohe Auflösung, andere), pro Färbung...?   9800.22
+8804.00  50 Chromosomenuntersuchung, Zuschlag fÃ¼r BenÃ¼tzung von zusÃ¤tzlicher FÃ¤rbung (G-,Q-,R- oder C-BÃ¤nderung, Ag-NOR, hohe AuflÃ¶sung, andere), pro FÃ¤rbung...?   9800.22
 				EOS
 				begin
 					result = @parser.parse_line(src)
@@ -45,7 +45,7 @@ module ODDB
 					:group					=>	'8804',
 					:position				=>	'00',
 					:taxpoints			=>	50,
-					:description		=>	'Chromosomenuntersuchung, Zuschlag für Benützung von zusätzlicher Färbung (G-,Q-,R- oder C-Bänderung, Ag-NOR, hohe Auflösung, andere), pro Färbung',
+					:description		=>	'Chromosomenuntersuchung, Zuschlag fÃ¼r BenÃ¼tzung von zusÃ¤tzlicher FÃ¤rbung (G-,Q-,R- oder C-BÃ¤nderung, Ag-NOR, hohe AuflÃ¶sung, andere), pro FÃ¤rbung',
 					:anonymousgroup =>	'9800',
 					:anonymouspos		=>	'22',
 					:list_title			=>	nil,
@@ -78,7 +78,7 @@ module ODDB
 			end
 			def test_parse_line__4
 				src = <<-EOS
-8806.00 300 In situ-Hybridisierung an Inter- phasekernen inkl. Präparation und Analyse von 20 oder mehr Zellen..? 9800.48
+8806.00 300 In situ-Hybridisierung an Inter- phasekernen inkl. PrÃ¤paration und Analyse von 20 oder mehr Zellen..? 9800.48
 				EOS
 				begin
 					result = @parser.parse_line(src)
@@ -88,7 +88,7 @@ module ODDB
 					:group					=>	'8806',
 					:position				=>	'00',
 					:taxpoints			=>	300,
-					:description		=>	'In situ-Hybridisierung an Interphasekernen inkl. Präparation und Analyse von 20 oder mehr Zellen',
+					:description		=>	'In situ-Hybridisierung an Interphasekernen inkl. PrÃ¤paration und Analyse von 20 oder mehr Zellen',
 					:anonymousgroup	=>	'9800',
 					:anonymouspos		=>	'48',
 					:list_title			=>	nil,
@@ -120,16 +120,16 @@ module ODDB
 			end
 			def test_parse_line__6
 				src = <<-EOS
-8810.19 50 1. Krebserkrankungen, familiäre
-Prädisposition; direkte oder
+8810.19 50 1. Krebserkrankungen, familiÃ¤re
+PrÃ¤disposition; direkte oder
 indirekte Mutationsanalyse bei
-- hereditärem Brust- oder
+- hereditÃ¤rem Brust- oder
 Ovarialkrebs-Syndrom, Gene
 BRCA1 und BRCA2
 - Polyposis coli oder attenuierter
 Form der Polyposis coli, Gen
 APC
-- hereditärem Colon-Carcinom-
+- hereditÃ¤rem Colon-Carcinom-
 Syndrom ohne Polyposis
 (hereditary non polypotic colon
 cancer HNPCC), Gene MLH1,
@@ -144,10 +144,10 @@ MSH2, MSH6 und PMS2
 					:group						=>	'8810',
 					:position					=>	'19',
 					:taxpoints				=>	50,
-					:description			=>	'1. Krebserkrankungen, familiäre Prädisposition; direkte oder indirekte Mutationsanalyse bei
-- hereditärem Brust- oder Ovarialkrebs-Syndrom, Gene BRCA1 und BRCA2
+					:description			=>	'1. Krebserkrankungen, familiÃ¤re PrÃ¤disposition; direkte oder indirekte Mutationsanalyse bei
+- hereditÃ¤rem Brust- oder Ovarialkrebs-Syndrom, Gene BRCA1 und BRCA2
 - Polyposis coli oder attenuierter Form der Polyposis coli, Gen APC
-- hereditärem Colon-Carcinom-Syndrom ohne Polyposis (hereditary non polypotic colon cancer HNPCC), Gene MLH1, MSH2, MSH6 und PMS2
+- hereditÃ¤rem Colon-Carcinom-Syndrom ohne Polyposis (hereditary non polypotic colon cancer HNPCC), Gene MLH1, MSH2, MSH6 und PMS2
 - Multiplen endokrinen Neoplasien',
 					:anonymousgroup		=>	'9800',
 					:anonymouspos			=>	'22',
@@ -160,17 +160,17 @@ MSH2, MSH6 und PMS2
 			def test_parse_page__1
 				src = <<-EOS
 Rev. Pos.-Nr. TP Bezeichnung Anonyme Nr.
-8800.04 100 Chromosomenuntersuchung, maligne Hämopathien, Zuschlag für Zelltrennung und Einfrieren......? 9800.30
+8800.04 100 Chromosomenuntersuchung, maligne HÃ¤mopathien, Zuschlag fÃ¼r Zelltrennung und Einfrieren......? 9800.30
 8801.00 400 Chromosomenuntersuchung,konstitutioneller Karyotyp..............? 9800.56
-8801.01 50 Chromosomenuntersuchung, konstitutioneller Karyotyp, Zuschlag für über 25 analysierte Zellen.............................................? 9800.22
-8801.02 100 Chromosomenuntersuchung, konstitutioneller Karyotyp, Zuschlag für über 50 analysierte Zellen.............................................? 9800.30
-8802.00 600 Chromosomenuntersuchung, maligne Hämopathien, 10 karyo- typisierte Metaphasen oder 5 karyotypisierte Metaphasen und 15 analysierte Metaphasen...........? 9800.68
-8802.01 300 Chromosomenuntersuchung,maligne Hämopathien, Zuschlag für zusätzliche analysierte Zellen, 5 karyotypisierte Metaphasen oder 10 analysierte Metaphasen...........? 9800.48
-8802.02 150 Chromosomenuntersuchung, maligne Hämopathien, Zuschlag für komplexe Anomalien (³ 3 Anomalien)....................................? 9800.36 
-8802.03 150 Chromosomenuntersuchung, maligne Hämopathien, Zuschlag für schwierige Analyse...................? 9800.36
-8804.00 50 Chromosomenuntersuchung, Zuschlag für Benützung von zusätzlicher Färbung (G-,Q-,R- oder C-Bänderung, Ag-NOR, hohe Auflösung, andere), pro Färbung...? 9800.22
-8805.00 250 Chromosomenuntersuchung, Zuschlag für in-situ Hybridisierung, pro Sonde......................................? 9800.44
-8806.00 300 In situ-Hybridisierung an Inter- phasekernen inkl. Präparation und Analyse von 20 oder mehr Zellen..? 9800.48 112
+8801.01 50 Chromosomenuntersuchung, konstitutioneller Karyotyp, Zuschlag fÃ¼r Ã¼ber 25 analysierte Zellen.............................................? 9800.22
+8801.02 100 Chromosomenuntersuchung, konstitutioneller Karyotyp, Zuschlag fÃ¼r Ã¼ber 50 analysierte Zellen.............................................? 9800.30
+8802.00 600 Chromosomenuntersuchung, maligne HÃ¤mopathien, 10 karyo- typisierte Metaphasen oder 5 karyotypisierte Metaphasen und 15 analysierte Metaphasen...........? 9800.68
+8802.01 300 Chromosomenuntersuchung,maligne HÃ¤mopathien, Zuschlag fÃ¼r zusÃ¤tzliche analysierte Zellen, 5 karyotypisierte Metaphasen oder 10 analysierte Metaphasen...........? 9800.48
+8802.02 150 Chromosomenuntersuchung, maligne HÃ¤mopathien, Zuschlag fÃ¼r komplexe Anomalien (Â³ 3 Anomalien)....................................? 9800.36 
+8802.03 150 Chromosomenuntersuchung, maligne HÃ¤mopathien, Zuschlag fÃ¼r schwierige Analyse...................? 9800.36
+8804.00 50 Chromosomenuntersuchung, Zuschlag fÃ¼r BenÃ¼tzung von zusÃ¤tzlicher FÃ¤rbung (G-,Q-,R- oder C-BÃ¤nderung, Ag-NOR, hohe AuflÃ¶sung, andere), pro FÃ¤rbung...? 9800.22
+8805.00 250 Chromosomenuntersuchung, Zuschlag fÃ¼r in-situ Hybridisierung, pro Sonde......................................? 9800.44
+8806.00 300 In situ-Hybridisierung an Inter- phasekernen inkl. PrÃ¤paration und Analyse von 20 oder mehr Zellen..? 9800.48 112
 				EOS
 				begin
 					result = @parser.parse_page(src,112)
@@ -181,7 +181,7 @@ Rev. Pos.-Nr. TP Bezeichnung Anonyme Nr.
 					:group						=>	'8800',
 					:position					=>	'04',
 					:taxpoints				=>	100,
-					:description			=>	'Chromosomenuntersuchung, maligne Hämopathien, Zuschlag für Zelltrennung und Einfrieren',
+					:description			=>	'Chromosomenuntersuchung, maligne HÃ¤mopathien, Zuschlag fÃ¼r Zelltrennung und Einfrieren',
 					:anonymousgroup		=>	'9800',
 					:anonymouspos			=>	'30',
 					:list_title				=>	nil,
@@ -193,7 +193,7 @@ Rev. Pos.-Nr. TP Bezeichnung Anonyme Nr.
 					:group						=>	'8806',
 					:position					=>	'00',
 					:taxpoints				=>	300,
-					:description			=>	'In situ-Hybridisierung an Interphasekernen inkl. Präparation und Analyse von 20 oder mehr Zellen',
+					:description			=>	'In situ-Hybridisierung an Interphasekernen inkl. PrÃ¤paration und Analyse von 20 oder mehr Zellen',
 					:anonymousgroup		=>	'9800',
 					:anonymouspos			=>	'48',
 					:list_title				=>	nil,
@@ -207,7 +207,7 @@ Rev. Pos.-Nr. TP Bezeichnung Anonyme Nr.
 			end
 			def test_fr_parse_line__1
 				src = <<-EOS
-8485.00   45  Prostate, antigène spécifique (PSA)  ?  9800.20
+8485.00   45  Prostate, antigÃ¨ne spÃ©cifique (PSA)  ?  9800.20
 				EOS
 				begin
 					result = @parser.parse_line(src)
@@ -217,7 +217,7 @@ Rev. Pos.-Nr. TP Bezeichnung Anonyme Nr.
 					:group					=>	'8485',
 					:position				=>	'00',
 					:taxpoints			=>	45,
-					:description		=>	'Prostate, antigène spécifique (PSA)',
+					:description		=>	'Prostate, antigÃ¨ne spÃ©cifique (PSA)',
 					:anonymousgroup	=>	'9800',
 					:anonymouspos		=>	'20',
 					:list_title			=>	nil,
@@ -228,8 +228,8 @@ Rev. Pos.-Nr. TP Bezeichnung Anonyme Nr.
 			end
 			def test_fr_parse_line__2
 				src = <<-EOS
-8810.09     20  Détermination du sexe, utilisation
-lors de maladies héréditaires liées
+8810.09     20  DÃ©termination du sexe, utilisation
+lors de maladies hÃ©rÃ©ditaires liÃ©es
 au chromosome X..........................?  9800.10
 				EOS
 				begin
@@ -240,7 +240,7 @@ au chromosome X..........................?  9800.10
 					:group						=>	'8810',
 					:position					=>	'09',
 					:taxpoints				=>	20,
-					:description			=>	'Détermination du sexe, utilisation lors de maladies héréditaires liées au chromosome X',
+					:description			=>	'DÃ©termination du sexe, utilisation lors de maladies hÃ©rÃ©ditaires liÃ©es au chromosome X',
 					:anonymousgroup		=>	'9800',
 					:anonymouspos			=>	'10',
 					:list_title				=>	nil,
@@ -251,9 +251,9 @@ au chromosome X..........................?  9800.10
 			end
 			def test_fr_parse_line__3
 				src = <<-EOS
-8810.13     50  Maladies d'hémostase; recherche
+8810.13     50  Maladies d'hÃ©mostase; recherche
 				d'une mutation ou d'un polymor-
-				phisme lié lors d'hémophilies A et
+				phisme liÃ© lors d'hÃ©mophilies A et
 				B, troubles du facteur II et du
 				facteur V.........................................?  9800.22
 				EOS
@@ -265,7 +265,7 @@ au chromosome X..........................?  9800.10
 					:group					=>	'8810',
 					:position				=>	'13',
 					:taxpoints			=>	50,
-					:description		=>	'Maladies d\'hémostase; recherche d\'une mutation ou d\'un polymorphisme lié lors d\'hémophilies A et B, troubles du facteur II et du facteur V',
+					:description		=>	'Maladies d\'hÃ©mostase; recherche d\'une mutation ou d\'un polymorphisme liÃ© lors d\'hÃ©mophilies A et B, troubles du facteur II et du facteur V',
 					:anonymousgroup	=>	'9800',
 					:anonymouspos		=>	'22',
 					:list_title			=>	nil,
@@ -278,12 +278,12 @@ au chromosome X..........................?  9800.10
 				src = <<-EOS
 				     8810.23     50  Dystrophies musculaires; recherche
 				d'une mutation ou d'un polymor-
-				phisme lié lors de dystrophies de
+				phisme liÃ© lors de dystrophies de
 				Duchenne et de Becker, troubles
-				des protéines associés à la dystro-
+				des protÃ©ines associÃ©s Ã  la dystro-
 				phine dans d'autres types de dys-
 				trophies musculaires, dystrophie
-				musculaire facio-scapulo-huméral  ?  9800.22
+				musculaire facio-scapulo-humÃ©ral  ?  9800.22
 
 				EOS
 				begin
@@ -294,7 +294,7 @@ au chromosome X..........................?  9800.10
 					:group						=>	'8810',
 					:position					=>	'23',
 					:taxpoints				=>	50,
-					:description			=>	'Dystrophies musculaires; recherche d\'une mutation ou d\'un polymorphisme lié lors de dystrophies de Duchenne et de Becker, troubles des protéines associés à la dystrophine dans d\'autres types de dystrophies musculaires, dystrophie musculaire facio-scapulo-huméral',	
+					:description			=>	'Dystrophies musculaires; recherche d\'une mutation ou d\'un polymorphisme liÃ© lors de dystrophies de Duchenne et de Becker, troubles des protÃ©ines associÃ©s Ã  la dystrophine dans d\'autres types de dystrophies musculaires, dystrophie musculaire facio-scapulo-humÃ©ral',	
 					:anonymousgroup		=>	'9800',
 					:anonymouspos			=>	'22',
 					:list_title				=>	nil,
@@ -328,9 +328,9 @@ au chromosome X..........................?  9800.10
 			def test_fr_parse_page__1
 				src = <<-EOS
 4.2  Positions anonymes
-Rév. No pos. TP Dénomination No anonyme
+RÃ©v. No pos. TP DÃ©nomination No anonyme
 
-8003.01  100 Cholinésterase, iso-enzymes de l'acétyl~..........................................?  9800.30
+8003.01  100 CholinÃ©sterase, iso-enzymes de l'acÃ©tyl~..........................................?  9800.30
 8017.00 45 Alpha-1-foetoprotein (AFP)..............?  9800.20
 8120.00 45 Beta-2- microglobuline.....................?  9800.20
 8140.00 50 CA 125.............................................?  9800.22
@@ -339,29 +339,29 @@ Rév. No pos. TP Dénomination No anonyme
 8145.00 50 CA 72-4............................................?  9800.22
 8145.01 50 CYFRA 21-1.....................................?  9800.22
 8147.00 60 Calcitonine.......................................?  9800.24
-8152.00 45 Antigène carcino-embryonnaire CEA ?  9800.20
-8194.00 25 Fibres élastiques après enrichisse-
-ment (matériel: lavage)..................?  9800.12
-8212.00 125 Estradiol, récepteurs........................?  9800.34
+8152.00 45 AntigÃ¨ne carcino-embryonnaire CEA ?  9800.20
+8194.00 25 Fibres Ã©lastiques aprÃ¨s enrichisse-
+ment (matÃ©riel: lavage)..................?  9800.12
+8212.00 125 Estradiol, rÃ©cepteurs........................?  9800.34
 8238.00 20 Fluorures..........................................?  9800.10
 8345.00 12 Agglutinines froides, test de recherche.......................................?  9800.04
-8430.01 45 MCA (antigène associé au carcino-
+8430.01 45 MCA (antigÃ¨ne associÃ© au carcino-
 me de type mucine.........................?  9800.20
-8435.00 80 Méthotrexate (sang).........................?  9800.28
-8461.01 70 Phénytoine, libre, y compris dosage
-de la phénytoine totale (sang)........?  9800.26
-8477.01 70 Primidone, y compris phénobarbital
+8435.00 80 MÃ©thotrexate (sang).........................?  9800.28
+8461.01 70 PhÃ©nytoine, libre, y compris dosage
+de la phÃ©nytoine totale (sang)........?  9800.26
+8477.01 70 Primidone, y compris phÃ©nobarbital
 (sang).............................................?  9800.26
-8480.00 125 Progestérone, récepteurs.................?  9800.34
-8485.00 45 Prostate, antigène spécifique (PSA)  ?  9800.20
-8485.01 25 Prostate, antigène spécifique (PSA),
+8480.00 125 ProgestÃ©rone, rÃ©cepteurs.................?  9800.34
+8485.00 45 Prostate, antigÃ¨ne spÃ©cifique (PSA)  ?  9800.20
+8485.01 25 Prostate, antigÃ¨ne spÃ©cifique (PSA),
 libre, uniquement en combinaison
 avec un PSA total entre 3 et 10
 ?g/l.................................................?  9800.12
 8531.00 50 Sqamous Cell Carcinoma (SCC)......?  9800.22
-8567.01 45 TPA (antigène polypeptidique
+8567.01 45 TPA (antigÃ¨ne polypeptidique
 tissulaire)........................................?  9800.20
-8800.01  250 Culture cellulaire et préparation
+8800.01  250 Culture cellulaire et prÃ©paration
 chromosomique, caryotype
 constitutionnel................................?  9800.44
 				111
@@ -373,7 +373,7 @@ constitutionnel................................?  9800.44
 				:code							=>	'8003.01',
 				:group						=>	'8003',
 				:position					=>	'01',
-				:description			=>	'Cholinésterase, iso-enzymes de l\'acétyl~',
+				:description			=>	'CholinÃ©sterase, iso-enzymes de l\'acÃ©tyl~',
 				:anonymouspos			=>	'30',
 				:anonymousgroup		=>	'9800',
 				:taxpoints				=>	100,
@@ -385,7 +385,7 @@ constitutionnel................................?  9800.44
 				:code							=>	'8800.01',
 				:group						=>	'8800',
 				:position					=>	'01',
-				:description			=>	'Culture cellulaire et préparation chromosomique, caryotype constitutionnel',
+				:description			=>	'Culture cellulaire et prÃ©paration chromosomique, caryotype constitutionnel',
 				:anonymouspos			=>	'44',
 				:anonymousgroup		=>	'9800',
 				:taxpoints				=>	250,

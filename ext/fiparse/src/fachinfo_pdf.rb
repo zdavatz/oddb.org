@@ -10,8 +10,8 @@ module ODDB
 		class FachinfoPDFWriter < Writer
 			include FachinfoWriterMethods
 			include Rpdf2txt::DefaultHandler
-      @@skip_pattern = /documed|copyright|seite|page|[kc]ompendium/i
-      @@hr_pattern = /-{5}\s*$/
+      @@skip_pattern = /documed|copyright|seite|page|[kc]ompendium/iu
+      @@hr_pattern = /-{5}\s*$/u
       IMAGE_DIR = File.join(IMAGE_DIR, 'fachinfo')
 			def initialize(*args)
 				super
@@ -40,7 +40,7 @@ module ODDB
 					## if the following is preformatted text, we would like to 
 					## know before the next call to add_text, e.g. for line_break
 					## and similar
-					if(/courier/i.match(font.basefont_name))
+					if(/courier/iu.match(font.basefont_name))
 						@preformatted = true
 					end
 				end
@@ -90,8 +90,8 @@ module ODDB
 				else
 					str_check = self.out.strip
 					font_name = @font.basefont_name
-					courier = !/courier/i.match(font_name).nil?
-					symbol = !/symbol/i.match(font_name).nil?
+					courier = !/courier/iu.match(font_name).nil?
+					symbol = !/symbol/iu.match(font_name).nil?
 					if(!@chapter.nil? && !str_check.empty? \
              && !@@skip_pattern.match(self.out))
 						str = self.out
@@ -113,7 +113,7 @@ module ODDB
 						if(courier)
 							if(@paragraph.empty?)
 								#str.strip!
-                str.gsub(/^[\n\r]+/, '')
+                str.gsub(/^[\n\r]+/u, '')
 								@paragraph.preformatted!
 							elsif(!@paragraph.preformatted?)
 								@paragraph = @section.next_paragraph
@@ -124,8 +124,8 @@ module ODDB
                 @preceding_hr = false
               end
 						else
-							str.gsub!(/-\n/, "-")
-							str.gsub!(/ ?\n ?/, " ")
+							str.gsub!(/-\n/u, "-")
+							str.gsub!(/ ?\n ?/u, " ")
 							@preformatted = false
 						end
 						@paragraph << str
@@ -136,8 +136,7 @@ module ODDB
 			end
 			def send_flowing_data(data)
 				@chars_since_last_linebreak += data.size
-				self.out << data #unless(/([kc]ompendium)|(\b(seite|page)\s*\d+)/i.match(data))
-				#self.out << data unless(/[kc]ompendium/i.match(data))
+				self.out << data.gsub(/■/u, '')
 			end
       def send_hr
         send_line_break
@@ -154,7 +153,7 @@ module ODDB
       def send_image(handle)
         send_line_break
         if img = handle.image
-          prefix = @name.downcase.gsub(/[^a-z]/, '')
+          prefix = @name.downcase.gsub(/[^a-z]/u, '')
           directory = File.join(IMAGE_DIR, prefix[0,2])
           FileUtils.mkdir_p directory
           files = Dir.glob("#{directory}/#{prefix}*")
@@ -168,13 +167,13 @@ module ODDB
           }
           if save.nil?
             id = files.collect { |path|
-              match = /(\d+)\.png/.match File.basename(path)
+              match = /(\d+)\.png/u.match File.basename(path)
               match[1].to_i
             }.max.to_i.next
             save = File.join directory, "#{prefix}_#{id}.png"
           end
           img.write save
-          @section.next_image.src = save[%r!/resources/.*!]
+          @section.next_image.src = save[%r!/resources/.*!u]
         end
         send_line_break
       end
@@ -182,7 +181,7 @@ module ODDB
 				## in newer fi-pdfs there is no change of font for 
 				## pagenumbers. Here in send_page we can recognize 
 				## and delete the page-numbering
-				if(pos = @out.index(/\w+\s+\d+$/))
+				if(pos = @out.index(/\w+\s+\d+$/u))
 					@out[pos..-1] = ''
 				end
 				self.add_text
@@ -193,7 +192,7 @@ module ODDB
 			def send_line_break
 				## After the first period in 'Valid until' 
 				## we can go on to the next chapter
-				if(@chapter == @date && /\.\s*$/.match(self.out))
+				if(@chapter == @date && /\.\s*$/u.match(self.out))
 					self.add_text
 					@chapter = next_chapter
 					@section = @chapter.next_section
@@ -210,7 +209,7 @@ module ODDB
 					end
 				elsif(@chars_since_last_linebreak < 80)
 					self.send_paragraph
-				elsif(!/[\s-]$/.match(self.out))
+				elsif(!/[\s‐­-]$/u.match(self.out))
 					self.out << " "
 				end
 				@chars_since_last_linebreak = 0

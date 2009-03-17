@@ -32,7 +32,7 @@ class OrphanedPatinfoAssign < State::Admin::Global
 	end
 	def init
 		@model = OrphanedPatinfoFacade.new(@model)
-		name = @model.name[/^\w+/]
+		name = @model.name[/^\w+/u]
 		@model.sequences = named_sequences(name)
 	end
 	def assign

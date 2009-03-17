@@ -27,7 +27,7 @@ module ODDB
 				@writer.new_font([nil, 1, nil, nil])
 				@writer.send_flowing_data('Subheading')
 				@writer.new_font(nil)
-				@writer.send_flowing_data("\240First Paragraph")
+				@writer.send_flowing_data("\302\240First Paragraph")
 				chapter = @writer.chapter
 				assert_equal(1, chapter.sections.size)
 				section = chapter.sections.first

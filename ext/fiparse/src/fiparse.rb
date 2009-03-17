@@ -46,7 +46,7 @@ module ODDB
 		end
 		def parse_fachinfo_pdf(src)
 			writer = FachinfoPDFWriter.new
-			parser = Rpdf2txt::Parser.new(src, 'latin1')
+			parser = Rpdf2txt::Parser.new(src, 'UTF-8')
 			parser.extract_text(writer)
 			writer.to_fachinfo
 		end

@@ -118,7 +118,7 @@ module ODDB
 				nil,
         <<-EOS
 Probable Errors in ODDB: #{@probable_errors_oddb.size}
-In den folgenden Fällen ist die Swissmedic-Packungsnummer von ODDB.org ziemlich
+In den folgenden FÃ¤llen ist die Swissmedic-Packungsnummer von ODDB.org ziemlich
 sicher falsch, weil Sie tiefer ist als diejenige von Medwin.ch
         EOS
 			]
@@ -129,7 +129,7 @@ sicher falsch, weil Sie tiefer ist als diejenige von Medwin.ch
 			lines.push nil
 			lines.push <<-EOS
 Probable Errors in Medwin: #{@probable_errors_medwin.size}
-In den folgenden Fällen ist die Swissmedic-Packungsnummer von Medwin.ch
+In den folgenden FÃ¤llen ist die Swissmedic-Packungsnummer von Medwin.ch
 ziemlich sicher falsch, weil Sie tiefer ist als diejenige von ODDB.org.
       EOS
       @probable_errors_medwin.each { |pack|
@@ -145,7 +145,7 @@ ziemlich sicher falsch, weil Sie tiefer ist als diejenige von ODDB.org.
 		end
     def update
       @header = <<-EOS
-Alle Packungen wurden überprüft (checked).
+Alle Packungen wurden Ã¼berprÃ¼ft (checked).
 Packungen, welche im Handel sind, wurden bei MedWin abgefragt (tried).
 Als Update (updated) gekennzeichnet wurden diejenigen, bei denen der Pharmacode
 von MedWin anders war als in der ODDB (inkl. diese, wo die ODDB noch keinen

@@ -14,7 +14,7 @@ module FiPiMethods
     if((info = model.send(type)) \
        && (lang = info.descriptions[language.to_s]) \
        && (chapter = lang.date))
-      chapter.sections.first.to_s[/\S+\s\d{4}/]
+      chapter.sections.first.to_s[/\S+\s\d{4}/u]
     end
   end
   def date_fi_de(model)

@@ -4,11 +4,15 @@
 require 'hpricot'
 require 'model/analysis/position'
 require 'open-uri'
+require 'iconv'
 
 module ODDB
 	module AnalysisParse
 		class AnalysisHpricot
 			URL_BASE = "http://www.dacapo.ch/analysen/"
+      def initialize
+        @iconv = Iconv.new('UTF-8', 'ISO-8859-1')
+      end
 			def dacapo_infos(&block)
 				("A".."Z").each { |letter|
 					doc = Hpricot(open(URL_BASE + "view.php?match=" + letter + "&lab_id=0"))
@@ -59,7 +63,10 @@ module ODDB
 				result
 			end
 			def format_string(text)
-				text.gsub(/\s+/, ' ')
+        text = text.gsub(/\s+/u, ' ')
+				@iconv.iconv text
+      rescue Iconv::IllegalSequence
+        text
 			end
 		end
 	end

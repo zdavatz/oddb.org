@@ -1,21 +1,22 @@
 Datenbeschrieb oddb.yaml
 
-Version:  1.5.1
-Geändert: 10.02.2009 (1.5.1) durch hwyss@ywesee.com
-Geändert: 04.12.2008 (1.5.0) durch hwyss@ywesee.com
-Geändert: 22.11.2007 (1.4.0) durch hwyss@ywesee.com
-Geändert: 20.09.2007 (1.3.2) durch hwyss@ywesee.com
-Geändert: 21.03.2007 (1.3.1) durch hwyss@ywesee.com
-Geändert: 09.12.2005 (1.3.0) durch hwyss@ywesee.com
-Geändert: 14.11.2005 (1.2.0) durch hwyss@ywesee.com
-Geändert: 30.09.2005 (1.1.3) durch hwyss@ywesee.com
-Geändert: 02.09.2005 (1.1.2) durch hwyss@ywesee.com
-Geändert: 01.09.2005 (1.1.1) durch hwyss@ywesee.com
-Geändert: 23.08.2005 (1.1.0) durch hwyss@ywesee.com
+Version:  1.6.0
+GeÃ¤ndert: 12.03.2009 (1.6.0) durch hwyss@ywesee.com
+GeÃ¤ndert: 10.02.2009 (1.5.1) durch hwyss@ywesee.com
+GeÃ¤ndert: 04.12.2008 (1.5.0) durch hwyss@ywesee.com
+GeÃ¤ndert: 22.11.2007 (1.4.0) durch hwyss@ywesee.com
+GeÃ¤ndert: 20.09.2007 (1.3.2) durch hwyss@ywesee.com
+GeÃ¤ndert: 21.03.2007 (1.3.1) durch hwyss@ywesee.com
+GeÃ¤ndert: 09.12.2005 (1.3.0) durch hwyss@ywesee.com
+GeÃ¤ndert: 14.11.2005 (1.2.0) durch hwyss@ywesee.com
+GeÃ¤ndert: 30.09.2005 (1.1.3) durch hwyss@ywesee.com
+GeÃ¤ndert: 02.09.2005 (1.1.2) durch hwyss@ywesee.com
+GeÃ¤ndert: 01.09.2005 (1.1.1) durch hwyss@ywesee.com
+GeÃ¤ndert: 23.08.2005 (1.1.0) durch hwyss@ywesee.com
 Erstellt: 26.07.2005 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
-Encoding: ISO-8859-1
+Encoding: UTF-8
 
 Top-Level:
 - Hash (Company.oid, Company)
@@ -24,44 +25,44 @@ Company:
 - oid               (Integer, NOT NULL)    -> Unique Identifier
 - ean13             (String)               -> Ean13 der Firma
 - name              (String)               -> Name der Firma
-- business_area     (String)               -> Geschäftsbereich 
+- business_area     (String)               -> GeschÃ¤ftsbereich 
 - generic_type      (Symbol)               -> siehe Glossar (GenericType)
 - registrations     (Array (Registration)) -> Produkte der Firma (siehe Registration)
 - url               (String)               -> Allgemeine Internet-Adresse
 - email             (String)               -> Allgemeine Email-Adresse
-- addresses         (Array (Address2))     -> Sammlung von Adressen für diese Firma (i.A. aus der Swissmedic-Registrationsurkunde)
+- addresses         (Array (Address2))     -> Sammlung von Adressen fÃ¼r diese Firma (i.A. aus der Swissmedic-Registrationsurkunde)
 - contact           (String)               -> Vorname und Name der Kontaktperson
 - contact_email     (String)               -> Kontakt-Email
 
 Address2:
 - type              (String)               -> Adresstyp: at_work | at_private | at_praxis
 - title             (String)               -> Titel und/oder Anrede
-- name              (String)               -> Name wie in der Adresse gewünscht
-- additional_lines  (Array (String))       -> Zusätzliche Adresszeilen vor Strasse/Nr.
-- address           (String)               -> Strasse/Nr. (französische Schweiz: Nr./Strasse)
+- name              (String)               -> Name wie in der Adresse gewÃ¼nscht
+- additional_lines  (Array (String))       -> ZusÃ¤tzliche Adresszeilen vor Strasse/Nr.
+- address           (String)               -> Strasse/Nr. (franzÃ¶sische Schweiz: Nr./Strasse)
 - location          (String)               -> PLZ/Ort
-- canton            (String)               -> 2-Stelliges Kantonskürzel
+- canton            (String)               -> 2-Stelliges KantonskÃ¼rzel
 - fon               (Array (String))       -> Mit dieser Adresse verbundene Telefonnummern
 - fax               (Array (String))       -> Mit dieser Adresse verbundene Faxnummern
 
 Registration:
 - iksnr             (String(5) NOT NULL)   -> Registrations-Id der Swissmedic (ehemals IKS)
 - registration_date (Date)                 -> Datum der ersten Zulassung in der Schweiz
-- revision_date     (Date)                 -> Datum der letzen gültigen Registrationsurkunde
-- expiration_date   (Date)                 -> Ende der Gültigkeit der letzen gültigen Registrationsurkunde
-- inactive_date     (Date)                 -> Falls ein Produkt unabhängig der Swissmedic ausser Handel genommen wird: Datum der Ausserhandelnahme
+- revision_date     (Date)                 -> Datum der letzen gÃ¼ltigen Registrationsurkunde
+- expiration_date   (Date)                 -> Ende der GÃ¼ltigkeit der letzen gÃ¼ltigen Registrationsurkunde
+- inactive_date     (Date)                 -> Falls ein Produkt unabhÃ¤ngig der Swissmedic ausser Handel genommen wird: Datum der Ausserhandelnahme
 - sequences         (Hash (Sequence.seqnr, Sequence)) -> Sequenzen der Registration (siehe Sequence)
 - indication        (Indication)           -> Indikationsbezeichnung aus der Registrationsurkunde
 - generic_type      (Symbol)               -> siehe Glossar (GenericType)
 - complementary_type(Symbol)               -> siehe Glossar (ComplementaryType)
-- export_flag       (Boolean)              -> Produkt ist nur für den Export bestimmt
-- fachinfo_oid      (Integer)              -> Verbindungsschlüssel zur Fachinformation (in fachinfo.yaml)
+- export_flag       (Boolean)              -> Produkt ist nur fÃ¼r den Export bestimmt
+- fachinfo_oid      (Integer)              -> VerbindungsschlÃ¼ssel zur Fachinformation (in fachinfo.yaml)
 
 Sequence:
 - seqnr             (String, NOT NULL)     -> Sequenznumerierung aus der Registrationsurkunde
-- name_base         (String)               -> Hauptname der Sequenz aus der Registrationsurkunde, enthält z.T. Dosisangaben.
+- name_base         (String)               -> Hauptname der Sequenz aus der Registrationsurkunde, enthÃ¤lt z.T. Dosisangaben.
 - name_descr        (String)               -> Zusatzname der Sequenz aus der Registrationsurkunde, z.B. 'Tabletten'
-- dose              (Dose)                 -> Dosierung der Sequenz. Wird falls möglich aus dem Namen gewonnen, andernfalls aus der Zusammensetzung.
+- dose              (Dose)                 -> Dosierung der Sequenz. Wird falls mÃ¶glich aus dem Namen gewonnen, andernfalls aus der Zusammensetzung.
 - atc_class         (AtcClass)             -> Atc-Klassierung der Sequenz (siehe AtcClass)
 - composition_text  (String)               -> Text der Zusammensetzung.
 - compositions      (Array (Composition))  -> Zusammensetzungen (siehe Composition)
@@ -73,23 +74,23 @@ Composition:
 
 Package:
 - ikscd             (String(3), NOT NULL)  -> Packungsnummer. Ergibt zusammen mit Registration.iksnr die 8-Stellige Swissmedic-Nummer.
-- descr             (String)               -> Zusätzlicher Beschreibungstext. Selten.
+- descr             (String)               -> ZusÃ¤tzlicher Beschreibungstext. Selten.
 - ikscat            (String)               -> Abgabekategorie. A-E
 - parts             (Array (Part))         -> Packungsbestandteile (siehe Part)
-- out_of_trade      (Boolean)              -> Nicht im Handel erhältlich
+- out_of_trade      (Boolean)              -> Nicht im Handel erhÃ¤ltlich
 - price_exfactory   (Integer)              -> Exfactorypreis in Rappen
 - price_public      (Integer)              -> Publikumspreis in Rappen
 - sl_entry          (SlEntry)              -> Eintrag in der SL, NULL = Nein, SlEntry = Ja.
 - ean13             (String)               -> Ean13 des Produkts
-- narcotics         (Array (String))       -> Betäubungsmitteleinträge: CAS Registry Numbers
-- pharmacode        (String)               -> Pharmacode gemäss RefData
+- narcotics         (Array (String))       -> BetÃ¤ubungsmitteleintrÃ¤ge: CAS Registry Numbers
+- pharmacode        (String)               -> Pharmacode gemÃ¤ss RefData
 - lppv              (Boolean)              -> Produkt ist in LPPV
 - has_generic       (Boolean)              -> Es gibt Generika zu diesem Produkt
 - deductible        (Integer)              -> Selbstbehalt in Prozent
 
 Part:
 - composition       (Composition)          -> Zusammensetzung dieses Bestandteils
-- size              (String)               -> Grössenbezeichnung
+- size              (String)               -> GrÃ¶ssenbezeichnung
 
 AtcClass:
 - code              (String(1-7), NOT NULL)-> Atc-Code. siehe Glossar (AtcCode)
@@ -109,7 +110,7 @@ ActiveAgent:
 
 SlEntry:
 - bsv_dossier       (String)               -> BSV-Dossier-Nummer
-- introduction_date (Date)                 -> Datum der Aufnahme in die Spezialitätenliste
+- introduction_date (Date)                 -> Datum der Aufnahme in die SpezialitÃ¤tenliste
 - limitation        (Boolean)              -> Limitation Ja/Nein
 - limitation_points (Integer)              -> Limitationspunkte
 - limitation_text   (LimitationText)       -> Limitationstexte in 3 Sprachen: de/it/fr
@@ -127,12 +128,12 @@ Substance:
 - swissmedic_code   (String)               -> Substanz-Code der Swissmedic. siehe Glossar (Swissmedic-Code)
 
 Dose:
-- val               (Float, NOT NULL)      -> Wert/Grösse der Dosis
+- val               (Float, NOT NULL)      -> Wert/GrÃ¶sse der Dosis
 - unit              (String)               -> Einheit der Dosis
 
 AtcClass::DDD:
-- administration_route (String, NOT NULL)  -> Route of Administration, Codiert gemäss WHO. Diverse Werte.
-- dose              (Dose)                 -> Empfohlene Tagesdosis für diese Route of Administration gemäss WHO.
+- administration_route (String, NOT NULL)  -> Route of Administration, Codiert gemÃ¤ss WHO. Diverse Werte.
+- dose              (Dose)                 -> Empfohlene Tagesdosis fÃ¼r diese Route of Administration gemÃ¤ss WHO.
 - note              (String)               -> Bemerkung zu dieser DDD. Sprache: en
 
 LimitationText:
@@ -151,15 +152,15 @@ Text::Chapter:
 
 Text::Section:
 - subheading        (String)                -> Abschnitt-Titel
-- paragraphs        (Array (Text::Paragraph)) -> Absätze
+- paragraphs        (Array (Text::Paragraph)) -> AbsÃ¤tze
 
 Text::Paragraph:
 - formats           (Array (Text::Format))  -> Formatdefinitionen
 - text              (String)                -> unformatierter Text
-- preformatted      (Boolean)               -> Wenn ja, sollte whitespace 1:1 übernommen werden.
+- preformatted      (Boolean)               -> Wenn ja, sollte whitespace 1:1 Ã¼bernommen werden.
 
 Text::Format:
-- values            (Array (Symbol))        -> mögliche Werte: alle Kombinationen von :bold, :italic und :symbol. Wenn Symbol, dann ist der Betreffende Text im Symbol-Font darzustellen.
+- values            (Array (Symbol))        -> mÃ¶gliche Werte: alle Kombinationen von :bold, :italic und :symbol. Wenn Symbol, dann ist der Betreffende Text im Symbol-Font darzustellen.
 - start             (Integer NOT NULL)      -> 0-N Char-Position innerhalb des Paragraphs an welchem das Format beginnt.
 - end               (Integer NOT NULL)      -> 1-N, -1. Wenn -1, gilt das Format bis zum Ende des Paragraphs.
 
@@ -167,8 +168,8 @@ Text::Format:
 ## Glossar ##
 * AtcCode:
 Anatomisch-Therapeutisch-Chemischer Code der durch die WHO vergeben wird. Hat 5 Ebenen:
-Level 1: C       -> Anatomische Gruppierung,    z.B. A:       Alimentäres System und Stoffwechsel
-Level 2: +NN     -> Therapeutische Gruppierung, z.B. A02:     Mittel bei Säure bedingten Erkrankungen
+Level 1: C       -> Anatomische Gruppierung,    z.B. A:       AlimentÃ¤res System und Stoffwechsel
+Level 2: +NN     -> Therapeutische Gruppierung, z.B. A02:     Mittel bei SÃ¤ure bedingten Erkrankungen
 Level 3:   +C    -> Therapeutische Untergruppe, z.B. A02A:    Antacida
 Level 4:    +C   -> Chemische Gruppierung,      z.B. A02AA:   Magnesium-haltige Verbindungen
 Level 5:     +NN -> Wirkstoff(-Kombination),    z.B. A02AA01: Magnesiumcarbonat
@@ -177,9 +178,9 @@ Level 5:     +NN -> Wirkstoff(-Kombination),    z.B. A02AA01: Magnesiumcarbonat
   http://www.cas.org/EO/regsys.html
 
 * ComplementaryType:
-Komplementärprodukt-Typ. Kann in Company oder Registration gesetzt sein zu einem von 5 Werten: 
-- :complementary  -> Komplementärprodukte (allgemein)
-- :homeopathy     -> Homöopathische Produkte
+KomplementÃ¤rprodukt-Typ. Kann in Company oder Registration gesetzt sein zu einem von 5 Werten: 
+- :complementary  -> KomplementÃ¤rprodukte (allgemein)
+- :homeopathy     -> HomÃ¶opathische Produkte
 - :anthroposophy  -> Heilmittel auf Grundlage antroposophischer Erkenntnis
 - :phytotherapy   -> Phytotherapeutische Produkte
 - :unknown / NULL -> Unbekannt / nicht gesetzt
@@ -191,14 +192,14 @@ Richtlinien der WHO zur Dosierung von Medikamenten: http://www.whocc.no/atcddd/
 serialisiert in der Form YYYY-MM-DD
 
 * GalenicGroup:
-Gruppierung von Galenischen Formen. Alle Galenischen Formen mit der gleichen Galenischen Gruppe gelten für Vergleichszwecke als equivalent.
+Gruppierung von Galenischen Formen. Alle Galenischen Formen mit der gleichen Galenischen Gruppe gelten fÃ¼r Vergleichszwecke als equivalent.
 Ausnahme: die Galenischen Formen in der Galenischen Gruppe mit der oid 1 ('Unbekannt') sind nicht equivalent.
 
 * GenericType:
 Produkt-Typ. Kann in Company oder Registration gesetzt sein zu einem von 4 Werten: 
 - :original       -> Originalprodukt
 - :generic        -> Generikum
-- :complementary  -> Produkt der Komplementärmedizin
+- :complementary  -> Produkt der KomplementÃ¤rmedizin
 - :unknown / NULL -> Unbekannt / nicht gesetzt
 
 Ist Registration.generic_type gesetzt, so gilt immer dieser.
@@ -209,30 +210,30 @@ Ist weder Registration.generic_type noch Company.generic_type gesetzt, so ist de
 Hash-Table. Unsortierte, indexierte Collection.
 
 * Sequence, Sequenz:
-Bezeichnung für die Gruppierung aller Packungsgrössen einer Registration, deren Dosierung/Zusammensetzung identisch ist.
+Bezeichnung fÃ¼r die Gruppierung aller PackungsgrÃ¶ssen einer Registration, deren Dosierung/Zusammensetzung identisch ist.
 
 * SimpleLanguage::Descriptions:
-Subklasse von Hash. Key-Value pairs für Sprache/Text, wobei folgende Werte als Schlüssel vorkommen:
+Subklasse von Hash. Key-Value pairs fÃ¼r Sprache/Text, wobei folgende Werte als SchlÃ¼ssel vorkommen:
 - de -> Deutsch
-- fr -> Französisch
+- fr -> FranzÃ¶sisch
 - it -> Italienisch
 - en -> Englisch
 - lt -> Latein
 
 * Swissmedic-Code
-Substanz-Code der Swissmedic. Datenquelle: Betäubungsmittelliste (als GTIN).
-GTIN = 7611 + swissmedic_code + Prüfziffer.
+Substanz-Code der Swissmedic. Datenquelle: BetÃ¤ubungsmittelliste (als GTIN).
+GTIN = 7611 + swissmedic_code + PrÃ¼fziffer.
 
 * Symbol: 
-Interne Repräsentation eines Namens. In anderen Programmiersprachen auch Atom.
+Interne ReprÃ¤sentation eines Namens. In anderen Programmiersprachen auch Atom.
 
 * YAML
 Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml.org
 
 * Version
-Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+Versionsnummern bezeichnen Ã„nderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
-- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+- Minor:         Kleinere Ã„nderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: ErgÃ¤nzungen und Ã„nderungen im Datenbeschrieb, die keine Ã„nderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/oddb.yaml.txt

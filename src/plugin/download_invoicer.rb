@@ -38,7 +38,7 @@ module ODDB
 				}
 			}
 			
-			# 5. Duplikate löschen
+			# 5. Duplikate lÃ¶schen
 			result = []
 			items.delete_if { |item| 
 				times.include?(item.time)

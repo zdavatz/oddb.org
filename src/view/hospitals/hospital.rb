@@ -53,7 +53,7 @@ class HospitalInnerComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
 	def mapsearch_format(*args)
-		args.compact.join('-').gsub(/\s+/, '-')
+		args.compact.join('-').gsub(/\s+/u, '-')
 	end		
 	def address(model)
 		Address.new(model.addresses.first, @session, self)

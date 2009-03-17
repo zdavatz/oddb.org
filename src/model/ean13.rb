@@ -14,7 +14,7 @@ module ODDB
 		def Ean13.checksum(str)
 			str = str.strip
 			sum = 0 
-			val =	str.split(//)
+			val =	str.split(//u)
 			12.times { |idx|
 				fct = ((idx%2)*2)+1
 				sum += fct*val[idx].to_i

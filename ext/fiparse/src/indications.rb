@@ -19,18 +19,18 @@ module ODDB
         end
         def send_line_break
           case @out
-          when /^(\s*\*\s*)?Zul\.-Nr\.:\s*(\d{5})/,
-               /^(\s*\*\s*)?N.\s*d'AMM:\s*(\d{5})/
+          when /^(\s*\*\s*)?Zul\.-Nr\.:\s*(\d{5})/u,
+               /^(\s*\*\s*)?N.\s*d'AMM:\s*(\d{5})/u
             @iksnr = $~[2]
             @indication = ''
-          when %r{^(\s*\*\s*)?Indica[tz]ion[eis]?:?\s*(.*)},
-               %r{^(\s*\*\s*)?Anwendung(?:en)?:?\s*(.*)}
+          when %r{^(\s*\*\s*)?Indica[tz]ion[eis]?:?\s*(.*)}u,
+               %r{^(\s*\*\s*)?Anwendung(?:en)?:?\s*(.*)}u
             @indication << $~[2]
             @news.push(@iksnr) if(@iksnr && $~[1])
-          when %r{^(\s*\*\s*)?Packung/en}, %r{^(\s*\*\s*)?Conditionnements},
-               %r{^(\s*\*\s*)?Confezione/i},
-               %r{^(\s*\*\s*)?Bemerkung}, %r{^(\s*\*\s*)?Remarque},
-               %r{^(\s*\*\s*)?Osservazione/i}
+          when %r{^(\s*\*\s*)?Packung/en}u, %r{^(\s*\*\s*)?Conditionnements}u,
+               %r{^(\s*\*\s*)?Confezione/i}u,
+               %r{^(\s*\*\s*)?Bemerkung}u, %r{^(\s*\*\s*)?Remarque}u,
+               %r{^(\s*\*\s*)?Osservazione/i}u
             if @iksnr && !@indication.empty?
               @indications.store @iksnr, @indication.strip
             end
@@ -43,7 +43,7 @@ module ODDB
         end
       end
       def Indications.extract(filename)
-        pdf = Rpdf2txt::Parser.new(File.read(filename), 'latin1')
+        pdf = Rpdf2txt::Parser.new(File.read(filename), 'UTF-8')
         handler = Handler.new
         pdf.extract_text(handler)
         [handler.indications, handler.news]

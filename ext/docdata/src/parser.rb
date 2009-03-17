@@ -35,7 +35,7 @@ module ODDB
 				'Staatsexamensjahr:'		=>	:exam,
 				'Korrespondenzsprache:'	=>	:language,
 				'Facharzttitel:'				=>	:specialities,
-				'Fähigkeitsausweis:'		=>	:abilities,
+				'FÃ¤higkeitsausweis:'		=>	:abilities,
 				'Fertigkeitsausweis:'		=>	:skills,
 			}
 			def initialize
@@ -52,9 +52,9 @@ module ODDB
 					handler.each_row { |row|
 						if(row.cdata(0))
 							unless(row.cdata(0).is_a?(Array))
-								if(row.cdata(0).match(/Praxis-Adresse/))
+								if(row.cdata(0).match(/Praxis-Adresse/u))
 									type = :praxis
-								elsif(row.cdata(0).match(/Adresse Arbeitsort/))
+								elsif(row.cdata(0).match(/Adresse Arbeitsort/u))
 									type = :work
 								end	
 							end
@@ -68,7 +68,7 @@ module ODDB
 			def get_plz_city(array)
 				arr = []
 				array.each { |str|
-					if(str.match(/[\d]{4}/))
+					if(str.match(/[\d]{4}/u))
 						arr = str.split(" ")
 					end
 				}
@@ -101,7 +101,7 @@ module ODDB
 				end
 			end
 			def handle_scalar_data(key, value)
-				string = key.to_s.delete("\240").strip
+				string = key.to_s.delete("\302\240").strip
 				if(key = translate_key(string))
 					if(@current_address)
 						@current_address.store(key, value)

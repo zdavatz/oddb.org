@@ -224,9 +224,6 @@ module ODDB
       end
       allowed?('credit', obj)
     end
-		def creditable?(obj)
-			allowed?('credit')
-		end
     def expired?
       !@yus_session.ping
     rescue RangeError, DRb::DRbConnError, NoMethodError
@@ -242,7 +239,7 @@ module ODDB
     end
     def groups
       remote_call(:entities).reject { |entity| 
-        /@/.match(entity.name) 
+        /@/u.match(entity.name)
       }
     end
     def method_missing(method, *args, &block)

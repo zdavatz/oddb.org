@@ -13,8 +13,8 @@ require 'swissmedic-diff'
 module ODDB
   class SwissmedicPlugin < Plugin
     include SwissmedicDiff::Diff
-    GALFORM_P = %r{excipiens\s+(ad|pro)\s+(?<galform>((?!\bpro\b)[^.])+)}
-    SCALE_P = %r{pro\s+(?<scale>(?<qty>[\d.,]+)\s*(?<unit>[kcmuµn]?[glh]))}
+    GALFORM_P = %r{excipiens\s+(ad|pro)\s+(?<galform>((?!\bpro\b)[^.])+)}u
+    SCALE_P = %r{pro\s+(?<scale>(?<qty>[\d.,]+)\s*(?<unit>[kcmuÂµn]?[glh]))}u
     def initialize(app=nil, archive=ARCHIVE_PATH)
       super app
       @archive = File.join archive, 'xls'
@@ -37,11 +37,11 @@ module ODDB
       end
     end
     def capitalize(string)
-      string.split(/\s+/).collect { |word| word.capitalize }.join(' ')
+      string.split(/\s+/u).collect { |word| word.capitalize }.join(' ')
     end
     def cell(row, pos)
       if str = super
-        str.gsub(/\n\r|\r\n?/, "\n").gsub(/ +/, ' ')
+        str.gsub(/\n\r|\r\n?/u, "\n").gsub(/ +/u, ' ')
       end
     end
     def deactivate(deactivations)
@@ -141,7 +141,7 @@ module ODDB
     def get_latest_file(agent)
       page = agent.get('http://www.swissmedic.ch/daten/00080/00251/index.html?lang=de')
       links = page.links.select do |link|
-        /packungen/i.match link.attributes['title']
+        /packungen/iu.match link.attributes['title']
       end
       link = links.first or raise "could not identify url to Packungen.xls"
       file = agent.get(link.href)
@@ -179,7 +179,7 @@ module ODDB
           report = sprintf(<<-EOS, salutations[email], date)
 %s
 
-Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
+Bei den folgenden Produkten wurden Ã„nderungen gemÃ¤ss Swissmedic %s vorgenommen:
           EOS
           registrations.sort_by { |reg| reg.name_base.to_s }.each { |reg|
             report << sprintf("%s: %s\n%s\n\n", reg.iksnr,
@@ -189,7 +189,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
           mail = Log.new(month)
           mail.report = report
           mail.recipients = [email]
-          mail.notify("Good Änderungen gemäss Swissmedic")
+          mail.notify("Good Ã„nderungen gemÃ¤ss Swissmedic")
         }
       end
     end
@@ -256,7 +256,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       hsh
     end
     def update_active_agent(seq, name, part, opts={})
-      ptrn = %r{(?ix)
+      ptrn = %r{(?ixu)
                 #{Regexp.escape name}
                 (\s*(?<dose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?)))?
                 (\s*ut\s+(?<chemical>[^\d,]+)
@@ -270,8 +270,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
               else
                 (comp.pointer + [:active_agent, name]).creator
               end
-        dose = match[:dose].split(/\b\s*(?![.,\d])/, 2) if match[:dose]
-        cdose = match[:cdose].split(/\b\s*(?![.,\d])/, 2) if match[:cdose]
+        dose = match[:dose].split(/\b\s*(?![.,\d])/u, 2) if match[:dose]
+        cdose = match[:cdose].split(/\b\s*(?![.,\d])/u, 2) if match[:cdose]
         if dose && scale = SCALE_P.match(part)
           unit = dose[1] << '/'
           num = scale[:qty].to_f
@@ -309,14 +309,14 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
       if opts[:create_only] && !seq.active_agents.empty?
         seq.compositions.first
       elsif(namestr = cell(row, column(:substances)))
-        names = namestr.split(/\s*,\s*/).collect { |name| 
+        names = namestr.split(/\s*,\s*/u).collect { |name| 
           capitalize(name) }
         substances = names.collect { |name|
           update_substance(name)
         }
         comps = []
         agents = []
-        composition = cell(row, column(:composition)).gsub(/\n/, ' ')
+        composition = cell(row, column(:composition)).gsub(/\n/u, ' ')
         names.each { |name|
           comp, agent = update_active_agent(seq, name, composition, opts)
           comps.push comp
@@ -428,7 +428,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
         case science
         when "Anthroposophika"
           args.store :complementary_type, 'anthroposophy'
-        when "Homöopathika"
+        when "HomÃ¶opathika"
           args.store :complementary_type, 'homeopathy'
         when "Phytotherapeutika"
           args.store :complementary_type, 'phytotherapy'
@@ -465,7 +465,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen:
               (registration.pointer + [:sequence, seqnr]).creator
             end
       ## some names use commas for dosage --v
-      parts = cell(row, column(:name_base)).split(/\s*,(?!\d)\s*/)
+      parts = cell(row, column(:name_base)).split(/\s*,(?!\d)\s*/u)
       descr = parts.pop
       base = parts.join(', ')
       base, descr = descr, nil if base.empty?

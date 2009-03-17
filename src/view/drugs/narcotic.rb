@@ -82,7 +82,7 @@ module ODDB
 				LEGACY_INTERFACE = false
 				CSS_CLASS = 'composite'
 				DEFAULT_CLASS = HtmlGrid::Value
-        @@reservation = /(SR|RS) (\d{3}\.\d{3}\.\d{2})/
+        @@reservation = /(SR|RS) (\d{3}\.\d{3}\.\d{2})/u
 				def narcotic_connection(model)
 					@lookandfeel.lookup(:narcotic_connection, model.substances.sort.first)
 				end

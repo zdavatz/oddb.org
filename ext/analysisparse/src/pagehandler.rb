@@ -33,36 +33,36 @@ module ODDB
 			end
 			def analyze(page, pagenum)
 				case @index[pagenum]
-				when /Chemie\/H\344matologie\/Immunologie/i \
-					, /Chimie\/Hématologie\/Immunologie/i
+				when /Chemie\/H\344matologie\/Immunologie/iu \
+					, /Chimie\/HÃ©matologie\/Immunologie/iu
 					@parser = ListParser.new
 					@list_title = $~.to_s
-				when /genetik/i , /génétique/i
+				when /genetik/iu, /gÃ©nÃ©tique/iu
 					@parser = ListParser.new
 					@list_title = $~.to_s
-				when /mikrobiologie/i , /microbiologie/i
+				when /mikrobiologie/iu, /microbiologie/iu
 					@parser = ListParser.new
 					@list_title = $~.to_s
-				when /allgemeine positionen/i , /positions générales/i
+				when /allgemeine positionen/iu, /positions gÃ©nÃ©rales/iu
 					@parser = SimpleListParser.new
 					@list_title = $~.to_s
-				when /Anonyme Positionen/i , /positions anonymes/i
+				when /Anonyme Positionen/iu, /positions anonymes/iu
 					@list_title = nil
 					@parser = AnonymousListParser.new
-				when /Fixe Analysenblöcke/i , /Blocs\s*d[\'\222]analyses\s*fixes/i
+				when /Fixe AnalysenblÃ¶cke/iu, /Blocs\s*d[\'\302\222]analyses\s*fixes/iu
 					@parser = BlockListParser.new
 					@list_title = $~.to_s
-				when /Liste seltener Autoantikörper/
+				when /Liste seltener AutoantikÃ¶rper/u
 					@parser = nil #AntibodyListParser.new
-				when /Im Rahmen der Grundversorgung durchgef\374hrte Analysen/i , /analyses effectuées dans le cadre des soins de base/i 
+				when /Im Rahmen der Grundversorgung durchgef\374hrte Analysen/iu, /analyses effectuÃ©es dans le cadre des soins de base/iu
 					@parser = FragmentedPageHandler.new
 					@list_title = nil
 					@permission = nil
-				when /Von Chiropraktoren oder Chiropraktorinnen veranlasste Analysen/i , /analyses prescrites par des chiropraticiens/i
+				when /Von Chiropraktoren oder Chiropraktorinnen veranlasste Analysen/iu, /analyses prescrites par des chiropraticiens/iu
 					@parser = AppendixListParser.new
 					@permission = $~.to_s
-				when /Von Hebammen veranlasste Analysen/i \
-					, /analyses prescrites par des sages-femmes/i
+				when /Von Hebammen veranlasste Analysen/iu,
+             /analyses prescrites par des sages-femmes/iu
 					@parser = AppendixListParser.new
 					@permission = $~.to_s
 				end
@@ -103,7 +103,7 @@ module ODDB
 					if(perm)
 						same[:permissions].push(pair)
 					end
-					if(/^\d+$/.match(rs))
+					if(/^\d+$/u.match(rs))
 						(@incomplete[rs] ||= []).push(pair)
 					end
 				}
@@ -134,27 +134,27 @@ module ODDB
 			end
 			def next_pagehandler(txt)
 				@index ||= {}
-				if((/vorbemerkungen/i.match(txt) \
-						|| /remarques\s*préliminaires/i.match(txt)) \
+				if((/vorbemerkungen/iu.match(txt) \
+						|| /remarques\s*prÃ©liminaires/iu.match(txt)) \
 						&& !@index.empty?)
 					IndexHandler.new(@index)
 				else
-					txt.gsub!(/~R/, '\'')
-					txt.gsub!(/\222/, '\'')
-					find_subchapters(/^\s*\d\.\s+(.*?)\.*\s*(\d*)/, txt)
-					find_subchapters(/^\s*\d\.\s*([^\d]+?)\..+?(\d+)/, txt)
-					find_subchapters(/^\s*\d\.\s*kapitel\s*:\s*(.*?)\s*[\d\.]{2,7}\s*.*?\.*\s*(\d+)\s*/im, txt)
-					find_subchapters(/\s*4\.\d\s*([\w\säöü\-\']+)\.*\s*?(\d{3})\s*?/i, txt)
-					find_subchapters(/^\s*5\.\d\s*anhang\s*[ABC]\s*(.*?)\s*\.*\s*(\d+)\s*$/, txt)
-					find_subchapters(/^\s*5\.\d\s*anhang\s*[ABC]\s*(.*?)[\d\.]{5,7}\s*.*?\.*\s*(\d+)\s*$/im, txt)
-					find_subchapters(/^\s*chapitre\s*\d:\s*(.*?)\s*[\d\.]{2,7}\s*.*?\.*\s*(\d+)\s*/im, txt)
-					find_subchapters(/\s*4\.\d\s*([\w\s\222éèà]+)\.*\s*(\d+)\s*/i, txt)
-					find_subchapters(/^\s*5\.\d\s*annexe\s*A\s*:\s*(.*?)\s*[\d\.]{5,7}\s*.*?\.*\s*(\d+)/im, txt)
-					find_subchapters(/^\s*5\.\d\s*annexe\s*[BC]\s*:\s*(.*?)\.*\s*(\d+)/i, txt)
+					txt.gsub!(/~R/u, '\'')
+					txt.gsub!(/\302\222/u, '\'')
+					find_subchapters(/^\s*\d\.\s+(.*?)\.*\s*(\d*)/u, txt)
+					find_subchapters(/^\s*\d\.\s*([^\d]+?)\..+?(\d+)/u, txt)
+					find_subchapters(/^\s*\d\.\s*kapitel\s*:\s*(.*?)\s*[\d\.]{2,7}\s*.*?\.*\s*(\d+)\s*/imu, txt)
+					find_subchapters(/\s*4\.\d\s*([\w\sÃ¤Ã¶Ã¼\-\']+)\.*\s*?(\d{3})\s*?/iu, txt)
+					find_subchapters(/^\s*5\.\d\s*anhang\s*[ABC]\s*(.*?)\s*\.*\s*(\d+)\s*$/u, txt)
+					find_subchapters(/^\s*5\.\d\s*anhang\s*[ABC]\s*(.*?)[\d\.]{5,7}\s*.*?\.*\s*(\d+)\s*$/imu, txt)
+					find_subchapters(/^\s*chapitre\s*\d:\s*(.*?)\s*[\d\.]{2,7}\s*.*?\.*\s*(\d+)\s*/imu, txt)
+					find_subchapters(/\s*4\.\d\s*([\w\s\302\222Ã©Ã¨Ã ]+)\.*\s*(\d+)\s*/iu, txt)
+					find_subchapters(/^\s*5\.\d\s*annexe\s*A\s*:\s*(.*?)\s*[\d\.]{5,7}\s*.*?\.*\s*(\d+)/imu, txt)
+					find_subchapters(/^\s*5\.\d\s*annexe\s*[BC]\s*:\s*(.*?)\.*\s*(\d+)/iu, txt)
 					@index.each_value { |val| 
-						val = val.gsub!(/\s*\/\s*/,'/')
+						val = val.gsub!(/\s*\/\s*/u,'/')
 					}
-					@index.each_value { |val| val.gsub!(/\222/,'\'')}
+					@index.each_value { |val| val.gsub!(/\302\222/,'\'')}
 					self
 				end
 			end

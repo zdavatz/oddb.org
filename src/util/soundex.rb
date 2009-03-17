@@ -10,6 +10,7 @@
 # license: GNU GPL
 #
 
+require 'util/searchterms'
 
 module ODDB
 module Text
@@ -66,20 +67,7 @@ module Soundex
   module_function :get_code
 
 	def prepare(str)
-		str = str.dup
-		str.gsub!(/[äÄæÆ]/, 'ae')
-		str.gsub!(/[áÁàÀâÂãÃ]/, 'a')
-		str.gsub!(/[çÇ]/, 'c')
-		str.gsub!(/[ëËéÉèÈêÊ]/, 'e')
-		str.gsub!(/[ïÏíÍìÌîÎ]/, 'i')
-		str.gsub!(/[öÖ]/, 'oe')
-		str.gsub!(/[óÓòÒôÔõÕøØ]/, 'o')
-		str.gsub!(/[üÜ]/, 'ue')
-		str.gsub!(/[úÚùÙûÛ]/, 'u')
-		str.tr!('şßğ', 'psd')
-		str.gsub!(/[-\s]/i, ' ')
-		str.gsub!(/[^a-z\s]/i, '')
-		str.strip
+    ODDB.search_term(str)
 	end
 	module_function :prepare
 	

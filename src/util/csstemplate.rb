@@ -275,7 +275,7 @@ module ODDB
 				}
 			end
 			def substitute(src, flavor)
-				src.gsub(/\$([^\s;]+)/) { |match|
+				src.gsub(/\$([^\s;]+)/u) { |match|
 					resolve($1, flavor)
 				}
 			end

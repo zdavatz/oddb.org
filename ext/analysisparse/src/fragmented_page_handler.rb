@@ -15,32 +15,32 @@ module ODDB
 				@permission = nil
 				@footnotes = {}
 				@chapters = [
-					/^ *teilliste\s*1/i,
-					/^ *teilliste\s*2/i,
-					/^ *allergologie\s*und\s*klinische\s*immunologie/i,
-					/^ *dermatologie\s*und\s*venerologie/i,
-					/^ *endokrinologie\s*-\s*diabetologie/i,
-					/^ *gastroenterologie/i,
-					/^ *gyn‰kologie\s*und\s*geburtshilfe/i,
-					/^ *h‰matologie/i,
-					/^ *kinder-\s*und\s*jugendmedizin/i,
-					/^ *medizinische\s*onkologie/i,
-					/^ *physikalische\s*medizin\s*und\s*rehabilitation/i,
-					/^ *rheumatologie/i,
-					/^ *tropenmedizin/i,
-					/^\s*Liste\s*partielle\s*1/i,
-					/^\s*Liste\s*partielle\s*2/i,
-					/^\s*allergologie\s*et\s*immunologie\s*clinique/i,
-					/^\s*dermatologie\s*et\s*vÈnÈrologie/i,
-					/^\s*endocrinologie\s*-\s*diabÈtologie/i,
-					/^\s*gastro-entÈrologie/i,
-					/^\s*gynÈcologie\s*et\s*obstÈtrique/i,
-					/^\s*hÈmatologie/i,
-					/^\s*mÈdecine\s*physique\s*et\s*rÈadaptation/i,
-					/^\s*mÈdecine\s*tropicale/i,
-					/^\s*oncologie\s*mÈdicale/i,
-					/^\s*pÈdiatrie/i,
-					/^\s*rhumatologie/i,
+					/^ *teilliste\s*1/iu,
+					/^ *teilliste\s*2/iu,
+					/^ *allergologie\s*und\s*klinische\s*immunologie/iu,
+					/^ *dermatologie\s*und\s*venerologie/iu,
+					/^ *endokrinologie\s*-\s*diabetologie/iu,
+					/^ *gastroenterologie/iu,
+					/^ *gyn√§kologie\s*und\s*geburtshilfe/iu,
+					/^ *h√§matologie/iu,
+					/^ *kinder-\s*und\s*jugendmedizin/iu,
+					/^ *medizinische\s*onkologie/iu,
+					/^ *physikalische\s*medizin\s*und\s*rehabilitation/iu,
+					/^ *rheumatologie/iu,
+					/^ *tropenmedizin/iu,
+					/^\s*Liste\s*partielle\s*1/iu,
+					/^\s*Liste\s*partielle\s*2/iu,
+					/^\s*allergologie\s*et\s*immunologie\s*clinique/iu,
+					/^\s*dermatologie\s*et\s*v√©n√©rologie/iu,
+					/^\s*endocrinologie\s*-\s*diab√©tologie/iu,
+					/^\s*gastro-ent√©rologie/iu,
+					/^\s*gyn√©cologie\s*et\s*obst√©trique/iu,
+					/^\s*h√©matologie/iu,
+					/^\s*m√©decine\s*physique\s*et\s*r√©adaptation/iu,
+					/^\s*m√©decine\s*tropicale/iu,
+					/^\s*oncologie\s*m√©dicale/iu,
+					/^\s*p√©diatrie/iu,
+					/^\s*rhumatologie/iu,
 				]
 			end
 			def parse_page(txt, pagenum)
@@ -79,10 +79,10 @@ module ODDB
 					stop = indices.at(idx.next).to_i - 1	
 					src = txt[start..stop]
 					case src
-					when /teilliste\s*1/i , /Liste\s*partielle\s*1/i
+					when /teilliste\s*1/iu, /Liste\s*partielle\s*1/iu
 						@taxpoint_type = :fixed
 						@permission = src.match(ptrns.at(idx)).to_s.lstrip
-					when /teilliste\s*2/i , /Liste\s*partielle\s*2/i
+					when /teilliste\s*2/iu, /Liste\s*partielle\s*2/iu
 						@taxpoint_type = :default
 						@permission = src.match(ptrns.at(idx)).to_s.lstrip
 					else

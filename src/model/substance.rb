@@ -19,7 +19,7 @@ module ODDB
 		include Comparable
 		include Language
 		def Substance.format_connection_key(key)
-			key.to_s.downcase.gsub(/[^a-z0-9]/, '')
+			key.to_s.downcase.gsub(/[^a-z0-9]/u, '')
 		end
 		def initialize
 			super()
@@ -39,14 +39,14 @@ module ODDB
 		def adjust_types(values, app=nil)
 			values.each { |key, value|
 				if(key.to_s.size == 2)
-          newval = value.to_s.gsub(/\S+/) { |match| 
+          newval = value.to_s.gsub(/\S+/u) { |match|
 						match.capitalize
 					}
-          newval.gsub!(/(?<=\s)[a-z]{1,4}[\s.]/i) { |match| 
+          newval.gsub!(/(?<=\s)[a-z]{1,4}[\s.]/iu) { |match|
             match.downcase 
           }
-					newval.gsub!(/\bhcl\b/i, 'HCl')
-          newval.gsub!(/([\d\(\)\-].)|(\b[dl]{1,2}-.)|(\..)|(\b[IVX]+\b)/i) { |match| 
+					newval.gsub!(/\bhcl\b/iu, 'HCl')
+          newval.gsub!(/([\d\(\)\-].)|(\b[dl]{1,2}-.)|(\..)|(\b[IVX]+\b)/iu) { |match|
             match.upcase 
           }
           values[key] = newval
@@ -273,7 +273,7 @@ module ODDB
 		end
 		def soundex_keys
 			keys = self.search_keys.collect { |key|
-				parts = ODDB.search_term(key).split(/\s/)
+				parts = ODDB.search_term(key).split(/\s/u)
 				soundex = Text::Soundex.soundex(parts)
 				soundex.join(' ')
 			}

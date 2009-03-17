@@ -1,8 +1,233 @@
 --- !oddb.org,2003/ODDB::Package 
+iksnr: "58233"
+ikscd: "001"
+name: Fluocim, Kapseln
+size: 14 Kapsel(n)
+ean13: "7680582330011"
+pharmacode: "3657338"
+out_of_trade: false
+prices: 
+  :public: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 36.3
+    authority: :sl
+    origin: http://www.galinfo.net/PR080101.txt
+    type: public
+    valid_from: &id001 2008-01-01 00:00:00 +01:00
+  :exfactory: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 16.91
+    authority: :sl
+    origin: http://www.galinfo.net/PR080101.txt
+    type: exfactory
+    valid_from: *id001
+
+--- !oddb.org,2003/ODDB::Package 
+iksnr: "58233"
+ikscd: "002"
+name: Fluocim, Kapseln
+size: 30 Kapsel(n)
+ean13: "7680582330028"
+pharmacode: "3657350"
+out_of_trade: false
+prices: 
+  :public: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 48.55
+    authority: :sl
+    origin: http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip (02.02.2009)
+    type: public
+    valid_from: 2009-02-01 00:00:00 +01:00
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 53.9
+    authority: :sl
+    origin: http://www.galinfo.net/PR080101.txt
+    type: public
+    valid_from: &id001 2008-01-01 00:00:00 +01:00
+  :exfactory: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 27.3
+    authority: :sl
+    origin: http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip (02.02.2009)
+    type: exfactory
+    valid_from: 2009-02-01 00:00:00 +01:00
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 31.84
+    authority: :sl
+    origin: http://www.galinfo.net/PR080101.txt
+    type: exfactory
+    valid_from: *id001
+
+--- !oddb.org,2003/ODDB::Package 
+iksnr: "58233"
+ikscd: "003"
+name: Fluocim, Kapseln
+size: 100 Kapsel(n)
+ean13: "7680582330035"
+pharmacode: "3657367"
+out_of_trade: false
+prices: 
+  :public: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 134.05
+    authority: :sl
+    origin: http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip (02.02.2009)
+    type: public
+    valid_from: 2009-02-01 00:00:00 +01:00
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 154.2
+    authority: :sl
+    origin: http://www.galinfo.net/PR080101.txt
+    type: public
+    valid_from: &id001 2008-01-01 00:00:00 +01:00
+  :exfactory: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 99.93
+    authority: :sl
+    origin: http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip (02.02.2009)
+    type: exfactory
+    valid_from: 2009-02-01 00:00:00 +01:00
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 117.04
+    authority: :sl
+    origin: http://www.galinfo.net/PR080101.txt
+    type: exfactory
+    valid_from: *id001
+
+--- !oddb.org,2003/ODDB::Package 
+iksnr: "54930"
+ikscd: "011"
+name: Insulin CP Pharma Hypurin Porcine Isophane Vial, Injektionssuspension
+size: "Vial(s) \xC3\xA0 10 ml"
+ean13: "7680549300118"
+pharmacode: "2234452"
+out_of_trade: false
+prices: 
+  :public: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 46.4
+    authority: :sl
+    origin: http://www.galinfo.net/sl/BSV_per_2003.10.01.xls
+    type: public
+    valid_from: 2003-10-01 00:00:00 +02:00
+  :exfactory: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 25.52
+    authority: :sl
+    origin: http://www.galinfo.net/sl/BSV_per_2003.10.01.xls
+    type: exfactory
+    valid_from: 2003-10-01 00:00:00 +02:00
+
+--- !oddb.org,2003/ODDB::Package 
+iksnr: "54931"
+ikscd: "026"
+name: Insulin CP Pharma Hypurin Porcine Isophane Patronen, Injektionssuspension
+size: 5 x 3 ml
+ean13: "7680549310261"
+pharmacode: "2873637"
+out_of_trade: false
+prices: 
+  :public: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 72.9
+    authority: :sl
+    origin: http://www.galinfo.net/sl/BSV_per_2005.07.01.xls
+    type: public
+    valid_from: 2005-07-01 00:00:00 +02:00
+  :exfactory: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 48.0
+    authority: :sl
+    origin: http://www.galinfo.net/sl/BSV_per_2005.07.01.xls
+    type: exfactory
+    valid_from: 2005-07-01 00:00:00 +02:00
+
+--- !oddb.org,2003/ODDB::Package 
+iksnr: "46474"
+ikscd: "015"
+name: Alpina Wallwurz-Gel, Gel
+size: 100 g
+ean13: "7680464740150"
+pharmacode: "1322326"
+out_of_trade: false
+prices: 
+  :public: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 17.8
+    authority: 
+    origin: 
+    type: public
+    valid_from: 
+  :exfactory: []
+
+
+--- !oddb.org,2003/ODDB::Package 
+iksnr: "54932"
+ikscd: "014"
+name: Insulin CP Pharma Hypurin Porcine 30/70 Mix Vial, Injektionssuspension
+size: "Vial(s) \xC3\xA0 10 ml"
+ean13: "7680549320147"
+pharmacode: "2234481"
+out_of_trade: false
+prices: 
+  :public: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 46.4
+    authority: :sl
+    origin: http://www.galinfo.net/sl/BSV_per_2003.10.01.xls
+    type: public
+    valid_from: 2003-10-01 00:00:00 +02:00
+  :exfactory: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 25.52
+    authority: :sl
+    origin: http://www.galinfo.net/sl/BSV_per_2003.10.01.xls
+    type: exfactory
+    valid_from: 2003-10-01 00:00:00 +02:00
+
+--- !oddb.org,2003/ODDB::Package 
+iksnr: "36185"
+ikscd: "023"
+name: Fero-Folic-500, compresse a rilascio prolungato
+size: 90 Tablette(n)
+ean13: "7680361850235"
+pharmacode: "890206"
+out_of_trade: false
+prices: 
+  :public: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 47.85
+    authority: 
+    origin: 
+    type: public
+    valid_from: 2007-03-17 00:55:05.467974 +01:00
+  :exfactory: []
+
+
+--- !oddb.org,2003/ODDB::Package 
+iksnr: "36185"
+ikscd: "015"
+name: Fero-Folic-500, compresse a rilascio prolungato
+size: 30 Tablette(n)
+ean13: "7680361850150"
+pharmacode: "568976"
+out_of_trade: false
+prices: 
+  :public: 
+  - !oddb.org,2003/ODDB::Util::Money 
+    amount: 17.4
+    authority: 
+    origin: 
+    type: public
+    valid_from: 2007-03-17 00:55:05.391528 +01:00
+  :exfactory: []
+
+
+--- !oddb.org,2003/ODDB::Package 
 iksnr: "45690"
 ikscd: "105"
-name: "Allsan Multivitamine und Mineralstoffe, Filmdrag\xE9es"
-size: "30 Drag\xE9e(s)"
+name: "Allsan Multivitamine und Mineralstoffe, Filmdrag\xC3\xA9es"
+size: "30 Drag\xC3\xA9e(s)"
 ean13: "7680456901057"
 pharmacode: "2873123"
 out_of_trade: false
@@ -10,7 +235,7 @@ prices:
   :public: 
   - !oddb.org,2003/ODDB::Util::Money 
     amount: 21.9
-    authority: :lppv
+    authority: :sl
     origin: http://www.lppa.ch/index/A.htm
     type: public
     valid_from: 2006-02-17 18:16:49.095416 +01:00
@@ -20,8 +245,8 @@ prices:
 --- !oddb.org,2003/ODDB::Package 
 iksnr: "45690"
 ikscd: "121"
-name: "Allsan Multivitamine und Mineralstoffe, Filmdrag\xE9es"
-size: "300 Drag\xE9e(s)"
+name: "Allsan Multivitamine und Mineralstoffe, Filmdrag\xC3\xA9es"
+size: "300 Drag\xC3\xA9e(s)"
 ean13: "7680456901217"
 pharmacode: "1467680"
 out_of_trade: false
@@ -29,7 +254,7 @@ prices:
   :public: 
   - !oddb.org,2003/ODDB::Util::Money 
     amount: 157.0
-    authority: :lppv
+    authority: :sl
     origin: http://www.lppa.ch/index/A.htm
     type: public
     valid_from: 2006-02-17 18:16:49.122392 +01:00
@@ -39,8 +264,8 @@ prices:
 --- !oddb.org,2003/ODDB::Package 
 iksnr: "45690"
 ikscd: "113"
-name: "Allsan Multivitamine und Mineralstoffe, Filmdrag\xE9es"
-size: "100 Drag\xE9e(s)"
+name: "Allsan Multivitamine und Mineralstoffe, Filmdrag\xC3\xA9es"
+size: "100 Drag\xC3\xA9e(s)"
 ean13: "7680456901132"
 pharmacode: "1467674"
 out_of_trade: false
@@ -48,7 +273,7 @@ prices:
   :public: 
   - !oddb.org,2003/ODDB::Util::Money 
     amount: 62.5
-    authority: :lppv
+    authority: :sl
     origin: http://www.lppa.ch/index/A.htm
     type: public
     valid_from: 2006-02-17 18:16:49.146350 +01:00
@@ -204,232 +429,3 @@ prices:
     origin: http://www.galinfo.net/sl/BSV_per_2006.05.01.xls
     type: exfactory
     valid_from: 2006-05-01 00:00:00 +02:00
-
---- !oddb.org,2003/ODDB::Package 
-iksnr: "57452"
-ikscd: "013"
-name: Simvasin Spirig 80, Filmtabletten
-size: 28 Tablette(n)
-ean13: "7680574520130"
-pharmacode: "3168088"
-out_of_trade: false
-prices: 
-  :public: 
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 42.95
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.07.01.xls
-    type: public
-    valid_from: 2006-07-01 00:00:00 +02:00
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 43.8
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.05.01.xls
-    type: public
-    valid_from: 2006-05-01 00:00:00 +02:00
-  :exfactory: 
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 22.56
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.07.01.xls
-    type: exfactory
-    valid_from: 2006-07-01 00:00:00 +02:00
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 23.3
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.05.01.xls
-    type: exfactory
-    valid_from: 2006-05-01 00:00:00 +02:00
-
---- !oddb.org,2003/ODDB::Package 
-iksnr: "57452"
-ikscd: "015"
-name: Simvasin Spirig 80, Filmtabletten
-size: 98 Tablette(n)
-ean13: "7680574520154"
-pharmacode: "3168094"
-out_of_trade: false
-prices: 
-  :public: 
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 99.9
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.07.01.xls
-    type: public
-    valid_from: 2006-07-01 00:00:00 +02:00
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 110.5
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.05.01.xls
-    type: public
-    valid_from: 2006-05-01 00:00:00 +02:00
-  :exfactory: 
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 70.92
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.07.01.xls
-    type: exfactory
-    valid_from: 2006-07-01 00:00:00 +02:00
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 79.9
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.05.01.xls
-    type: exfactory
-    valid_from: 2006-05-01 00:00:00 +02:00
-
---- !oddb.org,2003/ODDB::Package 
-iksnr: "57452"
-ikscd: "001"
-name: Simvasin Spirig 10, Filmtabletten
-size: 28 Tablette(n)
-ean13: "7680574520017"
-pharmacode: "3167953"
-out_of_trade: false
-prices: 
-  :public: 
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 26.0
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.07.01.xls
-    type: public
-    valid_from: 2006-07-01 00:00:00 +02:00
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 42.4
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.05.01.xls
-    type: public
-    valid_from: 2006-05-01 00:00:00 +02:00
-  :exfactory: 
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 11.64
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.08.01.xls
-    type: exfactory
-    valid_from: 2006-08-01 00:00:00 +02:00
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 11.34
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.07.01.xls
-    type: exfactory
-    valid_from: 2006-07-01 00:00:00 +02:00
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 22.09
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.05.01.xls
-    type: exfactory
-    valid_from: 2006-05-01 00:00:00 +02:00
-
---- !oddb.org,2003/ODDB::Package 
-iksnr: "57452"
-ikscd: "003"
-name: Simvasin Spirig 10, Filmtabletten
-size: 98 Tablette(n)
-ean13: "7680574520031"
-pharmacode: "3167976"
-out_of_trade: false
-prices: 
-  :public: 
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 61.5
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.07.01.xls
-    type: public
-    valid_from: 2006-07-01 00:00:00 +02:00
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 105.9
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.05.01.xls
-    type: public
-    valid_from: 2006-05-01 00:00:00 +02:00
-  :exfactory: 
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 38.31
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.07.01.xls
-    type: exfactory
-    valid_from: 2006-07-01 00:00:00 +02:00
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 76.02
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2006.05.01.xls
-    type: exfactory
-    valid_from: 2006-05-01 00:00:00 +02:00
-
---- !oddb.org,2003/ODDB::Package 
-iksnr: "54933"
-ikscd: 029
-name: Insulin CP Pharma Hypurin Porcine 30/70 Mix Patronen, Injektionssuspension
-size: 5 x 3 ml
-ean13: "7680549330290"
-pharmacode: "2873643"
-out_of_trade: false
-prices: 
-  :public: 
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 72.9
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2005.07.01.xls
-    type: public
-    valid_from: 2005-07-01 00:00:00 +02:00
-  :exfactory: 
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 48.0
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2005.07.01.xls
-    type: exfactory
-    valid_from: 2005-07-01 00:00:00 +02:00
-
---- !oddb.org,2003/ODDB::Package 
-iksnr: "45691"
-ikscd: "144"
-name: "Allsan Bevital mit Magnesium, Filmdrag\xE9es"
-size: "100 Drag\xE9e(s)"
-ean13: "7680456911445"
-pharmacode: "2544425"
-out_of_trade: false
-prices: 
-  :public: 
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 46.9
-    authority: :lppv
-    origin: http://www.lppa.ch/index/A.htm
-    type: public
-    valid_from: 2006-08-08 13:55:35.791585 +02:00
-  :exfactory: []
-
-
---- !oddb.org,2003/ODDB::Package 
-iksnr: "53021"
-ikscd: 018
-name: Serevent Diskus, Multidosen-Pulverinhalator
-size: 60 Inhalation(en)
-ean13: "7680530210181"
-pharmacode: "1629355"
-out_of_trade: false
-prices: 
-  :public: 
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 63.95
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2004.09.01.xls
-    type: public
-    valid_from: 2004-09-01 00:00:00 +02:00
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 63.8
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2003.10.01.xls
-    type: public
-    valid_from: 2003-10-01 00:00:00 +02:00
-  :exfactory: 
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 40.38
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2004.09.01.xls
-    type: exfactory
-    valid_from: 2004-09-01 00:00:00 +02:00
-  - !oddb.org,2003/ODDB::Util::Money 
-    amount: 40.28
-    authority: :sl
-    origin: http://www.galinfo.net/sl/BSV_per_2003.10.01.xls
-    type: exfactory
-    valid_from: 2003-10-01 00:00:00 +02:00

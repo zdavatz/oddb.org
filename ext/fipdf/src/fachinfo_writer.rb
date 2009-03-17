@@ -251,7 +251,7 @@ module ODDB
 				@substance_index
 			end
 			def add_text_wrap(left, y, width, text, *args)
-        text.gsub!(/\255/, '')
+        text.gsub!(/\302\255/u, '')
 				rest = super(@left_margin, y, width, text, *args)
 				@first_line_of_page = false
 				@enforce_line_count += 1
@@ -607,7 +607,7 @@ module ODDB
 				fill_color color
 				text(fachinfo_name, :font_size => format.size)
 				move_pointer(-format.margin)
-				name = CGI.escape(fachinfo_name[3..-1][/[^<®\ ]+/])
+				name = CGI.escape(fachinfo_name[3..-1][/[^<Â®\ ]+/u])
 				url = "http://www.oddb.org/de/gcc/search/search_query/#{name}"
 				add_link(url, @bg_bounds.at(0), @bg_bounds.at(1),
 					@bg_bounds.at(0) + @bg_bounds.at(2),
@@ -736,7 +736,7 @@ module ODDB
           move_pointer(format.spacing_before(paragraph.text))
           text = paragraph.text
           paragraph.text.each_line { |line|
-            if paragraph.preformatted? && /^-{53,}/.match(line)
+            if paragraph.preformatted? && /^-{53,}/u.match(line)
               line = line[0,52]
             end
             text(line.rstrip, :font_size => format.size,

@@ -58,7 +58,7 @@ class PriceHistoryList < HtmlGrid::List
     collect_data(model, :origin).inject([]) do |memo, url_and_date|
       url, date = url_and_date.split(' ')
       link = HtmlGrid::Link.new :origin, model, @session, self
-      if match = /#{ODDB.config.bsv_archives}/.match(url)
+      if match = /#{ODDB.config.bsv_archives}/u.match(url)
         url = "http://bag.e-mediat.net/SL2007.WEb.external/BSV_xls_20#{match[1]}.zip"
       end
       link.href = link.value = url

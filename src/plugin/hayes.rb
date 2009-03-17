@@ -32,7 +32,7 @@ module ODDB
 			end
 			def check_string(string)
 				case string
-				when "\240"
+				when "^\302\240$"
 					return false
 				when [] 
 					return false
@@ -128,13 +128,13 @@ module ODDB
 							end
 							unless(@function_set)
 								if(!row.cdata(0).is_a?(Array) \
-									&& row.cdata(0).match(/>>>>/))
-									if(row.cdata(0).match(/Substrate/))
-										arr = row.cdata(0).split(/>>>>/)
+									&& row.cdata(0).match(/>>>>/u))
+									if(row.cdata(0).match(/Substrate/u))
+										arr = row.cdata(0).split(/>>>>/u)
 										@function = arr.first.downcase
-									elsif(row.cdata(0).match(/DRUG/))
-										arr_one = row.cdata(1).split(/>>>>/)
-										arr_two = row.cdata(2).split(/>>>>/)
+									elsif(row.cdata(0).match(/DRUG/u))
+										arr_one = row.cdata(1).split(/>>>>/u)
+										arr_two = row.cdata(2).split(/>>>>/u)
 										@function_one = arr_one.first.downcase
 										@function_two = arr_two.first.downcase
 									end

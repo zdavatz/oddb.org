@@ -52,26 +52,8 @@ module ODDB
 			def symbol?
 				@values.include?(:symbol)
 			end
-=begin
-			def +(fmt)
-				unless(fmt.is_a?(Array))
-					fmt = [fmt]
-				end
-				Format.new(*(@values + fmt))
-			end
-			def -(fmt)
-				unless(fmt.is_a?(Array))
-					fmt = [fmt]
-				end
-				Format.new(*(@values - fmt))
-			end
-=end
 		end
 		class Paragraph
-			SYMBOLS = {
-				"\243"	=>	'<=',
-				"\263"	=>	'>=',
-			}
 			attr_reader :text, :formats
 			def initialize
 				clear!
@@ -80,7 +62,7 @@ module ODDB
 				set_format(*(@format.values + args))
 			end
       def clean!
-        @text.gsub! /\t/, ' '
+        @text.gsub! /\t/u, ' '
         @raw_txt = nil
       end
 			def clear!
@@ -144,34 +126,26 @@ module ODDB
       end
 			def to_s opts={}
 				@formats.collect { |fmt|
-					if(fmt.symbol?)
-						str = @text[fmt.range]
-						SYMBOLS.each { |sym, repl|
-							str.gsub!(sym, repl)
-						}
-						str
-					else
-						@text[fmt.range]
-					end
+          @text[fmt.range]
 				}.join
 			end
 			def <<(text)
         @raw_txt ||= @text.dup
-        if(/-\s*$/.match(@raw_txt) && /^[a-z\336-\377]/.match(text))
+        if(/[‐­-]\s*$/u.match(@raw_txt) && /^[[:lower:]]/u.match(text))
           # if we're appending to a hyphen, and text starts with a lowercase
-          # letter from iso-latin-1, we need to remove the hyphen
-          @raw_txt.gsub! /-\s*$/, ''
+          # letter, we need to remove the hyphen
+          @raw_txt.gsub! /[‐­-]\s*$/u, ''
         end
 				@raw_txt << text.to_s
-        @raw_txt.gsub!(/[\n\r]+/, "\n")
-        @raw_txt.gsub!(/^\n+/, "")
+        @raw_txt.gsub!(/[\n\r]+/u, "\n")
+        @raw_txt.gsub!(/^\n+/u, "")
 				if(@preformatted)
-          @raw_txt.gsub!(/(.*?)\t/) { |match|
+          @raw_txt.gsub!(/(.*?)\t/u) { |match|
             str = match[0..-2]
             str << (" " * (8 - (str.length % 8)))
           }
         else
-          @raw_txt.gsub! /\t+/, ' '
+          @raw_txt.gsub! /\t+/u, ' '
 				end
         if(@preformatted)
           @text = @raw_txt.rstrip
@@ -193,8 +167,8 @@ module ODDB
 			end
 			def clean!
         @paragraphs.compact!
-				@subheading.gsub!(/(^\s*)|([ \t\r]*$)/, '')
-				@subheading.gsub!(/\t+/, ' ')
+				@subheading.gsub!(/(^\s*)|([ \t\r]*$)/u, '')
+				@subheading.gsub!(/\t+/u, ' ')
 				@paragraphs.delete_if { |paragraph| paragraph.empty? }
         @paragraphs.each do |paragraph| paragraph.clean! end
 			end
@@ -239,7 +213,7 @@ module ODDB
 			end
 			def clean!
 				@heading.strip!
-				@heading.gsub!(/\t+/, ' ')
+				@heading.gsub!(/\t+/u, ' ')
 				@sections.delete_if { |section| 
 					section.clean!
 					section.empty? 
@@ -301,8 +275,6 @@ module ODDB
         @row_span = 1
         super(*args)
       end
-    end
-    class Table
       attr_reader :rows
       def initialize(*args)
         super

@@ -25,7 +25,7 @@ module ODDB
 				unless(lang == @name.to_s)
 					path = @session.request_path.dup
           base = "/#{@name}/"
-					path.sub!(%r{/#{lang}/?}, base) || path = base
+					path.sub!(%r{/#{lang}/?}u, base) || path = base
 					@attributes.store("href", path)
 				end
 			end
@@ -37,12 +37,12 @@ module ODDB
 				current = @session.currency
 				unless(current == @name.to_s)
 					path = @session.request_path.dup
-					path.slice!(/\/$/)
+					path.slice!(/\/$/u)
 					if(path.count('/') < 3)
 						args = { :currency => @name }
 						path = @lookandfeel._event_url(:self, args)
 					else
-						path.slice!(/\/currency\/[^\/]*/)
+						path.slice!(/\/currency\/[^\/]*/u)
 						path << '/currency/' << @name.to_s
 					end
 					@attributes.store("href", path)

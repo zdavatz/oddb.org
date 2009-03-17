@@ -222,7 +222,7 @@ module Root
 					&& !seq.packages.empty? \
 					&& (gf = seq.galenic_form) \
 					&& (gg = gf.galenic_group) \
-					&& !/^In[jf]/.match(gg.de)
+					&& !/^In[jf]/u.match(gg.de)
 			}
 			#if (candidates.size < sequences.size)
 				model += candidates

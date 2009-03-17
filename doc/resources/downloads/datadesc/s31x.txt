@@ -1,23 +1,24 @@
 Datenbeschrieb s31x
 
-Version: 1.0.2
-Geändert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
-Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
+Version: 1.1.0
+GeÃ¤ndert: 12.03.2009 (1.1.0) durch hwyss@ywesee.com
+GeÃ¤ndert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
+GeÃ¤ndert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
 Erstellt: 02.09.2005 (1.0)   durch hwyss@ywesee.com
 
 ## Struktur ##
-Encoding: ISO-8859-1
+Encoding: UTF-8
 Record-Separator: \n
 Field-Separator:  |
 
 s31x:
-Primärschlüssel: fachinfo_id, language, line_number
+PrimÃ¤rschlÃ¼ssel: fachinfo_id, language, line_number
 00: table             (31)                      -> Tabellenbezeichnung
 01: date              (yyyymmddhhmmss)          -> Datum des Exports
-02: fachinfo_id       (Integer, NOT NULL)       -> Primärschlüssel
+02: fachinfo_id       (Integer, NOT NULL)       -> PrimÃ¤rschlÃ¼ssel
 03: language          (D/F)                     -> Sprache 
 04: line_number       (Integer, NOT NULL)       -> Zeilennummer innerhalb einer Fachinfo
-05: update_type       (4)                       -> Vollständiger Datensatz
+05: update_type       (4)                       -> VollstÃ¤ndiger Datensatz
 06: text              (Char)                    -> Text mit Steuerzeichen. siehe Glossar (Steuerzeichen)
 
 
@@ -28,12 +29,12 @@ Primärschlüssel: fachinfo_id, language, line_number
 <BI> -> Beginn Fetter und Kursiver Text
 <E>  -> Ende formatierter Text
 <P>  -> Ende eines Abschnitts
-_    -> Steht in vorformatierten Abschnitten (Tabellen) für Abstände
+_    -> Steht in vorformatierten Abschnitten (Tabellen) fÃ¼r AbstÃ¤nde
 
 * Version
-Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+Versionsnummern bezeichnen Ã„nderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
-- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+- Minor:         Kleinere Ã„nderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: ErgÃ¤nzungen und Ã„nderungen im Datenbeschrieb, die keine Ã„nderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/s31x.txt

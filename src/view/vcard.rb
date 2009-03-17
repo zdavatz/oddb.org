@@ -2,6 +2,7 @@
 # -- oddb -- 10.03.2005 -- jlang@ywesee.com
 
 require 'htmlgrid/component'
+require 'util/searchterms'
 
 module ODDB
 	module View
@@ -14,8 +15,8 @@ class VCard < HtmlGrid::Component
 			inj += get_fons(addr.fon, "TEL;WORK;VOICE:")
 			inj += get_fons(addr.fax, "TEL;WORK;FAX:")
 			type = (addr.type == :work) ? 'WORK' : 'POSTAL'
-			inj.push(addr_str(addr, "ADR;#{type};CHARSET=ISO-8859-1:;;", ';'))
-			inj.push(addr_str(addr, "LABEL;#{type};CHARSET=ISO-8859-1:;;", ' '))
+			inj.push(addr_str(addr, "ADR;#{type};CHARSET=UTF-8:;;", ';'))
+			inj.push(addr_str(addr, "LABEL;#{type};CHARSET=UTF-8:;;", ' '))
 			inj
 		}
 	end
@@ -59,28 +60,17 @@ class VCard < HtmlGrid::Component
 	end
 	def name
 		[
-			"FN;CHARSET=ISO-8859-1:" + @model.name,
-			"N;CHARSET=ISO-8859-1:" + @model.name,
+			"FN;CHARSET=UTF-8:" + @model.name,
+			"N;CHARSET=UTF-8:" + @model.name,
 		]
 	end
 	def title
 		if(title = @model.title)
-			["TITLE;CHARSET=ISO-8859-1:" + title]
+			["TITLE;CHARSET=UTF-8:" + title]
 		end
 	end
 	def prepare(str)
-		str = str.dup
-		str.gsub!(/[äÄæÆ]/, 'ae')
-		str.gsub!(/[áÁàÀâÂãÃ]/, 'a')
-		str.gsub!(/[çÇ]/, 'c')
-		str.gsub!(/[ëËéÉèÈêÊ]/, 'e')
-		str.gsub!(/[ïÏíÍìÌîÎ]/, 'i')
-		str.gsub!(/[öÖ]/, 'oe')
-		str.gsub!(/[óÓòÒôÔõÕøØ]/, 'o')
-		str.gsub!(/[üÜ]/, 'ue')
-		str.gsub!(/[úÚùÙûÛ]/, 'u')
-		str.tr!('þßð', 'psd')
-		str
+    ODDB.search_term(str)
 	end
 end
 	end

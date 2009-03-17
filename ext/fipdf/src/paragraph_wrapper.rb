@@ -66,14 +66,14 @@ module ODDB
 					end
 					if(format.symbol?)
             body = str.dup
-            head = body.slice!(/^\s*/)
-            tail = body.slice!(/\s*$/)
+            head = body.slice!(/^\s*/u)
+            tail = body.slice!(/\s*$/u)
             str = head << '<f:Symbol>' << body << '</f>' << tail
 					end
 					text << str
 				}
 				unless(@paragraph.preformatted?)
-					text  = text.sub(/^-/, "")
+					text  = text.sub(/^-/u, "")
 				end
 				text
 			end

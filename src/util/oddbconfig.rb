@@ -3,6 +3,8 @@
 
 # Do not require any Application-Internals in this file
 
+$KCODE = 'UTF-8'
+
 module ODDB
 	SERVER_NAME = 'ch.oddb.org'
 	SMTP_SERVER = 'mail.ywesee.com'
@@ -28,7 +30,7 @@ module ODDB
   IMAGE_DIR = File.join(PROJECT_ROOT, 'doc', 'resources', 'images')
 	PAYPAL_SERVER = 'www.paypal.com'
 	PAYPAL_RECEIVER = 'zdavatz@ywesee.com'
-	ENCODING = 'latin1'
+	ENCODING = 'UTF-8'
 	## Prices and Durations
   DOWNLOAD_EXPORT_PRICES = {
     'analysis.csv'				=> 300,

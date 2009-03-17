@@ -23,7 +23,7 @@ module ODDB
 			'/content/page_1.aspx',
 		]
 		RECIPIENTS = [ ]
-    @@fi_ptrn = /Monographie.aspx\?Id=([0-9A-Fa-f\-]{36}).*MonType=fi/
+    @@fi_ptrn = /Monographie.aspx\?Id=([0-9A-Fa-f\-]{36}).*MonType=fi/u
 		def initialize(app)
 			super
 			@success = 0
@@ -47,8 +47,8 @@ module ODDB
 			iksnrs = []
 			languages.each_value { |doc|
 				src = doc.iksnrs.to_s.gsub("'", "")
-				if(match = src.match(/[0-9]{3,5}(?:\s*,\s*[0-9]{3,5})*/))
-					iksnrs += match.to_s.split(/\s*,\s*/)
+				if(match = src.match(/[0-9]{3,5}(?:\s*,\s*[0-9]{3,5})*/u))
+					iksnrs += match.to_s.split(/\s*,\s*/u)
 				end
 			}
 			iksnrs.collect { |iksnr| sprintf("%05i", iksnr) }.uniq

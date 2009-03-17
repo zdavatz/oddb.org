@@ -9,18 +9,18 @@ module ODDB
   module SizeParser
     unit_pattern = '(([kmucMG]?([glLJm]|mol|Bq)\b)(\/([mu]?[glL])\b)?)|((Mio\s)?U\.?I\.?)|(%( [mV]\/[mV])?)|(I\.E\.)|(Fl\.)'
     numeric_pattern = '\d+(\'\d+)*([.,]\d+)?'
-    iso_pattern = "[a-zA-Z#{0xC0.chr}-#{0xFF.chr}()\-]+"
+    iso_pattern = "[[:alpha:]()\-]+"
     @@parser = Parse.generate_parser <<-EOG
 Grammar OddbSize
   Tokens
-    DESCRIPTION	= /(?!#{unit_pattern}\s)#{iso_pattern}(\s+#{iso_pattern})*/
-    NUMERIC			= /#{numeric_pattern}/
-    SPACE				= /\s+/		[:Skip]
-    UNIT				= /#{unit_pattern}/
+    DESCRIPTION	= /(?!#{unit_pattern}\s)#{iso_pattern}(\s+#{iso_pattern})*/u
+    NUMERIC			= /#{numeric_pattern}/u
+    SPACE				= /\s+/u [:Skip]
+    UNIT				= /#{unit_pattern}/u
   Productions
     Size			->	Multiple* Addition? Count? Measure? Scale? Dose? DESCRIPTION?
     Count			->	'je'? NUMERIC
-    Multiple	->	NUMERIC UNIT? /[xXà]|Set/
+    Multiple	->	NUMERIC UNIT? /[xXÃ ]|Set/u
     Measure		->	NUMERIC UNIT UNIT?
     Addition	->	NUMERIC UNIT? '+'
     Scale			->	'/' NUMERIC? UNIT
@@ -160,7 +160,7 @@ Grammar OddbSize
       @measure = nil if @measure == 1
       if(@commercial_form)
         parts.push @commercial_form
-        parts.push "à" if @measure
+        parts.push "Ã " if @measure
       elsif @measure && !parts.empty?
         parts.push('x')
       end

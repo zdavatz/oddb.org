@@ -76,9 +76,9 @@ class PatinfoHpricot
       @date = chapter
     when nil # special chapers without heading
       case chapter.to_s
-      when /^\d{5}/
+      when /^\d{5}/u
         @iksnrs = chapter
-      when /\b\d{4}\b/
+      when /\b\d{4}\b/u
         @date = chapter
       end
     else
@@ -172,7 +172,7 @@ class PatinfoHpricot
   end
   def preformatted_text(elem)
     str = elem.inner_text || elem.to_s
-    target_encoding(str.gsub(/(&nbsp;|\302\240)/, ' '))
+    target_encoding(str.gsub(/(&nbsp;|\302\240)/u, ' '))
   end
   def simple_chapter(elem)
     if(elem)
@@ -188,8 +188,7 @@ class PatinfoHpricot
   end
   def text(elem)
     str = elem.inner_text || elem.to_s
-    str = str.gsub(/[\277]/, '-')
-    target_encoding(str.gsub(/(&nbsp;|\302\240|\s)+/, ' ').strip)
+    target_encoding(str.gsub(/(&nbsp;|\s)+/u, ' ').strip)
   end
 end
   end

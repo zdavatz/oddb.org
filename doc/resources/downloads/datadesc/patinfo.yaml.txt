@@ -1,15 +1,16 @@
 Datenbeschrieb patinfo.yaml
 
-Version: 1.0.2
-Geändert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
-Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
+Version: 1.1.0
+GeÃ¤ndert: 12.03.2009 (1.1.0) durch hwyss@ywesee.com
+GeÃ¤ndert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
+GeÃ¤ndert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
 Erstellt: 01.09.2005 (1.0)   durch hwyss@ywesee.com
 
 ## Struktur ##
-Encoding: ISO-8859-1
+Encoding: UTF-8
 
 Top-Level:
-- Stream von voneinander unabhängigen YAML-Documents, wovon jedes ein Patinfo beschreibt.
+- Stream von voneinander unabhÃ¤ngigen YAML-Documents, wovon jedes ein Patinfo beschreibt.
 
 Patinfo:
 - oid               (Integer, NOT NULL)    -> Unique Identifier
@@ -20,12 +21,12 @@ PatinfoDocument/PatinfoDocument2001:
 - company           (Text::Chapter)         -> Kapitel Hersteller
 - galenic_form      (Text::Chapter)         -> Kapitel Galenische Form
 - effects           (Text::Chapter)         -> Kapitel Eigenschaften/Verwendungszweck
-- amendments        (Text::Chapter)         -> Kapitel Ergänzungen
+- amendments        (Text::Chapter)         -> Kapitel ErgÃ¤nzungen
 - contra_indications(Text::Chapter)         -> Kapitel Kontraindikationen
 - precautions       (Text::Chapter)         -> Kapitel Vorsichtsmassnahmen
 - pregnancy         (Text::Chapter)         -> Kapitel Schwangerschaft/Stillzeit
 - usage             (Text::Chapter)         -> Kapitel Dosierung/Anwendung
-- unwanted_effects  (Text::Chapter)         -> Kapitel Unerwünschte Wirkungen
+- unwanted_effects  (Text::Chapter)         -> Kapitel UnerwÃ¼nschte Wirkungen
 - general_advice    (Text::Chapter)         -> Kapitel Allgemeine Hinweise
 - composition       (Text::Chapter)         -> Kapitel Zusammensetzung
 - packages          (Text::Chapter)         -> Kapitel Verkaufsart/Packungen
@@ -38,15 +39,15 @@ Text::Chapter:
 
 Text::Section:
 - subheading        (String)                -> Abschnitt-Titel
-- paragraphs        (Array (Text::Paragraph)) -> Absätze
+- paragraphs        (Array (Text::Paragraph)) -> AbsÃ¤tze
 
 Text::Paragraph:
 - formats           (Array (Text::Format))  -> Formatdefinitionen
 - text              (String)                -> unformatierter Text
-- preformatted      (Boolean)               -> Wenn ja, sollte whitespace 1:1 übernommen werden.
+- preformatted      (Boolean)               -> Wenn ja, sollte whitespace 1:1 Ã¼bernommen werden.
 
 Text::Format:
-- values            (Array (Symbol))        -> mögliche Werte: alle Kombinationen von :bold, :italic und :symbol. Wenn Symbol, dann ist der Betreffende Text im Symbol-Font darzustellen.
+- values            (Array (Symbol))        -> mÃ¶gliche Werte: alle Kombinationen von :bold, :italic und :symbol. Wenn Symbol, dann ist der Betreffende Text im Symbol-Font darzustellen.
 - start             (Integer NOT NULL)      -> 0-N Char-Position innerhalb des Paragraphs an welchem das Format beginnt.
 - end               (Integer NOT NULL)      -> 1-N, -1. Wenn -1, gilt das Format bis zum Ende des Paragraphs.
 
@@ -56,23 +57,23 @@ Text::Format:
 Hash-Table. Unsortierte, indexierte Collection.
 
 * SimpleLanguage::Descriptions:
-Subklasse von Hash. Key-Value pairs für Sprache/Text, wobei folgende Werte als Schlüssel vorkommen:
+Subklasse von Hash. Key-Value pairs fÃ¼r Sprache/Text, wobei folgende Werte als SchlÃ¼ssel vorkommen:
 - de -> Deutsch
-- fr -> Französisch
+- fr -> FranzÃ¶sisch
 - it -> Italienisch
 - en -> Englisch
 - lt -> Latein
 
 * PatinfoDocument/PatinfoDocument2001
-Strukturierte Repräsentation einer Patinformation.
+Strukturierte ReprÃ¤sentation einer Patinformation.
 
 * YAML
 Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml.org
 
 * Version
-Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+Versionsnummern bezeichnen Ã„nderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
-- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+- Minor:         Kleinere Ã„nderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: ErgÃ¤nzungen und Ã„nderungen im Datenbeschrieb, die keine Ã„nderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/patinfo.yaml.txt

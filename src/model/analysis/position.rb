@@ -25,7 +25,6 @@ module ODDB
 			def initialize(poscd)
 				@positions = {}
 				@poscd = poscd
-				@permissions = []
 				@feedbacks = {}
 			end
 			def code
@@ -98,7 +97,7 @@ module ODDB
 			def search_text(language)
 				terms = [@list_title, @taxnote, @footnote,
 					@limitation_text, self].compact.collect { |doc|
-					doc.send(language).split(/\s+/)
+					doc.send(language).split(/\s+/u)
 				}
 				if(@permissions)
 					@permissions.send(language).each { |perm|

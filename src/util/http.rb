@@ -21,7 +21,7 @@ module ODDB
 			end
 		end
 		def http_body(server, source, session=nil, hdrs=nil)
-			session ||= Net::HTTP.new(server)
+			session ||= HttpSession.new server
 			resp = session.get(source, hdrs)
 			if resp.is_a? Net::HTTPOK
 				resp.body
@@ -37,11 +37,10 @@ module ODDB
 			def body
 				body = @response.body
 				charset = self.charset
-				unless(charset.nil? \
-					|| %w{iso-8859-1 latin1}.include?(charset))
-					cd = Iconv.new('Latin1', charset)
+				unless(charset.nil? || charset.downcase == 'utf-8')
+					cd = Iconv.new('UTF-8', charset)
 					begin
-						latin = Iconv.iconv('Latin1', charset, body).first
+						cd.iconv body
 					rescue
 						body
 					end
@@ -51,7 +50,7 @@ module ODDB
 			end
 			def charset
 				if((ct = @response['Content-Type']) \
-					&& (match = /charset=([^;])+/.match(ct)))
+					&& (match = /charset=([^;])+/u.match(ct)))
 					arr = match[0].split("=")
 					arr[1].strip.downcase
 				end
@@ -117,7 +116,7 @@ module ODDB
 				['Accept', 'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1'],
 				['Accept-Language', 'de-ch,en-us;q=0.7,en;q=0.3'],       
 				['Accept-Encoding', 'gzip,deflate'],
-				['Accept-Charset', 'ISO-8859-1'],
+				['Accept-Charset', 'UTF-8'],
 				['Keep-Alive', '300'],
 				['Connection', 'keep-alive'],
 			]

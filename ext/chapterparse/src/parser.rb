@@ -112,29 +112,29 @@ module ODDB
 			end
 			def analyse_attributes(attrs, release)
 				if(style = fetch_attribute('style', attrs))
-					if(/\bmono(space)?\b/i.match(style))
+					if(/\bmono(space)?\b/iu.match(style))
 						start_pre(attrs)
 						release.push(:end_pre)
-					elsif(/\bsans-serif\b/i.match(style))
+					elsif(/\bsans-serif\b/iu.match(style))
 						suspend_pre(release)
 					end
-					if(/\bbold\b/i.match(style))
+					if(/\bbold\b/iu.match(style))
 						start_b(attrs)
 						release.push(:end_b)
 					end
-					if(/\bitalic\b/i.match(style))
+					if(/\bitalic\b/iu.match(style))
 						start_i(attrs)
 						release.push(:end_i)
 					end
-					if(/\bvertical-align\s*:\s*super\b/i.match(style))
+					if(/\bvertical-align\s*:\s*super\b/iu.match(style))
 						start_sup(attrs)
 						release.push(:end_sup)
-					elsif(/\bvertical-align\s*:\s*sub\b/i.match(style))
+					elsif(/\bvertical-align\s*:\s*sub\b/iu.match(style))
 						start_sub(attrs)
 						release.push(:end_sub)
 					end
 				elsif((klass = fetch_attribute('class', attrs)) \
-					&& /\bpreformatted\b/i.match(klass))
+					&& /\bpreformatted\b/iu.match(klass))
 					start_pre(attrs)
 					release.push(:end_pre)
 				end
@@ -197,10 +197,10 @@ module ODDB
 			def start_font(attrs)
 				register_release_tag { |release|
 					if(face = fetch_attribute('face', attrs))
-						if(/\bmono(space)?\b/i.match(face))
+						if(/\bmono(space)?\b/iu.match(face))
 							start_pre(attrs)
 							release.push(:end_pre)
-						elsif(/\bsans-serif\b/i.match(face))
+						elsif(/\bsans-serif\b/iu.match(face))
 							suspend_pre(release)
 						end
 					end

@@ -90,9 +90,9 @@ module ODDB
 			header = [
 				"Code",
 				"Name",
-				"Grösse",
+				"GrÃ¶sse",
 				"Sender",
-				"Empfänger",
+				"EmpfÃ¤nger",
 				"Total",
 			]
 			month_range = (first_month)..(last_month)

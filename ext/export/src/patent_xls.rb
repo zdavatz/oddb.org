@@ -15,7 +15,7 @@ module ODDB
           'Bezeichnung', 
           'Swissmedic-Nr.', 'Registrierungsdatum Swissmedic', 
           'ESZ-Nr.', 'Anmeldedatum', 'Publikationsdatum', 'Erteilungsdatum', 
-          'Schutzdauerbeginn', 'Ablaufdatum', 'Löschdatum',
+          'Schutzdauerbeginn', 'Ablaufdatum', 'LÃ¶schdatum',
           'Grund-Patent-Nr.', 'Schutzbeginn Grund-Patent', 'Direktlink',
         ]
         @worksheet.write(0, 0, columns, @fmt_title)
@@ -35,7 +35,7 @@ module ODDB
           reg = ODBA.cache.fetch(id)
           pat = reg.patent
           row = [
-            reg.name_base[/^.\D+/], reg.iksnr, date(reg.registration_date),
+            reg.name_base[/^.\D+/u], reg.iksnr, date(reg.registration_date),
             pat.certificate_number, date(pat.registration_date), 
             date(pat.publication_date), date(pat.issue_date), 
             date(pat.protection_date), date(pat.expiry_date), 

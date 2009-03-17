@@ -22,11 +22,11 @@ module ODDB
 					:fon, :fax, :title, :canton, :message, 
 					:address_type, :email_suggestion] + mandatory
 				input = user_input(keys, mandatory)
-				input[:fax] = input[:fax].to_s.split(/\s*,\s*/)
-				input[:fon] = input[:fon].to_s.split(/\s*,\s*/)
+				input[:fax] = input[:fax].to_s.split(/\s*,\s*/u)
+				input[:fon] = input[:fon].to_s.split(/\s*,\s*/u)
 				lns = input[:additional_lines].to_s
 				input.store(:additional_lines, 
-					lns.split(/[\n\r]+/))
+					lns.split(/[\n\r]+/u))
 				input.store(:type, input.delete(:address_type))
 				input.store(:address_pointer, @model.pointer)
 				parent = @model.parent(@session)
@@ -40,7 +40,7 @@ module ODDB
 			def send_notification(suggestion)
 				from = suggestion.email_suggestion 
 				mail = TMail::Mail.new
-				mail.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
+				mail.set_content_type('text', 'plain', 'charset'=>'UTF-8')
 				mail.from = from #'suggest_address@oddb.org'
 				mail.subject = "#{@session.lookandfeel.lookup(:address_subject)} #{suggestion.fullname}"
 				mail.date = Time.now

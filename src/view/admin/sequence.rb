@@ -72,7 +72,7 @@ class RootActiveAgents < ActiveAgents
   COMPONENT_CSS_MAP = { [2,0] => 'short right' }
   DEFAULT_CLASS = HtmlGrid::InputText
   HTTP_HEADERS = {
-    "Content-Type"	=>	"text/html; charset=iso-8859-1",
+    "Content-Type"	=>	"text/html; charset=UTF-8",
     "Cache-Control"	=>	"private, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
     "Pragma"				=>	"no-cache",
     "Expires"				=>	Time.now.rfc1123,
@@ -185,7 +185,7 @@ end
 class RootCompositions < Compositions
   COMPONENTS = { [0,0] => RootCompositionList }
   HTTP_HEADERS = {
-    "Content-Type"	=>	"text/html; charset=iso-8859-1",
+    "Content-Type"	=>	"text/html; charset=UTF-8",
     "Cache-Control"	=>	"private, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
     "Pragma"				=>	"no-cache",
     "Expires"				=>	Time.now.rfc1123,

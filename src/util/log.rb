@@ -40,9 +40,13 @@ module ODDB
 
 			parts = @parts.nil? ? [] : @parts.dup
 			unless(@files.nil?)
-				@files.each { |path, mime|
+				@files.each { |path, (mime, iconv)|
 					begin
-						parts.push([mime, File.basename(path), File.read(path)])
+            content = File.read(path)
+            if iconv
+              content = Iconv.new(iconv, 'UTF-8').iconv content
+            end
+						parts.push([mime, File.basename(path), content])
 					rescue Errno::ENOENT
 					end
 				}
@@ -83,7 +87,7 @@ module ODDB
 		end
 		def text_part(body)
 			text = TMail::Mail.new
-			text.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
+			text.set_content_type('text', 'plain', 'charset'=>'UTF-8')
 			text.body = body
 			text
 		end

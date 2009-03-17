@@ -3,5 +3,5 @@
 
 dir = File.expand_path('command', File.dirname(__FILE__))
 Dir.foreach(dir) { |filename|
-	require('command/' + filename) if /\.rb$/.match(filename)
+	require('command/' + filename) if /\.rb$/u.match(filename)
 }

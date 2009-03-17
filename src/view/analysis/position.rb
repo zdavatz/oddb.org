@@ -69,7 +69,7 @@ class AdditionalInfoComposite < HtmlGrid::Composite
 	end
 	def info_ext_material(model)
 				value = HtmlGrid::Value.new(model.info_ext_material, model, @session, self)
-			if(/info@dacapo.ch/.match(model.info_ext_material))
+			if(/info@dacapo.ch/u.match(model.info_ext_material))
 				value.value = $` + '<a href="mailto:info@dacapo.ch">' + $& + '</a>' + $'
 			else
 				value.value = model.info_ext_material
@@ -117,7 +117,7 @@ class PositionInnerComposite < HtmlGrid::Composite
 	def description(model, key = :description)
 		value = HtmlGrid::Value.new(key, model, @session, self)
 		if(model && (str = model.send(@session.language)))
-			value.value = str.gsub(/(\d{4})\.(\d{2})/) {
+			value.value = str.gsub(/(\d{4})\.(\d{2})/u) {
 				group_code = $~[1]
 				pos_code = $~[2]
 				ptr = Persistence::Pointer.new([:analysis_group, group_code])

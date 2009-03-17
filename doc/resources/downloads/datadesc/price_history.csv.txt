@@ -1,22 +1,23 @@
 Datenbeschrieb price_history.csv
 
-Version: 1.0.0
+Version: 1.1.0
+GeÃ¤ndert: 12.03.2009 (1.1.0) durch hwyss@ywesee.com
 Erstellt: 28.11.2008 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
-Encoding: ISO-8859-1
+Encoding: UTF-8
 Record-Separator: \n
 Field-Separator:  ;
 
 Das Dokument ist zwei-dimensional aufgebaut. Auf der Horizontalen achse liegen
-Daten, an welchen Preis-Änderungen vorkommen, auf der Vertikalen die
-Produkte, für welche die Preis-Änderungen gelten.
+Daten, an welchen Preis-Ã„nderungen vorkommen, auf der Vertikalen die
+Produkte, fÃ¼r welche die Preis-Ã„nderungen gelten.
 
 Produkt-Record:
   00: iksnr             (Integer (5)), NOT NULL   -> Registrationsnummer der Swissmedic
   01: ikscd             (Integer (3)), NOT NULL   -> Packungsnummer der Swissmedic
   02: name              (*)                       -> Hauptname der Sequenz aus der Registrationsurkunde.
-  03: size              (*)                       -> Packungsgrösse (z.B. 5 x 28 Tabletten)
+  03: size              (*)                       -> PackungsgrÃ¶sse (z.B. 5 x 28 Tabletten)
   04: barcode           (Integer (13)), NOT NULL  -> Packungs-Barcode, zusammengesetzt aus iksnr und ikscd
   05: pharmacode        (Integer)                 -> Pharmacode, wo vorhanden
   06: out_of_trade      (Boolean)                 -> true, wenn die Packung ausser Handel ist
@@ -34,9 +35,9 @@ c: origin               (String)                  -> Preisherkunft (Url oder E-M
 - :user   Preisempfehlung des Herstellers
 
 * Version
-Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+Versionsnummern bezeichnen Ã„nderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
-- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+- Minor:         Kleinere Ã„nderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: ErgÃ¤nzungen und Ã„nderungen im Datenbeschrieb, die keine Ã„nderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/price_history.csv.txt

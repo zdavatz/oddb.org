@@ -90,7 +90,7 @@ module ODDB
 		end
 		def update_substances(substances)
 			substances.collect { |substance|
-				substance.to_s.gsub(/(i|e|um)$/, '')
+				substance.to_s.gsub(/(i|e|um)$/u, '')
 			}.compact.uniq.each { |substance_name|
 				update_registrations(substance_name) 
 			}

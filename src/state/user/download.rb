@@ -21,7 +21,7 @@ class Download < State::User::Global
       stype = @model.data[:search_type]
     end
     if(query && stype)
-      @model = _search_drugs(query.to_s.downcase.gsub(/\s+/, ' '), stype)
+      @model = _search_drugs(query.to_s.downcase.gsub(/\s+/u, ' '), stype)
       @model.search_query = query
       @model.search_type = stype
       @model.session = @session

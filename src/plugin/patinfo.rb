@@ -10,11 +10,8 @@ module ODDB
 	class PatinfoPlugin < Plugin
 		HTML_PATH = File.expand_path('../../data/html/patinfo', 
 			File.dirname(__FILE__))
-		LATIN1 = "[a-zA-Z#{0xC0.chr}-#{0xFF.chr}]"
-		name_p = "[a-zA-Z#{0xC0.chr}-#{0xFF.chr}]+(?:[\s-][a-zA-Z#{0xC0.chr}-#{0xFF.chr}]+)*"
-		number_p = "[0-9]+"
 		LANGUAGES = ['de', 'fr']
-		KOMBI = "(#{name_p})?\s*(#{number_p})?"
+		KOMBI = "(\w+(?:[\s-]\w+)*)?\s*([0-9]+)?"
 		PARSER = DRbObject.new(nil, FIPARSE_URI)
 		RECIPIENTS = []
 		def initialize(app)
@@ -42,8 +39,8 @@ module ODDB
 			}
 		end
 		def extract_iksnrs(pi)
-			if(pi.iksnrs && (iksnrs = pi.iksnrs.match(/[0-9]+(,\s*[0-9]+)*/)))
-				iksnrs[0].split(/,\s*/)
+			if(pi.iksnrs && (iksnrs = pi.iksnrs.match(/[0-9]+(,\s*[0-9]+)*/u)))
+				iksnrs[0].split(/,\s*/u)
 			else
 				[]
 			end
@@ -52,13 +49,13 @@ module ODDB
 			unless(pi.name.nil?)
 				names = pi.name.gsub("#{174.chr}", "")
 				case names
-				when /(#{LATIN1}+)\s+(#{LATIN1}+)\/(#{LATIN1}+)\/(#{LATIN1}+)/
+				when /(\w+)\s+(\w+)\/(\w+)\/(\w+)/u
 					[
 						"#{$~[1]} #{$~[2]}", 
 						"#{$~[1]} #{$~[3]}", 
 						"#{$~[1]} #{$~[4]}",
 					]
-				when /#{KOMBI}\s*\/\s*#{KOMBI}/	
+				when /#{KOMBI}\s*\/\s*#{KOMBI}/u
 					match = $~
 					if(match[3].nil?)
 						[
@@ -71,7 +68,7 @@ module ODDB
 							match[3,2].compact.join(' '), 
 						]
 					end
-				when /#{KOMBI}/
+				when /#{KOMBI}/u
 					[$~.to_s]
 				end
 			else
@@ -214,7 +211,7 @@ module ODDB
 				target_dir = File.expand_path(lang, self::class::HTML_PATH)
 				source_dir = File.expand_path(lang, newsdir)
 				Dir.foreach(source_dir) { |entry|
-					if(match = /(.*)\.html$/.match(entry))
+					if(match = /(.*)\.html$/u.match(entry))
 						inj << match[1].to_s
 						File.rename(File.expand_path(entry, source_dir), 
 							File.expand_path(entry, target_dir))

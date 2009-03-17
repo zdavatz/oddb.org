@@ -1,7 +1,8 @@
 Datenbeschrieb generics.xls
 
-Version: 1.0.1
-Geändert: 25.11.2005 (1.0.1) durch hwyss@ywesee.com
+Version: 1.0.2
+GeÃ¤ndert: 12.03.2009 (1.0.2) durch hwyss@ywesee.com
+GeÃ¤ndert: 25.11.2005 (1.0.1) durch hwyss@ywesee.com
 Erstellt: 23.11.2005 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
@@ -11,31 +12,31 @@ C: EAN-Code Original
 D: Pharmacode Original 
 E: Bezeichnung Original
 F: Dosierung Original
-G: Packungsgrösse Original
+G: PackungsgrÃ¶sse Original
 H: Fabrikabgabe-preis Original
 I: Publikums-preis Original (inkl. MwSt)
 J: Zulassungsinhaberin Original
 K: Abgabekategorie Original
-L: Spezialitätenliste Original
+L: SpezialitÃ¤tenliste Original
 M: Registrations-Datum Original
 N: EAN-Code Generikum
 O: Pharmacode Generikum
 P: Bezeichnung Generikum
 Q: Dosierung Generikum
-R: Packungsgrösse Generikum
+R: PackungsgrÃ¶sse Generikum
 S: Fabrikabgabe-preis Generikum
 T: Publikums-preis Generikum (inkl. MwSt)
 U: Zulassungsinhaberin Generikum
 V: Abgabekategorie Generikum
-W: Spezialitätenliste Generikum
+W: SpezialitÃ¤tenliste Generikum
 X: Registrations-Datum Generikum
 Y: Bemerkung 
 
 ## Glossar ##
 * Version
-Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+Versionsnummern bezeichnen Ã„nderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
-- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+- Minor:         Kleinere Ã„nderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: ErgÃ¤nzungen und Ã„nderungen im Datenbeschrieb, die keine Ã„nderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/generics.xls.txt

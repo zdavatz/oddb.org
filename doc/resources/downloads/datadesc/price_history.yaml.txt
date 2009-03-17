@@ -1,23 +1,24 @@
 Datenbeschrieb price_history.yaml
 
-Version:  1.0.1
-Geändert: 28.11.2008 (1.0.1) durch hwyss@ywesee.com
+Version:  1.1.0
+GeÃ¤ndert: 12.03.2009 (1.1.0) durch hwyss@ywesee.com
+GeÃ¤ndert: 28.11.2008 (1.0.1) durch hwyss@ywesee.com
 Erstellt: 26.11.2008 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
-Encoding: ISO-8859-1
+Encoding: UTF-8
 
 Top-Level:
-- Stream von voneinander unabhängigen YAML-Documents, wovon jedes eine Package beschreibt.
+- Stream von voneinander unabhÃ¤ngigen YAML-Documents, wovon jedes eine Package beschreibt.
 
 Package:
 - iksnr         (String(5) NOT NULL)       -> Registrations-Id der Swissmedic (ehemals IKS)
 - ikscd         (String(3), NOT NULL)      -> Packungsnummer. Ergibt zusammen mit Registration.iksnr die 8-Stellige Swissmedic-Nummer.
 - name          (String)                   -> Name des Produkts
-- size          (String)                   -> Grössenbezeichnung
+- size          (String)                   -> GrÃ¶ssenbezeichnung
 - ean13         (String)                   -> Ean13 des Produkts
-- pharmacode    (String)                   -> Pharmacode gemäss RefData
-- out_of_trade  (Boolean)                  -> Nicht im Handel erhältlich
+- pharmacode    (String)                   -> Pharmacode gemÃ¤ss RefData
+- out_of_trade  (Boolean)                  -> Nicht im Handel erhÃ¤ltlich
 - prices        (Hash (Price.type, Array)) -> Preise der Packung (siehe Util::Money)
 
 Util::Money
@@ -25,7 +26,7 @@ Util::Money
 - authority     (Symbol)                   -> Kategorisierte Preisherkunft (siehe Glossar: Authority)
 - origin        (String)                   -> Preisherkunft (Url oder E-Mail-Adresse)
 - type          (String)                   -> Preisart (exfactory/public)
-- valid_from    (Time)                     -> Preis gültig ab diesem Datum (bei authority == :user Datum und Zeit des Eintrags)
+- valid_from    (Time)                     -> Preis gÃ¼ltig ab diesem Datum (bei authority == :user Datum und Zeit des Eintrags)
 
 ## Glossar ##
 * Authority
@@ -37,7 +38,7 @@ Util::Money
 Hash-Table. Unsortierte, indexierte Collection.
 
 * Symbol: 
-Interne Repräsentation eines Namens. In anderen Programmiersprachen auch Atom.
+Interne ReprÃ¤sentation eines Namens. In anderen Programmiersprachen auch Atom.
 
 * Time:
 Serialisiert als YYYY-mm-dd HH:MM:SS.ms OFFSET
@@ -46,9 +47,9 @@ Serialisiert als YYYY-mm-dd HH:MM:SS.ms OFFSET
 Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml.org
 
 * Version
-Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+Versionsnummern bezeichnen Ã„nderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
-- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+- Minor:         Kleinere Ã„nderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: ErgÃ¤nzungen und Ã„nderungen im Datenbeschrieb, die keine Ã„nderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/price_history.yaml.txt

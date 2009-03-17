@@ -1,21 +1,22 @@
 Datenbeschrieb oddb.csv
 
-Version: 1.2.0
-Geändert: 06.06.2006 (1.2.0) durch hwyss@ywesee.com
-Geändert: 27.02.2006 (1.1.0) durch hwyss@ywesee.com
-Geändert: 09.12.2005 (1.0.3) durch hwyss@ywesee.com
-Geändert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
-Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
+Version: 1.3.0
+GeÃ¤ndert: 12.03.2009 (1.3.0) durch hwyss@ywesee.com
+GeÃ¤ndert: 06.06.2006 (1.2.0) durch hwyss@ywesee.com
+GeÃ¤ndert: 27.02.2006 (1.1.0) durch hwyss@ywesee.com
+GeÃ¤ndert: 09.12.2005 (1.0.3) durch hwyss@ywesee.com
+GeÃ¤ndert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
+GeÃ¤ndert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
 Erstellt: 01.09.2005 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
-Encoding: ISO-8859-1
+Encoding: UTF-8
 Record-Separator: \n
 Field-Separator:  ;
 
 Es kommen zwei Record-Arten vor: ATC-Record und Produkt-Record
 
-ATC-Record: alle folgenden Produkt-Records gehören zu diesem ATC-Code
+ATC-Record: alle folgenden Produkt-Records gehÃ¶ren zu diesem ATC-Code
 00: rectype           (#MGroup), CONST          -> Record-Type
 01: code              (1-7), NOT NULL           -> Atc-Code. siehe Glossar (AtcCode)
 02: de                (*)                       -> Deutsche Bezeichnung 
@@ -28,60 +29,60 @@ Produkt-Record:
 04: barcode           (Integer (13)), NOT NULL  -> Packungs-Barcode, zusammengesetzt aus iksnr und ikscd
 05: bsv_dossier       (Integer)                 -> BSV-Dossier
 06: pharmacode        (Integer)                 -> Pharmacode, wo vorhanden
-07: name_base         (*)                       -> Hauptname der Sequenz aus der Registrationsurkunde, enthält z.T. Dosisangaben.
+07: name_base         (*)                       -> Hauptname der Sequenz aus der Registrationsurkunde, enthÃ¤lt z.T. Dosisangaben.
 08: galenic_form      (*)                       -> Galenische Form, Deutsche Bezeichnung
-09: dose              (*)                       -> Dosierung. Wird falls möglich aus dem Namen gewonnen, andernfalls aus der Zusammensetzung.
-10: size              (*)                       -> Packungsgrösse (z.B. 5 x 28 Tabletten)
-11: numerical_size    (Integer)                 -> Packungsgrösse, verrechnet (z.B. 140)
+09: dose              (*)                       -> Dosierung. Wird falls mÃ¶glich aus dem Namen gewonnen, andernfalls aus der Zusammensetzung.
+10: size              (*)                       -> PackungsgrÃ¶sse (z.B. 5 x 28 Tabletten)
+11: numerical_size    (Integer)                 -> PackungsgrÃ¶sse, verrechnet (z.B. 140)
 12: price_exfactory   (Float)                   -> Exfactorypreis in Franken und Rappen
 13: price_public      (Float)                   -> Publikumspreis in Franken und Rappen 
 14: company           (*)                       -> Registrationsinhaber
 15: ikscat            (*)                       -> Abgabekategorie. A-E. siehe Glossar (Abgabekategorie)
 16: sl_entry          (Ja/Nein)                 -> Eintrag in der SL
-17: introduction_date (dd.mm.yyyy)              -> Datum der Aufnahme in die Spezialitätenliste
+17: introduction_date (dd.mm.yyyy)              -> Datum der Aufnahme in die SpezialitÃ¤tenliste
 18: limitation        (Ja/Nein)                 -> Limitation
 19: limitation_points (Integer)                 -> Limitationspunkte
 20: limitation_text   (*)                       -> Limitationstext in Deutsch
 21: lppv              (Ja/Nein)                 -> Eintrag in der LPPV
 22: registration_date (dd.mm.yyyy)              -> Datum der ersten Zulassung in der Schweiz
-23: inactive_date     (dd.mm.yyyy)              -> Falls ein Produkt unabhängig von der Swissmedic ausser Handel genommen wird: Datum der Ausserhandelnahme
-24: export_flag       (*)                       -> Wenn gesetzt: Produkt ist nur für den Export Bestimmt
-25: narcotic          (*)                       -> Wenn gesetzt: CAS Registry Number des Eintrags in der Betäubungsmittelliste
+23: inactive_date     (dd.mm.yyyy)              -> Falls ein Produkt unabhÃ¤ngig von der Swissmedic ausser Handel genommen wird: Datum der Ausserhandelnahme
+24: export_flag       (*)                       -> Wenn gesetzt: Produkt ist nur fÃ¼r den Export Bestimmt
+25: narcotic          (*)                       -> Wenn gesetzt: CAS Registry Number des Eintrags in der BetÃ¤ubungsmittelliste
 26: generic_type      (O/G)                     -> O: Original, G: Generikum
 27: has_generic       (Ja/Nein)                 -> Wenn Ja: es ist mindestens ein Generikum zu diesem Produkt bekannt
-28: deductible        (10%/20%)                 -> Selbstbehalt für SL-Produkte
+28: deductible        (10%/20%)                 -> Selbstbehalt fÃ¼r SL-Produkte
 29: out_of_trade      (Ja/Nein)                 -> Ausser Handel laut http://www.refdata.ch ?
-30: complementary     (C/A/H/P)                 -> Komplementärprodukt,siehe Glossar (Komplementärprodukt)
+30: complementary     (C/A/H/P)                 -> KomplementÃ¤rprodukt,siehe Glossar (KomplementÃ¤rprodukt)
 
 ## Glossar ##
 * AtcCode:
 Anatomisch-Therapeutisch-Chemischer Code der durch die WHO vergeben wird. Hat 5 Ebenen:
-Level 1: C       -> Anatomische Gruppierung,    z.B. A:       Alimentäres System und Stoffwechsel
-Level 2: +NN     -> Therapeutische Gruppierung, z.B. A02:     Mittel bei Säure bedingten Erkrankungen
+Level 1: C       -> Anatomische Gruppierung,    z.B. A:       AlimentÃ¤res System und Stoffwechsel
+Level 2: +NN     -> Therapeutische Gruppierung, z.B. A02:     Mittel bei SÃ¤ure bedingten Erkrankungen
 Level 3:   +C    -> Therapeutische Untergruppe, z.B. A02A:    Antacida
 Level 4:    +C   -> Chemische Gruppierung,      z.B. A02AA:   Magnesium-haltige Verbindungen
 Level 5:     +NN -> Wirkstoff(-Kombination),    z.B. A02AA01: Magnesiumcarbonat
 
 * Abgabekategorie
-A: verschärft Rezeptpflichtig
+A: verschÃ¤rft Rezeptpflichtig
 B: Rezeptpflichtig
-C: erhältlich in Apotheken ohne Rezept
-D: erhältlich in Apotheken und Drogerien
+C: erhÃ¤ltlich in Apotheken ohne Rezept
+D: erhÃ¤ltlich in Apotheken und Drogerien
 http://www.trichema.ch/D/faq.php#15
 
 * CAS Registry Number:
   http://www.cas.org/EO/regsys.html
 
-* Komplementärprodukt:
-C: Komplementärprodukt
+* KomplementÃ¤rprodukt:
+C: KomplementÃ¤rprodukt
 A: Antroposophisches Heilmittel
-H: Homöopathisches Heilmittel
+H: HomÃ¶opathisches Heilmittel
 P: Phytotherapeutisches Heilmittel
 
 * Version
-Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+Versionsnummern bezeichnen Ã„nderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
-- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+- Minor:         Kleinere Ã„nderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: ErgÃ¤nzungen und Ã„nderungen im Datenbeschrieb, die keine Ã„nderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/oddb.csv.txt

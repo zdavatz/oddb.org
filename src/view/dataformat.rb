@@ -11,7 +11,7 @@ module ODDB
 				name = ''
 				line = ''
 				last = ''
-				txt.to_s.split(/(:?[\s-])/).each { |part|
+				txt.to_s.split(/(:?[\s-])/u).each { |part|
 					if((line.length + last.length + part.length) > length \
 						&& part.length > 3)
 						name << line << last << '<br>'
@@ -46,7 +46,7 @@ module ODDB
           if dose.is_a?(Quanty)
 					  dose = (dose && (dose.qty > 0)) ? dose : nil
           end
-					dose.to_s.gsub(/\s+/, '&nbsp;')
+					dose.to_s.gsub(/\s+/u, '&nbsp;')
 				end
 			end
 			def name_base(model, session=@session)

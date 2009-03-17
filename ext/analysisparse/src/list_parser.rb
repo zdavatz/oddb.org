@@ -17,16 +17,16 @@ module ODDB
 			grammar = <<-EOG
 Grammar AnalysisList
 	Tokens
-		SPACE				= /[\\n\\s\\t ]/	[:Skip]
-		NEWLINE			= /\\n/
-		FINDING			= /\\b[pn](?=\\s)/
-		GROUP				=	/[0-9]{4}/
-		LABAREA			= /(#{permutations.join('|')}) *$/
-		LIMITATION	= /[#{STOPCHARS}]\\s*[Ll]imitation:/
-		POSITION		=	/^\\s*[0-9]{2,}/
-		REVISION		= /[CS]|N(,\s*ex)?|TP/
-		TAXPOINTS		=	/[0-9]+/
-		WORD				=	/((\\d{1,2}\\.){2}\\d{4})|(\\d{4}\.\\d{2})|((?!\\b[pn]\\s|\\s*Limitation:|\\s*limitation:)[^#{STOPCHARS}\\s\\t ]+)|([#{STOPCHARS}])/im
+		SPACE				= /[\\n\\s\\t ]/u [:Skip]
+		NEWLINE			= /\\n/u
+		FINDING			= /\\b[pn](?=\\s)/u
+		GROUP				=	/[0-9]{4}/u
+		LABAREA			= /(#{permutations.join('|')}) *$/u
+		LIMITATION	= /[#{STOPCHARS}]\\s*[Ll]imitation:/u
+		POSITION		=	/^\\s*[0-9]{2,}/u
+		REVISION		= /[CS]|N(,\s*ex)?|TP/u
+		TAXPOINTS		=	/[0-9]+/u
+		WORD				=	/((\\d{1,2}\\.){2}\\d{4})|(\\d{4}\.\\d{2})|((?!\\b[pn]\\s|\\s*Limitation:|\\s*limitation:)[^#{STOPCHARS}\\s\\t ]+)|([#{STOPCHARS}])/imu
 	Productions
 		Line				->	REVISION? GROUP '.' POSITION '*'? 
 										TAXPOINTS FINDING? Description

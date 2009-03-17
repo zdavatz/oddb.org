@@ -57,7 +57,7 @@ class Parts < HtmlGrid::List
     [2,0] => "x",
     [3,0] => :count,
     [4,0] => :commercial_form,
-    [5,0] => "à",
+    [5,0] => "Ã ",
     [6,0] => :measure,
     [7,0] => :composition,
     [8,0] => :unsaved,
@@ -70,7 +70,7 @@ class Parts < HtmlGrid::List
   DEFAULT_CLASS = HtmlGrid::InputText
   EMPTY_LIST = true
   HTTP_HEADERS = {
-    "Content-Type"	=>	"text/html; charset=iso-8859-1",
+    "Content-Type"	=>	"text/html; charset=UTF-8",
     "Cache-Control"	=>	"private, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
     "Pragma"				=>	"no-cache",
     "Expires"				=>	Time.now.rfc1123,

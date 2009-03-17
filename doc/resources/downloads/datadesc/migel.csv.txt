@@ -1,15 +1,16 @@
 Datenbeschrieb migel.csv
 
-Version: 2.1
-Geändert: 17.04.2007 (2.1)   durch hwyss@ywesee.com
-Geändert: 30.09.2005 (2.0.2) durch hwyss@ywesee.com
-Geändert: 28.09.2005 (2.0.1) durch ffricker@ywesee.com
-Geändert: 27.09.2005 (2.0)   durch ffricker@ywesee.com
+Version: 2.2
+GeÃ¤ndert: 12.03.2009 (2.2)   durch hwyss@ywesee.com
+GeÃ¤ndert: 17.04.2007 (2.1)   durch hwyss@ywesee.com
+GeÃ¤ndert: 30.09.2005 (2.0.2) durch hwyss@ywesee.com
+GeÃ¤ndert: 28.09.2005 (2.0.1) durch ffricker@ywesee.com
+GeÃ¤ndert: 27.09.2005 (2.0)   durch ffricker@ywesee.com
 Erstellt: 26.09.2005 (1.0)   durch ffricker@ywesee.com
 
 ## Struktur ##
-Encoding: ISO-8859-1
-Record-Separator: \n (Für New-Lines in Feldern siehe Glossar: New-Line)
+Encoding: UTF-8
+Record-Separator: \n (FÃ¼r New-Lines in Feldern siehe Glossar: New-Line)
 Field-Separator:  ;
 
 Migel-Record:
@@ -32,10 +33,10 @@ Migel-Record:
 16: product_de             (*)             -> Produkt-Bezeichnung De.
 17: product_fr             (*)             -> Produkt-Bezeichnung Fr.
 18: product_it             (*)             -> Produkt-Bezeichnung It.
-19: accessory_code         (ZZ.V)          -> Zubehör-Code
-20: accessory_de           (*)             -> Zubehör De.
-21: accessory_fr           (*)             -> Zubehör Fr.
-22: accessory_it           (*)             -> Zubehör It.
+19: accessory_code         (ZZ.V)          -> ZubehÃ¶r-Code
+20: accessory_de           (*)             -> ZubehÃ¶r De.
+21: accessory_fr           (*)             -> ZubehÃ¶r Fr.
+22: accessory_it           (*)             -> ZubehÃ¶r It.
 23: product_limitation_de  (*)             -> Produkt-Limitation De.
 24: product_limitation_fr  (*)             -> Produkt-Limitation Fr.
 25: product_limitation_it  (*)             -> Produkt-Limitation It.
@@ -50,7 +51,7 @@ Migel-Record:
 ## Glossar ##
 * Sprachen
   De. - Deutsch
-  Fr. - Französisch
+  Fr. - FranzÃ¶sisch
   It. - Italienisch
 
 * Migel-Code
@@ -58,7 +59,7 @@ Migel-Record:
   |  |  |  |  |
   |  |  |  |  Verkaufsart
   |  |  |  |
-  |  |  |  Zubehör
+  |  |  |  ZubehÃ¶r
   |  |  |
   |  |  Produkt
   |  |
@@ -67,17 +68,17 @@ Migel-Record:
   Produkt-Gruppe
 
 * New-Line
-  In den Ausgangsdaten wurden Zeilenumbrüche mit ASCII-11 (Vertical Tab)
+  In den Ausgangsdaten wurden ZeilenumbrÃ¼che mit ASCII-11 (Vertical Tab)
   formatiert. In unseren Datenbanksystemen sind diese Daten jedoch als
   ACSCII-10 (Line-Feed) gespeichert.
-  Aufgrund der Tatsache, das viele CSV-Parser mühe haben, Record-Seperators
+  Aufgrund der Tatsache, das viele CSV-Parser mÃ¼he haben, Record-Seperators
   innerhalb von Fields anzutreffen, sind die Daten im CSV-Export mit den
   Vertical-Tabs formatiert.
           
 * Version
-Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+Versionsnummern bezeichnen Ã„nderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
-- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+- Minor:         Kleinere Ã„nderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: ErgÃ¤nzungen und Ã„nderungen im Datenbeschrieb, die keine Ã„nderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/migel.csv.txt

@@ -6,14 +6,14 @@ require 'parser'
 module ODDB
 	module AnalysisParse
 		class AntibodyListParser < Parser
-			LINE_PTRN = /^([CNS]|N,\s*ex|TP)?\s*Auto/m
+			LINE_PTRN = /^([CNS]|N,\s*ex|TP)?\s*Auto/mu
 			grammar = <<-EOG
 Grammar AnalysisList
 	Tokens
-		SPACE				= /[\\n\\s\\t ]/	[:Skip]
-		NEWLINE			= /\\n/
-		REVISION		= /^[CS]|N(,\s*ex)?|TP/
-		WORD				=	/(\\d{4}\.\\d{2})|\\d{4}\\.\\d{2}|Auto.*|\\?\\s*kapitel\\s*\\d*,\\s*pos\\.\\s*/im
+		SPACE				= /[\\n\\s\\t ]/u [:Skip]
+		NEWLINE			= /\\n/u
+		REVISION		= /^[CS]|N(,\s*ex)?|TP/u
+		WORD				=	/(\\d{4}\.\\d{2})|\\d{4}\\.\\d{2}|Auto.*|\\?\\s*kapitel\\s*\\d*,\\s*pos\\.\\s*/imu
 	Productions
 		Line				->	REVISION? Description
 										

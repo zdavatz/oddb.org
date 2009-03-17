@@ -18,7 +18,7 @@ module ODDB
 		def initialize(qty, unit=nil)
 		  np = '-?[0-9]+(?:[.,][0-9]+)?' ## numerical pattern
 			qty_str = ''
-			if(match = %r{(#{np})\s*-\s*(#{np})}.match(qty.to_s))
+			if(match = %r{(#{np})\s*-\s*(#{np})}u.match(qty.to_s))
 				qty = round(match[1].to_f)..round(match[2].to_f)
 			end
 			if(qty.is_a?(Range))
@@ -26,7 +26,7 @@ module ODDB
 				qty = (qty.first + qty.last) / 2.0
 				@not_normalized = [qty_str, unit].compact.join(' ')
 			end
-			if(match = %r{([^/]*)/\s*(#{np})\s*(.*)}.match(unit.to_s))
+			if(match = %r{([^/]*)/\s*(#{np})\s*(.*)}u.match(unit.to_s))
 				qty_str = round(qty).to_s
 				div = round(match[2])
 				@not_normalized = [
@@ -58,8 +58,8 @@ module ODDB
 			end
 		end
     def scale
-      if @not_normalized && str = @not_normalized[%r{/.*}]
-        Dose.new str[/[\d.]+/], str[/\D+$/]
+      if @not_normalized && str = @not_normalized[%r{/.*}u]
+        Dose.new str[/[\d.]+/u], str[/\D+$/u]
       end
     rescue
     end
@@ -76,7 +76,7 @@ module ODDB
 		def to_s
 			@not_normalized or begin
 				val = if(@val.is_a? Float)
-					sprintf('%.5f', @val).gsub(/0+$/, '')
+					sprintf('%.5f', @val).gsub(/0+$/u, '')
 				else
 					@val
 				end
@@ -127,7 +127,7 @@ module ODDB
 		end
 		private
 		def round(qty)
-			qty = qty.to_s.gsub(/'/, '').gsub(',', '.')
+			qty = qty.to_s.gsub(/'/u, '').gsub(',', '.')
 			if(qty.to_f == qty.to_i)
 				qty.to_i
 			else

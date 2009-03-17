@@ -369,7 +369,7 @@ module ODDB
 		ZONES = [:admin, :analysis, :doctors, :interactions, :drugs, :migel, :user, 
 			:hospitals, :substances, :companies]
 		def code(value)
-			pattern = /^[A-Z]([0-9]{2}([A-Z]([A-Z]([0-9]{2})?)?)?)?$/i
+			pattern = /^[A-Z]([0-9]{2}([A-Z]([A-Z]([0-9]{2})?)?)?)?$/iu
 			if(valid = pattern.match(value.capitalize))
 				valid[0].upcase
 			elsif(value.empty?)
@@ -378,7 +378,7 @@ module ODDB
 				raise SBSM::InvalidDataError.new(:e_invalid_atc_class, :atc_class, value)
 			end
 		end
-    @@dose = /(\d+(?:[.,]\d+)?)\s*(.*)/
+    @@dose = /(\d+(?:[.,]\d+)?)\s*(.*)/u
 		def dose(value)
 			return nil if value.empty?
 			if(valid = @@dose.match(value))
@@ -420,7 +420,7 @@ module ODDB
 		def galenic_group(value)
 			pointer(value)
 		end
-    @@ikscat = /[ABCDE]|Sp/
+    @@ikscat = /[ABCDE]|Sp/u
 		def ikscat(value)
 			return '' if value.empty?
 			if(valid = @@ikscat.match(value.capitalize))
@@ -442,7 +442,7 @@ module ODDB
       RMail::Address.parse(value.to_s).collect { |parsed| parsed.address }
     end
 		def search_query(value)
-			result = validate_string(value).gsub(/\*/, '')
+			result = validate_string(value).gsub(/\*/u, '')
 			if(result.length > 2)
 				result
 			else
@@ -459,7 +459,7 @@ module ODDB
 		def seqnr(value)
 			swissmedic_id(:seqnr, value, 1..2, 2)
 		end
-    @@swissmedic = /^\d+$/
+    @@swissmedic = /^\d+$/u
 		def swissmedic_id(key, value, range, pad=false)
 			return value if value.empty?
 			valid = @@swissmedic.match(value)
@@ -494,7 +494,7 @@ module ODDB
 				raise SBSM::InvalidDataError.new("e_invalid_pointer", :pointer, value)
 			end
 		end
-    @@yus = /^org\.oddb\.model\.[!*.a-z]+/
+    @@yus = /^org\.oddb\.model\.[!*.a-z]+/u
     def yus_association(value)
       value = value.to_s
       if(@@yus.match(value.to_s))

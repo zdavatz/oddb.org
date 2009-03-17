@@ -53,7 +53,7 @@ module ODDB
 					  # switch between old and new (2001) FI-Schema
 						set_templates(@chapter)
 					elsif([@company, @galenic_form].include?(@chapter) \
-						&& /Zusammensetzung|Composition|Principes\s*actifs/i.match(@chapter.heading))
+						&& /Zusammensetzung|Composition|Principes\s*actifs/iu.match(@chapter.heading))
 						if(@chapter == @company)
 							@company = nil
 						end
@@ -132,7 +132,6 @@ module ODDB
         @row = nil
       end
       def send_flowing_data(text)
-        text.gsub!(/\037/, '')
         if(@table && @row.nil?)
           @section.paragraphs.compact!
           @section.paragraphs << @table
@@ -149,10 +148,10 @@ module ODDB
       end
       def valid_chapter?(text)
         case text.strip
-        when "", '*', /Wirkstoffe/, /Hilfsstoffe/, /Klinische Wirksamkeit/,
-          /Atc.?code/i, /Wirkungsmechanismus/, /Absorption/, /Metabolismus/,
-          /Haltbarkeit/, /Lagerung/, /Handhabung/, /Tabe(lle)?/, /^-/,
-          /Tableau/
+        when "", '*', /Wirkstoffe/u, /Hilfsstoffe/u, /Klinische Wirksamkeit/u,
+          /Atc.?code/iu, /Wirkungsmechanismus/u, /Absorption/u, /Metabolismus/u,
+          /Haltbarkeit/u, /Lagerung/u, /Handhabung/u, /Tabe(lle)?/u, /^-/u,
+          /Tableau/u
           false
         else
           true
@@ -191,7 +190,7 @@ module ODDB
         @table_handler = FachinfoTableHandler.new
         @cutoff_fontsize = 40
         @max_fontsize = 0
-        @iconv = Iconv.new('latin1//TRANSLIT//IGNORE', 'utf16')
+        @iconv = Iconv.new('UTF-8', 'UTF-16')
 			end
 			def paragraph_end
 				unless(@writer.nil?)
@@ -214,10 +213,7 @@ module ODDB
 			end
       def run_of_text(text, char_props)
         text = @iconv.iconv(text)
-				# remove M$-Word special-chars
-				text.tr!("\031\036\034\023", "'\"\"-")
-        text.gsub!(/,,/, '"')
-        text.split(/\v/).each_with_index { |run, idx|
+        text.split(/\v/u).each_with_index { |run, idx|
           if(idx > 0 && @writer)
             @writer.send_line_break
           end
@@ -236,7 +232,7 @@ module ODDB
           end
           @max_fontsize = [@max_fontsize, char_props.fontsize].max
 				end
-				if(/^-{5,}$/.match(text))
+				if(/^-{5,}$/u.match(text))
 					@preformatted = text.length
 				elsif(@preformatted && (text.length > @preformatted))
 					@preformatted = nil

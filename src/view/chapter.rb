@@ -5,6 +5,7 @@ require 'htmlgrid/value'
 require 'htmlgrid/labeltext'
 require 'htmlgrid/textarea'
 require 'htmlgrid/dojotoolkit'
+require 'encoding/character/utf-8'
 require 'view/form'
 
 module ODDB
@@ -17,7 +18,7 @@ module ODDB
       TD_STYLE = 'padding: 4px; vertical-align: top;'
       def formats(context, paragraph)
         res = ''
-        txt = paragraph.text
+        txt = u paragraph.text
         paragraph.formats.each { |format|
           tag = :span
           style = [] 
@@ -69,7 +70,7 @@ module ODDB
           context.p(section_attr) { 
             head = context.span(subhead_attr) {
               self.escape(section.subheading) }
-            if(/\n\s*$/.match(section.subheading))  
+            if(/\n\s*$/u.match(section.subheading))
               head << context.br
             elsif(!section.subheading.strip.empty?)
               head << "&nbsp;"

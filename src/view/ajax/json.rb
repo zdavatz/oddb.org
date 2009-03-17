@@ -9,7 +9,7 @@ module ODDB
     module Ajax
 class Json < HtmlGrid::Component
   HTTP_HEADERS = {
-    'Content-Type'  =>  'text/javascript; charset=ISO-8859-1',
+    'Content-Type'  =>  'text/javascript; charset=UTF-8',
   }
   def to_html(context)
     @model.to_json

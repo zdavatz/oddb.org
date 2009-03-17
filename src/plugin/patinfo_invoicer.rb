@@ -36,7 +36,7 @@ module ODDB
                   item.text = [reg.iksnr, seq.seqnr].join(' ')
                   item.time = Time.now
                   item.type = :annual_fee
-                  item.unit = 'Jahresgebühr'
+                  item.unit = "Jahresgeb\374hr"
                   item.vat_rate = VAT_RATE
                   item.item_pointer = seq.pointer
                   items.push(item)
@@ -65,7 +65,7 @@ module ODDB
     end
     def unique_name(item)
       name = item.text
-      if(/^[0-9]{5} [0-9]{2}$/.match(name))
+      if(/^[0-9]{5} [0-9]{2}$/u.match(name))
         name.tr(' ', '_')
       elsif((ptr = item.item_pointer) && (seq = ptr.resolve(@app)) \
             && seq.is_a?(Sequence))

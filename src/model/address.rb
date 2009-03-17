@@ -9,7 +9,7 @@ module ODDB
 			:plz, :city, :type
 		
 		def city
-			if(match =/[^0-9]+/.match(self.lines[-1]))
+			if(match =/[^0-9]+/u.match(self.lines[-1]))
 				 match.to_s.strip
 			end
 		end
@@ -18,16 +18,16 @@ module ODDB
 		end
 		def lines_without_title
 			self.lines.select { |line|
-				!/(Prof(\.|ess))|(dr\.\s*med)|(Docteur)/i.match(line)
+				!/(Prof(\.|ess))|(dr\.\s*med)|(Docteur)/iu.match(line)
 			}
 		end
 		def number 
-			if(match = /[0-9][^,]*/.match(self.lines[-2]))
+			if(match = /[0-9][^,]*/u.match(self.lines[-2]))
 				match.to_s.strip
 			end
 		end
 		def plz
-			if(match = /[1-9][0-9]{3}/.match(self.lines[-1]))
+			if(match = /[1-9][0-9]{3}/u.match(self.lines[-1]))
 				 match.to_s
 			end
 		end
@@ -35,7 +35,7 @@ module ODDB
 			ODDB.search_terms([self.lines_without_title, @fon, @fax, @plz, @city])
 		end
 		def street
-			if(match = /[^0-9,]+/.match(self.lines[-2]))
+			if(match = /[^0-9,]+/u.match(self.lines[-2]))
 				match.to_s.strip
 			end
 		end
@@ -45,7 +45,7 @@ module ODDB
 	end
 	class Address2
 		include PersistenceMethods
-		@@city_pattern = /[^0-9]+[^0-9\-](?!-)([0-9]+)?/
+		@@city_pattern = /[^0-9]+[^0-9\-](?!-)([0-9]+)?/u
 		attr_accessor :name, :additional_lines, :address,
 			:location, :title, :fon, :fax, :canton, :type
 		alias :address_type :type
@@ -97,12 +97,12 @@ module ODDB
 			end
 		end
 		def number 
-			if(match = /[0-9][^\s,]*/.match(@address.to_s))
+			if(match = /[0-9][^\s,]*/u.match(@address.to_s))
 				match.to_s.strip
 			end
 		end
 		def plz
-			if(match = /[1-9][0-9]{3}/.match(@location.to_s))
+			if(match = /[1-9][0-9]{3}/u.match(@location.to_s))
 				 match.to_s
 			end
 		end
@@ -111,7 +111,7 @@ module ODDB
 				self.city, self.plz])
 		end
 		def street
-			if(match = /[^0-9,]+/.match(@address.to_s))
+			if(match = /[^0-9,]+/u.match(@address.to_s))
 				match.to_s.strip
 			end
 		end

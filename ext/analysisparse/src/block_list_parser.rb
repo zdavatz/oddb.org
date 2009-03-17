@@ -6,7 +6,7 @@ require 'parser'
 module ODDB
 	module AnalysisParse
 		class BlockListParser < Parser
-			LINE_PTRN = /^\s*([CNS]|N,\s*ex|TP)?\s*\d{4}\.\d{2,}\s+\d/
+			LINE_PTRN = /^\s*([CNS]|N,\s*ex|TP)?\s*\d{4}\.\d{2,}\s+\d/u
 			labareas = %w{C G H I M}
 			permutations = []
 			while(la = labareas.shift)
@@ -18,14 +18,14 @@ module ODDB
 			grammar = <<-EOG
 Grammar AnalysisList
 	Tokens
-		SPACE				= /[\\n\\s\\t ]/	[:Skip]
-		NEWLINE			= /\\n/
-		GROUP				=	/[0-9]{4}/
-		LABAREA			= /(#{permutations.join('|')}) *$/
-		POSITION		=	/[0-9]{2,}/
-		REVISION		= /^[CS]|N(,\s*ex)?|TP/
-		TAXPOINTS		=	/[0-9]+/
-		WORD				=	/((\\d{1,2}\\.){2}\\d{4})|(\\d{4}\.\\d{2})|([^#{STOPCHARS}\\s\\t ]+)|([#{STOPCHARS}])/im
+		SPACE				= /[\\n\\s\\t ]/u [:Skip]
+		NEWLINE			= /\\n/u
+		GROUP				=	/[0-9]{4}/u
+		LABAREA			= /(#{permutations.join('|')}) *$/u
+		POSITION		=	/[0-9]{2,}/u
+		REVISION		= /^[CS]|N(,\s*ex)?|TP/u
+		TAXPOINTS		=	/[0-9]+/u
+		WORD				=	/((\\d{1,2}\\.){2}\\d{4})|(\\d{4}\.\\d{2})|([^#{STOPCHARS}\\s\\t ]+)|([#{STOPCHARS}])/imu
 	Productions
 		Line				->	REVISION? GROUP '.' POSITION
 										TAXPOINTS Description LABAREA

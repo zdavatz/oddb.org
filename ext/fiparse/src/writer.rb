@@ -55,7 +55,7 @@ module ODDB
 			def send_literal_data(data)
 				if(@target)
 					@target.preformatted!
-					@target << data.gsub(/\r\n?/, "\n")
+					@target << data.gsub(/\r\n?/u, "\n")
 				end
 			end
 			def set_target(target)

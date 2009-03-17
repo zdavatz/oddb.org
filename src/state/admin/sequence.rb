@@ -305,7 +305,7 @@ class Sequence < State::Admin::Global
 		if((company = @model.company) && (addr = company.regulatory_email))
 			lookandfeel = @session.lookandfeel
 			mail = TMail::Mail.new
-			mail.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
+			mail.set_content_type('text', 'plain', 'charset'=>'UTF-8')
 			mail.to = [addr]
 			mail.from = MAIL_FROM
 			mail.subject = "#{@model.name_base} #{@model.iksnr}"

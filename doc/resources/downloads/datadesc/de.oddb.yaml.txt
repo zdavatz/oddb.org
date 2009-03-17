@@ -1,6 +1,7 @@
 Datenbeschrieb de.oddb.yaml
 
-Version:  1.0.0
+Version:  1.0.1
+GeÃ¤ndert: 12.03.2009 (1.0.1) durch hwyss@ywesee.com
 Erstellt: 12.10.2007 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
@@ -16,7 +17,7 @@ Drugs::Product:
 - sequences          (Array (Drugs::Sequence))   -> Sequenzen zu diesem Produkt
 
 Util::Multilingual:
-- canonical          (Hash (Symbol, String))     -> Sprachkürzel -> Bezeichnung
+- canonical          (Hash (Symbol, String))     -> SprachkÃ¼rzel -> Bezeichnung
 - synonyms           (Array (String))            -> Weitere Bezeichnungen
 
 Business::Company:
@@ -27,7 +28,7 @@ Drugs::Sequence:
 - oid                (Integer, NOT NULL)         -> Unique Identifier
 - atc                (Drugs::Atc)                -> Atc-Klassierung der Sequenz 
 - compositions       (Array (Drugs::Composition) -> Zusammensetzungen
-- packages           (Array (Drugs::Package)     -> Packungsgrössen
+- packages           (Array (Drugs::Package)     -> PackungsgrÃ¶ssen
 
 Drugs::Atc:
 - oid                (Integer, NOT NULL)         -> Unique Identifier
@@ -39,7 +40,7 @@ Drugs::Atc:
 
 Drugs::Composition:
 - oid                (Integer, NOT NULL)         -> Unique Identifier
-- equivalence_factor (Integer)                   -> Wirkstärkenequivalenfaktor gemäss DIMDI
+- equivalence_factor (Integer)                   -> WirkstÃ¤rkenequivalenfaktor gemÃ¤ss DIMDI
 - galenic_form       (Drugs::GalenicForm)        -> Galenische Form
 - active_agents      (Array (Drugs::ActiveAgent) -> Wirkstoff/Dosis
 - parts              (Array (Drugs::Part)        -> Packungsteile mit dieser Zusammensetzung
@@ -71,7 +72,7 @@ Drugs::ActiveAgent
 Drugs::Part:
 - oid                (Integer, NOT NULL)         -> Unique Identifier
 - multi              (Integer)                   -> Multi-Pack (m x n)
-- quantity           (Drugs::Dose)               -> Inhalt bei Flüssigkeiten und Aerosolen
+- quantity           (Drugs::Dose)               -> Inhalt bei FlÃ¼ssigkeiten und Aerosolen
 - size               (Integer)                   -> Anzahl Einheiten im Packungsteil
 - unit               (Drugs::Unit)               -> Handelsform
 
@@ -81,7 +82,7 @@ Util::Code:
 - value:             (*)                         -> Wert des Codes
 
 Drugs::Dose:
-- val                (Float, NOT NULL)            -> Wert/Grösse der Dosis
+- val                (Float, NOT NULL)            -> Wert/GrÃ¶sse der Dosis
 - unit               (String)                     -> Einheit der Dosis
 
 Drugs::GalenicGroup:
@@ -106,7 +107,7 @@ Drugs::SubstanceGroup:
 
 ## Glossar ##
 * Administration
-Route of Administration gemäss WHO
+Route of Administration gemÃ¤ss WHO
 N:  nasal
 O:  oral
 P:  parenteral
@@ -117,8 +118,8 @@ V:  vaginal
 
 * AtcCode:
 Anatomisch-Therapeutisch-Chemischer Code der durch die WHO vergeben wird. Hat 5 Ebenen:
-Level 1: C       -> Anatomische Gruppierung,    z.B. A:       Alimentäres System und Stoffwechsel
-Level 2: +NN     -> Therapeutische Gruppierung, z.B. A02:     Mittel bei Säure bedingten Erkrankungen
+Level 1: C       -> Anatomische Gruppierung,    z.B. A:       AlimentÃ¤res System und Stoffwechsel
+Level 2: +NN     -> Therapeutische Gruppierung, z.B. A02:     Mittel bei SÃ¤ure bedingten Erkrankungen
 Level 3:   +C    -> Therapeutische Untergruppe, z.B. A02A:    Antacida
 Level 4:    +C   -> Chemische Gruppierung,      z.B. A02AA:   Magnesium-haltige Verbindungen
 Level 5:     +NN -> Wirkstoff(-Kombination),    z.B. A02AA01: Magnesiumcarbonat
@@ -130,7 +131,7 @@ Richtlinien der WHO zur Dosierung von Medikamenten: http://www.whocc.no/atcddd/
 Kurzcodes der DIMDI, z.B. "TABL"
 
 * GalenicGroup:
-Gruppierung von Galenischen Formen. Alle Galenischen Formen mit der gleichen Galenischen Gruppe gelten für Vergleichszwecke als aequivalent.
+Gruppierung von Galenischen Formen. Alle Galenischen Formen mit der gleichen Galenischen Gruppe gelten fÃ¼r Vergleichszwecke als aequivalent.
 
 * Hash
 Hash-Table. Unsortierte, indexierte Collection.
@@ -141,18 +142,18 @@ Hash-Table. Unsortierte, indexierte Collection.
 - festbetragsstufe
 
 * Sequence, Sequenz:
-Bezeichnung für die Gruppierung aller Packungsgrössen einer Registration, deren Dosierung/Zusammensetzung identisch ist.
+Bezeichnung fÃ¼r die Gruppierung aller PackungsgrÃ¶ssen einer Registration, deren Dosierung/Zusammensetzung identisch ist.
 
 * Symbol: 
-Interne Repräsentation eines Namens. In anderen Programmiersprachen auch Atom.
+Interne ReprÃ¤sentation eines Namens. In anderen Programmiersprachen auch Atom.
 
 * YAML
 Yet Another Markup Language. Offener Standard, beschrieben unter http://www.yaml.org
 
 * Version
-Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+Versionsnummern bezeichnen Ã„nderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
-- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+- Minor:         Kleinere Ã„nderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: ErgÃ¤nzungen und Ã„nderungen im Datenbeschrieb, die keine Ã„nderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/de.oddb.yaml.txt

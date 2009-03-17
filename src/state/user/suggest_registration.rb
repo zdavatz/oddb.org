@@ -28,7 +28,7 @@ class SuggestRegistration < Global
 	def send_notification(email)
 		from = email
 		mail = TMail::Mail.new
-		mail.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
+		mail.set_content_type('text', 'plain', 'charset'=>'UTF-8')
 		mail.from = from 
 		mail.subject = sprintf("%s %s", 
 			@session.lookandfeel.lookup(:registration_subject),

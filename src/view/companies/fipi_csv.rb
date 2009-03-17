@@ -25,7 +25,7 @@ class FiPiCsv < HtmlGrid::Component
     :date_pi_fr,
   ]
   def http_headers
-    name = @model.name.gsub(/[\s]+/, '_')
+    name = @model.name.gsub(/[\s]+/u, '_')
     {
       'Content-Type'         =>  'text/csv',
       'Content-Disposition'  =>  "attachment;filename=#{name}.csv",

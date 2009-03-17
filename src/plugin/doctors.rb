@@ -179,7 +179,7 @@ module ODDB
 						begin
 							results = meddata.search(criteria).select { |res|
 								check_with = res.values[0,check.size]
-								check_with.at(1).gsub!(/\d/, '')
+								check_with.at(1).gsub!(/\d/u, '')
 								check_with.at(1).strip!
 								check_with == check
 							}

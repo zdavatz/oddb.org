@@ -26,7 +26,7 @@ class SearchBar < HtmlGrid::InputText
 		submit = @lookandfeel._event_url(@container.event, args)
 		script = "if(#{@name}.value!='#{val}'){"
 		script << "var href = '#{submit}'"
-		script << "+escape(#{@name}.value.replace(/\\//, '%2F'));"
+		script << "+encodeURIComponent(#{@name}.value.replace(/\\//, '%2F'));"
 		script << "if(this.search_type)"
 		script << "href += '/search_type/' + this.search_type.value;"
     unless @lookandfeel.disabled?(:best_result)

@@ -77,10 +77,10 @@ C 8001.00 18 ABO-Blutgruppen und Antigen D Bestimmung (inkl. Ausschluss schwache
 			end
 			def test_parse_line__4
 				src = <<-EOS
-C 8269.00 15 Hämatogramm II (automatisiert): Hämatogramm I, plus Thrombozyten 
+C 8269.00 15 HÃ¤matogramm II (automatisiert): HÃ¤matogramm I, plus Thrombozyten 
 Limitation: nicht mit QBC-Methode
 				EOS
-				src = "C 8269.00 15 H\344matogramm II (automatisiert): H\344matogramm I, plus Thrombozyten Limitation: nicht mit QBC-Methode\n"
+				src = "C 8269.00 15 HÃ¤matogramm II (automatisiert): HÃ¤matogramm I, plus Thrombozyten Limitation: nicht mit QBC-Methode\n"
 				begin
 					result = @parser.parse_line(src)
 				rescue AmbigousParseException	=> e
@@ -92,7 +92,7 @@ Limitation: nicht mit QBC-Methode
 				:position			=>	'00',
 				:taxpoints		=>	15,
 				:analysis_revision			=>	'C',
-				:description	=>	'Hämatogramm II (automatisiert): Hämatogramm I, plus Thrombozyten',
+				:description	=>	'HÃ¤matogramm II (automatisiert): HÃ¤matogramm I, plus Thrombozyten',
 				:limitation		=>	'nicht mit QBC-Methode',
 				:permission		=>	nil,
 				:list_title			=>	nil,
@@ -104,18 +104,18 @@ Limitation: nicht mit QBC-Methode
 				src = <<-EOS
 5.3 Anhang C: Von Hebammen veranlasste Analysen (Art. 62 Abs. 1 Bst. c KVV)
 Bemerkungen
-Hebammen haben mit der Durchführung der Analysen dieser Liste die Laboratorien gemäss Artikel 54 Absatz 3 KVV zu betrauen.
+Hebammen haben mit der DurchfÃ¼hrung der Analysen dieser Liste die Laboratorien gemÃ¤ss Artikel 54 Absatz 3 KVV zu betrauen.
 Liste der Analysen
 Rev. Pos.-Nr. A TP Bezeichnung (Liste Hebammen)
 C 8001.00 18 ABO-Blutgruppen und Antigen D Bestimmung (inkl. Ausschluss schwaches D Antigen bei Rhesus D negativ) nach Empfehlungen BSD SRK "Erythrozytenserologische Unter- suchungen an Patientenproben"
 8017.00 * 45 Alpha-1-Fetoprotein (AFP)
-C 8200.00 35 Erythrozyten-Alloantikörper, Suchtest nach Empfehlungen BSD SRK "Erythrozyten- serologische Untersuchungen an Patienten- proben"
-C 8269.00 15 Hämatogramm II (automatisiert): Hämatogramm I, plus Thrombozyten Limitation: nicht mit QBC-Methode
+C 8200.00 35 Erythrozyten-AlloantikÃ¶rper, Suchtest nach Empfehlungen BSD SRK "Erythrozyten- serologische Untersuchungen an Patienten- proben"
+C 8269.00 15 HÃ¤matogramm II (automatisiert): HÃ¤matogramm I, plus Thrombozyten Limitation: nicht mit QBC-Methode
 8580.00 4 Urin-Teilstatus (5-10 Parameter)
 8606.00 30 Guthrie-Test
-9108.01 35 Hepatitis-B-Virus-HBc-Antikörper (IG), ql
+9108.01 35 Hepatitis-B-Virus-HBc-AntikÃ¶rper (IG), ql
 9108.40 35 Hepatitis-B-Virus-HBs-Antigennachweis EIA/RIA, ql
-9116.40 * 12 HIV 1+2 -Antikörper (Screening) Schnelltest, ql
+9116.40 * 12 HIV 1+2 -AntikÃ¶rper (Screening) Schnelltest, ql
 9132.01 35 Rubellavirus-Antik\uffffrper (IG oder IgG), ql
 9564.81 * 20 Treponema VDRL, qn
 9645.10 32 Toxoplasma gondii (Ig oder IgG)
@@ -159,34 +159,34 @@ ____*   _________________________________________
 			end
 			def test_parse_page__2
 				src = <<-EOS
-trifft nur das ärztliche Praxislaboratorium.
+trifft nur das Ã¤rztliche Praxislaboratorium.
 Teilliste 1
-Für diese Analysen kann für das ärztliche Praxislaboratorium der 
-Taxpunktwert in Tarifverträgen festgesetzt werden, wobei die Tax-
+FÃ¼r diese Analysen kann fÃ¼r das Ã¤rztliche Praxislaboratorium der 
+Taxpunktwert in TarifvertrÃ¤gen festgesetzt werden, wobei die Tax-
 punktzahl der Analysenliste gilt. Fehlt eine solche vertragliche
 Regelung, so gilt der Taxpunktwert der Analysenliste.
 Rev. Pos.-Nr. A TP Bezeichnung (Liste Grundversorgung, Teilliste 1)
 8259.00 9 Glukose, im Blut/Plasma/Serum
-C 8273.00 7 Hämatokrit, manuelle Bestimmung, kumu-
-lierbar mit 8210.00 Erythrozyten-Zählung, 8275.00 Hämoglobin, 8406.00 Leukozyten-
-Zählung und 8560.00 Thrombozyten-
-Zählung bis max. Taxpunktzahl 15
-(Hämatogramm II)
+C 8273.00 7 HÃ¤matokrit, manuelle Bestimmung, kumu-
+lierbar mit 8210.00 Erythrozyten-ZÃ¤hlung, 8275.00 HÃ¤moglobin, 8406.00 Leukozyten-
+ZÃ¤hlung und 8560.00 Thrombozyten-
+ZÃ¤hlung bis max. Taxpunktzahl 15
+(HÃ¤matogramm II)
 Limitation: nicht mit QBC-Methode
-C 8275.00 7 Hämoglobin, manuelle Bestimmung,
+C 8275.00 7 HÃ¤moglobin, manuelle Bestimmung,
 kumulierbar mit 8210.00 Erythrozyten-
-Zählung, 8273.00 Hämatokrit, 8406.00
-Leukozyten-Zählung und 8560.00
-Thrombozyten-Zählung bis max. Tax-
-punktzahl 15 (Hämatogramm II)
+ZÃ¤hlung, 8273.00 HÃ¤matokrit, 8406.00
+Leukozyten-ZÃ¤hlung und 8560.00
+Thrombozyten-ZÃ¤hlung bis max. Tax-
+punktzahl 15 (HÃ¤matogramm II)
 Limitation: nicht mit QBC-Methode
 8387.00 9 Kreatinin, im Blut/Plasma/Serum
-C 8406.00 9 Leukozyten-Zählung, manuelle Bestimmung,
+C 8406.00 9 Leukozyten-ZÃ¤hlung, manuelle Bestimmung,
 kumulierbar mit 8210.00 Erythrozyten-
-Zählung, 8273.00 Hämatokrit, 8275.00
-Hämoglobin und 8560.00 Thrombozyten-
-Zählung bis max. Taxpunktzahl 15
-(Hämatogramm II)
+ZÃ¤hlung, 8273.00 HÃ¤matokrit, 8275.00
+HÃ¤moglobin und 8560.00 Thrombozyten-
+ZÃ¤hlung bis max. Taxpunktzahl 15
+(HÃ¤matogramm II)
 Limitation: nicht mit QBC-Methode
 8517.00 12 Sediment: mikroskopische Untersuchung
 8519.00 6 Senkungsreaktion, exkl. Blutentnahme
@@ -225,18 +225,18 @@ EOS
 				src = <<-EOS
 5.3 Annexe C Analyses prescrites par des sages-femmes
 (art. 62 1er al. let. c OAMal)
-Préambule
-Les sages-femmes sont tenues de confier l'éxecution des analyses figurant sur cette liste à des laboratoires au sens de l'article 54 3e alinéa OAMal
+PrÃ©ambule
+Les sages-femmes sont tenues de confier l'Ã©xecution des analyses figurant sur cette liste Ã  des laboratoires au sens de l'article 54 3e alinÃ©a OAMal
 Liste des analyses
-Rév. No pos. A TP Dénomination (liste sages-femmes)
-C 8001.00 18 ABO, groupe sanguin et antigène D faible si Rhésus D nég.) selon les recommandations STS CRS "Sérologie érythrocytaire chez le patient"
-8017.00 * 45 Alpha-1-foetoprotéine (AFP)
-C 8200.00 35 érythrocytes, alloanticorps anti~, test de recherche selon les recommandation STS CRS "Sérologie érythrocytaire chez le patient"
-C 8269.00 15 Hémogramme II (automatisé): hémogramme I, plus thromboytes
-Limitation: pas avec la méthode QBC
-8580.00 4 Status urinaire partiel (5-10 paramètres)
+RÃ©v. No pos. A TP DÃ©nomination (liste sages-femmes)
+C 8001.00 18 ABO, groupe sanguin et antigÃ¨ne D faible si RhÃ©sus D nÃ©g.) selon les recommandations STS CRS "SÃ©rologie Ã©rythrocytaire chez le patient"
+8017.00 * 45 Alpha-1-foetoprotÃ©ine (AFP)
+C 8200.00 35 Ã©rythrocytes, alloanticorps anti~, test de recherche selon les recommandation STS CRS "SÃ©rologie Ã©rythrocytaire chez le patient"
+C 8269.00 15 HÃ©mogramme II (automatisÃ©): hÃ©mogramme I, plus thromboytes
+Limitation: pas avec la mÃ©thode QBC
+8580.00 4 Status urinaire partiel (5-10 paramÃ¨tres)
 8606.00 30 Guthrie, test de ~
-9116.40 * 12 HIV 1+2, dépistage des anticorps (par test rapide), ql
+9116.40 * 12 HIV 1+2, dÃ©pistage des anticorps (par test rapide), ql
 				45
 				EOS
 				begin
@@ -247,7 +247,7 @@ Limitation: pas avec la méthode QBC
 					:group				=>	'8001',
 					:position			=>	'00',
 					:taxpoints		=>	18,
-					:description	=>	'ABO, groupe sanguin et antigène D faible si Rhésus D nég.) selon les recommandations STS CRS "Sérologie érythrocytaire chez le patient"',
+					:description	=>	'ABO, groupe sanguin et antigÃ¨ne D faible si RhÃ©sus D nÃ©g.) selon les recommandations STS CRS "SÃ©rologie Ã©rythrocytaire chez le patient"',
 					:analysis_revision		=>	'C',
 					:list_title			=>	nil,
 					:taxpoint_type	=>	nil,
@@ -257,7 +257,7 @@ Limitation: pas avec la méthode QBC
 					:code					=>	'9116.40',
 					:group				=>	'9116',
 					:position			=>	'40',
-					:description	=>	'HIV 1+2, dépistage des anticorps (par test rapide), ql',
+					:description	=>	'HIV 1+2, dÃ©pistage des anticorps (par test rapide), ql',
 					:list_title		=>	nil,
 					:taxpoints		=>	12,
 					:taxpoint_type	=>	nil,

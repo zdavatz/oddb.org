@@ -508,7 +508,7 @@ module ODDB
 						result = @session.search_analysis(query, @session.language)
 						State::Analysis::Result.new(@session, result)
 					else
-						query = query.to_s.downcase.gsub(/\s+/, ' ')
+						query = query.to_s.downcase.gsub(/\s+/u, ' ')
 						stype = @session.user_input(:search_type) 
 						_search_drugs_state(query, stype)
 					end

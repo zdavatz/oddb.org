@@ -11,15 +11,15 @@ cyp450: !oddb.org,2003/ODDB::CyP450
     substance: !oddb.org,2003/ODDB::Substance 
       oid: 6361
       descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+        fr: "Chlorph\xC3\xA9namine"
         de: Chlorphenamin
-        fr: "Chlorph\xE9namine"
         lt: Chlorphenaminum
         en: Chlorphenamine
       synonyms: 
       - Chlorpheniraminum
       - Chlorpheniramin
       - Chlorpheniramine
-      - "Chlorph\xE9niramine"
+      - "Chlorph\xC3\xA9niramine"
       swissmedic_code: 
     auc_factor: "1"
   - !oddb.org,2003/ODDB::CyP450InhibitorConnection 
@@ -104,8 +104,8 @@ cyp450: !oddb.org,2003/ODDB::CyP450
     substance: !oddb.org,2003/ODDB::Substance 
       oid: 6912
       descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-        fr: Midodrine
         de: Midodrin
+        fr: Midodrine
         lt: Midodrinum
         en: Midodrine
       synonyms: []
@@ -151,8 +151,8 @@ cyp450: !oddb.org,2003/ODDB::CyP450
     substance: !oddb.org,2003/ODDB::Substance 
       oid: 5837
       descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-        fr: Fluvoxamin
         de: Fluvoxamin
+        fr: Fluvoxamin
         lt: Fluvoxamin
         en: Fluvoxamine
       synonyms: []

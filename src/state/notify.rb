@@ -27,7 +27,7 @@ module Notify
 	def breakline(txt, length)
 		name = ''
 		line = ''
-		txt.to_s.split(/(:?[\s-])/).each { |part|
+		txt.to_s.split(/(:?[\s-])/u).each { |part|
 			if((line.length + part.length) > length)
 				name << line << "\n"
 				line = part
@@ -64,7 +64,7 @@ module Notify
 
       text = RMail::Message.new
       header = text.header
-      header.add('Content-Type', 'text/plain', nil, 'charset' => 'ISO-8859-1')
+      header.add('Content-Type', 'text/plain', nil, 'charset' => 'UTF-8')
       text.body = [
 				breakline(@model.notify_message, 75),
 				"\n",
@@ -75,7 +75,7 @@ module Notify
 
       htmlpart = RMail::Message.new
       header = htmlpart.header
-      header.add('Content-Type', 'text/html', nil, 'charset' => 'ISO-8859-1')
+      header.add('Content-Type', 'text/html', nil, 'charset' => 'UTF-8')
       header.add('Content-Transfer-Encoding', 'quoted-printable')
       html = View::NotifyMail.new(@model, @session).to_html(@session.cgi)
       htmlpart.body = [html].pack('M')

@@ -36,11 +36,11 @@ class AddressSuggestion < Global
 			:fon, :fax, :title, :canton, :pointer,
 			:email_suggestion, :address_type] + mandatory
 		input = user_input(keys, mandatory)
-		input[:fax] = input[:fax].to_s.split(/\s*,\s*/)
-		input[:fon] = input[:fon].to_s.split(/\s*,\s*/)
+		input[:fax] = input[:fax].to_s.split(/\s*,\s*/u)
+		input[:fon] = input[:fon].to_s.split(/\s*,\s*/u)
 		lns = input[:additional_lines].to_s
 		input.store(:additional_lines, 
-			lns.split(/[\n\r]+/))
+			lns.split(/[\n\r]+/u))
 		input.store(:type, input.delete(:address_type))
 		if(!error? && (pointer = input.delete(:pointer)) \
 			&& (sugg = pointer.resolve(@session)) \
@@ -58,7 +58,7 @@ class AddressSuggestion < Global
       addr.replace_with(sugg)
       @session.app.update(addr_pointer.parent,
         parent_input, unique_email)
-      ## nur nötig wenn suggestion nicht gelöscht wird
+      ## nur nÃ¶tig wenn suggestion nicht gelÃ¶scht wird
       @active_address.email_suggestion = email
 			self
 		end

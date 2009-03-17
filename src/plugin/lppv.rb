@@ -22,8 +22,8 @@ module ODDB
 		end
 		def prices
 			prices = {}
-			pcode_style = /[0-9]{6,8}/
-			price_style = /\d+\.\d\d/
+			pcode_style = /[0-9]{6,8}/u
+			price_style = /\d+\.\d\d/u
 			@tables.at(1).each_row { |row|
 				if(pcode_style.match(row.cdata(3)) \
 					 && price_style.match(row.cdata(5)))

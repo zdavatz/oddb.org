@@ -22,7 +22,6 @@ module ODDB
         'b' => :bold,
         'i' => :italic,
       }
-      @@iconv = Iconv.new('latin1//TRANSLIT//IGNORE', 'utf8')
       def initialize app, opts={}
         @app = app
         @change_flags = {}
@@ -33,9 +32,6 @@ module ODDB
           parts = txt.split('.', 3).collect do |part| part.to_i end
           Date.new *parts.reverse
         end
-      end
-      def text text
-        @text << @@iconv.iconv(text) if @text
       end
       def time txt
         unless txt.to_s.empty?
@@ -50,7 +46,7 @@ module ODDB
         end
         text.each do |line|
           par = sec.next_paragraph
-          line.scan /(<(\/)?([bi])>|[^<]+|<)/ do |match|
+          line.scan /(<(\/)?([bi])>|[^<]+|<)/u do |match|
             if fmt = FORMATS[match[2]]
               if match[1]
                 par.reduce_format fmt
@@ -116,7 +112,7 @@ module ODDB
             end
             @app.update lim_ptr.creator, @lim_data, :bag
           end
-        when /Limitation([A-Z].+)/, /Description(..)/
+        when /Limitation([A-Z].+)/u, /Description(..)/u
           @target_data.store $~[1].downcase.to_sym, @text
         when 'ValidFromDate'
           @target_data.store :valid_from, date(@text)
@@ -243,7 +239,7 @@ module ODDB
           @name = {}
           @report_data = {}
           @refdata_registration = false
-        when /(.+)Price/
+        when /(.+)Price/u
           @price_type = $~[1].downcase.to_sym
           @price = Util::Money.new(0, @price_type, 'CH')
           @price.origin = @origin
@@ -372,7 +368,7 @@ module ODDB
           @data.store :narcotic, @text == 'Y'
         when 'BagDossierNo'
           @sl_data.store :bsv_dossier, @text if @sl_data
-        when /(.+)Price/
+        when /(.+)Price/u
           if @price > 0
             @data.store :"price_#{@price_type}", @price
           end
@@ -436,13 +432,13 @@ module ODDB
           @in_limitation = false
         when 'LimitationType'
           # ignore
-        when /^Limitation([A-Z].+)$/
+        when /^Limitation([A-Z].+)$/u
           @sl_data.store $~[1].downcase.to_sym, @text if @sl_data
-        when /^Name(..)$/
+        when /^Name(..)$/u
           key = $~[1].downcase.to_sym
           @name[key] = @text
           @report_data.store(:name_base, @text) if key == :de
-        when /^Description(..)$/
+        when /^Description(..)$/u
           key = $~[1].downcase.to_sym
           if @in_limitation
             if @lim_data # we are within a Package
@@ -507,8 +503,8 @@ module ODDB
     def _update path=@latest
       Zip::ZipFile.foreach(path) do |entry|
         case entry.name
-        when /(\w+)(-\d+)?.xml$/
-          updater = $~[1].gsub(/[A-Z]/) do |match| "_" << match.downcase end
+        when /(\w+)(-\d+)?.xml$/u
+          updater = $~[1].gsub(/[A-Z]/u) do |match| "_" << match.downcase end
           entry.get_input_stream do |io| send('update' << updater, io) end
         when 'Publications.xls'
           # do nothing, is not even an xls as of 11.11.2008
@@ -593,7 +589,7 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
           explain,
           values.join("\n\n"),
         ].join("\n")
-        ['text/plain', name.gsub(/[\s()\/-]/, '_') << '.txt', report]
+        ['text/plain', name.gsub(/[\s()\/-]/u, '_') << '.txt', report]
       end
       parts.compact!
       ## combine the last two attachments
@@ -610,7 +606,7 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
         'Created Limitation-Texts', 'Updated Limitation-Texts',
         'Deleted Limitation-Texts'
       ].collect do |title|
-        method = title.downcase.gsub(/[ -]/, '_')
+        method = title.downcase.gsub(/[ -]/u, '_')
         report_format_header title, @preparations_listener.send(method)
       end.join("\n")
     end

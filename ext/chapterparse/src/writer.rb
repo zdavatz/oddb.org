@@ -90,10 +90,10 @@ module ODDB
 				if(preformatted?(@target))
 					@target = @section.next_paragraph
 				end
-				@target << data.tr("\240", " ")
+				@target << data.gsub(/\302\240/u, " ")
 			end
 			def send_literal_data(data)
-				@target << data.tr("\240", " ").gsub(/\r\n?/, "\n")
+				@target << data.gsub(/\302\240/u, " ").gsub(/\r\n?/u, "\n")
 			end
 		end
 	end

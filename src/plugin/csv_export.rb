@@ -19,6 +19,7 @@ module ODDB
 			EXPORT_SERVER.export_doc_csv(ids, EXPORT_DIR, 'doctors.csv')
 		end
     def export_drugs
+      @options = { :iconv => 'ISO-8859-1//TRANSLIT//IGNORE' }
       recipients.concat self.class::ODDB_RECIPIENTS
       _export_drugs 'oddb', [ :rectype, :iksnr, :ikscd, :ikskey, :barcode,
         :bsv_dossier, :pharmacode, :name_base, :galenic_form,
@@ -104,11 +105,17 @@ module ODDB
     def log_info
       hash = super
       if @file_path
-        if(@options && (comp = @options[:compression]))
-          hash.store(:files, { @file_path + "." << comp => "application/#{comp}"})
-        else
-          hash.store(:files, { @file_path => "text/csv"})
+        @options ||= {}
+        path = @file_path
+        type = "text/csv"
+        if comp = @options[:compression]
+          path = @file_path + "." << comp
+          type = "application/#{comp}"
         end
+        if iconv = @options[:iconv]
+          type = [ type, iconv ]
+        end
+        hash.store(:files, { path => type })
         hash.store(:recipients, recipients)
       end
       hash

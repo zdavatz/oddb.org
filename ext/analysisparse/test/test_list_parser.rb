@@ -90,7 +90,7 @@ C    8021.00  200  Alpha-Amanitin (Urin)                                        
 			end
 			def test_parse_line__6
 				src = <<-EOS
-		 8043.00   300  Anti-HLA Alloantikörper, Nachweis mit           HI 
+		 8043.00   300  Anti-HLA AlloantikÃ¶rper, Nachweis mit           HI 
 Test-Panel 
 				EOS
 				result = @parser.parse_line(src)
@@ -99,7 +99,7 @@ Test-Panel
 					:group						=>	'8043',
 					:position					=>	'00',
 					:taxpoints				=>	300,
-					:description			=>	'Anti-HLA Alloantikörper, Nachweis mit Test-Panel',
+					:description			=>	'Anti-HLA AlloantikÃ¶rper, Nachweis mit Test-Panel',
 					:lab_areas				=>	['H', 'I'],
 					:list_title				=>	nil,
 					:permission				=>	nil,
@@ -133,10 +133,10 @@ Gerinnung (DIC)
 				src = <<-EOS
 		 8059.10    80   Natriuretisches Peptid (BNP, NT-                       C 
 proBNP)  
-	Limitation: Abklärung der akuten Dyspnoe 
+	Limitation: AbklÃ¤rung der akuten Dyspnoe 
 zum Ausschluss der akuten oder chronischen 
 Herzinsuffizienz   ; nicht zur Therapie-
-überwachung
+Ã¼berwachung
 				EOS
 				result = @parser.parse_line(src)
 				expected = {
@@ -146,7 +146,7 @@ Herzinsuffizienz   ; nicht zur Therapie-
 					:taxpoints				=>	80,
 					:description			=>	'Natriuretisches Peptid (BNP, NT-proBNP)',
 					:lab_areas				=>	['C'],
-					:limitation				=>	'Abklärung der akuten Dyspnoe zum Ausschluss der akuten oder chronischen Herzinsuffizienz; nicht zur Therapieüberwachung',
+					:limitation				=>	'AbklÃ¤rung der akuten Dyspnoe zum Ausschluss der akuten oder chronischen Herzinsuffizienz; nicht zur TherapieÃ¼berwachung',
 					:list_title				=>	nil,
 					:permission				=>	nil,
 					:taxpoint_type		=>	nil,
@@ -197,7 +197,7 @@ Anaerobier-Nachweis)
 				src = <<-EOS
 C   9367.001    90      Helicobacter pylori, Atemtest mit 13C-        CM 
 Harnstoff inkl. 13C-Harnstoff 
-	Das 13C-Harnstoff-Präparat muss beim 
+	Das 13C-Harnstoff-PrÃ¤parat muss beim 
 Schweizerischen Heilmittelinstitut 
 (Swissmedic) registriert sein. 
 				EOS
@@ -213,7 +213,7 @@ Schweizerischen Heilmittelinstitut
 					:group							=>	'9367',
 					:position						=>	'00',
 					:taxpoints					=>	90,
-					:description				=>	'Helicobacter pylori, Atemtest mit 13C-Harnstoff inkl. 13C-Harnstoff Das 13C-Harnstoff-Präparat muss beim Schweizerischen Heilmittelinstitut (Swissmedic) registriert sein.',
+					:description				=>	'Helicobacter pylori, Atemtest mit 13C-Harnstoff inkl. 13C-Harnstoff Das 13C-Harnstoff-PrÃ¤parat muss beim Schweizerischen Heilmittelinstitut (Swissmedic) registriert sein.',
 					:lab_areas					=>	['C', 'M'],
 					:list_title					=>	nil,
 					:permission					=>	nil,
@@ -245,7 +245,7 @@ Schweizerischen Heilmittelinstitut
 			end
 			def test_parse_line__13
 				src = <<-EOS
-				9356.31    35      Immunologische Färbung Fluoreszenz/      M
+				9356.31    35      Immunologische FÃ¤rbung Fluoreszenz/      M
 				Peroxydase, kumulierbar mit Spezial-
 				mikroskopie, nicht kumulierbar mit
 				Kultur
@@ -260,7 +260,7 @@ Schweizerischen Heilmittelinstitut
 					:group					=>	'9356',
 					:position				=>	'31',
 					:taxpoints			=>	35,
-					:description		=>	'Immunologische Färbung Fluoreszenz/Peroxydase, kumulierbar mit Spezialmikroskopie, nicht kumulierbar mit Kultur',
+					:description		=>	'Immunologische FÃ¤rbung Fluoreszenz/Peroxydase, kumulierbar mit Spezialmikroskopie, nicht kumulierbar mit Kultur',
 					:lab_areas			=>	['M'],
 					:permission			=>	nil,
 					:list_title			=>	nil,
@@ -270,7 +270,7 @@ Schweizerischen Heilmittelinstitut
 			end	
 			def test_parse_line__14
 				src = <<-EOS
-				8064.01    40   Autoantikörper gegen GAD (Glutamat-             I
+				8064.01    40   AutoantikÃ¶rper gegen GAD (Glutamat-             I
 				Decarboxylase), ql
 				EOS
 				begin
@@ -283,7 +283,7 @@ Schweizerischen Heilmittelinstitut
 					:group							=>	'8064',
 					:position						=>	'01',
 					:taxpoints					=>	40,
-					:description				=>	'Autoantikörper gegen GAD (Glutamat-Decarboxylase), ql',
+					:description				=>	'AutoantikÃ¶rper gegen GAD (Glutamat-Decarboxylase), ql',
 					:lab_areas					=>	['I'],
 					:permission					=>	nil,
 					:list_title					=>	nil,
@@ -294,9 +294,9 @@ Schweizerischen Heilmittelinstitut
 			def test_parse_line__15
 				src = <<-EOS
 8619.00  65  Dihydropteridinreduktase (DHPR)-                     C
-Aktivität in Erythrozyten;
+AktivitÃ¤t in Erythrozyten;
 Limitation: in Stoffwechsellaboratorien der
-Universitätskliniken
+UniversitÃ¤tskliniken
 				EOS
 				begin
 					result = @parser.parse_line(src)
@@ -308,8 +308,8 @@ Universitätskliniken
 					:group							=>	'8619',
 					:position						=>	'00',
 					:taxpoints					=>	65,
-					:description				=>	'Dihydropteridinreduktase (DHPR)-Aktivität in Erythrozyten',
-					:limitation					=>	'in Stoffwechsellaboratorien der Universitätskliniken',
+					:description				=>	'Dihydropteridinreduktase (DHPR)-AktivitÃ¤t in Erythrozyten',
+					:limitation					=>	'in Stoffwechsellaboratorien der UniversitÃ¤tskliniken',
 					:lab_areas					=>	['C'],
 					:permission					=>	nil,
 					:list_title					=>	nil,
@@ -343,7 +343,7 @@ Universitätskliniken
 				assert_equal(expected, result)
 			end
 			def test_parse_line__18
-				src = "     8810.10 * 50    H\344matologische Erkrankungen, maligne      GH\n(Leuk\344mien, Lymphome); Nachweis \neines Fusionsgens oder Fusions-\nTranskripts oder eines Rearrange-\nments, ql oder qn, nämlich: \n - t(9;22) BCR-ABL \n - t(8;21) AML1-ETO \n - t(15;17) PML-RARa \n - inv(16) CBF-b-MYH11 \n - t(4;11) MLL-AF4 \n - FLT3 ITD \n - t(12;21) TEL-AML1 \n - t(1;19) E2A-PBX1 \n - t(11;14) BCL-1 \n - t(14;18) BCL-2 \n - IgH rearrangement \n - TCR rearrangement \n"
+				src = "     8810.10 * 50    HÃ¤matologische Erkrankungen, maligne      GH\n(LeukÃ¤mien, Lymphome); Nachweis \neines Fusionsgens oder Fusions-\nTranskripts oder eines Rearrange-\nments, ql oder qn, nÃ¤mlich: \n - t(9;22) BCR-ABL \n - t(8;21) AML1-ETO \n - t(15;17) PML-RARa \n - inv(16) CBF-b-MYH11 \n - t(4;11) MLL-AF4 \n - FLT3 ITD \n - t(12;21) TEL-AML1 \n - t(1;19) E2A-PBX1 \n - t(11;14) BCL-1 \n - t(14;18) BCL-2 \n - IgH rearrangement \n - TCR rearrangement \n"
 				begin
 					result = @parser.parse_line(src)
 				rescue AmbigousParseException => e
@@ -354,7 +354,7 @@ Universitätskliniken
 					:group							=>	'8810',
 					:position						=>	'10',
 					:taxpoints					=>	50,
-					:description				=>	"H\344matologische Erkrankungen, maligne (Leuk\344mien, Lymphome); Nachweis eines Fusionsgens oder Fusions-Transkripts oder eines Rearrangements, ql oder qn, n\344mlich:\n- t(9; 22) BCR-ABL\n- t(8; 21) AML1-ETO\n- t(15; 17) PML-RARa\n- inv(16) CBF-b-MYH11\n- t(4; 11) MLL-AF4\n- FLT3 ITD\n- t(12; 21) TEL-AML1\n- t(1; 19) E2A-PBX1\n- t(11; 14) BCL-1\n- t(14; 18) BCL-2\n- IgH rearrangement\n- TCR rearrangement",
+					:description				=>	"HÃ¤matologische Erkrankungen, maligne (LeukÃ¤mien, Lymphome); Nachweis eines Fusionsgens oder Fusions-Transkripts oder eines Rearrangements, ql oder qn, nÃ¤mlich:\n- t(9; 22) BCR-ABL\n- t(8; 21) AML1-ETO\n- t(15; 17) PML-RARa\n- inv(16) CBF-b-MYH11\n- t(4; 11) MLL-AF4\n- FLT3 ITD\n- t(12; 21) TEL-AML1\n- t(1; 19) E2A-PBX1\n- t(11; 14) BCL-1\n- t(14; 18) BCL-2\n- IgH rearrangement\n- TCR rearrangement",
 					:lab_areas					=>	['G', 'H'],
 					:anonymous					=>	true,
 					:permission					=>	nil,
@@ -365,8 +365,8 @@ Universitätskliniken
 			end
 			def test_parse_line__19
 				src = <<-EOS
-				 8535.03  125  Suchtstoffe (in der AL aufgeführt), Such-        C
-				und Bestätigungsanalytik, HPLC-MS/
+				 8535.03  125  Suchtstoffe (in der AL aufgefÃ¼hrt), Such-        C
+				und BestÃ¤tigungsanalytik, HPLC-MS/
 				GC-MS (Blut, Urin)
 
 				EOS
@@ -379,7 +379,7 @@ Universitätskliniken
 					:position						=>	'03',
 					:taxpoints					=>	125,
 					:lab_areas					=>	['C'],
-					:description				=>	'Suchtstoffe (in der AL aufgeführt), Such- und Bestätigungsanalytik, HPLC-MS/GC-MS (Blut, Urin)',
+					:description				=>	'Suchtstoffe (in der AL aufgefÃ¼hrt), Such- und BestÃ¤tigungsanalytik, HPLC-MS/GC-MS (Blut, Urin)',
 					:permission					=>	nil,
 					:list_title					=>	nil,
 					:taxpoint_type			=>	nil,
@@ -388,8 +388,8 @@ Universitätskliniken
 			end
 			def test_parse_line__20
 				src = <<-EOS
-8535.02    80  Suchtstoffe (in der AL aufgeführt), Such-        C
-				und Bestätigungsanalytik, HPLC, GC
+8535.02    80  Suchtstoffe (in der AL aufgefÃ¼hrt), Such-        C
+				und BestÃ¤tigungsanalytik, HPLC, GC
 				(Blut, Urin)
 				EOS
 				begin
@@ -403,7 +403,7 @@ Universitätskliniken
 					:position				=>	'02',
 					:taxpoints			=>	80,
 					:lab_areas			=>	['C'],
-					:description		=>	'Suchtstoffe (in der AL aufgeführt), Such- und Bestätigungsanalytik, HPLC, GC (Blut, Urin)',
+					:description		=>	'Suchtstoffe (in der AL aufgefÃ¼hrt), Such- und BestÃ¤tigungsanalytik, HPLC, GC (Blut, Urin)',
 					:list_title			=>	nil,
 					:permission			=>	nil,
 					:taxpoint_type	=>	nil,
@@ -460,7 +460,7 @@ Patientenproben"
 			def test_parse_line__23
 				src = <<-EOS
 				     9365.50  170     Bartonella henselae / quintana,                      M
-				Nukleinsäureamplifikation, inkl.
+				NukleinsÃ¤ureamplifikation, inkl.
 				Amplifikatnachweis
 				EOS
 				begin
@@ -471,7 +471,7 @@ Patientenproben"
 				:group					=>	'9365',
 				:position				=>	'50',
 				:taxpoints			=>	170,
-				:description		=>	'Bartonella henselae/quintana, Nukleinsäureamplifikation, inkl. Amplifikatnachweis',
+				:description		=>	'Bartonella henselae/quintana, NukleinsÃ¤ureamplifikation, inkl. Amplifikatnachweis',
 				:lab_areas			=>	['M'],
 				:list_title			=>	nil,
 				:permission			=>	nil,
@@ -521,48 +521,48 @@ Patientenproben"
 			end
 			def test_parse_page__1
 				src = <<-EOS
-				Rev.    Pos.-Nr. A TP  Bezeichnung (Chemie/Hömatologie/Immunologie) B
+				Rev.    Pos.-Nr. A TP  Bezeichnung (Chemie/HÃ¶matologie/Immunologie) B
 
-						 8069.00    50  Autoantikörper gegen glomerulöre                       I
+						 8069.00    50  AutoantikÃ¶rper gegen glomerulÃ¶re                       I
 				Basalmembran, qn
-						 8070.00    40  Autoantikörper gegen Haut, ql                               I
-						 8070.01    50  Autoantikörper gegen Haut, qn                              I
-						 8071.00    50  Autoantikörper gegen Histon, ql                            I
-						 8072.00    60  Autoantikörper gegen Histon, qn                          I
-						 8073.00    60  Autoantikörper gegen Hodengewebe                 I
-						 8073.11    40  Autoantikörper gegen Inselzellen, ql                   I
-						 8073.12    50  Autoantikörper gegen Inselzellen, qn                 I
-						 8074.00    40  Autoantikörper gegen Insulin, ql                           I
-						 8074.01    50  Autoantikörper gegen Insulin, qn                          I
-						 8074.02    40  Autoantikörper gegen Intrinsic-Faktor, ql          I
-						 8074.03    50  Autoantikörper gegen Intrinsic-Faktor, qn         I
-						 8074.04    40  Autoantikörper gegen Jo-1 (histidyl-                    I
+						 8070.00    40  AutoantikÃ¶rper gegen Haut, ql                               I
+						 8070.01    50  AutoantikÃ¶rper gegen Haut, qn                              I
+						 8071.00    50  AutoantikÃ¶rper gegen Histon, ql                            I
+						 8072.00    60  AutoantikÃ¶rper gegen Histon, qn                          I
+						 8073.00    60  AutoantikÃ¶rper gegen Hodengewebe                 I
+						 8073.11    40  AutoantikÃ¶rper gegen Inselzellen, ql                   I
+						 8073.12    50  AutoantikÃ¶rper gegen Inselzellen, qn                 I
+						 8074.00    40  AutoantikÃ¶rper gegen Insulin, ql                           I
+						 8074.01    50  AutoantikÃ¶rper gegen Insulin, qn                          I
+						 8074.02    40  AutoantikÃ¶rper gegen Intrinsic-Faktor, ql          I
+						 8074.03    50  AutoantikÃ¶rper gegen Intrinsic-Faktor, qn         I
+						 8074.04    40  AutoantikÃ¶rper gegen Jo-1 (histidyl-                    I
 				tRNA-synthetase), ql
-						 8074.05    50  Autoantikörper gegen Jo-1 (histidyl-                    I
+						 8074.05    50  AutoantikÃ¶rper gegen Jo-1 (histidyl-                    I
 				tRNA-synthetase), qn
-						 8075.00    40  Autoantikörper gegen Kardiolipin IgG, ql           I
-						 8076.00    50  Autoantikörper gegen Kardiolipin IgG, qn         I
-						 8077.00    40  Autoantikörper gegen Kardiolipin IgM, ql          I
-						 8078.00    50  Autoantikörper gegen Kardiolipin IgM, qn         I
-						 8078.01    40  Autoantikörper gegen Kardiolipin IgA, ql           I
-						 8078.02    50  Autoantikörper gegen Kardiolipin IgA, qn          I
-						 8078.03    40  Autoantikörper gegen LKM (liver-kidney           I
+						 8075.00    40  AutoantikÃ¶rper gegen Kardiolipin IgG, ql           I
+						 8076.00    50  AutoantikÃ¶rper gegen Kardiolipin IgG, qn         I
+						 8077.00    40  AutoantikÃ¶rper gegen Kardiolipin IgM, ql          I
+						 8078.00    50  AutoantikÃ¶rper gegen Kardiolipin IgM, qn         I
+						 8078.01    40  AutoantikÃ¶rper gegen Kardiolipin IgA, ql           I
+						 8078.02    50  AutoantikÃ¶rper gegen Kardiolipin IgA, qn          I
+						 8078.03    40  AutoantikÃ¶rper gegen LKM (liver-kidney           I
 				mikrosomales Antigen), ql
-						 8078.04    50  Autoantikörper gegen LKM (liver-kidney           I
+						 8078.04    50  AutoantikÃ¶rper gegen LKM (liver-kidney           I
 				mikrosomales Antigen), qn
-						 8079.00    40  Autoantikörper gegen Magenparietal-                 I
+						 8079.00    40  AutoantikÃ¶rper gegen Magenparietal-                 I
 				zellen, ql
-						 8079.01    50  Autoantikörper gegen Magenparietal-                 I
+						 8079.01    50  AutoantikÃ¶rper gegen Magenparietal-                 I
 				zellen, qn
-						 8080.00    40  Autoantikörper gegen mikrosomale                     I
+						 8080.00    40  AutoantikÃ¶rper gegen mikrosomale                     I
 				Antigene, ql
-						 8081.00    50  Autoantikörper gegen TPO (mikrosomale         I
+						 8081.00    50  AutoantikÃ¶rper gegen TPO (mikrosomale         I
 				Antigene), qn
-						 8082.00    40  Autoantikörper gegen Mitochondrien, ql            I
-						 8083.00    50  Autoantikörper gegen Mitochondrien,qn            I
-						 8083.01    40  Autoantikörper gegen M2 (Mitochondrial),        I
+						 8082.00    40  AutoantikÃ¶rper gegen Mitochondrien, ql            I
+						 8083.00    50  AutoantikÃ¶rper gegen Mitochondrien,qn            I
+						 8083.01    40  AutoantikÃ¶rper gegen M2 (Mitochondrial),        I
 				ql
-						 8083.02    50  Autoantikörper gegen M2 (Mitochondrial),        I
+						 8083.02    50  AutoantikÃ¶rper gegen M2 (Mitochondrial),        I
 				qn
 				44
 
@@ -575,7 +575,7 @@ Patientenproben"
 					:group					=>	'8083',
 					:position				=>	'02',
 					:taxpoints			=>	50,
-					:description		=>	'Autoantikörper gegen M2 (Mitochondrial), qn',
+					:description		=>	'AutoantikÃ¶rper gegen M2 (Mitochondrial), qn',
 					:lab_areas			=>	['I'],
 					:list_title			=>	nil,
 					:permission			=>	nil,
@@ -587,7 +587,7 @@ Patientenproben"
 					:position			=>	'00',
 					:taxpoints		=>	50,
 					:lab_areas		=>	['I'],
-					:description	=>	'Autoantikörper gegen glomerulöre Basalmembran, qn',
+					:description	=>	'AutoantikÃ¶rper gegen glomerulÃ¶re Basalmembran, qn',
 					:list_title			=>	nil,
 					:permission			=>	nil,
 					:taxpoint_type	=>	nil,
@@ -599,18 +599,18 @@ Patientenproben"
 			end
 			def test_parse_page__2
 				src =<<-EOS
-				Rev.    Pos.-Nr. A TP  Bezeichnung (Chemie/Hämatologie/Immunologie) B
+				Rev.    Pos.-Nr. A TP  Bezeichnung (Chemie/HÃ¤matologie/Immunologie) B
 
-						 8523.00    40  Sideroblasten, Färbung und Zählung inkl.      H
+						 8523.00    40  Sideroblasten, FÃ¤rbung und ZÃ¤hlung inkl.      H
 				Beurteilung
 						 8524.00    60  Somatomedin C (IGF-1)                                          C
 						 8525.00    80  Wachstumshormon (HGH, STH)                         C
 						 8526.00    35  Sorbit-Dehydrogenase (SDH)                             C
 						 8528.00  150  Spermiocytogramm (Beurteilung von pH,       C
-				Viskosität, Zellzahl, Motilität, Motilitäts-
-				verminderung, Vitalität, Morphologie,
+				ViskositÃ¤t, Zellzahl, MotilitÃ¤t, MotilitÃ¤ts-
+				verminderung, VitalitÃ¤t, Morphologie,
 				Fremdzellenelemente, inkl. verschiede-
-				ne Färbungen)
+				ne FÃ¤rbungen)
 						 8528.01    30  Spermiennachweis nach Vasektomie             C
 				(Nativsediment)
 						 8529.00     3    Spezifisches Gewicht, Dichte                               C
@@ -620,17 +620,17 @@ Patientenproben"
 				makroskopische und mikroskopische
 				Untersuchung ohne Anreicherung)
 						 8535.00  150  Stuhlfett                                                                         C
-						 8535.01    50  Suchtstoffe (in der AL aufgeführt), Such-         C
+						 8535.01    50  Suchtstoffe (in der AL aufgefÃ¼hrt), Such-         C
 				analytik, einfache chromatographische
 				Methoden
-						 8535.02    80  Suchtstoffe (in der AL aufgeführt), Such-        C
-				und Bestätigungsanalytik, HPLC, GC
+						 8535.02    80  Suchtstoffe (in der AL aufgefÃ¼hrt), Such-        C
+				und BestÃ¤tigungsanalytik, HPLC, GC
 				(Blut, Urin)
-						 8535.03  125  Suchtstoffe (in der AL aufgeführt), Such-        C
-				und Bestätigungsanalytik, HPLC-MS/
+						 8535.03  125  Suchtstoffe (in der AL aufgefÃ¼hrt), Such-        C
+				und BestÃ¤tigungsanalytik, HPLC-MS/
 				GC-MS (Blut, Urin)
 						 8535.04    16  Suchtstoffe, Screening, bis 4 Suchtstoffe        C
-				(Urin), je (Ausnahme für Opiate und
+				(Urin), je (Ausnahme fÃ¼r Opiate und
 				Cocain : je 14 TP)
 						 8535.05    10  Suchtstoffe, Screening, jeder weitere               C
 				Suchtstoff (Urin), max. 10
@@ -648,7 +648,7 @@ Patientenproben"
 					:group				=>	'8523',
 					:position			=>	'00',
 					:taxpoints		=>	40,
-					:description	=>	'Sideroblasten, Färbung und Zählung inkl. Beurteilung',
+					:description	=>	'Sideroblasten, FÃ¤rbung und ZÃ¤hlung inkl. Beurteilung',
 					:lab_areas		=>	['H'],
 					:list_title			=>	nil,
 					:permission			=>	nil,
@@ -672,7 +672,7 @@ Patientenproben"
 			end
 			def test_parse_page__3
 				src = <<-EOS
-				Rev.    Pos.-Nr. A TP  Bezeichnung (Chemie/Hämatologie/Immunologie) B
+				Rev.    Pos.-Nr. A TP  Bezeichnung (Chemie/HÃ¤matologie/Immunologie) B
 
 						 8017.00 * 45  Alpha-1-Fetoprotein (AFP)                                  CI
 						 8017.01    25  Alpha-1-Mikroglobulin                                            C
@@ -681,14 +681,14 @@ Patientenproben"
 						 8021.00  200  Alpha-Amanitin (Urin)                                              C
 						 8026.00    80  Alpha-Naphthylacetatesterase                           H
 						 8027.00  100  Aluminium, mit AAS                                                  C
-						 8029.00    60  Aminosäurenchromatographie (z.B. nach       C
+						 8029.00    60  AminosÃ¤urenchromatographie (z.B. nach       C
 				Stein und Moore, Kurzprogramm), qn
-						 8030.00  200  Aminosäurenchromatographie (z.B. nach       C
-				Stein u. Moore, vollständig), qn,
+						 8030.00  200  AminosÃ¤urenchromatographie (z.B. nach       C
+				Stein u. Moore, vollstÃ¤ndig), qn,
 				und/oder Acylcarnitine (Tandem-
 				Massenspektrometrie, min. 6
 				Komponenten), qn
-						 8032.00    60  Aminosäurenchromatographie, ql                       C
+						 8032.00    60  AminosÃ¤urenchromatographie, ql                       C
 						 8035.00    50  Ammoniak                                                                   C
 						 8036.00    16  Amphetamine, ql (Urin) (im Screening mit      C
 				anderen Suchtstoffen: siehe
@@ -696,18 +696,18 @@ Patientenproben"
 						 8037.00     9  Amylase, im Blut/Plasma/Serum                      C
 						 8037.01  100  Amylase-Isoenzyme (elektrophoretische         C
 				Differenzierung)
-						 8037.02     9  Amylase, in einer weiteren Körper-                    C
-				flüssigkeit
+						 8037.02     9  Amylase, in einer weiteren KÃ¶rper-                    C
+				flÃ¼ssigkeit
 						 8038.00    60  Androstendion                                                           C
 						 8039.00    60  Androsteron                                                                C
 						 8040.00    60  Angiotensin I                                                              C
 						 8041.00    60  Angiotensin II                                                             C
 						 8042.00    80  Angiotensin-Converting-Enzym                         C
-						 8043.00  300  Anti-HLA Alloantikörper, Nachweis mit            HI
+						 8043.00  300  Anti-HLA AlloantikÃ¶rper, Nachweis mit            HI
 				Test-Panel
 						 8044.00    60  Antidiuretisches Hormon (Vasopressin,           C
 				ADH)
-						 8046.00    60  Antikörper gegen Wachstumshormon              CI
+						 8046.00    60  AntikÃ¶rper gegen Wachstumshormon              CI
 						 8048.00    45  Antiplasmin, immunologisch                                H
 						 8049.00    50  Antiplasmin, funktionell                                          H
 						 8050.00    50  Antithrombin III, funktionell                                   H
@@ -754,16 +754,16 @@ Patientenproben"
 			def test_parse_page__4
 				src =<<-EOS
 				Systematische Auflistung der Analysen
-				inkl. Anhänge
+				inkl. AnhÃ¤nge
 
 
-				1. Kapitel:  Chemie/Hämatologie/Immunologie
+				1. Kapitel:  Chemie/HÃ¤matologie/Immunologie
 
 							Zu anonymisierende Positionen (A) = * (mit Stern bezeichnet) ?   Kapitel 4.2
-							Fachbereiche (B) = Suffix C (klinische Chemie), H (Hämatologie),
+							Fachbereiche (B) = Suffix C (klinische Chemie), H (HÃ¤matologie),
 							I (klinische Immunologie), M (medizinische Mikrobiologie)
 
-				Rev.    Pos.-Nr. A TP  Bezeichnung (Chemie/Hämatologie/Immunologie) B
+				Rev.    Pos.-Nr. A TP  Bezeichnung (Chemie/HÃ¤matologie/Immunologie) B
 
 C 8000.00 8 ABO/D-Antigen, Kontrolle nach Empfeh-         H
 				lungen BSD SRK "Erythrozyten-
@@ -834,29 +834,29 @@ C 8000.00 8 ABO/D-Antigen, Kontrolle nach Empfeh-         H
 
 						 9354.40 * 35    Neisseria gonorrhoeae, IF oder                      M
 				Hybridisierung
-						 9354.50 * 80    Neisseria gonorrhoeae, Nukleinsüure-        M
+						 9354.50 * 80    Neisseria gonorrhoeae, NukleinsÃ¼ure-        M
 				amplifikation, inkl. Amplifikatnachweis
 						 9355.30    20    Traditionelle Mikroskopie (Gram,                 M
-				Giemsa, Methylenblau, etc.), Fürbung
+				Giemsa, Methylenblau, etc.), FÃ¼rbung
 				inbegriffen, nicht kumulierbar mit
 				Kultur
 						 9356.30    25      Spezielle Mikroskopie (Acridineorange,      M
 				Ziehl-Neelsen, Auramin-Rhodamin,
 				inklusive Dunkelfeld, Phasenkontrast
 				etc., KOH, Pilze)
-						 9356.31    35      Immunologische Fürbung Fluoreszenz/      M
+						 9356.31    35      Immunologische FÃ¼rbung Fluoreszenz/      M
 				Peroxydase, kumulierbar mit Spezial-
 				mikroskopie, nicht kumulierbar mit
 				Kultur
-						 9357.50  170     Borrelia burgdorferi, Nukleinsüure-               M
+						 9357.50  170     Borrelia burgdorferi, NukleinsÃ¼ure-               M
 				amplifikation, inkl. Amplifikatnachweis
 						 9358.00    40 n   Pilznachweis, Blutkultur, auf Verlangen      M
 						 9358.10  100 p Pilznachweis, Blutkultur, auf Verlangen      M
-						 9359.00    80 n   Bronchoalveolüre Lavage (Kultur qn)           M
-						 9359.10  135 p   Bronchoalveolüre Lavage (Kultur qn)           M
-						 9360.50    80    Chlamydia trachomatis, Nukleinsüure-        M
+						 9359.00    80 n   BronchoalveolÃ¼re Lavage (Kultur qn)           M
+						 9359.10  135 p   BronchoalveolÃ¼re Lavage (Kultur qn)           M
+						 9360.50    80    Chlamydia trachomatis, NukleinsÃ¼ure-        M
 				Amplifikation inkl. Amplifikatnachweis
-						 9361.50  170      Chlamydia pneumoniae, Nukleinsüure-       M
+						 9361.50  170      Chlamydia pneumoniae, NukleinsÃ¼ure-       M
 				amplifikation, inkl. Amplifikatnachweis
 						 9362.83    10    Cyto-Zentrifugation (kumulierbar)                  M
 						 9363.84    10    Quantitative Bakt. (andere Mat. als               M
@@ -864,11 +864,11 @@ C 8000.00 8 ABO/D-Antigen, Kontrolle nach Empfeh-         H
 						 9364.00    40      Bartonella Henselae IgG                                   M
 						 9365.00    45      Bartonella Henselae IgM                                   M
 						 9365.50  170     Bartonella henselae / quintana,                      M
-				Nukleinsüureamplifikation, inkl.
+				NukleinsÃ¼ureamplifikation, inkl.
 				Amplifikatnachweis
 						9366.001   15    Urease-Test (Helicobacter pylori)              CM
 
-				1 Zur Durchführung dieser Analyse ist keine Anerkennung des Bundesamtes für Gesundheit im
+				1 Zur DurchfÃ¼hrung dieser Analyse ist keine Anerkennung des Bundesamtes fÃ¼r Gesundheit im
 				Sinne des Art. 5 Abs. 1 des Epidemiengesetzes vom 18. Dezember 1970 erforderlich
 
 																																																														 101
@@ -899,7 +899,7 @@ C 8000.00 8 ABO/D-Antigen, Kontrolle nach Empfeh-         H
 					:taxpoints		=>	15,
 					:lab_areas		=>	['C','M'],
 					:description	=>	'Urease-Test (Helicobacter pylori)',
-					:footnote			=>	'Zur Durchführung dieser Analyse ist keine Anerkennung des Bundesamtes für Gesundheit im Sinne des Art. 5 Abs. 1 des Epidemiengesetzes vom 18. Dezember 1970 erforderlich',
+					:footnote			=>	'Zur DurchfÃ¼hrung dieser Analyse ist keine Anerkennung des Bundesamtes fÃ¼r Gesundheit im Sinne des Art. 5 Abs. 1 des Epidemiengesetzes vom 18. Dezember 1970 erforderlich',
 					:list_title			=>	nil,
 					:permission			=>	nil,
 					:taxpoint_type	=>	nil,
@@ -911,47 +911,47 @@ C 8000.00 8 ABO/D-Antigen, Kontrolle nach Empfeh-         H
 			end
 			def test_parse_page__6
 				src = <<-EOS
-Rev.    Pos.-Nr. A TP  Bezeichnung (Chemie/Hämatologie/Immunologie) B
+Rev.    Pos.-Nr. A TP  Bezeichnung (Chemie/HÃ¤matologie/Immunologie) B
 
 			8055.00    25  Apolipoprotein E                                           C
-			8056.00    70  Apolipoprotein E Phänotypen                        C
+			8056.00    70  Apolipoprotein E PhÃ¤notypen                        C
 			8056.01   100  Arsen, mit AAS                                               C
 			8058.00     9  Aspartat-Aminotransferase (ASAT)             C
 			8059.10    80   Natriuretisches Peptid (BNP, NT-                  C
 proBNP)  
-	Limitation: Abklärung der akuten Dyspnoe 
+	Limitation: AbklÃ¤rung der akuten Dyspnoe 
 zum Ausschluss der akuten oder chronischen 
 Herzinsuffizien z; nicht zur Therapie-
-überwachung
-			8060.00    40  Autoantikörper gegen Colon-Epithel               I
-			8060.01    40  Autoantikörper gegen                                    I
+Ã¼berwachung
+			8060.00    40  AutoantikÃ¶rper gegen Colon-Epithel               I
+			8060.01    40  AutoantikÃ¶rper gegen                                    I
 Acetylcholinrezeptoren, ql 
-			8060.02    50  Autoantikörper gegen                                    I
+			8060.02    50  AutoantikÃ¶rper gegen                                    I
 Acetylcholinrezeptoren, qn 
-			8060.03    40   Autoantikörper gegen Actin, ql                        I
-			8060.04    50  Autoantikörper gegen Actin, qn                       I
-			8060.05    40   Autoantikörper gegen Centromer, ql               I
-			8060.06    50  Autoantikörper gegen Centromer, qn              I
-			8061.00    50   Autoantikörper gegen DNA, ql                        I
-			8062.00    60   Autoantikörper gegen DNA, qn                       I
-			8063.00    40  Autoantikörper gegen Endomysium, ql           I
-			8064.00    50   Autoantikörper gegen Endomysium, qn          I
-			8064.01    40  Autoantikörper gegen GAD (Glutamat-           I
+			8060.03    40   AutoantikÃ¶rper gegen Actin, ql                        I
+			8060.04    50  AutoantikÃ¶rper gegen Actin, qn                       I
+			8060.05    40   AutoantikÃ¶rper gegen Centromer, ql               I
+			8060.06    50  AutoantikÃ¶rper gegen Centromer, qn              I
+			8061.00    50   AutoantikÃ¶rper gegen DNA, ql                        I
+			8062.00    60   AutoantikÃ¶rper gegen DNA, qn                       I
+			8063.00    40  AutoantikÃ¶rper gegen Endomysium, ql           I
+			8064.00    50   AutoantikÃ¶rper gegen Endomysium, qn          I
+			8064.01    40  AutoantikÃ¶rper gegen GAD (Glutamat-           I
 Decarboxylase), ql 
-			8064.02    50  Autoantikörper gegen GAD (Glutamat-           I
+			8064.02    50  AutoantikÃ¶rper gegen GAD (Glutamat-           I
 Decarboxylase), qn 
-			8064.03    40   Autoantikörper gegen Gangliosid, ql               I
-			8064.04    50  Autoantikörper gegen Gangliosid, qn              I
-			8064.05    50   Autoantikörper gegen Gangliosid GM1           I
-			8064.06    50   Autoantikörper gegen Gangliosid GM2           I
-			8064.07    50   Autoantikörper gegen Gangliosid GD1           I
-			8064.50    50  Autoantikörper gegen Gewebstrans-              I
+			8064.03    40   AutoantikÃ¶rper gegen Gangliosid, ql               I
+			8064.04    50  AutoantikÃ¶rper gegen Gangliosid, qn              I
+			8064.05    50   AutoantikÃ¶rper gegen Gangliosid GM1           I
+			8064.06    50   AutoantikÃ¶rper gegen Gangliosid GM2           I
+			8064.07    50   AutoantikÃ¶rper gegen Gangliosid GD1           I
+			8064.50    50  AutoantikÃ¶rper gegen Gewebstrans-              I
 glutaminase, qn, nicht kumulierbar mit 
 8063.00 und 8064.00 
-			8065.00    40  Autoantikörper gegen glatte Muskulatur         I
-			8066.00    35   Gliadin, Antikörper gegen ~, IgG                     I
-			8067.00    35   Gliadin, Antikörper gegen ~, IgA                     I
-			8068.00    40  Autoantikörper gegen glomeruläre                  I
+			8065.00    40  AutoantikÃ¶rper gegen glatte Muskulatur         I
+			8066.00    35   Gliadin, AntikÃ¶rper gegen ~, IgG                     I
+			8067.00    35   Gliadin, AntikÃ¶rper gegen ~, IgA                     I
+			8068.00    40  AutoantikÃ¶rper gegen glomerulÃ¤re                  I
 Basalmembran, ql 
 																																																		 43
 
@@ -978,7 +978,7 @@ Basalmembran, ql
 					:position			=>	'00',
 					:taxpoints		=>	40,
 					:lab_areas		=>	['I'],
-					:description	=>	'Autoantikörper gegen glomeruläre Basalmembran, ql',
+					:description	=>	'AutoantikÃ¶rper gegen glomerulÃ¤re Basalmembran, ql',
 					:list_title			=>	nil,
 					:permission=>	nil,
 					:taxpoint_type	=>	nil,
@@ -990,7 +990,7 @@ Basalmembran, ql
 					:description		=>	'Natriuretisches Peptid (BNP, NT-proBNP)',
 					:lab_areas			=>	['C'],
 					:taxpoints			=>	80,
-					:limitation			=>	'Abklärung der akuten Dyspnoe zum Ausschluss der akuten oder chronischen Herzinsuffizien z; nicht zur Therapieüberwachung',
+					:limitation			=>	'AbklÃ¤rung der akuten Dyspnoe zum Ausschluss der akuten oder chronischen Herzinsuffizien z; nicht zur TherapieÃ¼berwachung',
 					:list_title			=>	nil,
 					:taxpoint_type	=>	nil,
 					:permission		=>	nil,
@@ -1005,9 +1005,9 @@ Basalmembran, ql
 			end
 			def test_fr_parse_line__1
 				src = <<-EOS
-C 8272.00 30 Hémogramme V (automatisé): comme  H 
-hémogramme IV, répartition des leucocytes par cytométrie de flux
-Limitation: pas avec la méthode QBC
+C 8272.00 30 HÃ©mogramme V (automatisÃ©): comme  H 
+hÃ©mogramme IV, rÃ©partition des leucocytes par cytomÃ©trie de flux
+Limitation: pas avec la mÃ©thode QBC
 				EOS
 				begin
 					result = @parser.parse_line(src)
@@ -1019,8 +1019,8 @@ Limitation: pas avec la méthode QBC
 					:lab_areas		=>	['H'],
 					:analysis_revision	=>	'C',
 					:taxpoints		=>	30,
-					:description	=>	'Hémogramme V (automatisé): comme hémogramme IV, répartition des leucocytes par cytométrie de flux',
-					:limitation		=>	'pas avec la méthode QBC',
+					:description	=>	'HÃ©mogramme V (automatisÃ©): comme hÃ©mogramme IV, rÃ©partition des leucocytes par cytomÃ©trie de flux',
+					:limitation		=>	'pas avec la mÃ©thode QBC',
 					:list_title		=>	nil,
 					:permission		=>	nil,
 					:taxpoint_type	=>	nil,
@@ -1029,9 +1029,9 @@ Limitation: pas avec la méthode QBC
 			end
 			def test_fr_parse_line__2
 				src = <<-EOS
-				      8179.00    25  D-dimère, ql; limitation: uniquement pour             H
+				      8179.00    25  D-dimÃ¨re, ql; limitation: uniquement pour             H
 				l'exclusion de la coagulopathie intravasculaire
-				disséminée (DIC)
+				dissÃ©minÃ©e (DIC)
 
 				EOS
 				 begin
@@ -1042,8 +1042,8 @@ Limitation: pas avec la méthode QBC
 					:group				=>	'8179',
 					:position			=>	'00',
 					:taxpoints		=>	25,
-					:description	=>	'D-dimère, ql',
-					:limitation		=>	'uniquement pour l\'exclusion de la coagulopathie intravasculaire disséminée (DIC)',
+					:description	=>	'D-dimÃ¨re, ql',
+					:limitation		=>	'uniquement pour l\'exclusion de la coagulopathie intravasculaire dissÃ©minÃ©e (DIC)',
 					:lab_areas		=>	['H'],
 					:taxpoint_type	=>	nil,
 					:list_title			=>	nil,
@@ -1053,8 +1053,8 @@ Limitation: pas avec la méthode QBC
 			end
 			def test_fr_parse_line__3
 				src = <<-EOS
-				      8059.10    80  Peptide natriurétique (BNP, NT-proBNP);     C
-				limitation: recherche d'une dyspnée aiguë
+				      8059.10    80  Peptide natriurÃ©tique (BNP, NT-proBNP);     C
+				limitation: recherche d'une dyspnÃ©e aiguÃ«
 				EOS
 				begin
 					result = @parser.parse_line(src)
@@ -1064,9 +1064,9 @@ Limitation: pas avec la méthode QBC
 					:group					=>	'8059',
 					:position				=>	'10',
 					:taxpoints			=>	80,
-					:description		=>	'Peptide natriurétique (BNP, NT-proBNP);',
+					:description		=>	'Peptide natriurÃ©tique (BNP, NT-proBNP);',
 					:lab_areas			=>	['C'],
-					:limitation			=>	'recherche d\'une dyspnée aiguë',
+					:limitation			=>	'recherche d\'une dyspnÃ©e aiguÃ«',
 					:taxpoint_type	=>	nil,
 					:list_title			=>	nil,
 					:permission			=>	nil,
@@ -1075,42 +1075,42 @@ Limitation: pas avec la méthode QBC
 			end
 			def test_fr_parse_page__1
 				src = <<-EOS
-Rév. No pos. A TP Dénomination (chimie/hématologie/immunologie) B
+RÃ©v. No pos. A TP DÃ©nomination (chimie/hÃ©matologie/immunologie) B
 8252.00   150  Culture lymphocytaire mixte, pour                 HI
-chaque donneur supplémentaire
+chaque donneur supplÃ©mentaire
 8256.00    40   Tests globaux des inhibiteurs (type               H
 				PIVKA)
 8258.00    60  Glucagon                                                      C
-8259.00     9    Glucose (sang, plasma, sérum)                     C
+8259.00     9    Glucose (sang, plasma, sÃ©rum)                     C
 8259.01     9    Glucose (autre liquide biologique)                 C
-8260.00    35  Glucose-6-phosphate-déshydrogénase       C
+8260.00    35  Glucose-6-phosphate-dÃ©shydrogÃ©nase       C
 		(G-6-PDH)
 8261.00    25   Glucose, test de surcharge, selon OMS        C
 			(uniquement les analyses)
-8262.00    25  Glutamate-déshydrogénase (GLDH)             C
-8262.01    25  Glutamate-décarboxylase                            C
-8263.00    35  Glutathion réduit                                           C
-8265.00    30   Hémoglobine glyquée (HbA1c)                      C
+8262.00    25  Glutamate-dÃ©shydrogÃ©nase (GLDH)             C
+8262.01    25  Glutamate-dÃ©carboxylase                            C
+8263.00    35  Glutathion rÃ©duit                                           C
+8265.00    30   HÃ©moglobine glyquÃ©e (HbA1c)                      C
 8266.00   100  Or, par AAS                                                    C
 8267.00    60  Elastase granulocytaire plasmatique          CH
-C     8268.00     12  Hémogramme I (automatisé):                        H
-				érythrocytes, leucocytes, hémoglobine,
-				hématocrite et indices
-				Limitation: pas avec la méthode QBC
-C     8269.00     15   Hémogramme II (automatisé):                       H
-				hémogramme I, plus thrombocytes
-				Limitation: pas avec la méthode QBC
-C     8270.00     20  Hémogramme III (automatisé):                     H
-				hémogramme II, plus 3 sous-
+C     8268.00     12  HÃ©mogramme I (automatisÃ©):                        H
+				Ã©rythrocytes, leucocytes, hÃ©moglobine,
+				hÃ©matocrite et indices
+				Limitation: pas avec la mÃ©thode QBC
+C     8269.00     15   HÃ©mogramme II (automatisÃ©):                       H
+				hÃ©mogramme I, plus thrombocytes
+				Limitation: pas avec la mÃ©thode QBC
+C     8270.00     20  HÃ©mogramme III (automatisÃ©):                     H
+				hÃ©mogramme II, plus 3 sous-
 				populations de  leucocytes
-				Limitation: pas avec la méthode QBC
-C     8271.00     25   Hémogramme IV (automatisé):                      H
-				hémogramme III, plus 5 ou plus de
+				Limitation: pas avec la mÃ©thode QBC
+C     8271.00     25   HÃ©mogramme IV (automatisÃ©):                      H
+				hÃ©mogramme III, plus 5 ou plus de
 				sous-populations de leucocytes
-				Limitation: pas avec la méthode QBC
-C     8272.00     30  Hémogramme V (automatisé): comme          H
- hémogramme IV, répartition des leucocytes par cytométrie de flux
-Limitation: pas avec la méthode QBC
+				Limitation: pas avec la mÃ©thode QBC
+C     8272.00     30  HÃ©mogramme V (automatisÃ©): comme          H
+ hÃ©mogramme IV, rÃ©partition des leucocytes par cytomÃ©trie de flux
+Limitation: pas avec la mÃ©thode QBC
 
 52
 				EOS
@@ -1124,8 +1124,8 @@ Limitation: pas avec la méthode QBC
 				:group										=>	'8272',
 				:position									=>	'00',
 				:code											=>	'8272.00',
-				:description							=>	'Hémogramme V (automatisé): comme hémogramme IV, répartition des leucocytes par cytométrie de flux',
-				:limitation								=>	'pas avec la méthode QBC',
+				:description							=>	'HÃ©mogramme V (automatisÃ©): comme hÃ©mogramme IV, rÃ©partition des leucocytes par cytomÃ©trie de flux',
+				:limitation								=>	'pas avec la mÃ©thode QBC',
 				:taxpoints								=>	30,
 				:taxpoint_type						=>	nil,
 				:list_title								=>	nil,
@@ -1135,14 +1135,14 @@ Limitation: pas avec la méthode QBC
 			end
 			def test_fr_parse_page__2
 				src = <<-EOS
-Rév. No pos. A TP Dénomination (chimie/hématologie/immunologie) B
-8059.10 80 Peptide natriurétique (BNP, NT-proBNP); C
-limitation: recherche d'une dyspnée aiguë pour l'élimination d'une insuffisance cardiaque aiguë ou chronique; pas pour le suivi d'une thérapie
-8060.00 40 Auto-anticorps anti-épithélium du côlon I
-8060.01 40 Auto-anticorps anti-récepteurs de I
-l'acétylcholine, ql
-8060.02 50 Auto-anticorps anti-récepteurs de I
-l'acétylcholine, qn
+RÃ©v. No pos. A TP DÃ©nomination (chimie/hÃ©matologie/immunologie) B
+8059.10 80 Peptide natriurÃ©tique (BNP, NT-proBNP); C
+limitation: recherche d'une dyspnÃ©e aiguÃ« pour l'Ã©limination d'une insuffisance cardiaque aiguÃ« ou chronique; pas pour le suivi d'une thÃ©rapie
+8060.00 40 Auto-anticorps anti-Ã©pithÃ©lium du cÃ´lon I
+8060.01 40 Auto-anticorps anti-rÃ©cepteurs de I
+l'acÃ©tylcholine, ql
+8060.02 50 Auto-anticorps anti-rÃ©cepteurs de I
+l'acÃ©tylcholine, qn
 8060.03 40 Auto-anticorps anti-actine, ql
 I
 8060.04 50 Auto-anticorps anti-actine, qn
@@ -1159,8 +1159,8 @@ I
 					:position			=>	'10',
 					:taxpoints		=>	80,
 					:lab_areas		=>	['C'],
-					:description	=>	'Peptide natriurétique (BNP, NT-proBNP);',
-					:limitation		=>	'recherche d\'une dyspnée aiguë pour l\'élimination d\'une insuffisance cardiaque aiguë ou chronique; pas pour le suivi d\'une thérapie',
+					:description	=>	'Peptide natriurÃ©tique (BNP, NT-proBNP);',
+					:limitation		=>	'recherche d\'une dyspnÃ©e aiguÃ« pour l\'Ã©limination d\'une insuffisance cardiaque aiguÃ« ou chronique; pas pour le suivi d\'une thÃ©rapie',
 					:list_title			=>	nil,
 					:permission			=>	nil,
 					:taxpoint_type	=>	nil,
@@ -1171,7 +1171,7 @@ I
 					:position				=>	'00',
 					:taxpoints			=>	40,
 					:lab_areas			=>	['I'],
-					:description		=>	'Auto-anticorps anti-épithélium du côlon',
+					:description		=>	'Auto-anticorps anti-Ã©pithÃ©lium du cÃ´lon',
 					:taxpoint_type	=>	nil,
 					:list_title			=>	nil,
 					:permission			=>	nil,
@@ -1182,7 +1182,7 @@ I
 				:position				=>	'01',
 				:taxpoints			=>	40,
 				:lab_areas			=>	['I'],
-				:description		=>	'Auto-anticorps anti-récepteurs de l\'acétylcholine, ql',
+				:description		=>	'Auto-anticorps anti-rÃ©cepteurs de l\'acÃ©tylcholine, ql',
 				:taxpoint_type	=>	nil,
 				:list_title			=>	nil,
 				:permission			=>	nil,
@@ -1193,7 +1193,7 @@ I
 				:position				=>	'02',
 				:taxpoints			=>	50,
 				:lab_areas			=>	['I'],
-				:description		=>	'Auto-anticorps anti-récepteurs de l\'acétylcholine, qn',
+				:description		=>	'Auto-anticorps anti-rÃ©cepteurs de l\'acÃ©tylcholine, qn',
 				:taxpoint_type	=>	nil,
 				:list_title			=>	nil,
 				:permission			=>	nil,
@@ -1226,18 +1226,18 @@ I
 			def test_fr_parse_page__3
 				src = <<-EOS
       9365.50   170 Bartonella henselae/quintana, amplifi-        M
-				cation et détection des acides
-				nucléiques
-				     9366.001    15      Uréase, test à l~R~ (Helicobacter pylori)      CM
-				     9367.001    90     Helicobacter pylori, test respiratoire à       CM
-				l~Rurée 13C, y.c. l'urée 13C
-				  La préparation à l'urée 13C doit être
-				enregistrée par l'Institut suisse des
-				produits thérapeutiques (Swissmedic).
+				cation et dÃ©tection des acides
+				nuclÃ©iques
+				     9366.001    15      UrÃ©ase, test Ã  l~R~ (Helicobacter pylori)      CM
+				     9367.001    90     Helicobacter pylori, test respiratoire Ã        CM
+				l~RurÃ©e 13C, y.c. l'urÃ©e 13C
+				  La prÃ©paration Ã  l'urÃ©e 13C doit Ãªtre
+				enregistrÃ©e par l'Institut suisse des
+				produits thÃ©rapeutiques (Swissmedic).
 				      9368.50   170    Tropheryma whippelii, amplification et        M
-				détection des acides nucléiques
-				1 L'exécution de cette analyse ne nécessite pas de reconnaissance par l'Office fédéral de la
-				santé publique au sens de l'art. 5, al. 1, de la loi sur les épidémies du 18 décembre 1970
+				dÃ©tection des acides nuclÃ©iques
+				1 L'exÃ©cution de cette analyse ne nÃ©cessite pas de reconnaissance par l'Office fÃ©dÃ©ral de la
+				santÃ© publique au sens de l'art. 5, al. 1, de la loi sur les Ã©pidÃ©mies du 18 dÃ©cembre 1970
 				103
 				EOS
 				begin
@@ -1248,9 +1248,9 @@ I
 					:group					=>	'9366',
 					:position				=>	'00',
 					:taxpoints			=>	15,
-					:description		=>	'Uréase, test à l~R~ (Helicobacter pylori)',
+					:description		=>	'UrÃ©ase, test Ã  l~R~ (Helicobacter pylori)',
 					:lab_areas			=>	['C','M'],
-					:footnote				=>	'L\'exécution de cette analyse ne nécessite pas de reconnaissance par l\'Office fédéral de la santé publique au sens de l\'art. 5, al. 1, de la loi sur les épidémies du 18 décembre 1970',
+					:footnote				=>	'L\'exÃ©cution de cette analyse ne nÃ©cessite pas de reconnaissance par l\'Office fÃ©dÃ©ral de la santÃ© publique au sens de l\'art. 5, al. 1, de la loi sur les Ã©pidÃ©mies du 18 dÃ©cembre 1970',
 					:list_title			=>	nil,
 					:taxpoint_type	=>	nil,
 					:permission			=>	nil,

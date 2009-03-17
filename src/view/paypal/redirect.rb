@@ -30,9 +30,9 @@ class Redirect < HtmlGrid::Component
 			<< "cancel_return=#{@lookandfeel.base_url}&" \
 			<< "image_url=https://www.generika.cc/images/oddb_paypal.jpg"
 		if((user = @session.user).is_a?(YusUser))
-			url << "&email=#{utf8(user.email)}&first_name=#{utf8(user.name_first)}" \
-				<< "&last_name=#{utf8(user.name_last)}&address1=#{utf8(user.address)}" \
-				<< "&city=#{utf8(user.city)}&zip=#{utf8(user.plz)}" \
+			url << "&email=#{user.email}&first_name=#{user.name_first}" \
+				<< "&last_name=#{user.name_last}&address1=#{user.address}" \
+				<< "&city=#{user.city}&zip=#{user.plz}" \
 				<< "&redirect_cmd=_xclick&cmd=_ext-enter"
 		else
 			url << '&cmd=_xclick'
@@ -43,9 +43,6 @@ class Redirect < HtmlGrid::Component
 	end
   def to_html(context)
     ''
-  end
-  def utf8(text)
-    Iconv.iconv('UTF-8', 'ISO_8859-1', text).first
   end
 end
 		end

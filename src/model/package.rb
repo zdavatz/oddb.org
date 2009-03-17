@@ -11,7 +11,7 @@ require 'model/part'
 module ODDB
 	class PackageCommon
 		include Persistence
-    @@ddd_galforms = /tabletten/i
+    @@ddd_galforms = /tabletten/iu
 		class << self
 			def price_internal(price, type=nil)
         unless(price.is_a?(Util::Money))
@@ -196,7 +196,7 @@ module ODDB
       @generic_type == :original && !comparables.empty?
     end
     def ikscd=(ikscd)
-      if(/^[0-9]{3}$/.match(ikscd))
+      if(/^[0-9]{3}$/u.match(ikscd))
         pacs = @sequence.packages
         pacs.delete(@ikscd)
         pacs.store(ikscd, self)

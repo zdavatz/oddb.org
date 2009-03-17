@@ -1,89 +1,92 @@
 --- !oddb.org,2003/ODDB::Narcotic 
-casrn: 10061-32-2
-oid: 11156173
+casrn: 50895-14-2
+oid: 878027
 substances: 
 - !oddb.org,2003/ODDB::Substance 
-  oid: 839736
+  oid: 878030
   descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-    fr: "L\xE9vophenacylmorphane"
-    de: Levophenacylmorphan
+    fr: "Alpham\xC3\xA9prodine-Chlorhydrate"
+    de: Alphameprodin-Hydrochlorid
   synonyms: []
 
-  swissmedic_code: "74606100"
-  narcotic: 10061-32-2
+  swissmedic_code: "74696834"
+  narcotic: 50895-14-2
 packages: []
 
 
 --- !oddb.org,2003/ODDB::Narcotic 
-casrn: 3861-72-1
-oid: 11154610
+casrn: 50-13-5
+oid: 815147
 substances: 
 - !oddb.org,2003/ODDB::Substance 
-  oid: 839130
+  oid: 840381
   descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-    de: Acetyldihydrocodein
-    fr: "Ac\xE9tyldihydrocod\xE9ine"
+    de: Pethidin-Hydrochlorid, Anhydrid (Pethidin-Hydrochlorid,
+    fr: "Pethidine-Chlorhydrate, Anhydre (P\xC3\xA9thidine-"
   synonyms: []
 
-  swissmedic_code: "74600100"
-  narcotic: 3861-72-1
-packages: []
-
-
---- !oddb.org,2003/ODDB::Narcotic 
-casrn: 84824-87-3
-oid: 11155132
-substances: 
+  swissmedic_code: "74699966"
+  narcotic: 50-13-5
 - !oddb.org,2003/ODDB::Substance 
-  oid: 839067
+  oid: 840366
   descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-    de: Dihydrocodein-Thiocyanat
-    fr: "Dihydrocod\xE9ine-Thiocyanate"
+    de: Pethidin-Hydrochlorid, Anhydrid
+    fr: "P\xC3\xA9thidine-Chlorhydrate, Anhydre"
   synonyms: []
 
-  swissmedic_code: "74699828"
-  narcotic: 84824-87-3
+  swissmedic_code: "74609510"
+  narcotic: 50-13-5
+- !oddb.org,2003/ODDB::Substance 
+  oid: 840369
+  descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+    de: Pethidin-Hydrochlorid, Anhydrid (Pethidin-Hydrochlorid,
+    fr: "Pethidine-Chlorhydrate, Anhydre (P\xC3\xA9thidine-"
+  synonyms: []
+
+  swissmedic_code: "74609511"
+  narcotic: 50-13-5
+- !oddb.org,2003/ODDB::Substance 
+  oid: 840372
+  descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+    de: Pethidin-Hydrochlorid, Anhydrid (Pethidin-Hydrochlorid,
+    fr: "Pethidine-Chlorhydrate, Anhydre (P\xC3\xA9thidine-"
+  synonyms: []
+
+  swissmedic_code: "74609517"
+  narcotic: 50-13-5
+- !oddb.org,2003/ODDB::Substance 
+  oid: 840375
+  descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+    de: Pethidin-Hydrochlorid, Anhydrid (Pethidin-Hydrochlorid,
+    fr: "Pethidine-Chlorhydrate, Anhydre (P\xC3\xA9thidine-"
+  synonyms: []
+
+  swissmedic_code: "74699869"
+  narcotic: 50-13-5
+- !oddb.org,2003/ODDB::Substance 
+  oid: 840378
+  descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
+    de: Pethidin-Hydrochlorid, Anhydrid (Pethidin-Hydrochlorid,
+    fr: "Pethidine-Chlorhydrate, Anhydre (P\xC3\xA9thidine-"
+  synonyms: []
+
+  swissmedic_code: "74699967"
+  narcotic: 50-13-5
 packages: 
-- "30157036"
-- "23774011"
+- "53572014"
+- "53572030"
+- "13369054"
+- "13369046"
+- "52109019"
+- "52109027"
+- "33492014"
+- "33492022"
+- "22672029"
+- "22672045"
+- "22672053"
+- "22672061"
+- "22672088"
+- "22672118"
+- "22672126"
+- "33491018"
 
---- !oddb.org,2003/ODDB::Narcotic 
-casrn: 520-52-5
-oid: 11157737
-substances: 
-- !oddb.org,2003/ODDB::Substance 
-  oid: 813185
-  descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-    de: Psilocybin
-    fr: Psilocybine
-  synonyms: []
-
-  swissmedic_code: "74615200"
-  narcotic: 520-52-5
-  effective_form: !oddb.org,2003/ODDB::Substance 
-    oid: 813180
-    descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-      fr: Psilocine
-      de: Psilocin
-      lt: Psilocinum
-    synonyms: []
-
-    swissmedic_code: "74615100"
-    narcotic: 520-53-6
-packages: []
-
-
---- !oddb.org,2003/ODDB::Narcotic 
-casrn: 
-oid: 11167637
-substances: 
-- !oddb.org,2003/ODDB::Substance 
-  oid: 813293
-  descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-    fr: "T\xE9trahydrocannabinol (Thc) tous les Isom\xE8res et Leurs"
-    de: Tetrahydrocannabinol (Thc), alle Isomere und Deren
-  synonyms: []
-
-  swissmedic_code: "74615500"
-  narcotic: 
-packages: []

@@ -18,9 +18,9 @@ class Formatter < HtmlFormatter
 end
 class ResultWriter < NullWriter
 	DG_PATTERNS = {
-		:partner => /DgMedwinPartner/,
-		:product => /DgMedrefProduct/,
-		:refdata => /DgMedrefProduct/,
+		:partner => /DgMedwinPartner/u,
+		:product => /DgMedrefProduct/u,
+		:refdata => /DgMedrefProduct/u,
 	}
 	def initialize(search_type=:partner)
 		@dg_pattern = DG_PATTERNS[search_type]
@@ -69,7 +69,7 @@ class DetailWriter < NullWriter
 		@tablehandlers.each { |handler|
 			unless(handler.nil?)
 				id = handler.attributes.first[1]
-				if(id.match(/tblFind/) || id.match(/Table2/))
+				if(id.match(/tblFind/u) || id.match(/Table2/u))
 					data = handler.extract_cdata(template)
 				end
 			end

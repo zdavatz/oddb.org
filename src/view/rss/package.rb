@@ -33,7 +33,7 @@ class Package < HtmlGrid::Component
       feed.channel.language = @session.language
       feed.image.url = @lookandfeel.resource(:logo_rss)
       feed.image.title = @lookandfeel.lookup(:logo)
-      feed.encoding = 'ISO-8859-1'
+      feed.encoding = 'UTF-8'
       feed.xml_stylesheets.new_xml_stylesheet.href = @lookandfeel.resource(:css)
       language = @session.language
       @model.each { |package|

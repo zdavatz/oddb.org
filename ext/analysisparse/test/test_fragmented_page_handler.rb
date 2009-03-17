@@ -18,14 +18,14 @@ module ODDB
 5.1.3 Analysen der Grundversorgung im engern Sinn
 
 Die Analysen der Grundversorgung im engern Sinn sind in zwei Teillisten unterteilt. Diese Unterteilung ist eine rein tarifliche und be-
-trifft nur das ärztliche Praxislaboratorium.
+trifft nur das Ã¤rztliche Praxislaboratorium.
 
 Teilliste 1
-Für diese Analysen kann für das ärztliche Praxislaboratorium
-der Taxpunktwert in Tarifverträgen festgesetzt werden, wobei die Taxpunktzahl der Analysenliste gilt. Fehlt eine solche vertragliche Regelung, so gilt der Taxpunktwert der Analysenliste.
-Rev. Pos.-Nr. A TP Bezeichnung (Liste Grundversorgung, Teilliste 1) 8259.00 9 Glukose, im Blut/Plasma/Serum C 8273.00 7 Hämatokrit, manuelle Bestimmung, kumulierbar mit 8210.00 Erythrozyten-Zählung, 8275.00 Hämoglobin, 8406.00 Leukozyten-Zählung und 8560.00 Thrombozyten-Zählung bis max. Taxpunktzahl 15 (Hämatogramm II)
+FÃ¼r diese Analysen kann fÃ¼r das Ã¤rztliche Praxislaboratorium
+der Taxpunktwert in TarifvertrÃ¤gen festgesetzt werden, wobei die Taxpunktzahl der Analysenliste gilt. Fehlt eine solche vertragliche Regelung, so gilt der Taxpunktwert der Analysenliste.
+Rev. Pos.-Nr. A TP Bezeichnung (Liste Grundversorgung, Teilliste 1) 8259.00 9 Glukose, im Blut/Plasma/Serum C 8273.00 7 HÃ¤matokrit, manuelle Bestimmung, kumulierbar mit 8210.00 Erythrozyten-ZÃ¤hlung, 8275.00 HÃ¤moglobin, 8406.00 Leukozyten-ZÃ¤hlung und 8560.00 Thrombozyten-ZÃ¤hlung bis max. Taxpunktzahl 15 (HÃ¤matogramm II)
 Limitation: nicht mit QBC-Methode
-C 8275.00 7 Hämoglobin, manuelle Bestimmung, kumulierbar mit 8210.00 Erythrozyten-Zählung, 8273.00 Hämatokrit, 8406.00 Leukozyten-Zählung und 8560.00 Thrombozyten-Zählung bis max. Taxpunktzahl 15 (Hämatogramm II)
+C 8275.00 7 HÃ¤moglobin, manuelle Bestimmung, kumulierbar mit 8210.00 Erythrozyten-ZÃ¤hlung, 8273.00 HÃ¤matokrit, 8406.00 Leukozyten-ZÃ¤hlung und 8560.00 Thrombozyten-ZÃ¤hlung bis max. Taxpunktzahl 15 (HÃ¤matogramm II)
 Limitation: nicht mit QBC-Methode
 8387.00 9 Kreatinin, im Blut/Plasma/Serum
 		25
@@ -35,16 +35,16 @@ Limitation: nicht mit QBC-Methode
 5.1.3 Analysen der Grundversorgung im engern Sinn
 
 Die Analysen der Grundversorgung im engern Sinn sind in zwei Teillisten unterteilt. Diese Unterteilung ist eine rein tarifliche und be-
-trifft nur das ärztliche Praxislaboratorium.
+trifft nur das Ã¤rztliche Praxislaboratorium.
 
 					EOS
 					<<-EOS,
 Teilliste 1
-Für diese Analysen kann für das ärztliche Praxislaboratorium
-der Taxpunktwert in Tarifverträgen festgesetzt werden, wobei die Taxpunktzahl der Analysenliste gilt. Fehlt eine solche vertragliche Regelung, so gilt der Taxpunktwert der Analysenliste.
-Rev. Pos.-Nr. A TP Bezeichnung (Liste Grundversorgung, Teilliste 1) 8259.00 9 Glukose, im Blut/Plasma/Serum C 8273.00 7 Hämatokrit, manuelle Bestimmung, kumulierbar mit 8210.00 Erythrozyten-Zählung, 8275.00 Hämoglobin, 8406.00 Leukozyten-Zählung und 8560.00 Thrombozyten-Zählung bis max. Taxpunktzahl 15 (Hämatogramm II)
+FÃ¼r diese Analysen kann fÃ¼r das Ã¤rztliche Praxislaboratorium
+der Taxpunktwert in TarifvertrÃ¤gen festgesetzt werden, wobei die Taxpunktzahl der Analysenliste gilt. Fehlt eine solche vertragliche Regelung, so gilt der Taxpunktwert der Analysenliste.
+Rev. Pos.-Nr. A TP Bezeichnung (Liste Grundversorgung, Teilliste 1) 8259.00 9 Glukose, im Blut/Plasma/Serum C 8273.00 7 HÃ¤matokrit, manuelle Bestimmung, kumulierbar mit 8210.00 Erythrozyten-ZÃ¤hlung, 8275.00 HÃ¤moglobin, 8406.00 Leukozyten-ZÃ¤hlung und 8560.00 Thrombozyten-ZÃ¤hlung bis max. Taxpunktzahl 15 (HÃ¤matogramm II)
 Limitation: nicht mit QBC-Methode
-C 8275.00 7 Hämoglobin, manuelle Bestimmung, kumulierbar mit 8210.00 Erythrozyten-Zählung, 8273.00 Hämatokrit, 8406.00 Leukozyten-Zählung und 8560.00 Thrombozyten-Zählung bis max. Taxpunktzahl 15 (Hämatogramm II)
+C 8275.00 7 HÃ¤moglobin, manuelle Bestimmung, kumulierbar mit 8210.00 Erythrozyten-ZÃ¤hlung, 8273.00 HÃ¤matokrit, 8406.00 Leukozyten-ZÃ¤hlung und 8560.00 Thrombozyten-ZÃ¤hlung bis max. Taxpunktzahl 15 (HÃ¤matogramm II)
 Limitation: nicht mit QBC-Methode
 8387.00 9 Kreatinin, im Blut/Plasma/Serum
 		25
@@ -65,7 +65,7 @@ Limitation: nicht mit QBC-Methode
 oder
 gruppenspezifischer Atopie-Screeningtest, ql/sq, ohne Unterscheidung einzelner spez.
 IgE
-(1) analog abgestuftem Blocktarif gemäss Punkt 5.7
+(1) analog abgestuftem Blocktarif gemÃ¤ss Punkt 5.7
 der Vorbemerkungen, je nach Anzahl Allergene im
 verwendeten Testsystem
 8543.00 1 40 Theophyllin (Blut)
@@ -76,7 +76,7 @@ verwendeten Testsystem
  Physikalische Medizin und Rehabilitation
 Rev. Pos.-Nr. A TP Bezeichnung (Liste physik. Medizin und Rehabilitation)
 8388.00 20 Kristallnachweis mit polarisiertem Licht
-8600.00 25 Zellzählung, sowie Differenzierung nach Anreicherung und Färbung von Körperflüssigkeiten
+8600.00 25 ZellzÃ¤hlung, sowie Differenzierung nach Anreicherung und FÃ¤rbung von KÃ¶rperflÃ¼ssigkeiten
 
 EOS
 				expected = [
@@ -86,7 +86,7 @@ EOS
 oder
 gruppenspezifischer Atopie-Screeningtest, ql/sq, ohne Unterscheidung einzelner spez.
 IgE
-(1) analog abgestuftem Blocktarif gemäss Punkt 5.7
+(1) analog abgestuftem Blocktarif gemÃ¤ss Punkt 5.7
 der Vorbemerkungen, je nach Anzahl Allergene im
 verwendeten Testsystem
 8543.00 1 40 Theophyllin (Blut)
@@ -99,7 +99,7 @@ EOS
  Physikalische Medizin und Rehabilitation
 Rev. Pos.-Nr. A TP Bezeichnung (Liste physik. Medizin und Rehabilitation)
 8388.00 20 Kristallnachweis mit polarisiertem Licht
-8600.00 25 Zellzählung, sowie Differenzierung nach Anreicherung und Färbung von Körperflüssigkeiten
+8600.00 25 ZellzÃ¤hlung, sowie Differenzierung nach Anreicherung und FÃ¤rbung von KÃ¶rperflÃ¼ssigkeiten
 
 EOS
 				]
@@ -112,8 +112,8 @@ EOS
 			end
 			def test_parse_fragment__1
 				src = <<-EOS
-Gynäkologie und Geburtshilfe
-Rev. Pos.-Nr. A TP Bezeichnung (Liste Gynäkologie und Geburtshilfe)
+GynÃ¤kologie und Geburtshilfe
+Rev. Pos.-Nr. A TP Bezeichnung (Liste GynÃ¤kologie und Geburtshilfe)
 8455.20 60 Penetrationstest
 8528.01 30 Spermiennachweis nach Vasektomie
 9343.50 16 Pilznachweis mit kommerziellen Medien
@@ -190,8 +190,8 @@ Gastroenterologie
 Rev. Pos.-Nr. A TP Bezeichnung (Liste Gastroenterologie)
 9366.00 15 Urease-Test (Helicobacter pylori)
 
-Gynäkologie und Geburtshilfe
-Rev. Pos.-Nr. A TP Bezeichnung (Liste Gynäkologie und Geburtshilfe)
+GynÃ¤kologie und Geburtshilfe
+Rev. Pos.-Nr. A TP Bezeichnung (Liste GynÃ¤kologie und Geburtshilfe)
 8455.20 60 Penetrationstest
 8528.01 30 Spermiennachweis nach Vasektomie
 
@@ -237,7 +237,7 @@ Rev. Pos.-Nr. A TP Bezeichnung (Liste Gynäkologie und Geburtshilfe)
 					:position			=>	'20',
 					:taxpoints		=>	60,
 					:description	=>	'Penetrationstest',
-					:permission		=>	'Gynäkologie und Geburtshilfe',
+					:permission		=>	'GynÃ¤kologie und Geburtshilfe',
 					:list_title			=>	nil,
 					:taxpoint_type	=>	nil,
 				},
@@ -247,7 +247,7 @@ Rev. Pos.-Nr. A TP Bezeichnung (Liste Gynäkologie und Geburtshilfe)
 					:position			=>	'01',
 					:taxpoints		=>	30,
 					:description	=>	'Spermiennachweis nach Vasektomie',
-					:permission		=>	'Gynäkologie und Geburtshilfe',
+					:permission		=>	'GynÃ¤kologie und Geburtshilfe',
 					:list_title			=>	nil,
 					:taxpoint_type	=>	nil,
 				},
@@ -259,12 +259,12 @@ Rev. Pos.-Nr. A TP Bezeichnung (Liste Gynäkologie und Geburtshilfe)
 Teilliste 1
 Rev. Pos.-Nr. A TP Bezeichnung (Liste Grundversorgung, Teilliste 1)
 8259.00 9 Glukose, im Blut/Plasma/Serum
-C 8273.00 7 Hämatokrit, manuelle Bestimmung, kumu-
-lierbar mit 8210.00 Erythrozyten-Zählung, 
-8275.00 Hämoglobin, 8406.00 Leukozyten-
-Zählung und 8560.00 Thrombozyten-
-Zählung bis max. Taxpunktzahl 15
-(Hämatogramm II)
+C 8273.00 7 HÃ¤matokrit, manuelle Bestimmung, kumu-
+lierbar mit 8210.00 Erythrozyten-ZÃ¤hlung, 
+8275.00 HÃ¤moglobin, 8406.00 Leukozyten-
+ZÃ¤hlung und 8560.00 Thrombozyten-
+ZÃ¤hlung bis max. Taxpunktzahl 15
+(HÃ¤matogramm II)
 Limitation: nicht mit QBC-Methode
 
 24
@@ -303,7 +303,7 @@ Untersuchungen an Patientenproben"
 					:position				=>	'00',
 					:analysis_revision				=>	'C',
 					:taxpoints			=>	7,
-					:description		=>	'Hämatokrit, manuelle Bestimmung, kumulierbar mit 8210.00 Erythrozyten-Zählung, 8275.00 Hämoglobin, 8406.00 Leukozyten-Zählung und 8560.00 Thrombozyten-Zählung bis max. Taxpunktzahl 15 (Hämatogramm II)',
+					:description		=>	'HÃ¤matokrit, manuelle Bestimmung, kumulierbar mit 8210.00 Erythrozyten-ZÃ¤hlung, 8275.00 HÃ¤moglobin, 8406.00 Leukozyten-ZÃ¤hlung und 8560.00 Thrombozyten-ZÃ¤hlung bis max. Taxpunktzahl 15 (HÃ¤matogramm II)',
 					:limitation			=>	'nicht mit QBC-Methode',
 					:taxpoint_type			=>	:fixed,
 					:list_title					=>	nil,
@@ -401,7 +401,7 @@ Rev. Pos.-Nr. A TP Bezeichnung (Liste Kinder- und Jugendmedizin)
 oder gruppenspezifischer Atopie-Screeningtest,
 ql/sq, ohne Unterscheidung einzelner spez.
 IgE
-(1) analog abgestuftem Blocktarif gemäss Punkt 5.7
+(1) analog abgestuftem Blocktarif gemÃ¤ss Punkt 5.7
 der Vorbemerkungen, je nach Anzahl Allergene im
 verwendeten Testsystem
 8543.00 1 40 Theophyllin (Blut)
@@ -410,13 +410,13 @@ verwendeten Testsystem
 * anonyme Position
 
 Medizinische Onkologie
-Vorläufig wie Hämatologie
+VorlÃ¤ufig wie HÃ¤matologie
 
 Physikalische Medizin und Rehabilitation
 Rev. Pos.-Nr. A TP Bezeichnung (Liste physik. Medizin und Rehabilitation)
 8388.00 20 Kristallnachweis mit polarisiertem Licht
-8600.00 25 Zellzählung, sowie Differenzierung nach
-Anreicherung und Färbung von Körper- flüssigkeiten
+8600.00 25 ZellzÃ¤hlung, sowie Differenzierung nach
+Anreicherung und FÃ¤rbung von KÃ¶rper- flÃ¼ssigkeiten
 
 100
 			EOS
@@ -442,7 +442,7 @@ KOH, Pilze)
 					:taxnumber				=>	'1',
 					:taxpoints				=>	25,
 					:description			=>	'Immunglobulin IgE - multispezifischer oder gruppenspezifischer Atopie-Screeningtest, ql/sq, ohne Unterscheidung einzelner spez. IgE',
-					:taxnote					=>	'analog abgestuftem Blocktarif gemäss Punkt 5.7 der Vorbemerkungen, je nach Anzahl Allergene im verwendeten Testsystem',
+					:taxnote					=>	'analog abgestuftem Blocktarif gemÃ¤ss Punkt 5.7 der Vorbemerkungen, je nach Anzahl Allergene im verwendeten Testsystem',
 					:permission				=>	'Kinder- und Jugendmedizin',
 					:list_title					=>	nil,
 					:taxpoint_type			=>	nil,
@@ -473,7 +473,7 @@ KOH, Pilze)
 					:group						=>	'8600',
 					:position					=>	'00',
 					:taxpoints				=>	25,
-					:description			=>	'Zellzählung, sowie Differenzierung nach Anreicherung und Färbung von Körperflüssigkeiten',
+					:description			=>	'ZellzÃ¤hlung, sowie Differenzierung nach Anreicherung und FÃ¤rbung von KÃ¶rperflÃ¼ssigkeiten',
 					:permission				=>	'Physikalische Medizin und Rehabilitation',
 					:list_title					=>	nil,
 					:taxpoint_type			=>	nil,
@@ -507,24 +507,24 @@ KOH, Pilze)
 			def test_fr_each_fragment__1
 				src = <<-EOS
 5.1.3  Analyses dans le cadre des soins de base au sens strict
-Les analyses effectuées dans le cadre des soins de base au sens strict sont subdivisées dans deux listes partielles. Cette subdivision est de nature tarifaire est ne concerne que les laboratoires de cabinets médicaux.
+Les analyses effectuÃ©es dans le cadre des soins de base au sens strict sont subdivisÃ©es dans deux listes partielles. Cette subdivision est de nature tarifaire est ne concerne que les laboratoires de cabinets mÃ©dicaux.
 Liste partielle 1
-Pour les laboratoires de cabinets médicaux, la valeur du point des analyses suivantes peut être fixée dans des conventions tarifaires, mais le nombre de points indiqué dans la liste des analyses doit être maintenu. En l'absence d'une convention tarifaire, la valeur du point de la liste des analyses est applicable.
-Rév. No pos. A TP Dénomination (liste des soins de base, liste partielle 1)
-8259.00 9 Glucose (sang, plasma, sérum)
-C 8273.00 7 Hématocrite, détermination manuelle, cumulable avec 8210.00 érythrocytes (numération), 8275.00 hémoglobine, 8406.00 leucocytes (numération) et 8560.00 thrombocytes (numération), jusqu'à un total de max. 15 points (hémogramme II) Limitation: pas avec la méthode QBC
+Pour les laboratoires de cabinets mÃ©dicaux, la valeur du point des analyses suivantes peut Ãªtre fixÃ©e dans des conventions tarifaires, mais le nombre de points indiquÃ© dans la liste des analyses doit Ãªtre maintenu. En l'absence d'une convention tarifaire, la valeur du point de la liste des analyses est applicable.
+RÃ©v. No pos. A TP DÃ©nomination (liste des soins de base, liste partielle 1)
+8259.00 9 Glucose (sang, plasma, sÃ©rum)
+C 8273.00 7 HÃ©matocrite, dÃ©termination manuelle, cumulable avec 8210.00 Ã©rythrocytes (numÃ©ration), 8275.00 hÃ©moglobine, 8406.00 leucocytes (numÃ©ration) et 8560.00 thrombocytes (numÃ©ration), jusqu'Ã  un total de max. 15 points (hÃ©mogramme II) Limitation: pas avec la mÃ©thode QBC
 				EOS
 				expected = [
 				<<-EOS,
 5.1.3  Analyses dans le cadre des soins de base au sens strict
-Les analyses effectuées dans le cadre des soins de base au sens strict sont subdivisées dans deux listes partielles. Cette subdivision est de nature tarifaire est ne concerne que les laboratoires de cabinets médicaux.
+Les analyses effectuÃ©es dans le cadre des soins de base au sens strict sont subdivisÃ©es dans deux listes partielles. Cette subdivision est de nature tarifaire est ne concerne que les laboratoires de cabinets mÃ©dicaux.
 				EOS
 				<<-EOS,
 Liste partielle 1
-Pour les laboratoires de cabinets médicaux, la valeur du point des analyses suivantes peut être fixée dans des conventions tarifaires, mais le nombre de points indiqué dans la liste des analyses doit être maintenu. En l'absence d'une convention tarifaire, la valeur du point de la liste des analyses est applicable.
-Rév. No pos. A TP Dénomination (liste des soins de base, liste partielle 1)
-8259.00 9 Glucose (sang, plasma, sérum)
-C 8273.00 7 Hématocrite, détermination manuelle, cumulable avec 8210.00 érythrocytes (numération), 8275.00 hémoglobine, 8406.00 leucocytes (numération) et 8560.00 thrombocytes (numération), jusqu'à un total de max. 15 points (hémogramme II) Limitation: pas avec la méthode QBC
+Pour les laboratoires de cabinets mÃ©dicaux, la valeur du point des analyses suivantes peut Ãªtre fixÃ©e dans des conventions tarifaires, mais le nombre de points indiquÃ© dans la liste des analyses doit Ãªtre maintenu. En l'absence d'une convention tarifaire, la valeur du point de la liste des analyses est applicable.
+RÃ©v. No pos. A TP DÃ©nomination (liste des soins de base, liste partielle 1)
+8259.00 9 Glucose (sang, plasma, sÃ©rum)
+C 8273.00 7 HÃ©matocrite, dÃ©termination manuelle, cumulable avec 8210.00 Ã©rythrocytes (numÃ©ration), 8275.00 hÃ©moglobine, 8406.00 leucocytes (numÃ©ration) et 8560.00 thrombocytes (numÃ©ration), jusqu'Ã  un total de max. 15 points (hÃ©mogramme II) Limitation: pas avec la mÃ©thode QBC
 				EOS
 				]
 				begin
@@ -538,10 +538,10 @@ C 8273.00 7 Hématocrite, détermination manuelle, cumulable avec 8210.00 érythroc
 			def test_fr_parse_fragment__1
 			src = <<-EOS
 Allergologie et immunologie clinique
-Rév. No pos. A TP Dénomination (list allergologie et immunologie clin.)
+RÃ©v. No pos. A TP DÃ©nomination (list allergologie et immunologie clin.)
 8317.00 35 Immunoglobuline IgE totale, qn
-8317.01 25(1) Immunoglobuline IgE - test de dépistage groupé ou multispécifique de l'atopie, ql/sq, sans différentiation des IgE spécif.
-(1) analogue au tarif échelonné des blocs d'analyses selon point 5.7 des remarques préliminaires, selon le nombre d'allergènes du test utilisé
+8317.01 25(1) Immunoglobuline IgE - test de dÃ©pistage groupÃ© ou multispÃ©cifique de l'atopie, ql/sq, sans diffÃ©rentiation des IgE spÃ©cif.
+(1) analogue au tarif Ã©chelonnÃ© des blocs d'analyses selon point 5.7 des remarques prÃ©liminaires, selon le nombre d'allergÃ¨nes du test utilisÃ©
 			113
 			EOS
 			begin
@@ -563,12 +563,12 @@ Rév. No pos. A TP Dénomination (list allergologie et immunologie clin.)
 					:group					=>	'8317',
 					:position				=>	'01',
 					:taxpoints			=>	25,
-					:description		=>	'Immunoglobuline IgE - test de dépistage groupé ou multispécifique de l\'atopie, ql/sq, sans différentiation des IgE spécif.',
+					:description		=>	'Immunoglobuline IgE - test de dÃ©pistage groupÃ© ou multispÃ©cifique de l\'atopie, ql/sq, sans diffÃ©rentiation des IgE spÃ©cif.',
 					:list_title			=>	nil,
 					:permission			=>	nil,
 					:taxpoint_type	=>	nil,
 					:taxnumber			=>	'1',
-					:taxnote				=>	'analogue au tarif échelonné des blocs d\'analyses selon point 5.7 des remarques préliminaires, selon le nombre d\'allergènes du test utilisé',
+					:taxnote				=>	'analogue au tarif Ã©chelonnÃ© des blocs d\'analyses selon point 5.7 des remarques prÃ©liminaires, selon le nombre d\'allergÃ¨nes du test utilisÃ©',
 			},
 			]
 			assert_equal(expected, result)
@@ -576,15 +576,15 @@ Rév. No pos. A TP Dénomination (list allergologie et immunologie clin.)
 			def test_fr_parse_page__1
 				src1 = <<-EOS
 Liste partielle 1
-8259.00 9 Glucose (sang, plasma, sérum)
-C 8273.00 7 Hematocrite, détermination manuelle
-Limitation: pas avec la méthode QBC
+8259.00 9 Glucose (sang, plasma, sÃ©rum)
+C 8273.00 7 Hematocrite, dÃ©termination manuelle
+Limitation: pas avec la mÃ©thode QBC
 				110
 				EOS
 				src2 = <<-EOS
-9355.30 20 Microscopie conventionelle, examen par ~, coloration comprise (Gram, Giemsa, bleu de méthylène, etc.)
+9355.30 20 Microscopie conventionelle, examen par ~, coloration comprise (Gram, Giemsa, bleu de mÃ©thylÃ¨ne, etc.)
 Liste partielle 2
-C 8000.00 8 ABO/D, contrôle selon les recommandations STS CRS "Sérologie érythrocytaire chez le patient"
+C 8000.00 8 ABO/D, contrÃ´le selon les recommandations STS CRS "SÃ©rologie Ã©rythrocytaire chez le patient"
 				111
 				EOS
 				begin
@@ -597,7 +597,7 @@ C 8000.00 8 ABO/D, contrôle selon les recommandations STS CRS "Sérologie érythro
 				:group					=>	'8259',
 				:position				=>	'00',
 				:taxpoints			=>	9,
-				:description		=>	'Glucose (sang, plasma, sérum)',
+				:description		=>	'Glucose (sang, plasma, sÃ©rum)',
 				:list_title			=>	nil,
 				:taxpoint_type	=>	:fixed,
 				:permission			=>	'Liste partielle 1',
@@ -608,8 +608,8 @@ C 8000.00 8 ABO/D, contrôle selon les recommandations STS CRS "Sérologie érythro
 				:position				=>	'00',
 				:taxpoints			=>	7,
 				:analysis_revision				=>	'C',
-				:description		=>	'Hematocrite, détermination manuelle',
-				:limitation			=>	'pas avec la méthode QBC',
+				:description		=>	'Hematocrite, dÃ©termination manuelle',
+				:limitation			=>	'pas avec la mÃ©thode QBC',
 				:list_title			=>	nil,
 				:taxpoint_type	=>	:fixed,
 				:permission			=>	'Liste partielle 1',
@@ -621,7 +621,7 @@ C 8000.00 8 ABO/D, contrôle selon les recommandations STS CRS "Sérologie érythro
 				:group					=>	'9355',
 				:position				=>	'30',
 				:taxpoints			=>	20,
-				:description		=>	'Microscopie conventionelle, examen par ~, coloration comprise (Gram, Giemsa, bleu de méthylène, etc.)',
+				:description		=>	'Microscopie conventionelle, examen par ~, coloration comprise (Gram, Giemsa, bleu de mÃ©thylÃ¨ne, etc.)',
 				:list_title			=>	nil,
 				:taxpoint_type	=>	:fixed,
 				:permission			=>	'Liste partielle 1',
@@ -631,7 +631,7 @@ C 8000.00 8 ABO/D, contrôle selon les recommandations STS CRS "Sérologie érythro
 				:group					=>	'8000',
 				:position				=>	'00',
 				:taxpoints			=>	8,
-				:description		=>	'ABO/D, contrôle selon les recommandations STS CRS "Sérologie érythrocytaire chez le patient"',
+				:description		=>	'ABO/D, contrÃ´le selon les recommandations STS CRS "SÃ©rologie Ã©rythrocytaire chez le patient"',
 				:analysis_revision				=>	'C',
 				:list_title			=>	nil,
 				:taxpoint_type	=>	:default,
@@ -644,10 +644,10 @@ C 8000.00 8 ABO/D, contrôle selon les recommandations STS CRS "Sérologie érythro
 			def test_fr_parse_page__2
 				src = <<-EOS
 Allergologie et immunologie clinique
-Rév. No pos. A TP Dénomination (liste allergologie et immunologie clin.)
+RÃ©v. No pos. A TP DÃ©nomination (liste allergologie et immunologie clin.)
 8317.00 35 Immunoglobuline IgE totale, qn
-8317.01 25 Immunoglobuline IgE - test de dépistage groupé ou multispécifique de l'atopie, ql,sq,
-sans différentiation des IgE spécif.
+8317.01 25 Immunoglobuline IgE - test de dÃ©pistage groupÃ© ou multispÃ©cifique de l'atopie, ql,sq,
+sans diffÃ©rentiation des IgE spÃ©cif.
 				55
 				EOS
 				begin
@@ -669,7 +669,7 @@ sans différentiation des IgE spécif.
 					:group					=>	'8317',
 					:position				=>	'01',
 					:taxpoints			=>	25,
-					:description		=>	'Immunoglobuline IgE - test de dépistage groupé ou multispécifique de l\'atopie, ql,sq, sans différentiation des IgE spécif.',
+					:description		=>	'Immunoglobuline IgE - test de dÃ©pistage groupÃ© ou multispÃ©cifique de l\'atopie, ql,sq, sans diffÃ©rentiation des IgE spÃ©cif.',
 					:permission			=>	'Allergologie et immunologie clinique',
 					:taxpoint_type	=>	nil,
 					:list_title			=>	nil,
@@ -679,12 +679,12 @@ sans différentiation des IgE spécif.
 			end
 			def test_fr_parse_page__3
 				src = <<-EOS
-				Médecine physique et réadaptation
+				MÃ©decine physique et rÃ©adaptation
 
-Rév. No pos. A TP Dénomination (liste médicine physique et réadaption)
+RÃ©v. No pos. A TP DÃ©nomination (liste mÃ©dicine physique et rÃ©adaption)
 
-				            8388.00       20    Cristaux, recherche en lumière polarisée
-				            8600.00       25    Cellules, numération et différentiation après
+				            8388.00       20    Cristaux, recherche en lumiÃ¨re polarisÃ©e
+				            8600.00       25    Cellules, numÃ©ration et diffÃ©rentiation aprÃ¨s
 				enrichissement et coloration de liquides
 				biologiques
 				56
@@ -698,8 +698,8 @@ Rév. No pos. A TP Dénomination (liste médicine physique et réadaption)
 					:group					=>	'8388',
 					:position				=>	'00',
 					:taxpoints			=>	20,
-					:description		=>	'Cristaux, recherche en lumière polarisée',
-					:permission			=>	'Médecine physique et réadaptation',
+					:description		=>	'Cristaux, recherche en lumiÃ¨re polarisÃ©e',
+					:permission			=>	'MÃ©decine physique et rÃ©adaptation',
 					:taxpoint_type	=>	nil,
 					:list_title			=>	nil,
 				},
@@ -708,8 +708,8 @@ Rév. No pos. A TP Dénomination (liste médicine physique et réadaption)
 					:group					=>	'8600',
 					:position				=>	'00',
 					:taxpoints			=>	25,
-					:description		=>	'Cellules, numération et différentiation après enrichissement et coloration de liquides biologiques',
-					:permission			=>	'Médecine physique et réadaptation',
+					:description		=>	'Cellules, numÃ©ration et diffÃ©rentiation aprÃ¨s enrichissement et coloration de liquides biologiques',
+					:permission			=>	'MÃ©decine physique et rÃ©adaptation',
 					:taxpoint_type	=>	nil,
 					:list_title			=>	nil,
 				},

@@ -193,7 +193,7 @@ module ODDB
 			@addresses = [ addr ]
 		end
 		def search_terms
-			terms = @name.split(/[\s\-()]+/).select { |str| str.size >= 3 }
+			terms = @name.split(/[\s\-()]+/u).select { |str| str.size >= 3 }
 			terms += [
 				@name, @ean13, 
 			]

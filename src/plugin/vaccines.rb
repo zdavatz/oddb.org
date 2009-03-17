@@ -13,7 +13,7 @@ module ODDB
 	class VaccineIndexWriter < NullWriter
 		attr_reader :path
     def send_flowing_data(data)
-      if(/Excel|xls/i.match data)
+      if(/Excel|xls/iu.match data)
         @path ||= @candidate
       end
       super
@@ -21,8 +21,8 @@ module ODDB
 		def new_linkhandler(link)
       if(link && (href = link.attribute('href')) \
          && (title = link.attribute('title')) \
-				 && /.*\.xls$/.match(title))
-        @candidate = href.gsub /&amp;/, '&'
+				 && /.*\.xls$/u.match(title))
+        @candidate = href.gsub /&amp;/u, '&'
 			end
 		end
 	end
@@ -31,11 +31,11 @@ module ODDB
 		SWISSMEDIC_SERVER = 'www.swissmedic.ch'
 		INDEX_PATH = '/daten/00080/00254/index.html?lang=de'
 		MEDDATA_SERVER = DRbObject.new(nil, MEDDATA_URI)
-		DOSE_PATTERN  = /(\d+(?:[,.]\d+)?)\s*((?:\/\d+)|[^\s\d]*)?/
-		ENDMULTI_PATTERN = /\d+\s*Stk$/
-		MULTI_PATTERN = /(\d+\s+)\b(Fl|Fertigspr)\b/
+		DOSE_PATTERN  = /(\d+(?:[,.]\d+)?)\s*((?:\/\d+)|[^\s\d]*)?/u
+		ENDMULTI_PATTERN = /\d+\s*Stk$/u
+		MULTI_PATTERN = /(\d+\s+)\b(Fl|Fertigspr)\b/u
 		XLS_PATH = '/files/pdf/B3.1.35-d.xls'
-		SIZE_PATTERN  = /(?:(?:(\d+(?:[.,]\d+)?)\s*x\s*)?(\d+(?:[.,]\d+)?))?\s*([^\d\s]*)$/
+		SIZE_PATTERN  = /(?:(?:(\d+(?:[.,]\d+)?)\s*x\s*)?(\d+(?:[.,]\d+)?))?\s*([^\d\s]*)$/u
 		class ParsedRegistration
 			attr_accessor :iksnr, :indication, :company, :ikscat, :out_of_trade, 
         :expiration_date
@@ -217,12 +217,12 @@ module ODDB
 		def parse_refdata_detail(str)
 			ean = str[0,13]
 			name = str[13..-1]
-			if(/^7680[0-9]{9}$/.match(ean))
+			if(/^7680[0-9]{9}$/u.match(ean))
 				pack = ParsedPackage.new
 				pack.ikscd = ean[-4..-2,]
 				mult, desc = nil
 				if(mstring = name.slice!(ENDMULTI_PATTERN))
-					mult, desc = mstring.split(/\s+/, 2)
+					mult, desc = mstring.split(/\s+/u, 2)
 					name.strip!
 				end
 				if(sstring = name.slice!(SIZE_PATTERN))
@@ -235,7 +235,7 @@ module ODDB
 						qty = 1
 					end
 					if(mstring = name.slice!(MULTI_PATTERN))
-						mult ||= mstring.split(/\s+/, 2).first
+						mult ||= mstring.split(/\s+/u, 2).first
 					end
 					if(mult)
 						sstring = mult + ' x ' + sstring
@@ -247,7 +247,7 @@ module ODDB
 					pack.size = Dose.new(1)
 				end
 				if(dstring = name.slice!(DOSE_PATTERN))
-					pack.dose = Dose.new(*dstring.split(/\s+/, 2))
+					pack.dose = Dose.new(*dstring.split(/\s+/u, 2))
 				end
 				pack
 			end
@@ -264,7 +264,7 @@ module ODDB
 		end
 		def parse_worksheet_row(row)
 			if((iksval = row_at(row, 1)) \
-				 && /^[0-9]{3,5}(\.[0-9]+)?$/.match(iksval.to_s))
+				 && /^[0-9]{3,5}(\.[0-9]+)?$/u.match(iksval.to_s))
 				reg = ParsedRegistration.new
 				reg.iksnr = sprintf('%05i', iksval.to_i)
 				reg.indication = row_at(row, 2)
@@ -277,11 +277,11 @@ module ODDB
         end
 				seq = ParsedSequence.new
         if(atc = row_at(row, 11))
-          seq.atc_class = atc.gsub(/[^A-Z0-9]/, '')
+          seq.atc_class = atc.gsub(/[^A-Z0-9]/u, '')
         end
         seqs = [seq]
         name = row_at(row, 0)
-        if(match = /^(.*?)(\d+)\/(\d+)$/.match(name))
+        if(match = /^(.*?)(\d+)\/(\d+)$/u.match(name))
 				  seq2 = seq.dup
           seq.name = match[1] + match[2]
           seq2.name = match[1] + match[3]

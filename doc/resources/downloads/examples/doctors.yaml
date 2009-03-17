@@ -1,8 +1,8 @@
-!oddb.org,2003/ODDB::Doctor 
+--- !oddb.org,2003/ODDB::Doctor 
 oid: 28766
 ean13: "7601000616715"
 email: amig@amig.ch
-language: "franz\xF6sisch"
+language: "franz\xC3\xB6sisch"
 firstname: Fabrice
 name: Dami
 exam: "1998"
@@ -14,11 +14,11 @@ member:
 addresses: []
 
 
-!oddb.org,2003/ODDB::Doctor 
+--- !oddb.org,2003/ODDB::Doctor 
 oid: 20547
 ean13: "7601000044648"
 email: 
-language: "franz\xF6sisch"
+language: "franz\xC3\xB6sisch"
 firstname: Bernard
 name: Reith
 exam: "1990"
@@ -33,9 +33,9 @@ addresses:
   title: Monsieur le Docteur
   name: Bernard Reith
   additional_lines: 
-  - "Cabinet m\xE9dical"
-  address: "28, rue de Gen\xE8ve"
-  location: "1225 Ch\xEAne-Bourg"
+  - "Cabinet m\xC3\xA9dical"
+  address: "28, rue de Gen\xC3\xA8ve"
+  location: "1225 Ch\xC3\xAAne-Bourg"
   canton: 
   fon: 
   - 022 349 86 86
@@ -43,7 +43,7 @@ addresses:
   - 022 349 53 11
   type: at_praxis
 
-!oddb.org,2003/ODDB::Doctor 
+--- !oddb.org,2003/ODDB::Doctor 
 oid: 12328
 ean13: 
 email: awey@bluewin.ch
@@ -64,7 +64,7 @@ addresses:
   additional_lines: 
   - Arztpraxis
   - Postfach 105
-  address: "B\xFCrenstr. 2"
+  address: "B\xC3\xBCrenstr. 2"
   location: 3296 Arch
   canton: 
   fon: 
@@ -73,13 +73,13 @@ addresses:
   - 032 679 21 93
   type: at_praxis
 
-!oddb.org,2003/ODDB::Doctor 
+--- !oddb.org,2003/ODDB::Doctor 
 oid: 4109
 ean13: "7601000024947"
 email: 
-language: "franz\xF6sisch"
+language: "franz\xC3\xB6sisch"
 firstname: Paul
-name: "H\xE9ritier"
+name: "H\xC3\xA9ritier"
 exam: "1967"
 praxis: false
 salutation: Herrn
@@ -90,7 +90,7 @@ member:
 addresses: []
 
 
-!oddb.org,2003/ODDB::Doctor 
+--- !oddb.org,2003/ODDB::Doctor 
 oid: 32876
 ean13: 
 email: sigrid.voneckardstein@usz.ch
@@ -102,7 +102,7 @@ praxis: false
 salutation: Frau
 title: PD Dr. med.
 specialities: 
-- "Gyn\xE4kologie und Geburtshilfe"
+- "Gyn\xC3\xA4kologie und Geburtshilfe"
 member: 
 addresses: 
 - !oddb.org,2003/ODDB::Address2 
@@ -110,9 +110,9 @@ addresses:
   name: U S Z
   additional_lines: 
   - Departement Frauenheilkunde
-  - "Klinik f\xFCr Gyn\xE4kologie"
+  - "Klinik f\xC3\xBCr Gyn\xC3\xA4kologie"
   address: Frauenklinikstr. 10
-  location: "8091 Z\xFCrich"
+  location: "8091 Z\xC3\xBCrich"
   canton: 
   fon: 
   - 044 255 52 00
@@ -120,7 +120,7 @@ addresses:
   - 044 255 44 33
   type: at_work
 
-!oddb.org,2003/ODDB::Doctor 
+--- !oddb.org,2003/ODDB::Doctor 
 oid: 24657
 ean13: "7601000356635"
 email: 
@@ -149,7 +149,7 @@ addresses:
   - 00423 392 13 00
   type: at_praxis
 
-!oddb.org,2003/ODDB::Doctor 
+--- !oddb.org,2003/ODDB::Doctor 
 oid: 16438
 ean13: "7601000124449"
 email: iwhiteho@hin.ch
@@ -171,7 +171,7 @@ addresses:
   additional_lines: 
   - Arztpraxis
   - Schmerzklinik Hirschgarten
-  address: "Hirschg\xE4sslein 11-15"
+  address: "Hirschg\xC3\xA4sslein 11-15"
   location: 4051 Basel
   canton: 
   fon: 
@@ -184,7 +184,7 @@ addresses:
   name: Schmerzklinik Kirschgarten
   additional_lines: 
   - Abteilung Rheumatologie
-  address: "Hirschg\xE4sslein 11 - 15"
+  address: "Hirschg\xC3\xA4sslein 11 - 15"
   location: 4010 Basel
   canton: 
   fon: 
@@ -193,7 +193,7 @@ addresses:
 
   type: at_work
 
-!oddb.org,2003/ODDB::Doctor 
+--- !oddb.org,2003/ODDB::Doctor 
 oid: 8219
 ean13: "7601000135162"
 email: leuthardt@datacomm.ch
@@ -222,7 +222,7 @@ addresses:
   - 091 811 87 87
   type: at_work
 
-!oddb.org,2003/ODDB::Doctor 
+--- !oddb.org,2003/ODDB::Doctor 
 oid: 28767
 ean13: "7601000706478"
 email: 
@@ -236,4 +236,3 @@ title: Arzt
 specialities: 
 member: 
 addresses: []
-

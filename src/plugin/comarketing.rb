@@ -27,7 +27,7 @@ module ODDB
 			sequences = @app.search_sequences(search_term, fuzz)
 			registrations = sequence_registrations(sequences)
 			if(registrations.size > 1)
-				if(registrations.size > 1 && (match = /,\s*([^,]+)$/.match(name)) \
+				if(registrations.size > 1 && (match = /,\s*([^,]+)$/u.match(name)) \
 					 && (galform = @app.galenic_form(match[1])))
 					registrations = sequence_registrations(sequences) { |seq|
 						galform.equivalent_to?(seq.galenic_form)
@@ -74,7 +74,7 @@ module ODDB
 			@not_found = []
       page = agent.get SOURCE_URI
       link = page.links.find do |node|
-        /Sortiert\s*nach\s*Basis/i.match node.attributes['title']
+        /Sortiert\s*nach\s*Basis/iu.match node.attributes['title']
       end or raise "unable to identify url for Co-Marketing-data"
       url = "http://www.swissmedic.ch/#{link.attributes['href']}"
 			@pairs = COMARKETING_PARSER.get_pairs(url)

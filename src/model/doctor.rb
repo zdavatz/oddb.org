@@ -93,7 +93,7 @@ module ODDB
       values.each { |key, value|
         case key
         when :specialities, :capabilities
-          values.store(key, value.to_s.split(/[\r\n]+/))
+          values.store(key, value.to_s.split(/[\r\n]+/u))
         when :exam
           values.store(key, value.to_i)
         end

@@ -80,12 +80,12 @@ class Session < HttpSession
 	def handle_resp!(resp)
 		@cookie_header = resp["set-cookie"]
     body = resp.body
-    if(match = /VIEWSTATE.*?value="([^"]+)"/.match(body))
+    if(match = /VIEWSTATE.*?value="([^"]+)"/u.match(body))
       @viewstate = match[1]
     else
       @viewstate = nil
     end
-    if(match = /EVENTVALIDATION.*?value="([^"]+)"/.match(body))
+    if(match = /EVENTVALIDATION.*?value="([^"]+)"/u.match(body))
       @eventvalidation = match[1]
     else
       @eventvalidation = nil
@@ -107,7 +107,7 @@ class Session < HttpSession
       raise
     end
   rescue RuntimeError => err
-    if /InternalServerError/.match err.message
+    if /InternalServerError/u.match err.message
       require 'pp'
       puts "error for criteria: #{criteria.pretty_inspect}"
       puts "... post_data: #{hash.pretty_inspect}"
@@ -144,7 +144,6 @@ class Session < HttpSession
     end
 		@form_keys.each { |key, new_key|
 			if(val = criteria[key])
-				val = Iconv.iconv('utf8', 'latin1', val.to_s).first
 				data.push([new_key, CGI.escape(val).tr('+', ' ')])
 			end
 		}

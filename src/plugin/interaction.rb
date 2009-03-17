@@ -129,9 +129,9 @@ module ODDB
 			def flock_conn_name(flock_conn)
 				name = flock_conn.name
 				case name 
-				when /=/
+				when /=/u
 					name.split("=").first
-				when /in part/
+				when /in part/u
 					name.split(" ").first
 				else
 					name

@@ -1,10 +1,11 @@
 Datenbeschrieb index_therapeuticus
 
-Version: 1.0.0
+Version: 1.1.0
+GeÃ¤ndert: 12.03.2009 (1.1.0) durch hwyss@ywesee.com
 Erstellt: 23.05.2008 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
-Encoding: ISO-8859-1
+Encoding: UTF-8
 Record-Separator: \n
 Field-Separator:  ;
 
@@ -13,25 +14,25 @@ Der Datensatz besteht aus zwei CSV-Dokumenten, idx_th.csv und ean13_idx_th.csv
 idx_th.csv:
 00: code              (String)                  -> Code. siehe Glossar (Code)
 01: description_de    (String)                  -> Deutsche Bezeichnung 
-02: description_fr    (String)                  -> Französische Bezeichnung
+02: description_fr    (String)                  -> FranzÃ¶sische Bezeichnung
 03: comment_de        (String)                  -> Deutscher Kommentar/Untertitel
-04: comment_fr        (String)                  -> Französischer Kommentar/Untertitel
+04: comment_fr        (String)                  -> FranzÃ¶sischer Kommentar/Untertitel
 05: limitation_de     (String)                  -> Deutscher Limitationstext
-06: limitation_fr     (String)                  -> Französischer Limitationstext
+06: limitation_fr     (String)                  -> FranzÃ¶sischer Limitationstext
 
 ean13_idx_th.csv: Verbindungstabelle
 00: ean13             (Integer (13)), NOT NULL  -> EAN-13 der Packung
-00: code              (String)                  -> Zugehöriger Index Therapeuticus, falls bekannt
+00: code              (String)                  -> ZugehÃ¶riger Index Therapeuticus, falls bekannt
 
 ## Glossar ##
 * Code:
-Index Therapeuticus gemäss http://www.galinfo.net, bestehend aus 3
+Index Therapeuticus gemÃ¤ss http://www.galinfo.net, bestehend aus 3
 Gruppierungs-Ebenen die der Regular Expression "(\d{2}\.){1,3}" entsprechen.
 
 * Version
-Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+Versionsnummern bezeichnen Ã„nderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
-- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+- Minor:         Kleinere Ã„nderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: ErgÃ¤nzungen und Ã„nderungen im Datenbeschrieb, die keine Ã„nderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/index_therapeuticus.txt

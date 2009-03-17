@@ -37,7 +37,7 @@ class GalenicForm < State::Admin::Global
 			inj
 		}
 		if(syn_list = @session.user_input(:synonym_list))
-			syns = syn_list.split(/\s*,\s*/)
+			syns = syn_list.split(/\s*,\s*/u)
 			syns.each { |syn| 
 				if(duplicate?(syn))
 					@errors.store(:synonym_list, 

@@ -12,7 +12,6 @@ class Session < HttpSession
 	def initialize
 		super('www.swissreg.ch')
 		@http.read_timeout = 120 
-    @iconv = Iconv.new('utf8', 'latin1')
 	end
 	def extract_result_links(html)
     doc = Hpricot(html)
@@ -45,7 +44,6 @@ class Session < HttpSession
     hdrs
 	end
 	def get_result_list(substance)
-    substance = @iconv.iconv(substance)
     response = get("/srclient/")
     update_cookie(response)
     response = get(response['location'])
@@ -83,11 +81,11 @@ class Session < HttpSession
   end
   def update_cookie(response)
     if(hdr = response['set-cookie'])
-      @cookie_id = hdr[/^[^;]+/]
+      @cookie_id = hdr[/^[^;]+/u]
     end
   end
   def view_state(response)
-    if match = /javax.faces.ViewState.*?value="([^"]+)"/.match(response.body)
+    if match = /javax.faces.ViewState.*?value="([^"]+)"/u.match(response.body)
       match[1]
     end
   end

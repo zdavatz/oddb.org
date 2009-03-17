@@ -18,19 +18,19 @@ module ODDB
                                 |Interaktionen|Interactions
                                 |Kontraindikationen|Contre-?indications
                                 )
-                              }ix
-        HYPHEN = /-$/
-        NAME_PTRN = /
+                              }uix
+        HYPHEN = /-$/u
+        NAME_PTRN = %r{
                     (?:Wirk?s?toffe?s:
-                    [^\(]*\((?<name>[^,\s\256\(]+))(\256|\(TM\))
+                    [^\(]*\((?<name>[^,\s®\(]+))(®|\(TM\))
                     |
                     (?:(?:(?:(?:Impf|Wirk?)stoffe?s?)
                          |(?:Zulassung\s*des\s*ersten[^:]+)):
                     (?:\s+Informationen\s+zu)?
-                    \s*(?<name>[^,\s\256\(]+(,?\s*ad\s*us\.\s*vet\.)?))
+                    \s*(?<name>[^,\s®\(]+(,?\s*ad\s*us\.\s*vet\.)?))
                     |
-                    ^(?:Zulassung\s*von\s*[,"\253�]{1,2})(?<name>[^,"\273�]+)
-                    /x
+                    ^(?:Zulassung\s*von\s*[,"„«]{1,2})(?<name>[^,"“»]+)
+                    }ux
         def initialize
           super('', '')
           @minifis = []
@@ -47,7 +47,6 @@ module ODDB
           @chapter = Text::Chapter.new
         end
         def new_font(font)
-          set_symbol(font)
           set_bold(font)
           @font = font
         end
@@ -58,38 +57,36 @@ module ODDB
         def send_line_break
           line = (@lines.last || []).join.strip
           case line
-          #when %r{^(Neu|Erst)?Zulassung eines (Arzneimittels|Medikamente?s) 
-          #         mit( einem)? neue[mn] Wirkstoff}ix,
-          when %r{^Zulassung eines( pflanzlichen)? Arzneimittels mit( einem)? neue[mn] Wirk?stoff}i,
-            %r{^Neuzulassung eines Medikamente?s mit( einem)? neue[mn] Wirkstoff}i,
-            %r{^(Erst)?Zulassung eines neuen (Impf|Wirk)stoffe?s}i,
-            %r{^Zulassung des ersten}i, %r{^Zulassung von [,"\253�]{1,2}}
+          when %r{^Zulassung eines( pflanzlichen)? Arzneimittels mit( einem)? neue[mn] Wirk?stoff}iu,
+            %r{^Neuzulassung eines Medikamente?s mit( einem)? neue[mn] Wirkstoff}iu,
+            %r{^(Erst)?Zulassung eines neuen (Impf|Wirk)stoffe?s}iu,
+            %r{^Zulassung des ersten}iu, %r{^Zulassung von [,"„«]{1,2}}iu
             if(@reached_news)
               @current = {}
               @minifis.push(@current)
               @current[:de] = create_document
             end
-          when %r{^Autorisation d.un (phyto)?m.dicament contenant un nouveau}i,
-            %r{^Autorisation d.livr.es? pour (un|de) nouveaux? principes? actifs?}i,
-            %r{^Autorisation d.livr.es? pour (un|de) nouveaux? produits? de vaccins?}i,
-            %r{^Autorisation d.un nouveau (principe actif|vaccin)}i,
-            %r{^Autorisation du premier}i, %r{^Autorisation de [,"\253�]{1,2}},
-            %r{^Autorisation d.(livr.e pour )?un m.dicament avec un nouveau}i
+          when %r{^Autorisation d.un (phyto)?m.dicament contenant un nouveau}iu,
+            %r{^Autorisation d.livr.es? pour (un|de) nouveaux? principes? actifs?}iu,
+            %r{^Autorisation d.livr.es? pour (un|de) nouveaux? produits? de vaccins?}iu,
+            %r{^Autorisation d.un nouveau (principe actif|vaccin)}iu,
+            %r{^Autorisation du premier}iu, %r{^Autorisation de [,"„«]{1,2}}iu,
+            %r{^Autorisation d.(livr.e pour )?un m.dicament avec un nouveau}iu
             @current[:fr] = create_document if @current
-          when %r{Arzneimittel Nachrichten( / M.dicaments)?$},
-            %r{^M.dicaments$}
+          when %r{Arzneimittel Nachrichten( / M.dicaments)?$}u,
+            %r{^M.dicaments$}u
             @reached_news = true
             #ignore
-          when %r{Arzneimittel\s*Statistik\s*/\s*Miscellan.es}, 
-            %r{Regulatory News / R.glementation}, %r{Regulatory News}, 
-            %r{Infosplitter(\s*/\s*En\s*vrac)?}, 
-            %r{Richtigstellung}, %r{Berichtigung},
-            %r{Medizinprodukte(\s*/\s*Dispositifs m.dicaux)?},
-            %r{Zulassung eines Tierarzneimittels},
-            %r{Entlassung aus der Heilmittelkontrolle}, 
-            %r{Mitteilung an die Fachpersonen},
-            %r{Zum Vertrieb freigegebene Chargen},
-            %r{^Heparinum natricum ad usum externum} # dtstcpw for 02/2006
+          when %r{Arzneimittel\s*Statistik\s*/\s*Miscellan.es}u,
+            %r{Regulatory News / R.glementation}u, %r{Regulatory News}u,
+            %r{Infosplitter(\s*/\s*En\s*vrac)?}u, 
+            %r{Richtigstellung}u, %r{Berichtigung}u,
+            %r{Medizinprodukte(\s*/\s*Dispositifs m.dicaux)?}u,
+            %r{Zulassung eines Tierarzneimittels}u,
+            %r{Entlassung aus der Heilmittelkontrolle}u, 
+            %r{Mitteilung an die Fachpersonen}u,
+            %r{Zum Vertrieb freigegebene Chargen}u,
+            %r{^Heparinum natricum ad usum externum}u # dtstcpw for 02/2006
             clean!
             @current = nil
           end
@@ -130,12 +127,12 @@ module ODDB
                       end
                       target = section.next_paragraph
                     end
-                  when %r{Arzneimittel Nachrichten( / M.dicaments)?},
-                    %r{^M.dicaments$}, %r{^Actualit.s$},
+                  when %r{Arzneimittel Nachrichten( / M.dicaments)?}u,
+                    %r{^M.dicaments$}u, %r{^Actualit.s$}u,
                     # misplaced header in 05/2003:416
-                    %r{^Arzneimittel Statistik$}
+                    %r{^Arzneimittel Statistik$}u
                     #ignore
-                  when %r{Swissmedic\s*Journal\s+[_\d]+}, %r{^\d+$}
+                  when %r{Swissmedic\s*Journal\s+[_\d]+}u, %r{^\d+$}u
                     target = section.next_paragraph
                   else
                     bold = @bold_lines[col][row]
@@ -149,30 +146,17 @@ module ODDB
                     elsif(!bold && title)
                       target << "\n"
                       target = section.next_paragraph
-                    elsif(/^[o-�]\s/.match(line))
+                    elsif(/^[o·-]\s/u.match(line))
                       target = section.next_paragraph
                     elsif(!title && previous_width \
                           && previous_width < (line.length * 0.65))
                       target = section.next_paragraph
                     end
                     previous_width = line.length
-                    if(target.is_a?(Text::Paragraph))
-                      symbols = @symbols[col][row] || []
-                      offset = 0
-                      symbols.each_with_index { |pos, idx|
-                        target << line.slice!(0, pos-offset)
-                        if(idx.even?)
-                          target.augment_format(:symbol)
-                        else
-                          target.reduce_format(:symbol)
-                        end
-                        offset = pos
-                      }
-                    end
                     if(line.match(HYPHEN))
                       previous_was_hyphenated = true
                       if(!((nxt = column.at(row.next)) \
-                           && /^[A-Z]/.match(nxt.to_s)))
+                           && /^[A-Z]/u.match(nxt.to_s)))
                         target << line.gsub(HYPHEN, '')
                       else
                         target << line
@@ -180,11 +164,6 @@ module ODDB
                     else
                       previous_was_hyphenated = false
                       target << line << ' '
-                    end
-                    if(target.is_a?(Text::Paragraph) \
-                       && (format = target.formats.last) \
-                       && format.symbol?)
-                      target.reduce_format(:symbol)
                     end
                   end
                 elsif(@chapter.heading == target && NAME_PTRN.match(target))
@@ -211,27 +190,17 @@ module ODDB
             bold[@lines.size - 1] = false
           end
         end
-        def set_symbol(font)
-          line = @symbols[@current_column][@lines.size - 1] ||= []
-          symbol = (font.respond_to?(:basefont_name) \
-                    && /Symbol/.match(font.basefont_name))
-          if((symbol && line.size.even?) \
-             || (!symbol && line.size.odd?))
-            line.push @columns[@current_column].length
-          end
-        end
         def start_page
           @bold_lines = Hash.new { |me, key| me[key] = Hash.new }
-          @symbols = Hash.new { |me, key| me[key] = Hash.new }
           @lines.clear
         end
       end
       def MiniFi.extract(filename)
-        pdf = Rpdf2txt::Parser.new(File.read(filename), 'latin1')
+        pdf = Rpdf2txt::Parser.new(File.read(filename), 'UTF-8')
         handler = Handler.new
         pdf.extract_text(handler)
         handler.minifis.reject { |minifi|
-          minifi[:name].nil? || /ad\s*us\.\s*vet/.match(minifi[:de].heading)
+          minifi[:name].nil? || /ad\s*us\.\s*vet/u.match(minifi[:de].heading)
         }
       end
     end

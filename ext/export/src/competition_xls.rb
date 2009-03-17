@@ -21,10 +21,10 @@ module ODDB
 				@worksheet.format_column(11, 16.0, @fmt_generic)
 				@worksheet.format_column(12..15, 8.0, @fmt_generic)
 				columns = [
-					'Name Original', 'Dosis Original', 'Packungsgrösse Original',
+					'Name Original', 'Dosis Original', 'PackungsgrÃ¶sse Original',
 					'Fabrikabgabe-preis Original', 
 					'Publikums-preis Original (inkl. MwSt)',
-					'Name Generikum', 'Dosis Generikum', 'Packungsgrösse Generikum',
+					'Name Generikum', 'Dosis Generikum', 'PackungsgrÃ¶sse Generikum',
 					'Fabrikabgabe-preis Generikum', 
 					'Publikums-preis Generikum (inkl. MwSt)', 
 					'Pharmacode Generikum', 'Hersteller Generikum',
@@ -135,7 +135,7 @@ module ODDB
 			end
 			def format_row(original, generic)
 				remarks = if(original.comparable_size != generic.comparable_size)
-										'unterschiedliche Packungsgrösse'
+										'unterschiedliche PackungsgrÃ¶sse'
 									end
 				_format_original(original).concat(_format_generic(original, 
 																													generic, remarks))

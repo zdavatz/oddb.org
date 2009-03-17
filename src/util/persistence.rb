@@ -131,11 +131,11 @@ module ODDB
 			@parser = Parse.generate_parser <<-EOG
 Grammar OddbSize
 	Tokens
-		STEP = /!/
-		ARG  = /,/
-		PTR  = /:/
-		PEND = /\\./
-		EXPR = /([^!,:.%]|%[!,:.%])+/
+		STEP = /!/u
+		ARG  = /,/u
+		PTR  = /:/u
+		PEND = /\\./u
+		EXPR = /([^!,:.%]|%[!,:.%])+/u
 	Productions
 		Pointer -> PTR Step* PEND?
 							 [: _, steps, _]
@@ -152,7 +152,7 @@ Grammar OddbSize
 				end
         def from_yus_privilege(string)
           ## does not support encapsulated pointers
-          args = string.scan(/!([^!]+)/).collect { |matches|
+          args = string.scan(/!([^!]+)/u).collect { |matches|
             matches.first.split('.').compact
           }
           self.new(*args)
@@ -163,7 +163,7 @@ Grammar OddbSize
 					if(arg.name == 'Pointer')
 						produce_pointer(arg)
 					else
-						arg.value.gsub(/%([!,:.%])/, '\1')
+						arg.value.gsub(/%([!,:.%])/u, '\1')
 					end
 				end
 				def produce_pointer(ast)
@@ -318,7 +318,7 @@ Grammar OddbSize
 						if(arg.is_a? Pointer)
 							arg
 						else
-							arg.to_s.gsub('%','%%').gsub(/[:!,.]/, '%\0')
+							arg.to_s.gsub('%','%%').gsub(/[:!,.]/u, '%\0')
 						end
 					}
 					'!' << step.join(',')

@@ -54,7 +54,7 @@ module ODDB
       }
     end
 		def basename
-			@name_base.to_s[/^.[^0-9]+/]
+			@name_base.to_s[/^.[^0-9]+/u]
 		end
 		def checkout
 			checkout_helper([@atc_class, @patinfo], :remove_sequence)
@@ -182,7 +182,7 @@ module ODDB
 			self.name
 		end
 		def match(query)
-			/#{query}/i.match(@name_base)
+			/#{query}/iu.match(@name_base)
 		end
     def _migrate_to_compositions(app)
       unless @compositions
@@ -283,11 +283,11 @@ module ODDB
     end
 		def search_terms
 			str = self.name
-			ODDB.search_terms(str.split(/\s+/).push(str))
+			ODDB.search_terms(str.split(/\s+/u).push(str))
 		end
 		def seqnr=(seqnr)
 			## FIXME: this is just a quick spaghetti-hack to get all data correct
-			if(/^[0-9]{2}$/.match(seqnr) \
+			if(/^[0-9]{2}$/u.match(seqnr) \
 				&& @registration.sequence(seqnr).nil?)
 				seqs = @registration.sequences
 				seqs.delete(@seqnr)

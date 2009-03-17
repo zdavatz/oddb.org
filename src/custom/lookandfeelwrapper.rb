@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-# encoding: iso-8859-1
 # LookandfeelWrapper - oddb -- 21.07.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/lookandfeelwrapper'
@@ -419,7 +418,7 @@ module ODDB
 		]
 		DICTIONARIES = {
 			'de'	=>	{
-				:all_drugs_pricecomparison	=>	'Schweizer Medikamenten-Enzyklopädie',
+				:all_drugs_pricecomparison	=>	'Schweizer Medikamenten-EnzyklopÃ¤die',
 				:atc_chooser								=>	'ATC-Codes', 
 				:data_declaration						=>	'Datenherkunft',
 				:fipi_overview_explain      =>	'Stand der Publikation der Fach- und Patienteninformationen unter www.med-drugs.ch',
@@ -428,23 +427,23 @@ module ODDB
 				:meddrugs_update						=>	'med-drugs update', 
 				:migel											=>	'Medizinprodukte (MiGeL)',
 				:migel_alphabetical					=>	'Medizinprodukte (MiGeL) A-Z',
-        :price_compare              =>  "Für Preisvergleich auf Medikamentnamen klicken.",
+        :price_compare              =>  "FÃ¼r Preisvergleich auf Medikamentnamen klicken.",
 				:search_explain							=>	'',
 				:sequences									=>	'Medikamente A-Z',
 			},
 			'fr'	=>	{
-				:all_drugs_pricecomparison	=>	'Encyclopédie des médicaments commercialisés en Suisse',
+				:all_drugs_pricecomparison	=>	'EncyclopÃ©die des mÃ©dicaments commercialisÃ©s en Suisse',
 				:atc_chooser								=>	'ATC-Codes', 
 				:data_declaration						=>	'Source des dates',
 				:fipi_overview_explain      =>	'Publications IPro et IPat sous www.just-medical.ch',
-				:home_drugs									=>	'Médicaments',
-				:legal_note									=>	'Notice légale',
+				:home_drugs									=>	'MÃ©dicaments',
+				:legal_note									=>	'Notice lÃ©gale',
 				:meddrugs_update						=>	'med-drugs update', 
-				:migel											=>	'Dispositifs médicaux (MiGeL)',
-				:migel_alphabetical					=>	'Dispositifs médicaux (MiGeL) A-Z',
-        :price_compare              =>  "Pour comparaison de prix cliquer sur nom du médicament",
+				:migel											=>	'Dispositifs mÃ©dicaux (MiGeL)',
+				:migel_alphabetical					=>	'Dispositifs mÃ©dicaux (MiGeL) A-Z',
+        :price_compare              =>  "Pour comparaison de prix cliquer sur nom du mÃ©dicament",
 				:search_explain							=>	'',
-				:sequences									=>	'Médicaments A-Z',
+				:sequences									=>	'MÃ©dicaments A-Z',
 			},
 			'en'	=>	{
 				:all_drugs_pricecomparison	=>	'Complete Swiss encyclopaedia of drugs',
@@ -838,16 +837,16 @@ module ODDB
       'de'	=>	{
         :explain_ddd_price_url    =>  'http://www.mymedi.ch/de/tk.htm',
         :explain_generic					=>	'Blau&nbsp;=&nbsp;Generikum',
-        :explain_sort             =>  'Klicken Sie auf einen der untenstehenden Begriffe um die zugehörige Spalte auf- oder absteigend zu sortieren.',
-        :price_compare            =>  "Für den Direktvergleich klicken Sie bitte auf das für Sie rezeptierte Medikament.",
+        :explain_sort             =>  'Klicken Sie auf einen der untenstehenden Begriffe um die zugehÃ¶rige Spalte auf- oder absteigend zu sortieren.',
+        :price_compare            =>  "FÃ¼r den Direktvergleich klicken Sie bitte auf das fÃ¼r Sie rezeptierte Medikament.",
 				:sequences								=>	'Medikamente A-Z',
       },
       'fr'	=>	{
         :explain_generic					=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
         :explain_ddd_price_url    =>  'http://www.mymedi.ch/fr/tk.htm',
-        :explain_sort             =>  "Clickez sur un des mot-clé ci-dessous pour accéder au menu déroulant.",
-        :price_compare            =>  'Afin d\'avoir une comparaison, clickez s.v.p. sur le médicament qui vous a été prescrit.',
-				:sequences								=>	'Médicaments A-Z',
+        :explain_sort             =>  "Clickez sur un des mot-clÃ© ci-dessous pour accÃ©der au menu dÃ©roulant.",
+        :price_compare            =>  'Afin d\'avoir une comparaison, clickez s.v.p. sur le mÃ©dicament qui vous a Ã©tÃ© prescrit.',
+				:sequences								=>	'MÃ©dicaments A-Z',
       },
       'en'	=>	{
         :explain_generic					=>	'Blue&nbsp;=&nbsp;Generic Drug',
@@ -1071,17 +1070,17 @@ module ODDB
     DICTIONARIES = {
       'de'  =>  {
         :html_title         =>  'anthroposophika.ch - alle anthroposophischen Arzneimittel im schweizer Gesundheitswesen', 
-        :home_welcome       =>  "Willkommen bei anthroposophika.ch, dem<br>Portal für anthroposophische Arzneimittel in der Schweiz.",
+        :home_welcome       =>  "Willkommen bei anthroposophika.ch, dem<br>Portal fÃ¼r anthroposophische Arzneimittel in der Schweiz.",
         :login_welcome      =>  'Willkommen bei anthroposophika.ch',
         :generic_definition =>  'Was ist ein anthroposophisches Arzneimittel?',
         :generic_definition_url => 'http://www.google.com/search?hl=en&sa=X&oi=spell&resnum=0&ct=result&cd=1&q=anthroposophische+Arzneimittel&spell=1',
       },
       'fr'  =>  {
-        :html_title         =>  'anthroposophika.ch - tous les médicaments anthroposophiques Arzneimittel sur le marché suisse', 
-        :home_welcome       =>  "Bienvenue sur anthroposophika.ch,<br>le portail des médicaments anthroposophiques dans la suisse.",
+        :html_title         =>  'anthroposophika.ch - tous les mÃ©dicaments anthroposophiques Arzneimittel sur le marchÃ© suisse', 
+        :home_welcome       =>  "Bienvenue sur anthroposophika.ch,<br>le portail des mÃ©dicaments anthroposophiques dans la suisse.",
         :login_welcome      =>  'Bienvenue sur anthroposophika.ch',
-        :generic_definition =>  'Qu\'est qu\'n médicament anthroposophique?',
-        :generic_definition_url => 'http://www.google.com/search?hl=en&sa=X&oi=spell&resnum=0&ct=result&cd=1&q=médicament+anthroposophique&spell=1',
+        :generic_definition =>  'Qu\'est qu\'n mÃ©dicament anthroposophique?',
+        :generic_definition_url => 'http://www.google.com/search?hl=en&sa=X&oi=spell&resnum=0&ct=result&cd=1&q=mÃ©dicament+anthroposophique&spell=1',
       },
       'en'  =>  {
         :html_title         =>  'anthroposophika.ch - all anthroposophical health-care products in the swiss market', 
@@ -1102,23 +1101,23 @@ module ODDB
     }
     DICTIONARIES = {
       'de'  =>  {
-        :html_title         =>  'homöopathika.ch - alle homöopathischen Arzneimittel im schweizer Gesundheitswesen', 
-        :home_welcome       =>  "Willkommen bei homöopathika.ch, dem<br>Portal für homöopathische Arzneimittel in der Schweiz.",
-        :login_welcome      =>  'Willkommen bei homöopathika.ch',
-        :generic_definition =>  'Was ist ein homöopathisches Arzneimittel?',
+        :html_title         =>  'homÃ¶opathika.ch - alle homÃ¶opathischen Arzneimittel im schweizer Gesundheitswesen', 
+        :home_welcome       =>  "Willkommen bei homÃ¶opathika.ch, dem<br>Portal fÃ¼r homÃ¶opathische Arzneimittel in der Schweiz.",
+        :login_welcome      =>  'Willkommen bei homÃ¶opathika.ch',
+        :generic_definition =>  'Was ist ein homÃ¶opathisches Arzneimittel?',
         :generic_definition_url => 'http://de.wikipedia.org/wiki/Hom%C3%B6opathisches_Arzneimittel',
       },
       'fr'  =>  {
-        :html_title         =>  'homöopathika.ch - tous les médicaments homéopathiques Arzneimittel sur le marché suisse', 
-        :home_welcome       =>  "Bienvenue sur homöopathika.ch,<br>le portail des médicaments homéopathiques dans la suisse.",
-        :login_welcome      =>  'Bienvenue sur homöopathika.ch',
-        :generic_definition =>  'Qu\'est qu\'n médicament homéopathique?',
+        :html_title         =>  'homÃ¶opathika.ch - tous les mÃ©dicaments homÃ©opathiques Arzneimittel sur le marchÃ© suisse', 
+        :home_welcome       =>  "Bienvenue sur homÃ¶opathika.ch,<br>le portail des mÃ©dicaments homÃ©opathiques dans la suisse.",
+        :login_welcome      =>  'Bienvenue sur homÃ¶opathika.ch',
+        :generic_definition =>  'Qu\'est qu\'n mÃ©dicament homÃ©opathique?',
         :generic_definition_url => 'http://fr.wikipedia.org/wiki/Hom%C3%A9opathie',
       },
       'en'  =>  {
-        :html_title         =>  'homöopathika.ch - all homeopathical health-care products in the swiss market', 
-        :home_welcome       =>  "Welcome to homöopathika.ch,<br>the database of homeopathical health-care products in switzerland.",
-        :login_welcome      =>  'Welcome to homöopathika.ch',
+        :html_title         =>  'homÃ¶opathika.ch - all homeopathical health-care products in the swiss market', 
+        :home_welcome       =>  "Welcome to homÃ¶opathika.ch,<br>the database of homeopathical health-care products in switzerland.",
+        :login_welcome      =>  'Welcome to homÃ¶opathika.ch',
         :generic_definition =>  'What is anthroposophical medicine?',
         :generic_definition_url => 'http://en.wikipedia.org/wiki/Homeopathic_medicine',
       }
@@ -1135,17 +1134,17 @@ module ODDB
     DICTIONARIES = {
       'de'  =>  {
         :html_title         =>  'phyto-pharma.ch - alle phyto-therapeutischen Arzneimittel im schweizer Gesundheitswesen', 
-        :home_welcome       =>  "Willkommen bei phyto-pharma.ch, dem<br>Portal für phyto-therapeutische Arzneimittel in der Schweiz.",
+        :home_welcome       =>  "Willkommen bei phyto-pharma.ch, dem<br>Portal fÃ¼r phyto-therapeutische Arzneimittel in der Schweiz.",
         :login_welcome      =>  'Willkommen bei phyto-pharma.ch',
         :generic_definition =>  'Was ist ein Phytopharmakon?',
         :generic_definition_url => 'http://de.wikipedia.org/wiki/Phytopharmakon',
       },
       'fr'  =>  {
-        :html_title         =>  'phyto-pharma.ch - tous les médicaments phyto-therapeutiques Arzneimittel sur le marché suisse', 
-        :home_welcome       =>  "Bienvenue sur phyto-pharma.ch,<br>le portail des médicaments phyto-therapeutiques dans la suisse.",
+        :html_title         =>  'phyto-pharma.ch - tous les mÃ©dicaments phyto-therapeutiques Arzneimittel sur le marchÃ© suisse', 
+        :home_welcome       =>  "Bienvenue sur phyto-pharma.ch,<br>le portail des mÃ©dicaments phyto-therapeutiques dans la suisse.",
         :login_welcome      =>  'Bienvenue sur phyto-pharma.ch',
         :generic_definition =>  'Was ist ein Phytopharmakon?',
-        :generic_definition =>  'Qu\'est qu\'n médicament pharmacokinétique?',
+        :generic_definition =>  'Qu\'est qu\'n mÃ©dicament pharmacokinÃ©tique?',
         :generic_definition_url => 'http://fr.wikipedia.org/wiki/Phytopharmacie',
       },
       'en'  =>  {

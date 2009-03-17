@@ -20,7 +20,7 @@ class OrphanedFachinfoAssign < State::Admin::Global
 	end
 	def init
 		@model = OrphanedFachinfoFacade.new(@model)
-		name = @model.name[/^\w+/]
+		name = @model.name[/^\w+/u]
 		@model.registrations = named_registrations(name)
 	end
 	def assign

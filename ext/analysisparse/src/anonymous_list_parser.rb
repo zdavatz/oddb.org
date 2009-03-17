@@ -6,18 +6,18 @@ require 'parser'
 module ODDB
 	module AnalysisParse
 		class AnonymousListParser < Parser
-			LINE_PTRN = /^([CNS]|N,\s*ex|TP)?\s*\d{4}\.\d{2,}\s*\d+\s*\w/
+			LINE_PTRN = /^([CNS]|N,\s*ex|TP)?\s*\d{4}\.\d{2,}\s*\d+\s*\w/u
 			grammar = <<-EOG
 Grammar AnalysisList
 	Tokens
-		SPACE						= /\\s+/	[:Skip]
-		ARROW						= /\\.*\\s*\\?/
-		GROUP						=	/[0-9]{4}/
-		POSITION				=	/[0-9]{2}/
-		REVISION				= /^[CS]|N(,\\s*ex)?|TP/
-		TAXPOINTS				=	/[0-9]+/
-		WORD						=	/(\\S(?!\\.))+[^.]|\\w|(\\d\\.)/
-		DOTS						=	/\\./
+		SPACE						= /\\s+/u [:Skip]
+		ARROW						= /\\.*\\s*\\?/u
+		GROUP						=	/[0-9]{4}/u
+		POSITION				=	/[0-9]{2}/u
+		REVISION				= /^[CS]|N(,\\s*ex)?|TP/u
+		TAXPOINTS				=	/[0-9]+/u
+		WORD						=	/(\\S(?!\\.))+[^.]|\\w|(\\d\\.)/u
+		DOTS						=	/\\./u
 	Productions
 		Line				->	REVISION? GROUP '.' POSITION 
 										TAXPOINTS Description DOTS* 

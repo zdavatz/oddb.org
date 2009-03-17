@@ -155,7 +155,7 @@ module ODDB
 				end
 				chapter.sections.each { |sec|
 					unless((subhead = sec.subheading).empty?)
-						subhead = subhead.gsub(/\n/, "<P>")
+						subhead = subhead.gsub(/\n/u, "<P>")
 						string << '<I>' << subhead.to_s << '<E>'
 					end
 					sec.paragraphs.each { |par|
@@ -184,7 +184,7 @@ module ODDB
             end
 					}
 				}
-				string.gsub(/\n/, ' ')
+				string.gsub(/\n/u, ' ')
 			end
 		end
 		class CodesTable < Table
@@ -220,7 +220,7 @@ module ODDB
 			FILENAME = 'README'
 			def lines
 				<<-EOS
-	oddbdat.tar.gz und oddbdat.zip enthalten die täglich aktualisierten Artikelstammdaten der ODDB. Die Daten werden von ywesee in das OddbDat-Format umgewandelt und allen gewünschten Systemlieferanten von Schweizer Spitälern zur Verfügung gestellt.
+	oddbdat.tar.gz und oddbdat.zip enthalten die tÃ¤glich aktualisierten Artikelstammdaten der ODDB. Die Daten werden von ywesee in das OddbDat-Format umgewandelt und allen gewÃ¼nschten Systemlieferanten von Schweizer SpitÃ¤lern zur VerfÃ¼gung gestellt.
 
 	Feedback bitte an zdavatz@ywesee.com
 
@@ -239,7 +239,7 @@ module ODDB
 	-ACSC (Tabelle 41) - Verbindungstabelle zwischen AC und SC
 	-ACODDB (Tabelle 99) - Verbindungstabelle zwischen ODDB-ID und Pharmacode
 
-	Folgende Tabelle mit den Fachinformationen steht wegen ihrer Grösse separat als tar.gz- oder zip-Download zur Verfügung.
+	Folgende Tabelle mit den Fachinformationen steht wegen ihrer GrÃ¶sse separat als tar.gz- oder zip-Download zur VerfÃ¼gung.
 
 	-MCM (Tabelle 31)	- Fachinformationen
 
@@ -266,7 +266,7 @@ module ODDB
 				return [] if structure.nil?
 				fields = Array.new(self::class::LENGTH)
 				structure.each_pair { |place, field|
-					# schlüssel in structure entsprechen der OddbDat-Doku
+					# schlÃ¼ssel in structure entsprechen der OddbDat-Doku
 					fields[place-1] = field 
 				}
 				fields
@@ -304,7 +304,7 @@ module ODDB
 					7		=>	ikskey,
 					14	=>	@package.ikscat,
 					# @package hat immer eine registration, da
-					# Registration::create_package die Verknüpfung erstellt
+					# Registration::create_package die VerknÃ¼pfung erstellt
 					20	=>	generic_code(@package.registration),
 					22	=>	iks_date(@package.registration),
 					29	=>	(@package.sl_entry) ? '3' : nil,

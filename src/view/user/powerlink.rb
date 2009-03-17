@@ -10,7 +10,7 @@ module ODDB
 class PowerLink < HtmlGrid::PassThru
 	def powerlink
 		pl = @model.powerlink
-		if(pl.nil? || /https?:\/\//.match(pl))
+		if(pl.nil? || /https?:\/\//u.match(pl))
 			pl
 		else
 			"http://" + pl

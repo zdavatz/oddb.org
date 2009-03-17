@@ -87,7 +87,7 @@ class Quanty #< Numeric
   def  >  (other); @val  >  adjust(other) end
 
   def **(n)
-    if /^[A-Za-z_]+&/o =~ @unit
+    if /^[A-Za-z_]+&/ou =~ @unit
       unit = @unit+'^'+n.to_s
     else
       unit = '('+@unit+')^'+n.to_s+''
@@ -102,7 +102,7 @@ class Quanty #< Numeric
 	if unit.empty?
 	  unit = @unit
 	else
-	  if /\A[A-Za-z_]/o =~ unit
+	  if /\A[A-Za-z_]/ou =~ unit
 	    unit = @unit+' '+unit
 	  else
 	    unit = @unit+' ('+unit+')' 
@@ -121,7 +121,7 @@ class Quanty #< Numeric
       if unit.empty?
 	unit = @unit
       else
-	if /\A[A-Za-z_-]+((\^|\*\*)?[0-9.]+)?$/o =~ unit
+	if /\A[A-Za-z_-]+((\^|\*\*)?[0-9.]+)?$/ou =~ unit
 	  unit = '/ '+unit
 	else
 	  unit = '/ ('+unit+')' 

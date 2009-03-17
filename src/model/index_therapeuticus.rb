@@ -18,7 +18,7 @@ module ODDB
         __find_by_normalized_code__ normalize_code(code)
       end
       def normalize_code(code)
-        if code && nonempty = code.to_s[/.*\d/]
+        if code && nonempty = code.to_s[/.*\d/u]
           parts = nonempty.split('.', 3)
           if((str = parts.last) && str.length == 1)
             str << '0'
@@ -57,7 +57,7 @@ module ODDB
       end
     end
     def parent
-      if parent_code = @code[/.+(?=\d{2}.?)/]
+      if parent_code = @code[/.+(?=\d{2}.?)/u]
         find_by_code parent_code
       end
     end

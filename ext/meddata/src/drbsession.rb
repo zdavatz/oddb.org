@@ -24,7 +24,7 @@ module ODDB
 			end
 			def remove_whitespace(data)
 				data.each { |key, value|
-					value.gsub!(/\240/, "") unless(value.nil?)
+					value.gsub!(/\302\240/, "") unless(value.nil?)
 				}
 			end
 			def search(criteria, &block)

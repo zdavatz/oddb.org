@@ -5,9 +5,11 @@ require 'plugin/plugin'
 require 'ydim/config'
 require 'ydim/client'
 require 'openssl'
+require 'iconv'
 
 module ODDB
 	class YdimPlugin < Plugin
+    ICONV = Iconv.new 'ISO-8859-1//TRANSLIT//IGNORE', 'UTF-8'
     class DebitorFacade
       attr_reader :invoice_email
       def initialize(email, app)
@@ -17,11 +19,18 @@ module ODDB
         @invoice_email = method_missing(:invoice_email) || email
       end
       def method_missing(method, *args, &block)
-        if(@debitor.respond_to?(method))
-          @debitor.send(method, *args, &block)
-        else
-          @app.yus_get_preference(@email, method)
+        res = if(@debitor.respond_to?(method))
+                @debitor.send(method, *args, &block)
+              else
+                @app.yus_get_preference(@email, method)
+              end
+        if res.is_a?(String)
+          begin
+            res = ICONV.iconv res
+          rescue Iconv::IllegalSequence
+          end
         end
+        res
       end
       def ydim_id=(id)
         if(@debitor.respond_to?(:ydim_id=))
@@ -45,7 +54,7 @@ module ODDB
 				debitor = client.create_debitor
         debitor.name = facade.fullname || facade.company_name || facade.contact
         contact = facade.contact.to_s.dup
-        salutation = contact.slice!(/^(Herr|Frau)\s+/).to_s.strip
+        salutation = contact.slice!(/^(Herr|Frau)\s+/u).to_s.strip
         name_first, name_last = contact.split(' ', 2)
         debitor.salutation = SALUTATIONS[facade.salutation] || salutation
         debitor.contact_firstname = facade.name_first || name_first
@@ -57,7 +66,7 @@ module ODDB
                                  'dt_hospital'
                                when ODDB::Company
                                  if(ba = facade.business_area)
-                                   ba.gsub(/^ba/, 'dt')
+                                   ba.gsub(/^ba/u, 'dt')
                                  else
                                    'dt_pharma'
                                  end
@@ -117,7 +126,8 @@ module ODDB
 						ydim_inv.precision = 3
 					end
 					data = item.ydim_data 
-					data[:text] = item_text(item)
+					data[:text] = latin1 item_text(item)
+          data[:unit] = latin1 data[:unit]
 					data
 				}
 				client.add_items(ydim_inv.unique_id, item_data)
@@ -191,14 +201,23 @@ module ODDB
           if last_date > (first_date >> 12)
             annual_date = last_date << 12
             lines.push <<-EOS
-Diese Rechnungsposition wird in der nächsten Jahresrechnung _nicht_ vorkommen.
-Die nächste Jahresrechnung wird am #{annual_date.strftime '%d.%m.%Y'} versandt.
+Diese Rechnungsposition wird in der n\344chsten Jahresrechnung _nicht_ vorkommen.
+Die n\344chste Jahresrechnung wird am #{annual_date.strftime '%d.%m.%Y'} versandt.
             EOS
           end
 				end
 			end
 			lines.compact.join("\n")
 		end
+    def latin1(text)
+      if text.is_a?(String)
+        ICONV.iconv text
+      else
+        text
+      end
+    rescue Iconv::IllegalSequence
+      text
+    end
 		def resolved_name(pointer)
 			pointer.resolve(@app).name
 		rescue StandardError

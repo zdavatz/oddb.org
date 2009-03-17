@@ -1,38 +1,39 @@
 Datenbeschrieb chde.xls
 
 Version: 1.1.0
-Geändert: 09.10.2007 (1.1.0) durch hwyss@ywesee.com
+GeÃ¤ndert: 12.03.2009 (1.1.1) durch hwyss@ywesee.com
+GeÃ¤ndert: 09.10.2007 (1.1.0) durch hwyss@ywesee.com
 Erstellt: 05.10.2007 (1.0.0) durch hwyss@ywesee.com
 
 ## Struktur ##
-A: Name DE (Name CH) 
-B: Pkg Grösse DE (Pkg Grösse CH) 
-C: AVP inkl. MwSt in CHF nach Abzug und Zuschlag  
-D: Hersteller DE (Hersteller CH) 
-E: PZN 
-F: EAN 
-G: Gal Form DE (gal. Form CH)  
-H: Stärke (Schreibweise CH)  
-I: Wirkstoff (Schreibweise CH) 
+A: Name DE (Name CH)
+B: Pkg GrÃ¶sse DE (Pkg GrÃ¶sse CH)
+C: AVP inkl. MwSt in CHF nach Abzug und Zuschlag
+D: Hersteller DE (Hersteller CH)
+E: PZN
+F: EAN
+G: Gal Form DE (gal. Form CH)
+H: StÃ¤rke (Schreibweise CH)
+I: Wirkstoff (Schreibweise CH)
 J: ATC-Code
-K: Abgabekategorie CH  
-L: SL Schweiz  
-M: Preisunterschied AVP inkl. Mwst. in CHF 
+K: Abgabekategorie CH
+L: SL Schweiz
+M: Preisunterschied AVP inkl. Mwst. in CHF
 N: Preisunterschied AVP in % (normalisiert)
-O: Packungsäquivalenzfaktor            
+O: PackungsÃ¤quivalenzfaktor
 P: FAP DE exkl. MwSt
 Q: FAP CH exkl. MwSt
-R: Preisunterschied FAP in CHF 
+R: Preisunterschied FAP in CHF
 S: Preisunterschied FAP in % (normalisiert)
 
 ## Glossar ##
 * normalisiert
-Prozentualberechnung unter Einbezug des Packungsäquivalenzfaktors
+Prozentualberechnung unter Einbezug des PackungsÃ¤quivalenzfaktors
 
 * Version
-Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+Versionsnummern bezeichnen Ã„nderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
-- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+- Minor:         Kleinere Ã„nderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: ErgÃ¤nzungen und Ã„nderungen im Datenbeschrieb, die keine Ã„nderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/chde.xls.txt

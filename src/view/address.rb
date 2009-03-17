@@ -18,7 +18,7 @@ module AddressMap
 		link
 	end
 	def mapsearch_format(*args)
-		args.compact.join('-').gsub(/\s+/, '-')
+		args.compact.join('-').gsub(/\s+/u, '-')
 	end		
 end
 module VCardMethods

@@ -83,7 +83,7 @@ module ODDB
                   {}
                 end
         keys.collect { |key|
-          descr.fetch(key.to_s, '').to_s.gsub(/\r?\n/, ' / ')
+          descr.fetch(key.to_s, '').to_s.gsub(/\r?\n/u, ' / ')
         }
       end
 			def CsvExporter.defr(item, opts={})

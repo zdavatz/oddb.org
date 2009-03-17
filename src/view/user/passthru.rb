@@ -10,7 +10,7 @@ module ODDB
 class PassThru < HtmlGrid::PassThru
 	def passthru
 		href = @session.user_input(:destination)
-		if(href.nil? || /https?:\/\//.match(href))
+		if(href.nil? || /https?:\/\//u.match(href))
 			href
 		else
 			"http://" + href

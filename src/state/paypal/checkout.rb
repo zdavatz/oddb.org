@@ -125,7 +125,7 @@ module Checkout
 		end
 		msg = 'e_need_all_input'
 		@errors.each { |key, err|
-			if(err.message.match(/^e_missing_/))
+			if(err.message.match(/^e_missing_/u))
 				@errors.store(key, create_error(msg, key, err.value))
 			end
 		}

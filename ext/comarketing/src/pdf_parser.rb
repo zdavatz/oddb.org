@@ -17,7 +17,7 @@ module ODDB
           1
         end
 				def firstword(str)
-					str.strip.split(/\s+/, 2).first
+					str.strip.split(/\s+/u, 2).first
 				end
         def identify_columns?
           true
@@ -34,7 +34,7 @@ module ODDB
 					@current_column += 1
 				end
 				def send_flowing_data(data)
-					if(/tierarzneimittel/i.match(data))
+					if(/tierarzneimittel/iu.match(data))
 						throw :vet_products
 					end
 					case @current_column
@@ -45,7 +45,7 @@ module ODDB
 					end
 				end
 				def send_line_break
-					if(@original && (iksnr = @raw_comarketing[/\d{5}/]))
+					if(@original && (iksnr = @raw_comarketing[/\d{5}/u]))
 						@pairs.push([@original, iksnr])
 					end
 					reset
@@ -56,7 +56,7 @@ module ODDB
 			end
 			def initialize(path)
 				open(path) { |fh|
-					@rpdf2txt = Rpdf2txt::Parser.new(fh.read, 'latin1')
+					@rpdf2txt = Rpdf2txt::Parser.new(fh.read, 'UTF-8')
 				}
 			end
 			def extract_pairs

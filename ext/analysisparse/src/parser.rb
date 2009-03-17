@@ -6,9 +6,9 @@ require 'rockit/rockit'
 module ODDB
 	module AnalysisParse
 		class Parser
-			FOOTNOTE_PTRN = /^\s*_*\s*(\d|\*)\s*_*\s*[^\d\*\.]+/m
+			FOOTNOTE_PTRN = /^\s*_*\s*(\d|\*)\s*_*\s*[^\d\*\.]+/mu
 			FOOTNOTE_TYPE = :footnote
-			LINE_PTRN = /^\s*([CNS]|N,\s*ex|TP)?\s*\d{4}\.\d{2,}\s*[\d\*]/
+			LINE_PTRN = /^\s*([CNS]|N,\s*ex|TP)?\s*\d{4}\.\d{2,}\s*[\d\*]/u
 			STOPCHARS = ";.\n"
 			attr_reader :footnotes
 			attr_accessor :list_title, :permission, :taxpoint_type
@@ -17,7 +17,7 @@ module ODDB
 			end
 			def footnote_line(footnotes, src, start, stop)
 				line = src[start..stop].strip
-				fn = line.slice!(/^\d+|\*/)
+				fn = line.slice!(/^\d+|\*/u)
 				#line.gsub!(/_/,'')
 				line.strip!
 				line.gsub!(/\s+/, ' ')
@@ -27,8 +27,8 @@ module ODDB
 				self.class::FOOTNOTE_TYPE
 			end
 			def parse_footnotes(src)
-				src.gsub!(/_*/, '')
-				src.gsub!(/~R/, '\'')
+				src.gsub!(/_*/u, '')
+				src.gsub!(/~R/u, '\'')
 				footnotes = {}
 				stop = 0
 				start = 0
@@ -49,7 +49,7 @@ module ODDB
 				src << "\n"
 				ast = self.class::PARSER.parse(src)
 			rescue Exception	=>	e
-				ptrn = /(\d{4})\.(\d{2})\s*(\d{1,2})\s*(.*)/
+				ptrn = /(\d{4})\.(\d{2})\s*(\d{1,2})\s*(.*)/u
 				data.update({
 					:error			=>	e,
 					:line						=>	src,
@@ -107,7 +107,7 @@ module ODDB
 				if((number = child_if_exists(ast, 'taxnumber')) \
 						&& (note = child_if_exists(ast, 'taxnote')))
 					taxnote = extract_text(note.description)
-					taxnumber = number.value[/\d+/]
+					taxnumber = number.value[/\d+/u]
 					data.store(:taxnumber, taxnumber)
 					data.store(:taxnote, taxnote)
 				end
@@ -172,7 +172,7 @@ module ODDB
 						if(subnode.is_a?(ArrayNode))
 							subnode.each { |nd| 
 								val = nd.value
-								unless(/^[#{STOPCHARS}]/.match(val) \
+								unless(/^[#{STOPCHARS}]/u.match(val) \
 											 || str.empty?)
 									str.strip!
 									str << ' '	
@@ -185,7 +185,7 @@ module ODDB
 							str = subnode.value
 						end
 						target << tmp
-						unless(/^[#{STOPCHARS}]/.match(str) \
+						unless(/^[#{STOPCHARS}]/u.match(str) \
 									 || target.empty?)
 							target.strip!
 							target << ' '	
@@ -193,18 +193,18 @@ module ODDB
 						tmp = str
 					}
 					target << tmp
-					if(/ - .* - /.match(target))
-						target.gsub!(/ - /, "\n- ")
+					if(/ - .* - /u.match(target))
+						target.gsub!(/ - /u, "\n- ")
 					end
-					ptrn = /([a-zäöü])-\s+(?!(?:und|oder))([a-zäöü])/
+					ptrn = /([a-zÃ¤Ã¶Ã¼])-\s+(?!(?:und|oder))([a-zÃ¤Ã¶Ã¼])/u
 					target.gsub!(ptrn, '\\1\\2')
-					target.gsub!(/(\S-)\s+(?!(?:und|oder))/,'\\1\\2')
-					target.gsub!(/\s*\/\s*/,'/')
-					target.gsub!(/(\()\s+(\S)/, '\\1\\2')
-					target.gsub!(/(\S)\s+(\))/,'\\1\\2')
-					target.gsub!(/(\.)\s*(,)/,'\\1\\2')
-					target.gsub!(/(\w)\s+(-\S)/, '\\1\\2')
-					target.gsub!(/(_+)/, '')
+					target.gsub!(/(\S-)\s+(?!(?:und|oder))/u,'\\1\\2')
+					target.gsub!(/\s*\/\s*/u,'/')
+					target.gsub!(/(\()\s+(\S)/u, '\\1\\2')
+					target.gsub!(/(\S)\s+(\))/u,'\\1\\2')
+					target.gsub!(/(\.)\s*(,)/u,'\\1\\2')
+					target.gsub!(/(\w)\s+(-\S)/u, '\\1\\2')
+					target.gsub!(/(_+)/u, '')
 					target.strip!
 				end
 				target

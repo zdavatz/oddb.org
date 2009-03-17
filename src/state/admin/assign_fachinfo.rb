@@ -38,7 +38,7 @@ class AssignFachinfo < Global
 	def init
 		super
 		@model = RegistrationFacade.new(@model)
-		if((match = /^[^\s]+/.match(@model.name_base)) \
+		if((match = /^[^\s]+/u.match(@model.name_base)) \
 			&& match[0].size >= 3)
 			@model.registrations = named_registrations(match[0])
 		end

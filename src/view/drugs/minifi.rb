@@ -17,7 +17,7 @@ class MiniFiChapter < Chapter
     @registration = @model.registrations.first
   end
   def link_product(context, html)
-    ptrn = /#{@model.name}(\256|\(TM\))?/
+    ptrn = /#{@model.name}(®|\(TM\))?/u
     link = HtmlGrid::Link.new(:name, @model, @session, self)
     link.href = @lookandfeel._event_url(:search, 
                                         :search_type => 'st_sequence', 

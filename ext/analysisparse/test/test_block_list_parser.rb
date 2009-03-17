@@ -62,7 +62,7 @@ Inkl. abgeleitete Werte
 			end
 			def test_parse_page__1
 				src = <<-EOS
-4.3 Fixe Analysenblöcke
+4.3 Fixe AnalysenblÃ¶cke
 
 Rev. Pos.-Nr. TP Bezeichnung des Blocks B
 
@@ -74,9 +74,9 @@ Bikarbonat
 Inkl. abgeleitete Werte
 8129.10
 50  Oxymetrieblock CH
-Oxyhämoglobin
-Carboxyhämoglobin
-Methämoglobin
+OxyhÃ¤moglobin
+CarboxyhÃ¤moglobin
+MethÃ¤moglobin
 8613.00 35 HÃ¤modialysebloc C
 8149.00 Calcium total
 8284.00 Harnstoff
@@ -87,7 +87,7 @@ Methämoglobin
 8614.00 25 Lipidblock C
 8158.00 Cholesterin total
 8288.00 HDL-Cholesterin, ohne
-separate Füllung
+separate FÃ¼llung
 8572.00 Triglyceride
  120
 				EOS
@@ -111,7 +111,7 @@ separate Füllung
 				:position				=>	'00',
 				:taxpoints			=>	25,
 				:lab_areas			=>	['C'],
-				:description		=>	'Lipidblock 8158.00 Cholesterin total 8288.00 HDL-Cholesterin, ohne separate Füllung 8572.00 Triglyceride',
+				:description		=>	'Lipidblock 8158.00 Cholesterin total 8288.00 HDL-Cholesterin, ohne separate FÃ¼llung 8572.00 Triglyceride',
 				:list_title			=>	nil,
 				:permission			=>	nil,
 				:taxpoint_type	=>	nil,
@@ -123,12 +123,12 @@ separate Füllung
 			end
 			def test_fr_parse_line__1
 				src = <<-EOS
-				      8129.00     30   Bloc gazométrie                                             C
+				      8129.00     30   Bloc gazomÃ©trie                                             C
 				pH
 				pCO2
 				pO2
 				Bicarbonate
-				valeurs dérivées incl.
+				valeurs dÃ©rivÃ©es incl.
 
 				EOS
 				begin
@@ -138,7 +138,7 @@ separate Füllung
 					:code						=>	'8129.00',
 					:group					=>	'8129',
 					:position				=>	'00',
-					:description		=>	'Bloc gazométrie pH pCO2 pO2 Bicarbonate valeurs dérivées incl.',
+					:description		=>	'Bloc gazomÃ©trie pH pCO2 pO2 Bicarbonate valeurs dÃ©rivÃ©es incl.',
 					:taxpoints			=>	30,
 					:lab_areas			=>	['C'],
 					:list_title			=>	nil,
@@ -150,34 +150,34 @@ separate Füllung
 			def test_fr_parse_page__1
 				src = <<-EOS
 4.3 Blocs d'analyses fixes
-Rév.   No. pos.    TP    Dénomination du bloc                                                   B
+RÃ©v.   No. pos.    TP    DÃ©nomination du bloc                                                   B
 
-8129.00 30 Bloc gazométrie
+8129.00 30 Bloc gazomÃ©trie
 C
 pH
 pCO2
 pO2
 Bicarbonate
-valeurs dérivées incl.
-8129.10 50 Bloc oxymétrie
+valeurs dÃ©rivÃ©es incl.
+8129.10 50 Bloc oxymÃ©trie
 CH
-Oxyhémoglobine
-Carboxyhémoglobine
-Methémoglobine
-8613.00 35 Bloc hémodialyse
+OxyhÃ©moglobine
+CarboxyhÃ©moglobine
+MethÃ©moglobine
+8613.00 35 Bloc hÃ©modialyse
 C
 8149.00 Calcium total
-8284.00 Urée
+8284.00 UrÃ©e
 8343.00 Potassium
-8387.00 Créatinine
+8387.00 CrÃ©atinine
 8438.00 Sodium
 8462.00 Phosphate
 8614.00 25 Bloc lipides
 C
-8158.00 Cholestérol total
-8288.00 Cholestérol HDL, sans
-précipitation séparée
-8572.00 Triglycérides
+8158.00 CholestÃ©rol total
+8288.00 CholestÃ©rol HDL, sans
+prÃ©cipitation sÃ©parÃ©e
+8572.00 TriglycÃ©rides
 
 				120
 
@@ -189,7 +189,7 @@ précipitation séparée
 					:code						=>	'8129.00',
 					:group					=>	'8129',
 					:position				=>	'00',
-					:description		=>	'Bloc gazométrie pH pCO2 pO2 Bicarbonate valeurs dérivées incl.',
+					:description		=>	'Bloc gazomÃ©trie pH pCO2 pO2 Bicarbonate valeurs dÃ©rivÃ©es incl.',
 					:lab_areas			=>	['C'],
 					:taxpoints			=>	30,
 					:taxpoint_type	=>	nil,
@@ -200,7 +200,7 @@ précipitation séparée
 					:code						=>	'8129.10',
 					:group					=>	'8129',
 					:position				=>	'10',
-					:description		=>	'Bloc oxymétrie Oxyhémoglobine Carboxyhémoglobine Methémoglobine',
+					:description		=>	'Bloc oxymÃ©trie OxyhÃ©moglobine CarboxyhÃ©moglobine MethÃ©moglobine',
 					:lab_areas			=>	['C', 'H'],
 					:taxpoints			=>	50,
 					:taxpoint_type	=>	nil,
@@ -211,7 +211,7 @@ précipitation séparée
 					:code						=>	'8613.00',
 					:group					=>	'8613',
 					:position				=>	'00',
-					:description		=>	'Bloc hémodialyse 8149.00 Calcium total 8284.00 Urée 8343.00 Potassium 8387.00 Créatinine 8438.00 Sodium 8462.00 Phosphate',
+					:description		=>	'Bloc hÃ©modialyse 8149.00 Calcium total 8284.00 UrÃ©e 8343.00 Potassium 8387.00 CrÃ©atinine 8438.00 Sodium 8462.00 Phosphate',
 					:lab_areas			=>	['C'],
 					:taxpoints			=>	35,
 					:taxpoint_type	=>	nil,
@@ -222,7 +222,7 @@ précipitation séparée
 					:code						=>	'8614.00',
 					:group					=>	'8614',
 					:position				=>	'00',
-					:description		=>	'Bloc lipides 8158.00 Cholestérol total 8288.00 Cholestérol HDL, sans précipitation séparée 8572.00 Triglycérides',
+					:description		=>	'Bloc lipides 8158.00 CholestÃ©rol total 8288.00 CholestÃ©rol HDL, sans prÃ©cipitation sÃ©parÃ©e 8572.00 TriglycÃ©rides',
 					:lab_areas			=>	['C'],
 					:taxpoints			=>	25,
 					:taxpoint_type	=>	nil,
@@ -236,16 +236,16 @@ précipitation séparée
 			end
 			def test_fr_parse_page__2
 				src = <<-EOS
-				      8129.00     30   Bloc gazométrie                                             C
+				      8129.00     30   Bloc gazomÃ©trie                                             C
 				pH
 				pCO2
 				pO2
 				Bicarbonate
-				valeurs dérivées incl.
-				      8129.10     50   Bloc oxy                   métrie                                             CH
-				Oxyhémoglobine
-				Carboxyhémoglobine
-				Methémoglobine
+				valeurs dÃ©rivÃ©es incl.
+				      8129.10     50   Bloc oxy                   mÃ©trie                                             CH
+				OxyhÃ©moglobine
+				CarboxyhÃ©moglobine
+				MethÃ©moglobine
 				45
 
 				EOS
@@ -257,7 +257,7 @@ précipitation séparée
 						:code						=>	'8129.00',
 						:group					=>	'8129',
 						:position				=>	'00',
-						:description		=>	'Bloc gazométrie pH pCO2 pO2 Bicarbonate valeurs dérivées incl.',
+						:description		=>	'Bloc gazomÃ©trie pH pCO2 pO2 Bicarbonate valeurs dÃ©rivÃ©es incl.',
 						:taxpoints			=>	30,
 						:lab_areas			=>	['C'],
 						:list_title			=>	nil,
@@ -268,7 +268,7 @@ précipitation séparée
 						:code						=>	'8129.10',
 						:group					=>	'8129',
 						:position				=>	'10',
-						:description		=>	'Bloc oxy métrie Oxyhémoglobine Carboxyhémoglobine Methémoglobine',
+						:description		=>	'Bloc oxy mÃ©trie OxyhÃ©moglobine CarboxyhÃ©moglobine MethÃ©moglobine',
 						:taxpoints			=>	50,
 						:lab_areas			=>	['C','H'],
 						:list_title			=>	nil,
@@ -282,33 +282,33 @@ précipitation séparée
 				src = <<-EOS
 				4.3 Blocs d'analyses fixes
 
-				Rév.   No. pos.    TP    Dénomination du bloc                                                   B
+				RÃ©v.   No. pos.    TP    DÃ©nomination du bloc                                                   B
 
-				      8129.00     30   Bloc gazométrie                                             C
+				      8129.00     30   Bloc gazomÃ©trie                                             C
 				pH
 				pCO2
 				pO2
 				Bicarbonate
-				valeurs dérivées incl.
-				      8129.10     50   Bloc oxy                   métrie                                             CH
-				Oxyhémoglobine
-				Carboxyhémoglobine
-				Methémoglobine
-				      8613.00     35   Bloc hémodialyse
+				valeurs dÃ©rivÃ©es incl.
+				      8129.10     50   Bloc oxy                   mÃ©trie                                             CH
+				OxyhÃ©moglobine
+				CarboxyhÃ©moglobine
+				MethÃ©moglobine
+				      8613.00     35   Bloc hÃ©modialyse
 				C
 				8149.00 Calcium total
-				8284.00 Urée
+				8284.00 UrÃ©e
 				8343.00 Potassium
-				8387.00 Créatinine
+				8387.00 CrÃ©atinine
 				8438.00 Sodium
 				8462.00 Phosphate
 				8614.00     25   Bloc lipides
 
 				                C
-				8158.00 Cholestérol total
-				8288.00 Cholestérol HDL, sans
-				précipitation séparée
-				8572.00 Triglycérides
+				8158.00 CholestÃ©rol total
+				8288.00 CholestÃ©rol HDL, sans
+				prÃ©cipitation sÃ©parÃ©e
+				8572.00 TriglycÃ©rides
 
 				120
 				
@@ -321,7 +321,7 @@ précipitation séparée
 					:code						=>	'8129.00',
 					:group					=>	'8129',
 					:position				=>	'00',
-					:description		=>	'Bloc gazométrie pH pCO2 pO2 Bicarbonate valeurs dérivées incl.',
+					:description		=>	'Bloc gazomÃ©trie pH pCO2 pO2 Bicarbonate valeurs dÃ©rivÃ©es incl.',
 					:lab_areas			=>	['C'],
 					:taxpoints			=>	30,
 					:taxpoint_type	=>	nil,
@@ -332,7 +332,7 @@ précipitation séparée
 					:code						=>	'8129.10',
 					:group					=>	'8129',
 					:position				=>	'10',
-					:description		=>	'Bloc oxy métrie Oxyhémoglobine Carboxyhémoglobine Methémoglobine',
+					:description		=>	'Bloc oxy mÃ©trie OxyhÃ©moglobine CarboxyhÃ©moglobine MethÃ©moglobine',
 					:lab_areas			=>	['C', 'H'],
 					:taxpoints			=>	50,
 					:taxpoint_type	=>	nil,
@@ -343,7 +343,7 @@ précipitation séparée
 					:code						=>	'8613.00',
 					:group					=>	'8613',
 					:position				=>	'00',
-					:description		=>	'Bloc hémodialyse 8149.00 Calcium total 8284.00 Urée 8343.00 Potassium 8387.00 Créatinine 8438.00 Sodium 8462.00 Phosphate',
+					:description		=>	'Bloc hÃ©modialyse 8149.00 Calcium total 8284.00 UrÃ©e 8343.00 Potassium 8387.00 CrÃ©atinine 8438.00 Sodium 8462.00 Phosphate',
 					:lab_areas			=>	['C'],
 					:taxpoints			=>	35,
 					:taxpoint_type	=>	nil,
@@ -354,7 +354,7 @@ précipitation séparée
 					:code						=>	'8614.00',
 					:group					=>	'8614',
 					:position				=>	'00',
-					:description		=>	'Bloc lipides 8158.00 Cholestérol total 8288.00 Cholestérol HDL, sans précipitation séparée 8572.00 Triglycérides',
+					:description		=>	'Bloc lipides 8158.00 CholestÃ©rol total 8288.00 CholestÃ©rol HDL, sans prÃ©cipitation sÃ©parÃ©e 8572.00 TriglycÃ©rides',
 					:lab_areas			=>	['C'],
 					:taxpoints			=>	25,
 					:taxpoint_type	=>	nil,

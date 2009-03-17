@@ -12,11 +12,10 @@ class VCard < View::VCard
 		@content = [:name, :addresses]
 	end
 	def get_filename
-		filename = @model.name.gsub(/\s/, '_').to_s + 
-			"_" + @model.ean13.gsub(/\s/, '_').to_s + ".vcf"
+		filename = @model.name.gsub(/\s/u, '_').to_s +
+			"_" + @model.ean13.gsub(/\s/u, '_').to_s + ".vcf"
 	end
 end
 		end
 	end
 end
-

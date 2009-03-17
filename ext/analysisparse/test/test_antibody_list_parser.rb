@@ -14,20 +14,20 @@ module ODDB
 			end
 			def test_parse_line__1
 				src =<<-EOS
-Autoantikˆrper gegen b2-Glykoprotein I (IgA)
+Autoantik√∂rper gegen b2-Glykoprotein I (IgA)
 				EOS
 				begin
 					result = @parser.parse_line(src)
 				rescue AmbigousParseException => e
 				end
 				expected = {
-					:description	=>	'Autoantikˆrper gegen b2-Glykoprotein I (IgA)'
+					:description	=>	'Autoantik√∂rper gegen b2-Glykoprotein I (IgA)'
 				}
 				assert_equal(expected, result)
 			end
 			def test_parse_line__2
 				src =<<-EOS
-S Autoantikˆrper gegen CCP (Cyclisches Citrulliniertes Peptid)? Kapitel 1, Pos. 8113.20
+S Autoantik√∂rper gegen CCP (Cyclisches Citrulliniertes Peptid)? Kapitel 1, Pos. 8113.20
 				EOS
 				begin
 					result = @parser.parse_line(src)
@@ -35,52 +35,52 @@ S Autoantikˆrper gegen CCP (Cyclisches Citrulliniertes Peptid)? Kapitel 1, Pos. 
 					puts e.inspect
 				end
 				expected = {
-					:description	=>	'Autoantikˆrper gegen CCP (Cyclisches Citrulliniertes Peptid)? Kapitel 1, Pos. 8113.20',
+					:description	=>	'Autoantik√∂rper gegen CCP (Cyclisches Citrulliniertes Peptid)? Kapitel 1, Pos. 8113.20',
 					:revision			=>	'S',
 				}
 				assert_equal(expected, result)
 			end
 			def test_parse_page__1
 				src = <<-EOS
-4.4 Liste seltener Autoantikˆrper
+4.4 Liste seltener Autoantik√∂rper
 Tarifierung: siehe Pos. 8110.00 ~V 8111.01
-Rev. Bezeichnung der Antikˆrper
-Autoantikˆrper gegen b2-Glykoprotein I (IgA)
-Autoantikˆrper gegen b2-Glykoprotein I (IgG)
-Autoantikˆrper gegen b2-Glykoprotein I (IgM)
-Autoantikˆrper gegen 21-Hydroxylase
-Autoantikˆrper gegen 68 KD (hsp-70)
-Autoantikˆrper gegen Becherzellen
-Autoantikˆrper gegen BPI (IgA)
-Autoantikˆrper gegen BPI (IgG)
-S Autoantikˆrper gegen CCP (Cyclisches Citrulliniertes Peptid)? Kapitel 1, Pos. 8113.20
-Autoantikˆrper gegen Chondrozyten
-Autoantikˆrper gegen Chromatin
-Autoantikˆrper gegen Cytokeratin 8/18
-Autoantikˆrper gegen Desmoglein 1
-Autoantikˆrper gegen Desmoglein 3
-Autoantikˆrper gegen Elastase
-Autoantikˆrper gegen Filaggrin (Keratin)
-Autoantikˆrper gegen Fodrin
-Autoantikˆrper gegen Gangliosid GQ1B
-Autoantikˆrper gegen G-S-T
-Autoantikˆrper gegen Herzmuskel
-Autoantikˆrper gegen Hu, Yo, Ri
-Autoantikˆrper gegen IA2
-Autoantikˆrper gegen Kathepsin
-Autoantikˆrper gegen Ku
-Autoantikˆrper gegen Laktoferrin
-Autoantikˆrper gegen MAG IgM
-Autoantikˆrper gegen Mi 2
-Autoantikˆrper gegen Myelin
-Autoantikˆrper gegen Nukleosomen
-Autoantikˆrper gegen p53
-Autoantikˆrper gegen Parathyreoidea
-Autoantikˆrper gegen PM-Scl
-Autoantikˆrper gegen Recoverin
-Autoantikˆrper gegen Retina
-Autoantikˆrper gegen ribosomale P-Proteine
-Autoantikˆrper gegen Sulfatidil
+Rev. Bezeichnung der Antik√∂rper
+Autoantik√∂rper gegen b2-Glykoprotein I (IgA)
+Autoantik√∂rper gegen b2-Glykoprotein I (IgG)
+Autoantik√∂rper gegen b2-Glykoprotein I (IgM)
+Autoantik√∂rper gegen 21-Hydroxylase
+Autoantik√∂rper gegen 68 KD (hsp-70)
+Autoantik√∂rper gegen Becherzellen
+Autoantik√∂rper gegen BPI (IgA)
+Autoantik√∂rper gegen BPI (IgG)
+S Autoantik√∂rper gegen CCP (Cyclisches Citrulliniertes Peptid)? Kapitel 1, Pos. 8113.20
+Autoantik√∂rper gegen Chondrozyten
+Autoantik√∂rper gegen Chromatin
+Autoantik√∂rper gegen Cytokeratin 8/18
+Autoantik√∂rper gegen Desmoglein 1
+Autoantik√∂rper gegen Desmoglein 3
+Autoantik√∂rper gegen Elastase
+Autoantik√∂rper gegen Filaggrin (Keratin)
+Autoantik√∂rper gegen Fodrin
+Autoantik√∂rper gegen Gangliosid GQ1B
+Autoantik√∂rper gegen G-S-T
+Autoantik√∂rper gegen Herzmuskel
+Autoantik√∂rper gegen Hu, Yo, Ri
+Autoantik√∂rper gegen IA2
+Autoantik√∂rper gegen Kathepsin
+Autoantik√∂rper gegen Ku
+Autoantik√∂rper gegen Laktoferrin
+Autoantik√∂rper gegen MAG IgM
+Autoantik√∂rper gegen Mi 2
+Autoantik√∂rper gegen Myelin
+Autoantik√∂rper gegen Nukleosomen
+Autoantik√∂rper gegen p53
+Autoantik√∂rper gegen Parathyreoidea
+Autoantik√∂rper gegen PM-Scl
+Autoantik√∂rper gegen Recoverin
+Autoantik√∂rper gegen Retina
+Autoantik√∂rper gegen ribosomale P-Proteine
+Autoantik√∂rper gegen Sulfatidil
 121
 				EOS
 				begin
@@ -89,10 +89,10 @@ Autoantikˆrper gegen Sulfatidil
 					puts e.inspect
 				end
 				expected_first = {
-					:description	=>	'Autoantikˆrper gegen b2-Glykoprotein I (IgA)'
+					:description	=>	'Autoantik√∂rper gegen b2-Glykoprotein I (IgA)'
 				}
 				expected_last = {
-					:description	=>	'Autoantikˆrper gegen Sulfatidil'
+					:description	=>	'Autoantik√∂rper gegen Sulfatidil'
 				}
 				expected_size = 36
 				assert_equal(expected_first, result.first)

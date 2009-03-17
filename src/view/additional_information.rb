@@ -46,7 +46,6 @@ module ODDB
 		module AdditionalInformation
       include Drugs::AtcDddLink
       include PartSize
-			@@utf8 = {}
       def atc_ddd_link(atc, session=@session)
         unless(@lookandfeel.disabled?(:atc_ddd))
           while(atc && !atc.has_ddd? && (code = atc.parent_code))
@@ -83,24 +82,24 @@ module ODDB
 					square(ctype)
 				end
 			end
-  def compositions(model, session=@session)
-    link = HtmlGrid::Link.new(:show, model, session, self)
-    link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
-    lang = @session.language
-    parts = model.compositions.collect { |comp|
-      part = ''
-      if galform = comp.galenic_form
-        part << galform.send(lang) << ': '
+      def compositions(model, session=@session)
+        link = HtmlGrid::Link.new(:show, model, session, self)
+        link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
+        lang = @session.language
+        parts = model.compositions.collect { |comp|
+          part = ''
+          if galform = comp.galenic_form
+            part << galform.send(lang) << ': '
+          end
+          if comp.active_agents.size > 1
+            part << @lookandfeel.lookup(:active_agents, model.active_agents.size)
+          else
+            part << comp.active_agents.first.to_s
+          end
+        }
+        link.value = parts.join('<br/>')
+        link
       end
-      if comp.active_agents.size > 1
-        part << @lookandfeel.lookup(:active_agents, model.active_agents.size)
-      else
-        part << comp.active_agents.first.to_s
-      end
-    }
-    link.value = parts.join('<br/>')
-    link
-  end
 			def ddd_price(model, session=@session)
 				span = HtmlGrid::Span.new(model, @session, self)
 				if(ddd_price = model.ddd_price)
@@ -175,9 +174,8 @@ module ODDB
 			end
 			def google_search(model, session=@session)
 				text = model.localized_name(@session.language)
-				glink = utf8(text)
 				link = HtmlGrid::Link.new(:square_google_search, @model, @session, self)
-				link.href =  "http://www.google.com/search?q=#{glink}"
+				link.href =  "http://www.google.com/search?q=#{text}"
 				link.css_class= 'square google_search'
 				link.set_attribute('title', "#{@lookandfeel.lookup(:google_alt)}#{text}")
 				link
@@ -209,7 +207,6 @@ module ODDB
 			end
 			def limitation_text(model, session=@session)
 				if(sltxt = model.limitation_text)
-					#if((sl = model.sl_entry) && (sltxt = sl.limitation_text))
 					limitation_link(sltxt)
 				end
 			end
@@ -294,9 +291,6 @@ module ODDB
 				square.attributes['title'] ||= @lookandfeel.lookup(key)
 				square.css_class = "square #{key}"
 				square
-			end
-			def utf8(text)
-				@@utf8[text] ||= Iconv.iconv('UTF-8', 'ISO_8859-1', text).first
 			end
 		end
 	end

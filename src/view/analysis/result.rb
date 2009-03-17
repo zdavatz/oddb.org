@@ -48,9 +48,9 @@ class List < HtmlGrid::List
 		link = PointerLink.new(:to_s, model, @session, self)
 		text = model.send(@session.language).gsub("\n", ' ')
 		if(text.size > 60)
-			if(match = /^([\S]*block)/.match(text))
+			if(match = /^([\S]*block)/u.match(text))
 				text = match[1]
-			elsif(match = /^(Blutgase)/.match(text))
+			elsif(match = /^(Blutgase)/u.match(text))
 				text = match[1]
 			else
 				text = text[0..60]

@@ -150,7 +150,7 @@ module Ipn
       lookandfeel = lookandfeel_stub
       recipient = PAYPAL_RECEIVER
       outgoing = TMail::Mail.new
-      outgoing.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
+      outgoing.set_content_type('text', 'plain', 'charset'=>'UTF-8')
       outgoing.to = [recipient]
       outgoing.from = MAIL_FROM
       outgoing.subject = lookandfeel.lookup(:download_mail_subject)
@@ -205,7 +205,7 @@ module Ipn
     if(recipient = invoice.yus_name)
       lookandfeel = lookandfeel_stub
       outgoing = TMail::Mail.new
-      outgoing.set_content_type('text', 'plain', 'charset'=>'ISO-8859-1')
+      outgoing.set_content_type('text', 'plain', 'charset'=>'UTF-8')
       outgoing.to = [recipient]
       outgoing.from = MAIL_FROM
       outgoing.date = Time.now

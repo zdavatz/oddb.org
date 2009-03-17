@@ -9,12 +9,12 @@ module ODDB
 			grammar = <<-EOG
 Grammar AnalysisList
 	Tokens
-		SPACE				= /\\s+/	[:Skip]
-		GROUP				=	/[0-9]{4}/
-		POSITION		=	/[0-9]{2}/
-		REVISION		= /^[CS]|N(,\\s*ex)?|TP/
-		TAXPOINTS		=	/[0-9]+/
-		WORD				=	/\\S+/
+		SPACE				= /\\s+/u [:Skip]
+		GROUP				=	/[0-9]{4}/u
+		POSITION		=	/[0-9]{2}/u
+		REVISION		= /^[CS]|N(,\\s*ex)?|TP/u
+		TAXPOINTS		=	/[0-9]+/u
+		WORD				=	/\\S+/u
 	Productions
 		Line				->	REVISION? GROUP '.' POSITION 
 										TAXPOINTS Description

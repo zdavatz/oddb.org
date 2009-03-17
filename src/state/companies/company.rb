@@ -109,8 +109,8 @@ class UserCompany < Company
 					input.delete(:plz),
 					input.delete(:city),
 				].compact.join(' ')
-				addr.fon = input.delete(:fon).to_s.split(/\s*,\s*/)
-				addr.fax = input.delete(:fax).to_s.split(/\s*,\s*/)
+				addr.fon = input.delete(:fon).to_s.split(/\s*,\s*/u)
+				addr.fax = input.delete(:fax).to_s.split(/\s*,\s*/u)
         @model = @session.app.update(@model.pointer, input, unique_email)
 			end
 		end

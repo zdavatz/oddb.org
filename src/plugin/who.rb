@@ -27,7 +27,7 @@ module ODDB
 			@tablehandlers.inject({}) { |inj, handler|
 				code = nil
 				handler.each_row { |row|
-					if(((match = /^#{ATC_PATTERN}$/.match(row.cdata(0).strip)) \
+					if(((match = /^#{ATC_PATTERN}$/u.match(row.cdata(0).strip)) \
 						|| code) && !row.cdata(2).strip.empty?)
 						code = match[0] unless match.nil?
 						(inj[code] ||= []).push(row2ddd(row))
@@ -71,7 +71,7 @@ module ODDB
       _handle_guideline(@guidelines, data)
 		end
     def _handle_guideline(storage, data)
-      return if(/^#{ATC_PATTERN}$/.match(data) \
+      return if(/^#{ATC_PATTERN}$/u.match(data) \
                 && (!@paragraph || @paragraph.empty?))
       chapter = storage[@current_code]
       if(!chapter)
@@ -87,7 +87,7 @@ module ODDB
 			handle_data(data)	
     end
 		def href2atc(href)
-			pattern = /query=(#{ATC_PATTERN})(?:$|&)/i
+			pattern = /query=(#{ATC_PATTERN})(?:$|&)/iu
 			if(match = pattern.match(href))
 				match[1]
 			end
@@ -114,9 +114,9 @@ module ODDB
 			qty = row.cdata(2).strip
 			unit = row.cdata(3).strip
 			note = row.cdata(5).strip
-			if(match = /^([^\d\s]+)\s*(\d+\))/.match(unit))
+			if(match = /^([^\d\s]+)\s*(\d+\))/u.match(unit))
 				unit = match[1]
-				note.gsub!(/^#{Regexp.escape(match[2])}\s*/, '')
+				note.gsub!(/^#{Regexp.escape(match[2])}\s*/u, '')
 			end
 			ddd = {
 				:dose									=>	Dose.new(qty, unit),
@@ -125,7 +125,7 @@ module ODDB
 			}
 		end
 		def send_flowing_data(data) 
-			data.tr!("\xA0", ' ') # remove &nbsp;
+			data.gsub!("\302\240", ' ') # remove &nbsp;
 			if(@current_linkhandler)
 				@current_linkhandler.send_adata(data)
 			elsif(@current_tablehandler)
@@ -196,7 +196,7 @@ module ODDB
 		def get_headers
 			headers = {
 				'Accept'          =>  'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1',
-				'Accept-Charset'	=>	'ISO-8859-1',
+				'Accept-Charset'	=>	'UTF-8',
 				'Accept-Language' =>  'de-ch,en-us;q=0.7,en;q=0.3',
 				'Accept-Encoding' =>  'gzip,deflate',
 				'Connection'			=>	'keep-alive',
@@ -213,7 +213,7 @@ module ODDB
 		def load_credentials(path)
 			hash = {}
 			File.foreach(path) { |line|
-				if(match = /(\w+)\s*=\s*([^\s]+)/.match(line))
+				if(match = /(\w+)\s*=\s*([^\s]+)/u.match(line))
 					hash.store(match[1], match[2])
 				end
 			}
@@ -234,7 +234,7 @@ module ODDB
 		end
 		def update_cookies(resp=nil)
 			if(resp && (cookiestring = resp['set-cookie']))
-				ptrn = /(?:^|, (?!\d))([^;]+)/
+				ptrn = /(?:^|, (?!\d))([^;]+)/u
 				cookiestring.scan(ptrn) { |cookie|
 					@cookies.store(*(cookie[0].split('=',2)))
 				}
@@ -285,7 +285,7 @@ module ODDB
 			writer.extract_ddd = daily = {}
 			CSV.open(path, 'r', ?;) { |csv_row|
 				unless(csv_row[2].to_s.strip.empty?)	
-					ddds = csv_row[4].to_s.split(/,/).collect { |ar|
+					ddds = csv_row[4].to_s.split(/,/u).collect { |ar|
 						ddd = {
 							:dose	=>	Dose.new(csv_row[2].to_s, csv_row[3].to_s),
 							:administration_route	=>	ar.strip,

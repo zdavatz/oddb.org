@@ -18,36 +18,36 @@ module ODDB
 			end
 			def check_string(string)
         case string
-				when /\240/
+				when /^\302\240$/u
 					return false
-				when /^=/
+				when /^=/u
 					return false
-				when /^>/
+				when /^>/u
 					return false
-				when /^[0-9]OH/
+				when /^[0-9]OH/u
 					return false
-				when /^[0-9]-OH/
+				when /^[0-9]-OH/u
 					return false
-				when /^NOT/
+				when /^NOT/u
 					return false
-				when /^NAPQI/
+				when /^NAPQI/u
 					return false
 				when ""
 					return false
-				when /^[0-9]+\s*$/
+				when /^[0-9]+\s*$/u
 					return false
-				when /^Chr\d+\s*$/
+				when /^Chr\d+\s*$/u
 					return false
 				else
 					return true
 				end
 			end
 			def clear_string(string)
-				string.delete!("\240")
-				string.slice!(/^=/)
-				string.slice!(/^>/)
-				string.slice!(/[0-9]OH/)
-				string.slice!(/[0-9]-OH/)
+				string.delete!("\302\240")
+				string.slice!(/^=/u)
+				string.slice!(/^>/u)
+				string.slice!(/[0-9]OH/u)
+				string.slice!(/[0-9]-OH/u)
 				string.strip
 				end	
 			def create_update_objects(base_name, data, cyt_id, not_cyt)
@@ -81,9 +81,9 @@ module ODDB
 						(0...max).each { |dig|
 							data = row.cdata(dig)
 							if(data.is_a?(String))
-								if(data.match(/@\/@\/@/))
+								if(data.match(/@\/@\/@/u))
                   # clean out some javascript.
-                  data.gsub!(/^.*function[^}]+\}/, '')
+                  data.gsub!(/^.*function[^}]+\}/u, '')
 									parse_cyt_string(data, dig)
 								elsif(data.size>3)
 									@collected_hashes.push(Hash[dig, parse_string(data)])
@@ -100,8 +100,8 @@ module ODDB
 								if(hsh!=nil)
 									hsh.each { |base_name, data|
 										not_cyt = nil
-										if(base_name.match(/-\/-\/-/))
-											base_name, not_cyt = base_name.split(/-\/-\/-/)
+										if(base_name.match(/-\/-\/-/u))
+											base_name, not_cyt = base_name.split(/-\/-\/-/u)
 										end
 										create_update_objects(base_name, data, cyt_id, not_cyt)
 									}
@@ -129,13 +129,13 @@ module ODDB
 			def parse_array(array)
 				hsh = {}
 				array.each { |str| 
-					name, category, auc = str.split(/\*\/\*\/\*/)
+					name, category, auc = str.split(/\*\/\*\/\*/u)
           hsh.store(name, {:category => category, :auc_factor => auc})
 				}
 				hsh
 			end
 			def parse_cyt_string(string, cyt_id)
-				array = string.split(/@\/@\/@/)
+				array = string.split(/@\/@\/@/u)
 				cyt = []
 				if(FlockhartPlugin::FORMAT_CYT_ID.keys.include?(array[1]))
 					FlockhartPlugin::FORMAT_CYT_ID[array[1]].each { |name|
@@ -157,48 +157,48 @@ module ODDB
 			end
 			def parse_string(string)
 				array = []
-				if(string.match(/-\/-\/-/))
-					array = string.split(/&\/&\/&/)
+				if(string.match(/-\/-\/-/u))
+					array = string.split(/&\/&\/&/u)
 					@duplicates.push(array.shift)
 				else
-					array = string.split(/&\/&\/&/)
+					array = string.split(/&\/&\/&/u)
 				end
 				parse_array(array)
 			end
 			def send_flowing_data(data) 
-        if(match = /SUBSTRATES|INHIBITORS|INDUCERS/.match(data))
+        if(match = /SUBSTRATES|INHIBITORS|INDUCERS/u.match(data))
           @current_table = match.to_s.downcase
 				elsif(@current_tablehandler)
 					if(@current_table)
 						@data = data
 						case @category
 						when "start"
-							@current_category = data.split(/:/).first.downcase.strip 
+							@current_category = data.split(/:/u).first.downcase.strip
 							@data = 'cat'
 						when "end"
 							@current_category = nil
 							@category = nil
 						end
-						if(@tr_class && @tr_class.match(/lite/) && @data!='cat')
+						if(@tr_class && @tr_class.match(/lite/u) && @data!='cat')
 							data = clear_string(data)
 							return unless check_string(data)
-							if(data.match(/\(not/))
-								data.slice!(/\(not/)
-								data.slice!(/\)/)
+							if(data.match(/\(not/u))
+								data.slice!(/\(not/u)
+								data.slice!(/\)/u)
 								data = @previous_data << "-/-/-" + data.strip
 							end
-							if(@ignore_next && !data.match(/=/))
+							if(@ignore_next && !data.match(/=/u))
 								@ignore_next = false
 							else
-								if(data.match(/=/))
-									data.slice!(/=/)
+								if(data.match(/=/u))
+									data.slice!(/=/u)
 									@ignore_next = true
 								end
 								data_string = write_substance_string(data)
 								@previous_data = data
 								@current_tablehandler.send_cdata(data_string) if check_string(data_string)
 							end
-						elsif(@tr_class && @tr_class.match(/green/) && @data!='cat')
+						elsif(@tr_class && @tr_class.match(/green/u) && @data!='cat')
 							type = @current_table.dup
 							type_cyt = type << "@/@/@" << data.strip
 							@current_tablehandler.send_cdata(type_cyt) if check_string(type_cyt)
@@ -249,11 +249,11 @@ module ODDB
 			def new_linkhandler(handler)
 				if(handler)
           if((href = handler.attributes["href"]) \
-             && href.match(/Abstract|abstractplus/))
+             && href.match(/Abstract|abstractplus/u))
 						@current_link = href
           elsif(name = handler.attributes["name"])
             @abstractlink = nil
-            if(/\dsub$/.match name)
+            if(/\dsub$/u.match name)
               @current_table = nil
             end
 					end
@@ -264,24 +264,24 @@ module ODDB
 			end
 			def send_image(src)
 				ODDB::Interaction::FlockhartPlugin::IMAGES.each { |img|
-					if(src.match(/#{img}/))
-						@current_table = src.split(/\./).first.downcase
+					if(src.match(/#{img}/u))
+						@current_table = src.split(/\./u).first.downcase
 					end
 				}
 			end
 			def send_flowing_data(data) 
-        data.gsub!("\240", ' ')
-        if(match = /SUBSTRATES|INHIBITORS|INDUCERS/.match(data))
+        data.gsub!("\302\240", ' ')
+        if(match = /SUBSTRATES|INHIBITORS|INDUCERS/u.match(data))
           @current_table = match.to_s.downcase
 				elsif(@current_table)
           case data
-          when /^\s*Article\s*$/
+          when /^\s*Article\s*$/u
             return @infotoken = true
-          when /^\s*Authors?\s*$/
+          when /^\s*Authors?\s*$/u
             return @infotoken = false
-          when /^:?\s*Info\s*$/i
+          when /^:?\s*Info\s*$/iu
             return @ignore_next = true
-          when /^\s*PubMed\s*$/i, /Updated: \d/
+          when /^\s*PubMed\s*$/iu, /Updated: \d/u
             return 
           end
 					if(@infotoken || @italic)
@@ -297,11 +297,11 @@ module ODDB
 					elsif(@bold && !@abstractlink && !@ignore_next && data.size > 3)
 						name = data.delete(":").downcase
 						case @current_table
-						when /substrates/
+						when /substrates/u
 							new_class = ODDB::Interaction::SubstrateConnection
-						when /inhibitors/
+						when /inhibitors/u
 							new_class = ODDB::Interaction::InhibitorConnection
-						when /inducers/
+						when /inducers/u
 							new_class = ODDB::Interaction::InducerConnection
 						end
 						@connection = new_class.new(name, 'en')
@@ -336,10 +336,10 @@ module ODDB
 			def new_linkhandler(handler)
 				unless(handler.nil?)
 					link = handler.attribute('href')
-					valid_link = link.split(/#/)[0]
-					if(valid_link && valid_link.match(/.htm/) \
+					valid_link = link.split(/#/u)[0]
+					if(valid_link && valid_link.match(/.htm/u) \
              && !(@links.include?(valid_link) \
-                  || /www.fda.gov/.match(valid_link) \
+                  || /www.fda.gov/u.match(valid_link) \
                   || FlockhartPlugin::INVALID_LINKS.include?(valid_link)))
 						@links.push(valid_link)
 					end

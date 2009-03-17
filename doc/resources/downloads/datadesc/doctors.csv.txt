@@ -1,14 +1,15 @@
 Datenbeschrieb doctors.csv
 
-Version: 1.3
-Geändert: 03.10.2005 (1.3)   durch hwyss@ywesee.com
-Geändert: 30.09.2005 (1.2)   durch hwyss@ywesee.com
-Geändert: 23.09.2005 (1.1)   durch hwyss@ywesee.com
-Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
+Version: 1.4
+GeÃ¤ndert: 12.03.2009 (1.4)   durch hwyss@ywesee.com
+GeÃ¤ndert: 03.10.2005 (1.3)   durch hwyss@ywesee.com
+GeÃ¤ndert: 30.09.2005 (1.2)   durch hwyss@ywesee.com
+GeÃ¤ndert: 23.09.2005 (1.1)   durch hwyss@ywesee.com
+GeÃ¤ndert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
 Erstellt: 01.09.2005 (1.0)   durch hwyss@ywesee.com
 
 ## Struktur ##
-Encoding: ISO-8859-1
+Encoding: UTF-8
 Record-Separator: \n
 Field-Separator:  ;
 
@@ -21,12 +22,12 @@ Doctor-Record:
 05: name              (*)                       -> Nachname
 06: praxis            (true/false)              -> Praxis Ja/Nein
 07: address_type      (at_praxis / at_work)     -> Adressart 
-08: address_name      (*)                       -> Name gemäss Adresse
-09: lines             (*)                       -> zusätzliche Adresszeilen
+08: address_name      (*)                       -> Name gemÃ¤ss Adresse
+09: lines             (*)                       -> zusÃ¤tzliche Adresszeilen
 10: address           (*)                       -> Strasse, Nummer
 11: plz               (*)                       -> PLZ
 12: city              (*)                       -> Ort
-13: canton            (*)                       -> Kantonskürzel (falls vorhanden)
+13: canton            (*)                       -> KantonskÃ¼rzel (falls vorhanden)
 14: fon               (*)                       -> Telefonnummern, durch ',' getrennt
 15: fax               (*)                       -> Faxnummern, durch ',' getrennt
 16: email             (*)                       -> Email-Adresse
@@ -34,9 +35,9 @@ Doctor-Record:
 18: specialities      (*)                       -> Facharzttitel, durch ',' getrennt
 
 * Version
-Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentation"
+Versionsnummern bezeichnen Ã„nderungen nach dem Schema "Major.Minor.Documentation"
 - Major:         Komplett neuer Aufbau des Exports
-- Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
-- Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
+- Minor:         Kleinere Ã„nderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
+- Documentation: ErgÃ¤nzungen und Ã„nderungen im Datenbeschrieb, die keine Ã„nderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
 http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/doctors.csv.txt
