@@ -275,6 +275,8 @@ module ODDB
         @row_span = 1
         super(*args)
       end
+    end
+    class Table
       attr_reader :rows
       def initialize(*args)
         super
