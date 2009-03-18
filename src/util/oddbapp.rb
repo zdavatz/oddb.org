@@ -1925,6 +1925,10 @@ module ODDB
         item.odba_store
       end
     end
+    def utf8ify(object)
+      iconv = ::Iconv.new 'UTF-8//TRANSLIT//IGNORE', 'ISO-8859-1'
+      _migrate_to_utf8([object], {}, iconv)
+    end
     def migrate_to_utf8
       iconv = ::Iconv.new 'UTF-8//TRANSLIT//IGNORE', 'ISO-8859-1'
       ODBA.cache.retire_age = 5
@@ -1940,10 +1944,10 @@ module ODDB
         if (queue.size - last_size).abs >= 10000
           puts last_size = queue.size
         end
-        _migrate_to_utf8 queue, table, iconv
+        _migrate_to_utf8 queue, table, iconv, :all => true
       end
     end
-    def _migrate_to_utf8 queue, table, iconv
+    def _migrate_to_utf8 queue, table, iconv, opts={}
       obj = queue.shift
       if obj.is_a?(Numeric)
         begin
@@ -1954,10 +1958,10 @@ module ODDB
       else
         obj = obj.odba_instance
       end
-      _migrate_obj_to_utf8 obj, queue, table, iconv
+      _migrate_obj_to_utf8 obj, queue, table, iconv, opts
       obj.odba_store unless obj.odba_unsaved?
     end
-    def _migrate_obj_to_utf8 obj, queue, table, iconv
+    def _migrate_obj_to_utf8 obj, queue, table, iconv, opts={}
       obj.instance_variables.each do |name|
         child = obj.instance_variable_get name
         if child.respond_to?(:odba_unsaved?) && !child.odba_unsaved? \
@@ -1965,32 +1969,32 @@ module ODDB
           && obj.odba_serializables.include?(name)
           child.instance_variable_set '@odba_persistent', nil
         end
-        child = _migrate_child_to_utf8 child, queue, table, iconv
+        child = _migrate_child_to_utf8 child, queue, table, iconv, opts
         obj.instance_variable_set name, child
       end
       case obj
       when Array
         obj.collect! do |child|
-          _migrate_child_to_utf8 child, queue, table, iconv
+          _migrate_child_to_utf8 child, queue, table, iconv, opts
         end
       when Hash
         obj.dup.each do |key, child|
-          obj.store key, _migrate_child_to_utf8(child, queue, table, iconv)
+          obj.store key, _migrate_child_to_utf8(child, queue, table, iconv, opts)
         end
       end
       if obj.is_a?(ODDB::SimpleLanguage::Descriptions)
-        obj.default = _migrate_child_to_utf8 obj.default, queue, table, iconv
+        obj.default = _migrate_child_to_utf8 obj.default, queue, table, iconv, opts
       end
       obj
     end
-    def _migrate_child_to_utf8 child, queue, table, iconv
+    def _migrate_child_to_utf8 child, queue, table, iconv, opts={}
       @serialized ||= {}
       case child
       when ODBA::Persistable, ODBA::Stub
         if child = child.odba_instance
           if child.odba_unsaved?
-            _migrate_to_utf8 [child], table, iconv
-          else
+            _migrate_to_utf8 [child], table, iconv, opts
+          elsif opts[:all]
             odba_id = child.odba_id
             unless table[odba_id]
               table.store odba_id, true
@@ -2003,13 +2007,13 @@ module ODDB
       when ODDB::Text::Section, ODDB::Text::Paragraph, ODDB::PatinfoDocument,
            ODDB::PatinfoDocument2001, ODDB::Text::Table, ODDB::Text::Cell,
            ODDB::Analysis::Permission, ODDB::Interaction::AbstractLink
-        child = _migrate_obj_to_utf8 child, queue, table, iconv
+        child = _migrate_obj_to_utf8 child, queue, table, iconv, opts
       when ODDB::Address2
         ## Address2 may cause StackOverflow if not controlled
         unless table[:serialized][child.object_id]
           table[:serialized].store child.object_id, true
           ObjectSpace.define_finalizer child, table[:finalizer]
-          child = _migrate_obj_to_utf8 child, queue, table, iconv
+          child = _migrate_obj_to_utf8 child, queue, table, iconv, opts
         end
       when Float, Fixnum, TrueClass, FalseClass, NilClass,
         ODDB::Persistence::Pointer, Symbol, Time, Date, ODDB::Dose, Quanty,
