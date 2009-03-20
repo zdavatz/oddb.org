@@ -2006,7 +2006,8 @@ module ODDB
         child = iconv.iconv(child)
       when ODDB::Text::Section, ODDB::Text::Paragraph, ODDB::PatinfoDocument,
            ODDB::PatinfoDocument2001, ODDB::Text::Table, ODDB::Text::Cell,
-           ODDB::Analysis::Permission, ODDB::Interaction::AbstractLink
+           ODDB::Analysis::Permission, ODDB::Interaction::AbstractLink,
+           ODDB::Dose
         child = _migrate_obj_to_utf8 child, queue, table, iconv, opts
       when ODDB::Address2
         ## Address2 may cause StackOverflow if not controlled
