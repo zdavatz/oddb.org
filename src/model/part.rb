@@ -7,7 +7,7 @@ require 'util/persistence'
 
 module ODDB
   module SizeParser
-    unit_pattern = '(([kmucMG]?([glLJm]|mol|Bq)\b)(\/([mu]?[glL])\b)?)|((Mio\s)?U\.?I\.?)|(%( [mV]\/[mV])?)|(I\.E\.)|(Fl\.)'
+    unit_pattern = '(([kmµucMG]?([glLJm]|mol|Bq)\b)(\/([mµu]?[glL])\b)?)|((Mio\s)?U\.?I\.?)|(%( [mV]\/[mV])?)|(I\.E\.)|(Fl\.)'
     numeric_pattern = '\d+(\'\d+)*([.,]\d+)?'
     iso_pattern = "[[:alpha:]()\-]+"
     @@parser = Parse.generate_parser <<-EOG
