@@ -1925,8 +1925,13 @@ module ODDB
         item.odba_store
       end
     end
-    def utf8ify(object)
-      iconv = ::Iconv.new 'UTF-8//TRANSLIT//IGNORE', 'ISO-8859-1'
+    def utf8ify(object, opts={})
+      from = 'ISO-8859-1'
+      to = 'UTF-8//TRANSLIT//IGNORE'
+      if opts[:reverse]
+        from, to = to, from
+      end
+      iconv = ::Iconv.new to, from
       _migrate_to_utf8([object], {}, iconv)
     end
     def migrate_to_utf8
@@ -2006,7 +2011,8 @@ module ODDB
         child = iconv.iconv(child)
       when ODDB::Text::Section, ODDB::Text::Paragraph, ODDB::PatinfoDocument,
            ODDB::PatinfoDocument2001, ODDB::Text::Table, ODDB::Text::Cell,
-           ODDB::Analysis::Permission, ODDB::Interaction::AbstractLink
+           ODDB::Analysis::Permission, ODDB::Interaction::AbstractLink, 
+           ODDB::Dose
         child = _migrate_obj_to_utf8 child, queue, table, iconv, opts
       when ODDB::Address2
         ## Address2 may cause StackOverflow if not controlled
