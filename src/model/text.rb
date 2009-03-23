@@ -3,6 +3,7 @@
 
 require 'util/persistence'
 require 'util/language'
+require 'encoding/character/utf-8'
 
 module ODDB
 	module Text
@@ -109,15 +110,16 @@ module ODDB
 				set_format(*(@format.values - args))
 			end
 			def set_format(*args)
+        len = u(@text).length
 				unless(@format.nil?)
-					if(@format.start == @text.length)
+					if(@format.start == len)
 						@formats.pop
 					else
-						@format.end	= (@text.length - 1)
+						@format.end	= (len - 1)
 					end
 				end
 				@format = Text::Format.new(*args)
-				@format.start = (@text.length)
+				@format.start = (len)
 				@formats.push(@format)
 				@format
 			end

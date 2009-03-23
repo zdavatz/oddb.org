@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # OddbDat -- oddb -- 09.12.2004 -- hwyss@ywesee.com
 
+require 'encoding/character/utf-8'
+
 module ODDB
 	module OdbaExporter
 		class Table
@@ -165,6 +167,7 @@ module ODDB
             when ODDB::Text::Table
               string << '<N>' << par.to_s << '<E>'
             else
+              text = u par.text
 							par.formats.each { |format|
 								start_tag = ""
 								end_tag = ""
@@ -175,8 +178,11 @@ module ODDB
 									start_tag = "<B>"
 									end_tag = "<E>"
 								end
-								string << start_tag << par.text[format.range] << end_tag << "<P>"
+                if formatted = text[format.range]
+                  string << start_tag << formatted << end_tag
+                end
 							}
+              string << "<P>"
 							if(par.preformatted?)
 								string.gsub!(/ /, '_')
 								string.gsub!(/\n/, "<P>")
