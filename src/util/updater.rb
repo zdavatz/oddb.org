@@ -106,8 +106,8 @@ module ODDB
 				log.notify(subj)
 			}
 		end
-		def log_info(plugin)
-			hash = plugin.log_info
+		def log_info(plugin, method=:log_info)
+			hash = plugin.send(method)
 			hash[:recipients] = if(rcp = hash[:recipients])
 				rcp + recipients
 			else
@@ -376,6 +376,9 @@ module ODDB
       end
 			log = @app.update(pointer.creator, values)
 			log.notify(subj)
+      log2 = Log.new(date)
+      log2.update_values log_info(plug, :log_info_bsv)
+      log2.notify(subj)
 		end
 		def notify_error(klass, subj, error)
 			log = Log.new(@@today)

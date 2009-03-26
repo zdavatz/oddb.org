@@ -16,6 +16,7 @@ require 'zip/zip'
 module ODDB
   class BsvXmlPlugin < Plugin
     RECIPIENTS = [ 'sibylle.imfeld@seconag.com', 'paul.wiederkehr@pharmasuisse.org' ]
+    BSV_RECIPIENTS = [ 'jean-christian.krayenbuehl@bag.admin.ch', 'todo@oddb.org' ]
     class Listener
       include REXML::StreamListener
       FORMATS = {
@@ -601,6 +602,58 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
       info.update(:parts => parts, :report => body)
       info
     end
+    def log_info_bsv
+      body = report_bsv << "\n\n"
+      info = { :recipients => recipients.concat(BSV_RECIPIENTS) }
+      parts = [
+        [ :conflicted_registrations,
+          'SMeX/SL-Differences (Registrations) %d.%m.%Y',
+          'SL hat anderen 5-Stelligen Swissmedic-Code als SMeX' ],
+        [ :missing_ikscodes,
+          'Missing Swissmedic-Codes in SL %d.%m.%Y',
+           'SL hat keinen 8-Stelligen Swissmedic-Code' ],
+        [ :missing_ikscodes_oot,
+          'Missing Swissmedic-Codes in SL (out of trade) %d.%m.%Y',
+          <<-EOS
+SL hat keinen 8-Stelligen Swissmedic-Code,
+Produkt ist laut RefData ausser Handel
+          EOS
+        ],
+        [ :unknown_packages,
+          'Unknown Packages in SL %d.%m.%Y',
+          <<-EOS
+es gibt im SMeX keine Zeile mit diesem 8-stelligen Swissmedic-Code, und
+wir konnten auch keine Automatisierte Zuweisung vornehmen, wir wissen
+aber anhand des Pharmacodes, dass die Packung in MedWin vorkommt.
+          EOS
+        ],
+        [ :unknown_registrations,
+          'Unknown Registrations in SL %d.%m.%Y',
+          'es gibt im SMeX keine Zeile mit diesem 5-stelligen Swissmedic-Code' ],
+        [ :unknown_packages_oot,
+          'Unknown Packages in SL (out of trade) %d.%m.%Y',
+          <<-EOS
+es gibt im SMeX keine Zeile mit diesem 8-stelligen Swissmedic-Code, und
+in MedWin kein Resultat mit dem entsprechenden Pharmacode
+          EOS
+        ],
+      ].collect do |collection, fmt, explain|
+        values = @preparations_listener.send(collection).collect do |data|
+          report_format data
+        end.sort
+        name = @@today.strftime fmt
+        header = report_format_header(name, values.size)
+        body << header << "\n"
+        report = [
+          header,
+          explain,
+          values.join("\n\n"),
+        ].join("\n")
+        ['text/plain', name.gsub(/[\s()\/-]/u, '_') << '.txt', report]
+      end
+      info.update(:parts => parts, :report => body)
+      info
+    end
     def report
       [ 'Created SL-Entries', 'Updated SL-Entries', 'Deleted SL-Entries',
         'Created Limitation-Texts', 'Updated Limitation-Texts',
@@ -609,6 +662,65 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
         method = title.downcase.gsub(/[ -]/u, '_')
         report_format_header title, @preparations_listener.send(method)
       end.join("\n")
+    end
+    def report_bsv
+      cfs = @preparations_listener.conflicted_registrations.size
+      micds = @preparations_listener.missing_ikscodes.size
+      micdoots = @preparations_listener.missing_ikscodes_oot.size
+      ups = @preparations_listener.unknown_packages.size
+      urs = @preparations_listener.unknown_registrations.size
+      upoots = @preparations_listener.unknown_packages_oot.size
+      <<-EOS
+Sehr geehrter Herr Krayenbühl
+
+Am #{@@today.strftime('%d.%m.%Y')} haben wir Ihren aktuellen SL-Export (XML)
+wieder überprüft. Dabei ist uns folgendes aufgefallen:
+
+1. Bei #{cfs} Produkten hat die SL einen anderen 5-Stelligen Swissmedic-Code als
+Swissmedic Excel.
+
+2. Bei #{micds} Produkten hat die SL keinen 8-Stelligen Swissmedic-Code. Ev.
+befinden sich dort auch Produkte darunter, welche nicht bei der Swissmedic
+registriert werden müssen. Es hat aber sicherlich auch Produkte darunter,
+welche einen Swissmedic-Code haben sollten.
+
+3. Bei #{micdoots} Produkten hat die SL keinen 8-Stelligen Swissmedic-Code, die
+Produkte sind laut RefData ausser Handel. Der Swissmedic Code sollte in der SL
+gemäss SR 830.1, Art. 24, Abs. 1 trotzdem korrekt vorhanden sein. Die
+Krankenkasse muss bis 5 Jahre in der Vergangenheit abrechnen können.
+
+4. Bei #{ups} Produkten gibt es im Swissmedic-Excel keine Zeile mit diesem
+8-stelligen Swissmedic-Code, die Packung kommt aber in Medwin vor.
+
+5. Bei #{urs} Produkten gibt im Swissmedic-Excel keine Zeile mit diesem
+5-stelligen Swissmedic-Code. Die Produkte sind aber sicherlich bei der
+Swissmedic registriert.
+
+6. Bei #{upoots} Produkten gibt es im Swissmedic-Excel keine Zeile mit diesem
+8-stelligen Swissmedic-Code. Die Produkte sind wohl ausser Handel aber sicher
+noch bei der Swissmedic registriert. Der Swissmedic Code sollte in der SL
+gemäss SR 830.1, Art. 24, Abs. 1 trotzdem korrekt vorhanden sein.
+
+Um die obigen Beobachtungen kontrollieren zu können, speichern Sie bitte die
+Attachments auf Ihrem Schreibtisch.
+
+Sie können die Attachments mit dem Windows-Editor öffnen. Sie finden den
+Windows-Editor unter: Startmenu > Programme > Editor
+
+Starten Sie den Editor und gehen Sie dann auf: Datei > Öffnen
+
+Wählen sie obige Attachments von Ihrem Schreibtisch aus und schon können Sie
+die Attachments anschauen.
+
+Danke für Ihr Feedback.
+
+Mit freundlichen Grüssen
+Zeno Davatz
++41 43 540 05 50
+
+
+Attachments:
+      EOS
     end
     def report_format_header name, size
       sprintf "%-58s%5i", name, size
