@@ -1925,8 +1925,13 @@ module ODDB
         item.odba_store
       end
     end
-    def utf8ify(object)
-      iconv = ::Iconv.new 'UTF-8//TRANSLIT//IGNORE', 'ISO-8859-1'
+    def utf8ify(object, opts={})
+      from = 'ISO-8859-1'
+      to = 'UTF-8//TRANSLIT//IGNORE'
+      if opts[:reverse]
+        from, to = to, from
+      end
+      iconv = ::Iconv.new to, from
       _migrate_to_utf8([object], {}, iconv)
     end
     def migrate_to_utf8
