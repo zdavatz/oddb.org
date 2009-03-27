@@ -1,5 +1,5 @@
 #SET ISO8859-1
-#TRY esianrtolcdugmphbyfvkwäüößáéêàâñESIANRTOLCDUGMPHBYFVKWÄÜÖ
+#TRY esianrtolcdugmphbyfvkwÃ¤Ã¼Ã¶ÃŸÃ¡Ã©ÃªÃ Ã¢Ã±ESIANRTOLCDUGMPHBYFVKWÃ„ÃœÃ–
 
 compoundwords controlled z
 compoundmin 3
@@ -70,12 +70,12 @@ flag *A:
    [^EIL]EL    > -EL,LEN
    [^EIL]EL    > -EL,LEM
    [^EIL]EL    > -EL,LES
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIG
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGE
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGER
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGEN
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGEM
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGES
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIG
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGE
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGER
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGEN
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGEM
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGES
    [^HI]ERIG    > -ERIG,RIG
    [^HI]ERIG    > -ERIG,RIGE
    [^HI]ERIG    > -ERIG,RIGER
@@ -134,24 +134,24 @@ flag *C:
    [^U]ER    > EREN
    [^U]ER    > EREM
    [^U]ER    > ERES
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGER
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGERE
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGERER
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGEREN
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGEREM
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGERES
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGER
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGERE
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGERER
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGEREN
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGEREM
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGERES
    [^HI]ERIG    > -ERIG,RIGER
    [^HI]ERIG    > -ERIG,RIGERE
    [^HI]ERIG    > -ERIG,RIGERER
    [^HI]ERIG    > -ERIG,RIGEREN
    [^HI]ERIG    > -ERIG,RIGEREM
    [^HI]ERIG    > -ERIG,RIGERES
-   [KßSUXZ]    > EST
-   [KßSUXZ]    > ESTE
-   [KßSUXZ]    > ESTER
-   [KßSUXZ]    > ESTEN
-   [KßSUXZ]    > ESTEM
-   [KßSUXZ]    > ESTES
+   [KÃŸSUXZ]    > EST
+   [KÃŸSUXZ]    > ESTE
+   [KÃŸSUXZ]    > ESTER
+   [KÃŸSUXZ]    > ESTEN
+   [KÃŸSUXZ]    > ESTEM
+   [KÃŸSUXZ]    > ESTES
    SS    > EST
    SS    > ESTE
    SS    > ESTER
@@ -170,12 +170,12 @@ flag *C:
    [^E]T    > ESTEN
    [^E]T    > ESTEM
    [^E]T    > ESTES
-   [^KßSTXZ]    > ST
-   [^KßSTXZ]    > STE
-   [^KßSTXZ]    > STER
-   [^KßSTXZ]    > STEN
-   [^KßSTXZ]    > STEM
-   [^KßSTXZ]    > STES
+   [^KÃŸSTXZ]    > ST
+   [^KÃŸSTXZ]    > STE
+   [^KÃŸSTXZ]    > STER
+   [^KÃŸSTXZ]    > STEN
+   [^KÃŸSTXZ]    > STEM
+   [^KÃŸSTXZ]    > STES
    ND    > ST
    ND    > STE
    ND    > STER
@@ -188,12 +188,12 @@ flag *C:
    [^N]D    > ESTEN
    [^N]D    > ESTEM
    [^N]D    > ESTES
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGST
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGSTE
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGSTER
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGSTEN
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGSTEM
-   [^AEIOUHLRäüö]LIG    > -LIG,ELIGSTES
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGST
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGSTE
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGSTER
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGSTEN
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGSTEM
+   [^AEIOUHLRÃ¤Ã¼Ã¶]LIG    > -LIG,ELIGSTES
    [^HI]ERIG    > -ERIG,RIGST
    [^HI]ERIG    > -ERIG,RIGSTE
    [^HI]ERIG    > -ERIG,RIGSTER
@@ -220,62 +220,62 @@ flag F:
    [^I]N    > INNEN
    [^EN]    > IN
    [^EN]    > INNEN
-   ABE    > -ABE,äBIN  
-   ABE    > -ABE,äBINNEN  
-   ACHS    > -ACHS,äCHSIN  
-   ACHS    > -ACHS,äCHSINNEN  
-   ACHSE    > -ACHSE,äCHSIN  
-   ACHSE    > -ACHSE,äCHSINNEN  
-   AF    > -AF,äFIN  
-   AF    > -AF,äFINNEN  
-   AGER    > -AGER,äGERIN  
-   AGER    > -AGER,äGERINNEN  
-   ALE    > -ALE,äLIN  
-   ALE    > -ALE,äLINNEN  
-   ANKE    > -ANKE,äNKIN  
-   ANKE    > -ANKE,äNKINNEN  
-   APST    > -APST,äPSTIN  
-   APST    > -APST,äPSTINNEN  
-   ARR    > -ARR,äRRIN  
-   ARR    > -ARR,äRRINNEN  
-   ARZT    > -ARZT,äRZTIN  
-   ARZT    > -ARZT,äRZTINNEN  
-   ASE    > -ASE,äSIN  
-   ASE    > -ASE,äSINNEN  
-   AT    > -AT,äTIN
-   AT    > -AT,äTINNEN  
-   ATZE    > -ATZE,äTZIN
-   ATZE    > -ATZE,äTZINNEN  
-   AUER    > -AUER,äUERIN  
-   AUER    > -AUER,äUERINNEN  
+   ABE    > -ABE,Ã¤BIN  
+   ABE    > -ABE,Ã¤BINNEN  
+   ACHS    > -ACHS,Ã¤CHSIN  
+   ACHS    > -ACHS,Ã¤CHSINNEN  
+   ACHSE    > -ACHSE,Ã¤CHSIN  
+   ACHSE    > -ACHSE,Ã¤CHSINNEN  
+   AF    > -AF,Ã¤FIN  
+   AF    > -AF,Ã¤FINNEN  
+   AGER    > -AGER,Ã¤GERIN  
+   AGER    > -AGER,Ã¤GERINNEN  
+   ALE    > -ALE,Ã¤LIN  
+   ALE    > -ALE,Ã¤LINNEN  
+   ANKE    > -ANKE,Ã¤NKIN  
+   ANKE    > -ANKE,Ã¤NKINNEN  
+   APST    > -APST,Ã¤PSTIN  
+   APST    > -APST,Ã¤PSTINNEN  
+   ARR    > -ARR,Ã¤RRIN  
+   ARR    > -ARR,Ã¤RRINNEN  
+   ARZT    > -ARZT,Ã¤RZTIN  
+   ARZT    > -ARZT,Ã¤RZTINNEN  
+   ASE    > -ASE,Ã¤SIN  
+   ASE    > -ASE,Ã¤SINNEN  
+   AT    > -AT,Ã¤TIN
+   AT    > -AT,Ã¤TINNEN  
+   ATZE    > -ATZE,Ã¤TZIN
+   ATZE    > -ATZE,Ã¤TZINNEN  
+   AUER    > -AUER,Ã¤UERIN  
+   AUER    > -AUER,Ã¤UERINNEN  
    ERER    > ERIN  
    ERER    > ERINNEN  
    INZ    > ESSIN  
    INZ    > ESSINNEN  
-   MANN    > -MANN,MäNNIN  
-   MANN    > -MANN,MäNNINNEN  
-   SACHSE    > -SACHSE,SäCHSIN  
-   SACHSE    > -SACHSE,SäCHSINNEN  
-   OCH    > -OCH,öCHIN  
-   OCH    > -OCH,öCHINNEN  
-   ORCH    > -ORCH,öRCHIN  
-   ORCH    > -ORCH,öRCHINNEN  
-   OLF    > -OLF,öLFIN  
-   OLF    > -OLF,öLFINNEN  
-   OF    > -OF,öFIN  
-   OF    > -OF,öFINNEN  
-   OSE    > -OSE,öSIN  
-   OSE    > -OSE,öSINNEN  
-   OTT    > -OTT,öTTIN  
-   OTT    > -OTT,öTTINNEN  
-   UCHS    > -UCHS,üCHSIN  
-   UCHS    > -UCHS,üCHSINNEN  
-   UDE    > -UDE,üDIN  
-   UDE    > -UDE,üDINNEN 
-   UND    > -UND,üNDIN  
-   UND    > -UND,üNDINNEN  
-   WALT    > -WALT,WäLTIN  
-   WALT    > -WALT,WäLTINNEN  
+   MANN    > -MANN,MÃ¤NNIN  
+   MANN    > -MANN,MÃ¤NNINNEN  
+   SACHSE    > -SACHSE,SÃ¤CHSIN  
+   SACHSE    > -SACHSE,SÃ¤CHSINNEN  
+   OCH    > -OCH,Ã¶CHIN  
+   OCH    > -OCH,Ã¶CHINNEN  
+   ORCH    > -ORCH,Ã¶RCHIN  
+   ORCH    > -ORCH,Ã¶RCHINNEN  
+   OLF    > -OLF,Ã¶LFIN  
+   OLF    > -OLF,Ã¶LFINNEN  
+   OF    > -OF,Ã¶FIN  
+   OF    > -OF,Ã¶FINNEN  
+   OSE    > -OSE,Ã¶SIN  
+   OSE    > -OSE,Ã¶SINNEN  
+   OTT    > -OTT,Ã¶TTIN  
+   OTT    > -OTT,Ã¶TTINNEN  
+   UCHS    > -UCHS,Ã¼CHSIN  
+   UCHS    > -UCHS,Ã¼CHSINNEN  
+   UDE    > -UDE,Ã¼DIN  
+   UDE    > -UDE,Ã¼DINNEN 
+   UND    > -UND,Ã¼NDIN  
+   UND    > -UND,Ã¼NDINNEN  
+   WALT    > -WALT,WÃ¤LTIN  
+   WALT    > -WALT,WÃ¤LTINNEN  
 
 flag H:
    .    > HEIT
@@ -294,14 +294,14 @@ flag *I:
    [^E]IEN    > -N,T
    CHNEN    > -N,T
    [^C]H[MN]EN    > -EN,T
-   [^AäEHILMNOöUüR][MN]EN    > -N,T
-   [AäEILMNOöUüR][MN]EN    > -EN,T
+   [^AÃ¤EHILMNOÃ¶UÃ¼R][MN]EN    > -N,T
+   [AÃ¤EILMNOÃ¶UÃ¼R][MN]EN    > -EN,T
    UN    > -N,E
    UN    > -N,T
 
 flag *J:
-   [BGKPßSZ]ELN    > -N,UNG
-   [BGKPßSZ]ELN    > -N,UNGEN
+   [BGKPÃŸSZ]ELN    > -N,UNG
+   [BGKPÃŸSZ]ELN    > -N,UNGEN
    ELN    > -ELN,LUNG
    ERN    > -N,UNG
    EN    > -EN,UNG
@@ -336,12 +336,12 @@ flag M:
    [^S][^S]    > CHENS
    [^E]    > CHEN
    [^E]    > CHENS
-   ASS    > -ASS,äSSCHEN
-   ASS    > -ASS,äSSCHENS
-   OSS    > -OSS,öSSCHEN
-   OSS    > -OSS,öSSCHENS
-   USS    > -USS,üSSCHEN
-   USS    > -USS,üSSCHENS
+   ASS    > -ASS,Ã¤SSCHEN
+   ASS    > -ASS,Ã¤SSCHENS
+   OSS    > -OSS,Ã¶SSCHEN
+   OSS    > -OSS,Ã¶SSCHENS
+   USS    > -USS,Ã¼SSCHEN
+   USS    > -USS,Ã¼SSCHENS
    E    > -E,CHEN
    E    > -E,CHENS
 
@@ -354,22 +354,22 @@ flag *O:
    [^DMNTW]EN    > -EN,TES
    CHNEN    > -N,TES
    [^C]H[MN]EN    > -EN,TES
-   [^AäEHILMNOöUüR][MN]EN    > -N,TES
-   [AäEILMNOöUüR][MN]EN    > -EN,TES
+   [^AÃ¤EHILMNOÃ¶UÃ¼R][MN]EN    > -N,TES
+   [AÃ¤EILMNOÃ¶UÃ¼R][MN]EN    > -EN,TES
    E[LR]N    > -N,TER
    [DTW]EN    > -N,TER
    [^DMNTW]EN    > -EN,TER
    CHNEN    > -N,TER
    [^C]H[MN]EN    > -EN,TER
-   [^AäEHILMNOöUüR][MN]EN    > -N,TER
-   [AäEILMNOöUüR][MN]EN    > -EN,TER
+   [^AÃ¤EHILMNOÃ¶UÃ¼R][MN]EN    > -N,TER
+   [AÃ¤EILMNOÃ¶UÃ¼R][MN]EN    > -EN,TER
    E[LR]N    > -N,TEM
    [DTW]EN    > -N,TEM
    [^DMNTW]EN    > -EN,TEM
    CHNEN    > -N,TEM
    [^C]H[MN]EN    > -EN,TEM
-   [^AäEHILMNOöUüR][MN]EN    > -N,TEM
-   [AäEILMNOöUüR][MN]EN    > -EN,TEM
+   [^AÃ¤EHILMNOÃ¶UÃ¼R][MN]EN    > -N,TEM
+   [AÃ¤EILMNOÃ¶UÃ¼R][MN]EN    > -EN,TEM
 
 flag *P:
    .    > EN
@@ -386,8 +386,8 @@ flag *R:
    E    > RN
 
 flag *S:
-   [^Sß]    > S
-   ß    > ES
+   [^SÃŸ]    > S
+   ÃŸ    > ES
    SS    > ES
    [^S]S    > -S,SES
 
@@ -412,21 +412,21 @@ flag *X:
    [^DITMNW]EN    > -EN,T
    CHNEN    > -N,T
    [^C]H[MN]EN    > -EN,T
-   [^AäEHILMNOöUüR][MN]EN    > -N,T
-   [AäEILMNOöUüR][MN]EN    > -EN,T
+   [^AÃ¤EHILMNOÃ¶UÃ¼R][MN]EN    > -N,T
+   [AÃ¤EILMNOÃ¶UÃ¼R][MN]EN    > -EN,T
    UN    > -N,T
    TST    > -ST,
    E[LR]N    > -N,ST
    [DTW]EN    > -N,ST
-   [^DIMNßSTWZX]EN    > -EN,ST
+   [^DIMNÃŸSTWZX]EN    > -EN,ST
    EIEN    > -EN,ST
    [^E]IEN    > -N,ST
    CHNEN    > -N,ST
    [^C]H[MN]EN    > -EN,ST
-   [^AäEHILMNOöUüR][MN]EN    > -N,ST
-   [AäEILMNOöUüR][MN]EN    > -EN,ST
+   [^AÃ¤EHILMNOÃ¶UÃ¼R][MN]EN    > -N,ST
+   [AÃ¤EILMNOÃ¶UÃ¼R][MN]EN    > -EN,ST
    UN    > -N,ST
-   [ßSXZ]EN    > -N,ST
+   [ÃŸSXZ]EN    > -N,ST
    SSEN    > -N,ST
    SCHEN    > -N,ST
    [^SZ]T    > -T,ST
@@ -440,8 +440,8 @@ flag *Y:
    [^E]IEN    > -N,TE
    CHNEN    > -N,TE
    [^C]H[MN]EN    > -EN,TE
-   [^AäEHILMNOöUüR][MN]EN    > -N,TE
-   [AäEILMNOöUüR][MN]EN    > -EN,TE
+   [^AÃ¤EHILMNOÃ¶UÃ¼R][MN]EN    > -N,TE
+   [AÃ¤EILMNOÃ¶UÃ¼R][MN]EN    > -EN,TE
    E[LR]N    > -N,TEST
    [DTW]EN    > -N,TEST
    [^DIMNTW]EN    > -EN,TEST
@@ -449,8 +449,8 @@ flag *Y:
    [^E]IEN    > -N,TEST
    CHNEN    > -N,TEST
    [^C]H[MN]EN    > -EN,TEST
-   [^AäEHILMNOöUüR][MN]EN    > -N,TEST
-   [AäEILMNOöUüR][MN]EN    > -EN,TEST
+   [^AÃ¤EHILMNOÃ¶UÃ¼R][MN]EN    > -N,TEST
+   [AÃ¤EILMNOÃ¶UÃ¼R][MN]EN    > -EN,TEST
    E[LR]N    > -N,TET
    [DTW]EN    > -N,TET
    [^DIMNTW]EN    > -EN,TET
@@ -458,8 +458,8 @@ flag *Y:
    [^E]IEN    > -N,TET
    CHNEN    > -N,TET
    [^C]H[MN]EN    > -EN,TET
-   [^AäEHILMNOöUüR][MN]EN    > -N,TET
-   [AäEILMNOöUüR][MN]EN    > -EN,TET
+   [^AÃ¤EHILMNOÃ¶UÃ¼R][MN]EN    > -N,TET
+   [AÃ¤EILMNOÃ¶UÃ¼R][MN]EN    > -EN,TET
    E[LR]N    > -N,TEN
    [DTW]EN    > -N,TEN
    [^DIMNTW]EN    > -EN,TEN
@@ -467,17 +467,17 @@ flag *Y:
    [^E]IEN    > -N,TEN
    CHNEN    > -N,TEN
    [^C]H[MN]EN    > -EN,TEN
-   [^AäEHILMNOöUüR][MN]EN    > -N,TEN
-   [AäEILMNOöUüR][MN]EN    > -EN,TEN
+   [^AÃ¤EHILMNOÃ¶UÃ¼R][MN]EN    > -N,TEN
+   [AÃ¤EILMNOÃ¶UÃ¼R][MN]EN    > -EN,TEN
 
 flag *Z:
-   [^HßSZ]    > ST
+   [^HÃŸSZ]    > ST
    [^C]H    > ST
    [^S]CH    > ST
    [DFKSTZ]    > EST
    CH    > EST
-   [AU]ß    > EST
-   IEß    > EST
+   [AU]ÃŸ    > EST
+   IEÃŸ    > EST
    [IO]SS    > EST
    [^DT]    > T
    [DTGB]    > ET
@@ -492,204 +492,204 @@ flag *f:
    PHIE    > -PHIE,FIEN
 
 flag *m:
-   ACH    > -ACH,äCHER
-   ACH    > -ACH,äCHERE
-   ACH    > -ACH,äCHEREN
-   ACH    > -ACH,äCHEREM
-   ACH    > -ACH,äCHERER
-   ACH    > -ACH,äCHERES
-   ACH    > -ACH,äCHSTE
-   ACH    > -ACH,äCHSTEN
-   ACH    > -ACH,äCHSTEM
-   ACH    > -ACH,äCHSTEN
-   ACH    > -ACH,äCHSTES
-   AH    > -AH,äHER
-   AH    > -AH,äHERE
-   AH    > -AH,äHEREN
-   AH    > -AH,äHEREM
-   AH    > -AH,äHERER
-   AH    > -AH,äHERES
-   AH    > -AH,äHSTE
-   AH    > -AH,äHSTEN
-   AH    > -AH,äHSTEM
-   AH    > -AH,äHSTEN
-   AH    > -AH,äHSTES
-   ALT    > -ALT,äLTER
-   ALT    > -ALT,äLTERE
-   ALT    > -ALT,äLTEREN
-   ALT    > -ALT,äLTEREM
-   ALT    > -ALT,äLTERER
-   ALT    > -ALT,äLTERES
-   ALT    > -ALT,äLTESTE
-   ALT    > -ALT,äLTESTEN
-   ALT    > -ALT,äLTESTEM
-   ALT    > -ALT,äLTESTEN
-   ALT    > -ALT,äLTESTES
-   ARG    > -ARG,äRGER
-   ARG    > -ARG,äRGERE
-   ARG    > -ARG,äRGEREN
-   ARG    > -ARG,äRGEREM
-   ARG    > -ARG,äRGERER
-   ARG    > -ARG,äRGERES
-   ARG    > -ARG,äRGESTE
-   ARG    > -ARG,äRGESTEN
-   ARG    > -ARG,äRGESTEM
-   ARG    > -ARG,äRGESTEN
-   ARG    > -ARG,äRGESTES
-   ASS    > -ASS,äSSER
-   ASS    > -ASS,äSSERE
-   ASS    > -ASS,äSSEREN
-   ASS    > -ASS,äSSEREM
-   ASS    > -ASS,äSSERER
-   ASS    > -ASS,äSSERES
-   ASS    > -ASS,äSSESTE
-   ASS    > -ASS,äSSESTEN
-   ASS    > -ASS,äSSESTEM
-   ASS    > -ASS,äSSESTEN
-   ASS    > -ASS,äSSESTES
-   Aß    > -Aß,äSSER
-   Aß    > -Aß,äSSERE
-   Aß    > -Aß,äSSEREN
-   Aß    > -Aß,äSSEREM
-   Aß    > -Aß,äSSERER
-   Aß    > -Aß,äSSERES
-   Aß    > -Aß,äSSESTE
-   Aß    > -Aß,äSSESTEN
-   Aß    > -Aß,äSSESTEM
-   Aß    > -Aß,äSSESTEN
-   Aß    > -Aß,äSSESTES
-   ANG    > -ANG,äNGER
-   ANG    > -ANG,äNGERE
-   ANG    > -ANG,äNGEREN
-   ANG    > -ANG,äNGEREM
-   ANG    > -ANG,äNGERER
-   ANG    > -ANG,äNGERES
-   ANG    > -ANG,äNGSTE
-   ANG    > -ANG,äNGSTEN
-   ANG    > -ANG,äNGSTEM
-   ANG    > -ANG,äNGSTEN
-   ANG    > -ANG,äNGSTES
-   ANK    > -ANK,äNKER
-   ANK    > -ANK,äNKERE
-   ANK    > -ANK,äNKEREN
-   ANK    > -ANK,äNKEREM
-   ANK    > -ANK,äNKERER
-   ANK    > -ANK,äNKERES
-   ANK    > -ANK,äNKSTE
-   ANK    > -ANK,äNKSTEN
-   ANK    > -ANK,äNKSTEM
-   ANK    > -ANK,äNKSTEN
-   ANK    > -ANK,äNKSTES
-   ARK    > -ARK,äRKER
-   ARK    > -ARK,äRKERE
-   ARK    > -ARK,äRKEREN
-   ARK    > -ARK,äRKEREM
-   ARK    > -ARK,äRKERER
-   ARK    > -ARK,äRKERES
-   ARK    > -ARK,äRKSTE
-   ARK    > -ARK,äRKSTEN
-   ARK    > -ARK,äRKSTEM
-   ARK    > -ARK,äRKSTEN
-   ARK    > -ARK,äRKSTES
-   ARM    > -ARM,äRMER
-   ARM    > -ARM,äRMERE
-   ARM    > -ARM,äRMEREN
-   ARM    > -ARM,äRMEREM
-   ARM    > -ARM,äRMERER
-   ARM    > -ARM,äRMERES
-   ARM    > -ARM,äRMSTE
-   ARM    > -ARM,äRMSTEN
-   ARM    > -ARM,äRMSTEM
-   ARM    > -ARM,äRMSTEN
-   ARM    > -ARM,äRMSTES
-   ART    > -ART,äRTER
-   ART    > -ART,äRTERE
-   ART    > -ART,äRTEREN
-   ART    > -ART,äRTEREM
-   ART    > -ART,äRTERER
-   ART    > -ART,äRTERES
-   ART    > -ART,äRTESTE
-   ART    > -ART,äRTESTEN
-   ART    > -ART,äRTESTEM
-   ART    > -ART,äRTESTEN
-   ART    > -ART,äRTESTES
-   Oß    > -Oß,öSSER
-   Oß    > -Oß,öSSERE
-   Oß    > -Oß,öSSEREN
-   Oß    > -Oß,öSSEREM
-   Oß    > -Oß,öSSERER
-   Oß    > -Oß,öSSERES
-   Oß    > -Oß,öSSTE
-   Oß    > -Oß,öSSTEN
-   Oß    > -Oß,öSSTEM
-   Oß    > -Oß,öSSTEN
-   Oß    > -Oß,öSSTES
-   Oß    > -Oß,ößER
-   Oß    > -Oß,ößERE
-   Oß    > -Oß,ößEREN
-   Oß    > -Oß,ößEREM
-   Oß    > -Oß,ößERER
-   Oß    > -Oß,ößERES
-   Oß    > -Oß,ößTE
-   Oß    > -Oß,ößTEN
-   Oß    > -Oß,ößTEM
-   Oß    > -Oß,ößTEN
-   Oß    > -Oß,ößTES
-   OCH    > -OCH,öHER
-   OCH    > -OCH,öHERE
-   OCH    > -OCH,öHEREN
-   OCH    > -OCH,öHEREM
-   OCH    > -OCH,öHERER
-   OCH    > -OCH,öHERES
-   OCH    > -OCH,öHSTE
-   OCH    > -OCH,öHSTEN
-   OCH    > -OCH,öHSTEM
-   OCH    > -OCH,öHSTEN
-   OCH    > -OCH,öHSTES
-   UG    > -UG,üGER
-   UG    > -UG,üGERE
-   UG    > -UG,üGEREN
-   UG    > -UG,üGEREM
-   UG    > -UG,üGERER
-   UG    > -UG,üGERES
-   UG    > -UG,üGSTE
-   UG    > -UG,üGSTEN
-   UG    > -UG,üGSTEM
-   UG    > -UG,üGSTEN
-   UG    > -UG,üGSTES
-   UMM    > -UMM,üMMER
-   UMM    > -UMM,üMMERE
-   UMM    > -UMM,üMMEREN
-   UMM    > -UMM,üMMEREM
-   UMM    > -UMM,üMMERER
-   UMM    > -UMM,üMMERES
-   UMM    > -UMM,üMMSTE
-   UMM    > -UMM,üMMSTEN
-   UMM    > -UMM,üMMSTEM
-   UMM    > -UMM,üMMSTEN
-   UMM    > -UMM,üMMSTES
-   UNG    > -UNG,üNGER
-   UNG    > -UNG,üNGERE
-   UNG    > -UNG,üNGEREN
-   UNG    > -UNG,üNGEREM
-   UNG    > -UNG,üNGERER
-   UNG    > -UNG,üNGERES
-   UNG    > -UNG,üNGSTE
-   UNG    > -UNG,üNGSTEN
-   UNG    > -UNG,üNGSTEM
-   UNG    > -UNG,üNGSTEN
-   UNG    > -UNG,üNGSTES
-   URZ    > -URZ,üRZER
-   URZ    > -URZ,üRZERE
-   URZ    > -URZ,üRZEREN
-   URZ    > -URZ,üRZEREM
-   URZ    > -URZ,üRZERER
-   URZ    > -URZ,üRZERES
-   URZ    > -URZ,üRZESTE
-   URZ    > -URZ,üRZESTEN
-   URZ    > -URZ,üRZESTEM
-   URZ    > -URZ,üRZESTEN
-   URZ    > -URZ,üRZESTES
+   ACH    > -ACH,Ã¤CHER
+   ACH    > -ACH,Ã¤CHERE
+   ACH    > -ACH,Ã¤CHEREN
+   ACH    > -ACH,Ã¤CHEREM
+   ACH    > -ACH,Ã¤CHERER
+   ACH    > -ACH,Ã¤CHERES
+   ACH    > -ACH,Ã¤CHSTE
+   ACH    > -ACH,Ã¤CHSTEN
+   ACH    > -ACH,Ã¤CHSTEM
+   ACH    > -ACH,Ã¤CHSTEN
+   ACH    > -ACH,Ã¤CHSTES
+   AH    > -AH,Ã¤HER
+   AH    > -AH,Ã¤HERE
+   AH    > -AH,Ã¤HEREN
+   AH    > -AH,Ã¤HEREM
+   AH    > -AH,Ã¤HERER
+   AH    > -AH,Ã¤HERES
+   AH    > -AH,Ã¤HSTE
+   AH    > -AH,Ã¤HSTEN
+   AH    > -AH,Ã¤HSTEM
+   AH    > -AH,Ã¤HSTEN
+   AH    > -AH,Ã¤HSTES
+   ALT    > -ALT,Ã¤LTER
+   ALT    > -ALT,Ã¤LTERE
+   ALT    > -ALT,Ã¤LTEREN
+   ALT    > -ALT,Ã¤LTEREM
+   ALT    > -ALT,Ã¤LTERER
+   ALT    > -ALT,Ã¤LTERES
+   ALT    > -ALT,Ã¤LTESTE
+   ALT    > -ALT,Ã¤LTESTEN
+   ALT    > -ALT,Ã¤LTESTEM
+   ALT    > -ALT,Ã¤LTESTEN
+   ALT    > -ALT,Ã¤LTESTES
+   ARG    > -ARG,Ã¤RGER
+   ARG    > -ARG,Ã¤RGERE
+   ARG    > -ARG,Ã¤RGEREN
+   ARG    > -ARG,Ã¤RGEREM
+   ARG    > -ARG,Ã¤RGERER
+   ARG    > -ARG,Ã¤RGERES
+   ARG    > -ARG,Ã¤RGESTE
+   ARG    > -ARG,Ã¤RGESTEN
+   ARG    > -ARG,Ã¤RGESTEM
+   ARG    > -ARG,Ã¤RGESTEN
+   ARG    > -ARG,Ã¤RGESTES
+   ASS    > -ASS,Ã¤SSER
+   ASS    > -ASS,Ã¤SSERE
+   ASS    > -ASS,Ã¤SSEREN
+   ASS    > -ASS,Ã¤SSEREM
+   ASS    > -ASS,Ã¤SSERER
+   ASS    > -ASS,Ã¤SSERES
+   ASS    > -ASS,Ã¤SSESTE
+   ASS    > -ASS,Ã¤SSESTEN
+   ASS    > -ASS,Ã¤SSESTEM
+   ASS    > -ASS,Ã¤SSESTEN
+   ASS    > -ASS,Ã¤SSESTES
+   AÃŸ    > -AÃŸ,Ã¤SSER
+   AÃŸ    > -AÃŸ,Ã¤SSERE
+   AÃŸ    > -AÃŸ,Ã¤SSEREN
+   AÃŸ    > -AÃŸ,Ã¤SSEREM
+   AÃŸ    > -AÃŸ,Ã¤SSERER
+   AÃŸ    > -AÃŸ,Ã¤SSERES
+   AÃŸ    > -AÃŸ,Ã¤SSESTE
+   AÃŸ    > -AÃŸ,Ã¤SSESTEN
+   AÃŸ    > -AÃŸ,Ã¤SSESTEM
+   AÃŸ    > -AÃŸ,Ã¤SSESTEN
+   AÃŸ    > -AÃŸ,Ã¤SSESTES
+   ANG    > -ANG,Ã¤NGER
+   ANG    > -ANG,Ã¤NGERE
+   ANG    > -ANG,Ã¤NGEREN
+   ANG    > -ANG,Ã¤NGEREM
+   ANG    > -ANG,Ã¤NGERER
+   ANG    > -ANG,Ã¤NGERES
+   ANG    > -ANG,Ã¤NGSTE
+   ANG    > -ANG,Ã¤NGSTEN
+   ANG    > -ANG,Ã¤NGSTEM
+   ANG    > -ANG,Ã¤NGSTEN
+   ANG    > -ANG,Ã¤NGSTES
+   ANK    > -ANK,Ã¤NKER
+   ANK    > -ANK,Ã¤NKERE
+   ANK    > -ANK,Ã¤NKEREN
+   ANK    > -ANK,Ã¤NKEREM
+   ANK    > -ANK,Ã¤NKERER
+   ANK    > -ANK,Ã¤NKERES
+   ANK    > -ANK,Ã¤NKSTE
+   ANK    > -ANK,Ã¤NKSTEN
+   ANK    > -ANK,Ã¤NKSTEM
+   ANK    > -ANK,Ã¤NKSTEN
+   ANK    > -ANK,Ã¤NKSTES
+   ARK    > -ARK,Ã¤RKER
+   ARK    > -ARK,Ã¤RKERE
+   ARK    > -ARK,Ã¤RKEREN
+   ARK    > -ARK,Ã¤RKEREM
+   ARK    > -ARK,Ã¤RKERER
+   ARK    > -ARK,Ã¤RKERES
+   ARK    > -ARK,Ã¤RKSTE
+   ARK    > -ARK,Ã¤RKSTEN
+   ARK    > -ARK,Ã¤RKSTEM
+   ARK    > -ARK,Ã¤RKSTEN
+   ARK    > -ARK,Ã¤RKSTES
+   ARM    > -ARM,Ã¤RMER
+   ARM    > -ARM,Ã¤RMERE
+   ARM    > -ARM,Ã¤RMEREN
+   ARM    > -ARM,Ã¤RMEREM
+   ARM    > -ARM,Ã¤RMERER
+   ARM    > -ARM,Ã¤RMERES
+   ARM    > -ARM,Ã¤RMSTE
+   ARM    > -ARM,Ã¤RMSTEN
+   ARM    > -ARM,Ã¤RMSTEM
+   ARM    > -ARM,Ã¤RMSTEN
+   ARM    > -ARM,Ã¤RMSTES
+   ART    > -ART,Ã¤RTER
+   ART    > -ART,Ã¤RTERE
+   ART    > -ART,Ã¤RTEREN
+   ART    > -ART,Ã¤RTEREM
+   ART    > -ART,Ã¤RTERER
+   ART    > -ART,Ã¤RTERES
+   ART    > -ART,Ã¤RTESTE
+   ART    > -ART,Ã¤RTESTEN
+   ART    > -ART,Ã¤RTESTEM
+   ART    > -ART,Ã¤RTESTEN
+   ART    > -ART,Ã¤RTESTES
+   OÃŸ    > -OÃŸ,Ã¶SSER
+   OÃŸ    > -OÃŸ,Ã¶SSERE
+   OÃŸ    > -OÃŸ,Ã¶SSEREN
+   OÃŸ    > -OÃŸ,Ã¶SSEREM
+   OÃŸ    > -OÃŸ,Ã¶SSERER
+   OÃŸ    > -OÃŸ,Ã¶SSERES
+   OÃŸ    > -OÃŸ,Ã¶SSTE
+   OÃŸ    > -OÃŸ,Ã¶SSTEN
+   OÃŸ    > -OÃŸ,Ã¶SSTEM
+   OÃŸ    > -OÃŸ,Ã¶SSTEN
+   OÃŸ    > -OÃŸ,Ã¶SSTES
+   OÃŸ    > -OÃŸ,Ã¶ÃŸER
+   OÃŸ    > -OÃŸ,Ã¶ÃŸERE
+   OÃŸ    > -OÃŸ,Ã¶ÃŸEREN
+   OÃŸ    > -OÃŸ,Ã¶ÃŸEREM
+   OÃŸ    > -OÃŸ,Ã¶ÃŸERER
+   OÃŸ    > -OÃŸ,Ã¶ÃŸERES
+   OÃŸ    > -OÃŸ,Ã¶ÃŸTE
+   OÃŸ    > -OÃŸ,Ã¶ÃŸTEN
+   OÃŸ    > -OÃŸ,Ã¶ÃŸTEM
+   OÃŸ    > -OÃŸ,Ã¶ÃŸTEN
+   OÃŸ    > -OÃŸ,Ã¶ÃŸTES
+   OCH    > -OCH,Ã¶HER
+   OCH    > -OCH,Ã¶HERE
+   OCH    > -OCH,Ã¶HEREN
+   OCH    > -OCH,Ã¶HEREM
+   OCH    > -OCH,Ã¶HERER
+   OCH    > -OCH,Ã¶HERES
+   OCH    > -OCH,Ã¶HSTE
+   OCH    > -OCH,Ã¶HSTEN
+   OCH    > -OCH,Ã¶HSTEM
+   OCH    > -OCH,Ã¶HSTEN
+   OCH    > -OCH,Ã¶HSTES
+   UG    > -UG,Ã¼GER
+   UG    > -UG,Ã¼GERE
+   UG    > -UG,Ã¼GEREN
+   UG    > -UG,Ã¼GEREM
+   UG    > -UG,Ã¼GERER
+   UG    > -UG,Ã¼GERES
+   UG    > -UG,Ã¼GSTE
+   UG    > -UG,Ã¼GSTEN
+   UG    > -UG,Ã¼GSTEM
+   UG    > -UG,Ã¼GSTEN
+   UG    > -UG,Ã¼GSTES
+   UMM    > -UMM,Ã¼MMER
+   UMM    > -UMM,Ã¼MMERE
+   UMM    > -UMM,Ã¼MMEREN
+   UMM    > -UMM,Ã¼MMEREM
+   UMM    > -UMM,Ã¼MMERER
+   UMM    > -UMM,Ã¼MMERES
+   UMM    > -UMM,Ã¼MMSTE
+   UMM    > -UMM,Ã¼MMSTEN
+   UMM    > -UMM,Ã¼MMSTEM
+   UMM    > -UMM,Ã¼MMSTEN
+   UMM    > -UMM,Ã¼MMSTES
+   UNG    > -UNG,Ã¼NGER
+   UNG    > -UNG,Ã¼NGERE
+   UNG    > -UNG,Ã¼NGEREN
+   UNG    > -UNG,Ã¼NGEREM
+   UNG    > -UNG,Ã¼NGERER
+   UNG    > -UNG,Ã¼NGERES
+   UNG    > -UNG,Ã¼NGSTE
+   UNG    > -UNG,Ã¼NGSTEN
+   UNG    > -UNG,Ã¼NGSTEM
+   UNG    > -UNG,Ã¼NGSTEN
+   UNG    > -UNG,Ã¼NGSTES
+   URZ    > -URZ,Ã¼RZER
+   URZ    > -URZ,Ã¼RZERE
+   URZ    > -URZ,Ã¼RZEREN
+   URZ    > -URZ,Ã¼RZEREM
+   URZ    > -URZ,Ã¼RZERER
+   URZ    > -URZ,Ã¼RZERES
+   URZ    > -URZ,Ã¼RZESTE
+   URZ    > -URZ,Ã¼RZESTEN
+   URZ    > -URZ,Ã¼RZESTEM
+   URZ    > -URZ,Ã¼RZESTEN
+   URZ    > -URZ,Ã¼RZESTES
 
 
 flag *n:
@@ -722,333 +722,333 @@ flag *o:
 
 flag *p:
    A    > -A,EN
-   AAL    > -AAL,ÄLE
-   AAL    > -AAL,ÄLEN
-   AAL    > -AAL,äLE
-   AAL    > -AAL,äLEN
-   AB    > -AB,äBE
-   AB    > -AB,äBEN
-   ABEN    > -ABEN,äBEN
-   ABEL    > -ABEL,äBEL
-   ABEL    > -ABEL,äBELN
-   ACH    > -ACH,äCHE
-   ACH    > -ACH,äCHEN
-   ACHT    > -ACHT,äCHTE
-   ACHT    > -ACHT,äCHTEN
-   ACHS    > -ACHS,äCHSE
-   ACHS    > -ACHS,äCHSEN
-   ACK    > -ACK,äCKE
-   ACK    > -ACK,äCKEN
-   ADT    > -ADT,äDTE
-   ADT    > -ADT,äDTEN
-   ADE    > -ADE,äDE
-   ADE    > -ADE,äDEN
-   ADEN    > -ADEN,äDEN
-   AFEL    > -AFEL,äFEL
-   AFEL    > -AFEL,äFELN
-   AGEL    > -AGEL,äGEL
-   AGEL    > -AGEL,äGELN
-   AGEN    > -AGEN,äGEN
-   AFEN    > -AFEN,äFEN
-   AFT    > -AFT,äFTE
-   AFT    > -AFT,äFTEN
-   AG    > -AG,äGE
-   AG    > -AG,äGEN
-   AGEN    > -AGEN,äGEN
-   AHL    > -AHL,äHLE
-   AHL    > -AHL,äHLEN
-   AHN    > -AHN,äHNE
-   AHN    > -AHN,äHNEN
-   AHT    > -AHT,äHTE
-   AHT    > -AHT,äHTEN
-   AL    > -AL,äLE
-   AL    > -AL,äLEN
-   ALER    > -ALER,äLER
-   ALER    > -ALER,äLERN
-   ALG    > -ALG,äLGE
-   ALG    > -ALG,äLGEN
-   ALL    > -ALL,äLLE
-   ALL    > -ALL,äLLEN
-   ALS    > -ALS,äLSE
-   ALS    > -ALS,äLSEN
-   ALT    > -ALT,äLTE
-   ALT    > -ALT,äLTEN
-   AMM    > -AMM,äMME
-   AMM    > -AMM,äMMEN
-   AMMER    > -AMMER,äMMER
-   AMMER    > -AMMER,äMMERN
-   AMS    > -AMS,äMSE
-   AMS    > -AMS,äMSEN
-   AMPF    > -AMPF,äMPFE
-   AMPF    > -AMPF,äMPFEN
-   AN    > -AN,äNE
-   AN    > -AN,äNEN
-   ANAL    > -ANAL,ANäLE
-   ANAL    > -ANAL,ANäLEN
-   AND    > -AND,äNDE
-   AND    > -AND,äNDEN
-   ANDEL    > -ANDEL,äNDEL
-   ANDEL    > -ANDEL,äNDELN
-   ANG    > -ANG,äNGE
-   ANG    > -ANG,äNGEN
-   ANGEL    > -ANGEL,äNGEL
-   ANGEL    > -ANGEL,äNGELN
-   ANGEL    > -ANGEL,ÄNGEL
-   ANGEL    > -ANGEL,ÄNGELN
-   ANGST    > -ANGST,ÄNGSTE
-   ANGST    > -ANGST,ÄNGSTEN
-   ANGST    > -ANGST,äNGSTE
-   ANGST    > -ANGST,äNGSTEN
-   ANFT    > -ANFT,äNFTE
-   ANFT    > -ANFT,äNFTEN
-   ANK    > -ANK,äNKE
-   ANK    > -ANK,äNKEN
-   ANKER    > -ANKER,äNKER
-   ANKER    > -ANKER,äNKERN
-   ANS    > -ANS,äNSE
-   ANS    > -ANS,äNSEN
-   ANST    > -ANST,äNSTE
-   ANST    > -ANST,äNSTEN
-   ANTEL    > -ANTEL,äNTEL
-   ANTEL    > -ANTEL,äNTELN
-   ANZ    > -ANZ,äNZE
-   ANZ    > -ANZ,äNZEN
-   APF    > -APF,äPFE
-   APF    > -APF,äPFEN
-   APFEN    > -APFEN,äPFEN
-   APS    > -APS,äPSE
-   APS    > -APS,äPSEN
-   APST    > -APST,äPSTE
-   APST    > -APST,äPSTEN
-   APFE    > -APFE,äPFE
-   APFE    > -APFE,äPFEN
-   APFEL    > -APFEL,äPFEL
-   APFEL    > -APFEL,äPFELN
-   APFEL    > -APFEL,ÄPFEL
-   APFEL    > -APFEL,ÄPFELN
-   AR    > -AR,äRE
-   AR    > -AR,äREN
-   ARG    > -ARG,äRGE
-   ARG    > -ARG,äRGEN
-   ARG    > -ARG,ÄRGE
-   ARG    > -ARG,ÄRGEN
-   ARK    > -ARK,äRKE
-   ARK    > -ARK,äRKEN
-   ARKT    > -ARKT,äRKTE
-   ARKT    > -ARKT,äRKTEN
-   ARM    > -ARM,äRME
-   ARM    > -ARM,äRMEN
-   ARM    > -ARM,ÄRME
-   ARM    > -ARM,ÄRMEN
-   ART    > -ART,äRTE
-   ART    > -ART,äRTEN
-   ARTEN    > -ARTEN,äRTEN
-   ASSER    > -ASSER,äSSER
-   ASSER    > -ASSER,äSSERN
-   AST    > -AST,äSTE
-   AST    > -AST,äSTEN
-   AST    > -AST,ÄSTE
-   AST    > -AST,ÄSTEN
-   ASTEN    > -ASTEN,äSTEN
-   ARSCH    > -ARSCH,äRSCHE
-   ARSCH    > -ARSCH,äRSCHEN
-   ARSCH    > -ARSCH,ÄRSCHE
-   ARSCH    > -ARSCH,ÄRSCHEN
-   ARZT    > -ARZT,äRZTE
-   ARZT    > -ARZT,äRZTEN
-   ARZT    > -ARZT,ÄRZTE
-   ARZT    > -ARZT,ÄRZTEN
-   AS    > -AS,äSE
-   AS    > -AS,äSEN
-   ASS    > -ASS,äSSE
-   ASS    > -ASS,äSSEN
-   Aß    > -Aß,ASSES
-   Aß    > -Aß,äßE
-   Aß    > -Aß,äßEN
-   ASTEN    > -ASTEN,äSTEN
-   AT    > -AT,äTE
-   AT    > -AT,äTEN
-   ATER    > -ATER,äTER
-   ATER    > -ATER,äTERN
-   ATT    > -ATT,äTTE
-   ATT    > -ATT,äTTEN
-   ATTEL    > -ATTEL,äTTEL
-   ATTEL    > -ATTEL,äTTELN
-   ATZ    > -ATZ,äTZE
-   ATZ    > -ATZ,äTZEN
-   AU    > -AU,äUE
-   AU    > -AU,äUEN
-   AUCH    > -AUCH,äUCHE
-   AUCH    > -AUCH,äUCHEN
-   AUF    > -AUF,äUFE
-   AUF    > -AUF,äUFEN
-   AUFE    > -AUFE,äUFE
-   AUFE    > -AUFE,äUFEN
-   AUL    > -AUL,äULE
-   AUL    > -AUL,äULEN
-   AUM    > -AUM,äUME
-   AUM    > -AUM,äUMEN
-   AUN    > -AUN,äUNE
-   AUN    > -AUN,äUNEN
-   AUS    > -AUS,äUSE
-   AUS    > -AUS,äUSEN
-   AUS    > -AUS,äUSE
-   AUS    > -AUS,äUSEN
-   AUSS    > -AUSS,äUSSE
-   AUSS    > -AUSS,äUSSEN
-   AUSCH    > -AUSCH,äUSCHE
-   AUSCH    > -AUSCH,äUSCHEN
-   AUST    > -AUST,äUSTE
-   AUST    > -AUST,äUSTEN
-   AUT    > -AUT,äUTE
-   AUT    > -AUT,äUTEN
-   AXT    > -AXT,äXTE
-   AXT    > -AXT,äXTEN
-   AXT    > -AXT,ÄXTE
-   AXT    > -AXT,ÄXTEN
+   AAL    > -AAL,Ã„LE
+   AAL    > -AAL,Ã„LEN
+   AAL    > -AAL,Ã¤LE
+   AAL    > -AAL,Ã¤LEN
+   AB    > -AB,Ã¤BE
+   AB    > -AB,Ã¤BEN
+   ABEN    > -ABEN,Ã¤BEN
+   ABEL    > -ABEL,Ã¤BEL
+   ABEL    > -ABEL,Ã¤BELN
+   ACH    > -ACH,Ã¤CHE
+   ACH    > -ACH,Ã¤CHEN
+   ACHT    > -ACHT,Ã¤CHTE
+   ACHT    > -ACHT,Ã¤CHTEN
+   ACHS    > -ACHS,Ã¤CHSE
+   ACHS    > -ACHS,Ã¤CHSEN
+   ACK    > -ACK,Ã¤CKE
+   ACK    > -ACK,Ã¤CKEN
+   ADT    > -ADT,Ã¤DTE
+   ADT    > -ADT,Ã¤DTEN
+   ADE    > -ADE,Ã¤DE
+   ADE    > -ADE,Ã¤DEN
+   ADEN    > -ADEN,Ã¤DEN
+   AFEL    > -AFEL,Ã¤FEL
+   AFEL    > -AFEL,Ã¤FELN
+   AGEL    > -AGEL,Ã¤GEL
+   AGEL    > -AGEL,Ã¤GELN
+   AGEN    > -AGEN,Ã¤GEN
+   AFEN    > -AFEN,Ã¤FEN
+   AFT    > -AFT,Ã¤FTE
+   AFT    > -AFT,Ã¤FTEN
+   AG    > -AG,Ã¤GE
+   AG    > -AG,Ã¤GEN
+   AGEN    > -AGEN,Ã¤GEN
+   AHL    > -AHL,Ã¤HLE
+   AHL    > -AHL,Ã¤HLEN
+   AHN    > -AHN,Ã¤HNE
+   AHN    > -AHN,Ã¤HNEN
+   AHT    > -AHT,Ã¤HTE
+   AHT    > -AHT,Ã¤HTEN
+   AL    > -AL,Ã¤LE
+   AL    > -AL,Ã¤LEN
+   ALER    > -ALER,Ã¤LER
+   ALER    > -ALER,Ã¤LERN
+   ALG    > -ALG,Ã¤LGE
+   ALG    > -ALG,Ã¤LGEN
+   ALL    > -ALL,Ã¤LLE
+   ALL    > -ALL,Ã¤LLEN
+   ALS    > -ALS,Ã¤LSE
+   ALS    > -ALS,Ã¤LSEN
+   ALT    > -ALT,Ã¤LTE
+   ALT    > -ALT,Ã¤LTEN
+   AMM    > -AMM,Ã¤MME
+   AMM    > -AMM,Ã¤MMEN
+   AMMER    > -AMMER,Ã¤MMER
+   AMMER    > -AMMER,Ã¤MMERN
+   AMS    > -AMS,Ã¤MSE
+   AMS    > -AMS,Ã¤MSEN
+   AMPF    > -AMPF,Ã¤MPFE
+   AMPF    > -AMPF,Ã¤MPFEN
+   AN    > -AN,Ã¤NE
+   AN    > -AN,Ã¤NEN
+   ANAL    > -ANAL,ANÃ¤LE
+   ANAL    > -ANAL,ANÃ¤LEN
+   AND    > -AND,Ã¤NDE
+   AND    > -AND,Ã¤NDEN
+   ANDEL    > -ANDEL,Ã¤NDEL
+   ANDEL    > -ANDEL,Ã¤NDELN
+   ANG    > -ANG,Ã¤NGE
+   ANG    > -ANG,Ã¤NGEN
+   ANGEL    > -ANGEL,Ã¤NGEL
+   ANGEL    > -ANGEL,Ã¤NGELN
+   ANGEL    > -ANGEL,Ã„NGEL
+   ANGEL    > -ANGEL,Ã„NGELN
+   ANGST    > -ANGST,Ã„NGSTE
+   ANGST    > -ANGST,Ã„NGSTEN
+   ANGST    > -ANGST,Ã¤NGSTE
+   ANGST    > -ANGST,Ã¤NGSTEN
+   ANFT    > -ANFT,Ã¤NFTE
+   ANFT    > -ANFT,Ã¤NFTEN
+   ANK    > -ANK,Ã¤NKE
+   ANK    > -ANK,Ã¤NKEN
+   ANKER    > -ANKER,Ã¤NKER
+   ANKER    > -ANKER,Ã¤NKERN
+   ANS    > -ANS,Ã¤NSE
+   ANS    > -ANS,Ã¤NSEN
+   ANST    > -ANST,Ã¤NSTE
+   ANST    > -ANST,Ã¤NSTEN
+   ANTEL    > -ANTEL,Ã¤NTEL
+   ANTEL    > -ANTEL,Ã¤NTELN
+   ANZ    > -ANZ,Ã¤NZE
+   ANZ    > -ANZ,Ã¤NZEN
+   APF    > -APF,Ã¤PFE
+   APF    > -APF,Ã¤PFEN
+   APFEN    > -APFEN,Ã¤PFEN
+   APS    > -APS,Ã¤PSE
+   APS    > -APS,Ã¤PSEN
+   APST    > -APST,Ã¤PSTE
+   APST    > -APST,Ã¤PSTEN
+   APFE    > -APFE,Ã¤PFE
+   APFE    > -APFE,Ã¤PFEN
+   APFEL    > -APFEL,Ã¤PFEL
+   APFEL    > -APFEL,Ã¤PFELN
+   APFEL    > -APFEL,Ã„PFEL
+   APFEL    > -APFEL,Ã„PFELN
+   AR    > -AR,Ã¤RE
+   AR    > -AR,Ã¤REN
+   ARG    > -ARG,Ã¤RGE
+   ARG    > -ARG,Ã¤RGEN
+   ARG    > -ARG,Ã„RGE
+   ARG    > -ARG,Ã„RGEN
+   ARK    > -ARK,Ã¤RKE
+   ARK    > -ARK,Ã¤RKEN
+   ARKT    > -ARKT,Ã¤RKTE
+   ARKT    > -ARKT,Ã¤RKTEN
+   ARM    > -ARM,Ã¤RME
+   ARM    > -ARM,Ã¤RMEN
+   ARM    > -ARM,Ã„RME
+   ARM    > -ARM,Ã„RMEN
+   ART    > -ART,Ã¤RTE
+   ART    > -ART,Ã¤RTEN
+   ARTEN    > -ARTEN,Ã¤RTEN
+   ASSER    > -ASSER,Ã¤SSER
+   ASSER    > -ASSER,Ã¤SSERN
+   AST    > -AST,Ã¤STE
+   AST    > -AST,Ã¤STEN
+   AST    > -AST,Ã„STE
+   AST    > -AST,Ã„STEN
+   ASTEN    > -ASTEN,Ã¤STEN
+   ARSCH    > -ARSCH,Ã¤RSCHE
+   ARSCH    > -ARSCH,Ã¤RSCHEN
+   ARSCH    > -ARSCH,Ã„RSCHE
+   ARSCH    > -ARSCH,Ã„RSCHEN
+   ARZT    > -ARZT,Ã¤RZTE
+   ARZT    > -ARZT,Ã¤RZTEN
+   ARZT    > -ARZT,Ã„RZTE
+   ARZT    > -ARZT,Ã„RZTEN
+   AS    > -AS,Ã¤SE
+   AS    > -AS,Ã¤SEN
+   ASS    > -ASS,Ã¤SSE
+   ASS    > -ASS,Ã¤SSEN
+   AÃŸ    > -AÃŸ,ASSES
+   AÃŸ    > -AÃŸ,Ã¤ÃŸE
+   AÃŸ    > -AÃŸ,Ã¤ÃŸEN
+   ASTEN    > -ASTEN,Ã¤STEN
+   AT    > -AT,Ã¤TE
+   AT    > -AT,Ã¤TEN
+   ATER    > -ATER,Ã¤TER
+   ATER    > -ATER,Ã¤TERN
+   ATT    > -ATT,Ã¤TTE
+   ATT    > -ATT,Ã¤TTEN
+   ATTEL    > -ATTEL,Ã¤TTEL
+   ATTEL    > -ATTEL,Ã¤TTELN
+   ATZ    > -ATZ,Ã¤TZE
+   ATZ    > -ATZ,Ã¤TZEN
+   AU    > -AU,Ã¤UE
+   AU    > -AU,Ã¤UEN
+   AUCH    > -AUCH,Ã¤UCHE
+   AUCH    > -AUCH,Ã¤UCHEN
+   AUF    > -AUF,Ã¤UFE
+   AUF    > -AUF,Ã¤UFEN
+   AUFE    > -AUFE,Ã¤UFE
+   AUFE    > -AUFE,Ã¤UFEN
+   AUL    > -AUL,Ã¤ULE
+   AUL    > -AUL,Ã¤ULEN
+   AUM    > -AUM,Ã¤UME
+   AUM    > -AUM,Ã¤UMEN
+   AUN    > -AUN,Ã¤UNE
+   AUN    > -AUN,Ã¤UNEN
+   AUS    > -AUS,Ã¤USE
+   AUS    > -AUS,Ã¤USEN
+   AUS    > -AUS,Ã¤USE
+   AUS    > -AUS,Ã¤USEN
+   AUSS    > -AUSS,Ã¤USSE
+   AUSS    > -AUSS,Ã¤USSEN
+   AUSCH    > -AUSCH,Ã¤USCHE
+   AUSCH    > -AUSCH,Ã¤USCHEN
+   AUST    > -AUST,Ã¤USTE
+   AUST    > -AUST,Ã¤USTEN
+   AUT    > -AUT,Ã¤UTE
+   AUT    > -AUT,Ã¤UTEN
+   AXT    > -AXT,Ã¤XTE
+   AXT    > -AXT,Ã¤XTEN
+   AXT    > -AXT,Ã„XTE
+   AXT    > -AXT,Ã„XTEN
    ENS    > -ENS,ENTIA
    ENS    > -ENS,ENZIEN
-   Eß    > -Eß,ESSES
+   EÃŸ    > -EÃŸ,ESSES
    IS    > -IS,EN
    IRMA    > -IRMA,IRMEN
    IUM    > -IUM,IEN
    IUM    > -IUM,IEN
    O    > -O,EN
-   OCH    > -OCH,öCHE
-   OCH    > -OCH,öCHEN
-   OCHTER    > -OCHTER,öCHTER
-   OCHTER    > -OCHTER,öCHTERN
-   OCK    > -OCK,öCKE
-   OCK    > -OCK,öCKEN
-   OF    > -OF,öFE
-   OF    > -OF,öFEN
-   OG    > -OG,öGE
-   OG    > -OG,öGEN
-   OGT    > -OGT,öGTE
-   OGT    > -OGT,öGTEN
-   OGEL    > -OGEL,öGEL
-   OGEL    > -OGEL,öGELN
-   ODEN    > -ODEN,öDEN
-   OFEN    > -OFEN,öFEN
-   OGEN    > -OGEN,öGEN
-   OH    > -OH,öHE
-   OH    > -OH,öHEN
-   OHN    > -OHN,öHNE
-   OHN    > -OHN,öHNEN
-   OHR    > -OHR,öHRE
-   OHR    > -OHR,öHREN
-   OLF    > -OLF,öLFE
-   OLF    > -OLF,öLFEN
-   OLL    > -OLL,öLLE
-   OLL    > -OLL,öLLEN
-   OM    > -OM,öME
-   OM    > -OM,öMEN
-   ON    > -ON,öNE
-   ON    > -ON,öNEN
-   OOG    > -OOG,öGE
-   OOG    > -OOG,öGEN
-   OPF    > -OPF,öPFE
-   OPF    > -OPF,öPFEN
-   OPS    > -OPS,öPSE
-   OPS    > -OPS,öPSEN
-   OR    > -OR,öRE
-   OR    > -OR,öREN
-   ORB    > -ORB,öRBE
-   ORB    > -ORB,öRBEN
-   ORCH    > -ORCH,öRCHE
-   ORCH    > -ORCH,öRCHEN
-   ORUS    > -ORUS,öRE
-   ORUS    > -ORUS,öREN
-   OSCH    > -OSCH,öSCHE
-   OSCH    > -OSCH,öSCHEN
-   OSTER    > -OSTER,öSTER
-   OSTER    > -OSTER,öSTERN
-   OSS    > -OSS,öSSE
-   OSS    > -OSS,öSSEN
-   Oß    > -Oß,öSSE
-   Oß    > -Oß,öSSEN
-   Oß    > -Oß,ößE
-   Oß    > -Oß,ößEN
-   OT    > -OT,öTE
-   OT    > -OT,öTEN
-   OTZ    > -OTZ,öTZE
-   OTZ    > -OTZ,öTZEN
-   UB    > -UB,üBE
-   UB    > -UB,üBEN
-   UCH    > -UCH,üCHE
-   UCH    > -UCH,üCHEN
-   UCHS    > -UCHS,üCHSE
-   UCHS    > -UCHS,üCHSEN
-   UCHT    > -UCHT,üCHTE
-   UCHT    > -UCHT,üCHTEN
-   UCK    > -UCK,üCKE
-   UCK    > -UCK,üCKEN
-   UDER    > -UDER,üDER
-   UDER    > -UDER,üDERN
-   UFT    > -UFT,üFTE
-   UFT    > -UFT,üFTEN
-   UG    > -UG,üGE
-   UG    > -UG,üGEN
-   UH    > -UH,üHE
-   UH    > -UH,üHEN
-   UHL    > -UHL,üHLE
-   UHL    > -UHL,üHLEN
-   ULST    > -ULST,üLSTE
-   ULST    > -ULST,üLSTEN
-   UMPF    > -UMPF,üMPFE
-   UMPF    > -UMPF,üMPFEN
-   UND    > -UND,üNDE
-   UND    > -UND,üNDEN
-   UNG    > -UNG,üNGE
-   UNG    > -UNG,üNGEN
-   UNFT    > -UNFT,üNFTE
-   UNFT    > -UNFT,üNFTEN
-   UNK    > -UNK,üNKE
-   UNK    > -UNK,üNKEN
-   UNKT    > -UNKT,üNKTE
-   UNKT    > -UNKT,üNKTEN
-   UNST    > -UNST,üNSTE
-   UNST    > -UNST,üNSTEN
-   UNSCH    > -UNSCH,üNSCHE
-   UNSCH    > -UNSCH,üNSCHEN
-   UPF    > -UPF,üPFE
-   UPF    > -UPF,üPFEN
-   UPS    > -UPS,üPSE
-   UPS    > -UPS,üPSEN
-   UR    > -UR,üRE
-   UR    > -UR,üREN
-   URF    > -URF,üRFE
-   URF    > -URF,üRFEN
-   URM    > -URM,üRME
-   URM    > -URM,üRMEN
-   URZ    > -URZ,üRZE
-   URZ    > -URZ,üRZEN
-   URSCHT    > -URSCHT,üRSCHTE
-   URSCHT    > -URSCHT,üRSCHTEN
-   URST    > -URST,üRSTE
-   URST    > -URST,üRSTEN
-   UT    > -UT,üTE
-   UT    > -UT,üTEN
-   USCH    > -USCH,üSCHE
-   USCH    > -USCH,üSCHEN
-   USS    > -USS,üSSE
-   USS    > -USS,üSSEN
-   UST    > -UST,üSTE
-   UST    > -UST,üSTEN
-   Uß    > -Uß,üßE
-   Uß    > -Uß,üßEN
-   Uß    > -Uß,üSSE
-   Uß    > -Uß,üSSEN
-   UTTER    > -UTTER,üTTER
-   UTTER    > -UTTER,üTTERN
+   OCH    > -OCH,Ã¶CHE
+   OCH    > -OCH,Ã¶CHEN
+   OCHTER    > -OCHTER,Ã¶CHTER
+   OCHTER    > -OCHTER,Ã¶CHTERN
+   OCK    > -OCK,Ã¶CKE
+   OCK    > -OCK,Ã¶CKEN
+   OF    > -OF,Ã¶FE
+   OF    > -OF,Ã¶FEN
+   OG    > -OG,Ã¶GE
+   OG    > -OG,Ã¶GEN
+   OGT    > -OGT,Ã¶GTE
+   OGT    > -OGT,Ã¶GTEN
+   OGEL    > -OGEL,Ã¶GEL
+   OGEL    > -OGEL,Ã¶GELN
+   ODEN    > -ODEN,Ã¶DEN
+   OFEN    > -OFEN,Ã¶FEN
+   OGEN    > -OGEN,Ã¶GEN
+   OH    > -OH,Ã¶HE
+   OH    > -OH,Ã¶HEN
+   OHN    > -OHN,Ã¶HNE
+   OHN    > -OHN,Ã¶HNEN
+   OHR    > -OHR,Ã¶HRE
+   OHR    > -OHR,Ã¶HREN
+   OLF    > -OLF,Ã¶LFE
+   OLF    > -OLF,Ã¶LFEN
+   OLL    > -OLL,Ã¶LLE
+   OLL    > -OLL,Ã¶LLEN
+   OM    > -OM,Ã¶ME
+   OM    > -OM,Ã¶MEN
+   ON    > -ON,Ã¶NE
+   ON    > -ON,Ã¶NEN
+   OOG    > -OOG,Ã¶GE
+   OOG    > -OOG,Ã¶GEN
+   OPF    > -OPF,Ã¶PFE
+   OPF    > -OPF,Ã¶PFEN
+   OPS    > -OPS,Ã¶PSE
+   OPS    > -OPS,Ã¶PSEN
+   OR    > -OR,Ã¶RE
+   OR    > -OR,Ã¶REN
+   ORB    > -ORB,Ã¶RBE
+   ORB    > -ORB,Ã¶RBEN
+   ORCH    > -ORCH,Ã¶RCHE
+   ORCH    > -ORCH,Ã¶RCHEN
+   ORUS    > -ORUS,Ã¶RE
+   ORUS    > -ORUS,Ã¶REN
+   OSCH    > -OSCH,Ã¶SCHE
+   OSCH    > -OSCH,Ã¶SCHEN
+   OSTER    > -OSTER,Ã¶STER
+   OSTER    > -OSTER,Ã¶STERN
+   OSS    > -OSS,Ã¶SSE
+   OSS    > -OSS,Ã¶SSEN
+   OÃŸ    > -OÃŸ,Ã¶SSE
+   OÃŸ    > -OÃŸ,Ã¶SSEN
+   OÃŸ    > -OÃŸ,Ã¶ÃŸE
+   OÃŸ    > -OÃŸ,Ã¶ÃŸEN
+   OT    > -OT,Ã¶TE
+   OT    > -OT,Ã¶TEN
+   OTZ    > -OTZ,Ã¶TZE
+   OTZ    > -OTZ,Ã¶TZEN
+   UB    > -UB,Ã¼BE
+   UB    > -UB,Ã¼BEN
+   UCH    > -UCH,Ã¼CHE
+   UCH    > -UCH,Ã¼CHEN
+   UCHS    > -UCHS,Ã¼CHSE
+   UCHS    > -UCHS,Ã¼CHSEN
+   UCHT    > -UCHT,Ã¼CHTE
+   UCHT    > -UCHT,Ã¼CHTEN
+   UCK    > -UCK,Ã¼CKE
+   UCK    > -UCK,Ã¼CKEN
+   UDER    > -UDER,Ã¼DER
+   UDER    > -UDER,Ã¼DERN
+   UFT    > -UFT,Ã¼FTE
+   UFT    > -UFT,Ã¼FTEN
+   UG    > -UG,Ã¼GE
+   UG    > -UG,Ã¼GEN
+   UH    > -UH,Ã¼HE
+   UH    > -UH,Ã¼HEN
+   UHL    > -UHL,Ã¼HLE
+   UHL    > -UHL,Ã¼HLEN
+   ULST    > -ULST,Ã¼LSTE
+   ULST    > -ULST,Ã¼LSTEN
+   UMPF    > -UMPF,Ã¼MPFE
+   UMPF    > -UMPF,Ã¼MPFEN
+   UND    > -UND,Ã¼NDE
+   UND    > -UND,Ã¼NDEN
+   UNG    > -UNG,Ã¼NGE
+   UNG    > -UNG,Ã¼NGEN
+   UNFT    > -UNFT,Ã¼NFTE
+   UNFT    > -UNFT,Ã¼NFTEN
+   UNK    > -UNK,Ã¼NKE
+   UNK    > -UNK,Ã¼NKEN
+   UNKT    > -UNKT,Ã¼NKTE
+   UNKT    > -UNKT,Ã¼NKTEN
+   UNST    > -UNST,Ã¼NSTE
+   UNST    > -UNST,Ã¼NSTEN
+   UNSCH    > -UNSCH,Ã¼NSCHE
+   UNSCH    > -UNSCH,Ã¼NSCHEN
+   UPF    > -UPF,Ã¼PFE
+   UPF    > -UPF,Ã¼PFEN
+   UPS    > -UPS,Ã¼PSE
+   UPS    > -UPS,Ã¼PSEN
+   UR    > -UR,Ã¼RE
+   UR    > -UR,Ã¼REN
+   URF    > -URF,Ã¼RFE
+   URF    > -URF,Ã¼RFEN
+   URM    > -URM,Ã¼RME
+   URM    > -URM,Ã¼RMEN
+   URZ    > -URZ,Ã¼RZE
+   URZ    > -URZ,Ã¼RZEN
+   URSCHT    > -URSCHT,Ã¼RSCHTE
+   URSCHT    > -URSCHT,Ã¼RSCHTEN
+   URST    > -URST,Ã¼RSTE
+   URST    > -URST,Ã¼RSTEN
+   UT    > -UT,Ã¼TE
+   UT    > -UT,Ã¼TEN
+   USCH    > -USCH,Ã¼SCHE
+   USCH    > -USCH,Ã¼SCHEN
+   USS    > -USS,Ã¼SSE
+   USS    > -USS,Ã¼SSEN
+   UST    > -UST,Ã¼STE
+   UST    > -UST,Ã¼STEN
+   UÃŸ    > -UÃŸ,Ã¼ÃŸE
+   UÃŸ    > -UÃŸ,Ã¼ÃŸEN
+   UÃŸ    > -UÃŸ,Ã¼SSE
+   UÃŸ    > -UÃŸ,Ã¼SSEN
+   UTTER    > -UTTER,Ã¼TTER
+   UTTER    > -UTTER,Ã¼TTERN
 
 flag *q:
    SS    > -SS,SSE
    SS    > -SS,SSES
    SS    > -SS,SSEN
-   ß    > -ß,SSE
-   ß    > -ß,SSES
-   ß    > -ß,SSEN
+   ÃŸ    > -ÃŸ,SSE
+   ÃŸ    > -ÃŸ,SSES
+   ÃŸ    > -ÃŸ,SSEN
 
 
 flag *r:
@@ -1059,83 +1059,83 @@ flag *r:
    US    > -US,EN
 
 flag *s:
-   ACH    > -ACH,äCHER
-   ACH    > -ACH,äCHERN
-   ACK    > -ACK,äCKER
-   ACK    > -ACK,äCKERN
-   AD    > -AD,äDER
-   AD    > -AD,äDERN
-   AL    > -AL,äLER
-   AL    > -AL,äLERN
-   ALB    > -ALB,äLBER
-   ALB    > -ALB,äLBERN
-   ALD    > -ALD,äLDER
-   ALD    > -ALD,äLDERN
-   ALT    > -ALT,äLTER
-   ALT    > -ALT,äLTERN
-   AMM    > -AMM,äMMER
-   AMM    > -AMM,äMMERN
-   AMS    > -AMS,äMSER
-   AMS    > -AMS,äMSERN
-   AMT    > -AMT,äMTER
-   AMT    > -AMT,äMTERN
-   AND    > -AND,äNDER
-   AND    > -AND,äNDERN
-   ANK    > -ANK,äNKER
-   ANK    > -ANK,äNKERN
-   ANN    > -ANN,äNNER
-   ANN    > -ANN,äNNERN
-   AS    > -AS,äSER
-   AS    > -AS,äSERN
-   Aß    > -Aß,äSSER
-   Aß    > -Aß,äSSERN
-   ASS    > -ASS,äSSER
-   ASS    > -ASS,äSSERN
-   ATT    > -ATT,äTTER
-   ATT    > -ATT,äTTERN
-   AUCH    > -AUCH,äUCHER
-   AUCH    > -AUCH,äUCHERN
-   AUL    > -AUL,äULER
-   AUL    > -AUL,äULERN
-   AUPT    > -AUPT,äUPTER
-   AUPT    > -AUPT,äUPTERN
-   AUS    > -AUS,äUSER
-   AUS    > -AUS,äUSERN
-   AUT    > -AUT,äUTER
-   AUT    > -AUT,äUTERN
+   ACH    > -ACH,Ã¤CHER
+   ACH    > -ACH,Ã¤CHERN
+   ACK    > -ACK,Ã¤CKER
+   ACK    > -ACK,Ã¤CKERN
+   AD    > -AD,Ã¤DER
+   AD    > -AD,Ã¤DERN
+   AL    > -AL,Ã¤LER
+   AL    > -AL,Ã¤LERN
+   ALB    > -ALB,Ã¤LBER
+   ALB    > -ALB,Ã¤LBERN
+   ALD    > -ALD,Ã¤LDER
+   ALD    > -ALD,Ã¤LDERN
+   ALT    > -ALT,Ã¤LTER
+   ALT    > -ALT,Ã¤LTERN
+   AMM    > -AMM,Ã¤MMER
+   AMM    > -AMM,Ã¤MMERN
+   AMS    > -AMS,Ã¤MSER
+   AMS    > -AMS,Ã¤MSERN
+   AMT    > -AMT,Ã¤MTER
+   AMT    > -AMT,Ã¤MTERN
+   AND    > -AND,Ã¤NDER
+   AND    > -AND,Ã¤NDERN
+   ANK    > -ANK,Ã¤NKER
+   ANK    > -ANK,Ã¤NKERN
+   ANN    > -ANN,Ã¤NNER
+   ANN    > -ANN,Ã¤NNERN
+   AS    > -AS,Ã¤SER
+   AS    > -AS,Ã¤SERN
+   AÃŸ    > -AÃŸ,Ã¤SSER
+   AÃŸ    > -AÃŸ,Ã¤SSERN
+   ASS    > -ASS,Ã¤SSER
+   ASS    > -ASS,Ã¤SSERN
+   ATT    > -ATT,Ã¤TTER
+   ATT    > -ATT,Ã¤TTERN
+   AUCH    > -AUCH,Ã¤UCHER
+   AUCH    > -AUCH,Ã¤UCHERN
+   AUL    > -AUL,Ã¤ULER
+   AUL    > -AUL,Ã¤ULERN
+   AUPT    > -AUPT,Ã¤UPTER
+   AUPT    > -AUPT,Ã¤UPTERN
+   AUS    > -AUS,Ã¤USER
+   AUS    > -AUS,Ã¤USERN
+   AUT    > -AUT,Ã¤UTER
+   AUT    > -AUT,Ã¤UTERN
    IEH    > -IEH,IECHER
-   OCH    > -OCH,öCHER
-   OCH    > -OCH,öCHERN
-   OLK    > -OLK,öLKER
-   OLK    > -OLK,öLKERN
-   OLZ    > -OLZ,öLZER
-   OLZ    > -OLZ,öLZERN
-   ORF    > -ORF,öRFER
-   ORF    > -ORF,öRFERN
-   ORN    > -ORN,öRNER
-   ORN    > -ORN,öRNERN
-   ORT    > -ORT,öRTER
-   ORT    > -ORT,öRTERN
-   OTT    > -OTT,öTTER
-   OTT    > -OTT,öTTERN
-   Oß    > -Oß,öSSES
-   Oß    > -Oß,öSSER
-   Oß    > -Oß,öSSERN
-   OSS    > -OSS,öSSES
-   OSS    > -OSS,öSSER
-   OSS    > -OSS,öSSERN
-   OTT    > -OTT,öTTER
-   OTT    > -OTT,öTTERN
-   UCH    > -UCH,üCHER
-   UCH    > -UCH,üCHERN
-   UHN    > -UHN,üHNER
-   UHN    > -UHN,üHNERN
-   UM    > -UM,üMER
-   UM    > -UM,üMERN
-   URM    > -URM,üRMER
-   URM    > -URM,üRMERN
-   UT    > -UT,üTER
-   UT    > -UT,üTERN
+   OCH    > -OCH,Ã¶CHER
+   OCH    > -OCH,Ã¶CHERN
+   OLK    > -OLK,Ã¶LKER
+   OLK    > -OLK,Ã¶LKERN
+   OLZ    > -OLZ,Ã¶LZER
+   OLZ    > -OLZ,Ã¶LZERN
+   ORF    > -ORF,Ã¶RFER
+   ORF    > -ORF,Ã¶RFERN
+   ORN    > -ORN,Ã¶RNER
+   ORN    > -ORN,Ã¶RNERN
+   ORT    > -ORT,Ã¶RTER
+   ORT    > -ORT,Ã¶RTERN
+   OTT    > -OTT,Ã¶TTER
+   OTT    > -OTT,Ã¶TTERN
+   OÃŸ    > -OÃŸ,Ã¶SSES
+   OÃŸ    > -OÃŸ,Ã¶SSER
+   OÃŸ    > -OÃŸ,Ã¶SSERN
+   OSS    > -OSS,Ã¶SSES
+   OSS    > -OSS,Ã¶SSER
+   OSS    > -OSS,Ã¶SSERN
+   OTT    > -OTT,Ã¶TTER
+   OTT    > -OTT,Ã¶TTERN
+   UCH    > -UCH,Ã¼CHER
+   UCH    > -UCH,Ã¼CHERN
+   UHN    > -UHN,Ã¼HNER
+   UHN    > -UHN,Ã¼HNERN
+   UM    > -UM,Ã¼MER
+   UM    > -UM,Ã¼MERN
+   URM    > -URM,Ã¼RMER
+   URM    > -URM,Ã¼RMERN
+   UT    > -UT,Ã¼TER
+   UT    > -UT,Ã¼TERN
 
 flag *t:
    E    > NS
@@ -1181,8 +1181,8 @@ flag *w:
 REP 52
 REP f ph
 REP ph f
-REP ß ss
-REP ss ß
+REP ÃŸ ss
+REP ss ÃŸ
 REP s ss
 REP ss s
 REP i ie
@@ -1195,12 +1195,12 @@ REP a ah
 REP ah a
 REP e eh
 REP eh e
-REP ue ü
-REP ü ue
-REP oe ö
-REP ö oe
-REP ae ä
-REP ä ae
+REP ue Ã¼
+REP Ã¼ ue
+REP oe Ã¶
+REP Ã¶ oe
+REP ae Ã¤
+REP Ã¤ ae
 REP ou o
 REP o ou
 REP d t
@@ -1221,13 +1221,13 @@ REP eo oe
 REP oe eo
 REP eu ue
 REP ue eu
-REP äu uä
-REP uä äu
+REP Ã¤u uÃ¤
+REP uÃ¤ Ã¤u
 REP eu ue
 REP ue eu
 REP ou uo
 REP uo ou
-REP üe ü
-REP ü üe
-REP öe ö
-REP ö öe
+REP Ã¼e Ã¼
+REP Ã¼ Ã¼e
+REP Ã¶e Ã¶
+REP Ã¶ Ã¶e
