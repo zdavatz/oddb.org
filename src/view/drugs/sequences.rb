@@ -78,7 +78,7 @@ class SequenceList < HtmlGrid::List
 		name = model.name_base
 		link.value = name
 		args = {
-			'search_query'	=>	CGI.escape(name),
+			'search_query' => name,
 		}
     if @lookandfeel.disabled?(:best_result)
       link.href = @lookandfeel._event_url(:search, args)
