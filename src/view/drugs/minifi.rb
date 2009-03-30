@@ -21,7 +21,7 @@ class MiniFiChapter < Chapter
     link = HtmlGrid::Link.new(:name, @model, @session, self)
     link.href = @lookandfeel._event_url(:search, 
                                         :search_type => 'st_sequence', 
-                                        :search_query => @model.name)
+                                        :search_query => @model.name.gsub('/', '%2F'))
     html.gsub(ptrn) { |match|
       link.value = match
       link.to_html(context)

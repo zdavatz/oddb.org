@@ -62,7 +62,7 @@ class Fachinfo < HtmlGrid::Component
         link = HtmlGrid::Link.new(:name, fachinfo, @session, self)
         link.href = @lookandfeel._event_url(:search, 
                                             :search_type => 'st_sequence', 
-                                            :search_query => name)
+                                            :search_query => name.gsub('/', '%2F'))
         html = comp.to_html(context)
         html.gsub!(%r{<pre\b.*?</pre>}imu) { |match|
           match.gsub(%r{\n}u, '<BR>')
