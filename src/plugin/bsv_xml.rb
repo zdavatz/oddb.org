@@ -34,6 +34,9 @@ module ODDB
           Date.new *parts.reverse
         end
       end
+      def text text
+        @text << text if @text
+      end
       def time txt
         unless txt.to_s.empty?
           parts = txt.split('.', 3).collect do |part| part.to_i end
@@ -651,7 +654,7 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
         ].join("\n")
         ['text/plain', name.gsub(/[\s()\/-]/u, '_') << '.txt', report]
       end
-      info.update(:parts => parts, :report => body)
+      info.update(:parts => parts, :report => body, :mail_from => MAIL_FROM)
       info
     end
     def report

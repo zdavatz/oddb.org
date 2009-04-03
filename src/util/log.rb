@@ -18,7 +18,7 @@ module ODDB
 		ODBA_SERIALIZABLE = ['@change_flags', '@pointers', '@recipients',
 			'@files']
 		attr_accessor :report, :pointers, :recipients, :change_flags, 
-			:files, :parts, :date_str
+			:files, :parts, :date_str, :mail_from
 		attr_reader :date
 
 		def initialize(date)
@@ -63,7 +63,7 @@ module ODDB
 				multipart
 			end
 			
-			outgoing.from = self::class::MAIL_FROM
+			outgoing.from = @mail_from || self::class::MAIL_FROM
 			@recipients = (@recipients + self::class::MAIL_TO).uniq
 			outgoing.subject = subj
 			outgoing.date = Time.now
@@ -77,7 +77,7 @@ module ODDB
 			multipart.parts << text_part(subject)
 			type1, type2 = (headers[:mime_type] || 'text/plain').split('/')
 			multipart.parts << file_part(type1, type2, headers[:filename], attachment)
-			multipart.from = self::class::MAIL_FROM
+			multipart.from = @mail_from || self::class::MAIL_FROM
 			@recipients = (@recipients + self::class::MAIL_TO).uniq
 			multipart.to = @recipients
 			multipart.subject = subject
@@ -96,7 +96,7 @@ module ODDB
 				@recipients.each { |recipient|
 					multipart.to = [recipient]
 					smtp.sendmail(multipart.encoded, 
-												self::class::MAIL_FROM, recipient)
+												@mail_from || self::class::MAIL_FROM, recipient)
 				}
 			}
 		end
