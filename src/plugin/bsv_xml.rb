@@ -607,7 +607,8 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
     end
     def log_info_bsv
       body = report_bsv << "\n\n"
-      info = { :recipients => recipients.concat(BSV_RECIPIENTS) }
+      info = { :recipients => recipients.concat(BSV_RECIPIENTS),
+               :mail_from => SMTP_FROM }
       parts = [
         [ :conflicted_registrations,
           'SMeX/SL-Differences (Registrations) %d.%m.%Y',
@@ -654,7 +655,7 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
         ].join("\n")
         ['text/plain', name.gsub(/[\s()\/-]/u, '_') << '.txt', report]
       end
-      info.update(:parts => parts, :report => body, :mail_from => MAIL_FROM)
+      info.update(:parts => parts, :report => body)
       info
     end
     def report
