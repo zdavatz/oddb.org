@@ -20,6 +20,7 @@ module ODDB
 		end
     module FormMethods 
 			include View::HiddenPointer
+      ACCEPT_CHARSET = 'UTF-8'
 			DEFAULT_CLASS = HtmlGrid::InputText
 			EVENT = :update
 			private 
