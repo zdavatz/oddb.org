@@ -696,7 +696,7 @@ Krankenkasse muss bis 5 Jahre in der Vergangenheit abrechnen können.
 4. Bei #{ups} Produkten gibt es im Swissmedic-Excel keine Zeile mit diesem
 8-stelligen Swissmedic-Code, die Packung kommt aber in Medwin vor.
 
-5. Bei #{urs} Produkten gibt im Swissmedic-Excel keine Zeile mit diesem
+5. Bei #{urs} Produkten gibt es im Swissmedic-Excel keine Zeile mit diesem
 5-stelligen Swissmedic-Code. Die Produkte sind aber sicherlich bei der
 Swissmedic registriert.
 
