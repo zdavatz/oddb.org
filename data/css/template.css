@@ -1,3 +1,4 @@
+@import "resources/dojo/dijit/themes/tundra/tundra.css";
 /* Top-Level */
 body {
 	font-family : $std_font_family;
@@ -907,13 +908,10 @@ a.footnote {
   font-weight: normal;
 }
 .dijitTooltipContainer {
-  background-color: InfoBackground;
-  border: 1px solid black;
-  color: InfoText;
+  background-color: white;
+  border: 1px solid $bg_dark;
   font-size : $std_font_size;
   padding: 4px;
 	white-space: nowrap;
-}
-div.dojoTooltip {
 }
 

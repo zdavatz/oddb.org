@@ -130,7 +130,7 @@ module ODDB
       def init
         super
         @attributes.update({
-          'dojoType'    => 'Editor2',  
+          'dojoType'    => 'dijit.Editor',
           'shareToolbar'=> 'true',
           'htmlEditing' => 'false',
           'useActiveX'  => 'false',
@@ -146,20 +146,20 @@ module ODDB
     class EditChapterForm < Form
       COMPONENTS = {
         [0,0]  =>  :heading,
-        [1,1]  =>  :toolbar,
-        [0,2,1]=>  :edit_chapter,
-        [1,3]  =>  :submit,
+        #[1,1]  =>  :toolbar,
+        [0,1,1]=>  :edit_chapter,
+        [1,2]  =>  :submit,
       }
       LABELS = true
       LEGACY_INTERFACE = false
       SYMBOL_MAP = { }
-      CSS_CLASS = 'composite'
+      CSS_CLASS = 'composite tundra'
       CSS_MAP = {
         [0,0]  =>  'list',
-        [0,2]  =>  'list top',
+        [0,1]  =>  'list top',
       }
       COMPONENT_CSS_MAP = {
-        [0,0,1]  =>  'standard',
+        #[0,0,1]  =>  'standard',
       }
       def initialize(name, *args)
         @name = name
