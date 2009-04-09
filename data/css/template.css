@@ -691,10 +691,6 @@ div.just-medical {
 div.long-text {
 	max-width: 400px;
 }
-div.dojoTooltip {
-  font-size : $std_font_size;
-	white-space: nowrap;
-}
 /* input-classes */
 input, select {
 	font-family : $std_font_family;
@@ -910,3 +906,14 @@ div#composition-list td {
 a.footnote {
   font-weight: normal;
 }
+.dijitTooltipContainer {
+  background-color: InfoBackground;
+  border: 1px solid black;
+  color: InfoText;
+  font-size : $std_font_size;
+  padding: 4px;
+	white-space: nowrap;
+}
+div.dojoTooltip {
+}
+

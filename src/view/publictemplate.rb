@@ -8,20 +8,22 @@ require 'sbsm/time'
 require 'view/custom/head'
 require 'view/htmlgrid/component'
 
+DOJO_VERSION = "3.1"
+
 module ODDB
 	module View
 		class PublicTemplate < HtmlGrid::Template
 			include View::Custom::HeadMethods
 			include HtmlGrid::DojoToolkit::DojoTemplate
 			DOJO_DEBUG = false
-      DOJO_REQUIRE = [ 'dojo.widget.Tooltip' ]
+      DOJO_ENCODING = 'UTF-8'
+      DOJO_REQUIRE = [ 'ywesee.widget.Tooltip' ]
       DOJO_PARSE_WIDGETS = false
       DOJO_PREFIX = {
-        'ywesee'  =>  '../javascript',
+        'ywesee'  =>  '/resources/javascript',
       }
 			CONTENT = nil
 			CSS_CLASS = "composite"
-			#CSS_ID = "template"
 			COMPONENTS = {
 				[0,0]		=>	:head,
 				[0,1]		=>	:content,

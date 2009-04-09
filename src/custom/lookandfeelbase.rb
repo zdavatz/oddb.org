@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # LookandfeelBase -- oddb -- hwyss@ywesee.com
 
 require 'sbsm/lookandfeel'
@@ -4033,6 +4034,7 @@ Zeno Davatz
 			:company_logo						=>	'logos',
 			:downloads							=>	'downloads',
 			:examples								=>	'downloads/examples',
+			:dojo_js								=>	'dojo/dojo/dojo.js',
 			:javascript							=>	'javascript',
 			:logo										=>	'logo.png',
 			:logo_de								=>	'logo_de.gif',
@@ -4049,7 +4051,6 @@ Zeno Davatz
 			:plugin_download_gif		=> 'plugins/oddb.org.gif',
 			:richtext_js						=>	'javascript/richtext.js',
       :rss_feed               =>  'livemarks16.png',
-			:dojo_js								=>	'dojo/dojo.js',
 			:sponsor								=>	'sponsor',
 		}
     def captcha
