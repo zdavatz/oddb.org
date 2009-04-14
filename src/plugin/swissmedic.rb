@@ -256,12 +256,12 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       hsh
     end
     def update_active_agent(seq, name, part, opts={})
-      ptrn = %r{(?ixu)
+      ptrn = %r{(?ix)
                 #{Regexp.escape name}
                 (\s*(?<dose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?)))?
                 (\s*ut\s+(?<chemical>[^\d,]+)
                       \s*(?<cdose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?))?)?
-               }
+               }u
       if(match = ptrn.match(part))
         comp = seq.compositions.first
         comp ||= @app.create(seq.pointer + :composition)
