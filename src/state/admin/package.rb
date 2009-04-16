@@ -97,8 +97,8 @@ module PackageMethods
     parts = user_input(part_keys)
     time = Time.now
     [:price_exfactory, :price_public].each { |key|
-      if(price = input[key])
-        price = ODDB::Package.price_internal(price, key)
+      if(input.include?(key))
+        price = ODDB::Package.price_internal(input[key], key)
         price.origin = unique_email
         price.authority = :user
         price.valid_from = time

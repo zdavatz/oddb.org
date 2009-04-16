@@ -31,7 +31,8 @@ class PriceHistory < State::Drugs::Global
           date = price.valid_from
           change = (dates[date] ||= PriceChange.new(date))
           change.send("#{key}=", price)
-          if previous && (pprice = previous.send(key))
+          if price.credits && previous && (pprice = previous.send(key)) \
+            && pprice.credits
             change.send "percent_#{key}=", (price - pprice) / pprice * 100
           end
           previous = change

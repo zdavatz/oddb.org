@@ -346,7 +346,7 @@ module ODDB
       price(:exfactory, ord_or_time)
     end
     def price_exfactory=(price)
-      return price_exfactory if(price_exfactory == price) 
+      return price_exfactory if(price == price_exfactory)
       (prices[:exfactory] ||= []).unshift(price)
       price
     end
@@ -354,7 +354,7 @@ module ODDB
       price(:public, ord_or_time)
     end
     def price_public=(price)
-      return price_public if(price_public == price) 
+      return price_public if(price == price_public)
       (prices[:public] ||= []).unshift(price)
       price
     end

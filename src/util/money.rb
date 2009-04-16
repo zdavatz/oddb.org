@@ -13,8 +13,12 @@ class Money
     @valid_from = Time.now
   end
   def amount=(amount)
-    @amount = amount.to_f
-    @credits = (@amount * 100).round
+    if amount
+      @amount = amount.to_f
+      @credits = (@amount * 100).round
+    else
+      @amount = @credits = nil
+    end
   end
   def is_for?(type, country)
     @type == type.to_s.downcase && @country == country.to_s.upcase
@@ -44,7 +48,7 @@ class Money
   def <=>(other)
     case other
     when Money
-      @credits <=> other.credits
+      @credits.to_i <=> other.credits.to_i
     else
       to_f <=> other.to_f
     end
