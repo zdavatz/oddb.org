@@ -109,8 +109,8 @@ module ODDB
             span = HtmlGrid::Link.new(:price_history, model, @session, self)
             args = [
               [:pointer, model.pointer],
-              [:search_type, @session.user_input(:search_type)],
-              [:search_query, @session.user_input(:search_query)]
+              [:search_type, @session.persistent_user_input(:search_type)],
+              [:search_query, @session.persistent_user_input(:search_query)]
             ]
             span.href = @lookandfeel._event_url(:price_history, args)
             suffix = @lookandfeel.lookup(:click_for_price_history)
