@@ -37,7 +37,7 @@ class SequenceList < HtmlGrid::List
 	CSS_CLASS = 'composite'
   CSS_KEYMAP = {
     :fachinfo       => 'list',
-    :galenic_form   => 'list',
+    :sequences      => 'list',
     :google_search  => 'list bold right',
     :iksnr          => 'small',
     :name_base      => 'list big',

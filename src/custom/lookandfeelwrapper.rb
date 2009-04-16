@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # LookandfeelWrapper - oddb -- 21.07.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/lookandfeelwrapper'
@@ -919,7 +920,7 @@ module ODDB
         [0,0]	=>	:iksnr,
         [1,0]	=>	:patinfo,
         [2,0]	=>	:name_base,
-        [3,0]	=>	:galenic_form,
+        [3,0]	=>	:compositions,
       }
     end
 		def zones

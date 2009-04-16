@@ -4172,7 +4172,7 @@ Zeno Davatz
         [1,0]	=>  :fachinfo,
         [2,0]	=>	:patinfo,
         [3,0]	=>	:name_base,
-        [4,0]	=>	:galenic_form,
+        [4,0]	=>	:compositions,
         [5,0]	=>  :google_search,
       }
     end
