@@ -228,7 +228,7 @@ class DDDChart < HtmlGrid::Component
     gr.title = @title
 
     gr.hide_legend = true
-    gr.marker_font_size = 17
+    gr.marker_font_size = 18
     gr.title_font_size = 20
     gr.sort = false
     gr.margins = 5
