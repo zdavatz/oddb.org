@@ -5,6 +5,7 @@ require 'htmlgrid/urllink'
 require 'state/http_404'
 require 'state/admin/login'
 require 'state/ajax/ddd_price'
+require 'state/ajax/ddd_chart'
 require 'state/ajax/swissmedic_cat'
 require 'state/analysis/group'
 require 'state/analysis/position'
@@ -93,6 +94,7 @@ module ODDB
 				:companylist					=>	State::Companies::CompanyList,
 				:compare							=>	State::Drugs::Compare,
 				:ddd									=>	State::Drugs::DDD,
+				:ddd_chart            =>	State::Ajax::DDDChart,
 				:download_export			=>	State::User::DownloadExport,
 				:fachinfos						=>	State::Drugs::Fachinfos,
 				:fipi_offer_input			=>	State::User::FiPiOfferInput,

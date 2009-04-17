@@ -8,7 +8,7 @@ require 'view/additional_information'
 module ODDB
 	module View
 		module Ajax
-class DDDPrice < HtmlGrid::Composite
+class DDDPriceTable < HtmlGrid::Composite
 	include View::DataFormat
 	include View::AdditionalInformation
 	COMPONENTS = {
@@ -81,6 +81,31 @@ class DDDPrice < HtmlGrid::Composite
 	def wanted_unit(mdose, ddose)
 		(mdose.fact.factor < ddose.fact.factor) ? mdose.unit : ddose.unit
 	end
+end
+class DDDPrice < HtmlGrid::DivComposite
+  COMPONENTS = {
+    [0,0] => DDDPriceTable,
+  }
+  def init
+    if @lookandfeel.enabled?(:ddd_chart)
+      components.store [0,1], :ddd_chart
+      css_map.store 1, 'big'
+    end
+    super
+  end
+  def ddd_chart(model)
+    link = HtmlGrid::Link.new(:ddd_chart, model, @session, self)
+    img = HtmlGrid::Image.new(:ddd_chart, model, @session, self)
+    args = [
+      :for, "#{model.ikskey}_#{model.name_base.gsub(/\s+/, '_')}.png"
+    ]
+    link.href = @lookandfeel._event_url(:ddd_chart, args)
+    args.unshift :factor, '0.8'
+    img.set_attribute('src', @lookandfeel._event_url(:ddd_chart, args))
+    link.set_attribute('title', @lookandfeel.lookup(:ddd_chart_link_title))
+    link.value = img
+    link
+  end
 end
 		end
 	end
