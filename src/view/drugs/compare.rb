@@ -156,7 +156,11 @@ module InsertBackbutton
       span2.value = link2
       span3 = HtmlGrid::Span.new(model, @session, self)
       span3.css_class = "breadcrumb-1"
-      span3.value = model.pointer_descr if(model.respond_to? :pointer_descr)
+      if(respond_to?(:pointer_descr))
+        span3.value = self.send(:pointer_descr, model)
+      elsif(model.respond_to? :pointer_descr)
+        span3.value = model.pointer_descr
+      end
       [span1, dv, span2, dv, span3]
     else
       super

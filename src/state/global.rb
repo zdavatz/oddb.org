@@ -95,6 +95,7 @@ module ODDB
 				:compare							=>	State::Drugs::Compare,
 				:ddd									=>	State::Drugs::DDD,
 				:ddd_chart            =>	State::Ajax::DDDChart,
+				:ddd_price            =>  State::Drugs::DDDPrice,
 				:download_export			=>	State::User::DownloadExport,
 				:fachinfos						=>	State::Drugs::Fachinfos,
 				:fipi_offer_input			=>	State::User::FiPiOfferInput,

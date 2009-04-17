@@ -142,6 +142,7 @@ module ODDB
 			:compare,
 			:ddd,
       :ddd_chart,
+      :ddd_price,
 			:delete,
 			:delete_connection_key,
 			:delete_orphaned_fachinfo,

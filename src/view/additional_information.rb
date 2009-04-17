@@ -15,7 +15,7 @@ module ODDB
             part_size part
           }.join(' + ')
         else
-          HtmlGrid::Value.new(:size, model, session, self)
+          model.size
         end
       end
       def part_size(part, session=@session)
@@ -101,18 +101,23 @@ module ODDB
         link
       end
 			def ddd_price(model, session=@session)
-				span = HtmlGrid::Span.new(model, @session, self)
+        link = HtmlGrid::Link.new(:ddd_price_link, model, @session, self)
 				if(ddd_price = model.ddd_price)
           ddd_price = convert_price(ddd_price, @session.currency)
 					@ddd_price_count ||= 0
 					@ddd_price_count += 1
-					span.value = ddd_price
-					span.css_id = "ddd_price_#{@ddd_price_count}"
-					args = {:pointer => model.pointer}
-					span.dojo_tooltip = @lookandfeel._event_url(:ajax_ddd_price, args)
+					link.value = ddd_price
+					link.css_id = "ddd_price_#{@ddd_price_count}"
+					args = [
+            :pointer, model.pointer,
+            :search_query, @session.persistent_user_input(:search_query),
+            :search_type, @session.persistent_user_input(:search_type),
+          ]
+          link.set_attribute('title', @lookandfeel.lookup(:ddd_price_title))
+          link.href = @lookandfeel._event_url(:ddd_price, args)
 				end
-				span.label = true
-				span
+				link.label = true
+				link
 			end
 			def deductible(model, session=@session)
 				@deductible_count ||= 0

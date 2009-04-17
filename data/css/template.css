@@ -476,6 +476,9 @@ td.center{
 td.center table {
 	margin: $align_center_tablemargin;
 }
+td.ddd-chart {
+  padding: 12px 0px 0px 0px;
+}
 td.donate {
 	text-align : $align_center;
 }

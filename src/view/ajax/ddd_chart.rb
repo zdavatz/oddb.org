@@ -6,7 +6,7 @@ require 'view/additional_information'
 require 'gruff'
 
 class SideBar < Gruff::Base
-  TITLE_MARGIN = LEGEND_MARGIN = 5
+  LABEL_MARGIN = LEGEND_MARGIN = TITLE_MARGIN = 4
   def draw
     @has_left_labels = true
     super
@@ -91,7 +91,7 @@ class SideBar < Gruff::Base
     # Draw horizontal line markers and annotate with numbers
     @d = @d.stroke(@marker_color)
     @d = @d.stroke_width 1
-    number_of_lines = [@maximum_value.to_f / 0.5, 5].min
+    number_of_lines = [@maximum_value.to_f / 0.5, 4].min
 
     # TODO Round maximum marker value to a round number like 100, 0.1, 0.5, etc.
     increment = significant(@maximum_value.to_f / number_of_lines)
@@ -123,7 +123,7 @@ class SideBar < Gruff::Base
       @d.font             = @font if @font
       @d.stroke           = 'transparent'
       @d.font_weight      = NormalWeight
-      @d.pointsize        = scale_fontsize(16)
+      @d.pointsize        = scale_fontsize(@theme_options[:source_font_size])
       @d.gravity          = WestGravity
       @d                  = @d.annotate_scaled(@base_image,
                               1, 1,
@@ -147,7 +147,7 @@ class SideBar < Gruff::Base
       longest_left_label_width = 0
       if @has_left_labels
         longest_left_label_width =  calculate_width(@marker_font_size,
-        labels.values.inject('') { |value, memo| (value.to_s.length > memo.to_s.length) ? value : memo }) * 1.25
+        labels.values.inject('') { |value, memo| (value.to_s.length > memo.to_s.length) ? value : memo }) #* 1.05
       else
         longest_left_label_width = calculate_width(@marker_font_size,
         label(@maximum_value.to_f))
@@ -222,16 +222,17 @@ class DDDChart < HtmlGrid::Component
   def to_html(cgi)
     factor = (@session.user_input(:factor) || 1).to_f
     height = (60 + @data.size * 20) * factor
-    width = 600 * factor
+    width = 750 * factor
     gr = SideBar.new "#{width}x#{height}"
 
     gr.title = @title
 
     gr.hide_legend = true
-    gr.marker_font_size = 18
-    gr.title_font_size = 20
+    gr.marker_font_size = 14
+    gr.title_font_size = 16
     gr.sort = false
-    gr.margins = 5
+    gr.margins = 4
+    gr.left_margin = 0
 
     gr.theme = {
       :colors => ['#ccff99'],
@@ -240,6 +241,7 @@ class DDDChart < HtmlGrid::Component
       :background_colors => "white",
       :custom_colors => { @original_index => '#2ba476' },
       :source => @lookandfeel.lookup(:ddd_chart_source),
+      :source_font_size => 12
     }
 
     gr.data "Data", @data
