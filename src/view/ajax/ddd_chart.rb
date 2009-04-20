@@ -161,7 +161,7 @@ class SideBar < Gruff::Base
       longest_left_label_width = 0
       if @has_left_labels
         longest_left_label_width =  calculate_width(@marker_font_size,
-        labels.values.inject('') { |value, memo| (value.to_s.length > memo.to_s.length) ? value : memo }) #* 1.05
+        labels.values.inject('') { |value, memo| (value.to_s.length > memo.to_s.length) ? value : memo }) * 1.05
       else
         longest_left_label_width = calculate_width(@marker_font_size,
         label(@maximum_value.to_f))
@@ -242,7 +242,7 @@ class DDDChart < HtmlGrid::Component
     gr.title = @title
 
     gr.hide_legend = true
-    gr.marker_font_size = 14
+    gr.marker_font_size = 15
     gr.title_font_size = 16
     gr.sort = false
     gr.margins = 4
