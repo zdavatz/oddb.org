@@ -101,23 +101,30 @@ module ODDB
         link
       end
 			def ddd_price(model, session=@session)
-        link = HtmlGrid::Link.new(:ddd_price_link, model, @session, self)
+        chart = @lookandfeel.enabled? :ddd_chart
+        node = chart ?
+                 HtmlGrid::Link.new(:ddd_price_link, model, @session, self) :
+                 HtmlGrid::Span.new(model, @session, self)
 				if(ddd_price = model.ddd_price)
           ddd_price = convert_price(ddd_price, @session.currency)
 					@ddd_price_count ||= 0
 					@ddd_price_count += 1
-					link.value = ddd_price
-					link.css_id = "ddd_price_#{@ddd_price_count}"
+					node.value = ddd_price
+					node.css_id = "ddd_price_#{@ddd_price_count}"
 					args = [
             :pointer, model.pointer,
             :search_query, @session.persistent_user_input(:search_query),
             :search_type, @session.persistent_user_input(:search_type),
           ]
-          link.set_attribute('title', @lookandfeel.lookup(:ddd_price_title))
-          link.href = @lookandfeel._event_url(:ddd_price, args)
+          if chart
+            node.set_attribute('title', @lookandfeel.lookup(:ddd_price_title))
+            node.href = @lookandfeel._event_url(:ddd_price, args)
+          else
+            node.dojo_tooltip = @lookandfeel._event_url(:ajax_ddd_price, args)
+          end
 				end
-				link.label = true
-				link
+				node.label = true
+				node
 			end
 			def deductible(model, session=@session)
 				@deductible_count ||= 0
