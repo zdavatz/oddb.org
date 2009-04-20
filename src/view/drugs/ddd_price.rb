@@ -101,8 +101,10 @@ class DDDPriceComposite < HtmlGrid::Composite
   end
   def ddd_chart(model)
     img = HtmlGrid::Image.new(:ddd_chart, model, @session, self)
+    url = sprintf "%s_%s_%s.png", model.ikskey, model.name_base,
+                                  @lookandfeel.lookup(:ddd_price_comparison)
     args = [
-      :for, "#{model.ikskey}_#{model.name_base.gsub(/\s+/, '_')}.png"
+      :for, url.gsub(/\s+/, '_')
     ]
     img.set_attribute('src', @lookandfeel._event_url(:ddd_chart, args))
     img
