@@ -23,6 +23,11 @@ module ODDB
 				LookandfeelStandardResult,
 				LookandfeelCarenaSchweiz, 
 			],
+      'desitin' => [
+				LookandfeelLanguages,
+				LookandfeelExtern,
+        LookandfeelDesitin,
+      ],
 			'generika'	=>	[
 				LookandfeelLanguages,
 				LookandfeelExtern,

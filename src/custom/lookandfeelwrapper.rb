@@ -1157,4 +1157,8 @@ module ODDB
       }
     }
   end
+  class LookandfeelDesitin < SBSM::LookandfeelWrapper
+    RESULT_FILTER = Proc.new do |seq| (comp = seq.company) && comp.oid == 215 end
+    ENABLED = [ :ajax, :breadcrumbs, :ddd_chart, :logo ]
+  end
 end
