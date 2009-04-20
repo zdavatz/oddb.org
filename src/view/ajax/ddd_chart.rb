@@ -131,6 +131,20 @@ class SideBar < Gruff::Base
                               @graph_bottom + (LABEL_MARGIN * 2.0),
                               @theme_options[:source], @scale)
   end
+  def draw_title
+    return if (@hide_title || @title.nil?)
+
+    @d.fill = @font_color
+    @d.font = @font if @font
+    @d.stroke('transparent')
+    @d.pointsize = scale_fontsize(@title_font_size)
+    @d.font_weight = BoldWeight
+    @d.gravity = NorthWestGravity
+    @d = @d.annotate_scaled( @base_image,
+    @raw_columns, 1.0,
+    TITLE_MARGIN, @top_margin,
+    @title, @scale)
+  end
   def setup_graph_measurements
     @marker_caps_height = @hide_line_markers ? 0 :
     calculate_caps_height(@marker_font_size)
