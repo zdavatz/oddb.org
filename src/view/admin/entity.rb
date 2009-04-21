@@ -76,6 +76,7 @@ class YusGroups < HtmlGrid::List
                             "if(this.value == '#{txt}') this.value='';")
         input.set_attribute("onblur", 
                             "if(this.value == '') this.value='#{txt}';")
+        self.onsubmit = "if(this.valid_until.value == '#{txt}') this.valid_until.value = ''; true;"
         input.value = txt
       end 
       input
