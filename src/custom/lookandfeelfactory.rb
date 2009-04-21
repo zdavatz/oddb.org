@@ -24,8 +24,6 @@ module ODDB
 				LookandfeelCarenaSchweiz, 
 			],
       'desitin' => [
-				LookandfeelLanguages,
-				LookandfeelExtern,
         LookandfeelDesitin,
       ],
 			'generika'	=>	[

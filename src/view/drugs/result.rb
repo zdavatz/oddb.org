@@ -64,7 +64,6 @@ class ResultComposite < HtmlGrid::Composite
 		[0,0,0]	=>	:title_found,
 		[0,0,1]	=>	:dsp_sort,
 		[0,1]		=>	'price_compare',
-		[1,1]		=>	SelectSearchForm,
 	}
 	CSS_CLASS = 'composite'
 	EVENT = :search
@@ -82,6 +81,11 @@ class ResultComposite < HtmlGrid::Composite
     if(@lookandfeel.enabled?(:breadcrumbs))
       components.store([0,0,0], :breadcrumbs)
       css_map.store([0,0], 'breadcrumbs')
+    end
+    if @lookandfeel.disabled?(:search)
+      colspan_map.store [0,1], 2
+    else
+      components.store [1,1], SelectSearchForm
     end
     y = 2
     if(@lookandfeel.enabled?(:explain_sort, false))
