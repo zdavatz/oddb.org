@@ -180,7 +180,7 @@ td.subheading, th.subheading {
 	padding : 4px;
 	text-decoration : none;
 }
-a.subheading {
+a.subheading, td.subheading a.navigation {
 	padding : 0px;
 	color : $bg_bright_font_color;
   white-space: nowrap;
@@ -188,14 +188,16 @@ a.subheading {
 td.subheading a.bold {
 	padding : 4px;
 }
-a.subheading:link, a.subheading:visited {
+a.subheading:link, a.subheading:visited, td.subheading a.navigation:visited {
 	color : $tabnavigation_link_color;
 }
-a.subheading:link:hover, a.subheading:visited:hover {
-	color : red;
+a.subheading:link:hover, a.subheading:visited:hover,
+td.subheading a.navigation:link:hover,
+td.subheading a.navigation:visited:hover {
+	color : $subheading_link_hover_color;
 }
 a.subheading:active {
-	color : silver;
+	color : $subheading_link_active_color;
 }
 
 /* navigation-classes */

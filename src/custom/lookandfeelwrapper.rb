@@ -1171,7 +1171,7 @@ module ODDB
         :ywesee_contact_text  => 'Bitte schreiben Sie an:',
       }
     }
-    DISABLED = [ :search ]
+    DISABLED = [ :search, :zone_navigation ]
     HTML_ATTRIBUTES = {
       :logo => {
         'width'  => '168',

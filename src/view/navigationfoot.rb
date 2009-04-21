@@ -38,6 +38,19 @@ module ODDB
           @component_css_map = {
             [0,0]	=>	'subheading',
           }
+        elsif(@lookandfeel.disabled?(:zone_navigation))
+          @components = {
+            [0,0]		=>	View::Copyright,
+            [1,0]		=>	View::Navigation,
+          }
+          @css_map = {
+            [0,0]	=>	'navigation',
+            [1,0]	=>	'navigation right',
+          }
+          @component_css_map = {
+            [0,0]	=>	'navigation',
+            [1,0]	=>	'navigation right',
+          }
         elsif(@lookandfeel.enabled?(:custom_navigation, false) \
 					 || @lookandfeel.zone_navigation.empty?)
           @components = {
