@@ -140,6 +140,7 @@ module ODDB
       :breadcrumbs,
 			:companylist,
       :country_navigation,
+      :ddd_chart,
 			:fachinfos,
 			:feedback,
 			:feedback_rss,
