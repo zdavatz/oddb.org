@@ -119,23 +119,29 @@ class ResultComposite < HtmlGrid::Composite
 		super
 	end
   def breadcrumbs(model, session=@session)
-    dv = HtmlGrid::Span.new(model, @session, self)
-    dv.css_class = "breadcrumb"
-    dv.value = "&lt;"
-    span1 = HtmlGrid::Span.new(model, @session, self)
-    span1.css_class = "breadcrumb-2 bold"
-    link1 = HtmlGrid::Link.new(:back_to_home, model, @session, self)
-    link1.href = @lookandfeel._event_url(:home)
-    link1.css_class = "list"
-    span1.value = link1
+    breadcrumbs = []
+    level = 2
+    if @lookandfeel.enabled?(:home)
+      dv = HtmlGrid::Span.new(model, @session, self)
+      dv.css_class = "breadcrumb"
+      dv.value = "&lt;"
+      span1 = HtmlGrid::Span.new(model, @session, self)
+      span1.css_class = "breadcrumb-#{level} bold"
+      level -= 1
+      link1 = HtmlGrid::Link.new(:back_to_home, model, @session, self)
+      link1.href = @lookandfeel._event_url(:home)
+      link1.css_class = "list"
+      span1.value = link1
+      breadcrumbs.push span1, dv
+    end
     span2 = HtmlGrid::Span.new(model, @session, self)
-    span2.css_class = "breadcrumb-1"
+    span2.css_class = "breadcrumb-#{level}"
     query = @session.persistent_user_input(:search_query)
     span2.value = @lookandfeel.lookup(:list_for, query, model.package_count)
     span3 = HtmlGrid::Span.new(model, @session, self)
     span3.css_class = "breadcrumb"
     span3.value = '&ndash;'
-    [span1, dv, span2, span3]
+    breadcrumbs.push span2, span3
   end
 	def dsp_sort(model, session)
 		url = @lookandfeel.event_url(:sort, {:sortvalue => :dsp})

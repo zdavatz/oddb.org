@@ -1160,7 +1160,26 @@ module ODDB
   end
   class LookandfeelDesitin < SBSM::LookandfeelWrapper
     RESULT_FILTER = Proc.new do |seq| (comp = seq.company) && comp.oid == 215 end
-    ENABLED = [ :ajax, :breadcrumbs, :ddd_chart, :logo ]
+    ENABLED = [ :ajax, :breadcrumbs, :ddd_chart, :login_form, :logo, :logout,
+                :ywesee_contact, ]
+    DICTIONARIES = {
+      'de' => {
+        :ywesee_contact_email => 'Franziska.Almgard@desitin.ch',
+        :ywesee_contact_href  => 'mailto:Fransziska.Almgard@desitin.ch',
+        :ywesee_contact       => 'Kontakt',
+        :ywesee_contact_name  => 'Franziska Almgard',
+        :ywesee_contact_text  => 'Bitte schreiben Sie an:',
+      }
+    }
     DISABLED = [ :search ]
+    HTML_ATTRIBUTES = {
+      :logo => {
+        'width'  => '168',
+        'height' => '95',
+      },
+    }
+    RESOURCES = {
+      :logo => 'logo.jpg',
+    }
   end
 end

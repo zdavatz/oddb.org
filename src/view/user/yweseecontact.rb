@@ -18,6 +18,7 @@ class YweseeContactForm < HtmlGrid::Form
 	CSS_MAP = {
 		[0,0]	=>	'list',
 		[0,1]	=>	'list',
+		[0,2]	=>	'list',
 	}
 	def ywesee_contact_email(model, session)
 		link = HtmlGrid::Link.new(:ywesee_contact_email, model, session, self)

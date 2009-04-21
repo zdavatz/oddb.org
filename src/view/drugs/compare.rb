@@ -133,17 +133,24 @@ module InsertBackbutton
   end
   def backtracking(model, session=@session)
     if(@lookandfeel.enabled?(:breadcrumbs))
+      breadcrumbs = []
+      level = 3
       dv = HtmlGrid::Span.new(model, @session, self)
       dv.css_class = "breadcrumb"
       dv.value = "&lt;"
-      span1 = HtmlGrid::Span.new(model, @session, self)
-      span1.css_class = "breadcrumb-3 bold"
-      link1 = HtmlGrid::Link.new(:back_to_home, model, @session, self)
-      link1.href = @lookandfeel._event_url(:home)
-      link1.css_class = "list"
-      span1.value = link1
+      if @lookandfeel.enabled?(:home)
+        span1 = HtmlGrid::Span.new(model, @session, self)
+        span1.css_class = "breadcrumb-#{level} bold"
+        level -= 1
+        link1 = HtmlGrid::Link.new(:back_to_home, model, @session, self)
+        link1.href = @lookandfeel._event_url(:home)
+        link1.css_class = "list"
+        span1.value = link1
+        breadcrumbs.push span1, dv
+      end
       span2 = HtmlGrid::Span.new(model, @session, self)
-      span2.css_class = "breadcrumb-2"
+      span2.css_class = "breadcrumb-#{level}"
+      level -= 1
       link2 = HtmlGrid::Link.new(:result, model, @session, self)
       link2.css_class = "list"
       query = @session.persistent_user_input(:search_query)
@@ -155,13 +162,13 @@ module InsertBackbutton
       link2.value = @lookandfeel.lookup(:back_to_list_for, query)
       span2.value = link2
       span3 = HtmlGrid::Span.new(model, @session, self)
-      span3.css_class = "breadcrumb-1"
+      span3.css_class = "breadcrumb-#{level}"
       if(respond_to?(:pointer_descr))
         span3.value = self.send(:pointer_descr, model)
       elsif(model.respond_to? :pointer_descr)
         span3.value = model.pointer_descr
       end
-      [span1, dv, span2, dv, span3]
+      breadcrumbs.push span2, dv, span3
     else
       super
     end

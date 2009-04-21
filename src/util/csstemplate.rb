@@ -27,7 +27,10 @@ module ODDB
 				:navigation_link_font_color =>	'white',
 				:rslt_link_hover_color		=>	'#6666CC',
 			},
-      :desitin => {},
+      :desitin => {
+				:bg_dark                  => '#1b49a2',
+				:bg_bright                => '#d8e1f3',
+      },
 			:'just-medical' => {
 				:bg												=>	'#fdeeb8',
 				:bg_bright								=>	'#e5c237',
