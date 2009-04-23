@@ -115,7 +115,7 @@ module ODDB
       cs = comparable_size
       bottom = cs * 0.75
       top = cs * 1.25
-      comparables = []
+      comparables = generic_group_comparables
       @sequence.comparables.each { |seq|
         comparables.concat seq.public_packages.select { |pack|
           comparable?(bottom, top, pack)
@@ -187,6 +187,13 @@ module ODDB
         part.fix_pointers
       }
       odba_store
+    end
+    def generic_group_comparables
+      if @generic_group
+        @generic_group.packages - [self]
+      else
+        []
+      end
     end
 		def good_result?(query)
 			query = query.to_s.downcase

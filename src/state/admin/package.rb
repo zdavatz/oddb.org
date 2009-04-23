@@ -153,6 +153,36 @@ class Package < State::Admin::Global
 		item.carry(:limitation, false)
 		State::Admin::SlEntry.new(@session, item)
 	end
+  def update
+    super
+    unless error?
+      pointer = nil
+      ikskeys = @session.user_input(:generic_group).split(/[^\d]+/)
+      unless ikskeys.empty?
+        packages = ikskeys.collect do |ikskey|
+          @session.package_by_ikskey ikskey
+        end
+        packages.push @model
+        group = @model.generic_group
+        if group.nil?
+          group = @session.create Persistence::Pointer.new([:generic_group, @model.pointer])
+        end
+        pointer = group.pointer
+        add = packages - group.packages
+        rem = group.packages - packages
+        rem.each do |pac|
+          @session.app.update pac.pointer, { :generic_group => nil }, unique_email
+        end
+        add.each do |pac|
+          @session.app.update pac.pointer, { :generic_group => pointer },
+                              unique_email
+        end
+      end
+      args = { :generic_group => pointer }
+      @model = @session.app.update(@model.pointer, args, unique_email)
+    end
+    self
+  end
 end
 class CompanyPackage < State::Admin::Package
 	def init

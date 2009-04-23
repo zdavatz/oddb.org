@@ -149,23 +149,26 @@ class PackageForm < HtmlGrid::Composite
 		[2,2]		=>	:sl_entry,
 		[0,3]		=>	:price_exfactory,
 		[2,3]		=>	:price_public,
-		[0,4]		=>	:generic_group,
-		[2,4]		=>	:market_date,
-    [2,5]   =>  :preview_with_market_date,
-		[0,6]		=>	:deductible,
-		[2,6]		=>	:lppv,
-		[0,7]		=>	:out_of_trade,
-		[0,8]		=>	:disable,
-		[2,8]		=>	:pharmacode,
-		[1,9,0]	=>	:submit,
-		[1,9,1]	=>	:delete_item,
+    [0,4]   =>  :market_date,
+    [2,4]   =>  :preview_with_market_date,
+    [0,5]   =>  :deductible,
+    [2,5]   =>  :lppv,
+    [0,6]   =>  :out_of_trade,
+    [0,7]   =>  :disable,
+    [2,7]   =>  :pharmacode,
+    [0,8]   =>  :generic_group,
+    [1,9,0] =>  :submit,
+    [1,9,1] =>  :delete_item,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0,4,5]	=>	'standard',
+    [3,7]     =>  'standard',
+    [1,8]     =>  'standard',
 		[3,2]			=>	'list',
 	}
 	CSS_MAP = {
 		[0,0,4,10]	=>	'list',
+    [0,8]       =>  'list top',
 	}
 	LABELS = true
   LOOKANDFEEL_MAP = {
@@ -210,7 +213,6 @@ class PackageForm < HtmlGrid::Composite
 				link = HtmlGrid::Link.new(:sl_modify, sl_entry, session, self)
 				args = {'pointer' => sl_entry.pointer}
 				link.href = @lookandfeel._event_url(:resolve, args)
-				#PointerLink.new(:pointer_descr, sl_entry, session, self)
 			else
 				link = HtmlGrid::Link.new(:sl_create, sl_entry, session, self)
 				link.href = @lookandfeel.event_url(:new_item)
@@ -221,9 +223,12 @@ class PackageForm < HtmlGrid::Composite
 		end
 	end
   def generic_group(model, session=@session)
-    if (group = model.generic_group) && (pack = group.packages.first)
-      PointerLink.new(:name, pack, @session, self)
-    end
+    input = HtmlGrid::Textarea.new(:generic_group, model, @session, self)
+    input.value = model.generic_group_comparables.collect do |pac|
+      pac.ikskey
+    end.sort.join(', ')
+    input.label = true
+    input
   end
 end
 class DeductiblePackageForm < View::Admin::PackageInnerComposite

@@ -329,6 +329,7 @@ module ODDB
       :for,
 			:fr,
 			:galenic_form,
+      :generic_group,
 			:heading,
       :highlight,
 			:index_therapeuticus,

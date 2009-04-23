@@ -728,6 +728,14 @@ class OddbPrevalence
   def package(pcode)
     ODDB::Package.find_by_pharmacode(pcode.to_s.gsub(/^0+/u, ''))
   end
+  def package_by_ikskey(ikskey)
+    ikskey = ikskey.to_s
+    iksnr = "%05i" % ikskey[-8..-4].to_i
+    ikscd = ikskey[-3..-1]
+    if reg = registration(iksnr)
+      reg.package ikscd
+    end
+  end
 	def package_count
 		@package_count ||= count_packages()
 	end
@@ -1316,18 +1324,22 @@ module ODDB
 		def initialize
       @rss_mutex = Mutex.new
 			@admin_threads = ThreadGroup.new
+      start = Time.now
 			@system = ODBA.cache.fetch_named('oddbapp', self){
 				OddbPrevalence.new
 			}
 			puts "init system"
 			@system.init
 			@system.odba_store
+      puts "init system: #{Time.now - start}"
 			puts "setup drb-delegation"
 			super(@system)
 			puts "reset"
 			reset()
+      puts "reset: #{Time.now - start}"
       log_size
 			puts "system initialized"
+      puts "initialized: #{Time.now - start}"
 		end
 		# prevalence-methods ################################
 		def accept_incomplete_registration(reg)

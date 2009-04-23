@@ -14,7 +14,8 @@ class DDDChart < Global
     img_name = @session.user_input(:for)
     match = /^(\d{5})(\d{3})/.match img_name
     original = @session.registration(match[1]).package(match[2])
-    packages = original.sequence.public_packages
+    packages = original.generic_group_comparables
+    packages.concat original.sequence.public_packages
     original.sequence.comparables.each do |seq|
       packages.concat seq.public_packages
     end
