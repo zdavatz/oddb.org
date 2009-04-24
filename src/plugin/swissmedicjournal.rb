@@ -3,7 +3,6 @@
 
 require 'date'
 require 'plugin/plugin'
-require 'swissmedicjournal/control'
 require 'util/persistence'
 require 'model/address'
 require 'cgi'
