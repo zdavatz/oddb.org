@@ -1311,6 +1311,7 @@ module ODDB
 		AUTOSNAPSHOT = true
 		CLEANING_INTERVAL = 5*60
 		EXPORT_HOUR = 2
+    MEMORY_LIMIT = 10240
 		RUN_CLEANER = true
 		RUN_EXPORTER = true
 		RUN_EXPORTER_NOTIFY = true
@@ -2078,6 +2079,10 @@ module ODDB
             lastbytes = bytes
             bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
             mbytes = bytes / (2**20)
+            if mbytes > MEMORY_LIMIT
+              puts "Footprint exceeds #{MEMORY_LIMIT}MB. Exiting."
+              Thread.main.exit
+            end
             lastsessions = sessions
             sessions = @sessions.size
             gc = ''
@@ -2093,7 +2098,7 @@ module ODDB
             File.open(path, 'w') { |fh|
               fh.puts lines
             }
-          rescue Exception => e
+          rescue StandardError => e
             puts e.class
             puts e.message
             $stdout.flush
