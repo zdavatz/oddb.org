@@ -179,10 +179,14 @@ class SideBar < Gruff::Base
             longest_factor = factor
           end
         end
-        longest_left_label_width = calculate_width(@marker_font_size,
-                                                   longest_label) * label_kerning
-        @factor_width = calculate_width(@marker_font_size,
-                                        longest_factor) * label_kerning
+        unless longest_label.empty?
+          longest_left_label_width = calculate_width(@marker_font_size,
+                                                     longest_label) * label_kerning
+        end
+        unless longest_factor.empty?
+          @factor_width = calculate_width(@marker_font_size,
+                                          longest_factor) * label_kerning
+        end
       else
         longest_left_label_width = calculate_width(@marker_font_size,
         label(@maximum_value.to_f))
