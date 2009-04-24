@@ -59,18 +59,24 @@ class SideBar < Gruff::Base
 
     @d.draw(@base_image)
   end
+  FACTOR_PTRN = /^[\s\d.\/]+x\s*/
   def draw_label(y_offset, index)
     if (text = @labels[index]) && @labels_seen[index].nil?
       price = text.slice! /[A-Z]{3}\s+[\d.]+$/
       @d.fill             = @font_color
       @d.font             = @font if @font
       @d.stroke           = 'transparent'
-      @d.font_weight      = NormalWeight
       @d.pointsize        = scale_fontsize(@marker_font_size)
       @d.gravity          = WestGravity
+      x_offset = @left_margin + LABEL_MARGIN
+      if factor = text.slice!(FACTOR_PTRN)
+        @d.font_weight    = BoldWeight
+        @d                = @d.annotate_scaled(@base_image,
+                            1, 1, x_offset, y_offset, factor, @scale)
+      end
+      @d.font_weight      = NormalWeight
       @d                  = @d.annotate_scaled(@base_image,
-                              1, 1,
-                              @left_margin + LABEL_MARGIN, y_offset,
+                              1, 1, x_offset + @factor_width, y_offset,
                               text, @scale)
 
       @d.gravity          = EastGravity
@@ -153,6 +159,9 @@ class SideBar < Gruff::Base
     @legend_caps_height = @hide_legend ? 0 :
     calculate_caps_height(@legend_font_size)
 
+    @factor_width = 0
+    label_kerning = 1.1
+
     if @hide_line_markers
       (@graph_left,
       @graph_right_margin,
@@ -160,8 +169,20 @@ class SideBar < Gruff::Base
     else
       longest_left_label_width = 0
       if @has_left_labels
-        longest_left_label_width =  calculate_width(@marker_font_size,
-        labels.values.inject('') { |value, memo| (value.to_s.length > memo.to_s.length) ? value : memo }) * 1.05
+        longest_factor = longest_label = ''
+        labels.values.each do |label|
+          if label.to_s.length > longest_label.length
+            longest_label = label.to_s
+          end
+          if (factor = label[FACTOR_PTRN]) \
+            && factor.length > longest_factor.length
+            longest_factor = factor
+          end
+        end
+        longest_left_label_width = calculate_width(@marker_font_size,
+                                                   longest_label) * label_kerning
+        @factor_width = calculate_width(@marker_font_size,
+                                        longest_factor) * label_kerning
       else
         longest_left_label_width = calculate_width(@marker_font_size,
         label(@maximum_value.to_f))
@@ -217,6 +238,8 @@ class DDDChart < HtmlGrid::Component
     @original_index = 0
     img_name = @session.user_input(:for)
     ikskey = img_name[/^\d{8}/]
+    original = @session.package_by_ikskey ikskey
+    oseq = original.sequence
     @model.each_with_index do |pac, idx|
       ddd_price = pac.ddd_price
       @data.push ddd_price
@@ -225,11 +248,15 @@ class DDDChart < HtmlGrid::Component
       fullname = u sprintf("%s, %s", base, size)
       name = fullname.length > MAX_LEN ? fullname[0, MAX_LEN - 1] + "…" : fullname
       label = sprintf "%s: CHF %4.2f", name, ddd_price
-      @labels.store idx, label
-      if pac.ikskey == ikskey
+      if pac == original
         @original_index = idx
         @title = @lookandfeel.lookup(:ddd_chart_title, fullname)
+      elsif pac.sequence.comparable?(oseq, 2)
+        label = sprintf "2 x %s: CHF %4.2f", name, ddd_price
+      elsif pac.sequence.comparable?(oseq, 0.5)
+        label = sprintf "1/2 x %s: CHF %4.2f", name, ddd_price
       end
+      @labels.store idx, label
     end
     super
   end

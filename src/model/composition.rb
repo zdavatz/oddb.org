@@ -72,6 +72,15 @@ module ODDB
     def to_s
       @active_agents.join(', ')
     end
+    def *(factor)
+      result = dup
+      result.active_agents = @active_agents.collect do |act|
+        factored = act.dup
+        factored.dose = act.dose * factor
+        factored
+      end
+      result
+    end
     def ==(other)
       other.is_a?(Composition) \
 				&& !@galenic_form.nil? \
@@ -115,5 +124,7 @@ module ODDB
       end
       target = value
     end	
+    protected
+    attr_writer :active_agents
   end
 end

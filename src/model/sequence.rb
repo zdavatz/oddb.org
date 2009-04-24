@@ -75,19 +75,23 @@ module ODDB
 		def company_name
 			@registration.company_name
 		end
-		def comparables
+		def comparables(factor = 1.0)
 			if(@atc_class)
 				@atc_class.sequences.select { |seq|
-					comparable?(seq)
+					comparable?(seq, factor)
 				}
 			else
 				[]
 			end
 		end
-		def comparable?(seq)
+		def comparable?(seq, factor = 1.0)
+      comps = @compositions
+      if factor != 1
+        comps = @compositions.collect do |comp| comp * factor end
+      end
 			seq != self \
 				&& seq.active? \
-        && seq.compositions.sort == @compositions.sort
+        && seq.compositions.sort == comps.sort
 		end
     def complementary_type
       @registration.complementary_type

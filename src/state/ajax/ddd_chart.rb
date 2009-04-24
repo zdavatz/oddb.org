@@ -16,8 +16,10 @@ class DDDChart < Global
     original = @session.registration(match[1]).package(match[2])
     packages = original.generic_group_comparables
     packages.concat original.sequence.public_packages
-    original.sequence.comparables.each do |seq|
-      packages.concat seq.public_packages
+    [0.5, 2, 1].each do |factor|
+      original.sequence.comparables(factor).each do |seq|
+        packages.concat seq.public_packages
+      end
     end
     @model = packages.select do |pac| pac.ddd_price end.sort_by do |pac|
       [ pac.name_base, pac.size ]
