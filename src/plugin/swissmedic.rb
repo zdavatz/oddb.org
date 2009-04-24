@@ -113,7 +113,7 @@ module ODDB
         seq = update_sequence(reg, row) if reg
         update_composition(seq, row) if seq
       }
-    rescue Exception => err
+    rescue StandardError => err
       puts "#{err.class} when fixing #{source_row(row).pretty_inspect}"
       puts err.backtrace[0,10]
     end

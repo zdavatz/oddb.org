@@ -72,7 +72,7 @@ module ODDB
 					reg.odba_store
 				end
 			end
-		rescue Exception => exc
+		rescue StandardError => exc
 			puts exc.class
 			puts exc.message
 			puts exc.backtrace

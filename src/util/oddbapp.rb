@@ -1242,7 +1242,7 @@ class OddbPrevalence
 					begin
 						puts "dropping: #{index_definition.index_name}"
 						ODBA.cache.drop_index(index_definition.index_name)
-					rescue Exception => e
+					rescue StandardError => e
 						puts e.message
 					end
 					puts "creating: #{index_definition.index_name}"
@@ -1254,7 +1254,7 @@ class OddbPrevalence
 						puts "source.size: #{source.size}"
 						ODBA.cache.fill_index(index_definition.index_name, 
 							source)
-					rescue Exception => e
+					rescue StandardError => e
 						puts e.class
 						puts e.message
 						puts e.backtrace
@@ -1510,7 +1510,6 @@ module ODDB
 						EXPORT_HOUR)
 					sleep(next_run - Time.now)
 					Exporter.new(self).run
-          #Thread.main.exit
 					GC.start
 					today = @@today.next
 				}
@@ -1561,7 +1560,7 @@ module ODDB
           plg = Plugin.new(self)
           plg.update_rss_feeds('feedback.rss', values, View::Rss::Feedback)
         }
-        rescue Exception => e
+        rescue StandardError => e
           puts e.message
           puts e.backtrace
         end
@@ -2081,7 +2080,7 @@ module ODDB
             mbytes = bytes / (2**20)
             if mbytes > MEMORY_LIMIT
               puts "Footprint exceeds #{MEMORY_LIMIT}MB. Exiting."
-              Thread.main.exit
+              Thread.main.raise SystemExit
             end
             lastsessions = sessions
             sessions = @sessions.size

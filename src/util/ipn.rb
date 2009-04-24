@@ -178,7 +178,7 @@ module Ipn
         smtp.sendmail(outgoing.encoded, SMTP_FROM, recipients)
       }
     end
-  rescue Exception => e
+  rescue StandardError => e
     puts e.class
     puts e.message
     puts e.backtrace
@@ -218,7 +218,7 @@ module Ipn
         smtp.sendmail(outgoing.encoded, SMTP_FROM, recipients)
       }
     end
-  rescue Exception => e
+  rescue StandardError => e
     puts e.class
     puts e.message
     puts e.backtrace

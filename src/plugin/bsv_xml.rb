@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # BsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 
 require 'config'
@@ -256,7 +257,7 @@ module ODDB
         else
           @text = ''
         end
-      rescue Exception => e
+      rescue StandardError => e
         e.message << "\n@report: " << @report.inspect
         raise
       end
@@ -484,7 +485,7 @@ module ODDB
           end
         end
         @text = nil
-      rescue Exception => e
+      rescue StandardError => e
         e.message << "\n@report: " << @report.inspect
         raise
       end

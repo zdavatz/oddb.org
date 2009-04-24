@@ -65,7 +65,7 @@ module ODDB
 				''
 			end
 			str << 'http://ch.oddb.org/de/gcc/resolve/pointer/' << CGI.escape(pointer.to_s) << ' '
-		rescue Exception
+		rescue StandardError
 			"Error creating Link for #{pointer.inspect}"
 		end
     def update_rss_feeds(name, model, view_klass)
