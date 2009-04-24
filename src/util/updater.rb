@@ -168,7 +168,7 @@ module ODDB
                 end
               end
             end
-            @app.update(log.pointer, {:change_flags, change_flags})
+            @app.update(log.pointer, {:change_flags => change_flags})
             partlog = Log.new(latest)
             partlog.update_values(log_info(plug))
             partlog.notify(subj)
@@ -399,7 +399,7 @@ module ODDB
         notify_error(klass, subj, e)
         raise
       end
-		rescue Exception
+		rescue StandardError
 			nil
 		end
 		def update_immediate(klass, subj, update_method=:update)
@@ -408,7 +408,7 @@ module ODDB
 			log = Log.new(@@today)
 			log.update_values(log_info(plug))
 			log.notify(subj)
-		rescue Exception => e #RuntimeError, StandardError => e
+		rescue StandardError => e #RuntimeError, StandardError => e
 			notify_error(klass, subj, e)
 		end
 		def update_notify_simple(klass, subj, update_method=:update)

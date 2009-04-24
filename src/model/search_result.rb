@@ -109,7 +109,7 @@ module ODDB
           @atc_sorted.reverse!
         end
         delete_empty_packages(@atc_sorted)
-      rescue Exception => e
+      rescue StandardError => e
         puts e.message
         puts e.backtrace
         atc_facades
