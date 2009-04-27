@@ -9,6 +9,10 @@ require 'drb/drb'
 require 'util/oddbapp'
 require 'etc/db_connection'
 
+File.open("/proc/#{Process.pid}/oom_adj", 'w') do |fh|
+  fh.puts "15"
+end
+
 trap("USR1") { 
 	puts "caught USR1 signal, clearing Sessions\n"
 	$oddb.clear 
