@@ -38,9 +38,7 @@ class AssignDeprivedSequence < State::Admin::Global
 	def init
 		super
 		@model = DeprivedSequenceFacade.new(@model)
-		#if(@model.sequences.empty? \
-		#	&& (match = /^[^\s]+/.match(@model.name_base)) \
-		if((match = /^[^\s]+/u.match(@model.name_base)) \
+		if((match = /^[\w\d]+/u.match(@model.name_base)) \
 			&& match[0].size > 3)
 			@model.sequences = named_sequences(match[0])
 		end
