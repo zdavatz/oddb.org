@@ -160,7 +160,7 @@ class SideBar < Gruff::Base
     calculate_caps_height(@legend_font_size)
 
     @factor_width = 0
-    label_kerning = 1.1
+    label_kerning = 1.2
 
     if @hide_line_markers
       (@graph_left,
