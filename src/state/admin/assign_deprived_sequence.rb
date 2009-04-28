@@ -40,7 +40,11 @@ class AssignDeprivedSequence < State::Admin::Global
 		@model = DeprivedSequenceFacade.new(@model)
 		if((match = /^[\w\d]+/u.match(@model.name_base)) \
 			&& match[0].size > 3)
-			@model.sequences = named_sequences(match[0])
+      sequences = named_sequences(match[0])
+      if sequences.empty? || sequences.size > 15
+        sequences = @model.sequence.registration.sequences.values
+      end
+      @model.sequences = sequences
 		end
 	end
 	def assign_deprived_sequence
