@@ -42,6 +42,7 @@ class AssignDeprivedSequence < State::Admin::Global
 			&& match[0].size > 3)
       sequences = named_sequences(match[0])
       if sequences.empty? || sequences.size > 15
+        @warnings.clear
         sequences = @model.sequence.registration.sequences.values
       end
       @model.sequences = sequences
