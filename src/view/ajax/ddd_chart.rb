@@ -253,14 +253,13 @@ class DDDChart < HtmlGrid::Component
       fullname = u sprintf("%s, %s", base, size)
       name = fullname.length > MAX_LEN ? fullname[0, MAX_LEN - 1] + "…" : fullname
       label = sprintf "%s: CHF %4.2f", name, ddd_price
+      pac_factor = (pac.generic_group_factor || 1).to_f / my_factor
       if pac == original
         @original_index = idx
         @title = @lookandfeel.lookup(:ddd_chart_title, fullname)
-      elsif (pac.generic_group_factor/my_factor) == 2 \
-        || pac.sequence.comparable?(oseq, 2)
+      elsif pac_factor == 2 || pac.sequence.comparable?(oseq, 2)
         label = sprintf "2 x %s: CHF %4.2f", name, ddd_price
-      elsif (pac.generic_group_factor/my_factor == 0.5) \
-        || pac.sequence.comparable?(oseq, 0.5)
+      elsif pac_factor == 0.5 || pac.sequence.comparable?(oseq, 0.5)
         label = sprintf "1/2 x %s: CHF %4.2f", name, ddd_price
       end
       @labels.store idx, label
