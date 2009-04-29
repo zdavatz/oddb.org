@@ -157,12 +157,14 @@ class Package < State::Admin::Global
     super
     unless error?
       pointer = nil
-      ikskeys = @session.user_input(:generic_group).split(/[^\d]+/)
-      unless ikskeys.empty?
-        packages = ikskeys.collect do |ikskey|
-          @session.package_by_ikskey ikskey
+      group = @session.user_input(:generic_group)
+      unless group.empty?
+        packages = []
+        group.scan(/(\d+)\s*(?:\(([\d.]+)x?\))?/) do |ikskey, factor|
+          packages.push [ @session.package_by_ikskey(ikskey),
+                          (factor || 1).to_f ]
         end
-        packages.push @model
+        packages.push [@model, 1]
         group = @model.generic_group
         if group.nil?
           group = @session.create Persistence::Pointer.new([:generic_group, @model.pointer])
@@ -170,12 +172,12 @@ class Package < State::Admin::Global
         pointer = group.pointer
         add = packages - group.packages
         rem = group.packages - packages
-        rem.each do |pac|
+        rem.each do |pac, factor|
           @session.app.update pac.pointer, { :generic_group => nil }, unique_email
         end
-        add.each do |pac|
-          @session.app.update pac.pointer, { :generic_group => pointer },
-                              unique_email
+        add.each do |pac, factor|
+          args = { :generic_group => pointer, :generic_group_factor => factor }
+          @session.app.update pac.pointer, args, unique_email
         end
       end
       args = { :generic_group => pointer }

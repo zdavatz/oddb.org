@@ -21,6 +21,7 @@ class DDDChart < Global
         packages.concat seq.public_packages
       end
     end
+    packages.uniq!
     @model = packages.select do |pac| pac.ddd_price end.sort_by do |pac|
       [ pac.name_base, pac.size ]
     end

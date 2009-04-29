@@ -243,6 +243,7 @@ class DDDChart < HtmlGrid::Component
     img_name = @session.user_input(:for)
     ikskey = img_name[/^\d{8}/]
     original = @session.package_by_ikskey ikskey
+    my_factor = (original.generic_group_factor || 1).to_f
     oseq = original.sequence
     @model.each_with_index do |pac, idx|
       ddd_price = pac.ddd_price
@@ -255,9 +256,11 @@ class DDDChart < HtmlGrid::Component
       if pac == original
         @original_index = idx
         @title = @lookandfeel.lookup(:ddd_chart_title, fullname)
-      elsif pac.sequence.comparable?(oseq, 2)
+      elsif (pac.generic_group_factor/my_factor) == 2 \
+        || pac.sequence.comparable?(oseq, 2)
         label = sprintf "2 x %s: CHF %4.2f", name, ddd_price
-      elsif pac.sequence.comparable?(oseq, 0.5)
+      elsif (pac.generic_group_factor/my_factor == 0.5) \
+        || pac.sequence.comparable?(oseq, 0.5)
         label = sprintf "1/2 x %s: CHF %4.2f", name, ddd_price
       end
       @labels.store idx, label
