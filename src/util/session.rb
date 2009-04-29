@@ -61,8 +61,7 @@ module ODDB
 			@flavor ||= (@valid_input[:partner] || super)
 		end
 		def limit_queries
-			#requests = (@@requests[remote_ip] ||= [])
-			requests = (@requests ||= [])
+			requests = (@@requests[remote_ip] ||= [])
 			if(@state.limited?)
 				requests.delete_if { |other| 
 					(@process_start - other) >= QUERY_LIMIT_AGE 
