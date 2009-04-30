@@ -140,36 +140,39 @@ end
 class PackageForm < HtmlGrid::Composite
   include FormMethods
 	include HtmlGrid::ErrorMessage
-	COMPONENTS = {
-		[0,0]		=>	:iksnr,
-		[2,0]		=>	:ikscd,
-		[0,1]		=>	:descr,
-		[2,1]		=>	:pretty_dose,
-		[0,2]		=>	:ikscat,
-		[2,2]		=>	:sl_entry,
-		[0,3]		=>	:price_exfactory,
-		[2,3]		=>	:price_public,
-    [0,4]   =>  :market_date,
-    [2,4]   =>  :preview_with_market_date,
-    [0,5]   =>  :deductible,
-    [2,5]   =>  :lppv,
-    [0,6]   =>  :out_of_trade,
-    [0,7]   =>  :disable,
-    [2,7]   =>  :pharmacode,
-    [0,8]   =>  :generic_group,
-    [1,9,0] =>  :submit,
-    [1,9,1] =>  :delete_item,
-	}
-	COMPONENT_CSS_MAP = {
-		[0,0,4,5]	=>	'standard',
-    [3,7]     =>  'standard',
-    [1,8]     =>  'standard',
-		[3,2]			=>	'list',
-	}
-	CSS_MAP = {
-		[0,0,4,10]	=>	'list',
-    [0,8]       =>  'list top',
-	}
+  COMPONENTS = {
+    [0,0]		=>	:iksnr,
+    [2,0]		=>	:ikscd,
+    [0,1]		=>	:descr,
+    [2,1]   =>  :photo_link,
+    [2,2]		=>	:pretty_dose,
+    [0,3]		=>	:ikscat,
+    [2,3]		=>	:sl_entry,
+    [0,4]		=>	:price_exfactory,
+    [2,4]		=>	:price_public,
+    [0,5]   =>  :market_date,
+    [2,5]   =>  :preview_with_market_date,
+    [0,6]   =>  :deductible,
+    [2,6]   =>  :lppv,
+    [0,7]   =>  :out_of_trade,
+    [0,8]   =>  :disable,
+    [2,8]   =>  :pharmacode,
+    [0,9]   =>  :generic_group,
+    [1,10,0] =>  :submit,
+    [1,10,1] =>  :delete_item,
+  }
+  COMPONENT_CSS_MAP = {
+    [0,0,4,1]	=>	'standard',
+    [0,2,4,4]	=>	'standard',
+    [3,1]			=>	'xxl',
+    [3,3]			=>	'list',
+    [3,8]     =>  'standard',
+    [1,9]     =>  'standard',
+  }
+  CSS_MAP = {
+    [0,0,4,11]	=>	'list',
+    [0,9]       =>  'list top',
+  }
 	LABELS = true
   LOOKANDFEEL_MAP = {
     :descr  =>  :description,

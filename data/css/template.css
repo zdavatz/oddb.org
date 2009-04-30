@@ -1,4 +1,4 @@
-@import "resources/dojo/dijit/themes/tundra/tundra.css";
+@import "/resources/dojo/dijit/themes/tundra/tundra.css";
 /* Top-Level */
 body {
 	font-family : $std_font_family;
@@ -729,6 +729,9 @@ td.center input.search {
 }
 input.xl {
 	width : 350px;
+}
+input.xxl {
+	width : 400px;
 }
 input.small {
 	width : 40px;

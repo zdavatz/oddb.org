@@ -62,8 +62,8 @@ module ODDB
         ]
 				link.href = @lookandfeel._event_url(:compare, args)
 				link.value = breakline(model.name_base, 25)
-				link.set_attribute('class', 
-					'big' << resolve_suffix(model))
+        link_class = 'big' << resolve_suffix(model)
+				link.css_class = link_class
 				if(model.good_result?(@query) && !@lookandfeel.disabled?(:best_result))
 					 link.set_attribute('name', 'best_result')
 				end
@@ -78,7 +78,15 @@ module ODDB
 					(indication.send(@session.language) unless(indication.nil?)),
 				].compact.join(', ')
 				link.set_attribute('title', title)
-				link
+        if url = model.photo_link
+          photo = HtmlGrid::Link.new(:photo_link_short, model, @session, self)
+          photo.href = url
+          photo.set_attribute 'title', @lookandfeel.lookup(:photo_link_title)
+          photo.css_class = link_class
+          [link, ' ‐ ', photo]
+        else
+          link
+        end
 			end
 			def price(model, session=@session)
 				formatted_price(:price, model)
