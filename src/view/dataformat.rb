@@ -78,7 +78,8 @@ module ODDB
 					(indication.send(@session.language) unless(indication.nil?)),
 				].compact.join(', ')
 				link.set_attribute('title', title)
-        if url = model.photo_link
+        url = model.photo_link
+        unless url.to_s.empty?
           photo = HtmlGrid::Link.new(:photo_link_short, model, @session, self)
           photo.href = url
           photo.set_attribute 'title', @lookandfeel.lookup(:photo_link_title)
