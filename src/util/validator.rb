@@ -346,6 +346,7 @@ module ODDB
 			:pattern,
 			:payment_status,
 			:phone, ## needed for download-registration!!
+      :photo_link,
 			:pi_update,
 			:plz,
 			:powerlink,
