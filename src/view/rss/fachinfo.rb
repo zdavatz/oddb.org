@@ -12,6 +12,7 @@ class FachinfoItem < HtmlGrid::DivComposite
   COMPONENTS = {}
   DEFAULT_CLASS = View::Chapter
   def init
+    @model = @model.send(@session.language)
     @model.chapter_names.each_with_index { |name, idx|
       components.store([0,idx], name)
       break if(name == :indications || idx > 4)
@@ -56,7 +57,7 @@ class Fachinfo < HtmlGrid::Component
         item.guid.isPermaLink = true
         item.date = fachinfo.revision
 
-        comp = FachinfoTemplate.new(document, @session, self)
+        comp = FachinfoTemplate.new(fachinfo, @session, self)
 
         ptrn = /#{Regexp.escape(name)}(®|\(TM\))?/u
         link = HtmlGrid::Link.new(:name, fachinfo, @session, self)
