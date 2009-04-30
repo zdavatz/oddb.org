@@ -83,6 +83,7 @@ module PackageMethods
       :preview_with_market_date,
 			:price_exfactory,
 			:price_public,
+      :photo_link,
 			:refdata_override,
 			:lppv,
 		]
