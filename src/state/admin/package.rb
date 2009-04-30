@@ -160,7 +160,7 @@ class Package < State::Admin::Global
       group = @session.user_input(:generic_group)
       unless group.empty?
         packages = []
-        group.scan(/(\d+)\s*(?:\(([\d.]+)x?\))?/) do |ikskey, factor|
+        group.scan(/(\d{8})\s*(?:\(\s*([\d.]+)\s*x?\s*\))?/) do |ikskey, factor|
           packages.push [ @session.package_by_ikskey(ikskey),
                           (factor || 1).to_f ]
         end
