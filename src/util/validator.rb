@@ -373,6 +373,8 @@ module ODDB
 		]
 		ZONES = [:admin, :analysis, :doctors, :interactions, :drugs, :migel, :user, 
 			:hospitals, :substances, :companies]
+		@@latin1 = Iconv.new('ISO-8859-1', 'UTF-8')
+		@@utf8 = Iconv.new('UTF-8', 'ISO-8859-1')
 		def code(value)
 			pattern = /^[A-Z]([0-9]{2}([A-Z]([A-Z]([0-9]{2})?)?)?)?$/iu
 			if(valid = pattern.match(value.capitalize))
@@ -448,6 +450,14 @@ module ODDB
     end
 		def search_query(value)
 			result = validate_string(value).gsub(/\*/u, '')
+			begin
+			  @@latin1.iconv(result)
+			rescue Iconv::IllegalSequence, Iconv::InvalidCharacter
+		          puts result.inspect
+			  result = @@utf8.iconv(result)
+		          puts result.inspect
+			end
+			result = u result
 			if(result.length > 2)
 				result
 			else
