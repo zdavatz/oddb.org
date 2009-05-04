@@ -125,7 +125,10 @@ module ODDB
 					if(sprintf('%1.2f', item.quantity) == "0.00")
 						ydim_inv.precision = 3
 					end
-					data = item.ydim_data 
+          data = {}
+					item.ydim_data.each do |key, value|
+            data.store key, latin1(value)
+          end
 					data[:text] = latin1 item_text(item)
           data[:unit] = latin1 data[:unit]
 					data
