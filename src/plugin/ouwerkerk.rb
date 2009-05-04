@@ -142,7 +142,8 @@ module ODDB
 				seq.seqnr,
 				seq.name,
 			]
-			if(dose = seq.dose)
+      ## Sequence#dose is obsolete - it's just a sum of all ActiveAgent's Doses
+			if (dose = seq.dose) && dose.is_a?(Dose)
 				row[8,2] = [
 					dose.qty,
 					dose.unit,
