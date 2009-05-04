@@ -214,12 +214,12 @@ Die n\344chste Jahresrechnung wird am #{annual_date.strftime '%d.%m.%Y'} versand
 		end
     def latin1(text)
       if text.is_a?(String)
-        ICONV.iconv text
+        String.new ICONV.iconv(text)
       else
         text
       end
     rescue Iconv::IllegalSequence
-      text
+      String.new text
     end
 		def resolved_name(pointer)
 			pointer.resolve(@app).name
