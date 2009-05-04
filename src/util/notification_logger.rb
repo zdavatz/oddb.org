@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # NotificationLogger -- oddb -- 21.04.2005 -- jlang@ywesee.com
 
-require 'csvparser'
+require 'csv'
 require 'date'
 require 'util/persistence'
 
@@ -59,7 +59,7 @@ module ODDB
 		end
 		def create_csv(app)
 			csv_lines(app).collect { |line|
-				CSVLine.new(line).to_s(false, ';')
+        CSV.generate_line(line, ';')
 			}.join("\n") << "\n"
 		end
 		def range_lines(month_range, entries, arguments)
