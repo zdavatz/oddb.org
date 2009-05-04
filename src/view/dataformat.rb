@@ -83,7 +83,7 @@ module ODDB
           photo = HtmlGrid::Link.new(:photo_link_short, model, @session, self)
           photo.href = url
           photo.set_attribute 'title', @lookandfeel.lookup(:photo_link_title)
-          photo.css_class = link_class
+          photo.css_class = 'square infos'
           [link, ' ‐ ', photo]
         else
           link
