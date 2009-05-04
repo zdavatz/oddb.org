@@ -215,6 +215,12 @@ Die n\344chste Jahresrechnung wird am #{annual_date.strftime '%d.%m.%Y'} versand
     def latin1(text)
       if text.is_a?(String)
         String.new ICONV.iconv(text)
+      elsif text.is_a?(Hash)
+        res = {}
+        text.each do |key, value|
+          res.store latin1(key), latin1(value)
+        end
+        res
       else
         text
       end
