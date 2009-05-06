@@ -51,7 +51,7 @@ module ODDB
 				&& persistent_user_input(:flavor) != @lookandfeel.flavor)
 				:home
 			else
-				super
+				super || :home
 			end
 		end
 		def expired?(now=Time.now)
