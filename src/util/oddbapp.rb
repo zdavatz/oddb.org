@@ -35,7 +35,7 @@ require 'model/analysis/group'
 class OddbPrevalence
 	include ODDB::Failsafe
 	include ODBA::Persistable
-  RESULT_SIZE_LIMIT = 750
+  RESULT_SIZE_LIMIT = 250
 	ODBA_EXCLUDE_VARS = [
 		"@atc_chooser", "@bean_counter", "@sorted_fachinfos", "@sorted_feedbacks",
     "@sorted_minifis",
@@ -982,7 +982,7 @@ class OddbPrevalence
 	end
 	def search_by_interaction(key, lang)
 		result = ODDB::SearchResult.new
-    result.limit = RESULT_SIZE_LIMIT
+    result.error_limit = RESULT_SIZE_LIMIT
 		if(lang.to_s != "fr") 
 			lang = "de"
 		end

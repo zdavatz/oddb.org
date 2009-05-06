@@ -60,7 +60,7 @@ module ODDB
 	class SearchResult
     include Enumerable
 		attr_accessor  :atc_classes, :session, :relevance, :exact, 
-			:search_type, :search_query, :limit
+			:search_type, :search_query, :limit, :error_limit
 		def initialize
       @limit = 50
 			@relevance = {}

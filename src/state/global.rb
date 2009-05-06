@@ -518,6 +518,10 @@ module ODDB
 				else
 					self
 				end
+      rescue ODBA::OdbaResultLimitError
+        exception = SBSM::InvalidDataError.new(:e_huge_search_result,
+                                               :search_query, query)
+        State::Exception.new(@session, exception)
 			end
 			alias :result :search
 			def _search_drugs(query, stype)
