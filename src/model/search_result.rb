@@ -60,9 +60,9 @@ module ODDB
 	class SearchResult
     include Enumerable
 		attr_accessor  :atc_classes, :session, :relevance, :exact, 
-			:search_type, :search_query, :limit, :error_limit
+			:search_type, :search_query, :limit, :display_limit, :error_limit
 		def initialize
-      @limit = 50
+      @display_limit = 50
 			@relevance = {}
 		end
 		def atc_facades
@@ -127,7 +127,7 @@ module ODDB
       end
     end
     def overflow?
-      (@atc_classes.size > 1) && (package_count >= @limit)
+      (@atc_classes.size > 1) && (package_count >= @display_limit)
     end
     def package_count
       @package_count ||= @atc_classes.inject(0) { |count, atc| 
