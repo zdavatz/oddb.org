@@ -2067,16 +2067,7 @@ module ODDB
             time = Time.now
             alarm = time - lasttime > 60 ? '*' : ' '
             lastthreads = threads
-=begin
-            Thread.exclusive {
-              threads = 0
-              ObjectSpace.each_object { |obj|
-                if !obj.is_a?(ODBA::Persistable) && obj.is_a?(Thread)
-                  threads += 1
-                end
-              }
-            }
-=end
+            threads = Thread.list.size
             lastbytes = bytes
             bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
             mbytes = bytes / (2**20)
