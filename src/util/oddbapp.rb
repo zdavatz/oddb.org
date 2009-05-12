@@ -920,6 +920,7 @@ class OddbPrevalence
 		# atc-code
 		atcs = search_by_atc(key)
 		result.search_type = :atc
+    result.error_limit = RESULT_SIZE_LIMIT
 		# exact word in sequence name
 		if(atcs.empty?)
 			atcs = search_by_sequence(key, result)
