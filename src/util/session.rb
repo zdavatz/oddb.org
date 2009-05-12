@@ -130,7 +130,7 @@ module ODDB
       if(ids = user_input(:substance_ids))
         ids = ids.split(/[+ ]/u).collect { |id| id.to_i }
         @interaction_basket.delete_if { |sub| !ids.delete(sub.oid) }
-        ids.each { |id| @interaction_basket.push @app.substance(id) }
+        ids.each { |id| @interaction_basket.push @app.substance(id, false) }
       end
       @interaction_basket = @interaction_basket.compact.uniq
     end

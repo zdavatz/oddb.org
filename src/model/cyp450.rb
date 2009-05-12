@@ -16,15 +16,20 @@ module ODDB
 		end
 		def interactions_with(substance)
 			connections = []
+      keys = {}
+      substance.connection_keys.each do |key|
+        keys.store key, 1
+      end
+      substance._search_keys.each do |key|
+        keys.store key.downcase, 1
+      end
 			@inhibitors.each { |connection_key, connection| 
-				if((substance.has_connection_key?(connection_key)) \
-					|| substance.same_as?(connection_key))
+				if(keys.include?(connection_key))
 					connections.push(connection)
 				end
 			}
 			@inducers.each { |connection_key, connection| 
-				if((substance.has_connection_key?(connection_key)) \
-					|| substance.same_as?(connection_key))
+				if(keys.include?(connection_key))
 					connections.push(connection)
 				end
 			}
