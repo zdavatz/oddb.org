@@ -4105,12 +4105,10 @@ Zeno Davatz
       end
     end
     def generate_challenge
-      @@turing.synchronize {
-        challenge = captcha.generate_challenge
-        @@turing_files.store challenge.object_id, challenge.file
-        ObjectSpace.define_finalizer challenge, @@turing_finalizer
-        challenge
-      }
+      challenge = @@turing.synchronize do captcha.generate_challenge end
+      @@turing_files.store challenge.object_id, challenge.file
+      ObjectSpace.define_finalizer challenge, @@turing_finalizer
+      challenge
     end
     def has_result_filter?
       false
