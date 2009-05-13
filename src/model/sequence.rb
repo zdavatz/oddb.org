@@ -77,21 +77,19 @@ module ODDB
 		end
 		def comparables(factor = 1.0)
 			if(@atc_class)
+        comps = factored_compositions(factor)
 				@atc_class.sequences.select { |seq|
-					comparable?(seq, factor)
+					comparable?(seq, factor, comps)
 				}
 			else
 				[]
 			end
 		end
-		def comparable?(seq, factor = 1.0)
-      comps = @compositions
-      if factor != 1
-        comps = @compositions.collect do |comp| comp * factor end
-      end
+		def comparable?(seq, factor = 1.0, comps = nil)
+      comps ||= factored_compositions(factor)
 			seq != self \
 				&& seq.active? \
-        && seq.compositions.sort == comps.sort
+        && seq.compositions.sort == comps
 		end
     def complementary_type
       @registration.complementary_type
@@ -141,6 +139,13 @@ module ODDB
 		def fachinfo
 			@registration.fachinfo
 		end
+    def factored_compositions(factor=1.0)
+      comps = @compositions.sort
+      if factor != 1.0
+        comps = comps.collect do |comp| comp * factor end
+      end
+      comps
+    end
     def fix_pointers
       @pointer = @registration.pointer + [:sequence, @seqnr]
       @packages.each_value { |package|

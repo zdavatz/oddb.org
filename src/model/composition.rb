@@ -86,6 +86,7 @@ module ODDB
 				&& !@galenic_form.nil? \
 				&& !other.galenic_form.nil? \
         && other.galenic_form.equivalent_to?(@galenic_form) \
+        && other.active_agents.size == @active_agents.size \
         && other.active_agents.sort == @active_agents.sort
     end
     def <=>(other)
