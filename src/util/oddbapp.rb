@@ -961,7 +961,9 @@ class OddbPrevalence
 		ODBA.cache.retrieve_from_index('atc_index', key.dup)
 	end
 	def search_by_company(key)
-		atcs = ODBA.cache.retrieve_from_index('atc_index_company', key.dup)
+		result = ODDB::SearchResult.new
+    result.error_limit = RESULT_SIZE_LIMIT
+		atcs = ODBA.cache.retrieve_from_index('atc_index_company', key.dup, result)
 		filtered = atcs.collect { |atc|
 			atc.company_filter_search(key.dup)
 		}
