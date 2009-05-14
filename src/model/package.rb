@@ -41,7 +41,7 @@ module ODDB
 			:price_exfactory, :price_public, :pretty_dose, :market_date,
 			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
       :disable, :swissmedic_source, :descr, :preview_with_market_date,
-      :generic_group_factor, :photo_link,
+      :generic_group_factor, :photo_link, :disable_ddd_price
 			:deductible_m # for just-medical
 		alias :pointer_descr :ikscd
 		registration_data :comarketing_with, :complementary_type, :expiration_date,
@@ -150,7 +150,7 @@ module ODDB
       end
     end
 		def ddd_price
-			if((ddd = self.ddd) \
+			if(!@disable_ddd_price && (ddd = self.ddd) \
 				&& (grp = galenic_group) && grp.match(@@ddd_galforms) \
 				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose))
         factor = (longevity || 1).to_f

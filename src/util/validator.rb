@@ -16,8 +16,8 @@ module ODDB
 		alias :competition_email :email
 		alias :swissmedic_email :email
 		BOOLEAN = [
-      :cl_status, :deductible_display, :disable, :disable_invoice_fachinfo,
-      :disable_invoice_patinfo,
+      :cl_status, :deductible_display, :disable, :disable_ddd_price,
+      :disable_invoice_fachinfo, :disable_invoice_patinfo,
       :disable_patinfo, :download, :experience, :export_flag, :helps,
       :ignore_patent, :impression, :invoice_htmlinfos, :limit_invoice_duration, :lppv,
       :parallel_import, :preview_with_market_date, :recommend,

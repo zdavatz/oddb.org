@@ -76,6 +76,7 @@ module PackageMethods
 			:deductible,
 			:descr,
       :disable,
+      :disable_ddd_price,
 			:ikscat,
 			:market_date,
       :pharmacode,

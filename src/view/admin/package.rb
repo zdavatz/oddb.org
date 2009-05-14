@@ -158,8 +158,9 @@ class PackageForm < HtmlGrid::Composite
     [0,8]   =>  :disable,
     [2,8]   =>  :pharmacode,
     [0,9]   =>  :generic_group,
-    [1,10,0] =>  :submit,
-    [1,10,1] =>  :delete_item,
+    [0,10]  =>  :disable_ddd_price,
+    [1,11,0] => :submit,
+    [1,11,1] => :delete_item,
   }
   COMPONENT_CSS_MAP = {
     [0,0,4,1]	=>	'standard',
@@ -170,7 +171,7 @@ class PackageForm < HtmlGrid::Composite
     [1,9]     =>  'standard',
   }
   CSS_MAP = {
-    [0,0,4,11]	=>	'list',
+    [0,0,4,12]	=>	'list',
     [0,9]       =>  'list top',
   }
 	LABELS = true
@@ -180,6 +181,7 @@ class PackageForm < HtmlGrid::Composite
 	SYMBOL_MAP = {
 		:deductible				=>	HtmlGrid::Select,
 		:disable     			=>	HtmlGrid::InputCheckbox,
+    :disable_ddd_price=>	HtmlGrid::InputCheckbox,
 		:price_exfactory	=>	HtmlGrid::InputCurrency,
 		:price_public			=>	HtmlGrid::InputCurrency,
 		:iksnr						=>	HtmlGrid::Value,
