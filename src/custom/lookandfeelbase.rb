@@ -5,7 +5,7 @@
 require 'sbsm/lookandfeel'
 require 'util/oddbconfig'
 require 'util/money'
-require 'turing'
+require 'sbsm/turing'
 require 'fileutils'
 
 module ODDB
@@ -13,8 +13,8 @@ module ODDB
 	class Doctor; end
 	class Hospital; end
 	class LookandfeelBase <	SBSM::Lookandfeel
-    @@turing = Mutex.new
     @@turing_files = {}
+    @@turings = {}
     CAPTCHA_DIR = File.join(PROJECT_ROOT, 'doc', 'resources', 'captchas')
     @@turing_finalizer = proc { |id|
       if file = @@turing_files.delete(id)
@@ -4047,8 +4047,8 @@ Zeno Davatz
 			:sponsor								=>	'sponsor',
 		}
     def captcha
-      @turing ||= Turing::Challenge.new(:outdir => CAPTCHA_DIR,
-                    :dictionary => File.join(PROJECT_ROOT, 'data', 'captcha', language))
+      @@turings[language] ||= Turing::Challenge.new(:outdir => CAPTCHA_DIR,
+        :dictionary => File.join(PROJECT_ROOT, 'data', 'captcha', language))
     end
 		def compare_list_components
 			{
@@ -4108,7 +4108,7 @@ Zeno Davatz
       end
     end
     def generate_challenge
-      challenge = @@turing.synchronize do captcha.generate_challenge end
+      challenge = captcha.generate_challenge
       @@turing_files.store challenge.object_id, challenge.file
       ObjectSpace.define_finalizer challenge, @@turing_finalizer
       challenge
