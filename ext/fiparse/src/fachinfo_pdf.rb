@@ -176,6 +176,7 @@ module ODDB
           @section.next_image.src = save[%r!/resources/.*!u]
         end
         send_line_break
+      rescue ArgumentError
       end
 			def send_page
 				## in newer fi-pdfs there is no change of font for 
