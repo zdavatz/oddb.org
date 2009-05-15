@@ -131,10 +131,6 @@ module ODDB
         super
         @attributes.update({
           'dojoType'    => 'dijit.Editor',
-          'shareToolbar'=> 'true',
-          'htmlEditing' => 'false',
-          'useActiveX'  => 'false',
-          'minHeight'   => '10em',
         })
       end
       def _to_html(context, value=@value)
@@ -169,6 +165,8 @@ module ODDB
         editor = ChapterEditor.new(:html_chapter, model, @session, self)
         editor.value = model.send(@name)
         editor.label = true
+        editor.css_id = "html-chapter"
+        self.onsubmit = "this.html_chapter.value = dijit.byId('html-chapter').getValue();"
         editor
       end
       def heading(model)
@@ -176,8 +174,9 @@ module ODDB
           @session, self)
       end
       def hidden_fields(context)
-        args = {'name' => 'chapter', 'value' => @name}
-        super << context.hidden(args)
+        chapter = {'name' => 'chapter', 'value' => @name}
+        html = {'name' => 'html_chapter', 'value' => ''}
+        super << context.hidden(chapter) << context.hidden(html)
       end
       def toolbar(model)
         args = {
