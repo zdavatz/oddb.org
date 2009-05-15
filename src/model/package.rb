@@ -41,14 +41,14 @@ module ODDB
 			:price_exfactory, :price_public, :pretty_dose, :market_date,
 			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
       :disable, :swissmedic_source, :descr, :preview_with_market_date,
-      :generic_group_factor, :photo_link, :disable_ddd_price
+      :generic_group_factor, :photo_link, :disable_ddd_price, :ddd_dose,
 			:deductible_m # for just-medical
 		alias :pointer_descr :ikscd
 		registration_data :comarketing_with, :complementary_type, :expiration_date,
 			:expired?, :export_flag, :generic_type, :inactive_date, :pdf_fachinfos,
 			:registration_date, :revision_date, :patent, :patent_protected?, :vaccine,
 			:parallel_import, :minifi, :source, :index_therapeuticus
-    sequence_data :atc_class, :basename, :company, :ddds, :dose, 
+    sequence_data :atc_class, :basename, :company, :ddds,
       :fachinfo, :galenic_forms, :galenic_group, :has_patinfo?, :longevity,
       :iksnr, :indication, :name, :name_base, :patinfo, :pdf_patinfo,
       :registration, :route_of_administration
@@ -178,6 +178,9 @@ module ODDB
 			self.odba_isolated_store
 			nil
 		end
+    def dose
+      @ddd_dose || (@sequence.dose if @sequence)
+    end
     def fix_pointers
       @pointer = @sequence.pointer + [:package, @ikscd]
       if(sl = @sl_entry)
@@ -299,7 +302,7 @@ module ODDB
 					values[key] = value.resolve(app)
 				when :price_public, :price_exfactory
 					values[key] = Package.price_internal(value, key)
-				when :pretty_dose
+				when :pretty_dose, :ddd_dose
 					values[key] = if(value.is_a? Dose)
 						value
 					elsif(value.is_a?(Array))

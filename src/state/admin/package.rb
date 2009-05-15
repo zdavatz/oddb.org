@@ -73,6 +73,7 @@ module PackageMethods
 			@model = @session.app.create(@model.pointer)
 		end
 		keys = [
+      :ddd_dose,
 			:deductible,
 			:descr,
       :disable,

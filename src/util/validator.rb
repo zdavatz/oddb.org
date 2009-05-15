@@ -400,6 +400,7 @@ module ODDB
 		alias :chemical_dose :dose
 		alias :equivalent_dose :dose
 		alias :measure :dose
+		alias :ddd_dose :dose
 		def filename(value)
 			if(value == File.basename(value))
 				value

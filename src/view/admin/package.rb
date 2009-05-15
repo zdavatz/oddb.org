@@ -158,7 +158,8 @@ class PackageForm < HtmlGrid::Composite
     [0,8]   =>  :disable,
     [2,8]   =>  :pharmacode,
     [0,9]   =>  :generic_group,
-    [0,10]  =>  :disable_ddd_price,
+    [0,10]  =>  :ddd_dose,
+    [2,10]  =>  :disable_ddd_price,
     [1,11,0] => :submit,
     [1,11,1] => :delete_item,
   }
@@ -169,6 +170,7 @@ class PackageForm < HtmlGrid::Composite
     [3,3]			=>	'list',
     [3,8]     =>  'standard',
     [1,9]     =>  'standard',
+    [1,10]    =>  'standard',
   }
   CSS_MAP = {
     [0,0,4,12]	=>	'list',
