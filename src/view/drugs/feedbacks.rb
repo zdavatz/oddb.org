@@ -76,6 +76,7 @@ class FeedbacksComposite < HtmlGrid::Composite
 	CSS_MAP = {
 		[0,1] => 'th',
 		[1,1] => 'th right',
+		[0,2] => 'top',
 		[1,2]	=> 'component border-left top'
 	}	
 	LEGACY_INTERFACE = false
