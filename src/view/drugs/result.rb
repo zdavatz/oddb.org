@@ -32,7 +32,7 @@ class DivExportCSV < HtmlGrid::DivForm
 		super
 		data = {
 			:zone					=>	@session.zone,
-			:search_query	=>	@session.persistent_user_input(:search_query),
+			:search_query	=>	@session.persistent_user_input(:search_query).gsub('/', '%2F'),
 			:search_type	=>	@session.persistent_user_input(:search_type),
 		}
 		url = @lookandfeel._event_url(:export_csv, data)
@@ -136,7 +136,7 @@ class ResultComposite < HtmlGrid::Composite
     end
     span2 = HtmlGrid::Span.new(model, @session, self)
     span2.css_class = "breadcrumb-#{level}"
-    query = @session.persistent_user_input(:search_query)
+    query = @session.persistent_user_input(:search_query).gsub('/', '%2F')
     span2.value = @lookandfeel.lookup(:list_for, query, model.package_count)
     span3 = HtmlGrid::Span.new(model, @session, self)
     span3.css_class = "breadcrumb"

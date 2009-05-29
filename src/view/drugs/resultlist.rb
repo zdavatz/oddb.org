@@ -68,7 +68,7 @@ class AtcHeader < HtmlGrid::Composite
         args = [ :search_query, code ]
       else
         args = [
-          :search_query, @session.persistent_user_input(:search_query),	
+          :search_query, @session.persistent_user_input(:search_query).gsub('/', '%2F'),
           :search_type, @session.persistent_user_input(:search_type),	
           :code, code
         ]
@@ -91,7 +91,7 @@ class AtcHeader < HtmlGrid::Composite
 			 && (pages = state.pages) \
 			 && pages.size > 1)
 			args = {
-				:search_query => @session.persistent_user_input(:search_query),	
+				:search_query => @session.persistent_user_input(:search_query).gsub('/', '%2F'),
 				:search_type => @session.persistent_user_input(:search_type),	
 			}
 			View::Pager.new(pages, @session, self, :search, args)
@@ -253,7 +253,7 @@ class ResultList < HtmlGrid::List
     current = @session.cookie_set_or_get(:resultview)
     switched = (current == 'pages' ? 'atc' : 'pages')
     args = {
-      :search_query => @session.persistent_user_input(:search_query),	
+      :search_query => @session.persistent_user_input(:search_query).gsub('/', '%2F'),
       :search_type => @session.persistent_user_input(:search_type),	
       :resultview  => switched,
     }

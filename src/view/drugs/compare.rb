@@ -153,7 +153,7 @@ module InsertBackbutton
       level -= 1
       link2 = HtmlGrid::Link.new(:result, model, @session, self)
       link2.css_class = "list"
-      query = @session.persistent_user_input(:search_query)
+      query = @session.persistent_user_input(:search_query).gsub('/', '%2F')
       args = [
         :zone, :drugs, :search_query, query, :search_type, 
         @session.persistent_user_input(:search_type),
