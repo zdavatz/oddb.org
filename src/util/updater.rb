@@ -188,7 +188,6 @@ module ODDB
       if(update_swissmedicjournal)
         update_minifis
       end
-			update_fachinfo
 			update_vaccines
 			if(update_bsv)
         update_bsv_followers
@@ -198,6 +197,9 @@ module ODDB
         update_interactions 
       }
 		end
+    def run_random
+      update_fachinfo
+    end
 		def update_analysis(path, lang)
 			klass = AnalysisPlugin
 			subj = 'Analysis'

@@ -1316,6 +1316,7 @@ module ODDB
 		AUTOSNAPSHOT = true
 		CLEANING_INTERVAL = 5*60
 		EXPORT_HOUR = 2
+		UPDATE_HOUR = 9
     MEMORY_LIMIT = 10240
 		RUN_CLEANER = true
 		RUN_EXPORTER = true
@@ -1497,7 +1498,10 @@ module ODDB
 		def reset
 			@updater.kill if(@updater.is_a? Thread)
 			@exporter.kill if(@exporter.is_a? Thread)
-			@updater = run_updater if RUN_UPDATER
+      if RUN_UPDATER
+        @updater = run_updater
+        @random_updater = run_random_updater
+      end
 			@exporter = run_exporter if RUN_EXPORTER
 			@exporter_notify = run_exporter_notify if RUN_EXPORTER_NOTIFY
 			@mutex.synchronize {
@@ -1534,29 +1538,46 @@ module ODDB
 				}
 			}
 		end
-		def run_updater
-			update_hour = rand(24)
-			update_min = rand(60)
-			Thread.new {
-				#Thread.current.priority=-5
-				Thread.current.abort_on_exception = true
-				today = (update_hour > Time.now.hour) ? \
-					Date.today : @@today.next
-				loop {
-					next_run = Time.local(today.year, today.month, today.day, 
-						update_hour, update_min)
-					puts "next update will take place at #{next_run}"
-					$stdout.flush
-					sleep(next_run - Time.now)
-					Updater.new(self).run
-					@system.recount
-					GC.start
-					today = @@today.next
-					update_hour = rand(24)
-					update_min = rand(60)
-				}
-			}
-		end
+    def run_random_updater
+      Thread.new {
+        Thread.current.abort_on_exception = true
+        update_hour = rand(24)
+        update_min = rand(60)
+        today = (update_hour > Time.now.hour) ? \
+          @@today : @@today.next
+        loop {
+          next_run = Time.local(today.year, today.month, today.day,
+            update_hour, update_min)
+          puts "next random update will take place at #{next_run}"
+          $stdout.flush
+          sleep(next_run - Time.now)
+          Updater.new(self).run_random
+          @system.recount
+          GC.start
+          today = @@today.next
+          update_hour = rand(24)
+          update_min = rand(60)
+        }
+      }
+    end
+    def run_updater
+      Thread.new {
+        Thread.current.abort_on_exception = true
+        update_hour = self.class::UPDATE_HOUR
+        today = (update_hour > Time.now.hour) ? \
+          Date.today : @@today.next
+        loop {
+          next_run = Time.local(today.year, today.month, today.day, update_hour)
+          puts "next scheduled update will take place at #{next_run}"
+          $stdout.flush
+          sleep(next_run - Time.now)
+          Updater.new(self).run
+          @system.recount
+          GC.start
+          today = @@today.next
+        }
+      }
+    end
     def update_feedback_rss_feed
       async {
         begin
