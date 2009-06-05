@@ -1,8 +1,8 @@
 function replace_element(id, url) {
   document.body.style.cursor = 'wait';
-  dojo.io.bind({
+  dojo.xhrGet({
 		url: url,
-		load: function(type, data, evt) { 
+		load: function(data) {
       var container;
       if(container = document.getElementById(id))
       {

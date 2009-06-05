@@ -8,16 +8,15 @@ function sbsm_encode(value)
 function update_company(url)
 {
   document.body.style.cursor = 'wait';
-	dojo.io.bind({
+	dojo.xhrGet({
 		url: url,
-		load: function(type, data, evt) { 
+		load: function(data) {
 			var content;
 			if(content = document.getElementById('company-content'))
 			{
 				content.parentNode.innerHTML = data	;
 			}
       document.body.style.cursor = 'auto';
-		},
-		mimetype: "text/html"
+		}
 	});
 }
