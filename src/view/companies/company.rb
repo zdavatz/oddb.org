@@ -587,7 +587,7 @@ class RootCompany < View::PrivateTemplate
 	end
 	def other_html_headers(context)
 		res = super
-		['dojo', 'company'].each { |name|
+		['company'].each { |name|
 			properties = {
 				"language"	=>	"JavaScript",
 				"type"			=>	"text/javascript",
