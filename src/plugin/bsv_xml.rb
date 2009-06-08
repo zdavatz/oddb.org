@@ -17,7 +17,7 @@ require 'zip/zip'
 module ODDB
   class BsvXmlPlugin < Plugin
     RECIPIENTS = [ 'sibylle.imfeld@seconag.com', 'paul.wiederkehr@pharmasuisse.org' ]
-    BSV_RECIPIENTS = [ 'jean-christian.krayenbuehl@bag.admin.ch', 'todo@oddb.org' ]
+    BSV_RECIPIENTS = [ 'jean-christian.krayenbuehl@bag.admin.ch', 'gertrud.fonatsch@bsv.admin.ch', 'todo@oddb.org' ]
     class Listener
       include REXML::StreamListener
       FORMATS = {
@@ -677,6 +677,7 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
       upoots = @preparations_listener.unknown_packages_oot.size
       <<-EOS
 Sehr geehrter Herr Krayenbühl
+Sehr geehrte Frau Fonatsch
 
 Am #{@@today.strftime('%d.%m.%Y')} haben wir Ihren aktuellen SL-Export (XML)
 wieder überprüft. Dabei ist uns folgendes aufgefallen:
