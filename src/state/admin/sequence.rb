@@ -272,6 +272,11 @@ module SequenceMethods
         comp = @session.app.update ptr, { :galenic_form => galform },
                                    unique_email
         substances.each { |sub_idx, sub|
+          ## create missing substance on the fly
+          unless @session.app.substance(sub)
+            sptr = Persistence::Pointer.new(:substance)
+            @session.app.update(sptr.creator, 'lt' => sub)
+          end
           parts = doses[sub_idx]
           sub_idx = sub_idx.to_i
           agent = comp.active_agents.at(sub_idx)

@@ -1106,6 +1106,7 @@ class OddbPrevalence
 	def search_single_substance(key)
 		result = ODDB::SearchResult.new
 		result.exact = true
+    key = ODDB.search_term(key)
 		ODBA.cache.retrieve_from_index("substance_index", key, result).find { |sub|
       sub.same_as? key
     }
