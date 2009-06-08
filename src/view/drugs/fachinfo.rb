@@ -282,7 +282,7 @@ end
 class RootFachinfo < PrivateTemplate
 	CONTENT = View::Drugs::RootFachinfoComposite
 	SNAPBACK_EVENT = :result
-	DOJO_REQUIRE = [ 'dijit.Editor' ]#, 'ywesee.widget.SymbolPalette' ]
+	DOJO_REQUIRE = [ 'dijit.Editor', 'dojox.analytics.Urchin' ]#, 'ywesee.widget.SymbolPalette' ]
   #JAVASCRIPTS = ['dojo/Editor']
 	DOJO_PARSE_WIDGETS = true
 end
