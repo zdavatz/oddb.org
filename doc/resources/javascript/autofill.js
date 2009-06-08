@@ -3,9 +3,9 @@ function autofill(form, key, url)
   document.body.style.cursor = 'wait';
   form.set_pass_2.disabled = false;
   var val = form[key].value;
-  dojo.io.bind({
+  dojo.xhrGet({
 		url: url + val,
-		load: function(type, data, evt) { 
+		load: function(data) {
       var retkey;
       var retval;
       for(retkey in data) {
@@ -16,6 +16,6 @@ function autofill(form, key, url)
         form.set_pass_2.disabled = true;
       document.body.style.cursor = 'auto';
 		},
-		mimetype: "text/json"
+		handleAs: "json"
 	});
 }
