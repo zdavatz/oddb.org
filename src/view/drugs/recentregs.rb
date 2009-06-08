@@ -113,6 +113,8 @@ class RecentRegsComposite < View::Drugs::ResultComposite
     span2.value = @lookandfeel.lookup(:recent_registrations)
     [span1, dv, span2]
   end
+  def export_csv(model, session=@session)
+  end
 end
 class RecentRegs < View::ResultTemplate
 	CONTENT = View::Drugs::RecentRegsComposite
