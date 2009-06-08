@@ -1154,7 +1154,7 @@ class OddbPrevalence
 	def sponsor(flavor)
 		@sponsors[flavor.to_s]
 	end
-	def substance(key, neurotic=true)
+	def substance(key, neurotic=false)
 		if(key.to_i.to_s == key.to_s)
 			@substances[key.to_i]
 		elsif(substance = search_single_substance(key))
