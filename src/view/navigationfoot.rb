@@ -68,16 +68,7 @@ module ODDB
         elsif(@lookandfeel.enabled?(:country_navigation))
           components.store([0,0], View::CountryNavigation)
         end
-        if(@lookandfeel.enabled?(:google_analytics))
-          components.store([0,0,1], :google_analytics)
-        end
         super
-      end
-      def google_analytics(model, session=@session)
-        div = HtmlGrid::Div.new(model, @session, self)
-        div.attributes.update('dojoType' => 'dojox.analytics.Urchin',
-                              'acct'     => 'UA-115196-1')
-        div
       end
 		end
     class TopFoot < HtmlGrid::Composite

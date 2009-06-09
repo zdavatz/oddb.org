@@ -17,7 +17,7 @@ module ODDB
 			include HtmlGrid::DojoToolkit::DojoTemplate
 			DOJO_DEBUG = false
       DOJO_ENCODING = 'UTF-8'
-      DOJO_REQUIRE = [ 'ywesee.widget.Tooltip', 'dojox.analytics.Urchin' ]
+      DOJO_REQUIRE = [ 'ywesee.widget.Tooltip' ]
       DOJO_PARSE_WIDGETS = false
       DOJO_PREFIX = {
         'ywesee'  =>  '/resources/javascript',
@@ -56,7 +56,24 @@ module ODDB
 			end
       def dynamic_html_headers(context)
         if(@lookandfeel.enabled?(:ajax))
-          super
+          headers = super
+          if @lookandfeel.enabled?(:google_analytics)
+            headers << context.script('type' => 'text/javascript') do
+              <<-EOS
+dojo.addOnLoad(function(){
+  setTimeout(function(){
+    dojo.require("dojox.analytics.Urchin")
+    dojo.addOnLoad(function(){
+      var tracker = new dojox.analytics.Urchin({
+        acct: "UA-115196-1"
+      })
+    })
+  }, 100)
+})
+              EOS
+            end
+          end
+          headers
         else
           ''
         end
