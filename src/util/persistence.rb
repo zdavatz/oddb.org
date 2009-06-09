@@ -2,7 +2,7 @@
 # Persistence -- oddb -- 26.02.2003 -- hwyss@ywesee.com
 
 require 'rockit/rockit'
-require 'odba/persistable'
+require 'odba'
 
 module ODBA
 	class Stub
