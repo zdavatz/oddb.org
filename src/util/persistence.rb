@@ -99,6 +99,7 @@ module ODDB
 		include PersistenceMethods
 		include ODBA::Persistable
 		ODBA_PREDEFINE_SERIALIZABLE = ['@data_origins']
+    odba_index :pointer
 		def initialize(*args)
 			@revision = Time.now
 			super
@@ -282,29 +283,31 @@ Grammar OddbSize
 				parent unless parent.directions.empty?
 			end
 			def resolve(hook)
-				lasthook = hook
-				laststep = []
-				@directions.each { |step|
-					if(hook.nil?)
-						call = laststep.shift
-						args = laststep.join(',')
-						msg = "#{to_s} -> #{lasthook.class}::#{call}(#{args}) returned nil"
-						raise(UninitializedPathError.new(msg, self))
-					elsif(hook.respond_to?(step.first))
-						lasthook = hook
-						laststep = step
-						hook = begin
-							hook.send(*step)
-						rescue 
-						end
-					else
-						call = step.shift
-						args = step.join(',')
-						msg = "#{to_s} -> undefined Method #{hook.class}::#{call}(#{args})"
-						raise(InvalidPathError.new(msg, self))
-					end
-				}
-				hook
+        Persistence.find_by_pointer(to_s) or begin
+          lasthook = hook
+          laststep = []
+          @directions.each { |step|
+            if(hook.nil?)
+              call = laststep.shift
+              args = laststep.join(',')
+              msg = "#{to_s} -> #{lasthook.class}::#{call}(#{args}) returned nil"
+              raise(UninitializedPathError.new(msg, self))
+            elsif(hook.respond_to?(step.first))
+              lasthook = hook
+              laststep = step
+              hook = begin
+                hook.send(*step)
+              rescue
+              end
+            else
+              call = step.shift
+              args = step.join(',')
+              msg = "#{to_s} -> undefined Method #{hook.class}::#{call}(#{args})"
+              raise(InvalidPathError.new(msg, self))
+            end
+          }
+          hook
+        end
 			end
 			def skeleton
 				@directions.collect { |step| 
