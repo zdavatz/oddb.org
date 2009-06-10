@@ -167,11 +167,16 @@ class RootActiveAgents < ActiveAgents
 end
 class CompositionList < HtmlGrid::DivList
   COMPONENTS = { [0,0] => :composition }
-  LABELS = true
+  LABELS = false
   OFFSET_STEP = [1,0]
   OMIT_HEADER = true
   def composition(model)
-    ActiveAgents.new(model.active_agents, @session, self)
+    agents = ActiveAgents.new(model.active_agents, @session, self)
+    if @model.size > 1
+      [@lookandfeel.lookup(:part, @list_index.to_i + 1), agents]
+    else
+      agents
+    end
   end
 end
 class RootCompositionList < CompositionList
