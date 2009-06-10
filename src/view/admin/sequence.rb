@@ -533,6 +533,9 @@ class RootSequenceForm < HtmlGrid::Form
   SYMBOL_MAP = {
     :composition_text => HtmlGrid::Textarea,
   }
+  COMPONENT_CSS_MAP = {
+    [0,2] => 'huge',
+  }
   def compositions(model, session=@session)
     RootCompositions.new(model.compositions, @session, self)
   end
