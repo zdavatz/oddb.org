@@ -159,6 +159,7 @@ module SequenceMethods
 			@model.append(seqnr)
 		end
     keys = [
+      :composition_text,
       :dose,
       :export_flag,
       :name_base,

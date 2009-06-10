@@ -31,19 +31,28 @@ class ActiveAgents < HtmlGrid::List
   OMIT_HEADER = false
   STRIPED_BG = false
   SORT_DEFAULT = nil
+	SORT_HEADER = false
   LEGACY_INTERFACE = false
   LABELS = false
-  def compose_header(offset)
-    _compose_header [0,0]
+  CSS_HEAD_MAP = {
+    [1,0] => 'right',
+  }
+  CSS_MAP = {
+    [0,0] => 'list',
+    [1,0] => 'list right',
+  }
+  def compose_footer(offset)
+    _compose_footer offset
   end
-  def _compose_header(offset)
+  def _compose_footer(offset)
     comp = if act = @model.first
              act.parent(@session.app)
            end
     input = galenic_form(comp)
     label = HtmlGrid::SimpleLabel.new(:galenic_form, input, @session, self)
     @grid.add [label, nil, input], *offset
-    [0,1]
+    offset[1] += 1
+    offset
   end
   def dose(model)
     model.dose.to_s if model
@@ -70,6 +79,10 @@ class RootActiveAgents < ActiveAgents
     [2,0,1] => :unsaved,
   }
   COMPONENT_CSS_MAP = { [2,0] => 'short right' }
+  CSS_HEAD_MAP = {
+    [2,0] => 'right',
+  }
+  CSS_MAP = { }
   DEFAULT_CLASS = HtmlGrid::InputText
   HTTP_HEADERS = {
     "Content-Type"	=>	"text/html; charset=UTF-8",
@@ -89,14 +102,16 @@ class RootActiveAgents < ActiveAgents
   def compose_footer(offset)
     if(@model.empty? || @model.last)
       @grid.add add(@model), *offset
-      offset[0] += 1
+      offset[1] += 1
+      _compose_footer [offset[0].next, offset[1]]
+      offset[1] += 1
       @grid.add delete_composition(@model), *offset
       @grid.add_style 'right', *offset
       @grid.set_colspan offset.at(0), offset.at(1)
+      offset[1] += 1
+    else
+      _compose_footer [offset[0].next, offset[1]]
     end
-  end
-  def compose_header(offset)
-    _compose_header [1,0]
   end
   def composition
     @container ? @container.list_index : @session.user_input(:composition)
@@ -462,16 +477,23 @@ class SequenceComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	:sequence_name,
 		[0,1]	=>	View::Admin::SequenceInnerComposite,
-		[0,2]	=>	'compositions',
-		[0,3]	=>	:compositions,
-		[0,4]	=>	:sequence_packages,
+		[0,2]	=>	'composition',
+		[0,3]	=>	:composition_text,
+    [0,4] =>  'active_agents',
+		[0,5]	=>	:compositions,
+		[0,6]	=>	:sequence_packages,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0]	=>	'th',
 		[0,2]	=>	'subheading',
+		[0,3]	=>	'list',
+		[0,4]	=>	'subheading',
 	}
 	PACKAGES = View::Admin::SequencePackages
+  SYMBOL_MAP = {
+    :composition_text => HtmlGrid::Value,
+  }
   def compositions(model, session=@session)
     Compositions.new(model.compositions, @session, self)
   end
@@ -499,11 +521,17 @@ class RootSequenceForm < HtmlGrid::Form
   TAG_METHOD = :multipart_form
   COMPONENTS = {
     [0,0]	=>	View::Admin::SequenceForm,
-    [0,1]	=>	'compositions',
-    [0,2]	=>	:compositions,
+    [0,1]	=>	'composition',
+    [0,2]	=>	:composition_text,
+    [0,3]	=>	'active_agents',
+    [0,4]	=>	:compositions,
   }
   CSS_MAP = {
     [0,1]	=>	'subheading',
+    [0,3]	=>	'subheading',
+  }
+  SYMBOL_MAP = {
+    :composition_text => HtmlGrid::Textarea,
   }
   def compositions(model, session=@session)
     RootCompositions.new(model.compositions, @session, self)

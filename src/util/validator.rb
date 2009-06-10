@@ -312,6 +312,7 @@ module ODDB
 			:company_form,
 			:company_name,
 			:comparable_size,
+      :composition_text,
 			:connection_key,
 			:contact,
 			:contact_email,

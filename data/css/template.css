@@ -904,7 +904,8 @@ a.create.square {
   margin: 1px;
 }
 div#composition-list div {
-  padding: 4px; 
+  padding: 4px;
+  margin-right: 8px;
   float: left;
 }
 div#composition-list label {
@@ -913,8 +914,14 @@ div#composition-list label {
 div#compositions {
   overflow: auto;
 }
-div#composition-list td {
-  padding: 0px; 
+div#composition-list th, div#composition-list label, div#composition-list a.ajax {
+  font-style: italic;
+  font-weight: normal;
+  background-color: transparent;
+  color: black;
+}
+div#composition-list td, div#composition-list th {
+  padding: 0px;
   height: 19px;
 }
 a.footnote {

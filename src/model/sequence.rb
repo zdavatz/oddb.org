@@ -390,9 +390,9 @@ module ODDB
 			target = value
 		end	
     def composition_text
-      @packages.collect { |cd, pac| 
+      @composition_text || @packages.collect { |cd, pac|
         (src = pac.swissmedic_source) && src[:composition] 
-      }.compact.first || @composition_text
+      }.compact.first
     end
 	end
 	class IncompleteSequence < SequenceCommon
