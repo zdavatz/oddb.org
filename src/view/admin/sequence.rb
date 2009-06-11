@@ -173,7 +173,10 @@ class CompositionList < HtmlGrid::DivList
   def composition(model)
     agents = ActiveAgents.new(model.active_agents, @session, self)
     if @model.size > 1
-      [@lookandfeel.lookup(:part, @list_index.to_i + 1), agents]
+      span = HtmlGrid::Span.new(model, @session, self)
+      span.css_class = 'italic'
+      span.value = @lookandfeel.lookup(:part, @list_index.to_i + 1)
+      [span, agents]
     else
       agents
     end

@@ -10,34 +10,21 @@ require 'htmlgrid/booleanvalue'
 module ODDB
 	module View
 		module Drugs
-class Parts < HtmlGrid::List
+class CompositionList < HtmlGrid::DivList
   include PartSize
-  COMPONENTS = {
-    [0,0] => :size,
-    [1,0] => :active_agents,
-    [2,0] => :galenic_form,
-  }
-  CSS_MAP = { [0,0,3] => 'list top' }
+  COMPONENTS = { [0,0] => :composition }
+  LABELS = false
+  OFFSET_STEP = [1,0]
   OMIT_HEADER = true
-  SORT_DEFAULT = nil
-  LEGACY_INTERFACE = false
-  def active_agents(model)
-    if(comp = model.composition)
-      comp.active_agents.collect { |act| 
-        [ (sub = act.substance) && sub.send(@session.language), 
-          act.dose ].join(' ')
-      }.join("<BR>")
-    end
+  def composition(model)
+    span = HtmlGrid::Span.new(model, @session, self)
+    span.css_class = 'italic'
+    span.value = part_size(model)
+    [ span, View::Admin::ActiveAgents.new(model.active_agents, @session, self)]
   end
-  def galenic_form(model)
-    if((comp = model.composition) && (gf = comp.galenic_form))
-      '' << @lookandfeel.lookup(:galenic_form) \
-         << ': ' << gf.send(@session.language)
-    end
-  end
-  def size(model)
-    part_size model
-  end
+end
+class Parts < View::Admin::Compositions
+  COMPONENTS = { [0,0] => CompositionList }
 end
 class PackageInnerComposite < HtmlGrid::Composite
 	include DataFormat
@@ -214,19 +201,26 @@ class PackageComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]	=>	:package_name,
 		[0,1]	=>	View::Drugs::PackageInnerComposite,
-		[0,2]	=>	'th_parts',
-		[0,3]	=>	:parts,
-		[0,4]	=>	'th_source',
-		[0,5]	=>	:source,
+    [0,2] =>  'composition',
+    [0,3] =>  :composition_text,
+		[0,4]	=>	'th_parts',
+		[0,5]	=>	:parts,
+		[0,6]	=>	'th_source',
+		[0,7]	=>	:source,
 	}
 	CSS_CLASS = 'composite'
 	CSS_MAP = {
 		[0,0]	=>	'th',
 		[0,2]	=>	'subheading',
+    [0,3] =>  'list',
 		[0,4]	=>	'subheading',
-    [0,5] =>  'list',
+		[0,6]	=>	'subheading',
+    [0,7] =>  'list',
 	}
   DEFAULT_CLASS = HtmlGrid::Value
+  def compositions(model, session=@session)
+    View::Admin::Compositions.new(model.compositions, @session, self)
+  end
 	def package_name(model, session)
 		[model.name, model.size].compact.join('&nbsp;-&nbsp;')
 	end
