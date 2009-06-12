@@ -23,7 +23,7 @@ module ODDB
     end
     def update(agent=WWW::Mechanize.new, target=get_latest_file(agent))
       if(target)
-        diff target, @latest, [:product_group, :atc_class]
+        diff target, @latest, [:product_group, :atc_class, :sequence_date]
         update_registrations @diff.news + @diff.updates, @diff.replacements
         sanity_check_deletions(@diff)
         delete @diff.package_deletions
@@ -226,7 +226,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       end
       "http://#{SERVER_NAME}/de/gcc/resolve/pointer/#{ptr}"
     end
-    def rows_diff(row, other, ignore = [:product_group, :sequence_date])
+    def rows_diff(row, other, ignore = [:product_group, :atc_class, :sequence_date])
       flags = super(row, other, ignore)
       if other.first.is_a?(String) \
         && (reg = @app.registration(cell(row, column(:iksnr)))) \
