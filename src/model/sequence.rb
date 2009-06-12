@@ -359,7 +359,7 @@ module ODDB
 						end
 					when :inactive_date, :sequence_date
 						if(value.is_a?(String))
-							hash.store(key, Date.parse(value.tr('.', '-')))
+							values.store(key, Date.parse(value.tr('.', '-')))
 						end
 					end 
 				end
