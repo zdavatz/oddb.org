@@ -13,7 +13,7 @@ module ODDB
 								:compositions, :longevity
     attr_accessor :registration, :atc_class, :export_flag,
                   :galenic_form, :patinfo, :pdf_patinfo, :atc_request_time,
-                  :deactivate_patinfo
+                  :deactivate_patinfo, :sequence_date
 		attr_writer :composition_text, :dose, :inactive_date
 		alias :pointer_descr :seqnr
 		def initialize(seqnr)
@@ -357,7 +357,7 @@ module ODDB
 						elsif(value.is_a?(Array))
 							Dose.new(*value)
 						end
-					when :inactive_date
+					when :inactive_date, :sequence_date
 						if(value.is_a?(String))
 							hash.store(key, Date.parse(value.tr('.', '-')))
 						end

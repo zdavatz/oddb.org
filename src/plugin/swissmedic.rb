@@ -226,7 +226,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       end
       "http://#{SERVER_NAME}/de/gcc/resolve/pointer/#{ptr}"
     end
-    def rows_diff(row, other, ignore = [:product_group])
+    def rows_diff(row, other, ignore = [:product_group, :sequence_date])
       flags = super(row, other, ignore)
       if other.first.is_a?(String) \
         && (reg = @app.registration(cell(row, column(:iksnr)))) \
@@ -470,10 +470,11 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       base = parts.join(', ')
       base, descr = descr, nil if base.empty?
       args = { 
-        :composition_text => cell(row, column(:composition)),
+        :composition_text => cell(row, column(:composition)).gsub(/\r\n?/u, "\n"),
         :name_base        => base,
         :name_descr       => descr,
         :dose             => nil,
+        :sequence_date    => cell(row, column(:sequence_date)),
       }
       sequence = registration.sequence(seqnr)
 			if(sequence.nil? || sequence.atc_class.nil?)
