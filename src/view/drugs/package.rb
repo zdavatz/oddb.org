@@ -17,10 +17,10 @@ class CompositionList < HtmlGrid::DivList
   OFFSET_STEP = [1,0]
   OMIT_HEADER = true
   def composition(model)
-    span = HtmlGrid::Span.new(model, @session, self)
-    span.css_class = 'italic'
-    span.value = part_size(model)
-    [ span, View::Admin::ActiveAgents.new(model.active_agents, @session, self)]
+    div = HtmlGrid::Div.new(model, @session, self)
+    div.css_class = 'galenic-form'
+    div.value = part_size(model)
+    [ div, View::Admin::ActiveAgents.new(model.active_agents, @session, self)]
   end
 end
 class Parts < View::Admin::Compositions

@@ -51,6 +51,8 @@ class ActiveAgents < HtmlGrid::List
     input = galenic_form(comp)
     label = HtmlGrid::SimpleLabel.new(:galenic_form, input, @session, self)
     @grid.add [label, nil, input], *offset
+    @grid.add_style 'list', *offset
+    @grid.add_style 'list right', offset[0] + 1, offset[1]
     offset[1] += 1
     offset
   end

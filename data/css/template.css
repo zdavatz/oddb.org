@@ -913,6 +913,11 @@ div#composition-list div {
   margin-right: 8px;
   float: left;
 }
+div#composition-list div.galenic-form {
+  padding: 4px 8px 4px 0px;
+  font-style: italic;
+  float: none;
+}
 div#composition-list label {
   padding-right: 4px; 
 }
@@ -928,8 +933,7 @@ div#composition-list a.ajax {
   font-style: italic;
 }
 div#composition-list td, div#composition-list th {
-  padding: 0px;
-  height: 19px;
+  padding: 4px 8px 4px 0px;
 }
 a.footnote {
   font-weight: normal;
