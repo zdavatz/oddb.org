@@ -311,12 +311,16 @@ class SequenceInnerComposite < HtmlGrid::Composite
 		[2,1]		=>	:name_descr,
 		[0,2]		=>	:atc_class,
 		[2,2]		=>	:atc_descr,
+		[0,3]		=>	:sequence_date,
 	}
 	CSS_MAP = {
-		[0,0,4,3]	=>	'list',
+		[0,0,4,4]	=>	'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
+  SYMBOL_MAP = {
+    :sequence_date => HtmlGrid::DateValue,
+  }
 end
 class SequenceForm < HtmlGrid::Composite
 	include HtmlGrid::ErrorMessage
@@ -333,14 +337,15 @@ class SequenceForm < HtmlGrid::Composite
 		[2,2]		=>	:export_flag,
 		[0,3]		=>	:atc_class,
 		[2,3]		=>	:atc_descr,
+		[0,4]		=>	:sequence_date,
 	}
 	COMPONENT_CSS_MAP = {
-		[1,0,1,4]	=>	'standard',
+		[1,0,1,5]	=>	'standard',
 		[3,0,1,2]	=>	'standard',
 		[3,3]	    =>	'standard',
 	}
   CSS_MAP = {
-    [0,0,4,4]	=>	'list',
+    [0,0,4,5]	=>	'list',
   }
 	LABELS = true
   LOOKANDFEEL_MAP = {
@@ -355,6 +360,7 @@ class SequenceForm < HtmlGrid::Composite
 		:no_company					=> HtmlGrid::LabelText,
 		:regulatory_email		=> HtmlGrid::InputText,
 		:deactivate_patinfo => HtmlGrid::InputDate,
+		:sequence_date      => HtmlGrid::InputDate,
 	}
 	def init
 		reorganize_components
@@ -365,20 +371,20 @@ class SequenceForm < HtmlGrid::Composite
 	def reorganize_components
 		if(@model.is_a?(ODDB::Sequence))
 			components.update({
-				[0,4]		=>	:html_upload,
-				[2,4]		=>	:language_select,
-				[0,5]		=>	:patinfo_upload,
-				[2,5]   =>  :patinfo_label,
-				[3,5,1] =>  :patinfo,
-				[3,5,2] =>  :assign_patinfo,
-				[3,5,3] =>  :delete_patinfo,
-        [2,6]   =>  :deactivate_patinfo,
-				[1,6,0]	=>	:submit,
-				[1,6,1] =>  :delete_item,
+				[0,5]		=>	:html_upload,
+				[2,5]		=>	:language_select,
+				[0,6]		=>	:patinfo_upload,
+				[2,6]   =>  :patinfo_label,
+				[3,6,1] =>  :patinfo,
+				[3,6,2] =>  :assign_patinfo,
+				[3,6,3] =>  :delete_patinfo,
+        [2,7]   =>  :deactivate_patinfo,
+				[1,7,0]	=>	:submit,
+				[1,7,1] =>  :delete_item,
 			})
 			css_map.update({
-				[0,4,4,3]	=>	'list',
-				[0,5,5]   =>	'list',
+				[0,5,4,3]	=>	'list',
+				[0,6,5]   =>	'list',
 			})
 			if(@model.atc_class.nil? && !atc_descr_error?)
 				if(@model.company.nil?)
@@ -394,7 +400,7 @@ class SequenceForm < HtmlGrid::Composite
 				end
 			end
 		else
-			components.store([1,4], :submit)
+			components.store([1,5], :submit)
 		end
 	end
 	def assign_patinfo(model, session=@session)

@@ -168,6 +168,7 @@ module SequenceMethods
       :substance,
       :galenic_form,
       :deactivate_patinfo,
+      :sequence_date,
     ]
 		input = user_input(keys)
 =begin

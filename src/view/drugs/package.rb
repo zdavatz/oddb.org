@@ -37,34 +37,36 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[0,1]		=>	:name,
 		[2,1]		=>	:registration_date,
 		#[0,2]		=>	:most_precise_dose,
-		[2,2]		=>	:revision_date,
-		[0,3,0]	=>	:atc_class,
-		[1,3,1]	=>	:atc_ddd_link,
-		[2,3]		=>	:expiration_date,
-		[0,4]		=>	:galenic_form,
-		[2,4]		=>	:size,
-    [0,5]		=>	:index_therapeuticus,
-		[2,5]		=>	:descr,
-		[0,6]		=>	:ikscat,
-		[2,6]		=>	:indication,
-		[0,7]		=>	:sl_entry,
-		[0,8]		=>	:price_exfactory,
-		[2,8]		=>	:price_public,
-		[0,9]	  =>	:deductible,
-    [0,10]  =>  :pharmacode,
+		[2,2]		=>	:sequence_date,
+		[2,3]		=>	:revision_date,
+		[0,4,0]	=>	:atc_class,
+		[1,4,1]	=>	:atc_ddd_link,
+		[2,4]		=>	:expiration_date,
+		[0,5]		=>	:galenic_form,
+		[2,5]		=>	:size,
+    [0,6]		=>	:index_therapeuticus,
+		[2,6]		=>	:descr,
+		[0,7]		=>	:ikscat,
+		[2,7]		=>	:indication,
+		[0,8]		=>	:sl_entry,
+		[0,9]		=>	:price_exfactory,
+		[2,9]		=>	:price_public,
+		[0,10]	=>	:deductible,
+    [0,11]  =>  :pharmacode,
 	}
 	CSS_MAP = {
-		[0,0,4]	=>	'list',
-		[0,1,4]	=>	'list',
-		[0,2,4]	=>	'list',
-		[0,3,4]	=>	'list',
-		[0,4,4]	=>	'list',
-		[0,5,4]	=>	'list',
-		[0,6,4]	=>	'list',
-		[0,7,4]	=>	'list',
-		[0,8,4]	=>	'list',
-		[0,9,4]	=>	'list',
-		[0,10,4]=>	'list',
+		[0,0,4] => 'list',
+		[0,1,4] => 'list',
+		[0,2,4] => 'list',
+		[0,3,4] => 'list',
+		[0,4,4] => 'list',
+		[0,5,4] => 'list',
+		[0,6,4] => 'list',
+		[0,7,4] => 'list',
+		[0,8,4] => 'list',
+		[0,9,4] => 'list',
+		[0,10,4] => 'list',
+		[0,11,4] => 'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
@@ -82,41 +84,42 @@ class PackageInnerComposite < HtmlGrid::Composite
 		:narcotic_label			=>	HtmlGrid::LabelText,
 		:registration_date	=>	HtmlGrid::DateValue,
 		:revision_date			=>	HtmlGrid::DateValue,
+    :sequence_date      =>  HtmlGrid::DateValue,
 		:expiration_date		=>	HtmlGrid::DateValue,
 	}
 	def init
     if(@model.narcotic?)
-      components.update([2,10] => :narcotic_label, [3,10] => :narcotic)
+      components.update([2,11] => :narcotic_label, [3,11] => :narcotic)
     end
     if(@lookandfeel.enabled?(:feedback))
-      components.update([0,10] => :feedback_label, [1,10] => :feedback,
-                        [0,11] => :pharmacode)
-      css_map.store([0,11,4], 'list')
+      components.update([0,11] => :feedback_label, [1,11] => :feedback,
+                        [0,12] => :pharmacode)
+      css_map.store([0,12,4], 'list')
     end
     if(@model.ddd_price)
-      components.store([2,9], :ddd_price)
+      components.store([2,10], :ddd_price)
     end
 		if(@model.sl_entry)
-			components.store([2,7], :limitation)
-      hash_insert_row(components, [0,8], :introduction_date)
-      hash_insert_row(css_map, [0,8,4], 'list')
+			components.store([2,8], :limitation)
+      hash_insert_row(components, [0,9], :introduction_date)
+      hash_insert_row(css_map, [0,9,4], 'list')
 			if(@model.limitation_text)
-        hash_insert_row(components, [0,8], :limitation_text)
-        hash_insert_row(css_map, [0,8,4], 'list')
+        hash_insert_row(components, [0,9], :limitation_text)
+        hash_insert_row(css_map, [0,9,4], 'list')
       end
 		end
     if(@lookandfeel.enabled?(:fachinfos))
-      hash_insert_row(components, [0,7], :fachinfo_label)
-      hash_insert_row(css_map, [0,7,4], 'list')
+      hash_insert_row(components, [0,8], :fachinfo_label)
+      hash_insert_row(css_map, [0,8,4], 'list')
       components.update({
-        [1,7]		=>	:fachinfo,
-        [2,7]		=>	:patinfo_label,
-        [3,7]		=>	:patinfo,
+        [1,8]		=>	:fachinfo,
+        [2,8]		=>	:patinfo_label,
+        [3,8]		=>	:patinfo,
       })
     elsif(@lookandfeel.enabled?(:patinfos))
-      hash_insert_row(components, [2,7], :patinfo_label)
-      hash_insert_row(css_map, [0,7,4], 'list')
-      components.store([3,7], :patinfo)
+      hash_insert_row(components, [2,8], :patinfo_label)
+      hash_insert_row(css_map, [0,8,4], 'list')
+      components.store([3,8], :patinfo)
     end
     if(idx = components.index(:limitation_text))
       css_map.store(idx, 'list top')

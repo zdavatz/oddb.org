@@ -43,6 +43,7 @@ module ODDB
 			:publication_date,
 			:registration_date,
 			:revision_date,
+      :sequence_date,
 			:sponsor_until,
       :valid_until,
 		]

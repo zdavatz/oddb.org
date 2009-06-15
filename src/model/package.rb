@@ -51,7 +51,7 @@ module ODDB
     sequence_data :atc_class, :basename, :company, :composition_text, :ddds,
       :fachinfo, :galenic_forms, :galenic_group, :has_patinfo?, :longevity,
       :iksnr, :indication, :name, :name_base, :patinfo, :pdf_patinfo,
-      :registration, :route_of_administration
+      :registration, :route_of_administration, :sequence_date
 		def initialize(ikscd)
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)

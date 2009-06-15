@@ -14,6 +14,7 @@ class SwissmedicCat < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value
 	SYMBOL_MAP = {
 		:registration_date	=>	HtmlGrid::DateValue,
+		:sequence_date	    =>	HtmlGrid::DateValue,
 		:revision_date			=>	HtmlGrid::DateValue,
 		:expiration_date		=>	HtmlGrid::DateValue,
 		:market_date		    =>	HtmlGrid::DateValue,
@@ -60,6 +61,11 @@ class SwissmedicCat < HtmlGrid::Composite
 		if(@model.registration_date)
 			@components.store([0,y], "registration_date")
 			@components.store([1,y], :registration_date)
+			y += 1
+		end
+		if(@model.sequence_date)
+			@components.store([0,y], "sequence_date")
+			@components.store([1,y], :sequence_date)
 			y += 1
 		end
 		if(@model.revision_date)
