@@ -111,10 +111,16 @@ module ODDB
       tbook.worksheet(0).each(skip) { |row|
         reg = update_registration(row) if row
         seq = update_sequence(reg, row) if reg
-        update_composition(seq, row) if seq
+        if seq
+          comps = update_compositions(seq, row)
+          comps.each_with_index do |comp, idx|
+            update_galenic_form(seq, comp, row)
+          end
+        end
       }
     rescue StandardError => err
-      puts "#{err.class} when fixing #{source_row(row).pretty_inspect}"
+      puts "#{err.class} when fixing #{source_row(row).pretty_inspect if row}"
+      puts err.message
       puts err.backtrace[0,10]
     end
     def fix_registrations
@@ -263,8 +269,11 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
                       \s*(?<cdose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?))?)?
                }u
       if(match = ptrn.match(part))
-        comp = seq.compositions.first
+        idx = opts[:composition].to_i
+        comp = seq.compositions.at(idx)
         comp ||= @app.create(seq.pointer + :composition)
+        @app.update(comp.pointer, {:source => part, :label => opts[:label]},
+                    :swissmedic)
         ptr = if(agent = comp.active_agent(name))
                 agent.pointer
               else
@@ -305,39 +314,74 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         @app.update ptr, { :name => name }
       end
     end
-    def update_composition(seq, row, opts={:create_only => false})
+    def update_compositions(seq, row, opts={:create_only => false})
       if opts[:create_only] && !seq.active_agents.empty?
-        seq.compositions.first
+        seq.compositions
       elsif(namestr = cell(row, column(:substances)))
+        res = []
         names = namestr.split(/\s*,\s*/u).collect { |name| 
           capitalize(name) }
         substances = names.collect { |name|
           update_substance(name)
         }
-        comps = []
-        agents = []
-        composition = cell(row, column(:composition)).gsub(/\n/u, ' ')
-        names.each { |name|
-          comp, agent = update_active_agent(seq, name, composition, opts)
-          comps.push comp
-          agents.push agent
-        }
-        comp = comps.compact.first
-        unless(agents.empty? || comp.nil?)
-          comp.active_agents.dup.each { |act|
-            unless agents.include?(act)
-              @app.delete act.pointer
-            end
-          }
+        composition_text = cell(row, column(:composition)).gsub(/\r\n?/u, "\n")
+        numbers = [ "A|I", "B|II", "C|III", "D|IV", "E|V", "F|VI" ]
+        current = numbers.shift
+        labels = []
+        compositions = composition_text.split(/\n/u).select do |line|
+          if match = /^(#{current})\)/.match(line)
+            labels.push match[1]
+            current = numbers.shift
+          end
         end
-        comp
+        if compositions.empty?
+          compositions.push composition_text.gsub(/\n/u, ' ')
+        end
+        offset = 0
+        compositions.each_with_index do |composition, idx|
+          idx -= offset
+          agents = []
+          comps = []
+          opts[:composition] = idx
+          opts[:label] = labels[idx]
+          comp = nil
+          names.each { |name|
+            comp, agent = update_active_agent(seq, name, composition, opts)
+            comps.push comp
+            agents.push agent
+          }
+          comp = comps.compact.first
+          if comp
+            res.push comp
+            unless(compositions.size - offset == 1 && agents.empty?)
+              comp.active_agents.dup.each { |act|
+                unless agents.include?(act)
+                  @app.delete act.pointer
+                end
+              }
+              comp.active_agents.replace agents.compact
+              comp.active_agents.odba_store
+            end
+          else
+            offset += 1
+          end
+        end
+        max = compositions.size - offset
+        seq.compositions.size.downto(max) do |idx|
+          if comp = seq.compositions.at(idx)
+            @app.delete comp.pointer
+          end
+        end
+        res
+      else
+        []
       end
     end
     def update_galenic_form(seq, comp, row, opts={:create_only => false})
       return if comp.galenic_form
       if((german = seq.name_descr) && !german.empty?)
         _update_galenic_form(comp, :de, german)
-      elsif(match = GALFORM_P.match(cell(row, column(:composition))))
+      elsif(match = GALFORM_P.match(comp.source.to_s))
         _update_galenic_form(comp, :lt, match[:galform].strip)
       end
     end
@@ -451,8 +495,12 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       rows.each { |row|
         reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row, opts) if reg
-        comp = update_composition(seq, row, opts) if seq
-        update_galenic_form(seq, comp, row, opts) if comp
+        if seq
+          comps = update_compositions(seq, row, opts)
+          comps.each_with_index do |comp, idx|
+            update_galenic_form(seq, comp, row, opts)
+          end
+        end
         update_package(reg, seq, row, replacements, opts) if reg
       }
     end

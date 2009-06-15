@@ -8,7 +8,7 @@ module ODDB
   class Composition
     include Persistence
     include Comparable
-    attr_accessor :sequence
+    attr_accessor :sequence, :source, :label
     attr_reader :galenic_form, :active_agents
     def initialize
       @active_agents = []

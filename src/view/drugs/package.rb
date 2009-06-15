@@ -19,7 +19,11 @@ class CompositionList < HtmlGrid::DivList
   def composition(model)
     div = HtmlGrid::Div.new(model, @session, self)
     div.css_class = 'galenic-form'
-    div.value = part_size(model)
+    size = part_size(model)
+    if (comp = model.composition) && (label = comp.label)
+      size = "#{label}) #{size}"
+    end
+    div.value = size
     [ div, View::Admin::ActiveAgents.new(model.active_agents, @session, self)]
   end
 end
