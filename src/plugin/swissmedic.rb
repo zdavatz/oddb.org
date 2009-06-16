@@ -517,8 +517,11 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       descr = parts.pop
       base = parts.join(', ')
       base, descr = descr, nil if base.empty?
+      if ctext = cell(row, column(:composition))
+        ctext = ctext.gsub(/\r\n?/u, "\n")
+      end
       args = { 
-        :composition_text => cell(row, column(:composition)).gsub(/\r\n?/u, "\n"),
+        :composition_text => ctext,
         :name_base        => base,
         :name_descr       => descr,
         :dose             => nil,
