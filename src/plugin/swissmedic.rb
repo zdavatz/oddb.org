@@ -105,11 +105,12 @@ module ODDB
         }
       end
     end
-    def fix_compositions(skip=3)
+    def fix_compositions(opts={})
+      opts = {:skip => 3}.update opts
       row = nil
       tbook = Spreadsheet.open(@latest)
-      tbook.worksheet(0).each(skip) { |row|
-        reg = update_registration(row) if row
+      tbook.worksheet(0).each(opts[:skip]) { |row|
+        reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row) if reg
         if seq
           comps = update_compositions(seq, row)
@@ -262,12 +263,25 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       hsh
     end
     def update_active_agent(seq, name, part, opts={})
+      ## first, insist on receiving a dose - in case there's a Label
+      #  such as 'Glucoselösung mit Calcium:'
       ptrn = %r{(?ix)
-                #{Regexp.escape name}
-                (\s*(?<dose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?)))?
+                #{Regexp.escape name}(?!:)
+                (\s*(?<dose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?)))
                 (\s*ut\s+(?<chemical>[^\d,]+)
                       \s*(?<cdose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?))?)?
                }u
+      unless match = ptrn.match(part)
+        ## But if that isn't successful, also try without dose, but limit to
+        #  terms where a Beginning can be identified (at start of line or after punctuation)
+        ptrn = %r{(?ix)
+                  (^|[[:punct:]])\s*#{Regexp.escape name}(?!:)
+                  (\s*(?<dose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?)))?
+                  (\s*ut\s+(?<chemical>[^\d,]+)
+                        \s*(?<cdose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?))?)?
+                 }u
+        match = ptrn.match(part)
+      end
       if(match = ptrn.match(part))
         idx = opts[:composition].to_i
         comp = seq.compositions.at(idx)
@@ -444,11 +458,13 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         @app.update(part.pointer, args, :swissmedic)
       end
     end
-    def update_registration(row, opts = {:date => @@today, :create_only => false})
+    def update_registration(row, opts = {})
+      opts = {:date => @@today, :create_only => false}.update(opts)
       opts[:date] ||= @@today
       group = cell(row, column(:product_group))
       if(group != 'TAM')
         iksnr = cell(row, column(:iksnr))
+        return if (filter = opts[:iksnr]) && iksnr != filter
         science = cell(row, column(:production_science))
         ptr = if(registration = @app.registration(iksnr))
                 return registration if opts[:create_only]
