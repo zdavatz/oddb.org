@@ -29,40 +29,56 @@ module ODDB
 			@app = app
 		end
 		def run
-			mail_patinfo_invoices
-			mail_fachinfo_log
-			run_on_monthday(1) {
-				mail_download_invoices
-			}
-			run_on_monthday(15) {
-				mail_download_invoices
-			}
+      safe_export 'Mail Patinfo-Invoices' do
+        mail_patinfo_invoices
+      end
+      safe_export 'Mail Fachinfo-Invoices' do
+        mail_fachinfo_log
+      end
+      safe_export 'Mail Download-Invoices' do
+        run_on_monthday(1) {
+            mail_download_invoices
+        }
+        run_on_monthday(15) {
+            mail_download_invoices
+        }
+      end
 			run_on_weekday(0) { 
-				mail_download_stats
-				mail_feedback_stats
+        safe_export 'Mail Download-Statistics' do
+          mail_download_stats
+        end
+        safe_export 'Mail Feedback-Statistics' do
+          mail_feedback_stats
+        end
 				#mail_notification_stats
 			}
-			export_sl_pcodes
-			export_yaml
-			export_oddbdat
-			export_csv
-			export_doc_csv
-      export_index_therapeuticus_csv
-      export_price_history_csv
+      safe_export 'SL-Pharmacodes' do
+        export_sl_pcodes
+      end
+      safe_export 'YAML-Files' do
+        export_yaml
+      end
+      safe_export 'OddbDat' do
+        export_oddbdat
+      end
+      safe_export 'CSV-Files' do
+        export_csv
+      end
+      safe_export 'CSV-Files (Doctors)' do
+        export_doc_csv
+      end
+      safe_export 'CSV-Files (ITh)' do
+        export_index_therapeuticus_csv
+      end
+      safe_export 'CSV-Files (Price-History)' do
+        export_price_history_csv
+      end
 			run_on_monthday(1) {
-				export_fachinfo_pdf
+        safe_export 'Fachinfo-PDF' do
+          export_fachinfo_pdf
+        end
 			}
-		rescue StandardError => e
-			EXPORT_SERVER.clear
-			log = Log.new(@@today)
-			log.report = [
-				"Error: #{e.class}",
-				"Message: #{e.message}",
-				"Backtrace:",
-				e.backtrace.join("\n"),
-			].join("\n")
-			log.notify("Error: Export")
-			nil
+      nil
 		end
     def export_helper(name)
       EXPORT_SERVER.remote_safe_export(EXPORT_DIR, name) { |path|
@@ -240,6 +256,20 @@ module ODDB
 		end
     def mail_swissmedic_notifications
       SwissmedicPlugin.new(@app).mail_notifications
+    end
+    def safe_export subject, &block
+      block.call
+		rescue StandardError => e
+      EXPORT_SERVER.clear rescue nil
+			log = Log.new(@@today)
+			log.report = [
+				"Error: #{e.class}",
+				"Message: #{e.message}",
+				"Backtrace:",
+				e.backtrace.join("\n"),
+			].join("\n")
+			log.notify("Error: Export - #{subject}")
+      sleep(30)
     end
 	end
 end
