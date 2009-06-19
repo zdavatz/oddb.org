@@ -13,7 +13,7 @@ module ODDB
 		include UserObserver
 		include AddressObserver
 		ODBA_SERIALIZABLE = ['@addresses', '@invoice_dates', '@disabled_invoices', 
-                         '@prices']
+                         '@prices', '@users']
     attr_accessor :address_email, :business_area, :business_unit, :cl_status,
       :competition_email, :complementary_type, :contact, :deductible_display,
       :disable_patinfo, :ean13, :generic_type,
