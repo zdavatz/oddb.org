@@ -17,6 +17,7 @@ require 'util/loggroup'
 require 'util/soundex'
 require 'util/iso-latin1'
 require 'util/notification_logger'
+require 'util/ngram_similarity'
 require 'util/today'
 require 'remote/package'
 require 'admin/subsystem'
@@ -222,15 +223,18 @@ class OddbPrevalence
 	def company(oid)
 		@companies[oid.to_i]
 	end
-	def company_by_name(name)
-		namedown = name.to_s.downcase
-		@companies.each_value { |company|
-			if company.name.to_s.downcase == namedown
-				return company
-			end
-		}
-		nil
-	end
+  def company_by_name(name, ngram_cutoff=nil)
+    namedown = name.to_s.downcase
+    @companies.each_value { |company|
+      name = company.name.to_s.downcase
+      if name == namedown \
+        || (ngram_cutoff \
+            && ODDB::Util::NGramSimilarity.compare(name, namedown) > ngram_cutoff)
+        return company
+      end
+    }
+    nil
+  end
 	def company_count
 		@company_count ||= @companies.size
 	end

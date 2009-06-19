@@ -321,8 +321,10 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     end
     def update_company(row)
       name = cell(row, column(:company))
-      if(company = @app.company_by_name(name)) 
-        company
+      ## an ngram-similarity of 0.8 seems to be a good choice here.
+      #  0.7 confuses Arovet AG with Provet AG
+      if(company = @app.company_by_name(name, 0.8))
+        @app.update company.ptr, { :name => name }
       else
         ptr = Persistence::Pointer.new(:company).creator
         @app.update ptr, { :name => name }
