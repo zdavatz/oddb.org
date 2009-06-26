@@ -82,7 +82,7 @@ class FeedbackForm < HtmlGrid::Form
 		input.set_attribute('cols', 53)
 		input.set_attribute('rows', 4)
 		input.set_attribute('wrap', true)
-		js = "if(this.value.length > 400) { (this.value = this.value.substr(0,400))}" 
+		js = "if(this.value.length > 800) { (this.value = this.value.substr(0,800))}"
 		input.set_attribute('onKeypress', js)
 		input.label = true
 		input
