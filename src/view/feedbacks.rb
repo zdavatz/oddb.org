@@ -4,7 +4,7 @@
 require 'view/publictemplate'
 require 'view/additional_information'
 require 'view/searchbar'
-require 'htmlgrid/form'
+require 'view/form'
 require 'htmlgrid/inputradio'
 require 'htmlgrid/textarea'
 require 'htmlgrid/errormessage'
@@ -13,7 +13,7 @@ require 'htmlgrid/div'
 
 module ODDB
 	module View
-class FeedbackForm < HtmlGrid::Form
+class FeedbackForm < Form
 	include HtmlGrid::ErrorMessage
 	include HtmlGrid::InfoMessage
 	CSS_MAP = {
