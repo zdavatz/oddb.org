@@ -45,6 +45,9 @@ module Notify
       puts @errors.inspect
       return self
 		end
+    if msg = input[:message]
+      input[:message] = msg[0,500]
+    end
     @model.name = input[:name]
     @model.notify_sender = input[:notify_sender]
     @model.notify_recipient = input[:notify_recipient]

@@ -339,6 +339,7 @@ module ODDB
 			:language_select,
 			:location,
 			:lt,
+      :message,
 			:name,
 			:name_base,
 			:name_descr,
@@ -445,9 +446,6 @@ module ODDB
 		end
 		def iksnr(value)
 			swissmedic_id(:iksnr, value, 4..5)
-		end
-		def message(value)
-			validate_string(value).to_s[0,500]
 		end
     def notify_recipient(value)
       RMail::Address.parse(value.to_s).collect { |parsed| parsed.address }

@@ -24,6 +24,9 @@ module ODDB
 				input = user_input(keys, mandatory)
 				input[:fax] = input[:fax].to_s.split(/\s*,\s*/u)
 				input[:fon] = input[:fon].to_s.split(/\s*,\s*/u)
+        if msg = input[:message]
+          input[:message] = msg[0,500]
+        end
 				lns = input[:additional_lines].to_s
 				input.store(:additional_lines, 
 					lns.split(/[\n\r]+/u))

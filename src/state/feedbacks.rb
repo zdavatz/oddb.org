@@ -87,6 +87,9 @@ def update
 		# store new Feedback
 		time = Time.now
 		hash.store(:time , time)
+    if msg = hash[:message]
+      hash[:message] = msg[0,800]
+    end
 		@model.current_feedback = @session.app.update(@model.current_feedback.pointer,
                                                   hash)
     @session.update_feedback_rss_feed
