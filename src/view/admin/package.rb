@@ -232,17 +232,19 @@ class PackageForm < HtmlGrid::Composite
   def generic_group(model, session=@session)
     input = HtmlGrid::Textarea.new(:generic_group, model, @session, self)
     my_factor = (model.generic_group_factor || 1).to_f
-    input.value = model.generic_group_comparables.collect do |pac|
-      str = pac.ikskey.to_s
-      if (factor = pac.generic_group_factor) && (factor /= my_factor) != 1
-        if factor.to_i == factor
-          str << " (%ix)" % factor
-        else
-          str << " (%3.1fx)" % factor
+    if ggcs = model.generic_group_comparables
+      input.value = ggcs.collect do |pac|
+        str = pac.ikskey.to_s
+        if (factor = pac.generic_group_factor) && (factor /= my_factor) != 1
+          if factor.to_i == factor
+            str << " (%ix)" % factor
+          else
+            str << " (%3.1fx)" % factor
+          end
         end
-      end
-      str
-    end.sort.join(', ')
+        str
+      end.sort.join(', ')
+    end
     input.label = true
     input
   end
