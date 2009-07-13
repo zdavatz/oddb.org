@@ -40,7 +40,7 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[2,0]		=>	:registration_holder,
 		[0,1]		=>	:name,
 		[2,1]		=>	:registration_date,
-		#[0,2]		=>	:most_precise_dose,
+		[0,2]		=>	:most_precise_dose,
 		[2,2]		=>	:sequence_date,
 		[2,3]		=>	:revision_date,
 		[0,4,0]	=>	:atc_class,
