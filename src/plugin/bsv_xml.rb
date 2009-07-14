@@ -349,12 +349,15 @@ module ODDB
           atc, name = visited = @visited_iksnrs[@iksnr]
           if @iksnr == '00000'
             # ignore
-          elsif visited.nil? || @atc_code == atc || atc.nil? || @atc_code.nil? \
+          elsif visited.nil? || @atc_code == atc \
+            || atc.to_s.empty? || @atc_code.to_s.empty? \
             || name == @name
             @registration = @app.registration(@iksnr)
             @visited_iksnrs.store @iksnr, [@atc_code, @name]
           else
             @duplicate_iksnr = true
+            @report_data.store :swissmedic_no5_bag,
+              sprintf("%s (belongs to %s)", @iksnr, name && name[:de])
             @duplicate_iksnrs.push @report_data
           end
         when 'SwissmedicNo8'
