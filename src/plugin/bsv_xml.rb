@@ -350,7 +350,7 @@ module ODDB
           if @iksnr == '00000'
             # ignore
           elsif visited.nil? || @atc_code == atc || atc.nil? || @atc_code.nil? \
-            || name == name
+            || name == @name
             @registration = @app.registration(@iksnr)
             @visited_iksnrs.store @iksnr, [@atc_code, @name]
           else
