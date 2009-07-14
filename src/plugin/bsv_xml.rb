@@ -137,7 +137,8 @@ module ODDB
                   :unknown_packages_oot, :unknown_registrations,
                   :created_sl_entries, :deleted_sl_entries,
                   :updated_sl_entries, :created_limitation_texts,
-                  :deleted_limitation_texts, :updated_limitation_texts
+                  :deleted_limitation_texts, :updated_limitation_texts,
+                  :duplicate_iksnrs
       def initialize *args
         super
         @known_packages = {}
@@ -155,6 +156,7 @@ module ODDB
         @conflicted_packages = []
         @conflicted_packages_oot = []
         @conflicted_registrations = []
+        @duplicate_iksnrs = []
         @missing_ikscodes = []
         @missing_ikscodes_oot = []
         @missing_pharmacodes = []
@@ -168,6 +170,7 @@ module ODDB
         @updated_sl_entries = 0
         @updated_limitation_texts = 0
         @origin = @@today.strftime "#{ODDB.config.url_bag_sl_zip} (%d.%m.%Y)"
+        @visited_iksnrs = {}
       end
       def erroneous_packages
         @known_packages.values.sort_by do |data| data[:name_base].to_s end
@@ -264,7 +267,7 @@ module ODDB
       def tag_end name
         case name
         when 'Pack'
-          if @pack && !@conflict
+          if @pack && !@conflict && !@duplicate_iksnr
             @report.store :pharmacode_oddb, @pack.pharmacode
             if seq = @pack.sequence
               @app.update seq.pointer, @seq_data, :bag
@@ -335,13 +338,25 @@ module ODDB
           elsif @refdata_registration
             @unknown_registrations.push @report_data
           end
-          @iksnr, @registration, @sl_entries, @lim_texts = nil
+          @iksnr, @registration, @sl_entries, @lim_texts, @duplicate_iksnr,
+            @atc_code = nil
         when 'AtcCode'
+          @atc_code = @text
           @seq_data.store :atc_class, @text
         when 'SwissmedicNo5'
           @iksnr = "%05i" % @text.to_i
           @report_data.store :swissmedic_no5_bag, @iksnr
-          @registration = @app.registration(@iksnr)
+          atc, name = visited = @visited_iksnrs[@iksnr]
+          if @iksnr == '00000'
+            # ignore
+          elsif visited.nil? || @atc_code == atc || atc.nil? || @atc_code.nil? \
+            || name == name
+            @registration = @app.registration(@iksnr)
+            @visited_iksnrs.store @iksnr, [@atc_code, @name]
+          else
+            @duplicate_iksnr = true
+            @duplicate_iksnrs.push @report_data
+          end
         when 'SwissmedicNo8'
           @report.store :swissmedic_no8_bag, @text
           if @text.strip.empty?
@@ -539,6 +554,12 @@ module ODDB
       body = report << "\n\n"
       info = super
       parts = [
+        [ :duplicate_iksnrs,
+          'Duplicate Registrations in SL %d.%m.%Y',
+          <<-EOS
+Zwei oder mehr "Preparations" haben den selben 5-stelligen Swissmedic-Code
+          EOS
+        ],
         [ :conflicted_registrations,
           'SMeX/SL-Differences (Registrations) %d.%m.%Y',
           'SL hat anderen 5-Stelligen Swissmedic-Code als SMeX' ],
@@ -642,6 +663,12 @@ es gibt im SMeX keine Zeile mit diesem 8-stelligen Swissmedic-Code, und
 in MedWin kein Resultat mit dem entsprechenden Pharmacode
           EOS
         ],
+        [ :duplicate_iksnrs,
+          'Duplicate Registrations in SL %d.%m.%Y',
+          <<-EOS
+Zwei oder mehr "Preparations" haben den selben 5-stelligen Swissmedic-Code
+          EOS
+        ],
       ].collect do |collection, fmt, explain|
         values = @preparations_listener.send(collection).collect do |data|
           report_format data
@@ -675,6 +702,7 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
       ups = @preparations_listener.unknown_packages.size
       urs = @preparations_listener.unknown_registrations.size
       upoots = @preparations_listener.unknown_packages_oot.size
+      dups = @preparations_listener.duplicate_iksnrs.size
       <<-EOS
 Sehr geehrter Herr Krayenbühl
 Sehr geehrte Frau Fonatsch
@@ -706,6 +734,9 @@ Swissmedic registriert.
 8-stelligen Swissmedic-Code. Die Produkte sind wohl ausser Handel aber sicher
 noch bei der Swissmedic registriert. Der Swissmedic Code sollte in der SL
 gemäss SR 830.1, Art. 24, Abs. 1 trotzdem korrekt vorhanden sein.
+
+7. #{dups} 5-stellige Swissmedic-Nummern kommen im BAG-XML-Export doppelt vor.
+Siehe auch Attachment: #{@@today.strftime('Duplicate_Registrations_in_SL_%d.%m.%Y.txt')}
 
 Um die obigen Beobachtungen kontrollieren zu können, speichern Sie bitte die
 Attachments auf Ihrem Schreibtisch.
