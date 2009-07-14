@@ -666,6 +666,9 @@ es gibt im SMeX keine Zeile mit diesem 8-stelligen Swissmedic-Code, und
 in MedWin kein Resultat mit dem entsprechenden Pharmacode
           EOS
         ],
+        [ :missing_pharmacodes,
+          'Missing Pharmacodes in SL %d.%m.%Y',
+          'SL hat keinen Pharmacode' ],
         [ :duplicate_iksnrs,
           'Duplicate Registrations in SL %d.%m.%Y',
           <<-EOS
@@ -699,46 +702,50 @@ Zwei oder mehr "Preparations" haben den selben 5-stelligen Swissmedic-Code
       end.join("\n")
     end
     def report_bsv
-      cfs = @preparations_listener.conflicted_registrations.size
-      micds = @preparations_listener.missing_ikscodes.size
-      micdoots = @preparations_listener.missing_ikscodes_oot.size
-      ups = @preparations_listener.unknown_packages.size
-      urs = @preparations_listener.unknown_registrations.size
-      upoots = @preparations_listener.unknown_packages_oot.size
-      dups = @preparations_listener.duplicate_iksnrs.size
-      <<-EOS
+      numbers = [
+        :conflicted_registrations, :missing_ikscodes, :missing_ikscodes_oot,
+        :unknown_packages, :unknown_registrations, :unknown_packages_oot,
+        :missing_pharmacodes, :duplicate_iksnrs ].collect do |key|
+        @preparations_listener.send(key).size
+      end
+      sprintf <<-EOS, *numbers
 Sehr geehrter Herr Krayenbühl
 Sehr geehrte Frau Fonatsch
 
 Am #{@@today.strftime('%d.%m.%Y')} haben wir Ihren aktuellen SL-Export (XML)
 wieder überprüft. Dabei ist uns folgendes aufgefallen:
 
-1. Bei #{cfs} Produkten hat die SL einen anderen 5-Stelligen Swissmedic-Code als
+1. Bei %i Produkten hat die SL einen anderen 5-Stelligen Swissmedic-Code als
 Swissmedic Excel.
 
-2. Bei #{micds} Produkten hat die SL keinen 8-Stelligen Swissmedic-Code. Ev.
+2. Bei %i Produkten hat die SL keinen 8-Stelligen Swissmedic-Code. Ev.
 befinden sich dort auch Produkte darunter, welche nicht bei der Swissmedic
 registriert werden müssen. Es hat aber sicherlich auch Produkte darunter,
 welche einen Swissmedic-Code haben sollten.
 
-3. Bei #{micdoots} Produkten hat die SL keinen 8-Stelligen Swissmedic-Code, die
+3. Bei %i Produkten hat die SL keinen 8-Stelligen Swissmedic-Code, die
 Produkte sind laut RefData ausser Handel. Der Swissmedic Code sollte in der SL
 gemäss SR 830.1, Art. 24, Abs. 1 trotzdem korrekt vorhanden sein. Die
 Krankenkasse muss bis 5 Jahre in der Vergangenheit abrechnen können.
 
-4. Bei #{ups} Produkten gibt es im Swissmedic-Excel keine Zeile mit diesem
+4. Bei %i Produkten gibt es im Swissmedic-Excel keine Zeile mit diesem
 8-stelligen Swissmedic-Code, die Packung kommt aber in Medwin vor.
 
-5. Bei #{urs} Produkten gibt es im Swissmedic-Excel keine Zeile mit diesem
+5. Bei %i Produkten gibt es im Swissmedic-Excel keine Zeile mit diesem
 5-stelligen Swissmedic-Code. Die Produkte sind aber sicherlich bei der
 Swissmedic registriert.
 
-6. Bei #{upoots} Produkten gibt es im Swissmedic-Excel keine Zeile mit diesem
+6. Bei %i Produkten gibt es im Swissmedic-Excel keine Zeile mit diesem
 8-stelligen Swissmedic-Code. Die Produkte sind wohl ausser Handel aber sicher
 noch bei der Swissmedic registriert. Der Swissmedic Code sollte in der SL
 gemäss SR 830.1, Art. 24, Abs. 1 trotzdem korrekt vorhanden sein.
 
-7. #{dups} 5-stellige Swissmedic-Nummern kommen im BAG-XML-Export doppelt vor.
+7. Bei %i Produkten fehlt der Pharmacode. Hier stellen wir uns die Frage,
+weshalb bei diesen Produkten der Pharmacode fehlt. Eigentlich dürften keine
+Pharmacodes fehlen, denn 99%% Prozent aller Apotheken, Spitäler, Heime etc.
+rechnen alle mit dem Pharmacode ab.
+
+8. %i 5-stellige Swissmedic-Nummern kommen im BAG-XML-Export doppelt vor.
 Siehe auch Attachment: #{@@today.strftime('Duplicate_Registrations_in_SL_%d.%m.%Y.txt')}
 
 Um die obigen Beobachtungen kontrollieren zu können, speichern Sie bitte die
