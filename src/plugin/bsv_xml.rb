@@ -153,6 +153,7 @@ module ODDB
             }
           end
         end
+        @completed_registrations = {}
         @conflicted_packages = []
         @conflicted_packages_oot = []
         @conflicted_registrations = []
@@ -172,11 +173,56 @@ module ODDB
         @origin = @@today.strftime "#{ODDB.config.url_bag_sl_zip} (%d.%m.%Y)"
         @visited_iksnrs = {}
       end
+      def completed_registrations
+        @completed_registrations.values
+      end
       def erroneous_packages
         @known_packages.values.sort_by do |data| data[:name_base].to_s end
       end
       def flag_change pointer, key
         (@change_flags[pointer] ||= []).push key
+      end
+      def find_typo_registration iksnr, name
+        names = name.collect do |key, name| name.downcase end
+        (iksnr.length - 1).times do |idx|
+          typo = iksnr.dup
+          typo[idx,2] = typo[idx,2].reverse
+          if reg = @app.registration(typo)
+            rnames = reg.sequences.collect do |seqnr, seq|
+              seq.name_base.downcase end
+            return reg unless (names & rnames).empty?
+          end
+        end
+        nil
+      end
+      def identify_sequence registration, name, substances
+        subs = substances.collect do |data|
+          [data[:lt], ODDB::Dose.new(data[:dose], data[:unit])]
+        end
+        seqs = registration.sequences.values
+        sequence = seqs.find do |seq|
+          agents = seq.active_agents
+          subs.size == agents.size && subs.all? do |sub, dose|
+            agents.any? do |act| act.same_as?(sub) && act.dose == dose end
+          end
+        end
+        sequence ||= seqs.find do |seq| seq.active_agents.empty? end
+        if sequence.nil?
+          seqnr = (registration.sequences.keys.max || '00').next
+          ptr = registration.pointer + [:sequence, seqnr]
+          sequence = @app.update ptr.creator, :name_base => name[:de]
+        end
+        if sequence.active_agents.empty?
+          cptr = sequence.pointer + :composition
+          comp = @app.create cptr
+          subs.each do |name, dose|
+            substance = @app.create_substance(name)
+            pointer = comp.pointer + [:active_agent, name]
+            agent = @app.update pointer.creator, :dose => dose,
+                                                 :substance => substance.oid
+          end
+        end
+        sequence
       end
       def load_ikskey pcode
         return if pcode.to_s.empty?
@@ -206,6 +252,7 @@ module ODDB
       def tag_start name, attrs
         case name
         when 'Pack'
+          @ikscd = nil
           @pcode = attrs['Pharmacode'].to_s
           @data = @pac_data.dup
           @report = @report_data.dup.update(@data).update(@reg_data).
@@ -246,6 +293,8 @@ module ODDB
           @lim_texts = {}
           @name = {}
           @report_data = {}
+          @deferred_packages = []
+          @substances = []
           @refdata_registration = false
         when /(.+)Price/u
           @price_type = $~[1].downcase.to_sym
@@ -257,6 +306,8 @@ module ODDB
         when 'ItCode'
           @itcode = attrs['Code']
           @it_descriptions = {}
+        when 'Substance'
+          @substance = {}
         else
           @text = ''
         end
@@ -267,7 +318,15 @@ module ODDB
       def tag_end name
         case name
         when 'Pack'
-          if @pack && !@conflict && !@duplicate_iksnr
+          if @pack.nil? && @completed_registrations[@iksnr]
+            @deferred_packages.push({
+              :ikscd    => @ikscd,
+              :sequence => @seq_data,
+              :package  => @data,
+              :sl_entry => @sl_data,
+              :lim_text => @lim_data,
+            })
+          elsif @pack && !@conflict && !@duplicate_iksnr
             @report.store :pharmacode_oddb, @pack.pharmacode
             if seq = @pack.sequence
               @app.update seq.pointer, @seq_data, :bag
@@ -289,8 +348,18 @@ module ODDB
             @sl_entries.store @pack.pointer, @sl_data
             @lim_texts.store @pack.pointer, @lim_data
           end
-          @pcode, @pack, @sl_data, @lim_data, @out_of_trade = nil
+          @pcode, @pack, @sl_data, @lim_data, @out_of_trade, @ikscd = nil
         when 'Preparation'
+          if !@deferred_packages.empty? \
+            && seq = identify_sequence(@registration, @name, @substances)
+            @deferred_packages.each do |info|
+              ptr = seq.pointer + [:package, info[:ikscd]]
+              @app.update seq.pointer, info[:sequence]
+              @app.update ptr.creator, info[:package]
+              @sl_entries.store ptr, info[:sl_entry]
+              @lim_texts.store ptr, info[:lim_text]
+            end
+          end
           @sl_entries.each do |pac_ptr, sl_data|
             pack = pac_ptr.resolve @app
             @known_packages.delete pac_ptr
@@ -339,7 +408,7 @@ module ODDB
             @unknown_registrations.push @report_data
           end
           @iksnr, @registration, @sl_entries, @lim_texts, @duplicate_iksnr,
-            @atc_code = nil
+            @atc_code, @deferred_packages, @substances = nil
         when 'AtcCode'
           @atc_code = @text
           @seq_data.store :atc_class, @text
@@ -348,17 +417,25 @@ module ODDB
           @report_data.store :swissmedic_no5_bag, @iksnr
           atc, name = visited = @visited_iksnrs[@iksnr]
           if @iksnr == '00000'
-            # ignore
+            # ignore, is reported independently
           elsif visited.nil? || @atc_code == atc \
             || atc.to_s.empty? || @atc_code.to_s.empty? \
             || name == @name
             @registration = @app.registration(@iksnr)
             @visited_iksnrs.store @iksnr, [@atc_code, @name]
+          elsif @registration = find_typo_registration(@iksnr, @name)
+            @report_data.store :swissmedic_no5_bag,
+              sprintf("%s (auto-corrected to %s)", @iksnr,
+                      @iksnr = @registration.iksnr)
+            @duplicate_iksnrs.push @report_data
           else
             @duplicate_iksnr = true
             @report_data.store :swissmedic_no5_bag,
               sprintf("%s (belongs to %s)", @iksnr, name && name[:de])
             @duplicate_iksnrs.push @report_data
+          end
+          if @registration && @registration.packages.empty?
+            @completed_registrations.store @iksnr, @report_data
           end
         when 'SwissmedicNo8'
           @report.store :swissmedic_no8_bag, @text
@@ -461,6 +538,15 @@ module ODDB
           key = $~[1].downcase.to_sym
           @name[key] = @text
           @report_data.store(:name_base, @text) if key == :de
+        when 'DescriptionLa'
+          @substance.store :lt, @text
+        when 'Quantity'
+          @substance.store :dose, @text.to_f
+        when 'QuantityUnit'
+          @substance.store :unit, @text
+        when 'Substance'
+          @substances.push @substance
+          @substance = nil
         when /^Description(..)$/u
           key = $~[1].downcase.to_sym
           if @in_limitation
@@ -561,6 +647,15 @@ module ODDB
           'Duplicate Registrations in SL %d.%m.%Y',
           <<-EOS
 Zwei oder mehr "Preparations" haben den selben 5-stelligen Swissmedic-Code
+          EOS
+        ],
+        [ :completed_registrations,
+          'Package-Data was completed from SL',
+          <<-EOS
+die Packungsinformation wurde aus den BAG-XML Daten übernommen weil von Seiten
+der Swissmedic zur Zeit keine Packungsinformationen zur Verfügung stehen.
+Limitation (falls vorhanden) und weitere Packungs-Infos wurden ebenfalls
+übernommen.
           EOS
         ],
         [ :conflicted_registrations,
