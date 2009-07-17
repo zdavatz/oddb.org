@@ -361,7 +361,7 @@ module ODDB
               @app.update seq.pointer, info[:sequence]
               @app.update ptr.creator, info[:package]
               pptr = ptr + [:part]
-              size = info[:size].sub(/(^| )[^\d.,]+(?= )/)
+              size = info[:size].sub(/(^| )[^\d.,]+(?= )/, '')
               @app.update pptr.creator, :size => size,
                                         :composition => seq.compositions.first
               @sl_entries.store ptr, info[:sl_entry]
