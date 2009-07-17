@@ -345,6 +345,8 @@ module ODDB
                 flag_change @pack.pointer, :price_rise
               end
             end
+            ## don't take the Swissmedic-Category unless it's missing in the DB
+            @data.delete :ikscat if @pack.ikscat
             @app.update @pack.pointer, @data, :bag
             @sl_entries.store @pack.pointer, @sl_data
             @lim_texts.store @pack.pointer, @lim_data
@@ -464,6 +466,8 @@ module ODDB
               @conflict = true
             end
           end
+        when 'SwissmedicCategory'
+          @data.store :ikscat, @text
         when 'OrgGenCode'
           gtype = GENERIC_TYPES[@text]
           @reg_data.store :generic_type, (gtype || :unknown)
