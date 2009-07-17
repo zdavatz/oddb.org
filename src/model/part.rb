@@ -49,7 +49,7 @@ Grammar OddbSize
     def size=(size)
       unless size.to_s.strip.empty?
         @addition, @multi, @count, @measure, @scale, @comform = parse_size(size) 
-        if @count == 1 && @multi.to_i > 1
+        if @count == 0
           @count, @multi = @multi, nil
         end
         set_comparable_size!
@@ -63,10 +63,6 @@ Grammar OddbSize
         count = (count ? count[1].value.to_i : 1)
       rescue ParseException, AmbigousParseException => e
         count = size.to_i
-      end
-      if(!dose.nil? && @package.sequence.dose.nil?)
-        @package.sequence.dose = Dose.new(*(dose.childrens[1,2].collect { |c| 
-          c.value }))
       end
       [
         (addition ? addition.first.value.to_i : 0),
@@ -148,16 +144,20 @@ Grammar OddbSize
       parts = []
       multi = @multi.to_i
       count = @count.to_i
+      add = @addition.to_i
       if(multi > 1) 
         parts.push(multi)
       end
-      if(multi > 1 && count > 1)
+      @measure = nil if @measure == 1
+      if(count > 0 && multi > 1 && !@measure)
         parts.push('x')
       end
-      if(count > 1 || (count > 0 && multi > 1))
+      if(count > 1 || (count > 0 && multi > 1 && !@measure))
         parts.push(count)
       end
-      @measure = nil if @measure == 1
+      if add > 0
+        parts.push '+', add
+      end
       if(@commercial_form)
         parts.push @commercial_form
         parts.push "à" if @measure
@@ -165,6 +165,7 @@ Grammar OddbSize
         parts.push('x')
       end
       parts.push @measure if @measure
+      parts.push('/', @scale) if @scale && @scale != 1
       parts.join(' ')
     end
     private

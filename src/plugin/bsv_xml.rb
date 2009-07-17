@@ -325,6 +325,7 @@ module ODDB
               :package  => @data,
               :sl_entry => @sl_data,
               :lim_text => @lim_data,
+              :size     => @size,
             })
           elsif @pack && !@conflict && !@duplicate_iksnr
             @report.store :pharmacode_oddb, @pack.pharmacode
@@ -348,7 +349,8 @@ module ODDB
             @sl_entries.store @pack.pointer, @sl_data
             @lim_texts.store @pack.pointer, @lim_data
           end
-          @pcode, @pack, @sl_data, @lim_data, @out_of_trade, @ikscd = nil
+          @pcode, @pack, @sl_data, @lim_data, @out_of_trade, @ikscd, @data,
+            @size = nil
         when 'Preparation'
           if !@deferred_packages.empty? \
             && seq = identify_sequence(@registration, @name, @substances)
@@ -356,6 +358,10 @@ module ODDB
               ptr = seq.pointer + [:package, info[:ikscd]]
               @app.update seq.pointer, info[:sequence]
               @app.update ptr.creator, info[:package]
+              pptr = ptr + [:part]
+              size = info[:size].sub(/(^| )[^\d.,]+(?= )/)
+              @app.update pptr.creator, :size => size,
+                                        :composition => seq.compositions.first
               @sl_entries.store ptr, info[:sl_entry]
               @lim_texts.store ptr, info[:lim_text]
             end
@@ -567,6 +573,8 @@ module ODDB
             end
           elsif @it_descriptions
             @it_descriptions[key] = @text
+          elsif @data
+            @size ||= @text
           else
             @descriptions[key] ||= @text
             @report_data[:name_descr] ||= @text if key == :de
