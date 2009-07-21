@@ -4,6 +4,7 @@
 
 require 'html-parser'
 require 'formatter'
+require 'iconv'
 
 module ODDB
 	class NullWriter < ::NullWriter
