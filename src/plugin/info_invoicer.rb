@@ -27,7 +27,7 @@ module ODDB
     def adjust_annual_fee(company, items)
       if(date = company.invoice_date(@infotype))
         diy = (date - (date << 12)).to_f
-        short = date << 6
+        short = date << 1
         items.each { |item|
           if(item.type == :annual_fee)
             tim = item.time
