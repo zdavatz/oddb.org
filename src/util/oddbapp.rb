@@ -4,6 +4,7 @@
 require 'odba'
 require 'odba/index_definition'
 require 'odba/drbwrapper'
+require 'odba/18_19_loading_compatibility'
 require 'custom/lookandfeelbase'
 require 'util/failsafe'
 require 'util/ipn'
@@ -808,6 +809,16 @@ class OddbPrevalence
       }
     end
     ODBA::DRbWrapper.new comparables
+  end
+  def remote_each_atc_class(&block)
+    @atc_classes.sort.each do |key, atc|
+      block.call ODBA::DRbWrapper.new(atc)
+    end
+  end
+  def remote_each_company(&block) # for migration to ch.oddb.org
+    @companies.each_value do |comp|
+      block.call ODBA::DRbWrapper.new(comp)
+    end
   end
   def remote_each_package(&block)
     each_package { |pac|

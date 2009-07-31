@@ -52,6 +52,9 @@ module ODDB
 		attr_accessor :general_advice, :other_advice, :composition, :packages
 		attr_accessor :distribution, :date, :fabrication
 		attr_accessor :iksnrs # interface only, no data
+    def chapter_names
+      self::class::CHAPTERS
+    end
     def empty?
     end
 		def to_s
@@ -61,6 +64,27 @@ module ODDB
 		end
 	end
 	class PatinfoDocument2001 < PatinfoDocument
+		CHAPTERS = [
+      :amzv,
+			:name,
+			:company,
+			:galenic_form,
+			:effects,
+			:purpose,
+			:amendments,
+			:contra_indications,
+			:precautions,
+			:pregnancy,
+			:usage,
+			:unwanted_effects,
+			:general_advice,
+			:other_advice,
+			:composition,
+			:packages,
+			:distribution,
+      :fabrication,
+			:date,
+		]
 		attr_accessor :amzv
 	end
 end
