@@ -224,18 +224,28 @@ Diese Produkte werden in ch.oddb.org nicht angezeigt (zu wenig Informationen).
       dir = File.join ARCHIVE_PATH, 'pdf'
       success = false
       languages.each do |language|
-        page = agent.get url + "?lang=#{language}"
-        link = page.links.find do |link| pattern.match link.text end
-        pdf = link.click
-        latest = File.join dir, "narcotics-#{language}-latest.pdf"
-        unless File.exist?(latest) && File.read(latest) == pdf.body
-          name = @@today.strftime "narcotics-#{language}-%d.%m.%Y.pdf"
-          path = File.join dir, name
-          pdf.save path
-          update_from_pdf path, language
-          ## if everything went well, save the pdf as 'latest'
-          pdf.save latest
-          success = true
+        retries = 3
+        begin
+          page = agent.get url + "?lang=#{language}"
+          link = page.links.find do |link| pattern.match link.text end
+          pdf = link.click
+          latest = File.join dir, "narcotics-#{language}-latest.pdf"
+          unless File.exist?(latest) && File.read(latest) == pdf.body
+            name = @@today.strftime "narcotics-#{language}-%d.%m.%Y.pdf"
+            path = File.join dir, name
+            pdf.save path
+            update_from_pdf path, language
+            ## if everything went well, save the pdf as 'latest'
+            pdf.save latest
+            success = true
+          end
+        rescue EOFError
+          if retries > 0
+            retries -= 1
+            sleep 60 ** (2 - retries)
+          else
+            raise "Downloading Narcotics-PDF file still fails with EOFError after 3 retries"
+          end
         end
       end
       success
