@@ -819,6 +819,7 @@ class OddbPrevalence
     @companies.each_value do |comp|
       block.call ODBA::DRbWrapper.new(comp)
     end
+    nil # don't try to pass all registrations across DRb-Land
   end
   def remote_each_package(&block)
     each_package { |pac|
