@@ -29,16 +29,16 @@ module ODDB
 				end
 				def send_column
 					if(@current_column == 2 && firstword(@raw_original))
-						@original = @raw_original.strip
+						@original = @raw_original[/\d{5}/u]
 					end
 					@current_column += 1
 				end
 				def send_flowing_data(data)
-					if(/tierarzneimittel/iu.match(data))
+					if(match = /tierarzneimittel/iu.match(data))
 						throw :vet_products
 					end
 					case @current_column
-					when 2
+					when 1,2
 						@raw_original << data
 					when 4,5
 						@raw_comarketing << data
