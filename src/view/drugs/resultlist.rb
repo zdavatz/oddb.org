@@ -138,6 +138,7 @@ class ResultList < HtmlGrid::List
 		:name_base					=>	'list big',
 		:narcotic						=>	'list',
 		:notify							=>	'list right',
+		:patent             =>	'list',
 		:patinfo						=>	'list',
 		:price_exfactory		=>	'list right',
 		:price_public				=>	'list pubprice',
