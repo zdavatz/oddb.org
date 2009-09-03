@@ -24,7 +24,7 @@ module ODDB
 			@sequences = {}
 		end
 		def active?(cutoff=@@two_years_ago)
-			(!@inactive_date || (@inactive_date > cutoff)) \
+			!inactive? \
 				&& (!@expiration_date || @expiration_date > cutoff || @renewal_flag) \
 				&& (!@market_date || @market_date <= @@today) 
 		end
