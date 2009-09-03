@@ -43,12 +43,25 @@ module ODDB
 				return registrations.first
 			end
 		end
+    def prune_comarketing except_pairs
+      table = {}
+      except_pairs.each do |original, comarketing|
+        table.store comarketing, original
+      end
+      @app.registrations.each do |iksnr, reg|
+        if (com_reg = reg.comarketing_with) && table[iksnr] != com_reg.iksnr
+          @app.update reg.pointer, :comarketing_with => nil
+          @deleted += 1
+        end
+      end
+    end
 		def report
-			fmt =  "Found            %3i Co-Marketing-Pairs\n"
-			fmt << "of which         %3i were found in the Database\n"
-			fmt << "New Connections: %3i\n\n"
-			fmt << "The following    %3i Original/Comarketing-Pairs were not found in the Database:\n"
-			txt = sprintf(fmt, @pairs.size, @found, @updated, @not_found.size)
+			fmt =  "Found                %3i Co-Marketing-Pairs\n"
+			fmt << "of which             %3i were found in the Database\n"
+			fmt << "New Connections:     %3i\n"
+			fmt << "Deleted Connections: %3i\n\n"
+			fmt << "The following        %3i Original/Comarketing-Pairs were not found in the Database:\n"
+			txt = sprintf(fmt, @pairs.size, @found, @updated, @deleted, @not_found.size)
 			@not_found.each { |original, comarketing|	
 				txt << sprintf("%s\n -> %s\n\n", original, comarketing)
 			}
@@ -69,6 +82,7 @@ module ODDB
 				seq.registration }.uniq.reject { |reg| reg.parallel_import }
 		end
 		def update(agent=WWW::Mechanize.new)
+      @deleted = 0
 			@updated = 0
 			@found = 0
 			@not_found = []
@@ -81,6 +95,7 @@ module ODDB
 			@pairs.each { |pair|
 				update_pair(*pair)
 			}
+      prune_comarketing @pairs
 		end
 		def update_pair(original_iksnr, comarketing_iksnr)
 			if((original = find(original_iksnr)) \
