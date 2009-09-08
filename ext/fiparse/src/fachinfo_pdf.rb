@@ -79,10 +79,12 @@ module ODDB
               @paragraph = @section.next_paragraph
             end
 						@wrote_section_heading = true
-					else
+          elsif @paragraph
 						@paragraph.set_format(:italic)
 						@paragraph << self.out
 						@paragraph.reduce_format(:italic)
+          else
+            warn "ignoring \"#{self.out}\""
 					end
           if @paragraph && @paragraph.empty?
             @fresh_paragraph = false
