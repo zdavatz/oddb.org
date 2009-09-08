@@ -484,6 +484,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           :registration_date   => reg_date,
           :expiration_date     => expiration,
           :renewal_flag        => false,
+          :inactive_date       => nil,
         }
         if(expiration < opts[:date])
           args.store :renewal_flag, true
