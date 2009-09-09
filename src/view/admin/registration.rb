@@ -174,21 +174,22 @@ class RegistrationForm < View::Form
 		[0,3,1]	=>	:complementary_type,
 		[2,3]		=>	:market_date,
 		[0,4]		=>	:index_therapeuticus,
-		[2,4]		=>	:inactive_date,
-		[0,5]		=>	:indication,
-		[2,5]		=>	:patented_until,
-		[0,6]		=>	:export_flag,
-    [2,6]   =>  :ignore_patent,
-    [3,6]   =>  :violates_patent,
-		[0,7]		=>	:parallel_import,
-		[2,7]		=>	:vaccine,
+		[2,4]		=>	:manual_inactive_date,
+		[2,5]		=>	:inactive_date,
+		[0,6]		=>	:indication,
+		[2,6]		=>	:patented_until,
+		[0,7]		=>	:export_flag,
+    [2,7]   =>  :ignore_patent,
+    [3,7]   =>  :violates_patent,
+		[0,8]		=>	:parallel_import,
+		[2,8]		=>	:vaccine,
 	}
 	COMPONENT_CSS_MAP = {
-		[1,0,1,6]	=>	'standard',
-		[3,0,1,6]	=>	'standard',
+		[1,0,1,7]	=>	'standard',
+		[3,0,1,7]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,6,8]	=>	'list',
+		[0,0,6,9]	=>	'list',
 		[0,8]			=>	'list',
 	}
   COLSPAN_MAP = { [3,6] => 3 }
@@ -202,7 +203,8 @@ class RegistrationForm < View::Form
 		:fachinfo_link      =>	HtmlGrid::InputText,
 		:generic_type				=>	HtmlGrid::Select,
     :ignore_patent      =>  HtmlGrid::InputCheckbox,
-		:inactive_date			=>	HtmlGrid::InputDate,
+		:inactive_date			=>	HtmlGrid::DateValue,
+		:manual_inactive_date=>	HtmlGrid::InputDate,
 		:index_therapeuticus=>	HtmlGrid::InputText,
 		:market_date				=>	HtmlGrid::InputDate,
 		:parallel_import		=>	HtmlGrid::InputCheckbox,
@@ -217,30 +219,30 @@ class RegistrationForm < View::Form
 	end
 	def reorganize_components
 		if(@model.is_a?(Persistence::CreateItem))
-			components.store([1,8], :submit)
-			css_map.store([1,8], 'list')
+			components.store([1,9], :submit)
+			css_map.store([1,9], 'list')
 		else
 			components.update({
-				[0,8]		=>	'fi_upload_instruction0',
-				[2,8]		=>	:fachinfo_label,
-				[3,8,0]	=>	:fachinfo,
-				[3,8,1]	=>	:assign_fachinfo,
-				[0,9]		=>	'fi_upload_instruction1',
-				[1,9]		=>	:language_select,
-				[0,10]	=>	'fi_upload_instruction2a',
-				[1,10]	=>	:fachinfo_upload,
-				[0,11]	=>	'fi_upload_instruction2b',
-				[1,11]	=>	:fachinfo_link,
-				[0,12]	=>	'fi_upload_instruction3',
-				[1,12,0]=>	:submit,
-				[1,12,1]=>	:new_registration,
+				[0,9]		=>	'fi_upload_instruction0',
+				[2,9]		=>	:fachinfo_label,
+				[3,9,0]	=>	:fachinfo,
+				[3,9,1]	=>	:assign_fachinfo,
+				[0,10]	=>	'fi_upload_instruction1',
+				[1,10]	=>	:language_select,
+				[0,11]	=>	'fi_upload_instruction2a',
+				[1,11]	=>	:fachinfo_upload,
+				[0,12]	=>	'fi_upload_instruction2b',
+				[1,12]	=>	:fachinfo_link,
+				[0,13]	=>	'fi_upload_instruction3',
+				[1,13,0]=>	:submit,
+				[1,13,1]=>	:new_registration,
 			})
-      colspan_map.store([3,8], 3)
-      colspan_map.store([0,8], 2)
-			css_map.store([0,8], 'list bg bold')
-			css_map.store([1,8], 'list bg')
-			css_map.store([2,8,2], 'list')
-			css_map.store([0,9,2,4], 'list bg')
+      colspan_map.store([3,9], 3)
+      colspan_map.store([0,9], 2)
+			css_map.store([0,9], 'list bg bold')
+			css_map.store([1,9], 'list bg')
+			css_map.store([2,9,2], 'list')
+			css_map.store([0,10,2,4], 'list bg')
 		end
 	end
 	def company_name(model, session=@session)

@@ -14,6 +14,7 @@ module ODDB
 		attr_writer :generic_type, :complementary_type
 		attr_accessor :registration_date, :export_flag, :company, 
 			:revision_date, :indication, :expiration_date, :inactive_date,
+      :manual_inactive_date,
 			:market_date, :fachinfo, :source, :ikscat, :renewal_flag, #:pdf_fachinfos,
       :index_therapeuticus, :comarketing_with, :vaccine, :ignore_patent,
       :parallel_import, :minifi, :product_group, :production_science
@@ -116,7 +117,7 @@ module ODDB
       !!@ignore_patent
     end
     def inactive?
-      @inactive_date && @inactive_date <= @@today
+      (date = @manual_inactive_date || @inactive_date) && date <= @@today
     end
 		def limitation_text_count
 			@sequences.values.inject(0) { |inj, seq|			
