@@ -189,9 +189,13 @@ module ODDB
       if target = get_latest_file(agent, 'Präparateliste')
         FileUtils.cp target, latest_name
       end
+      indices = {}
+      [ :iksnr, :package_count, :expiry_date, :registration_date ].each do |key|
+        indices.store key, PREPARATIONS_COLUMNS.index(key)
+      end
       Spreadsheet.open(latest_name) do |workbook|
-        iksnr_idx = PREPARATIONS_COLUMNS.index :iksnr
-        count_idx = PREPARATIONS_COLUMNS.index :package_count
+        iksnr_idx = indices.delete(:iksnr)
+        count_idx = indices.delete(:package_count)
         workbook.worksheet(0).each(3) do |row|
           iksnr = row[iksnr_idx]
           count = row[count_idx].to_i
@@ -199,7 +203,7 @@ module ODDB
             aggregate[:package_count] += count
           elsif count == 0
             data = {}
-            PREPARATIONS_COLUMNS.each_with_index do |key, idx|
+            indices.each do |key, idx|
               data.store key, row[idx]
             end
             data[:package_count] = count
@@ -446,6 +450,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       export_registrations.each do |iksnr, data|
         if reg = @app.registration(iksnr)
           @known_exports += 1 if reg.export_flag
+          data.delete :package_count
           data.update :export_flag => true, :inactive_date => nil
           @app.update reg.pointer, data, :swissmedic
         end
