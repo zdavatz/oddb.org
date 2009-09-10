@@ -164,7 +164,7 @@ module ODDB
     def get_latest_file(agent, keyword='Packungen')
       page = agent.get @index_url
       links = page.links.select do |link|
-        ptrn = keyword.gsub /[^A-Za-z]/, '.'
+        ptrn = keyword.gsub /[^A-Za-z]/u, '.'
         /#{ptrn}/iu.match link.attributes['title']
       end
       link = links.first or raise "could not identify url to #{keyword}.xls"
