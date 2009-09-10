@@ -12,19 +12,29 @@ require 'swissmedic-diff'
 
 module ODDB
   class SwissmedicPlugin < Plugin
+    PREPARATIONS_COLUMNS = [ :iksnr, :seqnr, :name_base, :company,
+      :product_group, :index_therapeuticus, :atc_class, :production_science,
+      :sequence_ikscat, :ikscat, :registration_date, :sequence_date,
+      :expiry_date, :substances, :package_count, :package_sizes, :composition,
+      :indication_registration, :indication_sequence ]
     include SwissmedicDiff::Diff
     GALFORM_P = %r{excipiens\s+(ad|pro)\s+(?<galform>((?!\bpro\b)[^.])+)}u
     SCALE_P = %r{pro\s+(?<scale>(?<qty>[\d.,]+)\s*(?<unit>[kcmuµn]?[glh]))}u
     def initialize(app=nil, archive=ARCHIVE_PATH)
       super app
+      @index_url = 'http://www.swissmedic.ch/daten/00080/00251/index.html?lang=de'
       @archive = File.join archive, 'xls'
       FileUtils.mkdir_p @archive
       @latest = File.join @archive, 'Packungen-latest.xls'
+      @known_exports = 0
+      @export_registrations = {}
     end
     def update(agent=WWW::Mechanize.new, target=get_latest_file(agent))
       if(target)
+        initialize_export_registrations agent
         diff target, @latest, [:product_group, :atc_class, :sequence_date]
         update_registrations @diff.news + @diff.updates, @diff.replacements
+        update_export_registrations @export_registrations
         sanity_check_deletions(@diff)
         delete @diff.package_deletions
         deactivate @diff.sequence_deletions
@@ -76,6 +86,12 @@ module ODDB
         row = diff.newest_rows[iksnr].sort.first.last
         sprintf "%s (%s)", txt, cell(row, column(flag))
       end
+    end
+    def known_data(latest)
+      data = super
+      ## remove Export-Registrations from known data
+      data.first.delete_if do |iksnr, row| @export_registrations[iksnr] end
+      data
     end
     def _known_data(latest, known_regs, known_seqs, known_pacs, newest_rows)
       if(File.exist? latest)
@@ -145,26 +161,56 @@ module ODDB
       puts "System Stack Error when fixing #{source_row(row).pretty_inspect}"
       puts err.backtrace[-100..-1]
     end
-    def get_latest_file(agent)
-      page = agent.get('http://www.swissmedic.ch/daten/00080/00251/index.html?lang=de')
+    def get_latest_file(agent, keyword='Packungen')
+      page = agent.get @index_url
       links = page.links.select do |link|
-        /packungen/iu.match link.attributes['title']
+        ptrn = keyword.gsub /[^A-Za-z]/, '.'
+        /#{ptrn}/iu.match link.attributes['title']
       end
-      link = links.first or raise "could not identify url to Packungen.xls"
+      link = links.first or raise "could not identify url to #{keyword}.xls"
       file = agent.get(link.href)
       download = file.body
+      latest_name = File.join @archive, "#{keyword}-latest.xls"
       latest = ''
-      if(File.exist? @latest)
-        latest = File.read @latest
+      if(File.exist? latest_name)
+        latest = File.read latest_name
       end
       if(download[-1] != ?\n)
         download << "\n"
       end
-      target = File.join @archive, @@today.strftime('Packungen-%Y.%m.%d.xls')
+      target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xls")
       if(download != latest)
         File.open(target, 'w') { |fh| fh.puts(download) }
         target
       end
+    end
+    def initialize_export_registrations(agent)
+      latest_name = File.join @archive, "Präparateliste-latest.xls"
+      if target = get_latest_file(agent, 'Präparateliste')
+        FileUtils.cp target, latest_name
+      end
+      Spreadsheet.open(latest_name) do |workbook|
+        iksnr_idx = PREPARATIONS_COLUMNS.index :iksnr
+        count_idx = PREPARATIONS_COLUMNS.index :package_count
+        workbook.worksheet(0).each(3) do |row|
+          iksnr = row[iksnr_idx]
+          count = row[count_idx].to_i
+          if aggregate = @export_registrations[iksnr]
+            aggregate[:package_count] += count
+          elsif count == 0
+            data = {}
+            PREPARATIONS_COLUMNS.each_with_index do |key, idx|
+              data.store key, row[idx]
+            end
+            data[:package_count] = count
+            @export_registrations.store iksnr, data
+          end
+        end
+      end
+      @export_registrations.delete_if do |iksnr, data|
+        data[:package_count] != 0
+      end
+      @export_registrations
     end
     def mail_notifications
       salutations = {}
@@ -222,6 +268,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         "Deleted Packages: #{@diff.package_deletions.size} (#{@diff.replacements.size} Replaced)",
         "Deleted Sequences: #{@diff.sequence_deletions.size}",
         "Deactivated Registrations: #{@diff.registration_deletions.size}",
+        "Updated new Export-Registrations: #{@export_registrations.size - @known_exports}",
+        "Updated existing Export-Registrations: #{@known_exports}",
         "Total Sequences without ATC-Class: #{atcless.size}",
         atcless,
       ]
@@ -394,6 +442,15 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         []
       end
     end
+    def update_export_registrations export_registrations
+      export_registrations.each do |iksnr, data|
+        if reg = @app.registration(iksnr)
+          @known_exports += 1 if reg.export_flag
+          data.update :export_flag => true, :inactive_date => nil
+          @app.update reg.pointer, data, :swissmedic
+        end
+      end
+    end
     def update_galenic_form(seq, comp, row, opts={:create_only => false})
       return if comp.galenic_form
       if((german = seq.name_descr) && !german.empty?)
@@ -485,6 +542,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           :expiration_date     => expiration,
           :renewal_flag        => false,
           :inactive_date       => nil,
+          :export_flag         => nil,
         }
         if(expiration < opts[:date])
           args.store :renewal_flag, true
