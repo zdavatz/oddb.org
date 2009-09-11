@@ -201,7 +201,7 @@ module ODDB
           count = row[count_idx].to_i
           if aggregate = @export_registrations[iksnr]
             aggregate[:package_count] += count
-          elsif count == 0
+          else
             data = {}
             indices.each do |key, idx|
               data.store key, row[idx]
