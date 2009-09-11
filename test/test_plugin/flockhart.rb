@@ -37,7 +37,7 @@ class TestFlockhartWriter < Test::Unit::TestCase
 		formatter = ODDB::Interaction::Formatter.new(@writer)
 		parser = ODDB::Interaction::Parser.new(formatter)
 		target = ODDB::Interaction::FlockhartPlugin::TARGET
-		table = "prepared_table.htm"
+		table = "prepared_table.asp"
 		@html = File.read([target, table].join("/"))
 		parser.feed(@html)
 		@writer.cytochromes.store("8/cyto", ODDB::Interaction::Cytochrome.new('cyto'))
@@ -47,7 +47,7 @@ class TestFlockhartWriter < Test::Unit::TestCase
 	def test_check_string
 		result = @writer2.check_string("test")
 		assert_equal(true, result)
-		result = @writer2.check_string("test\240test")
+		result = @writer2.check_string("test\302\240test")
 		assert_equal(false, result)
 	end
 	def test_check_string2
@@ -97,7 +97,7 @@ class TestFlockhartWriter < Test::Unit::TestCase
 	def test_extract_data2
 		@writer.extract_data
 		result = @writer.cytochromes["2/2C8"].substrates
-		assert_equal(5, result.size)
+		assert_equal(6, result.size)
 		result = @writer.cytochromes["2/2C8"].inducers
 		assert_equal(1, result.size)
 		expected = ODDB::Interaction::InducerConnection
@@ -118,7 +118,7 @@ class TestFlockhartWriter < Test::Unit::TestCase
 		substrates.each { |sub|
 			@result = sub if sub.name==nil
 		}
-		assert_equal(24, substrates.size)
+		assert_equal(25, substrates.size)
 		substrates.each { |sub|
 			@result = sub if sub.name.match(/phenacetin/)
 		}
@@ -127,10 +127,9 @@ class TestFlockhartWriter < Test::Unit::TestCase
 	end
 	def test_new_fonthandler
 		@writer2.category = "start"
-		@writer2.new_fonthandler(nil)
+		@writer2.new_font(nil)
 		assert_equal(nil, @writer2.category)
-		handler = ODDB::HtmlFontHandler.new(Hash["color","#FF0000"])
-		@writer2.new_fonthandler(handler)
+		@writer2.new_font([0,0,1,0])
 		assert_equal("start", @writer2.category)
 	end
 	def test_parse_array
@@ -320,13 +319,13 @@ class TestFlockhartPlugin < Test::Unit::TestCase
 		result = @plugin.parse_detail_pages
 		#assert_equal(10, result.keys.size)
 		assert_equal(9, result.keys.size)
-		assert_equal(25, result['1A2'].substrates.size)
-		assert_equal(25, result['2D6'].inhibitors.size)
+		assert_equal(24, result['1A2'].substrates.size)
+		assert_equal(24, result['2D6'].inhibitors.size)
 	end
 	def test_parse_table
 		result = @plugin.parse_table
 		assert_equal(9, result.size)
-		assert_equal(24, result['1A2'].substrates.size)
+		assert_equal(25, result['1A2'].substrates.size)
     inhs = result['1A2'].inhibitors
     assert_equal(9, inhs.size)
     inh = inhs.find { |i| i.name == 'fluvoxamine' }

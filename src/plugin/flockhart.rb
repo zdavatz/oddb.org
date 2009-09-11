@@ -18,25 +18,9 @@ module ODDB
 			end
 			def check_string(string)
         case string
-				when /^\302\240$/u
-					return false
-				when /^=/u
-					return false
-				when /^>/u
-					return false
-				when /^[0-9]OH/u
-					return false
-				when /^[0-9]-OH/u
-					return false
-				when /^NOT/u
-					return false
-				when /^NAPQI/u
-					return false
-				when ""
-					return false
-				when /^[0-9]+\s*$/u
-					return false
-				when /^Chr\d+\s*$/u
+				when '', /\302\240/u, /^[=>(:]/u, /^[0-9]OH/u, /^[0-9]-OH/u, /^No[rt]/iu,
+             /^NAPQI/u, /^[0-9]+\s*$/u, /^Chr\d+\s*$/u,
+             /o-desme/iu
 					return false
 				else
 					return true
@@ -49,7 +33,7 @@ module ODDB
 				string.slice!(/[0-9]OH/u)
 				string.slice!(/[0-9]-OH/u)
 				string.strip
-				end	
+      end
 			def create_update_objects(base_name, data, cyt_id, not_cyt)
 				case @type
 				when 'substrates'
@@ -113,14 +97,15 @@ module ODDB
 				}
 				@cytochromes
 			end
-			def new_fonthandler(handler)
-				if(handler!=nil && (handler.attribute('color')=='red' || handler.attribute('color')=='#FF0000') )
+      def new_font(font)
+        _, _, bold, _ = font
+        if bold == 1
 					@current_category = nil
 					@category = "start"
-				else
+        else
 					@category = nil 
-				end
-			end
+        end
+      end
 			def new_tablehandler(handler)
         @current_table = nil
 				@current_tablehandler = handler
@@ -170,15 +155,19 @@ module ODDB
           @current_table = match.to_s.downcase
 				elsif(@current_tablehandler)
 					if(@current_table)
-						@data = data
+						@data = data.strip
 						case @category
 						when "start"
-							@current_category = data.split(/:/u).first.downcase.strip
+							@current_category = data.split(/:/u).first.downcase
 							@data = 'cat'
 						when "end"
 							@current_category = nil
 							@category = nil
 						end
+            if /:$/.match(@data)
+              @current_category = @data[0...-1].downcase
+							@data = 'cat'
+            end
 						if(@tr_class && @tr_class.match(/lite/u) && @data!='cat')
 							data = clear_string(data)
 							return unless check_string(data)
@@ -207,7 +196,7 @@ module ODDB
 				end
 			end
 			def send_image(src)
-        case src
+        case File.basename(src)
         when "red.jpg"
           @auc_factor = "5"
         when "orange.jpg"
@@ -226,9 +215,14 @@ module ODDB
 				end
 			end
 			def start_tr(attributes)
-				if(attributes && attributes.first)
-					@tr_class = attributes.first[1]
-				end
+        case attributes && attributes.first
+        when ["bgcolor", "#CCCCCC"]
+          @tr_class = 'green'
+        when ["valign", "top"]
+          @tr_class = 'lite'
+        else
+          @tr_class = nil
+        end
 			end
 			def write_substance_string(data)
 				cat = @current_category
@@ -295,7 +289,7 @@ module ODDB
               end
             end
 					elsif(@bold && !@abstractlink && !@ignore_next && data.size > 3)
-						name = data.delete(":").downcase
+						name = data.delete(":").downcase.strip
 						case @current_table
 						when /substrates/u
 							new_class = ODDB::Interaction::SubstrateConnection
@@ -334,10 +328,9 @@ module ODDB
 			def extract_data
 			end
 			def new_linkhandler(handler)
-				unless(handler.nil?)
-					link = handler.attribute('href')
+				if handler && (link = handler.attribute('href'))
 					valid_link = link.split(/#/u)[0]
-					if(valid_link && valid_link.match(/.htm/u) \
+					if(valid_link && valid_link.match(/.asp$/u) \
              && !(@links.include?(valid_link) \
                   || /www.fda.gov/u.match(valid_link) \
                   || FlockhartPlugin::INVALID_LINKS.include?(valid_link)))
@@ -350,19 +343,12 @@ module ODDB
 		end
 		class FlockhartPlugin < Plugin
 			HTTP_SERVER = 'medicine.iupui.edu'
-			HTML_PATH = '/flockhart'
+			HTML_PATH = '/clinpharm/DDIs'
 			TARGET = File.expand_path('../../data/html/interaction/flockhart', File.dirname(__FILE__))
-			TABLE = "table.htm"
-			LINKS = [
-				"1A2.htm",
-				"2B6.htm",
-				"2C8.htm",
-				"2C19.htm",
-				"2C9.htm",
-				"2D6.htm",
-				"2E1.htm",
-				"3A457.htm",
-			]
+			TABLE = "table.asp"
+      LINKS = [ "1A2references.asp", "2B6references.asp", "2C8references.asp",
+        "2C9references.asp", "2C19references.asp", "2D6references.asp",
+        "2E1references.asp", "3A457references.asp" ]
 			FORMAT_CYT_ID = {
 				"3A457"		=>	["3A4", "3A5-7"],
 				"3A4,5,7"	=>	["3A4", "3A5-7"],
@@ -390,7 +376,7 @@ module ODDB
 					if(@refetch_pages)
 						fetch_page(link)
 					end
-					cyt_name = link.split(".").first
+					cyt_name = link.split("references").first
 					file_path = [TARGET, link].join("/")
 					writer = DetailWriter.new(cyt_name)
 					formatter = Formatter.new(writer)
@@ -416,7 +402,7 @@ module ODDB
 				parser.feed(html)
 				writer.extract_data
 				if(writer.links.size != LINKS.size)
-					@parsing_errors.store("flockhart", 'different amount of links found in table.htm')
+					@parsing_errors.store("flockhart", 'different amount of links found in table.asp')
 				end
 				writer.links
 			end
@@ -429,7 +415,7 @@ module ODDB
 				parser = Parser.new(formatter)
 				file = [TARGET, TABLE].join("/")
 				html = File.read(file)
-				html.gsub!('<br><br>', '<category />')
+				html.gsub!('<br /><br />', '<category />')
 				parser.feed(html)
 				result = {} 
 				writer.extract_data.each { |key, value|
