@@ -482,7 +482,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           data.update :export_flag => true
           @app.update seq.pointer, data, :swissmedic
           false
-        end
+        else
           true
         end
       end
