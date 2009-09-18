@@ -26,8 +26,10 @@ module ODDB
       @archive = File.join archive, 'xls'
       FileUtils.mkdir_p @archive
       @latest = File.join @archive, 'Packungen-latest.xls'
-      @known_exports = 0
+      @known_export_registrations = 0
+      @known_export_sequences = 0
       @export_registrations = {}
+      @export_sequences = {}
     end
     def update(agent=WWW::Mechanize.new, target=get_latest_file(agent))
       if(target)
@@ -35,6 +37,7 @@ module ODDB
         diff target, @latest, [:product_group, :atc_class, :sequence_date]
         update_registrations @diff.news + @diff.updates, @diff.replacements
         update_export_registrations @export_registrations
+        update_export_sequences @export_sequences
         sanity_check_deletions(@diff)
         delete @diff.package_deletions
         deactivate @diff.sequence_deletions
@@ -189,21 +192,35 @@ module ODDB
       if target = get_latest_file(agent, 'Präparateliste')
         FileUtils.cp target, latest_name
       end
-      indices = {}
-      [ :iksnr, :package_count, :expiry_date, :registration_date ].each do |key|
-        indices.store key, PREPARATIONS_COLUMNS.index(key)
+      reg_indices = {}
+      [ :iksnr, :package_count, :expiry_date,
+        :registration_date ].each do |key|
+        reg_indices.store key, PREPARATIONS_COLUMNS.index(key)
+      end
+      seq_indices = {}
+      [ :seqnr, :name_base, :atc_class ].each do |key|
+        seq_indices.store key, PREPARATIONS_COLUMNS.index(key)
       end
       Spreadsheet.open(latest_name) do |workbook|
-        iksnr_idx = indices.delete(:iksnr)
-        count_idx = indices.delete(:package_count)
+        iksnr_idx = reg_indices.delete(:iksnr)
+        seqnr_idx = seq_indices.delete(:seqnr)
+        count_idx = reg_indices.delete(:package_count)
         workbook.worksheet(0).each(3) do |row|
           iksnr = row[iksnr_idx]
+          seqnr = row[seqnr_idx]
           count = row[count_idx].to_i
+          if count == 0
+            data = {}
+            seq_indices.each do |key, idx|
+              data.store key, row[idx]
+            end
+            @export_sequences[[iksnr, seqnr]] = data
+          end
           if aggregate = @export_registrations[iksnr]
             aggregate[:package_count] += count
           else
             data = {}
-            indices.each do |key, idx|
+            reg_indices.each do |key, idx|
               data.store key, row[idx]
             end
             data[:package_count] = count
@@ -272,8 +289,10 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         "Deleted Packages: #{@diff.package_deletions.size} (#{@diff.replacements.size} Replaced)",
         "Deleted Sequences: #{@diff.sequence_deletions.size}",
         "Deactivated Registrations: #{@diff.registration_deletions.size}",
-        "Updated new Export-Registrations: #{@export_registrations.size - @known_exports}",
-        "Updated existing Export-Registrations: #{@known_exports}",
+        "Updated new Export-Registrations: #{@export_registrations.size - @known_export_registrations}",
+        "Updated existing Export-Registrations: #{@known_export_registrationss}",
+        "Updated new Export-Sequences: #{@export_sequences.size - @known_export_sequences}",
+        "Updated existing Export-Sequences: #{@known_export_sequences}",
         "Total Sequences without ATC-Class: #{atcless.size}",
         atcless,
       ]
@@ -449,10 +468,22 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     def update_export_registrations export_registrations
       export_registrations.each do |iksnr, data|
         if reg = @app.registration(iksnr)
-          @known_exports += 1 if reg.export_flag
+          @known_export_registrations += 1 if reg.export_flag
           data.delete :package_count
           data.update :export_flag => true, :inactive_date => nil
           @app.update reg.pointer, data, :swissmedic
+        end
+      end
+    end
+    def update_export_sequences export_sequences
+      export_sequences.delete_if do |(iksnr, seqnr), data|
+        if (reg = @app.registration(iksnr)) && (seq = reg.sequence(seqnr))
+          @known_export_sequences += 1 if seq.export_flag
+          data.update :export_flag => true
+          @app.update seq.pointer, data, :swissmedic
+          false
+        end
+          true
         end
       end
     end
@@ -609,6 +640,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         :name_descr       => descr,
         :dose             => nil,
         :sequence_date    => cell(row, column(:sequence_date)),
+        :export_flag      => nil,
       }
       sequence = registration.sequence(seqnr)
 			if(sequence.nil? || sequence.atc_class.nil?)
