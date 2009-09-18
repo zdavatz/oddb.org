@@ -66,6 +66,12 @@ class Parts < HtmlGrid::List
     [1,0,3] => "small right",
     [6,0]   => "small right",
   }
+  CSS_HEAD_MAP = {
+    [1,0] => 'list right',
+    [3,0] => 'list right',
+    [4,0] => 'list',
+    [6,0] => 'list right',
+  }
   CSS_ID = 'parts'
   DEFAULT_CLASS = HtmlGrid::InputText
   EMPTY_LIST = true
@@ -75,9 +81,12 @@ class Parts < HtmlGrid::List
     "Pragma"				=>	"no-cache",
     "Expires"				=>	Time.now.rfc1123,
   }
-  OMIT_HEADER = true
+  OMIT_HEADER = false
+  OMIT_HEAD_TAG = true
   LEGACY_INTERFACE = false
+  DEFAULT_HEAD_CLASS = nil
   SORT_DEFAULT = nil
+  SORT_HEADER = false
   input_text :multi, :count, :commercial_form, :measure
   def add(model)
     link = HtmlGrid::Link.new(:plus, model, @session, self)
