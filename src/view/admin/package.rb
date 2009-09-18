@@ -67,6 +67,7 @@ class Parts < HtmlGrid::List
     [6,0]   => "small right",
   }
   CSS_HEAD_MAP = {
+    [0,0] => 'list',
     [1,0] => 'list right',
     [3,0] => 'list right',
     [4,0] => 'list',
@@ -84,6 +85,7 @@ class Parts < HtmlGrid::List
   OMIT_HEADER = false
   OMIT_HEAD_TAG = true
   LEGACY_INTERFACE = false
+  LOOKANDFEEL_MAP = { :delete => :example }
   DEFAULT_HEAD_CLASS = nil
   SORT_DEFAULT = nil
   SORT_HEADER = false
