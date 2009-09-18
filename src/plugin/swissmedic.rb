@@ -290,7 +290,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         "Deleted Sequences: #{@diff.sequence_deletions.size}",
         "Deactivated Registrations: #{@diff.registration_deletions.size}",
         "Updated new Export-Registrations: #{@export_registrations.size - @known_export_registrations}",
-        "Updated existing Export-Registrations: #{@known_export_registrationss}",
+        "Updated existing Export-Registrations: #{@known_export_registrations}",
         "Updated new Export-Sequences: #{@export_sequences.size - @known_export_sequences}",
         "Updated existing Export-Sequences: #{@known_export_sequences}",
         "Total Sequences without ATC-Class: #{atcless.size}",
@@ -466,12 +466,15 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       end
     end
     def update_export_registrations export_registrations
-      export_registrations.each do |iksnr, data|
+      export_registrations.delete_if do |iksnr, data|
         if reg = @app.registration(iksnr)
           @known_export_registrations += 1 if reg.export_flag
           data.delete :package_count
           data.update :export_flag => true, :inactive_date => nil
           @app.update reg.pointer, data, :swissmedic
+          false
+        else
+          true
         end
       end
     end
