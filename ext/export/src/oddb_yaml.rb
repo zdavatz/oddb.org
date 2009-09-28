@@ -366,18 +366,9 @@ module ODDB
   class Part
     include OddbYaml
     EXPORT_PROPERTIES = [
+      '@count', '@multi', '@measure', '@addition', '@commercial_form',
       '@composition',
     ]
-		def to_yaml( opts = {} )
-			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( taguri ) { |map|
-          to_yaml_properties.each { |m|
-            map.add( m[1..-1], instance_variable_get( m ) )
-          }
-          map.add('size', self.size)
-				}
-			}
-		end
   end
 	class Patinfo
 		include OddbYaml
