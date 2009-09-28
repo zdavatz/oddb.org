@@ -125,6 +125,14 @@ module ODDB
 			]
 		end
 	end
+  class CommercialForm
+    include OddbYaml
+    EXPORT_PROPERTIES = [
+      '@oid',
+      '@descriptions',
+      '@galenic_group',
+    ]
+  end
 	class Company
 		include OddbYaml
 		EXPORT_PROPERTIES = [
