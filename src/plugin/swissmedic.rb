@@ -334,25 +334,12 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       hsh
     end
     def update_active_agent(seq, name, part, opts={})
-      ## first, insist on receiving a dose - in case there's a Label
-      #  such as 'Glucoselösung mit Calcium:'
       ptrn = %r{(?ix)
-                #{Regexp.escape name}(?!:)
-                (\s*(?<dose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?)))
+                (^|[[:punct:]])\s*#{Regexp.escape name}(?!:)
+                (\s*(?<dose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?)))?
                 (\s*ut\s+(?<chemical>[^\d,]+)
                       \s*(?<cdose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?))?)?
                }u
-      unless match = ptrn.match(part)
-        ## But if that isn't successful, also try without dose, but limit to
-        #  terms where a Beginning can be identified (at start of line or after punctuation)
-        ptrn = %r{(?ix)
-                  (^|[[:punct:]])\s*#{Regexp.escape name}(?!:)
-                  (\s*(?<dose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?)))?
-                  (\s*ut\s+(?<chemical>[^\d,]+)
-                        \s*(?<cdose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?))?)?
-                 }u
-        match = ptrn.match(part)
-      end
       if(match = ptrn.match(part))
         idx = opts[:composition].to_i
         comp = seq.compositions.at(idx)
@@ -408,7 +395,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       elsif(namestr = cell(row, column(:substances)))
         res = []
         names = namestr.split(/\s*,\s*/u).collect { |name| 
-          capitalize(name) }
+          capitalize(name) }.uniq
         substances = names.collect { |name|
           update_substance(name)
         }
@@ -443,7 +430,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
             res.push comp
             unless(compositions.size - offset == 1 && agents.empty?)
               comp.active_agents.dup.each { |act|
-                unless agents.include?(act)
+                unless agents.include?(act.odba_instance)
                   @app.delete act.pointer
                 end
               }
@@ -629,7 +616,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
             else
               (registration.pointer + [:sequence, seqnr]).creator
             end
-      ## some names use commas for dosage --v
+      ## some names use commas for dosage
       parts = cell(row, column(:name_base)).split(/\s*,(?!\d)\s*/u)
       descr = parts.pop
       base = parts.join(', ')
