@@ -262,6 +262,7 @@ module ODDB
 		def update
 			@session = WhoSession.new
 			@session.login
+      @has_ddds = {}
 			while(code = @code_handler.shift)
 				resp = @session.get_code(code)
 				if(resp.is_a?(Net::HTTPOK))
@@ -276,6 +277,15 @@ module ODDB
 				sleep(1)
 			end
 			@session.logout
+      unless @has_ddds.empty?
+        @app.atc_classes.each do |code, atc|
+          unless @has_ddds[code]
+            atc.ddds.values.each do |ddd|
+              @app.delete ddd.pointer
+            end
+          end
+        end
+      end
 		end
 		def update_from_csv(fname)
 			path = File.join(ARCHIVE_PATH, 'csv', fname)
@@ -335,7 +345,10 @@ module ODDB
           if(ddd.nil? || ddd != hash)
             ddd = @app.update(ddd_ptr.creator, hash, :who)
           end
-          keep.push ddd unless ddd.nil?
+          unless ddd.nil?
+            @has_ddds[code] ||= true
+            keep.push ddd
+          end
         }
         if atc = pointer.resolve(@app)
           atc.ddds.values.each do |ddd|
