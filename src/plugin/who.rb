@@ -338,8 +338,9 @@ module ODDB
 				pointer = Persistence::Pointer.new([:atc_class, code])
         keep = []
         ddds.each { |hash|
-          dkey = sprintf("%s%s", hash[:administration_route]||'*',
-                         hash[:note])
+          roa = hash[:administration_route].to_s
+          roa = '*' if roa.empty?
+          dkey = sprintf("%s%s", roa, hash[:note])
           ddd_ptr = pointer + [:ddd, dkey]
           ddd = @app.resolve(ddd_ptr)
           if(ddd.nil? || ddd != hash)
