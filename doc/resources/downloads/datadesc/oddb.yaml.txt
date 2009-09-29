@@ -1,6 +1,7 @@
 Datenbeschrieb oddb.yaml
 
-Version:  1.6.0
+Version:  1.7.0
+Geändert: 29.09.2009 (1.7.0) durch hwyss@ywesee.com
 Geändert: 12.03.2009 (1.6.0) durch hwyss@ywesee.com
 Geändert: 10.02.2009 (1.5.1) durch hwyss@ywesee.com
 Geändert: 04.12.2008 (1.5.0) durch hwyss@ywesee.com
@@ -25,7 +26,7 @@ Company:
 - oid               (Integer, NOT NULL)    -> Unique Identifier
 - ean13             (String)               -> Ean13 der Firma
 - name              (String)               -> Name der Firma
-- business_area     (String)               -> Geschäftsbereich 
+- business_area     (String)               -> Geschäftsbereich
 - generic_type      (Symbol)               -> siehe Glossar (GenericType)
 - registrations     (Array (Registration)) -> Produkte der Firma (siehe Registration)
 - url               (String)               -> Allgemeine Internet-Adresse
@@ -90,7 +91,15 @@ Package:
 
 Part:
 - composition       (Composition)          -> Zusammensetzung dieses Bestandteils
-- size              (String)               -> Grössenbezeichnung
+- multi:            (Integer)              -> _5_ x 10 + 10 Ampullen à 15 ml
+- count:            (Integer)              -> 5 x _10_ + 10 Ampullen à 15 ml
+- addition:         (Integer)              -> 5 x 10 + _10_ Ampullen à 15 ml
+- commercial_form:  (CommercialForm)       -> 5 x 10 + 10 _Ampullen_ à 15 ml
+- measure:          (Dose)                 -> 5 x 10 + 10 Ampullen à _15 ml_
+
+CommercialForm:
+- oid               (Integer, NOT NULL)    -> Unique Identifier
+- descriptions      (SimpleLanguage::Descriptions (String, String)) -> Sprache, Bezeichnung. siehe Glossar (SimpleLanguage::Descriptions)
 
 AtcClass:
 - code              (String(1-7), NOT NULL)-> Atc-Code. siehe Glossar (AtcCode)
@@ -128,8 +137,10 @@ Substance:
 - swissmedic_code   (String)               -> Substanz-Code der Swissmedic. siehe Glossar (Swissmedic-Code)
 
 Dose:
-- val               (Float, NOT NULL)      -> Wert/Grösse der Dosis
+- not_normalized    (String)               -> Ursprüngliche Text-repräsentation
+- val               (Float, NOT NULL)      -> Wert/Grösse der Dosis (normalisiert, siehe Glossar)
 - unit              (String)               -> Einheit der Dosis
+- scale             (Dose)                 -> Skalierungsfaktor (Umkehrung des Normalisierungsfaktors)
 
 AtcClass::DDD:
 - administration_route (String, NOT NULL)  -> Route of Administration, Codiert gemäss WHO. Diverse Werte.
@@ -178,7 +189,7 @@ Level 5:     +NN -> Wirkstoff(-Kombination),    z.B. A02AA01: Magnesiumcarbonat
   http://www.cas.org/EO/regsys.html
 
 * ComplementaryType:
-Komplementärprodukt-Typ. Kann in Company oder Registration gesetzt sein zu einem von 5 Werten: 
+Komplementärprodukt-Typ. Kann in Company oder Registration gesetzt sein zu einem von 5 Werten:
 - :complementary  -> Komplementärprodukte (allgemein)
 - :homeopathy     -> Homöopathische Produkte
 - :anthroposophy  -> Heilmittel auf Grundlage antroposophischer Erkenntnis
@@ -188,7 +199,7 @@ Komplementärprodukt-Typ. Kann in Company oder Registration gesetzt sein zu eine
 * DailyDrugDose
 Richtlinien der WHO zur Dosierung von Medikamenten: http://www.whocc.no/atcddd/
 
-* Date: 
+* Date:
 serialisiert in der Form YYYY-MM-DD
 
 * GalenicGroup:
@@ -196,7 +207,7 @@ Gruppierung von Galenischen Formen. Alle Galenischen Formen mit der gleichen Gal
 Ausnahme: die Galenischen Formen in der Galenischen Gruppe mit der oid 1 ('Unbekannt') sind nicht equivalent.
 
 * GenericType:
-Produkt-Typ. Kann in Company oder Registration gesetzt sein zu einem von 4 Werten: 
+Produkt-Typ. Kann in Company oder Registration gesetzt sein zu einem von 4 Werten:
 - :original       -> Originalprodukt
 - :generic        -> Generikum
 - :complementary  -> Produkt der Komplementärmedizin
@@ -208,6 +219,11 @@ Ist weder Registration.generic_type noch Company.generic_type gesetzt, so ist de
 
 * Hash
 Hash-Table. Unsortierte, indexierte Collection.
+
+* Normalisiert
+Dosis-Werte, die einen Nenner != 1 haben, werden normalisiert. So wird aus
+5mg/2ml der normalisierte Wert 2.5 mg/ml. Multipliziert mit dem Skalierungsfaktor
+2ml ergibt dies die absolute Wirkstoffmenge von 5mg.
 
 * Sequence, Sequenz:
 Bezeichnung für die Gruppierung aller Packungsgrössen einer Registration, deren Dosierung/Zusammensetzung identisch ist.
@@ -224,7 +240,7 @@ Subklasse von Hash. Key-Value pairs für Sprache/Text, wobei folgende Werte als 
 Substanz-Code der Swissmedic. Datenquelle: Betäubungsmittelliste (als GTIN).
 GTIN = 7611 + swissmedic_code + Prüfziffer.
 
-* Symbol: 
+* Symbol:
 Interne Repräsentation eines Namens. In anderen Programmiersprachen auch Atom.
 
 * YAML
