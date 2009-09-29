@@ -130,7 +130,6 @@ module ODDB
     EXPORT_PROPERTIES = [
       '@oid',
       '@descriptions',
-      '@galenic_group',
     ]
   end
 	class Company
