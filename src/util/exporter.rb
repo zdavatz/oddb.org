@@ -28,58 +28,32 @@ module ODDB
 		def initialize(app)
 			@app = app
 		end
-		def run
-      safe_export 'Mail Patinfo-Invoices' do
-        mail_patinfo_invoices
-      end
-      safe_export 'Mail Fachinfo-Invoices' do
-        mail_fachinfo_log
-      end
-      safe_export 'Mail Download-Invoices' do
-        run_on_monthday(1) {
-            mail_download_invoices
-        }
-        run_on_monthday(15) {
-            mail_download_invoices
-        }
-      end
-			run_on_weekday(0) { 
-        safe_export 'Mail Download-Statistics' do
-          mail_download_stats
-        end
-        safe_export 'Mail Feedback-Statistics' do
-          mail_feedback_stats
-        end
-				#mail_notification_stats
-			}
-      safe_export 'SL-Pharmacodes' do
-        export_sl_pcodes
-      end
-      safe_export 'YAML-Files' do
-        export_yaml
-      end
-      safe_export 'OddbDat' do
-        export_oddbdat
-      end
-      safe_export 'CSV-Files' do
-        export_csv
-      end
-      safe_export 'CSV-Files (Doctors)' do
-        export_doc_csv
-      end
-      safe_export 'CSV-Files (ITh)' do
-        export_index_therapeuticus_csv
-      end
-      safe_export 'CSV-Files (Price-History)' do
-        export_price_history_csv
-      end
-			run_on_monthday(1) {
-        safe_export 'Fachinfo-PDF' do
-          export_fachinfo_pdf
-        end
-			}
+    def run
+      mail_patinfo_invoices
+      mail_fachinfo_log
+      run_on_monthday(1) {
+        mail_download_invoices
+      }
+      run_on_monthday(15) {
+        mail_download_invoices
+      }
+      run_on_weekday(0) {
+        mail_download_stats
+        mail_feedback_stats
+        #mail_notification_stats
+      }
+      export_sl_pcodes
+      export_yaml
+      export_oddbdat
+      export_csv
+      export_doc_csv
+      export_index_therapeuticus_csv
+      export_price_history_csv
+      run_on_monthday(1) {
+        export_fachinfo_pdf
+      }
       nil
-		end
+    end
     def export_helper(name)
       EXPORT_SERVER.remote_safe_export(EXPORT_DIR, name) { |path|
         yield path
@@ -92,8 +66,12 @@ module ODDB
 		end
     def export_csv
       plug = CsvExportPlugin.new(@app)
-      plug.export_drugs
-      plug.export_drugs_extended
+      safe_export 'oddb.csv' do
+        plug.export_drugs
+      end
+      safe_export 'oddb.csv' do
+        plug.export_drugs_extended
+      end
       EXPORT_SERVER.clear
       sleep(30)
     end
@@ -104,18 +82,22 @@ module ODDB
 			sleep(30)
 		end
 		def export_doc_csv
-			plug = CsvExportPlugin.new(@app)
-			plug.export_doctors
-			EXPORT_SERVER.clear
-			sleep(30)
+      safe_export 'doctors.csv' do
+        plug = CsvExportPlugin.new(@app)
+        plug.export_doctors
+      end
+      EXPORT_SERVER.clear
+      sleep(30)
 		end
     def export_fachinfo_pdf(langs = [:de, :fr])
       plug = FiPDFExporter.new(@app)
       langs.each { |lang|
         name = "fachinfos_#{lang}.pdf"
-        path = File.join(EXPORT_DIR, name)
-        plug.write_pdf(lang, path)
-        EXPORT_SERVER.compress(EXPORT_DIR, name)
+        safe_export name do
+          path = File.join(EXPORT_DIR, name)
+          plug.write_pdf(lang, path)
+          EXPORT_SERVER.compress(EXPORT_DIR, name)
+        end
       }
     end
 		def export_generics_xls
@@ -133,8 +115,10 @@ module ODDB
 			plug
 		end
     def export_index_therapeuticus_csv
-      plug = CsvExportPlugin.new(@app)
-      plug.export_index_therapeuticus
+      safe_export 'index_therapeuticus' do
+        plug = CsvExportPlugin.new(@app)
+        plug.export_index_therapeuticus
+      end
       EXPORT_SERVER.clear
       sleep(30)
     end
@@ -151,29 +135,33 @@ module ODDB
 			sleep(30)
 		end
 		def export_oddbdat
-			exporter = OdbaExporter::OddbDatExport.new(@app)
-			exporter.export
-			EXPORT_SERVER.clear
-			sleep(30)
-			run_on_weekday(1) {
-				exporter.export_fachinfos
-				EXPORT_SERVER.clear
-				sleep(30)
-			}
+      safe_export 'oddbdat' do
+        exporter = OdbaExporter::OddbDatExport.new(@app)
+        exporter.export
+        EXPORT_SERVER.clear
+        sleep(30)
+        run_on_weekday(1) {
+          exporter.export_fachinfos
+          EXPORT_SERVER.clear
+          sleep(30)
+        }
+      end
 		end
 		def export_pdf
 			FiPDFExporter.new(@app).run
 		end
 		def export_sl_pcodes
-			path = File.expand_path('../../data/txt/sl_pcodes.txt', 
-				File.dirname(__FILE__))
-			File.open(path, 'w') { |fh|
-				@app.each_package { |pac|
-					if(pac.sl_entry && pac.pharmacode)
-						fh.puts(pac.pharmacode)
-					end
-				}
-			}
+      safe_export 'sl_pcodes.txt' do
+        path = File.expand_path('../../data/txt/sl_pcodes.txt',
+          File.dirname(__FILE__))
+        File.open(path, 'w') { |fh|
+          @app.each_package { |pac|
+            if(pac.sl_entry && pac.pharmacode)
+              fh.puts(pac.pharmacode)
+            end
+          }
+        }
+      end
 		end
     def export_patents_xls
       plug = XlsExportPlugin.new(@app)
@@ -182,41 +170,65 @@ module ODDB
     end
 		def export_yaml
 			exporter = YamlExporter.new(@app)
-			exporter.export
-			exporter.export_atc_classes
-			exporter.export_interactions
-			exporter.export_narcotics
-      exporter.export_prices
+      safe_export 'oddb.yaml' do
+        exporter.export
+      end
+      safe_export 'atc.yaml' do
+        exporter.export_atc_classes
+      end
+      safe_export 'interactions.yaml' do
+        exporter.export_interactions
+      end
+      safe_export 'narcotics.yaml' do
+        exporter.export_narcotics
+      end
+      safe_export 'price_history.yaml' do
+        exporter.export_prices
+      end
 			run_on_weekday(2) {
-				exporter.export_fachinfos
+        safe_export 'fachinfo.yaml' do
+          exporter.export_fachinfos
+        end
 			}
 			run_on_weekday(3) {
-				exporter.export_patinfos
+        safe_export 'patinfo.yaml' do
+          exporter.export_patinfos
+        end
 			}
 			run_on_weekday(4) {
-				exporter.export_doctors
+        safe_export 'doctors.yaml' do
+          exporter.export_doctors
+        end
 			}
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
 		def mail_download_stats
-			mail_stats('download')
+      safe_export 'Mail Download-Statistics' do
+        mail_stats('download')
+      end
 		end
 		def mail_download_invoices
-			DownloadInvoicer.new(@app).run
+      safe_export 'Mail Download-Invoices' do
+        DownloadInvoicer.new(@app).run
+      end
 		end
 		def mail_fachinfo_log(day = @@today)
-			plug = FachinfoInvoicer.new(@app)
-			plug.run(day)
-      if report = plug.report
-        log = Log.new(day)
-        log.date_str = day.strftime("%d.%m.%Y")
-        log.report = report
-        log.notify("Fachinfo-Uploads")
+      safe_export 'Mail Fachinfo-Invoices' do
+        plug = FachinfoInvoicer.new(@app)
+        plug.run(day)
+        if report = plug.report
+          log = Log.new(day)
+          log.date_str = day.strftime("%d.%m.%Y")
+          log.report = report
+          log.notify("Fachinfo-Uploads")
+        end
       end
 		end
 		def mail_feedback_stats
-			mail_stats('feedback')
+      safe_export 'Mail Feedback-Statistics' do
+        mail_stats('feedback')
+      end
 		end
 		def mail_notification_stats
 			file = @app.notification_logger.create_csv(@app)
@@ -228,11 +240,15 @@ module ODDB
 			Log.new(@@today).notify_attachment(file, headers)
 		end
 		def mail_patinfo_invoices
-			PatinfoInvoicer.new(@app).run
+      safe_export 'Mail Patinfo-Invoices' do
+        PatinfoInvoicer.new(@app).run
+      end
 		end
     def export_price_history_csv
-      plug = CsvExportPlugin.new(@app)
-      plug.export_price_history
+      safe_export 'price_history.csv' do
+        plug = CsvExportPlugin.new(@app)
+        plug.export_price_history
+      end
       EXPORT_SERVER.clear
       sleep(30)
     end
@@ -268,7 +284,7 @@ module ODDB
 				"Backtrace:",
 				e.backtrace.join("\n"),
 			].join("\n")
-			log.notify("Error: Export - #{subject}")
+			log.notify("Error Export: #{subject}")
       sleep(30)
     end
 	end
