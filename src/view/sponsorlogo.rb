@@ -30,10 +30,26 @@ module ODDB
 				end
 				@span.css_class = 'sponsor  right'
 			end
+      def logo(context)
+        src = @attributes['src']
+        case src[/\.[^.]+$/]
+        when '.swf'
+          <<-FLASH
+<object codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000">
+<param name="movie" value="#{src}"/>
+<param name="play" value="true"/>
+<param name="quality" value="best"/>
+<embed src="#{src}" play="true" quality="best" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer"/>
+</object>
+          FLASH
+        else
+          context.img(@attributes)
+        end
+      end
 			def to_html(context)
 				url = @lookandfeel._event_url(:sponsorlink)
 				context.a({'href' => url}) { 
-					context.img(@attributes) << @span.to_html(context)
+          logo(context) << @span.to_html(context)
 				}
 			end
 		end
