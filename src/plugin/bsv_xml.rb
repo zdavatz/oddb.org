@@ -736,6 +736,18 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
       unknown = unknown_regs << "\n\n" << unknown_pacs
       name = @@today.strftime('Unknown_Products_in_SL_%d.%m.%Y.txt')
       parts.push ['text/plain', name, unknown]
+      ## Add some general statistics to the body
+      packages = @app.packages
+      pcdless = packages.select do |pac| pac.pharmacode.to_s.empty? end
+      oots, its = pcdless.partition do |pac| pac.out_of_trade end
+      exps, rest = its.partition do |pac| pac.expired? end
+      body << <<-EOP
+Packungen in der ODDB Total: #{packages.size}
+Packungen ohne Pharmacode: #{pcdless.size}
+- ausser Handel: #{oots.size}
+- inaktive Registration: #{exps.size}
+- noch nicht auf MedWin: #{rest.size}
+      EOP
       info.update(:parts => parts, :report => body)
       info
     end
