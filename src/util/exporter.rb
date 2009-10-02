@@ -29,6 +29,10 @@ module ODDB
 			@app = app
 		end
     def run
+      ## restart the export server
+      EXPORT_SERVER.clear
+      sleep(30)
+      #
       mail_patinfo_invoices
       mail_fachinfo_log
       run_on_monthday(1) {
