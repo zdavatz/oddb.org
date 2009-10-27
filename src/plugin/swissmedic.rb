@@ -417,6 +417,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         end
         offset = 0
         compositions.each_with_index do |composition, idx|
+          composition.gsub!(/'/, '')
           idx -= offset
           agents = []
           comps = []
