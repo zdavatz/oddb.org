@@ -334,11 +334,14 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       hsh
     end
     def update_active_agent(seq, name, part, opts={})
+      units = 'U\.\s*Ph\.\s*Eur\.'
       ptrn = %r{(?ix)
-                (^|[[:punct:]])\s*#{Regexp.escape name}(?!:)
-                (\s*(?<dose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?)))?
-                (\s*ut\s+(?<chemical>[^\d,]+)
-                      \s*(?<cdose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?))?)?
+                (^|[[:punct:]])\s*#{Regexp.escape name}(?![:\-])
+                (\s*(?<dose>[\d\-.]+(\s*(?:(Mio\.?\s*)?(#{units}|[^\s,]+))
+                                     (\s*[mv]/[mv])?)))?
+                (\s*ut|corresp\.?\s+(?<chemical>[^\d,]+)
+                      \s*(?<cdose>[\d\-.]+(\s*(?:(Mio\.?\s*)?(#{units}|[^\s,]+))
+                                           (\s*[mv]/[mv])?))?)?
                }u
       if(match = ptrn.match(part.sub(/\.$/, '')))
         idx = opts[:composition].to_i
@@ -351,8 +354,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
               else
                 (comp.pointer + [:active_agent, name]).creator
               end
-        dose = match[:dose].split(/\b\s*(?![.,\d])/u, 2) if match[:dose]
-        cdose = match[:cdose].split(/\b\s*(?![.,\d])/u, 2) if match[:cdose]
+        dose = match[:dose].split(/\b\s*(?![.,\d\-]|Mio\.?)/u, 2) if match[:dose]
+        cdose = match[:cdose].split(/\b\s*(?![.,\d\-]|Mio\.?)/u, 2) if match[:cdose]
         if dose && (scale = SCALE_P.match(part)) && !dose[1].include?('/')
           unit = dose[1] << '/'
           num = scale[:qty].to_f
@@ -551,6 +554,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       if(group != 'TAM')
         iksnr = cell(row, column(:iksnr))
         return if (filter = opts[:iksnr]) && iksnr != filter
+        return if (filter = opts[:iksnrs]) && !filter.include?(iksnr)
         science = cell(row, column(:production_science))
         ptr = if(registration = @app.registration(iksnr))
                 return registration if opts[:create_only]
