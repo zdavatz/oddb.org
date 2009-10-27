@@ -336,11 +336,11 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     def update_active_agent(seq, name, part, opts={})
       ptrn = %r{(?ix)
                 (^|[[:punct:]])\s*#{Regexp.escape name}(?!:)
-                (\s*(?<dose>[\d\-.]+(\s*[^\s,.]+(\s*[mv]/[mv])?)))?
+                (\s*(?<dose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?)))?
                 (\s*ut\s+(?<chemical>[^\d,]+)
-                      \s*(?<cdose>[\d\-.]+(\s*[^\s,.]+(\s*[mv]/[mv])?))?)?
+                      \s*(?<cdose>[\d\-.]+(\s*[^\s,]+(\s*[mv]/[mv])?))?)?
                }u
-      if(match = ptrn.match(part))
+      if(match = ptrn.match(part.sub(/\.$/, '')))
         idx = opts[:composition].to_i
         comp = seq.compositions.at(idx)
         comp ||= @app.create(seq.pointer + :composition)
