@@ -38,7 +38,12 @@ module ODDB
 				unit = [match[1].strip,match[3].strip].join('/')
 			end
 			qty = round(qty)
-			unit = unit.to_s.tr('L', 'l')
+			unit = unit.to_s
+      unit.tr!('L', 'l')
+      unit.gsub!(/U\.\s*Ph\.\s*Eur\./, 'UPhEur')
+      unit.gsub!(/\./, '')
+      unit.gsub!(/\s*\/\s*/, '/')
+      unit.strip!
 			fuzzy_retry = true
 			strict_retry = true
 			begin
