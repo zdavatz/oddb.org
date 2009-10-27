@@ -3528,15 +3528,19 @@ perm_twentythree        perm_23C
 #                                                                         #
 ###########################################################################
 
+UPhEur    !    # Unite Pharmacopee Europeenne
+U.Ph.Eur. UPhEur
+
 UI        !
 U         UI
+U.        UI
 U.I.			UI
 IE        UI
 I.E.			IE
 
-LSU							# lipoprotein lipase releasing units
+LSU				!		 # lipoprotein lipase releasing units
 
-tablet					# one of the "official doses" in ATC-DDD
+tablet		!		 # one of the "official doses" in ATC-DDD
 
 Mio-			1e6
 Mio	  		1e6
