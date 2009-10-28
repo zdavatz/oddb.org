@@ -54,7 +54,7 @@ module ODDB
     end
     def cell(row, pos)
       if str = super
-        str.gsub(/\n\r|\r\n?/u, "\n").gsub(/ +/u, ' ')
+        str.gsub(/\n\r|\r\n?/u, "\n").gsub(/[ \t]+/u, ' ')
       end
     end
     def deactivate(deactivations)
