@@ -57,6 +57,9 @@ module ODDB
         str.gsub(/\n\r|\r\n?/u, "\n").gsub(/[ \t]+/u, ' ')
       end
     end
+    def date_cell(row, idx)
+      row.at(idx) && row.date(idx)
+    end
     def deactivate(deactivations)
       deactivations.each { |row|
         @app.update pointer(row), {:inactive_date => @@today}, :swissmedic
@@ -84,7 +87,7 @@ module ODDB
       when :registration_date, :expiry_date
         row = diff.newest_rows[iksnr].sort.first.last
         sprintf "%s (%s)", txt, 
-                row[column(flag)].strftime('%d.%m.%Y')
+                date_cell(row, column(flag)).strftime('%d.%m.%Y')
       else
         row = diff.newest_rows[iksnr].sort.first.last
         sprintf "%s (%s)", txt, cell(row, column(flag))
@@ -143,11 +146,11 @@ module ODDB
       puts err.message
       puts err.backtrace[0,10]
     end
-    def fix_registrations
+    def fix_registrations(opts={})
       row = nil
       tbook = Spreadsheet.open(@latest)
       tbook.worksheet(0).each(3) { |row|
-        update_registration(row) if row
+        update_registration(row, opts) if row
       }
     rescue SystemStackError => err
       puts "System Stack Error when fixing #{source_row(row).pretty_inspect}"
@@ -323,7 +326,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       COLUMNS.each_with_index { |key, idx|
         value = case key
                 when :registration_date, :expiry_date
-                  row[idx]
+                  date_cell(row, idx)
                 when :seqnr
                   sprintf "%02i", row.at(idx).to_i
                 else
@@ -563,8 +566,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
               else
                 Persistence::Pointer.new([:registration, iksnr]).creator
               end
-        expiration = row[column(:expiry_date)]
-        reg_date = row[column(:registration_date)]
+        expiration = date_cell(row, column(:expiry_date))
+        reg_date = date_cell(row, column(:registration_date))
         args = { 
           :product_group       => group,
           :index_therapeuticus => cell(row, column(:index_therapeuticus)), 
@@ -634,7 +637,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         :name_base        => base,
         :name_descr       => descr,
         :dose             => nil,
-        :sequence_date    => cell(row, column(:sequence_date)),
+        :sequence_date    => date_cell(row, column(:sequence_date)),
         :export_flag      => nil,
       }
       sequence = registration.sequence(seqnr)
