@@ -145,7 +145,7 @@ module ODDB
     end
     def fix_registrations
       row = nil
-      tbook = Spreadsheet::ParseExcel.parse(@latest)
+      tbook = Spreadsheet.open(@latest)
       tbook.worksheet(0).each(3) { |row|
         update_registration(row) if row
       }
@@ -153,11 +153,11 @@ module ODDB
       puts "System Stack Error when fixing #{source_row(row).pretty_inspect}"
       puts err.backtrace[-100..-1]
     end
-    def fix_sequences
+    def fix_sequences(opts={})
       row = nil
-      tbook = Spreadsheet::ParseExcel.parse(@latest)
+      tbook = Spreadsheet.open(@latest)
       tbook.worksheet(0).each(3) { |row|
-        reg = update_registration(row) if row
+        reg = update_registration(row, opts) if row
         seq = update_sequence(reg, row) if reg
       }
     rescue SystemStackError => err
@@ -622,7 +622,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
               (registration.pointer + [:sequence, seqnr]).creator
             end
       ## some names use commas for dosage
-      parts = cell(row, column(:name_base)).split(/\s*,(?!\d)\s*/u)
+      parts = cell(row, column(:name_base)).split(/\s*,(?!\d|[^(]+\))\s*/u)
       descr = parts.pop
       base = parts.join(', ')
       base, descr = descr, nil if base.empty?
