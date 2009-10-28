@@ -17,11 +17,6 @@
         seqnr: "03"
         name_base: Insulin NovoNordisk Lente MC 100 IE/mL
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI/ml
-          scale: 
         atc_class: !oddb.org,2003/ODDB::AtcClass 
           code: A10AC30
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -119,11 +114,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk Semilente MC 100 IE/mL
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI/ml
-          scale: 
         atc_class: *id11144
         composition_text: 
         compositions: 
@@ -184,11 +174,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk Actrapid MC suis 100 IE/mL
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI/ml
-          scale: 
         atc_class: *id11148
         composition_text: 
         compositions: 
@@ -249,11 +234,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk Insulatard MC suis 100 IE/mL
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI/ml
-          scale: 
         atc_class: *id11144
         composition_text: 
         compositions: 
@@ -314,7 +294,6 @@
         seqnr: "03"
         name_base: Estrofem 2 mg N
         name_descr: Filmtabletten
-        dose: 
         atc_class: *id769
         composition_text: "estradiolum 2 mg ut estradiolum hemihydricum, Color.: E 132, excipiens pro compresso obducto."
         compositions: 
@@ -364,7 +343,6 @@
         seqnr: "05"
         name_base: Estrofem 1 mg N
         name_descr: Filmtabletten
-        dose: 
         atc_class: *id769
         composition_text: estradiolum 1 mg ut estradiolum hemihydricum, excipiens pro compresso obducto.
         compositions: 
@@ -426,7 +404,6 @@
         seqnr: "03"
         name_base: Trisequens N
         name_descr: Filmtabletten
-        dose: 
         atc_class: *id13704
         composition_text: |-
           A) Filmtablette blau: estradiolum 2 mg ut estradiolum hemihydricum, Color.: E 132, excipiens pro compresso obducto.
@@ -532,7 +509,6 @@
         seqnr: "01"
         name_base: Insulin Mixtard 30 MC Suis
         name_descr: 
-        dose: 
         atc_class: *id11140
         composition_text: 
         compositions: 
@@ -593,7 +569,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk Actrapid HM 100 IE/mL
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id4361
         composition_text: "insulinum humanum ADNr solutum 100 U.I., glycerolum, zincum, Conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml."
         compositions: 
@@ -661,11 +636,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk Monotard HM 100 IE/mL
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI/ml
-          scale: 
         atc_class: *id4352
         composition_text: 
         compositions: 
@@ -734,7 +704,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk Insulatard HM 100 IE/mL
         name_descr: Injektionssuspension
-        dose: 
         atc_class: *id4352
         composition_text: "insulinum humanum ADNr isophanum 100 U.I., protamini sulfas, zincum, glycerolum, natrii phosphates, Conserv.: metacresolum 1.5 mg, phenolum 0.65 mg, aqua ad iniectabilia q.s. ad suspensionem pro 1 ml."
         compositions: 
@@ -796,11 +765,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk Ultratard HM 100 IE/mL
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI/ml
-          scale: 
         atc_class: *id13097
         composition_text: 
         compositions: 
@@ -862,7 +826,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk Mixtard 30 HM 100 IE/mL
         name_descr: Injektionssuspension
-        dose: 
         atc_class: *id4357
         composition_text: "insulinum humanum ADNr 100 U.I. ut, insulinum solutum 30 % et insulinum isophanum 70 %, protamini sulfas, zincum, glycerolum, natrii phosphates, Conserv.: metacresolum 1.5 mg, phenolum 0.65 mg, aqua ad iniectabilia q.s. ad suspensionem pro 1 ml."
         compositions: 
@@ -924,7 +887,6 @@
         seqnr: "02"
         name_base: Kliogest N
         name_descr: Filmtabletten
-        dose: 
         atc_class: *id5296
         composition_text: estradiolum 2 mg ut estradiolum hemihydricum, norethisteroni acetas 1 mg, excipiens pro compresso obducto.
         compositions: 
@@ -993,11 +955,6 @@
         seqnr: "03"
         name_base: Insulin NovoNordisk Velosulin HM 100 IE/mL
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI/ml
-          scale: 
         atc_class: *id4361
         composition_text: 
         compositions: 
@@ -1058,7 +1015,6 @@
         seqnr: "01"
         name_base: Vagifem
         name_descr: Vaginaltabletten
-        dose: 
         atc_class: *id769
         composition_text: "estradiolum 25 \xC2\xB5g ut estradiolum hemihydricum, excipiens pro compresso."
         compositions: 
@@ -1123,11 +1079,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Mixtard 50 HM 100 IE/mL
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI
-          scale: 
         atc_class: *id4357
         composition_text: 
         compositions: 
@@ -1196,11 +1147,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Actrapid HM 100 IE/mL NovoLet
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI/ml
-          scale: 
         atc_class: *id4361
         composition_text: 
         compositions: 
@@ -1293,11 +1239,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Insulatard HM 100 IE/mL NovoLe
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI/ml
-          scale: 
         atc_class: *id4352
         composition_text: 
         compositions: 
@@ -1359,11 +1300,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Mixtard 30 HM 100 IE/mL NovoLe
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI
-          scale: 
         atc_class: *id4357
         composition_text: 
         compositions: 
@@ -1432,11 +1368,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Mixtard 10 HM 100 IE/mL NovoLe
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI
-          scale: 
         atc_class: *id4357
         composition_text: 
         compositions: 
@@ -1505,11 +1436,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Mixtard 50 HM 100 IE/mL NovoLe
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI
-          scale: 
         atc_class: *id4357
         composition_text: 
         compositions: 
@@ -1578,11 +1504,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Mixtard 40 HM 100 IE/mL NovoLe
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI
-          scale: 
         atc_class: *id4357
         composition_text: 
         compositions: 
@@ -1651,11 +1572,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Mixtard 20 HM 100 IE/mL NovoLe
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI
-          scale: 
         atc_class: *id4357
         composition_text: 
         compositions: 
@@ -1724,7 +1640,6 @@
         seqnr: "01"
         name_base: Activelle
         name_descr: Filmtabletten
-        dose: 
         atc_class: *id5296
         composition_text: estradiolum 1 mg ut estradiolum hemihydricum, norethisteroni acetas 0.5 mg, excipiens pro compresso obducto.
         compositions: 
@@ -1792,11 +1707,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk NovoRapid NovoLet 3
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI/ml
-          scale: 
         atc_class: &id13736 !oddb.org,2003/ODDB::AtcClass 
           code: A10AB05
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -1883,7 +1793,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk NovoMix 30
         name_descr: Injektionssuspension
-        dose: 
         atc_class: !oddb.org,2003/ODDB::AtcClass 
           code: A10A
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -2009,7 +1918,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk NovoMix 30 Penfill
         name_descr: Injektionssuspension
-        dose: 
         atc_class: &id13731 !oddb.org,2003/ODDB::AtcClass 
           code: A10AD05
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -2043,7 +1951,6 @@
         seqnr: "03"
         name_base: Insulin NovoNordisk NovoMix 30 Penfill
         name_descr: Injektionssuspension
-        dose: 
         atc_class: *id13731
         composition_text: "insulinum aspartum 100 U. ut, insulinum solutum 30 % et insulinum isophanum 70 %, protamini sulfas, zincum ut zinci chloridum, glycerolum, natrii chloridum, natrii phosphates, Conserv.: phenolum 1.50 mg, metacresolum 1.72 mg, aqua ad iniectabilia q.s. ad suspensionem pro 1 ml."
         compositions: 
@@ -2105,11 +2012,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Actrapid HM 100 IE/mL InnoLet
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI/ml
-          scale: 
         atc_class: *id4361
         composition_text: 
         compositions: 
@@ -2170,11 +2072,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Insulatard HM 100 IE/mL InnoLe
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI/ml
-          scale: 
         atc_class: *id4352
         composition_text: 
         compositions: 
@@ -2236,11 +2133,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Mixtard 30 HM 100 IE/mL InnoLe
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI
-          scale: 
         atc_class: *id4357
         composition_text: 
         compositions: 
@@ -2309,7 +2201,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk NovoRapid FlexPen
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id13736
         composition_text: "insulinum aspartum 100 U.I., glycerolum, zincum, natrii phosphates, natrii chloridum, Conserv.: phenolum 1.5 mg, metacresolum 1.72 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml."
         compositions: 
@@ -2371,7 +2262,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk NovoMix 30 FlexPen
         name_descr: Injektionssuspension
-        dose: 
         atc_class: *id13731
         composition_text: "insulinum aspartum 100 U.I. ut, insulinum solutum 30 % et insulinum isophanum 70 %, protamini sulfas, mannitolum, zincum ut natrii chloridum, natrii phosphates, Conserv.: phenolum 1.5 mg, metacresolum 1.72 mg, aqua ad iniectabilia q.s. ad suspensionem pro 1 ml."
         compositions: 
@@ -2391,7 +2281,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk NovoMix 30 FlexPen
         name_descr: Injektionssuspension
-        dose: 
         atc_class: *id13731
         composition_text: "insulinum aspartum 100 U. ut, insulinum solutum 30 % et insulinum isophanum 70 %, protamini sulfas, zincum ut zinci chloridum, glycerolum, natrii chloridum, natrii phosphates, Conserv.: phenolum 1.50 mg, metacresolum 1.72 mg, aqua ad iniectabilia q.s. ad suspensionem pro 1 ml."
         compositions: 
@@ -2449,11 +2338,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Actrapid HM FlexPen
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI/ml
-          scale: 
         atc_class: *id4361
         composition_text: 
         compositions: 
@@ -2509,7 +2393,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Insulatard HM FlexPen
         name_descr: Injektionssuspension
-        dose: 
         atc_class: *id4352
         composition_text: "insulinum humanum ADNr isophanum 100 U.I., protamini sulfas, zincum, glycerolum, natrii phosphates, Conserv.: metacresolum 1.5 mg, phenolum 0.65 mg, aqua ad iniectabilia q.s. ad suspensionem pro 1 ml."
         compositions: 
@@ -2570,11 +2453,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Mixtard 30 HM FlexPen
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI
-          scale: 
         atc_class: *id4357
         composition_text: 
         compositions: 
@@ -2637,7 +2515,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Levemir 100 E/ml Penfill 3
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: &id13742 !oddb.org,2003/ODDB::AtcClass 
           code: A10AE05
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -2681,7 +2558,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk Levemir 100 E/ml Penfill
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id13742
         composition_text: "insulinum detemirum 100 U., natrii chloridum, zincum, glycerolum, natrii phosphates, Conserv.: metacresolum 2.06 mg, phenolum 1.8 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml."
         compositions: 
@@ -2743,7 +2619,6 @@
         seqnr: "01"
         name_base: Levemir InnoLet 3
         name_descr: 
-        dose: 
         atc_class: !oddb.org,2003/ODDB::AtcClass 
           code: A10AE
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -2830,7 +2705,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk Levemir 100 E/ml FlexPen 3
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id13742
         composition_text: "insulinum detemirum 100 U.I., mannitolum, natrii chloridum, zincum, natrii phosphates, Conserv.: metacresolum 2 mg, phenolum 1.75 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml."
         compositions: 
@@ -2850,7 +2724,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk Levemir 100 E/ml FlexPen
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id13742
         composition_text: "insulinum detemirum 100 U., natrii chloridum, zincum, glycerolum, natrii phosphates, Conserv.: metacresolum 2.06 mg, phenolum 1.8 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml."
         compositions: 
@@ -2912,7 +2785,6 @@
         seqnr: "01"
         name_base: Novofem
         name_descr: Filmtabletten
-        dose: 
         atc_class: *id13704
         composition_text: |-
           A) Rote Filmtablette: estradiolum 1 mg ut estradiolum hemihydricum, excipiens pro compresso obducto.
@@ -2992,11 +2864,6 @@
         seqnr: "03"
         name_base: Insulin NovoNordisk Mixtard 50 HM 100 IE/mL Penfill 3
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI
-          scale: 
         atc_class: *id4357
         composition_text: 
         compositions: 
@@ -3065,11 +2932,6 @@
         seqnr: "03"
         name_base: Insulin NovoNordisk Mixtard 40 HM 100 IE/mL Penfil
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI
-          scale: 
         atc_class: *id4357
         composition_text: 
         compositions: 
@@ -3138,7 +3000,6 @@
         seqnr: "03"
         name_base: Insulin NovoNordisk Mixtard 30 HM 100 IE/mL Penfill 3
         name_descr: Injektionssuspension
-        dose: 
         atc_class: *id4357
         composition_text: "insulinum humanum ADNr 100 U.I. ut, insulinum solutum 30 % et insulinum isophanum 70 %, protamini sulfas, zincum, glycerolum, natrii phosphates, Conserv.: metacresolum 1.5 mg, phenolum 0.65 mg, aqua ad iniectabilia q.s. ad suspensionem pro 1 ml."
         compositions: 
@@ -3200,11 +3061,6 @@
         seqnr: "03"
         name_base: Insulin NovoNordisk Mixtard 20 HM 100 IE/mL Penfil
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI
-          scale: 
         atc_class: *id4357
         composition_text: 
         compositions: 
@@ -3273,11 +3129,6 @@
         seqnr: "03"
         name_base: Insulin NovoNordisk Mixtard 10 HM 100 IE/mL Penfill 3
         name_descr: Injektionssuspension
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 100
-          unit: UI
-          scale: 
         atc_class: *id4357
         composition_text: 
         compositions: 
@@ -3346,7 +3197,6 @@
         seqnr: "03"
         name_base: Insulin NovoNordisk Insulatard HM 100 IE/mL Penfill 3
         name_descr: Injektionssuspension
-        dose: 
         atc_class: *id4352
         composition_text: "insulinum humanum ADNr isophanum 100 U.I., protamini sulfas, zincum, glycerolum, natrii phosphates, Conserv.: metacresolum 1.5 mg, phenolum 0.65 mg, aqua ad iniectabilia q.s. ad suspensionem pro 1 ml."
         compositions: 
@@ -3408,7 +3258,6 @@
         seqnr: "03"
         name_base: Insulin NovoNordisk Actrapid HM 100 IE/mL Penfill 3
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id4361
         composition_text: "insulinum humanum ADNr solutum 100 U.I., glycerolum, zincum, Conserv.: metacresolum 3 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml."
         compositions: 
@@ -3470,7 +3319,6 @@
         seqnr: "01"
         name_base: NovoNorm 0,5 mg
         name_descr: Tabletten
-        dose: 
         atc_class: &id13757 !oddb.org,2003/ODDB::AtcClass 
           code: A10BX02
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -3544,7 +3392,6 @@
         seqnr: "02"
         name_base: NovoNorm 1,0 mg
         name_descr: Tabletten
-        dose: 
         atc_class: *id13757
         composition_text: repaglinidum 1 mg, excipiens pro compresso.
         compositions: 
@@ -3594,7 +3441,6 @@
         seqnr: "03"
         name_base: NovoNorm 2,0 mg
         name_descr: Tabletten
-        dose: 
         atc_class: *id13757
         composition_text: repaglinidum 2 mg, excipiens pro compresso.
         compositions: 
@@ -3656,7 +3502,6 @@
         seqnr: "01"
         name_base: GlucaGen Novo
         name_descr: "Injektionspr\xC3\xA4parat"
-        dose: 
         atc_class: !oddb.org,2003/ODDB::AtcClass 
           code: H04AA01
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -3848,7 +3693,6 @@
         seqnr: "02"
         name_base: Insulin NovoNordisk NovoRapid Penfill 3
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id13736
         composition_text: "insulinum aspartum 100 U., glycerolum, zincum, natrii phosphates, natrii chloridum, Conserv.: phenolum 1.5 mg, metacresolum 1.72 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml."
         compositions: 
@@ -3910,7 +3754,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk NovoRapid
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id13736
         composition_text: "insulinum aspartum 100 U., glycerolum, zincum, natrii phosphates, natrii chloridum, Conserv.: phenolum 1.5 mg, metacresolum 1.72 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml."
         compositions: 
@@ -3972,7 +3815,6 @@
         seqnr: "01"
         name_base: NovoSeven 1,2 mg
         name_descr: "Injektionspr\xC3\xA4parat"
-        dose: 
         atc_class: &id13765 !oddb.org,2003/ODDB::AtcClass 
           code: B02BD08
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -4039,7 +3881,6 @@
         seqnr: "02"
         name_base: NovoSeven 2,4 mg
         name_descr: "Injektionspr\xC3\xA4parat"
-        dose: 
         atc_class: *id13765
         composition_text: |-
           Praeparatio cryodesiccata: eptacogum alfa (activatum) 2.4 mg, natrii chloridum, calcii chloridum dihydricum, glycyl-glycinum, polysorbatum 80, mannitolum, pro vitro.
@@ -4082,7 +3923,6 @@
         seqnr: "03"
         name_base: NovoSeven 4,8 mg
         name_descr: "Injektionspr\xC3\xA4parat"
-        dose: 
         atc_class: *id13765
         composition_text: |-
           Praeparatio cryodesiccata: eptacogum alfa (activatum) 4.8 mg, natrii chloridum, calcii chloridum dihydricum, glycyl-glycinum, polysorbatum 80, mannitolum, pro vitro.
@@ -4144,7 +3984,6 @@
         seqnr: "01"
         name_base: Norditropin NordiFlex 5 mg
         name_descr: "Injektionspr\xC3\xA4parat"
-        dose: 
         atc_class: *id7775
         composition_text: "somatropinum ADNr 5 mg corresp. 15 U.I., histidinum, poloxamerum 188, mannitolum, Conserv.: phenolum 4.5 mg, aqua ad iniectabilia q.s. ad solutionem pro 1.5 ml."
         compositions: 
@@ -4508,7 +4347,6 @@
         seqnr: "02"
         name_base: Norditropin NordiFlex 10 mg
         name_descr: "Injektionspr\xC3\xA4parat"
-        dose: 
         atc_class: *id7775
         composition_text: "somatropinum ADNr 10 mg corresp. 30 U.I., histidinum, poloxamerum 188, mannitolum, Conserv.: phenolum 4.5 mg, aqua ad iniectabilia q.s. ad solutionem pro 1.5 ml."
         compositions: 
@@ -4872,7 +4710,6 @@
         seqnr: "03"
         name_base: Norditropin NordiFlex 15 mg
         name_descr: "Injektionspr\xC3\xA4parat"
-        dose: 
         atc_class: *id7775
         composition_text: "somatropinum ADNr 15 mg corresp. 45 U.I., histidinum, poloxamerum 188, mannitolum, Conserv.: phenolum 4.5 mg, aqua ad iniectabilia q.s. ad solutionem pro 1.5 ml."
         compositions: 
@@ -5248,11 +5085,6 @@
         seqnr: "01"
         name_base: Norditropin 12 I.E.
         name_descr: "Injektionspr\xC3\xA4parat"
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 12
-          unit: U.I.
-          scale: 
         atc_class: *id7775
         composition_text: 
         compositions: 
@@ -5297,11 +5129,6 @@
         seqnr: "02"
         name_base: Norditropin 4 I.E.
         name_descr: "Injektionspr\xC3\xA4parat"
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 4
-          unit: U.I.
-          scale: 
         atc_class: *id7775
         composition_text: 
         compositions: 
@@ -5387,7 +5214,6 @@
         seqnr: "01"
         name_base: Norditropin Simplexx 5 mg
         name_descr: "Injektionspr\xC3\xA4parat"
-        dose: 
         atc_class: *id7775
         composition_text: "somatropinum ADNr 15 U.I., histidinum, poloxamerum 188, mannitolum, Conserv.: phenolum 4.5 mg, aqua ad iniectabilia q.s. ad solutionem pro 1.5 ml."
         compositions: 
@@ -5778,7 +5604,6 @@
         seqnr: "02"
         name_base: Norditropin Simplexx 10 mg
         name_descr: "Injektionspr\xC3\xA4parat"
-        dose: 
         atc_class: *id7775
         composition_text: "somatropinum ADNr 30 U.I., histidinum, poloxamerum 188, mannitolum, Conserv.: phenolum 4.5 mg, aqua ad iniectabilia q.s. ad solutionem pro 1.5 ml."
         compositions: 
@@ -6169,7 +5994,6 @@
         seqnr: "03"
         name_base: Norditropin Simplexx 15 mg
         name_descr: "Injektionspr\xC3\xA4parat"
-        dose: 
         atc_class: *id7775
         composition_text: "somatropinum ADNr 45 U.I., histidinum, poloxamerum 188, mannitolum, Conserv.: phenolum 4.5 mg, aqua ad iniectabilia q.s. ad solutionem pro 1.5 ml."
         compositions: 
@@ -6572,7 +6396,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk NovoMix 50 FlexPen 3
         name_descr: Injektionssuspension
-        dose: 
         atc_class: *id13731
         composition_text: "insulinum aspartum 100 U.I. ut, insulinum solutum 50 % et insulinum isophanum 50 %, protamini sulfas, zincum, glycerolum, natrii chloridum, natrii phosphates, Conserv.: phenolum 1.5 mg, metacresolum 1.72 mg, aqua ad iniectabilia q.s. ad suspensionem pro 1 ml."
         compositions: 
@@ -6628,7 +6451,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk NovoMix 50 Penfill 3
         name_descr: Injektionssuspension
-        dose: 
         atc_class: *id13731
         composition_text: "insulinum aspartum 100 U.I. ut, insulinum solutum 50 % et insulinum isophanum 50 %, protamini sulfas, zincum, glycerolum, natrii chloridum, natrii phosphates, Conserv.: phenolum 1.5 mg, metacresolum 1.72 mg, aqua ad iniectabilia q.s. ad suspensionem pro 1 ml."
         compositions: 
@@ -6684,7 +6506,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk NovoMix 70 FlexPen 3
         name_descr: Injektionssuspension
-        dose: 
         atc_class: *id13731
         composition_text: "insulinum aspartum 100 U.I. ut, insulinum solutum 70 % et insulinum isophanum 30 %, protamini sulfas, zincum, glycerolum, natrii chloridum, natrii phosphates, Conserv.: phenolum 1.5 mg, metacresolum 1.72 mg, aqua ad iniectabilia q.s. ad suspensionem pro 1 ml."
         compositions: 
@@ -6740,7 +6561,6 @@
         seqnr: "01"
         name_base: Insulin NovoNordisk NovoMix 70 Penfill 3
         name_descr: Injektionssuspension
-        dose: 
         atc_class: *id13731
         composition_text: "insulinum aspartum 100 U.I. ut, insulinum solutum 70 % et insulinum isophanum 30 %, protamini sulfas, zincum, glycerolum, natrii chloridum, natrii phosphates, Conserv.: phenolum 1.5 mg, metacresolum 1.72 mg, aqua ad iniectabilia q.s. ad suspensionem pro 1 ml."
         compositions: 
@@ -6796,7 +6616,6 @@
         seqnr: "01"
         name_base: NovoSeven 1 mg
         name_descr: "raumtemperaturstabiles Injektionspr\xC3\xA4parat"
-        dose: 
         atc_class: *id13765
         composition_text: |-
           Praeparatio cryodesiccata: eptacogum alfa (activatum) 1 mg, natrii chloridum, calcii chloridum dihydricum, glycyl-glycinum, polysorbatum 80, saccharum, mannitolum, Antiox.: methioninum 0.5 mg, pro vitro.
@@ -6852,7 +6671,6 @@
         seqnr: "02"
         name_base: NovoSeven 2 mg
         name_descr: "raumtemperaturstabiles Injektionspr\xC3\xA4parat"
-        dose: 
         atc_class: *id13765
         composition_text: |-
           Praeparatio cryodesiccata: eptacogum alfa (activatum) 2 mg, natrii chloridum, calcii chloridum dihydricum, glycyl-glycinum, polysorbatum 80, saccharum, mannitolum, Antiox.: methioninum 1 mg, pro vitro.
@@ -6900,7 +6718,6 @@
         seqnr: "03"
         name_base: NovoSeven 5 mg
         name_descr: "raumtemperaturstabiles Injektionspr\xC3\xA4parat"
-        dose: 
         atc_class: *id13765
         composition_text: |-
           Praeparatio cryodesiccata: eptacogum alfa (activatum) 5 mg, natrii chloridum, calcii chloridum dihydricum, glycyl-glycinum, polysorbatum 80, saccharum, mannitolum, Antiox.: methioninum 2.5 mg, pro vitro.
@@ -6985,7 +6802,6 @@
         seqnr: "01"
         name_base: Unguentolan
         name_descr: Salbe
-        dose: 
         atc_class: &id2596 !oddb.org,2003/ODDB::AtcClass 
           code: D03
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -7171,7 +6987,6 @@
         seqnr: "01"
         name_base: Makaphyt
         name_descr: Balsam
-        dose: 
         atc_class: &id160 !oddb.org,2003/ODDB::AtcClass 
           code: R05X
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -7416,7 +7231,6 @@
         seqnr: "01"
         name_base: Soufrol
         name_descr: Schwefel-Oelbad
-        dose: 
         atc_class: !oddb.org,2003/ODDB::AtcClass 
           code: D10AB05
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -7592,7 +7406,6 @@
         seqnr: "02"
         name_base: Makatussin Comp.
         name_descr: Hustensirup
-        dose: 
         atc_class: &id635 !oddb.org,2003/ODDB::AtcClass 
           code: R05DA20
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -7730,7 +7543,6 @@
         seqnr: "03"
         name_base: Carbaderm
         name_descr: "Cr\xC3\xA8me"
-        dose: 
         atc_class: &id009 !oddb.org,2003/ODDB::AtcClass 
           code: D02AE01
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -7877,7 +7689,6 @@
         seqnr: "04"
         name_base: Carbaderm
         name_descr: "Cr\xC3\xA8me"
-        dose: 
         atc_class: *id009
         composition_text: "ureum 100 mg, Conserv.: E 218, excipiens ad emulsionem pro 1 g."
         compositions: 
@@ -7911,7 +7722,6 @@
         seqnr: "01"
         name_base: Normolytoral
         name_descr: Pulver
-        dose: 
         atc_class: &id8791 !oddb.org,2003/ODDB::AtcClass 
           code: A07CA
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -8085,7 +7895,6 @@
         seqnr: "01"
         name_base: Aknex
         name_descr: Gel
-        dose: 
         atc_class: &id2997 !oddb.org,2003/ODDB::AtcClass 
           code: D10AE01
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -8190,7 +7999,6 @@
         seqnr: "01"
         name_base: No Pic
         name_descr: "fl\xC3\xBCssig"
-        dose: 
         atc_class: &id018 !oddb.org,2003/ODDB::AtcClass 
           code: D04AB01
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -8360,7 +8168,6 @@
         seqnr: "01"
         name_base: No Pic Gel forte
         name_descr: 
-        dose: 
         atc_class: *id018
         composition_text: lidocaini hydrochloridum 20 mg, diphenhydramini hydrochloridum 20 mg, benzalkonii chloridum 10 mg, levomentholum 20 mg, dexpanthenolum 30 mg, excipiens ad gelatum pro 1 g.
         compositions: 
@@ -8444,7 +8251,6 @@
         seqnr: "02"
         name_base: Yal
         name_descr: "L\xC3\xB6sung"
-        dose: 
         atc_class: !oddb.org,2003/ODDB::AtcClass 
           code: A06AG07
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -8549,7 +8355,6 @@
         seqnr: "01"
         name_base: Destrobac
         name_descr: "Tinktur ungef\xC3\xA4rbt"
-        dose: 
         atc_class: &id028 !oddb.org,2003/ODDB::AtcClass 
           code: D08AG02
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -8674,7 +8479,6 @@
         seqnr: "02"
         name_base: Destrobac
         name_descr: "Tinktur gef\xC3\xA4rbt"
-        dose: 
         atc_class: *id028
         composition_text: "iodum 1 mg ut povidonum iodinatum, alcohol isopropylicus 550 mg, Color.: E 110, excipiens ad solutionem pro 1 ml."
         compositions: 
@@ -8799,7 +8603,6 @@
         seqnr: "01"
         name_base: Halset
         name_descr: Lutschtabletten
-        dose: 
         atc_class: &id1613 !oddb.org,2003/ODDB::AtcClass 
           code: R02AA06
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -8887,7 +8690,6 @@
         seqnr: "02"
         name_base: Laxasan
         name_descr: Tropfen
-        dose: 
         atc_class: !oddb.org,2003/ODDB::AtcClass 
           code: A06AB58
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -9005,7 +8807,6 @@
         seqnr: "01"
         name_base: Cremol Ritter
         name_descr: "Baby-Bade\xC3\xB6l"
-        dose: 
         atc_class: &id078 !oddb.org,2003/ODDB::AtcClass 
           code: D02AC
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -9123,7 +8924,6 @@
         seqnr: "01"
         name_base: Becetamol 250 mg
         name_descr: Kautabletten
-        dose: 
         atc_class: &id037 !oddb.org,2003/ODDB::AtcClass 
           code: N02BE01
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -9230,7 +9030,6 @@
         seqnr: "03"
         name_base: Becetamol 500 mg
         name_descr: Kautabletten
-        dose: 
         atc_class: *id037
         composition_text: "paracetamolum 500 mg, Arom.: aspartamum et alia, excipiens pro compresso."
         compositions: 
@@ -9297,7 +9096,6 @@
         seqnr: "01"
         name_base: Hova
         name_descr: Filmtabletten
-        dose: 
         atc_class: &id2074 !oddb.org,2003/ODDB::AtcClass 
           code: N05CX99
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -9449,11 +9247,6 @@
         seqnr: "01"
         name_base: Becetamol 125 mg
         name_descr: Suppositorien
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 125
-          unit: mg
-          scale: 
         atc_class: *id037
         composition_text: 
         compositions: 
@@ -9514,11 +9307,6 @@
         seqnr: "02"
         name_base: Becetamol 250 mg
         name_descr: Suppositorien
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 250
-          unit: mg
-          scale: 
         atc_class: *id037
         composition_text: 
         compositions: 
@@ -9563,11 +9351,6 @@
         seqnr: "03"
         name_base: Becetamol 500 mg
         name_descr: Suppositorien
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 500
-          unit: mg
-          scale: 
         atc_class: *id037
         composition_text: 
         compositions: 
@@ -9612,11 +9395,6 @@
         seqnr: "04"
         name_base: Becetamol 1000 mg
         name_descr: Suppositorien
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 1000
-          unit: mg
-          scale: 
         atc_class: *id037
         composition_text: 
         compositions: 
@@ -9673,11 +9451,6 @@
         seqnr: "01"
         name_base: Lipocremol
         name_descr: Creme
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 30
-          unit: mg
-          scale: 
         atc_class: &id051 !oddb.org,2003/ODDB::AtcClass 
           code: D02AX
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -9759,11 +9532,6 @@
         seqnr: "01"
         name_base: Lipocremol
         name_descr: Salbe
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 30
-          unit: mg
-          scale: 
         atc_class: *id051
         composition_text: 
         compositions: 
@@ -9794,11 +9562,6 @@
         seqnr: "01"
         name_base: Grisol
         name_descr: Dosier-Pumpspray
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 0.4
-          unit: mg
-          scale: 
         atc_class: !oddb.org,2003/ODDB::AtcClass 
           code: D01AA08
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -9883,7 +9646,6 @@
         seqnr: "01"
         name_base: Vividrin
         name_descr: Augentropfen
-        dose: 
         atc_class: &id4433 !oddb.org,2003/ODDB::AtcClass 
           code: S01GX01
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -9976,7 +9738,6 @@
         seqnr: "01"
         name_base: Bio-H-Tin
         name_descr: Tabletten
-        dose: 
         atc_class: &id3320 !oddb.org,2003/ODDB::AtcClass 
           code: A11HA05
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -10130,7 +9891,6 @@
         seqnr: "02"
         name_base: Nocutil
         name_descr: Nasenspray
-        dose: 
         atc_class: &id149 !oddb.org,2003/ODDB::AtcClass 
           code: H01BA02
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -10316,7 +10076,6 @@
         seqnr: "01"
         name_base: Seractil 200 mg
         name_descr: Filmtabletten
-        dose: 
         atc_class: &id063 !oddb.org,2003/ODDB::AtcClass 
           code: M01AE14
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -10418,7 +10177,6 @@
         seqnr: "02"
         name_base: Seractil 300 mg
         name_descr: Filmtabletten
-        dose: 
         atc_class: *id063
         composition_text: "dexibuprofenum 300 mg.\n\
           \xC3\x9Cberzug: excipiens pro compresso obducto."
@@ -10500,7 +10258,6 @@
         seqnr: "03"
         name_base: Seractil 400 mg forte
         name_descr: Filmtabletten
-        dose: 
         atc_class: *id063
         composition_text: "dexibuprofenum 400 mg.\n\
           \xC3\x9Cberzug: excipiens pro compresso obducto."
@@ -10628,7 +10385,6 @@
         seqnr: "01"
         name_base: Mandal 425
         name_descr: Kapseln
-        dose: 
         atc_class: &id3038 !oddb.org,2003/ODDB::AtcClass 
           code: N06AX
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -10757,7 +10513,6 @@
         seqnr: "01"
         name_base: Makatussin neue Formel
         name_descr: Hustentropfen
-        dose: 
         atc_class: &id2193 !oddb.org,2003/ODDB::AtcClass 
           code: R05DA04
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -10855,7 +10610,6 @@
         seqnr: "01"
         name_base: Sanalgin N
         name_descr: Tabletten
-        dose: 
         atc_class: &id073 !oddb.org,2003/ODDB::AtcClass 
           code: N02BE51
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -10951,7 +10705,6 @@
         seqnr: "01"
         name_base: Becetamol C
         name_descr: Brausepulver
-        dose: 
         atc_class: *id073
         composition_text: "paracetamolum 500 mg, acidum ascorbicum 300 mg, Arom.: saccharinum natricum, excipiens ad pulverem pro pro charta."
         compositions: 
@@ -11058,7 +10811,6 @@
         seqnr: "01"
         name_base: Aknex Cleaning
         name_descr: Aknelotion
-        dose: 
         atc_class: &id13382 !oddb.org,2003/ODDB::AtcClass 
           code: D08AJ02
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -11142,7 +10894,6 @@
         seqnr: "01"
         name_base: Cremol-Ritter
         name_descr: Lotion
-        dose: 
         atc_class: *id078
         composition_text: "paraffinum perliquidum 147.7 mg, propylenglycolum, aromatica, Conserv.: E 216, E 218, excipiens ad emulsionem pro 1 g."
         compositions: 
@@ -11316,7 +11067,6 @@
         seqnr: "02"
         name_base: Cremol-Ritter fett
         name_descr: "\xC3\x96l-Bad"
-        dose: 
         atc_class: *id078
         composition_text: "arachidis oleum 250 mg, propylenglycolum, Antiox.: E 321, Conserv.: phenoxyethanolum, excipiens ad solutionem pro 1 g."
         compositions: 
@@ -11514,7 +11264,6 @@
         seqnr: "01"
         name_base: Passelyt
         name_descr: Nerventropfen
-        dose: 
         atc_class: &id166 !oddb.org,2003/ODDB::AtcClass 
           code: N05CM99
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -11594,11 +11343,6 @@
         seqnr: "01"
         name_base: Dinacode N
         name_descr: "Sirup f\xC3\xBCr Erwachsene"
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 507.9
-          unit: mg
-          scale: 
         atc_class: &id146 !oddb.org,2003/ODDB::AtcClass 
           code: R05FA02
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -11691,7 +11435,6 @@
         seqnr: "01"
         name_base: Makaphyt
         name_descr: Hustensirup
-        dose: 
         atc_class: &id088 !oddb.org,2003/ODDB::AtcClass 
           code: R05CA10
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -11833,7 +11576,6 @@
         seqnr: "01"
         name_base: Makaphyt
         name_descr: Hustentropfen
-        dose: 
         atc_class: *id088
         composition_text: "droserae extractum ethanolicum liquidum 39 mg, ratio: 1:1, liquiritiae extractum ethanolicum liquidum 146.3 mg, ratio: 1:1, pimpinellae extractum ethanolicum liquidum 58.5 mg, ratio: 1:1, polygalae extractum ethanolicum liquidum 58.5 mg, ratio: 1:2, thymi extractum ethanolicum et glycerolicum 175.5 mg, ratio: 1:1, dextrocamphora 7.8 mg, levomentholum 14.6 mg, anisi aetheroleum 8.8 mg, eucalypti aetheroleum 5.9 mg, saccharinum natricum, Conserv.: E 210, excipiens ad solutionem pro 1 ml, corresp. 30 guttae, corresp. ethanolum 49 % V/V."
         compositions: 
@@ -11964,7 +11706,6 @@
         seqnr: "01"
         name_base: Becetamol
         name_descr: Sirup
-        dose: 
         atc_class: *id037
         composition_text: "paracetamolum 25 mg, Arom.: saccharinum natricum, vanillinum et alia, Color.: E 150, Conserv.: E 218, E 216, excipiens ad solutionem pro 1 ml."
         compositions: 
@@ -12020,7 +11761,6 @@
         seqnr: "01"
         name_base: Becetamol
         name_descr: Tropfen
-        dose: 
         atc_class: *id037
         composition_text: "paracetamolum 100 mg, Arom.: saccharinum et alia, Antiox.: E 223, excipiens ad solutionem pro 1 ml corresp. 20 gutta."
         compositions: 
@@ -12085,7 +11825,6 @@
         seqnr: "01"
         name_base: Destrobac
         name_descr: "w\xC3\xA4sserige L\xC3\xB6sung gef\xC3\xA4rbt"
-        dose: 
         atc_class: &id7224 !oddb.org,2003/ODDB::AtcClass 
           code: D08AG03
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -12205,7 +11944,6 @@
         seqnr: "01"
         name_base: Destrobac
         name_descr: "w\xC3\xA4sserige L\xC3\xB6sung ungef\xC3\xA4rbt"
-        dose: 
         atc_class: *id028
         composition_text: iodum 1 mg ut povidonum iodinatum, excipiens ad solutionem pro 1 ml.
         compositions: 
@@ -12314,7 +12052,6 @@
         seqnr: "02"
         name_base: Lopisol
         name_descr: Brausetabletten
-        dose: 
         atc_class: &id1278 !oddb.org,2003/ODDB::AtcClass 
           code: A07DA03
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -12421,7 +12158,6 @@
         seqnr: "01"
         name_base: Tasmacyclin Akne
         name_descr: Tabletten
-        dose: 
         atc_class: &id1071 !oddb.org,2003/ODDB::AtcClass 
           code: J01AA02
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -12515,7 +12251,6 @@
         seqnr: "01"
         name_base: Tasmaderm
         name_descr: "Cr\xC3\xA8me"
-        dose: 
         atc_class: &id107 !oddb.org,2003/ODDB::AtcClass 
           code: D10AD05
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -12598,7 +12333,6 @@
         seqnr: "01"
         name_base: Tasmaderm
         name_descr: Lotion
-        dose: 
         atc_class: *id107
         composition_text: motretinidum 1 mg, ethanolum, propylenglycolum q.s. ad solutionem pro 1 ml.
         compositions: 
@@ -12660,7 +12394,6 @@
         seqnr: "01"
         name_base: Xyloneural
         name_descr: "Injektionsl\xC3\xB6sung (ohne Konservierungsmittel)"
-        dose: 
         atc_class: &id115 !oddb.org,2003/ODDB::AtcClass 
           code: N01BB02
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -12765,7 +12498,6 @@
         seqnr: "02"
         name_base: Xyloneural
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id115
         composition_text: "lidocaini hydrochloridum anhydricum 10 mg, natrii chloridum, Conserv.: E 218 1 mg, aqua ad iniectabilia q.s. ad solutionem pro 1 ml."
         compositions: 
@@ -12829,7 +12561,6 @@
         seqnr: "01"
         name_base: Zalain
         name_descr: "Cr\xC3\xA8me"
-        dose: 
         atc_class: !oddb.org,2003/ODDB::AtcClass 
           code: D01AC14
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -12905,7 +12636,6 @@
         seqnr: "02"
         name_base: Cremol-Ritter, Douche
         name_descr: "fl\xC3\xBCssig"
-        dose: 
         atc_class: !oddb.org,2003/ODDB::AtcClass 
           code: D09AA06
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -13072,7 +12802,6 @@
         seqnr: "01"
         name_base: Ribolac
         name_descr: Kapseln
-        dose: 
         atc_class: !oddb.org,2003/ODDB::AtcClass 
           code: A07FA51
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -13266,7 +12995,6 @@
         seqnr: "02"
         name_base: Cremol-Ritter
         name_descr: "\xC3\x96l-Bad"
-        dose: 
         atc_class: *id078
         composition_text: "sojae oleum, propylenglycolum, Antiox.: E 321, excipiens ad emulsionem pro 1 g."
         compositions: 
@@ -13493,7 +13221,6 @@
         seqnr: "01"
         name_base: Co-Becetamol forte
         name_descr: Kapseln
-        dose: 
         atc_class: &id130 !oddb.org,2003/ODDB::AtcClass 
           code: N02AA59
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -13569,7 +13296,6 @@
         seqnr: "02"
         name_base: "Co-Becetamol f\xC3\xBCr Kleinkinder"
         name_descr: Suppositorien
-        dose: 
         atc_class: *id073
         composition_text: paracetamolum 250 mg, codeini phosphas hemihydricus 5 mg, excipiens pro suppositorio.
         compositions: 
@@ -13622,7 +13348,6 @@
         seqnr: "03"
         name_base: "Co-Becetamol f\xC3\xBCr Schulkinder"
         name_descr: Suppositorien
-        dose: 
         atc_class: *id073
         composition_text: paracetamolum 500 mg, codeini phosphas hemihydricus 10 mg, excipiens pro suppositorio.
         compositions: 
@@ -13675,7 +13400,6 @@
         seqnr: "04"
         name_base: "Co-Becetamol f\xC3\xBCr Erwachsene"
         name_descr: Suppositorien
-        dose: 
         atc_class: *id130
         composition_text: paracetamolum 1 g, codeini phosphas hemihydricus 20 mg, excipiens pro suppositorio.
         compositions: 
@@ -13740,7 +13464,6 @@
         seqnr: "01"
         name_base: Co-Becetamol
         name_descr: Saft
-        dose: 
         atc_class: *id073
         composition_text: "codeini phosphas hemihydricus 5 mg, paracetamolum 200 mg, aromatica, Color.: E 110, Conserv.: E 200, E 216, E 218, excipiens ad solutionem pro 5 ml."
         compositions: 
@@ -13828,7 +13551,6 @@
         seqnr: "01"
         name_base: Co-Becetamol
         name_descr: Tabletten
-        dose: 
         atc_class: *id130
         composition_text: paracetamolum 500 mg, codeini phosphas hemihydricus 20 mg, excipiens pro compresso.
         compositions: 
@@ -13893,7 +13615,6 @@
         seqnr: "02"
         name_base: Sebo-Soufrol
         name_descr: Medizinalshampoo
-        dose: 
         atc_class: !oddb.org,2003/ODDB::AtcClass 
           code: D11AX12
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -14019,7 +13740,6 @@
         seqnr: "01"
         name_base: Metoject 7.5 mg
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: &id136 !oddb.org,2003/ODDB::AtcClass 
           code: L01BA01
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -14056,7 +13776,6 @@
         seqnr: "02"
         name_base: Metoject 10 mg
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id136
         composition_text: methotrexatum 10 mg ut methotrexatum natricum, natrii chloridum, aqua ad iniectabilia q.s. ad solutionem pro 1 ml.
         compositions: 
@@ -14175,7 +13894,6 @@
         seqnr: "03"
         name_base: Metoject 15 mg
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id136
         composition_text: methotrexatum 15 mg ut methotrexatum natricum, natrii chloridum, aqua ad iniectabilia q.s. ad solutionem pro 1.5 ml.
         compositions: 
@@ -14199,7 +13917,6 @@
         seqnr: "04"
         name_base: Metoject 20 mg
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id136
         composition_text: methotrexatum 20 mg ut methotrexatum natricum, natrii chloridum, aqua ad iniectabilia q.s. ad solutionem pro 2 ml.
         compositions: 
@@ -14223,7 +13940,6 @@
         seqnr: "05"
         name_base: Metoject 25 mg
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id136
         composition_text: methotrexatum 25 mg ut methotrexatum natricum, natrii chloridum, aqua ad iniectabilia q.s. ad solutionem pro 2.5 ml.
         compositions: 
@@ -14247,7 +13963,6 @@
         seqnr: "06"
         name_base: Metoject 7.5 mg
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id136
         composition_text: methotrexatum 7.5 mg ut methotrexatum natricum, natrii chloridum, natrii hydroxidum, aqua ad iniectabilia q.s. ad solutionem pro 0.15 ml.
         compositions: 
@@ -14359,7 +14074,6 @@
         seqnr: "07"
         name_base: Metoject 10 mg
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id136
         composition_text: methotrexatum 10 mg ut methotrexatum natricum, natrii chloridum, natrii hydroxidum, aqua ad iniectabilia q.s. ad solutionem pro 0.2 ml.
         compositions: 
@@ -14471,7 +14185,6 @@
         seqnr: 08
         name_base: Metoject 15 mg
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id136
         composition_text: methotrexatum 15 mg ut methotrexatum natricum, natrii chloridum, natrii hydroxidum, aqua ad iniectabilia q.s. ad solutionem pro 0.3 ml.
         compositions: 
@@ -14583,7 +14296,6 @@
         seqnr: 09
         name_base: Metoject 20 mg
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id136
         composition_text: methotrexatum 20 mg ut methotrexatum natricum, natrii chloridum, natrii hydroxidum, aqua ad iniectabilia q.s. ad solutionem pro 0.4 ml.
         compositions: 
@@ -14695,7 +14407,6 @@
         seqnr: "10"
         name_base: Metoject 25 mg
         name_descr: "Injektionsl\xC3\xB6sung"
-        dose: 
         atc_class: *id136
         composition_text: methotrexatum 25 mg ut methotrexatum natricum, natrii chloridum, natrii hydroxidum, aqua ad iniectabilia q.s. ad solutionem pro 0.5 ml.
         compositions: 
@@ -14822,7 +14533,6 @@
         seqnr: "01"
         name_base: Makatussin mit Natriumbenzoat
         name_descr: "Hustendrag\xC3\xA9es"
-        dose: 
         atc_class: *id146
         composition_text: "codeinum 10 mg, natrii benzoas 50 mg, Color.: E 127, excipiens pro compresso obducto."
         compositions: 
@@ -14897,7 +14607,6 @@
         seqnr: "01"
         name_base: Nocutil 0,1 mg
         name_descr: Tabletten
-        dose: 
         atc_class: *id149
         composition_text: desmopressini acetas 0.1 mg corresp. desmopressinum 0.089 mg, excipiens pro compresso.
         compositions: 
@@ -14978,7 +14687,6 @@
         seqnr: "02"
         name_base: Nocutil 0.2 mg
         name_descr: Tabletten
-        dose: 
         atc_class: *id149
         composition_text: desmopressini acetas 0.2 mg corresp. desmopressinum 0.178 mg, excipiens pro compresso.
         compositions: 
@@ -15074,11 +14782,6 @@
         seqnr: "01"
         name_base: Lactoferment 10 Sachets
         name_descr: 
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 10
-          unit: ""
-          scale: 
         atc_class: &id155 !oddb.org,2003/ODDB::AtcClass 
           code: A07FA01
           descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
@@ -15152,11 +14855,6 @@
         seqnr: "01"
         name_base: "Lact\xC3\xA9ol 5 Kapseln"
         name_descr: 
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 5
-          unit: ""
-          scale: 
         atc_class: *id155
         composition_text: lactobacillus acidophilus mortuus cryodesiccatus 5 Mia. ut culturae extractum filtratum cryodesiccatum 80 mg, excipiens pro capsula.
         compositions: 
@@ -15213,11 +14911,6 @@
         seqnr: "01"
         name_base: Lactoferment 5 Kapseln
         name_descr: 
-        dose: !oddb.org,2003/ODDB::Dose 
-          not_normalized: 
-          val: 5
-          unit: ""
-          scale: 
         atc_class: *id155
         composition_text: lactobacillus acidophilus mortuus cryodesiccatus 5 Mia. ut culturae extractum filtratum cryodesiccatum 80 mg, excipiens pro capsula.
         compositions: 

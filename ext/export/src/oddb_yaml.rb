@@ -468,7 +468,6 @@ module ODDB
 			'@seqnr',
 			'@name_base',
 			'@name_descr',
-			'@dose',
 			'@atc_class',
 			'@composition_text',
       '@compositions',

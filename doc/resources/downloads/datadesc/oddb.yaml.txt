@@ -1,6 +1,7 @@
 Datenbeschrieb oddb.yaml
 
-Version:  1.7.0
+Version:  1.8.0
+Geändert: 28.10.2009 (1.8.0) durch hwyss@ywesee.com
 Geändert: 29.09.2009 (1.7.0) durch hwyss@ywesee.com
 Geändert: 12.03.2009 (1.6.0) durch hwyss@ywesee.com
 Geändert: 10.02.2009 (1.5.1) durch hwyss@ywesee.com
@@ -63,7 +64,6 @@ Sequence:
 - seqnr             (String, NOT NULL)     -> Sequenznumerierung aus der Registrationsurkunde
 - name_base         (String)               -> Hauptname der Sequenz aus der Registrationsurkunde, enthält z.T. Dosisangaben.
 - name_descr        (String)               -> Zusatzname der Sequenz aus der Registrationsurkunde, z.B. 'Tabletten'
-- dose              (Dose)                 -> Dosierung der Sequenz. Wird falls möglich aus dem Namen gewonnen, andernfalls aus der Zusammensetzung.
 - atc_class         (AtcClass)             -> Atc-Klassierung der Sequenz (siehe AtcClass)
 - composition_text  (String)               -> Text der Zusammensetzung.
 - compositions      (Array (Composition))  -> Zusammensetzungen (siehe Composition)
