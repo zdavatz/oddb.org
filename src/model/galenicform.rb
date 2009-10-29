@@ -29,8 +29,12 @@ module ODDB
 		end
 		def merge(other)
 			other.sequences.dup.each { |seq|
-				seq.galenic_form = self
-				seq.odba_isolated_store
+        seq.compositions.each do |comp|
+          if comp.galenic_form == other
+            comp.galenic_form = self
+            comp.odba_isolated_store
+          end
+        end
 			}
 			self.synonyms += other.all_descriptions - self.all_descriptions
 		end
