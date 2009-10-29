@@ -497,7 +497,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       # remove counts and doses from the name - this is assuming name looks
       # (in the worst case) something like this: "10 Filmtabletten"
       # or: "Infusionsemulsion, 1875ml"
-      name = name[/[^\d,]{3,}/].strip
+      parts = name.split(/\s*,(?!\d|[^(]+\))\s*/u)
+      name = parts.first[/[^\d]{3,}/].strip
       unless(gf = @app.galenic_form(name))
         ptr = Persistence::Pointer.new([:galenic_group, 1], 
                                        [:galenic_form]).creator
