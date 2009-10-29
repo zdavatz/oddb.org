@@ -137,7 +137,7 @@ module ODDB
         if seq
           comps = update_compositions(seq, row)
           comps.each_with_index do |comp, idx|
-            update_galenic_form(seq, comp, row)
+            update_galenic_form(seq, comp, row, opts)
           end
         end
       }
@@ -484,8 +484,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         end
       end
     end
-    def update_galenic_form(seq, comp, row, opts={:create_only => false})
-      return if comp.galenic_form
+    def update_galenic_form(seq, comp, row, opts={})
+      opts = {:create_only => false}.merge opts
+      return if comp.galenic_form && !opts[:fix_galenic_form]
       if((german = seq.name_descr) && !german.empty?)
         _update_galenic_form(comp, :de, german)
       elsif(match = GALFORM_P.match(comp.source.to_s))
@@ -493,6 +494,10 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       end
     end
     def _update_galenic_form(comp, lang, name)
+      # remove counts and doses from the name - this is assuming name looks
+      # (in the worst case) something like this: "10 Filmtabletten"
+      # or: "Infusionsemulsion, 1875ml"
+      name = name[/[^\d,]{3,}/].strip
       unless(gf = @app.galenic_form(name))
         ptr = Persistence::Pointer.new([:galenic_group, 1], 
                                        [:galenic_form]).creator
@@ -627,6 +632,10 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       ## some names use commas for dosage
       parts = cell(row, column(:name_base)).split(/\s*,(?!\d|[^(]+\))\s*/u)
       descr = parts.pop
+      ## some names have dosage data after the galenic form
+      if /[\d\s][m]?[glL]\b/.match(descr) && parts.size > 1
+        descr = parts.pop << ', ' << descr
+      end
       base = parts.join(', ')
       base, descr = descr, nil if base.empty?
       if ctext = cell(row, column(:composition))
