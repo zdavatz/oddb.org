@@ -38,7 +38,7 @@ module ODDB
         end
       end
       def text text
-        @text << text if @text
+        @text << text.gsub(%r{<br\s*/?>}, "\n").gsub(%r{<[^>]+>}, '') if @text
       end
       def time txt
         unless txt.to_s.empty?
