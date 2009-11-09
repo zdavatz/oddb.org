@@ -218,7 +218,11 @@ module ODDB
           cptr = sequence.pointer + :composition
           comp = @app.create cptr
           subs.each do |name, dose|
-            substance = @app.create_substance(name)
+            substance = @app.substance name
+            unless substance
+              sptr = Persistence::Pointer.new :substance
+              substance = @app.update sptr.creator, :lt => name
+            end
             pointer = comp.pointer + [:active_agent, name]
             agent = @app.update pointer.creator, :dose => dose,
                                                  :substance => substance.oid
