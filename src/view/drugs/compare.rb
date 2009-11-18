@@ -153,10 +153,11 @@ module InsertBackbutton
       level -= 1
       link2 = HtmlGrid::Link.new(:result, model, @session, self)
       link2.css_class = "list"
-      query = @session.persistent_user_input(:search_query).gsub('/', '%2F')
+      query = @session.persistent_user_input(:search_query)
+      query = model.name_base if query.is_a?(SBSM::InvalidDataError)
       args = [
-        :zone, :drugs, :search_query, query, :search_type, 
-        @session.persistent_user_input(:search_type),
+        :zone, :drugs, :search_query, query.gsub('/', '%2F'), :search_type,
+        @session.persistent_user_input(:search_type) || 'st_oddb',
       ]
       link2.href = @lookandfeel._event_url(:search, args)
       link2.value = @lookandfeel.lookup(:back_to_list_for, query)

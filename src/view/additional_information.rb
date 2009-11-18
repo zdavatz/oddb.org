@@ -111,10 +111,13 @@ module ODDB
 					@ddd_price_count += 1
 					node.value = ddd_price
 					node.css_id = "ddd_price_#{@ddd_price_count}"
+          query = @session.persistent_user_input(:search_query)
+          query = model.name_base if query.is_a?(SBSM::InvalidDataError)
+          stype = @session.persistent_user_input(:search_type)
 					args = [
             :pointer, model.pointer,
-            :search_query, @session.persistent_user_input(:search_query),
-            :search_type, @session.persistent_user_input(:search_type),
+            :search_query, query.gsub('/', '%2F'),
+            :search_type, stype || 'st_sequence'
           ]
           if chart
             node.set_attribute('title', @lookandfeel.lookup(:ddd_price_title))
