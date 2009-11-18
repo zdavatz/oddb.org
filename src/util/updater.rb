@@ -309,7 +309,7 @@ module ODDB
           month = @@today << 1
           pointer = logs.pointer + [:log, Date.new(month.year, month.month)]
           log = @app.update(pointer.creator, log_info(plug))
-          log.notify('Swissmedic')
+          log.notify('Swissmedic XLS')
         end
       }
     end
