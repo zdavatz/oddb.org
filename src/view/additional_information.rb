@@ -113,6 +113,7 @@ module ODDB
 					node.css_id = "ddd_price_#{@ddd_price_count}"
           query = @session.persistent_user_input(:search_query)
           query = model.name_base if query.is_a?(SBSM::InvalidDataError)
+          query ||= model.name_base
           stype = @session.persistent_user_input(:search_type)
 					args = [
             :pointer, model.pointer,
