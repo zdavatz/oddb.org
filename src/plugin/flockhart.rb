@@ -4,6 +4,9 @@
 require 'plugin/interaction'
 require 'util/html_parser'
 require 'model/text'
+require 'model/cyp450'
+require 'model/cyp450connection'
+require 'mechanize'
 
 module ODDB
 	module Interaction
@@ -233,93 +236,6 @@ module ODDB
 				string << "&/&/&"
 			end
 		end
-		class DetailWriter < NullWriter
-			def initialize(name)
-				@cytochrome = Cytochrome.new(name.split(".").pop)
-			end
-			def extract_data
-				@cytochrome
-			end
-			def new_linkhandler(handler)
-				if(handler)
-          if((href = handler.attributes["href"]) \
-             && href.match(/Abstract|abstractplus/u))
-						@current_link = href
-          elsif(name = handler.attributes["name"])
-            @abstractlink = nil
-            if(/\dsub$/u.match name)
-              @current_table = nil
-            end
-					end
-				end
-			end
-			def new_font(font)
-        _, @italic, @bold = font
-			end
-			def send_image(src)
-				ODDB::Interaction::FlockhartPlugin::IMAGES.each { |img|
-					if(src.match(/#{img}/u))
-						@current_table = src.split(/\./u).first.downcase
-					end
-				}
-			end
-			def send_flowing_data(data) 
-        data.gsub!("\302\240", ' ')
-        if(match = /SUBSTRATES|INHIBITORS|INDUCERS/u.match(data))
-          @current_table = match.to_s.downcase
-				elsif(@current_table)
-          case data
-          when /^\s*Article\s*$/u
-            return @infotoken = true
-          when /^\s*Authors?\s*$/u
-            return @infotoken = false
-          when /^:?\s*Info\s*$/iu
-            return @ignore_next = true
-          when /^\s*PubMed\s*$/iu, /Updated: \d/u
-            return 
-          end
-					if(@infotoken || @italic)
-            unless(data.strip.empty?)
-              if(@abstractlink)
-                @abstractlink.info << data
-              else
-                @abstractlink = ODDB::Interaction::AbstractLink.new
-                @abstractlink.info = data
-                @connection.add_link(@abstractlink)
-              end
-            end
-					elsif(@bold && !@abstractlink && !@ignore_next && data.size > 3)
-						name = data.delete(":").downcase.strip
-						case @current_table
-						when /substrates/u
-							new_class = ODDB::Interaction::SubstrateConnection
-						when /inhibitors/u
-							new_class = ODDB::Interaction::InhibitorConnection
-						when /inducers/u
-							new_class = ODDB::Interaction::InducerConnection
-						end
-						@connection = new_class.new(name, 'en')
-						@cytochrome.add_connection(@connection)
-					end
-					if(@current_link)
-            unless(@abstractlink)
-              @abstractlink = ODDB::Interaction::AbstractLink.new
-						  @connection.add_link(@abstractlink)
-            end
-						@abstractlink.href = @current_link
-						@abstractlink.text = data
-            @abstractlink = nil
-						@current_link = nil
-					end
-          @ignore_next = false
-				end
-			end
-      def send_line_break(*args)
-        @infotoken = false
-      end
-			def start_tr(attrs)
-			end
-		end
 		class TableLinksWriter < NullWriter
 			attr_reader :links
 			def initialize
@@ -369,30 +285,70 @@ module ODDB
 				file = http_file(HTTP_SERVER, path, target)	
 				file
 			end
-			def parse_detail_pages
-				links = get_table_links
-				cytochromes = {}
-				links.each { |link|
-					if(@refetch_pages)
-						fetch_page(link)
-					end
-					cyt_name = link.split("references").first
-					file_path = [TARGET, link].join("/")
-					writer = DetailWriter.new(cyt_name)
-					formatter = Formatter.new(writer)
-					parser = Parser.new(formatter)
-					html = File.read(file_path)
-					parser.feed(html)
-					if(names = FORMAT_CYT_ID[cyt_name])
-						names.each { |name|
-							cytochromes.store(name, writer.extract_data)
-						}
-					else
-						cytochromes.store(cyt_name, writer.extract_data)
-					end
-				}
-				cytochromes
-			end
+      def parse_detail_page cyt_name, page
+        div = (page/"div[@class=content_content_inner]").first
+        cytochrome = Cytochrome.new cyt_name
+        buffer = ''
+        connection = nil
+        current_table = nil
+        abstract_link = nil
+        (div/'td').each do |td|
+          td.each_child do |child|
+            if child.is_a?(Hpricot::Text)
+              buffer << child.to_s.strip
+            else
+              case child.name
+              when 'a'
+                abstract_link = Interaction::AbstractLink.new
+                match = /^(.*?)\s*(\[)?$/.match buffer
+                abstract_link.text = match[1]
+                buffer = match[2].to_s
+                buffer << child.inner_text
+                abstract_link.href = child.attributes["href"]
+                abstract_link.info = buffer
+                connection.add_link abstract_link
+              when 'b'
+                if current_table
+                  name = "#{current_table.capitalize}Connection"
+                  klass = Interaction.const_get name
+                  connection = klass.new child.inner_text.capitalize, 'en'
+                  cytochrome.add_connection connection
+                end
+              when 'br'
+                if "\n" == buffer[-1,1]
+                  buffer = ''
+                elsif !buffer.empty?
+                  buffer << "\n"
+                end
+              when 'h2'
+                if match = /SUBSTRATE|INHIBITOR|INDUCER/u.match(child.inner_text)
+                  current_table = match.to_s.downcase
+                end
+              end
+            end
+          end
+        end
+        cytochrome
+      end
+      def parse_detail_pages
+        agent = WWW::Mechanize.new
+        links = get_table_links
+        cytochromes = {}
+        links.each do |link|
+          cyt_name = link.split("references").first
+          url = sprintf "http://%s%s/%s", HTTP_SERVER, HTML_PATH, link
+          page = agent.get url
+          cytochrome = parse_detail_page cyt_name, page
+          if(names = FORMAT_CYT_ID[cyt_name])
+            names.each do |name|
+              cytochromes.store(name, cytochrome)
+            end
+          else
+            cytochromes.store(cyt_name, cytochrome)
+          end
+        end
+        cytochromes
+      end
 			def get_table_links
 				writer = TableLinksWriter.new
 				formatter = Formatter.new(writer)

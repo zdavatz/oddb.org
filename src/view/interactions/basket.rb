@@ -86,8 +86,10 @@ class CyP450List < HtmlGrid::Component
           alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
           alink.href = link.href
           alink.value = link.text
-          text << [ "<br>", link.info, "<br>" ].join
+          text << "<br>"
           text << alink
+          text << "<br>"
+          text << link.info
         }
       end
       context.li { text.to_html(context) } 
@@ -169,8 +171,10 @@ class BasketSubstrates < HtmlGrid::List
             alink = HtmlGrid::Link.new(:abstract_link, @model, @session, self)
             alink.href = href
             alink.value = link.text
-            text << [ "<br>", link.info, "<br>" ].join
+            text << "<br>"
             text << alink
+            text << "<br>"
+            text << link.info
           end
         }
       end
