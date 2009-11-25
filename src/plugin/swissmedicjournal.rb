@@ -117,7 +117,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vor
 			}.sort
 			lines = [
 				"ODDB::SwissmedicJournalPlugin - Report #{@month}",
-				"Updated Indications: #{@indications.size}",
 				"Total Sequences without ATC-Class: #{atcless.size}",
 				atcless,
 			]
