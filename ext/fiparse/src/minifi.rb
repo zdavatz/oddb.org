@@ -92,6 +92,9 @@ module ODDB
           end
           super
         end
+        def column_count
+          2
+        end
         def send_page
           if(@chapter)
             max_idx = @lines.collect { |line| 
@@ -118,17 +121,13 @@ module ODDB
                   case line
                   when ''
                     if(!target.empty? && !previous_was_hyphenated)
-                      #FIXME && (target != @chapter.heading))
-                      #      this was supposed to ensure all bold text at the
-                      #      start of a page counts towards the heading - that 
-                      #      won't work post 12/2005 however...
                       if(section.subheading.empty?)
                         section = @chapter.next_section
                       end
                       target = section.next_paragraph
                     end
                   when %r{Arzneimittel Nachrichten( / M.dicaments)?}u,
-                    %r{^M.dicaments$}u, %r{^Actualit.s$}u,
+                    %r{^\s*/?\s*M.dicaments$}u, %r{^Actualit.s$}u,
                     # misplaced header in 05/2003:416
                     %r{^Arzneimittel Statistik$}u
                     #ignore
@@ -164,6 +163,13 @@ module ODDB
                     else
                       previous_was_hyphenated = false
                       target << line << ' '
+                    end
+                    # Ensure all bold text at the start of a page counts
+                    # towards the heading - this solution works post 12/2005
+                    if bold && target == @chapter.heading \
+                      && (other = @lines[row][1])
+                      target << other
+                      other.replace ''
                     end
                   end
                 elsif(@chapter.heading == target && NAME_PTRN.match(target))
