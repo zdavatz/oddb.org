@@ -267,16 +267,17 @@ module ODDB
 				 && /^[0-9]{3,5}(\.[0-9]+)?$/u.match(iksval.to_s))
 				reg = ParsedRegistration.new
 				reg.iksnr = sprintf('%05i', iksval.to_i)
-				reg.indication = row_at(row, 2)
-				reg.ikscat = row_at(row, 3)
+        ## missing as of 11/2009
+				#reg.indication = row_at(row, 2)
+				reg.ikscat = row_at(row, 2)
         ## missing as of 02/2008
         #reg.out_of_trade = row_at(row, 9) == 'x'
-				reg.company = row_at(row, 9)
-        if((date = row_at(row, 10)) && date.is_a?(Date))
+				reg.company = row_at(row, 8)
+        if((date = row_at(row, 9)) && date.is_a?(Date))
           reg.expiration_date = date
         end
 				seq = ParsedSequence.new
-        if(atc = row_at(row, 11))
+        if(atc = row_at(row, 10))
           seq.atc_class = atc.gsub(/[^A-Z0-9]/u, '')
         end
         seqs = [seq]
