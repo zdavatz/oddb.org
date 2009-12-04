@@ -156,7 +156,7 @@ module ODDB
         ptr = item.item_pointer
         if(seq = pointer_resolved(ptr))
           ## correct the item's stored name (it may have changed in Packungen.xls)
-          item.data[:name] = seq.name if seq.respond_to?(:name)
+          (item.data ||= {})[:name] = seq.name if seq.respond_to?(:name)
           (companies[seq.company.odba_instance] ||= []).push(item)
         end
       }
