@@ -11,7 +11,6 @@ require 'plugin/interaction'
 require 'plugin/lppv'
 require 'plugin/medwin'
 require 'plugin/migel'
-require 'plugin/minifi'
 require 'plugin/narcotic'
 require 'plugin/ouwerkerk'
 require 'plugin/patinfo'
@@ -185,9 +184,7 @@ module ODDB
 			if(update_swissmedic)
         update_swissmedic_followers
       end
-      if(update_swissmedicjournal)
-        update_minifis
-      end
+      update_swissmedicjournal
 			update_vaccines
 			if(update_bsv)
         update_bsv_followers
@@ -259,16 +256,6 @@ module ODDB
 		def update_medwin_packages
 			update_simple(MedwinPackagePlugin, 'Medwin-Packages')
 		end
-    def update_minifis(month=nil)
-      unless(month)
-        month = @app.log_group(:swissmedic_journal).newest_date
-      end
-      if(month)
-        update_simple(MiniFiPlugin, 
-                      month.strftime('Kurzfachinfo %m/%Y'), 
-                      :update, month)
-      end
-    end
     def update_price_feeds(month = @@today)
       RssPlugin.new(@app).update_price_feeds(month)
     end

@@ -13,11 +13,7 @@ class Init < State::Drugs::Global
 	DIRECT_EVENT = :home_drugs
   def init
     super
-    minifis = @session.app.sorted_minifis
-    newest = minifis.first
     @model = OpenStruct.new
-    @model.minifis = minifis.select { |minifi| 
-      minifi.publication_date == newest.publication_date }[0,3]
 
     fachinfos = @session.app.sorted_fachinfos
     newest = fachinfos.first

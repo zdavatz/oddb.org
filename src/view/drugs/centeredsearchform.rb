@@ -213,34 +213,6 @@ class RssFeedbacks < RssPreview
     end
   end
 end
-class MiniFiList < HtmlGrid::DivList
-  COMPONENTS = {
-    [0,0] => :heading,
-  }
-  def heading(model)
-    link = PointerLink.new(:heading, model, @session, self)
-    link.value = model.send(@session.language).heading
-    link
-  end
-end
-class MiniFis < RssPreview
-  COMPONENTS = {
-    [0,0] => :rss_image,
-    [1,0] => :title,
-    [0,1] => MiniFiList,
-  }
-  def title(model)
-    if((minifi = model.first) && (month = minifi.publication_date))
-      link = HtmlGrid::Link.new(:minifi_title, model, @session, self)
-      link.href = @lookandfeel._event_url(:rss, :channel => 'minifi.rss')
-      link.value = [ @lookandfeel.lookup(:minifi_title), '<br>',
-                     @lookandfeel.lookup("month_#{month.month}"),
-                     month.year ].join(' ')
-      link.css_class = 'list bold'
-      link
-    end
-  end
-end
 class FachinfoNewsList < HtmlGrid::DivList
   COMPONENTS = {
     [0,0] => :name,
@@ -302,9 +274,6 @@ class GoogleAdSenseComposite < View::GoogleAdSenseComposite
   }
   def rss_feeds_left(model, session=@session)
     content = []
-    if(@lookandfeel.enabled?(:minifi_rss))
-      content.push MiniFis.new(model.minifis, @session, self)
-    end
     if(@lookandfeel.enabled?(:fachinfo_rss))
       content.push FachinfoNews.new(model.fachinfo_news[0,5], @session, self)
     end
