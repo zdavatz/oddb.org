@@ -17,7 +17,7 @@ class Init < State::Drugs::Global
     newest = minifis.first
     @model = OpenStruct.new
     @model.minifis = minifis.select { |minifi| 
-      minifi.publication_date == newest.publication_date }
+      minifi.publication_date == newest.publication_date }[0,3]
 
     fachinfos = @session.app.sorted_fachinfos
     newest = fachinfos.first
