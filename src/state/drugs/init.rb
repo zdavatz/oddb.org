@@ -14,15 +14,16 @@ class Init < State::Drugs::Global
   def init
     super
     @model = OpenStruct.new
-
     fachinfos = @session.app.sorted_fachinfos
-    newest = fachinfos.first
-    revision = newest ? newest.revision : nil
-    @model.fachinfo_news = fachinfos.select { |fi|
-      rev = fi.revision
-      rev.year == revision.year && rev.month == revision.month \
-        && rev.day == revision.day
-    }
+    if newest = fachinfos.first
+      revision = newest.revision
+      date = Time.local(revision.year, revision.month, revision.day)
+      day = 24 * 3600
+      range = (date-day)...(date+day)
+      @model.fachinfo_news = fachinfos.select { |fi|
+        range.include? fi.revision
+      }
+    end
     @model.feedbacks = @session.app.sorted_feedbacks[0,5]
   end
 end
