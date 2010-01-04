@@ -64,7 +64,7 @@ while(line = readline(prompt, true))
 	when /^last_error/
 		begin
 			$stdout.puts eval(line)
-		rescue StandardError => last_error
+		rescue StandardError, SyntaxError => last_error
 			$stdout.puts last_error
 		end
 	when 'process'
@@ -73,7 +73,7 @@ while(line = readline(prompt, true))
 			$current = oddb._admin(cmd, result, priority)
 			$current.join
 			$stdout.puts result
-		rescue StandardError => last_error
+		rescue StandardError, SyntaxError => last_error
 			$stdout.puts last_error
 		end
 	when /to_html(\[[\d,.]+\])?/
@@ -83,7 +83,7 @@ while(line = readline(prompt, true))
 			$current = oddb._admin(cmd, result, priority)
 			$current.join
 			$stdout.puts result
-		rescue StandardError => last_error
+		rescue StandardError, SyntaxError => last_error
 			$stdout.puts last_error
 		end
 	when /sp\s+(-?\d+)/, /set_priority\s+(-?\d+)/, /^sp$/
@@ -97,7 +97,7 @@ while(line = readline(prompt, true))
 				$current.join
 			end
 			$stdout.puts result
-		rescue StandardError => last_error
+		rescue StandardError, SyntaxError => last_error
 			$stdout.puts last_error
 		end
 	end
