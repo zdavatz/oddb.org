@@ -18,6 +18,7 @@ module Notify
 			].join.empty?
 		end
 	end
+  attr_reader :passed_turing_test
 	def init
 		@model = Notification.new
 		if(pointer = @session.user_input(:pointer))
@@ -39,12 +40,20 @@ module Notify
 	end
 	def notify_send 
  		mandatory = [:name, :notify_sender, :notify_recipient]
+    unless @passed_turing_test
+      mandatory.push :captcha
+    end
 		keys = mandatory + [:notify_message]
 		input = user_input(keys, mandatory)
-		if(error?)
-      puts @errors.inspect
-      return self
-		end
+    if(@passed_turing_test)
+      # do nothing
+    elsif((candidates = input[:captcha]) && candidates.any? { |key, word|
+      @session.lookandfeel.captcha.valid_answer? key, word })
+      @passed_turing_test = true
+    else
+      @errors.store(:captcha, create_error('e_failed_turing_test',
+        :captcha, nil))
+    end
     if msg = input[:message]
       input[:message] = msg[0,500]
     end
@@ -52,6 +61,9 @@ module Notify
     @model.notify_sender = input[:notify_sender]
     @model.notify_recipient = input[:notify_recipient]
     @model.notify_message = input[:notify_message]
+    if(error?)
+      return self
+    end
     recipients = model.notify_recipient
 		if(model.name && model.notify_sender && recipients.is_a?(Array) \
 				&& !recipients.empty?)

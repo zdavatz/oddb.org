@@ -3,6 +3,7 @@
 
 require 'view/publictemplate'
 require 'view/additional_information'
+require 'view/captcha'
 require 'view/searchbar'
 require 'view/drugs/package'
 require 'htmlgrid/form'
@@ -26,6 +27,7 @@ module ODDB
     end
     class NotifyInnerComposite < HtmlGrid::Composite
 			include HtmlGrid::ErrorMessage
+      include Captcha
 			COMPONENTS = {
 				[0,0]			=>	:name,
 				[0,1]			=>	:notify_sender,
@@ -46,6 +48,11 @@ module ODDB
         :name => :name_sender,
       }
 			def init
+        unless(@session.state.passed_turing_test)
+          components.update [0,4] => :captcha, [1,5] => :captcha_image
+          colspan_map.store [1,5], 2
+          css_map.store [1,5], 'list'
+        end
 				super
 				error_message()
 			end

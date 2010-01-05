@@ -3,6 +3,7 @@
 
 require 'view/publictemplate'
 require 'view/additional_information'
+require 'view/captcha'
 require 'view/searchbar'
 require 'view/form'
 require 'htmlgrid/inputradio'
@@ -16,6 +17,7 @@ module ODDB
 class FeedbackForm < Form
 	include HtmlGrid::ErrorMessage
 	include HtmlGrid::InfoMessage
+  include Captcha
 	CSS_MAP = {
 		[0,0,2,15]		=>	'list top',
 		[1,4,1,15]		=>	'radio',
@@ -41,18 +43,6 @@ class FeedbackForm < Form
 		error_message
 		info_message
 	end
-  def challenge
-    @challenge ||= @lookandfeel.generate_challenge
-  end
-  def captcha(model)
-    name = "captcha[#{challenge.id}]"
-    HtmlGrid::InputText.new(name, model, @session, self)
-  end
-  def captcha_image(model)
-    img = HtmlGrid::Image.new(:file, challenge, @session, self)
-    img.attributes["src"] = File.join('', 'resources', 'captchas', challenge.file)
-    img
-  end
 	def experience(model)
 		radio_good(:experience)
 	end

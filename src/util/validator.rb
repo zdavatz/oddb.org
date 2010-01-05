@@ -11,7 +11,6 @@ module ODDB
 		alias :set_pass_2 :pass
 		alias :unique_email :email
 		alias :notify_sender :email
-		alias :notify_recipient :email
 		alias :receiver_email :email
 		alias :competition_email :email
 		alias :swissmedic_email :email
