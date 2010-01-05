@@ -9,7 +9,6 @@ module ODDB
 		EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
 		RECIPIENTS = [
 			'Josef.Hunkeler@pue.admin.ch',
-      'sandra.guberinic-jampen@sandoz.com',
 		]
 		def export_competition(company, db_path=nil)
 			dir = File.join(ARCHIVE_PATH, "xls")
