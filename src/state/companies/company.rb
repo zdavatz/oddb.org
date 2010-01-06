@@ -56,6 +56,7 @@ class UserCompany < Company
 	private
 	def do_update(keys, mandatory=[:name])
 		input = user_input(keys, mandatory)
+    validate input
 		if((upload = input.delete(:logo_file)) \
 			&& !upload.original_filename.empty?)
 			if((fname = @model.logo_filename) \
@@ -116,6 +117,8 @@ class UserCompany < Company
 		end
 		self
 	end
+  def validate input
+  end
 	def user_or_creator
 		mdl = @model.user
 		if(mdl.nil?)
@@ -162,12 +165,14 @@ class RootCompany < UserCompany
 			:ean13,
 			:fax,
 			:fon,
+      :force_new_ydim_debitor,
 			:generic_type,
 			:invoice_date_fachinfo,
 			:invoice_date_index,
 			:invoice_date_lookandfeel,
 			:invoice_date_patinfo,
 			:invoice_htmlinfos,
+      :invoice_email,
       :limit_invoice_duration,
 			:logo_file,
 			:lookandfeel_member_count,
@@ -184,9 +189,21 @@ class RootCompany < UserCompany
       :swissmedic_email,
       :swissmedic_salutation,
 			:url,
+      :ydim_id,
 		]
 		do_update(keys)
 	end
+  private
+  def validate input
+    if input[:invoice_email] == @model.contact_email
+      input.delete :invoice_email
+    end
+    if (input[:invoice_email] || input[:contact_email]) \
+      && "#{input[:force_new_ydim_debitor]}#{input[:ydim_id]}".empty?
+      err = create_error(:e_need_ydim_id, :ydim_id, '')
+      @errors.store(:ydim_id, err)
+    end
+  end
 end
 class PowerLinkCompany < UserCompany
 	VIEW = View::Companies::PowerLinkCompany

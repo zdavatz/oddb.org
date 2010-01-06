@@ -9,6 +9,7 @@ module ODDB
 	class Validator < SBSM::Validator
 		alias :partner :flavor
 		alias :set_pass_2 :pass
+		alias :invoice_email :email
 		alias :unique_email :email
 		alias :notify_sender :email
 		alias :receiver_email :email
@@ -22,6 +23,7 @@ module ODDB
       :parallel_import, :preview_with_market_date, :recommend,
       :refdata_override, :remember_me, :renewal_flag,
       :show_email, :vaccine, :yus_groups, :yus_privileges,
+      :force_new_ydim_debitor,
     ]
 		DATES = [
 			:base_patent_date, 
@@ -292,6 +294,7 @@ module ODDB
       :pharmacode,
 			:price_exfactory,
 			:price_public,
+      :ydim_id,
 			:year,
 		]
 		STRINGS = [

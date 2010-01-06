@@ -85,7 +85,7 @@ module ODDB
       #  exists, it should take precedence.
       if(id = facade.ydim_id)
         id
-      elsif(debitor = identify_debitor(facade))
+      elsif(!facade.force_new_ydim_debitor && debitor = identify_debitor(facade))
         debitor.unique_id
       else
         create_debitor(facade).unique_id

@@ -263,6 +263,7 @@ module ODDB
     end
   end
 	module UserObserver
+    attr_writer :invoice_email
     def add_user user
       unless user.nil? || users.include?(user)
         users.push user
@@ -271,15 +272,17 @@ module ODDB
         user
       end
     end
-    def invoice_email
+    def contact_email
       if usr = users.first
         usr.yus_name
       end
     end
-    alias :contact_email :invoice_email
 		def has_user?
       !users.empty?
 		end
+    def invoice_email
+      @invoice_email || contact_email
+    end
     def remove_user user
       res = users.delete user
       users.odba_store
