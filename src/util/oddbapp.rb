@@ -225,9 +225,19 @@ class OddbPrevalence
 		@companies[oid.to_i]
 	end
   def company_by_name(name, ngram_cutoff=nil)
+    _company_by_name(name, ngram_cutoff) \
+      || _company_by_name(name, ngram_cutoff, /\s*(ag|gmbh|sa)\b/i)
+  end
+  def _company_by_name(name, ngram_cutoff=nil, filter=nil)
     namedown = name.to_s.downcase
+    if filter
+      namedown.gsub! filter, ''
+    end
     @companies.each_value { |company|
       name = company.name.to_s.downcase
+      if filter
+        name.gsub! filter, ''
+      end
       if name == namedown \
         || (ngram_cutoff \
             && ODDB::Util::NGramSimilarity.compare(name, namedown) > ngram_cutoff)
