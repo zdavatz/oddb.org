@@ -47,6 +47,17 @@ module ODDB
 			ydim_id = ydim_inv.unique_id
 			plugin.send_invoice(ydim_id)
 			ydim_id
+    rescue StandardError => e
+			log = Log.new(@@today)
+			log.report = [
+        "Invoicer#send_invoice(#{date}, #{mail}, #{items.join(',')}, #{service_date})",
+				"Error: #{e.class}",
+				"Message: #{e.message}",
+				"Backtrace:",
+				e.backtrace.join("\n"),
+			].join("\n")
+			log.notify("Error Invoice: #{subject}")
+      nil
 		end
 	end
 end

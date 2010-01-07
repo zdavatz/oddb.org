@@ -235,7 +235,7 @@ module ODDB
               end
             }
           end
-        elsif(email = company.invoice_email)
+        elsif(email = company.contact_email)
           if(!company.invoice_date(@infotype))
             time = items.collect { |item| item.time }.min
             date = Date.new(time.year, time.month, time.day)
@@ -255,9 +255,10 @@ module ODDB
             adjust_overlap_fee(day, items)
             ensure_yus_user(company)
             ## first send the invoice 
-            ydim_id = send_invoice(invoice_date, email, items, day)
-            ## then store it in the database
-            create_invoice(email, items, ydim_id)
+            if ydim_id = send_invoice(invoice_date, email, items, day)
+              ## then store it in the database
+              create_invoice(email, items, ydim_id)
+            end
           elsif((day >> 12) == company.invoice_date(@infotype))
             ## if the date has been set to one year from now,
             ## this invoice has already been sent manually.
@@ -274,7 +275,7 @@ module ODDB
       groups = group_by_company(payable_items)
       groups.each { |company, items|
         if(!company.invoice_disabled?(@infotype) \
-           && (email = company.invoice_email) \
+           && (email = company.contact_email) \
            && (company_name.nil? || company_name == company.name))
           ## work with duplicates
           items = items.collect { |item| item.dup }
@@ -284,9 +285,10 @@ module ODDB
           adjust_annual_fee(company, items)
           ensure_yus_user(company)
           ## first send the invoice 
-          ydim_id = send_invoice(invoice_date, email, items, day)
-          ## then store it in the database
-          create_invoice(email, items, ydim_id)
+          if ydim_id = send_invoice(invoice_date, email, items, day)
+            ## then store it in the database
+            create_invoice(email, items, ydim_id)
+          end
         end
       }
       nil
