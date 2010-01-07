@@ -32,6 +32,16 @@ class Entity < Global
         if(@model.is_a?(Persistence::CreateItem))
           @model = @session.user.create_entity(input[:name])
         elsif(input[:name] != name)
+          if mdl = @session.app.yus_model(name)
+            mdl.users.collect! do |usr|
+              if usr.yus_name == name
+                YusStub.new input[:name]
+              else
+                usr
+              end
+            end
+            mdl.odba_store
+          end
           @session.user.rename(name, input[:name])
           name = input[:name]
           @model = @session.user.find_entity(name)
