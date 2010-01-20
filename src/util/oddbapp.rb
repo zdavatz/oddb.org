@@ -1347,7 +1347,7 @@ module ODDB
     MEMORY_LIMIT = 10240
 		RUN_CLEANER = true
 		RUN_EXPORTER = true
-		RUN_EXPORTER_NOTIFY = true
+		RUN_EXPORTER_NOTIFY = false
 		RUN_UPDATER = true
 		SESSION = Session
 		UNKNOWN_USER = UnknownUser
@@ -1551,7 +1551,6 @@ module ODDB
 				}
 			}
 		end
-=begin ## disable the notification statistic mail
 		def run_exporter_notify
 			Thread.new {
 				#Thread.current.priority=-10
@@ -1566,7 +1565,6 @@ module ODDB
 				}
 			}
 		end
-=end
     def run_random_updater
       Thread.new {
         Thread.current.abort_on_exception = true
