@@ -1551,6 +1551,7 @@ module ODDB
 				}
 			}
 		end
+=begin ## disable the notification statistic mail
 		def run_exporter_notify
 			Thread.new {
 				#Thread.current.priority=-10
@@ -1565,6 +1566,7 @@ module ODDB
 				}
 			}
 		end
+=end
     def run_random_updater
       Thread.new {
         Thread.current.abort_on_exception = true
