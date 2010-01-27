@@ -1344,7 +1344,7 @@ module ODDB
 		CLEANING_INTERVAL = 5*60
 		EXPORT_HOUR = 2
 		UPDATE_HOUR = 9
-    MEMORY_LIMIT = 10240
+    MEMORY_LIMIT = 20480
 		RUN_CLEANER = true
 		RUN_EXPORTER = true
 		RUN_EXPORTER_NOTIFY = false
@@ -2042,18 +2042,18 @@ module ODDB
         child = _migrate_child_to_utf8 child, queue, table, iconv, opts
         obj.instance_variable_set name, child
       end
-      case obj
-      when Array
+      if obj.is_a?(Array)
         obj.collect! do |child|
           _migrate_child_to_utf8 child, queue, table, iconv, opts
         end
-      when Hash
+      end
+      if obj.is_a?(Hash)
         obj.dup.each do |key, child|
           obj.store key, _migrate_child_to_utf8(child, queue, table, iconv, opts)
         end
-      end
-      if obj.is_a?(ODDB::SimpleLanguage::Descriptions)
-        obj.default = _migrate_child_to_utf8 obj.default, queue, table, iconv, opts
+        if obj.is_a?(ODDB::SimpleLanguage::Descriptions)
+          obj.default = _migrate_child_to_utf8 obj.default, queue, table, iconv, opts
+        end
       end
       obj
     end
