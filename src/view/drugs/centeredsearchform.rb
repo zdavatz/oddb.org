@@ -134,7 +134,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
     <<-EOS
 <script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US"></script>
 <script type="text/javascript">FB.init("3252fd8899d16ddc5b75a43ecfcf3e8b");</script>
-<fb:fan profile_id="273461529221" stream="0" connections="0" logobar="1" width="300"></fb:fan>
+<fb:fan profile_id="273461529221" stream="0" connections="0" logobar="0" width="300"></fb:fan>
 <div style="font-size:8px; padding-left:10px">
 <a href="http://www.facebook.com/pages/Generika/273461529221">Generika</a> on Facebook</div>
     EOS
