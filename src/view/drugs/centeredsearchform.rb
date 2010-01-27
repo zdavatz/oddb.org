@@ -93,12 +93,17 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,8]		=>	:atc_chooser,
 				[0,9,0]	=>	:new_feature,
 				[0,9,1]	=>	:download_generics,
-				[0,10]		=>	:generic_definition,
+				[0,10]	=>	:generic_definition,
 				[0,11]	=>	:legal_note,
 				[0,12]	=>	:paypal,
 			})
-			css_map.store([0,4,1,9], 'list center')
-			component_css_map.store([0,11], 'legal-note')
+      if @lookandfeel.enabled?(:facebook, false)
+        components.update [0,12] => :facebook, [0,13] => :paypal
+        css_map.store([0,4,1,10], 'list center')
+      else
+        css_map.store([0,4,1,9], 'list center')
+      end
+      component_css_map.store([0,11], 'legal-note')
 		else
 			components.update({
 				[0,5,0]	=>	'database_last_updated_txt',
@@ -125,6 +130,15 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 			'http://bag.e-mediat.net/SL2007.WEb.external/slindex.htm',
 			:limitation_texts)
 	end
+  def facebook(model, session=@session)
+    <<-EOS
+<script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US"></script><script type="text/javascript">
+  FB.init("3252fd8899d16ddc5b75a43ecfcf3e8b");
+</script>
+<fb:fan profile_id="273461529221" stream="0" connections="10" logobar="1" width="300"></fb:fan>
+<div style="font-size:8px; padding-left:10px"><a href="http://www.facebook.com/pages/Generika/273461529221">Generika</a> on Facebook</div>
+    EOS
+  end
 	def fi_count_text(model, session)
 		create_link(:fi_count_text, 
 			'http://wiki.oddb.org/wiki.php?pagename=ODDB.Fi-Upload',

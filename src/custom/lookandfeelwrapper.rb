@@ -141,6 +141,7 @@ module ODDB
 			:companylist,
       :country_navigation,
       :ddd_chart,
+      :facebook,
 			:fachinfos,
 			:feedback,
 			:feedback_rss,
