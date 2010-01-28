@@ -5,6 +5,7 @@ require 'view/admin/swissmedic_source'
 require 'view/drugs/privatetemplate'
 require 'view/additional_information'
 require 'view/admin/sequence'
+require 'view/facebook'
 require 'htmlgrid/booleanvalue'
 
 module ODDB
@@ -205,6 +206,7 @@ class PackageInnerComposite < HtmlGrid::Composite
 end
 class PackageComposite < HtmlGrid::Composite
   include View::Admin::SwissmedicSource
+  include View::Facebook
 	COMPONENTS = {
 		[0,0]	=>	:package_name,
 		[0,1]	=>	View::Drugs::PackageInnerComposite,
@@ -225,6 +227,13 @@ class PackageComposite < HtmlGrid::Composite
     [0,7] =>  'list',
 	}
   DEFAULT_CLASS = HtmlGrid::Value
+  def init
+    if @lookandfeel.enabled?(:facebook_share)
+      components.store [0,8], :facebook_share
+      css_map.store [0,8], 'list'
+    end
+    super
+  end
   def compositions(model, session=@session)
     View::Admin::Compositions.new(model.compositions, @session, self)
   end

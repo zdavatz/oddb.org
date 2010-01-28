@@ -4,6 +4,7 @@
 require 'htmlgrid/select'
 require 'htmlgrid/divlist'
 require 'view/centeredsearchform'
+require 'view/facebook'
 require 'view/google_ad_sense'
 
 module ODDB
@@ -34,6 +35,7 @@ class CenteredSearchForm < View::CenteredSearchForm
 	EVENT = :search
 end
 class CenteredSearchComposite < View::CenteredSearchComposite
+  include View::Facebook
 	COMPONENTS = {
 		[0,0]		=>	:screencast,
 		[0,1]		=>	:language_chooser,
@@ -97,8 +99,8 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,11]	=>	:legal_note,
 				[0,12]	=>	:paypal,
 			})
-      if @lookandfeel.enabled?(:facebook, false)
-        components.update [0,12] => :facebook, [0,13] => :paypal
+      if @lookandfeel.enabled?(:facebook_fan, false)
+        components.update [0,12] => :facebook_fan, [0,13] => :paypal
         css_map.store([0,4,1,10], 'list center')
       else
         css_map.store([0,4,1,9], 'list center')
@@ -130,15 +132,6 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 			'http://bag.e-mediat.net/SL2007.WEb.external/slindex.htm',
 			:limitation_texts)
 	end
-  def facebook(model, session=@session)
-    <<-EOS
-<script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US"></script>
-<script type="text/javascript">FB.init("3252fd8899d16ddc5b75a43ecfcf3e8b");</script>
-<fb:fan profile_id="273461529221" stream="0" connections="0" logobar="0" width="300"></fb:fan>
-<div style="font-size:8px; padding-left:10px">
-<a href="http://www.facebook.com/pages/Generika/273461529221">Generika</a> on Facebook</div>
-    EOS
-  end
 	def fi_count_text(model, session)
 		create_link(:fi_count_text, 
 			'http://wiki.oddb.org/wiki.php?pagename=ODDB.Fi-Upload',

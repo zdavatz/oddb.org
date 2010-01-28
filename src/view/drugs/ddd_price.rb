@@ -4,6 +4,7 @@
 require 'htmlgrid/composite'
 require 'view/dataformat'
 require 'view/additional_information'
+require 'view/facebook'
 
 module ODDB
 	module View
@@ -83,6 +84,7 @@ class DDDPriceTable < HtmlGrid::Composite
 	end
 end
 class DDDPriceComposite < HtmlGrid::Composite
+  include View::Facebook
   COMPONENTS = {
     [0,0] => :ddd_price,
     [0,1] => DDDPriceTable,
@@ -96,6 +98,10 @@ class DDDPriceComposite < HtmlGrid::Composite
     if @lookandfeel.enabled?(:ddd_chart)
       components.store [0,2], :ddd_chart
       css_map.store [0,2], 'ddd-chart'
+      if @lookandfeel.enabled?(:facebook_share)
+        components.store [0,3], :facebook_share
+        css_map.store [0,3], 'list'
+      end
     end
     super
   end
