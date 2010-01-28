@@ -257,9 +257,12 @@ class Package < PrivateTemplate
     base = @model.name_base
     size = comparable_size(@model)
     fullname = u sprintf("%s, %s", base, size)
-    description = @model.registration.indication.send(@session.language)
-    super << context.meta('name' => 'title', 'content' => fullname) \
-      << context.meta('name' => 'description', 'content' => description)
+    res = super << context.meta('name' => 'title', 'content' => fullname)
+    if ind = @model.indication
+      res << context.meta('name' => 'description',
+                          'content' => ind.send(@session.language))
+    end
+    res
   end
 end
 		end
