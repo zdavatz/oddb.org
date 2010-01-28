@@ -125,8 +125,25 @@ class DDDPriceComposite < HtmlGrid::Composite
 end
 class DDDPrice < PrivateTemplate
   include InsertBackbutton
+  include PartSize
   CONTENT = DDDPriceComposite
   SNAPBACK_EVENT = :result
+  def meta_tags(context)
+    base = @model.name_base
+    size = comparable_size(@model)
+    fullname = u sprintf("%s, %s", base, size)
+    title = @lookandfeel.lookup(:ddd_chart_title, fullname)
+    description = @model.registration.indication.send(@session.language)
+    file = sprintf "%s_%s_%s.png", @model.ikskey, @model.name_base,
+                                   @lookandfeel.lookup(:ddd_price_comparison)
+    args = [
+      :for, file.gsub(/\s+/, '_')
+    ]
+    url = @lookandfeel._event_url(:ddd_chart, args)
+    super << context.meta('name' => 'title', 'content' => title) \
+      << context.meta('name' => 'description', 'content' => description) \
+      << context.link('rel' => 'image_src', 'href' => url)
+  end
   def pointer_descr(model)
     @lookandfeel.lookup(:ddd_price_for, model.name_base)
   end

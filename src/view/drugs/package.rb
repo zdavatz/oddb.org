@@ -250,8 +250,17 @@ class PackageComposite < HtmlGrid::Composite
   end
 end
 class Package < PrivateTemplate
+  include PartSize
 	CONTENT = View::Drugs::PackageComposite
 	SNAPBACK_EVENT = :result
+  def meta_tags(context)
+    base = @model.name_base
+    size = comparable_size(@model)
+    fullname = u sprintf("%s, %s", base, size)
+    description = @model.registration.indication.send(@session.language)
+    super << context.meta('name' => 'title', 'content' => fullname) \
+      << context.meta('name' => 'description', 'content' => description)
+  end
 end
 		end
 	end
