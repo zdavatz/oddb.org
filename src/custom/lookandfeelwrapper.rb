@@ -161,6 +161,7 @@ module ODDB
       :sl_introduction_rss,
 			:sponsor,
 			:sponsorlogo,
+      :twitter_share,
 		]
 		DICTIONARIES = {
 			'de'	=>	{

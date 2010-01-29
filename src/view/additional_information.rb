@@ -310,6 +310,23 @@ module ODDB
 				square.css_class = "square #{key}"
 				square
 			end
+      def twitter_share(model, session=@session)
+        link = HtmlGrid::Link.new(:twitter_share_short, model, @session, self)
+        link.value = HtmlGrid::Image.new(:icon_twitter, model, @session, self)
+        base = model.name_base
+        size = comparable_size(model)
+        status = u sprintf("%s, %s", base, size)
+        url = @lookandfeel._event_url(:show, {:pointer => model.pointer})
+        tweet = "http://twitter.com/home?status=#{status} - "
+        if ind = model.indication
+          tweet << ind.send(@session.language) << " - "
+        end
+        link.href = '#' #tweet + url
+        link.onclick = "bitly_for_twitter('#{url}', '#{tweet}');"
+        link.set_attribute("title", @lookandfeel.lookup(:twitter_share))
+        link.css_class = "twitter"
+        link
+      end
 		end
 	end
 end

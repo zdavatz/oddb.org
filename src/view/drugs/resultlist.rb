@@ -144,6 +144,7 @@ class ResultList < HtmlGrid::List
 		:price_public				=>	'list pubprice',
 		:registration_date	=>	'list italic',
 		:substances					=>	'list italic',
+    :twitter_share      =>  'list right',
 		'nbsp'							=>	'list',
 	}
 	CSS_HEAD_KEYMAP = {
@@ -170,6 +171,7 @@ class ResultList < HtmlGrid::List
 		:price_public				=>	'th right',
 		:registration_date	=>	'th',
 		:substances					=>	'th',
+    :twitter_share      =>  'th',
     'nbsp'							=>	'th',
 	}
 	CSS_HEAD_MAP = {}

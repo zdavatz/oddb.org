@@ -170,6 +170,7 @@ end
 class Result < View::ResultTemplate
 	include View::SponsorMethods
 	CONTENT = ResultComposite
+  JAVASCRIPTS = ['bit.ly']
 end
 class EmptyResultComposite < HtmlGrid::Composite
 	COMPONENTS = {

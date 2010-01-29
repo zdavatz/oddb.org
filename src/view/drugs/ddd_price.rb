@@ -84,6 +84,7 @@ class DDDPriceTable < HtmlGrid::Composite
 	end
 end
 class DDDPriceComposite < HtmlGrid::Composite
+  include PartSize
   include View::Facebook
   COMPONENTS = {
     [0,0] => :ddd_price,
@@ -98,9 +99,13 @@ class DDDPriceComposite < HtmlGrid::Composite
     if @lookandfeel.enabled?(:ddd_chart)
       components.store [0,2], :ddd_chart
       css_map.store [0,2], 'ddd-chart'
-      if @lookandfeel.enabled?(:facebook_share)
-        components.store [0,3], :facebook_share
+      if @lookandfeel.enabled?(:twitter_share)
+        components.store [0,3,0], :twitter_share
         css_map.store [0,3], 'list'
+      end
+      if @lookandfeel.enabled?(:facebook_share)
+        components.store [0,3,1], :facebook_share
+        css_map.store [0,3], 'list spaced'
       end
     end
     super
@@ -122,12 +127,31 @@ class DDDPriceComposite < HtmlGrid::Composite
   def ddd_price(model)
     @lookandfeel.lookup(:ddd_price_for, model.name_base)
   end
+  def twitter_share(model, session=@session)
+    link = HtmlGrid::Link.new(:twitter_share_short, model, @session, self)
+    link.value = HtmlGrid::Image.new(:icon_twitter, model, @session, self)
+    base = model.name_base
+    size = comparable_size(model)
+    fullname = u sprintf("%s, %s", base, size)
+    title = @lookandfeel.lookup(:ddd_chart_title, fullname)
+    url = @lookandfeel._event_url(:ddd_price, :pointer => model.pointer)
+    tweet = "http://twitter.com/home?status=#{title} - "
+    if ind = model.indication
+      tweet << ind.send(@session.language) << " - "
+    end
+    link.href = "#" #tweet + url
+    link.onclick = "bitly_for_twitter('#{url}', '#{tweet}');"
+    link.set_attribute("title", @lookandfeel.lookup(:twitter_share))
+    link.css_class = "twitter"
+    link
+  end
 end
 class DDDPrice < PrivateTemplate
   include InsertBackbutton
   include PartSize
   CONTENT = DDDPriceComposite
   SNAPBACK_EVENT = :result
+  JAVASCRIPTS = ['bit.ly']
   def meta_tags(context)
     base = @model.name_base
     size = comparable_size(@model)

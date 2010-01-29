@@ -91,6 +91,16 @@ a.google_search, span.google_search, a.google_search:link, a.google_search:visit
 	color: white;
 	background-color : $bg_google;
 }
+td.spaced a.twitter {
+  padding-right: 4px;
+}
+a.twitter {
+  display: inline-block;
+  vertical-align: middle;
+}
+a.twitter img {
+  margin: 0px;
+}
 td.bg a.feedback {
 	background : $bg_feedback_alternate;
 }
