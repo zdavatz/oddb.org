@@ -17,7 +17,7 @@ module ODDB
 			include HtmlGrid::DojoToolkit::DojoTemplate
 			DOJO_DEBUG = false
       DOJO_ENCODING = 'UTF-8'
-      DOJO_REQUIRE = [ 'ywesee.widget.Tooltip' ]
+      DOJO_REQUIRE = [ 'ywesee.widget.Tooltip', 'dojo.io.script' ]
       DOJO_PARSE_WIDGETS = false
       DOJO_PREFIX = {
         'ywesee'  =>  '/resources/javascript',
