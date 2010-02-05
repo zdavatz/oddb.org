@@ -254,6 +254,7 @@ module ODDB
 	class FachinfoDocument
 		include OddbYaml
 		EXPORT_PROPERTIES = [
+      '@name',
 			'@galenic_form',
 			'@composition',
 			'@effects',
@@ -276,6 +277,7 @@ module ODDB
 	class FachinfoDocument2001
 		include OddbYaml
 		EXPORT_PROPERTIES = [
+      '@name',
 			'@amzv',
 			'@composition',
 			'@galenic_form',
