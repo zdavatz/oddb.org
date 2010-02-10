@@ -20,9 +20,10 @@ module Export
 		end
 	end
 	def display?(name)
-		file_paths(name).any? { |path|
+		res = file_paths(name).any? { |path|
 			File.exists?(path) && File.size(path) > 0
 		}
+    res
 	end
 	def example(filename)
 		link = HtmlGrid::Link.new(:example_download, 
@@ -103,6 +104,9 @@ module Export
 		File.expand_path(filename, self::class::EXPORT_DIR)
 	end
 	def file_paths(filename)
+    if uncompressed?(filename)
+      return [File.expand_path(filename, self::class::EXPORT_DIR)]
+    end
 		['.zip', '.gz', '.tar.gz'].collect { |suffix|
 			File.expand_path(filename + suffix, self::class::EXPORT_DIR)
 		}
@@ -112,6 +116,9 @@ module Export
 			convert_filesize(filename)
 		end
 	end
+  def uncompressed?(filename)
+    DOWNLOAD_UNCOMPRESSED.include?(filename)
+  end
 end
 		end
 	end

@@ -41,6 +41,8 @@ module ODDB
     'fachinfos_de.pdf' 		=> 1000,
     'fachinfos_fr.pdf' 		=> 1000,
     'fachinfo.yaml'				=> 800,
+    'compendium_ch.oddb.org.firefox.epub' => 17,
+    'compendium_ch.oddb.org.stanza.epub'  => 17,
     'generics.xls'				=> 150,
     'index_therapeuticus' => 500,
     'interactions.yaml'   => 300,
@@ -87,6 +89,8 @@ module ODDB
     'fachinfo.yaml'				=> 30,
     'fachinfos_de.pdf'		=> 30,
     'fachinfos_fr.pdf'		=> 30,
+    'compendium_ch.oddb.org.firefox.epub' => 30,
+    'compendium_ch.oddb.org.stanza.epub'  => 30,
     'generics.xls'				=> 30,
     'index_therapeuticus' => 30,
     'interactions.yaml'   => 30,
@@ -124,6 +128,10 @@ module ODDB
     's31x'								=> 365,
     'swissdrug-update.xls'=> 365,
   }
+  DOWNLOAD_UNCOMPRESSED = [
+    'compendium_ch.oddb.org.firefox.epub',
+    'compendium_ch.oddb.org.stanza.epub',
+  ]
 	FI_UPLOAD_PRICES = {
 		:activation => 1500,
 		:annual_fee => 350,

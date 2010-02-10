@@ -108,22 +108,30 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[2,25]	=>	:radio_swissdrug_update_xls,
 		[6,25]	=>	:datadesc_swissdrug_update_xls,
 		[7,25]	=>	:example_swissdrug_update_xls,
+		[0,26]	=>	:fachinfo_epub_firefox,
+		[3,26]	=>	:price_fachinfo_firefox_epub,
+		[6,26]	=>	:datadesc_epub,
+		[7,26]	=>	:example_fachinfo_firefox_epub,
+		[0,27]	=>	:fachinfo_epub_stanza,
+		[3,27]	=>	:price_fachinfo_stanza_epub,
+		[6,27]	=>	:datadesc_epub,
+		[7,27]	=>	:example_fachinfo_stanza_epub,
 
-		[0,27]	=>	'export_compatibility',
-		[0,28]	=>	:oddbdat_download,
-		[2,28]	=>	:radio_oddbdat,
-		[6,28]	=>	:datadesc_oddbdat,
-		[7,28]	=>	:example_oddbdat,
-		[0,29]	=>	:s31x,
-		[2,29]	=>	:radio_s31x,
-		[6,29]	=>	:datadesc_s31x,
-		[0,30]	=>	:compression_label,
-		[0,31]	=>	:compression,
+		[0,29]	=>	'export_compatibility',
+		[0,30]	=>	:oddbdat_download,
+		[2,30]	=>	:radio_oddbdat,
+		[6,30]	=>	:datadesc_oddbdat,
+		[7,30]	=>	:example_oddbdat,
+		[0,31]	=>	:s31x,
+		[2,31]	=>	:radio_s31x,
+		[6,31]	=>	:datadesc_s31x,
+		[0,32]	=>	:compression_label,
+		[0,33]	=>	:compression,
 	}
 	CSS_MAP = {
 		[0,0,8]			=>	'subheading',
 		[0,1,8]			=>	'list bg sum',
-		[0,2,8,30]	=>	'list',
+		[0,2,8,32]	=>	'list',
 		[0,3,8]			=>	'list bg',
 		[0,5,8]			=>	'list bg',
 		[0,7,8]			=>	'list bg',
@@ -136,15 +144,16 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[0,21,8]		=>	'list bg',
 		[0,23,8]		=>	'list bg',
 		[0,25,8]		=>	'list bg',
-		[0,27,8]		=>	'list bg sum',
+		[0,27,8]		=>	'list bg',
+		[0,29,8]		=>	'list bg sum',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
 		[0,1]	=>	8,
 		[0,19]=>	8,
-		[0,27]=>	8,
-		[0,30]=>	8,
-		[0,31]=>	8,
+		[0,29]=>	8,
+		[0,32]=>	8,
+		[0,33]=>	8,
 	}
 	CSS_CLASS = 'component'
 	SYMBOL_MAP = {
@@ -187,8 +196,8 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
     once_or_year('price_history.csv')
   end
 	def datadesc_analysis_csv(model, session)
-		datadesc('analysis.csv')
-	end
+    datadesc('analysis.csv')
+  end
 	def datadesc_chde_xls(model, session)
 		datadesc('chde.xls')
 	end
@@ -201,6 +210,12 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def datadesc_doctors_yaml(model, session)
 		datadesc('doctors.yaml')
 	end
+  def datadesc_epub(model, session)
+    link = HtmlGrid::Link.new(:data_description, @model, @session, self)
+    link.href = "http://www.openebook.org/specs.htm"
+    link.css_class = 'small'
+    link
+  end
 	def datadesc_fachinfo_yaml(model, session)
 		datadesc('fachinfo.yaml')
 	end
@@ -270,6 +285,12 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def example_doctors_yaml(model, session)
 		example('doctors.yaml')
 	end
+  def example_fachinfo_firefox_epub(model, session)
+    example('compendium_ch.oddb.org.firefox.epub')
+  end
+  def example_fachinfo_stanza_epub(model, session)
+    example('compendium_ch.oddb.org.stanza.epub')
+  end
 	def example_fachinfo_yaml(model, session)
 		example('fachinfo.yaml')
 	end
@@ -324,6 +345,12 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
   def example_price_history_yaml(model, session)
     example('price_history.yaml')
   end
+  def fachinfo_epub_firefox(model, session)
+    checkbox_with_filesize('compendium_ch.oddb.org.firefox.epub')
+  end
+  def fachinfo_epub_stanza(model, session)
+    checkbox_with_filesize('compendium_ch.oddb.org.stanza.epub')
+  end
 	def fachinfos_de_pdf(model, session)
 		checkbox_with_filesize('fachinfos_de.pdf')
 	end
@@ -335,6 +362,12 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def oddbdat_download(model, session)
 		checkbox_with_filesize("oddbdat")
+	end
+	def price_fachinfo_firefox_epub(model, session)
+		once('compendium_ch.oddb.org.firefox.epub')
+	end
+	def price_fachinfo_stanza_epub(model, session)
+		once('compendium_ch.oddb.org.stanza.epub')
 	end
 	def radio_chde_xls(model, session)
 		once_or_year('chde.xls')

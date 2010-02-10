@@ -380,14 +380,17 @@ module ODDB
 					files.each { |filename, val|
 						if(val)
 							item = AbstractInvoiceItem.new
-							suffix = case compression
-							when 'compr_gz'
-								['.gz', '.tar.gz'].select { |sfx|
-									File.exist?(File.join(dir, filename + sfx))
-								}.first
-							else 
-								'.zip'
-							end
+              suffix = ''
+              unless DOWNLOAD_UNCOMPRESSED.include?(filename)
+                suffix = case compression
+                when 'compr_gz'
+                  ['.gz', '.tar.gz'].select { |sfx|
+                    File.exist?(File.join(dir, filename + sfx))
+                  }.first
+                else
+                  '.zip'
+                end
+              end
 							item.text = filename + suffix
 							item.type = :download
 							item.unit = 'Download'
