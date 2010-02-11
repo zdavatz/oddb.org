@@ -169,6 +169,13 @@ module ODDB
 				span.set_attribute('style','color: black;')
 				span
 			end
+      def download_ebook(model, session)
+        link = HtmlGrid::Link.new(:download_ebook,
+                                  model, session, self)
+        link.href = @lookandfeel._event_url(:download_export)
+        link.set_attribute('class', 'list')
+        link
+      end
 			def download_export(model, session)
 				link = HtmlGrid::Link.new(:download_export, model, session, self)
 				link.href = @lookandfeel._event_url(:download_export)

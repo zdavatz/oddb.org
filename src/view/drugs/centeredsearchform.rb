@@ -94,7 +94,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 				[0,7,4]	=>	:sl_count_text,
 				[0,8]		=>	:atc_chooser,
 				[0,9,0]	=>	:new_feature,
-				[0,9,1]	=>	:download_generics,
+				[0,9,1]	=>	:download_ebook,
 				[0,10]	=>	:generic_definition,
 				[0,11]	=>	:legal_note,
 				[0,12]	=>	:paypal,
