@@ -1624,6 +1624,18 @@ module ODDB
       Util::Ipn.process notification, self
       nil # don't return the invoice back across drb - it's not defined in yipn
     end
+    def grant_download(email, filename, price, expires=Time.now+2592000)
+      ip = Persistence::Pointer.new(:invoice)
+      inv = update ip.creator, :yus_name => email, :currency => 'EUR'
+      itp = inv.pointer + :item
+      update itp.creator, :text => filename, :price => price, :time => Time.now,
+                          :type => :download, :expiry_time => expires,
+                          :duration => (Time.now - expires) / 86400,
+                          :vat_rate => 7.6
+      inv.payment_received!
+      inv.odba_store
+      "http://#{SERVER_NAME}/de/gcc/download/invoice/#{inv.oid}/email/#{email}/filename/#{filename}"
+    end
 
 		def assign_effective_forms(arg=nil)
       _assign_effective_forms(arg)
