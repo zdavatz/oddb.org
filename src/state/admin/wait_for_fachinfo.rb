@@ -52,8 +52,13 @@ class WaitForFachinfo < State::Admin::Global
 			@document = document
       @mime_type = mimetype
 		else
+      user = @session.user
 			log = Log.new(Time.now)
-			report = link
+			report = <<-EOS
+Email: #{user.name}
+Name:  #{user.name_first} #{user.name_last}
+Link:  #{link}
+      EOS
 			if(document.is_a?(Exception))
 				report = ([
 					link, nil, document.class, document.message
@@ -63,7 +68,8 @@ class WaitForFachinfo < State::Admin::Global
 			log.files = { 
 				path => mimetype 
 			}
-			log.notify("Fachinfo Parse Error Reg: #{model.iksnr}, Language; #{language}")
+      subject = "Fachinfo Parse Error Reg: #{model.iksnr}, Language; #{language}"
+			log.notify subject, @session.user.name
 		end
 		@wait = false
 	end

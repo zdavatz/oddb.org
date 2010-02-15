@@ -29,7 +29,7 @@ module ODDB
 			@parts = []
 			@recipients = []
 		end
-		def notify(subject = nil)
+		def notify(subject = nil, reply_to = nil)
 			subj = [
 				'ODDB Report', 
 				subject, 
@@ -64,6 +64,9 @@ module ODDB
 			end
 			
 			outgoing.from = @mail_from || self::class::MAIL_FROM
+      if reply_to
+        outgoing.reply_to = reply_to
+      end
 			@recipients = (@recipients + self::class::MAIL_TO).uniq
 			outgoing.subject = subj
 			outgoing.date = Time.now
