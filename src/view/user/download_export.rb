@@ -19,6 +19,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[3,0]		=>	'months_1',
 		[5,0]		=>	'months_12',
+		[8,0]		=>	'howto',
 		[0,1]		=>	'export_datafiles',
 		[0,2]		=>	:csv_analysis_export,
 		[3,2]		=>	:csv_analysis_price,
@@ -100,6 +101,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[3,23]	=>	:price_fachinfo_firefox_epub,
 		[6,23]	=>	:datadesc_epub,
 		[7,23]	=>	:example_fachinfo_firefox_epub,
+		[8,23]	=>	:howto_epub_firefox,
 		[0,24]	=>	:fachinfo_kindle,
 		[3,24]	=>	:price_fachinfo_kindle,
 		[6,24]	=>	:datadesc_kindle,
@@ -108,6 +110,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[3,25]	=>	:price_fachinfo_stanza_epub,
 		[6,25]	=>	:datadesc_epub,
 		[7,25]	=>	:example_fachinfo_stanza_epub,
+		[8,25]	=>	:howto_epub_stanza,
 		[0,26]	=>	:xls_generics,
 		[2,26]	=>	:radio_generics_xls,
 		[6,26]	=>	:datadesc_generics_xls,
@@ -133,31 +136,31 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[0,34]	=>	:compression,
 	}
 	CSS_MAP = {
-		[0,0,8]			=>	'subheading',
-		[0,1,8]			=>	'list bg sum',
-		[0,2,8,33]	=>	'list',
-		[0,3,8]			=>	'list bg',
-		[0,5,8]			=>	'list bg',
-		[0,7,8]			=>	'list bg',
-		[0,9,8]			=>	'list bg',
-		[0,11,8]		=>	'list bg',
-		[0,13,8]		=>	'list bg',
-		[0,15,8]		=>	'list bg',
-		[0,17,8]		=>	'list bg',
-		[0,19,8]		=>	'list bg sum',
-		[0,21,8]		=>	'list bg',
-		[0,23,8]		=>	'list bg',
-		[0,25,8]		=>	'list bg',
-		[0,27,8]		=>	'list bg',
-		[0,30,8]		=>	'list bg sum',
+		[0,0,9]			=>	'subheading',
+		[0,1,9]			=>	'list bg sum',
+		[0,2,9,33]	=>	'list',
+		[0,3,9]			=>	'list bg',
+		[0,5,9]			=>	'list bg',
+		[0,7,9]			=>	'list bg',
+		[0,9,9]			=>	'list bg',
+		[0,11,9]		=>	'list bg',
+		[0,13,9]		=>	'list bg',
+		[0,15,9]		=>	'list bg',
+		[0,17,9]		=>	'list bg',
+		[0,19,9]		=>	'list bg sum',
+		[0,21,9]		=>	'list bg',
+		[0,23,9]		=>	'list bg',
+		[0,25,9]		=>	'list bg',
+		[0,27,9]		=>	'list bg',
+		[0,30,9]		=>	'list bg sum',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
-		[0,1]	=>	8,
-		[0,19]=>	8,
-		[0,30]=>	8,
-		[0,33]=>	8,
-		[0,34]=>	8,
+		[0,1]	=>	9,
+		[0,19]=>	9,
+		[0,30]=>	9,
+		[0,33]=>	9,
+		[0,34]=>	9,
 	}
 	CSS_CLASS = 'component'
 	SYMBOL_MAP = {
@@ -373,6 +376,18 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def fachinfos_fr_pdf(model, session)
 		checkbox_with_filesize('fachinfos_fr.pdf')
 	end
+  def howto_epub_firefox(model, session)
+    link = HtmlGrid::Link.new(:howto_epub_firefox, @model, @session, self)
+    link.href = "http://www.ywesee.com/pmwiki.php/Main/EPUB"
+    link.css_class = 'small'
+    link
+  end
+  def howto_epub_stanza(model, session)
+    link = HtmlGrid::Link.new(:howto_epub_stanza, @model, @session, self)
+    link.href = "http://www.ywesee.com/pmwiki.php/Ywesee/Stanza"
+    link.css_class = 'small'
+    link
+  end
 	def download_index_therapeuticus(model, session)
 		checkbox_with_filesize('index_therapeuticus')
 	end
