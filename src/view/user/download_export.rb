@@ -96,42 +96,46 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[0,22]	=>	:fachinfos_fr_pdf,
 		[2,22]	=>	:radio_fachinfos_fr_pdf,
 		[7,22]	=>	:example_fachinfos_fr_pdf,
-		[0,23]	=>	:xls_generics,
-		[2,23]	=>	:radio_generics_xls,
-		[6,23]	=>	:datadesc_generics_xls,
-		[7,23]	=>	:example_generics_xls,
-		[0,24]	=>	:xls_patents,
-		[3,24]	=>	:radio_patents_xls,
-		[6,24]	=>	:datadesc_patents_xls,
-		[7,24]	=>	:example_patents_xls,
-		[0,25]	=>	:xls_swissdrug_update,
-		[2,25]	=>	:radio_swissdrug_update_xls,
-		[6,25]	=>	:datadesc_swissdrug_update_xls,
-		[7,25]	=>	:example_swissdrug_update_xls,
-		[0,26]	=>	:fachinfo_epub_firefox,
-		[3,26]	=>	:price_fachinfo_firefox_epub,
-		[6,26]	=>	:datadesc_epub,
-		[7,26]	=>	:example_fachinfo_firefox_epub,
-		[0,27]	=>	:fachinfo_epub_stanza,
-		[3,27]	=>	:price_fachinfo_stanza_epub,
-		[6,27]	=>	:datadesc_epub,
-		[7,27]	=>	:example_fachinfo_stanza_epub,
+		[0,23]	=>	:fachinfo_epub_firefox,
+		[3,23]	=>	:price_fachinfo_firefox_epub,
+		[6,23]	=>	:datadesc_epub,
+		[7,23]	=>	:example_fachinfo_firefox_epub,
+		[0,24]	=>	:fachinfo_kindle,
+		[3,24]	=>	:price_fachinfo_kindle,
+		[6,24]	=>	:datadesc_kindle,
+		[7,24]	=>	:example_fachinfo_kindle,
+		[0,25]	=>	:fachinfo_epub_stanza,
+		[3,25]	=>	:price_fachinfo_stanza_epub,
+		[6,25]	=>	:datadesc_epub,
+		[7,25]	=>	:example_fachinfo_stanza_epub,
+		[0,26]	=>	:xls_generics,
+		[2,26]	=>	:radio_generics_xls,
+		[6,26]	=>	:datadesc_generics_xls,
+		[7,26]	=>	:example_generics_xls,
+		[0,27]	=>	:xls_patents,
+		[3,27]	=>	:radio_patents_xls,
+		[6,27]	=>	:datadesc_patents_xls,
+		[7,27]	=>	:example_patents_xls,
+		[0,28]	=>	:xls_swissdrug_update,
+		[2,28]	=>	:radio_swissdrug_update_xls,
+		[6,28]	=>	:datadesc_swissdrug_update_xls,
+		[7,28]	=>	:example_swissdrug_update_xls,
 
-		[0,29]	=>	'export_compatibility',
-		[0,30]	=>	:oddbdat_download,
-		[2,30]	=>	:radio_oddbdat,
-		[6,30]	=>	:datadesc_oddbdat,
-		[7,30]	=>	:example_oddbdat,
-		[0,31]	=>	:s31x,
-		[2,31]	=>	:radio_s31x,
-		[6,31]	=>	:datadesc_s31x,
-		[0,32]	=>	:compression_label,
-		[0,33]	=>	:compression,
+		[0,30]	=>	'export_compatibility',
+		[0,31]	=>	:oddbdat_download,
+		[2,31]	=>	:radio_oddbdat,
+		[6,31]	=>	:datadesc_oddbdat,
+		[7,31]	=>	:example_oddbdat,
+		[0,32]	=>	:s31x,
+		[2,32]	=>	:radio_s31x,
+		[6,32]	=>	:datadesc_s31x,
+		[0,33]	=>	:compression_label,
+		[0,34]	=>	:compression,
 	}
 	CSS_MAP = {
 		[0,0,8]			=>	'subheading',
 		[0,1,8]			=>	'list bg sum',
-		[0,2,8,32]	=>	'list',
+		[0,2,8,33]	=>	'list',
 		[0,3,8]			=>	'list bg',
 		[0,5,8]			=>	'list bg',
 		[0,7,8]			=>	'list bg',
@@ -145,15 +149,15 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[0,23,8]		=>	'list bg',
 		[0,25,8]		=>	'list bg',
 		[0,27,8]		=>	'list bg',
-		[0,29,8]		=>	'list bg sum',
+		[0,30,8]		=>	'list bg sum',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
 		[0,1]	=>	8,
 		[0,19]=>	8,
-		[0,29]=>	8,
-		[0,32]=>	8,
+		[0,30]=>	8,
 		[0,33]=>	8,
+		[0,34]=>	8,
 	}
 	CSS_CLASS = 'component'
 	SYMBOL_MAP = {
@@ -228,6 +232,12 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def datadesc_interactions_yaml(model, session)
 		datadesc('interactions.yaml')
 	end
+  def datadesc_kindle(model, session)
+    link = HtmlGrid::Link.new(:data_description, @model, @session, self)
+    link.href = "http://www.mobipocket.com/dev/article.asp?BaseFolder=prcgen&File=mobiformat.htm"
+    link.css_class = 'small'
+    link
+  end
 	def datadesc_swissdrug_update_xls(model, session)
 		datadesc('swissdrug-update.xls')
 	end
@@ -287,6 +297,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
   def example_fachinfo_firefox_epub(model, session)
     example('compendium_ch.oddb.org.firefox.epub')
+  end
+  def example_fachinfo_kindle(model, session)
+    example('compendium_ch.oddb.org.kindle.mobi')
   end
   def example_fachinfo_stanza_epub(model, session)
     example('compendium_ch.oddb.org.stanza.epub')
@@ -348,6 +361,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
   def fachinfo_epub_firefox(model, session)
     checkbox_with_filesize('compendium_ch.oddb.org.firefox.epub')
   end
+  def fachinfo_kindle(model, session)
+    checkbox_with_filesize('compendium_ch.oddb.org.kindle.mobi')
+  end
   def fachinfo_epub_stanza(model, session)
     checkbox_with_filesize('compendium_ch.oddb.org.stanza.epub')
   end
@@ -365,6 +381,9 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def price_fachinfo_firefox_epub(model, session)
 		once('compendium_ch.oddb.org.firefox.epub')
+	end
+	def price_fachinfo_kindle(model, session)
+		once('compendium_ch.oddb.org.kindle.mobi')
 	end
 	def price_fachinfo_stanza_epub(model, session)
 		once('compendium_ch.oddb.org.stanza.epub')
