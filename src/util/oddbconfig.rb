@@ -42,6 +42,7 @@ module ODDB
     'fachinfos_fr.pdf' 		=> 1000,
     'fachinfo.yaml'				=> 800,
     'compendium_ch.oddb.org.firefox.epub' => 17,
+    'compendium_ch.oddb.org.htc.prc'      => 17,
     'compendium_ch.oddb.org.kindle.mobi'  => 17,
     'compendium_ch.oddb.org.stanza.epub'  => 17,
     'generics.xls'				=> 150,
@@ -91,7 +92,8 @@ module ODDB
     'fachinfos_de.pdf'		=> 30,
     'fachinfos_fr.pdf'		=> 30,
     'compendium_ch.oddb.org.firefox.epub' => 30,
-    'compendium_ch.oddb.org.kindle.mobi' => 30,
+    'compendium_ch.oddb.org.htc.prc'      => 30,
+    'compendium_ch.oddb.org.kindle.mobi'  => 30,
     'compendium_ch.oddb.org.stanza.epub'  => 30,
     'generics.xls'				=> 30,
     'index_therapeuticus' => 30,
@@ -132,6 +134,7 @@ module ODDB
   }
   DOWNLOAD_UNCOMPRESSED = [
     'compendium_ch.oddb.org.firefox.epub',
+    'compendium_ch.oddb.org.htc.prc',
     'compendium_ch.oddb.org.kindle.mobi',
     'compendium_ch.oddb.org.stanza.epub',
   ]

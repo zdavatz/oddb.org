@@ -828,6 +828,7 @@ Zeno Davatz
 				:hospitals								=>	'Spital',
         :howto                    =>  'Anleitung',
         :howto_epub_firefox       =>  'Installation Firefox',
+        :howto_htc                =>  'Installation HTC',
         :howto_kindle             =>  'Installation Kindle',
         :howto_epub_stanza        =>  'Installation Stanza',
 				:html_chapter						  =>	'Inhalt',
