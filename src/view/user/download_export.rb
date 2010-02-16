@@ -106,6 +106,7 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[3,24]	=>	:price_fachinfo_kindle,
 		[6,24]	=>	:datadesc_kindle,
 		[7,24]	=>	:example_fachinfo_kindle,
+		[8,24]	=>	:howto_kindle,
 		[0,25]	=>	:fachinfo_epub_stanza,
 		[3,25]	=>	:price_fachinfo_stanza_epub,
 		[6,25]	=>	:datadesc_epub,
@@ -385,6 +386,12 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
   def howto_epub_stanza(model, session)
     link = HtmlGrid::Link.new(:howto_epub_stanza, @model, @session, self)
     link.href = "http://www.ywesee.com/pmwiki.php/Ywesee/Stanza"
+    link.css_class = 'small'
+    link
+  end
+  def howto_kindle(model, session)
+    link = HtmlGrid::Link.new(:howto_kindle, @model, @session, self)
+    link.href = "http://www.ywesee.com/pmwiki.php/Ywesee/Kindle"
     link.css_class = 'small'
     link
   end

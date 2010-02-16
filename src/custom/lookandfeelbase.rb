@@ -828,6 +828,7 @@ Zeno Davatz
 				:hospitals								=>	'Spital',
         :howto                    =>  'Anleitung',
         :howto_epub_firefox       =>  'Installation Firefox',
+        :howto_kindle             =>  'Installation Kindle',
         :howto_epub_stanza        =>  'Installation Stanza',
 				:html_chapter						  =>	'Inhalt',
 				:html_title								=>	'ODDB.org: Open Drug Database',
