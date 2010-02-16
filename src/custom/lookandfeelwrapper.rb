@@ -749,12 +749,14 @@ module ODDB
       :breadcrumbs,
       :companylist,
 			:data_counts,
+      :drugs,
       :fachinfos,
 			:faq_link,
       :feedback,
 			:help_link,
 			:home,
 			:home_drugs,
+      :download_export,
       :legal_note_vertical,
       :limitation_texts,
       :login_form,
@@ -766,6 +768,7 @@ module ODDB
 			:search_reset,
 			:sequences,
 			:topfoot,
+      :user,
 			:ywesee_contact,
    ]
     def result_list_components
