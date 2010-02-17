@@ -385,7 +385,7 @@ Zeno Davatz
 				:download_doctors1				=>	'hier',
 				:download_doctors2				=>	'.',
 				:download_generics				=>	'Alle Originale und Generika monatlich aktualisiert in einem Excel!',
-        :download_ebook           =>	'Die gesamte Fachinformation in einem Ebook!',
+        :download_ebook           =>	'Die gesamte Fachinformation als Ebook für iPhone, Kindle, HTC und Firefox!',
 			  :download_export_descr		=>	'Mehr Infos zu den Stammdaten von ODDB.org',
 				:download_export_feedback	=>	'Feedback bitte an zdavatz at ywesee dot com',
 				:download_export					=>	'Stammdaten Download',
