@@ -1,31 +1,103 @@
 #!/usr/bin/env ruby
 # YAML -- oddb -- 09.12.2004 -- hwyss@ywesee.com
 
-require 'yaml'
+require 'psych'
 
 class Time
   def to_yaml_properties
     []
   end
 end
-module ODBA
-	class Stub
-		def to_yaml(*args)
-			odba_instance.to_yaml(*args)
-		end
-	end
+class Module
+  def yaml_as tag, sc = true
+    Psych.dump_tags.store self, tag
+  end
+end
+module Psych
+  module Visitors
+    class YAMLTree
+      alias :odba_accept :accept
+      def accept o
+        odba_accept o.odba_instance
+      end
+      alias :odba_visit_Object :visit_Object
+      def visit_Object o
+        odba_visit_Object o.odba_instance
+      end
+      def visit_String o
+        plain = false
+        quote = false
+
+        if o.index("\x00") || o.count("^ -~\t\r\n").fdiv(o.length) > 0.3
+          str   = [o].pack('m').chomp
+          tag   = '!binary'
+        else
+          str   = o
+          tag   = nil
+          begin
+            quote = !(String === @ss.tokenize(o))
+          rescue ArgumentError => e
+            quote = true
+          end
+          plain = !quote
+        end
+
+        ivars = o.respond_to?(:to_yaml_properties) ?
+          o.to_yaml_properties :
+          o.instance_variables
+
+        scalar = Nodes::Scalar.new str, nil, tag, plain, quote
+
+        if ivars.empty?
+          append scalar
+        else
+          mapping = append Nodes::Mapping.new(nil, '!str', false)
+
+          mapping.children << Nodes::Scalar.new('str')
+          mapping.children << scalar
+
+          @stack.push mapping
+          dump_ivars o, mapping
+          @stack.pop
+        end
+      end
+      alias :odba_visit_Array :visit_Array
+      def visit_Array o
+        odba_visit_Array o.odba_instance
+      end
+      alias :odba_visit_Hash :visit_Hash
+      def visit_Hash o
+        odba_visit_Hash o.odba_instance
+      end
+      alias :odba_dump_ivars :dump_ivars
+      def dump_ivars target, map
+        target = target.odba_instance
+        odba_dump_ivars target, map
+        if target.respond_to?(:custom_yaml_properties)
+          target.custom_yaml_properties.each do |iv, value|
+            unless value.nil?
+              map.children << Nodes::Scalar.new(iv.to_s)
+              accept value
+            end
+          end
+        end
+      end
+    end
+  end
 end
 module ODDB
 	module OddbYaml
 		YAML_URI = '!oddb.org,2003'
 		EXPORT_PROPERTIES = []
-		def to_yaml_type
-			"#{YAML_URI}/#{self.class}"
-		end
-		def to_yaml_properties
-			self::class::EXPORT_PROPERTIES
-		end
-		yaml_as YAML_URI
+    def to_yaml_properties
+      self::class::EXPORT_PROPERTIES.reject do |name|
+        instance_variable_get(name).nil?
+      end
+    end
+    def self.append_features mod
+      Psych.dump_tags.store mod, "#{YAML_URI}/#{mod}"
+      super
+    end
   end		
 	module SimpleLanguage
 		class Descriptions #< Hash
@@ -159,17 +231,10 @@ module ODDB
     EXPORT_PROPERTIES = [
       '@cyp_id',
     ]
-		def to_yaml( opts = {} )
-			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( taguri ) { |map|
-					to_yaml_properties.each { |m|
-						map.add( m[1..-1], instance_variable_get( m ) )
-					}
-					map.add('inhibitors', self.inhibitors.values)
-					map.add('inducers', self.inducers.values)
-				}
-			}
-		end
+    def custom_yaml_properties
+      { :inhibitors => self.inhibitors.values,
+        :inducers   => self.inducers.values }
+    end
  end
   class CyP450Connection
     include OddbYaml
@@ -218,16 +283,9 @@ module ODDB
 			'@val',
 			'@unit',
 		]
-		def to_yaml( opts = {} )
-			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( taguri ) { |map|
-					to_yaml_properties.each { |m|
-						map.add( m[1..-1], instance_variable_get( m ) )
-					}
-					map.add('scale', self.scale)
-				}
-			}
-		end
+    def custom_yaml_properties
+      { :scale => self.scale }
+    end
 	end	
 	class Ean13 < String
     def self.yaml_tag_subclasses?
@@ -240,16 +298,9 @@ module ODDB
 			'@oid',
 			'@descriptions',
 		]
-		def to_yaml( opts = {} )
-			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( taguri ) { |map|
-					to_yaml_properties.each { |m|
-						map.add( m[1..-1], instance_variable_get( m ) )
-					}
-					map.add('article_codes', self.article_codes)
-				}
-			}
-		end
+    def custom_yaml_properties
+      { :article_codes => self.article_codes }
+    end
 	end
 	class FachinfoDocument
 		include OddbYaml
@@ -333,17 +384,10 @@ module ODDB
 			'@oid',
 			'@substances',
 		]
-		def to_yaml( opts = {} )
-			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( taguri ) { |map|
-          map.add('casrn', casrn)
-					to_yaml_properties.each { |m|
-						map.add( m[1..-1], instance_variable_get( m ) )
-					}
-					map.add('packages', @packages.collect { |pac| pac.ikskey })
-				}
-			}
-		end
+    def custom_yaml_properties
+      { :casrn    => casrn,
+        :packages => @packages.collect { |pac| pac.ikskey } }
+    end
 	end
 	class Package #< PackageCommon
 		include OddbYaml
@@ -355,49 +399,36 @@ module ODDB
 			'@sl_entry',
       '@parts',
 		]
-		def to_yaml( opts = {} )
-			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( taguri ) { |map|
-          if Thread.current[:export_prices]
-            map.add('iksnr', self.iksnr)
-            map.add('ikscd', self.ikscd)
-            map.add('name', self.name)
-            map.add('size', self.size)
-            map.add('ean13', self.barcode.to_s)
-            map.add('pharmacode', self.pharmacode)
-            map.add('out_of_trade', !self.public?)
-            map.add('prices', self.prices)
-          else
-            to_yaml_properties.each { |m|
-              map.add( m[1..-1], instance_variable_get( m ) )
-            }
-            map.add('has_generic', self.has_generic?)
-            map.add('ean13', self.barcode.to_s)
-            map.add('price_exfactory', self.price_exfactory.to_f)
-            map.add('price_public', self.price_public.to_f)
-            map.add('pharmacode', self.pharmacode)
-            map.add('narcotics', @narcotics.collect { |narc| narc.casrn})
-            map.add('deductible', {'deductible_g' => 10, 'deductible_o' => 20 }[self.deductible.to_s])
-          end
-				}
-			}
-		end
+    def custom_yaml_properties
+      if Thread.current[:export_prices]
+        { :iksnr        => self.iksnr,
+          :name         => self.name,
+          :size         => self.size,
+          :ean13        => self.barcode.to_s,
+          :pharmacode   => self.pharmacode,
+          :out_of_trade => !self.public?,
+          :prices       => self.prices }
+
+      else
+        deductibles = {'deductible_g' => 10, 'deductible_o' => 20 }
+        { :has_generic     => self.has_generic?,
+          :ean13           => self.barcode.to_s,
+          :price_exfactory => self.price_exfactory.to_f,
+          :price_public    => self.price_public.to_f,
+          :pharmacode      => self.pharmacode,
+          :narcotics       => @narcotics.collect { |narc| narc.casrn},
+          :deductible      => deductibles[self.deductible.to_s] }
+      end
+    end
 	end
   class Part
     include OddbYaml
     EXPORT_PROPERTIES = [
       '@measure', '@addition', '@commercial_form', '@composition',
     ]
-    def to_yaml( opts = {} )
-      YAML::quick_emit( self.object_id, opts ) { |out|
-        out.map( taguri ) { |map|
-          map.add('count', self.count || 1)
-          map.add('multi', self.multi || 1)
-          to_yaml_properties.each { |m|
-            map.add( m[1..-1], instance_variable_get( m ) )
-          }
-        }
-      }
+    def custom_yaml_properties
+      { :count => self.count || 1,
+        :multi => self.multi || 1 }
     end
   end
 	class Patinfo
@@ -459,20 +490,16 @@ module ODDB
 			'@indication',
 			'@export_flag',
 		]
-		def to_yaml( opts = {} )
-			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( taguri ) { |map|
-					to_yaml_properties.each { |m|
-						map.add( m[1..-1], instance_variable_get( m ) )
-					}
-          if @fachinfo
-            map.add('fachinfo_oid', @fachinfo.oid)
-          end
-					map.add('generic_type', self.generic_type)
-					map.add('complementary_type', self.complementary_type)
-				}
-			}
-		end
+    def custom_yaml_properties
+      custom = {
+        :generic_type => self.generic_type,
+        :complementary_type => self.complementary_type
+      }
+      if @fachinfo
+        custom.store :fachinfo_oid, @fachinfo.oid
+      end
+      custom
+    end
 	end
 	class Sequence #< SequenceCommon
 		include OddbYaml
@@ -504,21 +531,16 @@ module ODDB
 			'@synonyms',
 			'@swissmedic_code',
 		]
-		def to_yaml( opts = {} )
-			YAML::quick_emit( self.object_id, opts ) { |out|
-				out.map( taguri ) { |map|
-					to_yaml_properties.each { |m|
-						map.add( m[1..-1], instance_variable_get( m ) )
-					}
-					if(@narcotic)
-						map.add('narcotic', @narcotic.casrn)
-					end
-          if @effective_form && @effective_form != self
-						map.add('effective_form', @effective_form)
-          end
-				}
-			}
-		end
+    def custom_yaml_properties
+      custom = { :effective_form => nil }
+      if @narcotic
+        custom.store :narcotic, @narcotic.casrn
+      end
+      if @effective_form && @effective_form != self
+        custom.store :effective_form, @effective_form
+      end
+      custom
+    end
 	end
   module Util
     class Money
