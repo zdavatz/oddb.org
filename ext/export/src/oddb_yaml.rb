@@ -8,6 +8,12 @@ class Time
     []
   end
 end
+class String
+  ## prevent String from exporting _rails_html_safe
+  def to_yaml_properties
+    []
+  end
+end
 class Module
   def yaml_as tag, sc = true
     Psych.dump_tags.store self, tag
