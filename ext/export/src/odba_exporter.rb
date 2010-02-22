@@ -15,7 +15,6 @@ require 'generics_xls'
 require 'competition_xls'
 require 'patent_xls'
 require 'odba'
-require 'psych'
 
 module ODDB
 	module OdbaExporter
@@ -230,7 +229,8 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
       opts.each do |key, val| Thread.current[key] = val end
 			safe_export(dir, name) { |fh|
 				odba_ids.each { |odba_id|
-					fh.puts Psych.dump(ODBA.cache.fetch(odba_id, nil))
+					YAML.dump(ODBA.cache.fetch(odba_id, nil), fh)
+					fh.puts
 				}
 				nil
 			}
