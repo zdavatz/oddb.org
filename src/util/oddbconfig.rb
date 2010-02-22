@@ -132,6 +132,7 @@ module ODDB
     's31x'								=> 365,
     'swissdrug-update.xls'=> 365,
   }
+  DOWNLOAD_PROTOCOLS = [ 'stanza' ]
   DOWNLOAD_UNCOMPRESSED = [
     'compendium_ch.oddb.org.firefox.epub',
     'compendium_ch.oddb.org.htc.prc',

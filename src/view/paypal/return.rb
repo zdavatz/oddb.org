@@ -9,14 +9,33 @@ module ODDB
 		module PayPal
 class ReturnDownloads < HtmlGrid::List
 	COMPONENTS = {
-		[0,0]	=>	:download_link	
+		[0,0]	=>	:download_link,
+		[1,0]	=>	:additional_download_link,
 	}
 	CSS_MAP = {
-		[0,0]	=>	'list',
+		[0,0,2]	=>	'list',
 	}
+  DEFAULT_HEAD_CLASS = 'subheading'
 	LEGACY_INTERFACE = false
-	OMIT_HEADER = true
+	OMIT_HEADER = false
 	STRIPED_BG = false
+  SORT_HEADER = false
+  def additional_download_link(model)
+    protocol = DOWNLOAD_PROTOCOLS.find do |prt| %r{#{prt}}.match(model.text) end
+    if protocol && !model.expired?
+      data = {
+        :email			=>	model.email,
+        :invoice		=>	model.oid,
+        :filename		=>	model.text,
+      }
+      link = HtmlGrid::Link.new(:download, model, @session, self)
+      url = URI.parse @lookandfeel._event_url(:download, data)
+      url.scheme = protocol
+      link.href = url.to_s
+      link.value = protocol + "://" + model.text
+      [link, ' ', @lookandfeel.lookup("adl_#{protocol}")]
+    end
+  end
 	def download_link(model)
 		if(model.expired?)
 			time = model.expiry_time
@@ -32,7 +51,7 @@ class ReturnDownloads < HtmlGrid::List
 			}
 			link = HtmlGrid::Link.new(:download, model, @session, self)
 			link.href = @lookandfeel._event_url(:download, data)
-			link.value = model.text
+      link.value = "http://" << model.text
 			link
 		end
 	end
@@ -61,13 +80,16 @@ class ReturnComposite < HtmlGrid::Composite
 		else
 			if(@model.payment_received?)
 				suffix = @model.items.size == 1 ? 's' : 'p'
+        txt = @model.items.first.text
+        if protocol = DOWNLOAD_PROTOCOLS.find do |prt| %r{#{prt}}.match(txt) end
+          suffix = 'p'
+        end
 				components.update({
 					[0,0,0]	=>	'paypal_success',
 					[0,1] 	=>	"paypal_msg_success_#{suffix}",
 					[0,2] 	=>	:download_links,
 					[0,3] 	=>	:back,
 				})
-				css_map.store([0,2], 'list')
 			else
 				components.update({
 					[0,0,0]	=>	'paypal_unconfirmed',

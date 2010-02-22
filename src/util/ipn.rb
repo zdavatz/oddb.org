@@ -126,8 +126,18 @@ module Ipn
           :invoice    =>  invoice.oid,
           :filename    =>  item.text,
         }
-        lookandfeel._event_url(:download, data)
-      }
+        url = lookandfeel._event_url(:download, data)
+        protocol = DOWNLOAD_PROTOCOLS.find do |prt|
+          %r{#{prt}}.match(item.text)
+        end
+        if protocol
+          parsed = URI.parse url
+          parsed.scheme = protocol
+          [url, parsed.to_s]
+        else
+          url
+        end
+      }.flatten
       salut = lookandfeel.lookup(yus(recipient, :salutation))
       suffix = (urls.size == 1) ? 's' : 'p'
       lines = [
