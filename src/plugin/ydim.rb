@@ -234,12 +234,14 @@ Die n\344chste Jahresrechnung wird am #{annual_date.strftime '%d.%m.%Y'} versand
 		def send_invoice(ydim_invoice_id)
 			ydim_connect { |client| client.send_invoice(ydim_invoice_id) }
 		end
-		def sort_items(items)
-			items.sort_by { |item| 
-				[item.time.to_i / SECONDS_IN_DAY, (item.type == :activation) ? 0 : 1,
-					item_text(item), item.type.to_s]
-			}
-		end
+    def sort_items(items)
+      items.sort_by { |item|
+        [ item_text(item),
+          item.time.to_i / SECONDS_IN_DAY,
+          (item.type == :activation) ? 0 : 1,
+          item.type.to_s ]
+      }
+    end
 		def ydim_connect(&block)
 			config = YDIM::Client::CONFIG
 			server = DRbObject.new(nil, config.server_url)
