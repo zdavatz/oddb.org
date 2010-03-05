@@ -696,53 +696,6 @@ module ODDB
       }
     end
   end
-	class LookandfeelSympany < SBSM::LookandfeelWrapper
-		ENABLED = [
-			:drugs, 
-			:external_css,
-			:help_link,
-			:logo,
-			:logout,
-			:migel,
-			:sequences,
-		]
-		DICTIONARIES = {
-			'de'	=>	{
-				:de								=>	'd',
-				:explain_generic	=>	'Blau&nbsp;=&nbsp;Generikum',
-				:en								=>	'e',
-				:fr								=>	'f',
-				:oekk_department	=>	'Medikamentenvergleich online',
-				:oekk_logo				=>	'Sympany - jung und unkompliziert.',
-				:oekk_title				=>	'Ihr Einsparungspotential mit Generika',
-			},
-			'fr'	=>	{
-				:explain_generic	=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
-				:oekk_department	=>	'Comparaison de m&eacute;dicaments sur ligne',
-				:oekk_logo				=>	'Sympany - jeune et sympa.',
-				:oekk_title				=>	'V&ocirc;tre &eacute;conomie potentielle avec g&eacute;n&eacute;riques',
-			},
-			'en'	=>	{
-				:explain_generic	=>	'Blue&nbsp;=&nbsp;Generic Drug',
-				:oekk_department	=>	'Drug comparison online',
-				:oekk_logo				=>	'Sympany - young and easy.',
-				:oekk_title				=>	'Your potential savings with generics',
-			},
-		}
-		RESOURCES = { 
-			:external_css	=> 'http://www.sympany.ch/generika.css',
-			:logo         => 'logo.gif',
-		}
-		HTML_ATTRIBUTES = {
-			:logo => {
-				'width'		=>	'321',
-				'height'	=>	'121',
-			},
-		}
-		def languages
-			[:de, :fr, :en]
-		end
-	end
   class LookandfeelMobile < SBSM::LookandfeelWrapper
     ENABLED = [
  			:atc_chooser,
