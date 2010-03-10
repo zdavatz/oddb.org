@@ -25,126 +25,118 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[3,2]		=>	:csv_analysis_price,
 		[6,2]		=>	:datadesc_analysis_csv,
 		[7,2]		=>	:example_analysis_csv,
-		[0,3]	  =>	:de_oddb_yaml,
-		[2,3]	  =>	:radio_de_oddb_yaml,
-		[6,3]	  =>	:datadesc_de_oddb_yaml,
-		[7,3]	  =>	:example_de_oddb_yaml,
-		[0,4]		=>	:csv_doctors_export,
-		[3,4]		=>	:csv_doctors_price,
-		[6,4]		=>	:datadesc_doctors_csv,
-		[7,4]		=>	:example_doctors_csv,
-		[0,5]		=>	:yaml_doctors_export,
-		[3,5]		=>	:yaml_doctors_price,
-		[6,5]		=>	:datadesc_doctors_yaml,
-		[7,5]		=>	:example_doctors_yaml,
-		[0,6]		=>	:yaml_fachinfo_export,
-		[2,6]		=>	:radio_fachinfo_yaml,
-		[6,6]		=>	:datadesc_fachinfo_yaml,
-		[7,6]		=>	:example_fachinfo_yaml,
-		[0,7]		=>	:download_index_therapeuticus,
-		[2,7]		=>	:radio_index_therapeuticus,
-		[6,7]		=>	:datadesc_index_therapeuticus,
-		[7,7]		=>	:example_index_therapeuticus,
-		[0,8]		=>	:yaml_interactions_export,
-		[2,8]		=>	:radio_interactions_yaml,
-		[6,8]		=>	:datadesc_interactions_yaml,
-		[7,8]		=>	:example_interactions_yaml,
-		[0,9]		=>	:csv_migel_export,
-		[3,9]		=>	:csv_migel_price,
-		[6,9]		=>	:datadesc_migel_csv,
-		[7,9]		=>	:example_migel_csv,
-		[0,10]	=>	:csv_narcotics_export,
-		[2,10]	=>	:radio_narcotics_csv,
-		[6,10]	=>	:datadesc_narcotics_csv,
-		[7,10]	=>	:example_narcotics_csv,
-		[0,11]	=>	:yaml_narcotics_export,
-		[2,11]	=>	:radio_narcotics_yaml,
-		[6,11]	=>	:datadesc_narcotics_yaml,
-		[7,11]	=>	:example_narcotics_yaml,
-		[0,12]	=>	:csv_export,
-		[2,12]	=>	:radio_oddb_csv,
-		[6,12]	=>	:datadesc_oddb_csv,
-		[7,12]	=>	:example_oddb_csv,
-		[0,13]	=>	:csv_export2,
-		[2,13]	=>	:radio_oddb2_csv,
-		[6,13]	=>	:datadesc_oddb2_csv,
-		[7,13]	=>	:example_oddb2_csv,
-		[0,14]	=>	:yaml_export,
-		[2,14]	=>	:radio_oddb_yaml,
-		[6,14]	=>	:datadesc_oddb_yaml,
-		[7,14]	=>	:example_oddb_yaml,
-		[0,15]	=>	:yaml_patinfo_export,
-		[3,15]	=>	:yaml_patinfo_price,
-		[6,15]	=>	:datadesc_patinfo_yaml,
-		[7,15]	=>	:example_patinfo_yaml,
-		[0,16]	=>	:yaml_price_history_export,
-		[2,16]	=>	:yaml_price_history_price,
-		[6,16]	=>	:datadesc_price_history_yaml,
-		[7,16]	=>	:example_price_history_yaml,
-		[0,17]	=>	:csv_price_history_export,
-		[2,17]	=>	:csv_price_history_price,
-		[6,17]	=>	:datadesc_price_history_csv,
-		[7,17]	=>	:example_price_history_csv,
+		[0,3]		=>	:csv_doctors_export,
+		[3,3]		=>	:csv_doctors_price,
+		[6,3]		=>	:datadesc_doctors_csv,
+		[7,3]		=>	:example_doctors_csv,
+		[0,4]		=>	:yaml_doctors_export,
+		[3,4]		=>	:yaml_doctors_price,
+		[6,4]		=>	:datadesc_doctors_yaml,
+		[7,4]		=>	:example_doctors_yaml,
+		[0,5]		=>	:yaml_fachinfo_export,
+		[2,5]		=>	:radio_fachinfo_yaml,
+		[6,5]		=>	:datadesc_fachinfo_yaml,
+		[7,5]		=>	:example_fachinfo_yaml,
+		[0,6]		=>	:download_index_therapeuticus,
+		[2,6]		=>	:radio_index_therapeuticus,
+		[6,6]		=>	:datadesc_index_therapeuticus,
+		[7,6]		=>	:example_index_therapeuticus,
+		[0,7]		=>	:yaml_interactions_export,
+		[2,7]		=>	:radio_interactions_yaml,
+		[6,7]		=>	:datadesc_interactions_yaml,
+		[7,7]		=>	:example_interactions_yaml,
+		[0,8]		=>	:csv_migel_export,
+		[3,8]		=>	:csv_migel_price,
+		[6,8]		=>	:datadesc_migel_csv,
+		[7,8]		=>	:example_migel_csv,
+		[0,9]	=>	:csv_narcotics_export,
+		[2,9]	=>	:radio_narcotics_csv,
+		[6,9]	=>	:datadesc_narcotics_csv,
+		[7,9]	=>	:example_narcotics_csv,
+		[0,10]	=>	:yaml_narcotics_export,
+		[2,10]	=>	:radio_narcotics_yaml,
+		[6,10]	=>	:datadesc_narcotics_yaml,
+		[7,10]	=>	:example_narcotics_yaml,
+		[0,11]	=>	:csv_export,
+		[2,11]	=>	:radio_oddb_csv,
+		[6,11]	=>	:datadesc_oddb_csv,
+		[7,11]	=>	:example_oddb_csv,
+		[0,12]	=>	:csv_export2,
+		[2,12]	=>	:radio_oddb2_csv,
+		[6,12]	=>	:datadesc_oddb2_csv,
+		[7,12]	=>	:example_oddb2_csv,
+		[0,13]	=>	:yaml_export,
+		[2,13]	=>	:radio_oddb_yaml,
+		[6,13]	=>	:datadesc_oddb_yaml,
+		[7,13]	=>	:example_oddb_yaml,
+		[0,14]	=>	:yaml_patinfo_export,
+		[3,14]	=>	:yaml_patinfo_price,
+		[6,14]	=>	:datadesc_patinfo_yaml,
+		[7,14]	=>	:example_patinfo_yaml,
+		[0,15]	=>	:yaml_price_history_export,
+		[2,15]	=>	:yaml_price_history_price,
+		[6,15]	=>	:datadesc_price_history_yaml,
+		[7,15]	=>	:example_price_history_yaml,
+		[0,16]	=>	:csv_price_history_export,
+		[2,16]	=>	:csv_price_history_price,
+		[6,16]	=>	:datadesc_price_history_csv,
+		[7,16]	=>	:example_price_history_csv,
 
-		[0,19]	=>	'export_added_value',
-		[0,20]	=>	:xls_chde,
-		[2,20]	=>	:radio_chde_xls,
-		[6,20]	=>	:datadesc_chde_xls,
-		[7,20]	=>	:example_chde_xls,
-		[0,21]	=>	:fachinfos_de_pdf,
-		[2,21]	=>	:radio_fachinfos_de_pdf,
-		[7,21]	=>	:example_fachinfos_de_pdf,
-		[0,22]	=>	:fachinfos_fr_pdf,
-		[2,22]	=>	:radio_fachinfos_fr_pdf,
-		[7,22]	=>	:example_fachinfos_fr_pdf,
-		[0,23]	=>	:fachinfo_epub_firefox,
-		[3,23]	=>	:price_fachinfo_firefox_epub,
-		[6,23]	=>	:datadesc_epub,
-		[7,23]	=>	:example_fachinfo_firefox_epub,
-		[8,23]	=>	:howto_epub_firefox,
-		[0,24]	=>	:fachinfo_htc,
-		[3,24]	=>	:price_fachinfo_htc,
-		[6,24]	=>	:datadesc_kindle,
-		[7,24]	=>	:example_fachinfo_htc,
-		[8,24]	=>	:howto_htc,
-		[0,25]	=>	:fachinfo_kindle,
-		[3,25]	=>	:price_fachinfo_kindle,
-		[6,25]	=>	:datadesc_kindle,
-		[7,25]	=>	:example_fachinfo_kindle,
-		[8,25]	=>	:howto_kindle,
-		[0,26]	=>	:fachinfo_epub_stanza,
-		[3,26]	=>	:price_fachinfo_stanza_epub,
-		[6,26]	=>	:datadesc_epub,
-		[7,26]	=>	:example_fachinfo_stanza_epub,
-		[8,26]	=>	:howto_epub_stanza,
-		[0,27]	=>	:xls_generics,
-		[2,27]	=>	:radio_generics_xls,
-		[6,27]	=>	:datadesc_generics_xls,
-		[7,27]	=>	:example_generics_xls,
-		[0,28]	=>	:xls_patents,
-		[3,28]	=>	:radio_patents_xls,
-		[6,28]	=>	:datadesc_patents_xls,
-		[7,28]	=>	:example_patents_xls,
-		[0,29]	=>	:xls_swissdrug_update,
-		[2,29]	=>	:radio_swissdrug_update_xls,
-		[6,29]	=>	:datadesc_swissdrug_update_xls,
-		[7,29]	=>	:example_swissdrug_update_xls,
+		[0,18]	=>	'export_added_value',
+		[0,19]	=>	:fachinfos_de_pdf,
+		[2,19]	=>	:radio_fachinfos_de_pdf,
+		[7,19]	=>	:example_fachinfos_de_pdf,
+		[0,20]	=>	:fachinfos_fr_pdf,
+		[2,20]	=>	:radio_fachinfos_fr_pdf,
+		[7,20]	=>	:example_fachinfos_fr_pdf,
+		[0,21]	=>	:fachinfo_epub_firefox,
+		[3,21]	=>	:price_fachinfo_firefox_epub,
+		[6,21]	=>	:datadesc_epub,
+		[7,21]	=>	:example_fachinfo_firefox_epub,
+		[8,21]	=>	:howto_epub_firefox,
+		[0,22]	=>	:fachinfo_htc,
+		[3,22]	=>	:price_fachinfo_htc,
+		[6,22]	=>	:datadesc_kindle,
+		[7,22]	=>	:example_fachinfo_htc,
+		[8,22]	=>	:howto_htc,
+		[0,23]	=>	:fachinfo_kindle,
+		[3,23]	=>	:price_fachinfo_kindle,
+		[6,23]	=>	:datadesc_kindle,
+		[7,23]	=>	:example_fachinfo_kindle,
+		[8,23]	=>	:howto_kindle,
+		[0,24]	=>	:fachinfo_epub_stanza,
+		[3,24]	=>	:price_fachinfo_stanza_epub,
+		[6,24]	=>	:datadesc_epub,
+		[7,24]	=>	:example_fachinfo_stanza_epub,
+		[8,24]	=>	:howto_epub_stanza,
+		[0,25]	=>	:xls_generics,
+		[2,25]	=>	:radio_generics_xls,
+		[6,25]	=>	:datadesc_generics_xls,
+		[7,25]	=>	:example_generics_xls,
+		[0,26]	=>	:xls_patents,
+		[3,26]	=>	:radio_patents_xls,
+		[6,26]	=>	:datadesc_patents_xls,
+		[7,26]	=>	:example_patents_xls,
+		[0,27]	=>	:xls_swissdrug_update,
+		[2,27]	=>	:radio_swissdrug_update_xls,
+		[6,27]	=>	:datadesc_swissdrug_update_xls,
+		[7,27]	=>	:example_swissdrug_update_xls,
 
-		[0,31]	=>	'export_compatibility',
-		[0,32]	=>	:oddbdat_download,
-		[2,32]	=>	:radio_oddbdat,
-		[6,32]	=>	:datadesc_oddbdat,
-		[7,32]	=>	:example_oddbdat,
-		[0,33]	=>	:s31x,
-		[2,33]	=>	:radio_s31x,
-		[6,33]	=>	:datadesc_s31x,
-		[0,34]	=>	:compression_label,
-		[0,35]	=>	:compression,
+		[0,29]	=>	'export_compatibility',
+		[0,30]	=>	:oddbdat_download,
+		[2,30]	=>	:radio_oddbdat,
+		[6,30]	=>	:datadesc_oddbdat,
+		[7,30]	=>	:example_oddbdat,
+		[0,31]	=>	:s31x,
+		[2,31]	=>	:radio_s31x,
+		[6,31]	=>	:datadesc_s31x,
+		[0,32]	=>	:compression_label,
+		[0,33]	=>	:compression,
 	}
 	CSS_MAP = {
 		[0,0,9]			=>	'subheading',
 		[0,1,9]			=>	'list bg sum',
-		[0,2,9,34]	=>	'list',
+		[0,2,9,32]	=>	'list',
 		[0,3,9]			=>	'list bg',
 		[0,5,9]			=>	'list bg',
 		[0,7,9]			=>	'list bg',
@@ -152,22 +144,20 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 		[0,11,9]		=>	'list bg',
 		[0,13,9]		=>	'list bg',
 		[0,15,9]		=>	'list bg',
-		[0,17,9]		=>	'list bg',
-		[0,19,9]		=>	'list bg sum',
-		[0,21,9]		=>	'list bg',
-		[0,23,9]		=>	'list bg',
-		[0,25,9]		=>	'list bg',
-		[0,27,9]		=>	'list bg',
-		[0,29,9]		=>	'list bg',
-		[0,31,9]		=>	'list bg sum',
+		[0,18,9]		=>	'list bg sum',
+		[0,20,9]		=>	'list bg',
+		[0,22,9]		=>	'list bg',
+		[0,24,9]		=>	'list bg',
+		[0,26,9]		=>	'list bg',
+		[0,29,9]		=>	'list bg sum',
 	}
 	COLSPAN_MAP = {
 		[5,0]	=>	2,
 		[0,1]	=>	9,
-		[0,19]=>	9,
-		[0,31]=>	9,
-		[0,34]=>	9,
-		[0,35]=>	9,
+		[0,18]=>	9,
+		[0,29]=>	9,
+		[0,32]=>	9,
+		[0,33]=>	9,
 	}
 	CSS_CLASS = 'component'
 	SYMBOL_MAP = {
@@ -212,12 +202,6 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def datadesc_analysis_csv(model, session)
     datadesc('analysis.csv')
   end
-	def datadesc_chde_xls(model, session)
-		datadesc('chde.xls')
-	end
-	def datadesc_de_oddb_yaml(model, session)
-		datadesc('de.oddb.yaml')
-	end
 	def datadesc_doctors_csv(model, session)
 		datadesc('doctors.csv')
 	end
@@ -287,20 +271,11 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def datadesc_s31x(model, session)
 		datadesc('s31x')
 	end
-	def de_oddb_yaml(model, session)
-		checkbox_with_filesize("de.oddb.yaml")
-	end
 	def example_doctors_csv(model, session)
 		example('doctors.csv')
 	end
 	def example_analysis_csv(model, session)
 		example('analysis.csv')
-	end
-	def example_chde_xls(model, session)
-		example('chde.xls')
-	end
-	def example_de_oddb_yaml(model, session)
-		example('de.oddb.yaml')
 	end
 	def example_doctors_yaml(model, session)
 		example('doctors.yaml')
@@ -435,12 +410,6 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def price_fachinfo_stanza_epub(model, session)
 		once('compendium_ch.oddb.org.stanza.epub')
 	end
-	def radio_chde_xls(model, session)
-		once_or_year('chde.xls')
-	end
-	def radio_de_oddb_yaml(model, session)
-		once_or_year('de.oddb.yaml')
-	end
 	def radio_fachinfos_de_pdf(model, session)
 		once_or_year('fachinfos_de.pdf')
 	end
@@ -488,9 +457,6 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	end
 	def s31x(model, session)
 		checkbox_with_filesize("s31x")
-	end
-	def xls_chde(model, session)
-		checkbox_with_filesize('chde.xls')
 	end
 	def xls_generics(model, session)
 		checkbox_with_filesize('generics.xls')
