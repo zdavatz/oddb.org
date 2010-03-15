@@ -23,6 +23,7 @@ module ODDB
 	## xmlconv2: "druby://localhost:10010"
 	ANALYSISPARSE_URI = "druby://localhost:10011"
 	## globopharm.xmlconv.bbmb.ch: "druby://localhost:10012"
+	READONLY_URI = "druby://localhost:10013"
 	CURRENCY_URI = "druby://localhost:10999"
   YUS_URI = "drbssl://localhost:9997"
   YUS_DOMAIN = 'oddb.org'

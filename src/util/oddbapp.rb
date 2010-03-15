@@ -20,7 +20,6 @@ require 'util/iso-latin1'
 require 'util/notification_logger'
 require 'util/ngram_similarity'
 require 'util/today'
-require 'remote/package'
 require 'admin/subsystem'
 require 'models'
 require 'commands'
@@ -805,55 +804,6 @@ class OddbPrevalence
 	def registration(registration_id)
 		@registrations[registration_id]
 	end
-  def remote_comparables(package)
-    package = ODDB::Remote::Package.new(package)
-    sequence = package.sequence
-    comparables = []
-    if(atc = atc_class(sequence.atc_code))
-      atc.sequences.each { |seq|
-        if(sequence.comparable?(seq))
-          comparables.concat seq.packages.values.select { |pac|
-            package.comparable?(pac)
-          }
-        end
-      }
-    end
-    ODBA::DRbWrapper.new comparables
-  end
-  def remote_each_atc_class(&block)
-    @atc_classes.sort.each do |key, atc|
-      block.call ODBA::DRbWrapper.new(atc)
-    end
-  end
-  def remote_each_company(&block) # for migration to ch.oddb.org
-    @companies.each_value do |comp|
-      block.call ODBA::DRbWrapper.new(comp)
-    end
-    nil # don't try to pass all registrations across DRb-Land
-  end
-  def remote_each_package(&block)
-    each_package { |pac|
-      if(pac.public? && !pac.narcotic?)
-        block.call ODBA::DRbWrapper.new(pac)
-      end
-    }
-    nil # don't try to pass all registrations across DRb-Land
-  end
-  def remote_export(name)
-    ODDB::Exporter.new(self).export_helper(name) { |path|
-      yield path
-    }
-  end
-  def remote_packages(query)
-    seqs = search_sequences(query, false)
-    if(seqs.empty?)
-      seqs = ODBA.cache.\
-        retrieve_from_index('substance_index_sequence', query)
-    end
-    ODBA::DRbWrapper.new seqs.collect { |seq|
-      seq.public_packages
-    }.flatten
-  end
 	def resolve(pointer)
 		pointer.resolve(self)
 	end

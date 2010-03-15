@@ -6,6 +6,7 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 
 require 'fastthread'
 require 'drb/drb'
+require 'util/currency'
 require 'util/oddbapp'
 require 'etc/db_connection'
 
@@ -25,8 +26,6 @@ trap("USR2") {
 module ODDB
 	headpath = File.expand_path('../.git/ORIG_HEAD', File.dirname(__FILE__))
 	ODDB_VERSION = File.read(headpath)
-
-  Currency = DRbObject.new(nil, ODDB::CURRENCY_URI)
 end
 
 ODBA.cache.setup
