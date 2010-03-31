@@ -12,7 +12,8 @@ module ODDB
 	class Log
 		MAIL_FROM = 'update@oddb.org'
 		MAIL_TO = [
-			'admin@ywesee.com',
+			'zdavatz@ywesee.com',
+			'hwyss@ywesee.com',
 		]
 		include Persistence
 		ODBA_SERIALIZABLE = ['@change_flags', '@pointers', '@recipients',

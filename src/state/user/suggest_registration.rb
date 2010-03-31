@@ -13,7 +13,7 @@ module ODDB
 class SuggestRegistration < Global
 	include State::Admin::RegistrationMethods
 	VIEW = View::User::SuggestRegistration
-	RECIPIENTS = ['admin@ywesee.com']
+	RECIPIENTS = ['zdavatz@ywesee.com', 'hwyss@ywesee.com']
 	SELECT_STATE = State::User::SelectIndication
 	def accept
 		update
