@@ -192,7 +192,7 @@ module ODDB
       }
       odba_store
     end
-    def generic_group_comparables(filters=[:bag])
+    def generic_group_comparables(filters=[])
       if @generic_group \
         && !((go = data_origins['generic_group']) && filters.include?(go))
         @generic_group.packages - [self]
