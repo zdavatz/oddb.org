@@ -157,12 +157,13 @@ module Ipn
   end
   def Ipn.send_download_seller_notification(invoice)
     if(name = invoice.yus_name)
+      config = ODDB.config
       lookandfeel = lookandfeel_stub
       recipient = PAYPAL_RECEIVER
       outgoing = TMail::Mail.new
       outgoing.set_content_type('text', 'plain', 'charset'=>'UTF-8')
       outgoing.to = [recipient]
-      outgoing.from = MAIL_FROM
+      outgoing.from = config.mail_from
       outgoing.subject = lookandfeel.lookup(:download_mail_subject)
       salut = lookandfeel.lookup(yus(name, :salutation))
       company = yus(name, :company_name)
@@ -184,8 +185,10 @@ module Ipn
       outgoing.date = Time.now
       outgoing['User-Agent'] = 'ODDB Download'
       recipients = [recipient] + RECIPIENTS
-      Net::SMTP.start(SMTP_SERVER) { |smtp|
-        smtp.sendmail(outgoing.encoded, SMTP_FROM, recipients)
+      Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
+                      config.smtp_user, config.smtp_pass,
+                      config.smtp_authtype) { |smtp|
+        smtp.sendmail(outgoing.encoded, config.smtp_user, recipients)
       }
     end
   rescue StandardError => e
@@ -224,8 +227,10 @@ module Ipn
       block.call(outgoing, recipient, lookandfeel) 
 
       recipients = ([recipient] + RECIPIENTS).uniq
-      Net::SMTP.start(SMTP_SERVER) { |smtp|
-        smtp.sendmail(outgoing.encoded, SMTP_FROM, recipients)
+      Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
+                      config.smtp_user, config.smtp_pass,
+                      config.smtp_authtype) { |smtp|
+        smtp.sendmail(outgoing.encoded, config.smtp_user, recipients)
       }
     end
   rescue StandardError => e

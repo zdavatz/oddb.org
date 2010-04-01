@@ -96,11 +96,14 @@ module ODDB
 			text
 		end
 		def send_mail(multipart)
-			Net::SMTP.start(SMTP_SERVER) { |smtp|
+      config = ODDB.config
+      Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
+                      config.smtp_user, config.smtp_pass,
+                      config.smtp_authtype) { |smtp|
 				@recipients.each { |recipient|
 					multipart.to = [recipient]
 					smtp.sendmail(multipart.encoded, 
-												@mail_from || self::class::MAIL_FROM, recipient)
+												@mail_from || config.smtp_user, recipient)
 				}
 			}
 		end

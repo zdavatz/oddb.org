@@ -2,6 +2,7 @@
 # State::Notify -- oddb -- 28.06.2007 -- hwyss@ywesee.com
 
 require 'rmail'
+require 'util/smtp_tls'
 
 module ODDB
 	module State
@@ -67,11 +68,12 @@ module Notify
     recipients = model.notify_recipient
 		if(model.name && model.notify_sender && recipients.is_a?(Array) \
 				&& !recipients.empty?)
+      config = ODDB.config
 			mail = RMail::Message.new
       header = mail.header
       header.add('Content-Type', 'multipart/alternative')
       header.add('Date', Time.now.rfc822)
-      from = header.from = 'zdavatz@ywesee.com'
+      from = header.from = config.mail_from
       to = header.to = recipients
 			header.subject = "#{@session.lookandfeel.lookup(:notify_subject)} #{@model.name}"
       header.add('Reply-To', @model.notify_sender)
@@ -96,8 +98,10 @@ module Notify
       htmlpart.body = [html].pack('M')
       mail.add_part htmlpart
 
-			Net::SMTP.start(SMTP_SERVER) { |smtp|
-				smtp.sendmail(mail.to_s, SMTP_FROM, recipients) 
+		  Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
+                      config.smtp_user, config.smtp_pass,
+                      config.smtp_authtype) { |smtp|
+				smtp.sendmail(mail.to_s, config.smtp_user, recipients)
 			}
 			logger = @session.notification_logger
 			key = [

@@ -4,6 +4,7 @@
 require 'state/global_predefine'
 require 'view/user/mailinglist'
 require 'tmail'
+require 'util/smtp_tls'
 
 module ODDB
 	module State
@@ -33,7 +34,10 @@ class MailingList < State::User::Global
 		mail.to = recipient
 		mail.date = Time.now
 		begin
-			Net::SMTP.start(SMTP_SERVER) { |smtp|
+      config = ODDB.config
+		  Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
+                      config.smtp_user, config.smtp_pass,
+                      config.smtp_authtype) { |smtp|
 				smtp.sendmail(mail.encoded, subscriber, recipient)
 			}
 			@infos.push(info_message)

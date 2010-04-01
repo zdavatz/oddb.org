@@ -6,6 +6,7 @@ require 'state/admin/registration'
 require 'state/user/contributor'
 require 'state/user/selectindication'
 require 'view/user/suggest_registration'
+require 'util/smtp_tls'
 
 module ODDB
 	module State
@@ -39,7 +40,9 @@ class SuggestRegistration < Global
 		mail.body = [
 			url,
 		].join("\n")
-		Net::SMTP.start(SMTP_SERVER) { |smtp|
+    Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
+                    config.smtp_user, config.smtp_pass,
+                    config.smtp_authtype) { |smtp|
 			RECIPIENTS.each { |rec|
 				mail.to = [rec]
 				smtp.sendmail(mail.encoded, from, rec) 

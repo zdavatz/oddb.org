@@ -9,7 +9,7 @@ require 'state/admin/activeagent'
 require 'state/admin/assign_deprived_sequence'
 require 'state/admin/assign_patinfo'
 require 'fileutils'
-require 'net/smtp'
+require 'util/smtp_tls'
 require 'tmail'
 
 module ODDB
@@ -311,10 +311,11 @@ class Sequence < State::Admin::Global
 	def atc_request
 		if((company = @model.company) && (addr = company.regulatory_email))
 			lookandfeel = @session.lookandfeel
+      config = ODDB.config
 			mail = TMail::Mail.new
 			mail.set_content_type('text', 'plain', 'charset'=>'UTF-8')
 			mail.to = [addr]
-			mail.from = MAIL_FROM
+			mail.from = config.mail_from
 			mail.subject = "#{@model.name_base} #{@model.iksnr}"
 			mail.date = Time.now
 			mail.body = [
@@ -328,8 +329,10 @@ class Sequence < State::Admin::Global
 				lookandfeel.lookup(:thanks_for_cooperation),
 			].join("\n")
 			mail['User-Agent'] = 'ODDB Download'
-			Net::SMTP.start(SMTP_SERVER) { |smtp|
-				smtp.sendmail(mail.encoded, SMTP_FROM, [addr] + RECIPIENTS)
+		  Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
+                      config.smtp_user, config.smtp_pass,
+                      config.smtp_authtype) { |smtp|
+				smtp.sendmail(mail.encoded, config.smtp_user, [addr] + RECIPIENTS)
 			}
 			@model.atc_request_time = Time.now
 			@model.odba_isolated_store
