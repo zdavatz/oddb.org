@@ -4096,8 +4096,14 @@ Zeno Davatz
 			:sponsor								=>	'sponsor',
 		}
     def captcha
-      @@turings[language] ||= Turing::Challenge.new(:outdir => CAPTCHA_DIR,
-        :dictionary => File.join(PROJECT_ROOT, 'data', 'captcha', language))
+      @@turings[language] or begin
+        dict = File.join(PROJECT_ROOT, 'data', 'captcha', language)
+        if !File.exist?(dict)
+          dict = File.join(PROJECT_ROOT, 'data', 'captcha', 'de')
+        end
+        @@turings[language] = Turing::Challenge.new(:outdir => CAPTCHA_DIR,
+                                                    :dictionary => dict)
+      end
     end
 		def compare_list_components
 			{
