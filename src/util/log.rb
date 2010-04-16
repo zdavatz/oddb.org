@@ -32,7 +32,7 @@ module ODDB
 		end
 		def notify(subject = nil, reply_to = nil)
 			subj = [
-				'ODDB Report', 
+				'ch.ODDB.org Report', 
 				subject, 
 				(@date_str || @date.strftime('%m/%Y')),
 			].compact.join(' - ')
