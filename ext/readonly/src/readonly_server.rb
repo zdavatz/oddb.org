@@ -11,7 +11,8 @@ module ODDB
       package = ODDB::Remote::Package.new(package)
       sequence = package.sequence
       comparables = []
-      if(atc = ODBA.cache.retrieve_from_index('atc_index', sequence.atc_code))
+      atcs = ODBA.cache.retrieve_from_index('atc_index', sequence.atc_code)
+      if(atcs.size == 1 && atc = atcs.first)
         atc.sequences.each { |seq|
           if(sequence.comparable?(seq))
             comparables.concat seq.packages.values.select { |pac|
