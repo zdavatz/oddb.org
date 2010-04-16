@@ -245,7 +245,7 @@ module ODDB
 			end
 			def new_linkhandler(handler)
 				if handler && (link = handler.attribute('href'))
-					valid_link = link.split(/#/u)[0]
+					valid_link = link.to_s.split(/#/u)[0]
 					if(valid_link && valid_link.match(/.asp$/u) \
              && !(@links.include?(valid_link) \
                   || /www.fda.gov/u.match(valid_link) \
@@ -293,8 +293,8 @@ module ODDB
         current_table = nil
         abstract_link = nil
         (div/'td').each do |td|
-          td.each_child do |child|
-            if child.is_a?(Hpricot::Text)
+          td.children.each do |child|
+            if child.is_a?(Nokogiri::XML::Text)
               buffer << child.to_s.strip
             else
               case child.name
@@ -304,7 +304,7 @@ module ODDB
                 abstract_link.text = match[1]
                 buffer = match[2].to_s
                 buffer << child.inner_text
-                abstract_link.href = child.attributes["href"]
+                abstract_link.href = child.attributes["href"].to_s
                 abstract_link.info = buffer
                 connection.add_link abstract_link
               when 'b'
