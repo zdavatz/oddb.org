@@ -3,7 +3,8 @@
 
 # Do not require any Application-Internals in this file
 
-$KCODE = 'UTF-8'
+# Rockit redefines some StringScanner stuff, unless this is set
+$USING_STRSCAN = true
 
 module ODDB
 	SERVER_NAME = 'ch.oddb.org'
