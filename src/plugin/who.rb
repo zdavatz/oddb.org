@@ -115,12 +115,21 @@ module ODDB
       end while row = row.next_sibling
     end
     def import_ddd_guidelines(atc, table)
-      guidelines = (table/'td').collect do |td|
-        extract_text(td) end.join if(table)
-      if atc.ddd_guidelines.nil? || (atc.ddd_guidelines.en != guidelines)
+      chp, sec = nil
+      if(table)
+        (table/'td').each do |td|
+          if (txt = extract_text(td)) && !txt.empty?
+            chp ||= Text::Chapter.new
+            sec ||= chp.next_section
+            par = sec.next_paragraph
+            par << txt
+          end
+        end
+      end
+      unless atc.ddd_guidelines.en == chp
         @ddd_guidelines += 1
         pointer = atc.pointer + :ddd_guidelines
-        @app.update pointer.creator, :en => guidelines
+        @app.update pointer.creator, :en => chp
         modified = true
       end
     end
@@ -136,11 +145,17 @@ module ODDB
       if table.name == 'table' && table[:bgcolor] == '#cccccc'
         modified = import_ddd_guidelines(atc, table)
       end
-      guidelines = extract_text(node)
-      if atc.guidelines.nil? || (atc.guidelines.en != guidelines)
+      chp = nil
+      if (txt = extract_text(node)) && !txt.empty?
+        chp = Text::Chapter.new
+        sec = chp.next_section
+        par = sec.next_paragraph
+        par << txt
+      end
+      unless atc.guidelines.en == chp
         @guidelines += 1
         pointer = atc.pointer + :guidelines
-        @app.update pointer.creator, :en => guidelines
+        @app.update pointer.creator, :en => chp
         modified = true
       end
       modified
