@@ -126,7 +126,7 @@ module ODDB
           end
         end
       end
-      unless atc.ddd_guidelines.en == chp
+      unless atc.ddd_guidelines && atc.ddd_guidelines.en == chp
         @ddd_guidelines += 1
         pointer = atc.pointer + :ddd_guidelines
         @app.update pointer.creator, :en => chp
@@ -152,7 +152,7 @@ module ODDB
         par = sec.next_paragraph
         par << txt
       end
-      unless atc.guidelines.en == chp
+      unless atc.guidelines && atc.guidelines.en == chp
         @guidelines += 1
         pointer = atc.pointer + :guidelines
         @app.update pointer.creator, :en => chp
