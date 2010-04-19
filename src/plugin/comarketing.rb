@@ -81,7 +81,7 @@ module ODDB
 			sequences.collect { |seq| 
 				seq.registration }.uniq.reject { |reg| reg.parallel_import }
 		end
-		def update(agent=WWW::Mechanize.new)
+		def update(agent=Mechanize.new)
       @deleted = 0
 			@updated = 0
 			@found = 0

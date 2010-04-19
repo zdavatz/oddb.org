@@ -640,7 +640,7 @@ module ODDB
     def download_to archive_path=ARCHIVE_PATH
       archive = File.join archive_path, 'xml'
       FileUtils.mkdir_p archive
-      agent = WWW::Mechanize.new
+      agent = Mechanize.new
       zip = agent.get ODDB.config.url_bag_sl_zip
       target = File.join archive,
                Date.today.strftime("XMLPublications-%Y.%m.%d.zip")

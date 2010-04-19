@@ -31,7 +31,7 @@ module ODDB
       @export_registrations = {}
       @export_sequences = {}
     end
-    def update(agent=WWW::Mechanize.new, target=get_latest_file(agent))
+    def update(agent=Mechanize.new, target=get_latest_file(agent))
       if(target)
         initialize_export_registrations agent
         diff target, @latest, [:product_group, :atc_class, :sequence_date]

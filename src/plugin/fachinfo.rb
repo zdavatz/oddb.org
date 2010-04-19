@@ -35,7 +35,7 @@ module ODDB
       @host = 'www.documedinfo.ch'
 		end
     def init_agent
-      @agent = WWW::Mechanize.new
+      @agent = Mechanize.new
       @agent.user_agent = "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_4_11; de-de) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.22"
     end
     def extract_fachinfo_id(href)
@@ -97,7 +97,7 @@ module ODDB
         msg << urls.join("\n")
         raise msg
       end
-    rescue WWW::Mechanize::ResponseCodeError, EOFError
+    rescue Mechanize::ResponseCodeError, EOFError
       retries ||= 10
       if retries > 0
         retries -= 1

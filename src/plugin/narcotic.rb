@@ -219,7 +219,7 @@ Diese Produkte werden in ch.oddb.org nicht angezeigt (zu wenig Informationen).
 		end
     def update(languages = [:de, :fr])
       pattern = /^(Verzeichnis\s+aller|Indice\s+de\s+tous)/u
-      agent = WWW::Mechanize.new
+      agent = Mechanize.new
       url = "http://www.swissmedic.ch/produktbereiche/00447/00536/index.html"
       dir = File.join ARCHIVE_PATH, 'pdf'
       success = false

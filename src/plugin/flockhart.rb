@@ -331,7 +331,7 @@ module ODDB
         cytochrome
       end
       def parse_detail_pages
-        agent = WWW::Mechanize.new
+        agent = Mechanize.new
         links = get_table_links
         cytochromes = {}
         links.each do |link|

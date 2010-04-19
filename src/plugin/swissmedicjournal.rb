@@ -123,7 +123,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vor
 			lines.flatten.join("\n")
 		end
 		def update(month)
-      agent = WWW::Mechanize.new
+      agent = Mechanize.new
       main = agent.get 'http://www.swissmedic.ch/org/00064/00065/index.html'
       link = main.links.find do |node|
         /Swissmedic\s*Journal/iu.match node.attributes['title']
@@ -140,7 +140,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic-Journal %s vor
         smj.save latest
         smj.save target
       end
-    rescue WWW::Mechanize::ResponseCodeError
+    rescue Mechanize::ResponseCodeError
 		end
     def update_indications(path)
       @indications, news = DRbObject.new(nil, FIPARSE_URI).extract_indications(path)
