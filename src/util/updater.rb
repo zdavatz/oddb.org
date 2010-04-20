@@ -346,6 +346,9 @@ module ODDB
 		def update_vaccines
 			update_notify_simple(VaccinePlugin, 'blutprodukte')
 		end
+    def update_whocc
+      update_notify_simple WhoPlugin, "WHO-Update", :import
+    end
 		private
 		def log_notify_bsv(plug, date, subj='SL-Update')
 			pointer = Persistence::Pointer.new([:log_group, :bsv_sl], [:log, date])
