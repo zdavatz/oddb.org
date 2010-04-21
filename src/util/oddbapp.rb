@@ -1472,11 +1472,13 @@ module ODDB
       YUS_SERVER.logout(session)
     rescue DRb::DRbError, RangeError
     end
+    def peer_cache cache
+      ODBA.peer cache
+    end
 		def reset
 			@updater.kill if(@updater.is_a? Thread)
 			@exporter.kill if(@exporter.is_a? Thread)
       if RUN_UPDATER
-        @updater = run_updater
         @random_updater = run_random_updater
       end
 			@exporter = run_exporter if RUN_EXPORTER
@@ -1537,23 +1539,8 @@ module ODDB
         }
       }
     end
-    def run_updater
-      Thread.new {
-        Thread.current.abort_on_exception = true
-        update_hour = self.class::UPDATE_HOUR
-        today = (update_hour > Time.now.hour) ? \
-          Date.today : @@today.next
-        loop {
-          next_run = Time.local(today.year, today.month, today.day, update_hour)
-          puts "next scheduled update will take place at #{next_run}"
-          $stdout.flush
-          sleep(next_run - Time.now)
-          Updater.new(self).run
-          @system.recount
-          GC.start
-          today = @@today.next
-        }
-      }
+    def unpeer_cache cache
+      ODBA.unpeer cache
     end
     def update_feedback_rss_feed
       async {

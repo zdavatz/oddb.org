@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+# must be scheduled in crontab to run as the same user as oddb
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+
+require 'util/job'
+require 'util/updater'
+
+module ODDB
+  module Util
+    Job.run do |system|
+      updater = Updater.new
+      if updater.update_swissmedic
+        updater.update_swissmedic_followers
+      end
+    end
+  end
+end
