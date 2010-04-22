@@ -67,7 +67,7 @@ class YusGroups < HtmlGrid::List
     if(model.name == 'PowerUser')
       input = HtmlGrid::Input.new(:valid_until, model, @session, self)
       entity = @container.model
-      time = entity.privileged_until('view', 'org.oddb') rescue
+      time = entity.privileged_until('view', 'org.oddb') rescue nil
       if(time)
         input.value = time.strftime('%d.%m.%Y')
       else
