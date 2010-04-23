@@ -1,4 +1,3 @@
-require 'fastthread'
 require 'drb'
 require 'config'
 require 'util/oddbapp'
