@@ -174,6 +174,29 @@ module ODDB
 			pointer = Persistence::Pointer.new(:fachinfo)
 			@app.update(pointer.creator, languages)
 		end
+    def update_from_iksnrs(*iksnrs)
+      init_agent
+      page = @agent.get("http://www.compendium.ch/Search.aspx")
+      form, = page.form_with :name => 'frmNutzungsbedingungen'
+      if form
+        if btn = form.button_with(:name => 'btnAkzeptieren')
+          page = @agent.submit form, btn
+        end
+      end
+      iksnrs.each do |iksnr|
+        page = @agent.get("http://www.compendium.ch/Search.aspx")
+        form = page.form_with :name => 'frmSearchForm'
+        form.radiobutton_with(:value => 'rbFulltext').click
+        form['txtSearch'] = iksnr
+        result = @agent.submit form
+        pdfform = result.form_with :name => 'frmResulthForm'
+        button = pdfform.button_with :name => /ImageButtonFiPdf/
+        redirect = @agent.submit pdfform, button
+        if match = /Id=([^&]+)/.match(redirect.uri.to_s)
+          update_from_id match[1]
+        end
+      end
+    end
 		def true_news(news, old_news)
 			if(idx = news.index(old_news.first))
 				news[0...idx]
@@ -197,7 +220,7 @@ module ODDB
       postprocess
 			!updates.empty?
 		end
-    def update_from_id idx
+    def _update_from_id idx
       languages = parse_from_id(idx)
       if(languages.empty?)
         @failures.push(idx)
@@ -205,6 +228,9 @@ module ODDB
         update_registrations(languages)
         @successes.push(idx)
       end
+    end
+    def update_from_id idx
+      _update_from_id idx
       postprocess
       @failures.empty?
     end

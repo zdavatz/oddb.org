@@ -238,9 +238,14 @@ module ODDB
 		def update_doctors
 			update_simple(Doctors::DoctorPlugin, 'Doctors')
 		end
-		def update_fachinfo
-			update_notify_simple(FachinfoPlugin, 'Fachinfo')
-		end
+    def update_fachinfo(*iksnrs)
+      if iksnrs.empty?
+        update_notify_simple FachinfoPlugin, 'Fachinfo'
+      else
+        update_notify_simple FachinfoPlugin, 'Fachinfo',
+                             :update_from_iksnrs, iksnrs
+      end
+    end
 		def update_hospitals
 			update_simple(HospitalPlugin, 'Hospitals')
 		end
@@ -403,10 +408,10 @@ module ODDB
 		rescue StandardError => e #RuntimeError, StandardError => e
 			notify_error(klass, subj, e)
 		end
-		def update_notify_simple(klass, subj, update_method=:update)
+		def update_notify_simple(klass, subj, update_method=:update, args=[])
 			wrap_update(klass, subj) {
 				plug = klass.new(@app)
-				if(plug.send(update_method))
+				if(plug.send(update_method, *args))
 					log = Log.new(@@today)
 					log.update_values(log_info(plug))
 					log.notify(subj)
