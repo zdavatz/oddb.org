@@ -2,6 +2,7 @@
 # must be scheduled in crontab to run as the same user as oddb
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
+$: << File.expand_path('../ext', File.dirname(__FILE__))
 
 require 'util/job'
 require 'util/exporter'
