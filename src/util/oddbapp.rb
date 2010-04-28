@@ -1296,8 +1296,6 @@ module ODDB
 		UPDATE_HOUR = 9
     MEMORY_LIMIT = 20480
 		RUN_CLEANER = true
-		RUN_EXPORTER = true
-		RUN_EXPORTER_NOTIFY = false
 		RUN_UPDATER = true
 		SESSION = Session
 		UNKNOWN_USER = UnknownUser
@@ -1305,7 +1303,7 @@ module ODDB
 		VALIDATOR = Validator
     YUS_SERVER = DRb::DRbObject.new(nil, YUS_URI)
 		attr_reader :cleaner, :updater
-		def initialize
+		def initialize opts={}
       @rss_mutex = Mutex.new
 			@admin_threads = ThreadGroup.new
       start = Time.now
@@ -1318,6 +1316,7 @@ module ODDB
       puts "init system: #{Time.now - start}"
 			puts "setup drb-delegation"
 			super(@system)
+      return if opts[:auxiliary]
 			puts "reset"
 			reset()
       puts "reset: #{Time.now - start}"
@@ -1476,45 +1475,12 @@ module ODDB
       ODBA.peer cache
     end
 		def reset
-			@updater.kill if(@updater.is_a? Thread)
-			@exporter.kill if(@exporter.is_a? Thread)
+			@random_updater.kill if(@random_updater.is_a? Thread)
       if RUN_UPDATER
         @random_updater = run_random_updater
       end
-			@exporter = run_exporter if RUN_EXPORTER
-			@exporter_notify = run_exporter_notify if RUN_EXPORTER_NOTIFY
 			@mutex.synchronize {
 				@sessions.clear
-			}
-		end
-		def run_exporter
-			Thread.new {
-				#Thread.current.priority=-10
-				Thread.current.abort_on_exception = true
-				today = (EXPORT_HOUR > Time.now.hour) ? \
-					@@today : @@today.next
-				loop {
-					next_run = Time.local(today.year, today.month, today.day, 
-						EXPORT_HOUR)
-					sleep(next_run - Time.now)
-					Exporter.new(self).run
-					GC.start
-					today = @@today.next
-				}
-			}
-		end
-		def run_exporter_notify
-			Thread.new {
-				#Thread.current.priority=-10
-				Thread.current.abort_on_exception = true
-				today = (10 > Time.now.hour) ? @@today : @@today.next
-				loop {
-					next_run = Time.local(today.year, today.month, today.day, 10)
-					sleep(next_run - Time.now)
-					Exporter.new(self).mail_notification_stats
-					GC.start
-					today = @@today.next
-				}
 			}
 		end
     def run_random_updater

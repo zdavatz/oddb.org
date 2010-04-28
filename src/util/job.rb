@@ -14,7 +14,7 @@ module Job
       ODBA.cache.clean_prefetched
       DRb.install_id_conv ODBA::DRbIdConv.new
       system.peer_cache ODBA.cache unless opts[:readonly]
-      block.call ODDB::App.new
+      block.call ODDB::App.new(:auxiliary => true)
     ensure
       system.unpeer_cache ODBA.cache unless opts[:readonly]
     end
