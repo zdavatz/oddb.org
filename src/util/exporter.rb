@@ -63,6 +63,12 @@ module ODDB
         yield path
       }
     end
+    def export_all_csv
+      export_csv
+      export_doc_csv
+      export_index_therapeuticus_csv
+      export_price_history_csv
+    end
 		def export_competition_xls(company, db_path=nil)
 			plug = XlsExportPlugin.new(@app)
 			plug.export_competition(company, db_path)

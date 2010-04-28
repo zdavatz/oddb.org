@@ -65,6 +65,16 @@ module ODDB
 				end
 			}
 		end
+    def export_index_therapeuticus_csv(date = @@today)
+      subj = 'index_therapeuticus.csv'
+      wrap_update(CsvExportPlugin, subj) {
+        plug = CsvExportPlugin.new(@app)
+        plug.export_index_therapeuticus
+        log = Log.new(date)
+        log.update_values(log_info(plug))
+        log.notify(subj)
+      }
+    end
     def export_oddb_csv(date = @@today)
       subj = 'oddb.csv'
       wrap_update(CsvExportPlugin, subj) {

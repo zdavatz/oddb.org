@@ -202,6 +202,9 @@ class CsvResult < HtmlGrid::Component
     end
 		boolean(lppv)
 	end
+  def narcotic(pack)
+    boolean(pack.narcotic?)
+  end
 	def numerical_size(pack)
     qty = pack.comparable_size.qty
     if qty == 0
@@ -326,6 +329,9 @@ class CsvResult < HtmlGrid::Component
 	def to_csv_file(keys, path, symbol=:active_packages)
 		File.open(path, 'w') { |fh| fh.puts to_csv(keys, symbol) }
 	end
+  def vaccine(pack)
+    boolean(pack.vaccine)
+  end
 end
 		end
 	end

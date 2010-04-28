@@ -28,7 +28,7 @@ module ODDB
         :limitation, :limitation_points, :limitation_text, :lppv,
         :registration_date, :expiration_date, :inactive_date, :export_flag,
         :casrn, :generic_type, :has_generic, :deductible, :out_of_trade,
-        :c_type ]
+        :c_type, :index_therapeuticus, :narcotic, :vaccine ]
     end
     def export_drugs_extended
       @options = { :compression => 'zip' }
@@ -75,8 +75,10 @@ module ODDB
       raise
     end
     def export_index_therapeuticus
+      recipients.concat self.class::ODDB_RECIPIENTS
       ids = @app.indices_therapeutici.sort.collect { |code, idx| idx.odba_id }
       files = []
+      @file_path = File.join EXPORT_DIR, 'idx_th.csv'
       files.push EXPORT_SERVER.export_idx_th_csv(ids, EXPORT_DIR, 'idx_th.csv')
       ids = @app.packages.sort_by { |pac| pac.ikskey }.collect { |pac| 
         pac.odba_id }

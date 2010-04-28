@@ -13,7 +13,7 @@ module Job
       ODBA.cache.setup
       ODBA.cache.clean_prefetched
       DRb.install_id_conv ODBA::DRbIdConv.new
-      system.peer_cache ODBA.cache unless opts[:readonly]
+      system.peer_cache ODBA.cache unless opts[:readonly] rescue Errno::ECONNREFUSED
       block.call ODDB::App.new(:auxiliary => true)
     ensure
       system.unpeer_cache ODBA.cache unless opts[:readonly]
