@@ -75,6 +75,7 @@ module ODDB
       raise
     end
     def export_index_therapeuticus
+      @options = { :iconv => 'ISO-8859-1//TRANSLIT//IGNORE' }
       recipients.concat self.class::ODDB_RECIPIENTS
       ids = @app.indices_therapeutici.sort.collect { |code, idx| idx.odba_id }
       files = []
