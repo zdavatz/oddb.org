@@ -10,7 +10,7 @@ require 'util/updater'
 module ODDB
   module Util
     Job.run do |system|
-      updater = Updater.new
+      updater = Updater.new system
       if updater.update_bsv
         updater.update_bsv_followers
       end
