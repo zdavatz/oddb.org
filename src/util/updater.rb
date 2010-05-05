@@ -18,6 +18,7 @@ require 'plugin/rss'
 require 'plugin/swissmedic'
 require 'plugin/swissmedicjournal'
 require 'plugin/swissreg'
+require 'plugin/text_info'
 require 'plugin/vaccines'
 require 'plugin/who'
 require 'util/log'
@@ -358,6 +359,10 @@ module ODDB
 		def update_swissreg_news
 			update_immediate(SwissregPlugin, 'Patents', :update_news)
 		end
+    def update_company_textinfos company
+      update_notify_simple TextInfoPlugin, "Fach- und Patienteninfo '#{company}'",
+                           :import_company, company
+    end
 		def update_vaccines
 			update_notify_simple(VaccinePlugin, 'blutprodukte')
 		end

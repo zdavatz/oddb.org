@@ -1,0 +1,329 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<html>
+	<head>
+		<title id="oPageTitle">Arzneimittel-Kompendium der Schweiz</title>
+		<!-- <title id="Title1">_Arzneimittel-Kompendium der Schweiz</title> -->
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="C#" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link href="includes/stylesheet_not_ie.css" rel="stylesheet" type="text/css"> <!--[if gte IE 5]><LINK href="includes/stylesheet_ie.css" type=text/css rel=stylesheet><![endif]-->
+		<script language="javascript">
+			function KeyDownHandler(btn, event){
+				if (document.all)
+				{
+					if (event.keyCode == 13)
+					{
+						event.returnValue=false;
+						event.cancel = true;
+						btn.click();
+					}
+				}
+				else if (document.getElementById)
+				{
+					if (event.which == 13)	
+					{
+						event.returnValue=false;
+						event.cancel = true;
+						btn.click();
+					}
+				}
+				else if(document.layers)
+				{
+					if(event.which == 13)
+					{
+						event.returnValue=false;
+						event.cancel = true;
+						btn.click();
+					}
+				}
+			}
+
+			function OpenWindow(strUrl)
+			{
+				oWindow = window.open(strUrl, 'KompendiumOnlineNews', 'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=yes,copyhistory=no,width=480,height=560');
+				oWindow.focus();
+			}
+		</script>
+	</head>
+	<BODY text="#000000" vlink="#999999" aLink="#999999" link="#999999" bgcolor="#ffffff"
+		leftmargin="0" topmargin="0">
+		<form name="frmSearchForm" method="post" action="Search.aspx" language="javascript" onsubmit="javascript:return WebForm_OnSubmit();" id="frmSearchForm">
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="btnSearch" />
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTE1NTU5MTY0NjgPFgQeCExhbmd1YWdlBQJkZR4SU2V0T2xkU2VhcmNoVmFsdWVzaBYEAgEPFgIeCWlubmVyaHRtbAUjQXJ6bmVpbWl0dGVsLUtvbXBlbmRpdW0gZGVyIFNjaHdlaXpkAgUPZBY4AgEPDxYGHghJbWFnZVVybAURfi9pbWFnZXMvbG9nby5naWYeC05hdmlnYXRlVXJsBTdodHRwOi8vd3d3LmRvY3VtZWRpbmZvLmNoL2NvbnRlbnQvZGVmYXVsdC5hc3B4P0xhbmdJRD0yHgdUb29sVGlwBQpEb2N1bWVkIEFHZGQCBw8PFgYfAwUPfi9pbWFnZXMvZG0uZ2lmHwQFN2h0dHA6Ly93d3cuZG9jdW1lZGluZm8uY2gvY29udGVudC9kZWZhdWx0LmFzcHg/TGFuZ0lEPTIfBQUKRG9jdW1lZCBBR2RkAgsPDxYEHwMFEn4vaW1hZ2VzL2ltcF9kLmdpZh8FBQlJbXByZXNzdW1kZAIPDw8WAh8DBRh+L2ltYWdlcy9iYW5uZXItYmxhdS5naWZkZAITDw8WBh8DBRV+L2ltYWdlcy9mcmFuY2Fpcy5naWYfBAUVfi9TZWFyY2guYXNweD9sYW5nPWZyHwUFCUZyYW7Dp2Fpc2RkAhcPDxYCHwMFGH4vaW1hZ2VzL2Jhbm5lci1ibGF1LmdpZmRkAhkPDxYCHwMFFH4vaW1hZ2VzL3ZlcmxhdWYuZ2lmZGQCKQ8PFgIfAwUWfi9pbWFnZXMvVGl0ZWxfQU1LLkdJRmRkAi0PDxYCHgRUZXh0BQVTdWNoZWRkAi8PEA8WAh8GBQ1QcsOkcGFyYXRuYW1lFgIeCW9ua2V5ZG93bgUfS2V5RG93bkhhbmRsZXIoYnRuU2VhcmNoLGV2ZW50KWRkZAIxDw8WBB8DBRZ+L2ltYWdlcy9iX2hpbGZlX2QuZ2lmHwUFBUhpbGZlZGQCMw8QDxYCHwYFFldpcmtzdG9mZiAoaW4gZGV1dHNjaCkWAh8HBR9LZXlEb3duSGFuZGxlcihidG5TZWFyY2gsZXZlbnQpZGRkAjUPDxYEHwMFFn4vaW1hZ2VzL2JfaGlsZmVfZC5naWYfBQUFSGlsZmVkZAI3DxAPFgIfBgUFRmlybWEWAh8HBR9LZXlEb3duSGFuZGxlcihidG5TZWFyY2gsZXZlbnQpZGRkAjkPDxYEHwMFFn4vaW1hZ2VzL2JfaGlsZmVfZC5naWYfBQUFSGlsZmVkZAI7DxAPFgIfBgUNVm9sbHRleHRzdWNoZRYCHwcFH0tleURvd25IYW5kbGVyKGJ0blNlYXJjaCxldmVudClkZGQCPQ8PFgQfAwUWfi9pbWFnZXMvYl9oaWxmZV9kLmdpZh8FBQVIaWxmZWRkAj8PEGQPFgNmAgECAhYDEAULYmVnaW5udCBtaXQFC2JlZ2lubnQgbWl0ZxAFCGVudGjDpGx0BQhlbnRow6RsdGcQBQNpc3QFA2lzdGdkZAJBDw8WAh8FBSZCaXR0ZSBnZWJlbiBTaWUgZWluZW4gU3VjaGJlZ3JpZmYgZWluLhYCHwcFH0tleURvd25IYW5kbGVyKGJ0blNlYXJjaCxldmVudClkAkMPDxYCHwYFBVN1Y2hlZGQCRQ8PFgIfBgUFUmVzZXRkZAJHDw8WAh4MRXJyb3JNZXNzYWdlBThCaXR0ZSBnZWJlbiBTaWUgZsO8ciBkaWUgU3VjaGUgbWluZGVzdGVucyAyIFplaWNoZW4gZWluLmRkAkkPDxYCHwgFOEJpdHRlIGdlYmVuIFNpZSBmw7xyIGRpZSBTdWNoZSBtaW5kZXN0ZW5zIDIgWmVpY2hlbiBlaW4uZGQCTQ8PFgQfBAUbfi9JbmZ1bmRpYmlsaWEuYXNweD9sYW5nPWRlHwYFJ1N0YW5kYXJkLUZhY2hpbmZvcm1hdGlvbmVuIEluZnVuZGliaWxpYWRkAk8PDxYEHwQFL0phdmFzY3JpcHQ6IE9wZW5XaW5kb3coJ0FkZEtvbXAyRmlyZWZveERlLmh0bScpHwYFR1N1Y2hlLVBsdWdpbiBmw7xyIGRhcyBLb21wZW5kaXVtIG9ubGluZSBmw7xyIE1vemlsbGEtYmFzaWVyZW5kZSBCcm93c2VyZGQCUw8PFgIfBgUqQWt0dWVsbGUgUHJlaXMtIHVuZCBQYWNrdW5nc2luZm9ybWF0aW9uZW4uZGQCVQ8PFgIfBgUzQ2xpY2tlbiBTaWUgYXVmIGRhcyBJY29uIG5lYmVuIGRlbSBQcsOkcGFyYXRlbmFtZW4uZGQCWQ8PFgIfBgUwQ29weXJpZ2h0IGJ5IERvY3VtZWQgQUcsIEJhc2VsLCBTd2l0emVybGFuZCAyMDEwZGQYAQUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgwFDGJ0bkltcHJlc3N1bQULcmJQcmFlcGFyYXQFEGJ0bkhlbHBQcmFlcGFyYXQFC3JiV2lya3N0b2ZmBQtyYldpcmtzdG9mZgUQYnRuSGVscFdpcmtzdG9mZgUHcmJGaXJtYQUHcmJGaXJtYQUMYnRuSGVscEZpcm1hBQpyYkZ1bGx0ZXh0BQpyYkZ1bGx0ZXh0BRRidG5IZWxwVm9sbHRleHRzdWNoZfDmR1VksvDmbhjM59hS94Y1BPum" />
+
+<script type="text/javascript">
+<!--
+var theForm = document.forms['frmSearchForm'];
+if (!theForm) {
+    theForm = document.frmSearchForm;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+// -->
+</script>
+
+
+<script src="/WebResource.axd?d=PQS0DfA4YgkZC30msTTJKQ2&amp;t=633834268103732959" type="text/javascript"></script>
+
+
+<script src="/WebResource.axd?d=FE-rN-WdCwMIy6cnmV2csfBaadpM1_GCleCW3KnMUmU1&amp;t=633834268103732959" type="text/javascript"></script>
+<script type="text/javascript">
+<!--
+function WebForm_OnSubmit() {
+if (typeof(ValidatorOnSubmit) == "function" && ValidatorOnSubmit() == false) return false;
+return true;
+}
+// -->
+</script>
+
+<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWEAK1mKbIDwKdq+ieAQKIyOeKCgKR14TSCgK1wozAAQLwmoqmAQKvsPmpDgKV8uqxBQLT4MKMCgKv89iCCALS4YDXBAKJuNnRAQLJv5iWAwKZ7YzdCgKln/PuCgKgt7D9Cm4R875xMmqhhFLNQFgK3Wl6hMsM" />
+			<!-- Start of the Body for this Page -->
+			<TABLE id="Table1" cellspacing="0" cellpadding="0" width="845" border="0">
+				<TR valign="top" align="left">
+					<TD>
+						<TABLE id="Table2" cellspacing="0" cellpadding="0" width="95" border="0">
+							<TR valign="top" align="left">
+								<TD valign="top" align="left" width="83px" colSpan="2" ><a id="hplLogo" tabindex="8" title="Documed AG" href="http://www.documedinfo.ch/content/default.aspx?LangID=2"><img title="Documed AG" src="images/logo.gif" border="0" /></a><MAP name="map1"><AREA shape="RECT" alt="Documed AG" coords="1,7,84,81" href="http://www.documed.ch/deutsch/index.html"></MAP></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<!--<TD width="12" height="60"><img src="images/clearpixel.gif" height="1" alt="Formatter Image" width="12" border="0" /></TD>-->
+								<TD width="83">
+									<TABLE id="VerticalNavigationBar3" cellspacing="0" cellpadding="0" width="83" border="0">
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="1"><img id="imgMenuLinie1" src="images/menu_linie.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="21"><a id="hplDocumed" tabindex="9" title="Documed AG" href="http://www.documedinfo.ch/content/default.aspx?LangID=2"><img title="Documed AG" src="images/dm.gif" border="0" /></a></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="1"><img id="imgMenuLinie2" src="images/menu_linie.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="21"><input type="image" name="btnImpressum" id="btnImpressum" tabindex="11" title="Impressum" src="images/imp_d.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="1"><img id="imgMenuLinie4" src="images/menu_linie.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="26"><img id="imgBannerBlau" src="images/banner-blau.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="1"><img id="imgMenuLinie5" src="images/menu_linie.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="21"><a id="hplFrancais" tabindex="12" title="Français" href="Search.aspx?lang=fr"><img title="Français" src="images/francais.gif" border="0" /></a></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="1"><img id="imgMenuLinie6" src="images/menu_linie.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="26"><img id="imgBannerBlau_2" src="images/banner-blau.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83"><img id="imgVerlauf" src="images/verlauf.gif" border="0" /></TD>
+										</TR>
+									</TABLE>
+								</TD>
+							</TR>
+						</TABLE>
+					</TD>
+					<TD>
+						<TABLE id="Table3" cellspacing="0" cellpadding="0" width="750" border="0">
+							<TR valign="top" align="left">
+								<TD height="7" style="width: 65px"><img src="images/clearpixel.gif" height="1" alt="Formatter Image" width="40" border="0" /></TD>
+								<TD width="1"><img src="images/clearpixel.gif" height="1" alt="Formatter Image" width="1" border="0" /></TD>
+								<TD width="374"><img src="images/clearpixel.gif" height="1" alt="Formatter Image" width="374" border="0" /></TD>
+								<TD width="140"><img src="images/clearpixel.gif" height="1" alt="Formatter Image" width="140" border="0" /></TD>
+								<TD width="53"><img src="images/clearpixel.gif" height="1" alt="Formatter Image" width="53" border="0" /></TD>
+								<TD width="142"><img src="images/clearpixel.gif" height="1" alt="Formatter Image" width="142" border="0" /></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD valign="top" align="left" width="617" colSpan="6" height="3"><img id="imgHr1" src="images/hr.gif" border="0" /></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD valign="top" align="left" width="617" colSpan="6" height="113"><img id="imgTitelAmk" src="images/Titel_AMK.GIF" border="0" /></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD valign="top" align="left" width="617" colSpan="6" height="3"><img id="imgHr2" src="images/hr.gif" border="0" /></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD colSpan="6" height="12"></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD style="height: 20px; width: 65px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+								<TD width="568" colSpan="4" style="height: 66px">
+									<TABLE id="Table4" height="216" cellspacing="0" cellpadding="0" width="568" border="0">
+										
+										<tr valign="top" align="left">
+											<td style="WIDTH: 598px" width="598" colSpan="3">
+												<table cellspacing="3" cellpadding="0" width="300" border="0">
+													<tr>
+													    <td>
+                                                            <br />
+                                                        </td>
+													</tr>
+													<tr valign="top" align="left">
+													    <!--<td>&nbsp;</td>-->
+													    <td style="height: 19px"><span id="lblSearch" class="ContentTitle">Suche</span></td>
+													</tr>
+													<tr height="6px">
+													<td></td>
+													</tr>
+													<tr valign="top" align="left">
+														<td colspan="2"><span onkeydown="KeyDownHandler(btnSearch,event)"><input id="rbPraeparat" type="radio" name="Suchobjekt" value="rbPraeparat" checked="checked" tabindex="1" /><label for="rbPraeparat">Präparatname</label></span></td>
+														<td><input type="image" name="btnHelpPraeparat" id="btnHelpPraeparat" tabindex="13" title="Hilfe" src="images/b_hilfe_d.gif" border="0" /></td>
+													</tr>
+													<tr valign="top" align="left">
+														<td colspan="2"><span onkeydown="KeyDownHandler(btnSearch,event)"><input id="rbWirkstoff" type="radio" name="Suchobjekt" value="rbWirkstoff" tabindex="3" /><label for="rbWirkstoff">Wirkstoff (in deutsch)</label></span></td>
+														<td><input type="image" name="btnHelpWirkstoff" id="btnHelpWirkstoff" tabindex="14" title="Hilfe" src="images/b_hilfe_d.gif" border="0" /></td>
+													</tr>
+													<tr valign="top" align="left">
+														<td colspan="2"><span onkeydown="KeyDownHandler(btnSearch,event)"><input id="rbFirma" type="radio" name="Suchobjekt" value="rbFirma" tabindex="4" /><label for="rbFirma">Firma</label></span></td>
+														<td><input type="image" name="btnHelpFirma" id="btnHelpFirma" tabindex="15" title="Hilfe" src="images/b_hilfe_d.gif" border="0" /></td>
+													</tr>
+													<tr valign="top" align="left">
+														<td colspan="2"><span onkeydown="KeyDownHandler(btnSearch,event)"><input id="rbFulltext" type="radio" name="Suchobjekt" value="rbFulltext" tabindex="4" /><label for="rbFulltext">Volltextsuche</label></span></td>
+														<td><input type="image" name="btnHelpVolltextsuche" id="btnHelpVolltextsuche" tabindex="16" title="Hilfe" src="images/b_hilfe_d.gif" border="0" /></td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+										
+										<TR valign="top" align="left">
+										
+										
+										<td style="WIDTH: 598px; height: 114px;" width="598" colSpan="3">
+												<table cellspacing="3" cellpadding="0" width="300" border="0">
+													<tr valign="top" align="left">
+													    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+														<td><select name="cbSearchParam" id="cbSearchParam" tabindex="2">
+	<option value="beginnt mit">beginnt mit</option>
+	<option value="enthält">enth&#228;lt</option>
+	<option value="ist">ist</option>
+
+</select></td>
+														<td width="20" height="24"></td>
+											            <td style="WIDTH: 460px"><input name="txtSearch" type="text" maxlength="65" id="txtSearch" tabindex="3" title="Bitte geben Sie einen Suchbegriff ein." onkeydown="KeyDownHandler(btnSearch,event)" style="width:360px;" /></td>
+													</tr>
+													<tr valign="top" align="left">
+														<TD height="24" colspan="3"></TD>
+											            <TD style="WIDTH: 460px" align="right">
+                                                            &nbsp;<input type="submit" name="btnSearch" value="Suche" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;btnSearch&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" language="javascript" id="btnSearch" tabindex="4" />&nbsp;<input type="submit" name="btnReset" value="Reset" id="btnReset" tabindex="5" />
+                                                        </TD>
+													</tr>
+												</table>
+												<span controltovalidate="txtSearch" errormessage="Bitte geben Sie für die Suche mindestens 2 Zeichen ein." id="vldSearchTextLength" class="ErrorMessageSmall" evaluationfunction="RegularExpressionValidatorEvaluateIsValid" validationexpression=".{2,65}" style="color:Red;visibility:hidden;">Bitte geben Sie für die Suche mindestens 2 Zeichen ein.</span>
+											    <br />
+										        <span controltovalidate="txtSearch" errormessage="Bitte geben Sie für die Suche mindestens 2 Zeichen ein." id="vldSearchTextRequired" class="ErrorMessageSmall" evaluationfunction="RequiredFieldValidatorEvaluateIsValid" initialvalue="" style="color:Red;visibility:hidden;">Bitte geben Sie für die Suche mindestens 2 Zeichen ein.</span></td>
+									</TABLE>
+								</TD>
+							</TR>
+							<TR valign="top" align="left">
+							    <TD valign="top" align="left" width="617" colSpan="6" style="height: 3px"><img id="imgHr3" src="images/hr.gif" border="0" /></TD>
+                            </TR>
+							<TR valign="top" align="left">
+								<TD colSpan="6">
+								<br style="line-height:16px;" />
+								</TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD></TD>
+								<TD width="514" colSpan="4">
+									<!-- Start of Text object -->
+									<!-- Start of diversen Bekanntmachungen-->
+									<a id="hplInfundibilia" tabindex="6" class="BekanntmachungenTitel" href="Infundibilia.aspx?lang=de" style="color:#003366;">Standard-Fachinformationen Infundibilia</a>
+									<!-- End of diversen Bekanntmachungen-->
+									<!-- End Text --></TD>
+								<TD colSpan="2"></TD>
+							</TR>
+							
+							<TR valign="top" align="left">
+								<TD></TD>
+								<TD width="514" colSpan="4" style="height: 18px">
+									<!-- Start of Text object -->
+									<!-- Start of diversen Bekanntmachungen-->
+									<a id="hplNews" tabindex="7" class="BekanntmachungenTitel" href="Javascript:%20OpenWindow('AddKomp2FirefoxDe.htm')" style="color:#003366;">Suche-Plugin für das Kompendium online für Mozilla-basierende Browser</a>
+									<!-- End of diversen Bekanntmachungen-->
+									<!-- End Text --></TD>
+								<TD colSpan="2" style="height: 18px"></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD valign="top" align="left" width="617" colSpan="6" height="3">
+                                <br style="line-height:8px;" />
+                                <img id="imgHr5" src="images/hr.gif" border="0" />
+                                <br style="line-height:16px;" />
+							    </TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD></TD>
+								<TD colSpan="4">
+									<!-- Start of Text object -->
+									<!-- Start of diversen Bekanntmachungen-->
+									<span id="lblRemarqueTitle" class="BekanntmachungenTitel">Aktuelle Preis- und Packungsinformationen.</span></TD>
+								<TD colSpan="2"></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD></TD>
+								<TD colSpan="4">
+									<span id="lblRemarque" class="BekanntmachungenText">Clicken Sie auf das Icon neben dem Präparatenamen.</span>
+									<!-- End of diversen Bekanntmachungen-->
+									<!-- End Text --></TD>
+								<TD colSpan="2"></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD valign="top" align="left" width="617" colSpan="6" height="3">
+								<br style="line-height:8px;" />
+                                <img id="imgHr4" src="images/hr.gif" border="0" />
+							    </TD>
+							</TR>
+							<tr>
+							    <td><br style="line-height: 30px;" /></td>
+							</tr>
+							<TR>
+							    <TD style="height: 18px"></TD>
+							    <TD colspan="2" style="height: 18px"><span id="lblCopyright" class="CopyrightText">Copyright by Documed AG, Basel, Switzerland 2010</span>
+							    </TD>
+							</TR>
+						</TABLE>
+					</TD>
+				</TR>
+			</TABLE>
+			<!-- End of the Body for this Page -->
+		
+<script type="text/javascript">
+<!--
+var Page_Validators =  new Array(document.getElementById("vldSearchTextLength"), document.getElementById("vldSearchTextRequired"));
+// -->
+</script>
+
+<script language="javascript"> document.getElementById("txtSearch").focus(); </Script>
+<script type="text/javascript">
+<!--
+
+var Page_ValidationActive = false;
+if (typeof(ValidatorOnLoad) == "function") {
+    ValidatorOnLoad();
+}
+
+function ValidatorOnSubmit() {
+    if (Page_ValidationActive) {
+        return ValidatorCommonOnSubmit();
+    }
+    else {
+        return true;
+    }
+}
+        // -->
+</script>
+</form>
+	</BODY>
+</html>

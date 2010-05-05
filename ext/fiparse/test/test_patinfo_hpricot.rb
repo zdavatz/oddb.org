@@ -35,7 +35,7 @@ class TestPatinfoHpricot < Test::Unit::TestCase
     assert_equal("", section.subheading)
     assert_equal(2, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected =  "1 Tablette enthält: 0,018-0,026 ml Flüssigextrakt aus "
+    expected =  "1 Tablette enthÃ¤lt: 0,018-0,026 ml FlÃ¼ssigextrakt aus "
     expected << "Cimicifugawurzelstock (Traubensilberkerze), "
     expected << "(DEV: 0,78-1,14:1), Auszugsmittel Isopropanol 40% (V/V)."
     assert_equal(2, paragraph.formats.size)
@@ -47,7 +47,7 @@ class TestPatinfoHpricot < Test::Unit::TestCase
     assert_equal(10..-1, fmt.range)
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(1)
-    expected =  "Dieses Präparat enthält zusätzlich Hilfsstoffe."
+    expected =  "Dieses PrÃ¤parat enthÃ¤lt zusÃ¤tzlich Hilfsstoffe."
     assert_equal(expected, paragraph.text)
   end
   def test_chapter__with_sections
@@ -64,7 +64,7 @@ class TestPatinfoHpricot < Test::Unit::TestCase
         <table cellSpacing="0" cellPadding="0" border="0">
           <thead>
             <tr>
-              <th>Alter\302\240\302\240\302\240\302\240Suspension\302\240\302\240\302\240\302\240\302\240Kapseln\302\240\302\240\302\240\302\240\302\240Zäpfchen\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</th>
+              <th>Alter\302\240\302\240\302\240\302\240Suspension\302\240\302\240\302\240\302\240\302\240Kapseln\302\240\302\240\302\240\302\240\302\240ZÃ¤pfchen\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</th>
             </tr>
             <tr>
               <th>in\302\240\302\240\302\240\302\240\302\240\302\240\302\240zu\302\24010\302\240mg/ml\302\240\302\240\302\240\302\240zu\302\240250\302\240mg\302\240\302\240\302\240125\302\240bzw.\302\240500\302\240mg\302\240</th>
@@ -75,40 +75,40 @@ class TestPatinfoHpricot < Test::Unit::TestCase
           </thead>
           <tbody>
             <tr>
-              <td>½\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2405\302\240ml\302\240\302\240\302\2403×\302\240\302\240\302\240\302\240\302\240\302\240-\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+              <td>Â½\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2405\302\240ml\302\240\302\240\302\2403Ã—\302\240\302\240\302\240\302\240\302\240\302\240-\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
             </tr>
             <tr>
-              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240125\302\240mg\302\2402-3×\302\240\302\240\302\240\302\240\302\240</td>
+              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240125\302\240mg\302\2402-3Ã—\302\240\302\240\302\240\302\240\302\240</td>
             </tr>
             <tr>
-              <td>1-3\302\240\302\240\302\240\302\240\302\240\302\2407,5\302\240ml\302\2403×\302\240\302\240\302\240\302\240\302\240\302\240-\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+              <td>1-3\302\240\302\240\302\240\302\240\302\240\302\2407,5\302\240ml\302\2403Ã—\302\240\302\240\302\240\302\240\302\240\302\240-\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
             </tr>
             <tr>
-              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240125\302\240mg\302\2403×\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240125\302\240mg\302\2403Ã—\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
             </tr>
             <tr>
-              <td>3-6\302\240\302\240\302\240\302\240\302\240\302\24010\302\240ml\302\240\302\2403×\302\240\302\240\302\240\302\240\302\240\302\240-\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+              <td>3-6\302\240\302\240\302\240\302\240\302\240\302\24010\302\240ml\302\240\302\2403Ã—\302\240\302\240\302\240\302\240\302\240\302\240-\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
             </tr>
             <tr>
-              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240125\302\240mg\302\2404×\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240125\302\240mg\302\2404Ã—\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
             </tr>
             <tr>
-              <td>6-9\302\240\302\240\302\240\302\240\302\240\302\24015\302\240ml\302\240\302\2403×\302\240\302\240\302\240\302\240\302\240\302\240-\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+              <td>6-9\302\240\302\240\302\240\302\240\302\240\302\24015\302\240ml\302\240\302\2403Ã—\302\240\302\240\302\240\302\240\302\240\302\240-\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
             </tr>
             <tr>
-              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240500\302\240mg\302\2401-2×\302\240\302\240\302\240\302\240\302\240</td>
+              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240500\302\240mg\302\2401-2Ã—\302\240\302\240\302\240\302\240\302\240</td>
             </tr>
             <tr>
-              <td>9-12\302\240\302\240\302\240\302\240\302\24020\302\240ml\302\240\302\2403×\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Kps\302\2402-3×\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+              <td>9-12\302\240\302\240\302\240\302\240\302\24020\302\240ml\302\240\302\2403Ã—\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Kps\302\2402-3Ã—\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
             </tr>
             <tr>
-              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240500\302\240mg\302\2402×\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+              <td class="rowSepBelow">\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240500\302\240mg\302\2402Ã—\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
             </tr>
             <tr>
-              <td>12-14\302\240\302\240\302\240\302\24025\302\240ml\302\240\302\2403×\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Kps\302\2403×\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+              <td>12-14\302\240\302\240\302\240\302\24025\302\240ml\302\240\302\2403Ã—\302\240\302\240\302\240\302\240\302\240\302\2401\302\240Kps\302\2403Ã—\302\240\302\240\302\240\302\2401\302\240Supp.\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
             </tr>
             <tr>
-              <td>\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240500\302\240mg\302\2403×\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
+              <td>\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240\302\240500\302\240mg\302\2403Ã—\302\240\302\240\302\240\302\240\302\240\302\240\302\240</td>
             </tr>
           </tbody>
         </table>
@@ -124,45 +124,45 @@ class TestPatinfoHpricot < Test::Unit::TestCase
     assert_equal(1, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
     expected =  "Halten Sie sich generell an die von Ihrem Arzt bzw. Ihrer "
-    expected << "Ärztin verordneten Richtlinien. Die übliche Dosierung beträgt:"
+    expected << "Ã„rztin verordneten Richtlinien. Die Ã¼bliche Dosierung betrÃ¤gt:"
     assert_equal(expected, paragraph.text)
     section = chapter.sections.at(1)
-    assert_equal("Für Erwachsene und Jugendliche über 14 Jahre\n", 
+    assert_equal("FÃ¼r Erwachsene und Jugendliche Ã¼ber 14 Jahre\n", 
                  section.subheading)
     assert_equal(4, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected =  "Täglich 3 mal 1 Filmtablette bzw. 3 mal 2 Kapseln Ponstan "
-    expected << "während der Mahlzeiten. Je nach Bedarf kann diese Dosis "
-    expected << "vermindert oder erhöht werden, jedoch sollten Sie am selben "
+    expected =  "TÃ¤glich 3 mal 1 Filmtablette bzw. 3 mal 2 Kapseln Ponstan "
+    expected << "wÃ¤hrend der Mahlzeiten. Je nach Bedarf kann diese Dosis "
+    expected << "vermindert oder erhÃ¶ht werden, jedoch sollten Sie am selben "
     expected << "Tag nicht mehr als 4 Filmtabletten oder 8 Kapseln einnehmen. "
-    expected << "Die übliche Dosierung für Zäpfchen beträgt 3mal täglich 1 "
-    expected << "Zäpfchen Ponstan zu 500 mg."
+    expected << "Die Ã¼bliche Dosierung fÃ¼r ZÃ¤pfchen betrÃ¤gt 3mal tÃ¤glich 1 "
+    expected << "ZÃ¤pfchen Ponstan zu 500 mg."
     assert_equal(expected, paragraph.text)
     section = chapter.sections.at(2)
     assert_equal(1, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
     expected = <<-EOS
-Alter    Suspension     Kapseln     Zäpfchen        
+Alter    Suspension     Kapseln     Z\303\244pfchen        
 in       zu 10 mg/ml    zu 250 mg   125 bzw. 500 mg 
 Jahren   pro Tag        pro Tag     pro Tag         
-----------------------------------------------------
-½        5 ml   3×      -           1 Supp.         
-                                    125 mg 2-3×     
-----------------------------------------------------
-1-3      7,5 ml 3×      -           1 Supp.         
-                                    125 mg 3×       
-----------------------------------------------------
-3-6      10 ml  3×      -           1 Supp.         
-                                    125 mg 4×       
-----------------------------------------------------
-6-9      15 ml  3×      -           1 Supp.         
-                                    500 mg 1-2×     
-----------------------------------------------------
-9-12     20 ml  3×      1 Kps 2-3×  1 Supp.         
-                                    500 mg 2×       
-----------------------------------------------------
-12-14    25 ml  3×      1 Kps 3×    1 Supp.         
-                                    500 mg 3×
+-----------------------------------------------------
+\302\275        5 ml   3\303\227      -           1 Supp.         
+                                    125 mg 2-3\303\227     
+-----------------------------------------------------
+1-3      7,5 ml 3\303\227      -           1 Supp.         
+                                    125 mg 3\303\227       
+-----------------------------------------------------
+3-6      10 ml  3\303\227      -           1 Supp.         
+                                    125 mg 4\303\227       
+-----------------------------------------------------
+6-9      15 ml  3\303\227      -           1 Supp.         
+                                    500 mg 1-2\303\227     
+-----------------------------------------------------
+9-12     20 ml  3\303\227      1 Kps 2-3\303\227  1 Supp.         
+                                    500 mg 2\303\227       
+-----------------------------------------------------
+12-14    25 ml  3\303\227      1 Kps 3\303\227    1 Supp.         
+                                    500 mg 3\303\227
     EOS
     assert_equal(expected.chomp, paragraph.text)
     assert_equal(true, paragraph.preformatted?)
@@ -186,7 +186,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_instance_of(PatinfoDocument2001, @patinfo)
   end
   def test_name1
-    assert_equal('Cimifemin®', @writer.name)
+    assert_equal('CimifeminÂ®', @writer.name)
   end
   def test_company1
     chapter = @writer.company
@@ -218,8 +218,8 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     expected =  "Cimifemin ist ein Arzneimittel mit einem Extrakt aus der "
     expected << "Heilpflanze Cimicifuga (Traubensilberkerze). Cimifemin wird "
     expected << "bei Beschwerden in den Wechseljahren (Hitzewallungen, "
-    expected << "Schweissausbrüche, Schlafstörungen, Nervosität und "
-    expected << "Verstimmungszustände) angewendet. Diese können durch Cimifemin "
+    expected << "SchweissausbrÃ¼che, SchlafstÃ¶rungen, NervositÃ¤t und "
+    expected << "VerstimmungszustÃ¤nde) angewendet. Diese kÃ¶nnen durch Cimifemin "
     expected << "gelindert werden."
     assert_equal(expected, paragraph.text)
   end
@@ -232,13 +232,13 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal("", section.subheading)
     assert_equal(2, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected =  "Bei Spannungs- und Schwellungsgefühl in den Brüsten sowie bei "
+    expected =  "Bei Spannungs- und SchwellungsgefÃ¼hl in den BrÃ¼sten sowie bei "
     expected << "unvorhergesehenen Zwischenblutungen, Schmierblutungen oder bei "
-    expected << "wiederkehrender Regelblutung sollten Sie Rücksprache mit Ihrem "
-    expected << "Arzt bzw. Ihrer Ärztin nehmen."
+    expected << "wiederkehrender Regelblutung sollten Sie RÃ¼cksprache mit Ihrem "
+    expected << "Arzt bzw. Ihrer Ã„rztin nehmen."
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(1)
-    expected =  "Für Diabetikerinnen geeignet."
+    expected =  "FÃ¼r Diabetikerinnen geeignet."
     assert_equal(expected, paragraph.text)
   end
   def test_contra_indications1
@@ -252,23 +252,23 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal(4, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
     expected =  "Cimifemin darf nicht angewendet werden bei bekannter "
-    expected << "Überempfindlichkeit auf einen der Inhaltsstoffe oder auf "
-    expected << "Ranunculaceen (Hahnenfussgewächse)."
+    expected << "Ãœberempfindlichkeit auf einen der Inhaltsstoffe oder auf "
+    expected << "Ranunculaceen (HahnenfussgewÃ¤chse)."
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(1)
-    expected =  "Bei vorbestehender Leberschädigung wird von der Einnahme von "
+    expected =  "Bei vorbestehender LeberschÃ¤digung wird von der Einnahme von "
     expected << "Cimifemin abgeraten."
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(2)
-    expected =  "Dieses Präparat beeinflusst die körperlichen und psychischen "
-    expected << "Beschwerden in der Abänderung (Klimakterium). Da bisher keine "
-    expected << "klinischen Daten vorliegen, die eine günstige Wirkung auf die "
-    expected << "Knochen feststellen lassen, kann deshalb dieses Präparat nicht "
+    expected =  "Dieses PrÃ¤parat beeinflusst die kÃ¶rperlichen und psychischen "
+    expected << "Beschwerden in der AbÃ¤nderung (Klimakterium). Da bisher keine "
+    expected << "klinischen Daten vorliegen, die eine gÃ¼nstige Wirkung auf die "
+    expected << "Knochen feststellen lassen, kann deshalb dieses PrÃ¤parat nicht "
     expected << "zur Vorbeugung der Osteoporose verwendet werden."
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(3)
     expected =  "Informieren Sie Ihren Arzt, Apotheker oder Drogisten bzw. Ihre "
-    expected << "Ärztin, Apothekerin oder Drogistin, wenn Sie an anderen "
+    expected << "Ã„rztin, Apothekerin oder Drogistin, wenn Sie an anderen "
     expected << "Krankheiten leiden, Allergien haben oder andere Arzneimittel "
     expected << "(auch selbstgekaufte) einnehmen!"
     assert_equal(expected, paragraph.text)
@@ -282,21 +282,21 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal("", section.subheading)
     assert_equal(3, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected =  "Soweit nicht anders verschrieben, 2 mal täglich (morgens und "
-    expected << "abends) 1 Tablette unzerkaut mit etwas Flüssigkeit einnehmen."
+    expected =  "Soweit nicht anders verschrieben, 2 mal tÃ¤glich (morgens und "
+    expected << "abends) 1 Tablette unzerkaut mit etwas FlÃ¼ssigkeit einnehmen."
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(1)
-    expected =  "Cimifemin kann längere Zeit angewendet werden, mindestens über "
-    expected << "einen Zeitraum von 6 Wochen. Eine Anwendung über 6 Monate "
-    expected << "hinaus soll nur nach Rücksprache mit Ihrem Arzt bzw. Ihrer "
-    expected << "Ärztin erfolgen."
+    expected =  "Cimifemin kann lÃ¤ngere Zeit angewendet werden, mindestens Ã¼ber "
+    expected << "einen Zeitraum von 6 Wochen. Eine Anwendung Ã¼ber 6 Monate "
+    expected << "hinaus soll nur nach RÃ¼cksprache mit Ihrem Arzt bzw. Ihrer "
+    expected << "Ã„rztin erfolgen."
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(2)
     expected =  "Halten Sie sich an die in der Packungsbeilage angegebene oder "
-    expected << "vom Arzt bzw. von der Ärztin verschriebene Dosierung. Wenn Sie "
+    expected << "vom Arzt bzw. von der Ã„rztin verschriebene Dosierung. Wenn Sie "
     expected << "glauben, das Arzneimittel wirke zu schwach oder zu stark, so "
     expected << "sprechen Sie mit Ihrem Arzt, Apotheker oder Drogisten, bzw. "
-    expected << "Ihrer Ärztin, Apothekerin oder Drogistin."
+    expected << "Ihrer Ã„rztin, Apothekerin oder Drogistin."
     assert_equal(expected, paragraph.text)
   end
   def test_unwanted_effects1
@@ -308,22 +308,22 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal("", section.subheading)
     assert_equal(3, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected =  "Folgende Nebenwirkungen können bei der Einnahme von Cimifemin "
-    expected << "auftreten: in seltenen Fällen leichte Magenbeschwerden, "
-    expected << "Übelkeit, sehr selten bei Überempfindlichkeit Hautausschlag, "
+    expected =  "Folgende Nebenwirkungen kÃ¶nnen bei der Einnahme von Cimifemin "
+    expected << "auftreten: in seltenen FÃ¤llen leichte Magenbeschwerden, "
+    expected << "Ãœbelkeit, sehr selten bei Ãœberempfindlichkeit Hautausschlag, "
     expected << "Juckreiz."
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(1)
-    expected =  "In sehr seltenen Fällen gibt es Hinweise auf "
-    expected << "Leberschädigungen. Bei ungewöhnlichem Leistungsabfall, bei "
-    expected << "Gelbfärbung der Bindehaut der Augen oder der Haut, bei dunklem "
-    expected << "Urin oder entfärbtem Stuhl sollte Cimifemin abgesetzt und ein "
-    expected << "Arzt bzw. eine Ärztin aufgesucht werden."
+    expected =  "In sehr seltenen FÃ¤llen gibt es Hinweise auf "
+    expected << "LeberschÃ¤digungen. Bei ungewÃ¶hnlichem Leistungsabfall, bei "
+    expected << "GelbfÃ¤rbung der Bindehaut der Augen oder der Haut, bei dunklem "
+    expected << "Urin oder entfÃ¤rbtem Stuhl sollte Cimifemin abgesetzt und ein "
+    expected << "Arzt bzw. eine Ã„rztin aufgesucht werden."
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(2)
     expected =  "Wenn Sie Nebenwirkungen bemerken, die hier nicht beschrieben "
     expected << "sind, sollten Sie Ihren Arzt, Apotheker oder Drogisten bzw. "
-    expected << "Ihre Ärztin, Apothekerin oder Drogistin informieren."
+    expected << "Ihre Ã„rztin, Apothekerin oder Drogistin informieren."
     assert_equal(expected, paragraph.text)
   end
   def test_general_advice1
@@ -335,16 +335,16 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal("", section.subheading)
     assert_equal(3, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected =  "Arzneimittel sollen für Kinder unerreichbar aufbewahrt werden. "
-    expected << "Bei Raumtemperatur (15-25 °C) aufbewahren."
+    expected =  "Arzneimittel sollen fÃ¼r Kinder unerreichbar aufbewahrt werden. "
+    expected << "Bei Raumtemperatur (15â€“25 Â°C) aufbewahren."
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(1)
-    expected =  "Das Arzneimittel darf nur bis zu dem auf dem Behälter mit "
-    expected << "«Exp» bezeichneten Datum verwendet werden."
+    expected =  "Das Arzneimittel darf nur bis zu dem auf dem BehÃ¤lter mit "
+    expected << "Â«ExpÂ» bezeichneten Datum verwendet werden."
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(2)
-    expected =  "Weitere Auskünfte erteilt Ihnen Ihr Arzt, Apotheker oder "
-    expected << "Drogist bzw. Ihre Ärztin, Apothekerin oder Drogistin."
+    expected =  "Weitere AuskÃ¼nfte erteilt Ihnen Ihr Arzt, Apotheker oder "
+    expected << "Drogist bzw. Ihre Ã„rztin, Apothekerin oder Drogistin."
     assert_equal(expected, paragraph.text)
   end
   def test_composition1
@@ -356,12 +356,12 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal("", section.subheading)
     assert_equal(2, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected =  "1 Tablette enthält: 0,018-0,026 ml Flüssigextrakt aus "
+    expected =  "1 Tablette enthÃ¤lt: 0,018â€“0,026 ml FlÃ¼ssigextrakt aus "
     expected << "Cimicifugawurzelstock (Traubensilberkerze), "
-    expected << "(DEV: 0,78-1,14:1), Auszugsmittel Isopropanol 40% (V/V)."
+    expected << "(DEV: 0,78â€“1,14:1), Auszugsmittel Isopropanol 40% (V/V)."
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(1)
-    expected =  "Dieses Präparat enthält zusätzlich Hilfsstoffe."
+    expected =  "Dieses PrÃ¤parat enthÃ¤lt zusÃ¤tzlich Hilfsstoffe."
     assert_equal(expected, paragraph.text)
   end
   def test_iksnrs1
@@ -377,14 +377,14 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
   def test_packages1
     chapter = @writer.packages
     assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal("Wo erhalten Sie Cimifemin? Welche Packungen sind erhältlich?",
+    assert_equal("Wo erhalten Sie Cimifemin? Welche Packungen sind erhÃ¤ltlich?",
                  chapter.heading)
     assert_equal(1, chapter.sections.size)
     section = chapter.sections.first
     assert_equal("", section.subheading)
     assert_equal(2, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected =  "In Apotheken und Drogerien, ohne ärztliche Verschreibung."
+    expected =  "In Apotheken und Drogerien, ohne Ã¤rztliche Verschreibung."
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(1)
     expected =  "Packungen zu 30, 60 und 180 Tabletten."
@@ -412,7 +412,7 @@ class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase
     assert_equal("", section.subheading)
     assert_equal(1, section.paragraphs.size)
     expected  = "Diese Packungsbeilage wurde im Februar 2005 letztmals durch "
-    expected << "die Arzneimittelbehörde (Swissmedic) geprüft."
+    expected << "die ArzneimittelbehÃ¶rde (Swissmedic) geprÃ¼ft."
     assert_equal(expected, section.paragraphs.first.text)
   end
 end
@@ -426,7 +426,7 @@ class TestPatinfoHpricotCimifeminFr < Test::Unit::TestCase
     }
   end
   def test_name2
-    assert_equal('Cimifemine®', @writer.name)
+    assert_equal('CimifemineÂ®', @writer.name)
   end
   def test_company2
     chapter = @writer.company
@@ -436,7 +436,7 @@ class TestPatinfoHpricotCimifeminFr < Test::Unit::TestCase
   def test_amzv2
     chapter = @writer.amzv
     assert_instance_of(ODDB::Text::Chapter, chapter)
-    assert_equal('OEMéd', chapter.heading)
+    assert_equal('OEMÃ©d', chapter.heading)
     assert_equal(0, chapter.sections.size)
   end
   def test_composition2
@@ -448,12 +448,12 @@ class TestPatinfoHpricotCimifeminFr < Test::Unit::TestCase
     assert_equal("", section.subheading)
     assert_equal(2, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected =  "1 comprimé contient: 0,018-0,026 ml extrait liquide de rhizome "
-    expected << "de Cimicifuga (actée à grappes), (RDE: 0,78-1,14:1), agent "
-    expected << "d'extraction: isopropanol 40% (v/v)."
+    expected =  "1 comprimÃ© contient: 0,018â€“0,026 ml extrait liquide de rhizome "
+    expected << "de Cimicifuga (actÃ©e Ã  grappes), (RDE: 0,78â€“1,14:1), agent "
+    expected << "dâ€™extraction: isopropanol 40% (v/v)."
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(1)
-    expected =  "Cette préparation contient en outre des excipients."
+    expected =  "Cette prÃ©paration contient en outre des excipients."
     assert_equal(expected, paragraph.text)
   end
 end
@@ -492,7 +492,7 @@ class TestPatinfoHpricotInderalDe < Test::Unit::TestCase
   def test_pregnancy3
     chapter = @writer.pregnancy
     assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('Darf Inderal während einer Schwangerschaft oder in der Stillzeit eingenommen werden?', 
+    assert_equal('Darf Inderal wÃ¤hrend einer Schwangerschaft oder in der Stillzeit eingenommen werden?', 
                  chapter.heading)
     assert_equal(1, chapter.sections.size)
     section = chapter.sections.first
@@ -518,20 +518,20 @@ class TestPatinfoHpricotPonstanDe < Test::Unit::TestCase
     assert_equal("", section.subheading)
     assert_equal(1, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected =  "Wirkstoff: Mefenaminsäure."
+    expected =  "Wirkstoff: MefenaminsÃ¤ure."
     assert_equal(expected, paragraph.text)
     section = chapter.sections.at(1)
     assert_equal("Filmtabletten\n", section.subheading)
     assert_equal(1, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected =  "500 mg Mefenaminsäure sowie Vanillin (Aromaticum) und andere "
+    expected =  "500 mg MefenaminsÃ¤ure sowie Vanillin (Aromaticum) und andere "
     expected << "Hilfsstoffe."
     assert_equal(expected, paragraph.text)
     section = chapter.sections.last
     assert_equal("Suspension\n", section.subheading)
     assert_equal(2, section.paragraphs.size)
     paragraph = section.paragraphs.at(0)
-    expected =  "5 ml enthalten 50 mg Mefenaminsäure, Konservierungsmittel: "
+    expected =  "5 ml enthalten 50 mg MefenaminsÃ¤ure, Konservierungsmittel: "
     expected << "Natriumbenzoat (E 211), Saccharin, Vanillin, Aromatica und "
     expected << "andere Hilfsstoffe."
     assert_equal(expected, paragraph.text)
@@ -561,11 +561,11 @@ class TestPatinfoHpricotNasivinDe < Test::Unit::TestCase
     assert_equal('Was ist in Nasivin enthalten?', chapter.heading)
     chapter = @writer.packages
     assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('Wo erhalten Sie Nasivin? Welche Packungen sind erhältlich?', chapter.heading)
+    assert_equal('Wo erhalten Sie Nasivin? Welche Packungen sind erhÃ¤ltlich?', chapter.heading)
     section = chapter.sections.first
     paragraph = section.paragraphs.first
     assert_instance_of(ODDB::Text::Paragraph, paragraph )
-    assert_equal("In Apotheken und Drogerien ohne ärztliche Verschreibung.", 
+    assert_equal("In Apotheken und Drogerien ohne Ã¤rztliche Verschreibung.", 
                  paragraph.text)
     chapter = @writer.date
     assert_instance_of(ODDB::Text::Chapter, chapter )
@@ -574,46 +574,7 @@ class TestPatinfoHpricotNasivinDe < Test::Unit::TestCase
     assert_instance_of(ODDB::Text::Section, section )
     assert_equal("", section.subheading)
     assert_equal(1, section.paragraphs.size)
-    assert_equal("Diese Packungsbeilage wurde im März 2007 letztmals durch die Arzneimittelbehörde (Swissmedic) geprüft.", section.to_s)
-     
-
-  end
-end
-class TestPatinfoHpricotAcompliaDe < Test::Unit::TestCase
-  def setup
-    @path = File.expand_path('data/html/de/acomplia.html', 
-      File.dirname(__FILE__))
-    @writer = PatinfoHpricot.new
-    open(@path) { |fh| 
-      @patinfo = @writer.extract(Hpricot(fh))
-    }
-  end
-  def test_composition6
-    chapter = @writer.effects
-    assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('Was ist Acomplia und wann wird es angewendet?', chapter.heading)
-    section = chapter.sections.first
-    assert_instance_of(ODDB::Text::Section, section )
-    assert_equal('', section.subheading)
-    chapter = @writer.composition
-    assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('Was ist in Acomplia enthalten?', chapter.heading)
-    chapter = @writer.packages
-    assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('Wo erhalten Sie Acomplia? Welche Packungen sind erhältlich?', chapter.heading)
-    section = chapter.sections.first
-    paragraph = section.paragraphs.first
-    assert_instance_of(ODDB::Text::Paragraph, paragraph )
-    assert_equal("In Apotheken nur gegen ärztliche Verschreibung.", 
-                 paragraph.text)
-    chapter = @writer.date
-    assert_instance_of(ODDB::Text::Chapter, chapter )
-    assert_equal('', chapter.heading)
-    section = chapter.sections.first
-    assert_instance_of(ODDB::Text::Section, section )
-    assert_equal("", section.subheading)
-    assert_equal(1, section.paragraphs.size)
-    assert_equal("Diese Packungsbeilage wurde im September 2007 letztmals durch die Arzneimittelbehörde (Swissmedic) geprüft.", section.to_s)
+    assert_equal("Diese Packungsbeilage wurde im MÃ¤rz 2007 letztmals durch die ArzneimittelbehÃ¶rde (Swissmedic) geprÃ¼ft.", section.to_s)
      
 
   end

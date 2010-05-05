@@ -1,75 +1,49 @@
 #!/usr/bin/env ruby
 # FiParse::PatinfoHpricot -- oddb -- 17.08.2006 -- hwyss@ywesee.com
 
-require 'hpricot'
-require 'iconv'
-require 'ostruct'
-require 'util/oddbconfig'
-require 'model/text'
 require 'model/patinfo'
+require 'textinfo_hpricot'
 
 module ODDB
   module FiParse
-class PatinfoHpricot
-  attr_reader :amendments, :amzv, :company, :composition, :contra_indications,
+class PatinfoHpricot < TextinfoHpricot
+  attr_reader :amendments, :amzv, :composition, :contra_indications,
     :date, :distribution, :effects, :iksnrs, :fabrication, :galenic_form,
-    :general_advice, :name, :packages, :precautions, :pregnancy,
+    :general_advice, :packages, :precautions, :pregnancy,
     :unwanted_effects, :usage
-  def chapter(elem)
-    chapter = Text::Chapter.new
-    code = nil
-    ptr = OpenStruct.new
-    ptr.chapter = chapter
-    if(title = elem.at("h2"))
-      elem.children.delete(title)
-      anchor = title.at("a")
-      code = anchor['name']
-      chapter.heading = text(anchor)
-    end
-    handle_element(elem, ptr)
-    chapter.clean!
-    [code, chapter]
-  end
-  def extract(doc)
-    @name = text(doc.at("h1"))
-    @company = simple_chapter(doc.at("div.ownerCompany"))
-    @galenic_form = simple_chapter(doc.at("div.shortCharacteristic"))
-    (doc/"div.paragraph").each { |elem|
-      identify_chapter(*chapter(elem))
-    }
-    to_patinfo
-  end
   def identify_chapter(code, chapter)
     case code
     when '7600'
       @amzv = chapter
-    when '7620'
+    when '2000', '7620'
       @effects = chapter
-    when '7640'
+    when '2500', '7640'
       @amendments = chapter
-    when '7660', '7680'
+    when '3000', '7625', '7660', '7680'
       @contra_indications = chapter
-    when '7700'
+    when '3500', '7700'
       @precautions = chapter
-    when '7720'
+    when '4000', '7720'
       @pregnancy = chapter
-    when '7740'
+    when '4500', '7740'
       @usage = chapter
-    when '7760'
+    when '5000', '7760'
       @unwanted_effects = chapter
-    when '7780'
+    when '5500', '7780'
       @general_advice = chapter
-    when '7840'
+    when '6000', '7840'
       @composition = chapter
     when '7860'
       @iksnrs = chapter
-    when '7880'
+    when '6500', '7880'
       @packages = chapter
-    when '7900'
+    when '7000', '7900'
       @distribution = chapter
     when '7920'
       @fabrication = chapter
-    when '7940'
+    when '7930'
+      @delivery = chapter
+    when '7520', '7940'
       if(@date) # we are overwriting an existing @date
         chapter.sections = @date.sections
       end
@@ -85,7 +59,7 @@ class PatinfoHpricot
       raise "Unknown chapter-code #{code}, while parsing #{@name}"
     end
   end
-  def to_patinfo
+  def to_textinfo
     pat = if(@amzv)
       pat = PatinfoDocument2001.new
       pat.amzv = @amzv
@@ -113,82 +87,6 @@ class PatinfoHpricot
     pat.fabrication = @fabrication
     pat.date = @date
     pat
-  end
-  private
-  def handle_element(elem, ptr)
-    elem.each_child { |child|
-      case child
-      when Hpricot::Text
-        handle_text(ptr, child)
-      when Hpricot::Elem
-        case child.name
-        when 'h3'
-          ptr.section = ptr.chapter.next_section
-          ptr.target = ptr.section.subheading
-          handle_text(ptr, child)
-          ptr.target << "\n"
-        when 'p'
-          ptr.section ||= ptr.chapter.next_section
-          ptr.target = ptr.section.next_paragraph
-          handle_element(child, ptr)
-        when 'span'
-          target = ptr.target
-          target << ' '
-          target.augment_format(:italic) if(target.is_a?(Text::Paragraph))
-          handle_element(child, ptr)
-          target = ptr.target
-          target.reduce_format(:italic) if(target.is_a?(Text::Paragraph))
-          target << ' '
-        when 'table'
-          ptr.tablewidth = nil
-          ptr.target = ptr.section.next_paragraph
-          ptr.target.preformatted!
-          handle_element(child, ptr)
-          ptr.target = ptr.section.next_paragraph
-        when 'thead', 'tbody'
-          handle_element(child, ptr)
-        when 'tr'
-          handle_element(child, ptr)
-          ptr.target << "\n"
-        when 'td', 'th'
-          ptr.target << preformatted_text(child)
-          ## the new format uses td-borders as "row-separators"
-          if(child.classes.include?("rowSepBelow"))
-            ptr.tablewidth ||= ptr.target.to_s.split("\n").collect { |line| 
-              line.length }.max
-            ptr.target << "\n" << ("-" * ptr.tablewidth)
-          end
-        end
-      end
-    }
-  end
-  def handle_text(ptr, child)
-    ptr.section ||= ptr.chapter.next_section
-    ptr.target ||= ptr.section.next_paragraph
-    ptr.target << text(child)
-  end
-  def preformatted(target)
-    target.respond_to?(:preformatted?) && target.preformatted?
-  end
-  def preformatted_text(elem)
-    str = elem.inner_text || elem.to_s
-    target_encoding(str.gsub(/(&nbsp;|\302\240)/u, ' '))
-  end
-  def simple_chapter(elem)
-    if(elem)
-      chapter = Text::Chapter.new
-      chapter.heading = text(elem)
-      chapter
-    end
-  end
-  def target_encoding(text)
-    Iconv.iconv(ENCODING + "//TRANSLIT//IGNORE", 'utf8', text).first
-  rescue 
-    text
-  end
-  def text(elem)
-    str = elem.inner_text || elem.to_s
-    target_encoding(str.gsub(/(&nbsp;|\s)+/u, ' ').strip)
   end
 end
   end

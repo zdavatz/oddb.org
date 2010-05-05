@@ -12,6 +12,7 @@ require 'fachinfo_pdf'
 require 'fachinfo_doc'
 require 'indications'
 require 'minifi'
+require 'fachinfo_hpricot'
 require 'patinfo_hpricot'
 require 'rpdf2txt/parser'
 
@@ -44,6 +45,13 @@ module ODDB
       end
 			handler.writers.collect { |wt| wt.to_fachinfo }.compact.first
 		end
+    def parse_fachinfo_html(src)
+      if File.exist?(src)
+        src = File.read src
+      end
+      writer = FachinfoHpricot.new
+      writer.extract(Hpricot(src))
+    end
 		def parse_fachinfo_pdf(src)
 			writer = FachinfoPDFWriter.new
 			parser = Rpdf2txt::Parser.new(src, 'UTF-8')
@@ -51,11 +59,15 @@ module ODDB
 			writer.to_fachinfo
 		end
 		def parse_patinfo_html(src)
+      if File.exist?(src)
+        src = File.read src
+      end
 			writer = PatinfoHpricot.new
       writer.extract(Hpricot(src))
 		end
 		module_function :storage=
 		module_function :parse_fachinfo_doc
+		module_function :parse_fachinfo_html
 		module_function :parse_fachinfo_pdf
 		module_function :parse_patinfo_html
 	end

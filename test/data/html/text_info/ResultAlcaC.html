@@ -1,0 +1,234 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<html>
+	<head>
+		<title id="oPageTitle">Arzneimittel-Kompendium der Schweiz</title>
+		<!-- <title id="Title1">_Arzneimittel-Kompendium der Schweiz</title> -->
+		<meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR">
+		<meta content="C#" name="CODE_LANGUAGE">
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link href="includes/stylesheet_not_ie.css" rel="stylesheet" type="text/css"> <!--[if gte IE 5]><LINK href="includes/stylesheet_ie.css" type=text/css rel=stylesheet><![endif]-->
+	</head>
+	<body text="#000000" vlink="#990000" link="#0000ff" bgcolor="#ffffff" leftmargin="0" topmargin="0"
+		marginheight="0" marginwidth="0">
+		<form name="frmResultProdukte" method="post" action="CompanyProdukte.aspx?lang=de" id="frmResultProdukte">
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwULLTE4MTE0NDg5NjQPFgQeCExhbmd1YWdlBQJkZR4JQ29tcGFueUlkAtQBFgQCAQ8WAh4JaW5uZXJodG1sBSNBcnpuZWltaXR0ZWwtS29tcGVuZGl1bSBkZXIgU2Nod2VpemQCBQ9kFhoCAQ8PFgYeCEltYWdlVXJsBRF+L2ltYWdlcy9sb2dvLmdpZh4LTmF2aWdhdGVVcmwFN2h0dHA6Ly93d3cuZG9jdW1lZGluZm8uY2gvY29udGVudC9kZWZhdWx0LmFzcHg/TGFuZ0lEPTIeB1Rvb2xUaXAFCkRvY3VtZWQgQUdkZAIHDw8WBB8DBRV+L2ltYWdlcy9zZWFyY2hfZC5HSUYfBQUKTmV1ZSBTdWNoZWRkAgsPDxYEHwMFFX4vaW1hZ2VzL3JldG91cl9kLmdpZh8FBQd6dXLDvGNrZGQCDw8PFgQfAwUTfi9pbWFnZXMvaGVscF9kLkdJRh8FBQVIaWxmZWRkAhMPDxYEHwMFEn4vaW1hZ2VzL2ltcF9kLmdpZh8FBQlJbXByZXNzdW1kZAIXDw8WAh8DBRh+L2ltYWdlcy9iYW5uZXItYmxhdS5naWZkZAIZDw8WAh8DBRR+L2ltYWdlcy92ZXJsYXVmLmdpZmRkAikPDxYCHwMFFn4vaW1hZ2VzL1RpdGVsX0FNSy5HSUZkZAItDw8WAh4EVGV4dAUSU3VjaGVyZ2VibmlzIEZpcm1hZGQCMQ8PFgIfAwURfi9JbWFnZXMvcGx1cy5naWZkZAI1Dw8WAh8GBQdBZHJlc3NlZGQCPw8PFgIfBgVqU2llIGJlbsO2dGlnZW4gZGVuIEFkb2JlIFJlYWRlciwgdW0gZGllIEZhY2gtIHVuZCBQYXRpZW50ZW5pbmZvcm1hdGlvbmVuIGltIFBERi1Gb3JtYXQgw7ZmZm5lbiB6dSBrw7ZubmVuLmRkAksPDxYCHwYFK0NvcHlyaWdodCBieSBEb2N1bWVkIEFHLCBCYXNlbCwgU3dpdHplcmxhbmRkZBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18W7gEFCWJ0blNlYXJjaAUHYnRuQmFjawUHYnRuSGVscAUMYnRuSW1wcmVzc3VtBRFpbWdPcGVuQ2xvc2VQYW5lbAUwZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDI6YnRuRmFjaGluZm9ybWF0aW9uUGRmBSxkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMjpidG5QcmVpc1BhY2t1bmdlbgUwZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDM6YnRuRmFjaGluZm9ybWF0aW9uUGRmBSxkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMzpidG5QcmVpc1BhY2t1bmdlbgUwZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDQ6YnRuRmFjaGluZm9ybWF0aW9uUGRmBSxkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNDpidG5QcmVpc1BhY2t1bmdlbgUwZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDU6YnRuRmFjaGluZm9ybWF0aW9uUGRmBSxkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNTpidG5QcmVpc1BhY2t1bmdlbgUwZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDY6YnRuRmFjaGluZm9ybWF0aW9uUGRmBSxkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNjpidG5QcmVpc1BhY2t1bmdlbgUwZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDc6YnRuRmFjaGluZm9ybWF0aW9uUGRmBSxkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNzpidG5QcmVpc1BhY2t1bmdlbgUwZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDg6YnRuRmFjaGluZm9ybWF0aW9uUGRmBSxkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsODpidG5QcmVpc1BhY2t1bmdlbgUwZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDk6YnRuRmFjaGluZm9ybWF0aW9uUGRmBSxkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsOTpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDEwOmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDEwOmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMTE6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMTE6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwxMjpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwxMjpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDEzOmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDEzOmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMTQ6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMTQ6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwxNTpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwxNTpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDE2OmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDE2OmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMTc6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMTc6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwxODpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwxODpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDE5OmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDE5OmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMjA6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMjA6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwyMTpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwyMTpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDIyOmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDIyOmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMjM6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMjM6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwyNDpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwyNDpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDI1OmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDI1OmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMjY6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMjY6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwyNzpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwyNzpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDI4OmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDI4OmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMjk6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMjk6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwzMDpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwzMDpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDMxOmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDMxOmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMzI6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMzI6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwzMzpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwzMzpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDM0OmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDM0OmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMzU6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMzU6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwzNjpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwzNjpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDM3OmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDM3OmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMzg6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsMzg6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwzOTpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGwzOTpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDQwOmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDQwOmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNDE6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNDE6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw0MjpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw0MjpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDQzOmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDQzOmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNDQ6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNDQ6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw0NTpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw0NTpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDQ2OmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDQ2OmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNDc6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNDc6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw0ODpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw0ODpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDQ5OmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDQ5OmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNTA6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNTA6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw1MTpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw1MTpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDUyOmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDUyOmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNTM6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNTM6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw1NDpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw1NDpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDU1OmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDU1OmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNTY6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNTY6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw1NzpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw1NzpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDU4OmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDU4OmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNTk6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNTk6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw2MDpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw2MDpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDYxOmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDYxOmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNjI6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNjI6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw2MzpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw2MzpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDY0OmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDY0OmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNjU6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNjU6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw2NjpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw2NjpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDY3OmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDY3OmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNjg6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNjg6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw2OTpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw2OTpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDcwOmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDcwOmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNzE6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNzE6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw3MjpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw3MjpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDczOmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDczOmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNzQ6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNzQ6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw3NTpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw3NTpidG5QcmVpc1BhY2t1bmdlbgUxZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDc2OmJ0bkZhY2hpbmZvcm1hdGlvblBkZgUtZHRnRmFjaGluZm9ybWF0aW9uZW46X2N0bDc2OmJ0blByZWlzUGFja3VuZ2VuBTFkdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNzc6YnRuRmFjaGluZm9ybWF0aW9uUGRmBS1kdGdGYWNoaW5mb3JtYXRpb25lbjpfY3RsNzc6YnRuUHJlaXNQYWNrdW5nZW4FMWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw3ODpidG5GYWNoaW5mb3JtYXRpb25QZGYFLWR0Z0ZhY2hpbmZvcm1hdGlvbmVuOl9jdGw3ODpidG5QcmVpc1BhY2t1bmdlbgU7ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsMjpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFO2R0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDM6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTtkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw0OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU7ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNTpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFO2R0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDY6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTtkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw3OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU7ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsODpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFO2R0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDk6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGwxMDpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDExOmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsMTI6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGwxMzpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDE0OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsMTU6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGwxNjpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDE3OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsMTg6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGwxOTpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDIwOmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsMjE6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGwyMjpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDIzOmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsMjQ6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGwyNTpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDI2OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsMjc6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGwyODpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDI5OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsMzA6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGwzMTpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDMyOmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsMzM6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGwzNDpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDM1OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsMzY6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGwzNzpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDM4OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsMzk6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw0MDpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDQxOmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNDI6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw0MzpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDQ0OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNDU6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw0NjpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDQ3OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNDg6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw0OTpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDUwOmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNTE6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw1MjpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDUzOmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNTQ6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw1NTpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDU2OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNTc6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw1ODpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDU5OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNjA6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw2MTpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDYyOmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNjM6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw2NDpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDY1OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNjY6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw2NzpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDY4OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNjk6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw3MDpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDcxOmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNzI6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw3MzpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDc0OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNzU6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw3NjpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDc3OmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZgU8ZHRnUGF0aWVudGVuaW5mb3JtYXRpb25lbjpfY3RsNzg6YnRuUGF0aWVudGVubmluZm9ybWF0aW9uUGRmBTxkdGdQYXRpZW50ZW5pbmZvcm1hdGlvbmVuOl9jdGw3OTpidG5QYXRpZW50ZW5uaW5mb3JtYXRpb25QZGYFPGR0Z1BhdGllbnRlbmluZm9ybWF0aW9uZW46X2N0bDgwOmJ0blBhdGllbnRlbm5pbmZvcm1hdGlvblBkZu1MnTnGPB7AWSJRNNHNKnC+C4Hh" />
+
+<script type="text/javascript">
+<!--
+var theForm = document.forms['frmResultProdukte'];
+if (!theForm) {
+    theForm = document.frmResultProdukte;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+// -->
+</script>
+
+
+<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="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" />
+			<!-- Start of the Body for this Page -->
+			<TABLE id="Table1" cellspacing="0" cellpadding="0" width="845" border="0">
+				<TR valign="top" align="left">
+					<TD>
+						<TABLE id="Table2" cellspacing="0" cellpadding="0" width="95" border="0">
+							<TR valign="top" align="left">
+                                <TD valign="top" align="left" width="83px" colSpan="2"><a id="hplLogo" title="Documed AG" href="http://www.documedinfo.ch/content/default.aspx?LangID=2"><img title="Documed AG" src="images/logo.gif" border="0" /></a><MAP name="map1"><AREA shape="RECT" alt="Documed AG" coords="1,7,84,81" href="http://www.documed.ch/deutsch/index.html"></MAP></TD>
+							</TR>
+							
+							
+							<TR valign="top" align="left">
+								<!--<TD width="12" height="60"><img src="images/clearpixel.gif" height="1" alt="Formatter Image" width="12" border="0" /></TD>-->
+								<TD width="83">
+									<TABLE id="TABLE5" cellspacing="0" cellpadding="0" width="83" border="0">
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="1"><img id="imgMenuLinie1" src="images/menu_linie.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="21"><input type="image" name="btnSearch" id="btnSearch" title="Neue Suche" src="images/search_d.GIF" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="1"><img id="imgMenuLinie2" src="images/menu_linie.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="21"><input type="image" name="btnBack" id="btnBack" title="zurück" src="images/retour_d.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="1"><img id="imgMenuLinie3" src="images/menu_linie.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="21"><input type="image" name="btnHelp" id="btnHelp" title="Hilfe" src="images/help_d.GIF" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="1"><img id="imgMenuLinie4" src="images/menu_linie.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="21"><input type="image" name="btnImpressum" id="btnImpressum" tabindex="11" title="Impressum" src="images/imp_d.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="1"><img id="imgMenuLinie5" src="images/menu_linie.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83" height="26"><img id="imgBannerBlau_2" src="images/banner-blau.gif" border="0" /></TD>
+										</TR>
+										<TR valign="top" align="left">
+											<TD valign="top" align="left" width="83"><img id="imgVerlauf" src="images/verlauf.gif" border="0" /></TD>
+										</TR>
+									</TABLE>
+								</TD>
+							</TR>
+						</TABLE>
+						
+					</TD>
+					<TD>
+						<TABLE id="Table6" cellspacing="0" cellpadding="0" width="750" border="0">
+							<TR valign="top" align="left">
+								<TD width="40" height="7"><img src="images/clearpixel.gif" id="IMG2" height="1" alt="Formatter Image" width="40" border="0" /></TD>
+								<TD width="1"><img src="images/clearpixel.gif" id="IMG3" height="1" alt="Formatter Image" width="1" border="0" /></TD>
+								<TD width="374"><img src="images/clearpixel.gif" id="IMG4" height="1" alt="Formatter Image" width="374" border="0" /></TD>
+								<TD width="140"><img src="images/clearpixel.gif" id="IMG5" height="1" alt="Formatter Image" width="140" border="0" /></TD>
+								<TD width="53"><img src="images/clearpixel.gif" id="IMG6" height="1" alt="Formatter Image" width="53" border="0" /></TD>
+								<TD width="142"><img src="images/clearpixel.gif" id="IMG7" height="1" alt="Formatter Image" width="142" border="0" /></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD valign="top" align="left" width="617" colSpan="6" height="3"><img id="imgHr1" src="images/hr.gif" border="0" /></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD valign="top" align="left" width="617" colSpan="6" height="113"><img id="imgTitelAmk" src="images/Titel_AMK.GIF" border="0" /></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD valign="top" align="left" width="617" colSpan="6" height="3"><img id="imgHr2" src="images/hr.gif" border="0" /></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD colSpan="6" height="12"></TD>
+							</TR>
+							<TR valign="top" align="left">
+								<TD style="height: 20px; width: 65px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+								<td colSpan="4">
+									<TABLE id="Table7" cellspacing="0" cellpadding="0" width="750" border="0">
+										
+										<TR valign="top" align="left">
+											<td style="WIDTH: 598px" width="598" colSpan="3">
+												<table cellspacing="3" cellpadding="0" width="300" border="0">
+													<tr>
+													    <td>
+                                                            <br />
+                                                        </td>
+													</tr>
+													<tr valign="top" align="left">
+													    <td style="height: 19px"><span id="lblCompanyProductTitle" class="ContentTitle">Suchergebnis Firma</span></td>
+													</tr>
+													<tr height="6px">
+													<td></td>
+													</tr>
+									    <tr valign="top" align="left">
+										    <td colspan="2">
+												<table cellspacing="0" cellpadding="0" border="0">
+													<tr>
+														<TD width="6" height="7"><img src="images/clearpixel.gif" height="1" alt="Formatter Image" width="6" border="0" /></TD>
+														<td><input type="image" name="imgOpenClosePanel" id="imgOpenClosePanel" src="Images/plus.gif" border="0" /></td>
+														<TD width="5" height="7"><img src="images/clearpixel.gif" height="1" alt="Formatter Image" width="5" border="0" /></TD>
+														<td><a id="btnOpenClosePanel" class="CompanyDetail" href="javascript:__doPostBack('btnOpenClosePanel','')">Adresse</a></td>
+													</tr>
+													<tr>
+														<TD width="20" colSpan="3" height="7"><img src="images/clearpixel.gif" height="1" alt="Formatter Image" width="20" border="0" /></TD>
+														<TD width="375"></TD>
+													</tr>
+												</table>
+											</td>
+										</TR>
+										<tr valign="top" align="left">
+											<td colspan="2">
+												<table cellspacing="0" cellpadding="0" border="0">
+													<tr>
+														<td colSpan="3">
+															<table>
+																<tr>
+																	<TD><img src="images/clearpixel.gif" height="10" alt="Formatter Image" width="2" border="0" /></TD>
+																</tr>
+																<tr>
+																	<td><a href="http://www.adobe.de/products/acrobat/readstep2.html" target="_blank"><img alt="Download Adobe Reader" src="./images/logo_acrobat.gif" align="left" border="0"></a>
+																	</td>
+																	<td><img src="images/clearpixel.gif" height="1" alt="Formatter Image" width="2" border="0" />
+																	</td>
+																	<td width="100%"><span id="lblDownloadAcrobat" class="AdobeAcrobatReaderText">Sie benötigen den Adobe Reader, um die Fach- und Patienteninformationen im PDF-Format öffnen zu können.</span></td>
+																</tr>
+																<tr>
+																	<TD><img src="images/clearpixel.gif" height="18" alt="Formatter Image" width="2" border="0" /></TD>
+																</tr>
+															</table>
+														</td>
+													</tr>
+													<tr>
+														<td valign="top"><table class="ListText" cellspacing="0" cellpadding="1" border="0" id="dtgFachinformationen" style="border-collapse:collapse;">
+	<tr style="color:White;background-color:#003366;">
+		<td nowrap="nowrap" style="width:170px;">Fachinformation</td><td style="width:50px;">PDF</td><td style="width:50px;">Preise</td><td style="width:100px;">Firma</td>
+	</tr><tr>
+		<td>
+																			<a id="dtgFachinformationen__ctl2_btnFachinformation" href="javascript:__doPostBack('dtgFachinformationen$_ctl2$btnFachinformation','')">Alca-C®</a>
+																		</td><td>
+																			<input type="image" name="dtgFachinformationen:_ctl2:btnFachinformationPdf" id="dtgFachinformationen__ctl2_btnFachinformationPdf" src="Images/button_pdf.gif" border="0" />
+																		</td><td>
+																			<input type="image" name="dtgFachinformationen:_ctl2:btnPreisPackungen" id="dtgFachinformationen__ctl2_btnPreisPackungen" src="Images/button2.gif" border="0" />
+																		</td><td>
+																			Novartis Consumer Health
+																		</td>
+                              </tr>
+                          </table></td>
+														<TD><img src="images/clearpixel.gif" height="1" alt="Formatter Image" width="30" border="0" /></TD>
+														<td valign="top"><table class="ListText" cellspacing="0" cellpadding="1" border="0" id="dtgPatienteninformationen" style="border-collapse:collapse;">
+	<tr style="color:White;background-color:#003366;">
+		<td nowrap="nowrap" style="width:170px;">Patienteninformation</td><td style="width:50px;">PDF</td><td style="width:100px;">Firma</td>
+	</tr><tr>
+		<td>
+																			<a id="dtgPatienteninformationen__ctl2_btnPatientenninformation" href="javascript:__doPostBack('dtgPatienteninformationen$_ctl2$btnPatientenninformation','')">Alca-C®</a>
+																		</td><td>
+																			<input type="image" name="dtgPatienteninformationen:_ctl2:btnPatientenninformationPdf" id="dtgPatienteninformationen__ctl2_btnPatientenninformationPdf" src="Images/button_pdf.gif" border="0" />
+																		</td><td>
+																			Novartis Consumer Health
+																		</td>
+                              </tr>
+                          </table></td>
+													</tr>
+												</table>
+											</TD>
+										</TR>
+									</table>
+											</td>
+										</tr>	
+										
+										<TR valign="top" align="left">
+										
+										</TABLE>
+								</TD>
+							</TR>
+							<TR valign="top" align="left">
+					            <TD valign="top" align="left" width="617" colSpan="6" height="3">
+					            <br style="line-height:8px;" />
+                                <img id="imgHr4" src="images/hr.gif" border="0" />
+				                </TD>
+				            </TR>
+				            <tr>
+				                <td><br style="line-height: 30px;" /></td>
+				            </tr>
+				            <TR>
+				                <TD style="height: 18px"></TD>
+				                <TD colspan="2" style="height: 18px"><span id="lblCopyright" class="CopyrightText">Copyright by Documed AG, Basel, Switzerland</span>
+				                </TD>
+				            </TR>
+						</TABLE>
+					</td>
+				</tr>
+			</TABLE>
+			<!-- End of the Body for this Page --></form>
+	</body>
+</html>
