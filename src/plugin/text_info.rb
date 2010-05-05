@@ -96,18 +96,6 @@ module ODDB
       @download_errors.push name
       [paths, flags]
     end
-    def save_info type, name, lang, page, flags={}
-      dir = File.join @dirs[type], lang.to_s
-      FileUtils.mkdir_p dir
-      tmp = File.join dir, name.gsub(/[\/\s\+:]/, '_') + '.tmp.html'
-      page.save tmp
-      path = File.join dir, name.gsub(/[\/\s\+:]/, '_') + '.html'
-      if File.exist?(path) && FileUtils.compare_file(tmp, path)
-        flags.store lang, :up_to_date
-      end
-      FileUtils.mv tmp, path
-      path
-    end
     def eventtarget string
       if match = /doPostBack\('([^']+)'.*\)/.match(string.to_s)
         match[1]
@@ -134,21 +122,6 @@ module ODDB
       end
       eventtargets
     end
-    def import_products page, agent
-      fi_sources = identify_eventtargets page, /btnFachinformation/
-      pi_sources = identify_eventtargets page, /btnPatientenn?information/
-      form = page.form_with :name => 'frmResultProdukte'
-      fi_sources.sort.each do |name, eventtarget|
-        import_product name, agent, form, eventtarget, pi_sources[name]
-      end
-    end
-    def import_product name, agent, form, fi_target, pi_target
-      fi_paths, fi_flags = download_info :fachinfo, name, agent, form, fi_target
-      if pi_target
-        pi_paths, pi_flags = download_info :patinfo, name, agent, form, pi_target
-      end
-      update_product name, fi_paths, pi_paths || {}, fi_flags, pi_flags || {}
-    end
     def import_company name, agent=init_agent
       @current_company = name
       # search for company
@@ -165,6 +138,21 @@ module ODDB
           import_products products, agent
         end
       end
+    end
+    def import_products page, agent
+      fi_sources = identify_eventtargets page, /btnFachinformation/
+      pi_sources = identify_eventtargets page, /btnPatientenn?information/
+      form = page.form_with :name => 'frmResultProdukte'
+      fi_sources.sort.each do |name, eventtarget|
+        import_product name, agent, form, eventtarget, pi_sources[name]
+      end
+    end
+    def import_product name, agent, form, fi_target, pi_target
+      fi_paths, fi_flags = download_info :fachinfo, name, agent, form, fi_target
+      if pi_target
+        pi_paths, pi_flags = download_info :patinfo, name, agent, form, pi_target
+      end
+      update_product name, fi_paths, pi_paths || {}, fi_flags, pi_flags || {}
     end
     def parse_fachinfo path
       @parser.parse_fachinfo_html path
@@ -206,6 +194,18 @@ module ODDB
         "Parse Errors: #{@failures.size}", 
         @failures.join("\n"), 
       ].join("\n")
+    end
+    def save_info type, name, lang, page, flags={}
+      dir = File.join @dirs[type], lang.to_s
+      FileUtils.mkdir_p dir
+      tmp = File.join dir, name.gsub(/[\/\s\+:]/, '_') + '.tmp.html'
+      page.save tmp
+      path = File.join dir, name.gsub(/[\/\s\+:]/, '_') + '.html'
+      if File.exist?(path) && FileUtils.compare_file(tmp, path)
+        flags.store lang, :up_to_date
+      end
+      FileUtils.mv tmp, path
+      path
     end
     def search_company name, agent
       page = init_searchform agent
