@@ -272,10 +272,8 @@ module ODDB
       page = setup_page 'http://textinfo.ch/CompanyProdukte.aspx?lang=de', path, agent
       form = page.form_with :name => 'frmResultProdukte'
       eventtarget = 'dtgFachinformationen$_ctl3$btnFachinformation'
-      paths = nil
-      assert_nothing_raised do
-        paths = @plugin.download_info :fachinfo, 'Aclasta', agent, form, eventtarget
-      end
+      paths, flags = @plugin.download_info :fachinfo, 'Aclasta',
+                                           agent, form, eventtarget
       expected = {}
       path = File.join @vardir, 'html', 'fachinfo', 'de', 'Aclasta.html'
       expected.store :de, path
@@ -284,6 +282,12 @@ module ODDB
       expected.store :fr, path
       assert File.exist?(path)
       assert_equal expected, paths
+      assert_equal({}, flags)
+      paths, flags = @plugin.download_info :fachinfo, 'Aclasta',
+                                           agent, form, eventtarget
+      ## existing identical files are flagged as up-to-date
+      assert_equal expected, paths
+      assert_equal({:fr => :up_to_date, :de => :up_to_date}, flags)
     end
     def test_extract_iksnrs
       de = setup_fachinfo_document 'Zulassungsnummer', '57363 (Swissmedic).'
@@ -444,6 +448,36 @@ module ODDB
         end
       end
       result = @plugin.update_product 'Aclasta', fi_paths, pi_paths
+    end
+    def test_update_product__up_to_date_infos
+      de = setup_fachinfo_document 'Zulassungsnummer', '57363 (Swissmedic).'
+      fr = setup_fachinfo_document 'Numéro d’autorisation', '57363 (Swissmedic).'
+      fi_path_de = File.join(@datadir, 'Aclasta.de.html')
+      fi_path_fr = File.join(@datadir, 'Aclasta.fr.html')
+      fi_paths = { :de => fi_path_de, :fr => fi_path_fr }
+      pi_path_de = File.join(@datadir, 'Aclasta.pi.de.html')
+      pi_path_fr = File.join(@datadir, 'Aclasta.pi.fr.html')
+      pi_paths = { :de => pi_path_de, :fr => pi_path_fr }
+      @parser.should_receive(:parse_fachinfo_html).with(fi_path_de).times(1).and_return de
+      @parser.should_receive(:parse_fachinfo_html).with(fi_path_fr).times(1).and_return fr
+
+      reg = flexmock 'registration'
+      reg.should_receive(:fachinfo)
+      ptr = Persistence::Pointer.new([:registration, '57363'])
+      reg.should_receive(:pointer).and_return ptr
+      seq = flexmock 'sequence'
+      seq.should_receive(:patinfo)
+      seq.should_receive(:pointer).and_return ptr + [:sequence, '01']
+      reg.should_receive(:each_sequence).and_return do |block| block.call seq end
+      reg.should_receive(:sequences).and_return({'01' => seq})
+      @app.should_receive(:registration).with('57363').and_return reg
+      fi = flexmock 'fachinfo'
+      fi.should_receive(:pointer).and_return Persistence::Pointer.new([:fachinfo,1])
+      pi = flexmock 'patinfo'
+      pi.should_receive(:pointer).and_return Persistence::Pointer.new([:patinfo,1])
+      flags = {:de => :up_to_date, :fr => :up_to_date}
+      result = @plugin.update_product 'Aclasta', fi_paths, pi_paths, flags, flags
+      assert true # no call to parse_patinfo or @app.update has been made
     end
     def test_detect_session_failure__failure
       agent = setup_mechanize

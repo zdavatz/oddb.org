@@ -18,7 +18,8 @@ module ODDB
       @updated_pis = 0
       @ignored_pseudos = 0
       @session_failures = 0
-      @up_to_date = Hash.new 0
+      @up_to_date_fis = 0
+      @up_to_date_pis = 0
       @iksless = []
       @unknown_iksnrs = {}
       @failures = []
@@ -47,6 +48,7 @@ module ODDB
     def download_info type, name, agent, form, eventtarget
       max_retries = ODDB.config.text_info_max_retry
       paths = {}
+      flags = {}
       de, fr = nil
       begin
         de = submit_event agent, form, eventtarget
@@ -57,13 +59,9 @@ module ODDB
         end
         if match = /(Pseudo-Fach|Produkt)information/i.match(de.body)
           @ignored_pseudos += 1
-          return {}
+          flags.store :pseudo, true
         end
-        if path = save_info(type, name, 'de', de)
-          paths.store :de, path
-        else
-          @up_to_date[type] += 1
-        end
+        paths.store :de, save_info(type, name, :de, de, flags)
       rescue Mechanize::ResponseCodeError => err
         retries ||= max_retries
         if retries > 0
@@ -82,11 +80,7 @@ module ODDB
           de = submit_event agent, form, eventtarget
           fr = agent.get de.uri.to_s.gsub('lang=de', 'lang=fr')
         end
-        if path = save_info(type, name, 'fr', fr)
-          paths.store :fr, path
-        else
-          @up_to_date[type] += 1
-        end
+        paths.store :fr, save_info(type, name, :fr, fr, flags)
       rescue Mechanize::ResponseCodeError => err
         retries ||= max_retries
         if retries > 0
@@ -97,24 +91,22 @@ module ODDB
           raise
         end
       end
-      paths
+      [paths, flags]
     rescue Mechanize::ResponseCodeError
       @download_errors.push name
-      paths
+      [paths, flags]
     end
-    def save_info type, name, lang, page
-      dir = File.join @dirs[type], lang
+    def save_info type, name, lang, page, flags={}
+      dir = File.join @dirs[type], lang.to_s
       FileUtils.mkdir_p dir
       tmp = File.join dir, name.gsub(/[\/\s\+:]/, '_') + '.tmp.html'
       page.save tmp
       path = File.join dir, name.gsub(/[\/\s\+:]/, '_') + '.html'
       if File.exist?(path) && FileUtils.compare_file(tmp, path)
-        FileUtils.rm tmp
-        nil
-      else
-        FileUtils.mv tmp, path
-        path
+        flags.store lang, :up_to_date
       end
+      FileUtils.mv tmp, path
+      path
     end
     def eventtarget string
       if match = /doPostBack\('([^']+)'.*\)/.match(string.to_s)
@@ -151,11 +143,11 @@ module ODDB
       end
     end
     def import_product name, agent, form, fi_target, pi_target
-      fi_paths = download_info :fachinfo, name, agent, form, fi_target
+      fi_paths, fi_flags = download_info :fachinfo, name, agent, form, fi_target
       if pi_target
-        pi_paths = download_info :patinfo, name, agent, form, pi_target
+        pi_paths, pi_flags = download_info :patinfo, name, agent, form, pi_target
       end
-      update_product name, fi_paths, pi_paths || {}
+      update_product name, fi_paths, pi_paths || {}, fi_flags, pi_flags || {}
     end
     def import_company name, agent=init_agent
       @current_company = name
@@ -201,9 +193,9 @@ module ODDB
       [
         "Stored #{@updated_fis} Fachinfos",
         "Ignored #{@ignored_pseudos} Pseudo-Fachinfos",
-        "Ignored #{@up_to_date[:fachinfo]} up-to-date Fachinfo-Texts",
+        "Ignored #{@up_to_date_fis} up-to-date Fachinfo-Texts",
         "Stored #{@updated_pis} Patinfos",
-        "Ignored #{@up_to_date[:patinfo]} up-to-date Patinfo-Texts", nil,
+        "Ignored #{@up_to_date_pis} up-to-date Patinfo-Texts", nil,
         "Unknown Iks-Numbers: #{unknown_size}",
         unknown, nil,
         "Fachinfos without iksnrs: #{@iksless.size}",
@@ -255,13 +247,19 @@ module ODDB
       form['__EVENTTARGET'] = eventtarget
       agent.submit form, *args
     end
-    def update_product name, fi_paths, pi_paths
+    def update_product name, fi_paths, pi_paths, fi_flags={}, pi_flags={}
       # parse pi and fi
       fis = {}
       fi_paths.each do |lang, path|
         fis.store lang, parse_fachinfo(path)
       end
       pis = {}
+      ## there's no need to parse up-to-date patinfos
+      #  if both of them are up-to-date
+      if pi_flags[:de] && pi_flags[:fr]
+        pi_paths.clear
+        @up_to_date_pis += 1
+      end
       pi_paths.each do |lang, path|
         pis.store lang, parse_patinfo(path)
       end
@@ -271,15 +269,28 @@ module ODDB
         if iksnrs.empty?
           @iksless.push name
         end
+        ## Now that we have identified the pertinent iksnrs, we can remove
+        #  up-to-date fachinfos from the queue.
+        if fi_flags[:de] && fi_flags[:fr]
+          fis.clear
+          @up_to_date_fis += 1
+        end
         fachinfo, patinfo = nil
         # assign infos.
         iksnrs.each do |iksnr|
           if reg = @app.registration(iksnr)
-            fachinfo ||= store_fachinfo(fis)
-            replace fachinfo, reg, :fachinfo
-            patinfo ||= store_patinfo(reg, pis)
-            reg.each_sequence do |seq|
-              replace patinfo, seq, :patinfo
+            ## identification of Pseudo-Fachinfos happens at download-time.
+            #  but because we still want to extract the iksnrs, we just mark them
+            #  and defer inaction until here:
+            unless fi_flags[:pseudo] || fis.empty?
+              fachinfo ||= store_fachinfo(fis)
+              replace fachinfo, reg, :fachinfo
+            end
+            unless pis.empty?
+              patinfo ||= store_patinfo(reg, pis)
+              reg.each_sequence do |seq|
+                replace patinfo, seq, :patinfo
+              end
             end
           else
             store_orphaned iksnr, fis, pis

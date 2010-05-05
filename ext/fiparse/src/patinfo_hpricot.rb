@@ -43,7 +43,7 @@ class PatinfoHpricot < TextinfoHpricot
       @fabrication = chapter
     when '7930'
       @delivery = chapter
-    when '7520', '7940'
+    when '7520', '7940', '7950'
       if(@date) # we are overwriting an existing @date
         chapter.sections = @date.sections
       end
