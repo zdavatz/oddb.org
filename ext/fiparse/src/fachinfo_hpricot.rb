@@ -57,6 +57,8 @@ class FachinfoHpricot < TextinfoHpricot
       @fabrication = chapter
     when '7870'
       @delivery = chapter
+    when '5595'
+      @distribution = chapter
     when nil # special chapers without heading
       @galenic_form ||= chapter
     else

@@ -24,6 +24,7 @@ module ODDB
       @unknown_iksnrs = {}
       @failures = []
       @download_errors = []
+      @companies = []
     end
     def init_agent
       agent = Mechanize.new
@@ -46,51 +47,28 @@ module ODDB
       !page.form_with(:name => 'frmSearchForm').nil?
     end
     def download_info type, name, agent, form, eventtarget
-      max_retries = ODDB.config.text_info_max_retry
       paths = {}
       flags = {}
       de, fr = nil
-      begin
+      de = submit_event agent, form, eventtarget
+      if detect_session_failure(de)
+        @session_failures += 1
+        form = rebuild_resultlist agent
         de = submit_event agent, form, eventtarget
-        if detect_session_failure(de)
-          @session_failures += 1
-          form = rebuild_resultlist agent
-          de = submit_event agent, form, eventtarget
-        end
-        if match = /(Pseudo-Fach|Produkt)information/i.match(de.body)
-          @ignored_pseudos += 1
-          flags.store :pseudo, true
-        end
-        paths.store :de, save_info(type, name, :de, de, flags)
-      rescue Mechanize::ResponseCodeError => err
-        retries ||= max_retries
-        if retries > 0
-          retries -= 1
-          sleep max_retries - retries
-          retry
-        else
-          raise
-        end
       end
-      begin
+      if match = /(Pseudo-Fach|Produkt)information/i.match(de.body)
+        @ignored_pseudos += 1
+        flags.store :pseudo, true
+      end
+      paths.store :de, save_info(type, name, :de, de, flags)
+      fr = agent.get de.uri.to_s.gsub('lang=de', 'lang=fr')
+      if detect_session_failure(fr)
+        @session_failures += 1
+        form = rebuild_resultlist agent
+        de = submit_event agent, form, eventtarget
         fr = agent.get de.uri.to_s.gsub('lang=de', 'lang=fr')
-        if detect_session_failure(fr)
-          @session_failures += 1
-          form = rebuild_resultlist agent
-          de = submit_event agent, form, eventtarget
-          fr = agent.get de.uri.to_s.gsub('lang=de', 'lang=fr')
-        end
-        paths.store :fr, save_info(type, name, :fr, fr, flags)
-      rescue Mechanize::ResponseCodeError => err
-        retries ||= max_retries
-        if retries > 0
-          retries -= 1
-          sleep max_retries - retries
-          retry
-        else
-          raise
-        end
       end
+      paths.store :fr, save_info(type, name, :fr, fr, flags)
       [paths, flags]
     rescue Mechanize::ResponseCodeError
       @download_errors.push name
@@ -133,6 +111,7 @@ module ODDB
       form = page.form_with :name => 'frmResulthForm'
       page.links_with(:href => /Linkbutton1/).each do |link|
         if et = eventtarget(link.href)
+          @companies.push link.text
           @current_eventtarget = et
           products = submit_event agent, form, et
           import_products products, agent
@@ -184,6 +163,8 @@ module ODDB
         "Ignored #{@up_to_date_fis} up-to-date Fachinfo-Texts",
         "Stored #{@updated_pis} Patinfos",
         "Ignored #{@up_to_date_pis} up-to-date Patinfo-Texts", nil,
+        "Checked #{@companies.size} companies",
+        @companies.join("\n"), nil,
         "Unknown Iks-Numbers: #{unknown_size}",
         unknown, nil,
         "Fachinfos without iksnrs: #{@iksless.size}",
@@ -244,8 +225,18 @@ module ODDB
       @app.update ptr, languages
     end
     def submit_event agent, form, eventtarget, *args
+      max_retries = ODDB.config.text_info_max_retry
       form['__EVENTTARGET'] = eventtarget
       agent.submit form, *args
+    rescue Mechanize::ResponseCodeError => err
+      retries ||= max_retries
+      if retries > 0
+        retries -= 1
+        sleep max_retries - retries
+        retry
+      else
+        raise
+      end
     end
     def update_product name, fi_paths, pi_paths, fi_flags={}, pi_flags={}
       # parse pi and fi
