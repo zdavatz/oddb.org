@@ -100,12 +100,15 @@ module ODDB
       end
       eventtargets
     end
-    def import_company name, agent=init_agent
-      @current_company = name
-      # search for company
-      page = search_company name, agent
-      # import each company from the result
-      import_companies page, agent
+    def import_company names, agent=init_agent
+      @search_term = names.to_a.join ', '
+      names.to_a.each do |name|
+        @current_search = [:search_company, name]
+        # search for company
+        page = search_company name, agent
+        # import each company from the result
+        import_companies page, agent
+      end
     end
     def import_companies page, agent
       form = page.form_with :name => 'frmResulthForm'
@@ -118,10 +121,18 @@ module ODDB
         end
       end
     end
+    def import_fulltext terms, agent=init_agent
+      @search_term = terms.to_a.join ', '
+      terms.to_a.each do |term|
+        @current_search = [:search_fulltext, term]
+        page = search_fulltext term, agent
+        import_products page, agent
+      end
+    end
     def import_products page, agent
-      fi_sources = identify_eventtargets page, /btnFachinformation/
-      pi_sources = identify_eventtargets page, /btnPatientenn?information/
-      form = page.form_with :name => 'frmResultProdukte'
+      fi_sources = identify_eventtargets page, /dtgFachinfo/
+      pi_sources = identify_eventtargets page, /dtgPatienteninfo/
+      form = page.form_with :name => /frmResult(Produkte|hForm)/
       fi_sources.sort.each do |name, eventtarget|
         import_product name, agent, form, eventtarget, pi_sources[name]
       end
@@ -140,10 +151,14 @@ module ODDB
       @parser.parse_patinfo_html path
     end
     def rebuild_resultlist agent
-      page = search_company @current_company, agent
+      method, term = @current_search
+      page = self.send method, term, agent
       form = page.form_with :name => 'frmResulthForm'
-      products = submit_event agent, form, @current_eventtarget
-      products.form_with :name => 'frmResultProdukte'
+      if @current_eventtarget
+        products = submit_event agent, form, @current_eventtarget
+        form = products.form_with :name => 'frmResultProdukte'
+      end
+      form
     end
     def replace text_info, container, type
       old_ti = container.send type
@@ -158,6 +173,7 @@ module ODDB
         "#{name} (#{iksnr})"
       }.join("\n")
       [
+        "Searched for #{@search_term}",
         "Stored #{@updated_fis} Fachinfos",
         "Ignored #{@ignored_pseudos} Pseudo-Fachinfos",
         "Ignored #{@up_to_date_fis} up-to-date Fachinfo-Texts",
@@ -188,12 +204,18 @@ module ODDB
       FileUtils.mv tmp, path
       path
     end
-    def search_company name, agent
+    def search type, term, agent
       page = init_searchform agent
       form = page.form_with :name => 'frmSearchForm'
-      form.radiobutton_with(:value => 'rbFirma').click
-      form['txtSearch'] = name
+      form.radiobutton_with(:value => type).click
+      form['txtSearch'] = term
       agent.submit form
+    end
+    def search_company name, agent
+      search 'rbFirma', name, agent
+    end
+    def search_fulltext term, agent
+      search 'rbFulltext', term, agent
     end
     def store_fachinfo languages
       @updated_fis += 1

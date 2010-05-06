@@ -15,7 +15,8 @@ module ODDB
 		end
 	end
   class TextInfoPlugin
-    attr_accessor :parser, :iksless, :session_failures
+    attr_accessor :parser, :iksless, :session_failures, :current_search,
+                  :current_eventtarget
   end
   class TestTextInfoPlugin < Test::Unit::TestCase
     include FlexMock::TestCase
@@ -516,9 +517,59 @@ module ODDB
         ],
       ]
       agent = setup_mechanize mapping
+      @plugin.current_search = [:search_company, 'Company Name']
+      @plugin.current_eventtarget = "dtgFachinformationen$_ctl2$btnFachinformation"
       form = @plugin.rebuild_resultlist agent
       assert_instance_of Mechanize::Form, form
       assert_equal 'CompanyProdukte.aspx?lang=de', form.action
+    end
+    def test_search_fulltext
+      mapping = [
+        [ 'SearchForm.html',
+          :get,
+          'http://textinfo.ch/Search.aspx',
+          'frmSearchForm',
+          'ResultFulltext.html',
+        ],
+      ]
+      agent = setup_mechanize mapping
+      page = nil
+      assert_nothing_raised do
+        page = @plugin.search_fulltext '53537', agent
+      end
+      assert_not_nil page.form_with :name => 'frmResulthForm'
+      assert_equal 1, @pages.size
+    end
+    def test_import_fulltext
+      mapping = [
+        [ 'SearchForm.html',
+          :get,
+          'http://textinfo.ch/Search.aspx',
+        ],
+        [ 'ResultFulltext.html',
+          :submit,
+          'Search.aspx',
+        ],
+        [ 'Aclasta.de.html',
+          :submit,
+          'Result.aspx?lang=de',
+        ],
+        [ 'Aclasta.fr.html',
+          :get,
+          'Result.aspx?lang=fr',
+        ],
+      ]
+      agent = setup_mechanize mapping
+      page = nil
+      @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
+      @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
+      assert_nothing_raised do
+        @plugin.import_fulltext '53537', agent
+      end
+      assert_equal 4, @pages.size
+      ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
+      #  the rest of the process is tested in test_update_product
+      assert_equal ['Topamax®'], @plugin.iksless.uniq
     end
   end
 end

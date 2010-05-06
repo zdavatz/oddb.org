@@ -246,6 +246,11 @@ module ODDB
 		def update_comarketing
 			update_immediate(CoMarketingPlugin, 'Co-Marketing')
 		end
+    def update_company_textinfos *companies
+      update_notify_simple TextInfoPlugin,
+                           "Fach- und Patienteninfo '#{companies.join(', ')}'",
+                           :import_company, [companies]
+    end
 		def update_doctors
 			update_simple(Doctors::DoctorPlugin, 'Doctors')
 		end
@@ -359,9 +364,10 @@ module ODDB
 		def update_swissreg_news
 			update_immediate(SwissregPlugin, 'Patents', :update_news)
 		end
-    def update_company_textinfos company
-      update_notify_simple TextInfoPlugin, "Fach- und Patienteninfo '#{company}'",
-                           :import_company, company
+    def update_textinfos *iksnrs
+      update_notify_simple TextInfoPlugin,
+                           "Fach- und Patienteninfo '#{iksnrs.join(', ')}'",
+                           :import_fulltext, [iksnrs]
     end
 		def update_vaccines
 			update_notify_simple(VaccinePlugin, 'blutprodukte')
