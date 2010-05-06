@@ -53,7 +53,7 @@ class FachinfoHpricot < TextinfoHpricot
       @preclinic = chapter
     when '7850'
       @registration_owner = chapter
-    when '7860'
+    when '5610', '7860'
       @fabrication = chapter
     when '7870'
       @delivery = chapter
