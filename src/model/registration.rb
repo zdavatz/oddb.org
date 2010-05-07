@@ -17,7 +17,8 @@ module ODDB
       :manual_inactive_date,
 			:market_date, :fachinfo, :source, :ikscat, :renewal_flag, #:pdf_fachinfos,
       :index_therapeuticus, :comarketing_with, :vaccine, :ignore_patent,
-      :parallel_import, :minifi, :product_group, :production_science
+      :parallel_import, :minifi, :product_group, :production_science,
+      :ith_swissmedic
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
 		def initialize(iksnr)
@@ -224,7 +225,7 @@ module ODDB
 						else
 							app.company(value)
 						end
-          when :index_therapeuticus
+          when :index_therapeuticus, :ith_swissmedic
             hash.store key, IndexTherapeuticus.normalize_code(value)
 					end
 				end

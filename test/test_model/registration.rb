@@ -5,10 +5,10 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'stub/odba'
 require 'util/persistence'
 require 'model/registration'
 require 'model/incompleteregistration'
-require 'stub/odba'
 require 'mock'
 require 'flexmock'
 
@@ -264,7 +264,7 @@ class TestRegistration < Test::Unit::TestCase
 		@registration.fachinfo = fachinfo2
 		assert_equal(@registration, fachinfo1.removed)
 		assert_equal(@registration, fachinfo2.added)
-		assert_equal(@registration.fachinfo_oid, 3)
+		assert_equal(@registration.fachinfo.oid, 3)
 		assert_nil(fachinfo2.removed)
 		@registration.fachinfo = nil
 		assert_equal(@registration, fachinfo2.removed)
@@ -318,6 +318,7 @@ class TestIncompleteRegistration < Test::Unit::TestCase
 		@reg.sequences = {'01'	=>	@seq}
 	end
 	def test__acceptable
+    flunk "IncompleteRegistration is obsolete and should be removed"
 		assert(!@reg._acceptable?)
 		@reg.iksnr = '12345'
 		assert(!@reg._acceptable?)
@@ -338,6 +339,7 @@ class TestIncompleteRegistration < Test::Unit::TestCase
 		assert(!@reg._acceptable?)
 	end
 	def test_acceptable
+    flunk "IncompleteRegistration is obsolete and should be removed"
 		seq = FlexMock.new
 		@reg.sequences = {'01'	=>	seq}
 		@reg.iksnr = '12345'
@@ -350,6 +352,7 @@ class TestIncompleteRegistration < Test::Unit::TestCase
 		assert(@reg.acceptable?)
 	end
 	def test_accepted
+    flunk "IncompleteRegistration is obsolete and should be removed"
 		app = StubRegistrationApp.new
 		@reg.company = StubRegistrationCompany.new('ywesee')
 		@reg.iksnr = '12345'

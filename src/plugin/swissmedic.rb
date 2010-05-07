@@ -106,8 +106,9 @@ module ODDB
         latest = nil
         @app.registrations.each { |iksnr, reg|
           row = [ iksnr, nil, nil, reg.company_name, reg.product_group,
-                  reg.index_therapeuticus, reg.production_science,
-                  reg.registration_date, reg.expiration_date ]
+                  reg.ith_swissmedic || reg.index_therapeuticus,
+                  reg.production_science, reg.registration_date,
+                  reg.expiration_date ]
           unless reg.inactive? || reg.vaccine
             known_regs.store [iksnr], row
             reg.sequences.each { |seqnr, seq|
@@ -325,7 +326,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       hsh = { :import_date => @@today }
       COLUMNS.each_with_index { |key, idx|
         value = case key
-                when :registration_date, :expiry_date
+                when :registration_date, :expiry_date, :sequence_date
                   date_cell(row, idx)
                 when :seqnr
                   sprintf "%02i", row.at(idx).to_i
@@ -339,10 +340,10 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     def update_active_agent(seq, name, part, opts={})
       units = 'U\.\s*Ph\.\s*Eur\.'
       ptrn = %r{(?ix)
-                (^|[[:punct:]])\s*#{Regexp.escape name}(?![:\-])
+                (^|[[:punct:]]|\bet|\bex)\s*#{Regexp.escape name}(?![:\-])
                 (\s*(?<dose>[\d\-.]+(\s*(?:(Mio\.?\s*)?(#{units}|[^\s,]+))
                                      (\s*[mv]/[mv])?)))?
-                (\s*ut|corresp\.?\s+(?<chemical>[^\d,]+)
+                (\s*(?:ut|corresp\.?)\s+(?<chemical>[^\d,]+)
                       \s*(?<cdose>[\d\-.]+(\s*(?:(Mio\.?\s*)?(#{units}|[^\s,]+))
                                            (\s*[mv]/[mv])?))?)?
                }u
@@ -576,7 +577,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         reg_date = date_cell(row, column(:registration_date))
         args = { 
           :product_group       => group,
-          :index_therapeuticus => cell(row, column(:index_therapeuticus)), 
+          :ith_swissmedic      => cell(row, column(:index_therapeuticus)),
           :production_science  => science,
           :registration_date   => reg_date,
           :expiration_date     => expiration,

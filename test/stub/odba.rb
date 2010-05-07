@@ -8,6 +8,8 @@ module ODBA
 		attr_writer :retrieve_from_index
 		def delete(anything)
 		end
+    def ensure_index_deferred *args
+    end
 		def store(anything)
 		end
 		def retrieve_from_index(*args)

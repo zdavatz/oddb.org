@@ -28,7 +28,7 @@ module ODDB
         :limitation, :limitation_points, :limitation_text, :lppv,
         :registration_date, :expiration_date, :inactive_date, :export_flag,
         :casrn, :generic_type, :has_generic, :deductible, :out_of_trade,
-        :c_type, :index_therapeuticus, :narcotic, :vaccine ]
+        :c_type, :index_therapeuticus, :ith_swissmedic, :narcotic, :vaccine ]
     end
     def export_drugs_extended
       @options = { :compression => 'zip' }
