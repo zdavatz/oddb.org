@@ -4,6 +4,7 @@ require 'drb'
 require 'mechanize'
 require 'model/fachinfo'
 require 'model/patinfo'
+require 'view/rss/fachinfo'
 
 module ODDB
   class TextInfoPlugin < Plugin
@@ -25,6 +26,7 @@ module ODDB
       @failures = []
       @download_errors = []
       @companies = []
+      @news_log = File.join ODDB.config.log_dir, 'fachinfo.txt'
     end
     def init_agent
       agent = Mechanize.new
@@ -93,6 +95,19 @@ module ODDB
     rescue
       []
     end
+    def fachinfo_news agent=init_agent
+      url = ODDB.config.text_info_newssource \
+        or raise 'please configure ODDB.config.text_info_newssource to proceed'
+      fi_ptrn = /Monographie.aspx\?Id=([0-9A-Fa-f\-]{36}).*MonType=fi/u
+      ids = []
+      page = agent.get url
+      page.links.each do |link|
+        if match = fi_ptrn.match(link.href)
+          ids.push [match[1], link.text.gsub(/;$/, '')]
+        end
+      end
+      ids
+    end
     def identify_eventtargets page, ptrn
       eventtargets = {}
       page.links_with(:href => ptrn).each do |link|
@@ -129,6 +144,26 @@ module ODDB
         import_products page, agent
       end
     end
+    def import_name terms, agent=init_agent
+      @search_term = terms.to_a.join ', '
+      terms.to_a.each do |term|
+        @current_search = [:search_product, term]
+        page = search_product term, agent
+        import_products page, agent
+      end
+    end
+    def import_news agent=init_agent
+      old_news = old_fachinfo_news
+      updates = true_news fachinfo_news(agent), old_news
+      updates.reverse!
+      indices, names = updates.transpose
+      if names
+        import_name names, agent
+        log_news updates + old_news
+        postprocess
+      end
+      !updates.empty?
+    end
     def import_products page, agent
       fi_sources = identify_eventtargets page, /dtgFachinfo/
       pi_sources = identify_eventtargets page, /dtgPatienteninfo/
@@ -144,11 +179,30 @@ module ODDB
       end
       update_product name, fi_paths, pi_paths || {}, fi_flags, pi_flags || {}
     end
+    def log_news lines
+      File.open @news_log, 'w' do |fh|
+        lines.each do |pair|
+          fh.puts pair.join(' ')
+        end
+      end
+    end
+    def old_fachinfo_news
+      begin
+        File.readlines(@news_log).collect do |line|
+          line.strip.split ' ', 2
+        end
+      rescue Errno::ENOENT
+        []
+      end
+    end
     def parse_fachinfo path
       @parser.parse_fachinfo_html path
     end
     def parse_patinfo path
       @parser.parse_patinfo_html path
+    end
+    def postprocess
+      update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
     end
     def rebuild_resultlist agent
       method, term = @current_search
@@ -207,7 +261,9 @@ module ODDB
     def search type, term, agent
       page = init_searchform agent
       form = page.form_with :name => 'frmSearchForm'
-      form.radiobutton_with(:value => type).click
+      unless type == 'rbPraeparat' ## default value, clicking leads to an error
+        form.radiobutton_with(:value => type).click
+      end
       form['txtSearch'] = term
       agent.submit form
     end
@@ -216,6 +272,9 @@ module ODDB
     end
     def search_fulltext term, agent
       search 'rbFulltext', term, agent
+    end
+    def search_product name, agent
+      search 'rbPraeparat', name, agent
     end
     def store_fachinfo languages
       @updated_fis += 1
@@ -258,6 +317,13 @@ module ODDB
         retry
       else
         raise
+      end
+    end
+    def true_news news, old_news
+      if (pair = old_news.first) && idx = news.flatten.index(pair.first)
+        news[0...idx/2]
+      else
+        news
       end
     end
     def update_product name, fi_paths, pi_paths, fi_flags={}, pi_flags={}

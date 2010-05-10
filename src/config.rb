@@ -13,6 +13,7 @@ module ODDB
   defaults = {
     'config'			        => default_config_files,
     'data_dir'            => File.expand_path('../data', File.dirname(__FILE__)),
+    'log_dir'             => File.expand_path('../log', File.dirname(__FILE__)),
     'url_bag_sl_zip'      => 'http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip',
     'bsv_archives'        => '(?:PR|BSV_per_20)(0[3-8])[\d.]+(?:txt|xls)',
     'server_url'          => 'druby://localhost:10000',
@@ -24,6 +25,7 @@ module ODDB
     'smtp_port'           => 587,
     'text_info_searchform'=> nil,
     'text_info_max_retry' => 5,
+    'text_info_newssource'=> nil,
     'mail_from'           => '"ODDB-Mails" <mail@oddb.org>',
     'mail_to'             => [],
   }

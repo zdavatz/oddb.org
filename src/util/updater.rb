@@ -251,15 +251,19 @@ module ODDB
                            "Fach- und Patienteninfo '#{companies.join(', ')}'",
                            :import_company, [companies]
     end
+    def update_textinfo_news
+      update_notify_simple TextInfoPlugin,
+                           "Fach- und Patienteninfo News",
+                           :import_news
+    end
 		def update_doctors
 			update_simple(Doctors::DoctorPlugin, 'Doctors')
 		end
     def update_fachinfo(*iksnrs)
       if iksnrs.empty?
-        update_notify_simple FachinfoPlugin, 'Fachinfo'
+        update_textinfo_news
       else
-        update_notify_simple FachinfoPlugin, 'Fachinfo',
-                             :update_from_iksnrs, iksnrs
+        update_textinfos *iksnrs
       end
     end
 		def update_hospitals

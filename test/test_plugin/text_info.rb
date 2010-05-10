@@ -27,7 +27,9 @@ module ODDB
       @vardir = File.expand_path '../var/', File.dirname(__FILE__)
       FileUtils.mkdir_p @vardir
       ODDB.config.data_dir = @vardir
+      ODDB.config.log_dir = @vardir
       ODDB.config.text_info_searchform = 'http://textinfo.ch/Search.aspx'
+      ODDB.config.text_info_newssource = 'http://textinfo.ch/news.aspx'
       @parser = flexmock 'parser (simulates ext/fiparse)'
       @plugin = TextInfoPlugin.new @app
       @plugin.parser = @parser
@@ -112,7 +114,7 @@ module ODDB
       assert_nothing_raised do
         page = @plugin.init_searchform agent
       end
-      assert_not_nil page.form_with :name => 'frmSearchForm'
+      assert_not_nil page.form_with(:name => 'frmSearchForm')
     end
     def test_search_company
       mapping = [
@@ -128,7 +130,7 @@ module ODDB
       assert_nothing_raised do
         page = @plugin.search_company 'novartis', agent
       end
-      assert_not_nil page.form_with :name => 'frmResulthForm'
+      assert_not_nil page.form_with(:name => 'frmResulthForm')
       assert_equal 1, @pages.size
     end
     def test_import_companies
@@ -344,6 +346,30 @@ module ODDB
         end
       end
       result = @plugin.update_product 'Aclasta', fi_paths, pi_paths
+      assert_equal <<-EOS, @plugin.report
+Searched for 
+Stored 1 Fachinfos
+Ignored 0 Pseudo-Fachinfos
+Ignored 0 up-to-date Fachinfo-Texts
+Stored 1 Patinfos
+Ignored 0 up-to-date Patinfo-Texts
+
+Checked 0 companies
+
+
+Unknown Iks-Numbers: 0
+
+
+Fachinfos without iksnrs: 0
+
+
+Session failures: 0
+
+Download errors: 0
+
+
+Parse Errors: 0
+      EOS
     end
     def test_update_product__existing_infos
       de = setup_fachinfo_document 'Zulassungsnummer', '57363 (Swissmedic).'
@@ -537,7 +563,7 @@ module ODDB
       assert_nothing_raised do
         page = @plugin.search_fulltext '53537', agent
       end
-      assert_not_nil page.form_with :name => 'frmResulthForm'
+      assert_not_nil page.form_with(:name => 'frmResulthForm')
       assert_equal 1, @pages.size
     end
     def test_import_fulltext
@@ -570,6 +596,183 @@ module ODDB
       ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
       #  the rest of the process is tested in test_update_product
       assert_equal ['Topamax®'], @plugin.iksless.uniq
+    end
+    def test_fachinfo_news__unconfigured
+      agent = setup_mechanize
+      ODDB.config.text_info_newssource = nil
+      assert_raises RuntimeError do
+        @plugin.fachinfo_news agent
+      end
+    end
+    def test_fachinfo_news
+      mapping = [
+        [ 'News.html',
+          :get,
+          ODDB.config.text_info_newssource,
+        ],
+      ]
+      agent = setup_mechanize mapping
+      news = nil
+      assert_nothing_raised do
+        news = @plugin.fachinfo_news agent
+      end
+      assert_equal 248, news.size
+      assert_equal ["13e742d9-f404-4681-ab82-71d347acfb93",
+                    "Abseamed®"], news.first
+    end
+    def test_old_fachinfo_news
+      ## no file means no news
+      assert_equal [], @plugin.old_fachinfo_news
+      File.open File.join(@vardir, 'fachinfo.txt'), 'w' do |fh|
+        fh.puts <<-EOS
+c413ce2d-a88e-4d71-b6b9-1c55e021edc0 Amiodarone Winthrop\302\256/- Mite
+1e5d1ba9-3073-47cb-8ebb-ecd3f88ecacf
+        EOS
+      end
+      ## the file is parsed properly
+      news = @plugin.old_fachinfo_news
+      assert_equal 2, news.size
+      assert_equal ["c413ce2d-a88e-4d71-b6b9-1c55e021edc0",
+                    "Amiodarone Winthrop\302\256/- Mite"], news.first
+      ## the file is also parsed properly when names aren't included
+      assert_equal ["1e5d1ba9-3073-47cb-8ebb-ecd3f88ecacf"], news.last
+    end
+    def test_true_news
+      ## there are no news
+      news = [
+        ["13e742d9-f404-4681-ab82-71d347acfb93", "Abseamed\302\256"],
+        ["8a7f708c-c738-4425-a9a5-5ad294f20be4", "Aclasta\302\256"],
+        ["01de437e-6568-4667-a3a6-00035098f59a", "Alcacyl\302\256 500 Instant-Pulver"],
+        ["3ac0c14d-8c1a-4aed-9db6-f2dba58bc964", "Aldurazyme\302\256"],
+        ["70893844-a876-4776-a61f-156e8465e47a", "Allopur\302\256"],
+        ["3d808e28-3445-46e1-be00-68f053499bc1", "Allopurinol - 1 A Pharma100 mg/300 mg"],
+        ["b287ecf9-84c2-48f0-b0c0-2dd9cff30d1f", "Amavita Acetylcystein 600"],
+        ["78163fd4-6cf0-40ea-91b8-06c258722a7d", "Amavita Carbocistein"],
+        ["1885f45a-b9df-4462-adb9-c46140859835", "Amavita Ibuprofen 400"],
+        ["0a717d39-a873-4bff-87ab-b6b08b861da0", "Amavita Paracetamol 500"]
+      ]
+      old_news = [
+        ["13e742d9-f404-4681-ab82-71d347acfb93", "Abseamed\302\256"],
+        ["8a7f708c-c738-4425-a9a5-5ad294f20be4", "Aclasta\302\256"],
+      ]
+      assert_equal [], @plugin.true_news(news, old_news)
+      ## clean disection
+      old_news = [
+        ["3d808e28-3445-46e1-be00-68f053499bc1", "Allopurinol - 1 A Pharma100 mg/300 mg"],
+        ["b287ecf9-84c2-48f0-b0c0-2dd9cff30d1f", "Amavita Acetylcystein 600"],
+        ["78163fd4-6cf0-40ea-91b8-06c258722a7d", "Amavita Carbocistein"],
+        ["1885f45a-b9df-4462-adb9-c46140859835", "Amavita Ibuprofen 400"],
+        ["0a717d39-a873-4bff-87ab-b6b08b861da0", "Amavita Paracetamol 500"]
+      ]
+      expected = [
+        ["13e742d9-f404-4681-ab82-71d347acfb93", "Abseamed\302\256"],
+        ["8a7f708c-c738-4425-a9a5-5ad294f20be4", "Aclasta\302\256"],
+        ["01de437e-6568-4667-a3a6-00035098f59a", "Alcacyl\302\256 500 Instant-Pulver"],
+        ["3ac0c14d-8c1a-4aed-9db6-f2dba58bc964", "Aldurazyme\302\256"],
+        ["70893844-a876-4776-a61f-156e8465e47a", "Allopur\302\256"],
+      ]
+      assert_equal expected, @plugin.true_news(news, old_news)
+      ## disection also works for ids recorded without name
+      old_news = [
+        ["3d808e28-3445-46e1-be00-68f053499bc1"],
+        ["b287ecf9-84c2-48f0-b0c0-2dd9cff30d1f"],
+        ["78163fd4-6cf0-40ea-91b8-06c258722a7d"],
+        ["1885f45a-b9df-4462-adb9-c46140859835"],
+        ["0a717d39-a873-4bff-87ab-b6b08b861da0"]
+      ]
+      assert_equal expected, @plugin.true_news(news, old_news)
+      ## recorded news don't appear on the news-page
+      old_news = [["c413ce2d-a88e-4d71-b6b9-1c55e021edc0",
+                  "Amiodarone Winthrop\302\256/- Mite"]]
+      assert_equal news, @plugin.true_news(news, old_news)
+    end
+    def test_search_product
+      mapping = [
+        [ 'SearchForm.html',
+          :get,
+          'http://textinfo.ch/Search.aspx',
+          'frmSearchForm',
+          'ResultProduct.html',
+        ],
+      ]
+      agent = setup_mechanize mapping
+      page = nil
+      assert_nothing_raised do
+        page = @plugin.search_product 'Trittico® retard', agent
+      end
+      assert_not_nil page.form_with(:name => 'frmResulthForm')
+      assert_equal 1, @pages.size
+    end
+    def test_import_name
+      mapping = [
+        [ 'SearchForm.html',
+          :get,
+          'http://textinfo.ch/Search.aspx',
+        ],
+        [ 'ResultProduct.html',
+          :submit,
+          'Search.aspx',
+        ],
+        [ 'Aclasta.de.html',
+          :submit,
+          'Result.aspx?lang=de',
+        ],
+        [ 'Aclasta.fr.html',
+          :get,
+          'Result.aspx?lang=fr',
+        ],
+      ]
+      agent = setup_mechanize mapping
+      page = nil
+      @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
+      @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
+      assert_nothing_raised do
+        @plugin.import_fulltext 'Trittico® retard', agent
+      end
+      assert_equal 4, @pages.size
+      ## we didn't set up @parser to return a FachinfoDocument with an iksnr.
+      #  the rest of the process is tested in test_update_product
+      assert_equal ['Trittico® retard'], @plugin.iksless.uniq
+    end
+    def test_import_news
+      logfile = File.join @vardir, 'fachinfo.txt'
+      File.open logfile, 'w' do |fh|
+        fh.puts "8a7f708c-c738-4425-a9a5-5ad294f20be4 Aclasta\302\256"
+      end
+      mapping = [
+        [ 'News.html',
+          :get,
+          ODDB.config.text_info_newssource,
+        ],
+        [ 'SearchForm.html',
+          :get,
+          'http://textinfo.ch/Search.aspx',
+        ],
+        [ 'ResultProduct.html',
+          :submit,
+          'Search.aspx',
+        ],
+        [ 'Aclasta.de.html',
+          :submit,
+          'Result.aspx?lang=de',
+        ],
+        [ 'Aclasta.fr.html',
+          :get,
+          'Result.aspx?lang=fr',
+        ],
+      ]
+      agent = setup_mechanize mapping
+      @parser.should_receive(:parse_fachinfo_html).and_return FachinfoDocument.new
+      @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
+      @app.should_receive(:sorted_fachinfos).and_return []
+      success = @plugin.import_news agent
+      expected = <<-EOS
+13e742d9-f404-4681-ab82-71d347acfb93 Abseamed®
+8a7f708c-c738-4425-a9a5-5ad294f20be4 Aclasta®
+      EOS
+      assert_equal 5, @pages.size
+      assert_equal expected, File.read(logfile)
+      assert_equal true, success
     end
   end
 end
