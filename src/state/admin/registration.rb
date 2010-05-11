@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # State::Admin::Registration -- oddb -- 10.03.2003 -- hwyss@ywesee.com 
 
+require 'plugin/text_info'
 require 'state/admin/global'
 require 'state/admin/sequence'
 require 'state/admin/selectindication'
@@ -47,20 +48,22 @@ module FachinfoMethods
             path, @model, mimetype, language, mail_link)
         }
       }
-    elsif((href = @session.user_input(:fachinfo_link)) && !href.empty?)
-      plugin = FachinfoPlugin.new(@session.app)
-      if(id = plugin.extract_fachinfo_id(href))
-        new_state = State::Admin::WaitForFachinfo.new(@session, @model)
-        @session.app.async {
-          @session.app.failsafe { 
-            new_state.signal_done(plugin.parse_from_id(id, [language])[language], 
-              href, @model, "application/pdf", language.to_sym, mail_link)
-          }
-        }
-      else
-        err = create_error(:e_invalid_fachinfo_id, :fachinfo_link, href)
-        @errors.store(:fachinfo_link, err)
-      end
+    elsif @session.user_input(:textinfo_update)
+      plugin = TextInfoPlugin.new(@session.app)
+      plugin.import_fulltext @model.iksnr
+      info = if plugin.updated_fis > 0 && plugin.updated_pis > 0
+               :updated_textinfos
+             elsif plugin.updated_fis > 0
+               :updated_fachinfo
+             elsif plugin.updated_pis > 0
+               :updated_patinfo
+             else
+               :updated_textinfos_utd
+             end
+      @infos.push info
+      log = Log.new Date.today
+      log.update_values plugin.log_info
+      log.notify "Fach- und Patienteninfo '#{@model.iksnr}'"
 		end
 		new_state
 	end

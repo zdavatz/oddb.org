@@ -8,6 +8,7 @@ require 'view/rss/fachinfo'
 
 module ODDB
   class TextInfoPlugin < Plugin
+    attr_reader :updated_fis, :updated_pis
     def initialize *args
       super
       @parser = DRb::DRbObject.new nil, FIPARSE_URI
@@ -95,15 +96,20 @@ module ODDB
     rescue
       []
     end
+    def extract_fachinfo_id href
+      fi_ptrn = /Monographie.aspx\?Id=([0-9A-Fa-f\-]{36}).*MonType=fi/u
+      if match = fi_ptrn.match(href.to_s)
+        match[1]
+      end
+    end
     def fachinfo_news agent=init_agent
       url = ODDB.config.text_info_newssource \
         or raise 'please configure ODDB.config.text_info_newssource to proceed'
-      fi_ptrn = /Monographie.aspx\?Id=([0-9A-Fa-f\-]{36}).*MonType=fi/u
       ids = []
       page = agent.get url
       page.links.each do |link|
-        if match = fi_ptrn.match(link.href)
-          ids.push [match[1], link.text.gsub(/;$/, '')]
+        if id = extract_fachinfo_id(link.href)
+          ids.push [id, link.text.gsub(/;$/, '')]
         end
       end
       ids

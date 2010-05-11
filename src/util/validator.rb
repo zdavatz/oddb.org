@@ -23,7 +23,7 @@ module ODDB
       :parallel_import, :preview_with_market_date, :recommend,
       :refdata_override, :remember_me, :renewal_flag,
       :show_email, :vaccine, :yus_groups, :yus_privileges,
-      :force_new_ydim_debitor,
+      :force_new_ydim_debitor, :textinfo_update,
     ]
 		DATES = [
 			:base_patent_date, 
@@ -326,7 +326,6 @@ module ODDB
 			:effective_form,
 			:en,
 			:equivalent_substance,
-      :fachinfo_link,
 			:fax,
 			:fi_update,
 			:fon,

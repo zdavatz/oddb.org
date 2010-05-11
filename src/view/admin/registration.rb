@@ -6,6 +6,7 @@ require 'htmlgrid/errormessage'
 require 'htmlgrid/datevalue'
 require 'htmlgrid/inputdate'
 require 'htmlgrid/select'
+require 'htmlgrid/infomessage'
 require 'htmlgrid/inputfile'
 require 'htmlgrid/inputcheckbox'
 require 'view/pointervalue'
@@ -144,12 +145,6 @@ module FachinfoPdfMethods
 		link.set_attribute('class', 'small')
 		link
 	end
-  def fachinfo_link(model, session=@session)
-    input = HtmlGrid::InputText.new(:fachinfo_link, model, session, self)
-    input.css_class = 'standard'
-    input.label = false
-    input
-  end
 	def fachinfo_upload(model, session=@session)
 		input = HtmlGrid::InputFile.new(:fachinfo_upload, model, session, self)
 		input.label = false
@@ -164,6 +159,7 @@ module FachinfoPdfMethods
 end
 class RegistrationForm < View::Form
 	include HtmlGrid::ErrorMessage
+	include HtmlGrid::InfoMessage
 	include View::AdditionalInformation
 	include FachinfoPdfMethods
 	COMPONENTS = {
@@ -205,7 +201,6 @@ class RegistrationForm < View::Form
 		:export_flag				=>	HtmlGrid::InputCheckbox,
 		:vaccine						=>	HtmlGrid::InputCheckbox,
 		:fachinfo_label			=>	HtmlGrid::LabelText,
-		:fachinfo_link      =>	HtmlGrid::InputText,
 		:generic_type				=>	HtmlGrid::Select,
     :ignore_patent      =>  HtmlGrid::InputCheckbox,
 		:inactive_date			=>	HtmlGrid::DateValue,
@@ -217,10 +212,12 @@ class RegistrationForm < View::Form
 		:registration_date	=>	HtmlGrid::InputDate,
 		:renewal_flag				=>	HtmlGrid::InputCheckbox,
 		:revision_date			=>	HtmlGrid::InputDate,
+    :textinfo_update    =>  HtmlGrid::InputCheckbox,
 	}
 	def init
 		reorganize_components()
 		super
+    info_message()
 		error_message()
 	end
 	def reorganize_components
@@ -228,28 +225,27 @@ class RegistrationForm < View::Form
 			components.store([1,9], :submit)
 			css_map.store([1,9], 'list')
 		else
-			components.update({
-				[0,9]		=>	'fi_upload_instruction0',
-				[2,9]		=>	:fachinfo_label,
-				[3,9,0]	=>	:fachinfo,
-				[3,9,1]	=>	:assign_fachinfo,
-				[0,10]	=>	'fi_upload_instruction1',
-				[1,10]	=>	:language_select,
-				[0,11]	=>	'fi_upload_instruction2a',
-				[1,11]	=>	:fachinfo_upload,
-				[0,12]	=>	'fi_upload_instruction2b',
-				[1,12]	=>	:fachinfo_link,
-				[0,13]	=>	'fi_upload_instruction3',
-				[1,13,0]=>	:submit,
-				[1,13,1]=>	:new_registration,
-			})
+      components.update({
+        [0,9]		=>	'fi_upload_instruction0',
+        [2,9]		=>	:fachinfo_label,
+        [3,9,0]	=>	:fachinfo,
+        [3,9,1]	=>	:assign_fachinfo,
+        [0,10]	=>	'fi_upload_instruction1',
+        [1,10]	=>	:language_select,
+        [2,10]	=>	:textinfo_update,
+        [0,11]	=>	'fi_upload_instruction2',
+        [1,11]	=>	:fachinfo_upload,
+        [0,12]	=>	'fi_upload_instruction3',
+        [1,12,0]=>	:submit,
+        [1,12,1]=>	:new_registration,
+      })
       colspan_map.store([3,9], 3)
       colspan_map.store([0,9], 2)
-			css_map.store([0,9], 'list bg bold')
-			css_map.store([1,9], 'list bg')
-			css_map.store([2,9,2], 'list')
-			css_map.store([0,10,2,4], 'list bg')
-		end
+      css_map.store([0,9], 'list bg bold')
+      css_map.store([1,9], 'list bg')
+      css_map.store([2,9,2,2], 'list')
+      css_map.store([0,10,2,3], 'list bg')
+    end
 	end
 	def company_name(model, session=@session)
 		klass = if(session.user.is_a?(ODDB::CompanyUser))

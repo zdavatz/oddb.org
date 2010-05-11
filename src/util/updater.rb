@@ -5,7 +5,6 @@ require 'plugin/analysis'
 require 'plugin/bsv_xml'
 require 'plugin/comarketing'
 require 'plugin/doctors'
-require 'plugin/fachinfo'
 require 'plugin/hospitals'
 require 'plugin/interaction'
 require 'plugin/lppv'
@@ -13,7 +12,6 @@ require 'plugin/medwin'
 require 'plugin/migel'
 require 'plugin/narcotic'
 require 'plugin/ouwerkerk'
-require 'plugin/patinfo'
 require 'plugin/rss'
 require 'plugin/swissmedic'
 require 'plugin/swissmedicjournal'
@@ -304,12 +302,6 @@ module ODDB
 		end
 		def update_narcotics
 			update_notify_simple(NarcoticPlugin, 'Narcotics')
-		end
-		def update_patinfo
-			update_simple(PatinfoPlugin, 'Patinfo')		
-		end
-		def update_patinfo_news
-			update_simple(PatinfoPlugin, 'Patinfo', :update_news)
 		end
     def update_swissmedic(*args)
       logs_pointer = Persistence::Pointer.new([:log_group, :swissmedic])

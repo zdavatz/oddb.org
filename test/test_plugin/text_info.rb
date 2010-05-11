@@ -774,5 +774,10 @@ c413ce2d-a88e-4d71-b6b9-1c55e021edc0 Amiodarone Winthrop\302\256/- Mite
       assert_equal expected, File.read(logfile)
       assert_equal true, success
     end
+    def test_extract_fachinfo_id
+      href = 'http://textinfo.ch/Monographie.aspx?Id=3914c196-70d8-43b7-816d-8fe923649740&lang=de&MonType=fi'
+      assert_equal '3914c196-70d8-43b7-816d-8fe923649740',
+                   @plugin.extract_fachinfo_id(href)
+    end
   end
 end

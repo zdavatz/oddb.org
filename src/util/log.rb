@@ -6,7 +6,6 @@ require 'cgi'
 require 'date'
 #require 'net/smtp'
 require 'tmail'
-require 'plugin/patinfo'
 
 module ODDB
 	class Log
