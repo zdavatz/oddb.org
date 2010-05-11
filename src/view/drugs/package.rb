@@ -49,15 +49,16 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[2,4]		=>	:expiration_date,
 		[0,5]		=>	:galenic_form,
 		[2,5]		=>	:size,
-    [0,6]		=>	:index_therapeuticus,
-		[2,6]		=>	:descr,
-		[0,7]		=>	:ikscat,
-		[2,7]		=>	:indication,
-		[0,8]		=>	:sl_entry,
-		[0,9]		=>	:price_exfactory,
-		[2,9]		=>	:price_public,
-		[0,10]	=>	:deductible,
-    [0,11]  =>  :pharmacode,
+    [0,6]   =>  :index_therapeuticus,
+    [2,6]   =>  :descr,
+    [0,7]   =>  :ith_swissmedic,
+    [0,8]   =>  :ikscat,
+    [2,8]   =>  :indication,
+    [0,9]   =>  :sl_entry,
+    [0,10]  =>  :price_exfactory,
+    [2,10]  =>  :price_public,
+    [0,11]  =>  :deductible,
+    [0,12]  =>  :pharmacode,
 	}
 	CSS_MAP = {
 		[0,0,4] => 'list',
@@ -72,6 +73,7 @@ class PackageInnerComposite < HtmlGrid::Composite
 		[0,9,4] => 'list',
 		[0,10,4] => 'list',
 		[0,11,4] => 'list',
+		[0,12,4] => 'list',
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
@@ -92,39 +94,39 @@ class PackageInnerComposite < HtmlGrid::Composite
     :sequence_date      =>  HtmlGrid::DateValue,
 		:expiration_date		=>	HtmlGrid::DateValue,
 	}
-	def init
+  def init
     if(@model.narcotic?)
-      components.update([2,11] => :narcotic_label, [3,11] => :narcotic)
+      components.update([2,12] => :narcotic_label, [3,12] => :narcotic)
     end
     if(@lookandfeel.enabled?(:feedback))
-      components.update([0,11] => :feedback_label, [1,11] => :feedback,
-                        [0,12] => :pharmacode)
-      css_map.store([0,12,4], 'list')
+      components.update([0,12] => :feedback_label, [1,12] => :feedback,
+                        [0,13] => :pharmacode)
+      css_map.store([0,13,4], 'list')
     end
     if(@model.ddd_price)
-      components.store([2,10], :ddd_price)
+      components.store([2,11], :ddd_price)
     end
-		if(@model.sl_entry)
-			components.store([2,8], :limitation)
-      hash_insert_row(components, [0,9], :introduction_date)
-      hash_insert_row(css_map, [0,9,4], 'list')
-			if(@model.limitation_text)
-        hash_insert_row(components, [0,9], :limitation_text)
-        hash_insert_row(css_map, [0,9,4], 'list')
+    if(@model.sl_entry)
+      components.store([2,9], :limitation)
+      hash_insert_row(components, [0,10], :introduction_date)
+      hash_insert_row(css_map, [0,10,4], 'list')
+      if(@model.limitation_text)
+        hash_insert_row(components, [0,10], :limitation_text)
+        hash_insert_row(css_map, [0,10,4], 'list')
       end
-		end
+    end
     if(@lookandfeel.enabled?(:fachinfos))
-      hash_insert_row(components, [0,8], :fachinfo_label)
-      hash_insert_row(css_map, [0,8,4], 'list')
+      hash_insert_row(components, [0,9], :fachinfo_label)
+      hash_insert_row(css_map, [0,9,4], 'list')
       components.update({
-        [1,8]		=>	:fachinfo,
-        [2,8]		=>	:patinfo_label,
-        [3,8]		=>	:patinfo,
+        [1,9]		=>	:fachinfo,
+        [2,9]		=>	:patinfo_label,
+        [3,9]		=>	:patinfo,
       })
     elsif(@lookandfeel.enabled?(:patinfos))
-      hash_insert_row(components, [2,8], :patinfo_label)
-      hash_insert_row(css_map, [0,8,4], 'list')
-      components.store([3,8], :patinfo)
+      hash_insert_row(components, [2,9], :patinfo_label)
+      hash_insert_row(css_map, [0,9,4], 'list')
+      components.store([3,9], :patinfo)
     end
     if(idx = components.index(:limitation_text))
       css_map.store(idx, 'list top')
@@ -132,8 +134,8 @@ class PackageInnerComposite < HtmlGrid::Composite
       sidx[0] += 1
       colspan_map.store(sidx, 3)
     end
-		super
-	end
+    super
+  end
 	def atc_class(model, session=@session)
 		val = HtmlGrid::Value.new(:atc_class, model, @session, self)
 		if(atc = model.atc_class)
@@ -151,9 +153,15 @@ class PackageInnerComposite < HtmlGrid::Composite
 		HtmlGrid::Value.new(:ikscat, model, @session, self)
 	end
   def index_therapeuticus(model, session=@session)
+    _index_therapeuticus model, :index_therapeuticus
+  end
+  def ith_swissmedic(model, session=@session)
+    _index_therapeuticus model, :ith_swissmedic
+  end
+  def _index_therapeuticus(model, key)
     span = HtmlGrid::Span.new(model, @session, self)
-    span.value = code = model.index_therapeuticus
-    span.css_id = "ith#{model.ikskey}"
+    span.value = code = model.send(key)
+    span.css_id = "#{key}#{model.ikskey}"
     if code
       ith = nil
       until ith || code.empty?
