@@ -161,27 +161,28 @@ class Registration < State::Admin::Global
 	VIEW = View::Admin::RootRegistration
 	SELECT_STATE = State::Admin::SelectIndication
 	include RegistrationMethods
-	def update
-		keys = [
-			:inactive_date, :generic_type, :registration_date, 
-			:revision_date, :market_date, :expiration_date, 
-			:complementary_type, :export_flag, :renewal_flag,
-			:parallel_import, :index_therapeuticus, :ignore_patent
-		]
-		if(@model.is_a? Persistence::CreateItem)
-			iksnr = @session.user_input(:iksnr)
-			if(error_check_and_store(:iksnr, iksnr, [:iksnr]))
-				return self
-			elsif(@session.app.registration(iksnr))
-				error = create_error('e_duplicate_iksnr', :iksnr, iksnr)
-				@errors.store(:iksnr, error)
-				return self
-			else
-				@model.append(iksnr)
-			end
-		end
-		do_update(keys)
-	end
+  def update
+    keys = [
+      :inactive_date, :generic_type, :registration_date,
+      :revision_date, :market_date, :expiration_date,
+      :complementary_type, :export_flag, :renewal_flag,
+      :parallel_import, :index_therapeuticus, :ignore_patent,
+      :ith_swissmedic
+    ]
+    if(@model.is_a? Persistence::CreateItem)
+      iksnr = @session.user_input(:iksnr)
+      if(error_check_and_store(:iksnr, iksnr, [:iksnr]))
+        return self
+      elsif(@session.app.registration(iksnr))
+        error = create_error('e_duplicate_iksnr', :iksnr, iksnr)
+        @errors.store(:iksnr, error)
+        return self
+      else
+        @model.append(iksnr)
+      end
+    end
+    do_update(keys)
+  end
 end
 class CompanyRegistration < State::Admin::Registration
 	def init

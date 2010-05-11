@@ -78,6 +78,16 @@ class SwissmedicCat < HtmlGrid::Composite
 			@components.store([1,y], :expiration_date)
 			y += 1
 		end
+    if(@model.index_therapeuticus)
+      @components.store([0,y], "index_therapeuticus")
+      @components.store([1,y], :index_therapeuticus)
+      y += 1
+    end
+    if(@model.ith_swissmedic)
+      @components.store([0,y], "ith_swissmedic")
+      @components.store([1,y], :ith_swissmedic)
+      y += 1
+    end
     @components.store([0,y], "refdata")
     @components.store([1,y], :out_of_trade)
 		y += 1

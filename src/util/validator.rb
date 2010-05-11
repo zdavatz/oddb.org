@@ -338,6 +338,7 @@ module ODDB
       :highlight,
 			:index_therapeuticus,
 			:indication,
+      :ith_swissmedic,
 			:language_select,
 			:location,
 			:lt,

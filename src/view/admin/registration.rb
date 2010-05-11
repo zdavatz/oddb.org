@@ -98,6 +98,7 @@ class FachinfoLanguageSelect < HtmlGrid::AbstractSelect
 end
 class RegistrationInnerComposite < HtmlGrid::Composite
 	include HtmlGrid::ErrorMessage
+	include View::AdditionalInformation
 	COMPONENTS = {
 		[0,0]		=>	:iksnr,
 		[2,0]		=>	:registration_date,
@@ -107,8 +108,11 @@ class RegistrationInnerComposite < HtmlGrid::Composite
 		[2,2]		=>	:expiration_date,
 		[0,3]		=>	:indication,
 		[2,3]		=>	:market_date,
+    [0,4]   =>  :index_therapeuticus,
 		[2,4]		=>	:inactive_date,
+    [0,5]   =>  :ith_swissmedic,
 		[2,5]		=>  :fachinfo_label,
+    [3,5]   =>  :fachinfo,
 	}
 	CSS_MAP = {
 		[0,0,4,6]	=>	'list',
@@ -175,6 +179,7 @@ class RegistrationForm < View::Form
 		[2,3]		=>	:market_date,
 		[0,4]		=>	:index_therapeuticus,
 		[2,4]		=>	:manual_inactive_date,
+		[0,5]		=>	:ith_swissmedic,
 		[2,5]		=>	:inactive_date,
 		[0,6]		=>	:indication,
 		[2,6]		=>	:patented_until,
@@ -206,6 +211,7 @@ class RegistrationForm < View::Form
 		:inactive_date			=>	HtmlGrid::DateValue,
 		:manual_inactive_date=>	HtmlGrid::InputDate,
 		:index_therapeuticus=>	HtmlGrid::InputText,
+    :ith_swissmedic     =>  HtmlGrid::InputText,
 		:market_date				=>	HtmlGrid::InputDate,
 		:parallel_import		=>	HtmlGrid::InputCheckbox,
 		:registration_date	=>	HtmlGrid::InputDate,
