@@ -6,6 +6,7 @@ require 'config'
 require 'drb'
 require 'fileutils'
 require 'mechanize'
+require 'model/dose'
 require 'model/text'
 require 'plugin/plugin'
 require 'rexml/document'
@@ -37,7 +38,10 @@ module ODDB
         end
       end
       def text text
-        @text << text.gsub(%r{<br\s*/?>}, "\n").gsub(%r{<[^>]+>}, '') if @text
+        if @html
+          @html << text.gsub(%r{<br\s*/?>}, "\n")
+          @text = @html.gsub(%r{<[^>]+>}, '')
+        end
       end
       def time txt
         unless txt.to_s.empty?
@@ -70,6 +74,7 @@ module ODDB
     class GenericsListener < Listener
       def tag_start name, attrs
         @text = ''
+        @html = ''
       end
       def tag_end name
         case name
@@ -87,7 +92,7 @@ module ODDB
           end
           @pointer, @original, @generic = nil
         end
-        @text = nil
+        @html, @text = nil
       end
     end
     class ItCodesListener < Listener
@@ -101,6 +106,7 @@ module ODDB
           @target_data = @lim_data = {}
         else
           @text = ''
+          @html = ''
         end
       end
       def tag_end name
@@ -125,7 +131,7 @@ module ODDB
         when 'Points'
           @target_data.store :limitation_points, @text.to_i
         end
-        @text = nil
+        @text, @html = nil
       end
     end
     class PreparationsListener < Listener
@@ -310,11 +316,13 @@ module ODDB
           @in_limitation = true
         when 'ItCode'
           @itcode = attrs['Code']
+          @reg_data.store :index_therapeuticus, @itcode
           @it_descriptions = {}
         when 'Substance'
           @substance = {}
         else
           @text = ''
+          @html = ''
         end
       rescue StandardError => e
         e.message << "\n@report: " << @report.inspect
@@ -323,7 +331,7 @@ module ODDB
       def tag_end name
         case name
         when 'Pack'
-          if @pack.nil? && @completed_registrations[@iksnr]
+          if @pack.nil? && @completed_registrations[@iksnr] && !@out_of_trade
             @deferred_packages.push({
               :ikscd    => @ikscd,
               :sequence => @seq_data,
@@ -567,7 +575,7 @@ module ODDB
           if @in_limitation
             if @lim_data # we are within a Package
               chp = Text::Chapter.new
-              update_chapter chp, @text
+              update_chapter chp, @html
               @lim_data.store key, chp
             else
               @lim_texts.each_value do |text_data|
@@ -577,7 +585,7 @@ module ODDB
                              else
                                @name[key]
                              end
-                update_chapter chp, @text, subheading
+                update_chapter chp, @html, subheading
               end
             end
           elsif @it_descriptions
@@ -605,7 +613,7 @@ module ODDB
             @app.delete sl_ptr
           end
         end
-        @text = nil
+        @text, @html = nil
       rescue StandardError => e
         e.message << "\n@report: " << @report.inspect
         raise
