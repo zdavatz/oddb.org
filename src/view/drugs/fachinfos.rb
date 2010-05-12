@@ -29,7 +29,7 @@ class FachinfoList < HtmlGrid::List
 	include View::AdditionalInformation
 	include View::ResultColors
 	def fachinfo(model)
-		_fachinfo(model)
+		_fachinfo(model.registrations.first)
 	end
 	def name(model)
 		link = HtmlGrid::Link.new(:name_base, model, @session, self)

@@ -155,6 +155,7 @@ module ODDB
 			:download_export,
 			:effective_substances,
 			:export_csv,
+      :fachinfo,
 			:fachinfos,
 			:feedbacks,
 			:fipi_offer_input,
@@ -449,6 +450,7 @@ module ODDB
 		def iksnr(value)
 			swissmedic_id(:iksnr, value, 4..5)
 		end
+    alias :swissmedicnr :iksnr
     def notify_recipient(value)
       RMail::Address.parse(value.to_s).collect { |parsed| parsed.address }
     end

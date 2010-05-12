@@ -225,8 +225,10 @@ class FachinfoNewsList < HtmlGrid::DivList
     [0,0] => :name,
   }
   def name(model)
-    link = PointerLink.new(:name_base, model, @session, self)
+    link = HtmlGrid::Link.new(:name_base, model, @session, self)
     link.value = model.localized_name(@session.language)
+    link.href = @lookandfeel._event_url :fachinfo,
+      :swissmedicnr => model.registrations.first.iksnr
     link
   end
 end

@@ -253,6 +253,15 @@ module ODDB
 				end
 				super
 			end
+      def fachinfo
+        if (iksnr = @session.user_input(:swissmedicnr)) \
+          && (reg = @session.app.registration(iksnr)) \
+          && fachinfo = reg.fachinfo
+          State::Drugs::Fachinfo.new(@session, fachinfo)
+        else
+          Http404.new(@session, nil)
+        end
+      end
 			def feedbacks
 				if((pointer = @session.user_input(:pointer)) \
 					&& pointer.is_a?(Persistence::Pointer) \
