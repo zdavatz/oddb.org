@@ -216,10 +216,10 @@ class TestParagraph < Test::Unit::TestCase
 		@paragraph << "Hallo Welt!"
 		assert_equal("Hallo Welt!", @paragraph.to_s)
 		@paragraph.set_format(:symbol)
-		@paragraph << " \263 "
+		@paragraph << " â‰¥ "
 		@paragraph.set_format
-		@paragraph << "Hallo Zürich!"
-		assert_equal("Hallo Welt! >= Hallo Zürich!", @paragraph.to_s)
+		@paragraph << "Hallo ZÃ¼rich!"
+		assert_equal("Hallo Welt! â‰¥ Hallo ZÃ¼rich!", @paragraph.to_s)
 	end
 	def test_prepend
 		format1 = @paragraph.set_format
@@ -258,6 +258,21 @@ class TestParagraph < Test::Unit::TestCase
 		assert_equal('FormattedUnFormattedBold', @paragraph.text)
 		@paragraph << " The End"
 		assert_equal('FormattedUnFormattedBold The End', @paragraph.text)
+	end
+	def test_append__hyphenated
+		assert_equal('', @paragraph.text)
+		@paragraph << " foo-\n"
+		assert_equal('foo-', @paragraph.text)
+		@paragraph << "bar"
+		assert_equal('foobar', @paragraph.text)
+	end
+	def test_append__hyphenated__preformatted
+    @paragraph.preformatted!
+		assert_equal('', @paragraph.text)
+		@paragraph << " foo-\n"
+		assert_equal(" foo-", @paragraph.text)
+		@paragraph << "bar"
+		assert_equal(" foo-\nbar", @paragraph.text)
 	end
 end
 class	TestSection < Test::Unit::TestCase
@@ -306,10 +321,10 @@ class	TestSection < Test::Unit::TestCase
 	def test_to_s2
 		@section.subheading = "Hallo!"
 		par1 = @section.next_paragraph
-		par1 << "schöne"
+		par1 << "schÃ¶ne"
 		par2 = @section.next_paragraph
 		par2 << "Welt!"
-		assert_equal("Hallo!\nschöne\nWelt!", @section.to_s)
+		assert_equal("Hallo!\nschÃ¶ne\nWelt!", @section.to_s)
 	end
 	def test_to_s__no_subheading
 		paragraph = @section.next_paragraph
@@ -371,23 +386,23 @@ class TestChapter < Test::Unit::TestCase
 		sec1 = @chapter.next_section
 		sec1.subheading = "Auch Hallo!"
 		par1 = sec1.next_paragraph
-		par1 << "Schöne foo..."
+		par1 << "SchÃ¶ne foo..."
 		par2 = sec1.next_paragraph
-		par2 << "Schöne bar..."
+		par2 << "SchÃ¶ne bar..."
 		sec2 = @chapter.next_section
 		sec2.subheading = "Nochmals Hallo!"
 		par3 = sec2.next_paragraph
-		par3 << "Schöne baz..."
+		par3 << "SchÃ¶ne baz..."
 		par4 = sec2.next_paragraph
-		par4 << "Schöne Welt!"
+		par4 << "SchÃ¶ne Welt!"
 		expected = <<-EOS
 Hallo!
 Auch Hallo!
-Schöne foo...
-Schöne bar...
+SchÃ¶ne foo...
+SchÃ¶ne bar...
 Nochmals Hallo!
-Schöne baz...
-Schöne Welt!
+SchÃ¶ne baz...
+SchÃ¶ne Welt!
 		EOS
 		assert_equal(expected.strip, @chapter.to_s)
 	end

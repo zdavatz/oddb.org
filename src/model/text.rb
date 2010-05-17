@@ -133,7 +133,8 @@ module ODDB
 			end
 			def <<(text)
         @raw_txt ||= @text.dup
-        if(/[‐­-]\s*$/u.match(@raw_txt) && /^[[:lower:]]/u.match(text))
+        if(!@preformatted \
+           && /[‐­-]\s*$/u.match(@raw_txt) && /^[[:lower:]]/u.match(text))
           # if we're appending to a hyphen, and text starts with a lowercase
           # letter, we need to remove the hyphen
           @raw_txt.gsub! /[‐­-]\s*$/u, ''
