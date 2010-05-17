@@ -49,7 +49,7 @@ module FachinfoMethods
         }
       }
     elsif @session.user_input(:textinfo_update)
-      plugin = TextInfoPlugin.new(@session.app)
+      plugin = TextInfoPlugin.new @session.app, :reparse => true
       plugin.import_fulltext @model.iksnr
       info = if plugin.updated_fis > 0 && plugin.updated_pis > 0
                :updated_textinfos

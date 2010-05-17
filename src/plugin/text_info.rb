@@ -9,8 +9,9 @@ require 'view/rss/fachinfo'
 module ODDB
   class TextInfoPlugin < Plugin
     attr_reader :updated_fis, :updated_pis
-    def initialize *args
-      super
+    def initialize app, opts={}
+      super(app)
+      @options = opts
       @parser = DRb::DRbObject.new nil, FIPARSE_URI
       @dirs = {
         :fachinfo => File.join(ODDB.config.data_dir, 'html', 'fachinfo'),
@@ -341,7 +342,7 @@ module ODDB
       pis = {}
       ## there's no need to parse up-to-date patinfos
       #  if both of them are up-to-date
-      if pi_flags[:de] && pi_flags[:fr]
+      if pi_flags[:de] && pi_flags[:fr] && !@options[:reparse]
         pi_paths.clear
         @up_to_date_pis += 1
       end
@@ -356,7 +357,7 @@ module ODDB
         end
         ## Now that we have identified the pertinent iksnrs, we can remove
         #  up-to-date fachinfos from the queue.
-        if fi_flags[:de] && fi_flags[:fr]
+        if fi_flags[:de] && fi_flags[:fr] && !@options[:reparse]
           fis.clear
           @up_to_date_fis += 1
         end
