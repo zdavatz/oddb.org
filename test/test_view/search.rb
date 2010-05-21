@@ -5,7 +5,6 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'stub/session'
 require 'stub/odba'
 require 'view/search'
 require 'custom/lookandfeelbase'
@@ -57,7 +56,7 @@ module ODDB
 			headers = @view.http_headers
 			time = headers["Expires"]
 			expected = {
-				"Content-Type"	=>	"text/html; charset=iso-8859-1",
+				"Content-Type"	=>	"text/html; charset=UTF-8",
 				"Cache-Control"	=>	"private, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
 				"Pragma"				=>	"no-cache",
 				"Expires"				=>	time,

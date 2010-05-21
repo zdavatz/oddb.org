@@ -2,6 +2,7 @@
 # Invoice -- oddb -- 08.10.2004 -- mwalder@ywesee.com, rwaltert@ywesee.com 
 
 require 'util/persistence'
+require 'util/today'
 
 module ODDB
 	class Invoice

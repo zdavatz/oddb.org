@@ -4,14 +4,13 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'test/unit'
 require 'state/global'
 require 'mock'
 require 'util/language'
 #require 'sbsm/validator'
 require 'sbsm/state'
-require 'stub/odba'
-
 
 module ODDB
 	module State
@@ -108,31 +107,6 @@ end
 				newstate = @state.resolve
 				assert_instance_of(State::Companies::Company, newstate)
 			end
-			def test_resolve2
-				@galgroup = StubGalenicGroup.new
-				@session.app.galenic_groups = { 
-					3	=>	@galgroup, 
-				}
-				@galform = StubGalenicForm.new
-				@galform.update_values({'de'=>'Sirup', 'fr'=>'sirop'})
-				@galgroup.galenic_forms = { 
-					6	=>	@galform, 
-				}
-				@session.user_input = {
-					:pointer	=>	Persistence::Pointer.new([:galenic_group, 3], [:galenic_form, 6])
-				}
-				@state.resolve
-				assert_equal(true, @session.app.state_transp_called)
-			end
-			def test_resolve3
-				@session.app.galenic_groups = { }
-				@session.user_input = {
-					:pointer	=>	Persistence::Pointer.new([:galenic_group, 3], [:galenic_form, 6])
-				}
-				assert_nothing_raised {
-					@state.resolve
-				}
-			end
 			def test_resolve__print1
 				@session.app.fachinfos = { 0	=>	:foo}
 				@session.user_input = {
@@ -140,14 +114,6 @@ end
 				}
 				newstate = @state.print
 				assert_instance_of(State::Drugs::FachinfoPrint, newstate)
-			end
-			def test_resolve__print2
-				@session.app.fachinfos = {}
-				@session.user_input = {
-					:pointer	=>	Persistence::Pointer.new([:fachinfo, 0])
-				}
-				newstate = @state.print
-				assert_equal(@state, newstate)
 			end
 			def test_user_input1
 				@session.user_input = {

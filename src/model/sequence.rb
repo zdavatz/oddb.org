@@ -12,7 +12,7 @@ module ODDB
 		attr_reader :seqnr, :name_base, :name_descr, :packages,
 								:compositions, :longevity
     attr_accessor :registration, :atc_class, :export_flag,
-                  :galenic_form, :patinfo, :pdf_patinfo, :atc_request_time,
+                  :patinfo, :pdf_patinfo, :atc_request_time,
                   :deactivate_patinfo, :sequence_date
 		attr_writer :composition_text, :dose, :inactive_date
 		alias :pointer_descr :seqnr
@@ -405,22 +405,17 @@ module ODDB
 			}
 		end
 		def _acceptable?
-			@atc_class && @name_base && @galenic_form
+			@atc_class && @name_base
 		end
 		def accepted!(app, reg_pointer)
 			reg = reg_pointer.resolve(app)
 			seq = reg.sequence(@seqnr)
-			galform = if(@galenic_form && ((@galenic_form.galenic_group.oid > 1) \
-																			|| seq.nil? || seq.galenic_form.nil?))
-									@galenic_form.pointer
-								end
 			ptr = reg_pointer + [:sequence, @seqnr]
 			hash = {
 				:name_base				=>	@name_base,
 				:name_descr				=>	@name_descr,
 				:dose							=>	@dose,
 				:atc_class				=>	(@atc_class.code if @atc_class), 
-				:galenic_form			=>	galform,
 				:composition_text	=>	@composition_text,
 			}.delete_if { |key, val| val.nil? }
 			app.update(ptr.creator, hash)
@@ -432,7 +427,7 @@ module ODDB
 			} 
 		end
 		def fill_blanks(sequence)
-			scalars = [	:name_base, :name_descr, :dose, :galenic_form, 
+			scalars = [	:name_base, :name_descr, :dose,
 				:atc_class ].select { |key|
 				if(self.send(key).to_s.empty?)
 					self.send("#{key}=", sequence.send(key))

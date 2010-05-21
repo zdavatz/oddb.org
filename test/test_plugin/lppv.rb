@@ -21,10 +21,10 @@ module ODDB
 		def test_integrate
 			@parser.feed(@source)
 			expected = {
-				'2347618'	=>	'32.00',
-				'2347624' =>  '58.00',
-				'0912103' =>	'9.85',
-				'1987273' =>	'114.65',
+				'2347618'	=>	Util::Money.new(32.00),
+				'2347624' =>  Util::Money.new(58.00),
+				'912103' =>	Util::Money.new(9.85),
+				'1987273' =>	Util::Money.new(114.65),
 			}
 			assert_equal(expected, @writer.prices)
 		end
@@ -39,12 +39,12 @@ module ODDB
 				'1234567'	=>	'9.90',		
 			}
 			package = FlexMock.new
-			package.mock_handle(:pointer) { 'package-pointer' }
-			package.mock_handle(:name) { 'Der Name' }
-			package.mock_handle(:price_public) { 250 }
-			package.mock_handle(:pharmacode) { '1234567' }
-			package.mock_handle(:sl_entry) {  }
-			@app.mock_handle(:update, 1) { |pointer, hash|
+			package.should_receive(:pointer).and_return { 'package-pointer' }
+			package.should_receive(:name).and_return { 'Der Name' }
+			package.should_receive(:price_public).and_return { Util::Money.new(2.50) }
+			package.should_receive(:pharmacode).and_return { '1234567' }
+			package.should_receive(:sl_entry).and_return {  }
+			@app.should_receive(:update, 1).and_return { |pointer, hash|
 				assert_equal('package-pointer', pointer)
 				expected = { :price_public	=>	"9.90", :lppv => true}
 				assert_equal(expected, hash)
@@ -53,7 +53,7 @@ module ODDB
 			update = @plugin.updated_packages.first
 			assert_instance_of(LppvPlugin::PriceUpdate, update)
 			assert(update.up?)
-			@app.mock_verify
+			@app.flexmock_verify
 		end
 		def test_update_package__price_down
 			data = {
@@ -61,13 +61,13 @@ module ODDB
 					'7654321' => '5.55',
 			}
 			package = FlexMock.new
-			package.mock_handle(:pointer){ 'package-pointer' }
-			package.mock_handle(:iksnr) { }
-			package.mock_handle(:name) { 'Neuer Name' }
-			package.mock_handle(:price_public) { 1000 }
-			package.mock_handle(:pharmacode) { '1234567' }
-			package.mock_handle(:sl_entry) { }
-			@app.mock_handle(:update, 1) { |pointer, hash|
+			package.should_receive(:pointer).and_return{ 'package-pointer' }
+			package.should_receive(:iksnr).and_return { }
+			package.should_receive(:name).and_return { 'Neuer Name' }
+			package.should_receive(:price_public).and_return { Util::Money.new(1000) }
+			package.should_receive(:pharmacode).and_return { '1234567' }
+			package.should_receive(:sl_entry).and_return { }
+			@app.should_receive(:update, 1).and_return { |pointer, hash|
 			assert_equal('package-pointer', pointer)
 			expected = { :price_public => "9.90", :lppv => true}
 			assert_equal(expected, hash)
@@ -76,20 +76,20 @@ module ODDB
 			update = @plugin.updated_packages.first
 			assert_instance_of(LppvPlugin::PriceUpdate, update)
 			assert(update.down?)
-			@app.mock_verify
+			@app.flexmock_verify
 		end		
 		def test_update_package__price_same__no_lppv
 			data = {
 				'1234567'	=>	'9.90',		
 			}
 			package = FlexMock.new
-			package.mock_handle(:pointer) { 'package-pointer' }
-			package.mock_handle(:name) { 'Der Name' }
-			package.mock_handle(:price_public) { 990 }
-			package.mock_handle(:pharmacode) { '1234567' }
-			package.mock_handle(:sl_entry) {  }
-			package.mock_handle(:lppv) {  }
-			@app.mock_handle(:update, 1) { |pointer, hash|
+			package.should_receive(:pointer).and_return { 'package-pointer' }
+			package.should_receive(:name).and_return { 'Der Name' }
+			package.should_receive(:price_public).and_return { Util::Money.new(9.90) }
+			package.should_receive(:pharmacode).and_return { '1234567' }
+			package.should_receive(:sl_entry).and_return {  }
+			package.should_receive(:lppv).and_return {  }
+			@app.should_receive(:update, 1).and_return { |pointer, hash|
 				assert_equal('package-pointer', pointer)
 				expected = { :price_public	=>	"9.90", :lppv => true}
 				assert_equal(expected, hash)
@@ -97,24 +97,24 @@ module ODDB
 			@plugin.update_package(package, data)
 			update = @plugin.updated_packages.first
 			assert_instance_of(LppvPlugin::PriceUpdate, update)
-			@app.mock_verify
+			@app.flexmock_verify
 		end
 		def test_update_package__price_same__lppv
 			data = {
 				'1234567' => '9.90',
 			}	
 			package = FlexMock.new
-			package.mock_handle(:pointer) { 'package-pointer' }
-			package.mock_handle(:name) { 'Noch a Name' }
-			package.mock_handle(:iksnr) { }
-			package.mock_handle(:price_public) { 990 }
-			package.mock_handle(:pharmacode) { '1234567' }
-			package.mock_handle(:sl_entry) { }
-			package.mock_handle(:lppv) { true }
-			@app.mock_handle(:update, 0) { }
+			package.should_receive(:pointer).and_return { 'package-pointer' }
+			package.should_receive(:name).and_return { 'Noch a Name' }
+			package.should_receive(:iksnr).and_return { }
+			package.should_receive(:price_public).and_return { Util::Money.new(9.90) }
+			package.should_receive(:pharmacode).and_return { '1234567' }
+			package.should_receive(:sl_entry).and_return { }
+			package.should_receive(:lppv).and_return { true }
+			@app.should_receive(:update, 0).and_return { }
 			@plugin.update_package(package, data)
 			assert_equal([], @plugin.updated_packages)
-			@app.mock_verify
+			@app.flexmock_verify
 		end	
 		def test_update_package__no_price
 			data = {
@@ -123,23 +123,23 @@ module ODDB
 			}
 			package = FlexMock.new
 			package2 = FlexMock.new
-			package.mock_handle(:pointer) { 'package-pointer' }
-			package.mock_handle(:name) { 'Namenda' }
-			package.mock_handle(:price_public) { 1000 }
-			package.mock_handle(:pharmacode) { '1234567' }
-			package.mock_handle(:sl_entry) { }
-			@app.mock_handle(:update, 1) { |pointer, hash|
+			package.should_receive(:pointer).and_return { 'package-pointer' }
+			package.should_receive(:name).and_return { 'Namenda' }
+			package.should_receive(:price_public).and_return { Util::Money.new(1000) }
+			package.should_receive(:pharmacode).and_return { '1234567' }
+			package.should_receive(:sl_entry).and_return { }
+			@app.should_receive(:update, 1).and_return { |pointer, hash|
 				assert_equal('package-pointer', pointer)
 				expected = { :price_public => "9.90", :lppv => true}
 				assert_equal(expected, hash)
 			}
 			@plugin.update_package(package, data)
-			package2.mock_handle(:pointer) { 'package-pointer' }
-			package2.mock_handle(:name) { 'Bla' }
-			package2.mock_handle(:price_public) {900 }
-			package2.mock_handle(:pharmacode) { '7654321' }
-			package2.mock_handle(:sl_entry) { }
-			@app.mock_handle(:update, 2) { |pointer, hash|
+			package2.should_receive(:pointer).and_return { 'package-pointer' }
+			package2.should_receive(:name).and_return { 'Bla' }
+			package2.should_receive(:price_public).and_return {900 }
+			package2.should_receive(:pharmacode).and_return { '7654321' }
+			package2.should_receive(:sl_entry).and_return { }
+			@app.should_receive(:update, 2).and_return { |pointer, hash|
 				assert_equal('package-pointer', pointer)
 				expected = { :price_public => "9.90",:lppv => true}
 				assert_equal(expected, hash)
@@ -147,7 +147,7 @@ module ODDB
 			@plugin.update_package(package2, data)
 			update = @plugin.updated_packages.first
 			assert_instance_of(LppvPlugin::PriceUpdate, update)
-			@app.mock_verify
+			@app.flexmock_verify
 		end
 	end
 end

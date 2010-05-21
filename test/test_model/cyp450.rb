@@ -4,9 +4,10 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'test/unit'
 require 'model/cyp450'
-require 'mock'
+require 'flexmock'
 
 module ODDB
 	class CyP450
@@ -63,11 +64,11 @@ class TestCyP450 < Test::Unit::TestCase
 		assert_equal([], result)
 	end
 	def test_interactions_with2
-		substance = Mock.new('substance')
-		inh_connection1 = Mock.new('inh_connection1')
-		inh_connection2 = Mock.new('inh_connection2')
-		ind_connection1 = Mock.new('ind_connection1')
-		ind_connection2 = Mock.new('ind_connection2')
+		substance = FlexMock.new('substance')
+		inh_connection1 = FlexMock.new('inh_connection1')
+		inh_connection2 = FlexMock.new('inh_connection2')
+		ind_connection1 = FlexMock.new('ind_connection1')
+		ind_connection2 = FlexMock.new('ind_connection2')
 		@cyp450.inhibitors = {
 			'inh_conn1'	=>	inh_connection1,	
 			'inh_conn2'	=>	inh_connection2,	
@@ -76,39 +77,17 @@ class TestCyP450 < Test::Unit::TestCase
 			'ind_conn1'	=>	ind_connection1,	
 			'ind_conn2'	=>	inh_connection2,	
 		}
-		substance.__next(:has_connection_key?) { false }
-		substance.__next(:same_as?) { |param|
-			assert_equal('inh_conn1', param)
-			false
-		}
-		substance.__next(:has_connection_key?) { false }
-		substance.__next(:same_as?) { |param|
-			assert_equal('inh_conn2', param)
-			false
-		}
-		substance.__next(:has_connection_key?) { false }
-		substance.__next(:same_as?) { |param|
-			assert_equal('ind_conn1', param)
-			false
-		}
-		substance.__next(:has_connection_key?) { false }
-		substance.__next(:same_as?) { |param|
-			assert_equal('ind_conn2', param)
-			false
-		}
+		substance.should_receive(:connection_keys).and_return { [ 'connection_key' ] }
+		substance.should_receive(:_search_keys).and_return { [ 'substance' ] }
 		result = @cyp450.interactions_with(substance)
 		assert_equal([], result)
-		inh_connection1.__verify
-		inh_connection2.__verify
-		ind_connection1.__verify
-		ind_connection2.__verify
 	end
 	def test_interactions_with3
-		substance = Mock.new('substance')
-		inh_connection1 = Mock.new('inh_connection1')
-		inh_connection2 = Mock.new('inh_connection2')
-		ind_connection1 = Mock.new('ind_connection1')
-		ind_connection2 = Mock.new('ind_connection2')
+		substance = FlexMock.new('substance')
+		inh_connection1 = FlexMock.new('inh_connection1')
+		inh_connection2 = FlexMock.new('inh_connection2')
+		ind_connection1 = FlexMock.new('ind_connection1')
+		ind_connection2 = FlexMock.new('ind_connection2')
 		@cyp450.inhibitors = {
 			'inh_conn1'	=>	inh_connection1,	
 			'inh_conn2'	=>	inh_connection2,	
@@ -117,32 +96,12 @@ class TestCyP450 < Test::Unit::TestCase
 			'ind_conn1'	=>	ind_connection1,	
 			'ind_conn2'	=>	ind_connection2,	
 		}
-		substance.__next(:has_connection_key?) { false }
-		substance.__next(:same_as?) { |param|
-			assert_equal('inh_conn1', param)
-			false
-		}
-		substance.__next(:has_connection_key?) { false }
-		substance.__next(:same_as?) { |param|
-			assert_equal('inh_conn2', param)
-			true
-		}
-		substance.__next(:has_connection_key?) { false }
-		substance.__next(:same_as?) { |param|
-			assert_equal('ind_conn1', param)
-			true
-		}
-		substance.__next(:has_connection_key?) { false }
-		substance.__next(:same_as?) { |param|
-			assert_equal('ind_conn2', param)
-			true
-		}
+		substance.should_receive(:connection_keys).and_return {
+      [ 'inh_conn2', 'ind_conn1', 'ind_conn2' ]
+    }
+		substance.should_receive(:_search_keys).and_return { [ 'substance' ] }
 		result = @cyp450.interactions_with(substance)
 		expected = [ inh_connection2, ind_connection1, ind_connection2 ]
 		assert_equal(expected, result)
-		inh_connection1.__verify
-		inh_connection2.__verify
-		ind_connection1.__verify
-		ind_connection2.__verify
 	end
 end

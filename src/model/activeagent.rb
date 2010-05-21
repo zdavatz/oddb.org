@@ -103,9 +103,9 @@ module ODDB
 					@substance.remove_sequence(@sequence)
 				end
 				@substance = substance
-        @sequence.substances.each { |substance|
-          substance.add_sequence(@sequence) if substance
-        }
+        if substance
+          substance.add_sequence @sequence
+        end
 			end
 			@substance
 		end

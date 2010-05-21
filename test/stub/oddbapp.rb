@@ -22,7 +22,6 @@ module ODDB
 	ODDB_VERSION = 'version'
 	class App < SBSM::DRbServer
 		remove_const :RUN_CLEANER
-		remove_const :RUN_EXPORTER
 		remove_const :RUN_UPDATER
 		RUN_CLEANER = false
 		RUN_EXPORTER = false

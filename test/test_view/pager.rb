@@ -20,6 +20,12 @@ module ODDB
 				def attributes(key)
 					{}
 				end
+        def disabled?(key)
+          false
+        end
+        def enabled?(key)
+          true
+        end
 				def event_url(event, values)
 					([
 						"http://www.oddb.org/de/gcc",
@@ -36,6 +42,9 @@ module ODDB
 				def lookup(key, *args)
 					(@dictionary ||= {})[key].to_s
 				end
+        def user_agent
+          'TEST'
+        end
 			end
 			def setup
 				@session = StubSession.new

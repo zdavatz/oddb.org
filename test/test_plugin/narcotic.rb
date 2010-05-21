@@ -46,21 +46,20 @@ module ODDB
 			row = ['name','text1','text2','text3','text4']
 			expected = "name\ntext1 | text2 | text3 | text4\n"
 			assert_equal(expected, @plugin.report_text(row))
-			row = [nil,nil,nil,nil,nil]
-			expected = "Error! Entry has no name!"
-			assert_equal(expected, @plugin.report_text(row))
 		end
 		def test_update_narcotic
 			row = ["Dextropropoxyphenhaltige","- - - - -","- - - - -",
 				"- - - - -","- - - - -","c"]
-			assert_equal("Dextropropoxyphenhaltige",
-									 @plugin.update_narcotic(row, 'casrn', :de))
+      res = @plugin.update_narcotic(row, 'casrn', :de)
+      assert_nil res
+      expected = { "Dextropropoxyphen" => "Dextropropoxyphenhaltige" }
+      assert_equal expected, @plugin.instance_variable_get('@narcotic_texts')
 		end
 		def test_narcotic_text
 			text = "Codeinhaltige"
 			assert_equal("Codein", @plugin.text2name(text, :de))
-			text = "Les préparations contenant du dextropropoxyphène sont" 
-			assert_equal("dextropropoxyphène", @plugin.text2name(text, :fr))
+			text = "Les prÃ©parations contenant du dextropropoxyphÃ¨ne sont" 
+			assert_equal("dextropropoxyphÃ¨ne", @plugin.text2name(text, :fr))
 		end	
 		def test_name
 			row = ['Codein', 'casrn', 'pcode', '7680543210079']

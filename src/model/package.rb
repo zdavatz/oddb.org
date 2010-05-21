@@ -3,6 +3,7 @@
 
 require 'util/persistence'
 require 'util/money'
+require 'util/today'
 require 'model/slentry'
 require 'model/ean13'
 require 'model/feedback_observer'

@@ -8,8 +8,6 @@ require 'test/unit'
 require 'view/navigationfoot.rb'
 require 'custom/lookandfeelbase'
 require 'util/validator'
-#require 'stub/oddbapp'
-#require 'stub/session'
 require 'sbsm/state'
 require 'stub/cgi'
 
@@ -57,12 +55,24 @@ module ODDB
 				def default_language
 					"de"
 				end
+        def disabled?
+          false
+        end
+        def enabled?
+          true
+        end
 				def http_protocol
 					'http'
 				end
 				def server_name
 					'test.oddb.org'
 				end
+        def user_agent
+          'TEST'
+        end
+        def zone_navigation
+          [:foo]
+        end
 			end
 			class StubApp
 				attr_accessor :last_update
@@ -85,11 +95,11 @@ module ODDB
 					result << @view.to_html(CGI.new)
 				}
 				expected = [
-					'<TABLE cellspacing="0" class="navigation-foot">',
-					'<TD><A name="foo" class="navigation">Foo</A></TD>',
+					'<TABLE cellspacing="0" class="navigation">',
+					'<TD><A name="foo" class="navigation right">Foo</A></TD>',
 					'<TD>&nbsp;|&nbsp;</TD>',
-					'<TD><A name="bar" href="http://test.oddb.org/de/gcc/bar/" class="navigation">Bar</A></TD>',
-					'<TD><A name="baz" href="http://test.oddb.org/de/gcc/baz/" class="navigation">Baz</A></TD>',
+					'<TD><A name="bar" href="http://test.oddb.org/de/gcc/bar/" class="subheading">Bar</A></TD>',
+					'<TD><A name="baz" href="http://test.oddb.org/de/gcc/baz/" class="subheading">Baz</A></TD>',
 				]
 				expected.each { |line|
 					assert(result.index(line), "expected #{line} in \n#{result}")

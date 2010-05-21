@@ -3,6 +3,7 @@
 
 require 'sbsm/validator'
 require 'model/ean13'
+require 'iconv'
 require 'cgi'
 
 module ODDB

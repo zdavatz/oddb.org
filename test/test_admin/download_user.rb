@@ -4,9 +4,9 @@
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 $: << File.expand_path('..', File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'admin/download_user'
 require 'test/unit'
-require 'stub/odba'
 
 module ODDB
 	module Admin

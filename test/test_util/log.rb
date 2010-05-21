@@ -11,7 +11,7 @@ require 'stub/odba'
 module Net
 	class SMTP
 		class << self
-			def start(mailserver)
+			def start(*args)
 				yield $stub_log_smtp
 			end
 		end
@@ -50,15 +50,15 @@ module ODDB
 			report = <<-EOS
 From: update@oddb.org\r
 To: hwyss@ywesee.com\r
-Subject: ODDB Report - 08/1975\r
-Content-Type: text/plain; charset=ISO-8859-1\r
+Subject: ch.ODDB.org Report - 08/1975\r
+Content-Type: text/plain; charset=UTF-8\r
 User-Agent: ODDB Updater\r
 \r
 a lengthy report.\r
 				EOS
 			expected = [
 				report.strip,
-				'update@oddb.org',
+				'admin@ywesee.com',
 				'hwyss@ywesee.com',
 			]
 			result = $stub_log_smtp.sent
@@ -78,15 +78,15 @@ a lengthy report.\r
 			report = <<-EOS
 From: update@oddb.org\r
 To: hwyss@ywesee.com\r
-Subject: ODDB Report - Subject - Today\r
-Content-Type: text/plain; charset=ISO-8859-1\r
+Subject: ch.ODDB.org Report - Subject - Today\r
+Content-Type: text/plain; charset=UTF-8\r
 User-Agent: ODDB Updater\r
 \r
 a lengthy report.\r
 				EOS
 			expected = [
 				report.strip,
-				'update@oddb.org',
+				'admin@ywesee.com',
 				'hwyss@ywesee.com',
 			]
 			result = $stub_log_smtp.sent

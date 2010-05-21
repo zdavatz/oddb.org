@@ -49,9 +49,9 @@ module ODDB
 			assert_equal(true, @invoice.expired?)
 			item.time = Time.now
 			assert_equal(true, @invoice.expired?)
-			item.expiry_time = (Time.now - 1)
+			item.expiry_time = @@today - 1
 			assert_equal(true, @invoice.expired?)
-			item.expiry_time = (Time.now + 1)
+			item.expiry_time = @@today
 			assert_equal(false, @invoice.expired?)
 		end
 		def test_expired_2_items
@@ -101,9 +101,9 @@ module ODDB
 			assert_equal(true, @item.expired?)
 			@item.time = Time.now
 			assert_equal(true, @item.expired?)
-			@item.expiry_time = (Time.now - 1)
+			@item.expiry_time = @@today - 1
 			assert_equal(true, @item.expired?)
-			@item.expiry_time = (Time.now + 1)
+			@item.expiry_time = @@today
 			assert_equal(false, @item.expired?)
 		end
 	end

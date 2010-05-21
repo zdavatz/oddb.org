@@ -45,6 +45,8 @@ class TestMedwinCompanyPlugin < Test::Unit::TestCase
 			@name = name
 			@pointer = pointer
 		end
+    def data_origin(key)
+    end
 		def listed?
 			false
 		end

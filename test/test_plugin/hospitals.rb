@@ -17,7 +17,7 @@ def setup
 	@plugin = ODDB::HospitalPlugin.new(@app)
 	@meddata = Mock.new('meddata')
 	@meddata_server = FlexMock.new
-	@meddata_server.mock_handle(:session) { yield @meddata }
+	@meddata_server.should_receive(:session).and_return { yield @meddata }
 	@plugin.meddata_server = @meddata_server
 end
 def teardown

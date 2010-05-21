@@ -5,7 +5,7 @@ module ODDB
 	module FeedbackObserver
 		attr_reader :feedbacks
 		def feedback(id)
-			@feedbacks.find { |fb| fb.oid == id }
+			@feedbacks.find { |fb| fb.oid == id.to_i }
 		end
     def add_feedback(feedback)
       unless(@feedbacks.include?(feedback))

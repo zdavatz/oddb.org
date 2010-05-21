@@ -5,6 +5,7 @@ $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'stub/odba'
 require 'plugin/bsv_xml'
 require 'flexmock'
 
@@ -899,10 +900,38 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       ptr += [:sequence, '01']
       expected_updates.store ptr, [{ :atc_class => 'M01AG01' }, reg]
       seq = flexmock 'sequence'
+      seq.should_receive(:compositions).and_return []
       seq.should_receive(:pointer).and_return ptr
       seq.should_receive(:active_agents).and_return([flexmock 'active-agent'])
+      reg.should_receive(:sequence).and_return seq
       expected_updates.store ptr.creator, [{:name_base=>"Ponstan"}, seq]
-      @app.should_receive(:update).times(2).and_return do |ptr, data|
+      ptr += [:package, '028']
+      pac = flexmock 'package'
+      pac.should_receive(:sl_entry).and_return nil
+      data = { 
+        :ikscat          => 'B',
+        :price_exfactory => Util::Money.new(2.9),
+        :sl_generic_type => :original,
+        :deductible      => :deductible_g,
+        :price_public    => Util::Money.new(7.5),
+        :narcotic        => false,
+        :pharmacode      => '703279',
+      }
+      seq.should_receive(:package).and_return pac
+      expected_updates.store ptr.creator, [data, pac]
+      part = flexmock 'part'
+      data = { :composition => nil, :size => '12 Stk' }
+      expected_updates.store((ptr + :part).creator, [data, pac])
+      sl_entry = flexmock 'sl_entry'
+      data = {
+        :introduction_date => Date.new(1977, 3, 15),
+        :limitation_points => nil,
+        :status            => "0",
+        :limitation        => nil,
+        :bsv_dossier       => "12495",
+      }
+      expected_updates.store((ptr + :sl_entry).creator, [data, pac])
+      @app.should_receive(:update).times(6).and_return do |ptr, data|
         exp, res = expected_updates.delete(ptr)
         assert_equal exp, data
         res
@@ -920,7 +949,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
         :swissmedic_no8_bag => "39271028",
         :pharmacode_bag     => "703279",
         :generic_type       => :original,
-        :deductible         => 10,
+        :deductible         => :deductible_g,
         :atc_class          => "M01AG01",
       } ]
       assert_equal expected, listener.unknown_packages

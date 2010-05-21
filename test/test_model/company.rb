@@ -4,9 +4,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'test/unit'
 require 'model/company'
-require 'stub/odba'
 
 module ODDB
 	class Company
@@ -111,13 +111,31 @@ class TestCompany < Test::Unit::TestCase
 			addr.pointer)
 		assert_equal(result, @company.addresses)
 	end
-	def test_pref_invoice_date
+	def test_invoice_date_patinfo
 		date = Date.today
-		@company.pref_invoice_date = date
-		assert_equal(date, @company.pref_invoice_date)
-		@company.pref_invoice_date = date >> 1
-		assert_equal(date >> 1, @company.pref_invoice_date)
-		@company.pref_invoice_date = date << 1
-		assert_equal(date >> 11, @company.pref_invoice_date)
+		@company.invoice_date_patinfo = date
+		assert_equal(date, @company.invoice_date_patinfo)
+		@company.invoice_date_patinfo = date >> 1
+		assert_equal(date >> 1, @company.invoice_date_patinfo)
+		@company.invoice_date_patinfo = date << 1
+		assert_equal(date >> 11, @company.invoice_date_patinfo)
+	end
+	def test_invoice_date_fachinfo
+		date = Date.today
+		@company.invoice_date_fachinfo = date
+		assert_equal(date, @company.invoice_date_fachinfo)
+		@company.invoice_date_fachinfo = date >> 1
+		assert_equal(date >> 1, @company.invoice_date_fachinfo)
+		@company.invoice_date_fachinfo = date << 1
+		assert_equal(date >> 11, @company.invoice_date_fachinfo)
+	end
+	def test_invoice_date_index
+		date = Date.today
+		@company.invoice_date_index = date
+		assert_equal(date, @company.invoice_date_index)
+		@company.invoice_date_index = date >> 1
+		assert_equal(date >> 1, @company.invoice_date_index)
+		@company.invoice_date_index = date << 1
+		assert_equal(date >> 11, @company.invoice_date_index)
 	end
 end

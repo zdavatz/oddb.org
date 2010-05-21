@@ -2,6 +2,7 @@
 # Company -- oddb -- 28.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
+require 'util/today'
 require 'model/registration_observer'
 require 'model/address'
 require 'model/user'

@@ -18,6 +18,9 @@ module ODDB
       @sequences.each { |seq| atcs.push seq.atc_class }
       atcs.compact.uniq
 		end
+    def empty?
+      @registrations.empty? && @sequences.empty?
+    end
 		def search_text(lang=nil)
       if(lang)
         super

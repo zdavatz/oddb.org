@@ -15,6 +15,7 @@ module ODDB
 			@inducers = {}
 		end
 		def interactions_with(substance)
+      return [] unless substance
 			connections = []
       keys = {}
       substance.connection_keys.each do |key|

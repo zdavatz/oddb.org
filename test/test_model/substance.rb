@@ -4,12 +4,11 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'test/unit'
 require 'model/substance'
 require 'util/searchterms'
-require 'stub/odba'
-require 'mock'
-require 'odba'
+require 'flexmock'
 
 module ODDB
 	class Substance
@@ -19,16 +18,6 @@ module ODDB
 end
 class TestSubstance < Test::Unit::TestCase
 	def setup
-		ODBA.storage = Mock.new
-		ODBA.storage.__next(:next_id) {
-			1
-		}
-		ODBA.storage.__next(:next_id) {
-			2
-		}
-		ODBA.storage.__next(:next_id) {
-			3
-		}
 		@substance = ODDB::Substance.new
 		@substance.descriptions.store('lt', "Acidum Acetylsalicylicum")
 	end
@@ -104,32 +93,36 @@ class TestSubstance < Test::Unit::TestCase
 		assert_equal({}, result)
 	end
 	def test_interaction_connections2
-		subst_conn1 = Mock.new('subst_conn1')
-		subst_conn2 = Mock.new('subst_conn2')
-		substance1 = Mock.new('substance1')
-		substance2 = Mock.new('substance2')
-		interaction1 = Mock.new('interaction1')
-		interaction2 = Mock.new('interaction2')
-		interaction3 = Mock.new('interaction3')
+		subst_conn1 = FlexMock.new('subst_conn1')
+		subst_conn2 = FlexMock.new('subst_conn2')
+		substance1 = FlexMock.new('substance1')
+		substance2 = FlexMock.new('substance2')
+		interaction1 = FlexMock.new('interaction1')
+		interaction2 = FlexMock.new('interaction2')
+		interaction3 = FlexMock.new('interaction3')
 		substances = [ substance1, substance2 ]
 		@substance.substrate_connections = {
 			'cyp450_id1'	=>	subst_conn1,
 			'cyp450_id2'	=>	subst_conn2,
 		}
-		subst_conn1.__next(:interactions_with) { |param|
-			assert_equal(substance1, param)
+		subst_conn1.should_receive(:interactions_with).with(substance1)\
+      .times(1).and_return {
+      assert true
 			[]
 		}
-		subst_conn1.__next(:interactions_with) { |param|
-			assert_equal(substance2, param)
+		subst_conn1.should_receive(:interactions_with).with(substance2)\
+      .times(1).and_return {
+      assert true
 			[]
 		}
-		subst_conn2.__next(:interactions_with) { |param|
-			assert_equal(substance1, param)
+		subst_conn2.should_receive(:interactions_with).with(substance1)\
+      .times(1).and_return {
+      assert true
 			[ interaction1 ]	
 		}
-		subst_conn2.__next(:interactions_with) { |param|
-			assert_equal(substance2, param)
+		subst_conn2.should_receive(:interactions_with).with(substance2)\
+      .times(1).and_return {
+			assert true
 			[ interaction2, interaction3 ]
 		}
 		result = @substance.interaction_connections(substances)		
@@ -138,13 +131,6 @@ class TestSubstance < Test::Unit::TestCase
 			"cyp450_id2"	=>	[ interaction1, interaction2, interaction3 ]
 		}
 		assert_equal(expected, result)
-		subst_conn1.__verify
-		subst_conn2.__verify
-		substance1.__verify
-		substance2.__verify
-		interaction1.__verify
-		interaction2.__verify
-		interaction3.__verify
 	end
 	def test_remove_sequence
 		@substance.sequences = ["alloa"]
@@ -154,43 +140,49 @@ class TestSubstance < Test::Unit::TestCase
 	def test_merge
 		@substance.pointer = ["!substance,12"]
 		@substance.sequences = []
-		sequence = Mock.new('sequence')
-		aagent = Mock.new('aagent') 
-		other = Mock.new('other')
-		connection = Mock.new('connection')
-		pointer = Mock.new('pointer')
-		other.__next(:sequences) { [ sequence ] }
-		sequence.__next(:active_agent) { aagent }
-		aagent.__next(:sequence) { sequence }
-		aagent.__next(:substance=) { |param| 
+    composition = FlexMock.new('composition')
+		sequence = FlexMock.new('sequence')
+    sequence.should_receive(:compositions).and_return [composition]
+		aagent = FlexMock.new('aagent') 
+		other = FlexMock.new('other')
+		connection = FlexMock.new('connection')
+		pointer = FlexMock.new('pointer')
+		other.should_receive(:sequences).and_return { [ sequence ] }
+    other.should_receive(:narcotic).times(1)
+    other.should_receive(:swissmedic_code).times(1).and_return 'smc'
+    other.should_receive(:casrn).times(1).and_return 'casrn'
+    act = FlexMock.new('active-agent')
+    act.should_receive(:sequence).and_return(sequence)
+    act.should_receive(:substance=).with(@substance).times(1)
+    act.should_receive(:odba_isolated_store)
+    composition.should_receive(:active_agent).with(other).and_return(act)
+		sequence.should_receive(:active_agent).and_return { aagent }
+		aagent.should_receive(:sequence).and_return { sequence }
+		aagent.should_receive(:substance=).and_return { |param| 
 			assert_equal(@substance, param)
 		}
-		aagent.__next(:odba_isolated_store) { }
-		other.__next(:substrate_connections) {
+		aagent.should_receive(:odba_isolated_store).and_return { }
+		other.should_receive(:substrate_connections).and_return {
 			{ 'conn_key'	=>	connection }
 		}
-		connection.__next(:cyp_id) { 'cyp_id' }
-		connection.__next(:pointer)	{ pointer }
-		pointer.__next(:last_step) { ['!pointer,last.'] }
-		connection.__next(:pointer=) { |param|
+		connection.should_receive(:cyp_id).and_return { 'cyp_id' }
+		connection.should_receive(:pointer).and_return	{ pointer }
+		pointer.should_receive(:last_step).and_return { ['!pointer,last.'] }
+		connection.should_receive(:pointer=).and_return { |param|
 			assert_equal(["!substance,12", "!pointer,last."], param)
 		}
-		connection.__next(:cyp_id) { 'cyp_id' }
-		connection.__next(:odba_isolated_store)	{ }
-		other.__next(:descriptions) {
+		connection.should_receive(:cyp_id).and_return { 'cyp_id' }
+		connection.should_receive(:odba_isolated_store).and_return	{ }
+		other.should_receive(:descriptions).and_return {
 			{ 'key'	=> 'value' }
 		}
-		other.__next(:synonyms) { ['a_Synonym'] }
-		other.__next(:descriptions) {
+		other.should_receive(:synonyms).and_return { ['a_Synonym'] }
+		other.should_receive(:descriptions).and_return {
 			{ 'key'	=> 'value' }
 		}
-		other.__next(:connection_keys) { ['connectionkey'] }
+		other.should_receive(:connection_keys).and_return { ['connectionkey'] }
 		@substance.merge(other)
-		sequence.__verify
-		aagent.__verify
-		other.__verify
-		connection.__verify
-		pointer.__verify
+    assert_equal('smc', @substance.swissmedic_code)
 	end
 	def test_name
 		assert_equal('Acidum Acetylsalicylicum', @substance.name)

@@ -4,10 +4,10 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'date'
 require 'test/unit'
 require 'stub/cgi'
-require 'stub/odba'
 require 'model/sponsor'
 require 'view/sponsorhead'
 
@@ -62,6 +62,9 @@ module ODDB
 				def user
 					self
 				end
+        def user_agent
+          'TEST'
+        end
 				def state
 					self
 				end
@@ -107,7 +110,7 @@ module ODDB
 				@other.represents = false
 				@pac = StubPackage.new
 				@pac.company = @comp
-				@logo_pattern = /<A><IMG src="sponsor.sponsorlogo" alt="sponsorlogo"><SPAN class="logo-r">SPONSOR_UNTIL<.SPAN><.A>/
+				@logo_pattern = /<A><IMG src="sponsor\/sponsorlogo" alt="sponsorlogo"><SPAN class="sponsor\s+right">SPONSOR_UNTIL<.SPAN><.A>/
 			end
 			def test_empty_model
 				view = View::SponsorHead.new([], @session)

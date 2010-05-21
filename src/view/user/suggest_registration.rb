@@ -2,6 +2,7 @@
 # View::User::SuggestRegistration -- oddb -- 29.11.2005 -- hwyss@ywesee.com
 
 require 'view/admin/registration'
+require 'view/admin/incompleteregistration'
 require 'util/persistence'
 
 module ODDB

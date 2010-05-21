@@ -3,6 +3,7 @@
 
 require 'date'
 require 'plugin/plugin'
+require 'model/dose'
 require 'spreadsheet/excel'
 require 'util/today'
 

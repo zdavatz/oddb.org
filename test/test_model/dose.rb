@@ -107,7 +107,7 @@ class TestDose < Test::Unit::TestCase
 		assert(dose2 == dose1, "dose2 was not == dose1")
 	end
 	def test_comparable8
-		dose1 = ODDB::Dose.new('1000', 'µg')
+		dose1 = ODDB::Dose.new('1000', 'Âµg')
 		dose2 = ODDB::Dose.new('1', 'mg')
 		assert(dose2 == dose1, "dose2 was not == dose1")
 	end
@@ -140,7 +140,7 @@ class TestDose < Test::Unit::TestCase
 		}
 	end
   def test_ug_h
-    dose = ODDB::Dose.new(100, 'µg/h')
-    assert_equal('100 µg/h', dose.to_s)
+    dose = ODDB::Dose.new(100, 'Âµg/h')
+    assert_equal('100 Âµg/h', dose.to_s)
   end
 end

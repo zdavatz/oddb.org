@@ -14,9 +14,9 @@ class TestEan < Test::Unit::TestCase
 		assert_equal(expected, result)
 	end
 	def test_new_unchecked2
-		assert_raises(SBSM::InvalidDataError) {
-			ODDB::Ean13.new_unchecked(" 76871639 ")
-		}
+    result = ODDB::Ean13.new_unchecked(" 76871639 ")
+		expected ="7687163900007"
+		assert_equal(expected, result)
 	end
 	def test_new_unchecked3
 		assert_raises(SBSM::InvalidDataError) {

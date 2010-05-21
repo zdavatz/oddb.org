@@ -4,9 +4,11 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'test/unit'
 require 'model/activeagent'
 require 'mock'
+
 module ODDB
 	class ActiveAgentCommon
 		public :adjust_types
@@ -19,7 +21,7 @@ class StubActiveAgentSubstance
 		@name = name
 	end
 	def ==(other)
-		@name==other.name
+		@name==other.name if other
 	end
 	def add_sequence(sequence)
 		@sequence = sequence
@@ -59,6 +61,8 @@ class TestActiveAgent < Test::Unit::TestCase
 	def setup
 		@substance_name = 'ACIDUM ACETYLSALICYLICUM'
 		@agent = ODDB::ActiveAgent.new(@substance_name)
+    @agent.substance = @substance
+    @agent.dose = ODDB::Dose.new 100, 'mg'
 		@app = StubActiveAgentApp.new
 		@substance = StubActiveAgentSubstance.new(@substance_name)
 		@agent.pointer = ODDB::Persistence::Pointer.new('parent', 'self')
@@ -73,6 +77,8 @@ class TestActiveAgent < Test::Unit::TestCase
 	end
 	def test_equal
 		other = ODDB::ActiveAgent.new(@substance_name)
+    other.substance = @substance
+    other.dose = ODDB::Dose.new 100, 'mg'
 		other.pointer = ODDB::Persistence::Pointer.new('parent', 'self')
 		other.init(@app)
 		assert_equal(other, @agent)
@@ -82,13 +88,12 @@ class TestActiveAgent < Test::Unit::TestCase
 	end
 	def test_substance_writer
 		sequence = StubActiveAgentSequence.new
-		sequence.pointer = ODDB::Persistence::Pointer.new(:sequence, 2)
+		sequence.pointer = ODDB::Persistence::Pointer.new([:sequence, 2])
 		subst1 = StubActiveAgentSubstance.new("LEVOMENTHOLUM")
 		@agent.sequence = sequence
 		@agent.substance = subst1
 		assert_equal(sequence, subst1.sequence)
 		assert_equal(subst1, @agent.substance)
-		assert_equal(sequence.pointer + [:active_agent, @agent.substance.name], @agent.pointer)
 		subst2 = StubActiveAgentSubstance.new("ACIDUM MEFENAMICUM")
 		@agent.substance = subst2
 		assert_equal(sequence, subst1.removed_sequence)

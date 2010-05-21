@@ -118,7 +118,7 @@ class TestFlockhartWriter < Test::Unit::TestCase
 		substrates.each { |sub|
 			@result = sub if sub.name==nil
 		}
-		assert_equal(25, substrates.size)
+		assert_equal(24, substrates.size)
 		substrates.each { |sub|
 			@result = sub if sub.name.match(/phenacetin/)
 		}
@@ -205,84 +205,6 @@ class TestFlockhartWriter < Test::Unit::TestCase
 		assert_equal(expected, result)
 	end
 end
-class TestDetailWriter < Test::Unit::TestCase
-	def prepare_test(cytochrome)
-		@writer = ODDB::Interaction::DetailWriter.new(cytochrome) 
-		formatter = ODDB::HtmlFormatter.new(@writer)
-		@parser = ODDB::HtmlParser.new(formatter)
-		@target = ODDB::Interaction::FlockhartPlugin::TARGET
-	end
-	def test_send_flowing_data
-		prepare_test("1a2")
-		list = "1A2.htm"
-		html = File.read([@target, list].join("/"))
-		@parser.feed(html)
-		result = []
-		@writer.extract_data.substrates.each { |conn|
-			result << conn
-		}
-		assert_equal(25, result.size)
-	end
-	def test_send_flowing_data2
-		prepare_test("3a457")
-		list = "3A457.htm"
-		html = File.read([@target, list].join("/"))
-		@parser.feed(html)
-		result = []
-		@writer.extract_data.substrates.each { |conn|
-			result << conn
-		}
-    edge1 = result.first
-		assert_equal "alfentanil", edge1.name
-    assert_equal 1, edge1.links.size
-    link = edge1.links.first
-    assert_equal "Human alfentanil metabolism by cytochrome P450 3A3/4. An explanation for the interindividual variability in alfentanil clearance?", link.info
-    assert_equal "Anesth Analg 1993;76:1033-1039", link.text
-    assert_equal "http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=PubMed&list_uids=8484504&dopt=Abstract", link.href
-
-    edge2 = result.at(40)
-		assert_equal "methandone", edge2.name
-    assert_equal 3, edge2.links.size
-    link = edge2.links.last
-    assert_equal "Involvement of cytochrome P450 3A4 enzyme in the N-demethylation of methadone in human liver microsomes", link.info
-    assert_equal "Chem Res Toxicol 1996 Mar;9(2):365-373", link.text
-    assert_equal "http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=PubMed&cmd=Retrieve&list_uids=8839037&dopt=Abstract", link.href
-
-    edge3 = result.at(41)
-		assert_equal "midazolam", edge3.name
-    assert_equal 1, edge3.links.size
-    link = edge3.links.first
-    assert_equal "Regioselective biotransformation of midazolam by members of the human cytochrome P450 3A (CYP3A) subfamily.", link.info
-    assert_equal "Biochem Pharmacol 1994;47(9):1643-1653", link.text
-    assert_equal "http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?db=PubMed&cmd=Retrieve&list_uids=8185679&dopt=Abstract", link.href
-
-    edge4 = result.at(42)
-    assert_equal "nateglinide", edge4.name
-    assert_equal 0, edge4.links.size
-
-    edge4 = result.at(53)
-    assert_equal "quetiapine", edge4.name
-    assert_equal 1, edge4.links.size
-    link = edge4.links.first
-    assert_equal "Metabolic mechanism of quetiapine in vivo with clinical therapeutic dose.", link.info
-    assert_equal "Methods Find Exp Clin Pharmacol. 2005 Mar;27(2):83-6.", link.text
-    assert_equal "http://www.ncbi.nlm.nih.gov/entrez/query.fcgi?cmd=Retrieve&db=pubmed&dopt=Abstract&list_uids=15834460&query_hl=2&itool=pubmed_docsum", link.href
-
-    edge5 = result.at(56)
-    assert_equal "risperidone", edge5.name
-    assert_equal 1, edge5.links.size
-
-    edge6 = result.at(66)
-    assert_equal "tamoxifen", edge6.name
-    assert_equal 1, edge6.links.size
-
-    edge7 = result.at(67)
-    assert_equal "taxol", edge7.name
-    assert_equal 0, edge7.links.size
-
-		assert_equal(78, result.size)
-	end
-end
 class TestTableLinksWriter < Test::Unit::TestCase
 	def setup
 		@writer = ODDB::Interaction::TableLinksWriter.new 
@@ -325,7 +247,7 @@ class TestFlockhartPlugin < Test::Unit::TestCase
 	def test_parse_table
 		result = @plugin.parse_table
 		assert_equal(9, result.size)
-		assert_equal(25, result['1A2'].substrates.size)
+		assert_equal(24, result['1A2'].substrates.size)
     inhs = result['1A2'].inhibitors
     assert_equal(9, inhs.size)
     inh = inhs.find { |i| i.name == 'fluvoxamine' }

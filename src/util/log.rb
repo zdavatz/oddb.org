@@ -2,9 +2,9 @@
 # Log -- oddb -- 23.05.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
+require 'config'
 require 'cgi'
 require 'date'
-#require 'net/smtp'
 require 'tmail'
 
 module ODDB

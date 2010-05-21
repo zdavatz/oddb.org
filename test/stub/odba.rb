@@ -32,6 +32,9 @@ module ODBA
 			@id ||= 0
 			@id = @id.next
 		end
+    def reset_id
+      @id = nil
+    end
 	end
 	def ODBA.transaction
 		yield

@@ -17,9 +17,8 @@ module ODDB
 		class TestCreateProduct < Test::Unit::TestCase
 			def setup
 				@subgroup = FlexMock.new
-				@subgroup.mock_handle(:code) { '04' }
-				#@subgroup.mock_handle(:group_code) { '03' }
-				@subgroup.mock_handle(:migel_code) { '03.04' }
+				@subgroup.should_receive(:code).and_return { '04' }
+				@subgroup.should_receive(:migel_code).and_return { '03.04' }
 				@product = Product.new('01.00.2')
 				@product.subgroup = @subgroup
 			end
@@ -27,16 +26,21 @@ module ODDB
 				assert_equal('03.04.01.00.2', @product.migel_code)
 			end
 			def test_search_terms
-				@group = FlexMock.new
-				@group.mock_handle(:de) { 'group' }
-				@subgroup.mock_handle(:group) { @group }
-				@subgroup.mock_handle(:de) { 'subgroup' }
-				expected = ['03.04.01.00.2', 'group', 'subgroup' ]
+				@group = FlexMock.new 'group'
+				@group.should_receive(:de).and_return { 'group' }
+        lt = LimitationText.new
+        lt.descriptions.store 'de', 'Limitation-Text'
+        @group.should_receive(:limitation_text).and_return lt
+				@subgroup.should_receive(:group).and_return { @group }
+				@subgroup.should_receive(:de).and_return { 'subgroup' }
+        @subgroup.should_receive(:limitation_text).and_return nil
+				expected = [ '030401002', 'group', 'Limitation',
+                     'LimitationText', 'Limitation Text', 'subgroup' ]
 				assert_equal(expected, @product.search_terms)
 			end
 			def test_product_writer
 				product = FlexMock.new
-				product.mock_handle(:add_accessory, 1) { |acc| 
+				product.should_receive(:add_accessory, 1).and_return { |acc| 
 					assert_equal(@product, acc)
 				}
 				res = @product.add_product(product)
@@ -44,7 +48,7 @@ module ODDB
 				assert_equal([product], @product.products)
 				@product.add_product(product)
 				assert_equal([product], @product.products)
-				product.mock_verify
+				product.flexmock_verify
 			end
 			def test_product_writer__nil
 				assert_nothing_raised { @product.add_product(nil) }
@@ -52,21 +56,21 @@ module ODDB
 			end
 			def test_product_writer__remove
 				product = FlexMock.new
-				product.mock_handle(:add_accessory) { |acc| 
+				product.should_receive(:add_accessory).and_return { |acc| 
 					assert_equal(@product, acc)
 				}
 				@product.add_product(product)
 				assert_equal([product], @product.products)
-				product.mock_handle(:remove_accessory, 1) { |acc| 
+				product.should_receive(:remove_accessory, 1).and_return { |acc| 
 					assert_equal(@product, acc)
 				}
 				@product.remove_product(product)
 				assert_equal([product], @product.products)
-				product.mock_verify
+				product.flexmock_verify
 			end
 			def test_add_accessory
 				odba = ODBA.cache = FlexMock.new
-				odba.mock_handle(:store, 2) { |arg|
+				odba.should_receive(:store, 2).and_return { |arg|
 					assert_equal(@product.accessories, arg)
 				}
 				acc = FlexMock.new
@@ -82,7 +86,7 @@ module ODDB
 			end
 			def test_remove_accessory
 				odba = ODBA.cache = FlexMock.new
-				odba.mock_handle(:store, 2) { |arg|
+				odba.should_receive(:store, 2).and_return { |arg|
 					assert_equal(@product.accessories, arg)
 				}
 				acc = FlexMock.new

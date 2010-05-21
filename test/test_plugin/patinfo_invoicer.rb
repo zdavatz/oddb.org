@@ -22,32 +22,34 @@ module ODDB
 		def test_adjust_annual_fee
 			item1 = AbstractInvoiceItem.new
 			item1.type = :annual_fee
-			item1.time = Time.local(2005, 7, 1, 18, 26, 42)
-			company = FlexMock.new
-			company.mock_handle(:pref_invoice_date) { Date.new(2006) }
-			company.mock_handle(:patinfo_price) { 100 }
+			item1.time = Time.local(2005, 12, 1, 18, 26, 42)
+			company = FlexMock.new 'company'
+			company.should_receive(:invoice_date).with(:patinfo).and_return { Date.new(2006) }
+			company.should_receive(:limit_invoice_duration).and_return false
+			company.should_receive(:patinfo_price).and_return { 100 }
 			@plugin.adjust_annual_fee(company, [item1])
-			assert_equal(184.0/365.0, item1.quantity)
+			assert_equal(31.0/365.0, item1.quantity)
 		end
 		def test_adjust_annual_fee__2
 			item1 = AbstractInvoiceItem.new
 			item1.type = :annual_fee
-			item1.time = Time.local(2005, 7, 2, 18, 26, 42)
-			company = FlexMock.new
-			company.mock_handle(:pref_invoice_date) { Date.new(2006) }
-			company.mock_handle(:patinfo_price) { 100 }
+			item1.time = Time.local(2005, 12, 2, 18, 26, 42)
+			company = FlexMock.new 'company'
+			company.should_receive(:invoice_date).with(:patinfo).and_return { Date.new(2006) }
+			company.should_receive(:limit_invoice_duration).and_return false
+			company.should_receive(:patinfo_price).and_return { 100 }
 			@plugin.adjust_annual_fee(company, [item1])
-			assert_equal(548.0/365.0, item1.quantity)
+			assert_equal(395.0/365.0, item1.quantity)
 		end
 		def test_filter_paid
 			ptr1 = FlexMock.new
 			ptr2 = FlexMock.new
 			ptr3 = FlexMock.new
 			ptr4 = FlexMock.new
-			ptr1.mock_handle(:resolve) { } # disables the neighborhood_names check
-			ptr2.mock_handle(:resolve) { }
-			ptr3.mock_handle(:resolve) { }
-			ptr4.mock_handle(:resolve) { }
+			ptr1.should_receive(:resolve).and_return { } # disables the neighborhood_names check
+			ptr2.should_receive(:resolve).and_return { }
+			ptr3.should_receive(:resolve).and_return { }
+			ptr4.should_receive(:resolve).and_return { }
 			day = Date.today - 1
 			## Item that has been paid more than a year ago
 			## (inv1) - should be in new invoice
@@ -84,38 +86,38 @@ module ODDB
 			items = [item1, item2, item3, item4]
 
 			inv1 = FlexMock.new
-			inv1.mock_handle(:items) {
+			inv1.should_receive(:items).and_return {
 				itm1 = FlexMock.new
-				itm1.mock_handle(:expired?) { true }
-				itm1.mock_handle(:type) { :annual_fee }
-				itm1.mock_handle(:item_pointer) { 'model 1' }
-				itm1.mock_handle(:text) { '11111 11' }
+				itm1.should_receive(:expired?).and_return { true }
+				itm1.should_receive(:type).and_return { :annual_fee }
+				itm1.should_receive(:item_pointer).and_return { 'model 1' }
+				itm1.should_receive(:text).and_return { '11111 11' }
 				itm2 = FlexMock.new
-				itm2.mock_handle(:expired?) { false }
-				itm2.mock_handle(:type) { :processing }
-				itm2.mock_handle(:item_pointer) { 'model 1' }
-				itm2.mock_handle(:text) { '11111 11' }
+				itm2.should_receive(:expired?).and_return { false }
+				itm2.should_receive(:type).and_return { :processing }
+				itm2.should_receive(:item_pointer).and_return { 'model 1' }
+				itm2.should_receive(:text).and_return { '11111 11' }
 				{1 => itm1, 2 => itm2}
 			}
 			inv2 = FlexMock.new
-			inv2.mock_handle(:items) {
+			inv2.should_receive(:items).and_return {
 				itm1 = FlexMock.new
-				itm1.mock_handle(:expired?) { false }
-				itm1.mock_handle(:type) { :annual_fee }
-				itm1.mock_handle(:item_pointer) { 'model 3' }
-				itm1.mock_handle(:text) { '33333 33' }
+				itm1.should_receive(:expired?).and_return { false }
+				itm1.should_receive(:type).and_return { :annual_fee }
+				itm1.should_receive(:item_pointer).and_return { 'model 3' }
+				itm1.should_receive(:text).and_return { '33333 33' }
 				{1 => itm1}
 			}
 			inv3 = FlexMock.new
-			inv3.mock_handle(:items) {
+			inv3.should_receive(:items).and_return {
 				itm1 = FlexMock.new
-				itm1.mock_handle(:expired?) { false }
-				itm1.mock_handle(:type) { :annual_fee }
-				itm1.mock_handle(:item_pointer) { 'model 4' }
-				itm1.mock_handle(:text) { '44444 44' }
+				itm1.should_receive(:expired?).and_return { false }
+				itm1.should_receive(:type).and_return { :annual_fee }
+				itm1.should_receive(:item_pointer).and_return { 'model 4' }
+				itm1.should_receive(:text).and_return { '44444 44' }
 				{1 => itm1}
 			}
-			@app.mock_handle(:invoices) { 
+			@app.should_receive(:invoices).and_return { 
 				{
 					1 => inv1, 
 					2 => inv2,
@@ -127,7 +129,7 @@ module ODDB
 		end
 		def test_recent_items
 			ptr = FlexMock.new
-			ptr.mock_handle(:resolve) { true }
+			ptr.should_receive(:resolve).and_return { true }
 			today = Date.today
 			item1 = AbstractInvoiceItem.new
 			item1.item_pointer = ptr
@@ -162,14 +164,14 @@ module ODDB
 				5	=>	item5,
 			}
 			slate = FlexMock.new
-			slate.mock_handle(:items) {
+			slate.should_receive(:items).and_return {
 				items
 			}
-			@app.mock_handle(:slate) { |name| 
+			@app.should_receive(:slate).and_return { |name| 
 				assert_equal(:patinfo, name)
 				slate
 			}
-			@app.mock_handle(:active_pdf_patinfos) {
+			@app.should_receive(:active_pdf_patinfos).and_return {
 				{
 					'12345_01.pdf' => 1, '12345_02.12347435.pdf' => 1,
 					'12345_03.pdf' => 1, '12345_04.e1718.pdf' => 1, 
@@ -182,20 +184,21 @@ module ODDB
 		def test_group_by_company
 			old_invoice = FlexMock.new
 			company1 = FlexMock.new
-			company1.mock_handle(:pref_invoice_date) { nil }
-			company1.mock_handle(:patinfo_price) { nil }
+			company1.should_receive(:invoice_date).with(:patinfo).and_return { nil }
+			company1.should_receive(:patinfo_price).and_return { nil }
 			company2 = FlexMock.new
-			company2.mock_handle(:pref_invoice_date) { nil }
-			company2.mock_handle(:patinfo_price) { nil }
-			@app.mock_handle(:invoices) { { 1 => old_invoice } }
+			company2.should_receive(:invoice_date).with(:patinfo).and_return { nil }
+			company2.should_receive(:patinfo_price).and_return { nil }
+			@app.should_receive(:invoices).and_return { { 1 => old_invoice } }
 			old_item = FlexMock.new
-			old_invoice.mock_handle(:items) { { 1 => old_item } }
-			old_item.mock_handle(:type) { :annual_fee }
+			old_invoice.should_receive(:items).and_return { { 1 => old_item } }
+			old_item.should_receive(:type).and_return { :annual_fee }
 			item_pointer = FlexMock.new
-			old_item.mock_handle(:item_pointer) { item_pointer }
+			old_item.should_receive(:item_pointer).and_return { item_pointer }
 			sequence = FlexMock.new
-			item_pointer.mock_handle(:resolve) { sequence }
-			sequence.mock_handle(:company) { company2 }
+      sequence.should_receive(:is_a?).with(Sequence).and_return true
+			item_pointer.should_receive(:resolve).and_return { sequence }
+			sequence.should_receive(:company).and_return { company2 }
 			pointer = FlexMock.new
 			time = Time.now
 			item1 = AbstractInvoiceItem.new
@@ -221,10 +224,10 @@ module ODDB
 			item4.time = time
 			company_donor1 = FlexMock.new
 			company_donor2 = FlexMock.new
-			company_donor1.mock_handle(:company) { company1 }
-			company_donor2.mock_handle(:company) { company2 }
+			company_donor1.should_receive(:company).and_return { company1 }
+			company_donor2.should_receive(:company).and_return { company2 }
 			companies = [company_donor1, company_donor2] * 2
-			pointer.mock_handle(:resolve) { companies.shift }
+			pointer.should_receive(:resolve).and_return { companies.shift }
 
 			items = [item1, item2, item3, item4]
 			comps = @plugin.group_by_company(items)
@@ -242,9 +245,9 @@ module ODDB
 			ptr1 = FlexMock.new
 			ptr2 = FlexMock.new
 			ptr3 = FlexMock.new
-			ptr1.mock_handle(:resolve) { } # disables the neighborhood_names check
-			ptr2.mock_handle(:resolve) { }
-			ptr3.mock_handle(:resolve) { }
+			ptr1.should_receive(:resolve).and_return { } # disables the neighborhood_names check
+			ptr2.should_receive(:resolve).and_return { }
+			ptr3.should_receive(:resolve).and_return { }
 			item1 = AbstractInvoiceItem.new
 			item1.yus_name = 'user1'
 			item1.item_pointer = ptr1
@@ -259,7 +262,7 @@ module ODDB
 			invoice = FlexMock.new
 			stored_ptr = pointer.dup
 			stored_ptr.append(1)
-			invoice.mock_handle(:pointer) { stored_ptr }
+			invoice.should_receive(:pointer).and_return { stored_ptr }
 			item_ptr = Persistence::Pointer.new([:invoice, 1], [:item])
 			item_vals1 = {
 				:data					=>	{},
@@ -286,7 +289,7 @@ module ODDB
 				[item_ptr.dup.creator, item_vals2, nil],
 				[item_ptr.dup.creator, item_vals3, nil],
 			]
-			@app.mock_handle(:update, 4) { |uptr, values| 
+			@app.should_receive(:update, 4).and_return { |uptr, values| 
 				exp_ptr, exp_vals, res = expected.shift
 				assert_equal(exp_ptr, uptr)
 				assert_equal(exp_vals, values)
@@ -296,7 +299,7 @@ module ODDB
 				res
 			}
 			@plugin.create_invoice('user1', items, 2134)
-			@app.mock_verify
+			@app.flexmock_verify
 		end
 	end
 end

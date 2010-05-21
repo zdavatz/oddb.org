@@ -34,6 +34,12 @@ module ODDB
 			def unknown_user
 				StubUnknownUser.new
 			end
+      def sorted_fachinfos
+        []
+      end
+      def sorted_feedbacks
+        []
+      end
 			def async(&block)
 				#block.call
 			end

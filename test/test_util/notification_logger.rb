@@ -151,7 +151,7 @@ module ODDB
 				[:drugs, '30785007']	=> [entry5, entry6, entry7],
 			}
 			string = <<-EOS
-Code;Name;Grösse;Sender;Empfänger;Total;December 2004;January 2005;February 2005;March 2005;April 2005
+Code;Name;GrÃ¶sse;Sender;EmpfÃ¤nger;Total;December 2004;January 2005;February 2005;March 2005;April 2005
 23487012;Ponstan;50 Tabletten;jlang@ywesee.com;usenguel@ywesee.com;4;0;2;1;0;1
 23487012;Ponstan;50 Tabletten;jlang@ywesee.com;usenguel@ywesee.com;4;0;2;1;0;1
 23487012;Ponstan;50 Tabletten;jlang@ywesee.com;usenguel@ywesee.com;4;0;2;1;0;1
@@ -164,7 +164,7 @@ Code;Name;Grösse;Sender;Empfänger;Total;December 2004;January 2005;February 2005
 			assert_equal(4, @log.last_month.mon)
 			registration1 = FlexMock.new
 			registration2 = FlexMock.new
-			@app.mock_handle(:registration) { |iksnr| 
+			@app.should_receive(:registration).and_return { |iksnr| 
 				case iksnr
 				when '30785'
 					registration1
@@ -176,24 +176,24 @@ Code;Name;Grösse;Sender;Empfänger;Total;December 2004;January 2005;February 2005
 			}
 			package1 = FlexMock.new
 			package2 = FlexMock.new
-			registration1.mock_handle(:package) { |iksnr| 
+			registration1.should_receive(:package).and_return { |iksnr| 
 				assert_equal('007', iksnr)
 				package1
 			}
-			registration2.mock_handle(:package) { |iksnr| 
+			registration2.should_receive(:package).and_return { |iksnr| 
 				assert_equal('012', iksnr)
 				package2
 			}
-			package1.mock_handle(:name) {
+			package1.should_receive(:name).and_return {
 				'Mefanzid; Tabletten'
 			}
-			package1.mock_handle(:size) {
+			package1.should_receive(:size).and_return {
 				'20 Tabletten'
 			}
-			package2.mock_handle(:name) {
+			package2.should_receive(:name).and_return {
 				'Ponstan'
 			}
-			package2.mock_handle(:size) {
+			package2.should_receive(:size).and_return {
 				'50 Tabletten'
 			}
 			assert_equal(string, @log.create_csv(@app))

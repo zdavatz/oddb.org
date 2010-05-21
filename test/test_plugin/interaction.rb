@@ -437,11 +437,33 @@ module ODDB
       @app = flexmock 'app'
       @plugin = ODDB::Interaction::FlockhartPlugin.new @app, false
     end
+    def setup_mechanize mapping=[]
+      agent = flexmock Mechanize.new
+      mapping.each do |page, method, url, formname, page2|
+        path = File.join @datadir, page
+        page = setup_page url, path, agent
+        if formname
+          form = flexmock page.form(formname)
+          action = form.action
+          page = flexmock page
+          page.should_receive(:form).with(formname).and_return(form)
+          path2 = File.join @datadir, page2
+          page2 = setup_page action, path2, agent
+          form.should_receive(:submit).and_return page2
+        end
+        agent.should_receive(method).with(url).and_return(page)
+      end
+      agent
+    end
+    def setup_page url, path, agent
+      response = {'content-type' => 'text/html'}
+      Mechanize::Page.new(URI.parse(url), response,
+                          File.read(path), 200, agent)
+    end
     def test_parse_detail
       path = File.expand_path('../data/html/interaction/flockhart/3A457.htm',
                               File.dirname(__FILE__))
-      page = WWW::Mechanize::Page.new(nil, { 'content-type' => 'text/html' },
-                                      open(path).read, 200)
+      page = setup_page 'url', path, setup_mechanize
       cytochrome = @plugin.parse_detail_page '3A457', page
       assert_instance_of ODDB::Interaction::Cytochrome, cytochrome
       assert_equal 86, cytochrome.substrates.size

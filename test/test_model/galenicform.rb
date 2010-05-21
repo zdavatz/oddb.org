@@ -4,9 +4,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'test/unit'
 require 'model/galenicform'
-require 'stub/odba'
 require	'mock'
 
 module ODDB
@@ -39,7 +39,11 @@ class TestGalenicForm < Test::Unit::TestCase
 		end
 	end
 	class StubSequence
+    attr_reader :compositions
 		include ODDB::Persistence
+    def initialize
+      @compositions = []
+    end
 		def galenic_form=(galform)
 			if(@galform.respond_to?(:remove_sequence))
 				@galform.remove_sequence(self)
@@ -50,19 +54,6 @@ class TestGalenicForm < Test::Unit::TestCase
 	end
 
 	def setup
-		ODBA.storage = Mock.new
-		ODBA.storage.__next(:next_id) {
-			1
-		}
-		ODBA.storage.__next(:next_id) {
-			2
-		}
-		ODBA.storage.__next(:next_id) {
-			3
-		}
-		ODBA.storage.__next(:next_id) {
-			4
-		}
 		@galform = ODDB::GalenicForm.new
 		@galform.update_values('de'=>'Tabletten')
 	end
@@ -121,18 +112,8 @@ class TestGalenicForm < Test::Unit::TestCase
 		pointer = ODDB::Persistence::Pointer.new([:galenic_group, 1], [:galenic_form])
 		@galform.pointer = pointer
 		@galform.init(nil)
-		puts @galform.oid
 		expected = pointer.parent + [:galenic_form, @galform.oid]
 		assert_equal(expected, @galform.pointer)
-	end
-	def test_merge
-		assert_equal(0, @galform.sequence_count)
-		galform = ODDB::GalenicForm.new
-		a = StubSequence.new
-		galform.add_sequence(a)
-		@galform.merge(galform)
-		assert_equal(1, @galform.sequence_count)
-		assert_equal([a], @galform.sequences)
 	end
 	def test_remove_sequence1
 		a = StubSequence.new
@@ -147,7 +128,7 @@ class TestGalenicForm < Test::Unit::TestCase
 		b = StubSequence.new
 		c = StubSequence.new
 		@galform.sequences = [a, b, c]
-		@galform.sequences.each { |seq|
+		@galform.sequences.dup.each { |seq|
 			@galform.remove_sequence(seq)
 		}
 		assert_equal(0, @galform.sequences.size)

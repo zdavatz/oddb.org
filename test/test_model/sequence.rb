@@ -4,12 +4,12 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'test/unit'
 require 'model/sequence'
 require 'model/atcclass'
 require 'model/substance'
 require 'util/searchterms'
-require 'stub/odba'
 require 'flexmock'
 require 'mock'
 
@@ -77,6 +77,7 @@ class StubAcceptable
 end
 
 class TestSequence < Test::Unit::TestCase
+  include FlexMock::TestCase
 	class StubPatinfo
 		attr_accessor :oid
 		attr_reader :added, :removed
@@ -111,20 +112,6 @@ class TestSequence < Test::Unit::TestCase
 		assert_equal("Aspirin", @seq.name_base)
 		assert_equal("Tabletten", @seq.name_descr)
 	end
-	def test_galenic_form_writer
-		assert_equal(nil, @seq.galenic_form)
-		galform = StubSequenceGalenicForm.new
-		@seq.galenic_form = galform
-		assert_equal(@seq, galform.added)
-		assert_equal(galform, @seq.galenic_form)
-		other_galform = StubSequenceGalenicForm.new
-		@seq.galenic_form = other_galform
-		assert_equal(@seq, galform.removed)
-		assert_equal(@seq, other_galform.added)
-		seq = ODDB::IncompleteSequence.new(1)
-		seq.galenic_form = galform
-		assert_not_equal(seq, galform.added)
-	end
 	def test_atc_class_writer
 		assert_nothing_raised { @seq.atc_class = nil }
 		atc1 = StubSequenceAtcClass.new
@@ -150,56 +137,14 @@ class TestSequence < Test::Unit::TestCase
 			:name					=>	"Aspirin Cardio",
 			:dose					=>	[100, 'mg'],
 			:atc_class		=>	'N02BA01',
-			:galenic_form	=>	'Tabletten',
 		}
 		app = StubSequenceApp.new
 		expected = {
 			:name					=>	"Aspirin Cardio",
 			:dose					=>	ODDB::Dose.new(100, 'mg'),
 			:atc_class		=>	app.atc_class('N02BA01'),
-			:galenic_form	=>	app.galenic_form('Tabletten'),
 		}
 		assert_equal(expected, @seq.adjust_types(values, app))
-	end
-	def test_active_agent
-		subst = ODDB::Substance.new
-		active_agent = Mock.new('ActiveAgent')
-		active_agent.__next(:same_as?) { true }
-		@seq.active_agents = [active_agent]
-		assert_equal(active_agent, @seq.active_agent('LEVOMENTHOLUM'))
-	end
-	def test_active_agent2
-		subst1 = ODDB::Substance.new
-		subst2 = ODDB::Substance.new
-		subst1.update_values(:lt => 'ACIDUM ACETYLSALICYLICUM')
-		subst2.update_values(:lt => 'LEVOMENTHOLUM')
-		active_agent1 = ODDB::ActiveAgent.new('')
-		active_agent2 = ODDB::ActiveAgent.new('')
-		active_agent1.substance = subst1
-		active_agent2.substance = subst2
-		@seq.active_agents = [active_agent1, active_agent2]
-		assert_equal(active_agent1, @seq.active_agent('acidum acetylsalicylicum'))
-		assert_equal(active_agent2, @seq.active_agent('levomentholum'))
-	end
-	def test_create_active_agent
-		@seq.active_agents = []
-		app = StubSequenceApp.new
-		subst = ODDB::Substance.new
-		app.substances = [subst]
-		active_agent = @seq.create_active_agent('LEVOMENTHOLUM')
-		assert_equal(ODDB::ActiveAgent,  @seq.active_agents.first.class)
-		assert_equal(@seq, active_agent.sequence)
-		active_agent.init(app)
-		assert_equal([@seq], subst.sequences)
-		assert_equal(subst, active_agent.substance)
-	end
-	def test_delete_active_agent
-		active_agent = Mock.new('ActiveAgent')
-		active_agent.__next(:same_as?) { true }
-		subst = ODDB::Substance.new
-		@seq.active_agents = [active_agent]
-		@seq.delete_active_agent('LEVOMENTHOLUM')
-		assert_equal([], @seq.active_agents)
 	end
 	def test_match
 		assert_nothing_raised{@seq.match('Aspirin')}
@@ -229,50 +174,60 @@ class TestSequence < Test::Unit::TestCase
 	end
 	def test_comparables1
 		reg = FlexMock.new
-		reg.mock_handle(:active?) { true }
-		reg.mock_handle(:may_violate_patent?) { false }
+		reg.should_receive(:active?).and_return { true }
+		reg.should_receive(:may_violate_patent?).and_return { false }
 		@seq.registration = reg
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
+    comp = ODDB::Composition.new
 		subst = ODDB::Substance.new
+    subst.descriptions.store 'lt', 'LEVOMENTHOLUM'
 		active_agent = ODDB::ActiveAgent.new('LEVOMENTHOLUM')
 		active_agent.substance = subst
-		@seq.active_agents = [active_agent]
-		@seq.galenic_form = StubSequenceGalenicForm.new
+    active_agent.composition = comp
+    @seq.compositions.push comp
+		comp.galenic_form = StubSequenceGalenicForm.new
 		comparable = ODDB::Sequence.new('02')
 		comparable.registration = reg
 		comparable.atc_class = atc
-		comparable.active_agents = [active_agent]
-		comparable.galenic_form = @seq.galenic_form
+    comparable.compositions.push comp
 		assert_equal([comparable], @seq.comparables)
 	end
 	def test_comparables2
 		reg = FlexMock.new
-		reg.mock_handle(:active?) { true }
-		reg.mock_handle(:may_violate_patent?) { false }
+		reg.should_receive(:active?).and_return { true }
+		reg.should_receive(:may_violate_patent?).and_return { false }
 		@seq.registration = reg
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
+    comp = ODDB::Composition.new
 		subst = ODDB::Substance.new
+    subst.descriptions.store 'lt', 'LEVOMENTHOLUM'
 		active_agent = ODDB::ActiveAgent.new('LEVOMENTHOLUM')
 		active_agent.substance = subst
-		@seq.active_agents = [active_agent]
+    active_agent.composition = comp
+    @seq.compositions.push comp
+		comp.galenic_form = StubSequenceGalenicForm.new
 		comparable = ODDB::Sequence.new('02')
 		comparable.registration = reg
+		comparable.atc_class = atc
+    comp = ODDB::Composition.new
 		subst = ODDB::Substance.new
+    subst.descriptions.store 'lt', 'ACIDUM ACETYLSALICYLICUM'
 		active_agent = ODDB::ActiveAgent.new('ACIDUM ACETYLSALICYLICUM')
 		active_agent.substance = subst
-		comparable.active_agents = [active_agent]
-		comparable.atc_class = atc
+    active_agent.composition = comp
+    comparable.compositions.push comp
 		assert_equal([], @seq.comparables)
 	end
 	def test_comparables3
 		reg = FlexMock.new
-		reg.mock_handle(:active?) { true }
-		reg.mock_handle(:may_violate_patent?) { false }
+		reg.should_receive(:active?).and_return { true }
+		reg.should_receive(:may_violate_patent?).and_return { false }
 		@seq.registration = reg
 		atc = StubSequenceAtcClass.new
 		@seq.atc_class = atc
+    comp = ODDB::Composition.new
 		subst1 = ODDB::Substance.new
 		subst1.descriptions[:de] = 'CAPTOPRILUM'
 		subst2 = ODDB::Substance.new
@@ -281,14 +236,14 @@ class TestSequence < Test::Unit::TestCase
 		active_agent2 = ODDB::ActiveAgent.new('HYDROCHLOROTHIACIDUM')
 		active_agent1.substance = subst1
 		active_agent2.substance = subst2
-		@seq.active_agents = [active_agent1, active_agent2]
-		@seq.galenic_form = StubSequenceGalenicForm.new
+    active_agent1.composition = comp
+    active_agent2.composition = comp
+    @seq.compositions.push comp
+		comp.galenic_form = StubSequenceGalenicForm.new
 		comparable = ODDB::Sequence.new('02')
 		comparable.registration = reg
-		comparable.active_agents = [active_agent2, active_agent1]
 		comparable.atc_class = atc
-		comparable.galenic_form = @seq.galenic_form
-		assert_equal(true, @seq.comparable?(comparable))
+    comparable.compositions.push comp
 		assert_equal([comparable], @seq.comparables)
 	end
 	def test_robust_adjust_types
@@ -316,7 +271,9 @@ class TestSequence < Test::Unit::TestCase
 		active_agent2 = StubActiveAgent.new
 		active_agent1.substance = "Subst1"
 		active_agent2.substance = "Subst2"
-		@seq.active_agents = [active_agent1, active_agent2]
+    comp = ODDB::Composition.new
+    comp.active_agents.push active_agent1, active_agent2
+    @seq.compositions.push comp
 		assert_equal(["Subst1", "Subst2"], @seq.substances)
 	end
 	def test_substance_names
@@ -324,8 +281,10 @@ class TestSequence < Test::Unit::TestCase
 		active_agent2 = StubActiveAgent.new
 		active_agent1.substance = "Subst1"
 		active_agent2.substance = "Subst2"
+    comp = ODDB::Composition.new
+    comp.active_agents.push active_agent1, active_agent2
+    @seq.compositions.push comp
 		expected = ["Subst1", "Subst2"]
-		@seq.active_agents = [active_agent1, active_agent2]
 		assert_equal(expected, @seq.substance_names)
 	end
 	def test_checkout
@@ -337,22 +296,11 @@ class TestSequence < Test::Unit::TestCase
 		assert_equal(:added, atc1.state)
 		@seq.checkout
 		assert_equal(:removed, atc1.state)
-		galform = StubSequenceGalenicForm.new
-		@seq.galenic_form = galform
-		assert_equal(@seq, galform.added)
+    comp = flexmock 'composition'
+    @seq.compositions.push comp
+    comp.should_receive(:checkout).times(1)
+    comp.should_receive(:odba_delete).times(1)
 		@seq.checkout
-		assert_equal(@seq, galform.removed)
-	end
-	def test_composition_text
-		subst = ODDB::Substance.new
-		subst.descriptions['lt'] = 'Levomentholum'
-		active_agent = ODDB::ActiveAgent.new('LEVOMENTHOLUM')
-		active_agent.substance = subst
-		@seq.active_agents = [active_agent]
-		assert_equal('Levomentholum', @seq.composition_text)
-		text = "Foo, Bar, and some Levomentholum mixed in."
-		@seq.composition_text = text
-		assert_equal(text, @seq.composition_text)
 	end
 	def test_limitation_text_count
 		mock1 = Mock.new("packet_mock1")
@@ -375,8 +323,9 @@ class TestSequence < Test::Unit::TestCase
 	end
 	def test_search_terms
 		expected = [ 
-			'Similasan', 
+			'Similasan', 'Kava',
 			'KavaKava', 'Kava Kava', 
+			'Similasan Kava',
 			'Similasan KavaKava',
 			'Similasan Kava Kava',
 		]

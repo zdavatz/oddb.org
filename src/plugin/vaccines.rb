@@ -4,6 +4,7 @@
 require 'drb'
 require 'plugin/plugin'
 require 'rockit/rockit'
+require 'spreadsheet'
 require 'util/persistence'
 require 'util/html_parser'
 require 'util/oddbconfig'
@@ -19,9 +20,7 @@ module ODDB
       super
     end
 		def new_linkhandler(link)
-      if(link && (href = link.attribute('href')) \
-         && (title = link.attribute('title')) \
-				 && /.*\.xls$/u.match(title))
+      if(link && (href = link.attribute('href')) && /.*\.xls$/u.match(href))
         @candidate = href.gsub /&amp;/u, '&'
 			end
 		end

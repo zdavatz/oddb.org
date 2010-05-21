@@ -23,7 +23,8 @@ module ODDB
 				"Alpina Arnica Gel",
 				"Alpina",
 			]
-			@app.mock_handle(:search_sequences, 10) { |query, fuzzflag|
+      @app.should_receive(:registration).and_return nil
+			@app.should_receive(:search_sequences, 10).and_return { |query, fuzzflag|
 				assert_equal(flap_flag, fuzzflag)
         flap_flag = !flap_flag
         exp = expected.shift
@@ -35,7 +36,7 @@ module ODDB
 			}
 			result = @plugin.find(name)
 			assert_nil(result)
-      @app.mock_verify
+      @app.flexmock_verify
 		end
 		def test_find__lacteol
       flap_flag = false
@@ -45,7 +46,8 @@ module ODDB
 				"Lacteol 5",
 				"Lacteol",
 			]
-			@app.mock_handle(:search_sequences, 6) { |query, fuzzflag|
+      @app.should_receive(:registration).and_return nil
+			@app.should_receive(:search_sequences, 6).and_return { |query, fuzzflag|
 				assert_equal(flap_flag, fuzzflag)
         flap_flag = !flap_flag
         exp = expected.shift
@@ -57,7 +59,7 @@ module ODDB
 			}
 			result = @plugin.find(name)
 			assert_nil(result)
-      @app.mock_verify
+      @app.flexmock_verify
 		end
 		def test_find__lactoferment
       flap_flag = false
@@ -67,7 +69,8 @@ module ODDB
 				"Lactoferment 5",
 				"Lactoferment",
 			]
-			@app.mock_handle(:search_sequences, 6) { |query, fuzzflag|
+      @app.should_receive(:registration).and_return nil
+			@app.should_receive(:search_sequences, 6).and_return { |query, fuzzflag|
 				assert_equal(flap_flag, fuzzflag)
         flap_flag = !flap_flag
         exp = expected.shift

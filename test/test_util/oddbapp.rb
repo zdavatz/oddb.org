@@ -4,6 +4,7 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'test/unit'
 require 'stub/oddbapp'
 require 'digest/md5'
@@ -13,7 +14,6 @@ require 'model/atcclass'
 require 'model/orphan'
 require 'model/galenicform'
 require 'util/language'
-require 'stub/odba'
 require 'mock'
 require 'flexmock'
 require 'util/oddbapp'
@@ -169,21 +169,9 @@ class TestOddbApp < Test::Unit::TestCase
 
 	def setup
 		ODDB::GalenicGroup.reset_oids
+    ODBA.storage.reset_id
 		dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
-		ODBA.storage = Mock.new
-		ODBA.storage.__next(:next_id){
-			1
-		}
 		@app = ODDB::App.new
-		ODBA.storage.__next(:next_id){
-			2
-		}
-		ODBA.storage.__next(:next_id){
-			3
-		}
-		ODBA.storage.__next(:next_id){
-			4
-		}
 	end
 	def teardown
 		ODBA.storage = nil
@@ -196,14 +184,6 @@ class TestOddbApp < Test::Unit::TestCase
 	def test_unknown_user
 		assert_instance_of(ODDB::UnknownUser, @app.unknown_user)
 	end
-=begin
-	def test_login
-		assert_instance_of(ODDB::RootUser, @app.login(StubSession.new))
-	end
-	def test_fail_login
-		assert_nil(@app.login('foo', 'bar'))
-	end
-=end
 	def test_registration
 		reg = StubRegistration.new('12345')
 		@app.registrations = {'12345'=>reg}
@@ -262,16 +242,12 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.update(galpointer.creator, {:de => 'Tabletten'})
 		values = {
 			:name					=>	"Aspirin Cardio",
-			:dose					=>	[100, 'mg'],
 			:atc_class		=>	'N02BA01',
-			:galenic_form	=>	'Tabletten',
 		}
 		@app.update(pointer, values)
 		seq = @app.registration('12345').sequence('01')
 		assert_equal('Aspirin Cardio', seq.name)
-		assert_equal(ODDB::Dose.new(100, 'mg'), seq.dose)
 		assert_equal(@app.atc_class('N02BA01'), seq.atc_class)
-		assert_equal(@app.galenic_form('Tabletten'), seq.galenic_form)
 	end
 	def test_create_package
 		pointer = ODDB::Persistence::Pointer.new(['registration', '12345'])
@@ -310,13 +286,11 @@ class TestOddbApp < Test::Unit::TestCase
 		pointer += ['package', '032']
 		result = @app.create(pointer)
 		values = {
-			'size'					=>	'20 x 1,7 g',
 			'descr'					=>	nil,
 			'ikscat'				=>	'A',
 		}
 		@app.update(pointer, values)
 		package = @app.registration('12345').package(32)
-		assert_equal('20 x 1,7 g', package.size)
 		assert_equal(nil, package.descr)
 		assert_equal('A', package.ikscat)
 	end
@@ -359,46 +333,11 @@ class TestOddbApp < Test::Unit::TestCase
 			:de	=>	'de_name',			
 		}
 		@app.update(subs.pointer, values)
-		assert_equal('en_name', subs.en)
+		assert_equal('En_name', subs.en)
 		assert_equal(['connectionkey', 'firstname', 'enname', 'dename'].sort, 
 			subs.connection_keys.sort)
-		assert_equal('de_name', subs.de)
+		assert_equal('De_name', subs.de)
 		assert_equal({subs.oid, subs}, @app.substances)
-	end
-	def test_create_active_agent
-		pointer = ODDB::Persistence::Pointer.new(['registration', '12345'])
-		reg = @app.create(pointer)
-		pointer += ['sequence', '01']
-		seq = @app.create(pointer)
-		substpointer = ODDB::Persistence::Pointer.new(['substance', 'LEVOMENTHOLUM'])
-		substance = @app.create(substpointer)
-		seq.active_agents = []
-		pointer += ['active_agent', 'LEVOMENTHOLUM']
-		@app.create(pointer)
-		assert_equal(1, seq.active_agents.size)
-		agent = seq.active_agents.first
-		assert_equal(ODDB::ActiveAgent, agent.class)
-		assert_equal(ODDB::Substance, agent.substance.class)
-		assert_equal('Levomentholum', agent.substance.name)
-		assert_equal(@app.substance('LEVOMENTHOLUM'), agent.substance)
-	end
-	def test_update_active_agent
-		pointer = ODDB::Persistence::Pointer.new(['registration', '12345'])
-		reg = @app.create(pointer)
-		pointer += ['sequence', '01']
-		seq = @app.create(pointer)
-		substpointer = ODDB::Persistence::Pointer.new(['substance', 'LEVOMENTHOLUM'])
-		substance = @app.create(substpointer)
-		#ODBA.cache.retrieve_from_index = [substance]
-		pointer += ['active_agent', 'LEVOMENTHOLUM']
-		agent = @app.create(pointer)
-		values = {
-			:dose	=>	[16, 'mg'],
-		}
-		@app.update(pointer, values)
-		assert_equal(ODDB::Dose, agent.dose.class)
-		assert_equal(16, agent.dose.qty)
-		assert_equal('mg', agent.dose.unit)
 	end
 	def test_create_atc_class
 		@app.atc_classes = {}
@@ -572,8 +511,9 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(0, cyp450.inducers.size)
 	end
 	def test_create_cyp450substrate
-		pointer = ODDB::Persistence::Pointer.new(['substance', 'subs_name'])
+		pointer = ODDB::Persistence::Pointer.new('substance')
 		substance = @app.create(pointer)
+    substance.descriptions['lt'] = 'subst_name'
 		pointer += [ :cyp450substrate, "cyp_id" ]
 		inh = @app.create(pointer)
 		values = {
@@ -586,8 +526,9 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(1, substance.substrate_connections.size)
 	end
 	def test_delete_cyp450substrate
-		pointer = ODDB::Persistence::Pointer.new(['substance', 'subs_name'])
+		pointer = ODDB::Persistence::Pointer.new('substance')
 		substance = @app.create(pointer)
+    substance.descriptions['lt'] = 'subst_name'
 		pointer += [ :cyp450substrate, "cyp_id" ]
 		substr = @app.create(pointer)
 		assert_equal(1, substance.substrate_connections.size)
@@ -661,34 +602,15 @@ class TestOddbApp < Test::Unit::TestCase
 		ODBA.cache.retrieve_from_index = atc_array
 		assert_nil(@app.unique_atc_class('substance'))
 
-		atc1 = Mock.new('ATC1')
+		atc1 = FlexMock.new('ATC1')
 		atc_array = [atc1]
 		ODBA.cache.retrieve_from_index = atc_array
 		assert_equal(atc1, @app.unique_atc_class('substance'))
-		atc1.__verify
 
-		atc2 = Mock.new('ATC2')
-		#atc_array = [atc1, atc2]
-		#ODBA.cache.retrieve_from_index = atc_array
-		#atc1.__next(:substances) { ['substance'] }
-		#atc2.__next(:substances) { ['substance'] }
-		#assert_nil(@app.unique_atc_class('substance'))
-		#atc1.__verify
-		#atc2.__verify
-
+		atc2 = FlexMock.new('ATC2')
 		atc_array = [atc1]
 		ODBA.cache.retrieve_from_index = atc_array
 		assert_equal(atc1, @app.unique_atc_class('substance'))
-		atc1.__verify
-
-		#atc1.__next(:substances) { ['sub1', 'sub2'] }
-		#atc2.__next(:substances) { ['substance'] }
-		#atc_array = [atc1, atc2]
-		#ODBA.cache.retrieve_from_index = atc_array
-		#assert_equal(atc2, @app.unique_atc_class('substance'))
-		#atc1.__verify
-		#atc2.__verify
-
 		ODBA.cache.retrieve_from_index = nil
 	end
 	def test_create_log_group
@@ -725,21 +647,20 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(substance, @app.substance(substance.oid) )
 	end
 	def test_substance_by_connection_key
-		substance = Mock.new('substance')
+		substance = FlexMock.new('substance')
 		@app.substances = { 'connection key' =>	substance }
-		substance.__next(:has_connection_key?) { |key|
-			assert_equal('valid key', key)
+		substance.should_receive(:has_connection_key?).with('valid key')\
+      .times(1).and_return {
 			true
 		}
 		result = @app.substance_by_connection_key('valid key')
 		assert_equal(substance, result)
-		substance.__next(:has_connection_key?) { |key|
-			assert_equal('invalid key', key)
+		substance.should_receive(:has_connection_key?).with('invalid key')\
+      .times(1).and_return {
 			false
 		}
 		result = @app.substance_by_connection_key('invalid key')
 		assert_equal(nil, result)
-		substance.__verify
 	end
 	def test_each_package
 		reg1 = StubRegistration.new(1)
@@ -843,26 +764,23 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(['iksnr'], orph.meanings)
 	end
 	def test_doctor_by_origin
-		docs = Mock.new('DoctorHash')
-		doc1 = Mock.new('Doctor1')
-		doc2 = Mock.new('Doctor2')
-		doc3 = Mock.new('Doctor3')
+		docs = FlexMock.new('DoctorHash')
+		doc1 = FlexMock.new('Doctor1')
+		doc2 = FlexMock.new('Doctor2')
+		doc3 = FlexMock.new('Doctor3')
 		@app.doctors = docs
-		docs.__next(:values) { 
+		docs.should_receive(:values).and_return { 
 			[ doc1, doc2, doc3, ]
 		}
-		doc1.__next(:record_match?) { |db, id| 
+		doc1.should_receive(:record_match?).and_return { |db, id| 
 			puts "record-match doc 1"
 			false
 		}
-		doc2.__next(:record_match?) { |db, id| 
+		doc2.should_receive(:record_match?).and_return { |db, id| 
 			puts "record-match doc 2"
 			true
 		}
 		assert_equal(doc2, @app.doctor_by_origin(:doc, 4567))
-		doc1.__verify
-		doc2.__verify
-		doc3.__verify
 	end
 	def test_create_migel_group
 		group = @app.create_migel_group('03')
@@ -874,27 +792,27 @@ class TestOddbApp < Test::Unit::TestCase
 	end
 	def test_narcotic_by_casrn
 		narc1 = FlexMock.new
-		narc1.mock_handle(:casrn) { 'foo-bar' }
+		narc1.should_receive(:casrn).and_return { 'foo-bar' }
 		narc2 = FlexMock.new
-		narc2.mock_handle(:casrn) {  }
+		narc2.should_receive(:casrn).and_return {  }
 		@app.narcotics.update({ 1 => narc1, 2 => narc2 })
 		assert_equal(narc1, @app.narcotic_by_casrn('foo-bar'))
 		assert_nil(@app.narcotic_by_casrn('x-bar'))
 	end
 	def test_narcotic_by_smcd
 		narc1 = FlexMock.new
-		narc1.mock_handle(:swissmedic_code) { 'foo-bar' }
+		narc1.should_receive(:swissmedic_codes).and_return { ['foo-bar'] }
 		narc2 = FlexMock.new
-		narc2.mock_handle(:swissmedic_code) {  }
+		narc2.should_receive(:swissmedic_codes).and_return { [] }
 		@app.narcotics.update({ 1 => narc1, 2 => narc2 })
 		assert_equal(narc1, @app.narcotic_by_smcd('foo-bar'))
 		assert_nil(@app.narcotic_by_smcd('x-bar'))
 	end
 	def test_substance_by_smcd
 		sub1 = FlexMock.new
-		sub1.mock_handle(:swissmedic_code) { 'SMCD' }
+		sub1.should_receive(:swissmedic_code).and_return { 'SMCD' }
 		sub2 = FlexMock.new
-		sub2.mock_handle(:swissmedic_code) {  }
+		sub2.should_receive(:swissmedic_code).and_return {  }
 		@app.substances = { 1 => sub1, 2 => sub2 }
 		assert_equal(sub1, @app.substance_by_smcd('SMCD'))
 		assert_nil(@app.substance_by_smcd('unknown'))

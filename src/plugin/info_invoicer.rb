@@ -2,6 +2,8 @@
 # InfoInvoicer -- oddb.org -- 26.02.2008 -- hwyss@ywesee.com
 
 require 'plugin/invoicer'
+require 'model/sequence'
+require 'util/today'
 
 module ODDB
   class InfoInvoicer < Invoicer

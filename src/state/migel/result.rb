@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # State::Migel::Result -- oddb -- 04.10.2005 -- ffricker@ywesee.com
 
-require 'util/oddbapp'
 require 'view/migel/result'
 require 'view/drugs/result'
 require 'delegate'

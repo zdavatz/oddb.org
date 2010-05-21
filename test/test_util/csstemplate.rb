@@ -59,7 +59,7 @@ class TestCssTemplate < Test::Unit::TestCase
 	end
 	def test_substitute
 		src = '$foobar'	
-		assert_raises(IndexError){
+		assert_raises(RuntimeError){
 			ODDB::CssTemplate.substitute(src, @foo)
 		}
 	end

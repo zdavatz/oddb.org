@@ -3,6 +3,7 @@
 
 require 'htmlgrid/composite'
 require 'htmlgrid/span'
+require 'util/today'
 require 'view/sponsorlogo'
 require 'view/logo'
 require 'view/tab_navigation'

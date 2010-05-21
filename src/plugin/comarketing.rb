@@ -13,14 +13,6 @@ module ODDB
 		SOURCE_URI = 'http://www.swissmedic.ch/daten/00080/00260/index.html?lang=de'
 		def find(iksnr)
       @app.registration(iksnr)
-=begin
-			while(!name.empty?)
-				if(registration = (_find(name) || _find(name, true)))
-					return registration
-				end
-				name = name.gsub(/(\s+|^)\S+$/, '')
-			end
-=end
 		end
 		def _find(name, fuzz=false)
 			search_term = ODDB.search_term(name)

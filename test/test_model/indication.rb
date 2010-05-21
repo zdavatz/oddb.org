@@ -4,9 +4,9 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'test/unit'
 require 'model/indication'
-require 'stub/odba'
 
 module ODDB
 	class Indication
@@ -44,10 +44,16 @@ class TestIndication < Test::Unit::TestCase
 		@indication.add_registration(reg1)
 		assert_equal(1, @indication.registration_count)
 	end
-	def test_empty?
+	def test_empty__registration
 		assert_equal(true, @indication.empty?)
 		reg1 = StubRegistration.new
 		@indication.add_registration(reg1)
+		assert_equal(false, @indication.empty?)
+	end
+	def test_empty__sequence
+		assert_equal(true, @indication.empty?)
+		reg1 = StubRegistration.new
+		@indication.add_sequence(reg1)
 		assert_equal(false, @indication.empty?)
 	end
 end

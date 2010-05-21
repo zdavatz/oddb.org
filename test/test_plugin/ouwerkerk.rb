@@ -10,6 +10,8 @@ require 'plugin/ouwerkerk'
 require 'model/atcclass'
 require 'model/galenicform'
 require 'model/indication'
+require 'model/activeagent'
+require 'model/composition'
 require 'mock'
 
 module ODDB
@@ -39,7 +41,7 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 	class StubRegistration
 		attr_accessor :iksnr, :export_flag, :indication, :company, :sequences
 	end
-	class StubDose
+	class StubDose < ODDB::Dose
 		attr_reader :qty, :unit
 		def initialize(qty, unit)
 			@qty, @unit = qty, unit
@@ -71,16 +73,6 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 	end
 
 	def setup
-		ODBA.storage = Mock.new
-		ODBA.storage.__next(:next_id) {
-			1
-		}
-		ODBA.storage.__next(:next_id) {
-			2
-		}
-		ODBA.storage.__next(:next_id) {
-			3
-		}
 		@app = StubApp.new
 		@plugin = ODDB::OuwerkerkPlugin.new(@app)
 		@atc_class = ODDB::AtcClass.new('A01BC23')
@@ -91,7 +83,7 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 	end
 	def teardown
 		if(File.exists? @plugin.file_path)
-      puts @plugin.file_path
+      #puts @plugin.file_path
 			#File.delete(@plugin.file_path)
 		end
 		ODBA.storage = nil
@@ -151,8 +143,8 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 		seq.seqnr = '01'
 		seq.galenic_form = @galform
 		seq.name = 'Ponstan, Tabletten'
-		seq.dose = StubDose.new(150, 'mg')
 		seq.active_agents = [:foo, :bar, :baz]
+		seq.dose = StubDose.new(150, 'mg')
 		seq.atc_class = @atc_class
 		flags = [:productname, :address]
 		rows = @plugin.export_sequence(seq, [flags], {'foo' => [:price]})

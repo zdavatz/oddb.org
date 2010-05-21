@@ -14,10 +14,11 @@ module ODDB
 	module View
 		class TestChapter < Test::Unit::TestCase
 			def setup 
-				@lookandfeel = FlexMock.new
-				@lookandfeel.mock_handle(:section_style) { 'section_style' }
-				session = FlexMock.new
-				session.mock_handle(:lookandfeel) { @lookandfeel }
+				@lookandfeel = FlexMock.new 'lookandfeel'
+				@lookandfeel.should_receive(:section_style).and_return { 'section_style' }
+				session = FlexMock.new 'session'
+				session.should_receive(:lookandfeel).and_return { @lookandfeel }
+        session.should_receive(:user_input)
 				assert(session.respond_to?(:lookandfeel))
 				@view = View::Chapter.new(:name, nil, session)
 			end	
@@ -30,7 +31,7 @@ module ODDB
 				par1.preformatted!
 				result = @view.paragraphs(CGI.new, [par1, par2])
 				expected = <<-EOS
-		<SPAN style="#{View::Chapter.const_get(:PRE_STYLE)}">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</SPAN><SPAN style="#{View::Chapter.const_get(:PAR_STYLE)}">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</SPAN><BR>
+		<PRE style="#{View::Chapter.const_get(:PRE_STYLE)}">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</PRE><SPAN style="#{View::Chapter.const_get(:PAR_STYLE)}">Guten Tag! &amp; wie gehts uns Heute? &lt; oder &gt;?</SPAN><BR>
 				EOS
 				assert_equal(expected.strip, result)
 			end
@@ -48,7 +49,7 @@ module ODDB
 				section.subheading = "Für Zwerge > 1.5 m"
 				@view.value = chapter
 				expected = <<-EOS
-<DIV style="section_style"><SPAN style="font-style: italic">Für Zwerge &gt; 1.5 m</SPAN>&nbsp;</DIV>
+<P style="section_style"><SPAN style="font-style: italic">Für Zwerge &gt; 1.5 m</SPAN>&nbsp;</P>
 				EOS
 				result = @view.to_html(CGI.new)
 				assert_equal(expected.strip, result)

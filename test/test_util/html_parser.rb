@@ -47,13 +47,13 @@ class TestHtmlParser < Test::Unit::TestCase
 	end
 	def test_unknown_entityref
 		@parser.unknown_entityref('uuml')
-		assert_equal('ü', @formatter.flowing_data)
+		assert_equal('Ã¼', @formatter.flowing_data)
 		@parser.unknown_entityref('sup2')
-		assert_equal('ü²', @formatter.flowing_data)
+		assert_equal('Ã¼Â²', @formatter.flowing_data)
 		@parser.unknown_entityref('para')
-		assert_equal('ü²¶', @formatter.flowing_data)
+		assert_equal('Ã¼Â²Â¶', @formatter.flowing_data)
 		@parser.unknown_entityref('ETH')
-		assert_equal('ü²¶Ð', @formatter.flowing_data)
+		assert_equal('Ã¼Â²Â¶Ã', @formatter.flowing_data)
 	end
 	def test_no_premature_pre_end
 		html = '<b>foo<pre></b>bar</pre>baz'

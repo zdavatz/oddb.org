@@ -22,20 +22,20 @@ class TestIpn < Test::Unit::TestCase
 	end
 	def test_format_invoice
 		lookandfeel = FlexMock.new
-		lookandfeel.mock_handle(:lookup) { |key| key.to_s }
+		lookandfeel.should_receive(:lookup).and_return { |key| key.to_s }
 		item1 = FlexMock.new
-		item1.mock_handle(:quantity) { 1 }
-		item1.mock_handle(:text) { 'fshort' }
-		item1.mock_handle(:total_netto) { 12 }
+		item1.should_receive(:quantity).and_return { 1 }
+		item1.should_receive(:text).and_return { 'fshort' }
+		item1.should_receive(:total_netto).and_return { 12 }
 		item2 = FlexMock.new
-		item2.mock_handle(:quantity) { 12 }
-		item2.mock_handle(:text) { 'a_longer_filename' }
-		item2.mock_handle(:total_netto) { 144 }
+		item2.should_receive(:quantity).and_return { 12 }
+		item2.should_receive(:text).and_return { 'a_longer_filename' }
+		item2.should_receive(:total_netto).and_return { 144 }
 		invoice = FlexMock.new
-		invoice.mock_handle(:items) { { 1 => item1, 2 => item2 } }
-		invoice.mock_handle(:total_netto) { 156 }
-		invoice.mock_handle(:vat) { 15.6 }
-		invoice.mock_handle(:total_brutto) { 171.6 }
+		invoice.should_receive(:items).and_return { { 1 => item1, 2 => item2 } }
+		invoice.should_receive(:total_netto).and_return { 156 }
+		invoice.should_receive(:vat).and_return { 15.6 }
+		invoice.should_receive(:total_brutto).and_return { 171.6 }
 		result = @state.format_invoice(invoice, lookandfeel)
 		expected = <<-EOS
 invoice_origin

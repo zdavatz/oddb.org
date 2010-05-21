@@ -39,10 +39,10 @@ module ODDB
 				4	=>	item4,
 			}
 			slate = FlexMock.new
-			slate.mock_handle(:items) {
+			slate.should_receive(:items).and_return {
 				items
 			}
-			@app.mock_handle(:slate) { |name| 
+			@app.should_receive(:slate).and_return { |name| 
 				assert_equal(:download, name)
 				slate
 			}
