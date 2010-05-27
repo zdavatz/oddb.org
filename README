@@ -1,7 +1,7 @@
 ODDB.org stands for OpenDrugDatabase 
 ====================================
 
-Date: 2008-08-12-13:41
+Date: 2010-05-27
 
 Short Description: ODDB.org is an OpenDrugDatabase that enables the
 search for Drugs by their ActiveAgent, Name, Producer, ATC-Code.  You
@@ -19,24 +19,155 @@ For for more information about the background see:
 Requirements
 ------------
 
-	* ruby 1.8, mod_ruby, drbsession, spreadsheet 
-	* apache, ruby-zlib, rubyzip, tarsimple, madeleine, rockit, tmail  
-	* rpdf2txt, rwv2, htmlgrid, datastructure, parseexcel, session-management*) 
+ch.oddb.org has a large set of functionality, and with it a large set of
+dependencies:
+
+	* ruby 1.8, mod_ruby, drbsession, apache
+  * character-encodings (gem: {{{ sudo gem install character-encodings }}})
+  * currency (git-project, clone and install:
+    {{{ git clone git://scm.ywesee.com/currency; cd currency;
+        ruby install.rb config; ruby install.rb setup;
+        sudo ruby install.rb install }}})
+  * dbi (gentoo: {{{ emerge install ruby-dbi }}} with postgres use flag)
+  * gruff (gem: {{{ sudo gem install gruff }}})
+  * htmlgrid (git-project, clone and install:
+    {{{ git clone git://scm.ywesee.com/htmlgrid; cd htmlgrid;
+        ruby install.rb config; ruby install.rb setup;
+        sudo ruby install.rb install }}})
+  * html-parser - three attached files:
+    http://trac.ywesee.com/attachment/ticket/226/html-parser.rb
+    http://trac.ywesee.com/attachment/ticket/226/sgml-parser.rb
+    http://trac.ywesee.com/attachment/ticket/226/formatter.rb
+    Still in use in several importer plugins, but should be phased out, as it
+    is unmaintained and mechanize is a much improved modern replacement
+  * json (gem: {{{ sudo gem install json }}})                                      
+  * mechanize (gem: {{{ sudo gem install mechanize }}})
+  * odba (git-project, clone and install:
+    {{{ git clone git://scm.ywesee.com/odba; cd odba; ruby install.rb config;
+        ruby install.rb setup; sudo ruby install.rb install }}})
+  * paypal (gem: {{{ sudo gem install paypal }}})
+  * racc (gem: {{{ sudo gem install racc }}})
+  * rclconf (git-project, clone and install:
+    {{{ git clone git://scm.ywesee.com/rclconf; cd rclconf;
+        ruby install.rb config; ruby install.rb setup;
+        sudo ruby install.rb install }}})
+  * rmail (gem: {{{ sudo gem install rmail }}})                                    
+  * rockit - attached archive:
+    http://trac.ywesee.com/attachment/ticket/226/rockit.tar.gz
+    Parser generator, should be replaced with racc or another maintained parser
+    generator. 
+  * rpdf2txt (git-project, clone and install:
+    {{{ git clone git://scm.ywesee.com/rpdf2txt; cd rpdf2txt;
+        ruby install.rb config; ruby install.rb setup;
+        sudo ruby install.rb install }}})                                                                
+  * rubyzip (gem: {{{ sudo gem install rubyzip }}})                                
+  * sbsm (git-project, clone and install:
+    {{{ git clone git://scm.ywesee.com/sbsm; cd sbsm; ruby install.rb config;
+        ruby install.rb setup; sudo ruby install.rb install }}})
+  * spreadsheet (gem: {{{ sudo gem install spreadsheet }}}, also a git-project,
+    clone and install:
+    {{{ git clone git://scm.ywesee.com/sbsm; cd sbsm; ruby install.rb config;
+        ruby install.rb setup; sudo ruby install.rb install }}})
+  * swissmedic-diff (git-project, clone and install:
+    {{{ git clone git://scm.ywesee.com/swissmedic-diff; cd swissmedic-diff;
+        ruby install.rb config; ruby install.rb setup;
+        sudo ruby install.rb install }}})
+  * tmail should be replaced with rmail (gem: {{{ sudo gem install tmail }}})
+  * ydim (git-project, clone and install:
+    {{{ git clone git://scm.ywesee.com/ydim; cd ydim; ruby install.rb config;
+        ruby install.rb setup; sudo ruby install.rb install }}})
+  * yus (git-project, clone and install:
+    {{{ git clone git://scm.ywesee.com/yus; cd yus; ruby install.rb config;
+        ruby install.rb setup; sudo ruby install.rb install }}})
+
+  Extension projects in ext have the following additional dependencies:
+  * facets (gem: {{{ sudo gem install facets }}})
+  * hpricot (gem: {{{ sudo gem install hpricot }}})
+  * pdf-writer needs to be replaced with [http://github.com/sandal/prawn prawn]
+    (gem: {{{ sudo gem install pdf-writer }}}) 
+  * rmagick (gem: {{{ sudo gem install rmagick }}})
+  * rwv2 (gentoo: {{{ emerge wv2 }}} and git-project, clone and install:
+    {{{ git clone git://scm.ywesee.com/rwv2; cd rwv2; ruby install.rb config;
+        ruby install.rb setup; sudo ruby install.rb install }}})
+  * text-hyphenate (git-project, clone, install the redistributed libhnj and
+    install: {{{ git clone git://scm.ywesee.com/text-hyphenate;
+                 cd text-hyphenate; ruby install.rb config;
+                 ruby install.rb setup; sudo ruby install.rb install }}})
+
 	
 Install 
 ------- 
+    * clone the git-repository:
+      {{{ git clone ssh://scm.ywesee.com/home/ywesee/git/oddb.org }}}
+    * set up an utf-8 encoded database, e.g.:
+{{{
+hwyss@work ~ $ psql -U postgres
+Welcome to psql 8.3.7, the PostgreSQL interactive terminal.
 
-Just copy everything into a directory of your choice, Configure your
-favorite Webserver to serve the $ODDBDIR/doc directory and to rewrite
-urls as follows: http://your.tld/(\w{2})/(\w+)/(\w+)/(\w+) =>
-http://your.tld/index.rbx?language=\1&flavor=\2&\3=\4 If you're
-interested in having the data that we provide online we can send you our
-ODBA snapshot.  Please contact us: zdavatz@ywesee.com
+Type:  \copyright for distribution terms
+       \h for help with SQL commands
+       \? for help with psql commands
+       \g or terminate with semicolon to execute query
+       \q to quit
+
+postgres=# create user someuser;
+CREATE ROLE
+postgres=# create database myoddb encoding 'utf8' owner someuser;
+CREATE DATABASE
+postgres=# \q
+}}}
+    * set up database-access in etc/db_connection.rb:
+{{{
+require 'dbi'                                                                     
+require 'odba/connection_pool'                                                    
+require 'pg'                                            
+                        
+ODBA.storage.dbi = ODBA::ConnectionPool.new('DBI:Pg:myoddb',             
+  'someuser', '') 
+}}}
+    * read in the data (private download):
+{{{ 
+zcat oddb.sql.gz | psql -U postgres myoddb
+}}}
+    * set up the Apache virtual host:
+{{{
+<Directory path-to-git-repository/doc>
+Options ExecCGI FollowSymlinks Indexes
+AllowOverride None
+Order allow,deny
+Allow from all
+</Directory>
+<Directory path-to-git-repository/data/rss>
+Order allow,deny
+Allow from all
+</Directory>
+
+<VirtualHost *:80>
+DocumentRoot path-to-git-repository/doc
+ServerName oddb.org.localhost
+DirectoryIndex index.rbx
+RubyAddPath path-to-git-repository/src
+RubyRequire 'sbsm/trans_handler'
+SetHandler ruby-object
+RubyTransHandler SBSM::FlavoredTransHandler.instance
+SetEnv DEFAULT_FLAVOR gcc
+</VirtualHost>
+}}}
+    * start or reload apache
+    * run css-updater: {{{ ruby bin/update_css }}}
+    * run the server: {{{ ruby bin/oddbd }}}
+    * optionally set up dns resolution,
+      e.g. add oddb.org.localhost to the localhost line in etc/hosts:
+      {{{ 127.0.0.1 localhost oddb.org.localhost }}}
 
 Install Instructions
 --------------------
 
 	* http://dev.ywesee.com/wiki.php/Oddb/InstallOddb
+
+Further Information
+-------------------
+http://trac.ywesee.com/ticket/226
 
 Usage
 -----
