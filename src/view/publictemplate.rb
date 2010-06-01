@@ -17,7 +17,8 @@ module ODDB
 			include HtmlGrid::DojoToolkit::DojoTemplate
 			DOJO_DEBUG = false
       DOJO_ENCODING = 'UTF-8'
-      DOJO_REQUIRE = [ 'ywesee.widget.Tooltip', 'dojo.io.script' ]
+      DOJO_REQUIRE = [ 'ywesee.widget.Tooltip', 'dojo.io.script',
+                       'dojox.data.JsonRestStore', 'dijit.form.ComboBox' ]
       DOJO_PARSE_WIDGETS = false
       DOJO_PREFIX = {
         'ywesee'  =>  '/resources/javascript',
@@ -44,6 +45,10 @@ module ODDB
 					"content"			=>	"follow, index, noarchive",
 				},
 			]
+      def init
+        @additional_javascripts = []
+        super
+      end
 			def content(model, session)
 				self::class::CONTENT.new(model, session, self)
 			end
@@ -82,8 +87,19 @@ dojo.addOnLoad(function(){
 				self::class::FOOT.new(model, session, self) unless self::class::FOOT.nil?
 			end
 			def head(model, session)
-				self::class::HEAD.new(model, session, self)
+				self::class::HEAD.new(model, session, self) unless self::class::HEAD.nil?
 			end
+      def javascripts(context)
+        scripts = super
+        @additional_javascripts.each do |script|
+          args = {
+            'type'     => 'text/javascript',
+            'language' => 'JavaScript',
+          }
+          scripts << context.script(args) do script end
+        end
+        scripts
+      end
 			def title(context)
 				context.title { 
 					[

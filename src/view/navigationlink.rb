@@ -30,6 +30,12 @@ module ODDB
 				end
 			end
 		end
+    class LanguageNavigationLinkShort < LanguageNavigationLink
+      def init
+        super
+        @value = @name.to_s.capitalize
+      end
+    end
 		class CurrencyNavigationLink < HtmlGrid::Link
 			CSS_CLASS = "list"
 			def init

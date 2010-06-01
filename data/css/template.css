@@ -957,4 +957,15 @@ a.footnote {
   padding: 4px;
 	white-space: nowrap;
 }
-
+div#widget_searchbar {
+  padding: 2px;
+  border: 1px solid ButtonShadow;
+  width: 260px;
+}
+#searchbar_popup {
+  border: 1px solid ButtonShadow;
+}
+.dijitMenuItemSelected {
+	background-color: $bg_bright;
+  color: black;
+}

@@ -11,6 +11,11 @@ module UserSettings
 			LanguageChooser.new(@lookandfeel.languages, session, self)
 		end
 	end
+	def language_chooser_short(model, session)
+		if(@lookandfeel.enabled?(:language_switcher))
+			LanguageChooserShort.new(@lookandfeel.languages, session, self)
+		end
+	end
 end
 class LanguageChooser < Navigation
 	CSS_CLASS = nil #"center"
@@ -44,6 +49,26 @@ class LanguageChooser < Navigation
 			}
 		end
 	end
+end
+class LanguageChooserShort < Navigation
+  CSS_CLASS = nil
+  NAV_METHOD = :languages
+  NAV_LINK_CLASS = LanguageNavigationLink
+  HTML_ATTRIBUTES = { }
+  def build_navigation
+    offset = 0
+    @lookandfeel.languages.each_with_index do |state, idx| 
+      xpos = idx*2
+      pos = [xpos,0]
+      if(state.is_a?(String))
+        state = state.intern
+      end
+      symbol_map.store(state, LanguageNavigationLinkShort)
+      components.store(pos, state)
+      components.store([xpos-1,0], :navigation_divider) if idx > 0
+      offset = idx.next * 2
+    end
+  end
 end
 	end
 end

@@ -257,6 +257,9 @@ module ODDB
 		def most_precise_dose
 			@pretty_dose || dose
 		end
+    def name_with_size
+      [name_base, size].join(', ')
+    end
 		def narcotic?
 			@narcotics.any? { |narc| narc.category == 'a' }
 		end
@@ -317,8 +320,9 @@ module ODDB
 	end
 	class Package < PackageCommon
     ODBA_SERIALIZABLE = [ '@prices', '@ancestors', '@swissmedic_source' ]
-    include ODBA::Persistable
+    include ODBA::Persistable ## include directly to get odba_index
     odba_index :pharmacode
+    odba_index :name_with_size
 		attr_accessor :medwin_ikscd, :ancestors
 		include FeedbackObserver
 		def initialize(ikscd)

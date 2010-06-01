@@ -36,6 +36,50 @@ class SearchBar < HtmlGrid::InputText
 		self.onsubmit = script
 	end
 end
+class AutocompleteSearchBar < HtmlGrid::InputText
+  def init
+    super
+		val = @lookandfeel.lookup(@name)
+    @container.additional_javascripts.push <<-EOS
+function initMatches() {
+  var searchbar = dojo.byId('searchbar');
+  dojo.connect(searchbar, 'onkeypress', function(e) {
+    if(e.keyCode == dojo.keys.ENTER) {
+      searchbar.form.submit();
+    }
+  });
+  dojo.connect(searchbar, 'onfocus', function(e) {
+    if(searchbar.value == '#{val}') { searchbar.value = ''; }
+  });
+  dojo.connect(searchbar, 'onblur', function(e) {
+    if(searchbar.value == '') { searchbar.value = '#{val}'; }
+  });
+}
+dojo.addOnLoad(initMatches);
+    EOS
+    @attributes.update 'dojotype'      => 'dijit.form.ComboBox',
+                       'jsId'          => 'searchbar',
+                       'id'            => 'searchbar',
+                       'store'         => 'search_matches',
+                       'queryExpr'     => '${0}',
+                       'searchAttr'    => 'search_query',
+                       'hasDownArrow'  => 'false',
+                       'autoComplete'  => 'false',
+                       'value'         => @session.persistent_user_input(:search_query)
+  end
+  def to_html(context, *args)
+    args = []
+    if @container.respond_to?(:index_name) && (index = @container.index_name)
+      args.push :index_name, index
+    end
+    target = @lookandfeel._event_url(:ajax_matches, args)
+    html = context.div 'dojoType'      => 'dojox.data.JsonRestStore',
+                       'jsId'          => 'search_matches',
+                       'idAttribute'   => 'search_query',
+                       'target'        => target
+    html << super
+  end
+end
 module SearchBarMethods
 	def search_type(model, session=@session)
 		select = HtmlGrid::Select.new(:search_type, model, @session, self)

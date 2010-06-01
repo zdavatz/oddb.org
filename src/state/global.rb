@@ -6,6 +6,7 @@ require 'state/http_404'
 require 'state/admin/login'
 require 'state/ajax/ddd_price'
 require 'state/ajax/ddd_chart'
+require 'state/ajax/matches'
 require 'state/ajax/swissmedic_cat'
 require 'state/analysis/init'
 require 'state/analysis/group'
@@ -16,6 +17,7 @@ require 'state/companies/company'
 require 'state/companies/companylist'
 require 'state/drugs/atcchooser'
 require 'state/drugs/compare'
+require 'state/drugs/compare_search'
 require 'state/drugs/ddd'
 require 'state/drugs/ddd_price'
 require 'state/drugs/fachinfo'
@@ -92,10 +94,12 @@ module ODDB
 			DIRECT_EVENT = nil 
 			GLOBAL_MAP = {
 				:ajax_ddd_price				=>	State::Ajax::DDDPrice,
+        :ajax_matches         =>  State::Ajax::Matches,
 				:ajax_swissmedic_cat	=>	State::Ajax::SwissmedicCat,
 				:analysis_alphabetical	=>	State::Analysis::Alphabetical,
 				:companylist					=>	State::Companies::CompanyList,
 				:compare							=>	State::Drugs::Compare,
+        :compare_search       =>  State::Drugs::CompareSearch,
 				:ddd									=>	State::Drugs::DDD,
 				:ddd_chart            =>	State::Ajax::DDDChart,
 				:ddd_price            =>  State::Drugs::DDDPrice,

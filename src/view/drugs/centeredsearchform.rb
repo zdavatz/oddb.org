@@ -22,7 +22,7 @@ class CenteredSearchForm < View::CenteredSearchForm
 		[0,4,0,4]	=>	:search_reset,
 	}
 	SYMBOL_MAP = {
-		:search_query	=>	View::SearchBar,	
+		:search_query	=>	View::SearchBar,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0]		=>	'component tabnavigation',

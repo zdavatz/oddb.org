@@ -67,33 +67,36 @@ class Compare < State::Drugs::Global
       @comparables = @comparables.sort_by(&block)
     end
 	end
-	def init
-		@model = nil
-		if((pointer = @session.user_input(:pointer)) \
-			&& pointer.is_a?(Persistence::Pointer) \
-			&& (package = pointer.resolve(@session.app)) \
-			&& package.is_a?(ODDB::Package))
-			begin
-				@model = Comparison.new(package)
-				descr = @session.lookandfeel.lookup(:compare_descr, 
-					package.name_base)
-				@model.pointer_descr = descr
-			rescue StandardError => e
-				puts e.class
-				puts e.message
-				puts e.backtrace
-			end
-		end
-		if(@model.nil?)
-			@default_view = View::Http404
-		elsif(@model.atc_class.nil?)
-			@default_view = View::Drugs::EmptyCompare
-		else
-			@default_view = View::Drugs::Compare
-		end
+  def init
+    @model = nil
+    if (pointer = @session.user_input(:pointer)) \
+      && pointer.is_a?(Persistence::Pointer)
+      @package = pointer.resolve(@session.app)
+    elsif term = @session.user_input(:search_query)
+      @package = ODDB::Package.find_by_name_with_size term
+    end
+    if @package.is_a?(ODDB::Package)
+      begin
+        @model = Comparison.new(@package)
+        descr = @session.lookandfeel.lookup(:compare_descr, 
+          @package.name_base)
+        @model.pointer_descr = descr
+      rescue StandardError => e
+        puts e.class
+        puts e.message
+        puts e.backtrace
+      end
+    end
+    if(@model.nil?)
+      @default_view = View::Http404
+    elsif(@model.atc_class.nil?)
+      @default_view = View::Drugs::EmptyCompare
+    else
+      @default_view = View::Drugs::Compare
+    end
   rescue Persistence::UninitializedPathError
     @default_view = View::Http404
-	end
+  end
 end
 		end
 	end

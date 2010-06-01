@@ -16,5 +16,9 @@ module HtmlGrid
         end
 			end
 		end
+    ## additional_javascripts should possibly be moved to htmlgrid proper.
+    def additional_javascripts
+      @additional_javascripts || (@container.additional_javascripts if @container)
+    end
   end
 end
