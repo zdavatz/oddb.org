@@ -21,6 +21,12 @@ module ODDB
 			def faq_link(model, session=@session)
 				wiki_link(model, :faq_link, :faq_pagename)
 			end
+      def generic_definition(model, session)
+        link = HtmlGrid::Link.new(:generic_definition, model, session, self)
+        link.href = @lookandfeel.lookup(:generic_definition_url)
+        link.set_attribute('class', 'list')
+        link
+      end
 			def help_link(model, session=@session)
 				wiki_link(model, :help_link, :help_pagename)
 			end

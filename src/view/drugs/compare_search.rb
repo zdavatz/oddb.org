@@ -16,12 +16,21 @@ class CompareSearchForm < View::Drugs::CenteredSearchForm
   end
   COMPONENTS = {
     [0,0] => :language_chooser_short,
-    [0,1] => :search_query,
-    [0,2] => :legal_note,
+    [0,1] => 'drugs',
+    [0,2] => :search_query,
+    [0,3] => :generic_definition,
+    [0,4] => :legal_note,
+  }
+  COMPONENT_CSS_MAP = {
+    [0,0]	=> 'component',
+    [0,4] => 'list',
   }
   CSS_MAP = {
+    [0,0] => 'list',
     [0,1] => 'list',
     [0,2] => 'list',
+    [0,3] => 'list',
+    [0,4] => 'list',
   }
 	SYMBOL_MAP = {
 		:search_query	=>	View::AutocompleteSearchBar,

@@ -210,12 +210,6 @@ module ODDB
 			def fachinfo_size(model, session)
 				@session.app.fachinfo_count.to_s << '&nbsp;'
 			end
-			def generic_definition(model, session)
-				link = HtmlGrid::Link.new(:generic_definition, model, session, self)
-				link.href = @lookandfeel.lookup(:generic_definition_url)
-				link.set_attribute('class', 'list')
-        link
-			end
 			def export_divider(model, session)
 				divider(model, session)
 			end

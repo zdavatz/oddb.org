@@ -78,7 +78,7 @@ class Compare < State::Drugs::Global
     if @package.is_a?(ODDB::Package)
       begin
         @model = Comparison.new(@package)
-        descr = @session.lookandfeel.lookup(:compare_descr, 
+        descr = @session.lookandfeel.lookup(:compare_descr,
           @package.name_base)
         @model.pointer_descr = descr
       rescue StandardError => e
