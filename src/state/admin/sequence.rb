@@ -167,6 +167,7 @@ module SequenceMethods
       :longevity,
       :substance,
       :galenic_form,
+      :activate_patinfo,
       :deactivate_patinfo,
       :sequence_date,
     ]

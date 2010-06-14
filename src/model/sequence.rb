@@ -13,7 +13,7 @@ module ODDB
 								:compositions, :longevity
     attr_accessor :registration, :atc_class, :export_flag,
                   :patinfo, :pdf_patinfo, :atc_request_time,
-                  :deactivate_patinfo, :sequence_date
+                  :deactivate_patinfo, :sequence_date, :activate_patinfo
 		attr_writer :composition_text, :dose, :inactive_date
 		alias :pointer_descr :seqnr
 		def initialize(seqnr)
@@ -238,7 +238,8 @@ module ODDB
 			@packages.length
 		end
     def patinfo_active?
-      @deactivate_patinfo.nil? || @deactivate_patinfo > @@today
+      (@deactivate_patinfo.nil? || @deactivate_patinfo > @@today) \
+        && (@activate_patinfo.nil? || @activate_patinfo <= @@today)
     end
     def public?
       !@export_flag && @registration.public? && active?

@@ -361,6 +361,7 @@ class SequenceForm < HtmlGrid::Composite
 		:atc_request_label	=> HtmlGrid::LabelText,
 		:no_company					=> HtmlGrid::LabelText,
 		:regulatory_email		=> HtmlGrid::InputText,
+    :activate_patinfo   => HtmlGrid::InputDate,
 		:deactivate_patinfo => HtmlGrid::InputDate,
 		:sequence_date      => HtmlGrid::InputDate,
 	}
@@ -380,12 +381,13 @@ class SequenceForm < HtmlGrid::Composite
 				[3,6,1] =>  :patinfo,
 				[3,6,2] =>  :assign_patinfo,
 				[3,6,3] =>  :delete_patinfo,
+        [0,7]   =>  :activate_patinfo,
         [2,7]   =>  :deactivate_patinfo,
-				[1,7,0]	=>	:submit,
-				[1,7,1] =>  :delete_item,
+				[1,8,0]	=>	:submit,
+				[1,8,1] =>  :delete_item,
 			})
 			css_map.update({
-				[0,5,4,3]	=>	'list',
+				[0,5,4,4]	=>	'list',
 				[0,6,5]   =>	'list',
 			})
 			if(@model.atc_class.nil? && !atc_descr_error?)

@@ -114,6 +114,7 @@ Zeno Davatz
 				:ZG												=>	'ZG', 
 				:ZH												=>	'ZH',
 				:accept										=>	'&Uuml;bernehmen',
+        :activate_patinfo         =>  'Patinfo aktivieren (dd.mm.YYYY)',
 				:active_address						=>	'Momentan Aktive Adresse',
 				:active_agents 						=>	'Wirkstoffe',
 				:active_agents0						=>	'',
@@ -1641,6 +1642,7 @@ Zeno Davatz
 			'fr'			=>		{
 				:'|unknown'								=>	'autres',
 				:accept										=>	'OK',
+        :activate_patinfo         =>  'Activer information patient (dd.mm.YYYY)',
 				:active_address						=>	'Adresse actuelle',
 				:active_agents 						=>	'Principes actifs',
 				:active_agents0						=>	'',
@@ -2786,6 +2788,7 @@ Zeno Davatz
 			'en'			=>		{
 				:'|unknown'								=>	'others',
 				:accept										=>	'Accept',
+        :activate_patinfo         =>  'Activate patient information (dd.mm.YYYY)',
 				:active_address						=>	'Active Address',
 				:active_agents 						=>	'&nbsp;Active Agents',
 				:active_agents0						=>	'',
@@ -2962,6 +2965,7 @@ Zeno Davatz
 				:ddd_version							=>	'ATC-DDD Version 2009. Source: ',
 				:ddd											=>	'WHO-DDD',
 				:de												=>	'Deutsch',
+        :activate_patinfo         =>  'Deactivate patient information (dd.mm.YYYY)',
 				:deductible								=>	'Deductible',
 				:deductible_g							=>	'10%',
 				:deductible_legal_url			=>	'http://www.bag.admin.ch/suchen/index.html?keywords=selbstbehalt&go_search=Suchen&lang=de',
