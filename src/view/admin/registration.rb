@@ -197,6 +197,8 @@ class RegistrationForm < View::Form
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
 	SYMBOL_MAP = {
+    :activate_fachinfo  =>  HtmlGrid::InputDate,
+    :deactivate_fachinfo=>  HtmlGrid::InputDate,
 		:expiration_date		=>	HtmlGrid::InputDate,
 		:export_flag				=>	HtmlGrid::InputCheckbox,
 		:vaccine						=>	HtmlGrid::InputCheckbox,
@@ -235,16 +237,19 @@ class RegistrationForm < View::Form
         [2,10]	=>	:textinfo_update,
         [0,11]	=>	'fi_upload_instruction2',
         [1,11]	=>	:fachinfo_upload,
+        [2,11]  =>  :activate_fachinfo,
         [0,12]	=>	'fi_upload_instruction3',
         [1,12,0]=>	:submit,
         [1,12,1]=>	:new_registration,
+        [2,12]  =>  :deactivate_fachinfo,
       })
       colspan_map.store([3,9], 3)
       colspan_map.store([0,9], 2)
       css_map.store([0,9], 'list bg bold')
       css_map.store([1,9], 'list bg')
-      css_map.store([2,9,2,2], 'list')
+      css_map.store([2,9,2,4], 'list')
       css_map.store([0,10,2,3], 'list bg')
+      component_css_map.store [3,11,1,2], 'standard'
     end
 	end
 	def company_name(model, session=@session)
@@ -258,6 +263,17 @@ class RegistrationForm < View::Form
 	def complementary_select(model, session=@session)
 		HtmlGrid::Select.new(:complementary_type, model, @session, self)
 	end
+  def _fachinfo(model, css='square infos')
+    if(model.has_fachinfo?)
+      link = HtmlGrid::Link.new(:square_fachinfo,
+          model, @session, self)
+      link.href = @lookandfeel._event_url(:fachinfo,
+        {:swissmedicnr => model.iksnr})
+      link.css_class = css
+      link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
+      link
+    end
+  end
 	def iksnr(model, session=@session)
 		klass = if(model.is_a?(Persistence::CreateItem) \
 			|| model.is_a?(ODDB::IncompleteRegistration))

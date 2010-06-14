@@ -152,7 +152,7 @@ module ODDB
 			def fachinfo(model, session=@session, css='square infos')
 				if(link = _fachinfo(model, css))
 					link
-				elsif(@session.allowed?('edit', model))
+				elsif(!model.has_fachinfo? && @session.allowed?('edit', model))
 					link = HtmlGrid::Link.new(:fachinfo_create, model, @session, self)
 					ptr = model.is_a?(Registration) ? 
 						model.pointer : model.registration.pointer
@@ -163,7 +163,7 @@ module ODDB
 				end
 			end
 			def _fachinfo(model, css='square infos')
-				if(model.fachinfo)
+				if(model.fachinfo_active?)
 					link = HtmlGrid::Link.new(:square_fachinfo, 
 							model, @session, self)
 					link.href = @lookandfeel._event_url(:fachinfo,

@@ -27,8 +27,10 @@ module ODDB
       :force_new_ydim_debitor, :textinfo_update,
     ]
 		DATES = [
+      :activate_fachinfo,
       :activate_patinfo,
 			:base_patent_date, 
+      :deactivate_fachinfo,
       :deactivate_patinfo,
 			:deletion_date,
 			:expiration_date,

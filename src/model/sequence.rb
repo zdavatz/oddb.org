@@ -9,6 +9,15 @@ require 'model/composition'
 module ODDB
 	class SequenceCommon
 		include Persistence
+    class << self
+      def registration_data(*names)
+        names.each { |name|
+          define_method(name) {
+            @registration && @registration.send(name)
+          }
+        }
+      end
+    end
 		attr_reader :seqnr, :name_base, :name_descr, :packages,
 								:compositions, :longevity
     attr_accessor :registration, :atc_class, :export_flag,
@@ -16,6 +25,9 @@ module ODDB
                   :deactivate_patinfo, :sequence_date, :activate_patinfo
 		attr_writer :composition_text, :dose, :inactive_date
 		alias :pointer_descr :seqnr
+    registration_data :company, :company_name, :complementary_type, :expired?,
+      :fachinfo, :fachinfo_active?, :generic_type, :has_fachinfo?, :iksnr,
+      :minifi, :patent_protected?, :source
 		def initialize(seqnr)
 			@seqnr = sprintf('%02d', seqnr.to_i)
 			@packages = {}
@@ -69,12 +81,6 @@ module ODDB
 			}
       @compositions.odba_delete
 		end
-		def company
-			@registration.company
-		end
-		def company_name
-			@registration.company_name
-		end
 		def comparables(factor = 1.0)
 			if(@atc_class)
         comps = factored_compositions(factor)
@@ -91,9 +97,6 @@ module ODDB
 				&& seq.active? \
         && seq.compositions.sort == comps
 		end
-    def complementary_type
-      @registration.complementary_type
-    end
     def composition(oid)
       @compositions.find { |comp| comp.oid == oid }
     end
@@ -133,12 +136,6 @@ module ODDB
 		def each_package(&block)
 			@packages.values.each(&block)
 		end
-		def expired?
-			@registration.expired?
-		end
-		def fachinfo
-			@registration.fachinfo
-		end
     def factored_compositions(factor=1.0)
       comps = @compositions.sort
       if factor != 1.0
@@ -166,9 +163,6 @@ module ODDB
     def galenic_forms
       @compositions.collect { |comp| comp.galenic_form }.compact.uniq
     end
-		def generic_type
-			@registration.generic_type if @registration
-		end
     def has_patinfo?
       (!@patinfo.nil? || !@pdf_patinfo.nil?) && patinfo_active? \
         && !company.disable_patinfo
@@ -178,9 +172,6 @@ module ODDB
         pac.public?
       }
     end
-		def iksnr
-			@registration.iksnr
-		end
 		def indication
 			@indication || @registration.indication
 		end
@@ -209,9 +200,6 @@ module ODDB
         @packages.each_value { |pac| pac._migrate_to_parts(app) }
         odba_store
       end
-    end
-    def minifi
-      @registration.minifi
     end
 		def name
 			[@name_base, @name_descr].compact.join(', ')
@@ -282,9 +270,6 @@ module ODDB
       days = days.to_i
       @longevity = (days > 1) ? days : nil
     end
-		def patent_protected?
-			@registration.patent_protected? if(@registration)
-		end
     def route_of_administration
       roas = @compositions.collect { |comp| 
         comp.route_of_administration 
@@ -306,9 +291,6 @@ module ODDB
 				@seqnr = seqnr
         fix_pointers
 			end
-		end
-		def source
-			@registration.source
 		end
 		def substances
 			@compositions.inject([]) { |subs, comp| 

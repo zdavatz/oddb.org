@@ -14,7 +14,7 @@ module ODDB
 		attr_writer :generic_type, :complementary_type
 		attr_accessor :registration_date, :export_flag, :company, 
 			:revision_date, :indication, :expiration_date, :inactive_date,
-      :manual_inactive_date,
+      :manual_inactive_date, :deactivate_fachinfo, :activate_fachinfo,
 			:market_date, :fachinfo, :source, :ikscat, :renewal_flag, #:pdf_fachinfos,
       :index_therapeuticus, :comarketing_with, :vaccine, :ignore_patent,
       :parallel_import, :minifi, :product_group, :production_science,
@@ -106,6 +106,10 @@ module ODDB
 			inactive? \
 				|| (!@renewal_flag && @expiration_date && @expiration_date <= @@today)
 		end
+    def fachinfo_active?
+      @fachinfo && (@deactivate_fachinfo.nil? || @deactivate_fachinfo > @@today) \
+        && (@activate_fachinfo.nil? || @activate_fachinfo <= @@today)
+    end
 		def generic?
 			self.generic_type == :generic
 		end
@@ -114,6 +118,9 @@ module ODDB
 				@company.generic_type
 			end
 		end
+    def has_fachinfo?
+      !@fachinfo.nil?
+    end
     def ignore_patent?
       !!@ignore_patent
     end

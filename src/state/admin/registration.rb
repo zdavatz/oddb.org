@@ -170,7 +170,7 @@ class Registration < State::Admin::Global
       :revision_date, :market_date, :expiration_date,
       :complementary_type, :export_flag, :renewal_flag,
       :parallel_import, :index_therapeuticus, :ignore_patent,
-      :ith_swissmedic
+      :ith_swissmedic, :activate_fachinfo, :deactivate_fachinfo
     ]
     if(@model.is_a? Persistence::CreateItem)
       iksnr = @session.user_input(:iksnr)

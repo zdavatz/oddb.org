@@ -46,9 +46,10 @@ module ODDB
 			:deductible_m # for just-medical
 		alias :pointer_descr :ikscd
 		registration_data :comarketing_with, :complementary_type, :expiration_date,
-			:expired?, :export_flag, :generic_type, :inactive_date, :pdf_fachinfos,
-			:registration_date, :revision_date, :patent, :patent_protected?, :vaccine,
-			:parallel_import, :minifi, :source, :index_therapeuticus, :ith_swissmedic
+      :expired?, :export_flag, :fachinfo_active?, :generic_type,
+      :inactive_date, :pdf_fachinfos, :registration_date, :revision_date,
+      :patent, :patent_protected?, :vaccine, :parallel_import, :minifi,
+      :source, :index_therapeuticus, :ith_swissmedic, :has_fachinfo?
     sequence_data :atc_class, :basename, :company, :composition_text, :ddds,
       :fachinfo, :galenic_forms, :galenic_group, :has_patinfo?, :longevity,
       :iksnr, :indication, :name, :name_base, :patinfo, :pdf_patinfo,
