@@ -152,11 +152,11 @@ Grammar OddbSize
       if(count > 0 && multi > 1 && !@measure)
         parts.push('x')
       end
+      if add > 0
+        parts.push add, '+'
+      end
       if(count > 1 || (count > 0 && multi > 1 && !@measure))
         parts.push(count)
-      end
-      if add > 0
-        parts.push '+', add
       end
       if(@commercial_form)
         parts.push @commercial_form

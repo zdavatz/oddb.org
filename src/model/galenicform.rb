@@ -13,11 +13,6 @@ module ODDB
     include ODBA::Persistable ## include directly to get odba_index
 		ODBA_SERIALIZABLE = [ '@descriptions', '@synonyms' ]
     odba_index :name, 'all_descriptions'
-		class << self
-			def reset_oid
-				@@oid = 0
-			end
-		end
 		def equivalent_to?(other)
 			(self == other) || (@galenic_group == other.galenic_group)
 		end

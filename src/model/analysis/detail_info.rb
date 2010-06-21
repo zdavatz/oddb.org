@@ -1,6 +1,4 @@
-#!/usr/bin/env ruby
-#  Analysis::Detail_Info-- oddb.org -- 07.09.2006 -- sfrischknecht@ywesee.com
-
+require 'util/persistence'
 
 module ODDB
 	module Analysis

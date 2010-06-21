@@ -31,7 +31,7 @@ module ODDB
 		attr_writer :sequences
 	end
 	class Sequence
-		attr_accessor :packages, :active_agents
+		attr_accessor :packages
 	end
 	module Persistence
 		class Pointer
@@ -624,17 +624,6 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(group, group1)
 		assert_equal({:swissmedic_journal=>group}, @app.log_groups)
 	end
-	def test_create_incomplete_registration
-		@app.incomplete_registrations = {}
-		pointer = ODDB::Persistence::Pointer.new(:incomplete_registration)
-		result = @app.create(pointer)	
-		assert_instance_of(ODDB::IncompleteRegistration, result)
-		assert_equal(1, @app.incomplete_registrations.size)
-		oid = result.oid
-		assert_equal(result, @app.incomplete_registration(oid))
-		expected = ODDB::Persistence::Pointer.new([:incomplete_registration, oid])
-		assert_equal(expected, result.pointer)
-	end
 	def test_substance
 		substance = ODDB::Substance.new
 		substance.descriptions[:de] = 'ACIDUM ACETYLSALICYLICUM'
@@ -740,7 +729,7 @@ class TestOddbApp < Test::Unit::TestCase
 		pointer = ODDB::Persistence::Pointer.new([:orphaned_patinfo])
 		assert_equal({}, @app.orphaned_patinfos)
 		orph = @app.create(pointer)
-		assert_instance_of(ODDB::OrphanedPatinfo, orph)
+		assert_instance_of(ODDB::OrphanedTextInfo, orph)
 		assert_equal({orph.oid => orph}, @app.orphaned_patinfos)
 		
 	end
@@ -753,15 +742,15 @@ class TestOddbApp < Test::Unit::TestCase
 	def test_update_orphan_patinfo
 		update_hash = {
 			'key'			=>	'12345',
-			'meanings'=>	['iksnr'],
+			'de'      =>	'iksnr',
 		}		
-		orph = ODDB::OrphanedPatinfo.new
+		orph = ODDB::OrphanedTextInfo.new
 		@app.orphaned_patinfos = { 1 => orph }
 		pointer = ODDB::Persistence::Pointer.new([:orphaned_patinfo, 1])
 		orph.pointer = pointer
 		@app.update(pointer, update_hash)
 		assert_equal('12345', orph.key)
-		assert_equal(['iksnr'], orph.meanings)
+		assert_equal({'de' => 'iksnr'}, orph.descriptions)
 	end
 	def test_doctor_by_origin
 		docs = FlexMock.new('DoctorHash')

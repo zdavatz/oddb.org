@@ -5,9 +5,10 @@
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
-require 'model/patinfo'
 require 'stub/odba'
+require 'test/unit'
+require 'flexmock'
+require 'model/patinfo'
 
 module ODDB
 	class Patinfo
@@ -16,6 +17,7 @@ module ODDB
 end
 
 class TestPatinfo < Test::Unit::TestCase
+  include FlexMock::TestCase
 	class StubSequence
 		include ODDB::Persistence
 		def patinfo=(patinfo)
@@ -35,6 +37,16 @@ class TestPatinfo < Test::Unit::TestCase
 		@patinfo.add_sequence(prod)
 		assert_equal([prod], @patinfo.sequences)
 	end
+  def test_company_name
+    assert_nil @patinfo.company_name
+    @patinfo.sequences.push flexmock(:company_name => 'Company Name')
+    assert_equal 'Company Name', @patinfo.company_name
+  end
+  def test_name_base
+    assert_nil @patinfo.name_base
+    @patinfo.sequences.push flexmock(:name_base => 'Company Name')
+    assert_equal 'Company Name', @patinfo.name_base
+  end
 	def test_remove_sequence
 		prod = StubSequence.new
 		@patinfo.sequences = [prod]
@@ -111,4 +123,12 @@ date
 		EOS
 		assert_equal(expected.strip, doc.to_s)
 	end
+  def test_chapter_names
+    doc = ODDB::PatinfoDocument.new
+    expected = [ :name, :company, :galenic_form, :effects, :purpose,
+                 :amendments, :contra_indications, :precautions, :pregnancy,
+                 :usage, :unwanted_effects, :general_advice, :other_advice,
+                 :composition, :packages, :distribution, :fabrication, :date ]
+    assert_equal expected, doc.chapter_names
+  end
 end

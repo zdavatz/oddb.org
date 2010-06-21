@@ -20,8 +20,8 @@ module ODDB
 				@subgroups = {}
 			end
 			def checkout
-				raise "cannot delete nonempty group" unless(@groups.empty?)
-				@groups.odba_delete
+				raise "cannot delete nonempty group" unless(@subgroups.empty?)
+				@subgroups.odba_delete
 				@limitation_text.odba_delete unless(@limitation_text.nil?)
 			end
 			def create_limitation_text
@@ -40,7 +40,7 @@ module ODDB
 				end
 			end
 			def delete_subgroup(code)
-				if(sbg = @subgroups[code])
+				if sbg = @subgroups.delete(code)
 					@subgroups.odba_isolated_store
 					sbg
 				end

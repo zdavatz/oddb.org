@@ -9,10 +9,12 @@ module ODDB
 		alias :qty :val 
 		DISABLE_DIFF = true
 		def Dose.from_quanty(other)
-			if other.is_a?(Quanty)
+      if other.is_a?(Dose)
+        other
+			elsif other.is_a?(Quanty)
 				Dose.new(other.val, other.unit)
 			else
-				other
+        Dose.new(other)
 			end
 		end
 		def initialize(qty, unit=nil)
@@ -106,22 +108,11 @@ module ODDB
 		def ** (other)
 			Dose.from_quanty(super)
 		end
-=begin
-		def ==(other)
-			begin
-				 other && (@val * 1000).round == (adjust(other) * 1000).round
-			rescue StandardError
-				false
-			end
-		end
-=end
 		def <=>(other)
 			begin
 				(@val * 1000).round <=> (adjust(other) * 1000).round
 			rescue StandardError
-				if(@unit.nil? && other.unit.nil?)
-					0
-				elsif(@unit.nil?)
+				if(@unit.nil?)
 					1
 				elsif(other.unit.nil?)
 					-1

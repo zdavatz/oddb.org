@@ -23,19 +23,6 @@ module ODDB
 		def contact
 			(addr = @addresses.first) && addr.name
 		end
-		def refactor_addresses
-			addr = Address2.new
-			addr.location = [@plz, @location].join(" ")
-			addr.canton = @canton
-			addr.address = @address
-			addr.additional_lines = [@business_unit]
-			addr.fon = [ @phone ].compact
-			addr.fax = [ @fax ].compact
-			@plz = @location = @canton = @street = @number =
-				@phone = @fax = nil
-			addr.pointer = @pointer + [:address, 0]
-			@addresses = [ addr ]
-		end
 		def search_terms
 			terms = [
 				@name, @ean13, @business_unit, @email

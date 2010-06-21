@@ -7,6 +7,7 @@ require 'view/resulttemplate'
 require 'view/resultfoot'
 require 'view/resultcolors'
 require 'view/lookandfeel_components'
+require 'view/pager'
 
 module ODDB
 	module View

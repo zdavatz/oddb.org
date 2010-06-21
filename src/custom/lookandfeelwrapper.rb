@@ -3,6 +3,8 @@
 # LookandfeelWrapper - oddb -- 21.07.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/lookandfeelwrapper'
+require 'state/drugs/sequences'
+require 'util/money'
 
 module SBSM
   class LookandfeelWrapper < Lookandfeel
@@ -897,19 +899,6 @@ module ODDB
 			:ywesee_contact,
 		]
 		DISABLED = [ :atc_ddd ]
-=begin
-		DICTIONARIES = {
-			'de'	=>	{
-				:explain_generic					=>	'Blau&nbsp;=&nbsp;Generikum',
-			},
-			'fr'	=>	{
-				:explain_generic					=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
-			},
-			'en'	=>	{
-				:explain_generic					=>	'Blue&nbsp;=&nbsp;Generic Drug',
-			},
-		}
-=end
 		def compare_list_components
 			{
 				[0,0]	=>	:name_base,

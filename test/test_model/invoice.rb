@@ -4,13 +4,14 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
-require 'test/unit'
-require 'model/invoice'
 require 'stub/odba'
-require 'mock'
+require 'test/unit'
+require 'flexmock'
+require 'model/invoice'
 
 module ODDB
 	class TestInvoice < Test::Unit::TestCase
+    include FlexMock::TestCase
 		def setup
 			@invoice = ODDB::Invoice.new
 		end
@@ -80,6 +81,37 @@ module ODDB
 			item.expiry_time = (Time.now + 1)
 			assert_equal(false, @invoice.deletable?)
 		end
+    def test_init
+      @invoice.pointer = Persistence::Pointer.new :invoice
+      @invoice.init nil
+      assert_equal Persistence::Pointer.new([:invoice, @invoice.oid]),
+                   @invoice.pointer
+    end
+    def test_max_duration
+      @invoice.items.update 1 => flexmock(:duration => 2),
+                            2 => flexmock(:duration => 4)
+      assert_equal 4, @invoice.max_duration
+      @invoice.items.update 3 => flexmock(:duration => 6)
+      assert_equal 6, @invoice.max_duration
+      @invoice.items.update 4 => flexmock(:duration => 5)
+      assert_equal 6, @invoice.max_duration
+    end
+    def test_types
+      @invoice.items.update 1 => flexmock(:type => :annual),
+                            2 => flexmock(:type => :activation)
+      assert_equal [:annual, :activation], @invoice.types
+      @invoice.items.update 3 => flexmock(:type => :download)
+      assert_equal [:annual, :activation, :download], @invoice.types
+      @invoice.items.update 4 => flexmock(:type => :annual)
+      assert_equal [:annual, :activation, :download], @invoice.types
+    end
+    def test_vat
+      @invoice.items.update 1 => flexmock(:vat => 3),
+                            2 => flexmock(:vat => 5)
+      assert_equal 8, @invoice.vat
+      @invoice.items.update 3 => flexmock(:vat => 7)
+      assert_equal 15, @invoice.vat
+    end
 	end
 	class TestInvoiceItem < Test::Unit::TestCase
 		def setup
@@ -90,21 +122,72 @@ module ODDB
 			@item.quantity = 10
 			@item.total_netto = 100
 			assert_equal(10, @item.price)
+      assert_in_delta(100/3.0, @item.vat, 0.01)
 		end
 		def test_total_brutto_writer
 			@item.vat_rate = 100/3.0
 			@item.quantity = 1
 			@item.total_brutto = 100
 			assert_in_delta(75.0, @item.price, 0.01)
+			assert_in_delta(25.0, @item.vat, 0.01)
 		end
 		def test_expired
 			assert_equal(true, @item.expired?)
+			assert_equal(true, @item.expired?(@@today))
+			assert_equal(true, @item.expired?(Time.now))
 			@item.time = Time.now
 			assert_equal(true, @item.expired?)
+			assert_equal(true, @item.expired?(@@today))
+			assert_equal(true, @item.expired?(Time.now))
 			@item.expiry_time = @@today - 1
 			assert_equal(true, @item.expired?)
+			assert_equal(true, @item.expired?(@@today))
+			assert_equal(true, @item.expired?(Time.now))
 			@item.expiry_time = @@today
 			assert_equal(false, @item.expired?)
+			assert_equal(false, @item.expired?(@@today))
+			assert_equal(false, @item.expired?(Time.now))
 		end
+    def test_dup
+      dupl = @item.dup
+      assert_not_equal @item.data.object_id, dupl.data.object_id
+    end
+    def test_expiry_time
+      now = Time.now
+      assert_equal now + 5*60*60*24, InvoiceItem.expiry_time(5, now)
+    end
+    def test_init
+      @item.pointer = Persistence::Pointer.new [:invoice, 2], :item
+      @item.init nil
+      assert_equal Persistence::Pointer.new([:invoice, 2], [:item, @item.oid]),
+                   @item.pointer
+    end
+    def test_to_s
+      @item.text = 'some item text'
+      assert_equal 'some item text', @item.to_s
+    end
+    def test_ydim_data
+      now = Time.now
+      expt = Time.now + 24*3600
+      @item.data.store :some, :data
+      @item.expiry_time = expt 
+      @item.price = 100.0
+      @item.quantity = 4
+      @item.text = 'A Text'
+      @item.time = now
+      @item.unit = 'Stück'
+      @item.vat_rate = 7.6
+      expected = {
+        :data        => { :some => :data },
+        :expiry_time => expt,
+        :price       => 100.0,
+        :quantity    => 4,
+        :text        => 'A Text',
+        :time        => now,
+        :unit        => 'Stück',
+        :vat_rate    => 7.6,
+      }
+      assert_equal expected, @item.ydim_data
+    end
 	end
 end

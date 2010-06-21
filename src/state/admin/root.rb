@@ -2,7 +2,6 @@
 # State::Admin::Root -- oddb -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/galenicgroups'
-require 'state/admin/incompleteregistrations'
 require 'state/admin/indications'
 require 'state/admin/init'
 require 'state/admin/logout'
@@ -40,7 +39,6 @@ class CommercialForms < Global; end
 class GalenicForm < Global; end
 class GalenicGroup < Global; end
 class GalenicGroups < Global; end
-class IncompleteRegs < Global; end
 class OrphanedFachinfos < Global; end
 class OrphanedFachinfoAssign < Global; end
 class OrphanedPatinfo < Global; end
@@ -54,10 +52,6 @@ class PatinfoStatsCommon < Global; end
 class PatinfoStats < PatinfoStatsCommon; end
 class Sponsor < Global; end
 class SuggestReg < Registration; end
-class IncompleteReg < Registration; end
-class IncompleteSequence < Sequence; end
-class IncompleteActiveAgent < ActiveAgent; end
-class IncompletePackage < Package; end
 class Indication < Global; end
 module Root
 	include State::Admin::User
@@ -76,13 +70,6 @@ module Root
 			:galenic_form ]							=>	State::Admin::GalenicForm,
 		[ :select_seq ]								=>  State::Admin::AssignDeprivedSequence,
 		[ :hospital ]									=>	State::Hospitals::RootHospital,
-		[ :incomplete_registration ]	=>	State::Admin::IncompleteReg, 
-		[ :incomplete_registration,
-			:sequence ]									=>	State::Admin::IncompleteSequence, 
-		[ :incomplete_registration,
-			:sequence, :package ]				=>	State::Admin::IncompletePackage, 
-		[ :incomplete_registration,
-			:sequence, :active_agent ]	=>	State::Admin::IncompleteActiveAgent, 
 		[ :orphaned_fachinfo ]				=>	State::Admin::OrphanedFachinfoAssign,
 		[ :orphaned_patinfo ]					=>	State::Admin::OrphanedPatinfo,
 		[ :registration ]							=>	State::Admin::Registration,
@@ -120,10 +107,6 @@ module Root
 	def galenic_groups
 		model = @session.app.galenic_groups.values
 		State::Admin::GalenicGroups.new(@session, model)
-	end
-	def incomplete_registrations
-		model = @session.app.incomplete_registrations
-		State::Admin::IncompleteRegs.new(@session, model)
 	end
 	def indications
 		model = @session.app.indications

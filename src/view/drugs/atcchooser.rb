@@ -37,7 +37,7 @@ class AtcChooserList < HtmlGrid::List
 	def init
 		css_map.store([0,0], "atcchooser#{@model.level.next}")
 		@model = @model.children
-		if(@session.user.is_a? ODDB::RootUser)
+		if(@session.user.allowed?('login', 'org.oddb.RootUser'))
 			components.store([2,0], :edit)
 			css_map.store([2,0], 'list small')
 		end

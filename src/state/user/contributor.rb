@@ -17,13 +17,6 @@ module ODDB
 module Contributor
 	include State::Admin::User
 	RESOLVE_STATES = {
-		[ :incomplete_registration ]	=>	State::User::SuggestRegistration, 
-		[ :incomplete_registration,
-			:sequence ]									=>	State::User::SuggestSequence, 
-		[ :incomplete_registration,
-			:sequence, :package ]				=>	State::User::SuggestPackage, 
-		[ :incomplete_registration,
-			:sequence, :active_agent ]	=>	State::User::SuggestActiveAgent,
 	}
 	def resolve_state(pointer, type=:standard)
 		if(klass = @viral_module::RESOLVE_STATES[pointer.skeleton])

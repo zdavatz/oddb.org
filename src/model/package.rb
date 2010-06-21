@@ -12,7 +12,7 @@ require 'model/part'
 module ODDB
 	class PackageCommon
 		include Persistence
-    @@ddd_galforms = /tabletten/iu
+    @@ddd_galforms = /tabletten?/iu
 		class << self
 			def price_internal(price, type=nil)
         unless(price.is_a?(Util::Money))
@@ -99,7 +99,7 @@ module ODDB
       @parts.collect { |part| part.commercial_form }
     end
 		def company_name
-			company.name
+			(cmp = company) && cmp.name
 		end
     def compositions
       @parts.inject([]) { |comps, part| comps.push part.composition }.compact
@@ -130,11 +130,10 @@ module ODDB
       comparables.uniq
     end
     def comparable_size
-      ODDB::Dose.new @parts.collect { |part| 
-        part.comparable_size }.inject { |a, b| a + b }
+      @parts.collect { |part| part.comparable_size }.inject { |a, b| a + b }
     rescue RuntimeError
       @parts.inject(Dose.new(0)) { |comp, part|
-        ODDB::Dose.new(comp + part.comparable_size.qty)
+        ODDB::Dose.new(comp.qty + part.comparable_size.qty)
       } rescue nil
     end
     def create_part
@@ -154,12 +153,13 @@ module ODDB
 		def ddd_price
 			if(!@disable_ddd_price && (ddd = self.ddd) \
 				&& (grp = galenic_group) && grp.match(@@ddd_galforms) \
-				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose))
+				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose) \
+        && size = comparable_size)
         factor = (longevity || 1).to_f
         if(mdose > (ddose * factor))
-          (price / comparable_size.to_f) / factor
+          (price / size.to_f) / factor
         else
-          (price / comparable_size.to_f) \
+          (price / size.to_f) \
             * (ddose.to_f * factor / mdose.want(ddose.unit).to_f) / factor
         end
 			end
@@ -234,27 +234,6 @@ module ODDB
 		def limitation_text
 			@sl_entry.limitation_text unless @sl_entry.nil?
 		end
-    def _migrate_to_parts(app)
-      unless @parts
-        @parts = []
-        ptr = @pointer + :part
-        part = create_part
-        part.pointer = ptr
-        part.init app
-        part.size = @size
-        part.commercial_form = @commercial_form
-        part.composition = @sequence.compositions.first
-        %w{@size @addition @multi @count @measure @scale @comform
-           @commercial_form}.each { |name|
-          if instance_variable_get(name)
-            remove_instance_variable name
-          end
-        }
-        part.fix_pointers
-        @parts.odba_store
-        odba_store
-      end
-    end
 		def most_precise_dose
 			@pretty_dose || dose
 		end
@@ -267,20 +246,15 @@ module ODDB
     def part(oid)
       @parts.find { |part| part.oid == oid }
     end
+    def pharmacode= pcode
+      @pharmacode = pcode ? pcode.to_i.to_s : nil
+    end
     def preview?
       @preview_with_market_date && @market_date && @market_date > @@today
     end
 		def public?
       active? && (@refdata_override || !@out_of_trade \
                   || registration.active?)
-		end
-    def pharmacode= pcode
-      @pharmacode = pcode ? pcode.to_i.to_s : nil
-    end
-		def registration_data(key)
-			if(reg = registration)
-				reg.send(key)
-			end
 		end
 		def remove_narcotic(narc)
 			if(res = @narcotics.delete(narc))
@@ -355,7 +329,7 @@ module ODDB
     def price(type, ord_or_time=0)
       candidates = (prices[type] ||= [])
       if(ord_or_time.is_a?(Time))
-        candidates.find { |price| price.valid_from < Time }
+        candidates.find { |price| price.valid_from < ord_or_time }
       else
         candidates[ord_or_time.to_i]
       end
@@ -379,44 +353,5 @@ module ODDB
     def prices
       @prices ||= {}
     end
-    def update_prices # migration, to be removed
-      needs_save = false
-      %w{public private}.each { |type|
-        name = "@price_#{type}"
-        if(price = instance_variable_get(name))
-          needs_save = true
-          money = Package.price_internal(price.to_f / 100.0, type)
-          money.origin = data_origin(name[1..-1])
-          money.valid_from = @revision
-          self.send("price_#{type}=", money)
-          remove_instance_variable(name)
-        end
-      }
-      needs_save && odba_store
-    end
-	end
-	class IncompletePackage < PackageCommon
-		def acceptable?
-			@size && @ikscat
-		end
-		def accepted!(app, sequence_pointer)
-			ptr = sequence_pointer + [:package, @ikscd]
-			hash = {
-				:size							=>	@size, 
-				:ikscat						=>	@ikscat, 		
-				:generic_group		=>	(@generic_group.pointer if @generic_group),
-				:price_exfactory	=>	@price_exfactory,
-				:price_public			=>	@price_public, 
-			}.delete_if { |key, val| val.nil? }
-			app.update(ptr.creator, hash) 
-		end
-		def fill_blanks(sequence)
-			[	:descr, :dose, :ikscat, :price_exfactory, :generic_group, 
-				:size, :price_public ].select { |key|
-				if(self.send(key).to_s.empty?)
-					self.send("#{key}=", sequence.send(key))
-				end
-			}
-		end
 	end
 end

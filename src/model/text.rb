@@ -3,6 +3,7 @@
 
 require 'util/persistence'
 require 'util/language'
+require 'util/searchterms'
 require 'encoding/character/utf-8'
 
 module ODDB
@@ -17,8 +18,8 @@ module ODDB
 			def empty?
 				@src.nil?
 			end
-      def gsub! *args
-        @src.gsub! *args
+      def gsub! *args, &block
+        @src.gsub! *args, &block
       end
       def preformatted?
         true
@@ -76,9 +77,9 @@ module ODDB
 			def empty?
 				@text.empty?
 			end
-      def gsub! *args
-        @raw_txt.gsub! *args if @raw_txt
-        @text.gsub! *args
+      def gsub! *args, &block
+        @raw_txt.gsub! *args, &block if @raw_txt
+        @text.gsub! *args, &block
       end
       def length
         @text.length
@@ -151,7 +152,7 @@ module ODDB
           @raw_txt.gsub! /\t+/u, ' '
 				end
         if(@preformatted)
-          @text = @raw_txt.rstrip
+          @text = @raw_txt.dup
         else
           @text = @raw_txt.strip
         end
@@ -179,9 +180,9 @@ module ODDB
 				#clean! ## empty? should have no side-effects!
 				@subheading.empty? && @paragraphs.empty?
 			end
-      def gsub! *args
-        @paragraphs.each do |paragraph| paragraph.gsub! *args end
-        @subheading.gsub! *args
+      def gsub! *args, &block
+        @paragraphs.each do |paragraph| paragraph.gsub! *args, &block end
+        @subheading.gsub! *args, &block
       end
 			def to_s opts={}
         lines = [ @subheading ] + @paragraphs.collect do |par| par.to_s opts end
@@ -226,9 +227,9 @@ module ODDB
 				#clean! ## empty? should have no side-effects!
 				@heading.empty? && @sections.empty?
 			end
-      def gsub! *args
-        @sections.each do |section| section.gsub! *args end
-        @heading.gsub! *args
+      def gsub! *args, &block
+        @sections.each do |section| section.gsub! *args, &block end
+        @heading.gsub! *args, &block
       end
 			def include?(section)
 				@sections.include?(section)
@@ -322,10 +323,10 @@ module ODDB
       def empty?
         @rows.flatten.all? { |cell| cell.strip.empty? }
       end
-      def gsub! *args
+      def gsub! *args, &gsub
         @rows.each do |row|
           row.each do |cell|
-            cell.gsub! *args
+            cell.gsub! *args, &gsub
           end
         end
       end
@@ -338,7 +339,9 @@ module ODDB
         current_cell << "\n" if current_cell
       end
       def next_row!
-        @rows.push []
+        row = []
+        @rows.push row
+        row
       end
       def each_normalized(&block)
         wd = width
@@ -390,7 +393,7 @@ module ODDB
         hyph = opts[:hyphenator]
         str.split("\n").each do |line|
           res = ''
-          words = str.split(' ')
+          words = line.split(' ')
           while word = words.shift
             rlen = res.length
             if rlen + word.length > width

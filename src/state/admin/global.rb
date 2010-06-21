@@ -17,8 +17,6 @@ class Global < State::Global
       ['edit', 'org.oddb.model.!sponsor.*', State::Admin::Sponsor],
       ['edit', 'org.oddb.model.!indication.*', State::Admin::Indications],
       ['edit', 'org.oddb.model.!galenic_group.*', State::Admin::GalenicGroups],
-      ['edit', 'org.oddb.model.!incomplete_registration.*', 
-        State::Admin::IncompleteRegs],
       ['edit', 'org.oddb.model.!address.*', State::Admin::Addresses],
       ['view', 'org.oddb.patinfo_stats.associated', 
         State::Admin::PatinfoStatsCompanyUser],

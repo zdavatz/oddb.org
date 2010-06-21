@@ -5,16 +5,17 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'test/unit'
 require 'util/searchterms'
 require 'model/migel/group'
 require 'model/migel/product'
-require 'stub/odba'
 require 'flexmock'
 
 module ODDB
 	module Migel
-		class TestCreateProduct < Test::Unit::TestCase
+		class TestProduct < Test::Unit::TestCase
+      include FlexMock::TestCase
 			def setup
 				@subgroup = FlexMock.new
 				@subgroup.should_receive(:code).and_return { '04' }
@@ -22,8 +23,107 @@ module ODDB
 				@product = Product.new('01.00.2')
 				@product.subgroup = @subgroup
 			end
+      def test_accessory_code
+        assert_equal '00.2', @product.accessory_code
+      end
+      def test_adjust_types
+        ptr = Persistence::Pointer.new([:migel_product, :id])
+        app = flexmock 'application'
+        app.should_receive(:migel_product).with(:id).and_return 'resolved'
+        data = {
+          :something => ptr
+        }
+        expected = {
+          :something => 'resolved'
+        }
+        assert_equal expected, @product.adjust_types(data, app)
+      end
+      def test_checkout
+        acc1 = flexmock 'accessory1'
+        acc1.should_receive(:remove_product).times(1).and_return do
+          @product.accessories.delete acc1
+          assert true
+        end
+        acc2 = flexmock 'accessory2'
+        acc2.should_receive(:remove_product).times(1).and_return do
+          @product.accessories.delete acc2
+          assert true
+        end
+        @product.accessories.push acc1, acc2
+        prod1 = flexmock 'product1'
+        prod1.should_receive(:remove_accessory).times(1).and_return do
+          assert true
+        end
+        prod2 = flexmock 'product2'
+        prod2.should_receive(:remove_accessory).times(1).and_return do
+          assert true
+        end
+        @product.products.push prod1, prod2
+        fb1 = flexmock :odba_store => true
+        fb1.should_receive(:item=).with(nil).times(1).and_return do
+          @product.feedbacks.delete fb1
+          assert true
+        end
+        fb2 = flexmock :odba_store => true
+        fb2.should_receive(:item=).with(nil).times(1).and_return do
+          @product.feedbacks.delete fb2
+          assert true
+        end
+        @product.feedbacks.push fb1, fb2
+        @product.checkout
+        assert_equal [], @product.accessories
+        assert_equal [], @product.feedbacks
+      end
+      def test_create_limitation_text
+        assert_nil @product.limitation_text
+        res = @product.create_limitation_text
+        assert_instance_of LimitationText, res
+        assert_equal res, @product.limitation_text
+      end
+      def test_create_product_text
+        assert_nil @product.product_text
+        res = @product.create_product_text
+        assert_instance_of Text::Document, res
+        assert_equal res, @product.product_text
+      end
+      def test_create_unit
+        assert_nil @product.unit
+        res = @product.create_unit
+        assert_instance_of Text::Document, res
+        assert_equal res, @product.unit
+      end
+      def test_delete_limitation_text
+        lt = flexmock :odba_delete => true
+        @product.instance_variable_set '@limitation_text', lt
+        @product.delete_limitation_text
+        assert_nil @product.limitation_text
+      end
+      def test_delete_product_text
+        lt = flexmock :odba_delete => true
+        @product.instance_variable_set '@product_text', lt
+        @product.delete_product_text
+        assert_nil @product.product_text
+      end
+      def test_delete_unit
+        lt = flexmock :odba_delete => true
+        @product.instance_variable_set '@unit', lt
+        @product.delete_unit
+        assert_nil @product.unit
+      end
+      def test_localized_name
+        @product.descriptions.update 'fr' => 'Description', 'de' => 'Beschreibung'
+        assert_equal 'Beschreibung', @product.localized_name(:de)
+        assert_equal 'Description', @product.localized_name(:fr)
+        pt = @product.create_product_text
+        pt.descriptions.store 'de', 'ProductText'
+        assert_equal 'ProductText: Beschreibung', @product.localized_name(:de)
+        assert_equal 'ProductText: Description', @product.localized_name(:fr)
+      end
 			def test_migel_code
 				assert_equal('03.04.01.00.2', @product.migel_code)
+			end
+			def test_product_code
+				assert_equal('01', @product.product_code)
 			end
 			def test_search_terms
 				@group = FlexMock.new 'group'
@@ -38,6 +138,18 @@ module ODDB
                      'LimitationText', 'Limitation Text', 'subgroup' ]
 				assert_equal(expected, @product.search_terms)
 			end
+      def test_search_text
+        @group = FlexMock.new 'group'
+        @group.should_receive(:de).and_return { 'group' }
+        lt = LimitationText.new
+        lt.descriptions.store 'de', 'Limitation-Text'
+        @group.should_receive(:limitation_text).and_return lt
+        @subgroup.should_receive(:group).and_return { @group }
+        @subgroup.should_receive(:de).and_return { 'subgroup' }
+        @subgroup.should_receive(:limitation_text).and_return nil
+        expected = '030401002 group limitation limitationtext limitation text subgroup'
+        assert_equal(expected, @product.search_text)
+      end
 			def test_product_writer
 				product = FlexMock.new
 				product.should_receive(:add_accessory, 1).and_return { |acc| 

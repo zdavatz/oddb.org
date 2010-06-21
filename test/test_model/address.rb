@@ -131,5 +131,9 @@ module ODDB
 			assert_equal('Schliern b. Koenitz', @address.city)
 			assert_equal('3098', @address.plz)
 		end
+    def test_search_terms
+      expected = []
+      assert_equal expected, @address.search_terms
+    end
 	end
 end

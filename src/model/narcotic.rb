@@ -4,6 +4,7 @@
 require 'util/persistence'
 require 'util/language'
 require 'model/package_observer'
+require 'model/text'
 
 module ODDB
 	class Narcotic
@@ -26,18 +27,19 @@ module ODDB
 			substance
 		end
 		def casrn
-			@substances.collect { |sub| sub.casrn }.first
+      (subst = @substances.find do |sub| sub.casrn end) && subst.casrn
 		end
 		def checkout
-			@substances.each { |sub| 
+			@substances.dup.each { |sub| 
 				sub.narcotic = nil 
 				sub.odba_store
 			}
-			@packages.each { |pack| 
+      @substances.odba_delete
+			@packages.dup.each { |pack| 
 				pack.remove_narcotic(self)
 				pack.odba_store 
 			}
-      @substances.odba_delete
+      @packages.odba_delete
 		end
 		def create_reservation_text
 			@reservation_text = Text::Document.new
@@ -56,7 +58,7 @@ module ODDB
 		end
     alias :swissmedic_code :swissmedic_codes
 		def to_s
-			@substances.sort_by { |sub| sub.to_s }.first.to_s
+      @substances.collect do |sub| sub.to_s end.sort.first
 		end
 	end
 end

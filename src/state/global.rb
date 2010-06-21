@@ -74,7 +74,6 @@ require	'state/user/help'
 require 'state/user/mailinglist'
 require 'state/user/passthru'
 require 'state/user/register_poweruser'
-require 'state/user/suggest_registration'
 require 'state/paypal/return'
 require 'state/rss/passthru'
 require 'state/user/paypal_thanks'
@@ -144,13 +143,6 @@ module ODDB
 				[ :doctor	]  =>	State::Doctors::Doctor,
 				[ :hospital ]  =>	State::Hospitals::Hospital,
 				[ :fachinfo ]	=>	State::Drugs::Fachinfo,
-				[ :incomplete_registration ]	=>	State::User::SuggestRegistration, 
-				[ :incomplete_registration,
-					:sequence ]									=>	State::User::SuggestSequence, 
-				[ :incomplete_registration,
-					:sequence, :package ]				=>	State::User::SuggestPackage, 
-				[ :incomplete_registration,
-					:sequence, :active_agent ]	=>	State::User::SuggestActiveAgent,
 				[	:registration, :sequence, 
 					:package, :sl_entry, 
 					:limitation_text ] =>	State::Drugs::LimitationText,
@@ -652,19 +644,6 @@ module ODDB
       rescue Persistence::UninitializedPathError
         Http404.new(@session, nil)
       end
-			def new_registration
-				@session[:allowed] ||= []
-				item = @session[:allowed].select { |obj| 
-					obj.is_a?(ODDB::IncompleteRegistration)
-				}.first
-				unless(item)
-					pointer = Persistence::Pointer.new(:incomplete_registration)
-					item = Persistence::CreateItem.new(pointer)
-          item.carry :sequences, {}
-          item.carry :packages, []
-				end
-				State::User::SuggestRegistration.new(@session, item)
-			end
 			def unique_email
 				user = @session.user
 				if(user.respond_to?(:unique_email))

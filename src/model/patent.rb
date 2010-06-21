@@ -2,6 +2,7 @@
 # Patent -- oddb.org -- 05.05.2006 -- hwyss@ywesee.com
 
 require 'util/persistence'
+require 'util/today'
 
 module ODDB
 	class Patent

@@ -3,6 +3,7 @@
 
 require 'util/persistence'
 require 'util/language'
+require 'util/searchterms'
 require 'model/registration_observer'
 
 module ODDB

@@ -32,9 +32,6 @@ module ODDB
 				product.subgroup = self
 				@products.store(productcd, product)
 			end
-			def create_limitation_text
-				@limitation_text = LimitationText.new
-			end
 			def delete_limitation_text
 				if(lt = @limitation_text)
 					@limitation_text = nil
@@ -52,7 +49,7 @@ module ODDB
 				@group.code 
 			end
 			def migel_code
-				[ @group.migel_code, @code ].join('.')
+				[ @group.code, @code ].join('.')
 			end
 			def product(code)
 				@products[code]

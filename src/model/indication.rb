@@ -2,6 +2,7 @@
 # Indication -- oddb -- 12.05.2003 -- hwyss@ywesee.com 
 
 require 'util/language'
+require 'util/searchterms'
 require 'model/registration_observer'
 require 'model/sequence_observer'
 
@@ -12,9 +13,9 @@ module ODDB
 		include SequenceObserver
 		ODBA_SERIALIZABLE = [ '@descriptions', '@synonyms' ]
 		def atc_classes
-			atcs = @registrations.collect { |reg| 
-				reg.atc_classes
-			}.flatten
+			atcs = @registrations.inject([]) do |memo, reg| 
+				memo.concat reg.atc_classes
+      end
       @sequences.each { |seq| atcs.push seq.atc_class }
       atcs.compact.uniq
 		end

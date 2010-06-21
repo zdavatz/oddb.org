@@ -2,6 +2,7 @@
 # IndexTherapeuticus -- oddb.org -- 20.05.2008 -- hwyss@ywesee.com
 
 require 'util/language'
+require 'model/limitationtext'
 require 'model/text'
 
 module ODDB
@@ -58,7 +59,7 @@ module ODDB
     end
     def parent
       if parent_code = @code[/.+(?=\d{2}.?)/u]
-        find_by_code parent_code
+        IndexTherapeuticus.find_by_code parent_code
       end
     end
   end

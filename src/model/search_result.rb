@@ -8,6 +8,7 @@ require 'delegate'
 module ODDB
 	class AtcFacade
 		include ResultSort
+    attr_reader :atc
 		def initialize(atc, session, result)
 			@atc = atc
 			@session = session
@@ -18,11 +19,11 @@ module ODDB
 		def active_packages
 			@packages ||= @atc.active_packages
 		end
-		def description(*args)
-			@atc.description(*args)
-		end
 		def code
 			@atc.code
+		end
+		def description(*args)
+			@atc.description(*args)
 		end
 		def odba_id
 			@atc.odba_id
@@ -82,7 +83,7 @@ module ODDB
             @atc_sorted = atc_facades.sort_by { |atc_class|
               atc_class.packages.select { |pac|
                 pac.active_agents.any? { |act| 
-                  act.same_as?(@query)
+                  act.same_as?(@search_query)
                 }
               }.size
             }

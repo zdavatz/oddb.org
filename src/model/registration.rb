@@ -31,7 +31,13 @@ module ODDB
 				&& (!@market_date || @market_date <= @@today) 
 		end
     def active_packages
-      @sequences.values.inject([]) { |memo, seq| memo.concat seq.active_packages }
+      if active?
+        @sequences.values.inject([]) do |memo, seq|
+          memo.concat seq.active_packages
+        end
+      else
+        []
+      end
     end
 		def active_package_count
 			if(active?)
@@ -194,11 +200,6 @@ module ODDB
 			else
 				0
 			end
-		end
-		def search(query)
-			@sequences.values.collect { |seq|
-				seq.atc_class if seq.match(query)
-			}.compact
 		end
 		def sequence(seqnr)
 			@sequences[sprintf('%02d', seqnr.to_i)]

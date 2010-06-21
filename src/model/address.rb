@@ -1,13 +1,16 @@
 #!/usr/bin/env ruby
 # Address -- oddb -- 20.09.2004 -- jlang@ywesee.com
 
+require 'util/searchterms'
 require 'util/persistence'
 
 module ODDB
 	class Address 
 		attr_accessor :lines, :fon, :fax,
 			:plz, :city, :type
-		
+    def initialize
+      @lines = []
+    end
 		def city
 			if(match =/[^0-9]+/u.match(self.lines[-1]))
 				 match.to_s.strip

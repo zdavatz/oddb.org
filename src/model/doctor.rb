@@ -31,29 +31,6 @@ module ODDB
 		def fullname
 			[@firstname, @name].join(' ')
 		end
-		def refactor_address(addr, idx)
-			new_addr = Address2.new
-			lines = addr.lines_without_title
-			new_addr.title = (addr.lines - lines).first
-			new_addr.name = lines.at(0)
-			new_addr.additional_lines = lines[1..-3]
-			new_addr.address = lines.at(-2)
-			new_addr.location = lines.at(-1)
-			if(type = addr.type)
-				new_addr.type = "at_#{type}"
-			end
-			new_addr.fon = addr.fon
-			new_addr.fax = addr.fax
-			new_addr.pointer = @pointer + [:address, idx]
-			new_addr
-		end
-		def refactor_addresses
-			addrs = []
-			@addresses.each_with_index { |addr, idx|
-				addrs.push(refactor_address(addr, idx))
-			}
-			@addresses = addrs
-		end
 		def pointer_descr
 			[@title, @firstname, @name].compact.join(' ')
 		end

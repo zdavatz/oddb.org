@@ -4,10 +4,10 @@
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'test/unit'
 require 'model/atcclass'
 require 'model/atcnode'
-require 'stub/odba'
 
 class TestAtcNode < Test::Unit::TestCase
 	def setup
@@ -92,4 +92,15 @@ class TestAtcNode < Test::Unit::TestCase
 		@root.delete('N02')
 		assert_equal([@nodeN01], @nodeN.children)
 	end
+  def test_method
+    mcode = @nodeN.method(:code)
+    assert_equal 'N', mcode.call
+    mchildren = @nodeN.method(:children)
+    assert_equal [@nodeN01, @nodeN02], mchildren.call
+  end
+  def test_each
+    collection = []
+    @nodeN.each do |node| collection.push node.code end
+    assert_equal ['N', 'N01', 'N02'], collection
+  end
 end

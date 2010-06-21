@@ -1,33 +1,45 @@
 #!/usr/bin/env ruby
 # TestFeedback -- oddb -- 02.11.2004 -- jlang@ywesee.com
 
+$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
+require 'stub/odba'
 require 'test/unit'
+require 'flexmock'
 require 'model/feedback'
-require 'mock'
-require 'odba'
 
 module ODDB
 	class TestFeedback < Test::Unit::TestCase
+    include FlexMock::TestCase
 		def setup
-			ODBA.storage = Mock.new
-			ODBA.storage.__next(:next_id) {
-				1
-			}
 			@feedback = Feedback.new
 		end
-		def teardown
-			ODBA.storage = nil
-		end
 		def test_init
-			ptr = Mock.new('Pointer')
+      ptr = Persistence::Pointer.new :feedback
 			@feedback.pointer = ptr
-			ptr.__next(:append) { |id|
-				assert_equal(@feedback.oid, id)
-			}
 			@feedback.init
-			ptr.__verify
+      assert_equal Persistence::Pointer.new([:feedback, @feedback.oid]), ptr
+      assert_equal ptr, @feedback.pointer
 		end
+    def test_item_writer
+      item = flexmock 'item2'
+      item.should_receive(:add_feedback).with(@feedback).times(1).and_return do
+        assert true
+      end
+      res = @feedback.item = item
+      assert_equal item, res
+      assert_equal item, @feedback.item
+      item.should_receive(:remove_feedback).with(@feedback).times(1).and_return do
+        assert true
+      end
+      other = flexmock 'item2'
+      other.should_receive(:add_feedback).with(@feedback).times(1).and_return do
+        assert true
+      end
+      res = @feedback.item = other
+      assert_equal other, res
+      assert_equal other, @feedback.item
+    end
 	end
 end

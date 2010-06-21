@@ -253,7 +253,7 @@ class RegistrationForm < View::Form
     end
 	end
 	def company_name(model, session=@session)
-		klass = if(session.user.is_a?(ODDB::CompanyUser))
+		klass = if(session.user.allowed?('login', 'org.oddb.CompanyUser'))
 			HtmlGrid::Value
 		else
 			HtmlGrid::InputText
@@ -275,8 +275,7 @@ class RegistrationForm < View::Form
     end
   end
 	def iksnr(model, session=@session)
-		klass = if(model.is_a?(Persistence::CreateItem) \
-			|| model.is_a?(ODDB::IncompleteRegistration))
+		klass = if model.is_a?(Persistence::CreateItem)
 			HtmlGrid::InputText
 		else
 			HtmlGrid::Value

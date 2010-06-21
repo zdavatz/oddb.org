@@ -53,6 +53,8 @@ module ODDB
 				0
 			end
 		end
+    ## active_patinfo is used for invoicing. Returns path to a pdf file, iff it
+    #  is displayed online.
     def active_patinfo
       active? && patinfo_active? && @pdf_patinfo
     end
@@ -173,7 +175,7 @@ module ODDB
       }
     end
 		def indication
-			@indication || @registration.indication
+			@indication || @registration.indication if @registration
 		end
     def indication=(indication)
       @indication = replace_observer(@indication,indication)
@@ -184,23 +186,6 @@ module ODDB
 		def match(query)
 			/#{query}/iu.match(@name_base)
 		end
-    def _migrate_to_compositions(app)
-      unless @compositions
-        @compositions = []
-        ptr = @pointer + :composition
-        comp = create_composition
-        comp.pointer = ptr
-        comp.init app
-        comp.instance_variable_set '@active_agents', @active_agents
-        remove_instance_variable '@active_agents' if @active_agents
-        comp.galenic_form = @galenic_form
-        remove_instance_variable '@galenic_form' if @galenic_form
-        comp.fix_pointers
-        @compositions.odba_store
-        @packages.each_value { |pac| pac._migrate_to_parts(app) }
-        odba_store
-      end
-    end
 		def name
 			[@name_base, @name_descr].compact.join(', ')
 		end
@@ -377,62 +362,5 @@ module ODDB
         (src = pac.swissmedic_source) && src[:composition] 
       }.compact.first
     end
-	end
-	class IncompleteSequence < SequenceCommon
-		ACTIVE_AGENT = IncompleteActiveAgent
-		PACKAGE = IncompletePackage
-		def acceptable?
-			_acceptable? && !@active_agents.empty? \
-			&& @packages.all? { |key, val|
-				val.acceptable?
-			}
-		end
-		def _acceptable?
-			@atc_class && @name_base
-		end
-		def accepted!(app, reg_pointer)
-			reg = reg_pointer.resolve(app)
-			seq = reg.sequence(@seqnr)
-			ptr = reg_pointer + [:sequence, @seqnr]
-			hash = {
-				:name_base				=>	@name_base,
-				:name_descr				=>	@name_descr,
-				:dose							=>	@dose,
-				:atc_class				=>	(@atc_class.code if @atc_class), 
-				:composition_text	=>	@composition_text,
-			}.delete_if { |key, val| val.nil? }
-			app.update(ptr.creator, hash)
-			@packages.each_value { |pack|
-				pack.accepted!(app, ptr)
-			}
-			@active_agents.each { |agent|
-				agent.accepted!(app, ptr)
-			} 
-		end
-		def fill_blanks(sequence)
-			scalars = [	:name_base, :name_descr, :dose,
-				:atc_class ].select { |key|
-				if(self.send(key).to_s.empty?)
-					self.send("#{key}=", sequence.send(key))
-				end
-			}
-			sequence.packages.each { |ikscd, pac|
-				npac = @packages.fetch(ikscd) { 
-					npac = create_package(ikscd)
-					npac.pointer = @pointer + [:package, ikscd]
-					npac
-				}
-				npac.fill_blanks(pac)
-			}
-			sequence.active_agents.each { |agent|
-				if(sub = agent.substance)
-					name = sub.name
-					nagent = create_active_agent(name)
-					nagent.pointer = @pointer + [:active_agent, name]
-					nagent.fill_blanks(agent)
-				end
-			}
-			scalars
-		end
 	end
 end

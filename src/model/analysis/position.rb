@@ -4,6 +4,7 @@
 require 'util/language'
 require 'util/searchterms'
 require 'model/analysis/detail_info'
+require 'model/limitationtext'
 require 'model/analysis/permission'
 require 'model/feedback_observer'
 require 'model/text'

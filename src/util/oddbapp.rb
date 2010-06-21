@@ -56,7 +56,6 @@ class OddbPrevalence
 	end
 	def init
 		create_unknown_galenic_group()
-		create_root_user()
 		@accepted_orphans ||= {}
 		@address_suggestions ||= {}
 		@analysis_groups ||= {}
@@ -72,7 +71,6 @@ class OddbPrevalence
 		@galenic_groups ||= []
 		@generic_groups ||= {}
 		@hospitals ||= {}
-		@incomplete_registrations ||= {}
 		@indications ||= {}
     @indices_therapeutici ||= {}
 		@invoices ||= {}
@@ -309,10 +307,6 @@ class OddbPrevalence
 	def cyp450s
 		@cyp450s.values
 	end
-	def create_admin
-		user = ODDB::AdminUser.new
-		@users.store(user.oid, user)
-	end
 	def create_analysis_group(groupcd)
 		group = ODDB::Analysis::Group.new(groupcd)
 		@analysis_groups.store(groupcd, group)
@@ -358,10 +352,6 @@ class OddbPrevalence
 	def create_generic_group(package_pointer)
 		@generic_groups.store(package_pointer, ODDB::GenericGroup.new)
 	end
-	def create_incomplete_registration
-		incomplete = ODDB::IncompleteRegistration.new
-		@incomplete_registrations.store(incomplete.oid, incomplete)
-	end
   def create_index_therapeuticus(code)
     code = code.to_s
     it = ODDB::IndexTherapeuticus.new(code)
@@ -392,11 +382,11 @@ class OddbPrevalence
 	end
 	def create_orphaned_fachinfo
 		@orphaned_fachinfos ||= {}
-		orphan = ODDB::OrphanedFachinfo.new
+		orphan = ODDB::OrphanedTextInfo.new
 	  @orphaned_fachinfos.store(orphan.oid, orphan)
 	end
 	def create_orphaned_patinfo
-		orphan = ODDB::OrphanedPatinfo.new
+		orphan = ODDB::OrphanedTextInfo.new
 	  @orphaned_patinfos.store(orphan.oid, orphan)
 	end
 	def create_patinfo
@@ -504,12 +494,6 @@ class OddbPrevalence
 		if(grp = @galenic_groups.delete(oid.to_i))
 			@galenic_groups.odba_isolated_store
 			grp
-		end
-	end
-	def delete_incomplete_registration(oid)
-		if(reg = @incomplete_registrations.delete(oid))
-			@incomplete_registrations.odba_isolated_store
-			reg
 		end
 	end
   def delete_index_therapeuticus(code)
@@ -657,17 +641,6 @@ class OddbPrevalence
 	end
 	def get_currency_rate(symbol)
     ODDB::Currency.rate('CHF', symbol)
-	end
-	def incomplete_registration(oid)
-		@incomplete_registrations[oid.to_i]
-	end
-	def incomplete_registration_by_iksnr(iksnr)
-		@incomplete_registrations.values.select { |reg|
-			reg.iksnr == iksnr
-		}.first
-	end
-	def incomplete_registrations
-		@incomplete_registrations.values
 	end
   def index_therapeuticus(code)
     @indices_therapeutici[code.to_s]
@@ -1279,12 +1252,6 @@ class OddbPrevalence
 			update(group.pointer, {'de'=>'Unbekannt'})
 		end
 	end
-	def create_root_user
-		@users ||= {}
-		if(@users[0].nil?)
-			@users.store(0, ODDB::RootUser.new)
-		end
-	end
 end
 
 module ODDB
@@ -1325,11 +1292,6 @@ module ODDB
       puts "initialized: #{Time.now - start}"
 		end
 		# prevalence-methods ################################
-		def accept_incomplete_registration(reg)
-			command = AcceptIncompleteRegistration.new(reg.pointer)
-			@system.execute_command(command)
-			registration(reg.iksnr)
-		end
 		def accept_orphaned(orphan, pointer, symbol, origin=nil)
 			command = AcceptOrphan.new(orphan, pointer,symbol, origin)
 			@system.execute_command(command)
@@ -1340,17 +1302,6 @@ module ODDB
 		end
 		def create(pointer)
 			@system.execute_command(CreateCommand.new(pointer))
-		end
-		def create_admin_user(email, password)
-			unless(@system.user_by_email(email))
-				pass_hash = Digest::MD5.hexdigest(password)
-				pointer = Persistence::Pointer.new([:admin])
-				values = {
-					:unique_email	=>	email,
-					:pass_hash		=>	pass_hash,
-				}
-				update(pointer.creator, values)
-			end
 		end
     def create_commercial_forms
       @system.each_package { |pac| 
@@ -1439,7 +1390,6 @@ module ODDB
 			@system.execute_command(ReplaceFachinfoCommand.new(iksnr, pointer))
 		end
 		def update(pointer, values, origin=nil)
-			#@system.execute_command(UpdateCommand.new(pointer, values))
 			@system.update(pointer, values, origin)
 		end
 		#####################################################
@@ -1672,166 +1622,6 @@ module ODDB
       }
     end
 
-    def migrate_to_yus(email, pass)
-      session = YUS_SERVER.login(email, pass, YUS_DOMAIN)
-      @system.users.each_value { |userobj|
-        klass = userobj.class.to_s.split('::').last
-        group, user = nil
-        unless(group = session.find_entity(klass))
-          group = session.create_entity(klass)
-        end
-        privileges = [
-          "login|org.oddb.#{klass}", 
-        ]
-        case klass 
-        when 'RootUser' 
-          #'view|org.oddb',
-          privileges.concat [ 'grant|create', 'grant|edit', 'grant|credit',
-            'edit|yus.entities', 'edit|org.oddb.drugs', 'set_password',
-            'edit|org.oddb.model.!company.*', 
-            'create|org.oddb.registration',
-            'edit|org.oddb.model.!sponsor.*', 
-            'edit|org.oddb.model.!indication.*', 
-            'edit|org.oddb.model.!galenic_group.*', 
-            'edit|org.oddb.model.!incomplete_registration.*', 
-            'edit|org.oddb.model.!address.*', 
-            'edit|org.oddb.model.!atc_class.*',
-            'view|org.oddb.patinfo_stats', 
-            'invoice|org.oddb.processing', 
-          ]
-        when 'AdminUser'
-          privileges.concat [ 'edit|org.oddb.drugs', #'view|org.oddb',
-            'create|org.oddb.registration', 
-            'edit|org.oddb.model.!incomplete_registration.*', 
-            'edit|org.oddb.model.!indication', 
-            'edit|org.oddb.model.!galenic_group.*', 
-          ]
-        when 'CompanyUser'
-          privileges.concat [ 'edit|org.oddb.drugs', #'view|org.oddb',
-            'create|org.oddb.registration', 
-            'edit|org.oddb.model.!galenic_group.*', 
-            'view|org.oddb.patinfo_stats.associated', 
-          ]
-        when 'PowerLinkUser'
-          privileges.concat [ 'edit|org.oddb.powerlinks', #'view|org.oddb',
-            'edit|org.oddb.drugs', 
-          ]
-        #when 'PowerUser'
-        else
-          [] # no further privileges
-        end
-        privileges.each { |priv|
-          session.grant(klass, *priv.split('|'))
-        }
-				empty = if(userobj.respond_to?(:invoices))
-									userobj.invoices.delete_if { |inv| inv.odba_instance.nil? }
-									userobj.invoices.empty?
-								else
-									false 
-								end
-        if(!empty && (email = userobj.unique_email) && !email.empty?)
-          unless(user = session.find_entity(email))
-            user = session.create_entity(email)
-          end
-          session.affiliate(email, klass)
-          if(hash = userobj.pass_hash)
-            session.set_password(email, hash)
-          end
-          if(model = userobj.model.odba_instance)
-            session.grant(email, "edit", model.pointer.to_yus_privilege)
-            if(contact = model.contact)
-              contact.slice!(/^(Herr|Frau)\s+/u)
-              name_first, name_last = contact.split(' ', 2)
-              session.set_entity_preference(email, 'name_first', name_first)
-              session.set_entity_preference(email, 'name_last', name_last)
-            end
-            session.set_entity_preference(email, 'association', model.odba_id)
-          end
-          if(userobj.respond_to?(:paid_invoices))
-            userobj.invoices.delete_if { |inv| inv.odba_instance.nil? }
-            pair = userobj.paid_invoices.inject([]) { |memo, invoice|
-              invoice.items.each_value { |item|
-                if(item.type == :poweruser && time = item.expiry_time)
-                  memo.push([time, item.duration])
-                end
-              }
-              memo
-            }.max || [Time.now, 1]
-            session.grant(email, 'view', 'org.oddb', pair.first)
-            session.set_entity_preference(email, 'poweruser_duration', pair.last)
-            userobj.invoices.each { |inv|
-              inv.yus_name = email
-              inv.odba_store
-            }
-          end
-          if(userobj.creditable?('download'))
-            session.grant(email, 'credit', 'org.oddb.download')
-          end
-          YusUser::PREFERENCE_KEYS.each { |key|
-            if(userobj.respond_to?(key) && (val = userobj.send(key)))
-              session.set_entity_preference(email, key, val, YUS_DOMAIN)
-            end
-          }
-        end
-      }
-      session.grant('hwyss@ywesee.com', 'grant', 'grant')
-      session.grant('hwyss@ywesee.com', 'grant', 'login')
-      klass = 'DownloadUser'
-      unless(group = session.find_entity(klass))
-        group = session.create_entity(klass)
-        session.grant(klass, 'login', 'org.oddb.DownloadUser')
-      end
-      @system.admin_subsystem.download_users.each { |email, userobj|
-				userobj.invoices.delete_if { |inv| inv.odba_instance.nil? }
-				unless(userobj.invoices.empty?)
-					unless(user = session.find_entity(email))
-						user = session.create_entity(email)
-					end
-					session.affiliate(email, klass)
-					userobj.invoices.delete_if { |inv| inv.odba_instance.nil? }
-					userobj.invoices.each { |invoice|
-						invoice.items.each_value { |item|
-							if(item.type == :download && item.expiry_time > Time.now)
-								session.grant(email, 'download', item.text, item.expiry_time)
-							end
-						}
-					}
-					YusUser::PREFERENCE_KEYS.each { |key|
-						if(userobj.respond_to?(key) && (val = userobj.send(key)))
-							session.set_entity_preference(email, key, val, YUS_DOMAIN)
-						end
-					}
-					userobj.invoices.each { |inv|
-						inv.yus_name = email
-						inv.odba_store
-					}
-				end
-      }
-
-      # Fix all Invoices and InvoiceItems - user_pointer -> yus_name
-      ptr_replace = Proc.new { |item|
-        if((ptr = item.user_pointer) && user = ptr.resolve(@system))
-          item.yus_name = user.unique_email
-          item.odba_store
-        end
-      }
-      @system.invoices.each_value { |inv|
-        ptr_replace.call(inv)
-        inv.items.each_value { |item|
-          ptr_replace.call(item)
-        }
-      }
-      @system.slates.each_value { |slate|
-        slate.items.each_value { |item|
-          ptr_replace.call(item)
-        }
-      }
-		rescue StandardError => e
-			puts e.class, e.message	
-			puts e.backtrace
-		ensure
-      YUS_SERVER.logout(session)
-    end
 		def multilinguify_analysis
 			@system.analysis_positions.each { |pos|
 				if(descr = pos.description)

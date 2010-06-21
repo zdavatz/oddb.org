@@ -105,11 +105,6 @@ class TestActiveAgent < Test::Unit::TestCase
 		assert_nil(subst2.removed_sequence)
 		assert_nil(subst3.sequence)
 		assert_equal(subst2, @agent.substance)
-		agent = ODDB::IncompleteActiveAgent.new('ACIDUM ACETYLSALICYLICUM')
-		incomplete = StubActiveAgentSequence.new
-		agent.sequence = incomplete
-		agent.substance = subst1
-		assert_not_equal(incomplete, subst1.sequence)
 	end
 	def test_checkout
 		@agent.checkout
@@ -210,6 +205,13 @@ class TestActiveAgent < Test::Unit::TestCase
 		}
 		assert_equal(expected, @agent.adjust_types(input, app))
 	end
+  def test_adjust_types__error
+    res = nil
+    assert_nothing_raised do
+      res = @agent.adjust_types :dose => []
+    end
+    assert_equal({}, res)
+  end
 	def test_compare1
 		@agent.dose = ODDB::Dose.new(1,'g')
 		other = ODDB::ActiveAgent.new(@substance_name)
@@ -267,23 +269,12 @@ class TestActiveAgent < Test::Unit::TestCase
 		assert_equal(true, agent.same_as?('Levomentholum'))
 		subst.__verify
 	end
-end
-class TestIncompleteActiveAgent < Test::Unit::TestCase
-	def setup
-		@agent = ODDB::IncompleteActiveAgent.new('LEVOMENTHOLUM')
-		@agent.substance = StubActiveAgentSubstance.new('LEVOMENTHOLUM')
-		@dose = StubActiveAgentDose.new()
-		@agent.dose = @dose
-	end
-	def test_accepted
-		ptr = ODDB::Persistence::Pointer.new
-		app = StubActiveAgentApp.new
-		@agent.accepted!(app, ptr)
-		pointer = ptr + [:active_agent, 'LEVOMENTHOLUM']
-		assert_equal(pointer.creator, app.pointer)
-		expected = {
-			:dose			=>	@dose,
-		}
-		assert_equal(expected, app.values)
-	end
+  def test_to_a
+    assert_equal [@substance, @agent.dose], @agent.to_a
+  end
+  def test_to_s
+    assert_equal 'ACIDUM ACETYLSALICYLICUM 100 mg', @agent.to_s
+  end
+  def test_update_values
+  end
 end

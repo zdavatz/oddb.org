@@ -22,8 +22,7 @@ module ODDB
       @active_agents.find { |active| active.same_as?(substance_or_oid, spag) }
     end
     def checkout
-      gf = @galenic_form
-      @galenic_form = nil
+      self.galenic_form = nil
       @active_agents.dup.each { |act|
         act.checkout
         act.odba_delete
@@ -49,14 +48,6 @@ module ODDB
     def doses
       @active_agents.collect { |agent| agent.dose }
     end
-    def fix_pointers
-      @pointer = @sequence.pointer + [:composition, @oid]
-      @active_agents.each { |act|
-        act.pointer = @pointer + [:active_agent, act.oid]
-        act.odba_store
-      }
-      odba_store
-    end
     def galenic_form=(galform)
       @galenic_form = replace_observer(@galenic_form, galform)
     end
@@ -70,7 +61,11 @@ module ODDB
       @active_agents.collect { |agent| agent.substance }
     end
     def to_s
-      @active_agents.join(', ')
+      str = @active_agents.join(', ')
+      if @galenic_form
+        str = "%s: %s" % [@galenic_form, str]
+      end
+      str
     end
     def *(factor)
       result = dup
@@ -82,7 +77,8 @@ module ODDB
       result
     end
     def ==(other)
-      other.is_a?(Composition) \
+      other.object_id == object_id \
+        || other.is_a?(Composition) \
 				&& !@galenic_form.nil? \
 				&& !other.galenic_form.nil? \
         && other.galenic_form.equivalent_to?(@galenic_form) \

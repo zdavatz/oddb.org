@@ -71,6 +71,17 @@ class TestDose < Test::Unit::TestCase
 		assert_equal('mg', dose.unit.to_s)
 		assert_equal('40-60 mg', dose.to_s)
 	end
+  def test_arithmetics
+		dose1 = ODDB::Dose.new(10, 'mg')
+		dose2 = ODDB::Dose.new(5, 'mg')
+		dose3 = ODDB::Dose.new(2, 'ml')
+    assert_equal dose1, dose2 + dose2
+    assert_equal dose2, dose1 - dose2
+    assert_equal dose1, dose2 * 2
+    assert_equal dose2, dose1 / 2
+    assert_equal ODDB::Dose.new(5, 'mg/ml'), dose1 / dose3
+    assert_equal ODDB::Dose.new(100, 'mg mg'), dose1 ** 2
+  end
 	def test_comparable1
 		dose1 = ODDB::Dose.new(10, 'mg')
 		dose2 = ODDB::Dose.new(10, 'mg')
@@ -111,17 +122,26 @@ class TestDose < Test::Unit::TestCase
 		dose2 = ODDB::Dose.new('1', 'mg')
 		assert(dose2 == dose1, "dose2 was not == dose1")
 	end
+	def test_comparable9
+		dose1 = ODDB::Dose.new('1000', nil) 
+		dose2 = ODDB::Dose.new('1', 'mg')
+		assert(dose2 > dose1, "dose2 was not > dose1")
+		assert(dose1 < dose2, "dose1 was not < dose2")
+	end
 	def test_complex_unit
 		dose = nil
 		assert_nothing_raised {
 			dose = ODDB::Dose.new(20.0, 'mg/5ml')
 		}
 	end
-	def test_from_quanty	
+	def test_from_quanty
 		quanty = Quanty.new(1,'mg')
 		result = ODDB::Dose.from_quanty(quanty)
 		assert_instance_of(ODDB::Dose, result)
 		assert_equal(ODDB::Dose.new(1, 'mg'), result)
+    second = ODDB::Dose.from_quanty result
+    assert_equal result, second
+    assert_equal result.object_id, second.object_id
 	end	
 	def test_multiplication
 		dose1 = ODDB::Dose.new(1,'ml')
@@ -139,8 +159,27 @@ class TestDose < Test::Unit::TestCase
 			dose.to_f
 		}
 	end
+  def test_scale
+    assert_nil @dose.scale
+    dose = ODDB::Dose.new(100, 'µg / 2 h')
+    assert_equal ODDB::Dose.new(2, 'h'), dose.scale
+  end
   def test_ug_h
     dose = ODDB::Dose.new(100, 'µg/h')
     assert_equal('100 µg/h', dose.to_s)
+  end
+  def test_to_i
+    assert_equal 1, @dose.to_i
+  end
+  def test_to_s
+    assert_equal '1.7 ml', @dose.to_s
+    dose = ODDB::Dose.new(100, 'µg / 2 h')
+    assert_equal '100µg / 2h', dose.to_s
+  end
+  def test_want
+    wanted = @dose.want 'cl'
+    assert_instance_of ODDB::Dose, wanted
+    assert_equal 'cl', wanted.unit
+    assert_equal 0.17, wanted.qty
   end
 end

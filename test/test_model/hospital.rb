@@ -5,35 +5,43 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'model/hospital'
 
 module ODDB
 	class TestHospital < Test::Unit::TestCase
+    include FlexMock::TestCase
 		def setup
 			@hospital = Hospital.new('12543')
 		end
-		def test_refactor_addresses
-			@hospital.pointer = [:hospital, 1]
-			@hospital.business_unit = 'Apotheke' 
-			@hospital.instance_variable_set('@address', 'Meissenbergstrasse 17')
-			@hospital.instance_variable_set('@plz', '6300')
-			@hospital.instance_variable_set('@location', 'Zug')
-			@hospital.instance_variable_set('@phone', 'fon')
-			@hospital.instance_variable_set('@fax', 'fax')
-			result = @hospital.refactor_addresses
-			assert_instance_of(Array, result)
-			assert_equal(1, result.size)
-			addr = result.first
-			assert_instance_of(Address2, addr)
-			
-			assert_equal(['Apotheke'], addr.additional_lines)
-			assert_equal('Meissenbergstrasse 17' , addr.address)
-			assert_equal('6300 Zug', addr.location)
-			assert_equal(['fon'], addr.fon)
-			assert_equal(['fax'], addr.fax)
-			assert_equal([:hospital, 1, :address, 0], 
-				addr.pointer)
-			assert_equal(result, @hospital.addresses)
-		end
+    def test_contact
+      assert_nil @hospital.contact
+      addr = @hospital.addresses.first
+      addr.name = 'A Name'
+      assert_equal 'A Name', @hospital.contact
+    end
+    def test_pointer_descr
+      @hospital.name = 'Hospital'
+      @hospital.business_unit = 'Neurologie'
+      assert_equal 'Hospital Neurologie', @hospital.pointer_descr
+    end
+    def test_search_terms
+      @hospital.name = 'A Name'
+      @hospital.business_unit = 'Neurologie'
+      @hospital.email = 'hospital@test.ch'
+      @hospital.addresses.replace [ flexmock(:search_terms => ['Address', 'Terms'])]
+      expected = [
+        "A Name", "12543", "Neurologie", "hospitaltestch", "Address", "Terms"
+      ]
+      assert_equal expected, @hospital.search_terms
+    end
+    def test_search_text
+      @hospital.name = 'A Name'
+      @hospital.business_unit = 'Neurologie'
+      @hospital.email = 'hospital@test.ch'
+      @hospital.addresses.replace [ flexmock(:search_terms => ['Address', 'Terms'])]
+      expected = "A Name 12543 Neurologie hospitaltestch Address Terms"
+      assert_equal expected, @hospital.search_text
+    end
 	end
 end

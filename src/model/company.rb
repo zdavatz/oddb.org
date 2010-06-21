@@ -44,9 +44,9 @@ module ODDB
 			}
 		end
 		def atc_classes
-			@registrations.collect { |registration|
-				registration.atc_classes				
-			}.flatten.compact.uniq
+			@registrations.inject([]) do |memo, registration|
+				memo.concat registration.atc_classes				
+      end.compact.uniq
 		end
     def disable_invoice_fachinfo
       invoice_disabled?(:fachinfo)
@@ -70,6 +70,7 @@ module ODDB
 				registration.public_package_count > 0
 			}
 		end
+    ## to be invoiceable, the company needs to have a complete address:
 		def invoiceable?
 			addr = address(0)
 			![ @name, @contact, addr.address, addr.plz, 
@@ -115,32 +116,6 @@ module ODDB
 			}
 			@registrations.odba_isolated_store
 		end
-    def migrate_invoice_dates
-      @invoice_dates ||= {
-        :patinfo     => @pref_invoice_date,
-        :index       => @index_invoice_date,
-        :lookandfeel => @lookandfeel_invoice_date,
-      }
-      @disabled_invoices ||= {
-        :patinfo => @disable_autoinvoice,
-      }
-      @prices ||= {
-        :patinfo            => @patinfo_price,
-        :index              => @index_price,
-        :index_package      => @index_package_price,
-        :lookandfeel        => @lookandfeel_price,
-        :lookandfeel_member => @lookandfeel_member_price,
-      }
-      remove_instance_variable("@pref_invoice_date") if(@pref_invoice_date)
-      remove_instance_variable("@index_invoice_date") if(@index_invoice_date)
-      remove_instance_variable("@lookandfeel_invoice_date") if(@lookandfeel_invoice_date)
-      remove_instance_variable("@disable_autoinvoice") if(@disable_autoinvoice)
-      remove_instance_variable("@patinfo_price") if(@patinfo_price)
-      remove_instance_variable("@index_price") if(@index_price)
-      remove_instance_variable("@index_package_price") if(@index_package_price)
-      remove_instance_variable("@lookandfeel_price") if(@lookandfeel_price)
-      remove_instance_variable("@lookandfeel_member_price") if(@lookandfeel_member_price)
-    end
 		def pointer_descr
 			@name
 		end
@@ -183,16 +158,6 @@ module ODDB
     def price_patinfo=(units)
       @prices[:patinfo] = units
     end
-		def refactor_addresses
-			addr = Address2.new
-			addr.location = [@plz, @location].join(" ")
-			addr.address = @address
-			addr.pointer = @pointer + [:address, 0]
-			addr.fon = [ @phone ].compact
-			addr.fax = [ @fax ].compact
-			@phone = @fax = @plz = @location = @address = nil
-			@addresses = [ addr ]
-		end
 		def search_terms
 			terms = @name.split(/[\s\-()]+/u).select { |str| str.size >= 3 }
 			terms += [

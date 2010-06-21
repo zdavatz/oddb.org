@@ -13,11 +13,8 @@ require 'view/user/export'
 require 'sbsm/user'
 
 module ODDB
-class AdminUser < User; end
-class CompanyUser < User; end
 	module View
 		module Drugs
-class User < SBSM::KnownUser; end
 class UnknownUser < SBSM::UnknownUser; end
 class DivExportCSV < HtmlGrid::DivForm
 	include View::User::Export

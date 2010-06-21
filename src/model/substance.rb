@@ -84,9 +84,7 @@ module ODDB
 			conn
 		end
 		def cyp450substrate(cyp_id)
-			if(@substrate_connections)
-				@substrate_connections[cyp_id]
-			end
+      @substrate_connections[cyp_id]
 		end
 		def delete_cyp450substrate(cyp_id)
 			if(cyp = @substrate_connections.delete(cyp_id))
@@ -118,22 +116,18 @@ module ODDB
 			!@effective_form.nil?
 		end
 		def interaction_connections(others)
-			if(@substrate_connections)
-				connections = {}
-				@substrate_connections.each { |cyp450_id, subs_connection|
-					others.each { |substance|
-						interactions = subs_connection.interactions_with(substance)
-						if(int_conn = connections[cyp450_id])
-							int_conn.concat(interactions)
-						else
-							connections.store(cyp450_id, interactions)
-						end
-					}
-				}
-				connections
-			else
-				{}	
-			end
+      connections = {}
+      @substrate_connections.each { |cyp450_id, subs_connection|
+        others.each { |substance|
+          interactions = subs_connection.interactions_with(substance)
+          if(int_conn = connections[cyp450_id])
+            int_conn.concat(interactions)
+          else
+            connections.store(cyp450_id, interactions)
+          end
+        }
+      }
+      connections
 		end
 		def interactions_with(other)
 			interactions = _interactions_with(other) 
@@ -145,15 +139,11 @@ module ODDB
       end
 			interactions.uniq
 		end
-		def _interactions_with(other)
-			if(@substrate_connections)
-				@substrate_connections.values.collect { |conn|
-					conn.interactions_with(other)
-				}.flatten
-			else
-				[]
-			end
-		end
+    def _interactions_with(other)
+      @substrate_connections.values.collect { |conn|
+        conn.interactions_with(other)
+      }.flatten
+    end
 		def is_effective_form?
 			@effective_form == self
 		end
@@ -204,10 +194,7 @@ module ODDB
 		end
 		def name
 			# First call to descriptions should go to lazy-initialisator
-			if(@name)
-				#@descriptions['lt'] = @name if(self.descriptions['lt'].empty?)
-				@name.to_s
-			elsif(lt = self.descriptions['lt']) && !lt.empty?
+			if(lt = self.descriptions['lt']) && !lt.empty?
 				lt
 			else
 				@descriptions['en'].to_s

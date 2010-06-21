@@ -13,6 +13,7 @@ module ODDB
       def eql?(other)
         @href.eql? other.href
       end
+      alias :== :eql?
       def hash
         @href.hash
       end

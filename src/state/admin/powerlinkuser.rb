@@ -2,6 +2,7 @@
 # State::Admin::PowerLinkUser -- oddb -- 07.12.2005 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
+require 'state/admin/registration'
 
 module ODDB
 	module State

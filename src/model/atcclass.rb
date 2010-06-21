@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
 # AtcClass -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
 
-require 'util/persistence'
 require 'util/language'
+require 'util/persistence'
+require 'util/searchterms'
 require 'model/text'
 require 'model/sequence_observer'
 
@@ -48,7 +49,7 @@ module ODDB
 			}
 		end
 		def checkout
-			@sequences.each { |seq| seq.atc_class = nil } 
+			@sequences.dup.each { |seq| seq.atc_class = nil } 
 			@sequences.odba_delete
 		end
     def company_filter_search(company_name)

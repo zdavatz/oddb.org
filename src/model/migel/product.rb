@@ -55,7 +55,7 @@ module ODDB
 				@limitation_text.odba_delete unless(@limitation_text.nil?)
 				@product_text.odba_delete unless(@product_text.nil?)
 				@unit.odba_delete unless(@unit.nil?)
-				@accessories.each { |acc|
+				@accessories.dup.each { |acc|
 					acc.remove_product(self)
 				}
 				@accessories.odba_delete

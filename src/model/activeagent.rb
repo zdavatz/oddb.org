@@ -34,10 +34,6 @@ module ODDB
 		def to_s
 			to_a.compact.join(' ')
 		end
-		def update_values(values, origin=nil)
-			super
-			@pointer = @pointer.parent + [:active_agent, oid]
-		end
 		alias :pointer_descr :to_s
 		def ==(other)
 			other.is_a?(ActiveAgent) \
@@ -108,29 +104,6 @@ module ODDB
         end
 			end
 			@substance
-		end
-	end
-	class IncompleteActiveAgent < ActiveAgentCommon
-		def accepted!(app, seq_pointer)
-			return if(@substance.nil? || @substance.name.empty?)
-			ptr = seq_pointer + [:active_agent, @substance.name]
-			hash = {
-				:chemical_substance		=>	(@chemical_substance.name if @chemical_substance), 
-				:equivalent_substance	=>	(@equivalent_substance.name if @equivalent_substance),
-				:dose									=>	@dose,
-				:chemical_dose				=>	@chemical_dose, 
-				:equivalent_dose			=>	@equivalent_dose,
-			}.delete_if { |key, va| va.nil? }
-			app.update(ptr.creator, hash)
-		end
-		def fill_blanks(sequence)
-			[	:substance, :chemical_substance, :equivalent_substance, 
-				:dose, :chemical_dose, :equivalent_dose, :spagyric_type,
-				:spagyric_dose ].select { |key|
-				if(self.send(key).to_s.empty?)
-					self.send("#{key}=", sequence.send(key))
-				end
-			}
 		end
 	end
 end
