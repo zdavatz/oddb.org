@@ -1,14 +1,14 @@
 ODDB.org stands for OpenDrugDatabase 
 ====================================
 
-Date: 2010-05-27
+Date: 2010-06-22
 
 Short Description: ODDB.org is an OpenDrugDatabase that enables the
 search for Drugs by their ActiveAgent, Name, Producer, ATC-Code.  You
 can do a price comparison between the Original Drug and the Generic by
 Clicking on the Drug's Name. The database tells you when the Drug has
-been registred in Switzerland. ODDB.org exports the complete Data in the
-YAML.org Format (15'881 registred products).
+been registred in Switzerland. ODDB.org exports the complete Data in
+the YAML.org Format (15'881 registred products).
 
 For for more information about the background see:
 
@@ -22,65 +22,133 @@ Requirements
 ch.oddb.org has a large set of functionality, and with it a large set of
 dependencies:
 
-	* ruby 1.8, mod_ruby, drbsession, apache
-  * character-encodings (gem: {{{ sudo gem install character-encodings }}})
-  * currency (git-project, clone and install:
-    {{{ git clone git://scm.ywesee.com/currency; cd currency;
-        ruby install.rb config; ruby install.rb setup;
-        sudo ruby install.rb install }}})
-  * dbi (gentoo: {{{ emerge install ruby-dbi }}} with postgres use flag)
-  * gruff (gem: {{{ sudo gem install gruff }}})
-  * htmlgrid (git-project, clone and install:
-    {{{ git clone git://scm.ywesee.com/htmlgrid; cd htmlgrid;
-        ruby install.rb config; ruby install.rb setup;
-        sudo ruby install.rb install }}})
-  * html-parser - three attached files:
+	[I] Third party software:
+	1. Apache     (WWW server)
+	2. PostgreSQL (DataBase Management System)
+	3. Ruby       (Interpreter)				(*1)
+	4. Git	      (Version Control System)			(*2)
+	5. RubyGems   (Ruby Libraries Management System)	(*3)
+
+	[II] Third party Ruby libraries:
+	1.  activesupport
+	2.  archive-tarsimple
+	3.  character-encodings
+	4.  dojo
+	5.  facets
+	6.  gruff
+	7.  hpricot  
+	8.  json
+	9.  mechanize
+	10.  mod_ruby
+	11. paypal
+	12. racc
+	13. rmail
+	14. ruby-dbi		(*4)
+	15. ruby-gd		(*5)		
+	16. ruby-password	(*6)
+	17. ruby-postgres
+	18. rubyzip
+	19. spreadsheet
+	20. tarsimple
+	21. tmail
+	22. turing
+	
+	[III] ywesee Ruby libraries and patches
+	1.  currency
+	2.  htmlgrid
+ 	3.  odba
+	4.  oddb
+	5.  rclconf
+	6.  rpdf2txt
+	7.  sbsm
+	8.  swissmedic-diff
+	9.  ydim
+	10. yus
+	11. oniguruma_patch    	(*7)	
+
+	[IV] Others
+	1. html-parser.rb	(*8)
+	2. formatter.rb
+	3. sgml-parser.rb
+	4. rockit		(*9)
+
+----
+*1 Ruby MUST be version 1.8.6 (<= patch level 369). 
+   Otherwise, the oniguruma patch (*5) does not work.
+*2 Git is necessary in order to get libraries from ywesee.
+*3 RubyGems is necessary in order to get third party Ruby libraries.
+*4 ruby-dbi MUST be version <= 0.2.0
+    http://rubyforge.org/frs/?group_id=234
+*5 ruby-gd 0.7.4
+    http://raa.ruby-lang.org/cache/ruby-gd/
+*6 ruby-password 0.5.3 
+    http://www.caliban.org/ruby/ruby-password.shtml
+*7 oniguruma patch for Ruby 1.8.6
+    http://trac.ywesee.com/attachment/ticket/166/oniguruma_patch_hannes_15.6.2010.tar.gz
+*8 html-parser.rb, formatter.rb and sgml-parser.rb are
+   originally placed on
+    http://raa.ruby-lang.org/project/html-parser-2/. 
+   However, the links are dead. You can get them from
     http://trac.ywesee.com/attachment/ticket/226/html-parser.rb
     http://trac.ywesee.com/attachment/ticket/226/sgml-parser.rb
     http://trac.ywesee.com/attachment/ticket/226/formatter.rb
-    Still in use in several importer plugins, but should be phased out, as it
-    is unmaintained and mechanize is a much improved modern replacement
-  * json (gem: {{{ sudo gem install json }}})                                      
-  * mechanize (gem: {{{ sudo gem install mechanize }}})
-  * odba (git-project, clone and install:
-    {{{ git clone git://scm.ywesee.com/odba; cd odba; ruby install.rb config;
-        ruby install.rb setup; sudo ruby install.rb install }}})
-  * paypal (gem: {{{ sudo gem install paypal }}})
-  * racc (gem: {{{ sudo gem install racc }}})
-  * rclconf (git-project, clone and install:
-    {{{ git clone git://scm.ywesee.com/rclconf; cd rclconf;
-        ruby install.rb config; ruby install.rb setup;
-        sudo ruby install.rb install }}})
-  * rmail (gem: {{{ sudo gem install rmail }}})                                    
-  * rockit - attached archive:
-    http://trac.ywesee.com/attachment/ticket/226/rockit.tar.gz
-    Parser generator, should be replaced with racc or another maintained parser
-    generator. 
-  * rpdf2txt (git-project, clone and install:
-    {{{ git clone git://scm.ywesee.com/rpdf2txt; cd rpdf2txt;
-        ruby install.rb config; ruby install.rb setup;
-        sudo ruby install.rb install }}})                                                                
-  * rubyzip (gem: {{{ sudo gem install rubyzip }}})                                
-  * sbsm (git-project, clone and install:
-    {{{ git clone git://scm.ywesee.com/sbsm; cd sbsm; ruby install.rb config;
-        ruby install.rb setup; sudo ruby install.rb install }}})
-  * spreadsheet (gem: {{{ sudo gem install spreadsheet }}}, also a git-project,
-    clone and install:
-    {{{ git clone git://scm.ywesee.com/sbsm; cd sbsm; ruby install.rb config;
-        ruby install.rb setup; sudo ruby install.rb install }}})
-  * swissmedic-diff (git-project, clone and install:
-    {{{ git clone git://scm.ywesee.com/swissmedic-diff; cd swissmedic-diff;
-        ruby install.rb config; ruby install.rb setup;
-        sudo ruby install.rb install }}})
-  * tmail should be replaced with rmail (gem: {{{ sudo gem install tmail }}})
-  * ydim (git-project, clone and install:
-    {{{ git clone git://scm.ywesee.com/ydim; cd ydim; ruby install.rb config;
-        ruby install.rb setup; sudo ruby install.rb install }}})
-  * yus (git-project, clone and install:
-    {{{ git clone git://scm.ywesee.com/yus; cd yus; ruby install.rb config;
-        ruby install.rb setup; sudo ruby install.rb install }}})
+*9 Rockit is the 'Ruby O-o Compiler construction toolKIT'
+   You can get the rockit version 0.3.8 from 
+    http://rockit.sourceforge.net/
+   There is a more recent version, 0.7.2, but it does not work
+   in the curret system.
 
-  Extension projects in ext have the following additional dependencies:
+
+We have checked ch.oddb.org working with the libraries of the
+following versions:
+
+   	1.  Apache	    	2.2.15
+   	2.  PostgreSQL	    	8.4.2
+	3.  Ruby		1.8.6_p369
+	4.  Git			1.7.0.3
+	5.  RubyGems		1.3.5    
+
+	6.  activesupport	2.3.8
+	7.  archive-tarsimple	1.1.1
+	8.  character-encodings 0.4.1
+	9.  dojo		1.3.0
+	10. facets		1.4.5
+	11. gruff		0.3.6
+	12. hpricot		0.8.2
+	13. json		1.4.3
+	14. mechanize 		1.0.0
+	15. mod_ruby		1.3.0
+	16. paypal 		2.0.0
+	17. racc 		1.4.5
+	18. rmail 		1.0.0
+	19. rockit		0.3.8
+	20. ruby-dbi		0.2.0
+	21. ruby-gd		0.7.4
+	22. ruby-password	0.5.3
+	23. ruby-postgres	0.7.9.20080128
+	24. rubyzip 		0.5.12
+	25. spreadsheet 	0.6.4.1
+	26. tmail 		1.2.7.1
+	27. turing		0.0.11
+
+[IMPORTANT]
+* You should NOT install dbd-pg-0.3.x for the postgreSQL driver and
+  dbi-0.4.x, because it has already been known that the dbd-pg-0.3.x
+  depends on the library, deprecated-0.2.x, that causes an error.
+
+
+[Note]
+* html-parser (html-parser.rb, sgml-parser.rb, formatter.rb)
+  Still in use in several importer plugins, but should be phased out,
+  as it is unmaintained and mechanize is a much improved modern
+  replacement
+
+* rockit - attached archive:
+  Parser generator, should be replaced with racc or another maintained
+  parser generator.
+
+
+* Extension projects in ext have the following additional dependencies:
   * facets (gem: {{{ sudo gem install facets }}})
   * hpricot (gem: {{{ sudo gem install hpricot }}})
   * pdf-writer needs to be replaced with [http://github.com/sandal/prawn prawn]
@@ -93,72 +161,260 @@ dependencies:
     install: {{{ git clone git://scm.ywesee.com/text-hyphenate;
                  cd text-hyphenate; ruby install.rb config;
                  ruby install.rb setup; sudo ruby install.rb install }}})
-
 	
 Install 
 ------- 
-    * clone the git-repository:
-      {{{ git clone ssh://scm.ywesee.com/home/ywesee/git/oddb.org }}}
-    * set up an utf-8 encoded database, e.g.:
-{{{
-hwyss@work ~ $ psql -U postgres
-Welcome to psql 8.3.7, the PostgreSQL interactive terminal.
+Although it is possible to install ch.oddb.org in any linux system, we
+recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
-Type:  \copyright for distribution terms
-       \h for help with SQL commands
-       \? for help with psql commands
-       \g or terminate with semicolon to execute query
-       \q to quit
+	1. Get Ruby source code (version 1.8.6 patch level <= 369)
 
-postgres=# create user someuser;
-CREATE ROLE
-postgres=# create database myoddb encoding 'utf8' owner someuser;
-CREATE DATABASE
-postgres=# \q
-}}}
-    * set up database-access in etc/db_connection.rb:
-{{{
-require 'dbi'                                                                     
-require 'odba/connection_pool'                                                    
-require 'pg'                                            
-                        
-ODBA.storage.dbi = ODBA::ConnectionPool.new('DBI:Pg:myoddb',             
-  'someuser', '') 
-}}}
-    * read in the data (private download):
-{{{ 
-zcat oddb.sql.gz | psql -U postgres myoddb
-}}}
-    * set up the Apache virtual host:
-{{{
-<Directory path-to-git-repository/doc>
-Options ExecCGI FollowSymlinks Indexes
-AllowOverride None
-Order allow,deny
-Allow from all
-</Directory>
-<Directory path-to-git-repository/data/rss>
-Order allow,deny
-Allow from all
-</Directory>
+	   You can download Ruby source code from FTP mirror servers:
 
-<VirtualHost *:80>
-DocumentRoot path-to-git-repository/doc
-ServerName oddb.org.localhost
-DirectoryIndex index.rbx
-RubyAddPath path-to-git-repository/src
-RubyRequire 'sbsm/trans_handler'
-SetHandler ruby-object
-RubyTransHandler SBSM::FlavoredTransHandler.instance
-SetEnv DEFAULT_FLAVOR gcc
-</VirtualHost>
-}}}
-    * start or reload apache
-    * run css-updater: {{{ ruby bin/update_css }}}
-    * run the server: {{{ ruby bin/oddbd }}}
-    * optionally set up dns resolution,
-      e.g. add oddb.org.localhost to the localhost line in etc/hosts:
-      {{{ 127.0.0.1 localhost oddb.org.localhost }}}
+	   (RingServer, Japan)	 	     	ftp://core.ring.gr.jp/pub/lang/ruby/
+	   (Korean, Korea FreeBSD Users Group)	ftp://ftp.kr.freebsd.org/pub/ruby/
+	   (FU Berlin, Germany)			ftp://ftp.fu-berlin.de/unix/languages/ruby/
+	   (The Mirror Service, UK)		ftp://ftp.mirrorservice.org/sites/ftp.ruby-lang.org/pub/ruby/
+	   (Easynet, Belgique)			ftp://ftp.easynet.be/ruby/ruby/
+	   (ChgNet,  Rossiya)			ftp://ftp.chg.ru/pub/lang/ruby/
+	   (Technical Univ. of Athens, Greece)  ftp://ftp.ntua.gr/pub/lang/ruby/    
+	   (sunsite.dk, Danmark)       		ftp://sunsite.dk/mirrors/ruby/
+	   (ibiblio.org, US)			ftp://www.ibiblio.org/pub/languages/ruby/
+	   (tuwien.ac.at, Australia)		ftp://gd.tuwien.ac.at/languages/ruby/
+	   (cdpa.nsysu.edu.tw, Taiwan)		ftp://ruby.cdpa.nsysu.edu.tw/ruby/
+	   (mirror.cs.mun.ca, Canada)		ftp://mirror.cs.mun.ca/pub/mirror/ruby/
+
+	2. Get and make a oniguruma patch to Ruby source code
+
+	   You can get the oniguruma patch for Ruby 1.8.6 from 
+
+	    http://trac.ywesee.com/attachment/ticket/166/oniguruma_patch_hannes_15.6.2010.tar.gz
+
+	   Then, uncompress it and put the patch,
+
+	   $ tar zxvf oniguruma_patch_hannes_15.6.2010.tar.gz
+	   $ cd oniguruma
+	   $ ./configure --with-rubydir=[path-to-ruby-sourcecode-directory]
+	   $ make 186
+	   $ cd [path-to-ruby-sourcecode-directory]
+	   $ ./configure
+	   $ make
+	   $ (su)
+	   $ make install
+
+	3. Install the third party software
+	   You can check whether they are installed or not as follows:
+
+	   $ whereis apachectl (apache2ctl)	    (Apache)
+	   $ pg_ctl --version			    (PostgreSQL)
+	   $ git --version			    (Git)
+	   $ gem --version			    (RubyGems)
+
+	   If you can not see the versions or the commands, you have
+	   to install them before the installation of ch.oddb.org.
+
+	4. Get the ywesee libraries and install them
+	   You can get the source codes with git command.
+
+	   $ git clone git://scm.ywesee.com/[project name]
+
+	   For instance,
+	   $ git clone git://scm.ywesee.com/currency
+	   $ git clone git://scm.ywesee.com/odba
+	   $ git clone git://scm.ywesee.com/oddb
+	   $ git clone git://scm.ywesee.com/rclconf
+	   $ git clone git://scm.ywesee.com/sbsm
+	   $ git clone git://scm.ywesee.com/swissmedic-diff
+	   $ git clone git://scm.ywesee.com/ydim
+	   $ git clone git://scm.ywesee.com/yus
+
+	   Then, to install the libraries
+	   $ cd [project name]
+	   $ ruby install.rb config
+	   $ ruby install.rb setup
+	   $ su
+	   $ ruby install.rb install
+
+	   [IMPOTANT]
+	   In the case of 'swissmedic-diff' library,
+	   you have to make a rubygems package, then install it.
+
+	   $ git clone git://scm.ywesee.com/swissmedic-diff
+	   $ cd swissmedic-diff
+	   $ gem build swissmedic-diff.gemspec
+	   $ su
+	   $ gem install swissmedic-diff-0.1.1.gem
+
+	   In the case of 'sbsm' library, before the installation
+	   above, you should comment out all the line of
+	   lib/sbsm/redefine_19_cookie.rb.
+
+	   This is for Ruby 1.9, but it does not work if Ruby 1.9 is
+	   not running.
+	   
+
+	5. Get the third party Ruby libraries
+	   If RubyGems are installed, you can get them easily with gem
+	   command.
+
+	   $ su		(it needs to be super user )
+	   $ gem install --remote [library name]
+
+	   The other useful commands are,
+
+	   $ gem uninstall [library name]	(Uninstall)
+	   $ gem search --remote [library name]	(Search)
+	   $ gem list | grep [library name]	(Check installed libraries)
+
+
+	   If your OS is Gentoo, you can also use 'emerge' command to
+	   install Ruby libraries,
+
+	   $ (su)
+	   $ emerge [library name]		(Install)
+	   $ emerge -C [library name]		(Uninstall)
+	   $ emerge -s [library name]		(Search)
+
+
+	   [IMPORTANT]
+	   In the case of dojo library,
+	   you should download its source file and extract it in 'doc/resources'
+
+	    http://download.dojotoolkit.org/release-1.3.0/dojo-release-1.3.0.tar.gz
+
+	   $ cp dojo-release-1.3.0.tar.gz doc/resources
+	   $ cd doc/resources
+	   $ tar zxvf dojo-release-1.3.0.tar.gz
+
+	   $ mv dojo-release-1.3.0 dojo
+
+	   As for html-parser.rb, sgml-parser.b, formatter.rb,
+	   they are originally placed on
+
+	     http://raa.ruby-lang.org/project/html-parser-2/. 
+
+	   However, the links are dead. You can get them from
+
+       	     http://trac.ywesee.com/attachment/ticket/226/html-parser.rb
+	     http://trac.ywesee.com/attachment/ticket/226/sgml-parser.rb
+	     http://trac.ywesee.com/attachment/ticket/226/formatter.rb
+
+	   And 'rockit' library version 0.3.8 is placed on
+
+	     http://rockit.sourceforge.net/
+        
+	   There is a more recent version, 0.7.2, but it does not work
+	   in the curret system.
+
+	   These libraries are placed on appropriate directory and set
+	   the path in the enviroment viable 'RUBYLIB'.
+
+	6. Create a database-access file in [project dir]/etc/db_connection.rb.
+	   Copy and paste the contents below:
+
+	   ----(begin)----
+	   require 'dbi'                                                                     
+	   require 'odba/connection_pool'                                                    
+	   require 'pg'                                            
+           ODBA.storage.dbi = ODBA::ConnectionPool.new('DBI:Pg:oddb', 'postgres', '') 
+	   -----(end)-----
+
+	7. Set up quanty library
+
+	   $ cd [path-to-oddb.rg-git-repository]/data/qunaty
+	   $ ruby extconf.rb
+	   $ make
+	   $ make install
+
+
+	8. Set up PostgreSQL database
+	   You should create a database named 'oddb' by postgres,
+
+	   $ su - postgres
+	   $ createdb -E UTF8 oddb
+
+	   You can check the list of database by the following command,
+
+	   $ psql -l
+
+
+	9. Read in the data (private download):
+
+	   $ zcat oddb.sql.gz | psql -U postgres oddb
+
+	10. Set up the Apache virtual host
+
+	    It depends on OS to set up a virtual host.
+	    If your OS is Gentoo, just make a .conf file (e.g. 01_vhost_oddb.conf)
+	    in /etc/apache2/vhosts.d/
+
+	    ----(begin)----
+	    <Directory [path-to-git-repository]/doc>
+		Options ExecCGI FollowSymlinks Indexes
+		AllowOverride None
+		Order allow,deny
+		Allow from all
+	    </Directory>
+	    <Directory [path-to-git-repository]/data/css>
+		   Order allow,deny
+		   Allow from all
+	    </Directory>
+
+	    <VirtualHost *:80>
+	           DocumentRoot [path-to-git-repository]/doc
+	           ServerName oddb.org.localhost
+	           DirectoryIndex index.rbx
+		   RubyAddPath [path-to-git-repository]/src
+		   RubyRequire 'sbsm/trans_handler'
+		   SetHandler ruby-object
+		   RubyTransHandler SBSM::FlavoredTransHandler.instance
+		   SetEnv DEFAULT_FLAVOR gcc
+	    </VirtualHost>
+ 	    -----(end)-----
+	
+	11. Restart apache
+	
+	   In Gentoo, you should type
+
+	   $ su
+	   $ /etc/init.d/apache2 restart
+
+	12. Set up DNS resolution
+	    e.g. add oddb.org.localhost to the localhost line in etc/hosts  
+
+	    127.0.0.1 localhost oddb.org.localhost 
+
+	13. Run css-updater
+
+	   $ cd [path-to-oddb.org-git-repository]
+	   $ ruby bin/update_css 
+
+	14. Other things
+
+	    To avoid some errors, please do the followings:
+
+	    $ cd [oddb.org-git-repository]
+	    $ cp .git/refs/heads/master .git/ORIG_HEAD
+
+	15. Set up and start yus server
+
+	    $ su - postgres
+	    $ createuser yus
+	    $ createdb yus
+	    $ exit
+	    $ cd [yus-git-repository]
+	    $ ruby bin/yusd
+
+	16. Start currency server
+
+	    $ cd [currency-git-repository]
+	    $ ruby bin/currencyd
+
+	17. Start oddb server
+
+	    $ cd [oddb.org-git-repository]
+	    $ ruby bin/oddbd
+
 
 Install Instructions
 --------------------
@@ -167,7 +423,7 @@ Install Instructions
 
 Further Information
 -------------------
-http://trac.ywesee.com/ticket/226
+	* http://trac.ywesee.com/ticket/226
 
 Usage
 -----
@@ -240,3 +496,4 @@ README Author
 -------------
 
 	* Zeno Davatz <zdavatz@ywesee.com>
+	* Masaomi Hatakeyama <mhatakeyama@ywesee.com>
