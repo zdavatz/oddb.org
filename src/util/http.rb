@@ -115,7 +115,6 @@ module ODDB
 				['User-Agent', "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_4_11; de-de) AppleWebKit/525.18 (KHTML, like Gecko) Version/3.1.2 Safari/525.22"],
 				['Accept', 'text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,video/x-mng,image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1'],
 				['Accept-Language', 'de-ch,en-us;q=0.7,en;q=0.3'],       
-				['Accept-Encoding', 'gzip,deflate'],
 				['Accept-Charset', 'UTF-8'],
 				['Keep-Alive', '300'],
 				['Connection', 'keep-alive'],
