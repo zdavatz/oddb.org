@@ -154,7 +154,7 @@ module InsertBackbutton
       link2 = HtmlGrid::Link.new(:result, model, @session, self)
       link2.css_class = "list"
       query = @session.persistent_user_input(:search_query)
-      query = model.name_base if query.is_a?(SBSM::InvalidDataError)
+      query = model.name_base if query.is_a?(SBSM::InvalidDataError) || query.nil?
       args = [
         :zone, :drugs, :search_query, query.gsub('/', '%2F'), :search_type,
         @session.persistent_user_input(:search_type) || 'st_oddb',

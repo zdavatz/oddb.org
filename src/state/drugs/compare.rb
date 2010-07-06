@@ -63,6 +63,9 @@ class Compare < State::Drugs::Global
 		def atc_class
 			@package.atc_class
 		end
+    def name_base
+      @package.name_base
+    end
     def sort_by!(&block)
       @comparables = @comparables.sort_by(&block)
     end
@@ -72,6 +75,8 @@ class Compare < State::Drugs::Global
     if (pointer = @session.user_input(:pointer)) \
       && pointer.is_a?(Persistence::Pointer)
       @package = pointer.resolve(@session.app)
+    elsif ean13 = @session.user_input(:ean13)
+      @package = @session.app.package_by_ikskey(ean13.to_s[4,8])
     elsif term = @session.user_input(:search_query)
       @package = ODDB::Package.find_by_name_with_size term
     end
