@@ -15,4 +15,6 @@ module ODDB
       end
 		end
 	end
+  class OrphanedFachinfo < OrphanedTextInfo
+  end
 end
