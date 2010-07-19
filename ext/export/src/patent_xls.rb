@@ -29,19 +29,32 @@ module ODDB
           date.strftime('%d.%m.%Y')
         end
       end
-      def export(odba_ids)
+      def export(odba_ids, nil_data)
         url_base = "http://ch.oddb.org/de/gcc/resolve/pointer/"
         odba_ids.each { |id|
           reg = ODBA.cache.fetch(id)
           pat = reg.patent
-          row = [
-            reg.name_base[/^.\D+/u], reg.iksnr, date(reg.registration_date),
-            pat.certificate_number, date(pat.registration_date), 
-            date(pat.publication_date), date(pat.issue_date), 
-            date(pat.protection_date), date(pat.expiry_date), 
-            date(pat.deletion_date),
-            pat.base_patent, date(pat.base_patent_date),
-          ]
+          row = []
+          if reg.name_base != nil
+            row = [
+              reg.name_base[/^.\D+/u], reg.iksnr, date(reg.registration_date),
+              pat.certificate_number, date(pat.registration_date), 
+              date(pat.publication_date), date(pat.issue_date), 
+              date(pat.protection_date), date(pat.expiry_date), 
+              date(pat.deletion_date),
+              pat.base_patent, date(pat.base_patent_date),
+            ]
+          else
+            row = [
+              "nil", reg.iksnr, date(reg.registration_date),
+              pat.certificate_number, date(pat.registration_date), 
+              date(pat.publication_date), date(pat.issue_date), 
+              date(pat.protection_date), date(pat.expiry_date), 
+              date(pat.deletion_date),
+              pat.base_patent, date(pat.base_patent_date),
+            ]
+            nil_data << row.join(", ").to_s
+          end
           @worksheet.write(@rows, 0, row)
           if(pac = reg.active_packages.sort_by { |pac| pac.ikscd }.first)
             @worksheet.write_url(@rows, row.size, url_base + pac.pointer.to_s)

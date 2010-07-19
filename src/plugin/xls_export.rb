@@ -30,7 +30,7 @@ module ODDB
       ids = regs.collect { |reg| reg.odba_id }
       name = 'patents.xls'
 			@file_path = File.join(EXPORT_DIR, name)
-      EXPORT_SERVER.export_patent_xls(ids, EXPORT_DIR, name)
+      @nil_data = EXPORT_SERVER.export_patent_xls(ids, EXPORT_DIR, name)
     end
 		def log_info
 			hash = super
@@ -40,6 +40,11 @@ module ODDB
 					:recipients => recipients,
 				})
 			end
+      if @nil_data
+        hash[:report] += "\n\nThere is nil data in the patents.xls file. " +
+                         "Most probably \"Bezeichnung\" is missing.\n" + 
+                         @nil_data.join("\n")
+      end
 			hash
 		end
 		def report

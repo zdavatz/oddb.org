@@ -188,12 +188,14 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 			end
 		end
     def OdbaExporter.export_patent_xls(odba_ids, dir, name)
+      nil_data = []
       safe_export(dir, name) { |fh|
         exporter = PatentXls.new(fh.path)
-        exporter.export(odba_ids)
+        exporter.export(odba_ids, nil_data)
         exporter.close
         nil
       }
+      nil_data
     end
     def OdbaExporter.export_price_history_csv(odba_ids, dir, name)
       epoch = Date.new 1979

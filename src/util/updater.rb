@@ -104,6 +104,16 @@ module ODDB
 				log.notify(subj)
 			}
 		end
+		def export_patents_xls(date = @@today)
+			subj = 'Export patents.xls'
+			wrap_update(XlsExportPlugin, subj) {
+        plug = XlsExportPlugin.new(@app)
+        plug.export_patents
+				log = Log.new(date)
+				log.update_values(log_info(plug))
+				log.notify(subj)
+			}
+		end
 		def export_ouwerkerk(date = @@today)
 			subj = 'Med-Drugs' 
 			wrap_update(OuwerkerkPlugin, subj) {
