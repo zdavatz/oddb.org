@@ -337,7 +337,7 @@ module ODDB
       update_medwin_companies
 			exporter = Exporter.new(@app)
 			exporter.export_generics_xls
-      exporter.export_patents_xls
+      export_patents_xls
       exporter.mail_swissmedic_notifications
     end
 		def update_swissmedicjournal
