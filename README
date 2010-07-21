@@ -419,6 +419,30 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 	    $ cd [oddb.org-git-repository]
 	    $ ruby bin/oddbd
 
+rewind the data of PostgreSQL on ch.oddb.org
+--------------------------------------------
+If Swissmedic publishes Bullshit data and everything is connected in the wrong way
+	
+	get an archive)
+	$ scp [production server]:/var/backup/thinpower/db/postgresql/July-2010/2010-xx-xx/22\:00-postgresql_database-oddb_dot_org-backup.gz data/sql/oddb_dot_org.2010-xx-xx.sql.gz
+
+	(restore)
+	$ su
+	$ su - postgres
+	(stop all deamon-tools services with svc -d /service/ch.oddb-service-name)
+	$ dropdb oddb_dot_org
+	$ createdb -O oddb -E UTF8 -T template0 oddb_dot_org
+	$ zcat oddb_dot_org.2010-xx-xx.sql.gz | psql -U postgres oddb_dot_org
+
+	(update the data)
+	$ cd oddb.org/data/xls/
+	$ cp Packungen-xx.xx.2010 Packungen-latest.xls
+	$ cd oddb.org/jobs
+	$ sudo -u apache ./import_swissmedic
+
+Also see: 
+
+	* http://masaywesee.wordpress.com/2010/07/21/rewind-postgresql-data/
 
 Install Instructions
 --------------------
