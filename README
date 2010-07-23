@@ -43,7 +43,7 @@ dependencies:
 	7.  hpricot  
 	8.  json
 	9.  mechanize
-	10.  mod_ruby
+	10. mod_ruby
 	11. paypal
 	12. racc
 	13. rmail
@@ -308,12 +308,13 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 	   And 'rockit' library version 0.3.8 is placed on
 
 	     http://rockit.sourceforge.net/
-        
+             http://prdownloads.sf.net/rockit/rockit-0-3-8.tar.gz
+
 	   There is a more recent version, 0.7.2, but it does not work
 	   in the curret system.
 
 	   These libraries are placed on appropriate directory and set
-	   the path in the enviroment viable 'RUBYLIB'.
+	   the path in the enviroment varible 'RUBYLIB'.
 
 	6. Create a database-access file in [project dir]/etc/db_connection.rb.
 	   Copy and paste the contents below:
