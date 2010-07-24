@@ -125,7 +125,7 @@ following versions:
 	16. paypal 		2.0.0
 	17. racc 		1.4.5
 	18. rmail 		1.0.0
-	19. rockit		0.3.8
+	19. rockit		0.3.8 (you will only need the lib/* files)
 	20. ruby-dbi		0.2.0
 	21. ruby-gd		0.7.4
 	22. ruby-password	0.5.3
@@ -150,7 +150,6 @@ following versions:
 * rockit - attached archive:
   Parser generator, should be replaced with racc or another maintained
   parser generator.
-
 
 * Extension projects in ext have the following additional dependencies:
   * facets (gem: {{{ sudo gem install facets }}})
@@ -208,6 +207,10 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 	   $ (su)
 	   $ make install
 
+	   If you are on Funtoo there is an Alternative way to Apply the Patch with ebuild
+
+	   	http://dev.ywesee.com/wiki.php/Main/Oniguruma
+
 	3. Install the third party software
 	   You can check whether they are installed or not as follows:
 
@@ -252,8 +255,9 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 	   $ gem install swissmedic-diff-0.1.1.gem
 
 	   In the case of 'sbsm' library, before the installation
-	   above, you should comment out all the line of
-	   lib/sbsm/redefine_19_cookie.rb.
+	   above, you should comment out all the lines of
+	   
+	   	lib/sbsm/redefine_19_cookie.rb.
 
 	   This is for Ruby 1.9, but it does not work if Ruby 1.9 is
 	   not running.
@@ -310,11 +314,22 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 	     http://rockit.sourceforge.net/
              http://prdownloads.sf.net/rockit/rockit-0-3-8.tar.gz
 
-	   There is a more recent version, 0.7.2, but it does not work
-	   in the curret system.
+	   There is a more recent version, 0.7.2, but we could not 
+	   yet get it to work with existing grammars.
 
-	   These libraries are placed on appropriate directory and set
-	   the path in the enviroment varible 'RUBYLIB'.
+	   get the file for ch.oddb.org directly from here:
+
+	   	http://trac.ywesee.com/raw-attachment/ticket/226/rockit.tar.gz
+		
+	   place the rockit files and
+	   
+	   	html-parser.rb
+		sgml-parser.rb
+		formatter.rb
+		
+	   to
+
+	   	/usr/lib[64]/ruby/site_ruby/1.8/
 
 	6. Create a database-access file in [project dir]/etc/db_connection.rb.
 	   Copy and paste the contents below:
