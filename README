@@ -194,7 +194,7 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
 	   You can get the oniguruma patch for Ruby 1.8.6 from 
 
-	    http://trac.ywesee.com/attachment/ticket/166/oniguruma_patch_hannes_15.6.2010.tar.gz
+	    http://trac.ywesee.com/raw-attachment/ticket/166/oniguruma_patch_hannes_15.6.2010.tar.gz
 
 	   Then, uncompress it and put the patch,
 
@@ -353,6 +353,17 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
 	10. Set up the Apache virtual host
 
+		//
+		As for Apache, (especially in the case of Gentoo) after the installing of mod_ruby by emerge,
+		we have to add 
+		
+			'-D RUBY' 
+		
+		to the apache variable, APACHE2_OPTS, in
+	
+			/etc/conf.d/apache2.
+		\\
+		
 	    It depends on OS to set up a virtual host.
 	    If your OS is Gentoo, just make a .conf file (e.g. 01_vhost_oddb.conf)
 	    in /etc/apache2/vhosts.d/
