@@ -460,7 +460,7 @@ If Swissmedic publishes Bullshit data and everything is connected in the wrong w
 	(restore)
 	$ su
 	$ su - postgres
-	$ createuser oddb
+	$ createuser oddb (I answerd "y" to the superuser question)
 	(stop all deamon-tools services with svc -d /service/ch.oddb-service-name)
 	$ dropdb oddb_dot_org
 	$ createdb -O oddb -E UTF8 -T template0 oddb_dot_org
