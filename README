@@ -305,9 +305,9 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
 	   However, the links are dead. You can get them from
 
-       	     http://trac.ywesee.com/attachment/ticket/226/html-parser.rb
-	     http://trac.ywesee.com/attachment/ticket/226/sgml-parser.rb
-	     http://trac.ywesee.com/attachment/ticket/226/formatter.rb
+       	     http://trac.ywesee.com/raw-attachment/ticket/226/html-parser.rb
+	     http://trac.ywesee.com/raw-attachment/ticket/226/sgml-parser.rb
+	     http://trac.ywesee.com/raw-attachment/ticket/226/formatter.rb
 
 	   And 'rockit' library version 0.3.8 is placed on
 
@@ -460,6 +460,7 @@ If Swissmedic publishes Bullshit data and everything is connected in the wrong w
 	(restore)
 	$ su
 	$ su - postgres
+	$ createuser oddb
 	(stop all deamon-tools services with svc -d /service/ch.oddb-service-name)
 	$ dropdb oddb_dot_org
 	$ createdb -O oddb -E UTF8 -T template0 oddb_dot_org
