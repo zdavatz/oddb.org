@@ -88,14 +88,14 @@ dependencies:
 *6 ruby-password 0.5.3 
     http://www.caliban.org/ruby/ruby-password.shtml
 *7 oniguruma patch for Ruby 1.8.6
-    http://trac.ywesee.com/attachment/ticket/166/oniguruma_patch_hannes_15.6.2010.tar.gz
+    http://trac.ywesee.com/raw-attachment/ticket/166/oniguruma_patch_hannes_15.6.2010.tar.gz
 *8 html-parser.rb, formatter.rb and sgml-parser.rb are
    originally placed on
     http://raa.ruby-lang.org/project/html-parser-2/. 
    However, the links are dead. You can get them from
-    http://trac.ywesee.com/attachment/ticket/226/html-parser.rb
-    http://trac.ywesee.com/attachment/ticket/226/sgml-parser.rb
-    http://trac.ywesee.com/attachment/ticket/226/formatter.rb
+    http://trac.ywesee.com/raw-attachment/ticket/226/html-parser.rb
+    http://trac.ywesee.com/raw-attachment/ticket/226/sgml-parser.rb
+    http://trac.ywesee.com/raw-attachment/ticket/226/formatter.rb
 *9 Rockit is the 'Ruby O-o Compiler construction toolKIT'
    You can get the rockit version 0.3.8 from 
     http://rockit.sourceforge.net/
