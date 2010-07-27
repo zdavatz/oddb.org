@@ -44,24 +44,25 @@ dependencies:
 	8.  json
 	9.  mechanize
 	10. mod_ruby
-	11. paypal
-	12. racc
-	13. rmail
-	14. ruby-dbi		(*4)
-	15. ruby-gd		(*5)		
-	16. ruby-password	(*6)
-	17. ruby-postgres
-	18. rubyzip
-	19. spreadsheet
-	20. tarsimple
-	21. tmail
-	22. turing
+	11. pdf-writer
+	12. paypal
+	13. racc
+	14. rmail
+	15. ruby-dbi		(*4)
+	16. ruby-gd		(*5)		
+	17. ruby-password	(*6)
+	18. ruby-postgres
+	19. rubyzip
+	20. spreadsheet
+	21. tarsimple
+	22. tmail
+	23. turing
 	
 	[III] ywesee Ruby libraries and patches
 	1.  currency
 	2.  htmlgrid
  	3.  odba
-	4.  oddb
+	4.  oddb.org
 	5.  rclconf
 	6.  rpdf2txt
 	7.  sbsm
@@ -118,22 +119,23 @@ following versions:
 	9.  dojo		1.3.0
 	10. facets		1.4.5
 	11. gruff		0.3.6
-	12. hpricot		0.8.2
+	12. hpricot		0.6.164
 	13. json		1.4.3
 	14. mechanize 		1.0.0
 	15. mod_ruby		1.3.0
-	16. paypal 		2.0.0
-	17. racc 		1.4.5
-	18. rmail 		1.0.0
-	19. rockit		0.3.8 (you will only need the lib/* files)
-	20. ruby-dbi		0.2.0
-	21. ruby-gd		0.7.4
-	22. ruby-password	0.5.3
-	23. ruby-postgres	0.7.9.20080128
-	24. rubyzip 		0.5.12
-	25. spreadsheet 	0.6.4.1
-	26. tmail 		1.2.7.1
-	27. turing		0.0.11
+	16. pdf-writer		1.1.8
+	17. paypal 		2.0.0
+	18. racc 		1.4.5
+	19. rmail 		1.0.0
+	20. rockit		0.3.8 (you will only need the lib/* files)
+	21. ruby-dbi		0.2.0
+	22. ruby-gd		0.7.4
+	23. ruby-password	0.5.3
+	24. ruby-postgres	0.7.9.20080128
+	25. rubyzip 		0.5.12
+	26. spreadsheet 	0.6.4.1
+	27. tmail 		1.2.7.1
+	28. turing		0.0.11
 
 [IMPORTANT]
 * You should NOT install dbd-pg-0.3.x for the postgreSQL driver and
@@ -230,7 +232,7 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 	   For instance,
 	   $ git clone git://scm.ywesee.com/currency
 	   $ git clone git://scm.ywesee.com/odba
-	   $ git clone git://scm.ywesee.com/oddb
+	   $ git clone git://scm.ywesee.com/oddb.org
 	   $ git clone git://scm.ywesee.com/rclconf
 	   $ git clone git://scm.ywesee.com/sbsm
 	   $ git clone git://scm.ywesee.com/swissmedic-diff
