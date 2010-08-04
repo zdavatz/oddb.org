@@ -396,6 +396,10 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 		   Order allow,deny
 		   Allow from all
 	    </Directory>
+	    <Directory [path-to-git-repository]/data/rss/>
+	           Order allow,deny
+	           Allow from all
+	    </Directory>
 
 	    <VirtualHost *:80>
 	           DocumentRoot [path-to-git-repository]/doc
