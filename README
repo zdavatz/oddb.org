@@ -456,6 +456,24 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 	    $ cd [oddb.org-git-repository]
 	    $ ruby bin/oddbd
 
+	18. Test environment and sending reports and emails
+
+	Make sure you got a test environment setup in 
+
+		src/testenvironment.rb
+
+	Also make sure that you can send mails with the following settings
+
+		you need to setup etc/oddb.yml
+		
+		with the following values:
+		
+		smtp_server: smtp.gmail.com
+		smtp_domain: ywesee.com
+		smtp_user: <yourname>@ywesee.com
+		smtp_pass: your mail password
+		smtp_port: 587
+
 rewind the data of PostgreSQL on ch.oddb.org
 --------------------------------------------
 If Swissmedic publishes Bullshit data and everything is connected in the wrong way
