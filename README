@@ -474,6 +474,14 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 		smtp_pass: your mail password
 		smtp_port: 587
 
+	19. For running export_daily you need to pay attention to the following:
+
+	When ‘export_daily’ runs, we should execute like:
+
+		$> for i in {1..7}; do ruby ext/export/bin/exportd; done
+
+	because ‘exportd’ automatically terminates by the ‘export_daily’ script.
+
 rewind the data of PostgreSQL on ch.oddb.org
 --------------------------------------------
 If Swissmedic publishes Bullshit data and everything is connected in the wrong way
