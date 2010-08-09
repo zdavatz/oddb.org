@@ -1,7 +1,7 @@
 ODDB.org stands for OpenDrugDatabase 
 ====================================
 
-Date: 2010-06-22
+Date: 2010-08-09
 
 Short Description: ODDB.org is an OpenDrugDatabase that enables the
 search for Drugs by their ActiveAgent, Name, Producer, ATC-Code.  You
@@ -445,6 +445,74 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 	    $ exit
 	    $ cd [yus-git-repository]
 	    $ ruby bin/yusd
+
+	    To create an user for oddb.org:
+
+	    $ cd [yus-git-repository]
+	    $ cd bin
+	    $ yus_add_user [email address] login [privilege class]
+	    $ (enter the password for yus server administrator)
+	    $ (enter the password two times for the oddb.org user (yus user))
+
+	    The following privilege classes are available:
+
+	    org.oddb.RootUser 
+	    org.oddb.AdminUser 
+	    org.oddb.PowerUser
+	    org.oddb.CompanyUser 
+	    org.oddb.PowerLinkUser
+
+	    If you are not logged in the oddb.org, you can see the result 
+	    only 5 times in the same session. If you use the oddb server 
+	    as the root user, you should add an user like
+
+	    $ yus_add_user [email address] login org.oddb.RootUser
+
+	    To set up the user group as the original ch.oddb.org server,
+	    you can run the following shell script:
+
+	    $ sh setup.usergroup.sh [yus server password]
+
+	    setup.usergroup.sh
+	    ----
+	    #! /bin/sh
+	    echo $1 > passwd
+	    yus_add_user RootUser login org.oddb.RootUser < passwd
+	    yus_grant RootUser grant login < passwd
+	    yus_grant RootUser grant view < passwd
+	    yus_grant RootUser grant create < passwd
+	    yus_grant RootUser grant edit < passwd
+	    yus_grant RootUser grant credit < passwd
+	    yus_grant RootUser edit yus.entities < passwd
+	    yus_grant RootUser edit org.oddb.drugs < passwd
+	    yus_grant RootUser edit 'org.oddb.model.!company.*' < passwd
+	    yus_grant RootUser edit 'org.oddb.model.!sponsor.*' < passwd
+	    yus_grant RootUser edit 'org.oddb.model.!indication.*' < passwd
+	    yus_grant RootUser edit 'org.oddb.model.!galenic_group.*' < passwd
+	    yus_grant RootUser edit 'org.oddb.model.!address.*' < passwd
+	    yus_grant RootUser edit 'org.oddb.model.!atc_class.*' < passwd
+	    yus_grant RootUser create org.oddb.registration < passwd
+	    yus_grant RootUser create org.oddb.task.background < passwd
+	    yus_grant RootUser view org.oddb.patinfo_stats < passwd
+	    yus_grant RootUser credit org.oddb.download < passwd
+	    yus_add_user AdminUser login org.oddb.AdminUser < passwd
+	    yus_grant AdminUser edit org.oddb.drugs < passwd
+	    yus_grant AdminUser create org.oddb.registration < passwd
+	    yus_grant AdminUser edit 'org.oddb.model.!galenic_group.*' < passwd
+	    yus_add_user CompanyUser login org.oddb.CompanyUser < passwd
+	    yus_grant CompanyUser edit org.oddb.drugs < passwd
+	    yus_grant CompanyUser create org.oddb.registration < passwd
+	    yus_grant CompanyUser edit 'org.oddb.model.!galenic_group.*' < passwd
+	    yus_grant CompanyUser view org.oddb.patinfo_stats.associated < passwd
+	    yus_add_user PowerLinkUser login org.oddb.PowerLinkUser < passwd
+	    yus_grant PowerLinkUser edit org.oddb.drugs < passwd
+	    yus_grant PowerLinkUser edit org.oddb.powerlinks < passwd
+	    yus_add_user PowerUser login org.oddb.PowerUser < passwd
+	    yus_add_user DownloadUser < passwd
+	    rm passwd
+	    ----
+
+	    You do not have to run the script above if you use the server personally.
 
 	16. Start currency server
 
