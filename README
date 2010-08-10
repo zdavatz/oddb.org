@@ -550,6 +550,26 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
 	because ‘exportd’ automatically terminates by the ‘export_daily’ script.
 
+	20. For jobs/export_daily to work properly, specially the yaml-Export you need to change the followint line
+
+		/usr/lib[64]/ruby/1.8/yaml/rubytypes.rb
+
+	from
+
+		( self.count( "^ -~", "^\r\n" ) / self.size > 0.3 || self.count( "\x00" ) > 0 ) unless empty?
+
+
+	to
+
+		( self.count( "^ -~", "^\r\n" ) / self.size > 0.3 || self.index( "\x00" ) ) unless empty?
+	
+	see 
+
+		http://masaywesee.wordpress.com/2010/07/29/look-into-yaml/
+
+	for the reasons why.
+
+
 rewind the data of PostgreSQL on ch.oddb.org
 --------------------------------------------
 If Swissmedic publishes Bullshit data and everything is connected in the wrong way
