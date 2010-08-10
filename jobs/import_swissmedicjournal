@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+$: << File.expand_path('..', File.dirname(__FILE__))
+
+require 'util/job'
+require 'util/updater'
+
+module ODDB
+  module Util
+    Job.run do |system|
+      Updater.new(system).update_swissmedicjournal
+    end
+  end
+end
