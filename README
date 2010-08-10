@@ -550,7 +550,7 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
 	because ‘exportd’ automatically terminates by the ‘export_daily’ script.
 
-	20. For jobs/export_daily to work properly, specially the yaml-Export you need to change the followint line
+	20. For jobs/export_daily to work properly, specially the yaml-Export you need to change the following line
 
 		/usr/lib[64]/ruby/1.8/yaml/rubytypes.rb
 
