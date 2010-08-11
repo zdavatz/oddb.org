@@ -5,6 +5,7 @@ require 'util/http'
 require 'ostruct'
 #require 'util/session'
 require 'custom/lookandfeelbase'
+require 'ftools'
 
 module ODDB
 	class Plugin
