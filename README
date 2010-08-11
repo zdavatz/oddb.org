@@ -550,6 +550,12 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
 	because ‘exportd’ automatically terminates by the ‘export_daily’ script.
 
+	Note: exportd has to run for import_daily and for export_daily. If not they will both throw a 
+
+		#<Errno::ECONNREFUSED: Connection refused
+
+	Be aware of that!
+
 	20. For jobs/export_daily to work properly, specially the yaml-Export you need to change the following line
 
 		/usr/lib[64]/ruby/1.8/yaml/rubytypes.rb
