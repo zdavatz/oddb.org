@@ -542,7 +542,7 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 		smtp_pass: your mail password
 		smtp_port: 587
 
-	19. For running export_daily you need to pay attention to the following:
+	19.a For running export_daily you need to pay attention to the following:
 
 	When ‘export_daily’ runs, we should execute like:
 
@@ -555,6 +555,23 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 		#<Errno::ECONNREFUSED: Connection refused
 
 	Be aware of that!
+
+	19.b In general you can say 
+
+		> when I run import_daily I usually run the following daemons:
+		>
+		> #  yusd
+		> # currencyd
+		> # ext/exportd
+		> # ext/meddatad
+		> # ext/swissregd
+		> # ext/comarketingd
+
+	you can find all the deamons listed in
+
+		src/util/oddbconfig.rb
+
+	you will find the ports there as well.
 
 	20. For jobs/export_daily to work properly, specially the yaml-Export you need to change the following line
 
