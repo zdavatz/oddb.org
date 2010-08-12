@@ -606,12 +606,25 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
 	this is also possible
 
-	$ touch -t “201007160000″ XMLPublication-latest.zip
+	$ touch -t “201007160000"″ XMLPublication-latest.zip
 	$ cp XMLPublications-2010.08.02.zip XMLPublications-2010.08.03.zip
 	
 	For a local data-rewind also see Masa's script at
 
 		http://masay.ch/2010/08/11/debug-deaktiviert-box/
+
+	22. Updateing with the bin/admin command
+
+		* ch.oddb> Updater.new(self).update_fachinfo('31706', '47025')
+		* ch.oddb> Updater.new(self).update_company_textinfos 'firmenname', 'firenname1' 
+
+		* ch.oddb> Updater.new(self).update_price_feeds 
+
+		* ch.oddb> Updater.new(self).update_swissmedic_followers 
+
+	for more commands see
+
+		src/util/updater.rb
 
 rewind the data of PostgreSQL on ch.oddb.org
 --------------------------------------------
