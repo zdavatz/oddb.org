@@ -560,7 +560,7 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
 		> when I run import_daily I usually run the following daemons:
 		>
-		> #  yusd
+		> # yusd
 		> # currencyd
 		> # ext/exportd
 		> # ext/meddatad
@@ -592,6 +592,26 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
 	for the reasons why. This is corrected in Ruby 1.8.7 or later version.
 
+	21. If you for some reason need to reimport the data you should try the following:
+
+	$ cd oddb.org/data/xls/ 
+
+	or
+
+	$ cd oddb.org/data/xml
+
+	$ cp Packungen-xx.xx.2010 Packungen-latest.xls
+	$ cd oddb.org/jobs
+	$ sudo -u apache ./import_swissmedic
+
+	this is also possible
+
+	$ touch -t “201007160000″ XMLPublication-latest.zip
+	$ cp XMLPublications-2010.08.02.zip XMLPublications-2010.08.03.zip
+	
+	For a local data-rewind also see Masa's script at
+
+		http://masay.ch/2010/08/11/debug-deaktiviert-box/
 
 rewind the data of PostgreSQL on ch.oddb.org
 --------------------------------------------
@@ -609,11 +629,6 @@ If Swissmedic publishes Bullshit data and everything is connected in the wrong w
 	$ createdb -O oddb -E UTF8 -T template0 oddb_dot_org
 	$ zcat oddb_dot_org.2010-xx-xx.sql.gz | psql -U postgres oddb_dot_org
 
-	(update the data)
-	$ cd oddb.org/data/xls/
-	$ cp Packungen-xx.xx.2010 Packungen-latest.xls
-	$ cd oddb.org/jobs
-	$ sudo -u apache ./import_swissmedic
 
 Also see: 
 
