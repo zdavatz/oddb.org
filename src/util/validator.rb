@@ -43,6 +43,7 @@ module ODDB
 			:invoice_date_patinfo,
 			:issue_date,
 			:market_date,
+      :manual_inactive_date,
 			:patented_until,
 			:protection_date,
 			:publication_date,
