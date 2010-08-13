@@ -637,6 +637,24 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 		der Klasse Oddb::App kann. Ausserdem delegiert es unbekannte 
 		methoden an OddbPrevalence.
 
+	23. For MiGel Updating you have to place the three files
+
+			migel_de.csv
+			migel_fr.csv
+			migel_it.csv
+
+		to
+
+			data/csv/
+		
+		and then you can run the command
+
+			Updater.new(self).update_migel
+
+		Make sure that the titles of the CSV-file are the same like the
+		those of the version of last year. Just compare the two
+		CSV files headers.
+
 rewind the data of PostgreSQL on ch.oddb.org
 --------------------------------------------
 If Swissmedic publishes Bullshit data and everything is connected in the wrong way
