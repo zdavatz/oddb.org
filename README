@@ -622,6 +622,9 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
 		* ch.oddb> Updater.new(self).update_swissmedic_followers 
 
+		* ch.oddb> Updater.new(self).update_comarketing
+		* ch.oddb> Updater.new(self).update_swissreg
+
 	for more commands see
 
 		src/util/updater.rb
