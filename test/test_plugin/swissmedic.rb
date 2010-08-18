@@ -103,7 +103,6 @@ module ODDB
       @app.should_receive(:registration).with('08537')
       ptr = Persistence::Pointer.new([:registration, '08537'])
       args = {
-        :product_group       => 'ATC HAM',
         :ith_swissmedic      => '01.01.1.',
         :production_science  => 'Synthetika human',
         :registration_date   => Date.new(1936,6,30),
@@ -136,7 +135,6 @@ module ODDB
       ptr = Persistence::Pointer.new([:registration, '08537'])
       registration.should_receive(:pointer).and_return ptr
       args = {
-        :product_group       => 'ATC HAM',
         :ith_swissmedic      => '01.01.1.',
         :production_science  => 'Synthetika human',
         :registration_date   => Date.new(1936,6,30),
@@ -176,7 +174,6 @@ module ODDB
       ptr = Persistence::Pointer.new([:registration, '08599'])
       registration.should_receive(:pointer).and_return ptr
       args = {
-        :product_group       => 'KPA HAM',
         :ith_swissmedic      => '12.02.4.',
         :production_science  => 'Phytotherapeutika',
         :registration_date   => Date.new(1930,9,6),
@@ -211,7 +208,6 @@ module ODDB
       ptr = Persistence::Pointer.new([:registration, '09232'])
       registration.should_receive(:pointer).and_return ptr
       args = {
-        :product_group       => 'KPA HAM',
         :ith_swissmedic      => '20.02.0.',
         :production_science  => 'Anthroposophika',
         :registration_date   => Date.new(1937,9,21),
@@ -246,7 +242,6 @@ module ODDB
       ptr = Persistence::Pointer.new([:registration, '10999'])
       registration.should_receive(:pointer).and_return ptr
       args = {
-        :product_group       => 'KPA HAM',
         :ith_swissmedic      => '20.01.0.',
         :production_science  => 'Homöopathika',
         :registration_date   => Date.new(1935,9,5),
@@ -281,7 +276,6 @@ module ODDB
       ptr = Persistence::Pointer.new([:registration, '08537'])
       registration.should_receive(:pointer).and_return ptr
       args = {
-        :product_group       => 'ATC HAM',
         :ith_swissmedic      => '01.01.1.',
         :production_science  => 'Synthetika human',
         :registration_date   => Date.new(1936,6,30),
@@ -343,7 +337,6 @@ module ODDB
           :atc_class       => "N02BA01",
           :composition     => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.",
           :company         => "Bayer (Schweiz) AG",
-          :product_group   => "ATC HAM",
           :name_base       => "Aspirin, Tabletten",
           :iksnr           => "08537",
           :import_date     => @@today,
@@ -419,7 +412,6 @@ module ODDB
           :atc_class       => "N02BA01",
           :composition     => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.",
           :company         => "Bayer (Schweiz) AG",
-          :product_group   => "ATC HAM",
           :name_base       => "Aspirin, Tabletten",
           :iksnr           => "08537",
           :import_date     => @@today,
@@ -485,7 +477,6 @@ module ODDB
           :atc_class       => "N02BA01",
           :composition     => "acidum acetylsalicylicum 500 mg, excipiens pro compresso.",
           :company         => "Bayer (Schweiz) AG",
-          :product_group   => "ATC HAM",
           :name_base       => "Aspirin, Tabletten",
           :iksnr           => "08537",
           :import_date     => @@today,

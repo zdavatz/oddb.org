@@ -13,7 +13,7 @@ require 'swissmedic-diff'
 module ODDB
   class SwissmedicPlugin < Plugin
     PREPARATIONS_COLUMNS = [ :iksnr, :seqnr, :name_base, :company,
-      :product_group, :index_therapeuticus, :atc_class, :production_science,
+      :index_therapeuticus, :atc_class, :production_science,
       :sequence_ikscat, :ikscat, :registration_date, :sequence_date,
       :expiry_date, :substances, :package_count, :package_sizes, :composition,
       :indication_registration, :indication_sequence ]
@@ -34,7 +34,7 @@ module ODDB
     def update(agent=Mechanize.new, target=get_latest_file(agent))
       if(target)
         initialize_export_registrations agent
-        diff target, @latest, [:product_group, :atc_class, :sequence_date]
+        diff target, @latest, [:atc_class, :sequence_date]
         update_registrations @diff.news + @diff.updates, @diff.replacements
         update_export_registrations @export_registrations
         update_export_sequences @export_sequences
@@ -105,7 +105,7 @@ module ODDB
       else
         latest = nil
         @app.registrations.each { |iksnr, reg|
-          row = [ iksnr, nil, nil, reg.company_name, reg.product_group,
+          row = [ iksnr, nil, nil, reg.company_name, 
                   reg.ith_swissmedic || reg.index_therapeuticus,
                   reg.production_science, reg.registration_date,
                   reg.expiration_date ]
@@ -308,7 +308,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       end
       "http://#{SERVER_NAME}/de/gcc/resolve/pointer/#{ptr}"
     end
-    def rows_diff(row, other, ignore = [:product_group, :atc_class, :sequence_date])
+    #def rows_diff(row, other, ignore = [:product_group, :atc_class, :sequence_date])
+    def rows_diff(row, other, ignore = [:atc_class, :sequence_date])
       flags = super(row, other, ignore)
       if other.first.is_a?(String) \
         && (reg = @app.registration(cell(row, column(:iksnr)))) \
@@ -561,8 +562,8 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     def update_registration(row, opts = {})
       opts = {:date => @@today, :create_only => false}.update(opts)
       opts[:date] ||= @@today
-      group = cell(row, column(:product_group))
-      if(group != 'TAM')
+      group = cell(row, column(:production_science))
+      if(group != 'Tierarzneimittel')
         iksnr = cell(row, column(:iksnr))
         return if (filter = opts[:iksnr]) && iksnr != filter
         return if (filter = opts[:iksnrs]) && !filter.include?(iksnr)
@@ -576,7 +577,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         expiration = date_cell(row, column(:expiry_date))
         reg_date = date_cell(row, column(:registration_date))
         args = { 
-          :product_group       => group,
           :ith_swissmedic      => cell(row, column(:index_therapeuticus)),
           :production_science  => science,
           :registration_date   => reg_date,
