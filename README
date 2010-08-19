@@ -130,12 +130,13 @@ following versions:
 	20. rockit		0.3.8 (you will only need the lib/* files)
 	21. ruby-dbi		0.2.0
 	22. ruby-gd		0.7.4
-	23. ruby-password	0.5.3
-	24. ruby-postgres	0.7.9.20080128
-	25. rubyzip 		0.5.12
-	26. spreadsheet 	0.6.4.1
-	27. tmail 		1.2.7.1
-	28. turing		0.0.11
+	23. ruby-ole		1.2.10.1
+	24. ruby-password	0.5.3
+	25. ruby-postgres	0.7.9.20080128
+	26. rubyzip 		0.5.12
+	27. spreadsheet 	0.6.4.1
+	28. tmail 		1.2.7.1
+	29. turing		0.0.11
 
 [IMPORTANT]
 * You should NOT install dbd-pg-0.3.x for the postgreSQL driver and
