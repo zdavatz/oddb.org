@@ -185,11 +185,20 @@ module ODDB
       if(download[-1] != ?\n)
         download << "\n"
       end
+      # for the test of update_swissmedic method in updater.rb locally
+      # not to download the xls files from online
+      if keyword == "Packungen"
+        target = "/home/masa/ywesee/oddb.org/data/xls/Packungen-2010.08.19.xls"
+      else
+        target = "/home/masa/ywesee/oddb.org/data/xls/Präparateliste-2010.08.19.xls"
+      end
+=begin
       target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xls")
       if(download != latest)
         File.open(target, 'w') { |fh| fh.puts(download) }
         target
       end
+=end
     end
     def initialize_export_registrations(agent)
       latest_name = File.join @archive, "Präparateliste-latest.xls"
