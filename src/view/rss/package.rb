@@ -44,7 +44,7 @@ class Package < HtmlGrid::Component
         args = pcurrent.valid_from.strftime(@lookandfeel.lookup(:date_format)),
           package.name, package.size, package.price_public
         fmt = "%s: %s, %s, %s"
-        if plast
+        if plast != nil && plast.to_f > 1e-10
           args.push((pcurrent - plast) / plast * 100.0)
           fmt = "%s: %s, %s, %s, %+.1f%%"
         end
