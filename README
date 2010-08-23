@@ -606,11 +606,23 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 	$ cd oddb.org/jobs
 	$ sudo -u apache ./import_swissmedic
 
-	this is also possible
+	this is also possible for import_bsv
 
-	$ touch -t 201007160000 XMLPublications-latest.zip
-	$ cp XMLPublications-2010.08.02.zip XMLPublications-2010.08.03.zip
+	$ mv XMLPublications-2010.08.03.zip XMLPublications-latest.zip
 	
+		[Note: you must do and ls of data/xml or data/ls - that
+		would then be
+
+			-rw-r--r--  1 apache apache 3351009 2010-08-03 09:27 XMLPublications-2010.08.03.zip
+			-rw-r--r--  1 apache apache 3561427 2010-08-12 03:01 XMLPublications-2010.08.12.zip
+			-rw-r--r--  1 apache apache 3561427 2010-08-12 04:08 XMLPublications-latest.zip
+
+		so all you actually need is to overwrite the 
+
+			XMLPublications-latest.gz
+
+		with the last up-to-date file.]
+
 	For a local data-rewind also see Masa's script at
 
 		http://masay.ch/2010/08/11/debug-deaktiviert-box/
