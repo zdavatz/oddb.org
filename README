@@ -608,7 +608,7 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
 	this is also possible
 
-	$ touch -t 201007160000 XMLPublication-latest.zip
+	$ touch -t 201007160000 XMLPublications-latest.zip
 	$ cp XMLPublications-2010.08.02.zip XMLPublications-2010.08.03.zip
 	
 	For a local data-rewind also see Masa's script at
