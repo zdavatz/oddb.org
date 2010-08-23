@@ -106,6 +106,10 @@ class PackageInnerComposite < HtmlGrid::Composite
     if(@model.ddd_price)
       components.store([2,11], :ddd_price)
     end
+    if(@model.production_science)
+      components.store([2,12], :production_science)
+    end
+
     if(@model.sl_entry)
       components.store([2,9], :limitation)
       hash_insert_row(components, [0,10], :introduction_date)

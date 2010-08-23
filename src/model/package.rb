@@ -49,7 +49,7 @@ module ODDB
       :expired?, :export_flag, :fachinfo_active?, :generic_type,
       :inactive_date, :pdf_fachinfos, :registration_date, :revision_date,
       :patent, :patent_protected?, :vaccine, :parallel_import, :minifi,
-      :source, :index_therapeuticus, :ith_swissmedic, :has_fachinfo?
+      :source, :index_therapeuticus, :ith_swissmedic, :has_fachinfo?, :production_science
     sequence_data :atc_class, :basename, :company, :composition_text, :ddds,
       :fachinfo, :galenic_forms, :galenic_group, :has_patinfo?, :longevity,
       :iksnr, :indication, :name, :name_base, :patinfo, :pdf_patinfo,

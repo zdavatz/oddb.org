@@ -91,6 +91,11 @@ class SwissmedicCat < HtmlGrid::Composite
     @components.store([0,y], "refdata")
     @components.store([1,y], :out_of_trade)
 		y += 1
+    if(@model.production_science)
+      @components.store([0,y], "production_science")
+      @components.store([1,y], :production_science)
+      y += 1
+    end
     if(@model.preview?)
       @components.store([0,y], "market_date_preview")
       @components.store([1,y], :market_date)
