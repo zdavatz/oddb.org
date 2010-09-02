@@ -60,7 +60,11 @@ module ODDB
         args = [
           :pointer, model.pointer, :search_type, @type, :search_query, @query,
         ]
-				link.href = @lookandfeel._event_url(:compare, args)
+        if (ean_code = model.barcode)
+          link.href = @lookandfeel._event_url(:compare) + "ean13/" + ean_code
+        else
+          link.href = @lookandfeel._event_url(:compare, args)
+        end
 				link.value = breakline(model.name_base, 25)
         link_class = 'big' << resolve_suffix(model)
 				link.css_class = link_class
