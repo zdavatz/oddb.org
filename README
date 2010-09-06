@@ -642,6 +642,8 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
 		* ch.oddb> Updater.new(self).export_index_therapeuticus_csv
 
+		* ch.oddb> Updater.new(self).reconsider_bsv
+
 	for more commands see
 
 		src/util/updater.rb
