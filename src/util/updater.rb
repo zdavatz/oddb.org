@@ -200,9 +200,9 @@ module ODDB
 		end
 		def run
 			logfile_stats
-#			if(update_swissmedic)
-#        update_swissmedic_followers
-#      end
+			if(update_swissmedic)
+        update_swissmedic_followers
+      end
       update_swissmedicjournal
 			update_vaccines
 			if(update_bsv)
@@ -314,7 +314,6 @@ module ODDB
 			update_notify_simple(NarcoticPlugin, 'Narcotics')
 		end
     def update_swissmedic(*args)
-=begin
       logs_pointer = Persistence::Pointer.new([:log_group, :swissmedic])
       logs = @app.create(logs_pointer)
       klass = SwissmedicPlugin
@@ -327,10 +326,8 @@ module ODDB
           log.notify('Swissmedic XLS')
         end
       }
-=end
     end
     def update_swissmedic_followers
-=begin
 			update_trade_status
 			update_medwin_packages
 			reconsider_bsv :new_log => true
@@ -342,7 +339,6 @@ module ODDB
 			exporter.export_generics_xls
       export_patents_xls
       exporter.mail_swissmedic_notifications
-=end
     end
 		def update_swissmedicjournal
 			logs_pointer = Persistence::Pointer.new([:log_group, :swissmedic_journal])
