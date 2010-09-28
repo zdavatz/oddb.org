@@ -419,6 +419,14 @@ module ODDB
                 else
                   @created_limitation_texts += 1
                 end
+                # In order to refresh limitation text old objects in ODBA cache 
+                # before updating. Otherwise, the link between sl_entry and 
+                # limitation_text may not produced even if there are both objects 
+                # in ODBA cache.
+                if sl_entry.limitation_text || txt_ptr.resolve(@app)
+                  @app.delete txt_ptr
+                end
+
                 @app.update txt_ptr.creator, lim_data, :bag
               end
             end
