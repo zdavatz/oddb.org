@@ -205,7 +205,12 @@ module ODDB
       end
       update_swissmedicjournal
 			update_vaccines
-			if(update_bsv)
+
+      return_value_update_bsv = update_bsv
+      LogFile.append('oddb/debug', " return_value_update_bsv=" + return_value_update_bsv.inspect.to_s, Time.now)
+
+			#if(update_bsv)
+			if(return_value_update_bsv)
         update_bsv_followers
 			end
       update_narcotics
@@ -225,6 +230,9 @@ module ODDB
 			}
 		end
 		def update_bsv
+        
+      LogFile.append('oddb/debug', " getin update_bsv", Time.now)
+
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
 			logs = @app.create(logs_pointer)
 			this_month = Date.new(@@today.year, @@today.month)
@@ -235,12 +243,20 @@ module ODDB
 			plug = klass.new(@app)
 			subj = 'SL-Update (XML)'
 			wrap_update(klass, subj) { 
-				if plug.update
+
+        return_value_plug_update = plug.update
+        LogFile.append('oddb/debug', " return_value_BsvXmlPlugin.update = " + return_value_plug_update.inspect.to_s, Time.now)
+
+				#if plug.update
+				if return_value_plug_update
 					log_notify_bsv(plug, this_month, subj)
 				end
 			}
 		end
     def update_bsv_followers
+
+      LogFile.append('oddb/debug', " getin update_bsv_followers", Time.now)
+
       update_trade_status
       update_medwin_packages
       update_lppv
@@ -383,6 +399,9 @@ module ODDB
     end
 		private
 		def log_notify_bsv(plug, date, subj='SL-Update')
+
+      LogFile.append('oddb/debug', " getin log_notify_bsv", Time.now)
+
 			pointer = Persistence::Pointer.new([:log_group, :bsv_sl], [:log, date])
 			values = log_info(plug)
       if log = pointer.resolve(@app)
@@ -399,10 +418,18 @@ module ODDB
         end
       end
 			log = @app.update(pointer.creator, values)
-			log.notify(subj)
+
+			#log.notify(subj)
+      return_value_log_notify = log.notify(subj)
+      LogFile.append('oddb/debug', " return_value_log_notify = " + return_value_log_notify.inspect.to_s, Time.now)
+
       log2 = Log.new(date)
       log2.update_values log_info(plug, :log_info_bsv)
-      log2.notify(subj)
+
+      return_value_log2_notify = log2.notify(subj)
+      LogFile.append('oddb/debug', " return_value_log2_notify = " + return_value_log2_notify.inspect.to_s, Time.now)
+      #log2.notify(subj)
+      return_value_log2_notify
 		end
 		def notify_error(klass, subj, error)
 			log = Log.new(@@today)

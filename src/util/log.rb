@@ -31,6 +31,8 @@ module ODDB
 			@recipients = []
 		end
 		def notify(subject = nil, reply_to = nil)
+      LogFile.append('oddb/debug', " getin Log.notify (SL-Update)", Time.now) if subject =~ /SL-Update/
+
 			subj = [
 				'ch.ODDB.org Report', 
 				subject, 

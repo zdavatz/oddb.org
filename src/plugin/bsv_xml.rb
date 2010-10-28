@@ -633,12 +633,31 @@ module ODDB
       super
     end
     def update
+
+      LogFile.append('oddb/debug', " getin BsvXmlPlugin.update", Time.now)
+
       path = download_to ARCHIVE_PATH
-      if File.exist?(@latest) && FileUtils.cmp(@latest, path)
+
+      LogFile.append('oddb/debug', " path = " + path.inspect.to_s, Time.now)
+      LogFile.append('oddb/debug', " @latest = " + @latet.inspect.to_s, Time.now)
+      file_exists = File.exist?(@latest)
+      comp_files = "Not calculated"
+      comp_files = FileUtils.cmp(@latest, path) if file_exists
+      LogFile.append('oddb/debug', ' File.exist?(@latest) = ' + file_exists.inspect.to_s, Time.now)
+      LogFile.append('oddb/debug', ' FileUtils.cmp(@latest, path) = ' + comp_files.inspect.to_s, Time.now)
+
+      #if File.exist?(@latest) && FileUtils.cmp(@latest, path)
+      if file_exists && comp_files
         FileUtils.rm path
+
+        LogFile.append('oddb/debug', " FileUtils.rm #{path} ", Time.now)
+
         return
       end
       _update path
+
+      LogFile.append('oddb/debug', " FileUtils.cp #{path}, #{@latest}", Time.now)
+
       FileUtils.cp path, @latest
       path
     end
