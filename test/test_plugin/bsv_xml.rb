@@ -12,7 +12,6 @@ require 'flexmock'
 module ODDB
   class BsvXmlPlugin
     class PreparationsListener
-      MEDDATA_SERVER = FlexMock.new 'meddata'
     end
   end
   class Package
@@ -681,7 +680,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       end
       session = flexmock 'session'
       session.should_receive(:get).times(1).with(@url).and_return page
-      mech = flexmock WWW::Mechanize
+      mech = flexmock Mechanize
       mech.should_receive(:new).times(1).and_return session
       archive = File.expand_path 'var', File.dirname(__FILE__)
       result = nil
@@ -695,7 +694,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
     end
     def test_update_it_codes
       updates = []
-      @app.should_receive(:update).times(68).and_return do |ptr, data|
+      @app.should_receive(:update).times(38).and_return do |ptr, data|
         updates.push data
       end
       zip = Zip::ZipFile.open(@zip)
@@ -902,8 +901,8 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       seq = flexmock 'sequence'
       seq.should_receive(:compositions).and_return []
       seq.should_receive(:pointer).and_return ptr
-      seq.should_receive(:active_agents).and_return([flexmock 'active-agent'])
-      reg.should_receive(:sequence).and_return seq
+      seq.should_receive(:active_agents).and_return([flexmock('active-agent')])
+      reg.should_receive(:sequence).and_return(seq)
       expected_updates.store ptr.creator, [{:name_base=>"Ponstan"}, seq]
       ptr += [:package, '028']
       pac = flexmock 'package'
