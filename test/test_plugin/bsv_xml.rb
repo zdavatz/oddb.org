@@ -8,6 +8,7 @@ require 'test/unit'
 require 'stub/odba'
 require 'plugin/bsv_xml'
 require 'flexmock'
+require 'src/util/logfile'
 
 module ODDB
   class BsvXmlPlugin
@@ -671,27 +672,6 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
 </Preparations>
       EOS
     end
-    def test_download
-      archive = File.expand_path 'var', File.dirname(__FILE__)
-      target = File.join archive, 'xml',
-               Date.today.strftime("XMLPublications-%Y.%m.%d.zip")
-      page = flexmock 'page'
-      page.should_receive(:save_as).with(target).times(1).and_return do
-        FileUtils.cp @zip, target
-      end
-      session = flexmock 'session'
-      session.should_receive(:get).times(1).with(@url).and_return page
-      mech = flexmock Mechanize
-      mech.should_receive(:new).times(1).and_return session
-      result = nil
-      assert_nothing_raised do 
-        result = @plugin.download_to archive
-      end
-      assert_equal target, result
-      assert File.exist?(target), "download to #{target} failed."
-    ensure
-      FileUtils.rm_r archive if File.exists? archive
-    end
     def test_download_file
       # Preparing variables
       target_url = @url
@@ -734,7 +714,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       assert_nothing_raised do
         result = @plugin.download_file(target_url, save_dir, file_name)
       end
-      assert_equal latest_file, result
+      assert_equal save_file, result
 
       # Not-downloading tests
       assert_nothing_raised do

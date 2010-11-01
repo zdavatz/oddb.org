@@ -636,29 +636,19 @@ module ODDB
 
       LogFile.append('oddb/debug', " getin BsvXmlPlugin.update", Time.now)
 
-      path = download_to ARCHIVE_PATH
+      target_url = ODDB.config.url_bag_sl_zip
+      save_dir = File.join ARCHIVE_PATH, 'xml'
+      file_name = "XMLPublications.zip"
 
+      LogFile.append('oddb/debug', " target_url = " + target_url.to_s, Time.now)
+      LogFile.append('oddb/debug', " save_dir   = " + save_dir.to_s, Time.now)
+
+      path = download_file(target_url, save_dir, file_name)
       LogFile.append('oddb/debug', " path = " + path.inspect.to_s, Time.now)
-      LogFile.append('oddb/debug', " @latest = " + @latet.inspect.to_s, Time.now)
-      file_exists = File.exist?(@latest)
-      comp_files = "Not calculated"
-      comp_files = FileUtils.cmp(@latest, path) if file_exists
-      LogFile.append('oddb/debug', ' File.exist?(@latest) = ' + file_exists.inspect.to_s, Time.now)
-      LogFile.append('oddb/debug', ' FileUtils.cmp(@latest, path) = ' + comp_files.inspect.to_s, Time.now)
-
-      #if File.exist?(@latest) && FileUtils.cmp(@latest, path)
-      if file_exists && comp_files
-        FileUtils.rm path
-
-        LogFile.append('oddb/debug', " FileUtils.rm #{path} ", Time.now)
-
-        return
+      #if(path = download_file(target_url, save_dir, file_name))
+      if(path)
+        _update path
       end
-      _update path
-
-      LogFile.append('oddb/debug', " FileUtils.cp #{path}, #{@latest}", Time.now)
-
-      FileUtils.cp path, @latest
       path
     end
     def _update path=@latest
@@ -672,26 +662,9 @@ module ODDB
         end
       end
     end
-    def download_to archive_path=ARCHIVE_PATH
-      archive = File.join archive_path, 'xml'
-      FileUtils.mkdir_p archive
-      agent = Mechanize.new
-      zip = agent.get ODDB.config.url_bag_sl_zip
-      target = File.join archive,
-               Date.today.strftime("XMLPublications-%Y.%m.%d.zip")
-      zip.save_as target
-      target
-    rescue EOFError
-      retries ||= 10
-      if retries > 0
-        retries -= 1
-        sleep 10 - retries
-        retry
-      else
-        raise
-      end
-    end
     def download_file(target_url, save_dir, file_name)
+      LogFile.append('oddb/debug', " getin download_file", Time.now)
+
       FileUtils.mkdir_p save_dir   # if there is it already, do nothing
     
       target_file = Mechanize.new.get(target_url)
@@ -699,11 +672,19 @@ module ODDB
                Date.today.strftime(file_name.gsub(/\./,"-%Y.%m.%d."))
       latest_file = File.join save_dir,
                Date.today.strftime(file_name.gsub(/\./,"-latest."))
+
+      LogFile.append('oddb/debug', " save_file   = " + save_file.to_s, Time.now)
+      LogFile.append('oddb/debug', " latest_file = " + latest_file.to_s, Time.now)
     
       # download target_file temporarily
       temp = Tempfile.new('foo')
       temp_file = temp.path
       target_file.save_as temp_file
+
+      LogFile.append('oddb/debug', " File.exists?(#{latest_file}) = " + File.exists?(latest_file).inspect.to_s, Time.now)
+      if(File.exists?(latest_file))
+        LogFile.append('oddb/debug', " FileUtils.compare_file(#{temp_file}, #{latest_file}) = " + FileUtils.compare_file(temp_file, latest_file).inspect.to_s, Time.now)
+      end
 
       # check and compare the latest file and save
       if(File.exists?(latest_file) && FileUtils.compare_file(temp_file, latest_file))
@@ -711,7 +692,7 @@ module ODDB
       else
         target_file.save_as save_file
         FileUtils.cp(save_file, latest_file)
-        return latest_file
+        return save_file
       end
     rescue EOFError
       retries ||= 10
