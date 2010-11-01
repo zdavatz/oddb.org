@@ -692,6 +692,62 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
     ensure
       FileUtils.rm_r archive if File.exists? archive
     end
+    def test_download_file
+      # Preparing variables
+      target_url = @url
+      save_dir = File.expand_path 'var', File.dirname(__FILE__)
+      file_name = "XMLPublications.zip"
+
+      online_file = @zip
+      temp_file = File.join save_dir, 'temp.zip'
+      save_file = File.join save_dir, 
+               Date.today.strftime("XMLPublications-%Y.%m.%d.zip")
+      latest_file = File.join save_dir, 'XMLPublications-latest.zip'
+      
+      # Preparing mock objects
+      flexstub(Tempfile).should_receive(:new).and_return do
+        flexmock do |tempfile|
+          tempfile.should_receive(:close)
+          tempfile.should_receive(:unlink)
+          tempfile.should_receive(:path).and_return(temp_file)
+        end
+      end
+ 
+      fileobj = flexmock do |obj|
+        obj.should_receive(:save_as).with(temp_file).and_return do
+          FileUtils.cp online_file, temp_file   # instead of downloading
+        end
+        obj.should_receive(:save_as).with(save_file).and_return do
+          FileUtils.cp online_file, save_file   # instead of downloading
+        end
+      end
+      flexstub(Mechanize) do |mechclass|
+        mechclass.should_receive(:new).and_return do
+          flexmock do |mechobj|
+            mechobj.should_receive(:get).and_return(fileobj)
+          end
+        end
+      end
+
+      # Downloading tests
+      result = nil
+      assert_nothing_raised do
+        result = @plugin.download_file(target_url, save_dir, file_name)
+      end
+      assert_equal latest_file, result
+
+      # Not-downloading tests
+      assert_nothing_raised do
+        result = @plugin.download_file(target_url, save_dir, file_name)
+      end
+      assert_equal nil, result
+
+      # Check files
+      assert File.exist?(save_file), "download to #{save_file} failed."
+      assert File.exist?(latest_file), "download to #{latest_file} failed."
+    ensure
+      FileUtils.rm_r save_dir if File.exists? save_dir
+    end
     def test_update_it_codes
       updates = []
       @app.should_receive(:update).times(38).and_return do |ptr, data|
@@ -1091,3 +1147,62 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
     end
   end
 end
+
+
+
+
+
+=begin
+class TestDownloadFile < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def test_download_file
+    target_url = 'http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip'
+    save_dir   = './data'
+    file_name  = 'XMLPublications.zip'
+
+    online_file = './online/XMLPublications.zip'
+    temp_file   = './data/temp'
+    save_file = './data/XMLPublications-2010.11.01.zip'
+    latest_file = './data/XMLPublications-latest.zip'
+
+    flexstub(Tempfile).should_receive(:new).and_return do
+      flexmock do |tempfile|
+        tempfile.should_receive(:close)
+        tempfile.should_receive(:unlink)
+        tempfile.should_receive(:path).and_return('./data/temp')
+      end
+    end
+
+    fileobj = flexmock do |obj|
+      obj.should_receive(:save_as).with(temp_file).and_return do
+        FileUtils.cp online_file, temp_file   # instead of downloading
+      end
+      obj.should_receive(:save_as).with(save_file).and_return do
+        FileUtils.cp online_file, save_file   # instead of downloading
+      end
+    end
+    flexstub(Mechanize) do |mechclass|
+      mechclass.should_receive(:new).and_return do
+        flexmock do |mechobj|
+          mechobj.should_receive(:get).and_return(fileobj)
+        end
+      end
+    end
+
+    result = nil
+    assert_nothing_raised do
+      result = download_file(target_url, save_dir, file_name)
+    end
+    assert_equal latest_file, result
+    assert_nothing_raised do
+      result = download_file(target_url, save_dir, file_name)
+    end
+    assert_equal nil, result
+    assert File.exist?(save_file), "download to #{save_file} failed."
+
+
+  ensure
+    FileUtils.rm_r save_dir if File.exists? save_dir
+  end
+end
+=end

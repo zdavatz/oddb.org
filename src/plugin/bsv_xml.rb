@@ -691,6 +691,41 @@ module ODDB
         raise
       end
     end
+    def download_file(target_url, save_dir, file_name)
+      FileUtils.mkdir_p save_dir   # if there is it already, do nothing
+    
+      target_file = Mechanize.new.get(target_url)
+      save_file = File.join save_dir,
+               Date.today.strftime(file_name.gsub(/\./,"-%Y.%m.%d."))
+      latest_file = File.join save_dir,
+               Date.today.strftime(file_name.gsub(/\./,"-latest."))
+    
+      # download target_file temporarily
+      temp = Tempfile.new('foo')
+      temp_file = temp.path
+      target_file.save_as temp_file
+
+      # check and compare the latest file and save
+      if(File.exists?(latest_file) && FileUtils.compare_file(temp_file, latest_file))
+        return nil
+      else
+        target_file.save_as save_file
+        FileUtils.cp(save_file, latest_file)
+        return latest_file
+      end
+    rescue EOFError
+      retries ||= 10
+      if retries > 0
+        retries -= 1
+        sleep 10 - retries
+        retry
+      else
+        raise
+      end
+    ensure
+      temp.close
+      temp.unlink
+    end
     def log_info
       body = report << "\n\n"
       info = super
@@ -964,3 +999,5 @@ Attachments:
     end
   end
 end
+
+
