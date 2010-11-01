@@ -672,7 +672,8 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       EOS
     end
     def test_download
-      target = File.join @archive, 'xml',
+      archive = File.expand_path 'var', File.dirname(__FILE__)
+      target = File.join archive, 'xml',
                Date.today.strftime("XMLPublications-%Y.%m.%d.zip")
       page = flexmock 'page'
       page.should_receive(:save_as).with(target).times(1).and_return do
@@ -682,10 +683,9 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       session.should_receive(:get).times(1).with(@url).and_return page
       mech = flexmock Mechanize
       mech.should_receive(:new).times(1).and_return session
-      archive = File.expand_path 'var', File.dirname(__FILE__)
       result = nil
       assert_nothing_raised do 
-        result = @plugin.download_to @archive
+        result = @plugin.download_to archive
       end
       assert_equal target, result
       assert File.exist?(target), "download to #{target} failed."
