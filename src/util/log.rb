@@ -42,6 +42,7 @@ module ODDB
 			text = text_part(@report)
 
 			parts = @parts.nil? ? [] : @parts.dup
+      LogFile.append('oddb/debug', " @files=" + @files.inspect.to_s, Time.now)
 			unless(@files.nil?)
 				@files.each { |path, (mime, iconv)|
 					begin
@@ -50,10 +51,13 @@ module ODDB
               content = Iconv.new(iconv, 'UTF-8').iconv content
             end
 						parts.push([mime, File.basename(path), content])
-					rescue Errno::ENOENT
+					#rescue Errno::ENOENT
+					rescue Errno::ENOENT => e
+            LogFile.append('oddb/debug', " " + e.inspect.to_s + "\n" + e.backtrace.inspect.to_s, Time.now)
 					end
 				}
 			end
+      LogFile.append('oddb/debug', " start outgoing process", Time.now)
 			outgoing = if(parts.empty?)
 				text
 			else
@@ -75,6 +79,7 @@ module ODDB
 			outgoing.date = Time.now
 			outgoing['User-Agent'] = 'ODDB Updater'
 
+      LogFile.append('oddb/debug', " before send_mail(outgoing)", Time.now)
 			send_mail(outgoing)
 		end
 		def notify_attachment(attachment, headers)

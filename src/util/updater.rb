@@ -401,9 +401,12 @@ module ODDB
 		def log_notify_bsv(plug, date, subj='SL-Update')
 
       LogFile.append('oddb/debug', " getin log_notify_bsv", Time.now)
+      LogFile.append('oddb/debug', " date=" + date.inspect.to_s, Time.now)
 
 			pointer = Persistence::Pointer.new([:log_group, :bsv_sl], [:log, date])
+      LogFile.append('oddb/debug', " after pointer creating", Time.now)
 			values = log_info(plug)
+      LogFile.append('oddb/debug', " after log_info(plug)", Time.now)
       if log = pointer.resolve(@app)
         change_flags = values[:change_flags]
         if previous = log.change_flags
@@ -417,8 +420,10 @@ module ODDB
           end
         end
       end
+      LogFile.append('oddb/debug', " before @app.update", Time.now)
 			log = @app.update(pointer.creator, values)
 
+      LogFile.append('oddb/debug', " after @app.update", Time.now)
 			#log.notify(subj)
       return_value_log_notify = log.notify(subj)
       LogFile.append('oddb/debug', " return_value_log_notify = " + return_value_log_notify.inspect.to_s, Time.now)
