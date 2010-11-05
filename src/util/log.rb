@@ -103,11 +103,15 @@ module ODDB
 			text
 		end
 		def send_mail(multipart)
+      LogFile.append('oddb/debug', " getin send_mail", Time.now)
+      LogFile.append('oddb/debug', " @recipients=" + @recipients.inspect.to_s, Time.now)
+
       config = ODDB.config
       Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
                       config.smtp_user, config.smtp_pass,
                       config.smtp_authtype) { |smtp|
 				@recipients.each { |recipient|
+          LogFile.append('oddb/debug', " recipient=" + recipient.to_s, Time.now)
 					multipart.to = [recipient]
 					smtp.sendmail(multipart.encoded, 
 												@mail_from || config.smtp_user, recipient)
