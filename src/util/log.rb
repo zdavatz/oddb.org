@@ -107,9 +107,17 @@ module ODDB
       LogFile.append('oddb/debug', " @recipients=" + @recipients.inspect.to_s, Time.now)
 
       config = ODDB.config
+      LogFile.append('oddb/debug', " config.smtp_server=" + config.smtp_server.inspect.to_s, Time.now)
+      LogFile.append('oddb/debug', " config.smtp_port=" + config.smtp_port.inspect.to_s, Time.now)
+      LogFile.append('oddb/debug', " config.smtp_domain=" + config.smtp_domain.inspect.to_s, Time.now)
+      LogFile.append('oddb/debug', " config.smtp_user=" + config.smtp_user.inspect.to_s, Time.now)
+      LogFile.append('oddb/debug', " config.smtp_pass=" + config.smtp_pass.inspect.to_s, Time.now)
+      LogFile.append('oddb/debug', " config.smtp_authtype=" + config.smtp_authtype.inspect.to_s, Time.now)
       Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
                       config.smtp_user, config.smtp_pass,
                       config.smtp_authtype) { |smtp|
+      LogFile.append('oddb/debug', " getin Net::SMTP", Time.now)
+        
 				@recipients.each { |recipient|
           LogFile.append('oddb/debug', " recipient=" + recipient.to_s, Time.now)
 					multipart.to = [recipient]
