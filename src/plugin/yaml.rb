@@ -22,7 +22,7 @@ module ODDB
 		def export_doctors(name='doctors.yaml')
 			export_array(name, @app.doctors.values)
 		end
-		def export_fachinfos(name='fachinfo.yaml')
+        def check_fachinfos(name='fachinfo.yaml')
           # Check missing data of fachinfo data
           no_descr = {'de' => [], 'fr' => []}
           @app.fachinfos.values.each do |fachinfo|
@@ -35,7 +35,6 @@ module ODDB
               end
             end
           end
-
           # Send a warning report of fachinfo description
           if no_descr.values.flatten.length > 0
             log = Log.new(@@today)
@@ -59,8 +58,10 @@ module ODDB
             ].concat(message).join("\n")
             log.notify(" Warning Export: #{name}")
           end
-
-          # Go to actual exporting process
+          return no_descr
+        end
+		def export_fachinfos(name='fachinfo.yaml')
+          check_fachinfos(name)
           export_array(name, @app.fachinfos.values)
 		end
     def export_interactions(name='interactions.yaml')

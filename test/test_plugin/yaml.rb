@@ -3,18 +3,83 @@
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
-=begin
+
 require 'test/unit'
+require 'flexmock'
 require 'plugin/yaml'
 
 module ODDB
-	class YamlExporter < Plugin
-		remove_const :EXPORT_DIR
-		EXPORT_DIR = File.expand_path('../data/export', File.dirname(__FILE__))
-	end
-end
+  class YamlExporter < Plugin
+    remove_const :EXPORT_DIR
+    EXPORT_DIR = File.expand_path('../data/export', File.dirname(__FILE__))
+    @@today = Time.now
+  end
+  class TestYamlExporter < Test::Unit::TestCase
+    include FlexMock::TestCase
+    def test_check_fachinfos_no_warning_case
+      flexfachinfo = flexmock do |fachinfo|
+        descriptions = {'de'=>'abc', 'fr'=>'def'}
+        fachinfo.should_receive(:descriptions).and_return(descriptions) 
+      end
+      fachinfos = {1=>flexfachinfo}
+      flexapp = flexmock do |app|
+        app.should_receive(:fachinfos).and_return(fachinfos)
+      end
+      @exporter = YamlExporter.new(flexapp)
 
-class TestYamlPlugin < Test::Unit::TestCase
+      flexstub(Log) do |logclass|
+        # This 'times' is a check point in this test case
+        # If there is no missing data, Log instance is not created
+        logclass.should_receive(:new).times(0)
+      end
+      
+      assert_equal(0, @exporter.check_fachinfos.values.flatten.length)
+    end
+    def test_check_fachinfos_warning_case
+      flexfachinfo = flexmock do |fachinfo|
+        descriptions = {'de'=>'abc'}
+        fachinfo.should_receive(:descriptions).and_return(descriptions) 
+        fachinfo.should_receive(:odba_id).and_return(123)
+        fachinfo.should_receive(:company_name).and_return('ywesee')
+        fachinfo.should_receive(:name_base).and_return('drug')
+      end
+      fachinfos = {1=>flexfachinfo}
+      flexapp = flexmock do |app|
+        app.should_receive(:fachinfos).and_return(fachinfos)
+      end
+      @exporter = YamlExporter.new(flexapp)
+
+      flexstub(ODBA) do |odba|
+        odba.should_receive(:cache).and_return do 
+          flexmock do |obj|
+            obj.should_receive(:fetch).and_return do 
+              flexmock do |obj2|
+                obj2.should_receive(:iksnrs).and_return([1,2,3])
+              end
+            end
+          end
+        end
+      end
+
+      flexstub(Log) do |logclass|
+        # This 'times' is a check point in this test case
+        # If there is missing data, Log instance is created once
+        logclass.should_receive(:new).times(1).and_return do 
+          flexmock do |logobj|
+            logobj.should_receive(:report=)
+            logobj.should_receive(:notify)
+          end
+        end
+      end
+ 
+      result = @exporter.check_fachinfos
+      assert_equal(5, result.values.flatten.length)
+      assert_equal(['ywesee','drug',1,2,3], result['fr'][0])
+    end
+  end
+end
+=begin
+  class TestYamlPlugin < Test::Unit::TestCase
 	def test_active_agent_to_yaml
 		agent = ODDB::ActiveAgent.new('Acidum Acetylsalicylicum')
 		assert_equal('!oddb.org,2003/ODDB::ActiveAgent', agent.to_yaml_type)
