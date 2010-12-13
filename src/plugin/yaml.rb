@@ -3,7 +3,6 @@
 
 require 'plugin/plugin'
 require 'drb'
-
 require 'util/log'
 
 module ODDB 
@@ -27,10 +26,12 @@ module ODDB
           # Check missing data of fachinfo data
           no_descr = {'de' => [], 'fr' => []}
           @app.fachinfos.values.each do |fachinfo|
-            swissmedic_registration_numbers = ODBA.cache.fetch(fachinfo.odba_id, nil).iksnrs
             no_descr.keys.each do |language|
               unless fachinfo.descriptions[language]
-               no_descr[language].concat swissmedic_registration_numbers
+                swissmedic_registration_numbers = ODBA.cache.fetch(fachinfo.odba_id, nil).iksnrs
+                no_descr[language].push(
+                  [fachinfo.company_name, fachinfo.name_base].concat(swissmedic_registration_numbers)
+                )
               end
             end
           end
@@ -41,10 +42,11 @@ module ODDB
             message = []
             no_descr.keys.each do |language|
               unless no_descr[language].empty?
+                i = 0
                 message.concat([
                   "There is no '#{language}' description of Fachinformation of the following",
-                  "Swissmedic Registration Number:",
-                  no_descr[language].join(", ").to_s
+                  "Swissmedic Registration (Company, Product, Numbers):",
+                  no_descr[language].map{|fachlist| " " + (i+=1).to_s + ". " + fachlist.join(", ") + "\n"}.to_s
                 ])
               end
             end
@@ -58,7 +60,7 @@ module ODDB
             log.notify(" Warning Export: #{name}")
           end
 
-          # Go to exporting process
+          # Go to actual exporting process
           export_array(name, @app.fachinfos.values)
 		end
     def export_interactions(name='interactions.yaml')
