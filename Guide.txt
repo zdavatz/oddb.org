@@ -627,7 +627,7 @@ way
 
 Also see: 
 
-  * http://masaywesee.wordpress.com/2010/07/21/rewind-postgresql-data/
+* http://masaywesee.wordpress.com/2010/07/21/rewind-postgresql-data/
 
 == Background
 
@@ -664,8 +664,8 @@ open standards.
 
 More here:
   
-  * http://www.ywesee.com/pmwiki.php/Main/WekoBlog
-  * http://www.ywesee.com/pmwiki.php/Main/Bundesgerichtsurteil
+* http://www.ywesee.com/pmwiki.php/Main/WekoBlog
+* http://www.ywesee.com/pmwiki.php/Main/Bundesgerichtsurteil
 
 Authors Guide.txt
 
