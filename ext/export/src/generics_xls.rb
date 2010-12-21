@@ -90,7 +90,7 @@ module ODDB
 				generics = []
 				comparables = []
 				@app.each_package { |pac|
-					if(pac.public? && pac.registration.active?)
+					if(pac.public? && pac.registration.active? && !pac.basename.nil? && pac.comparables.select{|pack| pack.basename.nil?}.empty?)
 						if(pac.registration.original? && (comps = pac.comparables) \
 							 && !comps.empty?)
 							originals.push(pac)
@@ -100,6 +100,15 @@ module ODDB
 						end
 					end
 				}
+                # Check Packages
+                # Some packages cannot be compared if package basename is nil
+                nilpackages = originals.select{|pac| pac.basename.nil?}.map{|pac| [pac.company_name, pac.barcode]}
+                unless nilpackages.empty? 
+                  error_message = "Package basename is nil. The package is not comparable.\n\n"
+                  error_message << "Package (company, EAN code): " << nilpackages.join(", ") << "\n"
+                  raise StandardError, error_message
+                end
+
 				originals.sort.each { |pac| export_comparables(pac) }
 				@rows += 1 # leave a space in the xls
 				(generics - comparables).sort.each { |pac| export_generic(pac) }
