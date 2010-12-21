@@ -663,11 +663,10 @@ data interchange in the healthcare industry. This can only take place on
 open standards.
 
 More here:
-  
 * http://www.ywesee.com/pmwiki.php/Main/WekoBlog
 * http://www.ywesee.com/pmwiki.php/Main/Bundesgerichtsurteil
 
-Authors Guide.txt
+== Authors Guide.txt
 
 * Masaomi Hatakeyama
 * Zeno R.R. Davatz
