@@ -8,7 +8,7 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 == FEATURES/PROBLEMS:
 
-* Some email-Addresses are still hardcoded. That needs to be fixed and placed into etc/toddb.yml
+* Some email-Addresses are still hardcoded. That needs to be fixed and placed into etc/oddb.yml
 
 == REQUIREMENTS:
 
@@ -26,4 +26,4 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 
 == LICENSE:
 
-
+* GPLv2.1
