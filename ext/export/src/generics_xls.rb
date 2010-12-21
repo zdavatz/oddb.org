@@ -194,3 +194,9 @@ module ODDB
 		end
 	end
 end
+
+begin
+      require 'testenvironment2'
+rescue LoadError
+end
+
