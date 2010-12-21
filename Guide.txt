@@ -1,0 +1,669 @@
+= Install Guide for ch.oddb.org Version 1.0
+
+Short Description: ODDB.org is an OpenDrugDatabase that enables the
+search for Drugs by their ActiveAgent, Name, Producer, ATC-Code.  You
+can do a price comparison between the Original Drug and the Generic by
+Clicking on the Drug's Name. The database tells you when the Drug has
+been registred in Switzerland. ODDB.org exports the complete Data in
+the YAML.org Format (15'881 registred products).
+
+== Requirements
+
+ch.oddb.org has a large set of functionality, and with it a large set of
+dependencies:
+
+=== I Third party software:
+  
+  1. Apache     (WWW server)
+  2. PostgreSQL (DataBase Management System)
+  3. Ruby       (Interpreter)       (*1)
+  4. Git        (Version Control System)      (*2)
+  5. RubyGems   (Ruby Libraries Management System)  (*3)
+
+=== II Third party Ruby libraries:
+  
+  1.  activesupport
+  2.  archive-tarsimple
+  3.  character-encodings
+  4.  dojo
+  5.  facets
+  6.  gruff
+  7.  hpricot  
+  8.  json
+  9.  mechanize
+  10. mod_ruby
+  11. pdf-writer
+  12. paypal
+  13. racc
+  14. rmail
+  15. ruby-dbi    (*4)
+  16. ruby-gd   (*5)    
+  17. ruby-password (*6)
+  18. ruby-postgres
+  19. rubyzip
+  20. spreadsheet
+  21. tarsimple
+  22. tmail
+  23. turing
+
+=== III ywesee Ruby libraries and patches
+  1.  currency
+  2.  htmlgrid
+  3.  odba
+  4.  oddb.org
+  5.  rclconf
+  6.  rpdf2txt
+  7.  sbsm
+  8.  swissmedic-diff
+  9.  ydim
+  10. yus
+  11. oniguruma_patch     (*7)  
+
+=== IV Others
+  1. html-parser.rb (*8)
+  2. formatter.rb
+  3. sgml-parser.rb
+  4. rockit   (*9)
+
+----
+*1 Ruby MUST be version 1.8.6 (<= patch level 369). 
+   Otherwise, the oniguruma patch (*5) does not work.
+*2 Git is necessary in order to get libraries from ywesee.
+*3 RubyGems is necessary in order to get third party Ruby libraries.
+*4 ruby-dbi MUST be version <= 0.2.0
+    http://rubyforge.org/frs/?group_id=234
+*5 ruby-gd 0.7.4
+    http://raa.ruby-lang.org/cache/ruby-gd/
+*6 ruby-password 0.5.3 
+    http://www.caliban.org/ruby/ruby-password.shtml
+*7 oniguruma patch for Ruby 1.8.6
+    http://trac.ywesee.com/raw-attachment/ticket/166/oniguruma_patch_hannes_15.6.2010.tar.gz
+*8 html-parser.rb, formatter.rb and sgml-parser.rb are
+   originally placed on
+    http://raa.ruby-lang.org/project/html-parser-2/. 
+   However, the links are dead. You can get them from
+    http://trac.ywesee.com/raw-attachment/ticket/226/html-parser.rb
+    http://trac.ywesee.com/raw-attachment/ticket/226/sgml-parser.rb
+    http://trac.ywesee.com/raw-attachment/ticket/226/formatter.rb
+*9 Rockit is the 'Ruby O-o Compiler construction toolKIT'
+   You can get the rockit version 0.3.8 from 
+    http://rockit.sourceforge.net/
+   There is a more recent version, 0.7.2, but it does not work
+   in the curret system.
+
+== Checked Versions of the Libraries
+
+We have checked ch.oddb.org working with the libraries of the
+following versions:
+
+  1.  Apache            2.2.15
+  2.  PostgreSQL        8.4.2
+  3.  Ruby              1.8.6_p369
+  5.  RubyGems          1.3.5    
+
+  6.  activesupport     2.3.8
+  7.  archive-tarsimple 1.1.1
+  8.  character-encodings 0.4.1
+  9.  dojo              1.3.0
+  10. facets            1.4.5
+  11. flexmock          0.8.7
+  12. gruff             0.3.6
+  13. hpricot           0.6.164
+  14. json              1.4.3
+  15. mechanize         1.0.0
+  16. mod_ruby          1.3.0
+  17. pdf-writer        1.1.8
+  18. paypal            2.0.0
+  19. racc              1.4.5
+  20. rmail             1.0.0
+  21. rockit            0.3.8 (you will only need the lib/* files)
+  22. ruby-dbi          0.2.0
+  23. ruby-gd           0.7.4
+  24. ruby-ole          1.2.10.1
+  25. ruby-password     0.5.3
+  26. ruby-postgres     0.7.9.20080128
+  27. rubyzip           0.5.12
+  28. spreadsheet       0.6.4.1
+  29. tmail             1.2.7.1
+  30. turing            0.0.11
+
+== IMPORTANT
+
+* You should NOT install dbd-pg-0.3.x for the postgreSQL driver and
+  dbi-0.4.x, because it has already been known that the dbd-pg-0.3.x
+  depends on the library, deprecated-0.2.x, that causes an error.
+
+== NOTE
+
+* html-parser (html-parser.rb, sgml-parser.rb, formatter.rb)
+  Still in use in several importer plugins, but should be phased out,
+  as it is unmaintained and mechanize is a much improved modern
+  replacement
+
+* rockit - attached archive:
+  Parser generator, should be replaced with racc or another maintained
+  parser generator.
+
+* Extension projects in ext have the following additional dependencies:
+  * facets (gem: {{{ sudo gem install facets }}})
+  * hpricot (gem: {{{ sudo gem install hpricot }}})
+  * pdf-writer needs to be replaced with [http://github.com/sandal/prawn
+  * prawn]
+    (gem: {{{ sudo gem install pdf-writer }}}) 
+  * rmagick (gem: {{{ sudo gem install rmagick }}})
+  * rwv2 (gentoo: {{{ emerge wv2 }}} and git-project, clone and install:
+    {{{ git clone git://scm.ywesee.com/rwv2; cd rwv2; ruby install.rb config;
+        ruby install.rb setup; sudo ruby install.rb install }}})
+  * text-hyphenate (git-project, clone, install the redistributed libhnj and
+    install: {{{ git clone git://scm.ywesee.com/text-hyphenate;
+                 cd text-hyphenate; ruby install.rb config;
+                 ruby install.rb setup; sudo ruby install.rb install }}})
+
+== INSTALL
+
+Although it is possible to install ch.oddb.org in any linux system, we
+recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
+
+  1. Get Ruby source code (version 1.8.6 patch level <= 369)
+
+  2. Get and make a oniguruma patch to Ruby source code
+
+     You can get the oniguruma patch for Ruby 1.8.6 from 
+
+      http://trac.ywesee.com/raw-attachment/ticket/166/oniguruma_patch_hannes_15.6.2010.tar.gz
+
+     Then, uncompress it and put the patch,
+
+     $ tar zxvf oniguruma_patch_hannes_15.6.2010.tar.gz
+     $ cd oniguruma
+     $ ./configure --with-rubydir=[path-to-ruby-sourcecode-directory]
+     $ make 186
+     $ cd [path-to-ruby-sourcecode-directory]
+     $ ./configure
+     $ make
+     $ (su)
+     $ make install
+
+     If you are on Funtoo there is an Alternative way to Apply the Patch with ebuild
+
+      http://dev.ywesee.com/wiki.php/Main/Oniguruma
+
+  3. Install the third party software
+     
+    You can check whether they are installed or not as follows:
+
+     $ whereis apachectl (apache2ctl)     (Apache)
+     $ pg_ctl --version         (PostgreSQL)
+     $ git --version          (Git)
+     $ gem --version          (RubyGems)
+
+     If you can not see the versions or the commands, you have
+     to install them before the installation of ch.oddb.org.
+
+  4. Get the ywesee libraries and install them
+
+     You can get the source codes with git command.
+
+     $ git clone git://scm.ywesee.com/[project name]
+
+     Most of the packages should be available as gem:
+
+      sudo gem install  currency
+                        htmlgrid
+                        oddb.org
+                        odba
+                        rclconf
+                        sbsm
+                        swissmedic-diff
+                        ydim
+                        yus
+     In the case of 'sbsm' library, before the installation
+     above, you should comment out all the lines of
+     
+      lib/sbsm/redefine_19_cookie.rb.
+
+     This is for Ruby 1.9, but it does not work if Ruby 1.9 is
+     not running.
+     
+  5. Get the third party Ruby libraries
+
+     If RubyGems are installed, you can get them easily with gem
+     command.
+
+  6. Create a database-access file in [project dir]/etc/db_connection.rb.
+     Copy and paste the contents below:
+
+     ----(begin)----
+     require 'dbi'                                                                     
+     require 'odba/connection_pool'                                                    
+     require 'pg'                                            
+     ODBA.storage.dbi = ODBA::ConnectionPool.new('DBI:Pg:oddb', 'postgres', '') 
+     -----(end)-----
+
+  7. Set up quanty library
+
+     $ cd [path-to-oddb.rg-git-repository]/data/quanty
+     $ ruby extconf.rb
+     $ make
+     $ make install
+
+  8. Set up PostgreSQL database
+     You should create a database named 'oddb' by postgres,
+
+     $ su
+     $ Enter Root-Password
+     $ su - postgres
+     $ createdb -E UTF8 oddb
+
+     You can check the list of database by the following command,
+
+     $ psql -l
+
+  9. Read in the data (private download):
+
+     $ zcat oddb.sql.gz | psql -U postgres oddb
+
+  10. Set up the Apache virtual host
+
+    //
+    As for Apache, (especially in the case of Gentoo) after the installing of mod_ruby by emerge,
+    we have to add 
+    
+      '-D RUBY' 
+    
+    to the apache variable, APACHE2_OPTS, in
+  
+      /etc/conf.d/apache2.
+    \\
+    
+      It depends on OS to set up a virtual host.
+      If your OS is Gentoo, just make a .conf file (e.g. 01_vhost_oddb.conf)
+      in /etc/apache2/vhosts.d/
+
+      ----(begin)----
+      <Directory [path-to-git-repository]/doc>
+    Options ExecCGI FollowSymlinks Indexes
+    AllowOverride None
+    Order allow,deny
+    Allow from all
+      </Directory>
+      <Directory [path-to-git-repository]/data/css>
+       Order allow,deny
+       Allow from all
+      </Directory>
+      <Directory [path-to-git-repository]/data/rss/>
+             Order allow,deny
+             Allow from all
+      </Directory>
+
+      <VirtualHost *:80>
+             DocumentRoot [path-to-git-repository]/doc
+             ServerName oddb.org.localhost
+             DirectoryIndex index.rbx
+       RubyAddPath [path-to-git-repository]/src
+       RubyRequire 'sbsm/trans_handler'
+       SetHandler ruby-object
+       RubyTransHandler SBSM::FlavoredTransHandler.instance
+       SetEnv DEFAULT_FLAVOR gcc
+      </VirtualHost>
+      -----(end)-----
+  
+  11. Restart apache
+  
+     In Gentoo, you should type
+
+     $ su
+     $ /etc/init.d/apache2 restart
+
+  12. Set up DNS resolution
+      e.g. add oddb.org.localhost to the localhost line in etc/hosts  
+
+      127.0.0.1 localhost oddb.org.localhost 
+
+  13. Run css-updater
+
+     $ cd [path-to-oddb.org-git-repository]
+     $ ruby bin/update_css 
+
+
+
+
+== Dojo
+
+     In the case of dojo library, you should download its source file and extract it in 'doc/resources'
+
+      http://download.dojotoolkit.org/release-1.3.0/dojo-release-1.3.0.tar.gz
+
+     $ cp dojo-release-1.3.0.tar.gz doc/resources
+     $ cd doc/resources
+     $ tar zxvf dojo-release-1.3.0.tar.gz
+
+     $ mv dojo-release-1.3.0 dojo
+
+== html-parser.rb, sgml-parser.b, formatter.rb,
+
+     Get them from
+
+      http://trac.ywesee.com/raw-attachment/ticket/226/html-parser.rb
+      http://trac.ywesee.com/raw-attachment/ticket/226/sgml-parser.rb
+      http://trac.ywesee.com/raw-attachment/ticket/226/formatter.rb
+
+     And 'rockit' library version 0.3.8 is placed on
+
+      http://rockit.sourceforge.net/
+      http://prdownloads.sf.net/rockit/rockit-0-3-8.tar.gz
+
+     There is a more recent version, 0.7.2, but we could not 
+     yet get it to work with existing grammars.
+
+     get the file for ch.oddb.org directly from here:
+
+      http://trac.ywesee.com/raw-attachment/ticket/226/rockit.tar.gz
+    
+     place the rockit files and
+     
+      html-parser.rb
+      sgml-parser.rb
+      formatter.rb
+    
+     to
+
+      /usr/lib[64]/ruby/site_ruby/1.8/
+
+== Set up and start yus server
+
+      $ su - postgres
+      $ createuser yus
+      $ createdb yus
+      $ exit
+      $ cd [yus-git-repository]
+      $ ruby bin/yusd
+
+      To create an user for oddb.org:
+
+      $ cd [yus-git-repository]
+      $ cd bin
+      $ yus_add_user [email address] login [privilege class]
+      $ (enter the password for yus server administrator)
+      $ (enter the password two times for the oddb.org user (yus user))
+
+      The following privilege classes are available:
+
+      org.oddb.RootUser 
+      org.oddb.AdminUser 
+      org.oddb.PowerUser
+      org.oddb.CompanyUser 
+      org.oddb.PowerLinkUser
+
+      If you are not logged in the oddb.org, you can see the result 
+      only 5 times in the same session. If you use the oddb server 
+      as the root user, you should add an user like
+
+      $ yus_add_user [email address] login org.oddb.RootUser
+
+      To set up the user group as the original ch.oddb.org server,
+      you can run the following shell script:
+
+      $ sh setup.usergroup.sh [yus server password]
+
+      setup.usergroup.sh
+      ----
+      #! /bin/sh
+      echo $1 > passwd
+      yus_add_user RootUser login org.oddb.RootUser < passwd
+      yus_grant RootUser grant login < passwd
+      yus_grant RootUser grant view < passwd
+      yus_grant RootUser grant create < passwd
+      yus_grant RootUser grant edit < passwd
+      yus_grant RootUser grant credit < passwd
+      yus_grant RootUser edit yus.entities < passwd
+      yus_grant RootUser edit org.oddb.drugs < passwd
+      yus_grant RootUser edit 'org.oddb.model.!company.*' < passwd
+      yus_grant RootUser edit 'org.oddb.model.!sponsor.*' < passwd
+      yus_grant RootUser edit 'org.oddb.model.!indication.*' < passwd
+      yus_grant RootUser edit 'org.oddb.model.!galenic_group.*' < passwd
+      yus_grant RootUser edit 'org.oddb.model.!address.*' < passwd
+      yus_grant RootUser edit 'org.oddb.model.!atc_class.*' < passwd
+      yus_grant RootUser create org.oddb.registration < passwd
+      yus_grant RootUser create org.oddb.task.background < passwd
+      yus_grant RootUser view org.oddb.patinfo_stats < passwd
+      yus_grant RootUser credit org.oddb.download < passwd
+      yus_add_user AdminUser login org.oddb.AdminUser < passwd
+      yus_grant AdminUser edit org.oddb.drugs < passwd
+      yus_grant AdminUser create org.oddb.registration < passwd
+      yus_grant AdminUser edit 'org.oddb.model.!galenic_group.*' < passwd
+      yus_add_user CompanyUser login org.oddb.CompanyUser < passwd
+      yus_grant CompanyUser edit org.oddb.drugs < passwd
+      yus_grant CompanyUser create org.oddb.registration < passwd
+      yus_grant CompanyUser edit 'org.oddb.model.!galenic_group.*' < passwd
+      yus_grant CompanyUser view org.oddb.patinfo_stats.associated < passwd
+      yus_add_user PowerLinkUser login org.oddb.PowerLinkUser < passwd
+      yus_grant PowerLinkUser edit org.oddb.drugs < passwd
+      yus_grant PowerLinkUser edit org.oddb.powerlinks < passwd
+      yus_add_user PowerUser login org.oddb.PowerUser < passwd
+      yus_add_user DownloadUser < passwd
+      rm passwd
+      ----
+
+      You do not have to run the script above if you use the server personally.
+
+== Test environment and sending reports and emails
+
+  Make sure you got a test environment setup in 
+
+    src/testenvironment.rb
+
+  Also make sure that you can send mails with the following settings
+
+    you need to setup etc/oddb.yml
+    
+    with the following values:
+    
+    smtp_server: smtp.gmail.com
+    smtp_domain: ywesee.com
+    smtp_user: <yourname>@ywesee.com
+    smtp_pass: your mail password
+    smtp_port: 587
+
+== Import Jobs
+
+  For running export_daily you need to pay attention to the following:
+
+  When ‘export_daily’ runs, we should execute like:
+
+    $> for i in {1..7}; do ruby ext/export/bin/exportd; done
+
+  because ‘exportd’ automatically terminates by the ‘export_daily’ script.
+
+  Note: exportd has to run for import_daily and for export_daily. If not they
+  will both throw a 
+
+    #<Errno::ECONNREFUSED: Connection refused
+
+  Be aware of that!
+
+  In general you can say 
+
+    > when I run import_daily I usually run the following daemons:
+    >
+    > # yusd
+    > # currencyd
+    > # ext/exportd
+    > # ext/meddatad
+    > # ext/swissregd
+    > # ext/comarketingd
+
+  you can find all the deamons listed in
+
+    src/util/oddbconfig.rb
+
+  you will find the ports there as well.
+
+== Export Daily
+
+  For jobs/export_daily to work properly, specially the yaml-Export you
+  need to change the following line
+
+    /usr/lib[64]/ruby/1.8/yaml/rubytypes.rb
+
+  from
+
+    ( self.count( "^ -~", "^\r\n" ) / self.size > 0.3 || self.count( "\x00" ) > 0 ) unless empty?
+
+
+  to
+
+    ( self.count( "^ -~", "^\r\n" ) / self.size > 0.3 || self.index( "\x00" ) ) unless empty?
+  
+  see 
+
+    http://masaywesee.wordpress.com/2010/07/29/look-into-yaml/
+
+  for the reasons why. This is corrected in Ruby 1.8.7 or later version.
+
+== Reimporting Data
+
+If for some reason you need to reimport the data you should try the
+following:
+
+  $ cd oddb.org/data/xls/ 
+
+  or
+
+  $ cd oddb.org/data/xml
+
+  $ cp Packungen-xx.xx.2010 Packungen-latest.xls
+  $ cd oddb.org/jobs
+  $ sudo -u apache ./import_swissmedic
+
+  this is also possible for import_bsv
+
+  $ mv XMLPublications-2010.08.03.zip XMLPublications-latest.zip
+  
+    [Note: you must do and ls of data/xml or data/ls - that
+    would then be
+
+      -rw-r--r--  1 apache apache 3351009 2010-08-03 09:27 XMLPublications-2010.08.03.zip
+      -rw-r--r--  1 apache apache 3561427 2010-08-12 03:01 XMLPublications-2010.08.12.zip
+      -rw-r--r--  1 apache apache 3561427 2010-08-12 04:08 XMLPublications-latest.zip
+
+    so all you actually need is to overwrite the 
+
+      XMLPublications-latest.gz
+
+    with the last up-to-date file.]
+
+  For a local data-rewind also see Masa's script at
+
+    http://masay.ch/2010/08/11/debug-deaktiviert-box/
+
+== Updating with the bin/admin command
+
+    * ch.oddb> Updater.new(self).update_fachinfo('31706', '47025')
+    * ch.oddb> Updater.new(self).update_company_textinfos 'firmenname', 'firenname1' 
+
+    * ch.oddb> Updater.new(self).update_price_feeds 
+
+    * ch.oddb> Updater.new(self).update_swissmedic_followers 
+    * ch.oddb> Updater.new(self).update_bsv_followers
+
+    * ch.oddb> Updater.new(self).update_comarketing
+    * ch.oddb> Updater.new(self).update_swissreg
+
+    * ch.oddb> Updater.new(self).export_index_therapeuticus_csv
+
+    * ch.oddb> Updater.new(self).reconsider_bsv
+
+    * ch.oddb> Updater.new(self).mail_sponsor_logs
+
+  for more commands see
+
+    src/util/updater.rb
+
+  Hannes said:
+
+    Aber das Admin-Tool ist quasi eine oddb-shell. Es lässt die 
+    Applikation (src/util/oddbapp.rb) einen Ruby-Befehl parsen 
+    und ausführen. Das heisst insbesondere, dass es alle Methoden 
+    der Klasse Oddb::App kann. Ausserdem delegiert es unbekannte 
+    methoden an OddbPrevalence.
+
+== Updating MiGel
+
+  You have to place the three files
+
+      migel_de.csv
+      migel_fr.csv
+      migel_it.csv
+
+  to
+
+      data/csv/
+    
+  and then you can run the command
+
+      Updater.new(self).update_migel
+
+  Make sure that the titles of the CSV-file are the same like the
+  those of the version of last year. Just compare the two
+  CSV files headers.
+
+== Rewind PostgreSQL data on ch.oddb.org
+
+If Swissmedic publishes Bullshit data and everything is connected in the wrong
+way
+  
+  (get an archive)
+  $ scp [production server]:/var/backup/thinpower/db/postgresql/July-2010/2010-xx-xx/22\:00-postgresql_database-oddb_dot_org-backup.gz data/sql/oddb_dot_org.2010-xx-xx.sql.gz
+
+  (restore)
+  $ su
+  $ su - postgres
+  $ createuser oddb (I answerd "y" to the superuser question)
+  (stop all deamon-tools services with svc -d /service/ch.oddb-service-name)
+  $ dropdb oddb_dot_org
+  $ createdb -O oddb -E UTF8 -T template0 oddb_dot_org
+  $ zcat oddb_dot_org.2010-xx-xx.sql.gz | psql -U postgres oddb_dot_org
+
+Also see: 
+
+  * http://masaywesee.wordpress.com/2010/07/21/rewind-postgresql-data/
+
+== Background
+
+A discussion on http://www.linuxmednews.org 
+
+Post by Zeno: In Switzerland we have the problem that there is only one
+provider of the data. And that provider serves all hospitals, doctors,
+old age homes, pharmacies etc. As they have the monopoly the could issue
+a tax on every transaction that is done with there data; Example: The
+docotor in the hospital prescribes one drug to the patient. That info
+goes into the system and then gets passed on the specialist (external of
+hospital) and then gets passed on to the insurance etc. Imagine you
+must pay 50cent for every transaction of the data...  
+
+Post by Tim: This certainly carries some pretty scary scenarios. Are
+there not laws to prevent abuse? It would seem that a government
+monoploy has been issued here and there would be protections in place.
+
+Post by Zeno: 1. Yes, that is exactly the problem. The company that has
+the monopoly also is working for the government and administrating the
+database of all drugs that are covered by the public health insurance.
+2. I have taken the above issues to antitrust department and the 'price
+governing' department of Switzerland. The first pushed the issue to the
+second and vice versa. I then contacted the leading consumer
+representative of Switzerland and she gave the issue some momentum.  3.
+The result of the above is ODDB.org an independent database for
+Switzerland. My personal interest is the acceleration of the electronic
+data interchange in the healthcare industry. This can only take place on
+open standards.
+
+More here:
+  
+  * http://www.ywesee.com/pmwiki.php/Main/WekoBlog
+  * http://www.ywesee.com/pmwiki.php/Main/Bundesgerichtsurteil
+
+Authors Guide.txt
+
+* Masaomi Hatakeyama
+* Zeno R.R. Davatz
