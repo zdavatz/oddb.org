@@ -9,6 +9,7 @@ require 'spreadsheet/excel'
 module ODDB
 	module OdbaExporter
 		class GenericXls
+ 			RECIPIENTS = [ 'mhatakeyama@ywesee.com', 'zdavatz@ywesee.com' ]
 			FLAGS = {
 				:address					=> 'neue Herstelleradresse',
 				:comment					=> 'neue Bemerkung',
@@ -90,7 +91,7 @@ module ODDB
 				generics = []
 				comparables = []
 				@app.each_package { |pac|
-					if(pac.public? && pac.registration.active? && !pac.basename.nil? && pac.comparables.select{|pack| pack.basename.nil?}.empty?)
+					if(pac.public? && pac.registration.active?)
 						if(pac.registration.original? && (comps = pac.comparables) \
 							 && !comps.empty?)
 							originals.push(pac)
@@ -102,11 +103,28 @@ module ODDB
 				}
                 # Check Packages
                 # Some packages cannot be compared if package basename is nil
-                nilpackages = originals.select{|pac| pac.basename.nil?}.map{|pac| [pac.company_name, pac.barcode]}
+                nilpackages = originals.select{|pac| pac.basename.nil?} + generics.select{|pac| pac.basename.nil?}
                 unless nilpackages.empty? 
-                  error_message = "Package basename is nil. The package is not comparable.\n\n"
-                  error_message << "Package (company, EAN code): " << nilpackages.join(", ") << "\n"
-                  raise StandardError, error_message
+                  message =  "Package name may have a number in it and therefore basename becomes nil.\n"
+                  message << "The following packages are skipped during export_generics, since the packages are not comparable.\n\n"
+                  link = "http://#{SERVER_NAME}/de/gcc/search/zone/drugs/search_query/"
+                  message << "Package (company, EAN code, link):\n" 
+                  message << nilpackages.map{|pac| [pac.company_name, pac.barcode, link + pac.barcode].join(", ")}.join("\n")
+                  message << "\n"
+				  log = Log.new(@@today)
+				  log.report = [
+					"Class: #{self.class}",
+                    "Method: export_generics",
+					"Message: #{message}",
+					"Backtrace:",
+					caller(0).join("\n"),
+				  ].join("\n")
+				  log.recipients = RECIPIENTS.dup
+				  log.notify("Warning: Nil basename packages")
+
+                  # Remove the packages that basename is nil
+                  originals -= nilpackages
+                  generics  -= nilpackages
                 end
 
 				originals.sort.each { |pac| export_comparables(pac) }

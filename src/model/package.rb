@@ -109,7 +109,8 @@ module ODDB
         pack != self \
           && (other = pack.comparable_size) \
           && bottom < other \
-          && top > other
+          && top > other \
+          && !pack.basename.nil?
       rescue RuntimeError => e
         false
       end
