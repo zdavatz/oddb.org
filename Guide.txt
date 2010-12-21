@@ -647,14 +647,17 @@ there not laws to prevent abuse? It would seem that a government
 monoploy has been issued here and there would be protections in place.
 
 Post by Zeno: 
-1. Yes, that is exactly the problem. The company that has
+
+Yes, that is exactly the problem. The company that has
 the monopoly also is working for the government and administrating the
 database of all drugs that are covered by the public health insurance.
-2. I have taken the above issues to antitrust department and the 'price
+
+I have taken the above issues to antitrust department and the 'price
 governing' department of Switzerland. The first pushed the issue to the
 second and vice versa. I then contacted the leading consumer
 representative of Switzerland and she gave the issue some momentum.  
-3. The result of the above is ODDB.org an independent database for
+
+The result of the above is ODDB.org an independent database for
 Switzerland. My personal interest is the acceleration of the electronic
 data interchange in the healthcare industry. This can only take place on
 open standards.
