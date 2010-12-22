@@ -14,7 +14,7 @@ For for more information about the background see:
 * http://www.ywesee.com
 * http://www.oddb.org
 * http://dev.ywesee.com
-	
+
 For usage also see:
 
 * http://wiki.oddb.org/
@@ -738,15 +738,14 @@ Switzerland. My personal interest is the acceleration of the electronic
 data interchange in the healthcare industry. This can only take place on
 open standards.
 
-More here:
-	
+More here:	
 * http://www.ywesee.com/pmwiki.php/Main/WekoBlog
 * http://www.ywesee.com/pmwiki.php/Main/Bundesgerichtsurteil
 
 === License
 
 * GPLv2
-	
+
 === Source Code Download with GIT
 
 * URL: http://scm.ywesee.com/?p=oddb.org/.git;a=summary
