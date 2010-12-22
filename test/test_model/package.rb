@@ -165,9 +165,39 @@ module ODDB
       @package.parts.push part1, part2
       assert_equal Dose.new(15, ''), @package.comparable_size
     end
+    def test_comparable?
+      part1 = flexmock :comparable_size => Dose.new(5, 'ml')
+      part2 = flexmock :comparable_size => Dose.new(10, 'ml')
+      @package.parts.push part1, part2
+
+      pack = ODDB::Package.new('98')
+      pack.parts.push part1, part2
+      seq = StubPackageSequence.new
+      seq.basename = "abc"
+      pack.sequence = seq
+
+      top = @package.comparable_size * 1.25
+      bottom = @package.comparable_size * 0.75
+      assert(@package.comparable?(bottom, top, pack))
+    end
+    def test_comparable_failcase
+      part1 = flexmock :comparable_size => Dose.new(5, 'ml')
+      part2 = flexmock :comparable_size => Dose.new(10, 'ml')
+      @package.parts.push part1, part2
+
+      pack = ODDB::Package.new('98')
+      pack.parts.push part1, part2
+
+      top = @package.comparable_size * 1.25
+      bottom = @package.comparable_size * 0.75
+      # pack.basename == nil => this will be returned false
+      assert_equal(false, @package.comparable?(bottom, top, pack))
+    end
     def test_comparables1
       seq = StubPackageSequence.new
+      seq.basename = "abc"
       pack = ODDB::Package.new('98')
+      pack.sequence = seq
       part = ODDB::Part.new
       part.size = '12 Tabletten'
       pack.parts.push part
@@ -175,6 +205,7 @@ module ODDB
       @package.sequence.comparables = [seq]
       part = ODDB::Part.new
       part.size = '15 Tabletten'
+
       @package.parts.push part
       assert_equal([pack], @package.comparables)
     end
@@ -193,11 +224,14 @@ module ODDB
     end
     def test_comparables3
       seq = StubPackageSequence.new
+      seq.basename = "abc"
       seqpack = ODDB::Package.new('97')
+      seqpack.sequence = seq
       part = ODDB::Part.new
       part.size = '12 Tabletten'
       seqpack.parts.push part
       pack = ODDB::Package.new('98')
+      pack.sequence = seq
       part = ODDB::Part.new
       part.size = '12 Tabletten'
       pack.parts.push part
