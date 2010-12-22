@@ -1,5 +1,6 @@
 == ODDB.org stands for OpenDrugDatabase 
 Date: 09.08.2010
+Last Update: 22.12.2010
 
 Short Description: ODDB.org is an OpenDrugDatabase that enables the
 search for Drugs by their ActiveAgent, Name, Producer, ATC-Code.  You
@@ -10,13 +11,13 @@ the YAML.org Format (15'881 registred products).
 
 For for more information about the background see:
 
-	* http://www.ywesee.com
-	* http://www.oddb.org
-	* http://dev.ywesee.com
+* http://www.ywesee.com
+* http://www.oddb.org
+* http://dev.ywesee.com
 	
 For usage also see:
 
-	* http://wiki.oddb.org/
+* http://wiki.oddb.org/
 
 === Requirements
 ch.oddb.org has a large set of functionality, and with it a large set of
@@ -689,24 +690,24 @@ If Swissmedic publishes Bullshit data and everything is connected in the wrong w
 
 Also see: 
 
-	* http://masaywesee.wordpress.com/2010/07/21/rewind-postgresql-data/
+* http://masaywesee.wordpress.com/2010/07/21/rewind-postgresql-data/
 
 === Install Instructions
 
-	* http://dev.ywesee.com/wiki.php/Oddb/InstallOddb
+* http://dev.ywesee.com/wiki.php/Oddb/InstallOddb
 
 ==== Further Information
 
-        * http://trac.ywesee.com/ticket/226
+* http://trac.ywesee.com/ticket/226
 
 === Usage
 
-	* Normal Consumer
-	* Health Insurance (Krankenkasse)
-	* Pharmacie
-	* Hospital
-	* Doctor / Physician
-	* Pharma Marketing
+* Normal Consumer
+* Health Insurance (Krankenkasse)
+* Pharmacie
+* Hospital
+* Doctor / Physician
+* Pharma Marketing
 
 === Background
 	
@@ -739,31 +740,30 @@ open standards.
 
 More here:
 	
-	* http://www.ywesee.com/pmwiki.php/Main/WekoBlog
-	* http://www.ywesee.com/pmwiki.php/Main/Bundesgerichtsurteil
+* http://www.ywesee.com/pmwiki.php/Main/WekoBlog
+* http://www.ywesee.com/pmwiki.php/Main/Bundesgerichtsurteil
 
 === License
 
-	* GPLv2
+* GPLv2
 	
 === Source Code Download with GIT
 
-	* URL: http://scm.ywesee.com/?p=oddb.org/.git;a=summary
+* URL: http://scm.ywesee.com/?p=oddb.org/.git;a=summary
 
 === Authors
 
-	* ywesee GmbH
+* ywesee GmbH
 
-        * Zeno R.R. Davatz <zdavatz@ywesee.com>
-	* Hannes Wyss <hwyss@ywesee.com>
-	* Markus Huggler <maege@ywesee.com>
-	* Mike Walder <walder@allink.ch> 
-	* Raphael Waltert <rwaltert@ywesee.com>
-	* Andreas Schrafl <aschrafl@ywesee.com>
-	* Benjamin Fay <benfay@ywesee.com> 
+* Zeno R.R. Davatz <zdavatz@ywesee.com>
+* Hannes Wyss <hwyss@ywesee.com>
+* Markus Huggler <maege@ywesee.com>
+* Mike Walder <walder@allink.ch> 
+* Raphael Waltert <rwaltert@ywesee.com>
+* Andreas Schrafl <aschrafl@ywesee.com>
+* Benjamin Fay <benfay@ywesee.com> 
 
-README Author
--------------
+=== README Author
 
-	* Zeno Davatz <zdavatz@ywesee.com>
-	* Masaomi Hatakeyama <mhatakeyama@ywesee.com>
+* Zeno Davatz <zdavatz@ywesee.com>
+* Masaomi Hatakeyama <mhatakeyama@ywesee.com>
