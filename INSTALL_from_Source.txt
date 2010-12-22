@@ -1,7 +1,5 @@
-ODDB.org stands for OpenDrugDatabase 
-====================================
-
-Date: 2010-08-09
+== ODDB.org stands for OpenDrugDatabase 
+Date: 09.08.2010
 
 Short Description: ODDB.org is an OpenDrugDatabase that enables the
 search for Drugs by their ActiveAgent, Name, Producer, ATC-Code.  You
@@ -20,9 +18,7 @@ For usage also see:
 
 	* http://wiki.oddb.org/
 
-Requirements
-------------
-
+=== Requirements
 ch.oddb.org has a large set of functionality, and with it a large set of
 dependencies:
 
@@ -169,8 +165,7 @@ following versions:
                  cd text-hyphenate; ruby install.rb config;
                  ruby install.rb setup; sudo ruby install.rb install }}})
 	
-Install 
-------- 
+=== Install 
 Although it is possible to install ch.oddb.org in any linux system, we
 recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 
@@ -676,8 +671,7 @@ recommend the installation of ch.oddb.org in Gentoo (Funtoo) linux.
 		those of the version of last year. Just compare the two
 		CSV files headers.
 
-rewind the data of PostgreSQL on ch.oddb.org
---------------------------------------------
+=== rewind the data of PostgreSQL on ch.oddb.org
 If Swissmedic publishes Bullshit data and everything is connected in the wrong way
 	
 	(get an archive)
@@ -697,17 +691,15 @@ Also see:
 
 	* http://masaywesee.wordpress.com/2010/07/21/rewind-postgresql-data/
 
-Install Instructions
---------------------
+=== Install Instructions
 
 	* http://dev.ywesee.com/wiki.php/Oddb/InstallOddb
 
-Further Information
--------------------
-	* http://trac.ywesee.com/ticket/226
+==== Further Information
 
-Usage
------
+        * http://trac.ywesee.com/ticket/226
+
+=== Usage
 
 	* Normal Consumer
 	* Health Insurance (Krankenkasse)
@@ -716,8 +708,7 @@ Usage
 	* Doctor / Physician
 	* Pharma Marketing
 
-Background
-----------
+=== Background
 	
 A discussion on http://www.linuxmednews.org 
 
@@ -751,21 +742,19 @@ More here:
 	* http://www.ywesee.com/pmwiki.php/Main/WekoBlog
 	* http://www.ywesee.com/pmwiki.php/Main/Bundesgerichtsurteil
 
-License
--------
+=== License
 
-	* LGPL
+	* GPLv2
 	
-Source Code Download with GIT
------------------------------
+=== Source Code Download with GIT
 
 	* URL: http://scm.ywesee.com/?p=oddb.org/.git;a=summary
 
-Authors
--------
+=== Authors
 
 	* ywesee GmbH
 
+        * Zeno R.R. Davatz <zdavatz@ywesee.com>
 	* Hannes Wyss <hwyss@ywesee.com>
 	* Markus Huggler <maege@ywesee.com>
 	* Mike Walder <walder@allink.ch> 
