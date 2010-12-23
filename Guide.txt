@@ -37,9 +37,9 @@ dependencies:
   13. racc
   14. rmail
   15. ruby-dbi    (*4)
-  16. ruby-gd   (*5)    
+  16. ruby-gd     (*5)    
   17. ruby-password (*6)
-  18. ruby-postgres
+  18. ruby-pg     (*7)
   19. rubyzip
   20. spreadsheet
   21. tarsimple
@@ -57,13 +57,13 @@ dependencies:
   8.  swissmedic-diff
   9.  ydim
   10. yus
-  11. oniguruma_patch     (*7)  
+  11. oniguruma_patch     (*8)  
 
 === IV Others
-  1. html-parser.rb (*8)
+  1. html-parser.rb (*9)
   2. formatter.rb
   3. sgml-parser.rb
-  4. rockit   (*9)
+  4. rockit   (*10)
 
 ----
 *1 Ruby MUST be version 1.8.6 (<= patch level 369). 
@@ -76,16 +76,19 @@ dependencies:
     http://raa.ruby-lang.org/cache/ruby-gd/
 *6 ruby-password 0.5.3 
     http://www.caliban.org/ruby/ruby-password.shtml
-*7 oniguruma patch for Ruby 1.8.6
+*7 ruby gem name is 'pg'. See http://rubygems.org/gems/pg
+   pg 0.9.0 is required Ruby 1.8.7 or later version
+   ruby-postgres (0.7.9.20080128) is also available instead of ruby-pg.
+*8 oniguruma patch for Ruby 1.8.6
     http://trac.ywesee.com/raw-attachment/ticket/166/oniguruma_patch_hannes_15.6.2010.tar.gz
-*8 html-parser.rb, formatter.rb and sgml-parser.rb are
+*9 html-parser.rb, formatter.rb and sgml-parser.rb are
    originally placed on
     http://raa.ruby-lang.org/project/html-parser-2/. 
    However, the links are dead. You can get them from
     http://trac.ywesee.com/raw-attachment/ticket/226/html-parser.rb
     http://trac.ywesee.com/raw-attachment/ticket/226/sgml-parser.rb
     http://trac.ywesee.com/raw-attachment/ticket/226/formatter.rb
-*9 Rockit is the 'Ruby O-o Compiler construction toolKIT'
+*10 Rockit is the 'Ruby O-o Compiler construction toolKIT'
    You can get the rockit version 0.3.8 from 
     http://rockit.sourceforge.net/
    There is a more recent version, 0.7.2, but it does not work
@@ -121,7 +124,7 @@ following versions:
   23. ruby-gd           0.7.4
   24. ruby-ole          1.2.10.1
   25. ruby-password     0.5.3
-  26. ruby-postgres     0.7.9.20080128
+  26. ruby-pg           0.8.0 (gem name is 'pg')
   27. rubyzip           0.5.12
   28. spreadsheet       0.6.4.1
   29. tmail             1.2.7.1
