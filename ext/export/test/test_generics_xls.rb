@@ -52,15 +52,6 @@ module ODDB
           pack.should_receive(:public?).and_return(true)
         end
 
-        @excel = flexmock('Spreadsheet::Excel') do |klass|
-          klass.should_receive(:new).and_return(flexmock{|book|
-            book.should_receive(:add_worksheet).and_return(flexmock{|sheet|
-              sheet.should_receive(:format_column)
-              sheet.should_receive(:write).with(0,0,Array, Spreadsheet::Format)
-            })
-          })
-        end
-
         @generics_xls = GenericXls.new(".")
       end
       def test__remarks1
