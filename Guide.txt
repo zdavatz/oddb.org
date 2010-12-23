@@ -77,7 +77,7 @@ dependencies:
 *6 ruby-password 0.5.3 
     http://www.caliban.org/ruby/ruby-password.shtml
 *7 ruby gem name is 'pg'. See http://rubygems.org/gems/pg
-   pg 0.9.0 is required Ruby 1.8.7 or later version
+   pg 0.9.0 requires Ruby 1.8.7 or later version
    ruby-postgres (0.7.9.20080128) is also available instead of ruby-pg.
 *8 oniguruma patch for Ruby 1.8.6
     http://trac.ywesee.com/raw-attachment/ticket/166/oniguruma_patch_hannes_15.6.2010.tar.gz
