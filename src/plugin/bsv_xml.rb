@@ -482,7 +482,7 @@ module ODDB
             @ikscd = '%03i' % @text[-3,3].to_i
             @pack ||= @registration.package @ikscd
             if !@pcode.empty? && @pack && @pack.pharmacode \
-              && @pack.pharmacode != @pcode
+              && @pack.pharmacode != @pcode && @pack.pharmacode.to_i != 0
               @report.store :pharmacode_oddb, @pack.pharmacode
               @conflict = true
             end
