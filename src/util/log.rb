@@ -74,6 +74,9 @@ module ODDB
       if reply_to
         outgoing.reply_to = reply_to
       end
+      LogFile.append('oddb/debug', " @recipients=" + @recipients.inspect.to_s, Time.now)
+      LogFile.append('oddb/debug', " self::class::MAIL_TO=" + self::class::MAIL_TO.to_s, Time.now)
+      LogFile.append('oddb/debug', " self::class=" + self::class.to_s, Time.now)
 			@recipients = (@recipients + self::class::MAIL_TO).uniq
 			outgoing.subject = subj
 			outgoing.date = Time.now
