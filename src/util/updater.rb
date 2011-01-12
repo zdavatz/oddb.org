@@ -426,12 +426,15 @@ module ODDB
       LogFile.append('oddb/debug', " after @app.update", Time.now)
 			#log.notify(subj)
       return_value_log_notify = log.notify(subj)
+      LogFile.append('oddb/debug', " the first log.notify end", Time.now)
       LogFile.append('oddb/debug', " return_value_log_notify = " + return_value_log_notify.inspect.to_s, Time.now)
 
       log2 = Log.new(date)
       log2.update_values log_info(plug, :log_info_bsv)
 
+      LogFile.append('oddb/debug', " before the second mail process", Time.now)
       return_value_log2_notify = log2.notify(subj)
+      LogFile.append('oddb/debug', " the second log.notify end", Time.now)
       LogFile.append('oddb/debug', " return_value_log2_notify = " + return_value_log2_notify.inspect.to_s, Time.now)
       #log2.notify(subj)
       return_value_log2_notify
