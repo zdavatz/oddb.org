@@ -242,6 +242,7 @@ module ODDB
 			klass = BsvXmlPlugin
 			plug = klass.new(@app)
 			subj = 'SL-Update (XML)'
+            return_value_plug_update = nil
 			wrap_update(klass, subj) { 
 
         return_value_plug_update = plug.update
@@ -252,6 +253,7 @@ module ODDB
 					log_notify_bsv(plug, this_month, subj)
 				end
 			}
+            return return_value_plug_update
 		end
     def update_bsv_followers
 
@@ -334,14 +336,17 @@ module ODDB
       logs = @app.create(logs_pointer)
       klass = SwissmedicPlugin
       plug = klass.new(@app)
+      return_value_plug_update = nil
       wrap_update(klass, "swissmedic") { 
-        if(plug.update(*args))
+        #if(plug.update(*args))
+        if(return_value_plug_update = plug.update(*args))
           month = @@today << 1
           pointer = logs.pointer + [:log, Date.new(month.year, month.month)]
           log = @app.update(pointer.creator, log_info(plug))
           log.notify('Swissmedic XLS')
         end
       }
+      return return_value_plug_update
     end
     def update_swissmedic_followers
 			update_trade_status
