@@ -616,74 +616,70 @@ Parse Errors: 0
       assert_nothing_raised do
         news = @plugin.fachinfo_news agent
       end
-      assert_equal 248, news.size
-      assert_equal ["13e742d9-f404-4681-ab82-71d347acfb93",
-                    "Abseamed®"], news.first
+      assert_equal 7, news.size
+      assert_equal "Abilify\302\256", news.first
     end
     def test_old_fachinfo_news
       ## no file means no news
       assert_equal [], @plugin.old_fachinfo_news
       File.open File.join(@vardir, 'fachinfo.txt'), 'w' do |fh|
         fh.puts <<-EOS
-c413ce2d-a88e-4d71-b6b9-1c55e021edc0 Amiodarone Winthrop\302\256/- Mite
-1e5d1ba9-3073-47cb-8ebb-ecd3f88ecacf
+Amiodarone Winthrop\302\256/- Mite
+AcetaPhos\302\256 750 mg
         EOS
       end
       ## the file is parsed properly
       news = @plugin.old_fachinfo_news
       assert_equal 2, news.size
-      assert_equal ["c413ce2d-a88e-4d71-b6b9-1c55e021edc0",
-                    "Amiodarone Winthrop\302\256/- Mite"], news.first
-      ## the file is also parsed properly when names aren't included
-      assert_equal ["1e5d1ba9-3073-47cb-8ebb-ecd3f88ecacf"], news.last
+      assert_equal "Amiodarone Winthrop\302\256/- Mite", news.first
     end
     def test_true_news
       ## there are no news
       news = [
-        ["13e742d9-f404-4681-ab82-71d347acfb93", "Abseamed\302\256"],
-        ["8a7f708c-c738-4425-a9a5-5ad294f20be4", "Aclasta\302\256"],
-        ["01de437e-6568-4667-a3a6-00035098f59a", "Alcacyl\302\256 500 Instant-Pulver"],
-        ["3ac0c14d-8c1a-4aed-9db6-f2dba58bc964", "Aldurazyme\302\256"],
-        ["70893844-a876-4776-a61f-156e8465e47a", "Allopur\302\256"],
-        ["3d808e28-3445-46e1-be00-68f053499bc1", "Allopurinol - 1 A Pharma100 mg/300 mg"],
-        ["b287ecf9-84c2-48f0-b0c0-2dd9cff30d1f", "Amavita Acetylcystein 600"],
-        ["78163fd4-6cf0-40ea-91b8-06c258722a7d", "Amavita Carbocistein"],
-        ["1885f45a-b9df-4462-adb9-c46140859835", "Amavita Ibuprofen 400"],
-        ["0a717d39-a873-4bff-87ab-b6b08b861da0", "Amavita Paracetamol 500"]
+        "Abseamed\302\256",
+        "Aclasta\302\256",
+        "Alcacyl\302\256 500 Instant-Pulver",
+        "Aldurazyme\302\256",
+        "Allopur\302\256",
+        "Allopurinol - 1 A Pharma100 mg/300 mg",
+        "Amavita Acetylcystein 600",
+        "Amavita Carbocistein",
+        "Amavita Ibuprofen 400",
+        "Amavita Paracetamol 500"
       ]
       old_news = [
-        ["13e742d9-f404-4681-ab82-71d347acfb93", "Abseamed\302\256"],
-        ["8a7f708c-c738-4425-a9a5-5ad294f20be4", "Aclasta\302\256"],
+        "Abseamed\302\256",
+        "Aclasta\302\256",
       ]
-      assert_equal [], @plugin.true_news(news, old_news)
+      expected_news = [
+        "Alcacyl\302\256 500 Instant-Pulver",
+        "Aldurazyme\302\256",
+        "Allopur\302\256",
+        "Allopurinol - 1 A Pharma100 mg/300 mg",
+        "Amavita Acetylcystein 600",
+        "Amavita Carbocistein",
+        "Amavita Ibuprofen 400",
+        "Amavita Paracetamol 500"
+      ]
+      assert_equal expected_news, @plugin.true_news(news, old_news)
       ## clean disection
       old_news = [
-        ["3d808e28-3445-46e1-be00-68f053499bc1", "Allopurinol - 1 A Pharma100 mg/300 mg"],
-        ["b287ecf9-84c2-48f0-b0c0-2dd9cff30d1f", "Amavita Acetylcystein 600"],
-        ["78163fd4-6cf0-40ea-91b8-06c258722a7d", "Amavita Carbocistein"],
-        ["1885f45a-b9df-4462-adb9-c46140859835", "Amavita Ibuprofen 400"],
-        ["0a717d39-a873-4bff-87ab-b6b08b861da0", "Amavita Paracetamol 500"]
+        "Allopurinol - 1 A Pharma100 mg/300 mg",
+        "Amavita Acetylcystein 600",
+        "Amavita Carbocistein",
+        "Amavita Ibuprofen 400",
+        "Amavita Paracetamol 500"
       ]
       expected = [
-        ["13e742d9-f404-4681-ab82-71d347acfb93", "Abseamed\302\256"],
-        ["8a7f708c-c738-4425-a9a5-5ad294f20be4", "Aclasta\302\256"],
-        ["01de437e-6568-4667-a3a6-00035098f59a", "Alcacyl\302\256 500 Instant-Pulver"],
-        ["3ac0c14d-8c1a-4aed-9db6-f2dba58bc964", "Aldurazyme\302\256"],
-        ["70893844-a876-4776-a61f-156e8465e47a", "Allopur\302\256"],
-      ]
-      assert_equal expected, @plugin.true_news(news, old_news)
-      ## disection also works for ids recorded without name
-      old_news = [
-        ["3d808e28-3445-46e1-be00-68f053499bc1"],
-        ["b287ecf9-84c2-48f0-b0c0-2dd9cff30d1f"],
-        ["78163fd4-6cf0-40ea-91b8-06c258722a7d"],
-        ["1885f45a-b9df-4462-adb9-c46140859835"],
-        ["0a717d39-a873-4bff-87ab-b6b08b861da0"]
+        "Abseamed\302\256",
+        "Aclasta\302\256",
+        "Alcacyl\302\256 500 Instant-Pulver",
+        "Aldurazyme\302\256",
+        "Allopur\302\256",
       ]
       assert_equal expected, @plugin.true_news(news, old_news)
       ## recorded news don't appear on the news-page
-      old_news = [["c413ce2d-a88e-4d71-b6b9-1c55e021edc0",
-                  "Amiodarone Winthrop\302\256/- Mite"]]
+      old_news = ["Amiodarone Winthrop\302\256/- Mite"]
       assert_equal news, @plugin.true_news(news, old_news)
     end
     def test_search_product
@@ -766,18 +762,10 @@ c413ce2d-a88e-4d71-b6b9-1c55e021edc0 Amiodarone Winthrop\302\256/- Mite
       @parser.should_receive(:parse_patinfo_html).and_return PatinfoDocument.new
       @app.should_receive(:sorted_fachinfos).and_return []
       success = @plugin.import_news agent
-      expected = <<-EOS
-13e742d9-f404-4681-ab82-71d347acfb93 Abseamed®
-8a7f708c-c738-4425-a9a5-5ad294f20be4 Aclasta®
-      EOS
+      expected = "Abilify\302\256\nAbilify\302\256 Injektionsl\303\266sung\nAbseamed\302\256\nAceril\302\256- mite\nAcetaPhos\302\256 750 mg\nAcimethin\302\256\nAclasta\302\256"
       assert_equal 5, @pages.size
       assert_equal expected, File.read(logfile)
       assert_equal true, success
-    end
-    def test_extract_fachinfo_id
-      href = 'http://textinfo.ch/Monographie.aspx?Id=3914c196-70d8-43b7-816d-8fe923649740&lang=de&MonType=fi'
-      assert_equal '3914c196-70d8-43b7-816d-8fe923649740',
-                   @plugin.extract_fachinfo_id(href)
     end
   end
 end

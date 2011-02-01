@@ -97,23 +97,17 @@ module ODDB
     rescue
       []
     end
-    def extract_fachinfo_id href
-      fi_ptrn = /Monographie.aspx\?Id=([0-9A-Fa-f\-]{36}).*MonType=fi/u
-      if match = fi_ptrn.match(href.to_s)
-        match[1]
-      end
-    end
     def fachinfo_news agent=init_agent
       url = ODDB.config.text_info_newssource \
         or raise 'please configure ODDB.config.text_info_newssource to proceed'
-      ids = []
+      name_list = []
       page = agent.get url
-      page.links.each do |link|
-        if id = extract_fachinfo_id(link.href)
-          ids.push [id, link.text.gsub(/;$/, '')]
-        end
+      list = page.at('div[id="blockContentInner"]/p')
+      list.to_html.split("\<br\>").each do |element|
+        name = element.delete("\<p\>").delete("\<\/p\>").chomp.strip
+        name_list << name
       end
-      ids
+      return name_list.sort
     end
     def identify_eventtargets page, ptrn
       eventtargets = {}
@@ -161,15 +155,13 @@ module ODDB
     end
     def import_news agent=init_agent
       old_news = old_fachinfo_news
-      updates = true_news fachinfo_news(agent), old_news
-      updates.reverse!
-      indices, names = updates.transpose
-      if names
-        import_name names, agent
-        log_news updates + old_news
+      news = fachinfo_news(agent)
+      if update_name_list = true_news(news, old_news)
+        import_name(update_name_list, agent)
+        log_news news
         postprocess
       end
-      !updates.empty?
+      return !update_name_list.empty?
     end
     def import_products page, agent
       fi_sources = identify_eventtargets page, /dtgFachinfo/
@@ -187,16 +179,15 @@ module ODDB
       update_product name, fi_paths, pi_paths || {}, fi_flags, pi_flags || {}
     end
     def log_news lines
-      File.open @news_log, 'w' do |fh|
-        lines.each do |pair|
-          fh.puts pair.join(' ')
-        end
+      FileUtils.mkdir_p(File.dirname(@news_log))
+      File.open(@news_log, 'w') do |fh|
+        fh.print lines.join("\n")
       end
     end
     def old_fachinfo_news
       begin
         File.readlines(@news_log).collect do |line|
-          line.strip.split ' ', 2
+          line.strip
         end
       rescue Errno::ENOENT
         []
@@ -327,11 +318,7 @@ module ODDB
       end
     end
     def true_news news, old_news
-      if (pair = old_news.first) && idx = news.flatten.index(pair.first)
-        news[0...idx/2]
-      else
-        news
-      end
+      news - old_news
     end
     def update_product name, fi_paths, pi_paths, fi_flags={}, pi_flags={}
       # parse pi and fi
