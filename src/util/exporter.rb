@@ -145,9 +145,10 @@ module ODDB
 			sleep(30)
 		end
 		def export_oddbdat
+          dose_missing_list = []
       safe_export 'oddbdat' do
         exporter = OdbaExporter::OddbDatExport.new(@app)
-        exporter.export
+        dose_missing_list = exporter.export
         EXPORT_SERVER.clear
         sleep(30)
         run_on_weekday(1) {
@@ -155,6 +156,22 @@ module ODDB
           EXPORT_SERVER.clear
           sleep(30)
         }
+
+        # here to raise warning if package.parts is empty
+        if !dose_missing_list.empty?
+			log = Log.new(@@today)
+			log.report = [
+				"Warning: Dose data (ODDB::Package.parts, Array of ODDB::Dose instances) is empty.",
+				"Message: export_oddbdat succeeded but the following package(s) do not have Dose data.",
+				"Package(s):",
+                dose_missing_list.collect do |list|
+                  list[0].to_s + ", " + \
+                  "http://#{SERVER_NAME}/de/gcc/resolve/pointer/%3A!registration%2C" + list[1].to_s + \
+                  "!sequence%2C" + list[2].to_s + "!package%2C" + list[3].to_s + ".\n"
+                end
+			].join("\n")
+			log.notify("Warning Export: oddbdat")
+        end
       end
 		end
 		def export_pdf

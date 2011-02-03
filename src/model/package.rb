@@ -131,7 +131,7 @@ module ODDB
       comparables.uniq
     end
     def comparable_size
-      @parts.collect { |part| part.comparable_size }.inject { |a, b| a + b }
+      @parts.collect { |part| part.comparable_size }.inject{ |a, b| a + b } or raise RuntimeError
     rescue RuntimeError
       @parts.inject(Dose.new(0)) { |comp, part|
         ODDB::Dose.new(comp.qty + part.comparable_size.qty)

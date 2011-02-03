@@ -47,7 +47,14 @@ class OddbDatExport < ODDB::Plugin
 			LimTxtTable, EanTable
 		]
 		ids = []
-		@app.each_package { |pac| ids.push(pac.odba_id) }
+        dose_missing_list = []
+		@app.each_package { |pac| 
+          ids.push(pac.odba_id) 
+          if pac.parts.empty?
+            dose_missing_list.push([pac.basename, pac.iksnr, pac.sequence.seqnr, pac.ikscd])
+          end
+        }
+
 		files += EXPORT_SERVER.export_oddbdat(ids, EXPORT_DIR, package_tables)
 
 		# codes table
@@ -65,9 +72,12 @@ class OddbDatExport < ODDB::Plugin
 
 		# readme
 		files += EXPORT_SERVER.export_oddbdat(nil, EXPORT_DIR, [Readme])
-		
+
 		# compress
 		EXPORT_SERVER.compress_many(EXPORT_DIR, 'oddbdat', files)
+
+        # warning
+        return dose_missing_list
 	end
 	def export_fachinfos
 		# fachinfo table

@@ -420,7 +420,7 @@ module ODDB
 					11	=>	galform,
 					12	=>	conc,
 					13	=>	unit,
-					16	=>	@package.parts.first.multi,
+					16	=>	@package.parts.first ? @package.parts.first.multi : '',
 					17	=>	comform,
 					18	=>	qty,
 					19	=>	qty_unit,
