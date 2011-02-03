@@ -53,9 +53,11 @@ module ODDB
       export_doc_csv
       export_index_therapeuticus_csv
       export_price_history_csv
+=begin # inoperable atm.
       run_on_monthday(1) {
         export_fachinfo_pdf
       }
+=end
       nil
     end
     def export_helper(name)
