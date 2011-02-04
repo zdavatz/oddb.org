@@ -165,6 +165,10 @@ module ODDB
       @package.parts.push part1, part2
       assert_equal Dose.new(15, ''), @package.comparable_size
     end
+    def test_comparable_size__empty
+      assert_equal [], @package.parts
+      assert_equal Dose.new(0, ''), @package.comparable_size
+    end
     def test_comparable?
       part1 = flexmock :comparable_size => Dose.new(5, 'ml')
       part2 = flexmock :comparable_size => Dose.new(10, 'ml')
