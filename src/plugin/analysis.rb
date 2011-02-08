@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 #  AnalysisPlugin -- oddb.org -- 09.06.2006 -- sfrischknecht@ywesee.com
 
+$: << path = File.expand_path("../..", File.dirname(__FILE__)) unless $:.include?(path)
+
 require 'plugin/plugin'
 require 'ext/analysisparse/src/analysis_hpricot'
 require 'model/analysis/group'

@@ -7,6 +7,8 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'util/log'
 require 'stub/odba'
+require 'flexmock'
+require 'util/logfile'
 
 module Net
 	class SMTP
@@ -19,12 +21,15 @@ module Net
 end
 module ODDB
 	class Log
+    remove_const :MAIL_FROM
+    remove_const :MAIL_TO
 		MAIL_FROM = 'update@oddb.org'
 		MAIL_TO = [
 			'hwyss@ywesee.com',
 		]
 	end
 	class TestLog < Test::Unit::TestCase
+    include FlexMock::TestCase
 		class StubSmtp
 			def sendmail(*args)
 				(@sent ||= []).push(args)
@@ -37,6 +42,20 @@ module ODDB
 		def setup
 			@log = ODDB::Log.new(Date.new(1975,8,21))
 			$stub_log_smtp = StubSmtp.new
+
+      flexstub(ODDB) do |oddb|
+        oddb.should_receive(:config).and_return(flexmock('config') do |conf|
+          conf.should_receive(:smtp_server).and_return('smtp_server')
+          conf.should_receive(:smtp_port).and_return('smtp_port')
+          conf.should_receive(:smtp_domain).and_return('smtp_domain')
+          conf.should_receive(:smtp_user).and_return('admin@ywesee.com')
+          conf.should_receive(:smtp_pass).and_return('smtp_pass')
+          conf.should_receive(:smtp_authtype).and_return('smtp_authtype')
+        end)
+      end
+      flexstub(LogFile) do |logfile|
+        logfile.should_receive(:append)
+      end
 		end
 		def test_notify
 			hash = {
