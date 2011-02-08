@@ -8,14 +8,16 @@ require 'test/unit'
 require 'stub/odba'
 require 'plugin/bsv_xml'
 require 'flexmock'
-require 'src/util/logfile'
+require 'util/logfile'
 
 module ODDB
   class BsvXmlPlugin
     class PreparationsListener
     end
   end
-  class Package
+  class PackageCommon
+  end
+  class Package < PackageCommon
   end
   class TestBsvXmlPlugin < Test::Unit::TestCase
     include FlexMock::TestCase

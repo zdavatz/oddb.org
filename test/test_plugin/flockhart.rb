@@ -110,7 +110,7 @@ class TestFlockhartWriter < Test::Unit::TestCase
 		substrates.each { |sub|
 			result << sub if sub.category == 'antipsychotics'	
 		}
-		assert_equal(5, result.size)
+		assert_equal(37, result.size)
 	end
 	def test_extract_data4
 		@writer.extract_data

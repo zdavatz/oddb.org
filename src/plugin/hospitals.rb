@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # HospitalPlugin -- oddb -- 07.02.2005 -- jlang@ywesee.com
 
+$: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
 require 'plugin/plugin'
