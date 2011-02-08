@@ -13,6 +13,7 @@ require 'model/indication'
 require 'model/activeagent'
 require 'model/composition'
 require 'mock'
+require 'fileutils'
 
 module ODDB
 	class OuwerkerkPlugin < Plugin
@@ -83,8 +84,7 @@ class TestOuwerkerkPlugin < Test::Unit::TestCase
 	end
 	def teardown
 		if(File.exists? @plugin.file_path)
-      #puts @plugin.file_path
-			#File.delete(@plugin.file_path)
+      FileUtils.rm_f(@plugin.file_path)
 		end
 		ODBA.storage = nil
 	end
