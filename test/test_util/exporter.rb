@@ -9,11 +9,8 @@ require 'util/exporter'
 require 'util/log'
 require 'date'
 
-# Redefine sleep method, otherwise you have to much time to do tests
-def sleep(*args)
-  'sleep'
-end
 module ODDB
+  include FlexMock::TestCase
   class StubDRbObject
     def clear
     end
@@ -21,13 +18,16 @@ module ODDB
   class Exporter
     remove_const :EXPORT_SERVER
     EXPORT_SERVER = StubDRbObject.new
-    @@today = Date.new(2011,2,3)
   end
   class TestExporter < Test::Unit::TestCase
     include FlexMock::TestCase
+    def test_test
+      assert(true)
+    end
     def setup
       @app = flexmock('app') 
       @exporter = ODDB::Exporter.new(@app)
+      flexstub(@exporter).should_receive(:sleep).and_return('sleep')
       @log = flexmock('log') do |log|
         log.should_receive(:report)
         log.should_receive(:notify)
@@ -48,10 +48,9 @@ module ODDB
       flexstub(DownloadInvoicer).should_receive(:new).and_return(@plugin)
       flexstub(FachinfoInvoicer).should_receive(:new).and_return(@plugin)
       flexstub(PatinfoInvoicer).should_receive(:new).and_return(@plugin)
-
     end
     def test_export_oddbdat__on_sunday
-      Exporter.__send__(:class_variable_set, :@@today, Date.new(2011,1,2)) # Sunday
+      flexstub(@exporter, :today => Date.new(2011,1,2))
       flexstub(Log) do |logclass|
         # white box test: Log.new is never called
         # if dose_missing_list is not empty or an error raises,
@@ -66,7 +65,7 @@ module ODDB
       assert_equal(nil, @exporter.export_oddbdat)
     end
     def test_export_oddbdat__on_monday
-      Exporter.__send__(:class_variable_set, :@@today, Date.new(2011,1,3)) # Monday
+      flexstub(@exporter, :today => Date.new(2011,1,3)) # Monday
       flexstub(Log) do |logclass|
         logclass.should_receive(:new).times(0).and_return(@log)
       end
@@ -90,8 +89,8 @@ module ODDB
     end
     def test_run__on_1st_day
       # totally whilte box test
-      Exporter.__send__(:class_variable_set, :@@today, Date.new(2011,1,1)) # Saturday
       flexstub(@exporter) do  |exp|
+        exp.should_receive(:today).and_return(Date.new(2011,1,1)) # Saturday
         exp.should_receive(:mail_patinfo_invoices).once.with_no_args
         exp.should_receive(:mail_fachinfo_log).once.with_no_args
         exp.should_receive(:mail_download_invoices).once.with_no_args
@@ -108,8 +107,8 @@ module ODDB
       assert_equal(nil, @exporter.run)
     end
     def test_run__on_15th_day
-      Exporter.__send__(:class_variable_set, :@@today, Date.new(2011,1,15)) # Saturday
       flexstub(@exporter) do  |exp|
+        exp.should_receive(:today).and_return(Date.new(2011,1,15)) # Saturday
         exp.should_receive(:mail_patinfo_invoices).once.with_no_args
         exp.should_receive(:mail_fachinfo_log).once.with_no_args
         exp.should_receive(:mail_download_invoices).once.with_no_args
@@ -124,11 +123,10 @@ module ODDB
         exp.should_receive(:export_price_history_csv).once.with_no_args
       end
       assert_equal(nil, @exporter.run)
- 
     end
     def test_run__on_sunday
-      Exporter.__send__(:class_variable_set, :@@today, Date.new(2011,1,2)) # Sunday
       flexstub(@exporter) do  |exp|
+        exp.should_receive(:today).and_return(Date.new(2011,1,2)) # Sunday
         exp.should_receive(:mail_patinfo_invoices).once.with_no_args
         exp.should_receive(:mail_fachinfo_log).once.with_no_args
         exp.should_receive(:mail_download_invoices).times(0).with_no_args
@@ -173,7 +171,7 @@ module ODDB
         plug.should_receive(:export_drugs)
         plug.should_receive(:export_drugs_extended)
       end
-      assert_equal(sleep, @exporter.export_csv)
+      assert_equal('sleep', @exporter.export_csv)
     end
     def test_export_csv__errorcase1
       flexstub(@plugin) do |plug|
@@ -184,7 +182,7 @@ module ODDB
         # white box test: Log.new is once called because of error
         logclass.should_receive(:new).times(1).and_return(@log)
       end
-      assert_equal(sleep, @exporter.export_csv)
+      assert_equal('sleep', @exporter.export_csv)
     end
     def test_export_csv__errorcase2
       flexstub(@plugin) do |plug|
@@ -195,19 +193,19 @@ module ODDB
         # white box test: Log.new is once called because of error
         logclass.should_receive(:new).times(1).and_return(@log)
       end
-      assert_equal(sleep, @exporter.export_csv)
+      assert_equal('sleep', @exporter.export_csv)
     end
     def test_export_analysis_csv
       flexstub(@plugin) do |plug|
         plug.should_receive(:export_analysis)
       end
-      assert_equal(sleep, @exporter.export_analysis_csv)
+      assert_equal('sleep', @exporter.export_analysis_csv)
     end
     def test_export_doc_csv
       flexstub(@plugin) do |plug|
         plug.should_receive(:export_doctors)
       end
-      assert_equal(sleep, @exporter.export_doc_csv)
+      assert_equal('sleep', @exporter.export_doc_csv)
     end
     def test_export_doc_csv__error
       flexstub(@plugin) do |plug|
@@ -217,7 +215,7 @@ module ODDB
         # white box test: Log.new is once called because of error
         logclass.should_receive(:new).times(1).and_return(@log)
       end
-      assert_equal(sleep, @exporter.export_doc_csv)
+      assert_equal('sleep', @exporter.export_doc_csv)
     end
     def test_export_fachinfo_pdf
       # this method will be removed
@@ -241,7 +239,7 @@ module ODDB
       flexstub(@plugin) do |plug|
         plug.should_receive(:export_index_therapeuticus)
       end
-      assert_equal(sleep, @exporter.export_index_therapeuticus_csv)
+      assert_equal('sleep', @exporter.export_index_therapeuticus_csv)
     end
     def test_export_index_therapeuticus_csv__error
       flexstub(@plugin) do |plug|
@@ -251,19 +249,19 @@ module ODDB
         # white box test: Log.new is once called because of error
         logclass.should_receive(:new).times(1).and_return(@log)
       end
-      assert_equal(sleep, @exporter.export_index_therapeuticus_csv) 
+      assert_equal('sleep', @exporter.export_index_therapeuticus_csv) 
     end
     def test_export_migel_csv
       flexstub(@plugin) do |plug|
         plug.should_receive(:export_migel)
       end
-      assert_equal(sleep, @exporter.export_migel_csv)
+      assert_equal('sleep', @exporter.export_migel_csv)
     end
     def test_export_narcotics_csv
       flexstub(@plugin) do |plug|
         plug.should_receive(:export_narcotics)
       end
-      assert_equal(sleep, @exporter.export_narcotics_csv)
+      assert_equal('sleep', @exporter.export_narcotics_csv)
     end
     def test_export_pdf
       flexstub(@plugin) do |plug|
@@ -297,7 +295,7 @@ module ODDB
         # white box test: Log.new is once called because of error
         logclass.should_receive(:new).times(1).and_return(@log)
       end
-      assert_equal(sleep, @exporter.export_sl_pcodes)
+      assert_equal('sleep', @exporter.export_sl_pcodes)
     end
     def test_export_patents_xls
       flexstub(@plugin) do |plug|
@@ -306,7 +304,7 @@ module ODDB
       assert_equal(@plugin, @exporter.export_patents_xls)
     end
     def test_export_yaml__on_monday
-      Exporter.__send__(:class_variable_set, :@@today, Date.new(2011,1,3)) # Monday
+      flexstub(@exporter, :today => Date.new(2011,1,3)) # Monday
       # totally white box test
       flexstub(@plugin) do |plug|
         plug.should_receive(:export).once.with_no_args
@@ -318,10 +316,10 @@ module ODDB
         plug.should_receive(:export_patinfos).times(0).with_no_args
         plug.should_receive(:export_doctors).times(0).with_no_args
       end
-      assert_equal(sleep, @exporter.export_yaml)
+      assert_equal('sleep', @exporter.export_yaml)
     end
     def test_export_yaml__on_tuesday
-      Exporter.__send__(:class_variable_set, :@@today, Date.new(2011,1,4)) # Tuesday
+      flexstub(@exporter, :today => Date.new(2011,1,4)) # Tuesday
       # totally white box test
       flexstub(@plugin) do |plug|
         plug.should_receive(:export).once.with_no_args
@@ -333,10 +331,10 @@ module ODDB
         plug.should_receive(:export_patinfos).times(0).with_no_args
         plug.should_receive(:export_doctors).times(0).with_no_args
       end
-      assert_equal(sleep, @exporter.export_yaml)
+      assert_equal('sleep', @exporter.export_yaml)
     end
     def test_export_yaml__on_wednesday
-      Exporter.__send__(:class_variable_set, :@@today, Date.new(2011,1,5)) # Wednesday
+      flexstub(@exporter, :today => Date.new(2011,1,5)) # Wednesday
       # totally white box test
       flexstub(@plugin) do |plug|
         plug.should_receive(:export).once.with_no_args
@@ -348,10 +346,10 @@ module ODDB
         plug.should_receive(:export_patinfos).once.with_no_args
         plug.should_receive(:export_doctors).times(0).with_no_args
       end
-      assert_equal(sleep, @exporter.export_yaml)
+      assert_equal('sleep', @exporter.export_yaml)
     end
     def test_export_yaml__on_thursday
-      Exporter.__send__(:class_variable_set, :@@today, Date.new(2011,1,6)) # Thursday
+      flexstub(@exporter, :today => Date.new(2011,1,6)) # Tursday
       # totally white box test
       flexstub(@plugin) do |plug|
         plug.should_receive(:export).once.with_no_args
@@ -363,7 +361,7 @@ module ODDB
         plug.should_receive(:export_patinfos).times(0).with_no_args
         plug.should_receive(:export_doctors).once.with_no_args
       end
-      assert_equal(sleep, @exporter.export_yaml)
+      assert_equal('sleep', @exporter.export_yaml)
     end
     def test_mail_download_stats
       flexstub(Log) do |logclass|
@@ -435,7 +433,7 @@ module ODDB
         # white box test: Log.new is never called
         logclass.should_receive(:new).times(0).and_return(@log)
       end
-      assert_equal(sleep, @exporter.export_price_history_csv) 
+      assert_equal('sleep', @exporter.export_price_history_csv) 
     end
     def test_export_price_history_csv
       flexstub(@plugin) do |plug|
@@ -445,10 +443,10 @@ module ODDB
         # white box test: Log.new is once called if there is an error
         logclass.should_receive(:new).times(1).and_return(@log)
       end
-      assert_equal(sleep, @exporter.export_price_history_csv) 
+      assert_equal('sleep', @exporter.export_price_history_csv) 
     end
     def test_mail_stats__before_8th
-      Exporter.__send__(:class_variable_set, :@@today, Date.new(2011,1,5)) 
+      flexstub(@exporter, :today => Date.new(2011,1,5))
       flexstub(Log) do |logclass|
         # white box test: Log.new is once called in any case
         logclass.should_receive(:new).times(1).and_return(@log)
@@ -461,7 +459,7 @@ module ODDB
       assert_equal(nil, @exporter.mail_stats('key'))
     end
     def test_mail_stats__after_8th
-      Exporter.__send__(:class_variable_set, :@@today, Date.new(2011,1,10)) 
+      flexstub(@exporter, :today => Date.new(2011,1,10))
       flexstub(Log) do |logclass|
         # white box test: Log.new is once called in any case
         logclass.should_receive(:new).times(1).and_return(@log)
