@@ -1484,7 +1484,7 @@ module ODDB
       update itp.creator, :text => filename, :price => price, :time => Time.now,
                           :type => :download, :expiry_time => expires,
                           :duration => (Time.now - expires) / 86400,
-                          :vat_rate => 7.6
+                          :vat_rate => 8.0
       inv.payment_received!
       inv.odba_store
       "http://#{SERVER_NAME}/de/gcc/download/invoice/#{inv.oid}/email/#{email}/filename/#{filename}"

@@ -158,7 +158,7 @@ module ODDB
 		30	=>	50,
 		365	=>	400,
 	}
-	VAT_RATE = 7.6
+	VAT_RATE = 8.0
   RSS_PATH = File.join(PROJECT_ROOT, 'data', 'rss')
 end
 
