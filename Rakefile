@@ -2,7 +2,9 @@
 
 require 'rubygems'
 require 'hoe'
+require 'lib/hoe/git.rb'
 
+Hoe.plugin :git
 # Hoe.plugin :compiler
 # Hoe.plugin :cucumberfeatures
 # Hoe.plugin :gem_prelude_sucks
