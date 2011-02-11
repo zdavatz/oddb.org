@@ -3,6 +3,7 @@ History.txt
 INSTALL_from_Source.txt
 LICENCE.txt
 Manifest.txt
+Manifest.txt_back
 README.txt
 Rakefile
 bin/admin
@@ -81,6 +82,8 @@ ext/export/src/oddb_yaml.rb
 ext/export/src/oddbdat.rb
 ext/export/src/patent_xls.rb
 ext/export/test/test_csv_exporter.rb
+ext/export/test/test_generics_xls.rb
+ext/export/test/test_oddbdat.rb
 ext/fiparse/bin/fiparsed
 ext/fiparse/src/fachinfo_doc.rb
 ext/fiparse/src/fachinfo_hpricot.rb
@@ -799,7 +802,9 @@ test/data/html/interaction/flockhart/2D6.htm
 test/data/html/interaction/flockhart/2E1.htm
 test/data/html/interaction/flockhart/3A457.htm
 test/data/html/interaction/flockhart/clinlist.htm
+test/data/html/interaction/flockhart/prepared_table.asp
 test/data/html/interaction/flockhart/prepared_table.htm
+test/data/html/interaction/flockhart/table.asp
 test/data/html/interaction/flockhart/table.htm
 test/data/html/interaction/hayes/CYP450-1.html
 test/data/html/interaction/hayes/CYP450-2.html
@@ -901,7 +906,6 @@ test/test_model/text.rb
 test/test_model/user.rb
 test/test_plugin/bsv_xml.rb
 test/test_plugin/comarketing.rb
-test/test_plugin/doctors.rb
 test/test_plugin/download_invoicer.rb
 test/test_plugin/flockhart.rb
 test/test_plugin/hayes.rb
@@ -921,6 +925,7 @@ test/test_plugin/swissmedicjournal.rb
 test/test_plugin/text_info.rb
 test/test_plugin/vaccines.rb
 test/test_plugin/yaml.rb
+test/test_plugin/zdoctor.rb
 test/test_state/admin/companyuser.rb
 test/test_state/admin/login.rb
 test/test_state/admin/root.rb
@@ -947,11 +952,11 @@ test/test_state/user/download_export.rb
 test/test_state/user/fipi_offer_input.rb
 test/test_util/config.rb
 test/test_util/csstemplate.rb
+test/test_util/exporter.rb
 test/test_util/html_parser.rb
 test/test_util/interval.rb
 test/test_util/language.rb
 test/test_util/levenshtein_distance.rb
-test/test_util/log.rb
 test/test_util/logfile.rb
 test/test_util/loggroup.rb
 test/test_util/notification_logger.rb
@@ -963,6 +968,8 @@ test/test_util/soundex.rb
 test/test_util/suite.rb
 test/test_util/updater.rb
 test/test_util/validator.rb
+test/test_util/zlog.rb
+test/test_view/asearch.rb
 test/test_view/chapter.rb
 test/test_view/companies/companylist.rb
 test/test_view/descriptionform.rb
@@ -974,7 +981,6 @@ test/test_view/logo.rb
 test/test_view/navigationfoot.rb
 test/test_view/pager.rb
 test/test_view/pointersteps.rb
-test/test_view/search.rb
 test/test_view/sponsorhead.rb
 test/test_view/suite.rb
 test/test_view/user/powerlink.rb
