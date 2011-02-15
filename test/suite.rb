@@ -20,7 +20,7 @@ command = 'system "rcov #{path} -t --aggregate #{coverage.path} >> #{temp_out.pa
 begin
   Rcov
   coverage = Tempfile.new('coverage')
-  p coverage.path
+#  p coverage.path
 rescue
   rcov = false
   command = 'system "ruby #{path} >> #{temp_out.path}"'
@@ -94,5 +94,5 @@ Finished in #{test_time} seconds.
 #{tests} tests, #{assertions} assertions, #{failures} failures, #{errors} errors
 EOF
 
-#temp_out.close
-#coverage.close if coverage
+temp_out.close
+coverage.close if coverage
