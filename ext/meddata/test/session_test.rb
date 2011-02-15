@@ -8,13 +8,13 @@ $: << File.expand_path("../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'meddata'
-require 'mock' 
+require 'flexmock' 
 
 module ODDB
 	module MedData
 class SessionTest < Test::Unit::TestCase
 	def setup
-		@session = Session.new('')
+		@session = Session.new()
 	end
 	def test_post_hash__1
 		data = {

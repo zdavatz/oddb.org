@@ -5,7 +5,7 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.dirname(__FILE__)
 
 require 'drbsession'
-require 'parser'
+require 'meddparser'
 require 'result'
 
 module ODDB

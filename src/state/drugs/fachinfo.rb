@@ -5,7 +5,7 @@ require 'state/drugs/global'
 require 'view/drugs/fachinfo'
 require 'delegate'
 require 'model/fachinfo'
-require 'ext/chapterparse/src/parser'
+require 'ext/chapterparse/src/chaptparser'
 require 'ext/chapterparse/src/writer'
 
 module ODDB

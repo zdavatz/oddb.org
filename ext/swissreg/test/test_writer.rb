@@ -108,25 +108,6 @@ module ODDB
 				}
 				assert_equal(expected, @writer.extract_data)
 			end
-			def test_extract_data__deletion
-        path = File.expand_path('data/isradipin_detail.html', 
-                                File.dirname(__FILE__))
-        html = File.read(path)
-				@parser.feed(html)
-				expected = {
-					:base_patent				=> "CH654836",
-					:base_patent_date		=> Date.new(1980, 7, 16),
-					:certificate_number	=> "C654836/01",
-					:deletion_date			=> Date.new(2004, 6, 8),
-					:expiry_date				=> Date.new(2004, 6, 8),
-					:iksnrs							=> ["49857"],
-					:issue_date					=> Date.new(1996, 6, 28),
-					:protection_date		=> Date.new(2000, 7, 17),
-					:publication_date		=> Date.new(1996, 3, 29),
-					:registration_date	=> Date.new(1995, 12, 6),
-				}
-				assert_equal(expected, @writer.extract_data)
-			end
 		end
 	end
 end

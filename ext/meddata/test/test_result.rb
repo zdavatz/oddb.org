@@ -10,12 +10,10 @@ module ODDB
 	module MedData
 		class ResultTest < Test::Unit::TestCase
 			def test_initialize
-				result = Result.new('foo', 'bar', 'baz')
-				assert_equal('foo', result.session)
+				result = Result.new('bar', 'baz')
 				assert_equal('bar', result.values)
 				assert_equal('baz', result.ctl)
-				result = Result.new(nil, nil, nil)
-				assert_nil(result.session)
+				result = Result.new(nil, nil)
 				assert_nil(result.values)
 				assert_nil(result.ctl)
 			end

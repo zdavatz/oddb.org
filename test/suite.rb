@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# suite.rb -- oddb -- 18.11.2002 -- hwyss@ywesee.com 
+# suite.rb -- oddb.org -- 15.02.2011 -- mhatakeyama@ywesee.com 
 
 $: << File.dirname(__FILE__)
 
@@ -20,6 +20,7 @@ command = 'system "rcov #{path} -t --aggregate #{coverage.path} >> #{temp_out.pa
 begin
   Rcov
   coverage = Tempfile.new('coverage')
+  p coverage.path
 rescue
   rcov = false
   command = 'system "ruby #{path} >> #{temp_out.path}"'
@@ -93,5 +94,5 @@ Finished in #{test_time} seconds.
 #{tests} tests, #{assertions} assertions, #{failures} failures, #{errors} errors
 EOF
 
-temp_out.close
-coverage.close if coverage
+#temp_out.close
+#coverage.close if coverage

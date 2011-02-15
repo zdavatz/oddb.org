@@ -17,10 +17,12 @@ module ODDB
 			end
 			def test_extract_pairs
 				pairs = @parser.extract_pairs
-				assert_equal(486, pairs.size)
-				first = ["47358", "53442"]
+				assert_equal(487, pairs.size)
+#				first = ["47358", "53442"]
+        first = ["49817", "56268"]
 				assert_equal(first, pairs.first)
-				last = ["52251", "52783"]
+#				last = ["52251", "52783"]
+        last = ["48808", "52769"]
 				assert_equal(last, pairs.last)
 			end
 		end

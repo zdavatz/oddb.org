@@ -6,7 +6,7 @@ $: << File.expand_path('../../../src', File.dirname(__FILE__))
 
 
 require 'test/unit'
-require 'parser'
+require 'chaptparser'
 
 module ODDB
 	module ChapterParse

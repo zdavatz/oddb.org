@@ -2,7 +2,7 @@
 # FachinfoWriter -- oddb -- 20.10.2003 -- rwaltert@ywesee.com
 
 require 'model/fachinfo'
-require 'writer'
+require 'fiwriter'
 
 module ODDB
 	module FiParse
