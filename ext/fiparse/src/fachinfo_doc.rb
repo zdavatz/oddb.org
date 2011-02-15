@@ -74,7 +74,7 @@ module ODDB
           if(@row)
             @format = @target.set_format(:bold) if @target
           elsif(@chapter && @chapter.sections.size == 1 \
-                && @chapter.sections.first.empty?)
+                && @chapter.sections.first.empty? && check_exception?(text))
             # stay with the previous heading
           elsif(valid_chapter?(text))
             @chapter_flag = true
@@ -100,6 +100,10 @@ module ODDB
 					@format = nil
 					@target.set_format
         elsif(!@in_table)
+          # remove ' symbol of swissmedic number
+          if text =~ /\(Swissmedic\)/
+            text.gsub!(/(\d+).*?(\d+)/,'\1\2')
+          end
           text.lstrip!
           ## sometimes, ill-formated colons are not appended to a subheading. 
           #  This is fixed manually here:
@@ -145,6 +149,14 @@ module ODDB
       def set_target(target)
         return if @row
         super
+      end
+      def check_exception?(text)
+        case text.strip
+        when /Composition/u, /Zusammensetzung/u
+          false
+        else
+          true
+        end
       end
       def valid_chapter?(text)
         case text.strip
