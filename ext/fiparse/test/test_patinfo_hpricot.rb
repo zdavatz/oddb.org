@@ -162,7 +162,8 @@ Jahren   pro Tag        pro Tag     pro Tag
                                     500 mg 2\303\227       
 -----------------------------------------------------
 12-14    25 ml  3\303\227      1 Kps 3\303\227    1 Supp.         
-                                    500 mg 3\303\227
+                                    500 mg 3\303\227       
+
     EOS
     assert_equal(expected.chomp, paragraph.text)
     assert_equal(true, paragraph.preformatted?)

@@ -25,7 +25,7 @@ class TestFachinfoHpricot < Test::Unit::TestCase
       <div class="paragraph">
         <h2><a name="3300">Zusammensetzung</a></h2>
         <p class="spacing1"><span style="font-style:italic; ">Wirkstoffe:</span></p>
-        <p class="spacing1">1 Brausetablette enthält: Carbasalatum calcicum 528 mg corresp. Acidum Acetylsalicylicum 415 mg, Acidum ascorbicum 250 mg.</p>
+        <p class="spacing1">1 Brausetablette enthält: Carbasalatum calcicum 528 mg corresp. Acidum Acetylsalicylicum 415 mg, Acidum ascorbicum 250 mg.</p>
         <p class="noSpacing"><span style="font-style:italic; ">Hilfsstoffe: </span>Saccharinum, Cyclamas, Aromatica, Color.: E 120.</p>
       </div>
     HTML
@@ -48,8 +48,8 @@ class TestFachinfoHpricot < Test::Unit::TestCase
     assert_equal(11..-1, fmt.range)
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(1)
-    expected =  "1 Brausetablette enthält: Carbasalatum calcicum 528 mg corresp. Acidum Acetylsalicylicum 415 mg, Acidum ascorbicum 250 mg."
-    assert_equal(expected, paragraph.text)
+    expected =  /1 Brausetablette enth.*lt: Carbasalatum calcicum 528.*mg corresp\. Acidum Acetylsalicylicum 415.*mg, Acidum ascorbicum 250.*mg\./
+    assert_match(expected, paragraph.text)
     paragraph = section.paragraphs.at(2)
     assert_equal(2, paragraph.formats.size)
     fmt = paragraph.formats.first
@@ -58,8 +58,8 @@ class TestFachinfoHpricot < Test::Unit::TestCase
     fmt = paragraph.formats.last
     assert_equal([], fmt.values)
     assert_equal(12..-1, fmt.range)
-    expected =  "Hilfsstoffe: Saccharinum, Cyclamas, Aromatica, Color.: E 120."
-    assert_equal(expected, paragraph.text)
+    expected =  /Hilfsstoffe: Saccharinum, Cyclamas, Aromatica, Color.: E.*120./
+    assert_match(expected, paragraph.text)
   end
   def test_identify_chapter__raises_unknown_chaptercode
     assert_raises(RuntimeError) { 
@@ -109,11 +109,11 @@ class TestFachinfoHpricotAlcaCDe < Test::Unit::TestCase
     expected =  "Wirkstoffe:"
     assert_equal(expected, paragraph.text)
     paragraph = section.paragraphs.at(1)
-    expected =  "1 Brausetablette enthält: Carbasalatum calcicum 528 mg corresp. Acidum Acetylsalicylicum 415 mg, Acidum ascorbicum 250 mg."
-    assert_equal(expected, paragraph.text)
+    expected =  /1 Brausetablette enth.*lt: Carbasalatum calcicum 528.*mg corresp. Acidum Acetylsalicylicum 415.*mg, Acidum ascorbicum 250.*mg./
+    assert_match(expected, paragraph.text)
     paragraph = section.paragraphs.at(2)
-    expected =  "Hilfsstoffe: Saccharinum, Cyclamas, Aromatica, Color.: E 120."
-    assert_equal(expected, paragraph.text)
+    expected =  /Hilfsstoffe: Saccharinum, Cyclamas, Aromatica, Color.: E.*120\./
+    assert_match(expected, paragraph.text)
   end
   def test_effects1
     chapter = @fachinfo.effects
