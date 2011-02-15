@@ -203,7 +203,7 @@ module ODDB
 				assert_equal(2, section.paragraphs.size)
 				paragraph = section.paragraphs.first
 				assert_equal(true, paragraph.preformatted?)
-				expected = "First Line"
+				expected = "First Line\n"
 				assert_equal(expected, paragraph.text)
 				paragraph = section.paragraphs.last
 				assert_equal(false, paragraph.preformatted?)
