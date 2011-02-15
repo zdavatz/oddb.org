@@ -3,6 +3,11 @@
 require 'rubygems'
 require 'hoe'
 
+## To run 'rake git:manifest' you will need the 'hoe-git' gem.
+
+Hoe.plugin :git
+# Hoe.plugins.delete :clean
+
 # Hoe.plugin :compiler
 # Hoe.plugin :cucumberfeatures
 # Hoe.plugin :gem_prelude_sucks
@@ -21,6 +26,7 @@ Hoe.spec 'oddb.org' do
   # (delete this comment too, of course)
 
 developer('Masaomi Hatakeyama, Zeno R.R. Davatz', 'mhatakeyama@ywesee.com, zdavatz@ywesee.com')
+self.local_rdoc_dir = 'rdoc'
 
   # self.rubyforge_name = 'oddb.orgx' # if different than 'oddb.org'
 end
