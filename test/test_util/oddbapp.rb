@@ -736,14 +736,20 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.fachinfos = { 1 => "foo", "1" =>	"bar"}
 		assert_equal("foo", @app.fachinfo("1"))
 		assert_equal("foo", @app.fachinfo(1))
-	end	
+        end
+        def test_create_orphaned_fachinfo
+                pointer = ODDB::Persistence::Pointer.new([:orphaned_fachinfo])
+                assert_equal({}, @app.orphaned_fachinfos)
+                orph = @app.create(pointer)
+                assert_instance_of(ODDB::OrphanedTextInfo, orph)
+                assert_equal({orph.oid => orph}, @app.orphaned_fachinfos)
+        end
 	def test_create_orphaned_patinfo
 		pointer = ODDB::Persistence::Pointer.new([:orphaned_patinfo])
 		assert_equal({}, @app.orphaned_patinfos)
 		orph = @app.create(pointer)
 		assert_instance_of(ODDB::OrphanedTextInfo, orph)
 		assert_equal({orph.oid => orph}, @app.orphaned_patinfos)
-		
 	end
 	def test_delete_orphan_patinfo
 		@app.orphaned_patinfos = { 1 => "foo" }
@@ -755,7 +761,7 @@ class TestOddbApp < Test::Unit::TestCase
 		update_hash = {
 			'key'			=>	'12345',
 			'de'      =>	'iksnr',
-		}		
+		}
 		orph = ODDB::OrphanedTextInfo.new
 		@app.orphaned_patinfos = { 1 => orph }
 		pointer = ODDB::Persistence::Pointer.new([:orphaned_patinfo, 1])
@@ -1003,6 +1009,15 @@ class TestOddbApp < Test::Unit::TestCase
     end
     assert_equal(sponsor, @app.create_sponsor('flavor'))
   end
+  def test_create_index_therapeuticus_code
+      index_therapeuticus = flexmock('index_therapeuticus') do |int|
+        int.should_receive(:code)
+      end
+      flexmock(ODDB::IndexTherapeuticus) do |int|
+        int.should_receive(:new).and_return(index_therapeuticus)
+      end
+      assert_equal(index_therapeuticus, @app.create_index_therapeuticus('code'))
+  end  
   def same?(result1, result2)
     #result1.atc_classes   == result2.atc_classes   and\
     result1.atc_classes.size == result2.atc_classes.size  and\
