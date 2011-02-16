@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# TestOddbApp -- oddb.org -- 16.02.2011 -- mhatakeyama@ywesee.com 
+# TestOddbApp -- oddb.org -- 16.02.2011 -- mhatakeyama@ywesee.com, zdavatz@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -948,7 +948,60 @@ class TestOddbApp < Test::Unit::TestCase
       fb.should_receive(:new).and_return(feedback)
     end
     assert_equal(feedback, @app.create_feedback)
-
+  end
+  def test_create_invoice
+    invoice = flexmock('invoice') do |inv|
+      inv.should_receive(:oid)
+    end
+    flexmock(ODDB::Invoice) do |inv|
+      inv.should_receive(:new).and_return(invoice)
+    end
+    assert_equal(invoice, @app.create_invoice)
+  end
+  def test_create_address_suggestion
+    address_suggestion = flexmock('address_suggestion') do |ads|
+      ads.should_receive(:oid)
+    end
+    flexmock(ODDB::AddressSuggestion) do |ads|
+      ads.should_receive(:new).and_return(address_suggestion)
+    end
+    assert_equal(address_suggestion, @app.create_address_suggestion)
+  end
+  def test_create_minifi
+    minifi = flexmock('minifi') do |mfi|
+      mfi.should_receive(:oid)
+    end
+    flexmock(ODDB::MiniFi) do |mfi|
+      mfi.should_receive(:new).and_return(minifi)
+    end
+    assert_equal(minifi, @app.create_minifi)
+  end
+  def test_create_narcotic
+    narcotic = flexmock('narcotic') do |nar|
+      nar.should_receive(:oid)
+    end
+    flexmock(ODDB::Narcotic) do |nar|
+      nar.should_receive(:new).and_return(narcotic)
+    end
+    assert_equal(narcotic, @app.create_narcotic)
+  end
+  def test_create_slate_name
+    slate = flexmock('slate') do |sla|
+      sla.should_receive(:oid)
+    end
+    flexmock(ODDB::Slate) do |sla|
+      sla.should_receive(:new).and_return(slate)
+    end
+    assert_equal(slate, @app.create_slate(name))
+  end
+  def test_create_sponsor_flavor
+    sponsor = flexmock('sponsor') do |spo|
+      spo.should_receive(:oid)
+    end
+    flexmock(ODDB::Sponsor) do |spo|
+      spo.should_receive(:new).and_return(sponsor)
+    end
+    assert_equal(sponsor, @app.create_sponsor('flavor'))
   end
 
 =begin
