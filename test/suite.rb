@@ -1,42 +1,35 @@
 #!/usr/bin/env ruby
-# suite.rb -- oddb.org -- 15.02.2011 -- mhatakeyama@ywesee.com 
+# suite.rb -- oddb.org -- 16.02.2011 -- mhatakeyama@ywesee.com 
 
 $: << File.dirname(__FILE__)
 
 require 'tempfile'
 
-directories = []
-
-Dir.foreach(File.dirname(__FILE__)) { |dir|
-	if /^test_.*/o.match(dir)
-		directories << File.expand_path(dir, File.dirname(__FILE__))
-	end
-}
+dir = File.expand_path(File.dirname(__FILE__))
+directories = [
+  "#{dir}/test_model/suite.rb",
+  "#{dir}/test_plugin/suite.rb",
+  "#{dir}/test_state/suite.rb",
+  "#{dir}/test_util/suite.rb",
+  "#{dir}/test_view/suite.rb",
+  "#{dir}/../ext/suite.rb",
+]
 
 rcov = true
 coverage = nil
-#command = 'system "rcov #{path} -t --aggregate #{coverage.path} >> #{temp_out.path 2>/dev/null}"'
 command = 'system "rcov #{path} -t --aggregate #{coverage.path} >> #{temp_out.path}"'
 begin
   Rcov
   coverage = Tempfile.new('coverage')
-#  p coverage.path
 rescue
   rcov = false
   command = 'system "ruby #{path} >> #{temp_out.path}"'
 end
 
 temp_out = Tempfile.new('temp_out')
-directories.each_with_index { |dir, i|
-	if(File.ftype(dir) == 'directory')
-		Dir.foreach(dir) { |file|
-			if /suite.rb$/o.match(file)
-				path = File.expand_path(file, dir)
-        puts "\nNow testing #{path}\n"
-        eval(command)
-			end
-		}
-	end
+directories.each_with_index { |path, i|
+  puts "\nNow testing #{path}\n"
+  eval(command)
 }
 
 # report output
