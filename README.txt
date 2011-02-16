@@ -1,7 +1,7 @@
 = oddb.org
 
 * http://scm.ywesee.com/?p=oddb.org/.git;a=summary
-* http://choddb.rubyforge.org/ - best for documentation.
+* http://choddb.rubyforge.org/
 
 == DESCRIPTION:
 
@@ -22,6 +22,11 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 * to run the Tests you need to do
   * rcov test/suite.rb
   * look at the index.html in the coverage directory
+
+== LOCAL DOCUMENTATION:
+
+* To build your local documentation do:
+  * rdoc1.9 --op documentation
 
 == INSTALL:
 
