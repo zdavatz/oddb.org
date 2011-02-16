@@ -1,6 +1,7 @@
 = oddb.org
 
 * http://scm.ywesee.com/?p=oddb.org/.git;a=summary
+* http://choddb.rubyforge.org/ - best for documentation.
 
 == DESCRIPTION:
 
@@ -15,6 +16,12 @@ Open Drug Database for Switzerland. See the live version at http://ch.oddb.org
 == REQUIREMENTS:
 
 * see Guide.txt
+
+== TESTS:
+
+* to run the Tests you need to do
+  * rcov test/suite.rb
+  * look at the index.html in the coverage directory
 
 == INSTALL:
 
