@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# TestOddbApp -- oddb -- 15.11.2002 -- hwyss@ywesee.com 
+# TestOddbApp -- oddb.org -- 16.02.2011 -- mhatakeyama@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -47,6 +47,7 @@ module ODDB
 end
 
 class TestOddbApp < Test::Unit::TestCase
+  include FlexMock::TestCase
 	class StubCompany
 		attr_accessor	:oid
 		def initialize
@@ -172,6 +173,17 @@ class TestOddbApp < Test::Unit::TestCase
     ODBA.storage.reset_id
 		dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
 		@app = ODDB::App.new
+=begin
+    @yus = flexmock('yus')
+    flexmock(ODDB::App::YUS_SERVER) do |yus|
+      yus.should_receive(:login)
+      yus.should_receive(:login_token)
+    end
+    flexmock(ODDB::YusUser) do |yus|
+      yus.should_receive(:new).and_return(@yus)
+    end
+=end
+
 	end
 	def teardown
 		ODBA.storage = nil
@@ -806,4 +818,165 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_equal(sub1, @app.substance_by_smcd('SMCD'))
 		assert_nil(@app.substance_by_smcd('unknown'))
 	end
+  def test_login
+=begin
+    flexmock(ODDB::App::YUS_SERVER) do |yus|
+      yus.should_receive(:login)
+    end
+    #@yus = flexmock('yus')
+    flexmock(ODDB::YusUser) do |yus|
+      yus.should_receive(:new).and_return(@yus)
+    end
+=end
+    @yus = flexmock('yus')
+    flexmock(ODDB::App::YUS_SERVER) do |yus|
+      yus.should_receive(:login)
+      yus.should_receive(:login_token)
+    end
+    flexmock(ODDB::YusUser) do |yus|
+      yus.should_receive(:new).and_return(@yus)
+    end
+
+    assert_equal(@yus, @app.login('email','pass'))
+  end
+=begin
+  def test_login_token
+    flexmock(ODDB::App::YUS_SERVER) do |yus|
+      yus.should_receive(:login_token)
+    end
+    #yus = flexmock('yus')
+    #flexmock(ODDB::YusUser) do |yus|
+    #  yus.should_receive(:new).and_return(@yus)
+    #end
+    assert_equal(@yus, @app.login_token('email','token'))
+  end
+=end
+  def test_logout
+    flexmock(ODDB::App::YUS_SERVER) do |yus|
+      yus.should_receive(:logout).and_return('logout')
+    end
+    assert_equal('logout', @app.logout('session'))
+  end
+  def test_reset
+    assert_equal({}, @app.reset)
+  end
+  def test_peer_cache
+    flexmock(ODBA) do |odba|
+      odba.should_receive(:peer).once.with('cache').and_return('peer')
+    end
+    assert_equal('peer', @app.peer_cache('cache'))
+  end
+  def test_unpeer_cache
+    flexmock(ODBA) do |odba|
+      odba.should_receive(:unpeer).once.with('cache').and_return('unpeer')
+    end
+    assert_equal('unpeer', @app.unpeer_cache('cache'))
+  end
+  def test_ipn
+    flexmock(ODDB::Util::Ipn) do |ipn|
+      ipn.should_receive(:process).once.with('notification', ODDB::App)
+    end
+    assert_equal(nil, @app.ipn('notification'))
+  end
+  def test_yus_allowed?
+    @session = flexmock('session') do |ses|
+      ses.should_receive(:entity_allowed?).once.with('email', 'action', 'key')\
+        .and_return('session')
+      ses.should_receive(:create_entity).once.with('email', 'pass')\
+        .and_return('session')
+    end
+    flexmock(ODDB::App::YUS_SERVER) do |yus|
+      yus.should_receive(:autosession).and_yield(@session)
+    end
+    assert_equal('session', @app.yus_allowed?('email', 'action', 'key'))
+  end
+  def test_active_fachinfos
+    assert_equal({}, @app.active_fachinfos)
+  end
+  def test_active_pdf_patinfos
+    assert_equal({}, @app.active_pdf_patinfos)
+  end
+  def test_address_suggestion
+    assert_equal(nil, @app.address_suggestion('12345'))
+  end
+  def test_analysis_group
+    assert_equal(nil, @app.analysis_group(0))
+  end
+  def test_analysis_positions
+    assert_equal([], @app.analysis_positions)
+  end
+  def test_create_analysis_group
+    group = flexmock('group') 
+    flexmock(ODDB::Analysis::Group) do |grp|
+      grp.should_receive(:new).and_return(group)
+    end
+    assert_equal(group, @app.create_analysis_group(0))
+  end
+  def test_create_commercial_form
+    form = flexmock('form') do |frm|
+      frm.should_receive(:oid)
+    end
+    flexmock(ODDB::CommercialForm) do |frm|
+      frm.should_receive(:new).and_return(form)
+    end
+    assert_equal(form, @app.create_commercial_form)
+  end
+  def test_create_hospital
+    hospital = flexmock('hospital') do |hos|
+      hos.should_receive(:oid)
+    end
+    flexmock(ODDB::Hospital) do |hos|
+      hos.should_receive(:new).and_return(hospital)
+    end
+    assert_equal(hospital, @app.create_hospital(0))
+  end
+  def test_create_fachinfo
+    fachinfo = flexmock('fachinfo') do |fi|
+      fi.should_receive(:oid)
+    end
+    flexmock(ODDB::Fachinfo) do |fi|
+      fi.should_receive(:new).and_return(fachinfo)
+    end
+    assert_equal(fachinfo, @app.create_fachinfo)
+
+  end
+  def test_create_feedback
+    feedback = flexmock('feedback') do |fb|
+      fb.should_receive(:oid)
+    end
+    flexmock(ODDB::Feedback) do |fb|
+      fb.should_receive(:new).and_return(feedback)
+    end
+    assert_equal(feedback, @app.create_feedback)
+
+  end
+
+=begin
+  def test_yus_create_user
+    # session definition should be here
+    assert_equal(@yus, @app.yus_create_user('email', 'pass'))
+  end
+=end
+=begin
+  def test_admin_subsystem
+    flexstub(ODBA).should_receive(:"cache.fetch_named")
+    assert_equal('', @app.admin_subsystem)
+  end
+=end
+=begin
+  def test_admin
+  end
+=end
+=begin
+  def test_create_user
+    user = flexmock('user') do |user|
+      user.should_receive(:oid).and_return('oid')
+    end
+    flexstub(ODDB::CompanyUser) do |comp|
+      comp.should_receive(:new).and_return(user)
+    end
+#    assert_equal(user, @app.create_user)
+    assert(false)
+  end
+=end
 end
