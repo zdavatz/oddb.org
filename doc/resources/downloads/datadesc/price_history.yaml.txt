@@ -52,4 +52,4 @@ Versionsnummern bezeichnen Änderungen nach dem Schema "Major.Minor.Documentatio
 - Minor:         Kleinere Änderungen am Export (z.B. Refactoring von Adressangaben in eine Address2-Klasse)
 - Documentation: Ergänzungen und Änderungen im Datenbeschrieb, die keine Änderung des Exports als Ursache haben.
 Die komplette Version-History ist zu finden unter:
-http://scm.ywesee.com/?p=oddb.org;a=history;f=doc/resources/downloads/datadesc/price_history.yaml.txt
+http://scm.ywesee.com/?p=oddb.org/.git;a=history;f=doc/resources/downloads/datadesc/price_history.yaml.txt
