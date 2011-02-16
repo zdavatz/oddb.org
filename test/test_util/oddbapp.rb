@@ -1003,6 +1003,57 @@ class TestOddbApp < Test::Unit::TestCase
     end
     assert_equal(sponsor, @app.create_sponsor('flavor'))
   end
+  def same?(result1, result2)
+    #result1.atc_classes   == result2.atc_classes   and\
+    result1.atc_classes.size == result2.atc_classes.size  and\
+    result1.search_type      == result2.search_type   and\
+    result1.display_limit    == result2.display_limit and\
+    result1.relevance        == result2.relevance     and\
+    result1.search_query     == result2.search_query 
+  end
+  def test_search_oddb
+    expected = ODDB::SearchResult.new
+    expected.atc_classes = []
+    expected.search_type=:unwanted_effect
+    #assert_equal(expected, @app.search_oddb('query', 'lang'))
+    assert(same?(expected, @app.search_oddb('query', 'lang')))
+  end
+  def test_search_oddb__atc_class
+    expected = ODDB::SearchResult.new
+    expected.atc_classes = ['atc']
+    expected.search_type=:atcless
+    expected.search_query = 'atcless'
+    #assert_equal(expected, @app.search_oddb('atcless', 'lang'))
+    assert(same?(expected, @app.search_oddb('atcless', 'lang')))
+  end
+  def test_search_oddb__iksnr
+    reg = flexmock('registration') do |reg|
+      reg.should_receive(:sequences).and_return({})
+    end
+    @app.registrations = {'12345'=>reg}
+    expected = ODDB::SearchResult.new
+    expected.atc_classes = ['atc']
+    expected.search_type=:iksnr
+    expected.search_query = '12345'
+    #assert_equal(expected, @app.search_oddb('12345', 'lang'))
+    assert(same?(expected, @app.search_oddb('12345', 'lang')))
+  end
+  def test_search_oddb__pharmacode
+    package = flexmock('package') do |pac|
+      pac.should_receive(:"sequence.seqnr")
+      pac.should_receive(:registration)
+      pac.should_receive(:ikscd)
+    end
+    flexstub(ODDB::Package) do |pac|
+      pac.should_receive(:find_by_pharmacode).and_return(package)
+    end
+    expected = ODDB::SearchResult.new
+    expected.atc_classes = ['atc']
+    expected.search_type=:pharmacode
+    expected.search_query = '123456'
+    #assert_equal(expected, @app.search_oddb('123456', 'lang'))
+    assert(same?(expected, @app.search_oddb('123456', 'lang')))
+  end
 
 =begin
   def test_yus_create_user
