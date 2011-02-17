@@ -1266,6 +1266,10 @@ class TestOddbApp < Test::Unit::TestCase
     @app.registrations = {'oid' => 'registration'}
     assert_equal('registration', @app.delete_registration('oid'))
   end
+  def test_delete_orphaned_fachinfo
+    @app.orphaned_fachinfos = {123 => 'orphaned_fachinfos'}
+    assert_equal('orphaned_fachinfos', @app.delete_orphaned_fachinfo('123'))
+  end
 
   def setup_assign_effective_forms
     sequence = flexmock('sequence') do |seq|
