@@ -1126,23 +1126,42 @@ class TestOddbApp < Test::Unit::TestCase
   def test_vaccine_count
     assert_equal(0, @app.vaccine_count)
   end
-  def test_create_commercial_forms
-    flexstub(@app) do |app|
+  def setup_create_commercial_forms
+   flexstub(@app) do |app|
       app.should_receive(:system).and_return(@app.instance_eval('@system'))
     end
     flexstub(@app.system) do |sys|
       sys.should_receive(:update)
     end
-    package = flexmock(ODDB::Package) do |pac|
-      pac.should_receive(:comform).and_return('')
+    package = flexmock('package') do |pac|
+      pac.should_receive(:comform).and_return('possibility')
       pac.should_receive(:commercial_form=)
       pac.should_receive(:odba_store)
     end
-    registration = flexmock('registration') do |reg|
+    @registration = flexmock('registration') do |reg|
       reg.should_receive(:each_package).and_yield(package)
     end
-    @app.registrations = {'12345' => registration}
-    assert_equal({'12345' => registration}, @app.create_commercial_forms)
+    @app.registrations = {'12345' => @registration}
+  end
+  def test_create_commercial_forms
+    setup_create_commercial_forms
+    assert_equal({'12345' => @registration}, @app.create_commercial_forms)
+  end
+  def test_create_commercial_forms__commercial_form
+    setup_create_commercial_forms
+    flexstub(ODDB::CommercialForm) do |frm|
+      frm.should_receive(:find_by_name).and_return('commercial_form')
+    end
+    @app.registrations = {'12345' => @registration}
+    galenicform = flexmock('galenicform') do |gf|
+      gf.should_receive(:description)
+      gf.should_receive(:synonyms)
+    end
+    galenicgroup = flexmock('galenicgroup') do |gg|
+      gg.should_receive(:get_galenic_form).and_return(galenicform)
+    end
+    @app.galenic_groups = {'12345'=> galenicgroup}
+    assert_equal({'12345' => @registration}, @app.create_commercial_forms)
   end
   def test_merge_commercial_forms
     source = flexmock('source') do |sou|
@@ -1218,6 +1237,14 @@ class TestOddbApp < Test::Unit::TestCase
       klass.should_receive(:new).and_return(command)
     end
     assert_equal(nil, @app.merge_substances(source, target))
+  end
+  def test_delete_fachinfo
+    @app.fachinfos = {'oid' => 'fachinfo'}
+    assert_equal('fachinfo', @app.delete_fachinfo('oid'))
+  end
+  def test_delete_indication
+    @app.indications = {'oid' => 'indication'}
+    assert_equal('indication', @app.delete_indication('oid'))
   end
 
 end
