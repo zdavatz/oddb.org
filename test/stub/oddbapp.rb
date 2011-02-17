@@ -11,7 +11,7 @@ class OddbPrevalence
 	attr_accessor :last_medication_update
 	attr_reader :sequence_index, :indication_index, :substance_index
 	attr_reader :patinfos
-	attr_writer :fachinfos, :orphaned_patinfos, :indices_therapeutici, :invoices, :minifis, :migel_groups, :orphaned_fachfinos, :patinfos, :registrations, :substances
+	attr_writer :fachinfos, :orphaned_patinfos, :indices_therapeutici, :invoices, :minifis, :migel_groups, :orphaned_fachinfos, :patinfos, :registrations, :substances
 	attr_writer :substance_index, :soundex_substances
 	#public :rebuild_indices
 	def all_soundex_substances
