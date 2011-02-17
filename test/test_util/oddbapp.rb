@@ -1069,6 +1069,12 @@ class TestOddbApp < Test::Unit::TestCase
     #assert_equal(expected, @app.search_oddb('123456', 'lang'))
     assert(same?(expected, @app.search_oddb('123456', 'lang')))
   end
+  def test_count_atc_ddd
+    assert_equal(0, @app.count_atc_ddd)
+  end
+  def test_atc_ddd_count
+    assert_equal(0, @app.atc_ddd_count)
+  end
 
 =begin
   def test_yus_create_user
