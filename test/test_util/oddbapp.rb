@@ -551,10 +551,10 @@ class TestOddbApp < Test::Unit::TestCase
 		group = StubGalenicGroup.new
 		@app.galenic_groups = {
 			12345	=>	group,
-		}	
+		}
 		group.galenic_form = StubGalenicForm.new('Tabletten')
 		assert_equal(false, group.empty?)
-		assert_raises(RuntimeError) { @app.delete_galenic_group('12345') } 
+		assert_raises(RuntimeError) { @app.delete_galenic_group('12345') }
 		group.galenic_form = nil
 		assert_nothing_raised {@app.delete_galenic_group('12345')}
 	end
@@ -686,7 +686,7 @@ class TestOddbApp < Test::Unit::TestCase
 		galgroup1.galenic_form=1
 		galgroup2.galenic_form=2
 		galgroup3.galenic_form=3
-		@app.galenic_groups = { 
+		@app.galenic_groups = {
 			1 => galgroup1,
 			2 => galgroup2,
 			3 => galgroup3,
@@ -705,9 +705,21 @@ class TestOddbApp < Test::Unit::TestCase
 			'reg3'	=>	StubRegistration.new,
 		}
 		@app.instance_variable_get('@system').instance_variable_set('@package_count', nil)
-		count = @app.package_count	
+		count = @app.package_count
 		assert_equal(9,count)
 	end
+=begin
+        def test_patinfo_count
+                @app.registrations = {
+                        'reg1'  =>      StubRegistration.new,
+                        'reg2'  =>      StubRegistration.new,
+                        'reg3'  =>      StubRegistration.new,
+                }
+                @app.instance_variable_get('@system').instance_variable_set('@patinfo_count', nil)
+                count = @app.patinfo_count
+                assert_equal(9,count)
+        end
+=end
 	def test_last_medication_update
 		@app.last_medication_update = Date.new(1977-07-07)
 		@app.create(ODDB::Persistence::Pointer.new([:atc_class, 'A']))
@@ -1024,7 +1036,7 @@ class TestOddbApp < Test::Unit::TestCase
     result1.search_type      == result2.search_type   and\
     result1.display_limit    == result2.display_limit and\
     result1.relevance        == result2.relevance     and\
-    result1.search_query     == result2.search_query 
+    result1.search_query     == result2.search_query
   end
   def test_search_oddb
     expected = ODDB::SearchResult.new
@@ -1074,6 +1086,45 @@ class TestOddbApp < Test::Unit::TestCase
   end
   def test_atc_ddd_count
     assert_equal(0, @app.atc_ddd_count)
+  end
+  def test_count_limitation_text_count
+    assert_equal(0, @app.limitation_text_count)
+  end
+  def test_migel_count
+    assert_equal(0, @app.migel_count)
+  end
+  def test_patinfo_count
+    assert_equal(0, @app.patinfo_count)
+  end
+  def test_recent_registration_count
+    assert_equal(0, @app.recent_registration_count)
+  end
+  def test_company_count
+    assert_equal(0, @app.company_count)
+  end
+  def test_count_vaccines
+    assert_equal(0, @app.count_vaccines)
+  end
+  def test_analysis_count
+    assert_equal(0, @app.analysis_count)
+  end
+  def test_hospital_count
+    assert_equal(0, @app.hospital_count)
+  end
+  def test_doctor_count
+    assert_equal(0, @app.doctor_count)
+  end
+  def test_fachinfo_count
+    assert_equal(0, @app.fachinfo_count)
+  end
+  def test_narcotics_count
+    assert_equal(0, @app.narcotics_count)
+  end
+  def test_substance_count
+    assert_equal(0, @app.substance_count)
+  end
+  def test_vaccine_count
+    assert_equal(0, @app.vaccine_count)
   end
 
 =begin
