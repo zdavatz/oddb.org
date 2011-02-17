@@ -1266,11 +1266,30 @@ class TestOddbApp < Test::Unit::TestCase
     @app.registrations = {'oid' => 'registration'}
     assert_equal('registration', @app.delete_registration('oid'))
   end
+  def test_delete_commercial_form
+    @app.commercial_forms = {'oid' => 'commercial_form'}
+    assert_equal('commercial_form', @app.delete_commercial_form('oid'))
+  end
+  def test_delete_atc_class
+    @app.atc_classes = {'oid' => 'atc_class'}
+    assert_equal('atc_class', @app.delete_atc_class('oid'))
+  end
+  def test_delete_address_suggestion
+    @app.address_suggestions = {'oid' => 'address_suggestion'}
+    assert_equal('address_suggestion', @app.delete_address_suggestion('oid'))
+  end
   def test_delete_orphaned_fachinfo
     @app.orphaned_fachinfos = {123 => 'orphaned_fachinfos'}
     assert_equal('orphaned_fachinfos', @app.delete_orphaned_fachinfo('123'))
   end
-
+  def test_delete_minifi
+    @app.minifis = {123 => 'minifis'}
+    assert_equal('minifis', @app.delete_minifi('123'))
+  end
+  def test_delete_substances
+    @app.substances = {123 => 'substances'}
+    assert_equal('substances', @app.delete_substance('123'))
+  end
   def setup_assign_effective_forms
     sequence = flexmock('sequence') do |seq|
       seq.should_receive(:delete_active_agent)
