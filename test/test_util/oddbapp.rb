@@ -1125,6 +1125,7 @@ class TestOddbApp < Test::Unit::TestCase
   end
   def test_vaccine_count
     assert_equal(0, @app.vaccine_count)
+  end
   def test_create_commercial_forms
     flexstub(@app) do |app|
       app.should_receive(:system).and_return(@app.instance_eval('@system'))
@@ -1143,33 +1144,19 @@ class TestOddbApp < Test::Unit::TestCase
     @app.registrations = {'12345' => registration}
     assert_equal({'12345' => registration}, @app.create_commercial_forms)
   end
-
-=begin
-  def test_yus_create_user
-    # session definition should be here
-    assert_equal(@yus, @app.yus_create_user('email', 'pass'))
-  end
-=end
-=begin
-  def test_admin_subsystem
-    flexstub(ODBA).should_receive(:"cache.fetch_named")
-    assert_equal('', @app.admin_subsystem)
-  end
-=end
-=begin
-  def test_admin
-  end
-=end
-=begin
-  def test_create_user
-    user = flexmock('user') do |user|
-      user.should_receive(:oid).and_return('oid')
+  def test_merge_commercial_forms
+    source = flexmock('source') do |sou|
+      sou.should_receive(:pointer)
     end
-    flexstub(ODDB::CompanyUser) do |comp|
-      comp.should_receive(:new).and_return(user)
+    target = flexmock('target') do |tar|
+      tar.should_receive(:pointer)
     end
-#    assert_equal(user, @app.create_user)
-    assert(false)
+    command = flexmock('command') do |com|
+        com.should_receive(:execute)
+    end
+    flexstub(ODDB::MergeCommand) do |klass|
+      klass.should_receive(:new).and_return(command)
+    end
+    assert_equal(nil, @app.merge_commercial_forms(source, target))
   end
-=end
 end
