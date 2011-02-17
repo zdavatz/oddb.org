@@ -1318,13 +1318,36 @@ class TestOddbApp < Test::Unit::TestCase
     setup_assign_effective_forms
     assert_equal(nil, @app.assign_effective_forms)
   end
-=begin
   def test_assign_effective_forms__other_name
+    setup_assign_effective_forms
+    flexstub(@app) do |app|
+      app.should_receive(:system).and_return(@app.instance_eval('@system'))
+    end
+    flexstub(@app.system) do |sys|
+      sys.should_receive(:update).and_return(@substance)
+    end
+
     def $stdin.readline
       'c abc'
     end
-    setup_assign_effective_forms
     assert_equal(nil, @app.assign_effective_forms)
+  end
+  def test_assign_effective_forms__else
+    def $stdin.readline
+      'abc'
+    end
+    setup_assign_effective_forms
+    flexstub(@app) do |app|
+      app.should_receive(:system).and_return(@app.instance_eval('@system'))
+    end
+    flexstub(@app.system) do |sys|
+      sys.should_receive(:substance).and_return(@substance)
+    end
+    assert_equal(nil, @app.assign_effective_forms)
+  end
+=begin
+  def test_inject_poweruser
+    assert_equal('', @app.inject_poweruser('email', 'pass', 'days'))
   end
 =end
 end
