@@ -1368,9 +1368,53 @@ class TestOddbApp < Test::Unit::TestCase
     end
     assert_equal(nil, @app.assign_effective_forms)
   end
-=begin
   def test_inject_poweruser
-    assert_equal('', @app.inject_poweruser('email', 'pass', 'days'))
+    flexstub(@app) do |app|
+      app.should_receive(:system).and_return(@app.instance_eval('@system'))
+    end
+    pointer = flexmock('pointer') do |poi|
+      poi.should_receive(:creator)
+    end
+    flexstub(pointer) do |poi|
+      poi.should_receive(:"+").and_return(pointer)
+    end
+    flexstub(@app.system) do |sys|
+      sys.should_receive(:update).and_return(flexmock('user_or_invoice') do |ui|
+        ui.should_receive(:pointer).and_return(pointer)
+        ui.should_receive(:payment_received!)
+        ui.should_receive(:add_invoice)
+        ui.should_receive(:odba_isolated_store).and_return('odba_isolated_store')
+      end)
+    end
+    assert_equal('odba_isolated_store', @app.inject_poweruser('email', 'pass', 10.0))
+  end
+  def test_rebuild_indices
+    flexstub(ODBA.cache) do |cache|
+      cache.should_receive(:indices).and_return([])
+      cache.should_receive(:create_index)
+    end
+    assert_equal(nil, @app.rebuild_indices)
+  end
+  def test_accept_orphaned
+    flexstub(@app) do |app|
+      app.should_receive(:system).and_return(@app.instance_eval('@system'))
+    end
+    flexstub(@app.system) do |sys|
+      sys.should_receive(:execute_command)
+    end
+    assert_equal(nil, @app.accept_orphaned('orphan', 'pointer', :symbol))
+  end
+  def test_clean
+    assert_equal(nil, @app.clean)
+  end
+=begin
+  def test_rebuild_indices__error
+    flexstub(ODBA.cache) do |cache|
+      cache.should_receive(:indices).and_return([])
+      cache.should_receive(:create_index).and_raise(StandardError)
+    end
+    assert_equal(nil, @app.rebuild_indices)
   end
 =end
+
 end
