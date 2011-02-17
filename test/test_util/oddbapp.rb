@@ -1159,4 +1159,65 @@ class TestOddbApp < Test::Unit::TestCase
     end
     assert_equal(nil, @app.merge_commercial_forms(source, target))
   end
+  def test_merge_companies
+    source = flexmock('source') do |sou|
+      sou.should_receive(:pointer)
+    end
+    target = flexmock('target') do |tar|
+      tar.should_receive(:pointer)
+    end
+    command = flexmock('command') do |com|
+      com.should_receive(:execute)
+    end
+    flexstub(ODDB::MergeCommand) do |klass|
+      klass.should_receive(:new).and_return(command)
+    end
+    assert_equal(nil, @app.merge_companies(source, target))
+  end
+  def test_merge_galenic_forms
+    source = flexmock('source') do |sou|
+      sou.should_receive(:pointer)
+    end
+    target = flexmock('target') do |tar|
+      tar.should_receive(:pointer)
+    end
+    command = flexmock('command') do |com|
+      com.should_receive(:execute)
+    end
+    flexstub(ODDB::MergeCommand) do |klass|
+      klass.should_receive(:new).and_return(command)
+    end
+    assert_equal(nil, @app.merge_galenic_forms(source, target))
+  end
+  def test_merge_indications
+    source = flexmock('source') do |sou|
+      sou.should_receive(:pointer)
+    end
+    target = flexmock('target') do |tar|
+      tar.should_receive(:pointer)
+    end
+    command = flexmock('command') do |com|
+      com.should_receive(:execute)
+    end
+    flexstub(ODDB::MergeCommand) do |klass|
+      klass.should_receive(:new).and_return(command)
+    end
+    assert_equal(nil, @app.merge_indications(source, target))
+    end
+  def test_merge_substances
+    source = flexmock('source') do |sou|
+      sou.should_receive(:pointer)
+    end
+    target = flexmock('target') do |tar|
+      tar.should_receive(:pointer)
+    end
+    command = flexmock('command') do |com|
+      com.should_receive(:execute)
+    end
+    flexstub(ODDB::MergeCommand) do |klass|
+      klass.should_receive(:new).and_return(command)
+    end
+    assert_equal(nil, @app.merge_substances(source, target))
+  end
+
 end
