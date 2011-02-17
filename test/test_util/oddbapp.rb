@@ -19,6 +19,8 @@ require 'flexmock'
 require 'util/oddbapp'
 
 module ODDB
+  class PowerUser; end
+  class CompanyUser; end
 	class RootUser
 		def initialize
 			@oid = 0
@@ -801,6 +803,10 @@ class TestOddbApp < Test::Unit::TestCase
 		}
 		assert_equal(doc2, @app.doctor_by_origin(:doc, 4567))
 	end
+  def test_doctor_by_origin__nil
+		@app.doctors = {}
+		assert_equal(nil, @app.doctor_by_origin(:doc, 4567))
+  end
 	def test_create_migel_group
 		group = @app.create_migel_group('03')
 		assert_instance_of(ODDB::Migel::Group, group)
@@ -909,7 +915,13 @@ class TestOddbApp < Test::Unit::TestCase
     assert_equal('session', @app.yus_allowed?('email', 'action', 'key'))
   end
   def test_active_fachinfos
-    assert_equal({}, @app.active_fachinfos)
+    registration = flexmock('registration') do |reg|
+      reg.should_receive(:active?).and_return(true)
+      reg.should_receive(:fachinfo).and_return(true)
+      reg.should_receive(:pointer).and_return('registration')
+    end
+    @app.registrations = {'registration' => registration}
+    assert_equal({'registration' => 1}, @app.active_fachinfos)
   end
   def test_active_pdf_patinfos
     assert_equal({}, @app.active_pdf_patinfos)
@@ -1286,9 +1298,13 @@ class TestOddbApp < Test::Unit::TestCase
     @app.minifis = {123 => 'minifis'}
     assert_equal('minifis', @app.delete_minifi('123'))
   end
-  def test_delete_substances
-    @app.substances = {123 => 'substances'}
-    assert_equal('substances', @app.delete_substance('123'))
+  def test_delete_substance
+    @app.substances = {123 => 'substance'}
+    assert_equal('substance', @app.delete_substance('123'))
+  end
+  def test_delete_substance__downcase
+    @app.substances = {'abc' => 'substance'}
+    assert_equal('substance', @app.delete_substance('abc'))
   end
   def setup_assign_effective_forms
     sequence = flexmock('sequence') do |seq|
@@ -1407,14 +1423,116 @@ class TestOddbApp < Test::Unit::TestCase
   def test_clean
     assert_equal(nil, @app.clean)
   end
-=begin
-  def test_rebuild_indices__error
-    flexstub(ODBA.cache) do |cache|
-      cache.should_receive(:indices).and_return([])
-      cache.should_receive(:create_index).and_raise(StandardError)
-    end
-    assert_equal(nil, @app.rebuild_indices)
+  def test_admin
+    @app.users = {123 => 'user'}
+    assert_equal('user', @app.admin('123'))
   end
-=end
-
+  def test_currencies
+    assert_equal([], @app.currencies)
+  end
+  def test_hospital
+    assert_equal(nil, @app.hospital('ean13'))
+  end
+  def test_each_atc_class
+    assert_equal({}, @app.each_atc_class)
+  end
+  def test_each_migel_product
+    subgroup = flexmock('subgroup') do |grp|
+      grp.should_receive(:products).and_return({'product' => 'product'})
+    end
+    group = flexmock('group') do |grp|
+      grp.should_receive(:subgroups).and_return({'subgroup' => subgroup})
+    end
+    @app.migel_groups = {'group' => group}
+    assert_equal({'group' => group}, @app.each_migel_product{})
+  end
+  def test_migel_products
+    subgroup = flexmock('subgroup') do |grp|
+      grp.should_receive(:products).and_return({'product' => 'product'})
+    end
+    group = flexmock('group') do |grp|
+      grp.should_receive(:subgroups).and_return({'subgroup' => subgroup})
+    end
+    @app.migel_groups = {'group' => group}
+    assert_equal(['product'], @app.migel_products)
+  end
+  def test_migel_product
+    subgroup = flexmock('subgroup') do |sub|
+      sub.should_receive(:product).and_return('product')
+    end
+    group = flexmock('group') do |grp|
+      grp.should_receive(:subgroup).and_return(subgroup)
+    end
+    @app.migel_groups = {'1' => group}
+    assert_equal('product', @app.migel_product('1.2.3'))
+  end
+  def test_migel_product__error
+    @app.migel_groups = {'1' => 'group'}
+    assert_equal(nil, @app.migel_product('1.2.3'))
+  end
+  def test_index_therapeuticus
+    @app.indices_therapeutici = {'code' => 'index'}
+    assert_equal('index', @app.index_therapeuticus('code'))
+  end
+  def test_feedback
+    @app.feedbacks = {123 => 'feedback'}
+    assert_equal('feedback', @app.feedback('123'))
+  end
+  def test_invoice
+    @app.invoices = {123 => 'invoice'}
+    assert_equal('invoice', @app.invoice('123'))
+  end
+  def test_narcotic
+    @app.narcotics = {123 => 'narcotics'}
+    assert_equal('narcotics', @app.narcotic('123'))
+  end
+  def test_create_poweruser
+    poweruser = flexmock('poweruser') do |pusr|
+      pusr.should_receive(:oid)
+    end
+    flexstub(ODDB::PowerUser) do |usr|
+      usr.should_receive(:new).and_return(poweruser)
+    end
+    @app.users = {}
+    assert_equal(poweruser, @app.create_poweruser)
+  end
+  def test_create_user
+    companyuser = flexmock('companyuser') do |usr|
+      usr.should_receive(:oid)
+    end
+    flexstub(ODDB::CompanyUser) do |usr|
+      usr.should_receive(:new).and_return(companyuser)
+    end
+    @app.users = {}
+    assert_equal(companyuser, @app.create_user)
+  end
+  def test_each_sequence
+    registration = flexmock('registration') do |reg|
+      reg.should_receive(:each_sequence).and_yield
+    end
+    @app.registrations = {'1' => registration}
+    assert_equal({'1' => registration}, @app.each_sequence{})
+  end
+  def test_fachinfos_by_name
+    assert_equal([], @app.fachinfos_by_name('name', 'lang'))
+  end
+  def test_package_by_ikskey
+    registration = flexmock('registration') do |reg|
+      reg.should_receive(:package).and_return('package')
+    end
+    @app.registrations = {'12345' => registration}
+    assert_equal('package', @app.package_by_ikskey('12345678'))
+  end
+  def test__clean_odba_stubs_hash
+    value = flexmock('val') do |val|
+      val.should_receive(:"odba_instance.nil?").and_return(true)
+    end
+    assert_equal({}, @app._clean_odba_stubs_hash({'value' => value}))
+  end
+  def test__clean_odba_stubs_array
+    value = flexmock('val') do |val|
+      val.should_receive(:"odba_instance.nil?").and_return(true)
+    end
+    assert_equal([], @app._clean_odba_stubs_array([value]))
+  end
 end
