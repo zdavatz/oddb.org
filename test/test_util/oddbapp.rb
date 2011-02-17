@@ -1125,6 +1125,23 @@ class TestOddbApp < Test::Unit::TestCase
   end
   def test_vaccine_count
     assert_equal(0, @app.vaccine_count)
+  def test_create_commercial_forms
+    flexstub(@app) do |app|
+      app.should_receive(:system).and_return(@app.instance_eval('@system'))
+    end
+    flexstub(@app.system) do |sys|
+      sys.should_receive(:update)
+    end
+    package = flexmock(ODDB::Package) do |pac|
+      pac.should_receive(:comform).and_return('')
+      pac.should_receive(:commercial_form=)
+      pac.should_receive(:odba_store)
+    end
+    registration = flexmock('registration') do |reg|
+      reg.should_receive(:each_package).and_yield(package)
+    end
+    @app.registrations = {'12345' => registration}
+    assert_equal({'12345' => registration}, @app.create_commercial_forms)
   end
 
 =begin
