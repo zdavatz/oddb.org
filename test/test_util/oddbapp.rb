@@ -54,16 +54,16 @@ class TestOddbApp < Test::Unit::TestCase
 			@registrations = []
 			@cl_status = false
 			super
-		end	
+		end
 	end
 	class StubSession
 		def user_input(*keys)
 			{
 				:email	=>	'test@oddb.org',
-				:pass		=>	Digest::MD5::hexdigest('test'),
+				:pass	=>	Digest::MD5::hexdigest('test'),
 			}
 		end
-	end	
+	end
 	class StubSession2
 		def user_input(*keys)
 			{}
@@ -284,7 +284,7 @@ class TestOddbApp < Test::Unit::TestCase
 		pat1 = @app.create_patinfo
 		pat2 = @app.create_patinfo
 		expected = {pat1.oid=>pat1,
-							 pat2.oid=>pat2,
+			    pat2.oid=>pat2,
 							}
 		assert_equal(expected,@app.patinfos)
 		assert_equal(pat1.oid+1,pat2.oid)
@@ -336,17 +336,17 @@ class TestOddbApp < Test::Unit::TestCase
 		@app.substances = {}
 		pointer = ODDB::Persistence::Pointer.new(:substance)
 		descr = {
-			'en'							=>	'first_name',
+			'en'			=>	'first_name',
 			:connection_keys	=>	['connection_key'],
 		}
 		subs = @app.update(pointer.creator, descr)
 		values = {
 			:en	=>	'en_name',
-			:de	=>	'de_name',			
+			:de	=>	'de_name',
 		}
 		@app.update(subs.pointer, values)
 		assert_equal('En_name', subs.en)
-		assert_equal(['connectionkey', 'firstname', 'enname', 'dename'].sort, 
+		assert_equal(['connectionkey', 'firstname', 'enname', 'dename'].sort,
 			subs.connection_keys.sort)
 		assert_equal('De_name', subs.de)
 		assert_equal({subs.oid, subs}, @app.substances)
@@ -380,7 +380,7 @@ class TestOddbApp < Test::Unit::TestCase
 			company2.oid => company2,
 		}
 		assert_equal(company1, @app.company_by_name('ywesee'))
-	end	
+	end
 	def test_company_by_name2
 		company1 = ODDB::Company.new
 		company2 = ODDB::Company.new
@@ -481,9 +481,9 @@ class TestOddbApp < Test::Unit::TestCase
 			:links		=>	'foo-links',
 			:category	=>	'bar-category',
 		}
-		@app.update(inh.pointer, values)	
-		assert_equal('foo-links', inh.links)	
-		assert_equal('bar-category', inh.category)	
+		@app.update(inh.pointer, values)
+		assert_equal('foo-links', inh.links)
+		assert_equal('bar-category', inh.category)
 		assert_equal('foo_name', inh.substance_name)
 		assert_equal(1, cyp450.inhibitors.size)
 		assert_equal(['foo_name'], cyp450.inhibitors.keys)
@@ -506,9 +506,9 @@ class TestOddbApp < Test::Unit::TestCase
 			:links		=>	'foo-links',
 			:category	=>	'bar-category',
 		}
-		@app.update(inh.pointer, values)	
-		assert_equal('foo-links', inh.links)	
-		assert_equal('bar-category', inh.category)	
+		@app.update(inh.pointer, values)
+		assert_equal('foo-links', inh.links)
+		assert_equal('bar-category', inh.category)
 		assert_equal('foo_name', inh.substance_name)
 		assert_equal(1, cyp450.inducers.size)
 		assert_equal(['foo_name'], cyp450.inducers.keys)
@@ -525,22 +525,22 @@ class TestOddbApp < Test::Unit::TestCase
 	def test_create_cyp450substrate
 		pointer = ODDB::Persistence::Pointer.new('substance')
 		substance = @app.create(pointer)
-    substance.descriptions['lt'] = 'subst_name'
+                substance.descriptions['lt'] = 'subst_name'
 		pointer += [ :cyp450substrate, "cyp_id" ]
 		inh = @app.create(pointer)
 		values = {
 			:links		=>	['foo-links'],
 			:category	=>	'bar-category',
 		}
-		@app.update(inh.pointer, values)	
-		assert_equal(['foo-links'], inh.links)	
-		assert_equal('bar-category', inh.category)	
+		@app.update(inh.pointer, values)
+		assert_equal(['foo-links'], inh.links)
+		assert_equal('bar-category', inh.category)
 		assert_equal(1, substance.substrate_connections.size)
 	end
 	def test_delete_cyp450substrate
 		pointer = ODDB::Persistence::Pointer.new('substance')
 		substance = @app.create(pointer)
-    substance.descriptions['lt'] = 'subst_name'
+                substance.descriptions['lt'] = 'subst_name'
 		pointer += [ :cyp450substrate, "cyp_id" ]
 		substr = @app.create(pointer)
 		assert_equal(1, substance.substrate_connections.size)
@@ -651,13 +651,13 @@ class TestOddbApp < Test::Unit::TestCase
 		substance = FlexMock.new('substance')
 		@app.substances = { 'connection key' =>	substance }
 		substance.should_receive(:has_connection_key?).with('valid key')\
-      .times(1).and_return {
+                .times(1).and_return {
 			true
 		}
 		result = @app.substance_by_connection_key('valid key')
 		assert_equal(substance, result)
 		substance.should_receive(:has_connection_key?).with('invalid key')\
-      .times(1).and_return {
+                .times(1).and_return {
 			false
 		}
 		result = @app.substance_by_connection_key('invalid key')
@@ -667,7 +667,7 @@ class TestOddbApp < Test::Unit::TestCase
 		reg1 = StubRegistration.new(1)
 		reg2 = StubRegistration.new(2)
 		reg3 = StubRegistration.new(3)
-		@app.registrations = { 
+		@app.registrations = {
 			1 => reg1,
 			2 => reg2,
 			3 => reg3,
@@ -771,7 +771,7 @@ class TestOddbApp < Test::Unit::TestCase
 	end
 	def test_update_orphan_patinfo
 		update_hash = {
-			'key'			=>	'12345',
+			'key'	  =>	'12345',
 			'de'      =>	'iksnr',
 		}
 		orph = ODDB::OrphanedTextInfo.new
@@ -788,14 +788,14 @@ class TestOddbApp < Test::Unit::TestCase
 		doc2 = FlexMock.new('Doctor2')
 		doc3 = FlexMock.new('Doctor3')
 		@app.doctors = docs
-		docs.should_receive(:values).and_return { 
+		docs.should_receive(:values).and_return {
 			[ doc1, doc2, doc3, ]
 		}
-		doc1.should_receive(:record_match?).and_return { |db, id| 
+		doc1.should_receive(:record_match?).and_return { |db, id|
 			puts "record-match doc 1"
 			false
 		}
-		doc2.should_receive(:record_match?).and_return { |db, id| 
+		doc2.should_receive(:record_match?).and_return { |db, id|
 			puts "record-match doc 2"
 			true
 		}
@@ -924,7 +924,7 @@ class TestOddbApp < Test::Unit::TestCase
     assert_equal([], @app.analysis_positions)
   end
   def test_create_analysis_group
-    group = flexmock('group') 
+    group = flexmock('group')
     flexmock(ODDB::Analysis::Group) do |grp|
       grp.should_receive(:new).and_return(group)
     end
@@ -1029,7 +1029,7 @@ class TestOddbApp < Test::Unit::TestCase
         int.should_receive(:new).and_return(index_therapeuticus)
       end
       assert_equal(index_therapeuticus, @app.create_index_therapeuticus('code'))
-  end  
+  end
   def same?(result1, result2)
     #result1.atc_classes   == result2.atc_classes   and\
     result1.atc_classes.size == result2.atc_classes.size  and\
@@ -1250,6 +1250,23 @@ class TestOddbApp < Test::Unit::TestCase
     @app.indices_therapeutici = {'oid' => 'index_therapeuticus'}
     assert_equal('index_therapeuticus', @app.delete_index_therapeuticus('oid'))
   end
+  def test_delete_invoice
+    @app.invoices = {'oid' => 'invoice'}
+    assert_equal('invoice', @app.delete_invoice('oid'))
+  end
+  def test_delete_migel_group
+    @app.migel_groups = {'code' => 'migel_group'}
+    assert_equal('migel_group', @app.delete_migel_group('code'))
+  end
+  def test_delete_patinfo
+    @app.patinfos = {'oid' => 'patinfo'}
+    assert_equal('patinfo', @app.delete_patinfo('oid'))
+  end
+  def test_delete_registration
+    @app.registrations = {'oid' => 'registration'}
+    assert_equal('registration', @app.delete_registration('oid'))
+  end
+
   def setup_assign_effective_forms
     sequence = flexmock('sequence') do |seq|
       seq.should_receive(:delete_active_agent)

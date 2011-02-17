@@ -5,7 +5,7 @@
 === 1.0.1 / 14.02.2011
 
 * Updated Rakefile
- 
+
   * doc dir is not longer deleted when running rake publish_docs
 
 === 1.0.0 / 21.12.2010
