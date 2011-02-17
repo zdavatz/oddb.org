@@ -1246,5 +1246,68 @@ class TestOddbApp < Test::Unit::TestCase
     @app.indications = {'oid' => 'indication'}
     assert_equal('indication', @app.delete_indication('oid'))
   end
-
+  def test_delete_index_therapeuticus
+    @app.indices_therapeutici = {'oid' => 'index_therapeuticus'}
+    assert_equal('index_therapeuticus', @app.delete_index_therapeuticus('oid'))
+  end
+  def setup_assign_effective_forms
+    sequence = flexmock('sequence') do |seq|
+      seq.should_receive(:delete_active_agent)
+      seq.should_receive(:"active_agents.odba_isolated_store")
+    end
+    @substance = flexmock('substance') do |sub|
+      sub.should_receive(:has_effective_form?).and_return(false)
+      sub.should_receive(:name).and_return('name')
+      sub.should_receive(:to_s).and_return('name')
+      sub.should_receive(:effective_form=)
+      sub.should_receive(:odba_store)
+      sub.should_receive(:odba_delete)
+      sub.should_receive(:sequences).and_return([sequence])
+    end
+    @app.substances = [@substance]
+  end
+  def test_assign_effective_forms__n
+    def $stdin.readline
+      'n'
+    end
+    setup_assign_effective_forms
+    assert_equal(nil, @app.assign_effective_forms)
+  end
+  def test_assign_effective_forms__S
+    def $stdin.readline
+      'S'
+    end
+    setup_assign_effective_forms
+    assert_equal(nil, @app.assign_effective_forms)
+  end
+  def test_assign_effective_forms__s
+    def $stdin.readline
+      's'
+    end
+    setup_assign_effective_forms
+    assert_equal(nil, @app.assign_effective_forms)
+  end
+  def test_assign_effective_forms__q
+    def $stdin.readline
+      'q'
+    end
+    setup_assign_effective_forms
+    assert_equal(nil, @app.assign_effective_forms)
+  end
+  def test_assign_effective_forms__d
+    def $stdin.readline
+      'd'
+    end
+    setup_assign_effective_forms
+    assert_equal(nil, @app.assign_effective_forms)
+  end
+=begin
+  def test_assign_effective_forms__other_name
+    def $stdin.readline
+      'c abc'
+    end
+    setup_assign_effective_forms
+    assert_equal(nil, @app.assign_effective_forms)
+  end
+=end
 end
