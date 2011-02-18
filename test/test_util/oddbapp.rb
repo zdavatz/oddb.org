@@ -19,6 +19,9 @@ require 'flexmock'
 require 'util/oddbapp'
 
 module ODDB
+  module Admin
+    class Subsystem; end
+  end
   class PowerUser; end
   class CompanyUser; end
 	class RootUser
@@ -175,17 +178,39 @@ class TestOddbApp < Test::Unit::TestCase
     ODBA.storage.reset_id
 		dir = File.expand_path('../data/prevalence', File.dirname(__FILE__))
 		@app = ODDB::App.new
-=begin
-    @yus = flexmock('yus')
-    flexmock(ODDB::App::YUS_SERVER) do |yus|
-      yus.should_receive(:login)
-      yus.should_receive(:login_token)
-    end
-    flexmock(ODDB::YusUser) do |yus|
-      yus.should_receive(:new).and_return(@yus)
-    end
-=end
 
+    @session = flexmock('session') do |ses|
+      ses.should_receive(:grant).once.with('name', 'key', 'item', 'expires')\
+        .and_return('session')
+      ses.should_receive(:entity_allowed?).once.with('email', 'action', 'key')\
+        .and_return('session')
+      ses.should_receive(:create_entity).once.with('email', 'pass')\
+        .and_return('session')
+      ses.should_receive(:get_entity_preference).once.with('name', 'key')\
+        .and_return('session')
+      ses.should_receive(:get_entity_preference).once.with('name', 'association')\
+        .and_return('odba_id')
+      ses.should_receive(:get_entity_preferences).once.with('name', 'keys')\
+        .and_return('session')
+      ses.should_receive(:get_entity_preferences).once.with('error', 'error')\
+        .and_raise(Yus::YusError)
+      ses.should_receive(:reset_entity_password).once.with('name', 'token', 'password')\
+        .and_return('session')
+      ses.should_receive(:set_entity_preference).once.with('name', 'key', 'value', 'domain')\
+        .and_return('session')
+    end
+    flexmock(ODDB::App::YUS_SERVER) do |yus|
+      yus.should_receive(:autosession).and_yield(@session)
+    end
+    flexstub(ODBA.storage) do |sto|
+      sto.should_receive(:remove_dictionary)
+      sto.should_receive(:generate_dictionary).once.with('language', 'locale', String)\
+        .and_return('generate_dictionary')
+      sto.should_receive(:generate_dictionary).once.with('french', 'fr_FR@euro', String)\
+        .and_return('french_dictionary')
+      sto.should_receive(:generate_dictionary).once.with('german', 'de_DE@euro', String)\
+        .and_return('german_dictionary')
+    end
 	end
 	def teardown
 		ODBA.storage = nil
@@ -843,16 +868,7 @@ class TestOddbApp < Test::Unit::TestCase
 		assert_nil(@app.substance_by_smcd('unknown'))
 	end
   def test_login
-=begin
-    flexmock(ODDB::App::YUS_SERVER) do |yus|
-      yus.should_receive(:login)
-    end
-    #@yus = flexmock('yus')
-    flexmock(ODDB::YusUser) do |yus|
-      yus.should_receive(:new).and_return(@yus)
-    end
-=end
-    @yus = flexmock('yus')
+    @yus ||= flexmock('yus')
     flexmock(ODDB::App::YUS_SERVER) do |yus|
       yus.should_receive(:login)
       yus.should_receive(:login_token)
@@ -860,21 +876,19 @@ class TestOddbApp < Test::Unit::TestCase
     flexmock(ODDB::YusUser) do |yus|
       yus.should_receive(:new).and_return(@yus)
     end
-
     assert_equal(@yus, @app.login('email','pass'))
   end
-=begin
   def test_login_token
+    @yus ||= flexmock('yus')
     flexmock(ODDB::App::YUS_SERVER) do |yus|
+      yus.should_receive(:login)
       yus.should_receive(:login_token)
     end
-    #yus = flexmock('yus')
-    #flexmock(ODDB::YusUser) do |yus|
-    #  yus.should_receive(:new).and_return(@yus)
-    #end
-    assert_equal(@yus, @app.login_token('email','token'))
+    flexmock(ODDB::YusUser) do |yus|
+      yus.should_receive(:new).and_return(@yus)
+    end
+    assert_equal(@yus.class, @app.login_token('email', 'token').class)
   end
-=end
   def test_logout
     flexmock(ODDB::App::YUS_SERVER) do |yus|
       yus.should_receive(:logout).and_return('logout')
@@ -903,15 +917,6 @@ class TestOddbApp < Test::Unit::TestCase
     assert_equal(nil, @app.ipn('notification'))
   end
   def test_yus_allowed?
-    @session = flexmock('session') do |ses|
-      ses.should_receive(:entity_allowed?).once.with('email', 'action', 'key')\
-        .and_return('session')
-      ses.should_receive(:create_entity).once.with('email', 'pass')\
-        .and_return('session')
-    end
-    flexmock(ODDB::App::YUS_SERVER) do |yus|
-      yus.should_receive(:autosession).and_yield(@session)
-    end
     assert_equal('session', @app.yus_allowed?('email', 'action', 'key'))
   end
   def test_active_fachinfos
@@ -924,7 +929,14 @@ class TestOddbApp < Test::Unit::TestCase
     assert_equal({'registration' => 1}, @app.active_fachinfos)
   end
   def test_active_pdf_patinfos
-    assert_equal({}, @app.active_pdf_patinfos)
+    sequence = flexmock('sequence') do |seq|
+      seq.should_receive(:active_patinfo).and_return('active_patinfo')
+    end
+    registration = flexmock('registration') do |reg|
+      reg.should_receive(:each_sequence).and_yield(sequence)
+    end
+    @app.registrations = {'1' => registration}
+    assert_equal({"active_patinfo"=>1}, @app.active_pdf_patinfos)
   end
   def test_address_suggestion
     assert_equal(nil, @app.address_suggestion('12345'))
@@ -1042,13 +1054,36 @@ class TestOddbApp < Test::Unit::TestCase
       end
       assert_equal(index_therapeuticus, @app.create_index_therapeuticus('code'))
   end
-  def same?(result1, result2)
+  def same?(o1, o2)
+=begin
     #result1.atc_classes   == result2.atc_classes   and\
     result1.atc_classes.size == result2.atc_classes.size  and\
     result1.search_type      == result2.search_type   and\
     result1.display_limit    == result2.display_limit and\
     result1.relevance        == result2.relevance     and\
     result1.search_query     == result2.search_query
+=end
+    h1 = {}
+    h2 = {}
+=begin
+    p o1
+    p o2
+    gets
+=end
+    if o1.instance_variables.sort == o2.instance_variables.sort
+      o1.instance_variables.each do |v|
+        if v.to_s == '@atc_classes' # actually atc_classes should also be checked
+          h1[v.to_sym] = o1.atc_classes.size
+          h2[v.to_sym] = o2.atc_classes.size
+        else
+          h1[v.to_sym] = o1.instance_variable_get(v)
+          h2[v.to_sym] = o2.instance_variable_get(v)
+        end
+      end
+    else
+      return false
+    end
+    return (h1 == h2)
   end
   def test_search_oddb
     expected = ODDB::SearchResult.new
@@ -1062,6 +1097,7 @@ class TestOddbApp < Test::Unit::TestCase
     expected.atc_classes = ['atc']
     expected.search_type=:atcless
     expected.search_query = 'atcless'
+    expected.exact = true
     #assert_equal(expected, @app.search_oddb('atcless', 'lang'))
     assert(same?(expected, @app.search_oddb('atcless', 'lang')))
   end
@@ -1074,6 +1110,7 @@ class TestOddbApp < Test::Unit::TestCase
     expected.atc_classes = ['atc']
     expected.search_type=:iksnr
     expected.search_query = '12345'
+    expected.exact = true
     #assert_equal(expected, @app.search_oddb('12345', 'lang'))
     assert(same?(expected, @app.search_oddb('12345', 'lang')))
   end
@@ -1090,11 +1127,17 @@ class TestOddbApp < Test::Unit::TestCase
     expected.atc_classes = ['atc']
     expected.search_type=:pharmacode
     expected.search_query = '123456'
+    expected.exact = true
+
     #assert_equal(expected, @app.search_oddb('123456', 'lang'))
     assert(same?(expected, @app.search_oddb('123456', 'lang')))
   end
   def test_count_atc_ddd
-    assert_equal(0, @app.count_atc_ddd)
+    atc = flexmock('atc') do |atc|
+      atc.should_receive(:has_ddd?).and_return(true)
+    end
+    @app.atc_classes = {'key' => atc}
+    assert_equal(1, @app.count_atc_ddd)
   end
   def test_atc_ddd_count
     assert_equal(0, @app.atc_ddd_count)
@@ -1139,7 +1182,7 @@ class TestOddbApp < Test::Unit::TestCase
     assert_equal(0, @app.vaccine_count)
   end
   def setup_create_commercial_forms
-   flexstub(@app) do |app|
+    flexstub(@app) do |app|
       app.should_receive(:system).and_return(@app.instance_eval('@system'))
     end
     flexstub(@app.system) do |sys|
@@ -1535,4 +1578,354 @@ class TestOddbApp < Test::Unit::TestCase
     end
     assert_equal([], @app._clean_odba_stubs_array([value]))
   end
+  def test_clean_odba_stubs
+    sequence = flexmock('sequence') do |seq|
+      seq.should_receive(:packages).and_return({})
+      seq.should_receive(:active_agents).and_return([])
+    end
+    registration = flexmock('registration') do |reg|
+      reg.should_receive(:sequences).and_return({'key' => sequence})
+    end
+    @app.registrations = {'key' => registration}
+    assert_equal({'key' => registration}, @app.clean_odba_stubs)
+  end
+  def test_yus_create_user
+    @yus ||= flexmock('yus')
+    flexmock(ODDB::App::YUS_SERVER) do |yus|
+      yus.should_receive(:login)
+      yus.should_receive(:login_token)
+    end
+    flexmock(ODDB::YusUser) do |yus|
+      yus.should_receive(:new).and_return(@yus)
+    end
+    #assert_equal(@yus, @app.yus_create_user('email', 'pass'))
+    assert_equal(@yus.class, @app.yus_create_user('email', 'pass').class)
+  end
+  def test_yus_grant
+    assert_equal('session', @app.yus_grant('name', 'key', 'item', 'expires'))
+  end
+  def test_yus_get_preference
+    assert_equal('session', @app.yus_get_preference('name', 'key'))
+  end
+  def test_yus_get_preferences
+    assert_equal('session', @app.yus_get_preferences('name', 'keys'))
+  end
+  def test_yus_get_preferences__error
+    assert_equal({}, @app.yus_get_preferences('error', 'error'))
+  end
+  def test_yus_model
+    flexstub(ODBA.cache) do |cache|
+      cache.should_receive(:fetch).once.with('odba_id', nil).and_return('yus_model')
+    end
+    assert_equal('yus_model', @app.yus_model('name'))
+  end
+  def test_yus_reset_password
+    assert_equal('session', @app.yus_reset_password('name', 'token', 'password'))
+  end
+  def test_yus_set_preference
+    assert_equal('session', @app.yus_set_preference('name', 'key', 'value', 'domain'))
+  end
+  def test_multilinguify_analysis
+    flexstub(@app) do |app|
+      app.should_receive(:system).and_return(@app.instance_eval('@system'))
+    end
+    flexstub(@app.system) do |sys|
+      sys.should_receive(:update)
+    end
+    pointer = flexmock('pointer') do |ptr|
+      ptr.should_receive(:creator)
+    end
+    flexstub(pointer) do |ptr|
+      ptr.should_receive(:+).and_return(pointer)
+    end
+    position = flexmock('position') do |pos|
+      pos.should_receive(:description).and_return('description')
+      pos.should_receive(:pointer).and_return(pointer)
+      pos.should_receive(:footnote).and_return('footnote')
+      pos.should_receive(:list_title).and_return('list_title')
+      pos.should_receive(:taxnote).and_return('taxnote')
+      pos.should_receive(:permissions).and_return('permissions')
+      pos.should_receive(:odba_store).and_return('odba_store')
+    end
+    position.instance_variable_set('@limitation', 'limitation')
+    group = flexmock('group') do |grp|
+      grp.should_receive(:positions).and_return({'key'=>position})
+    end
+    @app.analysis_groups = {'key'=>group}
+    assert_equal([position], @app.multilinguify_analysis)
+  end
+  def test_search_doctors
+    assert_equal([], @app.search_doctors('key'))
+  end
+  def test_search_companies
+    assert_equal([], @app.search_companies('key'))
+  end
+  def test_search_exact_company
+    expected = ODDB::SearchResult.new
+    expected.atc_classes = []
+    expected.search_type = :company
+    #assert_equal(expected, @app.search_exact_company('query'))
+    assert(same?(expected, @app.search_exact_company('query')))
+  end
+  def test_search_exact_indication
+    expected = ODDB::SearchResult.new
+    expected.atc_classes = []
+    expected.search_type = :indication
+    expected.exact = true
+    #assert_equal(expected, @app.search_exact_indication('query', 'lang'))
+    assert(same?(expected, @app.search_exact_indication('query', 'lang')))
+  end
+  def test_search_migel_alphabetical
+    assert_equal([], @app.search_migel_alphabetical('query', 'lang'))
+  end
+  def test_search_migel_products
+    assert_equal([], @app.search_migel_products('query', 'lang'))
+  end
+  def test_search_narcotics
+    assert_equal([], @app.search_narcotics('query', 'lang'))
+  end
+  def test_search_patinfos
+    assert_equal([], @app.search_patinfos('query'))
+  end
+  def test_search_vaccines
+    assert_equal([], @app.search_vaccines('query'))
+  end
+  def test__search_exact_classified_result
+    sequence = flexmock('sequence') do |seq|
+      seq.should_receive(:atc_class)
+    end
+    expected = ODDB::SearchResult.new
+    expected.atc_classes = ['atc']
+    expected.search_type = :unknown
+    #assert_equal(expected, @app._search_exact_classified_result([sequence]))
+    assert(same?(expected, @app._search_exact_classified_result([sequence])))
+  end
+  def test_search_sequences
+    assert_equal([], @app.search_sequences('query'))
+  end
+  def test_search_exact_sequence
+    expected = ODDB::SearchResult.new
+    expected.atc_classes = []
+    expected.search_type = :sequence
+    #assert_equal(expected, @app.search_exact_sequence('query'))
+    assert(same?(expected, @app.search_exact_sequence('query')))
+  end
+  def test_search_exact_substance
+    expected = ODDB::SearchResult.new
+    expected.atc_classes = []
+    expected.search_type = :substance
+    #assert_equal(expected, @app.search_exact_substance('query'))
+    assert(same?(expected, @app.search_exact_substance('query')))
+  end
+  def test_search_hospitals
+    assert_equal([], @app.search_hospitals('key'))
+  end
+  def test_search_indications
+    assert_equal([], @app.search_indications('query'))
+  end
+  def test_search_interactions
+    assert_equal([], @app.search_interactions('query'))
+  end
+  def test_search_substances
+    assert_equal([], @app.search_substances('query'))
+  end
+  def test_sequences
+    registration = flexmock('registration') do |reg|
+      reg.should_receive(:sequences).and_return({'key' => 'sequence'})
+    end
+    @app.registrations = {'key' => registration}
+    assert_equal(['sequence'], @app.sequences)
+  end
+  def test_slate
+    @app.slates = {'name' => 'slate'}
+    assert_equal('slate', @app.slate('name'))
+  end
+  def test_sorted_fachinfos
+    assert_equal([], @app.sorted_fachinfos)
+  end
+  def test_sorted_feedbacks
+    assert_equal([], @app.sorted_feedbacks)
+  end
+  def test_sorted_minifis
+    assert_equal([], @app.sorted_minifis)
+  end
+  def test_run_random_updater 
+    # this test-case is meaningless at the moment
+    flexstub(ODDB::Updater) do |klass|
+      klass.should_receive(:new).and_return(flexmock('updater') do |up|
+        up.should_receive(:run_random)
+      end)
+    end
+    flexstub(@app) do |app|
+      app.should_receive(:sleep)
+    end
+    thread = @app.run_random_updater
+    sleep(0.5)
+    thread.kill
+    assert(true)
+  end
+  def test_grant_download
+    flexstub(@app) do |app|
+      app.should_receive(:system).and_return(@app.instance_eval('@system'))
+    end
+    itp = flexmock('itp') do |itp|
+      itp.should_receive(:+).and_return(itp)
+      itp.should_receive(:creator)
+    end
+    inv = flexmock('inv') do |inv|
+      inv.should_receive(:pointer).and_return(itp)
+      inv.should_receive(:payment_received!)
+      inv.should_receive(:odba_store)
+      inv.should_receive(:oid).and_return('oid')
+    end
+    flexstub(@app.system) do |sys|
+      sys.should_receive(:update).and_return(inv)
+    end
+    expected = "http://#{ODDB::SERVER_NAME}/de/gcc/download/invoice/oid/email/email/filename/filename"
+    assert_equal(expected, @app.grant_download('email', 'filename', 'price'))
+  end
+  def test_update_feedback_rss_feed
+    flexstub(@app) do |app|
+      app.should_receive(:async).and_yield
+    end
+    assert_equal(nil, @app.update_feedback_rss_feed)
+  end
+  def test_update_feedback_rss_feed__error
+    flexstub(@app) do |app|
+      app.should_receive(:async).and_yield
+    end
+    flexstub(ODDB::Plugin) do |plg|
+      plg.should_receive(:new).and_raise(StandardError)
+    end
+    assert_equal(nil, @app.update_feedback_rss_feed)
+  end
+  def test_replace_fachinfo
+    assert_equal(nil, @app.replace_fachinfo('iksnr', 'pointer'))
+  end
+  def test_generate_dictionary
+    assert_equal('generate_dictionary', @app.generate_dictionary('language', 'locale'))
+  end
+  def test_generate_french_dictionary
+    assert_equal('french_dictionary', @app.generate_french_dictionary)
+  end
+  def test_generate_german_dictionary
+    assert_equal('german_dictionary', @app.generate_german_dictionary)
+  end
+  def test_generate_dictionaries
+    assert_equal('german_dictionary', @app.generate_dictionaries)
+  end
+  def test_admin_subsystem
+    flexstub(ODDB::Admin::Subsystem) do |sys|
+      sys.should_receive(:new).and_return('admin_subsystem')
+    end
+    assert_equal('admin_subsystem', @app.admin_subsystem)
+  end
+  def test_search_analysis
+    assert_equal([], @app.search_analysis('key', 'en'))
+  end
+  def test_search_analysis_alphabetical
+    assert_equal([], @app.search_analysis_alphabetical('query', 'en'))
+  end
+  def test_resolve
+    pointer = flexmock('pointer') do |ptr|
+      ptr.should_receive(:resolve).and_return('resolve')
+    end
+    assert_equal('resolve', @app.resolve(pointer))
+  end
+  def test_refactor_addresses
+    company = hospital = doctor = flexmock('mock') do |mock|
+      mock.should_receive(:refactor_addresses)
+      mock.should_receive(:odba_store)
+    end
+    @app.doctors   = {'key' => doctor}
+    @app.hospitals = {'key' => hospital}
+    @app.companies = {'key' => company}
+    assert_equal($stdout.flush, @app.refactor_addresses)
+  end
+  def test_commercial_form
+    @app.commercial_forms = {123 => 'commercial_form'}
+    assert_equal('commercial_form', @app.commercial_form('123'))
+  end
+  def test_commercial_form_by_name
+    assert_equal(nil, @app.commercial_form_by_name('name'))
+  end
+  def test_config
+    expected = ODDB::Config.new
+    expected.pointer = ODDB::Persistence::Pointer.new(:config)
+    #assert(same?(expected ,@app.config))
+    assert_equal(expected.class, @app.config('arg').class) # actually the instances should be compared
+  end
+  def test_count_limitation_texts
+    registration = flexmock('registration') do |reg|
+      reg.should_receive(:limitation_text_count).and_return(123)
+    end
+    @app.registrations = {'key' => registration}
+    assert_equal(123, @app.count_limitation_texts)
+  end
+  def test_sorted_patented_registrations
+    patent = flexmock('patent') do |pat|
+      pat.should_receive(:expiry_date).and_return(true)
+    end
+    registration = flexmock('registration') do |reg|
+      reg.should_receive(:patent).and_return(patent)
+    end
+    @app.registrations = {'key' => registration}
+    assert_equal([registration], @app.sorted_patented_registrations)
+  end
+  def test_sponsor
+    @app.sponsors = {'flavor' => 'sponsor'}
+    assert_equal('sponsor', @app.sponsor('flavor'))
+  end
+  def test_user
+    @app.users = {'oid' => 'user'}
+    assert_equal('user', @app.user('oid'))
+  end
+  def test_user_by_email
+    user = flexmock('user') do |usr|
+      usr.should_receive(:unique_email).and_return('email')
+    end
+    @app.users = {'oid' => user}
+    assert_equal(user, @app.user_by_email('email'))
+  end
+  def test__admin
+    assert_kind_of(Thread, @app._admin('"src"', 'result'))
+  end
+  def test__admin__str200
+    assert_kind_of(Thread, @app._admin('"a"*201', 'result'))
+  end
+  def test_count_recent_registrations
+    flags = [:new]
+    log = flexmock('log') do |log|
+      log.should_receive(:change_flags).and_return({'ptr' => flags})
+    end
+    group = flexmock('group') do |grp|
+      grp.should_receive(:latest).and_return(log)
+    end
+    @app.log_groups = {:swissmedic => group}
+    assert_equal(1, @app.count_recent_registrations)
+  end
+  def test_count_vaccines
+    registration = flexmock('registration') do |reg|
+      reg.should_receive(:vaccine).and_return(true)
+      reg.should_receive(:active_package_count).and_return(123)
+    end
+    @app.registrations = {'key' => registration}
+    assert_equal(123, @app.count_vaccines)
+  end
+  def test_clean_invoices
+    flexstub(@app) do |app|
+      app.should_receive(:system).and_return(@app.instance_eval('@system'))
+    end
+    flexstub(@app.system) do |sys|
+      sys.should_receive(:delete)
+    end
+    invoice = flexmock('invoice') do |inv|
+      inv.should_receive(:odba_instance_nil?)
+      inv.should_receive(:deletable?).and_return(true)
+      inv.should_receive(:pointer)
+    end
+    @app.invoices = {'oid' => invoice}
+    assert_equal(nil, @app.clean_invoices)
+  end
+
 end
