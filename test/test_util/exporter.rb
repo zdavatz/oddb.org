@@ -77,6 +77,7 @@ module ODDB
       assert_equal(nil, @exporter.export_oddbdat)
     end
     def test_export_oddbdat__dose_missing
+      flexstub(@exporter, :today => Date.new(2011,1,4)) # Tuesday
       flexstub(Log) do |logclass|
         # white box test: Log.new is once called because of dose data missing
         logclass.should_receive(:new).times(1).and_return(@log)
