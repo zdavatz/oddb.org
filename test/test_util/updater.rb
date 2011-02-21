@@ -222,14 +222,86 @@ module ODDB
       setup_logfile
       assert_equal({:powerlink=>"Powerlink-Statistics"}, @updater._logfile_stats('date'))
     end
-=begin
     def test_logfile_stats
       setup_logfile
-      flexstub(Date) do |date|
-        date.should_receive(:today).and_return(Date.new(2011, 1, 2))
+      @updater.instance_eval('@@today = Date.new(2011,1,1)')
+      sponsor = flexmock('sponsor') do |spr|
+        spr.should_receive(:emails).and_return(['emails'])
       end
-      assert_equal('', @updater.logfile_stats)
+      flexstub(@app) do |app|
+        app.should_receive(:sponsor).and_return(sponsor)
+      end
+      expected = {:generika=>"Exklusiv-Sponsoring Generika.cc", :gcc=>"Exklusiv-Sponsoring ODDB.org"}
+      assert_equal(expected, @updater.logfile_stats)
     end
-=end
+    def setup_log_notify_bsv
+      log = flexmock('log') do |log|
+        log.should_receive(:change_flags).and_return({'ptr' => ['flgs']})
+      end
+      @plugin = flexmock('plugin') do |plg|
+        plg.should_receive(:log_info).and_return(@recipients)
+        plg.should_receive(:log_info_bsv).and_return(@recipients)
+      end
+      flexstub(Persistence::Pointer) do |klass|
+        klass.should_receive(:new).and_return(flexmock('ptr') do |obj|
+          obj.should_receive(:resolve).and_return(log)
+          obj.should_receive(:creator)
+          obj.should_receive(:+)
+        end)
+      end
+    end
+    def test_log_notify_bsv # test private method
+      setup_log_notify_bsv
+      @recipients[:change_flags] = {'ptr' => []}
+      plugin = @plugin
+      assert_equal('notify', @updater.instance_eval('log_notify_bsv(plugin, "date")'))
+    end
+    def test_log_notify_bsv__else_change_flags
+      setup_log_notify_bsv
+      @recipients[:change_flags] = {}
+      plugin = @plugin
+      assert_equal('notify', @updater.instance_eval('log_notify_bsv(plugin, "date")'))
+    end
+    def setup_bsv_xml_plugin
+   #   @change_flags = {}
+      flexstub(BsvXmlPlugin) do |klass|
+        klass.should_receive(:new).and_return(flexmock('bsv') do |bsv|
+          bsv.should_receive(:update).and_return('update')
+          bsv.should_receive(:_update).and_return('_update')
+          #bsv.should_receive(:change_flags).and_return(@change_flags)
+          bsv.should_receive(:change_flags).and_return({})
+          bsv.should_receive(:log_info).and_return(@recipients)
+        end)
+      end
+    end
+    def test_update_bsv
+      setup_bsv_xml_plugin
+      assert_equal('update', @updater.update_bsv)
+    end
+    def test_reconsider_bsv
+      setup_log_notify_bsv
+      setup_bsv_xml_plugin
+      log = flexmock('log') do |log|
+        log.should_receive(:change_flags).and_return({'ptr' => ['flgs']})
+        log.should_receive(:pointer)
+      end
+      logs = flexmock('logs') do |logs|
+        logs.should_receive(:newest_date).and_return(Date.new(2011,1,1))
+        logs.should_receive(:latest).and_return(log)
+      end
+      flexstub(@app) do |app|
+        app.should_receive(:create).and_return(logs)
+        app.should_receive(:update)
+      end
+      assert_equal(logs, @updater.reconsider_bsv({:new_log => 'new_log'}))
+    end
+    def test_update_analysis
+      flexstub(AnalysisPlugin) do |klass|
+        klass.should_receive(:new).and_return(flexmock('ana') do |obj|
+          obj.should_receive(:update).and_return('update')
+        end)
+      end
+      assert_equal('update', @updater.update_analysis('path', 'lang'))
+    end
 	end
 end
