@@ -7,6 +7,8 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'util/updater'
 require 'stub/odba'
+require 'flexmock'
+require 'date'
 
 module ODDB
 	class StubUpdaterPlugin
@@ -32,6 +34,7 @@ module ODDB
 		alias :recipients :incomplete_pointers
 	end
 	class TestUpdater < Test::Unit::TestCase
+    include FlexMock::TestCase
 		class StubLog
 			include ODDB::Persistence
 			attr_accessor :report, :pointers, :recipients, :hash
@@ -68,6 +71,21 @@ module ODDB
 			@app = StubApp.new
 			@updater = ODDB::Updater.new(@app)
 			@group = @app.log_group = StubLogGroup.new
+
+      flexstub(Log) do |klass|
+        klass.should_receive(:new).and_return(flexmock('log') do |obj|
+          obj.should_receive(:report=)
+          obj.should_receive(:recipients=)
+          obj.should_receive(:update_values)
+          obj.should_receive(:notify).and_return('notify')
+        end)
+      end
+      @error = flexmock('error') do |err|
+        err.should_receive(:class)
+        err.should_receive(:message)
+        err.should_receive(:backtrace).and_return(['backtrace'])
+      end
+      @recipients = {:recipients => ['recipient']}
 		end
 		def test_update_bsv_no_repeats
 			today = Date.today()
@@ -76,5 +94,142 @@ module ODDB
 			@updater.update_bsv
 			assert_nil(@app.last_date)
 		end
+
+    def test_recipients
+      assert_equal([], @updater.recipients)
+    end
+    def test_log_info
+      plugin = flexmock('plugin') do |plg|
+        plg.should_receive(:log_info).and_return({})
+      end
+      assert_equal({:recipients => []}, @updater.log_info(plugin))
+    end
+    def test_log_info__else
+      plugin = flexmock('plugin') do |plg|
+        plg.should_receive(:log_info).and_return(@recipients)
+      end
+      assert_equal(@recipients, @updater.log_info(plugin))
+    end
+    def test_notify_error # test private method
+      error = @error
+      assert_equal('notify', @updater.instance_eval('notify_error("klass", "subject", error)'))
+    end
+    def test_wrap_update  # test private method
+      assert_equal('block', @updater.instance_eval("wrap_update('klass', 'subject'){'block'}"))
+    end
+    def test_wrap_update__error
+      assert_equal(nil, @updater.instance_eval("wrap_update('klass', 'subject'){raise}"))
+    end
+    def setup_exporter
+      plugin = flexmock('plugin') do |plg|
+        plg.should_receive(:log_info).and_return(@recipients)
+      end
+      flexstub(Exporter) do |klass|
+        klass.should_receive(:new).and_return(flexmock('exp') do |obj|
+          obj.should_receive(:export_competition_xls).and_return(plugin)
+          obj.should_receive(:export_swissdrug_xls).and_return(plugin)
+        end)
+      end
+    end
+    def setup_export_competition_xls
+      setup_exporter
+      flexstub(XlsExportPlugin) do |klass|
+        klass.should_receive(:new).and_return(flexmock('xls') do |obj|
+          obj.should_receive(:export_competition).and_return('path')
+        end)
+      end
+      @company = flexmock('company') do |comp|
+        comp.should_receive(:name).and_return('name')
+        comp.should_receive(:competition_email).and_return('competition_email')
+      end
+    end
+    def test_export_competition_xls
+      setup_export_competition_xls
+      assert_equal('path', @updater.export_competition_xls(@company))
+    end
+    def test_export_competition_xlss
+      setup_export_competition_xls
+      flexstub(@app) do |app|
+        app.should_receive(:companies).and_return({'key' => @company})
+      end
+      expected = {'key' => @company}
+      assert_equal(expected, @updater.export_competition_xlss)
+    end
+    def setup_csv_export_plugin
+      flexstub(CsvExportPlugin) do |klass|
+        klass.should_receive(:new).and_return(flexmock('csv') do |obj|
+          obj.should_receive(:export_index_therapeuticus)
+          obj.should_receive(:export_drugs)
+          obj.should_receive(:export_drugs_extended)
+          obj.should_receive(:log_info).and_return(@recipients)
+        end)
+      end
+    end
+    def test_export_index_therapeuticus_csv
+      setup_csv_export_plugin
+      assert_equal('notify', @updater.export_index_therapeuticus_csv)
+    end
+    def test_export_oddb_csv
+      setup_csv_export_plugin
+      assert_equal('notify', @updater.export_oddb_csv)
+    end
+    def test_export_oddb2_csv
+      setup_csv_export_plugin
+      assert_equal('notify', @updater.export_oddb2_csv)
+    end
+    def setup_xls_export_plugin
+      flexstub(XlsExportPlugin) do |klass|
+        klass.should_receive(:new).and_return(flexmock('xls') do |obj|
+          obj.should_receive(:export_generics)
+          obj.should_receive(:export_patents)
+          obj.should_receive(:log_info).and_return(@recipients)
+        end)
+      end
+    end
+    def test_export_generics_xls
+      setup_xls_export_plugin
+      assert_equal('notify', @updater.export_generics_xls)
+    end
+    def test_export_patents_xls
+      setup_xls_export_plugin
+      assert_equal('notify', @updater.export_patents_xls) 
+    end
+    def test_export_ouwerkerk
+      setup_exporter
+      assert_equal('notify', @updater.export_ouwerkerk)
+    end
+    def setup_logfile
+      flexstub(LogFile) do |log|
+        log.should_receive(:read).and_return('report')
+      end
+    end
+    def test_mail_logfile
+      setup_logfile
+      assert_equal('notify', @updater.mail_logfile('name', 'date', 'subject', ['emails']))
+    end
+    def test_mail_sponsor_logs
+      setup_logfile
+      sponsor = flexmock('sponsor') do |spr|
+        spr.should_receive(:emails).and_return(['emails'])
+      end
+      flexstub(@app) do |app|
+        app.should_receive(:sponsor).and_return(sponsor)
+      end
+      expected = {:generika=>"Exklusiv-Sponsoring Generika.cc", :gcc=>"Exklusiv-Sponsoring ODDB.org"}
+      assert_equal(expected, @updater.mail_sponsor_logs)
+    end
+    def test__logfile_stats
+      setup_logfile
+      assert_equal({:powerlink=>"Powerlink-Statistics"}, @updater._logfile_stats('date'))
+    end
+=begin
+    def test_logfile_stats
+      setup_logfile
+      flexstub(Date) do |date|
+        date.should_receive(:today).and_return(Date.new(2011, 1, 2))
+      end
+      assert_equal('', @updater.logfile_stats)
+    end
+=end
 	end
 end
