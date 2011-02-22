@@ -96,13 +96,16 @@ module ODDB
 		end
 
     def test_recipients
-      assert_equal([], @updater.recipients)
+      expected = @updater.class::RECIPIENTS
+      assert_equal(expected, @updater.recipients)
     end
     def test_log_info
       plugin = flexmock('plugin') do |plg|
         plg.should_receive(:log_info).and_return({})
       end
-      assert_equal({:recipients => []}, @updater.log_info(plugin))
+      expected = {:recipients => [] + @updater.class::RECIPIENTS}
+      #assert_equal({:recipients => []}, @updater.log_info(plugin))
+      assert_equal(expected, @updater.log_info(plugin))
     end
     def test_log_info__else
       plugin = flexmock('plugin') do |plg|
@@ -233,6 +236,7 @@ module ODDB
       end
       expected = {:generika=>"Exklusiv-Sponsoring Generika.cc", :gcc=>"Exklusiv-Sponsoring ODDB.org"}
       assert_equal(expected, @updater.logfile_stats)
+      @updater.instance_eval('@@today = Date.today')    # reset the @@today to the default value for the other test-cases
     end
     def setup_log_notify_bsv
       log = flexmock('log') do |log|
