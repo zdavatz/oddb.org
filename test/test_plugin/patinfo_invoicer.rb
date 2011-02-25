@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# TestPatinfoInvoicer -- oddb -- 25.02.2011 -- mhatakeyama@ywesee.com
 # TestPatinfoInvoicer -- oddb -- 16.08.2005 -- jlang@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
