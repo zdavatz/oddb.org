@@ -12,6 +12,7 @@ require 'model/invoice'
 
 module ODDB
 	class TestPatinfoInvoicer < Test::Unit::TestCase
+    include FlexMock::TestCase
 		class FlexMock < ::FlexMock
 			undef :type
 		end
@@ -301,5 +302,91 @@ module ODDB
 			@plugin.create_invoice('user1', items, 2134)
 			@app.flexmock_verify
 		end
+    def test_unique_name
+      item = flexmock('item') do |item|
+        item.should_receive(:text).and_return('12345 12')
+      end
+      assert_equal('12345_12', @plugin.unique_name(item))
+    end
+    def test_unique_name__else
+      sequence = flexmock('sequence') do |seq|
+        seq.should_receive(:is_a?).and_return(true)
+        seq.should_receive(:iksnr).and_return('iksnr')
+        seq.should_receive(:seqnr).and_return('seqnr')
+      end
+      item = flexmock('item') do |item|
+        item.should_receive(:text).and_return('name')
+        item.should_receive(:item_pointer).and_return(flexmock('ptr') do |ptr|
+          ptr.should_receive(:resolve).and_return(sequence)
+        end)
+      end
+      assert_equal('iksnr_seqnr', @plugin.unique_name(item))
+    end
+    def test_neighborhood_unique_names
+      sequence = flexmock('sequence') do |seq|
+        seq.should_receive(:pdf_patinfo).and_return('active')
+        seq.should_receive(:iksnr).and_return('iksnr')
+        seq.should_receive(:seqnr).and_return('seqnr')
+      end
+      flexstub(sequence) do |seq|
+        seq.should_receive(:"registration.sequences")\
+          .and_return({'key' => sequence})
+      end
+      item = flexmock('item') do |item|
+        item.should_receive(:text).and_return('12345 12')
+        item.should_receive(:item_pointer).and_return(flexmock('ptr') do |ptr|
+          ptr.should_receive(:resolve).and_return(sequence)
+        end)
+      end
+      expected = ["12345_12", "iksnr_seqnr"]
+      assert_equal(expected, @plugin.neighborhood_unique_names(item))
+    end
+    def same?(o1, o2)
+      if o1.instance_variables.sort == o2.instance_variables.sort
+        vars = o1.instance_variables
+        vars.delete('@time')
+        vars.each do |v|
+          if o1.instance_eval(v) != o2.instance_eval(v)
+            return false
+          end
+        end
+      else
+        return false
+      end
+      return true
+    end
+    def test_html_items
+      sequence = flexmock('sequence') do |seq|
+        seq.should_receive(:public_package_count).and_return(1)
+        seq.should_receive(:pdf_patinfo).and_return(false)
+        seq.should_receive(:"patinfo.odba_instance").and_return('patinfo')
+        seq.should_receive(:seqnr).and_return('seqnr')
+        seq.should_receive(:pointer).and_return('pointer')
+      end
+      registration = flexmock('registration') do |reg|
+        reg.should_receive(:active?).and_return(true)
+        reg.should_receive(:each_sequence).and_yield(sequence)
+        reg.should_receive(:iksnr).and_return('iksnr')
+      end
+      company = flexmock('company') do |comp|
+        comp.should_receive(:invoice_htmlinfos).and_return(true)
+        comp.should_receive(:invoice_date).and_return(123)
+        comp.should_receive(:registrations).and_return([registration])
+      end
+      flexstub(@app) do |app|
+        app.should_receive(:companies).and_return({'key' => company})
+      end
+      item = AbstractInvoiceItem.new
+      item.price = PI_UPLOAD_PRICES[:annual_fee]
+      item.text = 'iksnr seqnr'
+      item.time = Time.now
+      item.type = :annual_fee
+      item.unit = "Jahresgeb\374hr"
+      item.vat_rate = VAT_RATE
+      item.item_pointer = 'pointer'
+      #assert_equal([item], @plugin.html_items(123))
+      assert(same?(item, @plugin.html_items(123)[0])) # if this fails, look at the result of comment line above
+    end
 	end
 end
+
