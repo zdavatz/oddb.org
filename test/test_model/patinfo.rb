@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# TestPatinfo -- oddb -- 25.02.2011 -- mhatakeyama@ywesee.com
 # TestPatinfo -- oddb -- 29.10.2003 -- rwaltert@ywesee.com
 
 
@@ -12,7 +13,7 @@ require 'model/patinfo'
 
 module ODDB
 	class Patinfo
-		attr_accessor :sequences
+		attr_accessor :sequences, :descriptions
 	end
 end
 
@@ -53,6 +54,10 @@ class TestPatinfo < Test::Unit::TestCase
 		@patinfo.remove_sequence(prod)
 		assert_equal([],@patinfo.sequences)
 	end
+  def test_odba_store
+    @patinfo.descriptions = []
+    assert_equal(@patinfo, @patinfo.odba_store)
+  end
 end
 class TestPatinfoDocument < Test::Unit::TestCase
 	def test_to_s1
