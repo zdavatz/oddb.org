@@ -2,8 +2,13 @@
 # TestDownloadExport -- ODDB -- 19.04.2005 -- hwyss@ywesee.com
 
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
+$: << File.expand_path('.', File.dirname(__FILE__))
+$: << File.expand_path('..', File.dirname(__FILE__))
+
 
 require 'test/unit'
+require 'define_empty_class'
+require 'htmlgrid/select'
 require 'state/user/download_export'
 
 module ODDB

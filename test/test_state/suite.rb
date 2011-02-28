@@ -1,10 +1,13 @@
 #!/usr/bin/env ruby
-# OneDirSuite -- oddb -- 20.10.2003 -- mhuggler@ywesee.com
+# suite.rb -- oddb -- 25.02.2011 -- mhatakeyama@ywesee.com 
 
-$: << File.expand_path(File.dirname(__FILE__))
+require 'find'
 
-Dir.foreach(File.dirname(__FILE__)) { |file|
-	if /.*\.rb$/o.match(file)&&file!='suite.rb'
-		require file 
+$: << here = File.expand_path(File.dirname(__FILE__))
+
+Find.find(here) { |file|
+	if file.match(/\.rb$/) && !file.match(/suite\.rb/)
+p file
+    require file
 	end
 }

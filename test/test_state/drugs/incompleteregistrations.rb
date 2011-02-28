@@ -5,8 +5,11 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'state/drugs/incompleteregistrations'
+#require 'state/drugs/incompleteregistrations'
 require 'sbsm/state'
+require 'net/http'
+require 'htmlgrid/pass'
+require 'state/drugs/global'
 
 module Net
 	class HTTP

@@ -6,7 +6,9 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'command/merge'
-require 'state/drugs/galenicform'
+require 'define_empty_class'
+require 'htmlgrid/select'
+require 'state/admin/galenicform'
 
 module ODDB
 	module State

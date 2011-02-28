@@ -6,7 +6,7 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'state/drugs/result'
-require 'mock'
+require 'flexmock'
 
 module ODDB
 	module State

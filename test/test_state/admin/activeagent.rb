@@ -1,16 +1,22 @@
 #!/usr/bin/env ruby
+# State::Admin::TestActiveAgent -- oddb -- 28.02.2011 -- mhatakeyama@ywesee.com
 # State::Drugs::TestActiveAgent -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'state/drugs/activeagent'
+require 'flexmock'
+require 'htmlgrid/select'
+require 'define_empty_class'
+require 'state/admin/activeagent'
+
 
 module ODDB
 	module State
-		module Drugs
+		module Admin
 class TestActiveAgentState < Test::Unit::TestCase
+  include FlexMock::TestCase
 	class StubSession
 		attr_accessor :user_input
 		def app
@@ -49,7 +55,7 @@ class TestActiveAgentState < Test::Unit::TestCase
 		def substances
 			(@substances ||= {}).values
 		end
-		def update(pointer,values)	
+		def update(pointer,values,unique_email)	
 			@update_called = true
 		end
 	end
@@ -85,7 +91,8 @@ class TestActiveAgentState < Test::Unit::TestCase
 		@activeagent = StubActiveAgent.new
 		@activeagent.pointer = Persistence::Pointer.new(:sequence, :active_agent)
 		@sequence = StubSequence.new
-		@state = State::Drugs::ActiveAgent.new(@session, @activeagent)
+		#@state = State::Drugs::ActiveAgent.new(@session, @activeagent)
+		@state = State::Admin::ActiveAgent.new(@session, @activeagent)
 		@session.app.sequence = @sequence
 	end
 	def test_update1
@@ -103,9 +110,15 @@ class TestActiveAgentState < Test::Unit::TestCase
 			:substance => 'Acidum Mefenamicum',  
 			:dose => '10 mg'
 		}
+    flexmock(@activeagent) do |age|
+      age.should_receive(:parent).and_return(@sequence)
+    end
+    flexstub(@session) do |ses|
+      ses.should_receive(:substance)
+    end
 		newstate = @state.update
 		assert_equal(false, @state.error?)
-		assert_equal(State::Drugs::SelectSubstance, newstate.class)
+		assert_equal(State::Admin::SelectSubstance, newstate.class)
 		assert_equal(false, @session.app.update_called)
 	end
 	def test_update3
@@ -116,6 +129,12 @@ class TestActiveAgentState < Test::Unit::TestCase
 			:substance => 'Acidum Mefenamicum',  
 			:dose => '10 mg'
 		}
+    flexmock(@activeagent) do |age|
+      age.should_receive(:parent).and_return(@sequence)
+    end
+    flexmock(@session) do |ses|
+      ses.should_receive(:substance).and_return('Acidum Mefenamicum')
+    end
 		newstate = @state.update
 		assert_equal(true, @state.error?)
 		assert_equal(@state, newstate)
@@ -136,6 +155,18 @@ class TestActiveAgentState < Test::Unit::TestCase
 			:substance => 'Acidum Acetylsalicylicum',  
 			:dose => '10 mg'
 		}
+    chemical = flexmock('chemical') do |chem|
+      chem.should_receive(:pointer)
+    end
+    flexmock(@session) do |ses|
+      ses.should_receive(:substance).and_return(chemical)
+    end
+    flexmock(@activeagent) do |age|
+      age.should_receive(:substance).and_return('Acidum Mefenamicum')
+    end
+    flexmock(@state) do |sta|
+      sta.should_receive(:unique_email).and_return('unique_email')
+    end
 		newstate = @state.update
 		assert_equal(false, @state.error?)
 		assert_equal(@state, newstate)
@@ -147,7 +178,9 @@ class TestActiveAgentState < Test::Unit::TestCase
 		sub5 = StubSubstance.new("Acidum Mephenanikum", true)
 		@sequence.substances = [sub4]
 		@session.app.soundex_substances = [ sub2, sub4, sub5 ]
-
+    flexmock(@activeagent) do |age|
+      age.should_receive(:parent).and_return(@sequence)
+    end
 		assert_equal([sub2, sub5], @state.substance_selection)
 	end
 end

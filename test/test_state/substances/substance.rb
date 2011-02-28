@@ -5,10 +5,10 @@ $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'state/substances/substance'
+#require 'state/substances/substance'
 require 'state/admin/root'
 require 'model/substance'
-require 'mock'
+require 'flexmock'
 
 module ODDB
 	module State
