@@ -1,17 +1,20 @@
 #!/usr/bin/env ruby
+# State::Admin::TestGalenicFormState -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
 # State::Drugs::TestGalenicFormState -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'state/drugs/galenicform'
+require 'flexmock'
+require 'state/admin/galenicform'
 require 'util/language'
 
 module ODDB
 	module State
-		module Drugs
+		module Admin
 class	TestGalenicForm < Test::Unit::TestCase
+  include FlexMock::TestCase
 	class StubSession
 		attr_accessor :user_input
 		def app
@@ -44,12 +47,15 @@ class	TestGalenicForm < Test::Unit::TestCase
 		def galenic_form(name)
 			@galenic_forms[name]
 		end
-		def update(pointer,values)	
+		def update(pointer,values, unique_email=nil)	
 			@update_called = true
 		end
 	end
 	class StubPointer; end
 	class StubGalenicForm
+    def initialize
+      @odba_id = 123
+    end
 		include Language
 	end
 	class StubLookandfeel
@@ -61,46 +67,55 @@ class	TestGalenicForm < Test::Unit::TestCase
 	def setup
 		@session = StubSession.new
 		@galform = StubGalenicForm.new
-		@galform.update_values({'de'=>'Tabletten', 'fr'=>'comprimés'})
-		@state = State::Drugs::GalenicForm.new(@session, @galform)
+		@galform.update_values({'de'=>'Tabletten', 'fr'=>'comprim?s'})
+		@state = State::Admin::GalenicForm.new(@session, @galform)
 	end
 	def test_update1
 		@session.app.galenic_forms = { 
 			'Tabletten'	=>	@galform, 
-			'comprimés'	=>	@galform,
+			'comprim?s'	=>	@galform,
 		}
-		@session.user_input = { :de => 'Tabletten',  :fr => 'comprimés'}
+		@session.user_input = { :de => 'Tabletten',  :fr => 'comprim?s'}
+    flexstub(@state) do |sta|
+      sta.should_receive(:unique_email)
+    end
 		@state.update
 		assert_equal(false, @state.error?)
 	end
 	def test_update2
 		@session.app.galenic_forms = { 
 			'Tabletten'	=>	@galform, 
-			'comprimés'	=>	@galform,
+			'comprim?s'	=>	@galform,
 		}
-		@session.user_input = { :de => 'Filmtabletten', :fr => 'filmcomprimés'}
+		@session.user_input = { :de => 'Filmtabletten', :fr => 'filmcomprim?s'}
+    flexstub(@state) do |sta|
+      sta.should_receive(:unique_email)
+    end
 		@state.update
 		assert_equal(false, @state.error?)
 	end
 	def test_update3
 		galform = StubGalenicForm.new
-		galform.update_values({'de'=>'Tabletten', 'fr'=>'comprimés'})
+		galform.update_values({'de'=>'Tabletten', 'fr'=>'comprim?s'})
 		@session.app.galenic_forms = { 
 			'Tabletten'	=>	galform, 
-			'comprimés'	=>	galform,
+			'comprim?s'	=>	galform,
 		}
-		@session.user_input = { :de => 'Filmtabletten', :fr => 'filmcomprimés'}
+		@session.user_input = { :de => 'Filmtabletten', :fr => 'filmcomprim?s'}
+    flexstub(@state) do |sta|
+      sta.should_receive(:unique_email)
+    end
 		@state.update
 		assert_equal(false, @state.error?)
 	end
 	def test_update4
 		galform = StubGalenicForm.new
-		galform.update_values({'de'=>'Tabletten', 'fr'=>'comprimés'})
+		galform.update_values({'de'=>'Tabletten', 'fr'=>'comprim?s'})
 		@session.app.galenic_forms = { 
 			'Tabletten'	=>	galform, 
-			'comprimés'	=>	galform,
+			'comprim?s'	=>	galform,
 		}
-		@session.user_input = { :de =>'Tabletten', :fr => 'comprimés'}
+		@session.user_input = { :de =>'Tabletten', :fr => 'comprim?s'}
 		@state.update
 		assert_equal(true, @state.error?)
 	end

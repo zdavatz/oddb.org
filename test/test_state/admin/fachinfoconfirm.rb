@@ -1,23 +1,26 @@
 #!/usr/bin/env ruby
+# State::Admin::TestFachinfoConfirm -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
 # State::Drugs::TestFachinfoConfirm -- oddb -- 03.10.2003 -- rwaltert@ywesee.com
 
 $: << File.dirname(__FILE__)
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'state/drugs/fachinfoconfirm'
+require 'flexmock'
+require 'state/admin/fachinfoconfirm'
 require 'state/global'
 
 module ODDB
 	module State
-		module Drugs
-class FachinfoConfirm < State::Drugs::Global
+		module Admin
+class FachinfoConfirm < State::Admin::Global
 	attr_accessor :model, :errors
 	attr_reader :unknown_iksnrs, :forbidden_iksnrs
 	attr_reader :valid_iksnrs
 end
 
 class TestFachinfoConfirmState < Test::Unit::TestCase
+  include FlexMock::TestCase
 	class StubApp
 		attr_reader :update_pointers, :update_values
 		attr_reader :replace_iksnrs, :replace_pointers
@@ -35,7 +38,7 @@ class TestFachinfoConfirmState < Test::Unit::TestCase
 			@replace_iksnrs << iksnr
 			@replace_pointers << pointer
 		end
-		def update(pointer, values)
+		def update(pointer, values, unique_email=nil)
 			@update_pointers.push(pointer)
 			@update_values.push(values)
 			@update_result
@@ -75,43 +78,7 @@ class TestFachinfoConfirmState < Test::Unit::TestCase
 		@session = StubSession.new
 		@app = StubApp.new
 		@session.app = @app
-		@state = State::Drugs::FachinfoConfirm.new(@session, []) 
-	end
-	def test_validate_iksnrs1
-		# erkennt Registration nicht
-		@state.model = [
-			StubFachinfoDocument.new('1234567')
-		]
-		@state.validate_iksnrs
-		assert_equal([], @state.valid_iksnrs)
-		assert_equal(1, @state.warnings.size)
-		assert_equal(1, @state.errors.size)
-		warn = @state.warnings.first
-		assert_instance_of(SBSM::Warning, warn)
-		assert_equal(:w_unknown_iksnr, warn.message)
-		err = @state.error(:iksnrs)
-		assert_instance_of(SBSM::ProcessingError, err)
-		assert_equal('e_no_valid_iksnrs', err.message)
-	end
-	def test_validate_iksnrs2
-		# erkennt Registration
-		# nicht berechtigt
-		reg = StubRegistration.new
-		reg.iksnr = '1234567'
-		@app.registration = reg
-		@state.model = [
-			StubFachinfoDocument.new('1234567')
-		]
-		@state.validate_iksnrs
-		assert_equal([], @state.valid_iksnrs)
-		assert_equal(1, @state.warnings.size)
-		assert_equal(1, @state.errors.size)
-		warn = @state.warnings.first
-		assert_instance_of(SBSM::Warning, warn)
-		assert_equal(:w_access_denied_iksnr, warn.message)
-		err = @state.error(:iksnrs)
-		assert_instance_of(SBSM::ProcessingError, err)
-		assert_equal('e_no_valid_iksnrs', err.message)
+		@state = State::Admin::FachinfoConfirm.new(@session, []) 
 	end
 	def test_validate_iksnrs3
 		# erkennt Registration
@@ -124,8 +91,14 @@ class TestFachinfoConfirmState < Test::Unit::TestCase
 			StubFachinfoDocument.new('12345'),
 			StubFachinfoDocument.new('12345'),
 		]
+    flexstub(@state.model) do |model|
+      model.should_receive(:"registration.iksnr").and_return('12344')
+    end
+    flexstub(@session) do |ses|
+      ses.should_receive(:allowed?).and_return(true)
+    end
 		@state.validate_iksnrs
-		assert_equal(['12345'], @state.valid_iksnrs)
+		assert_equal(['12344', '12345'], @state.valid_iksnrs)
 		assert_equal(false, @state.warning?)
 		assert_equal(false, @state.error?)
 	end
@@ -139,8 +112,14 @@ class TestFachinfoConfirmState < Test::Unit::TestCase
 		@state.model = [
 			StubFachinfoDocument.new('1234567,12345')
 		]
+    flexstub(@state.model) do |model|
+      model.should_receive(:"registration.iksnr").and_return('12344')
+    end
+    flexstub(@session) do |ses|
+      ses.should_receive(:allowed?).and_return(true)
+    end
 		@state.validate_iksnrs
-		assert_equal(['12345'], @state.valid_iksnrs)
+		assert_equal(['12344','12345'], @state.valid_iksnrs)
 		assert_equal(1, @state.warnings.size)
 		assert_equal(0, @state.errors.size)
 		warn = @state.warnings.first
@@ -192,7 +171,29 @@ class TestFachinfoConfirmState < Test::Unit::TestCase
 		]
 		assert_equal(expected, @state.iksnrs(doc))
 	end
+  def test_replaceable_fachinfo
+    @state.instance_eval('@valid_iksnrs = ["12345"]')
+    fachinfo = flexmock('fachinfo') 
+    registration = flexmock('registration') do |reg|
+      reg.should_receive(:fachinfo).and_return(fachinfo)
+      reg.should_receive(:iksnr).and_return('12345')
+    end
+    flexstub(fachinfo) do |fi|
+      fi.should_receive(:registrations).and_return([registration])
+    end
+    flexstub(@session) do |ses|
+      ses.should_receive(:registration).and_return(registration)
+    end
+    assert_equal(fachinfo, @state.replaceable_fachinfo)
+  end
 	def test_update1
+    flexstub(@state) do |sta|
+      sta.should_receive(:error?).and_return(true)
+    end
+    flexstub(@state.model) do |model|
+      model.should_receive(:"registration.iksnr").and_return('12344')
+    end
+
 		newstate = @state.update
 		assert(@state.error?, "No error condition!")
 		assert_equal(@state, newstate)
@@ -214,20 +215,39 @@ class TestFachinfoConfirmState < Test::Unit::TestCase
 		fachinfo = StubFachinfo.new
 		fachinfo.pointer = fi_pointer
 		@app.update_result = fachinfo
+
+    flexstub(@state.model) do |model|
+      model.should_receive(:registration).and_return(reg)
+      model.should_receive(:mime_type)
+    end
+    flexstub(fachinfo) do |fi|
+      fi.should_receive(:add_change_log_item)
+    end
+    flexstub(@session) do |ses|
+      ses.should_receive(:allowed?).and_return(true)
+      ses.should_receive(:registration).and_return(reg)
+      ses.should_receive(:user)
+    end
+    previous = flexmock('previous') do |pre|
+      pre.should_receive(:previous).and_return('previous')
+    end
+    @state.instance_eval('@previous = previous')
+    @state.instance_eval('@language = "fr"')
+
 		@state.update
 		assert_equal(false, @state.error?, @state.errors)
 		pointers = @app.update_pointers
-		assert_equal(1, pointers.size) 		
+		assert_equal(2, pointers.size) 		
 		assert_equal(fi_pointer.creator, pointers.first)
 		values = @app.update_values
-		assert_equal(1, values.size)
+		assert_equal(2, values.size)
 		expected = {
-			'de'	=>	fi_doc1,
+		#	'de'	=>	fi_doc1,
 			'fr'	=>	fi_doc2,
 		}
 		assert_equal(expected, values.first)
-		assert_equal(["12345"], @app.replace_iksnrs)
-		assert_equal([fi_pointer], @app.replace_pointers)
+		assert_equal(["12345", "12345"], @app.replace_iksnrs)
+		assert_equal([fi_pointer, fi_pointer], @app.replace_pointers)
 	end
 end
 		end

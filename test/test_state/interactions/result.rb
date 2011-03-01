@@ -1,10 +1,14 @@
 #!/usr/bin/env ruby
+# State::Interactions::TestResult -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
 # State::Interactions::TestResult -- oddb -- 01.06.2004 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'define_empty_class'
+require 'view/search'
 require 'state/interactions/result'
 require 'mock'
 
@@ -30,6 +34,7 @@ class TestResultState < Test::Unit::TestCase
 		@session.__verify
 	end
 	def test_empty_list
+    @state.init
 		assert_equal(View::Interactions::EmptyResult, @state.default_view)
 	end
 =begin

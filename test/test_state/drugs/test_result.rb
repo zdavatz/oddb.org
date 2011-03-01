@@ -1,10 +1,13 @@
 #!/usr/bin/env ruby
+# State::Drugs::TestResult -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
 # State::Drugs::TestResult -- oddb -- 11.03.2003 -- aschrafl@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
+$: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'define_empty_class'
 require 'state/drugs/result'
 require 'flexmock'
 
@@ -83,55 +86,52 @@ class StubResultSession
 	end
 end
 class TestResult < Test::Unit::TestCase
-	def expect_init(mock, atc_classes)
-		mock.__next(:session=) { "foo" }
-		mock.__next(:atc_classes) { atc_classes}
-		if(atc_classes.is_a?(Array) && !atc_classes.empty?)
-			mock.__next(:atc_classes) { atc_classes }
-			mock.__next(:atc_sorted) { atc_classes }
-		end
-	end
+  include FlexMock::TestCase
 	def test_empty_list
-		model = Mock.new("model")
-		expect_init(model, nil)
+    model = flexmock('model') do |mod|
+      mod.should_receive(:session=)
+      mod.should_receive(:atc_classes).and_return([])
+    end
 		state = State::Drugs::Result.new(StubResultSession.new, model)
 		state.sortby = [:size, :price, :mice]
+    state.init
 		assert_equal(View::Drugs::EmptyResult, state.default_view)
-		model.__verify
 	end
 	def test_filter
-		p1 = StubResultPackage.new(1,2,3)
-		p2 = StubResultPackage.new(3,2,1)
-		atc = StubResultAtc.new
-		atc.packages = [p1, p2]
-		model = Mock.new("model")
-		expect_init(model, Array.new(250, atc))
-		state = State::Drugs::Result.new(StubResultSession.new, model)
+    atc = flexmock('atc') do |atc|
+      atc.should_receive(:package_count).and_return(1)
+    end
+    model = flexmock('model') do |mod|
+      mod.should_receive(:session=)
+      mod.should_receive(:atc_classes).and_return([atc])
+      mod.should_receive(:overflow?).and_return(true)
+      mod.should_receive(:each).and_yield(atc)
+    end
+    session = StubResultSession.new
+    flexstub(session) do |ses|
+      ses.should_receive(:persistent_user_input)
+      ses.should_receive(:cookie_set_or_get)
+    end
+		state = State::Drugs::Result.new(session, model)
+    state.init
 		filter = state.filter
 		assert_instance_of(Proc, filter)
-		state.session.user_input = { :page=>0 }
 		result = filter.call(nil)
-		assert_instance_of(State::PageFacade, result)
-		assert_equal(75, result.size)
-		state.session.user_input = { :page=>3 }
-		result = filter.call(nil)
-		assert_instance_of(State::PageFacade, result)
-		assert_equal(25, result.size)
+		assert_equal(model, result)
 	end
 	def test_page
-		p1 = StubResultPackage.new(1,2,3)
-		p2 = StubResultPackage.new(3,2,1)
-		atc = StubResultAtc.new
-		atc.packages = [p1, p2]
-		model = Mock.new("model")
-		expect_init(model, Array.new(150, atc))
-		state = State::Drugs::Result.new(StubResultSession.new, model)
-		assert_instance_of(State::PageFacade, state.page)
-		assert_equal(0, state.page.to_i)
-		state.session.user_input = { :page => 1 }
-		assert_equal(1, state.page.to_i)
-		state.session.user_input = {}
-		assert_equal(1, state.page.to_i)
+    model = flexmock('model') 
+    session = StubResultSession.new
+    flexstub(session) do |ses|
+      ses.should_receive(:event)
+      ses.should_receive(:persistent_user_input)
+    end
+		state = State::Drugs::Result.new(session, model)
+    page = flexmock('page') do |page|
+      page.should_receive(:model=)
+    end
+    state.instance_eval('@pages = [page]')
+		assert_equal(page, state.page)
 	end
 end
 		end

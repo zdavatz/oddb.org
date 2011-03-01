@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
+# State::Admin::TestGalenicGroup -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
 # State::Drugs::TestGalenicGroup -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'state/drugs/galenicgroup'
+require 'state/admin/galenicgroup'
 require 'util/language'
 require 'state/admin/root'
 
@@ -14,7 +15,7 @@ module ODDB
 		class Global < SBSM::State
 			attr_accessor :model
 		end
-		module Drugs
+		module Admin
 
 class TestGalenicGroup < Test::Unit::TestCase
 	class StubSession
@@ -47,6 +48,9 @@ class TestGalenicGroup < Test::Unit::TestCase
 		end
 	end
 	class StubGalenicForm
+    def initialize
+      @odba_id = 123
+    end
 		include Language
 	end
 	class StubApp; end
@@ -55,7 +59,7 @@ class TestGalenicGroup < Test::Unit::TestCase
 	def test_pass_galenic_group
 		session = StubSession.new
 		model = StubGalenicForm.new
-		state = State::Drugs::GalenicGroup.new(session, model)
+		state = State::Admin::GalenicGroup.new(session, model)
 		pointer = StubPointer.new
 		pointer.model = model
 		model.pointer = pointer
