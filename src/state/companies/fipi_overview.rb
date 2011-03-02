@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# State::Companies::FiPiOverview -- oddb.org -- 02.03.2011 -- mhatakeyama@ywesee.com
 # State::Companies::FiPiOverview -- oddb.org -- 27.11.2006 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
@@ -11,7 +12,7 @@ module ODDB
     module Companies
 class FiPiOverview < Global
   DIRECT_EVENT = :fipi_overview
-  VIEW = View::Companies::FiPiOverview
+  VIEW = ODDB::View::Companies::FiPiOverview
   def init
     fis = []
     pis = []

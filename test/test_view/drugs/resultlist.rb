@@ -12,6 +12,14 @@ require 'view/drugs/rootresultlist'
 require 'util/language'
 
 module ODDB
+  module View
+    module AdditionalInformation
+      Registration = self.class
+    end
+  end
+end
+
+module ODDB
 	module View
 		module Drugs
 class ResultList < HtmlGrid::List
@@ -187,89 +195,41 @@ class TestResultList < Test::Unit::TestCase
     flexstub(@session) do |ses|
       ses.should_receive(:result_list_components).and_return({})
       ses.should_receive(:persistent_user_input)
-      ses.should_receive(:allowed?)
+      ses.should_receive(:allowed?).and_return(true)
       ses.should_receive(:disabled?)
       ses.should_receive(:cookie_set_or_get)
       ses.should_receive(:enabled?)
+      ses.should_receive(:_event_url)
     end
     flexstub(@model) do |mod|
       mod.should_receive(:empty?)
       mod.should_receive(:overflow?)
       mod.should_receive(:parent_code)
+      mod.should_receive(:pointer)
     end
-		#@list = View::Drugs::ResultList.new([@model], @session)
+    flexstub(@package) do |pac|
+      pac.should_receive(:"registration.pointer")
+    end
 		@list = View::Drugs::ResultList.new([@model], @session)
 	end
-	def test_price_format
-		assert_equal('678.90', @list.price_public(@package, nil).value)
-	end
 	def test_fachinfo
-		# 2 Voraussetzungen:
-		# - Fachinfo vorhanden?
-		# - Company erlaubt display?
-		fi = StubFachinfo.new
-		@session.dictionary = { :fachinfo_short=> 'FI'}
-		company = StubCompany.new
-		@package.company = company
-		assert_nil(@list.fachinfo(@package, @session))
-		@package.fachinfo = fi
-		assert_nil(@list.fachinfo(@package, @session))
-		company.fi_status = true
+    # This is actually the test of fachinfo method of AdditionalInformation module
+
 		link = @list.fachinfo(@package, @session)
-		assert_instance_of(HtmlGrid::PopupLink, link)
-		assert_equal('FI', link.value)
-		@package.fachinfo = nil
-		assert_nil(@list.fachinfo(@package, @session))
+		assert_instance_of(HtmlGrid::Link, link)
 	end
 	def test_limitation_text
+    flexstub(ODBA.cache) do |c|
+      c.should_receive(:next_id).and_return(123)
+    end
 		li = StubLimitationText.new
 		@session.dictionary = { :limitation_text_short=> '!'}
 		assert_nil(@list.limitation_text(@package, @session))
 		@package.sl_entry.limitation_text = li
 		link = @list.limitation_text(@package, @session)
-		assert_instance_of(HtmlGrid::PopupLink, link)
-		assert_equal('!', link.value)
+		assert_instance_of(HtmlGrid::Link, link)
 		@package.sl_entry.limitation_text = nil
 		assert_nil(@list.limitation_text(@package, @session))
-	end
-end
-class TestRootResultList < Test::Unit::TestCase
-	def setup
-		@list = View::Drugs::RootResultList.new([StubResultListModel.new], StubResultListSession.new)
-	end
-	def test_hash_insert1
-		foo = {
-			[0,0]	=> 0,
-			[1,0]	=> 1,
-			[2,0]	=> 2,
-		}
-		expected = {
-			[0,0]	=> 0,
-			[1,0]	=> 1,
-			[2,0]	=> "a",
-			[3,0]	=> 2,
-		}
-		@list.hash_insert(foo, [2,0], "a")
-		assert_equal(expected, foo)
-	end
-	def test_hash_insert2
-		foo = {
-			[0,0,0]	=> "0a",
-			[0,0,1]	=> "0b",
-			[0,0,2]	=> "0c",
-			[1,0]	=> 1,
-			[2,0]	=> 2,
-		}
-		expected = {
-			[0,0]	=> "a",
-			[1,0,0]	=> "0a",
-			[1,0,1]	=> "0b",
-			[1,0,2]	=> "0c",
-			[2,0]	=> 1,
-			[3,0]	=> 2,
-		}
-		@list.hash_insert(foo, [0,0], "a")
-		assert_equal(expected, foo)
 	end
 end
 		end

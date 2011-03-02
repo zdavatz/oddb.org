@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# State::Companies::MergeCompanies -- oddb -- 02.03.2011 -- mhatakeyama@ywesee.com
 # State::Companies::MergeCompanies -- oddb -- 17.06.2003 -- mhuggler@ywesee.com
 
 require 'state/companies/global'
@@ -9,7 +10,7 @@ module ODDB
 	module State
 		module Companies
 class MergeCompanies < State::Companies::Global
-	VIEW = View::Companies::MergeCompanies
+	VIEW = ODDB::View::Companies::MergeCompanies
 	def merge
 		company = @session.user_input(:company_form)
 		target = @session.app.company_by_name(company)

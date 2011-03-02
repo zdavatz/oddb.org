@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# View::Companies::TestCompanyList -- oddb -- 02.03.2011 -- mhatakeyama@ywesee.com
 # View::Companies::TestCompanyList -- oddb -- 30.07.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
@@ -6,6 +7,7 @@ $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'view/companies/companylist'
+require 'flexmock'
 
 module ODDB
 	module View
@@ -16,6 +18,7 @@ module CompanyList
 end
 
 class TestCompanyList < Test::Unit::TestCase
+  include FlexMock::TestCase
 	class StubModel
 		attr_reader :name
 		def initialize(name)
@@ -68,6 +71,9 @@ class TestCompanyList < Test::Unit::TestCase
 		comp3 = StubModel.new("fru")
 		orig = [comp1, comp2, comp3]
 		@session.event = :sort
+    flexstub(@session) do |s|
+      s.should_receive(:_event_url)
+    end
 		list = View::Companies::UnknownCompanyList.new(orig, @session)
 		assert_equal(orig, list.model)
 	end

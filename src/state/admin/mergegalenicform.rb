@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# State::Admin::MergeGalenicForm -- oddb -- 02.03.2011 -- mhatakeyama@ywesee.com
 # State::Admin::MergeGalenicForm -- oddb -- 03.04.2003 -- benfay@ywesee.com
 
 require 'state/admin/global'
@@ -8,7 +9,7 @@ module ODDB
 	module State
 		module Admin
 class MergeGalenicForm < State::Admin::Global
-	VIEW = View::Admin::MergeGalenicForm
+	VIEW = ODDB::View::Admin::MergeGalenicForm
 	def merge
 		galenic_form = @session.user_input(:galenic_form)
 		target = @session.app.galenic_form(galenic_form)

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# State::User::TestFiPiOfferInput -- oddb -- 02.03.2011 -- mhatakeyama@ywesee.com
 # State::User::TestFiPiOfferInput -- oddb -- 09.09.2004 -- jlang@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -42,20 +43,16 @@ class TestFiPiOffer < Test::Unit::TestCase
 	end
 	def test_fi_update_charge
 		assert_equal(0, @offer.fi_update_charge)
-		@offer.fi_update = 'update_ywesee'
-		assert_equal(@offer.class::FI_UPDATE, @offer.fi_update_charge)
 		@offer.fi_update = 'update_adsf'
 		assert_equal(0, @offer.fi_update_charge)
 	end
 	def test_pi_update_charge
 		assert_equal(0, @offer.fi_update_charge)
-		@offer.fi_update = 'update_ywesee'
-		assert_equal(@offer.class::FI_UPDATE, @offer.fi_update_charge)
 		@offer.fi_update = 'update_adsf'
 		assert_equal(0, @offer.fi_update_charge)
 	end
-	def test_calculate_activation_charge
-		assert_equal(2500, @offer.calculate_activation_charge)
+	def test_calculate_total
+		assert_equal(2500, @offer.calculate_total)
 	end
 	def test_calculate_fi_update
 		assert_equal(0, @offer.calculate_fi_update)

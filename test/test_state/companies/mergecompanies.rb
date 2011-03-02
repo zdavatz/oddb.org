@@ -8,6 +8,15 @@ require 'test/unit'
 require 'state/companies/mergecompanies'
 require 'model/registration'
 
+=begin
+module ODDB
+  module State
+    module View
+      class Companies; end
+    end
+  end
+end
+=end
 module ODDB
 	module State
 		module Companies

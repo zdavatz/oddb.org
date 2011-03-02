@@ -75,7 +75,6 @@ end
 
   include FlexMock::TestCase
 	def setup
-		GalenicGroup.reset_oid
     flexstub(ODBA.cache) do |cache|
       cache.should_receive(:next_id).and_return(123)
     end

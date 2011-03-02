@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# State::Admin::GalenicForm -- oddb -- 02.03.2011 -- mhatakeyama@ywesee.com 
 # State::Admin::GalenicForm -- oddb -- 28.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'
@@ -10,7 +11,7 @@ module ODDB
 		module Admin
 class GalenicGroup < State::Admin::Global; end
 class GalenicForm < State::Admin::Global
-	VIEW = View::Admin::GalenicForm
+	VIEW = ODDB::View::Admin::GalenicForm
 	def delete
 		if(@model.empty?)
 			galenic_group = @model.parent(@session.app) 

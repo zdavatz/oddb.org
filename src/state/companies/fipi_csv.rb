@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# State::Companies::FiPiCsv -- oddb -- 02.03.2011 -- mhatakeyama@ywesee.com
 # State::Companies::FiPiCsv -- de.oddb.org -- 04.12.2006 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
@@ -9,7 +10,7 @@ module ODDB
     module Companies
 class FiPiCsv < Global
   VOLATILE = true
-  VIEW = View::Companies::FiPiCsv
+  VIEW = ODDB::View::Companies::FiPiCsv
 end
     end
   end

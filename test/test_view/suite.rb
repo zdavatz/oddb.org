@@ -7,7 +7,7 @@ $: << here = File.expand_path(File.dirname(__FILE__))
 
 Find.find(here) { |file|
 	if file.match(/\.rb$/) && !file.match(/suite\.rb/)
-p file
+#p file
     require file
 	end
 }

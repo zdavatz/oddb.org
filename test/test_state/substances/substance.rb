@@ -116,10 +116,14 @@ class TestSubstanceState < Test::Unit::TestCase
     assert_equal(false, state.error?)
   end
   def test_update__error
+    app = flexmock('app') do |a|
+      a.should_receive(:update)
+      a.should_receive(:substance).and_return('model')
+    end
     flexstub(@session) do |s|
       s.should_receive(:"lookandfeel.languages").and_return([])
       s.should_receive(:user_input).and_return('value')
-      s.should_receive(:"app.update")
+      s.should_receive(:app).and_return(app)
     end
     flexstub(@model) do |m|
       m.should_receive(:pointer)
@@ -129,94 +133,8 @@ class TestSubstanceState < Test::Unit::TestCase
     end
     state = @state.update
     assert_equal(@state, state)
-    assert_equal(false, state.error?)
-
+    assert_equal(true, state.error?)
   end
-=begin
-	def test_update
-		lookandfeel = Mock.new('lookandfeel')
-		app = Mock.new('app')
-		substance = Mock.new('substance')
-		@session.__next(:lookandfeel) { lookandfeel }
-		lookandfeel.__next(:languages) { ['de'] }
-		@session.__next(:user_input) { |param|
-			assert_equal(:de, param)
-			'value'
-		}
-		@session.__next(:app) { app }
-		app.__next(:substance) { |value|
-			assert_equal('value', value)
-			substance
-		}
-		@session.__next(:user_input) { |param|
-			assert_equal(:en, param)
-			'value'
-		}
-		@session.__next(:app) { app }
-		app.__next(:substance) { |value|
-			assert_equal('value', value)
-			substance
-		}
-		@session.__next(:user_input) { |param|
-			assert_equal(:lt, param)
-			'value'
-		}
-		@session.__next(:app) { app }
-		app.__next(:substance) { |value|
-			assert_equal('value', value)
-			substance
-		}
-		@state.update
-		assert_equal(3, @state.errors.size)
-		lookandfeel.__verify
-		app.__verify
-		substance.__verify
-	end
-	def test_update2
-		lookandfeel = Mock.new('lookandfeel')
-		app = Mock.new('app')
-		@session.__next(:lookandfeel) { lookandfeel }
-		lookandfeel.__next(:languages) { ['de'] }
-		@session.__next(:user_input) { |param|
-			assert_equal(:de, param)
-			'value'
-		}
-		@session.__next(:app) { app }
-		app.__next(:substance) { |value|
-			assert_equal('value', value)
-			nil
-		}
-		@session.__next(:user_input) { |param|
-			assert_equal(:en, param)
-			'value'
-		}
-		@session.__next(:app) { app }
-		app.__next(:substance) { |value|
-			assert_equal('value', value)
-			@model	
-		}
-		@session.__next(:user_input) { |param|
-			assert_equal(:lt, param)
-			'value'
-		}
-		@session.__next(:app) { app }
-		app.__next(:substance) { |value|
-			assert_equal('value', value)
-			@model
-		}
-		@session.__next(:app) { app }
-		@model.__next(:pointer) { 'model_pointer' }
-		app.__next(:update) { |pointer, input| 
-			assert_equal('model_pointer', pointer)
-			expected = { "de"=>"value", "lt"=>"value", "en"=>"value" }
-			assert_equal(expected, input)
-		}
-		@state.update
-		assert_equal(0, @state.errors.size)
-		lookandfeel.__verify
-		app.__verify
-	end
-=end
 end
 		end
 	end
