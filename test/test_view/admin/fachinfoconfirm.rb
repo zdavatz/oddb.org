@@ -1,21 +1,24 @@
 #!/usr/bin/env ruby
+# Vewi::Admin::TestFAchinfoConfirm -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
 # View::Drugs::TestFachinfoConfirm -- oddb -- 24.10.2003 -- rwaltert@ywesee.com
 
 $: << File.expand_path("../..", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'view/drugs/fachinfoconfirm'
+require 'view/admin/fachinfoconfirm'
 require 'stub/cgi'
+require 'flexmock'
 
 module ODDB
 	module View
-		module Drugs
+		module Admin
 class FachinfoConfirmForm < View::FormList
 	attr_accessor :grid
 end
 
 class TestFachinfoConfirm < Test::Unit::TestCase
+  include FlexMock::TestCase
 	class StubSession
 		attr_writer :error, :warning
 		attr_accessor :event, :base_url
@@ -48,7 +51,10 @@ class TestFachinfoConfirm < Test::Unit::TestCase
 	end
 	def setup
 		@session = StubSession.new
-		@form = View::Drugs::FachinfoConfirmForm.new(nil, @session)
+    flexstub(@session) do |ses|
+      ses.should_receive(:zone)
+    end
+		@form = View::Admin::FachinfoConfirmForm.new(nil, @session)
 	end
 	def test_compose_footer1
 		grid = @form.grid = HtmlGrid::Grid.new()

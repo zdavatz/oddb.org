@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
+# View::Drugs::TestResultList -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
 # View::Drugs::TestResultList -- oddb -- 05.03.2003 -- hwyss@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'view/drugs/resultlist'
 require 'view/drugs/rootresultlist'
 require 'util/language'
@@ -17,7 +19,7 @@ class ResultList < HtmlGrid::List
 	attr_reader :model
 end
 class RootResultList < View::Drugs::ResultList
-	public :hash_insert
+#	public :hash_insert
 end
 
 class StubResultListCompany
@@ -112,6 +114,7 @@ class RootUser
 end
 
 class TestResultList < Test::Unit::TestCase
+  include FlexMock::TestCase
 	class StubSession
 		attr_accessor :pages
 		attr_accessor :dictionary
@@ -181,12 +184,25 @@ class TestResultList < Test::Unit::TestCase
 		@model = StubAtc.new
 		@model.packages = [@package]
 		@session = StubSession.new
+    flexstub(@session) do |ses|
+      ses.should_receive(:result_list_components).and_return({})
+      ses.should_receive(:persistent_user_input)
+      ses.should_receive(:allowed?)
+      ses.should_receive(:disabled?)
+      ses.should_receive(:cookie_set_or_get)
+      ses.should_receive(:enabled?)
+    end
+    flexstub(@model) do |mod|
+      mod.should_receive(:empty?)
+      mod.should_receive(:overflow?)
+      mod.should_receive(:parent_code)
+    end
+		#@list = View::Drugs::ResultList.new([@model], @session)
 		@list = View::Drugs::ResultList.new([@model], @session)
 	end
 	def test_price_format
 		assert_equal('678.90', @list.price_public(@package, nil).value)
 	end
-=begin
 	def test_fachinfo
 		# 2 Voraussetzungen:
 		# - Fachinfo vorhanden?
@@ -205,7 +221,6 @@ class TestResultList < Test::Unit::TestCase
 		@package.fachinfo = nil
 		assert_nil(@list.fachinfo(@package, @session))
 	end
-=end
 	def test_limitation_text
 		li = StubLimitationText.new
 		@session.dictionary = { :limitation_text_short=> '!'}

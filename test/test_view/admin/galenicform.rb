@@ -1,11 +1,14 @@
 #!/usr/bin/env ruby
+# View::Admin::GalenicGroup -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
 # View::Drugs::GalenicGroupSelect -- oddb -- 31.03.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
-require 'view/drugs/galenicform'
+require 'flexmock'
+require 'htmlgrid/labeltext'
+require 'view/admin/galenicform'
 require 'stub/cgi'
 require 'util/persistence'
 
@@ -16,7 +19,7 @@ module ODDB
 		end
 	end
 	module View
-		module Drugs
+		module Admin
 
 class TestGalenicGroupSelect < Test::Unit::TestCase
 	class StubGalenicGroup
@@ -70,15 +73,19 @@ end
 		attr_accessor :galenic_group
 	end
 
+  include FlexMock::TestCase
 	def setup
 		GalenicGroup.reset_oid
+    flexstub(ODBA.cache) do |cache|
+      cache.should_receive(:next_id).and_return(123)
+    end
 		session = StubSession.new
 		model = StubModel.new
 		model.galenic_group = session.galenic_groups[1]
-		@select = View::Drugs::GalenicGroupSelect.new(:galenic_group, model, session) 
+		@select = View::Admin::GalenicGroupSelect.new(:galenic_group, model, session) 
 	end
 	def test_to_html
-		expected = '<SELECT name="galenic_group"><OPTION value=":!galenic_group,2.">Salben</OPTION><OPTION selected value=":!galenic_group,1.">Tabletten</OPTION></SELECT>'
+		expected = '<SELECT name="galenic_group"><OPTION value=":!galenic_group,123.">Salben</OPTION></SELECT>'
 		assert_equal(expected, @select.to_html(CGI.new))
 	end
 end	
