@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# State::Admin::TestMergeGalenicForm -- oddb -- 02.03.2011 -- mhatakeyama@ywesee.com
 # State::Drugs::TestMergeGalenicForm -- oddb -- 09.04.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -12,7 +13,7 @@ require 'state/admin/galenicform'
 
 module ODDB
 	module State
-		module Drugs
+		module Admin
 class StubMGFStateSession
 	attr_writer :user_input, :galenic_forms
 	attr_reader :merge_galenic_forms_called
@@ -46,7 +47,7 @@ class TestMergeGalenicFormState < Test::Unit::TestCase
 	def setup
 		@session = StubMGFStateSession.new
 		@model = StubMGFStateModel.new('Filmtabletten')
-		@state = State::Drugs::MergeGalenicForm.new(@session, @model)
+		@state = State::Admin::MergeGalenicForm.new(@session, @model)
 		@session.user_input = {:galenic_form => "Tabletten"}
 	end
 	def test_no_target
@@ -65,7 +66,7 @@ class TestMergeGalenicFormState < Test::Unit::TestCase
 		@session.galenic_forms = { "Tabletten" =>	StubMGFStateModel.new('Tabletten') }
 		newstate = @state.trigger(:merge)
 		assert_equal(true, @session.merge_galenic_forms_called)
-		assert_equal(State::Drugs::GalenicForm, newstate.class)
+		assert_equal(State::Admin::GalenicForm, newstate.class)
 	end
 end
 		end
