@@ -69,7 +69,13 @@ class CsvResult < HtmlGrid::Component
 	end
 	def bsv_dossier(pack)
 		if(sl = pack.sl_entry)
+      # Report package EAN code when an error happens with export_oddb_csv
+      # Refer to: http://dev.ywesee.com/wiki.php/Masa/20110302-testcases-oddbOrg#DebugCsv
+      begin
       dossier = sl.bsv_dossier
+      rescue => e
+        raise e.message + " package ean code=" + pack.barcode.to_s
+      end
       if dossier
         @bsv_dossiers.store dossier, true
         @counts['bsv_dossiers'] = @bsv_dossiers.size
