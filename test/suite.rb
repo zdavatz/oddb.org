@@ -16,6 +16,7 @@ directories = [
   "#{dir}/test_state/suite.rb",
   "#{dir}/test_view/suite.rb",
   "#{dir}/../ext/suite.rb",
+  "#{dir}/test_custom/suite.rb",
 ]
 
 rcov = true

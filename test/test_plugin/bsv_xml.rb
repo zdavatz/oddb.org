@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# TestBsvXmlPlubin -- oddb.org -- 03.03.2011 -- mhatakeyama@ywesee.com
 # TestBsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
@@ -11,6 +12,199 @@ require 'flexmock'
 require 'util/logfile'
 
 module ODDB
+  class TestListener < Test::Unit::TestCase
+    include FlexMock::TestCase
+    def setup
+      app = flexmock('app')
+      @listener = ODDB::BsvXmlPlugin::Listener.new(app)
+    end
+    def test_date
+      expected = Date.new(2011,2,1)
+      assert_equal(expected, @listener.date('01.02.2011'))
+    end
+    def test_date__nil
+      assert_equal(nil, @listener.date(''))
+    end
+    def test_text
+      @listener.instance_eval('@html="<html>html</html>"')
+      expected = "htmltext\ntext"
+      assert_equal(expected, @listener.text('text<br />text'))
+    end
+    def test_text__nil
+      @listener.instance_eval('@html=nil')
+      assert_equal(nil, @listener.text('text<br />text'))
+    end
+    def test_time
+      expected = Time.local(2011,2,1)
+      assert_equal(expected, @listener.time('01.02.2011'))
+    end
+    def test_time__nil
+      assert_equal(nil, @listener.time(''))
+    end
+    def test_update_chapter
+      paragraph = flexmock(Array.new) do |p|
+        p.should_receive(:reduce_format)
+        p.should_receive(:augment_format)
+      end
+      section = flexmock('section') do |s|
+        s.should_receive(:subheading).and_return('')
+        s.should_receive(:next_paragraph).and_return(paragraph)
+      end
+      chapter = flexmock('chapter') do |c|
+        c.should_receive(:next_section).and_return(section)
+        c.should_receive(:clean!).and_return('clean!')
+      end
+      text = [
+        '<i>hello</i>',
+        '<h>hello</h>'
+      ]
+      assert_equal('clean!', @listener.update_chapter(chapter, text, 'subheading'))
+
+      # check a local variable
+      expected = ["hello", "<", "h>hello", "<", "/h>"]
+      assert_equal(expected, paragraph)
+    end
+  end
+
+  class TestGenericsListener < Test::Unit::TestCase
+    include FlexMock::TestCase
+    def setup
+      @app = flexmock('app')
+      @listener = ODDB::BsvXmlPlugin::GenericsListener.new(@app)
+    end
+    def test_tag_start
+      assert_equal('', @listener.tag_start('name', 'attrs'))
+
+      # check instance variables
+      assert_equal('', @listener.instance_eval('@text'))
+      assert_equal('', @listener.instance_eval('@html'))
+    end
+    def test_tag_end__GenGroupOrg
+      assert_equal([nil], @listener.tag_end('GenGroupOrg'))
+
+      # check an instance variable
+      expected = Persistence::Pointer.new [:generic_group, @text]
+      assert_equal(expected, @listener.instance_eval('@pointer'))
+    end
+    def test_tag_end__PharmacodeOrg
+      flexstub(Package) do |p|
+        p.should_receive(:find_by_pharmacode).and_return('original')
+      end
+      assert_equal([nil], @listener.tag_end('PharmacodeOrg'))
+
+      # check an instance variable
+      assert_equal('original', @listener.instance_eval('@original'))
+    end
+    def test_tag_end__PharmacodeGen
+      flexstub(Package) do |p|
+        p.should_receive(:find_by_pharmacode).and_return('generic')
+      end
+      assert_equal([nil], @listener.tag_end('PharmacodeGen'))
+
+      # check an instance variable
+      assert_equal('generic', @listener.instance_eval('@generic'))
+    end
+    def test_tag_end__OrgGen
+      flexstub(@app) do |app|
+        app.should_receive(:create)
+        app.should_receive(:update)
+      end
+      package = flexmock('package') do |p|
+        p.should_receive(:pointer)
+      end
+      @listener.instance_eval('@pointer = "pointer"')
+      @listener.instance_eval('@original = package')
+      @listener.instance_eval('@generic = package')
+      assert_equal([nil], @listener.tag_end('OrgGen'))
+    end
+    def test_tag_end__else
+      assert_equal([nil], @listener.tag_end('name'))
+
+      # check instance variables
+      assert_equal(nil, @listener.instance_eval('@text'))
+      assert_equal(nil, @listener.instance_eval('@html'))
+    end
+  end
+  
+  class TestItCodesListener < Test::Unit::TestCase
+    include FlexMock::TestCase
+    def setup
+      @app = flexmock('app')
+      @listener = ODDB::BsvXmlPlugin::ItCodesListener.new(@app)
+    end
+    def test_tag_start__ItCode
+      attr = {'Code' => 'code'}
+      assert_equal({}, @listener.tag_start('ItCode', attr))
+
+      # check instance variables
+      expected = Persistence::Pointer.new [:index_therapeuticus, 'code']
+      assert_equal(expected, @listener.instance_eval('@pointer'))
+      assert_equal({}, @listener.instance_eval('@target_data'))
+      assert_equal({}, @listener.instance_eval('@data'))
+      target_data_id = @listener.instance_eval('@target_data.object_id')
+      data_id = @listener.instance_eval('@data.object_id')
+      assert_equal(target_data_id, data_id)
+    end
+    def test_tag_start__Limitations
+      assert_equal({}, @listener.tag_start('Limitations', 'attr'))
+
+      # check instance variables
+      assert_equal({}, @listener.instance_eval('@target_data'))
+      assert_equal({}, @listener.instance_eval('@lim_data'))
+      target_data_id = @listener.instance_eval('@target_data.object_id')
+      lim_data_id = @listener.instance_eval('@lim_data.object_id')
+      assert_equal(target_data_id, lim_data_id)
+    end
+    def test_tag_start__else
+      assert_equal('', @listener.tag_start('name', 'attr'))
+
+      # check instance variables
+      assert_equal('', @listener.instance_eval('@text'))
+      assert_equal('', @listener.instance_eval('@html'))
+    end
+    def test_tag_end__ItCode
+      flexstub(@app) do |app|
+        app.should_receive(:update)
+      end
+      pointer = flexmock('pointer') do |ptr|
+        ptr.should_receive(:creator)
+      end
+      flexstub(pointer) do |ptr|
+        ptr.should_receive(:+).and_return(pointer)
+      end
+      @listener.instance_eval('@pointer = pointer')
+      lim_data = {'key' => 'value'}
+      @listener.instance_eval('@lim_data = lim_data')
+      assert_equal([nil], @listener.tag_end('ItCode'))
+    end
+    def test_tag_end__Limitations
+      @listener.instance_eval('@target_data = {}')
+      assert_equal([nil], @listener.tag_end('Limitations'))
+    end
+    def test_tag_end__ValidFromDate
+      @listener.instance_eval('@target_data = {}')
+      assert_equal([nil], @listener.tag_end('ValidFromDate'))
+
+      # check instance variable
+      assert_equal({:valid_from=>nil}, @listener.instance_eval('@target_data'))
+    end
+    def test_tag_end__Points
+      @listener.instance_eval('@target_data = {}')
+      assert_equal([nil], @listener.tag_end('Points'))
+
+      # check instance variable
+      assert_equal({:limitation_points=>0}, @listener.instance_eval('@target_data'))
+    end
+    def test_tag_end__else
+      assert_equal([nil], @listener.tag_end('name'))
+
+      # check instance variables
+      assert_equal(nil, @listener.instance_eval('@text'))
+      assert_equal(nil, @listener.instance_eval('@html'))
+    end
+
+  end
+
   class BsvXmlPlugin
     class PreparationsListener
     end
