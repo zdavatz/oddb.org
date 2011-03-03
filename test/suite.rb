@@ -6,11 +6,14 @@ $: << File.dirname(__FILE__)
 require 'tempfile'
 
 dir = File.expand_path(File.dirname(__FILE__))
+# Below test_suites contain tests that call each other. 
+# This can result in a wrong coverage summary as shown in the example of oddbapp.rb
+# Out of this reason we run test_util/suite.rb first - but this may cause other problems. Lets see.
 directories = [
+  "#{dir}/test_util/suite.rb",
   "#{dir}/test_model/suite.rb",
   "#{dir}/test_plugin/suite.rb",
   "#{dir}/test_state/suite.rb",
-  "#{dir}/test_util/suite.rb",
   "#{dir}/test_view/suite.rb",
   "#{dir}/../ext/suite.rb",
 ]
