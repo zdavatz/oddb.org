@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# State::TestGlobal -- oddb -- 03.03.2011 -- mhatakeyama@ywesee.com
 # State::TestGlobal -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -11,6 +12,7 @@ require 'mock'
 require 'util/language'
 #require 'sbsm/validator'
 require 'sbsm/state'
+require 'flexmock'
 
 module ODDB
 	module State
@@ -26,6 +28,7 @@ end
 			attr_accessor :model
 		end
 		class TestGlobal < Test::Unit::TestCase
+      include FlexMock::TestCase
 			class StubSession
 				attr_accessor :user_input, :request_path
 				def app
@@ -86,10 +89,6 @@ end
 			end
 
 			def setup
-				ODBA.storage = Mock.new
-				ODBA.storage.__next(:next_id) {
-					1
-				}
 				@session = StubSession.new
 				@state = State::Global.new(@session, @session)
 			end
@@ -101,17 +100,28 @@ end
 				@session.app.companies = { 
 					4	=>	@company, 
 				}
-				@session.user_input = {
-					:pointer	=>	Persistence::Pointer.new([:company, 4])
-				}
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return('model')
+          ptr.should_receive(:skeleton).and_return([:company])
+        end
+        flexstub(@session) do |s|
+          s.should_receive(:user_input).and_return(pointer) 
+        end
 				newstate = @state.resolve
 				assert_instance_of(State::Companies::Company, newstate)
 			end
 			def test_resolve__print1
 				@session.app.fachinfos = { 0	=>	:foo}
-				@session.user_input = {
-					:pointer	=>	Persistence::Pointer.new([:fachinfo, 0])
-				}
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return('model')
+          ptr.should_receive(:skeleton).and_return([:fachinfo])
+        end
+        flexstub(@session) do |s|
+          s.should_receive(:user_input).and_return(pointer) 
+        end
+
 				newstate = @state.print
 				assert_instance_of(State::Drugs::FachinfoPrint, newstate)
 			end

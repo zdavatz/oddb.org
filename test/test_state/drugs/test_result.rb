@@ -95,7 +95,7 @@ class TestResult < Test::Unit::TestCase
 		state = State::Drugs::Result.new(StubResultSession.new, model)
 		state.sortby = [:size, :price, :mice]
     state.init
-		assert_equal(View::Drugs::EmptyResult, state.default_view)
+		assert_equal(ODDB::View::Drugs::EmptyResult, state.default_view)
 	end
 	def test_filter
     atc = flexmock('atc') do |atc|

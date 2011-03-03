@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# State::Interactions::Result -- oddb -- 03.03.2011 -- mhatakeyama@ywesee.com
 # State::Interactions::Result -- oddb -- 26.05.2004 -- mhuggler@ywesee.com
 
 require 'view/interactions/result'
@@ -37,7 +38,7 @@ class Result < State::Interactions::Global
 		#@facades = {}
 		@object_count = 0
 		if(@model.nil? || @model.empty?)
-			@default_view = View::Interactions::EmptyResult
+			@default_view = ODDB::View::Interactions::EmptyResult
 		else
 			@model.each { |obj|
 				@object_count += 1

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# State::Drugs::Result -- oddb -- 03.03.2011 -- mhatakeyama@ywesee.com
 # State::Drugs::Result -- oddb -- 03.03.2003 -- hwyss@ywesee.com 
 
 require 'state/global_predefine'
@@ -28,7 +29,7 @@ class Result < State::Drugs::Global
 		@model.session = @session
 		@model.atc_classes.delete_if { |atc| atc.package_count == 0 }
 		if(@model.atc_classes.nil? || @model.atc_classes.empty?)
-			@default_view = View::Drugs::EmptyResult
+			@default_view = ODDB::View::Drugs::EmptyResult
     elsif(@model.overflow?)
  			query = @session.persistent_user_input(:search_query).to_s.downcase
 			page  = 0

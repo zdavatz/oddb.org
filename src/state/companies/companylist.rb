@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# State::Companies::CompanyList -- oddb -- 03.03.2011 -- mhatakeyama@ywesee.com
 # State::Companies::CompanyList -- oddb -- 26.05.2003 -- mhuggler@ywesee.com
 
 require 'state/companies/global'
@@ -19,11 +20,11 @@ class CompanyResult < State::Companies::Global
 	LIMITED = true
 	def init
     priv = @session.allowed?('edit', 'org.oddb.model.!company.*')
-    @default_view = priv ? View::Companies::RootCompanies \
-                         : View::Companies::UnknownCompanies
+    @default_view = priv ? ODDB::View::Companies::RootCompanies \
+                         : ODDB::View::Companies::UnknownCompanies
 		if(!@model.is_a?(Array) || @model.empty?)
-      @default_view = priv ? View::Companies::RootEmptyResult \
-                           : View::Companies::EmptyResult
+      @default_view = priv ? ODDB::View::Companies::RootEmptyResult \
+                           : ODDB::View::Companies::EmptyResult
 		end
 		filter_interval
 	end

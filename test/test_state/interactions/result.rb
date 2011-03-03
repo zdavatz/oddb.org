@@ -35,7 +35,7 @@ class TestResultState < Test::Unit::TestCase
 	end
 	def test_empty_list
     @state.init
-		assert_equal(View::Interactions::EmptyResult, @state.default_view)
+		assert_equal(ODDB::View::Interactions::EmptyResult, @state.default_view)
 	end
 =begin
 	def test_check_facades
