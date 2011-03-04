@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::TestGlobal -- oddb -- 03.03.2011 -- mhatakeyama@ywesee.com
+# State::TestGlobal -- oddb -- 03.04.2011 -- mhatakeyama@ywesee.com
 # State::TestGlobal -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -10,7 +10,6 @@ require 'test/unit'
 require 'state/global'
 require 'mock'
 require 'util/language'
-#require 'sbsm/validator'
 require 'sbsm/state'
 require 'flexmock'
 
@@ -147,6 +146,191 @@ end
 				assert_equal('foo', @state.model.good)
 				assert_equal('bar', @state.model.bad)
 			end
+
+      def test_add_to_interaction_basket
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:resolve).and_return('object')
+        end
+        flexmock(@session) do |ses|
+          ses.should_receive(:user_input).and_return(pointer)
+          ses.should_receive(:add_to_interaction_basket)
+        end
+        assert_equal(@state, @state.add_to_interaction_basket)
+      end
+      def test_allowed?
+        model = flexmock('model') do |mod|
+          mod.should_receive(:is_a?).and_return(true)
+          mod.should_receive(:parent)
+        end
+        flexmock(@session) do |ses|
+          ses.should_receive(:allowed?).and_return('allowed?')
+        end
+        assert_equal('allowed?', @state.allowed?(model))
+      end
+      def test_atc_chooser
+        flexmock(@session.app) do |app|
+          app.should_receive(:atc_chooser)
+        end
+        assert_kind_of(State::Drugs::AtcChooser, @state.atc_chooser)
+      end
+      def test_checkout__user
+        flexmock(@session) do |ses|
+          ses.should_receive(:zone).and_return(:user)
+        end
+        flexmock(@state) do |sta|
+          sta.should_receive(:"proceed_download.checkout").and_return('proceed_download.checkout')
+        end
+        assert_equal('proceed_download.checkout', @state.checkout)
+      end
+      def test_checkout__drugs
+        flexmock(@session) do |ses|
+          ses.should_receive(:zone).and_return(:drugs)
+        end
+        flexmock(@state) do |sta|
+          sta.should_receive(:"export_csv.checkout").and_return('export_csv.checkout')
+        end
+        assert_equal('export_csv.checkout', @state.checkout)
+      end
+      def test_clear_interaction_basket
+        flexmock(@session) do |ses|
+          ses.should_receive(:clear_interaction_basket)
+        end
+        assert_kind_of(State::Interactions::EmptyBasket, @state.clear_interaction_basket)
+      end
+      def test_creditable?
+        flexmock(@session.user) do |usr|
+          usr.should_receive(:creditable?).and_return('creditable?')
+        end
+        assert_equal('creditable?', @state.creditable?)
+      end
+      def test_direct_request_path
+        flexmock(@state) do |sta|
+          sta.should_receive(:direct_event).and_return('event')
+        end
+        flexmock(@session) do |ses|
+          ses.should_receive(:lookandfeel).and_return(flexmock('lookandfeel') do |look|
+            look.should_receive(:_event_url).and_return('_event_url')
+          end)
+        end
+        assert_equal('_event_url', @state.direct_request_path)
+      end
+      def test_direct_request_path__else
+        flexmock(@state) do |s|
+          s.should_receive(:request_path).and_return('request_path')
+        end
+        assert_equal('request_path', @state.direct_request_path)
+      end
+      def test_doctorlist
+        flexmock(@session) do |s|
+          s.should_receive(:doctors).and_return({'key' => 'model'})
+        end
+        assert_kind_of(State::Doctors::DoctorList, @state.doctorlist)
+      end
+      def test_download__init
+        flexmock(@session) do |s|
+          s.should_receive(:is_crawler?).and_return(true)
+        end
+        assert_kind_of(State::Drugs::Init, @state.download)
+      end
+      def test_download__download
+        item = flexmock('item') do |i|
+          i.should_receive(:expired?).and_return(false)
+        end
+        invoice = flexmock('invoice') do |i|
+          i.should_receive(:yus_name).and_return('email')
+          i.should_receive(:payment_received?).and_return(true)
+          i.should_receive(:item_by_text).and_return(item)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:is_crawler?).and_return(false)
+          s.should_receive(:get_cookie_input).and_return('email')
+          s.should_receive(:invoice).and_return(invoice)
+        end
+        assert_kind_of(State::User::Download, @state.download)
+      end
+      def test_download__return
+        flexmock(@session) do |s|
+          s.should_receive(:is_crawler?).and_return(false)
+          s.should_receive(:get_cookie_input)
+          s.should_receive(:invoice)
+        end
+        assert_kind_of(State::PayPal::Return, @state.download)
+      end
+      def test_hospitallist
+        flexmock(@session) do |s|
+          s.should_receive(:hospitals).and_return({'key' => 'model'})
+        end
+        assert_kind_of(State::Hospitals::HospitalList, @state.hospitallist)
+      end
+      def test_export_csv
+        flexmock(@session) do |s|
+          s.should_receive(:zone).and_return(:drugs)
+        end
+        state = flexmock('state') do |s|
+          s.should_receive(:is_a?).and_return(true)
+          s.should_receive(:export_csv).and_return('export_csv')
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:search).and_return(state)
+        end
+        assert_equal('export_csv', @state.export_csv)
+      end
+      def test_export_csv__nil
+        flexmock(@session) do |s|
+          s.should_receive(:zone)
+        end
+        assert_equal(nil, @state.export_csv)
+      end
+      def test_extend
+        mod = flexmock(Module.new) do |m|
+          m.should_receive(:constants).and_return(['VIRAL'])
+        end
+        assert_equal(@state, @state.extend(mod))
+      end
+      def test_fachinfo
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return('iksnr')
+        end
+        registration = flexmock('registration') do |r|
+          r.should_receive(:fachinfo).and_return('fachinfo')
+        end
+        flexmock(@session.app) do |app|
+          app.should_receive(:registration).and_return(registration)
+        end
+        assert_kind_of(State::Drugs::Fachinfo, @state.fachinfo)
+      end
+      def test_fachinfo__http404
+        assert_kind_of(Http404, @state.fachinfo)
+      end
+      def test_feedbacks__package
+        item = flexmock('item') do |i|
+          i.should_receive(:odba_instance).and_return(ODDB::Package.new('ikscd'))
+        end
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return(item)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return(pointer)
+        end
+        assert_kind_of(State::Drugs::Feedbacks, @state.feedbacks)
+      end
+      def test_feedbacks__product
+        item = flexmock('item') do |i|
+          i.should_receive(:odba_instance).and_return(ODDB::Migel::Product.new('code'))
+        end
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return(item)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return(pointer)
+        end
+        assert_kind_of(State::Migel::Feedbacks, @state.feedbacks)
+      end
+      def test_feedbacks__nil
+        assert_equal(nil, @state.feedbacks)
+      end
 		end
 	end
 end

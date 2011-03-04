@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 # suite.rb -- oddb.org -- 16.02.2011 -- mhatakeyama@ywesee.com 
+# In order to execute test/suite.rb,
+# yusd and meddatad is needed to run.
 
 $: << File.dirname(__FILE__)
 

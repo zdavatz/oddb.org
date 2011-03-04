@@ -12,6 +12,13 @@ require 'flexmock'
 require 'util/logfile'
 
 module ODDB
+  class PackageCommon
+  end
+  class Package < PackageCommon
+  end
+end
+
+module ODDB
   class TestListener < Test::Unit::TestCase
     include FlexMock::TestCase
     def setup
@@ -202,9 +209,402 @@ module ODDB
       assert_equal(nil, @listener.instance_eval('@text'))
       assert_equal(nil, @listener.instance_eval('@html'))
     end
+  end
+
+  class BsvXmlPlugin
+  class PreparationsListener < Listener
+    MEDDATA_SERVER = self
+  end
+  end
+
+  class TestPreparationsListener < Test::Unit::TestCase
+    include FlexMock::TestCase
+    def setup
+      @package = flexmock('package') do |pac|
+        pac.should_receive(:public?).and_return(true)
+        pac.should_receive(:sl_entry).and_return(true)
+        pac.should_receive(:pointer)
+        pac.should_receive(:name_base)
+        pac.should_receive(:atc_class)
+        pac.should_receive(:pharmacode)
+        pac.should_receive(:iksnr)
+        pac.should_receive(:ikskey)
+        pac.should_receive(:[]).and_return('name_base')
+      end
+      @app = flexmock('app') do |app|
+        app.should_receive(:each_package).and_yield(@package)
+      end
+      @listener = ODDB::BsvXmlPlugin::PreparationsListener.new(@app)
+    end
+    def test_completed_registrations
+      completed_registrations = {'key' => 'value'}
+      @listener.instance_eval('@completed_registrations = completed_registrations')
+      assert_equal(['value'], @listener.completed_registrations)
+    end
+    def test_erroneous_packages
+      known_packages = {'key' => @package}
+      @listener.instance_eval('@known_packages = known_packages')
+      assert_equal([@package], @listener.erroneous_packages)
+    end
+    def test_flag_change
+      assert_equal(['key'], @listener.flag_change('pointer', 'key'))
+    end
+    def test_find_typo_registration
+      name = flexmock('name') do |n|
+        n.should_receive(:collect).and_return(['name'])
+        n.should_receive(:downcase)
+      end
+      sequence = flexmock('sequence') do |s|
+        s.should_receive(:"name_base.downcase").and_return(['name'])
+      end
+      registration = flexmock('registration') do |r|
+        r.should_receive(:"sequences.collect").and_yield('seqnr', sequence)
+      end
+      flexstub(@app) do |a|
+        a.should_receive(:registration).and_return(registration)
+      end
+      assert_equal(registration, @listener.find_typo_registration('iksnr', name))
+    end
+    def test_find_typo_registration__nil
+      name = flexmock('name') do |n|
+        n.should_receive(:collect)
+      end
+      assert_equal(nil, @listener.find_typo_registration('', name))
+    end
+    def test_identify_sequence
+      active_agent = flexmock('active_agent') do |act|
+        act.should_receive(:same_as?)
+      end
+      sequence = flexmock('sequence') do |seq|
+        seq.should_receive(:active_agents).and_return([active_agent])
+      end
+      pointer = flexmock('pointer') do |ptr|
+        ptr.should_receive(:creator)
+      end
+      flexmock(pointer) do |ptr|
+        ptr.should_receive(:+).and_return(pointer)
+      end
+      registration = flexmock('registration') do |reg|
+        reg.should_receive(:sequences).and_return({'key' => sequence})
+        reg.should_receive(:pointer).and_return(pointer)
+      end
+      flexmock(@app) do |app|
+        app.should_receive(:update).and_return(sequence)
+      end
+      assert_equal(sequence, @listener.identify_sequence(registration, 'name', 'substances'))
+    end
+    def test_identify_sequence__active_agent_nil
+      pointer = flexmock('pointer') do |ptr|
+        ptr.should_receive(:creator)
+      end
+      sequence = flexmock('sequence') do |seq|
+        seq.should_receive(:active_agents).and_return([])
+        seq.should_receive(:pointer).and_return(pointer)
+        seq.should_receive(:oid)
+      end
+      flexmock(pointer) do |ptr|
+        ptr.should_receive(:+).and_return(pointer)
+      end
+      registration = flexmock('registration') do |reg|
+        reg.should_receive(:sequences).and_return({'key' => sequence})
+        reg.should_receive(:pointer).and_return(pointer)
+      end
+      flexmock(@app) do |app|
+        app.should_receive(:update).and_return(sequence)
+        app.should_receive(:create).and_return(registration)
+        app.should_receive(:substance)
+      end
+      assert_equal(sequence, @listener.identify_sequence(registration, 'name', 'substances'))
+    end
+    def test_load_ikskey
+      meddata = flexmock('meddata') do |med|
+        med.should_receive(:search).and_return(['result'])
+        med.should_receive(:detail).and_return({:ean13 => '12345678'})
+      end
+      flexmock(BsvXmlPlugin::PreparationsListener) do |meddata_server|
+        meddata_server.should_receive(:session).and_yield(meddata)
+      end
+      assert_equal('5678', @listener.load_ikskey('pcode'))
+    end
+    def test_load_ikskey__nil
+      assert_equal(nil, @listener.load_ikskey(''))
+    end
+    def test_load_ikskey__error
+      flexmock(BsvXmlPlugin::PreparationsListener) do |meddata_server|
+        meddata_server.should_receive(:session).and_raise(Errno::ECONNRESET)
+      end
+      flexmock(@listener) do |listener|
+        listener.should_receive(:sleep)
+      end
+      assert_raise(Errno::ECONNRESET) do
+        @listener.load_ikskey('pcode')
+      end
+    end
+    def test_tag_start
+      # Memo
+      # This method is too long.
+      # It should be divided into small methods 
+
+      #assert_equal('', @listener.tag_start('name', 'attr'))
+    end
+    def test_tag_end
+      #assert_equal('', @listener.tag_end('name'))
+    end
+  end
+
+  class TestBsvXmlPlugin2 < Test::Unit::TestCase
+    include FlexMock::TestCase
+    def setup
+      flexstub(LogFile) do |log|
+        log.should_receive(:append)
+      end
+      @target_file = flexmock('target_file') do |t|
+        t.should_receive(:save_as)
+      end
+      @app = flexmock('app')
+      @plugin = BsvXmlPlugin.new(@app)
+
+    end
+    def test__update
+      entry = flexmock('entry') do |e|
+        e.should_receive(:name).and_return('AbCdef-123.xml')
+      end
+      flexstub(Zip::ZipFile) do |z|
+        z.should_receive(:foreach).and_yield(entry)
+      end
+      flexstub(@plugin) do |p|
+        p.should_receive(:update_ab_cdef).and_return('update_ab_cdef')
+      end
+      flexstub(entry) do |e|
+        e.should_receive(:get_input_stream).and_return(@plugin.update_ab_cdef)
+      end
+      assert_equal('update_ab_cdef', @plugin._update('path'))
+    end
+    def test__update_do_nothing
+      entry = flexmock('entry') do |e|
+        e.should_receive(:name).and_return('Publications.xls')
+      end
+      flexstub(Zip::ZipFile) do |z|
+        z.should_receive(:foreach).and_yield(entry)
+      end
+      assert_equal(nil, @plugin._update('path'))
+    end
+    def test_download_file
+      flexstub(File) do |f|
+        f.should_receive(:exist?)
+      end
+      flexstub(FileUtils) do |f|
+        f.should_receive(:cp)
+      end
+      target_file = flexmock('target_file') do |t|
+        t.should_receive(:save_as)
+      end
+      flexstub(Mechanize) do |klass|
+        klass.should_receive(:new).and_return(flexmock('mechanize') do |m|
+          m.should_receive(:get).and_return(target_file)
+        end)
+      end
+      assert_equal('save_dir/file_name', @plugin.download_file('target_url', 'save_dir', 'file_name'))
+    end
+    def test_download_file__file_exist
+      flexstub(File) do |f|
+        f.should_receive(:exists?).and_return(true)
+      end
+      flexstub(FileUtils) do |f|
+        f.should_receive(:cp)
+        f.should_receive(:compare_file).and_return(true)
+      end
+      target_file = flexmock('target_file') do |t|
+        t.should_receive(:save_as)
+      end
+      flexstub(Mechanize) do |klass|
+        klass.should_receive(:new).and_return(flexmock('mechanize') do |m|
+          m.should_receive(:get).and_return(target_file)
+        end)
+      end
+      assert_equal(nil, @plugin.download_file('target_url', 'save_dir', 'file_name'))
+    end
+    def test_download_file__error
+      flexstub(@target_file) do |t|
+        t.should_receive(:save_as).and_raise(EOFError)
+      end
+      flexstub(Mechanize) do |klass|
+        klass.should_receive(:new).and_return(flexmock('mechanize') do |m|
+          m.should_receive(:get).and_return(@target_file)
+        end)
+      end
+      flexstub(@plugin) do |p|
+        p.should_receive(:sleep)
+      end
+      assert_raise(EOFError) do 
+        @plugin.download_file('target_url', 'save_dir', 'file_name')
+      end
+    end
+    def test_update
+      # The methods, download_file and _update, are tested above
+      # so it is not necessary to test them again here as an unit test.
+      # But it is useful to test this as an integration test.
+      flexstub(@plugin) do |p|
+        p.should_receive(:download_file).and_return('path')
+        p.should_receive(:_update)
+      end
+      assert_equal('path', @plugin.update)
+    end
+    def test_report
+      preparations_listener = flexmock('preparations_listener') do |p|
+        p.should_receive(:created_sl_entries)
+        p.should_receive(:updated_sl_entries)
+        p.should_receive(:deleted_sl_entries)
+        p.should_receive(:created_limitation_texts)
+        p.should_receive(:updated_limitation_texts)
+        p.should_receive(:deleted_limitation_texts)
+      end
+      @plugin.instance_eval('@preparations_listener = preparations_listener')
+      expected = "Created SL-Entries                                            0\n" +
+                 "Updated SL-Entries                                            0\n" +
+                 "Deleted SL-Entries                                            0\n" +
+                 "Created Limitation-Texts                                      0\n" +
+                 "Updated Limitation-Texts                                      0\n" +
+                 "Deleted Limitation-Texts                                      0"
+      assert_equal(expected, @plugin.report)
+    end
+    def test_log_info
+      # Memo:
+      # log_info method is too long.
+      # It should be divided into small methods.
+
+      preparations_listener = flexmock('preparations_listener') do |p|
+        p.should_receive(:created_sl_entries)
+        p.should_receive(:updated_sl_entries)
+        p.should_receive(:deleted_sl_entries)
+        p.should_receive(:created_limitation_texts)
+        p.should_receive(:updated_limitation_texts)
+        p.should_receive(:deleted_limitation_texts)
+        p.should_receive(:duplicate_iksnrs).and_return([])
+        p.should_receive(:completed_registrations).and_return([])
+        p.should_receive(:conflicted_registrations).and_return([])
+        p.should_receive(:conflicted_packages).and_return([])
+        p.should_receive(:conflicted_packages_oot).and_return([])
+        p.should_receive(:missing_ikscodes).and_return([])
+        p.should_receive(:missing_pharmacodes).and_return([])
+        p.should_receive(:missing_ikscodes_oot).and_return([])
+        p.should_receive(:unknown_packages).and_return([])
+        p.should_receive(:unknown_registrations).and_return([])
+        p.should_receive(:unknown_packages_oot).and_return(['data'])
+      end
+      package = flexmock('package') do |p|
+        p.should_receive(:pharmacode)
+        p.should_receive(:out_of_trade)
+        p.should_receive(:expired?)
+      end
+      flexmock(@app) do |app|
+        app.should_receive(:packages).and_return([package])
+      end
+      @plugin.instance_eval('@preparations_listener = preparations_listener')
+      log_info = @plugin.log_info
+      assert_kind_of(Hash, log_info)
+      expected = ["change_flags", "parts", "recipients", "report"]
+      assert_equal(expected, log_info.keys.map{|k| k.to_s}.sort)
+      # Actually, the value of log_info should be checked but
+      # it is too big data.
+      # if you want to see the actual return value of log_info method,
+      # just run below:
+      # assert_equal('', log_info)
+    end
+    def test_log_info_bsv
+      preparations_listener = flexmock('preparations_listener') do |p|
+        p.should_receive(:conflicted_registrations).and_return([])
+        p.should_receive(:missing_ikscodes).and_return([])
+        p.should_receive(:missing_ikscodes_oot).and_return([])
+        p.should_receive(:unknown_packages).and_return([])
+        p.should_receive(:unknown_registrations).and_return([])
+        p.should_receive(:unknown_packages_oot).and_return(['data'])
+        p.should_receive(:missing_pharmacodes).and_return([])
+        p.should_receive(:duplicate_iksnrs).and_return([])
+      end
+      @plugin.instance_eval('@preparations_listener = preparations_listener')
+      log_info_bsv = @plugin.log_info_bsv
+      expected = ["mail_from", "parts", "recipients", "report"]
+      assert_equal(expected, log_info_bsv.keys.map{|k| k.to_s}.sort)
+      assert_equal("zdavatz@ywesee.com", log_info_bsv[:mail_from])
+      #assert_equal('', log_info_bsv)
+    end
+    def test_report_bsv
+      preparations_listener = flexmock('preparations_listener') do |p|
+        p.should_receive(:conflicted_registrations).and_return([])
+        p.should_receive(:missing_ikscodes).and_return([])
+        p.should_receive(:missing_ikscodes_oot).and_return([])
+        p.should_receive(:unknown_packages).and_return([])
+        p.should_receive(:unknown_registrations).and_return([])
+        p.should_receive(:unknown_packages_oot).and_return(['data'])
+        p.should_receive(:missing_pharmacodes).and_return([])
+        p.should_receive(:duplicate_iksnrs).and_return([])
+      end
+      @plugin.instance_eval('@preparations_listener = preparations_listener')
+      assert_kind_of(String, @plugin.report_bsv)
+      #assert_equal('', @plugin.report_bsv)
+    end
+    def test_report_format_header
+      expected = "name                                                        123"
+      assert_equal(expected, @plugin.report_format_header('name', 123))
+    end
+    def test_report_format
+      hash = {
+        :name_base => 'name_base',
+        :name_descr => ' name_descr',
+        :atc_class => 'atc_class',
+        :generic_type => 'generic_type',
+        :deductible => 'deductible',
+        :pharmacode_bag => 'pharmacode_bag',
+        :pharmacode_oddb => 'pharmacode_oddb',
+        :swissmedic_no5_oddb => 'swissmedic_no5_oddb',
+        :swissmedic_no8_oddb => 'swissmedic_no8_oddb',
+        :swissmedic_no5_bag => 'swissmedic_no5_bag',
+        :swissmedic_no8_bag => 'swissmedic_no8_bag'
+      }
+      expected = "Name-base:           name_base\n" +
+                 "Name-descr:           name_descr\n" +
+                 "Atc-class:           atc_class\n" +
+                 "Generic-type:        generic_type\n" +
+                 "Deductible:          deductible\n" +
+                 "Pharmacode-bag:      pharmacode_bag\n" +
+                 "Pharmacode-oddb:     pharmacode_oddb\n" +
+                 "Swissmedic-no5-oddb: swissmedic_no5_oddb\n" +
+                 "Swissmedic-no8-oddb: swissmedic_no8_oddb\n" +
+                 "Swissmedic-no5-bag:  swissmedic_no5_bag\n" +
+                 "Swissmedic-no8-bag:  swissmedic_no8_bag"
+      assert_equal(expected, @plugin.report_format(hash))
+    end
+    def test_update_generics
+      flexmock(REXML::Document) do |xml|
+        xml.should_receive(:parse_stream).and_return('parse_stream')
+      end
+      assert_equal('parse_stream', @plugin.update_generics('io'))
+    end
+    def test_update_it_codes
+      flexmock(REXML::Document) do |xml|
+        xml.should_receive(:parse_stream).and_return('parse_stream')
+      end
+      assert_equal('parse_stream', @plugin.update_it_codes('io'))
+    end
+    def test_update_preparations
+      flexmock(REXML::Document) do |xml|
+        xml.should_receive(:parse_stream).and_return('parse_stream')
+      end
+      preparations_listener = flexmock('preparations_listener') do |p|
+        p.should_receive(:change_flags).and_return('change_flags')
+      end
+      flexmock(ODDB::BsvXmlPlugin::PreparationsListener) do |klass|
+        klass.should_receive(:new).and_return(preparations_listener)
+      end
+      assert_equal('change_flags', @plugin.update_preparations('io'))
+    end
 
   end
 
+  # Memo:
+  # Hannes-san made the following test-cases
+  # These are a kind of integration tests
   class BsvXmlPlugin
     class PreparationsListener
     end
@@ -1324,61 +1724,3 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
   end
 end
 
-
-
-
-
-=begin
-class TestDownloadFile < Test::Unit::TestCase
-  include FlexMock::TestCase
-  def test_download_file
-    target_url = 'http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip'
-    save_dir   = './data'
-    file_name  = 'XMLPublications.zip'
-
-    online_file = './online/XMLPublications.zip'
-    temp_file   = './data/temp'
-    save_file = './data/XMLPublications-2010.11.01.zip'
-    latest_file = './data/XMLPublications-latest.zip'
-
-    flexstub(Tempfile).should_receive(:new).and_return do
-      flexmock do |tempfile|
-        tempfile.should_receive(:close)
-        tempfile.should_receive(:unlink)
-        tempfile.should_receive(:path).and_return('./data/temp')
-      end
-    end
-
-    fileobj = flexmock do |obj|
-      obj.should_receive(:save_as).with(temp_file).and_return do
-        FileUtils.cp online_file, temp_file   # instead of downloading
-      end
-      obj.should_receive(:save_as).with(save_file).and_return do
-        FileUtils.cp online_file, save_file   # instead of downloading
-      end
-    end
-    flexstub(Mechanize) do |mechclass|
-      mechclass.should_receive(:new).and_return do
-        flexmock do |mechobj|
-          mechobj.should_receive(:get).and_return(fileobj)
-        end
-      end
-    end
-
-    result = nil
-    assert_nothing_raised do
-      result = download_file(target_url, save_dir, file_name)
-    end
-    assert_equal latest_file, result
-    assert_nothing_raised do
-      result = download_file(target_url, save_dir, file_name)
-    end
-    assert_equal nil, result
-    assert File.exist?(save_file), "download to #{save_file} failed."
-
-
-  ensure
-    FileUtils.rm_r save_dir if File.exists? save_dir
-  end
-end
-=end
