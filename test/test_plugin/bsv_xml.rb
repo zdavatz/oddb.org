@@ -340,16 +340,293 @@ module ODDB
         @listener.load_ikskey('pcode')
       end
     end
-    def test_tag_start
+    def test_tag_start__pack
       # Memo
       # This method is too long.
       # It should be divided into small methods 
+      @listener.instance_eval('@pac_data = {}')
+      @listener.instance_eval('@report_data = {}')
+      @listener.instance_eval('@data = {}')
+      @listener.instance_eval('@reg_data = {}')
+      @listener.instance_eval('@seq_data = {}')
+      @listener.instance_eval('@pcode = ""')
+      assert_equal(false, @listener.tag_start('Pack', 'attr'))
+    end
+    def test_tag_start__limitation
+      assert_equal(true, @listener.tag_start('Limitation', 'attr'))
+      assert_equal(true, @listener.instance_eval('@in_limitation'))
+    end
+    def test_tag_start__error
+      pac_data = flexmock('pac_data') do |pac|
+        pac.should_receive(:dup).and_raise(StandardError)
+      end
+      @listener.instance_eval('@pac_data = pac_data')
+      assert_raise(StandardError) do 
+        @listener.tag_start('Pack', 'attr')
+      end
+    end
+    def test_tag_end__pack
+      # Memo
+      # This method is too long.
+      # It should be divided into small methods 
+      sequence = flexmock('sequence') do |seq|
+        seq.should_receive(:pointer)
+      end
+      package = flexmock('package') do |pac|
+        pac.should_receive(:price_public).and_return(nil)
+        pac.should_receive(:pharmacode).and_return('pharmacode')
+        pac.should_receive(:sequence).and_return(sequence)
+        pac.should_receive(:price_exfactory).and_return(1)
+        pac.should_receive(:ikscat)
+        pac.should_receive(:pointer)
+      end
+      data = {:public_price => nil, :price_exfactory => 2}
+      @listener.instance_eval('@pack = package')
+      @listener.instance_eval('@data = data')
+      @listener.instance_eval('@report = {}')
+      @listener.instance_eval('@sl_entries = {}')
+      @listener.instance_eval('@lim_texts = {}')
+      flexmock(@app) do |app|
+        app.should_receive(:update)
+      end
+      assert_equal([nil], @listener.tag_end('Pack'))
+    end
+    def test_tag_end__preparation
+      @listener.instance_eval('@deferred_packages = []')
+      txt_ptr = flexmock('txt_pointer') do |ptr|
+        ptr.should_receive(:resolve)
+        ptr.should_receive(:creator)
+      end
+      sl_ptr = flexmock('sl_pointer') do |ptr|
+        ptr.should_receive(:+).and_return(txt_ptr)
+      end
+      sl_entry = flexmock('sl_entry') do |sle|
+        sle.should_receive(:pointer).and_return(sl_ptr)
+        #sle.should_receive(:limitation_text)
+        sle.should_receive(:limitation_text).and_return('limitation_text')
+      end
+      package = flexmock('package') do |pac|
+        pac.should_receive(:sl_entry).and_return(sl_entry)
+      end
+      pac_ptr = flexmock('package_pointer') do |ptr|
+        ptr.should_receive(:resolve).and_return(package)
+      end
+      flexmock(pac_ptr) do |ptr|
+        ptr.should_receive(:+).and_return(pac_ptr)
+        ptr.should_receive(:creator)
+      end
+      #sl_entries = {pac_ptr => {'key' => 'sl_data'}}
+      sl_entries = {pac_ptr => {}}
+      @listener.instance_eval('@sl_entries = sl_entries')
+      lim_texts = {pac_ptr => 'lim_data'}
+      @listener.instance_eval('@lim_texts = lim_texts')
+      flexmock(@app) do |app|
+        app.should_receive(:delete)
+        app.should_receive(:update)
+      end
+      assert_equal([nil], @listener.tag_end('Preparation'))
+    end
+    def test_tag_end__preparation__limitation_text__sl_data
+      @listener.instance_eval('@deferred_packages = []')
+      txt_ptr = flexmock('txt_pointer') do |ptr|
+        ptr.should_receive(:resolve)
+        ptr.should_receive(:creator)
+      end
+      sl_ptr = flexmock('sl_pointer') do |ptr|
+        ptr.should_receive(:+).and_return(txt_ptr)
+      end
+      sl_entry = flexmock('sl_entry') do |sle|
+        sle.should_receive(:pointer).and_return(sl_ptr)
+        sle.should_receive(:limitation_text)
+        #sle.should_receive(:limitation_text).and_return('limitation_text')
+      end
+      package = flexmock('package') do |pac|
+        pac.should_receive(:sl_entry).and_return(sl_entry)
+      end
+      pac_ptr = flexmock('package_pointer') do |ptr|
+        ptr.should_receive(:resolve).and_return(package)
+      end
+      flexmock(pac_ptr) do |ptr|
+        ptr.should_receive(:+).and_return(pac_ptr)
+        ptr.should_receive(:creator)
+      end
+      sl_entries = {pac_ptr => {'key' => 'sl_data'}}
+      #sl_entries = {pac_ptr => {}}
+      @listener.instance_eval('@sl_entries = sl_entries')
+      lim_texts = {pac_ptr => 'lim_data'}
+      @listener.instance_eval('@lim_texts = lim_texts')
+      flexmock(@app) do |app|
+        app.should_receive(:delete)
+        app.should_receive(:update)
+      end
+      assert_equal([nil], @listener.tag_end('Preparation'))
+    end
+    def test_tag_end__swissmedic_no_5
+      @listener.instance_eval('@report_data = {}')
+      visited_iksnrs = {'12345' => ['atc', 'name']}
+      @listener.instance_eval('@visited_iksnrs = visited_iksnrs')
+      @listener.instance_eval('@text = "12345"')
+      @listener.instance_eval('@atc_code = "atc_code"')
 
-      #assert_equal('', @listener.tag_start('name', 'attr'))
+      # for find_typo_resigration
+      name = flexmock('name') do |n|
+        n.should_receive(:collect).and_return(['name'])
+        n.should_receive(:downcase)
+      end
+      sequence = flexmock('sequence') do |s|
+        s.should_receive(:"name_base.downcase").and_return(['name'])
+      end
+      registration = flexmock('registration') do |r|
+        r.should_receive(:"sequences.collect").and_yield('seqnr', sequence)
+        r.should_receive(:iksnr).and_return('iksnr')
+        r.should_receive(:packages).and_return([])
+      end
+      flexstub(@app) do |a|
+        a.should_receive(:registration).and_return(registration)
+      end
+      @listener.instance_eval('@name = name')
+      assert_equal([nil], @listener.tag_end('SwissmedicNo5'))
     end
-    def test_tag_end
-      #assert_equal('', @listener.tag_end('name'))
+    def test_tag_end__swissmedic_no_5__else
+      @listener.instance_eval('@report_data = {}')
+      visited_iksnrs = {'12345' => ['atc', 'name']}
+      @listener.instance_eval('@visited_iksnrs = visited_iksnrs')
+      @listener.instance_eval('@text = "12345"')
+      @listener.instance_eval('@atc_code = "atc_code"')
+
+      flexmock(@listener) do |lis|
+        lis.should_receive(:find_typo_registration)
+      end
+      assert_equal([nil], @listener.tag_end('SwissmedicNo5'))
     end
+    def test_tag_end__swissmedic_no_8
+      @listener.instance_eval('@report = {}')
+      @listener.instance_eval('@text = ""')
+      flexmock(@app) do |app|
+        app.should_receive(:registration)
+      end
+      assert_equal([nil], @listener.tag_end('SwissmedicNo8'))
+    end
+    def test_tag_end__swissmedic_no_8__out_of_trade
+      @listener.instance_eval('@report = {}')
+      @listener.instance_eval('@text = ""')
+      flexmock(@app) do |app|
+        app.should_receive(:registration)
+      end
+      @listener.instance_eval('@out_of_trade = "out_of_trade"')
+      assert_equal([nil], @listener.tag_end('SwissmedicNo8'))
+    end
+    def test_tag_end__StatusTypeCodeSl__2_6
+      @listener.instance_eval('@sl_data = {}')
+      @listener.instance_eval('@text = "2"')
+      pack = flexmock('package') do |pac|
+        pac.should_receive(:sl_entry)
+        pac.should_receive(:pointer)
+      end
+      @listener.instance_eval('@pack = pack')
+      assert_equal([nil], @listener.tag_end('StatusTypeCodeSl'))
+    end
+    def test_tag_end__StatusTypeCodeSl__3_7
+      @listener.instance_eval('@sl_data = {}')
+      @listener.instance_eval('@text = "3"')
+      pack = flexmock('package') do |pac|
+        pac.should_receive(:sl_entry).and_return('sl_entry')
+        pac.should_receive(:pointer)
+      end
+      @listener.instance_eval('@pack = pack')
+      assert_equal([nil], @listener.tag_end('StatusTypeCodeSl'))
+    end
+    def test_tag_end__StatusTypeCodeSl__confict
+      @listener.instance_eval('@sl_data = {}')
+      @listener.instance_eval('@conflict = "conflict"')
+      @listener.instance_eval('@out_of_trade = "out_of_trade"')
+      assert_equal([nil], @listener.tag_end('StatusTypeCodeSl'))
+    end
+    def test_tag_end__limitation
+      assert_equal([nil], @listener.tag_end('Limitation'))
+    end
+    def test_tag_end__limitationXXX
+      assert_equal([nil], @listener.tag_end('LimitationXXX'))
+    end
+    def test_tag_end__description
+      @listener.instance_eval('@in_limitation = "in_limitation"')
+      @listener.instance_eval('@lim_data = {}')
+      @listener.instance_eval('@html = []')
+      assert_equal([nil], @listener.tag_end('DescriptionXX'))
+    end
+    def test_tag_end__description_else
+      @listener.instance_eval('@in_limitation = "in_limitation"')
+      @listener.instance_eval('@html = []')
+      @listener.instance_eval('@name = {:xx => "name"}')
+
+      # for update_chapter
+      paragraph = flexmock(Array.new) do |p|
+        p.should_receive(:reduce_format)
+        p.should_receive(:augment_format)
+      end
+      section = flexmock('section') do |s|
+        s.should_receive(:subheading).and_return('')
+        s.should_receive(:next_paragraph).and_return(paragraph)
+      end
+      chapter = flexmock('chapter') do |c|
+        c.should_receive(:next_section).and_return(section)
+        c.should_receive(:clean!).and_return('clean!')
+      end
+
+      lim_texts = {'key' => {:xx => chapter}}
+      @listener.instance_eval('@lim_texts = lim_texts')
+      assert_equal([nil], @listener.tag_end('DescriptionXX'))
+    end
+    def test_tag_end__description_else_it_descriptions
+      @listener.instance_eval('@in_limitation = "in_limitation"')
+      @listener.instance_eval('@html = []')
+      @listener.instance_eval('@name = {:xx => "name"}')
+
+      # for update_chapter
+      paragraph = flexmock(Array.new) do |p|
+        p.should_receive(:reduce_format)
+        p.should_receive(:augment_format)
+      end
+      section = flexmock('section') do |s|
+        s.should_receive(:subheading).and_return('')
+        s.should_receive(:next_paragraph).and_return(paragraph)
+      end
+      chapter = flexmock('chapter') do |c|
+        c.should_receive(:next_section).and_return(section)
+        c.should_receive(:clean!).and_return('clean!')
+      end
+
+      lim_texts = {'key' => {:xx => chapter}}
+      @listener.instance_eval('@lim_texts = lim_texts')
+      @listener.instance_eval('@it_descriptions = {:xx => "it_descriptions"}')
+      assert_equal([nil], @listener.tag_end('DescriptionXX'))
+    end
+    def test_tag_end__points
+      @listener.instance_eval('@sl_data = {}')
+      assert_equal([nil], @listener.tag_end('Points'))
+    end
+    def test_tag_end__preparations
+      pointer = flexmock('pointer') do |ptr|
+        ptr.should_receive(:+)
+      end
+      known_packages = {pointer => 'data'}
+      @listener.instance_eval('@known_packages = known_packages')
+      flexmock(@app) do |app|
+        app.should_receive(:delete)
+      end
+      assert_equal([nil], @listener.tag_end('Preparations'))
+    end
+    def test_tag_end__error
+      pointer = flexmock('pointer') do |ptr|
+        ptr.should_receive(:+).and_raise(StandardError)
+      end
+      known_packages = {pointer => 'data'}
+      @listener.instance_eval('@known_packages = known_packages')
+      assert_raise(StandardError) do 
+        @listener.tag_end('Preparations')
+      end
+    end
+
   end
 
   class TestBsvXmlPlugin2 < Test::Unit::TestCase

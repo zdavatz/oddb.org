@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::TestGlobal -- oddb -- 03.04.2011 -- mhatakeyama@ywesee.com
+# State::TestGlobal -- oddb -- 03.07.2011 -- mhatakeyama@ywesee.com
 # State::TestGlobal -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -12,6 +12,9 @@ require 'mock'
 require 'util/language'
 require 'sbsm/state'
 require 'flexmock'
+require 'state/user/yweseecontact'
+require 'state/user/register_download'
+require 'state/migel/result'
 
 module ODDB
 	module State
@@ -330,6 +333,431 @@ end
       end
       def test_feedbacks__nil
         assert_equal(nil, @state.feedbacks)
+      end
+      def test_notify__package
+        item = flexmock('item') do |i|
+          i.should_receive(:odba_instance).and_return(ODDB::Package.new('ikscd'))
+        end
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return(item)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return(pointer)
+        end
+        assert_kind_of(State::Drugs::Notify, @state.notify)
+      end
+      def test_notify__product
+        item = flexmock('item') do |i|
+          i.should_receive(:odba_instance).and_return(ODDB::Migel::Product.new('code'))
+        end
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return(item)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return(pointer)
+        end
+        assert_kind_of(State::Migel::Notify, @state.notify)
+      end
+      def test_notify__nil
+        assert_equal(nil, @state.notify)
+      end
+      def test_help_navigation
+        expected = [
+          :help_link,
+          :faq_link
+        ]
+        assert_equal(expected, @state.help_navigation)
+      end
+      def test_home_state
+        assert_equal(State::Global::HOME_STATE, @state.home_state)
+      end
+      def test_home_navigation
+        expected = [State::Global::HOME_STATE]
+        assert_equal(expected, @state.home_navigation)
+      end
+      def test_interaction_basket__empty
+        flexmock(@session) do |s|
+          s.should_receive(:interaction_basket).and_return([])
+        end
+        assert_kind_of(State::Interactions::EmptyBasket, @state.interaction_basket)
+      end
+      def test_interaction_basket__not_empty
+        flexmock(@session) do |s|
+          s.should_receive(:interaction_basket).and_return(['basket'])
+        end
+        assert_kind_of(State::Interactions::Basket, @state.interaction_basket)
+      end
+      def test_limited?
+        assert_equal(false, @state.limited?)
+      end
+      def test_limit_state
+        assert_kind_of(State::User::Limit, @state.limit_state)
+      end
+      def test_logout
+        flexmock(@session) do |s|
+          s.should_receive(:logout).and_return('user')
+        end
+        assert_kind_of(State::Drugs::Init, @state.logout)
+      end
+      def test_user_navigation
+        expected = [State::Admin::Login, State::User::YweseeContact]
+        assert_equal(expected, @state.user_navigation)
+      end
+      
+      def test_navigation
+        expected = [:help_link, :faq_link,
+                    ODDB::State::Admin::Login,
+                    ODDB::State::User::YweseeContact,
+                    ODDB::State::Drugs::Init]
+        assert_equal(expected, @state.navigation)
+      end
+      def test_password_reset
+        flexmock(@state) do |s|
+          s.should_receive(:error?).and_return(false)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:yus_allowed?).and_return(true)
+        end
+        assert_kind_of(State::Admin::PasswordReset, @state.password_reset)
+      end
+      def test_paypal_return
+        flexmock(@session) do |s|
+          s.should_receive(:is_crawler?).and_return(true)
+        end
+        assert_kind_of(State::Drugs::Init, @state.paypal_return)
+      end
+      def test_paypal_return__user_input
+        invoice = flexmock('invoice') do |i|
+          i.should_receive(:"types.all?").and_return(true)
+        end
+        user = flexmock('user') do |u|
+          u.should_receive(:is_a?).and_return(true)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:is_crawler?).and_return(false)
+          s.should_receive(:user_input).and_return('id')
+          s.should_receive(:invoice).and_return(invoice)
+          s.should_receive(:allowed?).and_return(true)
+          s.should_receive(:desired_state).and_return('desired_state')
+          s.should_receive(:user).and_return(user)
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:reconsider_permissions)
+        end
+        assert_equal('desired_state', @state.paypal_return)
+      end
+      def test_paypal_return__else
+        flexmock(@session) do |s|
+          s.should_receive(:is_crawler?).and_return(false)
+          s.should_receive(:user_input)
+        end
+        assert_kind_of(State::PayPal::Return, @state.paypal_return)
+      end
+      def test_powerlink
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:resolve)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return(pointer)
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:error?).and_return(false)
+        end
+        assert_kind_of(State::User::PowerLink, @state.powerlink)
+      end
+      def test_proceed_download
+        flexmock(File) do |f|
+          f.should_receive(:exist?).and_return(true)
+        end
+        input = {
+          :compression => 'compr_gz',
+          :download => {'filename' => 'val'},
+          :months => {'filename' => '12'}
+        }
+        flexmock(@state) do |s|
+          s.should_receive(:user_input).and_return(input)
+        end
+        assert_kind_of(State::User::RegisterDownload, @state.proceed_download)
+      end
+      def test_proceed_download__zip
+        input = {
+          :compression => 'zip',
+          :download => {'filename' => 'val'},
+          :months => {'filename' => '12'}
+        }
+        flexmock(@state) do |s|
+          s.should_receive(:user_input).and_return(input)
+        end
+        assert_kind_of(State::User::RegisterDownload, @state.proceed_download)
+      end
+      def test_proceed_download__error
+        assert_equal(@state, @state.proceed_download)
+      end
+      def test_proceed_poweruser
+        flexmock(@state) do |s|
+          s.should_receive(:error?).and_return(false)
+        end
+        assert_kind_of(State::User::RenewPowerUser, @state.proceed_poweruser)
+      end
+      def test_proceed_poweruser__else
+        flexmock(@state) do |s|
+          s.should_receive(:error?).and_return(false)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return(nil)
+        end
+        assert_kind_of(State::User::RegisterPowerUser, @state.proceed_poweruser)
+      end
+      def test_proceed_poweruser__error
+        assert_equal(nil, @state.proceed_poweruser)
+      end
+      def test_resolve
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return('model')
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return(pointer)
+        end
+        klass = flexmock('klass') do |klass|
+          klass.should_receive(:new).and_return('resolve_state')
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:resolve_state).and_return(klass)
+        end
+        assert_equal('resolve_state', @state.resolve)
+      end
+      def test_resolve__else
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return('model')
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return(pointer)
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:resolve_state)
+        end
+        assert_kind_of(ODDB::State::Admin::TransparentLogin, @state.resolve)
+      end
+      def test_resolve__self
+        flexmock(@session) do |s|
+          s.should_receive(:request_path).and_return('request_path')
+        end
+        @state.instance_eval('@request_path = "request_path"')
+        assert_equal(@state, @state.resolve)
+      end
+      def test_resolve__nil
+        assert_equal(nil, @state.resolve)
+      end
+      def test_rss
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return('channel')
+          s.should_receive(:"lookandfeel.enabled?").and_return(true)
+        end
+        assert_kind_of(State::Rss::PassThru, @state.rss)
+      end
+      def test_rss__http404
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return('channel')
+          s.should_receive(:"lookandfeel.enabled?").and_return(false)
+        end
+        assert_kind_of(State::Http404, @state.rss)
+      end
+      def test_rss__nil
+        assert_equal(nil, @state.rss)
+      end
+      def setup_search(zone)
+        query = flexmock('query') do |q|
+            q.should_receive(:is_a?).and_return(false)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:zone).and_return(zone.to_sym)
+          s.should_receive(:persistent_user_input).and_return(query)
+          s.should_receive("search_#{zone}".to_sym)
+        end
+        flexmock(ODDB) do |o|
+          #o.should_receive(:search_term).and_return('query')
+          o.should_receive(:search_term)
+        end
+      end
+      def test_search__hospitals
+=begin
+        query = flexmock('query') do |q|
+            q.should_receive(:is_a?).and_return(false)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:zone).and_return(:hospitals)
+          s.should_receive(:persistent_user_input).and_return(query)
+          s.should_receive(:search_hospitals)
+        end
+        flexmock(ODDB) do |o|
+          o.should_receive(:search_term).and_return('query')
+        end
+=end
+        setup_search('hospitals')
+        assert_kind_of(State::Hospitals::HospitalResult, @state.search)
+      end
+      def test_search__doctors
+        setup_search('doctors')
+        assert_kind_of(State::Doctors::DoctorResult, @state.search)
+      end
+      def test_search__companies
+        setup_search('companies')
+        assert_kind_of(State::Companies::CompanyResult, @state.search)
+      end
+      def test_search__interactions
+        setup_search('interactions')
+        assert_kind_of(State::Interactions::Result, @state.search)
+      end
+      def test_search__substances
+        setup_search('substances')
+        assert_kind_of(State::Substances::Result, @state.search)
+      end
+      def test_search__migel
+        setup_search('migel')
+        flexmock(@session) do |s|
+          s.should_receive(:search_migel_products)
+        end
+        assert_kind_of(State::Migel::Result, @state.search)
+      end
+      def test_search__analysis
+        setup_search('analysis')
+        flexmock(@session) do |s|
+          s.should_receive(:language)
+        end
+        assert_kind_of(State::Analysis::Result, @state.search)
+      end
+      def test_search__else
+        setup_search('else')
+        flexmock(@state) do |s|
+          s.should_receive(:_search_drugs_state).and_return('_search_drugs_state')
+        end
+        assert_equal('_search_drugs_state', @state.search)
+      end
+      def test_search__self
+        query = flexmock('query') do |q|
+          q.should_receive(:is_a?).and_return(false)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:zone)
+          s.should_receive(:persistent_user_input).and_return(nil)
+        end
+        assert_equal(@state, @state.search)
+      end
+      def test_search__exception
+        query = flexmock('query') do |q|
+          q.should_receive(:is_a?).and_return(true)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:zone)
+          s.should_receive(:persistent_user_input).and_return(query)
+        end
+        assert_kind_of(State::Exception, @state.search)
+      end
+      def test_search__error
+        setup_search('else')
+        flexmock(@state) do |s|
+          s.should_receive(:_search_drugs_state).and_raise(ODBA::OdbaResultLimitError)
+        end
+        assert_kind_of(State::Exception, @state.search)
+      end
+      def test__search_drugs
+        flexmock(@session) do |s|
+          s.should_receive(:search_oddb).and_return('search_oddb')
+        end
+        assert_equal('search_oddb', @state._search_drugs('query', 'stype'))
+      end
+      def test__search_drugs__sequence
+        flexmock(@session) do |s|
+          s.should_receive(:search_exact_sequence).and_return('search_exact_sequence')
+        end
+        assert_equal('search_exact_sequence', @state._search_drugs('query', 'st_sequence'))
+      end
+      def test__search_drugs__substance
+        flexmock(@session) do |s|
+          s.should_receive(:search_exact_substance).and_return('search_exact_substance')
+        end
+        assert_equal('search_exact_substance', @state._search_drugs('query', 'st_substance'))
+      end
+      def test__search_drugs__company
+        flexmock(@session) do |s|
+          s.should_receive(:search_exact_company).and_return('search_exact_company')
+        end
+        assert_equal('search_exact_company', @state._search_drugs('query', 'st_company'))
+      end
+      def test__search_drugs__indication
+        flexmock(@session) do |s|
+          s.should_receive(:search_exact_indication).and_return('search_exact_indication')
+        end
+        assert_equal('search_exact_indication', @state._search_drugs('query', 'st_indication'))
+      end
+      def test__search_drugs__interaction
+        flexmock(@session) do |s|
+          s.should_receive(:search_by_interaction).and_return('search_by_interaction')
+          s.should_receive(:language)
+        end
+        assert_equal('search_by_interaction', @state._search_drugs('query', 'st_interaction'))
+      end
+      def test__search_drugs__unwanted_effect
+        flexmock(@session) do |s|
+          s.should_receive(:search_by_unwanted_effect).and_return('search_by_unwanted_effect')
+          s.should_receive(:language)
+        end
+        assert_equal('search_by_unwanted_effect', @state._search_drugs('query', 'st_unwanted_effect'))
+      end
+      def test__search_drugs_state__registration
+        registration = flexmock('registration')
+        flexmock(@session) do |s|
+          s.should_receive(:registration).and_return(registration)
+        end
+        assert_kind_of(State::Admin::Registration, @state._search_drugs_state('query', 'st_registration'))
+      end
+      def test__search_drugs_state__registration_active_package
+        package = flexmock('package') do |pac|
+          pac.should_receive(:ikscd)
+        end
+        registration = flexmock('registration') do |reg|
+          reg.should_receive(:active_packages).and_return([package])
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:registration).and_return(registration)
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:allowed?).and_return(false)
+        end
+        assert_kind_of(State::Drugs::Package, @state._search_drugs_state('query', 'st_registration'))
+      end
+      def test__search_drugs_state__registration_else
+        registration = flexmock('registration') do |reg|
+          reg.should_receive(:active_packages).and_return([])
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:registration).and_return(registration)
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:allowed?).and_return(false)
+        end
+        assert_kind_of(State::Drugs::Registration, @state._search_drugs_state('query', 'st_registration'))
+      end
+      def test__search_drugs_state__pharmacode
+        package = flexmock('package')
+        flexmock(@session) do |s|
+          s.should_receive(:package).and_return(package)
+        end
+        assert_kind_of(State::Admin::Package, @state._search_drugs_state('query', 'st_pharmacode'))
+      end
+      def test__search_drugs_state__pharmacode_else
+        package = flexmock('package')
+        flexmock(@session) do |s|
+          s.should_receive(:package).and_return(package)
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:allowed?).and_return(false)
+        end
+        assert_kind_of(State::Drugs::Package, @state._search_drugs_state('query', 'st_pharmacode'))
       end
 		end
 	end

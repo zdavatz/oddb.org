@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# State::Global -- oddb -- 07.03.2011 -- mhatakeyama@ywesee.com
 # State::Global -- oddb -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -284,8 +285,8 @@ module ODDB
 						State::Drugs::Notify.new(@session, item)
 					when ODDB::Migel::Product
 						State::Migel::Notify.new(@session, item)
-					when ODDB::Analysis::Position
-						State::Analysis::Notify.new(@session, item)
+					#when ODDB::Analysis::Position 
+					#	State::Analysis::Notify.new(@session, item) # There is not such a class defined
 					end
 				end
 			end
