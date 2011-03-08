@@ -759,6 +759,155 @@ end
         end
         assert_kind_of(State::Drugs::Package, @state._search_drugs_state('query', 'st_pharmacode'))
       end
+      def test__search_drugs_state__else
+        result = flexmock('result') do |r|
+          r.should_receive(:filter!)
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:_search_drugs).and_return(result)
+        end
+        lookandfeel = flexmock('lookandfeel') do |lnf|
+          lnf.should_receive(:has_result_filter?).and_return(true)
+          lnf.should_receive(:result_filter)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:lookandfeel).and_return(lookandfeel)
+        end
+        assert_kind_of(State::Drugs::Result, @state._search_drugs_state('query', 'else'))
+      end
+      def test_show
+        flexmock(@session) do |s|
+          s.should_receive(:request_path).and_return('request_path')
+        end
+        @state.instance_eval('@request_path = "request_path"')
+        assert_equal(@state, @state.show)
+      end
+      def test_show__else
+        klass = flexmock('klass') do |klass|
+          klass.should_receive(:new).and_return('klass.new')
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:resolve_state).and_return(klass)
+        end
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return('model')
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return(pointer)
+        end
+        assert_equal('klass.new', @state.show)
+      end
+      class StubState < State::Global
+        SNAPBACK_EVENT = "snapback_event"
+      end
+      def test_snapback_event
+        state = StubState.new(@session, @session)
+        #@state.instance_eval('SNAPBACK_EVENT = "snapback_event"')
+        assert_equal('snapback_event', state.snapback_event)
+      end
+      def test_snapback_event__direct_event
+        assert_equal(@state.instance_eval('DIRECT_EVENT'), @state.snapback_event)
+      end
+      def test_sort
+        @state.instance_eval('@model = []')
+        assert_equal(@state, @state.sort)
+      end
+      def test_sponsorlink
+        sponsor = flexmock('sponsor') do |s|
+          s.should_receive(:valid?).and_return(true)
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:sponsor).and_return(sponsor)
+        end
+        assert_kind_of(State::User::SponsorLink, @state.sponsorlink)
+      end
+      def test_suggest_address
+        parent = flexmock('parent') do |par|
+          par.should_receive(:fullname)
+        end
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:resolve)
+          ptr.should_receive(:parent).and_return(parent)
+        end
+        flexmock(parent) do |par|
+          par.should_receive(:resolve).and_return(parent)
+        end
+        input = {:pointer => pointer}
+        flexmock(@state) do |s|
+          s.should_receive(:user_input).and_return(input)
+        end
+        assert_kind_of(State::SuggestAddress, @state.suggest_address)
+      end
+      def test_switch
+        flexmock(@session) do |s|
+          s.should_receive(:zone)
+        end
+        assert_equal(@state, @state.switch)
+      end
+      def test_switch__else
+        flexmock(@session) do |s|
+          s.should_receive(:zone).and_return('zone')
+        end
+        assert_equal(@state, @state.switch)
+      end
+      def test__trigger
+        flexmock(@state) do |s|
+          s.should_receive(:event).and_return(nil)
+        end
+        assert_kind_of(Http404, @state._trigger('event'))
+      end
+      def test_unique_email
+        user = flexmock('user') do |u|
+          u.should_receive(:unique_email).and_return('unique_email')
+        end
+        flexmock(@session) do |s|
+          s.should_receive(:user).and_return(user)
+        end
+        assert_equal('unique_email', @state.unique_email)
+      end
+      def test_unique_email__nil
+        assert_equal(nil, @state.unique_email)
+      end
+      def test_user_input
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return('hash')
+        end
+        assert_equal({nil=>"hash"}, @state.user_input)
+      end
+      def test_ywesee_contact
+        assert_kind_of(State::User::YweseeContact, @state.ywesee_contact)
+      end
+      def test_zones
+        expected = [ :analysis, :doctors, :interactions, :drugs, :migel, :user , :hospitals, :companies]
+        assert_equal(expected, @state.zones)
+      end
+      def test_zone_navigation
+        assert_equal(@state.instance_eval('ZONE_NAVIGATION'), @state.zone_navigation)
+      end
+      def test_compare_entries
+        @state.instance_eval('@sortby = [:xxx, :sort]')
+        assert_equal(-1, @state.instance_eval('compare_entries("a","b")'))
+      end
+      def test_compare_entries__0
+        @state.instance_eval('@sortby = [:chomp!]')
+        assert_equal(0, @state.instance_eval('compare_entries("a","b")'))
+      end
+      def test_compare_entries__plus1
+        @state.instance_eval('@sortby = [:chomp!]')
+        assert_equal(1, @state.instance_eval('compare_entries("a","b\n")'))
+      end
+      def test_compare_entries__minus1
+        @state.instance_eval('@sortby = [:chomp!]')
+        assert_equal(-1, @state.instance_eval('compare_entries("a\n","b")'))
+      end
+      def test_get_sortby!
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).and_return('sortvalue')
+        end
+        assert_equal([:sortvalue], @state.instance_eval('get_sortby!'))
+      end
+
 		end
 	end
 end

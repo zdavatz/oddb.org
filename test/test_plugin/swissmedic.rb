@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# SwissmedicPluginTest -- oddb.org -- 08.03.2011 -- mhatakeyama@ywesee.com
 # SwissmedicPluginTest -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
@@ -9,6 +10,7 @@ require 'stub/odba'
 require 'flexmock'
 require 'plugin/swissmedic'
 require 'ostruct'
+require 'tempfile'
 
 module ODDB
   class SwissmedicPluginTest < Test::Unit::TestCase
@@ -964,6 +966,169 @@ module ODDB
 > 57678: Amlodipin-B Adico 5, Tabletten; Zulassungsinhaber (Adico Pharma AG), Index Therapeuticus (02.06.1.), Ablaufdatum der Zulassung (10.05.2012), Abgabekategorie (B), ATC-Code (C08CA01)
 + 57699: Pyrazinamide Labatec, comprimés
       EOS
+    end
+
+=begin
+    def test_initialize_export_registrations
+      assert_equal('', @plugin.initialize_export_registrations)
+    end
+=end
+    def test_deactivate
+      flexmock(@plugin) do |plg|
+        plg.should_receive(:pointer)
+      end
+      flexmock(@app) do |app|
+        app.should_receive(:update).and_return('update')
+      end
+      deactivations = ['row']
+      assert_equal(deactivations, @plugin.deactivate(deactivations))
+    end
+    def test_fix_registrations
+      rows = flexmock('rows') do |r|
+        r.should_receive(:each).and_yield('row')
+      end
+      book = flexmock('book') do |b|
+        b.should_receive(:worksheet).and_return(rows)
+      end
+      flexmock(Spreadsheet) do |s|
+        s.should_receive(:open).and_return(book)
+      end
+      flexmock(@plugin) do |s|
+        s.should_receive(:update_registration).and_return('update_registration')
+      end
+      assert_equal('update_registration', @plugin.fix_registrations)
+    end
+    def test_fix_registrations__error
+      flexmock(Spreadsheet) do |s|
+        s.should_receive(:open).and_raise(SystemStackError)
+      end
+      flexmock(@plugin) do |s|
+        s.should_receive(:source_row)
+      end
+      tempfile = Tempfile.new('tempfile')
+      $stdout = File.open(tempfile.path, "w")
+      assert_equal(nil, @plugin.fix_registrations)
+      tempfile.close
+      $stdout = STDOUT
+    end
+    def test_fix_sequences
+      rows = flexmock('rows') do |r|
+        r.should_receive(:each).and_yield('row')
+      end
+      book = flexmock('book') do |b|
+        b.should_receive(:worksheet).and_return(rows)
+      end
+      flexmock(Spreadsheet) do |s|
+        s.should_receive(:open).and_return(book)
+      end
+      flexmock(@plugin) do |s|
+        s.should_receive(:update_registration).and_return('registration')
+        s.should_receive(:update_sequence).and_return('update_sequence')
+      end
+      assert_equal('update_sequence', @plugin.fix_sequences)
+    end
+    def test_fix_sequences__error
+      flexmock(Spreadsheet) do |s|
+        s.should_receive(:open).and_raise(SystemStackError)
+      end
+      flexmock(@plugin) do |s|
+        s.should_receive(:source_row)
+      end
+      tempfile = Tempfile.new('tempfile')
+      $stdout = File.open(tempfile.path, "w")
+      assert_equal(nil, @plugin.fix_sequences)
+      tempfile.close
+      $stdout = STDOUT
+    end
+    def test_pointer
+      expected = Persistence::Pointer.new([:registration, "row"])
+      assert_kind_of(Persistence::Pointer, @plugin.pointer(['row']))
+      assert_equal(expected, @plugin.pointer(['row']))
+    end
+    def test_pointer_from_row
+      #assert_equal('', @plugin.pointer_from_row('row'))
+    end
+    def test_resolve_link
+      expected = "http://ch.oddb.org/de/gcc/resolve/pointer/:!registration,112!sequence,111."
+      assert_equal(expected, @plugin.resolve_link('pointer'))
+    end
+    def test_cell
+      row = [1, 2, 3]
+      pos = 0
+      assert_equal('1', @plugin.cell(row, pos))
+    end
+    def test__sanity_check_deletions
+      table = {'xxx' => 0}
+      deletions = [['xxx']]
+      assert_equal([], @plugin._sanity_check_deletions(deletions, table))
+    end
+    def test_sanity_check_deletions
+      diff = flexmock('diff') do |d|
+        d.should_receive(:registration_deletions).and_return({'key' => 'value'})
+        d.should_receive(:sequence_deletions).and_return([])
+        d.should_receive(:package_deletions).and_return([])
+      end
+      assert_equal([], @plugin.sanity_check_deletions(diff))
+    end
+    def test_update_sequence
+      pointer = flexmock('pointer')
+      flexmock(pointer) do |ptr|
+        ptr.should_receive(:+).and_return(pointer)
+        ptr.should_receive(:creator)
+      end
+      sequence = flexmock('sequence') do |s|
+        s.should_receive(:pointer)
+        s.should_receive(:atc_class)
+      end
+      atc_class = flexmock('atc_class') do |a|
+        a.should_receive(:code)
+      end
+      registration = flexmock('registration') do |r|
+        r.should_receive(:sequence).and_return(sequence)
+        r.should_receive(:pointer).and_return(pointer)
+        r.should_receive(:atc_classes).and_return([atc_class])
+      end
+      flexmock(@app) do |app|
+        app.should_receive(:update).and_return('update')
+      end
+      row = [0,1,"xxx ,(3mg), (4mg)"]
+      assert_equal('update', @plugin.update_sequence(registration, row))
+    end
+    def test_update_export_registrations
+      data = flexmock('data') do |d|
+        d.should_receive(:delete)
+        d.should_receive(:update)
+      end
+      registration = flexmock('registration') do |r|
+        r.should_receive(:export_flag)
+        r.should_receive(:pointer)
+      end
+      flexmock(@app) do |app|
+        app.should_receive(:registration).once.with('123').and_return(nil)
+        app.should_receive(:registration).once.with('456').and_return(registration)
+        app.should_receive(:update)
+      end
+      export_registrations = {'123' => data, '456' => data}
+      assert_equal({'456' => data}, @plugin.update_export_registrations(export_registrations))
+    end
+    def test_update_export_sequences
+      data = flexmock('data') do |d|
+        d.should_receive(:update)
+      end
+      sequence = flexmock('sequence') do |s|
+        s.should_receive(:export_flag)
+        s.should_receive(:pointer)
+      end
+      registration = flexmock('registration') do |r|
+        r.should_receive(:sequence).and_return(sequence)
+      end
+      flexmock(@app) do |app|
+        app.should_receive(:registration).once.with('123').and_return(nil)
+        app.should_receive(:registration).once.with('456').and_return(registration)
+        app.should_receive(:update)
+      end
+      export_sequences = {['123', 'seqnr'] => data, ['456', 'seqnr'] =>data}
+      assert_equal({['456', 'seqnr'] => data}, @plugin.update_export_sequences(export_sequences))
     end
   end
 end
