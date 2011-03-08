@@ -86,94 +86,88 @@ require 'util/umlautsort'
 require 'sbsm/state'
 
 module ODDB
-	module State
-		class Global < SBSM::State
-			include UmlautSort
-			include Admin::LoginMethods
-			attr_reader :model, :snapback_model
-			DIRECT_EVENT = nil 
-			GLOBAL_MAP = {
-				:ajax_ddd_price				=>	State::Ajax::DDDPrice,
-        :ajax_matches         =>  State::Ajax::Matches,
-				:ajax_swissmedic_cat	=>	State::Ajax::SwissmedicCat,
-				:analysis_alphabetical	=>	State::Analysis::Alphabetical,
-				:companylist					=>	State::Companies::CompanyList,
-				:compare							=>	State::Drugs::Compare,
-        :compare_search       =>  State::Drugs::CompareSearch,
-				:ddd									=>	State::Drugs::DDD,
-				:ddd_chart            =>	State::Ajax::DDDChart,
-				:ddd_price            =>  State::Drugs::DDDPrice,
-				:download_export			=>	State::User::DownloadExport,
-				:fachinfos						=>	State::Drugs::Fachinfos,
-				:fipi_offer_input			=>	State::User::FiPiOfferInput,
-				:help									=>	State::User::Help,
-				:home									=>	State::Drugs::Init,
-				:home_admin						=>	State::Admin::Init,
-				:home_analysis				=>	State::Analysis::Init,
-				:home_companies				=>	State::Companies::Init,
-				:home_doctors					=>	State::Doctors::Init,
-				:home_hospitals				=>	State::Hospitals::Init,
-				:home_drugs						=>  State::Drugs::Init,
-				:home_interactions		=>  State::Interactions::Init,
-				:home_migel						=>	State::Migel::Init,
-				:home_substances			=>  State::Substances::Init,
-				:home_user						=>  State::User::Init,
-				:hospitallist					=>	State::Hospitals::HospitalList,
-				:limitation_texts			=>	State::Drugs::LimitationTexts,
-				:listed_companies     =>  State::Companies::CompanyList,
-				:login_form						=>	State::Admin::Login,
-				:mailinglist					=>	State::User::MailingList,
-				:migel_alphabetical		=>	State::Migel::Alphabetical,
-				:password_lost				=>	State::Admin::PasswordLost,
-				:patinfos							=>	State::Drugs::Patinfos,
-				:narcotics						=>	State::Drugs::Narcotics,
-				:plugin								=>	State::User::Plugin,
-				:passthru							=>	State::User::PassThru,
-				:paypal_thanks				=>	State::User::PayPalThanks,
-        :price_history        =>  State::Drugs::PriceHistory,
-				:recent_registrations =>	State::Drugs::RecentRegs,
-				:sequences						=>	State::Drugs::Sequences,
-				:vaccines							=>	State::Drugs::Vaccines,
-			}	
-			HOME_STATE = State::Drugs::Init
-			LIMITED = false
-			RESOLVE_STATES = {
-				[ :analysis_group, :position ]	=>	State::Analysis::Position,
-				[ :analysis_group ]		=>	State::Analysis::Group,
-				[ :company ]	=>	State::Companies::Company,
-				[ :doctor	]  =>	State::Doctors::Doctor,
-				[ :hospital ]  =>	State::Hospitals::Hospital,
-				[ :fachinfo ]	=>	State::Drugs::Fachinfo,
-				[	:registration, :sequence, 
-					:package, :sl_entry, 
-					:limitation_text ] =>	State::Drugs::LimitationText,
-				[ :migel_group, :subgroup, 
-					:product ]	=>	State::Migel::Product,
-				[ :migel_group, :subgroup] => State::Migel::Subgroup,
-				[ :migel_group] => State::Migel::Group,
-				[	:migel_group, :subgroup, :product, 
-					:limitation_text ] =>	State::Migel::LimitationText,
-				[	:migel_group, :subgroup, 
-					:limitation_text ] =>  State::Migel::LimitationText,
-				[	:migel_group,
-					:limitation_text ] => State::Migel::LimitationText,
-				[ :minifi ]	=>	State::Drugs::MiniFi,
-				[ :narcotic ]	=>	State::Drugs::Narcotic,
-				[ :patinfo ]	=>	State::Drugs::Patinfo,
-				[ :registration, :sequence, 
-					:package, :narcotics ]	=>	State::Drugs::NarcoticPlus,
-			}	
-			READONLY_STATES = RESOLVE_STATES.dup.update({
-				[	:registration ]                      => State::Drugs::Registration,
-				[	:registration, :sequence, ]          => State::Drugs::Sequence,
-				[	:registration, :sequence, :package ] => State::Drugs::Package, })
-			PRINT_STATES = {
-				[ :fachinfo ]	=>	State::Drugs::FachinfoPrint,
-				[ :patinfo ]	=>	State::Drugs::PatinfoPrint,
-			}
-			REVERSE_MAP = {}
-			VIEW = View::Search
-			ZONE_NAVIGATION = []
+  module State
+    class Global < SBSM::State
+      include UmlautSort
+      include Admin::LoginMethods
+        attr_reader :model, :snapback_model
+        DIRECT_EVENT = nil 
+        GLOBAL_MAP = {
+          :ajax_ddd_price         => State::Ajax::DDDPrice,
+          :ajax_matches           => State::Ajax::Matches,
+          :ajax_swissmedic_cat    => State::Ajax::SwissmedicCat,
+          :analysis_alphabetical  => State::Analysis::Alphabetical,
+          :companylist            => State::Companies::CompanyList,
+          :compare                => State::Drugs::Compare,
+          :compare_search         => State::Drugs::CompareSearch,
+          :ddd                    => State::Drugs::DDD,
+          :ddd_chart              => State::Ajax::DDDChart,
+          :ddd_price              => State::Drugs::DDDPrice,
+          :download_export        => State::User::DownloadExport,
+          :fachinfos              => State::Drugs::Fachinfos,
+          :fipi_offer_input       => State::User::FiPiOfferInput,
+          :help                   => State::User::Help,
+          :home                   => State::Drugs::Init,
+          :home_admin             => State::Admin::Init,
+          :home_analysis          => State::Analysis::Init,
+          :home_companies         => State::Companies::Init,
+          :home_doctors           => State::Doctors::Init,
+          :home_hospitals         => State::Hospitals::Init,
+          :home_drugs             => State::Drugs::Init,
+          :home_interactions      => State::Interactions::Init,
+          :home_migel             => State::Migel::Init,
+          :home_substances        => State::Substances::Init,
+          :home_user              => State::User::Init,
+          :hospitallist           => State::Hospitals::HospitalList,
+          :limitation_texts       => State::Drugs::LimitationTexts,
+          :listed_companies       => State::Companies::CompanyList,
+          :login_form             => State::Admin::Login,
+          :mailinglist            => State::User::MailingList,
+          :migel_alphabetical     => State::Migel::Alphabetical,
+          :password_lost          => State::Admin::PasswordLost,
+          :patinfos               => State::Drugs::Patinfos,
+          :narcotics              => State::Drugs::Narcotics,
+          :plugin                 => State::User::Plugin,
+          :passthru               => State::User::PassThru,
+          :paypal_thanks          => State::User::PayPalThanks,
+          :price_history          => State::Drugs::PriceHistory,
+          :recent_registrations   => State::Drugs::RecentRegs,
+          :sequences              => State::Drugs::Sequences,
+          :vaccines               => State::Drugs::Vaccines,
+        }	
+        HOME_STATE = State::Drugs::Init
+        LIMITED = false
+        RESOLVE_STATES = {
+          [ :analysis_group, :position ]                                      => State::Analysis::Position,
+          [ :analysis_group ]                                                 => State::Analysis::Group,
+          [ :company ]                                                        => State::Companies::Company,
+          [ :doctor ]                                                         => State::Doctors::Doctor,
+          [ :hospital ]                                                       => State::Hospitals::Hospital,
+          [ :fachinfo ]                                                       => State::Drugs::Fachinfo,
+          [ :registration, :sequence, :package, :sl_entry, :limitation_text ] => State::Drugs::LimitationText,
+          [ :migel_group, :subgroup, :product ]                               => State::Migel::Product,
+          [ :migel_group, :subgroup]                                          => State::Migel::Subgroup,
+          [ :migel_group]                                                     => State::Migel::Group,
+          [ :migel_group, :subgroup, :product, :limitation_text ]             => State::Migel::LimitationText,
+          [ :migel_group, :subgroup, :limitation_text ]                       => State::Migel::LimitationText,
+          [ :migel_group, :limitation_text ]                                  => State::Migel::LimitationText,
+          [ :minifi ]                                                         => State::Drugs::MiniFi,
+          [ :narcotic ]                                                       => State::Drugs::Narcotic,
+          [ :patinfo ]                                                        => State::Drugs::Patinfo,
+          [ :registration, :sequence, :package, :narcotics ]                  => State::Drugs::NarcoticPlus,
+        }	
+        READONLY_STATES = RESOLVE_STATES.dup.update({
+          [ :registration ]                       => State::Drugs::Registration,
+          [ :registration, :sequence, ]           => State::Drugs::Sequence,
+          [ :registration, :sequence, :package ]  => State::Drugs::Package, 
+        })
+        PRINT_STATES = {
+          [ :fachinfo ]                           => State::Drugs::FachinfoPrint,
+          [ :patinfo ]                            => State::Drugs::PatinfoPrint,
+        }
+        REVERSE_MAP = {}
+        VIEW = View::Search
+        ZONE_NAVIGATION = []
 			def add_to_interaction_basket
 				pointer = @session.user_input(:pointer)
 				if(object = pointer.resolve(@session.app))
