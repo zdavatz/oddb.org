@@ -11,6 +11,7 @@ require 'flexmock'
 require 'plugin/swissmedic'
 require 'ostruct'
 require 'tempfile'
+require 'util/log'
 
 module ODDB
   class SwissmedicPluginTest < Test::Unit::TestCase
@@ -1094,6 +1095,84 @@ module ODDB
       row = [0,1,"xxx ,(3mg), (4mg)"]
       assert_equal('update', @plugin.update_sequence(registration, row))
     end
+    def test_update_sequence__identication
+      pointer = flexmock('pointer')
+      flexmock(pointer) do |ptr|
+        ptr.should_receive(:+).and_return(pointer)
+        ptr.should_receive(:creator)
+      end
+      sequence = flexmock('sequence') do |s|
+        s.should_receive(:pointer)
+        s.should_receive(:atc_class)
+      end
+      atc_class = flexmock('atc_class') do |a|
+        a.should_receive(:code)
+      end
+      registration = flexmock('registration') do |r|
+        r.should_receive(:sequence).and_return(sequence)
+        r.should_receive(:pointer).and_return(pointer)
+        r.should_receive(:atc_classes).and_return([atc_class])
+      end
+      flexmock(@app) do |app|
+        app.should_receive(:update).and_return('update')
+      end
+      indication = flexmock('indication', :pointer => nil)
+      flexmock(@plugin) do |p|
+        p.should_receive(:update_indication).and_return(indication)
+      end
+      row = [0,1,"xxx ,(3mg), (4mg)"]
+      assert_equal('update', @plugin.update_sequence(registration, row))
+    end
+    def test_update_sequence__substances
+      pointer = flexmock('pointer')
+      flexmock(pointer) do |ptr|
+        ptr.should_receive(:+).and_return(pointer)
+        ptr.should_receive(:creator)
+      end
+      sequence = flexmock('sequence') do |s|
+        s.should_receive(:pointer)
+        s.should_receive(:atc_class)
+      end
+      registration = flexmock('registration') do |r|
+        r.should_receive(:sequence).and_return(sequence)
+        r.should_receive(:pointer).and_return(pointer)
+        r.should_receive(:atc_classes).and_return([])
+      end
+      flexmock(@app) do |app|
+        app.should_receive(:update).and_return('update')
+      end
+      row = [0,1,"xxx ,(3mg), (4mg)",3,4,5]
+      assert_equal('update', @plugin.update_sequence(registration, row))
+    end
+    def test_update_sequence__atc_classes
+      pointer = flexmock('pointer')
+      flexmock(pointer) do |ptr|
+        ptr.should_receive(:+).and_return(pointer)
+        ptr.should_receive(:creator)
+      end
+      sequence = flexmock('sequence') do |s|
+        s.should_receive(:pointer)
+        s.should_receive(:atc_class)
+      end
+      atc_class = flexmock('atc_class') do |a|
+        a.should_receive(:code)
+      end
+      registration = flexmock('registration') do |r|
+        r.should_receive(:sequence).and_return(sequence)
+        r.should_receive(:pointer).and_return(pointer)
+        r.should_receive(:atc_classes).and_return([])
+      end
+      flexmock(@app) do |app|
+        app.should_receive(:update).and_return('update')
+        app.should_receive(:unique_atc_class).and_return(atc_class)
+      end
+      row = [0,1,"xxx ,(3mg), (4mg)",3,4,5,6,7,8,9,10,11,12,13,14]
+      flexmock(row) do |r|
+        r.should_receive(:date)
+      end
+      assert_equal('update', @plugin.update_sequence(registration, row))
+    end
+
     def test_update_export_registrations
       data = flexmock('data') do |d|
         d.should_receive(:delete)
@@ -1129,6 +1208,150 @@ module ODDB
       end
       export_sequences = {['123', 'seqnr'] => data, ['456', 'seqnr'] =>data}
       assert_equal({['456', 'seqnr'] => data}, @plugin.update_export_sequences(export_sequences))
+    end
+    def test_update_registrations
+      registration = flexmock('registration')
+      sequence = flexmock('sequence')
+      composition = flexmock('composition')
+      # Actually, we should test the following methods too withtout flexmock
+      flexmock(@plugin) do |plg|
+        plg.should_receive(:update_registration).and_return(registration)
+        plg.should_receive(:update_sequence).and_return(sequence)
+        plg.should_receive(:update_compositions).and_return([composition])
+        plg.should_receive(:update_galenic_form)
+        plg.should_receive(:update_package)
+      end
+      rows = ['row']
+      replacements = []
+      assert_equal(['row'], @plugin.update_registrations(rows, replacements))
+    end
+    def test_mail_notifications
+      company = flexmock('company') do |cmp|
+        cmp.should_receive(:swissmedic_email).and_return('email')
+        cmp.should_receive(:swissmedic_salutation).and_return('salutation')
+      end
+      registration = flexmock('registration') do |reg|
+        reg.should_receive(:company).and_return(company)
+        reg.should_receive(:name_base).and_return('name_base')
+        reg.should_receive(:iksnr).and_return('iksnr')
+        reg.should_receive(:pointer)
+      end
+      pointer = flexmock('pointer') do |ptr|
+        ptr.should_receive(:resolve).and_return(registration)
+      end
+      log = flexmock('log') do |log|
+        log.should_receive(:change_flags).and_return({pointer => 'flags'})
+        log.should_receive(:date).and_return(Time.local(2011,1,2))
+      end
+      flexmock(Log).new_instances do |log|
+        log.should_receive(:report=)
+        log.should_receive(:recipients=)
+        log.should_receive(:notify).and_return('notify')
+      end
+      log_group = flexmock('log_group', :latest => log)
+      flexmock(@app) do |app|
+        app.should_receive(:log_group).and_return(log_group)
+      end
+      flexmock(@plugin) do |plg|
+        plg.should_receive(:resolve_link)
+        plg.should_receive(:format_flags)
+      end
+      expected = {"email"=>[registration]}
+      assert_equal(expected, @plugin.mail_notifications)
+    end
+    def test_initialize_export_registrations
+      flexmock(@plugin) do |plg|
+        plg.should_receive(:get_latest_file).and_return(true)
+      end
+      flexmock(FileUtils, :cp => nil)
+      row = [0]
+      workbook = flexmock('workbook') do |bok|
+        bok.should_receive(:worksheet).and_return(flexmock("sheet") do |sht|
+          sht.should_receive(:each).and_yield(row)
+        end)
+      end
+      flexmock(Spreadsheet) do |spr|
+        spr.should_receive(:open).and_yield(workbook)
+      end
+      expected = {0=>{:registration_date=>nil, :expiry_date=>nil, :package_count=>0}}
+      assert_equal(expected, @plugin.initialize_export_registrations('agent'))
+    end
+    def test_initialize_export_registrations__aggregate
+      flexmock(@plugin) do |plg|
+        plg.should_receive(:get_latest_file).and_return(true)
+      end
+      flexmock(FileUtils, :cp => nil)
+      row = [0]
+      workbook = flexmock('workbook') do |bok|
+        bok.should_receive(:worksheet).and_return(flexmock("sheet") do |sht|
+          sht.should_receive(:each).and_yield(row)
+        end)
+      end
+      flexmock(Spreadsheet) do |spr|
+        spr.should_receive(:open).and_yield(workbook)
+      end
+      @plugin.instance_eval('@export_registrations = {0 => {:package_count => 0}}')
+      expected = {0=>{:package_count=>0}}
+      assert_equal(expected, @plugin.initialize_export_registrations('agent'))
+    end
+    def test_fix_compositions
+      sheet = flexmock('sheet') do |s|
+        s.should_receive(:each).and_yield('row')
+      end
+      book = flexmock('book', :worksheet => sheet)
+      flexmock(Spreadsheet, :open => book)
+      composition = flexmock('composition')
+      flexmock(@plugin) do |p|
+        p.should_receive(:update_registration).and_return('registration')
+        p.should_receive(:update_sequence).and_return('sequence')
+        p.should_receive(:update_compositions).and_return([composition])
+        p.should_receive(:update_galenic_form).and_return('galenic_form')
+      end
+      assert_equal([composition], @plugin.fix_compositions)
+    end
+    def test_fix_compositions__error
+      flexmock(Spreadsheet) do |s|
+        s.should_receive(:open).and_raise(StandardError, 'standard_error')
+      end
+      flexmock(@plugin) do |p|
+        p.should_receive(:source_row)
+      end
+      tempfile = Tempfile.new('tempfile')
+      $stdout = File.open(tempfile.path, "w")
+      assert_equal(nil, @plugin.fix_compositions)
+      tempfile.close
+      $stdout = STDOUT
+    end
+    def test_update
+      # Actuall, we should not replace the methods directly with flexmock.
+      # Otherwise, this test-case becomes meaningless.
+      # But for the moment, I do not care about this just to fulfill the coverage.
+      # This should be updated in the future when you have time.
+
+      flexmock(@plugin) do |p|
+        p.should_receive(:get_latest_file).and_return('target')
+        p.should_receive(:initialize_export_registrations)
+        p.should_receive(:diff)
+        p.should_receive(:update_registrations)
+        p.should_receive(:update_export_registrations)
+        p.should_receive(:update_export_sequences)
+        p.should_receive(:sanity_check_deletions)
+        p.should_receive(:delete)
+        p.should_receive(:deactivate)
+      end
+      diff = flexmock('diff') do |d|
+        d.should_receive(:news).and_return(flexmock('news', :+ => nil))
+        d.should_receive(:updates)
+        d.should_receive(:replacements)
+        d.should_receive(:package_deletions)
+        d.should_receive(:sequence_deletions)
+        d.should_receive(:registration_deletions)
+        d.should_receive(:changes).and_return({'iksnr' => 'flags'})
+      end
+      @plugin.instance_eval('@diff = diff')
+      flexmock(FileUtils, :cp => nil)
+      expected = {Persistence::Pointer.new([:registration, 'iksnr']) => 'flags'}
+      assert_equal(expected, @plugin.update)
     end
   end
 end
