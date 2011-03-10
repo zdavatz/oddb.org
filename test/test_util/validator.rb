@@ -1,14 +1,18 @@
 #!/usr/bin/env ruby
+# TestValidator -- oddb -- 10.03.2011 -- mhatakeyama@ywesee.com
 # TestValidator -- oddb -- 04.03.2003 -- hwyss@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'util/validator'
 require 'util/persistence'
+require 'sbsm/validator'
 
 class TestOddbValidator < Test::Unit::TestCase
+  include FlexMock::TestCase
 	def setup
 		@validator = ODDB::Validator.new
 	end
@@ -90,6 +94,110 @@ class TestOddbValidator < Test::Unit::TestCase
 	def test_filename
 		assert_equal('oddb.yaml.gz', @validator.validate(:filename, "oddb.yaml.gz"))
 		assert_equal(nil, @validator.validate(:filename, "/etc/passwd"))
-
 	end
+  def test_ean13
+    assert_equal('7680382940243', @validator.ean13('7680382940243'))
+  end
+  def test_ean13__empty
+    assert_equal('', @validator.ean13(''))
+  end
+  def test_ean13__error
+    assert_raise(SBSM::InvalidDataError) do
+      @validator.ean13('12345')
+    end
+  end
+  def test_emails
+    assert_equal(['abc@ywesee.com'], @validator.emails('abc@ywesee.com'))
+  end
+  def test_emails__invalid_email
+    assert_raise(SBSM::InvalidDataError) do 
+      @validator.emails('abc_at_ywesee.com')
+    end
+  end
+  def test_emails__nil
+    assert_equal(nil, @validator.emails(''))
+  end
+  def test_emails__domainless
+    # Actuall, I do not know how to make the result 'domainless'
+    # without flexmock
+    result = flexmock('result') do |r|
+      r.should_receive(:empty?).and_return(false)
+      r.should_receive(:all?).and_return(false)
+    end
+    flexmock(RMail::Address) do |r|
+      r.should_receive(:parse).and_return(result)
+    end
+    assert_raise(SBSM::InvalidDataError) do 
+      @validator.emails('abc')
+    end
+  end
+  def test_email_suggestion
+    assert_equal('abc@ywesee.com', @validator.email_suggestion('abc@ywesee.com'))
+  end
+  def test_pointer
+    pointer = ':!registration,49390.'
+    expected = ODDB::Persistence::Pointer.new([:registration, '49390'])
+    assert_equal(expected, @validator.pointer(pointer))
+  end
+  def test_pointer__invalid_pointer
+    assert_raise(SBSM::InvalidDataError) do
+      @validator.pointer('value')
+    end
+  end
+  def test_galenic_group
+    pointer = ':!registration,49390.'
+    expected = ODDB::Persistence::Pointer.new([:registration, '49390'])
+    assert_equal(expected, @validator.galenic_group(pointer))
+  end
+  def test_ikscat
+    assert_equal('A', @validator.ikscat('Ahogehoge'))
+  end
+  def test_ikscat__error
+    assert_raise(SBSM::InvalidDataError) do
+      @validator.ikscat('value')
+    end
+  end
+  def test_ikscat__empty
+    assert_equal('', @validator.ikscat(''))
+  end
+  def test_notify_recipient
+    assert_equal(['abc@ywesee.com'], @validator.notify_recipient('abc@ywesee.com'))
+  end
+  def test_set_pass_1
+    assert_equal('5f4dcc3b5aa765d61d8327deb882cf99', @validator.set_pass_1('password'))
+  end
+  def test_set_pass_1__error
+    assert_raise(SBSM::InvalidDataError) do
+      @validator.set_pass_1('pas')
+    end
+  end
+  def test_yus_association
+    assert_equal('org.oddb.model.hogehoge', @validator.yus_association('org.oddb.model.hogehoge'))
+  end
+  def test_yus_association__error
+    assert_raise(SBSM::InvalidDataError) do 
+      @validator.yus_association('value')
+    end
+  end
+  def test_zone
+    assert_equal(:admin, @validator.zone('admin'))
+  end
+  def test_zone__empty
+    assert_raise(SBSM::InvalidDataError) do
+      @validator.zone('')
+    end
+  end
+  def test_zone__error
+    assert_raise(SBSM::InvalidDataError) do
+      @validator.zone('value')
+    end
+  end
+  def test_code__empty
+    assert_equal(nil, @validator.code(''))
+  end
+  def test_dose__error
+    assert_raise(SBSM::InvalidDataError) do
+      @validator.dose('hogehoge')
+    end
+  end
 end

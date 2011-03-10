@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# Vewi::TestSearch -- oddb -- 10.03.2011 -- mhatakeyama@ywesee.com
 # View::TestSearch -- oddb -- 12.11.2002 -- hwyss@ywesee.com 
 
 $: << File.expand_path("..", File.dirname(__FILE__))
@@ -15,6 +16,7 @@ require 'stub/cgi'
 require 'mock'
 require 'odba'
 
+=begin
 module ODDB
 	class GalenicGroup
 		def GalenicGroup.reset_oid
@@ -38,20 +40,6 @@ module ODDB
 		def teardown
 			ODBA.storage = nil
 		end
-=begin
-		def test_to_html
-			result = ''
-			assert_nothing_raised {
-				result << @view.to_html(CGI.new)
-			}
-			expected = [
-				'<INPUT name="search_query" class="search-center" onFocus="if (value==\'HIER Medikament / Wirkstoff eingeben\') { value=\'\' }" type="text" onBlur="if (value==\'\') { value=\'HIER Medikament / Wirkstoff eingeben\' }" value="HIER Medikament / Wirkstoff eingeben" tabIndex="1">',
-			]
-			expected.each { |line|
-				assert(result.index(line), "expected #{line} in\n#{CGI.pretty(result)}")
-			}
-		end
-=end
 		def test_http_headers
 			headers = @view.http_headers
 			time = headers["Expires"]
@@ -69,3 +57,4 @@ module ODDB
 	end
 	end
 end
+=end

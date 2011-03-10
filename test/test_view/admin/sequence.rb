@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Admin::TestSequence -- oddb.org -- 09.03.2011 -- mhatakeyama@ywesee.com
+# View::Admin::TestSequence -- oddb.org -- 10.03.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -60,33 +60,11 @@ class TestActiveAgent < Test::Unit::TestCase
     model = flexmock('model', :substance => substance)
     assert_equal('language', @agents.substance(model))
   end
-end # TestActiveAgents
+end
 
 class TestRootActiveAgents < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
-=begin
-    lookandfeel = flexmock('lookandfeel') do |l|
-      l.should_receive(:lookup)
-      l.should_receive(:attributes).and_return({})
-    end
-    @session = flexmock('session') do |s|
-      s.should_receive(:lookandfeel).and_return(lookandfeel)
-      s.should_receive(:app)
-      s.should_receive(:language)
-      s.should_receive(:state).and_return(model)
-      s.should_receive(:user_input)
-    end
-    compose = flexmock('compose') do |c|
-      c.should_receive(:galenic_form)
-    end
-    active_agent = flexmock('active_agent') do |m|
-      m.should_receive(:substance)
-      m.should_receive(:dose)
-      m.should_receive(:parent).and_return(compose)
-    end
-=end
-
     lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:lookup)
       l.should_receive(:attributes).and_return({})
@@ -332,14 +310,15 @@ end
 class TestSequenceForm < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
-    lookandfeel = flexmock('lookandfeel') do |l|
+    @lookandfeel = flexmock('lookandfeel') do |l|
       l.should_receive(:attributes).and_return({})
       l.should_receive(:lookup)
       l.should_receive(:language)
       l.should_receive(:event_url)
+      l.should_receive(:_event_url)
     end
     @session = flexmock('session') do |s|
-      s.should_receive(:lookandfeel).and_return(lookandfeel)
+      s.should_receive(:lookandfeel).and_return(@lookandfeel)
       s.should_receive(:error)
       s.should_receive(:warning?)
       s.should_receive(:error?)
@@ -405,5 +384,239 @@ class TestSequenceForm < Test::Unit::TestCase
   def test_language_select
     assert_kind_of(ODDB::View::Admin::FachinfoLanguageSelect, @composite.language_select(@model, @session))
   end
+  def test_seqnr
+    assert_kind_of(HtmlGrid::InputText, @composite.seqnr(@model, @session))
+  end
+  def test_seqnr__else
+    flexmock(@model, :seqnr => 'seqnr')
+    assert_kind_of(HtmlGrid::Value, @composite.seqnr(@model, @session))
+  end
+  def test_patinfo
+    flexmock(@model) do |m|
+      # The following methods are defined in additional_information.rb
+      m.should_receive(:has_patinfo?).and_return(true)
+      m.should_receive(:pdf_patinfo).and_return(true)
+    end
+    flexmock(@lookandfeel) do |l|
+      l.should_receive(:resource_global)
+    end
+    assert_kind_of(HtmlGrid::PopupLink, @composite.patinfo(@model, @session))
+  end
+  def test_patinfo__nil
+    flexmock(@model) do |m|
+      m.should_receive(:has_patinfo?)
+    end
+    assert_equal(nil, @composite.patinfo(@model, @session))
+  end
+  def test_profile_link
+    company = flexmock('company', :pointer => 'pointer')
+    flexmock(@model, :company => company)
+    assert_kind_of(HtmlGrid::Link, @composite.profile_link(@model, @session))
+  end
+  def test_patinfo_label
+    assert_kind_of(HtmlGrid::LabelText, @composite.patinfo_label(@model, @session))
+  end
+  def test_patinfo_upload
+    company = flexmock('company') do |c|
+      c.should_receive(:invoiceable?)
+      c.should_receive(:pointer)
+    end
+    flexmock(@model, :company => company)
+    assert_kind_of(ODDB::View::PointerLink, @composite.patinfo_upload(@model, @session))
+  end
+  def test_patinfo_upload__invoiceable
+    company = flexmock('company') do |c|
+      c.should_receive(:invoiceable?).and_return(true)
+    end
+    flexmock(@model, :company => company)
+    assert_kind_of(HtmlGrid::InputFile, @composite.patinfo_upload(@model, @session))
+  end
 end
 
+class TestSequenceComposite < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lookandfeel = flexmock('lookandfeel') do |l|
+      l.should_receive(:attributes).and_return({})
+      l.should_receive(:lookup).and_return('lookup')
+      l.should_receive(:language)
+      l.should_receive(:event_url)
+      l.should_receive(:_event_url)
+      l.should_receive(:disabled?)
+      l.should_receive(:enabled?)
+    end
+    @session = flexmock('session') do |s|
+      s.should_receive(:lookandfeel).and_return(@lookandfeel)
+      s.should_receive(:error)
+      s.should_receive(:warning?)
+      s.should_receive(:error?)
+      s.should_receive(:info?)
+      s.should_receive(:language).and_return('language')
+      s.should_receive(:app)
+      s.should_receive(:state)
+      s.should_receive(:event)
+      s.should_receive(:allowed?)
+    end
+    substance = flexmock('substance') do |s|
+      s.should_receive(:language).and_return('language')
+    end
+    active_agent = flexmock('active_agent') do |a|
+      a.should_receive(:substance).and_return(substance)
+      a.should_receive(:dose)
+      a.should_receive(:parent)
+    end
+    composition = flexmock('composition') do |c|
+      c.should_receive(:active_agents).and_return([active_agent])
+    end
+    commercial_form = flexmock('commercial_form')
+    @package = flexmock('package') do |p|
+      p.should_receive(:ikscd).and_return('ikscd')
+      p.should_receive(:pointer)
+      p.should_receive(:commercial_forms).and_return([commercial_form])
+      p.should_receive(:parts).and_return([])
+      p.should_receive(:price_exfactory)
+      p.should_receive(:price_public)
+      p.should_receive(:sl_entry)
+    end
+    @model = flexmock('model') do |m|
+      m.should_receive(:atc_class)
+      m.should_receive(:seqnr)
+      m.should_receive(:company)
+      m.should_receive(:name)
+      m.should_receive(:compositions).and_return([composition])
+      m.should_receive(:packages).and_return({'key' => @package})
+      m.should_receive(:pointer)
+    end
+    @composite = ODDB::View::Admin::SequenceComposite.new(@model, @session)
+  end
+  def test_compositions
+    assert_kind_of(ODDB::View::Admin::Compositions, @composite.compositions(@model, @session))
+  end
+  def test_source
+    flexmock(@package) do |p|
+      p.should_receive(:swissmedic_source)
+    end
+    flexmock(@model) do |m|
+      m.should_receive(:source)
+    end
+    assert_kind_of(HtmlGrid::Value, @composite.source(@model, @session))
+  end
+end
+
+class TestRootSequenceForm < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lookandfeel = flexmock('lookandfeel') do |l|
+      l.should_receive(:attributes).and_return({})
+      l.should_receive(:lookup).and_return('lookup')
+      l.should_receive(:event_url)
+      l.should_receive(:base_url)
+    end
+    state = flexmock('state') do |s|
+      s.should_receive(:"model.pointer")
+    end
+    @session = flexmock('session') do |s|
+      s.should_receive(:lookandfeel).and_return(@lookandfeel)
+      s.should_receive(:error)
+      s.should_receive(:warning?)
+      s.should_receive(:error?)
+      s.should_receive(:info?)
+      s.should_receive(:state).and_return(state)
+      s.should_receive(:app)
+    end
+    active_agent = flexmock('active_agent') do |a|
+      a.should_receive(:dose)
+      a.should_receive(:substance)
+      a.should_receive(:parent)
+    end
+    composition = flexmock('composition') do |c|
+      c.should_receive(:active_agents).and_return([active_agent])
+    end
+    @model = flexmock('model') do |m|
+      m.should_receive(:atc_class)
+      m.should_receive(:seqnr)
+      m.should_receive(:compositions).and_return([composition])
+    end
+    @form = ODDB::View::Admin::RootSequenceForm.new(@model, @session)
+  end
+  def test_compositions
+    assert_kind_of(ODDB::View::Admin::RootCompositions, @form.compositions(@model, @session))
+  end
+  def test_hidden_fields
+    flexmock(@lookandfeel) do |l|
+      l.should_receive(:flavor)
+      l.should_receive(:language)
+    end
+    flexmock(@session, :zone => 'zone')
+    context = flexmock('context', :hidden => 'hidden')
+    expected = "hiddenhiddenhiddenhiddenhiddenhidden"
+    assert_equal(expected, @form.hidden_fields(context))
+  end
+end
+
+class TestResellerSequenceComposite < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lookandfeel = flexmock('lookandfeel') do |l|
+      l.should_receive(:attributes).and_return({})
+      l.should_receive(:lookup).and_return('lookup')
+      l.should_receive(:language)
+      l.should_receive(:event_url)
+      l.should_receive(:_event_url)
+      l.should_receive(:disabled?)
+      l.should_receive(:enabled?)
+      l.should_receive(:base_url)
+    end
+    state = flexmock('state') do |s|
+      s.should_receive(:"model.pointer")
+    end
+    @session = flexmock('session') do |s|
+      s.should_receive(:lookandfeel).and_return(@lookandfeel)
+      s.should_receive(:error)
+      s.should_receive(:warning?)
+      s.should_receive(:error?)
+      s.should_receive(:info?)
+      s.should_receive(:language).and_return('language')
+      s.should_receive(:app)
+      s.should_receive(:state).and_return(state)
+      s.should_receive(:event)
+      s.should_receive(:allowed?)
+    end
+    substance = flexmock('substance') do |s|
+      s.should_receive(:language).and_return('language')
+    end
+    active_agent = flexmock('active_agent') do |a|
+      a.should_receive(:substance).and_return(substance)
+      a.should_receive(:dose)
+      a.should_receive(:parent)
+    end
+    composition = flexmock('composition') do |c|
+      c.should_receive(:active_agents).and_return([active_agent])
+    end
+    commercial_form = flexmock('commercial_form')
+    @package = flexmock('package') do |p|
+      p.should_receive(:ikscd).and_return('ikscd')
+      p.should_receive(:pointer)
+      p.should_receive(:commercial_forms).and_return([commercial_form])
+      p.should_receive(:parts).and_return([])
+      p.should_receive(:price_exfactory)
+      p.should_receive(:price_public)
+      p.should_receive(:sl_entry)
+      p.should_receive(:swissmedic_source)
+    end
+    @model = flexmock('model') do |m|
+      m.should_receive(:atc_class)
+      m.should_receive(:seqnr)
+      m.should_receive(:company)
+      m.should_receive(:name)
+      m.should_receive(:compositions).and_return([composition])
+      m.should_receive(:packages).and_return({'key' => @package})
+      m.should_receive(:pointer)
+      m.should_receive(:source)
+    end
+    @composite = ODDB::View::Admin::ResellerSequenceComposite.new(@model, @session)
+  end
+  def test_compositions
+    assert_kind_of(ODDB::View::Admin::RootCompositions, @composite.compositions(@model, @session))
+  end
+end

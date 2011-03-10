@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# Validator -- oddb -- 10.03.2011 -- mhatakeyama@ywesee.com
 # Validator -- oddb -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -425,11 +426,11 @@ module ODDB
       return if(value.empty?)
       parsed = RMail::Address.parse(value)
       if(parsed.empty?)
-        raise InvalidDataError.new(:e_invalid_email_address, :email, value)
+        raise SBSM::InvalidDataError.new(:e_invalid_email_address, :email, value)
       elsif(parsed.all? { |addr| addr.domain })
         parsed.collect { |addr| addr.address }
       else
-        raise InvalidDataError.new(:e_domainless_email_address, :email, value)
+        raise SBSM::InvalidDataError.new(:e_domainless_email_address, :email, value)
       end
     end
 		def email_suggestion(value)
