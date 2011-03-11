@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
+# TestHtmlParser -- oddb -- 11.03.2011 -- mhatakeyama@ywesee.com
 # TestHtmlParser -- oddb -- 06.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'util/html_parser'
 
 module ODDB
@@ -111,8 +113,27 @@ class TestHtmlParser < Test::Unit::TestCase
 		@parser.feed(html)
 		assert_equal(:pop_fonthandler, @formatter.called)
 	end
+  def test_do_meta
+    assert_equal(:send_meta, @parser.do_meta('attrs'))
+  end
+  def test_handle_image
+    assert_equal(:send_image, @parser.handle_image('src'))
+  end
+  def test_do_img
+    attrs = {
+      'align' => 'xxx', 
+      'alt'   => 'xxx',
+      'ismap' => 'xxx',
+      'src'   => 'xxx',
+      'width' => 'xxx',
+      'height'=> 'xxx'
+    }
+    assert_equal(:send_image, @parser.do_img(attrs))
+  end
 end
+
 class TestHtmlFormatter < Test::Unit::TestCase
+  include FlexMock::TestCase
 	class StubWriter
 		attr_reader :called, :arguments
 		def method_missing(method_name, *args)
@@ -211,6 +232,26 @@ class TestHtmlFormatter < Test::Unit::TestCase
 		assert_respond_to(writer, :new_tablehandler)
 		assert_equal(1, writer.method(:new_tablehandler).arity)
 	end
+  def test_pop_alignment
+    @formatter.instance_eval('@align_stack = ["pop"]')
+    assert_equal('pop', @formatter.pop_alignment)
+  end
+  def test_pop_fonthandler
+    flexmock(@writer, :new_fonthandler => 'new_fonthandler')
+    assert_equal('new_fonthandler',@formatter.pop_fonthandler)
+  end
+  def test_push_alignment
+    assert_equal(['alignment'], @formatter.push_alignment('alignment'))
+  end
+  def test_push_fonthandler
+    assert_kind_of(ODDB::HtmlFontHandler, @formatter.push_fonthandler({})[0])
+  end
+  def test_send_image
+    assert_equal(['src'], @formatter.send_image('src'))
+  end
+  def test_send_meta
+    assert_equal(['attrs'], @formatter.send_meta('attrs'))
+  end
 end
 class TestHtmlLimitationHandler < Test::Unit::TestCase
 	class StubTableHandler
@@ -245,6 +286,9 @@ class TestHtmlLinkHandler < Test::Unit::TestCase
 		value = " link"
 		assert_equal('link', @handler.send_adata(value))
 	end
+  def test_to_s
+    assert_equal('', @handler.to_s)
+  end
 end
 class TestHtmlTableHandler < Test::Unit::TestCase
 	def setup
@@ -318,6 +362,96 @@ class TestHtmlTableHandler < Test::Unit::TestCase
 			@handler.extract_cdata({:no_such_pos=>[10,10]})
 		}
 	end
+  def test_add_child
+    current_row = ODDB::HtmlTableHandler::Row.new({})
+    current_cell = ODDB::HtmlTableHandler::Cell.new({})
+    current_row.instance_eval('@current_cell = current_cell')
+    @handler.instance_eval('@current_row = current_row')
+    assert_equal(['child'], @handler.add_child('child'))
+  end
+  def test_children
+    row = ODDB::HtmlTableHandler::Row.new({})
+    rows = [row]
+    cell = ODDB::HtmlTableHandler::Cell.new({})
+    cell.add_child('child')
+    cells = [cell]
+    row.instance_eval('@cells = cells')
+    @handler.instance_eval('@rows = rows')
+    assert_equal(['child'], @handler.children(0,0))
+  end
+  def test_children__nil
+    assert_equal(nil, @handler.children(0,0))
+  end
+  def test_current_colspan
+    current_row = ODDB::HtmlTableHandler::Row.new({})
+    current_cell = ODDB::HtmlTableHandler::Cell.new({})
+    current_row.instance_eval('@current_cell = current_cell')
+    @handler.instance_eval('@current_row = current_row')
+    assert_equal(1, @handler.current_colspan)
+  end
+  def test_each_row
+    row = ODDB::HtmlTableHandler::Row.new({})
+    rows = [row]
+    @handler.each_row do |r|
+      assert_equal(row, r)
+    end
+  end
+  def test_next_line
+    current_row = ODDB::HtmlTableHandler::Row.new({})
+    current_cell = ODDB::HtmlTableHandler::Cell.new({})
+    current_row.instance_eval('@current_cell = current_cell')
+    @handler.instance_eval('@current_row = current_row')
+    assert_equal(['',''], @handler.next_line)
+  end
+  def test_next_cell
+    row = ODDB::HtmlTableHandler::Row.new({})
+    rows = [row]
+    cell = ODDB::HtmlTableHandler::Cell.new({'rowspan' => '2'})
+    cell.add_child('child')
+    cells = [cell, cell]
+    row.instance_eval('@cells = cells')
+    @handler.instance_eval('@rows = rows')
+    assert_kind_of(ODDB::HtmlTableHandler::Cell, @handler.next_cell({}))
+  end
+  def test_to_s
+    row = ODDB::HtmlTableHandler::Row.new({})
+    rows = [row]
+    cell = ODDB::HtmlTableHandler::Cell.new({'rowspan' => '2', 'colspan' => '2'})
+    cdata = ['data']
+    cell.instance_eval('@cdata = cdata')
+    cells = [cell, cell]
+    row.instance_eval('@cells = cells')
+    @handler.instance_eval('@rows = rows')
+    expected = "------\ndata  \n------\n"
+    assert_equal(expected, @handler.to_s)
+  end
+  def test_to_s__colspan_1
+    row = ODDB::HtmlTableHandler::Row.new({})
+    rows = [row]
+    cell = ODDB::HtmlTableHandler::Cell.new({})
+    cdata = ['data']
+    cell.instance_eval('@cdata = cdata')
+    cells = [cell, cell]
+    row.instance_eval('@cells = cells')
+    @handler.instance_eval('@rows = rows')
+    expected = "----------\ndata  data\n----------\n"
+    assert_equal(expected, @handler.to_s)
+  end
+
+  def test_to_s__empty
+    assert_equal('', @handler.to_s)
+  end
+  def test_width
+    row = ODDB::HtmlTableHandler::Row.new({})
+    rows = [row]
+    cell = ODDB::HtmlTableHandler::Cell.new({})
+    cdata = ['data']
+    cell.instance_eval('@cdata = cdata')
+    cells = [cell, cell]
+    row.instance_eval('@cells = cells')
+    @handler.instance_eval('@rows = rows')
+    assert_equal(10, @handler.width)
+  end
 end
 class TestHtmlFontHandler < Test::Unit::TestCase
 	def test_attribute
@@ -328,3 +462,122 @@ class TestHtmlFontHandler < Test::Unit::TestCase
 		assert_equal('SYMBOL', handler.attribute('face'))
 	end
 end
+
+class TestBasicHtmlParser < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @formatter = flexmock('formatter')
+    @parser = ODDB::BasicHtmlParser.new(@formatter)
+  end
+  def test_finish_endtab
+    assert_equal(nil, @parser.finish_endtag('tag'))
+  end
+  def test_finish_endtab__last_tag
+    @parser.instance_eval('@stack = ["tag"]')
+    assert_equal(nil, @parser.finish_endtag('tag'))
+  end
+  def test_finish_endtag__empty
+    assert_equal(nil, @parser.finish_endtag(''))
+  end
+  def test_start_td
+    flexmock(@formatter) do |f|
+      f.should_receive(:push_alignment)
+      f.should_receive(:push_tablecell).and_return('push_tablecell')
+    end
+    attrs = {'align' => 'center'}
+    assert_equal('push_tablecell', @parser.start_td(attrs))
+  end
+end
+
+class TestHtmlTableHandlerCell < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    attrs = {}
+    @cell = ODDB::HtmlTableHandler::Cell.new(attrs)
+  end
+  def test_add_child
+    assert_equal(['child'], @cell.add_child('child'))
+  end
+  def test_cdata
+    cdata = ['data1', 'data2']
+    @cell.instance_eval('@cdata = cdata')
+    assert_equal(cdata, @cell.cdata)
+  end
+  def test_formatted_cdata
+    cdata = ['data']
+    formats = [[[0, 'format']]]
+    @cell.instance_eval('@cdata = cdata')
+    @cell.instance_eval('@formats = formats')
+    expected = ['formatdata']
+    assert_equal(expected, @cell.formatted_cdata)
+  end
+  def test_cdata__empty
+    assert_equal('', @cell.cdata)
+  end
+  def test_height
+    cdata = ['data']
+    @cell.instance_eval('@cdata = cdata')
+    assert_equal(1, @cell.height)
+  end
+  def test_next_line
+    assert_equal(['',''], @cell.next_line)
+  end
+  def test_send_format
+    assert_equal('format', @cell.send_format('format'))
+  end
+  def test_width
+    cdata = ['data']
+    @cell.instance_eval('@cdata = cdata')
+    assert_equal(4, @cell.width)
+  end
+end
+
+class TestHtmlTableHandlerRow < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    attrs = {}
+    @row = ODDB::HtmlTableHandler::Row.new(attrs)
+  end
+  def test_add_child
+    current_cell = ODDB::HtmlTableHandler::Cell.new({})
+    @row.instance_eval('@current_cell = current_cell')
+    assert_equal(['child'], @row.add_child('child'))
+  end
+  def test_children
+    cells = [ODDB::HtmlTableHandler::Cell.new({})]
+    cells[0].add_child('child')
+    @row.instance_eval('@cells = cells')
+    assert_equal(['child'], @row.children(0))
+  end
+  def test_current_colspan
+    current_cell = ODDB::HtmlTableHandler::Cell.new({})
+    @row.instance_eval('@current_cell = current_cell')
+    assert_equal(1, @row.current_colspan)
+  end
+  def test_each_cell_with_index
+    cell = ODDB::HtmlTableHandler::Cell.new({})
+    cells = [cell]
+    @row.instance_eval('@cells = cells')
+    @row.each_cell_with_index do |c, i|
+      assert_equal(cell, c) 
+    end
+  end
+  def test_height
+    cell = ODDB::HtmlTableHandler::Cell.new({})
+    cdata = ['data']
+    cell.instance_eval('@cdata = cdata')
+    cells = [cell]
+    @row.instance_eval('@cells = cells')
+    assert_equal(1, @row.height)
+  end
+  def test_next_line
+    current_cell = ODDB::HtmlTableHandler::Cell.new({})
+    @row.instance_eval('@current_cell = current_cell')
+    assert_equal(['',''], @row.next_line)
+  end
+  def test_send_format
+    assert_equal('format', @row.send_format('format'))
+  end
+end
+
+
