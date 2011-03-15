@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Admin::TestSequence -- oddb.org -- 14.03.2011 -- mhatakeyama@ywesee.com
+# State::Admin::TestSequence -- oddb.org -- 15.03.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -710,4 +710,103 @@ class TestSequence < Test::Unit::TestCase
   end
 end
 
-
+class TestCompanySequence < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @app = flexmock('app')
+    @session = flexmock('session') do |s|
+      s.should_receive(:app).and_return(@app)
+    end
+    @model = flexmock('model')
+    @sequence = ODDB::State::Admin::CompanySequence.new(@session, @model)
+  end
+  def test_init
+    flexmock(@session, :allowed? => false)
+    assert_equal(ODDB::View::Admin::Sequence, @sequence.init)
+  end
+  def test_delete
+    pointer = flexmock('pointer', :skeleton => [:company])
+    parent = flexmock('parent', :pointer => pointer)
+    flexmock(@model) do |m|
+      m.should_receive(:parent).and_return(parent)
+      m.should_receive(:pointer).and_return(pointer)
+    end
+    flexmock(@app, :delete => nil)
+    flexmock(@session, :allowed? => true)
+    assert_kind_of(ODDB::State::Companies::Company, @sequence.delete)
+  end
+  def test_delete__nil
+    flexmock(@session, :allowed? => nil)
+    assert_equal(nil, @sequence.delete)
+  end
+  def test_new_active_agent
+    flexmock(@session, :allowed? => true)
+    pointer = flexmock('pointer') do |p|
+      p.should_receive(:resolve).and_return(@model)
+      p.should_receive(:skeleton)
+    end
+    flexmock(pointer, :+ => pointer)
+    flexmock(@session, :user_input => pointer)
+    flexmock(@model) do |m|
+      m.should_receive(:iksnr)
+      m.should_receive(:name_base)
+      m.should_receive(:user_input)
+    end
+    assert_equal(@sequence, @sequence.new_active_agent)
+  end
+  def test_new_package
+    flexmock(@session, :allowed? => true)
+    pointer = flexmock('pointer') do |p|
+      p.should_receive(:resolve).and_return(@model)
+      p.should_receive(:skeleton)
+    end
+    flexmock(pointer, :+ => pointer)
+    flexmock(@session, :user_input => pointer)
+    flexmock(@model) do |m|
+      m.should_receive(:iksnr)
+      m.should_receive(:name_base)
+    end
+    assert_equal(@sequence, @sequence.new_package)
+  end
+  def test_update
+    flexmock(@session, :allowed? => true)
+    flexmock(@session) do |s|
+      s.should_receive(:user_input).and_return('seqnr')
+      s.should_receive(:language).and_return('language')
+      s.should_receive(:user)
+    end
+    flexmock(@app, :update => nil)
+    company = flexmock('company', :pointer => nil)
+    parent = flexmock('parent', :sequence => nil)
+    flexmock(@model) do |m|
+      m.should_receive(:company).and_return(company)
+      m.should_receive(:pointer)
+      m.should_receive(:is_a?).and_return(true)
+      m.should_receive(:parent).and_return(parent)
+      m.should_receive(:append)
+      m.should_receive(:carry)
+    end
+    # Actually, this should not be replaced by flexmock
+    flexmock(@sequence, :get_patinfo_input => 'get_patinfo_input')
+    assert_equal('get_patinfo_input', @sequence.update)
+  end
+  def test_store_slate
+    flexmock(@app, 
+             :create => nil,
+             :update => nil
+            )
+    lookandfeel = flexmock('lookandfeel', :lookup => nil)
+    user = flexmock('user', :name => 'name')
+    flexmock(@session, 
+            :lookandfeel => lookandfeel,
+            :user        => user
+            )
+    flexmock(@model, 
+             :iksnr => 'iksnr', 
+             :seqnr => 'seqnr',
+             :name  => 'name',
+             :pointer => 'pointer'
+            )
+    assert_equal(nil, @sequence.store_slate)
+  end
+end

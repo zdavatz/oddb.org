@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# State::Admin::Sequence -- oddb -- 15.03.2011 -- mhatakeyama@ywesee.com
 # State::Admin::Sequence -- oddb -- 11.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'
@@ -351,7 +352,7 @@ class CompanySequence < State::Admin::Sequence
 	def init
 		super
 		unless(allowed?)
-			@default_view = View::Admin::Sequence 
+			@default_view = ODDB::View::Admin::Sequence 
 		end
 	end
 	def delete
