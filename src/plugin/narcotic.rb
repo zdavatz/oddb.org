@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDV::NarcaticPlugin -- oddb -- 03.11.2005 -- ffricker@ywesee.com
+# ODDB::NarcoticPlugin -- oddb -- 17.03.2011 -- mhatakeyama@ywesee.com
+# ODDB::NarcoticPlugin -- oddb -- 03.11.2005 -- ffricker@ywesee.com
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
@@ -243,6 +244,7 @@ Diese Produkte werden in ch.oddb.org nicht angezeigt (zu wenig Informationen).
           if retries > 0
             retries -= 1
             sleep 60 ** (2 - retries)
+            retry
           else
             raise "Downloading Narcotics-PDF file still fails with EOFError after 3 retries"
           end
@@ -252,7 +254,7 @@ Diese Produkte werden in ch.oddb.org nicht angezeigt (zu wenig Informationen).
     end
 		def update_from_csv(path, language)
 			CSV.open(path, 'r', ';').each { |row|
-        process_row(row)
+        process_row(row, language)
 			}
       postprocess(language)
     end
@@ -321,6 +323,7 @@ Diese Produkte werden in ch.oddb.org nicht angezeigt (zu wenig Informationen).
               ## obviously something went wrong, and we have received too many
               #  results.. since we're only interested in results of size 1, we
               #  can safely ignore this.
+              'ignore'
             end
           end
           package = Package.find_by_pharmacode(pcode) if pcode

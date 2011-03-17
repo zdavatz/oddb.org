@@ -11,6 +11,16 @@ require 'plugin/narcotic'
 require 'flexmock'
 require 'mechanize'
 
+
+module ODDB
+  class NarcoticPlugin < Plugin
+    remove_const :MEDDATA_SERVER
+    MEDDATA_SERVER = self
+    module MedData
+      class OverflowError < Exception; end
+    end
+  end
+end
 module ODDB
 	class TestNarcoticPlugin < Test::Unit::TestCase
     include FlexMock::TestCase
@@ -123,6 +133,32 @@ module ODDB
       flexmock(@app, :registration => nil)
       row = ['0']
       assert_equal(["0\n\n"], @plugin.update_package(row, 'language'))
+    end
+    def test_update_package__not_pcode
+      registration = flexmock('registration', :package => nil)
+      flexmock(@app, :registration => registration)
+      meddata = flexmock('meddata', 
+                         :search => ['result'],
+                         :detail => {'pharmacode' => 'pcode'}
+                        )
+      flexmock(ODDB::NarcoticPlugin::MEDDATA_SERVER) do |m|
+        m.should_receive(:session).and_yield(meddata)
+      end
+
+      row = ['0','123',nil,'7680123456789']
+      expected = ["0\n123 |  | 7680123456789\n"]
+      assert_equal(expected, @plugin.update_package(row, 'language'))
+    end
+    def test_update_package__not_pcode__overflowerror
+      registration = flexmock('registration', :package => nil)
+      flexmock(@app, :registration => registration)
+      flexmock(ODDB::NarcoticPlugin::MEDDATA_SERVER) do |m|
+        m.should_receive(:session).and_raise(ODDB::NarcoticPlugin::MedData::OverflowError)
+      end
+
+      row = ['0','123',nil,'7680123456789']
+      expected = ["0\n123 |  | 7680123456789\n"]
+      assert_equal(expected, @plugin.update_package(row, 'language'))
     end
     def test_update_substance
       substance = flexmock('substance', :pointer => 'pointer')
@@ -237,7 +273,53 @@ module ODDB
       row = [0,'1/2',2,'7611123456789']
       assert_equal(update, @plugin.process_row(row, :de))
     end
-
+    def test_update_from_pdf
+      parser = flexmock('parser', :extract_text => 'extract_text')
+      flexmock(Rpdf2txt::Parser, :new => parser)
+      flexmock(File, :read => nil)
+      assert_equal(nil, @plugin.update_from_pdf('path', 'language'))
+    end
+    def test_update_from_csv
+      package = flexmock('package', :odba_store => nil)
+      registration = flexmock('registration', :package => package)
+      flexmock(@app, :registration => registration)
+      row = [0,1,2,'7680123456789']
+      flexmock(CSV, :open => [row]) 
+      assert_equal(nil, @plugin.update_from_csv('path', 'language'))
+    end
+    def test_update
+      # for update_from_pdf
+      parser = flexmock('parser', :extract_text => 'extract_text')
+      flexmock(Rpdf2txt::Parser, :new => parser)
+      flexmock(File, :read => nil)
+ 
+      pdf  = flexmock('pdf', :save => nil)
+      link = flexmock('link', :click => pdf)
+      page = flexmock('page', :"links.find" => link)
+      flexmock(Mechanize).new_instances do |m|
+        m.should_receive(:get).and_return(page)
+      end
+      assert_equal(true, @plugin.update)
+    end
+    def test_update__error
+      flexmock(@plugin, :sleep => nil)
+      # for update_from_pdf
+      parser = flexmock('parser', :extract_text => 'extract_text')
+      flexmock(Rpdf2txt::Parser, :new => parser)
+      flexmock(File) do |f|
+        f.should_receive(:read).and_raise(EOFError)
+      end
+ 
+      pdf  = flexmock('pdf', :save => nil)
+      link = flexmock('link', :click => pdf)
+      page = flexmock('page', :"links.find" => link)
+      flexmock(Mechanize).new_instances do |m|
+        m.should_receive(:get).and_return(page)
+      end
+      assert_raise(RuntimeError) do 
+        assert_equal(false, @plugin.update)
+      end
+    end
 	end
 end
 
