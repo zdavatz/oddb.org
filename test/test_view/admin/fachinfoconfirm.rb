@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# Vewi::Admin::TestFAchinfoConfirm -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
+# Vewi::Admin::TestFAchinfoConfirm -- oddb -- 18.03.2011 -- mhatakeyama@ywesee.com
 # View::Drugs::TestFachinfoConfirm -- oddb -- 24.10.2003 -- rwaltert@ywesee.com
 
 $: << File.expand_path("../..", File.dirname(__FILE__))
@@ -13,10 +13,12 @@ require 'flexmock'
 module ODDB
 	module View
 		module Admin
-class FachinfoConfirmForm < View::FormList
-	attr_accessor :grid
+      class FachinfoConfirmForm < View::FormList
+	      attr_accessor :grid
+      end
+		end
+	end
 end
-
 class TestFachinfoConfirm < Test::Unit::TestCase
   include FlexMock::TestCase
 	class StubSession
@@ -54,7 +56,7 @@ class TestFachinfoConfirm < Test::Unit::TestCase
     flexstub(@session) do |ses|
       ses.should_receive(:zone)
     end
-		@form = View::Admin::FachinfoConfirmForm.new(nil, @session)
+		@form = ODDB::View::Admin::FachinfoConfirmForm.new(nil, @session)
 	end
 	def test_compose_footer1
 		grid = @form.grid = HtmlGrid::Grid.new()
@@ -87,6 +89,4 @@ class TestFachinfoConfirm < Test::Unit::TestCase
 		assert_nil(html.index(line), "found: #{line}\nin:\n#{html}\n...but it should not be there!")
 	end
 end
-		end
-	end
-end
+

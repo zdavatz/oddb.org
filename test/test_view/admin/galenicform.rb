@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Admin::GalenicGroup -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
+# View::Admin::GalenicGroup -- oddb -- 18.03.2011 -- mhatakeyama@ywesee.com
 # View::Drugs::GalenicGroupSelect -- oddb -- 31.03.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
@@ -20,10 +20,13 @@ module ODDB
 	end
 	module View
 		module Admin
+		end
+	end
+end
 
 class TestGalenicGroupSelect < Test::Unit::TestCase
 	class StubGalenicGroup
-		include Persistence
+		include ODDB::Persistence
 		def initialize(description)
 			super()
 			@description = description
@@ -57,7 +60,7 @@ end
 			StubGalenicGroup.new("Tabletten"),	
 			StubGalenicGroup.new("Salben"),	
 			].inject({}) { |inj,group| 
-				group.pointer = Persistence::Pointer.new([:galenic_group, group.oid])
+				group.pointer = ODDB::Persistence::Pointer.new([:galenic_group, group.oid])
 				inj.store(group.oid, group)
 				inj
 			}
@@ -81,13 +84,11 @@ end
 		session = StubSession.new
 		model = StubModel.new
 		model.galenic_group = session.galenic_groups[1]
-		@select = View::Admin::GalenicGroupSelect.new(:galenic_group, model, session) 
+		@select = ODDB::View::Admin::GalenicGroupSelect.new(:galenic_group, model, session) 
 	end
 	def test_to_html
 		expected = '<SELECT name="galenic_group"><OPTION value=":!galenic_group,123.">Salben</OPTION></SELECT>'
 		assert_equal(expected, @select.to_html(CGI.new))
 	end
 end	
-		end
-	end
-end
+
