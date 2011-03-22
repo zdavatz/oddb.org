@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Drugs::TestResultList -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
+# View::Drugs::TestResultList -- oddb -- 22.03.2011 -- mhatakeyama@ywesee.com
 # View::Drugs::TestResultList -- oddb -- 05.03.2003 -- hwyss@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
@@ -10,6 +10,7 @@ require 'flexmock'
 require 'view/drugs/resultlist'
 require 'view/drugs/rootresultlist'
 require 'util/language'
+require 'htmlgrid/span'
 
 module ODDB
   module View
@@ -194,7 +195,7 @@ class TestResultList < Test::Unit::TestCase
 		@session = StubSession.new
     flexstub(@session) do |ses|
       ses.should_receive(:result_list_components).and_return({})
-      ses.should_receive(:persistent_user_input)
+      ses.should_receive(:persistent_user_input).and_return('persistent_user_input')
       ses.should_receive(:allowed?).and_return(true)
       ses.should_receive(:disabled?)
       ses.should_receive(:cookie_set_or_get)
@@ -203,7 +204,7 @@ class TestResultList < Test::Unit::TestCase
     end
     flexstub(@model) do |mod|
       mod.should_receive(:empty?)
-      mod.should_receive(:overflow?)
+      mod.should_receive(:overflow?).and_return(true)
       mod.should_receive(:parent_code)
       mod.should_receive(:pointer)
     end
@@ -231,7 +232,72 @@ class TestResultList < Test::Unit::TestCase
 		@package.sl_entry.limitation_text = nil
 		assert_nil(@list.limitation_text(@package, @session))
 	end
+  def test_active_agents
+    active_agent = flexmock('active_agent')
+    flexmock(@model, :active_agents => [active_agent, active_agent])
+    assert_kind_of(HtmlGrid::Link, @list.active_agents(@model, @session))
+  end
+  def test_active_agents__size_1
+    active_agent = flexmock('active_agent')
+    flexmock(@model, :active_agents => [active_agent])
+    assert_kind_of(HtmlGrid::Link, @list.active_agents(@model, @session))
+  end
+  def test_explain_atc
+    assert_kind_of(HtmlGrid::Link, @list.explain_atc(@model))
+  end
+  def test_galenic_form
+    galenic_form = flexmock('galenic_form', :language => 'language')
+    flexmock(@model, :galenic_forms => [galenic_form])
+    flexmock(@session, :language => 'language')
+    assert_equal('language', @list.galenic_form(@model, @session))
+  end
+  def test_registration_date
+    flexmock(@model, :inactive_date => 'inactive_date')
+    flexmock(@session, :format_date => 'format_date')
+    assert_kind_of(HtmlGrid::Span, @list.registration_date(@model, @session))
+  end
+  def test_resultview_switch
+    assert_kind_of(HtmlGrid::Link, @list.resultview_switch(@model, @session))
+  end
 end
 		end
 	end
 end
+
+class TestAtcHeader < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def test_init
+    lookandfeel = flexmock('lookandfeel', 
+                           :lookup     => 'lookup',
+                           :attributes => {},
+                           :language   => 'language',
+                           :disabled?  => nil,
+                           :_event_url => '_event_url'
+                          )
+    atc_class   = flexmock('atc_class', 
+                           :has_ddd?    => nil,
+                           :parent_code => nil
+                          )
+    state       = flexmock('state')
+    @app        = flexmock('app', :atc_class => atc_class)
+    @session    = flexmock('session', 
+                           :allowed?    => nil,
+                           :lookandfeel => lookandfeel,
+                           :app         => @app,
+                           :state       => state,
+                           :cookie_set_or_get => 'atc',
+                           :persistent_user_input => 'code'
+                          )
+    @model      = flexmock('model', 
+                           :overflow?     => true,
+                           :code          => 'code',
+                           :description   => 'description',
+                           :package_count => 'package_count',
+                           :has_ddd?      => nil,
+                           :parent_code   => nil
+                          )
+    @header     = ODDB::View::Drugs::AtcHeader.new(@model, @session)
+    assert_equal({}, @header.init)
+  end
+end
+
