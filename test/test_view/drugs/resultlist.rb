@@ -11,6 +11,7 @@ require 'view/drugs/resultlist'
 require 'view/drugs/rootresultlist'
 require 'util/language'
 require 'htmlgrid/span'
+require 'view/pager'
 
 module ODDB
   module View
@@ -259,6 +260,12 @@ class TestResultList < Test::Unit::TestCase
   def test_resultview_switch
     assert_kind_of(HtmlGrid::Link, @list.resultview_switch(@model, @session))
   end
+  def test_compose_list
+    flexmock(@list, :full_colspan => 2)
+    model = [@model]
+    flexmock(model, :overflow? => true)
+    assert_equal([@model], @list.compose_list(model))
+  end
 end
 		end
 	end
@@ -266,7 +273,7 @@ end
 
 class TestAtcHeader < Test::Unit::TestCase
   include FlexMock::TestCase
-  def test_init
+  def setup
     lookandfeel = flexmock('lookandfeel', 
                            :lookup     => 'lookup',
                            :attributes => {},
@@ -278,14 +285,13 @@ class TestAtcHeader < Test::Unit::TestCase
                            :has_ddd?    => nil,
                            :parent_code => nil
                           )
-    state       = flexmock('state')
+    @state      = flexmock('state')
     @app        = flexmock('app', :atc_class => atc_class)
     @session    = flexmock('session', 
                            :allowed?    => nil,
                            :lookandfeel => lookandfeel,
                            :app         => @app,
-                           :state       => state,
-                           :cookie_set_or_get => 'atc',
+                           :state       => @state,
                            :persistent_user_input => 'code'
                           )
     @model      = flexmock('model', 
@@ -296,8 +302,23 @@ class TestAtcHeader < Test::Unit::TestCase
                            :has_ddd?      => nil,
                            :parent_code   => nil
                           )
+  end
+  def test_init
+    flexmock(@session, :cookie_set_or_get => 'atc')
     @header     = ODDB::View::Drugs::AtcHeader.new(@model, @session)
     assert_equal({}, @header.init)
+  end
+  def test_pages
+    flexmock(@session, 
+             :cookie_set_or_get => 'pages',
+             :event             => 'event'
+            )
+    flexmock(@state, 
+             :pages => ['page', 'page'],
+             :page  => 'page'
+            )
+    @header     = ODDB::View::Drugs::AtcHeader.new(@model, @session)
+    assert_kind_of(ODDB::View::Pager, @header.pages(@model, @session))
   end
 end
 
