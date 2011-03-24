@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::CenteredSearchForm -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
+# ODDB::View::CenteredSearchForm -- oddb -- 24.03.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::CenteredSearchForm -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/form'
 require 'htmlgrid/input'
@@ -197,9 +198,6 @@ module ODDB
 				link.set_attribute('class', 'list')
 				link
 			end
-			def export_divider(model, session)
-				divider(model, session)
-			end
 			def fipi_offer(model, session)
 				link = HtmlGrid::Link.new(:fipi_offer, model, session, self)
 				link.href = @lookandfeel._event_url(:fipi_offer_input)
@@ -229,13 +227,6 @@ module ODDB
 			end
 			def limitation_size(mode, session)
 				@session.app.limitation_text_count.to_s << '&nbsp;'
-			end
-			def plugin(model, session)
-				link = HtmlGrid::Link.new(:plugin, model, session, self)
-				link.href = @lookandfeel._event_url(:plugin)
-				link.label = true
-				link.set_attribute('class', 'list')
-				link
 			end
 			def narcotics_size(model, session)
 				@session.app.narcotics_count.to_s << '&nbsp;'
