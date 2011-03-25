@@ -1,13 +1,16 @@
 #!/usr/bin/env ruby
+# TestMedwin -- oddb -- 25.03.2011 -- mhatakeyama@ywesee.com
 #	TestMedwin -- oddb -- 06.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
+$: << File.expand_path("../..", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'plugin/medwin'
 require 'util/html_parser'
 require 'flexmock'
+require 'ext/meddata/src/meddata'
 
 module ODDB
 	class MedwinPlugin < Plugin
@@ -23,6 +26,7 @@ module ODDB
 end
 
 class TestMedwinCompanyPlugin < Test::Unit::TestCase
+  include FlexMock::TestCase
 	class StubApp
 		attr_reader :pointers, :values, :companies
 		def initialize
@@ -119,8 +123,71 @@ class TestMedwinCompanyPlugin < Test::Unit::TestCase
 		assert_equal('comp1', result)
 		assert_equal(['ecosol ag'], @plugin.updated)
 	end
+  def test_update_company_data__phone_fax
+    company = flexmock('company', 
+                       :data_origin => 'data_origin',
+                       :name        => 'name',
+                       :pointer     => 'pointer'
+                      )
+    data    = {:address => 'address', :phone => 'phone', :fax => 'fax'}
+    assert_equal([{}], @plugin.update_company_data(company, data))
+  end
+  def stderr_null
+    require 'tempfile'
+    $stderr = Tempfile.open('stderr')
+    yield
+    $stderr.close
+    $stderr = STDERR
+  end
+  def replace_constant(constant, temp)
+    stderr_null do
+      keep = eval constant
+      eval "#{constant} = temp"
+      yield
+      eval "#{constant} = keep"
+    end
+  end
+  def test_update_company
+    meddata = flexmock('meddata', 
+                       :search => ['result'],
+                       :detail => {'key' => 'detail'}
+                      )
+    server  = flexmock('server') do |s|
+      s.should_receive(:session).and_yield(meddata)
+    end
+    company = flexmock('company', 
+                       :ean13       => 'ean13',
+                       :name        => 'name',
+                       :data_origin => 'data_origin',
+                       :pointer     => 'pointer'
+                      )
+    replace_constant('ODDB::MedwinCompanyPlugin::MEDDATA_SERVER', server) do  
+      assert_equal(nil, @plugin.update_company(company))
+    end
+  end
+  def test_update_company__result_empty
+    meddata = flexmock('meddata', 
+                       :search => [],
+                       :detail => {'key' => 'detail'}
+                      )
+    server  = flexmock('server') do |s|
+      s.should_receive(:session).and_yield(meddata)
+    end
+    company = flexmock('company', 
+                       :ean13       => 'ean13',
+                       :name        => 'name',
+                       :data_origin => 'data_origin',
+                       :pointer     => 'pointer'
+                      )
+    replace_constant('ODDB::MedwinCompanyPlugin::MEDDATA_SERVER', server) do  
+      assert_equal(nil, @plugin.update_company(company))
+    end
+  end
+
 end
+
 class TestMedwinPackagePlugin < Test::Unit::TestCase
+  include FlexMock::TestCase
 	class StubSequence
 		attr_accessor :packages
 		def active?
@@ -202,4 +269,165 @@ class TestMedwinPackagePlugin < Test::Unit::TestCase
 		assert_equal('normal_pack', result)
 		assert_equal(['normal'], @plugin.updated)
 	end
+  def test_report
+    errors = {'key' => 'value'}
+    @plugin.instance_eval('@errors = errors')
+    expected = "\nChecked 0 Packages\nTried 0 Medwin Entries\nUpdated  0 Packages\nProbable Errors in ODDB: 0\nProbable Errors in Medwin: 0\n\nProbable Errors in ODDB: 0\nIn den folgenden Fällen ist die Swissmedic-Packungsnummer von ODDB.org ziemlich\nsicher falsch, weil Sie tiefer ist als diejenige von Medwin.ch\n\n\nProbable Errors in Medwin: 0\nIn den folgenden Fällen ist die Swissmedic-Packungsnummer von Medwin.ch\nziemlich sicher falsch, weil Sie tiefer ist als diejenige von ODDB.org.\n\n\nErrors:\nkey => value"
+    assert_equal(expected, @plugin.report)
+  end
+  def test_update_package
+    package = flexmock('package', 
+                       :barcode    => 'barcode',
+                       :pharmacode => 'pharmacode',
+                       :pointer    => 'pointer'
+                      )
+    meddata = flexmock('meddata', 
+                       :search => ['result'],
+                       :detail => {'key' => 'detail'}
+                      )
+    assert_equal([{"key"=>"detail"}], @plugin.update_package(meddata, package))
+  end
+  def test_update_package__result_empty
+    package = flexmock('package', 
+                       :barcode    => 'barcode',
+                       :pharmacode => 'pharmacode',
+                       :pointer    => 'pointer',
+                       :"registration.package_count" => 1
+                      )
+    meddata = flexmock('meddata', 
+                       :search => [],
+                       :detail => {'key' => 'detail'}
+                      )
+    assert_equal(nil, @plugin.update_package(meddata, package))
+  end
+  def test_update_package__ean13__medwin_error
+    package = flexmock('package', 
+                       :barcode    => '1234567890124',
+                       :pharmacode => 'pharmacode',
+                       :pointer    => 'pointer'
+                      )
+    meddata = flexmock('meddata', 
+                       :search => ['result'],
+                       :detail => {:ean13 => '1234567890123'}
+                      )
+    assert_equal([{:medwin_ikscd=>"012"}], @plugin.update_package(meddata, package))
+  end
+  def test_update_package__ean13_oddb_error
+    package = flexmock('package', 
+                       :barcode    => '1234567890122',
+                       :pharmacode => 'pharmacode',
+                       :pointer    => 'pointer'
+                      )
+    meddata = flexmock('meddata', 
+                       :search => ['result'],
+                       :detail => {:ean13 => '1234567890123'}
+                      )
+    assert_equal([{:medwin_ikscd=>"012"}], @plugin.update_package(meddata, package))
+  end
+  def stderr_null
+    require 'tempfile'
+    $stderr = Tempfile.open('stderr')
+    yield
+    $stderr.close
+    $stderr = STDERR
+  end
+  def replace_constant(constant, temp)
+    stderr_null do
+      keep = eval constant
+      eval "#{constant} = temp"
+      yield
+      eval "#{constant} = keep"
+    end
+  end
+  def test_update
+    package = flexmock('package', 
+                       :out_of_trade => nil,
+                       :barcode      => 'barcode',
+                       :pharmacode   => 'pharmacode',
+                       :pointer      => 'pointer'
+                      )
+    flexmock(@app) do |a|
+      a.should_receive(:each_package).and_yield(package)
+    end
+    meddata = flexmock('meddata', 
+                       :search => ['result'],
+                       :detail => {'key' => 'detail'}
+                      )
+    server  = flexmock('server') do |s|
+      s.should_receive(:session).and_yield(meddata)
+    end
+    replace_constant('ODDB::MedwinPackagePlugin::MEDDATA_SERVER', server) do
+      assert_equal(nil, @plugin.update)
+    end
+  end
+  def test_update_package_trade_status
+    package = flexmock('package', 
+                       :barcode      => 'barcode',
+                       :out_of_trade => nil
+                      )
+    meddata = flexmock('meddata', :search => ['result'])
+    flexmock(@plugin, :sleep => 'sleep')
+    assert_equal('sleep', @plugin.update_package_trade_status(meddata, package))
+  end
+  def test_update_package_trade_status__result_empty
+    package = flexmock('package', 
+                       :barcode      => 'barcode',
+                       :pharmacode   => 'pharmacode',
+                       :out_of_trade => nil,
+                       :pointer      => 'pointer',
+                       :"registration.package_count" => 1
+                      )
+    meddata = flexmock('meddata', :search => [])
+    server  = flexmock('server') do |s|
+      s.should_receive(:session).and_yield(meddata)
+    end
+    flexmock(@plugin, :sleep => 'sleep')
+    replace_constant('ODDB::MedwinPackagePlugin::MEDDATA_SERVER', server) do
+      expected = [{:out_of_trade => true}]
+      assert_equal(expected, @plugin.update_package_trade_status(meddata, package))
+    end
+  end
+  def test_update_package_trade_status__out_of_trade
+    package = flexmock('package', 
+                       :barcode      => 'barcode',
+                       :out_of_trade => true,
+                       :pointer      => 'pointer'
+                      )
+    meddata = flexmock('meddata', :search => ['result'])
+    flexmock(@plugin, :sleep => 'sleep')
+    expected = [{:out_of_trade => false, :refdata_override => false}]
+    assert_equal(expected, @plugin.update_package_trade_status(meddata, package))
+  end
+  def test_update_package_trade_status__error
+    package = flexmock('package', 
+                       :barcode      => 'barcode',
+                       :pharmacode   => 'pharmacode',
+                       :out_of_trade => nil,
+                       :pointer      => 'pointer',
+                       :"registration.package_count" => 1
+                      )
+    meddata = flexmock('meddata', :search => [])
+    server  = flexmock('server') do |s|
+      s.should_receive(:session).and_raise(ODDB::MedData::OverflowError)
+    end
+    flexmock(@plugin, :sleep => 'sleep')
+    replace_constant('ODDB::MedwinPackagePlugin::MEDDATA_SERVER', server) do
+      expected = [{:out_of_trade => true}]
+      assert_equal(expected, @plugin.update_package_trade_status(meddata, package))
+    end
+  end
+  def test_update_trade_status
+    package = flexmock('package', 
+                       :barcode      => 'barcode',
+                       :out_of_trade => nil
+                      )
+    meddata = flexmock('meddata', :search => ['result'])
+    server  = flexmock('server') do |s|
+      s.should_receive(:session).and_yield(meddata)
+    end
+    flexmock(@plugin, :sleep => 'sleep')
+    replace_constant('ODDB::MedwinPackagePlugin::MEDDATA_SERVER', server) do
+      assert_equal(nil, @plugin.update_trade_status)
+    end
+  end
 end

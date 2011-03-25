@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::Interactions::TestBasket -- oddb.org -- 24.03.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Interactions::TestBasket -- oddb.org -- 25.03.2011 -- mhatakeyama@ywesee.com
 
 #$: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -142,6 +142,57 @@ class TestBasketSubstrates < Test::Unit::TestCase
     assert_equal('language (language)', @list.substance(@model))
   end
 end # TestBasketSubstrates
+
+class TestBasketForm < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf      = flexmock('lookandfeel', 
+                         :lookup     => 'lookup',
+                         :attributes => {},
+                         :_event_url => '_event_url',
+                         :event_url  => 'event_url',
+                         :disabled?  => nil,
+                         :base_url   => 'base_url'
+                        )
+    @session  = flexmock('session', 
+                         :lookandfeel => @lnf,
+                         :zone        => 'zone',
+                         :event       => 'event',
+                         :language    => 'language',
+                         :interaction_basket_count => 'interaction_basket_count'
+                        )
+    substance = flexmock('substance', 
+                         :language => 'language',
+                         :effective_form      => 'effective_form',
+                         :has_effective_form? => nil
+                        )
+    link      = flexmock('link', 
+                         :href   => 'href',
+                         :empty? => nil,
+                         :text   => 'text',
+                         :info   => 'info'
+                        )
+    item      = flexmock('item', :links => [link])
+    cyp450s   = flexmock('cyp450s', 
+                         :empty? => nil,
+                         :keys   => ['key, '],
+                         :sort   => {'key', item}
+                        )
+    inducer   = flexmock('inducer')
+    inhibitor = flexmock('inhibitor')
+    @model    = flexmock('model', 
+                         :substance  => substance,
+                         :cyp450s    => cyp450s,
+                         :inducers   => [inducer],
+                         :inhibitors => [inhibitor],
+                         :observed   => 'observed'
+                        )
+    @form     = BasketForm.new([@model], @session)
+  end
+  def test_interaction_basket_count
+    assert_equal('lookup', @form.interaction_basket_count(@model, @session))
+  end
+end
 
 end # Interactions
 end # View

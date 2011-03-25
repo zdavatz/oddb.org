@@ -223,6 +223,7 @@ Pharmacode hatte)
           ## obviously something went wrong, and we have received too many
           #  results.. since we're only interested in results of size 1, we
           #  can safely ignore this.
+          'do nothing'
         end
       end
 			if(results.empty? && pack.registration.package_count == 1)
