@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Admin::TestRoot -- oddb -- 02.03.2011 -- mhatakeyama@ywesee.com
+# State::Admin::TestRoot -- oddb -- 25.03.2011 -- mhatakeyama@ywesee.com
 # State::Admin::TestRoot -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -11,6 +11,7 @@ require 'state/drugs/init'
 require 'state/global'
 require 'util/persistence'
 require 'state/admin/login'
+require 'flexmock'
 
 module ODDB
 	module State

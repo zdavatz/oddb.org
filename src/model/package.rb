@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# Package -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
+# ODDB::Package -- oddb -- 28.03.2011 -- mhatakeyama@ywesee.com
+# ODDB::Package -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
 require 'util/money'
@@ -49,7 +50,7 @@ module ODDB
       :expired?, :export_flag, :fachinfo_active?, :generic_type,
       :inactive_date, :pdf_fachinfos, :registration_date, :revision_date,
       :patent, :patent_protected?, :vaccine, :parallel_import, :minifi,
-      :source, :index_therapeuticus, :ith_swissmedic, :has_fachinfo?, :production_science
+      :source, :index_therapeuticus, :ith_swissmedic, :has_fachinfo?, :production_science, :renewal_flag
     sequence_data :atc_class, :basename, :company, :composition_text, :ddds,
       :fachinfo, :galenic_forms, :galenic_group, :has_patinfo?, :longevity,
       :iksnr, :indication, :name, :name_base, :patinfo, :pdf_patinfo,

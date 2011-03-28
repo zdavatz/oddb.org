@@ -180,8 +180,8 @@ module ODDB
 															 '12345_03.12345654.pdf' => 1,
 				}	
 			}
-			assert_equal(2, @plugin.recent_items(today - 1).size)
-			assert_equal([item3, item1], @plugin.recent_items(today - 1))
+			assert_equal(1, @plugin.recent_items(today - 1).size)
+			assert_equal([item3], @plugin.recent_items(today - 1))
 		end
 		def test_group_by_company
 			old_invoice = FlexMock.new
