@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# TestCompany -- oddb -- 28.03.2011 -- mhatakeyama@ywesee.com
 # TestCompany -- oddb -- 28.02.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -120,8 +121,23 @@ class TestCompany < Test::Unit::TestCase
     assert_equal(date, @company.invoice_date_patinfo)
     @company.invoice_date_patinfo = date >> 1
     assert_equal(date >> 1, @company.invoice_date_patinfo)
-    @company.invoice_date_patinfo = date << 1
-    assert_equal(date >> 11, @company.invoice_date_patinfo)
+
+    today_bak = @company.today
+    # Normal year
+    date = Date.new(2010,1,2)
+    @company.instance_eval('@@today = Date.new(2011,4,1)')
+    @company.invoice_date_patinfo = date
+    expected = Date.new(2012,1,2)
+    assert_equal(expected, @company.invoice_date_patinfo)
+
+    # Check leap year
+    date = Date.new(2008,2,29)
+    @company.instance_eval('@@today = Date.new(2011,4,1)')
+    @company.invoice_date_patinfo = date
+    expected = Date.new(2012,2,28)
+    assert_equal(expected, @company.invoice_date_patinfo)
+
+    @company.instance_eval('@@today = today_bak')
   end
   def test_invoice_date_fachinfo
     date = Date.today
@@ -129,8 +145,23 @@ class TestCompany < Test::Unit::TestCase
     assert_equal(date, @company.invoice_date_fachinfo)
     @company.invoice_date_fachinfo = date >> 1
     assert_equal(date >> 1, @company.invoice_date_fachinfo)
-    @company.invoice_date_fachinfo = date << 1
-    assert_equal(date >> 11, @company.invoice_date_fachinfo)
+
+    today_bak = @company.today
+    # Normal year
+    date = Date.new(2010,1,2)
+    @company.instance_eval('@@today = Date.new(2011,4,1)')
+    @company.invoice_date_fachinfo = date
+    expected = Date.new(2012,1,2)
+    assert_equal(expected, @company.invoice_date_fachinfo)
+
+    # Check leap year
+    date = Date.new(2008,2,29)
+    @company.instance_eval('@@today = Date.new(2011,4,1)')
+    @company.invoice_date_fachinfo = date
+    expected = Date.new(2012,2,28)
+    assert_equal(expected, @company.invoice_date_fachinfo)
+
+    @company.instance_eval('@@today = today_bak')
   end
   def test_invoice_date_index
     date = Date.today
@@ -138,8 +169,23 @@ class TestCompany < Test::Unit::TestCase
     assert_equal(date, @company.invoice_date_index)
     @company.invoice_date_index = date >> 1
     assert_equal(date >> 1, @company.invoice_date_index)
-    @company.invoice_date_index = date << 1
-    assert_equal(date >> 11, @company.invoice_date_index)
+
+    today_bak = @company.today
+    # Normal year
+    date = Date.new(2010,1,2)
+    @company.instance_eval('@@today = Date.new(2011,4,1)')
+    @company.invoice_date_index = date
+    expected = Date.new(2012,1,2)
+    assert_equal(expected, @company.invoice_date_index)
+
+    # Check leap year
+    date = Date.new(2008,2,29)
+    @company.instance_eval('@@today = Date.new(2011,4,1)')
+    @company.invoice_date_index = date
+    expected = Date.new(2012,2,28)
+    assert_equal(expected, @company.invoice_date_index)
+
+    @company.instance_eval('@@today = today_bak')
   end
   def test_invoice_date_lookandfeel
     date = Date.today
@@ -147,8 +193,23 @@ class TestCompany < Test::Unit::TestCase
     assert_equal(date, @company.invoice_date_lookandfeel)
     @company.invoice_date_lookandfeel = date >> 1
     assert_equal(date >> 1, @company.invoice_date_lookandfeel)
-    @company.invoice_date_lookandfeel = date << 1
-    assert_equal(date >> 11, @company.invoice_date_lookandfeel)
+
+    today_bak = @company.today
+    # Normal year
+    date = Date.new(2010,1,2)
+    @company.instance_eval('@@today = Date.new(2011,4,1)')
+    @company.invoice_date_lookandfeel = date
+    expected = Date.new(2012,1,2)
+    assert_equal(expected, @company.invoice_date_lookandfeel)
+
+    # Check leap year
+    date = Date.new(2008,2,29)
+    @company.instance_eval('@@today = Date.new(2011,4,1)')
+    @company.invoice_date_lookandfeel = date
+    expected = Date.new(2012,2,28)
+    assert_equal(expected, @company.invoice_date_lookandfeel)
+
+    @company.instance_eval('@@today = today_bak')
   end
   def test_listed
     assert_equal false, @company.listed?
@@ -291,5 +352,14 @@ class TestCompany < Test::Unit::TestCase
     @company.init nil
     pointer = ODDB::Persistence::Pointer.new [:company, @company.oid]
     assert_equal pointer, @company.pointer
+  end
+  def test__yearly_repetition
+    # This is a testcase for a private method
+    today_bak = @company.today
+    @company.instance_eval('@@today = Date.new(2011,2,3)')
+    date = Date.new(2008,2,29)
+    expected = Date.new(2011,2,28)
+    assert_equal(expected, @company.instance_eval('_yearly_repetition(date)'))
+    @company.instance_eval('@@today = today_bak')
   end
 end

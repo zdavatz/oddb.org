@@ -1,15 +1,14 @@
 #!/usr/bin/env ruby
-# TestUpdater -- oddb.org -- 22.02.2011 -- mhatakeyama@ywesee.com 
+# TestUpdater -- oddb.org -- 28.02.2011 -- mhatakeyama@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'util/updater'
 require 'stub/odba'
-require 'flexmock'
 require 'date'
-
 module ODDB
   module Doctors
     class DoctorPlugin; end
@@ -524,7 +523,7 @@ module ODDB
         ptr.should_receive(:+).and_return(pointer)
       end
       logs = flexmock('logs') do |logs|
-        logs.should_receive(:newest_date).and_return(Date.today << 1)
+        logs.should_receive(:newest_date).and_return(Date.new(2009,2,3))
         logs.should_receive(:pointer).and_return(pointer)
       end
       log = flexmock('log') do |log|
@@ -544,7 +543,7 @@ module ODDB
     end
     def test_update_swissmedicjournal
       setup_update_swissmedicjournal
-      expected = Date.today
+      expected = Date.new(2009,3,3)
       assert_equal(expected, @updater.update_swissmedicjournal)
     end
     def test_update_swissreg

@@ -132,7 +132,7 @@ module ODDB
 		def test_recent_items
 			ptr = FlexMock.new
 			ptr.should_receive(:resolve).and_return { true }
-			today = Date.today
+			today = Date.new(2011,3,29)
 			item1 = AbstractInvoiceItem.new
 			item1.item_pointer = ptr
 			item1.time = Time.local(today.year, today.month,
@@ -180,8 +180,8 @@ module ODDB
 															 '12345_03.12345654.pdf' => 1,
 				}	
 			}
-			assert_equal(1, @plugin.recent_items(today - 1).size)
-			assert_equal([item3], @plugin.recent_items(today - 1))
+			assert_equal(2, @plugin.recent_items(today - 1).size)
+			assert_equal([item3,item1], @plugin.recent_items(today - 1))
 		end
 		def test_group_by_company
 			old_invoice = FlexMock.new
