@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Admin::TestRoot -- oddb -- 28.03.2011 -- mhatakeyama@ywesee.com
+# State::Admin::TestRoot -- oddb -- 29.03.2011 -- mhatakeyama@ywesee.com
 # State::Admin::TestRoot -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -14,7 +14,6 @@ require 'state/admin/login'
 require 'state/admin/root'
 require 'model/commercial_form'
 require 'state/companies/fipi_overview'
-require 'state/admin/entity'
 require 'util/persistence'
 
 module ODDB
@@ -110,6 +109,13 @@ end
 	end
 end
 
+module ODDB
+  module State
+    module Admin
+      class Entity < ODDB::State::Admin::Global; end
+    end
+  end
+end
 class TestODDBStateAdminRoot < Test::Unit::TestCase
   include FlexMock::TestCase
   class StubState < ODDB::State::Admin::Global

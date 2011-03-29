@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::Registration -- oddb -- 10.03.2003 -- hwyss@ywesee.com 
+# ODDB::State::Admin::Registration -- odd -- 29.03.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Registration -- oddb -- 10.03.2003 -- hwyss@ywesee.com 
 
 require 'plugin/text_info'
 require 'state/admin/global'
@@ -191,7 +192,7 @@ class CompanyRegistration < State::Admin::Registration
 	def init
 		super
 		unless(allowed?)
-			@default_view = View::Admin::Registration
+			@default_view = ODDB::View::Admin::Registration
 		end
 	end
 	def allowed?
