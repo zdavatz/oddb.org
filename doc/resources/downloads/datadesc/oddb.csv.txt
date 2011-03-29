@@ -1,6 +1,6 @@
 Datenbeschrieb oddb.csv
 
-Version: 1.5.0
+Version: 1.5.1
 Geändert: 29.03.2011 (1.5.1) durch zdavatz@ywesee.com
 Geändert: 07.05.2010 (1.5.0) durch hwyss@ywesee.com
 Geändert: 28.04.2010 (1.4.0) durch hwyss@ywesee.com
