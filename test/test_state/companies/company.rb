@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# State::Companies::TestCompany -- oddb -- 02.03.2011 -- mhatakeyama@ywesee.com
+# State::Companies::TestCompany -- oddb -- 30.03.2011 -- mhatakeyama@ywesee.com
 # State::Companies::TestCompany -- oddb -- 02.10.2003 -- rwaltert@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -211,6 +211,135 @@ class TestUserCompanyState < Test::Unit::TestCase
 		assert_nil(@app.pointer)
 		assert_nil(@app.input) 
 	end
+end
+
+class TestCompany < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def test_snapback_event
+    @session = flexmock('session')
+    @model   = flexmock('model', :name => 'name')
+    @state   = ODDB::State::Companies::Company.new(@session, @model)
+    assert_equal('name', @state.snapback_event)
+  end
+end
+
+class TestUserCompany < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @app     = flexmock('app')
+    @session = flexmock('session', :app => @app)
+    @model   = flexmock('model')
+    @state   = ODDB::State::Companies::UserCompany.new(@session, @model)
+  end
+  def test_validate
+    # This is a testcase for a private method
+    assert_equal(nil, @state.instance_eval('validate("input")'))
+  end
+  def test_user_or_creator
+    # This is a testcase for a private method
+    flexmock(@model, 
+             :user  => nil,
+             :carry => nil
+            )
+    flexmock(@session, :user_input => nil)
+    assert_kind_of(ODDB::Persistence::CreateItem, @state.instance_eval('user_or_creator'))
+  end
+  def test_do_update
+    # This is a testcase for a private method
+    flexmock(@app, :update => 'update')
+    address = flexmock('address', 
+                       :address=  => nil,
+                       :location= => nil,
+                       :fon=      => nil,
+                       :fax=      => nil
+                      )
+    flexmock(@model, 
+             :address => address,
+             :pointer => 'pointer'
+            )
+    flexmock(@session, 
+             :user_input => 'user_input',
+             :user       => 'user'
+            )
+    keys = ['key']
+    assert_kind_of(ODDB::State::Companies::UserCompany, @state.instance_eval('do_update(keys)'))
+  end
+  def test_do_update__upload
+    # This is a testcase for a private method
+    flexmock(FileUtils, :mkdir_p => nil)
+    flexmock(File) do |f|
+      f.should_receive(:open).and_yield('')
+      f.should_receive(:exist?).and_return(true)
+      f.should_receive(:delete)
+    end
+    flexmock(@app, :update => 'update')
+    address = flexmock('address', 
+                       :address=  => nil,
+                       :location= => nil,
+                       :fon=      => nil,
+                       :fax=      => nil
+                      )
+    flexmock(@model, 
+             :address       => address,
+             :pointer       => 'pointer',
+             :logo_filename => 'logo_filename',
+             :oid           => 'oid'
+            )
+    input   = flexmock('input', 
+                       :original_filename => 'original_filename',
+                       :read              => nil
+                      )
+    flexmock(@session, 
+             :user_input => input,
+             :user       => 'user'
+            )
+    keys    = [:logo_file, :name]
+    assert_kind_of(ODDB::State::Companies::UserCompany, @state.instance_eval('do_update(keys)'))
+  end
+  def test_update
+    flexmock(@app, :update   => 'update')
+    address = flexmock('address', 
+                       :address=  => nil,
+                       :location= => nil,
+                       :fon=      => nil,
+                       :fax=      => nil
+                      )
+    pointer = flexmock('pointer', :to_yus_privilege => nil)
+    flexmock(@model, 
+             :address => address,
+             :pointer => pointer
+            )
+    flexmock(@session, 
+             :user_input => 'user_input',
+             :user       => 'user',
+             :allowed?   => true
+            )
+    keys = ['key']
+
+    assert_kind_of(ODDB::State::Companies::UserCompany, @state.update)
+  end
+  def test_update__return_company
+    flexmock(@app, :update   => 'update')
+    address = flexmock('address', 
+                       :address=  => nil,
+                       :location= => nil,
+                       :fon=      => nil,
+                       :fax=      => nil
+                      )
+    pointer = flexmock('pointer', :to_yus_privilege => nil)
+    flexmock(@model, 
+             :address => address,
+             :pointer => pointer
+            )
+    flexmock(@session, 
+             :user_input => 'user_input',
+             :user       => 'user',
+             :allowed?   => nil
+            )
+    keys = ['key']
+
+    assert_kind_of(ODDB::State::Companies::Company, @state.update)
+  end
 end
 		end
 	end
