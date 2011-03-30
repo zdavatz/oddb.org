@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Drugs::TestCsvResult -- oddb -- 17.03.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::TestCsvResult -- oddb.org -- 31.03.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -220,6 +220,10 @@ class TestCsvResult < Test::Unit::TestCase
   def test_sl_entry
     package = flexmock('package', :sl_entry => 'sl_entry')
     assert_equal('lookup', @result.sl_entry(package))
+  end
+  def test_renewal_flag
+    package = flexmock('package', :renewal_flag => 'renewal_flag')
+    assert_equal('lookup', @result.renewal_flag(package))
   end
   def test_size
     flexmock(@session, :language => 'language')
