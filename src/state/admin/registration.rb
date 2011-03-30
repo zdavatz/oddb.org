@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::Registration -- odd -- 29.03.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Registration -- oddb -- 29.03.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Registration -- oddb -- 10.03.2003 -- hwyss@ywesee.com 
 
 require 'plugin/text_info'
