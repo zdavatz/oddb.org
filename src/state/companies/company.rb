@@ -66,6 +66,7 @@ class UserCompany < Company
 					File.delete(old)
 				rescue StandardError
 					# ignore
+          'ignore'
 				end
 			end
 			filename = @model.oid.to_s << "_" << upload.original_filename

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# State::Companies::TestCompany -- oddb -- 30.03.2011 -- mhatakeyama@ywesee.com
-# State::Companies::TestCompany -- oddb -- 02.10.2003 -- rwaltert@ywesee.com
+# ODDB::State::Companies::TestCompany -- oddb.org -- 04.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Companies::TestCompany -- oddb.org -- 02.10.2003 -- rwaltert@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -296,6 +296,70 @@ class TestUserCompany < Test::Unit::TestCase
     keys    = [:logo_file, :name]
     assert_kind_of(ODDB::State::Companies::UserCompany, @state.instance_eval('do_update(keys)'))
   end
+  def test_do_update__error
+    # This is a testcase for a private method
+    flexmock(FileUtils, :mkdir_p => nil)
+    flexmock(File) do |f|
+      f.should_receive(:open).and_yield('')
+      f.should_receive(:exist?).and_return(true)
+      f.should_receive(:delete).and_raise(StandardError)
+    end
+    flexmock(@app, :update          => 'update')
+    address = flexmock('address', 
+                       :address=  => nil,
+                       :location= => nil,
+                       :fon=      => nil,
+                       :fax=      => nil
+                      )
+    flexmock(@model, 
+             :address       => address,
+             :pointer       => 'pointer',
+             :logo_filename => 'logo_filename',
+             :oid           => 'oid'
+            )
+    input   = flexmock('input', 
+                       :original_filename => 'original_filename',
+                       :read              => nil
+                      )
+    flexmock(@session, 
+             :user_input => input,
+             :user       => 'user'
+            )
+    keys    = [:logo_file, :name]
+    assert_kind_of(ODDB::State::Companies::UserCompany, @state.instance_eval('do_update(keys)'))
+  end
+  def test_do_update__input_name
+    # This is a testcase for a private method
+    flexmock(FileUtils, :mkdir_p => nil)
+    flexmock(File) do |f|
+      f.should_receive(:open).and_yield('')
+      f.should_receive(:exist?).and_return(true)
+      f.should_receive(:delete).and_raise(StandardError)
+    end
+    flexmock(@app, 
+             :update          => 'update',
+             :company_by_name => 'company'
+            )
+    address = flexmock('address', 
+                       :address=  => nil,
+                       :location= => nil,
+                       :fon=      => nil,
+                       :fax=      => nil
+                      )
+    flexmock(@model, 
+             :address       => address,
+             :pointer       => 'pointer',
+             :logo_filename => 'logo_filename',
+             :oid           => 'oid'
+            )
+    flexmock(@session, 
+             :user_input => 'name',
+             :user       => 'user'
+            )
+    keys    = [:name]
+    assert_kind_of(ODDB::State::Companies::UserCompany, @state.instance_eval('do_update(keys)'))
+  end
+
   def test_update
     flexmock(@app, :update   => 'update')
     address = flexmock('address', 
@@ -340,7 +404,30 @@ class TestUserCompany < Test::Unit::TestCase
 
     assert_kind_of(ODDB::State::Companies::Company, @state.update)
   end
+  def test_set_pass
+    flexmock(@app, :update   => 'update')
+    address = flexmock('address', 
+                       :address=  => nil,
+                       :location= => nil,
+                       :fon=      => nil,
+                       :fax=      => nil
+                      )
+    pointer = flexmock('pointer', :to_yus_privilege => nil)
+    flexmock(@model, 
+             :address => address,
+             :pointer => pointer
+            )
+    flexmock(@session, 
+             :user_input => {'name' => 'value'},
+             :user       => 'user',
+             :allowed?   => true
+            )
+    keys = ['key']
+
+    assert_equal(nil, @state.set_pass)
+  end
 end
+
 		end
 	end
 end

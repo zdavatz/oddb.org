@@ -1,12 +1,13 @@
 #!/usr/bin/env ruby
-# State::PayPal::Ipn -- ODDB -- 19.04.2005 -- hwyss@ywesee.com
+# ODDB::State::PayPal::Ipn -- oddb.org -- 04.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::PayPal::Ipn -- oddb.org -- 19.04.2005 -- hwyss@ywesee.com
 
 require 'plugin/ydim'
 
 module ODDB
   module Util
 module Ipn
-  RECIPIENTS = [ 'hwyss@ywesee.com', ]
+  RECIPIENTS = [ 'zdavatz@ywesee.com', 'mhatakeyama@ywesee.com', ]
   def Ipn.lookandfeel_stub
     session = Plugin::SessionStub.new($oddb)
     session.language = 'de'
