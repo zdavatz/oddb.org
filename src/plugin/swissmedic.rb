@@ -582,11 +582,13 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           :registration_date   => reg_date,
           :expiration_date     => expiration,
           :renewal_flag        => false,
+          :renewal_flag_swissmedic => false,
           :inactive_date       => nil,
           :export_flag         => nil,
         }
         if(expiration < opts[:date])
           args.store :renewal_flag, true
+          args.store :renewal_flag_swissmedic, true
         end
         case science
         when "Anthroposophika"

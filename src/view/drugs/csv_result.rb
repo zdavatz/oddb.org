@@ -58,6 +58,7 @@ class CsvResult < HtmlGrid::Component
       'routes_of_administration' => 0,
       'sl_entries'               => 0,
       'renewal_flag'             => 0,
+      'renewal_flag_swissmedic'  => 0,
     }
     @bsv_dossiers = {}
     @roas = {}
@@ -277,6 +278,14 @@ class CsvResult < HtmlGrid::Component
     end
 		boolean(renewal_flag)
   end
+  def renewal_flag_swissmedic(pack)
+    renewal_flag_swissmedic = pack.renewal_flag_swissmedic
+    if renewal_flag_swissmedic
+      @counts['renewal_flag_swissmedic'] += 1
+    end
+		boolean(renewal_flag_swissmedic)
+  end
+
   def size(model, session=@session)
     model.parts.collect { |part|
       parts = []

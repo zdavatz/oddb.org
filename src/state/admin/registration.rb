@@ -170,6 +170,7 @@ class Registration < State::Admin::Global
       :inactive_date, :generic_type, :registration_date,
       :revision_date, :market_date, :expiration_date,
       :complementary_type, :export_flag, :renewal_flag,
+      :renewal_flag_swissmedic,
       :parallel_import, :index_therapeuticus, :ignore_patent,
       :ith_swissmedic, :activate_fachinfo, :deactivate_fachinfo, :manual_inactive_date
     ]

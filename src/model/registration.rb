@@ -16,6 +16,7 @@ module ODDB
 			:revision_date, :indication, :expiration_date, :inactive_date,
       :manual_inactive_date, :deactivate_fachinfo, :activate_fachinfo,
 			:market_date, :fachinfo, :source, :ikscat, :renewal_flag, #:pdf_fachinfos,
+      :renewal_flag_swissmedic,
       :index_therapeuticus, :comarketing_with, :vaccine, :ignore_patent,
       :parallel_import, :minifi, :product_group, :production_science,
       :ith_swissmedic

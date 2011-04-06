@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::Package -- oddb -- 14.03.2003 -- hwyss@ywesee.com 
+# ODDB::State::Admin::Package -- oddb.org -- 06.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Package -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'
 require 'view/admin/package'
@@ -193,7 +194,7 @@ class CompanyPackage < State::Admin::Package
 	def init
 		super
 		unless(allowed?)
-			@default_view = View::Admin::Package
+			@default_view = ODDB::View::Admin::Package
 		end
 	end
 	def delete
