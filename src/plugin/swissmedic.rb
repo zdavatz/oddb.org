@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 07.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 require 'fileutils'
 require 'mechanize'
@@ -560,8 +561,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       end
     end
     def update_registration(row, opts = {})
-      opts = {:date => @@today, :create_only => false}.update(opts)
-      opts[:date] ||= @@today
+      first_day = Date.new(@@today.year, @@today.month, 1)
+      opts = {:date => first_day, :create_only => false}.update(opts)
+      opts[:date] ||= first_day
       group = cell(row, column(:production_science))
       if(group != 'Tierarzneimittel')
         iksnr = cell(row, column(:iksnr))
