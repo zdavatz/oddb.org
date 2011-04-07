@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# SwissmedicPluginTest -- oddb.org -- 08.03.2011 -- mhatakeyama@ywesee.com
-# SwissmedicPluginTest -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
+# ODDB::SwissmedicPluginTest -- oddb.org -- 07.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPluginTest -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -114,6 +114,7 @@ module ODDB
         :export_flag         => nil,
         :company             => 'company-pointer',
         :renewal_flag        => false,
+        :renewal_flag_swissmedic => false,
       }
       @app.should_receive(:update).with(ptr.creator, args, :swissmedic)\
         .times(1).and_return { assert true }
@@ -146,6 +147,7 @@ module ODDB
         :export_flag         => nil,
         :company             => 'company-pointer',
         :renewal_flag        => false,
+        :renewal_flag_swissmedic => false,
         :indication          => 'indication-pointer',
       }
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
@@ -186,6 +188,7 @@ module ODDB
         :complementary_type  => 'phytotherapy',
         :indication          => 'indication-pointer',
         :renewal_flag        => false,
+        :renewal_flag_swissmedic => false,
         :export_flag         => nil,
       }
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
@@ -220,6 +223,7 @@ module ODDB
         :complementary_type  => 'anthroposophy',
         :indication          => 'indication-pointer',
         :renewal_flag        => false,
+        :renewal_flag_swissmedic => false,
         :export_flag         => nil,
       }
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
@@ -254,6 +258,7 @@ module ODDB
         :complementary_type  => 'homeopathy',
         :indication          => 'indication-pointer',
         :renewal_flag        => false,
+        :renewal_flag_swissmedic => false,
         :export_flag         => nil,
       }
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
@@ -286,6 +291,7 @@ module ODDB
         :inactive_date       => nil,
         :company             => 'company-pointer',
         :renewal_flag        => true,
+        :renewal_flag_swissmedic => true,
         :export_flag         => nil,
         :indication          => 'indication-pointer',
       }
@@ -968,12 +974,6 @@ module ODDB
 + 57699: Pyrazinamide Labatec, comprimés
       EOS
     end
-
-=begin
-    def test_initialize_export_registrations
-      assert_equal('', @plugin.initialize_export_registrations)
-    end
-=end
     def test_deactivate
       flexmock(@plugin) do |plg|
         plg.should_receive(:pointer)

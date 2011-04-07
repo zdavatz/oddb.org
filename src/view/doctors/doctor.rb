@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Doctors::Doctor -- oddb -- 27.05.2003 -- usenguel@ywesee.com
+# ODDB::View::Doctors::Doctor -- oddb.org -- 07.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Doctors::Doctor -- oddb.org -- 27.05.2003 -- usenguel@ywesee.com
 
 require 'htmlgrid/composite'
 require 'htmlgrid/labeltext'
@@ -159,7 +160,7 @@ class DoctorComposite < HtmlGrid::Composite
 		addrs = model.addresses
 		if(addrs.empty?)
 			addrs = addrs.dup
-			addr = Address2.new
+			addr = ODDB::Address2.new
 			addr.pointer = model.pointer + [:address, 0]
 			addrs.push(addr)
 		end

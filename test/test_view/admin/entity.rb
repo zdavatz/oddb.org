@@ -8,10 +8,7 @@ require 'test/unit'
 require 'flexmock'
 require 'view/admin/entity'
 require 'htmlgrid/inputcheckbox'
-
-module ODDB
-  module View
-    module Admin
+require 'htmlgrid/pass'
 
 class TestYusPrivileges < Test::Unit::TestCase
   include FlexMock::TestCase
@@ -104,35 +101,52 @@ class TestYusGroups < Test::Unit::TestCase
   end
 end
 
-=begin
 class TestEntityForm < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
     @lnf      = flexmock('lookandfeel', 
                          :attributes => {},
-                         :lookup     => 'lookup'
+                         :lookup     => 'lookup',
+                         :base_url   => 'base_url'
                         )
     group     = flexmock('group', :name => 'name')
     user      = flexmock('user', :groups => [group])
     yus_model = flexmock('yus_model', :"pointer.to_yus_privilege" => 'privilege')
     @app      = flexmock('app', :yus_model => yus_model)
     @session  = flexmock('session', 
-                         :lookandfeel => @lnf,
-                         :error       => 'error',
+                         :lookandfeel  => @lnf,
+                         :error        => 'error',
                          :yus_get_preference => 'yus_get_preference',
-                         :user        => user,
-                         :event       => 'event',
-                         :app         => @app
+                         :user         => user,
+                         :event        => 'event',
+                         :app          => @app,
+                         :allowed?     => nil,
+                         :valid_values => ['value'],
+                         :warning?     => nil,
+                         :error?       => nil
                         )
     @model    = flexmock('model', :name => 'name')
     @form     = ODDB::View::Admin::EntityForm.new(@model, @session)
   end
   def test_init
-    assert_equal('', nil)
+    assert_equal(nil, @form.init)
+  end
+  def test_association
+    flexmock(@model, :association => 'association')
+    assert_kind_of(HtmlGrid::InputText, @form.association(@model))
+  end
+  def test_set_pass?
+    flexmock(@model, :is_a? => true)
+    assert_equal(true, @form.set_pass?)
+  end
+  def test_pass
+    flexmock(@model, :is_a? => true)
+    flexmock(@session, :allowed? => true)
+    assert_kind_of(HtmlGrid::Pass, @form.pass(@model, 'key'))
+  end
+  def test_set_pass
+    flexmock(@model, :is_a? => false)
+    flexmock(@session, :allowed? => true)
+    assert_kind_of(HtmlGrid::Button, @form.set_pass(@model))
   end
 end
-=end
-
-    end # Admin
-  end # View
-end # ODDB
