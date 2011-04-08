@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# View::Drugs::CsvResult -- oddb -- 30.03.2011 -- mhatakeyama@ywesee.com
-# View::Drugs::CsvResult -- oddb -- 28.04.2005 -- hwyss@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb -- 08.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb -- 28.04.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
 require 'csv'
@@ -57,7 +57,6 @@ class CsvResult < HtmlGrid::Component
       'registration_date'        => 0,
       'routes_of_administration' => 0,
       'sl_entries'               => 0,
-      'renewal_flag'             => 0,
       'renewal_flag_swissmedic'  => 0,
     }
     @bsv_dossiers = {}
@@ -271,13 +270,6 @@ class CsvResult < HtmlGrid::Component
     end
 		boolean(sl_entry)
 	end
-  def renewal_flag(pack)
-    renewal_flag = pack.renewal_flag
-    if renewal_flag
-      @counts['renewal_flag'] += 1
-    end
-		boolean(renewal_flag)
-  end
   def renewal_flag_swissmedic(pack)
     renewal_flag_swissmedic = pack.renewal_flag_swissmedic
     if renewal_flag_swissmedic
