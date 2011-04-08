@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::TestChapter -- oddb -- 02.10.2003 -- rwaltert@ywesee.com
+# ODDB::View::TestChapter -- oddb.org -- 08.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::TestChapter -- oddb.org -- 02.10.2003 -- rwaltert@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -37,19 +38,19 @@ module ODDB
 			end
 			def test_escaped_heading
 				chapter = Text::Chapter.new
-				chapter.heading = "Für Zwerge > 1.5 m"
+				chapter.heading = "F?r Zwerge > 1.5 m"
 				@view.value = chapter
-				expected = '<H3>Für Zwerge &gt; 1.5 m</H3>'
+				expected = '<H3>F?r Zwerge &gt; 1.5 m</H3>'
 				result = @view.to_html(CGI.new)
 				assert_equal(expected, result)
 			end
 			def test_escaped_subheading
 				chapter = Text::Chapter.new
 				section = chapter.next_section
-				section.subheading = "Für Zwerge > 1.5 m"
+				section.subheading = "F?r Zwerge > 1.5 m"
 				@view.value = chapter
 				expected = <<-EOS
-<P style="section_style"><SPAN style="font-style: italic">Für Zwerge &gt; 1.5 m</SPAN>&nbsp;</P>
+<P style="section_style"><SPAN style="font-style: italic">F?r Zwerge &gt; 1.5 m</SPAN>&nbsp;</P>
 				EOS
 				result = @view.to_html(CGI.new)
 				assert_equal(expected.strip, result)
@@ -76,5 +77,224 @@ module ODDB
 				assert_equal(expected.strip, result)
 			end
 		end
+
+    class TestChapter2 < Test::Unit::TestCase
+      include FlexMock::TestCase
+      def setup
+        @lnf     = flexmock('lookandfeel')
+        @session = flexmock('session', :lookandfeel => @lnf)
+        value    = flexmock('value', 
+                            :heading  => 'heading',
+                            :sections => ['section']
+                           )
+        @model   = flexmock('model', :name => value)
+        @chapter = ODDB::View::Chapter.new(:name, @model, @session)
+      end
+      def test_to_html
+        flexmock(@lnf, :section_style => 'section_style')
+        flexmock(@session, :user_input  => 'highlight')
+        context  = flexmock('context', 
+                           :h3 => 'h3',
+                           :p  => 'p'
+                           )
+        assert_equal('h3p', @chapter.to_html(context))
+      end
+      def test_table
+        context = flexmock('context') do |c|
+          c.should_receive(:table).and_yield
+          c.should_receive(:tr).and_yield
+          c.should_receive(:td).and_yield
+          c.should_receive(:span).and_return('span')
+          c.should_receive(:br).and_return('br')
+        end
+        format  = flexmock('format', 
+                           :italic?      => nil,
+                           :bold?        => nil,
+                           :superscript? => nil,
+                           :subscript?   => nil,
+                           :symbol?      => nil,
+                           :range        => 'range'
+                          )
+        cell    = flexmock('cell', 
+                           :col_span => 'col_span',
+                           :text     => 'text',
+                           :formats  => [format],
+                           :preformatted? => nil
+                          )
+        row     = [cell]
+        table   = flexmock('table', :rows => [row])
+        assert_equal('spanbr', @chapter.table(context, table))
+      end
+      def test_paragraphs
+        context   = flexmock('context', 
+                             :span => 'span',
+                             :br   => 'br'
+                            )
+        format    = flexmock('format',
+                             :italic?      => nil,
+                             :bold?        => nil,
+                             :superscript? => nil,
+                             :subscript?   => nil,
+                             :symbol?      => nil,
+                             :range        => 'range'
+                            )
+        paragraph = flexmock('paragraph', 
+                             :text    => 'text',
+                             :formats => [format],
+                             :preformatted? => nil
+                            )
+        assert_equal('spanbr', @chapter.paragraphs(context, [paragraph]))
+      end
+      def test_paragraphs__text_imagelink
+        context   = flexmock('context', 
+                             :span => 'span',
+                             :br   => 'br',
+                             :p    => 'p'
+                            )
+        format    = flexmock('format',
+                             :italic?      => nil,
+                             :bold?        => nil,
+                             :superscript? => nil,
+                             :subscript?   => nil,
+                             :symbol?      => nil,
+                             :range        => 'range'
+                            )
+        paragraph = flexmock('paragraph', 
+                             :text    => 'text',
+                             :formats => [format],
+                             :preformatted? => nil,
+                             :is_a?   => true
+                            )
+        assert_equal('p', @chapter.paragraphs(context, [paragraph]))
+      end
+      def test_paragraphs__text_table
+        context   = flexmock('context', 
+                             :span  => 'span',
+                             :br    => 'br',
+                             :table => 'table'
+                            )
+        format    = flexmock('format',
+                             :italic?      => nil,
+                             :bold?        => nil,
+                             :superscript? => nil,
+                             :subscript?   => nil,
+                             :symbol?      => nil,
+                             :range        => 'range'
+                            )
+        paragraph = flexmock('paragraph', 
+                             :text    => 'text',
+                             :formats => [format],
+                             :preformatted? => nil
+                            )
+        flexmock(paragraph) do |p|
+          p.should_receive(:is_a?).with(Text::ImageLink).and_return(false)
+          p.should_receive(:is_a?).with(Text::Table).and_return(true)
+        end
+        assert_equal('table', @chapter.paragraphs(context, [paragraph]))
+      end
+      def test_formats
+        format    = flexmock('format',
+                             :italic?      => nil,
+                             :bold?        => nil,
+                             :superscript? => nil,
+                             :subscript?   => nil,
+                             :symbol?      => nil,
+                             :range        => 'range'
+                            )
+        paragraph = flexmock('paragprah', 
+                             :text    => 'text',
+                             :formats => [format],
+                             :preformatted? => nil
+                            )
+        context = flexmock('context', 
+                           :span => 'span',
+                           :br   => 'br'
+                          )
+        assert_equal('spanbr', @chapter.formats(context, paragraph))
+      end
+      def test_formats__superscript
+        format    = flexmock('format',
+                             :italic?      => nil,
+                             :bold?        => nil,
+                             :superscript? => true,
+                             :subscript?   => nil,
+                             :symbol?      => nil,
+                             :range        => 'range'
+                            )
+        paragraph = flexmock('paragprah', 
+                             :text    => 'text',
+                             :formats => [format],
+                             :preformatted? => true
+                            )
+        context = flexmock('context', 
+                           :span => 'span',
+                           :br   => 'br',
+                           :sup  => 'sup',
+                           :pre  => 'pre'
+                          )
+        assert_equal('pre', @chapter.formats(context, paragraph))
+      end
+    end
+
+    class TestChapterEditor < Test::Unit::TestCase
+      include FlexMock::TestCase
+      def setup
+        @lnf      = flexmock('lookandfeel', 
+                             :section_style => 'section_style',
+                             :attributes    => {}
+                            )
+        @session  = flexmock('session', :lookandfeel => @lnf)
+        @model    = flexmock('model')
+        @textarea = ODDB::View::ChapterEditor.new('name', @model, @session)
+      end
+      def test_init
+        expected = {"name"=>"name", "dojoType"=>"dijit.Editor"}
+        assert_equal(expected, @textarea.init)
+      end
+      def test__to_html
+        value   = flexmock('value', :sections => ['section'])
+        context = flexmock('context', :p => 'p')
+        assert_equal('p', @textarea._to_html(context, value))
+      end
+    end
+
+    class TestEditChapterForm < Test::Unit::TestCase
+      include FlexMock::TestCase
+      def setup
+        @lnf     = flexmock('lookandfeel', 
+                            :lookup     => 'lookup',
+                            :attributes => {},
+                            :base_url   => 'base_url'
+                           )
+        @session = flexmock('session', 
+                            :lookandfeel => @lnf,
+                            :error       => 'error'
+                           )
+        @model   = flexmock('model',
+                            :name => 'name'
+                           )
+        @form    = ODDB::View::EditChapterForm.new('name', @model, @session)
+      end
+      def test_edit_chapter
+        assert_kind_of(ODDB::View::ChapterEditor, @form.edit_chapter(@model))
+      end
+      def test_hidden_fields
+        flexmock(@lnf, 
+                 :flavor   => 'flavor',
+                 :language => 'language'
+                )
+        flexmock(@session, 
+                 :state => 'state',
+                 :zone  => 'zone'
+                )
+        context  = flexmock('context', :hidden => 'hidden')
+        expected = "hiddenhiddenhiddenhiddenhiddenhiddenhidden"
+        assert_equal(expected, @form.hidden_fields(context))
+      end
+      def test_toolbar
+        flexmock(@lnf, :resource_global => 'resource_global')
+        assert_kind_of(HtmlGrid::Div, @form.toolbar(@model))
+      end
+    end
 	end
 end
