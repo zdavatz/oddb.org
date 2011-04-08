@@ -221,10 +221,6 @@ class TestCsvResult < Test::Unit::TestCase
     package = flexmock('package', :sl_entry => 'sl_entry')
     assert_equal('lookup', @result.sl_entry(package))
   end
-  def test_renewal_flag
-    package = flexmock('package', :renewal_flag => 'renewal_flag')
-    assert_equal('lookup', @result.renewal_flag(package))
-  end
   def test_size
     flexmock(@session, :language => 'language')
     commercial_form = flexmock('commercial_form', :language => 'language')
