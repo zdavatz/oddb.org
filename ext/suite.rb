@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# suite.rb -- oddb.org/ext -- 16.02.2011 -- mhatakeyama@ywesee.com 
+# suite.rb -- oddb.org/ext -- 11.04.2011 -- mhatakeyama@ywesee.com 
 
 current_dir = (File.expand_path(File.dirname(__FILE__)))
 
@@ -11,6 +11,7 @@ require "#{current_dir}/meddata/test/test_meddata.rb"
 require "#{current_dir}/meddata/test/test_ean_factory.rb"
 require "#{current_dir}/fiparse/test/test_patinfo_hpricot.rb"
 require "#{current_dir}/fiparse/test/test_fachinfo_hpricot.rb"
+require "#{current_dir}/fiparse/test/test_fachinfo_writer.rb"
 require "#{current_dir}/comarketing/test/test_pdf_parser.rb"
 require "#{current_dir}/chapterparse/test/test_writer.rb"
 require "#{current_dir}/chapterparse/test/test_parser.rb"

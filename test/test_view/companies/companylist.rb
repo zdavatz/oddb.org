@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# View::Companies::TestCompanyList -- oddb -- 02.03.2011 -- mhatakeyama@ywesee.com
-# View::Companies::TestCompanyList -- oddb -- 30.07.2003 -- hwyss@ywesee.com 
+# ODDB::View::Companies::TestCompanyList -- oddb.org -- 11.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Companies::TestCompanyList -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -78,6 +78,80 @@ class TestCompanyList < Test::Unit::TestCase
 		assert_equal(orig, list.model)
 	end
 end
+
+class TestEmptyResultForm < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def test_title_none_found
+    @lnf     = flexmock('lookandfeel', 
+                        :lookup     => 'lookup',
+                        :attributes => {},
+                        :_event_url => '_event_url',
+                        :disabled?  => nil,
+                        :base_url   => 'base_url'
+                       ) 
+    @session = flexmock('session', 
+                        :lookandfeel => @lnf,
+                        :zone        => 'zone',
+                        :persistent_user_input => 'persistent_user_input'
+                       )
+    @model   = flexmock('model')
+    @form    = ODDB::View::Companies::EmptyResultForm.new(@model, @session)
+    assert_equal('lookup', @form.title_none_found(@model, @session))
+  end
+end
+
+class TestRootEmptyResultForm < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', 
+                        :attributes => {},
+                        :lookup     => 'lookup',
+                        :_event_url => '_event_url',
+                        :disabled?  => nil,
+                        :base_url   => 'base_url'
+                       )
+    @session = flexmock('session', 
+                        :lookandfeel => @lnf,
+                        :zone        => 'zone',
+                        :persistent_user_input => 'persistent_user_input'
+                       )
+    @model   = flexmock('model')
+    @form    = ODDB::View::Companies::RootEmptyResultForm.new(@model, @session)
+  end
+  def test_new_company
+    assert_kind_of(HtmlGrid::Button, @form.new_company(@model, @session))
+  end
+end
+
+=begin
+class TestRootCompaniesComposite < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', 
+                        :lookup     => 'lookup',
+                        :attributes => {},
+                        :event_url  => 'event_url',
+                        :_event_url => '_event_url',
+                        :disabled?  => nil
+                       )
+    state    = flexmock('state', 
+                        :intervals => ['interval'],
+                        :interval  => 'interval'
+                       )
+    @session = flexmock('session', 
+                        :lookandfeel => @lnf,
+                        :zone        => 'zone',
+                        :event       => 'event',
+                        :state       => state
+                       )
+    @model   = flexmock('model', :name => 'name')
+    @form    = ODDB::View::Companies::RootCompaniesComposite.new([@model], @session)
+  end
+  def test_company_list
+  end
+end
+=end
+
 		end
 	end
 end

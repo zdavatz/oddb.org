@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::TestSession -- oddb.org -- 08.04.2011-- mhatakeyama@ywesee.com
+# ODDB::TestSession -- oddb.org -- 11.04.2011-- mhatakeyama@ywesee.com
 # ODDB::TestSession -- oddb.org -- 22.10.2002 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -87,21 +87,10 @@ module ODDB
       flexmock(@app, :logout => 'logout')
       assert_kind_of(ODDB::State::Drugs::Init, @session.logout)
     end
-=begin
     def test_process
-      request = flexmock('request', 
-                         :unparsed_uri   => 'unparsed_uri',
-                         :request_method => 'request_method',
-                         :params         => [123],
-                         :cookies        => ['cookie']
-                        )
-      flexmock(@validator, 
-               :reset_errors => 'reset_errors',
-               :validate     => 'validate'
-              )
+      request = flexmock('request', :unparsed_uri   => 'unparsed_uri')
       assert_equal('', @session.process(request))
     end
-=end
     def test_add_to_interaction_basket
       expected = ["object"]
       assert_equal(expected, @session.add_to_interaction_basket('object'))
@@ -117,6 +106,7 @@ module ODDB
       assert_equal('get_currency_rate', @session.get_currency_rate('CHF'))
     end
     def test_interaction_basket
+      flexmock(@session, :user_input => '')
       assert_equal([], @session.interaction_basket)
     end
     def test_interaction_basket_count
