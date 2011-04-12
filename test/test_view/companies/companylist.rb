@@ -123,20 +123,52 @@ class TestRootEmptyResultForm < Test::Unit::TestCase
   end
 end
 
-=begin
-class TestRootCompaniesComposite < Test::Unit::TestCase
+class StubModel
+  def name
+    'name'
+  end
+end
+class TestUnknownCompaniesComposite < Test::Unit::TestCase
   include FlexMock::TestCase
-  def setup
+  def test_company_list
     @lnf     = flexmock('lookandfeel', 
                         :lookup     => 'lookup',
                         :attributes => {},
                         :event_url  => 'event_url',
                         :_event_url => '_event_url',
-                        :disabled?  => nil
+                        :disabled?  => nil,
+                        :base_url   => 'base_url'
+                       )
+    @session = flexmock('session', 
+                        :lookandfeel => @lnf,
+                        :zone        => 'zone',
+                        :event       => 'event'
+                       )
+    @model   = StubModel.new
+    flexmock(@model, 
+             :pointer       => 'pointer',
+             :ean13         => 'ena13',
+             :business_area => 'business_area'
+            )
+    @form    = ODDB::View::Companies::UnknownCompaniesComposite.new([@model], @session)
+    assert_kind_of(ODDB::View::Companies::UnknownCompanyList, @form.company_list([@model], @session))
+  end
+end
+
+class TestRootCompaniesComposite < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def test_listed_companies
+    @lnf     = flexmock('lookandfeel', 
+                        :lookup     => 'lookup',
+                        :attributes => {},
+                        :event_url  => 'event_url',
+                        :_event_url => '_event_url',
+                        :disabled?  => nil,
+                        :base_url   => 'base_url'
                        )
     state    = flexmock('state', 
-                        :intervals => ['interval'],
-                        :interval  => 'interval'
+                        :interval  => 'interval',
+                        :intervals => ['interval']
                        )
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
@@ -144,13 +176,17 @@ class TestRootCompaniesComposite < Test::Unit::TestCase
                         :event       => 'event',
                         :state       => state
                        )
-    @model   = flexmock('model', :name => 'name')
+    @model   = StubModel.new
+    flexmock(@model, 
+             :pointer       => 'pointer',
+             :ean13         => 'ena13',
+             :business_area => 'business_area'
+            )
+
     @form    = ODDB::View::Companies::RootCompaniesComposite.new([@model], @session)
-  end
-  def test_company_list
+    assert_kind_of(HtmlGrid::Link, @form.listed_companies(@model))
   end
 end
-=end
 
 		end
 	end

@@ -1,9 +1,11 @@
 #!/usr/bin/env ruby
-# TestPageHandler -- oddb.org -- 12.04.2006 -- sfrischknecht@ywesee.com
+# ODDB::AnalysisParse::TestPageHandler -- oddb.org -- 12.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::AnalysisParse::TestPageHandler -- oddb.org -- 12.04.2006 -- sfrischknecht@ywesee.com
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'pagehandler'
 require 'extended_list_parser'
 require 'fragmented_page_handler'
@@ -20,21 +22,21 @@ module ODDB
 			
 			def test_index_finder__1
 				src = <<-EOS
-Systematische Auflistung der Analysen inkl. Anhänge
-1. Kapitel: Chemie/Hämatologie/Immunologie............................. 41
+Systematische Auflistung der Analysen inkl. AnhÃ¤nge
+1. Kapitel: Chemie/HÃ¤matologie/Immunologie............................. 41
 				EOS
 				begin
 					result = @handler.next_pagehandler(src)
 					assert_kind_of(IndexFinder, result)
 					expected = {
-						41	=>	'Chemie/Hämatologie/Immunologie'
+						41	=>	'Chemie/HÃ¤matologie/Immunologie'
 					}
 					assert_equal(expected, result.index)
 				end
 			end
 			def test_index_finder__2
 				src = <<-EOS
-				Systematische Auflistung der Analysen inkl. Anhänge
+				Systematische Auflistung der Analysen inkl. AnhÃ¤nge
 				1. Kapitel: Chemie/H\uffffmatologie/Immunologie............................. 41
 				2. Kapitel: Genetik
 				2.1 Bemerkungen........................................................................ 75
@@ -51,23 +53,23 @@ Systematische Auflistung der Analysen inkl. Anhänge
 			end
 			def test_index_finder__3
 				src = <<-EOS
-				Inhaltsübersicht
+				InhaltsÃ¼bersicht
 				Vorbemerkungen
 				1. Rechtsgrundlagen ....................................................................... 5
-				1.1 Auszug aus dem Bundesgesetz vom 18. März 1994
-				über die Krankenversicherung (KVG) .................................. 5
-				1.2 Auszug aus der Verordnung über die
+				1.1 Auszug aus dem Bundesgesetz vom 18. MÃ¤rz 1994
+				Ã¼ber die Krankenversicherung (KVG) .................................. 5
+				1.2 Auszug aus der Verordnung Ã¼ber die
 				Krankenversicherung vom 27. Juni 1995 (KVV) ................ 13
 				1.3 Auszug aus der Krankenpflege-Leistungsverordnung
 				(KLV) vom 29. September 1995 ........................................ 20
-				2. Erläuterungen zu einzelnen Bestimmungen des KVG sowie
+				2. ErlÃ¤uterungen zu einzelnen Bestimmungen des KVG sowie
 				der KVV und der KLV................................................................ 24
 				EOS
 				begin
 					result = @handler.next_pagehandler(src)
 					assert_kind_of(IndexFinder, result)
 					expected = {
-						24	=>	'Erläuterungen zu einzelnen Bestimmungen des KVG sowie der KVV und der KLV',
+						24	=>	'ErlÃ¤uterungen zu einzelnen Bestimmungen des KVG sowie der KVV und der KLV',
 						5		=>	'Rechtsgrundlagen'
 					}
 					assert_equal(expected, result.index)
@@ -80,76 +82,76 @@ Systematische Auflistung der Analysen inkl. Anhänge
 				29. September 1995
 				Liste der von den Krankenversicherern im Rahmen der
 				obligatorischen Krankenpflegeversicherung als Pflichtleistung zu
-				vergütenden Analysen
+				vergÃ¼tenden Analysen
 				Fassung vom 1. Januar 2006
 				Die vorliegende Analysenliste ersetzt diejenige vom 1. Januar 2005
-				Herausgegeben vom Eidgenössischen Departement des Innern
+				Herausgegeben vom EidgenÃ¶ssischen Departement des Innern
 				Vertrieb:
-				Bundesamt für Bauten und Logistik BBL, Vertrieb Publikationen,
+				Bundesamt fÃ¼r Bauten und Logistik BBL, Vertrieb Publikationen,
 				3003 Bern, Fax 031 325 50 58
 				(Bestell-Nr. 316.935 d)
 				http://www.bbl.admin.ch/internet/produkte_und_dienstleistungen/online_shop/alle/index
 				.html?lang=de (Sucheingabe: Analysenliste)
-				Die Analysenliste ist auch auf der Webseite des Bundesamtes für Gesundheit unter
-				http://www.bag.admin.ch/kv/gesetze/d/index.htm veröffentlicht.
+				Die Analysenliste ist auch auf der Webseite des Bundesamtes fÃ¼r Gesundheit unter
+				http://www.bag.admin.ch/kv/gesetze/d/index.htm verÃ¶ffentlicht.
 
 				3
-				Inhaltsübersicht
+				InhaltsÃ¼bersicht
 				Vorbemerkungen
 				1. Rechtsgrundlagen ....................................................................... 5
-				1.1 Auszug aus dem Bundesgesetz vom 18. März 1994
-				über die Krankenversicherung (KVG) .................................. 5
-				1.2 Auszug aus der Verordnung über die
+				1.1 Auszug aus dem Bundesgesetz vom 18. M?rz 1994
+				?ber die Krankenversicherung (KVG) .................................. 5
+				1.2 Auszug aus der Verordnung ?ber die
 				Krankenversicherung vom 27. Juni 1995 (KVV) ................ 13
 				1.3 Auszug aus der Krankenpflege-Leistungsverordnung
 				(KLV) vom 29. September 1995 ........................................ 20
-				2. Erläuterungen zu einzelnen Bestimmungen des KVG sowie
+				2. Erl?uterungen zu einzelnen Bestimmungen des KVG sowie
 				der KVV und der KLV................................................................ 24
-				2.1 Allgemeine Zulassungsbedingungen für Laboratorien....... 24
-				2.2 Spezielle Zulassungsbedingungen für die
+				2.1 Allgemeine Zulassungsbedingungen f?r Laboratorien....... 24
+				2.2 Spezielle Zulassungsbedingungen f?r die
 				verschiedenen Laboratoriumstypen................................... 25
 				2.2.1 Laboratorien, die nur Analysen der Grundversorgung
-				durchführen dürfen ................................ 25
+				durchf?hren d?rfen ................................ 25
 				2.2.2 Laboratorien, die ausser den Analysen der
-				Grundversorgung weitere Analysen durchführen
-				dürfen........................................................................ 25
+				Grundversorgung weitere Analysen durchf?hren
+				d?rfen........................................................................ 25
 				2.2.3 Laboratorien, die Analysen des Kapitels Genetik
-				der Analysenliste durchführen dürfen ....................... 26
+				der Analysenliste durchf?hren d?rfen ....................... 26
 				2.2.4 Laboratorien, die Analysen des Kapitels Mikrobiologie
-				der Analysenliste durchführen dürfen.......... 27
+				der Analysenliste durchf?hren d?rfen.......... 27
 				2.2.5 Speziallaboratorien ................................................... 27
-				2.3 Anhänge zur Analysenliste ................................................ 28
-				2.4 Qualitätssicherung als Voraussetzung der Vergütung....... 29
-				2.5 Durchführung von Laboranalysen im Ausland ................... 29
+				2.3 Anh?nge zur Analysenliste ................................................ 28
+				2.4 Qualit?tssicherung als Voraussetzung der Verg?tung....... 29
+				2.5 Durchf?hrung von Laboranalysen im Ausland ................... 29
 				2.6 Vermittlung von Laboranalysen ......................................... 31
 				2.7 Rechnungstellung .............................................................. 31
-				2.8 Überprüfung der Verordnung von Laboranalysen.............. 31
+				2.8 ?berpr?fung der Verordnung von Laboranalysen.............. 31
 				2.9 Auskunfterteilung ............................................................... 32
-				3. Medizinprodukte für die In-vitro-Diagnostik (IVD) ..................... 33
+				3. Medizinprodukte f?r die In-vitro-Diagnostik (IVD) ..................... 33
 				EOS
 				begin
 					result = @handler.next_pagehandler(src)
 					assert_kind_of(IndexFinder, result)
 					expected = {
-						33	=>	'Medizinprodukte für die In-vitro-Diagnostik (IVD)',
+						33	=>	'Medizinprodukte f?r die In-vitro-Diagnostik (IVD)',
 						5		=>	'Rechtsgrundlagen',
-						24	=>	'Erläuterungen zu einzelnen Bestimmungen des KVG sowie der KVV und der KLV'
+						24	=>	'Erl?uterungen zu einzelnen Bestimmungen des KVG sowie der KVV und der KLV'
 					}
 					assert_equal(expected, result.index)
 				end
 			end
 			def test_index_finder__5
 				src = <<-EOS
-				Inhaltsübersicht
+				Inhalts?bersicht
 				Vorbemerkungen
 				1. Rechtsgrundlagen ....................................................................... 5
-				1.1 Auszug aus dem Bundesgesetz vom 18. März 1994
-				über die Krankenversicherung (KVG) .................................. 5
-				1.2 Auszug aus der Verordnung über die
+				1.1 Auszug aus dem Bundesgesetz vom 18. M?rz 1994
+				?ber die Krankenversicherung (KVG) .................................. 5
+				1.2 Auszug aus der Verordnung ?ber die
 				Krankenversicherung vom 27. Juni 1995 (KVV) ................ 13
 				1.3 Auszug aus der Krankenpflege-Leistungsverordnung
 				(KLV) vom 29. September 1995 ........................................ 20
-				2. Erläuterungen zu einzelnen Bestimmungen des KVG sowie
+				2. Erl?uterungen zu einzelnen Bestimmungen des KVG sowie
 				der KVV und der KLV................................................................ 24
 				EOS
 				begin
@@ -157,108 +159,108 @@ Systematische Auflistung der Analysen inkl. Anhänge
 					assert_kind_of(IndexFinder, result)
 					expected = {
 						5		=>	'Rechtsgrundlagen',
-						24	=>	'Erläuterungen zu einzelnen Bestimmungen des KVG sowie der KVV und der KLV'
+						24	=>	'Erl?uterungen zu einzelnen Bestimmungen des KVG sowie der KVV und der KLV'
 					}
 					assert_equal(expected, result.index)
 				end
 			end
 			def test_index_finder__6
 				src = <<-EOS 
-				Inhaltsübersicht
-				Vorbemerkungen
-				1. Rechtsgrundlagen ....................................................................... 5
-				1.1 Auszug aus dem Bundesgesetz vom 18. März 1994
-				über die Krankenversicherung (KVG) .................................. 5
-				1.2 Auszug aus der Verordnung über die
-				Krankenversicherung vom 27. Juni 1995 (KVV) ................ 13
-				1.3 Auszug aus der Krankenpflege-Leistungsverordnung
-				(KLV) vom 29. September 1995 ........................................ 20
-				2. Erläuterungen zu einzelnen Bestimmungen des KVG sowie
-				der KVV und der KLV................................................................ 24
-				2.1 Allgemeine Zulassungsbedingungen für Laboratorien....... 24
-				2.2 Spezielle Zulassungsbedingungen für die
-				verschiedenen Laboratoriumstypen................................... 25
-				2.2.1 Laboratorien, die nur Analysen der Grundversorgung
-				durchführen dürfen ................................ 25
-				2.2.2 Laboratorien, die ausser den Analysen der
-				Grundversorgung weitere Analysen durchführen
-				dürfen........................................................................ 25
-				2.2.3 Laboratorien, die Analysen des Kapitels Genetik
-				der Analysenliste durchführen dürfen ....................... 26
-				2.2.4 Laboratorien, die Analysen des Kapitels Mikrobiologie
-				der Analysenliste durchführen dürfen.......... 27
-				2.2.5 Speziallaboratorien ................................................... 27
-				2.3 Anhänge zur Analysenliste ................................................ 28
-				2.4 Qualitätssicherung als Voraussetzung der Vergütung....... 29
-				2.5 Durchführung von Laboranalysen im Ausland ................... 29
-				2.6 Vermittlung von Laboranalysen ......................................... 31
-				2.7 Rechnungstellung .............................................................. 31
-				2.8 Überprüfung der Verordnung von Laboranalysen.............. 31
-				2.9 Auskunfterteilung ............................................................... 32
-				3. Medizinprodukte für die In-vitro-Diagnostik (IVD) ..................... 33
-				4. Anträge auf Änderungen der Eidgenössischen Analysenliste
-				(AL) ........................................................................................... 33
-				5. Tarif ........................................................................................... 35
-				6. Systematik der Analysenlistenpositionen.................................. 37
-				7. Abkürzungen ............................................................................. 37
-				8. Bemerkungen zur vorliegenden Ausgabe ................................. 39
-				4
-				Systematische Auflistung der Analysen inkl. Anhänge
-				1. Kapitel: Chemie/Hämatologie/Immunologie............................. 41
-				2. Kapitel: Genetik
-				2.1 Bemerkungen........................................................................ 75
-				2.2 Liste der Analysen ................................................................ 76
-				2.2.1 Chromosomenanalysen.............................................. 76
-				2.2.2 Molekulargenetische Analysen ................................... 78
-				3. Kapitel: Mikrobiologie
-				3.1 Virologie ................................................................................ 85
-				3.2 Bakteriologie/Mykologie ........................................................ 96
-				3.2.1 Bemerkungen ............................................................. 96
-				3.2.2 Liste der Analysen ...................................................... 96
-				3.3 Parasitologie ...................................................................... 105
-				4. Kapitel: Übrige
-				4.1 Allgemeine Positionen ....................................................... 109
-				4.2 Anonyme Positionen.......................................................... 111
-				4.3 Fixe Analysenblöcke.......................................................... 120
-				4.4 Liste seltener Autoantikörper ............................................. 121
-				5. Kapitel: Anhänge zur Analysenliste ....................................... 123
-				5.1 Anhang A
-				Im Rahmen der Grundversorgung durchgeführte Analysen
-				5.1.1 Allgemeines .............................................................. 123
-				5.1.2 Ärztliches Praxislaboratorium
-				5.1.2.1 Definition "Analysen im Rahmen der
-				Grundversorgung" bezogen auf das ärztliche
-				Praxislaboratorium........................................... 124
-				5.1.2.2 Definition "Ärztliches Praxislaboratorium"........ 124
-				5.1.2.3 Definition "Präsenzdiagnostik"......................... 125
-				5.1.3 Analysen der Grundversorgung im engern Sinn....... 127
-				5.1.4 Erweiterte Liste für Fachärzte oder Fachärztinnen... 132
-				5.2 Anhang B
-				Von Chiropraktoren oder Chiropraktorinnen veranlasste
-				Analysen ............................................................................ 139
-				5.3 Anhang C
-				Von Hebammen veranlasste Analysen.............................. 141
-				Alphabetisches Verzeichnis der Analysen
-				(inkl. Synonyme) ........................................................................... 143
+        InhaltsÃ¼bersicht
+        Vorbemerkungen
+        1. Rechtsgrundlagen ....................................................................... 5
+        1.1 Auszug aus dem Bundesgesetz vom 18. MÃ¤rz 1994
+        Ã¼ber die Krankenversicherung (KVG) .................................. 5
+        1.2 Auszug aus der Verordnung Ã¼ber die
+        Krankenversicherung vom 27. Juni 1995 (KVV) ................ 13
+        1.3 Auszug aus der Krankenpflege-Leistungsverordnung
+        (KLV) vom 29. September 1995 ........................................ 20
+        2. ErlÃ¤uterungen zu einzelnen Bestimmungen des KVG sowie
+        der KVV und der KLV................................................................ 24
+        2.1 Allgemeine Zulassungsbedingungen fÃ¼r Laboratorien....... 24
+        2.2 Spezielle Zulassungsbedingungen fÃ¼r die
+        verschiedenen Laboratoriumstypen................................... 25
+        2.2.1 Laboratorien, die nur Analysen der Grundversorgung
+        durchfÃ¼hren dÃ¼rfen ................................ 25
+        2.2.2 Laboratorien, die ausser den Analysen der
+        Grundversorgung weitere Analysen durchfÃ¼hren
+        dÃ¼rfen........................................................................ 25
+        2.2.3 Laboratorien, die Analysen des Kapitels Genetik
+        der Analysenliste durchfÃ¼hren dÃ¼rfen ....................... 26
+        2.2.4 Laboratorien, die Analysen des Kapitels Mikrobiologie
+        der Analysenliste durchfÃ¼hren dÃ¼rfen.......... 27
+        2.2.5 Speziallaboratorien ................................................... 27
+        2.3 AnhÃ¤nge zur Analysenliste ................................................ 28
+        2.4 QualitÃ¤tssicherung als Voraussetzung der VergÃ¼tung....... 29
+        2.5 DurchfÃ¼hrung von Laboranalysen im Ausland ................... 29
+        2.6 Vermittlung von Laboranalysen ......................................... 31
+        2.7 Rechnungstellung .............................................................. 31
+        2.8 ÃœberprÃ¼fung der Verordnung von Laboranalysen.............. 31
+        2.9 Auskunfterteilung ............................................................... 32
+        3. Medizinprodukte fÃ¼r die In-vitro-Diagnostik (IVD) ..................... 33
+        4. AntrÃ¤ge auf Ã„nderungen der EidgenÃ¶ssischen Analysenliste
+        (AL) ........................................................................................... 33
+        5. Tarif ........................................................................................... 35
+        6. Systematik der Analysenlistenpositionen.................................. 37
+        7. AbkÃ¼rzungen ............................................................................. 37
+        8. Bemerkungen zur vorliegenden Ausgabe ................................. 39
+        4
+        Systematische Auflistung der Analysen inkl. AnhÃ¤nge
+        1. Kapitel: Chemie/HÃ¤matologie/Immunologie............................. 41
+        2. Kapitel: Genetik
+        2.1 Bemerkungen........................................................................ 75
+        2.2 Liste der Analysen ................................................................ 76
+        2.2.1 Chromosomenanalysen.............................................. 76
+        2.2.2 Molekulargenetische Analysen ................................... 78
+        3. Kapitel: Mikrobiologie
+        3.1 Virologie ................................................................................ 85
+        3.2 Bakteriologie/Mykologie ........................................................ 96
+        3.2.1 Bemerkungen ............................................................. 96
+        3.2.2 Liste der Analysen ...................................................... 96
+        3.3 Parasitologie ...................................................................... 105
+        4. Kapitel: Ãœbrige
+        4.1 Allgemeine Positionen ....................................................... 109
+        4.2 Anonyme Positionen.......................................................... 111
+        4.3 Fixe AnalysenblÃ¶cke.......................................................... 120
+        4.4 Liste seltener AutoantikÃ¶rper ............................................. 121
+        5. Kapitel: AnhÃ¤nge zur Analysenliste ....................................... 123
+        5.1 Anhang A
+        Im Rahmen der Grundversorgung durchgefÃ¼hrte Analysen
+        5.1.1 Allgemeines .............................................................. 123
+        5.1.2 Ã„rztliches Praxislaboratorium
+        5.1.2.1 Definition "Analysen im Rahmen der
+        Grundversorgung" bezogen auf das Ã¤rztliche
+        Praxislaboratorium........................................... 124
+        5.1.2.2 Definition "Ã„rztliches Praxislaboratorium"........ 124
+        5.1.2.3 Definition "PrÃ¤senzdiagnostik"......................... 125
+        5.1.3 Analysen der Grundversorgung im engern Sinn....... 127
+        5.1.4 Erweiterte Liste fÃ¼r FachÃ¤rzte oder FachÃ¤rztinnen... 132
+        5.2 Anhang B
+        Von Chiropraktoren oder Chiropraktorinnen veranlasste
+        Analysen ............................................................................ 139
+        5.3 Anhang C
+        Von Hebammen veranlasste Analysen.............................. 141
+        Alphabetisches Verzeichnis der Analysen
+        (inkl. Synonyme) ........................................................................... 143
 				EOS
 				begin
 					result = @handler.next_pagehandler(src)
 					assert_kind_of(IndexFinder, result)
 					expected = {
 						75	=>	'Genetik',
-						41	=>	'Chemie/Hämatologie/Immunologie',
+						41	=>	'Chemie/HÃ¤matologie/Immunologie',
 						5		=>	'Rechtsgrundlagen',
-						24	=>	'Erläuterungen zu einzelnen Bestimmungen des KVG sowie der KVV und der KLV',
-						33	=>	'Anträge auf Änderungen der Eidgenössischen Analysenliste (AL)',
+						24	=>	'ErlÃ¤uterungen zu einzelnen Bestimmungen des KVG sowie der KVV und der KLV',
+						33	=>	'AntrÃ¤ge auf Ã„nderungen der EidgenÃ¶ssischen Analysenliste (AL)',
 						35	=>	'Tarif',
-						37	=>	'Abkürzungen',
+						37	=>	'AbkÃ¼rzungen',
 						39	=>	'Bemerkungen zur vorliegenden Ausgabe',
 						85	=>	'Mikrobiologie',
 						109	=>	'Allgemeine Positionen',
 						111	=>	'Anonyme Positionen',
-						120	=>	'Fixe Analysenblöcke',
-						121	=>	'Liste seltener Autoantikörper',
-						123	=>	'Im Rahmen der Grundversorgung durchgeführte Analysen',
+						120	=>	'Fixe AnalysenblÃ¶cke',
+						121	=>	'Liste seltener AutoantikÃ¶rper',
+						123	=>	'Im Rahmen der Grundversorgung durchgefÃ¼hrte Analysen',
 						139	=>	'Von Chiropraktoren oder Chiropraktorinnen veranlasste Analysen',
 						141	=>	'Von Hebammen veranlasste Analysen'
 					}
@@ -285,7 +287,7 @@ Systematische Auflistung der Analysen inkl. Anhänge
 
 Teilliste 2
 
-Für diese Analysen gilt auch für das ärztliche Praxislaboratorium der
+F?r diese Analysen gilt auch f?r das ?rztliche Praxislaboratorium der
 Analysenlistentarif (Taxpunktwert und Taxpunktzahl).
 
 Rev. Pos. Nr.  A TP  Bezeichnung (Liste Grundversorgung, Teilliste 2)
@@ -300,9 +302,9 @@ Untersuchungen an Patientenproben"
 anderen Suchtstoffen: siehe 8535.04/05)
 			8129.00 3      30   Blutgase (pH, pCO, pO
 abgeleitete Werte)
-			8129.10 4      50  Oxymetrieblock (Oxyhämoglobin,
-Carboxyhämoglobin, Methämoglobin)
-N     8191.00         10   Spezielle Mikroskopie, Nativpräparat
+			8129.10 4      50  Oxymetrieblock (Oxyh?moglobin,
+Carboxyh?moglobin, Meth?moglobin)
+N     8191.00         10   Spezielle Mikroskopie, Nativpr?parat
 (Dunkelfeld, Polarisation, Phasenkontrast)
 																																																										129
 				EOS
@@ -310,35 +312,35 @@ N     8191.00         10   Spezielle Mikroskopie, Nativpräparat
 Rev. Pos. Nr.  A TP  Bezeichnung (Liste Grundversorgung, Teilliste 2)
 
 N     8560.10
-		6    Hämatologische Untersuchungen mit QBC-
+		6    H?matologische Untersuchungen mit QBC-
 Methode
-Limitation: nur für Hämoglobin und Hämatokrit.
-Gültig ab 1.1.2006 bis 31.12.2006.
+Limitation: nur f?r H?moglobin und H?matokrit.
+G?ltig ab 1.1.2006 bis 31.12.2006.
 			8572.00          9  Triglyceride
 			8574.11         16  Troponin (T oder I), Schnelltest, nicht
 kumulierbar mit 8384.00 Kreatin-Kinase
 (CK), total
 			8578.00          9  Urat
-C     8587.00       25   Verträglichkeitsprobe: Kreuzprobe nach
+C     8587.00       25   Vertr?glichkeitsprobe: Kreuzprobe nach
 Empfehlungen BSD SRK "Erythrozyten-
 serologische Untersuchungen an Patien-
 tenproben", pro Erythrozytenkonzentrat
-			9116.40    *  12   HIV-1+2 -Antikörper (Screening) Schnelltest,
+			9116.40    *  12   HIV-1+2 -Antik?rper (Screening) Schnelltest,
 ql
 S     9710.00          8  Blutentnahme, Kapillarblut oder
 Venenpunktion, nur anwendbar durch
-ärztliches Praxislaboratorium im Rahmen
-der Präsenzdiagnostik nach Artikel 54
+?rztliches Praxislaboratorium im Rahmen
+der Pr?senzdiagnostik nach Artikel 54
 Absatz 1 Buchstabe a KVV und Kapitel
 5.1.2 der Analysenliste
-	Limitation: g ültig ab 1.5.2004 bis 31.12.2005
+	Limitation: g ?ltig ab 1.5.2004 bis 31.12.2005
 ___________________________________________________________
 *Anonyme Position
-1  Nur für Spitäler
-2 Nur für autorisierte Medizinalpersonen in Substitutions- oder Entzugsbehandlungen
+1  Nur f?r Spit?ler
+2 Nur f?r autorisierte Medizinalpersonen in Substitutions- oder Entzugsbehandlungen
 ihrer eigenen Patienten
-3 Nur für Spitäler und Pneumologen
-4 Nur für Spitäler, Pneumologen und Hämatologen
+3 Nur f?r Spit?ler und Pneumologen
+4 Nur f?r Spit?ler, Pneumologen und H?matologen
 																																																										130
 				EOS
 				begin
@@ -355,7 +357,7 @@ ihrer eigenen Patienten
 					:taxpoints				=>		8,
 					:description			=>		'ABO/D-Antigen, Kontrolle nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben"',
 					:taxpoint_type		=>		:default,
-					:permissions			=>		[['Teilliste 2','Nur für Spitäler']],
+					:permissions			=>		[['Teilliste 2','Nur f?r Spit?ler']],
 					:list_title				=>		nil,
 					:analysis_revision	=>	'C',
 				},
@@ -386,7 +388,7 @@ ihrer eigenen Patienten
 					:taxpoints			=>		16,
 					:description		=>		'Amphetamine, ql (Urin) (im Screening mit anderen Suchtstoffen: siehe 8535.04/05)',
 					:taxpoint_type	=>		:default,
-					:permissions		=>		[['Teilliste 2','Nur für autorisierte Medizinalpersonen in Substitutions- oder Entzugsbehandlungen ihrer eigenen Patienten']],
+					:permissions		=>		[['Teilliste 2','Nur f?r autorisierte Medizinalpersonen in Substitutions- oder Entzugsbehandlungen ihrer eigenen Patienten']],
 					:list_title			=>		nil,
 				},
 				{    
@@ -396,17 +398,17 @@ ihrer eigenen Patienten
 					:taxpoints			=>		30,
 					:description		=>		'Blutgase (pH, pCO, pO abgeleitete Werte)',
 					:taxpoint_type	=>		:default,
-					:permissions		=>		[['Teilliste 2','Nur für Spitäler und Pneumologen']],
+					:permissions		=>		[['Teilliste 2','Nur f?r Spit?ler und Pneumologen']],
 					:list_title			=>		nil,
 				},
 				{
 					:code							=>		'8129.10',
 					:group						=>		'8129',
 					:position					=>		'10',
-					:description			=>		'Oxymetrieblock (Oxyhämoglobin, Carboxyhämoglobin, Methämoglobin)',
+					:description			=>		'Oxymetrieblock (Oxyh?moglobin, Carboxyh?moglobin, Meth?moglobin)',
 					:taxpoints				=>		50,
 					:list_title				=>		nil,
-					:permissions			=>		[['Teilliste 2', 'Nur für Spitäler, Pneumologen und Hämatologen']],
+					:permissions			=>		[['Teilliste 2', 'Nur f?r Spit?ler, Pneumologen und H?matologen']],
 					:taxpoint_type		=>		:default
 				},
 					{
@@ -414,7 +416,7 @@ ihrer eigenen Patienten
 					:group							=>	'8191',
 					:position						=>	'00',
 					:taxpoints					=>	10,
-					:description				=>	'Spezielle Mikroskopie, Nativpräparat (Dunkelfeld, Polarisation, Phasenkontrast)',
+					:description				=>	'Spezielle Mikroskopie, Nativpr?parat (Dunkelfeld, Polarisation, Phasenkontrast)',
 					:analysis_revision	=>	"N",
 					:list_title					=>	nil,
 					:permissions				=>	[['Teilliste 2', nil]],
@@ -426,7 +428,7 @@ ihrer eigenen Patienten
 					:group							=>	'8191',
 					:position						=>	'00',
 					:taxpoints					=>	10,
-					:description				=>	'Spezielle Mikroskopie, Nativpräparat (Dunkelfeld, Polarisation, Phasenkontrast)',
+					:description				=>	'Spezielle Mikroskopie, Nativpr?parat (Dunkelfeld, Polarisation, Phasenkontrast)',
 					:analysis_revision	=>	"N",
 					:list_title					=>	nil,
 					:permissions				=>	[['Teilliste 2',nil]],
@@ -445,8 +447,8 @@ ihrer eigenen Patienten
 					:group								=>	'8560',
 					:position							=>	'10',
 					:taxpoints						=>	6,
-					:description					=>	'H ämatologische Untersuchungen mit QBC-Methode',
-					:limitation						=>	'nur für Hämoglobin und Hämatokrit. Gültig ab 1.1.2006 bis 31.12.2006.',
+					:description					=>	'H ?matologische Untersuchungen mit QBC-Methode',
+					:limitation						=>	'nur f?r H?moglobin und H?matokrit. G?ltig ab 1.1.2006 bis 31.12.2006.',
 					:list_title						=>	nil,
 					:permissions					=>	[['Teilliste 2', nil]],
 					:taxpoint_type				=>	:default,
@@ -486,7 +488,7 @@ ihrer eigenen Patienten
 					:group								=>	'8587',
 					:position							=>	'00',
 					:taxpoints						=>	25,
-					:description					=>	'Vertr äglichkeitsprobe: Kreuzprobe nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben", pro Erythrozytenkonzentrat',
+					:description					=>	'Vertr ?glichkeitsprobe: Kreuzprobe nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben", pro Erythrozytenkonzentrat',
 					:list_title						=>	nil,
 					:permissions					=>	[['Teilliste 2', nil]],
 					:taxpoint_type				=>	:default,
@@ -499,7 +501,7 @@ ihrer eigenen Patienten
 					:taxpoints						=>	12,
 					:permissions					=>	[['Teilliste 2', nil]],
 					:list_title						=>	nil,
-					:description					=>	'HIV-1+2-Antikörper (Screening) Schnelltest, ql',
+					:description					=>	'HIV-1+2-Antik?rper (Screening) Schnelltest, ql',
 					:taxpoint_type				=>	:default,
 					:anonymous						=>	true,
 				},
@@ -509,8 +511,8 @@ ihrer eigenen Patienten
 					:group								=>	'9710',
 					:position							=>	'00',
 					:taxpoints						=>	8,
-					:description					=>	'Blutentnahme, Kapillarblut oder Venenpunktion, nur anwendbar durch ärztliches Praxislaboratorium im Rahmen der Präsenzdiagnostik nach Artikel 54 Absatz 1 Buchstabe a KVV und Kapitel 5.1.2 der Analysenliste',
-					:limitation						=>	'g ültig ab 1.5.2004 bis 31.12.2005',
+					:description					=>	'Blutentnahme, Kapillarblut oder Venenpunktion, nur anwendbar durch ?rztliches Praxislaboratorium im Rahmen der Pr?senzdiagnostik nach Artikel 54 Absatz 1 Buchstabe a KVV und Kapitel 5.1.2 der Analysenliste',
+					:limitation						=>	'g ?ltig ab 1.5.2004 bis 31.12.2005',
 					:taxpoint_type				=>	:default,
 					:permissions					=>	[['Teilliste 2', nil]],
 					:list_title						=>	nil,
@@ -522,8 +524,8 @@ ihrer eigenen Patienten
 					:group								=>	'8560',
 					:position							=>	'10',
 					:taxpoints						=>	6,
-					:description					=>	'H ämatologische Untersuchungen mit QBC-Methode',
-					:limitation						=>	'nur für Hämoglobin und Hämatokrit. Gültig ab 1.1.2006 bis 31.12.2006.',
+					:description					=>	'H ?matologische Untersuchungen mit QBC-Methode',
+					:limitation						=>	'nur f?r H?moglobin und H?matokrit. G?ltig ab 1.1.2006 bis 31.12.2006.',
 					:list_title						=>	nil,
 					:permissions					=>	[['Teilliste 2', nil]],
 					:taxpoint_type				=>	:default,
@@ -533,7 +535,7 @@ ihrer eigenen Patienten
 					:group								=>	'8587',
 					:position							=>	'00',
 					:taxpoints						=>	25,
-					:description					=>	'Vertr äglichkeitsprobe: Kreuzprobe nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben", pro Erythrozytenkonzentrat',
+					:description					=>	'Vertr ?glichkeitsprobe: Kreuzprobe nach Empfehlungen BSD SRK "Erythrozytenserologische Untersuchungen an Patientenproben", pro Erythrozytenkonzentrat',
 					:list_title						=>	nil,
 					:permissions					=>	[['Teilliste 2', nil]],
 					:taxpoint_type				=>	:default,
@@ -545,45 +547,45 @@ ihrer eigenen Patienten
 			end
 			def test_fr_index_finder__1
 				src = <<-EOS
-Liste systématique des analyses et annexes
+Liste systÃ©matique des analyses et annexes
 
-Chapitre 1: Chimie / Hématologie / Immunologie....................41
-Chapitre 2: Génétique
+Chapitre 1: Chimie / HÃ©matologie / Immunologie....................41
+Chapitre 2: GÃ©nÃ©tique
 2.1 Remarques.................75
 2.2 Liste des analyses..................76
 2.2.1 Analyses des chromosomes.....................76
 Chapitre 3: Microbiologie
 3.1 Virologie...................85
-3.2 Bactériologie / mycologie
+3.2 BactÃ©riologie / mycologie
 Chapitre 4: Autres
-4.1 Positions générales...............109
+4.1 Positions gÃ©nÃ©rales...............109
 				EOS
 				begin
 					result = @handler.next_pagehandler(src)
 				end
 				expected = {
-					41	=>	'Chimie/Hématologie/Immunologie',
-					75	=>	'Génétique',
+					41	=>	'Chimie/HÃ©matologie/Immunologie',
+					75	=>	'GÃ©nÃ©tique',
 					85	=>	'Microbiologie',
-					109	=>	'Positions générales',
+					109	=>	'Positions gÃ©nÃ©rales',
 				}
 				assert_equal(expected, result.index)
 			end
 			def test_fr_index_finder__2
 				src = <<-EOS
-5.1 Annexe A: Analyses effectuées dans le cadre des soins de base
-5.1.1 Considérations générales......................123
-5.1.2 Laboratoire de cabinet médical...........124
+5.1 Annexe A: Analyses effectu?es dans le cadre des soins de base
+5.1.1 Consid?rations g?n?rales......................123
+5.1.2 Laboratoire de cabinet m?dical...........124
 5.2 Annexe B: Analyses prescrites par des chiropraticiens.........139
 5.3 Annexe C: Analyses prescrites par des sages-femmes....141
 
-Liste alphabétique des analyses (avec synonymes)...143
+Liste alphab?tique des analyses (avec synonymes)...143
 				EOS
 				begin
 					result = @handler.next_pagehandler(src)
 				end
 				expected = {
-				123	=>	'Analyses effectuées dans le cadre des soins de base',
+				123	=>	'Analyses effectu?es dans le cadre des soins de base',
 				139	=>	'Analyses prescrites par des chiropraticiens',
 				141	=>	'Analyses prescrites par des sages-femmes',
 				}
@@ -592,105 +594,105 @@ Liste alphabétique des analyses (avec synonymes)...143
 			def test_fr_index_finder__3
 				src = <<-EOS
 
-Table des matières
+Table des matiÃ¨res
 
-				Remarques préliminaires
+                Remarques prÃ©liminaires
 
-				1. Bases légales..............................................................................5
-				     1.1  Extraits de la loi fédérale du 18 mars 1994 sur
-				   l~Rassurance-maladie (LAMal)...............................................5
-				     1.2  Extraits de l~Rordonnance du 27 juin 1995 sur
-				   l~Rassurance-maladie (OAMal).............................................13
-				     1.3  Extraits de l~Rordonnance du 29 septembre 1995
-				            sur les prestations dans l~Rassurance obligatoire des
-				            soins en cas de maladie (OPAS).......................................20
-				  2.  Commentaires des dispositions particulières de la LAMal,
-				     de l'OAMal et de l'OPAS...........................................................24
-				     2.1  Conditions générales d~Radmission pour les laboratoires....24
-				     2.2  Conditions d~Radmission particulières pour les différents
-				            types de laboratoires..........................................................25
-				   2.2.1 Laboratoires autorisés à effectuer uniquement
-				                     des analyses des soins de base..............................25
-				   2.2.2 Laboratoires autorisés à effectuer d~Rautres ana-
-				                     lyses en plus des analyses des soins de base........25
-				   2.2.3 Laboratoires autorisés à effectuer des analyses
-				                     du chapitre Génétique de la liste des analyses........26
-				   2.2.4 Laboratoires autorisés à effectuer des analyses
-				                     du chapitre Microbiologie de la liste des analyses...27
-				   2.2.5 Laboratoires spéciaux..............................................28
-				     2.3  Annexes à la liste des analyses.........................................28
-				     2.4  La garantie de la qualité, condition de remboursement.....29
-				     2.5  Analyses de laboratoire effectuées à l~Rétranger.................30
-				     2.6  Intermédiaires des analyses de laboratoire.......................31
-				 2.7  Facturation.........................................................................31
-				     2.8  Contrôle de la prescription des analyses...........................32
-				     2.9  Communication des renseignements.................................32
-				 3.  Dispositifs médicaux pour le diagnostic in vitro (DIV)...............33
-				4. Demandes de modifications de la liste des analyses................33
-				 5. Tarif ...........................................................................................35
-				6.                    Systématique des numéros de position dans la liste des
-				 analyses ....................................................................................37
-				 7. Abréviations..............................................................................37
-				8. Remarques concernant la présente édition..............................39
-				Chapitre 1:  Chimie / Hématologie / Immunologie..........................41
-				
-				Chapitre 2:  Génétique
-				 2.1                                       Remarques..........................................................................75
-				    2.2  Liste des analyses...............................................................76
-						          2.2.1  Analyses des chromosomes.....................................76
-											     2.2.2 Analyses moléculaires..............................................78
-													 
-													 Chapitre 3:  Microbiologie
-													  3.1                                       Virologie...............................................................................85
-														   3.2  Bactériologie / mycologie.....................................................97
-															      3.2.1 Remarques...............................................................97
-																		          3.2.2  Liste des analyses....................................................97
-																							 3.3 Parasitologie......................................................................106
-																							 
-																							 Chapitre 4:  Autres
-																							  4.1                                       Positions générales...........................................................109
-																								 4.2 Positions anonymes...........................................................111
-																								  4.3 Blocs d\'analyses fixes........................................................120
-																									   4.4  Liste des auto-anticorps rares...........................................121
-																										 
-																										 Chapitre 5:  Annexes à la liste des analyses................................123
-																										   5.1 Annexe A: Analyses effectuées dans le cadre des
-																											           soins de base
-																																      5.1.1 Considérations générales.......................................123
-																																			          5.1.2  Laboratoire de cabinet médical...............................124
-																																								               5.1.2.1 Définition des "analyses dans le cadre des
-																																															      soins de base" pour le laboratoire de
-																																																		     cabinet médical................................................124
-																																																				        5.1.2.2 Définition: "laboratoire de cabinet médical".....124
-																																																								       5.1.2.3 Définition: "diagnostic en présence du
-																																																											      patient".............................................................125
-																																																														          5.1.3  Analyses dans le cadre des soins de base
-																																																																			                    au sens strict...........................................................127
-																																																																													          5.1.4  Liste élargie pour les médecins spécialistes...........132
-5.2 Annexe B:  Analyses prescrites par des chiropraticiens....139
-5.3 Annexe C:  Analyses prescrites par des sages-femmes...141
-				
-				Liste alphabétique des analyses (avec synonymes).........143
-				
+                1. Bases lÃ©gales..............................................................................5
+                     1.1  Extraits de la loi fÃ©dÃ©rale du 18 mars 1994 sur
+                   l~Rassurance-maladie (LAMal)...............................................5
+                     1.2  Extraits de l~Rordonnance du 27 juin 1995 sur
+                   l~Rassurance-maladie (OAMal).............................................13
+                     1.3  Extraits de l~Rordonnance du 29 septembre 1995
+                            sur les prestations dans l~Rassurance obligatoire des
+                            soins en cas de maladie (OPAS).......................................20
+                  2.  Commentaires des dispositions particuliÃ¨res de la LAMal,
+                     de l'OAMal et de l'OPAS...........................................................24
+                     2.1  Conditions gÃ©nÃ©rales d~Radmission pour les laboratoires....24
+                     2.2  Conditions d~Radmission particuliÃ¨res pour les diffÃ©rents
+                            types de laboratoires..........................................................25
+                   2.2.1 Laboratoires autorisÃ©s Ã  effectuer uniquement
+                                     des analyses des soins de base..............................25
+                   2.2.2 Laboratoires autorisÃ©s Ã  effectuer d~Rautres ana-
+                                     lyses en plus des analyses des soins de base........25
+                   2.2.3 Laboratoires autorisÃ©s Ã  effectuer des analyses
+                                     du chapitre GÃ©nÃ©tique de la liste des analyses........26
+                   2.2.4 Laboratoires autorisÃ©s Ã  effectuer des analyses
+                                     du chapitre Microbiologie de la liste des analyses...27
+                   2.2.5 Laboratoires spÃ©ciaux..............................................28
+                     2.3  Annexes Ã  la liste des analyses.........................................28
+                     2.4  La garantie de la qualitÃ©, condition de remboursement.....29
+                     2.5  Analyses de laboratoire effectuÃ©es Ã  l~RÃ©tranger.................30
+                     2.6  IntermÃ©diaires des analyses de laboratoire.......................31
+                 2.7  Facturation.........................................................................31
+                     2.8  ContrÃ´le de la prescription des analyses...........................32
+                     2.9  Communication des renseignements.................................32
+                 3.  Dispositifs mÃ©dicaux pour le diagnostic in vitro (DIV)...............33
+                4. Demandes de modifications de la liste des analyses................33
+                 5. Tarif ...........................................................................................35
+                6.                    SystÃ©matique des numÃ©ros de position dans la liste des
+                 analyses ....................................................................................37
+                 7. AbrÃ©viations..............................................................................37
+                8. Remarques concernant la prÃ©sente Ã©dition..............................39
+                Chapitre 1:  Chimie / HÃ©matologie / Immunologie..........................41
+                
+                Chapitre 2:  GÃ©nÃ©tique
+                 2.1                                       Remarques..........................................................................75
+                    2.2  Liste des analyses...............................................................76
+                              2.2.1  Analyses des chromosomes.....................................76
+                                   2.2.2 Analyses molÃ©culaires..............................................78
+                                   
+                                   Chapitre 3:  Microbiologie
+                                    3.1                                       Virologie...............................................................................85
+                                       3.2  BactÃ©riologie / mycologie.....................................................97
+                                            3.2.1 Remarques...............................................................97
+                                                      3.2.2  Liste des analyses....................................................97
+                                                       3.3 Parasitologie......................................................................106
+                                                       
+                                                       Chapitre 4:  Autres
+                                                        4.1                                       Positions gÃ©nÃ©rales...........................................................109
+                                                         4.2 Positions anonymes...........................................................111
+                                                          4.3 Blocs d\'analyses fixes........................................................120
+                                                             4.4  Liste des auto-anticorps rares...........................................121
+                                                             
+                                                             Chapitre 5:  Annexes Ã  la liste des analyses................................123
+                                                               5.1 Annexe A: Analyses effectuÃ©es dans le cadre des
+                                                                         soins de base
+                                                                              5.1.1 ConsidÃ©rations gÃ©nÃ©rales.......................................123
+                                                                                        5.1.2  Laboratoire de cabinet mÃ©dical...............................124
+                                                                                                       5.1.2.1 DÃ©finition des "analyses dans le cadre des
+                                                                                                            soins de base" pour le laboratoire de
+                                                                                                                 cabinet mÃ©dical................................................124
+                                                                                                                        5.1.2.2 DÃ©finition: "laboratoire de cabinet mÃ©dical".....124
+                                                                                                                               5.1.2.3 DÃ©finition: "diagnostic en prÃ©sence du
+                                                                                                                                    patient".............................................................125
+                                                                                                                                              5.1.3  Analyses dans le cadre des soins de base
+                                                                                                                                                                  au sens strict...........................................................127
+                                                                                                                                                                            5.1.4  Liste Ã©largie pour les mÃ©decins spÃ©cialistes...........132
+        5.2 Annexe B:  Analyses prescrites par des chiropraticiens....139
+        5.3 Annexe C:  Analyses prescrites par des sages-femmes...141
+                
+                Liste alphabÃ©tique des analyses (avec synonymes).........143
+                
 				EOS
 				begin
 					result = @handler.next_pagehandler(src)
 				end
 				expected = {
-				5		=>	'Bases légales',
-				24	=>	'Commentaires des dispositions particulières de la LAMal, de l\'OAMal et de l\'OPAS',
+				5		=>	'Bases lÃ©gales',
+				24	=>	'Commentaires des dispositions particuliÃ¨res de la LAMal, de l\'OAMal et de l\'OPAS',
 				33	=>	'Demandes de modifications de la liste des analyses',
 				35	=>	'Tarif',
-				37	=>	'Abréviations',
-				39	=>	'Remarques concernant la présente édition',
-				41	=>	'Chimie/Hématologie/Immunologie',
-				75	=>	'Génétique',
+				37	=>	'AbrÃ©viations',
+				39	=>	'Remarques concernant la prÃ©sente Ã©dition',
+				41	=>	'Chimie/HÃ©matologie/Immunologie',
+				75	=>	'GÃ©nÃ©tique',
 				85	=>	'Microbiologie',
-				109	=>	'Positions générales',
+				109	=>	'Positions gÃ©nÃ©rales',
 				111	=>	'Positions anonymes',
 				120	=>	'Blocs d\'analyses fixes',
 				121	=>	'Liste des auto-anticorps rares',
-				123	=>	'Analyses effectuées dans le cadre des soins de base',
+				123	=>	'Analyses effectuÃ©es dans le cadre des soins de base',
 				139	=>	'Analyses prescrites par des chiropraticiens',
 				141	=>	'Analyses prescrites par des sages-femmes',
 				}
@@ -699,7 +701,7 @@ Table des matières
 			def test_fr_index_finder__4
 				src = <<-EOS
 Chapitre 4: Autres
-4.1																				Positions générales.................................109
+4.1                                       Positions gÃ©nÃ©rales.................................109
 4.2 Positions anonymes..........................................................111
  4.3 Blocs d~Ranalyses fixes..............................................................120
 				EOS
@@ -707,7 +709,8 @@ Chapitre 4: Autres
 					result = @handler.next_pagehandler(src) 
 				end
 				expected = {
-					109	=>	'Positions générales',
+					#109	=>	'Positions g?n?rales',
+					109	=>	'Positions gÃ©nÃ©rales',
 					111	=>	'Positions anonymes',
 					120	=>	'Blocs d\'analyses fixes',
 				}
@@ -732,63 +735,63 @@ EOS
 				Liste partielle 2
 
 				Pour les analyses suivantes, le tarif de la liste des analyses (valeur
-				du point et nombre de points) s'applique également aux laboratoires
-				de cabinets médicaux.
+				du point et nombre de points) s'applique ?galement aux laboratoires
+				de cabinets m?dicaux.
 
-				Rév.    No pos.     A   TP     Dénomination (liste des soins de base, liste partielle 2)
+				R?v.    No pos.     A   TP     D?nomination (liste des soins de base, liste partielle 2)
 
-				C     8000.00 1       8  ABO/D, contrôle selon les recommandations
-				STS CRS "Sérologie érythrocytaire chez le
+				C     8000.00 1       8  ABO/D, contr?le selon les recommandations
+				STS CRS "S?rologie ?rythrocytaire chez le
 				patient"
-				      8006.00          9 Alanine-aminotransférase (ALAT)
+				      8006.00          9 Alanine-aminotransf?rase (ALAT)
 				      8007.00          9 Albumine, chimique
 				      8008.50         12 Albumine urinaire, sq
 				      8012.00          9 Phosphatase alcaline
-				      8036.00 2      16   Amph étamines, ql (urine) (screening avec
+				      8036.00 2      16   Amph ?tamines, ql (urine) (screening avec
 				d'autres drogues: cf. 8535.04/05)
 				130
 				EOS
 				page_2 = <<-EOS
-Rév.    No pos.     A   TP     Dénomination (liste des soins de base, liste partielle 2)
+R?v.    No pos.     A   TP     D?nomination (liste des soins de base, liste partielle 2)
 
-				C     8560.00          9 Thrombocytes, numération, détermination
+				C     8560.00          9 Thrombocytes, num?ration, d?termination
 				manuelle, cumulable avec 8210.00
-				érythrocytes (numération), 8273.00
-				hématocrite, 8275.00 hémoglobine et
-				8406.00 leucocytes (numération), jusqu'à
-				un total de max. 15 points (hémogramme
+				?rythrocytes (num?ration), 8273.00
+				h?matocrite, 8275.00 h?moglobine et
+				8406.00 leucocytes (num?ration), jusqu'?
+				un total de max. 15 points (h?mogramme
 				II)
-				Limitation: pas avec la méthode QBC
-				N     8560.10          6    Examens hématologiques avec méthode
+				Limitation: pas avec la m?thode QBC
+				N     8560.10          6    Examens h?matologiques avec m?thode
 				QBC
-				Limitation: uniquement pour hémoglobine et
-				hématocrite. Valable du 1.1.2006 au 31.12.2006
-				      8572.00          9 Triglycérides
+				Limitation: uniquement pour h?moglobine et
+				h?matocrite. Valable du 1.1.2006 au 31.12.2006
+				      8572.00          9 Triglyc?rides
 				      8574.11         16   Troponine (T ou I), test rapide, non cumula-
-				ble avec 8384.00 Créatine-kinase (CK),
+				ble avec 8384.00 Cr?atine-kinase (CK),
 				total
 				      8578.00          9 Urate
-				C     8587.00       25   Test de compatibilité: compatibilité croisée,
-				par concentré érythrocitaire, selon les
-				recommandations STS CRS "Sérologie
-				érythrocytaire chez le patient"
-				      9116.40    *  12   HIV 1 + 2, dépistage des anticorps (par test
+				C     8587.00       25   Test de compatibilit?: compatibilit? crois?e,
+				par concentr? ?rythrocitaire, selon les
+				recommandations STS CRS "S?rologie
+				?rythrocytaire chez le patient"
+				      9116.40    *  12   HIV 1 + 2, d?pistage des anticorps (par test
 				rapide), ql
-				S     9710.00          8    Prélèvement de sang capillaire ou de sang
+				S     9710.00          8    Pr?l?vement de sang capillaire ou de sang
 				                                             veineux, uniquement pour les laboratoires
-				de cabinets médicaux dans le cadre d'un
-				diagnostic en présence du patient au sens
+				de cabinets m?dicaux dans le cadre d'un
+				diagnostic en pr?sence du patient au sens
 				de l'art. 54, al. 1, lt. a, OAMal et du chapitre
 				5.1.2 de la liste des analyses
 				  Limitation: valable du 1.5.2004 au 31.12.2005
 
 				______________________________________________    __________________
 				* position anonyme
-				1 seulement pour hôpitaux
-				2 seulement pour les personnes médicales autorisées, dans le cadre de traitements de
+				1 seulement pour h?pitaux
+				2 seulement pour les personnes m?dicales autoris?es, dans le cadre de traitements de
 				substitution ou de sevrage de leurs propres patients
-				3 seulement pour hôpitaux et pneumologues
-				4 seulement pour hôpitaux, pneumologues et hématologues
+				3 seulement pour h?pitaux et pneumologues
+				4 seulement pour h?pitaux, pneumologues et h?matologues
 				                                                                                                   131
 				
 				EOS
@@ -803,9 +806,9 @@ Rév.    No pos.     A   TP     Dénomination (liste des soins de base, liste part
 					:group								=>	'8000',
 					:position							=>	'00',
 					:taxpoints						=>	8,
-					:description					=>	'ABO/D, contrôle selon les recommandations STS CRS "Sérologie érythrocytaire chez le patient"',
+					:description					=>	'ABO/D, contr?le selon les recommandations STS CRS "S?rologie ?rythrocytaire chez le patient"',
 					:list_title						=>	nil,
-					:permissions					=>	[['Liste partielle 2', 'seulement pour hôpitaux']],
+					:permissions					=>	[['Liste partielle 2', 'seulement pour h?pitaux']],
 					:taxpoint_type				=>	:default,
 				},
 					{
@@ -813,7 +816,7 @@ Rév.    No pos.     A   TP     Dénomination (liste des soins de base, liste part
 					:group								=>	'8006',
 					:position							=>	'00',
 					:taxpoints						=>	9,
-					:description					=>	'Alanine-aminotransférase (ALAT)',
+					:description					=>	'Alanine-aminotransf?rase (ALAT)',
 					:list_title						=>	nil,
 					:permissions					=>	[['Liste partielle 2', nil]],
 					:taxpoint_type				=>	:default,
@@ -853,9 +856,9 @@ Rév.    No pos.     A   TP     Dénomination (liste des soins de base, liste part
 					:group								=>	'8036',
 					:position							=>	'00',
 					:taxpoints						=>	16,
-					:description					=>	'Amph étamines, ql (urine) (screening avec d\'autres drogues: cf. 8535.04/05)',
+					:description					=>	'Amph ?tamines, ql (urine) (screening avec d\'autres drogues: cf. 8535.04/05)',
 					:list_title						=>	nil,
-					:permissions					=>	[['Liste partielle 2', 'seulement pour les personnes médicales autorisées, dans le cadre de traitements de substitution ou de sevrage de leurs propres patients']],
+					:permissions					=>	[['Liste partielle 2', 'seulement pour les personnes m?dicales autoris?es, dans le cadre de traitements de substitution ou de sevrage de leurs propres patients']],
 					:taxpoint_type				=>	:default,
 				},
 				]
@@ -865,8 +868,8 @@ Rév.    No pos.     A   TP     Dénomination (liste des soins de base, liste part
 					:group								=>	'8560',
 					:position							=>	'00',
 					:taxpoints						=>	9,
-					:description					=>	'Thrombocytes, numération, détermination manuelle, cumulable avec 8210.00 érythrocytes (numération), 8273.00 hématocrite, 8275.00 hémoglobine et 8406.00 leucocytes (numération), jusqu\'à un total de max. 15 points (hémogramme II)',
-					:limitation						=>	'pas avec la méthode QBC',
+					:description					=>	'Thrombocytes, num?ration, d?termination manuelle, cumulable avec 8210.00 ?rythrocytes (num?ration), 8273.00 h?matocrite, 8275.00 h?moglobine et 8406.00 leucocytes (num?ration), jusqu\'? un total de max. 15 points (h?mogramme II)',
+					:limitation						=>	'pas avec la m?thode QBC',
 					:analysis_revision		=>	'C',
 					:list_title						=>	nil,
 					:permissions					=>	[['Liste partielle 2', nil]],
@@ -877,9 +880,9 @@ Rév.    No pos.     A   TP     Dénomination (liste des soins de base, liste part
 					:group								=>	'8560',
 					:position							=>	'10',
 					:taxpoints						=>	6,
-					:description					=>	'Examens hématologiques avec méthode QBC',
+					:description					=>	'Examens h?matologiques avec m?thode QBC',
 					:analysis_revision		=>	'N',
-					:limitation						=>	'uniquement pour hémoglobine et hématocrite. Valable du 1.1.2006 au 31.12.2006',
+					:limitation						=>	'uniquement pour h?moglobine et h?matocrite. Valable du 1.1.2006 au 31.12.2006',
 					:list_title						=>	nil,
 					:permissions					=>	[['Liste partielle 2', nil]],
 					:taxpoint_type				=>	:default,
@@ -889,7 +892,7 @@ Rév.    No pos.     A   TP     Dénomination (liste des soins de base, liste part
 					:group								=>	'8572',
 					:position							=>	'00',
 					:taxpoints						=>	9,
-					:description					=>	'Triglycérides',
+					:description					=>	'Triglyc?rides',
 					:list_title						=>	nil,
 					:permissions					=>	[['Liste partielle 2', nil]],
 					:taxpoint_type				=>	:default,
@@ -899,7 +902,7 @@ Rév.    No pos.     A   TP     Dénomination (liste des soins de base, liste part
 					:group								=>	'8574',
 					:position							=>	'11',
 					:taxpoints						=>	16,
-					:description					=>	'Troponine (T ou I), test rapide, non cumulable avec 8384.00 Créatine-kinase (CK), total',
+					:description					=>	'Troponine (T ou I), test rapide, non cumulable avec 8384.00 Cr?atine-kinase (CK), total',
 					:list_title						=>	nil,
 					:permissions					=>	[['Liste partielle 2', nil]],
 					:taxpoint_type				=>	:default,
@@ -919,10 +922,10 @@ Rév.    No pos.     A   TP     Dénomination (liste des soins de base, liste part
 					:group								=>	'8587',
 					:position							=>	'00',
 					:taxpoints						=>	25,
-					:description					=>	'Test de compatibilité: compatibilité croisée, par concentré érythrocitaire, selon les recommandations STS CRS "Sérologie érythrocytaire chez le patient"',
+					:description					=>	'Test de compatibilit?: compatibilit? crois?e, par concentr? ?rythrocitaire, selon les recommandations STS CRS "S?rologie ?rythrocytaire chez le patient"',
 					:analysis_revision		=>	'C',
 					:list_title						=>	nil,
-					:permissions					=>	[['Liste partielle 2', 'seulement pour hôpitaux']],
+					:permissions					=>	[['Liste partielle 2', 'seulement pour h?pitaux']],
 					:taxpoint_type				=>	:default,
 				},
 					{
@@ -930,7 +933,7 @@ Rév.    No pos.     A   TP     Dénomination (liste des soins de base, liste part
 					:group								=>	'9116',
 					:position							=>	'40',
 					:taxpoints						=>	12,
-					:description					=>	'HIV 1 + 2, dépistage des anticorps (par test rapide), ql',
+					:description					=>	'HIV 1 + 2, d?pistage des anticorps (par test rapide), ql',
 					:list_title						=>	nil,
 					:anonymous						=>	true,
 					:permissions					=>	[['Liste partielle 2', nil]],
@@ -941,7 +944,7 @@ Rév.    No pos.     A   TP     Dénomination (liste des soins de base, liste part
 					:group								=>	'9710',
 					:position							=>	'00',
 					:taxpoints						=>	8,
-					:description					=>	'Prélèvement de sang capillaire ou de sang veineux, uniquement pour les laboratoires de cabinets médicaux dans le cadre d\'un diagnostic en présence du patient au sens de l\'art. 54, al. 1, lt. a, OAMal et du chapitre 5.1.2 de la liste des analyses',
+					:description					=>	'Pr?l?vement de sang capillaire ou de sang veineux, uniquement pour les laboratoires de cabinets m?dicaux dans le cadre d\'un diagnostic en pr?sence du patient au sens de l\'art. 54, al. 1, lt. a, OAMal et du chapitre 5.1.2 de la liste des analyses',
 					:limitation						=>	'valable du 1.5.2004 au 31.12.2005',
 					:list_title						=>	nil,
 					:analysis_revision		=>	'S',
@@ -955,41 +958,41 @@ Rév.    No pos.     A   TP     Dénomination (liste des soins de base, liste part
 			def test_fr_parse_page__1
 				page_1 = <<-EOS
 Allergologie et immunologie clinique
-Rév. No pos. A TP Dénomination (liste allergologie et immunologie clin.)
+R?v. No pos. A TP D?nomination (liste allergologie et immunologie clin.)
 8317.00 35 Immunoglobuline IgE totale, qn
 
-Dermatologie et vénérologie
-8306.01 35 Test de gonflement hyposmotique (spermatozoïdes)
+Dermatologie et v?n?rologie
+8306.01 35 Test de gonflement hyposmotique (spermatozo?des)
 
-Endocrinologie - diabétologie
-8149.00 9 Calcium total (sang, plasma, sérum)
+Endocrinologie - diab?tologie
+8149.00 9 Calcium total (sang, plasma, s?rum)
 
-Gastro-entérologie
-9366.00 15 Uréase, test à l'~ (Helicobacter pylori)
+Gastro-ent?rologie
+9366.00 15 Ur?ase, test ? l'~ (Helicobacter pylori)
 
-Gynécologie et obstétrique
-8455.20 60 Pénétration, test de ~
+Gyn?cologie et obst?trique
+8455.20 60 P?n?tration, test de ~
 
-Hématologie
-C 8000.00 8 ABO/D, contrôle selon les recommandations STS CRS "Sérologie érythrocytaire chez le patient"
+H?matologie
+C 8000.00 8 ABO/D, contr?le selon les recommandations STS CRS "S?rologie ?rythrocytaire chez le patient"
 
-Médecine physique et réadaptation
-8388.00 20 Cristaux, recherche en lumière polarisée
+M?decine physique et r?adaptation
+8388.00 20 Cristaux, recherche en lumi?re polaris?e
 
-Médecine tropicale
-9356.30 25 Microscopie spéciale, examen par ~ (orange acridine, Ziehl-Neelsen, auramin-rhodamine, y compris sur fond noir, contraste de phase, etc., KOH, recherche de champignons)
+M?decine tropicale
+9356.30 25 Microscopie sp?ciale, examen par ~ (orange acridine, Ziehl-Neelsen, auramin-rhodamine, y compris sur fond noir, contraste de phase, etc., KOH, recherche de champignons)
 
-Pédiatrie
-8543.00 40 Théophylline (sang)
+P?diatrie
+8543.00 40 Th?ophylline (sang)
 
 Rhumatologie
-8388.01 20 Cristaux, recherche en lumière polarisée
+8388.01 20 Cristaux, recherche en lumi?re polaris?e
 				134
 				EOS
 				page_2 = <<-EOS
-8600.00 25 Cellules, numération et différentiation après enrichissement et coloration de liquides biologiques
+8600.00 25 Cellules, num?ration et diff?rentiation apr?s enrichissement et coloration de liquides biologiques
 
-8006.00 9 Alanine-aminotransférase (ALAT)
+8006.00 9 Alanine-aminotransf?rase (ALAT)
 				135
 				EOS
 				begin
@@ -1012,9 +1015,9 @@ Rhumatologie
 					:group								=>	'8306',
 					:position							=>	'01',
 					:taxpoints						=>	35,
-					:description					=>	'Test de gonflement hyposmotique (spermatozoïdes)',
+					:description					=>	'Test de gonflement hyposmotique (spermatozo?des)',
 					:list_title						=>	nil,
-					:permissions					=>	[['Dermatologie et vénérologie', nil]],
+					:permissions					=>	[['Dermatologie et v?n?rologie', nil]],
 					:taxpoint_type				=>	nil,
 				},
 					{
@@ -1022,9 +1025,9 @@ Rhumatologie
 					:group								=>	'8149',
 					:position							=>	'00',
 					:taxpoints						=>	9,
-					:description					=>	'Calcium total (sang, plasma, sérum)',
+					:description					=>	'Calcium total (sang, plasma, s?rum)',
 					:list_title						=>	nil,
-					:permissions					=>	[['Endocrinologie - diabétologie', nil]],
+					:permissions					=>	[['Endocrinologie - diab?tologie', nil]],
 					:taxpoint_type				=>	nil,
 				},
 					{
@@ -1032,9 +1035,9 @@ Rhumatologie
 					:group								=>	'9366',
 					:position							=>	'00',
 					:taxpoints						=>	15,
-					:description					=>	'Uréase, test à l\'~ (Helicobacter pylori)',
+					:description					=>	'Ur?ase, test ? l\'~ (Helicobacter pylori)',
 					:list_title						=>	nil,
-					:permissions					=>	[['Gastro-entérologie', nil]],
+					:permissions					=>	[['Gastro-ent?rologie', nil]],
 					:taxpoint_type				=>	nil,
 				},
 					{
@@ -1042,9 +1045,9 @@ Rhumatologie
 					:group								=>	'8455',
 					:position							=>	'20',
 					:taxpoints						=>	60,
-					:description					=>	'Pénétration, test de ~',
+					:description					=>	'P?n?tration, test de ~',
 					:list_title						=>	nil,
-					:permissions					=>	[['Gynécologie et obstétrique', nil]],
+					:permissions					=>	[['Gyn?cologie et obst?trique', nil]],
 					:taxpoint_type				=>	nil,
 				},
 					{
@@ -1053,9 +1056,9 @@ Rhumatologie
 					:position							=>	'00',
 					:analysis_revision		=>	'C',
 					:taxpoints						=>	8,
-					:description					=>	'ABO/D, contrôle selon les recommandations STS CRS "Sérologie érythrocytaire chez le patient"',
+					:description					=>	'ABO/D, contr?le selon les recommandations STS CRS "S?rologie ?rythrocytaire chez le patient"',
 					:list_title						=>	nil,
-					:permissions					=>	[['Hématologie', nil]],
+					:permissions					=>	[['H?matologie', nil]],
 					:taxpoint_type				=>	nil,
 				},
 					{
@@ -1063,9 +1066,9 @@ Rhumatologie
 					:group								=>	'8388',
 					:position							=>	'00',
 					:taxpoints						=>	20,
-					:description					=>	'Cristaux, recherche en lumière polarisée',
+					:description					=>	'Cristaux, recherche en lumi?re polaris?e',
 					:list_title						=>	nil,
-					:permissions					=>	[['Médecine physique et réadaptation', nil]],
+					:permissions					=>	[['M?decine physique et r?adaptation', nil]],
 					:taxpoint_type				=>	nil,
 				},
 					{
@@ -1073,9 +1076,9 @@ Rhumatologie
 					:group								=>	'9356',
 					:position							=>	'30',
 					:taxpoints						=>	25,
-					:description					=>	'Microscopie spéciale, examen par ~ (orange acridine, Ziehl-Neelsen, auramin-rhodamine, y compris sur fond noir, contraste de phase, etc., KOH, recherche de champignons)',
+					:description					=>	'Microscopie sp?ciale, examen par ~ (orange acridine, Ziehl-Neelsen, auramin-rhodamine, y compris sur fond noir, contraste de phase, etc., KOH, recherche de champignons)',
 					:list_title						=>	nil,
-					:permissions					=>	[['Médecine tropicale', nil]],
+					:permissions					=>	[['M?decine tropicale', nil]],
 					:taxpoint_type				=>	nil,
 				},
 					{
@@ -1083,9 +1086,9 @@ Rhumatologie
 					:group								=>	'8543',
 					:position							=>	'00',
 					:taxpoints						=>	40,
-					:description					=>	'Théophylline (sang)',
+					:description					=>	'Th?ophylline (sang)',
 					:list_title						=>	nil,
-					:permissions					=>	[['Pédiatrie', nil]],
+					:permissions					=>	[['P?diatrie', nil]],
 					:taxpoint_type				=>	nil,
 				},
 					{
@@ -1093,7 +1096,7 @@ Rhumatologie
 					:group								=>	'8388',
 					:position							=>	'01',
 					:taxpoints						=>	20,
-					:description					=>	'Cristaux, recherche en lumière polarisée',
+					:description					=>	'Cristaux, recherche en lumi?re polaris?e',
 					:list_title						=>	nil,
 					:permissions					=>	[['Rhumatologie', nil]],
 					:taxpoint_type				=>	nil,
@@ -1108,13 +1111,13 @@ Rhumatologie
 					:taxpoint_type	=>	nil,
 					:list_title			=>	nil,
 					:permissions		=>	[['Rhumatologie', nil]],
-					:description		=>	'Cellules, numération et différentiation après enrichissement et coloration de liquides biologiques',
+					:description		=>	'Cellules, num?ration et diff?rentiation apr?s enrichissement et coloration de liquides biologiques',
 				},
 					{
 					:code						=>	'8006.00',
 					:group					=>	'8006',
 					:position				=>	'00',
-					:description		=>	'Alanine-aminotransférase (ALAT)',
+					:description		=>	'Alanine-aminotransf?rase (ALAT)',
 					:taxpoints			=>	9,
 					:taxpoint_type	=>	nil,
 					:list_title			=>	nil,
@@ -1130,8 +1133,8 @@ Analyses prescrites par des chiropraticiens
 (art. 62 1er al. let. b OAMal)
 
 Liste des analyses
-Rév. No pos. A TP Dénomination (list chiropraticiens)
-8006.001 9 Alanine-aminotransférase (ALAT)
+R?v. No pos. A TP D?nomination (list chiropraticiens)
+8006.001 9 Alanine-aminotransf?rase (ALAT)
 8012.00 9 Phosphatase alcaline
 8013.01 60 Phosphatase alcaline, osseuse
 1 test restriction
@@ -1145,7 +1148,7 @@ Rév. No pos. A TP Dénomination (list chiropraticiens)
 						:code						=>	'8006.00',
 						:group					=>	'8006',
 						:position				=>	'00',
-						:description		=>	'Alanine-aminotransférase (ALAT)',
+						:description		=>	'Alanine-aminotransf?rase (ALAT)',
 						:permissions		=>	[],
 						:list_title			=>	nil,
 						:taxpoint_type	=>	nil,
@@ -1174,6 +1177,97 @@ Rév. No pos. A TP Dénomination (list chiropraticiens)
 				]
 				assert_equal(expected, result)
 			end
+      def test_next_pagehandler
+        txt = "vorbemerkungen"
+        @handler.instance_eval('@index = "index"')
+        assert_kind_of(ODDB::AnalysisParse::IndexHandler, @handler.next_pagehandler(txt))
+      end
 		end
 	end
 end
+
+module ODDB
+  module AnalysisParse
+    class TestPageHandler < Test::Unit::TestCase
+      include FlexMock::TestCase
+      def setup
+        @handler = ODDB::AnalysisParse::PageHandler.new
+      end
+      def test_next_pagehandler
+        assert_equal(@handler, @handler.next_pagehandler('txt'))
+      end
+      def test_analyze
+        page = flexmock('page', :text => 'text')
+        assert_equal(@handler, @handler.analyze(page, 'pagenum'))
+      end
+    end
+
+    class TestIndexHandler < Test::Unit::TestCase
+      include FlexMock::TestCase
+      def setup
+        index = [
+          'Chimie/HÃ©matologie/Immunologie',
+          'genetik',
+          'mikrobiologie',
+          'allgemeine positionen',
+          'Anonyme Positionen',
+          'Fixe AnalysenblÃ¶cke',
+          'Liste seltener AutoantikÃ¶rper',
+          'analyses effectuÃ©es dans le cadre des soins de base',
+          'Von Chiropraktoren oder Chiropraktorinnen veranlasste Analysen',
+          'Von Hebammen veranlasste Analysen',
+        ]
+        @page    = flexmock('page', :text => nil)
+        @handler = ODDB::AnalysisParse::IndexHandler.new(index)
+      end
+      def test_analayze__page_0
+        assert_kind_of(ODDB::AnalysisParse::IndexHandler, @handler.analyze(@page, 0))
+      end
+      def test_analayze__page_1
+        assert_kind_of(ODDB::AnalysisParse::IndexHandler, @handler.analyze(@page, 1))
+      end
+      def test_analayze__page_2
+        assert_kind_of(ODDB::AnalysisParse::IndexHandler, @handler.analyze(@page, 2))
+      end
+      def test_analayze__page_3
+        assert_kind_of(ODDB::AnalysisParse::IndexHandler, @handler.analyze(@page, 3))
+      end
+      def test_analayze__page_4
+        assert_kind_of(ODDB::AnalysisParse::IndexHandler, @handler.analyze(@page, 4))
+      end
+      def test_analayze__page_5
+        assert_kind_of(ODDB::AnalysisParse::IndexHandler, @handler.analyze(@page, 5))
+      end
+      def test_analayze__page_6
+        assert_kind_of(ODDB::AnalysisParse::IndexHandler, @handler.analyze(@page, 6))
+      end
+      def test_analayze__page_7
+        assert_kind_of(ODDB::AnalysisParse::IndexHandler, @handler.analyze(@page, 7))
+      end
+      def test_analayze__page_8
+        assert_kind_of(ODDB::AnalysisParse::IndexHandler, @handler.analyze(@page, 8))
+      end
+      def test_analayze__page_9
+        assert_kind_of(ODDB::AnalysisParse::IndexHandler, @handler.analyze(@page, 9))
+      end
+      def test_positions
+        assert_equal([], @handler.positions)
+      end
+      def test_parse_page
+        ps     = {:code => 123, :abc => nil}
+        parser = flexmock('parser',
+                         :list_title= => nil,
+                         :list_title  => 'list_title',
+                         :permission= => nil,
+                         :permission  => 'permission',
+                         :parse_page  => [ps],
+                         :footnotes   => {}
+                         )
+        positions = {123 => {}}
+        @handler.instance_eval('@positions = positions')
+        expected = [{:code=>123}]
+        assert_equal(expected , @handler.parse_page('text', 0, parser))
+      end
+    end
+  end # AnalysisParse
+end # ODDB

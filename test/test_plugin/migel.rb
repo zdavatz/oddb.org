@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# TestMiGeLPlugin -- oddb -- 30.08.2005 -- hwyss@ywesee.com
+# ODDB::TestMiGeLPlugin -- oddb.org -- 14.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::TestMiGeLPlugin -- oddb.org -- 30.08.2005 -- hwyss@ywesee.com
 
 $: << File.expand_path('../../src', 
 	File.dirname(__FILE__))
@@ -12,8 +13,9 @@ require 'flexmock'
 
 module ODDB
 	class TestMiGeLPlugin < Test::Unit::TestCase
+    include FlexMock::TestCase
 		def setup
-			@app = FlexMock.new
+			@app = flexmock('app')
 			@plugin = MiGeLPlugin.new(@app)
 		end
 		def test_update_group__id
@@ -310,5 +312,130 @@ Inkl. Zubehör und Verbrauchsmaterial.","","","9","B","01.01.2006"
 				@plugin.date_object('')
 			}
 		end
+
+    def test_prune_old_revisions
+      revision = Time.local(Time.now.year - 1, 2,3)
+      limitation_text = flexmock('limitation_text', 
+                                 :revision => revision,
+                                 :pointer  => 'pointer'
+                                )
+      product_text    = flexmock('product_text', 
+                                 :revision => revision,
+                                 :pointer  => 'pointer'
+                                )
+      unit            = flexmock('unit', 
+                                 :revision => revision,
+                                 :pointer  => 'pointer'
+                                )
+      product  = flexmock('product', 
+                          :limitation_text => limitation_text,
+                          :product_text    => product_text,
+                          :unit            => unit,
+                          :revision        => revision,
+                          :pointer         => 'pointer'
+                         )
+      subgroup = flexmock('subgroup', 
+                          :products => {'key' => product},
+                          :limitation_text => limitation_text
+                         )
+      group    = flexmock('group', 
+                          :subgroups => {'key' => subgroup},
+                          :limitation_text => limitation_text
+                         )
+      flexmock(@app, 
+               :migel_groups => {'key' => group},
+               :delete       => nil
+              )
+      expected = {"key" => group}
+      assert_equal(expected, @plugin.prune_old_revisions)
+    end
+    def test_prune_old_revisions__products_empty
+      revision = Time.local(Time.now.year - 1, 2,3)
+      limitation_text = flexmock('limitation_text', 
+                                 :revision => revision,
+                                 :pointer  => 'pointer'
+                                )
+      subgroup = flexmock('subgroup', 
+                          :products => {},
+                          :limitation_text => limitation_text,
+                          :revision => revision,
+                          :pointer  => 'pointer'
+                         )
+      group    = flexmock('group', 
+                          :subgroups => {'key' => subgroup},
+                          :limitation_text => limitation_text
+                         )
+      flexmock(@app, 
+               :migel_groups => {'key' => group},
+               :delete       => nil
+              )
+      expected = {"key" => group}
+      assert_equal(expected, @plugin.prune_old_revisions)
+    end
+    def test_prune_old_revisions__subgroups_empty
+      revision = Time.local(Time.now.year - 1, 2,3)
+      limitation_text = flexmock('limitation_text', 
+                                 :revision => revision,
+                                 :pointer  => 'pointer'
+                                )
+      group    = flexmock('group', 
+                          :subgroups => {},
+                          :limitation_text => limitation_text,
+                          :revision  => revision,
+                          :pointer   => 'pointer'
+                         )
+      flexmock(@app, 
+               :migel_groups => {'key' => group},
+               :delete       => nil
+              )
+      expected = {"key" => group}
+      assert_equal(expected, @plugin.prune_old_revisions)
+    end
+    def test_update
+      pointer = flexmock('pointer', :creator => 'creator')
+      flexmock(pointer, :+ => pointer)
+      update = flexmock('update', :pointer => pointer)
+      flexmock(@app, :update => update)
+      row = [0,1,2,3,4,5,6,7,8,9,10,11,12,"abc.def"]
+      flexmock(CSV, :read => [nil, row])
+      expected = [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, "abc.def"]]
+      assert_equal(expected, @plugin.update('path', 'language'))
+    end
+    def test_update__id_size_3
+      pointer = flexmock('pointer', :creator => 'creator')
+      flexmock(pointer, :+ => pointer)
+      product = flexmock('product',
+                        :pointer => pointer,
+                        :product => product
+                        )
+      flexmock(@app, :update => product)
+      row = [0,1,2,3,4,5,6,7,8,9,10,11,12,"1.2.3",14,'product_text']
+      flexmock(CSV, :read => [nil, row])
+      expected = [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, "1.2.3", 14, "product_text"]]
+      assert_equal(expected, @plugin.update('path', 'language'))
+    end
+    def test_update__id_empty
+      pointer = flexmock('pointer', :creator => 'creator')
+      flexmock(pointer, :+ => pointer)
+      update = flexmock('update', :pointer => pointer)
+      flexmock(@app, :update => update)
+      row = [0,1,2,3,4,5,6,7,8,9,10,11,12,""]
+      flexmock(CSV, :read => [nil, row])
+      expected = [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, ""]]
+      assert_equal(expected, @plugin.update('path', 'language'))
+    end
+    def test_update_product
+      pointer  = flexmock('pointer', :creator => 'creator')
+      flexmock(pointer, :+ => pointer)
+      product  = flexmock('product', :add_product => 'add_product')
+      flexmock(@app, :update => product)
+      subgroup = flexmock('subgroup', 
+                          :pointer => pointer,
+                          :product => product
+                         )
+      row      = [0,1,2,3,4,5,6,7,8,9,10,11,'name',13,14,'product_text', 16]
+      assert_equal(product, @plugin.update_product([0,1,'2','3','4'], subgroup, row, 'language'))
+    end
+
 	end
 end
