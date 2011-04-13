@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# OddbApp -- oddb -- hwyss@ywesee.com
+# OddbApp -- oddb.org -- 13.04.2011 -- mhatakeyama@ywesee.com
+# OddbApp -- oddb.org -- hwyss@ywesee.com
 
 require 'odba'
 require 'odba/index_definition'
@@ -777,6 +778,31 @@ class OddbPrevalence
 	def registration(registration_id)
 		@registrations[registration_id]
 	end
+  def set_all_export_flag_registration_false
+		@registrations.keys.each do |id|
+      @registrations[id].export_flag = false
+    end
+  end
+  def set_all_export_flag_sequence_false
+		@registrations.keys.each do |id|
+      @registrations[id].sequences.keys.each do |sid|
+        @registrations[id].sequences[sid].export_flag = false
+      end
+    end
+  end
+  def set_all_export_flag_registration_true
+		@registrations.keys.each do |id|
+      @registrations[id].export_flag = true
+    end
+  end
+  def set_all_export_flag_sequence_true
+		@registrations.keys.each do |id|
+      @registrations[id].sequences.keys.each do |sid|
+        @registrations[id].sequences[sid].export_flag = true
+      end
+    end
+  end
+
 	def resolve(pointer)
 		pointer.resolve(self)
 	end
