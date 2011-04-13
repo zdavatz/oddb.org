@@ -194,9 +194,11 @@ module ODDB
     end
     def initialize_export_registrations(agent)
       latest_name = File.join @archive, "Präparateliste-latest.xls"
+=begin
       if target = get_latest_file(agent, 'Präparateliste')
         FileUtils.cp target, latest_name
       end
+=end
       reg_indices = {}
       [ :iksnr, :package_count, :expiry_date,
         :registration_date ].each do |key|
