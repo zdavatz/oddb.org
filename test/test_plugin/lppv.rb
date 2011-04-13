@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# TestLppvPlugin -- oddb.org -- 18.01.2006 -- sfrischknecht@ywesee.com
+# ODDB::TestLppvPlugin -- oddb.org -- 13.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::TestLppvPlugin -- oddb.org -- 18.01.2006 -- sfrischknecht@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src/", File.dirname(__FILE__))
@@ -30,8 +31,9 @@ module ODDB
 		end
 	end
 	class TestLppvPlugin < Test::Unit::TestCase
+    include FlexMock::TestCase
 		def setup
-			@app = FlexMock.new
+			@app = FlexMock.new('app')
 			@plugin = LppvPlugin.new(@app)
 		end
 		def test_update_package__price_up
@@ -149,5 +151,113 @@ module ODDB
 			assert_instance_of(LppvPlugin::PriceUpdate, update)
 			@app.flexmock_verify
 		end
+    def test_update_package
+      data    = {}
+      package = flexmock('package', 
+                         :pharmacode  => 'pharmacode',
+                         :lppv        => 'lppv',
+                         :data_origin => :lppv,
+                         :pointer     => 'pointer'
+                        )
+      flexmock(@app, :update => 'update')
+      assert_equal('update', @plugin.update_package(package, data))
+    end
+    def test_update_package__sl_entry
+      data    = {'pharmacode' => 'price_dat'}
+      package = flexmock('package', 
+                         :pharmacode   => 'pharmacode',
+                         :sl_entry     => 'sl_entry',
+                         :price_public => 'price_public'
+                        )
+      assert_equal([package], @plugin.update_package(package, data))
+    end
+    def test_update_packages
+      package = flexmock('package', 
+                         :pharmacode   => 'pharmacode',
+                         :sl_entry     => 'sl_entry',
+                         :price_public => 'price_public'
+                        )
+      flexmock(@app) do |a|
+        a.should_receive(:each_package).and_yield(package)
+      end
+      data = {'pharmacode' => 'price_dat'}
+      assert_equal([package], @plugin.update_packages(data))
+    end
+    def test_get_prices
+      char = 'A'
+      body = File.read(File.expand_path('../data/html/lppv/A.html', File.dirname(__FILE__)))
+      response = flexmock('response', :body => body)
+      http = flexmock('http', :get => response)
+      assert_kind_of(Hash, @plugin.get_prices(char, http))
+    end
+    def test_get_prices__price_empty
+      char = 'A'
+      body = File.read(File.expand_path('../data/html/lppv/A_empty.html', File.dirname(__FILE__)))
+      response = flexmock('response', :body => body)
+      http = flexmock('http', :get => response)
+      assert_kind_of(Hash, @plugin.get_prices(char, http))
+    end
+    def test_update
+      package = flexmock('package', 
+                         :pharmacode  => 'pharmacode',
+                         :lppv        => 'lppv',
+                         :data_origin => :lppv,
+                         :pointer     => 'pointer'
+                        )
+      flexmock(@app) do |a|
+        a.should_receive(:each_package).and_yield(package)
+        a.should_receive(:update).and_return('update')
+      end
+
+      body = File.read(File.expand_path('../data/html/lppv/A_empty.html', File.dirname(__FILE__)))
+      response = flexmock('response', :body => body)
+      http = flexmock('http', :get => response)
+      flexmock(Net::HTTP).new_instances do |net|
+        net.should_receive(:start).and_yield(http)
+      end
+      assert_equal('update', @plugin.update())
+    end
+    def test_report
+      price1 = flexmock('price1', 
+                        :"package.name" => 'price1',
+                        :up?            => true,
+                        :report_lines   => ['report1']
+                       )
+      price2 = flexmock('price2', 
+                        :"package.name" => 'price2',
+                        :up?            => false,
+                        :report_lines   => ['report2']
+                       )
+      @plugin.instance_eval('@updated_packages = [price1, price2]')
+      @plugin.instance_eval('@prices = []')
+      expected = "Downloaded Prices: 0\nUpdated Packages: 2\n\nPackages with SL-Entry: 0\n\nThe following Packages experienced a Price RAISE:\nIKS-Number            Old Price             New Price            Package Name\nreport1\n\nThe following Packages experienced a Price CUT:\nIKS-Number            Old Price             New Price            Package Name,\nreport2\nNot updated were: "
+      assert_equal(expected, @plugin.report)
+    end
 	end
+
+  class LppvPlugin < Plugin
+    class TestPriceUpdate < Test::Unit::TestCase
+      include FlexMock::TestCase
+      def setup
+        current  = flexmock('current', :to_f => 1.0)
+        @package = flexmock('package', :price_public => nil)
+        @update  = ODDB::LppvPlugin::PriceUpdate.new(@package, current)
+      end
+      def test_resolve_link
+        model = flexmock('model', :pointer => 'pointer')
+        assert_equal('http://ch.oddb.org/de/gcc/resolve/pointer/pointer', @update.resolve_link(model))
+      end
+      def test_report_lines
+        flexmock(@package, 
+                 :pointer => 'pointer',
+                 :iksnr   => 'iksnr',
+                 :name    => 'name'
+                )
+        expected = ["http://ch.oddb.org/de/gcc/resolve/pointer/pointer",
+                   "iksnr                 0.00                  1.00                 name",
+                   nil]
+        assert_equal(expected, @update.report_lines)
+      end
+    end
+  end
 end
