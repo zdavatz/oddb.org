@@ -778,31 +778,18 @@ class OddbPrevalence
 	def registration(registration_id)
 		@registrations[registration_id]
 	end
-  def set_all_export_flag_registration_false
-		@registrations.keys.each do |id|
-      @registrations[id].export_flag = false
+  def each_registration
+		@registrations.values.each do |reg|
+      yield reg
     end
   end
-  def set_all_export_flag_sequence_false
-		@registrations.keys.each do |id|
-      @registrations[id].sequences.keys.each do |sid|
-        @registrations[id].sequences[sid].export_flag = false
+  def each_sequence
+    @registrations.values.each do |reg|
+      reg.sequences.values.each do |seq|
+        yield seq
       end
     end
   end
-  def set_all_export_flag_registration_true
-		@registrations.keys.each do |id|
-      @registrations[id].export_flag = true
-    end
-  end
-  def set_all_export_flag_sequence_true
-		@registrations.keys.each do |id|
-      @registrations[id].sequences.keys.each do |sid|
-        @registrations[id].sequences[sid].export_flag = true
-      end
-    end
-  end
-
 	def resolve(pointer)
 		pointer.resolve(self)
 	end
@@ -1418,6 +1405,18 @@ module ODDB
 		def update(pointer, values, origin=nil)
 			@system.update(pointer, values, origin)
 		end
+    def set_all_export_flag_registration(boolean)
+      data = {:export_flag => boolean}
+      @system.each_registration do |reg|
+        update reg.pointer, data, :swissmedic
+      end
+    end
+    def set_all_export_flag_sequence(boolean)
+      data = {:export_flag => boolean}
+      @system.each_sequence do |seq|
+        update seq.pointer, data, :swissmedic
+      end
+    end
 		#####################################################
 		def _admin(src, result, priority=0)
 			t = Thread.new {
