@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
-# suite.rb -- oddb.org/ext -- 11.04.2011 -- mhatakeyama@ywesee.com 
+# suite.rb -- oddb.org/ext -- 14.04.2011 -- mhatakeyama@ywesee.com 
 
 current_dir = (File.expand_path(File.dirname(__FILE__)))
 
 require "#{current_dir}/swissreg/test/test_writer.rb"
 require "#{current_dir}/swissreg/test/test_session.rb"
-#require "./meddata/test/test_session.rb"
+require "#{current_dir}/meddata/test/test_session.rb"
 require "#{current_dir}/meddata/test/test_result.rb"
 require "#{current_dir}/meddata/test/test_meddata.rb"
 require "#{current_dir}/meddata/test/test_ean_factory.rb"

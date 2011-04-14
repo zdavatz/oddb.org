@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::TestHttpSession -- oddb.org -- 13.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::TestHttpSession -- oddb.org -- 14.04.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -7,6 +7,7 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'test/unit'
 require 'flexmock'
 require 'util/http'
+require 'net/http'
 
 module ODDB
   class StubHttpFile
@@ -131,6 +132,51 @@ module ODDB
       flexmock(@http, :get => 'get')
       assert_equal('get', @session.get('args'))
     end
+    def test_get__error
+      flexmock(@http) do |h|
+        h.should_receive(:get).and_raise(EOFError)
+      end
+      flexmock(@session, :sleep => nil)
+      flexmock(@session, :flexmock_original_behavior_for_should_receive => nil) 
+      assert_raise(EOFError) do 
+        @session.get('args')
+      end
+    end
+    def test_post__ok
+      pair1 = ['aaa', 'bbb']
+      pair2 = ['ccc', 'ddd']
+      data  = [pair1, pair2]
+      ok = Net::HTTPOK.new(1,2,3)
+      flexmock(@http, :post => ok)
+      assert_kind_of(ODDB::HttpSession::ResponseWrapper, @session.post('path', data)) 
+    end
+    def test_post__found
+      pair1 = ['aaa', 'bbb']
+      pair2 = ['ccc', 'ddd']
+      data  = [pair1, pair2]
+      response = Net::HTTPFound.new(1,2,3)
+      flexmock(@http, 
+               :post => response,
+               :get  => 'get'
+              )
+      uri   = flexmock('uri', :request_uri => 'request_uri')
+      flexmock(URI, :parse => uri)
+      assert_equal('get', @session.post('path', data)) 
+    end
+    def test_post__eof_error
+      pair1 = ['aaa', 'bbb']
+      pair2 = ['ccc', 'ddd']
+      data  = [pair1, pair2]
+      flexmock(@http) do |h|
+        h.should_receive(:post).and_raise(EOFError)
+      end
+      flexmock(@session, :sleep => nil)
+      flexmock(@session, :flexmock_original_behavior_for_should_receive => nil) 
+      assert_raise(EOFError) do 
+        @session.post('path', data)
+      end
+    end
+
     def test_post__error
       pair1 = ['aaa', 'bbb']
       pair2 = ['ccc', 'ddd']
