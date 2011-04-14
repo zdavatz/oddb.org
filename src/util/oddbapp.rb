@@ -783,13 +783,6 @@ class OddbPrevalence
       yield reg
     end
   end
-  def each_sequence
-    @registrations.values.each do |reg|
-      reg.sequences.values.each do |seq|
-        yield seq
-      end
-    end
-  end
 	def resolve(pointer)
 		pointer.resolve(self)
 	end
