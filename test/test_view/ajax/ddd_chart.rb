@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Migel::TestProduct -- oddb.org -- 17.03.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Ajax::TestDDDChart -- oddb.org -- 17.03.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))

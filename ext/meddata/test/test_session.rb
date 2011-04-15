@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 # ODDB::MedData::TestSession -- 14.04.2011 -- mhatakeyama@ywesee.com
 
-$: << File.expand_path('../src', File.dirname(__FILE__))
+$: << File.expand_path('../..', File.dirname(__FILE__))
 
 require 'test/unit'
 require 'flexmock'
-require 'session'
+require 'meddata/src/session'
+
 module ODDB
   module MedData
     class StubSession < Session
