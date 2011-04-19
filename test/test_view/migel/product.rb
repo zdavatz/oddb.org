@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Migel::TestProduct -- oddb.org -- 17.03.2011 -- mhatakeyama@ywesee.com
+# View::Migel::TestProduct -- oddb.org -- 19.04.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -10,6 +10,10 @@ require 'view/resulttemplate'
 require 'htmlgrid/labeltext'
 require 'view/migel/product'
 require 'sbsm/validator'
+
+module ODDB
+  module View
+    module Migel
 
 class TestProductInnerComposite < Test::Unit::TestCase
   include FlexMock::TestCase
@@ -192,5 +196,77 @@ class TestProductInnerComposite < Test::Unit::TestCase
     assert_kind_of(HtmlGrid::Link, result)
     assert_equal('ddd_price', result.value)
   end
-
+  def test_description
+    flexmock(@model, :language => 'Position 12.34.56.78.9')
+    flexmock(@lookandfeel, :_event_url => '_event_url')
+    assert_kind_of(HtmlGrid::Value, @composite.description(@model))
+  end
 end
+
+class TestProductComposite < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf       = flexmock('lookandfeel', 
+                          :lookup     => 'lookup',
+                          :_event_url => '_event_url',
+                          :attributes => {},
+                          :disabled?  => nil,
+                          :enabled?   => nil,
+                          :language   => 'language'
+                         )
+    @session   = flexmock('session', 
+                          :lookandfeel => @lnf,
+                          :error       => 'error',
+                          :language    => 'language',
+                          :event       => 'event'
+                         )
+    method     = flexmock('method', :arity => 1)
+    #group      = flexmock('group', 
+    group      = flexmock('masa', 
+                          :pointer  => 'pointer',
+                          :language => 'language',
+                          :to_s     => 'value',
+                          :method   => method
+                         )
+    subgroup   = flexmock('subgroup', 
+                          :pointer  => 'pointer',
+                          :language => 'language'
+                         )
+    product_text    = flexmock('product_text', :language => 'language')
+    limitation_text = flexmock('limitation_text', :language => 'language')
+    accessory       = flexmock('accessory', 
+                               :pointer    => 'pointer',
+                               :migel_code => 'migel_code',
+                               :method     => method
+                              )
+    unit       = flexmock('unit', :language => 'language')
+    product    = flexmock('product', 
+                          :pointer    => 'pointer',
+                          :migel_code => 'migel_code',
+                          :method     => method
+                         )
+    @model     = flexmock('model', 
+                          :group    => group,
+                          :subgroup => subgroup,
+                          :language => 'language',
+                          :price    => 'price',
+                          :qty      => 'qty',
+                          :unit     => unit,
+                          :pointer  => 'pointer',
+                          :products => [product],
+                          :product_text => product_text,
+                          :accessories  => [accessory],
+                          :localized_name  => 'localized_name',
+                          :limitation_text => limitation_text
+                         )
+    @composite = ODDB::View::Migel::ProductComposite.new(@model, @session)
+  end
+  def test_accessories
+    flexmock(@model, :accessories => [])
+    assert_kind_of(ODDB::View::Migel::AccessoryOfList, @composite.accessories(@model))
+  end
+end
+
+    end # Migel
+  end # View
+end # ODDB

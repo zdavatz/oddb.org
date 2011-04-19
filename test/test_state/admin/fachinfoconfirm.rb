@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::TestFachinfoConfirm -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
-# State::Drugs::TestFachinfoConfirm -- oddb -- 03.10.2003 -- rwaltert@ywesee.com
+# ODDB::State::Admin::TestFachinfoConfirm -- oddb.org -- 19.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Drugs::TestFachinfoConfirm -- oddb.org -- 03.10.2003 -- rwaltert@ywesee.com
 
 $: << File.dirname(__FILE__)
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -249,6 +249,76 @@ class TestFachinfoConfirmState < Test::Unit::TestCase
 		assert_equal(["12345", "12345"], @app.replace_iksnrs)
 		assert_equal([fi_pointer, fi_pointer], @app.replace_pointers)
 	end
+end
+
+class TestFachinfoConfirm < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @registration = flexmock('registration', :iksnr  => 'iksnr')
+    @app     = flexmock('app', :registration => @registration)
+    @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
+    @session = flexmock('session', 
+                        :app      => @app,
+                        :allowed? => nil,
+                        :lookandfeel => @lnf
+                       )
+    @model   = flexmock('model', 
+                        :registration => @registration,
+                        :inject => 'inject'
+                       )
+    @state   = ODDB::State::Admin::FachinfoConfirm.new(@session, @model)
+  end
+  def test_init
+    expected = ['iksnr']
+    assert_equal(expected, @state.init)
+  end
+  def test_back
+    previous = flexmock('previous', :previous => 'previous')
+    @state.instance_eval('@previous = previous')
+    assert_equal('previous', @state.back)
+  end
+  def test_update
+    flexmock(@model, 
+             :at => @model,
+             :mime_type => 'mime_type'
+            )
+    fachinfo     = flexmock('fachinfo', :pointer => 'pointer')
+    registration = flexmock('registration', 
+                            :fachinfo => fachinfo,
+                            :iksnr    => 'iksnr'
+                           )
+    flexmock(fachinfo, :registrations => [registration])
+    flexmock(@session, 
+             :registration => registration,
+             :user         => 'user'
+            )
+    update = flexmock('update', 
+                      :add_change_log_item => 'add_change_log_item',
+                      :pointer => 'pointer'
+                     )
+    flexmock(@app, 
+             :update => update,
+             :replace_fachinfo => 'replace_fachinfo'
+            )
+    previous = flexmock('previous', :previous => 'previous')
+    @state.instance_eval('@previous = previous')
+    assert_equal('previous', @state.update)
+  end
+  def test_store_slate_item
+    user = flexmock('user', :name => 'name')
+    flexmock(@session, :user => user)
+    flexmock(@registration, 
+             :name_base => 'name_base',
+             :pointer   => 'pointer'
+            )
+    flexmock(@app, 
+             :create => 'create',
+             :update => 'update'
+            )
+    flexmock(@model, :mime_type => 'application/msword')
+    time = Time.local(2011,2,3)
+    assert_equal('update', @state.store_slate_item(time, 'type'))
+  end
 end
 		end
 	end
