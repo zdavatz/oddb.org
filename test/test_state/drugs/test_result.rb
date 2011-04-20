@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# State::Drugs::TestResult -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
-# State::Drugs::TestResult -- oddb -- 11.03.2003 -- aschrafl@ywesee.com
+# ODDB::State::Drugs::TestResult -- oddb.org -- 20.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Drugs::TestResult -- oddb.org -- 11.03.2003 -- aschrafl@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path('../..', File.dirname(__FILE__))
@@ -85,8 +85,15 @@ class StubResultSession
 		:to_s
 	end
 end
+
 class TestResult < Test::Unit::TestCase
   include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', :disabled? => nil)
+    @session = flexmock('session', :lookandfeel => @lnf)
+    @model   = flexmock('model')
+    @state   = ODDB::State::Drugs::Result.new(@session, @model)
+  end
 	def test_empty_list
     model = flexmock('model') do |mod|
       mod.should_receive(:session=)
@@ -133,7 +140,90 @@ class TestResult < Test::Unit::TestCase
     state.instance_eval('@pages = [page]')
 		assert_equal(page, state.page)
 	end
+  def test_page__search
+    flexmock(@session, 
+             :event      => :search,
+             :user_input => nil,
+             :set_persistent_user_input => nil
+            )
+    page = flexmock('page', :model= => nil)
+    @state.instance_eval('@pages = [page]')
+    assert_equal(page, @state.page)
+  end
+  def test_export_csv
+    flexmock(@state, :creditable? => nil)
+    assert_kind_of(ODDB::State::Drugs::RegisterDownload, @state.export_csv)
+  end
+  def test_export_csv__creditable
+    flexmock(@state, :creditable? => true)
+    assert_kind_of(ODDB::State::Drugs::PaymentMethod, @state.export_csv)
+  end
+  def test_limit_state
+    atc_class = flexmock('atc_class', :active_packages => ['active_package'])
+    model     = flexmock('drug', :atc_classes => [atc_class])
+    flexmock(@model, :package_count => 'package_count')
+    flexmock(@state, :_search_drugs => model)
+    assert_kind_of(ODDB::State::Drugs::ResultLimit, @state.limit_state)
+  end
+  def test_limit_state__search_type
+    atc_class = flexmock('atc_class', :active_packages => ['active_package'])
+    flexmock(@model, 
+             :package_count => 'package_count',
+             :atc_classes => [atc_class]
+            )
+    flexmock(@state, :_search_drugs => @model)
+    search_type = 'st_sequence'
+    @state.instance_eval('@search_type = search_type')
+    assert_kind_of(ODDB::State::Drugs::ResultLimit, @state.limit_state)
+  end
+  def test_package_count
+    flexmock(@model, :package_count => 'package_count')
+    assert_equal('package_count', @state.package_count)
+  end
+  def test_request_path
+    request_path = 'request_path'
+    @state.instance_eval('@request_path = request_path')
+    assert_equal('request_path#best_result', @state.request_path)
+  end
+  def test_search
+    flexmock(@session, 
+             :user_input => 'search_type', 
+             :persistent_user_input => 'search_query',
+             :request_path => 'request_path'
+            )
+    @state.instance_eval do 
+      @search_type  = 'search_type'
+      @search_query = 'search_query'
+    end
+    assert_kind_of(ODDB::State::Drugs::Result, @state.search)
+  end
+  def test_get_sortby
+    flexmock(@session, :user_input => :dsp)
+    assert_equal(nil, @state.get_sortby!)
+  end
+  def test_get_sortby__sortvalue
+    flexmock(@session, :user_input => :dsp)
+    sortby = [:most_precise_dose, :comparable_size, :price_public]
+    @state.instance_eval('@sortby = sortby')
+    assert_equal(nil, @state.get_sortby!)
+  end
+  def test_init
+    atc_class = flexmock('atc_class', :package_count => 101)
+    flexmock(@model, 
+             :session=    => nil,
+             :atc_classes => [atc_class],
+             :overflow?   => true
+            )
+    @model.should_receive(:each).and_yield(atc_class)
+    flexmock(@session, 
+             :persistent_user_input => 'persistent_user_input',
+             :cookie_set_or_get => 'pages'
+            )
+    assert_kind_of(Proc, @state.init)
+  end
+
 end
+
 		end
 	end
 end
