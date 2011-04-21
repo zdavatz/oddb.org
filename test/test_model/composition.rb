@@ -76,5 +76,57 @@ module ODDB
       @composition.galenic_form = galenic_form
       assert_equal('galenic_form: active_agent', @composition.to_s)
     end
+    def test_multiply
+      active_agent = flexmock('active_agent', 
+                              :dose  => 1,
+                              :dose= => nil
+                             )
+      @composition.instance_eval('@active_agents = [active_agent]')
+      assert_kind_of(ODDB::Composition, @composition * 2)
+    end
+    def test_equal
+      assert(@composition == @composition)
+    end
+    def test_comparison
+      @composition.instance_eval('@active_agents = ["active_agent"]')
+      @composition.instance_eval('@galenic_form = "galenic_form"')
+      assert_equal(0, @composition <=> @composition)
+    end
+    def test_comparison__else
+      assert_equal(1, @composition <=> 123)
+    end
+    
+    # The following testcases are for the private methods
+    def test_adjust_types
+      values = {'key' => 'value'}
+      assert_equal(values, @composition.instance_eval('adjust_types(values)'))
+    end
+    def test_adjust_types__pointer
+      flexmock(Persistence::Pointer).new_instances do |p|
+        p.should_receive(:resolve).and_return('resolve')
+      end
+      values = {'key' => Persistence::Pointer.new}
+      expected = {"key" => "resolve"}
+      assert_equal(expected, @composition.instance_eval('adjust_types(values)'))
+    end
+    def test_adjust_types__galenic_form
+      app    = flexmock('app', :galenic_form => 'galenic_form')
+      values = {:galenic_form => 'value'}
+      expected = {:galenic_form => "galenic_form"}
+      assert_equal(expected, @composition.instance_eval('adjust_types(values, app)'))
+    end
+    def test_adjust_types__galenic_form_else
+      app    = flexmock('app', :galenic_form => nil)
+      values = {:galenic_form => 'value'}
+      @composition.instance_eval('@galenic_form = "galenic_form"')
+      expected = {:galenic_form => "galenic_form"}
+      assert_equal(expected, @composition.instance_eval('adjust_types(values, app)'))
+    end
+    def test_replace_observer
+      target = flexmock('target', :remove_sequence => 'remove_sequence')
+      value  = flexmock('value', :add_sequence => 'add_sequence')
+      assert_equal(value, @composition.instance_eval('replace_observer(target, value)'))
+    end
+
   end
 end
