@@ -8,7 +8,7 @@ module ODDB
   module State
     module Admin
 class Entity < Global
-  VIEW = View::Admin::Entity
+  VIEW = ODDB::View::Admin::Entity
   def update
     mandatory = [:name]
     preferences = [:name_first, :name_last, :salutation, :address, :plz, :city]
@@ -102,7 +102,7 @@ class Entity < Global
       puts e.backtrace
       @errors.store(:yus_privileges, 
                     create_error(e.message, :e_yus_error, e.message))
-    rescue Exception => e
+    rescue ::Exception => e
       puts "something weird happened:"
       puts e.class, e.message
       puts e.backtrace

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Notify -- oddb -- 28.06.2007 -- hwyss@ywesee.com
+# ODDB::State::Notify -- oddb.org -- 27.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Notify -- oddb.org -- 28.06.2007 -- hwyss@ywesee.com
 
 require 'rmail'
 require 'util/smtp_tls'
@@ -94,7 +95,7 @@ module Notify
       header = htmlpart.header
       header.add('Content-Type', 'text/html', nil, 'charset' => 'UTF-8')
       header.add('Content-Transfer-Encoding', 'quoted-printable')
-      html = View::NotifyMail.new(@model, @session).to_html(@session.cgi)
+      html = ODDB::View::NotifyMail.new(@model, @session).to_html(@session.cgi)
       htmlpart.body = [html].pack('M')
       mail.add_part htmlpart
 
