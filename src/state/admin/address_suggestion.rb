@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::AddressSuggestion -- oddb -- 09.08.2005 -- jlang@ywesee.com
+# ODDB::State::Admin::AddressSuggestion -- oddb.org -- 28.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::AddressSuggestion -- oddb.org -- 09.08.2005 -- jlang@ywesee.com
 
 require 'state/global_predefine'
 require 'model/company'
@@ -11,7 +12,7 @@ module ODDB
 	module State
 		module Admin
 class AddressSuggestion < Global
-	VIEW = View::Admin::AddressSuggestion
+	VIEW = ODDB::View::Admin::AddressSuggestion
 	attr_reader :active_address
 	class AddressWrapper < SimpleDelegator
 		attr_accessor :email_suggestion

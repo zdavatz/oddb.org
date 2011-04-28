@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::TestActiveAgent -- oddb -- 28.02.2011 -- mhatakeyama@ywesee.com
-# State::Drugs::TestActiveAgent -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
+# ODDB::State::Admin::TestActiveAgent -- oddb.org -- 28.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Drugs::TestActiveAgent -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -15,6 +15,7 @@ require 'state/admin/activeagent'
 module ODDB
 	module State
 		module Admin
+
 class TestActiveAgentState < Test::Unit::TestCase
   include FlexMock::TestCase
 	class StubSession
@@ -184,6 +185,87 @@ class TestActiveAgentState < Test::Unit::TestCase
 		assert_equal([sub2, sub5], @state.substance_selection)
 	end
 end
+
+class TestActiveAgent  < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @app     = flexmock('app')
+    @session = flexmock('session', :app => @app)
+    @model   = flexmock('model')
+    @state   = ODDB::State::Admin::ActiveAgent.new(@session, @model)
+  end
+  class StubDummy
+    def initialize(session, sequence)
+    end
+  end
+  def test_delete
+    flexmock(@app, :delete => 'delete')
+    parent  = flexmock('parent', :pointer => 'pointer')
+    flexmock(@model, 
+             :parent  => parent,
+             :pointer => 'pointer'
+            )
+    flexmock(@state, :resolve_state => StubDummy)
+    assert_kind_of(ODDB::State::Admin::TestActiveAgent::StubDummy, @state.delete)
+  end
+  def test_new_active_agent
+    pointer  = flexmock('pointer')
+    flexmock(pointer, :+ => pointer)
+    sequence = flexmock('sequence', 
+                        :pointer   => pointer,
+                        :iksnr     => 'iksnr',
+                        :name_base => 'name_base'
+                       )
+    flexmock(@model, :sequence => sequence)
+    flexmock(@state, :resolve_state => StubDummy)
+    assert_kind_of(ODDB::State::Admin::TestActiveAgent::StubDummy, @state.new_active_agent)
+  end
+  def test_new_active_agent__resolve_state_nil
+    pointer  = flexmock('pointer')
+    flexmock(pointer, :+ => pointer)
+    sequence = flexmock('sequence', 
+                        :pointer   => pointer,
+                        :iksnr     => 'iksnr',
+                        :name_base => 'name_base'
+                       )
+    flexmock(@model, :sequence => sequence)
+    flexmock(@state, :resolve_state => nil)
+    assert_equal(@state, @state.new_active_agent)
+  end
+  def test_new_active_agent__no_sequence
+    flexmock(@model, 
+             :sequence  => nil,
+             :substance => 'substance'
+            )
+    assert_equal(@state, @state.new_active_agent)
+  end
+  def test_update__substance_nil
+    flexmock(@session, 
+             :user_input => {:name => 'name'},
+             :substance  => nil
+            )
+    flexmock(@app, :soundex_substances => [])
+    sequence = flexmock('sequence', :substances => [])
+    flexmock(@model, :parent => sequence)
+    assert_kind_of(ODDB::State::Admin::SelectSubstance, @state.update)
+  end
+=begin
+  def test_update__else
+    substance = flexmock('substance')
+    flexmock(@session, 
+             :user_input => {:name => 'name', :substance => 'substance'},
+             :substance  => {'substance' => substance}
+            )
+    flexmock(@model, 
+             :substance => substance,
+             :"sequence.active_agent" => nil
+            )
+    assert_equal('', @state.update)
+  end
+=end
+end
+
+
 		end	
 	end
 end

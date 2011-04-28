@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
-# View::TestPointerSteps -- oddb -- 02.04.2003 -- hwyss@ywesee.com 
+# ODDB::View::TestPointerSteps -- oddb.org -- 28.04.2011 -- hwyss@ywesee.com 
+# ODDB::View::TestPointerSteps -- oddb.org -- 02.04.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'view/pointersteps'
 require 'stub/cgi'
 
@@ -90,6 +92,7 @@ module ODDB
 		end
 
 		class TestPointerSteps < Test::Unit::TestCase
+      include FlexMock::TestCase
 			def setup 
 				@model = StubPointerStepsModel.new
 				@session = StubPointerStepsSession.new
@@ -155,6 +158,53 @@ module ODDB
 				EOS
 				assert_equal(expected.tr("\n", ""), steps.to_html(CGI.new))
 			end
+      def test_compose
+        flexmock(@model, :structural_ancestors => [@model])
+				steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        assert_equal('th-pointersteps', steps.compose(@model))
+      end
+      def test_compose_footer
+        flexmock(@model, :is_a? => true)
+				steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        assert_equal('th-pointersteps', steps.compose_footer)
+      end
+      def test_compose_snapback
+        flexmock(@session, :lookup => nil)
+        offset = [0,0]
+				steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        assert_equal([1, 0], steps.compose_snapback(offset))
+      end
+      def test_pointer_descr
+        flexmock(@session, :allowed? => nil)
+				steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        assert_kind_of(ODDB::View::PointerLink, steps.pointer_descr(@model, @session))
+      end
+
+      class StubSnapback
+        include ODDB::View::Snapback
+        def initialize(model, session)
+          @model   = model
+          @session = session
+        end
+      end
+      def test_snapback
+        previous_state = flexmock('previous_state', 
+                                  :snapback_event      => 'snapback_event',
+                                  :direct_request_path => 'direct_request_path',
+                                  :previous            => nil
+                                 )
+        state     = flexmock('state', 
+                             :direct_event   => nil,
+                             :previous       => previous_state,
+                             :snapback_event => 'snapback_event'
+                            )
+        @session  = flexmock('session', :state => state)
+        @model    = flexmock('model')
+        @snapback = ODDB::View::TestPointerSteps::StubSnapback.new(@model, @session)
+        expected = ["snapback_event", "direct_request_path"]
+        assert_equal(expected, @snapback.snapback)
+      end
+
 		end
 	end
 end
