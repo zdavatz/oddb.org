@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::ActiveAgent -- oddb -- 22.04.2003 -- hwyss@ywesee.com 
+# ODDB::State::Admin::ActiveAgent -- oddb.org -- 29.04.2011 -- mhatakeyama@ywesee.com 
+# ODDB::State::Admin::ActiveAgent -- oddb.org -- 22.04.2003 -- hwyss@ywesee.com 
 
 require 'state/global_predefine'
 require 'model/selectsubstance'
@@ -93,7 +94,7 @@ class CompanyActiveAgent < State::Admin::ActiveAgent
 	def init
 		super
 		unless(allowed?)
-			@default_view = View::Admin::ActiveAgent
+			@default_view = ODDB::View::Admin::ActiveAgent
 		end
 	end
 	def delete

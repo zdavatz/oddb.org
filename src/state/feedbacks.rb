@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-#  -- oddb -- 25.10.2005 -- ffricker@ywesee.com
+# ODDB::State::Feedbacks -- oddb.org -- 25.10.2005 -- ffricker@ywesee.com
 
 require 'state/global_predefine'
 require 'util/logfile'

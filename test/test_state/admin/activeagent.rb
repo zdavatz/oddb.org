@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::TestActiveAgent -- oddb.org -- 28.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::TestActiveAgent -- oddb.org -- 29.04.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Drugs::TestActiveAgent -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
+require 'state/global'
 require 'test/unit'
 require 'flexmock'
 require 'htmlgrid/select'
@@ -241,13 +242,79 @@ class TestActiveAgent  < Test::Unit::TestCase
   end
   def test_update__substance_nil
     flexmock(@session, 
-             :user_input => {:name => 'name'},
+             :user_input => {:name => 'name', :substance => 'substance'},
              :substance  => nil
             )
     flexmock(@app, :soundex_substances => [])
     sequence = flexmock('sequence', :substances => [])
     flexmock(@model, :parent => sequence)
     assert_kind_of(ODDB::State::Admin::SelectSubstance, @state.update)
+  end
+  def test_update__else
+    substance = flexmock('substance', :pointer => 'pointer')
+    flexmock(@session, 
+             :user_input => {:name => 'name', :substance => 'substance'},
+             :substance  => substance,
+             :user       => 'user'
+            )
+    flexmock(@model, 
+             :substance => substance,
+             :pointer   => 'pointer'
+            )
+    flexmock(@app, :update => 'update')
+    assert_equal(@state, @state.update)
+  end
+  def test_update__chemical_substance_empty
+    substance = flexmock('substance', :pointer => 'pointer')
+    flexmock(@session, 
+             :user_input => {:name => 'name', :substance => 'substance', :chemical_substance => []},
+             :user       => 'user'
+            )
+    flexmock(@session) do |s|
+      s.should_receive(:substance).with('substance').and_return(substance)
+      s.should_receive(:substance).with([]).and_return(nil)
+    end
+    flexmock(@model, 
+             :substance => substance,
+             :pointer   => 'pointer'
+            )
+    flexmock(@app, :update => 'update')
+    assert_equal(@state, @state.update)
+  end
+  def test_update__e_unknown_substance
+    substance = flexmock('substance', :pointer => 'pointer')
+    flexmock(@session, 
+             :user_input => {:name => 'name', :substance => 'substance', :chemical_substance => 'chemical_substance'},
+             :user       => 'user'
+            )
+    flexmock(@session) do |s|
+      s.should_receive(:substance).with('substance').and_return(substance)
+      s.should_receive(:substance).with('chemical_substance').and_return(nil)
+    end
+    flexmock(@model, 
+             :substance => substance,
+             :pointer   => 'pointer'
+            )
+    flexmock(@app, :update => 'update')
+    assert_equal(@state, @state.update)
+  end
+  def test_update__model_persistence_createitem
+    substance = flexmock('substance', :pointer => 'pointer')
+    flexmock(@session, 
+             :user_input => {:name => 'name', :substance => 'substance'},
+             :substance  => substance,
+             :user       => 'user'
+            )
+    flexmock(@model, 
+             :substance => substance,
+             :pointer   => 'pointer',
+             :is_a?     => true,
+             :carry     => 'carry',
+             :append    => 'append'
+            )
+    flexmock(@app, :update => 'update')
+    assert_equal(@state, @state.update)
+
   end
 =begin
   def test_update__else
@@ -265,6 +332,39 @@ class TestActiveAgent  < Test::Unit::TestCase
 =end
 end
 
+class TestCompanyActiveAgent < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @app     = flexmock('app')
+    @session = flexmock('session', 
+                        :allowed? => nil,
+                        :app      => @app
+                       )
+    @model   = flexmock('model')
+    @state   = ODDB::State::Admin::CompanyActiveAgent.new(@session, @model)
+  end
+  def test_init
+    assert_equal(ODDB::View::Admin::ActiveAgent, @state.init)
+  end
+  def test_delete
+    flexmock(@session, :allowed? => true)
+    pointer = flexmock('pointer', :skeleton => 'skeleton')
+    parent = flexmock('parent', :pointer => pointer)
+    flexmock(@model, :parent => parent)
+    assert_equal(nil, @state.delete)
+  end
+  def test_update
+    flexmock(@session, 
+             :allowed?   => true,
+             :user_input => {:name => 'name', :substance => 'substance'},
+             :substance  => nil
+            )
+    flexmock(@app, :soundex_substances => [])
+    sequence = flexmock('sequence', :substances => [])
+    flexmock(@model, :parent => sequence)
+    assert_kind_of(ODDB::State::Admin::SelectSubstance, @state.update)
+  end
+end
 
 		end	
 	end
