@@ -93,14 +93,14 @@ class Compare < State::Drugs::Global
       end
     end
     if(@model.nil?)
-      @default_view = View::Http404
+      @default_view = ODDB::View::Http404
     elsif(@model.atc_class.nil?)
-      @default_view = View::Drugs::EmptyCompare
+      @default_view = ODDB::View::Drugs::EmptyCompare
     else
-      @default_view = View::Drugs::Compare
+      @default_view = ODDB::View::Drugs::Compare
     end
   rescue Persistence::UninitializedPathError
-    @default_view = View::Http404
+    @default_view = ODDB::View::Http404
   end
 end
 		end
