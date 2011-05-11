@@ -83,7 +83,7 @@ class SwissindexNonpharma
         end
       end
       line
-    rescue => err
+    rescue StandardError, Timeout::Error => err
       if try_time > 0
         puts err
         puts err.backtrace
@@ -111,7 +111,7 @@ class SwissindexNonpharma
         end
       end
       return pos_num
-    rescue => err
+    rescue StandardError, Timeout::Error => err
       if try_time > 3
         puts err
         puts err.backtrace

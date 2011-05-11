@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# Updater-- oddb -- 19.02.2003 -- hwyss@ywesee.com 
+# ODDB::Updater-- oddb.org -- 11.05.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com 
 
 require 'plugin/analysis'
 require 'plugin/bsv_xml'
@@ -24,6 +25,7 @@ require 'util/persistence'
 require 'util/exporter'
 require 'ext/meddata/src/ean_factory'
 require 'util/schedule'
+require 'plugin/swissindex'
 
 module ODDB
 	class Updater
@@ -402,6 +404,13 @@ module ODDB
     def update_whocc
       update_notify_simple WhoPlugin, "WHO-Update", :import
     end
+    def update_package_trade_status_by_swissindex(logging = false)
+			update_notify_simple(SwissindexPharmaPlugin, 'Swissindex Pharma', :update_package_trade_status, [logging])
+    end
+    def migel_nonpharma(pharmacode_file, logging = false)
+      update_notify_simple(SwissindexNonpharmaPlugin, 'Swissindex Migel Nonpharma', :migel_nonpharma, [pharmacode_file, logging])
+    end
+
 		private
 		def log_notify_bsv(plug, date, subj='SL-Update')
 
