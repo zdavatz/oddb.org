@@ -263,7 +263,7 @@ module ODDB
       # output
       #
       open(@output_file, "w") do |f|
-        f.print "position number; pharmacode; GTIN; datetime; status; stdate; lang; description; additional description; company name; company GLN; pharmpreis; ppub; faktor; pzr\n" 
+        f.print "position number;pharmacode;GTIN;datetime;status;stdate;lang;description;additional description;company name;company GLN;pharmpreis;ppub;faktor;pzr\n" 
         
         count = 1
         pharmacode_list.each do |pharmacode|
