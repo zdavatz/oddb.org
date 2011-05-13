@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissindexPlugin -- oddb.org -- 11.05.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissindexPlugin -- oddb.org -- 13.05.2011 -- mhatakeyama@ywesee.com
 
 require 'util/oddbconfig'
 require 'plugin/plugin'
@@ -263,7 +263,7 @@ module ODDB
       # output
       #
       open(@output_file, "w") do |f|
-        f.print "position number, pharmacode, GTIN, datetime, status, stdate, lang, description, additional description, company name, company GLN, pharmpreis, ppub, faktor, pzr\n" 
+        f.print "position number; pharmacode; GTIN; datetime; status; stdate; lang; description; additional description; company name; company GLN; pharmpreis; ppub; faktor; pzr\n" 
         
         count = 1
         pharmacode_list.each do |pharmacode|
@@ -317,7 +317,7 @@ module ODDB
             if additional_data = migel_data[3..6]
               line.concat additional_data
             end
-            f.print line.join(','), "\n"
+            f.print line.join(';'), "\n"
           end # SWISSINDEX.session
 
           Logging.append(log_file) do |log|
