@@ -353,8 +353,9 @@ module ODDB
       return return_value_plug_update
     end
     def update_swissmedic_followers
-			update_trade_status
-			update_medwin_packages
+			# update_trade_status # replaced by swissINDEX
+			# update_medwin_packages # replaced by swissINDEX
+                        update_package_trade_status_by_swissindex
 			reconsider_bsv :new_log => true
 			update_comarketing
 			update_swissreg_news
