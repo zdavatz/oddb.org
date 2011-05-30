@@ -172,7 +172,8 @@ class Registration < State::Admin::Global
       :complementary_type, :export_flag, :renewal_flag,
       :renewal_flag_swissmedic,
       :parallel_import, :index_therapeuticus, :ignore_patent,
-      :ith_swissmedic, :activate_fachinfo, :deactivate_fachinfo, :manual_inactive_date
+      :ith_swissmedic, :activate_fachinfo, :deactivate_fachinfo, :manual_inactive_date,
+      :vaccine
     ]
     if(@model.is_a? Persistence::CreateItem)
       iksnr = @session.user_input(:iksnr)
