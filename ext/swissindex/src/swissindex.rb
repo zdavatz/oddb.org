@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-# ODDB::Swissindex::SwissindexPharma -- 06.05.2011 -- mhatakeyama@ywesee.com
+# ODDB::Swissindex::SwissindexPharma -- 30.05.2011 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
 require 'savon'
@@ -112,7 +112,7 @@ class SwissindexNonpharma
       end
       return pos_num
     rescue StandardError, Timeout::Error => err
-      if try_time > 3
+      if try_time > 0
         puts err
         puts err.backtrace
         puts
