@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissmedicPluginTest -- oddb.org -- 07.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPluginTest -- oddb.org -- 31.05.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPluginTest -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
@@ -108,6 +108,7 @@ module ODDB
       args = {
         :ith_swissmedic      => '01.01.1.',
         :production_science  => 'Synthetika human',
+        :vaccine             => nil,
         :registration_date   => Date.new(1936,6,30),
         :expiration_date     => Date.new(2012,5,9),
         :inactive_date       => nil,
@@ -141,6 +142,7 @@ module ODDB
       args = {
         :ith_swissmedic      => '01.01.1.',
         :production_science  => 'Synthetika human',
+        :vaccine             => nil,
         :registration_date   => Date.new(1936,6,30),
         :expiration_date     => Date.new(2012,5,9),
         :inactive_date       => nil,
@@ -181,6 +183,7 @@ module ODDB
       args = {
         :ith_swissmedic      => '12.02.4.',
         :production_science  => 'Phytotherapeutika',
+        :vaccine             => nil,
         :registration_date   => Date.new(1930,9,6),
         :expiration_date     => Date.new(2010,9,6),
         :inactive_date       => nil,
@@ -216,6 +219,7 @@ module ODDB
       args = {
         :ith_swissmedic      => '20.02.0.',
         :production_science  => 'Anthroposophika',
+        :vaccine             => nil,
         :registration_date   => Date.new(1937,9,21),
         :expiration_date     => Date.new(2011,11,1),
         :inactive_date       => nil,
@@ -251,6 +255,7 @@ module ODDB
       args = {
         :ith_swissmedic      => '20.01.0.',
         :production_science  => 'Homöopathika',
+        :vaccine             => nil,
         :registration_date   => Date.new(1935,9,5),
         :expiration_date     => Date.new(2011,11,6),
         :inactive_date       => nil,
@@ -286,6 +291,7 @@ module ODDB
       args = {
         :ith_swissmedic      => '01.01.1.',
         :production_science  => 'Synthetika human',
+        :vaccine             => nil,
         :registration_date   => Date.new(1936,6,30),
         :expiration_date     => Date.new(2012,5,9),
         :inactive_date       => nil,

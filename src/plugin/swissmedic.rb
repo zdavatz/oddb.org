@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissmedicPlugin -- oddb.org -- 07.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 31.05.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 require 'fileutils'
@@ -580,9 +580,15 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
               end
         expiration = date_cell(row, column(:expiry_date))
         reg_date = date_cell(row, column(:registration_date))
+        vaccine = if science =~ /Blutprodukte/ or science =~ /Impfstoffe/
+                    true
+                  else
+                    nil
+                  end
         args = { 
           :ith_swissmedic      => cell(row, column(:index_therapeuticus)),
           :production_science  => science,
+          :vaccine             => vaccine,
           :registration_date   => reg_date,
           :expiration_date     => expiration,
           :renewal_flag        => false,
