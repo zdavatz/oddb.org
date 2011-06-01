@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# OddbApp -- oddb.org -- 13.04.2011 -- mhatakeyama@ywesee.com
+# OddbApp -- oddb.org -- 01.06.2011 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- hwyss@ywesee.com
 
 require 'odba'
@@ -1248,6 +1248,15 @@ class OddbPrevalence
 	def generate_german_dictionary
 		generate_dictionary('german', 'de_DE@euro')
 	end
+  def update_ibflag
+    @registrations.values.select{|r| r.production_science =~ /Blutprodukte/ or r.production_science =~ /Impfstoffe/}.sort_by{|r| r.iksnr}.each do |reg|
+      unless reg.vaccine
+        ptr = reg.pointer
+        args = {:vaccine => true}
+        update ptr, args, :swissmedic
+      end
+    end
+  end
 	private
 	def create_unknown_galenic_group
 		unless(@galenic_groups.is_a?(Hash) && @galenic_groups.size > 0)
