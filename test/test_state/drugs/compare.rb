@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Drugs::TestCompare -- oddb.org -- 29.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Drugs::TestCompare -- oddb.org -- 01.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -11,6 +11,70 @@ require 'view/http_404'
 module ODDB
 	module State
 		module Drugs
+
+class TestPackageFacade < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @original = flexmock('original')
+    @package  = flexmock('package')
+    @facade   = ODDB::State::Drugs::Compare::Comparison::PackageFacade.new(@package, @original)
+  end
+  def test_price_difference
+    flexmock(@original, 
+             :price_public          => 1,
+             :"comparable_size.qty" => 1
+            )
+    flexmock(@package, 
+             :price_public          => 3,
+             :"comparable_size.qty" => 1 
+            )
+    assert_in_delta(2.0, @facade.price_difference, 0.001)
+  end
+  def test_price_difference__nil
+    flexmock(@original, 
+             :price_public          => -1,
+             :"comparable_size.qty" => 1
+            )
+    flexmock(@package, 
+             :price_public          => 3,
+             :"comparable_size.qty" => 1 
+            )
+    assert_nil(@facade.price_difference)
+  end
+  def test_compare1
+    flexmock(@original, :price_public => 1.5)
+    flexmock(@package,  :price_public => -3.5)
+
+    result = @facade <=> @original
+    assert_equal(4, result)
+  end
+  def test_compare2
+    other = flexmock('other',
+                     :price_public => 1,
+                     :price_difference => 0,
+                     :comparable_size => size,
+                     :name_base => 'A'
+                    )
+    size = flexmock('size', 
+                    :qty => 1,
+                    :<=> => 0
+                   )
+    flexmock(@original, 
+             :price_public     => 1,
+             :comparable_size  => size,
+             :name_base        => 'B'
+            )
+    flexmock(@package,
+             :price_public     => 1,
+             :comparable_size  => size,
+             :name_base        => 'B'
+            )
+
+    result = @facade <=> other
+    assert_equal(1, result)
+  end
+
+end
 
 class TestComparison < Test::Unit::TestCase
   include FlexMock::TestCase
@@ -101,6 +165,40 @@ class TestCompare < Test::Unit::TestCase
                       )
     flexmock(@session, :user_input => pointer)
     assert_equal(ODDB::View::Drugs::EmptyCompare, @state.init)
+  end
+  def test_init__search_query
+    flexmock(@session, :user_input) do |session|
+      session.should_receive(:user_input).once.with(:pointer).and_return(nil)
+      session.should_receive(:user_input).once.with(:ean13).and_return(nil)
+      session.should_receive(:user_input).once.with(:search_query).and_return('term')
+    end
+    package = flexmock('package')
+    flexmock(ODDB::Package, :find_by_name_with_size => package)
+    assert_equal(ODDB::View::Http404, @state.init)
+  end
+  def test_init__error1
+    flexmock(@session).should_receive(:user_input).and_raise(Persistence::UninitializedPathError.new(1,2))
+    assert_equal(ODDB::View::Http404, @state.init)
+  end
+  def stdout_null
+    require 'tempfile'
+    $stdout = Tempfile.open('stdout')
+    yield
+    $stdout.close
+    $stdout = STDERR
+  end
+  def test_init__error2
+    flexmock(@session, :user_input) do |session|
+      session.should_receive(:user_input).once.with(:pointer).and_return(nil)
+      session.should_receive(:user_input).once.with(:ean13).and_return(nil)
+      session.should_receive(:user_input).once.with(:search_query).and_return('term')
+    end
+    package = flexmock('package', :is_a? => true)
+    flexmock(ODDB::Package, :find_by_name_with_size => package)
+    flexmock(@lnf).should_receive(:lookup).and_raise(StandardError)
+    stdout_null do 
+      assert_equal(ODDB::View::Http404, @state.init)
+    end
   end
 end
 

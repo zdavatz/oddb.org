@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Drugs::Fachinfo -- oddb -- 17.09.2003 -- rwaltert@ywesee.com
+# ODDB::State::Drugs::Fachinfo -- oddb.org -- 01.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
 require 'state/drugs/global'
 require 'view/drugs/fachinfo'
@@ -36,7 +37,7 @@ class FachinfoPrint < State::Drugs::Global
 	VOLATILE = true
 	def init
 		if(allowed?)
-			@default_view = View::Drugs::CompanyFachinfoPrint
+			@default_view = ODDB::View::Drugs::CompanyFachinfoPrint
 		end
 		super
 	end
@@ -93,7 +94,7 @@ class CompanyFachinfo < RootFachinfo
 	def init
 		super
 		unless(allowed?)
-			@default_view = View::Drugs::Fachinfo
+			@default_view = ODDB::View::Drugs::Fachinfo
 		end
 	end
 	def update
