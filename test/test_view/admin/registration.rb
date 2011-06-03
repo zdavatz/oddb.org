@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Admin::TestRegistration -- oddb.org -- 11.03.2011 -- mhatakeyama@ywesee.com
+# View::Admin::TestRegistration -- oddb.org -- 03.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -12,57 +12,58 @@ require 'htmlgrid/span'
 require 'util/pointerarray'
 
 module ODDB
-  module Test
-    def htmlgrid_setup
-      @lookandfeel = flexmock('lookandfeel') do |l|
-        l.should_receive(:lookup).and_return('lookup')
-        l.should_receive(:attributes).and_return({})
-        l.should_receive(:event_url)
-        l.should_receive(:_event_url)
-        l.should_receive(:base_url)
-      end
-      @session = flexmock('session') do |s|
-        s.should_receive(:event)
-        s.should_receive(:lookandfeel).and_return(@lookandfeel)
-        s.should_receive(:allowed?)
-        s.should_receive(:info?)
-        s.should_receive(:warning?)
-        s.should_receive(:error?)
-        s.should_receive(:state)
-        s.should_receive(:language).and_return('language')
-        s.should_receive(:error)
-      end
-      galenic_form = flexmock('galenic_form') do |g|
-        g.should_receive(:language).and_return('galenic_form_language')
-      end
-      substance = flexmock('substance') do |s|
-        s.should_receive(:language).and_return('substance_language')
-      end
-      active_agent = flexmock('active_agent') do |a|
-        a.should_receive(:substance).and_return(substance)
-        a.should_receive(:dose).and_return('dose')
-      end
-      composition = flexmock('composition') do |c|
-        c.should_receive(:galenic_form).and_return(galenic_form)
-        c.should_receive(:active_agents).and_return([active_agent])
-      end
-      atc_class = flexmock('atc_class') do |a|
-        a.should_receive(:code).and_return('code')
-      end
-      @model = flexmock('model') do |m|
-        m.should_receive(:pointer)
-        m.should_receive(:seqnr)
-        m.should_receive(:compositions).and_return([composition])
-        m.should_receive(:atc_class).and_return(atc_class)
-        m.should_receive(:has_patinfo?)
-      end
+  module View
+    module Admin
+module TestSetup
+  def htmlgrid_setup
+    @lookandfeel = flexmock('lookandfeel') do |l|
+      l.should_receive(:lookup).and_return('lookup')
+      l.should_receive(:attributes).and_return({})
+      l.should_receive(:event_url)
+      l.should_receive(:_event_url)
+      l.should_receive(:base_url)
+    end
+    @session = flexmock('session') do |s|
+      s.should_receive(:event)
+      s.should_receive(:lookandfeel).and_return(@lookandfeel)
+      s.should_receive(:allowed?)
+      s.should_receive(:info?)
+      s.should_receive(:warning?)
+      s.should_receive(:error?)
+      s.should_receive(:state)
+      s.should_receive(:language).and_return('language')
+      s.should_receive(:error)
+    end
+    galenic_form = flexmock('galenic_form') do |g|
+      g.should_receive(:language).and_return('galenic_form_language')
+    end
+    substance = flexmock('substance') do |s|
+      s.should_receive(:language).and_return('substance_language')
+    end
+    active_agent = flexmock('active_agent') do |a|
+      a.should_receive(:substance).and_return(substance)
+      a.should_receive(:dose).and_return('dose')
+    end
+    composition = flexmock('composition') do |c|
+      c.should_receive(:galenic_form).and_return(galenic_form)
+      c.should_receive(:active_agents).and_return([active_agent])
+    end
+    atc_class = flexmock('atc_class') do |a|
+      a.should_receive(:code).and_return('code')
+    end
+    @model = flexmock('model') do |m|
+      m.should_receive(:pointer)
+      m.should_receive(:seqnr)
+      m.should_receive(:compositions).and_return([composition])
+      m.should_receive(:atc_class).and_return(atc_class)
+      m.should_receive(:has_patinfo?)
     end
   end
 end
 
 class TestRegistrationSequences < Test::Unit::TestCase
   include FlexMock::TestCase
-  include ODDB::Test
+  include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
     @list = ODDB::View::Admin::RegistrationSequences.new([@model], @session)
@@ -87,7 +88,7 @@ end
 
 class TestRootRegistrationSequences < Test::Unit::TestCase
   include FlexMock::TestCase
-  include ODDB::Test
+  include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
     @list = ODDB::View::Admin::RootRegistrationSequences.new([@model], @session)
@@ -99,7 +100,7 @@ end
 
 class TestFachinfoLanguageSelect < Test::Unit::TestCase
   include FlexMock::TestCase
-  include ODDB::Test
+  include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
     @select = ODDB::View::Admin::FachinfoLanguageSelect.new('name', @model, @session)
@@ -116,7 +117,7 @@ end
 
 class TestRegistrationInnerComposite < Test::Unit::TestCase
   include FlexMock::TestCase
-  include ODDB::Test
+  include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
     flexmock(@model) do |m|
@@ -133,7 +134,7 @@ end
 
 class TestRegistrationForm < Test::Unit::TestCase
   include FlexMock::TestCase
-  include ODDB::Test
+  include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
     @user = flexmock('user') do |u|
@@ -213,7 +214,7 @@ end
 
 class TestResellerRegistrationForm < Test::Unit::TestCase
   include FlexMock::TestCase
-  include ODDB::Test
+  include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
     @company = flexmock('company') do |c|
@@ -242,7 +243,7 @@ end
 
 class TestRegistrationComposite < Test::Unit::TestCase
   include FlexMock::TestCase
-  include ODDB::Test
+  include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
     galenic_form = flexmock('galenic_form') do |g|
@@ -289,3 +290,8 @@ class TestRegistrationComposite < Test::Unit::TestCase
     assert_kind_of(HtmlGrid::Value, @composite.source(@model, @session))
   end
 end
+
+    end # Admin
+  end # View
+end # ODDB
+
