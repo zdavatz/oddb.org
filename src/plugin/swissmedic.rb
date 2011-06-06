@@ -405,7 +405,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         seq.compositions
       elsif(namestr = cell(row, column(:substances)))
         res = []
-        names = namestr.split(/\s*,\s*/u).collect { |name| 
+        names = namestr.split(/\s*,(?!\d|[^(]+\))\s*/u).collect { |name| 
           capitalize(name) }.uniq
         substances = names.collect { |name|
           update_substance(name)
@@ -645,13 +645,16 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
             end
       ## some names use commas for dosage
       parts = cell(row, column(:name_base)).split(/\s*,(?!\d|[^(]+\))\s*/u)
-      descr = parts.pop
+      base = parts.shift
+      descr = unless parts.empty?
+                parts.pop
+              else
+                nil
+              end
       ## some names have dosage data after the galenic form
       if /[\d\s][m]?[glL]\b/.match(descr) && parts.size > 1
-        descr = parts.pop << ', ' << descr
+        descr = parts.join(', ') << ', ' << descr
       end
-      base = parts.join(', ')
-      base, descr = descr, nil if base.empty?
       if ctext = cell(row, column(:composition))
         ctext = ctext.gsub(/\r\n?/u, "\n")
       end
