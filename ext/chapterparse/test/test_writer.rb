@@ -1,16 +1,19 @@
 #!/usr/bin/env ruby
-# ChapterParse::TestWriter -- oddb -- 12.08.2005 -- ffricker@ywesee.com
+# ODDB::ChapterParse::TestWriter -- oddb.org -- 06.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::ChapterParse::TestWriter -- oddb.org -- 12.08.2005 -- ffricker@ywesee.com
 
 
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 $: << File.expand_path('../src', File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'writer'
 
 module ODDB
 	module ChapterParse
 		class TestWriter < Test::Unit::TestCase
+      include FlexMock::TestCase
 			def setup
 				@writer = Writer.new
 			end
@@ -210,6 +213,27 @@ module ODDB
 				expected = "Second Line"
 				assert_equal(expected, paragraph.text)
 			end
+      def test_new_fonthandler
+        fonthandler = flexmock('fonthandler', :attribute => nil)
+        assert_kind_of(ODDB::Text::Format, @writer.new_fonthandler(fonthandler))
+      end
+      def test_new_fonthandler__vertical_align
+        fonthandler = flexmock('fonthandler') do |fh|
+          fh.should_receive(:attribute).once.with('face').and_return('Symbol')
+          fh.should_receive(:attribute).once.with('vertical-align').and_return('align')
+        end
+        assert_kind_of(ODDB::Text::Format, @writer.new_fonthandler(fonthandler))
+      end
+      def test_new_tablehandler
+        tablehandler = flexmock('tablehandler')
+        assert_nil(@writer.new_tablehandler(tablehandler))
+        assert_kind_of(ODDB::Text::Paragraph, @writer.new_tablehandler(nil))
+      end
+      def test_send_line_break
+        tablehandler = flexmock('tablehandler', :next_line => 'next_line')
+        @writer.new_tablehandler(tablehandler)
+        assert_equal('next_line', @writer.send_line_break)
+      end
 		end
 	end
 end
