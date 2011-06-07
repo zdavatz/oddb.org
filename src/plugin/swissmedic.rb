@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissmedicPlugin -- oddb.org -- 31.05.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 07.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 require 'fileutils'
@@ -128,6 +128,26 @@ module ODDB
           end
         }
       end
+    end
+    def fix_packages(opts={})
+      opts = {:skip => 3}.update opts
+      row = nil
+      tbook = Spreadsheet.open(@latest)
+      tbook.worksheet(0).each(opts[:skip]) { |row|
+        reg = update_registration(row, opts) if row
+        seq = update_sequence(reg, row) if reg
+        if seq
+          comps = update_compositions(seq, row)
+          comps.each_with_index do |comp, idx|
+            update_galenic_form(seq, comp, row, opts)
+          end
+        end
+        update_package(reg, seq, row, {}, opts) if reg
+      }
+    rescue StandardError => err
+      puts "#{err.class} when fixing #{source_row(row).pretty_inspect if row}"
+      puts err.message
+      puts err.backtrace[0,10]
     end
     def fix_compositions(opts={})
       opts = {:skip => 3}.update opts
