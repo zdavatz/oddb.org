@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissmedicPlugin -- oddb.org -- 07.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 08.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 require 'fileutils'
@@ -523,7 +523,11 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       # (in the worst case) something like this: "10 Filmtabletten"
       # or: "Infusionsemulsion, 1875ml"
       parts = name.split(/\s*,(?!\d|[^(]+\))\s*/u)
-      name = parts.first[/[^\d]{3,}/].strip
+      unless name = parts.first[/[^\d]{3,}/]
+       name = parts.last[/[^\d]{3,}/]
+      end
+      name.strip! if name
+
       unless(gf = @app.galenic_form(name))
         ptr = Persistence::Pointer.new([:galenic_group, 1], 
                                        [:galenic_form]).creator
@@ -666,15 +670,16 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       ## some names use commas for dosage
       parts = cell(row, column(:name_base)).split(/\s*,(?!\d|[^(]+\))\s*/u)
       base = parts.shift
+      ## some names have dosage data before the galenic form
+      # ex. 'Ondansetron-Teva, 4mg, Filmtabletten'
+      if /[\d\s][m]?[glL]\b/.match(parts.first)
+        base << ', ' << parts.shift
+      end
       descr = unless parts.empty?
-                parts.pop
+                parts.join(', ') 
               else
                 nil
               end
-      ## some names have dosage data after the galenic form
-      if /[\d\s][m]?[glL]\b/.match(descr) && parts.size > 1
-        descr = parts.join(', ') << ', ' << descr
-      end
       if ctext = cell(row, column(:composition))
         ctext = ctext.gsub(/\r\n?/u, "\n")
       end
