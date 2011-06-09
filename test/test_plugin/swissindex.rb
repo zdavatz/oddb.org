@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::TestSwissindexPlugin -- oddb.org -- 31.05.2011 -- mhatakeyama@ywesee.com
+# ODDB::TestSwissindexPlugin -- oddb.org -- 09.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 $: << File.expand_path("../..", File.dirname(__FILE__))
@@ -161,6 +161,12 @@ module ODDB
       end
       assert_equal(true, @plugin.update_package_trade_status)
     end
+    def test_load_ikskey
+      item = {:gtin => '1234567890123'}
+      swissindex = flexmock('swissindex', :search_item => item)
+      flexmock(ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER).should_receive(:session).and_yield(swissindex)
+      assert_equal('56789012', @plugin.load_ikskey('pahrmacode'))
+    end
   end # TestSwissindexPharmaPlugin
 
   class SwissindexNonpharmaPlugin
@@ -312,7 +318,6 @@ module ODDB
       flexmock(@plugin).should_receive(:open).and_yield(file)
       assert(@plugin.migel_nonpharma('pharmacode_file'))
     end
-
   end # TestSwissindexNonpharmaPlugin
 
 
