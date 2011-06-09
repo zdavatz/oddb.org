@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissindexPlugin -- oddb.org -- 13.05.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissindexPlugin -- oddb.org -- 09.06.2011 -- mhatakeyama@ywesee.com
 
 require 'util/oddbconfig'
 require 'plugin/plugin'
@@ -235,6 +235,17 @@ module ODDB
       end
       lines.join("\n")
     end
+    def load_ikskey(pharmacode)
+      ikskey = nil
+      SWISSINDEX_PHARMA_SERVER.session(ODDB::Swissindex::SwissindexPharma) do |swissindex|
+        if item = swissindex.search_item(pharmacode, :get_by_pharmacode)
+          if ean = item[:gtin]
+            ikskey = ean.to_s[4,8]
+          end
+        end
+      end
+      return ikskey
+    end
   end
 
   class SwissindexNonpharmaPlugin < SwissindexPlugin
@@ -341,6 +352,5 @@ module ODDB
     def report
       File.expand_path(@output_file)
     end
-
 	end # SwissindexNonpharma
 end # ODDB

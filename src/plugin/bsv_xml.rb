@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# BsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
+# ODDB::BsvXmlPlugin -- oddb.org -- 09.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::BsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 
 require 'config'
 require 'drb'
@@ -14,6 +15,7 @@ require 'rexml/streamlistener'
 require 'util/persistence'
 require 'util/today'
 require 'zip/zip'
+require 'plugin/swissindex'
 
 module ODDB
   class BsvXmlPlugin < Plugin
@@ -237,28 +239,7 @@ module ODDB
       end
       def load_ikskey pcode
         return if pcode.to_s.empty?
-        tries = 3
-        ikskey = nil
-        begin
-          MEDDATA_SERVER.session(:product) { |meddata|
-            results = meddata.search({:pharmacode => pcode})
-            if(results.size == 1)
-              data = meddata.detail(results.first, {:ean13 => [1,2]})
-              if(ean13 = data[:ean13])
-                ikskey = ean13[4,8]
-              end
-            end
-          }
-          ikskey
-        rescue Errno::ECONNRESET
-          if(tries > 0)
-            tries -= 1
-            sleep(3 - tries)
-            retry
-          else
-            raise
-          end
-        end
+        ODDB::SwissindexPharmaPlugin.new(@app).load_ikskey(pcode)
       end
       def tag_start name, attrs
         case name

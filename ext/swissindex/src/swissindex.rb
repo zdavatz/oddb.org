@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-# ODDB::Swissindex::SwissindexPharma -- 30.05.2011 -- mhatakeyama@ywesee.com
+# ODDB::Swissindex::SwissindexPharma -- 09.06.2011 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
 require 'savon'
@@ -138,20 +138,30 @@ class SwissindexPharma
         config.log_level = :info      # changing the log level
     end
   end
-  def search_item(eancode, lang = 'DE')
+  def search_item(code, search_type = :get_by_gtin, lang = 'DE')
     client = Savon::Client.new do | wsdl, http |
       wsdl.document = "https://index.ws.e-mediat.net/Swissindex/Pharma/ws_Pharma_V101.asmx?WSDL"
     end
     try_time = 3
     begin
-      response = client.request :get_by_gtin do
-      soap.xml = '<?xml version="1.0" encoding="utf-8"?>
+      response = client.request search_type do
+      soap.xml = if search_type == :get_by_gting
+      '<?xml version="1.0" encoding="utf-8"?>
       <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
         <soap:Body>
-          <GTIN xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + eancode + '</GTIN>
+          <GTIN xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + code + '</GTIN>
           <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang    + '</lang>
         </soap:Body>
       </soap:Envelope>'
+                 elsif search_type == :get_by_pharmacode
+      '<?xml version="1.0" encoding="utf-8"?>
+      <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+        <soap:Body>
+          <pharmacode xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + code + '</pharmacode>
+          <lang xmlns="http://swissindex.e-mediat.net/SwissindexPharma_out_V101">' + lang    + '</lang>
+        </soap:Body>
+      </soap:Envelope>'
+                 end
       end
       if pharma = response.to_hash[:pharma] 
         return pharma[:item]
