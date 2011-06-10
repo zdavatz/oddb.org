@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
-# TestBsvXmlPlubin -- oddb.org -- 03.03.2011 -- mhatakeyama@ywesee.com
+# TestBsvXmlPlubin -- oddb.org -- 10.06.2011 -- mhatakeyama@ywesee.com
 # TestBsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
+$: << File.expand_path("../..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
@@ -10,6 +11,7 @@ require 'stub/odba'
 require 'plugin/bsv_xml'
 require 'flexmock'
 require 'util/logfile'
+require 'ext/swissindex/src/swissindex'
 
 module ODDB
   class PackageCommon
@@ -326,17 +328,39 @@ module ODDB
       end
       assert_equal('5678', @listener.load_ikskey('pcode'))
     end
+    def stderr_null
+      require 'tempfile'
+      $stderr = Tempfile.open('stderr')
+      yield
+      $stderr.close
+      $stderr = STDERR
+    end
+    def replace_constant(constant, temp)
+      stderr_null do
+        keep = eval constant
+        eval "#{constant} = temp"
+        yield
+        eval "#{constant} = keep"
+      end
+    end
+    def test_load_ikskey
+      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      server = flexmock('server') do |serv|
+        serv.should_receive(:session).and_yield(swissindex)
+      end
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
+        assert_equal('56789012', @listener.load_ikskey('pharmacode'))
+      end
+    end
     def test_load_ikskey__nil
       assert_equal(nil, @listener.load_ikskey(''))
     end
     def test_load_ikskey__error
-      flexmock(BsvXmlPlugin::PreparationsListener) do |meddata_server|
-        meddata_server.should_receive(:session).and_raise(Errno::ECONNRESET)
+      swissindex = flexmock('swissindex', :search_item => nil)
+      server = flexmock('server') do |serv|
+        serv.should_receive(:session).and_yield(swissindex)
       end
-      flexmock(@listener) do |listener|
-        listener.should_receive(:sleep)
-      end
-      assert_raise(Errno::ECONNRESET) do
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
         @listener.load_ikskey('pcode')
       end
     end
@@ -626,7 +650,6 @@ module ODDB
         @listener.tag_end('Preparations')
       end
     end
-
   end
 
   class TestBsvXmlPlugin2 < Test::Unit::TestCase
@@ -876,7 +899,6 @@ module ODDB
       end
       assert_equal('change_flags', @plugin.update_preparations('io'))
     end
-
   end
 
   # Memo:
@@ -1657,30 +1679,56 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       ith = updates.at(19)
       assert_equal expected, ith
     end
+    def stderr_null
+      require 'tempfile'
+      $stderr = Tempfile.open('stderr')
+      yield
+      $stderr.close
+      $stderr = STDERR
+    end
+    def replace_constant(constant, temp)
+      stderr_null do
+        keep = eval constant
+        eval "#{constant} = temp"
+        yield
+        eval "#{constant} = keep"
+      end
+    end
     def test_update_preparation__unknown_registration__out_of_trade
       updates = []
       flexmock(Package).should_receive(:find_by_pharmacode).
                         times(1).and_return nil
-      setup_meddata_server
       @app.should_receive(:registration).and_return nil
       @app.should_receive(:each_package)
-      @plugin.update_preparations StringIO.new(@src)
+      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      server = flexmock('server') do |serv|
+        serv.should_receive(:session).and_yield(swissindex)
+      end
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
+        @plugin.update_preparations StringIO.new(@src)
+      end
       assert_equal [], updates
       assert_equal({}, @plugin.change_flags)
       listener = @plugin.preparations_listener
       assert_equal [], listener.conflicted_packages
       assert_equal [], listener.conflicted_registrations
       assert_equal [], listener.unknown_packages
-      assert_equal [], listener.unknown_registrations
+      expected = [{:name_descr => "Filmtabs 500 mg ", :swissmedic_no5_bag => "39271", :name_base => "Ponstan"}]
+      assert_equal expected, listener.unknown_registrations
     end
     def test_update_preparation__unknown_registration
       updates = []
       flexmock(Package).should_receive(:find_by_pharmacode).
                         times(1).and_return nil
-      setup_meddata_server :ean13 => '7680392710281'
       @app.should_receive(:registration).and_return nil
       @app.should_receive(:each_package)
-      @plugin.update_preparations StringIO.new(@src)
+      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      server = flexmock('server') do |serv|
+        serv.should_receive(:session).and_yield(swissindex)
+      end
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
+        @plugin.update_preparations StringIO.new(@src)
+      end
       assert_equal [], updates
       assert_equal({}, @plugin.change_flags)
       listener = @plugin.preparations_listener
@@ -1772,7 +1820,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       reg.should_receive(:sequences).and_return({})
       flexmock(Package).should_receive(:find_by_pharmacode).
                         times(1).and_return nil
-      setup_meddata_server
+      #setup_meddata_server
       @app.should_receive(:registration).and_return reg
       @app.should_receive(:each_package)
       expected_updates = {}
@@ -1782,7 +1830,13 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       @app.should_receive(:update).times(1).and_return do |ptr, data|
         assert_equal expected_updates.delete(ptr), data
       end
-      @plugin.update_preparations StringIO.new(@conflicted_src)
+      swissindex = flexmock('swissindex', :search_item => nil)
+      server = flexmock('server') do |serv|
+        serv.should_receive(:session).and_yield(swissindex)
+      end
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
+        @plugin.update_preparations StringIO.new(@conflicted_src)
+      end
       assert_equal({}, expected_updates)
       assert_equal({}, @plugin.change_flags)
       listener = @plugin.preparations_listener
@@ -1798,7 +1852,6 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       reg.should_receive(:sequences).and_return({})
       flexmock(Package).should_receive(:find_by_pharmacode).
                         times(1).and_return nil
-      setup_meddata_server :ean13 => '7680392710281'
       @app.should_receive(:registration).and_return reg
       @app.should_receive(:each_package)
       expected_updates = {}
@@ -1844,7 +1897,13 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
         assert_equal exp, data
         res
       end
-      @plugin.update_preparations StringIO.new(@src)
+      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      server = flexmock('server') do |serv|
+        serv.should_receive(:session).and_yield(swissindex)
+      end
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
+        @plugin.update_preparations StringIO.new(@src)
+      end
       assert_equal({}, expected_updates)
       assert_equal({}, @plugin.change_flags)
       listener = @plugin.preparations_listener
@@ -1874,7 +1933,6 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       package.should_receive(:registration).and_return reg
       flexmock(Package).should_receive(:find_by_pharmacode).
                         times(1).and_return nil
-      setup_meddata_server :ean13 => '7680392710281'
       @app.should_receive(:registration).and_return reg
       @app.should_receive(:each_package)
       expected_updates = {}
@@ -1886,7 +1944,13 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       @app.should_receive(:update).and_return do |ptr, data|
         assert_equal expected_updates.delete(ptr), data
       end
-      @plugin.update_preparations StringIO.new(@conflicted_src)
+      swissindex = flexmock('swissindex', :search_item => {:gtin => '1234567890123'})
+      server = flexmock('server') do |serv|
+        serv.should_receive(:session).and_yield(swissindex)
+      end
+      replace_constant('ODDB::SwissindexPharmaPlugin::SWISSINDEX_PHARMA_SERVER', server) do 
+        @plugin.update_preparations StringIO.new(@conflicted_src)
+      end
       assert_equal({}, expected_updates)
       assert_equal({}, @plugin.change_flags)
       listener = @plugin.preparations_listener
