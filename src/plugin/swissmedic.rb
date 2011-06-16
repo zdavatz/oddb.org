@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissmedicPlugin -- oddb.org -- 08.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 16.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 require 'fileutils'
@@ -13,11 +13,10 @@ require 'swissmedic-diff'
 
 module ODDB
   class SwissmedicPlugin < Plugin
-    PREPARATIONS_COLUMNS = [ :iksnr, :seqnr, :name_base, :company,
+    PREPARATIONS_COLUMNS = [ :iksnr, :seqnr, :name_base, :company, :export_flag,
       :index_therapeuticus, :atc_class, :production_science,
       :sequence_ikscat, :ikscat, :registration_date, :sequence_date,
-      :expiry_date, :substances, :package_count, :package_sizes, :composition,
-      :indication_registration, :indication_sequence ]
+      :expiry_date, :substances, :composition, :indication_registration, :indication_sequence ]
     include SwissmedicDiff::Diff
     GALFORM_P = %r{excipiens\s+(ad|pro)\s+(?<galform>((?!\bpro\b)[^.])+)}u
     SCALE_P = %r{pro\s+(?<scale>(?<qty>[\d.,]+)\s*(?<unit>[kcmuµn]?[glh]))}u
@@ -214,14 +213,11 @@ module ODDB
     end
     def initialize_export_registrations(agent)
       latest_name = File.join @archive, "Präparateliste-latest.xls"
-=begin
       if target = get_latest_file(agent, 'Präparateliste')
         FileUtils.cp target, latest_name
       end
-=end
       reg_indices = {}
-      [ :iksnr, :package_count, :expiry_date,
-        :registration_date ].each do |key|
+      [ :iksnr, :export_flag, :expiry_date, :registration_date ].each do |key|
         reg_indices.store key, PREPARATIONS_COLUMNS.index(key)
       end
       seq_indices = {}
@@ -231,32 +227,26 @@ module ODDB
       Spreadsheet.open(latest_name) do |workbook|
         iksnr_idx = reg_indices.delete(:iksnr)
         seqnr_idx = seq_indices.delete(:seqnr)
-        count_idx = reg_indices.delete(:package_count)
+        export_flag_idx = reg_indices.delete(:export_flag)
         workbook.worksheet(0).each(3) do |row|
           iksnr = row[iksnr_idx]
           seqnr = row[seqnr_idx]
-          count = row[count_idx].to_i
-          if count == 0
+          export = row[export_flag_idx]
+          if export =~ /E/
             data = {}
             seq_indices.each do |key, idx|
               data.store key, row[idx]
             end
             @export_sequences[[iksnr, seqnr]] = data
-          end
-          if aggregate = @export_registrations[iksnr]
-            aggregate[:package_count] += count
-          else
-            data = {}
-            reg_indices.each do |key, idx|
-              data.store key, row[idx]
+            unless @export_registrations[iksnr]
+              data = {}
+              reg_indices.each do |key, idx|
+                data.store key, row[idx]
+              end
+              @export_registrations.store iksnr, data
             end
-            data[:package_count] = count
-            @export_registrations.store iksnr, data
           end
         end
-      end
-      @export_registrations.delete_if do |iksnr, data|
-        data[:package_count] != 0
       end
       @export_registrations
     end
@@ -488,7 +478,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       export_registrations.delete_if do |iksnr, data|
         if reg = @app.registration(iksnr)
           @known_export_registrations += 1 if reg.export_flag
-          data.delete :package_count
           data.update :export_flag => true, :inactive_date => nil
           @app.update reg.pointer, data, :swissmedic
           false
