@@ -1,9 +1,8 @@
 #!/usr/bin/env ruby
-# State::Substances::TestSubstance -- oddb -- 02.03.2011 -- mhatakeyama@ywesee.com
-# State::Substances::TestSubstance -- oddb -- 07.07.2004 -- mhuggler@ywesee.com
+# ODDB::State::Substances::TestSubstance -- oddb.org -- 17.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Substances::TestSubstance -- oddb.org -- 07.07.2004 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
-#$: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'htmlgrid/template'
@@ -79,6 +78,26 @@ class TestSubstanceState < Test::Unit::TestCase
 		state = @state.merge
     assert_kind_of(State::Substances::SelectSubstance, state) 
   end
+  def test_merge__substance_size_1
+    substance = flexmock('substance') do |s|
+      s.should_receive(:has_connection_key?).and_return(false)
+      s.should_receive(:pointer).and_return('target_pointer')
+    end
+    app = flexmock('app') do |a|
+      a.should_receive(:substance).and_return(substance)
+      a.should_receive(:search_substances).and_return(['substance'])
+    end
+    flexstub(@session) do |s|
+      s.should_receive(:user_input).and_return('s')
+      s.should_receive(:app).and_return(app)
+    end
+    flexstub(@model) do |m|
+      m.should_receive(:pointer).and_return('source_pointer')
+    end
+		state = @state.merge
+    assert_kind_of(State::Substances::Substance, state) 
+  end
+
 	def test_merge__error
     substance = flexmock('substance') do |s|
       s.should_receive(:has_connection_key?).and_return(false)
@@ -134,6 +153,31 @@ class TestSubstanceState < Test::Unit::TestCase
     state = @state.update
     assert_equal(@state, state)
     assert_equal(true, state.error?)
+  end
+  def test_assign
+    app       = flexmock('app', :update => 'update')
+    substance = flexmock('substance', :pointer => 'pointer')
+    flexmock(@session, 
+             :user_input => 'substance_name',
+             :substance  => substance,
+             :app        => app
+            )
+    flexmock(@model, :pointer => 'pointer')
+    flexmock(@state, :unique_email => 'unique_email')
+    assert_equal(@state, @state.assign)
+  end
+  def test_delete_connection_key
+    app       = flexmock('app', :update => 'update')
+    flexmock(@session, 
+             :user_input => 'key',
+             :app        => app
+            )
+    flexmock(@model, 
+             :connection_keys => ['key'], 
+             :pointer => 'pointer'
+            )
+    flexmock(@state, :unique_email => 'unique_email')
+    assert_equal(@state, @state.delete_connection_key)
   end
 end
 		end
