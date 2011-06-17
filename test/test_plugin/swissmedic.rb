@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissmedicPluginTest -- oddb.org -- 31.05.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPluginTest -- oddb.org -- 17.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPluginTest -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
@@ -1279,15 +1279,15 @@ module ODDB
       flexmock(Spreadsheet) do |spr|
         spr.should_receive(:open).and_yield(workbook)
       end
-      expected = {0=>{:registration_date=>nil, :expiry_date=>nil, :package_count=>0}}
+      expected = {}
       assert_equal(expected, @plugin.initialize_export_registrations('agent'))
     end
-    def test_initialize_export_registrations__aggregate
+    def test_initialize_export_registrations__export
       flexmock(@plugin) do |plg|
         plg.should_receive(:get_latest_file).and_return(true)
       end
       flexmock(FileUtils, :cp => nil)
-      row = [0]
+      row = [0,1,2,3,"E"]
       workbook = flexmock('workbook') do |bok|
         bok.should_receive(:worksheet).and_return(flexmock("sheet") do |sht|
           sht.should_receive(:each).and_yield(row)
@@ -1296,8 +1296,7 @@ module ODDB
       flexmock(Spreadsheet) do |spr|
         spr.should_receive(:open).and_yield(workbook)
       end
-      @plugin.instance_eval('@export_registrations = {0 => {:package_count => 0}}')
-      expected = {0=>{:package_count=>0}}
+      expected = {0 => {:registration_date => nil, :expiry_date => nil}} 
       assert_equal(expected, @plugin.initialize_export_registrations('agent'))
     end
     def test_fix_compositions
@@ -1325,6 +1324,35 @@ module ODDB
       tempfile = Tempfile.new('tempfile')
       $stdout = File.open(tempfile.path, "w")
       assert_equal(nil, @plugin.fix_compositions)
+      tempfile.close
+      $stdout = STDOUT
+    end
+    def test_fix_packages
+      sheet = flexmock('sheet') do |s|
+        s.should_receive(:each).and_yield('row')
+      end
+      book = flexmock('book', :worksheet => sheet)
+      flexmock(Spreadsheet, :open => book)
+      composition = flexmock('composition')
+      flexmock(@plugin) do |p|
+        p.should_receive(:update_registration).and_return('registration')
+        p.should_receive(:update_sequence).and_return('sequence')
+        p.should_receive(:update_compositions).and_return([composition])
+        p.should_receive(:update_galenic_form).and_return('galenic_form')
+        p.should_receive(:update_package).and_return('package')
+      end
+      assert_equal('package', @plugin.fix_packages)
+    end
+    def test_fix_packages__error
+      flexmock(Spreadsheet) do |s|
+        s.should_receive(:open).and_raise(StandardError, 'standard_error')
+      end
+      flexmock(@plugin) do |p|
+        p.should_receive(:source_row)
+      end
+      tempfile = Tempfile.new('tempfile')
+      $stdout = File.open(tempfile.path, "w")
+      assert_equal(nil, @plugin.fix_packages)
       tempfile.close
       $stdout = STDOUT
     end
