@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# FiParse::TestPatinfoHpricot -- oddb -- 17.08.2006 -- hwyss@ywesee.com
+# ODDB::FiParse::TestPatinfoHpricot -- oddb.org -- 20.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::FiParse::TestPatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
 require 'hpricot'
 
@@ -7,11 +8,13 @@ $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'patinfo_hpricot'
 
 module ODDB
   module FiParse
 class TestPatinfoHpricot < Test::Unit::TestCase
+  include FlexMock::TestCase
   def setup
     @writer = PatinfoHpricot.new
   end
@@ -172,6 +175,24 @@ Jahren   pro Tag        pro Tag     pro Tag
     assert_raises(RuntimeError) { 
       @writer.identify_chapter('7800', nil)
     }
+  end
+  def test_identify_chapter__7930
+    assert_nil(@writer.identify_chapter('7930', nil))
+  end
+  def test_identify_chapter__7520
+    chapter = flexmock('chapter', 
+                       :sections  => 'sections',
+                       :sections= => nil
+                      )
+    @writer.identify_chapter('7520', chapter)
+    assert_equal(chapter, @writer.identify_chapter('7520', chapter))
+  end
+  def test_identify_chapter__nil
+    chapter = flexmock('chapter', :to_s => '12345')
+    assert_equal(chapter, @writer.identify_chapter(nil, chapter))
+  end
+  def test_to_textinfo
+    assert_kind_of(ODDB::PatinfoDocument, @writer.to_textinfo)
   end
 end
 class TestPatinfoHpricotCimifeminDe < Test::Unit::TestCase

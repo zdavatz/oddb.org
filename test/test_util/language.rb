@@ -1,12 +1,16 @@
 #!/usr/bin/env ruby
-# TestLanguage -- oddb -- 24.03.2003 -- mhuggler@ywesee.com 
+# ODDB::TestLanguage -- oddb.org -- 20.06.2011 -- mhatakeyama@ywesee.com
+# TestLanguage -- oddb.org -- 24.03.2003 -- mhuggler@ywesee.com 
 
-$: << File.expand_path('..', File.dirname(__FILE__))
+#$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'util/language'
 require 'odba'
+require 'util/searchterms'
+
 class Language
 	attr_accessor :foo
 	include ODDB::Language
@@ -118,4 +122,65 @@ class TestDescriptions < Test::Unit::TestCase
 	def test_to_hash
 		assert_equal({'foo'=>'bar'}, @desc.to_hash)
 	end
+end
+
+module ODDB
+  class StubSimpleLanguage
+    include ODDB::SimpleLanguage
+  end
+
+  class TestDescriptions < Test::Unit::TestCase
+    include FlexMock::TestCase
+    def setup
+      @descriptions = ODDB::SimpleLanguage::Descriptions.new
+    end
+    def test_first
+      assert_equal('', @descriptions.first)
+    end
+  end
+
+  class TestSimpleLanguage < Test::Unit::TestCase
+    include FlexMock::TestCase
+    def setup
+      flexmock(ODBA.cache, :next_id => 123)
+      @simplelanguage = ODDB::StubSimpleLanguage.new
+    end
+    def test_match
+      assert_equal(false, @simplelanguage.match(/pattern/)) 
+    end
+    def test_method_missing
+      assert_raise(NoMethodError) do 
+        @simplelanguage.nomethod
+      end
+    end
+    def test_search_text
+      assert_equal('', @simplelanguage.search_text('de'))
+    end
+    def test_to_s
+      assert_equal('', @simplelanguage.to_s)
+    end
+    def test_to_s__not_empty
+      @simplelanguage.descriptions.store('key', 'value')
+      assert_equal('value', @simplelanguage.to_s)
+    end
+  end
+
+  class StubLanguage
+    include ODDB::Language
+  end
+  class TestLanguage < Test::Unit::TestCase
+    include FlexMock::TestCase
+    def setup
+      flexmock(ODBA.cache, :next_id => 123)
+      @language = ODDB::StubLanguage.new
+    end
+    def test_all_descriptions
+      assert_equal([], @language.all_descriptions)
+    end
+    def test_synonyms
+      @language.synonyms=['synonym']
+      assert_equal(["synonym"], @language.synonyms)
+    end
+  end
+
 end

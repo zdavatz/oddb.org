@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
-# View::TestNavigationFoot -- oddb -- 20.11.2002 -- hwyss@ywesee.com 
+# ODDB::View::TestNavigationFoot -- oddb.org -- 20.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::TestNavigationFoot -- oddb.org -- 20.11.2002 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'view/navigationfoot.rb'
 require 'custom/lookandfeelbase'
 require 'util/validator'
@@ -108,3 +110,83 @@ module ODDB
 		end
 	end
 end
+
+module ODDB
+  module View
+
+class TestNavigationFoot2 < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf       = flexmock('lookandfeel', 
+                          :lookup    => 'lookup',
+                          :disabled? => nil,
+                          :enabled?  => nil,
+                          :zone_navigation => 'zone_navigation',
+                          :attributes      => {},
+                          :direct_event    => 'direct_event',
+                          :_event_url      => '_event_url',
+                          :navigation      => 'navigation'
+                         )
+    @session   = flexmock('session', :lookandfeel => @lnf)
+    @model     = flexmock('model')
+    @composite = ODDB::View::NavigationFoot.new(@model, @session)
+  end
+  def test_init
+    expected = {
+      [0, 0] => "navigation",
+      [1, 1] => "subheading right",
+      [1, 0] => "navigation right",
+      [0, 1] => "subheading"
+    }
+    assert_equal(expected, @composite.init)
+  end
+
+  def test_init__navigation
+    flexmock(@lnf) do |lnf|
+      lnf.should_receive(:disabled?).with(:navigation).and_return(true)
+    end
+    expected = {[0, 0] => "subheading"}
+    assert_equal(expected, @composite.init)
+  end
+  def test_init__zone_navigation
+    flexmock(@lnf) do |lnf|
+      lnf.should_receive(:disabled?).with(:navigation).and_return(false)
+      lnf.should_receive(:disabled?).with(:zone_navigation).and_return(true)
+    end
+    expected = {[0, 0] => "navigation", [1, 0] => "navigation right"}
+    assert_equal(expected, @composite.init)
+  end
+  def test_init__custom_navigation
+    flexmock(@lnf) do |lnf|
+      lnf.should_receive(:disabled?).with(:navigation).and_return(false)
+      lnf.should_receive(:disabled?).with(:zone_navigation).and_return(false)
+      lnf.should_receive(:enabled?).and_return(true)
+    end
+    expected = {[0, 0] => "subheading", [1, 0] => "subheading right"}
+    assert_equal(expected, @composite.init)
+  end
+end
+
+class TestTopFoot < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf       = flexmock('lookandfeel', 
+                          :lookup   => 'lookup',
+                          :enabled? => true,
+                          :attributes      => {},
+                          :zone_navigation => 'zone_navigation',
+                          :direct_event    => 'direct_event',
+                          :_event_url      => '_event_url'
+                         )
+    @session   = flexmock('session', :lookandfeel => @lnf)
+    @model     = flexmock('model')
+    @composite = ODDB::View::TopFoot.new(@model, @session)
+  end
+  def test_init
+    expected = {[0, 0] => "navigation", [1, 0] => "navigation right"}
+    assert_equal(expected, @composite.init)
+  end
+end
+
+  end # View
+end # ODDB
