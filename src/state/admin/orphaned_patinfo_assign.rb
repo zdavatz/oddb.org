@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::OrphanedPatinfoAssign -- oddb -- 26.11.2003 -- rwaltert@ywesee.com
+# ODDB::Admin::OrphanedPatinfoAssign -- oddb.org -- 21.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::OrphanedPatinfoAssign -- oddb -- 26.11.2003 -- rwaltert@ywesee.com
 
 require 'view/admin/orphaned_patinfo_assign'
 
@@ -77,7 +78,7 @@ class OrphanedPatinfoAssign < State::Admin::Global
 	def preview 
 		if(lang = @session.user_input(:language_select))
 			doc = @model.languages[lang]
-			State::Drugs::PatinfoPreview.new(@session, doc)
+			ODDB::State::Admin::PatinfoPreview.new(@session, doc)
 		end
 	end
 end

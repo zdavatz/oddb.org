@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
-# State::Admin::TestLogin -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
+# ODDB::State::Admin::TestLogin -- oddb.org -- 21.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::TestLogin -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
-$: << File.expand_path('..', File.dirname(__FILE__))
+#$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
@@ -22,6 +23,116 @@ module Root
 	RESOLVE_STATES = {
 		[:resolve] =>	StubResolvedRootState,
 	}
+end
+
+class StubLoginMethods
+  include ODDB::State::Admin::LoginMethods
+  def initialize(session)
+    @session = session
+    @errors  = {}
+  end
+end
+
+class TestLoginMethods < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @session      = flexmock('session')
+    @loginmethods = ODDB::State::Admin::StubLoginMethods.new(@session)
+  end
+  def test_autologin
+    user = flexmock('user', 
+                    :valid?   => nil,
+                    :allowed? => nil
+                   )
+    assert_kind_of(ODDB::State::User::InvalidUser, @loginmethods.autologin(user))
+  end
+  def test_autologin__valid
+    state = flexmock('state', :augment_self => 'augment_self')
+    flexmock(@session, 
+             :desired_state  => state,
+             :desired_state= => nil
+            )
+    user = flexmock('user', 
+                    :valid?   => true,
+                    :allowed? => nil
+                   )
+    assert_equal('augment_self', @loginmethods.autologin(user))
+  end
+  def test_autologin__allowed
+    state = flexmock('state', :augment_self => 'augment_self')
+    flexmock(@session, 
+             :desired_state  => state,
+             :desired_state= => nil
+            )
+    user = flexmock('user', 
+                    :valid?   => true,
+                    :allowed? => true
+                   )
+    assert_equal('augment_self', @loginmethods.autologin(user))
+  end
+
+  def test_login
+    user = flexmock('user', 
+                    :valid?   => nil,
+                    :allowed? => nil
+                   )
+    flexmock(@session, :login => user)
+    assert_kind_of(ODDB::State::User::InvalidUser, @loginmethods.login)
+  end
+  def test_login__unknownentityerror
+    user = flexmock('user', 
+                    :valid?   => nil,
+                    :allowed? => nil
+                   )
+    flexmock(@session) do |s|
+      s.should_receive(:login).and_raise(Yus::UnknownEntityError)
+    end
+    flexmock(@loginmethods, :create_error => 'create_error')
+    assert_equal(@loginmethods, @loginmethods.login)
+  end
+  def test_login__authentificationerror
+    user = flexmock('user', 
+                    :valid?   => nil,
+                    :allowed? => nil
+                   )
+    flexmock(@session) do |s|
+      s.should_receive(:login).and_raise(Yus::AuthenticationError)
+    end
+    flexmock(@loginmethods, :create_error => 'create_error')
+    assert_equal(@loginmethods, @loginmethods.login)
+  end
+end
+
+class TestTransparentLogin < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
+    user     = flexmock('user', 
+                        :valid?   => nil,
+                        :allowed? => nil
+                       )
+    @session = flexmock('session', 
+                        :lookandfeel => @lnf,
+                        :login       => user
+                       )
+    @model   = flexmock('model')
+    @state   = ODDB::State::Admin::TransparentLogin.new(@session, @model)
+  end
+  def test_login
+    assert_equal(@state, @state.login)
+  end
+  def test_login__unknownentityerror
+    flexmock(@session) do |s|
+      s.should_receive(:login).and_raise(Yus::UnknownEntityError)
+    end
+    assert_equal(@state, @state.login)
+  end
+  def test_login__authentificationerror
+    flexmock(@session) do |s|
+      s.should_receive(:login).and_raise(Yus::AuthenticationError)
+    end
+    assert_equal(@state, @state.login)
+  end
 end
 
 class TestTransparentLoginState < Test::Unit::TestCase
