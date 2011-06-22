@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Substances::SelectSubstance -- ODDB -- 30.09.2004 -- hwyss@ywesee.com
+# ODDB::View::Substances::SelectSubstance -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Substances::SelectSubstance -- oddb.org -- 30.09.2004 -- hwyss@ywesee.com
 
 require 'htmlgrid/formlist'
 require 'view/privatetemplate'
@@ -48,7 +49,7 @@ class SelectSubstanceComposite < HtmlGrid::Composite
 	end
 end
 class SelectSubstance < View::PrivateTemplate
-	CONTENT = Substances::SelectSubstanceComposite
+	CONTENT = ODDB::View::Substances::SelectSubstanceComposite
 	SNAPBACK_EVENT = :result
 end
 		end

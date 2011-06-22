@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::WaitForFachinfo -- oddb -- 10.03.2003 -- mwalder@ywesee.com rwaltert@ywesee.com
+# ODDB::State::Admin::WaitForFachinfo -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::WaitForFachinfo -- oddb.org -- 10.03.2003 -- mwalder@ywesee.com rwaltert@ywesee.com
 
 require 'state/admin/global'
 require 'state/admin/fachinfoconfirm'
@@ -21,7 +22,7 @@ class WaitForFachinfo < State::Admin::Global
 		end
 	end
 	attr_accessor :wait_counter
-	VIEW = View::Admin::WaitForFachinfo
+	VIEW = ODDB::View::Admin::WaitForFachinfo
 	def init
 		super
 		@wait = true

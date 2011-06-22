@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-#	State::Admin::Sponsor -- oddb -- 29.07.2003 -- mhuggler@ywesee.com
+#	ODDB::State::Admin::Sponsor -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com
+#	ODDB::State::Admin::Sponsor -- oddb.org -- 29.07.2003 -- mhuggler@ywesee.com
 
 require 'state/admin/global'
 require 'util/upload'
@@ -10,7 +11,7 @@ module ODDB
 		module Admin
 class Sponsor < State::Admin::Global
 	DIRECT_EVENT = :sponsor	
-	VIEW = View::Admin::Sponsor	
+	VIEW = ODDB::View::Admin::Sponsor	
 	PATH = File.expand_path('../../../doc/resources/sponsor', 
 		File.dirname(__FILE__))
 	def update

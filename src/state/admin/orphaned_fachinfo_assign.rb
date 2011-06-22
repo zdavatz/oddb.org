@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::OrphanedFachinfoAssign -- oddb -- 11.12.2003 -- rwaltert@ywesee.com
+# ODDB::State::Admin::OrphanedFachinfoAssign -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::OrphanedFachinfoAssign -- oddb.org -- 11.12.2003 -- rwaltert@ywesee.com
 
 require 'view/admin/orphaned_fachinfo_assign'
 
@@ -7,7 +8,7 @@ module ODDB
 	module State
 		module Admin
 class OrphanedFachinfoAssign < State::Admin::Global
-	VIEW = View::Admin::OrphanedFachinfoAssign
+	VIEW = ODDB::View::Admin::OrphanedFachinfoAssign
 	class OrphanedFachinfoFacade < SimpleDelegator
 		attr_accessor :registrations
 		def structural_ancestors(app)

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::ResultFoot -- oddb -- 20.03.2003 -- hwyss@ywesee.com 
+# ODDB::View::ResultFoot -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::ResultFoot -- oddb.org -- 20.03.2003 -- hwyss@ywesee.com 
 
 require 'htmlgrid/composite'
 require 'htmlgrid/link'
@@ -50,7 +51,8 @@ module ODDB
 					width = [x, width].max
 					height = [y.next, height].max
 				}
-				@css_map.store([0, 0, width.next, height], 'infos')
+				#@css_map.store([0, 0, width.next, height], 'infos')
+				css_map.store([0, 0, width.next, height], 'infos')
 				super
 			end
 			def explain_comarketing(model, session=@session)

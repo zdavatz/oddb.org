@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
-# View::TestPager -- oddb -- 29.08.2003 -- ywesee@ywesee.com
+# ODDB::View::TestPager -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::TestPager -- oddb.org -- 29.08.2003 -- ywesee@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'view/pager'
 require 'stub/cgi'
 
@@ -15,6 +17,7 @@ module ODDB
 		end
 
 		class TestPager	< Test::Unit::TestCase
+      include FlexMock::TestCase
 			class StubSession
 				attr_accessor :page, :event, :dictionary
 				def attributes(key)
@@ -72,6 +75,12 @@ module ODDB
 				assert_not_nil(result.index('<TD class="pager">0</TD>'), "Page-Number without link did not have css-class")
 				assert_nil(result.index('<TD class="pager-bg">'), "The pager should not have alternate bg-classes")
 			end
+      def test_compose_header
+        page = flexmock('page', :previous => 'previous')
+        @view.instance_eval('@page = page')
+        offset = [0,0]
+        assert_equal([2,0], @view.compose_header(offset))
+      end
 		end
 	end
 end
