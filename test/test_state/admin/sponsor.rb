@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::TestSponsor- oddb.org -- 21.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::TestSponsor- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -18,14 +18,32 @@ class TestSponsor < Test::Unit::TestCase
     company  = flexmock('company', :pointer => 'pointer')
     @app     = flexmock('app', :company_by_name => company)
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
-    user_input = {:company_name => 'company_name'}
+    flexmock(File) do |file|
+      file.should_receive(:exist?).and_return(true)
+      file.should_receive(:delete)
+      file.should_receive(:open).and_yield('')
+    end
+    flexmock(FileUtils, :mkdir_p => nil)
+    @io = flexmock('io', 
+                  :original_filename => 'original_filename',
+                  :read => 'read'
+                 )
+
+    user_input = {:company_name => 'company_name', :logo_file => @io}
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
                         :user_input  => user_input,
-                        :app         => @app
+                        :app         => @app,
+                        :flavor      => 'flavor'
                        )
-    @model   = flexmock('model')
+    @model   = flexmock('model', 
+                        :pointer => 'pointer',
+                        :logo_filenames => {:default => 'default'}
+                       )
+    model = flexmock('model2', :logo_filenames => {})
+    flexmock(@app, :update => model)
     @state   = ODDB::State::Admin::Sponsor.new(@session, @model)
+    flexmock(@state, :unique_email => 'unique_email')
   end
   def test_update__company
     assert_equal(@state, @state.update)
@@ -49,20 +67,8 @@ class TestSponsor < Test::Unit::TestCase
     assert_equal(@state, @state.update)
   end
   def test_store_logo
-    flexmock(File) do |file|
-      file.should_receive(:exist?).and_return(true)
-      file.should_receive(:delete)
-      file.should_receive(:open).and_yield('')
-    end
-    flexmock(FileUtils, :mkdir_p => nil)
-    flexmock(@session, :flavor => 'flavor')
-    io = flexmock('io', 
-                  :original_filename => 'original_filename',
-                  :read => 'read'
-                 )
-    assert_equal("flavor_key_original_filename", @state.store_logo(io, 'key', 'oldname'))
+    assert_equal("flavor_key_original_filename", @state.store_logo(@io, 'key', 'oldname'))
   end
-
 end
 
 		end # Admin

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# Vewi::Admin::TestFAchinfoConfirm -- oddb -- 18.03.2011 -- mhatakeyama@ywesee.com
-# View::Drugs::TestFachinfoConfirm -- oddb -- 24.10.2003 -- rwaltert@ywesee.com
+# ODDB::View::Admin::TestFAchinfoConfirm -- oddb.org -- 23.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::TestFachinfoConfirm -- oddb.org -- 24.10.2003 -- rwaltert@ywesee.com
 
 $: << File.expand_path("../..", File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -19,7 +19,7 @@ module ODDB
 		end
 	end
 end
-class TestFachinfoConfirm < Test::Unit::TestCase
+class TestFachinfoConfirmForm < Test::Unit::TestCase
   include FlexMock::TestCase
 	class StubSession
 		attr_writer :error, :warning
@@ -27,7 +27,7 @@ class TestFachinfoConfirm < Test::Unit::TestCase
 		def error?
 			@error
 		end
-		def event_url(event)
+		def event_url(event, *args)
 			event.to_s
 		end
 		def warning?
@@ -88,5 +88,18 @@ class TestFachinfoConfirm < Test::Unit::TestCase
 		line = '<INPUT name="update" type="submit" value="lookup">'
 		assert_nil(html.index(line), "found: #{line}\nin:\n#{html}\n...but it should not be there!")
 	end
+  def test_iksnrs
+    flexmock(@session, :iksnrs => ['iksnr'])
+    model = flexmock('model')
+    assert_equal('iksnr', @form.iksnrs(model, @session))
+  end
+  def test_language
+    model = flexmock('model')
+    assert_equal('lookup', @form.language(model, @session))
+  end
+  def test_preview
+    model = flexmock('model')
+    assert_kind_of(HtmlGrid::PopupLink, @form.preview(model, @session))
+  end
 end
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# suite.rb -- oddb.org/ext -- 21.06.2011 -- mhatakeyama@ywesee.com 
+# suite.rb -- oddb.org/ext -- 23.06.2011 -- mhatakeyama@ywesee.com 
 
 current_dir = (File.expand_path(File.dirname(__FILE__)))
 
@@ -26,6 +26,7 @@ require "#{current_dir}/analysisparse/test/test_block_list_parser.rb"
 require "#{current_dir}/analysisparse/test/test_appendix_parser.rb"
 require "#{current_dir}/analysisparse/test/test_antibody_list_parser.rb"
 require "#{current_dir}/analysisparse/test/test_anonymous_list_parser.rb"
+require "#{current_dir}/analysisparse/test/test_analysis_hpricot.rb"
 require "#{current_dir}/export/test/test_oddbdat.rb"
 require "#{current_dir}/export/test/test_generics_xls.rb"
 require "#{current_dir}/export/test/test_csv_exporter.rb"
