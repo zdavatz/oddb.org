@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::TestAddressSuggestion -- oddb.org -- 28.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::TestAddressSuggestion -- oddb.org -- 24.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -14,6 +14,7 @@ require 'state/companies/init'
 require 'state/global'
 require 'state/admin/global'
 
+require 'state/hospitals/setpass'
 
 module ODDB
   module State
@@ -79,7 +80,7 @@ class TestAddressSuggestion < Test::Unit::TestCase
   end
   def test_zone_navigation__hospitals
     @state.instance_eval('@zone = :hospitals')
-    assert_equal([], @state.zone_navigation)
+    assert_equal([ODDB::State::Hospitals::HospitalList], @state.zone_navigation)
   end
   def test_accept
     flexmock(@app, :update => 'update')

@@ -1,20 +1,23 @@
 #!/usr/bin/env ruby
-# TestDownloadInvoicer -- oddb -- 27.09.2005 -- hwyss@ywesee.com
+# ODDB::TestDownloadInvoicer -- oddb.org -- 24.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::TestDownloadInvoicer -- oddb.org -- 27.09.2005 -- hwyss@ywesee.com
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
 require 'test/unit'
-require 'plugin/download_invoicer'
 require 'flexmock'
+require 'plugin/download_invoicer'
 require 'model/invoice'
 
 module ODDB
 	class TestDownloadInvoicer < Test::Unit::TestCase
+    include FlexMock::TestCase
 		class FlexMock < ::FlexMock
 			undef :type
 		end
 		def setup
-			@app = FlexMock.new
+			#@app = FlexMock.new
+			@app = flexmock('app')
 			@plugin = DownloadInvoicer.new(@app)
 		end
 		def test_recent_items
@@ -67,5 +70,45 @@ module ODDB
 			assert_equal([item1, item2, item3], group1)
 			assert_equal([item4], group2)
 		end
+    def test_filter_paid
+      invoice_item = flexmock('invoice_item', 
+                      :time => Time.local(2011,2,3),
+                      :type => :csv_export
+                     )
+      invoice = flexmock('invoice', :items => {'key' => invoice_item})
+      flexmock(@app, :invoices => {'key' => invoice})
+      item = flexmock('item', :time => Time.local(2011,3,3))
+      assert_equal([item], @plugin.filter_paid([item]))
+    end
+    def test_filter_paid__empty
+      invoice_item = flexmock('invoice_item', 
+                      :time => Time.local(2011,2,3),
+                      :type => :csv_export
+                     )
+      invoice = flexmock('invoice', :items => {'key' => invoice_item})
+      flexmock(@app, :invoices => {'key' => invoice})
+      item = flexmock('item', :time => Time.local(2011,2,3))
+      assert_equal([], @plugin.filter_paid([item]))
+    end
+
+    def test_run
+      invoice_item = flexmock('invoice_item', 
+                      :time => Time.local(2011,2,3),
+                      :type => :csv_export
+                     )
+      invoice = flexmock('invoice', :items => {'key' => invoice_item})
+      flexmock(@app, :invoices => {'key' => invoice})
+      item  = flexmock('item', 
+                       :time => Time.local(2011,3,3),
+                       :yus_name => 'yus_name'
+                      )
+      slate = flexmock('slate', :items => {'key' => item})
+      flexmock(@app, :slate => slate)
+      flexmock(@plugin, 
+               :send_invoice   => 'ydim_id',
+               :create_invoice => 'create_invoice'
+              )
+      assert_nil(@plugin.run(Date.new(2011,3,3)))
+    end
 	end
 end

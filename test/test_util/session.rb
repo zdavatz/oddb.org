@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::TestSession -- oddb.org -- 11.04.2011-- mhatakeyama@ywesee.com
+# ODDB::TestSession -- oddb.org -- 24.06.2011-- mhatakeyama@ywesee.com
 # ODDB::TestSession -- oddb.org -- 22.10.2002 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -23,7 +23,10 @@ module ODDB
                             :sorted_fachinfos => [],
                             :sorted_feedbacks => []
                            )
-      @validator = flexmock('validator')
+      @validator = flexmock('validator', 
+                            :reset_errors => 'reset_errors',
+                            :validate => 'validate'
+                           )
       @session   = ODDB::Session.new('key', @app, @validator)
     end
     def test_login_token
@@ -88,7 +91,12 @@ module ODDB
       assert_kind_of(ODDB::State::Drugs::Init, @session.logout)
     end
     def test_process
-      request = flexmock('request', :unparsed_uri   => 'unparsed_uri')
+      request = flexmock('request', 
+                         :unparsed_uri   => 'unparsed_uri',
+                         :request_method => 'request_method',
+                         :params => 'params',
+                         :cookies => 'cookies'
+                        )
       assert_equal('', @session.process(request))
     end
     def test_add_to_interaction_basket

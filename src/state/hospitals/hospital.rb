@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Companies::Company -- oddb -- 11.02.2005 -- jlang@ywesee.com, usenguel@ywesee.com
+# ODDB::State::Companies::Company -- oddb.org -- 24.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Companies::Company -- oddb.org -- 11.02.2005 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'state/global_predefine'
 require 'view/hospitals/hospital'
@@ -9,14 +10,14 @@ module ODDB
 	module State
 		module Hospitals
 class Hospital < State::Hospitals::Global
-	VIEW = View::Hospitals::Hospital
+	VIEW = ODDB::View::Hospitals::Hospital
 	LIMITED = true
 end
 class RootHospital < Hospital
 	def init
 		super
 		if(allowed?)
-			@default_view = View::Hospitals::RootHospital
+			@default_view = ODDB::View::Hospitals::RootHospital
 		end
 	end
 	def set_pass

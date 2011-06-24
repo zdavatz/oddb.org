@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# View::Admin::GalenicGroup -- oddb -- 18.03.2011 -- mhatakeyama@ywesee.com
-# View::Drugs::GalenicGroupSelect -- oddb -- 31.03.2003 -- hwyss@ywesee.com 
+# ODDB::View::Admin::TestGalenicGroup -- oddb.org -- 24.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::TestGalenicGroupSelect -- oddb.org -- 31.03.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -23,6 +23,10 @@ module ODDB
 		end
 	end
 end
+
+module ODDB
+  module View
+    module Admin
 
 class TestGalenicGroupSelect < Test::Unit::TestCase
 	class StubGalenicGroup
@@ -92,3 +96,79 @@ end
 	end
 end	
 
+class TestGalenicFormForm < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', 
+                        :lookup     => 'lookup',
+                        :languages  => ['language'],
+                        :attributes => {},
+                        :base_url   => 'base_url'
+                       )
+    @session = flexmock('session', 
+                        :error => 'error',
+                        :lookandfeel => @lnf,
+                        :warning?    => nil,
+                        :error?      => nil
+                       )
+    @model   = flexmock('model', :synonyms => ['synonym'])
+    @form    = ODDB::View::Admin::GalenicFormForm.new(@model, @session)
+  end
+  def test_languages
+    expected = ["language", "lt", "synonym_list"]
+    assert_equal(expected, @form.languages)
+  end
+end
+
+class TestGalenicFormComposite < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', 
+                        :lookup     => 'lookup',
+                        :languages  => ['language'],
+                        :attributes => {},
+                        :base_url   => 'base_url',
+                        :event_url  => 'event_url'
+                       )
+    state    = flexmock('state')
+    @session = flexmock('session', 
+                        :error => 'error',
+                        :lookandfeel => @lnf,
+                        :warning?    => nil,
+                        :error?      => nil,
+                        :event       => 'event',
+                        :allowed?    => nil,
+                        :state       => state,
+                        :language    => 'language'
+                       )
+    galenic_form = flexmock('galenic_form', :language => 'language')
+    substance    = flexmock('substance', :language => 'language')
+    active_agent = flexmock('active_agent', 
+                            :substance => substance,
+                            :dose => 'dose'
+                           )
+    composition  = flexmock('composition', 
+                            :galenic_form  => galenic_form,
+                            :active_agents => [active_agent]
+                           )
+    atc_class    = flexmock('atc_class', :code => 'code')
+    sequence = flexmock('sequence', 
+                        :pointer => 'pointer',
+                        :seqnr   => 'seqnr',
+                        :compositions => [composition],
+                        :atc_class    => atc_class,
+                        :has_patinfo? => nil
+                       )
+    @model   = flexmock('model', 
+                        :synonyms  => ['synonym'],
+                        :sequences => [sequence]
+                       )
+    @composite = ODDB::View::Admin::GalenicFormComposite.new(@model, @session)
+  end
+  def test_sequences
+    assert_kind_of(ODDB::View::Admin::RegistrationSequences, @composite.sequences(@model, @session))
+  end
+end
+    end # Admin
+  end # View
+end # ODDB
