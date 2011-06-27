@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::TestLimit -- oddb.org -- 19.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::TestNotify -- oddb.org -- 19.04.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))

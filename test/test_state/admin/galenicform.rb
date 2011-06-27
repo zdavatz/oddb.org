@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
-# State::Admin::TestGalenicFormState -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
-# State::Drugs::TestGalenicFormState -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
+# ODDB::State::Admin::TestGalenicFormState -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Drugs::TestGalenicFormState -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
-$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
@@ -13,6 +12,42 @@ require 'util/language'
 module ODDB
 	module State
 		module Admin
+
+class TestGalenicForm2 < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @app     = flexmock('app')
+    @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
+    @session = flexmock('session', 
+                        :app => @app,
+                        :lookandfeel => @lnf
+                       )
+    @model   = flexmock('model', :empty? => nil)
+    @form    = ODDB::State::Admin::GalenicForm.new(@session, @model)
+  end
+  def test_delete
+    assert_kind_of(ODDB::State::Admin::MergeGalenicForm, @form.delete)
+  end
+  def test_delete__model_empty
+    flexmock(@app, :delete => 'delete')
+    parent = flexmock('parent')
+    flexmock(@model, 
+             :empty?  => true,
+             :parent  => parent,
+             :pointer => 'pointer'
+            )
+    assert_kind_of(ODDB::State::Admin::GalenicGroup, @form.delete)
+  end
+  def test_update
+    galenic_form = flexmock('galenic_form')
+    flexmock(@app, :galenic_form => galenic_form)
+    flexmock(@lnf, :languages => ['language'])
+    flexmock(@session, :user_input => 'user_input')
+    assert_kind_of(ODDB::State::Admin::GalenicForm, @form.update)
+  end
+
+end
+
 class	TestGalenicForm < Test::Unit::TestCase
   include FlexMock::TestCase
 	class StubSession

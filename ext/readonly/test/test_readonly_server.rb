@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::TestReadonlyServer -- oddb.org/ext -- 16.02.2011 -- mhatakeyama@ywesee.com
+# ODDB::TestReadonlyServer -- oddb.org/ext -- 27.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path("../../..", File.dirname(__FILE__))
@@ -100,6 +100,41 @@ module ODDB
         end)
       end
       assert_equal(['package'], @serv.remote_packages('query'))
+    end
+    def test_remote_packages__seqs_empty
+      sequence = flexmock('sequence') do |seq|
+        seq.should_receive(:public_packages).and_return('package')
+      end
+      flexstub(ODBA) do |odba|
+        odba.should_receive(:cache).and_return(flexmock('cache') do |cache|
+          cache.should_receive(:retrieve_from_index).once\
+            .with('sequence_index_exact', 'query').and_return([])
+          cache.should_receive(:retrieve_from_index).once\
+            .with('substance_index_sequence', 'query').and_return([sequence])
+        end)
+      end
+      assert_equal(['package'], @serv.remote_packages('query'))
+    end
+    def stderr_null
+      require 'tempfile'
+      $stderr = Tempfile.open('stderr')
+      yield
+      $stderr.close
+      $stderr = STDERR
+    end
+    def replace_constant(constant, temp)
+      stderr_null do
+        keep = eval constant
+        eval "#{constant} = temp"
+        yield
+        eval "#{constant} = keep"
+      end
+    end
+    def test_get_currency_rate
+      currency = flexmock('currency', :rate => 'rate')
+      replace_constant('ODDB::Currency', currency) do 
+        assert_equal('rate', @serv.get_currency_rate('symbol'))
+      end
     end
   end
 end

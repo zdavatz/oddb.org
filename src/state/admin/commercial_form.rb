@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::CommercialForm -- oddb.org -- 24.11.2006 -- hwyss@ywesee.com
+# ODDB::State::Admin::CommercialForm -- oddb.org -- 27.07.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::CommercialForm -- oddb.org -- 24.11.2006 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
 require 'view/admin/commercial_form'
@@ -8,7 +9,7 @@ module ODDB
   module State
     module Admin
 class CommercialForm < Global
-  VIEW = View::Admin::CommercialForm
+  VIEW = ODDB::View::Admin::CommercialForm
   def delete
     if(@model.empty?)
       @session.app.delete(@model.pointer)

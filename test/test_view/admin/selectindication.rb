@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::Admin::TestSelectIndication -- oddb.org -- 23.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Admin::TestSelectIndication -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -25,7 +25,7 @@ class TestSelectIndicationForm < Test::Unit::TestCase
                         :event => 'event'
                        )
     @model   = flexmock('model', 
-                        :selection      => 'selection',
+                        :selection      => '',
                         :new_indication => 'new_indication',
                         :user_input     => 'user_input'
                        )
@@ -39,6 +39,36 @@ class TestSelectIndicationForm < Test::Unit::TestCase
       "ACTION" => "base_url"
     }
     assert_equal(expected, @form.init)
+  end
+  def test_selection_list
+    assert_kind_of(ODDB::View::Admin::SelectionList, @form.selection_list(@model, @session))
+  end
+end
+
+class TestSelectIndicationComposite < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf       = flexmock('lookandfeel', 
+                          :lookup     => 'lookup',
+                          :attributes => {},
+                          :base_url   => 'base_url'
+                         )
+    @session   = flexmock('session', 
+                          :lookandfeel => @lnf,
+                          :event       => 'event'
+                         )
+    registration = flexmock('registration', :name_base => 'name_base')
+    @model     = flexmock('model', 
+                          :registration   => registration,
+                          :selection      => 'selection',
+                          :new_indication => 'new_indication',
+                          :user_input     => 'user_input'
+                         )
+    @composite = ODDB::View::Admin::SelectIndicationComposite.new(@model, @session)
+  end
+  def test_registration_name
+    expected = "name_base&nbsp;-&nbsp;lookup"
+    assert_equal(expected, @composite.registration_name(@model, @session))
   end
 end
 

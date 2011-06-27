@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# ODDB::Invoicer -- ydpm -- 27.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::Invoicer -- ydpm -- 12.12.2005 -- hwyss@ywesee.com
 
 require 'date'
@@ -9,7 +10,7 @@ require 'util/oddbconfig'
 module ODDB
 	class Invoicer < Plugin
 		RECIPIENTS = [ 
-			'hwyss@ywesee.com', 
+			'mhatakeyama@ywesee.com', 
 			'zdavatz@ywesee.com' 
 		]
 		def create_invoice(email, items, ydim_id)

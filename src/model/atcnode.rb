@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# AtcNode -- oddb -- 17.07.2003 -- mhuggler@ywesee.com
+# ODDB::AtcNote -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::AtcNode -- oddb.org -- 17.07.2003 -- mhuggler@ywesee.com
 
 module ODDB
 	class AtcNode
@@ -56,6 +57,7 @@ module ODDB
 				atccode.length >= cd.length \
 					&& cd == atccode[0,cd.length]
 			rescue
+        nil
 			end
 		end
 	end

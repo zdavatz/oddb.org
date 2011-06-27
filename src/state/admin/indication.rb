@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::Indication -- oddb -- 07.07.2003 -- hwyss@ywesee.com 
+# ODDB::State::Admin::Indication -- oddb.org -- 27.06.2011 -- hwyss@ywesee.com 
+# ODDB::State::Admin::Indication -- oddb.org -- 07.07.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'
 require 'state/admin/mergeindication'
@@ -9,7 +10,7 @@ module ODDB
 	module State
 		module Admin
 class Indication < State::Admin::Global
-	VIEW = View::Admin::Indication
+	VIEW = ODDB::View::Admin::Indication
 	def delete
 		if(@model.registrations.empty? && @model.sequences.empty?)
 			@session.app.delete(@model.pointer)

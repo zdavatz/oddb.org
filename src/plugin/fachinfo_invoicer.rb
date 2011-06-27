@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# FachinfoInvoicer -- oddb -- 28.04.2006 -- hwyss@ywesee.com
+# ODDB::FachinfoInvoicer -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::FachinfoInvoicer -- oddb.org -- 28.04.2006 -- hwyss@ywesee.com
 
 require 'plugin/info_invoicer'
 
@@ -48,9 +49,6 @@ module ODDB
         report << "\n"
       }
       !report.empty? && report
-    end
-    def unique_name(item)
-      item.pointer
     end
     def unique_name(item)
       item.item_pointer
