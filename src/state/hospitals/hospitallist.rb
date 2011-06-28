@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Hospitals::HospitalList -- oddb -- 09.03.2005 -- jlang@ywesee.com
+# ODDB::State::Hospitals::HospitalList -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Hospitals::HospitalList -- oddb.org -- 09.03.2005 -- jlang@ywesee.com
 
 require 'state/global_predefine'
 require 'state/hospitals/hospital'
@@ -30,7 +31,7 @@ class HospitalList < State::Hospitals::Global
 	#REVERSE_MAP = ResultList::REVERSE_MAP
 	def init
 		if(!@model.is_a?(Array) || @model.empty?)
-			@default_view = View::Companies::EmptyResult
+			@default_view = ODDB::View::Companies::EmptyResult
 		end
 		filter_interval
 	end
@@ -42,7 +43,7 @@ class HospitalResult < HospitalList
 	DIRECT_EVENT = :result
 	def init
 		if(@model.empty?)
-			@default_view = View::Hospitals::EmptyResult
+			@default_view = ODDB::View::Hospitals::EmptyResult
 		else
 			super
 		end

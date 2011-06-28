@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Analysis::Global -- oddb.org -- 13.06.2006 -- sfrischknecht@ywesee.com
+# ODDB::State::Analysis::Global -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Analysis::Global -- oddb.org -- 13.06.2006 -- sfrischknecht@ywesee.com
 
 require 'state/analysis/init'
 require 'state/analysis/limit'
@@ -30,7 +31,7 @@ class Global < State::Global
 					memo.send(meth) })
 				bval = umlaut_filter(sortby.inject(b) { |memo, meth|
 					memo.send(meth) })
-			rescue Exception => e
+			rescue ::Exception => e
 				puts e
 				next
 			end

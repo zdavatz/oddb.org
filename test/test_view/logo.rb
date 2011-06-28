@@ -1,64 +1,81 @@
 #!/usr/bin/env ruby
-# View::TestLogo -- oddb -- 01.10.2003 -- mhuggler@ywesee.com
+# ODDB::View::TestLogo -- oddb.org -- 28.06.2011 -- mhatkeyama@ywesee.com
+# ODDB::View::TestLogo -- oddb.org -- 01.10.2003 -- mhuggler@ywesee.com
 
-$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'view/logo'
 
 module ODDB
-	module View
-		class Logo < PopupLogo
-			attr_reader :lookandfeel
-		end
+  module View
 
-		class TestLogo < Test::Unit::TestCase
-			class StubSession
-				attr_accessor :enabled, :attributes
-				attr_reader	:function_called
-				def initialize(function_called=nil, enabled=true)
-					@function_called = function_called
-					@enabled = enabled
-					@attributes = {}
-				end
-				def attributes(key)
-					@attributes
-				end
-				def lookandfeel
-					self
-				end
-				def enabled?(logo, default=nil)
-					@enabled
-				end
-				def resource(arg)
-					@function_called = 'not localized'
-				end
-				def resource_localized(arg)
-				 @function_called = "localized"
-				end
-				def lookup(arg)
-				end
-				def state
-					self
-				end
-				def zone
-					'zone'
-				end
-			end
-			def test_init
-				session = StubSession.new
-				view = View::Logo.new('model', session)
-				result = view.lookandfeel.function_called
-				assert_equal('localized', result)
-			end
-			def test_init2
-				session = StubSession.new
-				session.enabled = false
-				view = View::Logo.new('model', session)
-				result = view.lookandfeel.function_called
-				assert_equal('not localized', result)
-			end
-		end
-	end
+class TestPopupLogo < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf       = flexmock('lookandfeel', 
+                          :lookup     => 'lookup',
+                          :attributes => {},
+                          :enabled?   => nil,
+                          :resource   => 'resource'
+                         )
+    @session   = flexmock('session', :lookandfeel => @lnf)
+    @model     = flexmock('model')
+    @component = ODDB::View::PopupLogo.new(@model, @session)
+  end
+  def test_init
+    assert_equal('lookup', @component.init)
+  end
+  def test_to_html
+    flexmock(@lnf, :_event_url => '_event_url')
+    context = flexmock('context', :a => 'a')
+    assert_equal('a', @component.to_html(context))
+  end
+  def test_logo_src
+    flexmock(@lnf, 
+             :enabled? => true,
+             :resource_localized => 'resource_localized'
+            )
+    assert_equal('resource_localized', @component.logo_src('key'))
+  end
+  def test_zone_logo_src
+    flexmock(@lnf, 
+             :enabled? => true,
+             :resource_localized => 'resource_localized'
+            )
+    state = flexmock('state', :zone => 'zone')
+    flexmock(@session, :state => state)
+    assert_equal('resource_localized', @component.zone_logo_src('key'))
+  end
 end
+
+class TestLogo < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', 
+                        :lookup     => 'lookup',
+                        :attributes => {},
+                        :enabled?   => nil,
+                        :resource   => 'resource'
+                       )
+    @session = flexmock('session', :lookandfeel => @lnf)
+    @model   = flexmock('model')
+    @logo    = ODDB::View::Logo.new(@model, @session)
+  end
+  def test_to_html
+    context = flexmock('context')
+    assert_equal('&nbsp;', @logo.to_html(context))
+  end
+  def test_to_html__enabled
+    flexmock(@lnf, 
+             :enabled?   => true,
+             :_event_url => '_event_url'
+            )
+    context = flexmock('context', :a => 'a')
+    assert_equal('a', @logo.to_html(context))
+  end
+end
+  end # View
+end # ODDB
+

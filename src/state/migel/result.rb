@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Migel::Result -- oddb -- 04.10.2005 -- ffricker@ywesee.com
+# ODDB::State::Migel::Result -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Migel::Result -- oddb.org -- 04.10.2005 -- ffricker@ywesee.com
 
 require 'view/migel/result'
 require 'view/drugs/result'
@@ -25,7 +26,7 @@ class Result < State::Migel::Global
 	end
 	def init
 		if(@model.nil? || @model.empty?)
-			@default_view = View::Migel::EmptyResult
+			@default_view = ODDB::View::Migel::EmptyResult
 		else
 		subgroups = {}
 		@model.each { |product|

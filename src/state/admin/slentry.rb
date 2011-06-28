@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::SlEntry -- oddb -- 22.04.2003 -- benfay@ywesee.com
+# ODDB::State::Admin::SlEntry -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::SlEntry -- oddb.org -- 22.04.2003 -- benfay@ywesee.com
 
 require 'state/admin/global'
 require 'state/admin/package'
@@ -9,7 +10,7 @@ module ODDB
 	module State
 		module Admin
 class SlEntry < State::Admin::Global
-	VIEW = View::Admin::RootSlEntry
+	VIEW = ODDB::View::Admin::RootSlEntry
 	def delete
 		package = @model.parent(@session.app)
 		@session.app.delete(@model.pointer)
@@ -30,7 +31,7 @@ class CompanySlEntry < State::Admin::SlEntry
 	def init
 		super
 		unless(allowed?)
-			@default_view = View::Admin::SlEntry
+			@default_view = ODDB::View::Admin::SlEntry
 		end
 	end
 	def delete

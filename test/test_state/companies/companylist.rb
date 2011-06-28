@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Companies::TestCompanyList -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
+# ODDB::State::Companies::TestCompanyList -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Companies::TestCompanyList -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -141,6 +142,47 @@ class TestCompanyListState < Test::Unit::TestCase
     expected = 'u-zÜÚÛÙŲǗǓǙǛŨŬŮǕṼẂŴẀẄẆẌẊŸẎỸỲŶÝȲŽŹẐŻüúûùųǘǔǚǜũŭůǖṽẃŵẁẅẇẍẋÿẏỹỳŷýȳžźẑż'
 		assert_equal( expected, @state.range )
 	end
+end
+
+class TestCompanyResult < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
+    @session = flexmock('session', 
+                        :lookandfeel => @lnf,
+                        :allowed? => nil
+                       )
+    @model   = flexmock('model', :size => 1)
+    @state   = ODDB::State::Companies::CompanyResult.new(@session, @model)
+  end
+  def test_init
+    assert_nil(@state.init)
+  end
+end
+
+class TestCompanyList2 < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    company  = flexmock('company', :listed? => nil)
+    @app     = flexmock('app', :companies => {'key' => company})
+    @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
+    user     = flexmock('user', :model => 'model')
+    @session = flexmock('session', 
+                        :app => @app,
+                        :lookandfeel => @lnf,
+                        :event    => 'event',
+                        :allowed? => nil,
+                        :user     => user
+                       )
+    @model   = flexmock('model')
+    @list    = ODDB::State::Companies::CompanyList.new(@session, @model)
+  end
+  def test_init
+    assert_nil(@list.init)
+  end
+  def test_direct_event
+    assert_equal(:companylist, @list.direct_event)
+  end
 end
 		end
 	end

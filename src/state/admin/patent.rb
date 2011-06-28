@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::Patent -- oddb.org -- 05.05.2006 -- hwyss@ywesee.com
+# ODDB::State::Admin::Patent -- oddb.org -- 11.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Patent -- oddb.org -- 05.05.2006 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
 require 'view/admin/patent'
@@ -35,7 +36,7 @@ class CompanyPatent < Patent
 	def init
 		@registration = @model.parent(@session)
 		unless(allowed?(@registration))
-			@default_view = View::Admin::ReadonlyPatent
+			@default_view = ODDB::View::Admin::ReadonlyPatent
 		end
 	end
 	def update
