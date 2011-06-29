@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::TestSponsorHead -- oddb -- 30.07.2003 -- hwyss@ywesee.com 
+# ODDB::View::TestSponsorHead -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::TestSponsorHead -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -7,12 +8,59 @@ $: << File.expand_path("../../src", File.dirname(__FILE__))
 require 'stub/odba'
 require 'date'
 require 'test/unit'
+require 'flexmock'
 require 'stub/cgi'
 require 'model/sponsor'
 require 'view/sponsorhead'
 
 module ODDB
 	module View
+    class StubSponsorMethods
+      include ODDB::View::SponsorMethods
+      def initialize(model, session)
+        @modle = model
+        @session = session
+        @lookandfeel = session.lookandfeel
+      end
+    end
+    class TestSponsorMethods < Test::Unit::TestCase
+      include FlexMock::TestCase
+      def setup
+        @lnf     = flexmock('lookandfeel', 
+                            :lookup     => 'lookup',
+                            :enabled?   => nil,
+                            :attributes => {},
+                            :resource   => 'resource',
+                            :zones      => 'zones'
+                           )
+        user     = flexmock('user', :valid? => nil)
+        @session = flexmock('session', 
+                            :lookandfeel => @lnf,
+                            :user => user,
+                            :sponsor => user
+                           )
+        @model   = flexmock('model')
+        @view    = ODDB::View::StubSponsorMethods.new(@model, @session)
+      end
+      def test_head
+        assert_kind_of(ODDB::View::LogoHead, @view.head(@model, @session))
+      end
+      def test_head__sponsorlogo
+        flexmock(@lnf, 
+                 :resource_localized => 'resource_localized',
+                 :enabled?   => true,
+                 :languages  => ['language'],
+                 :currencies => ['currency'],
+                 :language   => 'language'
+                )
+        state = flexmock('state', :zone => 'zone')
+        flexmock(@session, 
+                 :state    => state,
+                 :currency => 'currency'
+                )
+        assert_kind_of(ODDB::View::SponsorHead, @view.head(@model, @session))
+      end
+    end
 		class TestSponsorHead < Test::Unit::TestCase
 			class StubHeadSession
 				attr_writer :enabled, :attributes

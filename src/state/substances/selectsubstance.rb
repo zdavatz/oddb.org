@@ -3,6 +3,7 @@
 
 require 'state/substances/global'
 require 'view/substances/selectsubstance'
+require 'state/substances/substance'
 
 module ODDB
 	module State

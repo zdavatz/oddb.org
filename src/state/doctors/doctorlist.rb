@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Doctors::DoctorList -- oddb -- 26.05.2003 -- mhuggler@ywesee.com
+# ODDB::State::Doctors::DoctorList -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Doctors::DoctorList -- oddb.org -- 26.05.2003 -- mhuggler@ywesee.com
 
 require 'state/doctors/global'
 require 'state/doctors/doctor'
@@ -32,7 +33,7 @@ class DoctorResult < DoctorList
 	DIRECT_EVENT = :result
 	def init
 		if(@model.empty?)
-			@default_view = View::Doctors::EmptyResult
+			@default_view = ODDB::View::Doctors::EmptyResult
 		else
 			super
 		end
