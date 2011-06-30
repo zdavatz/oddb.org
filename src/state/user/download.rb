@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::User::Download -- ODDB -- 29.10.2003 -- hwyss@ywesee.com
+# ODDB::State::User::Download -- oddb.org -- 30.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::User::Download -- oddb.org -- 29.10.2003 -- hwyss@ywesee.com
 
 require 'state/user/global'
 require 'view/user/download'
@@ -25,7 +26,7 @@ class Download < State::User::Global
       @model.search_query = query
       @model.search_type = stype
       @model.session = @session
-      @default_view = View::Drugs::CsvResult
+      @default_view = ODDB::View::Drugs::CsvResult
     end
   end
 end

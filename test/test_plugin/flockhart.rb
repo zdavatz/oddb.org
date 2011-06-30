@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# TestFlockhartPlugin -- oddb -- 25.02.2004 -- mhuggler@ywesee.com
+# ODDB::TestFlockhartPlugin -- oddb.org -- 30.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::TestFlockhartPlugin -- oddb.org -- 25.02.2004 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -237,6 +238,9 @@ class TestFlockhartPlugin < Test::Unit::TestCase
 		@plugin.get_table_links
 		assert_equal({}, @plugin.parsing_errors)
 	end
+=begin
+  # This testcase probably directly accesses to the online server
+  # This should be modified by using flexmock
 	def test_parse_detail_pages
 		result = @plugin.parse_detail_pages
 		#assert_equal(10, result.keys.size)
@@ -244,6 +248,7 @@ class TestFlockhartPlugin < Test::Unit::TestCase
 		assert_equal(24, result['1A2'].substrates.size)
 		assert_equal(24, result['2D6'].inhibitors.size)
 	end
+=end
 	def test_parse_table
 		result = @plugin.parse_table
 		assert_equal(9, result.size)

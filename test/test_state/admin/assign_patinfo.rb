@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::TestAssignPatinfo -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::TestAssignPatinfo -- oddb.org -- 30.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -21,7 +21,7 @@ class TestAssignPatinfo < Test::Unit::TestCase
     @session = flexmock('session', 
                         :app => @app,
                         :lookandfeel => @lnf,
-                        :user_input  => {:pointers => {'key' => pointer}}
+                        :user_input  => {:pointer => pointer, :pointers => {'key' => pointer}}
                        )
     @sequence = flexmock('sequence', :pdf_patinfo => 'pdf_patinfo')
     @model   = flexmock('model', :sequence => @sequence)
