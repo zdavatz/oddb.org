@@ -1,14 +1,15 @@
 #!/usr/bin/env ruby
-# State::Admin::TestGalenicGroup -- oddb -- 01.03.2011 -- mhatakeyama@ywesee.com
-# State::Drugs::TestGalenicGroup -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
+# ODDB::State::Admin::TestGalenicGroup -- oddb.org -- 01.07.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Drugs::TestGalenicGroup -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
-$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'state/admin/galenicgroup'
 require 'util/language'
 require 'state/admin/root'
+require 'state/exception'
 
 module ODDB
 	module State
@@ -18,6 +19,7 @@ module ODDB
 		module Admin
 
 class TestGalenicGroup < Test::Unit::TestCase
+  include FlexMock::TestCase
 	class StubSession
 		attr_accessor :user_input
 		def app
@@ -71,6 +73,33 @@ class TestGalenicGroup < Test::Unit::TestCase
 		assert_respond_to(newstate.model, :galenic_group)
 		assert_equal(model, newstate.model.galenic_group)
 	end
+  def setup
+    @model   = flexmock('model', :pointer => 'pointer')
+    @app     = flexmock('app', 
+                        :galenic_groups => {'key' => @model},
+                        :delete => 'delete'
+                       )
+    @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
+    @session = flexmock('session', 
+                        :lookandfeel => @lnf,
+                        :app => @app
+                       )
+    @state = ODDB::State::Admin::GalenicGroup.new(@session, @model)
+  end
+  def test_delete
+    flexmock(@state, :galenic_groups => 'galenic_groups')
+    assert_equal('galenic_groups', @state.delete)
+  end
+  def test_delete__error
+    assert_kind_of(ODDB::State::Exception, @state.delete)
+  end
+  def test_update
+    flexmock(@lnf, :languages => ['language'])
+    flexmock(@session, :user_input => 'user_input')
+    flexmock(@state, :unique_email => 'unique_email')
+    flexmock(@app, :update => 'update')
+    assert_equal(@state, @state.update)
+  end
 end
 		end
 	end
