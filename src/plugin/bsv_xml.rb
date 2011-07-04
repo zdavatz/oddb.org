@@ -950,6 +950,9 @@ Attachments:
       listener = GenericsListener.new @app
       REXML::Document.parse_stream io, listener
     end
+    def update_g_l__diff__s_b io
+      # do nothing by masa 20110704
+    end
     def update_it_codes io
       listener = ItCodesListener.new @app
       REXML::Document.parse_stream io, listener
