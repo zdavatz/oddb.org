@@ -55,7 +55,7 @@ class SwissindexNonpharma
         try_time -= 1
         retry
       else
-        puts " - #{server} is not responding"
+        puts " - probably server is not responding"
         puts err
         puts err.backtrace
         puts
@@ -179,7 +179,7 @@ class SwissindexPharma
         try_time -= 1
         retry
       else
-        puts " - #{server} is not responding"
+        puts " - probably server is not responding"
         puts err
         puts err.backtrace
         puts
