@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::TestEntity -- oddb.org -- 27.03.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::TestEntity -- oddb.org -- 05.07.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
+require 'state/global'
 require 'test/unit'
 require 'flexmock'
 require 'state/admin/entity'
@@ -55,7 +56,7 @@ class TestEntity < Test::Unit::TestCase
     assert_equal(@entity, @entity.update)
   end
   def test_update__pass1
-    flexmock(@session, :user_input => {:set_pass_1 => 'set_pass', :set_pass_2 => 'set_pass'})
+    flexmock(@session, :user_input => {:set_pass_1 => 'set_pass', :set_pass_2 => 'set_pass', :name => 'name'})
     assert_equal(@entity, @entity.update)
   end
   def test_update__model_create_item
@@ -69,7 +70,7 @@ class TestEntity < Test::Unit::TestCase
   end
   def test_update__from_yus_privilege
     flexmock(@session, 
-             :user_input => {:yus_association => 'yus_association'},
+             :user_input => {:yus_association => 'yus_association', :name => 'name'},
              :grant      => 'grant'
             )
     flexmock(@user, :grant => 'grant')
@@ -91,7 +92,7 @@ class TestEntity < Test::Unit::TestCase
     assert_equal(@entity, @entity.update)
   end
   def test_update__groups
-    flexmock(@session, :user_input => {:yus_groups => {'PowerUser' => 'value'}, :valid_until => Date.new(2011,2,3)})
+    flexmock(@session, :user_input => {:yus_groups => {'PowerUser' => 'value'}, :valid_until => Date.new(2011,2,3), :name => 'name'})
     flexmock(@user, 
              :affiliate => 'affiliate',
              :grant     => 'grant'

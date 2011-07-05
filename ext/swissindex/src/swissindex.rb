@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-# ODDB::Swissindex::SwissindexPharma -- 09.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::Swissindex::SwissindexPharma -- 05.07.2011 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
 require 'savon'
@@ -145,7 +145,7 @@ class SwissindexPharma
     try_time = 3
     begin
       response = client.request search_type do
-      soap.xml = if search_type == :get_by_gting
+      soap.xml = if search_type == :get_by_gtin
       '<?xml version="1.0" encoding="utf-8"?>
       <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
         <soap:Body>
