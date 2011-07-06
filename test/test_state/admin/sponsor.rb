@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::TestSponsor- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::TestSponsor- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -60,8 +60,8 @@ class TestSponsor < Test::Unit::TestCase
     flexmock(@session, 
              :user_input => {
                 :company_name => 'company_name', 
-                :logo_file    => 'logo_file', 
-                :logo_fr      => 'logo_fr'
+                :logo_file    => @io, 
+                :logo_fr      => @io
               }
             )
     assert_equal(@state, @state.update)

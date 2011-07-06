@@ -1,14 +1,16 @@
 #!/usr/bin/env ruby
-# TestDose -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
+# ODDB::TestDose -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com 
+# ODDB::TestDose -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
-$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
+require 'flexmock'
 require 'model/dose'
 require 'util/quanty'
 
 class TestDose < Test::Unit::TestCase
+  include FlexMock::TestCase
 	def setup
 		@dose = ODDB::Dose.new('1,7', 'mL')
 	end
@@ -142,6 +144,8 @@ class TestDose < Test::Unit::TestCase
     second = ODDB::Dose.from_quanty result
     assert_equal result, second
     assert_equal result.object_id, second.object_id
+    other = flexmock('other')
+    assert_kind_of(ODDB::Dose, ODDB::Dose.from_quanty(other))
 	end	
 	def test_multiplication
 		dose1 = ODDB::Dose.new(1,'ml')

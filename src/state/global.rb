@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# State::Global -- oddb -- 07.03.2011 -- mhatakeyama@ywesee.com
-# State::Global -- oddb -- 25.11.2002 -- hwyss@ywesee.com
+# ODDB::State::Global -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
 require 'state/http_404'
@@ -627,10 +627,7 @@ module ODDB
 				if(state.zone == @session.zone)
 					state
 				else
-					event = [
-						'home',
-						@session.zone
-					].compact.join('_').intern
+					event = [ 'home', @session.zone ].compact.join('_').intern
 					self.trigger(event)
 				end
 			end

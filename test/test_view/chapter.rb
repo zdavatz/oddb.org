@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::TestChapter -- oddb.org -- 08.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::TestChapter -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::TestChapter -- oddb.org -- 02.10.2003 -- rwaltert@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -233,6 +233,38 @@ module ODDB
                            :pre  => 'pre'
                           )
         assert_equal('pre', @chapter.formats(context, paragraph))
+      end
+      def test_sections
+        flexmock(@lnf, :section_style => 'section_style')
+        format    = flexmock('format',
+                             :italic?      => nil,
+                             :bold?        => nil,
+                             :superscript? => true,
+                             :subscript?   => nil,
+                             :symbol?      => nil,
+                             :range        => 'range'
+                            )
+        paragraph = flexmock('paragraph', 
+                             :text => 'text',
+                             :formats => [format],
+                             :preformatted? => nil
+                            )
+        section = flexmock('section', 
+                           :subheading => "subheading\n\s",
+                           :paragraphs => [paragraph]
+                          )
+        context = flexmock('context', 
+                           :span => 'span',
+                           :br   => 'br',
+                           :sup  => 'sup',
+                           :pre  => 'pre'
+                          )
+ 
+        flexmock(context) do |c|
+          c.should_receive(:p).and_yield
+          c.should_receive(:span).and_yield
+        end
+        assert_equal("subheading\n brsupbr", @chapter.sections(context, [section]))
       end
     end
 

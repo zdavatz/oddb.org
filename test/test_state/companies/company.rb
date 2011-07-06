@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Companies::TestCompany -- oddb.org -- 04.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Companies::TestCompany -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Companies::TestCompany -- oddb.org -- 02.10.2003 -- rwaltert@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -296,6 +296,27 @@ class TestUserCompany < Test::Unit::TestCase
     keys    = [:logo_file, :name]
     assert_kind_of(ODDB::State::Companies::UserCompany, @state.instance_eval('do_update(keys)'))
   end
+  def test_do_update__invoice_date_patinfo
+    # This is a testcase for a private method
+    flexmock(@app, :update => 'update')
+    address = flexmock('address', 
+                       :address=  => nil,
+                       :location= => nil,
+                       :fon=      => nil,
+                       :fax=      => nil
+                      )
+    flexmock(@model, 
+             :address => address,
+             :pointer => 'pointer',
+             :invoice_date => Date.new(2011,3,3)
+            )
+    flexmock(@session, 
+             :user_input => {:invoice_date_patinfo => Date.new(2011,2,3)},
+             :user       => 'user'
+            )
+    keys = ['key']
+    assert_kind_of(ODDB::State::Companies::UserCompany, @state.instance_eval('do_update(keys)'))
+  end
   def test_do_update__error
     # This is a testcase for a private method
     flexmock(FileUtils, :mkdir_p => nil)
@@ -359,29 +380,6 @@ class TestUserCompany < Test::Unit::TestCase
     keys    = [:name]
     assert_kind_of(ODDB::State::Companies::UserCompany, @state.instance_eval('do_update(keys)'))
   end
-
-  def test_update
-    flexmock(@app, :update   => 'update')
-    address = flexmock('address', 
-                       :address=  => nil,
-                       :location= => nil,
-                       :fon=      => nil,
-                       :fax=      => nil
-                      )
-    pointer = flexmock('pointer', :to_yus_privilege => nil)
-    flexmock(@model, 
-             :address => address,
-             :pointer => pointer
-            )
-    flexmock(@session, 
-             :user_input => 'user_input',
-             :user       => 'user',
-             :allowed?   => true
-            )
-    keys = ['key']
-
-    assert_kind_of(ODDB::State::Companies::UserCompany, @state.update)
-  end
   def test_update__return_company
     flexmock(@app, :update   => 'update')
     address = flexmock('address', 
@@ -405,7 +403,10 @@ class TestUserCompany < Test::Unit::TestCase
     assert_kind_of(ODDB::State::Companies::Company, @state.update)
   end
   def test_set_pass
-    flexmock(@app, :update   => 'update')
+    flexmock(@app, 
+             :update   => @session,
+             :company_by_name => nil
+            )
     address = flexmock('address', 
                        :address=  => nil,
                        :location= => nil,
@@ -418,13 +419,13 @@ class TestUserCompany < Test::Unit::TestCase
              :pointer => pointer
             )
     flexmock(@session, 
-             :user_input => {'name' => 'value'},
+             :user_input => {:name => 'name'},
              :user       => 'user',
              :allowed?   => true
             )
     keys = ['key']
 
-    assert_equal(nil, @state.set_pass)
+    assert_kind_of(ODDB::State::Companies::SetPass, @state.set_pass)
   end
 end
 

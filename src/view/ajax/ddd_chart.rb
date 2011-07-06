@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# Ajax::View::DDDChart -- oddb.org -- 17.04.2009 -- hwyss@ywesee.com
+# ODDB::Ajax::View::DDDChart -- oddb.org -- 06.07.2009 -- hwyss@ywesee.com
+# ODDB::Ajax::View::DDDChart -- oddb.org -- 17.04.2009 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
 require 'view/additional_information'
@@ -193,9 +194,7 @@ class SideBar < Gruff::Base
       end
 
       # Shift graph if left line numbers are hidden
-      line_number_width = @hide_line_numbers && !@has_left_labels ?
-      0.0 :
-      (longest_left_label_width + LABEL_MARGIN)
+      line_number_width = @hide_line_numbers && !@has_left_labels ?  0.0 : (longest_left_label_width + LABEL_MARGIN)
 
       @graph_left = @left_margin +
       line_number_width +
@@ -220,8 +219,7 @@ class SideBar < Gruff::Base
     (@hide_title  ? TITLE_MARGIN  : @title_caps_height  + TITLE_MARGIN  * 2) +
     (@hide_legend ? LEGEND_MARGIN : @legend_caps_height + LEGEND_MARGIN * 2)
 
-    x_axis_label_height = @x_axis_label.nil? ? 0.0 :
-    @marker_caps_height + LABEL_MARGIN
+    x_axis_label_height = @x_axis_label.nil? ? 0.0 : @marker_caps_height + LABEL_MARGIN
     @graph_bottom = @raw_rows - @graph_bottom_margin - x_axis_label_height
     @graph_height = @graph_bottom - @graph_top
   end

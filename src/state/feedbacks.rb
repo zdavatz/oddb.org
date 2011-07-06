@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# ODDB::State::Feedbacks -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Feedbacks -- oddb.org -- 25.10.2005 -- ffricker@ywesee.com
 
 require 'state/global_predefine'
@@ -99,9 +100,7 @@ def update
 		if(info_key == :feedback_saved)
 			args = {:pointer => @model.item.pointer}
 			link = @session.lookandfeel._event_url(:feedbacks, args)
-			line = [
-				nil, hash[:name], hash[:email], link
-			].join(';')
+			line = [ nil, hash[:name], hash[:email], link ].join(';')
 			LogFile.append('feedback', line, time)
 		end
 	end

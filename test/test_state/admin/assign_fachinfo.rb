@@ -1,8 +1,9 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::TestAssignFachinfo -- oddb.org -- 20.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::TestAssignFachinfo -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
+require 'state/global'
 require 'test/unit'
 require 'flexmock'
 require 'htmlgrid/labeltext'
@@ -71,7 +72,7 @@ class TestAssignFachinfo < Test::Unit::TestCase
     flexmock(@model, :registration => @registration)
     flexmock(@registration, :fachinfo => @fachinfo)
     pointer = flexmock('pointer', :resolve => 'resolve')
-    user_input = {:pointers => {'key' => pointer}}
+    user_input = {:pointers => {'key' => pointer}, :pointer => pointer}
     flexmock(@session, :user_input => user_input)
     assert_equal(@fachinfo, @fachinfo.assign)
   end

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Drugs::TestResult -- oddb.org -- 20.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Drugs::TestResult -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Drugs::TestResult -- oddb.org -- 11.03.2003 -- aschrafl@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -126,6 +126,31 @@ class TestResult < Test::Unit::TestCase
 		result = filter.call(nil)
 		assert_equal(model, result)
 	end
+	def test_filter__page
+    atc = flexmock('atc') do |atc|
+      atc.should_receive(:package_count).and_return(1)
+    end
+    model = flexmock('model') do |mod|
+      mod.should_receive(:session=)
+      mod.should_receive(:atc_classes).and_return([atc])
+      mod.should_receive(:overflow?).and_return(true)
+      mod.should_receive(:each).and_yield(atc)
+    end
+    session = StubResultSession.new
+    flexstub(session) do |ses|
+      ses.should_receive(:persistent_user_input)
+      ses.should_receive(:cookie_set_or_get).and_return('pages')
+      ses.should_receive(:event).and_return(:search)
+      ses.should_receive(:set_persistent_user_input)
+    end
+		state = State::Drugs::Result.new(session, model)
+    state.init
+		filter = state.filter
+		assert_instance_of(Proc, filter)
+		result = filter.call(nil)
+		assert_equal([atc], result)
+	end
+
 	def test_page
     model = flexmock('model') 
     session = StubResultSession.new
@@ -185,7 +210,21 @@ class TestResult < Test::Unit::TestCase
     @state.instance_eval('@request_path = request_path')
     assert_equal('request_path#best_result', @state.request_path)
   end
+  module StubModSuper
+    def search
+      'search_super'
+    end
+  end
   def test_search
+    @state.extend(StubModSuper)
+    flexmock(@session, 
+             :user_input => 'search_type', 
+             :persistent_user_input => 'search_query',
+             :request_path => 'request_path'
+            )
+    assert_equal('search_super', @state.search)
+  end
+  def test_search__else
     flexmock(@session, 
              :user_input => 'search_type', 
              :persistent_user_input => 'search_query',
@@ -197,6 +236,7 @@ class TestResult < Test::Unit::TestCase
     end
     assert_kind_of(ODDB::State::Drugs::Result, @state.search)
   end
+
   def test_get_sortby
     flexmock(@session, :user_input => :dsp)
     assert_equal(nil, @state.get_sortby!)
@@ -221,7 +261,6 @@ class TestResult < Test::Unit::TestCase
             )
     assert_kind_of(Proc, @state.init)
   end
-
 end
 
 		end

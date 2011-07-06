@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::Drugs::TestRegisterDownload -- oddb.org -- 18.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::TestRegisterDownload -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
 
-$: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
@@ -124,6 +123,14 @@ class TestRegisterInvoicedDownloadComposite < Test::Unit::TestCase
     assert_equal('lookup', @form.invoice_descr(@model))
     @form.instance_eval('@@today = today_bak')
   end
+  def test_invoice_descr__else
+    today = Date.new(2011,2,16)
+    today_bak = @form.instance_eval('@@today')
+    @form.instance_eval('@@today = today')
+    assert_equal('lookup', @form.invoice_descr(@model))
+    @form.instance_eval('@@today = today_bak')
+  end
+
 
 end
 
