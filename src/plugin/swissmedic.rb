@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissmedicPlugin -- oddb.org -- 16.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 require 'fileutils'
@@ -36,8 +36,8 @@ module ODDB
         initialize_export_registrations agent
         diff target, @latest, [:atc_class, :sequence_date]
         update_registrations @diff.news + @diff.updates, @diff.replacements
-        update_export_registrations @export_registrations
         update_export_sequences @export_sequences
+        update_export_registrations @export_registrations
         sanity_check_deletions(@diff)
         delete @diff.package_deletions
         deactivate @diff.sequence_deletions
@@ -216,18 +216,18 @@ module ODDB
       if target = get_latest_file(agent, 'Präparateliste')
         FileUtils.cp target, latest_name
       end
-      reg_indices = {}
-      [ :iksnr, :export_flag, :expiry_date, :registration_date ].each do |key|
-        reg_indices.store key, PREPARATIONS_COLUMNS.index(key)
-      end
       seq_indices = {}
-      [ :seqnr, :name_base, :atc_class ].each do |key|
+      [ :seqnr, :export_flag ].each do |key|
         seq_indices.store key, PREPARATIONS_COLUMNS.index(key)
+      end
+      reg_indices = {}
+      [ :iksnr ].each do |key|
+        reg_indices.store key, PREPARATIONS_COLUMNS.index(key)
       end
       Spreadsheet.open(latest_name) do |workbook|
         iksnr_idx = reg_indices.delete(:iksnr)
         seqnr_idx = seq_indices.delete(:seqnr)
-        export_flag_idx = reg_indices.delete(:export_flag)
+        export_flag_idx = seq_indices.delete(:export_flag)
         workbook.worksheet(0).each(3) do |row|
           iksnr = row[iksnr_idx]
           seqnr = row[seqnr_idx]
@@ -474,18 +474,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         []
       end
     end
-    def update_export_registrations export_registrations
-      export_registrations.delete_if do |iksnr, data|
-        if reg = @app.registration(iksnr)
-          @known_export_registrations += 1 if reg.export_flag
-          data.update :export_flag => true, :inactive_date => nil
-          @app.update reg.pointer, data, :swissmedic
-          false
-        else
-          true
-        end
-      end
-    end
     def update_export_sequences export_sequences
       export_sequences.delete_if do |(iksnr, seqnr), data|
         if (reg = @app.registration(iksnr)) && (seq = reg.sequence(seqnr))
@@ -493,6 +481,31 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           data.update :export_flag => true
           @app.update seq.pointer, data, :swissmedic
           false
+        else
+          true
+        end
+      end
+    end
+    def update_export_registrations export_registrations
+      export_registrations.delete_if do |iksnr, data|
+        if reg = @app.registration(iksnr) 
+          all_seq_export_flag = true
+          reg.sequences.values.each do |seq|
+            unless seq.export_flag
+              all_seq_export_flag = false
+              break
+            end
+          end
+          if all_seq_export_flag
+            @known_export_registrations += 1 if reg.export_flag
+            data.update :export_flag => true, :inactive_date => nil
+            @app.update reg.pointer, data, :swissmedic
+            false
+          else
+            data.update :export_flag => false
+            @app.update reg.pointer, data, :swissmedic
+            true
+          end
         else
           true
         end
