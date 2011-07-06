@@ -489,14 +489,9 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     def update_export_registrations export_registrations
       export_registrations.delete_if do |iksnr, data|
         if reg = @app.registration(iksnr) 
-          all_seq_export_flag = true
-          reg.sequences.values.each do |seq|
-            unless seq.export_flag
-              all_seq_export_flag = false
-              break
-            end
-          end
-          if all_seq_export_flag
+          # if all the export_flags of sequence are true,
+          # then the export_flag of registration is set to true
+          if reg.sequences.values.map{|seq| seq.export_flag ? true : false}.uniq == [true]
             @known_export_registrations += 1 if reg.export_flag
             data.update :export_flag => true, :inactive_date => nil
             @app.update reg.pointer, data, :swissmedic
