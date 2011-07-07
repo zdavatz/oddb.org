@@ -30,16 +30,21 @@ module ODDB
       @known_export_sequences = 0
       @export_registrations = {}
       @export_sequences = {}
+      @active_registrations_praeparateliste = {}
     end
     def update(agent=Mechanize.new, target=get_latest_file(agent))
       if(target)
         initialize_export_registrations agent
+        keep_active_registrations_praeparateliste
         diff target, @latest, [:atc_class, :sequence_date]
         update_registrations @diff.news + @diff.updates, @diff.replacements
+        set_all_export_flag_false
         update_export_sequences @export_sequences
         update_export_registrations @export_registrations
         sanity_check_deletions(@diff)
         delete @diff.package_deletions
+        recheck_deletions @diff.sequence_deletions
+        recheck_deletions @diff.registration_deletions
         deactivate @diff.sequence_deletions
         deactivate @diff.registration_deletions
         FileUtils.cp target, @latest
@@ -47,6 +52,16 @@ module ODDB
           memo.store Persistence::Pointer.new([:registration, iksnr]), flags
           memo
         }
+      end
+    end
+    def set_all_export_flag_false
+      @app.each_registration do |reg|
+        # registration export_flag
+        update reg.pointer, {:export_flag => false}, :admin
+        # sequence export_flag
+        reg.sequences.values.each do |seq|
+          update seq.pointer, {:export_flag => false}, :admin
+        end
       end
     end
     def capitalize(string)
@@ -59,6 +74,19 @@ module ODDB
     end
     def date_cell(row, idx)
       row.at(idx) && row.date(idx)
+    end
+    def recheck_deletions(deletions)
+      key_list = []
+      deletetions.each do |key|
+        # check if there is the sequence/registration in the Praeparateliste-latest.xls
+        # if there is, do not deactivate the sequence/registration 
+        if @active_registrations_praeparateliste[key[0]]
+          key_list << key
+        end
+      end
+      delete_key_list.each do |key|
+        deletions.delete(key)
+      end
     end
     def deactivate(deactivations)
       deactivations.each { |row|
@@ -243,6 +271,23 @@ module ODDB
         end
       end
       @export_registrations
+    end
+    def keep_active_registrations_praeparateliste
+      latest_name = File.join @archive, "Präparateliste-latest.xls"
+      indices = {
+        :iksnr => PREPARATIONS_COLUMNS.index(:iksnr),
+        :seqnr => PREPARATIONS_COLUMNS.index(:seqnr)
+      }
+      Spreadsheet.open(latest_name) do |workbook|
+        iksnr_idx = indices[:iksnr]
+        seqnr_idx = indices[:seqnr]
+        workbook.worksheet(0).each(3) do |row|
+          iksnr = row[iksnr_idx]
+          seqnr = row[seqnr_idx]
+          @active_registrations_praeparateliste[[iksnr, seqnr]] = {}
+        end
+      end
+      @active_registrations_praeparateliste
     end
     def mail_notifications
       salutations = {}
