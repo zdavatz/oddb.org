@@ -57,10 +57,10 @@ module ODDB
     def set_all_export_flag_false
       @app.each_registration do |reg|
         # registration export_flag
-        update reg.pointer, {:export_flag => false}, :admin
+        @app.update reg.pointer, {:export_flag => false}, :admin
         # sequence export_flag
         reg.sequences.values.each do |seq|
-          update seq.pointer, {:export_flag => false}, :admin
+          @app.update seq.pointer, {:export_flag => false}, :admin
         end
       end
     end
