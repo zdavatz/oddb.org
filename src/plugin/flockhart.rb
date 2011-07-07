@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# FlockhartPlugin -- oddb -- 25.02.2004 -- mhuggler@ywesee.com
+# ODDB::Interaction::FlockhartPlugin -- oddb.org -- 07.07.2011 -- mhatakeyama@ywesee.com
+# ODDB::Interaction::FlockhartPlugin -- oddb.org -- 25.02.2004 -- mhuggler@ywesee.com
 
 require 'plugin/interaction'
 require 'util/html_parser'
@@ -261,7 +262,7 @@ module ODDB
 			HTTP_SERVER = 'medicine.iupui.edu'
 			HTML_PATH = '/clinpharm/DDIs'
 			TARGET = File.expand_path('../../data/html/interaction/flockhart', File.dirname(__FILE__))
-			TABLE = "table.asp"
+			TABLE = "table.aspx"
       LINKS = [ "1A2references.asp", "2B6references.asp", "2C8references.asp",
         "2C9references.asp", "2C19references.asp", "2D6references.asp",
         "2E1references.asp", "3A457references.asp" ]
