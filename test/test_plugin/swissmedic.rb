@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissmedicPluginTest -- oddb.org -- 17.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPluginTest -- oddb.org -- 07.07.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPluginTest -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
@@ -304,6 +304,28 @@ module ODDB
       @app.should_receive(:update).with(ptr, args, :swissmedic)\
         .times(1).and_return { assert true }
       @plugin.update_registration(row, :date => Date.new(2012,5,10))
+    end
+    def stdout_null
+      require 'tempfile'
+      $stdout = Tempfile.open('stdout')
+      yield
+      $stdout.close
+      $stdout = STDERR
+    end
+    def test_update_registration__error
+      registration = flexmock('registration', :pointer => 'pointer')
+      company = flexmock('company', :pointer => 'pointer')
+      update  = flexmock('update', :pointer => 'pointer')
+      flexmock(@app, 
+               :registration    => registration,
+               :company_by_name => company
+              )
+      flexmock(@app).should_receive(:update).and_raise(SystemStackError)
+      row = []
+      flexmock(@plugin, :date_cell => Date.new(2011,2,3))
+      stdout_null do 
+        assert_nil(@plugin.update_registration(row))
+      end
     end
     def test_update_sequence__create
       row = @workbook.worksheet(0).row(3)
@@ -864,6 +886,12 @@ module ODDB
         .times(1).and_return { assert true }
       @plugin.update_galenic_form(seq, comp, row)
     end
+    def test__update_galenic_form
+      flexmock(@app, :update => 'update')
+      flexmock(@app, :galenic_form => nil)
+      composition = flexmock('composition', :pointer => 'pointer')
+      assert_equal('update', @plugin._update_galenic_form(composition, 'language', '123,name'))
+    end
     def test_diff
       pac = flexmock 'package'
       pac.should_receive(:data_origin).and_return :swissmedic
@@ -1101,6 +1129,30 @@ module ODDB
       row = [0,1,"xxx ,(3mg), (4mg)"]
       assert_equal('update', @plugin.update_sequence(registration, row))
     end
+    def test_update_sequence__parts_empty
+      pointer = flexmock('pointer')
+      flexmock(pointer) do |ptr|
+        ptr.should_receive(:+).and_return(pointer)
+        ptr.should_receive(:creator)
+      end
+      sequence = flexmock('sequence') do |s|
+        s.should_receive(:pointer)
+        s.should_receive(:atc_class)
+      end
+      atc_class = flexmock('atc_class') do |a|
+        a.should_receive(:code)
+      end
+      registration = flexmock('registration') do |r|
+        r.should_receive(:sequence).and_return(sequence)
+        r.should_receive(:pointer).and_return(pointer)
+        r.should_receive(:atc_classes).and_return([atc_class])
+      end
+      flexmock(@app) do |app|
+        app.should_receive(:update).and_return('update')
+      end
+      row = [0,1,'']
+      assert_equal('update', @plugin.update_sequence(registration, row))
+    end
     def test_update_sequence__identication
       pointer = flexmock('pointer')
       flexmock(pointer) do |ptr|
@@ -1184,9 +1236,11 @@ module ODDB
         d.should_receive(:delete)
         d.should_receive(:update)
       end
+      sequence = flexmock('sequence', :export_flag => true)
       registration = flexmock('registration') do |r|
         r.should_receive(:export_flag)
         r.should_receive(:pointer)
+        r.should_receive(:sequences).and_return({'key' => sequence})
       end
       flexmock(@app) do |app|
         app.should_receive(:registration).once.with('123').and_return(nil)
@@ -1196,6 +1250,26 @@ module ODDB
       export_registrations = {'123' => data, '456' => data}
       assert_equal({'456' => data}, @plugin.update_export_registrations(export_registrations))
     end
+    def test_update_export_registrations__else
+      data = flexmock('data') do |d|
+        d.should_receive(:delete)
+        d.should_receive(:update)
+      end
+      sequence = flexmock('sequence', :export_flag => false)
+      registration = flexmock('registration') do |r|
+        r.should_receive(:export_flag)
+        r.should_receive(:pointer)
+        r.should_receive(:sequences).and_return({'key' => sequence})
+      end
+      flexmock(@app) do |app|
+        app.should_receive(:registration).once.with('123').and_return(nil)
+        app.should_receive(:registration).once.with('456').and_return(registration)
+        app.should_receive(:update)
+      end
+      export_registrations = {'123' => data, '456' => data}
+      assert_equal({}, @plugin.update_export_registrations(export_registrations))
+    end
+
     def test_update_export_sequences
       data = flexmock('data') do |d|
         d.should_receive(:update)
@@ -1296,7 +1370,7 @@ module ODDB
       flexmock(Spreadsheet) do |spr|
         spr.should_receive(:open).and_yield(workbook)
       end
-      expected = {0 => {:registration_date => nil, :expiry_date => nil}} 
+      expected = {0 => {}} 
       assert_equal(expected, @plugin.initialize_export_registrations('agent'))
     end
     def test_fix_compositions
@@ -1386,6 +1460,33 @@ module ODDB
       flexmock(FileUtils, :cp => nil)
       expected = {Persistence::Pointer.new([:registration, 'iksnr']) => 'flags'}
       assert_equal(expected, @plugin.update)
+    end
+    def test_update_compositions
+      flexmock(@app, 
+               :substance => 'substance',
+               :delete    => 'delete'
+              )
+      row = [0,1,2,3,4,5,6,7,8,9,10,11,12,13, 'name', 'A)composition_text']
+      composition = flexmock('composition', :pointer => 'pointer')
+      sequence = flexmock('sequence', 
+                          :active_agents => [],
+                          :compositions  => [composition]
+                         )
+      assert_equal([], @plugin.update_compositions(sequence, row))
+    end
+    def test_update_compositions__create_only
+      row = []
+      active_agent = flexmock('active_agent')
+      sequence = flexmock('sequence', 
+                          :active_agents => [active_agent],
+                          :compositions  => 'compositions'
+                         )
+      assert_equal('compositions', @plugin.update_compositions(sequence, row, {:create_only => true}))
+    end
+    def test_update_compositions__else
+      row = []
+      sequence = flexmock('sequence', :active_agents => [])
+      assert_equal([], @plugin.update_compositions(sequence, row))
     end
   end
 end

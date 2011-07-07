@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissmedicPlugin -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 07.07.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 require 'fileutils'
@@ -234,15 +234,9 @@ module ODDB
           export = row[export_flag_idx]
           if export =~ /E/
             data = {}
-            seq_indices.each do |key, idx|
-              data.store key, row[idx]
-            end
             @export_sequences[[iksnr, seqnr]] = data
             unless @export_registrations[iksnr]
               data = {}
-              reg_indices.each do |key, idx|
-                data.store key, row[idx]
-              end
               @export_registrations.store iksnr, data
             end
           end
@@ -637,7 +631,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         end
         @app.update ptr, args, :swissmedic
       end
-    rescue SystemStackError 
+    rescue SystemStackError => err
       puts "Stack-Error when importing: #{source_row(row).pretty_inspect}"
       puts err.backtrace[-100..-1]
     end

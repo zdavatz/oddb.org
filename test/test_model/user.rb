@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# TestUser -- oddb -- 23.07.2003 -- hwyss@ywesee.com 
+# ODDB::TestUser -- oddb.org -- 07.07.2011 -- hwyss@ywesee.com 
+# ODDB::TestUser -- oddb.org -- 23.07.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -30,6 +31,9 @@ module ODDB
     end
     def test_model
       assert_nil @user.model
+    end
+    def test_valid
+      assert_equal(false, @user.valid?)
     end
   end
   class TestYusStub < Test::Unit::TestCase
@@ -138,6 +142,23 @@ module ODDB
     def test_expired
       @session.should_receive(:ping).and_return do assert true; true end
       assert_equal false, @user.expired?
+    end
+    def test_expired__error
+      @session.should_receive(:ping).and_raise(RangeError)
+      assert(@user.expired?)
+    end
+    def stderr_null
+      require 'tempfile'
+      $stderr = Tempfile.open('stderr')
+      yield
+      $stderr.close
+      $stderr = STDERR
+    end
+    def test_remote_call
+      flexmock(@session).should_receive(:method_name).and_raise(RangeError)
+      stderr_null do 
+        assert_nil(@user.remote_call(:method_name, 'args'))
+      end
     end
     def test_fullname
       @session.should_receive(:get_preference).with(:name_first).and_return do

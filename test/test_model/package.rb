@@ -1,3 +1,8 @@
+#!/usr/bin/env ruby
+# ODDB::TestPackage -- oddb.org -- 07.07.2011 -- mhatakeyama@ywesee.com 
+# ODDB::TestPackage -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
+
+
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
@@ -184,6 +189,12 @@ module ODDB
       bottom = @package.comparable_size * 0.75
       assert(@package.comparable?(bottom, top, pack))
     end
+    def test_comparable__error
+      pack = flexmock('pack')
+      flexmock(pack).should_receive(:comparable_size).and_raise(RuntimeError)
+      assert_equal(false, @package.comparable?('bottom', 'top', pack))
+    end
+
     def test_comparable_failcase
       part1 = flexmock :comparable_size => Dose.new(5, 'ml')
       part2 = flexmock :comparable_size => Dose.new(10, 'ml')
@@ -310,6 +321,17 @@ module ODDB
       @package.delete_sl_entry
       assert_nil @package.sl_entry
       assert_nil @package.deductible
+    end
+    def test_delete_sl_entry__sl_entry
+      flexmock(@package, :sl_entry => nil)
+      registration = flexmock('registration', 
+                              :packages => [@package],
+                              :generic_type= => nil,
+                              :odba_isolated_store => 'odba_isolated_store'
+                             )
+      @package.sequence.registration = registration 
+      assert_nil(@package.delete_sl_entry)
+      assert_nil(@package.sl_entry)
     end
     def test_feedback
       fb1 = flexmock :oid => 12
