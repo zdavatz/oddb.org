@@ -31,11 +31,14 @@ module ODDB
       @export_registrations = {}
       @export_sequences = {}
       @active_registrations_praeparateliste = {}
+      @update_time = 0 # minute
     end
     def update(agent=Mechanize.new, target=get_latest_file(agent))
       if(target)
+        start_time = Time.new
         initialize_export_registrations agent
         keep_active_registrations_praeparateliste
+#        keep_active_registrations_praeparateliste_with_export_flag_true
         diff target, @latest, [:atc_class, :sequence_date]
         update_registrations @diff.news + @diff.updates, @diff.replacements
         set_all_export_flag_false
@@ -43,10 +46,14 @@ module ODDB
         update_export_registrations @export_registrations
         sanity_check_deletions(@diff)
         delete @diff.package_deletions
-        recheck_deletions @diff.sequence_deletions
-        recheck_deletions @diff.registration_deletions
+        # check the case in which there is a sequence or registration in Praeparateliste.xls 
+        # but there is NO sequence or registration in Packungen.xls
+        recheck_deletions @diff.sequence_deletions # @diff comes from Packungen.xls but deletions are compared with Praeparateliste.xls
+        recheck_deletions @diff.registration_deletions # @diff comes from Packungen.xls but deletions are compared with Praeparateliste.xls
         deactivate @diff.sequence_deletions
         deactivate @diff.registration_deletions
+        end_time = Time.now - start_time
+        @update_time = (end_time / 60.0)
         FileUtils.cp target, @latest
         @change_flags = @diff.changes.inject({}) { |memo, (iksnr, flags)| 
           memo.store Persistence::Pointer.new([:registration, iksnr]), flags
@@ -92,7 +99,7 @@ module ODDB
     end
     def deactivate(deactivations)
       deactivations.each { |row|
-        @app.update pointer(row), {:inactive_date => @@today}, :swissmedic
+        @app.update pointer(row), {:inactive_date => @@today, :renewal_flag => nil, :renewal_flag_swissmedic => nil}, :swissmedic
       }
     end
     def delete(deletions)
@@ -286,7 +293,29 @@ module ODDB
         workbook.worksheet(0).each(3) do |row|
           iksnr = row[iksnr_idx]
           seqnr = row[seqnr_idx]
-          @active_registrations_praeparateliste[[iksnr, seqnr]] = {}
+          @active_registrations_praeparateliste[iksnr] = true
+        end
+      end
+      @active_registrations_praeparateliste
+    end
+    def keep_active_registrations_praeparateliste_with_export_flag_true
+      latest_name = File.join @archive, "Präparateliste-latest.xls"
+      indices = {
+        :iksnr => PREPARATIONS_COLUMNS.index(:iksnr),
+        :seqnr => PREPARATIONS_COLUMNS.index(:seqnr),
+        :export_flag => PREPARATIONS_COLUMNS.index(:export_flag),
+      }
+      Spreadsheet.open(latest_name) do |workbook|
+        iksnr_idx = indices[:iksnr]
+        seqnr_idx = indices[:seqnr]
+        export_flag_idx = indices[:export_flag]
+        workbook.worksheet(0).each(3) do |row|
+          iksnr = row[iksnr_idx]
+          seqnr = row[seqnr_idx]
+          export = row[export_flag_idx]
+          if export =~ /E/
+            @active_registrations_praeparateliste[iksnr] = true
+          end
         end
       end
       @active_registrations_praeparateliste
@@ -351,6 +380,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         "Updated existing Export-Registrations: #{@known_export_registrations}",
         "Updated new Export-Sequences: #{@export_sequences.size - @known_export_sequences}",
         "Updated existing Export-Sequences: #{@known_export_sequences}",
+        "Total time to update: #{@update_time} [m]",
         "Total Sequences without ATC-Class: #{atcless.size}",
         atcless,
       ]
