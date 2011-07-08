@@ -57,9 +57,11 @@ module ODDB
     def set_all_export_flag_false
       @app.each_registration do |reg|
         # registration export_flag
+        @known_export_registrations += 1 if reg.export_flag
         @app.update reg.pointer, {:export_flag => false}, :admin
         # sequence export_flag
         reg.sequences.values.each do |seq|
+          @known_export_sequences += 1 if seq.export_flag
           @app.update seq.pointer, {:export_flag => false}, :admin
         end
       end
@@ -343,7 +345,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         "Created Packages: #{@diff.news.size}",
         "Updated Packages: #{@diff.updates.size}",
         "Deleted Packages: #{@diff.package_deletions.size} (#{@diff.replacements.size} Replaced)",
-        "Deleted Sequences: #{@diff.sequence_deletions.size}",
+        "Deactivated Sequences: #{@diff.sequence_deletions.size}",
         "Deactivated Registrations: #{@diff.registration_deletions.size}",
         "Updated new Export-Registrations: #{@export_registrations.size - @known_export_registrations}",
         "Updated existing Export-Registrations: #{@known_export_registrations}",
@@ -516,7 +518,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     def update_export_sequences export_sequences
       export_sequences.delete_if do |(iksnr, seqnr), data|
         if (reg = @app.registration(iksnr)) && (seq = reg.sequence(seqnr))
-          @known_export_sequences += 1 if seq.export_flag
           data.update :export_flag => true
           @app.update seq.pointer, data, :swissmedic
           false
@@ -531,7 +532,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
           # if all the export_flags of sequence are true,
           # then the export_flag of registration is set to true
           if reg.sequences.values.map{|seq| seq.export_flag ? true : false}.uniq == [true]
-            @known_export_registrations += 1 if reg.export_flag
             data.update :export_flag => true, :inactive_date => nil
             @app.update reg.pointer, data, :swissmedic
             false
