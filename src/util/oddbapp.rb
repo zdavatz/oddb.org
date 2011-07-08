@@ -1257,6 +1257,13 @@ class OddbPrevalence
       end
     end
   end
+  def set_inactive_date_nil(date)
+    @registrations.values.each do |reg|
+      if reg.inactive_date == date
+        update reg.pointer, {:inactive_date => nil}, :admin
+      end
+    end
+  end
 	private
 	def create_unknown_galenic_group
 		unless(@galenic_groups.is_a?(Hash) && @galenic_groups.size > 0)
