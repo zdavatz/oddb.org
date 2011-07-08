@@ -99,7 +99,11 @@ module ODDB
     end
     def deactivate(deactivations)
       deactivations.each { |row|
-        @app.update pointer(row), {:inactive_date => @@today, :renewal_flag => nil, :renewal_flag_swissmedic => nil}, :swissmedic
+        if row.length == 1 # only in the case of registration_deletions
+          @app.update pointer(row), {:inactive_date => @@today, :renewal_flag => nil, :renewal_flag_swissmedic => nil}, :swissmedic
+        else # the case of sequence_deletions
+          @app.update pointer(row), {:inactive_date => @@today}, :swissmedic
+        end
       }
     end
     def delete(deletions)
@@ -380,7 +384,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         "Updated existing Export-Registrations: #{@known_export_registrations}",
         "Updated new Export-Sequences: #{@export_sequences.size - @known_export_sequences}",
         "Updated existing Export-Sequences: #{@known_export_sequences}",
-        "Total time to update: #{@update_time} [m]",
+        "Total time to update: #{"%.2f" % @update_time} [m]",
         "Total Sequences without ATC-Class: #{atcless.size}",
         atcless,
       ]
