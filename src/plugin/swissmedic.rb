@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissmedicPlugin -- oddb.org -- 07.07.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 08.07.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 require 'fileutils'
@@ -77,14 +77,14 @@ module ODDB
     end
     def recheck_deletions(deletions)
       key_list = []
-      deletetions.each do |key|
+      deletions.each do |key|
         # check if there is the sequence/registration in the Praeparateliste-latest.xls
         # if there is, do not deactivate the sequence/registration 
         if @active_registrations_praeparateliste[key[0]]
           key_list << key
         end
       end
-      delete_key_list.each do |key|
+      key_list.each do |key|
         deletions.delete(key)
       end
     end
