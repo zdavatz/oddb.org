@@ -73,6 +73,7 @@ module ODDB
       log_file = File.join(log_dir, 'update_package_trade_status.log')
       Logging.start(log_file) do |log|
         log.print "update_package_trade_status.log\n"
+        log.print "out_of_trade_false_list, update_pharmacode_list, out_of_trade_true_list, delete_pharmacode_list, eancode, No./Total, Estimate time\n"
       end
 
       @out_of_trade_true_list  = []
@@ -118,6 +119,8 @@ module ODDB
         end
 
         Logging.append(log_file) do |log|
+          log.print @out_of_trade_false_list.length, ",", @update_pharmacode_list.length, ","
+          log.print @out_of_trade_true_list.length, ",", @delete_pharmacode_list.length, "\t"
           log.print pack.barcode, "\t"
         end
         Logging.append_estimate_time(log_file, count, @total_packages)
