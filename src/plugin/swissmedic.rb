@@ -37,7 +37,7 @@ module ODDB
       if(target)
         start_time = Time.new
         initialize_export_registrations agent
-        keep_active_registrations_praeparateliste
+#        keep_active_registrations_praeparateliste
 #        keep_active_registrations_praeparateliste_with_export_flag_true
         diff target, @latest, [:atc_class, :sequence_date]
         update_registrations @diff.news + @diff.updates, @diff.replacements
@@ -48,8 +48,8 @@ module ODDB
         delete @diff.package_deletions
         # check the case in which there is a sequence or registration in Praeparateliste.xls 
         # but there is NO sequence or registration in Packungen.xls
-        recheck_deletions @diff.sequence_deletions # @diff comes from Packungen.xls but deletions are compared with Praeparateliste.xls
-        recheck_deletions @diff.registration_deletions # @diff comes from Packungen.xls but deletions are compared with Praeparateliste.xls
+        #recheck_deletions @diff.sequence_deletions # Do not consider Preaparateliste_mit_WS.xls when setting the "deaktiviert am" date.
+        #recheck_deletions @diff.registration_deletions # Do not consider Preaparateliste_mit_WS.xls when setting the "deaktiviert am" date.
         deactivate @diff.sequence_deletions
         deactivate @diff.registration_deletions
         end_time = Time.now - start_time
