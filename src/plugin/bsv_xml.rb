@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::BsvXmlPlugin -- oddb.org -- 09.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::BsvXmlPlugin -- oddb.org -- 02.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::BsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 
 require 'config'
@@ -685,8 +685,10 @@ module ODDB
         raise
       end
     ensure
-      temp.close
-      temp.unlink
+      if temp
+        temp.close
+        temp.unlink
+      end
     end
     def log_info
       body = report << "\n\n"
