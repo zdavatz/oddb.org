@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::AdditionalInformation -- oddb -- 09.12.2003 -- rwaltert@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 03.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/atcchooser'
 require 'iconv'
@@ -283,9 +284,9 @@ module ODDB
 					if(pdf_patinfo = model.pdf_patinfo)
 						klass = HtmlGrid::PopupLink
 						href = @lookandfeel.resource_global(:pdf_patinfo, pdf_patinfo)
-					elsif(patinfo = model.patinfo)
+					elsif(patinfo = model.patinfo and model.respond_to?(:sequence))
 						klass = HtmlGrid::Link
-						href = @lookandfeel._event_url(:resolve, {'pointer' => patinfo.pointer})
+						href = @lookandfeel._event_url(:patinfo, {:seqnr => model.sequence.seqnr, :swissmedicnr => model.iksnr})
 					end
 					link = klass.new(:square_patinfo, model, @session, self)
 					link.href = href

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Global -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 03.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -256,6 +256,18 @@ module ODDB
           Http404.new(@session, nil)
         end
       end
+      def patinfo
+        if (iksnr = @session.user_input(:swissmedicnr)) \
+          && (seqnr = @session.user_input(:seqnr)) \
+          && (reg = @session.app.registration(iksnr)) \
+          && (seq = reg.sequence(seqnr)) \
+          && (patinfo = seq.patinfo)
+          State::Drugs::Patinfo.new(@session, patinfo)
+        else
+          Http404.new(@session, nil)
+        end
+      end
+
 			def feedbacks
 				if((pointer = @session.user_input(:pointer)) \
 					&& pointer.is_a?(Persistence::Pointer) \

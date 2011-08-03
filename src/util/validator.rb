@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# Validator -- oddb -- 10.03.2011 -- mhatakeyama@ywesee.com
-# Validator -- oddb -- 18.11.2002 -- hwyss@ywesee.com 
+# ODDB::Validator -- oddb.org -- 03.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
 require 'model/ean13'
@@ -217,6 +217,7 @@ module ODDB
 			:password_request,
 			:password_reset,
 			:patinfo_deprived_sequences,
+			:patinfo,
 			:patinfos,
 			:patinfo_stats,
 			:patinfo_stats_company,
