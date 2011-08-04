@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::Package -- oddb -- 28.03.2011 -- mhatakeyama@ywesee.com
-# ODDB::Package -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
+# ODDB::Package -- oddb.org -- 04.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
 require 'util/money'
@@ -55,7 +55,7 @@ module ODDB
     sequence_data :atc_class, :basename, :company, :composition_text, :ddds,
       :fachinfo, :galenic_forms, :galenic_group, :has_patinfo?, :longevity,
       :iksnr, :indication, :name, :name_base, :patinfo, :pdf_patinfo,
-      :registration, :route_of_administration, :sequence_date
+      :registration, :route_of_administration, :sequence_date, :seqnr
 		def initialize(ikscd)
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)

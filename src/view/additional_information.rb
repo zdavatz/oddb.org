@@ -284,10 +284,10 @@ module ODDB
 					if(pdf_patinfo = model.pdf_patinfo)
 						klass = HtmlGrid::PopupLink
 						href = @lookandfeel.resource_global(:pdf_patinfo, pdf_patinfo)
-					elsif(patinfo = model.patinfo and model.respond_to?(:sequence))
+					elsif (model.patinfo and seqnr = model.seqnr)
 						klass = HtmlGrid::Link
-						href = @lookandfeel._event_url(:patinfo, {:seqnr => model.sequence.seqnr, :swissmedicnr => model.iksnr})
-					elsif(patinfo = model.patinfo)
+						href = @lookandfeel._event_url(:patinfo, {:seqnr => seqnr, :swissmedicnr => model.iksnr})
+					elsif (patinfo = model.patinfo) # This is an old format URL for PI. Probably no need any more (but still available).
 						klass = HtmlGrid::Link
 						href = @lookandfeel._event_url(:resolve, {'pointer' => patinfo.pointer})
 					end
