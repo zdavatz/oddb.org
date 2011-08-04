@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::AdditionalInformation -- oddb.org -- 03.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 04.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/atcchooser'
@@ -287,6 +287,9 @@ module ODDB
 					elsif(patinfo = model.patinfo and model.respond_to?(:sequence))
 						klass = HtmlGrid::Link
 						href = @lookandfeel._event_url(:patinfo, {:seqnr => model.sequence.seqnr, :swissmedicnr => model.iksnr})
+					elsif(patinfo = model.patinfo)
+						klass = HtmlGrid::Link
+						href = @lookandfeel._event_url(:resolve, {'pointer' => patinfo.pointer})
 					end
 					link = klass.new(:square_patinfo, model, @session, self)
 					link.href = href
