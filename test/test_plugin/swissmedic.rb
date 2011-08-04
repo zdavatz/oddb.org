@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissmedicPluginTest -- oddb.org -- 07.07.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPluginTest -- oddb.org -- 04.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPluginTest -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
@@ -1458,6 +1458,19 @@ module ODDB
       end
       @plugin.instance_eval('@diff = diff')
       flexmock(FileUtils, :cp => nil)
+      sequence = flexmock('sequence', 
+                          :export_flag => false,
+                          :pointer     => 'pointer'
+                         )
+      registration = flexmock('registration', 
+                              :export_flag => false,
+                              :pointer     => 'pointer',
+                              :sequences   => {'key' => sequence}
+                             )
+      flexmock(@app) do |app|
+        app.should_receive(:each_registration).and_yield(registration)
+        app.should_receive(:update).and_return('update')
+      end
       expected = {Persistence::Pointer.new([:registration, 'iksnr']) => 'flags'}
       assert_equal(expected, @plugin.update)
     end

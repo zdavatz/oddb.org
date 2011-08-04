@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Admin::TestSequence -- oddb.org -- 10.03.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Admin::TestSequence -- oddb.org -- 04.08.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -401,6 +401,21 @@ class TestSequenceForm < Test::Unit::TestCase
       l.should_receive(:resource_global)
     end
     assert_kind_of(HtmlGrid::PopupLink, @composite.patinfo(@model, @session))
+  end
+  def test_patinfo_else
+    sequence = flexmock('sequence', :seqnr => 'seqnr')
+    flexmock(@model) do |m|
+      # The following methods are defined in additional_information.rb
+      m.should_receive(:has_patinfo?).and_return(true)
+      m.should_receive(:pdf_patinfo).and_return(false)
+      m.should_receive(:patinfo).and_return('patinfo')
+      m.should_receive(:iksnr).and_return('iksnr')
+      m.should_receive(:sequence).and_return(sequence)
+    end
+    flexmock(@lookandfeel) do |l|
+      l.should_receive(:resource_global)
+    end
+    assert_kind_of(HtmlGrid::Link, @composite.patinfo(@model, @session))
   end
   def test_patinfo__nil
     flexmock(@model) do |m|

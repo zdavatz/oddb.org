@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# State::TestGlobal -- oddb -- 03.07.2011 -- mhatakeyama@ywesee.com
-# State::TestGlobal -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
+# ODDB::State::TestGlobal -- oddb -- 04.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::TestGlobal -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -907,7 +907,19 @@ end
         end
         assert_equal([:sortvalue], @state.instance_eval('get_sortby!'))
       end
-
+      def test_patinfo
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).once.with(:swissmedicnr).and_return('iksnr')
+          s.should_receive(:user_input).once.with(:seqnr).and_return('seqnr')
+        end
+        sequence     = flexmock('sequence', :patinfo => 'patinfo')
+        registration = flexmock('registration', :sequence => sequence)
+        flexmock(@session.app, :registration => registration)
+        assert_kind_of(State::Drugs::Patinfo, @state.patinfo)
+      end
+      def test_patinfo__http404
+        assert_kind_of(Http404, @state.patinfo)
+      end
 		end
 	end
 end
