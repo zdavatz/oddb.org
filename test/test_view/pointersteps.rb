@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::TestPointerSteps -- oddb.org -- 28.04.2011 -- hwyss@ywesee.com 
+# ODDB::View::TestPointerSteps -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::TestPointerSteps -- oddb.org -- 02.04.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -9,6 +9,12 @@ require 'test/unit'
 require 'flexmock'
 require 'view/pointersteps'
 require 'stub/cgi'
+
+class String
+  def to_csv
+    self
+  end
+end
 
 module ODDB
 	module View	
@@ -33,6 +39,9 @@ module ODDB
 			def pointer
 				self
 			end
+      def to_csv
+        self.to_s
+      end
 		end
 		class StubPointerStepsAncestor
 			attr_reader :pointer_descr
@@ -179,7 +188,12 @@ module ODDB
 				steps = ODDB::View::PointerSteps.new(@model, @session, @container)
         assert_kind_of(ODDB::View::PointerLink, steps.pointer_descr(@model, @session))
       end
-
+      def test_pointer_descr_smart_link
+        flexmock(@session, :allowed? => nil)
+        flexmock(@model, :pointer => "registration, 12345, sequence, 012, package, 01")
+				steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        assert_kind_of(ODDB::View::PointerLink, steps.pointer_descr(@model, @session))
+      end
       class StubSnapback
         include ODDB::View::Snapback
         def initialize(model, session)

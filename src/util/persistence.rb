@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# Persistence -- oddb -- 26.02.2003 -- hwyss@ywesee.com
+# Persistence -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com
+# Persistence -- oddb.org -- 26.02.2003 -- hwyss@ywesee.com
 
 require 'rockit/rockit'
 require 'odba'
@@ -327,6 +328,18 @@ Grammar OddbSize
 					'!' << step.join(',')
 				}.join << '.'
 			end
+      def to_csv
+				@directions.collect { |orig|
+					step = orig.collect { |arg|
+						if(arg.is_a? Pointer)
+							arg
+						else
+							arg.to_s.gsub('%','%%').gsub(/[:!,.]/u, '%\0')
+						end
+					}
+					step.join(',')
+				}.join(',')
+      end
       def to_yus_privilege
         @directions.inject('org.oddb.model') { |yus, steps|
           steps = steps.dup

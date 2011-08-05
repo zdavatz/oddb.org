@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Admin::Sequence -- oddb -- 11.03.2003 -- hwyss@ywesee.com 
+# ODDB::View::Admin::Sequence -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
 require 'view/admin/swissmedic_source'
 require 'view/drugs/privatetemplate'
@@ -254,8 +255,13 @@ module SequencePackageList
       evt = @session.state.respond_to?(:suggest_choose) ? :suggest_choose : :show
 			link = HtmlGrid::Link.new(:ikscd, model, @session, self)
 			link.value = model.ikscd
-			args = {:pointer => model.pointer}
-			link.href = @lookandfeel.event_url(evt, args)
+      smart_link_format = model.pointer.to_csv.gsub(/registration/, 'reg').gsub(/sequence/, 'seq').gsub(/package/, 'pack').split(/,/)
+      if evt == :show and smart_link_format.include?('reg')
+  			link.href = @lookandfeel.event_url(evt, smart_link_format)
+      else
+        old_link_format = {:pointer => model.pointer}
+  			link.href = @lookandfeel.event_url(evt, old_link_format)
+      end
 			link
 		end
 	end

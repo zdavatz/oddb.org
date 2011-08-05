@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::PointerSteps -- oddb -- 21.03.2003 -- mhuggler@ywesee.com 
+# ODDB::View::PointerSteps -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::PointerSteps -- oddb.org -- 21.03.2003 -- mhuggler@ywesee.com 
 
 require 'htmlgrid/list'
 require 'htmlgrid/link'
@@ -88,7 +89,13 @@ module ODDB
       def pointer_descr(model, session=@session)
         link = PointerLink.new(:pointer_descr, model, @session, self)
         unless(@session.allowed?('edit', model))
-          link.href = @lookandfeel._event_url(:show, :pointer => model.pointer)
+          smart_link_format = model.pointer.to_csv.gsub(/registration/, 'reg').gsub(/sequence/, 'seq').gsub(/package/, 'pack').split(/,/)
+          if smart_link_format.include?('reg')
+            link.href = @lookandfeel._event_url(:show, smart_link_format)
+          else 
+            old_link_format = {:pointer => model.pointer}
+            link.href = @lookandfeel._event_url(:show, old_link_format)
+          end
         end
         link
       end

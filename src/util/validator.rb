@@ -160,6 +160,7 @@ module ODDB
 			:download,
 			:download_credit,
 			:download_export,
+			:drug,
 			:effective_substances,
 			:export_csv,
       :fachinfo,
@@ -454,10 +455,12 @@ module ODDB
 		def ikscd(value)
 			swissmedic_id(:ikscd, value, 1..3, 3)
 		end
+		alias :pack :ikscd
 		def iksnr(value)
 			swissmedic_id(:iksnr, value, 4..5)
 		end
     alias :swissmedicnr :iksnr
+    alias :reg :iksnr
     def notify_recipient(value)
       RMail::Address.parse(value.to_s).collect { |parsed| parsed.address }
     end
@@ -487,6 +490,7 @@ module ODDB
 		def seqnr(value)
 			swissmedic_id(:seqnr, value, 1..2, 2)
 		end
+		alias :seq :seqnr
     @@swissmedic = /^\d+$/u
 		def swissmedic_id(key, value, range, pad=false)
 			return value if value.empty?

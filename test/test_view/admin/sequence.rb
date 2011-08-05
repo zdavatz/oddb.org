@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::Admin::TestSequence -- oddb.org -- 04.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Admin::TestSequence -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -245,25 +245,26 @@ class TestSequencePackage < Test::Unit::TestCase
     compose = flexmock('compose') do |c|
       c.should_receive(:galenic_form)
     end
+    @pointer = flexmock('pointer', :to_csv => 'registration,31706,sequence,01,package,017')
     active_agent = flexmock('active_agent') do |a|
       a.should_receive(:substance)
       a.should_receive(:dose)
       a.should_receive(:parent).and_return(compose)
       a.should_receive(:ikscd).and_return('ikscd')
-      a.should_receive(:pointer)
       a.should_receive(:commercial_forms).and_return([])
       a.should_receive(:size)
       a.should_receive(:price_exfactory)
       a.should_receive(:price_public)
       a.should_receive(:sl_entry)
+      a.should_receive(:pointer).and_return(@pointer)
     end
     @model = [active_agent]
     @agents = ODDB::View::Admin::SequencePackages.new(@model, @session)
   end
   def test_ikscd
     flexmock(@session, :allowed? => true)
-    model = flexmock('model', :pointer => nil)
-    assert_kind_of(ODDB::View::PointerLink, @agents.ikscd(model))
+    flexmock(@model, :pointer => @pointer)
+    assert_kind_of(ODDB::View::PointerLink, @agents.ikscd(@model))
   end
 end
 
@@ -431,9 +432,10 @@ class TestSequenceForm < Test::Unit::TestCase
     assert_kind_of(HtmlGrid::LabelText, @composite.patinfo_label(@model, @session))
   end
   def test_patinfo_upload
+    pointer = flexmock('pointer', :to_csv => 'pointer')
     company = flexmock('company') do |c|
       c.should_receive(:invoiceable?)
-      c.should_receive(:pointer)
+      c.should_receive(:pointer).and_return(pointer)
     end
     flexmock(@model, :company => company)
     assert_kind_of(ODDB::View::PointerLink, @composite.patinfo_upload(@model, @session))
@@ -483,9 +485,10 @@ class TestSequenceComposite < Test::Unit::TestCase
       c.should_receive(:active_agents).and_return([active_agent])
     end
     commercial_form = flexmock('commercial_form')
+    pointer = flexmock('pointer', :to_csv => 'pointer')
     @package = flexmock('package') do |p|
       p.should_receive(:ikscd).and_return('ikscd')
-      p.should_receive(:pointer)
+      p.should_receive(:pointer).and_return(pointer)
       p.should_receive(:commercial_forms).and_return([commercial_form])
       p.should_receive(:parts).and_return([])
       p.should_receive(:price_exfactory)
@@ -608,9 +611,10 @@ class TestResellerSequenceComposite < Test::Unit::TestCase
       c.should_receive(:active_agents).and_return([active_agent])
     end
     commercial_form = flexmock('commercial_form')
+    pointer = flexmock('pointer', :to_csv => 'pointer')
     @package = flexmock('package') do |p|
       p.should_receive(:ikscd).and_return('ikscd')
-      p.should_receive(:pointer)
+      p.should_receive(:pointer).and_return(pointer)
       p.should_receive(:commercial_forms).and_return([commercial_form])
       p.should_receive(:parts).and_return([])
       p.should_receive(:price_exfactory)

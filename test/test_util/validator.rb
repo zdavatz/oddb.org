@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# TestValidator -- oddb -- 10.03.2011 -- mhatakeyama@ywesee.com
-# TestValidator -- oddb -- 04.03.2003 -- hwyss@ywesee.com
+# TestValidator -- oddb.org -- 10.03.2011 -- mhatakeyama@ywesee.com
+# TestValidator -- oddb.org -- 04.03.2003 -- hwyss@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))

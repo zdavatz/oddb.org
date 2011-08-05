@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Admin::Registration -- oddb -- 07.03.2003 -- hwyss@ywesee.com 
+# ODDB::View::Admin::Registration -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::Admin::Registration -- oddb.org -- 07.03.2003 -- hwyss@ywesee.com 
 
 require 'view/drugs/privatetemplate'
 require 'htmlgrid/errormessage'
@@ -62,8 +63,13 @@ module RegistrationSequenceList
     else
       evt = @session.state.respond_to?(:suggest_choose) ? :suggest_choose : :show
 			link = HtmlGrid::Link.new(:seqnr, model, @session, self)
-			args = {:pointer => model.pointer}
-			link.href = @lookandfeel.event_url(evt, args)
+      smart_link_format = model.pointer.to_csv.gsub(/registration/, 'reg').gsub(/sequence/, 'seq').gsub(/package/, 'pack').split(/,/)
+      if evt == :show and smart_link_format.include?('reg')
+  			link.href = @lookandfeel.event_url(evt, smart_link_format)
+      else 
+        old_link_format = {:pointer => model.pointer}
+			  link.href = @lookandfeel.event_url(evt, old_link_format)
+      end
 			link.value = model.seqnr
 			link
 		end
@@ -267,8 +273,7 @@ class RegistrationForm < View::Form
     if(model.has_fachinfo?)
       link = HtmlGrid::Link.new(:square_fachinfo,
           model, @session, self)
-      link.href = @lookandfeel._event_url(:fachinfo,
-        {:swissmedicnr => model.iksnr})
+      link.href = @lookandfeel._event_url(:fachinfo, {:reg => model.iksnr})
       link.css_class = css
       link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
       link

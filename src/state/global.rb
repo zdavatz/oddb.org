@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Global -- oddb.org -- 03.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -248,7 +248,7 @@ module ODDB
 				super
 			end
       def fachinfo
-        if (iksnr = @session.user_input(:swissmedicnr)) \
+        if (iksnr = @session.user_input(:reg) || @session.user_input(:swissmedicnr)) \
           && (reg = @session.app.registration(iksnr)) \
           && fachinfo = reg.fachinfo
           State::Drugs::Fachinfo.new(@session, fachinfo)
@@ -257,8 +257,8 @@ module ODDB
         end
       end
       def patinfo
-        if (iksnr = @session.user_input(:swissmedicnr)) \
-          && (seqnr = @session.user_input(:seqnr)) \
+        if (iksnr = @session.user_input(:reg) || @session.user_input(:swissmedicnr)) \
+          && (seqnr = @session.user_input(:seq)) \
           && (reg = @session.app.registration(iksnr)) \
           && (seq = reg.sequence(seqnr)) \
           && (patinfo = seq.patinfo)
@@ -267,7 +267,6 @@ module ODDB
           Http404.new(@session, nil)
         end
       end
-
 			def feedbacks
 				if((pointer = @session.user_input(:pointer)) \
 					&& pointer.is_a?(Persistence::Pointer) \
@@ -470,16 +469,30 @@ module ODDB
 			def resolve
 				if(@session.request_path == @request_path)
 					self
-				elsif((pointer = @session.user_input(:pointer)) \
-					&& pointer.is_a?(Persistence::Pointer) \
-					&& (model = pointer.resolve(@session.app)))
-					if(klass = resolve_state(pointer))
-						klass.new(@session, model)
-					else
-						State::Admin::TransparentLogin.new(@session, model)
-					end
+        else
+          iksnr = @session.user_input(:reg)
+          seqnr = @session.user_input(:seq) 
+          ikscd = @session.user_input(:pack)
+          pointer = if iksnr && seqnr && ikscd
+                      @session.app.registration(iksnr).sequence(seqnr).package(ikscd).pointer
+                    elsif iksnr && seqnr
+                      @session.app.registration(iksnr).sequence(seqnr).pointer
+                    elsif iksnr
+                      @session.app.registration(iksnr).pointer
+                    else
+                      @session.user_input(:pointer)
+                    end
+          if pointer.is_a?(Persistence::Pointer) \
+					&& (model = pointer.resolve(@session.app))
+            if(klass = resolve_state(pointer))
+              klass.new(@session, model)
+            else
+              State::Admin::TransparentLogin.new(@session, model)
+            end
+          end
 				end
 			end
+      alias :drug :resolve
 			def resolve_state(pointer, type=:standard)
 				state_map = {
 					:standard	=>	self::class::RESOLVE_STATES,
@@ -591,11 +604,24 @@ module ODDB
 			def show
 				if(@session.request_path == @request_path)
 					self
-				elsif((pointer = @session.user_input(:pointer)) \
-					&& pointer.is_a?(Persistence::Pointer) \
+        else
+          iksnr = @session.user_input(:reg)
+          seqnr = @session.user_input(:seq) 
+          ikscd = @session.user_input(:pack)
+          pointer = if iksnr && seqnr && ikscd
+                      @session.app.registration(iksnr).sequence(seqnr).package(ikscd).pointer
+                    elsif iksnr && seqnr
+                      @session.app.registration(iksnr).sequence(seqnr).pointer
+                    elsif iksnr
+                      @session.app.registration(iksnr).pointer
+                    else
+                      @session.user_input(:pointer)
+                    end
+          if pointer.is_a?(Persistence::Pointer) \
 					&& (model = pointer.resolve(@session.app)) \
-					&& klass = resolve_state(pointer, :readonly))
-					klass.new(@session, model)
+					&& klass = resolve_state(pointer, :readonly)
+            klass.new(@session, model)
+          end
 				end
 			end
 			def snapback_event

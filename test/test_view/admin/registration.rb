@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Admin::TestRegistration -- oddb.org -- 03.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Admin::TestRegistration -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -66,6 +66,8 @@ class TestRegistrationSequences < Test::Unit::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
+    @pointer = flexmock('pointer', :to_csv => 'pointer')
+    flexmock(@model, :pointer => @pointer)
     @list = ODDB::View::Admin::RegistrationSequences.new([@model], @session)
   end
   def test_atc_class
@@ -76,6 +78,7 @@ class TestRegistrationSequences < Test::Unit::TestCase
     assert_equal(expected, @list.galenic_form(@model, @session))
   end
   def test_seqnr
+    flexmock(@pointer, :to_csv => "registration,12345,sequence,123,package,12")
     assert_kind_of(HtmlGrid::Link, @list.seqnr(@model, @session))
   end
   def test_seqnr__edit
@@ -85,12 +88,13 @@ class TestRegistrationSequences < Test::Unit::TestCase
     assert_kind_of(ODDB::View::PointerLink, @list.seqnr(@model, @session))
   end
 end
-
 class TestRootRegistrationSequences < Test::Unit::TestCase
   include FlexMock::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
+    pointer = flexmock('pointer', :to_csv => "pointer")
+    flexmock(@model, :pointer => pointer)
     @list = ODDB::View::Admin::RootRegistrationSequences.new([@model], @session)
   end
   def test_compose_empty_list
@@ -217,9 +221,10 @@ class TestResellerRegistrationForm < Test::Unit::TestCase
   include ODDB::View::Admin::TestSetup
   def setup
     htmlgrid_setup
+    pointer = flexmock('pointer', :to_csv => "pointer")
     @company = flexmock('company') do |c|
       c.should_receive(:invoiceable?)
-      c.should_receive(:pointer)
+      c.should_receive(:pointer).and_return(pointer)
     end
     flexmock(@model) do |m|
       m.should_receive(:company).and_return(@company)
@@ -276,6 +281,8 @@ class TestRegistrationComposite < Test::Unit::TestCase
       m.should_receive(:has_fachinfo?)
       m.should_receive(:sequences).and_return({'key' => @sequence})
     end
+    pointer = flexmock('pointer', :to_csv => "pointer")
+    flexmock(@sequence, :pointer => pointer)
     @composite = ODDB::View::Admin::RegistrationComposite.new(@model, @session)
   end
   def test_registration_sequences
@@ -290,7 +297,6 @@ class TestRegistrationComposite < Test::Unit::TestCase
     assert_kind_of(HtmlGrid::Value, @composite.source(@model, @session))
   end
 end
-
     end # Admin
   end # View
 end # ODDB

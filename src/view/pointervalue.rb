@@ -25,8 +25,18 @@ module ODDB
 		class PointerLink < View::PointerValue
       def init
         super
-				arguments = {'pointer'	=> @model.pointer.to_s}
-				@attributes['href'] = @lookandfeel._event_url(:resolve, arguments)
+        # @model.pointer.to_s might be like this:
+        # :!registration,31706!sequence,01!package,017.
+        # in such case, URL link will be smarter than the URL by using pointer.
+        # z.B.) http://ch.oddb.org/de/gcc/drug/reg/31706/seq/01/pack/017
+        # The old format is also available.
+        smart_link_format = @model.pointer.to_csv.gsub(/registration/, 'reg').gsub(/sequence/, 'seq').gsub(/package/, 'pack').split(/,/)
+        if smart_link_format.include?('reg')
+          @attributes['href'] = @lookandfeel._event_url(:drug, smart_link_format)
+        else # This is an old format by using the default pointer format
+          old_link_format = {'pointer'	=> @model.pointer.to_s}
+				  @attributes['href'] = @lookandfeel._event_url(:resolve, old_link_format)
+        end
       end
 			def to_html(context)
 				context.a(@attributes) { @value }

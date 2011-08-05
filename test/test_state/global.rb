@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::State::TestGlobal -- oddb -- 04.08.2011 -- mhatakeyama@ywesee.com
-# ODDB::State::TestGlobal -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
+# ODDB::State::TestGlobal -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::TestGlobal -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -108,7 +108,10 @@ end
           ptr.should_receive(:skeleton).and_return([:company])
         end
         flexstub(@session) do |s|
-          s.should_receive(:user_input).and_return(pointer) 
+          s.should_receive(:user_input).once.with(:pointer).and_return(pointer) 
+          s.should_receive(:user_input).once.with(:reg).and_return(nil) 
+          s.should_receive(:user_input).once.with(:seq).and_return(nil) 
+          s.should_receive(:user_input).once.with(:pack).and_return(nil) 
         end
 				newstate = @state.resolve
 				assert_instance_of(State::Companies::Company, newstate)
@@ -514,28 +517,94 @@ end
         assert_equal(nil, @state.proceed_poweruser)
       end
       def test_resolve
+        @state.request_path = 1
+        assert_equal(@state, @state.resolve)
+      end
+      def test_resolve__else_pointer
         pointer = flexmock('pointer') do |ptr|
           ptr.should_receive(:is_a?).and_return(true)
           ptr.should_receive(:resolve).and_return('model')
         end
         flexmock(@session) do |s|
-          s.should_receive(:user_input).and_return(pointer)
-        end
-        klass = flexmock('klass') do |klass|
-          klass.should_receive(:new).and_return('resolve_state')
+          s.should_receive(:user_input).once.with(:pointer).and_return(pointer)
+          s.should_receive(:user_input).once.with(:reg).and_return(nil)
+          s.should_receive(:user_input).once.with(:seq).and_return(nil)
+          s.should_receive(:user_input).once.with(:pack).and_return(nil)
         end
         flexmock(@state) do |s|
-          s.should_receive(:resolve_state).and_return(klass)
+          s.should_receive(:resolve_state)
         end
-        assert_equal('resolve_state', @state.resolve)
+        assert_kind_of(ODDB::State::Admin::TransparentLogin, @state.resolve)
       end
-      def test_resolve__else
+      def test_resolve__else_package
         pointer = flexmock('pointer') do |ptr|
           ptr.should_receive(:is_a?).and_return(true)
           ptr.should_receive(:resolve).and_return('model')
         end
+        package      = flexmock('package', :pointer => pointer)
+        sequence     = flexmock('sequence',
+                                :package  => package,
+                                :pointer  => pointer
+                               )
+        registration = flexmock('registration', 
+                                :sequence => sequence,
+                                :pointer  => pointer
+                               )
+        flexmock(@session.app, :registration => registration)
         flexmock(@session) do |s|
-          s.should_receive(:user_input).and_return(pointer)
+          s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
+          s.should_receive(:user_input).once.with(:seq).and_return('seqnr')
+          s.should_receive(:user_input).once.with(:pack).and_return('ikscd')
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:resolve_state)
+        end
+        assert_kind_of(ODDB::State::Admin::TransparentLogin, @state.resolve)
+      end
+      def test_resolve__else_sequence
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return('model')
+        end
+        package      = flexmock('package', :pointer => pointer)
+        sequence     = flexmock('sequence',
+                                :package  => package,
+                                :pointer  => pointer
+                               )
+        registration = flexmock('registration', 
+                                :sequence => sequence,
+                                :pointer  => pointer
+                               )
+        flexmock(@session.app, :registration => registration)
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
+          s.should_receive(:user_input).once.with(:seq).and_return('seqnr')
+          s.should_receive(:user_input).once.with(:pack).and_return(nil)
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:resolve_state)
+        end
+        assert_kind_of(ODDB::State::Admin::TransparentLogin, @state.resolve)
+      end
+      def test_resolve__else_registration
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return('model')
+        end
+        package      = flexmock('package', :pointer => pointer)
+        sequence     = flexmock('sequence',
+                                :package  => package,
+                                :pointer  => pointer
+                               )
+        registration = flexmock('registration', 
+                                :sequence => sequence,
+                                :pointer  => pointer
+                               )
+        flexmock(@session.app, :registration => registration)
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
+          s.should_receive(:user_input).once.with(:seq).and_return(nil)
+          s.should_receive(:user_input).once.with(:pack).and_return(nil)
         end
         flexmock(@state) do |s|
           s.should_receive(:resolve_state)
@@ -782,7 +851,7 @@ end
         @state.instance_eval('@request_path = "request_path"')
         assert_equal(@state, @state.show)
       end
-      def test_show__else
+      def test_show__else_pointer
         klass = flexmock('klass') do |klass|
           klass.should_receive(:new).and_return('klass.new')
         end
@@ -794,7 +863,94 @@ end
           ptr.should_receive(:resolve).and_return('model')
         end
         flexmock(@session) do |s|
-          s.should_receive(:user_input).and_return(pointer)
+          s.should_receive(:user_input).once.with(:pointer).and_return(pointer)
+          s.should_receive(:user_input).once.with(:reg).and_return(nil)
+          s.should_receive(:user_input).once.with(:seq).and_return(nil)
+          s.should_receive(:user_input).once.with(:pack).and_return(nil)
+        end
+        assert_equal('klass.new', @state.show)
+      end
+      def test_show__else_package
+        klass = flexmock('klass') do |klass|
+          klass.should_receive(:new).and_return('klass.new')
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:resolve_state).and_return(klass)
+        end
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return('model')
+        end
+        package      = flexmock('package', :pointer => pointer)
+        sequence     = flexmock('sequence', 
+                                :package => package,
+                                :pointer => pointer
+                               )
+        registration = flexmock('registration', 
+                                :sequence => sequence,
+                                :pointer  => pointer
+                               )
+        flexmock(@session.app, :registration => registration)
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
+          s.should_receive(:user_input).once.with(:seq).and_return('seqnr')
+          s.should_receive(:user_input).once.with(:pack).and_return('ikscd')
+        end
+        assert_equal('klass.new', @state.show)
+      end
+      def test_show__else_sequence
+        klass = flexmock('klass') do |klass|
+          klass.should_receive(:new).and_return('klass.new')
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:resolve_state).and_return(klass)
+        end
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return('model')
+        end
+        package      = flexmock('package', :pointer => pointer)
+        sequence     = flexmock('sequence', 
+                                :package => package,
+                                :pointer => pointer
+                               )
+        registration = flexmock('registration', 
+                                :sequence => sequence,
+                                :pointer  => pointer
+                               )
+        flexmock(@session.app, :registration => registration)
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
+          s.should_receive(:user_input).once.with(:seq).and_return('seqnr')
+          s.should_receive(:user_input).once.with(:pack).and_return(nil)
+        end
+        assert_equal('klass.new', @state.show)
+      end
+      def test_show__else_registration
+        klass = flexmock('klass') do |klass|
+          klass.should_receive(:new).and_return('klass.new')
+        end
+        flexmock(@state) do |s|
+          s.should_receive(:resolve_state).and_return(klass)
+        end
+        pointer = flexmock('pointer') do |ptr|
+          ptr.should_receive(:is_a?).and_return(true)
+          ptr.should_receive(:resolve).and_return('model')
+        end
+        package      = flexmock('package', :pointer => pointer)
+        sequence     = flexmock('sequence', 
+                                :package => package,
+                                :pointer => pointer
+                               )
+        registration = flexmock('registration', 
+                                :sequence => sequence,
+                                :pointer  => pointer
+                               )
+        flexmock(@session.app, :registration => registration)
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
+          s.should_receive(:user_input).once.with(:seq).and_return(nil)
+          s.should_receive(:user_input).once.with(:pack).and_return(nil)
         end
         assert_equal('klass.new', @state.show)
       end
@@ -909,8 +1065,9 @@ end
       end
       def test_patinfo
         flexmock(@session) do |s|
+          s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
+          s.should_receive(:user_input).once.with(:seq).and_return('seqnr')
           s.should_receive(:user_input).once.with(:swissmedicnr).and_return('iksnr')
-          s.should_receive(:user_input).once.with(:seqnr).and_return('seqnr')
         end
         sequence     = flexmock('sequence', :patinfo => 'patinfo')
         registration = flexmock('registration', :sequence => sequence)

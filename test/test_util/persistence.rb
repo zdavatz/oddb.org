@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# TestPersistence -- oddb -- 26.02.2003 -- hwyss@ywesee.com 
+# ODDB::TestPersistence -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com 
+# ODDB::TestPersistence -- oddb.org -- 26.02.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -8,6 +9,7 @@ require 'test/unit'
 require 'util/persistence'
 require 'date'
 require 'stub/odba'
+require 'flexmock'
 
 module ODDB
 	module Persistence
@@ -464,4 +466,16 @@ module ODDB
 			assert_equal(nil, @item.send(message))
 		end
 	end
+end
+
+module ODDB
+  module Persistence
+    class TestPointer < Test::Unit::TestCase
+      include FlexMock::TestCase
+      def test_to_csv
+        pointer = ODDB::Persistence::Pointer.new(['key', 'value'])
+        assert_equal('key,value', pointer.to_csv)
+      end
+    end
+  end
 end

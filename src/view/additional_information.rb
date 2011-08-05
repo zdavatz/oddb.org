@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::AdditionalInformation -- oddb.org -- 04.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/atcchooser'
@@ -85,7 +85,14 @@ module ODDB
 			end
       def compositions(model, session=@session)
         link = HtmlGrid::Link.new(:show, model, session, self)
-        link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
+        smart_link_format = model.pointer.to_csv.gsub(/registration/, 'reg').gsub(/sequence/, 'seq').gsub(/package/, 'pack').split(/,/)
+        if smart_link_format.include?('reg')
+          link.href = @lookandfeel._event_url(:show, smart_link_format)
+        else 
+          old_link_format = {:pointer => model.pointer}
+				  link.href = @lookandfeel._event_url(:show, old_link_format)
+        end
+
         lang = @session.language
         parts = model.compositions.collect { |comp|
           part = ''
@@ -167,8 +174,7 @@ module ODDB
 				if(model.fachinfo_active?)
 					link = HtmlGrid::Link.new(:square_fachinfo, 
 							model, @session, self)
-					link.href = @lookandfeel._event_url(:fachinfo,
-						{:swissmedicnr => model.iksnr})
+					link.href = @lookandfeel._event_url(:fachinfo, {:reg => model.iksnr})
 					link.css_class = css
 					link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
 					link
@@ -286,10 +292,12 @@ module ODDB
 						href = @lookandfeel.resource_global(:pdf_patinfo, pdf_patinfo)
 					elsif (model.patinfo and seqnr = model.seqnr)
 						klass = HtmlGrid::Link
-						href = @lookandfeel._event_url(:patinfo, {:seqnr => seqnr, :swissmedicnr => model.iksnr})
+            smart_link_format = [:reg, model.iksnr, :seq, seqnr]
+						href = @lookandfeel._event_url(:patinfo, smart_link_format)
 					elsif (patinfo = model.patinfo) # This is an old format URL for PI. Probably no need any more (but still available).
 						klass = HtmlGrid::Link
-						href = @lookandfeel._event_url(:resolve, {'pointer' => patinfo.pointer})
+            old_link_format = {'pointer' => patinfo.pointer}
+						href = @lookandfeel._event_url(:resolve, old_link_format)
 					end
 					link = klass.new(:square_patinfo, model, @session, self)
 					link.href = href
