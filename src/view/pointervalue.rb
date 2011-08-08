@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::PointerValue -- oddb -- 11.03.2003 -- hwyss@ywesee.com 
+# ODDB::View::PointerValue -- oddb.org -- 08.08.2003 -- mhatakeyama@ywesee.com 
+# ODDB::View::PointerValue -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
 require 'htmlgrid/value'
 require 'cgi'
@@ -30,7 +31,10 @@ module ODDB
         # in such case, URL link will be smarter than the URL by using pointer.
         # z.B.) http://ch.oddb.org/de/gcc/drug/reg/31706/seq/01/pack/017
         # The old format is also available.
-        smart_link_format = @model.pointer.to_csv.gsub(/registration/, 'reg').gsub(/sequence/, 'seq').gsub(/package/, 'pack').split(/,/)
+        smart_link_format = []
+        if @model.pointer.respond_to?(:to_csv) and csv = @model.pointer.to_csv
+          smart_link_format = csv.gsub(/registration/, 'reg').gsub(/sequence/, 'seq').gsub(/package/, 'pack').split(/,/)
+        end
         if smart_link_format.include?('reg')
           @attributes['href'] = @lookandfeel._event_url(:drug, smart_link_format)
         else # This is an old format by using the default pointer format
