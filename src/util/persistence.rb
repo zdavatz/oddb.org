@@ -1,9 +1,15 @@
 #!/usr/bin/env ruby
-# Persistence -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com
+# Persistence -- oddb.org -- 08.08.2011 -- mhatakeyama@ywesee.com
 # Persistence -- oddb.org -- 26.02.2003 -- hwyss@ywesee.com
 
 require 'rockit/rockit'
 require 'odba'
+
+# Hash#key has been newly defined since Ruby 1.9 (Ruby 1.8.8)
+# Hash#index has been obsolete since Ruby 1.9
+class Hash
+  alias :key :index
+end
 
 module ODBA
 	class Stub
