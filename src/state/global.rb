@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Global -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -64,6 +64,7 @@ require 'state/migel/subgroup'
 require 'state/migel/product'
 require 'state/migel/notify'
 require 'state/migel/feedbacks'
+require 'state/migel/items'
 require 'state/substances/init'
 require 'state/substances/result'
 require 'state/suggest_address'
@@ -84,6 +85,7 @@ require 'state/user/init'
 require 'state/user/sponsorlink'
 require 'util/umlautsort'
 require 'sbsm/state'
+
 
 module ODDB
   module State
@@ -466,6 +468,16 @@ module ODDB
 					end
 				end
 			end
+      def migel_search
+        if migel_code = @session.user_input(:migel_code)
+          product = if migel_products = @session.search_migel_products(migel_code) and !migel_products.empty?
+                      migel_products[0] 
+                    end
+          ODDB::State::Migel::Items.new(@session, ODDB::Migel::Items.new(product))
+        else
+          self
+        end
+      end
 			def resolve
 				if(@session.request_path == @request_path)
 					self

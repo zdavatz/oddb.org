@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# LookandfeelBase -- oddb -- hwyss@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- xx.xx.xxxx -- hwyss@ywesee.com
 
 require 'sbsm/lookandfeel'
 require 'util/oddbconfig'
@@ -1388,6 +1389,7 @@ Zeno Davatz
 				:th_administration_route	=>	'Adm.Route',
 				:th_analysis_revision			=>	'Revision',
 				:th_affiliations          =>	'Gruppen',
+        :th_article_name          =>  'Artikelname',
 				:thanks_for_cooperation		=>	'Besten Dank für Ihre Mitarbeit',
 				:thanks_for_donation_title =>	'Danke für Ihre Spende.',
 				:thanks_for_donation_txt	=>	'Vielen herzlichen Dank für Ihre Spende.<br><br>Ihr ywesee-Team.',
@@ -1407,6 +1409,7 @@ Zeno Davatz
 				:th_company_business_area	=>	'Geschäftsfeld',
 				:th_company_contact				=>	'E-Mail',
 				:th_company_name					=>	'Zulassungsinh.',
+        :th_companyname           =>  'Companyname',
 				:th_company_url						=>	'Internet-Adresse',
 				:th_comparable_size				=>	'Packungsgrösse',
 				:th_compositions 					=>	'Zusammensetzung',
@@ -1430,6 +1433,7 @@ Zeno Davatz
         :th_date_fi_fr            =>  'FI fr.',
         :th_date_pi_de            =>  'PI dt.',
         :th_date_pi_fr            =>  'PI fr.',
+        :th_ean_code              =>  'EAN-Code',
 				:th_effective_form				=>	'Wirkform',
 				:th_email             		=>	'E-Mail',
 				:th_en_description				=>	'Englische Bezeichnung',
@@ -1440,6 +1444,7 @@ Zeno Davatz
 				:th_export_flag						=>	'Exportprodukt',
 				:th_fachinfo_short				=>	'&nbsp;',
 				:th_fachinfo_title				=>	'Fachinfo-Titel',
+        :th_factor                =>  'Faktor',
 				:th_firstname							=>	'Vorname',
 				:th_fr_description				=>	'Französische Bezeichnung',
 				:th_galenic_form					=>	'Galenische Form',
@@ -1508,6 +1513,8 @@ Zeno Davatz
         :th_parts                 =>	'Packungsbestandteile',
 				:th_pharmacode					  =>	'Pharmacode',
 				:th_plz										=>	'Postleitzahl',
+        :th_ppha                  =>  'PPHA',
+        :th_ppub                  =>  'PPUB',
 				:th_pointer								=>	'Der eingegebene Wirkstoff existiert noch nicht. Bitte wählen Sie einen anderen aus oder erstellen Sie den Wirkstoff neu.',
 				:th_pointer_descr					=>	'Sie befinden sich in&nbsp;-&nbsp;',
 				:th_praxis_address				=>	'Praxis-Addrese',
@@ -1535,6 +1542,7 @@ Zeno Davatz
 				:th_swissmedic_numbers	  =>	'Registrationen',
 				:th_specialities					=>	'Facharzttitel',
 				:th_specialization				=>	'Erlaubnis',
+        :th_status                =>  'Status',
 				:th_substances						=>	'Wirkstoff',
 				:th_substance							=>	'Substanz',
 				:th_substrates						=>	'Substrat Verbindungen',
@@ -1640,6 +1648,7 @@ Zeno Davatz
 				:ywesee_contact_name			=>	'Zeno Davatz',
 				:ywesee_contact_text			=>	'Bitte schreiben Sie an:',
 				:ywesee										=>	'ywesee',
+
 			},
 			'fr'			=>		{
 				:'|unknown'								=>	'autres',

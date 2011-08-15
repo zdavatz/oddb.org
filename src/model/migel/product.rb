@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
-# Migel::Product -- oddb -- 14.09.2005 -- spfenninger@ywesee.com
+# ODDB::Migel::Product -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::Migel::Product -- oddb.org -- 14.09.2005 -- spfenninger@ywesee.com
 
 require 'util/language'
 require 'model/text'
 require 'model/feedback_observer'
 require 'util/searchterms'
+require 'model/migel/item'
 
 module ODDB
 	module Migel
@@ -12,7 +14,7 @@ module ODDB
 			include SimpleLanguage
 			include FeedbackObserver
 			ODBA_SERIALIZABLE = ['@descriptions']
-			attr_reader :code, :accessories, :products, :product_text
+			attr_reader :code, :accessories, :products, :product_text, :items
 			attr_accessor :subgroup, :limitation, :price, :type, :date, 
 				:qty, :unit, :limitation_text
 			alias :pointer_descr :code
@@ -21,6 +23,7 @@ module ODDB
 				@accessories = []
 				@products = []
 				@feedbacks = []
+        @items = {}
 			end
 			def accessory_code
 				@code.split('.', 2).last
@@ -42,11 +45,26 @@ module ODDB
 				end
 				prod
 			end
+      def create_item(pharmacode)
+        @items ||= {} 
+        itm = ODDB::Migel::Item.new(self)
+        @items.store(pharmacode, itm)
+        itm
+      end
+      def item(pharmacode)
+        @items[pharmacode]
+      end
+      def delete_item(pharmacode)
+        if(itm = @items.delete(pharmacode))
+          @items.odba_isolated_store
+          itm
+        end
+      end
 			def adjust_types(hash, app=nil)
 				hash = hash.dup
 				hash.each { |key, value|
 					if(value.is_a?(Persistence::Pointer))
-						hash[key] = value.resolve(app)
+				hash[key] = value.resolve(app)
 					end
 				}
 				hash
@@ -67,6 +85,7 @@ module ODDB
 					@feedbacks.dup.each { |fb| fb.item = nil; fb.odba_store }
 					@feedbacks.odba_delete
 				end
+        @items.odba_delete
 			end
 			def create_limitation_text
 				@limitation_text = LimitationText.new

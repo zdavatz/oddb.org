@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Migel::Result -- oddb -- 04.10.2005 -- ffricker@ywesee.com
+# ODDB::View::Migel::Result -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Result -- oddb.org -- 04.10.2005 -- ffricker@ywesee.com
 
 require 'htmlgrid/list'
 require 'htmlgrid/value'
@@ -78,6 +79,16 @@ class List < HtmlGrid::List
 		link.value = text
 		link
 	end
+  def migel_code(model)
+    if items = model.items and !items.empty?
+      link = PointerLink.new(:to_s, model, @session, self)
+      link.value = model.migel_code
+      link.href = @lookandfeel._event_url(:migel_search, {:migel_code => model.migel_code.gsub(/\./, '')})
+      link
+    else
+      model.migel_code
+    end
+  end
 end
 class ResultList < View::Migel::List
 	def compose_list(model=@model, offset=[0,0])
@@ -98,8 +109,7 @@ class ResultList < View::Migel::List
 	end
 	def compose_subheader(item, offset, css='list atc')
 		xval, yval = offset
-		values = [limitation_text(item), nil, item.migel_code, nil,
-			product_description(item)]
+		values = [limitation_text(item), nil, migel_code(item), nil, product_description(item)]
 		@grid.add(values, xval, yval)
 		@grid.add_style(css, xval, yval, 3)
 		@grid.set_colspan(xval + 2, yval, @width - xval - 1)

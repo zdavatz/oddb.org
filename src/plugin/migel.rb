@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# MiGeLPlugin -- oddb -- 30.08.2005 -- hwyss@ywesee.com
+# ODDB::MiGeLPlugin -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::MiGeLPlugin -- oddb.org -- 30.08.2005 -- hwyss@ywesee.com
 
 require 'util/persistence'
 require 'plugin/plugin'
@@ -159,5 +160,58 @@ module ODDB
 			end
 			product
 		end
+    def estimate_time(start_time, total, count)
+      estimate = (Time.now - start_time) * total / count
+      log = count.to_s + " / " + total.to_s + "\t"
+      em   = estimate/60
+      eh   = em/60
+      rest = estimate - (Time.now - start_time)
+      rm   = rest/60
+      rh   = rm/60
+      log << "Estimate total: "
+      if eh > 1.0
+        log << "%.2f" % eh + " [h]"
+      else
+        log << "%.2f" % em + " [m]"
+      end
+      log << " It will be done in: "
+      if rh > 1.0
+        log << "%.2f" % rh + " [h]\n"
+      else
+        log << "%.2f" % rm + " [m]\n"
+      end
+      log
+    end
+    def update_items_by_migel(time_estimate = false)
+      total = @app.migel_count
+      start_time = Time.now
+      @app.migel_products.each_with_index do |product, count|
+        migel_code = product.migel_code.split('.').to_s
+        plugin = ODDB::SwissindexNonpharmaPlugin.new(@app)
+        if table = plugin.search_migel_table(migel_code)
+          table.each do |record|
+            if record[:pharmacode]
+              update_item(product, record)
+            end
+          end
+        end
+        p estimate_time(start_time, total, count + 1) if time_estimate
+      end
+    end
+    def update_item(product, record)
+      pointer = product.pointer + [:item, record[:pharmacode]]
+      update_values = {
+        :pharmacode   => record[:pharmacode],
+        :ean_code     => record[:ean_code],
+        :article_name => record[:article_name],
+        :companyname  => record[:companyname],
+        :ppha         => record[:ppha],
+        :ppub         => record[:ppub],
+        :factor       => record[:factor],
+        :size         => record[:size],
+        :status       => record[:status],
+      }
+      @app.update(pointer.creator, update_values, :migel)
+    end
 	end
 end

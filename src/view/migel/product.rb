@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Migel::Product -- oddb -- 05.10.2005 -- ffricker@ywesee.com
+# ODDB::View::Migel::Product -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Product -- oddb.org -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/dataformat'
 require 'view/privatetemplate'
@@ -103,6 +104,12 @@ class ProductInnerComposite < HtmlGrid::Composite
 	def product_text(model)
 		description(model.product_text, :product_text)
 	end
+  def migel_code(model)
+		link = PointerLink.new(:to_s, model, @session, self)
+		link.value = model.migel_code
+    link.href = @lookandfeel._event_url(:migel_search, {:migel_code => model.migel_code.gsub(/\./, '')})
+		link
+  end
 end
 class ProductComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
