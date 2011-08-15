@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
+# ODDB::Updater-- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com 
 # ODDB::Updater-- oddb.org -- 25.05.2011 -- zdavatz@ywesee.com 
-# ODDB::Updater-- oddb.org -- 11.05.2011 -- mhatakeyama@ywesee.com 
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com 
 
 require 'plugin/analysis'
@@ -412,6 +412,9 @@ module ODDB
     end
     def migel_nonpharma(pharmacode_file, logging = false)
       update_notify_simple(SwissindexNonpharmaPlugin, 'Swissindex Migel Nonpharma', :migel_nonpharma, [pharmacode_file, logging])
+    end
+    def update_migel_nonpharma
+      update_notify_simple(MiGeLPlugin, 'Updated Migel Nonpharma', :update_items_by_migel)
     end
 
 		private

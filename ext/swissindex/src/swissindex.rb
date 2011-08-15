@@ -98,6 +98,36 @@ class SwissindexNonpharma
       end
     end
   end
+  def merge_swissindex_migel(swissindex_item, migel_line)
+    # Swissindex data
+    swissindex = {}
+    swissindex.update({
+      :ean_code => swissindex_item[:gtin],
+      :datetime => swissindex_item[:dt],
+      :stdate   => swissindex_item[:stdate],
+      :language => swissindex_item[:lang],
+      :article_name => swissindex_item[:dscr],
+      :size     => swissindex_item[:addscr],
+      :status   => swissindex_item[:status],
+    })
+    if company = swissindex_item[:comp]
+      swissindex[:companyname] = company[:name]
+      swissindex[:companyean]  = company[:gln]
+    end
+
+    # Migel data
+    pharmacode, article_name, companyname, ppha, ppub, factor, pzr = *migel_line
+    migel = {
+      :pharmacode   => pharmacode,
+      :article_name => article_name,
+      :companyname  => companyname,
+      :ppha         => ppha,
+      :ppub         => ppub,
+      :factor       => factor,
+      :pzr          => pzr,
+    }
+    migel.update swissindex
+  end
   def search_migel_table(code, query_key = 'Pharmacode')
     # 'MiGelCode' is also available for query_key
     agent = Mechanize.new
@@ -111,32 +141,13 @@ class SwissindexNonpharma
       agent.page.search('td').each_with_index do |td, i|
         text = td.inner_text.chomp.strip
         if text.is_a?(String) && text.length == 7 && text.match(/\d{7}/) 
-          swissindex = {}
-          if pharmacode = line[0] and pharmacode.match(/\d{7}/) and item = search_item(pharmacode)
-            swissindex[:ean_code] = item[:gtin]
-            swissindex[:article_name] = item[:dscr]
-            swissindex[:size] = item[:addscr]
-            swissindex[:status] = item[:status]
-            if company = item[:comp]
-              swissindex[:companyname] = company[:name]
-            end
-          end
-
-          pharmacode, article_name, companyname, ppha, ppub, factor = *line
-          migel = {
-            :pharmacode   => pharmacode,
-            :article_name => article_name,
-            :companyname  => companyname,
-            :ppha         => ppha,
-            :ppub         => ppub,
-            :factor       => factor,
-          }
-          migel.update swissindex
-#          line.unshift ean_code
-#          table << line
-          table << migel
+          migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and swissindex_item = search_item(pharmacode)
+                         merge_swissindex_migel(swissindex_item, line)
+                       else
+                         merge_swissindex_migel({}, line)
+                       end
+          table << migel_item
           line = []
-          swisindex = {}
           count = 0
         end
         if count < 7 
@@ -146,38 +157,14 @@ class SwissindexNonpharma
           count += 1
         end
       end
+
       # for the last line
-      swissindex = {}
-      if pharmacode = line[0] and pharmacode.match(/\d{7}/) and item = search_item(pharmacode)
-        swissindex[:ean_code] = item[:gtin]
-        swissindex[:article_name] = item[:dscr]
-        swissindex[:size] = item[:addscr]
-        swissindex[:status] = item[:status]
-        if company = item[:comp]
-          swissindex[:companyname] = company[:name]
-        end
-      end
-      pharmacode, article_name, companyname, ppha, ppub, factor = *line
-      migel = {
-        :pharmacode   => pharmacode,
-        :article_name => article_name,
-        :companyname  => companyname,
-        :ppha         => ppha,
-        :ppub         => ppub,
-        :factor       => factor,
-      }
-      migel.update swissindex
-
-      table << migel
-=begin
-      ean_code = nil
-      if pharmacode = line[0] and pharmacode.match(/\d{7}/) 
-        ean_code = search_item(pharmacode)[:gtin]
-      end
-      line.unshift ean_code
-      table << line
-=end
-
+      migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and swissindex_item = search_item(pharmacode)
+                     merge_swissindex_migel(swissindex_item, line)
+                   else
+                     merge_swissindex_migel({}, line)
+                   end
+      table << migel_item
       table.shift
       table
     rescue StandardError, Timeout::Error => err

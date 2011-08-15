@@ -80,7 +80,7 @@ class List < HtmlGrid::List
 		link
 	end
   def migel_code(model)
-    if items = model.items and !items.empty?
+    if model.respond_to?(:items) and items = model.items and !items.empty?
       link = PointerLink.new(:to_s, model, @session, self)
       link.value = model.migel_code
       link.href = @lookandfeel._event_url(:migel_search, {:migel_code => model.migel_code.gsub(/\./, '')})

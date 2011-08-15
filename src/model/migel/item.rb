@@ -9,7 +9,7 @@ module ODDB
   module Migel
     class Item
       include SimpleLanguage
-      attr_accessor :ean_code, :pharmacode, :article_name, :companyname, :ppha, :ppub, :factor, :size, :status
+      attr_accessor :ean_code, :pharmacode, :article_name, :companyname, :companyean, :ppha, :ppub, :factor, :pzr, :size, :status, :datetime, :stdate, :language
       attr_reader :product
       def initialize(product)
         @product = product
@@ -26,6 +26,7 @@ module ODDB
       def pointer_descr
         @product.migel_code
       end
+      alias :migel_code :pointer_descr
     end
   end
 end

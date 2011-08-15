@@ -35,9 +35,9 @@ class SearchedList < HtmlGrid::List
       [3,0]		=>	:size,
       [4,0]		=>	:status,
       [5,0]		=>	:companyname,
-      [6,0]		=>	:ppha,
-      [7,0]		=>	:ppub,
-      [8,0]		=>	:factor,
+    #  [6,0]		=>	:ppha,
+      [6,0]		=>	:ppub,
+    #  [8,0]		=>	:factor,
     }
     @css_map = {
       [0,0]   => 'list',
@@ -47,8 +47,8 @@ class SearchedList < HtmlGrid::List
       [4,0]   => 'list',
       [5,0]   => 'list',
       [6,0]   => 'list',
-      [7,0]   => 'list',
-      [8,0]   => 'list',
+    #  [7,0]   => 'list',
+    #  [8,0]   => 'list',
     }
     super
   end

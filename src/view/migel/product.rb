@@ -105,10 +105,14 @@ class ProductInnerComposite < HtmlGrid::Composite
 		description(model.product_text, :product_text)
 	end
   def migel_code(model)
-		link = PointerLink.new(:to_s, model, @session, self)
-		link.value = model.migel_code
-    link.href = @lookandfeel._event_url(:migel_search, {:migel_code => model.migel_code.gsub(/\./, '')})
-		link
+    if items = model.items and !items.empty?
+      link = PointerLink.new(:to_s, model, @session, self)
+      link.value = model.migel_code
+      link.href = @lookandfeel._event_url(:migel_search, {:migel_code => model.migel_code.gsub(/\./, '')})
+      link
+    else
+      model.migel_code
+    end
   end
 end
 class ProductComposite < HtmlGrid::Composite

@@ -185,6 +185,7 @@ module ODDB
     def update_items_by_migel(time_estimate = false)
       total = @app.migel_count
       start_time = Time.now
+      @count_updated_item = 0
       @app.migel_products.each_with_index do |product, count|
         migel_code = product.migel_code.split('.').to_s
         plugin = ODDB::SwissindexNonpharmaPlugin.new(@app)
@@ -192,11 +193,15 @@ module ODDB
           table.each do |record|
             if record[:pharmacode]
               update_item(product, record)
+              @count_updated_item += 1
             end
           end
         end
-        p estimate_time(start_time, total, count + 1) if time_estimate
+        puts estimate_time(start_time, total, count + 1) if time_estimate
+break if @count_updated_item > 3
       end
+      export_migel_nonpharma
+      return true
     end
     def update_item(product, record)
       pointer = product.pointer + [:item, record[:pharmacode]]
@@ -205,13 +210,67 @@ module ODDB
         :ean_code     => record[:ean_code],
         :article_name => record[:article_name],
         :companyname  => record[:companyname],
+        :companyean   => record[:companyean],
         :ppha         => record[:ppha],
         :ppub         => record[:ppub],
         :factor       => record[:factor],
+        :pzr          => record[:pzr],
         :size         => record[:size],
         :status       => record[:status],
+        :datetime     => record[:datetime],
+        :stdate       => record[:stdate],
+        :language     => record[:language],
       }
       @app.update(pointer.creator, update_values, :migel)
+    end
+    def migel_nonpharma_one_line(migel_item)
+      [
+        migel_item.odba_id,
+        migel_item.migel_code,
+        migel_item.pharmacode,
+        migel_item.ean_code,
+        migel_item.datetime,
+        migel_item.status,
+        migel_item.stdate,
+        migel_item.language,
+        migel_item.article_name,
+        migel_item.size,
+        migel_item.companyname,
+        migel_item.companyean,
+        migel_item.ppha,
+        migel_item.ppub,
+        migel_item.factor,
+        migel_item.pzr,
+      ].join(";")
+    end
+    def export_migel_nonpharma
+      dir = File.expand_path('../../data/csv', File.dirname(__FILE__))
+      FileUtils.mkdir_p dir
+      @output_file = File.join(dir, 'swissINDEX_MiGel.csv')
+      open(@output_file, "w") do |out|
+        out.print "odba_id;position number;pharmacode;GTIN;datetime;status;stdate;lang;description;additional description;company name;company GLN;pharmpreis;ppub;faktor;pzr\n" 
+        @app.each_migel_product do |product|
+          if items = product.items
+            items.values.each do |item|
+              out.print migel_nonpharma_one_line(item), "\n" 
+            end
+          end
+        end
+      end
+    end
+    def log_info
+      hash = super
+      if @output_file
+        type = "text/csv"
+        hash.store(:files, { @output_file => type })
+      end
+      hash
+    end
+    def report
+      [
+        "Updated MiGel items: #{@count_updated_item}\n",
+        File.expand_path(@output_file)
+      ].join("\n")
     end
 	end
 end
