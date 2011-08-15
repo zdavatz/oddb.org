@@ -198,7 +198,6 @@ module ODDB
           end
         end
         puts estimate_time(start_time, total, count + 1) if time_estimate
-break if @count_updated_item > 3
       end
       export_migel_nonpharma
       return true
@@ -223,10 +222,11 @@ break if @count_updated_item > 3
       }
       @app.update(pointer.creator, update_values, :migel)
     end
-    def migel_nonpharma_one_line(migel_item)
+    def migel_nonpharma_one_line(migel_code, migel_item)
       [
         migel_item.odba_id,
-        migel_item.migel_code,
+        #migel_item.migel_code,
+        migel_code,
         migel_item.pharmacode,
         migel_item.ean_code,
         migel_item.datetime,
@@ -252,7 +252,7 @@ break if @count_updated_item > 3
         @app.each_migel_product do |product|
           if items = product.items
             items.values.each do |item|
-              out.print migel_nonpharma_one_line(item), "\n" 
+              out.print migel_nonpharma_one_line(product.migel_code, item), "\n" 
             end
           end
         end
