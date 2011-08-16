@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-# ODDB::Swissindex::SwissindexPharma -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::Swissindex::SwissindexPharma -- 16.08.2011 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
 require 'savon'
@@ -67,7 +67,7 @@ class SwissindexNonpharma
     agent = Mechanize.new
     try_time = 3
     begin
-      agent.get(@base_url + 'Pharma=' + pharmacode)
+      agent.get(@base_url + 'Pharmacode=' + pharmacode)
       count = 100
       line = []
       agent.page.search('td').each_with_index do |td, i|
@@ -100,20 +100,25 @@ class SwissindexNonpharma
   end
   def merge_swissindex_migel(swissindex_item, migel_line)
     # Swissindex data
-    swissindex = {}
-    swissindex.update({
-      :ean_code => swissindex_item[:gtin],
-      :datetime => swissindex_item[:dt],
-      :stdate   => swissindex_item[:stdate],
-      :language => swissindex_item[:lang],
-      :article_name => swissindex_item[:dscr],
-      :size     => swissindex_item[:addscr],
-      :status   => swissindex_item[:status],
-    })
-    if company = swissindex_item[:comp]
-      swissindex[:companyname] = company[:name]
-      swissindex[:companyean]  = company[:gln]
+    swissindex = swissindex_item.collect do |key, value|
+      case key
+      when :gtin
+        [:ean_code, value]
+      when :dt
+        [:datetime, value]
+      when :lang
+        [:language, value]
+      when :dscr
+        [:article_name, value]
+      when :addscr
+        [:size, value]
+      when :comp
+        [:compnayname, value[:name], :companyean, value[:gln]]
+      else
+        [key, value]
+      end
     end
+    swissindex = Hash[*swissindex.flatten]
 
     # Migel data
     pharmacode, article_name, companyname, ppha, ppub, factor, pzr = *migel_line
@@ -180,6 +185,14 @@ class SwissindexNonpharma
       else
         return []
       end
+    end
+  end
+  def search_item_with_swissindex_migel(pharmacode)
+    migel_line = search_migel(pharmacode)
+    if swissindex_item = search_item(pharmacode)
+      merge_swissindex_migel(swissindex_item, migel_line)
+    else
+      merge_swissindex_migel({}, migel_line)
     end
   end
   def search_migel_position_number(pharmacode)

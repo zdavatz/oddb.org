@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::SuggestAddress -- oddb -- 04.08.2005 -- jlang@ywesee.com
+# ODDB::State::SuggestAddress -- oddb.org -- 16.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::SuggestAddress -- oddb.org -- 04.08.2005 -- jlang@ywesee.com
 
 require 'view/suggest_address'
 require 'state/suggest_address_confirm'
@@ -9,7 +10,7 @@ module ODDB
 	module State
 		class SuggestAddress < State::Global
 			VIEW = View::SuggestAddress
-			RECIPIENTS = [ 'zdavatz@ywesee.com', 'hwyss@ywesee.com' ]
+			RECIPIENTS = [ 'zdavatz@ywesee.com', 'mhatakeyama@ywesee.com' ]
 			def address_send
 				if(sugg = save_suggestion)
 					send_notification(sugg)

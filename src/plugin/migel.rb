@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::MiGeLPlugin -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::MiGeLPlugin -- oddb.org -- 16.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::MiGeLPlugin -- oddb.org -- 30.08.2005 -- hwyss@ywesee.com
 
 require 'util/persistence'
@@ -191,7 +191,7 @@ module ODDB
         plugin = ODDB::SwissindexNonpharmaPlugin.new(@app)
         if table = plugin.search_migel_table(migel_code)
           table.each do |record|
-            if record[:pharmacode]
+            if record[:pharmacode] and record[:article_name]
               update_item(product, record)
               @count_updated_item += 1
             end
@@ -199,8 +199,42 @@ module ODDB
         end
         puts estimate_time(start_time, total, count + 1) if time_estimate
       end
-      export_migel_nonpharma
+    #  export_migel_nonpharma
       return true
+    end
+    # This is just to update items which do not have article_name
+    def update_items_again_by_pharma(time_estimate = false)
+      total = @app.migel_count
+      start_time = Time.now
+      @count_updated_item = 0
+      @output_file = nil
+      plugin = ODDB::SwissindexNonpharmaPlugin.new(@app)
+      @app.migel_products.each_with_index do |product, count|
+        if items = product.items
+          items.each do |pharmacode, item|
+            unless item.article_name
+              item_record = plugin.search_item(pharmacode)
+              update_item(product, item_record)
+              @count_updated_item += 1
+            end
+          end
+        end
+        puts estimate_time(start_time, total, count + 1) if time_estimate
+      end
+      return true
+    end
+    def update_one_item_by_migel_code(migel_code, lang = 'de')
+      if products = @app.search_migel_products(migel_code, lang)[0]
+        migel_code = product.migel_code.split('.').to_s
+        plugin = ODDB::SwissindexNonpharmaPlugin.new(@app)
+        if table = plugin.search_migel_table(migel_code)
+          table.each do |record|
+            if record[:pharmacode] and record[:article_name]
+              update_item(product, record)
+            end
+          end
+        end
+      end
     end
     def update_item(product, record)
       pointer = product.pointer + [:item, record[:pharmacode]]

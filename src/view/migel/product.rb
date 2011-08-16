@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::Migel::Product -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Product -- oddb.org -- 16.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Product -- oddb.org -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/dataformat'
@@ -111,7 +111,9 @@ class ProductInnerComposite < HtmlGrid::Composite
       link.href = @lookandfeel._event_url(:migel_search, {:migel_code => model.migel_code.gsub(/\./, '')})
       link
     else
-      model.migel_code
+      value = HtmlGrid::Value.new(:to_s, model, @session)
+      value.value = model.migel_code
+      value
     end
   end
 end

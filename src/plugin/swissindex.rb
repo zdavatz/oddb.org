@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissindexPlugin -- oddb.org -- 15.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissindexPlugin -- oddb.org -- 16.06.2011 -- mhatakeyama@ywesee.com
 
 require 'util/oddbconfig'
 require 'plugin/plugin'
@@ -361,6 +361,13 @@ module ODDB
         table = swissindex.search_migel_table(migel_code, 'MiGelCode')
       end
       table
+    end
+    def search_item(pharmacode)
+      item = {}
+      SWISSINDEX_NONPHARMA_SERVER.session(ODDB::Swissindex::SwissindexNonpharma) do |swissindex|
+        item = swissindex.search_item_with_swissindex_migel(pharmacode)
+      end
+      item
     end
 	end # SwissindexNonpharma
 end # ODDB
