@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::SwissindexPlugin -- oddb.org -- 16.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissindexPlugin -- oddb.org -- 26.08.2011 -- mhatakeyama@ywesee.com
 
 require 'util/oddbconfig'
 require 'plugin/plugin'
@@ -111,7 +111,7 @@ module ODDB
 
             # Process 4
             # if there is no eancode in swissindex then delete the according pharmacode in ch.oddb
-            if pharmacode = pack.pharmacode 
+            if pharmacode = pack.pharmacode and !pack.slentry
               @delete_pharmacode_list << [pack, pharmacode]
             end
           end
