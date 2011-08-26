@@ -111,7 +111,7 @@ module ODDB
 
             # Process 4
             # if there is no eancode in swissindex then delete the according pharmacode in ch.oddb
-            if pharmacode = pack.pharmacode and !pack.slentry
+            if pharmacode = pack.pharmacode and !pack.sl_entry
               @delete_pharmacode_list << [pack, pharmacode]
             end
           end
