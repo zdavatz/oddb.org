@@ -25,6 +25,7 @@ class SwissindexNonpharma
     @base_url   = 'https://prod.ws.e-mediat.net/wv_getMigel/wv_getMigel.aspx?Lang=DE&Query='
   end
   def search_item(pharmacode, lang = 'DE')
+    lang.upcase!
     client = Savon::Client.new do | wsdl, http |
       wsdl.document = "https://index.ws.e-mediat.net/Swissindex/NonPharma/ws_NonPharma_V101.asmx?WSDL"
     end
@@ -146,7 +147,7 @@ class SwissindexNonpharma
       agent.page.search('td').each_with_index do |td, i|
         text = td.inner_text.chomp.strip
         if text.is_a?(String) && text.length == 7 && text.match(/\d{7}/) 
-          migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and swissindex_item = search_item(pharmacode)
+          migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and swissindex_item = search_item(pharmacode, lang)
                          merge_swissindex_migel(swissindex_item, line)
                        else
                          merge_swissindex_migel({}, line)
@@ -164,7 +165,7 @@ class SwissindexNonpharma
       end
 
       # for the last line
-      migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and swissindex_item = search_item(pharmacode)
+      migel_item = if pharmacode = line[0] and pharmacode.match(/\d{7}/) and swissindex_item = search_item(pharmacode, lang)
                      merge_swissindex_migel(swissindex_item, line)
                    else
                      merge_swissindex_migel({}, line)
@@ -187,9 +188,9 @@ class SwissindexNonpharma
       end
     end
   end
-  def search_item_with_swissindex_migel(pharmacode)
+  def search_item_with_swissindex_migel(pharmacode, lang = 'DE')
     migel_line = search_migel(pharmacode)
-    if swissindex_item = search_item(pharmacode)
+    if swissindex_item = search_item(pharmacode, lang)
       merge_swissindex_migel(swissindex_item, migel_line)
     else
       merge_swissindex_migel({}, migel_line)
