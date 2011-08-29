@@ -189,7 +189,7 @@ class SwissindexNonpharma
     end
   end
   def search_item_with_swissindex_migel(pharmacode, lang = 'DE')
-    migel_line = search_migel(pharmacode)
+    migel_line = search_migel(pharmacode, lang)
     if swissindex_item = search_item(pharmacode, lang)
       merge_swissindex_migel(swissindex_item, migel_line)
     else

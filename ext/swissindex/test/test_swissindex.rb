@@ -108,6 +108,197 @@ module ODDB
           assert_nil(@nonpharma.search_migel_position_number(pharmacode))
         end
       end
+      def test_merge_swissindex_migel
+        swissindex_item = {
+          :gtin => 'ean_code',
+          :dt   => 'datetime',
+          :lang => 'language',
+          :dscr => 'article_name',
+          :addscr => 'size',
+          :comp => {:name => 'companyname', :gln => 'companyean'},
+          :key  => 'value'
+        }
+        migel_line = [
+          'pharmacode',
+          'article_name_migel',
+          'companyname_migel',
+          'ppha',
+          'ppub',
+          'factor',
+          'pzr'
+        ]
+        expected = {
+          :ean_code     => 'ean_code',
+          :datetime     => 'datetime',
+          :language     => 'language',
+          :article_name => 'article_name',
+          :size         => 'size',
+          :companyname  => 'companyname', 
+          :companyean   => 'companyean',
+          :pharmacode   => 'pharmacode',
+          :ppha         => 'ppha',
+          :ppub         => 'ppub',
+          :factor       => 'factor',
+          :pzr          => 'pzr',
+          :key          => 'value'
+        }
+        assert_equal(expected, @nonpharma.merge_swissindex_migel(swissindex_item, migel_line))
+      end
+      def test_search_migel_table
+        # for swissindex
+        return_values = {
+          :gtin => 'ean_code',
+          :dt   => 'datetime',
+          :lang => 'language',
+          :dscr => 'article_name',
+          :addscr => 'size',
+          :comp => {:name => 'companyname', :gln => 'companyean'}
+        }
+        nonpharma = {:item => return_values}
+        response = flexmock('response', :to_hash => {:nonpharma => nonpharma}) 
+        wsdl = flexmock('wsdl', :document= => nil)
+        client = flexmock('client') do |c|
+          c.should_receive(:request).and_yield.and_return(response)
+        end
+        soap = flexmock('soap', :xml= => nil)
+        flexmock(@nonpharma, :soap => soap)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+
+        # for migel
+        td = flexmock('td', :inner_text => '1234567')
+        flexmock(Mechanize).new_instances do |agent|
+          agent.should_receive(:get)
+          agent.should_receive(:"page.search").and_return([td, td])
+        end
+        migel_code = '12.34.56.78.9'
+        expected = [
+          {:ppub     => nil,
+           :factor   => nil,
+           :pzr      => nil, 
+           :size     => "size",
+           :ppha     => nil,
+           :ean_code => "ean_code",
+           :language => "language",
+           :datetime => "datetime",
+           :article_name  => "article_name",
+           :companyname   => "companyname",
+           :companyean    => "companyean",
+           :pharmacode    => "1234567"},
+
+          {:ppub     => nil,
+           :factor   => nil,
+           :pzr      => nil, 
+           :size     => "size",
+           :ppha     => nil,
+           :ean_code => "ean_code",
+           :language => "language",
+           :datetime => "datetime",
+           :article_name  => "article_name",
+           :companyname   => "companyname",
+           :companyean    => "companyean",
+           :pharmacode    => "1234567"},
+ 
+        ]
+        
+        assert_equal(expected, @nonpharma.search_migel_table(migel_code))
+      end
+      def test_search_migel_table__no_swissindex_item
+        # for migel
+        td = flexmock('td', :inner_text => '1234567')
+        flexmock(Mechanize).new_instances do |agent|
+          agent.should_receive(:get)
+          agent.should_receive(:"page.search").and_return([td])
+        end
+        migel_code = '12.34.56.78.9'
+        expected = [
+          {:ppub     => nil,
+           :factor   => nil,
+           :pzr      => nil, 
+           :ppha     => nil,
+           :article_name  => nil,
+           :companyname   => nil,
+           :pharmacode    => "1234567"},
+        ]
+        
+        assert_equal(expected, @nonpharma.search_migel_table(migel_code))
+      end
+      def test_search_migel_table__error
+        # for migel
+        td = flexmock('td', :inner_text => '1234567')
+        flexmock(Mechanize).new_instances do |agent|
+          agent.should_receive(:get).and_raise(Timeout::Error)
+          agent.should_receive(:"page.search").and_return([td])
+        end
+        migel_code = '12.34.56.78.9'
+        flexmock(@nonpharma, 
+                 :puts  => nil,
+                 :sleep => nil
+                ) 
+        assert_equal([], @nonpharma.search_migel_table(migel_code))
+      end
+      def test_search_item_with_swissindex_migel
+        # for swissindex
+        return_values = {
+          :gtin => 'ean_code',
+          :dt   => 'datetime',
+          :lang => 'language',
+          :dscr => 'article_name',
+          :addscr => 'size',
+          :comp => {:name => 'companyname', :gln => 'companyean'}
+        }
+        nonpharma = {:item => return_values}
+        response = flexmock('response', :to_hash => {:nonpharma => nonpharma}) 
+        wsdl = flexmock('wsdl', :document= => nil)
+        client = flexmock('client') do |c|
+          c.should_receive(:request).and_yield.and_return(response)
+        end
+        soap = flexmock('soap', :xml= => nil)
+        flexmock(@nonpharma, :soap => soap)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+
+        # for migel
+        td = flexmock('td', :inner_text => '1234567')
+        flexmock(Mechanize).new_instances do |agent|
+          agent.should_receive(:get)
+          agent.should_receive(:"page.search").and_return([td])
+        end
+        pharmacode = '1234567'
+        expected = {
+           :article_name => 'article_name',
+           :language     => 'language',
+           :companyname  => 'companyname',
+           :companyean   => 'companyean',
+           :datetime     => 'datetime',
+           :ean_code     => 'ean_code',
+           :size         => 'size',
+           :ppub     => nil,
+           :factor   => nil,
+           :pzr      => nil, 
+           :ppha     => nil,
+           :pharmacode    => "1234567",
+        }
+        assert_equal(expected, @nonpharma.search_item_with_swissindex_migel(pharmacode))
+      end
+
+      def test_search_item_with_swissindex_migel__only_migel
+        # for migel
+        td = flexmock('td', :inner_text => '1234567')
+        flexmock(Mechanize).new_instances do |agent|
+          agent.should_receive(:get)
+          agent.should_receive(:"page.search").and_return([td])
+        end
+        pharmacode = '1234567'
+        expected = {
+           :ppub     => nil,
+           :factor   => nil,
+           :pzr      => nil, 
+           :ppha     => nil,
+           :article_name  => nil,
+           :companyname   => nil,
+           :pharmacode    => "1234567",
+        }
+        assert_equal(expected, @nonpharma.search_item_with_swissindex_migel(pharmacode))
+      end
     end # TestSwinssindexNonpharma
 
     class TestSwissindexPharma < Test::Unit::TestCase
