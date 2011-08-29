@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-# ODDB::Swissindex::SwissindexPharma -- 16.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::Swissindex::SwissindexPharma -- 29.08.2011 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
 require 'savon'
@@ -63,11 +63,11 @@ class SwissindexNonpharma
       end
     end
   end
-  def search_migel(pharmacode)
+  def search_migel(pharmacode, lang = 'DE')
     agent = Mechanize.new
     try_time = 3
     begin
-      agent.get(@base_url + 'Pharmacode=' + pharmacode)
+      agent.get(@base_url.gsub(/DE/, lang) + 'Pharmacode=' + pharmacode)
       count = 100
       line = []
       agent.page.search('td').each_with_index do |td, i|
@@ -113,7 +113,7 @@ class SwissindexNonpharma
       when :addscr
         [:size, value]
       when :comp
-        [:compnayname, value[:name], :companyean, value[:gln]]
+        [:companyname, value[:name], :companyean, value[:gln]]
       else
         [key, value]
       end
@@ -133,12 +133,12 @@ class SwissindexNonpharma
     }
     migel.update swissindex
   end
-  def search_migel_table(code, query_key = 'Pharmacode')
+  def search_migel_table(code, query_key = 'Pharmacode', lang = 'DE')
     # 'MiGelCode' is also available for query_key
     agent = Mechanize.new
     try_time = 3
     begin
-      agent.get(@base_url + query_key + '=' + code)
+      agent.get(@base_url.gsub(/DE/,lang) + query_key + '=' + code)
       count = 100
       table = []
       line  = []
@@ -195,11 +195,11 @@ class SwissindexNonpharma
       merge_swissindex_migel({}, migel_line)
     end
   end
-  def search_migel_position_number(pharmacode)
+  def search_migel_position_number(pharmacode, lang = 'DE')
     agent = Mechanize.new
     try_time = 3
     begin
-      agent.get(@base_url + 'Pharmacode=' + pharmacode)
+      agent.get(@base_url.gsub(/DE/, lang) + 'Pharmacode=' + pharmacode)
       pos_num = nil
       agent.page.search('td').each_with_index do |td, i|
         if i == 6
