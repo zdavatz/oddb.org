@@ -1755,6 +1755,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
                         times(1).and_return package
       flexmock(Persistence).should_receive(:find_by_pointer)
       reg.should_receive(:packages).and_return []
+      reg.should_receive(:keep_generic_type).and_return(false)
       setup_meddata_server
       @app.should_receive(:registration).and_return reg
       @app.should_receive(:each_package)
@@ -1820,6 +1821,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       seq = flexmock 'sequence'
       reg.should_receive(:packages).and_return []
       reg.should_receive(:sequences).and_return({})
+      reg.should_receive(:keep_generic_type).and_return(false)
       flexmock(Package).should_receive(:find_by_pharmacode).
                         times(1).and_return nil
       #setup_meddata_server
@@ -1852,6 +1854,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
       reg = setup_registration :iksnr => '39271'
       reg.should_receive(:packages).and_return []
       reg.should_receive(:sequences).and_return({})
+      reg.should_receive(:keep_generic_type).and_return(false)
       flexmock(Package).should_receive(:find_by_pharmacode).
                         times(1).and_return nil
       @app.should_receive(:registration).and_return reg
@@ -1932,6 +1935,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
                               :price_exfactory => Util::Money.new(11.22)
       reg = setup_registration :iksnr => '39271', :package => package
       reg.should_receive(:packages).and_return []
+      reg.should_receive(:keep_generic_type).and_return(false)
       package.should_receive(:registration).and_return reg
       flexmock(Package).should_receive(:find_by_pharmacode).
                         times(1).and_return nil
@@ -1976,6 +1980,7 @@ La terapia può essere effettuata soltanto con un preparato.&lt;br&gt;
     def test_update_preparation
       reg = setup_registration :iksnr => '39271'
       reg.should_receive(:packages).and_return []
+      reg.should_receive(:keep_generic_type).and_return(false)
       package = setup_package :pharmacode => "703279", :registration => reg, 
                               :steps => %w{39271 02 028}, 
                               :price_public => Util::Money.new(17.65), 
