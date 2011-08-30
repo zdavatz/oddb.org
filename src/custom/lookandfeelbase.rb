@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 30.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- xx.xx.xxxx -- hwyss@ywesee.com
 
 require 'sbsm/lookandfeel'
@@ -902,6 +902,7 @@ Zeno Davatz
 				:i_subscriber_mail_sent		=>	'Ihre Anmeldung wurde verschickt. Wenn Sie innerhalb der n&auml;chsten Minuten keine E-Mail bekommen, &uuml;berpr&uuml;fen Sie bitte die angegebene E-Mailadresse und versuchen Sie es erneut.',
         :ith_swissmedic           =>  'Index Therapeuticus (Swissmedic)',
 				:i_unsubscriber_mail_sent	=>	'Ihre Abmeldung wurde verschickt. Wenn Sie innerhalb der n&auml;chsten Minuten keine E-Mail bekommen, &uuml;berpr&uuml;fen Sie bitte die angegebene E-Mailadresse und versuchen Sie es erneut.',
+        :keep_generic_type        =>  'Overwrite BAG-XML',
 				:lab_areas								=>	'Laborfachgebiet',
 				:language_header					=>	'Korrespondenzsprache:',
 				:language_select					=>	'Sprache der FI',

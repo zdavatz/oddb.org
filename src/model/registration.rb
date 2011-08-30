@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# Registration -- oddb -- 24.02.2003 -- hwyss@ywesee.com 
+# ODDB::Registration -- oddb.org -- 30.08.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Registration -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'date'
 require 'util/persistence'
@@ -19,7 +20,7 @@ module ODDB
       :renewal_flag_swissmedic,
       :index_therapeuticus, :comarketing_with, :vaccine, :ignore_patent,
       :parallel_import, :minifi, :product_group, :production_science,
-      :ith_swissmedic
+      :ith_swissmedic, :keep_generic_type
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
 		def initialize(iksnr)

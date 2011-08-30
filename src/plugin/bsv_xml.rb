@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::BsvXmlPlugin -- oddb.org -- 02.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::BsvXmlPlugin -- oddb.org -- 30.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::BsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 
 require 'config'
@@ -472,7 +472,9 @@ module ODDB
           @data.store :ikscat, @text
         when 'OrgGenCode'
           gtype = GENERIC_TYPES[@text]
-          @reg_data.store :generic_type, (gtype || :unknown)
+          unless (registration = @app.registration(@iksnr) and registration.keep_generic_type)
+            @reg_data.store(:generic_type, (gtype || :unknown)) 
+          end
           @pac_data.store :sl_generic_type, gtype
         when 'FlagSB20'
           @pac_data.store :deductible, @text == 'Y' ? :deductible_o : :deductible_g

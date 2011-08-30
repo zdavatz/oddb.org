@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::Admin::Registration -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::Admin::Registration -- oddb.org -- 30.08.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Registration -- oddb.org -- 07.03.2003 -- hwyss@ywesee.com 
 
 require 'view/drugs/privatetemplate'
@@ -174,32 +174,34 @@ class RegistrationForm < View::Form
 		[0,1]		=>	:company_name,
 		[2,1]		=>	:revision_date,
 		[0,2]		=>	:generic_type,
+		[0,3] 	=>	:keep_generic_type,
 		[2,2]		=>	:expiration_date,
-		[4,2]		=>	:renewal_flag,
-		[0,3,0]	=>	:complementary_select,
-		[0,3,1]	=>	:complementary_type,
-		[2,3]		=>	:market_date,
-		[0,4]		=>	:index_therapeuticus,
-		[2,4]		=>	:manual_inactive_date,
-		[0,5]		=>	:ith_swissmedic,
-		[2,5]		=>	:inactive_date,
-		[0,6]		=>	:indication,
-		[2,6]		=>	:patented_until,
-		[0,7]		=>	:export_flag,
-    [2,7]   =>  :ignore_patent,
-    [3,7]   =>  :violates_patent,
-		[0,8]		=>	:parallel_import,
-		[2,8]		=>	:vaccine,
+		[2,3]		=>	:renewal_flag,
+		[0,4,0]	=>	:complementary_select,
+		[0,4,1]	=>	:complementary_type,
+		[2,4]		=>	:market_date,
+		[0,5]		=>	:index_therapeuticus,
+		[2,5]		=>	:manual_inactive_date,
+		[0,6]		=>	:ith_swissmedic,
+		[2,6]		=>	:inactive_date,
+		[0,7]		=>	:indication,
+		[2,7]		=>	:patented_until,
+		[0,8]		=>	:export_flag,
+    [2,8]   =>  :ignore_patent,
+    [3,8]   =>  :violates_patent,
+		[0,9]		=>	:parallel_import,
+		[2,9]		=>	:vaccine,
+
 	}
 	COMPONENT_CSS_MAP = {
-		[1,0,1,7]	=>	'standard',
-		[3,0,1,7]	=>	'standard',
+		[1,0,1,8]	=>	'standard',
+		[3,0,1,8]	=>	'standard',
 	}
 	CSS_MAP = {
-		[0,0,6,9]	=>	'list',
-		[0,8]			=>	'list',
+		[0,0,6,10]	=>	'list',
+		[0,9]			=>	'list',
 	}
-  COLSPAN_MAP = { [3,6] => 3 }
+  COLSPAN_MAP = { [3,7] => 3 }
 	DEFAULT_CLASS = HtmlGrid::Value
 	LABELS = true
 	SYMBOL_MAP = {
@@ -210,6 +212,7 @@ class RegistrationForm < View::Form
 		:vaccine						=>	HtmlGrid::InputCheckbox,
 		:fachinfo_label			=>	HtmlGrid::LabelText,
 		:generic_type				=>	HtmlGrid::Select,
+		:keep_generic_type	=>	HtmlGrid::InputCheckbox,
     :ignore_patent      =>  HtmlGrid::InputCheckbox,
 		:inactive_date			=>	HtmlGrid::DateValue,
 		:manual_inactive_date=>	HtmlGrid::InputDate,
@@ -230,32 +233,32 @@ class RegistrationForm < View::Form
 	end
 	def reorganize_components
 		if(@model.is_a?(Persistence::CreateItem))
-			components.store([1,9], :submit)
-			css_map.store([1,9], 'list')
+			components.store([1,10], :submit)
+			css_map.store([1,10], 'list')
 		else
       components.update({
-        [0,9]		=>	'fi_upload_instruction0',
-        [2,9]		=>	:fachinfo_label,
-        [3,9,0]	=>	:fachinfo,
-        [3,9,1]	=>	:assign_fachinfo,
-        [0,10]	=>	'fi_upload_instruction1',
-        [1,10]	=>	:language_select,
-        [2,10]	=>	:textinfo_update,
-        [0,11]	=>	'fi_upload_instruction2',
-        [1,11]	=>	:fachinfo_upload,
-        [2,11]  =>  :activate_fachinfo,
-        [0,12]	=>	'fi_upload_instruction3',
-        [1,12,0]=>	:submit,
-        [1,12,1]=>	:new_registration,
-        [2,12]  =>  :deactivate_fachinfo,
+        [0,10]		=>	'fi_upload_instruction0',
+        [2,10]		=>	:fachinfo_label,
+        [3,10,0]	=>	:fachinfo,
+        [3,10,1]	=>	:assign_fachinfo,
+        [0,11]	=>	'fi_upload_instruction1',
+        [1,11]	=>	:language_select,
+        [2,11]	=>	:textinfo_update,
+        [0,12]	=>	'fi_upload_instruction2',
+        [1,12]	=>	:fachinfo_upload,
+        [2,12]  =>  :activate_fachinfo,
+        [0,13]	=>	'fi_upload_instruction3',
+        [1,13,0]=>	:submit,
+        [1,13,1]=>	:new_registration,
+        [2,13]  =>  :deactivate_fachinfo,
       })
-      colspan_map.store([3,9], 3)
-      colspan_map.store([0,9], 2)
-      css_map.store([0,9], 'list bg bold')
-      css_map.store([1,9], 'list bg')
-      css_map.store([2,9,2,4], 'list')
-      css_map.store([0,10,2,3], 'list bg')
-      component_css_map.store [3,11,1,2], 'standard'
+      colspan_map.store([3,10], 3)
+      colspan_map.store([0,10], 2)
+      css_map.store([0,10], 'list bg bold')
+      css_map.store([1,10], 'list bg')
+      css_map.store([2,10,2,4], 'list')
+      css_map.store([0,11,2,3], 'list bg')
+      component_css_map.store [3,12,1,2], 'standard'
     end
 	end
 	def company_name(model, session=@session)

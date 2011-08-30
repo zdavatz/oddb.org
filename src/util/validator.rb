@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::Validator -- oddb.org -- 03.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 30.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -25,7 +25,7 @@ module ODDB
       :parallel_import, :preview_with_market_date, :recommend,
       :refdata_override, :remember_me, :renewal_flag,
       :show_email, :vaccine, :yus_groups, :yus_privileges,
-      :force_new_ydim_debitor, :textinfo_update,
+      :force_new_ydim_debitor, :textinfo_update, :keep_generic_type
     ]
 		DATES = [
       :activate_fachinfo,
@@ -353,6 +353,10 @@ module ODDB
 			:lt,
       :message,
       :migel_code,
+      :migel_limitation,
+      :migel_group,
+      :migel_product,
+      :migel_subgroup,
 			:name,
 			:name_base,
 			:name_descr,

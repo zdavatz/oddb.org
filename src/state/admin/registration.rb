@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::Registration -- oddb -- 29.03.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Registration -- oddb -- 30.03.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Registration -- oddb -- 10.03.2003 -- hwyss@ywesee.com 
 
 require 'plugin/text_info'
@@ -173,7 +173,7 @@ class Registration < State::Admin::Global
       :renewal_flag_swissmedic,
       :parallel_import, :index_therapeuticus, :ignore_patent,
       :ith_swissmedic, :activate_fachinfo, :deactivate_fachinfo, :manual_inactive_date,
-      :vaccine
+      :vaccine, :keep_generic_type
     ]
     if(@model.is_a? Persistence::CreateItem)
       iksnr = @session.user_input(:iksnr)
