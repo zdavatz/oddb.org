@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Logo -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
+# ODDB::View::Logo -- oddb.org -- 05.09.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::Logo -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/component'
 
@@ -17,9 +18,11 @@ module ODDB
 				end
 			end
 			def to_html(context)
-				link_attrs = {
-					"href"	=> @lookandfeel._event_url(:home)
-				}
+        link_attrs = if attrs = @lookandfeel.attributes(:logo) and href = attrs['href']
+                       { "href"	=> href }
+                     else
+                       { "href"	=> @lookandfeel._event_url(:home) }
+                     end
 				context.a(link_attrs) {
 					context.img(@attributes)
 				}

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Global -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 05.09.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -607,6 +607,7 @@ module ODDB
             filter_proc = Proc.new do |seq| lnf.result_filter seq end
             result.filter! filter_proc
           end
+          @session.set_cookie_input(:resultview, 'pages') if @session.flavor == 'desitin'
           state = State::Drugs::Result.new(@session, result)
           state.search_query = query
           state.search_type = stype

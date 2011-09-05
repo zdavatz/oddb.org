@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# LookandfeelWrapper - oddb -- 21.07.2003 -- mhuggler@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 05.09.2011 -- mhatakeyama@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/lookandfeelwrapper'
 require 'state/drugs/sequences'
@@ -1124,6 +1125,7 @@ module ODDB
       :logo => {
         'width'  => '168',
         'height' => '95',
+        'href'   => 'http://www.desitin.ch',
       },
     }
     RESOURCES = {
