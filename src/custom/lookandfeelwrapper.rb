@@ -787,6 +787,7 @@ module ODDB
       :explain_sort,
       :compare_backbutton,
       :custom_tab_navigation,
+      :ddd_chart,
 			:external_css,
       :ajax,
 			:home_drugs,
@@ -794,6 +795,7 @@ module ODDB
 			:faq_link,
       :patinfos,
 			:sequences,
+			:price_history,
 			:ywesee_contact,
 		]
 		DISABLED = [ :atc_ddd, :legal_note, :navigation, :price_request ]
@@ -835,6 +837,14 @@ module ODDB
 				[7,0]	=>	:price_difference, 
 				[8,0]	=>	:deductible, 
 			}	
+		end
+		PH_END = Date.new(2010,4,10)
+		def enabled?(event, default=false)
+		  if event == :price_history && @@today < PH_END
+		    true
+		  else
+		    super
+		  end
 		end
 		def explain_result_components
 			{
