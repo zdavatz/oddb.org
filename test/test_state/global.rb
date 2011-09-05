@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::TestGlobal -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::TestGlobal -- oddb.org -- 05.09.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::TestGlobal -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -841,6 +841,7 @@ end
         end
         flexmock(@session) do |s|
           s.should_receive(:lookandfeel).and_return(lookandfeel)
+          s.should_receive(:flavor).and_return(nil)
         end
         assert_kind_of(State::Drugs::Result, @state._search_drugs_state('query', 'else'))
       end

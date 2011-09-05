@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::TestLogo -- oddb.org -- 28.06.2011 -- mhatkeyama@ywesee.com
+# ODDB::View::TestLogo -- oddb.org -- 05.09.2011 -- mhatkeyama@ywesee.com
 # ODDB::View::TestLogo -- oddb.org -- 01.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -32,6 +32,13 @@ class TestPopupLogo < Test::Unit::TestCase
     context = flexmock('context', :a => 'a')
     assert_equal('a', @component.to_html(context))
   end
+  def test_to_html__desitin
+    attrs = {'href' => 'href'}
+    flexmock(@lnf, :attributes => attrs)
+    context = flexmock('context', :a => 'a')
+    assert_equal('a', @component.to_html(context))
+  end
+
   def test_logo_src
     flexmock(@lnf, 
              :enabled? => true,
