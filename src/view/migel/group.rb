@@ -29,6 +29,13 @@ class SubgroupList < HtmlGrid::List
 		:migel_code	=>	:title_subgroup,
 		:description	=>	:nbsp,
 	}
+  def migel_code(model=@model, session=@session)
+    link = PointerLink.new(:migel_code, model, @session, self)
+    event = :migel_search
+    key = :migel_subgroup
+    link.href = @lookandfeel._event_url(event, {key => model.migel_code.delete('.')})
+    link
+  end
 end
 class GroupInnerComposite < HtmlGrid::Composite
 	COMPONENTS = {

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::TestSwissindexPlugin -- oddb.org -- 09.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::TestSwissindexPlugin -- oddb.org -- 16.09.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 $: << File.expand_path("../..", File.dirname(__FILE__))
@@ -153,7 +153,8 @@ module ODDB
                          :barcode => 12345,
                          :pointer => 'pointer',
                          :out_of_trade => false,
-                         :pharmacode => 'pharmacode'
+                         :pharmacode => 'pharmacode',
+                         :sl_entry => 'sl_entry'
                         )
       flexmock(@app) do |app|
         app.should_receive(:each_package).and_yield(package)

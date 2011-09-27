@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::Migel::Result -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Result -- oddb.org -- 26.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Result -- oddb.org -- 04.10.2005 -- ffricker@ywesee.com
 
 require 'htmlgrid/list'
@@ -58,9 +58,20 @@ class List < HtmlGrid::List
 		@width = @components.keys.collect { |x, y| x }.max
 		super
 	end
+  def limitation_link(model)
+    link = HtmlGrid::Link.new(:square_limitation, nil, @session, self)
+    #link.href = @lookandfeel._event_url(:resolve, {'pointer'=>CGI.escape(sltxt.pointer.to_s)})
+    event = :migel_search
+    key = :migel_limitation
+    link.href = @lookandfeel._event_url(event, {key => model.migel_code.delete('.')})
+    link.set_attribute('title', @lookandfeel.lookup(:limitation_text))
+    pos = components.index(:limitation_text)
+    link.css_class = "square infos"
+    link
+  end
 	def limitation_text(model)
-		if(sltxt = model.limitation_text)
-			limitation_link(sltxt)
+		if(sltxt = model.limitation_text and !sltxt.to_s.empty?)
+			limitation_link(model)
 		else
 			''
 		end
@@ -76,11 +87,20 @@ class List < HtmlGrid::List
 		if(text.size > 60)
 			text = text[0,57] << '...'
 		end
+    key = if model.migel_code.length == 2
+            :migel_group
+          elsif model.migel_code.length == 5
+            :migel_subgroup
+          else
+            :migel_product
+          end
+    link.href = @lookandfeel._event_url(:migel_search, {key => model.migel_code.gsub(/\./, '')})
 		link.value = text
 		link
 	end
   def migel_code(model)
-    if model.respond_to?(:items) and items = model.items and !items.empty?
+    #if model.respond_to?(:items) and items = model.items and !items.empty?
+    if model.respond_to?(:items) and items = model.items and !items.select{|i| i.ean_code != nil and i.status != 'I'}.empty?
       link = PointerLink.new(:to_s, model, @session, self)
       link.value = model.migel_code
       link.href = @lookandfeel._event_url(:migel_search, {:migel_code => model.migel_code.gsub(/\./, '')})

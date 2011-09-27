@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+# encondig: utf-8
+# Migel::Model::Product -- migel -- 17.08.2011 -- mhatakeyama@ywesee.com
+
+#require 'util/language'
+#require 'model/text'
+
+module Migel
+  module Model
+    class Product < Migel::ModelSuper
+#      include SimpleLanguage
+      belongs_to :migelid, delegates(:price, :qty, :unit, :migel_code)
+      attr_accessor :ean_code, :pharmacode, :article_name, :companyname, :companyean, :ppha, :ppub, :factor, :pzr, :size, :status, :datetime, :stdate, :language
+#      attr_reader :product
+      alias :pointer_descr :migel_code
+=begin
+      def initialize(product)
+        @product = product
+      end
+      def price
+        @migelid.price
+      end
+      def qty
+        @migelid.qty
+      end
+      def unit
+        @migelid.unit
+      end
+      def pointer_descr
+        @migelid.migel_code
+      end
+      alias :migel_code :pointer_descr
+=end
+    end
+  end
+end

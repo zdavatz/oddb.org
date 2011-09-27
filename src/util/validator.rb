@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::Validator -- oddb.org -- 30.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 16.09.2011 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -374,6 +374,7 @@ module ODDB
 			:register_update,
 			:regulatory_email,
       :remember,
+      :reverse,
 			:size,
 			:sortvalue,
 			:spagyric_dose,

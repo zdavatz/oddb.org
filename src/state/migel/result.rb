@@ -28,14 +28,14 @@ class Result < State::Migel::Global
 		if(@model.nil? || @model.empty?)
 			@default_view = ODDB::View::Migel::EmptyResult
 		else
-		subgroups = {}
-		@model.each { |product|
-			sg = product.subgroup
-			subgroup = (subgroups[sg.migel_code] ||= SubgroupFacade.new(sg))
-			subgroup.add_product(product)
-		}
-		@model = subgroups.values.sort_by { |sg| sg.migel_code }
-		@model.each { |sg| sg.products.sort! { |a,b| a.code <=> b.code } }
+      subgroups = {}
+      @model.each { |product|
+        sg = product.subgroup
+        subgroup = (subgroups[sg.migel_code] ||= SubgroupFacade.new(sg))
+        subgroup.add_product(product)
+      }
+      @model = subgroups.values.sort_by { |sg| sg.migel_code }
+      @model.each { |sg| sg.products.sort! { |a,b| a.code <=> b.code } }
 		end
 	end
 	def sort

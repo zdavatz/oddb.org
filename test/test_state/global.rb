@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::TestGlobal -- oddb.org -- 05.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::TestGlobal -- oddb.org -- 27.09.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::TestGlobal -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -15,6 +15,7 @@ require 'flexmock'
 require 'state/user/yweseecontact'
 require 'state/user/register_download'
 require 'state/migel/result'
+require 'model/migel/items'
 
 module ODDB
 	module State
@@ -685,10 +686,106 @@ end
         setup_search('substances')
         assert_kind_of(State::Substances::Result, @state.search)
       end
-      def test_search__migel
+      def test_search__migel_product
         setup_search('migel')
         flexmock(@session) do |s|
+          s.should_receive(:search_migel_products).and_return(['result'])
+        end
+        assert_kind_of(State::Migel::Result, @state.search)
+      end
+      def test_search__migel_items
+        setup_search('migel')
+        flexmock(@session.app, :search_migel_items => {'key' => 'result'})
+        flexmock(@session) do |s|
           s.should_receive(:search_migel_products)
+          s.should_receive(:language).and_return('de')
+        end
+        assert_kind_of(State::Migel::Items, @state.search)
+      end
+      def test_migel_search__items
+        product = flexmock('product', 
+                           :items => {'key' => 'item'},
+                           :price => 'price',
+                           :qty   => 'qty',
+                           :unit  => 'unit',
+                           :migel_code => 'migel_code'
+                          )
+        flexmock(@session.app, :search_migel_items_by_migel_code => {'key' => product})
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).with(:migel_code).and_return('migel_code')
+          s.should_receive(:user_input).with(:sortvalue)
+          s.should_receive(:user_input).with(:reverse)
+        end
+        assert_kind_of(State::Migel::Items, @state.migel_search)
+      end
+      def test_migel_search__product
+        product = flexmock('product')
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).with(:migel_code)
+          s.should_receive(:user_input).with(:sortvalue)
+          s.should_receive(:user_input).with(:reverse)
+          s.should_receive(:user_input).with(:migel_product).and_return('migel_code')
+          s.should_receive(:search_migel_products).and_return([product])
+        end
+        assert_kind_of(State::Migel::Product, @state.migel_search)
+      end
+      def test_migel_search__subgroup
+        subgroup = flexmock('subgroup')
+        flexmock(@session.app).should_receive(:search_migel_subgroup).and_return(subgroup)
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).with(:migel_code)
+          s.should_receive(:user_input).with(:sortvalue)
+          s.should_receive(:user_input).with(:reverse)
+          s.should_receive(:user_input).with(:migel_product)
+          s.should_receive(:user_input).with(:migel_subgroup).and_return('migel_code')
+        end
+        assert_kind_of(State::Migel::Subgroup, @state.migel_search)
+      end
+      def test_migel_search__group
+        group = flexmock('group')
+        flexmock(@session.app).should_receive(:search_migel_group).and_return(group)
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).with(:migel_code)
+          s.should_receive(:user_input).with(:sortvalue)
+          s.should_receive(:user_input).with(:reverse)
+          s.should_receive(:user_input).with(:migel_product)
+          s.should_receive(:user_input).with(:migel_subgroup)
+          s.should_receive(:user_input).with(:migel_group).and_return('migel_code')
+        end
+        assert_kind_of(State::Migel::Group, @state.migel_search)
+      end
+      def test_migel_search__limitation_text
+        limitation_text = flexmock('limitation_text')
+        flexmock(@session.app).should_receive(:search_migel_limitation).and_return(limitation_text)
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).with(:migel_code)
+          s.should_receive(:user_input).with(:sortvalue)
+          s.should_receive(:user_input).with(:reverse)
+          s.should_receive(:user_input).with(:migel_product)
+          s.should_receive(:user_input).with(:migel_subgroup)
+          s.should_receive(:user_input).with(:migel_group)
+          s.should_receive(:user_input).with(:migel_limitation).and_return('migel_code')
+        end
+        assert_kind_of(State::Migel::LimitationText, @state.migel_search)
+      end
+      def test_migel_search__fail
+        flexmock(@session) do |s|
+          s.should_receive(:user_input).with(:migel_code)
+          s.should_receive(:user_input).with(:sortvalue)
+          s.should_receive(:user_input).with(:reverse)
+          s.should_receive(:user_input).with(:migel_product)
+          s.should_receive(:user_input).with(:migel_subgroup)
+          s.should_receive(:user_input).with(:migel_group)
+          s.should_receive(:user_input).with(:migel_limitation)
+        end
+        assert_equal(@state, @state.migel_search)
+      end
+      def test_search__migel_empty
+        setup_search('migel')
+        flexmock(@session.app, :search_migel_items => nil)
+        flexmock(@session) do |s|
+          s.should_receive(:search_migel_products)
+          s.should_receive(:language).and_return('de')
         end
         assert_kind_of(State::Migel::Result, @state.search)
       end

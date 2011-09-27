@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Migel::Items -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::Migel::Items -- oddb.org -- 27.09.2011 -- mhatakeyama@ywesee.com
 
 require 'plugin/swissindex'
 require 'model/migel/item'
@@ -9,26 +9,21 @@ module ODDB
   module Migel
 
 class Items
-  attr_reader :price, :qty, :unit, :pointer_descr
-  def initialize(product)
+  def initialize(product, sortvalue = nil, reverse = nil)
     if product and items = product.items
+      @sortvalue = sortvalue
       @list = items.values
+      @reverse = reverse
     else
       @list = []
     end
-    @price = product.price
-    @qty = product.qty
-    @unit = product.unit
-    @pointer_descr = product.migel_code
   end
   def empty?
     @list.empty?
   end
-  def sort_by
+  def sort_by(&block)
     # This is called at the first time when a search result is shown
-    @list.sort_by do |record|
-      record.pharmacode
-    end
+    @list.sort_by(&block)
   end
   def sort!
     # This is called when a header key is clicked
@@ -40,12 +35,23 @@ class Items
     @list.reverse!
   end
   def each_with_index
-    @list.each do |record| 
+    @list.each_with_index do |record, i| 
+      yield(record, i)
+    end
+  end
+  def each
+    @list.each do |record|
       yield record
     end
   end
   def at(index)
     @list[index]
+  end
+  def length
+    @list.length
+  end
+  def [](*args)
+    @list[*args]
   end
 end
 

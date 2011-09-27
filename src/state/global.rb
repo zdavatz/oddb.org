@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Global -- oddb.org -- 05.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 26.09.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -90,6 +90,13 @@ require 'sbsm/state'
 module ODDB
   module State
     class Global < SBSM::State
+      class StubProduct
+        attr_reader :items
+        def initialize(items)
+          @items = items
+        end
+      end
+
       include UmlautSort
       include Admin::LoginMethods
         attr_reader :model, :snapback_model
@@ -469,12 +476,23 @@ module ODDB
 				end
 			end
       def migel_search
-        if migel_code = @session.user_input(:migel_code)
-          product = if migel_products = @session.search_migel_products(migel_code) and !migel_products.empty?
-                      migel_products[0] 
-                    end
+        sortvalue = @session.user_input(:sortvalue) || @session.user_input(:reverse)
+        reverse  = @session.user_input(:reverse)
+        #if migel_code = @session.user_input(:migel_code) and product = @session.search_migel_products(migel_code).first
+        if migel_code = @session.user_input(:migel_code) and result = @session.app.search_migel_items_by_migel_code(migel_code, sortvalue, reverse)
+          product = StubProduct.new(result)
+          #ODDB::State::Migel::Items.new(@session, ODDB::Migel::Items.new(product, sort_key, reverse))
           ODDB::State::Migel::Items.new(@session, ODDB::Migel::Items.new(product))
-        else
+          #ODDB::State::Migel::Items.new(@session, product.products)
+        elsif migel_code = @session.user_input(:migel_product) and product = @session.search_migel_products(migel_code).first
+          ODDB::State::Migel::Product.new(@session, product)
+        elsif migel_code = @session.user_input(:migel_subgroup) and subgroup = @session.app.search_migel_subgroup(migel_code)
+          ODDB::State::Migel::Subgroup.new(@session, subgroup)
+        elsif migel_code = @session.user_input(:migel_group) and group = @session.app.search_migel_group(migel_code)
+          ODDB::State::Migel::Group.new(@session, group)
+        elsif migel_code = @session.user_input(:migel_limitation) and limitation_text = @session.app.search_migel_limitation(migel_code)
+          ODDB::State::Migel::LimitationText.new(@session, limitation_text)
+        else 
           self
         end
       end
@@ -530,7 +548,11 @@ module ODDB
 				if(query.is_a? RuntimeError)
 					State::Exception.new(@session, query)
 				elsif(!query.nil?)
-					query = ODDB.search_term(query)
+          if zone == :migel
+            query = query.to_s.gsub(//u,'')
+          else
+					  query = ODDB.search_term(query)
+          end
 					case zone
 					when :hospitals
 						result = @session.search_hospitals(query)
@@ -548,8 +570,20 @@ module ODDB
 						result = @session.search_substances(query)
 						State::Substances::Result.new(@session, result)
 					when :migel
-						result = @session.search_migel_products(query)
-						State::Migel::Result.new(@session, result)
+            sortvalue = @session.user_input(:sortvalue) || @session.user_input(:reverse)
+            reverse   = @session.user_input(:reverse)
+						if result = @session.search_migel_products(query) and !result.empty?
+						  State::Migel::Result.new(@session, result)
+            elsif result = @session.app.search_migel_items(query, @session.language, sortvalue, reverse) and !result.empty?
+              product = StubProduct.new(result)
+              #product = StubProduct.new(result[0,200])
+              #sort_key = @session.user_input(:sortvalue) || @session.user_input(:reverse)
+              #reverse  = @session.user_input(:reverse)
+              #ODDB::State::Migel::Items.new(@session, ODDB::Migel::Items.new(product, sort_key, reverse))
+              ODDB::State::Migel::Items.new(@session, ODDB::Migel::Items.new(product))
+            else
+						  State::Migel::Result.new(@session, [])
+            end
 					when :analysis
 						result = @session.search_analysis(query, @session.language)
 						State::Analysis::Result.new(@session, result)

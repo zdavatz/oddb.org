@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
-# OddbApp -- oddb.org -- 01.06.2011 -- mhatakeyama@ywesee.com
-# OddbApp -- oddb.org -- hwyss@ywesee.com
+# OddbApp -- oddb.org -- 26.09.2011 -- mhatakeyama@ywesee.com
+# OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 require 'odba'
 require 'odba/index_definition'
@@ -33,6 +33,9 @@ require 'yaml'
 require 'yus/session'
 require 'model/migel/group'
 require 'model/analysis/group'
+
+require 'remote/multilingual'
+require 'remote/migel/model'
 
 class OddbPrevalence
 	include ODDB::Failsafe
@@ -986,6 +989,10 @@ class OddbPrevalence
 		result.atc_classes = search_by_indication(query, lang, result)
 		result
 	end
+  def search_migel_group(migel_code)
+    migel_group(migel_code)
+  end
+=begin
 	def search_migel_alphabetical(query, lang)
 		if(lang.to_s != "fr") 
 			lang = "de"
@@ -999,7 +1006,37 @@ class OddbPrevalence
 		end
 		index_name = "migel_fulltext_index_#{lang}"
 		ODBA.cache.retrieve_from_index(index_name, query)
-	end
+  end
+  def search_migel_subgroup(migel_code)
+    if code = migel_code.split(/(\d\d)/).select{|x| !x.empty?} and
+       groupcd = code[0] and subgroupcd = code[1]
+       migel_group(groupcd).subgroup(subgroupcd)
+    end
+  end
+  def search_migel_items(query)
+    []
+  end
+  def search_migel_limitation(migel_code)
+    case migel_code.length
+    when 2 # Group
+      if group = migel_group(migel_code)
+        group.limitation_text
+      end
+    when 4 # Subgroup
+      if code = migel_code.split(/(\d\d)/).select{|x| !x.empty?} and
+         groupcd = code[0] and subgroupcd = code[1] and subgroup = migel_group(groupcd).subgroup(subgroupcd)
+         subgroup.limitation_text
+      end
+    when 9 # Product (Migel::Model::Migelid) z.B. 150101001
+      groupcd, subgroupcd, productcd = migel_code.match(/(\d\d)(\d\d)(\d+)/).to_a[1..-1]
+      if groupcd and subgroupcd and productcd and
+         productcd = productcd.split(/(\d\d)/).select{|x| !x.empty?}.join('.') and
+         product = migel_group(groupcd).subgroup(subgroupcd).product(productcd)
+         product.limitation_text
+      end
+    end
+  end
+=end
 	def search_narcotics(query, lang)
 		if(lang.to_s != "fr") 
 			lang = "de"
@@ -1291,6 +1328,7 @@ module ODDB
 		UPDATE_INTERVAL = 24*60*60
 		VALIDATOR = Validator
     YUS_SERVER = DRb::DRbObject.new(nil, YUS_URI)
+    MIGEL_SERVER = DRb::DRbObject.new(nil, MIGEL_URI)
 		attr_reader :cleaner, :updater
 		def initialize opts={}
       @rss_mutex = Mutex.new
@@ -1888,6 +1926,54 @@ module ODDB
         sleep 5
         }
       }
+    end
+    # The followings are for migel data to access to migel drb server
+    # @system (OddbPreverance) methods are replaced by the following methods
+    def search_migel_alphabetical(query, lang)
+      search_method = 'search_by_name_' + lang.downcase.to_s
+      MIGEL_SERVER.migelid.send(search_method, query)
+    end
+    def search_migel_products(query, lang)
+      migel_code = if query =~ /(\d){9}/
+                     query.split(/(\d\d)/).select{|x| !x.empty?}.join('.')
+                   elsif query =~ /(\d\d\.){4}\d/
+                     query
+                   end
+      if migel_code
+         MIGEL_SERVER.migelid.search_by_migel_code(migel_code)
+         #MIGEL_SERVER.search_migel_product_by_migel_code(migel_code)
+      else
+        MIGEL_SERVER.search_migel_migelid(query, lang)
+      end
+    end
+    def search_migel_subgroup(migel_code)
+      code = migel_code.split(/(\d\d)/).select{|x| !x.empty?}.join('.')
+      MIGEL_SERVER.subgroup.find_by_migel_code(code)
+    end
+    def search_migel_limitation(migel_code)
+      code = migel_code.split(/(\d\d)/).select{|x| !x.empty?}.join('.')
+      MIGEL_SERVER.search_limitation(code)
+    end
+    def search_migel_items_by_migel_code(query, sortvalue = nil, reverse = nil)
+      # migel_search event
+      # search items by migel_code
+      migel_code = if query =~ /(\d){9}/
+                     query.split(/(\d\d)/).select{|x| !x.empty?}.join('.')
+                   elsif query =~ /(\d\d\.){4}\d/
+                     query
+                   end
+      MIGEL_SERVER.search_migel_product_by_migel_code(migel_code, sortvalue, reverse)
+    end
+    def search_migel_items(query, lang, sortvalue = nil, reverse = nil)
+      # search event
+      # search items by using search box
+      if query =~ /^\d{13}$/
+        MIGEL_SERVER.product.search_by_ean_code(query)
+      elsif query =~ /^\d{6,}$/
+        MIGEL_SERVER.product.search_by_pharmacode(query)
+      else
+        MIGEL_SERVER.search_migel_product(query, lang, sortvalue, reverse)
+      end
     end
 	end
 end

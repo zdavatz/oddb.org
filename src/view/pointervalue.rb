@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::PointerValue -- oddb.org -- 08.08.2003 -- mhatakeyama@ywesee.com 
+# ODDB::View::PointerValue -- oddb.org -- 19.08.2003 -- mhatakeyama@ywesee.com 
 # ODDB::View::PointerValue -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
 require 'htmlgrid/value'
@@ -11,7 +11,10 @@ module ODDB
 			CSS_CLASS = 'list'
 			def init
 				value = @name
-				if(@model.respond_to?(@name))
+				#if(@model.respond_to?(@name))
+				if @model.is_a?(DRb::DRbObject)
+          value = @model.send(@name)
+        elsif(@model.respond_to?(@name))
 					method = @model.method(@name)
 					args = (method.arity == 1) ? [@lookandfeel.language] : []
 					value = @model.send(@name, *args)

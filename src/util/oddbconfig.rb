@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# OddbConfig -- oddb -- 09.04.2003 -- hwyss@ywesee.com 
+# OddbConfig -- oddb.org -- 19.08.2011 -- mhatakeyama@ywesee.com 
+# OddbConfig -- oddb.org -- 09.04.2003 -- hwyss@ywesee.com 
 
 # Do not require any Application-Internals in this file
 
@@ -27,6 +28,8 @@ module ODDB
 	READONLY_URI = "druby://localhost:10013"
 	CURRENCY_URI = "druby://localhost:10999"
   YUS_URI = "drbssl://localhost:9997"
+  MIGEL_URI = 'druby://localhost:33000'
+  #MIGEL_URI = 'druby://localhost:77777'
   YUS_DOMAIN = 'oddb.org'
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
   IMAGE_DIR = File.join(PROJECT_ROOT, 'doc', 'resources', 'images')

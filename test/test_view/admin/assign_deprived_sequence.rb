@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::Admin::TestAssignDeprivedSequenceForm -- oddb.org -- 06.0.6.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Admin::TestAssignDeprivedSequenceForm -- oddb.org -- 16.09.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -29,7 +29,7 @@ class TestAssignDeprivedSequenceForm < Test::Unit::TestCase
                         :warning?    => nil,
                         :error?      => nil
                        )
-    @pointer  = flexmock('pointer')
+    @pointer  = flexmock('pointer', :to_csv => 'to_csv')
     flexmock(@pointer, :+ => @pointer)
     galenic_form = flexmock('galenic_form', :language => 'language')
     substance    = flexmock('substance', :language => 'language')

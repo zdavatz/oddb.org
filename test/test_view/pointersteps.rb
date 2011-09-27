@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::TestPointerSteps -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::TestPointerSteps -- oddb.org -- 09.09.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::TestPointerSteps -- oddb.org -- 02.04.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -217,6 +217,25 @@ module ODDB
         @snapback = ODDB::View::TestPointerSteps::StubSnapback.new(@model, @session)
         expected = ["snapback_event", "direct_request_path"]
         assert_equal(expected, @snapback.snapback)
+      end
+      def test_init__pointervalue_drb
+        flexmock(@model) do |m|
+          m.should_receive(:is_a?).with(ODDB::LimitationText)
+          m.should_receive(:is_a?).with(DRb::DRbObject).and_return(true)
+        end
+        assert_nothing_raised do
+          steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        end
+      end
+      def test_init__pointervalue_symbol
+        flexmock(@model) do |m|
+          m.should_receive(:is_a?).with(ODDB::LimitationText)
+          m.should_receive(:is_a?).with(DRb::DRbObject).and_return(true)
+          m.should_receive(:pointer_descr).and_return(:name)
+        end
+        assert_nothing_raised do
+          steps = ODDB::View::PointerSteps.new(@model, @session, @container)
+        end
       end
 
 		end

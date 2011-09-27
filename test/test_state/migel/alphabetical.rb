@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Migel::TestAlphabetical -- oddb.org -- 01.07.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Migel::TestAlphabetical -- oddb.org -- 09.09.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -31,6 +31,18 @@ class TestAlphabetical < Test::Unit::TestCase
     flexmock(@session, :language => 'en')
     assert_equal('migel_index_de', @state.index_name)
   end
+  def test_index_lookup
+    flexmock(@session, :"app.search_migel_alphabetical" => 'search_migel_alphabetical')
+    assert_equal('search_migel_alphabetical', @state.index_lookup('query'))
+  end
+  def test_index_lookup__en
+    flexmock(@session, 
+             :"app.search_migel_alphabetical" => 'search_migel_alphabetical',
+             :language => 'en'
+            )
+    assert_equal('search_migel_alphabetical', @state.index_lookup('query'))
+  end
+
 end
 
     end # Migel

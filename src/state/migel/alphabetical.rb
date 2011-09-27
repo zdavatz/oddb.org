@@ -21,6 +21,14 @@ class Alphabetical < Global
 		end
 		"migel_index_#{lang}"
 	end
+  def index_lookup(query)
+		if(@session.language == 'en')
+			lang = 'de'
+		else
+			lang = @session.language
+		end
+    @session.app.search_migel_alphabetical(query, lang)
+  end
 end
 		end
 	end

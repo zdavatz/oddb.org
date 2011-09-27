@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::Migel::TestResult -- oddb.org -- 14.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::TestResult -- oddb.org -- 26.09.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -32,7 +32,10 @@ class TestList < Test::Unit::TestCase
   end
   def test_limitation_text
     limitation_text = flexmock('limitation_text', :pointer => 'pointer')
-    flexmock(@model, :limitation_text => limitation_text)
+    flexmock(@model, 
+             :limitation_text => limitation_text,
+             :migel_code => 'migel_code'
+            )
     assert_kind_of(HtmlGrid::Link, @list.limitation_text(@model))
   end
   def test_limitation_text__no_limitation_text
@@ -43,10 +46,46 @@ class TestList < Test::Unit::TestCase
     flexmock(@session, :language => 'language')
     flexmock(@model, 
              :pointer  => 'pointer',
-             :language => 'language'*100
+             :language => 'language'*100,
+             :migel_code => 'migel_code'
             )
     assert_kind_of(ODDB::View::PointerLink, @list.product_description(@model))
   end
+  def test_product_description__migel_group
+    flexmock(@session, :language => 'language')
+    flexmock(@model, 
+             :pointer  => 'pointer',
+             :language => 'language'*100,
+             :migel_code => '12'
+            )
+    assert_kind_of(ODDB::View::PointerLink, @list.product_description(@model))
+  end
+  def test_product_description__migel_subgroup
+    flexmock(@session, :language => 'language')
+    flexmock(@model, 
+             :pointer  => 'pointer',
+             :language => 'language'*100,
+             :migel_code => '12.34'
+            )
+    assert_kind_of(ODDB::View::PointerLink, @list.product_description(@model))
+  end
+  def test_migel_code
+    flexmock(@model, :migel_code => 'migel_code')
+    assert_equal('migel_code', @list.migel_code(@model))
+  end
+  def test_migel_code__items
+    item = flexmock('item',
+                    :ean_code => 'ean_code',
+                    :status   => 'status'
+                   )
+    flexmock(@model, 
+             :migel_code => 'migel_code',
+             :items    => [item],
+             :pointer  => 'pointer'
+            )
+    assert_kind_of(ODDB::View::PointerLink, @list.migel_code(@model))
+  end
+
 end
 
 class TestResultList < Test::Unit::TestCase

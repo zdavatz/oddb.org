@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::Migel::Product -- oddb.org -- 16.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Product -- oddb.org -- 12.09.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Product -- oddb.org -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/dataformat'
@@ -39,6 +39,14 @@ class AccessoryOfList < AccessoryList
 		:migel_code	=>	:title_accessories_of,
 		:description	=>	:nbsp,
 	}
+  def migel_code(model=@model, session=@session)
+    if model.is_a?(DRbObject)
+      # Actually, model is a Migel::Model::Product instance.
+      model.pharmacode
+    else
+      ''
+    end
+  end
 end
 class ProductInnerComposite < HtmlGrid::Composite
 	include AdditionalInformation
@@ -80,25 +88,27 @@ class ProductInnerComposite < HtmlGrid::Composite
 						ptr += [:product, code]
 					end
 				end
-				args = {:pointer => ptr}
-				'<a class="list" href="' << @lookandfeel._event_url(:resolve, args) << 
-					'">' << $~[0] << '</a>'
+        args = {:pointer => ptr}
+        '<a class="list" href="' << @lookandfeel._event_url(:resolve, args) << 
+          '">' << $~[0] << '</a>'
 			}
 		end
 		value
 	end
 	def group(model)
-		pointer_link(model.group)
+		pointer_link(model.group, :migel_group)
 	end
 	def limitation_text(model)
 		description(model.limitation_text, :limitation_text)
 	end
 	def subgroup(model)
-		pointer_link(model.subgroup)
+		pointer_link(model.subgroup, :migel_subgroup)
 	end
-	def pointer_link(model)
+	def pointer_link(model, key)
 		link = PointerLink.new(:to_s, model, @session, self)
 		link.value = model.send(@session.language)
+    event = :migel_search
+    link.href = @lookandfeel._event_url(event, {key => model.migel_code.delete('.')})
 		link
 	end
 	def product_text(model)
@@ -132,7 +142,9 @@ class ProductComposite < HtmlGrid::Composite
 	LEGACY_INTERFACE = false
 	def accessories(model)
 		acc = model.accessories
-		prods = model.products
+		prods = if products = model.products
+              products.select{|pro| pro.ean_code != nil and pro.status != 'I'}
+            end
 		if(!acc.empty?)
 			AccessoryList.new(acc, @session, self)
 		elsif(!prods.empty?)
@@ -140,9 +152,38 @@ class ProductComposite < HtmlGrid::Composite
 		end
 	end
 end
+class PointerSteps < ODDB::View::PointerSteps
+  def pointer_descr(model, session=@session)
+    event = :migel_search
+    link = PointerLink.new(:pointer_descr, model, @session, self) 
+    if model.is_a?(DRbObject)
+      # This is the case where Product instance comes from migel DRb server
+      # DRbObject is acutally Migel::Model::Group, Subgroup class. see lib/migel/model/migelid.rb in migel project.
+      key = case model.migel_code.length
+            when 2
+              :migel_group
+            when 5
+              :migel_subgroup
+            else
+              :migel_product
+            end
+    elsif model.is_a?(ODDB::Migel::Group)
+      key = :migel_group
+    elsif model.is_a?(ODDB::Migel::Subgroup)
+      key = :migel_subgroup
+    elsif model.is_a?(ODDB::Migel::Product)
+      key = :migel_product
+    end
+    link.href = @lookandfeel._event_url(event, {key => model.migel_code.delete('.')})
+    link
+  end
+end
 class Product < View::PrivateTemplate
 	CONTENT = ProductComposite
 	SNAPBACK_EVENT = :result
+  def backtracking(model, session=@session)
+    ODDB::View::Migel::PointerSteps.new(model, @session, self)
+  end
 end
 		end
 	end

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# TestOddbApp -- oddb.org -- 12.09.2011 -- mhatakeyama@ywesee.com
 # TestOddbApp -- oddb.org -- 16.02.2011 -- mhatakeyama@ywesee.com, zdavatz@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -1676,11 +1677,37 @@ class TestOddbApp < Test::Unit::TestCase
     assert(same?(expected, @app.search_exact_indication('query', 'lang')))
   end
   def test_search_migel_alphabetical
-    assert_equal([], @app.search_migel_alphabetical('query', 'lang'))
+    migelid = flexmock('migelid', 
+                       :send => 'migelid search result',
+                       :search_by_migel_code => 'search_by_migel_code'
+                      )
+    flexmock(ODDB::App::MIGEL_SERVER, :migelid => migelid)
+    assert_equal('migelid search result', @app.search_migel_alphabetical('query', 'lang'))
   end
   def test_search_migel_products
-    assert_equal([], @app.search_migel_products('query', 'lang'))
+    flexmock(ODDB::App::MIGEL_SERVER, :search_migel_migelid => 'search_migel_migelid')
+    assert_equal('search_migel_migelid', @app.search_migel_products('query', 'lang'))
   end
+  def test_search_migel_products__migel_code
+    migelid = flexmock('migelid', :search_by_migel_code => 'search_by_migel_code')
+    flexmock(ODDB::App::MIGEL_SERVER, :migelid => migelid)
+    assert_equal('search_by_migel_code', @app.search_migel_products('123456789', 'lang'))
+  end
+  def test_search_migel_subgroup
+    migel_code = '123456789'
+    subgroup = flexmock('subgroup', :find_by_migel_code => 'find_by_migel_code')
+    flexmock(ODDB::App::MIGEL_SERVER, :subgroup => subgroup)
+    assert_equal('find_by_migel_code', @app.search_migel_subgroup(migel_code))
+  end
+  def test_search_migel_limitation
+    flexmock(ODDB::App::MIGEL_SERVER, :search_limitation => 'search_limitation')
+    assert_equal('search_limitation', @app.search_migel_limitation('query'))
+  end
+  def test_search_migel_items
+    flexmock(ODDB::App::MIGEL_SERVER, :search_migel_product => 'search_migel_product')
+    assert_equal('search_migel_product', @app.search_migel_items('query', 'lang'))
+  end
+
   def test_search_narcotics
     assert_equal([], @app.search_narcotics('query', 'lang'))
   end
@@ -1927,5 +1954,26 @@ class TestOddbApp < Test::Unit::TestCase
     @app.invoices = {'oid' => invoice}
     assert_equal(nil, @app.clean_invoices)
   end
-
+  def test_set_all_export_flag_registration
+    flexstub(@app) do |app|
+      app.should_receive(:system).and_return(@app.instance_eval('@system'))
+    end
+    registration = flexmock('registration', :pointer => 'pointer')
+    flexstub(@app.system) do |sys|
+      sys.should_receive(:each_registration).and_yield(registration)
+      sys.should_receive(:update).and_return('update')
+    end
+    assert_equal('update', @app.set_all_export_flag_registration(true))
+  end
+  def test_set_all_export_flag_sequence
+    flexstub(@app) do |app|
+      app.should_receive(:system).and_return(@app.instance_eval('@system'))
+    end
+    sequence = flexmock('sequence', :pointer => 'pointer')
+    flexstub(@app.system) do |sys|
+      sys.should_receive(:each_sequence).and_yield(sequence)
+      sys.should_receive(:update).and_return('update')
+    end
+    assert_equal('update', @app.set_all_export_flag_sequence(true))
+  end
 end

@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
-#  -- oddb -- 05.10.2005 -- ffricker@ywesee.com
+# ODDB::View::Migel::LimitationText -- oddb.org -- 12.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::LimitationText -- oddb.org -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/drugs/limitationtext'
 require 'view/popuptemplate'
 require 'view/privatetemplate'
-
+#require 'view/migel/product'
 
 module ODDB
 	module View
@@ -35,16 +36,19 @@ class LimitationTextComposite < HtmlGrid::Composite
 		[0,1] => 'list',
 	}	
 	def limitation_text_title(model, session)
-		if(pointer =  model.pointer.parent)
-			parent = pointer.resolve(session.app)
+		if(parent = model.parent(@session.app))
 			@lookandfeel.lookup(:limitation_text_title, 
 				parent.send(@session.language))
 		end
 	end
 end
+# Note: ODDB::View::Migel::PointerSteps is defined in src/view/migel/product.rb
 class LimitationText < View::PrivateTemplate
 	CONTENT = View::Migel::LimitationTextComposite
 	SNAPBACK_EVENT = :result
+  def backtracking(model, session=@session)
+    ODDB::View::Migel::PointerSteps.new(model, @session, self)
+  end
 end
 		end
 	end

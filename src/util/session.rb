@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# Session -- oddb -- hwyss@ywesee.com
+# ODDB::Session -- oddb.org -- 23.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::Session -- oddb.org -- xx.xx.xxxx -- hwyss@ywesee.com
 
 require 'sbsm/session'
 require 'custom/lookandfeelfactory'

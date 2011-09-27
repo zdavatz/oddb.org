@@ -1,0 +1,168 @@
+#!/usr/bin/env ruby
+# View::Migel::TestItems -- oddb.org -- 27.09.2011 -- mhatakeyama@ywesee.com
+
+$: << File.expand_path('../..', File.dirname(__FILE__))
+$: << File.expand_path("../../../src", File.dirname(__FILE__))
+
+require 'test/unit'
+require 'flexmock'
+require 'view/migel/items'
+
+module ODDB
+  module View
+    module Migel
+
+class TestSubHeader < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', 
+                        :lookup     => 'lookup',
+                        :disabled?  => nil,
+                        :enabled?   => nil,
+                        :attributes => {},
+                        :_event_url => '_event_url'
+                       )
+    page     = flexmock('page', :to_i => 1)
+    state    = flexmock('state', 
+                        :pages => [page],
+                        :page  => page
+                       )
+    @session = flexmock('session', 
+                        :lookandfeel => @lnf,
+                        :language    => 'language',
+                        :user_input  => 'user_input',
+                        :state => state,
+                        :event => 'event'
+                       )
+    multilingual = flexmock('multilingual', :language => 'language')
+    @model   = flexmock('model', 
+                        :price => 'price',
+                        :qty   => 'qty',
+                        :unit  => multilingual,
+                        :migel_code => 'migel_code'
+                       )
+    @composite = ODDB::View::Migel::SubHeader.new(@model, @session)
+  end
+  def test_migel_code
+    assert_kind_of(HtmlGrid::Link, @composite.migel_code(@model, @session))
+  end
+end
+
+class TestSearchedList < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', 
+                        :lookup => 'lookup',
+                        :attributes => {},
+                        :event_url => 'event_url',
+                        :disabled? => nil,
+                        :enabled? => nil,
+                        :_event_url => '_event_url'
+                       )
+    page     = flexmock('page', :to_i => 1)
+    state    = flexmock('state', 
+                        :pages => [page],
+                        :page  => page
+                       )
+    @session = flexmock('session', 
+                        :lookandfeel => @lnf,
+                        :language    => 'language',
+                        :user_input  => nil,
+                        :event => 'event',
+                        :state => state,
+                        :persistent_user_input => 'persistent_user_input'
+                       )
+    @multilingual = flexmock('multilingual', :language => 'language')
+    @model   = flexmock('model', 
+                        :migel_code => 'migel_code',
+                        :price => 'price',
+                        :qty => 'qty',
+                        :unit => @multilingual,
+                        :article_name => @multilingual,
+                        :size => 'size',
+                        :companyname => @multilingual
+                       )
+    @list = ODDB::View::Migel::SearchedList.new([@model], @session)
+  end
+  def test_article_name
+    multilingual = flexmock('multilingual', 
+                            :language => 'language',
+                            :respond_to? => true,
+                            :send => 'article_name'
+                           )
+    model   = flexmock('model', 
+                        :migel_code => 'migel_code',
+                        :price => 'price',
+                        :qty => 'qty',
+                        :unit => multilingual,
+                        :article_name => multilingual,
+                        :size => 'size',
+                        :companyname => multilingual
+                       )
+ 
+    assert_equal('article_name', @list.article_name(model, @session))
+  end
+  def test_companyname
+    multilingual = flexmock('multilingual', 
+                            :language => 'language',
+                            :respond_to? => true,
+                            :send => 'companyname'
+                           )
+    model   = flexmock('model', 
+                        :migel_code => 'migel_code',
+                        :price => 'price',
+                        :qty => 'qty',
+                        :unit => multilingual,
+                        :article_name => multilingual,
+                        :size => 'size',
+                        :companyname => multilingual
+                       )
+ 
+    assert_equal('companyname', @list.companyname(model, @session))
+  end
+  def test_size
+    multilingual = flexmock('multilingual', 
+                            :language => 'language',
+                            :respond_to? => true,
+                            :send => 'size'
+                           )
+    model   = flexmock('model', 
+                        :migel_code => 'migel_code',
+                        :price => 'price',
+                        :qty => 'qty',
+                        :unit => multilingual,
+                        :article_name => multilingual,
+                        :size => multilingual,
+                        :companyname => multilingual
+                       )
+    flexmock(@session, :user_input => nil)
+ 
+    assert_equal('size', @list.size(model, @session))
+  end
+  def test_sort_link
+    assert_kind_of(HtmlGrid::Link, @list.sort_link('header_key', 'matrix', 'component'))
+  end
+  def test_sort_link__reverse
+    flexmock(@session) do |session|
+      session.should_receive(:user_input).with(:sortvalue).and_return('ean_code')
+      session.should_receive(:user_input).with(:reverse).and_return('ean_code')
+      session.should_receive(:user_input).with(:page).and_return(123)
+      session.should_receive(:user_input).with(:search_query)
+      session.should_receive(:zone).and_return('migel')
+    end
+    assert_kind_of(HtmlGrid::Link, @list.sort_link('header_key', 'matrix', 'ean_code'))
+  end
+  def test_sort_link__query
+    flexmock(@session) do |session|
+      session.should_receive(:user_input).with(:sortvalue).and_return('ean_code')
+      session.should_receive(:user_input).with(:reverse).and_return('ean_code')
+      session.should_receive(:user_input).with(:page).and_return(123)
+      session.should_receive(:user_input).with(:search_query).and_return('search_query')
+      session.should_receive(:zone).and_return('migel')
+    end
+    assert_kind_of(HtmlGrid::Link, @list.sort_link('header_key', 'matrix', 'ean_code'))
+  end
+end
+    end # Migel
+  end # View
+end # ODDB

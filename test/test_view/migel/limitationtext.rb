@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::Migel::TestLimitationText -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::TestLimitationText -- oddb.org -- 16.09.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -9,6 +9,7 @@ require 'view/migel/limitationtext'
 
 module ODDB
   module View
+    Copyright::ODDB_VERSION = 'version'
     module Migel
 
 class TestLimitationTextInnerComposite < Test::Unit::TestCase
@@ -50,7 +51,10 @@ class TestLimitationTextComposite < Test::Unit::TestCase
     parent   = flexmock('parent', :language => 'language')
     pointer  = flexmock('pointer', :resolve => parent)
     flexmock(pointer, :parent => pointer)
-    @model   = flexmock('model', :pointer => pointer)
+    @model   = flexmock('model', 
+                        :pointer => pointer,
+                        :parent  => parent
+                       )
     @view    = ODDB::View::Migel::LimitationTextComposite.new(@model, @session)
   end
   def test_limitation_text_title
@@ -58,6 +62,50 @@ class TestLimitationTextComposite < Test::Unit::TestCase
   end
 end
 
+class TestLimitationText < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', 
+                        :enabled?   => nil,
+                        :attributes => {},
+                        :resource   => 'resource',
+                        :lookup     => 'lookup',
+                        :zones      => 'zones',
+                        :disabled?  => nil,
+                        :direct_event => 'direct_event',
+                        :_event_url => '_event_url',
+                        :zone_navigation => 'zone_navigation',
+                        :navigation => 'navigation',
+                        :base_url   => 'base_url'
+                       )
+    @app     = flexmock('app')
+    user     = flexmock('user', :valid? => nil)
+    parent   = flexmock('parent', :language => 'language')
+    @model   = flexmock('model', 
+                        :pointer => 'pointer',
+                        :parent  => parent,
+                        :migel_code => 'migel_code'
+                       )
+    state    = flexmock('state', 
+                        :direct_event => 'direct_event',
+                        :snapback_model => @model
+                       )
+    @session = flexmock('session', 
+                        :app  => @app,
+                        :lookandfeel => @lnf,
+                        :user    => user,
+                        :sponsor => user,
+                        :state   => state,
+                        :allowed? => nil,
+                        :language => 'language',
+                        :zone    => 'zone'
+                       )
+    @view    = ODDB::View::Migel::LimitationText.new(@model, @session)
+  end
+  def test_backtracking
+    assert_kind_of(ODDB::View::PointerSteps, @view.backtracking(@model))
+  end
+end
     end # Migel
   end # View
 end # ODDB

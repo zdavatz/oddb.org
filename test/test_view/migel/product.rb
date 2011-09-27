@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Migel::TestProduct -- oddb.org -- 19.04.2011 -- mhatakeyama@ywesee.com
+# View::Migel::TestProduct -- oddb.org -- 27.09.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -9,10 +9,13 @@ require 'flexmock'
 require 'view/resulttemplate'
 require 'htmlgrid/labeltext'
 require 'view/migel/product'
+require 'view/migel/group'
+require 'view/migel/subgroup'
 require 'sbsm/validator'
 
 module ODDB
   module View
+    Copyright::ODDB_VERSION = 'version'
     module Migel
 
 class TestProductInnerComposite < Test::Unit::TestCase
@@ -33,11 +36,13 @@ class TestProductInnerComposite < Test::Unit::TestCase
                               )
     group           = flexmock('group', 
                                :language => 'language',
-                               :pointer  => 'pointer'
+                               :pointer  => 'pointer',
+                               :migel_code => 'migel_code'
                               )
     product_text    = flexmock('product_text', :language => 'language')
     limitation_text = flexmock('limitation_text', :language => 'language')
     unit            = flexmock('unit', :language => 'language')
+    pointer         = flexmock('pointer', :to_csv => 'to_csv')
     @model          = flexmock('model',
                                :group        => group,
                                :subgroup     => group,
@@ -47,8 +52,10 @@ class TestProductInnerComposite < Test::Unit::TestCase
                                :price        => 'price',
                                :qty          => 'qty',
                                :unit         => unit,
-                               :pointer      => 'pointer',
-                               :localized_name => 'localized_name'
+                               :pointer      => pointer,
+                               :localized_name => 'localized_name',
+                               :items        => ['item'],
+                               :migel_code   => 'migel_code'
                               )
     @composite = ODDB::View::Migel::ProductInnerComposite.new(@model, @session)
   end
@@ -201,6 +208,13 @@ class TestProductInnerComposite < Test::Unit::TestCase
     flexmock(@lookandfeel, :_event_url => '_event_url')
     assert_kind_of(HtmlGrid::Value, @composite.description(@model))
   end
+  def test_migel_code
+    assert_kind_of(ODDB::View::PointerLink, @composite.migel_code(@model))
+  end
+  def test_migel_code__else
+    flexmock(@model, :items => nil)
+    assert_kind_of(HtmlGrid::Value, @composite.migel_code(@model))
+  end
 end
 
 class TestProductComposite < Test::Unit::TestCase
@@ -221,16 +235,17 @@ class TestProductComposite < Test::Unit::TestCase
                           :event       => 'event'
                          )
     method     = flexmock('method', :arity => 1)
-    #group      = flexmock('group', 
-    group      = flexmock('masa', 
+    group      = flexmock('group', 
                           :pointer  => 'pointer',
                           :language => 'language',
                           :to_s     => 'value',
-                          :method   => method
+                          :method   => method,
+                          :migel_code => 'migel_code'
                          )
     subgroup   = flexmock('subgroup', 
                           :pointer  => 'pointer',
-                          :language => 'language'
+                          :language => 'language',
+                          :migel_code => 'migel_code'
                          )
     product_text    = flexmock('product_text', :language => 'language')
     limitation_text = flexmock('limitation_text', :language => 'language')
@@ -243,7 +258,9 @@ class TestProductComposite < Test::Unit::TestCase
     product    = flexmock('product', 
                           :pointer    => 'pointer',
                           :migel_code => 'migel_code',
-                          :method     => method
+                          :method     => method,
+                          :ean_code   => 'ean_code',
+                          :status     => 'status'
                          )
     @model     = flexmock('model', 
                           :group    => group,
@@ -257,16 +274,188 @@ class TestProductComposite < Test::Unit::TestCase
                           :product_text => product_text,
                           :accessories  => [accessory],
                           :localized_name  => 'localized_name',
-                          :limitation_text => limitation_text
+                          :limitation_text => limitation_text,
+                          :items    => ['item'],
+                          :migel_code => 'migel_code'
                          )
     @composite = ODDB::View::Migel::ProductComposite.new(@model, @session)
   end
   def test_accessories
+    assert_kind_of(ODDB::View::Migel::AccessoryList, @composite.accessories(@model))
+  end
+  def test_accessories_acc_empty
     flexmock(@model, :accessories => [])
     assert_kind_of(ODDB::View::Migel::AccessoryOfList, @composite.accessories(@model))
   end
 end
 
+class TestAccessoryOfList < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
+    @app     = flexmock('app')
+    @session = flexmock('session', 
+                        :app => @app,
+                        :lookandfeel => @lnf,
+                        :event => 'event'
+                       )
+    @model = flexmock('model', :migel_code => 'migel_code')
+    @list = ODDB::View::Migel::AccessoryOfList.new([@model], @session)
+  end
+  def test_migel_code
+    flexmock(@model, 
+             :is_a? => true,
+             :pharmacode => 'pharmacode'
+            )
+    assert_equal('pharmacode', @list.migel_code(@model, @session))
+  end
+end
+
+class TestPointerSteps < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', 
+                        :disabled?  => nil,
+                        :lookup     => 'lookup',
+                        :_event_url => '_event_url'
+                       )
+    method   = flexmock('method', :arity => 0)
+    @model   = flexmock('model', 
+                        :pointer => 'pointer',
+                        :pointer_descr => 'pointer_descr',
+                        :method  => method,
+                        :migel_code => 'migel_code'
+                       )
+    state    = flexmock('state', :snapback_model => @model)
+    @session = flexmock('session', 
+                        :lookandfeel => @lnf,
+                        :state       => state
+                       )
+    @steps = ODDB::View::Migel::PointerSteps.new(@model, @session)
+  end
+  def test_pointer_descr__drb_group
+    flexmock(@model) do |m|
+      m.should_receive(:is_a?).with(DRbObject).and_return(true)
+      m.should_receive(:migel_code).and_return('12')
+    end
+    assert_kind_of(ODDB::View::PointerLink, @steps.pointer_descr(@model, @session))
+  end
+  def test_pointer_descr__drb_subgroup
+    flexmock(@model) do |m|
+      m.should_receive(:is_a?).with(DRbObject).and_return(true)
+      m.should_receive(:migel_code).and_return('12.34')
+    end
+    assert_kind_of(ODDB::View::PointerLink, @steps.pointer_descr(@model, @session))
+  end
+  def test_pointer_descr__drb_product
+    flexmock(@model) do |m|
+      m.should_receive(:is_a?).with(DRbObject).and_return(true)
+      m.should_receive(:migel_code).and_return('12.34.56.78.9')
+    end
+    assert_kind_of(ODDB::View::PointerLink, @steps.pointer_descr(@model, @session))
+  end
+  def test_pointer_descr__group
+    flexmock(@model) do |m|
+      m.should_receive(:is_a?).with(DRbObject).and_return(false)
+      m.should_receive(:is_a?).with(ODDB::Migel::Group).and_return(true)
+    end
+    assert_kind_of(ODDB::View::PointerLink, @steps.pointer_descr(@model, @session))
+  end
+  def test_pointer_descr__subgroup
+    flexmock(@model) do |m|
+      m.should_receive(:is_a?).with(DRbObject).and_return(false)
+      m.should_receive(:is_a?).with(ODDB::Migel::Group).and_return(false)
+      m.should_receive(:is_a?).with(ODDB::Migel::Subgroup).and_return(true)
+    end
+    assert_kind_of(ODDB::View::PointerLink, @steps.pointer_descr(@model, @session))
+  end
+  def test_pointer_descr__product
+    flexmock(@model) do |m|
+      m.should_receive(:is_a?).with(DRbObject).and_return(false)
+      m.should_receive(:is_a?).with(ODDB::Migel::Group).and_return(false)
+      m.should_receive(:is_a?).with(ODDB::Migel::Subgroup).and_return(false)
+      m.should_receive(:is_a?).with(ODDB::Migel::Product).and_return(true)
+    end
+    assert_kind_of(ODDB::View::PointerLink, @steps.pointer_descr(@model, @session))
+  end
+end
+
+class TestProduct < Test::Unit::TestCase
+  include FlexMock::TestCase
+  def setup
+    @lnf     = flexmock('lookandfeel', 
+                        :enabled? => nil,
+                        :attributes => {},
+                        :resource   => 'resource',
+                        :lookup   => 'lookup',
+                        :zones    => 'zones',
+                        :disabled?  => nil,
+                        :direct_event => 'direct_event',
+                        :_event_url   => '_event_url',
+                        :zone_navigation => 'zone_navigation',
+                        :navigation   => 'navigation',
+                        :base_url  => 'base_url'
+                       )
+    user     = flexmock('user', :valid? => nil)
+    group    = flexmock('group', 
+                        :pointer    => 'pointer',
+                        :language   => 'language',
+                        :migel_code => 'migel_code'
+                       )
+    subgroup = flexmock('subgroup', 
+                        :pointer   => 'pointer',
+                        :language  => 'language',
+                        :migel_code => 'migel_code'
+                       )
+    product_text = flexmock('product_text', :language => 'language')
+    limitation_text = flexmock('limitation_text', :language => 'language')
+    unit     = flexmock('unit', :language => 'language')
+    method   = flexmock('method', :arity => 0)
+    accessory    = flexmock('accessory', 
+                            :pointer => 'pointer',
+                            :migel_code => 'migel_code',
+                            :method  => method
+                           )
+    product  = flexmock('product',
+                        :ean_code => 'ean_code',
+                        :status   => 'status'
+                       )
+    @model   = flexmock('model', 
+                        :pointer => 'pointer',
+                        :migel_code => 'migel_code',
+                        :items   => ['item'],
+                        :group   => group,
+                        :subgroup => subgroup,
+                        :language => 'language',
+                        :product_text => product_text,
+                        :limitation_text => limitation_text,
+                        :price => 'price',
+                        :qty   => 'qty',
+                        :unit  => unit,
+                        :localized_name => 'localized_name',
+                        :accessories => [accessory],
+                        :products => [product]
+                       )
+    state    = flexmock('state', 
+                        :direct_event   => 'direct_event',
+                        :snapback_model => @model
+                       )
+    @session = flexmock('session', 
+                        :lookandfeel => @lnf,
+                        :user    => user,
+                        :sponsor => user,
+                        :state   => state,
+                        :error   => 'error',
+                        :language => 'language',
+                        :event   => 'event',
+                        :zone    => 'zone'
+                       )
+    @view = ODDB::View::Migel::Product.new(@model, @session)
+  end
+  def test_backtracking
+    assert_kind_of(ODDB::View::Migel::PointerSteps, @view.backtracking(@model, @session))
+  end
+end
     end # Migel
   end # View
 end # ODDB

@@ -111,7 +111,8 @@ class TestNotifyMail < Test::Unit::TestCase
     flexmock(product, :language => 'language')
     group   = flexmock('group', 
                        :pointer  => 'pointer',
-                       :language => 'language'
+                       :language => 'language',
+                       :migel_code => 'migel_code'
                       )
     product.subgroup = flexmock('subgroup', 
                                 :migel_code => 'migel_code',

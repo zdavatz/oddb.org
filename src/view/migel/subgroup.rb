@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Migel::Subgroup -- oddb -- 05.10.2005 -- ffricker@ywesee.com
+# ODDB::View::Migel::Subgroup -- oddb.org -- 09.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Subgroup -- oddb.org -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/privatetemplate'
 require 'view/migel/result'
@@ -31,6 +32,17 @@ class ProductList < HtmlGrid::List
 		:migel_code	=>	:title_product,
 		:description	=>	:nbsp,
 	}
+  def migel_code(model)
+    if (items = model.items and !items.empty?)
+      link = PointerLink.new(:migel_code, model, @session, self)
+      event = :migel_search
+      key = :migel_code
+      link.href = @lookandfeel._event_url(event, {key => model.migel_code.delete('.')})
+		  link
+    else
+      model.migel_code
+    end
+  end
 	def description(model)
 		link = PointerLink.new(:to_s, model, @session, self)
 		text = [
@@ -43,6 +55,9 @@ class ProductList < HtmlGrid::List
 			text = text[0,57] << '...'
 		end
 		link.value = text
+    event = :migel_search
+    key = :migel_product
+    link.href = @lookandfeel._event_url(event, {key => model.migel_code.delete('.')})
 		link
 	end
 end
@@ -76,6 +91,9 @@ class SubgroupInnerComposite < HtmlGrid::Composite
 	def pointer_link(model)
 		link = PointerLink.new(:to_s, model, @session, self)
 		link.value = model.send(@session.language)
+    event = :migel_search
+    key = :migel_group
+    link.href = @lookandfeel._event_url(event, {key => model.migel_code})
 		link
 	end
 end
@@ -99,9 +117,13 @@ class SubgroupComposite < HtmlGrid::Composite
 		end
 	end
 end
+# Note: ODDB::View::Migel::PointerSteps is defined in src/view/migel/product.rb
 class Subgroup < View::PrivateTemplate
 	CONTENT = SubgroupComposite
 	SNAPBACK_EVENT = :result
+  def backtracking(model, session=@session)
+    ODDB::View::Migel::PointerSteps.new(model, @session, self)
+  end
 end
 		end
 	end
