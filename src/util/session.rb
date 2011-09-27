@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # ODDB::Session -- oddb.org -- 23.08.2011 -- mhatakeyama@ywesee.com
-# ODDB::Session -- oddb.org -- xx.xx.xxxx -- hwyss@ywesee.com
+# ODDB::Session -- oddb.org -- 12.05.2009 -- hwyss@ywesee.com
 
 require 'sbsm/session'
 require 'custom/lookandfeelfactory'
@@ -17,6 +17,7 @@ module ODDB
 		DEFAULT_LANGUAGE = "de"
 		DEFAULT_STATE = State::Drugs::Init
 		DEFAULT_ZONE = :drugs
+    EXPIRES = 30 * 60
 		SERVER_NAME = 'www.oddb.org'
 		PERSISTENT_COOKIE_NAME = 'oddb-preferences'
 		QUERY_LIMIT = 5
