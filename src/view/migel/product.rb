@@ -185,7 +185,11 @@ class Product < View::PrivateTemplate
     ODDB::View::Migel::PointerSteps.new(model, @session, self)
   end
   def meta_tags(context)
-    super << context.meta('name' => 'title', 'content' => @model.name)
+    res = super << context.meta('name' => 'title', 'content' => @model.name.send(@session.language))
+    if text = @model.migelid_text
+      res << context.meta('name' => 'description', 'content' => text.send(@session.language))
+    end
+    res
   end
 end
 		end
