@@ -4219,9 +4219,8 @@ Zeno Davatz
         [3,0] =>  :date,
         [4,0] =>  :price,
         [5,0]	=>	:qty_unit,
-        [6,0] =>	:feedback,
+        [6,0] =>  :notify,
         [7,0]	=>  :google_search,
-        [8,0] =>  :notify,
       }
     end
 		def result_list_components

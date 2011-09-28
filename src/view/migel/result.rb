@@ -36,10 +36,10 @@ class List < HtmlGrid::List
   CSS_KEYMAP = {
     :date                 => 'list',
     :feedback             => 'list right',
-    :google_search        => 'list right',
+    :google_search        => 'list',
     :limitation_text      => 'list',
     :migel_code           => 'list',
-    :notify               => 'list right',
+    :notify               => 'list',
     :price                => 'list right',
     :product_description  => 'list',
     :qty_unit             => 'list',
