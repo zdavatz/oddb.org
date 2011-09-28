@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 30.08.2011 -- mhatakeyama@ywesee.com
-# ODDB::LookandfeelBase -- oddb.org -- xx.xx.xxxx -- hwyss@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 28.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
 require 'sbsm/lookandfeel'
 require 'util/oddbconfig'
@@ -2647,6 +2647,7 @@ Zeno Davatz
 				:th_affiliations          =>	'Affiliations',
 				:thanks_for_donation_title=>	'Remerciement pour votre donation.',
 				:thanks_for_donation_txt	=>	'Merci beaucoup pour votre donation.<br><br>Votre Ywesee-team',
+        :th_article_name          =>  'Nom de produit',
 				:th_atc_class							=>	"Classe d'ATC",
         :th_authorities           =>  'Origine de prix',
 				:th_business_unit					=>	'D&eacute;partement',

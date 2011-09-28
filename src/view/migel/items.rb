@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Items -- oddb.org -- 21.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Items -- oddb.org -- 28.09.2011 -- mhatakeyama@ywesee.com
 
 require 'htmlgrid/list'
 require 'htmlgrid/link'
@@ -16,7 +16,7 @@ class SubHeader < HtmlGrid::Composite
   include View::AdditionalInformation
   include View::DataFormat
   COMPONENTS = {
-    [0,0,0] => 'Höchstvergütungsbetrag: ',
+    [0,0,0] => :max_insure_value,
     [0,0,1] => :price,
     [0,0,2] => :qty_unit,
     [0,0,3] => ' MiGel Code: ',
@@ -28,6 +28,13 @@ class SubHeader < HtmlGrid::Composite
     [0,0] => 'subheading',
     [1,0] => 'subheading',
   }
+  def max_insure_value(model = @model, session = @session)
+    if session.language == 'de'
+      'Höchstvergütungsbetrag: '
+    else
+      'Montants Maximaux: '
+    end
+  end
   def migel_code(model=@model, session=@session)
     link = HtmlGrid::Link.new(:to_s, @model, @session, self)
     key_value = {:migel_code => model.migel_code}

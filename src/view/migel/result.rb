@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::Migel::Result -- oddb.org -- 26.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Result -- oddb.org -- 28.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Result -- oddb.org -- 04.10.2005 -- ffricker@ywesee.com
 
 require 'htmlgrid/list'
@@ -99,8 +99,8 @@ class List < HtmlGrid::List
 		link
 	end
   def migel_code(model)
-    #if model.respond_to?(:items) and items = model.items and !items.empty?
-    if model.respond_to?(:items) and items = model.items and !items.select{|i| i.ean_code != nil and i.status != 'I'}.empty?
+    if model.respond_to?(:items) and items = model.items and !items.empty?
+    # If a migelid has only inactive products, link to empty result
       link = PointerLink.new(:to_s, model, @session, self)
       link.value = model.migel_code
       link.href = @lookandfeel._event_url(:migel_search, {:migel_code => model.migel_code.gsub(/\./, '')})
