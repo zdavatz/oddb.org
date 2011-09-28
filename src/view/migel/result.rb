@@ -15,6 +15,8 @@ require 'view/pointervalue'
 require 'view/resultfoot'
 require 'view/lookandfeel_components'
 
+require 'view/facebook'
+
 module ODDB
 	module View
 		module Migel
@@ -22,6 +24,7 @@ class List < HtmlGrid::List
 	include View::AdditionalInformation
 	include DataFormat
   include View::LookandfeelComponents
+  include View::Facebook
 	COMPONENTS = {}
 	CSS_CLASS = 'composite'
   CSS_HEAD_KEYMAP = {
@@ -58,6 +61,9 @@ class List < HtmlGrid::List
 		@width = @components.keys.collect { |x, y| x }.max
 		super
 	end
+  def notify(model=@model, session=@session)
+    facebook_share(model, session, @facebook_link)
+  end
   def limitation_link(model)
     link = HtmlGrid::Link.new(:square_limitation, nil, @session, self)
     #link.href = @lookandfeel._event_url(:resolve, {'pointer'=>CGI.escape(sltxt.pointer.to_s)})
@@ -99,6 +105,7 @@ class List < HtmlGrid::List
 		link
 	end
   def migel_code(model)
+    @facebook_link = @lookandfeel._event_url(:migel_search, {:migel_product => model.migel_code.gsub(/\./, '')})
     if model.respond_to?(:items) and items = model.items and !items.empty?
     # If a migelid has only inactive products, link to empty result
       link = PointerLink.new(:to_s, model, @session, self)

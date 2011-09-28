@@ -1,3 +1,8 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+# ODDB::View::Facebook -- oddb.org -- 28.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Facebook -- oddb.org -- 28.01.2010 -- hwyss@ywesee.com
+
 module ODDB
   module View
     module Facebook
@@ -10,10 +15,23 @@ module ODDB
 <a href="http://www.facebook.com/pages/Generika/273461529221">Generika</a> on Facebook</div>
         EOS
       end
-      def facebook_share(model, session=@session)
+      def facebook_share(model, session=@session, share_url=nil)
+        if share_url
+        <<-EOS
+<a name="fb_share" share_url="#{share_url}" type="button_count" href="http://www.facebook.com/sharer.php">Share</a>
+<script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script>
+        EOS
+        else
         <<-EOS
 <a name="fb_share" type="button_count" href="http://www.facebook.com/sharer.php">Share</a>
 <script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script>
+        EOS
+        end
+      end
+      def facebook_send(model, session)
+        <<-EOS
+<script src="http://connect.facebook.net/de_DE/all.js#xfbml=1"></script>
+<fb:send href="http://ywesee.com" show_faces="true" width="450" action="recommend" send="true"></fb:send>
         EOS
       end
     end

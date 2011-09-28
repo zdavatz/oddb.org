@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::Migel::Product -- oddb.org -- 12.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Product -- oddb.org -- 28.09.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Product -- oddb.org -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/dataformat'
@@ -183,6 +183,9 @@ class Product < View::PrivateTemplate
 	SNAPBACK_EVENT = :result
   def backtracking(model, session=@session)
     ODDB::View::Migel::PointerSteps.new(model, @session, self)
+  end
+  def meta_tags(context)
+    super << context.meta('name' => 'title', 'content' => @model.name)
   end
 end
 		end
