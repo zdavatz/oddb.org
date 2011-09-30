@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::AdditionalInformation -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 30.09.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/atcchooser'
@@ -325,10 +325,18 @@ module ODDB
       def twitter_share(model, session=@session)
         link = HtmlGrid::Link.new(:twitter_share_short, model, @session, self)
         link.value = HtmlGrid::Image.new(:icon_twitter, model, @session, self)
-        base = model.name_base
+        base = ''
+        url  = ''
+        if model.is_a?(DRb::DRbObject)
+          # in the case of migel items
+          base = model.localized_name(session.language)
+          url  = @lookandfeel._event_url(:migel_search, {:migel_pharmacode => model.pharmacode})
+        else
+          base = model.name_base
+          url = @lookandfeel._event_url(:show, {:pointer => model.pointer})
+        end
         size = comparable_size(model)
         status = u sprintf("%s, %s", base, size)
-        url = @lookandfeel._event_url(:show, {:pointer => model.pointer})
         tweet = "http://twitter.com/home?status=#{status} - "
         if ind = model.indication
           tweet << ind.send(@session.language) << " - "

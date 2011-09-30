@@ -87,6 +87,7 @@ class SearchedList < HtmlGrid::List
       [6,0]		=>	:ppub,
     #  [8,0]		=>	:factor,
       [7,0]    =>  :google_search,
+      [8,0]    =>  :twitter_share,
     }
     @css_map = {
       [0,0]   => 'list',
@@ -97,7 +98,7 @@ class SearchedList < HtmlGrid::List
       [5,0]   => 'list',
       [6,0]   => 'list',
       [7,0]   => 'list',
-    #  [8,0]   => 'list',
+      [8,0]   => 'list',
     }
     super
   end
@@ -177,6 +178,7 @@ class SearchedComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
 end
 class Items < View::PrivateTemplate
+  JAVASCRIPTS = ['bit.ly']
   CONTENT = SearchedComposite
   SNAPBACK_EVENT = :result
 end
