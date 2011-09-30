@@ -44,29 +44,30 @@ class SubHeader < HtmlGrid::Composite
     link
   end
   def pages(model, session=@session)
+    if @session.cookie_set_or_get(:resultview) == "pages"
+      pages = @session.state.pages
+      event = ''
+      args  = {}
+      if migel_code = @session.user_input(:migel_code)
+        event = :migel_search
+        args.update({:migel_code => migel_code})
+      else
+        event = :search
+        args.update({
+          :search_query => @session.persistent_user_input(:search_query).gsub('/', '%2F'),
+          :search_type => @session.persistent_user_input(:search_type),
+        })
+      end
 
-    pages = @session.state.pages
-    event = ''
-    args  = {}
-    if migel_code = @session.user_input(:migel_code)
-      event = :migel_search
-      args.update({:migel_code => migel_code})
-    else
-      event = :search
-      args.update({
-        :search_query => @session.persistent_user_input(:search_query).gsub('/', '%2F'),
-        :search_type => @session.persistent_user_input(:search_type),
-      })
+      # sort
+      sortvalue = @session.user_input(:sortvalue) || @session.user_input(:reverse)
+      sort_way = @session.user_input(:sortvalue) ? :sortvalue : :reverse
+      if sortvalue
+        args.update({sort_way => sortvalue})
+      end
+
+      View::Pager.new(pages, @session, self, event, args)
     end
-
-    # sort
-    sortvalue = @session.user_input(:sortvalue) || @session.user_input(:reverse)
-    sort_way = @session.user_input(:sortvalue) ? :sortvalue : :reverse
-    if sortvalue
-      args.update({sort_way => sortvalue})
-    end
-
-    View::Pager.new(pages, @session, self, event, args)
   end
 end
 

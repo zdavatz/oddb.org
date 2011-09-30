@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::Global -- oddb.org -- 26.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 30.09.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -476,14 +476,13 @@ module ODDB
 				end
 			end
       def migel_search
+        @session.set_cookie_input(:resultview, '')
         sortvalue = @session.user_input(:sortvalue) || @session.user_input(:reverse)
         reverse  = @session.user_input(:reverse)
-        #if migel_code = @session.user_input(:migel_code) and product = @session.search_migel_products(migel_code).first
         if migel_code = @session.user_input(:migel_code) and result = @session.app.search_migel_items_by_migel_code(migel_code, sortvalue, reverse)
           product = StubProduct.new(result)
-          #ODDB::State::Migel::Items.new(@session, ODDB::Migel::Items.new(product, sort_key, reverse))
+          @session.set_cookie_input(:resultview, 'pages') if items = product.items and items.length > ODDB::State::Migel::Items::ITEM_LIMIT
           ODDB::State::Migel::Items.new(@session, ODDB::Migel::Items.new(product))
-          #ODDB::State::Migel::Items.new(@session, product.products)
         elsif migel_code = @session.user_input(:migel_product) and product = @session.search_migel_products(migel_code).first
           ODDB::State::Migel::Product.new(@session, product)
         elsif migel_code = @session.user_input(:migel_subgroup) and subgroup = @session.app.search_migel_subgroup(migel_code)
@@ -576,10 +575,11 @@ module ODDB
 						  State::Migel::Result.new(@session, result)
             elsif result = @session.app.search_migel_items(query, @session.language, sortvalue, reverse) and !result.empty?
               product = StubProduct.new(result)
-              #product = StubProduct.new(result[0,200])
-              #sort_key = @session.user_input(:sortvalue) || @session.user_input(:reverse)
-              #reverse  = @session.user_input(:reverse)
-              #ODDB::State::Migel::Items.new(@session, ODDB::Migel::Items.new(product, sort_key, reverse))
+              if items = product.items and items.length > ODDB::State::Migel::Items::ITEM_LIMIT
+                @session.set_cookie_input(:resultview, 'pages')
+              else
+                @session.set_cookie_input(:resultview, '')
+              end
               ODDB::State::Migel::Items.new(@session, ODDB::Migel::Items.new(product))
             else
 						  State::Migel::Result.new(@session, [])
