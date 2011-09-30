@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Items -- oddb.org -- 28.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Items -- oddb.org -- 30.09.2011 -- mhatakeyama@ywesee.com
 
 require 'htmlgrid/list'
 require 'htmlgrid/link'
@@ -71,6 +71,7 @@ class SubHeader < HtmlGrid::Composite
 end
 
 class SearchedList < HtmlGrid::List
+  include View::AdditionalInformation
 	CSS_CLASS = 'composite'
   SUBHEADER = ODDB::View::Migel::SubHeader
   def init
@@ -84,6 +85,7 @@ class SearchedList < HtmlGrid::List
     #  [6,0]		=>	:ppha,
       [6,0]		=>	:ppub,
     #  [8,0]		=>	:factor,
+      [7,0]    =>  :google_search,
     }
     @css_map = {
       [0,0]   => 'list',
@@ -93,7 +95,7 @@ class SearchedList < HtmlGrid::List
       [4,0]   => 'list',
       [5,0]   => 'list',
       [6,0]   => 'list',
-    #  [7,0]   => 'list',
+      [7,0]   => 'list',
     #  [8,0]   => 'list',
     }
     super
