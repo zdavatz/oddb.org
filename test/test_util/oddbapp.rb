@@ -1703,6 +1703,15 @@ class TestOddbApp < Test::Unit::TestCase
     flexmock(ODDB::App::MIGEL_SERVER, :search_limitation => 'search_limitation')
     assert_equal('search_limitation', @app.search_migel_limitation('query'))
   end
+  def test_search_migel_items_by_migel_code
+    flexmock(ODDB::App::MIGEL_SERVER, :search_migel_product_by_migel_code => 'search_migel_product_by_migel_code')
+    assert_equal('search_migel_product_by_migel_code', @app.search_migel_items_by_migel_code('123456789'))
+  end
+  def test_search_migel_items_by_migel_code_with_dots
+    flexmock(ODDB::App::MIGEL_SERVER, :search_migel_product_by_migel_code => 'search_migel_product_by_migel_code')
+    assert_equal('search_migel_product_by_migel_code', @app.search_migel_items_by_migel_code('12.34.56.78.9'))
+  end
+
   def test_search_migel_items
     flexmock(ODDB::App::MIGEL_SERVER, :search_migel_product => 'search_migel_product')
     assert_equal('search_migel_product', @app.search_migel_items('query', 'lang'))

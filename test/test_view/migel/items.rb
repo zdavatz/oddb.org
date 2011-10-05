@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# View::Migel::TestItems -- oddb.org -- 27.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::TestItems -- oddb.org -- 05.10.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -11,6 +11,11 @@ require 'view/migel/items'
 module ODDB
   module View
     module Migel
+      class SearchedList
+        def u(str)
+          'status'
+        end
+      end
 
 class TestSubHeader < Test::Unit::TestCase
   include FlexMock::TestCase
@@ -32,7 +37,8 @@ class TestSubHeader < Test::Unit::TestCase
                         :language    => 'language',
                         :user_input  => 'user_input',
                         :state => state,
-                        :event => 'event'
+                        :event => 'event',
+                        :cookie_set_or_get => 'cookie_set_or_get'
                        )
     multilingual = flexmock('multilingual', :language => 'language')
     @model   = flexmock('model', 
@@ -46,6 +52,25 @@ class TestSubHeader < Test::Unit::TestCase
   def test_migel_code
     assert_kind_of(HtmlGrid::Link, @composite.migel_code(@model, @session))
   end
+  def test_max_insure_value
+    assert_equal('Montants Maximaux: ', @composite.max_insure_value(@model, @session))
+  end
+  def test_max_insure_value_de
+    flexmock(@session, :language => 'de')
+    assert_equal('Höchstvergütungsbetrag: ', @composite.max_insure_value(@model, @session))
+  end
+  def test_pages
+    flexmock(@session, :cookie_set_or_get => 'pages')
+    assert_kind_of(ODDB::View::Pager, @composite.pages(@model, @session))
+  end
+  def test_pages_not_migel_code
+    flexmock(@session, 
+             :cookie_set_or_get => 'pages',
+             :user_input => nil,
+             :persistent_user_input => 'persistent_user_input'
+            )
+    assert_kind_of(ODDB::View::Pager, @composite.pages(@model, @session))
+  end
 end
 
 class TestSearchedList < Test::Unit::TestCase
@@ -57,7 +82,8 @@ class TestSearchedList < Test::Unit::TestCase
                         :event_url => 'event_url',
                         :disabled? => nil,
                         :enabled? => nil,
-                        :_event_url => '_event_url'
+                        :_event_url => '_event_url',
+                        :resource  => 'resource'
                        )
     page     = flexmock('page', :to_i => 1)
     state    = flexmock('state', 
@@ -70,9 +96,18 @@ class TestSearchedList < Test::Unit::TestCase
                         :user_input  => nil,
                         :event => 'event',
                         :state => state,
-                        :persistent_user_input => 'persistent_user_input'
+                        :persistent_user_input => 'persistent_user_input',
+                        :cookie_set_or_get => 'cookie_set_or_get'
                        )
     @multilingual = flexmock('multilingual', :language => 'language')
+    commercial_form = flexmock('commercial_form', :language => 'language')
+    part     = flexmock('part', 
+                        :multi => 'multi',
+                        :count => 'count',
+                        :measure => 'measure',
+                        :commercial_form => commercial_form
+                       )
+    indication = flexmock('indication', :language => 'language')
     @model   = flexmock('model', 
                         :migel_code => 'migel_code',
                         :price => 'price',
@@ -80,7 +115,13 @@ class TestSearchedList < Test::Unit::TestCase
                         :unit => @multilingual,
                         :article_name => @multilingual,
                         :size => 'size',
-                        :companyname => @multilingual
+                        :companyname => @multilingual,
+                        :localized_name => 'localized_name',
+                        :name_base => 'name_base',
+                        :pointer => 'pointer',
+                        :commercial_forms => ['commercial_form'],
+                        :parts => [part],
+                        :indication => indication
                        )
     @list = ODDB::View::Migel::SearchedList.new([@model], @session)
   end

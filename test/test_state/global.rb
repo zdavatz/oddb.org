@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::State::TestGlobal -- oddb.org -- 27.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::TestGlobal -- oddb.org -- 05.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::TestGlobal -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -61,6 +61,10 @@ end
 					# disable self-caching for tests
 					@rp = @rp.to_i.next
 				end
+        def cookie_set_or_get(*args)
+        end
+        def set_cookie_input(*args)
+        end
 			end
 			class StubApp
 				attr_accessor :companies, :galenic_groups, :fachinfos
@@ -699,6 +703,19 @@ end
         flexmock(@session) do |s|
           s.should_receive(:search_migel_products)
           s.should_receive(:language).and_return('de')
+        end
+        assert_kind_of(State::Migel::Items, @state.search)
+      end
+      def test_search__migel_items__pages
+        setup_search('migel')
+        flexmock(@session.app, :search_migel_items => {'key' => 'result'})
+        flexmock(@session) do |s|
+          s.should_receive(:search_migel_products)
+          s.should_receive(:language).and_return('de')
+        end
+        flexmock(ODDB::State::Global::StubProduct).new_instances do |product|
+          key_values = Array.new(1000){|i| i}
+          product.should_receive(:items).and_return(Hash[*key_values])
         end
         assert_kind_of(State::Migel::Items, @state.search)
       end
