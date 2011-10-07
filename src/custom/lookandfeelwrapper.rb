@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 05.09.2011 -- mhatakeyama@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 07.09.2011 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/lookandfeelwrapper'
@@ -897,7 +897,11 @@ module ODDB
       }
     end
 		def zones
-			[ State::Drugs::Sequences ]
+      # Do not show Medikamente A-Z for mymedi Look & Feel
+      # This zone is refered from src/view/tab_navigation.rb
+      # and it is used to customize tab navigation.
+			#[ State::Drugs::Sequences ]
+			[]
 		end
 	end
 	class LookandfeelSwissMedInfo < SBSM::LookandfeelWrapper
