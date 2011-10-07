@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 28.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 07.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
 require 'sbsm/lookandfeel'
@@ -390,7 +390,7 @@ Zeno Davatz
 				:download_doctors1				=>	'hier',
 				:download_doctors2				=>	'.',
 				:download_generics				=>	'Alle Originale und Generika monatlich aktualisiert in einem Excel!',
-        :download_ebook           =>	'Die gesamte Fachinformation als Ebook für iPhone, Kindle, HTC und Firefox!',
+        :download_ebook           =>	'Die gesamte Fachinformation als Ebook auf dem Kindle (iPhone, Android, PC, Mac)',
 			  :download_export_descr		=>	'Mehr Infos zu den Stammdaten von ODDB.org',
 				:download_export_feedback	=>	'Feedback bitte an zdavatz at ywesee dot com',
 				:download_export					=>	'Stammdaten Download',
@@ -1002,7 +1002,7 @@ Zeno Davatz
 				:new_active_agent					=>	'Neuer Wirkstoff',
 				:new_commercial_form  		=>	'Neue Handelsform',
 				:new_company							=>	'Neue Firma',
-				:new_feature							=>	'Neu!',
+				:new_feature							=>	'Kostenlos!',
 				:new_galenic_form					=>	'Neue Galenische Form',
 				:new_galenic_group				=>	'Neue Galenische Gruppe',
 				:new_indication						=>	'Neue Indikation',
@@ -1851,7 +1851,7 @@ Zeno Davatz
 				:download_doctors1				=>	'ici',
 				:download_doctors2				=>	' s.v.p.',
 				:download_generics				=>	'Tous les m&eacute;dicaments et les G&eacute;n&eacute;riques correspondants dans un fichier d\'Excel, actualis&eacute; chaque mois!',
-        :download_ebook           =>	'Tous les informations professionelles dans un Ebook!',
+        :download_ebook           =>	'Tous les informations professionelles dans un Ebook Kindle (iPhone, Android, PC, Mac)',
         :download_export_descr    =>  "Plus d'information sur les donn&eacute;es de base d'ODDB.org",
 				:download_export					=>	'Download les donn&eacute;es de base',
         :download_export_feedback =>  'La r&eacute;troaction demande dessus zdavatz at ywesee dot com',
@@ -2338,7 +2338,7 @@ Zeno Davatz
 				:nbsp											=>	'&nbsp;',
 				:new_active_agent					=>	'Nouvel principe actif',
 				:new_company							=>	'Nouvel firme',
-				:new_feature							=>	'Nouveau!',
+				:new_feature							=>	'Gratuit!',
 				:new_galenic_form					=>	'Nouvelle forme gal&eacute;nique',
 				:new_galenic_group				=>	'Nouvel groupe gal&eacute;nique',
 				:new_indication						=>	'Nouvel indication',
@@ -3007,7 +3007,7 @@ Zeno Davatz
 				:doctors									=>  'Doctor',
 				:doctors_search_explain	  =>	'Search for a doctor in Switzerland. Search by name,<br> address, telefon, professional title or a combination of these.',
 				:dose											=>	'Concentration',
-        :download_ebook           =>	'All prescription drug information in an Ebook!',
+        :download_ebook           =>	'Download all prescription drug information in an Ebook! (iPhone, Android, PC, Mac)',
 			  :download_export_descr		=>	'More Information regarding the Master Data',
 				:download_export_feedback	=>	'Send feedback to: zdavatz at ywesee ! com',
 				:download_export					=>	'Master Data Download',
@@ -3542,7 +3542,7 @@ Zeno Davatz
 				:nbsp											=>	'&nbsp;',
 				:new_active_agent					=>	'New active agent',
 				:new_company							=>	'New company',
-				:new_feature							=>	'New!',
+				:new_feature							=>	'Free!',
 				:new_galenic_form					=>	'New galenic form',
 				:new_galenic_group				=>	'New galenic group',
 				:new_indication						=>	'New indication',

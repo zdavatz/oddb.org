@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# ODDB::View::CenteredSearchForm -- oddb -- 24.03.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::CenteredSearchForm -- oddb -- 07.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::CenteredSearchForm -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/form'
@@ -179,8 +179,9 @@ module ODDB
           'download[compendium_ch.oddb.org.kindle.mobi]'  => 1,
           'download[compendium_ch.oddb.org.stanza.epub]'  => 1,
         }
-        link.href = @lookandfeel._event_url(:download_export, args)
+#        link.href = @lookandfeel._event_url(:download_export, args)
         link.set_attribute('class', 'list')
+        link.href = 'http://ch.oddb.org/de/gcc/download/invoice/27397543/email/free_kindle_ebook@ywesee.com/filename/compendium_ch.oddb.org.kindle.mobi'
         link
       end
 			def download_export(model, session)
