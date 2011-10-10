@@ -9,7 +9,7 @@ require 'util/updater'
 module ODDB
   module Util
     Job.run do |system|
-      Updater.new(system).update_swissmedic
+      Updater.new(system).update_swissmedic_followers
     end
   end
 end
