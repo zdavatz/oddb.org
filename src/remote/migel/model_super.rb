@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Migel::Model::SuperModel -- migel -- 13.09.2011 -- mhatakeyama@ywesee.com
+# Migel::Model::SuperModel -- migel -- 10.10.2011 -- mhatakeyama@ywesee.com
 
 #require 'fixes/singular'
 require 'facet/module/basename'
@@ -191,5 +191,5 @@ module Migel
   end
 end
 
-require 'oddb/util/m10l_document'
+require 'lib/oddb/util/m10l_document'
 #require 'migel/util/m10l_document'
