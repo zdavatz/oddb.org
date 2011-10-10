@@ -2,7 +2,7 @@
 # encoding: utf-8
 # Migel::Model::SuperModel -- migel -- 10.10.2011 -- mhatakeyama@ywesee.com
 
-#require 'fixes/singular'
+require 'remote/migel/lib/fixes/singular'
 require 'facet/module/basename'
 
 module Migel
@@ -97,7 +97,7 @@ module Migel
         }
         define_method("add_#{plural.to_s.singular}") { |inst|
           container = self.send(plural)
-          unless(container.any? { |other| inst.eql? other })
+          unless(container.any? { |other| inst.eql? other }) 
             container.push(inst) 
           end
           inst
@@ -191,5 +191,4 @@ module Migel
   end
 end
 
-require 'lib/oddb/util/m10l_document'
-#require 'migel/util/m10l_document'
+require 'remote/migel/util/m10l_document'

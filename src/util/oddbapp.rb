@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# OddbApp -- oddb.org -- 26.09.2011 -- mhatakeyama@ywesee.com
+# OddbApp -- oddb.org -- 10.10.2011 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 require 'odba'
@@ -34,7 +34,6 @@ require 'yus/session'
 require 'model/migel/group'
 require 'model/analysis/group'
 
-require 'remote/multilingual'
 require 'remote/migel/model'
 
 class OddbPrevalence
