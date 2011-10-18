@@ -21,7 +21,7 @@ module ODDB
 			LEGACY_INTERFACE = false
 			def oddb_version(model)
 				link = standard_link(:oddb_version, model)
-				link.href = 'http://scm.ywesee.com/?p=oddb.org;a=summary'
+				link.href = 'http://scm.ywesee.com/?p=oddb.org/.git;a=summary'
 				link.set_attribute('title', ODDB_VERSION)
 				link
 			end
