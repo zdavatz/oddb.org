@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# LookandfeelFactory -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
+# encoding: utf-8
+# ODDB::LookandfeelFactory -- oddb.org -- 20.10.2011 -- mhatakeyama@ywesee.com 
+# ODDB::LookandfeelFactory -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/lookandfeelfactory'
 require 'custom/lookandfeelbase'
@@ -46,6 +48,9 @@ module ODDB
       ],
 			'mymedi'=>	[
 				LookandfeelMyMedi, 
+			],
+			'mymigel'=>	[
+				LookandfeelMyMigel, 
 			],
 			'oekk'	=>	[
 				LookandfeelOekk,

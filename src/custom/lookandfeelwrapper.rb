@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 07.09.2011 -- mhatakeyama@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 20.10.2011 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/lookandfeelwrapper'
@@ -904,6 +904,129 @@ module ODDB
 			[]
 		end
 	end
+	class LookandfeelMyMigel < SBSM::LookandfeelWrapper
+		ENABLED = [
+      :explain_sort,
+      :compare_backbutton,
+      :custom_tab_navigation,
+      :ddd_chart,
+			:external_css,
+      :ajax,
+			:home_drugs,
+			:help_link,
+			:faq_link,
+      :patinfos,
+			:sequences,
+			:price_history,
+			:ywesee_contact,
+		]
+		DISABLED = [ :atc_ddd, :legal_note, :navigation, :price_request ]
+    DICTIONARIES = {
+      'de'	=>	{
+        :explain_ddd_price_url    =>  'http://www.mymedi.ch/de/tk.htm',
+        :explain_generic					=>	'Blau&nbsp;=&nbsp;Generikum',
+        :explain_sort             =>  'Klicken Sie auf einen der untenstehenden Begriffe um die zugehörige Spalte auf- oder absteigend zu sortieren.',
+        :price_compare            =>  "Für den Direktvergleich klicken Sie bitte auf das für Sie rezeptierte Medikament.",
+				:sequences								=>	'Medikamente A-Z',
+      },
+      'fr'	=>	{
+        :explain_generic					=>	'bleu&nbsp;=&nbsp;g&eacute;n&eacute;rique',
+        :explain_ddd_price_url    =>  'http://www.mymedi.ch/fr/tk.htm',
+        :explain_sort             =>  "Clickez sur un des mot-clé ci-dessous pour accéder au menu déroulant.",
+        :price_compare            =>  'Afin d\'avoir une comparaison, clickez s.v.p. sur le médicament qui vous a été prescrit.',
+				:sequences								=>	'Médicaments A-Z',
+      },
+      'en'	=>	{
+        :explain_generic					=>	'Blue&nbsp;=&nbsp;Generic Drug',
+				:sequences								=>	'Drugs A-Z',
+      },
+    }
+    HTML_ATTRIBUTES = {
+      :explain_ddd_price => {'target' => '_parent'},
+    }
+    RESOURCES = {
+      :external_css	=>	'http://www.mymedi.ch/css/oddb_mymigel.css',
+    }
+		def compare_list_components
+			{
+				[0,0]	=>	:name_base,
+				[1,0]	=>	:company_name,
+				[2,0]	=>	:most_precise_dose,
+				[3,0]	=>	:comparable_size,
+				[4,0] =>	:compositions,
+				[5,0]	=>	:price_public,
+				[6,0]	=>	:ddd_price, 
+				[7,0]	=>	:price_difference, 
+				[8,0]	=>	:deductible, 
+			}	
+		end
+		PH_END = Date.new(2010,4,10)
+		def enabled?(event, default=false)
+		  if event == :price_history && @@today < PH_END
+		    true
+		  else
+		    super
+		  end
+		end
+		def explain_result_components
+			{
+				[0,1]	=>	:explain_original,
+				[0,2]	=>	:explain_generic,
+				[0,3]	=>	'explain_expired',
+				[0,4]	=>	'explain_pbp',
+				[0,5]	=>	:explain_deductible,
+				[0,6]	=>	:explain_ddd_price,
+				[1,0]	=>	:explain_patinfo,
+				[1,1]	=>	:explain_limitation,
+				[1,2]	=>	:explain_complementary,
+				[1,3]	=>	'explain_sl',
+				[1,4]	=>	'explain_slo',
+				[1,5]	=>	'explain_slg',
+				[1,6]	=>	:explain_lppv,
+			}
+		end
+		def result_list_components
+			{
+				[0,0]		=>	:limitation_text,
+				[1,0]		=>	:patinfo,
+				[2,0,0]	=>	'result_item_start',
+				[2,0,1]	=>	:name_base,
+				[2,0,2]	=>	'result_item_end',
+				[3,0]		=>	:deductible,
+				[4,0]		=>	:galenic_form,
+				[5,0]		=>	:most_precise_dose,
+				[6,0]		=>	:comparable_size,
+				[7,0]		=>	:price_public,
+				[8,0]		=>	:ddd_price,
+				[9,0]		=>	'nbsp',
+				[10,0]	=>	:company_name,
+				[11,0]	=>	:ikscat,
+			}
+		end
+		def search_type_selection
+      ['st_oddb', 'st_sequence', 'st_substance', 'st_company',
+        'st_indication']
+		end
+		def section_style
+			'font-size: 16px; margin-top: 8px; line-height: 1.4em; max-width: 600px'
+		end
+    def sequence_list_components
+      {
+        [0,0]	=>	:iksnr,
+        [1,0]	=>	:patinfo,
+        [2,0]	=>	:name_base,
+        [3,0]	=>	:compositions,
+      }
+    end
+		def zones
+      # Do not show Medikamente A-Z for mymedi Look & Feel
+      # This zone is refered from src/view/tab_navigation.rb
+      # and it is used to customize tab navigation.
+			#[ State::Drugs::Sequences ]
+			[]
+		end
+	end
+
 	class LookandfeelSwissMedInfo < SBSM::LookandfeelWrapper
 		ENABLED = [
 			:home_drugs,
