@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# State::Drugs::DDD -- ODDB -- 01.03.2004 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::State::Drugs::DDD -- oddb.org -- 20.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Drugs::DDD -- oddb.org -- 01.03.2004 -- hwyss@ywesee.com
 
 require 'state/drugs/global'
 require 'view/drugs/ddd'
@@ -13,6 +15,10 @@ class DDD < State::Drugs::Global
 	def init
 		if((pointer = @session.user_input(:pointer)))
 			@model = pointer.resolve(@session.app)
+		elsif atc_code = @session.user_input(:atc_code) and atc_class = @session.app.atc_class(atc_code)
+			@model = atc_class
+		else
+		  @model = nil
 		end
 =begin
 		if((pointer = @session.user_input(:pointer)) \

@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Drugs::AtcChooser -- oddb -- 14.07.2003 -- mhuggler@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::AtcChooser -- oddb.org -- 20.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::AtcChooser -- oddb.org -- 14.07.2003 -- mhuggler@ywesee.com
 
 require 'view/drugs/privatetemplate'
 require 'view/publictemplate'
@@ -13,7 +15,7 @@ module AtcDddLink
   def atc_ddd_link(atc, session=@session)
     if(atc && atc.has_ddd?)
       link = HtmlGrid::Link.new(:ddd, atc, session, self)
-      link.href = @lookandfeel._event_url(:ddd, {'pointer'=>atc.pointer})
+      link.href = @lookandfeel._event_url(:ddd, {'atc_code'=>atc.code})
       link.set_attribute('class', 'square infos')
       link.set_attribute('title', @lookandfeel.lookup(:ddd_title))
       link
