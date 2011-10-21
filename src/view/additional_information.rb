@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::AdditionalInformation -- oddb.org -- 30.09.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::AdditionalInformation -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/atcchooser'
@@ -123,10 +124,15 @@ module ODDB
           query = model.name_base if query.is_a?(SBSM::InvalidDataError)
           query ||= model.name_base
           stype = @session.persistent_user_input(:search_type)
+          pointer = if model.is_a?(ODDB::Package)
+                      [:reg, model.registration.iksnr, :seq, model.sequence.seqnr, :pack, model.ikscd]
+                    else
+                      [:pointer, model.pointer]
+                    end
 					args = [
-            :pointer, model.pointer,
-            :search_query, query.gsub('/', '%2F'),
-            :search_type, stype || 'st_sequence'
+            pointer,
+            [:search_query, query.gsub('/', '%2F')],
+            [:search_type, stype || 'st_sequence']
           ]
           if chart
             node.set_attribute('title', @lookandfeel.lookup(:ddd_price_title))
