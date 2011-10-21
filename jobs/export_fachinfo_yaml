@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+# must be scheduled in crontab to run as the same user as oddb
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+$: << File.expand_path('..', File.dirname(__FILE__))
+
+require 'util/job'
+require 'util/exporter'
+
+module ODDB
+  module Util
+    Job.run do |system|
+      Exporter.new(system).export_fachinfo_yaml
+    end
+  end
+end
