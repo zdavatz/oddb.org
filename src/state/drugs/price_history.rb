@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# State::Drugs::PriceHistory -- oddb.org -- 24.11.2008 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::State::Drugs::PriceHistory -- oddb.org -- 21.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Drugs::PriceHistory -- oddb.org -- 24.11.2008 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
 require 'view/drugs/price_history'
@@ -21,8 +23,16 @@ class PriceHistory < State::Drugs::Global
   end
   def init
     @model = PriceChanges.new
-    if pack = (pointer = @session.user_input(:pointer)) \
-      && pointer.resolve(@session.app)
+    pointer = @session.user_input(:pointer) 
+    reg  = @session.user_input(:reg)
+    seq  = @session.user_input(:seq)
+    pac  = @session.user_input(:pack)
+    pack = if pointer
+             pointer.resolve(@session.app)
+           elsif (reg = @session.app.registration(reg) and seq = reg.sequence(seq))
+             seq.package(pac)
+           end
+    if pack
       @model.package = pack
       dates = {}
       pack.prices.each do |key, prices|

@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::DataFormat -- oddb -- 14.03.2003 -- hwyss@ywesee.com 
+# encoding: utf-8
+# ODDB::View::DataFormat -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::DataFormat -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'view/external_links'
 
@@ -120,8 +122,13 @@ module ODDB
           if @lookandfeel.enabled?(:price_history) \
             && model.respond_to?(:has_price_history?) && model.has_price_history?
             span = HtmlGrid::Link.new(:price_history, model, @session, self)
+            pointer = if model.is_a?(ODDB::Package)
+                        [:reg, model.registration.iksnr, :seq, model.sequence.seqnr, :pack, model.ikscd]
+                      else
+                        [:pointer, model.pointer]
+                      end
             args = [
-              [:pointer, model.pointer],
+              pointer,
               [:search_type, @session.persistent_user_input(:search_type)],
               [:search_query, @session.persistent_user_input(:search_query)]
             ]
