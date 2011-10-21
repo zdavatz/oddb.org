@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::PointerValue -- oddb.org -- 19.08.2003 -- mhatakeyama@ywesee.com 
+# encoding: utf-8
+# ODDB::View::PointerValue -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::PointerValue -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
 require 'htmlgrid/value'
@@ -40,6 +41,8 @@ module ODDB
         end
         if smart_link_format.include?('reg')
           @attributes['href'] = @lookandfeel._event_url(:drug, smart_link_format)
+        elsif @model.is_a?(ODDB::Company)
+          @attributes['href'] = @lookandfeel._event_url(:company, {:oid => @model.oid})
         else # This is an old format by using the default pointer format
           old_link_format = {'pointer'	=> @model.pointer.to_s}
 				  @attributes['href'] = @lookandfeel._event_url(:resolve, old_link_format)

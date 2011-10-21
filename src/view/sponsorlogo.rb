@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Sponsorlogo -- oddb -- 30.07.2003 -- hwyss@ywesee.com 
+# ODDB::View::Sponsorlogo -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::Sponsorlogo -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
 require 'htmlgrid/image'
 
@@ -7,7 +8,7 @@ module ODDB
 	module View
 		class CompanyLogo < HtmlGrid::Component
 			def init
-				if(name = @model.logo_filename)
+				if(@model and name = @model.logo_filename)
 					@attributes['src'] = @lookandfeel.resource_global(:company_logo, name)
 					@attributes['alt'] = @model.name
 				end

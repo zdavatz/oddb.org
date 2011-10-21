@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::State::Global -- oddb.org -- 30.09.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::State::Global -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -106,6 +107,7 @@ module ODDB
           :ajax_matches           => State::Ajax::Matches,
           :ajax_swissmedic_cat    => State::Ajax::SwissmedicCat,
           :analysis_alphabetical  => State::Analysis::Alphabetical,
+          :company                => State::Companies::Company,
           :companylist            => State::Companies::CompanyList,
           :compare                => State::Drugs::Compare,
           :compare_search         => State::Drugs::CompareSearch,

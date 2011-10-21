@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# State::Companies::Company -- oddb -- 27.05.2003 -- mhuggler@ywesee.com
+# encoding: utf-8
+# ODDB::State::Companies::Company -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Companies::Company -- oddb.org -- 27.05.2003 -- mhuggler@ywesee.com
 
 require 'state/global_predefine'
 require 'state/companies/setpass'
@@ -13,8 +15,17 @@ module ODDB
 class Company < Global
 	VIEW = View::Companies::UnknownCompany
 	LIMITED = true
+  def init
+    if((pointer = @session.user_input(:pointer)))
+      @model = pointer.resolve(@session.app)
+    elsif oid = @session.user_input(:oid) and company = @session.app.company(oid)
+      @model = company
+    else
+      @model = nil
+    end
+  end
 	def snapback_event
-		@model.name
+		@model.name if @model
 	end
 end
 class UserCompany < Company

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Companies::Company -- oddb -- 27.05.2003 -- mhuggler@ywesee.com
+# ODDB::View::Companies::Company -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Companies::Company -- oddb.org -- 27.05.2003 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'
 require	'htmlgrid/errormessage'
@@ -100,7 +101,7 @@ class UnknownCompanyInnerComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
 	def address(model)
-		Address.new(model.address(0), @session, self)
+    Address.new(model.address(0), @session, self) if model
 	end
 end
 class UserCompanyForm < View::Form
@@ -436,7 +437,7 @@ class UnknownCompanyComposite < HtmlGrid::Composite
 		name = HtmlGrid::Value.new('name', model, session, self)
 	end
 	def ean13(model, session=@session)
-		if(model.ean13)
+		if(model and model.ean13)
 			"&nbsp;-&nbsp;"+model.ean13
 		end
 	end
