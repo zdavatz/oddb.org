@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# Exporter -- oddb -- 30.07.2003 -- hwyss@ywesee.com 
+# encoding: utf-8
+# ODDB::Exporter -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
 require 'plugin/oddbdat_export'
 require 'plugin/fipdf'
@@ -233,6 +235,12 @@ module ODDB
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
+    def export_fachinfo_yaml
+			exporter = YamlExporter.new(@app)
+      safe_export 'fachinfo.yaml' do
+        exporter.export_fachinfos
+      end
+    end
 		def mail_download_stats
       safe_export 'Mail Download-Statistics' do
         mail_stats('download')

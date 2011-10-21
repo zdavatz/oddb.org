@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# RegistrationObserver -- oddb -- 29.10.2003 -- rwaltert@ywesee.com
+# encoding: utf-8
+# ODDB::RegistrationObserver -- oddb.org -- 20.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::RegistrationObserver -- oddb.org -- 29.10.2003 -- rwaltert@ywesee.com
 
 module ODDB
 	module RegistrationObserver
@@ -26,6 +28,9 @@ module ODDB
 					if(pcode = pac.pharmacode)
 						cds.store(:article_pcode, pcode)
 					end
+          if(psize = pac.size)
+            cds.store(:article_size, psize)
+          end
 					codes.push(cds)
 				}
 			}
