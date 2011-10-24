@@ -399,12 +399,13 @@ module ODDB
 				end
 			end
 			def print
-				pointer = @session.user_input(:pointer)
-				begin
+				if pointer = @session.user_input(:pointer)
 					if((model = pointer.resolve(@session.app)) \
 						&& (klass = resolve_state(pointer, :print)))
 						klass.new(@session, model)
 					end
+        elsif iksnr = @session.user_input(:fachinfo) and reg = @session.app.registration(iksnr) and fi = reg.fachinfo
+          State::Drugs::FachinfoPrint.new(@session, fi)
 				end
 			end
 			def proceed_download

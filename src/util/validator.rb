@@ -340,6 +340,7 @@ module ODDB
 			:equivalent_substance,
 			:fax,
 			:fi_update,
+			:fachinfo,
 			:fon,
       :for,
 			:fr,

@@ -123,6 +123,15 @@ class FiChapterChooser < HtmlGrid::Composite
 			link
 		end
 	end
+  def print(model, session=@session, key=:print)
+    link = HtmlGrid::Link.new(key, model, session, self)
+    link.set_attribute('title', @lookandfeel.lookup(:print_title))
+    args = {
+      :fachinfo  => model.registrations.first.iksnr,
+    }
+    link.href = @lookandfeel._event_url(:print, args)
+    link
+  end
 end
 class FachinfoInnerComposite < HtmlGrid::DivComposite
 	COMPONENTS = {}
