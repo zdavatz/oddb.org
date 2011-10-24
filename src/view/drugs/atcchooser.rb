@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::AtcChooser -- oddb.org -- 20.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::AtcChooser -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::AtcChooser -- oddb.org -- 14.07.2003 -- mhuggler@ywesee.com
 
 require 'view/drugs/privatetemplate'
@@ -91,6 +91,7 @@ class AtcChooserList < HtmlGrid::List
 		link = View::PointerLink.new(:code, model, session, self)
 		link.value = @lookandfeel.lookup :edit_atc_class
 		link.attributes['class'] = 'small'
+		link.href = @lookandfeel._event_url(:atc_class, {:atc_code => model.code})
 		link
 	end
 	def result_link?(mdl)

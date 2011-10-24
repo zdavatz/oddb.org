@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -136,6 +136,7 @@ module ODDB
 			:assign_deprived_sequence,
 			:assign_fachinfo,
 			:assign_patinfo,
+			:atc_class,
 			:atc_chooser,
 			:atc_request,
 			#:authenticate,

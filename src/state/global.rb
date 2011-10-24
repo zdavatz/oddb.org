@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -196,6 +196,15 @@ module ODDB
 				mdl = @session.app.atc_chooser
 				State::Drugs::AtcChooser.new(@session, mdl)
 			end
+      def atc_class
+        if model = @session.app.atc_class(@session.user_input(:atc_code))
+          if @session.allowed?('edit', 'org.oddb.model.!atc_class.*')
+            State::Admin::AtcClass.new(@session, model)
+          else
+            State::Admin::TransparentLogin.new(@session, model)
+          end
+        end
+      end
 			def checkout
 				case @session.zone
 				when :user

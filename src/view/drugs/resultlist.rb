@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Drugs::ResultList -- oddb -- 03.03.2003 -- aschrafl@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::ResultList -- oddb.org -- 24.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
 require 'htmlgrid/list'
 require 'htmlgrid/value'
@@ -82,6 +84,7 @@ class AtcHeader < HtmlGrid::Composite
 		link = View::PointerLink.new(:code, model, session, self)
 		link.value = @lookandfeel.lookup(:edit_atc_class) + "&nbsp;"
 		link.attributes['class'] = 'small'
+		link.href = @lookandfeel._event_url(:atc_class, {:atc_code => model.code})
 		link
 	end
 	def pages(model, session=@session)
