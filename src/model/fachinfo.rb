@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# Fachinfo -- oddb -- 12.09.2003 -- rwaltert@ywesee.com
+# encoding: utf-8
+# ODDB::Fachinfo -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::Fachinfo -- oddb.org -- 12.09.2003 -- rwaltert@ywesee.com
 
 require 'util/persistence'
 require 'util/language'
@@ -22,6 +24,7 @@ module ODDB
 			item.chapter = chapter
 			item.language = language
 			self.change_log.push(item)
+			self.odba_store
 		end
 		def atc_class
 			if(reg = @registrations.first)

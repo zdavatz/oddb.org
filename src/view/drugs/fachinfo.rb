@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Drugs::Fachinfo -- oddb -- 17.09.2003 -- rwaltert@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::Fachinfo -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/privatetemplate'
 require 'view/chapter'
@@ -30,14 +32,14 @@ class FiChapterChooserLink < HtmlGrid::Link
 			@lookandfeel.lookup(@name)
 		end
 		args = [
+			:reg, @model.registrations.first.iksnr,
 			:chapter, @name,
-			:pointer, @model.pointer,
 		]
 		unless(@session.user_input(:chapter) == @name.to_s)
 			if(@model.pointer.skeleton == [:create])
 				self.href = @lookandfeel.event_url(:self, {:chapter => @name})
 			else
-				self.href = @lookandfeel._event_url(:resolve, args)
+				self.href = @lookandfeel._event_url(:fachinfo, args)
 			end
 		end
 	end

@@ -271,7 +271,11 @@ module ODDB
         if (iksnr = @session.user_input(:reg) || @session.user_input(:swissmedicnr)) \
           && (reg = @session.app.registration(iksnr)) \
           && fachinfo = reg.fachinfo
-          State::Drugs::Fachinfo.new(@session, fachinfo)
+          if @session.allowed?('edit', fachinfo)
+            State::Drugs::RootFachinfo.new(@session, fachinfo)
+          else
+            State::Drugs::Fachinfo.new(@session, fachinfo)
+          end
         else
           Http404.new(@session, nil)
         end
