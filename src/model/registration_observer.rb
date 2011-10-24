@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::RegistrationObserver -- oddb.org -- 20.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::RegistrationObserver -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::RegistrationObserver -- oddb.org -- 29.10.2003 -- rwaltert@ywesee.com
 
 module ODDB
@@ -30,6 +30,9 @@ module ODDB
 					end
           if(psize = pac.size)
             cds.store(:article_size, psize)
+          end
+          if(pdose = pac.dose)
+            cds.store(:article_dose, pdose.to_s)
           end
 					codes.push(cds)
 				}
