@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Fachinfo -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::Fachinfo -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/privatetemplate'
@@ -118,7 +118,7 @@ class FiChapterChooser < HtmlGrid::Composite
 			link = HtmlGrid::Link.new(:fachinfo_all, model, session, self)
 			link.set_attribute('title', @lookandfeel.lookup(:fachinfo_all_title))
 			unless(@session.user_input(:chapter).nil?)
-				link.href = @lookandfeel._event_url(:resolve, {:pointer => model.pointer})
+				link.href = @lookandfeel._event_url(:fachinfo, {:reg => model.registrations.first.iksnr})
 			end
 			link
 		end
