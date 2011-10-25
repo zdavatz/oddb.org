@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -107,7 +107,6 @@ module ODDB
           :ajax_matches           => State::Ajax::Matches,
           :ajax_swissmedic_cat    => State::Ajax::SwissmedicCat,
           :analysis_alphabetical  => State::Analysis::Alphabetical,
-          :company                => State::Companies::Company,
           :companylist            => State::Companies::CompanyList,
           :compare                => State::Drugs::Compare,
           :compare_search         => State::Drugs::CompareSearch,
@@ -213,6 +212,17 @@ module ODDB
 					export_csv.checkout
 				end
 			end
+      def company
+        if oid = @session.user_input(:oid) and model = @session.app.company(oid)
+          if @session.allowed?('edit', model)
+            State::Companies::RootCompany.new(@session, model)
+          else
+            State::Companies::Company.new(@session, model)
+          end
+        else
+          Http404.new(@session, nil)
+        end
+      end
 			def clear_interaction_basket
 				@session.clear_interaction_basket
 				State::Interactions::EmptyBasket.new(@session, [])
