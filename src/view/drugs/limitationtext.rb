@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Drugs::LimitationText -- oddb -- 12.11.2003 -- mhuggler@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::LimitationText -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::LimitationText -- oddb.org -- 12.11.2003 -- mhuggler@ywesee.com
 
 require 'view/drugs/privatetemplate'
 require 'view/chapter'
@@ -32,7 +34,7 @@ class LimitationTextComposite < HtmlGrid::Composite
 		[0,1] => 'list',
 	}	
 	def limitation_text_title(model, session)
-		if(sl_entry =  model.pointer.parent)
+		if(model and pointer = model.pointer and sl_entry = pointer.parent)
 			parent = sl_entry.parent.resolve(session.app)
 			@lookandfeel.lookup(:limitation_text_title, 
 				parent.name_base)

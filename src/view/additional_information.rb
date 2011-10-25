@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/atcchooser'
@@ -230,14 +230,29 @@ module ODDB
 			end
 			def limitation_text(model, session=@session)
 				if(sltxt = model.limitation_text)
-					limitation_link(sltxt)
+					limitation_link(sltxt, model)
 				end
 			end
-			def limitation_link(sltxt)
+			def limitation_link(sltxt, model = nil)
 				link = HtmlGrid::Link.new(:square_limitation, 
 					nil, @session, self)
-				link.href = @lookandfeel._event_url(:resolve, 
-					{'pointer'=>CGI.escape(sltxt.pointer.to_s)})
+        reg = seq = pack = nil
+        if model.is_a?(ODDB::Package)
+          reg  = model.registration.iksnr
+          seq  = model.sequence.seqnr 
+          pack = model.ikscd
+        elsif model.is_a?(ODDB::Sequence)
+          reg  = model.registration.iksnr
+          seq  = model.seqnr 
+          pack = if (packs = model.packages.values.select{|pac| pac.limitation_text} and !packs.empty?)
+                   packs.first.ikscd
+                 end
+        end
+        if reg and seq and pack
+          link.href = @lookandfeel._event_url(:limitation_text, [:reg, reg, :seq, seq, :pack, pack])
+        else
+  				link.href = @lookandfeel._event_url(:resolve, {'pointer'=>CGI.escape(sltxt.pointer.to_s)})
+        end
 				link.set_attribute('title', 
 					@lookandfeel.lookup(:limitation_text))
 				pos = components.index(:limitation_text)

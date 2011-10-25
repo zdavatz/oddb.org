@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Drugs::LimitationTexts -- oddb -- 21.11.2005 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::LimitationTexts -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::LimitationTexts -- oddb.org -- 21.11.2005 -- hwyss@ywesee.com
 
 require 'view/additional_information'
 require 'view/alphaheader'
@@ -35,7 +37,7 @@ class LimitationTextList < HtmlGrid::List
 		link = HtmlGrid::Link.new(:name_base, model, @session, self)
 		link.value = model.name_base
 		args = {
-			'search_query'	=>	model.name_base,
+			'search_query'	=>	model.name_base.split.first,
 		}
 		link.href = @lookandfeel._event_url(:search, args)
 		link.css_class = 'list big' << resolve_suffix(model)

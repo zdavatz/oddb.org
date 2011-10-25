@@ -129,6 +129,7 @@ module ODDB
           :home_substances        => State::Substances::Init,
           :home_user              => State::User::Init,
           :hospitallist           => State::Hospitals::HospitalList,
+          :limitation_text        => State::Drugs::LimitationText,
           :limitation_texts       => State::Drugs::LimitationTexts,
           :listed_companies       => State::Companies::CompanyList,
           :login_form             => State::Admin::Login,
