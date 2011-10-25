@@ -124,7 +124,7 @@ module ODDB
           query = model.name_base if query.is_a?(SBSM::InvalidDataError)
           query ||= model.name_base
           stype = @session.persistent_user_input(:search_type)
-          pointer = if model.is_a?(ODDB::Package)
+          pointer = if model.is_a?(ODDB::Package) || model.is_a?(ODDB::State::Drugs::Compare::Comparison::PackageFacade)
                       [:reg, model.registration.iksnr, :seq, model.sequence.seqnr, :pack, model.ikscd]
                     else
                       [:pointer, model.pointer]
