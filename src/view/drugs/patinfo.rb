@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Drugs::Patinfo -- oddb -- 11.11.2003 -- rwaltert@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::Patinfo -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::Patinfo -- oddb.org -- 11.11.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/privatetemplate'
 require 'view/chapter'
@@ -108,6 +110,17 @@ class PatinfoComposite < HtmlGrid::Composite
 		document = model.send(@session.language)
 		@lookandfeel.lookup(:patinfo_name, document.name)
 	end
+  def print(model, session=@session, key=:print)
+    link = HtmlGrid::Link.new(key, model, session, self)
+    link.set_attribute('title', @lookandfeel.lookup(:print_title))
+    args = [
+      :reg, model.sequences.first.registration.iksnr,
+      :seq, model.sequences.first.seqnr,
+      :patinfo, nil
+    ]
+    link.href = @lookandfeel._event_url(:print, args)
+    link
+  end
 end
 class PatinfoPrintComposite < View::Drugs::PatinfoComposite
 	include View::PrintComposite

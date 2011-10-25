@@ -416,6 +416,8 @@ module ODDB
 						&& (klass = resolve_state(pointer, :print)))
 						klass.new(@session, model)
 					end
+        elsif iksnr = @session.user_input(:reg) and reg = @session.app.registration(iksnr) and seq = reg.sequence(@session.user_input(:seq)) and pi = seq.patinfo
+          State::Drugs::PatinfoPrint.new(@session, pi)
         elsif iksnr = @session.user_input(:fachinfo) and reg = @session.app.registration(iksnr) and fi = reg.fachinfo
           State::Drugs::FachinfoPrint.new(@session, fi)
 				end
