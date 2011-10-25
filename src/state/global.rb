@@ -135,6 +135,7 @@ module ODDB
           :login_form             => State::Admin::Login,
           :mailinglist            => State::User::MailingList,
           :migel_alphabetical     => State::Migel::Alphabetical,
+          :minifi                 => State::Drugs::MiniFi,
           :password_lost          => State::Admin::PasswordLost,
           :patinfos               => State::Drugs::Patinfos,
           :narcotics              => State::Drugs::Narcotics,

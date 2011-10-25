@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Drugs::MiniFi -- oddb.org -- 26.04.2007 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::MiniFi -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::MiniFi -- oddb.org -- 26.04.2007 -- hwyss@ywesee.com
 
 require 'view/drugs/privatetemplate'
 require 'view/additional_information'
@@ -54,13 +56,15 @@ class MiniFiComposite < HtmlGrid::Composite
   }	
   LEGACY_INTERFACE = false
   def document(model)
-    if(chapter = model.send(@session.language))
+    if(model and chapter = model.send(@session.language))
       MiniFiChapter.new(model, @session, self)
     end
   end
   def name(model)
-    cname = (reg = model.registrations.first) ? reg.company_name : nil
-    @lookandfeel.lookup(:minifi_name, model.name, cname)
+    if model
+      cname = (reg = model.registrations.first) ? reg.company_name : nil
+      @lookandfeel.lookup(:minifi_name, model.name, cname)
+    end
   end
 end
 class MiniFi < PrivateTemplate

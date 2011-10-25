@@ -197,6 +197,7 @@ module ODDB
 			:merge,
 			:migel_alphabetical,
       :migel_search,
+      :minifi,
 			:narcotics,
 			:new_active_agent,
 			:new_commercial_form,

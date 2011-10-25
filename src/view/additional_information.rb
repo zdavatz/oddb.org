@@ -262,8 +262,12 @@ module ODDB
       def minifi(model, session=@session)
 				if(mfi = model.minifi)
 					link = HtmlGrid::Link.new(:square_minifi, mfi, @session, self)
-					link.href = @lookandfeel._event_url(:resolve,
-						{'pointer' => mfi.pointer})
+          iksnr = if model.is_a?(ODDB::Registration)
+                    model.iksnr
+                  else # ODDB::Sequence, ODDB::Package
+                    model.registration.iksnr
+                  end
+          link.href = @lookandfeel._event_url(:minifi, {:reg => iksnr})
 					link.css_class = 'square infos'
 					link.set_attribute('title', @lookandfeel.lookup(:minifi))
 					link
