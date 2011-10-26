@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Admin::CommercialForms -- oddb.org -- 23.11.2006 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::View::Admin::CommercialForms -- oddb.org -- 26.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Admin::CommercialForms -- oddb.org -- 23.11.2006 -- hwyss@ywesee.com
 
 require 'view/privatetemplate'
 require 'view/descriptionlist'
@@ -23,6 +25,11 @@ class CommercialFormsList < View::DescriptionList
   SYMBOL_MAP = {
     :oid => View::PointerLink,
   }
+  def oid(model, session)
+    link = View::PointerLink.new(:oid, model, session)
+    link.href = @lookandfeel._event_url(:commercial_form, {:oid => model.oid})
+    link
+  end
 end
 class CommercialForms < PrivateTemplate
   CONTENT = CommercialFormsList

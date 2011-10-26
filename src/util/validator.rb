@@ -146,6 +146,7 @@ module ODDB
 			:checkout,
 			:choice,
 			:clear_interaction_basket,
+      :commercial_form,
       :commercial_forms,
 			:company,
 			:companylist,

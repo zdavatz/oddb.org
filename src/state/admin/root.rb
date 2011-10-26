@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# State::Admin::Root -- oddb -- 14.03.2003 -- hwyss@ywesee.com 
+# encoding: utf-8
+# ODDB::State::Admin::Root -- oddb.org -- 26.10.2011 -- mhatakeyama@ywesee.com 
+# ODDB::State::Admin::Root -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/galenicgroups'
 require 'state/admin/indications'
@@ -88,6 +90,11 @@ module Root
 		model = @session.app.address_suggestions.values
 		State::Admin::Addresses.new(@session, model)
 	end
+  def commercial_form
+    if oid = @session.user_input(:oid) and model = @session.app.commercial_form(oid)
+      ODDB::State::Admin::CommercialForm.new(@session, model)
+    end
+  end
   def commercial_forms
     State::Admin::CommercialForms.new(@session, 
                                       ODDB::CommercialForm.odba_extent)

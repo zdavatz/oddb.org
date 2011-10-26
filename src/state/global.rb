@@ -544,6 +544,11 @@ module ODDB
           end
         end
       end
+      def commercial_form
+        if oid = @session.user_input(:oid) and model = @session.app.commercial_form(oid)
+          ODDB::State::Admin::TransparentLogin.new(@session, model)
+        end
+      end
 			def resolve
 				if(@session.request_path == @request_path)
 					self
