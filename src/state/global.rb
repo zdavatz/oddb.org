@@ -526,6 +526,24 @@ module ODDB
           self
         end
       end
+      def galenic_group
+        if oid = @session.user_input(:oid) and model = @session.app.galenic_group(oid)
+          if @session.allowed?('edit', 'org.oddb.model.!galenic_group.*')
+            ODDB::State::Admin::GalenicGroup.new(@session, model)
+          else
+            ODDB::State::Admin::TransparentLogin.new(@session, model)
+          end
+        end
+      end
+      def galenic_form
+        if group_oid = @session.user_input(:goid) and group = @session.app.galenic_group(group_oid) and model = group.galenic_form(@session.user_input(:foid))
+          if @session.allowed?('edit', 'org.oddb.model.!galenic_group.*')
+            ODDB::State::Admin::GalenicForm.new(@session, model)
+          else
+            ODDB::State::Admin::TransparentLogin.new(@session, model)
+          end
+        end
+      end
 			def resolve
 				if(@session.request_path == @request_path)
 					self

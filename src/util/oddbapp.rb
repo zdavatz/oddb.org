@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# OddbApp -- oddb.org -- 10.10.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# OddbApp -- oddb.org -- 26.10.2011 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 require 'odba'
@@ -694,8 +695,8 @@ class OddbPrevalence
   def minifi(oid)
     @minifis[oid.to_i]
   end
-	def narcotic(odba_id)
-		@narcotics[odba_id.to_i]
+	def narcotic(oid)
+		@narcotics[oid.to_i]
 	end
 	def narcotic_by_casrn(casrn)
 		unless(casrn.nil?)

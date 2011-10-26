@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Admin::GalenicGroups -- oddb -- 25.03.2003 -- andy@jetnet.ch
+# encoding: utf-8
+# ODDB::View::Admin::GalenicGroups -- oddb.org -- 26.10.2011 -- mhatakeyama@jetnet.ch
+# ODDB::View::Admin::GalenicGroups -- oddb.org -- 25.03.2003 -- andy@jetnet.ch
 
 require 'view/drugs/privatetemplate'
 require 'view/descriptionlist'
@@ -26,6 +28,16 @@ class GalenicGroupsList < View::DescriptionList
 		:description	=>	View::PointerLink,
 		:oid					=>	View::PointerLink,
 	}
+  def oid(model, session)
+    link = View::PointerLink.new(:oid, model, session)
+    link.href = @lookandfeel._event_url(:galenic_group, {:oid => model.oid})
+    link
+  end
+  def description(model, session)
+    link = View::PointerLink.new(:description, model, session)
+    link.href = @lookandfeel._event_url(:galenic_group, {:oid => model.oid})
+    link
+  end
 end
 class GalenicGroups < View::Drugs::PrivateTemplate
 	CONTENT = View::Admin::GalenicGroupsList
