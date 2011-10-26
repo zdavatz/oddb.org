@@ -41,7 +41,7 @@ class NarcoticList < HtmlGrid::List
 	}
 	def casrn(model, session=@session)
 		link = PointerLink.new(:casrn, model.narcotic, @session, self)
-    link.href = @lookandfeel._event_url(:narcotic, {:oid => model.narcotic.odba_id})
+    link.href = @lookandfeel._event_url(:narcotic, {:oid => model.narcotic.oid})
     link
 	end
 	def category(model, session=@session)
