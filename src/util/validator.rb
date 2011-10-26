@@ -187,6 +187,7 @@ module ODDB
 			:home_substances,
 			:home_user,
 			:hospitallist,
+			:indication,
 			:indications,
 			:interaction_basket,
 			:legal_note,

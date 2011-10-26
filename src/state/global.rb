@@ -549,6 +549,11 @@ module ODDB
           ODDB::State::Admin::TransparentLogin.new(@session, model)
         end
       end
+      def indication
+        if oid = @session.user_input(:oid) and model = @session.app.indication(oid)
+          ODDB::State::Admin::TransparentLogin.new(@session, model)
+        end
+      end
 			def resolve
 				if(@session.request_path == @request_path)
 					self

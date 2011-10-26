@@ -115,6 +115,11 @@ module Root
 		model = @session.app.galenic_groups.values
 		State::Admin::GalenicGroups.new(@session, model)
 	end
+  def indication
+    if oid = @session.user_input(:oid) and model = @session.app.indication(oid)
+      State::Admin::Indication.new(@session, model)
+    end
+  end
 	def indications
 		model = @session.app.indications
 		State::Admin::Indications.new(@session, model)
