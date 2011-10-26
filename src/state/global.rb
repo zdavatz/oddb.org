@@ -305,18 +305,12 @@ module ODDB
         end
       end
 			def feedbacks
-				if((pointer = @session.user_input(:pointer)) \
-					&& pointer.is_a?(Persistence::Pointer) \
-					&& (item = pointer.resolve(@session.app)))
-					case item.odba_instance
-					when ODDB::Package
-						State::Drugs::Feedbacks.new(@session, item)
-					when ODDB::Migel::Product
-						State::Migel::Feedbacks.new(@session, item)
-					#when ODDB::Analysis::Position
-					#	State::Analysis::Feedbacks.new(@session, item)
-					end
-				end
+        iksnr = @session.user_input(:reg)
+        seqnr = @session.user_input(:seq)
+        ikscd = @session.user_input(:pack)
+        if reg = @session.app.registration(iksnr) and seq = reg.sequence(seqnr) and pack = seq.package(ikscd)
+          State::Drugs::Feedbacks.new(@session, pack)
+        end
 			end
 			def notify 
 				if((pointer = @session.user_input(:pointer)) \
