@@ -50,7 +50,7 @@ module ODDB
 				end
 				def link(model, item)
 					link = HtmlGrid::Link.new(:show, model, @session, self)
-					link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
+					link.href = @lookandfeel._event_url(:show, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
 					link.value = item
 					link
 				end
