@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 26.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -138,6 +138,7 @@ module ODDB
           :minifi                 => State::Drugs::MiniFi,
           :password_lost          => State::Admin::PasswordLost,
           :patinfos               => State::Drugs::Patinfos,
+          :narcotic               => State::Drugs::Narcotic,
           :narcotics              => State::Drugs::Narcotics,
           :plugin                 => State::User::Plugin,
           :passthru               => State::User::PassThru,

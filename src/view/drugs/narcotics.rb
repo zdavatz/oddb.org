@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-#View::Drugs::Narcotics  -- oddb -- 16.11.2005 -- spfenninger@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::Narcotics  -- oddb.org -- 26.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::Narcotics  -- oddb.org -- 16.11.2005 -- spfenninger@ywesee.com
 
 
 require 'view/alphaheader'
@@ -38,7 +40,9 @@ class NarcoticList < HtmlGrid::List
 		:casrn	=>	PointerLink,
 	}
 	def casrn(model, session=@session)
-		PointerLink.new(:casrn, model.narcotic, @session, self)
+		link = PointerLink.new(:casrn, model.narcotic, @session, self)
+    link.href = @lookandfeel._event_url(:narcotic, {:oid => model.narcotic.odba_id})
+    link
 	end
 	def category(model, session=@session)
 		txt = HtmlGrid::Span.new(model ,session, self)

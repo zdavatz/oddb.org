@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-#View::Narcotic -- oddb -- 08.11.2005 -- spfenninger@ywesee.com
+# encoding: utf-8
+# ODDB::View::Narcotic -- oddb.org -- 26.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Narcotic -- oddb.org -- 08.11.2005 -- spfenninger@ywesee.com
 
 require 'view/drugs/privatetemplate'
 require 'view/resultfoot'
@@ -84,16 +86,18 @@ module ODDB
 				DEFAULT_CLASS = HtmlGrid::Value
         @@reservation = /(SR|RS) (\d{3}\.\d{3}\.\d{2})/u
 				def narcotic_connection(model)
-					@lookandfeel.lookup(:narcotic_connection, model.substances.sort.first)
+					@lookandfeel.lookup(:narcotic_connection, model.substances.sort.first) if model
 				end
 				def packages(model)
-					pack = model.packages
-					unless(pack.empty?)
-						PackagesList.new(pack, @session, self)
-					end
+          if model
+            pack = model.packages
+            unless(pack.empty?)
+              PackagesList.new(pack, @session, self)
+            end
+          end
 				end
 				def reservation_text(model)
-					if(text = model.reservation_text)
+					if(model and text = model.reservation_text)
 						div = HtmlGrid::Div.new(model, @session, self)
 						div.css_class = 'long-text list bg'
 						txt = text.send(@session.language)
