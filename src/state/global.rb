@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 26.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 27.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -310,6 +310,8 @@ module ODDB
         ikscd = @session.user_input(:pack)
         if reg = @session.app.registration(iksnr) and seq = reg.sequence(seqnr) and pack = seq.package(ikscd)
           State::Drugs::Feedbacks.new(@session, pack)
+        elsif migel_code = @session.user_input(:migel_product) and migel_product = @session.search_migel_products(migel_code).first
+          State::Migel::Feedbacks.new(@session, migel_product)
         end
 			end
 			def notify 

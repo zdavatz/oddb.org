@@ -190,6 +190,8 @@ module ODDB
 				link = HtmlGrid::Link.new(:square_feedback, model, session, self)
         if model.is_a?(ODDB::Package)
           link.href = @lookandfeel._event_url(:feedbacks, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
+        elsif model.is_a?(DRb::DRbObject) # Migel::Model::Product
+          link.href = @lookandfeel._event_url(:feedbacks, [:migel_product, model.migel_code.gsub(/\./,'')])
         end
         link.css_class = "square feedback"
 				link.set_attribute('title', @lookandfeel.lookup(:feedback_alt, 
