@@ -310,8 +310,9 @@ module ODDB
         ikscd = @session.user_input(:pack)
         if reg = @session.app.registration(iksnr) and seq = reg.sequence(seqnr) and pack = seq.package(ikscd)
           State::Drugs::Feedbacks.new(@session, pack)
-        elsif migel_code = @session.user_input(:migel_product) and migel_product = @session.search_migel_products(migel_code).first
-          State::Migel::Feedbacks.new(@session, migel_product)
+        #elsif migel_code = @session.user_input(:migel_product) and migel_product = @session.search_migel_products(migel_code).first
+          # Actually, migel_product is an instance of Migel::Model::Migelid
+        #  State::Migel::Feedbacks.new(@session, migel_product)
         end
 			end
 			def notify 
