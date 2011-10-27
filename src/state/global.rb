@@ -316,18 +316,12 @@ module ODDB
         end
 			end
 			def notify 
-				if((pointer = @session.user_input(:pointer)) \
-					&& pointer.is_a?(Persistence::Pointer) \
-					&& (item = pointer.resolve(@session.app)))
-					case item.odba_instance
-					when ODDB::Package
-						State::Drugs::Notify.new(@session, item)
-					when ODDB::Migel::Product
-						State::Migel::Notify.new(@session, item)
-					#when ODDB::Analysis::Position 
-					#	State::Analysis::Notify.new(@session, item) # There is not such a class defined
-					end
-				end
+        iksnr = @session.user_input(:reg)
+        seqnr = @session.user_input(:seq)
+        ikscd = @session.user_input(:pack)
+        if reg = @session.app.registration(iksnr) and seq = reg.sequence(seqnr) and pack = seq.package(ikscd)
+          State::Drugs::Notify.new(@session, pack)
+        end
 			end
 			def help_navigation
 				[

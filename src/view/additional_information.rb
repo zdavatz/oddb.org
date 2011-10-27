@@ -293,10 +293,10 @@ module ODDB
 			end
 			def notify(model, session=@session)
 				link = HtmlGrid::Link.new(:notify, model, @session, self)
-				args = {
-					:pointer => model.pointer.to_s,
-				}
-				link.href = @lookandfeel._event_url(:notify, args)
+        if model.is_a?(ODDB::Package)
+          args = [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd]
+          link.href = @lookandfeel._event_url(:notify, args)
+        end
 				img = HtmlGrid::Image.new(:notify, model, @session, self)
 				img.set_attribute('src', @lookandfeel.resource_global(:notify))
 				link.value = img
