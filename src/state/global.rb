@@ -319,8 +319,13 @@ module ODDB
         iksnr = @session.user_input(:reg)
         seqnr = @session.user_input(:seq)
         ikscd = @session.user_input(:pack)
-        if reg = @session.app.registration(iksnr) and seq = reg.sequence(seqnr) and pack = seq.package(ikscd)
-          State::Drugs::Notify.new(@session, pack)
+        package = if((pointer = @session.user_input(:pointer)) && pointer.is_a?(Persistence::Pointer)) 
+          pointer.resolve(@session.app)
+        elsif reg = @session.app.registration(iksnr) and seq = reg.sequence(seqnr)
+          seq.package(ikscd)
+        end
+        if package
+          State::Drugs::Notify.new(@session, package)
         end
 			end
 			def help_navigation

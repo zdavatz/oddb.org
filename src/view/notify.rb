@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Notify -- oddb -- 24.10.2005 -- ffricker@ywesee.com
+# encoding: utf-8
+# ODDB::View::Notify -- oddb.org -- 27.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Notify -- oddb.org -- 24.10.2005 -- ffricker@ywesee.com
 
 require 'view/publictemplate'
 require 'view/additional_information'
@@ -22,7 +24,11 @@ module ODDB
               else
                 :notify_title
               end
-        [@lookandfeel.lookup(key), model.item.name].join
+        if model.item
+          [@lookandfeel.lookup(key), model.item.name].join
+        else
+          @lookandfeel.lookup(key)
+        end
       end
     end
     class NotifyInnerComposite < HtmlGrid::Composite
