@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-#	State::Admin::PatinfoStats -- oddb -- 07.10.2004 -- mwalder@ywesee.com
+# encoding: utf-8
+#	ODDB::State::Admin::PatinfoStats -- oddb.org -- 27.10.2011 -- mhatakeyama@ywesee.com
+#	ODDB::State::Admin::PatinfoStats -- oddb.org -- 07.10.2004 -- mwalder@ywesee.com
 
 require 'state/global_predefine'
 require 'view/admin/patinfo_stats'
@@ -79,6 +81,9 @@ class PatinfoStatsCommon < State::Admin::Global
 		def user
 			@company.user
 		end
+    def oid
+      @company.oid
+    end
 	end
 	def init
 		model = {}

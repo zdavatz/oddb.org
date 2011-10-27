@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::PatinfoStats -- oddb -- 07.10.2004 -- mwalder@ywesee.com 
+# encoding: utf-8
+# ODDB::View::PatinfoStats -- oddb.org -- 27.10.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::PatinfoStats -- oddb.org -- 07.10.2004 -- mwalder@ywesee.com 
 
 require 'htmlgrid/composite'
 require 'htmlgrid/list'
@@ -28,6 +30,11 @@ class CompanyHeader < HtmlGrid::Composite
 	SYMBOL_MAP = {
 		:name =>	View::PointerLink,
 	}
+  def name(model, session)
+    link = View::PointerLink.new(:name, model, session)
+    link.href = @lookandfeel._event_url(:company, {:oid => model.oid})
+    link
+  end
 end
 class PatinfoStatsCompanyList < HtmlGrid::List
 	COMPONENTS = {
