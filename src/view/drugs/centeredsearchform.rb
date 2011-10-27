@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Drugs::CenteredSearchForm -- oddb -- 07.09.2004 -- mhuggler@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 27.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 07.09.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/select'
 require 'htmlgrid/divlist'
@@ -193,7 +195,9 @@ class RssFeedbackList < HtmlGrid::DivList
   def heading(model)
     if(parent = model.item)
       link = HtmlGrid::Link.new(:feedbacks, model, @session, self)
-      link.href = @lookandfeel._event_url(:feedbacks, :pointer => parent.pointer)
+      if parent.is_a?(ODDB::Package)
+        link.href = @lookandfeel._event_url(:feedbacks, [:reg, parent.iksnr, :seq, parent.seqnr, :pack, parent.ikscd])
+      end
       link.value = case parent.odba_instance
                    when ODDB::Package
                      @lookandfeel.lookup(:feedback_rss_title,
