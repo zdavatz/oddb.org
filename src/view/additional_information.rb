@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 26.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 27.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/atcchooser'
@@ -188,7 +188,9 @@ module ODDB
 			end
 			def feedback(model, session=@session)
 				link = HtmlGrid::Link.new(:square_feedback, model, session, self)
-				link.href = @lookandfeel._event_url(:feedbacks, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
+        if model.is_a?(ODDB::Package)
+          link.href = @lookandfeel._event_url(:feedbacks, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
+        end
         link.css_class = "square feedback"
 				link.set_attribute('title', @lookandfeel.lookup(:feedback_alt, 
 					model.localized_name(@session.language)))
