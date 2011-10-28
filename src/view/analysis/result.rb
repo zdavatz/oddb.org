@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Analysis::Result -- oddb.org -- 14.06.2006 -- sfrischknecht@ywesee.com
+# encoding: utf-8
+# ODDB::View::Analysis::Result -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Analysis::Result -- oddb.org -- 14.06.2006 -- sfrischknecht@ywesee.com
 
 require 'htmlgrid/list'
 require 'model/analysis/position'
@@ -58,6 +60,7 @@ class List < HtmlGrid::List
 			end
 		end
 		link.value = text
+    link.href = @lookandfeel._event_url(:analysis, [:group, model.groupcd, :position, model.poscd]) if model.is_a?(ODDB::Analysis::Position)
 		link
 	end
 	def list_title(model, key = :list_title)

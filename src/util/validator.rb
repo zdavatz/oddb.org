@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 26.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -131,6 +131,7 @@ module ODDB
 			:ajax_ddd_price,
 			:ajax_matches,
 			:ajax_swissmedic_cat,
+			:analysis,
 			:analysis_alphabetical,
 			:assign,
 			:assign_deprived_sequence,
@@ -354,6 +355,7 @@ module ODDB
 			:goid,
 			:galenic_form,
       :generic_group,
+      :group,
 			:heading,
       :highlight,
       :index_name,
@@ -383,6 +385,7 @@ module ODDB
 			:pi_update,
 			:plz,
 			:powerlink,
+			:position,
 			:range,
 			:register_update,
 			:regulatory_email,

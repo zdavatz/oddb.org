@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 27.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -548,6 +548,15 @@ module ODDB
       def indication
         if oid = @session.user_input(:oid) and model = @session.app.indication(oid)
           ODDB::State::Admin::TransparentLogin.new(@session, model)
+        end
+      end
+      def analysis
+        if group_cd = @session.user_input(:group) and group = @session.app.analysis_group(group_cd) 
+          if position = group.position(@session.user_input(:position))
+            State::Analysis::Position.new(@session, position)
+          else
+            State::Analysis::Group.new(@session, group)
+          end
         end
       end
 			def resolve

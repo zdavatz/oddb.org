@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Analysis::Group -- oddb.org -- 05.07.2006 -- sfrischknecht@ywesee.com
+# encoding: utf-8
+# ODDB::View::Analysis::Group -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Analysis::Group -- oddb.org -- 05.07.2006 -- sfrischknecht@ywesee.com
 
 require 'view/additional_information'
 require 'view/dataformat'
@@ -29,6 +31,7 @@ class	PositionList < HtmlGrid::List
 	def description(model, key = :description)
 		link = PointerLink.new(:to_s, model, @session, self)
 		link.value = model.send(@session.language)
+    link.href = @lookandfeel._event_url(:analysis, [:group, model.groupcd, :position, model.poscd])
 		link
 	end
 end

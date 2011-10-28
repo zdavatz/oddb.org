@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Analysis::Position -- oddb.org -- 23.06.2006 -- sfrischknecht@ywesee.com
+# encoding: utf-8
+# ODDB::View::Analysis::Position -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Analysis::Position -- oddb.org -- 23.06.2006 -- sfrischknecht@ywesee.com
 
 require 'htmlgrid/urllink'
 require 'view/additional_information'
@@ -182,9 +184,22 @@ class PositionComposite < HtmlGrid::Composite
 		Permissions.new(model.permissions.send(@session.language), @session, self)
 	end
 end
+
+class PointerSteps < ODDB::View::PointerSteps
+  def pointer_descr(model, session=@session)
+    event = :analysis
+    link = PointerLink.new(:pointer_descr, model, @session, self)
+    link.href = @lookandfeel._event_url(event, {:group => model.groupcd})
+    link
+  end
+end
+
 class Position < View::PrivateTemplate
 	CONTENT = PositionComposite
 	SNAPBACK_EVENT = :result
+  def backtracking(model, session=@session)
+    ODDB::View::Analysis::PointerSteps.new(model, @session, self)
+  end
 end
 		end
 	end
