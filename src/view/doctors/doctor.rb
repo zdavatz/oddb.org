@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::Doctors::Doctor -- oddb.org -- 07.04.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Doctors::Doctor -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Doctors::Doctor -- oddb.org -- 27.05.2003 -- usenguel@ywesee.com
 
 require 'htmlgrid/composite'
@@ -166,6 +167,11 @@ class DoctorComposite < HtmlGrid::Composite
 		end
 		Addresses.new(addrs, @session, self)
 	end
+  def vcard(model)
+    link = View::PointerLink.new(:vcard, model, @session, self)
+    link.href = @lookandfeel._event_url(:vcard, {:doctor => model.oid})
+    link
+  end
 end
 class RootDoctorComposite < DoctorComposite
 	COMPONENTS = {

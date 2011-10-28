@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::Session -- oddb.org -- 23.08.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::Session -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::Session -- oddb.org -- 12.05.2009 -- hwyss@ywesee.com
 
 require 'sbsm/session'
@@ -174,6 +175,10 @@ module ODDB
 			@persistent_user_input[:search_query] ||= query
 			@app.search_substances(query)
 		end
+    def search_doctor(oid)
+			@persistent_user_input[:oid] ||= oid
+      @app.doctor(oid)
+    end
 		def set_persistent_user_input(key, val)
 			@persistent_user_input.store(key, val)
 		end

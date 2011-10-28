@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# State::Doctors::Vcard -- oddb -- 10.11.2004 -- jlang@ywesee.com
+# encoding: utf-8
+# ODDB::State::Doctors::Vcard -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Doctors::Vcard -- oddb.org -- 10.11.2004 -- jlang@ywesee.com
 
 require 'view/doctors/vcard'
 
@@ -11,8 +13,9 @@ class VCard < Global
 	VOLATILE = true
 	LIMITED = false
 	def init
-		pointer = @session.user_input(:pointer)
-		@model = pointer.resolve(@session)
+		if pointer = @session.user_input(:pointer)
+		  @model = pointer.resolve(@session)
+    end
 		super
 	end
 end

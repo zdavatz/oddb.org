@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Root -- oddb.org -- 26.10.2011 -- mhatakeyama@ywesee.com 
+# ODDB::State::Admin::Root -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com 
 # ODDB::State::Admin::Root -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/galenicgroups'
@@ -98,6 +98,11 @@ module Root
   def commercial_forms
     State::Admin::CommercialForms.new(@session, 
                                       ODDB::CommercialForm.odba_extent)
+  end
+  def doctor
+    if oid = @session.user_input(:oid) and model = @session.app.doctor(oid)
+      State::Doctors::RootDoctor.new(@session, model)
+    end
   end
 	def effective_substances
 		model = @session.substances.select { |sub| 

@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Doctors::DocotorList -- oddb -- 26.05.2003 -- jlang@ywesee.com
+# encoding: utf-8
+# ODDB::View::Doctors::DocotorList -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Doctors::DocotorList -- oddb.org -- 26.05.2003 -- jlang@ywesee.com
 
 require 'htmlgrid/value'
 require 'htmlgrid/link'
@@ -58,7 +60,9 @@ class DoctorList < HtmlGrid::List
 		end
 	end
 	def name(model)
-		View::PointerLink.new(:name, model, @session, self)
+    link = View::PointerLink.new(:name, model, @session, self)
+    link.href = @lookandfeel._event_url(:doctor, {:oid => model.oid})
+    link
 	end
 	def tel(model)
 		if(address = model.praxis_address)
@@ -69,6 +73,11 @@ class DoctorList < HtmlGrid::List
 		spc = model.specialities
 		spc.join('<br>') unless spc.nil?
 	end	
+  def vcard(model)
+    link = View::PointerLink.new(:vcard, model, @session, self)
+    link.href = @lookandfeel._event_url(:vcard, {:doctor => model.oid})
+    link
+  end
 end
 class DoctorsComposite < Form
 	CSS_CLASS = 'composite'

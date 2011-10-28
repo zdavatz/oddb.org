@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Address -- oddb -- 05.08.2005 -- jlang@ywesee.com
+# encoding: utf-8
+# ODDB::View::Address -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Address -- oddb.org -- 05.08.2005 -- jlang@ywesee.com
 
 require 'htmlgrid/composite'
 require 'htmlgrid/urllink'
@@ -100,10 +102,19 @@ class SuggestedAddress < HtmlGrid::Composite
 	def correct(model)
 		button = HtmlGrid::Button.new(:correct, 
 			model, @session, self)
-		args = {
-			:pointer	=>	model.pointer,
-			:zone			=>	@session.zone,
-		}
+    args = if doctor_oid = @session.persistent_user_input(:oid) and doctor = @session.search_doctor(doctor_oid) \
+             and address = doctor.addresses.index(model)
+      [
+        :doctor, doctor_oid,
+        :address, address,
+        :zone, @session.zone,
+      ]
+    else
+      {
+        :pointer  =>  model.pointer,
+        :zone     =>  @session.zone,
+      }
+    end
 		url = @lookandfeel._event_url(:suggest_address, args)
 		button.set_attribute('onclick', 
 			"document.location.href='#{url}'")

@@ -559,6 +559,19 @@ module ODDB
           end
         end
       end
+      def doctor
+        if oid = @session.user_input(:oid) and model = @session.search_doctor(oid)
+          State::Doctors::Doctor.new(@session, model)
+        end
+      end
+      def vcard
+        doctor = if oid = @session.user_input(:doctor) 
+                   @session.app.doctor(oid)
+                 elsif pointer = @session.user_input(:pointer) 
+                   pointer.resolve(@session)
+                 end
+        State::Doctors::VCard.new(@session, doctor) if doctor
+      end
 			def resolve
 				if(@session.request_path == @request_path)
 					self
@@ -757,19 +770,22 @@ module ODDB
 			def suggest_address
 				keys = [:pointer]
 				input = user_input(keys, keys)
-				pointer = input[:pointer]
-				if(!error?) 
-					addr = pointer.resolve(@session)
-					if(addr.nil?)
-						## simulate an address
-						addr = Address2.new
-						if(parent = pointer.parent.resolve(@session))
-							addr.name = parent.fullname
-						end
-						addr.pointer = pointer
-					end
-					SuggestAddress.new(@session, addr)
-				end	
+				if pointer = input[:pointer]
+          if(!error?) 
+            addr = pointer.resolve(@session)
+            if(addr.nil?)
+              ## simulate an address
+              addr = Address2.new
+              if(parent = pointer.parent.resolve(@session))
+                addr.name = parent.fullname
+              end
+              addr.pointer = pointer
+            end
+            SuggestAddress.new(@session, addr)
+          end	
+        elsif oid = @session.user_input(:doctor) and doctor = @session.app.doctor(oid) and addr = doctor.address(@session.user_input(:address))
+          SuggestAddress.new(@session, addr)
+        end
 			end
 			def switch
 				state = self.trigger(self.direct_event)
