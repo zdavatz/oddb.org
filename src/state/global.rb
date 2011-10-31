@@ -788,8 +788,13 @@ module ODDB
             end
             SuggestAddress.new(@session, addr)
           end	
-        elsif oid = @session.user_input(:doctor) and doctor = @session.app.doctor(oid) and addr = doctor.address(@session.user_input(:address))
-          SuggestAddress.new(@session, addr)
+        else
+          doctor = if oid_or_ean = @session.user_input(:doctor)
+                     @session.search_doctor(oid_or_ean) || @session.search_doctors(oid_or_ean).first
+                   end
+          if doctor and addr = doctor.address(@session.user_input(:address))
+            SuggestAddress.new(@session, addr)
+          end
         end
 			end
 			def switch

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Address -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Address -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Address -- oddb.org -- 05.08.2005 -- jlang@ywesee.com
 
 require 'htmlgrid/composite'
@@ -102,8 +102,15 @@ class SuggestedAddress < HtmlGrid::Composite
 	def correct(model)
 		button = HtmlGrid::Button.new(:correct, 
 			model, @session, self)
-    args = if doctor_oid = @session.persistent_user_input(:oid) and doctor = @session.search_doctor(doctor_oid) \
+    args = if ean = @session.user_input(:ean) and doctors = @session.search_doctors(ean) and doctor = doctors.first \
              and address = doctor.addresses.index(model)
+      [
+        :doctor, ean,
+        :address, address,
+        :zone, @session.zone,
+      ]
+    elsif doctor_oid = @session.persistent_user_input(:oid) and doctor = @session.search_doctor(doctor_oid) \
+      and address = doctor.addresses.index(model)
       [
         :doctor, doctor_oid,
         :address, address,
