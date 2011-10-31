@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Doctors::DocotorList -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Doctors::DocotorList -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Doctors::DocotorList -- oddb.org -- 26.05.2003 -- jlang@ywesee.com
 
 require 'htmlgrid/value'
@@ -61,7 +61,11 @@ class DoctorList < HtmlGrid::List
 	end
 	def name(model)
     link = View::PointerLink.new(:name, model, @session, self)
-    link.href = @lookandfeel._event_url(:doctor, {:oid => model.oid})
+    if ean = model.ean13 and ean.to_s.strip != ""
+      link.href = @lookandfeel._event_url(:doctor, {:ean => ean})
+    else
+      link.href = @lookandfeel._event_url(:doctor, {:oid => model.oid})
+    end
     link
 	end
 	def tel(model)
@@ -75,7 +79,12 @@ class DoctorList < HtmlGrid::List
 	end	
   def vcard(model)
     link = View::PointerLink.new(:vcard, model, @session, self)
-    link.href = @lookandfeel._event_url(:vcard, {:doctor => model.oid})
+    ean_or_oid = if ean = model.ean13 and ean.to_s.strip != ""
+                   ean
+                 else
+                   model.oid
+                 end
+    link.href = @lookandfeel._event_url(:vcard, {:doctor => ean_or_oid})
     link
   end
 end

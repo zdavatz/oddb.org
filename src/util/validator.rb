@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -449,6 +449,7 @@ module ODDB
 			return '' if value.empty?
 			ODDB::Ean13.new(value)
 		end
+    alias :ean :ean13
     def emails(value)
       return if(value.empty?)
       parsed = RMail::Address.parse(value)

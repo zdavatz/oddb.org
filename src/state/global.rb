@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -560,13 +560,18 @@ module ODDB
         end
       end
       def doctor
-        if oid = @session.user_input(:oid) and model = @session.search_doctor(oid)
+        model = if ean = @session.user_input(:ean) 
+                   @session.search_doctors(ean).first
+                 elsif oid = @session.user_input(:oid) 
+                   @session.search_doctor(oid)
+                 end
+        if model 
           State::Doctors::Doctor.new(@session, model)
         end
       end
       def vcard
-        doctor = if oid = @session.user_input(:doctor) 
-                   @session.app.doctor(oid)
+        doctor = if ean_or_oid = @session.user_input(:doctor)
+                   @session.search_doctor(ean_or_oid) or @session.search_doctors(ean_or_oid).first 
                  elsif pointer = @session.user_input(:pointer) 
                    pointer.resolve(@session)
                  end

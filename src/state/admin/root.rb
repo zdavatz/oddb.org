@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Root -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com 
+# ODDB::State::Admin::Root -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com 
 # ODDB::State::Admin::Root -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/galenicgroups'
@@ -100,7 +100,12 @@ module Root
                                       ODDB::CommercialForm.odba_extent)
   end
   def doctor
-    if oid = @session.user_input(:oid) and model = @session.app.doctor(oid)
+    model = if ean = @session.user_input(:ean)
+               @session.search_doctors(ean).first
+             elsif oid = @session.user_input(:oid)
+               @session.search_doctor(oid)
+             end
+    if model
       State::Doctors::RootDoctor.new(@session, model)
     end
   end
