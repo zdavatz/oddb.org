@@ -120,6 +120,7 @@ module ODDB
 			:accept,
 			:add_to_interaction_basket,
 			:addresses,
+			:address_suggestion,
 			:ajax,
 			:ajax_autofill,
       :ajax_create_active_agent,

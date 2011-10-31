@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# Address -- oddb -- 20.09.2004 -- jlang@ywesee.com
+# encoding: utf-8
+# ODDB::Address -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::Address -- oddb.org -- 20.09.2004 -- jlang@ywesee.com
 
 require 'util/searchterms'
 require 'util/persistence'
@@ -153,7 +155,8 @@ module ODDB
 		ODBA_SERIALIZABLE = ['@additional_lines', '@fax',
 			'@fon'] 
 		attr_accessor :address_pointer, :message, 
-			:email_suggestion, :email, :time, :fullname
+			:email_suggestion, :email, :time, :fullname,
+      :address_instance
 		alias :pointer_descr :fullname
 		def init(app = nil)
 			super

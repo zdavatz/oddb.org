@@ -66,7 +66,7 @@ class SuggestedAddress < HtmlGrid::Composite
 	end
 	def init_components
 		ypos = ystart = self.class.const_get(:YPOS)
-		if(@model.type)
+		if(@model.class)
 			components.store([0,ypos], :type)
 			ypos += 1
 		end
@@ -137,7 +137,7 @@ class SuggestedAddress < HtmlGrid::Composite
 		model.lines.join('<br>')
 	end
 	def type(model)
-		HtmlGrid::LabelText.new("address_#{model.type}", model, @session, self)
+		HtmlGrid::LabelText.new("address_#{model.class}", model, @session, self)
 	end
 	def message(model)
 		model.message.to_s.gsub("\n", '<br>')

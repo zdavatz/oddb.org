@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::AddressSuggestion -- oddb.org -- 28.04.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::State::Admin::AddressSuggestion -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::AddressSuggestion -- oddb.org -- 09.08.2005 -- jlang@ywesee.com
 
 require 'state/global_predefine'
@@ -18,16 +19,15 @@ class AddressSuggestion < Global
 		attr_accessor :email_suggestion
 	end
 	def init
-		if(pointer = @model.address_pointer)
-			addr = pointer.resolve(@session)
-			if(addr.nil?)
-				addr = Address2.new
-				addr.pointer = pointer
-			end
+		if(addr = @model.address_instance or addr = @model.address_pointer.resolve(@session))
 			@active_address = AddressWrapper.new(addr)
-			parent = pointer.parent.resolve(@session)
-			select_zone(parent)
-			@active_address.email_suggestion = parent.email
+      @parent = if ean_or_oid = @session.persistent_user_input(:ean) || @session.persistent_user_input(:oid)
+                  @session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first
+                else pointer = @model.address_pointer
+                  pointer.parent.resolve(@session)
+                end
+			select_zone(@parent)
+			@active_address.email_suggestion = @parent.email
 		end
 		super
 	end
@@ -43,22 +43,14 @@ class AddressSuggestion < Global
 		input.store(:additional_lines, 
 			lns.split(/[\n\r]+/u))
 		input.store(:type, input.delete(:address_type))
-		if(!error? && (pointer = input.delete(:pointer)) \
-			&& (sugg = pointer.resolve(@session)) \
-			&& (addr_pointer = sugg.address_pointer))
-			addr = addr_pointer.resolve(@session)
-      if(addr.nil?)
-        addr = addr_pointer.creator.resolve(@session)
-        @active_address = AddressWrapper.new(addr)
-      end
+    if !error? and (addr = @model.address_instance or addr = @model.address_pointer.resolve(@session))
       email = input.delete(:email_suggestion)
       parent_input = {
         :email	=>	email,
       }
-      @session.app.update(pointer, input, unique_email)
-      addr.replace_with(sugg)
-      @session.app.update(addr_pointer.parent,
-        parent_input, unique_email)
+      @session.app.update(@model.pointer, input, unique_email)
+      addr.replace_with(@model)
+      @session.app.update(@parent.pointer, parent_input, unique_email)
       ## nur nötig wenn suggestion nicht gelöscht wird
       @active_address.email_suggestion = email
 			self

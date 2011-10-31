@@ -90,6 +90,12 @@ module Root
 		model = @session.app.address_suggestions.values
 		State::Admin::Addresses.new(@session, model)
 	end
+  def address_suggestion
+    if ean_or_oid = @session.user_input(:doctor) and (doctor = @session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first) \
+      and oid = @session.user_input(:oid) and model = @session.app.address_suggestion(oid)
+      State::Admin::AddressSuggestion.new(@session, model)
+    end
+  end
   def commercial_form
     if oid = @session.user_input(:oid) and model = @session.app.commercial_form(oid)
       ODDB::State::Admin::CommercialForm.new(@session, model)

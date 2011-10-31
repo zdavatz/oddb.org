@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::State::SuggestAddress -- oddb.org -- 16.08.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::State::SuggestAddress -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::SuggestAddress -- oddb.org -- 04.08.2005 -- jlang@ywesee.com
 
 require 'view/suggest_address'
@@ -34,7 +35,12 @@ module ODDB
 					lns.split(/[\n\r]+/u))
 				input.store(:type, input.delete(:address_type))
 				input.store(:address_pointer, @model.pointer)
-				parent = @model.parent(@session)
+				input.store(:address_instance, @model)
+        parent = if ean_or_oid = @session.persistent_user_input(:oid)
+                   @session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first
+                 else
+                   @model.parent(@session)
+                 end
 				input.store(:fullname, parent.fullname)
 				input.store(:time, Time.now)
 				unless error?
@@ -50,8 +56,11 @@ module ODDB
 				mail.from = from #'suggest_address@oddb.org'
 				mail.subject = "#{@session.lookandfeel.lookup(:address_subject)} #{suggestion.fullname}"
 				mail.date = Time.now
-				url = @session.lookandfeel._event_url(:resolve,
-					{:pointer => suggestion.pointer})
+        url = if doctor_ean_or_oid = @session.persistent_user_input(:oid)
+                @session.lookandfeel._event_url(:address_suggestion, [:doctor, doctor_ean_or_oid, :oid, suggestion.oid])
+              else
+				        @session.lookandfeel._event_url(:resolve, {:pointer => suggestion.pointer})
+              end
 				mail.body = [
 					url,
 				].join("\n")

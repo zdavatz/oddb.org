@@ -797,6 +797,12 @@ module ODDB
           end
         end
 			end
+      def address_suggestion
+        if ean_or_oid = @session.user_input(:doctor) and (doctor = @session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first) \
+          and oid = @session.user_input(:oid) and model = @session.app.address_suggestion(oid)
+          State::Admin::TransparentLogin.new(@session, model)
+        end
+      end
 			def switch
 				state = self.trigger(self.direct_event)
 				if(state.zone == @session.zone)
