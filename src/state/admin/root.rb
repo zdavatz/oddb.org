@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Root -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com 
+# ODDB::State::Admin::Root -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com 
 # ODDB::State::Admin::Root -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/galenicgroups'
@@ -249,6 +249,11 @@ module Root
 		model = pointer.resolve(@session.app) || Persistence::CreateItem.new(pointer)
 		State::Admin::Sponsor.new(@session, model)
 	end
+  def substance
+    if oid = @session.user_input(:oid) and substance = @session.app.substance(oid)
+      State::Substances::Substance.new(@session, substance)
+    end
+  end
 	def substances
 		model = @session.substances
 		State::Substances::Substances.new(@session, model)

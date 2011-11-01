@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Substances::Substances -- oddb -- 25.05.2004 -- mhuggler@ywesee.com
+# encoding: utf-8
+# ODDB::View::Substances::Substances -- oddb.org -- 25.05.2004 -- mhatakeyama@ywesee.com
+# ODDB::View::Substances::Substances -- oddb.org -- 25.05.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/value'
 require 'htmlgrid/link'
@@ -47,6 +49,7 @@ class List < View::FormList
 	SORT_REVERSE = false
 	def name(model, session)
 		link = View::PointerLink.new(:name, model, session, self)
+    link.href = @lookandfeel._event_url(:substance, {:oid => model.oid })
 		link
 	end
 	EVENT = :new_substance

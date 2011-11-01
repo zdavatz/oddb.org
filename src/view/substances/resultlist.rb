@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Substances::ResultList -- oddb -- 23.08.2004 -- mhuggler@ywesee.com
+# encoding: utf-8
+# ODDB::View::Substances::ResultList -- oddb.org -- 23.08.2004 -- mhatakeyama@ywesee.com
+# ODDB::View::Substances::ResultList -- oddb.org -- 23.08.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/value'
 require 'htmlgrid/link'
@@ -45,6 +47,7 @@ class ResultList < View::FormList
 	SORT_HEADER = false
 	def name(model, session)
 		link = View::PointerLink.new(:name, model, session, self)
+    link.href = @lookandfeel._event_url(:substance, {:oid => model.oid })
 		link
 	end
 	EVENT = :new_substance

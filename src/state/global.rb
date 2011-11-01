@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -576,6 +576,11 @@ module ODDB
                    pointer.resolve(@session)
                  end
         State::Doctors::VCard.new(@session, doctor) if doctor
+      end
+      def substance
+        if oid = @session.user_input(:oid) and substance = @session.app.substance(oid)
+          State::Admin::TransparentLogin.new(@session, substance)
+        end
       end
 			def resolve
 				if(@session.request_path == @request_path)
