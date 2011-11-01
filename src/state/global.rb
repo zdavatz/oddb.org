@@ -262,6 +262,11 @@ module ODDB
 					State::PayPal::Return.new(@session, invoice)
 				end
 			end
+      def hospital
+        if ean = @session.user_input(:ean) and model = @session.app.hospital(ean)
+          State::Hospitals::Hospital.new(@session, model)
+        end
+      end
 			def hospitallist
 				model = @session.hospitals.values
 				State::Hospitals::HospitalList.new(@session, model)
@@ -575,7 +580,16 @@ module ODDB
                  elsif pointer = @session.user_input(:pointer) 
                    pointer.resolve(@session)
                  end
-        State::Doctors::VCard.new(@session, doctor) if doctor
+        hospital = if ean = @session.user_input(:hospital) 
+                     @session.app.hospital(ean)
+                   elsif pointer = @session.user_input(:pointer)
+                     pointer.resolve(@session)
+                   end
+        if doctor
+          State::Doctors::VCard.new(@session, doctor) 
+        elsif hospital
+          State::Hospitals::VCard.new(@session, hospital)
+        end
       end
       def substance
         if oid = @session.user_input(:oid) and substance = @session.app.substance(oid)

@@ -131,6 +131,11 @@ module Root
 		model = @session.app.galenic_groups.values
 		State::Admin::GalenicGroups.new(@session, model)
 	end
+  def hospital
+    if ean = @session.user_input(:ean) and model = @session.app.hospital(ean)
+      State::Hospitals::RootHospital.new(@session, model)
+    end
+  end
   def indication
     if oid = @session.user_input(:oid) and model = @session.app.indication(oid)
       State::Admin::Indication.new(@session, model)

@@ -63,6 +63,11 @@ class HospitalInnerComposite < HtmlGrid::Composite
 			addr.location
 		end
 	end
+  def vcard(model)
+    link = View::PointerLink.new(:vcard, model, @session, self)
+    link.href = @lookandfeel._event_url(:vcard, {:hospital => model.ean13})
+    link
+  end
 end
 class HospitalForm < HtmlGrid::Form
 	include View::Admin::AddressFormMethods

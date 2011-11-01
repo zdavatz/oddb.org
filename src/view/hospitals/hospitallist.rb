@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Hospitals::HospitalList -- oddb -- 25.02.2005 --usenguel@ywesee.com, jlang@ywesee.com
+# encoding: utf-8
+# ODDB::View::Hospitals::HospitalList -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Hospitals::HospitalList -- oddb.org -- 25.02.2005 -- usenguel@ywesee.com, jlang@ywesee.com
 
 require 'htmlgrid/value'
 require 'htmlgrid/link'
@@ -79,6 +81,7 @@ class HospitalList < HtmlGrid::List
 	def name(model)
 		link = View::PointerLink.new(:name, model, @session, self)
 		link.set_attribute('title', "EAN: #{model.ean13}")
+    link.href = @lookandfeel._event_url(:hospital, {:ean => model.ean13})
 		link
 	end
 	def narcotics(model)
@@ -93,6 +96,11 @@ class HospitalList < HtmlGrid::List
 			super(addr)
 		end
 	end
+  def vcard(model)
+    link = View::PointerLink.new(:vcard, model, @session, self)
+    link.href = @lookandfeel._event_url(:vcard, {:hospital => model.ean13})
+    link
+  end
 end
 class HospitalsComposite < Form
 	CSS_CLASS = 'composite'
