@@ -58,10 +58,10 @@ module ODDB
 				mail.from = from #'suggest_address@oddb.org'
 				mail.subject = "#{@session.lookandfeel.lookup(:address_subject)} #{suggestion.fullname}"
 				mail.date = Time.now
-        url = if ean_or_oid = @session.persistent_user_input(:oid) and (@session.search_doctors(ean_or_oid) || @session.search_doctor(ean_or_oid))
-                @session.lookandfeel._event_url(:address_suggestion, [:doctor, ean_or_oid, :oid, suggestion.oid])
-              elsif ean = @session.persistent_user_input(:ean) and @session.search_hospital(ean)
-                @session.lookandfeel._event_url(:address_suggestion, [:hospital, ean, :oid, suggestion.oid])
+        url = if @parent.is_a?(ODDB::Doctor)
+                @session.lookandfeel._event_url(:address_suggestion, [:doctor, (@parent.ean13 || @parent.oid), :oid, suggestion.oid])
+              elsif @parent.is_a?(ODDB::Hospital)
+                @session.lookandfeel._event_url(:address_suggestion, [:hospital, @parent.ean13, :oid, suggestion.oid])
               else
 				        @session.lookandfeel._event_url(:resolve, {:pointer => suggestion.pointer})
               end
