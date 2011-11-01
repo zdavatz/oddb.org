@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::Swissindex::SwissindexPharma -- oddb.org -- 05.07.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::Swissindex::SwissindexPharma -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
 
@@ -25,7 +26,7 @@ module ODDB
         @nonpharma = ODDB::Swissindex::SwissindexNonpharma.new
       end
       def test_search_item
-        nonpharma = {:item => 'item'}
+        nonpharma = {:item => {'key' => 'item'}}
         response = flexmock('response', :to_hash => {:nonpharma => nonpharma}) 
         wsdl = flexmock('wsdl', :document= => nil)
         client = flexmock('client') do |c|
@@ -35,8 +36,22 @@ module ODDB
         flexmock(@nonpharma, :soap => soap)
         flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
         pharmacode = '1234567'
-        assert_equal('item', @nonpharma.search_item(pharmacode))
+        assert_equal({'key' => 'item'}, @nonpharma.search_item(pharmacode))
       end
+      def test_search_item__array
+        nonpharma = {:item => [{:gtin => '223'}, {:gtin => '123'}]}
+        response = flexmock('response', :to_hash => {:nonpharma => nonpharma}) 
+        wsdl = flexmock('wsdl', :document= => nil)
+        client = flexmock('client') do |c|
+          c.should_receive(:request).and_yield.and_return(response)
+        end
+        soap = flexmock('soap', :xml= => nil)
+        flexmock(@nonpharma, :soap => soap)
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+        pharmacode = '1234567'
+        assert_equal({:gtin => '223'}, @nonpharma.search_item(pharmacode))
+      end
+
       def test_search_item__nil
         response = flexmock('response', :to_hash => {:nonpharma => nil}) 
         wsdl = flexmock('wsdl', :document= => nil)
@@ -307,7 +322,7 @@ module ODDB
         @pharma = ODDB::Swissindex::SwissindexPharma.new
       end
       def test_search_item
-        pharma = {:item => 'item'}
+        pharma = {:item => {'key' => 'item'}}
         response = flexmock('response', :to_hash => {:pharma => pharma}) 
         wsdl = flexmock('wsdl', :document= => nil)
         client = flexmock('client') do |c|
@@ -317,10 +332,10 @@ module ODDB
         soap = flexmock('soap', :xml= => nil)
         flexmock(@pharma, :soap => soap)
         pharmacode = '1234567'
-        assert_equal('item', @pharma.search_item(pharmacode, :get_by_gtin))
+        assert_equal({'key' => 'item'}, @pharma.search_item(pharmacode, :get_by_gtin))
       end
-      def test_search_item__get_by_pharmacode
-        pharma = {:item => 'item'}
+      def test_search_item__array
+        pharma = {:item => [{:gtin => 223}, {:gtin => 123}]}
         response = flexmock('response', :to_hash => {:pharma => pharma}) 
         wsdl = flexmock('wsdl', :document= => nil)
         client = flexmock('client') do |c|
@@ -330,7 +345,21 @@ module ODDB
         soap = flexmock('soap', :xml= => nil)
         flexmock(@pharma, :soap => soap)
         pharmacode = '1234567'
-        assert_equal('item', @pharma.search_item(pharmacode, :get_by_pharmacode))
+        assert_equal({:gtin => 223}, @pharma.search_item(pharmacode, :get_by_gtin))
+      end
+
+      def test_search_item__get_by_pharmacode
+        pharma = {:item => {'key' => 'item'}}
+        response = flexmock('response', :to_hash => {:pharma => pharma}) 
+        wsdl = flexmock('wsdl', :document= => nil)
+        client = flexmock('client') do |c|
+          c.should_receive(:request).and_yield.and_return(response)
+        end
+        flexmock(Savon::Client).should_receive(:new).and_yield(wsdl, 'http').and_return(client)
+        soap = flexmock('soap', :xml= => nil)
+        flexmock(@pharma, :soap => soap)
+        pharmacode = '1234567'
+        assert_equal({'key' => 'item'}, @pharma.search_item(pharmacode, :get_by_pharmacode))
       end
 
       def test_search_item__nil

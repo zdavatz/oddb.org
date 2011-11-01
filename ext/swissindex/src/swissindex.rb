@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-# ODDB::Swissindex::SwissindexPharma -- 29.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::Swissindex::SwissindexPharma -- 01.11.2011 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
 require 'savon'
@@ -41,7 +41,13 @@ class SwissindexNonpharma
         </soap:Envelope>'
       end
       if nonpharma = response.to_hash[:nonpharma]
-        return nonpharma[:item]
+        nonpharma_item = if nonpharma[:item].is_a?(Array)
+                           nonpharma[:item].sort_by{|item| item[:gtin].to_i}.reverse.first
+                         elsif nonpharma[:item].is_a?(Hash)
+                           nonpharma[:item]
+                         end
+ 
+        return nonpharma_item
       else
         return nil
       end
@@ -262,7 +268,14 @@ class SwissindexPharma
                  end
       end
       if pharma = response.to_hash[:pharma] 
-        return pharma[:item]
+        # If there are some products those phamarcode is same, then the return value become an Array
+        # We take one of them which has a higher Ean-Code
+        pharma_item = if pharma[:item].is_a?(Array)
+                        pharma[:item].sort_by{|item| item[:gtin].to_i}.reverse.first
+                      elsif pharma[:item].is_a?(Hash)
+                        pharma[:item]
+                      end
+        return pharma_item
       else
         return nil
       end
