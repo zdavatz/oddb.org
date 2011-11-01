@@ -811,15 +811,21 @@ module ODDB
           doctor = if oid_or_ean = @session.user_input(:doctor)
                      @session.search_doctor(oid_or_ean) || @session.search_doctors(oid_or_ean).first
                    end
-          if doctor and addr = doctor.address(@session.user_input(:address))
+          hospital = if ean = @session.user_input(:hospital)
+                       @session.search_hospital(ean)
+                     end
+          if (doctor and addr = doctor.address(@session.user_input(:address))) \
+            or (hospital and addr = hospital.address(@session.user_input(:address)))
             SuggestAddress.new(@session, addr)
           end
         end
 			end
       def address_suggestion
-        if ean_or_oid = @session.user_input(:doctor) and (doctor = @session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first) \
-          and oid = @session.user_input(:oid) and model = @session.app.address_suggestion(oid)
-          State::Admin::TransparentLogin.new(@session, model)
+        if (ean_or_oid = @session.user_input(:doctor) and (doctor = @session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first)) \
+          or (ean = @session.user_input(:hospital) and hospital = @session.search_hospital(ean))
+          if oid = @session.user_input(:oid) and model = @session.app.address_suggestion(oid) 
+            State::Admin::TransparentLogin.new(@session, model)
+          end
         end
       end
 			def switch

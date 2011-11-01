@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::SuggestAddress-- oddb -- 05.08.2005 -- jlang@ywesee.com
+# encoding: utf-8
+# ODDB::View::SuggestAddress-- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::SuggestAddress-- oddb.org -- 05.08.2005 -- jlang@ywesee.com
 
 require 'htmlgrid/composite'
 require 'htmlgrid/select'
@@ -50,6 +52,11 @@ class SuggestAddressForm < View::Form
 		:message => :address_message
 	}
 	def init
+    unless @model.name
+      if ean = @session.user_input(:hospital) and hospital = @session.app.hospital(ean)
+        @model.name = hospital.name
+      end
+    end
 		super
 		error_message
 	end

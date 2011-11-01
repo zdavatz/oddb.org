@@ -36,12 +36,14 @@ module ODDB
 				input.store(:type, input.delete(:address_type))
 				input.store(:address_pointer, @model.pointer)
 				input.store(:address_instance, @model)
-        parent = if ean_or_oid = @session.persistent_user_input(:oid)
-                   @session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first
+        @parent = if ean_or_oid = @session.persistent_user_input(:oid) and parent = (@session.search_doctor(ean_or_oid) || @session.search_doctors(ean_or_oid).first) 
+                   parent
+                 elsif ean = @session.persistent_user_input(:ean) and parent = @session.search_hospital(ean)
+                   parent
                  else
                    @model.parent(@session)
                  end
-				input.store(:fullname, parent.fullname)
+				input.store(:fullname, @parent.fullname)
 				input.store(:time, Time.now)
 				unless error?
 					@session.set_cookie_input(:email, input[:email])
@@ -56,8 +58,10 @@ module ODDB
 				mail.from = from #'suggest_address@oddb.org'
 				mail.subject = "#{@session.lookandfeel.lookup(:address_subject)} #{suggestion.fullname}"
 				mail.date = Time.now
-        url = if doctor_ean_or_oid = @session.persistent_user_input(:oid)
-                @session.lookandfeel._event_url(:address_suggestion, [:doctor, doctor_ean_or_oid, :oid, suggestion.oid])
+        url = if ean_or_oid = @session.persistent_user_input(:oid) and (@session.search_doctors(ean_or_oid) || @session.search_doctor(ean_or_oid))
+                @session.lookandfeel._event_url(:address_suggestion, [:doctor, ean_or_oid, :oid, suggestion.oid])
+              elsif ean = @session.persistent_user_input(:ean) and @session.search_hospital(ean)
+                @session.lookandfeel._event_url(:address_suggestion, [:hospital, ean, :oid, suggestion.oid])
               else
 				        @session.lookandfeel._event_url(:resolve, {:pointer => suggestion.pointer})
               end
