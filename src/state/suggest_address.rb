@@ -43,11 +43,21 @@ module ODDB
                  else
                    @model.parent(@session)
                  end
+        input.store(:parent, @parent)
 				input.store(:fullname, @parent.fullname)
 				input.store(:time, Time.now)
 				unless error?
 					@session.set_cookie_input(:email, input[:email])
-					@session.app.update(pointer.creator, input, unique_email)
+					addr_sugg = @session.app.update(pointer.creator, input, unique_email)
+          @url = if @parent.is_a?(ODDB::Doctor)
+                  @session.lookandfeel._event_url(:address_suggestion, [:doctor, (@parent.ean13 || @parent.oid), :oid, addr_sugg.oid])
+                elsif @parent.is_a?(ODDB::Hospital)
+                  @session.lookandfeel._event_url(:address_suggestion, [:hospital, @parent.ean13, :oid, addr_sugg.oid])
+                else
+                  @session.lookandfeel._event_url(:resolve, {:pointer => @addr_sugg.pointer})
+                end
+          input.store(:url, @url)
+					@session.app.update(pointer, input, unique_email)
 				end
 			end
 			def send_notification(suggestion)
@@ -58,15 +68,8 @@ module ODDB
 				mail.from = from #'suggest_address@oddb.org'
 				mail.subject = "#{@session.lookandfeel.lookup(:address_subject)} #{suggestion.fullname}"
 				mail.date = Time.now
-        url = if @parent.is_a?(ODDB::Doctor)
-                @session.lookandfeel._event_url(:address_suggestion, [:doctor, (@parent.ean13 || @parent.oid), :oid, suggestion.oid])
-              elsif @parent.is_a?(ODDB::Hospital)
-                @session.lookandfeel._event_url(:address_suggestion, [:hospital, @parent.ean13, :oid, suggestion.oid])
-              else
-				        @session.lookandfeel._event_url(:resolve, {:pointer => suggestion.pointer})
-              end
 				mail.body = [
-					url,
+					@url,
 				].join("\n")
         Net::SMTP.start(config.smtp_server, config.smtp_port, config.smtp_domain,
                         config.smtp_user, config.smtp_pass,

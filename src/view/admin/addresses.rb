@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Admin::Addresses -- oddb -- 09.08.2005 -- jlang@ywesee.com
+# encoding: utf-8
+# ODDB::View::Admin::Addresses -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Admin::Addresses -- oddb.org -- 09.08.2005 -- jlang@ywesee.com
 
 require 'view/resulttemplate'
 require 'view/suggest_address'
@@ -34,8 +36,10 @@ class AddressList < HtmlGrid::List
 		@lookandfeel.lookup(model.type)
 	end
 	def parent_class(model)
-		ptr = model.address_pointer
-		obj = ptr.parent.resolve(@session)
+    obj = model.parent || begin
+		  ptr = model.address_pointer
+		  ptr.parent.resolve(@session)
+    end
 		@lookandfeel.lookup(obj.class)
 	end
 	def time(model)
@@ -43,9 +47,15 @@ class AddressList < HtmlGrid::List
 			link = PointerLink.new(:time, model, @session,self)
 			fmt = @lookandfeel.lookup(:time_format_long)
 			link.value = time.strftime(fmt)
+      link.href = model.url if model.url
 			link
 		end
 	end
+  def name(model)
+    link = View::PointerLink.new(:name, model, @session, self)
+    link.href = model.url if model.url
+    link
+  end
 end
 class Addresses < ResultTemplate
 	CONTENT = View::Admin::AddressList

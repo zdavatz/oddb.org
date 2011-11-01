@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Address -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::Address -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::Address -- oddb.org -- 20.09.2004 -- jlang@ywesee.com
 
 require 'util/searchterms'
@@ -156,7 +156,7 @@ module ODDB
 			'@fon'] 
 		attr_accessor :address_pointer, :message, 
 			:email_suggestion, :email, :time, :fullname,
-      :address_instance
+      :address_instance, :url, :parent
 		alias :pointer_descr :fullname
 		def init(app = nil)
 			super
