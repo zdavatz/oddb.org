@@ -84,6 +84,9 @@ class PatinfoStatsCommon < State::Admin::Global
     def oid
       @company.oid
     end
+    def ean13
+      @company.ean13
+    end
 	end
 	def init
 		model = {}
