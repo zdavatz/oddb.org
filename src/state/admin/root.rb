@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Root -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com 
+# ODDB::State::Admin::Root -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com 
 # ODDB::State::Admin::Root -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/galenicgroups'
@@ -106,6 +106,12 @@ module Root
   def commercial_forms
     State::Admin::CommercialForms.new(@session, 
                                       ODDB::CommercialForm.odba_extent)
+  end
+  def company
+    if (oid = @session.user_input(:oid) and model = @session.app.company(oid)) \
+      or (ean = @session.user_input(:ean) and model = @session.search_companies(ean).sort_by{|c| c.oid.to_i}.last)
+      State::Companies::RootCompany.new(@session, model)
+    end
   end
   def doctor
     model = if ean = @session.user_input(:ean)

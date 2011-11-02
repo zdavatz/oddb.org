@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -216,14 +216,9 @@ module ODDB
 				end
 			end
       def company
-        if oid = @session.user_input(:oid) and model = @session.app.company(oid)
-          if @session.allowed?('edit', model)
-            State::Companies::RootCompany.new(@session, model)
-          else
+        if (oid = @session.user_input(:oid) and model = @session.app.company(oid)) \
+          or (ean = @session.user_input(:ean) and model = @session.search_companies(ean).sort_by{|c| c.oid.to_i}.last)
             State::Companies::Company.new(@session, model)
-          end
-        else
-          Http404.new(@session, nil)
         end
       end
 			def clear_interaction_basket

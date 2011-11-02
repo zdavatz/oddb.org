@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Companies::CompanyList -- oddb -- 26.05.2003 -- mhuggler@ywesee.com
+# encoding: utf-8
+# ODDB::View::Companies::CompanyList -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Companies::CompanyList -- oddb.org -- 26.05.2003 -- mhuggler@ywesee.com
 
 require 'htmlgrid/value'
 require 'htmlgrid/link'
@@ -54,9 +56,10 @@ module CompanyList
 	end
 	def name(model, session=@session)
 		link = View::PointerLink.new(:name, model, @session, self)
-		if(model.ean13)
+		if(model.ean13 and !model.ean13.strip.empty?)
 			link.set_attribute('title', @lookandfeel.lookup(:ean_code, 
                                                       model.ean13))
+      link.href = @lookandfeel._event_url(:company, {:ean => model.ean13})
 		end
 		link
 	end

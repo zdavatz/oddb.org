@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Companies::Company -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Companies::Company -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Companies::Company -- oddb.org -- 27.05.2003 -- mhuggler@ywesee.com
 
 require 'state/global_predefine'
@@ -18,10 +18,6 @@ class Company < Global
   def init
     if((pointer = @session.user_input(:pointer)))
       @model = pointer.resolve(@session.app)
-    elsif oid = @session.user_input(:oid) and company = @session.app.company(oid)
-      @model = company
-    else
-      @model = nil
     end
   end
 	def snapback_event
