@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-#	ODDB::State::Admin::PatinfoStats -- oddb.org -- 27.10.2011 -- mhatakeyama@ywesee.com
+#	ODDB::State::Admin::PatinfoStats -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com
 #	ODDB::State::Admin::PatinfoStats -- oddb.org -- 07.10.2004 -- mwalder@ywesee.com
 
 require 'state/global_predefine'
@@ -90,7 +90,7 @@ class PatinfoStatsCommon < State::Admin::Global
 		patinfo_slate = @session.slate(:patinfo)
 		patinfo_slate.items.each_value { |item|
 			if(item.type == :annual_fee \
-				&& (sequence = @session.app.resolve(item.item_pointer)))
+				&& (sequence = item.sequence || @session.app.resolve(item.item_pointer)))
 				item_facade = InvoiceItemFacade.new(item)
 				item_facade.sequence = sequence
 				item_facade.email = item.yus_name 
@@ -119,8 +119,12 @@ class PatinfoStats < State::Admin::PatinfoStatsCommon
 	FILTER_THRESHOLD = 0
 	def init
 		super 
-		if((pointer = @session.user_input(:pointer)) \
-			&& (@snapback_model = pointer.resolve(@session.app)))
+    company = if oid_or_ean = @session.user_input(:company) 
+                @session.app.company(oid_or_ean) || @session.search_companies(oid_or_ean).sort_by{|c| c.oid.to_i}.last 
+              elsif pointer = @session.user_input(:pointer)
+                pointer.resolve(@session.app)
+              end
+    if @snapback_model = company
 			name = @snapback_model.name
 			@model.delete_if { |comp|
 				comp.name != name

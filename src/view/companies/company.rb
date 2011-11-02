@@ -183,7 +183,6 @@ class UserCompanyForm < View::Form
            else
              {:company => model.oid}
            end
-#    link.href = @lookandfeel._event_url(:fipi_overview, :pointer => @model.pointer)
     link.href = @lookandfeel._event_url(:fipi_overview, args)
     link
   end
@@ -192,9 +191,11 @@ class UserCompanyForm < View::Form
 	end
 	def patinfo_stats(model, session=@session)
 		link = HtmlGrid::Link.new(:patinfo_stats, model , session, self)
-		args = {
-			:pointer	=>	model.pointer,
-		}
+    args = unless model.ean13.strip.empty?
+             {:company => model.ean13}
+           else
+             {:company => model.oid}
+           end
 		link.href = @lookandfeel._event_url(:patinfo_stats, args)
 		link.set_attribute('title', @lookandfeel.lookup(:patinfo_stats))
 		link

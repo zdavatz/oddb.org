@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# Invoice -- oddb -- 08.10.2004 -- mwalder@ywesee.com, rwaltert@ywesee.com 
+# encoding: utf-8
+# ODDB::Invoice -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Invoice -- oddb.org -- 08.10.2004 -- mwalder@ywesee.com, rwaltert@ywesee.com 
 
 require 'util/persistence'
 require 'util/today'
@@ -124,6 +126,7 @@ module ODDB
 	class InvoiceItem < AbstractInvoiceItem
 		include Persistence
 		ODBA_SERIALIZABLE = ['@data']
+    attr_accessor :sequence
 		def InvoiceItem.expiry_time(duration, time)
 			time + (duration * 24 * 60 * 60)
 		end
