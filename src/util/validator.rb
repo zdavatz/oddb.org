@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -335,6 +335,7 @@ module ODDB
 			:chemical_substance,
 			:city,
       :commercial_form,
+			:company,
 			:company_form,
 			:company_name,
 			:comparable_size,

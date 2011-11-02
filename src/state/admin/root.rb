@@ -130,8 +130,8 @@ module Root
 		State::Substances::EffectiveSubstances.new(@session, model)
 	end
   def fipi_overview
-    if((pointer = @session.user_input(:pointer)) \
-      && (company = pointer.resolve(@session.app)))
+    if (oid_or_ean = @session.user_input(:company) and (company = @session.app.company(oid_or_ean) || @session.search_companies(oid_or_ean).sort_by{|c| c.oid.to_i}.last)) \
+        or ((pointer = @session.user_input(:pointer)) and (company = pointer.resolve(@session.app)))
       State::Companies::FiPiOverview.new(@session, company)
     end
   end

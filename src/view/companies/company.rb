@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::Companies::Company -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Companies::Company -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Companies::Company -- oddb.org -- 27.05.2003 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'
@@ -177,8 +178,13 @@ class UserCompanyForm < View::Form
 	end
   def fipi_overview(model, session=@session)
     link = HtmlGrid::Link.new(:fipi_overview, model, @session, self)
-    link.href = @lookandfeel._event_url(:fipi_overview, 
-                                        :pointer => @model.pointer)
+    args = if !model.ean13.strip.empty?
+             {:company => model.ean13}
+           else
+             {:company => model.oid}
+           end
+#    link.href = @lookandfeel._event_url(:fipi_overview, :pointer => @model.pointer)
+    link.href = @lookandfeel._event_url(:fipi_overview, args)
     link
   end
 	def fon(model, session=@session)
