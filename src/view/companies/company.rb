@@ -178,7 +178,7 @@ class UserCompanyForm < View::Form
 	end
   def fipi_overview(model, session=@session)
     link = HtmlGrid::Link.new(:fipi_overview, model, @session, self)
-    args = if !model.ean13.strip.empty?
+    args = unless model.ean13.to_s.strip.empty?
              {:company => model.ean13}
            else
              {:company => model.oid}
@@ -191,7 +191,7 @@ class UserCompanyForm < View::Form
 	end
 	def patinfo_stats(model, session=@session)
 		link = HtmlGrid::Link.new(:patinfo_stats, model , session, self)
-    args = unless model.ean13.strip.empty?
+    args = unless model.ean13.to_s.strip.empty?
              {:company => model.ean13}
            else
              {:company => model.oid}

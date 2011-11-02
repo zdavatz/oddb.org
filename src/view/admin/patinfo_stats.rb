@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::PatinfoStats -- oddb.org -- 27.10.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::PatinfoStats -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::PatinfoStats -- oddb.org -- 07.10.2004 -- mwalder@ywesee.com 
 
 require 'htmlgrid/composite'
@@ -32,7 +32,12 @@ class CompanyHeader < HtmlGrid::Composite
 	}
   def name(model, session)
     link = View::PointerLink.new(:name, model, session)
-    link.href = @lookandfeel._event_url(:company, {:oid => model.oid})
+    args = unless model.ean13.to_s.strip.empty?
+             {:ean => model.ean13}
+           else
+             {:oid => model.oid}
+           end
+    link.href = @lookandfeel._event_url(:company, args)
     link
   end
 end

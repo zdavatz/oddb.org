@@ -56,7 +56,7 @@ module CompanyList
 	end
 	def name(model, session=@session)
 		link = View::PointerLink.new(:name, model, @session, self)
-		if(model.ean13 and !model.ean13.strip.empty?)
+		if(model.ean13 and !model.ean13.to_s.strip.empty?)
 			link.set_attribute('title', @lookandfeel.lookup(:ean_code, 
                                                       model.ean13))
       link.href = @lookandfeel._event_url(:company, {:ean => model.ean13})
