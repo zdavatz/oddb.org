@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::TestPersistence -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com 
+# encoding: utf-8
+# ODDB::TestPersistence -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com 
 # ODDB::TestPersistence -- oddb.org -- 26.02.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -365,23 +366,9 @@ module ODDB
 			pointer = ODDB::Persistence::Pointer.new([:create, @pointer])
 			assert_equal(':!create,:!foo!bar,12345..', pointer.to_s)
 		end
-		def test_parse1
-			pointer = ODDB::Persistence::Pointer.parse(':!foo!bar,12345.')
-			assert_equal(@pointer, pointer)
-		end
-		def test_parse2
-			expected = ODDB::Persistence::Pointer.new([:create, @pointer])
-			pointer = ODDB::Persistence::Pointer.parse(':!create,:!foo!bar,12345..')
-			assert_equal(expected, pointer)
-		end
 		def test_to_s_escape
 			pointer = ODDB::Persistence::Pointer.new([:test, 'a!b,c:d.e%f'])
 			assert_equal(':!test,a%!b%,c%:d%.e%%f.', pointer.to_s)
-		end
-		def test_parse_escape
-			expected = ODDB::Persistence::Pointer.new([:test, 'a!b,c:d.e%f'])
-			pointer = ODDB::Persistence::Pointer.parse(':!test,a%!b%,c%:d%.e%%f.')
-			assert_equal(expected, pointer)
 		end
 		def test_skeleton
 			assert_equal([:foo,:bar], @pointer.skeleton)

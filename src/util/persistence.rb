@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
-# Persistence -- oddb.org -- 08.08.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# Persistence -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 # Persistence -- oddb.org -- 26.02.2003 -- hwyss@ywesee.com
 
-require 'rockit/rockit'
 require 'odba'
 
 # Hash#key has been newly defined since Ruby 1.9 (Ruby 1.8.8)
@@ -136,28 +136,7 @@ module ODDB
         :sponsor, :substance, :user, :limitation_text, :minifi, 
         :index_therapeuticus
       ]
-			@parser = Parse.generate_parser <<-EOG
-Grammar OddbSize
-	Tokens
-		STEP = /!/u
-		ARG  = /,/u
-		PTR  = /:/u
-		PEND = /\\./u
-		EXPR = /([^!,:.%]|%[!,:.%])+/u
-	Productions
-		Pointer -> PTR Step* PEND?
-							 [: _, steps, _]
-		Step		-> STEP EXPR Arg* 
-							 [: _, command, arguments]
-		Arg			-> ARG (EXPR | Pointer)
-							 [: _, argument]
-			EOG
 			class << self
-				def parse(string)
-					ast = @parser.parse(string)
-					ast.compact!
-					produce_pointer(ast)
-				end
         def from_yus_privilege(string)
           ## does not support encapsulated pointers
           args = string.scan(/!([^!]+)/u).collect { |matches|
@@ -166,27 +145,6 @@ Grammar OddbSize
           self.new(*args)
         end
 				private
-				def produce_argument(ast)
-					arg = ast.argument
-					if(arg.name == 'Pointer')
-						produce_pointer(arg)
-					else
-						arg.value.gsub(/%([!,:.%])/u, '\1')
-					end
-				end
-				def produce_pointer(ast)
-					steps = ast.steps.collect { |node|
-						produce_step(node)
-					}
-					Pointer.new(*steps)
-				end
-				def produce_step(ast)
-					step = [ast.command.value.intern]
-					ast.arguments.each { |arg| 
-						step.push produce_argument(arg)
-					}
-					step
-				end
 			end
 			def initialize(*args)
 				@directions = args.collect { |arg| [arg].flatten }

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# TestValidator -- oddb.org -- 10.03.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# TestValidator -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 # TestValidator -- oddb.org -- 04.03.2003 -- hwyss@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -56,11 +57,11 @@ class TestOddbValidator < Test::Unit::TestCase
 	end
 	def test_pointer2
 		pointer = ODDB::Persistence::Pointer.new([:registration, '49390'])
-		assert_equal(pointer, @validator.validate(:pointer, ':!registration,49390.'))
+		assert_kind_of(SBSM::InvalidDataError, @validator.validate(:pointer, ':!registration,49390.'))
 	end
 	def test_pointer3
 		pointer = ODDB::Persistence::Pointer.new([:registration, '49391'], [:sequence, '02'])
-		assert_equal(pointer, @validator.validate(:pointer, ':!registration,49391!sequence,02.'))
+		assert_kind_of(SBSM::InvalidDataError, @validator.validate(:pointer, ':!registration,49391!sequence,02.'))
 	end
 	def test_pointer4
 		assert_nothing_raised {
@@ -136,8 +137,9 @@ class TestOddbValidator < Test::Unit::TestCase
   end
   def test_pointer
     pointer = ':!registration,49390.'
-    expected = ODDB::Persistence::Pointer.new([:registration, '49390'])
-    assert_equal(expected, @validator.pointer(pointer))
+    assert_raise(SBSM::InvalidDataError) do 
+      @validator.pointer(pointer)
+    end
   end
   def test_pointer__invalid_pointer
     assert_raise(SBSM::InvalidDataError) do
@@ -146,8 +148,9 @@ class TestOddbValidator < Test::Unit::TestCase
   end
   def test_galenic_group
     pointer = ':!registration,49390.'
-    expected = ODDB::Persistence::Pointer.new([:registration, '49390'])
-    assert_equal(expected, @validator.galenic_group(pointer))
+    assert_raise(SBSM::InvalidDataError) do 
+       @validator.galenic_group(pointer)
+    end
   end
   def test_ikscat
     assert_equal('A', @validator.ikscat('Ahogehoge'))

@@ -540,22 +540,7 @@ module ODDB
 			validate_numeric(:page, value).to_i - 1
 		end
 		def pointer(value)
-			begin
-				pointer = Persistence::Pointer.parse(value)
-        if(pointer.insecure?)
-					path = File.expand_path('../../log/insecure_pointers',
-						File.dirname(__FILE__))
-					File.open(path, 'a') { |fh| fh.puts value }
-          raise SBSM::InvalidDataError.new('e_insecure_pointer', :pointer, value)
-        end
-        pointer
-			rescue StandardError, ParseException
-				if(value[-1] != ?.)
-					value << "."
-					retry
-				end
-				raise SBSM::InvalidDataError.new("e_invalid_pointer", :pointer, value)
-			end
+      raise SBSM::InvalidDataError.new("e_invalid_pointer", :pointer, value)
 		end
     @@yus = /^org\.oddb\.model\.[!*.a-z]+/u
     def yus_association(value)

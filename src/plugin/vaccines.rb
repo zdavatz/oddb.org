@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
-# VaccinePlugin -- oddb -- 22.03.2005 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::VaccinePlugin -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::VaccinePlugin -- oddb.org -- 22.03.2005 -- hwyss@ywesee.com
 
 require 'drb'
 require 'plugin/plugin'
-require 'rockit/rockit'
 require 'spreadsheet'
 require 'util/persistence'
 require 'util/html_parser'
