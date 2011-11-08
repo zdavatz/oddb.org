@@ -1,31 +1,15 @@
 #!/usr/bin/env ruby
-# Part -- oddb.org -- 05.05.2008 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::Part -- oddb.org -- 05.05.2008 -- hwyss@ywesee.com
+# ODDB::Part -- oddb.org -- 05.05.2008 -- hwyss@ywesee.com
 
 require 'model/dose'
-require 'rockit/rockit'
 require 'util/persistence'
+require 'strscan'
+require 'util/iso-latin1'
 
 module ODDB
   module SizeParser
-    unit_pattern = '(([kmµucMG]?([glLJm]|mol|Bq)\b)(\/([mµu]?[glL])\b)?)|((Mio\s)?U\.?I\.?)|(%( [mV]\/[mV])?)|(I\.E\.)|(Fl\.)'
-    numeric_pattern = '\d+(\'\d+)*([.,]\d+)?'
-    iso_pattern = "[[:alpha:]()\-]+"
-    @@parser = Parse.generate_parser <<-EOG
-Grammar OddbSize
-  Tokens
-    DESCRIPTION	= /(?!#{unit_pattern}\s)#{iso_pattern}(\s+#{iso_pattern})*/u
-    NUMERIC			= /#{numeric_pattern}/u
-    SPACE				= /\s+/u [:Skip]
-    UNIT				= /#{unit_pattern}/u
-  Productions
-    Size			->	Multiple* Addition? Count? Measure? Scale? Dose? DESCRIPTION?
-    Count			->	'je'? NUMERIC
-    Multiple	->	NUMERIC UNIT? /[xXà]|Set/u
-    Measure		->	NUMERIC UNIT UNIT?
-    Addition	->	NUMERIC UNIT? '+'
-    Scale			->	'/' NUMERIC? UNIT
-    Dose			->	'(' NUMERIC UNIT ')'
-    EOG
     UNIT = ODDB::Dose.new(1)
     def active_agents
       @composition ? @composition.active_agents : []
@@ -56,36 +40,89 @@ Grammar OddbSize
       end
     end
     def parse_size(size)
-      multi, addition, count, measure, scale, dose, comform = nil
-      begin
-        ast = @@parser.parse(size)
-        multi, addition, count, measure, scale, dose, comform = ast.flatten
-        count = (count ? count[1].value.to_i : 1)
-      rescue ParseException, AmbigousParseException => e
-        count = size.to_i
+      unit_pattern = /(([kmµucMG]?([glLJm]|mol|Bq))(\/([mµu]?[glL]))?)|(Mio\.?\s)?((U\.?I\.?)|(I\.E\.))|(%( [mV]\/[mV])?)|(I\.E\.)|(Fl\.)/
+      numeric_pattern = /\d+(\'\d+)*([.,]\d*)?/
+      isolatin1 = ODDB::Util::IsoLatin1::DOWNCASE_PAIRS.values.join
+      iso_pattern = /[[:alpha:]()\-#{isolatin1}]+/
+
+      description = /(?!#{unit_pattern}\s)#{iso_pattern}(\s+#{iso_pattern})*/u
+      numeric     = /#{numeric_pattern}/u
+      unit        = /#{unit_pattern}/u
+
+      count     = /(?<je>je)?\s*(?<numeric>#{numeric})/
+      multiple  = /(?<numeric>#{numeric})\s*(?<unit>#{unit})?\s*(?<set>[xXà])/
+      measure   = /(?<numeric>#{numeric})\s*(?<unit1>#{unit})\s*(?<unit2>#{unit})?/
+      addition  = /(?<numeric>#{numeric})\s*(?<unit>#{unit})?\s*(?<plus>\+)/
+      range     = /(?<minus>\-)\s*(?<numeric>#{numeric}\s*(?<unit>#{unit})?)/
+      part      = /(?<in>in)\s*(?<numeric>#{numeric})?\s*(?<unit>#{unit})/
+      scale     = /(?<slash>(\/|pro))\s*(?<numeric>#{numeric})?\s*(?<unit>#{unit})/
+      dose      = /\(\s*#{numeric}\s*#{unit}\s*\)/
+
+      s = StringScanner.new(size)
+      s_multi = []
+      s_comform = ""
+      s_count = nil
+      s_measure = nil
+      until s.eos?
+        s.skip(/\s+/)
+        case
+        when s.scan(/#{multiple}/)
+          m = s[0].match(/#{multiple}/)
+          s_multi << [m[:numeric], m[:unit], m[:set]] unless s_count
+        when s.scan(/#{addition}/)
+          m = s[0].match(/#{addition}/)
+          s_addition = [m[:numeric], m[:unit], m[:plus]]
+        when s.scan(/#{range}/)
+          m = s[0].match(/#{range}/)
+          s_range = [m[:minus], m[:numeric], m[:unit]]
+        when s.scan(/#{part}/)
+          m = s[0].match(/#{part}/)
+          s_part = [m[:in], m[:numeric], m[:unit]]
+        when s.scan(/#{measure}/)
+          m = s[0].match(/#{measure}/)
+          s_measure = [m[:numeric], m[:unit1], m[:unit2]] unless s_measure
+        when s.scan(/#{count}/)
+          m = s[0].match(/#{count}/)
+          s_count = [m[:je], m[:numeric]] unless s_count
+        when s.scan(/#{scale}/)
+          m = s[0].match(/#{scale}/)
+          s_scale = [m[:slash], m[:numeric], m[:unit]]
+        when s.scan(/#{dose}/)
+          s_dose = s[0]
+        when s.scan(/#{description}/)
+          s_comform += s[0]
+        when s.scan(/.*/)
+        end
+      end
+      s_comform = nil if s_comform.empty?
+      s_count = (s_count ? s_count[1].to_i : 1)
+      s_measure ||= [1, (s_range && s_range[2] or s_part && s_part[2]), nil]
+      if s_comform
+        s_comform.gsub!('()','')
+        s_comform.strip!
       end
       [
-        (addition ? addition.first.value.to_i : 0),
-        dose_from_multi(multi),
-        count,
-        dose_from_measure(measure),
-        dose_from_scale(scale),
-        (comform.value if comform),
+        (s_addition ? s_addition.first.to_i : 0),
+        dose_from_multi(s_multi),
+        s_count,
+        dose_from_measure(s_measure),
+        dose_from_scale(s_scale),
+        s_comform,
       ]
     end
     def dose_from_measure(measure)
-      values = measure ? measure.childrens[0,2].collect{ |c| c.value } : [1,nil]
+      values = measure ? measure[0,2] : [1,nil]
       Dose.new(*values)
     end
     def dose_from_scale(scale)
-      values = scale ? scale.childrens[1,2].collect{ |c| c.value } : [1,nil]
+      values = scale ? scale[1,2] : [1,nil]
       Dose.new(*values)
     end
     def dose_from_multi(multi)
       unless(multi.nil?)
-        multi.childrens.inject(UNIT) { |inj, node|
-          unit = (node[1].value if node[1])
-          dose = Dose.new(node[0].value, unit)
+        multi.inject(UNIT) { |inj, node|
+          unit = (node[1] if node[1])
+          dose = ODDB::Dose.new(node[0], unit)
           inj *= dose
         }
       else

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::TestPart -- oddb.org -- 07.04.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::TestPart -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -27,17 +28,24 @@ module ODDB
     def test_set_comparable_size
       assert_equal(Quanty(1.0,''), @part.set_comparable_size!)
     end
-    def test_parse_size
-      expected = [0, Quanty(1,''), 12, Quanty(1,''), Quanty(1,''), nil]
-      assert_equal(expected, @part.parse_size('12'))
+    def test_parse_size_multi
+      expected = [0, Quanty(10,''), 1, Quanty(20,'ml'), Quanty(1,''), nil]
+      assert_equal(expected, @part.parse_size('10 x 20 ml'))
+    end
+    def test_parse_size_addition
+      expected = [10, Quanty(1,''), 1, Quanty(20,'g'), Quanty(1,''), nil]
+      assert_equal(expected, @part.parse_size('10 + 20 g'))
+    end
+    def test_parse_size_tabletten
+      expected = [0, Quanty(1,''), 3, Quanty(1,''), Quanty(1,''), 'Tablette(n)']
+      assert_equal(expected, @part.parse_size('3 Tablette(n)'))
     end
     def test_size=
-      assert_equal('0', @part.size = '0')
+      assert_equal('10 x 20 ml', @part.size = '10 x 20 ml')
     end
     def test_dose_from_multi
-      node  = flexmock('node', :value => 123)
-      multi = flexmock('multi', :childrens => [[node, node]])
-      expected = Quanty(123,'123')
+      multi = [['123', 'ml']]
+      expected = Quanty(123,'ml')
       assert_equal(expected, @part.dose_from_multi(multi))
     end
     def test_dose_from_multi__nil
