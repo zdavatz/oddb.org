@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
-# View::Drugs::TestResultList -- oddb -- 22.03.2011 -- mhatakeyama@ywesee.com
-# View::Drugs::TestResultList -- oddb -- 05.03.2003 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::TestResultList -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::TestResultList -- oddb.org -- 05.03.2003 -- hwyss@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -12,6 +13,7 @@ require 'view/drugs/rootresultlist'
 require 'util/language'
 require 'htmlgrid/span'
 require 'view/pager'
+require 'model/sequence'
 
 module ODDB
   module View

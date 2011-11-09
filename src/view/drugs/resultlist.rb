@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 24.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
 require 'htmlgrid/list'
@@ -278,7 +278,11 @@ class ResultList < HtmlGrid::List
   end
 	def substances(model, session=@session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
-		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
+    if reg = model.iksnr and seq = model.seqnr and pac = model.ikscd
+		  link.href = @lookandfeel._event_url(:show, [:reg, reg, :seq, seq, :pack, pac])
+    else
+		  link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})
+    end
 		if (model.active_agents.size > 1)
 			#txt = HtmlGrid::Component.new(model, session, self)
 			link.set_attribute('title', model.active_agents.join(', '))
