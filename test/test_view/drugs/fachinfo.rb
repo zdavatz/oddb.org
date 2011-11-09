@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Drugs::TestFachinfo -- oddb.org -- 22.03.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::TestFachinfo -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -28,9 +29,11 @@ class TestFiChapterChooserLink < Test::Unit::TestCase
                         :respond_to? => true
                        )
     @pointer  = flexmock('pointer', :skeleton => 'skeleton')
+    registration = flexmock('registration', :iksnr => 'iksnr')
     @model   = flexmock('model', 
                         :language => @document,
-                        :pointer  => @pointer
+                        :pointer  => @pointer,
+                        :registrations => [registration]
                        )
     @link    = ODDB::View::Drugs::FiChapterChooserLink.new('name', @model, @session)
   end
@@ -72,10 +75,12 @@ class TestFiChapterChooser < Test::Unit::TestCase
     @pointer   = flexmock('pointer', :skeleton => 'skeleton')
     language   = flexmock('language', :chapter_names => 'chapter_names')
     atc_class  = flexmock('atc_class')
+    registration = flexmock('registration', :iksnr => 'iksnr')
     @model     = flexmock('model', 
                           :pointer   => @pointer,
                           :language  => language,
-                          :atc_class => atc_class
+                          :atc_class => atc_class,
+                          :registrations => [registration]
                          )
     @composite = ODDB::View::Drugs::FiChapterChooser.new(@model, @session)
   end
@@ -141,10 +146,12 @@ class TestFachinfoComposite < Test::Unit::TestCase
                           )
     pointer     = flexmock('pointer', :skeleton => 'skeleton')
     @atc_clas   = flexmock('atc_class')
+    registration = flexmock('registration', :iksnr => 'iksnr')
     @model      = flexmock('model',
                           :language  => language,
                           :pointer   => pointer,
-                          :atc_class => @atc_class
+                          :atc_class => @atc_class,
+                          :registrations => [registration]
                           )
     @composite  = ODDB::View::Drugs::FachinfoComposite.new(@model, @session)
   end
@@ -196,10 +203,12 @@ class TestEditFiChapterChooser < Test::Unit::TestCase
     chapter    = flexmock('chapter')
     language   = flexmock('language', :chapters => [chapter])
     atc_class  = flexmock('atc_class')
+    registration = flexmock('registration', :iksnr => 'iksnr')
     @model     = flexmock('model', 
                           :pointer   => pointer,
                           :language  => language,
-                          :atc_class => atc_class
+                          :atc_class => atc_class,
+                          :registrations => [registration]
                          )
     @composite = ODDB::View::Drugs::EditFiChapterChooser.new(@model, @session)
     document   = flexmock('document', :chapters => 'chapters')
@@ -233,11 +242,13 @@ class TestRootFachinfoComposite < Test::Unit::TestCase
                           :pointer      => pointer
                          )
     atc_class  = flexmock('atc_class')
+    registration = flexmock('registration', :iksnr => 'iksnr')
     @model     = flexmock('model',
                           :pointer   => pointer,
                           :company   => @company,
                           :language  => language,
-                          :atc_class => atc_class
+                          :atc_class => atc_class,
+                          :registrations => [registration]
                          )
     @composite = ODDB::View::Drugs::RootFachinfoComposite.new(@model, @session)
   end

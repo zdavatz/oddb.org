@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::Drugs::TestNarcotics -- oddb.org -- 03.06.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::TestNarcotics -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -36,7 +37,8 @@ class TestNarcoticList < Test::Unit::TestCase
     narcotic = flexmock('narcotic', 
                         :pointer   => 'pointer',
                         :category  => 'category',
-                        :packages  => [package]
+                        :packages  => [package],
+                        :oid       => 'oid'
                        )
     @model   = flexmock('model', 
                         :narcotic => narcotic,
@@ -77,7 +79,8 @@ class TestNarcoticsComposite < Test::Unit::TestCase
     narcotic   = flexmock('narcotic', 
                           :pointer   => 'pointer',
                           :category  => 'category',
-                          :packages  => [package]
+                          :packages  => [package],
+                          :oid       => 'oid'
                          )
     @model     = flexmock('model', 
                           :narcotic => narcotic,

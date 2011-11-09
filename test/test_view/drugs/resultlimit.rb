@@ -1,5 +1,6 @@
-#!/usr/bin/env ruby
-# ODDB::View::Drugs::TestResultLimit -- oddb.org -- 07.06.2011 -- mhatakeyama@ywesee.com
+#!/usr/bint_most_precise_doseenv ruby
+# encoding: utf-8
+# ODDB::View::Drugs::TestResultLimit -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -8,6 +9,7 @@ require 'flexmock'
 require 'htmlgrid/errormessage'
 require 'view/drugs/resultlimit'
 require 'htmlgrid/inputradio'
+require 'model/registration'
 
 
 module ODDB
@@ -43,6 +45,7 @@ class TestResultLimitList < Test::Unit::TestCase
                         :measure => 'measure',
                         :commercial_form => commercial_form
                        )
+    registration = flexmock('registration', :iksnr => 'iksnr')
     @model   = flexmock('model', 
                         :minifi => minifi,
                         :fachinfo_active? => nil,
@@ -60,7 +63,8 @@ class TestResultLimitList < Test::Unit::TestCase
                         :lppv             => 'lppv',
                         :sl_generic_type  => 'sl_generic_type',
                         :pointer          => 'pointer',
-                        :localized_name   => 'localized_name'
+                        :localized_name   => 'localized_name',
+                        :registration     => registration
                        )
     @list    = ODDB::View::Drugs::ResultLimitList.new([@model], @session)
   end
@@ -124,6 +128,7 @@ class TestResultLimitComposite < Test::Unit::TestCase
                         :measure => 'measure',
                         :commercial_form => commercial_form
                        )
+    registration = flexmock('registration', :iksnr => 'iksnr')
     @model   = flexmock('model', 
                         :minifi           => minifi,
                         :fachinfo_active? => nil,
@@ -141,7 +146,8 @@ class TestResultLimitComposite < Test::Unit::TestCase
                         :lppv             => 'lppv',
                         :sl_generic_type  => 'sl_generic_type',
                         :pointer          => 'pointer',
-                        :localized_name   => 'localized_name'
+                        :localized_name   => 'localized_name',
+                        :registration     => registration
                        )
     @composite = ODDB::View::Drugs::ResultLimitComposite.new([@model], @session)
   end

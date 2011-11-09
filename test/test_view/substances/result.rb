@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
-# ODDB::View::Substances::TestResult -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Substances::TestResult -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'flexmock'
 require 'view/substances/result'
+require 'model/company'
 
 
 module ODDB
@@ -35,7 +37,8 @@ class TestResultComposite < Test::Unit::TestCase
     @model     = flexmock('model', 
                           :pointer => 'pointer',
                           :name    => 'name',
-                          :method  => method
+                          :method  => method,
+                          :oid     => '123'
                          )
     @composite = ODDB::View::Substances::ResultComposite.new([@model], @session)
   end

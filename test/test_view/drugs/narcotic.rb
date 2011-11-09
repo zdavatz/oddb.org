@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::Drugs::TestNarcotic -- oddb.org -- 19.04.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::TestNarcotic -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -26,7 +27,10 @@ class TestPackagesList < Test::Unit::TestCase
                         :name_base => 'name_base',
                         :size      => 'size',
                         :ikskey    => 'ikskey',
-                        :pointer   => 'pointer'
+                        :pointer   => 'pointer',
+                        :iksnr     => 'iksnr',
+                        :seqnr     => 'seqnr',
+                        :ikscd     => 'ikscd'
                        )
     @list = ODDB::View::Drugs::PackagesList.new([@model], @session)
   end
@@ -53,7 +57,10 @@ class TestNarcoticComposite < Test::Unit::TestCase
                         :name_base => 'name_base',
                         :size      => 'size',
                         :ikskey    => 'ikskey',
-                        :pointer   => 'pointer'
+                        :pointer   => 'pointer',
+                        :iksnr     => 'iksnr',
+                        :seqnr     => 'seqnr',
+                        :ikscd     => 'ikscd'
                        )
     @model   = flexmock('model',
                         :substances => ['substance'],

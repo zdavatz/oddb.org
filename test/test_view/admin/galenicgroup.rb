@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::Admin::TestGalenicGroup -- oddb.org -- 23.06.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-9
+# ODDB::View::Admin::TestGalenicGroup -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -7,6 +8,7 @@ require 'test/unit'
 require 'flexmock'
 require 'htmlgrid/select'
 require 'view/admin/galenicgroup'
+require 'model/company'
 
 
 module ODDB
@@ -31,10 +33,13 @@ class TestGalenicGroupComposite < Test::Unit::TestCase
                           :error?   => nil
                          )
     method = flexmock('method', :arity => 1)
+    galenic_group = flexmock('galenic_group', :oid => 'oid')
     galenic_form = flexmock('galenic_form', 
+                            :oid    => 'oid',
                             :method => method,
                             :description => 'description',
-                            :pointer => 'pointer'
+                            :pointer => 'pointer',
+                            :galenic_group => galenic_group
                            )
     @model     = flexmock('model', 
                           :galenic_forms => {'key' => galenic_form},

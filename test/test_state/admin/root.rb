@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
-# State::Admin::TestRoot -- oddb -- 29.03.2011 -- mhatakeyama@ywesee.com
-# State::Admin::TestRoot -- oddb -- 13.10.2003 -- mhuggler@ywesee.com
+# encoding: utf-8
+# ODDB::State::Admin::TestRoot -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::TestRoot -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -142,6 +143,7 @@ class TestODDBStateAdminRoot < Test::Unit::TestCase
   def test_fipi_overview
     pointer = flexmock('pointer', :resolve => 'company')
     flexmock(@session, :user_input => pointer)
+    flexmock(@app, :company => 'company')
     assert_kind_of(ODDB::State::Companies::FiPiOverview, @state.fipi_overview)
   end
   def test_galenic_groups

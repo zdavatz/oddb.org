@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::Doctors::TestDoctor -- oddb.org -- 07.04.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Doctors::TestDoctor -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -9,6 +10,7 @@ require 'flexmock'
 require 'view/doctors/doctor'
 require 'htmlgrid/textarea'
 require 'model/address'
+require 'model/company'
 
 module ODDB
   module View
@@ -63,7 +65,16 @@ class TestDoctorComposite < Test::Unit::TestCase
                           :attributes => {},
                           :_event_url  => '_event_url'
                          )
-    @session   = flexmock('session', :lookandfeel => @lnf)
+    hospital   = flexmock('hospital', :addresses => ['address'])
+    doctor     = flexmock('doctor', :addresses => ['address'])
+    @session   = flexmock('session', 
+                          :lookandfeel => @lnf,
+                          :user_input  => 'user_input',
+                          :search_hospital => hospital,
+                          :search_doctors  => [doctor],
+                          :search_doctor   => doctor,
+                          :persistent_user_input => 'persistent_user_input'
+                         )
     address    = flexmock('address', 
                           :fon    => ['fon'],
                           :fax    => ['fax'],
@@ -77,7 +88,8 @@ class TestDoctorComposite < Test::Unit::TestCase
                           :specialities => ['speciality'],
                           :capabilities => ['capability'],
                           :addresses    => [address],
-                          :pointer      => 'pointer'
+                          :pointer      => 'pointer',
+                          :ean13        => 'ean13'
                          )
     @composite = ODDB::View::Doctors::DoctorComposite.new(@model, @session)
   end

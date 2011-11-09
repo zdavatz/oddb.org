@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::TestAddress -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::TestAddress -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
@@ -63,7 +64,16 @@ class TestSuggestedAddress < Test::Unit::TestCase
   end
   def test_correct
     flexmock(@lnf, :_event_url => '_event_url')
-    flexmock(@session, :zone => 'zone')
+    hospital = flexmock('hospital', :addresses => ['address'])
+    doctor   = flexmock('doctor', :addresses => ['address'])
+    flexmock(@session, 
+             :zone => 'zone',
+             :user_input      => 'user_input',
+             :search_hospital => hospital,
+             :search_doctors  => [doctor],
+             :persistent_user_input => 'persistent_user_input',
+             :search_doctor   => doctor
+            )
     flexmock(@model, :pointer => 'pointer')
     assert_kind_of(HtmlGrid::Button, @view.correct(@model))
   end
@@ -77,10 +87,16 @@ class TestAddress < Test::Unit::TestCase
                         :attributes => {},
                         :_event_url => '_event_url'
                        )
- 
+    hospital = flexmock('hospital', :addresses => ['address']) 
+    doctor   = flexmock('doctor', :addresses => ['address'])
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
-                        :zone => 'zone'
+                        :zone => 'zone',
+                        :user_input => 'user_input',
+                        :search_hospital => hospital,
+                        :search_doctors  => [doctor],
+                        :search_doctor   => doctor,
+                        :persistent_user_input => 'persistent_user_input'
                        )
     @model   = flexmock('model', 
                         :fon => ['fon'],

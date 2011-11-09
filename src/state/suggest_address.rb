@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::SuggestAddress -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::SuggestAddress -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::SuggestAddress -- oddb.org -- 04.08.2005 -- jlang@ywesee.com
 
 require 'view/suggest_address'
@@ -54,7 +54,7 @@ module ODDB
                 elsif @parent.is_a?(ODDB::Hospital)
                   @session.lookandfeel._event_url(:address_suggestion, [:hospital, @parent.ean13, :oid, addr_sugg.oid])
                 else
-                  @session.lookandfeel._event_url(:resolve, {:pointer => @addr_sugg.pointer})
+                  @session.lookandfeel._event_url(:resolve, {:pointer => addr_sugg.pointer})
                 end
           input.store(:url, @url)
 					@session.app.update(pointer, input, unique_email)

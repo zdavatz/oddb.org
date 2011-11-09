@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::Analysis::TestGroup -- oddb.org -- 23.06.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Analysis::TestGroup -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -29,7 +30,8 @@ class TestPositionList < Test::Unit::TestCase
                         :poscd    => 'poscd',
                         :pointer  => 'pointer',
                         :language => 'language',
-                        :localized_name => 'localized_name'
+                        :localized_name => 'localized_name',
+                        :groupcd  => 'groupcdt_positionlist'
                        )
     @list    = ODDB::View::Analysis::PositionList.new([@model], @session)
   end
@@ -75,6 +77,7 @@ class TestGroupComposite < Test::Unit::TestCase
                           :poscd    => 'poscd',
                           :pointer  => 'pointer',
                           :language => 'language',
+                          :groupcd  => 'groupcd',
                           :localized_name => 'localized_name'
                          )
     @model     = flexmock('model', 

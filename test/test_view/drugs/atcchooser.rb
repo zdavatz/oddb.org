@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
-# ODDB::View::Drugs::TestAtcChooser -- oddb.org -- 27.04.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::TestAtcChooser -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'flexmock'
 require 'view/drugs/atcchooser'
+require 'model/company'
 
 
 module ODDB
@@ -34,7 +36,8 @@ class TestAtcDddLink < Test::Unit::TestCase
     @link    = ODDB::View::Drugs::StubAtcDddLink.new(@model, @session)
     atc      = flexmock('atc', 
                         :has_ddd? => true,
-                        :pointer  => 'pointer'
+                        :pointer  => 'pointer',
+                        :code     => 'code'
                        )
     assert_kind_of(HtmlGrid::Link, @link.atc_ddd_link(atc, @session))
   end
@@ -104,7 +107,10 @@ class TestAtcChooserList < Test::Unit::TestCase
     assert_kind_of(HtmlGrid::Link, @list.description(@model, @session))
   end
   def test_edit
-    flexmock(@model, :pointer => 'pointer')
+    flexmock(@model, 
+             :pointer => 'pointer',
+             :code    => 'code'
+            )
     assert_kind_of(ODDB::View::PointerLink, @list.edit(@model, @session))
   end
   def test_compose_list

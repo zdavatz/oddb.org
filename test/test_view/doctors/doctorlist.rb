@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::Doctors::TestDoctorList -- oddb.org -- 26.04.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Doctors::TestDoctorList -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -7,6 +8,7 @@ require 'test/unit'
 require 'flexmock'
 require 'view/resulttemplate'
 require 'view/doctors/doctorlist'
+require 'model/company'
 
 module ODDB
   module View
@@ -47,7 +49,8 @@ class TestDoctorList < Test::Unit::TestCase
                         :pointer        => 'pointer',
                         :praxis_address => praxis_address,
                         :email          => 'email',
-                        :specialities   => ['speciality']
+                        :specialities   => ['speciality'],
+                        :ean13          => 'ean13'
                        )
     @list    = ODDB::View::Doctors::DoctorList.new([@model], @session)
   end

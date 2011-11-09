@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
-# ODDB::View::Drugs::TestPatinfo -- oddb.org -- 20.04.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Drugs::TestPatinfo -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
-#$: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
@@ -40,9 +40,15 @@ class TestPatinfoComposite < Test::Unit::TestCase
                           :language    => 'language'
                          )
     language   = flexmock('language', :name => 'name')
+    registration = flexmock('registration', :iksnr => 'iksnr')
+    sequence   = flexmock('sequence', 
+                          :registration => registration,
+                          :seqnr => 'seqnr'
+                         )
     @model     = flexmock('model', 
                           :language => language,
-                          :pointer  => 'pointer'
+                          :pointer  => 'pointer',
+                          :sequences => [sequence]
                          )
     @composite = ODDB::View::Drugs::PatinfoComposite.new(@model, @session)
   end
@@ -52,9 +58,15 @@ class TestPatinfoComposite < Test::Unit::TestCase
   def test_document_composite
     model      = ODDB::PatinfoDocument2001.new
     language   = flexmock('language', :name => 'name')
+    registration = flexmock('registration', :iksnr => 'iksnr')
+    sequence   = flexmock('sequence', 
+                          :registration => registration,
+                          :seqnr => 'seqnr'
+                         )
     flexmock(model,
              :language => language,
-             :pointer  => 'pointer'
+             :pointer  => 'pointer',
+             :sequences => [sequence]
             )
     composite = ODDB::View::Drugs::PatinfoComposite.new(model, @session)
     assert_kind_of(ODDB::View::Drugs::PatinfoInnerComposite, composite.document_composite(model, @session))

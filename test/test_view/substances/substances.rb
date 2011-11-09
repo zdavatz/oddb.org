@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
-# ODDB::View::Substances::TestSubstances -- oddb.org -- 05.04.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Substances::TestSubstances -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'flexmock'
 require 'view/substances/substances'
+require 'model/company'
 
 module ODDB
 	module View
@@ -30,7 +32,10 @@ class TestList < Test::Unit::TestCase
                         :event       => 'event',
                         :state       => state
                        )
-    @model   = flexmock('model', :pointer => 'pointer')
+    @model   = flexmock('model', 
+                        :pointer => 'pointer',
+                        :oid     => 'oid'
+                       )
     @list    = ODDB::View::Substances::List.new([@model], @session)
   end
   def test_name

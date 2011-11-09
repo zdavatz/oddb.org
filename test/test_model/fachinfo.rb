@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# TestFachinfo -- oddb -- 17.09.2003 -- rwaltert@ywesee.com
+# encoding: utf-8
+# ODDB::TestFachinfo -- oddb.org -- 09.09.2011 -- rwaltert@ywesee.com
+# ODDB::TestFachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -34,6 +36,7 @@ module ODDB
     end
     def test_add_change_log_item
       item, = @fachinfo.add_change_log_item 'test@email.ch', :indications, :de
+      item = @fachinfo.change_log[0]
       assert_instance_of ODDB::Fachinfo::ChangeLogItem, item
       assert_equal 'test@email.ch', item.email
       assert_equal :indications, item.chapter

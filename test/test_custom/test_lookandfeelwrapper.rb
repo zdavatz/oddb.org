@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
-# SBSM::LookandfeelWrapper -- oddb -- 03.03.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# SBSM::LookandfeelWrapper -- oddb.org -- 03.03.2011 -- mhatakeyama@ywesee.com
 
-#$: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
 require 'test/unit'
@@ -611,7 +611,7 @@ module ODDB
       assert_equal(expected, @look.sequence_list_components)
     end
     def test_zones
-      expected = [ State::Drugs::Sequences ]
+      expected = [ ]
       assert_equal(expected, @look.zones)
     end
   end

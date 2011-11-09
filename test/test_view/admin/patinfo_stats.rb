@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::Admin::TestPatinfoStats -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Admin::TestPatinfoStats -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -31,7 +32,8 @@ class TestPatinfoStatsCompanyList < Test::Unit::TestCase
     @model   = flexmock('model', 
                         :time    => Time.local(2011,2,3),
                         :pointer => 'pointer',
-                        :slate_sequences => [sequence]
+                        :slate_sequences => [sequence],
+                        :ean13   => 'ean13'
                        )
     @view    = ODDB::View::Admin::PatinfoStatsCompanyList.new([@model], @session)
   end

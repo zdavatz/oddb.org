@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Migel::TestProduct -- oddb.org -- 27.09.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Migel::TestProduct -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -12,6 +13,8 @@ require 'view/migel/product'
 require 'view/migel/group'
 require 'view/migel/subgroup'
 require 'sbsm/validator'
+require 'model/package'
+require 'state/drugs/compare'
 
 module ODDB
   module View
@@ -335,6 +338,7 @@ class TestPointerSteps < Test::Unit::TestCase
   end
   def test_pointer_descr__drb_group
     flexmock(@model) do |m|
+      m.should_receive(:is_a?).with(ODDB::Company).and_return(false)
       m.should_receive(:is_a?).with(DRbObject).and_return(true)
       m.should_receive(:migel_code).and_return('12')
     end
@@ -342,6 +346,7 @@ class TestPointerSteps < Test::Unit::TestCase
   end
   def test_pointer_descr__drb_subgroup
     flexmock(@model) do |m|
+      m.should_receive(:is_a?).with(ODDB::Company).and_return(false)
       m.should_receive(:is_a?).with(DRbObject).and_return(true)
       m.should_receive(:migel_code).and_return('12.34')
     end
@@ -349,6 +354,7 @@ class TestPointerSteps < Test::Unit::TestCase
   end
   def test_pointer_descr__drb_product
     flexmock(@model) do |m|
+      m.should_receive(:is_a?).with(ODDB::Company).and_return(false)
       m.should_receive(:is_a?).with(DRbObject).and_return(true)
       m.should_receive(:migel_code).and_return('12.34.56.78.9')
     end
@@ -356,6 +362,7 @@ class TestPointerSteps < Test::Unit::TestCase
   end
   def test_pointer_descr__group
     flexmock(@model) do |m|
+      m.should_receive(:is_a?).with(ODDB::Company).and_return(false)
       m.should_receive(:is_a?).with(DRbObject).and_return(false)
       m.should_receive(:is_a?).with(ODDB::Migel::Group).and_return(true)
     end
@@ -363,6 +370,7 @@ class TestPointerSteps < Test::Unit::TestCase
   end
   def test_pointer_descr__subgroup
     flexmock(@model) do |m|
+      m.should_receive(:is_a?).with(ODDB::Company).and_return(false)
       m.should_receive(:is_a?).with(DRbObject).and_return(false)
       m.should_receive(:is_a?).with(ODDB::Migel::Group).and_return(false)
       m.should_receive(:is_a?).with(ODDB::Migel::Subgroup).and_return(true)
@@ -371,6 +379,7 @@ class TestPointerSteps < Test::Unit::TestCase
   end
   def test_pointer_descr__product
     flexmock(@model) do |m|
+      m.should_receive(:is_a?).with(ODDB::Company).and_return(false)
       m.should_receive(:is_a?).with(DRbObject).and_return(false)
       m.should_receive(:is_a?).with(ODDB::Migel::Group).and_return(false)
       m.should_receive(:is_a?).with(ODDB::Migel::Subgroup).and_return(false)

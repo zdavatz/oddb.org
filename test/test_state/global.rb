@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::State::TestGlobal -- oddb.org -- 05.10.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::State::TestGlobal -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::TestGlobal -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -324,6 +325,10 @@ end
         flexmock(@session) do |s|
           s.should_receive(:user_input).and_return(pointer)
         end
+        package      = flexmock('package')
+        sequence     = flexmock('sequence', :package => package)
+        registration = flexmock('registration', :sequence => sequence)
+        flexmock(@session.app, :registration => registration)
         assert_kind_of(State::Drugs::Feedbacks, @state.feedbacks)
       end
       def test_feedbacks__product
@@ -337,9 +342,16 @@ end
         flexmock(@session) do |s|
           s.should_receive(:user_input).and_return(pointer)
         end
-        assert_kind_of(State::Migel::Feedbacks, @state.feedbacks)
+        package      = flexmock('package')
+        sequence     = flexmock('sequence', :package => package)
+        registration = flexmock('registration', :sequence => sequence)
+        flexmock(@session.app, :registration => registration)
+        assert_kind_of(State::Drugs::Feedbacks, @state.feedbacks)
       end
       def test_feedbacks__nil
+        sequence     = flexmock('sequence', :package => nil)
+        registration = flexmock('registration', :sequence => sequence)
+        flexmock(@session.app, :registration => registration)
         assert_equal(nil, @state.feedbacks)
       end
       def test_notify__package
@@ -366,9 +378,12 @@ end
         flexmock(@session) do |s|
           s.should_receive(:user_input).and_return(pointer)
         end
-        assert_kind_of(State::Migel::Notify, @state.notify)
+        assert_kind_of(State::Drugs::Notify, @state.notify)
       end
       def test_notify__nil
+        sequence     = flexmock('sequence', :package => nil)
+        registration = flexmock('registration', :sequence => sequence)
+        flexmock(@session.app, :registration => registration)
         assert_equal(nil, @state.notify)
       end
       def test_help_navigation

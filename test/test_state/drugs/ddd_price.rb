@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::State::Drugs::TestDDDPrice -- oddb.org -- 01.07.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::State::Drugs::TestDDDPrice -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -15,7 +16,8 @@ module ODDB
 class TestDDDPrice < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
-    @app     = flexmock('app')
+    registration = flexmock('registration', :sequence => nil)
+    @app     = flexmock('app', :registration => registration)
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @model   = flexmock('model')
     pointer  = flexmock('pointer', 

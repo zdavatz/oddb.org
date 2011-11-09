@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
-# ODDB::View::Admin::TestAddresses -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Admin::TestAddresses -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'flexmock'
 require 'view/admin/addresses'
+require 'model/company'
 
 
 module ODDB
@@ -28,11 +30,14 @@ class TestAddressList < Test::Unit::TestCase
                        )
     method   = flexmock('method', :arity => 1)
     address_pointer = flexmock('address_pointer')
+    parent   = flexmock('parent')
     @model   = flexmock('model', 
+                        :url     => 'url',
                         :time    => Time.local(2011,2,3),
                         :method  => method,
                         :pointer => 'pointer',
                         :resolve => 'resolve',
+                        :parent  => parent,
                         :address_pointer => address_pointer
                        )
     flexmock(address_pointer, :parent => @model)

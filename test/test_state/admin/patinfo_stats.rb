@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::TestPatinfoStats -- oddb -- 25.02.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::State::Admin::TestPatinfoStats -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -112,6 +113,7 @@ module ODDB
             item.should_receive(:type).and_return(:annual_fee)
             item.should_receive(:item_pointer)
             item.should_receive(:yus_name).and_return('yus_name')
+            item.should_receive(:sequence)
           end
           slate = flexmock('slate') do |sla|
             sla.should_receive(:items).and_return({'key' => item})
@@ -163,6 +165,8 @@ module ODDB
         def test_init
           setup_patinfo_stats_common
           @patinfo_stats = PatinfoStats.new(@session, 'model')
+          company = flexmock('company', :name => 'name')
+          flexmock(@session.app, :company => company)
           assert_kind_of(Proc, @patinfo_stats.init)
         end
       end

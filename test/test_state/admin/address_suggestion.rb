@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::TestAddressSuggestion -- oddb.org -- 24.06.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::State::Admin::TestAddressSuggestion -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -31,11 +32,18 @@ class TestAddressSuggestion < Test::Unit::TestCase
                         :parent  => parent
                        )
     @app     = flexmock('app')
+    doctor   = flexmock('doctor', :email => 'email')
     @session = flexmock('session', 
                         :lookandfeel => @lnf,
-                        :app         => @app
+                        :app         => @app,
+                        :persistent_user_input => {},
+                        :search_doctor => doctor
                        )
-    @model   = flexmock('model', :address_pointer => pointer)
+    address_instance = flexmock('address_instance', :replace_with => 'replace_with')
+    @model   = flexmock('model', 
+                        :address_pointer => pointer,
+                        :address_instance => address_instance
+                       )
     @state   = ODDB::State::Admin::AddressSuggestion.new(@session, @model)
   end
   def test_init
@@ -97,6 +105,13 @@ class TestAddressSuggestion < Test::Unit::TestCase
              :user_input => input,
              :user       => 'user'
             )
+    flexmock(@model, :pointer => 'pointer')
+    parent = flexmock('parent', :pointer => 'pointer')
+    active_address = flexmock('active_address', :email_suggestion= => nil)
+    @state.instance_eval do 
+      @parent = parent
+      @active_address = active_address
+    end
     assert_equal(@state, @state.accept)
   end
   def test_accept__error

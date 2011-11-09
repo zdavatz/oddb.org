@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::Veiw::TestSuggestAddress -- oddb.org -- 03.06.2011 -- mhatakeyama@ywesee.com
+# encodnig: utf-8
+# ODDB::Veiw::TestSuggestAddress -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
@@ -27,7 +28,10 @@ module ODDB
         @parent    = flexmock('parent')
         flexmock(@parent, :resolve => @parent)
         pointer   = flexmock('pointer', :parent => @parent)
-        @model    = flexmock('model', :pointer => pointer)
+        @model    = flexmock('model', 
+                             :pointer => pointer,
+                             :name    => 'name'
+                            )
         @form     = ODDB::View::SuggestAddressForm.new(@model, @session)
       end
       def test_init
@@ -56,7 +60,10 @@ module ODDB
         @parent    = flexmock('parent', :fullname => 'fullname')
         flexmock(@parent, :resolve => @parent)
         pointer    = flexmock('pointer', :parent => @parent)
-        @model     = flexmock('model', :pointer => pointer)
+        @model     = flexmock('model', 
+                              :pointer => pointer,
+                              :name    => 'name'
+                             )
         @composite = ODDB::View::SuggestAddressComposite.new(@model, @session)
       end
       def test_fullname

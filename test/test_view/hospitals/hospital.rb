@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::Hospitals::TestHospital -- oddb.org -- 12.04.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Hospitals::TestHospital -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -7,6 +8,7 @@ require 'test/unit'
 require 'flexmock'
 require 'view/hospitals/hospital'
 require 'htmlgrid/textarea'
+require 'model/company'
 
 module ODDB
 	module View
@@ -33,7 +35,8 @@ class TestHospitalInnerComposite < Test::Unit::TestCase
                          )
     @model     = flexmock('model', 
                           :addresses => [@address],
-                          :pointer   => 'pointer'
+                          :pointer   => 'pointer',
+                          :ean13     => 'ean13'
                          )
     @composite = ODDB::View::Hospitals::HospitalInnerComposite.new(@model, @session)
   end

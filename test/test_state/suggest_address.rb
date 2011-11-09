@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::State::TestSuggestAddress -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::State::TestSuggestAddress -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
@@ -29,11 +30,14 @@ class TestSuggestAddress < Test::Unit::TestCase
                         :lookup     => 'lookup',
                         :_event_url => '_event_url'
                        )
+    doctor   = flexmock('doctor', :fullname => 'fullname')
     @session = flexmock('session', 
                         :app => @app,
                         :lookandfeel => @lnf,
                         :user_input  => {},
-                        :set_cookie_input => 'set_cookie_input'
+                        :persistent_user_input => 'persistent_user_input',
+                        :set_cookie_input => 'set_cookie_input',
+                        :search_doctor => doctor
                        )
     parent   = flexmock('parent', :fullname => 'fullname')
     @model   = flexmock('model', 

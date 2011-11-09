@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::TestRegistrationObserver -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::TestRegistrationObserver -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
 
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -30,13 +31,20 @@ module ODDB
     def test_article_codes
       package      = flexmock('package', 
                               :barcode    => 'barcode',
-                              :pharmacode => 'pharmacode'
+                              :pharmacode => 'pharmacode',
+                              :size       => 'size',
+                              :dose       => 'dose'
                              )
       registration = flexmock('registration') do |reg|
         reg.should_receive(:each_package).and_yield(package)
       end
       @observer.add_registration(registration)
-      expected = [{:article_ean13 => "barcode", :article_pcode => "pharmacode"}]
+      expected = [{
+        :article_ean13 => "barcode", 
+        :article_pcode => "pharmacode",
+        :article_size  => 'size',
+        :article_dose  => 'dose'
+      }]
       assert_equal(expected, @observer.article_codes)
     end
     def test_empty

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Companies::TestCompany -- oddb.org -- 10.03.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Companies::TestCompany -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -47,6 +48,8 @@ class TestUserCompanyForm < Test::Unit::TestCase
     @model = flexmock('model') do |m|
       m.should_receive(:address)
       m.should_receive(:pointer)
+      m.should_receive(:ean13)
+      m.should_receive(:oid).and_return('123')
     end
     @form = ODDB::View::Companies::UserCompanyForm.new(@model, @session)
   end
@@ -91,6 +94,8 @@ class TestAjaxCompanyForm < Test::Unit::TestCase
     @model = flexmock('model') do |m|
       m.should_receive(:address)
       m.should_receive(:pointer)
+      m.should_receive(:ean13)
+      m.should_receive(:oid).and_return('123')
     end
     @form = ODDB::View::Companies::AjaxCompanyForm.new(@model, @session)
   end
