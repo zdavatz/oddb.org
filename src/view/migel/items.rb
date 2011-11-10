@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Items -- oddb.org -- 30.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Items -- oddb.org -- 10.11.2011 -- mhatakeyama@ywesee.com
 
 require 'htmlgrid/list'
 require 'htmlgrid/link'
@@ -73,33 +73,23 @@ end
 
 class SearchedList < HtmlGrid::List
   include View::AdditionalInformation
+  include View::LookandfeelComponents
 	CSS_CLASS = 'composite'
   SUBHEADER = ODDB::View::Migel::SubHeader
+  CSS_HEAD_KEYMAP = {}
+  CSS_KEYMAP = {
+    :pharmacode           => 'list',
+    :ean_code             => 'list',
+    :article_name         => 'list bold',
+    :size                 => 'list italic',
+    :status               => 'list',
+    :companyname          => 'list',
+    :ppub                 => 'list',
+    :google_search        => 'list',
+    :twitter_share        => 'list',
+  }
   def init
-    @components = {
-      [0,0]		=>	:pharmacode,
-      [1,0]		=>	:ean_code,
-      [2,0]		=>	:article_name,
-      [3,0]		=>	:size,
-      [4,0]		=>	:status,
-      [5,0]		=>	:companyname,
-    #  [6,0]		=>	:ppha,
-      [6,0]		=>	:ppub,
-    #  [8,0]		=>	:factor,
-      [7,0]    =>  :google_search,
-      [8,0]    =>  :twitter_share,
-    }
-    @css_map = {
-      [0,0]   => 'list',
-      [1,0]   => 'list',
-      [2,0]   => 'list bold',
-      [3,0]   => 'list italic',
-      [4,0]   => 'list',
-      [5,0]   => 'list',
-      [6,0]   => 'list',
-      [7,0]   => 'list',
-      [8,0]   => 'list',
-    }
+    reorganize_components(:migel_item_list_components)
     super
   end
   def article_name(model = @model, session = @session)

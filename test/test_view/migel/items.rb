@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
-# ODDB::View::Migel::TestItems -- oddb.org -- 05.10.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Migel::TestItems -- oddb.org -- 10.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
 require 'test/unit'
 require 'flexmock'
+require 'view/lookandfeel_components'
 require 'view/migel/items'
 
 module ODDB
@@ -83,7 +85,8 @@ class TestSearchedList < Test::Unit::TestCase
                         :disabled? => nil,
                         :enabled? => nil,
                         :_event_url => '_event_url',
-                        :resource  => 'resource'
+                        :resource  => 'resource',
+                        :migel_item_list_components => {}
                        )
     page     = flexmock('page', :to_i => 1)
     state    = flexmock('state', 

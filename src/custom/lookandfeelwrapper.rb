@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 20.10.2011 -- mhatakeyama@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 10.11.2011 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/lookandfeelwrapper'
@@ -1003,6 +1003,31 @@ module ODDB
 				[11,0]	=>	:ikscat,
 			}
 		end
+    def migel_list_components
+      {
+        [0,0] =>  :limitation_text,
+        [1,0] =>  :migel_code,
+        [2,0] =>  :product_description,
+        [3,0] =>  :date,
+        [4,0] =>  :price,
+        [5,0] =>  :qty_unit,
+        #[6,0] =>  :notify,
+        [6,0] =>  :google_search,
+      }
+    end
+    def migel_item_list_components
+      {
+        [0,0]   =>  :pharmacode,
+        [1,0]   =>  :ean_code,
+        [2,0]   =>  :article_name,
+        [3,0]   =>  :size,
+        [4,0]   =>  :status,
+        [5,0]   =>  :companyname,
+        [6,0]   =>  :ppub,
+        [7,0]   =>  :google_search,
+        #[8,0]   =>  :twitter_share,
+      }
+    end
 		def search_type_selection
       ['st_oddb', 'st_sequence', 'st_substance', 'st_company',
         'st_indication']
