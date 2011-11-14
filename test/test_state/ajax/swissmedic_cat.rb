@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::State::Ajax::TestSwissmedicCat -- oddb.org -- 05.07.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::State::Ajax::TestSwissmedicCat -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -16,13 +17,12 @@ module ODDB
 class TestSwissmedicCat < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
-    @app     = flexmock('app')
+    @package  = flexmock('package')
+    sequence = flexmock('sequence', :package => @package)
+    registration = flexmock('registration', :sequence => sequence)
+    @app     = flexmock('app', :registration => registration)
     @lnf     = flexmock('lookandfeel', :lookup => 'lookup')
     @model   = flexmock('model')
-    @pointer = flexmock('pointer', 
-                        :is_a? => true,
-                        :resolve => @model
-                       )
     @session = flexmock('session', 
                         :app => @app,
                         :lookandfeel => @lnf,
@@ -31,11 +31,11 @@ class TestSwissmedicCat < Test::Unit::TestCase
     @state   = ODDB::State::Ajax::SwissmedicCat.new(@session, @model)
   end
   def test_init
-    assert_equal(@model, @state.init)
+    assert_equal(@package, @state.init)
   end
   def test_init__nil
     flexmock(@pointer, :is_a? => false)
-    assert_nil(@state.init)
+    assert_equal(@package, @state.init)
   end
 end
 

@@ -1,6 +1,6 @@
 #!/usr/bint_most_precise_doseenv ruby
 # encoding: utf-8
-# ODDB::View::Drugs::TestResultLimit -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::TestResultLimit -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -64,7 +64,11 @@ class TestResultLimitList < Test::Unit::TestCase
                         :sl_generic_type  => 'sl_generic_type',
                         :pointer          => 'pointer',
                         :localized_name   => 'localized_name',
-                        :registration     => registration
+                        :registration     => registration,
+                        :iksnr            => 'iksnr',
+                        :seqnr            => 'seqnr',
+                        :ikscd            => 'ikscd'
+
                        )
     @list    = ODDB::View::Drugs::ResultLimitList.new([@model], @session)
   end
@@ -147,7 +151,10 @@ class TestResultLimitComposite < Test::Unit::TestCase
                         :sl_generic_type  => 'sl_generic_type',
                         :pointer          => 'pointer',
                         :localized_name   => 'localized_name',
-                        :registration     => registration
+                        :registration     => registration,
+                        :iksnr            => 'iksnr',
+                        :seqnr            => 'seqnr',
+                        :ikscd            => 'ikscd'
                        )
     @composite = ODDB::View::Drugs::ResultLimitComposite.new([@model], @session)
   end

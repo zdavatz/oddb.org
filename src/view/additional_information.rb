@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 27.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/atcchooser'
@@ -225,8 +225,7 @@ module ODDB
 					text_elements.push(@lookandfeel.lookup("sl_#{gt}_short"))
 				end
 				txt.value = text_elements.join('&nbsp;/&nbsp;')
-				url = @lookandfeel._event_url(:ajax_swissmedic_cat,
-					{:pointer => model.pointer})
+				url = @lookandfeel._event_url(:ajax_swissmedic_cat, [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd])
 				txt.css_id = "ikscat_#{@ikscat_count}"
 				txt.dojo_tooltip = url
 				txt
