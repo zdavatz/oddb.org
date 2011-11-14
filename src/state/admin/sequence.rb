@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
-# State::Admin::Sequence -- oddb -- 15.03.2011 -- mhatakeyama@ywesee.com
-# State::Admin::Sequence -- oddb -- 11.03.2003 -- hwyss@ywesee.com 
+# encoding: utf-8
+# ODDB::State::Admin::Sequence -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'
 require 'view/admin/sequence'
@@ -211,7 +212,7 @@ module SequenceMethods
 	end
   def ajax_create_active_agent
     check_model
-    keys = [:pointer, :composition]
+    keys = [:reg, :seq, :composition]
     input = user_input(keys, keys)
     agents = []
     if(!error? \
@@ -232,7 +233,7 @@ module SequenceMethods
   end
   def ajax_delete_active_agent
     check_model
-    keys = [:pointer, :active_agent, :composition]
+    keys = [:reg, :seq, :active_agent, :composition]
     input = user_input(keys, keys)
     agents = []
     if(!error? \
@@ -248,7 +249,7 @@ module SequenceMethods
   end
   def ajax_delete_composition
     check_model
-    keys = [:pointer, :composition]
+    keys = [:reg, :seq, :composition]
     input = user_input(keys, keys)
     agents = []
     if(!error? \
@@ -258,9 +259,12 @@ module SequenceMethods
     AjaxCompositions.new(@session, @model.compositions)
   end
   def check_model
-    if(@model.pointer != @session.user_input(:pointer))
+    unless iksnr = @session.user_input(:reg) and seqnr = @session.user_input(:seq)\
+      and reg = @session.app.registration(iksnr) and seq = reg.sequence(seqnr)\
+      and @model.pointer == seq.pointer
       @errors.store :pointer, create_error(:e_state_expired, :pointer, nil)
-    elsif !allowed?
+    end
+    if !allowed?
       @errors.store :pointer, create_error(:e_not_allowed, :pointer, nil)
     end
   end

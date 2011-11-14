@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::Admin::Sequence -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com 
+# encoding: utf-8
+# ODDB::View::Admin::Sequence -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
 require 'view/admin/swissmedic_source'
@@ -98,7 +99,7 @@ class RootActiveAgents < ActiveAgents
     link = HtmlGrid::Link.new(:plus, model, @session, self)
     link.set_attribute('title', @lookandfeel.lookup(:create_active_agent))
     link.css_class = 'create square'
-    args = [ :pointer, @session.state.model.pointer, :composition, composition ]
+    args = [ :reg, @session.state.model.iksnr, :seq, @session.state.model.seqnr, :composition, composition ]
     url = @session.lookandfeel.event_url(:ajax_create_active_agent, args)
     link.onclick = "replace_element('#{css_id}', '#{url}');"
     link
@@ -128,8 +129,7 @@ class RootActiveAgents < ActiveAgents
       link = HtmlGrid::Link.new(:minus, model, @session, self)
       link.set_attribute('title', @lookandfeel.lookup(:delete))
       link.css_class = 'delete square'
-      args = [ :pointer, @session.state.model.pointer, :composition, composition, 
-               :active_agent, @list_index ]
+      args = [ :reg, @session.state.model.iksnr, :seq, @session.state.model.seqnr, :composition, composition, :active_agent, @list_index ]
       url = @session.lookandfeel.event_url(:ajax_delete_active_agent, args)
       link.onclick = "replace_element('#{css_id}', '#{url}');"
       link
@@ -138,7 +138,7 @@ class RootActiveAgents < ActiveAgents
   def delete_composition(model)
     link = HtmlGrid::Link.new(:delete_composition, model, @session, self)
     link.css_class = 'ajax'
-    args = [ :pointer, @session.state.model.pointer, :composition, composition ]
+    args = [ :reg, @session.state.model.iksnr, :seq, @session.state.model.seqnr, :composition, composition ]
     url = @session.lookandfeel.event_url(:ajax_delete_composition, args)
     link.onclick = "replace_element('composition-list', '#{url}');"
     link
@@ -192,7 +192,7 @@ class RootCompositionList < CompositionList
   def add(model)
     link = HtmlGrid::Link.new(:create_composition, model, @session, self)
     link.css_class = 'ajax'
-    args = [ :pointer, @session.state.model.pointer ]
+    args = [:reg, @session.state.model.iksnr, :seq, @session.state.model.seqnr]
     url = @session.lookandfeel.event_url(:ajax_create_composition, args)
     link.onclick = "replace_element('composition-list', '#{url}');"
     link

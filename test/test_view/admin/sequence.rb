@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::Admin::TestSequence -- oddb.org -- 05.08.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Admin::TestSequence -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -72,6 +73,8 @@ class TestRootActiveAgents < Test::Unit::TestCase
     end
     model = flexmock('model') do |m|
       m.should_receive(:pointer)
+      m.should_receive(:iksnr).and_return('iksnr')
+      m.should_receive(:seqnr).and_return('seqnr')
     end
     state = flexmock('state') do |s|
       s.should_receive(:model).and_return(model)
@@ -187,9 +190,7 @@ class TestRootCompositionList < Test::Unit::TestCase
       l.should_receive(:attributes).and_return({})
       l.should_receive(:event_url)
     end
-    state = flexmock('state') do |s|
-      s.should_receive(:"model.pointer")
-    end
+    state = flexmock('state') 
     @session = flexmock('session') do |s|
       s.should_receive(:lookandfeel).and_return(lookandfeel)
       s.should_receive(:app)
@@ -202,7 +203,10 @@ class TestRootCompositionList < Test::Unit::TestCase
     end
     @model = flexmock('model') do |m|
       m.should_receive(:active_agents).and_return([active_agent])
+      m.should_receive(:iksnr).and_return('iksnr')
+      m.should_receive(:seqnr).and_return('seqnr')
     end
+    flexmock(state, :model => @model)
     model = [@model]
     @agents = ODDB::View::Admin::RootCompositionList.new(model, @session)
   end
@@ -529,9 +533,7 @@ class TestRootSequenceForm < Test::Unit::TestCase
       l.should_receive(:event_url)
       l.should_receive(:base_url)
     end
-    state = flexmock('state') do |s|
-      s.should_receive(:"model.pointer")
-    end
+    state = flexmock('state')
     @session = flexmock('session') do |s|
       s.should_receive(:lookandfeel).and_return(@lookandfeel)
       s.should_receive(:error)
@@ -553,7 +555,10 @@ class TestRootSequenceForm < Test::Unit::TestCase
       m.should_receive(:atc_class)
       m.should_receive(:seqnr)
       m.should_receive(:compositions).and_return([composition])
+      m.should_receive(:iksnr).and_return('iksnr')
+      m.should_receive(:seqnr).and_return('seqnr')
     end
+    flexmock(state, :model => @model)
     @form = ODDB::View::Admin::RootSequenceForm.new(@model, @session)
   end
   def test_compositions
@@ -584,9 +589,7 @@ class TestResellerSequenceComposite < Test::Unit::TestCase
       l.should_receive(:enabled?)
       l.should_receive(:base_url)
     end
-    state = flexmock('state') do |s|
-      s.should_receive(:"model.pointer")
-    end
+    state = flexmock('state')
     @session = flexmock('session') do |s|
       s.should_receive(:lookandfeel).and_return(@lookandfeel)
       s.should_receive(:error)
@@ -631,7 +634,10 @@ class TestResellerSequenceComposite < Test::Unit::TestCase
       m.should_receive(:packages).and_return({'key' => @package})
       m.should_receive(:pointer)
       m.should_receive(:source)
+      m.should_receive(:iksnr).and_return('iksnr')
+      m.should_receive(:seqnr).and_return('seqnr')
     end
+    flexmock(state, :model => @model)
     @composite = ODDB::View::Admin::ResellerSequenceComposite.new(@model, @session)
   end
   def test_compositions

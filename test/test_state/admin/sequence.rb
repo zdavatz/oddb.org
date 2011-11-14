@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# State::Admin::TestSequence -- oddb.org -- 15.03.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::State::Admin::TestSequence -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -225,9 +226,11 @@ end
 class TestSequence < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
-    @app = flexmock('app')
+    sequence     = flexmock('sequence', :pointer => 'pointer')
+    registration = flexmock('registration', :sequence => sequence)
+    @app = flexmock('app', :registration => registration)
     @session = flexmock('session', :app => @app)
-    @model = flexmock('model')
+    @model = flexmock('model', :pointer => 'pointer')
     @sequence = ODDB::State::Admin::Sequence.new(@session, @model)
   end
   def test_delete
@@ -301,7 +304,10 @@ class TestSequence < Test::Unit::TestCase
     assert_kind_of(ODDB::State::Companies::Company, @sequence.new_package)
   end
   def test_check_model__no_error
-    flexmock(@model, :pointer => 'pointer')
+    flexmock(@model, 
+             :reg => 'reg',
+             :seq => 'seq'
+            )
     flexmock(@session) do |s|
       s.should_receive(:user_input).and_return('pointer')
       s.should_receive(:allowed?).and_return(true)
@@ -310,8 +316,12 @@ class TestSequence < Test::Unit::TestCase
   end
   def test_check_model__e_state_expired
     flexmock(@model, :pointer => 'pointer1')
-    flexmock(@session, :user_input => 'pointer2')
-    result = @sequence.check_model
+    flexmock(@session, 
+             :user_input => {:reg => nil},
+             :allowed?   => true
+            )
+    @sequence.check_model
+    result = @sequence.errors[:pointer]
     assert_kind_of(SBSM::ProcessingError, result)
     assert_equal('e_state_expired', result.message)
   end
