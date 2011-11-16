@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 10.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 16.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
 require 'sbsm/lookandfeel'
@@ -2064,6 +2064,8 @@ Zeno Davatz
 				:export_datafiles					=>	'Fichiers de dates',
 				:fachinfo									=>	'Information professionnelle',
 				:fachinfos								=>	'Informations professionnelles',
+				:fachinfo_all_title				=>	'Information professionnelle complète',
+				:fachinfo_all							=>	'Information professionnelle complète',
 				:fachinfo_column					=>	'Informations destin&eacute;es aux professionnels.',
 				:fachinfo_confirm					=>	'Confirmer l\'information professionelle',
 				:fachinfo_create					=>	'IPro?',
@@ -2482,6 +2484,8 @@ Zeno Davatz
 				:price_request_pagename		=>	'ODDB.DemandeDesPrix',
         :price_rise_feed_title    =>  'Augmentation des prix LS/LPPA',
         :price_rise_feed_description =>  'Augmentation des prix des produits dans la liste des specialités',
+				:print										=>	'imprimé',
+				:print_title							=>	'Version imprimable',
 				:print_type_fachinfo			=>	'Information destin&eacute;e aux professionnels',
 				:print_type_patinfo				=>	'Information destin&eacute;e aux patients ',
         :privileges               =>  'Privileges',
