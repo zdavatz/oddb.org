@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::FachinfoInvoicer -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::FachinfoInvoicer -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::FachinfoInvoicer -- oddb.org -- 28.04.2006 -- hwyss@ywesee.com
 
 require 'plugin/info_invoicer'
@@ -43,8 +44,9 @@ module ODDB
       @companies.sort.each { |company_name, fachinfos|
         report << company_name << "\n"
         fachinfos.sort_by { |fi| fi.name_base }.each { |fi|
-          report << sprintf("%s:\n  http://www.oddb.org/de/gcc/resolve/pointer/%s\n",
-                        fi.name_base, fi.pointer) 
+          if reg = fi.registrations.first
+            report << sprintf("%s:\n  http://ch.oddb.org/de/gcc/fachinfo/reg/%s\n", fi.name_base, reg.iksnr) 
+          end
         }
         report << "\n"
       }

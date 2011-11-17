@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::TestFachinfoInvoicer -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::TestFachinfoInvoicer -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
@@ -30,13 +31,15 @@ module ODDB
       assert_equal('item_pointer', @plugin.unique_name(item))
     end
     def test_report
+      registration = flexmock('registration', :iksnr => 'iksnr')
       fachinfo  = flexmock('fachinfo', 
                            :name_base => 'name_base',
-                           :pointer   => 'pointer'
+                           :pointer   => 'pointer',
+                           :registrations => [registration]
                           )
       companies = {'company_name' => [fachinfo]}
       @plugin.instance_eval('@companies = companies')
-      expected = "company_name\nname_base:\n  http://www.oddb.org/de/gcc/resolve/pointer/pointer\n\n"
+      expected = "company_name\nname_base:\n  http://ch.oddb.org/de/gcc/fachinfo/reg/iksnr\n\n"
       assert_equal(expected, @plugin.report)
     end
     def test_report_edited_fachinfos
