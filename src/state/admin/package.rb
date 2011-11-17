@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::Package -- oddb.org -- 06.04.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::State::Admin::Package -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Package -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'
@@ -25,7 +26,7 @@ module PackageMethods
   end
   def ajax_delete_part
     check_model
-    keys = [:pointer, :part]
+    keys = [:reg, :seq, :pack, :part]
     input = user_input(keys, keys)
     if(!error? \
        && (part = @model.parts[input[:part].to_i]))
@@ -34,9 +35,12 @@ module PackageMethods
     AjaxParts.new(@session, @model.parts)
   end
   def check_model
-    if(@model.pointer != @session.user_input(:pointer))
+    unless iksnr = @session.user_input(:reg) and seqnr = @session.user_input(:seq) and ikscd = @session.user_input(:pack)\
+      and reg = @session.app.registration(iksnr) and seq = reg.sequence(seqnr) and pac = seq.package(ikscd)\
+      and @model.pointer == pac.pointer
       @errors.store :pointer, create_error(:e_state_expired, :pointer, nil)
-    elsif !allowed?
+    end
+    if !allowed?
       @errors.store :pointer, create_error(:e_not_allowed, :pointer, nil)
     end
   end

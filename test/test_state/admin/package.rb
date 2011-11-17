@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::TestPackage -- oddb.org -- 04.05.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::State::Admin::TestPackage -- oddb.org -- 16.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -17,7 +18,11 @@ module ODDB
 class TestPackage < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
-    @session = flexmock('session')
+    package      = flexmock('package', :pointer => 'pointer')
+    sequence     = flexmock('sequence', :package => package)
+    registration = flexmock('registration', :sequence => sequence)
+    @app     = flexmock('app', :registration => registration)
+    @session = flexmock('session', :app => @app)
     @model   = flexmock('model')
     @state   = ODDB::State::Admin::Package.new(@session, @model)
   end
@@ -31,7 +36,7 @@ class TestPackage < Test::Unit::TestCase
     flexmock(@model, :pointer => 'pointer')
     flexmock(@session, :user_input => 'xxx')
     flexmock(@state, :allowed? => true)
-    assert_kind_of(SBSM::ProcessingError, @state.check_model)
+    assert_nil(@state.check_model)
   end
   def test_check_model__e_not_allowed
     flexmock(@model, :pointer => 'pointer')
@@ -60,9 +65,9 @@ class TestPackage < Test::Unit::TestCase
              :parts   => {123 => value}
             )
     flexmock(@session, 
-             :user_input   => input,
-             :"app.delete" => nil
+             :user_input   => input
             )
+    flexmock(@app, :delete => nil)
     flexmock(@state, :allowed? => true)
 
     assert_kind_of(ODDB::State::Admin::AjaxParts, @state.ajax_delete_part)

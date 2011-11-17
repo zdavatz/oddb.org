@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# View::Admin::Package -- oddb -- 14.03.2003 -- hwyss@ywesee.com 
+# encoding: utf-8
+# ODDB::View::Admin::Package -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::Admin::Package -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'view/admin/swissmedic_source'
 require 'view/drugs/privatetemplate'
@@ -94,7 +96,7 @@ class Parts < HtmlGrid::List
     link = HtmlGrid::Link.new(:plus, model, @session, self)
     link.set_attribute('title', @lookandfeel.lookup(:create_part))
     link.css_class = 'create square'
-    args = [ :pointer, @session.state.model.pointer ]
+    args = [ :reg, @session.state.model.iksnr, :seq, @session.state.model.seqnr, :pack, @session.state.model.ikscd ]
     url = @session.lookandfeel.event_url(:ajax_create_part, args)
     link.onclick = "replace_element('#{css_id}', '#{url}');"
     link
@@ -112,7 +114,7 @@ class Parts < HtmlGrid::List
       link = HtmlGrid::Link.new(:minus, model, @session, self)
       link.set_attribute('title', @lookandfeel.lookup(:delete))
       link.css_class = 'delete square'
-      args = [ :pointer, @session.state.model.pointer, :part, @list_index ]
+      args = [ :reg, @session.state.model.iksnr, :seq, @session.state.model.seqnr, :pack, @session.state.model.ikscd, :part, @list_index ]
       url = @session.lookandfeel.event_url(:ajax_delete_part, args)
       link.onclick = "replace_element('#{css_id}', '#{url}');"
       link

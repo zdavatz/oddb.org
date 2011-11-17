@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# View::Admin::TestPackage -- oddb.org -- 16.03.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::View::Admin::TestPackage -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -48,7 +49,10 @@ class TestParts < Test::Unit::TestCase
                      :count => 'count',
                      :commercial_form => 'commercial_form',
                      :measure => 'measure',
-                     :pointer => 'pointer'
+                     :pointer => 'pointer',
+                     :iksnr   => 'iksnr',
+                     :seqnr   => 'seqnr',
+                     :ikscd   => 'ikscd'
                      )
     state = flexmock('state', :model => @model)
     @session = flexmock('session',
@@ -186,7 +190,10 @@ class TestRootPackageComposite < Test::Unit::TestCase
                         :pointer      => 'pointer',
                         :generic_group_factor => 1,
                         :generic_group_comparables => [package],
-                        :swissmedic_source => 'swissmedic_source'
+                        :swissmedic_source => 'swissmedic_source',
+                        :iksnr        => 'iksnr',
+                        :seqnr        => 'seqnr',
+                        :ikscd        => 'ikscd'
                        )
     flexmock(state, :model => @model)
     @composite = ODDB::View::Admin::RootPackageComposite.new(@model, @session)
@@ -235,7 +242,10 @@ class TestDeductiblePackageComposite < Test::Unit::TestCase
                          :pointer  => 'pointer',
                          :sequence => 'sequence',
                          :price_public    => 'price_public',
-                         :price_exfactory => 'price_exfactory'
+                         :price_exfactory => 'price_exfactory',
+                         :iksnr   => 'iksnr',
+                         :seqnr   => 'seqnr',
+                         :ikscd   => 'ikscd'
                          )
     flexmock(state, :model => @model)
     @composite = ODDB::View::Admin::DeductiblePackageComposite.new(@model, @session)
