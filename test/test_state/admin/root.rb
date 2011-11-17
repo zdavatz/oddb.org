@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::TestRoot -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::TestRoot -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::TestRoot -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -123,7 +123,15 @@ class TestODDBStateAdminRoot < Test::Unit::TestCase
     include ODDB::State::Admin::Root
   end
   def setup
-    @app     = flexmock('app', :address_suggestions => {'key' => 'value'})
+    company      = flexmock('company')
+    registration = flexmock('registration', 
+                            :name_base => 'name_base',
+                            :company   => company
+                           )
+    @app     = flexmock('app', 
+                        :address_suggestions => {'key' => 'value'},
+                        :registration => registration
+                       )
     @model   = flexmock('model')
     @session = flexmock('session', :app => @app)
     @state   = StubState.new(@session, @model)

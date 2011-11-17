@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::TestResultList -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::TestResultList -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::TestResultList -- oddb.org -- 05.03.2003 -- hwyss@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
@@ -211,8 +211,12 @@ class TestResultList < Test::Unit::TestCase
       mod.should_receive(:parent_code)
       mod.should_receive(:pointer)
     end
+    registration = flexmock('registration', 
+                            :pointer => 'pointer',
+                            :iksnr   => 'iksnr'
+                           )
     flexstub(@package) do |pac|
-      pac.should_receive(:"registration.pointer")
+      pac.should_receive(:registration).and_return(registration)
     end
 		@list = View::Drugs::ResultList.new([@model], @session)
 	end

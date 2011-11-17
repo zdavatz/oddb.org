@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Persistence -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
+# Persistence -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
 # Persistence -- oddb.org -- 26.02.2003 -- hwyss@ywesee.com
 
 require 'odba'
@@ -346,7 +346,7 @@ module ODDB
 			def parent(app)
 				@inner_pointer.parent.resolve(app)
 			end
-			def respond_to?(key)
+			def respond_to?(key, *args)
 				key != :pointer_descr
 			end
 		end

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Root -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com 
+# ODDB::State::Admin::Root -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com 
 # ODDB::State::Admin::Root -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/galenicgroups'
@@ -167,8 +167,7 @@ module Root
 		State::Companies::RootCompany.new(@session, Persistence::CreateItem.new(pointer))
 	end
 	def new_fachinfo
-		if((pointer = @session.user_input(:pointer)) \
-				&& (registration = pointer.resolve(@session)))
+		if(reg = @session.user_input(:reg) and registration = @session.app.registration(reg))
 			_new_fachinfo(registration)
 		end
 	end
