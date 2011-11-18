@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
-# ODDB::State::Admin::Registration -- oddb -- 30.03.2011 -- mhatakeyama@ywesee.com
-# ODDB::State::Admin::Registration -- oddb -- 10.03.2003 -- hwyss@ywesee.com 
+# encoding: utf-8
+# ODDB::State::Admin::Registration -- oddb.org -- 18.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Registration -- oddb.org -- 10.03.2003 -- hwyss@ywesee.com 
 
 require 'plugin/text_info'
 require 'state/admin/global'
@@ -30,7 +31,11 @@ module FachinfoMethods
 			language = language.intern
 			four_bytes = fi_file.read(4)
 			fi_file.rewind
-			mail_link = @session.lookandfeel.event_url(:resolve, {'pointer' => model.pointer})
+			mail_link = if reg = model.iksnr
+                    @session.lookandfeel.event_url(:drug, {'reg' => reg})
+                  else
+                    @session.lookandfeel.event_url(:resolve, {'pointer' => model.pointer})
+                  end
       type, mimetype = (four_bytes == "%PDF") \
         ? [:pdf, "application/pdf"] \
         : [:doc, "application/msword"]
