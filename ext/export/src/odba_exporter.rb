@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# OdbaExporter -- ODDB -- 25.11.2011 -- mhatakeyama@ywesee.com
 # OdbaExporter -- ODDB -- 09.12.2004 -- hwyss@ywesee.com
 
 require 'fileutils'
@@ -231,8 +232,11 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
       opts.each do |key, val| Thread.current[key] = val end
 			safe_export(dir, name) { |fh|
 				odba_ids.each { |odba_id|
-					YAML.dump(ODBA.cache.fetch(odba_id, nil), fh)
-					fh.puts
+          begin
+            YAML.dump(ODBA.cache.fetch(odba_id, nil), fh)
+            fh.puts
+          rescue
+          end
 				}
 				nil
 			}
