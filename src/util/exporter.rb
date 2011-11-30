@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Exporter -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Exporter -- oddb.org -- 30.11.2011 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
 require 'plugin/oddbdat_export'
@@ -51,7 +51,7 @@ module ODDB
       }
       export_sl_pcodes
       export_yaml
-      export_oddbdat
+      #export_oddbdat # Stop for the moment
       export_csv
       export_doc_csv
       export_index_therapeuticus_csv
@@ -227,11 +227,13 @@ module ODDB
           exporter.export_patinfos
         end
 			}
+=begin # Stop for the moment
 			run_on_weekday(4) {
         safe_export 'doctors.yaml' do
           exporter.export_doctors
         end
 			}
+=end
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
