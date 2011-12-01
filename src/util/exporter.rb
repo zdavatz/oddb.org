@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Exporter -- oddb.org -- 30.11.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Exporter -- oddb.org -- 01.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
 require 'plugin/oddbdat_export'
@@ -53,7 +53,7 @@ module ODDB
       export_yaml
       #export_oddbdat # Stop for the moment
       export_csv
-      export_doc_csv
+      #export_doc_csv
       export_index_therapeuticus_csv
       export_price_history_csv
 =begin # inoperable atm.
