@@ -52,7 +52,7 @@ module ODDB
       export_sl_pcodes
       export_yaml
       #export_oddbdat # Stop for the moment
-      export_csv
+      #export_csv
       #export_doc_csv
       export_index_therapeuticus_csv
       export_price_history_csv
