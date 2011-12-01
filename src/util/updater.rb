@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
-# ODDB::Updater-- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com 
-# ODDB::Updater-- oddb.org -- 25.05.2011 -- zdavatz@ywesee.com 
-# ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com 
+# ODDB::Updater-- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::Updater-- oddb.org -- 1.12.2011 -- zdavatz@ywesee.com
+# ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
 
 require 'plugin/analysis'
 require 'plugin/bsv_xml'
@@ -35,7 +35,7 @@ module ODDB
 		RECIPIENTS = []
 		LOG_RECIPIENTS = {
 			# :powerlink					=>	[], ## Disabled 2.3.2009, there are no Powerlink-Users at the current time
-			:passthru						=>	[],	
+			:passthru						=>	[],
 		}
 		LOG_FILES = {
 			:powerlink				=>	'Powerlink-Statistics',
@@ -118,9 +118,9 @@ module ODDB
 			}
 		end
 		def export_ouwerkerk(date = @@today)
-			subj = 'Med-Drugs' 
+			subj = 'Med-Drugs'
 			wrap_update(OuwerkerkPlugin, subj) {
-				plug = Exporter.new(@app).export_swissdrug_xls date, 
+				plug = Exporter.new(@app).export_swissdrug_xls date,
                                                        :remove_newlines => true
 				log = Log.new(date)
 				log.update_values(log_info(plug))
@@ -218,7 +218,7 @@ module ODDB
 			end
       update_narcotics
       run_on_monthday(1) {
-        update_interactions 
+        update_interactions
       }
 		end
     def run_random
@@ -229,11 +229,11 @@ module ODDB
 			subj = 'Analysis'
 			wrap_update(klass, subj) {
 				plug = klass.new(@app)
-				plug.update(path, lang)	
+				plug.update(path, lang)
 			}
 		end
 		def update_bsv
-        
+
       LogFile.append('oddb/debug', " getin update_bsv", Time.now)
 
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
@@ -246,7 +246,7 @@ module ODDB
 			plug = klass.new(@app)
 			subj = 'SL-Update (XML)'
             return_value_plug_update = nil
-			wrap_update(klass, subj) { 
+			wrap_update(klass, subj) {
 
         return_value_plug_update = plug.update
         LogFile.append('oddb/debug', " return_value_BsvXmlPlugin.update = " + return_value_plug_update.inspect.to_s, Time.now)
@@ -268,7 +268,7 @@ module ODDB
       update_lppv
       update_price_feeds
       export_oddb_csv
-      export_oddb2_csv 
+      export_oddb2_csv
       export_ouwerkerk
       export_generics_xls
       export_competition_xlss
@@ -324,7 +324,7 @@ module ODDB
 			wrap_update(klass, subj) {
 				plug = klass.new(@app)
 				[:de, :fr, :it].each { |lang|
-					path = File.expand_path("../../data/csv/migel_#{lang}.csv", 
+					path = File.expand_path("../../data/csv/migel_#{lang}.csv",
 						File.dirname(__FILE__))
 					plug.update(path, lang)
 				}
@@ -341,7 +341,7 @@ module ODDB
       klass = SwissmedicPlugin
       plug = klass.new(@app)
       return_value_plug_update = nil
-      wrap_update(klass, "swissmedic") { 
+      wrap_update(klass, "swissmedic") {
         #if(plug.update(*args))
         if(return_value_plug_update = plug.update(*args))
           month = @@today << 1
@@ -365,19 +365,20 @@ module ODDB
 			exporter.export_generics_xls
       export_patents_xls
       exporter.mail_swissmedic_notifications
+      export_oddb2_csv
     end
 		def update_swissmedicjournal
 			logs_pointer = Persistence::Pointer.new([:log_group, :swissmedic_journal])
 			logs = @app.create(logs_pointer)
 			# The first issue of SwissmedicJournal is 2002,1
-			latest = logs.newest_date || Date.new(2002,4) 
+			latest = logs.newest_date || Date.new(2002,4)
       latest_swissmedic = @app.log_group(:swissmedic).newest_date
 			success = true
 			while(latest < @@today && latest <= latest_swissmedic && success)
 				latest = latest >> 1
 				klass = SwissmedicJournalPlugin
 				plug = klass.new(@app)
-				wrap_update(klass, "swissmedic-journal") { 
+				wrap_update(klass, "swissmedic-journal") {
 					success = false
 					success = plug.update(latest)
 				}
