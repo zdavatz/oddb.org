@@ -268,7 +268,7 @@ module ODDB
       update_lppv
       update_price_feeds
       export_oddb_csv
-      # export_oddb2_csv # Disabled 4.1.2010
+      export_oddb2_csv 
       export_ouwerkerk
       export_generics_xls
       export_competition_xlss
