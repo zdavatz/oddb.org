@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Registration -- oddb.org -- 18.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Registration -- oddb.org -- 05.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Registration -- oddb.org -- 10.03.2003 -- hwyss@ywesee.com 
 
 require 'plugin/text_info'
@@ -142,19 +142,25 @@ module RegistrationMethods
 		end
 	end
 	def new_sequence
-		pointer = @session.user_input(:pointer)
-		model = pointer.resolve(@session.app)
-		seq_pointer = pointer + [:sequence]
-		item = Persistence::CreateItem.new(seq_pointer)
-		item.carry(:iksnr, model.iksnr)
-		item.carry(:company, model.company)
-    item.carry(:compositions, [])
-    item.carry(:packages, {})
-		if (klass=resolve_state(seq_pointer))
-			klass.new(@session, item)
-		else
-			self
-		end
+    model = if iksnr = @session.persistent_user_input(:reg)
+              @session.app.registration(iksnr)
+            end
+    if model
+      pointer = model.pointer
+      seq_pointer = pointer + [:sequence]
+      item = Persistence::CreateItem.new(seq_pointer)
+      item.carry(:iksnr, model.iksnr)
+      item.carry(:company, model.company)
+      item.carry(:compositions, [])
+      item.carry(:packages, {})
+      if (klass=resolve_state(seq_pointer))
+        klass.new(@session, item)
+      else
+        self
+      end
+    else
+      self
+    end
 	end
 	def resolve_company(hash)
 		comp_name = @session.user_input(:company_name)
