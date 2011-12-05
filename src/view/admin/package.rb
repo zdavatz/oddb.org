@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Admin::Package -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::Admin::Package -- oddb.org -- 05.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Package -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'view/admin/swissmedic_source'
@@ -231,8 +231,8 @@ class PackageForm < HtmlGrid::Composite
 			link = nil
 			if (sl_entry = model.sl_entry)
 				link = HtmlGrid::Link.new(:sl_modify, sl_entry, session, self)
-				args = {'pointer' => sl_entry.pointer}
-				link.href = @lookandfeel._event_url(:resolve, args)
+				args = [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd]
+				link.href = @lookandfeel._event_url(:sl_entry, args)
 			else
 				link = HtmlGrid::Link.new(:sl_create, sl_entry, session, self)
 				link.href = @lookandfeel.event_url(:new_item)
