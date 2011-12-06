@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# TestUpdater -- oddb.org -- 28.02.2011 -- mhatakeyama@ywesee.com 
+# ODDB::TestUpdater -- oddb.org -- 06.12.2011 -- mhatakeyama@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -610,9 +610,7 @@ module ODDB
     end
     def test_update_swissmedic_followers
       setup_update_swissmedic_followers
-      expected = 'mail_swissmedic_notifications'  # the return value of 
-                                                  # Exporter#mail_swissmedic_notifications
-      assert_equal(expected, @updater.update_swissmedic_followers)
+      assert_nil(@updater.update_swissmedic_followers)
     end
     def test_run
       logs = flexmock('logs') do |logs|

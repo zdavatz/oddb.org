@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::TestSequence -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::TestSequence -- oddb.org -- 06.12.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -226,7 +226,13 @@ end
 class TestSequence < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
-    sequence     = flexmock('sequence', :pointer => 'pointer')
+    pointer      = flexmock('pointer', :skeleton => [:company])
+    flexmock(pointer, :+ => pointer)
+    sequence     = flexmock('sequence', 
+                            :pointer   => pointer,
+                            :iksnr     => 'iksnr',
+                            :name_base => 'name_base'
+                           )
     registration = flexmock('registration', :sequence => sequence)
     @app = flexmock('app', :registration => registration)
     @session = flexmock('session', :app => @app)
@@ -281,14 +287,17 @@ class TestSequence < Test::Unit::TestCase
     flexmock(pointer, :+ => pointer)
     flexmock(@session) do |s|
       s.should_receive(:user_input).and_return(pointer)
+      s.should_receive(:persistent_user_input)
     end
     flexmock(@model) do |m|
       m.should_receive(:iksnr)
       m.should_receive(:name_base)
     end
     assert_equal(@sequence, @sequence.new_package)
+#    assert_kind_of(ODDB::State::Companies::Company, @sequence.new_package)
   end
   def test_new_package__resolve_state
+    flexmock(@session, :persistent_user_input => 'persistent_user_input')
     pointer = flexmock('pointer') do |p|
       p.should_receive(:resolve).and_return(@model)
       p.should_receive(:skeleton).and_return([:company])
@@ -765,7 +774,10 @@ class TestCompanySequence < Test::Unit::TestCase
     assert_equal(@sequence, @sequence.new_active_agent)
   end
   def test_new_package
-    flexmock(@session, :allowed? => true)
+    flexmock(@session, 
+             :allowed? => true,
+             :persistent_user_input => nil
+            )
     pointer = flexmock('pointer') do |p|
       p.should_receive(:resolve).and_return(@model)
       p.should_receive(:skeleton)

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Admin::TestPackage -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Admin::TestPackage -- oddb.org -- 06.12.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -97,7 +97,10 @@ class TestPackageForm < Test::Unit::TestCase
                         :out_of_trade => 'out_of_trade',
                         :generic_group_factor => 1,
                         :sl_entry => sl_entry,
-                        :generic_group_comparables => [package]
+                        :generic_group_comparables => [package],
+                        :iksnr => 'iksnr',
+                        :seqnr => 'seqnr',
+                        :ikscd => 'ikscd'
                        )
     @form = ODDB::View::Admin::PackageForm.new(@model, @session)
   end

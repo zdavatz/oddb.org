@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::TestGlobal -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::TestGlobal -- oddb.org -- 06.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::TestGlobal -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -575,6 +575,7 @@ end
           s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
           s.should_receive(:user_input).once.with(:seq).and_return('seqnr')
           s.should_receive(:user_input).once.with(:pack).and_return('ikscd')
+          s.should_receive(:set_persistent_user_input)
         end
         flexmock(@state) do |s|
           s.should_receive(:resolve_state)
@@ -600,6 +601,7 @@ end
           s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
           s.should_receive(:user_input).once.with(:seq).and_return('seqnr')
           s.should_receive(:user_input).once.with(:pack).and_return(nil)
+          s.should_receive(:set_persistent_user_input)
         end
         flexmock(@state) do |s|
           s.should_receive(:resolve_state)
@@ -625,6 +627,7 @@ end
           s.should_receive(:user_input).once.with(:reg).and_return('iksnr')
           s.should_receive(:user_input).once.with(:seq).and_return(nil)
           s.should_receive(:user_input).once.with(:pack).and_return(nil)
+          s.should_receive(:set_persistent_user_input)
         end
         flexmock(@state) do |s|
           s.should_receive(:resolve_state)
