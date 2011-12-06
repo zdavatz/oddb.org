@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 05.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 06.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -604,14 +604,13 @@ module ODDB
           iksnr = @session.user_input(:reg)
           seqnr = @session.user_input(:seq) 
           ikscd = @session.user_input(:pack)
+          @session.set_persistent_user_input(:reg, iksnr) if iksnr
+          @session.set_persistent_user_input(:seq, seqnr) if seqnr
           pointer = if iksnr && seqnr && ikscd
                       @session.app.registration(iksnr).sequence(seqnr).package(ikscd).pointer
                     elsif iksnr && seqnr
-                      @session.set_persistent_user_input(:reg, iksnr)
-                      @session.set_persistent_user_input(:seq, seqnr)
                       @session.app.registration(iksnr).sequence(seqnr).pointer
                     elsif iksnr
-                      @session.set_persistent_user_input(:reg, iksnr)
                       @session.app.registration(iksnr).pointer
                     else
                       @session.user_input(:pointer)
