@@ -47,11 +47,12 @@ module ODDB
       run_on_weekday(0) {
         mail_download_stats
         mail_feedback_stats
+        export_yaml # don't run daily, just run on Sunday ;)
         #mail_notification_stats
       }
       export_sl_pcodes
-      export_yaml
-      #export_oddbdat # Stop for the moment
+      #export_yaml
+      #export_oddbdat
       #export_csv
       #export_doc_csv
       export_index_therapeuticus_csv
