@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::CsvExportPlugin -- oddb.org -- 08.04.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::CsvExportPlugin -- oddb.org -- 08.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
@@ -53,13 +54,17 @@ module ODDB
       @file_path = path = File.join(EXPORT_DIR, name)
       exporter = View::Drugs::CsvResult.new(model, session)
       exporter.to_csv_file(keys, path, :packages)
+      if missing_packages = exporter.missing_packages
+        log = Log.new(@@today)
+        log.report = sprintf "CSV-Export includes %i missing or corrupted packages:\n%s", missing_packages.size, missing_packages.join("\n")
+        log.notify("CSV-Export includes %i missing or corrupted packages" % missing_packages.size)
+      end
       dups = exporter.duplicates
       @counts = exporter.counts
       @counts['duplicates'] = dups.size
       unless(dups.empty?)
         log = Log.new(@@today)
-        log.report = sprintf "CSV-Export includes %i duplicates:\n%s",
-                             dups.size, dups.join("\n")
+        log.report = sprintf "CSV-Export includes %i duplicates:\n%s", dups.size, dups.join("\n")
         log.notify("CSV-Export includes %i duplicates" % dups.size)
       end
       EXPORT_SERVER.compress(EXPORT_DIR, name)

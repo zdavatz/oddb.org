@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::TestCsvExportPlugin -- oddb.org -- 18.04.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::TestCsvExportPlugin -- oddb.org -- 08.12.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -121,8 +122,9 @@ module ODDB
                :cp      => 'cp'
               )
       package   = flexmock('package', 
-                           :ikskey => 123,
-                           :keys   => 'keys'
+                           :ikskey  => 123,
+                           :keys    => 'keys',
+                           :barcode =>'barcode'
                           )
       atc_class = flexmock('atc_class', 
                            :code => 123,
@@ -184,8 +186,9 @@ module ODDB
                :cp      => 'cp'
               )
       package   = flexmock('package', 
-                           :ikskey => 123,
-                           :keys   => 'keys'
+                           :ikskey  => 123,
+                           :keys    => 'keys',
+                           :barcode => 'barcode'
                           )
       atc_class = flexmock('atc_class', 
                            :code => 123,
