@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::View::TestSponsorHead -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com 
+# encoding: utf-8
+# ODDB::View::TestSponsorHead -- oddb.org -- 08.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::TestSponsorHead -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -13,6 +14,21 @@ require 'stub/cgi'
 require 'model/sponsor'
 require 'view/sponsorhead'
 
+module ODBA
+  class DbiStub
+    def dbi_args
+      ['dbi_args']
+    end
+  end
+  class StorageStub
+    def dbi
+      DbiStub.new
+    end
+    def update_max_id(id)
+      'update_max_id'
+    end
+  end
+end
 module ODDB
 	module View
     class StubSponsorMethods

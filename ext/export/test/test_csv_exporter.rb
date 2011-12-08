@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# Odba::Exporter::TestCsvExporter -- oddb -- 26.08.2005 -- hwyss@ywesee.com
+# encoding: utf-8
+# Odba::Exporter::TestCsvExporter -- oddb.org -- 08.12.2012 -- mhatakeyama@ywesee.com
+# Odba::Exporter::TestCsvExporter -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
@@ -11,15 +13,22 @@ require 'model/analysis/group'
 require 'model/doctor'
 require 'stub/odba'
 require 'model/limitationtext'
+require 'flexmock'
 
 module ODDB
 	module OdbaExporter
 		class TestCsvExporter < Test::Unit::TestCase
+      include FlexMock::TestCase
 			def setup
+        dbi = flexmock('dbi', :dbi_args => ['dbi_args'])
+        flexmock(ODBA.storage, 
+                 :dbi => dbi,
+                 :update_max_id => 'update_max_id'
+                )
 				@addr = Address2.new
 				@addr.address = "Foobodenstrasse 1"
 				@addr.type = 'at_work'
-				@addr.location = "1234 Neuchâtel"
+				@addr.location = "1234 Neuch?tel"
 				@addr.canton = 'NE'
 				@addr.fon = ['fon1', 'fon2']
 				@addr.fax = []
@@ -65,7 +74,7 @@ module ODDB
 			end
 			def test_dump_1
 				expected = <<-CSV
-7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;false;at_work;"";"";Foobodenstrasse 1;1234;Neuchâtel;NE;fon1,fon2;"";amig@amig.ch;französisch;Kardiologie,Psychokardiologie
+7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;false;at_work;\"\";\"\";Foobodenstrasse 1;1234;Neuch?tel;NE;fon1,fon2;\"\";amig@amig.ch;franz\366sisch;Kardiologie,Psychokardiologie
 				CSV
 				fh = ''
 				CsvExporter.dump(CsvExporter::DOCTOR, @doc, fh)
@@ -75,7 +84,7 @@ module ODDB
 				@addr.type = 'at_praxis'
 				@doc.praxis = true
 				expected = <<-CSV
-7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;true;at_praxis;"";"";Foobodenstrasse 1;1234;Neuchâtel;NE;fon1,fon2;"";amig@amig.ch;französisch;Kardiologie,Psychokardiologie
+7601000616715;1998;Herrn;Dr. med;Fabrice;Dami;true;at_praxis;\"\";\"\";Foobodenstrasse 1;1234;Neuch?tel;NE;fon1,fon2;\"\";amig@amig.ch;franz\366sisch;Kardiologie,Psychokardiologie
 				CSV
 				fh = ''
 				CsvExporter.dump(CsvExporter::DOCTOR, @doc, fh)

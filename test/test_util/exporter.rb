@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::TestExporter -- oddb.org -- 06.12.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::TestExporter -- oddb.org -- 08.12.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
@@ -98,7 +99,7 @@ module ODDB
         exp.should_receive(:mail_download_stats).times(0).with_no_args
         exp.should_receive(:mail_feedback_stats).times(0).with_no_args
         exp.should_receive(:export_sl_pcodes).once.with_no_args
-        exp.should_receive(:export_yaml).once.with_no_args
+        #exp.should_receive(:export_yaml).once.with_no_args
         #exp.should_receive(:export_oddbdat).once.with_no_args
         #exp.should_receive(:export_csv).once.with_no_args
         #exp.should_receive(:export_doc_csv).once.with_no_args
@@ -116,7 +117,7 @@ module ODDB
         exp.should_receive(:mail_download_stats).times(0).with_no_args
         exp.should_receive(:mail_feedback_stats).times(0).with_no_args
         exp.should_receive(:export_sl_pcodes).once.with_no_args
-        exp.should_receive(:export_yaml).once.with_no_args
+        #exp.should_receive(:export_yaml).once.with_no_args
         #exp.should_receive(:export_oddbdat).once.with_no_args
         #exp.should_receive(:export_csv).once.with_no_args
         #exp.should_receive(:export_doc_csv).once.with_no_args

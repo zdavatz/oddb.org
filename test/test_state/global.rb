@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::TestGlobal -- oddb.org -- 06.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::TestGlobal -- oddb.org -- 08.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::TestGlobal -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -18,6 +18,22 @@ require 'state/user/register_download'
 require 'state/migel/result'
 require 'model/migel/items'
 
+
+module ODBA
+  class DbiStub
+    def dbi_args
+      ['dbi_args']
+    end
+  end
+  class StorageStub
+    def dbi
+      DbiStub.new
+    end
+    def update_max_id(id)
+      'update_max_id'
+    end
+  end
+end
 module ODDB
 	module State
 		module Admin

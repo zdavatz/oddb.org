@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::OdbaExporter::TestTable, TestLine -- oddb -- 03.02.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::OdbaExporter::TestTable, TestLine -- oddb.org -- 08.12.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../src', File.dirname(__FILE__))
 $: << File.expand_path('../../../src', File.dirname(__FILE__))
@@ -22,6 +23,21 @@ class String
   end
 end
 
+module ODBA
+  class DbiStub
+    def dbi_args
+      ['dbi_args']
+    end
+  end
+  class StorageStub
+    def dbi
+      DbiStub.new
+    end
+    def update_max_id(id)
+      'update_max_id'
+    end
+  end
+end
 module ODDB
   module OdbaExporter
     DATE = Date.today.strftime("%Y%m%d%H%M%S")
@@ -591,8 +607,7 @@ module ODDB
         end
         package.sl_entry.limitation_text.descriptions[0] = chap
         ## test 
-        flexstub(AcLimLine).should_receive(:new).with(1,2,1002).and_return('aclimline')
-        assert_equal(['aclimline'], @aclimtable.lines(package))
+        assert_kind_of(ODDB::OdbaExporter::AcLimLine, @aclimtable.lines(package).first)
       end
     end
     class TestAcmedTable < Test::Unit::TestCase
