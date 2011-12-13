@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::Updater-- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# encoding: utf-8
+# ODDB::Updater-- oddb.org -- 13.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 1.12.2011 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
 
@@ -348,8 +349,10 @@ module ODDB
           pointer = logs.pointer + [:log, Date.new(month.year, month.month)]
           log = @app.update(pointer.creator, log_info(plug))
           log.notify('Swissmedic XLS')
+          ODBA.cache.fetch(log.odba_id)
         end
-      }
+      } 
+      @app.recount
       return return_value_plug_update
     end
     def update_swissmedic_followers
