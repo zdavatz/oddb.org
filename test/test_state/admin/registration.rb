@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::TestRegistration -- oddb.org -- 06.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::TestRegistration -- oddb.org -- 13.12.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -9,6 +9,7 @@ require 'test/unit'
 require 'flexmock'
 require 'state/admin/registration'
 require 'util/log'
+require 'model/registration'
 #require 'src/state/admin/wait_for_fachinfo'
 
 module ODDB

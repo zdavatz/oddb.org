@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Registration -- oddb.org -- 05.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Registration -- oddb.org -- 13.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Registration -- oddb.org -- 10.03.2003 -- hwyss@ywesee.com 
 
 require 'plugin/text_info'
@@ -142,7 +142,9 @@ module RegistrationMethods
 		end
 	end
 	def new_sequence
-    model = if iksnr = @session.persistent_user_input(:reg)
+    model = if @model.is_a?(ODDB::Registration)
+              @model
+            elsif iksnr = @session.persistent_user_input(:reg)
               @session.app.registration(iksnr)
             end
     if model

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Sequence -- oddb.org -- 02.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Sequence -- oddb.org -- 13.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'
@@ -129,9 +129,9 @@ module SequenceMethods
 		end
 	end
 	def new_package
-    iksnr = @session.persistent_user_input(:reg) 
-    seqnr = @session.persistent_user_input(:seq)
-    model = if iksnr and seqnr
+    model = if @model.is_a?(ODDB::Sequence)
+              @model
+            elsif iksnr = @session.persistent_user_input(:reg) and seqnr = @session.persistent_user_input(:seq)
               @session.app.registration(iksnr).sequence(seqnr)
             end
     if model
