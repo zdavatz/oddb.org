@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::PayPal::Redirect -- ODDB -- 20.04.2005 -- hwyss@ywesee.com
 
 require 'state/global_predefine'

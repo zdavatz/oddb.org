@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Stage::PageFacade -- oddb -- 01.06.2004 -- mhuggler@ywesee.com
 
 module ODDB

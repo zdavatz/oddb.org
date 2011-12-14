@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Admin::TestGalenicFormState -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Drugs::TestGalenicFormState -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 

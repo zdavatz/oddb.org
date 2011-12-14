@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # suite.rb -- oddb.org -- 01.07.2011 -- mhatakeyama@ywesee.com 
 # In order to execute test/suite.rb,
 # yusd and meddatad is needed to run.

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # TestLevenshteinDistance -- ODDB -- 09.11.2004 -- hwyss@ywesee.com
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))

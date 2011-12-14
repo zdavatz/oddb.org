@@ -1,3 +1,4 @@
+# encoding: utf-8
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 

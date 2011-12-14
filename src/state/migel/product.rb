@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Migel::Product -- oddb -- 08.03.2011 -- mhatakeyama@ywesee.com
 # State::Migel::Product -- oddb -- 05.10.2005 -- ffricker@ywesee.com
 

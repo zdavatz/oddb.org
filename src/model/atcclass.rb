@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # AtcClass -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/language'

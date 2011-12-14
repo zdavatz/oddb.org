@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Parinfo -- oddb -- 29.10.2003 -- rwaltert@ywesee.com
 
 require 'util/language'

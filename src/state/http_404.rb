@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Http404 -- oddb.org -- 22.05.2007 -- hwyss@ywesee.com
 
 require 'state/global_predefine'

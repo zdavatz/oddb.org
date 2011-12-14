@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Rss::SlIntroduction -- oddb.org -- 02.12.2008 -- hwyss@ywesee.com
 
 require 'view/rss/package'

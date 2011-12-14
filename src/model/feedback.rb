@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Feedback -- oddb -- 02.11.2004 -- jlang@ywesee.com
 
 require 'util/persistence'

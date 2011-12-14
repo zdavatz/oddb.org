@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Exception -- oddb -- 12.03.2003 -- andy@jetnet.ch
 
 require 'view/publictemplate'

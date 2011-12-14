@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Admin::PatinfoDeprivedSequences -- oddb -- 08.12.2003 -- rwaltert@ywesee.com
 
 require 'view/admin/patinfo_deprived_sequences'

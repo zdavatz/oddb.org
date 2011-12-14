@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # n-gram similarity -- oddb.org -- 19.06.2009 -- hwyss@ywesee.com
 
 module ODDB

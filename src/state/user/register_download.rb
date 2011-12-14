@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::User::RegisterDownload -- oddb -- 22.12.2004 -- hwyss@ywesee.com
 
 require 'state/global_predefine'

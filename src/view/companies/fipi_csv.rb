@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Companies::FiPiCsv -- de.oddb.org -- 04.12.2006 -- hwyss@ywesee.com
 
 require 'csv'

@@ -8,7 +8,7 @@ require 'odba'
 # Hash#key has been newly defined since Ruby 1.9 (Ruby 1.8.8)
 # Hash#index has been obsolete since Ruby 1.9
 class Hash
-  alias :key :index
+  alias :index :key 
 end
 
 module ODBA

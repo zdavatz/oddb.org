@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Failsafe -- ODDB -- 08.03.2004 -- hwyss@ywesee.com
 
 module ODDB

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Dose -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/quanty'
@@ -28,7 +29,8 @@ module ODDB
 				qty = (qty.first + qty.last) / 2.0
 				@not_normalized = [qty_str, unit].compact.join(' ')
 			end
-			if(match = %r{([^/]*)/\s*(#{np})\s*(.*)}u.match(unit.to_s))
+			#if(match = %r{([^/]*)/\s*(#{np})\s*(.*)}u.match(unit.to_s))
+			if(match = %r{([^/]*)/\s*(#{np})\s*(.*)}u.match(unit.to_s.force_encoding('utf-8')))
 				qty_str = round(qty).to_s
 				div = round(match[2])
 				@not_normalized = [

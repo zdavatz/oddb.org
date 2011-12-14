@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ModelLoader -- oddb -- 03.03.2003 -- hwyss@ywesee.com 
 
 dir = File.expand_path('model', File.dirname(__FILE__))

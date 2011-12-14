@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::PasswordReset -- oddb -- 20.02.2006 -- hwyss@ywesee.com
 
 require 'view/publictemplate'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # SelectSubstance -- oddb -- 05.05.2003 -- mhuggler@ywesee.com
 
 require 'util/persistence'

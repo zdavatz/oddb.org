@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # @@today -- oddb.org -- 11.07.2007 -- hwyss@ywesee.com
 
 class Object

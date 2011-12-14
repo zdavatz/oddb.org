@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # LppvPlugin -- oddb.org -- 18.01.2006 -- sfrischknecht@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))

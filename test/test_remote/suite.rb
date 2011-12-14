@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # suite.rb -- oddb -- 01.07.2011 -- mhatakeyama@ywesee.com 
 
 require 'find'

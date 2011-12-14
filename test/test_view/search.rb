@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Vewi::TestSearch -- oddb -- 10.03.2011 -- mhatakeyama@ywesee.com
 # View::TestSearch -- oddb -- 12.11.2002 -- hwyss@ywesee.com 
 

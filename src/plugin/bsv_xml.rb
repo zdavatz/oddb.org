@@ -56,7 +56,8 @@ module ODDB
         if subheading
           sec.subheading << subheading.to_s << "\n"
         end
-        text.each do |line|
+        #text.each do |line|
+        text.each_line do |line|
           par = sec.next_paragraph
           line.scan /(<(\/)?([bi])>|[^<]+|<)/u do |match|
             if fmt = FORMATS[match[2]]

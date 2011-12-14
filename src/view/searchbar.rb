@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::SearchBar -- oddb -- 22.11.2002 -- hwyss@ywesee.com 
 
 require 'view/form'

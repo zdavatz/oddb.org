@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ReplaceFachinfoCommand -- ODDB -- 14.11.2003 -- hwyss@ywesee.com
 
 module ODDB

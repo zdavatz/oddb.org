@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Drugs::Patinfos -- oddb -- 21.11.2005 -- hwyss@ywesee.com
 
 require 'state/global_predefine'

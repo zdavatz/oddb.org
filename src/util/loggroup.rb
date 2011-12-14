@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # LogGroup -- oddb -- 16.05.2003 -- hwyss@ywesee.com 
 
 require 'date'

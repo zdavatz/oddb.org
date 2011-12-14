@@ -1,3 +1,4 @@
+# encoding: utf-8
 module ODDB
 	module View
 module Captcha

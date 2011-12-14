@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Notify -- oddb -- 21.03.2005 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'state/drugs/global'

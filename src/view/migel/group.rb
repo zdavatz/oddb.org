@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Migel::Group -- oddb -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/privatetemplate'

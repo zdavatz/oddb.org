@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Drugs::ResultLimit -- oddb -- 26.07.2005 -- hwyss@ywesee.com
 
 require 'view/resulttemplate'

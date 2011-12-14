@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::User::Plugin -- oddb -- 11.08.2003 -- mhuggler@ywesee.com
 
 require 'view/publictemplate'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::User::SponsorLink -- oddb -- 18.10.2005 -- hwyss@ywesee.com
 
 module ODDB

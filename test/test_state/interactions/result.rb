@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Interactions::TestResult -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Interactions::TestResult -- oddb.org -- 01.06.2004 -- mhuggler@ywesee.com
 

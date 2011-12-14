@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::DescriptionForm -- oddb -- 26.03.2003 -- aschrafl@ywesee.com
 
 require 'view/form'

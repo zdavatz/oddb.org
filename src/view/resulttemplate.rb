@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::ResultTemplate -- oddb -- 20.10.2004 -- jlang@ywesee.com
 
 require 'view/publictemplate'

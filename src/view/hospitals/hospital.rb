@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Hospitals::Hospital -- oddb -- 09.03.2005 -- usenguel@ywesee.com, jlang@ywesee.com
 
 require 'htmlgrid/composite'

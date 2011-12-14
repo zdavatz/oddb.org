@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Drugs::Fachinfos -- oddb -- 17.11.2005 -- hwyss@ywesee.com
 
 require 'view/additional_information'

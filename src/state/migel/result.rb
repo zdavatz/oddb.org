@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Migel::Result -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Migel::Result -- oddb.org -- 04.10.2005 -- ffricker@ywesee.com
 

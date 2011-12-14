@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # HtmlParser -- oddb -- 06.10.2003 -- mhuggler@ywesee.com
 
 
@@ -148,9 +149,9 @@ module ODDB
 		def end_font
 			@formatter.pop_fonthandler
 		end
-		def feed(data)
-			super(data.gsub("\302\222", "’"))
-		end
+		#def feed(data)
+			#super(data.gsub("\302\222", "’"))
+		#end
 		def handle_image(src, *args)
 			@formatter.send_image(src.to_s.gsub(/["']/u, ''))
 		end
@@ -224,7 +225,8 @@ module ODDB
 			end
 			def send_cdata(data)
 				@current_line << data
-        @current_line.gsub!(/\s+/u, ' ')
+        #@current_line.gsub!(/\s+/u, ' ')
+        @current_line.gsub!(/\s+/, ' ')
         @current_line
 			end
 			def send_format(fmtstr)
@@ -330,7 +332,8 @@ module ODDB
 			@current_row
 		end
 		def send_cdata(data)
-			(@current_row || next_row).send_cdata(data.gsub(/\s/u, ' '))
+			#(@current_row || next_row).send_cdata(data.gsub(/\s/u, ' '))
+			(@current_row || next_row).send_cdata(data)
 		end
 		alias :<< :send_cdata
 		def to_s

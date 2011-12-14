@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Ean13 -- oddb -- 01.10.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/validator'

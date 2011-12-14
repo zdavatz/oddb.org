@@ -63,6 +63,8 @@ module ODDB
 			@fax = []
 		end
 		def city
+      #@location.force_encoding('utf-8')
+      @location
 			if(match = @@city_pattern.match(@location.to_s))
 				 match.to_s.strip
 			end

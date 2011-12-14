@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Migel::Alphabetical -- oddb -- 02.02.2006 -- hwyss@ywesee.com
 
 require 'view/migel/result'

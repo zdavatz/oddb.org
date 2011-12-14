@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Analysis::Global -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Analysis::Global -- oddb.org -- 13.06.2006 -- sfrischknecht@ywesee.com
 

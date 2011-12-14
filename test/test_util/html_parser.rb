@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # TestHtmlParser -- oddb -- 11.03.2011 -- mhatakeyama@ywesee.com
 # TestHtmlParser -- oddb -- 06.10.2003 -- mhuggler@ywesee.com
 

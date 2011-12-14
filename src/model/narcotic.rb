@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Narcotic -- oddb -- 04.11.2005 -- ffricker@ywesee.com
 
 require 'util/persistence'

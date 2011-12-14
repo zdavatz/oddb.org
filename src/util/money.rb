@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Util::Money -- oddb.org -- 14.11.2006 -- hwyss@ywesee.com
 
 module ODDB

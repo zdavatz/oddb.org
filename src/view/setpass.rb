@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::SetPass -- oddb -- 29.09.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/pass'

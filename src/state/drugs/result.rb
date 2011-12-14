@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Drugs::Result -- oddb -- 03.03.2011 -- mhatakeyama@ywesee.com
 # State::Drugs::Result -- oddb -- 03.03.2003 -- hwyss@ywesee.com 
 

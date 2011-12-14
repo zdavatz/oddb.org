@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # SwissmedicJournalPlugin -- oddb -- 19.02.2003 -- hwyss@ywesee.com 
 
 require 'date'

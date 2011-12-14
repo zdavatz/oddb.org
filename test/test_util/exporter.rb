@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestExporter -- oddb.org -- 08.12.2011 -- mhatakeyama@ywesee.com
+# TestExporter -- oddb -- 07.02.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
@@ -99,10 +99,10 @@ module ODDB
         exp.should_receive(:mail_download_stats).times(0).with_no_args
         exp.should_receive(:mail_feedback_stats).times(0).with_no_args
         exp.should_receive(:export_sl_pcodes).once.with_no_args
-        #exp.should_receive(:export_yaml).once.with_no_args
-        #exp.should_receive(:export_oddbdat).once.with_no_args
-        #exp.should_receive(:export_csv).once.with_no_args
-        #exp.should_receive(:export_doc_csv).once.with_no_args
+        exp.should_receive(:export_yaml).once.with_no_args
+        exp.should_receive(:export_oddbdat).once.with_no_args
+        exp.should_receive(:export_csv).once.with_no_args
+        exp.should_receive(:export_doc_csv).once.with_no_args
         exp.should_receive(:export_index_therapeuticus_csv).once.with_no_args
         exp.should_receive(:export_price_history_csv).once.with_no_args
       end
@@ -117,10 +117,10 @@ module ODDB
         exp.should_receive(:mail_download_stats).times(0).with_no_args
         exp.should_receive(:mail_feedback_stats).times(0).with_no_args
         exp.should_receive(:export_sl_pcodes).once.with_no_args
-        #exp.should_receive(:export_yaml).once.with_no_args
-        #exp.should_receive(:export_oddbdat).once.with_no_args
-        #exp.should_receive(:export_csv).once.with_no_args
-        #exp.should_receive(:export_doc_csv).once.with_no_args
+        exp.should_receive(:export_yaml).once.with_no_args
+        exp.should_receive(:export_oddbdat).once.with_no_args
+        exp.should_receive(:export_csv).once.with_no_args
+        exp.should_receive(:export_doc_csv).once.with_no_args
         exp.should_receive(:export_index_therapeuticus_csv).once.with_no_args
         exp.should_receive(:export_price_history_csv).once.with_no_args
       end
@@ -136,9 +136,9 @@ module ODDB
         exp.should_receive(:mail_feedback_stats).once.with_no_args
         exp.should_receive(:export_sl_pcodes).once.with_no_args
         exp.should_receive(:export_yaml).once.with_no_args
-        #exp.should_receive(:export_oddbdat).once.with_no_args
-        #exp.should_receive(:export_csv).once.with_no_args
-        #exp.should_receive(:export_doc_csv).once.with_no_args
+        exp.should_receive(:export_oddbdat).once.with_no_args
+        exp.should_receive(:export_csv).once.with_no_args
+        exp.should_receive(:export_doc_csv).once.with_no_args
         exp.should_receive(:export_index_therapeuticus_csv).once.with_no_args
         exp.should_receive(:export_price_history_csv).once.with_no_args
       end
@@ -329,7 +329,7 @@ module ODDB
         plug.should_receive(:export_interactions).once.with_no_args
         plug.should_receive(:export_narcotics).once.with_no_args
         plug.should_receive(:export_prices).once.with_no_args
-        #plug.should_receive(:export_fachinfos).once.with_no_args
+        plug.should_receive(:export_fachinfos).once.with_no_args
         plug.should_receive(:export_patinfos).times(0).with_no_args
         plug.should_receive(:export_doctors).times(0).with_no_args
       end
@@ -345,7 +345,7 @@ module ODDB
         plug.should_receive(:export_narcotics).once.with_no_args
         plug.should_receive(:export_prices).once.with_no_args
         plug.should_receive(:export_fachinfos).times(0).with_no_args
-        #plug.should_receive(:export_patinfos).once.with_no_args
+        plug.should_receive(:export_patinfos).once.with_no_args
         plug.should_receive(:export_doctors).times(0).with_no_args
       end
       assert_equal('sleep', @exporter.export_yaml)
@@ -361,7 +361,7 @@ module ODDB
         plug.should_receive(:export_prices).once.with_no_args
         plug.should_receive(:export_fachinfos).times(0).with_no_args
         plug.should_receive(:export_patinfos).times(0).with_no_args
-        #plug.should_receive(:export_doctors).once.with_no_args
+        plug.should_receive(:export_doctors).once.with_no_args
       end
       assert_equal('sleep', @exporter.export_yaml)
     end

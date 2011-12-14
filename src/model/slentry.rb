@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # SlEntry -- oddb -- 03.03.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -26,7 +27,7 @@ module ODDB
 		private
 		def adjust_types(values, app=nil)
 			values = values.dup
-			values.each { |key, value|
+			values.dup.each { |key, value|
 				case(key)
 				when :introduction_date
 					values[key] = if (value.is_a? Date)
@@ -41,6 +42,7 @@ module ODDB
 					values[key] = (points > 0) ? points : nil
 				end unless value.nil?
 			}
+      values
 		end
 	end
 end

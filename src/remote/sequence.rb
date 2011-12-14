@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Remote::Sequence -- de.oddb.org -- 22.02.2007 -- hwyss@ywesee.com
 
 require 'remote/object'

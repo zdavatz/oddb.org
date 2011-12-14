@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Companies::Company -- oddb -- 27.05.2003 -- mhuggler@ywesee.com
 
 require 'state/doctors/global'

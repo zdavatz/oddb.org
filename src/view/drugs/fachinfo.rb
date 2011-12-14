@@ -269,8 +269,8 @@ class RootFachinfoComposite < View::Drugs::FachinfoComposite
 	def init
 		unless(@model.company.invoiceable?)
 			components.update({
-				[0,2], :invoiceability,
-				[0,3], :document,
+				[0,2] => :invoiceability,
+				[0,3] => :document,
 			})
 			css_map.store([0,3], 'list')
 			colspan_map.store([0,3], 2)

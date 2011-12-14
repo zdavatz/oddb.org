@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::Invoicer -- ydpm -- 27.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::Invoicer -- ydpm -- 12.12.2005 -- hwyss@ywesee.com
 
@@ -57,7 +58,8 @@ module ODDB
 				"Backtrace:",
 				e.backtrace.join("\n"),
 			].join("\n")
-			log.notify("Error Invoice: #{subject}")
+			#log.notify("Error Invoice: #{subject}")
+			log.notify("Error Invoice: ")
       nil
 		end
 	end

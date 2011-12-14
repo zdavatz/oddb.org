@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::TestRegistration -- oddb.org -- 13.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::TestRegistration -- oddb.org -- 29.03.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -9,7 +9,6 @@ require 'test/unit'
 require 'flexmock'
 require 'state/admin/registration'
 require 'util/log'
-require 'model/registration'
 #require 'src/state/admin/wait_for_fachinfo'
 
 module ODDB
@@ -182,16 +181,7 @@ class TestRegistration < Test::Unit::TestCase
                       )
     pointer = flexmock('pointer', :resolve => model)
     flexmock(pointer, :+ => pointer)
-    flexmock(@session, 
-             :user_input => pointer,
-             :persistent_user_input => 'persistent_user_input'
-            )
-    registration = flexmock('registration', 
-                            :pointer => [],
-                            :iksnr   => 'iksnr',
-                            :company => 'company'
-                           )
-    flexmock(@app, :registration => registration)
+    flexmock(@session, :user_input => pointer)
     flexmock(@reg, :resolve_state => nil)
     assert_kind_of(ODDB::State::Admin::Registration, @reg.new_sequence)
   end
@@ -202,16 +192,7 @@ class TestRegistration < Test::Unit::TestCase
                       )
     pointer = flexmock('pointer', :resolve => model)
     flexmock(pointer, :+ => pointer)
-    flexmock(@session, 
-             :user_input => pointer,
-             :persistent_user_input => 'persistent_user_input'
-            )
-    registration = flexmock('registration', 
-                            :pointer => [],
-                            :iksnr   => 'iksnr',
-                            :company => 'company'
-                           )
-    flexmock(@app, :registration => registration)
+    flexmock(@session, :user_input => pointer)
     klass   = flexmock('klass', :new => 'new')
     flexmock(@reg, :resolve_state => klass)
     assert_equal('new', @reg.new_sequence)
@@ -353,16 +334,7 @@ class TestCompanyRegistration < Test::Unit::TestCase
                       )
     pointer = flexmock('pointer', :resolve => model)
     flexmock(pointer, :+ => pointer)
-    flexmock(@session, 
-             :user_input => pointer,
-             :persistent_user_input => 'persistent_user_input'
-            )
-    registration = flexmock('registration', 
-                            :pointer => [],
-                            :iksnr   => 'iksnr',
-                            :company => 'company'
-                           )
-    flexmock(@app, :registration => registration)
+    flexmock(@session, :user_input => pointer)
     flexmock(@reg, :resolve_state => nil)
     assert_kind_of(ODDB::State::Admin::Registration, @reg.new_sequence)
 

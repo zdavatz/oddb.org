@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Admin::TestSlEntry -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -30,12 +31,7 @@ class TestSlEntry < Test::Unit::TestCase
     assert_kind_of(ODDB::State::Admin::Package, @state.delete)
   end
   def test_update
-    package  = flexmock('package', 
-                        :update  => 'update',
-                        :pointer => 'pointer'
-                       )
-    sl_entry = flexmock('sl_entry', :parent => package)
-    flexmock(@app, :update => sl_entry)
+    flexmock(@app, :update => 'update')
     flexmock(@session, :user_input => 'user_input')
     flexmock(@state, :unique_email => 'unique_email')
     assert_equal(@state, @state.update)
@@ -65,18 +61,13 @@ class TestCompanySlEntry < Test::Unit::TestCase
     assert_kind_of(ODDB::State::Admin::Package, @state.delete)
   end
   def test_update
-    package  = flexmock('package', 
-                        :update  => 'update',
-                        :pointer => 'pointer'
-                       )
-    sl_entry = flexmock('sl_entry', :parent => package)
     flexmock(@session, 
              :allowed?   => true,
              :user_input => 'user_input'
             )
     flexmock(@model, :pointer => 'pointer')
     flexmock(@state, :unique_email => 'unique_email')
-    flexmock(@app, :update => sl_entry)
+    flexmock(@app, :update => 'update')
     assert_equal(@state, @state.update)
   end
 end

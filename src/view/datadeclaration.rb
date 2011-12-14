@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::DataDeclaration -- ODDB -- 29.04.2005 -- hwyss@ywesee.com
 
 module ODDB

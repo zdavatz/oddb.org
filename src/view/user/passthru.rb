@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::User::PassThru -- ODDB -- 21.10.2003 -- hwyss@ywesee.com
 
 require 'htmlgrid/passthru'

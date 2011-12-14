@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Notify -- oddb.org -- 27.04.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Notify -- oddb.org -- 28.06.2007 -- hwyss@ywesee.com
 

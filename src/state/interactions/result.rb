@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Interactions::Result -- oddb -- 03.03.2011 -- mhatakeyama@ywesee.com
 # State::Interactions::Result -- oddb -- 26.05.2004 -- mhuggler@ywesee.com
 

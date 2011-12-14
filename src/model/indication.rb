@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Indication -- oddb -- 12.05.2003 -- hwyss@ywesee.com 
 
 require 'util/language'

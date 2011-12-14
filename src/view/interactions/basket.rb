@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Interactions::Basket -- oddb -- 07.06.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'

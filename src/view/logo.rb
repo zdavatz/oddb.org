@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::View::Logo -- oddb.org -- 05.09.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::Logo -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
 

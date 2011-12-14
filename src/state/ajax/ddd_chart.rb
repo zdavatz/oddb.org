@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Drugs::DDDChart -- oddb.org -- 17.04.2009 -- hwyss@ywesee.com
 
 require 'state/ajax/global'

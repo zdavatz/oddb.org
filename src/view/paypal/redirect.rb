@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::PayPal::Redirect -- ODDB -- 20.04.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'

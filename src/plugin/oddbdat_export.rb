@@ -1,4 +1,5 @@
 #/usr/bin/env ruby
+# encoding: utf-8
 # OddbDatExport -- oddb -- 23.06.2003 -- aschrafl@ywesee.com
 
 require 'plugin/plugin'

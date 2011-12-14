@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Admin::Indications -- oddb -- 03.07.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'

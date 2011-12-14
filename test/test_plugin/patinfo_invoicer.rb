@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # TestPatinfoInvoicer -- oddb -- 25.02.2011 -- mhatakeyama@ywesee.com
 # TestPatinfoInvoicer -- oddb -- 16.08.2005 -- jlang@ywesee.com
 

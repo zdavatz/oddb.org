@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::TestSmjPlugin -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::TestSmjPlugin -- oddb.org -- 30.04.2003 -- benfay@ywesee.com
 

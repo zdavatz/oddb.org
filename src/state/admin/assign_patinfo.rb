@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Admin::AssignPatinfo -- oddb -- 19.10.2005 -- hwyss@ywesee.com
 
 require 'state/global_predefine'

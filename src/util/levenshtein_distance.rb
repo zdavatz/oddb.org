@@ -1,3 +1,4 @@
+# encoding: utf-8
 =begin
 LevenshteinDistance
 A String add-on to calculate the number of operation required

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestUpdater -- oddb.org -- 14.12.2011 -- mhatakeyama@ywesee.com 
+# TestUpdater -- oddb.org -- 28.02.2011 -- mhatakeyama@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -66,9 +66,6 @@ module ODDB
 			def create(pointer)
 				@log_group
 			end
-      def recount
-        'recount'
-      end
 		end
 		class StubLogGroup
 			attr_accessor :newest_date
@@ -614,7 +611,9 @@ module ODDB
     end
     def test_update_swissmedic_followers
       setup_update_swissmedic_followers
-      assert_nil(@updater.update_swissmedic_followers)
+      expected = 'mail_swissmedic_notifications'  # the return value of 
+                                                  # Exporter#mail_swissmedic_notifications
+      assert_equal(expected, @updater.update_swissmedic_followers)
     end
     def test_run
       logs = flexmock('logs') do |logs|

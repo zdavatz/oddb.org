@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Drugs::Compare -- oddb -- 20.03.2003 -- hwyss@ywesee.com 
 
 require 'state/drugs/global'

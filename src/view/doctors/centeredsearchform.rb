@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Doctors::CenteredSearchForm -- oddb -- 17.09.2004 -- jlang@ywesee.com
 
 require 'view/centeredsearchform'

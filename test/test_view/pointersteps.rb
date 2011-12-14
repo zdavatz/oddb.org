@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::View::TestPointerSteps -- oddb.org -- 09.09.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::TestPointerSteps -- oddb.org -- 02.04.2003 -- hwyss@ywesee.com 
 

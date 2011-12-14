@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::CustomHead -- oddb -- 21.12.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/composite'

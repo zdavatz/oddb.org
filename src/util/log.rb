@@ -1,18 +1,19 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Log -- oddb -- 23.05.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
 require 'config'
 require 'cgi'
 require 'date'
-require 'tmail'
+require 'mail'
 
 module ODDB
 	class Log
 		MAIL_FROM = 'update@oddb.org'
 		MAIL_TO = [
-			'zdavatz@ywesee.com',
-			'hwyss@ywesee.com',
+#			'zdavatz@ywesee.com',
+#			'hwyss@ywesee.com',
 			'mhatakeyama@ywesee.com',
 		]
 		include Persistence
@@ -38,7 +39,7 @@ module ODDB
 				subject, 
 				(@date_str || @date.strftime('%m/%Y')),
 			].compact.join(' - ')
-			
+
 			text = text_part(@report)
 
 			parts = @parts.nil? ? [] : @parts.dup
@@ -61,11 +62,10 @@ module ODDB
 			outgoing = if(parts.empty?)
 				text
 			else
-				multipart = TMail::Mail.new
+				multipart = Mail.new
 				multipart.parts << text
 				parts.each { |mime, name, content|
-					mtype, stype = mime.split('/')
-					multipart.parts << file_part(mtype, stype, name, content)
+          multipart.attachments[name] = {:mime_type => mime, :content => content}
 				}
 				multipart
 			end
@@ -86,11 +86,13 @@ module ODDB
 			send_mail(outgoing)
 		end
 		def notify_attachment(attachment, headers)
-			multipart = TMail::Mail.new
+			multipart = Mail.new
 			subject = headers[:subject]
 			multipart.parts << text_part(subject)
-			type1, type2 = (headers[:mime_type] || 'text/plain').split('/')
-			multipart.parts << file_part(type1, type2, headers[:filename], attachment)
+			mime = (headers[:mime_type] || 'text/plain')
+      multipart.attachments[headers[:filename]] = {:mime_type => mime, :content => attachment}
+      # This is also fine. but the full file path is necessary
+      #multipart.add_file('/home/masa/work/test.xls')
 			multipart.from = @mail_from || self::class::MAIL_FROM
 			@recipients = (@recipients + self::class::MAIL_TO).uniq
 			multipart.to = @recipients
@@ -100,9 +102,8 @@ module ODDB
 			send_mail(multipart)
 		end
 		def text_part(body)
-			text = TMail::Mail.new
-			text.set_content_type('text', 'plain', 'charset'=>'UTF-8')
-			text.body = body
+			text = Mail::Part.new
+      text.body = body
 			text
 		end
 		def send_mail(multipart)
@@ -128,14 +129,6 @@ module ODDB
 												@mail_from || config.smtp_user, recipient)
 				}
 			}
-		end
-		def file_part(type1, type2, filename, attachment)
-			file = TMail::Mail.new
-			file.set_content_type(type1, type2, 'name' => filename)
-			file.disposition = 'attachment'
-			file.transfer_encoding = 'base64'
-			file.body = [attachment].pack('m')
-			file
 		end
 	end
 end

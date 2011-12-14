@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::View::Admin::TestFAchinfoConfirm -- oddb.org -- 23.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::TestFachinfoConfirm -- oddb.org -- 24.10.2003 -- rwaltert@ywesee.com
 

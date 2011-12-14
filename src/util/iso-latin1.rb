@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Util::IsoLatin1 -- oddb -- 05.01.2006 -- hwyss@ywesee.com
 
 module ODDB
@@ -47,7 +48,8 @@ class String
 		alias :_downcase :downcase
 		alias :_downcase! :downcase!
 		def downcase
-			res = _downcase
+			#res = _downcase
+      res = _downcase.force_encoding('utf-8')
       if DOWNCASE_PTRN.match(res)
         res.locale_downcase!
       end

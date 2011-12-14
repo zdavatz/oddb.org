@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Exporter -- oddb.org -- 01.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Exporter -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
 require 'plugin/oddbdat_export'
@@ -47,14 +47,13 @@ module ODDB
       run_on_weekday(0) {
         mail_download_stats
         mail_feedback_stats
-        export_yaml # don't run daily, just run on Sunday ;)
         #mail_notification_stats
       }
       export_sl_pcodes
-      #export_yaml
-      #export_oddbdat
-      #export_csv
-      #export_doc_csv
+      export_yaml
+      export_oddbdat
+      export_csv
+      export_doc_csv
       export_index_therapeuticus_csv
       export_price_history_csv
 =begin # inoperable atm.
@@ -85,7 +84,7 @@ module ODDB
       safe_export 'oddb.csv' do
         plug.export_drugs
       end
-      safe_export 'oddb2.csv' do
+      safe_export 'oddb.csv' do
         plug.export_drugs_extended
       end
       EXPORT_SERVER.clear
@@ -218,7 +217,6 @@ module ODDB
       safe_export 'price_history.yaml' do
         exporter.export_prices
       end
-=begin # Stop for the moment
 			run_on_weekday(2) {
         safe_export 'fachinfo.yaml' do
           exporter.export_fachinfos
@@ -234,7 +232,6 @@ module ODDB
           exporter.export_doctors
         end
 			}
-=end
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
@@ -244,13 +241,6 @@ module ODDB
         exporter.export_fachinfos
       end
     end
-    def export_patinfo_yaml
-			exporter = YamlExporter.new(@app)
-      safe_export 'patinfo.yaml' do
-        exporter.export_patinfos
-      end
-    end
-
 		def mail_download_stats
       safe_export 'Mail Download-Statistics' do
         mail_stats('download')

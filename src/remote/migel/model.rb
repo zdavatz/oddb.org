@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # enconding: utf-8
 # Migel::Model -- migel -- 17.08.2011 -- mhatakeyama@ywesee.com
 

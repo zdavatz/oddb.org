@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::PayPal::Invoice -- ODDB -- 28.04.2005 -- hwyss@ywesee.com
 
 module ODDB

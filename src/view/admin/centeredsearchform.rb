@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::CenteredSearchForm -- oddb -- 07.09.2004 -- mhuggler@ywesee.com
 
 require 'view/centeredsearchform'

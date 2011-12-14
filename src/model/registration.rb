@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::Registration -- oddb.org -- 30.08.2011 -- mhatakeyama@ywesee.com 
 # ODDB::Registration -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
@@ -214,7 +215,7 @@ module ODDB
 		private
 		def adjust_types(hash, app=nil)
 			hash = hash.dup
-			hash.each { |key, value|
+			hash.dup.each { |key, value|
 				if(value.is_a?(Persistence::Pointer))
 					hash[key] = value.resolve(app)
 				else

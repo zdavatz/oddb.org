@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Admin::Orphaned_pantinfos -- oddb -- 20.11.2003 -- rwaltert@ywesee.com
 
 require 'view/admin/orphaned_patinfos'

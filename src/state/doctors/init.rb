@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Doctors::Init -- oddb -- 17.09.2004 -- jlang@ywesee.com
 
 require 'state/global_predefine'

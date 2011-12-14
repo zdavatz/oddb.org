@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State:Rss::Passthru -- oddb.org -- 23.05.2007 -- hwyss@ywesee.com
 
 require 'state/global_predefine'

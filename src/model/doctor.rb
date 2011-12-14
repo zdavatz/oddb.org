@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Doctor -- oddb -- 20.09.2004 -- jlang@ywesee.com
 
 require 'util/persistence'
@@ -67,7 +68,7 @@ module ODDB
 		end
     private
     def adjust_types(values, app=nil)
-      values.each { |key, value|
+      values.dup.each { |key, value|
         case key
         when :specialities, :capabilities
           values.store(key, value.to_s.split(/[\r\n]+/u))
@@ -75,6 +76,7 @@ module ODDB
           values.store(key, value.to_i)
         end
       }
+      values
     end
 	end
 end

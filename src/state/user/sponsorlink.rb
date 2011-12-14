@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::User::Sponsorlink -- oddb -- 18.10.2005 -- hwyss@ywesee.com
 
 require 'state/user/global'

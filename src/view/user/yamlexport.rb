@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::User::YamlExport -- oddb -- 05.09.2003 -- rwaltert@ywesee.com
 
 require 'view/publictemplate'

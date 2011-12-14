@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Pager -- oddb -- 28.08.2003 -- ywesee@ywesee.com
 
 require 'htmlgrid/link'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # WhoPlugin -- ODDB -- 23.02.2004 -- hwyss@ywesee.com
 
 require 'mechanize'
@@ -52,7 +53,7 @@ module ODDB
       unless(node.children.any? { |br| br.element? && br.name != 'br' })
         html = node.inner_html
         if RUBY_VERSION < '1.9'
-          html.gsub! /\240/, ''
+          #html.gsub! /\240/, ''
         end
         html.gsub(/\s+/, ' ').gsub(/\s*<br\s*\/?>\s*/, "\n").strip
       end

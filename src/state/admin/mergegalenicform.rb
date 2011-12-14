@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Admin::MergeGalenicForm -- oddb -- 02.03.2011 -- mhatakeyama@ywesee.com
 # State::Admin::MergeGalenicForm -- oddb -- 03.04.2003 -- benfay@ywesee.com
 

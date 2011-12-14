@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 24.11.2011 -- mhatakeyama@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 10.11.2011 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/lookandfeelwrapper'
@@ -797,7 +797,6 @@ module ODDB
 			:sequences,
 			:price_history,
 			:ywesee_contact,
-			:print,
 		]
 		DISABLED = [ :atc_ddd, :legal_note, :navigation, :price_request ]
     DICTIONARIES = {

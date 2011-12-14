@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # TestNotifyLog -- oddb -- 21.04.2005 -- jlang@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))

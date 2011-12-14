@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODBAStub -- ODDB -- 16.09.2004 -- hwyss@ywesee.com
 
 require 'odba'

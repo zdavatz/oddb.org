@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::MedData::TestHospitalPlugin -- oddb.org -- 20.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::MedData::TestHospitalPlugin -- oddb.org -- 07.02.2005 -- jlang@ywesee.com
 

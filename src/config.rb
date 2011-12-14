@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # @config -- de.oddb.org -- 08.09.2006 -- hwyss@ywesee.com
 
 require 'rclconf'

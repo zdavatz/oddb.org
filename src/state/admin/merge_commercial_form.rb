@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Admin::MergeCommercialForm -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::MergeCommercialForm -- oddb.org -- 24.11.2006 -- hwyss@ywesee.com
 

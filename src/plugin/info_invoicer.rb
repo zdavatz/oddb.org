@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # InfoInvoicer -- oddb.org -- 26.02.2008 -- hwyss@ywesee.com
 
 require 'plugin/invoicer'
@@ -205,7 +206,8 @@ module ODDB
       lt = Time.local(ld.year, ld.month, ld.mday)
       range = ft...lt
       recents = all_items.select { |item|
-        range.include?(item.time)
+        #range.include?(item.time)
+        range.cover?(item.time)
       }
       ## remove duplicate processing items
       active = active_infos

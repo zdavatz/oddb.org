@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # MergeGalenicFormCommand -- oddb -- 09.04.2003 -- hwyss@ywesee.com 
 
 module ODDB

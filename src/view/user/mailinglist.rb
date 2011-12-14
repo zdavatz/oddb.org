@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::User::MailingList -- oddb -- 30.09.2003 -- mhuggler@ywesee.com
 
 require 'view/publictemplate'

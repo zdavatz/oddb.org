@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Admin::GalenicGroups -- oddb -- 25.03.2003 -- andy@jetnet.ch
 
 require 'state/admin/global'

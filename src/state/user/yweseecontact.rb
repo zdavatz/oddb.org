@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::User::YweseeContact -- oddb -- 04.08.2003 -- mhuggler@ywesee.com
 
 require 'state/user/global'

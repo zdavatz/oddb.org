@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::Admin::OrphanedPatinfoAssign -- oddb.org -- 21.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::OrphanedPatinfoAssign -- oddb -- 26.11.2003 -- rwaltert@ywesee.com
 

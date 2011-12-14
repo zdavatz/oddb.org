@@ -1,3 +1,4 @@
+# encoding: utf-8
 # Ruby/Mock version 1.0
 # 
 # A class for conveniently building mock objects in RUnit test cases.

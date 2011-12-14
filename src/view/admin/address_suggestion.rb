@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::AddressSuggestion -- oddb -- 09.08.2005 -- jlang@ywesee.com
 
 require 'view/resulttemplate'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Sequence -- oddb -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -68,7 +69,7 @@ module ODDB
       }
     end
 		def basename
-			@name_base.to_s[/^.[^0-9]+/u]
+			@name_base.to_s[/^.[^0-9]+/u].force_encoding('utf-8')
 		end
 		def checkout
 			checkout_helper([@atc_class, @patinfo], :remove_sequence)
@@ -187,6 +188,8 @@ module ODDB
 			/#{query}/iu.match(@name_base)
 		end
 		def name
+      @name_base.force_encoding('utf-8') if @name_base
+      @name_descr.force_encoding('utf-8') if @name_descr
 			[@name_base, @name_descr].compact.join(', ')
 		end
 		alias :to_s :name
@@ -263,6 +266,7 @@ module ODDB
     end
 		def search_terms
 			str = self.name
+			#str = self.name.force_encoding('utf-8')
 			ODDB.search_terms(str.split(/\s+/u).push(str))
 		end
 		def seqnr=(seqnr)
@@ -308,7 +312,7 @@ module ODDB
 		private
 		def adjust_types(values, app=nil)
 			values = values.dup
-			values.each { |key, value|
+			values.dup.each { |key, value|
 				if(value.is_a?(Persistence::Pointer))
 					values[key] = value.resolve(app)
 				else
@@ -361,6 +365,7 @@ module ODDB
       @composition_text || @packages.collect { |cd, pac|
         (src = pac.swissmedic_source) && src[:composition] 
       }.compact.first
+      @composition_text.force_encoding('utf-8') if @composition_text
     end
 	end
 end

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::PayPal::Return -- ODDB -- 21.04.2005 -- hwyss@ywesee.com
 
 require 'view/resulttemplate'

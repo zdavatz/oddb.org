@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Rss::MiniFi -- oddb.org -- 11.05.2007 -- hwyss@ywesee.com
 
 require 'rss/maker'

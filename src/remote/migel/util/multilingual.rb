@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # enconding: utf-8
 # Migel::Util::Multilingual -- migel -- 26.08.2011 -- mhatakeyama@ywesee.com
 

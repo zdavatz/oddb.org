@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::User::FiPiOfferConfirm -- oddb -- 29.06.2004 -- mhuggler@ywesee.com
 
 require 'state/user/global'

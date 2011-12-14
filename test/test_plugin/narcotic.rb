@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::TestNarcoticPlugin -- oddb -- 16.03.2011 -- mhatakeyama@ywesee.com
 # ODDB::TestNarcoticPlugin -- oddb -- 03.11.2005 -- ffricker@ywesee.com
 

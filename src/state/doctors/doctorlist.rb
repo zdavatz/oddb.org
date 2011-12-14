@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Doctors::DoctorList -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Doctors::DoctorList -- oddb.org -- 26.05.2003 -- mhuggler@ywesee.com
 

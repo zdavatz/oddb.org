@@ -32,7 +32,8 @@ module ODDB
       range = (time1...time2)
       modified = @app.fachinfos.values.select { |fi| 
         fi.change_log.reverse.any? { |item|
-          range.include?(item.time)
+          #range.include?(item.time)
+          range.cover?(item.time)
         }
       }
       modified.each { |fi|

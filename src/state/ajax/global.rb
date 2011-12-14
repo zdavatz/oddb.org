@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Ajax::Global -- oddb -- 17.03.2006 -- hwyss@ywesee.com
 
 module ODDB

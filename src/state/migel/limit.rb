@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Drugs::Limit -- oddb -- 28.10.2005 -- hwyss@ywesee.com
 
 require 'state/limit'

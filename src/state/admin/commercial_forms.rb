@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Admin::CommercialForms -- oddb.org -- 23.11.2006 -- hwyss@ywesee.com
 
 require 'state/global_predefine'

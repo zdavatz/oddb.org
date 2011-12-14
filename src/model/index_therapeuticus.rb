@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # IndexTherapeuticus -- oddb.org -- 20.05.2008 -- hwyss@ywesee.com
 
 require 'util/language'

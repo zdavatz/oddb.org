@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::MergeIndication -- oddb -- 07.07.2003 -- hwyss@ywesee.com 
 
 require 'view/drugs/privatetemplate'

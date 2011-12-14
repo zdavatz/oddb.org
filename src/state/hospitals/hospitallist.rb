@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Hospitals::HospitalList -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Hospitals::HospitalList -- oddb.org -- 09.03.2005 -- jlang@ywesee.com
 

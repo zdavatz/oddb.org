@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # InvoiceObserver -- oddb -- 03.08.2005 -- hwyss@ywesee.com
 
 module ODDB

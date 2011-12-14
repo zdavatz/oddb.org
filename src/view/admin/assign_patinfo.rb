@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::AssignPatinfo -- oddb -- 19.10.2005 -- hwyss@ywesee.com
 
 require 'view/drugs/privatetemplate'
@@ -27,7 +28,7 @@ class AssignPatinfoForm < View::Admin::AssignDeprivedSequenceForm
 	def compose_footer(matrix)
 		super
 		btn = HtmlGrid::Button.new(:back, @model, @session, self)
-		args = {:pointer, @model.sequence.pointer}
+		args = {:pointer => @model.sequence.pointer}
 		url = @lookandfeel._event_url(:resolve, args)
 		script = "location.href='#{url}'"
 		btn.set_attribute('onClick', script)

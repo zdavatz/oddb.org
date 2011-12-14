@@ -208,7 +208,7 @@ module ODDB
     private
     def adjust_types(values, app=nil)
       values = values.dup
-      values.each { |key, value|
+      values.dup.each { |key, value|
         case value
         when Persistence::Pointer
           values[key] = value.resolve(app)

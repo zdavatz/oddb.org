@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::User::Export -- oddb -- 05.09.2003 -- hwyss@ywesee.com
 
 module ODDB

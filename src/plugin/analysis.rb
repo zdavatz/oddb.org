@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 #  AnalysisPlugin -- oddb.org -- 09.06.2006 -- sfrischknecht@ywesee.com
 
 $: << path = File.expand_path("../..", File.dirname(__FILE__)) unless $:.include?(path)

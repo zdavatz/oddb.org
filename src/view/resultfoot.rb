@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::View::ResultFoot -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::ResultFoot -- oddb.org -- 20.03.2003 -- hwyss@ywesee.com 
 

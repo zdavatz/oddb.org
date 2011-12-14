@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Admin::FachinfoConfirm -- oddb -- 26.09.2003 -- rwaltert@ywesee.com
 
 require 'state/admin/global'

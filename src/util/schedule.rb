@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Util::Schedule -- oddb.org -- 30.05.2007 -- hwyss@ywesee.com
 
 module ODDB

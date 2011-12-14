@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Drugs::DDD -- oddb -- 01.03.2004 -- hwyss@ywesee.com
 
 require 'htmlgrid/list'

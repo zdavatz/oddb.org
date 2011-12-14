@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # GalenicForm -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/language'
@@ -45,7 +46,7 @@ module ODDB
 		private
 		def adjust_types(values, app=nil)
 			values = values.dup
-			values.each { |key, value|
+			values.dup.each { |key, value|
 				case(key)
 				when :galenic_group
 					values[key] = value.resolve(app)

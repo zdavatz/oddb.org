@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # MiniFi -- oddb.org -- 23.04.2007 -- hwyss@ywesee.com
 
 require 'model/text'

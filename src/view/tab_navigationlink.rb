@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::TabNavigationLink -- oddb -- 20.11.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/link'

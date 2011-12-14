@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 #  -- oddb -- 24.10.2005 -- ffricker@ywesee.com
 
 require 'view/notify'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::OrphanedLanguages -- oddb -- 11.12.2003 -- rwaltert@ywesee.com
 
 module ODDB

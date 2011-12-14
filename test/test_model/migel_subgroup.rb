@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # TestCreateSubgroup -- oddb -- 13.09.2005 -- spfenninger@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))

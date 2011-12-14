@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Drugs::RootResult -- oddb -- 07.03.2003 -- hwyss@ywesee.com 
 
 require 'view/drugs/resultlist'

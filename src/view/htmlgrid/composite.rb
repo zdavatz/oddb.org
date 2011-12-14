@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # HtmlGrid::Composite -- oddb -- 17.02.2006 -- hwyss@ywesee.com
 
 require 'htmlgrid/composite'

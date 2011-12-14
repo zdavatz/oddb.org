@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::TestNGramSimilarity -- oddb.org -- 01.07.2011 -- mhatakeyama@ywesee.com 
 
 

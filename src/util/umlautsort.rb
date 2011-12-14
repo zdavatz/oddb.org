@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # UmlautSort -- oddb -- 07.07.2003 -- mhuggler@ywesee.com
 
 module ODDB

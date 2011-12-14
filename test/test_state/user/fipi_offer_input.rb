@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::User::TestFiPiOfferInput -- oddb.org -- 28.04.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::User::TestFiPiOfferInput -- oddb.org -- 09.09.2004 -- jlang@ywesee.com
 

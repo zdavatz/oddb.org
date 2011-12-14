@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Analysis::Group -- oddb.org -- 05.07.2006 -- sfrischknecht@ywesee.com
 
 require 'view/analysis/group'

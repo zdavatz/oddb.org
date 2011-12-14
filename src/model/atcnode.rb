@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::AtcNote -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::AtcNode -- oddb.org -- 17.07.2003 -- mhuggler@ywesee.com
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Sponsor -- oddb -- 29.07.2003 -- mhuggler@ywesee.com
 
 require 'date'

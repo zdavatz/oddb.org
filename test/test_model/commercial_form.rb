@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::TestCommercialForm -- oddb.org -- 01.07.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))

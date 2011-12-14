@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissmedicPlugin -- oddb.org -- 24.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 08.07.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 require 'fileutils'
@@ -372,7 +372,7 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
     end
     def report
       atcless = @app.atcless_sequences.collect { |sequence|
-        (resolve_sequence_link(sequence) || resolve_link(sequence.pointer))	
+        resolve_link(sequence.pointer)	
       }.sort
       lines = [
         "ODDB::SwissmedicPlugin - Report #{@@today.strftime('%d.%m.%Y')}",
@@ -390,11 +390,6 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
         atcless,
       ]
       lines.flatten.join("\n")
-    end
-    def resolve_sequence_link(sequence)
-      if iksnr = sequence.iksnr and seqnr = sequence.seqnr
-        "http://#{SERVER_NAME}/de/gcc/show/reg/#{iksnr}/seq/#{seqnr}"
-      end
     end
     def resolve_link(ptr)
       unless(ptr.is_a? Persistence::Pointer)

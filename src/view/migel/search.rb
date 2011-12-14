@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Migel::Search -- oddb -- 04.10.2005 -- ffricker@ywesee.com
 
 require 'view/publictemplate'

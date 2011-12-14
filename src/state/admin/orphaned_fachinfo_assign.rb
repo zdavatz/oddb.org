@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Admin::OrphanedFachinfoAssign -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::OrphanedFachinfoAssign -- oddb.org -- 11.12.2003 -- rwaltert@ywesee.com
 

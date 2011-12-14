@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::CommercialForm -- de.oddb.org -- 24.11.2006 -- hwyss@ywesee.com
 
 require 'view/privatetemplate'

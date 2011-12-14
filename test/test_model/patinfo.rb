@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # TestPatinfo -- oddb -- 25.02.2011 -- mhatakeyama@ywesee.com
 # TestPatinfo -- oddb -- 29.10.2003 -- rwaltert@ywesee.com
 

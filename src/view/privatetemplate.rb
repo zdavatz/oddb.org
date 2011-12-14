@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::PrivateTemplate -- oddb -- 23.10.2002 -- hwyss@ywesee.com 
 
 require	'view/form'

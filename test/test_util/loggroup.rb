@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::LogGroupTest -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com 
 # ODDB::LogGroupTest -- oddb.org -- 16.05.2003 -- hwyss@ywesee.com 
 

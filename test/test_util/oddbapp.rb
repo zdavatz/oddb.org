@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # TestOddbApp -- oddb.org -- 12.09.2011 -- mhatakeyama@ywesee.com
 # TestOddbApp -- oddb.org -- 16.02.2011 -- mhatakeyama@ywesee.com, zdavatz@ywesee.com
 

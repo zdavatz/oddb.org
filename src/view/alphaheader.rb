@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::AlphaHeader -- oddb -- 03.07.2003 -- hwyss@ywesee.com 
 
 module ODDB

@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'view/external_links'
 require 'view/language_chooser'
 require 'view/publictemplate'

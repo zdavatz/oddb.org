@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Exception -- oddb -- 12.03.2003 -- andy@jetnet.ch
 
 require 'state/global_predefine'

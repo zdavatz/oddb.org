@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # encondig: utf-8
 # ODDB::Migel::Item -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
 

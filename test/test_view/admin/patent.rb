@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::View::Admin::TestPatent -- oddb.org -- 20.04.2011 -- mhatakeyama@ywesee.com
 
 #$: << File.expand_path('../..', File.dirname(__FILE__))

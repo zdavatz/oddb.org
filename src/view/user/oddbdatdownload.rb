@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::User::ODDBDatDownload -- oddb -- 18.08.2003 -- mhuggler@ywesee.com
 
 require 'view/publictemplate'

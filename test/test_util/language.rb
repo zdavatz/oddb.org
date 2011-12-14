@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::TestLanguage -- oddb.org -- 20.06.2011 -- mhatakeyama@ywesee.com
 # TestLanguage -- oddb.org -- 24.03.2003 -- mhuggler@ywesee.com 
 

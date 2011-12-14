@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::View::Admin::TestGalenicGroup -- oddb.org -- 24.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::TestGalenicGroupSelect -- oddb.org -- 31.03.2003 -- hwyss@ywesee.com 
 

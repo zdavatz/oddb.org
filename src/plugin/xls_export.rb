@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # XlsExportPlugin -- oddb -- 22.11.2005 -- hwyss@ywesee.com
 
 require 'plugin/plugin'

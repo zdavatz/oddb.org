@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Plugin::MiniFi -- oddb.org -- 26.04.2007 -- hwyss@ywesee.com
 
 require 'plugin/plugin'

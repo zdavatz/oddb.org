@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 #  State::Notify-- oddb -- 20.10.2005 -- ffricker@ywesee.com
 
 require 'state/migel/global'

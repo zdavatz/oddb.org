@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Interactions::Basket -- oddb -- 07.06.2004 -- mhuggler@ywesee.com
 
 require	'state/global_predefine'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # GalenicGroup -- oddb -- 24.03.2003 -- mhuggler@ywesee.com 
 
 require 'util/persistence'

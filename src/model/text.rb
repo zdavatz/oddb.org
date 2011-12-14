@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Text -- oddb -- 10.09.2003 -- rwaltert@ywesee.com
 
 require 'util/persistence'
 require 'util/language'
 require 'util/searchterms'
-require 'encoding/character/utf-8'
+#require 'encoding/character/utf-8'
 
 module ODDB
 	module Text

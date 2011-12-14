@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # LimitationText -- oddb -- 10.11.2003 -- mhuggler@ywesee.com
 
 require 'util/language'

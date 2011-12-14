@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::TestDownloadInvoicer -- oddb.org -- 24.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::TestDownloadInvoicer -- oddb.org -- 27.09.2005 -- hwyss@ywesee.com
 

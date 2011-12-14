@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # FeedbackObserver -- oddb -- 09.01.2006 -- hwyss@ywesee.com
 
 module ODDB

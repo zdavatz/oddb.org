@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::TestYamlExporter -- oddb.org -- 21.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::TestYamlExporter -- oddb.org -- 02.09.2003 -- rwaltert@ywesee.com
 

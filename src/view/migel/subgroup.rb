@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::View::Migel::Subgroup -- oddb.org -- 09.09.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Subgroup -- oddb.org -- 05.10.2005 -- ffricker@ywesee.com
 

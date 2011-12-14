@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 #  View::Analysis::ExplainResult-- oddb.org -- 15.08.2006 -- sfrischknecht@ywesee.com
 
 require 'htmlgrid/list'

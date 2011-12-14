@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'config'
 require 'plugin/plugin'
 require 'drb'

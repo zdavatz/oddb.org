@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::View::TestPager -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::TestPager -- oddb.org -- 29.08.2003 -- ywesee@ywesee.com
 

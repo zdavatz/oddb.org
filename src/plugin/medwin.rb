@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # MedwinPlugin -- oddb -- 06.10.2003 -- mhuggler@ywesee.com
 
 require 'util/oddbconfig'

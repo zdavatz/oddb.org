@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::User::RegisterPowerUser -- oddb -- 29.07.2005 -- hwyss@ywesee.com
 
 require 'view/resulttemplate'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::Patent -- oddb.org -- 05.05.2006 -- hwyss@ywesee.com
 
 require 'view/privatetemplate'

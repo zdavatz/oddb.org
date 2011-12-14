@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # OuwerkerkPlugin -- oddb -- 18.06.2003 -- hwyss@ywesee.com 
 
 require 'date'

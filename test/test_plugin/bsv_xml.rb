@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # TestBsvXmlPlubin -- oddb.org -- 21.06.2011 -- mhatakeyama@ywesee.com
 # TestBsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::SwissmedicSource -- oddb.org -- 03.04.2008 -- hwyss@ywesee.com
 
 module ODDB

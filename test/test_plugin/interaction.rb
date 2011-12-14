@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # TestInteractionPlugin -- oddb -- 15.03.2011 -- mhatakeyama@ywesee.com
 # TestInteractionPlugin -- oddb -- 23.02.2004 -- mhuggler@ywesee.com
 

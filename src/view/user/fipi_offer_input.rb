@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::User::FiPiOfferInput -- oddb -- 28.06.2004 -- mhuggler@ywesee.com
 
 require 'view/resulttemplate'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Drugs::RegisterDownload -- ODDB -- 28.04.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/errormessage'

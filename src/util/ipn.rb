@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::PayPal::Ipn -- oddb.org -- 04.04.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::PayPal::Ipn -- oddb.org -- 19.04.2005 -- hwyss@ywesee.com
 

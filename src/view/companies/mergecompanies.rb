@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Companies::MergeCompanies -- oddb -- 17.06.2003 -- mhuggler@ywesee.com
 
 require 'view/privatetemplate'

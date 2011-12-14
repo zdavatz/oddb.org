@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Rss::Feedback -- oddb.org -- 29.06.2007 -- hwyss@ywesee.com
 
 require 'rss/maker'

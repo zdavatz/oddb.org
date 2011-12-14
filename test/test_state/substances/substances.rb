@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # enconding: utf-8
 # ODDB::State::Substances::TestSubstances -- oddb.org -- 17.06.2011 -- mhatakeyama@ywesee.com
 

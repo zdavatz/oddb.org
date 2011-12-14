@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::LoginComposite -- oddb -- 26.11.2002 -- hwyss@ywesee.com 
 
 require 'view/admin/loginform'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Companies::FiPiOverview -- oddb.org -- 27.11.2006 -- hwyss@ywesee.com
 
 require 'view/privatetemplate'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Admin::MergeIndication -- oddb.org -- 27.06.2011 -- mhatakeyama@ywesee.com 
 # ODDB::State::Admin::MergeIndication -- oddb.org -- 07.07.2003 -- hwyss@ywesee.com 
 

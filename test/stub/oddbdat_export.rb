@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # StubOddbDatExport -- oddb -- 20.08.2003 -- ywesee@ywesee.com
 
 

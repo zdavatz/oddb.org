@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Drugs::Patinfo -- oddb -- 11.11.2003 -- rwaltert@ywesee.com
 
 require 'state/drugs/global'

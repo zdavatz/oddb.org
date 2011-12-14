@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # SequenceObserver -- oddb -- 28.11.2003 -- rwaltert@ywesee.com
 
 module ODDB

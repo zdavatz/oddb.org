@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Composition -- oddb.org -- 28.04.2008 -- hwyss@ywesee.com
 
 require 'util/persistence'
@@ -96,7 +97,7 @@ module ODDB
 		private
     def adjust_types(values, app=nil)
       values = values.dup
-      values.each { |key, value|
+      values.dup.each { |key, value|
         if(value.is_a?(Persistence::Pointer))
           values[key] = value.resolve(app)
         else

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # encodnig: utf-8
 # ODDB::Veiw::TestSuggestAddress -- oddb.org -- 08.11.2011 -- mhatakeyama@ywesee.com
 

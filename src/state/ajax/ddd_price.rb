@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Ajax::DDDPrice -- oddb.org -- 10.04.2006 -- hwyss@ywesee.com
 
 require 'state/ajax/global'

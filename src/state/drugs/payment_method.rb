@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Drugs::PaymentMethod -- oddb -- 05.10.2005 -- hwyss@ywesee.com
 
 require 'state/global_predefine'

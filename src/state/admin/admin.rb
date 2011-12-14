@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Admin::Admin -- ydim -- 01.03.2006 -- hwyss@ywesee.com
 
 require 'state/admin/user'

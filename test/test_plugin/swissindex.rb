@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestSwissindexPlugin -- oddb.org -- 07.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::TestSwissindexPlugin -- oddb.org -- 16.09.2011 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 $: << File.expand_path("../..", File.dirname(__FILE__))
@@ -120,10 +120,7 @@ module ODDB
     def test_report
       package = flexmock('package', 
                          :barcode => 12345,
-                         :pointer => 'pointer',
-                         :iksnr   => 'iksnr',
-                         :seqnr   => 'seqnr',
-                         :ikscd   => 'ikscd'
+                         :pointer => 'pointer' 
                         )
       @plugin.instance_eval('@out_of_trade_false_list = [package]')
       @plugin.instance_eval('@out_of_trade_true_list  = [package]')
@@ -131,7 +128,7 @@ module ODDB
       @plugin.instance_eval('@update_pharmacode_list  = [package]')
       @plugin.instance_eval('@total_packages  = 123')
 
-      expected = "Checked 123 packages\nUpdated in trade     (out_of_trade:false): 1 packages\nUpdated out of trade (out_of_trade:true) : 1 packages\nUpdated pharmacode: 1 packages\nDeleted pharmacode: 1 packages\n\nUpdated in trade     (out_of_trade:false): 1 packages\nCheck swissindex by eancode and then check if the package is out of trade (true) in ch.oddb,\nif so the package becomes in trade (false)\n        12345: http://ch.oddb.org/de/gcc/show/reg/iksnr/seq/seqnr/pack/ikscd\n\nUpdated out of trade (out_of_trade:true) : 1 packages\nIf there is no eancode in swissindex and the package is in trade in ch.oddb,\nthen the package becomes out of trade (true) in ch.oddb\n        12345: http://ch.oddb.org/de/gcc/show/reg/iksnr/seq/seqnr/pack/ikscd\n\nUpdated pharmacode: 1 packages\nIf the package does not have a pharmacode and there is a pharmacode found in swissindex,\nthen put the pharmacode into ch.oddb\n        12345: http://ch.oddb.org/de/gcc/show/reg/iksnr/seq/seqnr/pack/ikscd\n\nDeleted pharmacode: 1 packages\nIf there is no eancode in swissindex then delete the according pharmacode in ch.oddb\n        12345: http://ch.oddb.org/de/gcc/show/reg/iksnr/seq/seqnr/pack/ikscd"
+      expected = "Checked 123 packages\nUpdated in trade     (out_of_trade:false): 1 packages\nUpdated out of trade (out_of_trade:true) : 1 packages\nUpdated pharmacode: 1 packages\nDeleted pharmacode: 1 packages\n\nUpdated in trade     (out_of_trade:false): 1 packages\nCheck swissindex by eancode and then check if the package is out of trade (true) in ch.oddb,\nif so the package becomes in trade (false)\n        12345: http://ch.oddb.org/de/gcc/resolve/pointer/pointer\n\nUpdated out of trade (out_of_trade:true) : 1 packages\nIf there is no eancode in swissindex and the package is in trade in ch.oddb,\nthen the package becomes out of trade (true) in ch.oddb\n        12345: http://ch.oddb.org/de/gcc/resolve/pointer/pointer\n\nUpdated pharmacode: 1 packages\nIf the package does not have a pharmacode and there is a pharmacode found in swissindex,\nthen put the pharmacode into ch.oddb\n        12345: http://ch.oddb.org/de/gcc/resolve/pointer/pointer\n\nDeleted pharmacode: 1 packages\nIf there is no eancode in swissindex then delete the according pharmacode in ch.oddb\n        12345: http://ch.oddb.org/de/gcc/resolve/pointer/pointer"
       assert_equal(expected, @plugin.report)
     end
     def test_update_package_trade_status__process12

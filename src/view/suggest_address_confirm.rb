@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # SuggestAddressConfirm -- oddb -- 08.08.2005 -- jlang@ywesee.com
 
 require 'view/address'

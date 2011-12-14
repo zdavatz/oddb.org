@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::WaitForFachinfo -- oddb -- 18.11.2004 -- mwalder@ywesee.com  rwaltert@ywesee.com
 
 require 'view/popuptemplate'

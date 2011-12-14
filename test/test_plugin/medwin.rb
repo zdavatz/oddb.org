@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # TestMedwin -- oddb -- 25.03.2011 -- mhatakeyama@ywesee.com
 #	TestMedwin -- oddb -- 06.10.2003 -- mhuggler@ywesee.com
 

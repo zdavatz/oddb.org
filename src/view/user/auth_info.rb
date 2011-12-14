@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::AuthInfo -- oddb -- 22.12.2004 -- hwyss@ywesee.com
 
 require 'view/publictemplate'

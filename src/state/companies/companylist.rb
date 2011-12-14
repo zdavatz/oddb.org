@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Companies::CompanyList -- oddb -- 03.03.2011 -- mhatakeyama@ywesee.com
 # State::Companies::CompanyList -- oddb -- 26.05.2003 -- mhuggler@ywesee.com
 

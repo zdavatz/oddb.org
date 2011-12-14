@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::GlobalPredefine -- oddb -- 08.03.2011 -- mhatakeyama@ywesee.com
 # State::GlobalPredefine -- oddb -- 25.11.2002 -- hwyss@ywesee.com 
 

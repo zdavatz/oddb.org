@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::User::AutoFill -- oddb -- 22.06.2006 -- hwyss@ywesee.com
 
 module ODDB

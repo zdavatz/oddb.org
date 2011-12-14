@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # HtmlGrid::Component -- oddb -- 04.08.2006 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'

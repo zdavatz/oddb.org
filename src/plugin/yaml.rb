@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # YamlPlugin -- oddb -- 02.09.2003 -- rwaltert@ywesee.com
 
 require 'plugin/plugin'

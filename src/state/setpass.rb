@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::SetPass -- oddb -- 29.09.2005 -- hwyss@ywesee.com
 
 require 'util/persistence'

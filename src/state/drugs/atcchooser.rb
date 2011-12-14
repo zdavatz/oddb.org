@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Drugs::AtcChooser  -- oddb -- 14.07.2003 -- mhuggler@ywesee.com
 
 require 'state/drugs/global'

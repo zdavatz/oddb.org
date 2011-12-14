@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Drugs::Init -- oddb -- 22.10.2002 -- hwyss@ywesee.com 
 
 require 'state/global_predefine'
@@ -21,7 +22,7 @@ class Init < State::Drugs::Global
       day = 24 * 3600
       range = (date-day)...(date+day)
       @model.fachinfo_news = fachinfos.select { |fi|
-        range.include? fi.revision
+        range.cover? fi.revision
       }
     end
     @model.feedbacks = @session.app.sorted_feedbacks[0,5]

@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Chapter -- oddb -- 17.09.2003 -- rwaltert@ywesee.com
 
 require 'htmlgrid/value'
 require 'htmlgrid/labeltext'
 require 'htmlgrid/textarea'
 require 'htmlgrid/dojotoolkit'
-require 'encoding/character/utf-8'
 require 'view/form'
 
 module ODDB

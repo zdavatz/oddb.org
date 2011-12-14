@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Dir -- ODDB -- 21.10.2003 -- hwyss@ywesee.com
 
 class Dir

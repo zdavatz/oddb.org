@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # RssPlugin -- oddb.org -- 16.08.2007 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
@@ -19,7 +20,8 @@ module ODDB
       range = first..last
       @app.each_package { |package|
         if((current = package.price_public) \
-          && (range.include?(current.valid_from)))
+          && (range.cover?(current.valid_from)))
+          #&& (range.include?(current.valid_from)))
           previous = package.price_public(1)
           target = if previous.nil?
                      news if current.authority == :sl
@@ -33,7 +35,16 @@ module ODDB
           target.push(package) if(target)
         end
       }
-      update_rss_feeds('sl_introduction.rss', sort_packages(news), View::Rss::SlIntroduction)
+#print "news.length = "
+#p news.length
+#p news.select{|pac| pac.name =~ /Excipial U Lipolotio ohne Parfum/}.length
+#p news.select{|pac| pac.name =~ /Excipial U Lipolotio ohne Parfum/}.map{|a| a.odba_id.to_s}.join(", ")
+#news = [ODBA.cache.fetch('26781434')]
+      #update_rss_feeds('sl_introduction.rss', sort_packages(news), View::Rss::SlIntroduction)
+      #update_rss_feeds('sl_introduction.rss', sort_packages(news)[0..9], View::Rss::SlIntroduction)
+      update_rss_feeds('sl_introduction.rss', news, View::Rss::SlIntroduction)
+#p "after sl_introduction.rss"
+#exit
       update_rss_feeds('price_cut.rss', sort_packages(cuts), View::Rss::PriceCut)
       update_rss_feeds('price_rise.rss', sort_packages(rises), View::Rss::PriceRise)
     end

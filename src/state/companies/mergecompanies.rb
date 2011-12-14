@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Companies::MergeCompanies -- oddb -- 02.03.2011 -- mhatakeyama@ywesee.com
 # State::Companies::MergeCompanies -- oddb -- 17.06.2003 -- mhuggler@ywesee.com
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Drugs::TestRegisterDownload -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Drugs::TestRegisterDownload -- oddb.org -- 29.04.2005 -- hwyss@ywesee.com
 

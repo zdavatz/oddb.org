@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Admin::TestLogin -- oddb.org -- 21.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::TestLogin -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 #State::Drugs::Narcotics  -- oddb -- 16.11.2005 -- spfenninger@ywesee.com
 
 require 'state/global_predefine'

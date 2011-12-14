@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::ResultColors -- oddb -- 20.03.2003 -- hwyss@ywesee.com 
 
 module ODDB

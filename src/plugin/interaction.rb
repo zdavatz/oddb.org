@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Plugin -- oddb -- 23.02.2004 -- mhuggler@ywesee.com
 
 require 'plugin/plugin'

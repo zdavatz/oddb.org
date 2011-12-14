@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # GoogleAdSense -- oddb -- 15.09.2004 -- jlang@ywesee.com
 
 module ODDB

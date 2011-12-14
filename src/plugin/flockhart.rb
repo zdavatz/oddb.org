@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::Interaction::FlockhartPlugin -- oddb.org -- 07.07.2011 -- mhatakeyama@ywesee.com
 # ODDB::Interaction::FlockhartPlugin -- oddb.org -- 25.02.2004 -- mhuggler@ywesee.com
 

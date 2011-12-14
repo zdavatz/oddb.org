@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::TestFlockhartPlugin -- oddb.org -- 30.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::TestFlockhartPlugin -- oddb.org -- 25.02.2004 -- mhuggler@ywesee.com
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::MergeGalenicForm -- oddb -- 04.04.2003 -- hwyss@ywesee.com 
 
 require 'view/drugs/privatetemplate'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::LookandfeelComponents -- oddb.org -- 15.05.2007 -- hwyss@ywesee.com
 
 module ODDB

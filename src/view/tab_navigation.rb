@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::TabNavigation -- oddb -- 01.09.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'

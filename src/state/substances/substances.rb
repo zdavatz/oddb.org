@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Substances::Substances -- oddb -- 25.05.2004 -- mhuggler@ywesee.com
 
 require 'state/substances/global'

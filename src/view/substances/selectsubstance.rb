@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::View::Substances::SelectSubstance -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Substances::SelectSubstance -- oddb.org -- 30.09.2004 -- hwyss@ywesee.com
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::PatinfoDeprivedSequences -- oddb -- 08.12.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/privatetemplate'

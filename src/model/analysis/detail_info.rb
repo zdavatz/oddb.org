@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'util/persistence'
 
 module ODDB

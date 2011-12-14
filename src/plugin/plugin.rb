@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Plugin -- oddb -- 30.05.2003 -- hwyss@ywesee.com 
 
 require 'util/http'
 require 'ostruct'
 #require 'util/session'
 require 'custom/lookandfeelbase'
-require 'ftools'
+#require 'ftools'
+require 'fileutils'
 
 module ODDB
 	class Plugin
@@ -79,7 +81,8 @@ module ODDB
         File.open(tmp, 'w') { |fh|
           fh.puts view.to_html(CGI.new('html4'))
         }
-        File.mv(tmp, path)
+        #File.mv(tmp, path)
+        FileUtils.mv(tmp, path)
       }
       @app.rss_updates[name] = [@month || @@today, model.size]
       @app.odba_isolated_store

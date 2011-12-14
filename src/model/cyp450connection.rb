@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # CyP450Connection -- oddb -- 04.05.2004 -- mhuggler@ywesee.com
 
 require 'util/persistence'

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::View::User::TestPowerLink -- oddb.org -- 29.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::User::TestPowerLink -- oddb.org -- 22.10.2003 -- rwaltert@ywesee.com
 

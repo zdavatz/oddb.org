@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # PatinfoInvoicer -- oddb -- 16.08.2005 -- jlang@ywesee.com
 
 require 'plugin/info_invoicer'
@@ -65,7 +66,8 @@ module ODDB
     end
     def unique_name(item)
       name = item.text
-      if(/^[0-9]{5} [0-9]{2}$/u.match(name))
+      #if(/^[0-9]{5} [0-9]{2}$/u.match(name))
+      if(/^[0-9]{5} [0-9]{2}$/.match(name))
         name.tr(' ', '_')
       elsif((ptr = item.item_pointer) && (seq = ptr.resolve(@app)) \
             && seq.is_a?(Sequence))

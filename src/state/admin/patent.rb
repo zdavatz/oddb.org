@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Admin::Patent -- oddb.org -- 11.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Patent -- oddb.org -- 05.05.2006 -- hwyss@ywesee.com
 

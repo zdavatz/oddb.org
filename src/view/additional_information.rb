@@ -256,7 +256,7 @@ module ODDB
         end
 				link.set_attribute('title', 
 					@lookandfeel.lookup(:limitation_text))
-				pos = components.index(:limitation_text)
+				#pos = components.index(:limitation_text)
 				link.css_class = "square infos"
 				link
 			end

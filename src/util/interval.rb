@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Interval -- oddb -- 03.07.2003 -- hwyss@ywesee.com 
 
 module ODDB
@@ -91,11 +92,19 @@ module ODDB
 					intervals
 					parts = @numbers
 				end
-				parts.each { |part|
-					@model.concat(index_lookup(part).sort_by { |item| 
-						comparison_value(item)
-					})
-				}
+        if parts.is_a?(String)
+          parts.each_char { |part|
+            @model.concat(index_lookup(part).sort_by { |item| 
+              comparison_value(item)
+            })
+          }
+        else
+          parts.each { |part|
+            @model.concat(index_lookup(part).sort_by { |item| 
+              comparison_value(item)
+            })
+          }
+        end
 			end
 			@model
 		end

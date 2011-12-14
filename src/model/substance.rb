@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Substance -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -37,7 +38,7 @@ module ODDB
       form
     end
 		def adjust_types(values, app=nil)
-			values.each { |key, value|
+			values.dup.each { |key, value|
 				if(key.to_s.size == 2)
           newval = value.to_s.gsub(/\S+/u) { |match|
 						match.capitalize
@@ -194,11 +195,19 @@ module ODDB
 		end
 		def name
 			# First call to descriptions should go to lazy-initialisator
-			if(lt = self.descriptions['lt']) && !lt.empty?
-				lt
-			else
-				@descriptions['en'].to_s
+			#if(lt = self.descriptions['lt']) && !lt.empty?
+			if descrs = self.descriptions and lt = descrs['lt'] and !lt.empty?
+				lt.to_s
+      elsif @descriptions and en = @descriptions['en']
+				en.to_s
+      else
+        ''
 			end
+    rescue => e
+      @@name_error_count ||= 0
+      @@name_error_count += 1
+      warn "#{@@name_error_count}, ODDB::Substance#descriptions error: Substance#odba_id = #{self.odba_id}"
+      ''
 		end
 		alias :pointer_descr :name
     def names

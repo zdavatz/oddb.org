@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Drugs::Sequences -- oddb -- 08.02.2005 -- hwyss@ywesee.com
 
 require 'view/alphaheader'

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CsvResult -- oddb.org -- 08.12.2011 -- mhatakeyama@ywesee.com
-# ODDB::View::Drugs::CsvResult -- oddb.org -- 28.04.2005 -- hwyss@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb -- 08.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb -- 28.04.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
 require 'csv'
@@ -315,7 +315,6 @@ class CsvResult < HtmlGrid::Component
 	def to_html(context)
 		to_csv(CSV_KEYS)
 	end
-  attr_reader :missing_packages
 	def to_csv(keys, symbol=:active_packages)
     eans = {}
 		result = []
@@ -325,29 +324,24 @@ class CsvResult < HtmlGrid::Component
 		}
 		result.push(header)
 		@model.each { |atc|
-      result.push(['#MGrp', atc.code.to_s, atc.description(lang).to_s])
-      atc.send(symbol).each { |pack|
-        begin
-          eans[pack.ikskey] = eans[pack.ikskey].to_i + 1
-          line = keys.collect { |key|
-            if(self.respond_to?(key))
-              self.send(key, pack)
-            else
-              pack.send(key)
-            end
-          }
-          result.push(line)
-        rescue => e
-          warn e.message
-          @missing_packages ||= []
-          @missing_packages << pack.barcode.to_s
-        end
-      }
+			result.push(['#MGrp', atc.code.to_s, atc.description(lang).to_s])
+			atc.send(symbol).each { |pack|
+        eans[pack.ikskey] = eans[pack.ikskey].to_i + 1
+				line = keys.collect { |key|
+					if(self.respond_to?(key))
+						self.send(key, pack)
+					else
+						pack.send(key)
+					end
+				}
+				result.push(line)
+			}
 		}
     @duplicates = eans.collect { |ikskey, count| 
       ikskey if count > 1 }.compact.sort
 		result.collect { |line|
-			CSV.generate_line(line, ';')
+			#CSV.generate_line(line, ';')
+			CSV.generate_line(line, {:row_sep => ';'})
 		}.join("\n")
 	end
 	def to_csv_file(keys, path, symbol=:active_packages)

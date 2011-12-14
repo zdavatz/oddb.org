@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::LoginForm -- oddb -- 25.11.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/form'

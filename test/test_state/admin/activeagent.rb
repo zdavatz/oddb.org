@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Admin::TestActiveAgent -- oddb.org -- 29.04.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Drugs::TestActiveAgent -- oddb.org -- 13.10.2003 -- mhuggler@ywesee.com
 

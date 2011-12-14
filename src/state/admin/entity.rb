@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Admin::Entity -- oddb.org -- 08.06.2006 -- hwyss@ywesee.com
 
 require 'state/global_predefine'

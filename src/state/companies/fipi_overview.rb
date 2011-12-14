@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Companies::FiPiOverview -- oddb.org -- 02.03.2011 -- mhatakeyama@ywesee.com
 # State::Companies::FiPiOverview -- oddb.org -- 27.11.2006 -- hwyss@ywesee.com
 

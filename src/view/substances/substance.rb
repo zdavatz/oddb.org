@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Substances::Substance -- oddb -- 25.05.2004 -- mhuggler@ywesee.com
 
 require 'view/privatetemplate'

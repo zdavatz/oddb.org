@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'state/ajax/global'
 require 'view/ajax/json'
 

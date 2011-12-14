@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ComarketingPlugin -- oddb.org -- 09.05.2006 -- hwyss@ywesee.com
 
 require 'plugin/plugin'

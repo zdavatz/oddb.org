@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # AcceptOrphan -- oddb -- 05.12.2003 -- rwaltert@ywesee.com
 
 require 'util/persistence' 

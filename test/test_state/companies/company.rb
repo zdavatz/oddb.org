@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Companies::TestCompany -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Companies::TestCompany -- oddb.org -- 02.10.2003 -- rwaltert@ywesee.com
 

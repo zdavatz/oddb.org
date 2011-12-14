@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Drugs::LimitationText -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Drugs::LimitationText -- oddb.org -- 14.11.2003 -- mhuggler@ywesee.com
 

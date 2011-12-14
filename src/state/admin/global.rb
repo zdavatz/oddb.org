@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Admin::Global -- oddb -- 24.08.2004 -- mhuggler@ywesee.com
 
 require 'state/admin/init'

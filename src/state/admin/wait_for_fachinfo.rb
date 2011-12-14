@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::State::Admin::WaitForFachinfo -- oddb.org -- 22.06.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::WaitForFachinfo -- oddb.org -- 10.03.2003 -- mwalder@ywesee.com rwaltert@ywesee.com
 

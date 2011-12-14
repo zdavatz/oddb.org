@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Array -- oddb -- 22.04.2003 -- hwyss@ywesee.com 
 
 module ODDB

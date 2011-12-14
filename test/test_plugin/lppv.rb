@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::TestLppvPlugin -- oddb.org -- 13.04.2011 -- mhatakeyama@ywesee.com
 # ODDB::TestLppvPlugin -- oddb.org -- 18.01.2006 -- sfrischknecht@ywesee.com
 

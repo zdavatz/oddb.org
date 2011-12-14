@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::TestMiGeLPlugin -- oddb.org -- 14.04.2011 -- mhatakeyama@ywesee.com
 # ODDB::TestMiGeLPlugin -- oddb.org -- 30.08.2005 -- hwyss@ywesee.com
 

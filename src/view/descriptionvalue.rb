@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::DescriptionValue -- oddb -- 28.03.2003 -- hwyss@ywesee.com 
 
 require 'htmlgrid/value'

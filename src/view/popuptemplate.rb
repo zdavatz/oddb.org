@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::PopupTemplate -- oddb -- 21.08.2003 -- ywesee@ywesee.com
 
 require 'view/publictemplate'

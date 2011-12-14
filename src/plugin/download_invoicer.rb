@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # Plugin::DownloadInvoicer -- oddb -- 27.09.2005 -- hwyss@ywesee.com
 
 require 'plugin/invoicer'

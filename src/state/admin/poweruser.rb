@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Admin::PowerUser -- oddb -- 29.07.2005 -- hwyss@ywesee.com
 
 require 'state/admin/user'

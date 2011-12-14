@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::User::PayPalThanks -- oddb -- 10.09.2003 -- mhuggler@ywesee.com
 
 require 'state/user/global'

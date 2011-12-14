@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # FiPDFExporter -- ODDB -- 13.02.2004 -- hwyss@ywesee.com
 
 require 'plugin/plugin'

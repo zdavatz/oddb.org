@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # States -- oddb -- 22.10.2002 -- hwyss@ywesee.com
 
 def require_r(dir, prefix)

@@ -193,6 +193,14 @@ class ResultList < HtmlGrid::List
 		reorganize_components(:result_list_components)
 		super
 	end
+=begin
+  def price_exfactory(model, session)
+    'price_exfactory'
+  end
+  def price_public(model, session)
+    'price_public'
+  end
+=end
 	def active_agents(model, session=@session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
 		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})

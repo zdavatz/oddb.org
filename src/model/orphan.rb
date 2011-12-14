@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # OrphanedPatinfo -- oddb -- 06.11.2003 -- rwaltert@ywesee.com
 
 require 'util/persistence'

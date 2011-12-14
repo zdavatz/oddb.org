@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # State::Drugs::RecentRegs -- oddb -- 01.09.2003 -- mhuggler@ywesee.com
 
 require 'state/drugs/global'

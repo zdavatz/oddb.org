@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::SelectSubstance -- oddb -- 28.04.2003 -- benfay@ywesee.com
 
 require 'view/drugs/privatetemplate'

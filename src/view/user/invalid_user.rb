@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # View::Admin::InvalidUser -- oddb -- 02.08.2005 -- hwyss@ywesee.com
 
 require 'view/publictemplate'

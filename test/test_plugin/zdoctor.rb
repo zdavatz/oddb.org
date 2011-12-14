@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # TestDoctorPlugin -- oddb -- 22.09.2004 -- jlang@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))

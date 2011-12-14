@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # ODDB::SwissmedicPluginTest -- oddb.org -- 04.08.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPluginTest -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
