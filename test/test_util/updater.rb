@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
-# ODDB::TestUpdater -- oddb.org -- 06.12.2011 -- mhatakeyama@ywesee.com 
+# encoding: utf-8
+# ODDB::TestUpdater -- oddb.org -- 14.12.2011 -- mhatakeyama@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -65,6 +66,9 @@ module ODDB
 			def create(pointer)
 				@log_group
 			end
+      def recount
+        'recount'
+      end
 		end
 		class StubLogGroup
 			attr_accessor :newest_date
