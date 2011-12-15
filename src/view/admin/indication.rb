@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Admin::Indication -- oddb -- 07.07.2003 -- hwyss@ywesee.com 
+# ODDB::View::Admin::Indication -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::Admin::Indication -- oddb.org -- 07.07.2003 -- hwyss@ywesee.com 
 
 require 'view/drugs/privatetemplate'
 require 'view/descriptionform'
@@ -15,7 +16,9 @@ class IndicationForm < View::DescriptionForm
   end
   def synonym_list *args
     input = super
-    input.value = @model.synonyms.join(' | ')
+    if @model.synonyms
+      input.value = @model.synonyms.join(' | ')
+    end
     input
   end
 end
