@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Interval -- oddb -- 03.07.2003 -- hwyss@ywesee.com 
+# ODDB::Interval -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Interval -- oddb.org -- 03.07.2003 -- hwyss@ywesee.com 
 
 module ODDB
 	module Interval
@@ -43,7 +44,7 @@ module ODDB
 		def get_intervals
 			@model.collect { |item| 
 				range_patterns.collect { |range, pattern| 
-					range if /^[#{pattern}]/iu.match(item.send(*symbol))
+          range if /^[#{pattern}]/iu.match(item.send(*symbol).force_encoding('utf-8'))
 				}.compact.first || '|unknown'
 			}.flatten.uniq.sort
 		end
