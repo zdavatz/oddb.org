@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 04.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::Package -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -39,13 +39,13 @@ module ODDB
 				}
 			end
 		end
-		attr_reader :ikscd,  :sl_entry, :narcotics, :parts, :pharmacode
+		attr_reader :ikscd, :narcotics, :parts, :pharmacode
 		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type,
 			:price_exfactory, :price_public, :pretty_dose, :market_date,
 			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
       :disable, :swissmedic_source, :descr, :preview_with_market_date,
       :generic_group_factor, :photo_link, :disable_ddd_price, :ddd_dose,
-			:deductible_m # for just-medical
+			:sl_entry, :deductible_m # for just-medical
 		alias :pointer_descr :ikscd
 		registration_data :comarketing_with, :complementary_type, :expiration_date,
       :expired?, :export_flag, :fachinfo_active?, :generic_type,

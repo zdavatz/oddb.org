@@ -66,6 +66,9 @@ module ODDB
 			def create(pointer)
 				@log_group
 			end
+      def recount
+        'recount'
+      end
 		end
 		class StubLogGroup
 			attr_accessor :newest_date

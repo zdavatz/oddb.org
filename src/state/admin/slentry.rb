@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::SlEntry -- oddb.org -- 28.06.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::SlEntry -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::SlEntry -- oddb.org -- 22.04.2003 -- benfay@ywesee.com
 
 require 'state/admin/global'
@@ -25,6 +25,8 @@ class SlEntry < State::Admin::Global
 		]
 		input = user_input(keys)
 		@model = @session.app.update(@model.pointer, input, unique_email) unless error?
+    package = @model.parent(@session.app)
+    @session.app.update(package.pointer, {:sl_entry => @model}, unique_email)
 		self
 	end
 end
