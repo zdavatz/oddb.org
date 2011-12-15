@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Root -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com 
+# ODDB::State::Admin::Root -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::State::Admin::Root -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/galenicgroups'
@@ -256,6 +256,12 @@ module Root
 	def patinfo_stats
 		State::Admin::PatinfoStats.new(@session,[])
 	end
+   def sl_entry
+     if iksnr = @session.user_input(:reg) and seqnr = @session.user_input(:seq) and ikscd = @session.user_input(:pack)\
+        and package = @session.app.registration(iksnr).sequence(seqnr).package(ikscd) and model = package.sl_entry
+       State::Admin::SlEntry.new(@session, model)
+     end
+   end
 	def sponsor
 		pointer = Persistence::Pointer.new([:sponsor, @session.flavor])
 		model = pointer.resolve(@session.app) || Persistence::CreateItem.new(pointer)

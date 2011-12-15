@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 02.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -591,6 +591,12 @@ module ODDB
           State::Admin::TransparentLogin.new(@session, substance)
         end
       end
+       def sl_entry
+         if iksnr = @session.user_input(:reg) and seqnr = @session.user_input(:seq) and ikscd = @session.user_input(:pack)\
+           and package = @session.app.registration(iksnr).sequence(seqnr).package(ikscd) and model = package.sl_entry
+           State::Admin::TransparentLogin.new(@session, model)
+         end
+       end
 			def resolve
 				if(@session.request_path == @request_path)
 					self
