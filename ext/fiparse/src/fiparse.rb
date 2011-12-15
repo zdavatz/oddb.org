@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# FiParse -- oddb -- 20.10.2003 -- rwaltert@ywesee.com
+# encoding: utf-8
+# ODDB::FiParse -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::FiParse -- oddb.org -- 20.10.2003 -- rwaltert@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.dirname(__FILE__)

@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# Fachinfo -- oddb -- 26.10.2004 -- mwalder@ywesee.com rwaltert@ywesee.com
+# encoding: utf-8
+# ODDB::Fachinfo -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::Fachinfo -- oddb.org -- 26.10.2004 -- mwalder@ywesee.com rwaltert@ywesee.com
 
 require	'fachinfo_writer'
 require 'rpdf2txt/parser'

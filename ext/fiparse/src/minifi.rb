@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# FiParse::MiniFi -- oddb.org -- 23.04.2007 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::FiParse::MiniFi -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::FiParse::MiniFi -- oddb.org -- 23.04.2007 -- hwyss@ywesee.com
 
 require 'rpdf2txt/parser'
 require 'model/text'

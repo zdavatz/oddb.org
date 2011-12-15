@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# FiParse::PatinfoHpricot -- oddb -- 17.08.2006 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
 require 'hpricot'
 require 'iconv'
