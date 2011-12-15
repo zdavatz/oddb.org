@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Indication -- oddb -- 12.05.2003 -- hwyss@ywesee.com 
+# ODDB::Indication -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Indication -- oddb.org -- 12.05.2003 -- hwyss@ywesee.com 
 
 require 'util/language'
 require 'util/searchterms'
@@ -43,6 +44,9 @@ module ODDB
       end
       self.synonyms.concat(other.all_descriptions - all_descriptions).uniq!
       other
+    end
+    def description(key=nil)
+      super.force_encoding('utf-8')
     end
 	end
 end
