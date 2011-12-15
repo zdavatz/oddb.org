@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 26.10.2011 -- mhatakeyama@ywesee.com
+# OddbApp -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 require 'odba'
@@ -1510,10 +1510,10 @@ module ODDB
         Thread.current.abort_on_exception = true
         update_hour = rand(24)
         update_min = rand(60)
-        today = (update_hour > Time.now.hour) ? \
-          @@today : @@today.next
+        day = (update_hour > Time.now.hour) ? \
+          today : today.next
         loop {
-          next_run = Time.local(today.year, today.month, today.day,
+          next_run = Time.local(day.year, day.month, day.day,
             update_hour, update_min)
           puts "next random update will take place at #{next_run}"
           $stdout.flush
@@ -1521,7 +1521,7 @@ module ODDB
           Updater.new(self).run_random
           @system.recount
           GC.start
-          today = @@today.next
+          day = today.next
           update_hour = rand(24)
           update_min = rand(60)
         }
