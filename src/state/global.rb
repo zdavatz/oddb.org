@@ -604,6 +604,8 @@ module ODDB
           iksnr = @session.user_input(:reg)
           seqnr = @session.user_input(:seq) 
           ikscd = @session.user_input(:pack)
+          @session.set_persistent_user_input(:reg, iksnr) if iksnr
+          @session.set_persistent_user_input(:seq, seqnr) if seqnr
           pointer = if iksnr && seqnr && ikscd
                       @session.app.registration(iksnr).sequence(seqnr).package(ikscd).pointer
                     elsif iksnr && seqnr

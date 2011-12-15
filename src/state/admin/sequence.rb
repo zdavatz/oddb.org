@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Sequence -- oddb.org -- 14.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Sequence -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'
@@ -129,19 +129,27 @@ module SequenceMethods
 		end
 	end
 	def new_package
-		pointer = @session.user_input(:pointer)
-		model = pointer.resolve(@session.app)
-		p_pointer = pointer + [:package]
-		item = Persistence::CreateItem.new(p_pointer)
-		item.carry(:iksnr, model.iksnr)
-		item.carry(:name_base, model.name_base)
-		item.carry(:sequence, model)
-    item.carry(:parts, [])
-		if (klass=resolve_state(p_pointer))
-			klass.new(@session, item)
-		else
-			self
-		end
+    model = if @model.is_a?(ODDB::Sequence)
+               @model
+            elsif iksnr = @session.persistent_user_input(:reg) and seqnr = @session.persistent_user_input(:seq)
+               @session.app.registration(iksnr).sequence(seqnr)
+            end
+    if model
+      pointer = model.pointer
+      p_pointer = pointer + [:package]
+      item = Persistence::CreateItem.new(p_pointer)
+      item.carry(:iksnr, model.iksnr)
+      item.carry(:name_base, model.name_base)
+      item.carry(:sequence, model)
+      item.carry(:parts, [])
+      if (klass=resolve_state(p_pointer))
+        klass.new(@session, item)
+      else
+        self
+      end
+    else
+      self
+    end
 	end
 	def update
 		newstate = self

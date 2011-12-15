@@ -12,8 +12,7 @@ module ODDB
 	class Log
 		MAIL_FROM = 'update@oddb.org'
 		MAIL_TO = [
-#			'zdavatz@ywesee.com',
-#			'hwyss@ywesee.com',
+			'zdavatz@ywesee.com',
 			'mhatakeyama@ywesee.com',
 		]
 		include Persistence
