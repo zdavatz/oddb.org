@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Product -- oddb.org -- 28.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Product -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Product -- oddb.org -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/dataformat'
@@ -34,6 +34,13 @@ class AccessoryList < HtmlGrid::List
 		:migel_code	=>	:title_accessories,
 		:description	=>	:nbsp,
 	}
+  def migel_code(model=@model, session=@session)
+    link = PointerLink.new(:to_s, model, @session, self)
+    link.value = model.migel_code
+    event = :migel_search
+    link.href = @lookandfeel._event_url(event, {:migel_product => model.migel_code.delete('.')})
+    link
+  end
 end
 class AccessoryOfList < AccessoryList	
 	LOOKANDFEEL_MAP = {
