@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
+# OddbApp -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 require 'odba'
@@ -1535,6 +1535,20 @@ module ODDB
         begin
         @rss_mutex.synchronize {
           values = @system.sorted_feedbacks
+          values.select! do |feedback|
+            feedback.item.is_a?(ODDB::Package) if feedback.item
+          end
+          values.each do |feedback|
+            if feedback.item.name
+              feedback.item.name.force_encoding('utf-8')
+            end
+            if feedback.item.respond_to?(:size) and feedback.item.size
+              feedback.item.size.force_encoding('utf-8')
+            end
+            feedback.name.force_encoding('utf-8') if feedback.name
+            feedback.email.force_encoding('utf-8') if feedback.email
+            feedback.message.force_encoding('utf-8') if feedback.message
+          end
           plg = Plugin.new(self)
           plg.update_rss_feeds('feedback.rss', values, View::Rss::Feedback)
         }

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Feedbacks -- oddb.org -- 06.07.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Feedbacks -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Feedbacks -- oddb.org -- 25.10.2005 -- ffricker@ywesee.com
 
 require 'state/global_predefine'
@@ -66,10 +66,10 @@ def update
   end
 	keys = mandatory + [:message]
 	hash = user_input(keys, mandatory)
+  answer = ODDB::LookandfeelBase::DICTIONARIES[@session.language][:captcha_answer]
   if(@passed_turing_test)
     # do nothing
-  elsif((candidates = hash[:captcha]) && candidates.any? { |key, word| 
-    @session.lookandfeel.captcha.valid_answer? key, word })
+  elsif(hash[:captcha] == answer)
     @passed_turing_test = true
   else
     @errors.store(:captcha, create_error('e_failed_turing_test', 
