@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/atcchooser'
@@ -292,8 +292,11 @@ module ODDB
 			def notify(model, session=@session)
 				link = HtmlGrid::Link.new(:notify, model, @session, self)
         if model.is_a?(ODDB::Package)
-          args = [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd]
-          link.href = @lookandfeel._event_url(:notify, args)
+          name = model.name
+          iksnr = model.iksnr
+          seqnr = model.seqnr
+          ikscd = model.ikscd
+          link.href = "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/de/gcc/drug/reg/#{iksnr}/seq/#{seqnr}/pack/#{ikscd}"
         end
 				img = HtmlGrid::Image.new(:notify, model, @session, self)
 				img.set_attribute('src', @lookandfeel.resource_global(:notify))
