@@ -296,7 +296,7 @@ module ODDB
           iksnr = model.iksnr
           seqnr = model.seqnr
           ikscd = model.ikscd
-          link.href = "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/de/gcc/drug/reg/#{iksnr}/seq/#{seqnr}/pack/#{ikscd}"
+          link.href = "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/de/gcc/show/reg/#{iksnr}/seq/#{seqnr}/pack/#{ikscd}"
         end
 				img = HtmlGrid::Image.new(:notify, model, @session, self)
 				img.set_attribute('src', @lookandfeel.resource_global(:notify))
