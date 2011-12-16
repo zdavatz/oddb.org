@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+#!/usr/local/bin/ruby193
 # encoding: utf-8
 # must be scheduled in crontab to run as the same user as oddb
 
