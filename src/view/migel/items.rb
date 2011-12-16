@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Items -- oddb.org -- 10.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Items -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com
 
 require 'htmlgrid/list'
 require 'htmlgrid/link'
@@ -87,6 +87,7 @@ class SearchedList < HtmlGrid::List
     :ppub                 => 'list',
     :google_search        => 'list',
     :twitter_share        => 'list',
+    :notify               => 'list',
   }
   def init
     reorganize_components(:migel_item_list_components)

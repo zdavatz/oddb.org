@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Result -- oddb.org -- 28.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Result -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Result -- oddb.org -- 04.10.2005 -- ffricker@ywesee.com
 
 require 'htmlgrid/list'
@@ -31,6 +31,7 @@ class List < HtmlGrid::List
   CSS_HEAD_KEYMAP = {
     :feedback             => 'th right',
     :google_search        => 'th right',
+    :facebook             => 'th right',
     :notify               => 'th right',
     :price                => 'th right',
   }
@@ -40,6 +41,7 @@ class List < HtmlGrid::List
     :google_search        => 'list',
     :limitation_text      => 'list',
     :migel_code           => 'list',
+    :facebook             => 'list',
     :notify               => 'list',
     :price                => 'list right',
     :product_description  => 'list',
@@ -62,7 +64,7 @@ class List < HtmlGrid::List
 		@width = @components.keys.collect { |x, y| x }.max
 		super
 	end
-  def notify(model=@model, session=@session)
+  def facebook(model=@model, session=@session)
     facebook_share(model, session, @facebook_link)
   end
   def limitation_link(model)

@@ -4222,8 +4222,9 @@ Zeno Davatz
         [3,0] =>  :date,
         [4,0] =>  :price,
         [5,0]	=>	:qty_unit,
-        [6,0] =>  :notify,
+        [6,0] =>  :facebook,
         [7,0]	=>  :google_search,
+        [8,0] =>  :notify,
       }
     end
     def migel_item_list_components
@@ -4237,6 +4238,7 @@ Zeno Davatz
         [6,0]   =>  :ppub,
         [7,0]   =>  :google_search,
         [8,0]   =>  :twitter_share,
+        [9,0]   =>  :notify,
       }
     end
 		def result_list_components

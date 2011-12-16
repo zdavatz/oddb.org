@@ -296,7 +296,23 @@ module ODDB
           iksnr = model.iksnr
           seqnr = model.seqnr
           ikscd = model.ikscd
-          link.href = "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/de/gcc/show/reg/#{iksnr}/seq/#{seqnr}/pack/#{ikscd}"
+          link.href = "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/#{@session.language}/#{@session.flavor}/drug/reg/#{iksnr}/seq/#{seqnr}/pack/#{ikscd}"
+        elsif model.is_a?(DRb::DRbObject) and model.respond_to?(:article_name) # ODDB::Migel::Item
+          name = model.article_name
+          migel_code = model.migel_code
+          link.href = "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/#{@session.language}/#{@session.flavor}/migel_search/migel_code/#{migel_code}"
+        elsif model.is_a?(DRb::DRbObject) # ODDB::Migel::Product
+          name = [
+            model,
+            (model.product_text if(model.respond_to?(:product_text))),
+          ].compact.collect { |item|
+            item.send(@session.language)
+          }.join(': ').gsub("\n", ' ')
+          if(name.size > 60)
+            name = name[0,57] << '...'
+          end
+          range = @session.state.interval
+          link.href = "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/#{@session.language}/#{@session.flavor}/migel_alphabetical/range/#{range}"
         end
 				img = HtmlGrid::Image.new(:notify, model, @session, self)
 				img.set_attribute('src', @lookandfeel.resource_global(:notify))
