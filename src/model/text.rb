@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Text -- oddb -- 10.09.2003 -- rwaltert@ywesee.com
+# ODDB::Text -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::Text -- oddb.org -- 10.09.2003 -- rwaltert@ywesee.com
 
 require 'util/persistence'
 require 'util/language'
 require 'util/searchterms'
-#require 'encoding/character/utf-8'
 
 module ODDB
 	module Text
@@ -112,7 +112,7 @@ module ODDB
 				set_format(*(@format.values - args))
 			end
 			def set_format(*args)
-        len = u(@text).length
+        len = @text.length
 				unless(@format.nil?)
 					if(@format.start == len)
 						@formats.pop
