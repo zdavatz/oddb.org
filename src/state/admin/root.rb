@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Root -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::State::Admin::Root -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::State::Admin::Root -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/galenicgroups'
@@ -172,12 +172,16 @@ module Root
 		end
 	end
 	def new_galenic_form
-		pointer = @session.user_input(:pointer)
-		model = pointer.resolve(@session.app)
-		item = Persistence::CreateItem.new(pointer + [:galenic_form])
-		item.carry(:galenic_group, model)
-		item.carry(:sequences, [])
-		State::Admin::GalenicForm.new(@session, item)
+    if model.is_a?(ODDB::GalenicGroup)
+      model = @model
+      pointer = model.pointer
+      item = Persistence::CreateItem.new(pointer + [:galenic_form])
+      item.carry(:galenic_group, model)
+      item.carry(:sequences, [])
+      State::Admin::GalenicForm.new(@session, item)
+    else
+      self
+    end
 	end
 	def new_galenic_group
 		pointer = Persistence::Pointer.new(:galenic_group)

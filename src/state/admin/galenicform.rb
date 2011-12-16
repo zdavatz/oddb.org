@@ -49,7 +49,7 @@ class GalenicForm < State::Admin::Global
 			}
 			input.store(:synonyms, syns)
 		end
-		input.store(:galenic_group, @session.user_input(:galenic_group))
+    input.store(:galenic_group, @model.parent(@session.app).pointer)
 		unless error?
 			@model = @session.app.update(@model.pointer, input, unique_email)
 		end
