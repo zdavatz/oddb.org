@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Feedbacks -- oddb -- 28.10.2004 -- jlang@ywesee.com, usenguel@ywesee.com
+# ODDB::View::Feedbacks -- oddb.org -- 16.12.2011 -- jlang@ywesee.com, usenguel@ywesee.com
+# ODDB::View::Feedbacks -- oddb.org -- 28.10.2004 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'view/feedbacks'
 require 'view/publictemplate'
@@ -70,7 +71,6 @@ class FeedbacksComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[1,0]	  =>	View::SearchForm,
 		[0,1]	  =>	:feedback_title,
-		[1,1]		=>	:feedback_pager,
 		[0,2]	  =>	:current_feedback,
 		[1,2]	  =>	:feedback_list,
 	}
