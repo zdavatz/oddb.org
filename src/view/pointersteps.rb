@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::PointerSteps -- oddb.org -- 23.08.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::PointerSteps -- oddb.org -- 19.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::PointerSteps -- oddb.org -- 21.03.2003 -- mhuggler@ywesee.com 
 
 require 'htmlgrid/list'
@@ -94,6 +94,9 @@ module ODDB
                          smart_link_format = model.pointer.to_csv.gsub(/registration/, 'reg').gsub(/sequence/, 'seq').gsub(/package/, 'pack').split(/,/) and
                          smart_link_format.include?('reg')
                         @lookandfeel._event_url(:show, smart_link_format)
+                      elsif model.is_a?(ODDB::GalenicGroup)
+                        link_format = {:oid => model.oid}
+                        @lookandfeel._event_url(:galenic_group, link_format)
                       else
                         old_link_format = {:pointer => model.pointer}
                         @lookandfeel._event_url(:show, old_link_format)
