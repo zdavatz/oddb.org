@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Sequence -- oddb -- 24.02.2003 -- hwyss@ywesee.com 
+# ODDB::Sequence -- oddb.org -- 19.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Sequence -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
 require 'model/package'
@@ -69,7 +70,8 @@ module ODDB
       }
     end
 		def basename
-			@name_base.to_s[/^.[^0-9]+/u].force_encoding('utf-8')
+      nb = @name_base.to_s[/^.[^0-9]+/u]
+      nb.force_encoding('utf-8') if nb
 		end
 		def checkout
 			checkout_helper([@atc_class, @patinfo], :remove_sequence)
