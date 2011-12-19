@@ -181,6 +181,24 @@ module ODDB
         REVERSE_MAP = {}
         VIEW = View::Search
         ZONE_NAVIGATION = []
+
+        # If the URL contains old pointer link then go to the latest view in the session.
+        # Once the Internet start to forget the old pointer links, this is not needed anymore.
+        class << self
+          def skip_event_pointer_link(global_map_event)
+            global_map_event.each do |event, state|
+              define_method(event) do
+                if @session.user_input(:pointer)
+                  self
+                else
+                  state.new(@session, @model)
+                end
+              end
+            end
+          end
+        end
+        skip_event_pointer_link(GLOBAL_MAP)
+
 			def add_to_interaction_basket
 				pointer = @session.user_input(:pointer)
 				if(object = pointer.resolve(@session.app))
@@ -624,23 +642,7 @@ module ODDB
 				end
 			end
       alias :drug :resolve
-      # If the URL contains old pointer link then go to the latest view in the session.
-      # This is not smart because it has to be done for every event.
-      # Once the Internet start to forget the old pointer links, this is not needed anymore.
-      def ddd_price
-        if @session.user_input(:pointer)
-          self
-        else
-          State::Drugs::DDDPrice.new(@session, @model)
-        end
-      end
-      def ddd
-        if @session.user_input(:pointer)
-          self
-        else
-          State::Drugs::DDD.new(@session, @model)          
-        end
-      end
+
 			def resolve_state(pointer, type=:standard)
 				state_map = {
 					:standard	=>	self::class::RESOLVE_STATES,
