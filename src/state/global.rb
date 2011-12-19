@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 19.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -626,6 +626,13 @@ module ODDB
 				end
 			end
       alias :drug :resolve
+      def ddd_price
+        if @session.user_input(:pointer)
+          self
+        else
+          State::Drugs::DDDPrice.new(@session, @model)
+        end
+      end
 			def resolve_state(pointer, type=:standard)
 				state_map = {
 					:standard	=>	self::class::RESOLVE_STATES,
