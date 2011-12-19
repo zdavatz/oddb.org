@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# State::Drugs::Result -- oddb -- 03.03.2011 -- mhatakeyama@ywesee.com
-# State::Drugs::Result -- oddb -- 03.03.2003 -- hwyss@ywesee.com 
+# State::Drugs::Result -- oddb.org -- 19.12.2011 -- mhatakeyama@ywesee.com
+# State::Drugs::Result -- oddb.org -- 03.03.2003 -- hwyss@ywesee.com 
 
 require 'state/global_predefine'
 require 'state/page_facade'
@@ -44,12 +44,10 @@ class Result < State::Drugs::Global
           count = 0
         end	
       }
+      @session.set_cookie_input(:resultview, 'pages')
       @filter = Proc.new { |model|
-        if(@session.cookie_set_or_get(:resultview) == 'pages')
-          page()
-        else
-          @model
-        end
+        @session.set_cookie_input(:resultview, 'pages')
+        page()
       }
 		end
 	end
