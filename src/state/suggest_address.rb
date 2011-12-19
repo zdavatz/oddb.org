@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::SuggestAddress -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::SuggestAddress -- oddb.org -- 19.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::SuggestAddress -- oddb.org -- 04.08.2005 -- jlang@ywesee.com
 
 require 'view/suggest_address'
 require 'state/suggest_address_confirm'
 require 'util/smtp_tls'
+require 'mail'
 
 module ODDB
 	module State
@@ -63,8 +64,8 @@ module ODDB
 			def send_notification(suggestion)
 				from = suggestion.email_suggestion 
         config = ODDB.config
-				mail = TMail::Mail.new
-				mail.set_content_type('text', 'plain', 'charset'=>'UTF-8')
+				mail = Mail.new
+        mail.content_type('text/plain; charset=UTF-8')
 				mail.from = from #'suggest_address@oddb.org'
 				mail.subject = "#{@session.lookandfeel.lookup(:address_subject)} #{suggestion.fullname}"
 				mail.date = Time.now
