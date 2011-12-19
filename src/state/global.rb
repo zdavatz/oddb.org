@@ -612,8 +612,6 @@ module ODDB
                       @session.app.registration(iksnr).sequence(seqnr).pointer
                     elsif iksnr
                       @session.app.registration(iksnr).pointer
-                    else
-                      @session.user_input(:pointer)
                     end
           if pointer.is_a?(Persistence::Pointer) \
 					&& (model = pointer.resolve(@session.app))
@@ -626,11 +624,21 @@ module ODDB
 				end
 			end
       alias :drug :resolve
+      # If the URL contains old pointer link then go to the latest view in the session.
+      # This is not smart because it has to be done for every event.
+      # Once the Internet start to forget the old pointer links, this is not needed anymore.
       def ddd_price
         if @session.user_input(:pointer)
           self
         else
           State::Drugs::DDDPrice.new(@session, @model)
+        end
+      end
+      def ddd
+        if @session.user_input(:pointer)
+          self
+        else
+          State::Drugs::DDD.new(@session, @model)          
         end
       end
 			def resolve_state(pointer, type=:standard)
