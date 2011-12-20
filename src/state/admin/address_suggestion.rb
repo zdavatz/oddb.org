@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::AddressSuggestion -- oddb.org -- 31.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::AddressSuggestion -- oddb.org -- 20.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::AddressSuggestion -- oddb.org -- 09.08.2005 -- jlang@ywesee.com
 
 require 'state/global_predefine'
@@ -37,7 +37,7 @@ class AddressSuggestion < Global
 	def accept
 		mandatory = [:name]
 		keys = [:additional_lines, :address, :location,
-			:fon, :fax, :title, :canton, :pointer,
+			:fon, :fax, :title, :canton, 
 			:email_suggestion, :address_type] + mandatory
 		input = user_input(keys, mandatory)
 		input[:fax] = input[:fax].to_s.split(/\s*,\s*/u)
@@ -53,6 +53,11 @@ class AddressSuggestion < Global
       }
       @session.app.update(@model.pointer, input, unique_email)
       addr.replace_with(@model)
+      addr_idx = if addr_pointer = @model.address_pointer and addr_match = addr_pointer.to_s.match(/address,(\d)\./) 
+                   addr_match[1]
+                 end
+      @parent.addresses.odba_persistent = false # This is necessary to update Doctor@addresses in ODBA::Persistable
+      @parent.addresses[addr_idx.to_i].replace_with(addr)
       @session.app.update(@parent.pointer, parent_input, unique_email)
       ## nur nötig wenn suggestion nicht gelöscht wird
       @active_address.email_suggestion = email
