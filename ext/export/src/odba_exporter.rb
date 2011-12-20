@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 # OdbaExporter -- ODDB -- 25.11.2011 -- mhatakeyama@ywesee.com
 # OdbaExporter -- ODDB -- 09.12.2004 -- hwyss@ywesee.com
 

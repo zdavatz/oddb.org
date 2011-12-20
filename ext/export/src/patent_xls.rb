@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
+# OdbaExporter::PatentXls -- oddb.org -- 20.12.2011 -- mhatakeyama@ywesee.com
 # OdbaExporter::PatentXls -- oddb.org -- 28.08.2007 -- hwyss@ywesee.com
 
 require 'util/oddbapp'

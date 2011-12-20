@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
-# OddbDat -- oddb -- 09.12.2004 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::OddbDat -- oddb.org -- 20.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::OddbDat -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
 
-require 'encoding/character/utf-8'
 
 module ODDB
 	module OdbaExporter

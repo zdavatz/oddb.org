@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# OdbaExporter -- CompetitionXls -- 07.03.2006 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::OdbaExporter -- CompetitionXls -- 20.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::OdbaExporter -- CompetitionXls -- 07.03.2006 -- hwyss@ywesee.com
 
 require 'spreadsheet/excel'
 

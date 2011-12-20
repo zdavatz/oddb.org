@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# OdbaExporter::GenericXls -- oddb -- 22.11.2005 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::OdbaExporter::GenericXls -- oddb.org -- 20.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::OdbaExporter::GenericXls -- oddb.org -- 22.11.2005 -- hwyss@ywesee.com
 
 require 'util/oddbapp'
 require 'util/loggroup'
