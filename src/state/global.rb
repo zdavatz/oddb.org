@@ -572,20 +572,24 @@ module ODDB
         end
       end
       def vcard
-        doctor = if ean_or_oid = @session.user_input(:doctor)
-                   @session.search_doctor(ean_or_oid) or @session.search_doctors(ean_or_oid).first 
-                 elsif pointer = @session.user_input(:pointer) 
-                   pointer.resolve(@session)
-                 end
-        hospital = if ean = @session.user_input(:hospital) 
-                     @session.app.hospital(ean)
-                   elsif pointer = @session.user_input(:pointer)
+        if @session.user_input(:pointer)
+          self
+        else
+          doctor = if ean_or_oid = @session.user_input(:doctor)
+                     @session.search_doctor(ean_or_oid) or @session.search_doctors(ean_or_oid).first 
+                   elsif pointer = @session.user_input(:pointer) 
                      pointer.resolve(@session)
                    end
-        if doctor
-          State::Doctors::VCard.new(@session, doctor) 
-        elsif hospital
-          State::Hospitals::VCard.new(@session, hospital)
+          hospital = if ean = @session.user_input(:hospital) 
+                       @session.app.hospital(ean)
+                     elsif pointer = @session.user_input(:pointer)
+                       pointer.resolve(@session)
+                     end
+          if doctor
+            State::Doctors::VCard.new(@session, doctor) 
+          elsif hospital
+            State::Hospitals::VCard.new(@session, hospital)
+          end
         end
       end
       def substance
