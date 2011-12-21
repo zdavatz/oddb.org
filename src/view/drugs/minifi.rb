@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::MiniFi -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::MiniFi -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::MiniFi -- oddb.org -- 26.04.2007 -- hwyss@ywesee.com
 
 require 'view/drugs/privatetemplate'
@@ -24,10 +24,7 @@ class MiniFiChapter < Chapter
     link.href = @lookandfeel._event_url(:search, 
                                         :search_type => 'st_sequence', 
                                         :search_query => @model.name.gsub('/', '%2F'))
-    html.gsub(ptrn) { |match|
-      link.value = match
-      link.to_html(context)
-    }
+    html
   end
   def to_html(context)
     link_product(context, sanitize(sections(context, @value.sections))) \
