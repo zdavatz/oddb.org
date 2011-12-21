@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Chapter -- oddb -- 17.09.2003 -- rwaltert@ywesee.com
+# ODDB::View::Chapter -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Chapter -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
 require 'htmlgrid/value'
 require 'htmlgrid/labeltext'
@@ -61,7 +62,9 @@ module ODDB
         end
       end
       def heading(context)
-        context.h3 { self.escape(@value.heading) }
+        if @value.respond_to?(:heading)
+          context.h3 { self.escape(@value.heading) }
+        end
       end
       def sections(context, sections)
         section_attr = { 'style' => @lookandfeel.section_style }
@@ -110,10 +113,12 @@ module ODDB
       def to_html(context)
         html = ''
         if @value
-          unless(@value.heading.empty?)
+          if(@value.respond_to?(:heading) and !@value.heading.empty?)
             html << heading(context)
           end
-          html << sections(context, @value.sections)
+          if @value.respond_to?(:sections)
+            html << sections(context, @value.sections)
+          end
           if(hl = @session.user_input(:highlight))
             html.gsub!(hl, "<span class='highlight'>%s</span>" % hl)
           end
