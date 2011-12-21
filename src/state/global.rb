@@ -764,14 +764,14 @@ module ODDB
           iksnr = @session.user_input(:reg)
           seqnr = @session.user_input(:seq) 
           ikscd = @session.user_input(:pack)
-          pointer = if iksnr && seqnr && ikscd
-                      @session.app.registration(iksnr).sequence(seqnr).package(ikscd).pointer
-                    elsif iksnr && seqnr
-                      @session.app.registration(iksnr).sequence(seqnr).pointer
-                    elsif iksnr
-                      @session.app.registration(iksnr).pointer
-                    else
-                      @session.user_input(:pointer)
+          pointer = if (iksnr && seqnr && ikscd) and reg = @session.app.registration(iksnr) \
+                      and seq = reg.sequence(seqnr) and pack = seq.package(ikscd)
+                      pack.pointer
+                    elsif (iksnr && seqnr) and reg = @session.app.registration(iksnr) \
+                      and seq = reg.sequence(seqnr)
+                      seq.pointer
+                    elsif iksnr and reg = @session.app.registration(iksnr)
+                      reg.pointer
                     end
           if pointer.is_a?(Persistence::Pointer) \
 					&& (model = pointer.resolve(@session.app)) \
