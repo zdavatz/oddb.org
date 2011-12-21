@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 19.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -812,32 +812,21 @@ module ODDB
 				end
 			end
 			def suggest_address
-				keys = [:pointer]
-				input = user_input(keys, keys)
-				if pointer = input[:pointer]
-          if(!error?) 
-            addr = pointer.resolve(@session)
-            if(addr.nil?)
-              ## simulate an address
-              addr = Address2.new
-              if(parent = pointer.parent.resolve(@session))
-                addr.name = parent.fullname
-              end
-              addr.pointer = pointer
-            end
-            SuggestAddress.new(@session, addr)
-          end	
-        else
-          doctor = if oid_or_ean = @session.user_input(:doctor)
-                     @session.search_doctor(oid_or_ean) || @session.search_doctors(oid_or_ean).first
+        doctor = if oid_or_ean = @session.user_input(:doctor)
+                   @session.search_doctor(oid_or_ean) || @session.search_doctors(oid_or_ean).first
+                 end
+        hospital = if ean = @session.user_input(:hospital)
+                     @session.search_hospital(ean)
                    end
-          hospital = if ean = @session.user_input(:hospital)
-                       @session.search_hospital(ean)
-                     end
-          if (doctor and addr = doctor.address(@session.user_input(:address))) \
-            or (hospital and addr = hospital.address(@session.user_input(:address)))
-            SuggestAddress.new(@session, addr)
-          end
+        if (doctor and addr = doctor.address(@session.user_input(:address))) \
+          or (hospital and addr = hospital.address(@session.user_input(:address)))
+          SuggestAddress.new(@session, addr)
+        elsif doctor # create a new address
+          addr = Address2.new
+          addr.name = doctor.fullname
+          addr.pointer = doctor.pointer + [:address, @session.user_input(:address)]
+          SuggestAddress.new(@session, addr)
+        #elsif hospital # TODO create a new address for a hospital
         end
 			end
       def address_suggestion

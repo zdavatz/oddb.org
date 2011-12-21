@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Address -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Address -- oddb.org -- 21.11.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Address -- oddb.org -- 05.08.2005 -- jlang@ywesee.com
 
 require 'htmlgrid/composite'
@@ -109,20 +109,35 @@ class SuggestedAddress < HtmlGrid::Composite
         :address, address,
         :zone, @session.zone,
       ]
-    elsif ean = @session.user_input(:ean) and doctors = @session.search_doctors(ean) and doctor = doctors.first \
-      and address = doctor.addresses.index(model)
-      [
-        :doctor, ean,
-        :address, address,
-        :zone, @session.zone,
-      ]
+    elsif ean = @session.user_input(:ean) and doctors = @session.search_doctors(ean) and doctor = doctors.first 
+      if address = doctor.addresses.index(model)
+        [
+          :doctor, ean,
+          :address, address,
+          :zone, @session.zone,
+        ]
+      else
+        [
+          :doctor, ean,
+          :address, 0,
+          :zone, @session.zone,
+        ]
+      end
     elsif doctor_oid = @session.persistent_user_input(:oid) and doctor = @session.search_doctor(doctor_oid) \
-      and address = doctor.addresses.index(model)
-      [
-        :doctor, doctor_oid,
-        :address, address,
-        :zone, @session.zone,
-      ]
+      or
+      if address = doctor.addresses.index(model)
+        [
+          :doctor, doctor_oid,
+          :address, address,
+          :zone, @session.zone,
+        ]
+      else
+        [
+          :doctor, doctor_oid,
+          :address, 0,
+          :zone, @session.zone,
+        ]
+      end
     else
       {
         :pointer  =>  model.pointer,

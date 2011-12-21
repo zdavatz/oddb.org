@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::AddressSuggestion -- oddb.org -- 20.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::AddressSuggestion -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::AddressSuggestion -- oddb.org -- 09.08.2005 -- jlang@ywesee.com
 
 require 'state/global_predefine'
@@ -57,7 +57,14 @@ class AddressSuggestion < Global
                    addr_match[1]
                  end
       @parent.addresses.odba_persistent = false # This is necessary to update Doctor@addresses in ODBA::Persistable
-      @parent.addresses[addr_idx.to_i].replace_with(addr)
+      if parent_addr = @parent.addresses[addr_idx.to_i]
+        parent_addr.replace_with(addr)
+      else # create a new address
+        parent_addr = Address2.new
+        parent_addr.replace_with(addr)
+        parent_addr.pointer = @parent.pointer + [:address, addr_idx]
+        @parent.addresses << parent_addr
+      end
       @session.app.update(@parent.pointer, parent_input, unique_email)
       ## nur nötig wenn suggestion nicht gelöscht wird
       @active_address.email_suggestion = email
