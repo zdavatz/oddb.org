@@ -123,8 +123,7 @@ class SuggestedAddress < HtmlGrid::Composite
           :zone, @session.zone,
         ]
       end
-    elsif doctor_oid = @session.persistent_user_input(:oid) and doctor = @session.search_doctor(doctor_oid) \
-      or
+    elsif doctor_oid = @session.persistent_user_input(:oid) and doctor = @session.search_doctor(doctor_oid)
       if address = doctor.addresses.index(model)
         [
           :doctor, doctor_oid,

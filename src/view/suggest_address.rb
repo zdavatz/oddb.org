@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::SuggestAddress-- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::SuggestAddress-- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::SuggestAddress-- oddb.org -- 05.08.2005 -- jlang@ywesee.com
 
 require 'htmlgrid/composite'
@@ -60,6 +60,16 @@ class SuggestAddressForm < View::Form
 		super
 		error_message
 	end
+  def fon(model)
+    input = HtmlGrid::InputText.new(:fon, model, @session, self)
+    input.value = model.fon.join(', ')
+    input
+  end
+  def fax(model)
+    input = HtmlGrid::InputText.new(:fax, model, @session, self)
+    input.value = model.fax.join(', ')
+    input
+  end
 	def additional_lines(model)
 		area = HtmlGrid::Textarea.new(:additional_lines, 
 			model, @session, self)

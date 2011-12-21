@@ -43,6 +43,16 @@ module AddressFormMethods
 		super
 		error_message
 	end
+  def fon(model)
+    input = HtmlGrid::InputText.new(:fon, model, @session, self)
+    input.value = model.fon.join(', ')
+    input
+  end
+  def fax(model)
+    input = HtmlGrid::InputText.new(:fax, model, @session, self)
+    input.value = model.fax.join(', ')
+    input
+  end
 	def additional_lines(model)
 		area = HtmlGrid::Textarea.new(:additional_lines, 
 			model, @session, self)
