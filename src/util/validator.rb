@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -222,7 +222,6 @@ module ODDB
 			:new_sequence,
 			:new_substance,
       :new_user,
-			:notify,
 			:notify_send,
 			:orphaned_fachinfos,
 			:orphaned_patinfos,

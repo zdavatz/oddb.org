@@ -333,19 +333,6 @@ module ODDB
         #  State::Migel::Feedbacks.new(@session, migel_product)
         end
 			end
-			def notify 
-        iksnr = @session.user_input(:reg)
-        seqnr = @session.user_input(:seq)
-        ikscd = @session.user_input(:pack)
-        package = if((pointer = @session.user_input(:pointer)) && pointer.is_a?(Persistence::Pointer)) 
-          pointer.resolve(@session.app)
-        elsif reg = @session.app.registration(iksnr) and seq = reg.sequence(seqnr)
-          seq.package(ikscd)
-        end
-        if package
-          State::Drugs::Notify.new(@session, package)
-        end
-			end
 			def help_navigation
 				[
 					:help_link,
