@@ -119,7 +119,7 @@ class SuggestedAddress < HtmlGrid::Composite
       else
         [
           :doctor, ean,
-          :address, 0,
+          :address, doctor.addresses.length,
           :zone, @session.zone,
         ]
       end
@@ -134,7 +134,7 @@ class SuggestedAddress < HtmlGrid::Composite
       else
         [
           :doctor, doctor_oid,
-          :address, 0,
+          :address, doctor.addresses.length,
           :zone, @session.zone,
         ]
       end
