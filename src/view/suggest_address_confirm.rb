@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SuggestAddressConfirm -- oddb -- 08.08.2005 -- jlang@ywesee.com
+# ODDB::SuggestAddressConfirm -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::SuggestAddressConfirm -- oddb.org -- 08.08.2005 -- jlang@ywesee.com
 
 require 'view/address'
 require 'view/privatetemplate'
@@ -23,8 +24,13 @@ class AddressSent < HtmlGrid::Composite
 	end
 	def go_back(model, session)
 		link = HtmlGrid::Link.new(:address_back, model, session, self)
-		link.href = @session.lookandfeel._event_url(:resolve,
-			{:pointer => model.address_pointer.parent})
+		link.href = if doctor = model.address_pointer.parent.resolve(@session.app)
+                  if ean13 = doctor.ean13
+                    @session.lookandfeel._event_url(:doctor, {:ean => ean13})
+                  else
+                    @session.lookandfeel._event_url(:doctor, {:oid => doctor.oid})
+                  end
+                end
 		link.css_class = 'list'
 		link
 	end
