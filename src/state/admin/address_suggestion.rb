@@ -50,6 +50,8 @@ class AddressSuggestion < Global
       email = input.delete(:email_suggestion)
       parent_input = {
         :email	=>	email,
+        :dummy_id => rand(2**20) # This is used in order to call object#odba_store forcibly in Persistence#issue_update
+                                 # otherwise, Doctor#addresses may be not updated
       }
       @session.app.update(@model.pointer, input, unique_email)
       addr.replace_with(@model)

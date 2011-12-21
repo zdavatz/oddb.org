@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Doctor -- oddb -- 20.09.2004 -- jlang@ywesee.com
+# ODDB::Doctor -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::Doctor -- oddb.org -- 20.09.2004 -- jlang@ywesee.com
 
 require 'util/persistence'
 require 'model/address'
@@ -15,7 +16,8 @@ module ODDB
 		attr_accessor :capabilities, :title, :name, :firstname,
 			:email, :exam, :language, :specialities, 
 			:praxis, :member, :salutation,
-			:origin_db, :origin_id, :addresses, :ean13
+			:origin_db, :origin_id, :addresses, :ean13,
+      :dummy_id
     alias :name_first :firstname
     alias :name_first= :firstname=
     alias :correspondence :language
