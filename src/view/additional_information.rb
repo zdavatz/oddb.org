@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/atcchooser'
@@ -311,8 +311,12 @@ module ODDB
           if(name.size > 60)
             name = name[0,57] << '...'
           end
-          range = @session.state.interval
-          link.href = "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/#{@session.language}/#{@session.flavor}/migel_alphabetical/range/#{range}"
+          name.gsub!(/,\s*\d*\s*\%.*/, '')
+          link.href = if @session.state.respond_to?(:interval) and range = @session.state.interval
+            "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/#{@session.language}/#{@session.flavor}/migel_alphabetical/range/#{range}"
+                      elsif query = @session.user_input(:search_query) 
+            "mailto:?subject=#{SERVER_NAME}: #{name}&amp;body=http://#{SERVER_NAME}/#{@session.language}/#{@session.flavor}/search/zone/migel/search_query/#{query}"
+                      end
         end
 				img = HtmlGrid::Image.new(:notify, model, @session, self)
 				img.set_attribute('src', @lookandfeel.resource_global(:notify))
