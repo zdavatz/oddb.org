@@ -413,11 +413,8 @@ module ODDB
 				end
 			end
 			def print
-				if pointer = @session.user_input(:pointer)
-					if((model = pointer.resolve(@session.app)) \
-						&& (klass = resolve_state(pointer, :print)))
-						klass.new(@session, model)
-					end
+				if @session.user_input(:pointer)
+          self
         elsif iksnr = @session.user_input(:reg) and reg = @session.app.registration(iksnr) and seq = reg.sequence(@session.user_input(:seq)) and pi = seq.patinfo
           State::Drugs::PatinfoPrint.new(@session, pi)
         elsif iksnr = @session.user_input(:fachinfo) and reg = @session.app.registration(iksnr) and fi = reg.fachinfo
