@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Text -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::Text -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::Text -- oddb.org -- 10.09.2003 -- rwaltert@ywesee.com
 
 require 'util/persistence'
@@ -86,6 +86,9 @@ module ODDB
         @text.length
       end
 			def match(pattern)
+        pattern_s = pattern.to_s
+        pattern_s.force_encoding('utf-8')
+        pattern = Regexp.new(pattern_s)
 				@text.match(pattern)
 			end
 			def preformatted!
@@ -191,6 +194,9 @@ module ODDB
 				lines.join("\n")
 			end
 			def match(pattern)
+        pattern_s = pattern.to_s
+        pattern_s.force_encoding('utf-8')
+        pattern = Regexp.new(pattern_s)
 				pattern.match(@subheading) or
 				@paragraphs.collect { |par| 
 					par.match(pattern) 
