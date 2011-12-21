@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::PointerSteps -- oddb.org -- 19.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::PointerSteps -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::View::PointerSteps -- oddb.org -- 21.03.2003 -- mhuggler@ywesee.com 
 
 require 'htmlgrid/list'
@@ -97,6 +97,13 @@ module ODDB
                       elsif model.is_a?(ODDB::GalenicGroup)
                         link_format = {:oid => model.oid}
                         @lookandfeel._event_url(:galenic_group, link_format)
+                      elsif model.is_a?(ODDB::Doctor)
+                        link_format = if model.ean13
+                                        {:ean => model.ean13}
+                                      else
+                                        {:oid => model.oid}
+                                      end
+                        @lookandfeel._event_url(:doctor, link_format)
                       else
                         old_link_format = {:pointer => model.pointer}
                         @lookandfeel._event_url(:show, old_link_format)
