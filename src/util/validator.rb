@@ -496,10 +496,10 @@ module ODDB
       RMail::Address.parse(value.to_s).collect { |parsed| parsed.address }
     end
 		def search_query(value)
-			result = validate_string(value).gsub(/\*/u, '')
 			begin
+        result = validate_string(value).gsub(/\*/u, '')
 			  @@latin1.iconv(result)
-			rescue Iconv::IllegalSequence, Iconv::InvalidCharacter
+			rescue Iconv::IllegalSequence, Iconv::InvalidCharacter, ArgumentError
 		          puts result.inspect
 			  result = @@utf8.iconv(result)
 		          puts result.inspect

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# State::Drugs::Compare -- oddb -- 20.03.2003 -- hwyss@ywesee.com 
+# ODDB::State::Drugs::Compare -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::State::Drugs::Compare -- oddb.org -- 20.03.2003 -- hwyss@ywesee.com 
 
 require 'state/drugs/global'
 require 'view/drugs/compare'
@@ -73,9 +74,9 @@ class Compare < State::Drugs::Global
 	end
   def init
     @model = nil
-    if (pointer = @session.user_input(:pointer)) \
-      && pointer.is_a?(Persistence::Pointer)
-      @package = pointer.resolve(@session.app)
+    if @session.user_input(:pointer)
+      @package = nil
+      self
     elsif ean13 = @session.user_input(:ean13)
       @package = @session.app.package_by_ikskey(ean13.to_s[4,8])
     elsif term = @session.user_input(:search_query)
