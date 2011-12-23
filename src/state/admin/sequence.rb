@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Sequence -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Sequence -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'
@@ -12,7 +12,7 @@ require 'state/admin/assign_deprived_sequence'
 require 'state/admin/assign_patinfo'
 require 'fileutils'
 require 'util/smtp_tls'
-require 'tmail'
+require 'mail'
 
 module ODDB
 	module State
@@ -326,8 +326,8 @@ class Sequence < State::Admin::Global
 		if((company = @model.company) && (addr = company.regulatory_email))
 			lookandfeel = @session.lookandfeel
       config = ODDB.config
-			mail = TMail::Mail.new
-			mail.set_content_type('text', 'plain', 'charset'=>'UTF-8')
+			mail = Mail.new
+      mail.content_type('text/plain; charset=UTF-8')
 			mail.to = [addr]
 			mail.from = config.mail_from
 			mail.subject = "#{@model.name_base} #{@model.iksnr}"

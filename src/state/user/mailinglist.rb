@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# State::User::MailingList -- oddb -- 30.09.2003 -- mhuggler@ywesee.com
+# ODDB::State::User::MailingList -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::User::MailingList -- oddb.org -- 30.09.2003 -- mhuggler@ywesee.com
 
 require 'state/global_predefine'
 require 'view/user/mailinglist'
-require 'tmail'
+require 'mail'
 require 'util/smtp_tls'
 
 module ODDB
@@ -30,7 +31,7 @@ class MailingList < State::User::Global
 		self 
 	end
 	def send_email(subscriber, recipient, info_message)
-		mail = TMail::Mail.new
+		mail = Mail.new
 		mail.from = subscriber 
 		mail.to = recipient
 		mail.date = Time.now

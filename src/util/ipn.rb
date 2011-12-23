@@ -1,9 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::PayPal::Ipn -- oddb.org -- 04.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::PayPal::Ipn -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::PayPal::Ipn -- oddb.org -- 19.04.2005 -- hwyss@ywesee.com
 
 require 'plugin/ydim'
+require 'util/smtp_tls'
+require 'mail'
 
 module ODDB
   module Util
@@ -94,8 +96,8 @@ module Ipn
       config = ODDB.config
       lookandfeel = lookandfeel_stub
       recipient = PAYPAL_RECEIVER
-      outgoing = TMail::Mail.new
-      outgoing.set_content_type('text', 'plain', 'charset'=>'UTF-8')
+      outgoing = Mail.new
+      outgoing.content_type('text/plain; charset=UTF-8')
       outgoing.to = [recipient]
       outgoing.from = config.mail_from
       outgoing.subject = lookandfeel.lookup(:download_mail_subject)
@@ -151,8 +153,8 @@ module Ipn
   def Ipn.send_notification(invoice, &block)
     if(recipient = invoice.yus_name)
       lookandfeel = lookandfeel_stub
-      outgoing = TMail::Mail.new
-      outgoing.set_content_type('text', 'plain', 'charset'=>'UTF-8')
+      outgoing = Mail.new
+      outgoing.content_type('text/plain; charset=UTF-8')
       outgoing.to = [recipient]
       outgoing.from = MAIL_FROM
       outgoing.date = Time.now
