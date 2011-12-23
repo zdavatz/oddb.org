@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Composition -- oddb.org -- 28.04.2008 -- hwyss@ywesee.com
+# ODDB::Composition -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::Composition -- oddb.org -- 28.04.2008 -- hwyss@ywesee.com
 
 require 'util/persistence'
 require 'model/activeagent'
@@ -72,7 +73,11 @@ module ODDB
       result = dup
       result.active_agents = @active_agents.collect do |act|
         factored = act.dup
-        factored.dose = act.dose * factor
+        factored.dose = if act.dose
+                          act.dose * factor
+                        else
+                          0 * factor
+                        end
         factored
       end
       result

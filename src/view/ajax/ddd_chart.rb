@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Ajax::View::DDDChart -- oddb.org -- 06.07.2009 -- hwyss@ywesee.com
+# ODDB::Ajax::View::DDDChart -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::Ajax::View::DDDChart -- oddb.org -- 17.04.2009 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
@@ -294,7 +294,7 @@ class DDDChart < HtmlGrid::Component
 
     labels = {}
     gr.labels = @labels
-    gr.maximum_value = (@data.max * 2).to_f.ceil / 2.0
+    gr.maximum_value = (@data.max.to_f * 2).to_f.ceil / 2.0
     gr.minimum_value = 0
 
     gr.to_blob
