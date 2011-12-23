@@ -1127,6 +1127,10 @@ class OddbPrevalence
       slate(name).items.values.select{|i| i.type == type}.each do |item|
         rebuild_patinfo_slate_item(item, type)
       end
+    when :fachinfo
+      slate(name).items.values.select{|i| i.type == type}.each do |item|
+        rebuild_fachinfo_slate_item(item, type)
+      end
     end
   end
   def rebuild_patinfo_slate_item(item, type)
@@ -1153,6 +1157,36 @@ class OddbPrevalence
       rescue
         delete(item.pointer)
         slate_pointer = ODDB::Persistence::Pointer.new([:slate, :patinfo])
+        create(slate_pointer)
+        item_pointer = slate_pointer + :item
+        #p "item_pointer = #{item_pointer}"
+        obj = update(item_pointer.creator, values, :admin)
+        #p "obj.pointer = #{obj.pointer}"
+      end
+    end
+  end
+  def rebuild_fachinfo_slate_item(item, type)
+    if registration = resolve(item.item_pointer) and registration.is_a?(ODDB::Registration)
+      values = {
+        :data         =>  {:name => registration.name_base},
+        :duration     =>  ODDB::FI_UPLOAD_DURATION,
+        :expiry_time  =>  item.expiry_time,
+        :item_pointer =>  registration.pointer,
+        :price        =>  ODDB::FI_UPLOAD_PRICES[type],
+        :text         =>  registration.iksnr,
+        :time         =>  item.time,
+        :type         =>  type,
+        :unit         =>  item.unit,
+        :yus_name     =>  item.yus_name,
+        :vat_rate     =>  ODDB::VAT_RATE,
+      }
+      #puts "values = #{values.pretty_inspect}"
+      begin
+        item.data[:name]
+        update(item.pointer, values, :admin)
+      rescue
+        delete(item.pointer)
+        slate_pointer = ODDB::Persistence::Pointer.new([:slate, :fachinfo])
         create(slate_pointer)
         item_pointer = slate_pointer + :item
         #p "item_pointer = #{item_pointer}"
