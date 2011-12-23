@@ -85,7 +85,7 @@ module ODDB
       safe_export 'oddb.csv' do
         plug.export_drugs
       end
-      safe_export 'oddb.csv' do
+      safe_export 'oddb2.csv' do
         plug.export_drugs_extended
       end
       EXPORT_SERVER.clear
