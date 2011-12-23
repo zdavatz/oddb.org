@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com
+# OddbApp -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 require 'odba'
@@ -1121,6 +1121,46 @@ class OddbPrevalence
 	def slate(name)
 		@slates[name]
 	end
+  def rebuild_slates(name=:patinfo, type=:annual_fee) 
+    case name
+    when :patinfo
+      slate(name).items.values.select{|i| i.type == type}.each do |item|
+        rebuild_patinfo_slate_item(item, type)
+      end
+    end
+  end
+  def rebuild_patinfo_slate_item(item, type)
+    #p "item.pointer = #{item.pointer}"
+    sequence = item.sequence || resolve(item.item_pointer)
+    if sequence and sequence.is_a?(ODDB::Sequence)
+      values = {
+        :data         =>  {:name => sequence.name},
+        :duration     =>  ODDB::PI_UPLOAD_DURATION,
+        :expiry_time  =>  item.expiry_time,
+        :item_pointer =>  sequence.pointer,
+        :price        =>  ODDB::PI_UPLOAD_PRICES[type],
+        :text         =>  item.text,
+        :time         =>  item.time,
+        :type         =>  type,
+        :unit         =>  item.unit,
+        :yus_name     =>  item.yus_name,
+        :vat_rate     =>  ODDB::VAT_RATE,
+      }
+      #puts "values = #{values.pretty_inspect}"
+      begin
+        item.data[:name]
+        update(item.pointer, values, :admin)
+      rescue
+        delete(item.pointer)
+        slate_pointer = ODDB::Persistence::Pointer.new([:slate, :patinfo])
+        create(slate_pointer)
+        item_pointer = slate_pointer + :item
+        #p "item_pointer = #{item_pointer}"
+        obj = update(item_pointer.creator, values, :admin)
+        #p "obj.pointer = #{obj.pointer}"
+      end
+    end
+  end
 	def soundex_substances(name)
 		parts = ODDB::Text::Soundex.prepare(name).split(/\s+/u)
 		soundex = ODDB::Text::Soundex.soundex(parts)
