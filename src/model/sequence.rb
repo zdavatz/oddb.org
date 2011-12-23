@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Sequence -- oddb.org -- 19.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Sequence -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::Sequence -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -210,7 +210,9 @@ module ODDB
 			}
     end
 		def package(ikscd)
-			@packages[sprintf('%03d', ikscd.to_i)]
+      unless ikscd.is_a?(SBSM::InvalidDataError)
+        @packages[sprintf('%03d', ikscd.to_i)]
+      end
 		end
 		def package_count
 			@packages.length

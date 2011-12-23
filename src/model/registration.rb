@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Registration -- oddb.org -- 30.08.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Registration -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::Registration -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'date'
@@ -205,7 +205,9 @@ module ODDB
 			end
 		end
 		def sequence(seqnr)
-			@sequences[sprintf('%02d', seqnr.to_i)]
+      unless seqnr.is_a?(SBSM::InvalidDataError)
+  			@sequences[sprintf('%02d', seqnr.to_i)]
+      end
 		end
 		def substance_names
 			@sequences.values.collect { |seq|
