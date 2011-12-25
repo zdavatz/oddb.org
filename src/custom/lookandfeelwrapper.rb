@@ -1012,7 +1012,7 @@ module ODDB
         [4,0] =>  :price,
         [5,0] =>  :qty_unit,
         #[6,0] =>  :notify,
-        [6,0] =>  :google_search,
+        #[6,0] =>  :google_search,
       }
     end
     def migel_item_list_components
@@ -1024,7 +1024,7 @@ module ODDB
         [4,0]   =>  :status,
         [5,0]   =>  :companyname,
         [6,0]   =>  :ppub,
-        [7,0]   =>  :google_search,
+        #[7,0]   =>  :google_search,
         #[8,0]   =>  :twitter_share,
       }
     end
