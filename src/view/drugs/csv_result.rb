@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CsvResult -- oddb -- 08.04.2011 -- mhatakeyama@ywesee.com
-# ODDB::View::Drugs::CsvResult -- oddb -- 28.04.2005 -- hwyss@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb.org -- 28.04.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
 require 'csv'
@@ -201,7 +201,10 @@ class CsvResult < HtmlGrid::Component
 	def limitation_text(pack)
 		if((sl = pack.sl_entry) && (txt = sl.limitation_text))
       @counts['limitation_texts'] += 1
-			txt.send(@lookandfeel.language).to_s.gsub(/\n/u, '|')
+      if txt.respond_to?(@lookandfeel.language) and lim_txt = txt.send(@lookandfeel.language).to_s
+        lim_txt.force_encoding('utf-8')
+        lim_txt.gsub(/\n/u, '|')
+      end
 		end
 	end
 	def lppv(pack)
