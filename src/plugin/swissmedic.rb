@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::SwissmedicPlugin -- oddb.org -- 08.07.2011 -- mhatakeyama@ywesee.com
+# ODDB::SwissmedicPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::SwissmedicPlugin -- oddb.org -- 18.03.2008 -- hwyss@ywesee.com
 
 require 'fileutils'
@@ -248,7 +248,7 @@ module ODDB
         download << "\n"
       end
       target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xls")
-      if(download != latest)
+      if(download.size != File.size(latest_name))
         File.open(target, 'w') { |fh| fh.puts(download) }
         target
       end
