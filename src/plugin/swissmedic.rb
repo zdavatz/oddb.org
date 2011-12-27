@@ -248,7 +248,7 @@ module ODDB
         download << "\n"
       end
       target = File.join @archive, @@today.strftime("#{keyword}-%Y.%m.%d.xls")
-      if(download.size != File.size(latest_name))
+      if(!File.exist?(latest_name) or download.size != File.size(latest_name))
         File.open(target, 'w') { |fh| fh.puts(download) }
         target
       end
