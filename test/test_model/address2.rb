@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# TestAddress2 -- oddb -- 28.07.2005 -- jlang@ywesee.com
+# ODDB::TestAddress2 -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::TestAddress2 -- oddb.org -- 28.07.2005 -- jlang@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -47,18 +48,18 @@ module ODDB
 			assert_equal('13', @address.number)
 		end
 		def test_location__1
-			@address.location = '8000 Zürich'
+			@address.location = '8000 Zurich'
 			assert_equal('8000', @address.plz)
-			assert_equal('Zürich', @address.city)
+			assert_equal('Zurich', @address.city)
 		end
 		def test_location__2
-			@address.location = 'Zürich'
-			assert_equal('Zürich', @address.city)
+			@address.location = 'Zurich'
+			assert_equal('Zurich', @address.city)
 			assert_nil(@address.plz)
 		end
 		def test_location__3
-			@address.location = 'CH-8006 Zürich'
-			assert_equal('Zürich', @address.city)
+			@address.location = 'CH-8006 Zurich'
+			assert_equal('Zurich', @address.city)
 			assert_equal('8006', @address.plz)
 		end
 		def test_location__4
@@ -109,7 +110,7 @@ module ODDB
 			other = Address2.new
 			other.title = 'Herrn Dr. med.'
 			other.name = 'Werner Blaumacher'
-			other.address = 'Schürmattstrasse 4b'
+			other.address = 'Schurmattstrasse 4b'
 			other.location = '8706 Meilen'
 			other.fon = ['041 154 32 64']
 			other.fax = ['041 254 32 64']
@@ -129,7 +130,7 @@ module ODDB
 			assert_equal('Herrn Dr. med.', @address.title)
 			assert_equal('Werner Blaumacher', @address.name)
 			assert_equal([], @address.additional_lines)
-			assert_equal('Schürmattstrasse 4b', @address.address)
+			assert_equal('Schurmattstrasse 4b', @address.address)
 			assert_equal('8706 Meilen', @address.location)
 			assert_equal(['041 154 32 64'], @address.fon)
 			assert_equal(['041 254 32 64'], @address.fax)
@@ -177,7 +178,7 @@ module ODDB
       @address.location = '8706 Meilen'
       other = Address2.new
       other.title = 'Frau Dr. med.'
-      other.name = 'Waltraud Hotzenköcherle'
+      other.name = 'Waltraud Hotzenkocherle'
       other.additional_lines = [ 'Arztpraxis', 
         'Praxisgemeinschaft Steinfels' ]
       other.address = 'Burgweg 28'
