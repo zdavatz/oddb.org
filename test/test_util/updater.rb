@@ -296,49 +296,6 @@ module ODDB
       setup_bsv_xml_plugin
       assert_equal('update', @updater.update_bsv)
     end
-    def test_reconsider_bsv
-      setup_log_notify_bsv
-      setup_bsv_xml_plugin
-      log = flexmock('log') do |log|
-        log.should_receive(:change_flags).and_return({'ptr' => ['flgs']})
-        log.should_receive(:pointer)
-      end
-      logs = flexmock('logs') do |logs|
-        logs.should_receive(:newest_date).and_return(Date.new(2011,1,1))
-        logs.should_receive(:latest).and_return(log)
-      end
-      flexstub(@app) do |app|
-        app.should_receive(:create).and_return(logs)
-        app.should_receive(:update)
-      end
-      assert_equal(logs, @updater.reconsider_bsv({:new_log => 'new_log'}))
-    end
-    def test_reconsider_bsv__change_flags
-      setup_log_notify_bsv
-      bsv = flexmock('bsv') do |bsv|
-          bsv.should_receive(:update).and_return('update')
-          bsv.should_receive(:_update).and_return('_update')
-          bsv.should_receive(:change_flags).and_return({'ptr' => ['flgs']})
-          bsv.should_receive(:log_info).and_return(@recipients)
-      end
-      flexstub(BsvXmlPlugin) do |klass|
-        klass.should_receive(:new).and_return(bsv)
-      end
-
-      log = flexmock('log') do |log|
-        log.should_receive(:change_flags).and_return({'ptr' => ['flgs']})
-        log.should_receive(:pointer)
-      end
-      logs = flexmock('logs') do |logs|
-        logs.should_receive(:newest_date).and_return(Date.new(2011,1,1))
-        logs.should_receive(:latest).and_return(log)
-      end
-      flexstub(@app) do |app|
-        app.should_receive(:create).and_return(logs)
-        app.should_receive(:update)
-      end
-      assert_equal(logs, @updater.reconsider_bsv({:new_log => 'new_log'}))
-    end
     def test_update_analysis
       flexstub(AnalysisPlugin) do |klass|
         klass.should_receive(:new).and_return(flexmock('ana') do |obj|
@@ -581,7 +538,6 @@ module ODDB
     end
     def setup_update_swissmedic_followers
       setup_update_immediate(MedwinPackagePlugin) # for update_trade_status
-      setup_log_notify_bsv                        # for reconsider_bsv
       setup_bsv_xml_plugin
       log = flexmock('log') do |log|
         log.should_receive(:change_flags).and_return({'ptr' => ['flgs']})

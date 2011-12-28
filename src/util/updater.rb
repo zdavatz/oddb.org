@@ -169,39 +169,6 @@ module ODDB
 		def recipients
 			self.class::RECIPIENTS
 		end
-		def reconsider_bsv opts={}
-			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
-			logs = @app.create(logs_pointer)
-			if(latest = logs.newest_date)
-				klass = BsvXmlPlugin
-				plug = klass.new(@app)
-				subj = 'SL-Update Reconsidered'
-				wrap_update(klass, subj) {
-          if(plug._update)
-            log = logs.latest
-            change_flags = plug.change_flags || {}
-            if previous = log.change_flags
-              previous.each do |ptr, flgs|
-                if flags = change_flags[ptr]
-                  flags.concat flgs
-                  flags.uniq!
-                else
-                  change_flags[ptr] = flgs
-                end
-              end
-            end
-            @app.update(log.pointer, {:change_flags => change_flags})
-            partlog = Log.new(latest)
-            partlog.update_values(log_info(plug))
-            partlog.notify(subj)
-            if opts[:new_log]
-              ## Store all subsequent BSV-Updates in next month.
-              @app.create(logs_pointer + [:log, latest >> 1])
-            end
-          end
-				}
-			end
-		end
 		def run
 			logfile_stats
 			if(update_swissmedic)
@@ -351,7 +318,6 @@ module ODDB
     def update_swissmedic_followers
 			# update_trade_status # replaced by swissINDEX
       update_package_trade_status_by_swissindex
-			reconsider_bsv :new_log => true
 			update_comarketing
 			update_swissreg_news
       update_lppv
