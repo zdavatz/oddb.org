@@ -264,7 +264,6 @@ module ODDB
 
       #update_trade_status # replaced by swissindex_pharma
       #update_package_trade_status_by_swissindex
-      update_medwin_packages # replaced by swissindex_pharma
       update_lppv
       update_price_feeds
       export_oddb_csv
@@ -307,9 +306,6 @@ module ODDB
 		end
 		def update_medwin_companies
 			update_simple(MedwinCompanyPlugin, 'Medwin-Companies')
-		end
-		def update_medwin_packages
-			update_simple(MedwinPackagePlugin, 'Medwin-Packages')
 		end
     def update_price_feeds(month = @@today)
       RssPlugin.new(@app).update_price_feeds(month)
@@ -354,8 +350,7 @@ module ODDB
     end
     def update_swissmedic_followers
 			# update_trade_status # replaced by swissINDEX
-			# update_medwin_packages # replaced by swissINDEX
-                        update_package_trade_status_by_swissindex
+      update_package_trade_status_by_swissindex
 			reconsider_bsv :new_log => true
 			update_comarketing
 			update_swissreg_news

@@ -461,10 +461,6 @@ module ODDB
       setup_update_simple(MedwinCompanyPlugin)
       assert_equal('notify', @updater.update_medwin_companies)
     end
-    def test_update_medwin_packages
-      setup_update_simple(MedwinPackagePlugin)
-      assert_equal('notify', @updater.update_medwin_packages)
-    end
     def test_update_price_feeds
       flexstub(RssPlugin) do |klass|
         klass.should_receive(:new).and_return(flexmock('rss') do |obj|
@@ -564,7 +560,6 @@ module ODDB
     end
     def setup_update_bsv_followers
       setup_update_immediate(MedwinPackagePlugin) # for update_trade_status
-      setup_update_simple(MedwinPackagePlugin)    # for update_medwin_packages
       setup_update_immediate(LppvPlugin)          # for update_lppv
       flexstub(RssPlugin) do |klass|              # for update_price_feeds
         klass.should_receive(:new).and_return(flexmock('rss') do |obj|
@@ -586,7 +581,6 @@ module ODDB
     end
     def setup_update_swissmedic_followers
       setup_update_immediate(MedwinPackagePlugin) # for update_trade_status
-      setup_update_simple(MedwinPackagePlugin)    # for update_medwin_packages
       setup_log_notify_bsv                        # for reconsider_bsv
       setup_bsv_xml_plugin
       log = flexmock('log') do |log|
