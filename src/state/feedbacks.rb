@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Feedbacks -- oddb.org -- 16.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Feedbacks -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Feedbacks -- oddb.org -- 25.10.2005 -- ffricker@ywesee.com
 
 require 'state/global_predefine'
@@ -99,7 +99,11 @@ def update
 
 		# in case this was a new feedback, drop a line into a logfile
 		if(info_key == :feedback_saved)
-			args = {:pointer => @model.item.pointer}
+      args = if @model.item.is_a?(ODDB::Package)
+               [:reg, @model.item.iksnr, :seq, @model.item.seqnr, :pack, @model.item.ikscd]
+             else
+               {:pointer => @model.item.pointer}
+             end
 			link = @session.lookandfeel._event_url(:feedbacks, args)
 			line = [ nil, hash[:name], hash[:email], link ].join(';')
 			LogFile.append('feedback', line, time)
