@@ -392,10 +392,18 @@ Bei den folgenden Produkten wurden Änderungen gemäss Swissmedic %s vorgenommen
       lines.flatten.join("\n")
     end
     def resolve_link(ptr)
-      unless(ptr.is_a? Persistence::Pointer)
+      if ptr.is_a?(Persistence::Pointer)
+        if reg = @app.resolve(ptr) and reg.is_a?(ODDB::Registration)
+          "http://#{SERVER_NAME}/de/gcc/show/reg/#{reg.iksnr}"
+        elsif seq = @app.resolve(ptr) and seq.is_a?(ODDB::Sequence)
+          "http://#{SERVER_NAME}/de/gcc/show/reg/#{seq.iksnr}/seq/#{seq.seqnr}"
+        elsif pac = @app.resolve(ptr) and pac.is_a?(ODDB::Package)
+          "http://#{SERVER_NAME}/de/gcc/show/reg/#{pac.iksnr}/seq/#{pac.seqnr}/pack/#{pac.ikscd}"
+        end
+      else
         ptr = pointer_from_row(ptr)
+        "http://#{SERVER_NAME}/de/gcc/resolve/pointer/#{ptr}"
       end
-      "http://#{SERVER_NAME}/de/gcc/resolve/pointer/#{ptr}"
     end
     #def rows_diff(row, other, ignore = [:product_group, :atc_class, :sequence_date])
     def rows_diff(row, other, ignore = [:atc_class, :sequence_date])
