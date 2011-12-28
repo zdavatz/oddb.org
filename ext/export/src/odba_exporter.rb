@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OdbaExporter -- ODDB -- 25.11.2011 -- mhatakeyama@ywesee.com
-# OdbaExporter -- ODDB -- 09.12.2004 -- hwyss@ywesee.com
+# ODDB::OdbaExporter -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::OdbaExporter -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
 
 require 'fileutils'
 require 'tempfile'
@@ -222,7 +222,7 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
           head.push "#{datestr} (exfactory)", 'authority', 'origin',
                     "#{datestr} (public)", 'authority', 'origin'
         end
-        CSV::Writer.generate(fh, ';') do |csv| csv << head end
+        CSV.open(fh.path, "w", {:col_sep => ';'}) do |csv| csv << head end
         packages.sort_by do |pack| pack.name end.each do |pack|
           CsvExporter.dump(CsvExporter::PRICE_HISTORY, pack, fh, :dates => dates)
         end

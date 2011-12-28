@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# OdbaExporter::CsvExporter -- oddb -- 26.08.2005 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::OdbaExporter::CsvExporter -- oddb.org -- 28.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::OdbaExporter::CsvExporter -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
 require 'csv'
 
@@ -83,7 +85,7 @@ module ODDB
                   {}
                 end
         keys.collect { |key|
-          descr.fetch(key.to_s, '').to_s.gsub(/\r?\n/u, ' / ')
+          descr.fetch(key.to_s, '').to_s.force_encoding('utf-8').gsub(/\r?\n/u, ' / ')
         }
       end
 			def CsvExporter.defr(item, opts={})
@@ -93,7 +95,7 @@ module ODDB
 				self.collect_languages(DEFRIT, item)
 			end
 			def CsvExporter.dump(keys, item, fh, opts={})
-        CSV::Writer.generate(fh, ';') { |csv|
+        CSV.open(fh.path, "w", {:col_sep => ';'}) { |csv|
           csv << collect_data(keys, item, opts).flatten
         }
 			end
