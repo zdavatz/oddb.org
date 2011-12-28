@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# MedData::DRbSession -- oddb.org -- 08.05.2006 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::MedData::DRbSession -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::MedData::DRbSession -- oddb.org -- 08.05.2006 -- hwyss@ywesee.com
 
 require 'session'
 require 'drb'
@@ -20,7 +22,7 @@ module ODDB
 				parser = HtmlParser.new(formatter)
 				parser.feed(html)
 				results = writer.extract_data(template)
-				remove_whitespace(results)
+				#remove_whitespace(results)
 			end
 			def remove_whitespace(data)
 				data.each { |key, value|

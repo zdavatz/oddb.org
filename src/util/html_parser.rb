@@ -224,9 +224,11 @@ module ODDB
 				@cdata << @current_line
 			end
 			def send_cdata(data)
+        @current_line.force_encoding('utf-8')
+        data.force_encoding('utf-8')
 				@current_line << data
         #@current_line.gsub!(/\s+/u, ' ')
-        @current_line.gsub!(/\s+/, ' ')
+        #@current_line.gsub!(/\s+/, ' ')
         @current_line
 			end
 			def send_format(fmtstr)

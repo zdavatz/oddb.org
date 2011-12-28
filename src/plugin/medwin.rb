@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# MedwinPlugin -- oddb -- 06.10.2003 -- mhuggler@ywesee.com
+# ODDB::MedwinPlugin -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::MedwinPlugin -- oddb.org -- 06.10.2003 -- mhuggler@ywesee.com
 
 require 'util/oddbconfig'
 require 'plugin/plugin'
@@ -66,8 +67,9 @@ module ODDB
         end
 				if(results.size == 1)
 					result = results.first
-					details = meddata.detail(result, @medwin_template)
-					update_company_data(comp, details)
+					if details = meddata.detail(result, @medwin_template)
+            update_company_data(comp, details)
+          end
 				end
 				nil # return nil across DRb
 			}

@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# -- oddb -- 09.12.2004 -- jlang@ywesee.com
+# encoding: utf-8
+# ODDB::MedData::Session -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::MedData::Session -- oddb.org -- 09.12.2004 -- jlang@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 $: << File.dirname(__FILE__)
@@ -80,6 +82,7 @@ class Session < HttpSession
 	def handle_resp!(resp)
 		@cookie_header = resp["set-cookie"]
     body = resp.body
+    body.force_encoding('utf-8')
     if(match = /VIEWSTATE.*?value="([^"]+)"/u.match(body))
       @viewstate = match[1]
     else
