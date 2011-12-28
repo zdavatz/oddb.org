@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# TestUpdater -- oddb.org -- 28.02.2011 -- mhatakeyama@ywesee.com 
+# TestUpdater -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -558,10 +558,6 @@ module ODDB
       setup_update_immediate(SwissregPlugin, :update_news)
       assert_equal('notify', @updater.update_swissreg_news)
     end
-    def test_update_vaccines
-      setup_update_notify_simple(VaccinePlugin)
-      assert_equal('notify', @updater.update_vaccines)
-    end
     def test_update_whocc
       setup_update_notify_simple(WhoPlugin, :import)
       assert_equal('notify', @updater.update_whocc)
@@ -629,7 +625,6 @@ module ODDB
         setup_update_swissmedic                   # for update_swissmedic
         setup_update_swissmedic_followers         # for update_swissmedic_followers
         setup_update_swissmedicjournal            # for update_swissmedicjournals
-        setup_update_notify_simple(VaccinePlugin) # for update_vaccines
         setup_bsv_xml_plugin                      # for update_bsv
         setup_update_bsv_followers                # for update_bsv_followers
         setup_update_notify_simple(NarcoticPlugin)# for update_narcotics
