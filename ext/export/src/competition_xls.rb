@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::OdbaExporter -- CompetitionXls -- 20.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::OdbaExporter -- CompetitionXls -- 29.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::OdbaExporter -- CompetitionXls -- 07.03.2006 -- hwyss@ywesee.com
 
 require 'spreadsheet/excel'
@@ -76,17 +76,17 @@ module ODDB
 					unless((nxt = originals.at(idx.next)) && package.iksnr == nxt.iksnr)
 						if(last_export == package.iksnr) ## omit phantom exports
 							subs = package.substances.sort
-							galform = package.galenic_form
-							owns.values.select { |pac| 
-								pac.galenic_form.equivalent_to?(galform) \
-									&& pac.substances.sort == subs
-							}.sort.each { |pac|
-								unless(pac.comparables.any? { |comp| 
-									(comp.sl_generic_type == :original) && comp.sl_entry })
-									export_generic(pac)
-									owns.delete(pac.ikskey)
-								end
-							}
+							if galform = package.galenic_forms.first
+                owns.values.select { |pac| 
+                  pac.galenic_forms.first && pac.galenic_forms.first.equivalent_to?(galform) && pac.substances.sort == subs
+                }.sort.each { |pac|
+                  unless(pac.comparables.any? { |comp| 
+                    (comp.sl_generic_type == :original) && comp.sl_entry })
+                    export_generic(pac)
+                    owns.delete(pac.ikskey)
+                  end
+                }
+              end
 						end
 					end
 				}
