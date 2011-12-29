@@ -370,10 +370,6 @@ module ODDB
         klass.should_receive(:new).and_return(plugin)
       end
     end
-    def test_update_comarketing
-      setup_update_simple(CoMarketingPlugin)
-      assert_equal('notify', @updater.update_comarketing)
-    end
     def test_update_company_textinfos
       setup_update_notify_simple(TextInfoPlugin, :import_company)
       assert_equal('notify', @updater.update_company_textinfos)
@@ -520,7 +516,6 @@ module ODDB
         app.should_receive(:create).and_return(logs)
         app.should_receive(:update)
       end
-      setup_update_simple(CoMarketingPlugin)      # for update_comarketing
       setup_update_immediate(SwissregPlugin, :update_news) # for update_swissreg_news
       setup_update_immediate(LppvPlugin)          # for update_lppv
       setup_update_simple(MedwinCompanyPlugin)

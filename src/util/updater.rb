@@ -238,9 +238,6 @@ module ODDB
       export_generics_xls
       export_competition_xlss
     end
-		def update_comarketing
-			update_immediate(CoMarketingPlugin, 'Co-Marketing')
-		end
     def update_company_textinfos *companies
       update_notify_simple TextInfoPlugin,
                            "Fach- und Patienteninfo '#{companies.join(', ')}'",
@@ -317,7 +314,6 @@ module ODDB
     def update_swissmedic_followers
 			# update_trade_status # replaced by swissINDEX
       update_package_trade_status_by_swissindex
-			update_comarketing
 			update_swissreg_news
       update_lppv
       update_medwin_companies
