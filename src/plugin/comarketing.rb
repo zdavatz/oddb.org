@@ -1,16 +1,19 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ComarketingPlugin -- oddb.org -- 09.05.2006 -- hwyss@ywesee.com
+# ODDB::ComarketingPlugin -- oddb.org -- 29.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::ComarketingPlugin -- oddb.org -- 09.05.2006 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
 require 'util/oddbconfig'
 require 'util/searchterms'
 require 'mechanize'
 require 'drb'
+require 'spreadsheet'
+require 'open-uri'
+require 'tempfile'
 
 module ODDB
 	class CoMarketingPlugin < Plugin
-		COMARKETING_PARSER = DRb::DRbObject.new(nil, COMARKETING_URI)
 		SOURCE_URI = 'http://www.swissmedic.ch/daten/00080/00260/index.html?lang=de'
 		def find(iksnr)
       @app.registration(iksnr)
@@ -74,6 +77,24 @@ module ODDB
 			sequences.collect { |seq| 
 				seq.registration }.uniq.reject { |reg| reg.parallel_import }
 		end
+    def get_pairs(url)
+      tempfile = Tempfile.new('comarketing.xls')
+      open(url) do |input|
+          tempfile.print input.read
+      end
+
+      workbook = Spreadsheet.open(tempfile.path)
+      pairs = []
+      workbook.worksheet(0).each do |row|
+        if row[0].to_i > 0
+          original_iksnr = "%05d" % row[0].to_i.to_s
+          comarket_iksnr = "%05d" % row[3].to_i.to_s
+          pairs <<  [original_iksnr, comarket_iksnr]
+        end
+      end
+      tempfile.close
+      pairs.uniq
+    end
 		def update(agent=Mechanize.new)
       @deleted = 0
 			@updated = 0
@@ -81,10 +102,10 @@ module ODDB
 			@not_found = []
       page = agent.get SOURCE_URI
       link = page.links.find do |node|
-        /Sortiert\s*nach\s*Basis/iu.match node.attributes['title']
+        /Excel-Version/iu.match node.attributes['title']
       end or raise "unable to identify url for Co-Marketing-data"
       url = "http://www.swissmedic.ch/#{link.attributes['href']}"
-			@pairs = COMARKETING_PARSER.get_pairs(url)
+			@pairs = get_pairs(url)
 			@pairs.each { |pair|
 				update_pair(*pair)
 			}
