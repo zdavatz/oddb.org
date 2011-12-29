@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Updater-- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::Updater-- oddb.org -- 29.12.2011 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 25.05.2011 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
 
@@ -174,7 +174,6 @@ module ODDB
 			if(update_swissmedic)
         update_swissmedic_followers
       end
-      update_swissmedicjournal
 
       return_value_update_bsv = update_bsv
       LogFile.append('oddb/debug', " return_value_update_bsv=" + return_value_update_bsv.inspect.to_s, Time.now)
@@ -327,30 +326,6 @@ module ODDB
       export_patents_xls
       exporter.mail_swissmedic_notifications
     end
-		def update_swissmedicjournal
-			logs_pointer = Persistence::Pointer.new([:log_group, :swissmedic_journal])
-			logs = @app.create(logs_pointer)
-			# The first issue of SwissmedicJournal is 2002,1
-			latest = logs.newest_date || Date.new(2002,4)
-      latest_swissmedic = @app.log_group(:swissmedic).newest_date
-			success = true
-			while(latest < @@today && latest <= latest_swissmedic && success)
-				latest = latest >> 1
-				klass = SwissmedicJournalPlugin
-				plug = klass.new(@app)
-				wrap_update(klass, "swissmedic-journal") {
-					success = false
-					success = plug.update(latest)
-				}
-				if(success)
-					pointer = logs.pointer + [:log, latest.dup]
-					log = @app.update(pointer.creator, log_info(plug))
-					log.notify('Swissmedic-Journal')
-					@smj_updated = latest
-				end
-			end
-      @smj_updated
-		end
 		def update_swissreg
 			update_immediate(SwissregPlugin, 'Patents')
 		end

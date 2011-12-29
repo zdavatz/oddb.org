@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# TestUpdater -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::TestUpdater -- oddb.org -- 29.12.2011 -- mhatakeyama@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -472,37 +472,6 @@ module ODDB
       setup_update_swissmedic
       assert_equal('update', @updater.update_swissmedic)
     end
-    def setup_update_swissmedicjournal
-      pointer = flexmock('pointer') do |ptr|
-        ptr.should_receive(:creator)
-      end
-      flexstub(pointer) do |ptr|
-        ptr.should_receive(:+).and_return(pointer)
-      end
-      logs = flexmock('logs') do |logs|
-        logs.should_receive(:newest_date).and_return(Date.new(2009,2,3))
-        logs.should_receive(:pointer).and_return(pointer)
-      end
-      log = flexmock('log') do |log|
-        log.should_receive(:notify)
-      end
-      flexstub(@app) do |app|
-        app.should_receive(:create).and_return(logs)
-        app.should_receive(:log_group).and_return(logs)
-        app.should_receive(:update).and_return(log)
-      end
-      flexstub(SwissmedicJournalPlugin) do |klass|
-        klass.should_receive(:new).and_return(flexmock('sjp') do |obj|
-          obj.should_receive(:update).and_return('update')
-          obj.should_receive(:log_info).and_return({})
-        end)
-      end
-    end
-    def test_update_swissmedicjournal
-      setup_update_swissmedicjournal
-      expected = Date.new(2009,3,3)
-      assert_equal(expected, @updater.update_swissmedicjournal)
-    end
     def test_update_swissreg
       setup_update_immediate(SwissregPlugin)
       assert_equal('notify', @updater.update_swissreg)
@@ -574,7 +543,6 @@ module ODDB
       setup_logfile_stats do                      # for logfile_stats
         setup_update_swissmedic                   # for update_swissmedic
         setup_update_swissmedic_followers         # for update_swissmedic_followers
-        setup_update_swissmedicjournal            # for update_swissmedicjournals
         setup_bsv_xml_plugin                      # for update_bsv
         setup_update_bsv_followers                # for update_bsv_followers
         setup_update_notify_simple(NarcoticPlugin)# for update_narcotics
