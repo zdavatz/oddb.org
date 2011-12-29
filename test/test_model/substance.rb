@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# TestSubstance	-- oddb -- 25.02.2003 -- hwyss@ywesee.com 
+# ODDB::TestSubstance	-- oddb.org -- 29.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::TestSubstance	-- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -47,7 +48,7 @@ module ODDB
       values = { 
         'en'	=>	'EN NAME',
         'lt'	=>	'DE NAME',
-        'fr'	=>	'Fr PréNom',
+        'fr'	=>	'Fr PreNom',
         'hc'  =>  'special Hcl',
         'c2'  =>  'special C2o6',
         '.E'  =>  'F.e.i.a.',
@@ -61,7 +62,7 @@ module ODDB
       expected = {
         'en'	=>	'En Name',
         'lt'	=>	'De Name',
-        'fr'	=>	'Fr Prénom',
+        'fr'	=>	'Fr Prenom',
         'hc'  =>  'Special HCl',
         'c2'  =>  'Special C2O6',
         '.E'  =>  'F.E.I.A.',
@@ -335,9 +336,9 @@ module ODDB
       substance.connection_keys = ['acidummefenanicum']
       substance.descriptions.store('lt', "Acidum Acetylsalicylicum")
       assert_equal(true, substance.same_as?('ACIDUM ACETYLSALICYLICUM'))
-      assert_equal(false, substance.same_as?('Acetylsalicylsäure'))
-      substance.descriptions.store('de', "Acetylsalicylsäure")
-      assert_equal(true, substance.same_as?('Acetylsalicylsäure'))
+      assert_equal(false, substance.same_as?('Acetylsalicylsaure'))
+      substance.descriptions.store('de', "Acetylsalicylsaure")
+      assert_equal(true, substance.same_as?('Acetylsalicylsaure'))
       assert_equal(true, substance.same_as?('Acidum Mefenanicum'))
     end
     def test_search_keys
