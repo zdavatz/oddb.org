@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Updater-- oddb.org -- 02.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 29.12.2011 -- mhatakeyama@ywesee.com
-# ODDB::Updater-- oddb.org -- 25.05.2011 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
 
 require 'plugin/analysis'
@@ -228,8 +228,7 @@ module ODDB
 
       LogFile.append('oddb/debug', " getin update_bsv_followers", Time.now)
 
-      #update_trade_status # replaced by swissindex_pharma
-      #update_package_trade_status_by_swissindex
+      update_package_trade_status_by_swissindex
       update_lppv
       update_price_feeds
       export_oddb_csv
