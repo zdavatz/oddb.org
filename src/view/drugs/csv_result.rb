@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CsvResult -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 28.04.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
@@ -343,8 +343,7 @@ class CsvResult < HtmlGrid::Component
     @duplicates = eans.collect { |ikskey, count| 
       ikskey if count > 1 }.compact.sort
 		result.collect { |line|
-			#CSV.generate_line(line, ';')
-			CSV.generate_line(line, {:row_sep => ';'})
+			CSV.generate_line(line, {:col_sep => ';'})
 		}.join("\n")
 	end
 	def to_csv_file(keys, path, symbol=:active_packages)
