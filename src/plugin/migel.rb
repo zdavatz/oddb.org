@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::MiGeLPlugin -- oddb.org -- 16.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::MiGeLPlugin -- oddb.org -- 03.12.2012 -- mhatakeyama@ywesee.com
 # ODDB::MiGeLPlugin -- oddb.org -- 30.08.2005 -- hwyss@ywesee.com
 
 require 'util/persistence'
@@ -302,10 +302,14 @@ module ODDB
       hash
     end
     def report
-      [
-        "Updated MiGel items: #{@count_updated_item}\n",
-        File.expand_path(@output_file)
-      ].join("\n")
+      if @output_file
+        [
+          "Updated MiGel items: #{@count_updated_item}\n",
+          File.expand_path(@output_file)
+        ].join("\n")
+      else
+        "Updated MiGel items: #{@count_updated_item}\n"
+      end
     end
 	end
 end
