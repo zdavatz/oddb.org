@@ -344,7 +344,7 @@ class CsvResult < HtmlGrid::Component
       ikskey if count > 1 }.compact.sort
 		result.collect { |line|
 			CSV.generate_line(line, {:col_sep => ';'})
-		}.join("\n")
+		}
 	end
 	def to_csv_file(keys, path, symbol=:active_packages)
 		File.open(path, 'w') { |fh| fh.puts to_csv(keys, symbol) }
