@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::BsvXmlPlugin -- oddb.org -- 30.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::BsvXmlPlugin -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::BsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 
 require 'config'
@@ -637,6 +637,7 @@ module ODDB
     end
     def _update path=@latest
       Zip::ZipFile.foreach(path) do |entry|
+        LogFile.append('oddb/debug', " entry.name = " + entry.name.to_s, Time.now)
         case entry.name
         when /(\w+)(-\d+)?.xml$/u
           updater = $~[1].gsub(/[A-Z]/u) do |match| "_" << match.downcase end
