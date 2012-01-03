@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OuwerkerkPlugin -- oddb -- 18.06.2003 -- hwyss@ywesee.com 
+# ODDB::OuwerkerkPlugin -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com 
+# ODDB::OuwerkerkPlugin -- oddb.org -- 18.06.2003 -- hwyss@ywesee.com 
 
 require 'date'
 require 'plugin/plugin'
@@ -72,7 +73,8 @@ module ODDB
 				row[12] = reg.company.name
 				row[19] = reg.company.powerlink
 			end
-			if(reg.sequences.empty?)
+    begin
+			if reg.sequences.empty?
 				rows.push(row)
 			else
 				reg.sequences.each_value { |seq|
@@ -80,6 +82,12 @@ module ODDB
 					rows += export_sequence(seq, seqrow, pac_flags)
 				}
 			end
+    rescue => e
+      warn e.message
+      warn "Something is wrong with @sequences of Registration (iksnr = #{reg.iksnr})"
+      @error_regs ||= []
+      @error_regs << reg.iksnr
+    end
 			rows
 		end
 		def export_registrations
@@ -226,7 +234,18 @@ module ODDB
 		def title
 			@title ||= @title_base + " #{date_str}"
 		end
-		alias :report :title
+		#alias :report :title
+    def report
+      if @error_regs
+        [
+          title,
+          "\n",
+          "Error registrations (Swissmedic Number):",
+        ].concat(@error_regs).join("\n")
+      else
+        title
+      end
+    end
 		private
 		def date_str
 			[
