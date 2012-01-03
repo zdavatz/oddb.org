@@ -188,7 +188,7 @@ module ODDB
       start_time = Time.now
       @count_updated_item = 0
       @app.migel_products.each_with_index do |product, count|
-        migel_code = product.migel_code.split('.').to_s
+        migel_code = product.migel_code.split('.').join
         plugin = ODDB::SwissindexNonpharmaPlugin.new(@app)
         if table = plugin.search_migel_table(migel_code)
           table.each do |record|
