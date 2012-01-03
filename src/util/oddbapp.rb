@@ -1,8 +1,10 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com
+# OddbApp -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
+require 'yaml'
+YAML::ENGINE.yamler = "syck"
 require 'odba'
 require 'odba/index_definition'
 require 'odba/drbwrapper'
@@ -30,7 +32,6 @@ require 'sbsm/drbserver'
 require 'sbsm/index'
 require 'util/config'
 require 'fileutils'
-require 'yaml'
 require 'yus/session'
 require 'model/migel/group'
 require 'model/analysis/group'
