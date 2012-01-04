@@ -193,8 +193,16 @@ module ODDB
         if table = plugin.search_migel_table(migel_code)
           table.each do |record|
             if record[:pharmacode] and record[:article_name]
-              update_item(product, record)
-              @count_updated_item += 1
+              begin
+                update_item(product, record)
+                @count_updated_item += 1
+              rescue
+                @error_items_migel ||= []
+                @error_items_migel << migel_code
+                warn "Something is wrong with MiGel Item (migel_code: #{migel_code})"
+                warn e.message
+                warn e.backtrace
+              end
             end
           end
         end
@@ -219,8 +227,8 @@ module ODDB
                 update_item(product, item_record)
                 @count_updated_item += 1
               rescue => e
-                @error_items ||= []
-                @error_items << pharmacode.to_s
+                @error_items_pharma ||= []
+                @error_items_pharma << pharmacode.to_s
                 warn "Something is wrong with MiGel Item (pharmacode: #{pharmacode})"
                 warn e.message
                 warn e.backtrace
@@ -318,11 +326,17 @@ module ODDB
       else
         "Updated MiGel items: #{@count_updated_item}\n"
       end
-      if @error_items
+      if @error_items_pharma
         report_text << [
           "",
           "Error MiGel Items (Pharmacode):",
-        ].concat(@error_items).join("\n")
+        ].concat(@error_items_pharma).join("\n")
+      end
+      if @error_items_migel
+        report_text << [
+          "",
+          "Error MiGel Items (Migel Code):",
+        ].concat(@error_items_migel).join("\n")
       end
       report_text
     end
