@@ -50,8 +50,13 @@ module FachinfoMethods
       new_state.previous = self
       @session.app.async {
         @session.app.failsafe { 
-          new_state.signal_done(parse_fachinfo(type, fi_file), 
+          if type == :doc
+            new_state.signal_done(parse_fachinfo(type, path), 
             path, @model, mimetype, language, mail_link)
+          else
+            new_state.signal_done(parse_fachinfo(type, fi_file), 
+            path, @model, mimetype, language, mail_link)
+          end
         }
       }
     elsif @session.user_input(:textinfo_update)
@@ -77,7 +82,11 @@ module FachinfoMethods
 		begin
 			# establish connection to fachinfo_parser
 			parser = DRbObject.new(nil, FIPARSE_URI)
-			result = parser.send("parse_fachinfo_#{type}", file.read)
+      if type == :doc
+        result = parser.send("parse_fachinfo_doc", file)
+      else
+        result = parser.send("parse_fachinfo_#{type}", file.read)
+      end
 			result
     rescue ArgumentError => e
       msg = @session.lookandfeel.lookup(:e_not_a_wordfile)

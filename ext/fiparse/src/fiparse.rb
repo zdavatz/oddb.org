@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::FiParse -- oddb.org -- 04.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse -- oddb.org -- 20.10.2003 -- rwaltert@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -32,8 +32,8 @@ module ODDB
     def FiParse.extract_minifi(path)
       MiniFi.extract(path)
     end
-		def parse_fachinfo_doc(src)
-			parser = Rwv2.create_parser_from_content(src)
+		def parse_fachinfo_doc(path)
+			parser = Rwv2.create_parser(path)
 			handler = FachinfoTextHandler.new
 			parser.set_text_handler(handler)
       parser.set_table_handler(handler.table_handler)
