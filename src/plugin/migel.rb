@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::MiGeLPlugin -- oddb.org -- 03.12.2012 -- mhatakeyama@ywesee.com
+# ODDB::MiGeLPlugin -- oddb.org -- 04.12.2012 -- mhatakeyama@ywesee.com
 # ODDB::MiGeLPlugin -- oddb.org -- 30.08.2005 -- hwyss@ywesee.com
 
 require 'util/persistence'
@@ -215,8 +215,16 @@ module ODDB
           items.each do |pharmacode, item|
             unless item.article_name
               item_record = plugin.search_item(pharmacode)
-              update_item(product, item_record)
-              @count_updated_item += 1
+              begin
+                update_item(product, item_record)
+                @count_updated_item += 1
+              rescue => e
+                @error_items ||= []
+                @error_items << pharmacode.to_s
+                warn "Something is wrong with MiGel Item (pharmacode: #{pharmacode})"
+                warn e.message
+                warn e.backtrace
+              end
             end
           end
         end
@@ -302,7 +310,7 @@ module ODDB
       hash
     end
     def report
-      if @output_file
+      report_text = if @output_file
         [
           "Updated MiGel items: #{@count_updated_item}\n",
           File.expand_path(@output_file)
@@ -310,6 +318,13 @@ module ODDB
       else
         "Updated MiGel items: #{@count_updated_item}\n"
       end
+      if @error_items
+        report_text << [
+          "",
+          "Error MiGel Items (Pharmacode):",
+        ].concat(@error_items).join("\n")
+      end
+      report_text
     end
 	end
 end
