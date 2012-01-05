@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::MiGeLPlugin -- oddb.org -- 04.12.2012 -- mhatakeyama@ywesee.com
+# ODDB::MiGeLPlugin -- oddb.org -- 05.12.2012 -- mhatakeyama@ywesee.com
 # ODDB::MiGeLPlugin -- oddb.org -- 30.08.2005 -- hwyss@ywesee.com
 
 require 'util/persistence'
@@ -196,7 +196,7 @@ module ODDB
               begin
                 update_item(product, record)
                 @count_updated_item += 1
-              rescue
+              rescue => e
                 @error_items_migel ||= []
                 @error_items_migel << migel_code
                 warn "Something is wrong with MiGel Item (migel_code: #{migel_code})"
