@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# State::Admin::AssignPatinfo -- oddb -- 19.10.2005 -- hwyss@ywesee.com
+# ODDB::State::Admin::AssignPatinfo -- oddb.org -- 06.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::AssignPatinfo -- oddb.org -- 19.10.2005 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
 require 'state/admin/assign_deprived_sequence'
@@ -12,9 +13,15 @@ module ODDB
 class AssignPatinfo < AssignDeprivedSequence
 	VIEW = View::Admin::AssignPatinfo
 	def assign
-		keys = [:pointers, :pointer]
-		input = user_input(keys, keys)
-		pointers = input[:pointers].values
+    input = @session.user_input(:pointer_list)
+    pointers = input.values.map do |p_str|
+      if match = p_str.match(/\:\!registration,(\d+)\!sequence,(\d+)\./)
+        if reg = match.to_a[1] and seq = match.to_a[2] \
+          and sequence = @session.app.registration(reg).sequence(seq)
+            sequence.pointer
+        end
+      end
+    end
 		if(pointers \
 			&& pointers.any? { |pointer| 
 				!allowed?(pointer.resolve(@session))})

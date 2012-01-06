@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 06.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -391,6 +391,7 @@ module ODDB
       :photo_link,
 			:pi_update,
 			:plz,
+			:pointer_list,
 			:powerlink,
 			:position,
 			:range,

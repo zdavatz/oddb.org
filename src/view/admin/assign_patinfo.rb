@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Admin::AssignPatinfo -- oddb -- 19.10.2005 -- hwyss@ywesee.com
+# ODDB::View::Admin::AssignPatinfo -- oddb.org -- 06.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Admin::AssignPatinfo -- oddb.org -- 19.10.2005 -- hwyss@ywesee.com
 
 require 'view/drugs/privatetemplate'
 require 'view/admin/assign_deprived_sequence'
@@ -19,7 +20,7 @@ class AssignPatinfoForm < View::Admin::AssignDeprivedSequenceForm
 		elsif([model.pdf_patinfo, model.patinfo].include?(test))
 			@lookandfeel.lookup(:assign_patinfo_equal)			
 		else
-			check = HtmlGrid::InputCheckbox.new("pointers[#{@list_index}]", 
+			check = HtmlGrid::InputCheckbox.new("pointer_list[#{@list_index}]", 
 																					model, session, self)
 																					check.value = model.pointer
 																					check
@@ -28,8 +29,8 @@ class AssignPatinfoForm < View::Admin::AssignDeprivedSequenceForm
 	def compose_footer(matrix)
 		super
 		btn = HtmlGrid::Button.new(:back, @model, @session, self)
-		args = {:pointer => @model.sequence.pointer}
-		url = @lookandfeel._event_url(:resolve, args)
+		args = [:reg, @model.sequence.iksnr, :seq, @model.sequence.seqnr]
+		url = @lookandfeel._event_url(:drug, args)
 		script = "location.href='#{url}'"
 		btn.set_attribute('onClick', script)
 		@grid.add(btn, *matrix)
