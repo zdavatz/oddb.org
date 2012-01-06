@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Product -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Product -- oddb.org -- 06.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Product -- oddb.org -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/dataformat'
@@ -86,18 +86,24 @@ class ProductInnerComposite < HtmlGrid::Composite
 	@@migel_pattern = /Pos(?:ition|\.)?\s*(\d\d)(?:\.(\d\d)(?:\.(\d\d\.\d\d\.\d))?)?/u
 	def description(model, key = :migel_product)
 		value = HtmlGrid::Value.new(key, model, @session, self)
+    group_cd    = ''
+    subgroup_cd = ''
+    product_cd  = ''
+    args = []
 		if(model && (str = model.send(@session.language)))
 			value.value = str.gsub(@@migel_pattern) {
-				code = $~[1]
-				ptr = Persistence::Pointer.new([:migel_group, code])
-				if(code = $~[2])
-					ptr += [:subgroup, code]
-					if(code = $~[3])
-						ptr += [:product, code]
-					end
-				end
-        args = {:pointer => ptr}
-        '<a class="list" href="' << @lookandfeel._event_url(:resolve, args) << 
+				if group_cd = $~[1]
+          if subgroup_cd = $~[2]
+            if product_cd = $~[3]
+              args = [:migel_product, group_cd + subgroup_cd + product_cd.gsub('.','')]
+            else
+              args = [:migel_subgroup, group_cd + subgroup_cd]
+            end
+          else
+            args = [:migel_group, group_cd]
+          end
+        end
+        '<a class="list" href="' << @lookandfeel._event_url(:migel_search, args) << 
           '">' << $~[0] << '</a>'
 			}
 		end
