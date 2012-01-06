@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Migel::Product -- oddb.org -- 15.08.2011 -- mhatakeyama@ywesee.com
+# ODDB::Migel::Product -- oddb.org -- 06.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Migel::Product -- oddb.org -- 14.09.2005 -- spfenninger@ywesee.com
 
 require 'util/language'
@@ -87,6 +87,10 @@ module ODDB
 					@feedbacks.odba_delete
 				end
         @items.odba_delete
+      rescue => e
+        warn "Something is wrong with Migel Product during checkout (migel_code = #{self.migel_code})"
+        warn e.message
+        warn e.backtrace
 			end
 			def create_limitation_text
 				@limitation_text = LimitationText.new
