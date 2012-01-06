@@ -208,7 +208,7 @@ module ODDB
         end
         puts estimate_time(start_time, total, count + 1) if time_estimate
       end
-    #  export_migel_nonpharma
+      export_migel_nonpharma
       return true
     end
     # This is just to update items which do not have article_name
