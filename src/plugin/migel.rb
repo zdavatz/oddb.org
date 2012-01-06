@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::MiGeLPlugin -- oddb.org -- 05.12.2012 -- mhatakeyama@ywesee.com
+# ODDB::MiGeLPlugin -- oddb.org -- 06.12.2012 -- mhatakeyama@ywesee.com
 # ODDB::MiGeLPlugin -- oddb.org -- 30.08.2005 -- hwyss@ywesee.com
 
 require 'util/persistence'
@@ -198,7 +198,7 @@ module ODDB
                 @count_updated_item += 1
               rescue => e
                 @error_items_migel ||= []
-                @error_items_migel << migel_code
+                @error_items_migel << product.name.to_s + migel_code
                 warn "Something is wrong with MiGel Item (migel_code: #{migel_code})"
                 warn e.message
                 warn e.backtrace
@@ -228,7 +228,7 @@ module ODDB
                 @count_updated_item += 1
               rescue => e
                 @error_items_pharma ||= []
-                @error_items_pharma << pharmacode.to_s
+                @error_items_pharma << product.name.to_s + pharmacode.to_s
                 warn "Something is wrong with MiGel Item (pharmacode: #{pharmacode})"
                 warn e.message
                 warn e.backtrace
@@ -303,7 +303,13 @@ module ODDB
         @app.each_migel_product do |product|
           if items = product.items
             items.values.each do |item|
-              out.print migel_nonpharma_one_line(product.migel_code, item), "\n" 
+              begin
+                out.print migel_nonpharma_one_line(product.migel_code, item), "\n" 
+              rescue
+                warn "Something is wrong with MiGel Item (name = #{product.name}, migel_code = #{product.migel_code})"
+                @error_items_migel ||= []
+                @error_items_migel << product.name.to_s + product.migel_code
+              end
             end
           end
         end
