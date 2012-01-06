@@ -182,7 +182,7 @@ module ODDB
         }
 #        link.href = @lookandfeel._event_url(:download_export, args)
         link.set_attribute('class', 'list')
-        link.href = 'http://ch.oddb.org/de/gcc/download/invoice/27397543/email/free_kindle_ebook@ywesee.com/filename/compendium_ch.oddb.org.kindle.mobi'
+        link.href = 'http://ch.oddb.org/de/gcc/download/invoice/28379462/email/free_kindle_ebook@ywesee.com/filename/compendium_ch.oddb.org.kindle.mobi'
         link
       end
 			def download_export(model, session)
