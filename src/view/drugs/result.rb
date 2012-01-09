@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Drugs::Result -- oddb -- 03.03.2003 -- andy@jetnet.ch
+# ODDB::View::Drugs::Result -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::Result -- oddb.org -- 03.03.2003 -- andy@jetnet.ch
 
 require 'view/form'
 require 'view/resulttemplate'
@@ -104,6 +105,8 @@ class ResultComposite < HtmlGrid::Composite
                             : self::class::DEFAULT_LISTCLASS)
 		if(@lookandfeel.enabled?(:export_csv))
 			components.store([1,0], :export_csv)
+    elsif(@lookandfeel.enabled?(:print, false))
+      components.store([1,0], :print)
 		else
 			colspan_map.store([0,0], 2)
 		end
@@ -160,6 +163,12 @@ class ResultComposite < HtmlGrid::Composite
 			View::Drugs::DivExportCSV.new(model, @session, self)
 		end
 	end
+  def print(model, session=@session)
+    link = HtmlGrid::Link.new(:print, model, @session, self)
+    link.set_attribute('onClick', 'window.print();')
+    link.href = ""
+    link
+  end
   def title_found(model, session=@session)
     query = @session.persistent_user_input(:search_query)
     @lookandfeel.lookup(:title_found, query, model.package_count)

@@ -797,6 +797,7 @@ module ODDB
 			:sequences,
 			:price_history,
 			:ywesee_contact,
+      :print,
 		]
 		DISABLED = [ :atc_ddd, :legal_note, :navigation, :price_request ]
     DICTIONARIES = {
