@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
-# Swissreg::Session -- oddb.org -- 04.05.2006 -- hwyss@ywesee.com
+# encoding: utf-8
+# ODDB::Swissreg::Session -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Swissreg::Session -- oddb.org -- 04.05.2006 -- hwyss@ywesee.com
 
 require 'writer'
 require 'hpricot'
@@ -14,7 +16,7 @@ class Session < HttpSession
 		@http.read_timeout = 120 
 	end
 	def extract_result_links(html)
-    doc = Hpricot(html)
+    doc = Hpricot.make(html, {})
     path = "//a[@target='detail']/span[@title='zur Detailansicht']" 
     link = "/srclient/faces/jsp/spc/sr300.jsp?language=de&section=spc&id=%s"
     (doc/path).collect { |span|
@@ -85,7 +87,7 @@ class Session < HttpSession
     end
   end
   def view_state(response)
-    if match = /javax.faces.ViewState.*?value="([^"]+)"/u.match(response.body)
+    if match = /javax.faces.ViewState.*?value="([^"]+)"/u.match(response.body.force_encoding('utf-8'))
       match[1]
     end
   end
