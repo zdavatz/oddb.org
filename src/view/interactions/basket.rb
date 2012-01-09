@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Interactions::Basket -- oddb -- 07.06.2004 -- mhuggler@ywesee.com
+# ODDB::View::Interactions::Basket -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Interactions::Basket -- oddb.org -- 07.06.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'
 require 'htmlgrid/richtext'
@@ -205,9 +206,9 @@ class BasketSubstrates < HtmlGrid::List
 		lang = @session.language
 		name = sub.send(lang)
     if(sub.has_effective_form? && !sub.is_effective_form?)
-      sprintf("%s (%s)", sub.effective_form.send(lang), name)
+      sprintf("%s (%s)", sub.effective_form.send(lang), name).force_encoding('utf-8')
     else
-      name
+      name.force_encoding('utf-8')
     end
   end
 end
