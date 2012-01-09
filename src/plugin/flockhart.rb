@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Interaction::FlockhartPlugin -- oddb.org -- 07.07.2011 -- mhatakeyama@ywesee.com
+# ODDB::Interaction::FlockhartPlugin -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Interaction::FlockhartPlugin -- oddb.org -- 25.02.2004 -- mhuggler@ywesee.com
 
 require 'plugin/interaction'
@@ -135,6 +135,9 @@ module ODDB
 					cyt = array[1]
 				end
 				objs = {}
+        unless cyt.is_a?(Array)
+          cyt = [cyt]
+        end
 				cyt.each { |name|
 					objs.store(cyt_id.to_s+"/"+name, ODDB::Interaction::Cytochrome.new(name))
 				}

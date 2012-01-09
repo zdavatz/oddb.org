@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Http -- ODDB -- 03.12.2003 -- hwyss@ywesee.com
+# ODDB::Http -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Http -- oddb.org -- 03.12.2003 -- hwyss@ywesee.com
 
 require 'cgi'
 require 'net/http'
@@ -23,6 +24,7 @@ module ODDB
 		end
 		def http_body(server, source, session=nil, hdrs=nil)
 			session ||= HttpSession.new server
+      hdrs ||= {}
 			resp = session.get(source, hdrs)
 			if resp.is_a? Net::HTTPOK
 				resp.body
