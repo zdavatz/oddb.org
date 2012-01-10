@@ -7,12 +7,25 @@ $: << path = File.expand_path("../..", File.dirname(__FILE__)) unless $:.include
 require 'plugin/plugin'
 require 'ext/analysisparse/src/analysis_hpricot'
 require 'model/analysis/group'
+require 'spreadsheet'
+
 
 module ODDB
 	class AnalysisPlugin < Plugin
-		ANALYSIS_PARSER = DRbObject.new(nil, ANALYSISPARSE_URI)
+    COL = {
+      :chapter              => 0, # A
+      :analysis_revision    => 1, # B
+      :group_position_code  => 2, # C 
+      :taxpoints            => 3, # D
+      :description          => 4, # E
+      :limitation_text      => 5, # F
+      :taxnote              => 6, # G
+      :lab_areas            => 7, # H
+    }
+		#ANALYSIS_PARSER = DRbObject.new(nil, ANALYSISPARSE_URI)
 		def update(path, lang)
-			ANALYSIS_PARSER.parse_pdf(path).each { |position|
+			#ANALYSIS_PARSER.parse_pdf(path).each { |position|
+      parse_xls(path).each { |posision|
 				group = update_group(position)
 				if(position[:analysis_revision] == 'S')
 					delete_position(group, position)
@@ -22,6 +35,27 @@ module ODDB
 			}
 			@app.recount
 		end
+    def parse_xls(path)
+      workbook = Spreadsheet.open(path)
+      positions = []
+      workbook.worksheet(0).each do |row|
+        groupcd, poscd = row[COL[:group_position_code]].split('.')
+        if poscd
+          positions << {
+            :chapter     => row[COL[:chapter]],
+            :analysis_revision => row[COL[:analysis_revision]],
+            :group       => groupcd,
+            :position    => poscd,
+            :taxpoints   => row[COL[:taxpoints]],
+            :description => row[COL[:description]],
+            :limitation_text   => row[COL[:limitation_text]],
+            :taxnote     => row[COL[:taxnote]],
+            :lab_areas   => row[COL[:lab_areas]],
+          }
+        end
+      end
+      positions
+    end
 		def delete_position(group, position)
 			## TODO
 			#	position.odba_delete
@@ -84,6 +118,7 @@ module ODDB
 				@app.delete(ps.pointer)
 			end
 		end
+=begin
 		def update_dacapo
 			ANALYSIS_PARSER.dacapo { |code, info|
 				unless(info.empty?)
@@ -96,5 +131,6 @@ module ODDB
 				end
 			}
 		end
+=end
 	end
 end

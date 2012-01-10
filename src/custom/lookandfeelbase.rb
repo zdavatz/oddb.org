@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 16.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 10.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
 require 'sbsm/lookandfeel'
@@ -247,6 +247,7 @@ Zeno Davatz
 				#:change_flag_13						=>	'Preiserh&ouml;hung',
 				:change_flag_14						=>	'L&ouml;schung der Registration',
 				:change_flags							=>	'Change-Flags',
+				:chapter          				=>	'Kapitel',
 				:checkout									=>	'Bezahlen',
 				:checkout_invoice					=>	'Zu Rechnung hinzuf&uuml;gen',
 				:checkout_paypal					=>	'Bezahlen via PayPal',
@@ -1404,9 +1405,10 @@ Zeno Davatz
 				:th_category							=>	'Kategorie',
 				:th_casrn									=>	'CAS Reg.Nr.',
 				:th_city									=>	'Ort',
+				:th_chapter								=>	'Kapitel',
 				:th_chemical_dose					=>	'Dosis',
 				:th_chemical_substance		=>	'Chemische Form',
-				:th_code									=>	'Gruppe',
+				:th_code									=>	'Position Nr.',
 				:th_commercial_form       =>	'Ampulle(n)',
 				:th_company_business_area	=>	'Geschäftsfeld',
 				:th_company_contact				=>	'E-Mail',
@@ -1738,6 +1740,7 @@ Zeno Davatz
 				:category_c								=>	'Liste des stupéfiants pouvant être obtenus en petite quantité sans ordonnance médi-cale et soustraits partiellement au contrôle (art. 3, 2e al., LStup)',
 				:category_d								=>	'Liste des stupéfiants prohibés (art. 8, 1er et 3e al., LStup)',
 				:certificate_number				=>	'CCP-no',
+				:chapter          				=>	'Chapitre',
 				:checkout									=>	'Payer',
 				:checkout_invoice					=>	'Ajouter &agrave; la facture',
 				:checkout_paypal          =>	'Payer via PayPal',
@@ -2659,7 +2662,8 @@ Zeno Davatz
 				:th_city									=>	'Place',
 				:th_canton								=>	'Canton',
 				:th_category							=>	'Catégorie',
-				:th_code									=>	'Groupe',
+				:th_chapter        				=>	'Chapitre',
+				:th_code									=>	'Position Nr.',
 				:th_company_business_area	=>	'Domaine commercial',
 				:th_company_contact				=>	'Émail',
 				:th_company_name					=>	'Titulaire de l\'aut.',
@@ -2901,6 +2905,7 @@ Zeno Davatz
 				:category_c								=>	'Listing ot the Narcotics which are given by a doctor without medical using up in small quantities and are partly excluded of control',
 				:category_d								=>	'Listing of the forbidden Narcotics (Art. 8 Abs. 1 and 3 BetmG)',
 				:certificate_number				=>	'SPC No', 
+				:chapter          				=>	'Chapter', 
 				:checkout									=>	'Checkout',
 				:checkout_invoice					=>	'Add to invoice',
 				:checkout_paypal 					=>	'Proceed to PayPal',
@@ -3891,8 +3896,9 @@ Zeno Davatz
 				:th_business_unit					=>	'Department',
 				:th_canton								=>	'Canton',
 				:th_category							=>	'Category',
+				:th_chapter        				=>	'Chapter', 
 				:th_city									=>	'City',
-				:th_code									=>	'Group',
+				:th_code									=>	'Position Nr.',
 				:th_company_business_area	=>	'Business Area',
 				:th_company_contact				=>	'E-mail',
 				:th_company_name					=>	'Registr. Holder',

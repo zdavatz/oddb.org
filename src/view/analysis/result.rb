@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Analysis::Result -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Analysis::Result -- oddb.org -- 10.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Analysis::Result -- oddb.org -- 14.06.2006 -- sfrischknecht@ywesee.com
 
 require 'htmlgrid/list'
@@ -18,15 +18,14 @@ module ODDB
 class List < HtmlGrid::List
 	include View::AdditionalInformation
 	COMPONENTS = {
-		[0,0]	=> :code,
-		[1,0]	=> :lab_areas,
-		[2,0]	=> :list_title,
-		[3,0]	=> :description,
+    [0,0] => :limitation_text,
+		[1,0]	=> :chapter,
+		[2,0]	=> :code,
+		[3,0]	=> :analysis_revision,
 		[4,0]	=> :taxpoints,
-		[5,0]	=> :analysis_revision,
-#		[6,0]	=> :feedback,
-		[6,0]	=> :google_search,
-#		[7,0]	=> :notify,
+		[5,0]	=> :description,
+		[6,0]	=> :lab_areas,
+		[7,0]	=> :google_search,
 	}
 	CSS_CLASS = 'composite'
 	CSS_HEAD_MAP = {
@@ -36,14 +35,17 @@ class List < HtmlGrid::List
 		[3,0]	=>	'th',
 		[4,0]	=>	'th',
 		[5,0]	=>	'th',
+		[6,0]	=>	'th',
 	}
 	CSS_MAP = {
-		[0,0,6]	=>	'list',
-		[6,0,1]	=>	'list right',
+    [0,0]   =>  'small list',
+		[0,0,7]	=>	'list',
+		[7,0,1]	=>	'list right',
 	}
 	LEGACY_INTERFACE = false
 	LOOKANDFEEL_MAP = {
 		:description => :analysis_description,
+    :limitation_text  =>  :ltext,
 	}
 	SORT_DEFAULT = :code
 	def description(model)
@@ -62,13 +64,6 @@ class List < HtmlGrid::List
 		link.value = text
     link.href = @lookandfeel._event_url(:analysis, [:group, model.groupcd, :position, model.poscd]) if model.is_a?(ODDB::Analysis::Position)
 		link
-	end
-	def list_title(model, key = :list_title)
-		if(model.list_title)
-			value = HtmlGrid::Value.new(key, model, @session, self)
-			value.value = model.list_title.send(@session.language)
-			value
-		end
 	end
 end
 class ResultComposite < HtmlGrid::Composite

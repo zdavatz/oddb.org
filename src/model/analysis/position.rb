@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Analysis::Position -- oddb.org -- 12.06.2006 -- sfrischknecht@ywesee.com
+# ODDB::Analysis::Position -- oddb.org -- 10.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Analysis::Position -- oddb.org -- 12.06.2006 -- sfrischknecht@ywesee.com
 
 require 'util/language'
 require 'util/searchterms'
@@ -20,7 +21,7 @@ module ODDB
 			attr_accessor :taxpoints, :anonymous, :anonymousgroup,
 				:anonymouspos, :lab_areas, :taxnumber,
 				:analysis_revision, :finding, :poscd, :group,
-				:taxpoint_type
+				:taxpoint_type, :chapter
 			attr_reader :limitation_text, :footnote, :list_title, 
 				:taxnote, :permissions
 			alias	:pointer_descr :poscd

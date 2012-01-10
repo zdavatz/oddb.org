@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Analysis::Position -- oddb.org -- 28.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Analysis::Position -- oddb.org -- 10.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Analysis::Position -- oddb.org -- 23.06.2006 -- sfrischknecht@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -87,7 +87,7 @@ class PositionInnerComposite < HtmlGrid::Composite
 	}
 	COMPONENTS	= {
 		[0,0]		=>	:code,
-		[0,1]		=>	:anonymous,
+		[0,1]		=>	:chapter,
 		[0,2]		=>	:analysis_revision,
 		[0,3,0]	=>	:description,
 		[1,3,0]	=>	"nbsp",
@@ -95,11 +95,7 @@ class PositionInnerComposite < HtmlGrid::Composite
 		[0,4]		=>	:taxpoints,
 		[0,5]		=>	:lab_areas,
 		[0,6]		=>	:limitation_text,
-		[0,7]		=>	:finding,
-		[0,8]		=>	:taxnote,	
-#		[0,7]		=>	:feedback_label,
-#		[1,7]		=>	:feedback,
-		[0,9]		=>	:footnote,
+		[0,7]		=>	:taxnote,	
 	}
 	CSS_CLASS = ''
 	CSS_MAP = {
@@ -109,13 +105,6 @@ class PositionInnerComposite < HtmlGrid::Composite
 	LABELS = true
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
-	def anonymous(model, key = :anonymous)
-			value = HtmlGrid::Value.new(key, model, @session, self)
-			if(model.anonymous)
-				value.value = [model.anonymousgroup.dup, model.anonymouspos].join('.')
-			end
-			value
-	end
 	def description(model, key = :description)
 		value = HtmlGrid::Value.new(key, model, @session, self)
 		if(model && (str = model.send(@session.language)))
@@ -135,9 +124,6 @@ class PositionInnerComposite < HtmlGrid::Composite
 	end
 	def taxnote(model)
 		description(model.taxnote, :taxnote)
-	end
-	def footnote(model)
-		description(model.footnote, :footnote)
 	end
 	def taxpoints(model, key = :taxpoints)
 		value = HtmlGrid::Value.new(key, model, @session, self)
@@ -165,9 +151,7 @@ class PositionComposite < HtmlGrid::Composite
 	COMPONENTS = {
 		[0,0]		=>	'position_details',
 		[0,1]		=>	PositionInnerComposite,
-		[0,2]		=>	:permissions,
-		[0,3]		=>	:additional_info,
-		[0,4]		=>	:result_foot,
+		[0,2]		=>	:result_foot,
 	}
 	CSS_MAP	=	{
 		[0,0]		=>	'th',
@@ -175,14 +159,6 @@ class PositionComposite < HtmlGrid::Composite
 	}
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
-	def additional_info(model)
-		if(info = model.detail_info(:dacapo))
-			AdditionalInfoComposite.new(info, @session, self)
-		end
-	end
-	def permissions(model)
-		Permissions.new(model.permissions.send(@session.language), @session, self)
-	end
 end
 
 class PointerSteps < ODDB::View::PointerSteps
