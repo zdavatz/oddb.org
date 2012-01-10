@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Narcotics  -- oddb.org -- 26.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::Narcotics  -- oddb.org -- 10.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Narcotics  -- oddb.org -- 16.11.2005 -- spfenninger@ywesee.com
 
 
@@ -64,7 +64,7 @@ class NarcoticList < HtmlGrid::List
 		end
 =end
 		#link
-		model.send(@session.language)
+		model.send(@session.language).force_encoding('utf-8')
 	end
 end
 class ExplainNarcotics < HtmlGrid::Composite
