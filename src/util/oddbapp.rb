@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com
+# OddbApp -- oddb.org -- 10.01.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 require 'yaml'
@@ -700,11 +700,13 @@ class OddbPrevalence
 		@narcotics[oid.to_i]
 	end
 	def narcotic_by_casrn(casrn)
+    GC.start
 		unless(casrn.nil?)
       @narcotics.values.find do |narc| narc.casrn == casrn end
     end
 	end
 	def narcotic_by_smcd(smcd)
+    GC.start
 		unless(smcd.nil?)
       @narcotics.values.find do |narc| narc.swissmedic_codes.include?(smcd) end
 		end
