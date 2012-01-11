@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Analysis::Position -- oddb.org -- 10.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Analysis::Position -- oddb.org -- 11.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Analysis::Position -- oddb.org -- 12.06.2006 -- sfrischknecht@ywesee.com
 
 require 'util/language'
@@ -21,9 +21,8 @@ module ODDB
 			attr_accessor :taxpoints, :anonymous, :anonymousgroup,
 				:anonymouspos, :lab_areas, :taxnumber,
 				:analysis_revision, :finding, :poscd, :group,
-				:taxpoint_type, :chapter
-			attr_reader :limitation_text, :footnote, :list_title, 
-				:taxnote, :permissions
+				:taxpoint_type, :chapter, :limitation_text, :taxnote
+			attr_reader :footnote, :list_title, :permissions
 			alias	:pointer_descr :poscd
 			def initialize(poscd)
 				@positions = {}

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 11.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -15,6 +15,7 @@ require 'state/analysis/group'
 require 'state/analysis/position'
 require 'state/analysis/alphabetical'
 require 'state/analysis/result'
+require 'state/analysis/limitationtext'
 require 'state/companies/company'
 require 'state/companies/companylist'
 require 'state/drugs/atcchooser'
@@ -131,6 +132,7 @@ module ODDB
           :hospitallist           => State::Hospitals::HospitalList,
           :limitation_text        => State::Drugs::LimitationText,
           :limitation_texts       => State::Drugs::LimitationTexts,
+          :limitation_analysis    => State::Analysis::LimitationText,
           :listed_companies       => State::Companies::CompanyList,
           :login_form             => State::Admin::Login,
           :mailinglist            => State::User::MailingList,

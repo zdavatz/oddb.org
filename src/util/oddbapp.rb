@@ -447,6 +447,14 @@ class OddbPrevalence
 	def analysis_count
 		@analysis_count ||= analysis_positions.size
 	end
+  def delete_all_analysis_group
+    analysis_positions.each do |pos|
+      delete(pos.pointer)
+    end
+    analysis_groups.values.each do |grp|
+      delete(grp.pointer)
+    end
+  end
 	def delete_address_suggestion(oid)
 		if(sug = @address_suggestions.delete(oid))
 			@address_suggestions.odba_isolated_store

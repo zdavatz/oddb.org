@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 # ODDB::Updater-- oddb.org -- 02.01.2012 -- zdavatz@ywesee.com
-# ODDB::Updater-- oddb.org -- 29.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::Updater-- oddb.org -- 11.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
 
 require 'plugin/analysis'
@@ -190,12 +190,12 @@ module ODDB
     def run_random
       update_fachinfo
     end
-		def update_analysis(path, lang)
+		def update_analysis
 			klass = AnalysisPlugin
 			subj = 'Analysis'
 			wrap_update(klass, subj) {
 				plug = klass.new(@app)
-				plug.update(path, lang)
+				plug.update
 			}
 		end
 		def update_bsv
