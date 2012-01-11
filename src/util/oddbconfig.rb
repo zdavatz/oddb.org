@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbConfig -- oddb.org -- 19.08.2011 -- mhatakeyama@ywesee.com 
+# OddbConfig -- oddb.org -- 11.01.2012 -- mhatakeyama@ywesee.com 
 # OddbConfig -- oddb.org -- 09.04.2003 -- hwyss@ywesee.com 
 
 # Do not require any Application-Internals in this file
@@ -21,15 +21,10 @@ module ODDB
 	EXPORT_URI = "druby://localhost:10005"
 	MEDDATA_URI = "druby://localhost:10006"
 	SWISSREG_URI = "druby://localhost:10007"
-	## holidaymanager: "druby://localhost:10009"
-	## xmlconv2: "druby://localhost:10010"
-	ANALYSISPARSE_URI = "druby://localhost:10011"
-	## globopharm.xmlconv.bbmb.ch: "druby://localhost:10012"
 	READONLY_URI = "druby://localhost:10013"
 	CURRENCY_URI = "druby://localhost:10999"
   YUS_URI = "drbssl://localhost:9997"
   MIGEL_URI = 'druby://localhost:33000'
-  #MIGEL_URI = 'druby://localhost:77777'
   YUS_DOMAIN = 'oddb.org'
 	PROJECT_ROOT = File.expand_path('../..', File.dirname(__FILE__))
   IMAGE_DIR = File.join(PROJECT_ROOT, 'doc', 'resources', 'images')
