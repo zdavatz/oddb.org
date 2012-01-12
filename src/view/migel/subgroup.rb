@@ -1,12 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Subgroup -- oddb.org -- 09.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Subgroup -- oddb.org -- 12.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Subgroup -- oddb.org -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/privatetemplate'
 require 'view/migel/result'
 require 'view/pointervalue'
-require 'model/migel/subgroup'
 require 'view/dataformat'
 
 module ODDB

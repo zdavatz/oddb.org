@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 11.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 12.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -96,6 +96,52 @@ module ODDB
         attr_reader :items
         def initialize(items)
           @items = items
+        end
+      end
+      class StubItems
+        def initialize(product, sortvalue = nil, reverse = nil)
+          if product and items = product.items
+            @sortvalue = sortvalue
+            @list = items.values
+            @reverse = reverse
+          else
+            @list = []
+          end
+        end
+        def empty?
+          @list.empty?
+        end
+        def sort_by(&block)
+          # This is called at the first time when a search result is shown
+          @list.sort_by(&block)
+        end
+        def sort!
+          # This is called when a header key is clicked
+          @list.sort! do |a,b|
+            yield(a,b)
+          end
+        end
+        def reverse!
+          @list.reverse!
+        end
+        def each_with_index
+          @list.each_with_index do |record, i|
+            yield(record, i)
+          end
+        end
+        def each
+          @list.each do |record|
+            yield record
+          end
+        end
+        def at(index)
+          @list[index]
+        end
+        def length
+          @list.length
+        end
+        def [](*args)
+          @list[*args]
         end
       end
 
@@ -517,7 +563,7 @@ module ODDB
         if migel_code = @session.user_input(:migel_code) and result = @session.app.search_migel_items_by_migel_code(migel_code, sortvalue, reverse)
           product = StubProduct.new(result)
           @session.set_cookie_input(:resultview, 'pages') if items = product.items and items.length > ODDB::State::Migel::Items::ITEM_LIMIT
-          ODDB::State::Migel::Items.new(@session, ODDB::Migel::Items.new(product))
+          ODDB::State::Migel::Items.new(@session, StubItems.new(product))
         elsif migel_code = @session.user_input(:migel_product) and product = @session.search_migel_products(migel_code).first
           ODDB::State::Migel::Product.new(@session, product)
         elsif migel_code = @session.user_input(:migel_subgroup) and subgroup = @session.app.search_migel_subgroup(migel_code)
@@ -695,7 +741,7 @@ module ODDB
               else
                 @session.set_cookie_input(:resultview, '')
               end
-              ODDB::State::Migel::Items.new(@session, ODDB::Migel::Items.new(product))
+              ODDB::State::Migel::Items.new(@session, StubItems.new(product))
             else
 						  State::Migel::Result.new(@session, [])
             end

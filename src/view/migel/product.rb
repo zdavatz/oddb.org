@@ -1,13 +1,12 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Product -- oddb.org -- 06.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Product -- oddb.org -- 12.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Product -- oddb.org -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/dataformat'
 require 'view/privatetemplate'
 require 'view/pointervalue'
 require 'view/migel/result'
-require 'model/migel/product'
 require 'htmlgrid/urllink'
 require 'view/additional_information'
 
