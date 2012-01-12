@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Copyright -- oddb -- 27.05.2003 -- mhuggler@ywesee.com
+# ODDB::View::Copyright -- oddb.org -- 12.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Copyright -- oddb.org -- 27.05.2003 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'
 require 'htmlgrid/link'
@@ -23,7 +24,7 @@ module ODDB
 			def oddb_version(model)
 				link = standard_link(:oddb_version, model)
 				link.href = 'http://scm.ywesee.com/?p=oddb.org/.git;a=summary'
-				link.set_attribute('title', ODDB_VERSION)
+				link.set_attribute('title', link.href)
 				link
 			end
 			def cpr_link(model)

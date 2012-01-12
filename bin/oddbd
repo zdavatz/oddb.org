@@ -22,11 +22,6 @@ trap("USR2") {
 	$stdout.flush
 }
 
-module ODDB
-	headpath = File.expand_path('../.git/ORIG_HEAD', File.dirname(__FILE__))
-	ODDB_VERSION = File.read(headpath)
-end
-
 ODBA.cache.setup
 ODBA.cache.clean_prefetched
 
