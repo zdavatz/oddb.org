@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 11.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 12.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -209,6 +209,7 @@ module ODDB
       :minifi,
       :narcotic,
 			:narcotics,
+      :narcotic_plus,
 			:new_active_agent,
 			:new_commercial_form,
 			:new_company,

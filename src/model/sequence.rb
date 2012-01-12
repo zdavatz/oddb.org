@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Sequence -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Sequence -- oddb.org -- 12.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Sequence -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -9,6 +9,11 @@ require 'model/dose'
 require 'model/composition'
 
 module ODDB
+  module Migel
+    class Item
+      # This is necessary because maybe some old migel item object remain somewhere in the cache
+    end
+  end
 	class SequenceCommon
 		include Persistence
     class << self

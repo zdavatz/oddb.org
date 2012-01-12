@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 10.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 12.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/atcchooser'
@@ -282,10 +282,9 @@ module ODDB
       end
 			def narcotic(model, session=@session)
 				if(model.narcotic?)
-					link = HtmlGrid::Link.new(:square_narc, 
-							model, @session, self)
-					link.href = @lookandfeel._event_url(:resolve,
-						{'pointer' => model.pointer + :narcotics})
+					link = HtmlGrid::Link.new(:square_narc, model, @session, self)
+          args = [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd]
+					link.href = @lookandfeel._event_url(:narcotic_plus, args)
 					link.css_class = 'square infos'
 					link.set_attribute('title', @lookandfeel.lookup(:narcotic))
 					link

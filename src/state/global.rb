@@ -655,6 +655,12 @@ module ODDB
            State::Admin::TransparentLogin.new(@session, model)
          end
        end
+      def narcotic_plus
+        if iksnr = @session.user_input(:reg) and seqnr = @session.user_input(:seq) and ikscd = @session.user_input(:pack)\
+          and reg = @session.app.registration(iksnr) and seq = reg.sequence(seqnr) and pac = seq.package(ikscd)
+          State::Drugs::NarcoticPlus.new(@session, pac.narcotics)
+        end
+      end
 			def resolve
 				if(@session.request_path == @request_path)
 					self
