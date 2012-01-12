@@ -1013,9 +1013,6 @@ class OddbPrevalence
 		result.atc_classes = search_by_indication(query, lang, result)
 		result
 	end
-  def search_migel_group(migel_code)
-    migel_group(migel_code)
-  end
 	def search_narcotics(query, lang)
 		if(lang.to_s != "fr") 
 			lang = "de"
@@ -2012,6 +2009,9 @@ module ODDB
       else
         MIGEL_SERVER.search_migel_migelid(query, lang)
       end
+    end
+    def search_migel_group(migel_code)
+      MIGEL_SERVER.group.find_by_migel_code(migel_code)
     end
     def search_migel_subgroup(migel_code)
       code = migel_code.split(/(\d\d)/).select{|x| !x.empty?}.join('.')
