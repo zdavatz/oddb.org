@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Updater-- oddb.org -- 02.01.2012 -- zdavatz@ywesee.com
+# ODDB::Updater-- oddb.org -- 12.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 11.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
 
@@ -12,7 +12,6 @@ require 'plugin/hospitals'
 require 'plugin/interaction'
 require 'plugin/lppv'
 require 'plugin/medwin'
-require 'plugin/migel'
 require 'plugin/narcotic'
 require 'plugin/ouwerkerk'
 require 'plugin/rss'
@@ -278,21 +277,6 @@ module ODDB
 		def update_trade_status
 			update_immediate(MedwinPackagePlugin, 'Trade-Status', :update_trade_status)
 		end
-		def update_migel
-			klass = MiGeLPlugin
-			subj = 'MiGeL'
-			status_report = "MiGeL is now up to date"
-			wrap_update(klass, subj) {
-				plug = klass.new(@app)
-				[:de, :fr, :it].each { |lang|
-					path = File.expand_path("../../data/csv/migel_#{lang}.csv",
-						File.dirname(__FILE__))
-					plug.update(path, lang)
-				}
-				plug.prune_old_revisions
-				status_report
-			}
-		end
 		def update_narcotics
 			update_notify_simple(NarcoticPlugin, 'Narcotics')
 		end
@@ -344,9 +328,6 @@ module ODDB
     end
     def migel_nonpharma(pharmacode_file, logging = false)
       update_notify_simple(SwissindexNonpharmaPlugin, 'Swissindex Migel Nonpharma', :migel_nonpharma, [pharmacode_file, logging])
-    end
-    def update_migel_nonpharma
-      update_notify_simple(MiGeLPlugin, 'Updated Migel Nonpharma', :update_items_by_migel)
     end
 
 		private
