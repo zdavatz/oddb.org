@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 10.01.2012 -- mhatakeyama@ywesee.com
+# OddbApp -- oddb.org -- 12.01.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 require 'yaml'
@@ -453,6 +453,19 @@ class OddbPrevalence
     end
     analysis_groups.values.each do |grp|
       delete(grp.pointer)
+    end
+  end
+  def delete_all_migel_group
+    migel_products.each do |prd|
+      delete(prd.pointer)
+    end
+    @migel_groups.each_value { |group| 
+      group.subgroups.each_value { |subgrp|
+        delete(subgrp.pointer)
+      }
+    }
+    migel_groups.values.each do |group|
+      delete(group.pointer)
     end
   end
 	def delete_address_suggestion(oid)
@@ -1003,51 +1016,6 @@ class OddbPrevalence
   def search_migel_group(migel_code)
     migel_group(migel_code)
   end
-=begin
-	def search_migel_alphabetical(query, lang)
-		if(lang.to_s != "fr") 
-			lang = "de"
-		end
-		index_name = "migel_index_#{lang}"
-		ODBA.cache.retrieve_from_index(index_name, query)
-	end
-	def search_migel_products(query, lang)
-		if(lang.to_s != "fr") 
-			lang = "de"
-		end
-		index_name = "migel_fulltext_index_#{lang}"
-		ODBA.cache.retrieve_from_index(index_name, query)
-  end
-  def search_migel_subgroup(migel_code)
-    if code = migel_code.split(/(\d\d)/).select{|x| !x.empty?} and
-       groupcd = code[0] and subgroupcd = code[1]
-       migel_group(groupcd).subgroup(subgroupcd)
-    end
-  end
-  def search_migel_items(query)
-    []
-  end
-  def search_migel_limitation(migel_code)
-    case migel_code.length
-    when 2 # Group
-      if group = migel_group(migel_code)
-        group.limitation_text
-      end
-    when 4 # Subgroup
-      if code = migel_code.split(/(\d\d)/).select{|x| !x.empty?} and
-         groupcd = code[0] and subgroupcd = code[1] and subgroup = migel_group(groupcd).subgroup(subgroupcd)
-         subgroup.limitation_text
-      end
-    when 9 # Product (Migel::Model::Migelid) z.B. 150101001
-      groupcd, subgroupcd, productcd = migel_code.match(/(\d\d)(\d\d)(\d+)/).to_a[1..-1]
-      if groupcd and subgroupcd and productcd and
-         productcd = productcd.split(/(\d\d)/).select{|x| !x.empty?}.join('.') and
-         product = migel_group(groupcd).subgroup(subgroupcd).product(productcd)
-         product.limitation_text
-      end
-    end
-  end
-=end
 	def search_narcotics(query, lang)
 		if(lang.to_s != "fr") 
 			lang = "de"
