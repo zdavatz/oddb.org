@@ -33,7 +33,6 @@ require 'sbsm/index'
 require 'util/config'
 require 'fileutils'
 require 'yus/session'
-require 'model/migel/group'
 require 'model/analysis/group'
 
 require 'remote/migel/model'
@@ -48,7 +47,7 @@ class OddbPrevalence
 	]
 	ODBA_SERIALIZABLE = [ '@currency_rates', '@rss_updates' ]
 	attr_reader :address_suggestions, :atc_chooser, :atc_classes, :analysis_groups,
-		:companies, :doctors, :fachinfos, :galenic_groups, :migel_groups,
+		:companies, :doctors, :fachinfos, :galenic_groups, 
 		:hospitals, :invoices, :last_medication_update, :last_update,
     :minifis, :notification_logger, :orphaned_fachinfos,
     :orphaned_patinfos, :patinfos, :patinfos_deprived_sequences,
@@ -80,7 +79,6 @@ class OddbPrevalence
     @indices_therapeutici ||= {}
 		@invoices ||= {}
 		@log_groups ||= {}
-		@migel_groups ||= {}
     @minifis ||= {}
 		@narcotics ||= {}
 		@notification_logger ||= ODDB::NotificationLogger.new
@@ -440,10 +438,6 @@ class OddbPrevalence
 	def currencies
 		@currency_rates.keys.sort
 	end
-	def create_migel_group(groupcd)
-		migel = ODDB::Migel::Group.new(groupcd)
-		@migel_groups.store(groupcd, migel)
-	end
 	def analysis_count
 		@analysis_count ||= analysis_positions.size
 	end
@@ -453,19 +447,6 @@ class OddbPrevalence
     end
     analysis_groups.values.each do |grp|
       delete(grp.pointer)
-    end
-  end
-  def delete_all_migel_group
-    migel_products.each do |prd|
-      delete(prd.pointer)
-    end
-    @migel_groups.each_value { |group| 
-      group.subgroups.each_value { |subgrp|
-        delete(subgrp.pointer)
-      }
-    }
-    migel_groups.values.each do |group|
-      delete(group.pointer)
     end
   end
 	def delete_address_suggestion(oid)
@@ -541,12 +522,6 @@ class OddbPrevalence
 			inv
 		end
 	end
-	def delete_migel_group(code)
-		if(grp = @migel_groups[code])
-			@migel_groups.odba_isolated_store
-			grp
-		end
-	end
   def delete_minifi(oid)
     if(minifi = @minifis.delete(oid.to_i))
       @minifis.odba_isolated_store
@@ -618,13 +593,6 @@ class OddbPrevalence
 			galgroup.each_galenic_form(&block)
 		}
 	end
-  def each_migel_product(&block)
-    @migel_groups.each_value { |group| 
-      group.subgroups.each_value { |subgr|
-        subgr.products.each_value(&block)
-      }
-    }
-  end
 	def each_package(&block)
 		@registrations.each_value { |reg|
 			reg.each_package(&block)
@@ -691,28 +659,6 @@ class OddbPrevalence
 	end
 	def log_group(key)
 		@log_groups[key]
-	end
-	def migel_count
-		@migel_count ||= migel_products.size	
-	end
-	def migel_group(groupcd)
-		@migel_groups[groupcd]
-	end
-	def migel_product(code)
-		parts = code.split('.', 3)
-		migel_group(parts[0]).subgroup(parts[1]).product(parts[2])
-	rescue NoMethodError
-		# invalid migel_code
-		nil
-	end
-	def migel_products
-		products = []
-		@migel_groups.each_value { |group| 
-			group.subgroups.each_value { |subgr|
-				products.concat(subgr.products.values)
-			}
-		}
-		products
 	end
   def minifi(oid)
     @minifis[oid.to_i]
@@ -793,7 +739,6 @@ class OddbPrevalence
         @company_count = @companies.size
         @substance_count = @substances.size
         @limitation_text_count = count_limitation_texts()
-        @migel_count = migel_products.size
         @package_count = count_packages()
         @patinfo_count = count_patinfos()
         @recent_registration_count = count_recent_registrations()
@@ -1796,9 +1741,6 @@ module ODDB
       @system.each_package { |pac|
         _migrate_feedbacks(pac)
       }
-      @system.each_migel_product { |prd|
-        _migrate_feedbacks(prd)
-      }
       @system.feedbacks.odba_store
       @system.odba_store
       update_feedback_rss_feed
@@ -2045,6 +1987,10 @@ module ODDB
     def migel_product_index_keys(lang)
       MIGEL_SERVER.migelid_index_keys(lang)
     end
+    def migel_count
+      @migel_count ||= MIGEL_SERVER.migelids.length
+    end
+
 	end
 end
 
