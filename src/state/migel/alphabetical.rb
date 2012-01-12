@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# State::Migel::Alphabetical -- oddb -- 02.02.2006 -- hwyss@ywesee.com
+# ODDB::State::Migel::Alphabetical -- oddb.org -- 12.01.2012 -- hwyss@ywesee.com
+# ODDB::State::Migel::Alphabetical -- oddb.org -- 02.02.2006 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
 require 'view/migel/alphabetical'
@@ -14,6 +15,18 @@ class Alphabetical < Global
 	DIRECT_EVENT = :migel_alphabetical
 	PERSISTENT_RANGE = true
 	LIMITED = true
+  def intervals
+    @intervals or begin
+      values = @session.app.migel_product_index_keys(@session.language)
+      @intervals, @numbers = values.partition { |char|
+        /[a-z]/ui.match(char)
+      }
+      unless(@numbers.empty?)
+        @intervals.push('0-9')
+      end
+      @intervals
+    end
+  end
 	def index_name
 		if(@session.language == 'en')
 			lang = 'de'

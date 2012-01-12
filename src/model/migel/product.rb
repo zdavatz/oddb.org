@@ -86,7 +86,7 @@ module ODDB
 					@feedbacks.dup.each { |fb| fb.item = nil; fb.odba_store }
 					@feedbacks.odba_delete
 				end
-        @items.odba_delete
+        @items.odba_delete if @items
       rescue => e
         warn "Something is wrong with Migel Product during checkout (migel_code = #{self.migel_code})"
         warn e.message

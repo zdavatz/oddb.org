@@ -2042,6 +2042,9 @@ module ODDB
         MIGEL_SERVER.search_migel_product(query, lang, sortvalue, reverse)
       end
     end
+    def migel_product_index_keys(lang)
+      MIGEL_SERVER.migelid_index_keys(lang)
+    end
 	end
 end
 
