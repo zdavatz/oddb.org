@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::NarcoticPlugin -- oddb -- 17.03.2011 -- mhatakeyama@ywesee.com
-# ODDB::NarcoticPlugin -- oddb -- 03.11.2005 -- ffricker@ywesee.com
+# ODDB::NarcoticPlugin -- oddb.org -- 13.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::NarcoticPlugin -- oddb.org -- 03.11.2005 -- ffricker@ywesee.com
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
@@ -232,7 +232,7 @@ Diese Produkte werden in ch.oddb.org nicht angezeigt (zu wenig Informationen).
           link = page.links.find do |link| pattern.match link.text end
           pdf = link.click
           latest = File.join dir, "narcotics-#{language}-latest.pdf"
-          unless File.exist?(latest) && File.read(latest) == pdf.body
+          unless File.exist?(latest) && File.size(latest) == pdf.body.size
             name = @@today.strftime "narcotics-#{language}-%d.%m.%Y.pdf"
             path = File.join dir, name
             pdf.save path
