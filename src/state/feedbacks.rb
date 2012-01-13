@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Feedbacks -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Feedbacks -- oddb.org -- 13.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Feedbacks -- oddb.org -- 25.10.2005 -- ffricker@ywesee.com
 
 require 'state/global_predefine'
@@ -30,7 +30,9 @@ class ItemWrapper < SimpleDelegator
     end
 	end
 	def feedback_list
-		@item.feedbacks[@index, INDEX_STEP]
+    unless @item.feedbacks.is_a?(ODDB::Migel::Item)
+      @item.feedbacks[@index, INDEX_STEP]
+    end
 	end
 	def feedback_count
 		@item.feedbacks.size

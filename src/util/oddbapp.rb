@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 12.01.2012 -- mhatakeyama@ywesee.com
+# OddbApp -- oddb.org -- 13.01.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 require 'yaml'
@@ -1936,8 +1936,12 @@ module ODDB
     # The followings are for migel data to access to migel drb server
     # @system (OddbPreverance) methods are replaced by the following methods
     def search_migel_alphabetical(query, lang)
-      search_method = 'search_by_name_' + lang.downcase.to_s
-      MIGEL_SERVER.migelid.send(search_method, query)
+      if lang == 'de' or lang == 'fr'
+        search_method = 'search_by_name_' + lang.downcase.to_s
+        MIGEL_SERVER.migelid.send(search_method, query)
+      else
+        []
+      end
     end
     def search_migel_products(query, lang)
       migel_code = if query =~ /(\d){9}/
