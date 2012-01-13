@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::OdbaExporter -- oddb.org -- 27.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::OdbaExporter -- oddb.org -- 13.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::OdbaExporter -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
 
 require 'fileutils'
@@ -9,7 +9,6 @@ require 'archive/tarsimple'
 require 'zip/zip'
 require 'models'
 require 'model/analysis/group'
-require 'model/migel/group'
 require 'oddb_yaml'
 require 'csv_exporter'
 require 'oddbdat'
