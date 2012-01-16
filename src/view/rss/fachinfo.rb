@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Rss::Fachinfo -- oddb.org -- 21.05.2007 -- hwyss@ywesee.com
+# ODDB::View::Rss::Fachinfo -- oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Rss::Fachinfo -- oddb.org -- 21.05.2007 -- hwyss@ywesee.com
 
 require 'rss/maker'
 require 'view/drugs/fachinfo'
@@ -53,8 +54,8 @@ class Fachinfo < HtmlGrid::Component
         item.author = "ODDB.org"
 
         name = item.title = sanitize(fachinfo.localized_name(language))
-        item.guid.content = item.link = @lookandfeel._event_url(:resolve, 
-                                          :pointer => fachinfo.pointer)
+        args = {:reg => fachinfo.iksnrs.first}
+        item.guid.content = item.link = @lookandfeel._event_url(:fachinfo, args)
         item.guid.isPermaLink = true
         item.date = fachinfo.revision
 
