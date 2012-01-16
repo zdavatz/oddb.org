@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CsvResult -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 28.04.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
@@ -318,7 +318,7 @@ class CsvResult < HtmlGrid::Component
 	def to_html(context)
 		to_csv(CSV_KEYS)
 	end
-	def to_csv(keys, symbol=:active_packages)
+	def to_csv(keys, symbol=:active_packages, encoding=nil)
     eans = {}
 		result = []
 		lang = @lookandfeel.language
@@ -343,11 +343,15 @@ class CsvResult < HtmlGrid::Component
     @duplicates = eans.collect { |ikskey, count| 
       ikskey if count > 1 }.compact.sort
 		result.collect { |line|
-			CSV.generate_line(line, {:col_sep => ';'})
+      if encoding
+        CSV.generate_line(line, {:col_sep => ';'}).encode(encoding, :invalid => :replace, :undef => :replace, :replace => '')
+      else
+        CSV.generate_line(line, {:col_sep => ';'})
+      end
 		}
 	end
-	def to_csv_file(keys, path, symbol=:active_packages)
-		File.open(path, 'w') { |fh| fh.puts to_csv(keys, symbol) }
+	def to_csv_file(keys, path, symbol=:active_packages, encoding=nil)
+		File.open(path, 'w') { |fh| fh.puts to_csv(keys, symbol, encoding) }
 	end
   def vaccine(pack)
     boolean(pack.vaccine)

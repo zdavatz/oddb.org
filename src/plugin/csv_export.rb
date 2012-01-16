@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::CsvExportPlugin -- oddb.org -- 08.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::CsvExportPlugin -- oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
@@ -21,7 +21,7 @@ module ODDB
 			EXPORT_SERVER.export_doc_csv(ids, EXPORT_DIR, 'doctors.csv')
 		end
     def export_drugs
-      @options = { :iconv => 'ISO-8859-1//TRANSLIT//IGNORE' }
+      @options = { :iconv => 'ISO-8859-1//TRANSLIT//IGNORE', :compression => 'zip'}
       recipients.concat self.class::ODDB_RECIPIENTS
       _export_drugs 'oddb', [ :rectype, :iksnr, :ikscd, :ikskey, :barcode,
         :bsv_dossier, :pharmacode, :name_base, :galenic_form,
@@ -53,7 +53,10 @@ module ODDB
       name = "#{export_name}.csv"
       @file_path = path = File.join(EXPORT_DIR, name)
       exporter = View::Drugs::CsvResult.new(model, session)
-      exporter.to_csv_file(keys, path, :packages)
+      encoding = if enc = @options.delete(:iconv) and enc = enc.split('/')
+                   enc.first
+                 end
+      exporter.to_csv_file(keys, path, :packages, encoding)
       dups = exporter.duplicates
       @counts = exporter.counts
       @counts['duplicates'] = dups.size
