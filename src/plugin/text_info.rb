@@ -1,4 +1,8 @@
+#!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::TextInfoPlugin -- oddb.org -- 16.01.2012 -- hwyss@ywesee.com 
+# ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
+
 require 'config'
 require 'plugin/plugin'
 require 'drb'
@@ -104,9 +108,11 @@ module ODDB
       name_list = []
       page = agent.get url
       list = page.at('div[id="blockContentInner"]/p')
-      list.to_html.split("\<br\>").each do |element|
-        name = element.delete("\<p\>").delete("\<\/p\>").chomp.strip
-        name_list << name
+      if list
+        list.to_html.split("\<br\>").each do |element|
+          name = element.delete("\<p\>").delete("\<\/p\>").chomp.strip
+          name_list << name
+        end
       end
       return name_list.sort
     end
