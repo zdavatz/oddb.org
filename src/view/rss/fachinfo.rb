@@ -28,9 +28,11 @@ class FachinfoTemplate < HtmlGrid::Template
     [0,0] => FachinfoItem, 
     [0,1] => :fachinfo_feed_link,
   }
-  SYMBOL_MAP = {
-    :fachinfo_feed_link => PointerLink,
-  }
+  def fachinfo_feed_link(model)
+    link = HtmlGrid::Link.new(:fachinfo_feed_link, model, @session, self)
+    link.href = @lookandfeel._event_url(:fachinfo, :reg => model.iksnrs.first)
+    link
+  end
 end
 class Fachinfo < HtmlGrid::Component
   include View::Latin1

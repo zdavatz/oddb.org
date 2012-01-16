@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View:Rss::Package -- oddb.org -- 23.05.2007 -- hwyss@ywesee.com
+# ODDB::View:Rss::Package -- oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View:Rss::Package -- oddb.org -- 23.05.2007 -- hwyss@ywesee.com
 
 require 'view/drugs/package'
 require 'view/latin1'
@@ -20,7 +21,8 @@ class PackageTemplate < HtmlGrid::Template
   }
   def package_feed_link(model)
     link = HtmlGrid::Link.new(:package_feed_link, model, @session, self)
-    link.href = @lookandfeel._event_url(:show, :pointer => model.pointer)
+    args = [:reg, model.iksnr, :seq, model.seqnr, :pack, model.ikscd]
+    link.href = @lookandfeel._event_url(:show, args)
     link
   end
 end
@@ -51,7 +53,8 @@ class Package < HtmlGrid::Component
         end
         item.title = sanitize sprintf(fmt, *args)
         
-        url = @lookandfeel._event_url(:show, :pointer => package.pointer)
+        args = [:reg, package.iksnr, :seq, package.seqnr, :pack, package.ikscd]
+        url = @lookandfeel._event_url(:show, args)
         item.guid.content = item.link = url
         item.guid.isPermaLink = true
         item.date = pcurrent.valid_from
