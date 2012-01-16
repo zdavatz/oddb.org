@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Plugin::DownloadInvoicer -- oddb -- 27.09.2005 -- hwyss@ywesee.com
+# ODDB::Plugin::DownloadInvoicer -- oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Plugin::DownloadInvoicer -- oddb.org -- 27.09.2005 -- hwyss@ywesee.com
 
 require 'plugin/invoicer'
 
@@ -60,7 +61,7 @@ module ODDB
 			time_end = Time.local(date_end.year, date_end.month)
 			range = time_start...time_end
 			all_items.select { |item|
-				range.include?(item.time)
+				range.cover?(item.time)
 			}
 		end
 	end
