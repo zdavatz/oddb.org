@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Registration -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Registration -- oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Registration -- oddb.org -- 10.03.2003 -- hwyss@ywesee.com 
 
 require 'plugin/text_info'
@@ -139,16 +139,22 @@ module RegistrationMethods
 		new_state
 	end
 	def new_patent
-		pointer = @session.user_input(:pointer)
-		model = pointer.resolve(@session.app)
-		pat_pointer = pointer + [:patent]
-		item = Persistence::CreateItem.new(pat_pointer)
-		item.carry(:iksnr, model.iksnr)
-		if(klass=resolve_state(pat_pointer))
-			klass.new(@session, item)
-		else
-			self
-		end
+    model = if iksnr = @session.user_input(:reg)
+              @session.app.registration(iksnr)
+            end
+    if model
+      pointer = model.pointer
+      pat_pointer = pointer + [:patent]
+      item = Persistence::CreateItem.new(pat_pointer)
+      item.carry(:iksnr, model.iksnr)
+      if(klass=resolve_state(pat_pointer))
+        klass.new(@session, item)
+      else
+        self
+      end
+    else
+      self
+    end
 	end
 	def new_sequence
 

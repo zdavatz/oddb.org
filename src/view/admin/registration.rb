@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Admin::Registration -- oddb.org -- 30.08.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::Admin::Registration -- oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Registration -- oddb.org -- 07.03.2003 -- hwyss@ywesee.com 
 
 require 'view/drugs/privatetemplate'
@@ -307,7 +307,7 @@ class RegistrationForm < View::Form
 				link.value = @lookandfeel.format_date(date)
 			else
 				link = HtmlGrid::Link.new(:patented_until, nil, @session, self)
-				args = {:pointer => model.pointer}
+        args = {:reg => model.iksnr}
 				link.href = @lookandfeel.event_url(:new_patent, args)
 				link.value = @lookandfeel.lookup(:new_patent)
 			end
