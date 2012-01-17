@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Drugs::PriceHistory -- oddb.org -- 24.11.2008 -- hwyss@ywesee.com
+# ODDB::View::Drugs::PriceHistory -- oddb.org -- 17.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::PriceHistory -- oddb.org -- 24.11.2008 -- hwyss@ywesee.com
 
 require 'htmlgrid/datevalue'
 require 'view/dataformat'
@@ -57,12 +58,12 @@ class PriceHistoryList < HtmlGrid::List
   end
   def origins(model)
     collect_data(model, :origin).inject([]) do |memo, url_and_date|
-      url, date = url_and_date.split(' ')
+      url, date = url_and_date.to_s.split(' ')
       link = HtmlGrid::Link.new :origin, model, @session, self
       if match = /#{ODDB.config.bsv_archives}/u.match(url)
         url = "http://bag.e-mediat.net/SL2007.WEb.external/BSV_xls_20#{match[1]}.zip"
       end
-      link.href = link.value = url
+      link.href = link.value = url if url =~ /http/
       memo.push link
       if date
         memo.push ' ', date
