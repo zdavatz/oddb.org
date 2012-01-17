@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# HtmlParser -- oddb -- 06.10.2003 -- mhuggler@ywesee.com
+# ODDB::HtmlParser -- oddb.org -- 17.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::HtmlParser -- oddb.org -- 06.10.2003 -- mhuggler@ywesee.com
 
 
-require 'html-parser'
-require 'formatter'
+require 'util/html-parser'
+require 'util/formatter'
 require 'iconv'
 
 module ODDB
