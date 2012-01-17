@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Exporter -- oddb.org -- 21.10.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Exporter -- oddb.org -- 17.01.2011 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
 require 'plugin/oddbdat_export'
@@ -211,9 +211,6 @@ module ODDB
       end
       safe_export 'interactions.yaml' do
         exporter.export_interactions
-      end
-      safe_export 'narcotics.yaml' do
-        exporter.export_narcotics
       end
       safe_export 'price_history.yaml' do
         exporter.export_prices
