@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Patinfo -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::Patinfo -- oddb.org -- 17.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Patinfo -- oddb.org -- 11.11.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/privatetemplate'
@@ -108,18 +108,22 @@ class PatinfoComposite < HtmlGrid::Composite
 	end
 	def patinfo_name(model, session)
 		document = model.send(@session.language)
-		@lookandfeel.lookup(:patinfo_name, document.name)
+    if document.is_a?(ODDB::PatinfoDocument)
+      @lookandfeel.lookup(:patinfo_name, document.name)
+    end
 	end
   def print(model, session=@session, key=:print)
-    link = HtmlGrid::Link.new(key, model, session, self)
-    link.set_attribute('title', @lookandfeel.lookup(:print_title))
-    args = [
-      :reg, model.sequences.first.registration.iksnr,
-      :seq, model.sequences.first.seqnr,
-      :patinfo, nil
-    ]
-    link.href = @lookandfeel._event_url(:print, args)
-    link
+    if model.send(@session.language).is_a?(ODDB::PatinfoDocument)
+      link = HtmlGrid::Link.new(key, model, session, self)
+      link.set_attribute('title', @lookandfeel.lookup(:print_title))
+      args = [
+        :reg, model.sequences.first.registration.iksnr,
+        :seq, model.sequences.first.seqnr,
+        :patinfo, nil
+      ]
+      link.href = @lookandfeel._event_url(:print, args)
+      link
+    end
   end
 end
 class PatinfoPrintComposite < View::Drugs::PatinfoComposite
