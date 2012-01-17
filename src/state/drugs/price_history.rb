@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Drugs::PriceHistory -- oddb.org -- 23.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Drugs::PriceHistory -- oddb.org -- 17.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Drugs::PriceHistory -- oddb.org -- 24.11.2008 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
@@ -40,7 +40,9 @@ class PriceHistory < State::Drugs::Global
           change.send("#{key}=", price)
           if price.credits && previous && (pprice = previous.send(key)) \
             && pprice.credits
-            change.send "percent_#{key}=", (price - pprice) / pprice * 100
+            if pprice.to_f.abs > 0.0001
+              change.send "percent_#{key}=", (price - pprice) / pprice * 100
+            end
           end
           previous = change
         end
