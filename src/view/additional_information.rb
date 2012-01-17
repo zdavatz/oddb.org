@@ -281,7 +281,7 @@ module ODDB
 				end
       end
 			def narcotic(model, session=@session)
-				if(model.narcotic?)
+				if(model.bm_flag)
 					link = HtmlGrid::Link.new(:square_narc, model, @session, self)
 					link.href = "http://www.swissmedic.ch/produktbereiche/00447/00536/index.html?lang=#{@session.language}"
 					link.css_class = 'square infos'
