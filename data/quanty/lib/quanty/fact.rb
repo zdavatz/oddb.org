@@ -1,3 +1,4 @@
+# encoding: utf-8
 #
 # quanty/fact.rb
 #
@@ -53,7 +54,9 @@ class Quanty
 
     def find_prefix(a,n)
       Prefix.each{ |key,factor|
-	if /^#{key}-?/u =~ a && (unit = List[b=$']) && b.size>n
+        k = key.dup
+        k.force_encoding('utf-8') if RUBY_VERSION > '1.9'
+	if /^#{k}-?/u =~ a && (unit = List[b=$']) && b.size>n
 	  #p [a,b,factor]
 	  return Fact.new(b).fac!(factor)
 	end
