@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::NarcoticPlugin -- oddb.org -- 13.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::NarcoticPlugin -- oddb.org -- 17.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::NarcoticPlugin -- oddb.org -- 03.11.2005 -- ffricker@ywesee.com
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
@@ -10,6 +10,7 @@ require 'plugin/plugin'
 require	'iconv'
 require 'model/package'
 require 'rpdf2txt/parser'
+require 'spreadsheet'
 
 module ODDB
   class NarcoticHandler < Rpdf2txt::ColumnHandler
@@ -154,38 +155,8 @@ module ODDB
     end
     def report
       [
-        "Narcotics: #{@updated_narcs.size}",
-        "Narcotics with CASRN: #{@narcs.size}",
-        "Packages with Narcotics: #{@updated_packages.size}",
-        "Unknown registrations: #{@unknown_registrations.size}",
-        "Unknown packages: #{@unknown_packages.size}",
-        "Created Substances: #{@new_substances.size}",
-        "Created Narcotics: #{@new_narcotics}",
-        "Created Narcotic Texts: #{@narcotic_texts.size}",
-        "Removed Narcotics #{@removed_narcotics.size}",
-        "\n",
-        "Name", "Casrn | Pharmacode | Ean-Code | Company | Level",
-        "\n",
-        "Unknown registrations: #{@unknown_registrations.size}\n",
-        @unknown_registrations,
-        "\n",
-        <<-EOS,
-Unknown packages: #{@unknown_packages.size}
-Packungen, die weder anhand des Swissmedic-Codes noch anhand des
-Pharmacodes in der ODDB gefunden wurden. Kann auch ausser-Handel
-Packungen beinhalten.
-Diese Produkte werden in ch.oddb.org nicht angezeigt (zu wenig Informationen).
-        EOS
-        @unknown_packages,
-        "\n",
-        "New substances: #{@new_substances.size}\n",
-        @new_substances,
-        "\n",
-        "New Narcotic Texts: #{@narcotic_texts.size}\n",
-        @narcotic_texts,
-        "\n",
-        "Removed Narcotics #{@removed_narcotics.size}\n",
-        @removed_narcotics,
+        "Updated packages Narcotic flag(true): #{@update_bm_flag}",
+        "Updated packages Category(A+): #{@update_ikscat}",
       ].join("\n")
     end
     def report_text(row)
@@ -252,6 +223,34 @@ Diese Produkte werden in ch.oddb.org nicht angezeigt (zu wenig Informationen).
         end
       end
       success
+    end
+    def update_from_xls(path)
+      if File.exists?(path)
+        @update_bm_flag = 0
+        @update_ikscat  = 0
+        workbook = Spreadsheet.open(path)
+        workbook.worksheet(0).each do |row|
+          iksnr = ikscd = ikscat = nil
+          if row[5] and items = row[5].split(/\s/)
+            iksnr = items[2]
+            ikscd = items[3]
+          end
+          if reg = @app.registration(iksnr) and pac = reg.package(ikscd)
+            values = {}
+            unless pac.bm_flag
+              #pac.bm_flag = true
+              values.store(:bm_flag, true)
+              @update_bm_flag += 1
+            end
+            if row[8] == 'A+' and ikscat = row[8] and pac.ikscat != ikscat
+              #pac.ikscat = ikscat 
+              values.store(:ikscat, ikscat)
+              @update_ikscat += 1
+            end
+            @app.update(pac.pointer, values, :narcotic)
+          end
+        end
+      end
     end
 		def update_from_csv(path, language)
 			CSV.open(path, 'r', ';').each { |row|

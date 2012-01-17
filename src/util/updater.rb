@@ -279,6 +279,9 @@ module ODDB
 		def update_narcotics
 			update_notify_simple(NarcoticPlugin, 'Narcotics')
 		end
+    def update_btm(path)
+      update_notify_simple(NarcoticPlugin, 'Narcotics (XLS)', :update_from_xls, [path])
+    end
     def update_swissmedic(*args)
       logs_pointer = Persistence::Pointer.new([:log_group, :swissmedic])
       logs = @app.create(logs_pointer)
