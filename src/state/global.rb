@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 12.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 17.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -670,12 +670,14 @@ module ODDB
           ikscd = @session.user_input(:pack)
           @session.set_persistent_user_input(:reg, iksnr) if iksnr
           @session.set_persistent_user_input(:seq, seqnr) if seqnr
-          pointer = if iksnr && seqnr && ikscd
-                      @session.app.registration(iksnr).sequence(seqnr).package(ikscd).pointer
-                    elsif iksnr && seqnr
-                      @session.app.registration(iksnr).sequence(seqnr).pointer
-                    elsif iksnr
-                      @session.app.registration(iksnr).pointer
+          pointer = if iksnr and seqnr and ikscd and reg=@session.app.registration(iksnr)\
+                      and seq=reg.sequence(seqnr) and pac=seq.package(ikscd)
+                      pac.pointer
+                    elsif iksnr and seqnr and reg=@session.app.registration(iksnr)\
+                      and seq=reg.sequence(seqnr)
+                      seq.pointer
+                    elsif iksnr and reg=@session.app.registration(iksnr)
+                      reg.pointer
                     end
           if pointer.is_a?(Persistence::Pointer) \
 					&& (model = pointer.resolve(@session.app))
