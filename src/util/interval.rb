@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Interval -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Interval -- oddb.org -- 17.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Interval -- oddb.org -- 03.07.2003 -- hwyss@ywesee.com 
 
 module ODDB
@@ -131,6 +131,8 @@ module ODDB
 					@intervals.push('0-9')
 				end
 				@intervals
+        rescue KeyError
+          []
 			end
 		end
 	end
