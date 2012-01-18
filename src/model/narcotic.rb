@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Narcotic -- oddb -- 04.11.2005 -- ffricker@ywesee.com
+# ODDB::Narcotic -- oddb.org -- 18.01.2012 -- ffricker@ywesee.com
+# ODDB::Narcotic -- oddb.org -- 04.11.2005 -- ffricker@ywesee.com
 
 require 'util/persistence'
 require 'util/language'
@@ -8,6 +9,11 @@ require 'model/package_observer'
 require 'model/text'
 
 module ODDB
+  class Narcotic2
+    include Persistence
+    include Language
+    attr_accessor :package, :ikskey
+  end
 	class Narcotic
 		include Persistence
     include PackageObserver

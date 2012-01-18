@@ -1,108 +1,152 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Narcotics  -- oddb.org -- 10.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::Narcotics  -- oddb.org -- 18.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Narcotics  -- oddb.org -- 16.11.2005 -- spfenninger@ywesee.com
 
-
 require 'view/alphaheader'
-require 'view/resulttemplate'
-require 'view/resultfoot'
-require 'view/resultcolors'
+require 'view/drugs/result'
+require 'view/drugs/rootresultlist'
 
 module ODDB
 	module View
 		module Drugs
-class NarcoticList < HtmlGrid::List
-	include AlphaHeader
-	COMPONENTS = {
-		[0,0] => :casrn,
-		[1,0] => :swissmedic_code,
-		[2,0] => :name,
-		[3,0]	=> :category,
-		[4,0] => :num_packages,
-	}
-	LEGACY_INTERFACE = false
-	DEFAULT_CLASS = HtmlGrid::Value
-	CSS_CLASS = 'composite'
-	CSS_MAP = {
-		[0,0,4] => 'list',
-		[4,0] 	=> 'list right',
-	}
-	CSS_HEAD_MAP = {
-		[0,0] => 'th',
-		[1,0] => 'th',
-		[2,0] => 'th',
-		[3,0] => 'th',
-		[4,0] => 'th right',
-	}
-	SORT_HEADER = false
-	SYMBOL_MAP = {
-		:casrn	=>	PointerLink,
-	}
-	def casrn(model, session=@session)
-		link = PointerLink.new(:casrn, model.narcotic, @session, self)
-    link.href = @lookandfeel._event_url(:narcotic, {:oid => model.narcotic.oid})
-    link
-	end
-	def category(model, session=@session)
-		txt = HtmlGrid::Span.new(model ,session, self)
-		cat = model.narcotic.category.to_s
-		key = "category_" + cat
-		txt.value = cat
-		txt.set_attribute('title', @lookandfeel.lookup(key))
-		txt
-	end
-	def num_packages(model)
-		model.narcotic.packages.size
-	end
-	def name(model)
-		#link = HtmlGrid::Link.new(:narcotic, model, @session, self)
-		#link.value = 
-=begin
-		if(sub = model.substance)
-			link.value = sub.send(@session.language)
-		end
-=end
-		#link
-		model.send(@session.language).force_encoding('utf-8')
-	end
+
+class NarcoticsResultList < ResultList
+  include AlphaHeader
 end
-class ExplainNarcotics < HtmlGrid::Composite
-	COMPONENTS = {
-		[0,0]	=>	'explain_narc_overview',
-		[1,0]	=>	'explain_narc_controlled',
-	}
-	CSS_MAP = {	
-		 [0,0,2]	=>	'explain infos',
-	}
+class NarcoticsRootResultList < RootResultList
+  include AlphaHeader
 end
-class NarcoticsComposite < HtmlGrid::Composite
+class NarcoticsResultComposite < HtmlGrid::Composite
 	include ResultFootBuilder
-	EXPLAIN_RESULT = View::Drugs::ExplainNarcotics
+	COLSPAN_MAP	= {}
 	COMPONENTS = {
-		[0,0] => :title_narcotics,
-		[1,0] => SearchForm,
-		[0,1] => NarcoticList,
-		[0,2] => :result_foot,
+		[0,0,0]	=>	:title_found,
+		[0,0,1]	=>	:dsp_sort,
+		[0,1]		=>	'price_compare',
 	}
 	CSS_CLASS = 'composite'
+	EVENT = :search
+	FORM_METHOD = 'GET'
+	DEFAULT_LISTCLASS = View::Drugs::NarcoticsResultList
+	ROOT_LISTCLASS = View::Drugs::NarcoticsRootResultList
+	SYMBOL_MAP = { }
 	CSS_MAP = {
-		[0,0] => 'result-found list',
+		[0,0] =>	'result-found',
+    [1,0] =>  'right',
+		[0,1] =>	'list bold price-compare',
+    [1,1] =>  'right',
 	}
-	COLSPAN_MAP = {
-		[0,1] => 2,
-		[0,2] => 2,
-	}
-	LEGACY_INTERFACE = false
-	def title_narcotics(model)
-		unless(model.empty?)
-			@lookandfeel.lookup(:title_narcotics,
-				@session.state.interval, @model.size)
+	def init
+    if(@lookandfeel.enabled?(:breadcrumbs))
+      components.store([0,0,0], :breadcrumbs)
+      css_map.store([0,0], 'breadcrumbs')
+    end
+    if @lookandfeel.disabled?(:search)
+      colspan_map.store [0,1], 2
+    else
+      components.store [1,1], SelectSearchForm
+    end
+    y = 2
+    if(@lookandfeel.enabled?(:explain_sort, false))
+      components.store([0,y], "explain_sort")
+      css_map.store([0,y], "navigation")
+      colspan_map.store([0,y], 2)
+      y += 1
+    end
+    if @lookandfeel.enabled?(:oekk_structure, false)
+      components.store([0,y], :explain_colors)
+      css_map.store([0,y], "explain")
+      colspan_map.store([0,y], 2)
+      y += 1
+    end
+    colspan_map.store([0,y], 2)
+    components.store([0,y], (@session.allowed?('edit', 'org.oddb.drugs')) \
+                            ? self::class::ROOT_LISTCLASS \
+                            : self::class::DEFAULT_LISTCLASS)
+		if(@lookandfeel.enabled?(:export_csv))
+			components.store([1,0], :export_csv)
+    elsif(@lookandfeel.enabled?(:print, false))
+      components.store([1,0], :print)
+		else
+			colspan_map.store([0,0], 2)
+		end
+    code = @session.persistent_user_input(:code)
+    unless(@model.respond_to?(:overflow?) && @model.overflow? \
+           && (code.nil? || !@model.any? { |atc| atc.code == code }))
+      y += 1
+      components.store([0,y], :result_foot)
+      colspan_map.store([0,y], 2)
+    end
+		super
+	end
+  def breadcrumbs(model, session=@session)
+    breadcrumbs = []
+    level = 2
+    if @lookandfeel.enabled?(:home)
+      dv = HtmlGrid::Span.new(model, @session, self)
+      dv.css_class = "breadcrumb"
+      dv.value = "&lt;"
+      span1 = HtmlGrid::Span.new(model, @session, self)
+      span1.css_class = "breadcrumb-#{level} bold"
+      level -= 1
+      link1 = HtmlGrid::Link.new(:back_to_home, model, @session, self)
+      link1.href = @lookandfeel._event_url(:home)
+      link1.css_class = "list"
+      span1.value = link1
+      breadcrumbs.push span1, dv
+    end
+    span2 = HtmlGrid::Span.new(model, @session, self)
+    span2.css_class = "breadcrumb-#{level}"
+    query = @session.persistent_user_input(:search_query).gsub('/', '%2F')
+    prefix = if @session.language == 'de'
+               'Betäubungsmittel '
+             elsif @session.language == 'fr'
+               'Stupéfiants '
+             else
+               'Narcotics '
+             end
+    span2.value = @lookandfeel.lookup(:list_for, prefix + query, model.package_count)
+    span3 = HtmlGrid::Span.new(model, @session, self)
+    span3.css_class = "breadcrumb"
+    span3.value = '&ndash;'
+    breadcrumbs.push span2, span3
+  end
+	def dsp_sort(model, session)
+		url = @lookandfeel.event_url(:sort, {:sortvalue => :dsp})
+		link = HtmlGrid::Link.new(:dsp_sort, model, @session, self)
+		link.href = url
+		link
+	end
+  def explain_colors(model, session=@session)
+    comps = {
+      [0,0]	=>	:explain_original,
+      [0,1]	=>	:explain_generic,
+      [0,2]	=>	'explain_unknown',
+    }
+    ExplainResult.new(model, @session, self, comps)
+  end
+	def export_csv(model, session=@session)
+		if(@lookandfeel.enabled?(:export_csv))
+			View::Drugs::DivExportCSV.new(model, @session, self)
 		end
 	end
+  def print(model, session=@session)
+    link = HtmlGrid::Link.new(:print, model, @session, self)
+    link.set_attribute('onClick', 'window.print();')
+    link.href = ""
+    link
+  end
+  def title_found(model, session=@session)
+    query = @session.persistent_user_input(:search_query)
+    @lookandfeel.lookup(:title_found, query, model.package_count)
+  end
 end
+
 class Narcotics < View::ResultTemplate
-	CONTENT = View::Drugs::NarcoticsComposite
+  include View::SponsorMethods
+  CONTENT = NarcoticsResultComposite
+  JAVASCRIPTS = ['bit.ly']
 end
 		end
 	end

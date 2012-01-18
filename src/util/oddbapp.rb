@@ -381,7 +381,8 @@ class OddbPrevalence
     @minifis.store(minifi.oid, minifi)
   end
 	def create_narcotic
-		narc = ODDB::Narcotic.new
+		#narc = ODDB::Narcotic.new
+		narc = ODDB::Narcotic2.new
 		@narcotics.store(narc.oid, narc)
 	end
 	def create_orphaned_fachinfo
@@ -685,6 +686,11 @@ class OddbPrevalence
       @narcotics.values.find do |narc| narc.swissmedic_codes.include?(smcd) end
 		end
 	end
+  def narcotic_by_ikskey(ikskey)
+    @narcotics.values.find do |narc|
+      narc.ikskey == ikskey
+    end
+  end
 	def narcotics_count
 		@narcotics.size
 	end
@@ -891,22 +897,24 @@ class OddbPrevalence
 		end
 		result
 	end
-	def search_btm
+	def search_btm(query='')
 		result = ODDB::SearchResult.new
 		result.exact = true
-		result.search_query = ''
+		result.search_query = query
 	  atc = ODDB::AtcClass.new('n.n.')
     atc.sequences = []
-    each_package do |pac|
-      if pac.bm_flag
-        seq = ODDB::Sequence.new(pac.sequence.seqnr)
-        seq.registration = pac.registration
-        seq.packages.store pac.ikscd, pac
-		    atc.sequences << seq
+    unless query.empty?
+      pacs = @narcotics.values.map{|narc| narc.package}
+      pacs.each do |pac|
+        if pac.name_base[0].downcase == query
+          seq = ODDB::Sequence.new(pac.sequence.seqnr)
+          seq.registration = pac.registration
+          seq.packages.store pac.ikscd, pac
+          atc.sequences << seq
+        end
       end
     end
 		result.atc_classes = [atc]
-	  #result.search_type = :pharmacode
 	  result.search_type = :btm
     result
 	end

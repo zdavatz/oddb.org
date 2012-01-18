@@ -224,7 +224,7 @@ module ODDB
       end
       success
     end
-    def update_from_xls(path)
+    def update_from_xls(path, lang='de')
       if File.exists?(path)
         @update_bm_flag = 0
         @update_ikscat  = 0
@@ -247,8 +247,23 @@ module ODDB
               @update_ikscat += 1
             end
             @app.update(pac.pointer, values, :narcotic)
+
+            # update narcotics
+            values = {
+              :ikskey  => iksnr + ikscd,
+              :package => pac
+            }
+            values.store(lang.to_sym, pac.name_base)
+            pointer = if narc = @app.narcotic_by_ikskey(pac.ikskey)
+                        narc.pointer
+                      else
+                        Persistence::Pointer.new(:narcotic).creator
+                      end
+            @app.update(pointer, values, :swissmedic)
           end
         end
+
+        # update bm_package_count
         @app.bm_package_count = @app.packages.values.select do |pac| 
           pac.bm_flag
         end.length
