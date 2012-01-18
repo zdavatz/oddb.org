@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::CenteredSearchForm -- oddb -- 07.10.2011 -- mhatakeyama@ywesee.com
-# ODDB::View::CenteredSearchForm -- oddb -- 24.10.2002 -- hwyss@ywesee.com 
+# ODDB::View::CenteredSearchForm -- oddb.org -- 18.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::CenteredSearchForm -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/form'
 require 'htmlgrid/input'
@@ -231,7 +231,7 @@ module ODDB
 				@session.app.limitation_text_count.to_s << '&nbsp;'
 			end
 			def narcotics_size(model, session)
-				@session.app.narcotics_count.to_s << '&nbsp;'
+        @session.app.bm_package_count.to_s << '&nbsp;'
 			end
 			def new_feature(model, session)
 				span = HtmlGrid::Span.new(model, session, self)

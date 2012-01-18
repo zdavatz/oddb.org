@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::NarcoticPlugin -- oddb.org -- 17.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::NarcoticPlugin -- oddb.org -- 18.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::NarcoticPlugin -- oddb.org -- 03.11.2005 -- ffricker@ywesee.com
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
@@ -236,20 +236,23 @@ module ODDB
             ikscd = items[3]
           end
           if reg = @app.registration(iksnr) and pac = reg.package(ikscd)
+            # update package
             values = {}
             unless pac.bm_flag
-              #pac.bm_flag = true
               values.store(:bm_flag, true)
               @update_bm_flag += 1
             end
             if row[8] == 'A+' and ikscat = row[8] and pac.ikscat != ikscat
-              #pac.ikscat = ikscat 
               values.store(:ikscat, ikscat)
               @update_ikscat += 1
             end
             @app.update(pac.pointer, values, :narcotic)
           end
         end
+        @app.bm_package_count = @app.packages.values.select do |pac| 
+          pac.bm_flag
+        end.length
+        @app.odba_isolated_store
       end
     end
 		def update_from_csv(path, language)

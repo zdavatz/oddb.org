@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 13.01.2012 -- mhatakeyama@ywesee.com
+# OddbApp -- oddb.org -- 18.01.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 require 'yaml'
@@ -54,6 +54,7 @@ class OddbPrevalence
     :registrations, :slates, :users, :narcotics, :accepted_orphans,
     :commercial_forms, :rss_updates, :feedbacks, :indices_therapeutici,
     :generic_groups
+  attr_accessor :bm_package_count
 	def initialize
 		init
 		@last_medication_update ||= Time.now()
@@ -441,6 +442,12 @@ class OddbPrevalence
 	def analysis_count
 		@analysis_count ||= analysis_positions.size
 	end
+  def delete_all_narcotics
+    @narcotics.values.each do |narc|
+      delete(narc.pointer)
+    end
+    @narcotics.odba_isolated_store
+  end
   def delete_all_analysis_group
     analysis_positions.each do |pos|
       delete(pos.pointer)
@@ -883,6 +890,25 @@ class OddbPrevalence
 			result = search_by_unwanted_effect(key, lang)
 		end
 		result
+	end
+	def search_btm
+		result = ODDB::SearchResult.new
+		result.exact = true
+		result.search_query = ''
+	  atc = ODDB::AtcClass.new('n.n.')
+    atc.sequences = []
+    each_package do |pac|
+      if pac.bm_flag
+        seq = ODDB::Sequence.new(pac.sequence.seqnr)
+        seq.registration = pac.registration
+        seq.packages.store pac.ikscd, pac
+		    atc.sequences << seq
+      end
+    end
+		result.atc_classes = [atc]
+	  #result.search_type = :pharmacode
+	  result.search_type = :btm
+    result
 	end
 	def search_by_atc(key)
 		ODBA.cache.retrieve_from_index('atc_index', key.dup)
