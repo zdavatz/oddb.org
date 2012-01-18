@@ -900,9 +900,10 @@ class OddbPrevalence
 		result = ODDB::SearchResult.new
 		result.exact = true
 		result.search_query = query
-	  atc = ODDB::AtcClass.new('n.n.')
-    atc.sequences = []
+    result.atc_classes = []
     unless query.empty?
+      atc = ODDB::AtcClass.new('n.n.')
+      atc.sequences = []
       pacs = @narcotics.values.map{|narc| narc.package}
       pacs.each do |pac|
         if pac.name_base[0].downcase == query
@@ -912,8 +913,8 @@ class OddbPrevalence
           atc.sequences << seq
         end
       end
+      result.atc_classes << atc
     end
-		result.atc_classes = [atc]
 	  result.search_type = :btm
     result
 	end
