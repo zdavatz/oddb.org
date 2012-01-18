@@ -54,7 +54,6 @@ class OddbPrevalence
     :registrations, :slates, :users, :narcotics, :accepted_orphans,
     :commercial_forms, :rss_updates, :feedbacks, :indices_therapeutici,
     :generic_groups
-  attr_accessor :bm_package_count
 	def initialize
 		init
 		@last_medication_update ||= Time.now()

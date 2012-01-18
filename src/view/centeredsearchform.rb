@@ -231,7 +231,7 @@ module ODDB
 				@session.app.limitation_text_count.to_s << '&nbsp;'
 			end
 			def narcotics_size(model, session)
-        @session.app.bm_package_count.to_s << '&nbsp;'
+        @session.app.narcotics.length.to_s << '&nbsp;'
 			end
 			def new_feature(model, session)
 				span = HtmlGrid::Span.new(model, session, self)

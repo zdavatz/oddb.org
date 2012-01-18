@@ -262,12 +262,6 @@ module ODDB
             @app.update(pointer, values, :swissmedic)
           end
         end
-
-        # update bm_package_count
-        @app.bm_package_count = @app.packages.values.select do |pac| 
-          pac.bm_flag
-        end.length
-        @app.odba_isolated_store
       end
     end
 		def update_from_csv(path, language)
