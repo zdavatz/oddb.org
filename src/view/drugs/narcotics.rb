@@ -19,6 +19,9 @@ class NarcoticsResultList < ResultList
 end
 class NarcoticsRootResultList < RootResultList
   include AlphaHeader
+  def compose_subheader(atc, offset)
+    offset[1] -= 1 
+  end
 end
 class NarcoticsResultComposite < HtmlGrid::Composite
 	include ResultFootBuilder
