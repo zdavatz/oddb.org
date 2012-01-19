@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestPackage -- oddb.org -- 07.07.2011 -- mhatakeyama@ywesee.com 
+# ODDB::TestPackage -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TestPackage -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 
@@ -113,15 +113,6 @@ module ODDB
         assert true
       end
       @package.instance_variable_set '@generic_group', group
-      narc1 = flexmock 'narcotic1'
-      narc1.should_receive(:remove_package).with(@package).times(1).and_return do
-        assert true
-      end
-      narc2 = flexmock 'narcotic2'
-      narc2.should_receive(:remove_package).with(@package).times(1).and_return do
-        assert true
-      end
-      @package.narcotics.push narc1, narc2
       part1 = flexmock 'part1'
       part1.should_receive(:checkout).times(1).and_return do
         assert true
@@ -449,13 +440,6 @@ module ODDB
       @package.parts.push flexmock(:size => '10 Tablette(n)')
       assert_equal 'Name, 10 Tablette(n)', @package.name_with_size
     end
-    def test_narcotic
-      assert_equal false, @package.narcotic?
-      @package.narcotics.push flexmock(:category => 'b')
-      assert_equal false, @package.narcotic?
-      @package.narcotics.push flexmock(:category => 'a')
-      assert_equal true, @package.narcotic?
-    end
     def test_pharmacode_writer
       assert_nil @package.pharmacode
       @package.pharmacode = '12345'
@@ -536,15 +520,6 @@ module ODDB
       assert_nil @package.source
       @package.sequence = seq
       assert_equal 'source', @package.source
-    end
-    def test_remove_narcotic
-      narc = flexmock 'narcotic'
-      narc.should_receive(:remove_package).with(@package).times(1).and_return do
-        assert true
-      end
-      @package.narcotics.push narc
-      @package.remove_narcotic narc
-      assert_equal [], @package.narcotics
     end
     def test_respond_to_name_base
       assert_respond_to(@package, :name_base)

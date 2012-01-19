@@ -39,7 +39,7 @@ module ODDB
 				}
 			end
 		end
-		attr_reader :ikscd, :narcotics, :parts, :pharmacode
+		attr_reader :ikscd, :parts, :pharmacode
 		attr_accessor :sequence, :ikscat, :generic_group, :sl_generic_type,
 			:price_exfactory, :price_public, :pretty_dose, :market_date,
 			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
@@ -60,7 +60,6 @@ module ODDB
 		def initialize(ikscd)
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)
-			@narcotics = []
       @parts = []
 		end
 		def active?
@@ -70,14 +69,6 @@ module ODDB
     def active_agents
       @parts.inject([]) { |acts, part| acts.concat part.active_agents }
     end
-		def add_narcotic(narc)
-			unless(narc.nil? || @narcotics.include?(narc))
-				@narcotics.push(narc)
-				@narcotics.odba_isolated_store
-				narc.add_package(self)
-			end
-			narc
-		end
 		def barcode
 			if(key = ikskey)
 				Ean13.new_unchecked('7680'+key).to_s
@@ -85,9 +76,6 @@ module ODDB
 		end
 		def checkout
 			checkout_helper([@generic_group], :remove_package)
-			@narcotics.each { |narc| 
-				narc.remove_package(self)
-			} if @narcotics
       @parts.dup.each { |part|
         part.checkout
         part.odba_delete
@@ -259,13 +247,6 @@ module ODDB
 		def public?
       active? && (@refdata_override || !@out_of_trade \
                   || registration.active?)
-		end
-		def remove_narcotic(narc)
-			if(res = @narcotics.delete(narc))
-				@narcotics.odba_isolated_store
-				narc.remove_package(self)
-			end
-			res
 		end
     def size
       @parts.collect { |part| part.size }.compact.join(' + ')

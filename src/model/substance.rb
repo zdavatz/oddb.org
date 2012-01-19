@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Substance -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
+# ODDB::Substance -- oddb.org -- 19.02.2012 -- mhatakeyama@ywesee.com 
+# ODDB::Substance -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
 require 'util/levenshtein_distance'
@@ -14,7 +15,7 @@ module ODDB
 		include Persistence
 		include SequenceObserver
 		ODBA_SERIALIZABLE = [ '@descriptions', '@connection_keys', '@synonyms' ]
-    attr_reader :chemical_forms, :effective_form, :sequences, :narcotic,
+    attr_reader :chemical_forms, :effective_form, :sequences
       :substrate_connections
 		attr_accessor :swissmedic_code, :casrn
 		include Comparable
@@ -67,7 +68,6 @@ module ODDB
 		end
     def checkout
       @sequences.odba_delete
-      self.narcotic = nil
       @substrate_connections.values.each { |conn| conn.odba_delete }
       @substrate_connections.odba_delete
     end
@@ -103,8 +103,7 @@ module ODDB
       @effective_form = form
     end
 		def empty?
-			@sequences.empty? && @narcotic.nil? \
-				&& @substrate_connections.empty? && !is_effective_form?
+			@sequences.empty? && @substrate_connections.empty? && !is_effective_form?
 		end
 		def format_connection_key(key)
 			Substance.format_connection_key(key)
@@ -149,11 +148,6 @@ module ODDB
 			@effective_form == self
 		end
 		def merge(other)
-      if(@narcotic.nil? && other.narcotic)
-        narc = other.narcotic
-        other.narcotic = nil
-        self.narcotic = narc
-      end
       @swissmedic_code ||= other.swissmedic_code
       @casrn ||= other.casrn
 			other.sequences.uniq.each { |sequence|
@@ -224,15 +218,6 @@ module ODDB
     def _names
       self.descriptions.values + self.synonyms
     end
-		def narcotic=(narc)
-			if(@narcotic)
-				@narcotic.remove_substance(self)
-			end
-			if(narc)
-				narc.add_substance(self)
-			end
-			@narcotic = narc
-		end
 		def primary_connection_key
 			@primary_connection_key ||= format_connection_key(self.name)
 		end

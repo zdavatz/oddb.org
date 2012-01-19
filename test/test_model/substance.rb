@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestSubstance	-- oddb.org -- 29.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::TestSubstance	-- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TestSubstance	-- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -239,15 +239,7 @@ module ODDB
       other = FlexMock.new('other')
       connection = FlexMock.new('connection')
       pointer = FlexMock.new('pointer')
-      narc = flexmock 'narcotic'
-      narc.should_receive(:add_substance).with(@substance).times(1).and_return do
-        assert true
-      end
       other.should_receive(:sequences).and_return { [ sequence ] }
-      other.should_receive(:narcotic).times(1).and_return narc
-      other.should_receive(:narcotic=).with(nil).times(1).and_return do
-        assert true
-      end
       other.should_receive(:swissmedic_code).times(1).and_return 'smc'
       other.should_receive(:casrn).times(1).and_return 'casrn'
       act = FlexMock.new('active-agent')
@@ -285,7 +277,6 @@ module ODDB
       end
       @substance.merge(other)
       assert_equal('smc', @substance.swissmedic_code)
-      assert_equal narc, @substance.narcotic
     end
     def test_name
       assert_equal('Acidum Acetylsalicylicum', @substance.name)
@@ -301,17 +292,6 @@ module ODDB
       effective = flexmock :names => ['Other Names', nil, '']
       @substance.instance_variable_set '@effective_form', effective
       assert_equal ['Acidum Acetylsalicylicum', 'Other Names'], @substance.names
-    end
-    def test_narcotic_writer
-      narc = flexmock 'narcotic'
-      narc.should_receive(:add_substance).with(@substance).times(1).and_return do
-        assert true
-      end
-      @substance.narcotic = narc
-      narc.should_receive(:remove_substance).with(@substance).times(1).and_return do
-        assert true
-      end
-      @substance.narcotic = nil
     end
     def test_primary_connection_key
       assert_equal 'acidumacetylsalicylicum', @substance.primary_connection_key
