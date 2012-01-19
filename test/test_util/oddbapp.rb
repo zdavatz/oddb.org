@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# TestOddbApp -- oddb.org -- 12.09.2011 -- mhatakeyama@ywesee.com
+# TestOddbApp -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # TestOddbApp -- oddb.org -- 16.02.2011 -- mhatakeyama@ywesee.com, zdavatz@ywesee.com
 
 $: << File.expand_path('..', File.dirname(__FILE__))
@@ -842,24 +842,6 @@ class TestOddbApp < Test::Unit::TestCase
 		## getter-test
 		assert_equal(group, @app.migel_group('03'))
 	end
-	def test_narcotic_by_casrn
-		narc1 = FlexMock.new
-		narc1.should_receive(:casrn).and_return { 'foo-bar' }
-		narc2 = FlexMock.new
-		narc2.should_receive(:casrn).and_return {  }
-		@app.narcotics.update({ 1 => narc1, 2 => narc2 })
-		assert_equal(narc1, @app.narcotic_by_casrn('foo-bar'))
-		assert_nil(@app.narcotic_by_casrn('x-bar'))
-	end
-	def test_narcotic_by_smcd
-		narc1 = FlexMock.new
-		narc1.should_receive(:swissmedic_codes).and_return { ['foo-bar'] }
-		narc2 = FlexMock.new
-		narc2.should_receive(:swissmedic_codes).and_return { [] }
-		@app.narcotics.update({ 1 => narc1, 2 => narc2 })
-		assert_equal(narc1, @app.narcotic_by_smcd('foo-bar'))
-		assert_nil(@app.narcotic_by_smcd('x-bar'))
-	end
 	def test_substance_by_smcd
 		sub1 = FlexMock.new
 		sub1.should_receive(:swissmedic_code).and_return { 'SMCD' }
@@ -1024,7 +1006,7 @@ class TestOddbApp < Test::Unit::TestCase
     narcotic = flexmock('narcotic') do |nar|
       nar.should_receive(:oid)
     end
-    flexmock(ODDB::Narcotic) do |nar|
+    flexmock(ODDB::Narcotic2) do |nar|
       nar.should_receive(:new).and_return(narcotic)
     end
     assert_equal(narcotic, @app.create_narcotic)
