@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 17.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Package -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -245,7 +245,7 @@ module ODDB
       [name_base, size].join(', ')
     end
 		def narcotic?
-			@narcotics.any? { |narc| narc.category == 'a' }
+      @bm_flag
 		end
     def part(oid)
       @parts.find { |part| part.oid == oid }
