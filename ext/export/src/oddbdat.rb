@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::OddbDat -- oddb.org -- 20.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::OddbDat -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::OddbDat -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
 
 
@@ -319,7 +319,7 @@ module ODDB
 					39	=>	inscode,
 					40	=>	limitation,
 					41	=>	limitation_points,
-					47	=>	(@package.narcotics.empty?) ? nil : 'y',
+					47	=>	(@package.narcotic?) ? 'y' : nil,
 				}
 			end
 			def generic_code(registration)
