@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Chapter -- oddb.org -- 21.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Chapter -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
 require 'htmlgrid/value'
@@ -44,7 +44,7 @@ module ODDB
           escape_method = (format.symbol?) ? :escape_symbols : :escape
           str = self.send(escape_method, txt[format.range]) 
           if(style.empty? && tag == :span)
-            res << str
+            res << str.force_encoding('utf-8')
           else
             attrs.store('style', style.join(' '))
             res << context.send(tag, attrs) { 
@@ -58,7 +58,15 @@ module ODDB
           ## this must be an inline element, to enable starting 
           ## paragraphs on the same line as the section-subheading
           context.span({ 'style' => self.class::PAR_STYLE }) { 
-            res.gsub("\n", context.br) } << context.br
+            begin
+              res.gsub("\n", context.br.force_encoding('utf-8')) 
+            rescue ArgumentError
+              br = context.br.force_encoding('utf-8')
+              res = res.encode("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
+              res.gsub("\n", br) 
+            end
+          } << context.br.force_encoding('utf-8')
+
         end
       end
       def heading(context)
