@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Substances::TestSubstance -- oddb.org -- 05.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Substances::TestSubstance -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
 
@@ -101,28 +101,6 @@ class TestConnectionKeys < Test::Unit::TestCase
   end
 end
 
-class TestAdminComposite < Test::Unit::TestCase
-  include FlexMock::TestCase
-  def test_narcotic
-    @lnf       = flexmock('lookandfeel', 
-                          :lookup     => 'lookup',
-                          :attributes => {},
-                          :base_url   => 'base_url'
-                         )
-    @session   = flexmock('session', 
-                          :lookandfeel => @lnf,
-                          :error       => 'error'
-                         )
-    @model     = flexmock('model',
-                          :is_effective_form?  => nil,
-                          :has_effective_form? => nil,
-                          :narcotic            => 'narcotic'
-                         )
-    @composite = ODDB::View::Substances::AdminComposite.new(@model, @session)
-    assert_kind_of(ODDB::View::Drugs::NarcoticInnerComposite, @composite.narcotic(@model, @session))
-  end
-end
-
 class TestOuterComposite < Test::Unit::TestCase
   include FlexMock::TestCase
   def setup
@@ -152,8 +130,7 @@ class TestOuterComposite < Test::Unit::TestCase
                             :pointer   => 'pointer',
                             :sequences => [sequence],
                             :is_effective_form?  => nil,
-                            :has_effective_form? => nil,
-                            :narcotic  => 'narcotic'
+                            :has_effective_form? => nil
                            )
     @composite  = ODDB::View::Substances::OuterComposite.new(@model, @session)
   end
