@@ -151,11 +151,10 @@ module ODDB
         dose_missing_list = exporter.export
         EXPORT_SERVER.clear
         sleep(30)
-        run_on_weekday(1) {
-          exporter.export_fachinfos
-          EXPORT_SERVER.clear
-          sleep(30)
-        }
+        
+        exporter.export_fachinfos
+        EXPORT_SERVER.clear
+        sleep(30)
 
         # here to raise warning if package.parts is empty
         if !dose_missing_list.empty?
