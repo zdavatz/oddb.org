@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestUpdater -- oddb.org -- 29.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::TestUpdater -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
 
 $: << File.expand_path('..', File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -436,10 +436,6 @@ module ODDB
       expected = "MiGeL is now up to date"
       assert_equal(expected, @updater.update_migel)
     end
-    def test_update_narcotics
-      setup_update_notify_simple(NarcoticPlugin)
-      assert_equal('notify', @updater.update_narcotics)
-    end
     def setup_update_swissmedic
       flexstub(SwissmedicPlugin) do |klass|
         klass.should_receive(:new).and_return(flexmock('swm') do |obj|
@@ -540,7 +536,6 @@ module ODDB
         setup_update_swissmedic_followers         # for update_swissmedic_followers
         setup_bsv_xml_plugin                      # for update_bsv
         setup_update_bsv_followers                # for update_bsv_followers
-        setup_update_notify_simple(NarcoticPlugin)# for update_narcotics
         setup_update_simple(ODDB::Interaction::InteractionPlugin) # for update_interactions
 
         assert_equal('notify', @updater.run)

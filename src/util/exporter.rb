@@ -144,12 +144,6 @@ module ODDB
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
-		def export_narcotics_csv
-			plug = CsvExportPlugin.new(@app)
-			plug.export_narcotics
-			EXPORT_SERVER.clear
-			sleep(30)
-		end
 		def export_oddbdat
           dose_missing_list = []
       safe_export 'oddbdat' do

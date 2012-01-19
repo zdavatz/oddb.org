@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# TestExporter -- oddb -- 07.02.2011 -- mhatakeyama@ywesee.com
+# ODDB::TestExporter -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("../../src", File.dirname(__FILE__))
 
@@ -259,12 +259,6 @@ module ODDB
       end
       assert_equal('sleep', @exporter.export_migel_csv)
     end
-    def test_export_narcotics_csv
-      flexstub(@plugin) do |plug|
-        plug.should_receive(:export_narcotics)
-      end
-      assert_equal('sleep', @exporter.export_narcotics_csv)
-    end
     def test_export_pdf
       flexstub(@plugin) do |plug|
         plug.should_receive(:run).and_return('run')
@@ -312,7 +306,6 @@ module ODDB
         plug.should_receive(:export).once.with_no_args
         plug.should_receive(:export_atc_classes).once.with_no_args
         plug.should_receive(:export_interactions).once.with_no_args
-        plug.should_receive(:export_narcotics).once.with_no_args
         plug.should_receive(:export_prices).once.with_no_args
         plug.should_receive(:export_fachinfos).times(0).with_no_args
         plug.should_receive(:export_patinfos).times(0).with_no_args
@@ -327,7 +320,6 @@ module ODDB
         plug.should_receive(:export).once.with_no_args
         plug.should_receive(:export_atc_classes).once.with_no_args
         plug.should_receive(:export_interactions).once.with_no_args
-        plug.should_receive(:export_narcotics).once.with_no_args
         plug.should_receive(:export_prices).once.with_no_args
         plug.should_receive(:export_fachinfos).once.with_no_args
         plug.should_receive(:export_patinfos).times(0).with_no_args
@@ -342,7 +334,6 @@ module ODDB
         plug.should_receive(:export).once.with_no_args
         plug.should_receive(:export_atc_classes).once.with_no_args
         plug.should_receive(:export_interactions).once.with_no_args
-        plug.should_receive(:export_narcotics).once.with_no_args
         plug.should_receive(:export_prices).once.with_no_args
         plug.should_receive(:export_fachinfos).times(0).with_no_args
         plug.should_receive(:export_patinfos).once.with_no_args
@@ -357,7 +348,6 @@ module ODDB
         plug.should_receive(:export).once.with_no_args
         plug.should_receive(:export_atc_classes).once.with_no_args
         plug.should_receive(:export_interactions).once.with_no_args
-        plug.should_receive(:export_narcotics).once.with_no_args
         plug.should_receive(:export_prices).once.with_no_args
         plug.should_receive(:export_fachinfos).times(0).with_no_args
         plug.should_receive(:export_patinfos).times(0).with_no_args
