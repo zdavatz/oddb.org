@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Analysis::Position -- oddb.org -- 10.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Analysis::Position -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Analysis::Position -- oddb.org -- 23.06.2006 -- sfrischknecht@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -111,10 +111,8 @@ class PositionInnerComposite < HtmlGrid::Composite
 			value.value = str.gsub(/(\d{4})\.(\d{2})/u) {
 				group_code = $~[1]
 				pos_code = $~[2]
-				ptr = Persistence::Pointer.new([:analysis_group, group_code])
-				ptr += [:position, pos_code]
-				args = {:pointer => ptr}
-				'<a class="list" href="' << @lookandfeel._event_url(:resolve, args) << '">' << $~[0] << '</a>'
+				args = [:group, group_code, :position, pos_code]
+				'<a class="list" href="' << @lookandfeel._event_url(:analysis, args) << '">' << $~[0] << '</a>'
 			}
 		end
 		value
