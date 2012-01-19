@@ -782,13 +782,13 @@ class OddbPrevalence
 		$stdout.flush
 	end
 	def search_analysis(key, lang)
-		if(lang == 'en')
+    if lang.to_s != 'fr'
 			lang = 'de'
 		end
 		ODBA.cache.retrieve_from_index("analysis_index_#{lang}", key)
 	end
 	def search_analysis_alphabetical(query, lang)
-		if(lang == 'en')
+    if lang.to_s != 'fr'
 			lang = 'de'
 		end
 		index_name = "analysis_alphabetical_index_#{lang}"
