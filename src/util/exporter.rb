@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Exporter -- oddb.org -- 17.01.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Exporter -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
 require 'plugin/oddbdat_export'
@@ -48,11 +48,11 @@ module ODDB
         mail_download_stats
         mail_feedback_stats
         export_yaml
+        export_oddbdat
         #mail_notification_stats
       }
       export_sl_pcodes
       #export_yaml
-      #export_oddbdat
       export_csv
       export_doc_csv
       export_index_therapeuticus_csv
