@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# YamlPlugin -- oddb -- 02.09.2003 -- rwaltert@ywesee.com
+# ODDB::YamlPlugin -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::YamlPlugin -- oddb.org -- 02.09.2003 -- rwaltert@ywesee.com
 
 require 'plugin/plugin'
 require 'drb'
@@ -68,9 +69,6 @@ module ODDB
     def export_interactions(name='interactions.yaml')
       export_array(name, @app.substances.inject([]) { |memo, sub| memo.concat sub.substrate_connections.values })
     end
-		def export_narcotics(name='narcotics.yaml')
-			export_array(name, @app.narcotics.values)
-		end
 		def export_obj(name, obj)
 			EXPORT_SERVER.export_yaml([obj.odba_id], EXPORT_DIR, name)
 		end

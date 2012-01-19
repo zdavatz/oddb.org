@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TestCsvExportPlugin -- oddb.org -- 18.04.2011 -- mhatakeyama@ywesee.com
+# ODDB::TestCsvExportPlugin -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
 $: << File.expand_path("../../src", File.dirname(__FILE__))
@@ -54,17 +54,6 @@ module ODDB
       flexmock(@app, :packages => [package])
       temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do 
         assert_equal('export_price_history_csv', @plugin.export_price_history)
-      end
-    end
-    def test_export_narcotics
-      narcotic = flexmock('narcotic', 
-                          :substance => 'substance',
-                          :odba_id   => 123
-                         )
-      flexmock(@app, :narcotics => {'key' => narcotic})
-      export_server = flexmock('export_server', :export_narcotics_csv => 'export_narcotics_csv')
-      temporary_replace_constant(@plugin, 'ODDB::CsvExportPlugin::EXPORT_SERVER', export_server ) do
-        assert_equal('export_narcotics_csv', @plugin.export_narcotics)
       end
     end
     def test_export_migel
@@ -231,7 +220,6 @@ module ODDB
                            :commercial_form => commercial_form
                           )
       comparable_size = flexmock('comparable_size', :qty => 'qty')
-      narcotic  = flexmock('narcotic', :casrn => 'casrn')
       package   = flexmock('package',
                            :ikskey => 123,
                            :keys   => 'keys',
@@ -244,7 +232,6 @@ module ODDB
                            :sl_entry   => sl_entry,
                            :pharmacode => 'pharmacode',
                            :name_base  => 'name_base',
-                           :narcotics  => [narcotic],
                            :deductible => :generics,
                            :public?    => nil,
                            :narcotic?  => nil,
@@ -306,7 +293,6 @@ module ODDB
                            :measure => 'measure',
                            :commercial_form => commercial_form
                           )
-      narcotic  = flexmock('narcotic', :casrn => 'casrn')
       package   = flexmock('package', 
                            :ikskey  => 123,
                            :keys    => 'keys',
@@ -321,7 +307,6 @@ module ODDB
                            :parts   => [part],
                            :public? => nil,
                            :sl_entry     => sl_entry, 
-                           :narcotics    => [narcotic],
                            :bsv_dossier  => 'bsv_dossier', 
                            :pharmacode   => 'pharmacode', 
                            :limitation   => 'limitation', 
