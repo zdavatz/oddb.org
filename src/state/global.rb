@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 17.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -47,7 +47,6 @@ require 'state/drugs/recentregs'
 require 'state/drugs/result'
 require 'state/drugs/sequence'
 require 'state/drugs/sequences'
-require 'state/drugs/narcotic'
 require 'state/drugs/narcotics'
 require 'state/doctors/init'
 require 'state/hospitals/init'
@@ -186,7 +185,6 @@ module ODDB
           :minifi                 => State::Drugs::MiniFi,
           :password_lost          => State::Admin::PasswordLost,
           :patinfos               => State::Drugs::Patinfos,
-          :narcotic               => State::Drugs::Narcotic,
           :narcotics              => State::Drugs::Narcotics,
           :plugin                 => State::User::Plugin,
           :passthru               => State::User::PassThru,
@@ -213,9 +211,7 @@ module ODDB
           [ :migel_group, :subgroup, :limitation_text ]                       => State::Migel::LimitationText,
           [ :migel_group, :limitation_text ]                                  => State::Migel::LimitationText,
           [ :minifi ]                                                         => State::Drugs::MiniFi,
-          [ :narcotic ]                                                       => State::Drugs::Narcotic,
           [ :patinfo ]                                                        => State::Drugs::Patinfo,
-          [ :registration, :sequence, :package, :narcotics ]                  => State::Drugs::NarcoticPlus,
         }	
         READONLY_STATES = RESOLVE_STATES.dup.update({
           [ :registration ]                       => State::Drugs::Registration,
@@ -655,12 +651,6 @@ module ODDB
            State::Admin::TransparentLogin.new(@session, model)
          end
        end
-      def narcotic_plus
-        if iksnr = @session.user_input(:reg) and seqnr = @session.user_input(:seq) and ikscd = @session.user_input(:pack)\
-          and reg = @session.app.registration(iksnr) and seq = reg.sequence(seqnr) and pac = seq.package(ikscd)
-          State::Drugs::NarcoticPlus.new(@session, pac.narcotics)
-        end
-      end
 			def resolve
 				if(@session.request_path == @request_path)
 					self
