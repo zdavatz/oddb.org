@@ -165,8 +165,8 @@ module ODDB
 				"Package(s):",
                 dose_missing_list.collect do |list|
                   list[0].to_s + ", " + \
-                  "http://#{SERVER_NAME}/de/gcc/resolve/pointer/%3A!registration%2C" + list[1].to_s + \
-                  "!sequence%2C" + list[2].to_s + "!package%2C" + list[3].to_s + ".\n"
+                  "http://#{SERVER_NAME}/de/gcc/show/reg/" + list[1].to_s + \
+                  "/seq/" + list[2].to_s + "/pack/" + list[3].to_s + ".\n"
                 end
 			].join("\n")
 			log.notify("Warning Export: oddbdat")
