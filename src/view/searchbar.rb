@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::SearchBar -- oddb -- 22.11.2002 -- hwyss@ywesee.com 
+# ODDB::View::SearchBar -- oddb.org -- 19.01.2012 -- hwyss@ywesee.com 
+# ODDB::View::SearchBar -- oddb.org -- 22.11.2002 -- hwyss@ywesee.com 
 
 require 'view/form'
 require 'htmlgrid/divform'
@@ -78,7 +79,7 @@ dojo.addOnLoad(initMatches);
                        'jsId'          => 'search_matches',
                        'idAttribute'   => 'search_query',
                        'target'        => target
-    html << super
+    html << super(context)
   end
 end
 module SearchBarMethods
