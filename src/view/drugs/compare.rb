@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Compare -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com 
+# ODDB::View::Drugs::Compare -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::Drugs::Compare -- oddb.org -- 20.03.2003 -- hwyss@ywesee.com 
 
 require 'htmlgrid/composite'
@@ -157,13 +157,15 @@ module InsertBackbutton
       link2 = HtmlGrid::Link.new(:result, model, @session, self)
       link2.css_class = "list"
       query = @session.persistent_user_input(:search_query)
-      query = model.name_base if query.is_a?(SBSM::InvalidDataError) || query.nil?
-      args = [
-        :zone, :drugs, :search_query, query.gsub('/', '%2F'), :search_type,
-        @session.persistent_user_input(:search_type) || 'st_oddb',
-      ]
-      link2.href = @lookandfeel._event_url(:search, args)
-      link2.value = @lookandfeel.lookup(:back_to_list_for, query)
+      query = model.name_base if model.respond_to?(:name_base) && (query.is_a?(SBSM::InvalidDataError) || query.nil?)
+      if query and !query.is_a?(SBSM::InvalidDataError)
+        args = [
+          :zone, :drugs, :search_query, query.gsub('/', '%2F'), :search_type,
+          @session.persistent_user_input(:search_type) || 'st_oddb',
+        ]
+        link2.href = @lookandfeel._event_url(:search, args)
+        link2.value = @lookandfeel.lookup(:back_to_list_for, query)
+      end
       span2.value = link2
       span3 = HtmlGrid::Span.new(model, @session, self)
       span3.css_class = "breadcrumb-#{level}"
