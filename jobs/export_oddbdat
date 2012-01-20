@@ -1,0 +1,20 @@
+#!/usr/local/bin/ruby
+# must be scheduled in crontab to run as the same user as oddb
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+$: << File.expand_path('..', File.dirname(__FILE__))
+
+require 'util/job'
+require 'util/exporter'
+
+module ODDB
+  module Util
+    Job.run do |system|
+      if company_name = ARGV[0]
+        Exporter.new(system).export_oddbdat_by_company_name company_name
+      else
+        Exporter.new(system).export_oddbdat
+      end
+    end
+  end
+end

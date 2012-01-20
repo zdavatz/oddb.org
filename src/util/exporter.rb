@@ -144,6 +144,20 @@ module ODDB
 			EXPORT_SERVER.clear
 			sleep(30)
 		end
+    def report_dose_missing_list(list)
+      log = Log.new(@@today)
+      log.report = [
+        "Warning: Dose data (ODDB::Package.parts, Array of ODDB::Dose instances) is empty.",
+        "Message: export_oddbdat succeeded but the following package(s) do not have Dose data.",
+        "Package(s):",
+        list.collect do |list|
+          list[0].to_s + ", " + \
+          "http://#{SERVER_NAME}/de/gcc/show/reg/" + list[1].to_s + \
+          "/seq/" + list[2].to_s + "/pack/" + list[3].to_s + ".\n"
+        end
+      ].join("\n")
+      log.notify("Warning Export: oddbdat")
+    end
 		def export_oddbdat
           dose_missing_list = []
       safe_export 'oddbdat' do
@@ -158,21 +172,31 @@ module ODDB
 
         # here to raise warning if package.parts is empty
         if !dose_missing_list.empty?
-			log = Log.new(@@today)
-			log.report = [
-				"Warning: Dose data (ODDB::Package.parts, Array of ODDB::Dose instances) is empty.",
-				"Message: export_oddbdat succeeded but the following package(s) do not have Dose data.",
-				"Package(s):",
-                dose_missing_list.collect do |list|
-                  list[0].to_s + ", " + \
-                  "http://#{SERVER_NAME}/de/gcc/show/reg/" + list[1].to_s + \
-                  "/seq/" + list[2].to_s + "/pack/" + list[3].to_s + ".\n"
-                end
-			].join("\n")
-			log.notify("Warning Export: oddbdat")
+          report_dose_missing_list(dose_missing_list)
         end
       end
 		end
+    def export_oddbdat_by_company_name(company_name)
+      subj = "oddbdat #{company_name}"
+      dose_missing_list = []
+      safe_export(subj) do
+        exporter = OdbaExporter::OddbDatExport.new(@app)
+        dose_missing_list = exporter.export_by_company_name(company_name)
+
+        log = Log.new(@@today)
+        log.update_values(exporter.log_info)
+        log.notify(subj)
+
+        EXPORT_SERVER.clear
+        sleep(30)
+        
+        # here to raise warning if package.parts is empty
+        if !dose_missing_list.empty?
+          report_dose_missing_list(dose_missing_list)
+        end
+      end
+    end
+
 		def export_pdf
 			FiPDFExporter.new(@app).run
 		end
