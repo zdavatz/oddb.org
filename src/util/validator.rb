@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -436,6 +436,7 @@ module ODDB
     @@dose = /(\d+(?:[.,]\d+)?)\s*(.*)/u
 		def dose(value)
 			return nil if value.empty?
+      value.force_encoding('utf-8')
 			if(valid = @@dose.match(value))
 				qty = valid[1].gsub(',', '.')
 				[qty.to_f, valid[2].to_s]
