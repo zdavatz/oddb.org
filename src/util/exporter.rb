@@ -196,7 +196,7 @@ module ODDB
         end
       end
     end
-    def export_oddb2tdat(transfer_file)
+    def export_oddb2tdat(transfer_file=nil)
       subj = 'oddb2tdat'
       safe_export(subj) do 
 			  plug = CsvExportPlugin.new(@app)

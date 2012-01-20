@@ -10,9 +10,7 @@ require 'util/exporter'
 module ODDB
   module Util
     Job.run do |system|
-      if ARGV[0]
-        Exporter.new(system).export_oddb2tdat ARGV[0]
-      end
+      Exporter.new(system).export_oddb2tdat ARGV[0]
     end
   end
 end
