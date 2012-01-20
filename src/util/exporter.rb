@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Exporter -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
+# ODDB::Exporter -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Exporter -- oddb.org -- 30.07.2003 -- hwyss@ywesee.com 
 
 require 'plugin/oddbdat_export'
@@ -194,6 +194,17 @@ module ODDB
         if !dose_missing_list.empty?
           report_dose_missing_list(dose_missing_list)
         end
+      end
+    end
+    def export_oddb2tdat(transfer_file)
+      subj = 'oddb2tdat'
+      safe_export(subj) do 
+			  plug = CsvExportPlugin.new(@app)
+        plug.export_oddb_dat(transfer_file)
+        log = Log.new(@@today)
+        log.update_values(plug.log_info)
+        log.report = plug.report
+        log.notify(subj)
       end
     end
 

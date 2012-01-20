@@ -1,9 +1,10 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::CsvExportPlugin -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::CsvExportPlugin -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::CsvExportPlugin -- oddb.org -- 26.08.2005 -- hwyss@ywesee.com
 
 require 'plugin/plugin'
+require 'oddb2tdat'
 
 module ODDB
 	class CsvExportPlugin < Plugin
@@ -103,6 +104,17 @@ module ODDB
       end
       EXPORT_SERVER.export_price_history_csv(ids, EXPORT_DIR, 'price_history.csv')
     end
+    def export_oddb_dat(transfer)
+      input = File.join(EXPORT_DIR, 'oddb.csv')
+      output = File.join(EXPORT_DIR, 'oddb.dat')
+      @file_path = output
+      @options ||= {}
+      @options[:compression] = 'zip'
+      gem_app = Oddb2tdat.new(input, output, transfer)
+      gem_app.run
+      @updated_arztpreis = gem_app.updated_prmo
+      EXPORT_SERVER.compress(EXPORT_DIR, 'oddb.dat')
+    end
     def log_info
       hash = super
       if @file_path
@@ -127,6 +139,13 @@ module ODDB
         @counts.sort.collect do |key, val|
           report << sprintf("%-32s %5i\n", key, val)
         end
+      end
+      if @updated_arztpreis
+        report << [
+          "Updated ArztPreise (05 PRMO Arztpreis (=Galexis-Basis-Preis) 061 – 066 6 num): #{@updated_arztpreis}",
+          "",
+          "File: #{@file_path}",
+        ].join("\n")
       end
       report
     end
