@@ -83,10 +83,11 @@ class OddbDatExport < ODDB::Plugin
         return dose_missing_list
 	end
   def export_by_company_name(company_name)
-    export_dir = File.join(EXPORT_DIR, company_name)
+    company_name.downcase!
+    export_dir = File.join(EXPORT_DIR, company_name.gsub(/\s+/,'_'))
     FileUtils.mkdir_p export_dir
     @options = {:compression => 'zip'}
-    @file_path = File.join(export_dir, 'oddbdat_' + company_name)
+    @file_path = File.join(export_dir, 'oddbdat_' + company_name.gsub(/\s+/,'_')
     @packages = 0
 
     files = []
@@ -100,7 +101,7 @@ class OddbDatExport < ODDB::Plugin
     ids = []
     dose_missing_list = []
     @app.each_package do |pac| 
-      if pac.company_name and pac.company_name.downcase =~ /#{company_name.downcase}/
+      if pac.company_name and pac.company_name.downcase =~ /#{company_name}/
         ids.push(pac.odba_id) 
         if pac.parts.empty?
           dose_missing_list.push([pac.basename, pac.iksnr, pac.sequence.seqnr, pac.ikscd])
