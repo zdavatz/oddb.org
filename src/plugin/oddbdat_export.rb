@@ -83,7 +83,7 @@ class OddbDatExport < ODDB::Plugin
         return dose_missing_list
 	end
   def export_by_company_name(company_name)
-    company_name.downcase!
+    company_name = company_name.downcase
     export_dir = File.join(EXPORT_DIR, company_name.gsub(/\s+/,'_'))
     FileUtils.mkdir_p export_dir
     @options = {:compression => 'zip'}
