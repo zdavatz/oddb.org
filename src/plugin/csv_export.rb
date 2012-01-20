@@ -106,7 +106,7 @@ module ODDB
     end
     def export_oddb_dat(transfer)
       unless transfer and  File.exist?(transfer)
-        transfer = File.join(EXPORT_DIR, 'transfer.dat'
+        transfer = File.join(EXPORT_DIR, 'transfer.dat')
       end
       input = File.join(EXPORT_DIR, 'oddb.csv')
       output = File.join(EXPORT_DIR, 'oddb.dat')
