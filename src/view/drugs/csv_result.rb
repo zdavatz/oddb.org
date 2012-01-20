@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CsvResult -- oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::CsvResult -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CsvResult -- oddb.org -- 28.04.2005 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
@@ -87,10 +87,7 @@ class CsvResult < HtmlGrid::Component
 		end
 	end
 	def casrn(pack)
-		str = pack.narcotics.collect { |narc|
-			narc.casrn
-		}.compact.join(',')
-    str unless str.empty?
+    ''
 	end
   def c_type(pack)
     if ctype = pack.complementary_type
