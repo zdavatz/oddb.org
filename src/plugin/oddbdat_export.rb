@@ -87,7 +87,7 @@ class OddbDatExport < ODDB::Plugin
     export_dir = File.join(EXPORT_DIR, company_name.gsub(/\s+/,'_'))
     FileUtils.mkdir_p export_dir
     @options = {:compression => 'zip'}
-    @file_path = File.join(export_dir, 'oddbdat_' + company_name.gsub(/\s+/,'_')
+    @file_path = File.join(export_dir, 'oddbdat_' + company_name.gsub(/\s+/,'_'))
     @packages = 0
 
     files = []
