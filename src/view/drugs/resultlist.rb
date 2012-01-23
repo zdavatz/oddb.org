@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 09.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 23.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
 require 'htmlgrid/list'
@@ -101,6 +101,25 @@ class AtcHeader < HtmlGrid::Composite
 		end
 	end
 end
+class MailOrderPriceLogo < HtmlGrid::NamedComponent
+  LOGO_PATH = "http://#{SERVER_NAME}/resources/logos/"
+  def init
+    super
+    @index = 0
+  end
+  def mail_order_index=(index)
+    @index = index
+  end
+  def to_html(context)
+    @attributes['src'] = LOGO_PATH + @model.mail_order_prices.sort[@index].logo
+    src = context.img(@attributes) 
+    if @model.respond_to?(:mail_order_prices) and !@model.mail_order_prices.empty?
+      #src << ' %.2f' % @model.mail_order_prices.sort.first.price.to_f
+      src << ' %.2f' % @model.mail_order_prices.sort[@index].price.to_f
+    end
+    src
+  end
+end
 class ResultList < HtmlGrid::List
 	include DataFormat
 	include View::ResultColors
@@ -149,6 +168,7 @@ class ResultList < HtmlGrid::List
 		:substances					=>	'list italic',
     :twitter_share      =>  'list right',
 		'nbsp'							=>	'list',
+    :mail_order_price   =>  'list bold',
 	}
 	CSS_HEAD_KEYMAP = {
 		:active_agents			=>	'th',
@@ -189,7 +209,39 @@ class ResultList < HtmlGrid::List
 	LOOKANDFEEL_MAP = {
 		:limitation_text	=>	:ltext,
 	}
+  class << self
+    def add_additional_mail_order_price_method(n)
+      n.times do |i|
+        define_method(('additional_mail_order_price'+i.to_s).to_sym) do |model, session|
+          if model.mail_order_prices and model.mail_order_prices[i+1]
+            link = HtmlGrid::Link.new(:mail_order_price, model, session, self)
+            link.href = model.mail_order_prices[i+1].url
+            link.target = '_blank'
+            link.value = MailOrderPriceLogo.new(:mail_order_price, model, @session, self)
+            link.value.mail_order_index = i+1
+            link
+          end
+        end
+      end
+    end
+  end
 	def init
+    if @session.flavor == 'mymedi'
+      @max_mail_order_price = 0
+      @model.atc_classes.each do |atc|
+        atc.packages.each do |pac|
+          if pac.mail_order_prices and n = pac.mail_order_prices.length and n > @max_mail_order_price
+            @max_mail_order_price = n
+          end
+        end
+      end
+      self.class.add_additional_mail_order_price_method(@max_mail_order_price-1)
+
+      (@max_mail_order_price-1).times do |i|
+        CSS_KEYMAP.store("additional_mail_order_price#{i}".to_sym, 'list bold')
+        #@css_map.store("additional_mail_order_price#{i}".to_sym, 'list bold')
+      end
+    end
 		reorganize_components(:result_list_components)
 		super
 	end
@@ -201,6 +253,15 @@ class ResultList < HtmlGrid::List
     'price_public'
   end
 =end
+  def mail_order_price(model, session=@session)
+    if model.mail_order_prices and !model.mail_order_prices.empty?
+      link = HtmlGrid::Link.new(:mail_order_price, model, session, self)
+      link.href = model.mail_order_prices[0].url
+      link.target = '_blank'
+      link.value = MailOrderPriceLogo.new(:mail_order_price, model, @session, self)
+      link
+    end
+  end
 	def active_agents(model, session=@session)
 		link = HtmlGrid::Link.new(:show, model, session, self)
 		link.href = @lookandfeel._event_url(:show, {:pointer => model.pointer})

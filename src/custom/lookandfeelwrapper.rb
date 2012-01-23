@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 10.11.2011 -- mhatakeyama@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 23.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/lookandfeelwrapper'
@@ -873,13 +873,17 @@ module ODDB
 				[2,0,2]	=>	'result_item_end',
 				[3,0]		=>	:deductible,
 				[4,0]		=>	:galenic_form,
+				#[4,0]		=>	:company_name,
 				[5,0]		=>	:most_precise_dose,
 				[6,0]		=>	:comparable_size,
 				[7,0]		=>	:price_public,
 				[8,0]		=>	:ddd_price,
 				[9,0]		=>	'nbsp',
 				[10,0]	=>	:company_name,
+        #[10,0]  =>  :mail_order_price,
+        #[11,0]  =>  :additional_mail_order_price0,
 				[11,0]	=>	:ikscat,
+				#[12,0]	=>	:ikscat,
 			}
 		end
 		def search_type_selection

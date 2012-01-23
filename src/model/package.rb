@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Package -- oddb.org -- 23.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -45,7 +45,8 @@ module ODDB
 			:medwin_ikscd, :out_of_trade, :refdata_override, :deductible, :lppv,
       :disable, :swissmedic_source, :descr, :preview_with_market_date,
       :generic_group_factor, :photo_link, :disable_ddd_price, :ddd_dose,
-			:sl_entry, :deductible_m, :bm_flag # for just-medical
+			:sl_entry, :deductible_m, # for just-medical
+      :bm_flag, :mail_order_prices
 		alias :pointer_descr :ikscd
 		registration_data :comarketing_with, :complementary_type, :expiration_date,
       :expired?, :export_flag, :fachinfo_active?, :generic_type,
@@ -57,11 +58,42 @@ module ODDB
       :fachinfo, :galenic_forms, :galenic_group, :has_patinfo?, :longevity,
       :iksnr, :indication, :name, :name_base, :patinfo, :pdf_patinfo,
       :registration, :route_of_administration, :sequence_date, :seqnr
+    MailOrderPrice = Struct.new(:price, :url, :logo)
+    class MailOrderPrice
+      def <=>(other)
+        self.price.to_f <=> other.price.to_f
+      end
+    end
 		def initialize(ikscd)
 			super()
 			@ikscd = sprintf('%03d', ikscd.to_i)
       @parts = []
+      @mail_order_prices = [] 
 		end
+    def add_mail_order_price(price, url, logo)
+      @mail_order_prices ||= []
+      @mail_order_prices << MailOrderPrice.new(price, url, logo)
+      @mail_order_prices.odba_store
+      odba_store
+    end
+    def update_mail_order_price(index, price, url, logo)
+      if @mail_order_prices and  @mail_order_prices[index]
+        @mail_order_prices[index] = MailOrderPrice.new(price, url, logo)
+        @mail_order_prices.odba_store
+      end
+      odba_store
+    end
+    def delete_mail_order_price_at(index)
+      @mail_order_prices.delete_at(index)
+      @mail_order_prices.odba_store
+      odba_store
+    end
+    def delete_all_mail_order_prices
+      @mail_order_prices.clear
+      @mail_order_prices = []
+      @mail_order_prices.odba_store
+      odba_store
+    end
 		def active?
 			!@disable && (@preview_with_market_date || @market_date.nil? \
                     || @market_date <= @@today)
@@ -85,6 +117,7 @@ module ODDB
 				@sl_entry.checkout 
 				@sl_entry.odba_delete
 			end
+      delete_all_mail_order_prices
 		end
     def commercial_forms
       @parts.collect { |part| part.commercial_form }

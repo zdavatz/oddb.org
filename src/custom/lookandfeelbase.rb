@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 10.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 23.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
 require 'sbsm/lookandfeel'
@@ -1486,6 +1486,7 @@ Zeno Davatz
 				:th_location							=>	'PLZ/Ort',
 				:th_lppv									=>	'LPPV',
 				:th_lt_description				=>	'Lateinische Bezeichnung',
+				:th_mail_order_price			=>	'Versandapotheke',
 				:th_market_date						=>	'Markteintritt',
 				:th_measure               =>	'25ml',
 				:th_migel_code						=>	'Code',
@@ -2699,6 +2700,7 @@ Zeno Davatz
 				:th_lab_areas							=>	'Laboratoire',
 				:th_list									=>	'Liste',
 				#:th_location							=>	'Place',
+				:th_mail_order_price			=>	'Pharmacie par corresp.',
 				:th_most_precise_dose			=>	'Concentration',
         :th_mutation_codes        =>  'Codes mutation',
 				:th_name_base							=>	'Préparation',
@@ -3947,6 +3949,7 @@ Zeno Davatz
 				:th_list_title						=>	'List',
 				#:th_location							=>	'Location',
 				:th_lt_description				=>	'Latin description',
+				:th_mail_order_price			=>	'Mail Order Pharm.',
 				:th_market_date						=>	'Market entry',
 				:th_most_precise_dose			=>	'Dose',
         :th_mutation_codes        =>  'Mutation codes',
