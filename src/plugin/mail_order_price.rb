@@ -10,7 +10,8 @@ require 'fileutils'
 
 module ODDB
 	class MailOrderPricePlugin < Plugin
-    LOGO_PATH = File.expand_path('../../doc/resources/logos', File.dirname(__FILE__))
+    LOGO_DIR = File.expand_path('../../doc/resources/logos', File.dirname(__FILE__))
+    CSV_DIR  = File.expand_path('../../data/csv', File.dirname(__FILE__))
 		def initialize(app)
 			super(app)
 		end
@@ -19,14 +20,19 @@ module ODDB
     end
     def update(csv_file_path, logo_file_path)
       unless File.exist?(logo_file_path)
-       if File.exist?(File.join(LOGO_PATH, logo_file_path))
-         logo_file_path = File.join(LOGO_PATH, logo_file_path) 
+       if File.exist?(File.join(LOGO_DIR, logo_file_path))
+         logo_file_path = File.join(LOGO_DIR, logo_file_path) 
        end
+      end
+      unless File.exist?(csv_file_path)
+        if File.exist?(File.join(CSV_DIR, csv_file_path))
+          csv_file_path = File.join(CSV_DIR, csv_file_path)
+        end
       end
       if File.exist?(csv_file_path) and File.exist?(logo_file_path)
         # copy logo file
-        unless File.exist?(File.join(LOGO_PATH, File.basename(logo_file_path)))
-          FileUtils.cp(logo_file_path, File.join(LOGO_PATH, File.basename(logo_file_path)))
+        unless File.exist?(File.join(LOGO_DIR, File.basename(logo_file_path)))
+          FileUtils.cp(logo_file_path, File.join(LOGO_DIR, File.basename(logo_file_path)))
         end
         logo_file_name = File.basename(logo_file_path)
 
