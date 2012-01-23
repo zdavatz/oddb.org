@@ -18,6 +18,11 @@ module ODDB
       "Updated Packages: #{@updated_packages}"
     end
     def update(csv_file_path, logo_file_path)
+      unless File.exist?(logo_file_path)
+       if File.exist?(File.join(LOGO_PATH, logo_file_path))
+         logo_file_path = File.join(LOGO_PATH, logo_file_path) 
+       end
+      end
       if File.exist?(csv_file_path) and File.exist?(logo_file_path)
         # copy logo file
         unless File.exist?(File.join(LOGO_PATH, File.basename(logo_file_path)))
