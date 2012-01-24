@@ -504,7 +504,7 @@ module ODDB
         result = validate_string(value).gsub(/\*/u, '')
 			  @@latin1.iconv(result)
 			rescue Iconv::IllegalSequence, Iconv::InvalidCharacter, ArgumentError
-			  value = ""
+        value = @@utf8.iconv(value)
 			  result = @@utf8.iconv(result)
 			end
 			result = u result
