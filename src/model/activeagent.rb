@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ActiveAgent -- oddb -- 22.04.2003 -- hwyss@ywesee.com 
+# ODDB::ActiveAgent -- oddb.org -- 24.01.2012 -- mhatakeyama@ywesee.com 
+# ODDB::ActiveAgent -- oddb.org -- 22.04.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
 require 'model/dose'
@@ -52,13 +53,12 @@ module ODDB
 			od = other.dose
 			if(@dose.nil? && od.nil?)
 				@substance <=> other.substance
-			elsif(od.nil?)
+			elsif(od.nil? or !od.respond_to?(:unit))
 				-1
-			elsif(@dose.nil?)
+			elsif(@dose.nil? or !@dose.respond_to?(:unit))
 				1
 			else
-				(od <=> @dose).nonzero? \
-					|| (@substance <=> other.substance)
+				(od <=> @dose).nonzero? || (@substance <=> other.substance)
 			end
 		end
 		private
