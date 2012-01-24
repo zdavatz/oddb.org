@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# State::Interactions::Basket -- oddb -- 07.06.2004 -- mhuggler@ywesee.com
+# ODDB::State::Interactions::Basket -- oddb.org -- 24.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::State::Interactions::Basket -- oddb.org -- 07.06.2004 -- mhuggler@ywesee.com
 
 require	'state/global_predefine'
 require	'view/interactions/basket'
@@ -83,9 +84,11 @@ class Basket < State::Interactions::Global
   end
   def _observed_interactions_chemical(sub, other)
     values = _observed_interactions(sub, other)
-    sub.chemical_forms.each { |chm|
-      values += _observed_interactions_chemical(chm, other)
-    }
+    if sub.chemical_forms
+      sub.chemical_forms.each { |chm|
+        values += _observed_interactions_chemical(chm, other)
+      }
+    end
     values
   end
   def _observed_interactions_effective(sub, other)
