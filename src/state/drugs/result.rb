@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# State::Drugs::Result -- oddb.org -- 19.12.2011 -- mhatakeyama@ywesee.com
+# State::Drugs::Result -- oddb.org -- 24.01.2012 -- mhatakeyama@ywesee.com
 # State::Drugs::Result -- oddb.org -- 03.03.2003 -- hwyss@ywesee.com 
 
 require 'state/global_predefine'
@@ -100,6 +100,7 @@ class Result < State::Drugs::Global
       pge = @session.persistent_user_input(:page)
     end
     page = @pages[pge || 0]
+    page ||= @pages[0]
     page.model = @model
     page
   end
