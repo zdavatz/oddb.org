@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Product -- oddb.org -- 12.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Product -- oddb.org -- 24.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Product -- oddb.org -- 05.10.2005 -- ffricker@ywesee.com
 
 require 'view/dataformat'
@@ -154,15 +154,12 @@ class ProductComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = HtmlGrid::Value
 	LEGACY_INTERFACE = false
 	def accessories(model)
-		acc = model.accessories
-		prods = if products = model.products
-              products.select{|pro| pro.ean_code != nil and pro.status != 'I'}
-            end
-		if(!acc.empty?)
+		if acc = model.accessories and !acc.empty?
 			AccessoryList.new(acc, @session, self)
-		elsif(!prods.empty?)
+    elsif products = model.products and prods = products.select{|pro| pro.ean_code != nil and pro.status != 'I'} \
+      and !prods.empty?
 			AccessoryOfList.new(prods, @session, self)
-		end
+    end
 	end
 end
 class PointerSteps < ODDB::View::PointerSteps
