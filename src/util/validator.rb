@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 24.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -504,6 +504,7 @@ module ODDB
         result = validate_string(value).gsub(/\*/u, '')
 			  @@latin1.iconv(result)
 			rescue Iconv::IllegalSequence, Iconv::InvalidCharacter, ArgumentError
+			  value = ""
 			  result = @@utf8.iconv(result)
 			end
 			result = u result
