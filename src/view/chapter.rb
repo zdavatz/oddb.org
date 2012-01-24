@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Chapter -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Chapter -- oddb.org -- 24.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
 require 'htmlgrid/value'
@@ -81,6 +81,11 @@ module ODDB
           context.p(section_attr) { 
             head = context.span(subhead_attr) {
               self.escape(section.subheading) }
+            begin
+              /\n\s*$/u.match(section.subheading.force_encoding('utf-8'))
+            rescue
+              section.subheading = section.subheading.encode("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
+            end
             if(/\n\s*$/u.match(section.subheading))
               head << context.br
             elsif(!section.subheading.strip.empty?)
