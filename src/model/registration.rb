@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Registration -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Registration -- oddb.org -- 24.12.2011 -- mhatakeyama@ywesee.com 
 # ODDB::Registration -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'date'
@@ -104,9 +104,11 @@ module ODDB
 			end
 		end
 		def each_package(&block)
-			@sequences.each_value { |seq|
-				seq.each_package(&block)
-			}
+      unless @sequences.is_a?(NilClass)
+        @sequences.each_value { |seq|
+          seq.each_package(&block)
+        }
+      end
 		end
 		def each_sequence(&block)
 			@sequences.values.each(&block)
