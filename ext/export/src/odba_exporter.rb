@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::OdbaExporter -- oddb.org -- 13.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::OdbaExporter -- oddb.org -- 25.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::OdbaExporter -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
 
 require 'fileutils'
@@ -173,7 +173,9 @@ migel_code;group_code;group_de;group_fr;group_it;group_limitation_de;group_limit
 				odba_ids.each { |odba_id|
 					item = ODBA.cache.fetch(odba_id, nil)
 					files.each { |file, table|
-						file.puts table.lines(item)
+            if lines = table.lines(item)
+						  file.puts table.lines(item)
+            end
 					}
 					#ODBA.cache.clear
 				}

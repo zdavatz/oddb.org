@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::OddbDat -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::OddbDat -- oddb.org -- 25.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::OddbDat -- oddb.org -- 09.12.2004 -- hwyss@ywesee.com
 
 
@@ -131,25 +131,27 @@ module ODDB
 		class MCMTable < Table
 			FILENAME = 's31x'
 			def lines(fi)
-				lines = []
-				fi.descriptions.each { |lang, doc|
-					line = 1
-					doc.each_chapter { |chap|
-						text = format_line(chap)
-						while(text.size > 220)
-							pos = text.rindex(' ', 220)
-							if(pos.nil?)
-								pos = text.rindex('<P>', 220)-1
-							end
-							txt = text.slice!(0..pos)
-							lines << MCMLine.new(fi.oid, line, lang, txt)
-							line = line.next
-						end
-						lines << MCMLine.new(fi.oid, line, lang, text)
-						line = line.next
-					}	
-				}
-				lines
+        if pharmacode = fi.article_codes.map{|code| code[:article_pcode]}.compact.max
+				  lines = []
+          fi.descriptions.each { |lang, doc|
+            line = 1
+            doc.each_chapter { |chap|
+              text = format_line(chap)
+              while(text.size > 220)
+                pos = text.rindex(' ', 220)
+                if(pos.nil?)
+                  pos = text.rindex('<P>', 220)-1
+                end
+                txt = text.slice!(0..pos)
+                lines << MCMLine.new(pharmacode, line, lang, txt)
+                line = line.next
+              end
+              lines << MCMLine.new(pharmacode, line, lang, text)
+              line = line.next
+            }	
+          }
+				  lines
+        end
 			end
 			def format_line(chapter)
 				string = String.new
@@ -652,8 +654,8 @@ module ODDB
 		end
 		class MCMLine < Line
 			LENGTH = 7
-			def initialize(fi_oid, line_nr, language, text)
-				@fi_oid = fi_oid
+			def initialize(pharmacode, line_nr, language, text)
+				@pharmacode = pharmacode 
 				@line_nr = line_nr
 				@language = language
 				@text = text
@@ -663,7 +665,7 @@ module ODDB
 				{
 					1	=>	'31',
 					2	=>	@date,
-					3	=>	@fi_oid,
+					3	=>	@pharmacode,
 					4	=>	@language.to_s[0,1].upcase,
 					5	=>	@line_nr,
 					6	=>	'4',
