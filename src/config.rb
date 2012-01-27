@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# @config -- de.oddb.org -- 08.09.2006 -- hwyss@ywesee.com
+# @config -- oddb.org -- 27.01.2012 -- mhatakeyama@ywesee.com
+# @config -- oddb.org -- 08.09.2006 -- hwyss@ywesee.com
 
 require 'rclconf'
 
@@ -25,6 +26,7 @@ module ODDB
     'smtp_pass'           => nil,
     'smtp_port'           => 587,
     'text_info_searchform'=> nil,
+    'text_info_searchform2' => nil,
     'text_info_max_retry' => 5,
     'text_info_newssource'=> nil,
     'mail_from'           => '"ODDB-Mails" <mail@oddb.org>',

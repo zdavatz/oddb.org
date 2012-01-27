@@ -13,7 +13,7 @@ require 'view/rss/fachinfo'
 require 'fileutils'
 
 class Mechanize 
-  TOP_URL = 'http://beta.kompendium.ch/settings.aspx?platform=Desktop'
+  TOP_URL = ODDB.config.text_info_searchform2
 
   FORM_ID = 'aspnetForm'
 
