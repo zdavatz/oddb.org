@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 15.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 27.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
 require 'hpricot'
@@ -18,7 +18,8 @@ class TextinfoHpricot
     code = nil
     ptr = OpenStruct.new
     ptr.chapter = chapter
-    if(title = elem.at("h2"))
+    title_tag = @new_format_flag ? "div.absTitle" : "h2"
+    if(title = elem.at(title_tag))
       elem.children.delete(title)
       anchor = title.at("a")
       code = anchor['name']
@@ -29,7 +30,8 @@ class TextinfoHpricot
     [code, chapter]
   end
   def extract(doc)
-    @name = text(doc.at("h1"))
+    title_tag = @new_format_flag ? "div.MonTitle" : "h1"
+    @name = text(doc.at(title_tag))
     @company = simple_chapter(doc.at("div.ownerCompany"))
     @galenic_form = simple_chapter(doc.at("div.shortCharacteristic"))
     (doc/"div.paragraph").each { |elem|

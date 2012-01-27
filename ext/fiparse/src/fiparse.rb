@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse -- oddb.org -- 04.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::FiParse -- oddb.org -- 27.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse -- oddb.org -- 20.10.2003 -- rwaltert@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -46,11 +46,12 @@ module ODDB
       end
 			handler.writers.collect { |wt| wt.to_fachinfo }.compact.first
 		end
-    def parse_fachinfo_html(src)
+    def parse_fachinfo_html(src, new_format_flag = false)
       if File.exist?(src)
         src = File.read src
       end
       writer = FachinfoHpricot.new
+      writer.new_format_flag = new_format_flag
       writer.extract(Hpricot(src))
     end
 		def parse_fachinfo_pdf(src)
