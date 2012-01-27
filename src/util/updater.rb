@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Updater-- oddb.org -- 23.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Updater-- oddb.org -- 27.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 12.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
 
@@ -243,6 +243,11 @@ module ODDB
       update_notify_simple TextInfoPlugin,
                            "Fach- und Patienteninfo '#{companies.join(', ')}'",
                            :import_company, [companies]
+    end
+    def update_company_textinfos2 *companies
+      update_notify_simple TextInfoPlugin,
+                           "Fach- und Patienteninfo2 '#{companies.join(', ')}'",
+                           :import_company2, [companies]
     end
     def update_textinfo_news
       update_notify_simple TextInfoPlugin,

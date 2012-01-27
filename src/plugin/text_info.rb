@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 16.01.2012 -- hwyss@ywesee.com 
+# ODDB::TextInfoPlugin -- oddb.org -- 27.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
 require 'config'
@@ -10,6 +10,176 @@ require 'mechanize'
 require 'model/fachinfo'
 require 'model/patinfo'
 require 'view/rss/fachinfo'
+require 'fileutils'
+
+class Mechanize 
+  TOP_URL = 'http://beta.kompendium.ch/settings.aspx?platform=Desktop'
+
+  FORM_ID = 'aspnetForm'
+
+  FI_HOME_BUTTON_ID = 'ctl00_MainContent_btnProUser'
+  PI_HOME_BUTTON_ID = 'ctl00_MainContent_btnPubUser'
+
+  FI_SELECT_ID = 'ctl00_MainContent_ddlSearchType'
+
+  SEARCH_HOME_BUTTON_ID = 'ctl00_MainContent_ibSearch'
+  SEARCH_BUTTON_ID = 'ctl00_MainContent_ibSearch'
+
+  PI_SEARCH_FIELD_ID = 'ctl00_MainContent_txtSearch'
+  FI_SEARCH_FIELD_ID = 'ctl00_MainContent_rcbSearch_ClientState' # hidden text 
+
+  FI_PRODUCT_TABLE_ID = 'ctl00_MainContent_gvwProducts'
+  PI_PRODUCT_TABLE_ID = 'ctl00_MainContent_ucProd_dlProducts'
+  def top_page
+    get(TOP_URL)
+  end
+  def search_page(type = 'FI'||'PI', lang)
+    page = top_page
+    form = page.form_with(:id => FORM_ID)
+    if lang == 'FR'
+      radio = page.at('input[@value="FR"]')
+      event = arg = nil
+      if attr = radio.attributes['onclick'] and val = attr.value \
+        and match = val.match(/__doPostBack\(\\'(.*)\\',\\'(.*)\\'/) \
+        and match.length == 3
+        event = match[1]
+        arg   = match[2]
+        radio = form.radiobutton_with(:value => lang)
+        radio.check
+        page = page.emulate_doPostBack(event, arg)
+      end
+    end
+    page.search_page(type, lang)
+  end
+  def search_fachinfo(search_word, lang='DE'||'FR')
+    page = search_page('FI', lang.upcase)
+    pages = page.search_fachinfo(search_word)
+  end
+  def search_patinfo(search_word, lang='DE'||'FR')
+    page = search_page('PI', lang.upcase)
+    page = page.search_patinfo(search_word)
+  end
+
+  class Page 
+    attr_accessor :lang
+    attr_accessor :info_type
+    def next_page(button_id)
+      form = form_with(:id => FORM_ID)
+      button = form.button_with(:id => button_id)
+      page = form.click_button(button)
+      page.lang = lang
+      page
+    end
+    def search_page(type, lang)
+      @info_type = type
+      @lang = lang
+      button_id = eval(type + '_HOME_BUTTON_ID')
+      page = next_page(button_id)
+      page = page.next_page(SEARCH_HOME_BUTTON_ID)
+      page.lang = @lang
+      page.info_type = @info_type
+      page
+    end
+    def emulate_doPostBack(event, arg)
+      form = form_with(:name => FORM_ID)
+      form.field_with(:id => '__EVENTTARGET').value = event
+      form.field_with(:id => '__EVENTARGUMENT').value = arg
+      page = form.submit
+      page.lang = lang
+      page.info_type = info_type
+      page
+    end
+    attr_accessor :file_name
+    def fachinfo_pages
+      form = form_with(:name => FORM_ID)
+      buttons = form.buttons
+      buttons.shift # the first button is the search button
+      pages = []
+      buttons.each do |button|
+        page = form.click_button(button)
+        page.lang = lang
+        page.info_type = info_type
+        if mon_title = page.at('div.MonTitle')
+          page.file_name = mon_title.text
+        end
+        pages << page
+      end
+      pages 
+    end
+    def search_fachinfo(search_word)
+      # get result page (fachinfo list)
+      form = form_with(:name => FORM_ID)
+      select = form.field_with(:id => FI_SELECT_ID)
+      select.option_with(:value => '1').select
+      input = form.field_with(:id => FI_SEARCH_FIELD_ID)
+      input.value = '{"logEntries":[],"value":"","text":"' + search_word + '","enabled":true,"checkedIndices":[],"checkedItemsTextOverflows":false}'
+      button = form.button_with(:id => SEARCH_BUTTON_ID)
+      page = form.click_button(button)
+      page.lang = lang
+      page.info_type = info_type
+
+      # gather fachinfo document (html) list
+      pages = page.fachinfo_pages
+    end
+    def patinfo_pages
+      table = self.at("table[@id='#{PI_PRODUCT_TABLE_ID}']")
+      pi_list = table.search("a")
+      event_arg_list = []
+      pi_list.each do |pi|
+        if attr = pi.attributes['href'] and match = attr.value.match(/'(.*)','(.*)'/)\
+          and match.length == 3
+          event_arg_list << [match[1], match[2]]
+        end
+      end
+      event_arg_list.uniq!
+
+      pages = []
+      event_arg_list.each do |event, arg|
+        page = emulate_doPostBack(event,arg)
+        page.lang = lang
+        page.info_type = info_type
+        if mon_title = page.at('div.MonTitle')
+          page.file_name = mon_title.text 
+        end
+        pages << page
+      end
+      pages
+    end
+    def search_patinfo(search_word)
+      # get result page (patinfo list)
+      form = form_with(:name => FORM_ID)
+      input = form.field_with(:id => PI_SEARCH_FIELD_ID)
+      input.value = search_word
+      button = form.button_with(:id => SEARCH_BUTTON_ID)
+      page = form.click_button(button)
+      page.lang = lang
+      page.info_type = info_type
+
+      # gather patinfo document (html) list
+      pages = page.patinfo_pages
+    end
+    def save_body(flags={})
+      if @file_name
+        dirs = {
+          'FI' => ::File.join(ODDB.config.data_dir, 'html', 'fachinfo'),
+          'PI' => ::File.join(ODDB.config.data_dir, 'html', 'patinfo'),
+        }
+        dir = ::File.join dirs[info_type], lang.downcase.to_s
+        FileUtils.mkdir_p dir
+        tmp = ::File.join dir, @file_name.gsub(/[\/\s\+:]/, '_') + '.tmp.html'
+        open(tmp, "w") do |out|
+          out.print body
+        end
+        path = ::File.join dir, @file_name.gsub(/[\/\s\+:]/, '_') + '.html'
+        if ::File.exist?(path) && FileUtils.compare_file(tmp, path)
+          flags.store lang, :up_to_date
+        end
+        FileUtils.mv tmp, path
+        path
+      end
+    end
+  end
+end
 
 module ODDB
   class TextInfoPlugin < Plugin
@@ -34,6 +204,7 @@ module ODDB
       @download_errors = []
       @companies = []
       @news_log = File.join ODDB.config.log_dir, 'fachinfo.txt'
+      @new_format_flag = false
     end
     def init_agent
       agent = Mechanize.new
@@ -133,6 +304,37 @@ module ODDB
         import_companies page, agent
       end
     end
+    def import_company2 names, agent=init_agent
+      @new_format_flag = true
+      @search_term = names.to_a.join ', '
+      list = {}
+      fi_flag = {}
+      names.to_a.each do |name|
+        @current_search = [:search_company, name]
+        # de
+        pages = agent.search_fachinfo(name, 'DE')
+        file_names = pages.map{|page| page.file_name}.compact.uniq
+        file_names.each_with_index do |file_name, i|
+          page = pages.find{|page| page.file_name == file_name}
+          list[file_name] ||= {}
+          list[file_name].store(:de, page.save_body(fi_flag))
+        end
+
+        # fr
+        pages = agent.search_fachinfo(name, 'FR')
+        file_names = pages.map{|page| page.file_name}.compact.uniq
+        file_names.each_with_index do |file_name, i|
+          page = pages.find{|page| page.file_name == file_name}
+          list[file_name] ||= {}
+          list[file_name].store(:fr, page.save_body(fi_flag))
+        end
+      end
+
+      # update_product
+      list.each do |name, path_list|
+        update_product name, path_list, {}, fi_flag
+      end
+    end
     def import_companies page, agent
       form = page.form_with :name => 'frmResulthForm'
       page.links_with(:href => /Linkbutton1/).each do |link|
@@ -201,7 +403,8 @@ module ODDB
       end
     end
     def parse_fachinfo path
-      @parser.parse_fachinfo_html path
+      @new_format_flag = true
+      @parser.parse_fachinfo_html(path, @new_format_flag)
     end
     def parse_patinfo path
       @parser.parse_patinfo_html path
@@ -328,6 +531,7 @@ module ODDB
       news - old_news
     end
     def update_product name, fi_paths, pi_paths, fi_flags={}, pi_flags={}
+      #p "name = #{name}, fi_paths = #{fi_paths}, fi_flags = #{fi_flags}"
       # parse pi and fi
       fis = {}
       fi_paths.each do |lang, path|
