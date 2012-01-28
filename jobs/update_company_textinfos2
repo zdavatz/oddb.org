@@ -1,0 +1,16 @@
+#!/usr/local/bin/ruby
+# must be scheduled in crontab to run as the same user as oddb
+
+$: << File.expand_path('../src', File.dirname(__FILE__))
+$: << File.expand_path('..', File.dirname(__FILE__))
+
+require 'util/job'
+require 'util/updater'
+
+module ODDB
+  module Util
+    Job.run do |system|
+      Updater.new(system).update_company_textinfos2(*ARGV)
+    end
+  end
+end
