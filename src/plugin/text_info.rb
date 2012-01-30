@@ -324,13 +324,11 @@ module ODDB
         @current_search = [:search_company, name]
         ## fachinfo
         # de
+        agent = init_agent
         pages = agent.search_fachinfo(name, 'DE')
         file_names = pages.map{|page| page.file_name}.compact.uniq
         file_names.each_with_index do |file_name, i|
           page = pages.find{|page| page.file_name == file_name}
-          #list[file_name] ||= {}
-          #list[file_name][:fi] ||= {}
-          #list[file_name][:fi].store(:de, page.save_body(fi_flag))
           if path = page.save_body(fi_flag)
             downloaded_files[:fi] ||= {}
             downloaded_files[:fi][:de] ||= []
@@ -344,10 +342,6 @@ module ODDB
         file_names = pages.map{|page| page.file_name}.compact.uniq
         file_names.each_with_index do |file_name, i|
           page = pages.find{|page| page.file_name == file_name}
-          #list[file_name] ||= {}
-          #list[file_name][:fi] ||= {}
-          #list[file_name][:fi].store(:fr, page.save_body(fi_flag))
-
           if path = page.save_body(fi_flag)
             downloaded_files[:fi] ||= {}
             downloaded_files[:fi][:fr] ||= []
@@ -362,10 +356,6 @@ module ODDB
         file_names = pages.map{|page| page.file_name}.compact.uniq
         file_names.each_with_index do |file_name, i|
           page = pages.find{|page| page.file_name == file_name}
-          #list[file_name] ||= {}
-          #list[file_name][:pi] ||= {}
-          #list[file_name][:pi].store(:de, page.save_body(fi_flag))
-
           if path = page.save_body(pi_flag)
             downloaded_files[:pi] ||= {}
             downloaded_files[:pi][:de] ||= []
@@ -379,10 +369,6 @@ module ODDB
         file_names = pages.map{|page| page.file_name}.compact.uniq
         file_names.each_with_index do |file_name, i|
           page = pages.find{|page| page.file_name == file_name}
-          #list[file_name] ||= {}
-          #list[file_name][:pi] ||= {}
-          #list[file_name][:pi].store(:fr, page.save_body(fi_flag))
-
           if path = page.save_body(pi_flag)
             downloaded_files[:pi] ||= {}
             downloaded_files[:pi][:fr] ||= []
@@ -393,66 +379,77 @@ module ODDB
 
       # parse all the downloaded files and check iksnr
       # de
-      fi_iksnr_path = {}
-      fi_name_iksnr = {}
-      downloaded_files[:fi][:de].each do |path|
-        iksnr = if match = parse_fachinfo(path).iksnrs.to_s.match(/(\d{5})/)
-                  match[1]
-                end
-        if iksnr
-          fi_iksnr_path.store(iksnr, path)
-          fi_name_iksnr.store(File.basename(path).gsub(/\.html/,''), iksnr)
-        end
-      end
-      pi_iksnr_path = {}
-      downloaded_files[:pi][:de].each do |path|
-        iksnr = if match = parse_patinfo(path).iksnrs.to_s.match(/(\d{5})/)
-                  match[1]
-                end
-        if iksnr
-          pi_iksnr_path.store(iksnr, path)
+      fi_de_iksnr_path = {}
+      fi_de_iksnr_path = {}
+      fi_de_name_iksnr = {}
+      if downloaded_files[:fi] and downloaded_files[:fi][:de]
+        downloaded_files[:fi][:de].each do |path|
+          iksnr = if match = parse_fachinfo(path).iksnrs.to_s.match(/(\d{5})/)
+                    match[1]
+                  end
+          if iksnr
+            fi_de_iksnr_path.store(iksnr, path)
+            fi_de_name_iksnr.store(File.basename(path).gsub(/\.html/,''), iksnr)
+          end
         end
       end
 
-      # store list for update_product
-      fi_name_iksnr.each do |name, iksnr|
-        list[name] ||= {}
-        list[name][:fi] ||= {}
-        list[name][:fi].store(:de, fi_iksnr_path[iksnr])
-        if pi_path = pi_iksnr_path[iksnr]
-          list[name][:pi] ||= {}
-          list[name][:pi].store(:de, pi_path)
+
+      pi_de_iksnr_path = {}
+      if downloaded_files[:pi] and downloaded_files[:pi][:de]
+        downloaded_files[:pi][:de].each do |path|
+          iksnr = if match = parse_patinfo(path).iksnrs.to_s.match(/(\d{5})/)
+                    match[1]
+                  end
+          if iksnr
+            pi_de_iksnr_path.store(iksnr, path)
+          end
         end
       end
      
       # fr
-      fi_iksnr_path = {}
-      fi_name_iksnr = {}
-      downloaded_files[:fi][:fr].each do |path|
-        iksnr = if match = parse_fachinfo(path).iksnrs.to_s.match(/(\d{5})/)
-                  match[1]
-                end
-        if iksnr
-          fi_iksnr_path.store(iksnr, path)
-          fi_name_iksnr.store(File.basename(path).gsub(/\.html/,''), iksnr)
+      fi_fr_iksnr_path = {}
+      fi_fr_name_iksnr = {}
+      if downloaded_files[:fi] and downloaded_files[:fi][:fr]
+        downloaded_files[:fi][:fr].each do |path|
+          iksnr = if match = parse_fachinfo(path).iksnrs.to_s.match(/(\d{5})/)
+                    match[1]
+                  end
+          if iksnr
+            fi_fr_iksnr_path.store(iksnr, path)
+            fi_fr_name_iksnr.store(File.basename(path).gsub(/\.html/,''), iksnr)
+          end
         end
       end
-      pi_iksnr_path = {}
-      downloaded_files[:pi][:fr].each do |path|
-        iksnr = if match = parse_patinfo(path).iksnrs.to_s.match(/(\d{5})/)
-                  match[1]
-                end
-        if iksnr
-          pi_iksnr_path.store(iksnr, path)
+
+      pi_fr_iksnr_path = {}
+      if downloaded_files[:pi] and downloaded_files[:pi][:fr]
+        downloaded_files[:pi][:fr].each do |path|
+          iksnr = if match = parse_patinfo(path).iksnrs.to_s.match(/(\d{5})/)
+                    match[1]
+                  end
+          if iksnr
+            pi_fr_iksnr_path.store(iksnr, path)
+          end
         end
       end
 
       # store list for update_product
-      fi_name_iksnr.each do |name, iksnr|
+      fi_de_name_iksnr.each do |name, iksnr|
+        # de
         list[name] ||= {}
         list[name][:fi] ||= {}
-        list[name][:fi].store(:fr, fi_iksnr_path[iksnr])
-        if pi_path = pi_iksnr_path[iksnr]
+        list[name][:fi].store(:de, fi_de_iksnr_path[iksnr])
+        if pi_path = pi_de_iksnr_path[iksnr]
+          list[name][:pi] ||= {}
+          list[name][:pi].store(:de, pi_path)
+        end
+
+        # fr
+        if fi_path = fi_fr_iksnr_path[iksnr]
+          list[name][:fi].store(:fr, fi_path)
+        end
+        if pi_path = pi_fr_iksnr_path[iksnr]
           list[name][:pi] ||= {}
           list[name][:pi].store(:fr, pi_path)
         end
