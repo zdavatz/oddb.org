@@ -63,7 +63,7 @@ class Mechanize
   class Page 
     attr_accessor :lang
     attr_accessor :info_type
-    attr_reader :up_to_date
+    attr_reader :up_to_date, :pseudo
     def next_page(button_id)
       form = form_with(:id => FORM_ID)
       button = form.button_with(:id => button_id)
@@ -170,6 +170,9 @@ class Mechanize
         tmp = ::File.join dir, @file_name.gsub(/[\/\s\+:]/, '_') + '.tmp.html'
         open(tmp, "w") do |out|
           out.print body
+        end
+        if /(Pseudo-Fach|Produkt)information/i.match(body)
+          @pseudo = true
         end
         path = ::File.join dir, @file_name.gsub(/[\/\s\+:]/, '_') + '.html'
         if ::File.exist?(path) && FileUtils.compare_file(tmp, path)
@@ -317,9 +320,14 @@ module ODDB
       list = {}
       fi_de_name_uptodate = {}
       fi_fr_name_uptodate = {}
+      fi_de_name_pseudo   = {}
       pi_de_name_uptodate = {}
       pi_fr_name_uptodate = {}
       names.delete('')
+
+      #
+      # search and download files
+      #
       names.to_a.each do |name|
         @current_search = [:search_company, name]
         ## fachinfo
@@ -334,7 +342,12 @@ module ODDB
             downloaded_files[:fi][:de] ||= []
             downloaded_files[:fi][:de] << path
           end
-          fi_de_name_uptodate.store(file_name.gsub(/[\/\s\+:]/, '_'), page.up_to_date)
+          if page.up_to_date
+            fi_de_name_uptodate.store(file_name.gsub(/[\/\s\+:]/, '_'), true)
+          end
+          if page.pseudo
+            fi_de_name_pseudo.store(file_name.gsub(/[\/\s\+:]/, '_'), true)
+          end
         end
 
         # fr
@@ -348,7 +361,9 @@ module ODDB
             downloaded_files[:fi][:fr] ||= []
             downloaded_files[:fi][:fr] << path
           end
-          fi_fr_name_uptodate.store(file_name.gsub(/[\/\s\+:]/, '_'), page.up_to_date)
+          if page.up_to_date
+            fi_fr_name_uptodate.store(file_name.gsub(/[\/\s\+:]/, '_'), true)
+          end
         end
 
         ## patinfo
@@ -363,7 +378,9 @@ module ODDB
             downloaded_files[:pi][:de] ||= []
             downloaded_files[:pi][:de] << path
           end
-          pi_de_name_uptodate.store(file_name.gsub(/[\/\s\+:]/, '_'), page.up_to_date)
+          if page.up_to_date
+            pi_de_name_uptodate.store(file_name.gsub(/[\/\s\+:]/, '_'), true)
+          end
         end
 
         # fr
@@ -377,12 +394,15 @@ module ODDB
             downloaded_files[:pi][:fr] ||= []
             downloaded_files[:pi][:fr] << path
           end
-          pi_fr_name_uptodate.store(file_name.gsub(/[\/\s\+:]/, '_'), page.up_to_date)
+          if page.up_to_date
+            pi_fr_name_uptodate.store(file_name.gsub(/[\/\s\+:]/, '_'), true)
+          end
         end
       end
 
       #
       # parse all the downloaded files and check iksnr
+      # and store up_to_date flag
       # 
       # fi de
       fi_de_iksnr_path = {}
@@ -480,12 +500,15 @@ module ODDB
         end
       end
 
+      #
       # update_product
+      # 
       list.each do |name, path_list|
         fi_flag = {}
         pi_flag = {}
         fi_flag.store(:de, fi_de_name_uptodate[name])
         fi_flag.store(:fr, fi_fr_name_uptodate[name])
+        fi_flag.store(:pseudo, fi_de_name_pseudo[name])
         pi_flag.store(:de, pi_de_name_uptodate[name])
         pi_flag.store(:fr, pi_fr_name_uptodate[name])
         update_product name, path_list[:fi]||{}, path_list[:pi]||{}, fi_flag, pi_flag
