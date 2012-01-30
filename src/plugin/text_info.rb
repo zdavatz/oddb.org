@@ -63,6 +63,7 @@ class Mechanize
   class Page 
     attr_accessor :lang
     attr_accessor :info_type
+    attr_reader :up_to_date
     def next_page(button_id)
       form = form_with(:id => FORM_ID)
       button = form.button_with(:id => button_id)
@@ -158,7 +159,7 @@ class Mechanize
       # gather patinfo document (html) list
       pages = page.patinfo_pages
     end
-    def save_body(flags={})
+    def save_body
       if @file_name
         dirs = {
           'FI' => ::File.join(ODDB.config.data_dir, 'html', 'fachinfo'),
@@ -172,12 +173,10 @@ class Mechanize
         end
         path = ::File.join dir, @file_name.gsub(/[\/\s\+:]/, '_') + '.html'
         if ::File.exist?(path) && FileUtils.compare_file(tmp, path)
-          flags.store lang, :up_to_date
-          nil
-        else
-          FileUtils.mv tmp, path
-          path
+          @up_to_date = true
         end
+        FileUtils.mv tmp, path
+        path
       end
     end
     def print_body(file_name='test.html')
@@ -316,9 +315,10 @@ module ODDB
       @search_term = names.to_a.join ', '
       downloaded_files = {}
       list = {}
-      update_list = {}
-      fi_flag = {}
-      pi_flag = {}
+      fi_de_name_uptodate = {}
+      fi_fr_name_uptodate = {}
+      pi_de_name_uptodate = {}
+      pi_fr_name_uptodate = {}
       names.delete('')
       names.to_a.each do |name|
         @current_search = [:search_company, name]
@@ -329,11 +329,12 @@ module ODDB
         file_names = pages.map{|page| page.file_name}.compact.uniq
         file_names.each_with_index do |file_name, i|
           page = pages.find{|page| page.file_name == file_name}
-          if path = page.save_body(fi_flag)
+          if path = page.save_body
             downloaded_files[:fi] ||= {}
             downloaded_files[:fi][:de] ||= []
             downloaded_files[:fi][:de] << path
           end
+          fi_de_name_uptodate.store(file_name.gsub(/[\/\s\+:]/, '_'), page.up_to_date)
         end
 
         # fr
@@ -342,11 +343,12 @@ module ODDB
         file_names = pages.map{|page| page.file_name}.compact.uniq
         file_names.each_with_index do |file_name, i|
           page = pages.find{|page| page.file_name == file_name}
-          if path = page.save_body(fi_flag)
+          if path = page.save_body
             downloaded_files[:fi] ||= {}
             downloaded_files[:fi][:fr] ||= []
             downloaded_files[:fi][:fr] << path
           end
+          fi_fr_name_uptodate.store(file_name.gsub(/[\/\s\+:]/, '_'), page.up_to_date)
         end
 
         ## patinfo
@@ -356,11 +358,12 @@ module ODDB
         file_names = pages.map{|page| page.file_name}.compact.uniq
         file_names.each_with_index do |file_name, i|
           page = pages.find{|page| page.file_name == file_name}
-          if path = page.save_body(pi_flag)
+          if path = page.save_body
             downloaded_files[:pi] ||= {}
             downloaded_files[:pi][:de] ||= []
             downloaded_files[:pi][:de] << path
           end
+          pi_de_name_uptodate.store(file_name.gsub(/[\/\s\+:]/, '_'), page.up_to_date)
         end
 
         # fr
@@ -369,19 +372,22 @@ module ODDB
         file_names = pages.map{|page| page.file_name}.compact.uniq
         file_names.each_with_index do |file_name, i|
           page = pages.find{|page| page.file_name == file_name}
-          if path = page.save_body(pi_flag)
+          if path = page.save_body
             downloaded_files[:pi] ||= {}
             downloaded_files[:pi][:fr] ||= []
             downloaded_files[:pi][:fr] << path
           end
+          pi_fr_name_uptodate.store(file_name.gsub(/[\/\s\+:]/, '_'), page.up_to_date)
         end
       end
 
+      #
       # parse all the downloaded files and check iksnr
-      # de
-      fi_de_iksnr_path = {}
+      # 
+      # fi de
       fi_de_iksnr_path = {}
       fi_de_name_iksnr = {}
+      fi_de_iksnr_name = {}
       if downloaded_files[:fi] and downloaded_files[:fi][:de]
         downloaded_files[:fi][:de].each do |path|
           iksnr = if match = parse_fachinfo(path).iksnrs.to_s.match(/(\d{5})/)
@@ -390,26 +396,13 @@ module ODDB
           if iksnr
             fi_de_iksnr_path.store(iksnr, path)
             fi_de_name_iksnr.store(File.basename(path).gsub(/\.html/,''), iksnr)
+            fi_de_iksnr_name.store(iksnr, File.basename(path).gsub(/\.html/,''))
           end
         end
       end
 
-
-      pi_de_iksnr_path = {}
-      if downloaded_files[:pi] and downloaded_files[:pi][:de]
-        downloaded_files[:pi][:de].each do |path|
-          iksnr = if match = parse_patinfo(path).iksnrs.to_s.match(/(\d{5})/)
-                    match[1]
-                  end
-          if iksnr
-            pi_de_iksnr_path.store(iksnr, path)
-          end
-        end
-      end
-     
-      # fr
+      # fi fr
       fi_fr_iksnr_path = {}
-      fi_fr_name_iksnr = {}
       if downloaded_files[:fi] and downloaded_files[:fi][:fr]
         downloaded_files[:fi][:fr].each do |path|
           iksnr = if match = parse_fachinfo(path).iksnrs.to_s.match(/(\d{5})/)
@@ -417,11 +410,35 @@ module ODDB
                   end
           if iksnr
             fi_fr_iksnr_path.store(iksnr, path)
-            fi_fr_name_iksnr.store(File.basename(path).gsub(/\.html/,''), iksnr)
+            if flag = fi_fr_name_uptodate[File.basename(path).gsub(/\.html/,'')]
+              if de_name = fi_de_iksnr_name[iksnr]
+                fi_fr_name_uptodate.store(de_name, flag)
+              end
+            end
           end
         end
       end
 
+      # pi de
+      pi_de_iksnr_path = {}
+      if downloaded_files[:pi] and downloaded_files[:pi][:de]
+        downloaded_files[:pi][:de].each do |path|
+          iksnr = if match = parse_patinfo(path).iksnrs.to_s.match(/(\d{5})/)
+                    match[1]
+                  end
+
+          if iksnr
+            pi_de_iksnr_path.store(iksnr, path)
+             if flag = pi_de_name_uptodate[File.basename(path).gsub(/\.html/,'')]
+              if de_name = fi_de_iksnr_name[iksnr]
+                pi_de_name_uptodate.store(de_name, flag)
+              end
+            end
+          end
+        end
+      end
+     
+      # pi fr
       pi_fr_iksnr_path = {}
       if downloaded_files[:pi] and downloaded_files[:pi][:fr]
         downloaded_files[:pi][:fr].each do |path|
@@ -430,11 +447,18 @@ module ODDB
                   end
           if iksnr
             pi_fr_iksnr_path.store(iksnr, path)
+            if flag = pi_fr_name_uptodate[File.basename(path).gsub(/\.html/,'')]
+              if de_name = fi_de_iksnr_name[iksnr]
+                pi_fr_name_uptodate.store(de_name, flag)
+              end
+            end
           end
         end
       end
 
+      #
       # store list for update_product
+      #
       fi_de_name_iksnr.each do |name, iksnr|
         # de
         list[name] ||= {}
@@ -444,6 +468,7 @@ module ODDB
           list[name][:pi] ||= {}
           list[name][:pi].store(:de, pi_path)
         end
+
 
         # fr
         if fi_path = fi_fr_iksnr_path[iksnr]
@@ -457,6 +482,12 @@ module ODDB
 
       # update_product
       list.each do |name, path_list|
+        fi_flag = {}
+        pi_flag = {}
+        fi_flag.store(:de, fi_de_name_uptodate[name])
+        fi_flag.store(:fr, fi_fr_name_uptodate[name])
+        pi_flag.store(:de, pi_de_name_uptodate[name])
+        pi_flag.store(:fr, pi_fr_name_uptodate[name])
         update_product name, path_list[:fi]||{}, path_list[:pi]||{}, fi_flag, pi_flag
       end
     end
@@ -655,7 +686,7 @@ module ODDB
       news - old_news
     end
     def update_product name, fi_paths, pi_paths, fi_flags={}, pi_flags={}
-      #p "name = #{name}, fi_paths = #{fi_paths}, pi_paths = #{pi_paths}"
+      #p "name = #{name}, fi_paths = #{fi_paths}, pi_paths = #{pi_paths}, fi_flags = #{fi_flags}, pi_flags = #{pi_flags}"
       # parse pi and fi
       fis = {}
       fi_paths.each do |lang, path|
