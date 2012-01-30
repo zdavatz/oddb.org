@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Ajax::DDDPrice -- oddb.org -- 24.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Ajax::DDDPrice -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Ajax::DDDPrice -- oddb.org -- 10.04.2006 -- hwyss@ywesee.com
 
 require 'htmlgrid/composite'
@@ -40,7 +40,7 @@ class DDDPriceTable < HtmlGrid::Composite
 		end
 	end
 	def dose(model)
-		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose)
+		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose && model.dose.unit == ddd.dose.unit)
 			comp = HtmlGrid::Value.new(:dose, model, @session, self)
 			mdose = model.dose
 			comp.value = mdose.want(wanted_unit(mdose, ddd.dose))
@@ -48,7 +48,7 @@ class DDDPriceTable < HtmlGrid::Composite
 		end
 	end
 	def calculation(model)
-		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose)
+		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose && model.dose.unit == ddd.dose.unit)
       currency = @session.currency
 			mprice = model.price_public
       mprice = convert_price(mprice, currency)
