@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 27.10.2011 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 07.09.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/select'
@@ -231,8 +231,9 @@ class FachinfoNewsList < HtmlGrid::DivList
   def name(model)
     link = HtmlGrid::Link.new(:name_base, model, @session, self)
     link.value = model.localized_name(@session.language)
-    link.href = @lookandfeel._event_url :fachinfo,
-      :swissmedicnr => model.registrations.first.iksnr
+    if regs = model.registrations and reg = regs.first and reg.iksnr
+      link.href = @lookandfeel._event_url :fachinfo, :swissmedicnr => model.registrations.first.iksnr
+    end
     link
   end
 end
