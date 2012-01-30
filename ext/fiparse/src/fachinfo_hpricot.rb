@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 27.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::FiParse::FachinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::FachinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
 require 'model/fachinfo'
@@ -13,7 +13,6 @@ class FachinfoHpricot < TextinfoHpricot
               :usage, :kinetic, :restrictions, :unwanted_effects, :interactions,
               :overdose, :other_advice, :iksnrs, :date, :pregnancy, :driving_ability,
               :contra_indications
-  attr_accessor :new_format_flag
   def identify_chapter(code, chapter)
     case code
     when '6900'

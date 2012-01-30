@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::TextInfoPlugin -- oddb.org -- 27.01.2012 -- mhatakeyama@ywesee.com 
+# ODDB::TextInfoPlugin -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::TextInfoPlugin -- oddb.org -- 17.05.2010 -- hwyss@ywesee.com 
 
 require 'config'
@@ -57,7 +57,7 @@ class Mechanize
   end
   def search_patinfo(search_word, lang='DE'||'FR')
     page = search_page('PI', lang.upcase)
-    page = page.search_patinfo(search_word)
+    pages = page.search_patinfo(search_word)
   end
 
   class Page 
@@ -173,9 +173,16 @@ class Mechanize
         path = ::File.join dir, @file_name.gsub(/[\/\s\+:]/, '_') + '.html'
         if ::File.exist?(path) && FileUtils.compare_file(tmp, path)
           flags.store lang, :up_to_date
+          nil
+        else
+          FileUtils.mv tmp, path
+          path
         end
-        FileUtils.mv tmp, path
-        path
+      end
+    end
+    def print_body(file_name='test.html')
+      open(file_name,"w") do |out|
+        out.print self.body
       end
     end
   end
@@ -307,32 +314,153 @@ module ODDB
     def import_company2 names, agent=init_agent
       @new_format_flag = true
       @search_term = names.to_a.join ', '
+      downloaded_files = {}
       list = {}
+      update_list = {}
       fi_flag = {}
+      pi_flag = {}
+      names.delete('')
       names.to_a.each do |name|
         @current_search = [:search_company, name]
+        ## fachinfo
         # de
         pages = agent.search_fachinfo(name, 'DE')
         file_names = pages.map{|page| page.file_name}.compact.uniq
         file_names.each_with_index do |file_name, i|
           page = pages.find{|page| page.file_name == file_name}
-          list[file_name] ||= {}
-          list[file_name].store(:de, page.save_body(fi_flag))
+          #list[file_name] ||= {}
+          #list[file_name][:fi] ||= {}
+          #list[file_name][:fi].store(:de, page.save_body(fi_flag))
+          if path = page.save_body(fi_flag)
+            downloaded_files[:fi] ||= {}
+            downloaded_files[:fi][:de] ||= []
+            downloaded_files[:fi][:de] << path
+          end
         end
 
         # fr
+        agent = init_agent
         pages = agent.search_fachinfo(name, 'FR')
         file_names = pages.map{|page| page.file_name}.compact.uniq
         file_names.each_with_index do |file_name, i|
           page = pages.find{|page| page.file_name == file_name}
-          list[file_name] ||= {}
-          list[file_name].store(:fr, page.save_body(fi_flag))
+          #list[file_name] ||= {}
+          #list[file_name][:fi] ||= {}
+          #list[file_name][:fi].store(:fr, page.save_body(fi_flag))
+
+          if path = page.save_body(fi_flag)
+            downloaded_files[:fi] ||= {}
+            downloaded_files[:fi][:fr] ||= []
+            downloaded_files[:fi][:fr] << path
+          end
+        end
+
+        ## patinfo
+        # de
+        agent = init_agent
+        pages = agent.search_patinfo(name, 'DE')
+        file_names = pages.map{|page| page.file_name}.compact.uniq
+        file_names.each_with_index do |file_name, i|
+          page = pages.find{|page| page.file_name == file_name}
+          #list[file_name] ||= {}
+          #list[file_name][:pi] ||= {}
+          #list[file_name][:pi].store(:de, page.save_body(fi_flag))
+
+          if path = page.save_body(pi_flag)
+            downloaded_files[:pi] ||= {}
+            downloaded_files[:pi][:de] ||= []
+            downloaded_files[:pi][:de] << path
+          end
+        end
+
+        # fr
+        agent = init_agent
+        pages = agent.search_patinfo(name, 'FR')
+        file_names = pages.map{|page| page.file_name}.compact.uniq
+        file_names.each_with_index do |file_name, i|
+          page = pages.find{|page| page.file_name == file_name}
+          #list[file_name] ||= {}
+          #list[file_name][:pi] ||= {}
+          #list[file_name][:pi].store(:fr, page.save_body(fi_flag))
+
+          if path = page.save_body(pi_flag)
+            downloaded_files[:pi] ||= {}
+            downloaded_files[:pi][:fr] ||= []
+            downloaded_files[:pi][:fr] << path
+          end
+        end
+      end
+
+      # parse all the downloaded files and check iksnr
+      # de
+      fi_iksnr_path = {}
+      fi_name_iksnr = {}
+      downloaded_files[:fi][:de].each do |path|
+        iksnr = if match = parse_fachinfo(path).iksnrs.to_s.match(/(\d{5})/)
+                  match[1]
+                end
+        if iksnr
+          fi_iksnr_path.store(iksnr, path)
+          fi_name_iksnr.store(File.basename(path).gsub(/\.html/,''), iksnr)
+        end
+      end
+      pi_iksnr_path = {}
+      downloaded_files[:pi][:de].each do |path|
+        iksnr = if match = parse_patinfo(path).iksnrs.to_s.match(/(\d{5})/)
+                  match[1]
+                end
+        if iksnr
+          pi_iksnr_path.store(iksnr, path)
+        end
+      end
+
+      # store list for update_product
+      fi_name_iksnr.each do |name, iksnr|
+        list[name] ||= {}
+        list[name][:fi] ||= {}
+        list[name][:fi].store(:de, fi_iksnr_path[iksnr])
+        if pi_path = pi_iksnr_path[iksnr]
+          list[name][:pi] ||= {}
+          list[name][:pi].store(:de, pi_path)
+        end
+      end
+     
+      # fr
+      fi_iksnr_path = {}
+      fi_name_iksnr = {}
+      downloaded_files[:fi][:fr].each do |path|
+        iksnr = if match = parse_fachinfo(path).iksnrs.to_s.match(/(\d{5})/)
+                  match[1]
+                end
+        if iksnr
+          fi_iksnr_path.store(iksnr, path)
+          fi_name_iksnr.store(File.basename(path).gsub(/\.html/,''), iksnr)
+        end
+      end
+      pi_iksnr_path = {}
+      downloaded_files[:pi][:fr].each do |path|
+        iksnr = if match = parse_patinfo(path).iksnrs.to_s.match(/(\d{5})/)
+                  match[1]
+                end
+        if iksnr
+          pi_iksnr_path.store(iksnr, path)
+        end
+      end
+
+      # store list for update_product
+      fi_name_iksnr.each do |name, iksnr|
+        list[name] ||= {}
+        list[name][:fi] ||= {}
+        list[name][:fi].store(:fr, fi_iksnr_path[iksnr])
+        if pi_path = pi_iksnr_path[iksnr]
+          list[name][:pi] ||= {}
+          list[name][:pi].store(:fr, pi_path)
         end
       end
 
       # update_product
       list.each do |name, path_list|
-        update_product name, path_list, {}, fi_flag
+        update_product name, path_list[:fi]||{}, path_list[:pi]||{}, fi_flag, pi_flag
       end
     end
     def import_companies page, agent
@@ -403,11 +531,10 @@ module ODDB
       end
     end
     def parse_fachinfo path
-      @new_format_flag = true
       @parser.parse_fachinfo_html(path, @new_format_flag)
     end
     def parse_patinfo path
-      @parser.parse_patinfo_html path
+      @parser.parse_patinfo_html(path, @new_format_flag)
     end
     def postprocess
       update_rss_feeds('fachinfo.rss', @app.sorted_fachinfos, View::Rss::Fachinfo)
@@ -531,7 +658,7 @@ module ODDB
       news - old_news
     end
     def update_product name, fi_paths, pi_paths, fi_flags={}, pi_flags={}
-      #p "name = #{name}, fi_paths = #{fi_paths}, fi_flags = #{fi_flags}"
+      #p "name = #{name}, fi_paths = #{fi_paths}, pi_paths = #{pi_paths}"
       # parse pi and fi
       fis = {}
       fi_paths.each do |lang, path|

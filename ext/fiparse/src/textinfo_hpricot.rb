@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 27.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::FiParse::PatinfoHpricot -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse::PatinfoHpricot -- oddb.org -- 17.08.2006 -- hwyss@ywesee.com
 
 require 'hpricot'
@@ -13,6 +13,7 @@ module ODDB
   module FiParse
 class TextinfoHpricot
   attr_reader :name, :company
+  attr_accessor :new_format_flag
   def chapter(elem)
     chapter = Text::Chapter.new
     code = nil

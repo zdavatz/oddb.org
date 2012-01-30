@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::FiParse -- oddb.org -- 27.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::FiParse -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::FiParse -- oddb.org -- 20.10.2003 -- rwaltert@ywesee.com
 
 $: << File.expand_path("../../../src", File.dirname(__FILE__))
@@ -60,11 +60,12 @@ module ODDB
 			parser.extract_text(writer)
 			writer.to_fachinfo
 		end
-		def parse_patinfo_html(src)
+		def parse_patinfo_html(src, new_format_flag = false)
       if File.exist?(src)
         src = File.read src
       end
 			writer = PatinfoHpricot.new
+      writer.new_format_flag = new_format_flag
       writer.extract(Hpricot(src))
 		end
 		module_function :storage=
