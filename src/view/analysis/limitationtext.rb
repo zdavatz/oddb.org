@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Analysis::LimitationText -- oddb.org -- 11.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Analysis::LimitationText -- oddb.org -- 31.01.2012 -- mhatakeyama@ywesee.com
 
 require 'view/privatetemplate'
 require 'view/chapter'
@@ -16,7 +16,9 @@ class LimitationTextInnerComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = View::Chapter
   def limitation_text(model, session)
     lang = @session.language.intern
-    model.send(lang).gsub(/^Limitation: /,'')
+    if model.send(lang)
+      model.send(lang).gsub(/^Limitation: /,'')
+    end
   end
 end
 class LimitationTextComposite < HtmlGrid::Composite
