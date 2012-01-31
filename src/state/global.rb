@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 31.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -957,7 +957,11 @@ module ODDB
 					else 
 						aval <=> bval
 					end
-					return res unless(res == 0)
+          if !res
+            return 0
+          elsif res != 0
+            return res
+          end
 				}
 				0
 			end
