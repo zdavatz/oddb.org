@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Ajax::View::DDDChart -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::Ajax::View::DDDChart -- oddb.org -- 31.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Ajax::View::DDDChart -- oddb.org -- 17.04.2009 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
@@ -241,27 +241,28 @@ class DDDChart < HtmlGrid::Component
     @original_index = 0
     img_name = @session.user_input(:for)
     ikskey = img_name[/^\d{8}/]
-    original = @session.package_by_ikskey ikskey
-    my_factor = (original.generic_group_factor || 1).to_f
-    oseq = original.sequence
-    @model.each_with_index do |pac, idx|
-      ddd_price = pac.ddd_price
-      @data.push ddd_price
-      base = pac.name_base
-      size = comparable_size(pac)
-      fullname = u sprintf("%s, %s", base, size)
-      name = fullname.length > MAX_LEN ? fullname[0, MAX_LEN - 1] + "…" : fullname
-      label = sprintf "%s: CHF %4.2f", name, ddd_price
-      pac_factor = (pac.generic_group_factor || 1).to_f / my_factor
-      if pac == original
-        @original_index = idx
-        @title = @lookandfeel.lookup(:ddd_chart_title, fullname)
-      elsif pac_factor == 2 || pac.sequence.comparable?(oseq, 2)
-        label = sprintf "2 x %s: CHF %4.2f", name, ddd_price
-      elsif pac_factor == 0.5 || pac.sequence.comparable?(oseq, 0.5)
-        label = sprintf "1/2 x %s: CHF %4.2f", name, ddd_price
+    if original = @session.package_by_ikskey(ikskey)
+      my_factor = (original.generic_group_factor || 1).to_f
+      oseq = original.sequence
+      @model.each_with_index do |pac, idx|
+        ddd_price = pac.ddd_price
+        @data.push ddd_price
+        base = pac.name_base
+        size = comparable_size(pac)
+        fullname = u sprintf("%s, %s", base, size)
+        name = fullname.length > MAX_LEN ? fullname[0, MAX_LEN - 1] + "…" : fullname
+        label = sprintf "%s: CHF %4.2f", name, ddd_price
+        pac_factor = (pac.generic_group_factor || 1).to_f / my_factor
+        if pac == original
+          @original_index = idx
+          @title = @lookandfeel.lookup(:ddd_chart_title, fullname)
+        elsif pac_factor == 2 || pac.sequence.comparable?(oseq, 2)
+          label = sprintf "2 x %s: CHF %4.2f", name, ddd_price
+        elsif pac_factor == 0.5 || pac.sequence.comparable?(oseq, 0.5)
+          label = sprintf "1/2 x %s: CHF %4.2f", name, ddd_price
+        end
+        @labels.store idx, label
       end
-      @labels.store idx, label
     end
     super
   end
