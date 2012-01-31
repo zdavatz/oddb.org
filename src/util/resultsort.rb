@@ -1,15 +1,18 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ResultSort -- oddb -- 10.09.2003 -- mhuggler@ywesee.com
+# ODDB::ResultSort -- oddb.org -- 31.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::ResultSort -- oddb.org -- 10.09.2003 -- mhuggler@ywesee.com
 
 module ODDB
 	module ResultStateSort
 		def sort
 			get_sortby!
-			@model.each { |atc| 
-				atc.packages.sort! { |a, b| compare_entries(a, b) }
-				atc.packages.reverse! if(@sort_reverse)
-			}
+      if @model
+        @model.each { |atc| 
+          atc.packages.sort! { |a, b| compare_entries(a, b) }
+          atc.packages.reverse! if(@sort_reverse)
+        }
+      end
 			self
 		end
 	end
