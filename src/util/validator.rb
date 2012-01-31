@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 24.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 31.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -528,6 +528,7 @@ module ODDB
     @@swissmedic = /^\d+$/u
 		def swissmedic_id(key, value, range, pad=false)
 			return value if value.empty?
+      value.force_encoding('utf-8')
 			valid = @@swissmedic.match(value)
 			if(valid && range.include?(valid[0].length))
 				if(pad)
