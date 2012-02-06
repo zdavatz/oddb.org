@@ -10,7 +10,7 @@ module ODDB
 	class CsvExportPlugin < Plugin
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
-    ODDB_RECIPIENTS = [ "produktion@seconag.com" ]
+    ODDB_RECIPIENTS = [ "produktion@seconag.com", "paul.wiederkehr@pharmasuisse.org" ]
     ODDB_RECIPIENTS_EXTENDED = [ "thomas.frischknecht@just-medical.com" ]
 		def export_analysis
 			ids = @app.analysis_positions.sort_by { |pos|
