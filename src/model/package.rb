@@ -89,7 +89,7 @@ module ODDB
       odba_store
     end
     def delete_all_mail_order_prices
-      @mail_order_prices.clear
+      @mail_order_prices
       @mail_order_prices = []
       @mail_order_prices.odba_store
       odba_store
