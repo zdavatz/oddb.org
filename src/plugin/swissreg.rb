@@ -91,6 +91,7 @@ module ODDB
 		end
 		def update_substances(substances)
 			substances.collect { |substance|
+        substance.force_encoding('utf-8')
 				substance.to_s.gsub(/(i|e|um)$/u, '')
 			}.compact.uniq.each { |substance_name|
 				update_registrations(substance_name) 
