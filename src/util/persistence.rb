@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Persistence -- oddb.org -- 17.11.2011 -- mhatakeyama@ywesee.com
-# Persistence -- oddb.org -- 26.02.2003 -- hwyss@ywesee.com
+# ODDB::Persistence -- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::Persistence -- oddb.org -- 26.02.2003 -- hwyss@ywesee.com
 
 require 'odba'
 
@@ -230,7 +230,7 @@ module ODDB
       end
 			def issue_update(hook, values, origin = nil)
 				obj = resolve(hook)
-				unless(obj.nil?)
+        if !obj.nil? and obj.respond_to?(:diff)
           diff = obj.diff(values, hook)
           unless diff.empty?
             obj.update_values(diff, origin)
