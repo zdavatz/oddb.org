@@ -387,7 +387,7 @@ module ODDB
             end
           end
           @lim_texts.each do |pac_ptr, lim_data|
-            if (pac = pac_ptr.resolve(@app)) && (sl_entry = pac.sl_entry)
+            if (pac = pac_ptr.resolve(@app)) && (sl_entry = pac.sl_entry) && (sl_entry.respond_to?(:pointer))
               sl_ptr = sl_entry.pointer
               txt_ptr = sl_ptr + :limitation_text
               if lim_data.empty?
