@@ -78,8 +78,10 @@ class DDDPriceTable < HtmlGrid::Composite
 	end
 	def price_public(model)
 		item = super
-		item.value += ' ' + @session.currency
-		item
+    if item.respond_to?(:value)
+      item.value += ' ' + @session.currency
+      item
+    end
 	end
 	def wanted_unit(mdose, ddose)
 		(mdose.fact.factor < ddose.fact.factor) ? mdose.unit : ddose.unit

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Ajax::View::DDDChart -- oddb.org -- 31.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Ajax::View::DDDChart -- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Ajax::View::DDDChart -- oddb.org -- 17.04.2009 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
@@ -102,28 +102,33 @@ class SideBar < Gruff::Base
     number_of_lines = [@maximum_value.to_f / 0.5, 4].min
 
     # TODO Round maximum marker value to a round number like 100, 0.1, 0.5, etc.
-    increment = significant(@maximum_value.to_f / number_of_lines)
-    (0..number_of_lines).each do |index|
+    increment = if number_of_lines.to_i > 0
+                  significant(@maximum_value.to_f / number_of_lines) 
+                else
+                  0
+                end
+    if number_of_lines.to_i > 0
+      (0..number_of_lines).each do |index|
+        line_diff    = (@graph_right - @graph_left) / number_of_lines
+        x            = @graph_right - (line_diff * index) - 1
+        @d           = @d.line(x, @graph_bottom, x, @graph_top)
+        diff         = index - number_of_lines
+        marker_label = "%4.2f" % (diff.abs * increment)
 
-      line_diff    = (@graph_right - @graph_left) / number_of_lines
-      x            = @graph_right - (line_diff * index) - 1
-      @d           = @d.line(x, @graph_bottom, x, @graph_top)
-      diff         = index - number_of_lines
-      marker_label = "%4.2f" % (diff.abs * increment)
-
-      unless @hide_line_numbers
-        @d.fill      = @font_color
-        @d.font      = @font if @font
-        @d.stroke    = 'transparent'
-        @d.pointsize = scale_fontsize(@marker_font_size)
-        @d.gravity   = CenterGravity
-        # TODO Center text over line
-        @d           = @d.annotate_scaled( @base_image,
-                          0, 0, # Width of box to draw text in
-                          x, @graph_bottom + (LABEL_MARGIN * 2.0), # Coordinates of text
-                          marker_label, @scale)
-      end # unless
-      @d = @d.stroke_antialias true
+        unless @hide_line_numbers
+          @d.fill      = @font_color
+          @d.font      = @font if @font
+          @d.stroke    = 'transparent'
+          @d.pointsize = scale_fontsize(@marker_font_size)
+          @d.gravity   = CenterGravity
+          # TODO Center text over line
+          @d           = @d.annotate_scaled( @base_image,
+                            0, 0, # Width of box to draw text in
+                            x, @graph_bottom + (LABEL_MARGIN * 2.0), # Coordinates of text
+                            marker_label, @scale)
+        end # unless
+        @d = @d.stroke_antialias true
+      end
     end
   end
   def draw_source
