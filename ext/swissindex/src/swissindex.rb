@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 # encoding: utf-8
-# ODDB::Swissindex::SwissindexPharma -- 01.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::Swissindex::SwissindexPharma -- 10.02.2012 -- mhatakeyama@ywesee.com
 
 require 'rubygems'
 require 'savon'
@@ -54,18 +54,10 @@ class SwissindexNonpharma
 
     rescue StandardError, Timeout::Error => err
       if try_time > 0
-        puts err
-        puts err.backtrace
-        puts
-        puts "retry"
         sleep 10
         try_time -= 1
         retry
       else
-        puts " - probably server is not responding"
-        puts err
-        puts err.backtrace
-        puts
         return nil
       end
     end
@@ -92,10 +84,6 @@ class SwissindexNonpharma
       line
     rescue StandardError, Timeout::Error => err
       if try_time > 0
-        puts err
-        puts err.backtrace
-        puts
-        puts "retry"
         sleep 10
         agent = Mechanize.new
         try_time -= 1
@@ -181,10 +169,6 @@ class SwissindexNonpharma
       table
     rescue StandardError, Timeout::Error => err
       if try_time > 0
-        puts err
-        puts err.backtrace
-        puts
-        puts "retry"
         sleep 10
         agent = Mechanize.new
         try_time -= 1
@@ -217,10 +201,6 @@ class SwissindexNonpharma
       return pos_num
     rescue StandardError, Timeout::Error => err
       if try_time > 0
-        puts err
-        puts err.backtrace
-        puts
-        puts "retry"
         sleep 10
         agent = Mechanize.new
         try_time -= 1
@@ -282,18 +262,31 @@ class SwissindexPharma
 
     rescue StandardError, Timeout::Error => err
       if try_time > 0
-        puts err
-        puts err.backtrace
-        puts
-        puts "retry"
         sleep 10
         try_time -= 1
         retry
       else
-        puts " - probably server is not responding"
-        puts err
-        puts err.backtrace
-        puts
+        project_root = File.expand_path('../../..', File.dirname(__FILE__))
+        log_dir = File.expand_path("doc/sl_errors/#{Time.now.year}/#{"%02d" % Time.now.month.to_i}", project_root)
+        log_file = File.join(log_dir, 'bag_xml_swissindex_pharmacode_error.log')
+        create_file = if File.exist?(log_file)
+                        mtime = File.mtime(log_file)
+                        last_update = [mtime.year, mtime.month, mtime.day].join.to_s
+                        now = Time.new
+                        today = [now.year, now.month, now.day].join.to_s
+                        last_update != today
+                      else
+                        true
+                      end
+        FileUtils.mkdir_p log_dir
+        wa = create_file ? 'w' : 'a'
+        open(log_file, wa) do |out|
+          if create_file 
+            out.print "The following packages (gtin or pharmacode) are not updated (probably because of no response from swissindex server).\n"
+            out.print "The second possibility is that the pharmacode is not found in the swissindex server.\n\n"
+          end
+          out.print "#{search_type.to_s.gsub('get_by_','')}: #{code} (#{Time.new})\n"
+        end
         return nil
       end
     end
