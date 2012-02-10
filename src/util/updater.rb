@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Updater-- oddb.org -- 27.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Updater-- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Updater-- oddb.org -- 12.01.2012 -- zdavatz@ywesee.com
 # ODDB::Updater-- oddb.org -- 19.02.2003 -- hwyss@ywesee.com
 
@@ -28,6 +28,7 @@ require 'ext/meddata/src/ean_factory'
 require 'util/schedule'
 require 'plugin/swissindex'
 require 'plugin/mail_order_price'
+require 'util/oddbconfig'
 
 module ODDB
 	class Updater
@@ -201,6 +202,11 @@ module ODDB
 
       LogFile.append('oddb/debug', " getin update_bsv", Time.now)
 
+      sl_errors_dir = File.expand_path("doc/sl_errors/#{@@today.year}/#{"%02d" % @@today.month.to_i}", ODDB::PROJECT_ROOT)
+      sl_error_file = File.join(sl_errors_dir, 'bag_xml_swissindex_pharmacode_error.log')
+      if File.exist?(sl_error_file)
+        FileUtils.rm sl_error_file
+      end
 			logs_pointer = Persistence::Pointer.new([:log_group, :bsv_sl])
 			logs = @app.create(logs_pointer)
 			this_month = Date.new(@@today.year, @@today.month)

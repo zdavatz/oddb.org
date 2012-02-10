@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::BsvXmlPlugin -- oddb.org -- 03.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::BsvXmlPlugin -- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::BsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 
 require 'config'
@@ -694,6 +694,16 @@ module ODDB
         temp.unlink
       end
     end
+    def save_attached_files(file_name, report)
+      if file_name and report
+        log_dir = File.expand_path("doc/sl_errors/#{Time.now.year}/#{"%02d" % Time.now.month.to_i}", ODDB::PROJECT_ROOT)
+        log_file = File.join(log_dir, file_name)
+        FileUtils.mkdir_p(log_dir)
+        open(log_file, "w") do |out|
+          out.print report
+        end
+      end
+    end
     def log_info
       body = report << "\n\n"
       info = super
@@ -777,6 +787,13 @@ in MedWin kein Resultat mit dem entsprechenden Pharmacode
       unknown = unknown_regs << "\n\n" << unknown_pacs
       name = @@today.strftime('Unknown_Products_in_SL_%d.%m.%Y.txt')
       parts.push ['text/plain', name, unknown]
+      ## Add bag_xml_swissindex_pharmacode_error.log (error packages from swissindex server)
+      sl_errors_dir = File.expand_path("doc/sl_errors/#{Time.now.year}/#{"%02d" % Time.now.month.to_i}", ODDB::PROJECT_ROOT)
+      error_file = File.join(sl_errors_dir, 'bag_xml_swissindex_pharmacode_error.log')
+      if File.exist?(error_file)
+        report = File.read(error_file)
+        parts.push ['text/plain', @@today.strftime('Error_Packages_%d.%m.%Y.txt'), report] 
+      end
       ## Add some general statistics to the body
       packages = @app.packages
       pcdless = packages.select do |pac| pac.pharmacode.to_s.empty? end
@@ -789,6 +806,10 @@ Packungen ohne Pharmacode: #{pcdless.size}
 - inaktive Registration: #{exps.size}
 - noch nicht auf MedWin: #{rest.size}
       EOP
+
+      parts.each do |part|
+        save_attached_files(part[1], part[2])
+      end
       info.update(:parts => parts, :report => body)
       info
     end
@@ -849,7 +870,9 @@ Zwei oder mehr "Preparations" haben den selben 5-stelligen Swissmedic-Code
           explain,
           values.join("\n\n"),
         ].join("\n")
-        ['text/plain', name.gsub(/[\s()\/-]/u, '_') << '.txt', report]
+        file_name = name.gsub(/[\s()\/-]/u, '_') << '.txt'
+        save_attached_files(file_name, report)
+        ['text/plain', file_name, report]
       end
       info.update(:parts => parts, :report => body)
       info
