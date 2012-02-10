@@ -203,6 +203,8 @@ module ODDB
 				# being inaccessible after a restart
 				hook.odba_store
 				new_obj
+      rescue InvalidPathError, UninitializedPathError => e
+        warn "Could not create: #{to_s}, reason: #{e.message}"
 			end
       def issue_delete(app)
         obj = resolve(app)
