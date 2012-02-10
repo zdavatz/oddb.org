@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# LppvPlugin -- oddb.org -- 18.01.2006 -- sfrischknecht@ywesee.com
+# ODDB::LppvPlugin -- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::LppvPlugin -- oddb.org -- 18.01.2006 -- sfrischknecht@ywesee.com
 
 $: << File.expand_path("..", File.dirname(__FILE__))
 
@@ -64,8 +65,12 @@ module ODDB
 				@current != @old
 			end
 			def resolve_link(model)
-				pointer = model.pointer
-				str = 'http://ch.oddb.org/de/gcc/resolve/pointer/'.concat(CGI.escape(pointer.to_s))
+        if model.is_a?(ODDB::Package) and iksnr = model.iksnr and seqnr = model.seqnr and ikscd = model.ikscd
+          str = "http://ch.oddb.org/de/gcc/show/reg/#{iksnr}/seq/#{seqnr}/pack/#{ikscd}"
+        else
+          pointer = model.pointer
+          str = 'http://ch.oddb.org/de/gcc/resolve/pointer/'.concat(CGI.escape(pointer.to_s))
+        end
 			end
 			def report_lines
 				[
