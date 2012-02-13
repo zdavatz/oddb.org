@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Interactions::Basket -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Interactions::Basket -- oddb.org -- 13.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Interactions::Basket -- oddb.org -- 07.06.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'
@@ -126,27 +126,33 @@ class BasketSubstrates < HtmlGrid::List
 	BACKGROUND_SUFFIX = ' bg'
 	COMPONENTS = {
 		[0,0]		=>	:substance,
-		[1,0]		=>	:cyp450s,
-		[2,0]		=>	:inducers,
-		[3,0]		=>	:inhibitors,
-    [4,0]   =>  :observed,
+		[1,0]		=>	:atc_class,
+		[2,0]		=>	:cyp450s,
+		[3,0]		=>	:inducers,
+		[4,0]		=>	:inhibitors,
+    [5,0]   =>  :observed,
 	}
 	CSS_MAP = {
 		[0,0]		=>	'bold interaction-substance',
-		[1,0,3]	=>	'interaction-connection',
-    [4,0]   =>  'list',
+		[1,0]		=>	'bold',
+		[2,0,3]	=>	'interaction-connection',
+    [5,0]   =>  'list',
 	}
 	CSS_HEAD_MAP = {
 		[0,0]	=>	'th',
 		[1,0]	=>	'th',
 		[2,0]	=>	'th',
 		[3,0]	=>	'th',
+		[4,0]	=>	'th',
 	}
 	CSS_CLASS = 'composite interaction-basket'
 	DEFAULT_CLASS = HtmlGrid::Value
 	SORT_DEFAULT = :substance
 	SUBHEADER = View::Interactions::BasketHeader
   LEGACY_INTERFACE = false
+  def atc_class(model, session=@session)
+    atc_codes = model.atc_codes
+  end
 	def cyp450s(model, session=@session)
     cyp450s = model.cyp450s
 		unless(cyp450s.empty?)
@@ -227,6 +233,7 @@ class BasketForm < View::Form
 		[1,1,1]	=>	:submit,
 		[0,2]		=>	View::Interactions::BasketSubstrates,
 		[0,3]		=>	:clear_interaction_basket,
+		#[0,3,1]	=>	:interaction_list,
     [0,4]   =>  ExplainResult,
 	}
 	CSS_CLASS = 'composite'
@@ -245,6 +252,9 @@ class BasketForm < View::Form
 		[0,3]	=>	'list bg',
 		[0,4]	=>	'explain',
 	}
+  def interaction_list(model, session)
+    get_event_button(:interactions)
+  end
 	def interaction_basket_count(model, session)
 		count = session.interaction_basket_count
 		@lookandfeel.lookup(:interaction_basket_count, count)

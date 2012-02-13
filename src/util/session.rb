@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Session -- oddb.org -- 01.11.2011 -- mhatakeyama@ywesee.com
+# ODDB::Session -- oddb.org -- 13.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Session -- oddb.org -- 12.05.2009 -- hwyss@ywesee.com
 
 require 'sbsm/session'
@@ -34,6 +34,7 @@ module ODDB
 		def initialize(key, app, validator=nil)
 			super(key, app, validator)
 			@interaction_basket = []
+			@interaction_basket_atc_codes = []
       @currency_rates = {}
 		end
     def active_state
@@ -122,6 +123,7 @@ module ODDB
 		end
 		def clear_interaction_basket
 			@interaction_basket.clear
+      @interaction_basket_atc_codes.clear
 		end
 		def currency 
 			cookie_set_or_get(:currency) || "CHF"
@@ -131,17 +133,25 @@ module ODDB
     end
     def interaction_basket
       if(ids = user_input(:substance_ids))
-        ids = ids.split(/[+ ]/u).collect { |id| id.to_i }
+        ids = ids.split(/,/).collect { |id| id.to_i }
         @interaction_basket.delete_if { |sub| !ids.delete(sub.oid) }
         ids.each { |id| @interaction_basket.push @app.substance(id, false) }
       end
       @interaction_basket = @interaction_basket.compact.uniq
     end
+    def interaction_basket_atc_codes
+      if atc_codes = user_input(:atc_code)
+        codes = atc_codes.split(/,/)
+        @interaction_basket_atc_codes.delete_if { |code| !codes.delete(code) }
+        codes.each { |code| @interaction_basket_atc_codes.push(code)}
+      end
+      @interaction_basket_atc_codes = @interaction_basket_atc_codes.compact.uniq
+    end
 		def interaction_basket_count
 			@interaction_basket.size
 		end
     def interaction_basket_ids
-      @interaction_basket.collect { |sub| sub.oid }.join('+')
+      @interaction_basket.collect { |sub| sub.oid }.join(',')
     end
     def interaction_basket_link
       lookandfeel._event_url(:interaction_basket, 

@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Interactions::ResultList -- oddb -- 01.06.2004 -- mhuggler@ywesee.com
+# ODDB::View::Interactions::ResultList -- oddb.org -- 13.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Interactions::ResultList -- oddb.org -- 01.06.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/list'
 require 'htmlgrid/value'
@@ -13,6 +14,8 @@ require 'view/publictemplate'
 require 'view/dataformat'
 require 'view/resultcolors'
 require 'view/descriptionvalue'
+
+require 'cgi'
 
 module ODDB
 	module View
@@ -55,9 +58,20 @@ class ResultList < HtmlGrid::List
 			name
 		else
 			link = HtmlGrid::Link.new(:add_to_interaction_basket, model, session, self)
-			#link.href = @lookandfeel._event_url(:add_to_interaction_basket, {'pointer'=>CGI.escape(model.pointer.to_s)})
-      ids = @session.interaction_basket_ids << "+" << model.oid.to_s
-      link.href = @lookandfeel._event_url(:interaction_basket, :substance_ids => ids)
+      atc_codes = @session.interaction_basket_atc_codes 
+      if query = @session.persistent_user_input(:search_query)\
+        and atc_code = @session.search_exact_sequence(query).atc_classes.map{|atc| atc.code}
+        atc_codes << atc_code
+      end
+      ids = if basket_ids = @session.interaction_basket_ids and !basket_ids.empty?
+              basket_ids << "," << model.oid.to_s
+            else
+              model.oid.to_s
+            end
+      args = [:substance_ids, ids, :atc_code, atc_codes.join(",")]
+      link.href = @lookandfeel._event_url(:interaction_basket, args) do |args|
+        args.map!{|arg| CGI.unescape(arg)}
+      end
 			link.value = name
 			link.set_attribute('class', 'list big')
 			link

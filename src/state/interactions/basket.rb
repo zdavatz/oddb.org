@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Interactions::Basket -- oddb.org -- 24.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::State::Interactions::Basket -- oddb.org -- 13.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Interactions::Basket -- oddb.org -- 07.06.2004 -- mhuggler@ywesee.com
 
 require	'state/global_predefine'
@@ -27,9 +27,10 @@ class Basket < State::Interactions::Global
     end
   end
 	class Check
-		attr_reader :substance, :cyp450s, :inducers, :inhibitors, :observed
-		def initialize(substance)#, cyp450s)
+		attr_reader :substance, :cyp450s, :inducers, :inhibitors, :observed, :atc_codes
+		def initialize(substance, atc_codes)#, cyp450s)
 			@substance = substance
+      @atc_codes = atc_codes
 			@cyp450s = substance.substrate_connections
       while(substance.has_effective_form? && !substance.is_effective_form?)
 				substance = substance.effective_form
@@ -63,8 +64,11 @@ class Basket < State::Interactions::Global
 	end
   def calculate_interactions
     subs = @session.interaction_basket
+    atc_codes = @session.interaction_basket_atc_codes
+    i = 0
     @model = subs.collect { |sub|
-      check = Check.new(sub)
+      check = Check.new(sub, atc_codes[i])
+      i += 1
       (subs - [sub]).each { |other|
         sub.interactions_with(other).each { |interaction|
           check.add_interaction(interaction)
@@ -75,6 +79,7 @@ class Basket < State::Interactions::Global
       }
       check
     }
+    @model
   end
   def observed_interactions(sub, other)
     values = _observed_interactions_chemical(sub, other)
