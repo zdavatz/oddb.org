@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Chapter -- oddb.org -- 24.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Chapter -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Chapter -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
 require 'htmlgrid/value'
@@ -91,6 +91,7 @@ module ODDB
             elsif(!section.subheading.strip.empty?)
               head << "&nbsp;"
             end
+            head.force_encoding('utf-8')
             head << paragraphs(context, section.paragraphs)
           } 
         }.join
