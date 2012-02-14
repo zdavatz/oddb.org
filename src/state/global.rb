@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Global -- oddb.org -- 31.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
 require 'htmlgrid/urllink'
@@ -57,6 +57,7 @@ require 'state/exception'
 require 'state/interactions/basket'
 require 'state/interactions/init'
 require 'state/interactions/result'
+require 'state/interactions/interactions'
 require 'state/migel/init'
 require 'state/migel/alphabetical'
 require 'state/migel/limitationtext'
@@ -287,6 +288,12 @@ module ODDB
 				@session.clear_interaction_basket
 				State::Interactions::EmptyBasket.new(@session, [])
 			end
+      def interactions
+        State::Interactions::Interactions.new(@session, [])
+      end
+      def interaction_detail
+        State::Interactions::InteractionDetail.new(@session, [])
+      end
 			def creditable?(item = @model)
 				@session.user.creditable?(item)
 			end

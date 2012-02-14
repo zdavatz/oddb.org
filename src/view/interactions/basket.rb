@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Interactions::Basket -- oddb.org -- 13.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Interactions::Basket -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Interactions::Basket -- oddb.org -- 07.06.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/composite'
@@ -232,8 +232,8 @@ class BasketForm < View::Form
 		[1,1,0]	=>	:search_query,
 		[1,1,1]	=>	:submit,
 		[0,2]		=>	View::Interactions::BasketSubstrates,
-		[0,3]		=>	:clear_interaction_basket,
-		#[0,3,1]	=>	:interaction_list,
+		[0,3,0] =>	:clear_interaction_basket,
+		[0,3,1]	=>	:interaction_list,
     [0,4]   =>  ExplainResult,
 	}
 	CSS_CLASS = 'composite'
@@ -249,11 +249,16 @@ class BasketForm < View::Form
 		[0,0] =>	'result-found',
 		[0,1] =>	'list',
 		[1,1]	=>	'search',	
-		[0,3]	=>	'list bg',
+		[0,3,0]	=>	'list bg',
+		[0,3,1]	=>	'list bg',
 		[0,4]	=>	'explain',
 	}
   def interaction_list(model, session)
-    get_event_button(:interactions)
+    button = HtmlGrid::Button.new(:interactions_button, @model, @session, self)
+    url = @lookandfeel._event_url(:interactions, {})
+    script = "document.location.href='#{url}';"
+    button.set_attribute("onclick", script)
+    button
   end
 	def interaction_basket_count(model, session)
 		count = session.interaction_basket_count

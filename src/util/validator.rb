@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Validator -- oddb.org -- 31.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
 require 'sbsm/validator'
@@ -194,6 +194,8 @@ module ODDB
 			:indication,
 			:indications,
 			:interaction_basket,
+			:interaction_detail,
+			:interactions,
 			:legal_note,
       :limitation_analysis,
 			:limitation_text,

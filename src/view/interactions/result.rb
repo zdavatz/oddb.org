@@ -41,8 +41,7 @@ class ResultForm < View::Form
 		[0,3]	=>	'list bg',	
 	}
 	def interaction_basket(model, session)
-		get_event_button(:interaction_basket, 
-                     :substance_ids => @session.interaction_basket_ids)
+		get_event_button(:interaction_basket, :substance_ids => @session.interaction_basket_ids)
 	end
 	def interaction_basket_link(model, session)
 		link = HtmlGrid::Link.new(:interaction_basket, model, session, self)
