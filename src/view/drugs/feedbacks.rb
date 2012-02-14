@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Feedbacks -- oddb.org -- 16.12.2011 -- jlang@ywesee.com, usenguel@ywesee.com
+# ODDB::View::Feedbacks -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Feedbacks -- oddb.org -- 28.10.2004 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'view/feedbacks'
@@ -65,6 +65,16 @@ class FeedbackList < View::FeedbackList
 		[0,6,0]		=>	'helps',
 		[1,6,1]		=>	:helps,
 	}
+  def name(model, session=@session)
+    model.name.force_encoding('utf-8')
+  rescue
+     name = model.name.encode("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
+  end
+  def message(model, session=@session)
+    model.message.force_encoding('utf-8')
+  rescue
+     message = model.message.encode("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
+  end
 end
 class FeedbacksComposite < HtmlGrid::Composite
 	CSS_CLASS = 'composite'
