@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Interactions::InteractionDetail -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::State::Interactions::InteractionDetail -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
 
 require	'state/global_predefine'
 require	'view/interactions/interaction_detail'
@@ -40,7 +40,12 @@ class InteractionDetail < State::Interactions::Global
 
       # get xml document
       server_url = "api.epha.ch"
-      base_url = "/1.0/interaction/#{atc_codes.first}/#{atc_codes.last}?key=OD3DJ2EZ68LAZYL"
+      interaction_key = if ODDB.config.respond_to?(:interaction_key)
+                          ODDB.config.interaction_key
+                        else
+                          '79VVZ51XJKSEN1G'
+                        end
+      base_url = "/1.0/interaction/#{atc_codes.first}/#{atc_codes.last}?key=#{interaction_key}"
       https = Net::HTTP.new(server_url, 443)
       https.use_ssl = true
       https.ssl_version = :SSLv3
