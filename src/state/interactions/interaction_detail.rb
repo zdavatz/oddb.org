@@ -20,7 +20,7 @@ class InteractionDetail < State::Interactions::Global
 
       # get xml document
       server_url = "api.epha.ch"
-      base_url = "/1.0/interaction/#{atc_codes.first}/#{atc_codes.last}?key=79VVZ51XJKSEN1G"
+      base_url = "/1.0/interaction/#{atc_codes.first}/#{atc_codes.last}?key=OD3DJ2EZ68LAZYL"
       https = Net::HTTP.new(server_url, 443)
       https.use_ssl = true
       https.ssl_version = :SSLv3
