@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::BsvXmlPlugin -- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::BsvXmlPlugin -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::BsvXmlPlugin -- oddb.org -- 10.11.2008 -- hwyss@ywesee.com
 
 require 'config'
@@ -322,29 +322,38 @@ module ODDB
               :lim_text => @lim_data,
               :size     => @size,
             })
-          elsif @pack && !@conflict && !@duplicate_iksnr
-            @report.store :pharmacode_oddb, @pack.pharmacode
-            if seq = @pack.sequence
-              @app.update seq.pointer, @seq_data, :bag
+          #elsif @pack && !@conflict && !@duplicate_iksnr
+          elsif @pack && !@duplicate_iksnr
+            ## check @conflict case (compare @pcode (bag pharmacode) and @pack.pharmacode (oddb pharmacode))
+            update_conflict = true
+            if @conflict and @pcode and @pack and @pcode.to_i < @pack.pharmacode.to_i
+              update_conflict = false
             end
-            pold = @pack.price_public
-            pnew = @data[:price_public]
-            unless pold && pnew
-              pold = @pack.price_exfactory
-              pnew = @data[:price_exfactory]
-            end
-            if pold && pnew
-              if pold > pnew
-                flag_change @pack.pointer, :price_cut
-              elsif pold < pnew
-                flag_change @pack.pointer, :price_rise
+            if update_conflict
+              @report.store :pharmacode_oddb, @pack.pharmacode
+              if seq = @pack.sequence
+                @app.update seq.pointer, @seq_data, :bag
               end
+              pold = @pack.price_public
+              pnew = @data[:price_public]
+              unless pold && pnew
+                pold = @pack.price_exfactory
+                pnew = @data[:price_exfactory]
+              end
+              if pold && pnew
+                if pold > pnew
+                  flag_change @pack.pointer, :price_cut
+                elsif pold < pnew
+                  flag_change @pack.pointer, :price_rise
+                end
+              end
+
+              ## don't take the Swissmedic-Category unless it's missing in the DB
+              @data.delete :ikscat if @pack.ikscat
+              @app.update @pack.pointer, @data, :bag
+              @sl_entries.store @pack.pointer, @sl_data
+              @lim_texts.store @pack.pointer, @lim_data
             end
-            ## don't take the Swissmedic-Category unless it's missing in the DB
-            @data.delete :ikscat if @pack.ikscat
-            @app.update @pack.pointer, @data, :bag
-            @sl_entries.store @pack.pointer, @sl_data
-            @lim_texts.store @pack.pointer, @lim_data
           end
           @pcode, @pack, @sl_data, @lim_data, @out_of_trade, @ikscd, @data,
             @size = nil
@@ -527,6 +536,7 @@ module ODDB
             end
             if active && !@out_of_trade
               if @registration && @pack.nil?
+                @report.store :swissmedic_no5_oddb, @registration.iksnr
                 @unknown_packages.push @report
               elsif @pack
                 if @conflict
@@ -534,6 +544,7 @@ module ODDB
                 end
               end
             elsif @registration && @pack.nil?
+              @report.store :swissmedic_no5_oddb, @registration.iksnr
               @unknown_packages_oot.push @report
             elsif @conflict
               @conflicted_packages_oot.push @report
@@ -809,6 +820,7 @@ Packungen ohne Pharmacode: #{pcdless.size}
 
       parts.each do |part|
         save_attached_files(part[1], part[2])
+        LogFile.append('oddb/debug', " attached file #{part[1]} is saved", Time.now)
       end
       info.update(:parts => parts, :report => body)
       info
@@ -872,6 +884,7 @@ Zwei oder mehr "Preparations" haben den selben 5-stelligen Swissmedic-Code
         ].join("\n")
         file_name = name.gsub(/[\s()\/-]/u, '_') << '.txt'
         save_attached_files(file_name, report)
+        LogFile.append('oddb/debug', " attached file #{file_name} is saved", Time.now)
         ['text/plain', file_name, report]
       end
       info.update(:parts => parts, :report => body)
