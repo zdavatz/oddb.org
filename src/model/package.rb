@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 23.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::Package -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -177,19 +177,29 @@ module ODDB
     end
 		def ddd_price
 			if(!@disable_ddd_price && (ddd = self.ddd) \
-				&& (grp = galenic_group) && grp.match(@@ddd_galforms) \
 				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose) \
         && size = comparable_size)
+
         factor = (longevity || 1).to_f
-        if(mdose > (ddose * factor))
-          (price / size.to_f) / factor
+        if (grp = galenic_group) && grp.match(@@ddd_galforms) 
+          if(mdose > (ddose * factor))
+            (price / size.to_f) / factor
+          else
+            (price / size.to_f) \
+              * (ddose.to_f * factor / mdose.want(ddose.unit).to_f) / factor
+          end
         else
-          (price / size.to_f) \
-            * (ddose.to_f * factor / mdose.want(ddose.unit).to_f) / factor
+          # This is valid only for the following case, for example, mdose unit: mg/ml, size unit: ml
+          # ddd.dose  (ddose): the amount of active_agent required for one day
+          # self.dose (mdose): (usually) the amount of active_agent included in one unit of package
+          # but in the case of mg/ml, mdose means not 'amount' but 'concentration'
+          # size: total amount of package
+          (price / (size * mdose / ddose)) / factor
         end
 			end
 		rescue RuntimeError
 		end
+
     def delete_part(oid)
       @parts.delete_if { |comp| comp.oid == oid }
     end
