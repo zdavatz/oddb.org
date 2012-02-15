@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
 require 'sbsm/lookandfeel'
@@ -2266,6 +2266,7 @@ Zeno Davatz
 				:interaction_search_explain2	=>	'2. Cliquer sur "le nom de médicament" -> Le médicament est mis dans le panier d\'interaction.',
 				:interaction_search_explain3	=>	'3. Cliquer sur "Panier d\'interaction".',
 				:interactions							=>	'Interactions',
+				:interaction_detail				=>	"Détail d'interaction",
 				:introduction_date				=>	"Date entr&eacute;e LS",
 				:invalid_user_welcome			=>	'Expiration de compte',
 				:invalid_user_explain0		=>	'Bonjour ',
@@ -3477,6 +3478,7 @@ Zeno Davatz
 				:interaction_search_explain2	=>	'2. Click on the "drug name" -> the drug is put into the interaction basket.',
 				:interaction_search_explain3	=>	'3. Click on the button "Interaction Basket".',
 				:interactions							=>	'Interactions',
+				:interaction_detail				=>	'Interaction Detail',
 				:introduction_date				=>	'Date SL entry',
 				:invalid_user_welcome			=>	'Account expired',
 				:invalid_user_explain0		=>	'Dear ',

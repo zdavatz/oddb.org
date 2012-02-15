@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Interactions::InteractionDetail -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Interactions::InteractionDetail -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
 
 require 'htmlgrid/composite'
 require 'htmlgrid/richtext'
@@ -153,7 +153,15 @@ class InteractionDetailForm < View::Form
     link
   end
   def interaction_detail(model, session=@session)
-    '&nbsp;-&nbsp;Interaktion Detail'    
+    title = case @session.language
+             when 'en'
+              ' - Interaction Detail '
+             when 'fr'
+              " - Détail d'interaction "
+             else
+              ' - Interaktion Detail '
+             end
+     title + model[:title] 
   end
   def interaction_list(model, session)
     get_event_button(:interactions)

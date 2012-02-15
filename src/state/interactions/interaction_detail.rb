@@ -17,6 +17,26 @@ class InteractionDetail < State::Interactions::Global
 	def init
     @model = {}
     if atc_codes = @session.user_input(:atc_code).split(/,/) and atc_codes.length == 2
+      # interaction title
+      atc_subs = []
+      atc_codes.each do |atc_code|
+        i = @session.interaction_basket_atc_codes.index(atc_code)
+        sub_name = if sub = @session.interaction_basket[i]
+                     sub.send(@session.language)
+                   else
+                     ''
+                   end
+        atc_subs << atc_code + ' (' + sub_name + ')'
+      end
+      und = case @session.language 
+            when 'en'
+              ' and '
+            when 'fr'
+              ' et '
+            else
+              ' und '
+            end
+      @model.store(:title, atc_subs.join(und))
 
       # get xml document
       server_url = "api.epha.ch"
