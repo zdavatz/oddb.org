@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Ajax::DDDPrice -- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Ajax::DDDPrice -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Ajax::DDDPrice -- oddb.org -- 10.04.2006 -- hwyss@ywesee.com
 
 require 'htmlgrid/composite'
@@ -32,23 +32,23 @@ class DDDPriceTable < HtmlGrid::Composite
 	LEGACY_INTERFACE = false
 	DEFAULT_CLASS = HtmlGrid::Value
 	def ddd_oral(model)
-		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose && model.dose.unit == ddd.dose.unit)
+		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose)
 			comp = HtmlGrid::Value.new(:ddd_dose, ddd.dose, @session, self)
 			ddose = ddd.dose
-			comp.value = ddose.want(wanted_unit(model.dose, ddose)) 
+			comp.value = ddose
 			comp
 		end
 	end
 	def dose(model)
-		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose && model.dose.unit == ddd.dose.unit)
+		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose)
 			comp = HtmlGrid::Value.new(:dose, model, @session, self)
 			mdose = model.dose
-			comp.value = mdose.want(wanted_unit(mdose, ddd.dose))
+			comp.value = mdose
 			comp
 		end
 	end
 	def calculation(model)
-		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose && model.dose.unit == ddd.dose.unit)
+		if(model && (atc = model.atc_class) && (ddd = atc.ddd('O')) && model.dose && ddd.dose)
       currency = @session.currency
 			mprice = model.price_public
       mprice = convert_price(mprice, currency)
@@ -56,16 +56,13 @@ class DDDPriceTable < HtmlGrid::Composite
       dprice = convert_price(dprice, currency)
 			mdose = model.dose
 			ddose = ddd.dose
-			wanted = wanted_unit(mdose, ddose)
-			mdose = model.dose.want(wanted)
-			ddose = ddd.dose.want(wanted)
 			curr = @session.currency
 			comp = HtmlGrid::Value.new(:ddd_calculation, model, @session, self)
       if(factor = model.longevity)
         comp.value = @lookandfeel.lookup(:ddd_calc_long, factor, mprice,
                                          model.size, dprice, curr)
 
-      elsif(mdose > ddose)
+      elsif(mdose > ddose and model.galenic_group =~ /tabletten?/iu)
         comp.value = @lookandfeel.lookup(:ddd_calc_tablet, mprice,
                                          model.size, dprice, curr)
       else
@@ -122,7 +119,9 @@ class DDDPriceComposite < HtmlGrid::Composite
     args = [
       :for, file.gsub(/\s+/, '_')
     ]
-    url = @lookandfeel._event_url(:ddd_chart, args)
+    url = @lookandfeel._event_url(:ddd_chart, args) do |args|
+      args.map!{|arg| CGI.unescape(arg)}
+    end
     img.set_attribute('src', url)
     link.href = url
     link.value = img

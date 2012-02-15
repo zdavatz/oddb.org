@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Ajax::View::DDDChart -- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::Ajax::View::DDDChart -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Ajax::View::DDDChart -- oddb.org -- 17.04.2009 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
@@ -254,6 +254,7 @@ class DDDChart < HtmlGrid::Component
         @data.push ddd_price
         base = pac.name_base
         size = comparable_size(pac)
+        size.gsub!(/&agrave;/,'à')
         fullname = u sprintf("%s, %s", base, size)
         name = fullname.length > MAX_LEN ? fullname[0, MAX_LEN - 1] + "…" : fullname
         label = sprintf "%s: CHF %4.2f", name, ddd_price
