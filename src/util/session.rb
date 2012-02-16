@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Session -- oddb.org -- 13.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::Session -- oddb.org -- 16.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Session -- oddb.org -- 12.05.2009 -- hwyss@ywesee.com
 
 require 'sbsm/session'
@@ -140,12 +140,14 @@ module ODDB
       @interaction_basket = @interaction_basket.compact.uniq
     end
     def interaction_basket_atc_codes
-      if atc_codes = user_input(:atc_code)
+      if atc_codes = user_input(:atc_code) and event == :interaction_basket
         codes = atc_codes.split(/,/)
         @interaction_basket_atc_codes.delete_if { |code| !codes.delete(code) }
         codes.each { |code| @interaction_basket_atc_codes.push(code)}
+        @interaction_basket_atc_codes = @interaction_basket_atc_codes.compact.uniq
+      else
+        @interaction_basket_atc_codes
       end
-      @interaction_basket_atc_codes = @interaction_basket_atc_codes.compact.uniq
     end
 		def interaction_basket_count
 			@interaction_basket.size
