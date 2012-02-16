@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# SBSM::LookandfeelWrapper - oddb.org -- 23.01.2012 -- mhatakeyama@ywesee.com
+# SBSM::LookandfeelWrapper - oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com
 # SBSM::LookandfeelWrapper - oddb.org -- 21.07.2003 -- mhuggler@ywesee.com
 
 require 'sbsm/lookandfeelwrapper'
@@ -712,12 +712,16 @@ module ODDB
 			:help_link,
 			:home,
 			:home_drugs,
+      :home_interactions,
+      :home_migel,
+      :interactions, 
       :download_export,
       :legal_note_vertical,
       :limitation_texts,
       :login_form,
       :logo,
 			:logout,
+      :migel,
       :patinfos, 
       :query_limit,
 			:recent_registrations,
