@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::Package -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -120,7 +120,11 @@ module ODDB
       delete_all_mail_order_prices
 		end
     def commercial_forms
-      @parts.collect { |part| part.commercial_form }
+      if @parts.is_a?(Array)
+        @parts.collect { |part| part.commercial_form }
+      else
+        []
+      end
     end
 		def company_name
 			(cmp = company) && cmp.name
