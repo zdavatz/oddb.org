@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Sequence -- oddb.org -- 12.01.2012 -- mhatakeyama@ywesee.com 
+# ODDB::Sequence -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Sequence -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -48,14 +48,15 @@ module ODDB
 			end
 		end
 		def active_package_count(generic_type=nil)
-			if(active? && (generic_type.nil? \
-				|| @registration.generic_type == generic_type))
-				@packages.values.inject(0) { |count, pack|
-					if(pack.active?)
-						count += 1
-					end
-					count
-				}
+			if(active? && (generic_type.nil? || @registration.generic_type == generic_type))
+        if @packages.is_a?(Hash)
+          @packages.values.inject(0) { |count, pack|
+            if(pack.active?)
+              count += 1
+            end
+            count
+          }
+        end
 			else
 				0
 			end
