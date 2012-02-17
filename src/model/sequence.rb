@@ -219,7 +219,9 @@ module ODDB
     end
 		def package(ikscd)
       unless ikscd.is_a?(SBSM::InvalidDataError)
-        @packages[sprintf('%03d', ikscd.to_i)]
+        if @packages.is_a?(Hash)
+          @packages[sprintf('%03d', ikscd.to_i)]
+        end
       end
 		end
 		def package_count
