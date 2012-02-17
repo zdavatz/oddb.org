@@ -172,7 +172,9 @@ module ODDB
       @compositions.collect { |comp| comp.galenic_group }.compact.uniq
     end
     def galenic_forms
-      @compositions.collect { |comp| comp.galenic_form }.compact.uniq
+      @compositions.collect { |comp| 
+        comp.galenic_form if comp.respond_to?(:galenic_form)
+      }.compact.uniq
     end
     def has_patinfo?
       (!@patinfo.nil? || !@pdf_patinfo.nil?) && patinfo_active? \
