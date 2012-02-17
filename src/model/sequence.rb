@@ -179,9 +179,11 @@ module ODDB
         && !company.disable_patinfo
     end
     def has_public_packages?
-      @packages.any? { |key, pac|
-        pac.public?
-      }
+      if @packages.is_a?(Hash)
+        @packages.any? { |key, pac|
+          pac.public?
+        }
+      end
     end
 		def indication
 			@indication || @registration.indication if @registration
