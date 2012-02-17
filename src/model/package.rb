@@ -271,7 +271,7 @@ module ODDB
 			@sl_entry.limitation unless @sl_entry.nil?
 		end
 		def limitation_text
-			@sl_entry.limitation_text unless @sl_entry.nil?
+			@sl_entry.limitation_text if @sl_entry.respond_to?(:limitation_text)
 		end
 		def most_precise_dose
 			@pretty_dose || dose
