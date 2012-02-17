@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::DataFormat -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com 
+# ODDB::View::DataFormat -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::DataFormat -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'view/external_links'
@@ -94,6 +94,8 @@ module ODDB
         else
           link
         end
+      rescue
+        ''
 			end
 			def price(model, session=@session)
 				formatted_price(:price, model)
