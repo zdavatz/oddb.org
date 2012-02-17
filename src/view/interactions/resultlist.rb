@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Interactions::ResultList -- oddb.org -- 16.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Interactions::ResultList -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Interactions::ResultList -- oddb.org -- 01.06.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/list'
@@ -61,7 +61,8 @@ class ResultList < HtmlGrid::List
       atc_codes = @session.interaction_basket_atc_codes 
       if query = @session.persistent_user_input(:search_query)\
         and atc_classes = @session.search_oddb(query).atc_classes\
-        and atc_code = atc_classes.sort{|atc| atc.package_count}.reverse.first.code
+        and atc_class = atc_classes.sort{|atc| atc.package_count}.reverse.first\
+        and atc_code = atc_class.code
         atc_codes << atc_code
       end
       ids = if basket_ids = @session.interaction_basket_ids and !basket_ids.empty?
