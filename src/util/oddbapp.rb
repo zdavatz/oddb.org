@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# OddbApp -- oddb.org -- 16.02.2012 -- mhatakeyama@ywesee.com
+# OddbApp -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com
 # OddbApp -- oddb.org -- 21.06.2010 -- hwyss@ywesee.com
 
 require 'yaml'
@@ -1916,7 +1916,7 @@ module ODDB
         bytes = 0
         threads = 0
         sessions = 0
-        format = "%s %s: sessions: %4i - threads: %4i (%s) - memory: %4iMB %s"
+        format = "%s %s: sessions: %4i - threads: %4i  - memory: %4iMB %s"
         loop {
           begin
             lasttime = time
@@ -1924,16 +1924,6 @@ module ODDB
             alarm = time - lasttime > 60 ? '*' : ' '
             lastthreads = threads
             threads = Thread.list.size
-            threads_run = Thread.list.select{|th| th.status == 'run'}.length
-            threads_sleep = Thread.list.select{|th| th.status == 'sleep'}.length
-            threads_aborting = Thread.list.select{|th| th.status == 'aborting'}.length
-            threads_dead = Thread.list.select{|th| !th.alive?}.length
-            threads_status = [
-              "run:#{threads_run}",
-              "sleep:#{threads_sleep}",
-              "aborting:#{threads_aborting}",
-              "dead:#{threads_dead}"
-            ]
             lastbytes = bytes
             bytes = File.read("/proc/#{$$}/stat").split(' ').at(22).to_i
             mbytes = bytes / (2**20)
@@ -1952,7 +1942,7 @@ module ODDB
             lines = File.readlines(path)[0,100] rescue []
             lines.unshift sprintf(format, alarm, 
                                   time.strftime('%Y-%m-%d %H:%M:%S'),
-                                  sessions, threads, threads_status.join(' '), mbytes, gc)
+                                  sessions, threads, mbytes, gc)
             File.open(path, 'w') { |fh|
               fh.puts lines
             }
