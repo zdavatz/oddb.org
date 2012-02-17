@@ -241,11 +241,13 @@ module ODDB
 			if(public? && (generic_type.nil? \
 				|| @registration.generic_type == generic_type))
         count = 0
-				@packages.values.each { |pack|
-					if(pack.public?)
-						count += 1
-					end
-				}
+        if @packages.is_a?(Hash)
+          @packages.values.each { |pack|
+            if(pack.public?)
+              count += 1
+            end
+          }
+        end
         count
 			else
 				0
