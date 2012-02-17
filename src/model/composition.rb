@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Composition -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::Composition -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Composition -- oddb.org -- 28.04.2008 -- hwyss@ywesee.com
 
 require 'util/persistence'
@@ -60,7 +60,11 @@ module ODDB
       @galenic_form.route_of_administration if(@galenic_form)
     end
     def substances
-      @active_agents.collect { |agent| agent.substance }
+      if @active_agents.is_a?(Array)
+        @active_agents.collect { |agent| agent.substance }
+      else
+        []
+      end
     end
     def to_s
       str = @active_agents.join(', ')
