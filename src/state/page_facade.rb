@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Stage::PageFacade -- oddb -- 01.06.2004 -- mhuggler@ywesee.com
+# ODDB::Stage::PageFacade -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::Stage::PageFacade -- oddb.org -- 01.06.2004 -- mhuggler@ywesee.com
 
 module ODDB
 	module State
@@ -63,7 +64,8 @@ module ODDB
 				page()
 			end
 			def page
-				@page = @pages[@session.user_input(:page).to_i] || []
+				@page = @pages[@session.user_input(:page).to_i] if @pages
+        @page ||= []
 			end
 		end
 	end
