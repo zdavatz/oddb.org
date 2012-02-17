@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Drugs::PriceHistory -- oddb.org -- 17.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::State::Drugs::PriceHistory -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Drugs::PriceHistory -- oddb.org -- 24.11.2008 -- hwyss@ywesee.com
 
 require 'state/global_predefine'
@@ -29,7 +29,7 @@ class PriceHistory < State::Drugs::Global
     pack = if (reg = @session.app.registration(reg) and seq = reg.sequence(seq))
              seq.package(pac)
            end
-    if pack
+    if pack.is_a?(ODDB::Package)
       @model.package = pack
       dates = {}
       pack.prices.each do |key, prices|
