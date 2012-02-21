@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Interactions::InteractionDetail -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::State::Interactions::InteractionDetail -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 
 require	'state/global_predefine'
 require	'view/interactions/interaction_detail'
@@ -15,6 +15,7 @@ class InteractionDetail < State::Interactions::Global
 	DIRECT_EVENT = :interaction_detail
 	LIMITED = false
 	def init
+    try_time ||= 3
     @model = {}
     if atc_codes = @session.user_input(:atc_code).split(/,/) and atc_codes.length == 2
       # interaction title
@@ -78,6 +79,12 @@ class InteractionDetail < State::Interactions::Global
           }
         end
       end
+    end
+  rescue
+    if try_time > 0
+      sleep 5
+      try_time -= 1
+      retry
     end
 	end
 end

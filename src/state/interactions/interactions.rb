@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Interactions::Interactions -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::State::Interactions::Interactions -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 
 require	'state/global_predefine'
 require	'view/interactions/interactions'
@@ -16,13 +16,13 @@ class Interactions < State::Interactions::Global
 	DIRECT_EVENT = :interactions
 	LIMITED = false
 	def init
+    try_time ||= 3
     @model = []
     if atc_codes = @session.interaction_basket_atc_codes and !atc_codes.empty?\
       and substances = @session.interaction_basket and !substances.empty?
 
       # get xml document
       server_url = "api.epha.ch"
-      #base_url = "/1.0/interaction/list?atc=#{atc_codes.join(',')}&key=OD3DJ2EZ68LAZYL"
       interaction_key = if ODDB.config.respond_to?(:interaction_key)
                           ODDB.config.interaction_key 
                         else
@@ -55,6 +55,12 @@ class Interactions < State::Interactions::Global
           }
         end
       end
+    end
+  rescue 
+    if try_time > 0
+      sleep 5
+      try_time -= 1
+      retry
     end
 	end
 end
