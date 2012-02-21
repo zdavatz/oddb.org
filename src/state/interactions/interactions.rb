@@ -16,7 +16,6 @@ class Interactions < State::Interactions::Global
 	DIRECT_EVENT = :interactions
 	LIMITED = false
 	def init
-    try_time ||= 3
     @model = []
     if atc_codes = @session.interaction_basket_atc_codes and !atc_codes.empty?\
       and substances = @session.interaction_basket and !substances.empty?
@@ -32,6 +31,7 @@ class Interactions < State::Interactions::Global
       https = Net::HTTP.new(server_url, 443)
       https.use_ssl = true
       https.ssl_version = :SSLv3
+      https.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       xml = ""
       https.start {|w|
@@ -55,12 +55,6 @@ class Interactions < State::Interactions::Global
           }
         end
       end
-    end
-  rescue 
-    if try_time > 0
-      sleep 5
-      try_time -= 1
-      retry
     end
 	end
 end

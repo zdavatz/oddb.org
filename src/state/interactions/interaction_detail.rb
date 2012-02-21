@@ -15,7 +15,6 @@ class InteractionDetail < State::Interactions::Global
 	DIRECT_EVENT = :interaction_detail
 	LIMITED = false
 	def init
-    try_time ||= 3
     @model = {}
     if atc_codes = @session.user_input(:atc_code).split(/,/) and atc_codes.length == 2
       # interaction title
@@ -50,6 +49,7 @@ class InteractionDetail < State::Interactions::Global
       https = Net::HTTP.new(server_url, 443)
       https.use_ssl = true
       https.ssl_version = :SSLv3
+      https.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       xml = ""
       https.start {|w|
@@ -79,12 +79,6 @@ class InteractionDetail < State::Interactions::Global
           }
         end
       end
-    end
-  rescue
-    if try_time > 0
-      sleep 5
-      try_time -= 1
-      retry
     end
 	end
 end
