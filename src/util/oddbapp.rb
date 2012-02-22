@@ -1924,8 +1924,8 @@ module ODDB
             alarm = time - lasttime > 60 ? '*' : ' '
             lastthreads = threads
             threads = Thread.list.size
-            # Shutdown if more than 80 threads are created, probably because of spiders
-            if threads > 80
+            # Shutdown if more than 150 threads are created, probably because of spiders
+            if threads > 150
               exit
             end
             lastbytes = bytes
