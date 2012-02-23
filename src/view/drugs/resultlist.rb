@@ -102,7 +102,7 @@ class AtcHeader < HtmlGrid::Composite
 	end
 end
 class MailOrderPriceLogo < HtmlGrid::NamedComponent
-  LOGO_PATH = "http://#{SERVER_NAME}/resources/logos/"
+  LOGO_PATH = "http://#{SERVER_NAME}/resources/zurrose/"
   def init
     super
     @index = 0
