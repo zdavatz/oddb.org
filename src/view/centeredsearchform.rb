@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::CenteredSearchForm -- oddb.org -- 18.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::CenteredSearchForm -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::CenteredSearchForm -- oddb.org -- 24.10.2002 -- hwyss@ywesee.com 
 
 require 'htmlgrid/form'
@@ -41,7 +41,7 @@ module ODDB
 				#'width'				=>	'100%',
 			}
 			def donation_logo(model, session)
-				image = HtmlGrid::Input.new(:submit, model, session, self)
+				image = HtmlGrid::Input.new(:submit, nil, session, self)
 				image.attributes['src'] = @lookandfeel.resource_global(:paypal_donate)
 				image.attributes['type'] = 'image'
 				image.attributes['alt'] = "Make payments with PayPal - it's fast, free and secure!"
