@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
 require 'sbsm/lookandfeel'
@@ -1525,6 +1525,7 @@ Zeno Davatz
         :th_origins               =>  'Datenquellen',
 				:th_out_of_trade					=>	'Ausser Handel (MedRef)',
 				:th_package_count					=>	'Packungen',
+				:th_patinfo     				  =>	'&nbsp;',
 				:th_patinfo_short				  =>	'&nbsp;',
 				:th_patinfo_stats					=>	'Patinfo Statistik',
 				:th_patinfo_title				  =>	'Patinfo-Titel',
