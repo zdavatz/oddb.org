@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::AlphaHeader -- oddb -- 03.07.2003 -- hwyss@ywesee.com 
+# ODDB::View::AlphaHeader -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com 
+# ODDB::View::AlphaHeader -- oddb.org -- 03.07.2003 -- hwyss@ywesee.com 
 
 module ODDB
 	module View
@@ -22,7 +23,7 @@ module ODDB
 					link.set_attribute('class', 'subheading bold')
 					@grid.add(link, *offset)
 				}
-				@grid.set_colspan(offset.at(0), offset.at(1), full_colspan)
+				@grid.set_colspan(offset.at(0), offset.at(1), full_colspan.to_i)
 				@grid.add_style('subheading bold', *offset)
 				resolve_offset(offset, self::class::OFFSET_STEP)
 			end
