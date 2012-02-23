@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::MailOrderPricePlugin -- oddb.org -- 23.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::MailOrderPricePlugin -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 
 $: << File.expand_path('../../src', File.dirname(__FILE__))
 
@@ -10,7 +10,7 @@ require 'fileutils'
 
 module ODDB
 	class MailOrderPricePlugin < Plugin
-    LOGO_DIR = File.expand_path('../../doc/resources/logos', File.dirname(__FILE__))
+    LOGO_DIR = File.expand_path('../../doc/resources/zurrose', File.dirname(__FILE__))
     CSV_DIR  = File.expand_path('../../data/csv', File.dirname(__FILE__))
 		def initialize(app)
 			super(app)
@@ -45,14 +45,12 @@ module ODDB
             if reg = @app.registration(iksnr) and pac = reg.package(ikscd)
               price = x[1]
               url   = x[2].chomp
-              if pac.mail_order_prices 
-                if index = pac.mail_order_prices.index{|price| price.logo == logo_file_name}
-                  pac.update_mail_order_price(index, price, url, logo_file_name)
-                else
-                  pac.add_mail_order_price(price, url, logo_file_name)
-                end
-                @updated_packages += 1
+              if pac.mail_order_prices and index = pac.mail_order_prices.index{|price| price.logo == logo_file_name}
+                pac.update_mail_order_price(index, price, url, logo_file_name)
+              else
+                pac.add_mail_order_price(price, url, logo_file_name)
               end
+              @updated_packages += 1
             end
           end
         end
