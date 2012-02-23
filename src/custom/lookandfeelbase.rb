@@ -1532,6 +1532,8 @@ Zeno Davatz
 				:th_parent_class				  =>	'Adresse für',
         :th_parts                 =>	'Packungsbestandteile',
         :th_passive               =>	'Passive',
+				:th_percent_exfactory			=>	'&nbsp;',
+				:th_percent_public  			=>	'&nbsp;',
 				:th_pharmacode					  =>	'Pharmacode',
 				:th_plz										=>	'Postleitzahl',
         :th_ppha                  =>  'PPHA',
