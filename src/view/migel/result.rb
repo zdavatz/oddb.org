@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Migel::Result -- oddb.org -- 12.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Migel::Result -- oddb.org -- 24.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Migel::Result -- oddb.org -- 04.10.2005 -- ffricker@ywesee.com
 
 require 'htmlgrid/list'
@@ -138,8 +138,12 @@ class ResultList < View::Migel::List
 	end
 	def compose_subheader(item, offset, css='list atc')
 		xval, yval = offset
-		values = [limitation_text(item), nil, migel_code(item), nil, product_description(item)]
-		@grid.add(values, xval, yval)
+		values = [limitation_text(item), migel_code(item), product_description(item)]
+    x = xval
+    values.each do |val|
+		  @grid.add(val, x, yval)
+      x += 1
+    end
 		@grid.add_style(css, xval, yval, 3)
 		@grid.set_colspan(xval + 2, yval, @width - xval - 1)
 	end
