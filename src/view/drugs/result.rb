@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Result -- oddb.org -- 09.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::Result -- oddb.org -- 24.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Result -- oddb.org -- 03.03.2003 -- andy@jetnet.ch
 
 require 'view/form'

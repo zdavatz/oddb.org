@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# State::Drugs::Result -- oddb.org -- 24.01.2012 -- mhatakeyama@ywesee.com
+# State::Drugs::Result -- oddb.org -- 24.02.2012 -- mhatakeyama@ywesee.com
 # State::Drugs::Result -- oddb.org -- 03.03.2003 -- hwyss@ywesee.com 
 
 require 'state/global_predefine'
@@ -23,7 +23,7 @@ class Result < State::Drugs::Global
 	ITEM_LIMIT = 100
 	REVERSE_MAP = View::Drugs::ResultList::REVERSE_MAP
 	attr_accessor :search_query, :search_type
-  attr_reader :pages
+  attr_reader :pages, :code2page
 	include ResultStateSort
 	def init
     @pages = []
@@ -35,7 +35,9 @@ class Result < State::Drugs::Global
  			query = @session.persistent_user_input(:search_query).to_s.downcase
 			page  = 0
 			count = 0
+      @code2page = {}
       @model.each { |atc|
+        @code2page.store(atc.code, page)
         @pages[page] ||= State::PageFacade.new(page) 
         @pages[page].push(atc)
         count += atc.package_count
@@ -94,7 +96,11 @@ class Result < State::Drugs::Global
     pge = nil
     if(@session.event == :search)
       ## reset page-input
-      pge = @session.user_input(:page)
+      if @session.user_input(:page)
+        pge = @session.user_input(:page)
+      elsif code = @session.user_input(:code)
+        pge = @code2page[code]
+      end
       @session.set_persistent_user_input(:page, pge)
     else
       pge = @session.persistent_user_input(:page)
