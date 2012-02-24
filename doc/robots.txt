@@ -27,3 +27,9 @@ Disallow: /en/santesuisse/
 Disallow: /de/schoenenberger/
 Disallow: /fr/schoenenberger/
 Disallow: /en/schoenenberger/
+Disallow: /de/mymigel/
+Disallow: /fr/mymigel/
+Disallow: /en/mymigel/
+Disallow: /de/mymedi/
+Disallow: /fr/mymedi/
+Disallow: /en/mymedi/
