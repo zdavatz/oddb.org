@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 23.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
 require 'htmlgrid/list'
@@ -285,6 +285,19 @@ class ResultList < HtmlGrid::List
       @grid.set_colspan(half, y, full_colspan - half)
       offset = resolve_offset(offset, self::class::OFFSET_STEP)
     end
+
+    code = @session.user_input(:code)
+    if @session.get_cookie_input(:resultview) == 'atc'
+        model = @model.model
+    else # 'pages'
+      if page = @session.user_input(:page)
+        model = @session.state.pages[page]
+      elsif code
+        page = @session.state.code2page[code]||0
+        model = @session.state.pages[page]
+      end
+    end
+      
     code = @session.persistent_user_input(:code)
     model.each { |atc|
       compose_subheader(atc, offset)
