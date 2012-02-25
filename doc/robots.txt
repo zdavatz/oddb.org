@@ -33,3 +33,4 @@ Disallow: /en/mymigel/
 Disallow: /de/mymedi/
 Disallow: /fr/mymedi/
 Disallow: /en/mymedi/
+Disallow: /resources/dojo/
