@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Sequence -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com 
+# ODDB::Sequence -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Sequence -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -17,6 +17,7 @@ module ODDB
 	class SequenceCommon
 		include Persistence
     class << self
+      include AccessorCheckMethod
       def registration_data(*names)
         names.each { |name|
           define_method(name) {
@@ -31,6 +32,21 @@ module ODDB
                   :patinfo, :pdf_patinfo, :atc_request_time,
                   :deactivate_patinfo, :sequence_date, :activate_patinfo
 		attr_writer :composition_text, :dose, :inactive_date
+    check_accessor_list = {
+      :registration => "ODDB::Registration",
+      :atc_class => "ODDB::AtcClass",
+      :export_flag => ["FalseClass","TrueClass"],
+      :patinfo => "ODDB::Patinfo",
+      :pdf_patinfo => "String",
+      :atc_request_time => "Time",
+      :deactivate_patinfo => "Date",
+      :sequence_date => "Date",
+      :activate_patinfo => "Date",
+      :composition_text => "String",
+      :dose => "ODDB::Dose",
+      #:inactive_date => "Date",
+    }
+    define_check_class_methods check_accessor_list
 		alias :pointer_descr :seqnr
     registration_data :company, :company_name, :complementary_type, :expired?,
       :fachinfo, :fachinfo_active?, :generic_type, :has_fachinfo?, :iksnr,
@@ -363,11 +379,13 @@ module ODDB
 		ODBA_PREFETCH = true
 		PACKAGE = Package
 		def atc_class=(atc_class)
+      super(atc_class)
 			unless(atc_class.nil?)
 				@atc_class = replace_observer(@atc_class, atc_class)
 			end
 		end
 		def patinfo=(patinfo)
+      super(patinfo)
 			@patinfo = replace_observer(@patinfo, patinfo)
 		end
 		def	replace_observer(target, value)
