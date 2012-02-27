@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::ActiveAgent -- oddb.org -- 24.01.2012 -- mhatakeyama@ywesee.com 
+# ODDB::ActiveAgent -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::ActiveAgent -- oddb.org -- 22.04.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -13,6 +13,19 @@ module ODDB
 		attr_accessor :chemical_substance, :equivalent_substance
 		attr_accessor :dose, :chemical_dose, :equivalent_dose, :sequence
 		attr_accessor :spagyric_dose, :spagyric_type, :composition
+    class << self
+      include AccessorCheckMethod
+    end
+    check_class_list = {
+      :substance => 'ODDB::Substance',
+      :chemical_substance => 'ODDB::Substance',
+      :equivalent_substance => 'ODDB::Substance',
+      :dose => 'ODDB::Dose',
+      :chemical_dose => 'ODDB::Dose',
+      :equivalent_dose => 'ODDB::Dose',
+      :sequence => 'ODDB::Sequence',
+    }
+    define_check_class_methods check_class_list
 		def initialize(substance_name)
 			super()
 			@substance_name = substance_name
@@ -95,6 +108,7 @@ module ODDB
 	class ActiveAgent < ActiveAgentCommon
 		ODBA_PREFETCH = true
 		def substance=(substance)
+      super(substance)
 			unless(substance.nil? || @substance == substance)
 				if(@substance.respond_to?(:remove_sequence))
 					@substance.remove_sequence(@sequence)

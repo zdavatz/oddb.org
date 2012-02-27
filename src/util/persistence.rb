@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Persistence -- oddb.org -- 10.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::Persistence -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Persistence -- oddb.org -- 26.02.2003 -- hwyss@ywesee.com
 
 require 'odba'
@@ -102,6 +102,23 @@ module ODDB
 			@oid ||= self.odba_id
 		end
 	end
+  module AccessorCheckMethod
+    def define_check_class_methods(check_class_list)
+      check_class_list.each do |accessor, klass|
+        define_method("#{accessor.to_s}=") do |arg|
+          if arg.class.to_s == klass.to_s
+            instance_variable_set("@#{accessor.to_s}", arg)
+          else
+            arg_class = arg.class
+            arg = if arg.respond_to?(:to_s)
+                    arg.to_s[0,10]
+                  end
+            raise TypeError.new("'#{arg.to_s}'(#{arg_class}) should be #{klass}")
+          end
+        end
+      end
+    end
+  end
 	module Persistence
 		include PersistenceMethods
 		include ODBA::Persistable
