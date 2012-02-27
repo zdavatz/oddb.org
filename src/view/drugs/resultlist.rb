@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::ResultList -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
 require 'htmlgrid/list'
@@ -293,21 +293,27 @@ class ResultList < HtmlGrid::List
       if page = @session.user_input(:page)
         model = @session.state.pages[page]
       elsif code
-        page = @session.state.code2page[code]||0
+        page = if code2page = @session.state.code2page 
+                 code2page[code]||0
+               else
+                 0
+               end
         model = @session.state.pages[page]
       end
     end
       
     code = @session.persistent_user_input(:code)
-    model.each { |atc|
-      compose_subheader(atc, offset)
-      offset = resolve_offset(offset, self::class::OFFSET_STEP)
-      if(show_packages? || code == atc.code)
-        packages = atc.packages
-        super(packages, offset)
-        offset[1] += packages.size
-      end
-    }
+    if model
+      model.each { |atc|
+        compose_subheader(atc, offset)
+        offset = resolve_offset(offset, self::class::OFFSET_STEP)
+        if(show_packages? || code == atc.code)
+          packages = atc.packages
+          super(packages, offset)
+          offset[1] += packages.size
+        end
+      }
+    end
 	end
 	def compose_subheader(atc, offset)
 		subheader = self::class::SUBHEADER.new(atc, @session, self)
