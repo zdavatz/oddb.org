@@ -104,16 +104,19 @@ module ODDB
 	end
   module AccessorCheckMethod
     def define_check_class_methods(check_class_list)
-      check_class_list.each do |accessor, klass|
+      check_class_list.each do |accessor, klasses|
         define_method("#{accessor.to_s}=") do |arg|
-          if arg.class.to_s == klass.to_s
+          unless klasses.is_a?(Array)
+            klasses = [klasses]
+          end
+          if klasses.include?(arg.class.to_s) 
             instance_variable_set("@#{accessor.to_s}", arg)
           else
             arg_class = arg.class
             arg = if arg.respond_to?(:to_s)
                     arg.to_s[0,10]
                   end
-            raise TypeError.new("'#{arg.to_s}'(#{arg_class}) should be #{klass}")
+            raise TypeError.new("'#{arg.to_s}'(#{arg_class}) should be #{klasses.join(' or ')}")
           end
         end
       end

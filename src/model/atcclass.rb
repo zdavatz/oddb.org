@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# AtcClass -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
+# ODDB::AtcClass -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com 
+# ODDB::AtcClass -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/language'
 require 'util/persistence'
@@ -10,6 +11,9 @@ require 'model/sequence_observer'
 
 module ODDB
 	class AtcClass
+    class << self
+      include AccessorCheckMethod
+    end
 		include Language
 		include SequenceObserver
 		ODBA_SERIALIZABLE = [ '@descriptions' ]
@@ -17,6 +21,12 @@ module ODDB
 		attr_reader :guidelines, :ddd_guidelines
 		# use this instead of add_sequence for temporary atc_classes
 		attr_writer :sequences, :descriptions
+    check_class_list = {
+      :code => "String",
+      :sequences => "Array",
+      :descriptions => "ODDB::SimpleLanguage::Descriptions",
+    }
+    define_check_class_methods check_class_list
 		class DDD
 			include Persistence
 			attr_accessor :dose, :note, :administration_route
