@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Registration -- oddb.org -- 24.12.2011 -- mhatakeyama@ywesee.com 
+# ODDB::Registration -- oddb.org -- 28.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Registration -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'date'
@@ -12,6 +12,9 @@ require 'util/today'
 module ODDB
 	class RegistrationCommon
 		include Persistence
+    class << self
+      include AccessorCheckMethod
+    end
 		attr_reader :iksnr, :sequences, :patent
 		attr_writer :generic_type, :complementary_type
 		attr_accessor :registration_date, :export_flag, :company, 
@@ -22,6 +25,37 @@ module ODDB
       :index_therapeuticus, :comarketing_with, :vaccine, :ignore_patent,
       :parallel_import, :minifi, :product_group, :production_science,
       :ith_swissmedic, :keep_generic_type
+    check_accessor_list = {
+      :generic_type => "Symbol",
+      :complementary_type => "Symbol",
+      :registration_date => ["DateTime","Date"],
+      :export_flag => ["FalseClass","NilClass","TrueClass"],
+      :company => ["ODDB::Company"],
+      :revision_date => "Date",
+      :indication => "ODDB::Indication",
+      :expiration_date => "Date",
+      :inactive_date => "Date",
+      :manual_inactive_date => "Date",
+      :deactivate_fachinfo => "Date",
+      :activate_fachinfo => "Date",
+      :market_date => "Date",
+      :fachinfo => "ODDB::Fachinfo",
+      :source => "String",
+      :ikscat => "String",
+      :renewal_flag => ["NilClass","FalseClass","TrueClass"],
+      :renewal_flag_swissmedic => ["NilClass","FalseClass","TrueClass"],
+      :index_therapeuticus => "String",
+      :comarketing_with => "ODDB::Registration",
+      :vaccine => ["TrueClass","NilClass","FalseClass"],
+      :ignore_patent => ["NilClass","TrueClass","FalseClass"],
+      :parallel_import => ["NilClass","TrueClass","FalseClass"],
+      :minifi => "ODDB::MiniFi",
+      :product_group => "String",
+      :production_science => "String",
+      :ith_swissmedic => "String",
+      :keep_generic_type => ["NilClass","TrueClass","FalseClass"],
+    }
+    define_check_class_methods check_accessor_list
 		alias :pointer_descr :iksnr
 		SEQUENCE = Sequence
 		def initialize(iksnr)
