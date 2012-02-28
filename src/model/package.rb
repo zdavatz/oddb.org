@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::Package -- oddb.org -- 28.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -16,6 +16,7 @@ module ODDB
 		include Persistence
     @@ddd_galforms = /tabletten?/iu
 		class << self
+      include AccessorCheckMethod
 			def price_internal(price, type=nil)
         unless(price.is_a?(Util::Money))
           price = Util::Money.new(price, type, 'CH')
@@ -47,6 +48,34 @@ module ODDB
       :generic_group_factor, :photo_link, :disable_ddd_price, :ddd_dose,
 			:sl_entry, :deductible_m, # for just-medical
       :bm_flag, :mail_order_prices
+    check_accessor_list = {
+      :sequence => "ODDB::Sequence",
+      :ikscat => "String",
+      :generic_group => "ODDB::GenericGroup",
+      :sl_generic_type => "Symbol",
+      :price_exfactory => "ODDB::Util::Money",
+      :price_public => "ODDB::Util::Money",
+      :pretty_dose => "ODDB::Dose",
+      :market_date => "Date",
+      :medwin_ikscd => "String",
+      :out_of_trade => ["TrueClass","NilClass","FalseClass"],
+      :refdata_override => ["TrueClass","NilClass","FalseClass"],
+      :deductible => ["Symbol","String"],
+      :lppv => ["TrueClass","NilClass","FalseClass"],
+      :disable => ["TrueClass","NilClass","FalseClass"],
+      :swissmedic_source => "Hash",
+      :descr => "String",
+      :preview_with_market_date => ["TrueClass","NilClass","FalseClass"],
+      :generic_group_factor => "NilClass,Float,Fixnum",
+      :photo_link => "NilClass,String",
+      :disable_ddd_price => ["TrueClass","NilClass","FalseClass"],
+      :ddd_dose => "ODDB::Dose",
+      :sl_entry => "ODDB::SlEntry",
+      :deductible_m => "String",
+      :bm_flag => ["TrueClass","NilClass","FalseClass"],
+      :mail_order_prices => "Array",
+    }
+    define_check_class_methods check_accessor_list
 		alias :pointer_descr :ikscd
 		registration_data :comarketing_with, :complementary_type, :expiration_date,
       :expired?, :export_flag, :fachinfo_active?, :generic_type,
