@@ -2,6 +2,8 @@ User-agent: Mediapartners-Google*
 Disallow: /
 User-agent: Baiduspider
 Disallow: /
+User-agent: bingbot
+Disallow: /
 User-agent: *
 Disallow: /de/atupri/
 Disallow: /fr/atupri/
