@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Registration -- oddb.org -- 28.02.2012 -- mhatakeyama@ywesee.com 
+# ODDB::Registration -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Registration -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'date'
@@ -159,7 +159,7 @@ module ODDB
 			self.generic_type == :generic
 		end
 		def generic_type
-			@generic_type || if(@company)
+			@generic_type || if(@company and @company.respond_to?(:generic_type))
 				@company.generic_type
 			end
 		end
