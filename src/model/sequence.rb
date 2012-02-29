@@ -276,11 +276,13 @@ module ODDB
 			end
 		end
 		def limitation_text
-			@packages.each_value { |package|
-				if(txt = package.limitation_text)
-					return txt
-				end
-			}
+      if @packages.is_a?(Hash)
+        @packages.each_value { |package|
+          if(txt = package.limitation_text)
+            return txt
+          end
+        }
+      end
 			nil
 		end
 		def limitation_text_count
