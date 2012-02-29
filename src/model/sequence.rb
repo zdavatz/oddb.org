@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Sequence -- oddb.org -- 28.02.2012 -- mhatakeyama@ywesee.com 
+# ODDB::Sequence -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Sequence -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -35,15 +35,15 @@ module ODDB
     check_accessor_list = {
       :registration => "ODDB::Registration",
       :atc_class => "ODDB::AtcClass",
-      :export_flag => ["FalseClass","TrueClass"],
+      :export_flag => ["NilClass","FalseClass","TrueClass"],
       :patinfo => "ODDB::Patinfo",
       :pdf_patinfo => "String",
       :atc_request_time => "Time",
-      :deactivate_patinfo => "Date",
-      :sequence_date => "Date",
-      :activate_patinfo => "Date",
+      :deactivate_patinfo => ["NilClass","Date"],
+      :sequence_date => ["NilClass", "Date"],
+      :activate_patinfo => ["NilClass","Date"],
       :composition_text => "String",
-      :dose => "ODDB::Dose",
+      :dose => ["NilClass","ODDB::Dose"],
       #:inactive_date => "Date",
     }
     define_check_class_methods check_accessor_list
