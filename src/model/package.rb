@@ -297,7 +297,7 @@ module ODDB
 			end
 		end
 		def limitation
-			@sl_entry.limitation unless @sl_entry.nil?
+			@sl_entry.limitation if @sl_entry.respond_to?(:limitation)
 		end
 		def limitation_text
 			@sl_entry.limitation_text if @sl_entry.respond_to?(:limitation_text)
