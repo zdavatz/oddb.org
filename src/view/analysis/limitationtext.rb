@@ -16,7 +16,7 @@ class LimitationTextInnerComposite < HtmlGrid::Composite
 	DEFAULT_CLASS = View::Chapter
   def limitation_text(model, session)
     lang = @session.language.intern
-    if model and model.send(lang)
+    if model and model.respond_to?(lang.to_sym) and model.send(lang)
       model.send(lang).gsub(/^Limitation: /,'')
     end
   end
