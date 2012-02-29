@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Sequence -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com 
+# ODDB::Sequence -- oddb.org -- 28.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Sequence -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -253,7 +253,7 @@ module ODDB
       !@export_flag && @registration.public? && active?
     end
 		def public_packages
-			if(public?) 
+			if(public? and @packages.is_a?(Hash)) 
 				@packages.values.select { |pac| pac.public? }
 			else
 				[]
