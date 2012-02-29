@@ -128,7 +128,13 @@ module ODDB
                     || @market_date <= @@today)
 		end
     def active_agents
-      @parts.inject([]) { |acts, part| acts.concat part.active_agents }
+      @parts.inject([]) { |acts, part| 
+        if part.active_agents.is_a?(Array)
+          acts.concat part.active_agents 
+        else
+          acts
+        end
+      }
     end
 		def barcode
 			if(key = ikskey)
