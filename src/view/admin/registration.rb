@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Admin::Registration -- oddb.org -- 16.01.2012 -- mhatakeyama@ywesee.com 
+# ODDB::View::Admin::Registration -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::Admin::Registration -- oddb.org -- 07.03.2003 -- hwyss@ywesee.com 
 
 require 'view/drugs/privatetemplate'
@@ -52,7 +52,9 @@ module RegistrationSequenceList
     model.compositions.collect { |comp|
       galform = (gf = comp.galenic_form) ? gf.send(lang) : ''
       agents = comp.active_agents.collect { |act|
-        substance = (sub = act.substance) ? sub.send(lang) : nil
+        substance = if sub = act.substance and sub.respond_to?(lang.to_sym)
+                      sub.send(lang)
+                    end
         [substance, act.dose].compact.join ' '
       }.join ', '
       "#{galform} (#{agents})"
