@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 17.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
 require 'view/drugs/atcchooser'
@@ -97,7 +97,7 @@ module ODDB
         lang = @session.language
         parts = model.compositions.collect { |comp|
           part = ''
-          if galform = comp.galenic_form
+          if galform = comp.galenic_form and galform.respond_to?(lang.to_sym)
             part << galform.send(lang) << ': '
           end
           if comp.active_agents.size > 1
