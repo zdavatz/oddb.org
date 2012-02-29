@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Interactions::ResultList -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Interactions::ResultList -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Interactions::ResultList -- oddb.org -- 01.06.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/list'
@@ -80,9 +80,12 @@ class ResultList < HtmlGrid::List
 		end
 	end
 	def search_oddb(model, session)
-		active_sequences = model.sequences.select { |seq| 
-			seq.active_package_count > 0 
-		}
+    active_sequences = []
+    if model.respond_to?(:sequences) and model.sequences.is_a?(Array)
+      active_sequences = model.sequences.select { |seq| 
+        seq.active_package_count > 0 
+      }
+    end
 		unless(active_sequences.empty?)
 			link = HtmlGrid::Link.new(:substance_result, model, session, self)
 			link.href = @lookandfeel._event_url(:search, 'search_query' => model.name, 
