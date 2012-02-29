@@ -26,7 +26,7 @@ module ODDB
 			def registration_data(*names)
 				names.each { |name|
 					define_method(name) { 
-						if(@sequence && (reg = @sequence.registration))
+						if(@sequence && @sequence.respond_to?(:registration) && (reg = @sequence.registration))
 							reg.send(name)
 						end
 					}
