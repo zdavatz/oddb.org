@@ -2025,6 +2025,6 @@ module ODDB
 end
 
 begin 
-	require 'testenvironment'
+ 	require ODDB.config.testenvironment1
 rescue LoadError
 end

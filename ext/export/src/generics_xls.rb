@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::OdbaExporter::GenericXls -- oddb.org -- 20.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::OdbaExporter::GenericXls -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::OdbaExporter::GenericXls -- oddb.org -- 22.11.2005 -- hwyss@ywesee.com
 
 require 'util/oddbapp'
@@ -198,7 +198,7 @@ module ODDB
 end
 
 begin
-      require 'testenvironment2'
+      require ODDB.config.testenvironment2
 rescue LoadError
 end
 
