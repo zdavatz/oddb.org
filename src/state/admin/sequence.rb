@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Admin::Sequence -- oddb.org -- 23.12.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Admin::Sequence -- oddb.org -- 29.02.2011 -- mhatakeyama@ywesee.com
 # ODDB::State::Admin::Sequence -- oddb.org -- 11.03.2003 -- hwyss@ywesee.com 
 
 require 'state/admin/global'
@@ -328,7 +328,11 @@ class Sequence < State::Admin::Global
       config = ODDB.config
 			mail = Mail.new
       mail.content_type('text/plain; charset=UTF-8')
-			mail.to = [addr]
+      if File.exist?(ODDB.config.testenvironment1)
+        mail.to = ODDB::State::Admin::Sequence::RECIPIENTS
+      else
+			  mail.to = [addr]
+      end
 			mail.from = config.mail_from
 			mail.subject = "#{@model.name_base} #{@model.iksnr}"
 			mail.date = Time.now
@@ -338,7 +342,7 @@ class Sequence < State::Admin::Global
 				lookandfeel.lookup(:registration) + ": " + @model.iksnr,
 				lookandfeel.lookup(:package) + ": " \
 					+ @model.packages.keys.join(","),
-				lookandfeel._event_url(:resolve, {:pointer => @model.pointer}),
+				lookandfeel._event_url(:drug, [:reg, @model.iksnr, :seq, @model.seqnr]),
 				nil, 
 				lookandfeel.lookup(:thanks_for_cooperation),
 			].join("\n")
