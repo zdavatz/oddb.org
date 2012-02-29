@@ -87,7 +87,7 @@ module ODDB
 		end
 		def atc_classes
 			@sequences.values.collect { |seq|
-				seq.atc_class
+				seq.atc_class if seq.respond_to?(:atc_class)
 			}.compact.uniq
 		end
 		def atcless_sequences
