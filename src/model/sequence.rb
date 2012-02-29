@@ -265,7 +265,7 @@ module ODDB
         count = 0
         if @packages.is_a?(Hash)
           @packages.values.each { |pack|
-            if(pack.public?)
+            if(pack.respond_to?(:public?) and pack.public?)
               count += 1
             end
           }
