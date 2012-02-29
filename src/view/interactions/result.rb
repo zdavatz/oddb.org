@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# View::Interactions::Result -- oddb -- 26.05.2004 -- mhuggler@ywesee.com
+# ODDB::View::Interactions::Result -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Interactions::Result -- oddb.org -- 26.05.2004 -- mhuggler@ywesee.com
 
 require 'view/form'
 require 'view/publictemplate'
@@ -50,8 +51,10 @@ class ResultForm < View::Form
 		link
 	end
 	def title_found(model, session)
-		query = session.persistent_user_input(:search_query)
-		@lookandfeel.lookup(:title_found, query, session.state.object_count)
+    if session.state.respond_to?(:object_count)
+      query = session.persistent_user_input(:search_query)
+      @lookandfeel.lookup(:title_found, query, session.state.object_count)
+    end
 	end
 end
 class Result < View::ResultTemplate
