@@ -35,7 +35,7 @@ module ODDB
 			def sequence_data(*names)
 				names.each { |name|
 					define_method(name) { 
-						@sequence && @sequence.send(name)
+						@sequence && @sequence.respond_to?(name) && @sequence.send(name)
 					}
 				}
 			end
