@@ -156,7 +156,7 @@ module ODDB
 		end
     def commercial_forms
       if @parts.is_a?(Array)
-        @parts.collect { |part| part.commercial_form }
+        @parts.collect { |part| part.commercial_form if part.respond_to?(:commercial_form)}.compact
       else
         []
       end
