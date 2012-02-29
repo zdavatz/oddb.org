@@ -96,7 +96,7 @@ module ODDB
         && other.active_agents.sort == @active_agents.sort
     end
     def <=>(other)
-      if other.is_a? Composition
+      if other.is_a? Composition and @active_agents.respond_to?(:sort)
         [@active_agents.sort, @galenic_form] \
           <=> [other.active_agents.sort, other.galenic_form]
       else
