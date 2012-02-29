@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Composition -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::Composition -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Composition -- oddb.org -- 28.04.2008 -- hwyss@ywesee.com
 
 require 'util/persistence'
@@ -54,7 +54,7 @@ module ODDB
       @galenic_form = replace_observer(@galenic_form, galform)
     end
     def galenic_group
-      @galenic_form.galenic_group if(@galenic_form)
+      @galenic_form.galenic_group if @galenic_form.respond_to?(:galenic_group)
     end
     def route_of_administration
       @galenic_form.route_of_administration if(@galenic_form)
