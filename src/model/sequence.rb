@@ -67,7 +67,7 @@ module ODDB
 			if(active? && (generic_type.nil? || @registration.generic_type == generic_type))
         if @packages.is_a?(Hash)
           @packages.values.inject(0) { |count, pack|
-            if(pack.active?)
+            if(pack.respond_to?(:active?) and pack.active?)
               count += 1
             end
             count
