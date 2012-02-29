@@ -331,7 +331,7 @@ module ODDB
                   || registration.active?)
 		end
     def size
-      @parts.collect { |part| part.size }.compact.join(' + ')
+      @parts.collect { |part| part.size if part.respond_to?(:size)}.compact.join(' + ')
     end
 		def substances
 			active_agents.collect { |active| active.substance }.compact
