@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# @config -- oddb.org -- 27.01.2012 -- mhatakeyama@ywesee.com
+# @config -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # @config -- oddb.org -- 08.09.2006 -- hwyss@ywesee.com
 
 require 'rclconf'
@@ -31,6 +31,8 @@ module ODDB
     'text_info_newssource'=> nil,
     'mail_from'           => '"ODDB-Mails" <mail@oddb.org>',
     'mail_to'             => [],
+    'testenvironment1'    => '',
+    'testenvironment2'    => '',
   }
 
   config = RCLConf::RCLConf.new(ARGV, defaults)
