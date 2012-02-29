@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Ajax::DDDPrice -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Ajax::DDDPrice -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Ajax::DDDPrice -- oddb.org -- 10.04.2006 -- hwyss@ywesee.com
 
 require 'htmlgrid/composite'
@@ -175,7 +175,9 @@ class DDDPrice < PrivateTemplate
     res
   end
   def pointer_descr(model)
-    @lookandfeel.lookup(:ddd_price_for, model.name_base)
+    if model.respond_to?(:name_base)
+      @lookandfeel.lookup(:ddd_price_for, model.name_base)
+    end
   end
 end
 		end
