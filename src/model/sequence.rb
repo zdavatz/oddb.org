@@ -21,7 +21,7 @@ module ODDB
       def registration_data(*names)
         names.each { |name|
           define_method(name) {
-            @registration && @registration.send(name)
+            @registration && @registration.respond_to?(name) && @registration.send(name)
           }
         }
       end
