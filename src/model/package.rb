@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 28.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::Package -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/persistence'
@@ -204,7 +204,7 @@ module ODDB
 			@sl_entry = SlEntry.new
 		end
     def ddd
-      if (atc = atc_class) && atc.has_ddd?
+      if (atc = atc_class) and atc.respond_to?(:has_ddd?) and atc.has_ddd?
         atc.ddds['O']
       end
     end
