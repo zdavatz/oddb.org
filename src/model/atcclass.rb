@@ -56,7 +56,11 @@ module ODDB
 		end
 		def package_count(generic_type=nil)
 			@sequences.inject(0) { |inj, seq|
-				inj + seq.public_package_count(generic_type)
+        if seq.respond_to?(:public_package_count)
+				  inj + seq.public_package_count(generic_type)
+        else
+          inj
+        end
 			}
 		end
 		def checkout
