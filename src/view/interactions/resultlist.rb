@@ -83,7 +83,7 @@ class ResultList < HtmlGrid::List
     active_sequences = []
     if model.respond_to?(:sequences) and model.sequences.is_a?(Array)
       active_sequences = model.sequences.select { |seq| 
-        seq.active_package_count > 0 
+        (seq.respond_to?(:active_package_count) && (seq.active_package_count > 0))
       }
     end
 		unless(active_sequences.empty?)
