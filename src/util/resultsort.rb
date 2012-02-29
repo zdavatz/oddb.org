@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::ResultSort -- oddb.org -- 31.01.2012 -- mhatakeyama@ywesee.com
+# ODDB::ResultSort -- oddb.org -- 28.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::ResultSort -- oddb.org -- 10.09.2003 -- mhuggler@ywesee.com
 
 module ODDB
@@ -45,8 +45,10 @@ module ODDB
 		def galform_str(galform, session)
 			if(galform.odba_instance.nil?)
 				''
-			else
+      elsif galform.respond_to?(session.language.to_sym)
 				galform.send(session.language)
+      else
+        ''
 			end
 		end
 		def generic_type_weight(package)
