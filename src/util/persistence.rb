@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Persistence -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::Persistence -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Persistence -- oddb.org -- 26.02.2003 -- hwyss@ywesee.com
 
 require 'odba'
@@ -109,6 +109,8 @@ module ODDB
           unless klasses.is_a?(Array)
             klasses = [klasses]
           end
+          klasses << "NilClass"
+          klasses.uniq!
           if klasses.include?(arg.class.to_s) 
             instance_variable_set("@#{accessor.to_s}", arg)
           else
