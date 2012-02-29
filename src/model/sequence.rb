@@ -250,7 +250,7 @@ module ODDB
         && (@activate_patinfo.nil? || @activate_patinfo <= @@today)
     end
     def public?
-      !@export_flag && @registration.public? && active?
+      !@export_flag && @registration.respond_to?(:public?) && @registration.public? && active?
     end
 		def public_packages
 			if(public? and @packages.is_a?(Hash)) 
