@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Result -- oddb.org -- 24.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Drugs::Result -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Result -- oddb.org -- 03.03.2003 -- andy@jetnet.ch
 
 require 'view/form'
@@ -29,9 +29,15 @@ class DivExportCSV < HtmlGrid::DivForm
 	EVENT = :export_csv
 	def init
 		super
+    search_query = @session.persistent_user_input(:search_query)
+    if search_query.respond_to?(:gsub)
+      search_query.gsub('/', '%2F')
+    else
+      search_equery = ''
+    end
 		data = {
 			:zone					=>	@session.zone,
-			:search_query	=>	@session.persistent_user_input(:search_query).gsub('/', '%2F'),
+			:search_query	=>	search_query,
 			:search_type	=>	@session.persistent_user_input(:search_type),
 		}
 		url = @lookandfeel._event_url(:export_csv, data)
