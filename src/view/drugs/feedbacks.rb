@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Feedbacks -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Feedbacks -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Feedbacks -- oddb.org -- 28.10.2004 -- jlang@ywesee.com, usenguel@ywesee.com
 
 require 'view/feedbacks'
@@ -68,7 +68,11 @@ class FeedbackList < View::FeedbackList
   def name(model, session=@session)
     model.name.force_encoding('utf-8')
   rescue
-     name = model.name.encode("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
+    if model.name.respond_to?(:encode)
+      name = model.name.encode("UTF-16BE", :invalid => :replace, :undef => :replace, :replace => '?').encode("UTF-8")
+    else
+      name = ''
+    end
   end
   def message(model, session=@session)
     model.message.force_encoding('utf-8')
