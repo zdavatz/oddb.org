@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Analysis::LimitationText -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::View::Analysis::LimitationText -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 
 require 'view/privatetemplate'
 require 'view/chapter'
@@ -32,7 +32,9 @@ class LimitationTextComposite < HtmlGrid::Composite
 		[0,1] => 'list',
 	}	
 	def limitation_text_title(model, session)
-    if model and model.respond_to?(:pointer) and lim_ptr = model.pointer and pos_ptr = lim_ptr.parent and position = pos_ptr.resolve(@session.app)
+    if model and model.respond_to?(:pointer) and lim_ptr = model.pointer\
+      and pos_ptr = lim_ptr.parent and position = pos_ptr.resolve(@session.app)\
+      and position.respond_to?(:description)
       @lookandfeel.lookup(:limitation_text_title, position.description)
     end
 	end
