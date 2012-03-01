@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::State::Migel:Items -- oddb.org -- 26.09.2011 -- mhatakeyama@ywesee.com
+# ODDB::State::Migel:Items -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 
 require 'state/global_predefine'
 require 'view/migel/items'
@@ -10,7 +10,7 @@ module ODDB
 	module State
 		module Migel
 
-class PageFacade < ODDB::State::PageFacade
+lass PameFacade < ODDB::State::PageFacade
   # Overwrite sort_by method otherwise the page is sorted in htmlgrid/list.rb#sort_model method
   def sort_by
     self
@@ -27,7 +27,9 @@ class Items < State::Migel::Global
     @pages = Array.new((@model.length.to_f / ITEM_LIMIT).ceil){|i| ODDB::State::Migel::PageFacade.new(i)}
     @current_page = @session.user_input(:page) || 0
     @pages[@current_page] = ODDB::State::Migel::PageFacade.new(@current_page)
-    @pages[@current_page].concat @model[@current_page*ITEM_LIMIT, ITEM_LIMIT]
+    if items = @model[@current_page*ITEM_LIMIT, ITEM_LIMIT]
+      @pages[@current_page].concat items
+    end
     @pages[@current_page].model = @model
 
     @filter = Proc.new { |model|
