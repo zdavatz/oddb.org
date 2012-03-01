@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Ajax::View::DDDChart -- oddb.org -- 15.02.2012 -- mhatakeyama@ywesee.com
+# ODDB::Ajax::View::DDDChart -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 # ODDB::Ajax::View::DDDChart -- oddb.org -- 17.04.2009 -- hwyss@ywesee.com
 
 require 'htmlgrid/component'
@@ -245,8 +245,7 @@ class DDDChart < HtmlGrid::Component
     @data = []
     @original_index = 0
     img_name = @session.user_input(:for)
-    ikskey = img_name[/^\d{8}/]
-    if original = @session.package_by_ikskey(ikskey)
+    if img_name.respond_to?(:[]) and ikskey = img_name[/^\d{8}/] and original = @session.package_by_ikskey(ikskey)
       my_factor = (original.generic_group_factor || 1).to_f
       oseq = original.sequence
       @model.each_with_index do |pac, idx|
