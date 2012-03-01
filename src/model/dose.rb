@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# Dose -- oddb -- 01.03.2012 -- yasaka@ywesee.com
 # Dose -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/quanty'
@@ -71,6 +72,13 @@ module ODDB
         Dose.new str[/[\d.]+/u], str[/\D+$/u]
       end
     rescue
+    end
+    def to_g
+      if(self.to_s.match("mg"))
+        self.to_f * 100
+      else
+        self.to_i
+      end
     end
 		def to_f
 			begin

@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Package -- oddb.org -- 01.03.2012 -- yasaka@ywesee.com
 # ODDB::Package -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
@@ -15,6 +16,7 @@ module ODDB
 	class PackageCommon
 		include Persistence
     @@ddd_galforms = /tabletten?/iu
+    @@ddd_grmforms = /[mg|g|ml]/iu
 		class << self
       include AccessorCheckMethod
 			def price_internal(price, type=nil)
@@ -233,7 +235,11 @@ module ODDB
           # self.dose (mdose): (usually) the amount of active_agent included in one unit of package
           # but in the case of mg/ml, mdose means not 'amount' but 'concentration'
           # size: total amount of package
-          (price / ((size * mdose).to_f / ddose.to_f)) / factor
+          if size.to_s.match(@@ddd_grmforms) 
+            (price / ((size / mdose.to_g).to_f / ddose.to_f)) / factor
+          else
+            (price / ((size * mdose).to_f / ddose.to_f)) / factor
+          end
         end
 			end
 		rescue RuntimeError
