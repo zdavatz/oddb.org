@@ -11,7 +11,7 @@ module ODDB
 		EXPORT_SERVER = DRbObject.new(nil, EXPORT_URI)
 		EXPORT_DIR = File.join(ARCHIVE_PATH, 'downloads')
     ODDB_RECIPIENTS = [ "produktion@seconag.com", "paul.wiederkehr@pharmasuisse.org" ]
-    ODDB_RECIPIENTS_EXTENDED = [ "thomas.frischknecht@just-medical.com" ]
+    ODDB_RECIPIENTS_EXTENDED = [ "mo@just-medical.com" ]
 		def export_analysis
 			ids = @app.analysis_positions.sort_by { |pos|
 				pos.code }.collect { |pos| pos.odba_id }
