@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# Dose -- oddb -- 01.03.2012 -- yasaka@ywesee.com
+# Dose -- oddb -- 02.03.2012 -- yasaka@ywesee.com
 # Dose -- oddb -- 25.02.2003 -- hwyss@ywesee.com 
 
 require 'util/quanty'
@@ -75,7 +75,7 @@ module ODDB
     end
     def to_g
       if(self.to_s.match("mg"))
-        self.to_f * 100
+        self.to_s.match(/[\d]+/u).to_s.to_i * 0.0001
       else
         self.to_i
       end

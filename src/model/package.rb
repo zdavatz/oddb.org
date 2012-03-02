@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::Package -- oddb.org -- 01.03.2012 -- yasaka@ywesee.com
+# ODDB::Package -- oddb.org -- 02.03.2012 -- yasaka@ywesee.com
 # ODDB::Package -- oddb.org -- 01.03.2012 -- mhatakeyama@ywesee.com
 # ODDB::Package -- oddb.org -- 25.02.2003 -- hwyss@ywesee.com 
 
@@ -221,12 +221,13 @@ module ODDB
 				&& (price = price_public) && (ddose = ddd.dose) && (mdose = dose) \
         && size = comparable_size)
 
+        _ddd_price = 0.00
         factor = (longevity || 1).to_f
         if (grp = galenic_group) && grp.match(@@ddd_galforms) 
           if(mdose > (ddose * factor))
-            (price / size.to_f) / factor
+            _ddd_price = (price / size.to_f) / factor
           else
-            (price / size.to_f) \
+            _ddd_price = (price / size.to_f) \
               * (ddose.to_f * factor / mdose.want(ddose.unit).to_f) / factor
           end
         else
@@ -235,11 +236,19 @@ module ODDB
           # self.dose (mdose): (usually) the amount of active_agent included in one unit of package
           # but in the case of mg/ml, mdose means not 'amount' but 'concentration'
           # size: total amount of package
-          if size.to_s.match(@@ddd_grmforms) and !mdose.to_s.match('mg/ml')
-            (price / ((size / mdose.to_g).to_f / ddose.to_f)) / factor
-          else
-            (price / ((size * mdose).to_f / ddose.to_f)) / factor
+          begin
+            if size.to_s.match(@@ddd_grmforms)
+              unless mdose.to_g == 0
+                _ddd_price = (price / ((size / mdose.to_g).to_f / ddose.to_f)) / factor
+              end
+            else
+              _ddd_price = (price / ((size * mdose).to_f / ddose.to_f)) / factor
+            end
+          rescue StandardError
           end
+        end
+        unless _ddd_price.to_s.match(/^0.*0$/u)
+          _ddd_price
         end
 			end
 		rescue RuntimeError
