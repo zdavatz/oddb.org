@@ -10,7 +10,7 @@ module ODDB
 	module State
 		module Migel
 
-class PameFacade < ODDB::State::PageFacade
+class PageFacade < ODDB::State::PageFacade
   # Overwrite sort_by method otherwise the page is sorted in htmlgrid/list.rb#sort_model method
   def sort_by
     self
