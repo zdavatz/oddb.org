@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::DataFormat -- oddb.org -- 17.02.2012 -- mhatakeyama@ywesee.com 
+# ODDB::View::DataFormat -- oddb.org -- 02.03.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::DataFormat -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
 require 'view/external_links'
@@ -154,8 +154,8 @@ module ODDB
 				end
 			end
 			def convert_price(price, currency)
-				if(rate = @session.get_currency_rate(currency))
-					price * rate
+				if(price and rate = @session.get_currency_rate(currency))
+					price * rate 
 				end
 			end
 		end
