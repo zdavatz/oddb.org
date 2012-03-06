@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::User::DownloadExport -- oddb.org -- 06.03.2012 -- yasaka@ywesee.com
 # ODDB::View::User::DownloadExport -- oddb.org -- 20.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::User::DownloadExport -- oddb.org -- 20.09.2004 -- mhuggler@ywesee.com
 
@@ -19,36 +20,39 @@ module ODDB
 class DownloadExportInnerComposite < HtmlGrid::Composite
 	include View::User::Export
 	COMPONENTS = {
-		[3,0]		=>	'months_1',
-		[5,0]		=>	'months_12',
-		[8,0]		=>	'howto',
+		[2,0]		=>	'months_1 ',
+		[3,0]		=>	'months_12',
+		[7,0]		=>	'howto',
 		[0,1]		=>	'export_datafiles',
 		[0,2]		=>	:csv_analysis_export,
-		[3,2]		=>	:csv_analysis_price,
+		[2,2]		=>	:csv_analysis_price,
 		[6,2]		=>	:datadesc_analysis_csv,
 		[7,2]		=>	:example_analysis_csv,
 		[0,3]		=>	:csv_doctors_export,
-		[3,3]		=>	:csv_doctors_price,
+		[2,3]		=>	:csv_doctors_price,
 		[6,3]		=>	:datadesc_doctors_csv,
 		[7,3]		=>	:example_doctors_csv,
 		[0,4]		=>	:yaml_doctors_export,
-		[3,4]		=>	:yaml_doctors_price,
+		[2,4]		=>	:yaml_doctors_price,
 		[6,4]		=>	:datadesc_doctors_yaml,
 		[7,4]		=>	:example_doctors_yaml,
 		[0,5]		=>	:yaml_fachinfo_export,
-		[2,5]		=>	:radio_fachinfo_yaml,
+		[2,5]		=>	:radio_fachinfo_yaml_1,
+		[3,5]		=>	:radio_fachinfo_yaml_12,
 		[6,5]		=>	:datadesc_fachinfo_yaml,
 		[7,5]		=>	:example_fachinfo_yaml,
 		[0,6]		=>	:download_index_therapeuticus,
-		[2,6]		=>	:radio_index_therapeuticus,
+		[2,6]		=>	:radio_index_therapeuticus_1,
+		[3,6]		=>	:radio_index_therapeuticus_12,
 		[6,6]		=>	:datadesc_index_therapeuticus,
 		[7,6]		=>	:example_index_therapeuticus,
 		[0,7]		=>	:yaml_interactions_export,
-		[2,7]		=>	:radio_interactions_yaml,
+		[2,7]		=>	:radio_interactions_yaml_1,
+		[3,7]		=>	:radio_interactions_yaml_12,
 		[6,7]		=>	:datadesc_interactions_yaml,
 		[7,7]		=>	:example_interactions_yaml,
 		[0,8]		=>	:csv_migel_export,
-		[3,8]		=>	:csv_migel_price,
+		[2,8]		=>	:csv_migel_price,
 		[6,8]		=>	:datadesc_migel_csv,
 		[7,8]		=>	:example_migel_csv,
 #		[0,9]	=>	:csv_narcotics_export,
@@ -60,77 +64,88 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 #		[6,10]	=>	:datadesc_narcotics_yaml,
 #		[7,10]	=>	:example_narcotics_yaml,
 		[0,9]	=>	:csv_export,
-		[2,9]	=>	:radio_oddb_csv,
+		[2,9]	=>	:radio_oddb_csv_1,
+		[3,9]	=>	:radio_oddb_csv_12,
 		[6,9]	=>	:datadesc_oddb_csv,
 		[7,9]	=>	:example_oddb_csv,
 		[0,10]	=>	:csv_export2,
-		[2,10]	=>	:radio_oddb2_csv,
+		[2,10]	=>	:radio_oddb2_csv_1,
+		[3,10]	=>	:radio_oddb2_csv_12,
 		[6,10]	=>	:datadesc_oddb2_csv,
 		[7,10]	=>	:example_oddb2_csv,
 		[0,11]	=>	:yaml_export,
-		[2,11]	=>	:radio_oddb_yaml,
+		[2,11]	=>	:radio_oddb_yaml_1,
+		[3,11]	=>	:radio_oddb_yaml_12,
 		[6,11]	=>	:datadesc_oddb_yaml,
 		[7,11]	=>	:example_oddb_yaml,
 		[0,12]	=>	:yaml_patinfo_export,
-		[3,12]	=>	:yaml_patinfo_price,
+		[2,12]	=>	:yaml_patinfo_price,
 		[6,12]	=>	:datadesc_patinfo_yaml,
 		[7,12]	=>	:example_patinfo_yaml,
 		[0,13]	=>	:yaml_price_history_export,
-		[2,13]	=>	:yaml_price_history_price,
+		[2,13]	=>	:yaml_price_history_price_1,
+		[3,13]	=>	:yaml_price_history_price_12,
 		[6,13]	=>	:datadesc_price_history_yaml,
 		[7,13]	=>	:example_price_history_yaml,
 		[0,14]	=>	:csv_price_history_export,
-		[2,14]	=>	:csv_price_history_price,
+		[2,14]	=>	:csv_price_history_price_1,
+		[3,14]	=>	:csv_price_history_price_12,
 		[6,14]	=>	:datadesc_price_history_csv,
 		[7,14]	=>	:example_price_history_csv,
 
 		[0,16]	=>	'export_added_value',
 		[0,17]	=>	:fachinfos_de_pdf,
-		[2,17]	=>	:radio_fachinfos_de_pdf,
+		[2,17]	=>	:radio_fachinfos_de_pdf_1,
+		[3,17]	=>	:radio_fachinfos_de_pdf_12,
 		[7,17]	=>	:example_fachinfos_de_pdf,
 		[0,18]	=>	:fachinfos_fr_pdf,
-		[2,18]	=>	:radio_fachinfos_fr_pdf,
+		[2,18]	=>	:radio_fachinfos_fr_pdf_1,
+		[3,18]	=>	:radio_fachinfos_fr_pdf_12,
 		[7,18]	=>	:example_fachinfos_fr_pdf,
 		[0,19]	=>	:fachinfo_epub_firefox,
-		[3,19]	=>	:price_fachinfo_firefox_epub,
+		[2,19]	=>	:price_fachinfo_firefox_epub,
 		[6,19]	=>	:datadesc_epub,
 		[7,19]	=>	:example_fachinfo_firefox_epub,
 		[8,19]	=>	:howto_epub_firefox,
 		[0,20]	=>	:fachinfo_htc,
-		[3,20]	=>	:price_fachinfo_htc,
+		[2,20]	=>	:price_fachinfo_htc,
 		[6,20]	=>	:datadesc_kindle,
 		[7,20]	=>	:example_fachinfo_htc,
 		[8,20]	=>	:howto_htc,
 		[0,21]	=>	:fachinfo_kindle,
-		[3,21]	=>	:price_fachinfo_kindle,
+		[2,21]	=>	:price_fachinfo_kindle,
 		[6,21]	=>	:datadesc_kindle,
 		[7,21]	=>	:example_fachinfo_kindle,
 		[8,21]	=>	:howto_kindle,
 		[0,22]	=>	:fachinfo_epub_stanza,
-		[3,22]	=>	:price_fachinfo_stanza_epub,
+		[2,22]	=>	:price_fachinfo_stanza_epub,
 		[6,22]	=>	:datadesc_epub,
 		[7,22]	=>	:example_fachinfo_stanza_epub,
 		[8,22]	=>	:howto_epub_stanza,
 		[0,23]	=>	:xls_generics,
-		[2,23]	=>	:radio_generics_xls,
+		[2,23]	=>	:radio_generics_xls_1,
+		[3,23]	=>	:radio_generics_xls_12,
 		[6,23]	=>	:datadesc_generics_xls,
 		[7,23]	=>	:example_generics_xls,
 		[0,24]	=>	:xls_patents,
-		[3,24]	=>	:radio_patents_xls,
+		[2,24]	=>	:radio_patents_xls,
 		[6,24]	=>	:datadesc_patents_xls,
 		[7,24]	=>	:example_patents_xls,
 		[0,25]	=>	:xls_swissdrug_update,
-		[2,25]	=>	:radio_swissdrug_update_xls,
+		[2,25]	=>	:radio_swissdrug_update_xls_1,
+		[3,25]	=>	:radio_swissdrug_update_xls_12,
 		[6,25]	=>	:datadesc_swissdrug_update_xls,
 		[7,25]	=>	:example_swissdrug_update_xls,
 
 		[0,27]	=>	'export_compatibility',
 		[0,28]	=>	:oddbdat_download,
-		[2,28]	=>	:radio_oddbdat,
+		[2,28]	=>	:radio_oddbdat_1,
+		[3,28]	=>	:radio_oddbdat_12,
 		[6,28]	=>	:datadesc_oddbdat,
 		[7,28]	=>	:example_oddbdat,
 		[0,29]	=>	:s31x,
-		[2,29]	=>	:radio_s31x,
+		[2,29]	=>	:radio_s31x_1,
+		[3,29]	=>	:radio_s31x_12,
 		[6,29]	=>	:datadesc_s31x,
 		[0,30]	=>	:compression_label,
 		[0,31]	=>	:compression,
@@ -197,8 +212,11 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
   def csv_price_history_export(model, session)
     checkbox_with_filesize("price_history.csv")
   end
-  def csv_price_history_price(model, session)
-    once_or_year('price_history.csv')
+  def csv_price_history_price_1(model, session)
+    radio_price('price_history.csv', 1)
+  end
+  def csv_price_history_price_12(model, session)
+    radio_price('price_history.csv', 12)
   end
 	def datadesc_analysis_csv(model, session)
     datadesc('analysis.csv')
@@ -411,32 +429,59 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def price_fachinfo_stanza_epub(model, session)
 		once('compendium_ch.oddb.org.stanza.epub')
 	end
-	def radio_fachinfos_de_pdf(model, session)
-		once_or_year('fachinfos_de.pdf')
+	def radio_fachinfos_de_pdf_1(model, session)
+		radio_price('fachinfos_de.pdf', 1)
 	end
-	def radio_fachinfos_fr_pdf(model, session)
-		once_or_year('fachinfos_fr.pdf')
+	def radio_fachinfos_de_pdf_12(model, session)
+		radio_price('fachinfos_de.pdf', 12)
 	end
-	def radio_oddb_csv(model, session)
-		once_or_year('oddb.csv')
+	def radio_fachinfos_fr_pdf_1(model, session)
+		radio_price('fachinfos_fr.pdf', 1)
 	end
-	def radio_oddb2_csv(model, session)
-		once_or_year('oddb2.csv')
+	def radio_fachinfos_fr_pdf_12(model, session)
+		radio_price('fachinfos_fr.pdf', 12)
 	end
-	def radio_fachinfo_yaml(model, session)
-		once_or_year('fachinfo.yaml')
+	def radio_oddb_csv_1(model, session)
+		radio_price('oddb.csv', 1)
 	end
-	def radio_generics_xls(model, session)
-		once_or_year('generics.xls')
+	def radio_oddb_csv_12(model, session)
+		radio_price('oddb.csv', 12)
 	end
-	def radio_index_therapeuticus(model, session)
-		once_or_year('index_therapeuticus')
+	def radio_oddb2_csv_1(model, session)
+		radio_price('oddb2.csv', 1)
 	end
-	def radio_interactions_yaml(model, session)
-		once_or_year('interactions.yaml')
+	def radio_oddb2_csv_12(model, session)
+		radio_price('oddb2.csv', 12)
 	end
-	def radio_swissdrug_update_xls(model, session)
-		once_or_year('swissdrug-update.xls')
+	def radio_fachinfo_yaml_1(model, session)
+		radio_price('fachinfo.yaml', 1)
+	end
+	def radio_fachinfo_yaml_12(model, session)
+		radio_price('fachinfo.yaml', 12)
+	end
+	def radio_generics_xls_1(model, session)
+		radio_price('generics.xls', 1)
+	end
+	def radio_generics_xls_12(model, session)
+		radio_price('generics.xls', 12)
+	end
+	def radio_index_therapeuticus_1(model, session)
+		radio_price('index_therapeuticus', 1)
+	end
+	def radio_index_therapeuticus_12(model, session)
+		radio_price('index_therapeuticus', 12)
+	end
+	def radio_interactions_yaml_1(model, session)
+		radio_price('interactions.yaml', 1)
+	end
+	def radio_interactions_yaml_12(model, session)
+		radio_price('interactions.yaml', 12)
+	end
+	def radio_swissdrug_update_xls_1(model, session)
+		radio_price('swissdrug-update.xls', 1)
+	end
+	def radio_swissdrug_update_xls_12(model, session)
+		radio_price('swissdrug-update.xls', 12)
 	end
 	def radio_narcotics_csv(model, session)
 		once_or_year('narcotics.csv')
@@ -444,17 +489,26 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
 	def radio_narcotics_yaml(model, session)
 		once_or_year('narcotics.yaml')
 	end
-	def radio_oddbdat(model, session)
-		once_or_year('oddbdat')
+	def radio_oddbdat_1(model, session)
+		radio_price('oddbdat', 1)
 	end
-	def radio_oddb_yaml(model, session)
-		once_or_year('oddb.yaml')
+	def radio_oddbdat_12(model, session)
+		radio_price('oddbdat', 12)
+	end
+	def radio_oddb_yaml_1(model, session)
+		radio_price('oddb.yaml', 1)
+	end
+	def radio_oddb_yaml_12(model, session)
+		radio_price('oddb.yaml', 12)
 	end
 	def radio_patents_xls(model, session)
 		once('patents.xls')
 	end
-	def radio_s31x(model, session)
-		once_or_year('s31x')
+	def radio_s31x_1(model, session)
+		radio_price('s31x', 1)
+	end
+	def radio_s31x_12(model, session)
+		radio_price('s31x', 12)
 	end
 	def s31x(model, session)
 		checkbox_with_filesize("s31x")
@@ -495,8 +549,11 @@ class DownloadExportInnerComposite < HtmlGrid::Composite
   def yaml_price_history_export(model, session)
     checkbox_with_filesize("price_history.yaml")
   end
-  def yaml_price_history_price(model, session)
-    once_or_year('price_history.yaml')
+  def yaml_price_history_price_1(model, session)
+    radio_price('price_history.yaml', 1)
+  end
+  def yaml_price_history_price_12(model, session)
+    radio_price('price_history.yaml', 12)
   end
 end
 class DownloadExportComposite < Form

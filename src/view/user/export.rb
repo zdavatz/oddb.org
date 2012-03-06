@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# View::User::Export -- oddb -- 06.03.2012 -- yasaka@ywesee.com
 # View::User::Export -- oddb -- 05.09.2003 -- hwyss@ywesee.com
 
 module ODDB
@@ -66,7 +67,7 @@ module Export
 			checkbox = HtmlGrid::InputCheckbox.new("download[#{filename}]", 
 				@model, @session, self)
 			size = filesize(filename)
-			[checkbox, "#{filename} #{size}"]
+			[checkbox, "&nbsp;", "#{filename} #{size}"]
 		end
 	end
 	def once(filename)
@@ -79,6 +80,21 @@ module Export
 			[@lookandfeel.format_price(price.to_i * 100, 'EUR'), hidden]
 		end
 	end
+	def radio_price(filename, value='1')
+		if(display?(filename))
+			name = "months[#{filename}]"
+			months = @session.user_input('months') || {}
+			checked = months[filename] || '1'
+			radio = HtmlGrid::InputRadio.new(name, @model, @session, self)
+			radio.value = value
+			if(checked == '1')
+				radio.set_attribute('checked', true)
+			end
+			price = State::User::DownloadExport.price(filename)
+			[radio, "&nbsp;", @lookandfeel.format_price(price.to_i * 100, 'EUR')]
+		end
+	end
+	#legacy method (for htmlgrid.so)
 	def once_or_year(filename)
 		if(display?(filename))
 			name = "months[#{filename}]"
