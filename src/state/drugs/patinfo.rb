@@ -4,13 +4,15 @@
 
 require 'state/drugs/global'
 require 'view/drugs/patinfo'
-
+require 'delegate'
+require 'model/patinfo'
+require 'ext/chapterparse/src/chaptparser'
 
 module ODDB
 	module State
 		module Drugs
 class Patinfo < State::Drugs::Global
-	class PatinfoWrapper < DelegateClass(ODDB::Patinfo)
+	class PatinfoWrapper < SimpleDelegator
 		attr_accessor :pointer_descr
 	end
 	VIEW = View::Drugs::Patinfo
@@ -21,6 +23,10 @@ class Patinfo < State::Drugs::Global
 			@model.name_base)
 		@model.pointer_descr = descr
 	end
+end
+class PatinfoPreview < State::Drugs::Global
+	VIEW = View::Drugs::PatinfoPreview
+	VOLATILE = true
 end
 class PatinfoPrint < State::Drugs::Global
 	VIEW = View::Drugs::PatinfoPrint
