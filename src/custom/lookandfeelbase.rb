@@ -136,7 +136,7 @@ Zeno Davatz
 				:address									=>	'Strasse',
 				:address_subject					=>	'Addressänderungsvorschlag für:',
 				:address_type							=>	'Adress-Art',
-				:add_to_interaction				=>	'Klicken Sie auf das Suchresultat, um das gew&uuml;nschte Produkt zu ihrem Interaktionskorb hinzuzuf&uuml;gen.',
+				:add_to_interaction				=>	'Bitte NAME anklicken, um das gew&uuml;nschte Produkt/Substanz zu ihrem Interaktionskorb hinzuzuf&uuml;gen.',
         :adl_stanza               =>  '(direkt im iPhone-Browser oder im iPhone-Mail anklicken!)',
 				:admin										=>	'Admin',
 				:ambiguous								=>  'Doppeldeutige Patinfo(s)',
