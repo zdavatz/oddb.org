@@ -267,6 +267,12 @@ module ODDB
         exporter.export_fachinfos
       end
     end
+    def export_patinfo_yaml
+			exporter = YamlExporter.new(@app)
+      safe_export 'patinfo.yaml' do
+        exporter.export_patinfos
+      end
+    end
 		def mail_download_stats
       safe_export 'Mail Download-Statistics' do
         mail_stats('download')
