@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::YamlPlugin -- oddb.org -- 09.03.2012 -- yasaka@ywesee.com
 # ODDB::YamlPlugin -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::YamlPlugin -- oddb.org -- 02.09.2003 -- rwaltert@ywesee.com
 
@@ -24,47 +25,50 @@ module ODDB
 		def export_doctors(name='doctors.yaml')
 			export_array(name, @app.doctors.values)
 		end
-        def check_fachinfos(name='fachinfo.yaml')
-          # Check missing data of fachinfo data
-          no_descr = {'de' => [], 'fr' => []}
-          @app.fachinfos.values.each do |fachinfo|
-            no_descr.keys.each do |language|
-              unless fachinfo.descriptions[language]
-                swissmedic_registration_numbers = ODBA.cache.fetch(fachinfo.odba_id, nil).iksnrs
-                no_descr[language].push(
-                  [fachinfo.company_name, fachinfo.name_base].concat(swissmedic_registration_numbers)
-                )
-              end
-            end
+    def check_infos(name, group, &block)
+      # Check missing data of fachinfo/patinfo data
+      no_descr = {'de' => [], 'fr' => []}
+      block.call(no_descr)
+      # Send a warning report of fachinfo/patinfo description
+      if no_descr.values.flatten.length > 0
+        log = Log.new(@@today)
+        info = File.basename(name, ".yaml")
+        message = []
+        no_descr.keys.each do |language|
+          unless no_descr[language].empty?
+            i = 0
+            message.concat([
+              "There is no '#{language}' description of #{info.capitalize} of the following",
+              "Swissmedic #{group} (Company, Product, Numbers):",
+              no_descr[language].map{|list| " " + (i+=1).to_s + ". " + list.join(", ") + "\n"}.to_s
+            ])
           end
-          # Send a warning report of fachinfo description
-          if no_descr.values.flatten.length > 0
-            log = Log.new(@@today)
-            message = []
-            no_descr.keys.each do |language|
-              unless no_descr[language].empty?
-                i = 0
-                message.concat([
-                  "There is no '#{language}' description of Fachinformation of the following",
-                  "Swissmedic Registration (Company, Product, Numbers):",
-                  no_descr[language].map{|fachlist| " " + (i+=1).to_s + ". " + fachlist.join(", ") + "\n"}.to_s
-                ])
-              end
-            end
-            log.report = [
-              "Message: ",
-              "YamlExporter#export_fachinfs method is still running,",
-              "but I found some missing Fachinfo document data.",
-              "This may cause an error in export ebooks process of ebps.",
-              "",
-            ].concat(message).join("\n")
-            log.notify(" Warning Export: #{name}")
-          end
-          return no_descr
         end
+        log.report = [
+          "Message: ",
+          "YamlExporter#export_#{info}s method is still running,",
+          "but I found some missing #{info.capitalize} document data.",
+          "This may cause an error in export ebooks process of ebps.",
+          "",
+        ].concat(message).join("\n")
+        log.notify(" Warning Export: #{name}")
+      end
+      return no_descr
+    end
 		def export_fachinfos(name='fachinfo.yaml')
-          check_fachinfos(name)
-          export_array(name, @app.fachinfos.values)
+      check_infos(name, "Registration") do |no_descr|
+        @app.fachinfos.values.each do |fachinfo|
+          no_descr.keys.each do |language|
+            unless fachinfo.descriptions[language]
+              swissmedic_registration_numbers = ODBA.cache.fetch(fachinfo.odba_id, nil).iksnrs
+              no_descr[language].push(
+                [fachinfo.company_name, fachinfo.name_base].concat(swissmedic_registration_numbers)
+              )
+            end
+          end
+        end
+      end
+      export_array(name, @app.fachinfos.values)
 		end
     def export_interactions(name='interactions.yaml')
       export_array(name, @app.substances.inject([]) { |memo, sub| memo.concat sub.substrate_connections.values })
@@ -73,11 +77,34 @@ module ODDB
 			EXPORT_SERVER.export_yaml([obj.odba_id], EXPORT_DIR, name)
 		end
 		def export_patinfos(name='patinfo.yaml')
+      check_infos(name, "Sequence") do |no_descr|
+        @app.patinfos.values.each do |patinfo|
+          next unless patinfo.descriptions
+          no_descr.keys.each do |language|
+            begin
+              unless patinfo.descriptions[language]
+                if sequence = ODBA.cache.fetch(patinfo.odba_id, nil).sequences.first
+                  swissmedic_registration_number = sequence.registration.iksnr
+                  swissbedic_sequence_number     = sequence.seqnr
+                  no_descr[language].push(
+                    [patinfo.company_name, patinfo.name_base].concat([
+                      swissmedic_registration_number,
+                      swissbedic_sequence_number
+                    ])
+                  )
+                end
+              end
+            rescue StandardError
+              next # unexpected patinfo (no sequence, no descriptions)
+            end
+          end
+        end
+      end
 			export_array(name, @app.patinfos.values)
 		end
     def export_prices(name='price_history.yaml')
       packages = @app.packages.reject do |pac|
-        pac.prices.all? do |key, prices| prices.empty? end
+      pac.prices.all? do |key, prices| prices.empty? end
       end
       export_array(name, packages, :export_prices => true)
     end
