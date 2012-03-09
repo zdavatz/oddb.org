@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Drugs::ResultList -- oddb.org -- 09.03.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 27.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::ResultList -- oddb.org -- 03.03.2003 -- aschrafl@ywesee.com
 
@@ -228,18 +229,20 @@ class ResultList < HtmlGrid::List
 	def init
     if @session.flavor == 'mymedi'
       @max_mail_order_price = 0
-      @model.atc_classes.each do |atc|
-        atc.packages.each do |pac|
-          if pac.mail_order_prices and n = pac.mail_order_prices.length and n > @max_mail_order_price
-            @max_mail_order_price = n
+      if(@model.respond_to?(:atc_classes))
+        @model.atc_classes.each do |atc|
+          atc.packages.each do |pac|
+            if pac.mail_order_prices and n = pac.mail_order_prices.length and n > @max_mail_order_price
+              @max_mail_order_price = n
+            end
           end
         end
-      end
-      self.class.add_additional_mail_order_price_method(@max_mail_order_price-1)
+        self.class.add_additional_mail_order_price_method(@max_mail_order_price-1)
 
-      (@max_mail_order_price-1).times do |i|
-        CSS_KEYMAP.store("additional_mail_order_price#{i}".to_sym, 'list bold')
-        #@css_map.store("additional_mail_order_price#{i}".to_sym, 'list bold')
+        (@max_mail_order_price-1).times do |i|
+          CSS_KEYMAP.store("additional_mail_order_price#{i}".to_sym, 'list bold')
+          #@css_map.store("additional_mail_order_price#{i}".to_sym, 'list bold')
+        end
       end
     end
 		reorganize_components(:result_list_components)
