@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 08.03.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 07.09.2004 -- mhuggler@ywesee.com
 
@@ -229,12 +230,14 @@ class FachinfoNewsList < HtmlGrid::DivList
     [0,0] => :name,
   }
   def name(model)
-    link = HtmlGrid::Link.new(:name_base, model, @session, self)
-    link.value = model.localized_name(@session.language)
-    if regs = model.registrations and reg = regs.first and reg.iksnr
-      link.href = @lookandfeel._event_url :fachinfo, :swissmedicnr => model.registrations.first.iksnr
+    if(model.respond_to?(:localized_name))
+      link = HtmlGrid::Link.new(:name_base, model, @session, self)
+      link.value = model.localized_name(@session.language)
+      if regs = model.registrations and reg = regs.first and reg.iksnr
+        link.href = @lookandfeel._event_url :fachinfo, :swissmedicnr => model.registrations.first.iksnr
+      end
+      link
     end
-    link
   end
 end
 class FachinfoNews < RssPreview
