@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::State::Global -- oddb.org -- 10.03.2012 -- yasaka@ywesee.com
 # ODDB::State::Global -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::State::Global -- oddb.org -- 25.11.2002 -- hwyss@ywesee.com
 
@@ -367,7 +368,8 @@ module ODDB
           && (seqnr = @session.user_input(:seq)) \
           && (reg = @session.app.registration(iksnr)) \
           && (seq = reg.sequence(seqnr)) \
-          && (patinfo = seq.patinfo)
+          && (patinfo = seq.patinfo) \
+          && (!patinfo.descriptions.empty?)
           State::Drugs::Patinfo.new(@session, patinfo)
         else
           Http404.new(@session, nil)
