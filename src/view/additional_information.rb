@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::AdditionalInformation -- oddb.org -- 10.03.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -337,7 +338,7 @@ module ODDB
         end
       end
 			def patinfo(model, session=@session)
-				if(model.has_patinfo?)
+				if(model.has_patinfo? and !model.patinfo.description.empty?)
 					href = nil
 					klass = nil
 					if(pdf_patinfo = model.pdf_patinfo)
