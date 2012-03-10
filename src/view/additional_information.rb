@@ -338,7 +338,7 @@ module ODDB
         end
       end
 			def patinfo(model, session=@session)
-				if(model.has_patinfo? and !model.patinfo.description.empty?)
+				if(model.has_patinfo?)
 					href = nil
 					klass = nil
 					if(pdf_patinfo = model.pdf_patinfo)
