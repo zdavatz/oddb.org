@@ -194,11 +194,10 @@ module ODDB
       }.compact.uniq
     end
     def has_patinfo?
-      (!@patinfo.nil? || !@pdf_patinfo.nil?) \
-        && @patinfo.respond_to?(:description) \
-        && !@patinfo.description.empty? \
-        && patinfo_active? \
-        && !company.disable_patinfo
+      ((!@patinfo.nil? && @patinfo.respond_to?(:descriptions) && !@patinfo.descriptions.nil? && !@patinfo.descriptions.empty?) \
+        || !@pdf_patinfo.nil?) \
+          && patinfo_active? \
+          && !company.disable_patinfo
     end
     def has_public_packages?
       if @packages.is_a?(Hash)
