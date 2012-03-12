@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::YamlPlugin -- oddb.org -- 09.03.2012 -- yasaka@ywesee.com
+# ODDB::YamlPlugin -- oddb.org -- 12.03.2012 -- yasaka@ywesee.com
 # ODDB::YamlPlugin -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::YamlPlugin -- oddb.org -- 02.09.2003 -- rwaltert@ywesee.com
 
@@ -28,7 +28,8 @@ module ODDB
     def check_infos(name, group, &block)
       # Check missing data of fachinfo/patinfo data
       no_descr = {'de' => [], 'fr' => []}
-      block.call(no_descr)
+      valid_infos = []
+      block.call(no_descr, valid_infos)
       # Send a warning report of fachinfo/patinfo description
       if no_descr.values.flatten.length > 0
         log = Log.new(@@today)
@@ -53,7 +54,7 @@ module ODDB
         ].concat(message).join("\n")
         log.notify(" Warning Export: #{name}")
       end
-      return no_descr
+      return valid_infos
     end
 		def export_fachinfos(name='fachinfo.yaml')
       check_infos(name, "Registration") do |no_descr|
@@ -77,13 +78,18 @@ module ODDB
 			EXPORT_SERVER.export_yaml([obj.odba_id], EXPORT_DIR, name)
 		end
 		def export_patinfos(name='patinfo.yaml')
-      check_infos(name, "Sequence") do |no_descr|
+      valid_patinfos = check_infos(name, "Sequence") do |no_descr, valid_infos|
         @app.patinfos.values.each do |patinfo|
-          next unless patinfo.descriptions
+          patinfo = ODBA.cache.fetch(patinfo.odba_id, nil)
+          next if (patinfo.nil? or !patinfo.valid?)
+          if (patinfo.sequences.first \
+            and (patinfo.descriptions['de'] || patinfo.descriptions['fr'])) then
+            valid_infos.push patinfo
+          end
           no_descr.keys.each do |language|
             begin
               unless patinfo.descriptions[language]
-                if sequence = ODBA.cache.fetch(patinfo.odba_id, nil).sequences.first
+                if sequence = patinfo.sequences.first then
                   swissmedic_registration_number = sequence.registration.iksnr
                   swissbedic_sequence_number     = sequence.seqnr
                   no_descr[language].push(
@@ -95,12 +101,12 @@ module ODDB
                 end
               end
             rescue StandardError
-              next # unexpected patinfo (no sequence, no descriptions)
+              next # unexpected patinfo
             end
           end
         end
       end
-			export_array(name, @app.patinfos.values)
+			export_array(name, valid_patinfos)
 		end
     def export_prices(name='price_history.yaml')
       packages = @app.packages.reject do |pac|

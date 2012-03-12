@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# Parinfo -- oddb -- 12.03.2012 -- yasaka@ywesee.com
 # Parinfo -- oddb -- 29.10.2003 -- rwaltert@ywesee.com
 
 require 'util/language'
@@ -15,6 +16,12 @@ module ODDB
 		def name_base
 			_sequence_delegate(:name_base)
 		end
+    def valid?
+      (!@descriptions.nil?) \
+      and @descriptions.respond_to?(:[]) \
+      and @descriptions.respond_to?(:empty?) \
+      and !@descriptions.empty?
+    end
     def odba_store
       @descriptions.odba_store
       super
