@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Sequence -- oddb.org -- 12.03.2012 -- yasaka@ywesee.com
 # ODDB::Sequence -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com 
 # ODDB::Sequence -- oddb.org -- 24.02.2003 -- hwyss@ywesee.com 
 
@@ -193,7 +194,10 @@ module ODDB
       }.compact.uniq
     end
     def has_patinfo?
-      (!@patinfo.nil? || !@pdf_patinfo.nil?) && patinfo_active? \
+      (!@patinfo.nil? || !@pdf_patinfo.nil?) \
+        && @patinfo.respond_to?(:description) \
+        && !@patinfo.description.empty? \
+        && patinfo_active? \
         && !company.disable_patinfo
     end
     def has_public_packages?
