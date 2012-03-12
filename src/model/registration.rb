@@ -194,7 +194,7 @@ module ODDB
 				&& (@registration_date > @@one_year_ago)
 		end
 		def name_base
-			if(seq = @sequences.values.first)
+			if(@sequences.respond_to?(:values) and seq = @sequences.values.first)
 				seq.name_base
 			end
 		end
