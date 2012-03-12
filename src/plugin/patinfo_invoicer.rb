@@ -73,6 +73,7 @@ module ODDB
             && seq.is_a?(Sequence))
         [seq.iksnr, seq.seqnr].join('_')
       end
+    rescue
     end
   end
 end
