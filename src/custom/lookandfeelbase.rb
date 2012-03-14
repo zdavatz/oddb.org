@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::LookandfeelBase -- oddb.org -- 14.03.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -136,7 +137,7 @@ Zeno Davatz
 				:address									=>	'Strasse',
 				:address_subject					=>	'Addressänderungsvorschlag für:',
 				:address_type							=>	'Adress-Art',
-				:add_to_interaction				=>	'Bitte NAME anklicken, um das gew&uuml;nschte Produkt/Substanz zu ihrem Interaktionskorb hinzuzuf&uuml;gen.',
+				:add_to_interaction				=>	'<span style="color:red;">Bitte NAME anklicken</span>, um das gew&uuml;nschte Produkt/Substanz zu ihrem Interaktionskorb hinzuzuf&uuml;gen.',
         :adl_stanza               =>  '(direkt im iPhone-Browser oder im iPhone-Mail anklicken!)',
 				:admin										=>	'Admin',
 				:ambiguous								=>  'Doppeldeutige Patinfo(s)',
@@ -1722,7 +1723,7 @@ Zeno Davatz
 				:address_at_work					=>	'Adresse commerce',
 				:address_back							=>	'Retour au vue détail',
 				:address_type							=>	'Type d\'adresse',
-				:add_to_interaction				=>	"Cliquetez sur le r&eacute;sultat de recherche, pour ajouter le produit souhait&eacute; &agrave; son panier d'interaction.",
+				:add_to_interaction				=>	'<span style="color:red;">Cliquetez sur le r&eacute;sultat de recherche</span>, pour ajouter le produit souhait&eacute; &agrave; son panier d\'interaction.',
         :adl_stanza               =>  '(cliquetez directement en iPhone-browser ou en iPhone-mail!)',
 				:amzv_article13						=>	'Article 13',
 				:amzv_article13_href			=>	'http://www.admin.ch/ch/f/rs/812_212_22/a13.html',
@@ -2902,7 +2903,7 @@ Zeno Davatz
 				:address_at_work					=>	'Adresse Business',
 				:address_back							=>	'Back',
 				:address_type							=>	'Address Type',
-				:add_to_interaction				=>	'Click on the search result to add the desired product to the interaction basket.',
+				:add_to_interaction				=>	'<span style="color:red;">Click on the search result</span>, to add the desired product to the interaction basket.',
         :adl_stanza               =>  '(click directly in your iPhone-browser or your iPhone-mailclient!)',
 				:admin										=>	'Admin',
 				:ambiguous								=>  'Ambigous consumer information',
