@@ -1,6 +1,7 @@
 Datenbeschrieb patinfo.yaml
 
-Version: 1.1.0
+Version: 1.1.1
+Geändert: 15.03.2012 (1.1.1) durch yasaka@ywesee.com
 Geändert: 12.03.2009 (1.1.0) durch hwyss@ywesee.com
 Geändert: 30.09.2005 (1.0.2) durch hwyss@ywesee.com
 Geändert: 02.09.2005 (1.0.1) durch hwyss@ywesee.com
@@ -15,6 +16,7 @@ Top-Level:
 Patinfo:
 - oid               (Integer, NOT NULL)    -> Unique Identifier
 - descriptions      (SimpleLanguage::Descriptions (String, PatinfoDocument|PatinfoDocument2001)) -> Sprache, Dokument. siehe Glossar (SimpleLanguage::Descriptions)
+- article_codes     (Array(Hash))          -> Ean13-Barcodes im 7680*-Bereich, Pharmacodes, Größe der Packung und Größe des Behälter
 
 PatinfoDocument/PatinfoDocument2001:
 - name              (String)                -> Produktname

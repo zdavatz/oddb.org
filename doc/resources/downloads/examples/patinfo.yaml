@@ -1,21 +1,18 @@
 --- !oddb.org,2003/ODDB::Patinfo 
 oid: 1823
 descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-  fr: !oddb.org,2003/ODDB::PatinfoDocument 
+  de: !oddb.org,2003/ODDB::PatinfoDocument2001 
     name: "Rapamune\xC2\xAE"
     company: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: WYETH
+      heading: PFIZER
       sections: []
 
-    galenic_form: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: ""
-      sections: []
-
+    galenic_form: 
     effects: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Propri\xC3\xA9t\xC3\xA9s/Emploi th\xC3\xA9rapeutique"
+      heading: Was ist Rapamune und wann wird es angewendet?
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Qu'est-ce que le Rapamune et quand est-il utilis\xC3\xA9?\n"
+        subheading: ""
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -24,7 +21,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Rapamune appartient \xC3\xA0 une classe de m\xC3\xA9dicaments appel\xC3\xA9s immunosuppresseurs. Il aide \xC3\xA0 att\xC3\xA9nuer la r\xC3\xA9action immunitaire de votre organisme apr\xC3\xA8s une transplantation d'organe. Il est utilis\xC3\xA9 pour emp\xC3\xAAcher le rejet par votre organisme des reins transplant\xC3\xA9s et il est normalement associ\xC3\xA9 \xC3\xA0 des m\xC3\xA9dicaments appel\xC3\xA9s ciclosporine et corticost\xC3\xA9ro\xC3\xAFdes."
+          text: "Rapamune geh\xC3\xB6rt zu einer Gruppe von Arzneimitteln, die Immunsuppressiva genannt wird. Es hilft die Immunantwort Ihres K\xC3\xB6rpers zu unterdr\xC3\xBCcken, nachdem Sie ein Organtransplantat erhalten haben. Es verhindert die Abstossung einer transplantierten Niere durch Ihren K\xC3\xB6rper, und wird normalerweise in Kombination mit Kortikosteroiden und vor\xC3\xBCbergehend mit Ciclosporin angewendet."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -33,655 +30,13 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Vous ne pouvez prendre ce m\xC3\xA9dicament que s'il vous a \xC3\xA9t\xC3\xA9 prescrit par votre m\xC3\xA9decin."
+          text: "Dieses Medikament darf nur auf Verschreibung des Arztes oder der \xC3\x84rztin eingenommen werden."
           preformatted: false
     amendments: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Compl\xC3\xA9ment d'information"
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          De quoi faut-il tenir compte en dehors du traitement?
-
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Le Rapamune diminue par son m\xC3\xA9canisme d'action la r\xC3\xA9sistance de l'organisme aux infections. Il est donc important d'\xC3\xA9viter tout risque d'infection et d'informer le m\xC3\xA9decin traitant des sympt\xC3\xB4mes d'infection tels que rhumes, maux de gorge, plaies suppurantes, etc."
-          preformatted: false
-    contra_indications: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Contre-indications
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Quand le Rapamune ne doit-il pas \xC3\xAAtre utilis\xC3\xA9?\n"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Le Rapamune ne doit pas \xC3\xAAtre utilis\xC3\xA9 en cas de r\xC3\xA9action d'hypersensibilit\xC3\xA9 (allergique) \xC3\xA0 la substance active ou \xC3\xA0 l'un des excipients."
-          preformatted: false
-    precautions: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Pr\xC3\xA9cautions"
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Quelles sont les mesures de pr\xC3\xA9caution \xC3\xA0 observer lors de la prise de Rapamune?\n"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Si vous avez des probl\xC3\xA8mes h\xC3\xA9patiques ou si vous avez eu une maladie susceptible d'avoir agi sur votre foie, veuillez en informer votre m\xC3\xA9decin car cela peut influer sur la dose de Rapamune que vous recevez."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Les agents immunosuppresseurs peuvent diminuer la capacit\xC3\xA9 de votre organisme \xC3\xA0 lutter contre l'infection et majorer le risque d'apparition de n\xC3\xA9oplasies lympho\xC3\xAFdes ou cutan\xC3\xA9es."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "La r\xC3\xA9ponse immunitaire aux vaccinations peut \xC3\xA9galement \xC3\xAAtre diminu\xC3\xA9e. Consultez votre m\xC3\xA9decin avant de vous faire vacciner."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Veuillez informer votre m\xC3\xA9decin ou votre pharmacien si vous souffrez d'une autre maladie, si vous \xC3\xAAtes allergique ou si vous prenez d\xC3\xA9j\xC3\xA0 d'autres m\xC3\xA9dicaments (m\xC3\xAAme en autom\xC3\xA9dication), notamment:"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "tout autre immunosuppresseur, \xC3\xA0 l'exception de la ciclosporine et des corticost\xC3\xA9ro\xC3\xAFdes;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "antibiotiques et antifongiques, par exemple rifampicine, clarithromycine, \xC3\xA9rythromycine, tri ol\xC3\xA9andomycine, rifabutine, clotrimazole, fluconazole, itraconazole, k\xC3\xA9toconazole;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "antihypertenseurs ou m\xC3\xA9dicaments \xC3\xA0 vis\xC3\xA9e cardiaque, y compris nicardipine, v\xC3\xA9rapamil et diltiazem;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "anti\xC3\xA9pileptiques, y compris carbamaz\xC3\xA9pine, ph\xC3\xA9nobarbital, ph\xC3\xA9nyto\xC3\xAFne;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "cisapride, m\xC3\xA9toclopramide, bromocriptine, cim\xC3\xA9tidine, danazol, antiprot\xC3\xA9ases."
-          preformatted: false
-    pregnancy: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Grossesse/Allaitement
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Le Rapamune peut-il \xC3\xAAtre pris pendant la grossesse ou l'allaitement?\n"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Ne pas prendre de Rapamune pendant la grossesse et la p\xC3\xA9riode d'allaitement."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Vous devez utiliser une m\xC3\xA9thode contraceptive efficace durant le traitement par Rapamune et pendant 12 semaines apr\xC3\xA8s la fin du traitement. Si vous pensez \xC3\xAAtre enceinte, veuillez en parler imm\xC3\xA9diatement \xC3\xA0 votre m\xC3\xA9decin."
-          preformatted: false
-    usage: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Posologie/Mode d'emploi
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Comment utiliser le Rapamune?
-
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Rapamune ne doit \xC3\xAAtre pris que par voie orale. Prenez toujours le m\xC3\xA9dicament exactement comme votre m\xC3\xA9decin vous l'a prescrit."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Il est tr\xC3\xA8s important de prendre Rapamune toujours au m\xC3\xAAme moment de la journ\xC3\xA9e."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Votre m\xC3\xA9decin d\xC3\xA9cidera exactement quelle dose de Rapamune vous devez prendre, quand et combien de fois."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Habituellement, la dose initiale prescrite est de 6 mg de Rapamune apr\xC3\xA8s la transplantation r\xC3\xA9nale pour les adultes et les jeunes de plus de 13 ans. Vous devrez ensuite prendre chaque jour 2 mg de Rapamune."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Si vous prenez \xC3\xA9galement de la ciclosporine, vous devez prendre le Rapamune 4 heures apr\xC3\xA8s la ciclosporine."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Ne changez pas la le dosage prescrit de votre propre chef. Adressez-vous \xC3\xA0 votre m\xC3\xA9decin ou \xC3\xA0 votre pharmacien lorsque vous pensez que l'efficacit\xC3\xA9 de votre m\xC3\xA9dicament est trop faible ou au contraire trop forte."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Si vous avez pris une plus grande quantit\xC3\xA9 du m\xC3\xA9dicament que la quantit\xC3\xA9 prescrite, consultez d'urgence un m\xC3\xA9decin ou rendez-vous imm\xC3\xA9diatement au service des urgences de l'h\xC3\xB4pital le plus proche. Apportez toujours le flacon du m\xC3\xA9dicament avec l'\xC3\xA9tiquette, m\xC3\xAAme s'il est vide."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Si vous oubliez de prendre Rapamune, prenez-le d\xC3\xA8s que vous vous en souvenez, sauf si vous devez prendre votre dose de ciclosporine dans les 4 heures. Dans ce cas, ne prenez pas la dose oubli\xC3\xA9e de Rapamune et poursuivez votre traitement comme d'habitude. Ne prenez pas une double dose pour compenser une dose oubli\xC3\xA9e et respectez toujours un intervalle d'environ 4 heures entre les prises de Rapamune et de ciclosporine."
-          preformatted: false
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Instructions pour la dilution de Rapamune buvable
-
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "1. Ouvrez le flacon de solution. Retirez le bouchon de s\xC3\xA9curit\xC3\xA9 du flacon en le pressant et en tournant dans le sens inverse des aiguilles d'une montre."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "2. Lorsque vous entamez le flacon, ins\xC3\xA9rez l'adaptateur de seringue (le petit tube en plastique muni d'un capuchon) de fa\xC3\xA7on \xC3\xA0 ce que le capuchon affleure l'ouverture du flacon. Ne retirez plus l'adaptateur du flacon apr\xC3\xA8s insertion."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "3. Pour prendre le m\xC3\xA9dicament, introduisez l'une des seringues doseuses de couleur ambre dans l'orifice de l'adaptateur. Le piston de la seringue doit \xC3\xAAtre enti\xC3\xA8rement enfonc\xC3\xA9."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "4. Aspirez la quantit\xC3\xA9 exacte de Rapamune solution buvable comme prescrit par votre m\xC3\xA9decin en tirant doucement le piston de la seringue doseuse jusqu'\xC3\xA0 ce que le bas de la ligne noire du piston soit au niveau du rep\xC3\xA8re correspondant \xC3\xA0 la dose prescrite sur la seringue doseuse. Le flacon doit \xC3\xAAtre maintenu en position verticale pendant que la solution est aspir\xC3\xA9e. Si des bulles se forment dans la seringue doseuse au cours de l'aspiration, videz la solution de Rapamune dans le flacon et r\xC3\xA9p\xC3\xA9tez la proc\xC3\xA9dure d'aspiration."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "5. Il vous a peut-\xC3\xAAtre \xC3\xA9t\xC3\xA9 demand\xC3\xA9 d'avoir toujours le m\xC3\xA9dicament pr\xC3\xA8s de vous. Si vous devez transporter votre seringue doseuse remplie, fermez-la herm\xC3\xA9tiquement avec le capuchon - vous devez entendre un clic lorsque vous mettez le capuchon en place."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "6. Placez ensuite la seringue doseuse bouch\xC3\xA9e dans l'\xC3\xA9tui de transport fourni avec le m\xC3\xA9dicament. Une fois dans la seringue, le m\xC3\xA9dicament peut \xC3\xAAtre conserv\xC3\xA9 \xC3\xA0 temp\xC3\xA9rature ambiante ou au r\xC3\xA9frig\xC3\xA9rateur et doit \xC3\xAAtre utilis\xC3\xA9 dans les 24 heures. Eviter d'exposer le m\xC3\xA9dicament \xC3\xA0 des temp\xC3\xA9ratures extr\xC3\xAAmes (moins de 2 \xC2\xB0C et plus de 30 \xC2\xB0C)."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: 297
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: 
-            - :italic
-            start: 298
-            end: 304
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 305
-            end: -1
-          text: "7. Videz le contenu de la seringue doseuse dans un verre contenant au moins 60 ml d'eau ou de jus d'orange. M\xC3\xA9langez vigoureusement pendant une minute et buvez imm\xC3\xA9diatement. Remplissez de nouveau le verre avec au moins 120 ml d'eau ou de jus d'orange, agitez vigoureusement et buvez imm\xC3\xA9diatement. Ne pas utiliser d'autre liquide que de l'eau ou du jus d'orange pour la dilution. Jus de pamlemousse ne doit pas \xC3\xAAtre utilis\xC3\xA9. Vous ne devez pas utiliser de r\xC3\xA9cipients en plastique, en papier ou en polystyr\xC3\xA8ne pour la dilution de Rapamune. La seringue doseuse et son capuchon ne doivent \xC3\xAAtre utilis\xC3\xA9s qu'une seule fois. Les jeter apr\xC3\xA8s usage."
-          preformatted: false
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Remarque
-
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Lorsqu'elle est conserv\xC3\xA9e au r\xC3\xA9frig\xC3\xA9rateur, la solution dans le flacon peut s\xC3\xA9dimenter ou avoir un aspect trouble. Dans ce cas, ramenez simplement votre solution buvable de Rapamune \xC3\xA0 la temp\xC3\xA9rature ambiante et agitez doucement. L'aspect trouble n'alt\xC3\xA8re pas la qualit\xC3\xA9 de Rapamune."
-          preformatted: false
-    unwanted_effects: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Effets ind\xC3\xA9sirables"
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Quels effets ind\xC3\xA9sirables le Rapamune peut-il avoir?\n"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Fr\xC3\xA9quents: douleurs abdominales, faiblesse, fi\xC3\xA8vre, maux de t\xC3\xAAte, lombalgies, douleurs thoraciques, douleurs articulaires, r\xC3\xA9tention d'eau dans les tissus (oed\xC3\xA8me); occasionnels: frissons, infections, crampes musculaires, atonie musculaire, irritation des gencives."
-          preformatted: false
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Syst\xC3\xA8me cardio-vasculaire:"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "fr\xC3\xA9quents: hypertension, an\xC3\xA9mie; occasionnels: probl\xC3\xA8mes cardiaques, battements de coeur, tachycardie, hypotension."
-          preformatted: false
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Syst\xC3\xA8me gastro-intestinal:"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "fr\xC3\xA9quents: constipation, diarrh\xC3\xA9e, naus\xC3\xA9es, vomissements; occasionnels: manque d'app\xC3\xA9tit, troubles digestifs, flatulence."
-          preformatted: false
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Syst\xC3\xA8me nerveux et troubles sensoriels:"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "fr\xC3\xA9quents: tremblements; occasionnels: insomnies, d\xC3\xA9pression, confusion, anxi\xC3\xA9t\xC3\xA9, \xC3\xA9tourdissements, modification de la sensibilit\xC3\xA9 aux stimuli, somnolence, troubles de la vision."
-          preformatted: false
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Peau:"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "fr\xC3\xA9quents: acn\xC3\xA9; occasionnels: d\xC3\xA9mangeaisons, rougeurs, augmentation de la pilosit\xC3\xA9, sueurs."
-          preformatted: false
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Voies respiratoires:"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "fr\xC3\xA9quents: difficult\xC3\xA9 \xC3\xA0 respirer, inflammation de la gorge et du nez; occasionnels: probl\xC3\xA8mes pulmonaires, toux, saignements de nez."
-          preformatted: false
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Voies urinaires:"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "fr\xC3\xA9quents: infections urinaires; occasionnels: douleurs v\xC3\xA9sicales, douleurs et difficult\xC3\xA9s \xC3\xA0 uriner, incontinence."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Si l'un quelconque de ces effets secondaires vous inqui\xC3\xA8te ou si vous constatez un effet autre que ceux qui sont mentionn\xC3\xA9s ci-dessus, veuillez en parler \xC3\xA0 votre m\xC3\xA9decin ou \xC3\xA0 votre pharmacien."
-          preformatted: false
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Vous pouvez \xC3\xA9galement pr\xC3\xA9senter des effets ind\xC3\xA9sirables sans le savoir:"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "en particulier, modifications du m\xC3\xA9tabolisme, par exemple des graisses, du cholest\xC3\xA9rol (fr\xC3\xA9quents), sucre, sang, syndrome de Cushing (occasionnels)."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Il est indispensable de passer tous les examens de contr\xC3\xB4le prescrits par votre m\xC3\xA9decin, entre autres les tests des fonctions h\xC3\xA9patiques et r\xC3\xA9nales ainsi que les examens sanguins."
-          preformatted: false
-    general_advice: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Remarques particuli\xC3\xA8res"
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          De quoi faut-il en outre tenir compte?
-
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Rapamune solution buvable contient 2% d'\xC3\xA9thanol. Chaque dose contient jusqu'\xC3\xA0 0,1 g d'alcool. L'alcool peut \xC3\xAAtre nocif pour les personnes qui souffrent d'alcoolisme, d'\xC3\xA9pilepsie, de l\xC3\xA9sion ou de maladies c\xC3\xA9r\xC3\xA9brales, ainsi que pour les femmes enceintes et les enfants. L'alcool peut entraver ou majorer les effets des autres m\xC3\xA9dicaments."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Le Rapamune doit \xC3\xAAtre conserv\xC3\xA9 hors de la port\xC3\xA9e des enfants."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Conservez la solution buvable de Rapamune dans son conditionnement d'origine \xC3\xA0 l'abri de la lumi\xC3\xA8re au r\xC3\xA9frig\xC3\xA9rateur (+2 \xC3\xA0 +8 \xC2\xB0C). Une fois le flacon ouvert, il doit \xC3\xAAtre conserv\xC3\xA9 au r\xC3\xA9frig\xC3\xA9rateur et utilis\xC3\xA9 dans un d\xC3\xA9lai de 30 jours."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Conservez les comprim\xC3\xA9s film\xC3\xA9s de Rapamune dans leurs conditionnement d'origine \xC3\xA0 l'abri de la lumi\xC3\xA8re et \xC3\xA0 la temp\xC3\xA9rature ambiante (15-25 \xC2\xB0C)."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Le m\xC3\xA9dicament ne peut \xC3\xAAtre utilis\xC3\xA9 au-del\xC3\xA0 de la date imprim\xC3\xA9e sur le r\xC3\xA9cipient avec la mention \xC2\xABEXP\xC2\xBB."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Pour de plus amples renseignements, consultez votre m\xC3\xA9decin ou votre pharmacien qui disposent d'une documentation d\xC3\xA9taill\xC3\xA9e destin\xC3\xA9e aux repr\xC3\xA9sentants des professions m\xC3\xA9dicales."
-          preformatted: false
-    composition: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Composition
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: 1 ml de Rapamune solution buvable
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "contient 1 mg de la substance active, le sirolimus; excipients: \xC3\xA9thanol, propyl\xC3\xA8neglycol, acides gras de soja, polysorbate 80, phosphatidylcholine, glyc\xC3\xA9rine; conservateur: E 304; teneur en alcool: 2 vol.%."
-          preformatted: false
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "1 Rapamune comprim\xC3\xA9 film\xC3\xA9"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "contient 1 mg de la substance active, le sirolimus; excipients; propyl\xC3\xA8neglycol ainsi que des autres excipents."
-          preformatted: false
-    packages: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Mode de vente/Pr\xC3\xA9sentation"
+      heading: Was sollte dazu beachtet werden?
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: ""
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "En pharmacie, uniquement sur ordonnance m\xC3\xA9dicale."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: 24
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: 
-            - :italic
-            start: 25
-            end: 42
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 43
-            end: -1
-          text: "Flacon en verre: 60 ml de solution buvable."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: 22
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: 
-            - :italic
-            start: 23
-            end: 40
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 41
-            end: -1
-          text: "Emballages de 30 et 100 comprim\xC3\xA9s film\xC3\xA9s."
-          preformatted: false
-    distribution: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Distributeur
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: ""
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: AHP (Suisse) SA, Wyeth Division, 6301 Zoug.
-          preformatted: false
-    date: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Mise \xC3\xA0 jour de l'information"
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: ""
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: Mai 2001.
-          preformatted: false
-  de: !oddb.org,2003/ODDB::PatinfoDocument 
-    name: "Rapamune\xC2\xAE"
-    company: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: WYETH
-      sections: []
-
-    galenic_form: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: ""
-      sections: []
-
-    effects: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Eigenschaften/Verwendungszweck
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Was ist Rapamune und wann wird es angewendet?
-
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Rapamune geh\xC3\xB6rt zu einer Gruppe von Arzneimitteln, die Immunsuppressiva genannt wird. Es hilft die Immunantwort Ihres K\xC3\xB6rpers zu unterdr\xC3\xBCcken, nachdem Sie ein Organtransplantat erhalten haben. Es verhindert die Abstossung einer transplantierten Niere durch Ihren K\xC3\xB6rper und wird normalerweise zusammen mit den Arzneimitteln Ciclosporin und Kortikosteroiden angewendet."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: Dieses Medikament darf nur auf Verschreibung eines Arztes eingenommen werden.
-          preformatted: false
-    amendments: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Erg\xC3\xA4nzungen"
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Was sollte dazu beachtet werden?
-
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -693,12 +48,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
           text: "Rapamune verringert durch seine Wirkungsweise die Widerstandskraft des K\xC3\xB6rpers gegen Infektionen; es ist daher wichtig, Infektionsrisiken zu vermeiden und dem behandelnden Arzt Infektionssymptome wie Schnupfen, Halsweh, eiternde Verletzungen usw. zu melden."
           preformatted: false
     contra_indications: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Kontraindikationen
+      heading: Wann darf Rapamune nicht eingenommen werden?
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Wann darf Rapamune nicht angewendet werden?
-
+        subheading: ""
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -710,12 +63,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
           text: "Rapamune darf nicht eingenommen werden, wenn Sie auf den Wirkstoff oder einen der Hilfsstoffe von Rapamune \xC3\xBCberempfindlich (allergisch) reagieren."
           preformatted: false
     precautions: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Vorsichtsmassnahmen
+      heading: Wann ist bei der Einnahme von Rapamune Vorsicht geboten?
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Wann ist bei der Einnahme von Rapamune Vorsicht geboten?
-
+        subheading: ""
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -733,7 +84,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Immunosuppressive Arzneimittel k\xC3\xB6nnen die F\xC3\xA4higkeit Ihres K\xC3\xB6rpers, Infektionen zu bek\xC3\xA4mpfen, beeintr\xC3\xA4chtigen und k\xC3\xB6nnen das Risiko, b\xC3\xB6sartige Geschw\xC3\xBClste der lymphatischen Gewebe oder der Haut zu entwickeln, erh\xC3\xB6hen."
+          text: "Ihr Arzt wird Labortests durchf\xC3\xBChren, um den Rapamune-Spiegel in Ihrem Blut zu \xC3\xBCberwachen. W\xC3\xA4hrend der Behandlung mit Rapamune wird Ihr Arzt ausserdem Labortests zur \xC3\x9Cberwachung der Nierenfunktion, der Blutfettwerte (Cholesterin und/oder Triglyzeride) und m\xC3\xB6glicherweise der Leberfunktion durchf\xC3\xBChren."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -742,7 +93,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Auch die Immunantwort auf Impfungen kann herabgesetzt werden. Konsultieren Sie Ihren Arzt bevor sie sich impfen lassen.
+          text: "Immunosuppressive Arzneimittel k\xC3\xB6nnen die F\xC3\xA4higkeit Ihres K\xC3\xB6rpers, Infektionen zu bek\xC3\xA4mpfen, beeintr\xC3\xA4chtigen, und k\xC3\xB6nnen das Risiko, b\xC3\xB6sartige Geschw\xC3\xBClste der lymphatischen Gewebe oder der Haut zu entwickeln, erh\xC3\xB6hen."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -751,7 +102,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Informieren Sie Ihren Arzt oder Apotheker, wenn Sie an anderen Krankheiten leiden, Allergien haben oder andere Medikamente (auch selbstgekaufte) einnehmen und zwar:"
+          text: Auch die Immunantwort auf Impfungen kann herabgesetzt werden. Konsultieren Sie Ihren Arzt bevor Sie sich impfen lassen.
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -760,7 +111,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: andere immunsuppressive Arzneimittel, ausser Ciclosporin oder Kortikosteroide;
+          text: Rapamune darf nicht mit Grapefruitsaft eingenommen werden.
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -769,7 +120,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Antibiotika oder Arzneimittel gegen Pilzinfektionen, z.B. Rifampicin, Clarithromycin, Erythromycin, Troleandomycin, Rifabutin, Clotrimazol, Fluconazol, Itraconazol, Ketoconazol;
+          text: "Wegen des erh\xC3\xB6hten Hautkrebsrisikos sollte die Einwirkung von Sonnen- und UV-Licht eingeschr\xC3\xA4nkt werden durch das Tragen von sch\xC3\xBCtzender Kleidung und Verwendung von Sonnenschutzmitteln mit einem hohen Lichtschutzfaktor."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -778,7 +129,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Bluthochdruckmittel oder Arzneimittel zur Behandlung von Herzkrankheiten, einschliesslich Nicardipin, Verapamil und Diltiazem;
+          text: "Es wurden keine spezifischen Studien zum Einfluss von Rapamune auf die Fahrt\xC3\xBCchtigkeit oder das Bedienen von Maschinen durchgef\xC3\xBChrt. Obwohl keine Auswirkungen auf die Verkehrst\xC3\xBCchtigkeit durch die Einnahme von Rapamune zu erwarten sind, wenden Sie sich bitte an Ihren Arzt oder Ihre \xC3\x84rztin, wenn Sie irgendwelche Bedenken haben."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -787,7 +138,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Arzneimittel gegen Epilepsie, einschliesslich Carbamazepin, Phenobarbital, Phenytoin;
+          text: "Informieren Sie Ihren Arzt oder Apotheker bzw. Ihre \xC3\x84rztin oder Apothekerin, wenn Sie an anderen Krankheiten leiden, Allergien haben oder andere Arzneimittel (auch selbstgekaufte!) einnehmen oder \xC3\xA4usserlich anwenden (Externa) und zwar insbesondere:"
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -796,13 +147,95 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Cisaprid, Metoclopramid, Bromocriptin, Cimetidin, Danazol, Proteasehemmer.
+          text: Andere immunsuppressive Arzneimittel, ausser Ciclosporin oder Kortikosteroide.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Antibiotika oder Arzneimittel gegen Pilzinfektionen, z.B. Rifampicin, Clarithromycin, Erythromycin, Troleandomycin, Rifabutin, Clotrimazol, Fluconazol, Itraconazol, Ketoconazol, Voriconazol.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Bluthochdruckmittel oder Arzneimittel zur Behandlung von Herzkrankheiten, einschliesslich Nicardipin, Verapamil und Diltiazem.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Arzneimittel gegen Epilepsie, einschliesslich Carbamazepin, Phenobarbital, Phenytoin.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Arzneimittel, die zur Behandlung von Magengeschw\xC3\xBCren oder anderen Magen-Darm-Beschwerden eingesetzt werden, wie Cisaprid, Cimetidin, Metoclopramid."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Bromocriptin (zur Behandlung der Parkinson-Krankheit und verschiedener hormoneller Beschwerden), Danazol (zur Behandlung von gyn\xC3\xA4kologischen Beschwerden) oder Proteasehemmer (zur HIV Behandlung)."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 14
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 15
+            end: 35
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 36
+            end: -1
+          text: Johanniskraut ( Hypericum perforatum ).
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Die Anwendung von Rapamune kann zu erh\xC3\xB6hten Konzentrationen von Cholesterin und Triglyceriden im Blut f\xC3\xBChren, die behandlungsbed\xC3\xBCrftig werden k\xC3\xB6nnen. Arzneimittel, die als \xC2\xABStatine\xC2\xBB und \xC2\xABFibrate\xC2\xBB bekannt sind und bei erh\xC3\xB6hten Cholesterin- und Triglycerid-Werten angewendet werden, wurden mit einem erh\xC3\xB6hten Risiko von Muskelabbau (Rhabdomyolyse) in Verbindung gebracht. Bitte informieren Sie Ihren Arzt, wenn Sie Arzneimittel zur Senkung Ihrer Blutfettwerte einnehmen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Rapamune \xC3\xBCberzogene Tabletten enthalten Laktose und Saccharose. Bitte informieren Sie Ihren Arzt, falls bei Ihnen eine Unvertr\xC3\xA4glichkeit gegen\xC3\xBCber Galaktose oder Fruktose, ein Laktasemangel, Glukose-Galaktose-Aufnahmest\xC3\xB6rungen oder ein Saccharase-Isomaltase-Mangel vorliegen."
           preformatted: false
     pregnancy: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Schwangerschaft/Stillzeit
+      heading: "Darf Rapamune w\xC3\xA4hrend einer Schwangerschaft oder in der Stillzeit eingenommen werden?"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Darf Rapamune w\xC3\xA4hrend der Schwangerschaft oder in der Stillzeit eingenommen werden?\n"
+        subheading: ""
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -820,15 +253,22 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Sie sollten w\xC3\xA4hrend der Behandlung mit Rapamune und bis zu 12 Wochen nach Beendigung der Behandlung eine wirksame empf\xC3\xA4ngnisverh\xC3\xBCtende Methode verwenden. Sprechen Sie unverz\xC3\xBCglich mit Ihrem Arzt, wenn Sie vermuten, schwanger zu sein."
+          text: "Sie sollten w\xC3\xA4hrend der Behandlung mit Rapamune und bis zu 12 Wochen nach Beendigung der Behandlung eine wirksame empf\xC3\xA4ngnisverh\xC3\xBCtende Methode verwenden. Sprechen Sie unverz\xC3\xBCglich mit Ihrem Arzt, wenn Sie vermuten schwanger zu sein."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Eine verminderte Spermienzahl wurde mit der Einnahme von Rapamune in Zusammenhang gebracht. Diese normalisiert sich normalerweise nach Absetzen der Behandlung.
           preformatted: false
     usage: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Dosierung/Anwendung
+      heading: Wie verwenden Sie Rapamune?
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Wie verwenden Sie Rapamune?
-
+        subheading: ""
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -837,7 +277,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Rapamune ist ausschliesslich zur oralen Anwendung bestimmt. Nehmen Sie Ihr Arzneimittel immer so ein, wie Ihr Arzt es Ihnen verordnet hat.
+          text: "Rapamune ist ausschliesslich zur oralen Anwendung bestimmt. Nehmen Sie Ihr Arzneimittel immer so ein, wie Ihr Arzt es Ihnen verordnet hat. \xC3\x84ndern Sie nicht von sich aus die verschriebene Dosierung. Wenn Sie glauben, das Arzneimittel wirke zu schwach oder zu stark, so sprechen Sie mit Ihrem Arzt oder Apotheker bzw. mit Ihrer \xC3\x84rztin oder Apothekerin."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -846,7 +286,43 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Es ist wichtig, Rapamune stets zur gleichen Zeit einzunehmen.
+          text: Es ist wichtig Rapamune stets zur gleichen Zeit mit oder ohne Nahrung einzunehmen.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Rapamune Trinkl\xC3\xB6sung sollte nur mit Wasser oder Orangensaft verd\xC3\xBCnnt werden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Rapamune darf nicht zusammen mit Grapefruitsaft eingenommen werden.
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Die Tabletten d\xC3\xBCrfen nicht zerdr\xC3\xBCckt, zerkaut oder geteilt werden. Bitte informieren Sie Ihren Arzt, wenn Sie Schwierigkeiten mit der Einnahme der Tabletten haben."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Es sollten nicht mehrere 0,5 mg Tabletten als Ersatz f\xC3\xBCr die 1 mg Tablette oder anstelle anderer St\xC3\xA4rken eingenommen werden."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -882,15 +358,6 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "\xC3\x84ndern Sie nicht von sich aus die verschriebene Dosierung. Wenn Sie glauben, das Medikament wirke zu schwach oder zu stark, so sprechen Sie mit Ihrem Arzt oder Apotheker."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
           text: "Wenn Sie eine gr\xC3\xB6ssere Menge Rapamune eingenommen haben als verordnet, suchen Sie sofort einen Arzt auf, oder gehen Sie in die n\xC3\xA4chste Krankenhaus-Notaufnahme. Bringen Sie immer die etikettierte Arzneimittelflasche mit, auch wenn diese leer ist."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
@@ -900,7 +367,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Wenn Sie einmal die Einnahme einer Dosis vergessen haben, holen Sie diese nach, sobald Sie sich daran erinnern, ausser wenn Sie die n\xC3\xA4chste Dosis Ciclosporin schon innerhalb der n\xC3\xA4chsten 4 Stunden einnehmen m\xC3\xBCssen. In diesem Fall lassen Sie die vergessene Dosis Rapamune aus und nehmen Ihre Arzneimittel weiter zu den gewohnten Zeiten ein. Nehmen Sie keine doppelte Dosis, um die vergessene Dosis auszugleichen, und nehmen Sie Rapamune und Ciclosporin immer in einem Abstand von 4 Stunden ein."
+          text: "Wenn Sie einmal die Einnahme einer Dosis vergessen haben, holen Sie diese nach, sobald Sie sich daran erinnern, ausser wenn Sie die n\xC3\xA4chste Dosis Ciclosporin schon innerhalb der n\xC3\xA4chsten 4 Stunden einnehmen m\xC3\xBCssen. In diesem Fall lassen Sie die vergessene Dosis Rapamune aus und nehmen Ihre Arzneimittel weiter zu den gewohnten Zeiten ein. Nehmen Sie keine doppelte Dosis, um die vergessene Dosis auszugleichen, und nehmen Sie Rapamune und Ciclosporin immer in einem Abstand von 4 Stunden ein. Wenn Sie eine Rapamune Dosis komplett ausgelassen haben, sollten Sie Ihren Arzt informieren."
           preformatted: false
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: "Hinweise zur Verd\xC3\xBCnnung von Rapamune Trinkl\xC3\xB6sung\n"
@@ -948,7 +415,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "5. M\xC3\xB6glicherweise wurden Sie angewiesen, das Medikament bei sich zu tragen. Falls es notwendig ist, die gef\xC3\xBCllte Dosierspritze mitzuf\xC3\xBChren, verschliessen Sie die Spritze sicher mit der Kappe - die Kappe sollte beim Verschliessen einrasten."
+          text: "5. M\xC3\xB6glicherweise wurden Sie angewiesen, das Medikament bei sich zu tragen. Falls es notwendig ist, die gef\xC3\xBCllte Dosierspritze mitzuf\xC3\xBChren, verschliessen Sie die Spritze sicher mit der Kappe \xE2\x80\x93 die Kappe sollte beim Verschliessen einrasten."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -993,93 +460,446 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
           text: "Die L\xC3\xB6sung in der Flasche kann bei Aufbewahrung im K\xC3\xBChlschrank zusammenlaufen oder tr\xC3\xBCbe erscheinen. Bringen Sie in diesem Fall einfach Ihre Rapamune L\xC3\xB6sung auf Raumtemperatur und sch\xC3\xBCtteln Sie sie behutsam. Dieses tr\xC3\xBCbe Aussehen beeintr\xC3\xA4chtigt die Qualit\xC3\xA4t von Rapamune nicht."
           preformatted: false
     unwanted_effects: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Unerw\xC3\xBCnschte Wirkungen"
+      heading: Welche Nebenwirkungen kann Rapamune haben?
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Folgende Nebenwirkungen k\xC3\xB6nnen bei der Einnahme von Rapamune auftreten:"
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "K\xC3\xB6rper allgemein\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 12
+            end: -1
+          text: "Sehr h\xC3\xA4ufig: Fl\xC3\xBCssigkeitsansammlung im Bereich der Nieren, Wassereinlagerungen im Gewebe (\xC3\x96deme), Fieber, Schmerz."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 7
+            end: -1
+          text: "H\xC3\xA4ufig: Wundheilungsst\xC3\xB6rungen; Infektionen (einschliesslich lebensbedrohlicher Infektionen)."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 7
+            end: -1
+          text: "Selten: Allergische Reaktionen, einschliesslich solcher, die lebensbedrohlich sind; Gesichtsschwellungen mit Einengung der Atemwege."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Funktionsst\xC3\xB6rungen des Nervensystems\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 12
+            end: -1
+          text: "Sehr h\xC3\xA4ufig: Kopfschmerz."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Funktionsst\xC3\xB6rungen des Herzens\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 7
+            end: -1
+          text: "H\xC3\xA4ufig: Schneller Herzschlag."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 12
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 13
+            end: -1
+          text: "Gelegentlich: Fl\xC3\xBCssigkeitsansammlung im Herzbeutel, die in einigen F\xC3\xA4llen die Pumpfunktion des Herzens vermindern kann."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Funktionsst\xC3\xB6rungen des Kreislaufs\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 12
+            end: -1
+          text: "Sehr h\xC3\xA4ufig: Erh\xC3\xB6hter Blutdruck."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 7
+            end: -1
+          text: "H\xC3\xA4ufig: Blutgerinnsel in den Beinvenen, die zu Gerinnseln in der Lunge f\xC3\xBChren k\xC3\xB6nnen."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
         subheading: |
-          Welche Nebenwirkungen kann Rapamune haben?
+          Gastrointestinale Beschwerden
 
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
           - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 0
+            start: 12
             end: -1
-          text: "H\xC3\xA4ufig: Unterleibsschmerzen, Schw\xC3\xA4che, Fieber, Kopfschmerzen, R\xC3\xBCckenschmerzen, Brustschmerzen, Gelenkschmerzen und Wassereinlagerungen im Gewebe (\xC3\x96deme); gelegentlich: Sch\xC3\xBCttelfrost, Infektionen, Muskelkr\xC3\xA4mpfe, Muskelschlaffheit und Probleme mit dem Zahnfleisch."
+          text: "Sehr h\xC3\xA4ufig: Bauchschmerzen, Durchfall, Verstopfung, \xC3\x9Cbelkeit."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 7
+            end: -1
+          text: "H\xC3\xA4ufig: Mundschleimhaut-Entz\xC3\xBCndung, Fl\xC3\xBCssigkeitsansammlung im Bauchraum."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 12
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 13
+            end: -1
+          text: "Gelegentlich: Bauchspeicheldr\xC3\xBCsen-Entz\xC3\xBCndung."
           preformatted: false
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Herz-Kreislauf-System:"
+        subheading: "St\xC3\xB6rungen des Blut- und Lymphsystems\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
           - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 0
+            start: 12
             end: -1
-          text: "h\xC3\xA4ufig: Bluthochdruck, Blutarmut; gelegentlich: Herzprobleme, Herzklopfen, Herzrasen und niedriger Blutdruck."
+          text: "Sehr h\xC3\xA4ufig: Verminderung der roten Blutk\xC3\xB6rperchen und der Blutpl\xC3\xA4ttchen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 7
+            end: -1
+          text: "H\xC3\xA4ufig: Nierensch\xC3\xA4digung mit gleichzeitig verminderter Zahl an Blutpl\xC3\xA4ttchen und roten Blutk\xC3\xB6rperchen mit oder ohne Hautausschlag; verminderte Zahl an Zellen im Blut, die Infektionen abwehren (weisse Blutk\xC3\xB6rperchen); Verminderung der weissen Blutk\xC3\xB6rperchen, die als neutrophile Leukozyten bezeichnet werden."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 12
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 13
+            end: -1
+          text: "Gelegentlich: Krebs des lymphatischen Gewebes, gleichzeitige Verminderung der roten und weissen Blutk\xC3\xB6rperchen sowie der Blutpl\xC3\xA4ttchen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 7
+            end: -1
+          text: "Selten: Fl\xC3\xBCssigkeitsansammlung im Gewebe aufgrund unregelm\xC3\xA4ssiger Lymphfunktion."
           preformatted: false
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Magen-Darm-Trakt:"
+        subheading: "Stoffwechsel- und Ern\xC3\xA4hrungsst\xC3\xB6rungen\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
           - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 0
+            start: 12
             end: -1
-          text: "h\xC3\xA4ufig: Verstopfung, Durchfall, \xC3\x9Cbelkeit und Erbrechen; gelegentlich: Appetitlosigkeit, Verdauungsst\xC3\xB6rungen und Bl\xC3\xA4hungen."
+          text: "Sehr h\xC3\xA4ufig: Erh\xC3\xB6hter Cholesterinspiegel, erh\xC3\xB6hte Blutzuckerwerte, erh\xC3\xB6hte Blutfette, erniedrigter Kaliumwert im Blut, erniedrigter Phosphatspiegel im Blut, erh\xC3\xB6hte Laktat-Dehydrogenase (LDH) im Blut, erh\xC3\xB6htes Kreatinin im Blut."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 7
+            end: -1
+          text: "H\xC3\xA4ufig: Diabetes, anormale Leberfunktionstests, erh\xC3\xB6hte Leberenzyme."
           preformatted: false
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Nervensystem und Sinnesorgane:"
+        subheading: "Funktionsst\xC3\xB6rungen der Gelenke und der Knochen\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
           - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 0
+            start: 12
             end: -1
-          text: "h\xC3\xA4ufig: Zittern; gelegentlich: Schlafschwierigkeiten, Depression, Verwirrtheit, \xC3\x84ngstlichkeit, Schwindel, ver\xC3\xA4nderte Reizempfindlichkeit, Schl\xC3\xA4frigkeit und Sehst\xC3\xB6rungen."
+          text: "Sehr h\xC3\xA4ufig: Gelenkschmerzen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 7
+            end: -1
+          text: "H\xC3\xA4ufig: Verschlechterung der Knochensubstanz."
           preformatted: false
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Haut:"
+        subheading: "Funktionsst\xC3\xB6rungen der Atemwege\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
           - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 0
+            start: 7
             end: -1
-          text: "h\xC3\xA4ufig: Akne; gelegentlich: Juckreiz, R\xC3\xB6tung der Haut, vermehrte K\xC3\xB6rperbehaarung und Schweissausbr\xC3\xBCche."
+          text: "H\xC3\xA4ufig: Nasenbluten; Pneumonie und andere Ursachen einer Entz\xC3\xBCndung, die zu einer Sch\xC3\xA4digung der Lunge f\xC3\xBChren k\xC3\xB6nnen, Fl\xC3\xBCssigkeitsansammlung im Bereich der Lunge."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 12
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 13
+            end: -1
+          text: "Gelegentlich: Blutungen in der Lunge."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 7
+            end: -1
+          text: "Selten: Anh\xC3\xA4ufung von Eiweiss in den Lungenbl\xC3\xA4schen, welche die Atmung beeintr\xC3\xA4chtigen kann."
           preformatted: false
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Atemwege:"
+        subheading: "Funktionsst\xC3\xB6rungen der Haut\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
           - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 0
+            start: 12
             end: -1
-          text: "h\xC3\xA4ufig: erschwertes Atmen und Entz\xC3\xBCndungen des Nasen-Rachen-Raumes; gelegentlich: Lungenprobleme, Husten und Nasenbluten."
+          text: "Sehr h\xC3\xA4ufig: Akne."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 7
+            end: -1
+          text: "H\xC3\xA4ufig: Ausschlag, Hautkrebs."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 7
+            end: -1
+          text: "Selten: Sch\xC3\xA4len der Haut (exfoliative Dermatitis)."
           preformatted: false
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Harnwege:"
+        subheading: "Funktionsst\xC3\xB6rungen der Nieren\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
           - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 0
+            start: 12
             end: -1
-          text: "h\xC3\xA4ufig: Entz\xC3\xBCndungen der Harnwege; gelegentlich: Blasenschmerzen, Schmerzen und Schwierigkeiten beim Wasserlassen und Inkontinenz."
+          text: "Sehr h\xC3\xA4ufig: Harnwegsinfektion."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 6
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 7
+            end: -1
+          text: "H\xC3\xA4ufig: Niereninfektion, Eiweiss im Urin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 12
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 13
+            end: -1
+          text: "Gelegentlich: Nephrotisches Syndrom (Krankheitsbild mit viel Eiweiss im Urin und weiteren Nebenwirkungen wie z.B. Schwellungen)."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1088,10 +908,46 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Wenn Sie bei irgendwelchen Nebenwirkungen verunsichert sind oder falls Sie andere als die oben erw\xC3\xA4hnten Nebenwirkungen bemerken, informieren Sie bitte Ihren Arzt oder Apotheker."
+          text: "Es gibt eine allgemeine Tendenz zur Fl\xC3\xBCssigkeitsansammlung in den verschiedenen Geweben."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Es wurde ferner \xC3\xBCber schwerwiegende Lebersch\xC3\xA4digung berichtet."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Es wurde \xC3\xBCber Narbenbildung in der Niere, welche die Nierenfunktion vermindern kann, berichtet."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Die oben genannten Nebenwirkungen k\xC3\xB6nnen medizinische Massnahmen erforderlich machen, und einige k\xC3\xB6nnen lebensbedrohlich oder t\xC3\xB6dlich sein. Sie sollten unverz\xC3\xBCglich Ihren Arzt aufsuchen, wenn bei Ihnen Symptome wie Schwellung von Gesicht, Zunge und/oder Pharynx (Rachen) auftreten und/oder wenn Sie Atemnot bekommen (Angio\xC3\xB6deme), oder wenn Ihre Haut sich sch\xC3\xA4lt (exfoliative Dermatitis)."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Wenn Sie bei irgendwelchen Nebenwirkungen verunsichert sind, oder wenn Sie Nebenwirkungen bemerken, die hier nicht beschrieben sind, sollten Sie Ihren Arzt oder Apotheker bzw. Ihre \xC3\x84rztin oder Apothekerin informieren."
           preformatted: false
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Nebenwirkungen, die Sie nicht selber bemerken k\xC3\xB6nnen:"
+        subheading: "Nebenwirkungen, die Sie nicht selber bemerken k\xC3\xB6nnen\n"
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1100,7 +956,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Dabei handelt es sich vorwiegend um Ver\xC3\xA4nderungen im Stoffwechsel, z.B. des Fett-, Cholesterin- (h\xC3\xA4ufig), und Zuckerstoffwechsels oder Ver\xC3\xA4nderungen des Blutes, Cushing-Syndrom (gelegentlich)."
+          text: "Dabei handelt es sich vorwiegend um Ver\xC3\xA4nderungen im Stoffwechsel, z.B. des Fett- und Cholesterinstoffwechsels (sehr h\xC3\xA4ufig), oder Ver\xC3\xA4nderungen des Blutes."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1112,12 +968,10 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
           text: "Es ist ausserordentlich wichtig, dass Sie sich allen durch Ihren Arzt angeordneten Kontrolluntersuchungen unterziehen, dazu geh\xC3\xB6ren auch die Leber- und Nierenfunktionstests und Blutuntersuchungen."
           preformatted: false
     general_advice: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Allgemeine Hinweise
+      heading: Was ist ferner zu beachten?
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          Was ist ferner zu beachten?
-
+        subheading: ""
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1126,7 +980,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Rapamune Trinkl\xC3\xB6sung enth\xC3\xA4lt 2 Vol.% Ethanol. Jede Dosis enth\xC3\xA4lt bis zu 0,1 g Alkohol. Ein gesundheitliches Risiko besteht bei Alkoholkranken, Epileptikern, Hirngesch\xC3\xA4digten, Schwangeren und Kindern. Alkohol kann die Wirkung anderer Arzneimittel beeintr\xC3\xA4chtigen oder verst\xC3\xA4rken."
+          text: "Rapamune Trinkl\xC3\xB6sung enth\xC3\xA4lt 2 Vol.% Alkohol. Jede Dosis enth\xC3\xA4lt bis zu 0,1 g Alkohol. Ein gesundheitliches Risiko besteht bei Alkoholkranken, Epileptikern, Hirngesch\xC3\xA4digten, Schwangeren und Kindern. Alkohol kann die Wirkung anderer Arzneimittel beeintr\xC3\xA4chtigen oder verst\xC3\xA4rken."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1144,7 +998,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Bewahren Sie Rapamune Trinkl\xC3\xB6sung in der Originalverpackung, vor Licht gesch\xC3\xBCtzt und im K\xC3\xBChlschrank (+2-+8 \xC2\xB0C) auf. Wenn die Flasche einmal ge\xC3\xB6ffnet ist, sollte der Inhalt im K\xC3\xBChlschrank aufbewahrt und innerhalb von 30 Tagen aufgebraucht werden."
+          text: "Bewahren Sie Rapamune Trinkl\xC3\xB6sung in der Originalverpackung, vor Licht gesch\xC3\xBCtzt und im K\xC3\xBChlschrank (+2 \xE2\x80\x93 +8 \xC2\xB0C) auf. Wenn die Flasche einmal ge\xC3\xB6ffnet ist, sollte der Inhalt im K\xC3\xBChlschrank aufbewahrt und innerhalb von 30 Tagen aufgebraucht werden."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1153,7 +1007,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Bewahren Sie Rapamune Filmtabletten in der Originalpackung, vor Licht gesch\xC3\xBCtzt und bei Raumtemperatur (15-25 \xC2\xB0C) auf."
+          text: "Bewahren Sie Rapamune \xC3\xBCberzogene Tabletten in der Originalpackung, vor Licht gesch\xC3\xBCtzt und bei Raumtemperatur (15\xE2\x80\x9325 \xC2\xB0C) auf."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1162,7 +1016,7 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Das Medikament darf nur bis zu dem auf der Packung mit \xC2\xABEXP\xC2\xBB bezeichneten Datum verwendet werden."
+          text: "Das Arzneimittel darf nur bis zu dem auf dem Beh\xC3\xA4lter mit \xC2\xABEXP\xC2\xBB bezeichneten Datum verwendet werden."
           preformatted: false
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
@@ -1171,37 +1025,44 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "Weitere Ausk\xC3\xBCnfte erteilt Ihnen Ihr Arzt oder Apotheker, der \xC3\xBCber die ausf\xC3\xBChrliche Fachinformation verf\xC3\xBCgt."
+          text: "Weitere Ausk\xC3\xBCnfte erteilt Ihnen Ihr Arzt oder Apotheker bzw. Ihre \xC3\x84rztin oder Apothekerin. Diese Personen verf\xC3\xBCgen \xC3\xBCber die ausf\xC3\xBChrliche Fachinformation."
           preformatted: false
     composition: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Zusammensetzung
+      heading: Was ist in Rapamune enthalten?
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "1 ml Rapamune Trinkl\xC3\xB6sung"
+        subheading: ""
         paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
           - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 24
+          - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 0
+            start: 25
             end: -1
-          text: "enth\xC3\xA4lt 1 mg Sirolimus (Wirkstoff); Hilfsstoffe: Ethanol, Propylenglycol, Sojafetts\xC3\xA4uren, Polysorbat 80, Phosphatidylcholin, Glycerin; Konservierungsmittel: E 304; Alkoholgehalt: 2 Vol.%."
+          text: "1 ml Rapamune Trinkl\xC3\xB6sung enth\xC3\xA4lt 1 mg Sirolimus (Wirkstoff); Hilfsstoffe: Ethanol und weitere Hilfsstoffe; Alkoholgehalt: 2 Vol.%."
           preformatted: false
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: 1 Rapamune Filmtablette
-        paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
           - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 29
+          - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 0
+            start: 30
             end: -1
-          text: "enth\xC3\xA4lt 1 mg Sirolimus (Wirkstoff); Hilfsstoffe: Propylenglycol sowie weitere Hilfsstoffe."
+          text: "1 Rapamune \xC3\xBCberzogene Tablette enth\xC3\xA4lt 0,5 mg, 1 mg oder 2 mg Sirolimus (Wirkstoff), Laktose, Saccharose und weitere Hilfsstoffe."
           preformatted: false
     packages: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Verkaufsart/Packungen
+      heading: "Wo erhalten Sie Rapamune? Welche Packungen sind erh\xC3\xA4ltlich?"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: ""
@@ -1213,8 +1074,13 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: "In Apotheken nur gegen \xC3\xA4rztliches Rezept."
+          text: "In Apotheken nur gegen \xC3\xA4rztliche Verschreibung."
           preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Packungen
+
+        paragraphs: 
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
           - !oddb.org,2003/ODDB::Text::Format 
@@ -1237,24 +1103,29 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
         - !oddb.org,2003/ODDB::Text::Paragraph 
           formats: 
           - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 30
+          - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 0
-            end: 22
+            start: 31
+            end: 54
           - !oddb.org,2003/ODDB::Text::Format 
             values: 
             - :italic
-            start: 23
-            end: 37
+            start: 55
+            end: 76
           - !oddb.org,2003/ODDB::Text::Format 
             values: []
 
-            start: 38
+            start: 77
             end: -1
-          text: Packungen zu 30 und 100 Filmtabletten.
+          text: "Rapamune 0,5 mg, 1 mg und 2 mg: Packungen zu 30 und 100 \xC3\xBCberzogene Tabletten."
           preformatted: false
     distribution: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Vertriebsfirma
+      heading: Zulassungsinhaberin
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: ""
@@ -1266,10 +1137,42 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: AHP (Schweiz) AG, Wyeth Division, 6301 Zug.
+          text: "Pfizer AG, Z\xC3\xBCrich."
           preformatted: false
     date: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Stand der Information
+      heading: ""
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 29
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 30
+            end: 43
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 44
+            end: -1
+          text: "Diese Packungsbeilage wurde im Dezember 2010 letztmals durch die Arzneimittelbeh\xC3\xB6rde (Swissmedic) gepr\xC3\xBCft."
+          preformatted: false
+  fr: !oddb.org,2003/ODDB::PatinfoDocument2001 
+    name: "Rapamune\xC2\xAE"
+    company: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: PFIZER
+      sections: []
+
+    galenic_form: 
+    effects: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Qu\xE2\x80\x99est-ce que Rapamune et quand est-il utilis\xC3\xA9?"
       sections: 
       - !oddb.org,2003/ODDB::Text::Section 
         subheading: ""
@@ -1281,620 +1184,1190 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
 
             start: 0
             end: -1
-          text: Mai 2001.
+          text: "Rapamune appartient \xC3\xA0 une classe de m\xC3\xA9dicaments appel\xC3\xA9s immunosuppresseurs. Il aide \xC3\xA0 att\xC3\xA9nuer la r\xC3\xA9action immunitaire de votre organisme apr\xC3\xA8s une transplantation d\xE2\x80\x99organe. Il est utilis\xC3\xA9 pour emp\xC3\xAAcher le rejet par votre organisme des reins transplant\xC3\xA9s et il est normalement associ\xC3\xA9 \xC3\xA0 des m\xC3\xA9dicaments appel\xC3\xA9s cortico\xC3\xAFdes et temporairement \xC3\xA0 la ciclosporine."
           preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Rapamune ne doit \xC3\xAAtre utilis\xC3\xA9 que sur prescription du m\xC3\xA9decin."
+          preformatted: false
+    amendments: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: De quoi faut-il tenir compte en dehors du traitement?
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Gr\xC3\xA2ce \xC3\xA0 son m\xC3\xA9canisme d\xE2\x80\x99action Rapamune diminue la r\xC3\xA9sistance de l\xE2\x80\x99organisme aux infections. Il est donc important d\xE2\x80\x99\xC3\xA9viter tout risque d\xE2\x80\x99infection et d\xE2\x80\x99informer le m\xC3\xA9decin traitant des sympt\xC3\xB4mes d\xE2\x80\x99infection tels que rhumes, maux de gorge, plaies suppurantes, etc."
+          preformatted: false
+    contra_indications: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Quand Rapamune ne doit-il pas \xC3\xAAtre utilis\xC3\xA9?"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Rapamune ne doit pas \xC3\xAAtre utilis\xC3\xA9 en cas de r\xC3\xA9action d\xE2\x80\x99hypersensibilit\xC3\xA9 (allergique) \xC3\xA0 la substance active ou \xC3\xA0 l\xE2\x80\x99un des excipients."
+          preformatted: false
+    precautions: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Quelles sont les pr\xC3\xA9cautions \xC3\xA0 observer lors de la prise de Rapamune?"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si vous avez des probl\xC3\xA8mes h\xC3\xA9patiques ou si vous avez eu une maladie susceptible d\xE2\x80\x99avoir agi sur votre foie, veuillez en informer votre m\xC3\xA9decin car cela peut influer sur la dose de Rapamune que vous recevez."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Votre m\xC3\xA9decin fera r\xC3\xA9aliser des examens sanguins pour surveiller les concentrations de Rapamune. Votre m\xC3\xA9decin fera \xC3\xA9galement r\xC3\xA9aliser des examens pour surveiller votre fonction r\xC3\xA9nale, votre taux de lipides sanguins (cholest\xC3\xA9rol et/ou triglyc\xC3\xA9rides) et, \xC3\xA9ventuellement, votre fonction h\xC3\xA9patique, au cours du traitement par Rapamune."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Les agents immunosuppresseurs peuvent diminuer la capacit\xC3\xA9 de votre organisme \xC3\xA0 lutter contre l\xE2\x80\x99infection et majorer le risque d\xE2\x80\x99apparition de n\xC3\xA9oplasies lympho\xC3\xAFdes ou cutan\xC3\xA9es."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "La r\xC3\xA9ponse immunitaire aux vaccinations peut \xC3\xA9galement \xC3\xAAtre diminu\xC3\xA9e. Consultez votre m\xC3\xA9decin avant de vous faire vacciner."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Rapamune ne doit pas \xC3\xAAtre pris avec du jus de pamplemousse."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L\xE2\x80\x99exposition au soleil et aux rayons UV doit \xC3\xAAtre limit\xC3\xA9e par le port de v\xC3\xAAtements protecteurs et par l\xE2\x80\x99application d\xE2\x80\x99un \xC3\xA9cran solaire \xC3\xA0 indice de protection \xC3\xA9lev\xC3\xA9 en raison du risque accru de cancer de la peau."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Aucune \xC3\xA9tude sp\xC3\xA9cifique des effets de Rapamune sur l\xE2\x80\x99aptitude \xC3\xA0 conduire des v\xC3\xA9hicules ou \xC3\xA0 utiliser des machines n\xE2\x80\x99a \xC3\xA9t\xC3\xA9 men\xC3\xA9e. Bien que le traitement par Rapamune ne soit pas consid\xC3\xA9r\xC3\xA9 comme susceptible d\xE2\x80\x99affecter votre aptitude \xC3\xA0 conduire, veuillez consulter votre m\xC3\xA9decin en cas de doute."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Veuillez informer votre m\xC3\xA9decin ou votre pharmacien si vous souffrez d\xE2\x80\x99une autre maladie, si vous \xC3\xAAtes allergique ou si vous prenez d\xC3\xA9j\xC3\xA0 d\xE2\x80\x99autres m\xC3\xA9dicaments en usage interne ou externe (m\xC3\xAAme en autom\xC3\xA9dication!), notamment:"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "tout autre immunosuppresseur, \xC3\xA0 l\xE2\x80\x99exception de la ciclosporine et des corticost\xC3\xA9ro\xC3\xAFdes;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "antibiotiques et antifongiques, par exemple rifampicine, clarithromycine, \xC3\xA9rythromycine, trol\xC3\xA9andomycine, rifabutine, clotrimazole, fluconazole, itraconazole, k\xC3\xA9toconazole, voriconazole;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "antihypertenseurs ou m\xC3\xA9dicaments \xC3\xA0 vis\xC3\xA9e cardiaque, y compris nicardipine, v\xC3\xA9rapamil et diltiazem;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "anti\xC3\xA9pileptiques, y compris carbamaz\xC3\xA9pine, ph\xC3\xA9nobarbital, ph\xC3\xA9nyto\xC3\xAFne;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "m\xC3\xA9dicaments utilis\xC3\xA9s pour traiter les ulc\xC3\xA8res ou d\xE2\x80\x99autres troubles gastro-intestinaux, tels que cisapride, cim\xC3\xA9tidine, m\xC3\xA9toclopramide;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "bromocriptine (traitement de la maladie de Parkinson et des troubles hormonaux divers), danazol (traitement de troubles gyn\xC3\xA9cologiques), ou antiprot\xC3\xA9ases (traitement du VIH);"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 13
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 14
+            end: 34
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 35
+            end: -1
+          text: millepertuis ( Hypericum perforatum ).
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L\xE2\x80\x99utilisation de Rapamune peut conduire \xC3\xA0 une augmentation des taux de cholest\xC3\xA9rol et de triglyc\xC3\xA9rides dans votre sang, pouvant n\xC3\xA9cessiter un traitement. Les m\xC3\xA9dicaments tels que les \xC2\xABstatines\xC2\xBB et les \xC2\xABfibrates\xC2\xBB utilis\xC3\xA9s dans le traitement de l\xE2\x80\x99\xC3\xA9l\xC3\xA9vation des taux de cholest\xC3\xA9rol et de triglyc\xC3\xA9rides, ont \xC3\xA9t\xC3\xA9 associ\xC3\xA9s \xC3\xA0 une augmentation du risque de fonte musculaire (rhabdomyolyse). Veuillez informer votre m\xC3\xA9decin si vous prenez des m\xC3\xA9dicaments pour diminuer les taux des lipides sanguins."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Les comprim\xC3\xA9s enrob\xC3\xA9s de Rapamune contiennent du lactose et du saccharose. Veuillez informer votre m\xC3\xA9decin en cas d\xE2\x80\x99intol\xC3\xA9rance au galactose ou fructose, de d\xC3\xA9ficit en lactase, de syndrome de malabsorption du glucose et du galactose ou de d\xC3\xA9ficit en saccharase-isomaltase."
+          preformatted: false
+    pregnancy: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Rapamune peut-il \xC3\xAAtre pris pendant la grossesse ou l\xE2\x80\x99allaitement?"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Ne pas prendre de Rapamune pendant la grossesse et la p\xC3\xA9riode d\xE2\x80\x99allaitement."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Vous devez utiliser une m\xC3\xA9thode contraceptive efficace durant le traitement par Rapamune et pendant les 12 semaines apr\xC3\xA8s la fin du traitement. Si vous pensez \xC3\xAAtre enceinte, veuillez en parler imm\xC3\xA9diatement \xC3\xA0 votre m\xC3\xA9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Une diminution du nombre de spermatozo\xC3\xAFdes, g\xC3\xA9n\xC3\xA9ralement r\xC3\xA9versible apr\xC3\xA8s arr\xC3\xAAt du traitement, a \xC3\xA9t\xC3\xA9 associ\xC3\xA9e \xC3\xA0 l\xE2\x80\x99utilisation de Rapamune."
+          preformatted: false
+    usage: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Comment utiliser Rapamune?
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Rapamune ne doit \xC3\xAAtre pris que par voie orale. Prenez toujours le m\xC3\xA9dicament exactement comme votre m\xC3\xA9decin vous l\xE2\x80\x99a prescrit. Ne changez pas de votre propre chef le dosage prescrit. Adressez-vous \xC3\xA0 votre m\xC3\xA9decin ou \xC3\xA0 votre pharmacien si vous estimez que l\xE2\x80\x99efficacit\xC3\xA9 du m\xC3\xA9dicament est trop faible ou au contraire trop forte."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Il est tr\xC3\xA8s important de prendre Rapamune toujours au m\xC3\xAAme moment de la journ\xC3\xA9e, avec ou sans nourriture."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Rapamune solution buvable ne doit \xC3\xAAtre dilu\xC3\xA9 que dans de l\xE2\x80\x99eau ou du jus d\xE2\x80\x99orange."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Rapamune ne doit pas \xC3\xAAtre pris avec du jus de pamplemousse."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "N\xE2\x80\x99\xC3\xA9crasez pas, ne m\xC3\xA2chez pas ou ne coupez pas les comprim\xC3\xA9s. Informez votre m\xC3\xA9decin si vous avez des difficult\xC3\xA9s \xC3\xA0 prendre le comprim\xC3\xA9."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Plusieurs comprim\xC3\xA9s de 0,5 mg ne doivent pas \xC3\xAAtre utilis\xC3\xA9s en remplacement d\xE2\x80\x99un comprim\xC3\xA9 de 1 mg ou d\xE2\x80\x99autres dosages."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Votre m\xC3\xA9decin d\xC3\xA9cidera exactement quelle dose de Rapamune vous devez prendre, quand et combien de fois."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Habituellement, la dose initiale prescrite est de 6 mg de Rapamune apr\xC3\xA8s la transplantation r\xC3\xA9nale pour les adultes et les jeunes de plus de 13 ans. Vous devrez ensuite prendre chaque jour 2 mg de Rapamune."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si vous prenez \xC3\xA9galement de la ciclosporine, vous devez prendre le Rapamune 4 heures apr\xC3\xA8s la ciclosporine."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si vous avez pris une plus grande quantit\xC3\xA9 du m\xC3\xA9dicament que la quantit\xC3\xA9 prescrite, consultez d\xE2\x80\x99urgence un m\xC3\xA9decin ou rendez-vous imm\xC3\xA9diatement au service des urgences de l\xE2\x80\x99h\xC3\xB4pital le plus proche. Apportez toujours le flacon du m\xC3\xA9dicament avec l\xE2\x80\x99\xC3\xA9tiquette, m\xC3\xAAme s\xE2\x80\x99il est vide."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si vous oubliez de prendre Rapamune, prenez-le d\xC3\xA8s que vous vous en souvenez, sauf si vous devez prendre votre prochaine dose de ciclosporine dans les 4 heures. Dans ce cas, ne prenez pas la dose oubli\xC3\xA9e de Rapamune et poursuivez votre traitement comme d\xE2\x80\x99habitude. Ne prenez pas une double dose pour compenser une dose oubli\xC3\xA9e et respectez toujours un intervalle d\xE2\x80\x99environ 4 heures entre les prises de Rapamune et de ciclosporine. Si vous oubliez totalement une dose de Rapamune, vous devez le signaler \xC3\xA0 votre m\xC3\xA9decin."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Instructions pour la dilution de Rapamune solution buvable
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "1. Ouvrez le flacon de solution. Retirez le bouchon de s\xC3\xA9curit\xC3\xA9 du flacon en le pressant et en tournant dans le sens inverse des aiguilles d\xE2\x80\x99une montre."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "2. Lorsque vous entamez le flacon, ins\xC3\xA9rez l\xE2\x80\x99adaptateur de seringue (le petit tube en plastique muni d\xE2\x80\x99un capuchon) de fa\xC3\xA7on \xC3\xA0 ce que le capuchon affleure l\xE2\x80\x99ouverture du flacon. Ne retirez plus l\xE2\x80\x99adaptateur du flacon apr\xC3\xA8s insertion."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "3. Pour prendre le m\xC3\xA9dicament, introduisez l\xE2\x80\x99une des seringues doseuses de couleur ambre dans l\xE2\x80\x99orifice de l\xE2\x80\x99adaptateur. Le piston de la seringue doit \xC3\xAAtre enti\xC3\xA8rement enfonc\xC3\xA9."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "4. Aspirez la quantit\xC3\xA9 exacte de Rapamune solution buvable comme prescrit par votre m\xC3\xA9decin en tirant doucement le piston de la seringue doseuse jusqu\xE2\x80\x99\xC3\xA0 ce que le bas de la ligne noire du piston soit au niveau du rep\xC3\xA8re correspondant \xC3\xA0 la dose prescrite sur la seringue doseuse. Le flacon doit \xC3\xAAtre maintenu en position verticale pendant que la solution est aspir\xC3\xA9e. Si des bulles se forment dans la seringue doseuse au cours de l\xE2\x80\x99aspiration, videz le contenu de la seringue dans le flacon et r\xC3\xA9p\xC3\xA9tez la proc\xC3\xA9dure d\xE2\x80\x99aspiration."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "5. Il vous a peut-\xC3\xAAtre \xC3\xA9t\xC3\xA9 demand\xC3\xA9 d\xE2\x80\x99avoir toujours le m\xC3\xA9dicament pr\xC3\xA8s de vous. Si vous devez transporter votre seringue doseuse remplie, fermez-la herm\xC3\xA9tiquement avec le capuchon \xE2\x80\x93 vous devez entendre un clic lorsque vous mettez le capuchon en place."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "6. Placez ensuite la seringue doseuse bouch\xC3\xA9e dans l\xE2\x80\x99\xC3\xA9tui de transport fourni avec le m\xC3\xA9dicament. Une fois dans la seringue, le m\xC3\xA9dicament peut \xC3\xAAtre conserv\xC3\xA9 \xC3\xA0 temp\xC3\xA9rature ambiante ou au r\xC3\xA9frig\xC3\xA9rateur et doit \xC3\xAAtre utilis\xC3\xA9 dans les 24 heures. Eviter d\xE2\x80\x99exposer le m\xC3\xA9dicament \xC3\xA0 des temp\xC3\xA9ratures extr\xC3\xAAmes (moins de 2 \xC2\xB0C et plus de 30 \xC2\xB0C)."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 300
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 301
+            end: 304
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 305
+            end: -1
+          text: "7. Videz le contenu de la seringue doseuse dans un verre contenant au moins 60 ml d\xE2\x80\x99eau ou de jus d\xE2\x80\x99orange. M\xC3\xA9langez vigoureusement pendant une minute et buvez imm\xC3\xA9diatement. Remplissez de nouveau le verre avec au moins 120 ml d\xE2\x80\x99eau ou de jus d\xE2\x80\x99orange, agitez vigoureusement et buvez imm\xC3\xA9diatement. Ne pas utiliser d\xE2\x80\x99autre liquide que de l\xE2\x80\x99eau ou du jus d\xE2\x80\x99orange pour la dilution. Le jus de pamplemousse ne doit pas \xC3\xAAtre utilis\xC3\xA9. Vous ne devez pas utiliser de r\xC3\xA9cipients en plastique, en papier ou en polystyr\xC3\xA8ne pour la dilution de Rapamune. La seringue doseuse et son capuchon ne doivent \xC3\xAAtre utilis\xC3\xA9s qu\xE2\x80\x99une seule fois. Les jeter apr\xC3\xA8s usage."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Remarque
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Lorsqu\xE2\x80\x99elle est conserv\xC3\xA9e au r\xC3\xA9frig\xC3\xA9rateur, la solution dans le flacon peut s\xC3\xA9dimenter ou avoir un aspect trouble. Dans ce cas, ramenez simplement votre solution buvable de Rapamune \xC3\xA0 la temp\xC3\xA9rature ambiante et agitez doucement. L\xE2\x80\x99aspect trouble n\xE2\x80\x99alt\xC3\xA8re pas la qualit\xC3\xA9 de Rapamune."
+          preformatted: false
+    unwanted_effects: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Quels effets secondaires Rapamune peut-il provoquer?
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "La prise de Rapamune peut provoquer les effets secondaires suivants:"
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Troubles g\xC3\xA9n\xC3\xA9raux\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 13
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 14
+            end: -1
+          text: "Tr\xC3\xA8s fr\xC3\xA9quent: R\xC3\xA9tention de liquide autour du rein, r\xC3\xA9tention d\xE2\x80\x99eau dans les tissus (oed\xC3\xA8me), fi\xC3\xA8vre, douleur."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 8
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 9
+            end: -1
+          text: "Fr\xC3\xA9quent: Cicatrisation anormale, infections (y compris des infections mettant en jeu le pronostic vital)."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 4
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 5
+            end: -1
+          text: "Rare: R\xC3\xA9actions allergiques, y compris celles pr\xC3\xA9sentant un risque mortel; gonflement du visage avec r\xC3\xA9tr\xC3\xA9cissement des voies respiratoires."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Affections du syst\xC3\xA8me nerveux\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 13
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 14
+            end: -1
+          text: "Tr\xC3\xA8s fr\xC3\xA9quent: Maux de t\xC3\xAAte."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Troubles cardiaques
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 8
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 9
+            end: -1
+          text: "Fr\xC3\xA9quent: Acc\xC3\xA9l\xC3\xA9ration du rythme cardiaque."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 12
+            end: -1
+          text: "Occasionnel: Collection liquidienne dans l\xE2\x80\x99enveloppe qui entoure le coeur pouvant dans certains cas diminuer la capacit\xC3\xA9 du coeur \xC3\xA0 pomper le sang."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Troubles circulatoires
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 13
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 14
+            end: -1
+          text: "Tr\xC3\xA8s fr\xC3\xA9quent: Augmentation de la pression sanguine."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 8
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 9
+            end: -1
+          text: "Fr\xC3\xA9quent: Caillots sanguins dans les jambes pouvant mener \xC3\xA0 des caillots dans les poumons."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "R\xC3\xA9actions gastro-intestinales\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 13
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 14
+            end: -1
+          text: "Tr\xC3\xA8s fr\xC3\xA9quent: Douleur abdominale, diarrh\xC3\xA9e, constipation, naus\xC3\xA9e."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 8
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 9
+            end: -1
+          text: "Fr\xC3\xA9quent: Inflammation de la muqueuse buccale, accumulation de liquide dans l\xE2\x80\x99abdomen."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 12
+            end: -1
+          text: "Occasionnel: Inflammation du pancr\xC3\xA9as."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Troubles de la circulation sanguine et lymphatique
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 13
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 14
+            end: -1
+          text: "Tr\xC3\xA8s fr\xC3\xA9quent: Faible taux de globules rouges, faible taux de plaquettes sanguines."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 8
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 9
+            end: -1
+          text: "Fr\xC3\xA9quent: L\xC3\xA9sions r\xC3\xA9nales, avec faible taux de plaquettes sanguines et faible taux de globules rouges avec ou sans \xC3\xA9ruption cutan\xC3\xA9e, une diminution du nombre de cellules sanguines qui luttent contre les infections (globules blancs), quantit\xC3\xA9 insuffisante de certains globules blancs du sang appel\xC3\xA9s neutrophiles."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 12
+            end: -1
+          text: "Occasionnel: Cancer du tissu lymphatique; diminution associ\xC3\xA9e des globules rouges, des globules blancs et des plaquettes sanguines."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 4
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 5
+            end: -1
+          text: "Rare: Exc\xC3\xA8s de liquide accumul\xC3\xA9 dans les tissus d\xC3\xBB \xC3\xA0 un d\xC3\xA9r\xC3\xA8glement de la fonction lymphatique."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Troubles du m\xC3\xA9tabolisme et de la nutrition\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 13
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 14
+            end: -1
+          text: "Tr\xC3\xA8s fr\xC3\xA9quent: Cholest\xC3\xA9rol \xC3\xA9lev\xC3\xA9, taux de sucre \xC3\xA9lev\xC3\xA9 dans le sang, taux de graisses \xC3\xA9lev\xC3\xA9 dans le sang, faible taux de potassium sanguin, faible taux de phosphore sanguin, \xC3\xA9l\xC3\xA9vation de la lactate-d\xC3\xA9shydrog\xC3\xA9nase dans le sang, \xC3\xA9l\xC3\xA9vation de la concentration de cr\xC3\xA9atinine dans le sang."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 8
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 9
+            end: -1
+          text: "Fr\xC3\xA9quent: Diab\xC3\xA8te, tests fonctionnels h\xC3\xA9patiques anormaux, augmentation des enzymes h\xC3\xA9patiques."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Troubles des os et des articulations
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 13
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 14
+            end: -1
+          text: "Tr\xC3\xA8s fr\xC3\xA9quent: Douleur articulaire."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 8
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 9
+            end: -1
+          text: "Fr\xC3\xA9quent: D\xC3\xA9t\xC3\xA9rioration de la substance osseuse."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Troubles des voies respiratoires
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 8
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 9
+            end: -1
+          text: "Fr\xC3\xA9quent: Saignements de nez; pneumonie et autres causes d\xE2\x80\x99inflammations qui peuvent provoquer une atteinte pulmonaire; accumulation de liquide autour des poumons."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 12
+            end: -1
+          text: "Occasionnel: Saignements des poumons."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 4
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 5
+            end: -1
+          text: "Rare: D\xC3\xA9p\xC3\xB4t de prot\xC3\xA9ines dans les alv\xC3\xA9oles pulmonaires pouvant entra\xC3\xAEner une g\xC3\xAAne respiratoire."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Troubles cutan\xC3\xA9s\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 13
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 14
+            end: -1
+          text: "Tr\xC3\xA8s fr\xC3\xA9quent: Acn\xC3\xA9."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 8
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 9
+            end: -1
+          text: "Fr\xC3\xA9quent: \xC3\x89ruption cutan\xC3\xA9e, cancer de la peau."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 4
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 5
+            end: -1
+          text: "Rare: Exfoliation de la peau (dermatite exfoliative)."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Troubles r\xC3\xA9naux\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 13
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 14
+            end: -1
+          text: "Tr\xC3\xA8s fr\xC3\xA9quent: Infection urinaire."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 8
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 9
+            end: -1
+          text: "Fr\xC3\xA9quent: Infection r\xC3\xA9nale; prot\xC3\xA9ines dans les urines."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 12
+            end: -1
+          text: "Occasionnel: Syndrome n\xC3\xA9phrotique (tableau clinique avec beaucoup de prot\xC3\xA9ines dans les urines et autres effets ind\xC3\xA9sirables tels que des oed\xC3\xA8mes)."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Il existe une tendance g\xC3\xA9n\xC3\xA9rale pour les liquides \xC3\xA0 s\xE2\x80\x99accumuler dans divers tissus du corps."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Des cas d\xE2\x80\x99atteinte h\xC3\xA9patique grave ont \xC3\xA9galement \xC3\xA9t\xC3\xA9 rapport\xC3\xA9s."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Des cas de fibrose r\xC3\xA9nale susceptible d\xE2\x80\x99alt\xC3\xA9rer la fonction r\xC3\xA9nale ont \xC3\xA9t\xC3\xA9 rapport\xC3\xA9s."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Les effets secondaires ci-dessus peuvent n\xC3\xA9cessiter l\xE2\x80\x99intervention d\xE2\x80\x99un m\xC3\xA9decin et certains peuvent pr\xC3\xA9senter un risque mortel ou \xC3\xAAtre fatals. Vous devez consulter imm\xC3\xA9diatement votre m\xC3\xA9decin si vous ressentez des sympt\xC3\xB4mes tels qu\xE2\x80\x99un gonflement de la face, de la langue et/ou du pharynx (gorge) et/ou des difficult\xC3\xA9s \xC3\xA0 respirer (angi\xC2\xADoed\xC3\xA8me), ou si votre peau p\xC3\xA8le (dermatite exfoliative)."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si l\xE2\x80\x99un de ces effets secondaires vous inqui\xC3\xA8te ou si vous remarquez d\xE2\x80\x99autres effets secondaires que ceux qui sont mentionn\xC3\xA9s ci-dessus, veuillez en informer votre m\xC3\xA9decin ou votre pharmacien."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Vous pouvez \xC3\xA9galement pr\xC3\xA9senter des effets secondaires sans le savoir\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "en particulier, modifications du m\xC3\xA9tabolisme, par exemple du m\xC3\xA9tabolisme des graisses et du cholest\xC3\xA9rol (tr\xC3\xA8s fr\xC3\xA9quent) ou modifications du sang."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Il est indispensable de passer tous les examens de contr\xC3\xB4le prescrits par votre m\xC3\xA9decin, entre autres les tests des fonctions h\xC3\xA9patiques et r\xC3\xA9nales ainsi que les examens sanguins."
+          preformatted: false
+    general_advice: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: A quoi faut-il encore faire attention?
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Rapamune solution buvable contient 2 vol.% d\xE2\x80\x99alcool. Chaque dose contient jusqu\xE2\x80\x99\xC3\xA0 0,1 g d\xE2\x80\x99alcool. L\xE2\x80\x99alcool peut \xC3\xAAtre nocif pour les personnes qui souffrent d\xE2\x80\x99alcoolisme, d\xE2\x80\x99\xC3\xA9pilepsie, de l\xC3\xA9sion ou de maladie c\xC3\xA9r\xC3\xA9brales, ainsi que pour les femmes enceintes et les enfants. L\xE2\x80\x99alcool peut entraver ou majorer les effets des autres m\xC3\xA9dicaments."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Rapamune doit \xC3\xAAtre conserv\xC3\xA9 hors de la port\xC3\xA9e des enfants."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Conservez la solution buvable de Rapamune dans son conditionnement d\xE2\x80\x99origine \xC3\xA0 l\xE2\x80\x99abri de la lumi\xC3\xA8re au r\xC3\xA9frig\xC3\xA9rateur (+2 \xC3\xA0 +8 \xC2\xB0C). Une fois le flacon ouvert, il doit \xC3\xAAtre conserv\xC3\xA9 au r\xC3\xA9frig\xC3\xA9rateur et utilis\xC3\xA9 dans un d\xC3\xA9lai de 30 jours."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Conservez les comprim\xC3\xA9s enrob\xC3\xA9s de Rapamune dans leurs conditionnement d\xE2\x80\x99origine \xC3\xA0 l\xE2\x80\x99abri de la lumi\xC3\xA8re et \xC3\xA0 temp\xC3\xA9rature ambiante (15\xE2\x80\x9325 \xC2\xB0C)."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le m\xC3\xA9dicament ne doit pas \xC3\xAAtre utilis\xC3\xA9 au-del\xC3\xA0 de la date figurant apr\xC3\xA8s la mention \xC2\xABEXP\xC2\xBB sur le r\xC3\xA9cipient."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Pour de plus amples renseignements, consultez votre m\xC3\xA9decin ou votre pharmacien, qui disposent d\xE2\x80\x99une information d\xC3\xA9taill\xC3\xA9e destin\xC3\xA9e aux professionnels."
+          preformatted: false
+    composition: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Que contient Rapamune?
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 32
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 33
+            end: -1
+          text: "1 ml de Rapamune solution buvable contient 1 mg de sirolimus (substance active); excipients: \xC3\xA9thanol et autres excipients; teneur en alcool: 2 vol.%."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 25
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 26
+            end: -1
+          text: "1 Rapamune comprim\xC3\xA9 enrob\xC3\xA9 contient 0,5 mg, 1 mg ou 2 mg de sirolimus (substance active), lactose, saccharose ainsi que d\xE2\x80\x99autres excipients."
+          preformatted: false
+    packages: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "O\xC3\xB9 obtenez-vous Rapamune? Quels sont les emballages \xC3\xA0 disposition sur le march\xC3\xA9?"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "En pharmacie, sur ordonnance m\xC3\xA9dicale."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          Emballages
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 24
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 25
+            end: 42
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 43
+            end: -1
+          text: "Flacon en verre: 60 ml de solution buvable."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 0
+            end: 29
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 30
+            end: 53
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 54
+            end: 72
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 73
+            end: -1
+          text: "Rapamune 0,5 mg, 1 mg et 2 mg: Emballages de 30 et 100 comprim\xC3\xA9s enrob\xC3\xA9s."
+          preformatted: false
+    distribution: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Titulaire de l\xE2\x80\x99autorisation"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Pfizer SA, Zurich.
+          preformatted: false
+    date: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: ""
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 63
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 64
+            end: 77
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 78
+            end: -1
+          text: "Cette notice d\xE2\x80\x99emballage a \xC3\xA9t\xC3\xA9 v\xC3\xA9rifi\xC3\xA9e pour la derni\xC3\xA8re fois en d\xC3\xA9cembre 2010 par l\xE2\x80\x99autorit\xC3\xA9 de contr\xC3\xB4le des m\xC3\xA9dicaments (Swissmedic)."
+          preformatted: false
+article_codes: 
+- :article_ean13: "7680558040012"
+  :article_pcode: "2474127"
+  :article_size: 30 Tablette(n)
+  :article_dose: 1 mg
+- :article_ean13: "7680558040036"
+  :article_pcode: "2474156"
+  :article_size: 100 Tablette(n)
+  :article_dose: 1 mg
+- :article_ean13: "7680552430024"
+  :article_pcode: "2322110"
+  :article_size: 60 ml
+  :article_dose: 1 mg/ml
+- :article_ean13: "7680558040050"
+  :article_size: 30 Tablette(n)
+  :article_dose: 2 mg
+- :article_ean13: "7680558040074"
+  :article_pcode: "2808982"
+  :article_size: 100 Tablette(n)
+  :article_dose: 2 mg
+- :article_ean13: "7680558040081"
+  :article_pcode: "4898009"
+  :article_size: 30 Tablette(n)
+  :article_dose: 0.5 mg
+- :article_ean13: "7680558040098"
+  :article_size: 100 Tablette(n)
+  :article_dose: 0.5 mg
 
 --- !oddb.org,2003/ODDB::Patinfo 
 oid: 260
 descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions 
-  fr: !oddb.org,2003/ODDB::PatinfoDocument 
-    name: "Asp\xC3\xA9gic\xC2\xAE Baby"
-    company: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "SANOFI-SYNTH\xC3\x89LABO"
-      sections: []
-
-    galenic_form: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: ""
-      sections: []
-
-    effects: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Propri\xC3\xA9t\xC3\xA9s/Emploi th\xC3\xA9rapeutique"
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Qu'est-ce que l'Asp\xC3\xA9gic Baby et quand est-il utilis\xC3\xA9?\n"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "L'Asp\xC3\xA9gic Baby poss\xC3\xA8de toutes les propri\xC3\xA9t\xC3\xA9s de l'acide ac\xC3\xA9tylsalicylique. Il calme les douleurs et abaisse la fi\xC3\xA8vre."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "L'Asp\xC3\xA9gic Baby est utilis\xC3\xA9 pour un traitement \xC3\xA0 court terme contre les maux de t\xC3\xAAte, les maux des dents, les douleurs au niveau des articulations et des ligaments, les douleurs dorsales, les douleurs lors de refroidissements, et contre la fi\xC3\xA8vre."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "L'Asp\xC3\xA9gic Baby peut \xC3\xAAtre dissous dans le liquide du biberon, par exemple: eau, th\xC3\xA9, lait, tisanes, jus de fruits etc. Il ne laisse aucune particule, ni dans le biberon, ni dans la bouche."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "L'Asp\xC3\xA9gic Baby ne contient pas de sodium et peut donc \xC3\xAAtre administr\xC3\xA9 m\xC3\xAAme en cas de r\xC3\xA9gime sans sel."
-          preformatted: false
-    amendments: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Compl\xC3\xA9ment d'information"
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          De quoi faut-il tenir compte en dehors du traitement?
-
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Comme tous les antipyr\xC3\xA9tiques et analg\xC3\xA9siques, l'Asp\xC3\xA9gic Baby ne devrait pas \xC3\xAAtre pris pendant plus de 5 jours, ou plus de 3 jours en cas de fi\xC3\xA8vre, sans pr\xC3\xA9scription m\xC3\xA9dicale."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Les analg\xC3\xA9siques ne devraient pas \xC3\xAAtre pris r\xC3\xA9guli\xC3\xA8rement pendant une p\xC3\xA9riode prolong\xC3\xA9e sans contr\xC3\xB4le m\xC3\xA9dical. En cas de douleurs persistantes, veuillez consulter votre m\xC3\xA9decin."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Le dosage indiqu\xC3\xA9 ou pr\xC3\xA9scrit par le m\xC3\xA9decin ne doit pas \xC3\xAAtre d\xC3\xA9pass\xC3\xA9."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Il faut \xC3\xA9galement noter que l'absorption prolong\xC3\xA9e d'analg\xC3\xA9siques peut contribuer \xC3\xA0 faire persister les maux de t\xC3\xAAte."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "L'absorption prolong\xC3\xA9e d'analg\xC3\xA9sique, surtout la combinaison de plusieurs analg\xC3\xA9siques peut provoquer des troubles durables de la fonction r\xC3\xA9nale avec un risque d'insuffisance r\xC3\xA9nale terminale."
-          preformatted: false
-    contra_indications: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Contre-indications
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Quand l'Asp\xC3\xA9gic Baby ne doit-il pas \xC3\xAAtre utilis\xC3\xA9?\n"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Asp\xC3\xA9gic Baby ne doit pas \xC3\xAAtre administr\xC3\xA9 \xC3\xA0 un enfant:"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "qui pr\xC3\xA9sente une hypersensibilit\xC3\xA9 \xC3\xA0 l'acide ac\xC3\xA9tylsalicylique ou \xC3\xA0 d'autres anti-inflammatoires (antirhumatismaux) ou analg\xC3\xA9siques et antipyr\xC3\xA9tiques. Une telle hypersensibilit\xC3\xA9 se manifeste par des signes tels que: asthme, d\xC3\xA9tresse respiratoire, troubles circulatoires, tum\xC3\xA9faction de la peau et des muqueuses ou urticaire;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "souffrant d'un ulc\xC3\xA8re de l'estomac ou du duod\xC3\xA9num,souffrant d'une maladie h\xC3\xA9morragique;"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: souffrant d'une grave insuffisance des reins ou du foie;
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "\xC3\xA9tant dans un \xC3\xA9tat impliquant un risque accru d'h\xC3\xA9morragie (blessures, r\xC3\xA9gles dans l'\xC3\xA9ventualit\xC3\xA9 d'une utilisation par des adolescentes ou par des femmes adultes, etc.)."
-          preformatted: false
-    precautions: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Pr\xC3\xA9cautions"
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Quelles sont les mesures de pr\xC3\xA9caution \xC3\xA0 observer lors de la prise d'Asp\xC3\xA9gic Baby?\n"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Si votre enfant souffre d'asthme ou d'urticaire, s'il a des polypes dans le nez, s'il prend des anticoagulants, s'il souffre d'un d\xC3\xA9ficit en \xC2\xABglucose-6-phosphate-d\xC3\xA9hydrog\xC3\xA9nase\xC2\xBB, une maladie h\xC3\xA9r\xC3\xA9ditaire rare des globules rouges, s'il souffre de troubles fonctionnels des reins ou du foie, ou s'il a souffert de troubles gastro-intestinaux chroniques ou r\xC3\xA9p\xC3\xA9titifs, Asp\xC3\xA9gic Baby ne devra \xC3\xAAtre administr\xC3\xA9 que sous surveillance stricte du m\xC3\xA9decin."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Avant toute chose, respectez la posologie indiqu\xC3\xA9e par votre m\xC3\xA9decin. En cas de surdosage accidentel, le traitement d'urgence doit se faire en milieu hospitalier sp\xC3\xA9cialis\xC3\xA9."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: 11
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: 
-            - :italic
-            start: 12
-            end: 31
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 32
-            end: -1
-          text: "Les premiers signes de surdosage sont: troubles de l'ou\xC3\xAFe, naus\xC3\xA9es, vomissements, augmentation de la temp\xC3\xA9rature, respiration profonde avec apparition de sueur."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "L'administration d'Asp\xC3\xA9gic Baby aux enfants de moins de douze ans que l'on soup\xC3\xA7onne atteints de grippe ou de varicelle ne doit se faire que sous surveillance stricte du m\xC3\xA9decin. Si des troubles de la conscience accompagn\xC3\xA9s de forts vomissements se manifestent, un m\xC3\xA9decin doit \xC3\xAAtre imm\xC3\xA9diatement consult\xC3\xA9."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "L'Asp\xC3\xA9gic Baby peut modifier l'action de certains m\xC3\xA9dicaments administr\xC3\xA9s simultan\xC3\xA9ment:"
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "L'effet des corticost\xC3\xA9ro\xC3\xAFdes, des comprim\xC3\xA9s contre le diab\xC3\xA8te, des anticoagulants, et du m\xC3\xA9thotrexate (qui est prescrit p.ex. en cas de polyarthrite chronique) est augment\xC3\xA9; il en est de m\xC3\xAAme de l'effet des antid\xC3\xA9presseurs au lithium et de leurs effets ind\xC3\xA9sirables."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "L'effet des certains m\xC3\xA9dicaments contre la goutte (prob\xC3\xA9n\xC3\xA9cide et sulfinpyrazone) ou de certains diur\xC3\xA9tiques est diminu\xC3\xA9."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Les effets secondaires des m\xC3\xA9dicaments contre les rhumatismes ainsi que du m\xC3\xA9thotrexate peuvent \xC3\xAAtre augment\xC3\xA9s si votre enfant prend aussi de l'Asp\xC3\xA9gic Baby."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "C'est pourquoi il est prudent de consulter un m\xC3\xA9decin si votre enfant est d\xC3\xA9j\xC3\xA0 sous traitement."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Si la douleur se prolonge au-del\xC3\xA0 de 5 jours ou la fi\xC3\xA8vre au-del\xC3\xA0 de 3 jours, consultez un m\xC3\xA9decin."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Il faut aussi penser que la prise r\xC3\xA9guli\xC3\xA8re de m\xC3\xA9dicaments contre la douleur pendant de larges p\xC3\xA9riodes peut avoir pour effet d'entretenir les maux de t\xC3\xAAte."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Veuillez informer votre m\xC3\xA9decin, votre pharmacien, ou votre droguiste si votre enfant souffre d'une autre maladie, est allergique ou prend d\xC3\xA9j\xC3\xA0 d'autres m\xC3\xA9dicaments (m\xC3\xAAme en autom\xC3\xA9dication!)."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Le m\xC3\xA9decin ou le dentiste doivent \xC3\xAAtre consult\xC3\xA9s ou inform\xC3\xA9s de la prise avant une intervention chirurgicale."
-          preformatted: false
-    pregnancy: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Grossesse/Allaitement
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "L'Asp\xC3\xA9gic Baby peut-il \xC3\xAAtre pris pendant la grossesse ou la p\xC3\xA9riode d'allaitement?\n"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Cette pr\xC3\xA9paration est destin\xC3\xA9e \xC3\xA0 \xC3\xAAtre utilis\xC3\xA9e uniquement chez les enfants."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Lors de la prise \xC3\xA9ventuelle d'Asp\xC3\xA9gic Baby par des femmes jeunes ou adultes pendant la grossesse et l'allaitement, Asp\xC3\xA9gic Baby devra seulement \xC3\xAAtre pris sous contr\xC3\xB4le m\xC3\xA9dical strict. Durant les trois derniers mois de la grossesse, Asp\xC3\xA9gic Baby ne devra pas \xC3\xAAtre pris."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Il faut renoncer \xC3\xA0 un dosage important pendant l'allaitement."
-          preformatted: false
-    usage: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Posologie/Mode d'emploi
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Comment utiliser l'Asp\xC3\xA9gic Baby?\n"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Selon avis m\xC3\xA9dical."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Posologie habituelle:"
-          preformatted: false
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "De 6 mois \xC3\xA0 1 an (7-10 kg):"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "selon prescription m\xC3\xA9dicale."
-          preformatted: false
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "De 1 \xC3\xA0 3 ans (10-15 kg):"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "jusqu'\xC3\xA0 4 sachets par jour \xC3\xA0 r\xC3\xA9partir en plusieurs prises (3-4 au minimum, si possible apr\xC3\xA8s les repas)."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Asp\xC3\xA9gic 250 est plus particuli\xC3\xA8rement adapt\xC3\xA9 au traitement des enfants de 3 \xC3\xA0 12 ans."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Asp\xC3\xA9gic 500 est destin\xC3\xA9 aux enfants \xC3\xA0 partir de 12 ans et \xC3\xA0 l'adulte."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Versez la poudre dans un verre ou dans le biberon; ajoutez de l'eau ou un autre liquide (v. premi\xC3\xA8re rubrique), agitez quelques secondes et donnez \xC3\xA0 boire."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Veuillez vous conformer au dosage figurant dans la notice d'emballage ou prescrit par le m\xC3\xA9decin."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Si vous avez l'impression que l'efficacit\xC3\xA9 du m\xC3\xA9dicament est trop faible ou au contraire trop forte, veuillez vous adresser \xC3\xA0 votre m\xC3\xA9decin, votre pharmacien ou votre droguiste."
-          preformatted: false
-    unwanted_effects: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Effets ind\xC3\xA9sirables"
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: "Quels effets secondaires l'Asp\xC3\xA9gic Baby peut-il avoir?\n"
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Des troubles digestifs peuvent se produire. Dans de rares cas, des r\xC3\xA9actions allergiques ou d'hypersensibilit\xC3\xA9 comme tum\xC3\xA9faction de la peau et des muqueuses, urticaire, asthme ou d\xC3\xA9tresse respiratoire ainsi que des ulc\xC3\xA8res gastriques et des h\xC3\xA9morragies digestives peuvent se produire."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "D\xC3\xA8s l'apparition de signes d'une r\xC3\xA9action d'hypersensibilit\xC3\xA9, il faut interrompre la prise du m\xC3\xA9dicament et consulter le m\xC3\xA9decin."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Si pendant le traitement vous remarquez des selles noir\xC3\xA2tres ou des vomissements sanglants, arr\xC3\xAAtez l'administration du m\xC3\xA9dicament et consultez imm\xC3\xA9diatement votre m\xC3\xA9decin."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Des \xC3\xA9tourdissement, maux de t\xC3\xAAte, troubles visuels ou \xC3\xA9tats de confusion ont \xC3\xA9t\xC3\xA9 observ\xC3\xA9s dans de rares cas et sont g\xC3\xA9n\xC3\xA9ralement la marque d'un surdosage."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "En r\xC3\xA8gle g\xC3\xA9n\xC3\xA9rale, la prise \xC3\xA0 long terme de m\xC3\xA9dicaments contre la douleur, et particuli\xC3\xA8rement l'association de plusieurs principes actifs peut conduire \xC3\xA0 des l\xC3\xA9sions r\xC3\xA9nales durables avec le risque d'une insuffisance r\xC3\xA9nale terminale."
-          preformatted: false
-    general_advice: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Remarques particuli\xC3\xA8res"
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: |
-          De quoi faut-il en outre tenir compte?
-
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "En cas de prise non contr\xC3\xB4l\xC3\xA9e (surdosage), consultez imm\xC3\xA9diatement votre m\xC3\xA9decin; le bourdonnement d'oreilles et/ou une transpiration abondante peuvent \xC3\xAAtre les signes d'un surdosage."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Pour de plus amples renseignements, consultez votre m\xC3\xA9decin, votre pharmacien ou votre droguiste qui disposent d'une information d\xC3\xA9taill\xC3\xA9e destin\xC3\xA9e aux repr\xC3\xA9sentants des professions m\xC3\xA9dicales."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Conservez le produit \xC3\xA0 temp\xC3\xA9rature ambiante (15 \xC3\xA0 25 \xC2\xB0C) et \xC3\xA0 l'abri de l'humidit\xC3\xA9."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Ne le laissez pas \xC3\xA0 port\xC3\xA9e des enfants."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Le m\xC3\xA9dicament ne peut \xC3\xAAtre utilis\xC3\xA9 au-del\xC3\xA0 de la date imprim\xC3\xA9e sur la bo\xC3\xAEte avec la mention \xC2\xABExp.\xC2\xBB."
-          preformatted: false
-    composition: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Composition
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: 1 sachet
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "contient: ac\xC3\xA9tylsalicylate de lysine 180 mg (exprim\xC3\xA9 en acide ac\xC3\xA9tylsalicylique, correspond \xC3\xA0 100 mg), des ar\xC3\xB4mes, des excipients."
-          preformatted: false
-    packages: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Mode de vente/Pr\xC3\xA9sentation"
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: ""
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: 10
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: 
-            - :italic
-            start: 11
-            end: 19
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 20
-            end: -1
-          text: "Bo\xC3\xAEte de 20 sachets: vente en pharmacie et droguerie, sans ordonnance m\xC3\xA9dicale."
-          preformatted: false
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: 11
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: 
-            - :italic
-            start: 12
-            end: 20
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 21
-            end: -1
-          text: "Bo\xC3\xAEte de 100 sachets: vente en pharmacie, sur ordonnance m\xC3\xA9dicale."
-          preformatted: false
-    distribution: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: Distributeur
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: ""
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: "Sanofi-Synth\xC3\xA9labo (Suisse) SA, 1217 Meyrin."
-          preformatted: false
-    date: !oddb.org,2003/ODDB::Text::Chapter 
-      heading: "Mise \xC3\xA0 jour de l'information"
-      sections: 
-      - !oddb.org,2003/ODDB::Text::Section 
-        subheading: ""
-        paragraphs: 
-        - !oddb.org,2003/ODDB::Text::Paragraph 
-          formats: 
-          - !oddb.org,2003/ODDB::Text::Format 
-            values: []
-
-            start: 0
-            end: -1
-          text: Mars 1997.
-          preformatted: false
   de: !oddb.org,2003/ODDB::PatinfoDocument 
     name: "Asp\xC3\xA9gic\xC2\xAE Baby"
     company: !oddb.org,2003/ODDB::Text::Chapter 
@@ -2503,3 +2976,620 @@ descriptions: !oddb.org,2003/ODDB::SimpleLanguage::Descriptions
             end: -1
           text: "M\xC3\xA4rz 1997."
           preformatted: false
+  fr: !oddb.org,2003/ODDB::PatinfoDocument 
+    name: "Asp\xC3\xA9gic\xC2\xAE Baby"
+    company: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "SANOFI-SYNTH\xC3\x89LABO"
+      sections: []
+
+    galenic_form: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: ""
+      sections: []
+
+    effects: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Propri\xC3\xA9t\xC3\xA9s/Emploi th\xC3\xA9rapeutique"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Qu'est-ce que l'Asp\xC3\xA9gic Baby et quand est-il utilis\xC3\xA9?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'Asp\xC3\xA9gic Baby poss\xC3\xA8de toutes les propri\xC3\xA9t\xC3\xA9s de l'acide ac\xC3\xA9tylsalicylique. Il calme les douleurs et abaisse la fi\xC3\xA8vre."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'Asp\xC3\xA9gic Baby est utilis\xC3\xA9 pour un traitement \xC3\xA0 court terme contre les maux de t\xC3\xAAte, les maux des dents, les douleurs au niveau des articulations et des ligaments, les douleurs dorsales, les douleurs lors de refroidissements, et contre la fi\xC3\xA8vre."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'Asp\xC3\xA9gic Baby peut \xC3\xAAtre dissous dans le liquide du biberon, par exemple: eau, th\xC3\xA9, lait, tisanes, jus de fruits etc. Il ne laisse aucune particule, ni dans le biberon, ni dans la bouche."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'Asp\xC3\xA9gic Baby ne contient pas de sodium et peut donc \xC3\xAAtre administr\xC3\xA9 m\xC3\xAAme en cas de r\xC3\xA9gime sans sel."
+          preformatted: false
+    amendments: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Compl\xC3\xA9ment d'information"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          De quoi faut-il tenir compte en dehors du traitement?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Comme tous les antipyr\xC3\xA9tiques et analg\xC3\xA9siques, l'Asp\xC3\xA9gic Baby ne devrait pas \xC3\xAAtre pris pendant plus de 5 jours, ou plus de 3 jours en cas de fi\xC3\xA8vre, sans pr\xC3\xA9scription m\xC3\xA9dicale."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Les analg\xC3\xA9siques ne devraient pas \xC3\xAAtre pris r\xC3\xA9guli\xC3\xA8rement pendant une p\xC3\xA9riode prolong\xC3\xA9e sans contr\xC3\xB4le m\xC3\xA9dical. En cas de douleurs persistantes, veuillez consulter votre m\xC3\xA9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le dosage indiqu\xC3\xA9 ou pr\xC3\xA9scrit par le m\xC3\xA9decin ne doit pas \xC3\xAAtre d\xC3\xA9pass\xC3\xA9."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Il faut \xC3\xA9galement noter que l'absorption prolong\xC3\xA9e d'analg\xC3\xA9siques peut contribuer \xC3\xA0 faire persister les maux de t\xC3\xAAte."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'absorption prolong\xC3\xA9e d'analg\xC3\xA9sique, surtout la combinaison de plusieurs analg\xC3\xA9siques peut provoquer des troubles durables de la fonction r\xC3\xA9nale avec un risque d'insuffisance r\xC3\xA9nale terminale."
+          preformatted: false
+    contra_indications: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Contre-indications
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Quand l'Asp\xC3\xA9gic Baby ne doit-il pas \xC3\xAAtre utilis\xC3\xA9?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Asp\xC3\xA9gic Baby ne doit pas \xC3\xAAtre administr\xC3\xA9 \xC3\xA0 un enfant:"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "qui pr\xC3\xA9sente une hypersensibilit\xC3\xA9 \xC3\xA0 l'acide ac\xC3\xA9tylsalicylique ou \xC3\xA0 d'autres anti-inflammatoires (antirhumatismaux) ou analg\xC3\xA9siques et antipyr\xC3\xA9tiques. Une telle hypersensibilit\xC3\xA9 se manifeste par des signes tels que: asthme, d\xC3\xA9tresse respiratoire, troubles circulatoires, tum\xC3\xA9faction de la peau et des muqueuses ou urticaire;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "souffrant d'un ulc\xC3\xA8re de l'estomac ou du duod\xC3\xA9num,souffrant d'une maladie h\xC3\xA9morragique;"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: souffrant d'une grave insuffisance des reins ou du foie;
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "\xC3\xA9tant dans un \xC3\xA9tat impliquant un risque accru d'h\xC3\xA9morragie (blessures, r\xC3\xA9gles dans l'\xC3\xA9ventualit\xC3\xA9 d'une utilisation par des adolescentes ou par des femmes adultes, etc.)."
+          preformatted: false
+    precautions: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Pr\xC3\xA9cautions"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Quelles sont les mesures de pr\xC3\xA9caution \xC3\xA0 observer lors de la prise d'Asp\xC3\xA9gic Baby?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si votre enfant souffre d'asthme ou d'urticaire, s'il a des polypes dans le nez, s'il prend des anticoagulants, s'il souffre d'un d\xC3\xA9ficit en \xC2\xABglucose-6-phosphate-d\xC3\xA9hydrog\xC3\xA9nase\xC2\xBB, une maladie h\xC3\xA9r\xC3\xA9ditaire rare des globules rouges, s'il souffre de troubles fonctionnels des reins ou du foie, ou s'il a souffert de troubles gastro-intestinaux chroniques ou r\xC3\xA9p\xC3\xA9titifs, Asp\xC3\xA9gic Baby ne devra \xC3\xAAtre administr\xC3\xA9 que sous surveillance stricte du m\xC3\xA9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Avant toute chose, respectez la posologie indiqu\xC3\xA9e par votre m\xC3\xA9decin. En cas de surdosage accidentel, le traitement d'urgence doit se faire en milieu hospitalier sp\xC3\xA9cialis\xC3\xA9."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 12
+            end: 31
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 32
+            end: -1
+          text: "Les premiers signes de surdosage sont: troubles de l'ou\xC3\xAFe, naus\xC3\xA9es, vomissements, augmentation de la temp\xC3\xA9rature, respiration profonde avec apparition de sueur."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'administration d'Asp\xC3\xA9gic Baby aux enfants de moins de douze ans que l'on soup\xC3\xA7onne atteints de grippe ou de varicelle ne doit se faire que sous surveillance stricte du m\xC3\xA9decin. Si des troubles de la conscience accompagn\xC3\xA9s de forts vomissements se manifestent, un m\xC3\xA9decin doit \xC3\xAAtre imm\xC3\xA9diatement consult\xC3\xA9."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'Asp\xC3\xA9gic Baby peut modifier l'action de certains m\xC3\xA9dicaments administr\xC3\xA9s simultan\xC3\xA9ment:"
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'effet des corticost\xC3\xA9ro\xC3\xAFdes, des comprim\xC3\xA9s contre le diab\xC3\xA8te, des anticoagulants, et du m\xC3\xA9thotrexate (qui est prescrit p.ex. en cas de polyarthrite chronique) est augment\xC3\xA9; il en est de m\xC3\xAAme de l'effet des antid\xC3\xA9presseurs au lithium et de leurs effets ind\xC3\xA9sirables."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "L'effet des certains m\xC3\xA9dicaments contre la goutte (prob\xC3\xA9n\xC3\xA9cide et sulfinpyrazone) ou de certains diur\xC3\xA9tiques est diminu\xC3\xA9."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Les effets secondaires des m\xC3\xA9dicaments contre les rhumatismes ainsi que du m\xC3\xA9thotrexate peuvent \xC3\xAAtre augment\xC3\xA9s si votre enfant prend aussi de l'Asp\xC3\xA9gic Baby."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "C'est pourquoi il est prudent de consulter un m\xC3\xA9decin si votre enfant est d\xC3\xA9j\xC3\xA0 sous traitement."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si la douleur se prolonge au-del\xC3\xA0 de 5 jours ou la fi\xC3\xA8vre au-del\xC3\xA0 de 3 jours, consultez un m\xC3\xA9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Il faut aussi penser que la prise r\xC3\xA9guli\xC3\xA8re de m\xC3\xA9dicaments contre la douleur pendant de larges p\xC3\xA9riodes peut avoir pour effet d'entretenir les maux de t\xC3\xAAte."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Veuillez informer votre m\xC3\xA9decin, votre pharmacien, ou votre droguiste si votre enfant souffre d'une autre maladie, est allergique ou prend d\xC3\xA9j\xC3\xA0 d'autres m\xC3\xA9dicaments (m\xC3\xAAme en autom\xC3\xA9dication!)."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le m\xC3\xA9decin ou le dentiste doivent \xC3\xAAtre consult\xC3\xA9s ou inform\xC3\xA9s de la prise avant une intervention chirurgicale."
+          preformatted: false
+    pregnancy: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Grossesse/Allaitement
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "L'Asp\xC3\xA9gic Baby peut-il \xC3\xAAtre pris pendant la grossesse ou la p\xC3\xA9riode d'allaitement?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Cette pr\xC3\xA9paration est destin\xC3\xA9e \xC3\xA0 \xC3\xAAtre utilis\xC3\xA9e uniquement chez les enfants."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Lors de la prise \xC3\xA9ventuelle d'Asp\xC3\xA9gic Baby par des femmes jeunes ou adultes pendant la grossesse et l'allaitement, Asp\xC3\xA9gic Baby devra seulement \xC3\xAAtre pris sous contr\xC3\xB4le m\xC3\xA9dical strict. Durant les trois derniers mois de la grossesse, Asp\xC3\xA9gic Baby ne devra pas \xC3\xAAtre pris."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Il faut renoncer \xC3\xA0 un dosage important pendant l'allaitement."
+          preformatted: false
+    usage: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Posologie/Mode d'emploi
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Comment utiliser l'Asp\xC3\xA9gic Baby?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Selon avis m\xC3\xA9dical."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Posologie habituelle:"
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "De 6 mois \xC3\xA0 1 an (7-10 kg):"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "selon prescription m\xC3\xA9dicale."
+          preformatted: false
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "De 1 \xC3\xA0 3 ans (10-15 kg):"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "jusqu'\xC3\xA0 4 sachets par jour \xC3\xA0 r\xC3\xA9partir en plusieurs prises (3-4 au minimum, si possible apr\xC3\xA8s les repas)."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Asp\xC3\xA9gic 250 est plus particuli\xC3\xA8rement adapt\xC3\xA9 au traitement des enfants de 3 \xC3\xA0 12 ans."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Asp\xC3\xA9gic 500 est destin\xC3\xA9 aux enfants \xC3\xA0 partir de 12 ans et \xC3\xA0 l'adulte."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Versez la poudre dans un verre ou dans le biberon; ajoutez de l'eau ou un autre liquide (v. premi\xC3\xA8re rubrique), agitez quelques secondes et donnez \xC3\xA0 boire."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Veuillez vous conformer au dosage figurant dans la notice d'emballage ou prescrit par le m\xC3\xA9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si vous avez l'impression que l'efficacit\xC3\xA9 du m\xC3\xA9dicament est trop faible ou au contraire trop forte, veuillez vous adresser \xC3\xA0 votre m\xC3\xA9decin, votre pharmacien ou votre droguiste."
+          preformatted: false
+    unwanted_effects: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Effets ind\xC3\xA9sirables"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: "Quels effets secondaires l'Asp\xC3\xA9gic Baby peut-il avoir?\n"
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Des troubles digestifs peuvent se produire. Dans de rares cas, des r\xC3\xA9actions allergiques ou d'hypersensibilit\xC3\xA9 comme tum\xC3\xA9faction de la peau et des muqueuses, urticaire, asthme ou d\xC3\xA9tresse respiratoire ainsi que des ulc\xC3\xA8res gastriques et des h\xC3\xA9morragies digestives peuvent se produire."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "D\xC3\xA8s l'apparition de signes d'une r\xC3\xA9action d'hypersensibilit\xC3\xA9, il faut interrompre la prise du m\xC3\xA9dicament et consulter le m\xC3\xA9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Si pendant le traitement vous remarquez des selles noir\xC3\xA2tres ou des vomissements sanglants, arr\xC3\xAAtez l'administration du m\xC3\xA9dicament et consultez imm\xC3\xA9diatement votre m\xC3\xA9decin."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Des \xC3\xA9tourdissement, maux de t\xC3\xAAte, troubles visuels ou \xC3\xA9tats de confusion ont \xC3\xA9t\xC3\xA9 observ\xC3\xA9s dans de rares cas et sont g\xC3\xA9n\xC3\xA9ralement la marque d'un surdosage."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "En r\xC3\xA8gle g\xC3\xA9n\xC3\xA9rale, la prise \xC3\xA0 long terme de m\xC3\xA9dicaments contre la douleur, et particuli\xC3\xA8rement l'association de plusieurs principes actifs peut conduire \xC3\xA0 des l\xC3\xA9sions r\xC3\xA9nales durables avec le risque d'une insuffisance r\xC3\xA9nale terminale."
+          preformatted: false
+    general_advice: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Remarques particuli\xC3\xA8res"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: |
+          De quoi faut-il en outre tenir compte?
+
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "En cas de prise non contr\xC3\xB4l\xC3\xA9e (surdosage), consultez imm\xC3\xA9diatement votre m\xC3\xA9decin; le bourdonnement d'oreilles et/ou une transpiration abondante peuvent \xC3\xAAtre les signes d'un surdosage."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Pour de plus amples renseignements, consultez votre m\xC3\xA9decin, votre pharmacien ou votre droguiste qui disposent d'une information d\xC3\xA9taill\xC3\xA9e destin\xC3\xA9e aux repr\xC3\xA9sentants des professions m\xC3\xA9dicales."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Conservez le produit \xC3\xA0 temp\xC3\xA9rature ambiante (15 \xC3\xA0 25 \xC2\xB0C) et \xC3\xA0 l'abri de l'humidit\xC3\xA9."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Ne le laissez pas \xC3\xA0 port\xC3\xA9e des enfants."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Le m\xC3\xA9dicament ne peut \xC3\xAAtre utilis\xC3\xA9 au-del\xC3\xA0 de la date imprim\xC3\xA9e sur la bo\xC3\xAEte avec la mention \xC2\xABExp.\xC2\xBB."
+          preformatted: false
+    composition: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Composition
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: 1 sachet
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "contient: ac\xC3\xA9tylsalicylate de lysine 180 mg (exprim\xC3\xA9 en acide ac\xC3\xA9tylsalicylique, correspond \xC3\xA0 100 mg), des ar\xC3\xB4mes, des excipients."
+          preformatted: false
+    packages: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Mode de vente/Pr\xC3\xA9sentation"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 10
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 11
+            end: 19
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 20
+            end: -1
+          text: "Bo\xC3\xAEte de 20 sachets: vente en pharmacie et droguerie, sans ordonnance m\xC3\xA9dicale."
+          preformatted: false
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: 11
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: 
+            - :italic
+            start: 12
+            end: 20
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 21
+            end: -1
+          text: "Bo\xC3\xAEte de 100 sachets: vente en pharmacie, sur ordonnance m\xC3\xA9dicale."
+          preformatted: false
+    distribution: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: Distributeur
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: "Sanofi-Synth\xC3\xA9labo (Suisse) SA, 1217 Meyrin."
+          preformatted: false
+    date: !oddb.org,2003/ODDB::Text::Chapter 
+      heading: "Mise \xC3\xA0 jour de l'information"
+      sections: 
+      - !oddb.org,2003/ODDB::Text::Section 
+        subheading: ""
+        paragraphs: 
+        - !oddb.org,2003/ODDB::Text::Paragraph 
+          formats: 
+          - !oddb.org,2003/ODDB::Text::Format 
+            values: []
+
+            start: 0
+            end: -1
+          text: Mars 1997.
+          preformatted: false
+article_codes: 
+- :article_ean13: "7680381330632"
+  :article_pcode: "2735013"
+  :article_size: 100 Sachet(s)
+  :article_dose: 100 mg
+- :article_ean13: "7680381331288"
+  :article_pcode: "2735007"
+  :article_size: 20 Sachet(s)
+  :article_dose: 100 mg
