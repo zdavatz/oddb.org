@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::AdditionalInformation -- oddb.org -- 10.03.2012 -- yasaka@ywesee.com
+# ODDB::View::AdditionalInformation -- oddb.org -- 15.03.2012 -- yasaka@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 29.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::AdditionalInformation -- oddb.org -- 09.12.2003 -- rwaltert@ywesee.com
 
@@ -177,10 +177,16 @@ module ODDB
 				end
 			end
 			def _fachinfo(model, css='square infos')
-				if(model.fachinfo_active?)
+        iksnr = ''
+        if(model.respond_to?(:fachinfo_active?) and model.fachinfo_active?) #Registration
+          iksnr = model.iksnr
+        elsif(model.respond_to?(:iksnrs) and iksnrs = model.iksnrs) #FachinfoDocument
+          iksnr = iksnrs.first
+        end
+        unless iksnr.empty?
 					link = HtmlGrid::Link.new(:square_fachinfo, 
 							model, @session, self)
-					link.href = @lookandfeel._event_url(:fachinfo, {:reg => model.iksnr})
+					link.href = @lookandfeel._event_url(:fachinfo, {:reg => iksnr})
 					link.css_class = css
 					link.set_attribute('title', @lookandfeel.lookup(:fachinfo))
 					link
