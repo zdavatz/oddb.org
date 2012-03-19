@@ -10,12 +10,11 @@ require 'util/oddbconfig'
 DRb.start_service('druby://localhost:0')
 
 begin
-  request = SBSM::Request.new(nil)
-  uri = ODDB::SERVER_URI
+  request = SBSM::Request.new(ODDB::SERVER_URI)
   if request.is_crawler?
-    uri = ODDB::SERVER_URI_FOR_CRAWLER
+    request = SBSM::Request.new(ODDB::SERVER_URI_FOR_CRAWLER)
   end
-  SBSM::Request.new(uri).process
+  request.process
 rescue Exception => e
 	$stderr << "ODDB-Client-Error: " << e.message << "\n"
 	$stderr << e.class << "\n"
