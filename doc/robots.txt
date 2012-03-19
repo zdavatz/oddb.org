@@ -1,12 +1,4 @@
-User-agent: ReverseGet
-Disallow: /
-User-agent: Exabot
-Disallow: /
-User-agent: VoilaBot
-Disallow: /
 User-agent: Mediapartners-Google*
-Disallow: /
-User-agent: Baiduspider
 Disallow: /
 User-agent: *
 Disallow: /de/atupri
