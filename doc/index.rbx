@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# index.rbx -- oddb.org -- 19.03.2012 -- yasaka@ywesee.com
 # index.rbx -- oddb.org -- 21.02.2012 -- mhatakeyama@ywesee.com
 # index.rbx -- oddb.org -- hwyss@ywesee.com
 
@@ -9,7 +10,12 @@ require 'util/oddbconfig'
 DRb.start_service('druby://localhost:0')
 
 begin
-	SBSM::Request.new(ODDB::SERVER_URI).process
+  request = SBSM::Request.new(nil)
+  uri = ODDB::SERVER_URI
+  if request.is_crawler?
+    uri = ODDB::SERVER_URI_FOR_CRAWLER
+  end
+  SBSM::Request.new(uri).process
 rescue Exception => e
 	$stderr << "ODDB-Client-Error: " << e.message << "\n"
 	$stderr << e.class << "\n"

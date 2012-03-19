@@ -15,6 +15,7 @@ module ODDB
 	MAIL_TO = ['hwyss@ywesee.com']
 	SMTP_FROM = 'zdavatz@ywesee.com'
 	SERVER_URI = "druby://localhost:10000"
+	SERVER_URI_FOR_CRAWLER = "druby://localhost:10001"
 	FIPARSE_URI = "druby://localhost:10002"
 	FIPDF_URI = "druby://localhost:10003"
 	DOCPARSE_URI = "druby://localhost:10004"

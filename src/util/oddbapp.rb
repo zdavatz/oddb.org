@@ -664,7 +664,7 @@ class OddbPrevalence
 	def limitation_text_count
 		@limitation_text_count ||= count_limitation_texts()
 	end
-	def log_group(key)
+  def log_group(key)
 		@log_groups[key]
 	end
   def minifi(oid)
@@ -1348,6 +1348,13 @@ module ODDB
     MIGEL_SERVER = DRb::DRbObject.new(nil, MIGEL_URI)
 		attr_reader :cleaner, :updater
 		def initialize opts={}
+      if opts.has_key?(:server_uri) and \
+         opts[:server_uri] == ODDB::SERVER_URI_FOR_CRAWLER
+        @process = :crawler
+      else
+        @process = :user
+      end
+      puts "process: #{$0}"
       @rss_mutex = Mutex.new
 			@admin_threads = ThreadGroup.new
       start = Time.now
@@ -1909,7 +1916,9 @@ module ODDB
       puts child.class
       raise
     end
-
+    def process_for_crawler?
+      @process == :crawler
+    end
     def log_size
       @size_logger = Thread.new {
         time = Time.now
@@ -1917,6 +1926,7 @@ module ODDB
         threads = 0
         sessions = 0
         format = "%s %s: sessions: %4i - threads: %4i  - memory: %4iMB %s"
+        status = process_for_crawler? ? 'status_crawler' : 'status'
         loop {
           begin
             lasttime = time
@@ -1941,7 +1951,7 @@ module ODDB
             gc << 'S' if sessions < lastsessions
             gc << 'T' if threads < lastthreads
             gc << 'M' if bytes < lastbytes
-            path = File.expand_path('../../doc/resources/downloads/status',
+            path = File.expand_path('../../doc/resources/downloads/' + status,
                                     File.dirname(__FILE__))
             lines = File.readlines(path)[0,100] rescue []
             lines.unshift sprintf(format, alarm, 

@@ -25,11 +25,16 @@ trap("USR2") {
 ODBA.cache.setup
 ODBA.cache.clean_prefetched
 
-$oddb = ODDB::App.new
-
-$0 = "Oddb (OddbApp)"
+if (opt = ARGV.first and opt == 'crawler')
+  server_uri = ODDB::SERVER_URI_FOR_CRAWLER
+  $0 = "Oddb (OddbApp:Crawler)"
+else
+  server_uri = ODDB::SERVER_URI
+  $0 = "Oddb (OddbApp)"
+end
+$oddb = ODDB::App.new({:server_uri => server_uri})
 
 DRb.install_id_conv ODBA::DRbIdConv.new
-DRb.start_service(ODDB::SERVER_URI, $oddb)
+DRb.start_service(server_uri, $oddb)
 
 DRb.thread.join
