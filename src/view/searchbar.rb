@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::SearchBar -- oddb.org -- 19.01.2012 -- hwyss@ywesee.com 
+# ODDB::View::SearchBar -- oddb.org -- 20.03.2012 -- yasaka@ywesee.com 
+# ODDB::View::SearchBar -- oddb.org -- 19.01.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::SearchBar -- oddb.org -- 22.11.2002 -- hwyss@ywesee.com 
 
 require 'view/form'
@@ -58,6 +59,13 @@ function initMatches() {
   });
 }
 dojo.addOnLoad(initMatches);
+function selectSubmit() {
+  var popup = dojo.byId('searchbar_popup');
+  var searchbar = dojo.byId('searchbar');
+  if (!popup.style.overflowX.match(/auto/) && searchbar.value != '') {
+    searchbar.form.submit();
+  }
+}
     EOS
     @attributes.update 'dojotype'      => 'dijit.form.ComboBox',
                        'jsId'          => 'searchbar',
@@ -67,6 +75,7 @@ dojo.addOnLoad(initMatches);
                        'searchAttr'    => 'search_query',
                        'hasDownArrow'  => 'false',
                        'autoComplete'  => 'false',
+                       'onChange'      => 'selectSubmit',
                        'value'         => @session.persistent_user_input(:search_query)
   end
   def to_html(context, *args)
