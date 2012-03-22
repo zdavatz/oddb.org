@@ -965,7 +965,8 @@ div#widget_searchbar {
 #searchbar_popup {
   border: 1px solid ButtonShadow;
 }
-.dijitMenuItemSelected {
+#searchbar_popup .dijitMenuItemHover,
+#searchbar_popup .dijitMenuItemSelected {
 	background-color: $bg_bright;
   color: black;
 }
