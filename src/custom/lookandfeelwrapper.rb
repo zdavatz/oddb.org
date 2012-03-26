@@ -201,7 +201,9 @@ module ODDB
 		end
 	end
 	class LookandfeelProvita < SBSM::LookandfeelWrapper
-		ENABLED = [ ]
+		ENABLED = [
+      :ajax
+    ]
 		DICTIONARIES = {
 			'de'	=>	{
 				:home_welcome	=>	'Willkommen bei Provita und oddb.org',
@@ -218,6 +220,7 @@ module ODDB
 	end
 	class LookandfeelSantesuisse < SBSM::LookandfeelWrapper
 		ENABLED = [ 
+      :ajax,
       :doctors 
     ]
 		DICTIONARIES = {
@@ -243,6 +246,7 @@ module ODDB
 	end
 	class LookandfeelAtupri < SBSM::LookandfeelWrapper
 		ENABLED = [
+      :ajax,
 			:external_css,
 			:logo,
 		]
@@ -271,6 +275,7 @@ module ODDB
 	end
 	class LookandfeelAtupriWeb < SBSM::LookandfeelWrapper
 		ENABLED = [
+      :ajax,
 			:atupri_web,
 			:custom_navigation,
 			:drugs, 
@@ -406,6 +411,7 @@ module ODDB
 	end
 	class LookandfeelJustMedical < SBSM::LookandfeelWrapper
 		ENABLED = [
+      :ajax,
 			:atc_chooser,
 			:custom_navigation,
       :custom_tab_navigation,
@@ -790,6 +796,7 @@ module ODDB
   end
 	class LookandfeelMyMedi < SBSM::LookandfeelWrapper
 		ENABLED = [
+      :ajax,
       :explain_sort,
       :compare_backbutton,
       :custom_tab_navigation,
@@ -1065,6 +1072,7 @@ module ODDB
 
 	class LookandfeelSwissMedInfo < SBSM::LookandfeelWrapper
 		ENABLED = [
+      :ajax,
 			:home_drugs,
 			:help_link,
 			:faq_link,

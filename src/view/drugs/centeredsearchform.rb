@@ -38,11 +38,14 @@ class CenteredSearchForm < View::CenteredSearchForm
 	}
 	EVENT = :search
   def link_to_instant(model, session=@session)
-    link = HtmlGrid::Link.new(:search_instant, model, session, self)
-    args = { :search_form => "instant" }
-    link.href  = @lookandfeel._event_url(:home, args)
-    link.value = "Instant"
-    link
+    if(@container.respond_to?(:instant_search_enabled?) and
+      @container.instant_search_enabled?)
+      link = HtmlGrid::Link.new(:search_instant, model, session, self)
+      args = { :search_form => "instant" }
+      link.href  = @lookandfeel._event_url(:home, args)
+      link.value = "Instant"
+      link
+    end
   end
 end
 class CenteredCompareSearchForm < CenteredSearchForm
@@ -59,7 +62,7 @@ class CenteredCompareSearchForm < CenteredSearchForm
   }
   def init
     @index_name = 'oddb_package_name_with_size'
-    @additional_javascripts = []
+    @additional_javascripts = [] # for AutocompleteSearchBar
     super
   end
   def javascripts(context)
@@ -100,7 +103,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		if(@lookandfeel.enabled?(:just_medical_structure, false))
 			@components = {
 				[0,0]	  =>	:language_chooser,
-				[0,1]	  =>	View::Drugs::CenteredSearchForm,
+				[0,1]	  =>	:search_form,
 				[0,2]	  =>	'search_explain', 
 				[0,3,0]	=>	'database_last_updated_txt',
 				[0,3,1]	=>	:database_last_updated,
@@ -115,7 +118,7 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 			}
 		elsif(@lookandfeel.enabled?(:atupri_web, false))
 			@components = {
-				[0,0]	  =>	View::Drugs::CenteredSearchForm,
+				[0,0]	  =>	:search_form,
 				[0,1]	  =>	'search_explain', 
 				[0,2,0]	=>	'database_last_updated_txt',
 				[0,2,1]	=>	:database_last_updated,
@@ -213,11 +216,10 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		@session.app.substance_count
 	end
   def search_form(model, session=@session)
-    case @session.search_form
-    when "normal"
+    if(@session.search_form == "instant" and instant_search_enabled?)
+        View::Drugs::CenteredCompareSearchForm.new(model, session, self)
+    else # normal
       View::Drugs::CenteredSearchForm.new(model, session, self)
-    when "instant"
-      View::Drugs::CenteredCompareSearchForm.new(model, session, self)
     end
   end
 	def narcotics(model, session)
@@ -232,6 +234,10 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 		link.set_attribute('class', 'list')
 		link
 	end
+  def instant_search_enabled?
+    @session.flavor == Session::DEFAULT_FLAVOR or
+    @lookandfeel.enabled?(:ajax, false)
+  end
 end	
 class RssPreview < HtmlGrid::DivComposite
   CSS_MAP = ['heading']
