@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Validator -- oddb.org -- 26.03.2012 -- yasaka@ywesee.com
 # ODDB::Validator -- oddb.org -- 14.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Validator -- oddb.org -- 18.11.2002 -- hwyss@ywesee.com 
 
@@ -86,6 +87,7 @@ module ODDB
       :route_of_administration => [nil, 'roa_O', 'roa_P', 'roa_N', 'roa_SL', 
                          'roa_TD', 'roa_R', 'roa_V'],
 			:salutation		=>	['salutation_m', 'salutation_f'],
+			:search_form  =>  ['normal', 'instant'],
       :yus_privileges => [ 
         'edit|yus.entities', 
         'grant|login', 

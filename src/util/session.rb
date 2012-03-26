@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Session -- oddb.org -- 26.03.2012 -- yasaka@ywesee.com
 # ODDB::Session -- oddb.org -- 16.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::Session -- oddb.org -- 12.05.2009 -- hwyss@ywesee.com
 
@@ -168,6 +169,9 @@ module ODDB
 		def navigation
 			@active_state.navigation
 		end
+    def search_form
+      cookie_set_or_get(:search_form) || "normal"
+    end
 		def search_oddb(query)
 			@persistent_user_input[:search_query] ||= query
 			@app.search_oddb(query, self.language)

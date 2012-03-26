@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 08.03.2012 -- yasaka@ywesee.com
+# ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 26.03.2012 -- yasaka@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 30.01.2012 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::CenteredSearchForm -- oddb.org -- 07.09.2004 -- mhuggler@ywesee.com
 
 require 'htmlgrid/select'
 require 'htmlgrid/divlist'
+require 'htmlgrid/link'
 require 'view/centeredsearchform'
 require 'view/facebook'
 require 'view/google_ad_sense'
@@ -16,33 +17,79 @@ module ODDB
 class CenteredSearchForm < View::CenteredSearchForm
   include SearchBarMethods
 	CSS_CLASS = 'composite'
-	COMPONENTS = {
-		[0,0]			=>	View::TabNavigation,
-		[0,1]			=>	'search_type',
-		[0,2,0,1]	=>	:search_type,
-		[0,3,0,2]	=>	:search_query,
-		[0,4,0,3]	=>	:submit,
-		[0,4,0,4]	=>	:search_reset,
-	}
+  COMPONENTS = {
+    [0,0]      => View::TabNavigation,
+    [0,1,0]    => 'search_type',
+    [0,1,1]    => :link_to_instant,
+    [0,2,0,1]  => :search_type,
+    [0,3,0,2]  => :search_query,
+    [0,4,0,3]  => :submit,
+  }
 	SYMBOL_MAP = {
-		:search_query	=>	View::SearchBar,
+		:search_query => View::SearchBar,
 	}
 	COMPONENT_CSS_MAP = {
 		[0,0]		=>	'component tabnavigation',
 	}
 	CSS_MAP = {
-		[0,0]	=>	'center',
-		[0,1]	=>	'list center',
-		[0,2,1,3]	=>	'center',
+		[0,0]     => 'center',
+		[0,1]     => 'list center',
+		[0,2,1,3] => 'center',
 	}
 	EVENT = :search
+  def link_to_instant(model, session=@session)
+    link = HtmlGrid::Link.new(:search_instant, model, session, self)
+    args = { :search_form => "instant" }
+    link.href  = @lookandfeel._event_url(:home, args)
+    link.value = "Instant"
+    link
+  end
+end
+class CenteredCompareSearchForm < CenteredSearchForm
+  attr_reader :index_name
+  EVENT = :compare
+  COMPONENTS = {
+    [0,0]   => View::TabNavigation,
+    [0,1,0] => 'search_type',
+    [0,1,1] => :link_to_normal,
+    [0,2,0] => :search_query,
+  }
+  SYMBOL_MAP = {
+    :search_query => View::AutocompleteSearchBar,
+  }
+  def init
+    @index_name = 'oddb_package_name_with_size'
+    @additional_javascripts = []
+    super
+  end
+  def javascripts(context)
+    scripts = ''
+    @additional_javascripts.each do |script|
+      args = {
+        'type'     => 'text/javascript',
+        'language' => 'JavaScript',
+      }
+      scripts << context.script(args) do script end
+    end
+    scripts
+  end
+  def to_html(context)
+    javascripts(context).to_s << super
+  end
+  def link_to_normal(model, session=@session)
+    link = HtmlGrid::Link.new(:search_instant, model, session, self)
+    args = { :search_form => "normal" }
+    link.href  = @lookandfeel._event_url(:home, args)
+    link.value = "Normal"
+    link
+  end
 end
 class CenteredSearchComposite < View::CenteredSearchComposite
   include View::Facebook
 	COMPONENTS = {
 		[0,0]		=>	:screencast,
 		[0,1]		=>	:language_chooser,
-		[0,2]		=>	View::Drugs::CenteredSearchForm,
+		[0,2]		=>	:search_form,
 		[0,3]		=>	:search_explain, 
 		[0,4]		=>	View::CenteredNavigation,
 	}
@@ -165,6 +212,14 @@ class CenteredSearchComposite < View::CenteredSearchComposite
 	def substance_count(model, session)
 		@session.app.substance_count
 	end
+  def search_form(model, session=@session)
+    case @session.search_form
+    when "normal"
+      View::Drugs::CenteredSearchForm.new(model, session, self)
+    when "instant"
+      View::Drugs::CenteredCompareSearchForm.new(model, session, self)
+    end
+  end
 	def narcotics(model, session)
 		link = HtmlGrid::Link.new(:narcotics, model, session, self)
 		link.href = @lookandfeel._event_url(:narcotics)
