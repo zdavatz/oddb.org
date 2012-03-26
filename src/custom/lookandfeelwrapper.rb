@@ -36,18 +36,20 @@ module ODDB
 		ENABLED = [
       :fachinfos, :feedback,
     ]
-		def compare_list_components
-			{
-				[0,0]	=>	:name_base,
-				[1,0]	=>	:company_name,
-				[2,0]	=>	:comparable_size,
-				[3,0] =>	:compositions,
-				[4,0]	=>	:price_public,
-				[5,0]	=>	:price_difference,
-				[6,0]	=>	:deductible,
-				[7,0] =>  :ikscat,
-			}	
-		end
+    def compare_list_components
+      {
+        [0,0] => :fachinfo,
+        [1,0] => :patinfo,
+        [2,0] => :name_base,
+        [3,0] => :company_name,
+        [4,0] => :comparable_size,
+        [5,0] => :compositions,
+        [6,0] => :price_public,
+        [7,0] => :price_difference,
+        [8,0] => :deductible,
+        [9,0] => :ikscat,
+      } 
+    end
 		def explain_result_components
 			{
 				[0,0]	=>	:explain_original,
@@ -308,19 +310,21 @@ module ODDB
 			:external_css	=>	'http://www.atupri.ch/misc/new.generika.css',
 		}
 		HTML_ATTRIBUTES = { }
-		def compare_list_components
-			{
-				[0,0]	=>	:name_base,
-				[1,0]	=>	:company_name,
-				[2,0]	=>	:most_precise_dose,
-				[3,0]	=>	:comparable_size,
-				[4,0] =>	:compositions,
-				[5,0]	=>	:price_public,
-				[6,0]	=>	:price_difference, 
-				[7,0]	=>	:deductible,
-				[8,0] =>  :ikscat,
-			}	
-		end
+    def compare_list_components
+      {
+        [0,0]  => :fachinfo,
+        [1,0]  => :patinfo,
+        [2,0]  => :name_base,
+        [3,0]  => :company_name,
+        [4,0]  => :most_precise_dose,
+        [5,0]  => :comparable_size,
+        [6,0]  => :compositions,
+        [7,0]  => :price_public,
+        [8,0]  => :price_difference, 
+        [9,0]  => :deductible,
+        [10,0] => :ikscat,
+      }  
+    end
 		def explain_result_components
 			{
 				[0,0]	=>	:explain_original,
@@ -479,19 +483,21 @@ module ODDB
 		RESOURCES = {
 			:external_css	=>	'http://www.just-medical.com/css/new.oddb.css',
 		}
-		def compare_list_components
-			{
-				[0,0]	=>	:name_base,
-				[1,0]	=>	:company_name,
-				[2,0]	=>	:most_precise_dose,
-				[3,0]	=>	:comparable_size,
-				[4,0] =>	:compositions,
-				[5,0]	=>	:price_public,
-				[6,0]	=>	:price_difference, 
-				[7,0]	=>	:deductible,
-				[8,0] =>  :ikscat,
-			}	
-		end
+    def compare_list_components
+      {
+        [0,0]  => :fachinfo,
+        [1,0]  => :patinfo,
+        [2,0]  => :name_base,
+        [3,0]  => :company_name,
+        [4,0]  => :most_precise_dose,
+        [5,0]  => :comparable_size,
+        [6,0]  => :compositions,
+        [7,0]  => :price_public,
+        [8,0]  => :price_difference, 
+        [9,0]  => :deductible,
+        [10,0] => :ikscat,
+      }  
+    end
 		def explain_result_components
 			{
 				[0,0]	=>	:explain_original,
@@ -655,15 +661,17 @@ module ODDB
     HTML_ATTRIBUTES = { }
     def compare_list_components
       {
-        [0,0]	=>	:name_base,
-        [1,0]	=>	:company_name,
-        [2,0]	=>	:most_precise_dose,
-        [3,0]	=>	:comparable_size,
-        [4,0] =>	:compositions,
-        [5,0]	=>	:price_public,
-        [6,0]	=>	:price_difference,
-        [7,0]	=>	:deductible,
-        [8,0] =>  :ikscat,
+        [1,0]  => :name_base,
+        [2,0]  => :company_name,
+        [3,0]  => :most_precise_dose,
+        [4,0]  => :comparable_size,
+        [5,0]  => :compositions,
+        [6,0]  => :price_public,
+        [7,0]  => :price_difference,
+        [8,0]  => :deductible,
+        [9,0]  => :ikscat,
+        [10,0] => :fachinfo,
+        [11,0] => :patinfo,
       }
     end
     def explain_result_components
@@ -839,19 +847,21 @@ module ODDB
     RESOURCES = {
       :external_css	=>	'http://www.mymedi.ch/css/oddb.css',
     }
-		def compare_list_components
-			{
-				[0,0]	=>	:name_base,
-				[1,0]	=>	:company_name,
-				[2,0]	=>	:most_precise_dose,
-				[3,0]	=>	:comparable_size,
-				[4,0] =>	:compositions,
-				[5,0]	=>	:price_public,
-				[6,0]	=>	:ddd_price, 
-				[7,0]	=>	:price_difference, 
-				[8,0]	=>	:deductible, 
-			}	
-		end
+    def compare_list_components
+      {
+        [0,0]  => :fachinfo,
+        [1,0]  => :patinfo,
+        [2,0]  => :name_base,
+        [3,0]  => :company_name,
+        [4,0]  => :most_precise_dose,
+        [5,0]  => :comparable_size,
+        [6,0]  => :compositions,
+        [7,0]  => :price_public,
+        [8,0]  => :ddd_price, 
+        [9,0]  => :price_difference, 
+        [10,0] => :deductible, 
+      }  
+    end
 		PH_END = Date.new(2010,4,10)
 		def enabled?(event, default=false)
 		  if event == :price_history && @@today < PH_END
@@ -868,13 +878,14 @@ module ODDB
 				[0,4]	=>	'explain_pbp',
 				[0,5]	=>	:explain_deductible,
 				[0,6]	=>	:explain_ddd_price,
-				[1,0]	=>	:explain_patinfo,
-				[1,1]	=>	:explain_limitation,
-				[1,2]	=>	:explain_complementary,
-				[1,3]	=>	'explain_sl',
-				[1,4]	=>	'explain_slo',
-				[1,5]	=>	'explain_slg',
-				[1,6]	=>	:explain_lppv,
+				[1,1]	=>	:explain_fachinfo,
+				[1,2]	=>	:explain_patinfo,
+				[1,3]	=>	:explain_limitation,
+				[1,4]	=>	:explain_complementary,
+				[1,5]	=>	'explain_sl',
+				[1,6]	=>	'explain_slo',
+				[1,7]	=>	'explain_slg',
+				[1,8]	=>	:explain_lppv,
 			}
 		end
 		def result_list_components
@@ -965,19 +976,19 @@ module ODDB
     RESOURCES = {
       :external_css	=>	'http://www.mymedi.ch/css/oddb_mymigel.css',
     }
-		def compare_list_components
-			{
-				[0,0]	=>	:name_base,
-				[1,0]	=>	:company_name,
-				[2,0]	=>	:most_precise_dose,
-				[3,0]	=>	:comparable_size,
-				[4,0] =>	:compositions,
-				[5,0]	=>	:price_public,
-				[6,0]	=>	:ddd_price, 
-				[7,0]	=>	:price_difference, 
-				[8,0]	=>	:deductible, 
-			}	
-		end
+    def compare_list_components
+      {
+        [0,0] => :name_base,
+        [1,0] => :company_name,
+        [2,0] => :most_precise_dose,
+        [3,0] => :comparable_size,
+        [4,0] => :compositions,
+        [5,0] => :price_public,
+        [6,0] => :ddd_price, 
+        [7,0] => :price_difference, 
+        [8,0] => :deductible, 
+      }  
+    end
 		PH_END = Date.new(2010,4,10)
 		def enabled?(event, default=false)
 		  if event == :price_history && @@today < PH_END
@@ -1082,19 +1093,21 @@ module ODDB
 			:ywesee_contact,
 		]
 		DISABLED = [ :atc_ddd ]
-		def compare_list_components
-			{
-				[0,0]	=>	:name_base,
-				[1,0]	=>	:company_name,
-				[2,0]	=>	:most_precise_dose,
-				[3,0]	=>	:comparable_size,
-				[4,0] =>	:compositions,
-				[5,0]	=>	:price_public,
-				[6,0]	=>	:price_difference, 
-				[7,0]	=>	:ddd_price, 
-				[8,0] =>  :ikscat,
-			}	
-		end
+    def compare_list_components
+      {
+        [0,0]  => :fachinfo,
+        [1,0]  => :patinfo,
+        [2,0]  => :name_base,
+        [3,0]  => :company_name,
+        [4,0]  => :most_precise_dose,
+        [5,0]  => :comparable_size,
+        [6,0]  => :compositions,
+        [7,0]  => :price_public,
+        [8,0]  => :price_difference, 
+        [9,0]  => :ddd_price, 
+        [10,0] => :ikscat,
+      }  
+    end
 		def explain_result_components
 			{
 				[0,0]	=>	:explain_original,

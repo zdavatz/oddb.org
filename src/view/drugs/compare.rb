@@ -28,9 +28,11 @@ class CompareList < HtmlGrid::List
 		:compositions      =>	'list italic',
 		:ddd_price				 => 'list right',
 		:deductible				 => 'list right',
+    :fachinfo          => 'list',
 		:ikscat						 => 'list italic',
 		:most_precise_dose => 'list right',
 		:name_base				 => 'list big',
+    :patinfo           => 'list',
 		:price_difference	 => 'list bold right',
 		:price_public			 => 'list pubprice',
 	}
@@ -41,9 +43,11 @@ class CompareList < HtmlGrid::List
 		:compositions      =>	'th',
 		:ddd_price				 => 'th right',
 		:deductible				 => 'th right',
+    :fachinfo          => 'th',
 		:ikscat						 => 'th',
 		:most_precise_dose => 'th right',
 		:name_base				 => 'th',
+    :patinfo           => 'th',
 		:price_difference	 => 'th right',
 		:price_public			 => 'th right',
 	}

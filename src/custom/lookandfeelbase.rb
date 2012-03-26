@@ -4248,18 +4248,20 @@ Zeno Davatz
                                                     :dictionary => dict)
       end
     end
-		def compare_list_components
-			{
-				[0,0]	=>	:name_base,
-				[1,0]	=>	:company_name,
-				[2,0]	=>	:comparable_size,
-				[3,0] =>	:compositions,
-				[4,0]	=>	:price_public,
-				[5,0]	=>	:price_difference,
-				[6,0]	=>	:deductible,
-				[7,0] =>  :ddd_price,
-			}	
-		end
+    def compare_list_components
+      {
+        [0,0] => :fachinfo,
+        [1,0] => :patinfo,
+        [2,0] => :name_base,
+        [3,0] => :company_name,
+        [4,0] => :comparable_size,
+        [5,0] => :compositions,
+        [6,0] => :price_public,
+        [7,0] => :price_difference,
+        [8,0] => :deductible,
+        [9,0] => :ddd_price,
+      }
+    end
     def comparison_sorter
     end
 		def currencies
