@@ -170,7 +170,11 @@ module ODDB
 			@active_state.navigation
 		end
     def search_form
-      cookie_set_or_get(:search_form) || "normal"
+      search_form = cookie_set_or_get(:search_form) || \
+                    @persistent_user_input[:search_form] || \
+                    "normal"
+      @persistent_user_input[:search_form] = search_form
+      search_form
     end
 		def search_oddb(query)
 			@persistent_user_input[:search_query] ||= query
