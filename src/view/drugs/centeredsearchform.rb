@@ -83,7 +83,7 @@ class CenteredCompareSearchForm < CenteredSearchForm
     link = HtmlGrid::Link.new(:search_instant, model, session, self)
     args = { :search_form => "normal" }
     link.href  = @lookandfeel._event_url(:home, args)
-    link.value = "Normal"
+    link.value = "Plus"
     link
   end
 end
