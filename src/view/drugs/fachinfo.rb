@@ -1,8 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::Drugs::Fachinfo -- oddb.org -- 27.03.2011 -- yasaka@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
+require 'flickraw'
+require 'thread'
 require 'view/drugs/privatetemplate'
 require 'view/chapter'
 require 'view/printtemplate'
@@ -136,12 +139,97 @@ end
 class FachinfoInnerComposite < HtmlGrid::DivComposite
 	COMPONENTS = {}
 	DEFAULT_CLASS = View::Chapter
+  CSS_STYLE_MAP = {
+    0 => 'float:right;',
+  }
 	def init
 		@model.chapter_names.each_with_index { |name, idx|
 			components.store([0,idx], name)
 		}
 		super
+    thumbs = []
+    photos = _load_photos
+    photos.each_with_index { |photo, idx|
+      image_div = _image_div(photo)
+      text_link = _text_link(photo)
+      div = HtmlGrid::Div.new(model, @session, self)
+      div.value = image_div.to_html(@session.cgi) +
+                  text_link.to_html(@session.cgi)
+      div.set_attribute('class', 'thumbnail')
+      thumbs << div
+    }
+    @grid.unshift(thumbs)
 	end
+  private
+  def _image_div(photo)
+    image = HtmlGrid::Image.new(photo[:name], @model, @session, self)
+    image.set_attribute('alt', photo[:name])
+    image.set_attribute('src', photo[:src])
+    link = HtmlGrid::Link.new(photo[:name], @model, @session, self)
+    link.href = photo[:url]
+    link.value = image
+    div = HtmlGrid::Div.new(model, @session, self)
+    div.value = link
+    div
+  end
+  def _text_link(photo)
+    link = HtmlGrid::Link.new(photo[:name], @model, @session, self)
+    link.href = photo[:url]
+    link.value = photo[:name]
+    link
+  end
+  def _load_photos
+    # Flickr Image Size
+    # "Thumbnail" :  40 x 100
+    # "Small"     :  97 x 240
+    # "Small320"  : 240 X 320
+    photos = []
+    config = ODDB.config
+    if config.flickr_api_key.empty? or
+       config.flickr_shared_secret.empty?
+      return photos
+    end
+    FlickRaw.api_key = config.flickr_api_key
+    FlickRaw.shared_secret = config.flickr_shared_secret
+    flickr_form = /^http(?:s*):\/\/(?:.*)\.flickr\.com\/photos\/(?:.[^\/]*)\/([0-9]*)(?:\/*)/
+    registrations = @container.model.registrations
+    threads = {}
+    mutex = Mutex.new
+    registrations.each do |reg|
+      reg.packages.each do |pack|
+        if pack.photo_link =~ flickr_form
+          id = $1
+          unless threads.keys.include?(id)
+            threads[id] = Thread.new {
+              begin
+                sizes = flickr.photos.getSizes :photo_id => id
+                sizes.each do |size|
+                  if size.label == "Small"
+                    photo = {
+                      :name => pack.name_base,
+                      :src  => size.source,
+                      :url  => pack.photo_link
+                    }
+                    mutex.synchronize do
+                      photos << photo
+                    end
+                    break
+                  end
+              end
+              rescue FlickRaw::FailedResponse => e
+              end
+            }
+          end
+        end
+      end
+    end
+    threads.values.each do |thread|
+      thread.join
+    end
+    photos.sort_by do |photo|
+      photo[:name]
+    end
+  end
 end
 =begin
 class Fachinfo2001InnerComposite < FachinfoInnerComposite
@@ -206,7 +294,7 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 		[0,0]	=>	:fachinfo_name,
 		[1,0]	=>	:company_name,
 		[0,1]	=>	:chapter_chooser,
-		[0,2] =>	:document,
+		[0,2] =>  :document,
 	}
 	COLSPAN_MAP = {
 		[0,1]	=>	2,

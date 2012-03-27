@@ -859,6 +859,11 @@ div.heading {
 div.heading img {
   float: right;
 }
+div.thumbnail {
+  float: left;
+  display: inline;
+  margin: 0 5px;
+}
 span.highlight {
   background-color: yellow;
 }
