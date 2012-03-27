@@ -849,17 +849,16 @@ module ODDB
     }
     def compare_list_components
       {
-        [0,0]  => :fachinfo,
-        [1,0]  => :patinfo,
-        [2,0]  => :name_base,
-        [3,0]  => :company_name,
-        [4,0]  => :most_precise_dose,
-        [5,0]  => :comparable_size,
-        [6,0]  => :compositions,
-        [7,0]  => :price_public,
-        [8,0]  => :ddd_price, 
-        [9,0]  => :price_difference, 
-        [10,0] => :deductible, 
+        [0,0] => :patinfo,
+        [1,0] => :name_base,
+        [2,0] => :company_name,
+        [3,0] => :most_precise_dose,
+        [4,0] => :comparable_size,
+        [5,0] => :compositions,
+        [6,0] => :price_public,
+        [7,0] => :ddd_price,
+        [8,0] => :price_difference,
+        [9,0] => :deductible,
       }  
     end
 		PH_END = Date.new(2010,4,10)
@@ -870,24 +869,23 @@ module ODDB
 		    super
 		  end
 		end
-		def explain_result_components
-			{
-				[0,1]	=>	:explain_original,
-				[0,2]	=>	:explain_generic,
-				[0,3]	=>	'explain_expired',
-				[0,4]	=>	'explain_pbp',
-				[0,5]	=>	:explain_deductible,
-				[0,6]	=>	:explain_ddd_price,
-				[1,1]	=>	:explain_fachinfo,
-				[1,2]	=>	:explain_patinfo,
-				[1,3]	=>	:explain_limitation,
-				[1,4]	=>	:explain_complementary,
-				[1,5]	=>	'explain_sl',
-				[1,6]	=>	'explain_slo',
-				[1,7]	=>	'explain_slg',
-				[1,8]	=>	:explain_lppv,
-			}
-		end
+    def explain_result_components
+      {
+        [0,1] => :explain_original,
+        [0,2] => :explain_generic,
+        [0,3] => 'explain_expired',
+        [0,4] => 'explain_pbp',
+        [0,5] => :explain_deductible,
+        [0,6] => :explain_ddd_price,
+        [1,1] => :explain_patinfo,
+        [1,2] => :explain_limitation,
+        [1,3] => :explain_complementary,
+        [1,4] => 'explain_sl',
+        [1,5] => 'explain_slo',
+        [1,6] => 'explain_slg',
+        [1,7] => :explain_lppv,
+      }
+    end
 		def result_list_components
 			{
 				[0,0]		=>	:limitation_text,
