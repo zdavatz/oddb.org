@@ -143,14 +143,16 @@ module ODDB
       threads.values.each do |thread|
         thread.join
       end
-      photos.sort do |a, b| # sort_by size
+      photos.sort do |a, b| # sort_by size in name
         result = a[:name].gsub(/(\d+)/) { "%04d" % $1.to_i } <=>
                  b[:name].gsub(/(\d+)/) { "%04d" % $1.to_i }
         if result.zero?
-          a[:name] <=> b[:name]
-        else
-          result
+          result = a[:name] <=> b[:name]
+          if result.zero?
+            result = a[:url] <=> b[:url]
+          end
         end
+        result
       end
     end
   end
