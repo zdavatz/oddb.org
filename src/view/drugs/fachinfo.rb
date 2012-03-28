@@ -243,10 +243,10 @@ class FachinfoPreviewComposite < HtmlGrid::Composite
 	end
 end
 class FachinfoPrintInnerComposite < FachinfoInnerComposite
-  attr_accessor :photos
 	DEFAULT_CLASS = View::PrintChapter
 end
 class FachinfoPrintComposite < HtmlGrid::DivComposite #View::Drugs::FachinfoPreviewComposite
+  attr_accessor :photos
 	include PrintComposite
 	INNER_COMPOSITE = View::Drugs::FachinfoInnerComposite
 	PRINT_TYPE = :print_type_fachinfo
@@ -255,6 +255,11 @@ class FachinfoPrintComposite < HtmlGrid::DivComposite #View::Drugs::FachinfoPrev
 		1	=> 'print big',
 		2	=> 'list right',
 	}
+  def init
+    @document = @model.send(@session.language)
+    @photos = @model.send(:photos, 'thumbnail')
+    super
+  end
 end
 class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
   attr_accessor :photos
