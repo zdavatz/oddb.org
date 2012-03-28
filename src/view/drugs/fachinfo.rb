@@ -179,7 +179,7 @@ class FachinfoInnerComposite < HtmlGrid::DivComposite
         components.store([0,idx], name)
       }
     end
-    unless @container.photos.empty?
+    if @container.respond_to?(:photos) and !@container.photos.empty?
       @css_style_map = {
         0 => 'float:right;',
       }
@@ -243,6 +243,7 @@ class FachinfoPreviewComposite < HtmlGrid::Composite
 	end
 end
 class FachinfoPrintInnerComposite < FachinfoInnerComposite
+  attr_accessor :photos
 	DEFAULT_CLASS = View::PrintChapter
 end
 class FachinfoPrintComposite < HtmlGrid::DivComposite #View::Drugs::FachinfoPreviewComposite
