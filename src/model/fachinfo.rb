@@ -85,6 +85,16 @@ module ODDB
 		def unwanted_effect_text(language)
       ODDB.search_term(self.send(language).unwanted_effects.to_s)
 		end
+    def has_photo?
+      registrations.each do |reg|
+        reg.packages.each do |pack|
+          if pack.has_flickr_photo?
+            return true
+          end
+        end
+      end
+      return false
+    end
     def photos(image_size="Thumbnail")
       # Flickr Image Size (max)
       # "Square"    :  75 x  75 px
@@ -96,7 +106,7 @@ module ODDB
       config = ODDB.config
       if config.flickr_api_key.empty? or
          config.flickr_shared_secret.empty?
-        return photos
+        return nil
       end
       FlickRaw.api_key = config.flickr_api_key
       FlickRaw.shared_secret = config.flickr_shared_secret
@@ -143,6 +153,7 @@ module ODDB
       threads.values.each do |thread|
         thread.join
       end
+      return nil if photos.empty?
       photos.sort do |a, b| # sort_by size in name
         result = a[:name].gsub(/(\d+)/) { "%04d" % $1.to_i } <=>
                  b[:name].gsub(/(\d+)/) { "%04d" % $1.to_i }

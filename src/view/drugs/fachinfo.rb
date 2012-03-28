@@ -111,7 +111,7 @@ class FiChapterChooser < HtmlGrid::Composite
 	end
   def display_names(document)
     names = document.chapter_names
-    unless @container.photos.empty?
+    if @container.respond_to?(:photos) and !@container.photos.nil?
       names << :photos
     end
     names
@@ -179,7 +179,7 @@ class FachinfoInnerComposite < HtmlGrid::DivComposite
         components.store([0,idx], name)
       }
     end
-    if @container.respond_to?(:photos) and !@container.photos.empty?
+    if @container.respond_to?(:photos) and !@container.photos.nil?
       @css_style_map = {
         0 => 'float:right;',
       }
@@ -281,12 +281,16 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 	}	
   def init
     @document = @model.send(@session.language)
-    @photos = []
+    @photos = nil
     case @session.user_input(:chapter)
     when nil
       @photos = @model.send(:photos, 'thumbnail')
     when 'photos'
       @photos = @model.send(:photos, 'small')
+    else
+      if @model.send(:has_photo?)
+        @photos = true # link only
+      end
     end
     super
   end
@@ -304,7 +308,7 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
     end
   end
 	def description(model, session)
-		chapter = @session.user_input(:chapter)
+		chapter = session.user_input(:chapter)
 		if(chapter == 'ddd')
 			View::Drugs::DDDTree.new(model.atc_class, session, self)
 		elsif(chapter == 'changelog')
