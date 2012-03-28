@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::View::DataFormat -- oddb.org -- 28.03.2012 -- yasaka@ywesee.com
 # ODDB::View::DataFormat -- oddb.org -- 02.03.2012 -- mhatakeyama@ywesee.com 
 # ODDB::View::DataFormat -- oddb.org -- 14.03.2003 -- hwyss@ywesee.com 
 
@@ -87,7 +88,15 @@ module ODDB
         url = model.photo_link
         unless url.to_s.empty?
           photo = HtmlGrid::Link.new(:photo_link_short, model, @session, self)
-          photo.href = url
+          if model.has_flickr_photo?
+            args = [
+              :reg, model.registration.iksnr,
+              :chapter, :photos
+            ]
+            photo.href = @lookandfeel._event_url(:fachinfo, args)
+          else
+            photo.href = url
+          end
           photo.set_attribute 'title', @lookandfeel.lookup(:photo_link_title)
           photo.css_class = 'square infos'
           [link, ' ‐ ', photo]

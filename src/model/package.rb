@@ -17,6 +17,7 @@ module ODDB
 		include Persistence
     @@ddd_galforms = /tabletten?/iu
     @@ddd_grmforms = /(?!mg\/ml)[mg|g|ml]/iu
+    @@flickr_forms = /^http(?:s*):\/\/(?:.*)\.flickr\.com\/photos\/(?:.[^\/]*)\/([0-9]*)(?:\/*)/
 		class << self
       include AccessorCheckMethod
 			def price_internal(price, type=nil)
@@ -298,6 +299,14 @@ module ODDB
     def has_generic?
       @generic_type == :original && !comparables.empty?
     end
+    def flickr_photo_id
+      if self.photo_link =~ @@flickr_forms
+        $1
+      else
+        nil
+      end
+    end
+    alias :has_flickr_photo? :flickr_photo_id
     def ikscd=(ikscd)
       if(/^[0-9]{3}$/u.match(ikscd))
         pacs = @sequence.packages

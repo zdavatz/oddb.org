@@ -340,16 +340,16 @@ class RootFachinfoComposite < View::Drugs::FachinfoComposite
 		unless(@model.company.invoiceable?)
 			components.update({
 				[0,2] => :invoiceability,
-				[0,3] => :document,
+				[0,3] => :description,
 			})
 			css_map.store([0,3], 'list')
 			colspan_map.store([0,3], 2)
 		end
 		super
 	end
-	def chapter_view(chapter, document)
+	def chapter_view(chapter)
 		if(@model.company.invoiceable?)
-			View::EditChapterForm.new(chapter, document, @session, self)
+			View::EditChapterForm.new(chapter, @document, @session, self)
 		elsif(@model.pointer.skeleton == [:create])
 			# don't show anything
 		else
