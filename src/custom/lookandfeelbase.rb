@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::LookandfeelBase -- oddb.org -- 14.03.2012 -- yasaka@ywesee.com
+# ODDB::LookandfeelBase -- oddb.org -- 28.03.2012 -- yasaka@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 23.02.2012 -- mhatakeyama@ywesee.com
 # ODDB::LookandfeelBase -- oddb.org -- 14.06.2010 -- hwyss@ywesee.com
 
@@ -750,6 +750,7 @@ Zeno Davatz
 				:fi_driving_ability				=>	'Fahrt&uuml;cht.',
 				:fi_effects								=>	'Eigensch.',
 				:fi_fabrication						=>	'Hersteller',
+        :fi_photos                =>  'Foto',
 				:fi_galenic_form_amzv			=>	'Galen.Form',
 				:fi_galenic_form					=>	'Gal.Form/Ther.Gr.',
 				:fi_iksnrs								=>	'Swissmedic-Nr.',
@@ -2181,6 +2182,7 @@ Zeno Davatz
 				:fi_driving_ability				=>	'Apt.conduite',
 				:fi_effects								=>	'Propri&eacute;t&eacute;s',
 				:fi_fabrication						=>	'Fabric.',
+        :fi_photos                =>  'Photo',
 				:fi_galenic_form_amzv			=>	'Forme gal.',
 				:fi_galenic_form					=>	'Forme gal./Grpe.th.',
 				:fi_iksnrs								=>	'Estampille',
@@ -3402,6 +3404,7 @@ Zeno Davatz
 				:fi_driving_ability				=>	'Driving ability',
 				:fi_effects								=>	'Effects',
 				:fi_fabrication						=>	'Manufacturer',
+        :fi_photos                =>  'Photo',
 				:fi_galenic_form_amzv			=>	'Galenic Form',
 				:fi_galenic_form					=>	'Galenic Form / Therapeutic Group',
 				:fi_iksnrs								=>	'Swissmedic-Nr.',

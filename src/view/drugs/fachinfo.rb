@@ -1,11 +1,9 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-# ODDB::View::Drugs::Fachinfo -- oddb.org -- 27.03.2011 -- yasaka@ywesee.com
+# ODDB::View::Drugs::Fachinfo -- oddb.org -- 28.03.2011 -- yasaka@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 25.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::View::Drugs::Fachinfo -- oddb.org -- 17.09.2003 -- rwaltert@ywesee.com
 
-require 'flickraw'
-require 'thread'
 require 'view/drugs/privatetemplate'
 require 'view/chapter'
 require 'view/printtemplate'
@@ -111,9 +109,13 @@ class FiChapterChooser < HtmlGrid::Composite
 				model, session, self)
 		end
 	end
-	def display_names(document)
-		document.chapter_names
-	end
+  def display_names(document)
+    names = document.chapter_names
+    unless @container.photos.empty?
+      names << :photos
+    end
+    names
+  end
 	def full_text(model, session)
 		if(@model.pointer.skeleton == [:create])
 			@lookandfeel.lookup(:fachinfo_all)
@@ -136,98 +138,63 @@ class FiChapterChooser < HtmlGrid::Composite
     link
   end
 end
-class FachinfoInnerComposite < HtmlGrid::DivComposite
-	COMPONENTS = {}
-	DEFAULT_CLASS = View::Chapter
-  CSS_STYLE_MAP = {
-    0 => 'float:right;',
-  }
-	def init
-		@model.chapter_names.each_with_index { |name, idx|
-			components.store([0,idx], name)
-		}
-		super
-    thumbs = []
-    photos = _load_photos
-    photos.each_with_index { |photo, idx|
-      image_div = _image_div(photo)
-      text_link = _text_link(photo)
-      div = HtmlGrid::Div.new(model, @session, self)
-      div.value = image_div.to_html(@session.cgi) +
-                  text_link.to_html(@session.cgi)
-      div.set_attribute('class', 'thumbnail')
-      thumbs << div
-    }
-    @grid.unshift(thumbs)
-	end
+class FachinfoPhotoView < HtmlGrid::Div
+  CSS_CLASS = ''
+  def init
+    super
+    @value = []
+    if model.has_key?(:src)
+      @value << _image_div(model)
+      @value << _text_link(model)
+    end
+  end
   private
-  def _image_div(photo)
-    image = HtmlGrid::Image.new(photo[:name], @model, @session, self)
-    image.set_attribute('alt', photo[:name])
-    image.set_attribute('src', photo[:src])
-    link = HtmlGrid::Link.new(photo[:name], @model, @session, self)
-    link.href = photo[:url]
+  def _image_div(model)
+    image = HtmlGrid::Image.new(model[:name], @model, @session, self)
+    image.set_attribute('alt', model[:name])
+    image.set_attribute('src', model[:src])
+    link = HtmlGrid::Link.new(model[:name], @model, @session, self)
+    link.href = model[:url]
     link.value = image
+    link.target = '_blank'
     div = HtmlGrid::Div.new(model, @session, self)
     div.value = link
     div
   end
-  def _text_link(photo)
-    link = HtmlGrid::Link.new(photo[:name], @model, @session, self)
-    link.href = photo[:url]
-    link.value = photo[:name]
+  def _text_link(model)
+    link = HtmlGrid::Link.new(model[:name], @model, @session, self)
+    link.href = model[:url]
+    link.value = model[:name]
+    link.target = '_blank'
     link
   end
-  def _load_photos
-    # Flickr Image Size
-    # "Thumbnail" :  40 x 100
-    # "Small"     :  97 x 240
-    # "Small320"  : 240 X 320
-    photos = []
-    config = ODDB.config
-    if config.flickr_api_key.empty? or
-       config.flickr_shared_secret.empty?
-      return photos
+end
+class FachinfoInnerComposite < HtmlGrid::DivComposite
+  COMPONENTS = {}
+  DEFAULT_CLASS = View::Chapter
+  CSS_STYLE_MAP = {}
+  def init
+    if @model # document
+      @model.chapter_names.each_with_index { |name, idx|
+        components.store([0,idx], name)
+      }
     end
-    FlickRaw.api_key = config.flickr_api_key
-    FlickRaw.shared_secret = config.flickr_shared_secret
-    flickr_form = /^http(?:s*):\/\/(?:.*)\.flickr\.com\/photos\/(?:.[^\/]*)\/([0-9]*)(?:\/*)/
-    registrations = @container.model.registrations
-    threads = {}
-    mutex = Mutex.new
-    registrations.each do |reg|
-      reg.packages.each do |pack|
-        if pack.photo_link =~ flickr_form
-          id = $1
-          unless threads.keys.include?(id)
-            threads[id] = Thread.new {
-              begin
-                sizes = flickr.photos.getSizes :photo_id => id
-                sizes.each do |size|
-                  if size.label == "Small"
-                    photo = {
-                      :name => pack.name_base,
-                      :src  => size.source,
-                      :url  => pack.photo_link
-                    }
-                    mutex.synchronize do
-                      photos << photo
-                    end
-                    break
-                  end
-              end
-              rescue FlickRaw::FailedResponse => e
-              end
-            }
-          end
-        end
-      end
-    end
-    threads.values.each do |thread|
-      thread.join
-    end
-    photos.sort_by do |photo|
-      photo[:name]
+    unless @container.photos.empty?
+      @css_style_map = {
+        0 => 'float:right;',
+      }
+      super
+      images = []
+      css_class = @model.nil? ? 'small' : 'thumbnail'
+      @container.photos.each_with_index { |photo, idx|
+        image = FachinfoPhotoView.new(photo, @session, self)
+        image.css_class = css_class
+        images << image
+
+      }
+      @grid.unshift(images)
+    else
+      super
     end
   end
 end
@@ -289,13 +256,14 @@ class FachinfoPrintComposite < HtmlGrid::DivComposite #View::Drugs::FachinfoPrev
 	}
 end
 class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
+  attr_accessor :photos
 	CHOOSER_CLASS = View::Drugs::FiChapterChooser
-	COMPONENTS = {
-		[0,0]	=>	:fachinfo_name,
-		[1,0]	=>	:company_name,
-		[0,1]	=>	:chapter_chooser,
-		[0,2] =>  :document,
-	}
+  COMPONENTS = {
+    [0,0] => :fachinfo_name,
+    [1,0] => :company_name,
+    [0,1] => :chapter_chooser,
+    [0,2] => :description,
+  }
 	COLSPAN_MAP = {
 		[0,1]	=>	2,
 		[0,2]	=>	2,
@@ -305,30 +273,44 @@ class FachinfoComposite < View::Drugs::FachinfoPreviewComposite
 		[1,0]	=> 'th right',
 		[0,2]	=> 'list',
 	}	
+  def init
+    @document = @model.send(@session.language)
+    @photos = []
+    case @session.user_input(:chapter)
+    when nil
+      @photos = @model.send(:photos, 'thumbnail')
+    when 'photos'
+      @photos = @model.send(:photos, 'small')
+    end
+    super
+  end
 	def chapter_chooser(model, session)
 		if(klass = self.class.const_get(:CHOOSER_CLASS))
 			klass.new(model, session, self)
 		end
 	end
-	def chapter_view(chapter, document)
-		View::Chapter.new(chapter, document, @session, self)
-	end
-	def document(model, session)
-		document = model.send(session.language)
+  def chapter_view(chapter)
+    if(chapter == 'photos')
+      @document = nil
+      View::Drugs::FachinfoInnerComposite.new(@document, @session, self)
+    else
+      View::Chapter.new(chapter, @document, @session, self)
+    end
+  end
+	def description(model, session)
 		chapter = @session.user_input(:chapter)
 		if(chapter == 'ddd')
 			View::Drugs::DDDTree.new(model.atc_class, session, self)
 		elsif(chapter == 'changelog')
 		  View::ChangeLog.new(model.change_log, session, self)
 		elsif(chapter != nil)
-			chapter_view(chapter, document)
+			chapter_view(chapter)
 		else
-			View::Drugs::FachinfoInnerComposite.new(document, session, self)
+			View::Drugs::FachinfoInnerComposite.new(@document, session, self)
 		end
 	end
 	def fachinfo_name(model, session)
-		model = model.send(@session.language)
-		super(model, session)
+		super(@document, session)
 	end
 end
 class Fachinfo < PrivateTemplate

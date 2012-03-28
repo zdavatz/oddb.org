@@ -859,10 +859,23 @@ div.heading {
 div.heading img {
   float: right;
 }
-div.thumbnail {
+div.thumbnail,
+div.small {
   float: left;
   display: inline;
-  margin: 0 5px;
+  margin: 5px 5px 0 5px;
+  text-align: center;
+}
+div.thumbnail div {
+  height: 100px;
+  width: 100px;
+  margin-bottom: 3px;
+  text-align: center;
+}
+div.small div {
+  width: 240px;
+  margin-bottom: 3px;
+  text-align: center;
 }
 span.highlight {
   background-color: yellow;

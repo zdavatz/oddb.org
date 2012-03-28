@@ -1,8 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
+# ODDB::Fachinfo -- oddb.org -- 28.03.2011 -- yasaka@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 24.10.2011 -- mhatakeyama@ywesee.com
 # ODDB::Fachinfo -- oddb.org -- 12.09.2003 -- rwaltert@ywesee.com
 
+require 'flickraw'
+require 'thread'
 require 'util/persistence'
 require 'util/language'
 require 'util/searchterms'
@@ -82,6 +85,64 @@ module ODDB
 		def unwanted_effect_text(language)
       ODDB.search_term(self.send(language).unwanted_effects.to_s)
 		end
+    def photos(image_size="Thumbnail")
+      # Flickr Image Size
+      # "Thumbnail" :  40 x 100
+      # "Small"     :  97 x 240
+      # "Small320"  : 240 X 320
+      image_size.capitalize!
+      photos = []
+      config = ODDB.config
+      if config.flickr_api_key.empty? or
+         config.flickr_shared_secret.empty?
+        return photos
+      end
+      FlickRaw.api_key = config.flickr_api_key
+      FlickRaw.shared_secret = config.flickr_shared_secret
+      flickr_form = /^http(?:s*):\/\/(?:.*)\.flickr\.com\/photos\/(?:.[^\/]*)\/([0-9]*)(?:\/*)/
+      threads = {}
+      mutex = Mutex.new
+      registrations.each do |reg|
+        reg.packages.each do |pack|
+          if pack.photo_link =~ flickr_form
+            id = $1
+            unless threads.keys.include?(id)
+              threads[id] = Thread.new do
+                begin
+                  sizes = flickr.photos.getSizes :photo_id => id
+                  sizes.each do |size|
+                    if size.label == image_size
+                      photo = {
+                        :name => pack.name_base,
+                        :src  => size.source,
+                        :url  => pack.photo_link
+                      }
+                      mutex.synchronize do
+                        photos << photo
+                      end
+                      break
+                    end
+                end
+                rescue FlickRaw::FailedResponse => e
+                end
+              end
+            end
+          end
+        end
+      end
+      threads.values.each do |thread|
+        thread.join
+      end
+      photos.sort do |a, b| # sort_by size
+        result = a[:name].gsub(/(\d+)/) { "%04d" % $1.to_i } <=>
+                 b[:name].gsub(/(\d+)/) { "%04d" % $1.to_i }
+        if result.zero?
+          a[:name] <=> b[:name]
+        else
+          result
+        end
+      end
+    end
   end
 	class FachinfoDocument
 		include Persistence
@@ -91,6 +152,7 @@ module ODDB
 		attr_accessor :interactions, :overdose, :other_advice
 		attr_accessor :date, :iksnrs, :reference, :packages
 		attr_accessor :delivery, :distribution, :fabrication
+    attr_accessor :photos
 		CHAPTERS = [
 			:galenic_form,
 			:composition,
